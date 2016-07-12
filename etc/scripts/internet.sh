@@ -163,6 +163,10 @@ roaming_wifi() {
 	fi
 }
 
+# regenerate staticroutes and iptables rules scripts before processing
+nvram_genstaticroutes 2860
+nvram_geniptablesrules 2860
+
 # some reload and reconfigure
 if [ "$MODE" != "connect_sta" ]; then
     if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then

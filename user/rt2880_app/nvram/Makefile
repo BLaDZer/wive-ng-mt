@@ -19,3 +19,5 @@ romfs:
 	$(ROMFSINST) -s /bin/nvram /bin/nvram_clear
 	$(ROMFSINST) -s /bin/nvram /bin/nvram_renew
 	$(ROMFSINST) -s /bin/nvram /bin/nvram_genwlconfig
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_genstaticroutes
+	$(ROMFSINST) -s /bin/nvram /bin/nvram_geniptablesrules

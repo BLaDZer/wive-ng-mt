@@ -1112,8 +1112,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 
-	static_routing_rebuild_etc();
-
 	/* reconfigure system */
 	doSystem("internet.sh");
 
@@ -1166,10 +1164,6 @@ void initInternet(void)
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	char *opmode;
 #endif
-	/* first generate user routes and fierwall scripts */
-	static_routing_rebuild_etc();
-	firewall_rebuild_etc();
-
 	/* reconfigure system */
 	doSystem("internet.sh");
 

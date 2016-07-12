@@ -8,6 +8,7 @@
 
 #include "oid.h"	/* for max bssid num */
 #include "libnvram.h"
+#include "libnvram_utils.h"
 
 static int set_usage(char *aout)
 {
@@ -141,21 +142,6 @@ static int ra_nv_buf_get(int argc, char *argv[])
 	}
 
 	return (ret);
-}
-
-static int isMacValid(char *str)
-{
-	int i, len = strlen(str);
-	if(len != 17)
-		return 0;
-
-	for ( i = 0; i < 5; i++ )
-	{
-		if( (!isxdigit( str[i*3])) || (!isxdigit( str[i*3+1])) || (str[i*3+2] != ':') )
-			return 0;
-	}
-
-	return (isxdigit(str[15]) && isxdigit(str[16])) ? 1: 0;
 }
 
 static int nvram_load_default(void)
@@ -712,19 +698,35 @@ static int gen_wifi_config(int mode, int genmode)
 	return 0;
 }
 
+static int gen_staticroutes(int mode, int genmode)
+{
+	static_routing_rebuild_etc();
+
+	return 0;
+}
+
+static int gen_iptablesrules(int mode, int genmode)
+{
+	firewall_rebuild_etc();
+
+	return 0;
+}
+
 void usage(char *cmd)
 {
 	printf("Usage:\n");
 	printf("nvram_<command> [<platform>] [<file>]\n\n");
 	printf("command:\n");
-	printf("  get		- get value from nvram for <platform>\n");
-	printf("  buf_get	- buffered get value from nvram for <platform>\n");
-	printf("  set		- set value to nvram for <platform>\n");
-	printf("  show		- display values in nvram for <platform>\n");
-	printf("  renew		- replace nvram values for <platform> with <file>\n");
-	printf("  clear		- clear all entries in nvram for <platform>\n");
-	printf("  default	- load default for <platform>\n");
-	printf("  genwlconfig	- generate config file from nvram for <platform>\n");
+	printf("  get              - get value from nvram for <platform>\n");
+	printf("  buf_get          - buffered get value from nvram for <platform>\n");
+	printf("  set              - set value to nvram for <platform>\n");
+	printf("  show             - display values in nvram for <platform>\n");
+	printf("  renew            - replace nvram values for <platform> with <file>\n");
+	printf("  clear            - clear all entries in nvram for <platform>\n");
+	printf("  default          - load default for <platform>\n");
+	printf("  genwlconfig      - generate config file from nvram for <platform>\n");
+	printf("  genstaticroutes  - generate static routes scripts from nvram for <platform>\n");
+	printf("  geniptablesrules - generate iptables rules from nvram for <platform>\n");
 	printf("platform:\n");
 	printf("  2860    - first module\n");
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -768,6 +770,10 @@ int main(int argc, char *argv[])
 		return nvram_clear(mode);
 	else if (!strncmp(cmd, "nvram_genwlconfig", 18))
 		return gen_wifi_config(mode, genmode);
+	else if (!strncmp(cmd, "nvram_genstaticroutes", 22))
+		return gen_staticroutes(mode, genmode);
+	else if (!strncmp(cmd, "nvram_geniptablesrules", 23))
+		return gen_iptablesrules(mode, genmode);
 	else if (!strncmp(cmd, "nvram_renew", 12)) {
 		if (argc >= 3)
 		    return nvram_renew(mode, argv[2]);
