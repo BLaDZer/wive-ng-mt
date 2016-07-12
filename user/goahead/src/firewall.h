@@ -11,5 +11,4 @@
 
 void formDefineFirewall(void);
 void firewall_rebuild(void);
-void firewall_rebuild_etc(void);
 #endif

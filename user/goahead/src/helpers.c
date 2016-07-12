@@ -198,13 +198,6 @@ char *racat(char *s, int i)
 	return str;
 }
 
-char *strip_space(char *str)
-{
-	while (isspace(*str))
-		str++;
-	return str;
-}
-
 /*
  * check the existence of semicolon in str
  */
@@ -351,41 +344,6 @@ char *setNthValue(int index, char *old_values, char *new_value)
 }
 
 /*
- * substitution of getNthValue which dosen't destroy the original value
- */
-int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
-{
-    int i = 0, result_len = 0;
-    char *begin, *end;
-
-    if(!value || !result || !len)
-        return -1;
-
-    begin = value;
-    end = strchr(begin, delimit);
-    while(i < index && end != NULL){
-        begin = end + 1;
-        end = strchr(begin, delimit);
-        i++;
-    }
-
-    /* no delimit */
-    if(!end){
-	if(i == index){
-	    end = begin + strlen(begin);
-	    result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
-	} else
-		return -1;
-    } else
-	result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
-
-    memcpy(result, begin, result_len);
-    *(result + result_len ) = '\0';
-
-	return 0;
-}
-
-/*
  *  argument:  [IN]     index -- the index array of deleted items(begin from 0)
  *             [IN]     count -- deleted itmes count.
  *             [IN/OUT] value -- original string/return string
@@ -439,20 +397,6 @@ int deleteNthValueMulti(int index[], int count, char *value, char delimit)
 	return 0;
 }
 
-int getNums(char *value, char delimit)
-{
-    char *pos = value;
-    int count = 1;
-    if (!pos || !(*pos))
-        return 0;
-
-    while ((pos = strchr(pos, delimit)) != NULL) {
-        ++pos;
-        ++count;
-    }
-    return count;
-}
-
 /*
  * configure LED blinking with proper frequency (privatly use only)
  *   on: number of ticks that LED is on
@@ -503,88 +447,6 @@ int ledAlways(int gpio, int on)
 		return gpioLedSet(gpio, RALINK_GPIO_LED_INFINITY, 0, 1, 1, RALINK_GPIO_LED_INFINITY);
 	else
 		return gpioLedSet(gpio, 0, RALINK_GPIO_LED_INFINITY, 1, 1, RALINK_GPIO_LED_INFINITY);
-}
-
-/*
- * description: return LAN interface name
- */
-char* getLanIfName(void)
-{
-	char *mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	static char *if_name = "br0";
-	FILE *fp;
-	char lan_if[16]; /* max 16 char in lan if name */
-
-	/* set default */
-	if (mode == NULL)
-		return if_name;
-
-	/* try read fron file exported from init.d */
-	fp = fopen("/tmp/lan_if_name", "r");
-	if (fp) {
-	    /* get first lan_if in file */
-	    while ((fgets(lan_if, sizeof(lan_if), fp)) != NULL) {
-		if ((strstr(lan_if, ETH_SIG) != NULL) || (strstr(lan_if, BR_SIG) != NULL)) {
-		    fclose(fp);
-		    return strip_space(lan_if);
-		}
-	    }
-	    fclose(fp);
-	}
-
-	/* in ethernet converter mode lan_if = eth2 */
-	if (!strncmp(mode, "2", 2))
-	    if_name = "eth2";
-	else
-	    if_name = "br0";
-
-	return if_name;
-}
-
-/*
- * description: return WAN interface name depend by opmode
- */
-char* getWanIfName(void)
-{
-	char *mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char *apc_cli_mode = nvram_get(RT2860_NVRAM, "ApCliBridgeOnly");
-	char *apc_cli_wanif = nvram_get(RT2860_NVRAM, "ApCliIfName");
-	char *if_name = WAN_DEF;
-	char wan_if[16]; /* max 16 char in wan if name */
-	FILE *fp;
-
-	/* try read fron file exported from init.d */
-	fp = fopen("/tmp/wan_if_name", "r");
-	if (fp) {
-	    /* get first wan_if in file */
-	    while ((fgets(wan_if, sizeof(wan_if), fp)) != NULL) {
-		if ((strstr(wan_if, ETH_SIG) != NULL) || (strstr(wan_if, BR_SIG) != NULL)) {
-		    fclose(fp);
-		    return strip_space(wan_if);
-		}
-	    }
-	    fclose(fp);
-	}
-
-	/* set default */
-	if (mode == NULL)
-		return WAN_DEF;
-
-	if (!strncmp(mode, "0", 2))					/* bridge mode */
-		if_name = "br0";
-	else if (!strncmp(mode, "1", 2) || !strncmp(mode, "4", 2))	/* gw and chillispot mode */
-		if_name = WAN_DEF;
-	else if (!strncmp(mode, "2", 2))				/* ethernet converter mode */
-		if_name = "ra0";
-	else if (!strncmp(mode, "3", 2)) {				/* apcli mode */
-		    if (!strncmp(apc_cli_mode, "1", 2)) {
-			if_name = "br0";				/* Client-AP-Bridge */
-		    } else {
-			if_name = apc_cli_wanif;			/* Client-AP-Gateway 2.4Ghz/5GHz */
-		    }
-		}
-
-	return if_name;
 }
 
 /*

@@ -872,46 +872,6 @@ static void removeRoutingRuleNvram(const char *iface, const char *dest, const ch
 	free(buf);
 }
 
-static int addRoutingRule(char *buf, const char *dest, const char *netmask, const char *gw, const char *true_if)
-{
-	char cmd[256];
-
-	// action, destination
-	sprintf(cmd, "ip route $1 %s", dest);
-
-	// netmask
-	if (strcmp(netmask, "255.255.255.255")!=0)
-		sprintf(cmd, "%s/%s", cmd, netmask);
-
-	// interface
-	sprintf(cmd, "%s dev %s", cmd, true_if);
-
-	// gateway
-	if (strlen(gw) && strcmp(gw, "0.0.0.0") != 0)
-		sprintf(cmd, "%s via %s", cmd, gw);
-
-	if (buf != NULL)
-	{
-		strcpy(buf, cmd);
-		return 1;
-	}
-	else
-	{
-		FILE *fp;
-		strcat(cmd, " 2>&1 ");
-		printf("%s\n", cmd);
-
-		fp = popen(cmd, "r");
-		if (!fp)
-			return 0;
-
-		fgets(cmd, sizeof(cmd), fp);
-
-		pclose(fp);
-		return strlen(cmd) == 0;
-	}
-}
-
 static void addRoutingRuleNvram(
 	const char *iface, const char *dest, const char *netmask,
 	const char *gw, const char *true_if, const char *cust_if, const char *comment)
@@ -946,157 +906,6 @@ static void addRoutingRuleNvram(
 
 	// Clear resource
 	free(tmp);
-}
-
-static void rebuildVPNRoutes(char *src_rrs)
-{
-	// Check if we are not in bridge mode
-	char *op_mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	if (strcmp(op_mode, "0") == 0)
-		return;
-
-	// Now generate file
-	int nwritten=0, index=0;
-	char one_rule[256], iface[32], dest[32], netmask[32], gw[32];
-
-	char *rrs = (src_rrs != NULL) ? src_rrs : nvram_get(RT2860_NVRAM, "RoutingRules");
-	if (rrs == NULL)
-		return;
-
-	FILE *fd = fopen(_PATH_PPP_ROUTES, "w");
-	if (fd == NULL)
-	{
-		syslog(LOG_ERR, "open %s failed, %s", _PATH_PPP_ROUTES, __FUNCTION__);
-		return;
-	}
-
-	fputs("#/bin/sh\n\n", fd);
-
-	while (getNthValueSafe(index++, rrs, ';', one_rule, sizeof(one_rule)) != -1)
-	{
-		// Get & check interface
-		if (getNthValueSafe(3, one_rule, ',', iface, sizeof(iface)) == -1)
-			continue;
-		if (strcmp(iface, "VPN") != 0)
-			continue;
-
-		// Get destination
-		if (getNthValueSafe(0, one_rule, ',', dest, sizeof(dest)) == -1)
-			continue;
-
-		// Get netmask
-		if (getNthValueSafe(1, one_rule, ',', netmask, sizeof(netmask)) == -1)
-			continue;
-
-		// Get gateway
-		if (getNthValueSafe(2, one_rule, ',', gw, sizeof(gw)) == -1)
-			continue;
-
-		addRoutingRule(one_rule, dest, netmask, gw, "$2");
-		fprintf(fd, "%s\n", one_rule);
-		nwritten++;
-	}
-
-	fclose(fd);
-
-	if (nwritten <= 0)
-		unlink(_PATH_PPP_ROUTES);
-	else
-		chmod(_PATH_PPP_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
-}
-
-static void rebuildLANWANRoutes(char *src_rrs)
-{
-	// Get work mode
-	char *op_mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	int isBridgeMode = (strcmp(op_mode, "0") == 0) ? 1 : 0;
-
-	// Now generate file
-	int nwritten=0, index=0;
-	char one_rule[256], iface[32], dest[32], netmask[32], gw[32], custom_iface[32];
-
-	char *rrs = (src_rrs != NULL) ? src_rrs : nvram_get(RT2860_NVRAM, "RoutingRules");
-	if (rrs == NULL)
-		return;
-
-	FILE *fd = fopen(_PATH_LANWAN_ROUTES, "w");
-	if (fd == NULL)
-	{
-		syslog(LOG_ERR, "open %s failed, %s", _PATH_LANWAN_ROUTES, __FUNCTION__);
-		return;
-	}
-
-	fputs("#/bin/sh\n\n", fd);
-
-	while (getNthValueSafe(index++, rrs, ';', one_rule, sizeof(one_rule)) != -1)
-	{
-		// Get & check interface
-		if (getNthValueSafe(3, one_rule, ',', iface, sizeof(iface)) == -1)
-			continue;
-		if (strcmp(iface, "VPN") == 0)
-			continue;
-		else if ((strcmp(iface, "WAN")==0) && isBridgeMode)
-		{
-			syslog(LOG_ERR, "Skip WAN routing rule in the non-Gateway mode: %s,%s", one_rule, __FUNCTION__);
-			continue;
-		}
-
-		// Get destination
-		if (getNthValueSafe(0, one_rule, ',', dest, sizeof(dest)) == -1)
-			continue;
-
-		// Get netmask
-		if (getNthValueSafe(1, one_rule, ',', netmask, sizeof(netmask)) == -1)
-			continue;
-
-		// Get gateway
-		if (getNthValueSafe(2, one_rule, ',', gw, sizeof(gw)) == -1)
-			continue;
-
-		if ((getNthValueSafe(5, one_rule, ',', custom_iface, sizeof(custom_iface)) == -1))
-			continue;
-
-		// Check interface
-		if (strcmp(iface, "WAN")==0)
-			strcpy(custom_iface, "$3");
-		else if (strcmp(iface, "LAN")==0)
-			strcpy(custom_iface, "$2");
-		else if (strcmp(iface, "Custom")==0)
-		{
-			if (strlen(custom_iface)<=0)
-				strcpy(custom_iface, "$3");
-		}
-		else
-		{
-			strcpy(iface, "LAN");
-			strcpy(custom_iface, "$2");
-		}
-
-		addRoutingRule(one_rule, dest, netmask, gw, custom_iface);
-		fprintf(fd, "%s\n", one_rule);
-		nwritten++;
-	}
-
-	fclose(fd);
-
-	if (nwritten <= 0)
-		unlink(_PATH_LANWAN_ROUTES);
-	else
-		chmod(_PATH_LANWAN_ROUTES, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
-}
-
-void staticRoutingInit(void)
-{
-	// Get routing rules
-	char *rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
-
-	// Remove static routes scripts
-	doSystem("rm -f " _PATH_PPP_ROUTES);
-	doSystem("rm -f " _PATH_LANWAN_ROUTES);
-
-	// And rebuild VPN routes
-	rebuildLANWANRoutes(rrs);
-	rebuildVPNRoutes(rrs);
 }
 
 /*
@@ -1303,7 +1112,7 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 		}
 	}
 
-	staticRoutingInit();
+	static_routing_rebuild_etc();
 
 	/* reconfigure system */
 	doSystem("internet.sh");
@@ -1358,7 +1167,7 @@ void initInternet(void)
 	char *opmode;
 #endif
 	/* first generate user routes and fierwall scripts */
-	staticRoutingInit();
+	static_routing_rebuild_etc();
 	firewall_rebuild_etc();
 
 	/* reconfigure system */

@@ -2199,18 +2199,19 @@
 5) goahead: merge wireless basic and advanced page.<br>
 6) goahead: add input values check to ipv6 page.<br>
 7) goahead: add ipv6 dns options.<br>
-8) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-9) kernel: mips: fix siginfo.h to use strict posix types.<br>
-10) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-11) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-12) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-13) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-14) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-15) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-16) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-17) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-18) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-19) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+8) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
+9) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+10) kernel: mips: fix siginfo.h to use strict posix types.<br>
+11) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+12) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+13) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+14) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+15) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+16) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+17) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+18) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+19) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+20) kernel: net: ppp: defer netns reference release for ppp channel.<br>
 <br>
 <br>
 <br>

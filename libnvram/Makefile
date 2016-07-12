@@ -31,7 +31,7 @@ CFLAGS+=$(SSP_ALL_CFLAGS) -DUSE_HOSTCC -fPIC -D_LARGEFILE64_SOURCE=1
 LIBNVRAM=libnvram.a
 LIBNVRAM_SHARED=libnvram.so
 
-OBJS	:= libnvram.o
+OBJS	:= libnvram.o libnvram_utils.o
 HEADERS := libnvram.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: shared
