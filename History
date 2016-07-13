@@ -2217,6 +2217,7 @@
 23) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
 24) kernel: net: ppp: defer netns reference release for ppp channel.<br>
 25) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+26) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
 <br>
 <br>
 <br>
