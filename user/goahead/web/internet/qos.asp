@@ -97,7 +97,8 @@ function bodyOnLoad(form)
 {
 	initializeForm(form);
 	QoSSelectChange(form);
-	 initTranslation();
+	initTranslation();
+	showWarning();
 }
 
 function resetClick(form)
@@ -111,6 +112,7 @@ function resetClick(form)
 <!--     body      -->
 <body bgcolor="#FFFFFF" onLoad="bodyOnLoad(document.QoSSetup);">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="QoSTitleStr">Quality of Service Settings </h1>
       <p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>

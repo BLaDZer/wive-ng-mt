@@ -88,12 +88,14 @@ function initValue()
 	else
 		form.opMode[0].checked = true;
 	changeMode();
+	showWarning();
 }
 </script>
 </head>
 
 <body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
+  <tr id="warning"></tr>
   <tr>
     <td><h1 id="oTitle">Operation Mode Configuration</h1>
       <p><div id="oFirmVer">Current Firmware Version:</div> <% getSdkVersion(); %></p>

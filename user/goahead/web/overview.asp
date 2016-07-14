@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("view");
 Butterlate.setTextDomain("buttons");
@@ -53,6 +54,7 @@ function initValue()
 			}
 		}
 	}
+	showWarning();
 }
 
 function setLanguage()
@@ -66,6 +68,7 @@ function setLanguage()
 
 <body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1>Wive-NG-MT - firmware for Mediatek based Wi-Fi CPE productions by NAG</h1>
       <p id="ovIntroduction" />

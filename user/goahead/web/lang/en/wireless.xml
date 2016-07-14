@@ -32,7 +32,8 @@
   <message msgid="basic introduction" msgstr="You can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel. These settings are sufficient to have a working Access Point." />
   <message msgid="basic wireless" msgstr="Wireless (2.4GHz)" />
   <message msgid="basic wireless ac" msgstr="Wireless (5GHz)" />
-  <message msgid="basic wireless network" msgstr="Wireless Network" />
+  <message msgid="basic wireless network" msgstr="Wireless Network 2.4GHz" />
+  <message msgid="basic wireless network ac" msgstr="Wireless Network 5GHz" />
   <message msgid="basic wireless settings" msgstr="SSID Settings" />
   <message msgid="basic radio button" msgstr="Radio On/Off" />
   <message msgid="basic ac network mode" msgstr="Network Mode (5GHz)" />
@@ -203,6 +204,7 @@
   <message msgid="adv idletimeout range" msgstr="sec (range 60 - 300)" />
   <message msgid="adv entrylifecheck range" msgstr="times (range 128 - 2048)" />
 
+  <message msgid="adv no mssid_1" msgstr="Please specify Network Name (SSID)" />
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
   <message msgid="adv invalid beacon" msgstr="Invalid Beacon Interval" />
   <message msgid="adv no dtim" msgstr="Please specify DTIM Interval" />
@@ -243,6 +245,7 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA Algorithms" />
   <message msgid="secure wpa pass phrase" msgstr="Pass Phrase" />
+  <message msgid="secure wpa show pass phrase" msgstr="(show)" />
   <message msgid="secure wpa key renew interval" msgstr="Key Renewal Interval" />
   <message msgid="secure wpa pmk cache period" msgstr="PMK Cache Period" />
   <message msgid="secure wpa preauth" msgstr="Pre-Authentication" />

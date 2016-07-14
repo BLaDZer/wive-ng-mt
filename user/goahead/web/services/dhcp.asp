@@ -254,6 +254,7 @@ function initValue()
 	dhcpTypeSwitch();
 	
 	loadDhcpClientsList();
+	showWarning();
 }
 
 function CheckValue(form)
@@ -461,6 +462,7 @@ function displayServiceStatus()
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="lTitle"></h1>
       <p id="lIntroduction"></p>

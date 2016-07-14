@@ -947,7 +947,13 @@ function initTranslation()
 	_TR("secureRadiusPort", "secure radius port");
 	_TR("secureRadiusSharedSecret", "secure radius shared secret");
 	_TR("secureRadiusSessionTimeout", "secure radius session timeout");
-
+	_TR("secureShowPass", "secure wpa show pass phrase");
+	_TR("secureShowPass1", "secure wpa show pass phrase");
+	_TR("secureShowPass2", "secure wpa show pass phrase");
+	_TR("secureShowPass3", "secure wpa show pass phrase");
+	_TR("secureShowPass4", "secure wpa show pass phrase");
+	_TR("secureShowPass5", "secure wpa show pass phrase");
+	
 	_TRV("secureApply", "wireless apply");
 	_TRV("secureCancel", "wireless cancel");
 }
@@ -955,6 +961,7 @@ function initTranslation()
 function initAll()
 {
 	initTranslation();
+	showWarning();
 	makeRequest("/goform/wirelessGetSecurity", "n/a", securityHandler);
 }
 
@@ -1001,12 +1008,50 @@ function onPreAuthenticationClick(type)
 	setChange(1);
 }
 
+function showWarning() {
+	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
+	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
+	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+
+	var warningHTML = "";
+	
+	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
+		warningHTML += '<tr><td>';
+		warningHTML += '<table class="warning">';
+		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
+		if  (warning_wireless_security || warning_wireless_key) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning" colspan="2">' + _("warning wireless security") + '</td>';
+			warningHTML += '</tr>';
+		}
+		if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
+			warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
+		}
+		if  (warning_access_password) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning">' + _("warning access password") + '</td>';
+			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/adm/management.asp");\'></td>';
+			warningHTML += '</tr>';
+		}
+		warningHTML += '</table>';
+		warningHTML += '</td></tr><br>';
+		ajaxModifyElementHTML('warning', warningHTML);
+	}
+}
+function showPassPhrase(id) {
+	var element = document.getElementById(id);
+	if (element.type == 'password')
+		element.type = 'text'
+	else
+		element.type = 'password';
+}
 </script>
 </head>
 
 <body bgcolor="#FFFFFF" onLoad="initAll();">
 <table class="body">
   <tbody>
+    <tr id="warning"></tr>
     <tr>
       <td><h1 id="securityTitle">Wireless Security/Encryption Settings </h1>
         <p id="securityIntroduction">Here you can configure wireless security and encryption to prevent unauthorized access to the router.</p>
@@ -1060,7 +1105,7 @@ function onPreAuthenticationClick(type)
             <tr>
               <td class="head1" rowspan="4" id="secureWEPKey">WEP Keys</td>
               <td class="head2" id="secureWEPKey1">WEP Key 1 :</td>
-              <td><input type="password" name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP1')"><font id="secureShowPass">(show)</font></td>
               <td><select id="WEP1Select" class="half" name="WEP1Select" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1068,7 +1113,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey2">WEP Key 2 : </td>
-              <td><input type="password" name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP2')"><font id="secureShowPass1">(show)</font></td>
               <td><select id="WEP2Select" name="WEP2Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1076,7 +1121,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey3">WEP Key 3 : </td>
-              <td><input type="password" name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP3')"><font id="secureShowPass2">(show)</font></td>
               <td><select id="WEP3Select" name="WEP3Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1084,7 +1129,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head2" id="secureWEPKey4">WEP Key 4 : </td>
-              <td><input type="password" name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP4')"><font id="secureShowPass3">(show)</font></td>
               <td><select id="WEP4Select" name="WEP4Select" class="half" onChange="setChange(1)">
                   <option value="1">ASCII</option>
                   <option value="0">Hex</option>
@@ -1109,7 +1154,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr id="wpa_passphrase" name="wpa_passphrase" style="visibility: hidden;">
               <td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
-              <td><input type="password" name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('passphrase')"><font id="secureShowPass4">(show)</font></td>
             </tr>
             <tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
               <td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
@@ -1157,7 +1202,7 @@ function onPreAuthenticationClick(type)
             </tr>
             <tr>
               <td class="head" id="secureRadiusSharedSecret"> Shared Secret </td>
-              <td><input type="password" name="RadiusServerSecret" id="RadiusServerSecret" size="16" maxlength="64" value="" onKeyUp="setChange(1)"></td>
+              <td><input type="password" name="RadiusServerSecret" id="RadiusServerSecret" size="16" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('RadiusServerSecret')"><font id="secureShowPass5">(show)</font></td>
             </tr>
             <tr>
               <td class="head" id="secureRadiusSessionTimeout"> Session Timeout </td>

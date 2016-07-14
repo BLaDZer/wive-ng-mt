@@ -27,7 +27,10 @@ var wdsEncrypKey2  = '<% getCfgGeneral(1, "Wds2Key"); %>';
 var wdsEncrypKey3  = '<% getCfgGeneral(1, "Wds3Key"); %>';
 var is5gh = '<% getCfgGeneral(1, "WdsIfName"); %>' == 'wdsi';
 var is5gh_1t1r = '<% is5gh_1t1r(); %>' == '1';
-
+var is5gh_support = '<% is5gh_support(); %>';
+var wds_interface = '<% getCfgGeneral(1, "WdsIfName"); %>';
+var radio_on = "<% getCfgZero(1, "RadioOn"); %>";
+var radio_on_ac = "<% getCfgZero(1, "RadioOnINIC"); %>";
 var WDS_NUM_MAX = 4;
 
 function wdsDisplay(form) {
@@ -38,7 +41,7 @@ function wdsDisplay(form) {
 		enableElements( [ eval("form.wds_"+(i+1)) ], (form.wds_mode.options.selectedIndex > 1));
 		WdsSecurityOnChange(form, i);
 	}
-
+	displayElement('basicWdsInterfaceT', (form.wds_mode.options.selectedIndex >= 1) && ((is5gh_support != 0) && ((radio_on != 0) || (radio_on_ac != 0))))
 	enableElements(form.basicWDSAdd, (count < WDS_NUM_MAX));
 }
 
@@ -134,7 +137,8 @@ function initValue()
 	form.wds_num.value = count;
 
 	initTranslation();
-
+	showWarning();
+	
 	wdsMode = 1*wdsMode;
 	if (wdsMode == 0)
 		form.wds_mode.options.selectedIndex = 0;
@@ -182,14 +186,27 @@ function initValue()
 
 		form.elements['wds_encryp_key' + i].value = eval('wdsEncrypKey' + i);
 	}
+	
+	if ((is5gh_support == 0) || ((radio_on == 0) && (radio_on_ac == 0))) {
+		form.wds_interface.value = "wds";
+		displayElement('basicWdsInterfaceT', false);
+	} 
+	else {
+		form.wds_interface.disabled = (radio_on == 0) || (radio_on_ac == 0);
+		if (radio_on == 0) 
+			form.wds_interface.value = "wdsi"
+		else if (radio_on_ac == 0)
+			form.wds_interface.value = "wds"
+		else
+			form.wds_interface.value = wds_interface;
+	}	
 
 	WdsModeOnChange(form);
 }
 
 function CheckEncKey(form, i)
 {
-	var key;
-	key = eval("form.wds_encryp_key"+i).value;
+	var key = document.getElementById("wds_encryp_key"+i).value;
 
 	if (eval("form.wds_encryp_type"+i).options.selectedIndex == 1) {
 		if (key.length == 10 || key.length == 26) {
@@ -293,116 +310,132 @@ function CheckValue(form) {
 	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
+
+function showPassPhrase(id) {
+	var element = document.getElementById('wds_encryp_key' + id);
+	if (element.type == 'password')
+		element.type = 'text'
+	else
+		element.type = 'password';
+}
 </script>
 </head>
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
-  <tr>
-    <td><h1 id="basicWDS">Wireless Distribution System</h1>
-      <p id="basicWDSIntroduction">Wireless Distribution System Settings</p>
-      <hr />
-      <form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this);">
-        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-        <table class="form">
-          <tr>
-            <td class="title" id="basicWDSTitle" colspan="4">Wireless Distribution System</td>
-            <td class="title" style="text-align:right"><select name="wds_mode" id="wds_mode" class="normal" onChange="WdsModeOnChange(this.form);">
-                <option value=0 id="basicWDSDisable">Disable</option>
-                <option value=4 id="basicWDSLazyMode">Lazy Mode</option>
-                <option value=2 id="basicWDSBridgeMode">Bridge Mode</option>
-                <option value=3 id="basicWDSRepeaterMode">Repeater Mode</option>
-              </select></td>
-          </tr>
-          <tr id="dev_head" style="display:none;">
-            <td class="head" id="basicWDSAPMacAddr">AP MAC Address</td>
-            <td class="head" id="basicWDSPhyMode">Phy Mode</td>
-            <td class="head" id="basicWDSEncrypType">EncrypType</td>
-            <td class="head" id="basicWDSEncrypKey">EncrypKey</td>
-            <td class="head" id="basicWDSAction">Action</td>
-          </tr>
-          <tr id="div_wds0" style="display:none;">
-          	<td><input type="text" name="wds_1" class="normal" value=""></td>
-          	<td><select name="wds_phy_mode1" id="wds_phy_mode1" class="half">
-                <option value="CCK">CCK</option>
-                <option value="OFDM">OFDM</option>
-                <option value="HTMIX">HTMIX</option>
-                <option value="GREENFIELD">GREENFIELD</option>
-              </select></td>
-            <td><select name="wds_encryp_type0" id="wds_encryp_type0" class="half" onChange="WdsSecurityOnChange(this.form, 0);">
-                <option value="NONE">NONE</option>
-                <option value="WEP">WEP</option>
-                <option value="TKIP">TKIP</option>
-                <option value="AES">AES</option>
-            </select></td>
-            <td><input type="password" type="text" name="wds_encryp_key0" class="normal" value=""></td>
-            <td><input type="button" class="normal" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
-          </tr>
-          <tr id="div_wds1" style="display:none;">
-          	<td><input type="text" name="wds_2" class="normal" value=""></td>
-          	<td><select name="wds_phy_mode2" id="wds_phy_mode2" class="half">
-                <option value="CCK">CCK</option>
-                <option value="OFDM">OFDM</option>
-                <option value="HTMIX">HTMIX</option>
-                <option value="GREENFIELD">GREENFIELD</option>
-              </select></td>
-            <td><select name="wds_encryp_type1" id="wds_encryp_type1" class="half" onChange="WdsSecurityOnChange(this.form, 1);">
-                <option value="NONE">NONE</option>
-                <option value="WEP">WEP</option>
-                <option value="TKIP">TKIP</option>
-                <option value="AES">AES</option>
-            </select></td>
-            <td><input type="password" type="text" name="wds_encryp_key1" class="normal" value=""></td>
-            <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 1);"></td>
-          </tr>
-          <tr id="div_wds2" style="display:none;">
-          	<td><input type="text" name="wds_3" class="normal" value=""></td>
-          	<td><select name="wds_phy_mode3" id="wds_phy_mode3" class="half">
-                <option value="CCK">CCK</option>
-                <option value="OFDM">OFDM</option>
-                <option value="HTMIX">HTMIX</option>
-                <option value="GREENFIELD">GREENFIELD</option>
-              </select></td>
-            <td><select name="wds_encryp_type2" id="wds_encryp_type2" class="half" onChange="WdsSecurityOnChange(this.form, 2);">
-                <option value="NONE">NONE</option>
-                <option value="WEP">WEP</option>
-                <option value="TKIP">TKIP</option>
-                <option value="AES">AES</option>
-            </select></td>
-            <td><input type="password" type="text" name="wds_encryp_key2" class="normal" value=""></td>
-            <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 2);"></td>
-          </tr>
-          <tr id="div_wds3" style="display:none;">
-          	<td><input type="text" name="wds_4" class="normal" value=""></td>
-          	<td><select name="wds_phy_mode4" id="wds_phy_mode4" class="half">
-                <option value="CCK">CCK</option>
-                <option value="OFDM">OFDM</option>
-                <option value="HTMIX">HTMIX</option>
-                <option value="GREENFIELD">GREENFIELD</option>
-              </select></td>
-            <td><select name="wds_encryp_type3" id="wds_encryp_type3" class="half" onChange="WdsSecurityOnChange(this.form, 3);">
-                <option value="NONE">NONE</option>
-                <option value="WEP">WEP</option>
-                <option value="TKIP">TKIP</option>
-                <option value="AES">AES</option>
-            </select></td>
-            <td><input type="password" type="text" name="wds_encryp_key3" class="normal" value=""></td>
-            <td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 3);"></td>
-          </tr>
-        </table>
-        <table class="buttons">
-          <tr>
-            <td><input type="hidden" name="wds_list" value="">
-              <input type="hidden" name="wds_phy_mode" value="">
-              <input type="hidden" name="wds_encryp_type" value="">
-              <input type="hidden" name="wds_num" value="<% getCfgZero(1, "WdsNum"); %>">
-              <input type="submit" class="normal" value="Apply" id="basicWDSApply">
-              <input type="reset"  class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()">
-              <input type="hidden" name="submit-url" value="/wireless/wds.asp"></td>
-          </tr>
-        </table>
-      </form></td>
-  </tr>
-</table>
+	<tr id="warning"><tr>
+	<tr>
+		<td><h1 id="basicWDS">Wireless Distribution System</h1>
+			<p id="basicWDSIntroduction">Wireless Distribution System Settings</p>
+			<hr />
+			<form method="post" name="wireless_wds" action="/goform/wirelessWds" onSubmit="return CheckValue(this);">
+			<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+			<table class="form">
+				<tr>
+					<td class="title" id="basicWDSTitle" colspan="4">Wireless Distribution System</td>
+					<td class="title" style="text-align:right"><select name="wds_mode" id="wds_mode" class="normal" onChange="WdsModeOnChange(this.form);">
+						<option value=0 id="basicWDSDisable">Disable</option>
+						<option value=4 id="basicWDSLazyMode">Lazy Mode</option>
+						<option value=2 id="basicWDSBridgeMode">Bridge Mode</option>
+						<option value=3 id="basicWDSRepeaterMode">Repeater Mode</option>
+					</select></td>
+				</tr>
+				<tr id="basicWdsInterfaceT" style="display:none;">
+					<td class="head" id="basicWDSInterface" colspan="1">WDS Mode</td>
+					<td colspan="5"><select name="wds_interface" size="1" class="normal">
+						<option value="wds" selected id="1">2.4GHz</option>
+						<option value="wdsi" id="2">5GHz</option>
+					</select></td>
+				</tr>		  
+				<tr id="dev_head" style="display:none;">
+					<td class="head" id="basicWDSAPMacAddr">AP MAC Address</td>
+					<td class="head" id="basicWDSPhyMode">Phy Mode</td>
+					<td class="head" id="basicWDSEncrypType">EncrypType</td>
+					<td class="head" id="basicWDSEncrypKey">EncrypKey</td>
+					<td class="head" id="basicWDSAction">Action</td>
+				</tr>
+				<tr id="div_wds0" style="display:none;">
+					<td><input type="text" name="wds_1" class="normal" value=""></td>
+					<td><select name="wds_phy_mode1" id="wds_phy_mode1" class="half">
+						<option value="CCK">CCK</option>
+						<option value="OFDM">OFDM</option>
+						<option value="HTMIX">HTMIX</option>
+						<option value="GREENFIELD">GREENFIELD</option>
+					</select></td>
+					<td><select name="wds_encryp_type0" id="wds_encryp_type0" class="half" onChange="WdsSecurityOnChange(this.form, 0);">
+						<option value="NONE">NONE</option>
+						<option value="WEP">WEP</option>
+						<option value="TKIP">TKIP</option>
+						<option value="AES">AES</option>
+					</select></td>
+					<td><input type="password" type="text" id="wds_encryp_key0" name="wds_encryp_key0" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(0);"></td>
+					<td><input type="button" class="normal" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
+				</tr>
+				<tr id="div_wds1" style="display:none;">
+					<td><input type="text" name="wds_2" class="normal" value=""></td>
+					<td><select name="wds_phy_mode2" id="wds_phy_mode2" class="half">
+						<option value="CCK">CCK</option>
+						<option value="OFDM">OFDM</option>
+						<option value="HTMIX">HTMIX</option>
+						<option value="GREENFIELD">GREENFIELD</option>
+					</select></td>
+					<td><select name="wds_encryp_type1" id="wds_encryp_type1" class="half" onChange="WdsSecurityOnChange(this.form, 1);">
+						<option value="NONE">NONE</option>
+						<option value="WEP">WEP</option>
+						<option value="TKIP">TKIP</option>
+						<option value="AES">AES</option>
+					</select></td>
+					<td><input type="password" type="text" id="wds_encryp_key1" name="wds_encryp_key1" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(1);"></td>
+					<td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 1);"></td>
+				</tr>
+				<tr id="div_wds2" style="display:none;">
+					<td><input type="text" name="wds_3" class="normal" value=""></td>
+					<td><select name="wds_phy_mode3" id="wds_phy_mode3" class="half">
+						<option value="CCK">CCK</option>
+						<option value="OFDM">OFDM</option>
+						<option value="HTMIX">HTMIX</option>
+						<option value="GREENFIELD">GREENFIELD</option>
+					</select></td>
+					<td><select name="wds_encryp_type2" id="wds_encryp_type2" class="half" onChange="WdsSecurityOnChange(this.form, 2);">
+						<option value="NONE">NONE</option>
+						<option value="WEP">WEP</option>
+						<option value="TKIP">TKIP</option>
+						<option value="AES">AES</option>
+					</select></td>
+					<td><input type="password" type="text" id="wds_encryp_key2" name="wds_encryp_key2" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(2);"></td>
+					<td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 2);"></td>
+				</tr>
+				<tr id="div_wds3" style="display:none;">
+					<td><input type="text" name="wds_4" class="normal" value=""></td>
+					<td><select name="wds_phy_mode4" id="wds_phy_mode4" class="half">
+						<option value="CCK">CCK</option>
+						<option value="OFDM">OFDM</option>
+						<option value="HTMIX">HTMIX</option>
+						<option value="GREENFIELD">GREENFIELD</option>
+					</select></td>
+					<td><select name="wds_encryp_type3" id="wds_encryp_type3" class="half" onChange="WdsSecurityOnChange(this.form, 3);">
+						<option value="NONE">NONE</option>
+						<option value="WEP">WEP</option>
+						<option value="TKIP">TKIP</option>
+						<option value="AES">AES</option>
+					</select></td>
+					<td><input type="password" type="text" id="wds_encryp_key3" name="wds_encryp_key3" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(3);"></td>
+					<td><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 3);"></td>
+				</tr>
+			</table>
+			<table class="buttons">
+				<tr>
+					<td><input type="hidden" name="wds_list" value="">
+					<input type="hidden" name="wds_phy_mode" value="">
+					<input type="hidden" name="wds_encryp_type" value="">
+					<input type="hidden" name="wds_num" value="<% getCfgZero(1, "WdsNum"); %>">
+					<input type="submit" class="normal" value="Apply" id="basicWDSApply">
+					<input type="reset"  class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()">
+					<input type="hidden" name="submit-url" value="/wireless/wds.asp"></td>
+				</tr>
+			</table>
+			</form></td>
+		</tr>
+	</table>
 </body>
 </html>

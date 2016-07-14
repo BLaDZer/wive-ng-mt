@@ -172,6 +172,7 @@ function initValue()
 
 	connectionTypeSwitch(form);
 	wanMtuChange(form);
+	showWarning();
 }
 
 function dnsSwitchClick(form)
@@ -217,6 +218,7 @@ function submitForm(form) {
   <iframe id="rebootReloader" name="rebootReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="wTitle"></h1>
       <p id="wIntroduction"></p>

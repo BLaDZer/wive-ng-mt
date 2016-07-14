@@ -69,6 +69,15 @@ function AdmFormCheck(form)
 		form.admpass.focus();
 		return false;
 	}
+	
+	if (form.admpass.value != form.admpassconf.value) {
+		alert(_("management password confirmation")); 
+		form.admpass.value = "";
+		form.admpassconf.value = "";
+		form.admpass.focus();
+		return false;
+	}
+	
 	return true;
 }
 
@@ -105,7 +114,8 @@ function initValue()
 			}
 		}
 	}
-  initTranslation();
+	showWarning();
+	initTranslation();
 	// Firmware
 	document.getElementById("loading").style.display="none";
 }
@@ -159,10 +169,42 @@ function onReset2DefaultsSubmit(form)
       _("message config"),
       ajaxShowProgress);
 }
+
+function showWarning() {
+	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
+	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
+	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+
+	var warningHTML = "";
+	
+	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
+		warningHTML += '<tr><td>';
+		warningHTML += '<table class="warning">';
+		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
+		if  (warning_access_password) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning" colspan="2">' + _("warning access password") + '</td>';
+			warningHTML += '</tr>';
+		}
+		if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
+			warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
+		}
+		if  (warning_wireless_security || warning_wireless_key) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning">' + _("warning wireless security") + '</td>';
+			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/security.asp");\'></td>';
+			warningHTML += '</tr>';
+		}
+		warningHTML += '</table>';
+		warningHTML += '</td></tr><br>';
+		ajaxModifyElementHTML('warning', warningHTML);
+	}
+}
 </script>
 </head>
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body" style="width:600px;">
+  <tr id="warning"></tr>
   <tr>
     <td><h1 id="manTitle">System Management</h1>
       <div id="manIntroduction">
@@ -196,19 +238,20 @@ function onReset2DefaultsSubmit(form)
         <form method="POST" name="Adm" action="/goform/setSysAdm" onSubmit="return AdmFormCheck(this);">
           <table class="form">
             <tr>
-              <td class="title" colspan="2" id="manAdmSet">Administrator Settings</td>
+              <td class="title" colspan="3" id="manAdmSet">Administrator Settings</td>
             </tr>
             <tr>
               <td class="head" id="manAdmLodin">Login</td>
-              <td><input type="text" name="admuser" size="16" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
+              <td colspan="2"><input type="text" name="admuser" size="16" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
             </tr>
             <tr>
               <td class="head" id="manAdmPasswd">Password</td>
               <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td width="55%"><input type="password" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
             </tr>
             <tr>
               <td class="head" ></td>
-              <td><input type="hidden" name="submit-url" value="/adm/management.asp" >
+              <td colspan="3"><input type="hidden" name="submit-url" value="/adm/management.asp" >
                 <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
             </tr>
           </table>

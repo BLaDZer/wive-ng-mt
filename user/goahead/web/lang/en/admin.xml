@@ -7,7 +7,8 @@
     <message msgid="management language select" msgstr="Select Language" />
     <message msgid="management administrator settings" msgstr="Administrator Settings" />
     <message msgid="management administrator login" msgstr="Login" />
-    <message msgid="management administrator password" msgstr="Password" />
+    <message msgid="management administrator password" msgstr="Password / Confirmation" />
+    <message msgid="management administrator password confirmation" msgstr="Confirmation" />
     <message msgid="management firmware" msgstr="Firmware update" />
     <message msgid="management filename" msgstr="Filename:" />
     <message msgid="management reset rwfs" msgstr="Replace (update) RWFS" />
@@ -17,7 +18,8 @@
     <message msgid="management upload file" msgstr="Load settings from file" />
     <message msgid="management reset factory" msgstr="Reset to factory defaults" />
     <message msgid="management uncorrect login" msgstr="Please specify correct administrator login (a-z, A-Z, 0-9, _)." />
-    <message msgid="management uncorrect password" msgstr="Please specify correct administrator password (spaces and dollar symbol are disallowed)." />
+    <message msgid="management uncorrect password" msgstr="Please specify correct administrator password (spaces and dollar symbol are disallowed)." />    
+    <message msgid="management password confirmation" msgstr="Entered passwords do not match." />
     <message msgid="management dont power off" msgstr="Do not power off the device while upgrading firmware! Doing so can result in permanent damage to the device. Do you really want to proceed?" />
     <message msgid="management ask upload settings" msgstr="Proceed uploading settings?" />
     <message msgid="management ask upload rwfs" msgstr="Proceed uploading RWFS?" />

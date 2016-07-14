@@ -29,7 +29,8 @@ function updateState()
 		'rtsp': '<% getCfgZero(1, "fwAlgRTSP"); %>'
 	};
 
-  initTranslation();
+	initTranslation();
+	showWarning();
 
 	for (var field in st)
 		setElementChecked('alg_' + field, st[field] == '1');
@@ -48,6 +49,7 @@ function initTranslation()
 </head>
 <body bgcolor="#FFFFFF" onLoad="updateState();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="algTitle">ALG Settings</h1>
       <p id="algIntroduction">On this page you can enable/disable ALG services.</p>

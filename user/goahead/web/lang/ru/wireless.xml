@@ -32,7 +32,8 @@
   <message msgid="basic introduction" msgstr="Для настройки точки доступа достаточно задать название сети (SSID) и выбрать канал." />
   <message msgid="basic wireless" msgstr="Радиомодуль (2.4GHz)" />
   <message msgid="basic wireless ac" msgstr="Радиомодуль (5GHz)" />
-  <message msgid="basic wireless network" msgstr="Беспроводная сеть" />
+  <message msgid="basic wireless network" msgstr="Беспроводная сеть 2.4ГГц" />
+  <message msgid="basic wireless network ac" msgstr="Беспроводная сеть 5ГГц" />
   <message msgid="basic wireless settings" msgstr="Настройки SSID" />
   <message msgid="basic radio button" msgstr="Wi-Fi вкл./выкл." />
   <message msgid="basic ac network mode" msgstr="Режим работы (5GHz)" />
@@ -203,6 +204,7 @@
   <message msgid="adv idletimeout range" msgstr="секунд (диапазон 60 - 300)" />
   <message msgid="adv entrylifecheck range" msgstr="количество (диапазон 128 - 2048)" />
 
+  <message msgid="adv no mssid_1" msgstr="Пожалуйста, укажите имя беспроводной сети (SSID)" />
   <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
   <message msgid="adv invalid beacon" msgstr="Неверный интервал маяка" />
   <message msgid="adv no dtim" msgstr="Пожалуйста, укажите интервал оповещения" />
@@ -243,6 +245,7 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA алгоритмы" />
   <message msgid="secure wpa pass phrase" msgstr="Ключевая фраза" />
+  <message msgid="secure wpa show pass phrase" msgstr="(отобразить)" />
   <message msgid="secure wpa key renew interval" msgstr="Интервал смены ключа" />
   <message msgid="secure wpa pmk cache period" msgstr="Период кеширования PMK" />
   <message msgid="secure wpa preauth" msgstr="Пре-аутентификация" />

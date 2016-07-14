@@ -76,6 +76,37 @@ td.title {
 	color: #FFFFFF;
 }
 
+table.warning {
+	min-width: 795px;
+	width: 795px;
+	border-bottom: 2px solid #FFBF00;
+	background-color: #ffffe0;
+}
+
+th.warning {
+	background-color: #FFBF00;
+	color: #333333;
+	font-size: 10pt; 
+	font-family: Arial, Helvetica, sans-serif;
+	font-style: bold;
+	text-align: center;
+	border: 3px solid #FFBF00;
+	white-space: nowrap;
+	padding: 0;
+}
+
+td.warning {
+	padding: 5px;
+	background-color: #FFFFE0;
+}
+
+hr.warning {
+	border: none;
+	background-color: #FFBF00;
+	color: #FFBF00;
+	height: 1px;
+}
+
 td.subtitle {
 	background-color: #3C6EB4;
 	font-style: italic;
@@ -157,7 +188,6 @@ table.buttons tr, table.buttons td {
 table.form {
 	min-width: 800px;
 	width: 800px;
-
 	border-width: 1px;
 	border-style: solid;
 	border-spacing: 1px;
@@ -165,6 +195,8 @@ table.form {
 	border-color: #9BABBD;
 	margin-bottom: 4px;
 }
+
+
 
 table.form th {
 	font-size: 9pt; 

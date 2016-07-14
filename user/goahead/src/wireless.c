@@ -604,7 +604,7 @@ parameter_fetch_t ids_flags[] =
 /* goform/wirelessBasic */
 static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *mbssid_mode, *apcli_mode, *wds_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
+	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
@@ -663,8 +663,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	mode = atoi(wirelessmode);
 	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
-	apcli_mode = websGetVar(wp, T("apcli_mode"), T("apcli0"));
-	wds_mode = websGetVar(wp, T("wds_mode"), T("wds"));
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	hssid = websGetVar(wp, T("hssid"), T("")); 
 	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
@@ -800,8 +798,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	// Virtual iface modes
 	nvram_bufset(RT2860_NVRAM, "BssidIfName", mbssid_mode);
-	nvram_bufset(RT2860_NVRAM, "ApCliIfName", apcli_mode);
-	nvram_bufset(RT2860_NVRAM, "WdsIfName", wds_mode);
 
 	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
 	if ((mode == 4) || (mode == 7)) //g, gn
@@ -1223,13 +1219,14 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
 parameter_fetch_t wds_args[] =
 {
-	{ T("wds_phy_mode"), "WdsPhyMode", 0, T("") },
-	{ T("wds_encryp_type"), "WdsEncrypType", 0,       T("") },
-	{ T("wds_encryp_key0"), "Wds0Key", 0, T("") },
-	{ T("wds_encryp_key1"), "Wds1Key", 0, T("") },
-	{ T("wds_encryp_key2"), "Wds2Key", 0, T("") },
-	{ T("wds_encryp_key3"), "Wds3Key", 0, T("") },
-	{ T("wds_num"), "WdsNum", 0, T("1") },
+	{ T("wds_interface"),   "WdsIfName",     0, T("") },
+	{ T("wds_phy_mode"),    "WdsPhyMode",    0, T("") },
+	{ T("wds_encryp_type"), "WdsEncrypType", 0, T("") },
+	{ T("wds_encryp_key0"), "Wds0Key",       0, T("") },
+	{ T("wds_encryp_key1"), "Wds1Key",       0, T("") },
+	{ T("wds_encryp_key2"), "Wds2Key",       0, T("") },
+	{ T("wds_encryp_key3"), "Wds3Key",       0, T("") },
+	{ T("wds_num"),         "WdsNum",        0, T("1") },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1267,6 +1264,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 parameter_fetch_t apcli_args[] =
 {
+	{ T("apcli_interface"),         "ApCliIfName",          0,       T("") },
 	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("") },
 	{ T("apcli_bssid"),             "ApCliBssid",           0,       T("") },
 	{ T("apcli_mode"),              "ApCliAuthMode",        0,       T("OPEN") },

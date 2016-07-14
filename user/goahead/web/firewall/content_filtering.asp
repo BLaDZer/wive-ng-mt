@@ -112,6 +112,7 @@ function initValues()
 
 	genFilteringTable();
 	initTranslation();
+	showWarning();
 }
 
 function addAllRules(list, type)
@@ -161,6 +162,7 @@ function initTranslation()
 </head>
 <body onLoad="initValues();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
       <div style="display:none;" id="bridge_warning">

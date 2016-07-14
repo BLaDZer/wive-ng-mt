@@ -180,6 +180,7 @@ function initValue()
 	mtuChange(form);
 	mruChange(form);
 	displayServiceStatus();
+	showWarning();
 }
 
 function CheckValue(form)
@@ -307,6 +308,7 @@ function resetClick(form)
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="l2tpServerTitle">L2TP Server Setup</h1>
       <p id="l2tpServerIntroduction">Here you can configure L2TP server settings.</p>

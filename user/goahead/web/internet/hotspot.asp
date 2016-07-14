@@ -286,6 +286,7 @@ function initValue() {
   form.UsernameAuthentication.value = ("<% getCfgGeneral(1, "nodog_UsernameAuthentication"); %>" == "1") ? "1" : "0";
 
   ModeOnChange(form);
+  showWarning();
   initTranslation();
 }
 
@@ -513,6 +514,7 @@ function resetClick(form) {
 </head>
 <body bgcolor="#FFFFFF" onLoad="initValue();">
   <table class="body">
+    <tr id="warning"><tr>
     <tr>
       <td>
         <h1 id="sTitle"></h1>

@@ -25,7 +25,8 @@ function initValue(form)
 	form.SmbEnabled.value = (smbEnabled != '1') ? '0' : '1';
 	form.SmbTimeserver.value = (smbTimeserver != '1') ? '0' : '1';
 	smbEnabledSwitch(form);
-  initTranslation();
+	initTranslation();
+	showWarning();
 }
 
 function smbEnabledSwitch(form)
@@ -137,6 +138,7 @@ function displayServiceStatus()
 
 <body bgcolor="#FFFFFF" onLoad="initValue(document.formSamba);">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="sambaTitle">Samba/WINS Setup</h1>
       <p id="sambaIntroduction">Here you can configure Samba/WINS service.</p>

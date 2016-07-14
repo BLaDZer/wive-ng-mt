@@ -63,7 +63,7 @@ function initTranslation()
 	_TR("dmzDisable2", "button disable");
 	_TR("dmzEnable2", "button enable");
 	_TR("dmzIPAddr", "dmz ipaddr");
-  _TR("bridge_warning", "firewall bridge warning");
+	_TR("bridge_warning", "firewall bridge warning");
 
 	_TRV("dmzApply", "button apply");
 	_TRV("dmzReset", "button reset");
@@ -81,6 +81,7 @@ function pageInit()
 
 	form.dmzLoopback.value = dmz_loopback;
 	dmzEnableSwitch(form);
+	showWarning();
 }
 
 function dmzEnableSwitch(form)
@@ -106,6 +107,7 @@ function resetClick(form) {
 </head>
 <body bgcolor="#FFFFFF" onLoad="pageInit()">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="dmzTitle"> DMZ Settings </h1>
       <div style="display:none;" id="bridge_warning">

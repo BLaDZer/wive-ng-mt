@@ -39,12 +39,14 @@ function PageInit()
     for (var i = 0; i < elements.length; i++)
     if(elements[i].id == "disconnect")
 	    elements[i].value = _("button disconnect");
+    showWarning();
 }
 </script>
 </head>
 
 <body bgcolor="#FFFFFF" onLoad="PageInit();">
 <table class="body">
+  <tr id="warning"></tr>
   <tr>
     <td><h1 id="stalistTitle">Station List</h1>
       <p id="stalistIntroduction"> Here you can monitor stations associated with this AP. </p>

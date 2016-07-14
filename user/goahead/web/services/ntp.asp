@@ -63,6 +63,7 @@ function initValue()
 	ntpChange(form);
 
 	form.time_zone.value = tz;
+	showWarning();
 }
 
 function syncWithHost()
@@ -135,11 +136,11 @@ function displayServiceStatus()
 </head>
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="ntpTitle">NTP Management</h1>
       <p id="ntpIntroduction">Here you can configure time synchronization.</p>
       <hr />
-
       <!-- ================= NTP Settings ================= -->
 
       <form method="POST" name="NTP" action="/goform/NTP" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">

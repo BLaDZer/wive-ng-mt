@@ -47,12 +47,14 @@ function initValue()
 	displayElement('fastpath_warning', (nat_fp == '1') || (nat_fp == '2') || (nat_fp == '3'));
 	displayElement('fastpath_form', (nat_fp == '0'));
 	initTranslation();
+	showWarning();
 }
 </script>
 </head>
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="accountTitle">IP Accounting</h1>
       <p id="accountIntroduction">Here you can configure Accounting Control.</p>

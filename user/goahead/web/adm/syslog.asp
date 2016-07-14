@@ -72,6 +72,7 @@ function pageInit()
 
 	syslogdSelect(form);
 	updateLog();
+	showWarning();
 }
 
 function clearlogclick()
@@ -108,6 +109,7 @@ function syslogdSelect(form)
 </head>
 <body bgcolor="#FFFFFF" onLoad="pageInit()">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="syslogTitle">System Log</h1>
       <p id="syslogIntroduction">Here you can configure system logging</p>

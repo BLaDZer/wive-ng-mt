@@ -500,3 +500,35 @@ function getBrowser() {
  
     return browsrObj;
 }
+
+function showWarning() {
+	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
+	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
+	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+
+	var warningHTML = "";
+	
+	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
+		warningHTML += '<tr><td>';
+		warningHTML += '<table class="warning">';
+		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
+		if  (warning_access_password) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning">' + _("warning access password") + '</td>';
+			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/adm/management.asp");\'></td>';
+			warningHTML += '</tr>';
+		}
+		if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
+			warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
+		}
+		if  (warning_wireless_security || warning_wireless_key) {
+			warningHTML += '<tr>';
+			warningHTML += '<td class="warning">' + _("warning wireless security") + '</td>';
+			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/security.asp");\'></td>';
+			warningHTML += '</tr>';
+		}
+		warningHTML += '</table>';
+		warningHTML += '</td></tr><br>';
+		ajaxModifyElementHTML('warning', warningHTML);
+	}
+}

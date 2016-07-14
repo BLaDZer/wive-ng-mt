@@ -25,4 +25,9 @@
     <message msgid="message config" msgstr="Пожалуйста, подождите пока применяются новые параметры..." />
     <message msgid="message upgrade" msgstr="Обновление прошивки... Пожалуйста, не отключайте и не перезагружайте маршрутизатор." />
     <message msgid="message rwfs" msgstr="Пожалуйста, подождите пока обновляется файловая система..." />
+
+	<message msgid="warning header" msgstr="Внимание!" />
+	<message msgid="warning access password" msgstr="Рекомендуется изменить пароль доступа к маршрутизатору." />
+	<message msgid="warning wireless security" msgstr="Рекомендуется выставить шифрование и/или изменить пароль беспроводной сети." />
+	<message msgid="button warning" msgstr="Перейти" />	
 </po>

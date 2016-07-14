@@ -172,6 +172,7 @@ function InitValue()
     reloadPage();
     checkSTBform();
     checkSIPform();
+	showWarning();
 }
 
 function reloadPage()
@@ -254,6 +255,7 @@ function checkSIPform()
 
 <body bgcolor="#FFFFFF" onLoad="InitValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="statusTitle">Access Point Status</h1>
       <p id="statusIntroduction">Let's take a look at the status. </p>

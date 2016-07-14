@@ -240,6 +240,7 @@ function initValue()
 	displayElement('smb_fastpath_row', smbfp_built == '1');
 
 	displayServiceStatus();
+	showWarning();
 }
 
 function CheckValue(form)
@@ -406,6 +407,7 @@ function submitForm(form) {
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="lTitle">Miscellaneous Services Setup</h1>
       <p id="lIntroduction"></p>

@@ -202,6 +202,7 @@ function bodyOnLoad(form)
 	selectType(form);
 	mtuChange(form);
 	showVPNStatus();
+	showWarning();
 }
 
 function selectType(form)
@@ -364,6 +365,7 @@ function initTranslation()
 
 <body bgcolor="#FFFFFF" onLoad="bodyOnLoad(document.formVPNSetup);">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="vTitle">Virtual Private Network setup</h1>
       <p id="vIntroduction"> This page is used to configure the <acronym title="Virtual Private Network">VPN</acronym> tunnel on your Router. </p>

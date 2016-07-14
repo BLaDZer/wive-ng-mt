@@ -470,6 +470,7 @@ function initState()
 	updateForwardingState(document.portForward);
 	updateFilteringState(document.portFiltering);
 	initTranslation();
+	showWarning();
 }
 
 function updateForwardingState(form)
@@ -538,6 +539,7 @@ function initTranslation()
 
 <body bgcolor="#FFFFFF" onLoad="initState();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><!-- Port forwarding -->
       <h1 id="forwardTitle">Port Forwarding Settings</h1>

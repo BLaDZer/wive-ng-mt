@@ -82,6 +82,7 @@ function onInit()
 	displayElement('dynamicRoutingDiv', dr_built == '1');
 
 	genRoutingTable();
+	showWarning();
 }
 
 function hostnetChange(form)
@@ -245,6 +246,7 @@ function formRoutingTable(form)
 <body bgcolor="#FFFFFF" onLoad="onInit()">
 <table class="body">
   <tbody>
+    <tr id="warning"><tr>
     <tr>
       <td><h1 id="routingTitle">Static Routing Settings</h1>
         <p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>

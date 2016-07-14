@@ -13,6 +13,7 @@
 <script language="JavaScript" type="text/javascript">
 
 Butterlate.setTextDomain("admin");
+Butterlate.setTextDomain("buttons");
 
 function initTranslation() {
 	_TR("statisticTitle", "statistic title");
@@ -130,6 +131,7 @@ function loadStatistics() {
 		initTranslation();
 		showLoadedElements();
 		showPortStatistics();
+		showWarning();
 		self.setTimeout(loadStatistics, 15000);
 	}
 	ajaxLoadElement("statistics_table", "/adm/statistic_table.asp", reloader);
@@ -139,6 +141,7 @@ function loadStatistics() {
 </head>
 <body bgcolor="#FFFFFF" onLoad="loadStatistics();">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="statisticTitle">Statistics</h1>
       <p id="statisticIntroduction"> Take a look at the CPE statistics </p>
@@ -149,7 +152,7 @@ function loadStatistics() {
         <p>To get correct statistics you need to shut down '<b>Hardware NAT offload mode</b>' option on <a href="/services/misc.asp#nat_fastpath_ref">MISC&nbsp;Services</a> configuration page.</p>
       </div>
       <hr>
-      <div id="statistics_table" > </div>
+       <div id="statistics_table" > </div>
       <div class="whitespace">&nbsp;</div>
     </td>
   </tr>

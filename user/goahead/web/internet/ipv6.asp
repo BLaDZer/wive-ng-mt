@@ -109,6 +109,7 @@ function initValue()
 	initTranslation();
 
 	displayServiceStatus();
+	showWarning();
 }
 
 function CheckValue(form)
@@ -308,6 +309,7 @@ function resetClick(form) {
 
 <body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
+	<tr id="warning"><tr>
 	<tr>
 		<td>
 			<h1 id="v6Title">IPv6 Setup</h1>

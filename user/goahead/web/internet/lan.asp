@@ -70,6 +70,7 @@ function initValue()
 
 	//gateway, dns only allow to configure at bridge mode
 	displayElement( [ 'brGateway', 'brPriDns', 'brSecDns' ], opmode == "0" );
+	showWarning();
 }
 
 function CheckValue()
@@ -139,6 +140,7 @@ function lan2_enable_switch(form)
 
 <body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="lTitle"></h1>
       <p id="lIntroduction"></p>

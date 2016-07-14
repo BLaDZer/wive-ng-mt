@@ -85,6 +85,7 @@ function initValue()
 		form.DDNSProvider.options.selectedIndex = 4;
 
 	DDNSupdateState();
+	showWarning();
 }
 
 function displayServiceHandler(response)
@@ -135,6 +136,7 @@ function displayServiceStatus()
 </head>
 <body bgcolor="#FFFFFF" onLoad="initValue()">
 <table class="body">
+  <tr id="warning"><tr>
   <tr>
     <td><h1 id="manTitle">DDNS Settings</h1>
       <p id="manIntroduction">Here you can configure Dynamic DNS settings.</p>
