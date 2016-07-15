@@ -5797,7 +5797,8 @@ static int netif_alloc_netdev_queues(struct net_device *dev)
 	unsigned int count = dev->num_tx_queues;
 	struct netdev_queue *tx;
 
-	BUG_ON(count < 1);
+	if (count < 1 || count > 0xffff)
+		return -EINVAL;
 
 	tx = kcalloc(count, sizeof(struct netdev_queue), GFP_KERNEL);
 	if (!tx)

@@ -2221,6 +2221,7 @@
 27) kernel: net: ppp: defer netns reference release for ppp channel.<br>
 28) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
 29) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+30) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
 <br>
 <br>
 <br>
