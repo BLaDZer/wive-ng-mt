@@ -2206,20 +2206,21 @@
 12) init.d: direct call regenerate route/iptables rules and switch bootlevel instead iptables call.<br>
 13) init.d: rename web init to switchstage and drop goahead dependency start second init stage.<br>
 14) init.d: use user configured ipv6 dns in static mode and as fallback for dhcp mode.<br>
-15) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-16) kernel: mips: fix siginfo.h to use strict posix types.<br>
-17) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-18) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-19) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-20) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-21) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-22) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-23) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-24) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-25) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-26) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-27) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-28) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+15) init.d: fix not set MTU to WAN regression.<br>
+16) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+17) kernel: mips: fix siginfo.h to use strict posix types.<br>
+18) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+19) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+20) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+21) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+22) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+23) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+24) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+25) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+26) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+27) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+28) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+29) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
 <br>
 <br>
 <br>

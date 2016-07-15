@@ -186,7 +186,6 @@ getSixWanIfName() {
 getWanIpaddr() {
     # in WAN non static mode and in full bridget modes always get parametrs direct from if
     if [ "$wanConnectionMode" != "STATIC" ] || [ "$OperationMode" = "0" ] || [ "$ApCliBridgeOnly" = "1" ]; then
-	wan_manual_mtu=""
 	wan_ipaddr=""
 	wan_netmask=""
 	if [ "$OperationMode" != "0" -a "$ApCliBridgeOnly" != "1" ]; then
