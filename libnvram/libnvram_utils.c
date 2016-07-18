@@ -257,6 +257,30 @@ char* getPPPIfName(void)
 }
 
 /*
+ * arguments: index - index of the Nth value
+ *            values - un-parsed values
+ * description: parse values delimited by semicolon, and return the value
+ *              according to given index (starts from 0)
+ * WARNING: the original values will be destroyed by strtok
+ */
+char *getNthValue(int index, char *values)
+{
+	int i;
+	static char *tok;
+
+	if (NULL == values)
+		return NULL;
+	for (i = 0, tok = strtok(values, ";");
+			(i < index) && tok;
+			i++, tok = strtok(NULL, ";")) {
+		;
+	}
+	if (NULL == tok)
+		return "";
+	return tok;
+}
+
+/*
  * substitution of getNthValue which dosen't destroy the original value
  */
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
