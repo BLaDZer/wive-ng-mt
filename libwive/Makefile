@@ -33,14 +33,12 @@ LIBWIVE_SHARED=libwive.so
 
 OBJS	:= libwive_wireless.o libwive_ethernet.o libwive_network.o libwive_gpio.o libwive_helpers.o
 HEADERS := $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-
-LDLIBS  += -lnvram
+LDLIBS  :=
 
 all: shared
 
 $(OBJS): %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(LDLIBS)
-	$(STRIPTOOL) -x -R .note -R .comment $*.o
 
 $(LIBWIVE) ar-target: $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBWIVE) $(OBJS)

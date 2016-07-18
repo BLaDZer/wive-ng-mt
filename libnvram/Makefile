@@ -38,7 +38,6 @@ all: shared
 
 $(OBJS): %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-	$(STRIPTOOL) -x -R .note -R .comment $*.o
 
 $(LIBNVRAM) ar-target: $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBNVRAM) $(OBJS)
