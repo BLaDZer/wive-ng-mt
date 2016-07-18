@@ -88,4 +88,5 @@ int nvram_clear(int index);
 int nvram_renew(int mode, char *fname);
 int nvram_show(int mode);
 int nvram_fromdef(int idx_nvram, int num, ...);
+
 #endif

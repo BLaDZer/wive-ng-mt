@@ -6,36 +6,12 @@
 #include "user/busybox/include/autoconf.h"	//busybox config
 
 #include <linux/autoconf.h>			//kernel config
-#include <asm/types.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <time.h>
-#include <signal.h>
-#include <ctype.h>
-#include <errno.h>
-#include <inttypes.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/wait.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <sys/sysinfo.h>
-#include <sys/reboot.h>
-#include <linux/reboot.h>
-#include <linux/sockios.h>
-#include <linux/ethtool.h>
-#include <linux/if.h>
-#include <linux/route.h>
-#include <linux/sockios.h>
-#include <dirent.h>
 #include <syslog.h>
 
 #include "libnvram.h"
 #include "libnvram_utils.h"
 
-#include "linux/ralink_gpio.h"			//gpio config
+#include "libwive.h"
 
 #include "webs.h"
 #include "uemf.h"
@@ -69,9 +45,6 @@
 #define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 
 #define IOCTL_IF "eth2"
-
-#define VPN_SIG	"ppp"
-#define VPN_DEF "ppp0"
 
 #define IPT_SHORT_ACCOUNT
 
@@ -164,8 +137,6 @@ typedef struct string_split_t
 	char  **items;
 } string_split_t;
 
-const char *normalizeSize(long long *size);
-
 // Set-up parameters in NVRAM
 void setupParameters(webs_t wp, parameter_fetch_t *fetch, int transaction);
 
@@ -175,25 +146,9 @@ int splitString(string_split_t *buf, const char *string, char splitter);
 int freeSplitter(string_split_t *buf);
 char *racat(char *s, int i);
 int checkSemicolon(char *str);
-char *scale(uint64_t size);
 
-void STFs(int nvram, int index, char *flash_key, char *value);
 void outputTimerForReload(webs_t wp, char_t *url, long delay);
 void reboot_now(void);
 int doSystem(char_t *fmt, ...);
-char *getNthValue(int index, char *values);
-char *setNthValue(int index, char *old_values, char *new_value);
-int deleteNthValueMulti(int index[], int count, char *value, char delimit);
-int ledAlways(int gpio, int on);
-void arplookup(char *ip, char *arp);
 
-// Get netif informations
-char* getPPPIfName(void);
-char *getLanWanNamebyIf(const char *ifname);
-int getIfIp(const char *ifname, char *if_addr);
-int getIfMac(const char *ifname, char *if_hw);
-int getIfNetmask(const char *ifname, char *if_net);
-
-int vpn_mode_enabled(void);
-unsigned int ConvertRssiToSignalQuality(long RSSI);
 #endif /* HELPERS_H_ */

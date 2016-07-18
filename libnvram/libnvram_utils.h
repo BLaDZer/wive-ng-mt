@@ -36,6 +36,8 @@
 
 #define BR_SIG	"br"
 #define ETH_SIG	"eth"
+#define VPN_SIG	"ppp"
+#define VPN_DEF "ppp0"
 
 #ifdef CONFIG_RAETH_BOTH_GMAC		/* dual phy/rgmii mode */
 #define WAN_DEF "eth3"
@@ -50,9 +52,19 @@ int isIpNetmaskValid(char *s);
 
 int getNums(char *value, char delimit);
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len);
+
+int vpn_mode_enabled(void);
 char* getLanIfName(void);
 char* getWanIfName(void);
+char *getLanWanNamebyIf(const char *ifname);
+char* getPPPIfName(void);
 
 void static_routing_rebuild_etc(void);
 void firewall_rebuild_etc(void);
+
+void STFs(int nvram, int index, char *flash_key, char *value);
+char *getNthValue(int index, char *values);
+char *setNthValue(int index, char *old_values, char *new_value);
+int deleteNthValueMulti(int index[], int count, char *value, char delimit);
+
 #endif

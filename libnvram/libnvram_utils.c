@@ -206,6 +206,57 @@ char* getWanIfName(void)
 }
 
 /*
+ * description: return 1 if vpn enables or 0 if disabled
+ */
+int vpn_mode_enabled(void)
+{
+	char *cm = nvram_get(RT2860_NVRAM, "vpnEnabled");
+
+        if (!strncmp(cm, "on", 3))
+	    return 1;
+        else
+	    return 0;
+}
+
+/*
+ * description: get the value "WAN" or "LAN" the interface is belong to.
+ */
+char *getLanWanNamebyIf(const char *ifname)
+{
+	if(!strcmp(ifname, getLanIfName()))
+		return "LAN";
+	if(!strcmp(ifname, getWanIfName()))
+		return "WAN";
+	if (vpn_mode_enabled() == 1 && strstr(ifname, getPPPIfName()) != NULL)
+		return "VPN";
+
+	return "LAN";
+}
+
+/*
+ * description: return vpn interface name or VPN_DEF as default
+ */
+char* getPPPIfName(void)
+{
+        FILE *fp;
+	char ppp_if[16]; /* max 16 char in vpn if name */
+
+	fp = fopen("/tmp/vpn_if_name", "r");
+	if (fp) {
+	    /* get first ppp_if in file */
+	    while ((fgets(ppp_if, sizeof(ppp_if), fp)) != NULL) {
+		if (strstr(ppp_if, VPN_SIG) != NULL) {
+		    fclose(fp);
+		    return strip_space(ppp_if);
+		}
+	    }
+	    fclose(fp);
+	}
+
+	return VPN_DEF;
+}
+
+/*
  * substitution of getNthValue which dosen't destroy the original value
  */
 int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
@@ -1407,4 +1458,117 @@ void firewall_rebuild_etc(void)
 	// Web filtering
 	remove(_PATH_WEBS_FILE);
 	iptablesWebsFilterBuildScript();
+}
+
+/*
+ * arguments: index - index of the Nth value (starts from 0)
+ *            old_values - un-parsed values
+ *            new_value - new value to be replaced
+ * description: parse values delimited by semicolon,
+ *              replace the Nth value with new_value,
+ *              and return the result
+ * WARNING: return the internal static string -> use it carefully
+ */
+char *setNthValue(int index, char *old_values, char *new_value)
+{
+	int i;
+	char *p, *q;
+	static char ret[2048];
+	char buf[8][256];
+
+	memset(ret, 0, 2048);
+	for (i = 0; i < 8; i++)
+		memset(buf[i], 0, 256);
+
+	/* copy original values */
+	for ( i = 0, p = old_values, q = strchr(p, ';')  ;
+	      i < 8 && q != NULL                         ;
+	      i++, p = q + 1, q = strchr(p, ';')         )
+		strncpy(buf[i], p, q - p);
+
+	if (i > 7) /* limit of buf size = 8 */
+	    i=7;
+
+	strcpy(buf[i], p); /* the last one */
+
+	/* replace buf[index] with new_value */
+	strncpy(buf[index], new_value, 256);
+
+	/* calculate maximum index */
+	index = (i > index)? i : index;
+
+	/* concatenate into a single string delimited by semicolons */
+	strcat(ret, buf[0]);
+	for (i = 1; i <= index; i++) {
+		strncat(ret, ";", 2);
+		snprintf(ret, sizeof(ret), "%s%s", ret,  buf[i]);
+	}
+
+	p = ret;
+	return p;
+}
+
+/*
+ *  argument:  [IN]     index -- the index array of deleted items(begin from 0)
+ *             [IN]     count -- deleted itmes count.
+ *             [IN/OUT] value -- original string/return string
+ *             [IN]     delimit -- delimitor
+ */
+int deleteNthValueMulti(int index[], int count, char *value, char delimit)
+{
+	char *begin, *end;
+	int i=0, j=0;
+	int need_check_flag=0;
+	char *buf = strdup(value);
+
+	begin = buf;
+
+	end = strchr(begin, delimit);
+	while(end != NULL){
+		if(i == index[j]){
+			memset(begin, 0, end - begin );
+			if(index[j] == 0)
+				need_check_flag = 1;
+			j++;
+			if(j >=count)
+				break;
+		}
+		begin = end;
+		end = strchr(begin+1, delimit);
+		i++;
+	}
+
+	if(!end && index[j] == i)
+		memset(begin, 0, strlen(begin));
+
+	if(need_check_flag){
+		for(i=0; i < (int)strlen(value); i++){
+			if(buf[i] == '\0')
+				continue;
+			if(buf[i] == ';')
+				buf[i] = '\0';
+			break;
+		}
+	}
+
+	for(i=0, j=0; i < (int)strlen(value); i++){
+		if(buf[i] != '\0'){
+			value[j++] = buf[i];
+		}
+	}
+	value[j] = '\0';
+
+	free(buf);
+	return 0;
+}
+
+void STFs(int nvram, int index, char *flash_key, char *value)
+{
+	char *result;
+	char *tmp = nvram_get(nvram, flash_key);
+	if(!tmp)
+		tmp = "";
+	result = setNthValue(index, tmp, value);
+	nvram_bufset(nvram, flash_key, result);
+	return ;
 }

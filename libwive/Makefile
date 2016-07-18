@@ -31,8 +31,8 @@ CFLAGS+=$(SSP_ALL_CFLAGS) -DUSE_HOSTCC -fPIC -D_LARGEFILE64_SOURCE=1
 LIBWIVE=libwive.a
 LIBWIVE_SHARED=libwive.so
 
-OBJS	:= libwive_wireless.o libwive_ethernet.o libwive_helpers.o
-HEADERS := libwive_wireless.h libwive_ethernet.h libwive_helpers.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
+OBJS	:= libwive_wireless.o libwive_ethernet.o libwive_network.o libwive_gpio.o libwive_helpers.o
+HEADERS := $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 LDLIBS  += -lnvram
 

@@ -21,9 +21,10 @@ CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
 endif
 endif
 
+# no use balloc (conflict with new libs model)
+CFLAGS += -DNO_BALLOC
+
 ifdef CONFIG_RALINK_MT7621
-# no use balloc on SMP
-CFLAGS += -DNO_BALLOC -DB_STATS
 ifdef CONFIG_MT7530_GSW
 CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
 endif
@@ -183,7 +184,7 @@ sockGen.o:  sockGen.c uemf.h $(CONF_H)
 
 sslSocket.o: sslSocket.c sslSocket.h
 
-station.o: station.c station.h oid.h webs.h
+station.o: station.c station.h webs.h
 
 usb.o: usb.c usb.h webs.h $(UCONF_H)
 
