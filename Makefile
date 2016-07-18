@@ -15,7 +15,7 @@
 
 ROOTDIR	:= $(shell pwd)
 
-all: tools prep_romfs linux lib_configure lib_only lib_install libnvram_only libext_only user_only romfs image
+all: tools prep_romfs linux lib_configure lib_only lib_install libnvram_only libwive_only libext_only user_only romfs image
 
 CONFIG_VENDOR	:= Mediatek
 CONFIG_LINUXDIR := linux
@@ -274,6 +274,7 @@ clean:
 	-$(MAKE) clean -C config
 	-$(MAKE) clean -C tools
 	-$(MAKE) clean -C libnvram
+	-$(MAKE) clean -C libwive
 	-$(MAKE) clean -C libext
 	-$(MAKE) mrproper -C Uboot
 	-$(MAKE) mrproper -C linux

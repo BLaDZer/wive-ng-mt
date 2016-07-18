@@ -1,6 +1,6 @@
 BNDSTRG_EXEC = bndstrg
 
-CFLAGS += -I./ -I$(ROOTDIR)/user/goahead/src -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA
+CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA
 LDFLAGS += -lpthread -lnvram -Wl,--gc-sections
 
 BNDSTRG_OBJS = bndstrg.o driver_wext.o eloop.o os_internal.o main.o netlink.o

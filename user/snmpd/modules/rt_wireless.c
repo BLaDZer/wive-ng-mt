@@ -28,7 +28,7 @@
 #include        "asn.h"
 #include        "mix.h"
 #include        "systm.h"
-#include        "src/oid.h"
+#include        "oid.h"
 
 
 #define WIRELESS_DEVICE	"ra0"

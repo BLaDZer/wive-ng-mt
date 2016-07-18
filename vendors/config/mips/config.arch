@@ -184,6 +184,9 @@ endif
 	# include nvram headers
 	CFLAGS  += -I$(ROOTDIR)/libnvram
 
+	# include wive headers
+	CFLAGS  += -I$(ROOTDIR)/libwive
+
 	# include system headers
 	CFLAGS += -isystem $(LIBCDIRSHARED)/include
 

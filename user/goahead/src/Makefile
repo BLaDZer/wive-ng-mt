@@ -100,7 +100,7 @@ CFLAGS	+= -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qu
 CFLAGS	+=  -DWEBS -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)
 
 LDFLAGS	+= $(SSLLIB) $(IFMODLIB)
-LDLIBS	+= -lnvram
+LDLIBS	+= -lnvram -lwive
 all:	$(NAME)
 
 #

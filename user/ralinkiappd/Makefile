@@ -2,7 +2,7 @@ EXEC = ralinkiappd
 OBJS = rtmpiapp.o
 
 # If you want to debug daemon, add following line
-CFLAGS += -I./ -DDBG -DSYSLOG -I../goahead/src -ffunction-sections -fdata-sections
+CFLAGS += -I./ -DDBG -DSYSLOG -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections
 #-DSYSLOG
 $(EXEC): $(OBJS)

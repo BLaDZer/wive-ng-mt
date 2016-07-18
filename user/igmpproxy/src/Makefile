@@ -16,7 +16,6 @@ ifdef CONFIG_MT76X2_AP_IGMP_SNOOP
 endif
 
 ifdef WIFISNOOP
-CFLAGS+= -I../../goahead
 # auto enable Multicast to Unicast in wifi drivers by user req
 CFLAGS+= -DWIFI_IGMPSNOOP_SUPPORT
 # auto disable Multicast to Unicast in wifi drivers if route table empty

@@ -2196,32 +2196,33 @@
 2) busybox: update to 1.25.0 version.<br>
 3) xupnpd: up to 1.034 version commit dffe9c55 (use old style ui).<br>
 4) radvd: up to 2.14 version.<br>
-5) goahead: merge wireless basic and advanced page.<br>
-6) goahead: add input values check to ipv6 page.<br>
-7) goahead: add ipv6 dns options.<br>
-8) goahead: add use default password warnings.<br>
-9) goahead: move select band for apcli/wds to true places.<br>
-10) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
-11) nvram: add genstaticroutes and geniptablesrules commands for use from init instead of direct call from goahead (drop dependency routes/netfilters by goahead).<br>
-12) init.d: direct call regenerate route/iptables rules and switch bootlevel instead iptables call.<br>
-13) init.d: rename web init to switchstage and drop goahead dependency start second init stage.<br>
-14) init.d: use user configured ipv6 dns in static mode and as fallback for dhcp mode.<br>
-15) init.d: fix not set MTU to WAN regression.<br>
-16) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-17) kernel: mips: fix siginfo.h to use strict posix types.<br>
-18) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-19) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-20) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-21) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-22) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-23) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-24) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-25) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-26) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-27) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-28) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-29) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-30) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+5) build_system: add libwive sceleton for move reused functions from goaead/netcwmpd/snmpd/etc to one place.<br>
+6) goahead: merge wireless basic and advanced page.<br>
+7) goahead: add input values check to ipv6 page.<br>
+8) goahead: add ipv6 dns options.<br>
+9) goahead: add use default password warnings.<br>
+10) goahead: move select band for apcli/wds to true places.<br>
+11) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
+12) nvram: add genstaticroutes and geniptablesrules commands for use from init instead of direct call from goahead (drop dependency routes/netfilters by goahead).<br>
+13) init.d: direct call regenerate route/iptables rules and switch bootlevel instead iptables call.<br>
+14) init.d: rename web init to switchstage and drop goahead dependency start second init stage.<br>
+15) init.d: use user configured ipv6 dns in static mode and as fallback for dhcp mode.<br>
+16) init.d: fix not set MTU to WAN regression.<br>
+17) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+18) kernel: mips: fix siginfo.h to use strict posix types.<br>
+19) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+20) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+21) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+22) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+23) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+24) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+25) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+26) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+27) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+28) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+29) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+30) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+31) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
 <br>
 <br>
 <br>
