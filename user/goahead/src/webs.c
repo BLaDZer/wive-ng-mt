@@ -1595,7 +1595,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
     if (userMsg == NULL) {
 	syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
 	va_end(args);
-	return -1;
+	return;
     }
 
     va_end(args);
@@ -1645,7 +1645,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
 	if (buf == NULL) {
 		syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
 		bfree(B_L, userMsg);
-		return -1;
+		return;
 	}
 
 	websResponse(wp, code, buf, NULL);
