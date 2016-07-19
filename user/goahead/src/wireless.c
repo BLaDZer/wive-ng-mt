@@ -384,6 +384,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	{
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
+		close(s);
 		goto out24;
 	}
 
@@ -448,8 +449,8 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
-out24:
 	close(s);
+out24:
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
 	s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -463,6 +464,7 @@ out24:
 	{
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
+		close(s);
 		goto out5;
 	}
 
@@ -530,8 +532,8 @@ out24:
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
-out5:
 	close(s);
+out5:
 #endif
 	return err;
 }
