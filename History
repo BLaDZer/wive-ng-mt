@@ -2225,6 +2225,7 @@
 31) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
 32) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
 33) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+34) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
 <br>
 <br>
 <br>

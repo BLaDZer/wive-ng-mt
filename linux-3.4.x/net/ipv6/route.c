@@ -1270,7 +1270,7 @@ static int ip6_dst_gc(struct dst_ops *ops)
 		goto out;
 
 	net->ipv6.ip6_rt_gc_expire++;
-	fib6_run_gc(net->ipv6.ip6_rt_gc_expire, net, entries > rt_max_size);
+	fib6_run_gc(net->ipv6.ip6_rt_gc_expire, net, true);
 	net->ipv6.ip6_rt_last_gc = now;
 	entries = dst_entries_get_slow(ops);
 	if (entries < ops->gc_thresh)
