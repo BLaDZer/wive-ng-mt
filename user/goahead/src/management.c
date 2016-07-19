@@ -208,39 +208,6 @@ invalid_values:
 }
 #endif
 
-/*
- * arguments: ifname - interface name
- * description: return 1 if interface is up and ready
- *              return 0 if interface is down or no carrier
- *              return -1 if error
- */
-static int getIfIsReady(const char *ifname)
-{
-	struct ifreq ifr;
-	int skfd;
-
-	skfd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (skfd == -1) {
-		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
-		return -1;
-	}
-
-	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
-	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
-		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
-		return -1;
-	}
-	close(skfd);
-
-	if ((ifr.ifr_flags & IFF_UP) && (ifr.ifr_flags & IFF_RUNNING))
-		return 1;
-	else
-		return 0;
-}
-
 static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_ETHTOOL)
