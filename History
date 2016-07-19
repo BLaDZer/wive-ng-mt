@@ -2228,6 +2228,7 @@
 34) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
 35) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
 36) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+37) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
 <br>
 <br>
 <br>
