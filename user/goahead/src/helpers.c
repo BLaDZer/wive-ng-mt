@@ -138,33 +138,6 @@ int freeSplitter(string_split_t *buf)
 }
 
 /*
- * concatenate a string with an integer
- * ex: racat("SSID", 1) will return "SSID1"
- */
-char *racat(char *s, int i)
-{
-	static char str[32];
-	snprintf(str, 32, "%s%1d", s, i);
-	return str;
-}
-
-/*
- * check the existence of semicolon in str
- */
-int checkSemicolon(char *str)
-{
-	char *c = strchr(str, ';');
-	if (c)
-		return 1;
-	return 0;
-}
-
-void reboot_now(void)
-{
-	doSystem("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
-}
-
-/*
  * description: parse va and do system
  */
 int doSystem(char_t *fmt, ...)
@@ -185,6 +158,11 @@ int doSystem(char_t *fmt, ...)
 	}
 
 	return rc;
+}
+
+void reboot_now(void)
+{
+	doSystem("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
 }
 
 void redirect_wholepage(webs_t wp, const char *url)

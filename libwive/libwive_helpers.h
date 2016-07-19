@@ -4,4 +4,7 @@
 char *scale(uint64_t size);
 const char *normalizeSize(long long *size);
 
+char *racat(char *s, int i);
+int checkSemicolon(char *str);
+
 #endif

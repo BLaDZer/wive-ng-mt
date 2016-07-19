@@ -144,11 +144,8 @@ void setupParameters(webs_t wp, parameter_fetch_t *fetch, int transaction);
 int initSplitter(string_split_t *buf);
 int splitString(string_split_t *buf, const char *string, char splitter);
 int freeSplitter(string_split_t *buf);
-char *racat(char *s, int i);
-int checkSemicolon(char *str);
 
 void outputTimerForReload(webs_t wp, char_t *url, long delay);
-void reboot_now(void);
 int doSystem(char_t *fmt, ...);
-
+void reboot_now(void);
 #endif /* HELPERS_H_ */

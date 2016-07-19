@@ -60,3 +60,25 @@ const char *normalizeSize(long long *size)
 	}
 	return *result;
 }
+
+/*
+ * concatenate a string with an integer
+ * ex: racat("SSID", 1) will return "SSID1"
+ */
+char *racat(char *s, int i)
+{
+	static char str[32];
+	snprintf(str, 32, "%s%1d", s, i);
+	return str;
+}
+
+/*
+ * check the existence of semicolon in str
+ */
+int checkSemicolon(char *str)
+{
+	char *c = strchr(str, ';');
+	if (c)
+		return 1;
+	return 0;
+}
