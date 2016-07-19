@@ -61,6 +61,7 @@
   <message msgid="content filter webs content filter proxy" msgstr="Proxy" />
   <message msgid="content filter webs content filter java" msgstr="Java" />
   <message msgid="content filter webs content filter activex" msgstr="ActiveX" />
+  <message msgid="content filter webs content filter cookies" msgstr="Cookies" />
   <message msgid="content filter webs blocking rules" msgstr="Web URL / Host blocking rules" />
   <message msgid="content filter table type" msgstr="Type" />
   <message msgid="content filter table value" msgstr="Value" />

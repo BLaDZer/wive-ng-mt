@@ -101,26 +101,44 @@ load_nat_helpers() {
 	if [ "$fwAlgSIP" != "0" ]; then
 	    modprobe -q nf_conntrack_sip
 	    modprobe -q nf_nat_sip
+	else
+	    rmmod nf_nat_sip  > /dev/null 2>&1
+	    rmmod nf_conntrack_sip > /dev/null 2>&1
 	fi
 	if [ "$fwAlgGRE" != "0" ]; then
-	    modprobe -q nf_conntrack_proto_gre
 	    modprobe -q nf_nat_proto_gre
+	    modprobe -q nf_conntrack_proto_gre
+	else
+	    rmmod nf_nat_proto_gre > /dev/null 2>&1
+	    rmmod nf_conntrack_proto_gre > /dev/null 2>&1
 	fi
 	if [ "$fwAlgPPTP" != "0" ]; then
-	    modprobe -q nf_conntrack_pptp
 	    modprobe -q nf_nat_pptp
+	    modprobe -q nf_conntrack_pptp
+	else
+	    rmmod nf_nat_pptp > /dev/null 2>&1
+	    rmmod nf_conntrack_pptp > /dev/null 2>&1
 	fi
 	if [ "$fwAlgH323" != "0" ]; then
-	    modprobe -q nf_conntrack_h323
 	    modprobe -q nf_nat_h323
+	    modprobe -q nf_conntrack_h323
+	else
+	    rmmod nf_nat_h323 > /dev/null 2>&1
+	    rmmod nf_conntrack_h323 > /dev/null 2>&1
 	fi
 	if [ "$fwAlgFTP" != "0" ]; then
 	    modprobe -q nf_conntrack_ftp
 	    modprobe -q nf_nat_ftp
+	else
+	    rmmod nf_nat_ftp > /dev/null 2>&1
+	    rmmod nf_conntrack_ftp > /dev/null 2>&1
 	fi
 	if [ "$fwAlgRTSP" != "0" ]; then
 	    modprobe -q nf_conntrack_rtsp
 	    modprobe -q nf_nat_rtsp
+	else
+	    rmmod nf_nat_rtsp > /dev/null 2>&1
+	    rmmod nf_conntrack_rtsp > /dev/null 2>&1
 	fi
     fi
 }

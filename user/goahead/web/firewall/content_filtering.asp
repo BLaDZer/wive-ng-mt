@@ -1,209 +1,200 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Content Filter Settings</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
-<meta http-equiv="Pragma" content="no-cache">
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<link rel="stylesheet" href="/style/controls.css" type="text/css">
-<link rel="stylesheet" href="/style/windows.css" type="text/css">
-<script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript" src="/js/controls.js"></script>
-<script type="text/javascript" src="/js/ajax.js"></script>
-<script language="JavaScript" type="text/javascript">
+	<head>
+		<title>Content Filter Settings</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+		<link rel="stylesheet" href="/style/controls.css" type="text/css">
+		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<script src="/lang/b28n.js"></script>
+		<script src="/js/controls.js"></script>
+		<script src="/js/ajax.js"></script>
+		<script>
+			Butterlate.setTextDomain("firewall");
+			Butterlate.setTextDomain("buttons");
 
-Butterlate.setTextDomain("firewall");
-Butterlate.setTextDomain("buttons");
+			var filteringRules = [];
 
-var filteringRules = [];
+			function initTranslation()
+			{
+				_TR("ContentFilterTitle",		"content filter title");
+				_TR("ContentFilterIntrodution", "content filter introduction");
+				_TR("WebsContentFilter",		"content filter webs content filter");
+				_TR("WebsContentFilterFilter",	"content filter webs content filter filter");
+				_TR("websFilter_proxy",			"content filter webs content filter proxy");
+				_TR("websFilter_java",			"content filter webs content filter java");
+				_TR("websFilter_activex",		"content filter webs content filter activex");
+				_TR("websFilter_cookies",		"content filter webs content filter cookies");
+				_TR("websBlockingRules",		"content filter webs blocking rules");
+				_TR("bridge_warning",			"firewall bridge warning");
+				_TRV("ContentFilterApply",		"button apply");
+			}
 
-function genFilteringTable()
-{
-	var table = '<table class="small" style="width: 100%"><tr>' +
-		'<th>' + _("content filter table type") + '</th>' +
-		'<th>' + _("content filter table value") + '</th>' +
-		'<th>' + _("content filter table action") + '</th></tr>';
+			function initValues()
+			{
+				var st = {
+					'proxy'   : '<% getCfgZero(1, "websFilterProxy"); %>',
+					'java'    : '<% getCfgZero(1, "websFilterJava"); %>',
+					'activex' : '<% getCfgZero(1, "websFilterActivex"); %>',
+					'cookies' : '<% getCfgZero(1, "websFilterCookies"); %>'
+				};
+				var urls      = '<% getCfgGeneral(1, "websURLFilters"); %>';
+				var hosts     = '<% getCfgGeneral(1, "websHostFilters"); %>';
+				var opmode    = '<% getCfgZero(1, "OperationMode"); %>';
 
-	for (var i=0; i<filteringRules.length; i++)
-	{
-		var row = filteringRules[i];
-		var type = _("content filter unknown");
+				displayElement('bridge_warning', opmode == '0'); // bridge mode
 
-		if (row[0] == 'url')
-			type = _("content filter block url");
-		else if (row[0] == 'host')
-			type = _("content filter block host");
+				addAllRules(urls, 'url');
+				addAllRules(hosts, 'host');
 
-		table +=
-			'<tr>' +
-			'<td style="text-align: left;">' + type + '</td>' + // Type
-			'<td style="text-align: left;">' + row[1] + '</td>' + // Protocol
-			'<td style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" onclick="deleteRule(' + i + ');"><img src="/graphics/cross.png" alt="[x]"></a></td>' +
-			'</tr>';
-	}
+				for (var field in st)
+					setElementChecked('websFilter_' + field, st[field] == '1');
 
-	if (filteringRules.length <= 0)
-		table += '<tr><td colspan="3" style="text-align: left;">' + _("content filter no rules") + '</td></tr>';
+				genFilteringTable();
+				showWarning();
+				initTranslation();
+			}
 
-	// Controls
-	table +=
-		'<tr>'+
-		'<td style="text-align: left;"><select name="filterType" tabindex="1"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
-		'<td style="text-align: left;"><input type="text" class="normal" name="filterValue" tabindex="2"></td>' +
-		'<td style="text-align: center;"><input type="button" class="mid" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
-		'</tr>';
+			function checkValues(form)
+			{
+				var ents = { 'url' : [], 'host': [] };
 
-	// Close manager
-	table += '</table>';
+				// Separate into 2 arrays
+				for (var i=0; i<filteringRules.length; i++)
+					ents[filteringRules[i][0]].push(filteringRules[i][1]);
 
-	var elem = document.getElementById("filteringRules");
-	if (elem!=null)
-		elem.innerHTML = table;
-}
+				form.urlFiltering.value  = ents['url'].join(';');
+				form.hostFiltering.value = ents['host'].join(';');
 
-function addRule(form)
-{
-	if (form.filterValue.value.match(/^\s*$/))
-	{
-		alert(_("content filter not def"));
-		form.filterValue.focus();
-		return;
-	}
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				return true;
+			}
+			
+			function genFilteringTable()
+			{
+				var table = '<table class="small" style="width: 100%"><tr>' +
+					'<th>' + _("content filter table type") + '</th>' +
+					'<th>' + _("content filter table value") + '</th>' +
+					'<th>' + _("content filter table action") + '</th></tr>';
 
-	var row = [ form.filterType.value, form.filterValue.value ];
+				for (var i=0; i<filteringRules.length; i++)
+				{
+					var row = filteringRules[i];
+					var type = _("content filter unknown");
 
-	// Add a rule
-	filteringRules.push(row);
+					if (row[0] == 'url')
+						type = _("content filter block url");
+					else if (row[0] == 'host')
+						type = _("content filter block host");
 
-	// Regenerate table
-	genFilteringTable();
-}
+					table +=
+						'<tr>' +
+						'<td style="text-align: left;">' + type + '</td>' + // Type
+						'<td style="text-align: left;">' + row[1] + '</td>' + // Protocol
+						'<td style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" onclick="deleteRule(' + i + ');"><img src="/graphics/cross.png" alt="[x]"></a></td>' +
+						'</tr>';
+				}
 
-function deleteRule(index)
-{
-	if ((index>=0) && (index < filteringRules.length))
-	{
-		filteringRules.splice(index, 1);
-		genFilteringTable();
-	}
-}
+				if (filteringRules.length <= 0)
+					table += '<tr><td colspan="3" style="text-align: left;">' + _("content filter no rules") + '</td></tr>';
 
-function initValues()
-{
-	var st = {
-		'proxy'   : '<% getCfgZero(1, "websFilterProxy"); %>',
-		'java'    : '<% getCfgZero(1, "websFilterJava"); %>',
-		'activex' : '<% getCfgZero(1, "websFilterActivex"); %>',
-		'cookies' : '<% getCfgZero(1, "websFilterCookies"); %>'
-	};
+				// Controls
+				table +=
+					'<tr>'+
+					'<td style="text-align: left; width: 25%;"><select name="filterType" tabindex="1"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
+					'<td style="text-align: left; width: 50%;"><input type="text" style="width: 99%" name="filterValue" tabindex="2" size="100"></td>' +
+					'<td style="text-align: center; width: 25%;"><input type="button" class="mid" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
+					'</tr>';
 
-	var urls = '<% getCfgGeneral(1, "websURLFilters"); %>';
-	var hosts = '<% getCfgGeneral(1, "websHostFilters"); %>';
-	var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+				// Close manager
+				table += '</table>';
 
-	displayElement('bridge_warning', opmode == '0'); // bridge mode
+				var elem = document.getElementById("websFilteringRules");
+				if (elem!=null)
+					elem.innerHTML = table;
+			}
 
-	addAllRules(urls, 'url');
-	addAllRules(hosts, 'host');
+			function addRule(form)
+			{
+				if (form.filterValue.value.match(/^\s*$/))
+				{
+					alert(_("content filter not def"));
+					form.filterValue.focus();
+					return;
+				}
 
-	for (var field in st)
-		setElementChecked('websFilter_' + field, st[field] == '1');
+				var row = [ form.filterType.value, form.filterValue.value ];
 
-	genFilteringTable();
-	initTranslation();
-	showWarning();
-}
+				// Add a rule
+				filteringRules.push(row);
 
-function addAllRules(list, type)
-{
-	if (list.length > 0)
-	{
-		entries = list.split(';');
-		for (var i=0; i<entries.length; i++)
-		{
-			if (!entries[i].match(/^\s*$/))
-				filteringRules.push( [ type, entries[i] ] );
-		}
-	}
-}
+				// Regenerate table
+				genFilteringTable();
+			}
 
-function submitForm(form)
-{
-	var ents = { 'url' : [], 'host': [] };
+			function deleteRule(index)
+			{
+				if ((index>=0) && (index < filteringRules.length))
+				{
+					filteringRules.splice(index, 1);
+					genFilteringTable();
+				}
+			}
 
-	// Separate into 2 arrays
-	for (var i=0; i<filteringRules.length; i++)
-		ents[filteringRules[i][0]].push(filteringRules[i][1]);
-
-	form.urlFiltering.value  = ents['url'].join(';');
-	form.hostFiltering.value = ents['host'].join(';');
-
-	ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
-	return true;
-}
-
-function initTranslation()
-{
-	_TR("ContentFilterTitle", "content filter title");
-	_TR("ContentFilterIntrodution", "content filter introduction");
-	_TR("WebsContentFilter", "content filter webs content filter");
-	_TR("WebsContentFilterFilter", "content filter webs content filter filter");
-  	_TR("websFilter_proxy", "content filter webs content filter proxy");
-  	_TR("websFilter_java", "content filter webs content filter java");
-  	_TR("websFilter_activex", "content filter webs content filter activex");
-  	_TR("WebsBlockingRules", "content filter webs blocking rules");
-  	_TR("bridge_warning", "firewall bridge warning");
-
-	_TRV("ContentFilterApply", "button apply");
-}
-
-</script>
-</head>
-<body onLoad="initValues();">
-<table class="body">
-  <tr id="warning"><tr>
-  <tr>
-    <td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
-      <div style="display:none;" id="bridge_warning">
-      	<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
-      </div>
-      <p id="ContentFilterIntrodution">Here you can setup Content Filter to restrict access to unwanted content.</p>
-      <hr>
-      <form action="/goform/webContentFilterSetup" method="POST" name="websContentFilterSetup" onSubmit="return submitForm(this);">
-        <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-        <!-- New content filtering -->
-        <table class="form">
-          <tr>
-            <td class="title" colspan="2" id="WebsContentFilter">Web Content Filter Setup</td>
-          </tr>
-          <tr>
-            <td class="head" id="WebsContentFilterFilter"> Filter: </td>
-            <td><input type="checkbox" name="websFilterProxy" id="websFilter_proxy">
-              &nbsp;Proxy&nbsp;
-              <input type="checkbox" name="websFilterJava" id="websFilter_java">
-              &nbsp;Java&nbsp;
-              <input type="checkbox" name="websFilterActivex" id="websFilter_activex">
-              &nbsp;ActiveX </td>
-          </tr>
-          <tr>
-            <td class="title" colspan="2" id="WebsBlockingRules">Web URL / Host blocking rules</td>
-          </tr>
-          <tr>
-            <td colspan="2" id="filteringRules"></td>
-          </tr>
-        </table>
-        <table class="buttons">
-          <tr>
-            <td><input type="hidden" name="urlFiltering" />
-              <input type="hidden" name="hostFiltering" />
-              <input type="hidden" name="submit-url" value="/firewall/content_filtering.asp" />
-              <input type="submit" value="Apply" id="ContentFilterApply"></td>
-          </tr>
-        </table>
-      </form>
-      <div class="whitespace">&nbsp;</div></td>
-  </tr>
-</table>
-</body>
+			function addAllRules(list, type)
+			{
+				if (list.length > 0)
+				{
+					entries = list.split(';');
+					for (var i=0; i<entries.length; i++)
+						if (!entries[i].match(/^\s*$/))
+							filteringRules.push( [ type, entries[i] ] );
+				}
+			}
+		</script>
+	</head>
+	<body onLoad="initValues();">
+		<table class="body">
+			<tr id="warning"><tr>
+			<tr>
+				<td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
+					<div id="bridge_warning" style="display:none;">
+						<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
+					</div>
+					<p id="ContentFilterIntrodution">Here you can setup Content Filter to restrict access to unwanted content.</p>
+					<hr>
+					<iframe id="timerReloader" name="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
+					<form method="POST" action="/goform/webContentFilterSetup" name="websContentFilterSetup" onSubmit="return checkValues(this);">
+						<table class="form">
+							<tr>
+								<td id="WebsContentFilter" class="title" colspan="2">Web Content Filter Setup</td>
+							</tr>
+							<tr>
+								<td id="WebsContentFilterFilter" class="head"> Filter: </td>
+								<td><input id="websFilter_proxy"   name="websFilterProxy"   type="checkbox">Proxy
+									<input id="websFilter_java"    name="websFilterJava"    type="checkbox">Java
+									<input id="websFilter_activex" name="websFilterActivex" type="checkbox">ActiveX
+									<input id="websFilter_cookies" name="websFilterCookies" type="checkbox">Cookies</td>
+							</tr>
+							<tr>
+								<td id="websBlockingRules" class="title" colspan="2">Web URL / Host blocking rules</td>
+							</tr>
+							<tr>
+								<td id="websFilteringRules" colspan="2"></td>
+							</tr>
+						</table>
+						<table class="buttons">
+							<tr>
+								<td><input type="hidden" name="urlFiltering" />
+									<input type="hidden" name="hostFiltering" />
+									<input type="submit" value="Apply" id="ContentFilterApply"></td>
+							</tr>
+						</table>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</body>
 </html>

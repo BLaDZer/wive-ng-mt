@@ -60,6 +60,16 @@ input.short
 	width: 48px;
 }
 
+input.pfShort
+{
+	width: 40px;
+}
+
+input.pfNormal
+{
+	width: 100px;
+}
+
 input.small
 {
 	width: 36px;
