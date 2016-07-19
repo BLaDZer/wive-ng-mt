@@ -2183,7 +2183,7 @@ static int fib6_clean_tohost(struct rt6_info *rt, void *arg)
 
 void rt6_clean_tohost(struct net *net, struct in6_addr *gateway)
 {
-	fib6_clean_all(net, fib6_clean_tohost, gateway);
+	fib6_clean_all(net, fib6_clean_tohost, 0, gateway);
 }
 
 struct arg_dev_net {
