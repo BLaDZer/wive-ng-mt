@@ -26,6 +26,37 @@ int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName
 	return (ioctl(socket_id, QueryCode, &wrq));
 }
 
+int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+{
+	struct iwreq wrq;
+
+	memset(&wrq, 0, sizeof(wrq));
+	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
+	wrq.u.data.length = PtrLength;
+	wrq.u.data.pointer = (caddr_t)ptr;
+	wrq.u.data.flags = OidQueryCode;
+
+	if (OidQueryCode == OID_802_11_BSSID_LIST)
+		wrq.u.data.length = 8192;
+
+	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
+}
+
+int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+{
+	struct iwreq wrq;
+
+	memset(&wrq, 0, sizeof(wrq));
+	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
+	wrq.u.data.length = PtrLength;
+	wrq.u.data.pointer = (caddr_t) ptr;
+	wrq.u.data.flags = OidQueryCode | OID_GET_SET_TOGGLE;
+
+	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
+}
+
 unsigned int ConvertRssiToSignalQuality(long RSSI)
 {
 	unsigned int signal_quality;
