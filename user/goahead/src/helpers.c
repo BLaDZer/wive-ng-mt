@@ -147,15 +147,21 @@ int doSystem(char_t *fmt, ...)
 	int	rc = 0;
 
 	va_start(vargs, fmt);
-	if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE)
+	if (fmtValloc(&cmd, WEBS_BUFSIZE, fmt, vargs) >= WEBS_BUFSIZE) {
 		syslog(LOG_ERR, "lost data, buffer overflow , %s", __FUNCTION__);
+		va_end(vargs);
+		return -1;
+	}
 
+	if (cmd == NULL) {
+		syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
+		va_end(vargs);
+		return -1;
+	}
 	va_end(vargs);
 
-	if (cmd) {
-		rc = system(cmd);
-		bfree(B_L, cmd);
-	}
+	rc = system(cmd);
+	bfree(B_L, cmd);
 
 	return rc;
 }

@@ -1591,6 +1591,13 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
     va_start(args, fmt);
     userMsg = NULL;
     fmtValloc(&userMsg, WEBS_BUFSIZE, fmt, args);
+
+    if (userMsg == NULL) {
+	syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
+	va_end(args);
+	return -1;
+    }
+
     va_end(args);
     safeMsg = websSafeUrl(userMsg);
     bfree(B_L, userMsg);
@@ -1634,6 +1641,12 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
 	buf = NULL;
 	fmtAlloc(&buf, WEBS_BUFSIZE, msg, websErrorMsg(code), 
 		websErrorMsg(code), userMsg);
+
+	if (buf == NULL) {
+		syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
+		bfree(B_L, userMsg);
+		return -1;
+	}
 
 	websResponse(wp, code, buf, NULL);
 	bfree(B_L, buf);
