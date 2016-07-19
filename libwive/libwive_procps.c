@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "procps.h"
-#include "uemf.h"
+#include "libwive_procps.h"
 
 // Read unsigned number
 // Returns -1 on error
@@ -29,10 +28,10 @@ void procps_init(cmdline_t *src)
 	src->pid        = -1;
 	src->cap        = CMDLINE_EXT;
 	src->size       = 0;
-	src->buffer     = (char *)balloc(B_L, CMDLINE_EXT);
+	src->buffer     = (char *)malloc(CMDLINE_EXT);
 	src->acap       = CMDLINE_AEXT;
 	src->argc       = 0;
-	src->argv       = (char **)balloc(B_L, CMDLINE_AEXT * sizeof(char *));
+	src->argv       = (char **)malloc(CMDLINE_AEXT * sizeof(char *));
 	src->dynamic    = 0;
 	src->next       = NULL;
 }
@@ -45,11 +44,11 @@ void procps_free(cmdline_t *src)
 		cmdline_t *next = src->next;
 
 		if (src->argv!=NULL)
-			bfree(B_L, src->argv);
+			free(src->argv);
 		if (src->buffer!=NULL)
-			bfree(B_L, src->buffer);
+			free(src->buffer);
 		if (src->dynamic)
-			bfree(B_L, src);
+			free(src);
 		src = next;
 	}
 }
@@ -74,7 +73,7 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 			{
 				size_t newcap   = pcmdline->cap + CMDLINE_EXT;
 
-				char *newbuf    = (char *)brealloc(B_L, pcmdline->buffer, newcap);
+				char *newbuf    = (char *)realloc(pcmdline->buffer, newcap);
 				if (newbuf == NULL) // cmdline_free has to free resouce
 				{
 					fclose(fd); // close file
@@ -108,7 +107,7 @@ int procps_read_args(pid_t procnum, cmdline_t *pcmdline)
 		{
 			size_t newcap = argc + CMDLINE_AEXT - (argc % CMDLINE_AEXT); // Calculate new capacity
 
-			char **new_argv = (char **)brealloc(B_L, pcmdline->argv, (newcap*sizeof(char *))); // resize
+			char **new_argv = (char **)realloc(pcmdline->argv, (newcap*sizeof(char *))); // resize
 			if (new_argv == NULL) // cmdline_free has to free resouce
 			{
 				fclose(fd);
@@ -223,7 +222,7 @@ cmdline_t *procps_list()
 			// Allocate new entry if needed
 			if (cmdline == NULL)
 			{
-				cmdline = (cmdline_t *)balloc(B_L, sizeof(cmdline_t));
+				cmdline = (cmdline_t *)malloc(sizeof(cmdline_t));
 				if (cmdline == NULL) // Allocation failed?
 				{
 					// Free previously allocated data & return

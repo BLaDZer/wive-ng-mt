@@ -67,7 +67,7 @@ DEPEND_FILES	= asp.o balloc.o base64.o cgi.o default.o  \
 				  md5c.o um.o umui.o websda.o emfdb.o \
 				  webrom.o webs.o websuemf.o \
 				  internet.o services.o utils.o wireless.o \
-				  firewall.o management.o helpers.o procps.o $(NAME).o
+				  firewall.o management.o helpers.o $(NAME).o
 
 # gahead flags
 ifeq ("$(CONFIG_USER_GOAHEAD_IPV6)", "y")
@@ -143,8 +143,6 @@ ejparse.o:  ejparse.c ej.h ejIntrn.h uemf.h
 emfdb.o:  emfdb.h wsIntrn.h uemf.h
 
 firewall.o: firewall.c webs.h firewall.h
-
-procps.o: procps.c helpers.h webs.h procps.h
 
 helpers.o: helpers.c webs.h helpers.h
 

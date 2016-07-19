@@ -8,7 +8,6 @@
  */
 
 #include	"helpers.h"
-#include        "procps.h"
 #include	"usb.h"
 
 #ifdef CONFIG_USER_P910ND

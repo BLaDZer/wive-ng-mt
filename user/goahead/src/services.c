@@ -11,7 +11,6 @@
 #include	"management.h"
 #include	"station.h"
 #include	"firewall.h"
-#include	"procps.h"
 
 /*** Busybox leases.h ***/
 static uint64_t hton64(uint64_t v)
