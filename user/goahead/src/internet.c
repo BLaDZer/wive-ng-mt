@@ -1531,7 +1531,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 		srv_ipaddr = websGetVar(wp, T("ipv6_static_gw"), T(""));
 		srv_dns_primary = websGetVar(wp, T("ipv6_static_dns_primary"), T(""));
 		srv_dns_secondary = websGetVar(wp, T("ipv6_static_dns_secondary"), T(""));
-		
+
 		nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
 		nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
 		nvram_bufset(RT2860_NVRAM, "IPv6WANIPAddr", wan_ipaddr);

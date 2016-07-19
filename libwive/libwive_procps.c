@@ -1,11 +1,15 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
+/*
+ EULA:
 
-#include "libwive_procps.h"
+ WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.
+
+ Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
+ For a more detailed discussion please mail me.
+ News and changes in Russian: http://wive-ng.sf.net
+ Bug report please send to support[at]nag.ru or sfstudio[at]mail.ru
+*/
+
+#include "libwive.h"
 
 // Read unsigned number
 // Returns -1 on error
