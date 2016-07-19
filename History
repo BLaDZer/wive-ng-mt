@@ -2226,6 +2226,7 @@
 32) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
 33) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
 34) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+35) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
 <br>
 <br>
 <br>
