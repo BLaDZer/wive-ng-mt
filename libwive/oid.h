@@ -573,29 +573,4 @@ typedef struct _RT_802_11_MAC_TABLE {
     RT_802_11_MAC_ENTRY Entry[MAX_NUMBER_OF_MAC];
 } RT_802_11_MAC_TABLE, *PRT_802_11_MAC_TABLE;
 
-typedef struct _SITE_SURVEY
-{
-	char channel[4];
-	unsigned char ssid[33];
-	char bssid[20];
-	char security[23];
-	char signal[9];
-	char wmode[7];
-	char extch[7];
-	char bsstype[3];
-} SITE_SURVEY;
-
-typedef struct _SITE_SURVEY_ARRAY
-{
-	SITE_SURVEY SiteSurvey[64];
-} SSA;
-
-#define SITE_SURVEY_APS_MAX	(16*1024)
-
-typedef struct _PAIR_CHANNEL_FREQ_ENTRY
-{
-	unsigned long   lChannel;
-	unsigned long   lFreq;
-} PAIR_CHANNEL_FREQ_ENTRY, *PPAIR_CHANNEL_FREQ_ENTRY;
-
 #endif
