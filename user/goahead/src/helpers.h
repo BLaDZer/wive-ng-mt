@@ -75,9 +75,6 @@
 
 #define DMZ_CHAIN			"DMZ"
 
-#define PROC_MEM_STATISTIC		"/proc/meminfo"
-#define PROC_CPU_STATISTIC		"/proc/stat"
-
 // Optimizer macros
 #define CHK_IF_DIGIT(var, val)  \
 	((var != NULL) && (var[0] == (val + '0')) && (var[1] == '\0'))

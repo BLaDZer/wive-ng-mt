@@ -1,5 +1,5 @@
-#ifndef _PROCPS_H
-#define _PROCPS_H
+#ifndef _WIVE_PROCPS_H
+#define _WIVE_PROCPS_H	1
 
 #include <sys/types.h>
 
@@ -27,4 +27,4 @@ int  procps_read_args(pid_t procnum, cmdline_t *pcmdline);
 int  procps_find(const char *procname, size_t elems, pid_t *pids);
 int  procps_count(const char *procname);
 cmdline_t *procps_list();
-#endif /* _PROCPS_H */
+#endif /* _WIVE_PROCPS_H */

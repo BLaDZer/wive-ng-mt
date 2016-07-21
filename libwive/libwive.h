@@ -39,6 +39,7 @@
 #include "libwive_helpers.h"
 #include "libwive_network.h"
 #include "libwive_procps.h"
+#include "libwive_sysstat.h"
 #include "libwive_wireless.h"
 
 #endif
