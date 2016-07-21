@@ -696,10 +696,10 @@ static int getLinkingMode(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	HTTRANSMIT_SETTING HTSetting;
+	MACHTTRANSMIT_SETTING HTSetting;
 
-	memset(&HTSetting, 0x00, sizeof(HTTRANSMIT_SETTING));
-	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(HTTRANSMIT_SETTING));
+	memset(&HTSetting, 0x00, sizeof(MACHTTRANSMIT_SETTING));
+	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(MACHTTRANSMIT_SETTING));
 	close(s);
 
 	return websWrite(wp, (HTSetting.field.MODE > 1) ? T("0") : T("1"));
@@ -711,7 +711,7 @@ static int getLinkingMode(int eid, webs_t wp, int argc, char_t **argv)
 static int getStaHT(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int s;
-	HTTRANSMIT_SETTING HTSetting;
+	MACHTTRANSMIT_SETTING HTSetting;
 	char tmp[8], tmpBW[88], tmpGI[88], tmpSTBC[88], tmpMCS[88];
 
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
@@ -729,8 +729,8 @@ static int getStaHT(int eid, webs_t wp, int argc, char_t **argv)
 		return -1;
 	}
 
-	memset(&HTSetting, 0x00, sizeof(HTTRANSMIT_SETTING));
-	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(HTTRANSMIT_SETTING));
+	memset(&HTSetting, 0x00, sizeof(MACHTTRANSMIT_SETTING));
+	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(MACHTTRANSMIT_SETTING));
 	close(s);
 
 	if (HTSetting.field.MODE > 1) // 0: CCK, 1:OFDM, 2:Mixedmode, 3:GreenField
@@ -771,7 +771,7 @@ static int getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv)
 {
 	NDIS_802_11_CONFIGURATION Configuration;
 	RT_802_11_LINK_STATUS     LinkStatus;
-	HTTRANSMIT_SETTING HTSetting;
+	MACHTTRANSMIT_SETTING HTSetting;
 	int s, i;
 	int nChannel = -1;
 	int Japan_channel = 200;
@@ -798,8 +798,8 @@ static int getStaLinkChannel(int eid, webs_t wp, int argc, char_t **argv)
 
 	OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, s, "ra0", &LinkStatus, sizeof(&LinkStatus));
 
-	memset(&HTSetting, 0x00, sizeof(HTTRANSMIT_SETTING));
-	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(HTTRANSMIT_SETTING));
+	memset(&HTSetting, 0x00, sizeof(MACHTTRANSMIT_SETTING));
+	OidQueryInformation(RT_OID_802_11_QUERY_LAST_TX_RATE, s, "ra0", &HTSetting, sizeof(MACHTTRANSMIT_SETTING));
 	close(s);
 
 	if (nChannel == -1) {
@@ -904,7 +904,7 @@ static char bGetHTTxRateByBW_GI_MCS(int nBW, int nGI, int nMCS, double* dRate)
 static void DisplayLastTxRxRateFor11n(int s, int nID, double* fLastTxRxRate)
 {
 	unsigned long lHTSetting;
-	HTTRANSMIT_SETTING HTSetting;
+	MACHTTRANSMIT_SETTING HTSetting;
 	double b_mode[] ={1, 2, 5.5, 11};
 	float g_Rate[] = { 6,9,12,18,24,36,48,54};
 

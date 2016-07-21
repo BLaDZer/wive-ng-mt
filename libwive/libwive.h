@@ -31,9 +31,6 @@
 #include <dirent.h>
 #include <syslog.h>
 
-#include "oid.h"
-#include "linux/ralink_gpio.h"
-
 #include "libwive_ethernet.h"
 #include "libwive_gpio.h"
 #include "libwive_helpers.h"

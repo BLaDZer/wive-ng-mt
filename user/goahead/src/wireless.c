@@ -404,34 +404,21 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	    // Power Save mode, MIMO Power Save
 	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
 
-	    // TX Rate
-	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
+	    // TX MCS
+	    websWrite(wp, T("<td>%d</td>"), getMCS(pe->TxRate));
 
 	    // Bandwith
-	    switch (pe->TxRate.field.BW) {
-		case 0: websWrite(wp, T("<td>%s</td>"), "20MHz"); break;
-		case 1: websWrite(wp, T("<td>%s</td>"), "40MHz"); break;
-		case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
-		case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
-		//case 4: websWrite(wp, T("<td>%s</td>"), "10MHz"); break;
-		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
-	    }
+	    websWrite(wp, T("<td>%s</td>"), getBW(pe->TxRate.field.BW));
 
 	    // SGI/STBC/LDPC
 	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
-		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
-		(pe->TxRate.field.STBC == 0)? "NO " : "YES",
-		(pe->TxRate.field.ldpc == 0)? "NO " : "YES");
+		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES", (pe->TxRate.field.ldpc == 0)? "NO " : "YES");
 
 	    // HT/VHT Modes
-	    switch (pe->TxRate.field.MODE) {
-		case 0: websWrite(wp, T("<td>%s</td>"), "CCK"); break;
-		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
-		case 2: websWrite(wp, T("<td>%s</td>"), "HT"); break;
-		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
-		case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
-		default : websWrite(wp, T("<td>%s</td>"), "");
-	    }
+	    websWrite(wp, T("<td>%s</td>"), getPhyMode(pe->TxRate.field.MODE));
+
+	    // Tx Rate
+	    websWrite(wp, T("<td>%dMbit/s</td>"), getRate(pe->TxRate));
 
 	    // RSSI
 #if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
@@ -484,34 +471,21 @@ out24:
 	    // Power Save mode, MIMO Power Save
 	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
 
-	    // TX Rate
-	    websWrite(wp, T("<td>%d</td>"), pe->TxRate.field.MCS);
+	    // TX MCS
+	    websWrite(wp, T("<td>%d</td>"), getMCS(pe->TxRate));
 
 	    // Bandwith
-	    switch (pe->TxRate.field.BW) {
-		case 0: websWrite(wp, T("<td>%s</td>"), "20MHz"); break;
-		case 1: websWrite(wp, T("<td>%s</td>"), "40MHz"); break;
-		case 2: websWrite(wp, T("<td>%s</td>"), "80MHz"); break;
-		case 3: websWrite(wp, T("<td>%s</td>"), "BOTH"); break;
-		//case 4: websWrite(wp, T("<td>%s</td>"), "10MHz"); break;
-		default : websWrite(wp, T("<td>%s</td>"), "20MHz");
-	    }
+	    websWrite(wp, T("<td>%s</td>"), getBW(pe->TxRate.field.BW));
 
 	    // SGI/STBC/LDPC
 	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
-		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES",
-		(pe->TxRate.field.STBC == 0)? "NO " : "YES",
-		(pe->TxRate.field.ldpc == 0)? "NO " : "YES");
+		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES", (pe->TxRate.field.ldpc == 0)? "NO " : "YES");
 
 	    // HT/VHT Modes
-	    switch (pe->TxRate.field.MODE) {
-		case 0: websWrite(wp, T("<td>%s</td>"), "CCK"); break;
-		case 1: websWrite(wp, T("<td>%s</td>"), "OFDM"); break;
-		case 2: websWrite(wp, T("<td>%s</td>"), "HT"); break;
-		case 3: websWrite(wp, T("<td>%s</td>"), "HTGRF"); break;
-		case 4: websWrite(wp, T("<td>%s</td>"), "VHT"); break;
-		default : websWrite(wp, T("<td>%s</td>"), "");
-	    }
+	    websWrite(wp, T("<td>%s</td>"), getPhyMode(pe->TxRate.field.MODE));
+
+	    // Tx Rate
+	    websWrite(wp, T("<td>%dMbit/s</td>"), getRate(pe->TxRate));
 
 	    // RSSI
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)

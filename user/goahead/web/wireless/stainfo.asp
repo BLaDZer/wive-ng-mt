@@ -54,7 +54,7 @@ function PageInit()
       <form name="sta" action="/goform/disconnectSta" method="POST">
         <table class="form">
           <tr>
-            <td class="title" colspan="15" id="stalistWirelessNet">Wireless Network</td>
+            <td class="title" colspan="16" id="stalistWirelessNet">Wireless Network</td>
           </tr>
           <tr>
             <th>AID</th>
@@ -68,6 +68,7 @@ function PageInit()
             <th>STBC</th>
             <th>LDPC</th>
             <th>MODE</th>
+            <th>TX RATE</th>
             <th>RSSI</th>
             <th>QUALITY</th>
             <th>RX/TX COUNT</th>

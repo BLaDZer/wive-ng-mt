@@ -178,11 +178,18 @@
 #define NdisMediaStateConnected                 1
 #define NdisMediaStateDisconnected              0
 
+// PhyMODE
+#define MODE_CCK		0
+#define MODE_OFDM   		1
+#define MODE_HTMIX		2
+#define MODE_HTGREENFIELD	3
+#define MODE_VHT		4
+
 // BW
 #define BW_20       0
 #define BW_40       1
 #define BW_80       2
-#define BW_BOTH     3
+#define BW_160      3
 #define BW_10       4
 
 // SHORTGI
@@ -531,20 +538,6 @@ typedef struct _NDIS_802_11_PASSPHRASE
 
 
 /* MIMO Tx parameter, ShortGI, MCS, STBC, etc.  these are fields in TXWI. Don't change this definition!!! */
-typedef union _HTTRANSMIT_SETTING {
-	struct {
-		unsigned short MCS:6;
-		unsigned short ldpc:1;
-		unsigned short BW:2;
-		unsigned short ShortGI:1;
-		unsigned short STBC:1;
-		unsigned short eTxBF:1;
-		unsigned short iTxBF:1;
-		unsigned short MODE:3;
-	} field;
-	unsigned short word;
-} HTTRANSMIT_SETTING, *PHTTRANSMIT_SETTING;
-
 typedef union _MACHTTRANSMIT_SETTING {
 	struct  {
 		unsigned short MCS:6; 
@@ -557,7 +550,7 @@ typedef union _MACHTTRANSMIT_SETTING {
 		unsigned short MODE:3;
 	} field;
 	unsigned short      word;
-} MACHTTRANSMIT_SETTING;
+} MACHTTRANSMIT_SETTING, *PMACHTTRANSMIT_SETTING;
 
 typedef struct _RT_802_11_MAC_ENTRY {
 	unsigned char	ApIdx;
