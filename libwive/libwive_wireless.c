@@ -11,8 +11,6 @@
 
 #include "libwive.h"
 
-#include "oid.h"
-
 int RtpQueryInformation(unsigned long QueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
