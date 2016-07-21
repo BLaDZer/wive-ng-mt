@@ -573,4 +573,10 @@ typedef struct _RT_802_11_MAC_TABLE {
     RT_802_11_MAC_ENTRY Entry[MAX_NUMBER_OF_MAC];
 } RT_802_11_MAC_TABLE, *PRT_802_11_MAC_TABLE;
 
+typedef struct _PAIR_CHANNEL_FREQ_ENTRY
+{
+	unsigned long   lChannel;
+	unsigned long   lFreq;
+} PAIR_CHANNEL_FREQ_ENTRY, *PPAIR_CHANNEL_FREQ_ENTRY;
+
 #endif
