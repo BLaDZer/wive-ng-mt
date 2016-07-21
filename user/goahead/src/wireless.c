@@ -369,22 +369,14 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
 	unsigned int i;
-	int s, err = 0;
+	int err = 0;
 
 	RT_802_11_MAC_TABLE table = {0};
 
-	s = socket(AF_INET, SOCK_DGRAM, 0);
-	if (s < 0) {
-		syslog(LOG_ERR, "first wlan: ioctl sock failed, %s", __FUNCTION__);
-		err = -1;
-		goto out24;
-	}
-
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "ra0", &table, sizeof(table)) < 0)
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "ra0", &table, sizeof(table)) < 0)
 	{
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
-		close(s);
 		goto out24;
 	}
 
@@ -436,22 +428,13 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
-	close(s);
 out24:
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
-	s = socket(AF_INET, SOCK_DGRAM, 0);
-	if (s < 0) {
-		syslog(LOG_ERR, "second wlan: ioctl sock failed, %s", __FUNCTION__);
-		err = -1;
-		goto out5;
-	}
-
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, s, "rai0", &table, sizeof(table)) < 0)
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "rai0", &table, sizeof(table)) < 0)
 	{
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
-		close(s);
 		goto out5;
 	}
 
@@ -506,7 +489,6 @@ out24:
 			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
 	    websWrite(wp, T("</tr>"));
 	}
-	close(s);
 out5:
 #endif
 	return err;

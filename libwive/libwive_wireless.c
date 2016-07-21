@@ -13,9 +13,15 @@
 
 #include "oid.h"
 
-int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+int RtpQueryInformation(unsigned long QueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
+	int s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if (s < 0) {
+		syslog(LOG_ERR, "wlan: ioctl open sock failed, %s", __FUNCTION__);
+		return -1;
+	}
 
 	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
@@ -23,7 +29,14 @@ int RtpQueryInformation(unsigned long QueryCode, int socket_id, char *DeviceName
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 
-	return (ioctl(socket_id, QueryCode, &wrq));
+	if (ioctl(s, QueryCode, &wrq) < 0) {
+	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
+	    close(s);
+	    return -1;
+	}
+
+	close(s);
+	return 0;
 }
 
 int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
