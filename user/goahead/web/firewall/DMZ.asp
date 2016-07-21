@@ -58,10 +58,8 @@
 
 			function checkValues(form)
 			{
-				if (!ipaddr.IPv4.isValid(form.DMZIPAddress.value) && form.DMZEnabled.options.selectedIndex) {
-					alert(_("dmz invalid ip"));
+				if (form.DMZEnabled.options.selectedIndex && !validateIP(form.DMZIPAddress, true)) {
 					form.DMZIPAddress.focus();
-					form.DMZIPAddress.select();
 					return false;
 				}
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);

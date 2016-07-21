@@ -71,4 +71,6 @@
   <message msgid="content filter block host" msgstr="Block host" />
   <message msgid="content filter no rules" msgstr="No content filtering rules yet" />
   <message msgid="content filter not def" msgstr="Filtering value not specified" />
+  <message msgid="content filter wrong url" msgstr="Entered an invalid URL address (Permitted only characters, numbers and symbols /:-._)" />
+  <message msgid="content filter wrong host" msgstr="Entered an invalid Host address (Permitted only characters, numbers and symbols -._)" />
 </po>

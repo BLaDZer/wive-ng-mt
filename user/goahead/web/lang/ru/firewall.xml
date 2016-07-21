@@ -71,4 +71,6 @@
   <message msgid="content filter block host" msgstr="Блокирование хоста" />
   <message msgid="content filter no rules" msgstr="Нет правил фильтрации контента" />
   <message msgid="content filter not def" msgstr="Значение фильтрации не указано" />
+  <message msgid="content filter wrong url" msgstr="Введен недопустимый URL (Разрешены только буквы и символы /:.-_)" />
+  <message msgid="content filter wrong host" msgstr="Введен недопустимый адрес хоста (Разрешены только буквы и символы .-_)" />  
 </po>

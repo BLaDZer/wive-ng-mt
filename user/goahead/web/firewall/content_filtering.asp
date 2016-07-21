@@ -42,9 +42,9 @@
 				};
 				var urls      = '<% getCfgGeneral(1, "websURLFilters"); %>';
 				var hosts     = '<% getCfgGeneral(1, "websHostFilters"); %>';
-				var opmode    = '<% getCfgZero(1, "OperationMode"); %>';
+				var opMode    = '<% getCfgZero(1, "OperationMode"); %>';
 
-				displayElement('bridge_warning', opmode == '0'); // bridge mode
+				displayElement('bridge_warning', opMode == '0'); // bridge mode
 
 				addAllRules(urls, 'url');
 				addAllRules(hosts, 'host');
@@ -118,13 +118,25 @@
 
 			function addRule(form)
 			{
-				if (form.filterValue.value.match(/^\s*$/))
+				if (form.filterType.value == "url") 
 				{
-					alert(_("content filter not def"));
-					form.filterValue.focus();
-					return;
+					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9:\/._-]/gi)))
+					{
+						alert(_("content filter wrong url"));
+						form.filterValue.focus();
+						return;
+					}
 				}
-
+				else if (form.filterType.value == "host") 
+				{
+					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9._-]/gi)))
+					{
+						alert(_("content filter wrong host"));
+						form.filterValue.focus();
+						return;
+					}
+				}
+					
 				var row = [ form.filterType.value, form.filterValue.value ];
 
 				// Add a rule
@@ -149,7 +161,7 @@
 				{
 					entries = list.split(';');
 					for (var i=0; i<entries.length; i++)
-						if (!entries[i].match(/^\s*$/))
+						if (!entries[i].match(/[^A-ZА-Я0-9:\\._-]/gi))
 							filteringRules.push( [ type, entries[i] ] );
 				}
 			}

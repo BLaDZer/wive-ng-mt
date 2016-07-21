@@ -2202,7 +2202,7 @@
 8) goahead: add ipv6 dns options.<br>
 9) goahead: add use default password warnings.<br>
 10) goahead: move select band for apcli/wds to true places.<br>
-11) goahead: refactoring firewall page.<br>
+11) goahead: refactoring firewall/dmz page.<br>
 12) goahead: add lost buffer alocation checks (prevent null pointer dereference in come cases).<br>
 13) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
 14) nvram: add genstaticroutes and geniptablesrules commands for use from init instead of direct call from goahead (drop dependency routes/netfilters by goahead).<br>
