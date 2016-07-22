@@ -95,6 +95,7 @@ stop() {
 
 get_params() {
     modprobe -q tun
+    modprobe -q xt_coova
     eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
     PARLINE="--dhcpif $lan_if --radiustimeout=20 --radiusretry=10 --txqlen=1000 --rcvbuf=128 --sndbuf=128"
     for i in $PARAMS; do

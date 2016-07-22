@@ -280,10 +280,8 @@ forwardlimit() {
 	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
     	    $LOG "Add forward rules for chillispot"
-	    if [ "$CONFIG_NETFILTER_XT_MATCH_COOVA" != "" ]; then
-		iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
-		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
-	    fi
+	    iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
+	    iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
