@@ -1488,7 +1488,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 }
 
 #ifdef CONFIG_IPV6
-parameter_fetch_t service_ipv6_flags[] = 
+parameter_fetch_t service_ipv6_flags[] =
 {
 	{ T("dhcp6c_enable"), "IPv6Dhcpc", 2, T("off") },
 	{ T("ipv6_allow_forward"), "IPv6AllowForward", 2, T("off") },
@@ -1596,59 +1596,14 @@ out:
 	doSystem("internet.sh");
 }
 
-/*
- * arguments: ifname  - interface name
- *            if_addr - buffer to store ip address
- *            netmask - buffer to store prefix
- * description: fetch ipv6 address
- */
-int getIfIPv6(const char *ifname, char *if_addr, char *netmask)
-{
-	FILE *fp;
-	unsigned char ipv6[16];
-	int scope, prefix;
-	char address[INET6_ADDRSTRLEN] = "";
-	char dname[IFNAMSIZ] = "";
-
-	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
-
-	if (!strcmp(opmode, "0")) {
-		return -1;
-	}
-
-	if (NULL == (fp = fopen(_PATH_PROCNET_IPV6, "r"))) {
-		syslog(LOG_ERR, "getIPv6IntAddr: open /proc/net/if_inet6 error, %s", __FUNCTION__);
-		return -1;
-	}
-
-	while (19 == fscanf(fp, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s",
-		&ipv6[0], &ipv6[1], &ipv6[2], &ipv6[3], &ipv6[4], &ipv6[5], &ipv6[6], &ipv6[7], &ipv6[8], &ipv6[9],
-		&ipv6[10], &ipv6[11], &ipv6[12], &ipv6[13], &ipv6[14], &ipv6[15], &prefix, &scope, dname)) {
-		if (strcmp(ifname, dname) != 0) {
-			continue;
-		}
-		if (inet_ntop(AF_INET6, ipv6, address, sizeof(address)) == NULL) {
-			continue;
-		}
-		if (scope == IPV6_ADDR_GLOBAL) {
-			break;
-		}
-	}
-	fclose(fp);
-
-	if (strlen(address)<=0) {
-		return -255;
-	} else {
-		strcpy(if_addr, address);
-		sprintf(netmask, "%d", prefix);
-		return 0;
-	}
-}
-
 static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char address[INET6_ADDRSTRLEN] = "";
 	char lanif[IFNAMSIZ] = "";
 	char mask[16] = "";
+	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+
+	if (!strcmp(opmode, "0"))
+		return websWrite(wp, T(""));
 
 	strcpy(lanif, getLanIfName());
 
@@ -1666,6 +1621,9 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	FILE *fp;
 
 	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+
+	if (!strcmp(opmode, "0"))
+		return websWrite(wp, T(""));
 
 	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
 		if (!strcmp(opmode, "1")) {
