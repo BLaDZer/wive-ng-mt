@@ -710,8 +710,8 @@ void announce_802_3_packet(
 #if defined (CONFIG_WIFI_PKT_FWD)
 			BOOLEAN	 need_drop = FALSE;
 
-			ApCliLinkCoverRxPolicy(pAd, pPacket, &need_drop);
-			
+			ApCliLinkCoverRxPolicy(pAd, pNetPkt, &need_drop);
+
 			if (need_drop == TRUE) {
 				RELEASE_NDIS_PACKET(pAd, pRxPkt, NDIS_STATUS_FAILURE);
 				return;

@@ -662,10 +662,7 @@ PNDIS_PACKET ClonePacket(
 		pClonedPkt->data = pData;
 		pClonedPkt->len = DataSize;
 		SET_OS_PKT_DATATAIL(pClonedPkt, pClonedPkt->data, pClonedPkt->len);
-		//ASSERT(DataSize < 1530);
-        if(DataSize > 1530)
-                DBGPRINT(RT_DEBUG_TRACE,
-		        ("%s %d : DataSize > 1530 !\n",__FUNCTION__,__LINE__));
+		ASSERT(DataSize < 1530);
 	}
 	return pClonedPkt;
 }
@@ -707,12 +704,9 @@ void wlan_802_11_to_802_3_packet(
 	pOSPkt = RTPKT_TO_OSPKT(pRxPacket);
 
         pOSPkt->dev = pNetDev;
-
-	{
-		pOSPkt->data = pData;
-		pOSPkt->len = DataSize;
-		SET_OS_PKT_DATATAIL(pOSPkt, pOSPkt->data, pOSPkt->len);
-	}
+	pOSPkt->data = pData;
+	pOSPkt->len = DataSize;
+	SET_OS_PKT_DATATAIL(pOSPkt, pOSPkt->data, pOSPkt->len);
 
 	/* copy 802.3 header */
 #ifdef CONFIG_AP_SUPPORT

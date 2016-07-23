@@ -1713,8 +1713,10 @@ INT Set_Cli_Status_Show_Proc(
 				("\tTX Flow Statistics: Total Count = %lld, Failure Count = %lu, Total Bytes = %lu\n",
 				cli_info.tx_total_packets, cli_info.tx_fail_cnt, cli_info.tx_total_bytes));
 		}
-	} 
+	}
 	DBGPRINT(RT_DEBUG_TRACE, ("<==%s\n", __FUNCTION__));
+
+	return TRUE;
 }
 
 VOID Update_CliPktStats(
@@ -1931,6 +1933,8 @@ INT Set_Cli_Pkt_Stats_Enable_Proc(
             }
         }
     }
+
+    return TRUE;
 }
 
 INT Set_Cli_Pkt_Stats_TX_Show_Proc(
@@ -2452,9 +2456,9 @@ INT Smart_Mesh_Pkt_Report_Action(
 	skb_put(skb, frame_len);
 
 	/* Report to upper layer */
-	RtmpOsPktProtocolAssign(skb);
-	RtmpOsPktRcvHandle(skb);
-done:	
+	skb->protocol = eth_type_trans(skb, skb->dev);
+	netif_rx(skb);
+done:
 	return TRUE;
 }
 
