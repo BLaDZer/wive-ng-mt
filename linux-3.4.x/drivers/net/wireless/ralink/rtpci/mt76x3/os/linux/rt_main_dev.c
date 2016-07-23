@@ -41,6 +41,8 @@
 #endif
 
 MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Mediatek");
+MODULE_DESCRIPTION("MT7603 WiFi driver");
 
 /*---------------------------------------------------------------------*/
 /* Private Variables Used                                              */
