@@ -280,8 +280,10 @@ forwardlimit() {
 	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
     	    $LOG "Add forward rules for chillispot"
-	    iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
-	    iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
+	    if [ -d /sys/module/xt_coova ]; then
+		iptables -A FORWARD -o $lan_if -s $chilli_net -m coova --name chilli -j ACCEPT
+		iptables -A FORWARD -i $lan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
+	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
@@ -486,7 +488,6 @@ rwfsrulez() {
 }
 
 restart() {
-	get_param
 	stop
 	$LOG "Add netfiler rules"
 	#########################################DEFAULTRULES###################################
@@ -618,7 +619,6 @@ rwfsrulezv6() {
 
 restartv6() {
 	if [ -d /proc/sys/net/ipv6 ] && [ "$IPv6OpMode" != "0" ]; then
-	    get_param
 	    stopv6
 	    #########################################DEFAULTRULES###################################
 	    $LOG "V6: Add netfiler rules"
@@ -636,6 +636,14 @@ restartv6() {
 	    $LOG "Allow established/related in forward"
 	    ip6tables -A FORWARD $STATE_EST -j ACCEPT
 	    ############################################ENDRULES#######################################
+	fi
+}
+
+iptmodulesload() {
+	# this auto load needed iptables modules (do not remove this modules on the fly)
+	if [ -e /bin/chilli ] && [ "$chilli_enable" = "on" ] && [ ! -d /sys/module/xt_coova ]; then
+	    $LOG "Load xt_coova module for coova chilli daemon"
+	    modprobe -q xt_coova
 	fi
 }
 
@@ -740,6 +748,8 @@ stopv6() {
 
 case "$1" in
         start)
+            get_param
+            iptmodulesload
             restart
             restartv6
             ;;
@@ -750,6 +760,8 @@ case "$1" in
             ;;
 
         restart)
+            get_param
+            iptmodulesload
             restart
             restartv6
             ;;

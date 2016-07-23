@@ -149,9 +149,6 @@ load_nat_helpers() {
 load_apps_depended() {
     # do not remove this modules in the fly, may be apps crashed
     if [ -e /bin/chilli ] && [ "$chilli_enable" = "on" ]; then
-        if [ ! -d /sys/module/xt_coova ]; then
-	    modprobe -q xt_coova
-	fi
 	if [ ! -d /sys/module/tun ]; then
 	    modprobe -q tun
 	fi
