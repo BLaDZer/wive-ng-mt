@@ -364,6 +364,7 @@ typedef spinlock_t			OS_NDIS_SPIN_LOCK;
 
 #define OS_IRQ_LOCK(__lock, __irqflags)			\
 {													\
+    if (__irqflags);                            \
 	__irqflags = 0;									\
 	typecheck(unsigned long, __irqflags);                           \
 	spin_lock_irqsave((spinlock_t *)(__lock), __irqflags);			\
@@ -376,6 +377,7 @@ typedef spinlock_t			OS_NDIS_SPIN_LOCK;
 #else
 #define OS_IRQ_LOCK(__lock, __irqflags)			\
 {												\
+    if (__irqflags);                            \
 	__irqflags = 0;								\
 	typecheck(unsigned long, __irqflags);                           \
 	spin_lock_bh((spinlock_t *)(__lock));		\
@@ -866,19 +868,19 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 #ifdef RTMP_MAC_PCI
 #if defined(INF_TWINPASS) || defined(INF_DANUBE) || defined(INF_AR9) || defined(IKANOS_VX_1X0)
 #define RTMP_IO_FORCE_READ32(_A, _R, _pV)									\
-{																	\
+do{																	\
 	(*(_pV) = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
 	(*(_pV) = SWAP32(*((UINT32 *)(_pV))));                           \
-}
+}while(0)
 
 #define RTMP_IO_READ32(_A, _R, _pV)									\
-{																	\
+do{																	\
     if ((_A)->bPCIclkOff == FALSE)                                      \
     {                                                                   \
 	(*(_pV) = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
 	(*(_pV) = SWAP32(*((UINT32 *)(_pV))));                           \
     }                                                                   \
-}
+}while(0)
 
 #define RTMP_IO_READ8(_A, _R, _pV)									\
 {																	\
@@ -886,18 +888,18 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 }
 
 #define _RTMP_IO_WRITE32(_A, _R, _V)									\
-{																	\
+do{																	\
     if ((_A)->bPCIclkOff == FALSE)                                      \
     {                                                                   \
 	UINT32	_Val;													\
 	_Val = SWAP32(_V);												\
 	writel(_Val, (void *)((_A)->CSRBaseAddress + (_R)));			\
     }                                                                   \
-}
+}while(0)
 
 #ifdef INF_VR9
 #define RTMP_IO_WRITE8(_A, _R, _V)            \
-{                    \
+do{                    \
         ULONG Val;                \
         UCHAR _i;                \
 	UINT32 _Val;		\
@@ -908,7 +910,7 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
         Val = Val | ((ULONG)(_V) << ((_i)*8));         \
 	Val = SWAP32(Val);				\
         writel((Val), (void *)((_A)->CSRBaseAddress + ((_R) - _i)));    \
-}
+}while(0)
 #else
 #define RTMP_IO_WRITE8(_A, _R, _V)									\
 {																	\
@@ -922,14 +924,14 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 }
 #else
 #define RTMP_IO_READ32(_A, _R, _pV)								\
-{																\
+do{																\
     if ((_A)->bPCIclkOff == FALSE)                                  \
     {                                                               \
 		(*(_pV) = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
     }                                                               \
     else															\
 		*(_pV) = 0;													\
-}
+}while(0)
 
 #define RTMP_IO_FORCE_READ32(_A, _R, _pV)							\
 {																	\
@@ -938,14 +940,14 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 
 #if defined(BRCM_6358) || defined(RALINK_2880) || defined(RALINK_3052) || defined(RALINK_2883) || defined(RTMP_RBUS_SUPPORT)
 #define RTMP_IO_READ8(_A, _R, _V)            \
-{                    \
+do{                    \
 	ULONG Val;                \
 	UCHAR _i;                \
 	_i = ((_R) & 0x3);             \
 	Val = readl((void *)((_A)->CSRBaseAddress + ((_R) - _i)));   \
 	Val = (Val >> ((_i)*8)) & (0x000000ff);         \
 	*((PUCHAR)_V) = (UCHAR) Val;				\
-}
+}while(0)
 #else
 #define RTMP_IO_READ8(_A, _R, _pV)								\
 {																\
@@ -981,7 +983,7 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 
 #if defined(BRCM_6358) || defined(RALINK_2880) || defined(RALINK_3052) || defined(RALINK_2883) || defined(RTMP_RBUS_SUPPORT)
 #define RTMP_IO_WRITE8(_A, _R, _V)            \
-{                    \
+do{                    \
 	ULONG Val;                \
 	UCHAR _i;                \
 	_i = ((_R) & 0x3);             \
@@ -989,7 +991,7 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 	Val = Val & (~(0x000000ff << ((_i)*8)));         \
 	Val = Val | ((ULONG)(_V) << ((_i)*8));         \
 	writel((Val), (void *)((_A)->CSRBaseAddress + ((_R) - _i)));    \
-}
+}while(0)
 #else
 #define RTMP_IO_WRITE8(_A, _R, _V)							\
 {															\
