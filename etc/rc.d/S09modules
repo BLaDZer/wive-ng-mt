@@ -21,6 +21,9 @@ start() {
 	$LOG "Load conntrack helpers modules."
 	load_nat_helpers
 
+	$LOG "Load application depended modules."
+	load_apps_depended
+
 	$LOG "Prepare wifi config."
 	gen_wifi_config
 
@@ -139,6 +142,18 @@ load_nat_helpers() {
 	else
 	    rmmod nf_nat_rtsp > /dev/null 2>&1
 	    rmmod nf_conntrack_rtsp > /dev/null 2>&1
+	fi
+    fi
+}
+
+load_apps_depended() {
+    # do not remove this modules in the fly, may be apps crashed
+    if [ -e /bin/chilli ] && [ "$chilli_enable" = "on" ]; then
+        if [ ! -d /sys/module/xt_coova ]; then
+	    modprobe -q xt_coova
+	fi
+	if [ ! -d /sys/module/tun ]; then
+	    modprobe -q tun
 	fi
     fi
 }
