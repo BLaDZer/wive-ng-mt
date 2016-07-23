@@ -326,10 +326,6 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 {
 	struct sk_buff *pPacket;
 
-
-	ASSERT(pData);
-	ASSERT(DataLen);
-
 	pPacket = dev_alloc_skb(HeaderLen + DataLen + RTMP_PKT_TAIL_PADDING);
 	if (pPacket == NULL) {
 		*ppPacket = NULL;
@@ -341,12 +337,12 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 	MEM_DBG_PKT_ALLOC_INC(pPacket);
 
 	/* Clone the frame content and update the length of packet */
-	if (HeaderLen > 0)
+	if ((HeaderLen > 0) && (pHeader != NULL))
 		NdisMoveMemory(pPacket->data, pHeader, HeaderLen);
-	if (DataLen > 0)
+
+	if ((DataLen > 0) && (pData != NULL))
 		NdisMoveMemory(pPacket->data + HeaderLen, pData, DataLen);
 	skb_put(pPacket, HeaderLen + DataLen);
-/* printk(KERN_ERR "%s : pPacket = %p, len = %d\n", __FUNCTION__, pPacket, GET_OS_PKT_LEN(pPacket));*/
 
 	*ppPacket = (PNDIS_PACKET)pPacket;
 

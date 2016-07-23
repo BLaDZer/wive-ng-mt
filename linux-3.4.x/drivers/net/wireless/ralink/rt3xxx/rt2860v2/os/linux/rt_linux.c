@@ -350,8 +350,6 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 	IN UINT DataLen)
 {
 	PNDIS_PACKET pPacket;
-	ASSERT(pData);
-	ASSERT(DataLen);
 
 	/* 1. Allocate a packet */
 	pPacket = (PNDIS_PACKET) dev_alloc_skb(HeaderLen + DataLen + RTMP_PKT_TAIL_PADDING);
@@ -367,17 +365,15 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 	MEM_DBG_PKT_ALLOC_INC(pPacket);
 
 	/* 2. clone the frame content */
-	if (HeaderLen > 0)
+	if ((HeaderLen > 0) && (pHeader != NULL))
 		NdisMoveMemory(GET_OS_PKT_DATAPTR(pPacket), pHeader, HeaderLen);
-	if (DataLen > 0)
+	if ((DataLen > 0) && (pData != NULL))
 		NdisMoveMemory(GET_OS_PKT_DATAPTR(pPacket) + HeaderLen, pData,
 			       DataLen);
 
 	/* 3. update length of packet */
 	skb_put(GET_OS_PKT_TYPE(pPacket), HeaderLen + DataLen);
 
-/*	printk(KERN_ERR "%s : pPacket = %p, len = %d\n", __FUNCTION__,
-	pPacket, GET_OS_PKT_LEN(pPacket));*/
 	*ppPacket = pPacket;
 	return NDIS_STATUS_SUCCESS;
 }
