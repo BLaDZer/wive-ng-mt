@@ -433,9 +433,9 @@ USHORT RtmpPCI_WriteMultiTxResource(
 		else if (pTxBlk->TxFrameType == TX_RALINK_FRAME)
 			/*hwHdrLen = ROUND_UP(pTxBlk->MpduHeaderLen-ARALINK_HEADER_LEN, 4)+ARALINK_HEADER_LEN;*/
 			hwHdrLen = pTxBlk->MpduHeaderLen - ARALINK_HEADER_LEN + pTxBlk->HdrPadLen + ARALINK_HEADER_LEN;
-
-		/*hwHdrLen = ROUND_UP(pTxBlk->MpduHeaderLen, 4);*/
-		hwHdrLen = pTxBlk->MpduHeaderLen + pTxBlk->HdrPadLen;
+		else
+			/*hwHdrLen = ROUND_UP(pTxBlk->MpduHeaderLen, 4);*/
+			hwHdrLen = pTxBlk->MpduHeaderLen + pTxBlk->HdrPadLen;
 
 		firstDMALen = TXWISize + hwHdrLen;
 	}

@@ -2215,28 +2215,29 @@
 21) kernel: ralink_wifi: fix potentional crash in AllocateNdisPacket.<br>
 22) kernel: ralink_wifi: prevent new gcc overoptimization.<br>
 23) kernel: ralink_wifi: lost zero tx_block RxRing1DoneInterruptHandle.<br>
-24) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-25) kernel: mips: fix siginfo.h to use strict posix types.<br>
-26) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-27) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-28) kernel: mips: prevent hitting do_notify_resume() with !user_mode(regs).<br>
-29) kernel: mips: fix harmlessly missing else statement.<br>
-30) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-31) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-32) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-33) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-34) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-35) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-36) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-37) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-38) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-39) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-40) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-41) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-42) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-43) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-44) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-45) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+24) kernel: ralink_wifi: mt76x2: fix hwHdrLen calculation regression after china refactoring.<br>
+25) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+26) kernel: mips: fix siginfo.h to use strict posix types.<br>
+27) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+28) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+29) kernel: mips: prevent hitting do_notify_resume() with !user_mode(regs).<br>
+30) kernel: mips: fix harmlessly missing else statement.<br>
+31) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+32) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+33) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+34) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+35) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+36) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+37) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+38) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+39) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+40) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+41) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+42) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+43) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+44) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+45) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+46) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
