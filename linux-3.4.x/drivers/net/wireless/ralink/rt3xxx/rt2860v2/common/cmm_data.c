@@ -3632,8 +3632,15 @@ VOID MacTableReset(
 
 	for (i=1; i<MaxWcidNum; i++)
 	{
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+		/* Clear TXWI ack in Tx Ring*/
+		ClearTxRingClientAck(pAd, &pAd->MacTab.Content[i]);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+
 		if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[i]))
-	   {
+		{
 	   		/* Delete a entry via WCID */
 
 			/*MacTableDeleteEntry(pAd, i, pAd->MacTab.Content[i].Addr);*/
@@ -3643,10 +3650,10 @@ VOID MacTableReset(
 			IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
 			{
 				RTMPReleaseTimer(&pAd->MacTab.Content[i].WPA_Authenticator.MsgRetryTimer, &Cancelled);
-            }
+        		}
 #endif /* ADHOC_WPA2PSK_SUPPORT */
 #endif /* CONFIG_STA_SUPPORT */
-            pAd->MacTab.Content[i].EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
+        		 pAd->MacTab.Content[i].EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
 
 #ifdef CONFIG_AP_SUPPORT
 			IF_DEV_CONFIG_OPMODE_ON_AP(pAd)

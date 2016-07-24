@@ -1399,6 +1399,12 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 
 		if (bDisconnectSta)
 		{
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+			/* Clear TXWI ack in Tx Ring*/
+			ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
 

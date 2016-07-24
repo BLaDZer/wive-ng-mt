@@ -931,8 +931,16 @@ VOID MacTableReset(
 
 	for (i=1; i<MaxWcidNum; i++)
 	{
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+		/* Clear TXWI ack in Tx Ring*/
+		ClearTxRingClientAck(pAd, &pAd->MacTab.Content[i]);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+
 		if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[i]))
-	   {
+		{
 	   		/* Delete a entry via WCID */
 
 			/*MacTableDeleteEntry(pAd, i, pAd->MacTab.Content[i].Addr);*/
@@ -943,7 +951,7 @@ VOID MacTableReset(
 				RTMPReleaseTimer(&pAd->MacTab.Content[i].EnqueueStartForPSKTimer, &Cancelled);
 			}
 
-            pAd->MacTab.Content[i].EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
+        		pAd->MacTab.Content[i].EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
 
 #ifdef CONFIG_AP_SUPPORT
 			IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
@@ -951,6 +959,8 @@ VOID MacTableReset(
 				/* Before reset MacTable, send disassociation packet to client.*/
 				if (pAd->MacTab.Content[i].Sst == SST_ASSOC)
 				{
+
+
 					/*  send out a De-authentication request frame*/
 					NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
 					if (NStatus != NDIS_STATUS_SUCCESS)

@@ -9039,12 +9039,17 @@ VOID PeerDelBATxAdaptTimeOut(
 INT set_rf(RTMP_ADAPTER *pAd, PSTRING arg);
 #endif /* RLT_RF */
 
-
-#endif  /* __RTMP_H__ */
-
 #ifdef MT76x0
 INT Set_DoTemperatureSensor_Proc(
 	IN RTMP_ADAPTER		*pAd,
 	IN PSTRING			arg);
 #endif /* MT76x0 */
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+
+#endif  /* __RTMP_H__ */
 

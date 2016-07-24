@@ -1726,9 +1726,8 @@ VOID NICResetFromError(RTMP_ADAPTER *pAd)
 
 	========================================================================
 */
-static VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
+VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
-#ifdef RTMP_MAC
 	INT index;
 	USHORT TxIdx;
 	RTMP_TX_RING *pTxRing;
@@ -1740,7 +1739,6 @@ static VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	TXWI_STRUC *pDestTxWI;
 	TXWI_STRUC	TxWI;
 #endif /* RT_BIG_ENDIAN */
-#endif /* RTMP_MAC */
 #ifdef RT_BIG_ENDIAN
 	UINT8 TXWISize;
 #endif /* RT_BIG_ENDIAN */
@@ -1751,14 +1749,6 @@ static VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 #ifdef RT_BIG_ENDIAN
 	TXWISize = pAd->chipCap.TXWISize;
 #endif /* RT_BIG_ENDIAN */
-
-#ifdef RLT_MAC
-	if (pAd->chipCap.hif_type == HIF_RLT) {
-		DBGPRINT(RT_DEBUG_OFF, ("%s(): TBD for this function!\n", __FUNCTION__));
-	}
-#endif /* RLT_MAC */
-#ifdef RTMP_MAC
-	if (pAd->chipCap.hif_type == HIF_RTMP) {
 		for (index = 3; index >= 0; index--)
 		{
 			pTxRing = &pAd->TxRing[index];
@@ -1783,10 +1773,14 @@ static VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 #else
 					 pTxWI = (TXWI_STRUC *)pTxRing->Cell[TxIdx].DmaBuf.AllocVa;
 #endif /* RT_BIG_ENDIAN */
-
-					if (pTxWI->TXWI_O.wcid == pEntry->wcid)
-						pTxWI->TXWI_O.ACK = FALSE;
-
+#ifdef RTMP_MAC
+					    if (pAd->chipCap.hif_type == HIF_RTMP && pTxWI->TXWI_O.wcid == pEntry->wcid)
+						    pTxWI->TXWI_O.ACK = FALSE;
+#endif /* RTMP_MAC */
+#ifdef RLT_MAC
+					    if (pAd->chipCap.hif_type == HIF_RLT && pTxWI->TXWI_N.wcid == pEntry->wcid)
+						    pTxWI->TXWI_N.ACK = FALSE;
+#endif /* RTL_MAC */
 #ifdef RT_BIG_ENDIAN
 					RTMPWIEndianChange(pAd, (PUCHAR)pTxWI, TYPE_TXWI);
 					NdisMoveMemory((PUCHAR)pDestTxWI, (PUCHAR)pTxWI, TXWISize);
@@ -1794,8 +1788,6 @@ static VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 				}
 			}
 		}
-	}
-#endif /* RTMP_MAC */
 }
 #endif /* RTMP_MAC_PCI */
 

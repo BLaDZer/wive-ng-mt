@@ -11172,6 +11172,11 @@ BOOLEAN Monitor_Close(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 #endif /* CONFIG_SNIFFER_SUPPORT */
 int gen_radiotap_header(RTMP_ADAPTER *pAd,RX_BLK *pRxBlk);
 
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 
 #endif  /* __RTMP_H__ */
 

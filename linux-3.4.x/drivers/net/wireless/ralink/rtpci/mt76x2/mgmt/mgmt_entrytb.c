@@ -1292,6 +1292,12 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 	for (i=1; i < MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		pMacEntry = &pAd->MacTab.Content[i];
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+		/* Clear TXWI ack in Tx Ring*/
+		ClearTxRingClientAck(pAd, pMacEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 		if (IS_ENTRY_CLIENT(pMacEntry))
 		{
 			RTMPReleaseTimer(&pMacEntry->EnqueueStartForPSKTimer, &Cancelled);
@@ -1311,6 +1317,7 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 				/* Before reset MacTable, send disassociation packet to client.*/
 				if (pMacEntry->Sst == SST_ASSOC)
 				{
+
 					/*  send out a De-authentication request frame*/
 					NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
 					if (NStatus != NDIS_STATUS_SUCCESS)

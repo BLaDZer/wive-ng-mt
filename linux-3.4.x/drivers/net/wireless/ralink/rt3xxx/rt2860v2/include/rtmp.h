@@ -10120,5 +10120,12 @@ VOID Peer_DelBA_Tx_AdaptTimeOut(
         IN PVOID SystemSpecific2,
         IN PVOID SystemSpecific3);   
 #endif /* PEER_DELBA_TX_ADAPT */
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+
 #endif  /* __RTMP_H__ */
 

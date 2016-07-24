@@ -148,10 +148,14 @@ static VOID QBSS_LoadAlarm(
 
 			if (bDisconnectSta)
 			{
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+				/* Clear TXWI ack in Tx Ring*/
+				ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 				/* send wireless event - for ageout */
-				RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
-
-				{
+				RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0);
 					PUCHAR      pOutBuffer = NULL;
 					NDIS_STATUS NStatus;
 					ULONG       FrameLen = 0;
@@ -177,7 +181,6 @@ static VOID QBSS_LoadAlarm(
 			    	                  END_OF_ARGS);
 			    	MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 			    	MlmeFreeMemory(pAd, pOutBuffer);
-				}
 
 				DBGPRINT(RT_DEBUG_TRACE, ("qbss> Alarm! Deauth the station "
 						"%02x:%02x:%02x:%02x:%02x:%02x\n",

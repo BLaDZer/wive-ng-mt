@@ -4580,6 +4580,12 @@ VOID P2PMacTableMaintenance(
 
 		if (bDisconnectSta)
 		{
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+			/* Clear TXWI ack in Tx Ring*/
+			ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout  */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
 
@@ -4847,6 +4853,12 @@ VOID P2PMacTableReset(
 	for (i = FirstWcid; i < MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		pEntry = &pAd->MacTab.Content[i];
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+		/* Clear TXWI ack in Tx Ring*/
+		ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 
 		if (IS_ENTRY_CLIENT(pEntry))
 		{
