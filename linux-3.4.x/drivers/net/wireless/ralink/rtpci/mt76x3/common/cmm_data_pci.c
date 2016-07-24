@@ -513,8 +513,8 @@ USHORT RtmpPCI_WriteMultiTxResource(
 			hwHdrLen = pTxBlk->MpduHeaderLen - AMSDU_SUBHEAD_LEN + pTxBlk->HdrPadLen + AMSDU_SUBHEAD_LEN;
 		else if (pTxBlk->TxFrameType == TX_RALINK_FRAME)
 			hwHdrLen = pTxBlk->MpduHeaderLen - ARALINK_HEADER_LEN + pTxBlk->HdrPadLen + ARALINK_HEADER_LEN;
-
-		hwHdrLen = pTxBlk->MpduHeaderLen + pTxBlk->HdrPadLen;
+		else
+			hwHdrLen = pTxBlk->MpduHeaderLen + pTxBlk->HdrPadLen;
 
 		firstDMALen = pAd->chipCap.TXWISize + hwHdrLen;
 	}
