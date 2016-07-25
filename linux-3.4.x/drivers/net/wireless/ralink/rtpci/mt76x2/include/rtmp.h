@@ -1929,7 +1929,7 @@ typedef struct _CHANNEL_SWITCH{
 /* configuration common to OPMODE_AP as well as OPMODE_STA */
 typedef struct _COMMON_CONFIG {
 	BOOLEAN bCountryFlag;
-	UCHAR CountryCode[3];
+	UCHAR CountryCode[4];
 #ifdef EXT_BUILD_CHANNEL_LIST
 	UCHAR Geography;
 	UCHAR DfsType;
@@ -2674,7 +2674,7 @@ typedef struct _STA_ADMIN_CONFIG {
 
 #ifdef EXT_BUILD_CHANNEL_LIST
 	UCHAR IEEE80211dClientMode;
-	UCHAR StaOriCountryCode[3];
+	UCHAR StaOriCountryCode[4];
 	UCHAR StaOriGeography;
 #endif /* EXT_BUILD_CHANNEL_LIST */
 

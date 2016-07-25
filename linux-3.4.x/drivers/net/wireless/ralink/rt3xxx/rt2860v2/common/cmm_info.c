@@ -1256,7 +1256,8 @@ INT Set_ExtCountryCode_Proc(
 	}
 	else
 	{
-		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		NdisZeroMemory(pAd->CommonCfg.CountryCode,
+				sizeof(pAd->CommonCfg.CountryCode));
 		pAd->CommonCfg.bCountryFlag = FALSE;
 	}	
 

@@ -1436,8 +1436,6 @@ typedef struct _bcn_ie_list {
 	VHT_OP_IE vht_op_ie;
 	UCHAR vht_cap_len;
 	UCHAR vht_op_len;
-	OPERATING_MODE operating_mode;
-	UCHAR vht_op_mode_len;
 #endif /* DOT11_VHT_AC */
 #ifdef SMART_MESH
 	UCHAR VIEFlag;       		/* Store the flag byte inside VIE*/	

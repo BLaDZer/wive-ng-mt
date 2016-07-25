@@ -4540,7 +4540,8 @@ INT Set_CountryCode_Proc(
 	}
 	else
 	{
-		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		NdisZeroMemory(pAd->CommonCfg.CountryCode,
+				sizeof(pAd->CommonCfg.CountryCode));
 		pAd->CommonCfg.bCountryFlag = FALSE;
 	}	
 		
@@ -4643,7 +4644,7 @@ INT Set_CountryString_Proc(
 			{
 				if (allCountry[index].SupportGBand == TRUE)
 				{
-					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+					NdisZeroMemory(pAd->CommonCfg.CountryCode, sizeof(pAd->CommonCfg.CountryCode));
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
 					pAd->CommonCfg.CountryCode[2] = ' ';
 
@@ -4675,7 +4676,7 @@ INT Set_CountryString_Proc(
 			{
 				if (allCountry[index].SupportABand == TRUE)
 				{
-					NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+					NdisZeroMemory(pAd->CommonCfg.CountryCode, sizeof(pAd->CommonCfg.CountryCode));
 					NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
 					pAd->CommonCfg.CountryCode[2] = ' ';
 

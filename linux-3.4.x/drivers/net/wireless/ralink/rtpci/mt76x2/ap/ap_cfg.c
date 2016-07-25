@@ -6450,7 +6450,8 @@ INT Set_CountryCode_Proc(
 	}
 	else
 	{
-		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		NdisZeroMemory(pAd->CommonCfg.CountryCode,
+				sizeof(pAd->CommonCfg.CountryCode));
 		pAd->CommonCfg.bCountryFlag = FALSE;
 	}	
 		
@@ -6585,7 +6586,7 @@ INT Set_CountryString_Proc(
 
 	if (success == TRUE)
 	{
-		NdisZeroMemory(pAd->CommonCfg.CountryCode, 3);
+		NdisZeroMemory(pAd->CommonCfg.CountryCode, sizeof(pAd->CommonCfg.CountryCode));
 		NdisMoveMemory(pAd->CommonCfg.CountryCode, allCountry[index].IsoName, 2);
 		pAd->CommonCfg.CountryCode[2] = ' ';
 		/* After Set ChGeography need invoke SSID change procedural again for Beacon update. */
