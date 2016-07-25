@@ -3394,6 +3394,7 @@ BOOLEAN RTMPCheckEtherType(
 	return TRUE;
 }
 
+#ifdef RTMP_RXPACKET_CLASSIFY
 VOID RTMP_RxPacketClassify(
 	IN RTMP_ADAPTER *pAd,
 	IN RX_BLK		*pRxBlk,
@@ -3443,6 +3444,7 @@ VOID RTMP_RxPacketClassify(
 		}
 	}
 }
+#endif
 
 VOID Update_Rssi_Sample(
 	IN RTMP_ADAPTER *pAd,

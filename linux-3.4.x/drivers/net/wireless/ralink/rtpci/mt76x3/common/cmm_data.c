@@ -4033,6 +4033,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():failed for VLAN_ID(vlan_id=%d, VLAN_VID=%d)\n",
 	return TRUE;
 }
 
+#ifdef RTMP_RXPACKET_CLASSIFY
 VOID RTMP_RxPacketClassify(
 	IN RTMP_ADAPTER *pAd,
 	IN RX_BLK		*pRxBlk,
@@ -4066,8 +4067,7 @@ VOID RTMP_RxPacketClassify(
 		}
 	}
 }
-
-
+#endif
 
 #ifdef DBG
 BOOLEAN CheckICMPPacket(RTMP_ADAPTER *pAd, UCHAR *pSrcBuf, UINT8 Direction)

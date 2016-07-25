@@ -4721,11 +4721,10 @@ VOID APRxDataFrameAnnounce(
 					return;
 				}
 #endif /* CONFIG_HOTSPOT */
-
+#ifdef RTMP_RXPACKET_CLASSIFY
 		if (pEntry && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
 			RTMP_RxPacketClassify(pAd, pRxBlk, pEntry);
-		
-
+#endif
 #ifdef STATS_COUNT_SUPPORT
 		if (pEntry
 			&& (IS_ENTRY_CLIENT(pEntry))

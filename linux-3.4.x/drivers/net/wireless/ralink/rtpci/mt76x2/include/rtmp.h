@@ -6966,10 +6966,12 @@ BOOLEAN RTMPCheckEtherType(
 	OUT PUCHAR pUserPriority,
 	OUT PUCHAR pQueIdx);
 
+#ifdef RTMP_RXPACKET_CLASSIFY
 VOID RTMP_RxPacketClassify(
 	IN RTMP_ADAPTER *pAd,
 	IN RX_BLK *pRxBlk,
 	IN MAC_TABLE_ENTRY *pEntry);
+#endif
 
 VOID RTMPCckBbpTuning(
 	IN	RTMP_ADAPTER *pAd, 
