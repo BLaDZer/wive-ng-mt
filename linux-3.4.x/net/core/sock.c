@@ -1685,40 +1685,39 @@ static void __release_sock(struct sock *sk)
 	__releases(&sk->sk_lock.slock)
 	__acquires(&sk->sk_lock.slock)
 {
-	struct sk_buff *skb, *next;
+	struct sk_buff *skb = sk->sk_backlog.head;
 
-	while ((skb = sk->sk_backlog.head) != NULL) {
+	do {
 		sk->sk_backlog.head = sk->sk_backlog.tail = NULL;
-
-		spin_unlock_bh(&sk->sk_lock.slock);
+		bh_unlock_sock(sk);
 
 		do {
-			next = skb->next;
+			struct sk_buff *next = skb->next;
+
 			prefetch(next);
 			WARN_ON_ONCE(skb_dst_is_noref(skb));
 			skb->next = NULL;
 			sk_backlog_rcv(sk, skb);
 
-			cond_resched();
+			/*
+			 * We are in process context here with softirqs
+			 * disabled, use cond_resched_softirq() to preempt.
+			 * This is safe to do because we've taken the backlog
+			 * queue private:
+			 */
+			cond_resched_softirq();
 
 			skb = next;
 		} while (skb != NULL);
 
-		spin_lock_bh(&sk->sk_lock.slock);
-	}
+		bh_lock_sock(sk);
+	} while ((skb = sk->sk_backlog.head) != NULL);
 
 	/*
 	 * Doing the zeroing here guarantee we can not loop forever
 	 * while a wild producer attempts to flood us.
 	 */
 	sk->sk_backlog.len = 0;
-}
-
-void __sk_flush_backlog(struct sock *sk)
-{
-	spin_lock_bh(&sk->sk_lock.slock);
-	__release_sock(sk);
-	spin_unlock_bh(&sk->sk_lock.slock);
 }
 
 /**

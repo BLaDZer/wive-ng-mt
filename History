@@ -2181,14 +2181,11 @@
 93) kernel: usb: net: cdc_ncm: update datagram size after changing mtu.<br>
 94) kernel: usb: core: fix crash on unlink urb.<br>
 95) kernel: usb: retry reset if a device times out.<br>
-96) kernel: net: do not block BH while processing socket backlog.<br>
-97) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-98) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-99) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
-100) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
-101) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
-102) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
-103) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
+96) kernel: net: ipv4: don't do expensive useless work during inetdev destroy.<br>
+97) kernel: net: bridge: fix incorrect re-injection of STP packets.<br>
+98) kernel: net: ethtool: use kcalloc instead of kmalloc for ethtool_get_strings.<br>
+99) kernel: net: netfilter: x_tables: don't move to non-existent next rule (CVE-2016-4997).<br>
+100) kernel: net: ipmr/ip6mr: Initialize the last assert time of mfc entries.<br>
 <br>
 <br>
 <b>4.5.x</b><br>
