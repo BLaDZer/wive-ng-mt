@@ -535,19 +535,19 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 #ifdef RTMP_MAC_PCI
 #if defined(INF_TWINPASS) || defined(INF_DANUBE) || defined(INF_AR9) || defined(IKANOS_VX_1X0)
 #define RTMP_IO_FORCE_READ32(_A, _R, _pV)									\
-{																	\
+do{																	\
 	(*_pV = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
 	(*_pV = SWAP32(*((UINT32 *)(_pV))));                           \
-}
+}while(0)
 
 #define RTMP_IO_READ32(_A, _R, _pV)									\
-{																	\
+do{																	\
     if ((_A)->bPCIclkOff == FALSE)                                      \
     {                                                                   \
 	(*_pV = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
 	(*_pV = SWAP32(*((UINT32 *)(_pV))));                           \
     }                                                                   \
-}
+}while(0)
 
 #define RTMP_IO_READ8(_A, _R, _pV)									\
 {																	\
@@ -555,14 +555,13 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 }
 
 #define RTMP_IO_WRITE32(_A, _R, _V)									\
-{																	\
+do{ \
     if ((_A)->bPCIclkOff == FALSE)                                      \
     {                                                                   \
-	UINT32	_Val;													\
-	_Val = SWAP32(_V);												\
+		UINT32 _Val = SWAP32(_V);\
 	writel(_Val, (void *)((_A)->CSRBaseAddress + (_R)));			\
     }                                                                   \
-}
+}while(0)
 
 #ifdef INF_VR9
 #define RTMP_IO_WRITE8(_A, _R, _V)            \
@@ -596,14 +595,14 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 }
 
 #define RTMP_IO_READ32(_A, _R, _pV)								\
-{																\
+do{																\
     if ((_A)->bPCIclkOff == FALSE)                                  \
     {                                                               \
 		(*_pV = readl((void *)((_A)->CSRBaseAddress + (_R))));			\
     }                                                               \
     else															\
 		*_pV = 0;													\
-}
+}while(0)
 
 #define RTMP_IO_FORCE_READ32(_A, _R, _pV)							\
 {																	\
@@ -619,7 +618,6 @@ void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, i
 {																				\
     if ((_A)->bPCIclkOff == FALSE)                                  \
     {                                                               \
-    	/*if ((_R) != 0x404)*/ /* TODO:shiang-6590, depends on sw porting guide, don't acccess it now */\
 	writel((_V), (void *)((_A)->CSRBaseAddress + (_R)));								\
     }                                                               \
 }
