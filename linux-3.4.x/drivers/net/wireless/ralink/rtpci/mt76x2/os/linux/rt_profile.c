@@ -1276,6 +1276,13 @@ int RTMPSendPackets(
 
 	ASSERT(wdev->sys_handle);
 	pAd = (RTMP_ADAPTER *)wdev->sys_handle;
+
+	if(pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s(): pAd is NULL!\n", __FUNCTION__));
+		return 0;
+	}
+
 	INC_COUNTER64(pAd->WlanCounters.TransmitCountFrmOs);
 #ifdef RTMP_MAC_PCI
 	/* Update timer to flush tx ring buffer */

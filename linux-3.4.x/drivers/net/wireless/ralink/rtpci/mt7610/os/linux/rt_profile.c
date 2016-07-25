@@ -620,6 +620,12 @@ int	RTMPSendPackets(
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)dev_hnd;
 	PNDIS_PACKET pPacket = ppPacketArray[0];
 
+	if(pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s(): pAd is NULL!\n", __FUNCTION__));
+		return 0;
+	}
+
 	INC_COUNTER64(pAd->WlanCounters.TransmitCountFrmOs);
 
 #ifdef RTMP_MAC_PCI

@@ -763,6 +763,12 @@ int	RTMPSendPackets(
 	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)MiniportAdapterContext;
 	PNDIS_PACKET pPacket = ppPacketArray[0];
 
+	if(pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s(): pAd is NULL!\n", __FUNCTION__));
+		return 0;
+	}
+
 	INC_COUNTER64(pAd->WlanCounters.TransmitCountFrmOs);
 
 #ifdef RTMP_MAC_PCI
