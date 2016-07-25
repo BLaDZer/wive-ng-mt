@@ -2019,6 +2019,7 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 		}
 		else
 		{
+			// TODO: shiang-usw, check this, original code is use pTxBlk->HeaderBuf[0]
 			pHeaderBufPtr = &pTxBlk->HeaderBuf[TXINFO_SIZE];
 			padding = ROUND_UP(LENGTH_AMSDU_SUBFRAMEHEAD + subFramePayloadLen, 4) - (LENGTH_AMSDU_SUBFRAMEHEAD + subFramePayloadLen);
 			NdisZeroMemory(pHeaderBufPtr, padding + LENGTH_AMSDU_SUBFRAMEHEAD);

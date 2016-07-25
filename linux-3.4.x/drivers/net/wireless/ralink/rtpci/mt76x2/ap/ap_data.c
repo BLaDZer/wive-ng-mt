@@ -2148,6 +2148,7 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 		}
 		else
 		{
+			// TODO: shiang-usw, check this, original code is use pTxBlk->HeaderBuf[0]
 			pHeaderBufPtr = &pTxBlk->HeaderBuf[TXINFO_SIZE];
 			padding = ROUND_UP(AMSDU_SUBHEAD_LEN + subFramePayloadLen, 4) - (AMSDU_SUBHEAD_LEN + subFramePayloadLen);
 			NdisZeroMemory(pHeaderBufPtr, padding + AMSDU_SUBHEAD_LEN);

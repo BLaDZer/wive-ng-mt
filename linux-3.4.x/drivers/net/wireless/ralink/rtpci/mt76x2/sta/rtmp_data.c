@@ -3327,12 +3327,13 @@ VOID STA_AMSDU_Frame_Tx(
 			/* NOTE: TxWI->TxWIMPDUByteCnt will be updated after final frame was handled. */
 			RTMPWriteTxWI_Data(pAd, (TXWI_STRUC *) (&pTxBlk->HeaderBuf[TXINFO_SIZE]), pTxBlk);
 		} else {
-			pHeaderBufPtr = &pTxBlk->HeaderBuf[0];
-			padding = ROUND_UP(AMSDU_SUBHEAD_LEN + subFramePayloadLen, 4) - 
-								(AMSDU_SUBHEAD_LEN + subFramePayloadLen);
+			// TODO: shiang-usw, check this, original code is use pTxBlk->HeaderBuf[0]
+			pHeaderBufPtr = &pTxBlk->HeaderBuf[TXINFO_SIZE];
+			padding = ROUND_UP(AMSDU_SUBHEAD_LEN + subFramePayloadLen, 4) - (AMSDU_SUBHEAD_LEN + subFramePayloadLen);
 			NdisZeroMemory(pHeaderBufPtr, padding + AMSDU_SUBHEAD_LEN);
 			pHeaderBufPtr += padding;
 			pTxBlk->MpduHeaderLen = padding;
+			pTxBlk->HdrPadLen += padding;
 		}
 
 		/*

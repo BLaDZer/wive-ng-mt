@@ -1744,6 +1744,7 @@ REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 			NdisZeroMemory(pHeaderBufPtr, padding + AMSDU_SUBHEAD_LEN);
 			pHeaderBufPtr += padding;
 			pTxBlk->MpduHeaderLen = padding;
+			pTxBlk->HdrPadLen += padding;
 		}
 
 		/*
