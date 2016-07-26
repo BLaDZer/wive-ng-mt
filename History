@@ -2225,22 +2225,23 @@
 34) kernel: mips: fix harmlessly missing else statement.<br>
 35) kernel: mips: tlbex: avoid duplicated single_insn_swpd.<br>
 36) kernel: mips: uasm: handle low values in uasm_in_compat_space_p().<br>
-37) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-38) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-39) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-40) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-41) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-42) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-43) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-44) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-45) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-46) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-47) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-48) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-49) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-50) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-51) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-52) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+37) kernel: mips: traps: return correct si code for accessing nonmapped addresses.<br>
+38) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+39) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+40) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+41) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+42) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+43) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+44) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+45) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+46) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+47) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+48) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+49) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+50) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+51) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+52) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+53) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
