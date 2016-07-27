@@ -1632,6 +1632,11 @@ static void VHTParametersHook(
 		else
 			pAd->CommonCfg.vht_bw = VHT_BW_2040;
 
+#ifdef MCAST_RATE_SPECIFIC
+		if (pAd->CommonCfg.vht_bw == VHT_BW_80)
+			pAd->CommonCfg.MCastPhyMode.field.BW = BW_80;
+#endif /* MCAST_RATE_SPECIFIC */
+
 		DBGPRINT(RT_DEBUG_TRACE, ("VHT: Channel Width = %s\n",
 					(pAd->CommonCfg.vht_bw == VHT_BW_80) ? "80 MHz" : "20/40 MHz" ));
 	}
@@ -3759,38 +3764,43 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					if (RTMPGetKeyParameter("McastPhyMode", tmpbuf, 32, pBuffer, TRUE))
 					{	
 						UCHAR PhyMode = simple_strtol(tmpbuf, 0, 10);
-									pAd->CommonCfg.MCastPhyMode.field.BW = pAd->CommonCfg.RegTransmitSetting.field.BW;
+						//pAd->CommonCfg.MCastPhyMode.field.BW = pAd->CommonCfg.RegTransmitSetting.field.BW;
 						switch (PhyMode)
 						{
-										case MCAST_DISABLE: /* disable*/
-											NdisMoveMemory(&pAd->CommonCfg.MCastPhyMode,
-												&pAd->MacTab.Content[MCAST_WCID].HTPhyMode, sizeof(HTTRANSMIT_SETTING));
-											break;
-
-										case MCAST_CCK:	/* CCK*/
-											pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_CCK;
-											pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
+							case MCAST_DISABLE: /* disable */
+								NdisMoveMemory(&pAd->CommonCfg.MCastPhyMode,
+									&pAd->MacTab.Content[MCAST_WCID].HTPhyMode, sizeof(HTTRANSMIT_SETTING));
 								break;
 
-										case MCAST_OFDM:	/* OFDM*/
-											pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_OFDM;
-											pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
+							case MCAST_CCK:	/* CCK*/
+								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_CCK;
+								pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
+								break;
+
+							case MCAST_OFDM: /* OFDM*/
+								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_OFDM;
+								pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 								break;
 #ifdef DOT11_N_SUPPORT
-										case MCAST_HTMIX:	/* HTMIX*/
-											pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_HTMIX;
+							case MCAST_HTMIX: /* HTMIX*/
+								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_HTMIX;
 								break;
-#endif /* DOT11_N_SUPPORT */									
+#endif /* DOT11_N_SUPPORT */	
+#ifdef DOT11_VHT_AC
+							case MCAST_VHT:	/* VHT */
+								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_VHT;
+								break;
+#endif /* DOT11_VHT_AC */	
 
 							default:
-								DBGPRINT(RT_DEBUG_OFF, ("unknow Muticast PhyMode %d.\n", PhyMode));
-								DBGPRINT(RT_DEBUG_OFF, ("0:Disable 1:CCK, 2:OFDM, 3:HTMIX.\n"));
+								DBGPRINT(RT_DEBUG_OFF, ("Unknown Muticast PhyMode %d\n", PhyMode));
+								DBGPRINT(RT_DEBUG_OFF, ("0:Disable 1:CCK, 2:OFDM, 3:HTMIX, 4:VHT\n"));
 								break;
 						}
 					}
 					else
-									NdisMoveMemory(&pAd->CommonCfg.MCastPhyMode,
-										&pAd->MacTab.Content[MCAST_WCID].HTPhyMode, sizeof(HTTRANSMIT_SETTING));
+						NdisMoveMemory(&pAd->CommonCfg.MCastPhyMode,
+							&pAd->MacTab.Content[MCAST_WCID].HTPhyMode, sizeof(HTTRANSMIT_SETTING));
 
 					/* McastMcs*/
 					if (RTMPGetKeyParameter("McastMcs", tmpbuf, 32, pBuffer, TRUE))
@@ -3807,7 +3817,7 @@ NDIS_STATUS	RTMPSetProfileParameters(
 
 							case MODE_OFDM:
 								if (Mcs > 7)
-									DBGPRINT(RT_DEBUG_OFF, ("MCS must in range from 0 to 7 for CCK Mode.\n"));
+									DBGPRINT(RT_DEBUG_OFF, ("MCS must in range from 0 to 7 for OFDM Mode.\n"));
 								else
 									pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 								break;

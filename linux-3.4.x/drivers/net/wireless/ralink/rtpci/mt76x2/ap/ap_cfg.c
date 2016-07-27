@@ -1790,6 +1790,15 @@ INT RTMPAPPrivIoctlShow(
 		if (!*this_char)
 			continue;
 
+		value = strchr(this_char, '=');
+		if (value) {
+			if (strlen(value) > 1) {
+				*value=0;
+				value++;
+			} else
+				value = NULL;
+		}
+
 		for (PRTMP_PRIVATE_SHOW_PROC = RTMP_PRIVATE_SHOW_SUPPORT_PROC; PRTMP_PRIVATE_SHOW_PROC->name; PRTMP_PRIVATE_SHOW_PROC++)
 		{
 			if (!strcmp(this_char, PRTMP_PRIVATE_SHOW_PROC->name)) 
@@ -14209,8 +14218,8 @@ INT	Set_IappPID_Proc(
 	POS_COOKIE	pObj = (POS_COOKIE) pAd->OS_Cookie;
 
 	IappPid = simple_strtol(arg, 0, 10);
-	// TODO:  correct the following line
-	/*RTMP_GET_OS_PID(pObj->IappPid, IappPid);*/
+
+	RTMP_GET_OS_PID(pObj->IappPid, IappPid);
 	pObj->IappPid_nr = IappPid;
 
 /*	DBGPRINT(RT_DEBUG_TRACE, ("pObj->IappPid = %d", GET_PID_NUMBER(pObj->IappPid))); */
@@ -14573,8 +14582,8 @@ INT Set_McastPhyMode(
 			break;
 #endif /* DOT11_VHT_AC */
 		default:
-			DBGPRINT(RT_DEBUG_OFF, ("Unknown Muticast PhyMode %d\n", PhyMode));
-			DBGPRINT(RT_DEBUG_OFF, ("0:Disabled, 1:CCK, 2:OFDM, 3:HTMIX, 4:VHT\n"));
+			printk("Unknown Muticast PhyMode %d\n", PhyMode);
+			printk("0:Disabled, 1:CCK, 2:OFDM, 3:HTMIX, 4:VHT\n");
 			break;
 	}
 
@@ -14593,12 +14602,12 @@ INT Set_McastMcs(
 			if ((Mcs <= 3) || (Mcs >= 8 && Mcs <= 11))
 				pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 			else
-				DBGPRINT(RT_DEBUG_ERROR, ("MCS must in range of 0 ~ 3 and 8 ~ 11 for CCK mode\n"));
+				printk("MCS must in range of 0 ~ 3 and 8 ~ 11 for CCK mode\n");
 			break;
 
 		case MODE_OFDM:
 			if (Mcs > 7)
-				DBGPRINT(RT_DEBUG_ERROR, ("MCS must in range from 0 to 7 for OFDM mode\n"));
+				printk("MCS must in range from 0 to 7 for OFDM mode\n");
 			else
 				pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 			break;
@@ -14615,8 +14624,8 @@ INT Show_McastRate(
 	IN PRTMP_ADAPTER pAd,
 	IN PSTRING arg)
 {
-	DBGPRINT(RT_DEBUG_OFF, ("Mcast PhyMode = %d\n", pAd->CommonCfg.MCastPhyMode.field.MODE));
-	DBGPRINT(RT_DEBUG_OFF, ("Mcast MCS = %d\n", pAd->CommonCfg.MCastPhyMode.field.MCS));
+	printk("Mcast PhyMode = %d\n", pAd->CommonCfg.MCastPhyMode.field.MODE);
+	printk("Mcast MCS = %d\n", pAd->CommonCfg.MCastPhyMode.field.MCS);
 
 	return TRUE;
 }

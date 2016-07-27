@@ -1811,6 +1811,7 @@ enum WIFI_MODE{
 #define MCAST_CCK		1
 #define MCAST_OFDM		2
 #define MCAST_HTMIX		3
+#define MCAST_VHT               4
 #endif /* MCAST_RATE_SPECIFIC */
 
 /* For AsicRadioOff/AsicRadioOn function */

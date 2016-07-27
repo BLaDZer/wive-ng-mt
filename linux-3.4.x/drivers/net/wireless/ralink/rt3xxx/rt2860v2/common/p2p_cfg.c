@@ -859,6 +859,15 @@ INT RTMPAPPrivIoctlShow(
 		if (!*this_char)
 			continue;
 
+		value = strchr(this_char, '=');
+		if (value) {
+			if (strlen(value) > 1) {
+				*value=0;
+				value++;
+			} else
+				value = NULL;
+		}
+
 		for (PRTMP_PRIVATE_SHOW_PROC = RTMP_PRIVATE_SHOW_SUPPORT_PROC; PRTMP_PRIVATE_SHOW_PROC->name; PRTMP_PRIVATE_SHOW_PROC++)
 		{
 			if (!strcmp(this_char, PRTMP_PRIVATE_SHOW_PROC->name)) 

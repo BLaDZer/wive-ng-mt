@@ -1512,6 +1512,15 @@ INT RTMPAPPrivIoctlShow(
 		if (!*this_char)
 			continue;
 
+		value = strchr(this_char, '=');
+		if (value) {
+			if (strlen(value) > 1) {
+				*value=0;
+				value++;
+			} else
+				value = NULL;
+		}
+
 		for (PRTMP_PRIVATE_SHOW_PROC = RTMP_PRIVATE_SHOW_SUPPORT_PROC; PRTMP_PRIVATE_SHOW_PROC->name; PRTMP_PRIVATE_SHOW_PROC++)
 		{
 			if (!strcmp(this_char, PRTMP_PRIVATE_SHOW_PROC->name)) 
@@ -12673,8 +12682,6 @@ INT Set_UAPSD_Proc(
 } /* End of Set_UAPSD_Proc */
 #endif /* UAPSD_SUPPORT */
 
-
-
 #ifdef MCAST_RATE_SPECIFIC
 INT Set_McastPhyMode(
 	IN PRTMP_ADAPTER pAd,
@@ -12682,30 +12689,34 @@ INT Set_McastPhyMode(
 {
 	UCHAR PhyMode = simple_strtol(arg, 0, 10);
 
-	pAd->CommonCfg.MCastPhyMode.field.BW = pAd->CommonCfg.RegTransmitSetting.field.BW;
+	//pAd->CommonCfg.MCastPhyMode.field.BW = pAd->CommonCfg.RegTransmitSetting.field.BW;
 	switch (PhyMode)
 	{
 		case MCAST_DISABLE: /* disable */
 			NdisMoveMemory(&pAd->CommonCfg.MCastPhyMode, &pAd->MacTab.Content[MCAST_WCID].HTPhyMode, sizeof(HTTRANSMIT_SETTING));
 			break;
 
-		case MCAST_CCK:	/* CCK */
+		case MCAST_CCK: /* CCK */
 			pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_CCK;
 			pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 			break;
 
-		case MCAST_OFDM:	/* OFDM */
+		case MCAST_OFDM: /* OFDM */
 			pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_OFDM;
 			pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
-			break;
+			break;		
 #ifdef DOT11_N_SUPPORT
-		case MCAST_HTMIX:	/* HTMIX */
+		case MCAST_HTMIX: /* HTMIX */
 			pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_HTMIX;
+			if (pAd->CommonCfg.BBPCurrentBW > BW_20)
+				pAd->CommonCfg.MCastPhyMode.field.BW =  BW_40;
+			else	
+				pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 			break;
 #endif /* DOT11_N_SUPPORT */
 		default:
-			printk("unknow Muticast PhyMode %d.\n", PhyMode);
-			printk("0:Disable 1:CCK, 2:OFDM, 3:HTMIX.\n");
+			printk("Unknown Muticast PhyMode %d\n", PhyMode);
+			printk("0:Disabled, 1:CCK, 2:OFDM, 3:HTMIX\n");
 			break;
 	}
 
@@ -12718,25 +12729,22 @@ INT Set_McastMcs(
 {
 	UCHAR Mcs = simple_strtol(arg, 0, 10);
 
-	if (Mcs > 15)
-		printk("Mcs must in range of 0 to 15\n");
-
-	switch(pAd->CommonCfg.MCastPhyMode.field.MODE)
+	switch (pAd->CommonCfg.MCastPhyMode.field.MODE)
 	{
 		case MODE_CCK:
 			if ((Mcs <= 3) || (Mcs >= 8 && Mcs <= 11))
 				pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 			else
-				printk("MCS must in range of 0 ~ 3 and 8 ~ 11 for CCK Mode.\n");
+				printk("MCS must in range of 0 ~ 3 and 8 ~ 11 for CCK mode\n");
 			break;
 
 		case MODE_OFDM:
 			if (Mcs > 7)
-				printk("MCS must in range from 0 to 7 for CCK Mode.\n");
+				printk("MCS must in range from 0 to 7 for OFDM mode\n");
 			else
 				pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 			break;
-
+			
 		default:
 			pAd->CommonCfg.MCastPhyMode.field.MCS = Mcs;
 			break;
@@ -12749,8 +12757,9 @@ INT Show_McastRate(
 	IN PRTMP_ADAPTER pAd,
 	IN PSTRING arg)
 {
-	printk("Mcast PhyMode =%d\n", pAd->CommonCfg.MCastPhyMode.field.MODE);
-	printk("Mcast Mcs =%d\n", pAd->CommonCfg.MCastPhyMode.field.MCS);
+	printk("Mcast PhyMode = %d\n", pAd->CommonCfg.MCastPhyMode.field.MODE);
+	printk("Mcast MCS = %d\n", pAd->CommonCfg.MCastPhyMode.field.MCS);
+
 	return TRUE;
 }
 #endif /* MCAST_RATE_SPECIFIC */
