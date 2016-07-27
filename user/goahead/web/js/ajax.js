@@ -532,3 +532,13 @@ function showWarning() {
 		ajaxModifyElementHTML('warning', warningHTML);
 	}
 }
+
+function resetValues(form) {
+	if (confirm(_('message reset confirm'))) {
+		var br = getBrowser();
+		form.reset.value = "1";
+		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+		if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
+			form.submit();
+	}
+}

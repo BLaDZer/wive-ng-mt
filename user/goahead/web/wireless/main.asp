@@ -123,11 +123,21 @@ var ChannelList_24G =
 var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
 var channels = [];
 
-function bandSteeringChange(form) {
-	if (bandsteeringBuilt == 1)
-	{
+function bandSteeringChange(form, userselect) {
+	if (bandsteeringBuilt == 1) {
 		displayElement('div_bandsteering', true);
 		displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], form.BandSteering.value == "1");
+		if ((form.BandSteering.value == "1") && (userselect == 1)) {
+			alert(_("basic bandsteering ssid"));
+		}	
+	}
+}
+
+function beamformingChange(form, userselect) {
+	if (txbf_built == 1)
+	{
+		displayElement('div_txbf', true);
+		displayElement(["div_ETxBfeeEn", "div_ETxBfEnCond" ], form.ITxBfEn.value == "1");
 	}
 }
 
@@ -390,7 +400,6 @@ function initTranslation()
 	_TR("basicDeauthFloodThreshold", "basic ids deauth");
 	_TR("basicEapReqFloodThreshold", "basic ids eap");
 	_TR("basicTxBf", "basic txbf");
-	_TR("basicITxBfEn", "basic itxbfen");
 	_TR("basicETxBfeeEn", "basic etxbfeeen");
 	_TR("basicETxBfEnCond", "basic etxbfencond");
 
@@ -1161,7 +1170,7 @@ function wirelessOnChange(form)
 		}
 		showElement('div_roaming');
 		displayElement( 'div_txbf', txbf_built == '1');
-		showElement('div_bandsteering');
+		displayElement('div_bandsteering', bandsteeringBuilt == '1');
 		showElement('div_ids');
 		displayElement('div_m2u', m2uBuilt == '1');
 		showElement('advSynVGA_table');	
@@ -1916,26 +1925,24 @@ function showRoamingMenu(){
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
-	</table>	
+	</table>
 	<table id="div_txbf" name="div_txbf" class="form" style="display:none;">
 		<tr>
-			<td class="title" colspan="2" id="basicTxBf">Beamforming</td>
-		</tr>
-		<tr id="div_ITxBfEn">
-			<td class="head" id="basicITxBfEn" width="50%">iTxBF(beamforming)</td>
-			<td width="50%"><select name="ITxBfEn" class="normal">
-				<option value="0" id="disable">Disable</option>
-				<option value="1" id="enable">Enable</option>
+			<td class="title" id="basicTxBf" width="50%" >Beamforming</td>
+			<td class="title" size="1"  width="50%" style="text-align:right">
+				<select name="ITxBfEn" class="half" onChange="beamformingChange(this.form);">
+					<option value="0" id="disable">Disable</option>
+					<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
-		<tr id="div_ETxBfeeEn">
+		<tr id="div_ETxBfeeEn" style="display:none;">
 			<td class="head" id="basicETxBfeeEn" width="50%">BFee feature</td>
 			<td width="50%"><select name="ETxBfeeEn" class="normal">
 				<option value="0" id="disable">Disable</option>
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
-		<tr id="div_ETxBfEnCond">
+		<tr id="div_ETxBfEnCond" style="display:none;">
 			<td class="head" id="basicETxBfEnCond" width="50%">Sending of sounding and beamforming</td>
 			<td width="50%"><select name="ETxBfEnCond" class="normal">
 				<option value="0" id="disable">Disable</option>
@@ -1944,10 +1951,10 @@ function showRoamingMenu(){
 		</tr>
 	</table>
 	<table id="div_bandsteering" name="div_bandsteering" class="form" style="display:none;">
-		<tr>
+		<tr id="row_BndStrg">
 			<td class="title" id="band_steering" width="50%">Band steering</td>
 			<td class="title" width="50%" style="text-align:right">
-				<select name="BandSteering" size="1" class="half" onChange="bandSteeringChange(this.form);">
+				<select name="BandSteering" size="1" class="half" onChange="bandSteeringChange(this.form, 1);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select>

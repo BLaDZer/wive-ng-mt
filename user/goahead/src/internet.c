@@ -42,7 +42,7 @@ parameter_fetch_t vpn_args[] =
 	{ T("vpn_lcp_errors"),         "vpnLCPFailure",        0,       T("") },
 	{ T("vpn_lcp_interval"),       "vpnLCPInterval",       0,       T("") },
 	{ T("vpn_test_reachable"),     "vpnTestReachable",     2,       T("") },
-	{ NULL, NULL, 0, NULL } // Terminator
+	{ NULL,                        NULL,                   0,       NULL  }  // Terminator
 };
 
 parameter_fetch_t lanauth_args[] =
@@ -60,10 +60,10 @@ parameter_fetch_t lanauth_args[] =
 const vpn_status_t vpn_statuses[] =
 {
 
-	{ "disabled",     0x808080        },
-	{ "offline",      0xff0000        },
-	{ "connecting",   0xff8000        },
-	{ "online",       0x00ff00        }
+	{ "disabled",     0x808080 },
+	{ "offline",      0xff0000 },
+	{ "connecting",   0xff8000 },
+	{ "online",       0x00ff00 }
 };
 
 #ifdef CONFIG_USER_KABINET
@@ -73,11 +73,11 @@ const vpn_status_t vpn_statuses[] =
 const vpn_status_t lanauth_statuses[] =
 {
 
-	{ "disabled",           0x808080        },
-	{ "not started",        0x808080        },
-	{ "offline",            0xff0000        },
-	{ "kabinet networks",   0x33bb33        },
-	{ "full access",        0x00ff00        }
+	{ "disabled",           0x808080 },
+	{ "not started",        0x808080 },
+	{ "offline",            0xff0000 },
+	{ "kabinet networks",   0x33bb33 },
+	{ "full access",        0x00ff00 }
 };
 #endif
 
@@ -203,48 +203,7 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 	// Output connection status
 	const vpn_status_t *st = &st_table[status];
-	websWrite(
-		wp,
-		T("<b><font color=\"#%06x\">%s</font></b>\n"),
-		st->color, st->status
-	);
-
-	return 0;
-}
-
-const char *vpn_ifaces[] =
-{
-	"LAN",
-	"WAN",
-	NULL // Terminator
-};
-
-static int vpnIfaceList(int eid, webs_t wp, int argc, char_t **argv)
-{
-	char_t iface[32];
-	const char **line;
-
-	// Fetch VPN interface
-	char *rrs  = nvram_get(RT2860_NVRAM, "vpnInterface");
-	if (rrs!=NULL)
-		strcpy(iface, rrs);
-	else
-		iface[0] = '\0';
-	if (strlen(iface)<=0)
-		strcpy(iface, "LAN");
-
-	// Read all ifaces and check match
-	for (line = vpn_ifaces; *line != NULL; line++)
-	{
-		// Write iface to output if it was found
-		websWrite(wp, T("<option value=\"%s\"%s>%s</option>\n"),
-			*line,
-			(strcmp(*line, iface)==0) ? " selected=\"selected\"" : "",
-			*line
-		);
-	}
-
-	return 0;
+	websWrite(wp, T("%s"), st->status);
 }
 
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
@@ -256,42 +215,32 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 		nvram_fromdef(RT2860_NVRAM, 20, "vpnEnabled", "vpnType", "vpnServer", "vpnMPPE", "vpnPeerDNS", "vpnDebug",
 			"vpnNAT", "vpnDGW", "vpnAuthProtocol", "vpnEnableLCP", "vpnPurePPPOE", "vpnLCPFailure", "vpnLCPInterval",
 			"vpnTestReachable", "LANAUTH_LVL", "vpnMTU", "vpnUser", "vpnPassword", "vpnInterface", "vpnService");
-		goto out;
 	}
+	else {
+		vpn_enabled = websGetVar(wp, T("vpn_enabled"), T(""));
+		vpn_type = websGetVar(wp, T("vpn_type"), T("0"));
 
-	vpn_enabled = websGetVar(wp, T("vpn_enabled"), T(""));
-	vpn_type = websGetVar(wp, T("vpn_type"), T("0"));
+		if (vpn_enabled[0] == '\0')
+			vpn_enabled="off";
 
-	if (vpn_enabled[0] == '\0')
-		vpn_enabled="off";
+		nvram_init(RT2860_NVRAM);
+		nvram_bufset(RT2860_NVRAM, "vpnEnabled", vpn_enabled);
+		
+		if ((strncmp(vpn_enabled, "on", 3)) || !CHK_IF_DIGIT(vpn_type, 0))
+			nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
 
-	nvram_init(RT2860_NVRAM);
-
-	if (nvram_bufset(RT2860_NVRAM, "vpnEnabled", (void *)vpn_enabled)!=0)
-	{
-		syslog(LOG_ERR, "Set vpnEnabled error, %s", __FUNCTION__);
-		return;
-	}
-
-	if ((strncmp(vpn_enabled, "on", 3)) || !CHK_IF_DIGIT(vpn_type, 0))
-		nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
-
-	if (strncmp(vpn_enabled, "on", 3))
-		goto out_with_commit;
-
-	parameter_fetch_t *fetch = vpn_args;
-
+		if (!strncmp(vpn_enabled, "on", 3)) {
+			parameter_fetch_t *fetch = vpn_args;
 #ifdef CONFIG_USER_KABINET
-	if (CHK_IF_DIGIT(vpn_type, 3))
-		fetch = lanauth_args;
+			if (CHK_IF_DIGIT(vpn_type, 3))
+			fetch = lanauth_args;
 #endif
-	setupParameters(wp, fetch, 0);
+			setupParameters(wp, fetch, 0);
+		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
 
-out_with_commit:
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-out:
 	//kill helpers firt sigterm second sigkill
 	doSystem("killall -q W60vpnhelper");
 	doSystem("killall -q vpnhelper");
@@ -299,8 +248,8 @@ out:
 	doSystem("killall -q -SIGKILL vpnhelper");
 	doSystem("service vpnhelper restart > /dev/console 2>&1");
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
+	websHeader(wp);
+	websDone(wp, 200);
 }
 
 /*
@@ -1046,110 +995,100 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 static void editRouting(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *trans = websGetVar(wp, T("routingTableDiff"), T(""));
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
 	char rec[256];
 	char true_iface[32], destination[32], gateway[32], netmask[32], iface[32], c_iface[32], comment[64], action[4];
 	int i = 0, iaction;
-	char_t *submitUrl;
 
-	while (getNthValueSafe(i++, trans, ';', rec, sizeof(rec)) != -1)
-	{
-		// Get true interface
-		if ((getNthValueSafe(0, rec, ',', c_iface, sizeof(c_iface)) == -1))
-			continue;
-		// Get destination
-		if ((getNthValueSafe(1, rec, ',', destination, sizeof(destination)) == -1))
-			continue;
-		// Get gateway
-		if ((getNthValueSafe(2, rec, ',', gateway, sizeof(gateway)) == -1))
-			continue;
-		// Get netmask
-		if ((getNthValueSafe(3, rec, ',', netmask, sizeof(netmask)) == -1))
-			continue;
-		// Get interface
-		if ((getNthValueSafe(9, rec, ',', iface, sizeof(iface)) == -1))
-			continue;
-		// Get comment
-		if ((getNthValueSafe(11, rec, ',', comment, sizeof(comment)) == -1))
-			continue;
-		// Get action
-		if ((getNthValueSafe(12, rec, ',', action, sizeof(action)) == -1))
-			continue;
-
-		// Check action
-		iaction = atoi(action);
-		if (! ((iaction == 1) || (iaction == 2)))
-			continue;
-
-		// Check interface
-		strcpy(true_iface, c_iface);
-		if (strcmp(iface, "WAN")==0)
-			strcpy(true_iface, getWanIfName());
-		else if (strcmp(iface, "LAN")==0)
-			strcpy(true_iface, getLanIfName());
-		else if (strcmp(iface, "Custom")==0)
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_set(RT2860_NVRAM, "RoutingRules", "");
+	}
+	else {
+		while (getNthValueSafe(i++, trans, ';', rec, sizeof(rec)) != -1)
 		{
-			if (strlen(true_iface)<=0)
+			// Get true interface
+			if ((getNthValueSafe(0, rec, ',', c_iface, sizeof(c_iface)) == -1))
+				continue;
+			// Get destination
+			if ((getNthValueSafe(1, rec, ',', destination, sizeof(destination)) == -1))
+				continue;
+			// Get gateway
+			if ((getNthValueSafe(2, rec, ',', gateway, sizeof(gateway)) == -1))
+				continue;
+			// Get netmask
+			if ((getNthValueSafe(3, rec, ',', netmask, sizeof(netmask)) == -1))
+				continue;
+			// Get interface
+			if ((getNthValueSafe(9, rec, ',', iface, sizeof(iface)) == -1))
+				continue;
+			// Get comment
+			if ((getNthValueSafe(11, rec, ',', comment, sizeof(comment)) == -1))
+				continue;
+			// Get action
+			if ((getNthValueSafe(12, rec, ',', action, sizeof(action)) == -1))
+				continue;
+
+			// Check action
+			iaction = atoi(action);
+			if (! ((iaction == 1) || (iaction == 2)))
+				continue;
+
+			// Check interface
+			strcpy(true_iface, c_iface);
+			if (strcmp(iface, "WAN")==0)
 				strcpy(true_iface, getWanIfName());
-		}
-		else if (strcmp(iface, "VPN")==0)
-		{
-			strcpy(true_iface, "ppp+");
-		}
-		else
-		{
-			strcpy(iface, "LAN");
-			strcpy(true_iface, getLanIfName());
-		}
+			else if (strcmp(iface, "LAN")==0)
+				strcpy(true_iface, getLanIfName());
+			else if (strcmp(iface, "Custom")==0)
+			{
+				if (strlen(true_iface)<=0)
+					strcpy(true_iface, getWanIfName());
+			}
+			else if (strcmp(iface, "VPN")==0)
+			{
+				strcpy(true_iface, "ppp+");
+			}
+			else
+			{
+				strcpy(iface, "LAN");
+				strcpy(true_iface, getLanIfName());
+			}
 
-		if (iaction == 1) // Add route
-		{
-			addRoutingRuleNvram(iface, destination, netmask, gateway, true_iface, c_iface, comment);
-		}
-		else if (iaction == 2) // Remove route
-		{
-			removeRoutingRuleNvram(iface, destination, netmask, gateway);
+			if (iaction == 1) // Add route
+			{
+				addRoutingRuleNvram(iface, destination, netmask, gateway, true_iface, c_iface, comment);
+			}
+			else if (iaction == 2) // Remove route
+			{
+				removeRoutingRuleNvram(iface, destination, netmask, gateway);
+			}
 		}
 	}
 
 	/* reconfigure system */
 	doSystem("internet.sh");
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
+	websHeader(wp);
+	websDone(wp, 200);
 }
 
 #ifdef CONFIG_USER_ZEBRA
 static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *rip;
-	char_t *submitUrl;
-	char *RIPEnable;
+	char_t *rip   = websGetVar(wp, T("RIPSelect"), T(""));
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
-	rip = websGetVar(wp, T("RIPSelect"), T(""));
-	if(!rip || !strlen(rip))
-		return;
-
-	RIPEnable = nvram_get(RT2860_NVRAM, "RIPEnable");
-	if(!RIPEnable || !strlen(RIPEnable))
-		RIPEnable = "0";
-
-	if(!strcmp(rip, "0") && !strcmp(RIPEnable, "1"))
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_set(RT2860_NVRAM, "RIPEnable", "0");
+	}
+	else {
 		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
-	else if(!strcmp(rip, "1") && !strcmp(RIPEnable, "0"))
-		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
+		doSystem("service dynroute restart");
+	}
 
-	doSystem("service dynroute restart");
-
-#ifdef PRINT_DEBUG
 	websHeader(wp);
-	websWrite(wp, T("<h3>Dynamic Routing:</h3><br>\n"));
-	websWrite(wp, T("RIPEnable %s<br>\n"), rip);
-	websFooter(wp);
 	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
 }
 #endif
 
@@ -1168,145 +1107,105 @@ static void getMyMAC(webs_t wp, char_t *path, char_t *query)
 /* goform/setLan */
 static void setLan(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*ip, *nm, *start_ip, *end_ip, *dgw;
+	char_t	*lan_ip, *lan_nm;
+	char_t	*lan2enabled, *lan2_ip, *lan2_nm;
+	char_t	*start_ip, *end_ip, *dgw;
 	char_t	*gw = NULL, *pd = NULL, *sd = NULL;
-	char_t *lan2enabled, *lan2_ip, *lan2_nm;
-	char_t *submitUrl;
 	char_t	*host;
+	char_t	*reset		= websGetVar(wp, T("reset"), T("0"));
 
-	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char	*wan_ip = nvram_get(RT2860_NVRAM, "wan_ipaddr");
-	char	*ctype = nvram_get(RT2860_NVRAM, "connectionType");
-	char    *dhcpEnabled = nvram_get(RT2860_NVRAM, "dhcpEnabled");
-	char_t  *dhcpGateway = nvram_get(RT2860_NVRAM, "dhcpGateway");
-	char_t	*old_start_ip = nvram_get(RT2860_NVRAM, "dhcpStart");
-	char_t	*old_end_ip = nvram_get(RT2860_NVRAM, "dhcpEnd");
-	char_t	*old_mask = nvram_get(RT2860_NVRAM, "dhcpMask");
+	char	*opmode		= nvram_get(RT2860_NVRAM, "OperationMode");
+	char	*dhcpEnabled	= nvram_get(RT2860_NVRAM, "dhcpEnabled");
 
-	ip = websGetVar(wp, T("lanIp"), T(""));
-	nm = websGetVar(wp, T("lanNetmask"), T(""));
-	lan2enabled = websGetVar(wp, T("lan2enabled"), T(""));
-	lan2_ip = websGetVar(wp, T("lan2Ip"), T(""));
-	lan2_nm = websGetVar(wp, T("lan2Netmask"), T(""));
-	start_ip = websGetVar(wp, T("dhcpStart"), T(""));
-	end_ip = websGetVar(wp, T("dhcpEnd"), T(""));
-	dgw = websGetVar(wp, T("dhcpGateway"), T(""));
-	host = websGetVar(wp, T("hostname"), T("0"));
+	lan_ip		= websGetVar(wp, T("lanIp"), T(""));
+	lan_nm		= websGetVar(wp, T("lanNetmask"), T(""));
+	lan2enabled	= websGetVar(wp, T("lan2enabled"), T(""));
+	lan2_ip		= websGetVar(wp, T("lan2Ip"), T(""));
+	lan2_nm		= websGetVar(wp, T("lan2Netmask"), T(""));
+	start_ip	= websGetVar(wp, T("dhcpStart"), T(""));
+	end_ip		= websGetVar(wp, T("dhcpEnd"), T(""));
+	dgw		= websGetVar(wp, T("dhcpGateway"), T(""));
+	host		= websGetVar(wp, T("hostname"), T("0"));
 
-	/*
-	 * check static ip address:
-	 * lan and wan ip should not be the same except in bridge mode
-	 */
-	if (strncmp(ctype, "STATIC", 7))
-	{
-		if (strcmp(opmode, "0") && !strncmp(ip, wan_ip, 15)) {
-			websError(wp, 200, "IP address is identical to WAN");
-			return;
-		}
-		if (!strcmp(lan2enabled, "1"))
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 6, "HostName", "lan_ipaddr", "lan_netmask", "Lan2Enabled", "lan2_ipaddr", "lan2_netmask");
+		if (!strcmp(opmode, "0"))
 		{
-			if (strcmp(opmode, "0") && !strncmp(lan2_ip, wan_ip, 15)) {
-				websError(wp, 200, "LAN2 IP address is identical to WAN");
-				return;
-			}
-			else if (strcmp(opmode, "0") && !strncmp(lan2_ip, ip, 15)) {
-				websError(wp, 200, "LAN2 IP address is identical to LAN1");
-				return;
-			}
+			nvram_fromdef(RT2860_NVRAM, 3, "wan_gateway", "wan_primary_dns", "wan_secondary_dns");
+			nvram_set(RT2860_NVRAM, "wan_static_dns", "on");
+		}
+		if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
+			nvram_fromdef(RT2860_NVRAM, 4, "dhcpStart", "dhcpEnd", "dhcpMask", "dhcpGateway");
 		}
 	}
+	else {
+		nvram_init(RT2860_NVRAM);
 
-	nvram_init(RT2860_NVRAM);
+		nvram_bufset(RT2860_NVRAM, "HostName", host);
+		nvram_bufset(RT2860_NVRAM, "Lan2Enabled", lan2enabled);
+		nvram_bufset(RT2860_NVRAM, "lan_ipaddr", lan_ip);
+		nvram_bufset(RT2860_NVRAM, "lan_netmask", lan_nm);
+		nvram_bufset(RT2860_NVRAM, "lan2_ipaddr", lan2_ip);
+		nvram_bufset(RT2860_NVRAM, "lan2_netmask", lan2_nm);
 
-	// configure gateway and dns (WAN) at bridge mode
-	if (!strncmp(opmode, "0", 2))
-	{
-		gw = websGetVar(wp, T("lanGateway"), T(""));
-		pd = websGetVar(wp, T("lanPriDns"), T(""));
-		sd = websGetVar(wp, T("lanSecDns"), T(""));
-		nvram_bufset(RT2860_NVRAM, "wan_gateway", gw);
-		nvram_bufset(RT2860_NVRAM, "wan_primary_dns", pd);
-		nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
-		nvram_bufset(RT2860_NVRAM, "wan_static_dns", "on");
-	}
+		// configure gateway and dns (WAN) at bridge mode
+		if (!strncmp(opmode, "0", 2))
+		{
+			gw = websGetVar(wp, T("lanGateway"), T(""));
+			pd = websGetVar(wp, T("lanPriDns"), T(""));
+			sd = websGetVar(wp, T("lanSecDns"), T(""));
+			nvram_bufset(RT2860_NVRAM, "wan_gateway", gw);
+			nvram_bufset(RT2860_NVRAM, "wan_primary_dns", pd);
+			nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
+			nvram_bufset(RT2860_NVRAM, "wan_static_dns", "on");
+		}
 
-	nvram_bufset(RT2860_NVRAM, "lan_ipaddr", ip);
-	nvram_bufset(RT2860_NVRAM, "lan_netmask", nm);
-	nvram_bufset(RT2860_NVRAM, "Lan2Enabled", lan2enabled);
-	nvram_bufset(RT2860_NVRAM, "lan2_ipaddr", lan2_ip);
-	nvram_bufset(RT2860_NVRAM, "lan2_netmask", lan2_nm);
-	nvram_bufset(RT2860_NVRAM, "HostName", host);
-
-	if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
-		if (strncmp(old_start_ip, start_ip, 15))
+		if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
 			nvram_bufset(RT2860_NVRAM, "dhcpStart", start_ip);
-		if (strncmp(old_end_ip, end_ip, 15))
 			nvram_bufset(RT2860_NVRAM, "dhcpEnd", end_ip);
-		if (strncmp(old_mask, nm, 15))
-			nvram_bufset(RT2860_NVRAM, "dhcpMask", nm);
-		if (strncmp(dhcpGateway, dgw, 15))
+			nvram_bufset(RT2860_NVRAM, "dhcpMask", lan_nm);
 			nvram_bufset(RT2860_NVRAM, "dhcpGateway", dgw);
+		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
 
-#ifdef PRINT_DEBUG
-	websHeader(wp);
-	websWrite(wp, T("<h3>LAN Interface Setup</h3><br>\n"));
-	websWrite(wp, T("Hostname: %s<br>\n"), host);
-	websWrite(wp, T("IP: %s<br>\n"), ip);
-	websWrite(wp, T("Netmask: %s<br>\n"), nm);
-	websWrite(wp, T("LAN2 Enabled: %s<br>\n"), lan2enabled);
-	websWrite(wp, T("LAN2 IP: %s<br>\n"), lan2_ip);
-	websWrite(wp, T("LAN2 Netmask: %s<br>\n"), lan2_nm);
-	if (!strncmp(opmode, "0", 2))
-	{
-		websWrite(wp, T("Gateway: %s<br>\n"), gw);
-		websWrite(wp, T("PriDns: %s<br>\n"), pd);
-		websWrite(wp, T("SecDns: %s<br>\n"), sd);
-	}
-	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = "http://%s%s", ip, websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
-	/* reconfigure system */
 	doSystem("internet.sh");
 #if defined(CONFIG_USER_SAMBA)
 	doSystem("service samba restart");
 #endif
+
+	websHeader(wp);
+	websDone(wp, 200);
 }
 
+/* goform/restoremac */
 static void restoremac(webs_t wp, char_t *path, char_t *query)
 {
-	/* Output timer for reloading */
 	outputTimerForReload(wp, "", 80000);
-
 	doSystem("fs factory_mac > /dev/console 2>&1");
-
-	/* Reboot */
 	reboot_now();
 }
 
 /* goform/setWan */
 static void setWan(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*ctype, *req_ip, *dhcpVen;
-	char_t	*ip, *nm, *gw, *mac, *oldmac;
-	char_t	*eth, *user, *pass;
-	char_t	*nat_enable;
-	char_t	*vpn_srv, *vpn_mode;
-	char_t	*l2tp_srv, *l2tp_mode;
+	char_t *ctype, *req_ip, *dhcpVen;
+	char_t *ip, *nm, *gw, *mac, *oldmac;
+	char_t *eth, *user, *pass;
+	char_t *nat_enable;
+	char_t *vpn_srv, *vpn_mode;
+	char_t *l2tp_srv, *l2tp_mode;
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
 
 	char_t *wan_mtu;
-	char_t *submitUrl;
 	char_t *st_en, *pd, *sd;
 	unsigned int i, flag = 1;
 
-	char	*opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char	*lan_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
-	char	*lan2enabled = nvram_get(RT2860_NVRAM, "Lan2Enabled");
+	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
+	char *lan_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
+	char *lan2enabled = nvram_get(RT2860_NVRAM, "Lan2Enabled");
 
 	ctype = ip = nm = gw = eth = user = pass = mac = vpn_srv = vpn_mode = l2tp_srv = l2tp_mode = NULL;
 
@@ -1314,181 +1213,121 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	req_ip = websGetVar(wp, T("dhcpReqIP"), T(""));
 	dhcpVen = websGetVar(wp, T("dhcpVendorClass"), T(""));
 
-	if (!strncmp(ctype, "STATIC", 7) || !strcmp(opmode, "0"))
-	{
-		FILE *fd;
+	websHeader(wp);
 
-		//always treat bridge mode having static wan connection
-		ip = websGetVar(wp, T("staticIp"), T(""));
-		nm = websGetVar(wp, T("staticNetmask"), T("0"));
-		gw = websGetVar(wp, T("staticGateway"), T(""));
-
-		nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
-		if (inet_addr(ip) == INADDR_NONE)
-		{
-			websError(wp, 200, "invalid IP Address");
-			return;
-		}
-		/*
-		 * lan and wan ip should not be the same except in bridge mode
-		 */
-		if (NULL != opmode && strcmp(opmode, "0") && !strncmp(ip, lan_ip, 15))
-		{
-			websError(wp, 200, "IP address is identical to LAN");
-			return;
-		}
-		if (!strcmp(lan2enabled, "1"))
-		{
-			char *lan2_ip = nvram_get(RT2860_NVRAM, "lan2_ipaddr");
-			if (NULL != opmode && strcmp(opmode, "0") && !strncmp(ip, lan2_ip, 15))
-			{
-				websError(wp, 200, "IP address is identical to LAN2");
-				return;
-			}
-		}
-
-		if (inet_addr(nm) == INADDR_NONE)
-		{
-			websError(wp, 200, "invalid Subnet Mask");
-			return;
-		}
-
-		nvram_init(RT2860_NVRAM);
-		nvram_bufset(RT2860_NVRAM, "wan_ipaddr", ip);
-		nvram_bufset(RT2860_NVRAM, "wan_netmask", nm);
-		/*
-		 * in Bridge Mode, lan and wan are bridged together and associated with
-		 * the same ip address
-		 */
-		if (NULL != opmode && !strcmp(opmode, "0"))
-		{
-			nvram_bufset(RT2860_NVRAM, "lan_ipaddr", ip);
-			nvram_bufset(RT2860_NVRAM, "lan_netmask", nm);
-		}
-		nvram_bufset(RT2860_NVRAM, "wan_gateway", gw);
-
-		nvram_commit(RT2860_NVRAM);
-		nvram_close(RT2860_NVRAM);
-
-		// Reset /etc/resolv.conf
-		fd = fopen("/etc/resolv.conf", "w");
-		if (fd != NULL)
-			fclose(fd);
-	}
-	else if (strncmp(ctype, "DHCP", 5) == 0)
-	{
-		nvram_init(RT2860_NVRAM);
-		nvram_bufset(RT2860_NVRAM, "wanConnectionMode", ctype);
-		nvram_bufset(RT2860_NVRAM, "dhcpRequestIP", req_ip);
-		nvram_bufset(RT2860_NVRAM, "dhcpVendorClass", dhcpVen);
-		nvram_commit(RT2860_NVRAM);
-		nvram_close(RT2860_NVRAM);
-	}
-	else if (strncmp(ctype, "ZERO", 5) == 0)
-	{
-		nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
-	}
-	else
-	{
-		websHeader(wp);
-		websWrite(wp, T("<h2>Unknown Connection Type: %s</h2><br>\n"), ctype);
-		websFooter(wp);
-		websDone(wp, 200);
-		return;
-	}
-
-	// Primary/Seconfary DNS set
-	st_en = websGetVar(wp, T("wStaticDnsEnable"), T("off"));
-	pd = websGetVar(wp, T("staticPriDns"), T(""));
-	sd = websGetVar(wp, T("staticSecDns"), T(""));
-
-	mac = websGetVar(wp, T("wanMac"), T(""));
-	oldmac = nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
-	if (strlen(mac) == 17) {
-		for (i = 0; i < strlen(mac); i++) {
-			switch (i % 3) {
-				case 2:
-					if (mac[i] == '-')
-						mac[i] = ':';
-					flag &= (mac[i] == ':');
-					break;
-				default:
-					flag &= ( (mac[i] >= '0' && mac[i] <= '9') ||
-						(mac[i] >= 'a' && mac[i] <= 'f') ||
-						(mac[i] >= 'A' && mac[i] <= 'F') );
-			}
-		}
-	} else if (strlen(mac) == 0)
-		mac = oldmac;
-
-	if (!flag) {
-		websError(wp, 200, "Invalid MAC Address, restore from factory!");
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 13, "wanConnectionMode", "wan_ipaddr", "wan_netmask", "wan_gateway", 
+						"dhcpRequestIP", "dhcpVendorClass", "natEnabled",
+						"wan_static_dns", "wan_primary_dns", "wan_secondary_dns"
+						"wan_mtu", "wan_manual_mtu", "CHECKMAC" );
 		doSystem("fs factory_mac > /dev/console 2>&1");
-		return;
 	}
+	else {
+		if (!strncmp(ctype, "STATIC", 7) || !strcmp(opmode, "0"))
+		{
+			FILE *fd;
 
-	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "wan_static_dns", st_en);
+			//always treat bridge mode having static wan connection
+			ip = websGetVar(wp, T("staticIp"), T(""));
+			nm = websGetVar(wp, T("staticNetmask"), T("0"));
+			gw = websGetVar(wp, T("staticGateway"), T(""));
 
-	if (strcmp(st_en, "on") == 0)
-	{
-		nvram_bufset(RT2860_NVRAM, "wan_primary_dns", pd);
-		nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
-	}
+			nvram_init(RT2860_NVRAM);
+			nvram_bufset(RT2860_NVRAM, "wanConnectionMode", ctype);
+			nvram_bufset(RT2860_NVRAM, "wan_ipaddr", ip);
+			nvram_bufset(RT2860_NVRAM, "wan_netmask", nm);
+			/*
+			 * in Bridge Mode, lan and wan are bridged together and associated with
+			 * the same ip address
+			 */
+			if (NULL != opmode && !strcmp(opmode, "0"))
+			{
+				nvram_bufset(RT2860_NVRAM, "lan_ipaddr", ip);
+				nvram_bufset(RT2860_NVRAM, "lan_netmask", nm);
+			}
+			nvram_bufset(RT2860_NVRAM, "wan_gateway", gw);
 
-	// NAT
-	if (strcmp(opmode, "0") != 0)
-	{
-		nat_enable = websGetVar(wp, T("natEnabled"), T("off"));
-		nat_enable = (strcmp(nat_enable, "on") == 0) ? "1" : "0";
-		nvram_bufset(RT2860_NVRAM, "natEnabled", nat_enable);
-	}
+			nvram_commit(RT2860_NVRAM);
+			nvram_close(RT2860_NVRAM);
 
-	// MTU for WAN
-	wan_mtu = websGetVar(wp, T("wan_mtu"), T("0"));
-	nvram_bufset(RT2860_NVRAM, "wan_manual_mtu", wan_mtu);
+			// Reset /etc/resolv.conf
+			fd = fopen("/etc/resolv.conf", "w");
+			if (fd != NULL)
+				fclose(fd);
+		}
+		else if (strncmp(ctype, "DHCP", 5) == 0)
+		{
+			nvram_init(RT2860_NVRAM);
+			nvram_bufset(RT2860_NVRAM, "wanConnectionMode", ctype);
+			nvram_bufset(RT2860_NVRAM, "dhcpRequestIP", req_ip);
+			nvram_bufset(RT2860_NVRAM, "dhcpVendorClass", dhcpVen);
+			nvram_commit(RT2860_NVRAM);
+			nvram_close(RT2860_NVRAM);
+		}
+		else if (strncmp(ctype, "ZERO", 5) == 0)
+		{
+			nvram_set(RT2860_NVRAM, "wanConnectionMode", ctype);
+		}
+		else
+		{
+			websDone(wp, 200);
+			return;
+		}
 
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
+		// Primary/Seconfary DNS set
+		st_en = websGetVar(wp, T("wStaticDnsEnable"), T("off"));
+		pd = websGetVar(wp, T("staticPriDns"), T(""));
+		sd = websGetVar(wp, T("staticSecDns"), T(""));
 
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-#ifdef PRINT_DEBUG
-	if ( !submitUrl[0] ) {
-	    // debug print
-	    websHeader(wp);
-	    websWrite(wp, T("<h2>Mode: %s</h2><br>\n"), ctype);
-	    if (!strncmp(ctype, "STATIC", 7))
-	    {
-		websWrite(wp, T("IP Address: %s<br>\n"), ip);
-		websWrite(wp, T("Subnet Mask: %s<br>\n"), nm);
-		websWrite(wp, T("Default Gateway: %s<br>\n"), gw);
-	    }
-	    websFooter(wp);
-	    websDone(wp, 200);
-	}
-#endif
-	if (strcmp(oldmac, mac) != 0) {
 		nvram_init(RT2860_NVRAM);
-		nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR", mac);
-		nvram_bufset(RT2860_NVRAM, "CHECKMAC", "NO");
+		nvram_bufset(RT2860_NVRAM, "wan_static_dns", st_en);
+
+		if (!strcmp(st_en, "on"))
+		{
+			nvram_bufset(RT2860_NVRAM, "wan_primary_dns", pd);
+			nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
+		}
+
+		// NAT
+		if (!strcmp(opmode, "0"))
+		{
+			nat_enable = websGetVar(wp, T("natEnabled"), T("off"));
+			nat_enable = (strcmp(nat_enable, "on") == 0) ? "1" : "0";
+			nvram_bufset(RT2860_NVRAM, "natEnabled", nat_enable);
+		}
+
+		// MTU for WAN
+		wan_mtu = websGetVar(wp, T("wan_mtu"), T("0"));
+		nvram_bufset(RT2860_NVRAM, "wan_manual_mtu", wan_mtu);
+
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
-		if (CHK_IF_DIGIT(reboot_flag, 1)) {
-			/* Output timer for reloading */
-			outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
-			/* Reboot */
+		// MAC
+		mac = websGetVar(wp, T("wanMac"), T(""));
+		oldmac = nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
+		if (strcmp(oldmac, mac) != 0) {
+			nvram_init(RT2860_NVRAM);
+			nvram_bufset(RT2860_NVRAM, "WAN_MAC_ADDR", mac);
+			nvram_bufset(RT2860_NVRAM, "CHECKMAC", "NO");
+			nvram_commit(RT2860_NVRAM);
+			nvram_close(RT2860_NVRAM);
+		}
+
+		// Reboot
+		if (CHK_IF_DIGIT(reboot, 1)) {
+			outputTimerForReload(wp, "", 80000);
 			reboot_now();
 		}
 	}
-	websRedirect(wp, submitUrl);
+
 	/* reconfigure system */
 	doSystem("internet.sh");
+	websDone(wp, 200);
 }
 
 #ifdef CONFIG_IPV6
-parameter_fetch_t service_ipv6_flags[] =
+parameter_fetch_t service_ipv6_flags[] = 
 {
 	{ T("dhcp6c_enable"), "IPv6Dhcpc", 2, T("off") },
 	{ T("ipv6_allow_forward"), "IPv6AllowForward", 2, T("off") },
@@ -1505,7 +1344,7 @@ parameter_fetch_t service_ipv6_flags[] =
 /* goform/setIPv6 */
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *opmode, *submitUrl;
+	char_t *opmode;
 	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
@@ -1516,84 +1355,55 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
 			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc", "IPv6AllowForward",
 			"Ipv6InVPN", "radvdEnabled", "dhcpv6Enabled");
-		goto out;
 	}
+	else {
+		opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
 
-	opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
+		nvram_init(RT2860_NVRAM);
 
-	nvram_init(RT2860_NVRAM);
+		if (!strcmp(opmode, "1")) {
+			ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
+			prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T(""));
+			wan_ipaddr = websGetVar(wp, T("ipv6_wan_ipaddr"), T(""));
+			wan_prefix_len = websGetVar(wp, T("ipv6_wan_prefix_len"), T(""));
+			srv_ipaddr = websGetVar(wp, T("ipv6_static_gw"), T(""));
+			srv_dns_primary = websGetVar(wp, T("ipv6_static_dns_primary"), T(""));
+			srv_dns_secondary = websGetVar(wp, T("ipv6_static_dns_secondary"), T(""));
 
-	if (!strcmp(opmode, "1")) {
-		ipaddr = websGetVar(wp, T("ipv6_lan_ipaddr"), T(""));
-		prefix_len = websGetVar(wp, T("ipv6_lan_prefix_len"), T(""));
-		wan_ipaddr = websGetVar(wp, T("ipv6_wan_ipaddr"), T(""));
-		wan_prefix_len = websGetVar(wp, T("ipv6_wan_prefix_len"), T(""));
-		srv_ipaddr = websGetVar(wp, T("ipv6_static_gw"), T(""));
-		srv_dns_primary = websGetVar(wp, T("ipv6_static_dns_primary"), T(""));
-		srv_dns_secondary = websGetVar(wp, T("ipv6_static_dns_secondary"), T(""));
-
-		nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
-		nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
-		nvram_bufset(RT2860_NVRAM, "IPv6WANIPAddr", wan_ipaddr);
-		nvram_bufset(RT2860_NVRAM, "IPv6WANPrefixLen", wan_prefix_len);
-		nvram_bufset(RT2860_NVRAM, "IPv6GWAddr", srv_ipaddr);
-		nvram_bufset(RT2860_NVRAM, "IPv6DNSPrimary", srv_dns_primary);
-		nvram_bufset(RT2860_NVRAM, "IPv6DNSSecondary", srv_dns_secondary);
+			nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
+			nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
+			nvram_bufset(RT2860_NVRAM, "IPv6WANIPAddr", wan_ipaddr);
+			nvram_bufset(RT2860_NVRAM, "IPv6WANPrefixLen", wan_prefix_len);
+			nvram_bufset(RT2860_NVRAM, "IPv6GWAddr", srv_ipaddr);
+			nvram_bufset(RT2860_NVRAM, "IPv6DNSPrimary", srv_dns_primary);
+			nvram_bufset(RT2860_NVRAM, "IPv6DNSSecondary", srv_dns_secondary);
 #if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
-	} else if (!strcmp(opmode, "2")) {
-		ipaddr = websGetVar(wp, T("ipv6_6rd_prefix"), T(""));
-		prefix_len = websGetVar(wp, T("ipv6_6rd_prefix_len"), T(""));
-		srv_ipaddr = websGetVar(wp, T("ipv6_6rd_border_ipaddr"), T(""));
-		nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
-		nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
-		nvram_bufset(RT2860_NVRAM, "IPv6SrvAddr", srv_ipaddr);
+		} else if (!strcmp(opmode, "2")) {
+			ipaddr = websGetVar(wp, T("ipv6_6rd_prefix"), T(""));
+			prefix_len = websGetVar(wp, T("ipv6_6rd_prefix_len"), T(""));
+			srv_ipaddr = websGetVar(wp, T("ipv6_6rd_border_ipaddr"), T(""));
+			nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
+			nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
+			nvram_bufset(RT2860_NVRAM, "IPv6SrvAddr", srv_ipaddr);
 #endif
-	} else if (!strcmp(opmode, "3")) {
-		ipaddr = websGetVar(wp, T("IPv6SrvAddr"), T("192.88.99.1"));
-		nvram_bufset(RT2860_NVRAM, "IPv6SrvAddr", ipaddr);
+		} else if (!strcmp(opmode, "3")) {
+			ipaddr = websGetVar(wp, T("IPv6SrvAddr"), T("192.88.99.1"));
+			nvram_bufset(RT2860_NVRAM, "IPv6SrvAddr", ipaddr);
 #endif
-	}
-	nvram_bufset(RT2860_NVRAM, "IPv6OpMode", opmode);
+		}
+		nvram_bufset(RT2860_NVRAM, "IPv6OpMode", opmode);
 
-	setupParameters(wp, service_ipv6_flags, 0);
+		setupParameters(wp, service_ipv6_flags, 0);
 
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-out:
-#ifdef PRINT_DEBUG
-	websHeader(wp);
-	websWrite(wp, T("<h3>IPv6 Setup</h3><br>\n"));
-	websWrite(wp, T("ipv6_opmode: %s<br>\n"), opmode);
-	websWrite(wp, T("dhcp6c_enable: %s<br>\n"), dhcp6c_enable);
-	websWrite(wp, T("ipv6_allow_forward: %s<br>\n"), ipv6_allow_forward);
-	if (!strcmp(opmode, "1")) {
-	    websWrite(wp, T("ipv6_lan_ipaddr: %s<br>\n"), ipaddr);
-	    websWrite(wp, T("ipv6_lan_prefix_len: %s<br>\n"), prefix_len);
-	    websWrite(wp, T("ipv6_wan_ipaddr: %s<br>\n"), wan_ipaddr);
-	    websWrite(wp, T("ipv6_wan_prefix_len: %s<br>\n"), wan_prefix_len);
-	    websWrite(wp, T("ipv6_static_gw: %s<br>\n"), srv_ipaddr);
-#if defined (CONFIG_IPV6_SIT_6RD)
-	} else if (!strcmp(opmode, "2")) {
-	    websWrite(wp, T("ipv6_6rd_prefix: %s<br>\n"), ipaddr);
-	    websWrite(wp, T("ipv6_6rd_prefix_len: %s<br>\n"), prefix_len);
-	    websWrite(wp, T("ipv6_6rd_border_ipaddr: %s<br>\n"), srv_ipaddr);
-#endif
-#if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
-	} else if (!strcmp(opmode, "3")) {
-	    websWrite(wp, T("IPv6SrvAddr: %s<br>\n"), ipaddr);
-#endif
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
 
-	websWrite(wp, T("<script language=\"JavaScript\" type=\"text/javascript\">ajaxReloadDelayedPage(10000, '/internet/ipv6.asp', true);</script>\n"));
-	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
-	/* reconfigure system */
 	doSystem("internet.sh");
+
+	websHeader(wp);
+	websDone(wp, 200);
 }
 
 static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
@@ -1660,8 +1470,8 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 // ChilliSpot variables
 parameter_fetch_t chilli_vars[] =
 {
-	{ T("chilliEnable"),			"chilli_enable",			0,       T("") },
-	{ T("spotProfile"),			"chilli_profile",			0,       T("manual") },
+	{ T("chilliEnable"),		"chilli_enable",		0,       T("") },
+	{ T("spotProfile"),		"chilli_profile",		0,       T("manual") },
 	{ T("sPriDns"),			"chilli_dns1",			0,       T("") },
 	{ T("sSecDns"),			"chilli_dns2",			0,       T("") },
 	{ T("sDomain"),			"chilli_domain",		0,       T("") },
@@ -1673,7 +1483,7 @@ parameter_fetch_t chilli_vars[] =
 	{ T("sRadSecret"),		"chilli_radiussecret",		0,       T("") },
 	{ T("sNasId"),			"chilli_radiusnasid",		0,       T("") },
 	{ T("sRadLocId"),		"chilli_radiuslocationid",	0,       T("") },
-	{ T("sRadLocName"),	"chilli_radiuslocationname",	0,       T("") },
+	{ T("sRadLocName"),		"chilli_radiuslocationname",	0,       T("") },
 	{ T("sRadCoaPort"),		"chilli_coaport",		0,       T("") },
 	{ T("sRadCoaNoIpCheck"),	"chilli_coanoipcheck",		0,       T("") },
 	{ T("sUamServer"),		"chilli_uamserver",		0,       T("") },
@@ -1683,7 +1493,7 @@ parameter_fetch_t chilli_vars[] =
 	{ T("sUamDomain"),		"chilli_uamdomain",		0,       T("") },
 	{ T("sUamAnyDNS"),		"chilli_uamanydns",		0,       T("") },
 	{ T("sMacAllowed"),		"chilli_macallowed",		0,       T("") },
-	{ NULL, NULL, 0, 0 } // Terminator
+	{ NULL, 			NULL, 				0,       0     }  // Terminator
 };
 #endif
 
@@ -1694,20 +1504,20 @@ parameter_fetch_t nodog_vars[] =
 	{ T("nodogEnable"),			"nodogsplash_enable",			0,       T("") },
 	{ T("GatewayIPRange"),			"nodog_GatewayIPRange",			0,       T("0.0.0.0/0") },
 	{ T("RedirectURL"),			"nodog_RedirectURL",			0,       T("http://wive-ng.sf.net") },
-	{ T("MaxClients"),			"nodog_MaxClients",		0,       T("32") },
-	{ T("ClientIdleTimeout"),			"nodog_ClientIdleTimeout",			0,       T("10") },
+	{ T("MaxClients"),			"nodog_MaxClients",			0,       T("32") },
+	{ T("ClientIdleTimeout"),		"nodog_ClientIdleTimeout",		0,       T("10") },
 	{ T("ClientForceTimeout"),		"nodog_ClientForceTimeout",		0,       T("360") },
-	{ T("AuthenticateImmediately"),		"nodog_AuthenticateImmediately",		0,       T("no") },
-	{ T("MACMechanism"),		"nodog_MACMechanism",		0,       T("block") },
-	{ T("BlockedMACList"),		"nodog_BlockedMACList",		0,       T("") },
-	{ T("AllowedMACList"),			"nodog_AllowedMACList",		0,       T("") },
-	{ T("TrustedMACList"),		"nodog_TrustedMACList",	0,       T("") },
-	{ T("PasswordAuthentication"),	"nodog_PasswordAuthentication",	0,       T("no") },
-	{ T("Password"),		"nodog_Password",		0,       T("nodog") },
-	{ T("UsernameAuthentication"),	"nodog_UsernameAuthentication",		0,       T("no") },
-	{ T("Username"),		"nodog_Username",		0,       T("guest") },
+	{ T("AuthenticateImmediately"),		"nodog_AuthenticateImmediately",	0,       T("no") },
+	{ T("MACMechanism"),			"nodog_MACMechanism",			0,       T("block") },
+	{ T("BlockedMACList"),			"nodog_BlockedMACList",			0,       T("") },
+	{ T("AllowedMACList"),			"nodog_AllowedMACList",			0,       T("") },
+	{ T("TrustedMACList"),			"nodog_TrustedMACList",			0,       T("") },
+	{ T("PasswordAuthentication"),		"nodog_PasswordAuthentication",		0,       T("no") },
+	{ T("Password"),			"nodog_Password",			0,       T("nodog") },
+	{ T("UsernameAuthentication"),		"nodog_UsernameAuthentication",		0,       T("no") },
+	{ T("Username"),			"nodog_Username",			0,       T("guest") },
 	{ T("PasswordAttempts"),		"nodog_PasswordAttempts",		0,       T("5") },
-	{ NULL, NULL, 0, 0 } // Terminator
+	{ NULL,					NULL,					0,       0 } // Terminator
 };
 #endif
 
@@ -1753,8 +1563,7 @@ static int getSpotNetmask(int eid, webs_t wp, int argc, char_t **argv)
 static void setHotspot(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *enabled = websGetVar(wp, T("spotEnable"), T("0"));
-	char_t *submitUrl;
-	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	char_t *reset   = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 39, "chilli_enable", "chilli_profile", "chilli_dns1",
@@ -1769,67 +1578,60 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 			"nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
 			"nodog_TrustedMACList", "nodog_PasswordAuthentication", "nodog_Password",
 			"nodog_UsernameAuthentication", "nodog_Username", "nodog_PasswordAttempts");
-		goto out;
 	}
+	else {
 #ifdef CONFIG_USER_CHILLISPOT
-	char_t *ip = websGetVar(wp, T("sIp"), T("192.168.182.0"));
-	char_t *amask = websGetVar(wp, T("sNetmask"), T("255.255.255.0"));
-	struct in_addr iip;
-	struct in_addr imask;
+		char_t *ip = websGetVar(wp, T("sIp"), T("192.168.182.0"));
+		char_t *amask = websGetVar(wp, T("sNetmask"), T("255.255.255.0"));
+		struct in_addr iip;
+		struct in_addr imask;
 
-	iip.s_addr = inet_addr(ip);
-	imask.s_addr = inet_addr(amask);
-	int h_mask=ntohl(imask.s_addr);
-	int i;
-	for (i = 30; i > 0; i--) {
-		if (h_mask >= 0 - (1 << (32 - i)))
-			break;
-	}
-	if (!i) i = 24;
-	iip.s_addr &= ntohl(0 - (1 << (32 - i)));
+		iip.s_addr = inet_addr(ip);
+		imask.s_addr = inet_addr(amask);
+		int h_mask=ntohl(imask.s_addr);
+		int i;
+		for (i = 30; i > 0; i--) {
+			if (h_mask >= 0 - (1 << (32 - i)))
+				break;
+		}
+		if (!i) i = 24;
+		iip.s_addr &= ntohl(0 - (1 << (32 - i)));
 
-	char_t subnet[20];
-	sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
+		char_t subnet[20];
+		sprintf(subnet, "%s/%d", inet_ntoa(iip), i);
 #endif
-
-	nvram_init(RT2860_NVRAM);
-
+		nvram_init(RT2860_NVRAM);
 #ifdef CONFIG_USER_CHILLISPOT
-	if(CHK_IF_DIGIT(enabled, 1)) {
-		setupParameters(wp, chilli_vars, 0);
-		if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
-			syslog(LOG_ERR, "set chilli_net nvram error, %s", __FUNCTION__);
-	}
-	else
+		if(CHK_IF_DIGIT(enabled, 1)) {
+			setupParameters(wp, chilli_vars, 0);
+			if (nvram_bufset(RT2860_NVRAM, "chilli_net", (void *)subnet)!=0) //!!!
+				syslog(LOG_ERR, "set chilli_net nvram error, %s", __FUNCTION__);
+			nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
+		}
+		else
 #endif
 #ifdef CONFIG_USER_NODOGSPLASH
-	if(CHK_IF_DIGIT(enabled, 2))
-		setupParameters(wp, nodog_vars, 0);
-	else
+		if(CHK_IF_DIGIT(enabled, 2)) {
+			setupParameters(wp, nodog_vars, 0);
+			nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+		}
+		else
 #endif
-	if(CHK_IF_DIGIT(enabled, 0)) {
+		if(CHK_IF_DIGIT(enabled, 0)) {
 #ifdef CONFIG_USER_CHILLISPOT
-		nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+			nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
 #endif
 #ifdef CONFIG_USER_NODOGSPLASH
-		nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
+			nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
 #endif
+		}
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
-
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-out:
-#ifdef PRINT_DEBUG
-	websHeader(wp);
-	websWrite(wp, T("Wait till device will be reconfigured...<br>\n"));
-	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
 	doSystem("services_restart.sh all");
+	websHeader(wp);
+	websDone(wp, 200);
 }
 #endif // HOTSPOT
 
@@ -1909,7 +1711,6 @@ void formDefineInternet(void) {
 	websAspDefine(T("getSysLogBuilt"), getSysLogBuilt);
 
 	websAspDefine(T("vpnShowVPNStatus"), vpnShowVPNStatus);
-	websAspDefine(T("vpnIfaceList"), vpnIfaceList);
 	websFormDefine(T("formVPNSetup"), formVPNSetup);
 
 	websFormDefine(T("restoremac"), restoremac);

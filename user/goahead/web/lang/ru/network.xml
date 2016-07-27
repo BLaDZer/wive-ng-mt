@@ -15,6 +15,10 @@
     <message msgid="inet invalid mtu" msgstr="Неверное значение MTU" />
     <message msgid="inet invalid mac" msgstr="Введен некорректный MAC адрес" />
     <message msgid="inet auto" msgstr="Автоматически" />
+    <message msgid="inet hostname wrong" msgstr="Введите корректное имя хоста" />
+    <message msgid="inet lan wan same" msgstr="LAN IP адрес идентичен WAN адресу" />
+    <message msgid="inet lan2 wan same" msgstr="LAN2 IP адрес идентичен WAN адресу" />
+    <message msgid="inet lan lan2 same" msgstr="LAN2 IP адрес идентичен LAN адресу" />
 
     <message msgid="wan title" msgstr="Настройки Wide Area Network (WAN)" />
     <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
@@ -33,6 +37,7 @@
     <message msgid="wan nat enabled" msgstr="Включить NAT" />
     <message msgid="wan mac" msgstr="MAC адрес WAN" />
     <message msgid="wan reboot confirm" msgstr="Для изменения MAC адреса требуется перезагрузть маршрутизатор. Вы хотите продолжить?" />
+    <message msgid="wan warning same lan" msgstr="WAN IP адрес идентичен LAN/LAN2 адресу" />
 
     <message msgid="vpn title" msgstr="Настройка VPN(Virtual Private Network)" />
     <message msgid="vpn introduction" msgstr="Эта страница используется для настройки VPN(Virtual Private Network) туннеля на маршрутизаторе." />
@@ -131,6 +136,7 @@
     <message msgid="qos mode all" msgstr="Всё" />
     <message msgid="qos mode wan" msgstr="Только WAN" />
     <message msgid="qos mode vpn" msgstr="Только VPN" />
+    <message msgid="qos invalid bw" msgstr="Введено неверное значение" />
 
     <message msgid="routing title" msgstr="Настройки маршрутизации" />
     <message msgid="routing introduction" msgstr="Здесь вы можете добавлять и удалять пользовательские правила маршрутизации траффика и/или включить протокол динамической маршрутизации." />
@@ -193,4 +199,6 @@
     <message msgid="hotspot nodog pass" msgstr="Авторизация по паролю" />
     <message msgid="hotspot nodog user" msgstr="Авторизация по имени пользователя" />
     <message msgid="hotspot nodog pass attempts" msgstr="Число попыток ввода пароля" />
+    <message msgid="hotspot nodog block" msgstr="Блокировать" />
+    <message msgid="hotspot nodog allow" msgstr="Разрешить" />
 </po>

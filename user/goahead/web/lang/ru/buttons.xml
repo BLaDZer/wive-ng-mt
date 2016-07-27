@@ -6,7 +6,7 @@
     <message msgid="button add" msgstr="Добавить" />
     <message msgid="button openall" msgstr="Развернуть все" />
     <message msgid="button closeall" msgstr="Свернуть все" />
-    <message msgid="button reset" msgstr="Сброс" />
+    <message msgid="button reset" msgstr="Сбросить" />
     <message msgid="button restore factory" msgstr="Восстановить заводской" />
     <message msgid="button apply connect" msgstr="Применить и подключить" />
     <message msgid="button update" msgstr="Обновить" />
@@ -25,9 +25,10 @@
     <message msgid="message config" msgstr="Пожалуйста, подождите пока применяются новые параметры..." />
     <message msgid="message upgrade" msgstr="Обновление прошивки... Пожалуйста, не отключайте и не перезагружайте маршрутизатор." />
     <message msgid="message rwfs" msgstr="Пожалуйста, подождите пока обновляется файловая система..." />
+    <message msgid="message reset confirm" msgstr="Настройки будут сброшены к заводским значениям. Продолжить?" />	
 
-	<message msgid="warning header" msgstr="Внимание!" />
-	<message msgid="warning access password" msgstr="Рекомендуется изменить пароль доступа к маршрутизатору." />
-	<message msgid="warning wireless security" msgstr="Рекомендуется выставить шифрование и/или изменить пароль беспроводной сети." />
-	<message msgid="button warning" msgstr="Перейти" />	
+    <message msgid="warning header" msgstr="Внимание!" />
+    <message msgid="warning access password" msgstr="Рекомендуется изменить пароль доступа к маршрутизатору." />
+    <message msgid="warning wireless security" msgstr="Рекомендуется выставить шифрование и/или изменить пароль беспроводной сети." />
+    <message msgid="button warning" msgstr="Перейти" />	
 </po>

@@ -1,1 +1,0 @@
-<% vpnShowVPNStatus(); %>&nbsp;

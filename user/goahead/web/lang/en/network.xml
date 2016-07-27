@@ -15,6 +15,10 @@
     <message msgid="inet invalid mtu" msgstr="Invalid MTU value" />
     <message msgid="inet invalid mac" msgstr="Invalid MAC address" />
     <message msgid="inet auto" msgstr="Auto" />
+    <message msgid="inet hostname wrong" msgstr="Enter valid Hostname" />
+    <message msgid="inet lan wan same" msgstr="LAN IP address is identical to WAN" />
+    <message msgid="inet lan2 wan same" msgstr="LAN2 IP address is identical to WAN" />
+    <message msgid="inet lan lan2 same" msgstr="LAN2 IP address is identical to LAN" />
 
     <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
     <message msgid="wan introduction" msgstr="You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type." />
@@ -33,6 +37,7 @@
     <message msgid="wan nat enabled" msgstr="Enable NAT" />
     <message msgid="wan mac" msgstr="WAN MAC address" />
     <message msgid="wan reboot confirm" msgstr="Changing new MAC needs to reboot you router. Do you want to proceed?" />
+    <message msgid="wan warning same lan" msgstr="WAN IP address is identical to LAN/LAN2" />
 
     <message msgid="vpn title" msgstr="Virtual Private Network setup" />
     <message msgid="vpn introduction" msgstr="This page is used to configure the VPN(Virtual Private Network) tunnel on your Router. " />
@@ -133,6 +138,7 @@
     <message msgid="qos mode all" msgstr="All" />
     <message msgid="qos mode wan" msgstr="Only WAN" />
     <message msgid="qos mode vpn" msgstr="Only VPN" />
+    <message msgid="qos invalid bw" msgstr="Entered wrong value." />
 
     <message msgid="routing title" msgstr="Static Routing Settings" />
     <message msgid="routing introduction" msgstr="You can add and remove custom Internet routing rules and/or enable dynamic routing exchange protocol here." />
@@ -195,4 +201,6 @@
     <message msgid="hotspot nodog pass" msgstr="Password Authentication" />
     <message msgid="hotspot nodog user" msgstr="Username Authentication" />
     <message msgid="hotspot nodog pass attempts" msgstr="Password Attempts" />
+    <message msgid="hotspot nodog block" msgstr="Block" />	
+    <message msgid="hotspot nodog allow" msgstr="Allow" />	
 </po>

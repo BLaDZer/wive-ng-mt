@@ -141,6 +141,7 @@
   <message msgid="basic bandsteering age" msgstr="Помнить режим неактивного клиента" />
   <message msgid="basic bandsteering hold" msgstr="Таймаут запрета соединения в 2.4ГГц диапазоне" />
   <message msgid="basic bandsteering check" msgstr="Время на определение поддерживаемого диапазона" />
+  <message msgid="basic bandsteering ssid" msgstr="SSID для сети 2.4GHz и 5GHz должны быть одинаковыми" />
 
   <message msgid="basic ids" msgstr="Предотвращение вторжений" />
   <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />

@@ -25,9 +25,10 @@
     <message msgid="message config" msgstr="Please wait while parameters are applied..." />
     <message msgid="message upgrade" msgstr="Upgrading firmware... Please do not turn off power or reboot your router." />
     <message msgid="message rwfs" msgstr="Please wait while new RWFS are applied..." />
-	
-	<message msgid="warning header" msgstr="Warning!" />
-	<message msgid="warning access password" msgstr="Recommended change your password to access the router." />
-	<message msgid="warning wireless security" msgstr="Recommended set the encryption and/or change your password the wireless network." />
-	<message msgid="button warning" msgstr="Go to settings" />
+    <message msgid="message reset confirm" msgstr="Settings will be reset to the factory defaults. Continue?" />
+
+    <message msgid="warning header" msgstr="Warning!" />
+    <message msgid="warning access password" msgstr="Recommended change your password to access the router." />
+    <message msgid="warning wireless security" msgstr="Recommended set the encryption and/or change your password the wireless network." />
+    <message msgid="button warning" msgstr="Go to settings" />
 </po>
