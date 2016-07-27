@@ -2233,15 +2233,16 @@
 42) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
 43) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
 44) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-45) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-46) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-47) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-48) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-49) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-50) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-51) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-52) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-53) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+45) kernel: net: neigh: disallow transition to NUD_STALE if lladdr is unchanged in neigh_update().<br>
+46) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+47) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+48) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+49) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+50) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+51) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+52) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+53) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+54) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
