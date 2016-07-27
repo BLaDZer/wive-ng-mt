@@ -3843,10 +3843,15 @@ NDIS_STATUS	RTMPSetProfileParameters(
 
 										case MCAST_OFDM:	/* OFDM*/
 											pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_OFDM;
+											pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 								break;
 #ifdef DOT11_N_SUPPORT
 										case MCAST_HTMIX:	/* HTMIX*/
 											pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_HTMIX;
+											if (pAd->CommonCfg.BBPCurrentBW > BW_20)
+												pAd->CommonCfg.MCastPhyMode.field.BW =  BW_40;
+											else
+												pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 								break;
 #endif /* DOT11_N_SUPPORT */									
 

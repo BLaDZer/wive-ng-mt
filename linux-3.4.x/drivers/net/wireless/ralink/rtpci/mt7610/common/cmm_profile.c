@@ -3784,11 +3784,16 @@ NDIS_STATUS	RTMPSetProfileParameters(
 #ifdef DOT11_N_SUPPORT
 							case MCAST_HTMIX: /* HTMIX*/
 								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_HTMIX;
+								if (pAd->CommonCfg.BBPCurrentBW > BW_20)
+									pAd->CommonCfg.MCastPhyMode.field.BW =  BW_40;
+								else
+									pAd->CommonCfg.MCastPhyMode.field.BW =  BW_20;
 								break;
 #endif /* DOT11_N_SUPPORT */	
 #ifdef DOT11_VHT_AC
 							case MCAST_VHT:	/* VHT */
 								pAd->CommonCfg.MCastPhyMode.field.MODE = MODE_VHT;
+								pAd->CommonCfg.MCastPhyMode.field.BW = pAd->CommonCfg.BBPCurrentBW;
 								break;
 #endif /* DOT11_VHT_AC */	
 
