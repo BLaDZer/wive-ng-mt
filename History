@@ -2194,59 +2194,61 @@
 3) xupnpd: up to 1.034 version commit dffe9c55 (use old style ui).<br>
 4) radvd: up to 2.14 version.<br>
 5) build_system: add libwive for move reused functions from goaead/netcwmpd/snmpd/etc to one place.<br>
-6) goahead: merge wireless basic and advanced page.<br>
-7) goahead: add input values check to ipv6 page.<br>
-8) goahead: add ipv6 dns options.<br>
-9) goahead: add use default password warnings.<br>
-10) goahead: move select band for apcli/wds to true places.<br>
-11) goahead: refactoring firewall/dmz page.<br>
-12) goahead: add lost buffer alocation checks (prevent null pointer dereference in come cases).<br>
-13) goahead: add TX Rate show in station list.<br>
-14) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
-15) nvram: add genstaticroutes and geniptablesrules commands for use from init instead of direct call from goahead (drop dependency routes/netfilters by goahead).<br>
-16) init.d: direct call regenerate route/iptables rules and switch bootlevel instead iptables call.<br>
-17) init.d: rename web init to switchstage and drop goahead dependency start second init stage.<br>
-18) init.d: use user configured ipv6 dns in static mode and as fallback for dhcp mode.<br>
-19) init.d: fix not set MTU to WAN regression.<br>
-20) init.d: fix unload unused conntrack helpers modules.<br>
-21) init.d: fix buffers overflow trouble chillispot with 76x2 driver.<br>
-22) kernel: ralink_wifi: fix potentional crash in AllocateNdisPacket.<br>
-23) kernel: ralink_wifi: prevent new gcc overoptimization.<br>
-24) kernel: ralink_wifi: lost zero tx_block RxRing1DoneInterruptHandle.<br>
-25) kernel: ralink_wifi: fix padding in AMSDU frames.<br>
-26) kernel: ralink_wifi: fix potentional null pointer dereference in RTMPSendPackets.<br>
-27) kernel: ralink_wifi: fix set and use country code (need for RRM).<br>
-28) kernel: ralink_wifi: fix set mcast BW from profiles.<br>
-29) kernel: ralink_wifi: mt7610: add VTH mode for multicast phy mode set.<br>
-30) kernel: ralink_wifi: mt7610: fix mcast BW set with BW=80Mhz.<br>
-31) kernel: ralink_wifi: mt76x2/mt7603: fix hwHdrLen calculation regression after china refactoring.<br>
-32) kernel: ralink_wifi: mt7620/mt7610/mt76x2: clear TXWI ack flags in Tx Ring before send disconnect to clients.<br>
-33) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
-34) kernel: mips: fix siginfo.h to use strict posix types.<br>
-35) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
-36) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
-37) kernel: mips: prevent hitting do_notify_resume() with !user_mode(regs).<br>
-38) kernel: mips: fix harmlessly missing else statement.<br>
-39) kernel: mips: tlbex: avoid duplicated single_insn_swpd.<br>
-40) kernel: mips: uasm: handle low values in uasm_in_compat_space_p().<br>
-41) kernel: mips: traps: return correct si code for accessing nonmapped addresses.<br>
-42) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-43) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-44) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-45) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-46) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-47) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-48) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-49) kernel: net: neigh: disallow transition to NUD_STALE if lladdr is unchanged in neigh_update().<br>
-50) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-51) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-52) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-53) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-54) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-55) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-56) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-57) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-58) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+6) build_system: enable build FT/RRM support for all chips.<br>
+7) defaults: allow 80MHz channel width for MD1 devices per default.<br>
+8) goahead: merge wireless basic and advanced page.<br>
+9) goahead: add input values check to ipv6 page.<br>
+10) goahead: add ipv6 dns options.<br>
+11) goahead: add use default password warnings.<br>
+12) goahead: move select band for apcli/wds to true places.<br>
+13) goahead: refactoring firewall/dmz page.<br>
+14) goahead: add lost buffer alocation checks (prevent null pointer dereference in come cases).<br>
+15) goahead: add TX Rate show in station list.<br>
+16) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>
+17) nvram: add genstaticroutes and geniptablesrules commands for use from init instead of direct call from goahead (drop dependency routes/netfilters by goahead).<br>
+18) init.d: direct call regenerate route/iptables rules and switch bootlevel instead iptables call.<br>
+19) init.d: rename web init to switchstage and drop goahead dependency start second init stage.<br>
+20) init.d: use user configured ipv6 dns in static mode and as fallback for dhcp mode.<br>
+21) init.d: fix not set MTU to WAN regression.<br>
+22) init.d: fix unload unused conntrack helpers modules.<br>
+23) init.d: fix buffers overflow trouble chillispot with 76x2 driver.<br>
+24) kernel: ralink_wifi: fix potentional crash in AllocateNdisPacket.<br>
+25) kernel: ralink_wifi: prevent new gcc overoptimization.<br>
+26) kernel: ralink_wifi: lost zero tx_block RxRing1DoneInterruptHandle.<br>
+27) kernel: ralink_wifi: fix padding in AMSDU frames.<br>
+28) kernel: ralink_wifi: fix potentional null pointer dereference in RTMPSendPackets.<br>
+29) kernel: ralink_wifi: fix set and use country code (need for RRM).<br>
+30) kernel: ralink_wifi: fix set mcast BW from profiles.<br>
+31) kernel: ralink_wifi: mt7610: add VTH mode for multicast phy mode set.<br>
+32) kernel: ralink_wifi: mt7610: fix mcast BW set with BW=80Mhz.<br>
+33) kernel: ralink_wifi: mt76x2/mt7603: fix hwHdrLen calculation regression after china refactoring.<br>
+34) kernel: ralink_wifi: mt7620/mt7610/mt76x2: clear TXWI ack flags in Tx Ring before send disconnect to clients.<br>
+35) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
+36) kernel: mips: fix siginfo.h to use strict posix types.<br>
+37) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
+38) kernel: mips: dma-default: defend against NULL dev in massage_gfp_flags.<br>
+39) kernel: mips: prevent hitting do_notify_resume() with !user_mode(regs).<br>
+40) kernel: mips: fix harmlessly missing else statement.<br>
+41) kernel: mips: tlbex: avoid duplicated single_insn_swpd.<br>
+42) kernel: mips: uasm: handle low values in uasm_in_compat_space_p().<br>
+43) kernel: mips: traps: return correct si code for accessing nonmapped addresses.<br>
+44) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+45) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+46) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+47) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+48) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+49) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+50) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+51) kernel: net: neigh: disallow transition to NUD_STALE if lladdr is unchanged in neigh_update().<br>
+52) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+53) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+54) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+55) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+56) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+57) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+58) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+59) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+60) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
