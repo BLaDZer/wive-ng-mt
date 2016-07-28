@@ -296,8 +296,8 @@ BOOLEAN StaUpdateMacTableEntry(
 	if (wdev->bAutoTxRateSwitch == TRUE) {
 		UCHAR TableSize = 0;
 
-		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 		pEntry->bAutoTxRateSwitch = TRUE;
+		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 	} else {
 		pEntry->HTPhyMode.field.MODE = wdev->HTPhyMode.field.MODE;
 		pEntry->HTPhyMode.field.MCS = wdev->HTPhyMode.field.MCS;

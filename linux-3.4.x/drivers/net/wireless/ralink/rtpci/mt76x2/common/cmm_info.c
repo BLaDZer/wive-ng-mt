@@ -4042,11 +4042,12 @@ INT	Set_HtMcs_Proc(RTMP_ADAPTER *pAd, PSTRING arg)
 			if (IS_ENTRY_CLIENT(pEntry) && (pEntry->apidx == pObj->ioctl_if)) {
 				if ((HtMcs == MCS_AUTO) &&  ss == 0) {
 					UCHAR TableSize = 0;
-					
+
+					pEntry->bAutoTxRateSwitch = TRUE;
+
 					MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 					MlmeNewTxRate(pAd, pEntry);
 
-					pEntry->bAutoTxRateSwitch = TRUE;
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 					if (! ADAPT_RATE_TABLE(pEntry->pTable))
