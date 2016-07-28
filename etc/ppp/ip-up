@@ -106,16 +106,10 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
 	    if [ "$chilli_enable" = "on" ]; then
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
 	    fi
-	    if [ "$Lan2Enabled" = "1" ]; then
-		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j SNAT --to-source $PPP_LOCAL" >> $PPP_FIREWALL
-	    fi
 	else
 	    echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j MASQUERADE" >> $PPP_FIREWALL
 	    if [ "$chilli_enable" = "on" ]; then
 		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $chilli_net -j MASQUERADE" >> $PPP_FIREWALL
-	    fi
-	    if [ "$Lan2Enabled" = "1" ]; then
-		echo "iptables -t nat -A POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j MASQUERADE" >> $PPP_FIREWALL
 	    fi
 	fi
 	if [ -e /etc/portforward_vpn ] && [ -e $PPP_FIREWALL ] && [ "$PortForwardEnable" = "1" ]; then

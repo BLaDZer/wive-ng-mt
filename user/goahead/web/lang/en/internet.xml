@@ -8,9 +8,6 @@
   <message msgid="inet ip" msgstr="IP Address" />
   <message msgid="inet server" msgstr="Server IP" />
   <message msgid="inet netmask" msgstr="Subnet Mask" />
-  <message msgid="inet lan2" msgstr="LAN 2" />
-  <message msgid="inet lan2 ip" msgstr="LAN2 IP Address" />
-  <message msgid="inet lan2 netmask" msgstr="LAN2 Subnet Mask" />
   <message msgid="inet gateway" msgstr="Default Gateway" />
   <message msgid="inet pri dns" msgstr="Primary DNS Server" />
   <message msgid="inet sec dns" msgstr="Secondary DNS Server" />

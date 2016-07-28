@@ -510,7 +510,7 @@ function showWarning() {
 	
 	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
 		warningHTML += '<tr><td>';
-		warningHTML += '<table class="warning">';
+		warningHTML += '<table class="warning" align="center">';
 		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
 		if  (warning_access_password) {
 			warningHTML += '<tr>';

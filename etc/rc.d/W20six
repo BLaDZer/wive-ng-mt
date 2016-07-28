@@ -35,9 +35,6 @@ calculate_and_set_mtu() {
 
     # set mtu for lan
     sysctl -wq  net.ipv6.conf."$lan_if".mtu="$ipvmtu"
-    if [ "$Lan2Enabled" = "1" ]; then
-	sysctl -wq  net.ipv6.conf."$lan2_if".mtu="$ipvmtu"
-    fi
 }
 
 start() {

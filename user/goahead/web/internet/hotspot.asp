@@ -364,6 +364,16 @@
 			}
 
 			function ProfileOnChange(form) {
+				if ((form.spotProfile.value != "manual") && (form.spotProfile.value != old_profile) && (old_profile != "manual") && (old_profile != "0")) {
+					if (confirm(_("hotspot profile change"))) {
+						resetform 				= document.spotCfgReset;
+						resetform.profile.value = form.spotProfile.value;
+						ajaxShowTimer(resetform, 'timerReloader', _('message apply'), 15);
+						var br = getBrowser();
+						if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
+							resetform.submit();
+					}
+				}
 				for(var i = 0; i < Profiles.length; i++) {
 					var tmp = Profiles[i];
 					if (tmp[0] == form.spotProfile.value) {
@@ -504,6 +514,7 @@
 					<p id="sIntroduction"></p>
 					<hr />
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
+					<form method="POST" name="spotCfgReset" action="/goform/resetHotspot"><input type="hidden" id="profile" name="profile"></form>
 					<form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
 						<table class="form">
 							<tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">

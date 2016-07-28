@@ -278,7 +278,7 @@ var Profiles = [
 		"200",						// End DHCP IP
 		false,						// Primary DNS
 		false,						// Secondary DNS
-		"NetNyNEt.lo",					// Domain name
+		"NetByNet.lo",					// Domain name
 		"3000",						// Lease time
 		"wi-fi.netbynet.ru",				// Radius server auth address
 		"wi-fi.netbynet.ru",				// Radius server acct address

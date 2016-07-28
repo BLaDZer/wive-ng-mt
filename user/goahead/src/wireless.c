@@ -373,124 +373,98 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 	RT_802_11_MAC_TABLE table = {0};
 
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "ra0", &table, sizeof(table)) < 0)
-	{
+	websWrite(wp, T("{ "));
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "ra0", &table, sizeof(table)) < 0) {
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
-		goto out24;
 	}
-
-	for (i = 0; i < table.Num; i++) {
-	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
-
-	    // AID
-	    websWrite(wp, T("<tr><td  bgcolor=\"#c4d7ff\">%d</td>"), pe->Aid);
-
-	    // MAC Address
-	    websWrite(wp, T("<td bgcolor=\"#c4d7ff\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
-			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
-
-	    // Connection Time
-	    websWrite(wp, T("<td>%02u:%02u:%02u</td>"), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
-
-	    // Power Save mode, MIMO Power Save
-	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
-
-	    // TX MCS
-	    websWrite(wp, T("<td>%d</td>"), getMCS(pe->TxRate));
-
-	    // Bandwith
-	    websWrite(wp, T("<td>%s</td>"), getBW(pe->TxRate.field.BW));
-
-	    // SGI/STBC/LDPC
-	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
-		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES", (pe->TxRate.field.ldpc == 0)? "NO " : "YES");
-
-	    // HT/VHT Modes
-	    websWrite(wp, T("<td>%s</td>"), getPhyMode(pe->TxRate.field.MODE));
-
-	    // Tx Rate
-	    websWrite(wp, T("<td>%dMbit/s</td>"), getRate(pe->TxRate));
-
-	    // RSSI
+	else {
+		websWrite(wp, T("\"stationlist24\": [ "));
+		for (i = 0; i < table.Num; i++) {
+			RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
+			// AID
+			websWrite(wp, T("{ \"aid\":\"%d\", "), pe->Aid);
+			// MAC Address
+			websWrite(wp, T("\"mac\":\"%02X:%02X:%02X:%02X:%02X:%02X\", "), pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
+			// Connection Time
+			websWrite(wp, T("\"conntime\":\"%02u:%02u:%02u\", "), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
+			// Power Save mode, MIMO Power Save
+			websWrite(wp, T("\"psm\":\"%s\", \"mimo\":\"%s\", "), (pe->Psm == 0)? "NO" : "YES", (pe->MimoPs == 0)? "NO" : "YES");
+			// TX MCS
+			websWrite(wp, T("\"mcs\":\"%d\", "), getMCS(pe->TxRate));
+			// Bandwith
+			websWrite(wp, T("\"bw\":\"%s\", "), getBW(pe->TxRate.field.BW));
+			// SGI/STBC/LDPC
+			websWrite(wp, T("\"sgi\":\"%s\", \"stbc\":\"%s\", \"ldpc\":\"%s\", "), (pe->TxRate.field.ShortGI == 0)? "NO" : "YES", (pe->TxRate.field.STBC == 0)? "NO" : "YES", (pe->TxRate.field.ldpc == 0)? "NO" : "YES");
+			// HT/VHT Modes
+			websWrite(wp, T("\"mode\":\"%s\", "), getPhyMode(pe->TxRate.field.MODE));
+			// Tx Rate
+			websWrite(wp, T("\"txrate\":\"%d\", "), getRate(pe->TxRate));
+			// RSSI
 #if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
-	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-	    websWrite(wp, T("<td>%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+			websWrite(wp, T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
+			websWrite(wp, T("\"quality0\":\"%d\", \"quality1\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
-	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
-	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
+			websWrite(wp, T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", \"rssi2\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
+			websWrite(wp, T("\"quality0\":\"%d\", \"quiality1\":\"%d\", \"quiality2\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
-	    // Rx/Tx bytes
-	    websWrite(wp, T("<td>%s,%s</td>"), scale(pe->RxBytes), scale(pe->TxBytes));
-
-	    // Action
-	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
-			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
-	    websWrite(wp, T("</tr>"));
+			// Rx/Tx bytes
+			websWrite(wp, T("\"rxbytes\":\"%s\", \"txbytes\":\"%s\" }"), scale(pe->RxBytes), scale(pe->TxBytes));
+			if (i < (table.Num - 1))
+				websWrite(wp, T(", "));
+		}
+		websWrite(wp, T(" ]"));
 	}
-out24:
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "rai0", &table, sizeof(table)) < 0)
-	{
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "rai0", &table, sizeof(table)) < 0) {
 		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
 		err = -1;
-		goto out5;
 	}
-
-	for (i = 0; i < table.Num; i++) {
-	    RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
-
-	    // AID
-	    websWrite(wp, T("<tr><td  bgcolor=\"#c4ffc4\">%d</td>"), pe->Aid);
-
-	    // MAC Address
-	    websWrite(wp, T("<td bgcolor=\"#c4ffc4\">%02X:%02X:%02X:%02X:%02X:%02X</td>"),
-			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
-
-	    // Connection Time
-	    websWrite(wp, T("<td>%02u:%02u:%02u</td>"), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
-
-	    // Power Save mode, MIMO Power Save
-	    websWrite(wp, T("<td>%s</td><td>%s</td>"), (pe->Psm == 0)? "NO " : "YES", (pe->MimoPs == 0)? "NO " : "YES");
-
-	    // TX MCS
-	    websWrite(wp, T("<td>%d</td>"), getMCS(pe->TxRate));
-
-	    // Bandwith
-	    websWrite(wp, T("<td>%s</td>"), getBW(pe->TxRate.field.BW));
-
-	    // SGI/STBC/LDPC
-	    websWrite(wp, T("<td>%s</td><td>%s</td><td>%s</td>"),
-		(pe->TxRate.field.ShortGI == 0)? "NO " : "YES", (pe->TxRate.field.STBC == 0)? "NO " : "YES", (pe->TxRate.field.ldpc == 0)? "NO " : "YES");
-
-	    // HT/VHT Modes
-	    websWrite(wp, T("<td>%s</td>"), getPhyMode(pe->TxRate.field.MODE));
-
-	    // Tx Rate
-	    websWrite(wp, T("<td>%dMbit/s</td>"), getRate(pe->TxRate));
-
-	    // RSSI
+	else {
+		if (err == 0)
+			websWrite(wp, T(", "));
+		websWrite(wp, T("\"stationlist5\": [ "));
+		for (i = 0; i < table.Num; i++) {
+			RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
+			// AID
+			websWrite(wp, T("{ \"aid\":\"%d\", "), pe->Aid);
+			// MAC Address
+			websWrite(wp, T("\"mac\":\"%02X:%02X:%02X:%02X:%02X:%02X\", "), pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
+			// Connection Time
+			websWrite(wp, T("\"conntime\":\"%02u:%02u:%02u\", "), (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
+			// Power Save mode, MIMO Power Save
+			websWrite(wp, T("\"psm\":\"%s\", \"mimo\":\"%s\", "), (pe->Psm == 0)? "NO" : "YES", (pe->MimoPs == 0)? "NO" : "YES");
+			// TX MCS
+			websWrite(wp, T("\"mcs\":\"%d\", "), getMCS(pe->TxRate));
+			// Bandwith
+			websWrite(wp, T("\"bw\":\"%s\", "), getBW(pe->TxRate.field.BW));
+			// SGI/STBC/LDPC
+			websWrite(wp, T("\"sgi\":\"%s\", \"stbc\":\"%s\", \"ldpc\":\"%s\", "), (pe->TxRate.field.ShortGI == 0)? "NO" : "YES", (pe->TxRate.field.STBC == 0)? "NO" : "YES", (pe->TxRate.field.ldpc == 0)? "NO" : "YES");
+			// HT/VHT Modes
+			websWrite(wp, T("\"mode\":\"%s\", "), getPhyMode(pe->TxRate.field.MODE));
+			// Tx Rate
+			websWrite(wp, T("\"txrate\":\"%d\", "), getRate(pe->TxRate));
+			// RSSI
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
-	    websWrite(wp, T("<td>%d</td>"), (int)(pe->AvgRssi0));
-	    websWrite(wp, T("<td>%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0));
+			websWrite(wp, T("\"rssi0\":\"%d\", "), (int)(pe->AvgRssi0));
+			websWrite(wp, T("\"quality0\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0));
 #elif defined(CONFIG_RT_SECOND_IF_MT7612E)
-	    websWrite(wp, T("<td>%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-	    websWrite(wp, T("<td>%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+			websWrite(wp, T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
+			websWrite(wp, T("\"quality0\":\"%d\", \"quality1\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
-	    websWrite(wp, T("<td>%d,%d,%d</td>"), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
-	    websWrite(wp, T("<td>%d%%,%d%%,%d%%</td>"), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
+			websWrite(wp, T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", \"rssi2\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
+			websWrite(wp, T("\"quality0\":\"%d\", \"quiality1\":\"%d\", \"quiality2\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
-	    // Rx/Tx bytes
-	    websWrite(wp, T("<td>%s,%s</td>"), scale(pe->RxBytes), scale(pe->TxBytes));
-
-	    // Action
-	    websWrite(wp, T("<td><input type=\"button\" id=\"disconnect\" value=\"disconnect\" onclick=\"doDisconnectSta(this.form, '%02X:%02X:%02X:%02X:%02X:%02X')\"></td>"),
-			pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
-	    websWrite(wp, T("</tr>"));
+			// Rx/Tx bytes
+			websWrite(wp, T("\"rxbytes\":\"%s\", \"txbytes\":\"%s\" }"), scale(pe->RxBytes), scale(pe->TxBytes));
+			if (i < (table.Num - 1))
+				websWrite(wp, T(", "));
+		}
+		websWrite(wp, T(" ]"));
 	}
-out5:
 #endif
+	websWrite(wp, T(" }"));
 	return err;
 }
 

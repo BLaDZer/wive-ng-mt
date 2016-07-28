@@ -1108,7 +1108,6 @@ static void getMyMAC(webs_t wp, char_t *path, char_t *query)
 static void setLan(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*lan_ip, *lan_nm;
-	char_t	*lan2enabled, *lan2_ip, *lan2_nm;
 	char_t	*start_ip, *end_ip, *dgw;
 	char_t	*gw = NULL, *pd = NULL, *sd = NULL;
 	char_t	*host;
@@ -1119,16 +1118,13 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 
 	lan_ip		= websGetVar(wp, T("lanIp"), T(""));
 	lan_nm		= websGetVar(wp, T("lanNetmask"), T(""));
-	lan2enabled	= websGetVar(wp, T("lan2enabled"), T(""));
-	lan2_ip		= websGetVar(wp, T("lan2Ip"), T(""));
-	lan2_nm		= websGetVar(wp, T("lan2Netmask"), T(""));
 	start_ip	= websGetVar(wp, T("dhcpStart"), T(""));
 	end_ip		= websGetVar(wp, T("dhcpEnd"), T(""));
 	dgw		= websGetVar(wp, T("dhcpGateway"), T(""));
 	host		= websGetVar(wp, T("hostname"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 6, "HostName", "lan_ipaddr", "lan_netmask", "Lan2Enabled", "lan2_ipaddr", "lan2_netmask");
+		nvram_fromdef(RT2860_NVRAM, 6, "HostName", "lan_ipaddr", "lan_netmask");
 		if (!strcmp(opmode, "0"))
 		{
 			nvram_fromdef(RT2860_NVRAM, 3, "wan_gateway", "wan_primary_dns", "wan_secondary_dns");
@@ -1142,11 +1138,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 		nvram_init(RT2860_NVRAM);
 
 		nvram_bufset(RT2860_NVRAM, "HostName", host);
-		nvram_bufset(RT2860_NVRAM, "Lan2Enabled", lan2enabled);
 		nvram_bufset(RT2860_NVRAM, "lan_ipaddr", lan_ip);
 		nvram_bufset(RT2860_NVRAM, "lan_netmask", lan_nm);
-		nvram_bufset(RT2860_NVRAM, "lan2_ipaddr", lan2_ip);
-		nvram_bufset(RT2860_NVRAM, "lan2_netmask", lan2_nm);
 
 		// configure gateway and dns (WAN) at bridge mode
 		if (!strncmp(opmode, "0", 2))
@@ -1205,7 +1198,6 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
 	char *lan_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
-	char *lan2enabled = nvram_get(RT2860_NVRAM, "Lan2Enabled");
 
 	ctype = ip = nm = gw = eth = user = pass = mac = vpn_srv = vpn_mode = l2tp_srv = l2tp_mode = NULL;
 
@@ -1635,6 +1627,34 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 }
 #endif // HOTSPOT
 
+static void resetHotspot(webs_t wp, char_t *path, char_t *query)
+{
+	char_t *profile   = websGetVar(wp, T("profile"), T("0"));
+
+	nvram_fromdef(RT2860_NVRAM, 39, "chilli_enable", "chilli_profile", "chilli_dns1",
+		"chilli_dns2", "chilli_domain", "chilli_dhcpstart", "chilli_dhcpend",
+		"chilli_lease", "chilli_radiusserver1", "chilli_radiusserver2",
+		"chilli_radiussecret", "chilli_radiusnasid", "chilli_radiuslocationid",
+		"chilli_radiuslocationname", "chilli_coaport", "chilli_coanoipcheck",
+		"chilli_uamserver", "chilli_uamhomepage", "chilli_uamsecret", "chilli_uamallowed",
+		"chilli_uamdomain", "chilli_uamanydns", "chilli_macallowed", "nodogsplash_enable",
+		"nodog_GatewayIPRange", "nodog_RedirectURL", "nodog_MaxClients",
+		"nodog_ClientIdleTimeout", "nodog_ClientForceTimeout", "nodog_AuthenticateImmediately",
+		"nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
+		"nodog_TrustedMACList", "nodog_PasswordAuthentication", "nodog_Password",
+		"nodog_UsernameAuthentication", "nodog_Username", "nodog_PasswordAttempts");
+
+	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");
+	nvram_bufset(RT2860_NVRAM, "chilli_enable", "on");
+	nvram_bufset(RT2860_NVRAM, "chilli_profile", profile);
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
+
+	websHeader(wp);
+	websDone(wp, 200);
+}
+
 static int getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_USER_CHILLISPOT
@@ -1721,6 +1741,7 @@ void formDefineInternet(void) {
 #endif
 #if defined(CONFIG_USER_CHILLISPOT) || defined(CONFIG_USER_NODOGSPLASH)
 	websFormDefine(T("setHotspot"), setHotspot);
+	websFormDefine(T("resetHotspot"), resetHotspot);
 #endif
 	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
 	websAspDefine(T("getNoDogBuilt"), getNoDogBuilt);

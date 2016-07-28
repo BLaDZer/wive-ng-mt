@@ -204,7 +204,7 @@ function displayServiceStatus()
                   <option value="YEKT-5">(UTC+05:00) Russia (Yekaterinburg)</option>
                   <option value="UCT_006" id="ntpBangladesh">(UTC+06:00) Bangladesh</option>
                   <option value="KGT-6" id="ntpBangladesh">(UTC+06:00) Kyrgyzstan (Bishkek)</option>
-                  <option value="NOVT-6">(UTC+06:00) Russia (Novosibirsk)</option>
+                  <option value="NOVT-7">(UTC+07:00) Russia (Novosibirsk)</option>
                   <option value="OMST-6">(UTC+06:00) Russia (Omsk)</option>
                   <option value="UCT_007" id="ntpThailand">(UTC+07:00) Thailand</option>
                   <option value="KRAT-7" id="ntpAustraliaWA">(UTC+07:00) Russia (Krasnoyarsk)</option>

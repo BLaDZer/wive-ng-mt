@@ -18,56 +18,52 @@
 
 			function initTranslation()
 			{
-				_TR("wTitle",				"wan title");
+				_TR("wTitle",			"wan title");
 				_TR("wIntroduction",		"wan introduction");
-
 				_TR("wConnectionType",		"wan connection type");
-				_TR("wConnection",			"wan connection");
+				_TR("wConnection",		"wan connection");
 				_TR("wConnTypeStatic",		"wan connection type static");
 				_TR("wConnTypeDhcp",		"wan connection type dhcp");
 				_TR("wConnTypeZero",		"wan connection type zero");
-
-				_TR("wStaticMode",			"wan static mode");
-				_TR("wStaticDns",			"wan static dns");
-				_TR("wStaticIp",			"inet ip");
+				_TR("wStaticMode",		"wan static mode");
+				_TR("wStaticDns",		"wan static dns");
+				_TR("wStaticIp",		"inet ip");
 				_TR("wStaticNetmask",		"inet netmask");
 				_TR("wStaticGateway",		"inet gateway");
 				_TR("wStaticPriDns",		"inet pri dns");
 				_TR("wStaticSecDns",		"inet sec dns");
-
-				_TR("wDhcpMode",			"wan dhcp mode");
+				_TR("wDhcpMode",		"wan dhcp mode");
 				_TR("wAdditionalOptions",	"wan additional options");
-				_TR("wReqFromDHCP",			"wan request from dhcp");
+				_TR("wReqFromDHCP",		"wan request from dhcp");
 				_TR("wDHCPVendorClass",		"wan dhcp vendor class");
-				_TR("wMTU",					"wan mtu");
-				_TR("wAuto",				"inet auto");
-				_TR("wCustom",				"routing custom");
-				_TR("wNatEnabled",			"wan nat enabled");
-				_TR("wMacAddress",			"inet mac");
-				_TR("wMacAddr",				"wan mac");
-
-				_TRV("wApply",				"button apply");
-				_TRV("wCancel",				"button cancel");
-				_TRV("wReset",				"button reset");
+				_TR("wMTU",			"wan mtu");
+				_TR("wAuto",			"inet auto");
+				_TR("wCustom",			"routing custom");
+				_TR("wNatEnabled",		"wan nat enabled");
+				_TR("wMacAddress",		"inet mac");
+				_TR("wMacAddr",			"wan mac");
+				_TRV("wApply",			"button apply");
+				_TRV("wCancel",			"button cancel");
+				_TRV("wReset",			"button reset");
 				_TRV("WanMacRestore",		"button restore factory");
 			}
 
 			function initValues()
 			{
-				var form		= document.wanCfg;
-				var mode 		= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
-				var nat			= '<% getCfgZero(1, "natEnabled"); %>';
-				var opMode		= '<% getCfgZero(1, "OperationMode"); %>';
+				var form	= document.wanCfg;
+				var mode 	= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
+				var nat		= '<% getCfgZero(1, "natEnabled"); %>';
+				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
 				var static_dns	= '<% getCfgZero(1, "wan_static_dns"); %>';
-				var wan_mtu		= defaultNumber("<% getCfgGeneral(1, "wan_manual_mtu"); %>", '0');
-				var wanIp		= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
+				var wan_mtu	= defaultNumber("<% getCfgGeneral(1, "wan_manual_mtu"); %>", '0');
+				var wanIp	= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
 				var wanNetmask	= '<% getCfgGeneral(1, "wan_netmask"); %>';
 				var wanGateway	= '<% getCfgGeneral(1, "wan_gateway"); %>';
 				var dhcpReqIP	= '<% getCfgGeneral(1, "dhcpRequestIP"); %>';
 				var dhcpVendor	= '<% getCfgGeneral(1, "dhcpVendorClass"); %>';
-				var priDNS		= '<% getDns(1); %>';
-				var secDNS		= '<% getDns(2); %>';
-				var wanMac		= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>';
+				var priDNS	= '<% getDns(1); %>';
+				var secDNS	= '<% getDns(2); %>';
+				var wanMac	= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>';
 
 				form.staticIp.value 		= wanIp;
 				form.staticNetmask.value	= wanNetmask;
@@ -104,7 +100,6 @@
 				var wan_mtu	= form.wan_mtu.value * 1;
 				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
 				var lanIp	= '<% getCfgGeneral(1, "lan_ipaddr"); %>';
-				var lan2Ip	= '<% getCfgGeneral(1, "lan2_ipaddr"); %>';
 
 				if (c_type == "STATIC") {
 					form.wStaticDnsEnable.disabled = false;
@@ -121,7 +116,7 @@
 							form.staticGateway.focus();
 							return false;
 						}
-					if ((opMode != "0") && ((form.staticIp.value == lanIp) || (form.staticIp.value == lan2Ip))) {
+					if ((opMode != "0") && (form.staticIp.value == lanIp)) {
 							alert(_("wan warning same lan"));
 							form.staticIp.focus();
 							return false;

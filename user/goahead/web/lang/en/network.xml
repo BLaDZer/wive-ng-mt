@@ -9,16 +9,11 @@
     <message msgid="inet gateway" msgstr="Default Gateway" />
     <message msgid="inet pri dns" msgstr="Primary DNS Server" />
     <message msgid="inet sec dns" msgstr="Secondary DNS Server" />
-    <message msgid="inet lan2" msgstr="LAN 2" />
-    <message msgid="inet lan2 ip" msgstr="LAN2 IP Address" />
-    <message msgid="inet lan2 netmask" msgstr="LAN2 Subnet Mask" />
     <message msgid="inet invalid mtu" msgstr="Invalid MTU value" />
     <message msgid="inet invalid mac" msgstr="Invalid MAC address" />
     <message msgid="inet auto" msgstr="Auto" />
     <message msgid="inet hostname wrong" msgstr="Enter valid Hostname" />
     <message msgid="inet lan wan same" msgstr="LAN IP address is identical to WAN" />
-    <message msgid="inet lan2 wan same" msgstr="LAN2 IP address is identical to WAN" />
-    <message msgid="inet lan lan2 same" msgstr="LAN2 IP address is identical to LAN" />
 
     <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
     <message msgid="wan introduction" msgstr="You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type." />
@@ -37,7 +32,7 @@
     <message msgid="wan nat enabled" msgstr="Enable NAT" />
     <message msgid="wan mac" msgstr="WAN MAC address" />
     <message msgid="wan reboot confirm" msgstr="Changing new MAC needs to reboot you router. Do you want to proceed?" />
-    <message msgid="wan warning same lan" msgstr="WAN IP address is identical to LAN/LAN2" />
+    <message msgid="wan warning same lan" msgstr="WAN IP address is identical to LAN" />
 
     <message msgid="vpn title" msgstr="Virtual Private Network setup" />
     <message msgid="vpn introduction" msgstr="This page is used to configure the VPN(Virtual Private Network) tunnel on your Router. " />
@@ -202,5 +197,6 @@
     <message msgid="hotspot nodog user" msgstr="Username Authentication" />
     <message msgid="hotspot nodog pass attempts" msgstr="Password Attempts" />
     <message msgid="hotspot nodog block" msgstr="Block" />	
-    <message msgid="hotspot nodog allow" msgstr="Allow" />	
+    <message msgid="hotspot nodog allow" msgstr="Allow" />
+    <message msgid="hotspot profile change" msgstr="When changing profile recommended to reset the hotspot settings. Reset settings?" />
 </po>

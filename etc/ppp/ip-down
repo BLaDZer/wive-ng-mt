@@ -23,10 +23,8 @@ eval `nvram_buf_get 2860 vpnPeerDNS`
     iptables -D FORWARD -o $PPP_IFACE -j ACCEPT > /dev/null 2>&1
     iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j MASQUERADE > /dev/null 2>&1
     iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $chilli_net -j MASQUERADE > /dev/null 2>&1
-    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j MASQUERADE > /dev/null 2>&1
     iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan_ipaddr/$lan_netmask -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
     iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $chilli_net -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
-    iptables -t nat -D POSTROUTING -o $PPP_IFACE -s $lan2_ipaddr/$lan2_netmask -j SNAT --to-source $PPP_LOCAL > /dev/null 2>&1
 
     if [ -e $PPP_FIREWALL ]; then
 	rm -f $PPP_FIREWALL

@@ -38,12 +38,6 @@ start() {
     ifconfig "$lan_if" "$lan_ipaddr" netmask "$lan_netmask" up
     $LOG "Add LAN1 Mode is $OperationMode lan iface $lan_if, adress $lan_ipaddr"
 
-    # configure LAN2/BR0:9
-    if [ "$Lan2Enabled" = "1" ] && [ "$lan2_ipaddr" != "" ] && [ "$lan2_netmask" != "" ] ; then
-	$LOG "Add LAN2 iface $lan2_if $lan2_ipaddr netmask $lan2_netmask"
-        ifconfig "$lan2_if" "$lan2_ipaddr" netmask "$lan2_netmask" up
-    fi
-
     # enable forward for LAN interfaces only not bridge mode enable forward
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	sysctl -wq net.ipv4.conf.$lan_if.forwarding=1
@@ -53,7 +47,6 @@ start() {
 addr_flush() {
     # drop adresses
     ip -4 addr flush dev "$lan_if" > /dev/null 2>&1
-    ip -4 addr flush dev "$lan2_if" > /dev/null 2>&1
     ip -4 addr flush dev "$phys_lan_if" > /dev/null 2>&1
 }
 
@@ -61,7 +54,6 @@ stop() {
   $LOG "Stop LAN network interfaces."
     # flush ip from interfaces
     addr_flush
-    ip link set "$lan2_if" down > /dev/null 2>&1
     ip link set "$phys_lan_if" down > /dev/null 2>&1
     # last delete bridge interface
     if [ -d /proc/sys/net/ipv4/conf/br0 ]; then

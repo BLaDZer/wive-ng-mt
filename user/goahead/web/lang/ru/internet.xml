@@ -8,9 +8,6 @@
   <message msgid="inet ip" msgstr="IP адрес" />
   <message msgid="inet server" msgstr="IP сервера" />
   <message msgid="inet netmask" msgstr="Маска подсети" />
-  <message msgid="inet lan2" msgstr="LAN 2" />
-  <message msgid="inet lan2 ip" msgstr="LAN2 IP адрес" />
-  <message msgid="inet lan2 netmask" msgstr="LAN2 маска подсети" />
   <message msgid="inet gateway" msgstr="Шлюз по умолчанию" />
   <message msgid="inet pri dns" msgstr="Основной DNS" />
   <message msgid="inet sec dns" msgstr="Вторичный DNS" />

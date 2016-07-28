@@ -19,9 +19,6 @@ iptaccounting() {
 	    iptables -N ipaccount
 	    iptables -A FORWARD -j ipaccount
 	    iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan_ip_acc"/"$lan_ip_prf" --ashort
-	    if [ "$Lan2Enabled" = "1" ]; then
-	        iptables -A ipaccount -m account --aname mynetwork --aaddr "$lan2_ip_acc"/"$lan2_ip_prf" --ashort
-	    fi
 	    echo "show=src" > /proc/net/ipt_account/mynetwork
 	    echo "reset-on-read=no" > /proc/net/ipt_account/mynetwork
 	fi
@@ -73,10 +70,6 @@ servicelimit() {
 	    if [ "$RadiusSrvEnable" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
-		if [ "$RadiusSrvEnable" = "1" ]; then
-		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
-		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
-		fi
 	    elif [ "$RadiusSrvEnable" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport 1812:1813 -j ACCEPT
     		iptables -A servicelimit $STATE_NEW -p udp --dport 1812:1813 -j ACCEPT
@@ -105,37 +98,22 @@ servicelimit() {
 	if [ "$LOCAL_PRT" != "" ]; then
 	    $LOG "allow local port range $LOCAL_PRT from LAN, need for some local service"
 	    iptables -A servicelimit -i $lan_if -p udp --dport "$LOCAL_PRT" -j ACCEPT
-	    if [ "$Lan2Enabled" = "1" ]; then
-		iptables -A servicelimit -i $lan2_if -p udp --dport "$LOCAL_PRT" -j ACCEPT
-	    fi
 	fi
 	if [ "$upnpEnabled" = "1" ] && [ "$ROUTE_MODE" = "on" ]; then
 	    $LOG "UPNP allow to connect"
 	    iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 8666 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p udp --dport 1900 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p udp --dport 5350:5351 -j ACCEPT
-	    if [ "$Lan2Enabled" = "1" ]; then
-		iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport 8666 -j ACCEPT
-		iptables -A servicelimit -i $lan2_if -p udp --dport 1900 -j ACCEPT
-		iptables -A servicelimit -i $lan2_if -p udp --dport 5350:5351 -j ACCEPT
-	    fi
 	fi
 	if [ "$xupnpd" = "1" ]; then
 	    $LOG "Xupnpd allow to connect"
 	    iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 4044 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p udp --dport 1900 -j ACCEPT
-	    if [ "$Lan2Enabled" = "1" ]; then
-    		iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport 4044 -j ACCEPT
-		iptables -A servicelimit -i $lan2_if -p udp --dport 1900 -j ACCEPT
-	    fi
 	fi
 	if [ "$UDPXYMode" != "0" ]; then
 	    $LOG "Udpxy allow to connect"
 	    if [ "$UDPXYMode" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $UDPXYPort -j ACCEPT
-		if [ "$Lan2Enabled" = "1" ]; then
-		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport $UDPXYPort -j ACCEPT
-		fi
 	    elif [ "$UDPXYMode" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $UDPXYPort -j ACCEPT
 	    fi
@@ -150,9 +128,6 @@ servicelimit() {
     	    iptables -A servicelimit -p tcp --dport $RemoteManagementPort $CONNLIMIT 16 -j REJECT
 	    if [ "$RemoteManagement" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
-	     if [ "$Lan2Enabled" = "1" ]; then
-    		iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
-	     fi
 	    elif [ "$RemoteManagement" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
 	    fi
@@ -162,9 +137,6 @@ servicelimit() {
     	    iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteSSHPort $CONNLIMIT 4 -j REJECT
 	    if [ "$RemoteSSH" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $RemoteSSHPort -j ACCEPT
-	     if [ "$Lan2Enabled" = "1" ]; then
-    		iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport $RemoteSSHPort -j ACCEPT
-	     fi
 	    elif [ "$RemoteSSH" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteSSHPort -j ACCEPT
 	    fi
@@ -174,9 +146,6 @@ servicelimit() {
     	    iptables -A servicelimit $STATE_NEW -p tcp --dport 23 $CONNLIMIT 4 -j REJECT
 	    if [ "$RemoteTelnet" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 23 -j ACCEPT
-	     if [ "$Lan2Enabled" = "1" ]; then
-    		iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport 23 -j ACCEPT
-	     fi
 	    elif [ "$RemoteTelnet" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport 23 -j ACCEPT
 	    fi
@@ -185,9 +154,6 @@ servicelimit() {
 	    $LOG "FTP allow to connect"
 	    if [ "$RemoteFTP" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp -m multiport --dport 20,$FtpPort -j ACCEPT
-	        if [ "$Lan2Enabled" = "1" ]; then
-    		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp -m multiport --dport 20,$FtpPort -j ACCEPT
-	        fi
 	    elif [ "$RemoteFTP" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp -m multiport --dport 20,$FtpPort -j ACCEPT
 	    fi
@@ -208,9 +174,6 @@ servicelimit() {
 	    # RPC
 	    if [ "$TransAccess" = "1" ]; then
 		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $TransRPCPort -j ACCEPT
-		if [ "$Lan2Enabled" = "1" ]; then
-    		    iptables -A servicelimit -i $lan2_if $STATE_NEW -p tcp --dport $TransRPCPort -j ACCEPT
-		fi
 	    elif [ "$TransAccess" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $TransRPCPort -j ACCEPT
 	    fi
@@ -294,10 +257,6 @@ forwardlimit() {
 	if [ "$parproutedEnabled" != "1" ]; then
     	    $LOG "Allow forward from LAN to any"
 	    iptables -A FORWARD -i $lan_if -s $lan_ipaddr/$lan_netmask -j ACCEPT
-	    # second lan
-	    if [ "$Lan2Enabled" = "1" ]; then
-    		iptables -A FORWARD ! -o $lan_if -s $lan2_ipaddr/$lan2_netmask -j ACCEPT
-	    fi
 	else
     	    $LOG "Parprouted enabled - allow forward any to any"
 	    iptables -I FORWARD -j ACCEPT
@@ -338,10 +297,6 @@ natrules() {
 		    $LOG "Add SNAT from $chilli_net to $wan_ipaddr at $wan_if."
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j SNAT --to-source $wan_ipaddr
 		fi
-		if [ "$Lan2Enabled" = "1" ]; then
-		    $LOG "Add SNAT from $lan2_ip/$lan2_nm to $wan_ipaddr at $wan_if."
-		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j SNAT --to-source $wan_ipaddr
-		fi
 	    else
 		if [ "$chilli_enable" != "on" ]; then
 		    $LOG "Add MASQRADE from $lan_ipaddr/$lan_netmask to $wan_if."
@@ -349,10 +304,6 @@ natrules() {
 		else
 		    $LOG "Add MASQRADE from $chilli_net to $wan_if."
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
-		fi
-		if [ "$Lan2Enabled" = "1" ]; then
-		    $LOG "Add MASQRADE from $lan2_ip/$lan2_nm to $wan_if."
-		    iptables -t nat -A POSTROUTING -o $wan_if -s $lan2_ip/$lan2_nm -j MASQUERADE
 		fi
 	    fi
 	fi
@@ -682,10 +633,6 @@ get_param() {
     if [ "$ipt_account" = "1" ]; then
 	lan_ip_acc=`ipcalc "$lan_ipaddr" "$lan_netmask" -ns | cut -f 2- -d =`
 	lan_ip_prf=`ipcalc "$lan_ipaddr" "$lan_netmask" -ps | cut -f 2- -d =`
-	if [ "$Lan2Enabled" = "1" ]; then
-	    lan2_ip_acc=`ipcalc "$lan2_ipaddr" "$lan2_netmask" -ns | cut -f 2- -d =`
-	    lan2_ip_prf=`ipcalc "$lan2_ipaddr" "$lan2_netmask" -ps | cut -f 2- -d =`
-	fi
     fi
     # macros
     STATE_NEW="-m state --state NEW"

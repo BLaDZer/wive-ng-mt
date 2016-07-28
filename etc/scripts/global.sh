@@ -31,7 +31,7 @@ upnmp_net="239.0.0.0/8"
 # first get operation mode and wan mode  dns mode and relay mode vpn mode and type
 eval `nvram_buf_get 2860 HostName OperationMode \
 	wanConnectionMode wan_ipaddr wan_netmask wan_gateway wan_static_dns wan_manual_mtu \
-	lan_ipaddr lan_netmask Lan2Enabled lan2_ipaddr lan2_netmask \
+	lan_ipaddr lan_netmask \
 	wan_port tv_port sip_port tv_port_mcast sip_port_mcast \
 	WAN_MAC_ADDR LAN_MAC_ADDR \
 	RadioOn RadioOnINIC \
@@ -97,10 +97,8 @@ getLanIfName() {
     # logical names
     if [ "$OperationMode" = "2" ]; then
 	lan_if="eth2"
-	lan2_if="eth2:9"
     else
 	lan_if="br0"
-	lan2_if="br0:9"
     fi
     # export for goahead
     echo -n "$lan_if" > /tmp/lan_if_name

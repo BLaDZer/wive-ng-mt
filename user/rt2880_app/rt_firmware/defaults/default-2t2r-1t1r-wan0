@@ -187,7 +187,6 @@ l2tp_srv_mppe_enabled=0
 l2tp_srv_pass0=test
 l2tp_srv_user0=test
 l2tp_srv_proxyarp=0
-Lan2Enabled=0
 Language=en
 lan_ipaddr=192.168.1.1
 lan_netmask=255.255.255.0
