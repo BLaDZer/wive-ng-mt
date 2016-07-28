@@ -2196,7 +2196,7 @@
 5) build_system: add libwive for move reused functions from goaead/netcwmpd/snmpd/etc to one place.<br>
 6) build_system: enable build FT/RRM support for all chips.<br>
 7) defaults: allow 80MHz channel width for MD1 devices per default.<br>
-8) full remove redementary LAN2 alias support.<br>
+8) full remove redumentary LAN2 alias support.<br>
 9) goahead: auto update station list.<br>
 10) goahead: fix timezone for Novosibirsk.<br>
 11) goahead: merge wireless basic and advanced page.<br>
