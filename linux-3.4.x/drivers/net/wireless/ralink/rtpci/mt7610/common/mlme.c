@@ -3733,7 +3733,7 @@ VOID RTMPCheckRates(
 	INOUT UCHAR *SupRateLen)
 {
 	UCHAR	RateIdx, i, j;
-	UCHAR	NewRate[12], NewRateLen;
+	UCHAR	NewRate[12]={0}, NewRateLen;
 	
 	NewRateLen = 0;
 	
