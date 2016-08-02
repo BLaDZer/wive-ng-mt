@@ -1102,6 +1102,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 	BOOLEAN bTxRateChanged = TRUE, bUpgradeQuality = FALSE;
 	UCHAR TrainUp = 0, TrainDown = 0, next_grp;
 	CHAR RssiOffset = 0;
+	BOOLEAN HasTxInfo = FALSE;
 	ULONG TxTotalCnt, TxErrorRatio = 0;
 	ULONG TxSuccess, TxRetransmit, TxFailCount;
 	AGS_STATISTICS_INFO AGSStatisticsInfo = {0};
@@ -1124,6 +1125,8 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 
 		if (TxTotalCnt)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+
+		HasTxInfo = TRUE;
 	}
 	else
 	{
@@ -1154,10 +1157,13 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			TxRetransmit = pEntry->fifoTxRtyCnt;
 			TxTotalCnt = HwTxCnt;
 			TxErrorRatio = HwErrRatio;
+
+			HasTxInfo = TRUE;
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+    if (HasTxInfo)
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 	AGSStatisticsInfo.RSSI = RTMPAvgRssi(pAd, &pEntry->RssiSample);
@@ -1793,6 +1799,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 	BOOLEAN bTxRateChanged = TRUE;
 	UCHAR TrainUp = 0, TrainDown = 0;
 	CHAR ratio = 0;
+	BOOLEAN HasTxInfo = FALSE;
 	ULONG OneSecTxNoRetryOKRationCount = 0;
 	MAC_TABLE_ENTRY *pEntry;
 	AGS_STATISTICS_INFO AGSStatisticsInfo = {0};
@@ -1822,6 +1829,8 @@ VOID ApQuickResponeForRateUpExecAGS(
 
 		if (TxTotalCnt)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+
+		HasTxInfo = TRUE;
 	}
 	else
 	{
@@ -1852,10 +1861,13 @@ VOID ApQuickResponeForRateUpExecAGS(
 			TxRetransmit = pEntry->fifoTxRtyCnt;
 			TxTotalCnt = HwTxCnt;
 			TxErrorRatio = HwErrRatio;
+
+			HasTxInfo = TRUE;
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+    if (HasTxInfo)
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 	DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,

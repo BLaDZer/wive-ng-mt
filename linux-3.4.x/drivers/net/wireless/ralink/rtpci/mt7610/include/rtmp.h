@@ -1866,9 +1866,6 @@ typedef struct _COMMON_CONFIG {
 	MO_CFG_STRUCT MO_Cfg;	/* data structure for mitigating microwave interference */
 #endif /* DYNAMIC_VGA_SUPPORT */
 
-#ifdef MULTI_CLIENT_SUPPORT
-	UINT txRetryCfg;
-#endif /* MULTI_CLIENT_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
 #ifdef DBG_CTRL_SUPPORT
@@ -1965,9 +1962,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	RALINK_TIMER_STRUCT EnqueueStartForPSKTimer;	/* A timer which enqueue EAPoL-Start for triggering PSK SM */
 
 #ifdef DROP_MASK_SUPPORT
-	BOOLEAN 		tx_fail_drop_mask_enabled;
-	BOOLEAN 		ps_drop_mask_enabled;
-	NDIS_SPIN_LOCK		drop_mask_lock;
 	RALINK_TIMER_STRUCT	dropmask_timer;
 #endif /* DROP_MASK_SUPPORT */
 #ifdef PS_ENTRY_MAITENANCE
@@ -3356,6 +3350,9 @@ struct _RTMP_ADAPTER {
 #endif /* defined(RT3090) || defined(RT3592) || defined(RT3390) || defined(RT3593) || defined(RT5390) || defined(RT5392) || defined(RT5592) || defined(RT3290) */
 #endif /* RTMP_MAC_PCI */
 
+#ifdef DROP_MASK_SUPPORT
+	NDIS_SPIN_LOCK drop_mask_lock;
+#endif /* DROP_MASK_SUPPORT */
 
 /*****************************************************************************************/
 /*      ASIC related parameters                                                          */
@@ -4781,6 +4778,12 @@ VOID NICUpdateFifoStaCounters(
 
 VOID NICUpdateRawCounters(
 	IN  PRTMP_ADAPTER   pAd);
+
+#ifdef CONFIG_AP_SUPPORT
+VOID ClearTxRingClientAck(
+	IN PRTMP_ADAPTER pAd,
+	IN MAC_TABLE_ENTRY *pEntry);
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef FIFO_EXT_SUPPORT
 BOOLEAN NicGetMacFifoTxCnt(
@@ -8999,13 +9002,9 @@ VOID drop_mask_release_per_client(
 	RTMP_ADAPTER *ad,
 	MAC_TABLE_ENTRY *entry);
 
-VOID drop_mask_per_client_reset(
-	RTMP_ADAPTER *ad);
-
-VOID set_drop_mask_per_client(
+VOID drop_mask_set_per_client(
 	RTMP_ADAPTER *ad,
 	MAC_TABLE_ENTRY *entry,
-	UINT8 type,
 	BOOLEAN enable);
 
 VOID drop_mask_timer_action(
@@ -9044,12 +9043,4 @@ INT Set_DoTemperatureSensor_Proc(
 	IN RTMP_ADAPTER		*pAd,
 	IN PSTRING			arg);
 #endif /* MT76x0 */
-
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
-
 #endif  /* __RTMP_H__ */
-
