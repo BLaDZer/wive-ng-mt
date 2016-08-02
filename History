@@ -2258,11 +2258,12 @@
 67) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
 68) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
 69) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-70) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-71) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-72) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-73) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-74) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+70) kernel: net: bridge: Fix incorrect re-injection of LLDP packets.<br>
+71) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+72) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+73) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+74) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+75) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
