@@ -47,7 +47,6 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 	RTMP_RA_LEGACY_TB *pCurrTxRate, *pTmpTxRate = NULL;
 	CHAR Rssi, TmpIdx = 0;
 	ULONG TxTotalCnt, TxErrorRatio = 0, TxSuccess, TxRetransmit, TxFailCount;
-	BOOLEAN HasTxInfo = FALSE;
 
 #ifdef RALINK_ATE
    	if (ATE_ON(pAd))
@@ -125,8 +124,6 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif
 			if (TxTotalCnt)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
-
-			HasTxInfo = TRUE;
 		}
 		else
 		{
@@ -162,14 +159,11 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 					TxRetransmit = pEntry->fifoTxRtyCnt;
 					TxTotalCnt = HwTxCnt;
 					TxErrorRatio = HwErrRatio;
-
-					HasTxInfo = TRUE;
 				}
 			}
 #endif /* FIFO_EXT_SUPPORT */
 		}
 
-	    if (HasTxInfo)
 		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 		/* Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
@@ -476,7 +470,6 @@ VOID APQuickResponeForRateUpExec(
 #ifdef TXBF_SUPPORT
 	BOOLEAN					CurrPhyETxBf, CurrPhyITxBf;
 #endif /* TXBF_SUPPORT */
-	BOOLEAN					HasTxInfo = FALSE;
 
 	pAd->ApCfg.ApQuickResponeForRateUpTimerRunning = FALSE;
 
@@ -555,8 +548,6 @@ VOID APQuickResponeForRateUpExec(
 				Rssi = pEntry->RssiSample.AvgRssi0;
 
 			TxCnt = AccuTxTotalCnt;
-
-			HasTxInfo = TRUE;
 		}
 		else
 		{
@@ -593,14 +584,11 @@ VOID APQuickResponeForRateUpExec(
 					TxErrorRatio = HwErrRatio;
 					TxTotalCnt = HwTxCnt;
 					TxCnt = HwTxCnt;
-
-					HasTxInfo = TRUE;
 				}
 			}
 #endif /* FIFO_EXT_SUPPORT */
 		}
 
-	    if (HasTxInfo)
 		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 #ifdef THERMAL_PROTECT_SUPPORT

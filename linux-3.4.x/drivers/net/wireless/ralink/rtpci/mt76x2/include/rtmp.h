@@ -2067,6 +2067,7 @@ typedef struct _COMMON_CONFIG {
 	UCHAR APCwmin;		/* record ap cwmin */
 	UCHAR APCwmax;	/* record ap cwmax */
 	UCHAR BSSCwmin;	/* record BSS cwmin */
+	UINT32 txRetryCfg;
 #endif /* MULTI_CLIENT_SUPPORT */
 	QBSS_LOAD_PARM APQbssLoad;	/* QBSS load of the current associated AP */
 	UCHAR AckPolicy[4];	/* ACK policy of the specified AC. see ACK_xxx */
@@ -2989,7 +2990,10 @@ typedef struct _MAC_TABLE_ENTRY {
 #endif /* IWSC_SUPPORT */
 
 #ifdef DROP_MASK_SUPPORT
-	RALINK_TIMER_STRUCT dropmask_timer;
+	BOOLEAN	tx_fail_drop_mask_enabled;
+	BOOLEAN	ps_drop_mask_enabled;
+	NDIS_SPIN_LOCK	drop_mask_lock;
+	RALINK_TIMER_STRUCT	dropmask_timer;
 #endif /* DROP_MASK_SUPPORT */
 
 #ifdef PS_ENTRY_MAITENANCE
@@ -5058,10 +5062,6 @@ struct _RTMP_ADAPTER {
 	WLAN_FUN_CTRL_STRUC WlanFunCtrl;
 #endif /* defined(RT3290) || defined(RLT_MAC) */
 
-#ifdef DROP_MASK_SUPPORT
-	NDIS_SPIN_LOCK drop_mask_lock;
-#endif /* DROP_MASK_SUPPORT */
-
 /*****************************************************************************************/
 /*      802.11 related parameters                                                        */
 /*****************************************************************************************/
@@ -6607,7 +6607,6 @@ VOID NICEraseFirmware(RTMP_ADAPTER *pAd);
 VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd);
 VOID NICUpdateRawCounters(RTMP_ADAPTER *pAd);
 #ifdef CONFIG_AP_SUPPORT
-VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
 VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSuccess, ULONG TxRetransmit);
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -11099,9 +11098,13 @@ VOID drop_mask_release_per_client(
 	RTMP_ADAPTER *ad,
 	MAC_TABLE_ENTRY *entry);
 
-VOID drop_mask_set_per_client(
+VOID drop_mask_per_client_reset(
+	RTMP_ADAPTER *ad);
+
+VOID set_drop_mask_per_client(
 	RTMP_ADAPTER *ad,
 	MAC_TABLE_ENTRY *entry,
+	UINT8 type,
 	BOOLEAN enable);
 
 VOID drop_mask_timer_action(
@@ -11170,4 +11173,12 @@ BOOLEAN Monitor_Open(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 BOOLEAN Monitor_Close(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 #endif /* CONFIG_SNIFFER_SUPPORT */
 int gen_radiotap_header(RTMP_ADAPTER *pAd,RX_BLK *pRxBlk);
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+VOID ClearTxRingClientAck(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+
 #endif  /* __RTMP_H__ */
+
