@@ -129,22 +129,20 @@ static VOID IGMPTableDisplay(
 	MULTICAST_FILTER_TABLE_ENTRY *pEntry = NULL;
 	PMULTICAST_FILTER_TABLE pMulticastFilterTable = pAd->pMulticastFilterTable;
 
-	printk("Multicast filter table: ");
+	printk(KERN_INFO "Multicast filter table:\n");
 
 	if (pMulticastFilterTable == NULL)
 	{
-		printk("Table is not ready!\n");
+		DBGPRINT(RT_DEBUG_OFF, ("Table is not ready!\n"));
 		return;
 	}
 
 	/* if FULL, return */
 	if (pMulticastFilterTable->Size == 0)
 	{
-		printk("Table is empty.\n");
+		printk(KERN_INFO "Table is empty.\n");
 		return;
 	}
-
-	printk("\n");
 
 	/* allocate one MAC entry */
 	RTMP_SEM_LOCK(&pMulticastFilterTable->MulticastFilterTabLock);
@@ -157,16 +155,14 @@ static VOID IGMPTableDisplay(
 			PMEMBER_ENTRY pMemberEntry = NULL;
 			pEntry = &pMulticastFilterTable->Content[i];
 
-			printk("IF(%s) entry #%d, type=%s, GrpId=(%02x:%02x:%02x:%02x:%02x:%02x) memberCnt=%d\n",
+			printk(KERN_INFO "IF(%s) entry #%d, type=%s, GrpId=(%02x:%02x:%02x:%02x:%02x:%02x) memberCnt=%d\n",
 				RTMP_OS_NETDEV_GET_DEVNAME(pEntry->net_dev), i, (pEntry->type==0 ? "static":"dynamic"),
 				PRINT_MAC(pEntry->Addr), IgmpMemberCnt(&pEntry->MemberList));
 
 			pMemberEntry = (PMEMBER_ENTRY)pEntry->MemberList.pHead;
 			while (pMemberEntry)
 			{
-				printk("member mac=(%02x:%02x:%02x:%02x:%02x:%02x)\n",
-										PRINT_MAC(pMemberEntry->Addr));
-
+				printk(KERN_INFO "  member MAC=(%02x:%02x:%02x:%02x:%02x:%02x)\n", PRINT_MAC(pMemberEntry->Addr));
 				pMemberEntry = pMemberEntry->pNext;
 			}
 		}
@@ -195,7 +191,7 @@ BOOLEAN MulticastFilterTableInsertEntry(
 	MULTICAST_FILTER_TABLE_ENTRY *pEntry = NULL, *pCurrEntry, *pPrevEntry;
 	PMEMBER_ENTRY pMemberEntry;
 	PMULTICAST_FILTER_TABLE pMulticastFilterTable = pAd->pMulticastFilterTable;
-
+	
 	if (pMulticastFilterTable == NULL)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s Multicase filter table is not ready.\n", __FUNCTION__));
@@ -397,12 +393,12 @@ BOOLEAN MulticastFilterTableDeleteEntry(
 		}
 		else
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("%s: the Group doesn't exist.\n", __FUNCTION__));
+			DBGPRINT(RT_DEBUG_TRACE, ("%s: the Group doesn't exist.\n", __FUNCTION__));
 		}
 	} while(FALSE);
 
 	RTMP_SEM_UNLOCK(&pMulticastFilterTable->MulticastFilterTabLock);
-
+    
 	return TRUE;
 }
 
@@ -421,7 +417,7 @@ PMULTICAST_FILTER_TABLE_ENTRY MulticastFilterTableLookup(
 {
 	ULONG HashIdx, Now;
 	PMULTICAST_FILTER_TABLE_ENTRY pEntry = NULL, pPrev = NULL;
-
+	
 	if (pMulticastFilterTable == NULL)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s Multicase filter table is not ready.\n", __FUNCTION__));
@@ -482,6 +478,37 @@ PMULTICAST_FILTER_TABLE_ENTRY MulticastFilterTableLookup(
 	return pEntry;
 }
 
+static inline BOOLEAN isIgmpMacAddr(
+	IN PUCHAR pMacAddr)
+{
+	if((pMacAddr[0] == 0x01)
+		&& (pMacAddr[1] == 0x00)
+		&& (pMacAddr[2] == 0x5e))
+		return TRUE;
+	return FALSE;
+}
+
+BOOLEAN isIgmpPkt(
+	IN PUCHAR pDstMacAddr,
+	IN PUCHAR pIpHeader)
+{
+	UINT16 IpProtocol = ntohs(*((UINT16 *)(pIpHeader)));
+	UCHAR IgmpProtocol;
+
+	if(!isIgmpMacAddr(pDstMacAddr))
+		return FALSE;
+
+	if(IpProtocol == ETH_P_IP)
+	{
+		IgmpProtocol = (UCHAR)*(pIpHeader + 11);
+		if(IgmpProtocol == IGMP_PROTOCOL_DESCRIPTOR)
+				return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 VOID IGMPSnooping(
 	IN PRTMP_ADAPTER pAd,
 	IN PUCHAR pDstMacAddr,
@@ -538,24 +565,24 @@ VOID IGMPSnooping(
 				AuxDataLen = (UCHAR)(*(pGroup + 1));
 				numOfSources = ntohs(*((UINT16 *)(pGroup + 2)));
 				pGroupIpAddr = (PUCHAR)(pGroup + 4);
-				DBGPRINT(RT_DEBUG_TRACE, ("IGMPv3 Type=%d, ADL=%d, numOfSource=%d\n",
+				DBGPRINT(RT_DEBUG_TRACE, ("IGMPv3 Type=%d, ADL=%d, numOfSource=%d\n", 
 								GroupType, AuxDataLen, numOfSources));
 				ConvertMulticastIP2MAC(pGroupIpAddr, (PUCHAR *)&pGroupMacAddr, ETH_P_IP);
 				DBGPRINT(RT_DEBUG_TRACE, ("IGMP Group=%02x:%02x:%02x:%02x:%02x:%02x\n",
-					GroupMacAddr[0], GroupMacAddr[1], GroupMacAddr[2],
+					GroupMacAddr[0], GroupMacAddr[1], GroupMacAddr[2], 
 					GroupMacAddr[3], GroupMacAddr[4], GroupMacAddr[5]));
 
 				do
 				{
-					if ((GroupType == MODE_IS_EXCLUDE)
-						|| (GroupType == CHANGE_TO_EXCLUDE_MODE)
+					if ((GroupType == MODE_IS_EXCLUDE) 
+						|| (GroupType == CHANGE_TO_EXCLUDE_MODE) 
 						|| (GroupType == ALLOW_NEW_SOURCES))
 					{
 						MulticastFilterTableInsertEntry(pAd, GroupMacAddr, pSrcMacAddr, pDev, MCAT_FILTER_DYNAMIC);
 						break;
 					}
 
-					if ((GroupType == CHANGE_TO_INCLUDE_MODE)
+					if ((GroupType == CHANGE_TO_INCLUDE_MODE) 
 						|| (GroupType == MODE_IS_INCLUDE)
 						|| (GroupType == BLOCK_OLD_SOURCES))
 					{
@@ -579,35 +606,33 @@ VOID IGMPSnooping(
 	return;
 }
 
+static INT32 IPv6MulticastFilterExcluded(
+	IN PUCHAR pDstMacAddr);
 
-static inline BOOLEAN isIgmpMacAddr(
-	IN PUCHAR pMacAddr)
+static INT32 IPv4MulticastFilterExcluded(
+	IN PUCHAR pDstMacAddr)
 {
-	if((pMacAddr[0] == 0x01)
-		&& (pMacAddr[1] == 0x00)
-		&& (pMacAddr[2] == 0x5e))
-		return TRUE;
-	return FALSE;
-}
-
-BOOLEAN isIgmpPkt(
-	IN PUCHAR pDstMacAddr,
-	IN PUCHAR pIpHeader)
-{
-	UINT16 IpProtocol = ntohs(*((UINT16 *)(pIpHeader)));
-	UCHAR IgmpProtocol;
+	UINT32 DstIpAddr;
 
 	if(!isIgmpMacAddr(pDstMacAddr))
-		return FALSE;
+		return -1;
 
-	if(IpProtocol == ETH_P_IP)
-	{
-		IgmpProtocol = (UCHAR)*(pIpHeader + 11);
-		if(IgmpProtocol == IGMP_PROTOCOL_DESCRIPTOR)
-				return TRUE;
-	}
+	/* Check IGMP packet */
+	if(*(pDstMacAddr + 23) == IGMP_PROTOCOL_DESCRIPTOR)
+		return 1;
 
-	return FALSE;
+	/* Get destination Ip address of IP header */
+	DstIpAddr = ntohl(*((UINT32*)(pDstMacAddr + 30)));
+
+	/* Check address is local multicast */
+	if ((DstIpAddr & 0xffffff00) == 0xe0000000)
+		return 2;
+
+	/* Check address is SSDP */
+	if (DstIpAddr == 0xeffffffa)
+		return 2;
+
+	return 0;
 }
 
 static VOID InsertIgmpMember(
@@ -769,7 +794,7 @@ INT Set_IgmpSn_Enable_Proc(
 }
 
 INT Set_IgmpSn_AddEntry_Proc(
-	IN PRTMP_ADAPTER pAd,
+	IN PRTMP_ADAPTER pAd, 
 	IN PSTRING arg)
 {
 	INT i;
@@ -968,90 +993,6 @@ void rtmp_read_igmp_snoop_from_file(
 	}
 }
 
-static rsv_table_t ip_addr_rsvd[] =
-{
-	{ 0xe0000001, 0xffffffff }, /* All hosts */
-	{ 0xe0000002, 0xffffffff }, /* All routers */
-	{ 0xe0000004, 0xffffffff }, /* DVMRP routers */
-	{ 0xe0000005, 0xffffffff }, /* OSPF1 routers */
-	{ 0xe0000006, 0xffffffff }, /* OSPF2 routers */
-	{ 0xe0000009, 0xffffffff }, /* RIP v2 routers */
-	{ 0xe000000d, 0xffffffff }, /* PIMd routers */
-	{ 0xe0000012, 0xffffffff }, /* VRRP routers */
-	{ 0xe0000016, 0xffffffff }, /* IGMP v3 routers */
-	{ 0xe00000fb, 0xffffffff }, /* mDNS */
-	{ 0xe00000fc, 0xffffffff }, /* LLMNR */
-	{ 0xe000ff87, 0xffffffff }, /* Reserved */
-	{ 0xeffffffa, 0xffffffff }, /* UPnP */
-};
-
-static inline BOOLEAN IPv4MulticastFilterExcluded(IN PUCHAR pDstMacAddr)
-{
-	UINT32 DstIpAddr;
-	UINT32 Count;
-
-	if(!isIgmpMacAddr(pDstMacAddr))
-		return FALSE;
-
-	/* Check IGMP packet */
-	if(*(pDstMacAddr + 23) == IGMP_PROTOCOL_DESCRIPTOR)
-		return TRUE;
-
-	/* Get destination Ip address of IP header */
-	DstIpAddr = ntohl(*((UINT32*)(pDstMacAddr + 30)));
-
-	/* Check adress exist in reserved ranges by ip_addr_rsvd table */
-	for (Count = 0; Count < sizeof(ip_addr_rsvd)/sizeof(rsv_table_t); Count++)
-		if ((DstIpAddr & ip_addr_rsvd[Count].mask) == (ip_addr_rsvd[Count].addr & ip_addr_rsvd[Count].mask))
-			return TRUE;
-
-	return FALSE;
-}
-
-static inline int IPv6_Transient_Multicast(
-	IN PRT_IPV6_ADDR pIpv6Addr)
-{
-	if ((pIpv6Addr->ipv6_addr32[0] & htonl(0xFF100000)) == htonl(0xFF100000))
-		return 1;
-
-	return 0;
-}
-
-static inline BOOLEAN IPv6MulticastFilterExcluded(
-	IN PUCHAR pDstMacAddr)
-{
-	PUCHAR pIpHeader;
-	PRT_IPV6_HDR pIpv6Hdr;
-	UINT32 offset;
-	INT idx;
-	UINT8 nextProtocol;
-
-	if(!IS_IPV6_MULTICAST_MAC_ADDR(pDstMacAddr))
-		return FALSE;
-
-	pIpHeader = pDstMacAddr + 14;
-	pIpv6Hdr = (PRT_IPV6_HDR)(pIpHeader);
-	offset = IPV6_HDR_LEN;
-	nextProtocol = pIpv6Hdr->nextHdr;
-	while(nextProtocol == IPV6_NEXT_HEADER_HOP_BY_HOP)
-	{
-		if(IPv6ExtHdrHandle((RT_IPV6_EXT_HDR *)(pIpHeader + offset), &nextProtocol, &offset) == FALSE)
-			break;
-	}
-
-	for (idx = 0; idx < IPV6_MULTICAST_FILTER_EXCLUED_SIZE; idx++)
-	{
-		if (nextProtocol == IPv6MulticastFilterExclued[idx])
-			return TRUE;
-	}
-
-	/* Check non-transient multicast */
-	if (!IPv6_Transient_Multicast(&pIpv6Hdr->dstAddr))
-		return TRUE;
-
-	return FALSE;
-}
-
 NDIS_STATUS IgmpPktInfoQuery(
 	IN PRTMP_ADAPTER pAd,
 	IN PUCHAR pSrcBufVA,
@@ -1062,22 +1003,24 @@ NDIS_STATUS IgmpPktInfoQuery(
 {
 	if(IS_MULTICAST_MAC_ADDR(pSrcBufVA))
 	{
-		BOOLEAN NeedForwardToAll = FALSE;
+		INT32 ExcludedGroupType = -1;
 		UINT16 EtherType = ntohs(*((UINT16 *)(pSrcBufVA + 12)));
-
+ 
 		if (EtherType == ETH_P_IPV6)
 		{
-			NeedForwardToAll = IPv6MulticastFilterExcluded(pSrcBufVA);
+			ExcludedGroupType = IPv6MulticastFilterExcluded(pSrcBufVA);
 		}
 		else if(EtherType == ETH_P_IP)
 		{
-			NeedForwardToAll = IPv4MulticastFilterExcluded(pSrcBufVA);
+			ExcludedGroupType = IPv4MulticastFilterExcluded(pSrcBufVA);
 		}
 
-		if (NeedForwardToAll)
+		if (ExcludedGroupType)
 		{
 			*ppGroupEntry = NULL;
-			*pInIgmpGroup = IGMP_PKT;  // IGMP/MLD and all reserved
+			
+			if (ExcludedGroupType == 1)
+				*pInIgmpGroup = IGMP_PKT;
 		}
 		else if ((*ppGroupEntry = MulticastFilterTableLookup(pAd->pMulticastFilterTable, pSrcBufVA,
 									get_netdev_from_bssid(pAd, FromWhichBSSID))) == NULL)
@@ -1093,7 +1036,7 @@ NDIS_STATUS IgmpPktInfoQuery(
 		PUCHAR pDstIpAddr = pSrcBufVA + 30; /* point to Destination of Ip address of IP header. */
 		UCHAR GroupMacAddr[6];
 		PUCHAR pGroupMacAddr = (PUCHAR)&GroupMacAddr;
-
+		
 		ConvertMulticastIP2MAC(pDstIpAddr, (PUCHAR *)&pGroupMacAddr, ETH_P_IP);
 		if ((*ppGroupEntry = MulticastFilterTableLookup(pAd->pMulticastFilterTable, pGroupMacAddr,
 								get_netdev_from_bssid(pAd, FromWhichBSSID))) != NULL)
@@ -1107,14 +1050,12 @@ NDIS_STATUS IgmpPktInfoQuery(
 
 NDIS_STATUS IgmpPktClone(
 	IN PRTMP_ADAPTER pAd,
-	IN PUCHAR pSrcBufVA,
 	IN PNDIS_PACKET pPacket,
 	IN INT IgmpPktInGroup,
 	IN PMULTICAST_FILTER_TABLE_ENTRY pGroupEntry,
 	IN UCHAR QueIdx,
 	IN UINT8 UserPriority)
 {
-	PNET_DEV pNetDev = NULL;
 	PNDIS_PACKET pSkbClone = NULL;
 	PMEMBER_ENTRY pMemberEntry = NULL;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
@@ -1122,11 +1063,12 @@ NDIS_STATUS IgmpPktClone(
 	SST Sst = SST_ASSOC;
 	UCHAR PsMode = PWR_ACTIVE;
 	UCHAR Rate;
-	ULONG IrqFlags = 0;
+	unsigned long IrqFlags;
 	INT MacEntryIdx;
 	BOOLEAN bContinue;
 	PUCHAR pMemberAddr = NULL;
 	PUCHAR pSrcMAC = NULL;
+	PNET_DEV pNetDev = NULL;
 
 	bContinue = FALSE;
 
@@ -1134,7 +1076,7 @@ NDIS_STATUS IgmpPktClone(
 	{
 		if (!pGroupEntry)
 			return NDIS_STATUS_FAILURE;
-
+		
 		pMemberEntry = (PMEMBER_ENTRY)pGroupEntry->MemberList.pHead;
 		if (pMemberEntry)
 		{
@@ -1146,8 +1088,8 @@ NDIS_STATUS IgmpPktClone(
 	else if (IgmpPktInGroup == IGMP_PKT)
 	{
 		pNetDev = GET_OS_PKT_NETDEV(pPacket);
-		pSrcMAC = pSrcBufVA + 6;
-
+		pSrcMAC = GET_OS_PKT_DATAPTR(pPacket) + 6;
+		
 		for(MacEntryIdx=1; MacEntryIdx<MAX_NUMBER_OF_MAC; MacEntryIdx++)
 		{
 			pMemberAddr = pAd->MacTab.Content[MacEntryIdx].Addr;
@@ -1175,9 +1117,9 @@ NDIS_STATUS IgmpPktClone(
 			OS_PKT_CLONE(pAd, pPacket, pSkbClone, MEM_ALLOC_FLAG);
 			if (!pSkbClone)
 				return NDIS_STATUS_FAILURE;
-
+			
 			RTMP_SET_PACKET_WCID(pSkbClone, (UCHAR)pMacEntry->Aid);
-
+			
 			if (PsMode == PWR_SAVE)
 			{
 				APInsertPsQueue(pAd, pSkbClone, pMacEntry, QueIdx);
@@ -1185,7 +1127,7 @@ NDIS_STATUS IgmpPktClone(
 			else
 			{
 				/* insert the pkt to TxSwQueue. */
-				if (pAd->TxSwQueue[QueIdx].Number >= MAX_PACKETS_IN_MCAST_NORMAL_QUEUE)
+				if (pAd->TxSwQueue[QueIdx].Number >= pAd->TxSwQMaxLen)
 				{
 #ifdef BLOCK_NET_IF
 					StopNetIfQueue(pAd, QueIdx, pSkbClone);
@@ -1217,7 +1159,7 @@ NDIS_STATUS IgmpPktClone(
 			else
 				bContinue = FALSE;
 		}
-		else if (IgmpPktInGroup == IGMP_PKT)
+		else
 		{
 			for(MacEntryIdx=pMacEntry->Aid + 1; MacEntryIdx<MAX_NUMBER_OF_MAC; MacEntryIdx++)
 			{
@@ -1235,8 +1177,6 @@ NDIS_STATUS IgmpPktClone(
 			if (MacEntryIdx == MAX_NUMBER_OF_MAC)
 				bContinue = FALSE;
 		}
-		else
-			bContinue = FALSE;
 	}
 
 	return NDIS_STATUS_SUCCESS;
@@ -1313,6 +1253,64 @@ BOOLEAN isMldPkt(
 	return result;
 }
 
+static inline int IPv6_Transient_Multicast(
+	IN PRT_IPV6_ADDR pIpv6Addr)
+{
+	if ((pIpv6Addr->ipv6_addr32[0] & htonl(0xFF100000)) == htonl(0xFF100000))
+		return 1;
+
+	return 0;
+}
+
+static INT32 IPv6MulticastFilterExcluded(
+	IN PUCHAR pDstMacAddr)
+{
+	PUCHAR pIpHeader;
+	PRT_IPV6_HDR pIpv6Hdr;
+	UINT32 offset;
+	INT idx;
+	UINT8 nextProtocol;
+
+	if(!IS_IPV6_MULTICAST_MAC_ADDR(pDstMacAddr))
+		return -1;
+
+	pIpHeader = pDstMacAddr + 14;
+	pIpv6Hdr = (PRT_IPV6_HDR)(pIpHeader);
+	offset = IPV6_HDR_LEN;
+	nextProtocol = pIpv6Hdr->nextHdr;
+	while(nextProtocol == IPV6_NEXT_HEADER_HOP_BY_HOP)
+	{
+		if(IPv6ExtHdrHandle((RT_IPV6_EXT_HDR *)(pIpHeader + offset), &nextProtocol, &offset) == FALSE)
+			break;
+	}
+
+	if (nextProtocol == IPV6_NEXT_HEADER_ICMPV6)
+	{
+		PRT_ICMPV6_HDR pICMPv6Hdr = (PRT_ICMPV6_HDR)(pIpHeader + offset);
+		
+		switch (pICMPv6Hdr->type)
+		{
+		case MLD_QUERY:
+		case MLD_V1_LISTENER_REPORT:
+		case MLD_V1_LISTENER_DONE:
+		case MLD_V2_LISTERNER_REPORT:
+			return 1;
+		}
+	}
+
+	for (idx = 0; idx < IPV6_MULTICAST_FILTER_EXCLUED_SIZE; idx++)
+	{
+		if (nextProtocol == IPv6MulticastFilterExclued[idx])
+			return 2;
+	}
+
+	/* Check non-transient multicast */
+	if (!IPv6_Transient_Multicast(&pIpv6Hdr->dstAddr))
+		return 2;
+
+	return 0;
+}
+
 /*  MLD v1 messages have the following format:
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -1328,86 +1326,86 @@ BOOLEAN isMldPkt(
 	|                                                               |
 	+                                                               +
 	|                                                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 */
 
 /*	Version 3 Membership Report Message
-	0                   1                   2                   3
-	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|  Type = 143   |    Reserved   |           Checksum            |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|           Reserved            |  Number of Group Records (M)  |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                                                               |
-	.                                                               .
-	.               Multicast Address Record [1]                    .
-	.                                                               .
-	|                                                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                                                               |
-	.                                                               .
-	.               Multicast Address Record [2]                    .
-	.                                                               .
-	|                                                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                               .                               |
-	.                               .                               .
-	|                               .                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                                                               |
-	.                                                               .
-	.               Multicast Address Record [M]                    .
-	.                                                               .
-	|                                                               |
+	0                   1                   2                   3       
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|  Type = 143   |    Reserved   |           Checksum            |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|           Reserved            |  Number of Group Records (M)  |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|                                                               |      
+	.                                                               .      
+	.               Multicast Address Record [1]                    . 
+	.                                                               .      
+	|                                                               |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|                                                               |      
+	.                                                               .      
+	.               Multicast Address Record [2]                    . 
+	.                                                               .      
+	|                                                               |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|                               .                               |      
+	.                               .                               .      
+	|                               .                               |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|                                                               |      
+	.                                                               .      
+	.               Multicast Address Record [M]                    . 
+	.                                                               .      
+	|                                                               |      
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 
-	where each Group Record has the following internal format:
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|  Record Type  |  Aux Data Len |     Number of Sources (N)     |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	where each Group Record has the following internal format:      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+	|  Record Type  |  Aux Data Len |     Number of Sources (N)     |      
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    *                       Multicast Address                       *    
+    |                                                               |    
+    *                                                               *    
     |                                                               |
-    *                                                               *
-    |                                                               |
-    *                       Multicast Address                       *
-    |                                                               |
-    *                                                               *
-    |                                                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    *                       Source Address [1]                      *
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    +-                                                             -+
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    *                       Source Address [2]                      *
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    +-                                                             -+
-    .                               .                               .
-    .                               .                               .
-    .                               .                               .
-    +-                                                             -+
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    *                       Source Address [N]                      *
-    |                                                               |
-    *                                                               *
-    |                                                               |
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                                                               |
-    .                                                               .
-    .                         Auxiliary Data                        .
-    .                                                               .
-    |                                                               |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    *                       Source Address [1]                      *    
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    +-                                                             -+    
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    *                       Source Address [2]                      *    
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    +-                                                             -+    
+    .                               .                               .    
+    .                               .                               .    
+    .                               .                               .    
+    +-                                                             -+    
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    *                       Source Address [N]                      *    
+    |                                                               |    
+    *                                                               *    
+    |                                                               |    
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    
+    |                                                               |    
+    .                                                               .    
+    .                         Auxiliary Data                        .    
+    .                                                               .    
+    |                                                               |    
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 */
 
