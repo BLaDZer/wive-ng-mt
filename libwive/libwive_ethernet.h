@@ -17,6 +17,14 @@
 #define PROCREG_GMAC		("/proc/" PROCREG_DIR "/gmac")
 #define IOCTL_IF "eth2"
 
+struct port_counts {
+	unsigned long long rx_count[6];	// recive switch port count
+	unsigned long long tx_count[6];	// transmit switch port count
+};
+
+void portscounts(struct port_counts *st);
+
+#if defined(CONFIG_ETHTOOL)
 struct port_status {
 	int portnum;	// port number
 	int link;	// link status
@@ -28,4 +36,5 @@ int linkspeed(const char *ifname, int sd);
 int linkduplex(const char *ifname, int sd);
 int linkstatus(const char *ifname, int sd);
 void portstatus(struct port_status *st, int portnm);
+#endif
 #endif

@@ -439,42 +439,9 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	int i;
-	unsigned long long rx_count[6], tx_count[6];
-#ifdef CONFIG_RAETH_SNMPD
-	char buf[256];
-	FILE *fp;
-#endif
-	rx_count[0] = rx_count[1] = rx_count[2] = rx_count[3] = rx_count[4] = rx_count[5] = 0;
-	tx_count[0] = tx_count[1] = tx_count[2] = tx_count[3] = tx_count[4] = tx_count[5] = 0;
+	struct port_counts pcs;
 
-#ifdef CONFIG_RAETH_SNMPD
-	fp = fopen(PROCREG_SNMP, "r");
-	if (fp == NULL) {
-		syslog(LOG_ERR, "no snmp, %s", __FUNCTION__);
-		return -1;
-	}
-
-	// skip 32bit counters
-	fgets(buf, sizeof(buf), fp);
-	fgets(buf, sizeof(buf), fp);
-
-	// get rx 64 bit counter
-	if((fgets(buf, sizeof(buf), fp) == NULL) ||
-	    (sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rx_count[0], &rx_count[1], &rx_count[2], &rx_count[3], &rx_count[4], &rx_count[5]) != 6)) {
-		syslog(LOG_ERR, "rx64 format string error, %s", __FUNCTION__);
-		fclose(fp);
-		return -1;
-	}
-
-	// get tx 64 bit counter
-	if((fgets(buf, sizeof(buf), fp) == NULL ) ||
-	    (sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &tx_count[0], &tx_count[1], &tx_count[2], &tx_count[3], &tx_count[4], &tx_count[5]) != 6)) {
-		syslog(LOG_ERR, "tx64 format string error, %s", __FUNCTION__);
-		fclose(fp);
-		return -1;
-	}
-	fclose(fp);
-#endif
+	portscounts(&pcs);
 
 	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
@@ -483,7 +450,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	for (i = 4; i >= 0; i--)
 #endif
 	{
-		char *tmpstr = scale((uint64_t)rx_count[i]);
+		char *tmpstr = scale((uint64_t)pcs.rx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
 		bfree(B_L, tmpstr);
 	}
@@ -494,7 +461,7 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	for (i = 4; i >= 0; i--)
 #endif
 	{
-		char *tmpstr = scale((uint64_t)tx_count[i]);
+		char *tmpstr = scale((uint64_t)pcs.tx_count[i]);
 		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
 		bfree(B_L, tmpstr);
 	}

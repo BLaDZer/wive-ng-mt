@@ -11,6 +11,45 @@
 
 #include "libwive.h"
 
+void portscounts(struct port_counts *st)
+{
+#ifdef CONFIG_RAETH_SNMPD
+	char buf[256];
+	FILE *fp;
+#endif
+	st->rx_count[0] = st->rx_count[1] = st->rx_count[2] = st->rx_count[3] = st->rx_count[4] = st->rx_count[5] = 0;
+	st->tx_count[0] = st->tx_count[1] = st->tx_count[2] = st->tx_count[3] = st->tx_count[4] = st->tx_count[5] = 0;
+
+#ifdef CONFIG_RAETH_SNMPD
+	fp = fopen(PROCREG_SNMP, "r");
+	if (fp == NULL) {
+		syslog(LOG_ERR, "no snmp, %s", __FUNCTION__);
+		return;
+	}
+
+	// skip 32bit counters
+	fgets(buf, sizeof(buf), fp);
+	fgets(buf, sizeof(buf), fp);
+
+	// get rx 64 bit counter
+	if((fgets(buf, sizeof(buf), fp) == NULL) ||
+	    (sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &st->rx_count[0], &st->rx_count[1], &st->rx_count[2], &st->rx_count[3], &st->rx_count[4], &st->rx_count[5]) != 6)) {
+		syslog(LOG_ERR, "rx64 format string error, %s", __FUNCTION__);
+		fclose(fp);
+		return;
+	}
+
+	// get tx 64 bit counter
+	if((fgets(buf, sizeof(buf), fp) == NULL ) ||
+	    (sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &st->tx_count[0], &st->tx_count[1], &st->tx_count[2], &st->tx_count[3], &st->tx_count[4], &st->tx_count[5]) != 6)) {
+		syslog(LOG_ERR, "tx64 format string error, %s", __FUNCTION__);
+		fclose(fp);
+		return;
+	}
+	fclose(fp);
+#endif
+}
+
 #if defined(CONFIG_ETHTOOL)
 /*
  * description: get link info from ethtool (return defaults values in error path for compat with webswrite)

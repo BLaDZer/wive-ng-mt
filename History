@@ -2198,7 +2198,7 @@
 7) defaults: allow 80MHz channel width for MD1 devices per default.<br>
 8) full remove redumentary LAN2 alias support.<br>
 9) netcwmpd: rework debug messages and start use libwive functions.<br>
-10) libwive: add portstatus function for easy get port status info (use in cli and goahead).<br>
+10) libwive: add portstatus,portscounts function sfor easy get port status and counts info (future use in cli,goahead and netcwmpd).<br>
 11) goahead: auto update station list.<br>
 12) goahead: fix timezone for Novosibirsk.<br>
 13) goahead: merge wireless basic and advanced page.<br>
