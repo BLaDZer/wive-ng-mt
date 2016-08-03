@@ -29,23 +29,6 @@
 #define LED_ON				1
 #define LED_OFF				0
 
-#if defined (CONFIG_RALINK_MT7620)
-#define PROCREG_DIR			"mt7620"
-#elif defined (CONFIG_RALINK_MT7621)
-#define PROCREG_DIR			"mt7621"
-#elif defined (CONFIG_RALINK_MT7628)
-#define PROCREG_DIR			"mt7628"
-#else
-#define PROCREG_DIR			"mt7620"
-#endif
-
-#ifdef CONFIG_RAETH_SNMPD
-#define PROCREG_SNMP			("/proc/" PROCREG_DIR "/snmp")
-#endif
-#define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
-
-#define IOCTL_IF "eth2"
-
 #define IPT_SHORT_ACCOUNT
 
 #define _PATH_PROCNET_DEV		"/proc/net/dev"

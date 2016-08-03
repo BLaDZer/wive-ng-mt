@@ -89,4 +89,39 @@ int linkstatus(const char *ifname, int sd) {
 	else
 	    return 0;
 }
+
+void portstatus(struct port_status *st, int portnm)
+{
+	int sd = -1;
+	FILE *proc_file;
+
+	st->portnum = portnm;
+	st->link = st->speed = st->duplex = 0;
+
+	if (getIfIsReady(IOCTL_IF) != 1) {
+	    syslog(LOG_ERR, "ioctl iface down, %s", __FUNCTION__);
+	    return;
+	}
+
+	/* switch phy to needed port */
+	proc_file = fopen(PROCREG_GMAC, "w");
+	if (!proc_file) {
+	    syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
+	    return;
+	}
+	fprintf(proc_file, "%d\n", st->portnum);
+	fclose(proc_file);
+
+	sd = socket(AF_INET, SOCK_DGRAM, 0);
+	if(sd < 0) {
+	    syslog(LOG_ERR, "error ethtool socket open, %s", __FUNCTION__);
+	    return;
+	}
+
+	st->link = linkstatus(IOCTL_IF, sd);
+	st->speed = linkspeed(IOCTL_IF, sd);
+	st->duplex = linkduplex(IOCTL_IF, sd);
+
+	close(sd);
+}
 #endif

@@ -214,40 +214,15 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	int port;
 
-	if (getIfIsReady(IOCTL_IF) != 1) {
-	    syslog(LOG_ERR, "ioctl iface down, %s", __FUNCTION__);
-	    return -1;
-	}
-
 	for (port=4; port>-1; port--)
 	{
+		struct port_status pst;
 		char buf[16];
-		int sd = -1, link, speed, duplex;
-		FILE *proc_file;
 
-		/* switch phy to needed port */
-		proc_file = fopen(PROCREG_GMAC, "w");
-		if (!proc_file) {
-		    syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
-		    return -1;
-		}
-		fprintf(proc_file, "%d\n", port);
-		fclose(proc_file);
-
-		sd = socket(AF_INET, SOCK_DGRAM, 0);
-		if(sd < 0) {
-			syslog(LOG_ERR, "error ethtool socket open, %s", __FUNCTION__);
-			return -1;
-		}
-
-		link = linkstatus(IOCTL_IF, sd);
-		speed = linkspeed(IOCTL_IF, sd);
-		duplex = linkduplex(IOCTL_IF, sd);
-
-		close(sd);
+		portstatus(&pst, port);
 
 		/* create string in new buffer and write to web (this more safe of direct write) */
-		snprintf(buf, sizeof(buf), ("%s%d,%d,%s"), (port == 4) ? "" : ";", link, speed, (duplex == 1) ? "F" : "H");
+		snprintf(buf, sizeof(buf), ("%s%d,%d,%s"), (pst.portnum == 4) ? "" : ";", pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H");
 		websWrite(wp, T("%s"), buf);
 	}
 #endif
