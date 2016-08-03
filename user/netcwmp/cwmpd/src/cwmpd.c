@@ -106,7 +106,8 @@ int main(int argc, char **argv)
 
     if (loglevel != NULL) 
     {
-	if (strcasecmp(loglevel,"error") == 0) level = CWMP_LOG_ERROR;
+        if (strcasecmp(loglevel,"crit") == 0) level = CWMP_LOG_CRIT;
+	else if (strcasecmp(loglevel,"error") == 0) level = CWMP_LOG_ERROR;
         else if (strcasecmp(loglevel,"warn") == 0) level = CWMP_LOG_WARN;
         else if (strcasecmp(loglevel,"info") == 0) level = CWMP_LOG_INFO;
         else if (strcasecmp(loglevel,"debug") == 0) level = CWMP_LOG_DEBUG;
@@ -114,6 +115,7 @@ int main(int argc, char **argv)
     }
 
     cwmp_log_init(NULL, level);
+    cwmp_log_debug("DEBUG: current log level is \"%s\" (%i)", loglevel, level);
 
     cwmp_enable=cwmp_conf_get_int("cwmp:enable");
     if(!cwmp_enable)

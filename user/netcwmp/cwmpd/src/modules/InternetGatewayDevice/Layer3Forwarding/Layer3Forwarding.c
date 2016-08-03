@@ -5,7 +5,7 @@ int cpe_get_igd_l3f_defaultconnection(cwmp_t * cwmp, const char * name, char ** 
 
     int isvpn =  cwmp_nvram_get_int("vpnDGW", 0);
     char* val = (isvpn!=0)?"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.2":"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1";
-    cwmp_log_error("DEBUG2: cpe_get_igd_l3f_defaultconnection: value %s \n",val);
+    cwmp_log_debug("DEBUG: cpe_get_igd_l3f_defaultconnection: value %s \n",val);
 
     *value = pool_pstrdup(pool, val);
 

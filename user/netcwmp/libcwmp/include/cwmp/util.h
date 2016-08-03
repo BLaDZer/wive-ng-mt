@@ -17,6 +17,8 @@
 #include <cwmp/md5.h>
 #include <cwmp/upload.h>
 
+#include <libwive_network.h>
+
 
 #define Public		/* Accessible outside this module     */
 #define Private static		/* Accessible only within this module */
@@ -73,8 +75,8 @@
 
 
 int getHWStatistic(unsigned long long* rxtx_count);
-char* getIntIp(pool_t * pool);
-int getIfMac(char *ifname, char *if_hw);
+//char* getIntIp(pool_t * pool);
+//int getIfMac(char *ifname, char *if_hw);
 int firmware_upgrade(char* filename);
 
 

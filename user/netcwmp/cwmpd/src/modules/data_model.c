@@ -215,8 +215,8 @@ int cpe_get_nvram_bool(cwmp_t * cwmp, const char * name, char ** value, char * a
     const char* valStr = val?"1":"0";
 
     *value = pool_pstrdup(pool, valStr);
-//    cwmp_log_error("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
-//    cwmp_log_error("cpe_get_nvram_string: value is %s",*value);
+//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
+//    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
 
 }
@@ -242,8 +242,8 @@ int cpe_get_nvram_bool_onoff(cwmp_t * cwmp, const char * name, char ** value, ch
     const char* valStr = val?"1":"0";
 
     *value = pool_pstrdup(pool, valStr);
-//    cwmp_log_error("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
-//    cwmp_log_error("cpe_get_nvram_string: value is %s",*value);
+//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
+//    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
 
 }
@@ -269,8 +269,8 @@ int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * ar
     
 
     *value = pool_pstrdup(pool, &valStr);
-//    cwmp_log_error("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
-//    cwmp_log_error("cpe_get_nvram_string: value is %s",*value);
+//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
+//    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
 
 }
@@ -281,7 +281,7 @@ int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * ar
 int cpe_set_nvram_string(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
     FUNCTION_TRACE();
-    cwmp_log_error("DEBUG2: cpe_set_nvram_string: %s %s %s", name, value, args);
+    cwmp_log_debug("DEBUG: cpe_set_nvram_string: %s %s %s", name, value, args);
     if (value == NULL) 
     {
         cwmp_log_error("cpe_set_nvram_string: param (%s) value is NULL", name);

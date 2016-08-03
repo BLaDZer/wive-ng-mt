@@ -78,7 +78,7 @@ int getIfIp(const char *ifname, char *if_addr)
  *            if_addr - a 18-byte buffer to store mac address
  * description: fetch mac address according to given interface name
  */
-int getIfMac(const char *ifname, char *if_hw)
+int getIfMac(const char *ifname, char *if_hw, char separator)
 {
 	struct ifreq ifr;
 	char *ptr;
@@ -99,9 +99,18 @@ int getIfMac(const char *ifname, char *if_hw)
 	}
 
 	ptr = (char *)&ifr.ifr_addr.sa_data;
-	sprintf(if_hw, "%02X:%02X:%02X:%02X:%02X:%02X",
+
+	if (separator == '\0') {
+		sprintf(if_hw, "%02X%02X%02X%02X%02X%02X",
 			(ptr[0] & 0377), (ptr[1] & 0377), (ptr[2] & 0377),
 			(ptr[3] & 0377), (ptr[4] & 0377), (ptr[5] & 0377));
+	}
+	else
+	{
+		sprintf(if_hw, "%02X%c%02X%c%02X%c%02X%c%02X%c%02X",
+			(ptr[0] & 0377), separator, (ptr[1] & 0377), separator, (ptr[2] & 0377), separator,
+			(ptr[3] & 0377), separator, (ptr[4] & 0377), separator, (ptr[5] & 0377));
+	}
 
 	close(skfd);
 	return 0;

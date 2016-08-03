@@ -16,7 +16,7 @@
 
 int getIfIsReady(const char *ifname);
 int getIfIp(const char *ifname, char *if_addr);
-int getIfMac(const char *ifname, char *if_hw);
+int getIfMac(const char *ifname, char *if_hw, char separator);
 int getIfNetmask(const char *ifname, char *if_net);
 
 #ifdef CONFIG_IPV6

@@ -497,16 +497,16 @@ int cwmp_session_create_connection(cwmp_session_t * session)
 
         }
     }
-    cwmp_log_info("session connect using ssl?(%s)\n", use_ssl==1?"yes":"no");
+    cwmp_log_debug("DEBUG: session connect using ssl?(%s)\n", use_ssl==1?"yes":"no");
 
     int rc = http_socket_create(&sock, AF_INET, SOCK_STREAM, 0, session->connpool);
     if (rc != CWMP_OK)
     {
-        cwmp_log_error("session connect: create socket error.");
+        cwmp_log_error("ERROR: session connect - create socket error.");
         return rc;
     }
 
-    cwmp_log_debug("dest host: %s, dest port: %d", session->dest->host, session->dest->port);
+    cwmp_log_info("dest host: %s, dest port: %d", session->dest->host, session->dest->port);
 
     http_socket_set_sendtimeout(sock, 10);
 
@@ -849,7 +849,7 @@ xmldoc_t *  cwmp_session_create_getparameternames_response_message(cwmp_session_
 
 xmldoc_t *  cwmp_session_create_getparametervalues_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
-    cwmp_log_error("DEBUG: cwmp_session_create_getparametervalues_response_message");
+    cwmp_log_debug("DEBUG: cwmp_session_create_getparametervalues_response_message");
     header_t * header;
     int rv;
     parameter_list_t * pl;
@@ -905,7 +905,7 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
 
 xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
-    cwmp_log_error("DEBUG2: cwmp_session_create_setparameterattributes_response_message \n");
+    cwmp_log_debug("DEBUG: cwmp_session_create_setparameterattributes_response_message \n");
     header_t * header;
     int rv;
     parameter_list_t * pl = NULL;
@@ -1062,7 +1062,7 @@ xmldoc_t *  cwmp_session_create_deleteobject_response_message(cwmp_session_t * s
 
 xmldoc_t *  cwmp_session_create_reboot_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {
-    cwmp_log_error("DEBUG cwmp_session_create_reboot_response_message\n");
+    cwmp_log_debug("DEBUG cwmp_session_create_reboot_response_message\n");
     header_t * header;
     int rv;
     char * key;
@@ -1104,7 +1104,7 @@ xmldoc_t *  cwmp_session_create_factoryreset_response_message(cwmp_session_t * s
 int cwmp_session_send_request(cwmp_session_t * session)
 {
     size_t alength = cwmp_chunk_length(session->writers);
-    cwmp_log_error("DEBUG: cwmp_session_send_request len: %u",alength);
+    cwmp_log_debug("DEBUG: cwmp_session_send_request len: %u",alength);
     //    http_request_t * request;
     //    http_request_create(&request, session->env->pool);
     //    request->dest = session->dest;
@@ -1116,7 +1116,7 @@ int cwmp_session_send_request(cwmp_session_t * session)
     http_request_t * request;
     FUNCTION_TRACE();
 
-//    cwmp_log_error("session dest url: %s", session->dest->url);
+//    cwmp_log_debug("session dest url: %s", session->dest->url);
 
 
     http_request_create(&request, session->envpool);
@@ -1140,12 +1140,12 @@ int cwmp_session_send_request(cwmp_session_t * session)
 
     if (rv <= 0)
     {
-        cwmp_log_error("DEBUG: cwmp_session_send_request ERR");
+        cwmp_log_error("ERROR: cwmp_session_send_request ERR");
         return CWMP_ERROR;
     }
     else
     {
-        cwmp_log_error("DEBUG: cwmp_session_send_request OK");
+        cwmp_log_debug("DEBUG: cwmp_session_send_request OK");
         return CWMP_OK;
     }
 
@@ -1156,7 +1156,7 @@ int cwmp_session_send_request(cwmp_session_t * session)
 
 int cwmp_session_recv_response(cwmp_session_t * session)
 {
-    cwmp_log_error("DEBUG: cwmp_session_recv_response");
+    cwmp_log_debug("DEBUG: cwmp_session_recv_response");
     int respcode;
     http_response_t * response;
     char * auth;
@@ -1202,12 +1202,12 @@ int cwmp_session_recv_response(cwmp_session_t * session)
 
     if(respcode == HTTP_200 || respcode == HTTP_204)
     	{
-//	    cwmp_log_error("DEBUG: cwmp_session_recv_response OK");
+//	    cwmp_log_debug("DEBUG: cwmp_session_recv_response OK");
 		return respcode;
     	}
     else
     	{
-	    cwmp_log_error("DEBUG: cwmp_session_recv_response ERR");
+	    cwmp_log_error("ERROR: cwmp_session_recv_response ERR");
 		return CWMP_ERROR;
     	}
 

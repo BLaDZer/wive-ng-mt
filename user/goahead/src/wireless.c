@@ -348,7 +348,7 @@ static int getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char if_hw[18] = {0};
 
-	if (getIfMac("ra0", if_hw) == -1)
+	if (getIfMac("ra0", if_hw, ':') == -1)
 		return websWrite(wp, T("00:00:00:00:00:00"));
 	return websWrite(wp, T("%s"), if_hw);
 }
@@ -358,7 +358,7 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char if_hw[18] = {0};
 
-	if (getIfMac("rai0", if_hw) == -1)
+	if (getIfMac("rai0", if_hw, ':') == -1)
 		return websWrite(wp, T("00:00:00:00:00:00"));
 	return websWrite(wp, T("%s"), if_hw);
 #else

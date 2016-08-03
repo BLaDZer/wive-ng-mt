@@ -81,7 +81,7 @@ void initialize(void) {
 
        char if_hw[18] = {0};
 
-        if (getIfMac("rai0", if_hw) == -1) { cwmp_log_error("BSSID: 0 \n");}
+        if (getIfMac("rai0", if_hw, 0) == -1) { cwmp_log_error("BSSID: 0 \n");}
 	else cwmp_log_error("BSSID: %s \n",if_hw);
 
 

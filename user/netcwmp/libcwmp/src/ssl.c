@@ -119,7 +119,7 @@ SSL * openssl_connect(SSL_CTX * ctx, int fd)
             }
             else
                 {
-                cwmp_log_info("SSL connect to host ok.\n");  
+                cwmp_log_debug("SSL connect to host ok.\n");  
                      
             }
             

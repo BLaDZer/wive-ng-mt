@@ -494,7 +494,7 @@ static int getLanMac(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char if_mac[18];
 
-	if (getIfMac(getLanIfName(), if_mac) == -1) {
+	if (getIfMac(getLanIfName(), if_mac, ':') == -1) {
 		//websError(wp, 500, T("getLanIp: calling getIfMac error\n"));
 		return websWrite(wp, T(""));
 	}
@@ -648,7 +648,7 @@ static int getWanMac(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char if_mac[18];
 
-	if (getIfMac(getWanIfName(), if_mac) == -1) {
+	if (getIfMac(getWanIfName(), if_mac, ':') == -1) {
 		return websWrite(wp, T(""));
 	}
 	return websWrite(wp, T("%s"), if_mac);

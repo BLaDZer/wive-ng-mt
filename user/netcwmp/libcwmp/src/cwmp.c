@@ -1354,7 +1354,7 @@ int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parame
 //cwmp_parse_getparametervalues_message
 int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault)
 {
-    cwmp_log_error("DEBUG: cwmp_parse_getparametervalues_message");
+    cwmp_log_debug("DEBUG: cwmp_parse_getparametervalues_message");
     xmlnode_t * parameterListNode;
     xmlnode_t * parameterNode;
 //    parameter_t ** nextpv;
@@ -1499,7 +1499,7 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
 //    }
 
 
-    cwmp_log_error("DEBUG: cwmp_parse_getparametervalues_message OK");
+    cwmp_log_debug("DEBUG: cwmp_parse_getparametervalues_message OK");
 
     pool_destroy(pool);
     return CWMP_OK;
@@ -1971,7 +1971,7 @@ int cwmp_parse_deleteobject_message(env_t * env , xmldoc_t *doc, parameter_node_
 
 int cwmp_parse_reboot_message(env_t * env , xmldoc_t *doc, char ** key, fault_code_t *fault)
 {
-    cwmp_log_error("DEBUG: cwmp_parse_reboot_message\n");
+    cwmp_log_debug("DEBUG: cwmp_parse_reboot_message\n");
     xmlnode_t * commandKeyNode;
 
 
@@ -2354,7 +2354,7 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
 	{
 	    if (pnode->inform == 2) pnode->inform = 0;
 
-	    cwmp_log_error("INFORM PARAM: %s \n", name);
+	    cwmp_log_debug("INFORM PARAM: %s \n", name);
 	    parameter_t * parameter = cwmp_parameter_list_add_parameter(env, pool, ppl, rootNode, name, NULL, 1, 0);//Add with getter exec
 
     	    if(!parameter || parameter->fault_code != FAULT_CODE_OK)
@@ -2378,11 +2378,11 @@ int cwmp_create_inform_message_parameter_iterator(env_t * env, parameter_list_t 
 /*
 void cwmp_create_inform_message_iterate_parameters(env_t * env, parameter_node_t * root,  parameter_list_t * pl)
 {
-    cwmp_log_error("DEBUG: cwmp_create_inform_message_iterate_parameters");
+    cwmp_log_debug("DEBUG: cwmp_create_inform_message_iterate_parameters");
     parameter_node_t * node;
     for (node = root->child; node && node->next_sibling; node = node->next_sibling) {
 	if (node->inform > 0) {
-	    cwmp_log_error("INFORM PARAM: %s \n", node->name);
+	    cwmp_log_debug("INFORM PARAM: %s \n", node->name);
 	}
 
 	cwmp_create_inform_message_iterate_parameters(env, node, pl);
@@ -2405,7 +2405,7 @@ xmldoc_t* cwmp_create_inform_message(env_t * env ,  header_t * header,
     xmlnode_t * headerNode;
     xmlnode_t * deviceIdNode, *eventsNode, *maxenvNode, *currtimeNode, *retryCountNode, *paramlistNode;
 
-    cwmp_log_error("DEBUG: cwmp_create_inform_message");
+    cwmp_log_debug("DEBUG: cwmp_create_inform_message");
 
 
     xmldoc_t * doc = XmlDocCreateDocument(env->pool );
@@ -2875,7 +2875,7 @@ xmldoc_t * cwmp_create_deleteobject_response_message(env_t * env , header_t * he
 
 xmldoc_t * cwmp_create_reboot_response_message(env_t * env ,  header_t * header)
 {
-    cwmp_log_error("DEBUG: cwmp_create_reboot_response_message\n");
+    cwmp_log_debug("DEBUG: cwmp_create_reboot_response_message\n");
 
     xmlnode_t * envelopeNode;
     xmlnode_t * bodyNode;

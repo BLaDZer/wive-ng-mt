@@ -14,7 +14,7 @@ int  cpe_refresh_igd_wanconnectiondevice(cwmp_t * cwmp, parameter_node_t * param
     {
         for(tmp_param=child_param->next_sibling; tmp_param; )
         {
-            cwmp_log_info("refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
+            cwmp_log_debug("DEBUG: refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
             tmp_node = tmp_param->next_sibling;
             cwmp_model_delete_parameter(tmp_param);
             tmp_param = tmp_node;

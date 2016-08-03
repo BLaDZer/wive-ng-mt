@@ -82,8 +82,9 @@ void cwmp_log_fini()
 
 void cwmp_log_write(int level, cwmp_log_t * log, const char * fmt, va_list ap)
 {
+    int syslog_level = cwmp_loglevel_to_syslog_level(level);
     if (g_ot_log_file_ptr == NULL) return; /* Uninitialized logger! */
-    vsyslog(cwmp_loglevel_to_syslog_level(level), fmt, ap);
+    vsyslog(syslog_level, fmt, ap);
 
     cwmp_log_t * logger = log;
     if (logger == NULL)

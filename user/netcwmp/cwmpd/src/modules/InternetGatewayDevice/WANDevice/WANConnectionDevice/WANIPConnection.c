@@ -33,7 +33,7 @@ int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value
     getHWStatistic(&rxtx[0]);
 
     int i;
-    for (i=0;i<12;i++) cwmp_log_error("wan RX/TX Count %i : %llu", i, rxtx[i]);
+    for (i=0;i<12;i++) cwmp_log_debug("wan RX/TX Count %i : %llu", i, rxtx[i]);
 
 
     int wan_port = cwmp_nvram_get_int("wan_port",0);
@@ -85,7 +85,7 @@ int cpe_set_igd_wan_ip_addrtype(cwmp_t * cwmp, const char * name, const char * v
     FUNCTION_TRACE();
 
     char* valStr;
-    cwmp_log_error("DEBUG3: cpe_set_igd_wan_ip_addrtype: value is %s \n",value);
+    cwmp_log_debug("DEBUG: cpe_set_igd_wan_ip_addrtype: value is %s \n",value);
 
     switch (value[0]) {
 	case 'S': valStr = "STATIC"; break;
@@ -120,7 +120,7 @@ int  cpe_refresh_igd_wanipconnection(cwmp_t * cwmp, parameter_node_t * param_nod
     {
         for(tmp_param=child_param->next_sibling; tmp_param; )
         {
-            cwmp_log_info("IP:refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
+            cwmp_log_debug("DEBUG: IP:refresh WANConnectionDevice node, delete param %s\n", tmp_param->name);
             tmp_node = tmp_param->next_sibling;
             cwmp_model_delete_parameter(tmp_param);
             tmp_param = tmp_node;

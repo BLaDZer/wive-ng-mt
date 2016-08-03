@@ -127,7 +127,7 @@ int cpe_get_igd_di_provisioningcode(cwmp_t * cwmp, const char * name, char ** va
 //InternetGatewayDevice.DeviceInfo.DeviceLog
 int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-//    cwmp_log_error("DEBUG: cpe_get_igd_di_devicelog");
+//    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog");
     FUNCTION_TRACE();
 
     long length, length2;
@@ -159,7 +159,7 @@ int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, ch
     }
 
     length2 = fread(buffer, 1, length, f);
-    cwmp_log_info("cpe_get_igd_di_devicelog: devicelog file (%s) length is %lu, write length is %lu", filename, length, length2);
+    cwmp_log_debug("cpe_get_igd_di_devicelog: devicelog file (%s) length is %lu, write length is %lu", filename, length, length2);
     if (ferror(f)) 
     {
         cwmp_log_error("cpe_get_igd_di_devicelog: devicelog file (%s) read error %i", ferror(f));
@@ -183,7 +183,7 @@ int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, ch
 
     *value = resbuffer;
 
-//    cwmp_log_error("DEBUG: cpe_get_igd_di_devicelog OK");
+//    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog OK");
     return FAULT_CODE_OK;
 }
 
