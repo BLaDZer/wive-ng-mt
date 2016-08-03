@@ -2402,8 +2402,8 @@ typedef struct _STA_TR_ENTRY{
 #ifdef CONFIG_AP_SUPPORT
 	LARGE_INTEGER TxPackets;
 	LARGE_INTEGER RxPackets;
-	ULONG TxBytes;
-	ULONG RxBytes;
+	UINT64 TxBytes;
+	UINT64 RxBytes;
 #endif /* CONFIG_AP_SUPPORT */
  /* 
  	Used to ignore consecutive PS poll.
@@ -2770,8 +2770,8 @@ typedef struct _MAC_TABLE_ENTRY {
 #ifdef CONFIG_AP_SUPPORT
 	LARGE_INTEGER TxPackets;
 	LARGE_INTEGER RxPackets;
-	ULONG TxBytes;
-	ULONG RxBytes;
+	UINT64 TxBytes;
+	UINT64 RxBytes;
 	ULONG OneSecTxBytes;
 	ULONG OneSecRxBytes;
 #endif /* CONFIG_AP_SUPPORT */

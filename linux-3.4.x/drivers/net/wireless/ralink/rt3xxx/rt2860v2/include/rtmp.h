@@ -2730,8 +2730,8 @@ typedef struct _MAC_TABLE_ENTRY {
 #ifdef CONFIG_AP_SUPPORT
 	LARGE_INTEGER TxPackets;
 	LARGE_INTEGER RxPackets;
-	ULONG TxBytes;
-	ULONG RxBytes;
+	UINT64 TxBytes;
+	UINT64 RxBytes;
 #endif				/* CONFIG_AP_SUPPORT */
 #ifdef P2P_SUPPORT
 	P2P_ENTRY_PARM		P2pInfo;

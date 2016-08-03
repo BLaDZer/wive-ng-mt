@@ -6728,8 +6728,8 @@ INT Show_StaCount_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 			printk("%-4d", (int)pEntry->Aid);
 			printk("%-12ld",(ULONG)pEntry->TxPackets.QuadPart);
 			printk("%-12ld", (ULONG)pEntry->RxPackets.QuadPart);
-			printk("%-12ld", (ULONG)pEntry->TxBytes);
-			printk("%-12ld", (ULONG)pEntry->RxBytes);
+			printk("%-12lld", (UINT64)pEntry->TxBytes);
+			printk("%-12lld", (UINT64)pEntry->RxBytes);
 			printk("\n");
 		}
 	}

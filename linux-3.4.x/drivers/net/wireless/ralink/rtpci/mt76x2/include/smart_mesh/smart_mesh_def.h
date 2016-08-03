@@ -366,10 +366,10 @@ typedef struct _SMART_MESH_CLI_INFO {
 	
 	/* statistics */
 	INT64	rx_total_packets;
-	ULONG	rx_total_bytes;
+	INT64	rx_total_bytes;
 	ULONG	rx_fail_cnt;
 	INT64	tx_total_packets;
-	ULONG	tx_total_bytes;
+	INT64	tx_total_bytes;
 	ULONG	tx_fail_cnt;
 } SMART_MESH_CLI_INFO, *PSMART_MESH_CLI_INFO;
 

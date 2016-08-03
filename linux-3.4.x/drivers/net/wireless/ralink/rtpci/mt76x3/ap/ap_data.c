@@ -1395,7 +1395,7 @@ VOID AP_AMPDU_Frame_Tx(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 			INC_COUNTER64(pMacEntry->TxPackets);
 			pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
 			pMacEntry->OneSecTxBytes+=pTxBlk->SrcBufLen;
-            pAd->TxTotalByteCnt += pTxBlk->SrcBufLen;
+        		pAd->TxTotalByteCnt += pTxBlk->SrcBufLen;
 		}
 	}
 

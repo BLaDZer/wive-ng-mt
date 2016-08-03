@@ -1706,11 +1706,11 @@ INT Set_Cli_Status_Show_Proc(
 				cli_info.tx_sgi,get_phymode_str(cli_info.tx_phymode)));
 
 			DBGPRINT(RT_DEBUG_OFF, 
-				("\tRX Flow Statistics: Total Count = %lld, Error Count = %lu, Total Bytes  = %lu\n",
+				("\tRX Flow Statistics: Total Count = %lld, Error Count = %lu, Total Bytes  = %lld\n",
 				cli_info.rx_total_packets, cli_info.rx_fail_cnt, cli_info.rx_total_bytes));
 
 			DBGPRINT(RT_DEBUG_OFF, 
-				("\tTX Flow Statistics: Total Count = %lld, Failure Count = %lu, Total Bytes = %lu\n",
+				("\tTX Flow Statistics: Total Count = %lld, Failure Count = %lu, Total Bytes = %lld\n",
 				cli_info.tx_total_packets, cli_info.tx_fail_cnt, cli_info.tx_total_bytes));
 		}
 	}

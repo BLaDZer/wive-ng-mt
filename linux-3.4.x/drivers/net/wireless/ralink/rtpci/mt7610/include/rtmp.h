@@ -2314,8 +2314,8 @@ typedef struct _MAC_TABLE_ENTRY {
 #ifdef CONFIG_AP_SUPPORT
 	LARGE_INTEGER TxPackets;
 	LARGE_INTEGER RxPackets;
-	ULONG TxBytes;
-	ULONG RxBytes;
+	UINT64 TxBytes;
+	UINT64 RxBytes;
 #endif /* CONFIG_AP_SUPPORT */
 
 UCHAR	SupportRateMode; /* 1: CCK 2:OFDM 4: HT, 8:VHT */
