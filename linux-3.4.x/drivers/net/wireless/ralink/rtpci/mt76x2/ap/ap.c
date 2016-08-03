@@ -93,6 +93,11 @@ NDIS_STATUS APInitialize(RTMP_ADAPTER *pAd)
 	MulticastFilterTableInit(pAd, &pAd->pMulticastFilterTable);
 #endif /* IGMP_SNOOP_SUPPORT */
 
+#ifdef DROP_MASK_SUPPORT
+	NdisAllocateSpinLock(pAd, &pAd->drop_mask_lock);
+	asic_drop_mask_reset(pAd);
+#endif /* DROP_MASK_SUPPORT */
+
 #ifdef DOT11V_WNM_SUPPORT
 	initList(&pAd->DMSEntryList);
 #endif /* DOT11V_WNM_SUPPORT */
@@ -1357,9 +1362,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				DBGPRINT(RT_DEBUG_WARN, ("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
 					PRINT_MAC(pEntry->Addr),
-					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck));
+					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 			}
 		}
 #ifdef BAND_STEERING
@@ -1404,6 +1409,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			/* Clear TXWI ack in Tx Ring*/
 			ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
+#ifdef DROP_MASK_SUPPORT
+			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
+#endif
 #endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
@@ -1436,6 +1444,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 								END_OF_ARGS);				
 				MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 				MlmeFreeMemory(pAd, pOutBuffer);
+
+				/* wait for DEAUTH processed */
+				OS_WAIT(5);
 
 #ifdef MAC_REPEATER_SUPPORT
 				if ((pAd->ApCfg.bMACRepeaterEn == TRUE) && IS_ENTRY_CLIENT(pEntry)

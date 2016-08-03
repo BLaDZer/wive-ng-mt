@@ -1491,9 +1491,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				DBGPRINT(RT_DEBUG_WARN, ("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
 					PRINT_MAC(pEntry->Addr),
-					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck));
+					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 			}
 		}
 #ifdef BAND_STEERING

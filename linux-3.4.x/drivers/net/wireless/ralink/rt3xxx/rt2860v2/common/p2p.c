@@ -4572,9 +4572,9 @@ VOID P2PMacTableMaintenance(
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				DBGPRINT(RT_DEBUG_WARN, ("STA-%02x:%02x:%02x:%02x:%02x:%02x had left\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
-					pEntry->Addr[4],pEntry->Addr[5]));			
+					pEntry->Addr[4],pEntry->Addr[5]);
 			}
 		}
 

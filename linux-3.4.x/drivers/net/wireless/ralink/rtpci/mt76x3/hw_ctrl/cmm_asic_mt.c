@@ -2376,9 +2376,9 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 		if ((TxSuccess == 0) && (pTxInfo->TxFailCount > 0))
 		{
 			/* prevent fast drop long range clients */
-			if (TxRetransmit > MAC_ENTRY_LIFE_CHECK_CNT / 4)
-				TxRetransmit = MAC_ENTRY_LIFE_CHECK_CNT / 4;
-			
+			if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
+				TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
+
 			/* No TxPkt ok in this period as continue tx fail */
 			pEntry->ContinueTxFailCnt += TxRetransmit;
 		}
@@ -2386,9 +2386,8 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 		{
 			pEntry->ContinueTxFailCnt = 0;
 		}
-		
-		DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%d, FAIL:%d, ConFail:%d) \n",__FUNCTION__,
-			TxSuccess, pTxInfo->TxFailCount, pEntry->ContinueTxFailCnt));	
+
+		DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%d, FAIL:%d, ConFail:%d) \n",__FUNCTION__, TxSuccess, pTxInfo->TxFailCount, pEntry->ContinueTxFailCnt));
 	}
 
 }

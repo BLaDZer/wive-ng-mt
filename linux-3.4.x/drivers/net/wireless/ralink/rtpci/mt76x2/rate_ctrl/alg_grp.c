@@ -1507,9 +1507,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	ULONG					TxSuccess, TxRetransmit, TxFailCount;
 	ULONG					OneSecTxNoRetryOKRationCount;
 	BOOLEAN					rateChanged;
+	BOOLEAN					HasTxInfo = FALSE;
 #ifdef TXBF_SUPPORT
 	BOOLEAN					CurrPhyETxBf, CurrPhyITxBf;
 #endif /*  TXBF_SUPPORT */
+
 
 	pEntry = &pAd->MacTab.Content[idx];
 
@@ -1552,6 +1554,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			Rssi = pEntry->RssiSample.AvgRssi0;
 
 		TxCnt = AccuTxTotalCnt;
+
+		HasTxInfo = TRUE;
 	}
 	else
 	{
@@ -1586,10 +1590,13 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			TxErrorRatio = HwErrRatio;
 			TxTotalCnt = HwTxCnt;
 			TxCnt = HwTxCnt;
+
+			HasTxInfo = TRUE;
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+    if (HasTxInfo)
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 #ifdef NEW_RATE_ADAPT_QUICK_DOWN
@@ -1849,6 +1856,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	MAC_TABLE_ENTRY *pEntry;
 	RTMP_RA_GRP_TB *pCurrTxRate;
 	CHAR Rssi;
+	BOOLEAN HasTxInfo = FALSE;
 
 	pEntry = &pAd->MacTab.Content[i]; /* point to information of the individual station */
 	pTable = pEntry->pTable;
@@ -1873,6 +1881,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 #endif
 		if (TxTotalCnt)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+
+		HasTxInfo = TRUE;
 	}
 	else
 	{
@@ -1904,17 +1914,12 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			TxTotalCnt = HwTxCnt;
 			TxErrorRatio = HwErrRatio;
 
-#ifdef RT65xx
-			if (IS_RT65XX(pAd))
-			{
-				if (TxSuccess > 0)
-					pEntry->NoDataIdleCount = 0;
-			}
-#endif /* RT65xx */
+			HasTxInfo = TRUE;
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 	}
 
+    if (HasTxInfo)
 	ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */

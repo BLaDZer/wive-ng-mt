@@ -1215,10 +1215,10 @@ VOID MacTableMaintenance(
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				DBGPRINT(RT_DEBUG_WARN, ("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
 					pEntry->Addr[4],pEntry->Addr[5],
-					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck));
+					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 			}
 		}
 

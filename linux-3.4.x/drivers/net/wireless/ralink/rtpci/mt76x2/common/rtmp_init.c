@@ -1796,25 +1796,26 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 #ifdef RT65xx
 	if (IS_RT65XX(pAd)) {
         	if (pAd->MacTab.Size <= 8) {
-			
 #ifdef UAPSD_SUPPORT
-				/* check the EOSP packet by RateCtrl's way */
-                UAPSD_SP_AUE_Handle(pAd, pEntry, TRUE);
+		    /* check the EOSP packet by RateCtrl's way */
+		    UAPSD_SP_AUE_Handle(pAd, pEntry, TRUE);
 #endif /* UAPSD_SUPPORT */
-			
-				if ((TxSuccess == 0) && (TxRetransmit > 0))
-				{
-						/* No TxPkt ok in this period as continue tx fail */
-						pEntry->ContinueTxFailCnt += TxRetransmit;
-				}
-				else
-				{
-						pEntry->ContinueTxFailCnt = 0;
-				}
+		    if ((TxSuccess == 0) && (TxRetransmit > 0))
+		    {
+			    /* prevent fast drop long range clients */
+			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
+					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
+					/* No TxPkt ok in this period as continue tx fail */
+					pEntry->ContinueTxFailCnt += TxRetransmit;
+			    } else {
+					pEntry->ContinueTxFailCnt = 0;
+			    }
 
-				DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%d, FAIL:%d, ConFail:%d) \n",__FUNCTION__,
-						TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
-		}
+			    if (TxSuccess > 0)
+				pEntry->NoDataIdleCount = 0;
+
+			    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
+		    }
 	}
 	else
 #endif /* RT65xx */
@@ -2026,6 +2027,11 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 
 			/* Update the continuous transmission counter.*/
+#ifdef FIFO_EXT_SUPPORT
+			if (StaFifoExt.field.txRtyCnt > 0)
+				pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
+			else
+#endif
 			pEntry->ContinueTxFailCnt++;
 
 			if(pEntry->PsMode == PWR_ACTIVE)
