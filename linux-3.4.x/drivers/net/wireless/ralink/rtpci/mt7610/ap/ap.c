@@ -1392,7 +1392,7 @@ VOID MacTableMaintenance(
 		    	MlmeFreeMemory(pAd, pOutBuffer);
 
 				/* wait for DEAUTH processed */
-				OS_WAIT(5);
+				OS_WAIT(1);
 
 #ifdef MAC_REPEATER_SUPPORT
 				if ((pAd->ApCfg.bMACRepeaterEn == TRUE) && IS_ENTRY_CLIENT(pEntry))
