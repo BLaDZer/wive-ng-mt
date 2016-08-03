@@ -204,11 +204,13 @@ static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 	// Output connection status
 	const vpn_status_t *st = &st_table[status];
 	websWrite(wp, T("%s"), st->status);
+
+	return 0;
 }
 
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *vpn_enabled, *submitUrl, *vpn_type;
+	char_t *vpn_enabled, *vpn_type;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
@@ -225,7 +227,7 @@ static void formVPNSetup(webs_t wp, char_t *path, char_t *query)
 
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "vpnEnabled", vpn_enabled);
-		
+
 		if ((strncmp(vpn_enabled, "on", 3)) || !CHK_IF_DIGIT(vpn_type, 0))
 			nvram_bufset(RT2860_NVRAM, "vpnPurePPPOE", "0");
 
@@ -1194,10 +1196,8 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 	char_t *wan_mtu;
 	char_t *st_en, *pd, *sd;
-	unsigned int i, flag = 1;
 
 	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
-	char *lan_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
 
 	ctype = ip = nm = gw = eth = user = pass = mac = vpn_srv = vpn_mode = l2tp_srv = l2tp_mode = NULL;
 
