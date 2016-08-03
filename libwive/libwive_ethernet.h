@@ -11,20 +11,20 @@
 #define PROCREG_DIR			"mt7620"
 #endif
 
+#define IOCTL_IF			"eth2"
+
 #ifdef CONFIG_RAETH_SNMPD
 #define PROCREG_SNMP			("/proc/" PROCREG_DIR "/snmp")
-#endif
-#define PROCREG_GMAC		("/proc/" PROCREG_DIR "/gmac")
-#define IOCTL_IF "eth2"
-
 struct port_counts {
 	unsigned long long rx_count[6];	// recive switch port count
 	unsigned long long tx_count[6];	// transmit switch port count
 };
 
 void portscounts(struct port_counts *st);
+#endif
 
 #if defined(CONFIG_ETHTOOL)
+#define PROCREG_GMAC			("/proc/" PROCREG_DIR "/gmac")
 struct port_status {
 	int portnum;	// port number
 	int link;	// link status
