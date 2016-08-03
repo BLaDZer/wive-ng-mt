@@ -1803,8 +1803,8 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 		    if ((TxSuccess == 0) && (TxRetransmit > 0))
 		    {
 			    /* prevent fast drop long range clients */
-			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
-					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
+			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 16)
+					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 16;
 					/* No TxPkt ok in this period as continue tx fail */
 					pEntry->ContinueTxFailCnt += TxRetransmit;
 			    } else {
@@ -2028,9 +2028,13 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 
 			/* Update the continuous transmission counter.*/
 #ifdef FIFO_EXT_SUPPORT
-			if (StaFifoExt.field.txRtyCnt > 0)
+			if (StaFifoExt.field.txRtyCnt > 0) {
+			    /* limit incriment by fifo */
+			    if (StaFifoExt.field.txRtyCnt > 8)
+				pEntry->ContinueTxFailCnt += 8;
+			    else
 				pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
-			else
+			} else
 #endif
 			pEntry->ContinueTxFailCnt++;
 

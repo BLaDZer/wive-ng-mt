@@ -2376,8 +2376,8 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 		if ((TxSuccess == 0) && (pTxInfo->TxFailCount > 0))
 		{
 			/* prevent fast drop long range clients */
-			if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
-				TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
+			if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 16)
+				TxRetransmit = pAd->ApCfg.EntryLifeCheck / 16;
 
 			/* No TxPkt ok in this period as continue tx fail */
 			pEntry->ContinueTxFailCnt += TxRetransmit;
