@@ -1409,9 +1409,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			/* Clear TXWI ack in Tx Ring*/
 			ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
-#ifdef DROP_MASK_SUPPORT
-			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
-#endif
+//#ifdef DROP_MASK_SUPPORT
+//			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
+//#endif
 #endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
@@ -1444,10 +1444,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 								END_OF_ARGS);				
 				MiniportMMRequest(pAd, 0, pOutBuffer, FrameLen);
 				MlmeFreeMemory(pAd, pOutBuffer);
-
-				/* wait for DEAUTH processed */
-				OS_WAIT(1);
-
 #ifdef MAC_REPEATER_SUPPORT
 				if ((pAd->ApCfg.bMACRepeaterEn == TRUE) && IS_ENTRY_CLIENT(pEntry)
 #ifdef MWDS
