@@ -234,16 +234,14 @@ VOID APStartUp(RTMP_ADAPTER *pAd)
 						and should be set to 1 in extended multiple BSSIDs'
 						Bit3~ of MAC address Byte0 is extended multiple BSSID index.
 					 */
-#ifdef ENHANCE_NEW_MBSSID_MODE
 					wdev->if_addr[0] &= ((MacMask << 2) + 3);
-#endif /* ENHANCE_NEW_MBSSID_MODE */
-					wdev->if_addr[0] += ((idx - 1) << 2);
+					wdev->if_addr[0] |= ((idx - 1) << 2);
 				}
 #ifdef ENHANCE_NEW_MBSSID_MODE
 				else
 				{
 					wdev->if_addr[pAd->chipCap.MBSSIDMode - 1] &= (MacMask);
-					wdev->if_addr[pAd->chipCap.MBSSIDMode - 1] += (idx - 1);
+					wdev->if_addr[pAd->chipCap.MBSSIDMode - 1] |= (idx - 1);
 				}
 #endif /* ENHANCE_NEW_MBSSID_MODE */
 			}
@@ -2513,12 +2511,15 @@ VOID APOverlappingBSSScan(RTMP_ADAPTER *pAd)
 		RTMP_IRQ_ENABLE(pAd);
 #endif /* RTMP_MAC_PCI */
 
+
+		/* Now Enable RxTx */
+		RTMPEnableRxTx(pAd);
+
 		/* rtmp_rx_done_handle() API will check this flag to decide accept incoming packet or not. */
 		/* Set the flag be ready to receive Beacon frame for autochannel select. */
 		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_START_UP);
 	}
 
-	RTMPEnableRxTx(pAd);
 
 	DBGPRINT(RT_DEBUG_TRACE, ("Ready to do passive scanning for Channel[%d] to Channel[%d]!\n", 
 			pAd->ChannelList[chStartIdx].Channel, pAd->ChannelList[chEndIdx].Channel));
