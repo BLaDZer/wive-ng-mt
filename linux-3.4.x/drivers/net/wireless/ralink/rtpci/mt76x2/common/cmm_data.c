@@ -3451,8 +3451,8 @@ VOID Update_Rssi_Sample(
 	IN RSSI_SAMPLE *pRssi,
 	IN RXWI_STRUC *pRxWI)
 {
-	CHAR rssi[3];
-	UCHAR snr[3];
+	CHAR rssi[3] = {0};
+	UCHAR snr[3] = {0};
 	BOOLEAN bInitial = FALSE;
 #ifdef RLT_MAC
 	CHAR Phymode = get_pkt_phymode_by_rxwi(pAd, pRxWI);

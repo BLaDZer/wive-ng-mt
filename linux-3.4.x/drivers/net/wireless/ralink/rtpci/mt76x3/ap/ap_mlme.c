@@ -646,7 +646,7 @@ VOID APAsicEvaluateRxAnt(
 */
 VOID APAsicRxAntEvalTimeout(RTMP_ADAPTER *pAd)
 {
-	CHAR rssi[3], *target_rssi;
+	CHAR rssi[3] = {0}, *target_rssi;
 
 #ifdef CONFIG_ATE
 	if (ATE_ON(pAd))
