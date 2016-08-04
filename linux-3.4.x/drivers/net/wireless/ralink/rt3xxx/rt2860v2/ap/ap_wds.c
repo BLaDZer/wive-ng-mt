@@ -475,9 +475,9 @@ VOID WdsTableMaintenance(
 		/* delete those MAC entry that has been idle for a long time */
 		if (pEntry->NoDataIdleCount >= MAC_TABLE_AGEOUT_TIME)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("ageout %02x:%02x:%02x:%02x:%02x:%02x from WDS #%d after %d-sec silence\n",
+			printk("ageout %02x:%02x:%02x:%02x:%02x:%02x from WDS #%d after %d-sec silence\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
-					pEntry->Addr[4],pEntry->Addr[5], idx, MAC_TABLE_AGEOUT_TIME));
+					pEntry->Addr[4],pEntry->Addr[5], idx, MAC_TABLE_AGEOUT_TIME);
 			WdsEntryDel(pAd, pEntry->Addr);
 			MacTableDeleteWDSEntry(pAd, pEntry->Aid, pEntry->Addr);
 		}

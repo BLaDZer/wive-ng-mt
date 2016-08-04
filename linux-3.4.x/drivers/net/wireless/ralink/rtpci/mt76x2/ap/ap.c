@@ -1339,8 +1339,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (pEntry->continuous_ps_count > pAd->ps_timeout)
 				DBGPRINT(RT_DEBUG_WARN, ("ps_timeout(%u) !!!\n", pEntry->Aid));
 #endif /* PS_ENTRY_MAITENANCE */
-			DBGPRINT(RT_DEBUG_WARN, ("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
-					PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout));
+			printk("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
+					PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout);
 			ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 #ifdef SMART_MESH_MONITOR
 			{
@@ -1362,7 +1362,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
 					PRINT_MAC(pEntry->Addr),
 					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 			}

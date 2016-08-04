@@ -1201,9 +1201,9 @@ VOID MacTableMaintenance(
 		if (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout)
 		{
 			bDisconnectSta = TRUE;
-			DBGPRINT(RT_DEBUG_WARN, ("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
+			printk("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
-					pEntry->Addr[4],pEntry->Addr[5],pEntry->StaIdleTimeout));
+					pEntry->Addr[4],pEntry->Addr[5],pEntry->StaIdleTimeout);
 			ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 		}
 		else if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
@@ -1215,7 +1215,7 @@ VOID MacTableMaintenance(
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (%d %lu)\n",
+				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
 					pEntry->Addr[4],pEntry->Addr[5],
 					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
