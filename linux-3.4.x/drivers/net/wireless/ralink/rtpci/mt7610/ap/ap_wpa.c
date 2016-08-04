@@ -843,7 +843,7 @@ VOID GREKEYPeriodicExec(
 					pEntry->GTKState = REKEY_NEGOTIATING;
 #ifdef DROP_MASK_SUPPORT
 					/* Disable Drop Mask */
-					drop_mask_set_per_client(pAd, pEntry, FALSE);
+					set_drop_mask_per_client(pAd, pEntry, 0, 0);
 #endif /* DROP_MASK_SUPPORT */
                 			WPAStart2WayGroupHS(pAd, pEntry);
 					pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;

@@ -2027,15 +2027,6 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 
 			/* Update the continuous transmission counter.*/
-#ifdef FIFO_EXT_SUPPORT
-			if (StaFifoExt.field.txRtyCnt > 0) {
-			    /* limit incriment by fifo */
-			    if (StaFifoExt.field.txRtyCnt > 8)
-				pEntry->ContinueTxFailCnt += 8;
-			    else
-				pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
-			} else
-#endif
 			pEntry->ContinueTxFailCnt++;
 
 			if(pEntry->PsMode == PWR_ACTIVE)

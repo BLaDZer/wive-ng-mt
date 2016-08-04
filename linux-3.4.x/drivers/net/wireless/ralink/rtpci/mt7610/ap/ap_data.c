@@ -3599,7 +3599,7 @@ VOID APHandleRxPsPoll(
 	{
 #ifdef DROP_MASK_SUPPORT
 		/* Disable Drop Mask */
-		drop_mask_set_per_client(pAd, pMacEntry, FALSE);
+		set_drop_mask_per_client(pAd, pMacEntry, 2, 0);
 #endif /* DROP_MASK_SUPPORT */
 #ifdef PS_ENTRY_MAITENANCE
 			pMacEntry->continuous_ps_count = 0;
@@ -5173,7 +5173,7 @@ VOID APHandleRxDataFrame(
 			{
 #ifdef DROP_MASK_SUPPORT
 			    /* Disable Drop Mask */
-			    drop_mask_set_per_client(pAd, pEntry, FALSE);
+			    set_drop_mask_per_client(pAd, pEntry, 2, 0);
 #endif /* DROP_MASK_SUPPORT */
 	    		    UAPSD_TriggerFrameHandle(pAd, pEntry, OldUP);
 			}

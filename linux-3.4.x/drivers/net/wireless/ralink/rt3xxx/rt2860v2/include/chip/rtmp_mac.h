@@ -2243,7 +2243,7 @@ typedef	union GNU_PACKED _TX_STA_FIFO_STRUC	{
 }	TX_STA_FIFO_STRUC, *PTX_STA_FIFO_STRUC;
 #endif
 
-#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+#ifdef FIFO_EXT_SUPPORT
 
 #define TX_STA_FIFO_EXT		0x1798		/* Only work after RT53xx */
 /*
@@ -2266,10 +2266,6 @@ typedef	union GNU_PACKED _TX_STA_FIFO_EXT_STRUC	{
 	UINT32			word;
 }	TX_STA_FIFO_EXT_STRUC, *PTX_STA_FIFO_EXT_STRUC;
 #endif
-
-#endif /* TX_STA_FIFO_EXT_SUPPORT */
-
-#ifdef FIFO_EXT_SUPPORT
 
 #define WCID_TX_CNT_0	0x176c
 #define WCID_TX_CNT_1	0x1770

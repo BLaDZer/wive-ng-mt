@@ -79,10 +79,6 @@ NDIS_STATUS APInitialize(
 	MulticastFilterTableInit(pAd, &pAd->pMulticastFilterTable);
 #endif /* IGMP_SNOOP_SUPPORT */
 
-#ifdef DROP_MASK_SUPPORT
-	NdisAllocateSpinLock(pAd, &pAd->drop_mask_lock);
-	asic_drop_mask_reset(pAd);
-#endif /* DROP_MASK_SUPPORT */
 
 #ifdef WDS_SUPPORT
 	NdisAllocateSpinLock(pAd, &pAd->WdsTabLock);
@@ -1865,7 +1861,7 @@ BOOLEAN APPsIndicate(
 		{
 #ifdef DROP_MASK_SUPPORT
 			/* Disable Drop Mask */
-			drop_mask_set_per_client(pAd, pEntry, FALSE);
+			set_drop_mask_per_client(pAd, pEntry, 2, 0);
 #endif /* DROP_MASK_SUPPORT */
 #ifdef PS_ENTRY_MAITENANCE
 			pEntry->continuous_ps_count = 0;
@@ -1884,7 +1880,7 @@ BOOLEAN APPsIndicate(
 #ifdef DROP_MASK_SUPPORT
 		else if ((old_psmode == PWR_ACTIVE) && (Psm == PWR_SAVE)) {
 			/* Enable Drop Mask */
-			drop_mask_set_per_client(pAd, pEntry, TRUE);
+			set_drop_mask_per_client(pAd, pEntry, 2, 1);
 		}
 #endif /* DROP_MASK_SUPPORT */
 
