@@ -370,6 +370,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 {
 	unsigned int i;
 	int err = 0;
+	char str[64];
 
 	RT_802_11_MAC_TABLE table = {0};
 
@@ -409,7 +410,8 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("\"quality0\":\"%d\", \"quiality1\":\"%d\", \"quiality2\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
 			// Rx/Tx bytes
-			websWrite(wp, T("\"rxbytes\":\"%s\", \"txbytes\":\"%s\" }"), scale(pe->RxBytes), scale(pe->TxBytes));
+			sprintf(str, "\"rxbytes\":\" %llu \", \"txbytes\":\" %llu \" }", (long long unsigned)pe->RxBytes, (long long unsigned)pe->TxBytes);
+			websWrite(wp, T("%s"), str);
 			if (i < (table.Num - 1))
 				websWrite(wp, T(", "));
 		}
@@ -457,7 +459,8 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("\"quality0\":\"%d\", \"quiality1\":\"%d\", \"quiality2\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
 #endif
 			// Rx/Tx bytes
-			websWrite(wp, T("\"rxbytes\":\"%s\", \"txbytes\":\"%s\" }"), scale(pe->RxBytes), scale(pe->TxBytes));
+			sprintf(str, "\"rxbytes\":\" %llu \", \"txbytes\":\" %llu \" }", (long long unsigned)pe->RxBytes, (long long unsigned)pe->TxBytes);
+			websWrite(wp, T("%s"), str);
 			if (i < (table.Num - 1))
 				websWrite(wp, T(", "));
 		}
@@ -1679,9 +1682,8 @@ static void disconnectSta(webs_t wp, char_t *path, char_t *query)
 #endif
 		}
 	}
-
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
+	websHeader(wp);
+	websDone(wp, 204);
 }
 
 static int getMaxStaNum(int eid, webs_t wp, int argc, char_t **argv)

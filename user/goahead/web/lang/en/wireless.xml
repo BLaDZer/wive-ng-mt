@@ -203,7 +203,7 @@
   <message msgid="adv maximum stations range" msgstr="num" />
   <message msgid="adv station keep alive range" msgstr="sec (range 10 - 300)" />
   <message msgid="adv idletimeout range" msgstr="sec (range 60 - 300)" />
-  <message msgid="adv entrylifecheck range" msgstr="times (range 128 - 2048)" />
+  <message msgid="adv entrylifecheck range" msgstr="times (range 256 - 4096)" />
 
   <message msgid="adv no mssid_1" msgstr="Please specify Network Name (SSID)" />
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
@@ -298,11 +298,6 @@
   <message msgid="apcli long phrase" msgstr="Password phrase is too long" />
   <message msgid="apcli chars not allowed" msgstr="Some of characters in password phrase are not allowed" />
 
-  <message msgid="stalist title" msgstr="Station List" />
-  <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here." />
-  <message msgid="stalist wireless network" msgstr="Wireless Network" />
-  <message msgid="stalist conn time" msgstr="CONN TIME" />
-
   <message msgid="prof title" msgstr="Station Profile" />
   <message msgid="prof introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="prof list" msgstr="Profile List" />
@@ -379,4 +374,40 @@
   <message msgid="about introduction" msgstr="The Status page shows settings and current operation status of the Station." />
   <message msgid="about about" msgstr="About" />
   <message msgid="about driver version" msgstr="Driver Version" />
+  
+  <message msgid="stalist title" msgstr="Station List" />
+  <message msgid="stalist introduction" msgstr="You can monitor stations associated with this AP here." />
+  <message msgid="stalist wireless summary" msgstr="Wireless Network Summary" />  
+  <message msgid="stalist wireless network" msgstr="Wireless Network Stations" />
+  <message msgid="stalist wireless plot" msgstr="Wireless Network Plot" />  
+  <message msgid="stalist mac address" msgstr="MAC ADDRESS" />
+  <message msgid="stalist conn time" msgstr="CONN. TIME" />
+  <message msgid="stalist mode" msgstr="MODE" />
+  <message msgid="stalist txrate" msgstr="TX RATE" />
+  <message msgid="stalist rssi" msgstr="RSSI" />
+  <message msgid="stalist quality" msgstr="QUALITY" />
+  <message msgid="stalist rxtx" msgstr="RX/TX COUNT" />
+  <message msgid="stalist plot" msgstr="PLOT" />
+  <message msgid="stalist action" msgstr="ACTION" />
+  <message msgid="stalist wireless sum total" msgstr="Total" />
+  <message msgid="stalist wireless sum total 24" msgstr="2.4GHz" />
+  <message msgid="stalist wireless sum total 5" msgstr="5GHz" />
+  <message msgid="stalist wireless sum aid" msgstr="Stations" />
+  <message msgid="stalist wireless sum txrate" msgstr="Average TX Rate" />
+  <message msgid="stalist wireless sum rxtx" msgstr="Average TX/RX Bandwidth" />
+  <message msgid="stalist wireless sum rssi" msgstr="Average RSSI" />
+  <message msgid="stalist wireless sum quality" msgstr="Average Quality" />
+  <message msgid="stalist wireless mode" msgstr="Wireless station list mode" />
+  <message msgid="stalist wireless mode basic" msgstr="Basic" />
+  <message msgid="stalist wireless mode advanced" msgstr="Advanced" />
+  <message msgid="stalist wireless plot type" msgstr="Graphic type " />
+  <message msgid="stalist wireless plot type txrate" msgstr="TX Rate" />
+  <message msgid="stalist wireless plot type rssi" msgstr="RSSI" />
+  <message msgid="stalist wireless plot type quality" msgstr="Quality" />
+  <message msgid="stalist wireless plot type rxtx" msgstr="RX/TX Bandwidth" />
+  <message msgid="stalist wireless plot time" msgstr="Graphic time" />
+  <message msgid="stalist wireless plot time all" msgstr="All time" />
+  <message msgid="stalist wireless plot time 1h" msgstr="1H" />
+  <message msgid="stalist wireless plot time 3h" msgstr="3H" />
+  <message msgid="stalist wireless plot time 6h" msgstr="6H" />
 </po>

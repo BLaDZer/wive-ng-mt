@@ -24,7 +24,6 @@
   <message msgid="station encryp" msgstr="Шифрование" />
   <message msgid="station auth" msgstr="Аутентификация" />
   <message msgid="station network type" msgstr="Тип сети" />
-  <message msgid="stalist mac address" msgstr="MAC адрес" />
 
   <message msgid="basic tx power" msgstr="Мощность передатчика (2.4GHz)" />
   <message msgid="basic tx power ac" msgstr="Мощность передатчика  (5GHz)" />
@@ -203,7 +202,7 @@
   <message msgid="adv maximum stations range" msgstr="количество" />
   <message msgid="adv station keep alive range" msgstr="секунд (диапазон 10 - 300)" />
   <message msgid="adv idletimeout range" msgstr="секунд (диапазон 60 - 300)" />
-  <message msgid="adv entrylifecheck range" msgstr="количество (диапазон 128 - 2048)" />
+  <message msgid="adv entrylifecheck range" msgstr="количество (диапазон 256 - 4096)" />
 
   <message msgid="adv no mssid_1" msgstr="Пожалуйста, укажите имя беспроводной сети (SSID)" />
   <message msgid="adv no beacon" msgstr="Пожалуйста, укажите интервал маяка" />
@@ -298,11 +297,6 @@
   <message msgid="apcli long phrase" msgstr="Секретная фраза слишком длинная" />
   <message msgid="apcli chars not allowed" msgstr="В секретной фразе использованны недопустимые символы" />
 
-  <message msgid="stalist title" msgstr="Активные подключения" />
-  <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список клиентов, подключенных к данной точке доступа." />
-  <message msgid="stalist wireless network" msgstr="Беспроводная сеть" />
-  <message msgid="stalist conn time" msgstr="Время подкл." />
-
   <message msgid="prof title" msgstr="Профиль станции" />
   <message msgid="prof introduction" msgstr="Страница статуса показывает настройки и текущий режим работы станции." />
   <message msgid="prof list" msgstr="Список профилей" />
@@ -379,4 +373,40 @@
   <message msgid="about introduction" msgstr="." />
   <message msgid="about about" msgstr="О устройстве" />
   <message msgid="about driver version" msgstr="Версия драйвера" />
+
+  <message msgid="stalist title" msgstr="Активные подключения" />
+  <message msgid="stalist introduction" msgstr="Здесь вы можете увидеть список клиентов, подключенных к данной точке доступа." />
+  <message msgid="stalist wireless summary" msgstr="Суммарная информация" />  
+  <message msgid="stalist wireless network" msgstr="Список активных подключений" />
+  <message msgid="stalist wireless plot" msgstr="График подключений беспроводных клиентов" />  
+  <message msgid="stalist mac address" msgstr="MAC Адрес" />
+  <message msgid="stalist conn time" msgstr="Время подкл." />
+  <message msgid="stalist mode" msgstr="Режим" />
+  <message msgid="stalist txrate" msgstr="Скорость передачи" />
+  <message msgid="stalist rssi" msgstr="RSSI" />
+  <message msgid="stalist quality" msgstr="Качество" />
+  <message msgid="stalist rxtx" msgstr="RX/TX Счетчик" />
+  <message msgid="stalist plot" msgstr="График" />
+  <message msgid="stalist action" msgstr="Действие" />
+  <message msgid="stalist wireless sum total" msgstr="Всего" />
+  <message msgid="stalist wireless sum total 24" msgstr="2.4ГГц" />
+  <message msgid="stalist wireless sum total 5" msgstr="5ГГц" />  
+  <message msgid="stalist wireless sum aid" msgstr="Количество подключений" />
+  <message msgid="stalist wireless sum txrate" msgstr="Средняя скорость подключения" />
+  <message msgid="stalist wireless sum rxtx" msgstr="Средняя скорость передачи данных" />
+  <message msgid="stalist wireless sum rssi" msgstr="Средний уровень принимаемого сигнала" />
+  <message msgid="stalist wireless sum quality" msgstr="Среднее качество сигнала" />
+  <message msgid="stalist wireless mode" msgstr="Режим отображения подключенных клиентов" />
+  <message msgid="stalist wireless mode basic" msgstr="Базовый" />
+  <message msgid="stalist wireless mode advanced" msgstr="Расширенный" />
+  <message msgid="stalist wireless plot type" msgstr="Тип графика " />
+  <message msgid="stalist wireless plot type txrate" msgstr="Скорось подключения" />
+  <message msgid="stalist wireless plot type rssi" msgstr="Уровень сигнала" />
+  <message msgid="stalist wireless plot type quality" msgstr="Качество" />
+  <message msgid="stalist wireless plot type rxtx" msgstr="скорость передачи данных" />
+  <message msgid="stalist wireless plot time" msgstr="Время графика " />
+  <message msgid="stalist wireless plot time all" msgstr="Все время" />
+  <message msgid="stalist wireless plot time 1h" msgstr="1 Час" />
+  <message msgid="stalist wireless plot time 3h" msgstr="3 Часа" />
+  <message msgid="stalist wireless plot time 6h" msgstr="6 Часов" />
 </po>

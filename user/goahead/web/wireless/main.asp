@@ -1297,7 +1297,7 @@ function CheckValue(form)
 		return false;
 	}
 
-	if (isNaN(form.EntryLifeCheck.value) || form.EntryLifeCheck.value < 128 || form.EntryLifeCheck.value > 2048)
+	if (isNaN(form.EntryLifeCheck.value) || form.EntryLifeCheck.value < 256 || form.EntryLifeCheck.value > 4096)
 	{
 		alert(_("adv invalid entrylifecheck"));
 		form.EntryLifeCheck.focus();
@@ -1486,10 +1486,6 @@ function showRoamingMenu(){
 			<td class="title" colspan="1" align="center"><span id="basicBroadcast">Broadcast</span><br><span id="basicIsolatedSSID1">Isolated</span></td>
 			<td id="basicAction"class="title" colspan="1" align="center">Action</td>
 		</tr>
-		<tr id="div_11a_name" name="div_11a_name">
-			<td class="head" id="basicAcSSID" colspan="1">Network Name (5GHz)</td>
-			<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
-		</tr>
 		<tr id="div_11g_name" name="div_11g_name">
 			<td class="head" id="basicSSID" colspan="1">Network Name (2.4GHz)</td>
 				<input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
@@ -1554,6 +1550,10 @@ function showRoamingMenu(){
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="7"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
 			<td colspan="1" align="center"><input type="button" onClick="ssidRemove(this.form, 7);" class="half" value="Remove" id="basicRemove"></td>
+		</tr>
+		<tr id="div_11a_name" name="div_11a_name">
+			<td class="head" id="basicAcSSID" colspan="1">Network Name (5GHz)</td>
+			<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
 		</tr>
 		<tr id="basicMbssidModeT">
 			<td class="head" id="basicMBSSIDMode" colspan="1">MBSSID Mode</td>
@@ -1784,7 +1784,7 @@ function showRoamingMenu(){
 		<tr id="advEntryLifeCheck_tr">
 			<td id="advEntryLifeCheck_td_1" class="head" width="50%">EntryLifeCheck</td>
 			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">
-				<font color="#808080" id="advEntryLifeCheckTimes"> (128 - 2048)</font></td>
+				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
 		</tr>
 		<tr id="advShortPre_tr">
 			<td id="advShortPre_td_1" class="head" width="50%">Short Preamble</td>
