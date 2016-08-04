@@ -402,11 +402,20 @@
   <message msgid="stalist wireless plot type" msgstr="Тип графика " />
   <message msgid="stalist wireless plot type txrate" msgstr="Скорось подключения" />
   <message msgid="stalist wireless plot type rssi" msgstr="Уровень сигнала" />
-  <message msgid="stalist wireless plot type quality" msgstr="Качество" />
-  <message msgid="stalist wireless plot type rxtx" msgstr="скорость передачи данных" />
+  <message msgid="stalist wireless plot type quality" msgstr="Качество сигнала" />
+  <message msgid="stalist wireless plot type rxtx" msgstr="Cкорость передачи данных" />
   <message msgid="stalist wireless plot time" msgstr="Время графика " />
-  <message msgid="stalist wireless plot time all" msgstr="Все время" />
+  <message msgid="stalist wireless plot time 1m" msgstr="1 Минута" />
+  <message msgid="stalist wireless plot time 2m" msgstr="2 Минуты" />
+  <message msgid="stalist wireless plot time 3m" msgstr="3 Минуты" />
+  <message msgid="stalist wireless plot time 4m" msgstr="4 Минуты" />
+  <message msgid="stalist wireless plot time 5m" msgstr="5 Минут" />
+  <message msgid="stalist wireless plot time 10m" msgstr="10 Минут" />
+  <message msgid="stalist wireless plot time 15m" msgstr="15 Минут" />
+  <message msgid="stalist wireless plot time 20m" msgstr="20 Минут" />
+  <message msgid="stalist wireless plot time 30m" msgstr="30 Минут" />
   <message msgid="stalist wireless plot time 1h" msgstr="1 Час" />
   <message msgid="stalist wireless plot time 3h" msgstr="3 Часа" />
   <message msgid="stalist wireless plot time 6h" msgstr="6 Часов" />
+  <message msgid="stalist wireless plot time all" msgstr="Все время" />
 </po>

@@ -31,10 +31,10 @@
 			var wirelessAvgRxLast5	= 0;
 			var wirelessAvgTxLast5	= 0;
 
-			
 			var lastRxTxCount	= [];		// Last RX/TX count for all clients
 			var plotData 		= [];		// Statistic of all clients
 			var plotMACs 		= [];		// List MACs for Ploting
+			var plotMACsAll		= 0;		// Plot All MAC's
 
 			function initTranslation()
 			{
@@ -65,10 +65,19 @@
 				_TR("stalistWirelessModeAdvanced",	"stalist wireless mode advanced");
 				_TR("wirelessPlotTypeName",					"stalist wireless plot type");
 				_TR("wirelessPlotTimeName",					"stalist wireless plot time");
-				_TR("timeAll",						"stalist wireless plot time all");
+				_TR("time1M",						"stalist wireless plot time 1m");
+				_TR("time2M",						"stalist wireless plot time 2m");
+				_TR("time3M",						"stalist wireless plot time 3m");
+				_TR("time4M",						"stalist wireless plot time 4m");
+				_TR("time5M",						"stalist wireless plot time 5m");
+				_TR("time10M",						"stalist wireless plot time 10m");
+				_TR("time15M",						"stalist wireless plot time 15m");
+				_TR("time20M",						"stalist wireless plot time 20m");
+				_TR("time30M",						"stalist wireless plot time 30m");
 				_TR("time1H",						"stalist wireless plot time 1h");
 				_TR("time3H",						"stalist wireless plot time 3h");
 				_TR("time6H",						"stalist wireless plot time 6h");
+				_TR("timeAll",						"stalist wireless plot time all");
 				_TR("typeTxRate",					"stalist wireless plot type txrate");
 				_TR("typeRSSI",						"stalist wireless plot type rssi");
 				_TR("typeQuality",					"stalist wireless plot type quality");
@@ -82,9 +91,9 @@
 
 			function initValues()
 			{
-				var is5gh_support = '<% is5gh_support(); %>';
-				var radio_on = "<% getCfgZero(1, "RadioOn"); %>";
-				var radio_on_ac = "<% getCfgZero(1, "RadioOnINIC"); %>";				
+				var is5gh_support	= '<% is5gh_support(); %>';
+				var radio_on		= "<% getCfgZero(1, "RadioOn"); %>";
+				var radio_on_ac		= "<% getCfgZero(1, "RadioOnINIC"); %>";				
 				
 				if ((radio_on == 0) && (radio_on_ac == 0)) {
 					hideElement('tableWirelessSummary');
@@ -127,12 +136,18 @@
 					hideElement('stalistWirelessSumQualityData24');
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
-				
-				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", showStationList);
-				setInterval('ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", showStationList);', 5000);
+
+				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", startShowStationList);
 				showWarning();
 			}
 
+			function startShowStationList() {
+				getStationsCounters();
+				showStationList();
+				setInterval('ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", getStationsCounters);', 5000);
+				setInterval('showStationList();', 5000);
+			}
+			
 			function wirelessModeChange()
 			{
 				if (document.sta.stalistWirelessModeSelect.selectedIndex == 0) {
@@ -154,7 +169,6 @@
 
 			function disconnectStation(form, mac)
 			{
-
 				form.disconnectSta.value = mac;
 				if (mac == "*") {
 					lastRxTxCount = [];
@@ -172,8 +186,6 @@
 					}
 				}
 
-				displayElement("tableWirelessPlot", plotMACs.length > 0)
-
 				var m_method	= $(form).attr('method');
 				var m_action	= $(form).attr('action');
 				var m_data		= $(form).serialize();
@@ -184,11 +196,13 @@
 					success: 	function(data) {$('#results').html(data); },
 					error:  	function(xhr, str){	alert('Error: ' + xhr.responseCode); }
 				});
-				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", showStationList);
+				showStationList();
 			}
 
 			function addremoveplotMACs(mac_id)
 			{
+				if (plotMACsAll == 1)
+					plotMACsAll = 0;
 				if (document.getElementById('checkbox_' + mac_id).checked == false) {
 					if (plotMACs.indexOf(mac_id) != "-1") {
 						plotMACs.splice(plotMACs.indexOf(mac_id), 1);
@@ -197,10 +211,20 @@
 				else {
 					plotMACs.push(mac_id);
 				}
-				displayElement("tableWirelessPlot", plotMACs.length > 0)
-				showPlot();
+				showStationList();
 			}
 
+			function addremoveplotMACsAll()
+			{
+				if (plotMACsAll == 0)
+					plotMACsAll = 1;
+				else {
+					plotMACsAll = 0;
+					plotMACs = [];
+				}
+				showStationList();
+			}
+			
 			function showStationList()
 			{
 				var i, mac_id, checked, rx, tx, bytes;
@@ -208,6 +232,9 @@
 				var html	                = "";
 				var time	                = new Date().getTime();
 				var MACs                	= plotMACs.slice(0);
+				var plotAll					= "";
+				var quality					= 0;
+				var rssi					= 0;
 
 				var wirelessAIDs	    	= 0;
 				var wirelessAIDs24	    	= 0;
@@ -227,11 +254,6 @@
 				var wirelessAvgTx24	    	= 0;
 				var wirelessAvgRx5	    	= 0;
 				var wirelessAvgTx5	    	= 0;
-				
-				var rate;           												// Tx Rate for ploting
-				var quality;        												// Quality for ploting
-				var rssi;					            							// RSSI for ploting;
-				var rxbytes, txbytes;       										// Rx/Tx Bytes for ploting;
 
 				if (wirelessMode == "Basic") {
 					i = "selected";
@@ -241,6 +263,9 @@
 					i = "";
 					j = "selected";
 				}
+				
+				if (plotMACsAll == 1) 
+					plotAll = "checked";
 				
 				html += '<table class="form" style="width: ' + wirelessTabeWidth + ';">';
 				html +=	'<tr>';
@@ -270,7 +295,7 @@
 				html +=	'<th id="stalistRSSI">RSSI</th>';
 				html +=	'<th id="stalistQuality">QUALITY</th>';
 				html +=	'<th id="stalistRxTxCount">RX/TX COUNT</th>';
-				html += '<th id="stalistPlot">PLOT</th>';
+				html += '<th  style="vertical-align: middle"><div id="stalistPlot" style="vertical-align: middle">PLOT</div><input type="checkbox" id="checkbox_all" ' + plotAll + ' onClick="addremoveplotMACsAll();"></th>';
 				html +=	'<th id="stalistAction">ACTIONS</th>';
 				html +=	'</tr>';
 
@@ -281,8 +306,15 @@
 
 						if (plotMACs.indexOf(mac_id) != "-1")
 							checked = "checked";
-						else
-							checked = "";
+						else {
+							if (plotMACsAll == 1) {
+								checked = "checked";
+								plotMACs.push(mac_id);
+							}
+							else {
+								checked = "";
+							}
+						}
 
 						html += '<tr>';
 						html += '<td style="background-color: #C4D7FF; text-align: center">' + data.stationlist24[i].aid + '</td>';		//AID
@@ -298,20 +330,40 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';				//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';				//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'MBit/s' + '</td>';				//TX RATE
-						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;						//RSSI
+						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'MBit/s' + '</td>';		//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;							//RSSI
 						if (data.stationlist24[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi1;
 						if (data.stationlist24[i].rssi2 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi2;
 						html += '</td>';
 						html += '<td style="text-align: center">' + data.stationlist24[i].quality0 + '%';					//QUALITY
-						if (data.stationlist24[i].quality1 !== undefined)
+						if (data.stationlist24[i].quality1 !== undefined) 
 							html += ', ' + data.stationlist24[i].quality1 + '%';
 						if (data.stationlist24[i].quality2 !== undefined)
 							html += ', ' + data.stationlist24[i].quality2 + '%';
 						html += '</td>';
 
+						if (data.stationlist24[i].quality2 != undefined) {
+							quality = (+data.stationlist24[i].quality2 + +data.stationlist24[i].quality1 + +data.stationlist24[i].quality0) / 3 | 0;
+						} 
+						else if (data.stationlist24[i].quality1 != undefined) {
+							quality = (+data.stationlist24[i].quality0 + +data.stationlist24[i].quality1) / 2 | 0;
+						} 
+						else {
+							quality = +data.stationlist24[i].quality0;
+						}
+
+						if (data.stationlist24[i].rssi != undefined) {
+							rssi = (+data.stationlist24[i].rssi2 + +data.stationlist24[i].rssi1 + +data.stationlist24[i].rssi0) / 3 | 0;
+						} 
+						else if (data.stationlist24[i].quality1 != undefined) {
+							rssi = (+data.stationlist24[i].rssi1 + +data.stationlist24[i].rssi0) / 2 | 0;
+						} 
+						else {
+							rssi = +data.stationlist24[i].rssi0;
+						}
+						
 						rx = +data.stationlist24[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1024 * 1024 * 1024))
 							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
@@ -333,45 +385,13 @@
 						html += '<td style="text-align: center"><input type="button" id="disconnect" value="disconnect" onClick="disconnectStation(this.form, ' + "'" + data.stationlist24[i].mac + "');" +'"></td>';	//DISCONNECT
 						html += '</tr>';
 
-						rate		= null;
-						quality		= null;
-						rssi		= null;
-						rxbytes		= txbytes = null;
-
-						if (MACs.indexOf(mac_id) != "-1")
-							MACs.splice(MACs.indexOf(mac_id), 1);
-
-						// Filling RATE
-						rate = data.stationlist24[i].txrate;
-
-						// Filling QUALITY
-						if (data.stationlist24[i].quality2 !== undefined)
-							quality = ((+data.stationlist24[i].quality2 + +data.stationlist24[i].quality1 + +data.stationlist24[i].quality0) / 3 | 0);
-						else if (data.stationlist24[i].quality1 !== undefined)
-							quality = ((+data.stationlist24[i].quality1 + +data.stationlist24[i].quality0) / 2 | 0);
-						else
-							quality = +data.stationlist24[i].quality0;
-
-						// Filling RSSI
-						if (data.stationlist24[i].rssi2 !== undefined)
-							rssi = -((-data.stationlist24[i].rssi2 + -data.stationlist24[i].rssi1 + -data.stationlist24[i].rssi0) / 3 | 0);
-						else if (data.stationlist24[i].rssi1 !== undefined)
-							rssi = -((-data.stationlist24[i].rssi1 + -data.stationlist24[i].rssi0) / 2 | 0);
-						else if (data.stationlist24[i].rssi0 !== undefined)
-							rssi = data.stationlist24[i].rssi0;
-
-						//Filling RX/TX Rate
-						rxbytes = +data.stationlist24[i].rxbytes.replace(/ /g, '');
-						txbytes = +data.stationlist24[i].txbytes.replace(/ /g, '');
-						plotData.push([ mac_id, time, rate, rssi, quality, rxbytes, txbytes ]);
-
 						wirelessAIDs++;
 						wirelessAIDs24++;
 						wirelessAvgRSSI24		+= +rssi;
 						wirelessAvgQuality24	+= +quality;
-						wirelessAvgTxRate24		+= +rate;
-						wirelessAvgRx24			+= rxbytes;
-						wirelessAvgTx24			+= txbytes;
+						wirelessAvgTxRate24		+= +data.stationlist24[i].txrate;
+						wirelessAvgRx24			+= +data.stationlist24[i].rxbytes.replace(/ /g, '');
+						wirelessAvgTx24			+= +data.stationlist24[i].txbytes.replace(/ /g, '');
 					}
 				}
 
@@ -379,6 +399,18 @@
 					for (i = 0; i < data.stationlist5.length; i++) {
 
 						mac_id = data.stationlist5[i].mac.replace(/:/g, '');
+
+						if (plotMACs.indexOf(mac_id) != "-1")
+								checked = "checked";
+						else {
+							if (plotMACsAll == 1) {
+								checked = "checked";
+								plotMACs.push(mac_id);
+							}
+							else {
+								checked = "";
+							}
+						}
 
 						if (plotMACs.indexOf(mac_id) != "-1")							// Flag of checked client
 							checked = "checked";
@@ -413,11 +445,26 @@
 							html += ', ' + data.stationlist5[i].quality2 + '%';
 						html += '</td>';
 
-						rate		= null;
-						quality		= null;
-						rssi		= null;
-						rxbytes		= txbytes = null;
+						if (data.stationlist5[i].quality2 != undefined) {
+							quality = (+data.stationlist5[i].quality2 + +data.stationlist5[i].quality1 + +data.stationlist5[i].quality0) / 3 | 0;
+						} 
+						else if (data.stationlist5[i].quality1 != undefined) {
+							quality = (+data.stationlist5[i].quality0 + +data.stationlist5[i].quality1) / 2 | 0;
+						} 
+						else {
+							quality = +data.stationlist5[i].quality0;
+						}
 
+						if (data.stationlist5[i].rssi != undefined) {
+							rssi = (+data.stationlist5[i].rssi2 + +data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 3 | 0;
+						} 
+						else if (data.stationlist5[i].quality1 != undefined) {
+							rssi = (+data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 2 | 0;
+						} 
+						else {
+							rssi = +data.stationlist5[i].rssi0;
+						}
+						
 						rx = +data.stationlist5[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1024 * 1024 * 1024))
 							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
@@ -439,42 +486,13 @@
 						html += '<td style="text-align: center"><input type="button" id="disconnect" value="disconnect" onClick="disconnectStation(this.form, ' + "'" + data.stationlist5[i].mac + "');" +'"></td>';	//DISCONNECT
 						html += '</tr>';
 
-
-						if (MACs.indexOf(mac_id) != "-1")
-							MACs.splice(MACs.indexOf(mac_id), 1);
-
-						// Filling RATE
-						rate = data.stationlist5[i].txrate;
-
-						// Filling QUALITY
-						if (data.stationlist5[i].quality2 !== undefined)
-							quality = ((+data.stationlist5[i].quality2 + +data.stationlist5[i].quality1 + +data.stationlist5[i].quality0) / 3 | 0);
-						else if (data.stationlist5[i].quality1 !== undefined)
-							quality = ((+data.stationlist5[i].quality1 + +data.stationlist5[i].quality0) / 2 | 0);
-						else
-							quality = +data.stationlist5[i].quality0;
-
-						// Filling RSSI
-						if (data.stationlist5[i].rssi2 !== undefined)
-							rssi = -((-data.stationlist5[i].rssi2 + -data.stationlist5[i].rssi1 + -data.stationlist5[i].rssi0) / 3 | 0);
-						else if (data.stationlist5[i].rssi1 !== undefined)
-							rssi = -((-data.stationlist5[i].rssi1 + -data.stationlist5[i].rssi0) / 2 | 0);
-						else if (data.stationlist5[i].rssi0 !== undefined)
-							rssi = data.stationlist5[i].rssi0;
-
-						//Filling RX/TX Rate
-						rxbytes = +data.stationlist5[i].rxbytes.replace(/ /g, '');
-						txbytes = +data.stationlist5[i].txbytes.replace(/ /g, '');
-
-						plotData.push([ mac_id, time, rate, rssi, quality, rxbytes, txbytes ]);
-
 						wirelessAIDs++;
 						wirelessAIDs5++;
 						wirelessAvgRSSI5		+= +rssi;
 						wirelessAvgQuality5		+= +quality;
-						wirelessAvgTxRate5		+= +rate;
-						wirelessAvgRx5			+= rxbytes;
-						wirelessAvgTx5			+= txbytes;
+						wirelessAvgTxRate5		+= +data.stationlist5[i].txrate;
+						wirelessAvgRx5			+= +data.stationlist5[i].rxbytes.replace(/ /g, '');
+						wirelessAvgTx5			+= +data.stationlist5[i].txbytes.replace(/ /g, '');
 					}
 				}
 
@@ -482,20 +500,6 @@
 				document.getElementById('stationList').innerHTML = html;
 
 				displayElement('stationWirelessButtons', (wirelessAIDs > 0));
-
-				for (i = 0; i < MACs.length; i++) {
-					plotData.push([ MACs[i], time, null, null, null, null, null ]);
-
-					for (j = 0; j < plotData.length; j++) {
-						if (plotData[j][0] == MACs[i]) {
-							plotData[j][5] = null;
-							plotData[j][6] = null;
-						}
-					}
-					if (lastRxTxCount.indexOf(MACs[i]) != "-1") {
-						lastRxTxCount.splice(lastRxTxCount.indexOf(mac.replace(/:/g, '')), 3);
-					}
-				}
 
 				wirelessAvgRSSI		= ((wirelessAvgRSSI24 + wirelessAvgRSSI5) / wirelessAIDs | 0);
 				wirelessAvgQuality	= ((wirelessAvgQuality24 + wirelessAvgQuality5) / wirelessAIDs | 0) + "%";
@@ -656,6 +660,105 @@
 				showPlot();
 			}
 
+			function getStationsCounters()
+			{
+				var i, mac_id;
+				var data	                = JSON.parse(document.getElementById('stationListData').innerHTML);
+				var time	                = new Date().getTime();
+				var MACs                	= plotMACs.slice(0);
+				var rate;           												// Tx Rate for ploting
+				var quality;        												// Quality for ploting
+				var rssi;					            							// RSSI for ploting;
+				var rxbytes, txbytes;       										// Rx/Tx Bytes for ploting;
+
+				if (data.stationlist24 !== undefined) {
+					for (i = 0; i < data.stationlist24.length; i++) {
+
+						mac_id = data.stationlist24[i].mac.replace(/:/g, '');
+
+						rate		= null;
+						quality		= null;
+						rssi		= null;
+						rxbytes		= txbytes = null;
+
+						if (MACs.indexOf(mac_id) != "-1")
+							MACs.splice(MACs.indexOf(mac_id), 1);
+
+						rate = data.stationlist24[i].txrate;
+
+						if (data.stationlist24[i].quality2 !== undefined)
+							quality = ((+data.stationlist24[i].quality2 + +data.stationlist24[i].quality1 + +data.stationlist24[i].quality0) / 3 | 0);
+						else if (data.stationlist24[i].quality1 !== undefined)
+							quality = ((+data.stationlist24[i].quality1 + +data.stationlist24[i].quality0) / 2 | 0);
+						else
+							quality = +data.stationlist24[i].quality0;
+
+						if (data.stationlist24[i].rssi2 !== undefined)
+							rssi = -((-data.stationlist24[i].rssi2 + -data.stationlist24[i].rssi1 + -data.stationlist24[i].rssi0) / 3 | 0);
+						else if (data.stationlist24[i].rssi1 !== undefined)
+							rssi = -((-data.stationlist24[i].rssi1 + -data.stationlist24[i].rssi0) / 2 | 0);
+						else if (data.stationlist24[i].rssi0 !== undefined)
+							rssi = data.stationlist24[i].rssi0;
+
+						rxbytes = +data.stationlist24[i].rxbytes.replace(/ /g, '');
+						txbytes = +data.stationlist24[i].txbytes.replace(/ /g, '');
+
+						plotData.push([ mac_id, time, rate, rssi, quality, rxbytes, txbytes ]);
+					}
+				}
+
+				if (data.stationlist5 !== undefined) {
+					for (i = 0; i < data.stationlist5.length; i++) {
+
+						mac_id = data.stationlist5[i].mac.replace(/:/g, '');
+
+						rate		= null;
+						quality		= null;
+						rssi		= null;
+						rxbytes		= txbytes = null;
+
+						if (MACs.indexOf(mac_id) != "-1")
+							MACs.splice(MACs.indexOf(mac_id), 1);
+
+						rate = data.stationlist5[i].txrate;
+
+						if (data.stationlist5[i].quality2 !== undefined)
+							quality = ((+data.stationlist5[i].quality2 + +data.stationlist5[i].quality1 + +data.stationlist5[i].quality0) / 3 | 0);
+						else if (data.stationlist5[i].quality1 !== undefined)
+							quality = ((+data.stationlist5[i].quality1 + +data.stationlist5[i].quality0) / 2 | 0);
+						else
+							quality = +data.stationlist5[i].quality0;
+
+						if (data.stationlist5[i].rssi2 !== undefined)
+							rssi = -((-data.stationlist5[i].rssi2 + -data.stationlist5[i].rssi1 + -data.stationlist5[i].rssi0) / 3 | 0);
+						else if (data.stationlist5[i].rssi1 !== undefined)
+							rssi = -((-data.stationlist5[i].rssi1 + -data.stationlist5[i].rssi0) / 2 | 0);
+						else if (data.stationlist5[i].rssi0 !== undefined)
+							rssi = data.stationlist5[i].rssi0;
+
+						rxbytes = +data.stationlist5[i].rxbytes.replace(/ /g, '');
+						txbytes = +data.stationlist5[i].txbytes.replace(/ /g, '');
+
+						plotData.push([ mac_id, time, rate, rssi, quality, rxbytes, txbytes ]);
+					}
+				}
+
+				for (i = 0; i < MACs.length; i++) {
+					plotData.push([ MACs[i], time, null, null, null, null, null ]);
+
+					for (j = 0; j < plotData.length; j++) {
+						if (plotData[j][0] == MACs[i]) {
+							plotData[j][5] = null;
+							plotData[j][6] = null;
+						}
+					}
+					if (lastRxTxCount.indexOf(MACs[i]) != "-1") {
+						lastRxTxCount.splice(lastRxTxCount.indexOf(mac.replace(/:/g, '')), 3);
+					}
+				}
+			}
+			
+			
 			function showPlot()
 			{
 				var time			= new Date().getTime();
@@ -667,10 +770,19 @@
 				var i = j = k = tmp = label = data = RxTxCount = labelRxTx = "";
 
 				switch(plotTime) {
-					case 0:		startTime = { mode: "time", timezone: "browser" }; 								                        break;	// All
-					case 1:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 3600 * 1000).getTime() };		break;	// 1H
-					case 2:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 3 * 3600 * 1000).getTime() };		break;	// 3H
-					case 3:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 6 * 3600 * 1000).getTime() };		break;	// 6H
+					case 0:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 60 * 1000).getTime() };		break;	// 1M
+					case 1:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 2 * 60 * 1000).getTime() };		break;	// 2M
+					case 2:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 3 * 60 * 1000).getTime() };		break;	// 3M
+					case 3:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 4 * 60 * 1000).getTime() };		break;	// 4M
+					case 4:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 5 * 60 * 1000).getTime() };		break;	// 5M
+					case 5:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 10 * 60 * 1000).getTime() };		break;	// 10M
+					case 6:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 15 * 60 * 1000).getTime() };		break;	// 15M
+					case 7:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 20 * 60 * 1000).getTime() };		break;	// 20M
+					case 8:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 30 * 60 * 1000).getTime() };		break;	// 30M
+					case 9:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 3600 * 1000).getTime() };		break;	// 1H
+					case 10:	startTime = { mode: "time", timezone: "browser", min: new Date(time - 3 * 3600 * 1000).getTime() };		break;	// 3H
+					case 11:	startTime = { mode: "time", timezone: "browser", min: new Date(time - 6 * 3600 * 1000).getTime() };		break;	// 6H
+					case 12:	startTime = { mode: "time", timezone: "browser" };														break;	// All time
 				}
 				switch(plotType) {
 					case 0:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: 0 } }; 				        break;	// TX RATE
@@ -691,6 +803,8 @@
 						min: 0 } };								                														break;	// RX/TX COUNT
 				}
 
+				displayElement("tableWirelessPlot", plotMACs.length > 0)
+				
 				if (plotMACs.length > 0) {
 					for (i = 0; i < plotMACs.length; i++) {
 						data = "";
@@ -785,7 +899,6 @@
 					<form name="sta" action="/goform/disconnectSta" method="POST">
 						<div id="stationListData" style="display: none;"></div>
 						<div id="stationList"></div>
-						<br>
 						<table id="stationWirelessButtons" class="button" style="display: none;">
 							<tr>
 								<td><input type="hidden" name="disconnectSta" value="" />
@@ -852,10 +965,19 @@
 								</td>
 								<td class=head><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
 									<select id="wirelessPlotTime" name="wirelessPlotTime" class="normal" onChange="showPlot();">
-										<option value="0" id="timeAll" selected>All time</option>
-										<option value="1" id="time1h">1H</option>
-										<option value="2" id="time3h">3H</option>
-										<option value="3" id="time6h">6H</option>
+										<option value="0" id="time1M" selected>1 Minute</option>
+										<option value="1" id="time2M">2 Minutes</option>
+										<option value="2" id="time3M">3 Minutes</option>
+										<option value="3" id="time4M">4 Minutes</option>
+										<option value="4" id="time5M">5 Minutes</option>
+										<option value="5" id="time10M">10 Minutes</option>
+										<option value="6" id="time15M">15 Minutes</option>
+										<option value="7" id="time20M">20 Minutes</option>
+										<option value="8" id="time30M">30 Minutes</option>
+										<option value="9" id="time1H">1H</option>
+										<option value="10" id="time3H">3H</option>
+										<option value="11" id="time6H">6H</option>
+										<option value="12" id="timeAll">All time</option>
 									</select>
 								</td>
 							</tr>

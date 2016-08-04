@@ -406,8 +406,17 @@
   <message msgid="stalist wireless plot type quality" msgstr="Quality" />
   <message msgid="stalist wireless plot type rxtx" msgstr="RX/TX Bandwidth" />
   <message msgid="stalist wireless plot time" msgstr="Graphic time" />
+  <message msgid="stalist wireless plot time 1m" msgstr="1 Minute" />
+  <message msgid="stalist wireless plot time 2m" msgstr="2 Minutes" />
+  <message msgid="stalist wireless plot time 3m" msgstr="3 Minutes" />
+  <message msgid="stalist wireless plot time 4m" msgstr="4 Minutes" />
+  <message msgid="stalist wireless plot time 5m" msgstr="5 Minutes" />
+  <message msgid="stalist wireless plot time 10m" msgstr="10 Minutes" />
+  <message msgid="stalist wireless plot time 15m" msgstr="15 Minutes" />
+  <message msgid="stalist wireless plot time 20m" msgstr="20 Minutes" />
+  <message msgid="stalist wireless plot time 30m" msgstr="30 Minutes" />
+  <message msgid="stalist wireless plot time 1h" msgstr="1 Hour" />
+  <message msgid="stalist wireless plot time 3h" msgstr="3 Hours" />
+  <message msgid="stalist wireless plot time 6h" msgstr="6 Hours" />
   <message msgid="stalist wireless plot time all" msgstr="All time" />
-  <message msgid="stalist wireless plot time 1h" msgstr="1H" />
-  <message msgid="stalist wireless plot time 3h" msgstr="3H" />
-  <message msgid="stalist wireless plot time 6h" msgstr="6H" />
 </po>
