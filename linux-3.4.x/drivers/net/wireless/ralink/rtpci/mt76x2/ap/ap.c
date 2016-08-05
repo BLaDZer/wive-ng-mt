@@ -93,6 +93,11 @@ NDIS_STATUS APInitialize(RTMP_ADAPTER *pAd)
 	MulticastFilterTableInit(pAd, &pAd->pMulticastFilterTable);
 #endif /* IGMP_SNOOP_SUPPORT */
 
+#ifdef DROP_MASK_SUPPORT
+	NdisAllocateSpinLock(pAd, &pAd->drop_mask_lock);
+	asic_drop_mask_reset(pAd);
+#endif /* DROP_MASK_SUPPORT */
+
 #ifdef DOT11V_WNM_SUPPORT
 	initList(&pAd->DMSEntryList);
 #endif /* DOT11V_WNM_SUPPORT */
@@ -1402,9 +1407,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			/* Clear TXWI ack in Tx Ring*/
 			ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
-//#ifdef DROP_MASK_SUPPORT
-//			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
-//#endif
+#ifdef DROP_MASK_SUPPORT
+			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
+#endif
 #endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
