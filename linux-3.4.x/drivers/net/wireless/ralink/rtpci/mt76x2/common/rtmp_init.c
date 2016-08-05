@@ -1803,19 +1803,20 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 		    if ((TxSuccess == 0) && (TxRetransmit > 0))
 		    {
 			    /* prevent fast drop long range clients */
-			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 16)
-					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 16;
-					/* No TxPkt ok in this period as continue tx fail */
-					pEntry->ContinueTxFailCnt += TxRetransmit;
-			    } else {
-					pEntry->ContinueTxFailCnt = 0;
-			    }
+			    if (TxRetransmit > MAX_ENTRY_LIFE_CNT_INC)
+					TxRetransmit = MAX_ENTRY_LIFE_CNT_INC;
 
-			    if (TxSuccess > 0)
-				pEntry->NoDataIdleCount = 0;
-
-			    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
+			    /* No TxPkt ok in this period as continue tx fail */
+			    pEntry->ContinueTxFailCnt += TxRetransmit;
+		    } else {
+			    pEntry->ContinueTxFailCnt = 0;
 		    }
+
+		    if (TxSuccess > 0)
+			pEntry->NoDataIdleCount = 0;
+
+		    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
+		}
 	}
 	else
 #endif /* RT65xx */
@@ -2028,10 +2029,11 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 
 			/* Update the continuous transmission counter.*/
 #ifdef FIFO_EXT_SUPPORT
+			/* fo 65xx incriment in ApTxFailCntUpdate function */
 			if (StaFifoExt.field.txRtyCnt > 0) {
 			    /* limit incriment by fifo */
-			    if (StaFifoExt.field.txRtyCnt > 8)
-				pEntry->ContinueTxFailCnt += 8;
+			    if (StaFifoExt.field.txRtyCnt > MAX_ENTRY_LIFE_CNT_INC)
+				pEntry->ContinueTxFailCnt += MAX_ENTRY_LIFE_CNT_INC;
 			    else
 				pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
 			} else
