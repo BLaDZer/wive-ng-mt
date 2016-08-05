@@ -3012,7 +3012,7 @@ INT deq_mgmt_frame(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qIdx, BOOLEAN bLoc
 								fRTMP_ADAPTER_NIC_NOT_EXIST |\
 								fRTMP_ADAPTER_DISABLE_DEQUEUEPACKET)
 
-#define ENTRY_RETRY_INTERVAL	(100 * OS_HZ / 1000)
+#define ENTRY_RETRY_INTERVAL	(50 * OS_HZ / 1000)
 static inline BOOLEAN traffic_jam_chk(RTMP_ADAPTER *pAd, STA_TR_ENTRY *tr_entry)
 {
 	BOOLEAN drop_it = FALSE;
