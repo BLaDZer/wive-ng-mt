@@ -2257,27 +2257,28 @@
 67) kernel: mips: c-r4k: avoid small flush_icache_range SMP calls.<br>
 68) kernel: mips: smp: clear ASID without confusing has_valid_asid().<br>
 69) kernel: mips: smp: update cpu_foreign_map on CPU disable.<br>
-70) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
-71) kernel: rndis_host: Set valid random MAC on buggy devices.<br>
-72) kernel: cdc_ether: improve ZTE MF823/831/910 handling.<br>
-73) kernel: usb: serial: option: add support for Telit LE910 PID 0x1206.<br>
-74) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
-75) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
-76) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
-77) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
-78) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
-79) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
-80) kernel: net: neigh: disallow transition to NUD_STALE if lladdr is unchanged in neigh_update().<br>
-81) kernel: net: ppp: defer netns reference release for ppp channel.<br>
-82) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
-83) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
-84) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
-85) kernel: net: bridge: Fix incorrect re-injection of LLDP packets.<br>
-86) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
-87) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
-88) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
-89) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
-90) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
+70) kernel: mips: smp: drop stop_this_cpu() cpu_foreign_map hack.<br>
+71) kernel: cdc_ncm: workaround for EM7455 silent data interface.<br>
+72) kernel: rndis_host: Set valid random MAC on buggy devices.<br>
+73) kernel: cdc_ether: improve ZTE MF823/831/910 handling.<br>
+74) kernel: usb: serial: option: add support for Telit LE910 PID 0x1206.<br>
+75) kernel: net: tcp: increase size at which tcp_bound_to_half_wnd bounds to > TCP_MSS_DEFAULT.<br>
+76) kernel: net: net/core: revert net: fix __netdev_update_features return.. and add comment.<br>
+77) kernel: net: neigh: only allow init_net to change the default neigh_parms.<br>
+78) kernel: net: neigh: netlink notification for administrative NUD state change.<br>
+79) kernel: net: neigh: directly goto out after setting nud_state to NUD_FAILED.<br>
+80) kernel: net: neigh: recompute reachabletime before returning from neigh_periodic_work().<br>
+81) kernel: net: neigh: disallow transition to NUD_STALE if lladdr is unchanged in neigh_update().<br>
+82) kernel: net: ppp: defer netns reference release for ppp channel.<br>
+83) kernel: net: netfilter: nf_conntrack_h323: fix off-by-one in DecodeQ931.<br>
+84) kernel: net: ipv4: af_inet: make it explicitly non-modular.<br>
+85) kernel: net: graceful exit from netif_alloc_netdev_queues().<br>
+86) kernel: net: bridge: Fix incorrect re-injection of LLDP packets.<br>
+87) kernel: net: ipv6: slight optimization in ip6_dst_gc.<br>
+88) kernel: net: ipv6: make ip -6 route get mark xyz work.<br>
+89) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
+90) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
+91) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
 <br>
 <br>
 <br>
