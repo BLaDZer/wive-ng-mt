@@ -2621,12 +2621,17 @@ VOID asic_change_tx_retry(
 {
 	UINT32	TxRtyCfg, MacReg = 0;
 
+	if (pAd->CommonCfg.txRetryCfg == 0) {
+		/* txRetryCfg is invalid, should not be 0 */
+		DBGPRINT(RT_DEBUG_TRACE, ("txRetryCfg=%x\n", pAd->CommonCfg.txRetryCfg));
+		return;
+	}
+
 	if (num < 3)
 	{
-		/* Tx data retry 31/15 (thres 2000) */
+		/* Tx date retry default 15 */
 		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
-		TxRtyCfg &= 0xf0000000;
-		TxRtyCfg |= 0x07d01f0f;
+		TxRtyCfg = ((TxRtyCfg & 0xffff0000) | (pAd->CommonCfg.txRetryCfg & 0x0000ffff));
 		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
 		/* Tx RTS retry default 32 */
@@ -2640,10 +2645,8 @@ VOID asic_change_tx_retry(
 	}
 	else
 	{
-		/* Tx data retry 8/10 (thres 256)  */
-		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
-		TxRtyCfg &= 0xf0000000;
-		TxRtyCfg |= 0x0100080A;
+		/* Tx date retry 7 */
+		TxRtyCfg = 0x4100070A;
 		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
 		/* Tx RTS retry 3 */

@@ -1903,6 +1903,9 @@ typedef struct _COMMON_CONFIG {
 #endif /* defined(MICROWAVE_OVEN_SUPPORT) || defined(DYNAMIC_VGA_SUPPORT) */
 	BOOLEAN bEnTemperatureTrack;
 
+#ifdef MULTI_CLIENT_SUPPORT
+    UINT txRetryCfg;
+#endif /* MULTI_CLIENT_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
 #ifdef DBG_CTRL_SUPPORT

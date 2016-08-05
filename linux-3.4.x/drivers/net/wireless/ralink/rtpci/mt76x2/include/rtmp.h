@@ -2067,6 +2067,7 @@ typedef struct _COMMON_CONFIG {
 	UCHAR APCwmin;		/* record ap cwmin */
 	UCHAR APCwmax;	/* record ap cwmax */
 	UCHAR BSSCwmin;	/* record BSS cwmin */
+	UINT32 txRetryCfg;
 #endif /* MULTI_CLIENT_SUPPORT */
 	QBSS_LOAD_PARM APQbssLoad;	/* QBSS load of the current associated AP */
 	UCHAR AckPolicy[4];	/* ACK policy of the specified AC. see ACK_xxx */

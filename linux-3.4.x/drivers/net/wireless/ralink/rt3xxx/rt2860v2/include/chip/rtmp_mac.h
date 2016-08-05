@@ -2002,7 +2002,6 @@ typedef	union	_PROT_CFG_STRUC	{
 #define EXP_CTS_TIME	0x137C		/* */
 #define EXP_ACK_TIME	0x1380		/* */
 #ifdef RT6352
-#define HT_FBK_TO_LEGACY	0x1384
 #define TX_FBK_LIMIT	0x1398
 #define TX_ALC_VGA3		0x13C8
 #endif /* RT6352 */
