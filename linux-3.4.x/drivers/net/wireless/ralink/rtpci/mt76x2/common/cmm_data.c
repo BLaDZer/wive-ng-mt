@@ -886,7 +886,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	UCHAR MlmeRate;
 	TXWI_STRUC *pFirstTxWI;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
-	UCHAR PID, wcid, tx_rate;
+	UCHAR PID, wcid/*, tx_rate*/;
 	HTTRANSMIT_SETTING *transmit;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
 #ifdef CONFIG_AP_SUPPORT
@@ -1069,6 +1069,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 					bAckRequired = FALSE; /* Disable ACK to prevent retry 0x1f for Probe Response*/
 #ifdef CONFIG_AP_SUPPORT
 #ifdef SPECIFIC_TX_POWER_SUPPORT
+					{
 					/* Find which MBSSID to be send this probeRsp */
 					UINT32 apidx = get_apidx_by_addr(pAd, pHeader_802_11->Addr2);
 
@@ -1078,6 +1079,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 					     (pAd->CommonCfg.MlmeTransmit.field.MCS == RATE_1)*/)
 					{
 						TxPwrAdj = pAd->ApCfg.MBSSID[apidx].TxPwrAdj;
+					}
 					}
 #endif /* SPECIFIC_TX_POWER_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
@@ -1140,7 +1142,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	if (pMacEntry == NULL)
 	{
 		wcid = RESERVED_WCID;
-		tx_rate = (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS;
+		/*tx_rate = (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS;*/
 		transmit = &pAd->CommonCfg.MlmeTransmit;
 #ifdef VHT_TXBF_SUPPORT
 		if (pAd->NDPA_Request)
@@ -1152,7 +1154,7 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	}
 	else
 	{
-#if defined(P2P_SUPPORT) || defined(RT_CFG80211_P2P_SUPPORT)
+//#if defined(P2P_SUPPORT) || defined(RT_CFG80211_P2P_SUPPORT)
 		/* P2P Test Case 6.1.12, only OFDM rate can be captured by sniffer */
 		if(
 #ifdef RT_CFG80211_P2P_SUPPORT
@@ -1181,17 +1183,17 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 			}
 
 			wcid = pMacEntry->wcid;
-			tx_rate = (UCHAR)NullFramePhyMode.field.MCS;
+			/*tx_rate = (UCHAR)NullFramePhyMode.field.MCS;*/
 			transmit = &NullFramePhyMode;			
 
 		} 
 		else 
-#endif /* P2P_SUPPORT || RT_CFG80211_SUPPORT */
+//#endif /* P2P_SUPPORT || RT_CFG80211_SUPPORT */
 		{
-			wcid = pMacEntry->wcid;
-			tx_rate = (UCHAR)pMacEntry->MaxHTPhyMode.field.MCS;
-			transmit = &pMacEntry->MaxHTPhyMode;
 			/* dont use low rate to send QoS Null data frame */
+			wcid = pMacEntry->wcid;
+			/*tx_rate = (UCHAR)pMacEntry->MaxHTPhyMode.field.MCS;*/
+			transmit = &pMacEntry->MaxHTPhyMode;
 		}
 	}
 
@@ -1215,8 +1217,8 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	}
 	else
 #endif /* SOFT_SOUNDING */
-       	{
-#ifdef VHT_TXBF_SUPPORT
+       	{   
+#ifdef VHT_TXBF_SUPPORT	      	
      	    if ((pHeader_802_11->FC.Type == FC_TYPE_CNTL) && (pHeader_802_11->FC.SubType == SUBTYPE_VHT_NDPA))
 	    {
 	    	  UINT8 PrevMcs, PrevMode;
@@ -1234,12 +1236,13 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
                 transmit->field.MODE = PrevMode;
             }
             else
-#endif
+#endif		    
             {
-            	    RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE, 
+                //set tx_rate be zero for eBF with iPhone6 IOT issue
+                RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE, 
 				0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), PID, 0, 
-				tx_rate, IFS_BACKOFF, transmit);
-            }
+				0, IFS_BACKOFF, transmit);
+            }   
 
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 #ifdef RTMP_MAC
