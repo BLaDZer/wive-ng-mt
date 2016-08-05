@@ -1924,6 +1924,15 @@ VOID NICUpdateFifoStaCounters(
 
 
 					/* Update the continuous transmission counter.*/
+#if defined (FIFO_EXT_SUPPORT)
+					if (StaFifoExt.field.txRtyCnt > 0) {
+					    /* limit incriment by fifo */
+					    if (StaFifoExt.field.txRtyCnt > pAd->ApCfg.EntryLifeCheck / 8)
+						pEntry->ContinueTxFailCnt += pAd->ApCfg.EntryLifeCheck / 8;
+					    else
+						pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
+					 } else
+#endif
 					pEntry->ContinueTxFailCnt++;
 
 					if(pEntry->PsMode == PWR_ACTIVE)
