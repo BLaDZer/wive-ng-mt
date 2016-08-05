@@ -1336,7 +1336,7 @@ typedef struct GNU_PACKED _EID_STRUCT{
 
 /* AP shall drop the sta if contine Tx fail count reach it. */
 #define MAC_ENTRY_LIFE_CHECK_CNT		1024			/* packet cnt. */
-#define MAX_ENTRY_LIFE_CNT_INC			8				/* maximum summ to ContinueTxFailCnt per iteration from fifo. */
+#define MAX_ENTRY_LIFE_CNT_INC			32				/* maximum summ to ContinueTxFailCnt per iteration from fifo. */
 
 /* Value domain of pMacEntry->Sst */
 typedef enum _Sst {
