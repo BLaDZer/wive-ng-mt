@@ -295,7 +295,8 @@
 				html +=	'<th id="stalistRSSI">RSSI</th>';
 				html +=	'<th id="stalistQuality">QUALITY</th>';
 				html +=	'<th id="stalistRxTxCount">RX/TX COUNT</th>';
-				html += '<th  style="vertical-align: middle"><div id="stalistPlot" style="vertical-align: middle">PLOT</div><input type="checkbox" id="checkbox_all" ' + plotAll + ' onClick="addremoveplotMACsAll();"></th>';
+				html += '<th><div style="display: flex; height: 1.75em; align-items: center; width: 5em; margin: 0 auto;"><div style="margin: 0 auto;" id="stalistPlot">PLOT</div>';
+				html += '<div><input type="checkbox" id="checkbox_all" ' + plotAll + ' onClick="addremoveplotMACsAll();"></div></div></th>';
 				html +=	'<th id="stalistAction">ACTIONS</th>';
 				html +=	'</tr>';
 

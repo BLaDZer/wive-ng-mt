@@ -285,7 +285,11 @@
   <message msgid="apcli title" msgstr="Клиент AP" />
   <message msgid="apcli param" msgstr="Здесь вы можете сменить параметры клиента AP." />
   <message msgid="apcli about" msgstr="Для корректной работы необходимо установить канал беспроводной сети (Беспроводные настройки -> Основные) как канал, используемый для подключения AP." />
+  <message msgid="apcli client enable" msgstr="Клиент AP" />
+  <message msgid="apcli client wifi mode" msgstr="Диапазон беспроводной сети" />
+  <message msgid="apcli open" msgstr="Открытый" />
   <message msgid="apcli client param" msgstr="Параметры клиента AP" />
+  <message msgid="apcli client open" msgstr="Клиент AP" />
   <message msgid="apcli mac" msgstr="MAC адрес (не обязательно)" />
   <message msgid="apcli enable autoscan" msgstr="Автоматически выбирать канал" />
   <message msgid="apcli disable iface" msgstr="Отключить интерфейс AP" />
@@ -385,7 +389,7 @@
   <message msgid="stalist txrate" msgstr="Скорость передачи" />
   <message msgid="stalist rssi" msgstr="RSSI" />
   <message msgid="stalist quality" msgstr="Качество" />
-  <message msgid="stalist rxtx" msgstr="RX/TX Счетчик" />
+  <message msgid="stalist rxtx" msgstr="Получено/Отправлено" />
   <message msgid="stalist plot" msgstr="График" />
   <message msgid="stalist action" msgstr="Действие" />
   <message msgid="stalist wireless sum total" msgstr="Всего" />

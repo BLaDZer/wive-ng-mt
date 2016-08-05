@@ -2200,7 +2200,7 @@
 9) netcwmpd: rework debug messages and start use libwive functions.<br>
 10) libwive: add portstatus,portscounts function sfor easy get port status and counts info (future use in cli,goahead and netcwmpd).<br>
 11) goahead: auto update station list.<br>
-12) goahead: full refactoring station list page.<br>
+12) goahead: full refactoring station list, apcli page.<br>
 13) goahead: fix timezone for Novosibirsk.<br>
 14) goahead: merge wireless basic and advanced page.<br>
 15) goahead: add input values check to ipv6 page.<br>

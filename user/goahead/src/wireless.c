@@ -665,8 +665,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	dyn_vga_long = websGetVar(wp, T("dyn_vga_long"), T("0"));
-	dyn_vga_clamp = websGetVar(wp, T("dyn_vga_clamp"), T("0"));
+	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
+	dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
 #endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
@@ -1185,39 +1185,42 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 parameter_fetch_t apcli_args[] =
 {
-	{ T("apcli_interface"),         "ApCliIfName",          0,       T("") },
-	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("") },
-	{ T("apcli_bssid"),             "ApCliBssid",           0,       T("") },
-	{ T("apcli_mode"),              "ApCliAuthMode",        0,       T("OPEN") },
-	{ T("apcli_enc"),               "ApCliEncrypType",      0,       T("NONE") },
+	{ T("apcli_enable"),            "ApCliEnable",          0,       T("")         },
+	{ T("apcli_interface"),         "ApCliIfName",          0,       T("")         },
+	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("")         },
+	{ T("apcli_bssid"),             "ApCliBssid",           0,       T("")         },
+	{ T("apcli_mode"),              "ApCliAuthMode",        0,       T("OPEN")     },
+	{ T("apcli_enc"),               "ApCliEncrypType",      0,       T("NONE")     },
 	{ T("apcli_wpapsk"),            "ApCliWPAPSK",          0,       T("12345678") },
-	{ T("apcli_autoscan"),          "ApCliAutoConnect",     2,       T("off") },
-	{ T("apcli_apiface"),           "ApCliClientOnly",      2,       T("off") },
-	{ T("apcli_bridge"),            "ApCliBridgeOnly",      2,       T("off") },
-	{ NULL, NULL, 0, NULL }
+	{ T("apcli_autoscan"),          "ApCliAutoConnect",     2,       T("off")      },
+	{ T("apcli_apiface"),           "ApCliClientOnly",      2,       T("off")      },
+	{ T("apcli_bridge"),            "ApCliBridgeOnly",      2,       T("off")      },
+	{ NULL,                         NULL,                   0,       NULL          }
 };
 
 /* goform/wirelessApcli */
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 {
-	//fetch from web input
-	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "ApCliEnable", "1");
-	setupParameters(wp, apcli_args, 0);
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
+	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
-	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (CHK_IF_DIGIT(reboot_flag, 1)) {
-		/* Output timer for reloading */
-		outputTimerForReload(wp, "" /* submitUrl */, 80000);
-
-		/* Reboot */
-		reboot_now();
-	} else {
-		websRedirect(wp, submitUrl);
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 10, "ApCliEnable", "ApCliIfName", "ApCliSsid", "ApCliBssid", "ApCliAuthMode", 
+						"ApCliEncrypType", "ApCliWPAPSK", "ApCliAutoConnect", "ApCliClientOnly", "ApCliBridgeOnly");
 	}
+	else {
+		nvram_init(RT2860_NVRAM);
+		setupParameters(wp, apcli_args, 0);
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(reboot, 1)) {
+			outputTimerForReload(wp, "", 80000);
+			reboot_now();
+		}
+	}
+	websHeader(wp);
+	websDone(wp, 204);
 }
 #endif
 

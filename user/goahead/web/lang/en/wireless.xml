@@ -286,6 +286,9 @@
   <message msgid="apcli title" msgstr="AP Client Feature" />
   <message msgid="apcli param" msgstr="Here you can configure AP Client parameters." />
   <message msgid="apcli about" msgstr="For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect." />
+  <message msgid="apcli client enable" msgstr="AP Client" />
+  <message msgid="apcli client wifi mode" msgstr="AP Client WiFi Mode" />
+  <message msgid="apcli open" msgstr="OPEN" />  
   <message msgid="apcli client param" msgstr="AP Client Parameters" />
   <message msgid="apcli mac" msgstr="MAC Address (Optional)" />
   <message msgid="apcli enable autoscan" msgstr="Auto channel select" />
