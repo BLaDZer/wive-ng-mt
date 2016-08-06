@@ -2028,6 +2028,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 
 			/* Update the continuous transmission counter.*/
+#ifdef CONFIG_AP_SUPPORT
 #ifdef FIFO_EXT_SUPPORT
 			/* fo 65xx incriment in ApTxFailCntUpdate function */
 			if (StaFifoExt.field.txRtyCnt > 0) {
@@ -2037,6 +2038,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 			    else
 				pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
 			} else
+#endif
 #endif
 			pEntry->ContinueTxFailCnt++;
 

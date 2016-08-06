@@ -2443,6 +2443,7 @@ VOID NICUpdateFifoStaCounters(
 #endif /* CONFIG_STA_SUPPORT */
 
 					/* Update the continuous transmission counter.*/
+#ifdef CONFIG_AP_SUPPORT
 #if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 					if (StaFifoExt.field.txRtyCnt > 0) {
 					    /* limit incriment by fifo */
@@ -2451,6 +2452,7 @@ VOID NICUpdateFifoStaCounters(
 					    else
 						pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
 					 } else
+#endif
 #endif
 					pEntry->ContinueTxFailCnt++;
 
