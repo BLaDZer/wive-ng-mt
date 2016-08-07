@@ -1359,6 +1359,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			*/
 			if (pEntry->PsMode != PWR_SAVE)
 			{
+#ifdef DROP_MASK_SUPPORT
+				asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
+#endif
 				bDisconnectSta = TRUE;
 				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
 					PRINT_MAC(pEntry->Addr),
@@ -1407,9 +1410,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			/* Clear TXWI ack in Tx Ring*/
 			ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
-#ifdef DROP_MASK_SUPPORT
-			asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
-#endif
 #endif /* CONFIG_AP_SUPPORT */
 			/* send wireless event - for ageout */
 			RTMPSendWirelessEvent(pAd, IW_AGEOUT_EVENT_FLAG, pEntry->Addr, 0, 0); 
