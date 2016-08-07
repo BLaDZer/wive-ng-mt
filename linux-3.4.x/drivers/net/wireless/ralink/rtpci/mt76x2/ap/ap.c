@@ -1359,9 +1359,10 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			*/
 			if (pEntry->PsMode != PWR_SAVE)
 			{
-#ifdef DROP_MASK_SUPPORT
-				asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
-#endif
+// do not need use this place
+//#ifdef DROP_MASK_SUPPORT
+//				asic_set_drop_mask(pAd, pEntry->Aid, TRUE);
+//#endif
 				bDisconnectSta = TRUE;
 				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
 					PRINT_MAC(pEntry->Addr),
