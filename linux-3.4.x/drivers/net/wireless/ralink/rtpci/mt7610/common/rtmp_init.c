@@ -1918,10 +1918,8 @@ VOID NICUpdateFifoStaCounters(
 				if (pEntry->FIFOCount >= 1)
 				{			
 					DBGPRINT(RT_DEBUG_TRACE, ("#"));
-#ifdef DOT11_N_SUPPORT
-					pEntry->NoBADataCountDown = 64;
-#endif /* DOT11_N_SUPPORT */
 
+					//pEntry->NoBADataCountDown = 64;
 
 					/* Update the continuous transmission counter.*/
 #if defined (FIFO_EXT_SUPPORT)
@@ -1937,25 +1935,6 @@ VOID NICUpdateFifoStaCounters(
 
 					if(pEntry->PsMode == PWR_ACTIVE)
 					{
-#ifdef DOT11_N_SUPPORT					
-						int tid;
-
-#ifdef NOISE_TEST_ADJUST
-						if ((pAd->MacTab.Size > 2) &&
-							(pEntry->HTPhyMode.field.MODE == MODE_VHT) &&
-							(pEntry->lowTrafficCount >= 4 /* 2 sec */))
-						{
-							pEntry->NoBADataCountDown = 10;
-						}
-						else
-						{
-							pEntry->NoBADataCountDown = 64;
-						}
-#endif /* NOISE_TEST_ADJUST */
-						for (tid=0; tid<NUM_OF_TID; tid++)
-							BAOriSessionTearDown(pAd, pEntry->Aid,  tid, FALSE, FALSE);
-#endif /* DOT11_N_SUPPORT */
-
 #ifdef WDS_SUPPORT
 						/* fix WDS Jam issue*/
 						if(IS_ENTRY_WDS(pEntry)
