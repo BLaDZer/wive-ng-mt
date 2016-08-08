@@ -289,7 +289,6 @@
   <message msgid="apcli client enable" msgstr="AP Client" />
   <message msgid="apcli client wifi mode" msgstr="AP Client WiFi Mode" />
   <message msgid="apcli open" msgstr="OPEN" />  
-  <message msgid="apcli client param" msgstr="AP Client Parameters" />
   <message msgid="apcli mac" msgstr="MAC Address (Optional)" />
   <message msgid="apcli enable autoscan" msgstr="Auto channel select" />
   <message msgid="apcli disable iface" msgstr="Disable AP Interface" />
@@ -408,6 +407,9 @@
   <message msgid="stalist wireless plot type rssi" msgstr="RSSI" />
   <message msgid="stalist wireless plot type quality" msgstr="Quality" />
   <message msgid="stalist wireless plot type rxtx" msgstr="RX/TX Bandwidth" />
+  <message msgid="stalist wireless plot type rxtx sum" msgstr="RX/TX Summary Bandwidth" />
+  <message msgid="stalist wireless plot type rx" msgstr="RX Bandwidth" />
+  <message msgid="stalist wireless plot type tx" msgstr="TX Bandwidth" />
   <message msgid="stalist wireless plot time" msgstr="Graphic time" />
   <message msgid="stalist wireless plot time 1m" msgstr="1 Minute" />
   <message msgid="stalist wireless plot time 2m" msgstr="2 Minutes" />

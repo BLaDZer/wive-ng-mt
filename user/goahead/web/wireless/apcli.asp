@@ -20,7 +20,6 @@
 				_TR("apcliTitle",			"apcli title");
 				_TR("apcliParameters",		"apcli param");
 				_TR("apcliAbout",			"apcli about");
-				_TR("apcliClientParam",		"apcli client param");
 				_TR("apcliEnable",			"apcli client enable");
 				_TR("apcli_enable_enable",	"button enable");
 				_TR("apcli_enable_disable",	"button disable");
@@ -147,18 +146,17 @@
 					<p id="apcliParameters">Here you can configure AP Client parameters.</p>
 					<p id="apcliAbout">For correct work need set wireless channel (in Wireless Settings->Basiс) as channel used by AP to connect.</p>
 					<hr />
-					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="wireless_apcli" action="/goform/wirelessApcli">
+					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<table class="form">
 						<tr>
-							<td id="apcliClientParam" class="title" colspan="2">AP Client Parameters</td>
-						</tr>
-						<tr id="apcliEnable_tr">
-							<td id="apcliEnable" class="head" style="width: 40%;">APCLI Enable</td>
-							<td><select name="apcli_enable" class="normal" onChange="apcliEnableSwitch(this.form);">
-								<option value="0" id="apcli_enable_disable">Disable</option>
-								<option value="1" id="apcli_enable_enable">Enable</option>
-							</select></td>
+							<td id="apcliEnable" class="title" style="width: 40%">AP Client Parameters</td>
+							<td class="title" style="text-align: right;">
+								<select name="apcli_enable" class="half" onChange="apcliEnableSwitch(this.form);">
+									<option value="0" id="apcli_enable_disable">Disable</option>
+									<option value="1" id="apcli_enable_enable">Enable</option>
+								</select>
+							</td>
 						</tr>
 						<tr id="apcliWiFiMode_tr">
 							<td id="apcliWiFiMode" class="head">APCLI Mode</td>
@@ -214,7 +212,7 @@
 						<tr>
 							<td><input type="submit" class="normal" value="Apply"  id="apcliApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">&nbsp; &nbsp;
-								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form);">
+								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 5);">
 								<input type="hidden" value="1" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>

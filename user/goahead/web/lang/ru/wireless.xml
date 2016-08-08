@@ -52,9 +52,11 @@
   <message msgid="basic frequency ac" msgstr="Канал (5ГГц)" />
   <message msgid="basic frequency auto" msgstr="Автовыбор" />
   <message msgid="basic rate" msgstr="Скорость" />
-  <message msgid="basic wds title" msgstr="Wireless Distribution System" />
+  
+  <message msgid="basic wds title" msgstr="Беспроводная система распределения (WDS)" />
   <message msgid="basic wds introduction" msgstr="Настройка Wireless Distribution System" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
+  <message msgid="basic wds wifi mode" msgstr="Диапазон беспроводной сети" />
   <message msgid="basic wds lazy mode" msgstr="Ленивый" />
   <message msgid="basic wds bridge mode" msgstr="Мост" />
   <message msgid="basic wds repeater mode" msgstr="Повторитель" />
@@ -67,6 +69,7 @@
   <message msgid="basic wds key3" msgstr="Ключ должен состоять из 64 шестнадцатиричных чисел" />
   <message msgid="basic wds invalid mac" msgstr="Пожалуйста, заполните правильно MAC адрес! (XX:XX:XX:XX:XX:XX)" />
   <message msgid="basic wds no mac" msgstr="MAC адрес не указан!" />
+  
   <message msgid="basic ht phy mode" msgstr="Физический режим HT" />
   <message msgid="basic ht op mode" msgstr="Разрешить чистый 802.11N" />
   <message msgid="basic ht op mixed" msgstr="Disabled" />
@@ -288,7 +291,6 @@
   <message msgid="apcli client enable" msgstr="Клиент AP" />
   <message msgid="apcli client wifi mode" msgstr="Диапазон беспроводной сети" />
   <message msgid="apcli open" msgstr="Открытый" />
-  <message msgid="apcli client param" msgstr="Параметры клиента AP" />
   <message msgid="apcli client open" msgstr="Клиент AP" />
   <message msgid="apcli mac" msgstr="MAC адрес (не обязательно)" />
   <message msgid="apcli enable autoscan" msgstr="Автоматически выбирать канал" />
@@ -407,7 +409,10 @@
   <message msgid="stalist wireless plot type txrate" msgstr="Скорось подключения" />
   <message msgid="stalist wireless plot type rssi" msgstr="Уровень сигнала" />
   <message msgid="stalist wireless plot type quality" msgstr="Качество сигнала" />
-  <message msgid="stalist wireless plot type rxtx" msgstr="Cкорость передачи данных" />
+  <message msgid="stalist wireless plot type rxtx" msgstr="Cкорость приема/передачи" />
+  <message msgid="stalist wireless plot type rxtx sum" msgstr="Суммарная скорость приема/передачи" />
+  <message msgid="stalist wireless plot type rx" msgstr="Cкорость приема" />
+  <message msgid="stalist wireless plot type tx" msgstr="Cкорость передачи" />
   <message msgid="stalist wireless plot time" msgstr="Время графика " />
   <message msgid="stalist wireless plot time 1m" msgstr="1 Минута" />
   <message msgid="stalist wireless plot time 2m" msgstr="2 Минуты" />

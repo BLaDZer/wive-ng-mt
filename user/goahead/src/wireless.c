@@ -1140,45 +1140,46 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
 parameter_fetch_t wds_args[] =
 {
-	{ T("wds_interface"),   "WdsIfName",     0, T("") },
-	{ T("wds_phy_mode"),    "WdsPhyMode",    0, T("") },
-	{ T("wds_encryp_type"), "WdsEncrypType", 0, T("") },
-	{ T("wds_encryp_key0"), "Wds0Key",       0, T("") },
-	{ T("wds_encryp_key1"), "Wds1Key",       0, T("") },
-	{ T("wds_encryp_key2"), "Wds2Key",       0, T("") },
-	{ T("wds_encryp_key3"), "Wds3Key",       0, T("") },
+	{ T("wds_interface"),   "WdsIfName",     0, T("")  },
+	{ T("wds_phy_mode"),    "WdsPhyMode",    0, T("")  },
+	{ T("wds_encryp_type"), "WdsEncrypType", 0, T("")  },
+	{ T("wds_encryp_key0"), "Wds0Key",       0, T("")  },
+	{ T("wds_encryp_key1"), "Wds1Key",       0, T("")  },
+	{ T("wds_encryp_key2"), "Wds2Key",       0, T("")  },
+	{ T("wds_encryp_key3"), "Wds3Key",       0, T("")  },
 	{ T("wds_num"),         "WdsNum",        0, T("1") },
-	{ NULL, NULL, 0, NULL }
+	{ NULL,                 NULL,            0, NULL   }
 };
 
 /* goform/wirelessWds */
 static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 {
-	char_t	*wds_mode, *wds_list;
-	char_t *submitUrl;
+	char_t *wds_mode = websGetVar(wp, T("wds_mode"), T("0"));
+	char_t *wds_list = websGetVar(wp, T("wds_list"), T(""));;
+	char_t *reset    = websGetVar(wp, T("reset"), T(""));;
 
-	wds_mode = websGetVar(wp, T("wds_mode"), T("0"));
-	wds_list = websGetVar(wp, T("wds_list"), T(""));
-
-	nvram_init(RT2860_NVRAM);
-	nvram_bufset(RT2860_NVRAM, "WdsEnable", wds_mode);
-	if (!CHK_IF_DIGIT(wds_mode, 0)) {
-		setupParameters(wp, wds_args, 0);
-		if (CHK_IF_DIGIT(wds_mode, 2) || CHK_IF_DIGIT(wds_mode, 3)) {
-			if (0 != strlen(wds_list))
-				nvram_bufset(RT2860_NVRAM, "WdsList", wds_list);
-		} else {
-			nvram_bufset(RT2860_NVRAM, "WdsList", "");
-		}
+	if (!CHK_IF_DIGIT(reset, 0)) {
+		nvram_fromdef(RT2860_NVRAM, 10, "WdsEnable", "WdsList", "WdsIfName", "WdsPhyMode", 
+						"WdsEncrypType", "Wds0Key", "Wds1Key", "Wds2Key", "Wds3Key", "WdsNum");
 	}
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-
-	/* reconfigure system */
+	else {
+		nvram_init(RT2860_NVRAM);
+		nvram_bufset(RT2860_NVRAM, "WdsEnable", wds_mode);
+		if (!CHK_IF_DIGIT(wds_mode, 0)) {
+			setupParameters(wp, wds_args, 0);
+			if (CHK_IF_DIGIT(wds_mode, 2) || CHK_IF_DIGIT(wds_mode, 3)) {
+				if (0 != strlen(wds_list))
+					nvram_bufset(RT2860_NVRAM, "WdsList", wds_list);
+			} else {
+				nvram_bufset(RT2860_NVRAM, "WdsList", "");
+			}
+		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
 	doSystem("internet.sh");
+	websHeader(wp);
+	websDone(wp, 204);
 }
 #endif
 

@@ -2206,7 +2206,7 @@
 16) goahead: add ipv6 dns options.<br>
 17) goahead: add use default password warnings.<br>
 18) goahead: move select band for apcli/wds to true places.<br>
-19) goahead: refactoring firewall/dmz page.<br>
+19) goahead: refactoring firewall/dmz/wds pages.<br>
 20) goahead: add lost buffer alocation checks (prevent null pointer dereference in come cases).<br>
 21) goahead: add TX Rate show in station list.<br>
 22) libnvram: move rebuild script logic from goahead to this place (prepare drop dependency and more code reuse).<br>

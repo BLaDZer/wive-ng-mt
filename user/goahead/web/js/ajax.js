@@ -533,11 +533,13 @@ function showWarning() {
 	}
 }
 
-function resetValues(form) {
+function resetValues(form, time) {
 	if (confirm(_('message reset confirm'))) {
 		var br = getBrowser();
 		form.reset.value = "1";
-		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+		if (time === undefined) 
+			time = 15;
+		ajaxShowTimer(form, 'timerReloader', _('message apply'), time);
 		if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
 			form.submit();
 	}

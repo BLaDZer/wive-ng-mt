@@ -32,6 +32,7 @@
 			var wirelessAvgTxLast5	= 0;
 
 			var lastRxTxCount	= [];		// Last RX/TX count for all clients
+			var lastAllRxTx		= [];		// Summary of last RX/TX count 
 			var plotData 		= [];		// Statistic of all clients
 			var plotMACs 		= [];		// List MACs for Ploting
 			var plotMACsAll		= 0;		// Plot All MAC's
@@ -82,6 +83,9 @@
 				_TR("typeRSSI",						"stalist wireless plot type rssi");
 				_TR("typeQuality",					"stalist wireless plot type quality");
 				_TR("typeRxTx",						"stalist wireless plot type rxtx");
+				_TR("typeRxTxSum",						"stalist wireless plot type rxtx sum");
+				_TR("typeTx",						"stalist wireless plot type tx");
+				_TR("typeRx",						"stalist wireless plot type rx");
 				_TRV("disconnectAll",				"button disconnect all");
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
@@ -137,10 +141,68 @@
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
 
+				if (getCookie('wirelessMode') !== undefined) {
+					wirelessMode = getCookie('wirelessMode');
+					if (wirelessMode == "Basic") {
+						wirelessTabeWidth		= "800px";
+						wirelessTableColumn		= 9;
+						document.getElementById('tableWirelessSummary').style.width = "800px";
+						document.getElementById('tableWirelessPlot').style.width = "800px";
+					}
+					else {
+						wirelessTabeWidth	= "1100px";
+						wirelessTableColumn	= 17;
+						document.getElementById('tableWirelessSummary').style.width = "1100px";
+						document.getElementById('tableWirelessPlot').style.width = "1100px";
+					}					
+				}
+				if (getCookie('plotMACs') !== undefined) {
+					plotMACs = JSON.parse(getCookie('plotMACs'));
+				}
+				if (getCookie('plotMACsAll') !== undefined) {
+					plotMACsAll = getCookie('plotMACsAll');
+				}
+				
 				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", startShowStationList);
 				showWarning();
 			}
 
+			function setCookie(name, value, options) {
+				options = options || {};
+
+				var expires = options.expires;
+
+				if (typeof expires == "number" && expires) {
+					var d = new Date();
+					d.setTime(d.getTime() + expires * 1000);
+					expires = options.expires = d;
+				}
+				if (expires && expires.toUTCString) {
+					options.expires = expires.toUTCString();
+				}
+
+				value = encodeURIComponent(value);
+
+				var updatedCookie = name + "=" + value;
+
+				for (var propName in options) {
+					updatedCookie += "; " + propName;
+					var propValue = options[propName];
+					if (propValue !== true) {
+						updatedCookie += "=" + propValue;
+					}
+				}
+
+				document.cookie = updatedCookie;
+			}			
+			
+			function getCookie(name) {
+				var matches = document.cookie.match(new RegExp(
+					"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+				));
+				return matches ? decodeURIComponent(matches[1]) : undefined;
+			}
+			
 			function startShowStationList() {
 				getStationsCounters();
 				showStationList();
@@ -164,6 +226,7 @@
 					document.getElementById('tableWirelessSummary').style.width = "1100px";
 					document.getElementById('tableWirelessPlot').style.width = "1100px";
 				}
+				setCookie('wirelessMode', wirelessMode);
 				showStationList();
 			}
 
@@ -185,6 +248,7 @@
 						}
 					}
 				}
+				setCookie('plotMACs', JSON.stringify(plotMACs));
 
 				var m_method	= $(form).attr('method');
 				var m_action	= $(form).attr('action');
@@ -196,7 +260,8 @@
 					success: 	function(data) {$('#results').html(data); },
 					error:  	function(xhr, str){	alert('Error: ' + xhr.responseCode); }
 				});
-				showStationList();
+				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", getStationsCounters);
+				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", showStationList);
 			}
 
 			function addremoveplotMACs(mac_id)
@@ -211,6 +276,8 @@
 				else {
 					plotMACs.push(mac_id);
 				}
+				setCookie('plotMACs', JSON.stringify(plotMACs));				
+				setCookie('plotMACsAll', plotMACsAll);
 				showStationList();
 			}
 
@@ -222,6 +289,7 @@
 					plotMACsAll = 0;
 					plotMACs = [];
 				}
+				setCookie('plotMACsAll', plotMACsAll);
 				showStationList();
 			}
 			
@@ -754,9 +822,10 @@
 						}
 					}
 					if (lastRxTxCount.indexOf(MACs[i]) != "-1") {
-						lastRxTxCount.splice(lastRxTxCount.indexOf(mac.replace(/:/g, '')), 3);
+						lastRxTxCount.splice(lastRxTxCount.indexOf(MACs[i].replace(/:/g, '')), 3);
 					}
 				}
+				setCookie('plotData', JSON.stringify(plotData));
 			}
 			
 			
@@ -766,8 +835,10 @@
 				var plotType		= document.getElementById('wirelessPlotType').selectedIndex;
 				var plotTime		= document.getElementById('wirelessPlotTime').selectedIndex;
 				var plotGraphData	= [];
+				var allRxTxTmp		= [];
 				var plotOptions;
 				var startTime;
+				var allRx, allTX;
 				var i = j = k = tmp = label = data = RxTxCount = labelRxTx = "";
 
 				switch(plotTime) {
@@ -789,7 +860,7 @@
 					case 0:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: 0 } }; 				        break;	// TX RATE
 					case 1:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: -100, max: 0 } };			break;	// RSSI
 					case 2:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: 0, max: 100 } };			break;	// QUALITY
-					case 3:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: {
+					default:	plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: {
 						tickFormatter: function (v, axis) {
 							if (v > 1000000) {
 								v = v / 1000000;
@@ -822,36 +893,118 @@
 						// Filling Data
 						if (plotType == 3)
 							labelRxTx = ' (Rx Bytes)';
-						data += '{ "label":"' + label + labelRxTx + '", ';
-						data += ' "data": [ ';
+						if (plotType != 4) {
+							data += '{ "label":"' + label + labelRxTx + '", ';
+							data += ' "data": [ ';
+						}
 						for (j = 0; j < plotData.length; j++) {
 							if (plotData[j][0] == plotMACs[i]) {
-								if (data[data.length - 1] == "]")
-									data += ", ";
-								switch(plotType) {
-									case 0:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][2] + ' ]';	    break;	// TX RATE
-									case 1:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][3] + ' ]';	    break;	// RSSI
-									case 2:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][4] + ' ]';	    break;	// QUALITY
-									case 3:		lastCount = "";
-										if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-											lastRxTxCount.push(plotData[j][0]);
-											lastRxTxCount.push(plotData[j][5]);
-											lastRxTxCount.push(plotData[j][6]);
-											lastCount = plotData[j][5];
-										}
-										else {
-											lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
-											lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-										}
-										if (lastCount > +plotData[j][5])
-											lastCount = +plotData[j][5];
-										RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
-										if (RxTxCount < 0)
-											RxTxCount = 0;
-										data += '[ ' + plotData[j][1] + ', ' + RxTxCount + ' ]';                    break;	// RX/TX COUNT
+								if (plotType == 4) {
+									allRxTxTmp.push( [ plotData[j][1], plotData[j][5], plotData[j][6] ] );
+								} 
+								else {
+									if (data[data.length - 1] == "]")
+										data += ", ";
+									switch(plotType) {
+										case 0:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][2] + ' ]';	    break;	// TX RATE
+										case 1:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][3] + ' ]';	    break;	// RSSI
+										case 2:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][4] + ' ]';	    break;	// QUALITY
+										case 3:		lastCount = "";
+											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+												lastRxTxCount.push(plotData[j][0]);
+												lastRxTxCount.push(plotData[j][5]);
+												lastRxTxCount.push(plotData[j][6]);
+												lastCount = plotData[j][5];
+											}
+											else {
+												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
+												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
+											}
+											if (lastCount > +plotData[j][5])
+												lastCount = +plotData[j][5];
+											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
+											if (RxTxCount < 0)
+												RxTxCount = 0;
+											data += '[ ' + plotData[j][1] + ', ' + RxTxCount + ' ]';                    break;	// RX/TX COUNT
+										case 5: lastCount = "";
+											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+												lastRxTxCount.push(plotData[j][0]);
+												lastRxTxCount.push(plotData[j][5]);
+												lastRxTxCount.push(plotData[j][6]);
+												lastCount = plotData[j][5];
+											}
+											else {
+												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
+												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
+											}
+											if (lastCount > +plotData[j][5])
+												lastCount = +plotData[j][5];
+											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
+											if (RxTxCount < 0)
+												RxTxCount = 0;
+											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount + ' ]';                    break;	// RX COUNT
+										case 6: lastCount = "";
+											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+												lastRxTxCount.push(plotData[j][0]);
+												lastRxTxCount.push(plotData[j][5]);
+												lastRxTxCount.push(plotData[j][6]);
+												lastCount = plotData[j][6];
+											}
+											else {
+												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
+												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
+											}
+											RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000) | 0);
+											if (RxTxCount < 0)
+												RxTxCount = 0;
+											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount + ' ]';					break;	// TX COUNT
+									}
 								}
 							}
 						}
+						
+						if (plotType == 4) {
+							var allTime;
+							var lastAllRx;
+							var lastAllTx;
+							data += '{ "label":"Summary RX", "data": [';
+							for (i = 0; i < allRxTxTmp.length; i++) {
+								if (data[data.length - 1] == "]")
+									data += ", ";
+								allTime = allRxTxTmp[i][0];
+								allRx	= 0;
+								for (j = 0; j < allRxTxTmp.length; j++) {
+									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][1] != "-1")) {
+										allRx += allRxTxTmp[j][1];
+										allRxTxTmp[j][1] = "-1";
+									}
+								}
+								if (lastAllRx == 0)
+									lastAllRx = allRx;
+								data += ' [ ' + allTime + ', ' + ((allRx - lastAllRx) / (updateTime / 1000) | 0) + ' ]';
+								lastAllRx = allRx;
+							}
+							data += ']}';
+							plotGraphData.push(JSON.parse(data));
+							data = '{ "label":"Summary TX", "data": [';
+							for (i = 0; i < allRxTxTmp.length; i++) {
+								if (data[data.length - 1] == "]")
+									data += ", ";
+								allTime = allRxTxTmp[i][0];
+								allTx	= 0;
+								for (j = 0; j < allRxTxTmp.length; j++) {
+									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][2] != "-1")) {
+										allTx += allRxTxTmp[j][2];
+										allRxTxTmp[j][2] = "-1";
+									}
+								}
+								if (lastAllTx == 0)
+									lastAllTx = allTx;
+								data += '[ ' + allTime + ', ' + ((allTx - lastAllTx) / (updateTime / 1000) | 0) + ' ]';
+								lastAllTx = allTx;
+							}
+						}
+						
 						data += ' ] }';
 						plotGraphData.push(JSON.parse(data));
 
@@ -885,6 +1038,7 @@
 							plotGraphData.push(JSON.parse(data));
 						}
 					}
+
 					$.plot($("#placeholder"), plotGraphData, plotOptions);
 				}
 			}
@@ -961,7 +1115,10 @@
 										<option value="0" id="typeTxRate" selected>TX Rate</option>
 										<option value="1" id="typeRSSI">RSSI</option>
 										<option value="2" id="typeQuality">Quality</option>
-										<option value="3" id="typeRxTx">Rx/Tx Count</option>
+										<option value="3" id="typeRxTx">Rx/Tx Bandwidth</option>
+										<option value="4" id="typeRxTxSum" selected>Rx/Tx Bandwidth Summary</option>
+										<option value="5" id="typeRx">Rx Bandwidth</option>
+										<option value="6" id="typeTx">Tx Bandwidth</option>
 									</select>
 								</td>
 								<td class=head><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
