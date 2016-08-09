@@ -86,6 +86,10 @@
 				_TR("typeRxTxSum",						"stalist wireless plot type rxtx sum");
 				_TR("typeTx",						"stalist wireless plot type tx");
 				_TR("typeRx",						"stalist wireless plot type rx");
+				_TR("wirelessPlotUnitName",				"stalist wireless plot unit");
+				_TR("unitBits",						"stalist wireless plot unit bits");
+				_TR("unitKB",						"stalist wireless plot unit kbits");
+				_TR("unitMB",						"stalist wireless plot unit mbits");
 				_TRV("disconnectAll",				"button disconnect all");
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
@@ -834,6 +838,8 @@
 				var time			= new Date().getTime();
 				var plotType		= document.getElementById('wirelessPlotType').selectedIndex;
 				var plotTime		= document.getElementById('wirelessPlotTime').selectedIndex;
+				var plotUnit		= document.getElementById('wirelessPlotUnit').selectedIndex;
+				var columns			= (wirelessMode == "Basic") ? 4 : 6;
 				var plotGraphData	= [];
 				var allRxTxTmp		= [];
 				var plotOptions;
@@ -841,6 +847,11 @@
 				var allRx, allTX;
 				var i = j = k = tmp = label = data = RxTxCount = labelRxTx = "";
 
+				if (plotType <= 2) 
+					document.getElementById('wirelessPlotUnit').disabled = true;
+				else
+					document.getElementById('wirelessPlotUnit').disabled = false;
+				
 				switch(plotTime) {
 					case 0:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 60 * 1000).getTime() };		break;	// 1M
 					case 1:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 2 * 60 * 1000).getTime() };		break;	// 2M
@@ -857,20 +868,17 @@
 					case 12:	startTime = { mode: "time", timezone: "browser" };														break;	// All time
 				}
 				switch(plotType) {
-					case 0:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: 0 } }; 				        break;	// TX RATE
-					case 1:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: -100, max: 0 } };			break;	// RSSI
-					case 2:		plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: { min: 0, max: 100 } };			break;	// QUALITY
-					default:	plotOptions = { legend: { position: "nw" }, xaxis: startTime, yaxis: {
+					case 0:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: 0 } }; 			        break;	// TX RATE
+					case 1:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: -100, max: 0 } };		break;	// RSSI
+					case 2:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: 0, max: 100 } };		break;	// QUALITY
+					default:	plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { 
 						tickFormatter: function (v, axis) {
-							if (v > 1000000) {
-								v = v / 1000000;
-								return v.toFixed(2) + "M"
-							}
-							if (v > 1000) {
-								v = v / 1000;
-								return v.toFixed(2) + "K";
-							}
-							return v;
+							if (plotUnit == 0) 
+								return (v / (1024 * 1024)).toFixed(2) + "M";
+							else if (plotUnit == 1) 
+								return (v / 1024).toFixed(2) + "K";
+							else
+								return v;
 						},
 						min: 0 } };								                														break;	// RX/TX COUNT
 				}
@@ -1038,8 +1046,7 @@
 							plotGraphData.push(JSON.parse(data));
 						}
 					}
-
-					$.plot($("#placeholder"), plotGraphData, plotOptions);
+					$.plot($("#plotGraph"), plotGraphData, plotOptions);
 				}
 			}
 		</script>
@@ -1107,10 +1114,10 @@
 						<br>
 						<table id="tableWirelessPlot" class="form" style="display: none;">
 							<tr>
-								<td class="title" colspan="2" id="stalistWirelessPlot">Wireless Network Plot</td>
+								<td class="title" colspan="3" id="stalistWirelessPlot">Wireless Network Plot</td>
 							</tr>
 							<tr>
-								<td class=head><label for="wirelessPlotType" id="wirelessPlotTypeName">Graphic Type: </label>
+								<td class="head"><label for="wirelessPlotType" id="wirelessPlotTypeName">Graphic Type: </label>
 									<select id="wirelessPlotType" name="wirelessPlotType" class="normal" onChange="showPlot();">
 										<option value="0" id="typeTxRate" selected>TX Rate</option>
 										<option value="1" id="typeRSSI">RSSI</option>
@@ -1121,7 +1128,7 @@
 										<option value="6" id="typeTx">Tx Bandwidth</option>
 									</select>
 								</td>
-								<td class=head><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
+								<td class="head"><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
 									<select id="wirelessPlotTime" name="wirelessPlotTime" class="normal" onChange="showPlot();">
 										<option value="0" id="time1M" selected>1 Minute</option>
 										<option value="1" id="time2M">2 Minutes</option>
@@ -1138,9 +1145,19 @@
 										<option value="12" id="timeAll">All time</option>
 									</select>
 								</td>
+								<td class="head"><label for="wirelessPlotUnit" id="wirelessPlotUnitName">Graphic Unit: </label>
+									<select id="wirelessPlotUnit" name="wirelessPlotUnit" class="normal" onChange="showPlot();">
+										<option value="0" id="unitMB" selected>MBits/sec</option>
+										<option value="1" id="unitKB">KBits/sec</option>
+										<option value="2" id="unitBits">Bits/sec</option>
+									</select>
+								</td>
 							</tr>
 							<tr>
-								<td colspan="2"><div id="placeholder" style="width: full; height: 300px;"></div></td>
+								<td colspan="3">
+									<div id="plotLegend" style="width: full;"></div>
+									<div id="plotGraph" style="width: full; height: 300px;"></div>
+								</td>
 							</tr>
 						</table>
 					</form>

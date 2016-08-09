@@ -427,4 +427,8 @@
   <message msgid="stalist wireless plot time 3h" msgstr="3 Часа" />
   <message msgid="stalist wireless plot time 6h" msgstr="6 Часов" />
   <message msgid="stalist wireless plot time all" msgstr="Все время" />
+  <message msgid="stalist wireless plot unit" msgstr="Единицы измерения " />
+  <message msgid="stalist wireless plot unit bits" msgstr="Бит/сек." />
+  <message msgid="stalist wireless plot unit kbits" msgstr="КБит/сек." />
+  <message msgid="stalist wireless plot unit mbits" msgstr="МБит/сек." />
 </po>
