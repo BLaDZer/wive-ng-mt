@@ -20,8 +20,8 @@
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
-			var updateTime		= 5000;
-			var wirelessMode	= "Basic";
+			var updateTime			= 5000;
+			var wirelessMode		= "Basic";
 			var wirelessTabeWidth	= "800px";
 			var wirelessTableColumn = 9;
 			var wirelessAvgRxLast	= 0;
@@ -64,8 +64,8 @@
 				_TR("stalistWirelessMode",			"stalist wireless mode");
 				_TR("stalistWirelessModeBasic",		"stalist wireless mode basic");
 				_TR("stalistWirelessModeAdvanced",	"stalist wireless mode advanced");
-				_TR("wirelessPlotTypeName",					"stalist wireless plot type");
-				_TR("wirelessPlotTimeName",					"stalist wireless plot time");
+				_TR("wirelessPlotTypeName",			"stalist wireless plot type");
+				_TR("wirelessPlotTimeName",			"stalist wireless plot time");
 				_TR("time1M",						"stalist wireless plot time 1m");
 				_TR("time2M",						"stalist wireless plot time 2m");
 				_TR("time3M",						"stalist wireless plot time 3m");
@@ -83,10 +83,10 @@
 				_TR("typeRSSI",						"stalist wireless plot type rssi");
 				_TR("typeQuality",					"stalist wireless plot type quality");
 				_TR("typeRxTx",						"stalist wireless plot type rxtx");
-				_TR("typeRxTxSum",						"stalist wireless plot type rxtx sum");
+				_TR("typeRxTxSum",					"stalist wireless plot type rxtx sum");
 				_TR("typeTx",						"stalist wireless plot type tx");
 				_TR("typeRx",						"stalist wireless plot type rx");
-				_TR("wirelessPlotUnitName",				"stalist wireless plot unit");
+				_TR("wirelessPlotUnitName",			"stalist wireless plot unit");
 				_TR("unitBits",						"stalist wireless plot unit bits");
 				_TR("unitKB",						"stalist wireless plot unit kbits");
 				_TR("unitMB",						"stalist wireless plot unit mbits");
@@ -201,9 +201,7 @@
 			}			
 			
 			function getCookie(name) {
-				var matches = document.cookie.match(new RegExp(
-					"(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-				));
+				var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
 				return matches ? decodeURIComponent(matches[1]) : undefined;
 			}
 			
@@ -392,25 +390,25 @@
 						html += '<tr>';
 						html += '<td style="background-color: #C4D7FF; text-align: center">' + data.stationlist24[i].aid + '</td>';		//AID
 						html += '<td style="background-color: #C4D7FF; text-align: center">' + data.stationlist24[i].mac + '</td>';		//MAC
-						html += '<td style="text-align: center">' + data.stationlist24[i].conntime + '</td>';					//CONNTIME
+						html += '<td style="text-align: center">' + data.stationlist24[i].conntime + '</td>';							//CONNTIME
 						if (wirelessMode == "Advanced") {
-							html += '<td style="text-align: center">' + data.stationlist24[i].psm + '</td>';				//PSM
-							html += '<td style="text-align: center">' + data.stationlist24[i].mimo + '</td>';				//MIMO
-							html += '<td style="text-align: center">' + data.stationlist24[i].mcs + '</td>';				//MCS
-							html += '<td style="text-align: center">' + data.stationlist24[i].bw + '</td>';					//BW
-							html += '<td style="text-align: center">' + data.stationlist24[i].sgi + '</td>';				//SGI
-							html += '<td style="text-align: center">' + data.stationlist24[i].stbc + '</td>';				//STBC
-							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';				//LDPC
-							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';				//MODE
+							html += '<td style="text-align: center">' + data.stationlist24[i].psm + '</td>';							//PSM
+							html += '<td style="text-align: center">' + data.stationlist24[i].mimo + '</td>';							//MIMO
+							html += '<td style="text-align: center">' + data.stationlist24[i].mcs + '</td>';							//MCS
+							html += '<td style="text-align: center">' + data.stationlist24[i].bw + '</td>';								//BW
+							html += '<td style="text-align: center">' + data.stationlist24[i].sgi + '</td>';							//SGI
+							html += '<td style="text-align: center">' + data.stationlist24[i].stbc + '</td>';							//STBC
+							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';							//LDPC
+							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';							//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'MBit/s' + '</td>';		//TX RATE
-						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;							//RSSI
+						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'MBit/s' + '</td>';					//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;										//RSSI
 						if (data.stationlist24[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi1;
 						if (data.stationlist24[i].rssi2 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi2;
 						html += '</td>';
-						html += '<td style="text-align: center">' + data.stationlist24[i].quality0 + '%';					//QUALITY
+						html += '<td style="text-align: center">' + data.stationlist24[i].quality0 + '%';								//QUALITY
 						if (data.stationlist24[i].quality1 !== undefined) 
 							html += ', ' + data.stationlist24[i].quality1 + '%';
 						if (data.stationlist24[i].quality2 !== undefined)
@@ -439,19 +437,19 @@
 						
 						rx = +data.stationlist24[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1024 * 1024 * 1024))
-							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GB";
 						else if (rx >= (1024 * 1024))
-							rx = (rx / 1024 / 1024).toFixed(2) + " MiB";
+							rx = (rx / 1024 / 1024).toFixed(2) + " MB";
 						else if (rx >= (1024))
-							rx = (rx / 1024).toFixed(0) + " KiB";
+							rx = (rx / 1024).toFixed(0) + " KB";
 
 						tx = +data.stationlist24[i].txbytes.replace(/ /g, '');
 						if (tx >= (1024 * 1024 * 1024))
-							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GB";
 						else if (tx >= (1024 * 1024))
-							tx = (tx / 1024 / 1024).toFixed(2) + " MiB";
+							tx = (tx / 1024 / 1024).toFixed(2) + " MB";
 						else if (tx >= (1024))
-							tx = (tx / 1024).toFixed(0) + " KiB";
+							tx = (tx / 1024).toFixed(0) + " KB";
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';						//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -485,7 +483,7 @@
 							}
 						}
 
-						if (plotMACs.indexOf(mac_id) != "-1")							// Flag of checked client
+						if (plotMACs.indexOf(mac_id) != "-1")
 							checked = "checked";
 						else
 							checked = "";
@@ -493,25 +491,25 @@
 						html += '<tr>';
 						html += '<td style="background-color: #C4FFC4; text-align: center">' + data.stationlist5[i].aid + '</td>';		//AID
 						html += '<td style="background-color: #C4FFC4; text-align: center">' + data.stationlist5[i].mac + '</td>';		//MAC
-						html += '<td style="text-align: center">' + data.stationlist5[i].conntime + '</td>';					//CONNTIME
+						html += '<td style="text-align: center">' + data.stationlist5[i].conntime + '</td>';							//CONNTIME
 						if (wirelessMode == "Advanced") {
-							html += '<td style="text-align: center">' + data.stationlist5[i].psm + '</td>';					//PSM
-							html += '<td style="text-align: center">' + data.stationlist5[i].mimo + '</td>';				//MIMO
-							html += '<td style="text-align: center">' + data.stationlist5[i].mcs + '</td>';					//MCS
-							html += '<td style="text-align: center">' + data.stationlist5[i].bw + '</td>';					//BW
-							html += '<td style="text-align: center">' + data.stationlist5[i].sgi + '</td>';					//SGI
-							html += '<td style="text-align: center">' + data.stationlist5[i].stbc + '</td>';				//STBC
-							html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';				//LDPC
-							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';				//MODE
+							html += '<td style="text-align: center">' + data.stationlist5[i].psm + '</td>';								//PSM
+							html += '<td style="text-align: center">' + data.stationlist5[i].mimo + '</td>';							//MIMO
+							html += '<td style="text-align: center">' + data.stationlist5[i].mcs + '</td>';								//MCS
+							html += '<td style="text-align: center">' + data.stationlist5[i].bw + '</td>';								//BW
+							html += '<td style="text-align: center">' + data.stationlist5[i].sgi + '</td>';								//SGI
+							html += '<td style="text-align: center">' + data.stationlist5[i].stbc + '</td>';							//STBC
+							html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';							//LDPC
+							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';							//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist5[i].txrate +  'MBit/s' + '</td>';				//TX RATE
-						html += '<td style="text-align: center">' + data.stationlist5[i].rssi0;							//RSSI
+						html += '<td style="text-align: center">' + data.stationlist5[i].txrate +  'MBit/s' + '</td>';					//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist5[i].rssi0;											//RSSI
 						if (data.stationlist5[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist5[i].rssi1;
 						if (data.stationlist5[i].rssi2 !== undefined)
 							html += ', ' + data.stationlist5[i].rssi2;
 						html += '</td>';
-						html += '<td style="text-align: center">' + data.stationlist5[i].quality0 + '%';					//QUALITY
+						html += '<td style="text-align: center">' + data.stationlist5[i].quality0 + '%';								//QUALITY
 						if (data.stationlist5[i].quality1 !== undefined)
 							html += ', ' + data.stationlist5[i].quality1 + '%';
 						if (data.stationlist5[i].quality2 !== undefined)
@@ -540,19 +538,19 @@
 						
 						rx = +data.stationlist5[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1024 * 1024 * 1024))
-							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GB";
 						else if (rx >= (1024 * 1024))
-							rx = (rx / 1024 / 1024).toFixed(2) + " MiB";
+							rx = (rx / 1024 / 1024).toFixed(2) + " MB";
 						else if (rx >= (1024))
-							rx = (rx / 1024).toFixed(0) + " KiB";
+							rx = (rx / 1024).toFixed(0) + " KB";
 
 						tx = +data.stationlist5[i].txbytes.replace(/ /g, '');
 						if (tx >= (1024 * 1024 * 1024))
-							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GB";
 						else if (tx >= (1024 * 1024))
-							tx = (tx / 1024 / 1024).toFixed(2) + "MiB";
+							tx = (tx / 1024 / 1024).toFixed(2) + "MB";
 						else if (tx >= (1024))
-							tx = (tx / 1024).toFixed(0) + " KiB";
+							tx = (tx / 1024).toFixed(0) + " KB";
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';	//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -594,11 +592,11 @@
 					wirelessAvgRxLast24 = wirelessAvgRx24;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgRx24 = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgRx24 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgRx24 = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgRx24 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgRx24 = bytes + " B";
+						wirelessAvgRx24 = bytes  * 8 + " Bits/s";
 					else
 						wirelessAvgRx24 = "-";
 
@@ -609,11 +607,11 @@
 					wirelessAvgTxLast24 = wirelessAvgTx24;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgTx24 = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgTx24 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgTx24 = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgTx24 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgTx24 = bytes + " B";
+						wirelessAvgTx24 = bytes * 8 + " Bits/s";
 					else
 						wirelessAvgTx24 = "-";
 				}
@@ -639,11 +637,11 @@
 					wirelessAvgRxLast5 = wirelessAvgRx5;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgRx5 = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgRx5 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgRx5 = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgRx5 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgRx5 = bytes + " B";
+						wirelessAvgRx5 = bytes * 8 + " Bits/s";
 					else
 						wirelessAvgRx5 = "-";
 
@@ -654,11 +652,11 @@
 					wirelessAvgTxLast5 = wirelessAvgTx5;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgTx5 = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgTx5 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgTx5 = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgTx5 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgTx5 = bytes + " B";
+						wirelessAvgTx5 = bytes * 8 + " Bits/s";
 					else
 						wirelessAvgTx5 = "-";
 				}
@@ -678,11 +676,11 @@
 					wirelessAvgRxLast = wirelessAvgRx;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgRx = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgRx = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgRx = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgRx = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgRx = bytes + " B";
+						wirelessAvgRx = bytes * 8 + " Bits/s";
 					else
 						wirelessAvgRx = "-";
 
@@ -693,11 +691,11 @@
 					wirelessAvgTxLast = wirelessAvgTx;
 
 					if (bytes >= (1024 * 1024))
-						wirelessAvgTx = (bytes / 1024 / 1024).toFixed(2) + " MiB";
+						wirelessAvgTx = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
 					else if (bytes >= 1024)
-						wirelessAvgTx = (bytes / 1024).toFixed(0) + " KiB";
+						wirelessAvgTx = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
 					else if (bytes > 0)
-						wirelessAvgTx = bytes + " B";
+						wirelessAvgTx = bytes * 8 + " Bits/s";
 					else
 						wirelessAvgTx = "-";
 				}
@@ -900,7 +898,7 @@
 
 						// Filling Data
 						if (plotType == 3)
-							labelRxTx = ' (Rx Bytes)';
+							labelRxTx = ' (RX)';
 						if (plotType != 4) {
 							data += '{ "label":"' + label + labelRxTx + '", ';
 							data += ' "data": [ ';
@@ -908,7 +906,7 @@
 						for (j = 0; j < plotData.length; j++) {
 							if (plotData[j][0] == plotMACs[i]) {
 								if (plotType == 4) {
-									allRxTxTmp.push( [ plotData[j][1], plotData[j][5], plotData[j][6] ] );
+									allRxTxTmp.push( [ +plotData[j][1], +plotData[j][5], +plotData[j][6] ] );
 								} 
 								else {
 									if (data[data.length - 1] == "]")
@@ -933,7 +931,7 @@
 											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
 											if (RxTxCount < 0)
 												RxTxCount = 0;
-											data += '[ ' + plotData[j][1] + ', ' + RxTxCount + ' ]';                    break;	// RX/TX COUNT
+											data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';                    break;	// RX/TX COUNT
 										case 5: lastCount = "";
 											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
 												lastRxTxCount.push(plotData[j][0]);
@@ -950,7 +948,7 @@
 											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
 											if (RxTxCount < 0)
 												RxTxCount = 0;
-											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount + ' ]';                    break;	// RX COUNT
+											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';                    break;	// RX COUNT
 										case 6: lastCount = "";
 											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
 												lastRxTxCount.push(plotData[j][0]);
@@ -965,7 +963,7 @@
 											RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000) | 0);
 											if (RxTxCount < 0)
 												RxTxCount = 0;
-											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount + ' ]';					break;	// TX COUNT
+											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';					break;	// TX COUNT
 									}
 								}
 							}
@@ -983,13 +981,13 @@
 								allRx	= 0;
 								for (j = 0; j < allRxTxTmp.length; j++) {
 									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][1] != "-1")) {
-										allRx += allRxTxTmp[j][1];
+										allRx += +allRxTxTmp[j][1];
 										allRxTxTmp[j][1] = "-1";
 									}
 								}
 								if (lastAllRx == 0)
 									lastAllRx = allRx;
-								data += ' [ ' + allTime + ', ' + ((allRx - lastAllRx) / (updateTime / 1000) | 0) + ' ]';
+								data += ' [ ' + allTime + ', ' + ((allRx - lastAllRx) / (updateTime / 1000) | 0) * 8 + ' ]';
 								lastAllRx = allRx;
 							}
 							data += ']}';
@@ -1002,13 +1000,13 @@
 								allTx	= 0;
 								for (j = 0; j < allRxTxTmp.length; j++) {
 									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][2] != "-1")) {
-										allTx += allRxTxTmp[j][2];
+										allTx += +allRxTxTmp[j][2];
 										allRxTxTmp[j][2] = "-1";
 									}
 								}
 								if (lastAllTx == 0)
 									lastAllTx = allTx;
-								data += '[ ' + allTime + ', ' + ((allTx - lastAllTx) / (updateTime / 1000) | 0) + ' ]';
+								data += '[ ' + allTime + ', ' + ((allTx - lastAllTx) / (updateTime / 1000) | 0) * 8 + ' ]';
 								lastAllTx = allTx;
 							}
 						}
@@ -1018,7 +1016,7 @@
 
 						if (plotType == 3) {
 							data = "";
-							labelRxTx = ' (Tx Bytes) ';
+							labelRxTx = ' (TX) ';
 							data += '{ "label":"' + label + labelRxTx + '", ';
 							data += ' "data": [ ';
 							for (j = 0; j < plotData.length; j++) {
@@ -1039,7 +1037,7 @@
 									RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000) | 0);
 									if (RxTxCount < 0)
 										RxTxCount = 0;
-									data += '[ ' + plotData[j][1] + ', ' + RxTxCount + ' ]';
+									data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
 								}
 							}
 							data += ' ] }';
