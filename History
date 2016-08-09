@@ -2282,7 +2282,8 @@
 92) kernel: net: ipv6: update Destination Cache entries when gateway turn into host.<br>
 93) kernel: net: ipv6: fix RTPROT_RA markup of RA routes w/nexthops.<br>
 94) kernel: net: ipv6: pass neighbours and dest address into NETEVENT_REDIRECT events.<br>
-95) kernel: mm: prevent setting of a value less than 0 to min_free_kbytes.<br>
+95) kernel: net: netfilter: h323: Use mod_timer instead of set_expect_timeout.<br>
+96) kernel: mm: prevent setting of a value less than 0 to min_free_kbytes.<br>
 <br>
 <br>
 <br>
