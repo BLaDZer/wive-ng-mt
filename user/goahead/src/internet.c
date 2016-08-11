@@ -1352,7 +1352,6 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websDone(wp, 200);
 }
-#endif // HOTSPOT
 
 static void resetHotspot(webs_t wp, char_t *path, char_t *query)
 {
@@ -1381,6 +1380,7 @@ static void resetHotspot(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websDone(wp, 200);
 }
+#endif // HOTSPOT
 
 static int getChilliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
