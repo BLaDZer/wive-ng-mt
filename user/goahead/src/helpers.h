@@ -31,7 +31,6 @@
 
 #define IPT_SHORT_ACCOUNT
 
-#define _PATH_PROCNET_DEV		"/proc/net/dev"
 #define _PATH_IPT_ACCOUNTING_FILE	"/proc/net/ipt_account/mynetwork"
 
 #define RULE_MODE_DISABLE		0
@@ -114,5 +113,4 @@ int freeSplitter(string_split_t *buf);
 
 void outputTimerForReload(webs_t wp, char_t *url, long delay);
 int doSystem(char_t *fmt, ...);
-void reboot_now(void);
 #endif /* HELPERS_H_ */

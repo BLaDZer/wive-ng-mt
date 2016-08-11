@@ -11,7 +11,7 @@
 
 #include "libwive.h"
 
-void getcpudata(struct cpu_stats *st)
+void getCPUData(struct cpu_stats *st)
 {
 	FILE *fp;
 	char line_buf[256];
@@ -35,7 +35,7 @@ void getcpudata(struct cpu_stats *st)
 	fclose(fp);
 }
 
-void get_memdata(struct mem_stats *st)
+void getMemData(struct mem_stats *st)
 {
 	FILE *fp;
 	char line_buf[64];
@@ -59,4 +59,28 @@ void get_memdata(struct mem_stats *st)
 		sscanf(line_buf, "Cached: %lu %*s", &st->cached);
 	}
 	fclose(fp);
+}
+
+void getSyslogTail(char* log, int maxlen)
+{
+
+	FILE *fp = NULL;
+
+	char cmd[64];
+	snprintf((char*)&cmd,maxlen,"tail -c %i /var/log/messages",maxlen-1);
+
+	fp = popen(cmd, "r");
+	if(!fp){
+		syslog(LOG_ERR, "no log exist, %s", __FUNCTION__);
+		goto error;
+	}
+
+	memset(log, 0, maxlen);
+	fread(log, 1, maxlen, fp);
+
+error:
+	if(fp)
+	    pclose(fp);
+
+
 }

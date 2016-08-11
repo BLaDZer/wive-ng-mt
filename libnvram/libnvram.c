@@ -319,6 +319,25 @@ char *nvram_get(int index, char *name)
 	return recv;
 }
 
+int nvram_get_int(int index, char *name, int def)
+{
+	char* value = nvram_get(index, name);
+	char* endptr = value;
+
+	if (value == NULL) 
+	    return def;
+
+	long val = strtol(value, &endptr, 10);
+
+	if (endptr[0] != '\0')
+	    return def;
+
+	if (val > INT_MAX || val < INT_MIN)
+	    return def;
+
+	return (int) val;
+}
+
 int nvram_bufset(int index, char *name, char *value)
 {
 	int idx;

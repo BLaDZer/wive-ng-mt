@@ -44,7 +44,6 @@
 #include <syslog.h>
 #include <unistd.h>
 #include<sys/ioctl.h>
-#include<net/if.h>
 #include<netinet/in.h>
 #include<net/if_arp.h>
 #include <pthread.h>

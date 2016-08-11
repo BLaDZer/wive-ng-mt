@@ -11,7 +11,95 @@
 
 #include "libwive.h"
 
-void portscounts(struct port_counts *st)
+struct nic_counts* nicscounts() {
+	char buf[512];
+	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
+	int inum = 0;
+
+
+	if (fp == NULL)
+	{
+		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
+		return NULL;
+	}
+
+	int res_arr_capacity = 32;
+	struct nic_counts* pst = calloc(res_arr_capacity,sizeof(struct nic_counts));
+
+	if (pst == NULL)
+	{
+    		syslog(LOG_ERR, "Memory allocation error, %s", __FUNCTION__);
+		fclose(fp);
+		return NULL;
+	}
+
+	// skip headers
+	fgets(buf, sizeof(buf), fp);
+	fgets(buf, sizeof(buf), fp);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+	{
+		char *semiColon;
+		struct nic_counts* nc = &pst[inum];
+		nc->is_available = 0;
+
+		// find : , extract ifname, move pointer to next block semicolon
+		semiColon = strchr(buf, ':');
+		if (semiColon == NULL || (*semiColon++ = 0, sscanf(buf, "%s", nc->ifname) != 1)) {
+			syslog(LOG_ERR, "wrong format string in /proc/net/dev, %s", __FUNCTION__);
+			continue;
+		}
+
+		// not correct parse
+		if(nc->ifname[0]=='\0')
+			continue;
+
+		// long ifname
+		if(strlen(nc->ifname) > IFNAMSIZ)
+			continue;
+
+		// filter 'lo' interface
+		if (strcmp(nc->ifname, "lo") == 0)
+			continue;
+
+		// check that interface is up
+		if (getIfIsReady(nc->ifname) != 1)
+			continue;
+
+		// extract scale and print statistic
+		if (sscanf(semiColon, "%llu%llu%llu%llu%llu%llu%llu%*d%llu%llu%llu%llu%llu%llu%llu",
+			   &nc->rx_bytes, &nc->rx_packets, &nc->rx_errs, &nc->rx_drops, &nc->rx_fifo, &nc->rx_frame, &nc->rx_multi,
+			    &nc->tx_bytes, &nc->tx_packets, &nc->tx_errs, &nc->tx_drops, &nc->tx_fifo, &nc->tx_colls, &nc->tx_carrier) != 14) {
+			// not extracted - print n/a
+			nc->is_available = 0;
+		} else {
+			nc->is_available = 1;
+		}
+
+		inum++;
+		if (inum == res_arr_capacity)
+		{
+		    res_arr_capacity += 32;
+		    void* nnc = realloc(pst,res_arr_capacity*sizeof(struct nic_counts));
+		    if (nnc == NULL) {
+	    		syslog(LOG_ERR, "Memory allocation error, %s", __FUNCTION__);
+			fclose(fp);
+			return pst;
+		    }
+		    pst = (struct nic_counts*)nnc;
+		    
+		}
+
+		pst[inum].ifname[0] = '\0';
+	}
+
+	fclose(fp);
+	return pst;
+
+}
+
+
+int portscounts(struct port_counts *st)
 {
 #ifdef CONFIG_RAETH_SNMPD
 	char buf[256];
@@ -20,11 +108,12 @@ void portscounts(struct port_counts *st)
 	st->rx_count[0] = st->rx_count[1] = st->rx_count[2] = st->rx_count[3] = st->rx_count[4] = st->rx_count[5] = 0;
 	st->tx_count[0] = st->tx_count[1] = st->tx_count[2] = st->tx_count[3] = st->tx_count[4] = st->tx_count[5] = 0;
 
+
 #ifdef CONFIG_RAETH_SNMPD
 	fp = fopen(PROCREG_SNMP, "r");
 	if (fp == NULL) {
 		syslog(LOG_ERR, "no snmp, %s", __FUNCTION__);
-		return;
+		return 1;
 	}
 
 	// skip 32bit counters
@@ -36,7 +125,7 @@ void portscounts(struct port_counts *st)
 	    (sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &st->rx_count[0], &st->rx_count[1], &st->rx_count[2], &st->rx_count[3], &st->rx_count[4], &st->rx_count[5]) != 6)) {
 		syslog(LOG_ERR, "rx64 format string error, %s", __FUNCTION__);
 		fclose(fp);
-		return;
+		return 2;
 	}
 
 	// get tx 64 bit counter
@@ -44,10 +133,12 @@ void portscounts(struct port_counts *st)
 	    (sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &st->tx_count[0], &st->tx_count[1], &st->tx_count[2], &st->tx_count[3], &st->tx_count[4], &st->tx_count[5]) != 6)) {
 		syslog(LOG_ERR, "tx64 format string error, %s", __FUNCTION__);
 		fclose(fp);
-		return;
+		return 3;
 	}
 	fclose(fp);
+	return 0;
 #endif
+	return -1;
 }
 
 #if defined(CONFIG_ETHTOOL)

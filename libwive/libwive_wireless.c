@@ -37,9 +37,15 @@ int RtpQueryInformation(unsigned long QueryCode, char *DeviceName, void *ptr, un
 	return 0;
 }
 
-int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+int OidQueryInformation(unsigned long OidQueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
+	int s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if (s < 0) {
+		syslog(LOG_ERR, "wlan: ioctl open sock failed, %s", __FUNCTION__);
+		return -1;
+	}
 
 	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
@@ -51,12 +57,27 @@ int OidQueryInformation(unsigned long OidQueryCode, int socket_id, char *DeviceN
 	if (OidQueryCode == OID_802_11_BSSID_LIST)
 		wrq.u.data.length = 8192;
 
-	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
+	if (ioctl(s, RT_PRIV_IOCTL, &wrq) < 0) {
+	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
+	    close(s);
+	    return -1;
+	}
+
+	close(s);
+	return 0;
 }
 
-int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceName, void *ptr, unsigned long PtrLength)
+
+int OidSetInformation(unsigned long OidQueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
+
+	int s = socket(AF_INET, SOCK_DGRAM, 0);
+
+	if (s < 0) {
+		syslog(LOG_ERR, "wlan: ioctl open sock failed, %s", __FUNCTION__);
+		return -1;
+	}
 
 	memset(&wrq, 0, sizeof(wrq));
 	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
@@ -65,7 +86,14 @@ int OidSetInformation(unsigned long OidQueryCode, int socket_id, char *DeviceNam
 	wrq.u.data.pointer = (caddr_t) ptr;
 	wrq.u.data.flags = OidQueryCode | OID_GET_SET_TOGGLE;
 
-	return (ioctl(socket_id, RT_PRIV_IOCTL, &wrq));
+	if (ioctl(s, RT_PRIV_IOCTL, &wrq) < 0) {
+	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
+	    close(s);
+	    return -1;
+	}
+
+	close(s);
+	return (ioctl(s, RT_PRIV_IOCTL, &wrq));
 }
 
 unsigned int ConvertRssiToSignalQuality(long RSSI)
@@ -190,4 +218,239 @@ int getRate(MACHTTRANSMIT_SETTING HTSetting)
 		rate_index = rate_count-1;
 
 	return (MCSMappingRateTable[rate_index] * num_ss_vht * 5)/10;
+}
+
+char* getWlanRadioModuleName(int radio_module_ind)
+{
+	switch (radio_module_ind)
+	{
+	    case 1: return "ra0";
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	    case 2: return "rai0";
+#else
+	    case 2: return 0;
+#endif
+
+	    default:
+		    syslog(LOG_ERR, "libwive wireless : %s - Unknown radio module number!", __FUNCTION__); 
+		    return 0;
+	}
+}
+
+int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
+{
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+	    return 2;
+
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, if_name, table, sizeof(RT_802_11_MAC_TABLE)) < 0) {
+		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
+		return 1;
+	}
+
+	return 0;
+
+}
+
+int getWlanChannelNum(int radio_module_ind)
+{
+	switch (radio_module_ind)
+	{
+	    case 1:
+		    if (nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0) == 1) return 0;
+		    return nvram_get_int(RT2860_NVRAM, "Channel", 9);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	    case 2:
+		    if (nvram_get_int(RT2860_NVRAM, "AutoChannelSelectINIC", 0) == 1) return 0;
+		    return nvram_get_int(RT2860_NVRAM, "ChannelINIC", 48);
+#else
+	    case 2: return 0;
+#endif
+
+	    default:
+		    syslog(LOG_ERR, "libwive wireless : %s - Unknown radio module number!", __FUNCTION__); 
+	}
+
+	return 0;
+
+}
+
+int getWlanCurrentMacAddr(char *buf, int radio_module_ind)
+{
+	strcpy(buf, "00:00:00:00:00:00");
+
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+		return 1;
+
+    	if (getIfMac(if_name, buf, ':') == -1)
+		return 2;
+
+	return 0;
+}
+
+/*
+ * description: get station link quality
+ */
+int getWlanStationLinkQuality(int radio_module_ind)
+{
+	RT_802_11_LINK_STATUS LinkStatus;
+
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+		return 0;
+
+	// Get Link Status Info from driver
+	if (OidQueryInformation(RT_OID_802_11_QUERY_LINK_STATUS, if_name, &LinkStatus, sizeof(RT_802_11_LINK_STATUS)) != 0)
+	    return 0;
+
+	LinkStatus.ChannelQuality = (unsigned long)(LinkStatus.ChannelQuality * 1.2 + 10);
+	if (LinkStatus.ChannelQuality > 100)
+		LinkStatus.ChannelQuality = 100;
+
+	return (int)LinkStatus.ChannelQuality;
+}
+
+/*
+ * get station current frequency in KHz
+ */
+int getWlanStationFrequencyKHz(int radio_module_ind)
+{
+	NDIS_802_11_CONFIGURATION Configuration;
+
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+		return -1;
+
+	if (OidQueryInformation(OID_802_11_CONFIGURATION, if_name, &Configuration, sizeof(NDIS_802_11_CONFIGURATION)) != 0)
+		return -2;
+
+	return Configuration.DSConfig;
+
+}
+
+int getWlanStationNoiseDbm(int radio_module_ind)
+{
+	unsigned char lNoise; // this value is (ULONG) in Ndis driver (NOTICE!!!)
+
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+		return -1;
+
+	// Noise Level
+	// Get Noise Level From Driver
+	OidQueryInformation(RT_OID_802_11_QUERY_NOISE_LEVEL, if_name, &lNoise, sizeof(lNoise));
+
+	return lNoise-143;
+}
+
+static char bGetHTTxRateByBW_GI_MCS(int nBW, int nGI, int nMCS, double* dRate)
+{
+	//fprintf(stderr, "bGetHTTxRateByBW_GI_MCS()\n");
+	double HTTxRate20_800[24]={6.5, 13.0, 19.5, 26.0, 39.0, 52.0, 58.5, 65.0, 13.0, 26.0, 39.0, 52.0, 78.0, 104.0, 117.0, 130.0,
+								19.5, 39.0, 58.5, 78.0, 117.0, 156.0, 175.5, 195.0};
+	double HTTxRate20_400[24]={7.2, 14.4, 21.7, 28.9, 43.3, 57.8, 65.0, 72.2, 14.444, 28.889, 43.333, 57.778, 86.667, 115.556, 130.000, 144.444,
+								21.7, 43.3, 65.0, 86.7, 130.0, 173.3, 195.0, 216.7};
+	double HTTxRate40_800[25]={13.5, 27.0, 40.5, 54.0, 81.0, 108.0, 121.5, 135.0, 27.0, 54.0, 81.0, 108.0, 162.0, 216.0, 243.0, 270.0,
+								40.5, 81.0, 121.5, 162.0, 243.0, 324.0, 364.5, 405.0, 6.0};
+	double HTTxRate40_400[25]={15.0, 30.0, 45.0, 60.0, 90.0, 120.0, 135.0, 150.0, 30.0, 60.0, 90.0, 120.0, 180.0, 240.0, 270.0, 300.0,
+								45.0, 90.0, 135.0, 180.0, 270.0, 360.0, 405.0, 450.0, 6.7};
+
+	// no TxRate for (BW = 20, GI = 400, MCS = 32) & (BW = 20, GI = 400, MCS = 32)
+	if (((nBW == BW_20) && (nGI == GI_400) && (nMCS == 32)) ||
+			((nBW == BW_20) && (nGI == GI_800) && (nMCS == 32)))
+	{
+		return 0;
+	}
+
+	if (nMCS == 32)
+		nMCS = 25;
+
+	if (nBW == BW_20 && nGI == GI_800)
+		*dRate = HTTxRate20_800[nMCS];
+	else if (nBW == BW_20 && nGI == GI_400)
+		*dRate = HTTxRate20_400[nMCS];
+	else if (nBW == BW_40 && nGI == GI_800)
+		*dRate = HTTxRate40_800[nMCS];
+	else if (nBW == BW_40 && nGI == GI_400)
+		*dRate = HTTxRate40_400[nMCS];
+	else
+		return 0; //false
+
+	//fprintf(stderr, "dRate=%.1f\n", *dRate);
+	return 1; //true
+}
+
+int getLastTxRxRateFor11n(int nID, double* fLastTxRxRate)
+{
+	unsigned long lHTSetting;
+	MACHTTRANSMIT_SETTING HTSetting;
+	double b_mode[] ={1, 2, 5.5, 11};
+	float g_Rate[] = { 6,9,12,18,24,36,48,54};
+
+	if (OidQueryInformation(nID, "ra0", &lHTSetting, sizeof(lHTSetting)) < 0)
+	    return 1;
+
+	memset(&HTSetting, 0x00, sizeof(HTSetting));
+	memcpy(&HTSetting, &lHTSetting, sizeof(HTSetting));
+
+	switch(HTSetting.field.MODE)
+	{
+		case 0:
+			if (HTSetting.field.MCS >=0 && HTSetting.field.MCS<=3)
+				*fLastTxRxRate = b_mode[HTSetting.field.MCS];
+			else if (HTSetting.field.MCS >=8 && HTSetting.field.MCS<=11)
+				*fLastTxRxRate = b_mode[HTSetting.field.MCS-8];
+			else
+				*fLastTxRxRate = 0;
+
+			break;
+		case 1:
+			if ((HTSetting.field.MCS >= 0) && (HTSetting.field.MCS < 8))
+				*fLastTxRxRate = g_Rate[HTSetting.field.MCS];
+			else
+				*fLastTxRxRate = 0;
+
+			break;
+		case 2:
+		case 3:
+			if (0 == bGetHTTxRateByBW_GI_MCS(HTSetting.field.BW,
+						HTSetting.field.ShortGI,
+						HTSetting.field.MCS,
+						fLastTxRxRate))
+			{
+				*fLastTxRxRate = 0;
+			}
+			break;
+		default:
+			*fLastTxRxRate = 0;
+			break;
+	}
+
+	return 0;
+}
+
+int getLastTxRateFor11n(double* fLastTxRate)
+{
+    return getLastTxRxRateFor11n(RT_OID_802_11_QUERY_LAST_TX_RATE, fLastTxRate);
+}
+
+int getLastRxRateFor11n(double* fLastRxRate)
+{
+    return getLastTxRxRateFor11n(RT_OID_802_11_QUERY_LAST_RX_RATE, fLastRxRate);
+}
+
+int getWlanHWRadioStatus(int radio_module_ind)
+{
+	unsigned long RadioStatus=0;
+
+	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	if (if_name == NULL)
+    	    return -1;
+
+	if (OidQueryInformation(RT_OID_802_11_RADIO, "ra0", &RadioStatus, sizeof(RadioStatus)) < 0)
+	    return -1;
+
+	return RadioStatus==1;
 }

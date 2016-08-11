@@ -29,12 +29,16 @@ int cpe_set_igd_wan_ip_dnsenabled(cwmp_t * cwmp, const char * name, const char *
 
 
 int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool) {
-    unsigned long long rxtx[12];
-    getHWStatistic(&rxtx[0]);
-
+    struct port_counts pcs;
     int i;
-    for (i=0;i<12;i++) cwmp_log_debug("wan RX/TX Count %i : %llu", i, rxtx[i]);
 
+    portscounts(&pcs);
+
+    for (i=0;i<6;i++) 
+    {
+	cwmp_log_debug("wan RX Count %i : %llu", i, pcs.rx_count[i]);
+	cwmp_log_debug("wan TX Count %i : %llu", i, pcs.tx_count[i]);
+    }
 
     int wan_port = cwmp_nvram_get_int("wan_port",0);
     if (wan_port>5) return FAULT_CODE_9002;
@@ -43,13 +47,12 @@ int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value
 
     if (args[0] == 'r')
     {
-	snprintf(buf,1024,"%llu",rxtx[4-wan_port]);
+	snprintf(buf,1024,"%llu", pcs.rx_count[4-wan_port]);
     }
     else
     {
-	snprintf(buf,1024,"%llu",rxtx[(4-wan_port)+6]);
+	snprintf(buf,1024,"%llu",pcs.tx_count[4-wan_port]);
     }
-
 
     *value = pool_pstrdup(pool, buf);
     return FAULT_CODE_OK;

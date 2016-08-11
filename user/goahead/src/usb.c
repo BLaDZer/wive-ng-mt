@@ -127,10 +127,10 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 	const modem_status_t *st_table = modem_statuses;
 
 	// Get value
-	char *modem_enabled = nvram_get(RT2860_NVRAM, "MODEMENABLED");
+	int modem_enabled = nvram_get_int(RT2860_NVRAM, "MODEMENABLED", 0);
 
 	// Do not perform other checks if modem is turned off
-	if (strcmp(modem_enabled, "1")==0)
+	if (modem_enabled == 1)
 	{
 
 			// Status is at least 'offline' now

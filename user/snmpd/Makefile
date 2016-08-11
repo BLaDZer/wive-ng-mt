@@ -1,6 +1,7 @@
-CFLAGS    += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized
-CXXFLAGS  += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized
-LDFLAGS   += -Wl,--gc-sections
+CFLAGS    += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized -I$(ROOTDIR)/libwive/ -I$(ROOTDIR)/libnvram/
+CXXFLAGS  += -ffunction-sections -fdata-sections -Wno-maybe-uninitialized -I$(ROOTDIR)/libwive/ -I$(ROOTDIR)/libnvram/
+LDFLAGS   += -Wl,--gc-sections -L$(ROOTDIR)/libwive/ -L$(ROOTDIR)/libnvram/
+LDLIBS    += -lwive -lnvram
 
 DIRS = snmplib modules snmpd
 

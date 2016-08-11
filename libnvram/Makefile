@@ -5,6 +5,9 @@ UCLINUX_BUILD_USER=1
 
 CFLAGS += $(SSP_ALL_CFLAGS) -fPIC -D_LARGEFILE64_SOURCE=1
 
+# strong build
+CFLAGS += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter -Wno-sign-compare -Werror -Wfatal-errors
+
 LIBNVRAM=libnvram.a
 LIBNVRAM_SHARED=libnvram.so
 

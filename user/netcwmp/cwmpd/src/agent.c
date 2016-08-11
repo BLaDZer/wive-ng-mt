@@ -814,7 +814,7 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
 					cwmp_log_info("INFO: Rebooting the system ...");
 					cwmp_event_set_value(cwmp, INFORM_MREBOOT, 1, NULL, 0, 0, 0);
 					cwmp_event_clear_active(cwmp);
-					system("reboot");
+					reboot_now();
 				}
 				break;
 

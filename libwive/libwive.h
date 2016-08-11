@@ -25,18 +25,26 @@
 #include <linux/reboot.h>
 #include <linux/sockios.h>
 #include <linux/ethtool.h>
-#include <linux/if.h>
+#include <linux/autoconf.h>
+#include <linux/if_ether.h>
+#include <linux/wireless.h>
 #include <linux/route.h>
 #include <linux/sockios.h>
 #include <dirent.h>
 #include <syslog.h>
 
+#include <libnvram.h>
+#include <libnvram_utils.h>
+
 #include "libwive_ethernet.h"
 #include "libwive_gpio.h"
 #include "libwive_helpers.h"
 #include "libwive_network.h"
+#include "libwive_firewall.h"
 #include "libwive_procps.h"
 #include "libwive_sysstat.h"
+#include "libwive_system.h"
 #include "libwive_wireless.h"
+
 
 #endif

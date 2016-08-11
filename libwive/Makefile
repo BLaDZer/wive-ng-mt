@@ -3,19 +3,25 @@ UCLINUX_BUILD_USER=1
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
-CFLAGS += $(SSP_ALL_CFLAGS) -fPIC -D_LARGEFILE64_SOURCE=1
+CFLAGS += $(SSP_ALL_CFLAGS) -fPIC -D_LARGEFILE64_SOURCE=1 
+
+# strong build
+CFLAGS += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter -Wno-sign-compare -Werror -Wfatal-errors
+
 
 LIBWIVE=libwive.a
 LIBWIVE_SHARED=libwive.so
 
 OBJS	:= libwive_wireless.o libwive_ethernet.o libwive_network.o libwive_gpio.o libwive_procps.o libwive_sysstat.o libwive_helpers.o
+OBJS	+= libwive_system.o libwive_firewall.o
+
 HEADERS := $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-LDLIBS  :=
+LDLIBS  := -lnvram
 
 all: shared
 
 $(OBJS): %.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@ $(LDLIBS)
+	$(CC) $(CFLAGS) -c $< -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(LIBWIVE) ar-target: $(OBJS)
 	$(AR) $(ARFLAGS) $(LIBWIVE) $(OBJS)

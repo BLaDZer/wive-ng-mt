@@ -164,12 +164,15 @@ static int listCountryCodes(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int  idx = 0, channel;
-	const char *value = nvram_get(RT2860_NVRAM, "CountryRegionABand");
-	const char *channel_s = nvram_get(RT2860_NVRAM, "ChannelINIC");
+	int  idx = 0;
+	int value = nvram_get_int(RT2860_NVRAM, "CountryRegionABand", -1);
+	int channel = nvram_get_int(RT2860_NVRAM, "ChannelINIC", 0);
 
-	channel = (channel_s == NULL)? 0 : atoi(channel_s);
-	if ((value == NULL) || (strcmp(value, "") == 0) || (strcmp(value, "0") == 0) || (strcmp(value, "7") == 0)) {
+	switch (value)
+	{
+	    case -1:
+	    case 0:
+	    case 7:
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -180,7 +183,9 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "1") == 0) {
+		break;
+
+	    case 1:
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -191,13 +196,17 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
 				   	(36+4*idx == channel)? "selected" : "", 5180+20*idx,
 					"MHz (Channel ", 36+4*idx, ")</option>");
-	} else if (strcmp(value, "2") == 0) {
+		break;
+
+	    case 2:
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
 					(36+4*idx == channel)? "selected" : "", 5180+20*idx,
 					"MHz (Channel ", 36+4*idx, ")</option>");
-	} else if (strcmp(value, "3") == 0) {
+		break;
+
+	    case 3:
 		/* 52~64 */
 		for (idx = 4; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -208,31 +217,41 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "4") == 0) {
+		break;
+
+	    case 4:
 		/* 149~165 */
 		for (idx = 28; idx < 33; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "5") == 0) {
+		break;
+
+	    case 5:
 		/* 149~161 */
 		for (idx = 28; idx < 32; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "6") == 0) {
+		break;
+
+	    case 6:
 		/* 36~48 */
 		for (idx = 0; idx < 4; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
 					(36+4*idx == channel)? "selected" : "", 5180+20*idx,
 					"MHz (Channel ", 36+4*idx, ")</option>");
-	} else if (strcmp(value, "8") == 0) {
+		break;
+
+	    case 8:
 		/* 52~64 */
 		for (idx = 4; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
 					(36+4*idx == channel)? "selected" : "", 5180+20*idx,
 					"MHz (Channel ", 36+4*idx, ")</option>");
-	} else if (strcmp(value, "9") == 0) {
+		break;
+
+	    case 9:
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -253,7 +272,9 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "10") == 0) {
+		break;
+
+	    case 10:
 		/* 36~48 */
 		for (idx = 0; idx < 4; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -264,7 +285,9 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
-	} else if (strcmp(value, "11") == 0) {
+		break;
+
+	    case 11:
 		/* 36~64 */
 		for (idx = 0; idx < 8; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
@@ -280,6 +303,7 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",
 					36+4*idx+1, (36+4*idx+1 == channel)? "selected" : "",
 					5180+20*idx+5, "MHz (Channel ", 36+4*idx+1, ")</option>");
+		break;
 	}
 
 	return 0;
@@ -290,10 +314,8 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
 {
-    int idx = 0, channel;
-    char *channel_s = nvram_get(RT2860_NVRAM, "Channel");
-
-    channel = (channel_s == NULL)? 0 : atoi(channel_s);
+    int idx = 0;
+    int channel = nvram_get_int(RT2860_NVRAM, "Channel", 0);
 
     for (idx = 0; idx < 13; idx++)
 	websWrite(wp, T("%s%d %s>%d%s%d%s"), 
@@ -307,38 +329,14 @@ static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWlanChannel(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char *value = nvram_get(RT2860_NVRAM, "AutoChannelSelect");
-
-	if (NULL == value)
-		return websWrite(wp, T("9"));
-	if (!strncmp(value, "1", 2))
-		return websWrite(wp, T("0"));
-
-	value = nvram_get(RT2860_NVRAM, "Channel");
-	if (NULL == value)
-		return websWrite(wp, T("9"));
-	else
-		return websWrite(wp, T("%s"), value);
+	int value =  getWlanChannelNum(1);
+	return websWrite(wp, T("%d"), value);
 }
 
 static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	char *value = nvram_get(RT2860_NVRAM, "AutoChannelSelectINIC");
-
-	if (NULL == value)
-		return websWrite(wp, T("48"));
-	if (!strncmp(value, "1", 2))
-		return websWrite(wp, T("0"));
-
-	value = nvram_get(RT2860_NVRAM, "ChannelINIC");
-	if (NULL == value)
-		return websWrite(wp, T("48"));
-	else
-		return websWrite(wp, T("%s"), value);
-#else
-	return websWrite(wp, T("0"));
-#endif
+	int value =  getWlanChannelNum(2);
+	return websWrite(wp, T("%d"), value);
 }
 
 /*
@@ -347,9 +345,12 @@ static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 static int getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char if_hw[18] = {0};
+	int errcode = getWlanCurrentMacAddr(if_hw, 1);
+	if (errcode)
+	{
+	    syslog(LOG_ERR, "Wlan interface 1 mac address receive error: %i", errcode); 
+	}
 
-	if (getIfMac("ra0", if_hw, ':') == -1)
-		return websWrite(wp, T("00:00:00:00:00:00"));
 	return websWrite(wp, T("%s"), if_hw);
 }
 
@@ -358,8 +359,12 @@ static int getWlanCurrentMacAC(int eid, webs_t wp, int argc, char_t **argv)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char if_hw[18] = {0};
 
-	if (getIfMac("rai0", if_hw, ':') == -1)
-		return websWrite(wp, T("00:00:00:00:00:00"));
+	int errcode = getWlanCurrentMacAddr(if_hw, 2);
+	if (errcode)
+	{
+	    syslog(LOG_ERR, "Wlan interface 2 mac address receive error: %i", errcode);
+	}
+
 	return websWrite(wp, T("%s"), if_hw);
 #else
 	return websWrite(wp, T("00:00:00:00:00:00"));
@@ -375,9 +380,9 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	RT_802_11_MAC_TABLE table = {0};
 
 	websWrite(wp, T("{ "));
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "ra0", &table, sizeof(table)) < 0) {
-		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
-		err = -1;
+	if (getWlanStationTable(&table, 1) != 0) {
+	    err = -1;
+	    syslog(LOG_ERR, "Unable to receive wlan station table 1"); 
 	}
 	else {
 		websWrite(wp, T("\"stationlist24\": [ "));
@@ -419,9 +424,9 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	}
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	/* second radio module */
-	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, "rai0", &table, sizeof(table)) < 0) {
-		syslog(LOG_ERR, "first wlan: ioctl -> RTPRIV_IOCTL_GET_MAC_TABLE failed, %s", __FUNCTION__);
-		err = -1;
+	if (getWlanStationTable(&table, 2) != 0) {
+	    err = -1;
+	    syslog(LOG_ERR, "Unable to receive wlan station table 1"); 
 	}
 	else {
 		if (err == 0)
@@ -928,11 +933,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		setupParameters(wp, ids_flags, 0);
 #endif
 
-	char *num_s = nvram_get(RT2860_NVRAM, "BssidNum");
-	if (NULL != num_s)
-		ssid_num = atoi(num_s);
-	else
-		ssid_num = 1;
+	ssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 1);
 
 	//Radar Detect region
 	if ((rd_region == NULL) || (strlen(rd_region)<=0))
@@ -1227,22 +1228,17 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 
 static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
-	int num_ssid, i;
-	char *num_s = nvram_get(nvram, "BssidNum");
+	int i;
+	int num_ssid = nvram_get_int(nvram, "BssidNum", 1);
 	char_t result[4096];
 	char_t *PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
 		   *Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod, *IEEE8021X;
 	char_t *RADIUS_Server, *RADIUS_Port, *RADIUS_Key, *session_timeout_interval;
 
-	if(num_s)
-		num_ssid = atoi(num_s);
-	else
-		num_ssid = 1;
-
 	result[0] = '\0';
 
 	// deal with shown MBSSID
-	if(default_shown_mbssid[nvram] > atoi(num_s))
+	if(default_shown_mbssid[nvram] > num_ssid)
 		default_shown_mbssid[nvram] = 0;
 	sprintf(result, "%d\n",  default_shown_mbssid[nvram]);
 

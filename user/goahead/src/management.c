@@ -229,84 +229,50 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 	return 0;
 }
+
+
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char buf[512];
-	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
+    int i;
+    struct nic_counts* ncs = nicscounts();
 
-	if (fp == NULL)
-	{
-		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
-		return -1;
-	}
+    for (i=0;i<1024;i++)
+    {
+	struct nic_counts nc = ncs[i];
+	if (nc.ifname[0] == '\0')
+	    break;
 
-	// skip headers
-	fgets(buf, sizeof(buf), fp);
-	fgets(buf, sizeof(buf), fp);
+	if (!nc.is_available) {
+	    // not extracted - print n/a
+	    websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
+	    continue;
+	} else {
+		char strbuf[512];
+		char *rx_tmpstr, *tx_tmpstr;
 
-	while (fgets(buf, sizeof(buf), fp) != NULL)
-	{
-		char *semiColon;
-		char ifname[IFNAMSIZ];
-		unsigned long long rx_bytes = 0, rx_packets = 0, rx_errs = 0, rx_drops = 0, rx_fifo = 0, rx_frame = 0,
-			tx_bytes = 0, tx_packets = 0, tx_errs = 0, tx_drops = 0, tx_fifo = 0, tx_colls = 0, tx_carrier = 0, rx_multi = 0;
+		// scale bytes to K/M/G/Tb
+		rx_tmpstr = scale((uint64_t)nc.rx_bytes);
+		tx_tmpstr = scale((uint64_t)nc.tx_bytes);
 
-		// find : , extract ifname, move pointer to next block semicolon
-		semiColon = strchr(buf, ':');
-		if (semiColon == NULL || (*semiColon++ = 0, sscanf(buf, "%s", ifname) != 1)) {
-			syslog(LOG_ERR, "wrong format string in /proc/net/dev, %s", __FUNCTION__);
-			continue;
-		}
+		if (rx_tmpstr && tx_tmpstr) {
+		    // format string in buffer
+		    snprintf(strbuf, sizeof(strbuf),
+				"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
+										    nc.ifname, nc.rx_packets, rx_tmpstr, nc.tx_packets, tx_tmpstr);
+		    bfree(B_L, rx_tmpstr);
+		    bfree(B_L, tx_tmpstr);
 
-		// not correct parse
-		if(ifname[0]=='\0')
-			continue;
-
-		// long ifname
-		if(strlen(ifname) > IFNAMSIZ)
-			continue;
-
-		// filter 'lo' interface
-		if (strcmp(ifname, "lo") == 0)
-			continue;
-
-		// check that interface is up
-		if (getIfIsReady(ifname) != 1)
-			continue;
-
-		// extract scale and print statistic
-		if (sscanf(semiColon, "%llu%llu%llu%llu%llu%llu%llu%*d%llu%llu%llu%llu%llu%llu%llu",
-			   &rx_bytes, &rx_packets, &rx_errs, &rx_drops, &rx_fifo, &rx_frame, &rx_multi,
-			    &tx_bytes, &tx_packets, &tx_errs, &tx_drops, &tx_fifo, &tx_colls, &tx_carrier) != 14) {
-			// not extracted - print n/a
-			websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
-			continue;
+		    // write to web
+		    websWrite(wp, T("%s"), strbuf);
 		} else {
-			char strbuf[512];
-			char *rx_tmpstr, *tx_tmpstr;
-
-			// scale bytes to K/M/G/Tb
-			rx_tmpstr = scale((uint64_t)rx_bytes);
-			tx_tmpstr = scale((uint64_t)tx_bytes);
-
-			if (rx_tmpstr && tx_tmpstr) {
-			    // format string in buffer
-			    snprintf(strbuf, sizeof(strbuf),
-					"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
-											    ifname, rx_packets, rx_tmpstr, tx_packets, tx_tmpstr);
-			    bfree(B_L, rx_tmpstr);
-			    bfree(B_L, tx_tmpstr);
-
-			    // write to web
-			    websWrite(wp, T("%s"), strbuf);
-			} else {
-			    websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
-			}
-		}
+		    websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
+		} 
 	}
-	fclose(fp);
 
-	return 0;
+    }
+
+    free(ncs);
+    return 0;
 }
 
 static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
@@ -314,7 +280,7 @@ static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
 	struct mem_stats mem;
 	char buf[16];
 
-	get_memdata(&mem);
+	getMemData(&mem);
 
 	snprintf(buf, sizeof(buf), "%lu", mem.total);
 	return websWrite(wp, T("%s"), buf);
@@ -325,7 +291,7 @@ static int getMemLeftASP(int eid, webs_t wp, int argc, char_t **argv)
 	struct mem_stats mem;
 	char buf[16];
 
-	get_memdata(&mem);
+	getMemData(&mem);
 
 	snprintf(buf, sizeof(buf), "%lu", mem.free);
 	return websWrite(wp, T("%s"), buf);
@@ -338,7 +304,7 @@ static int getCpuUsageASP(int eid, webs_t wp, int argc, char_t **argv)
 	char buf[16];
 	float outd = 0;
 
-	getcpudata(&cpu);
+	getCPUData(&cpu);
 
 	if (cpu.total != prevtotal)
 	    outd=((((float)cpu.busy-(float)prevbusy)/((float)cpu.total-(float)prevtotal))*100);
@@ -394,37 +360,28 @@ static void setuplog(webs_t wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 }
 
+
 #define LOG_MAX 32768
 static void getsyslog(webs_t wp, char_t *path, char_t *query)
 {
-	FILE *fp = NULL;
 	char *log;
 
 	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
 	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 	websWrite(wp, T("\n"));
 
-	// LOG_MAX 32768 - 1
-	fp = popen("tail -c 32767 /var/log/messages", "r");
-	if(!fp){
-		syslog(LOG_ERR, "no log exist, %s", __FUNCTION__);
-		goto error;
-	}
 
 	log = balloc(B_L, LOG_MAX * sizeof(char));
 	if(!log){
 		syslog(LOG_ERR, "no memory left, %s", __FUNCTION__);
-		goto error;
+		websDone(wp, 200);
+		return;
 	}
 
-	memset(log, 0, LOG_MAX);
-	fread(log, 1, LOG_MAX, fp);
+	getSyslogTail(log, LOG_MAX);
 	websLongWrite(wp, log);
-
 	bfree(B_L, log);
-error:
-	if(fp)
-	    pclose(fp);
+
 	websDone(wp, 200);
 }
 #endif

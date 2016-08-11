@@ -12,34 +12,6 @@
 #include	"station.h"
 #include	"firewall.h"
 
-/*** Busybox leases.h ***/
-static uint64_t hton64(uint64_t v)
-{
-        return (((uint64_t)htonl(v)) << 32) | htonl(v >> 32);
-}
-
-#define ntoh64(v) hton64(v)
-typedef uint32_t leasetime_t;
-typedef int32_t signed_leasetime_t;
-
-struct dyn_lease {
-	/* "nip": IP in network order */
-	/* Unix time when lease expires. Kept in memory in host order.
-	 * When written to file, converted to network order
-	 * and adjusted (current time subtracted) */
-	leasetime_t expires;
-	uint32_t lease_nip;
-	/* We use lease_mac[6], since e.g. ARP probing uses
-	 * only 6 first bytes anyway. We check received dhcp packets
-	 * that their hlen == 6 and thus chaddr has only 6 significant bytes
-	 * (dhcp packet has chaddr[16], not [6])
-	 */
-	uint8_t lease_mac[6];
-	char hostname[20];
-	uint8_t pad[2];
-	/* total size is a multiply of 4 */
-} __attribute__((__packed__));
-
 
 static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -77,39 +49,23 @@ static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 {
-	FILE *fp;
-	struct dyn_lease lease;
-
-	int i, rownum = 0;
+	int i, rownum;
 	struct in_addr addr;
-	int64_t written_at, curr, expired_abs;
+	uint64_t written_at, curr, expired_abs;
 
-	//if DHCP is disabled - just exit
-	char* dhcpEnabled = nvram_get(RT2860_NVRAM, "dhcpEnabled");
-	if (CHK_IF_DIGIT(dhcpEnabled, 0))
-		return 0;
+	int row_len = 0;
+	struct dyn_lease* leases = getDhcpClientList(&row_len, &written_at);
 
-	doSystem("killall -q -SIGUSR1 udhcpd > /dev/null 2>&1");
-
-	fp = fopen("/var/udhcpd.leases", "r");
-	if (!fp)
-		return websWrite(wp, T(""));
-
-	/* Read header of dhcpleases */
-	if ( fread(&written_at, 1, sizeof(written_at), fp) != sizeof(written_at) )
-	{
-		fclose(fp);
-		return 0;
-	}
-
-	written_at = ntoh64(written_at);
+	if (leases == NULL)
+	    return 0; //if DHCP is disabled or unable to read - just exit
+	
 	curr = time(NULL);
-	if (curr < written_at)
-		written_at = curr; /* lease file from future! :) */
 
 	/* Output leases file */
-	while (fread(&lease, 1, sizeof(lease), fp) == sizeof(lease))
+	for (rownum=0; rownum<row_len; rownum++)
 	{
+	    	struct dyn_lease lease = leases[rownum];
+		
 		// Output structure
 		// Host
 		websWrite(wp, T("<tr><td>%s&nbsp;</td>"), lease.hostname);
@@ -138,16 +94,20 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%02u:%02u:%02u</td>"), h, m, (unsigned)expires);
 		}
 		else
+		{
 			websWrite(wp, T("expired</td>"));
+		}
+
 		websWrite(wp, "<td id=\"dhclient_row%d_status\" style=\"text-align: center;\">"
 			"<input id=\"dhclient_row%d\" type=\"checkbox\" onchange=\"toggleDhcpTable(this);\"></td>",
 			rownum, rownum);
-		websWrite(wp, "</tr>\n");
 
-		rownum++;
+		websWrite(wp, "</tr>\n");
 	}
 
-	fclose(fp);
+	if (leases)
+	    free(leases);
+
 	return 0;
 }
 
@@ -189,8 +149,8 @@ static void setDhcp(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "dhcpEnabled", "1");
 		setupParameters(wp, dhcp_args, 0);
 
-		char *dns_proxy = nvram_get(RT2860_NVRAM, "dnsPEnabled");
-		if (CHK_IF_DIGIT(dns_proxy, 1))
+		int dns_proxy = nvram_get_int(RT2860_NVRAM, "dnsPEnabled", 0);
+		if (dns_proxy == 1)
 		{
 			nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
 			nvram_bufset(RT2860_NVRAM, "dhcpSecDns", "");
@@ -353,16 +313,16 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 
 	setupParameters(wp, service_misc_flags, 0);
 
-	char_t *nat_fp = nvram_get(RT2860_NVRAM, "offloadMode");
-	if (CHK_IF_DIGIT(nat_fp, 2) || CHK_IF_DIGIT(nat_fp, 3))
+	int nat_fp = nvram_get_int(RT2860_NVRAM, "offloadMode", -1);
+	if (nat_fp == 2 || nat_fp == 3)
 	{
 		char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
 		if (nat_th != NULL)
 			nvram_bufset(RT2860_NVRAM, "hw_nat_bind", nat_th);
 	}
 
-	char_t *dns_proxy = nvram_get(RT2860_NVRAM, "dnsPEnabled");
-	if (CHK_IF_DIGIT(dns_proxy, 1))
+	int dns_proxy = nvram_get_int(RT2860_NVRAM, "dnsPEnabled", 0);
+	if (dns_proxy == 1)
 	{
 		nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
 		nvram_bufset(RT2860_NVRAM, "dhcpSecDns", "");
@@ -481,14 +441,11 @@ int iptStatList(int eid, webs_t wp, int argc, char_t **argv)
 	int lines = 0;
 
 	// Do not show anything if nat_fastpath is set
-	char* nat_fp = nvram_get(RT2860_NVRAM, "offloadMode");
-	if (nat_fp != NULL)
+	int nat_fp = nvram_get_int(RT2860_NVRAM, "offloadMode", -1);
+	if (nat_fp > 0)
 	{
-		if (strcmp(nat_fp, "0") != 0)
-		{
-			websWrite(wp, T("<tr><td>No IPT accounting allowed</td></tr>\n"));
-			return 0;
-		}
+		websWrite(wp, T("<tr><td>No IPT accounting allowed</td></tr>\n"));
+		return 0;
 	}
 
 	websWrite(wp, T("<tr><td class=\"title\" colspan=\"%d\">IP Accounting table</td></tr>\n"),

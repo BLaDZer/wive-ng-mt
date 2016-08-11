@@ -168,7 +168,7 @@ static int initWebs(void)
 	 *	Open the web server on the given port. If that port is taken, try
 	 *	the next sequential port for up to "retries" attempts.
 	 */
-	web_port = atoi(nvram_get(RT2860_NVRAM, "RemoteManagementPort"));
+	web_port = nvram_get_int(RT2860_NVRAM, "RemoteManagementPort", 0);
 	if (web_port && web_port != 80)
 	    port=web_port;
 

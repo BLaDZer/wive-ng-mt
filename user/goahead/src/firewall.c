@@ -19,111 +19,26 @@
 static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int first=1, i=0;
-	int prf_int, prt_int, rprf_int, rprt_int, proto, inat_loopback;
-	char ip_address[32], prf[8], prt[8], rprf[8], rprt[8], comment[64], protocol[8], interface[8], nat_loopback[8];
-	char rec[128];
 	char_t *rules = nvram_get(RT2860_NVRAM, "PortForwardRules");
+	struct PortForwardRule rule;
 
 	if (rules == NULL)
 		return 0;
 	if (strlen(rules) == 0)
 		return 0;
 
-	/* format is :
-	 * [interface],[protocol],[src_port],[dst_port],[ip_address],[redirect_src_port],[redirect_dst_port],[nat_loopback],[comment];
-	 */
-	while(getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1)
+	while (parse_portforward_rule(rules, &rule, i++) == 0)
 	{
-		// get interface
-		if ((getNthValueSafe(0, rec, ',', interface, sizeof(interface)) == -1))
-			continue;
-
-		// get protocol
-		if ((getNthValueSafe(1, rec, ',', protocol, sizeof(protocol)) == -1))
-			continue;
-
-		proto = atoi(protocol);
-		switch(proto)
-		{
-			case PROTO_TCP:
-			case PROTO_UDP:
-			case PROTO_TCP_UDP:
-				break;
-			default:
-				continue;
-		}
-
-		// get port range "from"
-		if ((getNthValueSafe(2, rec, ',', prf, sizeof(prf)) == -1))
-			continue;
-
-		if (strlen(prf) > 0)
-		{
-			if ((prf_int = atoi(prf)) == 0 || prf_int > 65535)
-				continue;
-		}
-
-		// get port range "to"
-		if ((getNthValueSafe(3, rec, ',', prt, sizeof(prt)) == -1))
-			continue;
-
-		if (strlen(prt) > 0)
-		{
-			if ((prt_int = atoi(prt)) > 65535)
-				continue;
-		}
-
-		// get ip address
-		if ((getNthValueSafe(4, rec, ',', ip_address, sizeof(ip_address)) == -1))
-			continue;
-
-		if (!isIpValid(ip_address))
-			continue;
-
-		// get forward port range "from"
-		if ((getNthValueSafe(5, rec, ',', rprf, sizeof(rprf)) == -1))
-			continue;
-
-		if (strlen(rprf) > 0)
-		{
-			if ((rprf_int = atoi(rprf)) == 0 || rprf_int > 65535)
-				continue;
-		}
-
-		// get port range "to"
-		if ((getNthValueSafe(6, rec, ',', rprt, sizeof(rprt)) == -1))
-			continue;
-
-		if (strlen(rprt) > 0)
-		{
-			if ((rprt_int = atoi(rprt)) > 65535)
-				continue;
-		}
-
-		// get Nat Loopback enable flag
-		if ((getNthValueSafe(7, rec, ',', nat_loopback, sizeof(nat_loopback)) == -1))
-			continue;
-
-		if (strlen(nat_loopback) > 0)
-			inat_loopback = atoi(nat_loopback);
-		else
-			inat_loopback = 0;
-
-
-		// Get comment
-		if ((getNthValueSafe(8, rec, ',', comment, sizeof(comment)) == -1))
-			continue;
-
 		// Output data
 		websWrite(wp, T("%s[ '%s', %d, '%s', '%s', '%s', '%s', '%s', %d, '%s' ]"),
 				(first) ? "" : ",\n\t",
-				interface,
-				proto,
-				prf, prt,
-				ip_address,
-				rprf, rprt,
-				inat_loopback,
-				comment
+				rule.interface,
+				rule.protocol,
+				rule.prf, rule.prt,
+				rule.ip_address,
+				rule.rprf, rule.rprt,
+				rule.nat_loopback,
+				rule.comment
 			);
 
 		first = 0;
@@ -138,110 +53,26 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 static int getPortFilteringRules(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int i = 0, first = 1;
-	int sprf_int, sprt_int, proto, dprf_int, dprt_int;
-	char mac_address[32];
-	char sip[32], sprf[8], sprt[8], comment[16], protocol[8], action[4];
-	char dip[32], dprf[8], dprt[8], iface[8], sim[32], dim[32];
-	char rec[256];
-	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
+	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");	
+	struct PortFilteringRule rule;
 
 	if (rules == NULL)
 		return 0;
 
-	while (getNthValueSafe(i++, rules, ';', rec, sizeof(rec)) != -1)
+	while (parse_portfiltering_rule(rules, &rule, i++) == 0)
 	{
-		// Get interface
-		if ((getNthValueSafe(0, rec, ',', iface, sizeof(iface)) == -1))
-			continue;
-
-		// get protocol
-		if ((getNthValueSafe(1, rec, ',', protocol, sizeof(protocol)) == -1))
-			continue;
-
-		proto = atoi(protocol);
-		switch(proto)
-		{
-			case PROTO_TCP:
-			case PROTO_UDP:
-			case PROTO_NONE:
-			case PROTO_ICMP:
-				break;
-			default:
-				continue;
-		}
-
-		// get mac address
-		if ((getNthValueSafe(2, rec, ',', mac_address, sizeof(mac_address)) == -1))
-			continue;
-
-		// get source ip
-		if ((getNthValueSafe(3, rec, ',', sip, sizeof(sip)) == -1))
-			continue;
-		if (!isIpNetmaskValid(sip))
-			sip[0] = '\0';
-
-		// get source ip mask
-		if ((getNthValueSafe(4, rec, ',', sim, sizeof(sim)) == -1))
-			continue;
-		if (!isIpNetmaskValid(sim))
-			sim[0] = '\0';
-
-		// get source port range "from"
-		if ((getNthValueSafe(5, rec, ',', sprf, sizeof(sprf)) == -1))
-			continue;
-		if ((sprf_int = atoi(sprf)) > 65535)
-			continue;
-
-		// get source port range "to"
-		if ((getNthValueSafe(6, rec, ',', sprt, sizeof(sprt)) == -1))
-			continue;
-		if ((sprt_int = atoi(sprt)) > 65535)
-			continue;
-
-		// get destination ip
-		if ((getNthValueSafe(7, rec, ',', dip, sizeof(dip)) == -1))
-			continue;
-		if (!isIpNetmaskValid(dip))
-			dip[0] = '\0';
-
-		// get destination ip mask
-		if ((getNthValueSafe(8, rec, ',', dim, sizeof(dim)) == -1))
-			continue;
-		if (!isIpNetmaskValid(dim))
-			dim[0] = '\0';
-
-		// get destination port range "from"
-		if ((getNthValueSafe(9, rec, ',', dprf, sizeof(dprf)) == -1))
-			continue;
-		if ((dprf_int = atoi(dprf)) > 65535)
-			continue;
-
-		// get destination port range "to"
-		if ((getNthValueSafe(10, rec, ',', dprt, sizeof(dprt)) == -1))
-			continue;
-		if ((dprt_int = atoi(dprt)) > 65535)
-			continue;
-
-		// get action / policy
-		if ((getNthValueSafe(11, rec, ',', action, sizeof(action)) == -1))
-			continue;
-
-		// get comment
-		if ((getNthValueSafe(12, rec, ',', comment, sizeof(comment)) == -1))
-			continue;
-
 		// Output data
 		websWrite(wp, T("%s[ '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ]"),
 				(first) ? "" : ",\n\t",
-				iface,
-				proto,
-				mac_address,
-				sip, sim,
-				sprf, sprt,
-				dip, dim,
-				dprf, dprt,
-				action,
-				comment
+				rule.interface,
+				rule.protocol,
+				rule.mac_address,
+				rule.sip, rule.sim,
+				rule.sprf, rule.sprt,
+				rule.dip, rule.dim,
+				rule.dprf, rule.dprt,
+				rule.action,
+				rule.comment
 			);
 
 		first = 0;

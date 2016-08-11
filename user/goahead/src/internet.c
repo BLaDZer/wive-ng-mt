@@ -81,125 +81,21 @@ const vpn_status_t lanauth_statuses[] =
 };
 #endif
 
-
-#ifdef CONFIG_USER_KABINET
-/* returns actual lanauth state+1 or 0 if lanauth process not found
-*/
-static int get_LANAUTHState()
-{
-	FILE *fp;
-	char result[96],*r;
-	unsigned int i, state;
-
-	fp = popen("ps|grep lanaut[h]", "r");
-	if(!fp){
-		syslog(LOG_ERR, "no ps util exist, %s", __FUNCTION__);
-		return -1;
-	}
-	fgets(result, sizeof(result), fp);
-	pclose(fp);
-	for (i=0, state=0, r=result; *r && i<sizeof(result) ;i++,r++)
-	{
-		switch(state)
-		{
-			case 0:
-				if (*r == '-')
-					state++;
-				break;
-			case 1:
-				if (*r == 'A')
-					state++;
-				else
-					state = 0;
-				break;
-			case 2:
-				if (*r == ' ' || *r == '\t')
-					state = 3;
-				else
-					state = 0;
-				break;
-			case 3:
-				if (*r == '0')
-					return 1;
-				else if (*r == '1')
-					return 2;
-				else if (*r == '2')
-					return 3;
-				else
-					state = 0;
-			default:
-				break;
-		}
-	}
-	return 0;
-}
-#endif
-
 /*
  * Show PPTP VPN status
  */
 static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int status = 0; // Status is 'disabled'
+	int status = getVPNStatusCode();
 	const vpn_status_t *st_table = vpn_statuses;
-	char *vpn_enabled = nvram_get(RT2860_NVRAM, "vpnEnabled");
 
-	if ((vpn_enabled==NULL) || (vpn_enabled[0]=='\0'))
-		vpn_enabled = "off";
-
-	// Do not perform other checks if VPN is turned off
-	if (strcmp(vpn_enabled, "on")==0) {
 #ifdef CONFIG_USER_KABINET
-		char *vpn_type = nvram_get(RT2860_NVRAM, "vpnType");
+    	int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
 
-		if (CHK_IF_DIGIT(vpn_type, 3)) {
-			status = (get_LANAUTHState() + 1) % 5;
-			st_table = lanauth_statuses;
-		} else {
-#endif
-			// Status is at least 'offline' now
-			status++;
-
-			// Try to find pppd or xl2tpd
-			int found = procps_count("pppd");
-			if (found==0)
-				found = procps_count("xl2tpd");
-
-			if (found>0) {
-				// Now status is at least 'connecting'
-				status++;
-
-				// Try to search for 'pppXX' device
-				FILE * fd = fopen(_PATH_PROCNET_DEV, "r");
-
-				if (fd != NULL) {
-					int ppp_id;
-					char_t line[256];
-
-					// Read all ifaces and check match
-					while ((fgets(line, sizeof(line), fd)) != NULL) {
-						// Filter only 'pppXX'
-						if (sscanf(line, " ppp%d", &ppp_id) == 1) {
-							// Check if ppp interface has number at least 8
-							if ((ppp_id >= 0) && (ppp_id <= 8)) {
-								status++; // Status is set to 'connected'
-								break; // Do not search more
-							}
-						}
-					}
-
-					fclose(fd);
-				} else {
-					syslog(LOG_WARNING, "cannot open %s (%s).\n", _PATH_PROCNET_DEV, strerror(errno));
-				}
-			} else if (found<0) {
-				//syslog(LOG_WARNING, "cannot serach process 'pppd' or 'xl2tpd': %s\n", strerror(-found));
-				;
-			}
-#ifdef CONFIG_USER_KABINET
-		}
-#endif
+    	if (vpn_type == 3) {
+	    st_table = lanauth_statuses;
 	}
+#endif
 
 	// Output connection status
 	const vpn_status_t *st = &st_table[status];
@@ -723,274 +619,98 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 		return websWrite(wp, T(""));
 }
 
-/*
- *
- */
-
-static int findRoutingRule(char *rrs, char *buf, const char *dest, const char *netmask, const char* gw, const char *iface)
-{
-	char c_dest[32], c_netmask[32], c_iface[32], c_gw[32];
-	int index = 0;
-
-	while (getNthValueSafe(index++, rrs, ';', buf, 256) != -1)
-	{
-		if ((getNthValueSafe(0, buf, ',', c_dest, sizeof(c_dest)) == -1))
-			continue;
-		if ((getNthValueSafe(1, buf, ',', c_netmask, sizeof(c_netmask)) == -1))
-			continue;
-		if ((getNthValueSafe(2, buf, ',', c_gw, sizeof(c_gw)) == -1))
-			continue;
-		if ((getNthValueSafe(4, buf, ',', c_iface, sizeof(c_iface)) == -1))
-			continue;
-
-		if ((strcmp(dest, c_dest)==0) && (strcmp(netmask, c_netmask)==0) &&
-			(strcmp(iface, c_iface)==0) && (strcmp(gw, c_gw)==0))
-			return index-1;
-	}
-
-	return -1;
-}
-
-static void removeRoutingRuleNvram(const char *iface, const char *dest, const char *netmask, const char *gw)
-{
-	char rule[256];
-	char c_iface[32], c_dest[32], c_netmask[32], c_gw[32];
-	char *old = nvram_get(RT2860_NVRAM, "RoutingRules");
-
-	// Check that NVRAM contains variable
-	if (old == NULL)
-	    return;
-
-	// Create temporary buffer
-	char *buf = (char *)calloc(1, strlen(old) + sizeof(char)*2);
-	if (buf == NULL)
-	    return;
-
-	char *p = buf;
-	buf[0] = '\0';
-
-	char *head = old;
-	char *tail = strchr(head, ';');
-	if (tail == NULL)
-		tail = head + strlen(head);
-
-	while (tail != head)
-	{
-		do
-		{
-			// Create record
-			int count = tail-head;
-			memcpy(rule, head, count);
-			rule[count] = '\0';
-
-			// Get destination
-			if ((getNthValueSafe(0, rule, ',', c_dest, sizeof(c_dest)) == -1))
-				continue;
-			// Get netmask
-			if ((getNthValueSafe(1, rule, ',', c_netmask, sizeof(c_netmask)) == -1))
-				continue;
-			// Get gateway
-			if ((getNthValueSafe(2, rule, ',', c_gw, sizeof(c_gw)) == -1))
-				continue;
-			// Get interface
-			if ((getNthValueSafe(3, rule, ',', c_iface, sizeof(c_iface)) == -1))
-				continue;
-
-			// Check if rule not matches
-			if (!((strcmp(iface, c_iface)==0) && (strcmp(dest, c_dest)==0) &&
-			    (strcmp(netmask, c_netmask)==0) && (strcmp(gw, c_gw)==0))) {
-				// Store rule
-				if (strlen(buf) > 0)
-				    *(p++) = ';';
-
-				strcpy(p, rule);
-				p += strlen(rule);
-			}
-			// else skip adding rule
-		} while (0);
-
-		// Move pointer to next entry
-		head = tail;
-		if (head[0] == ';')
-			head++;
-		tail = strchr(head, ';');
-		if (tail == NULL)
-			tail = head + strlen(head);
-	}
-	// Write new buffer to NVRAM
-	nvram_set(RT2860_NVRAM, "RoutingRules", buf);
-	free(buf);
-}
-
-static void addRoutingRuleNvram(
-	const char *iface, const char *dest, const char *netmask,
-	const char *gw, const char *true_if, const char *cust_if, const char *comment)
-{
-	char cmd[256];
-
-	char *rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
-	if (rrs == NULL)
-		rrs = "";
-
-	// Create new item
-	sprintf(cmd, "%s,%s,%s,%s,%s,%s,%s", dest, netmask, gw, iface, true_if, cust_if, comment);
-
-	int len = strlen(rrs);
-	char *tmp = (char *)calloc(1, len + strlen(cmd) + sizeof(char)*2);
-	char *p = tmp;
-	if (tmp == NULL)
-		return;
-
-	// Write previous rules if exist
-	if (len > 0)
-	{
-		strcpy(tmp, rrs);
-		p += len;
-		*(p++) = ';';
-	}
-
-	strcpy(p, cmd);
-
-	// Set NVRAM variable
-	nvram_set(RT2860_NVRAM, "RoutingRules", tmp);
-
-	// Clear resource
-	free(tmp);
-}
 
 /*
  * description: get routing table
  */
 static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char   buff[512];
-	int    nl = 0, index;
-	char   ifname[32], interface[128];
-	struct in_addr dest, gw, netmask;
-	char   dest_str[32], gw_str[32], netmask_str[32], comment[32];
-	int    flgs, ref, use, metric;
+	int    i = 0;
+	char   interface[128];
+	char   dest_str[32], gw_str[32], netmask_str[32];
 	int   *running_rules = NULL;
-	char   one_rule[256];
-	unsigned long int d,g,m;
 	char *rrs;
 	int  rule_count;
-	FILE *fp = fopen("/proc/net/route", "r");
-	if (!fp)
-		return -1;
 
 	// Determine work mode
-	char *op_mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	int isBridgeMode = (strcmp(op_mode, "0") == 0) ? 1 : 0;
+	int op_mode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
+	int isBridgeMode = (op_mode == 0) ? 1 : 0;
 
-	// Get routing table
 	rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
 	if (rrs == NULL)
 		rrs = "";
 	rule_count = getNums(rrs, ';');
+
+	// Get routing table
+	int parsed_rule_count = 0;
+	struct RoutingRule* table = parseRoutingTable(rrs, &parsed_rule_count);
+
+	if (table == NULL) 
+	{
+	    syslog(LOG_ERR, "Routing table parse error in function %s", __FUNCTION__);
+	    return -1;
+	}
 
 	if (rule_count)
 	{
 		running_rules = calloc(1, sizeof(int) * rule_count);
 		if (!running_rules)
 		{
-			fclose(fp);
 			return -1;
 		}
 	}
 
 	// true_interface[0], destination[1], gateway[2], netmask[3], flags[4], ref[5], use[6],
 	// metric[7], category[8], interface[9], idle[10], comment[11], new[12]
-	while ((fgets(buff, sizeof(buff), fp)) != NULL)
+	for (i = 0 ; i < parsed_rule_count; i++) 
 	{
-		if (nl > 0)
-		{
-			if (sscanf(buff, "%s%lx%lx%X%d%d%d%lx", ifname, &d, &g, &flgs, &ref, &use, &metric, &m) != 8)
-			{
-				syslog(LOG_ERR, "format error, %s", __FUNCTION__);
-				free(running_rules);
-				fclose(fp);
-				return 0;
-			}
-			dest.s_addr = d;
-			gw.s_addr = g;
-			netmask.s_addr = m;
+	    struct RoutingRule rule = table[i];
 
-			if (!(flgs & 0x1))	// skip not usable
-				continue;
+	    strncpy(dest_str, inet_ntoa(rule.dest), sizeof(dest_str));
+	    strncpy(gw_str, inet_ntoa(rule.gw), sizeof(gw_str));
+	    strncpy(netmask_str, inet_ntoa(rule.netmask), sizeof(netmask_str));
 
-			strncpy(dest_str, inet_ntoa(dest), sizeof(dest_str));
-			strncpy(gw_str, inet_ntoa(gw), sizeof(gw_str));
-			strncpy(netmask_str, inet_ntoa(netmask), sizeof(netmask_str));
+	    if (i > 0) websWrite(wp, T(",\n"));
 
-			if (nl > 1)
-				websWrite(wp, T(",\n"));
-			websWrite(wp, T("[ '%s', '%s', '%s', '%s', %d, %d, %d, %d"), ifname, dest_str, gw_str, netmask_str, flgs, ref, use, metric); // 0-7
+	    websWrite(wp, T("[ '%s', '%s', '%s', '%s', %d, %d, %d, %d"), rule.interface, dest_str, gw_str, netmask_str, rule.flgs, rule.ref, rule.use, rule.metric); // 0-7
 
-			// check if internal routing rules
-			strcpy(comment, "");
-			if ((index=findRoutingRule(rrs, one_rule, dest_str, netmask_str, gw_str, ifname)) != -1)
-			{
-				if (index < rule_count)
-					running_rules[index] = 1;
-				else
-					syslog(LOG_ERR, "fatal error in %s", __FUNCTION__);
+	    switch (rule.category)
+	    {
+		case 1:
+			websWrite(wp, T(", %d, "), rule.internal_id); // 8
 
-				websWrite(wp, T(", %d, "), index); // 8
-				if (getNthValueSafe(3, one_rule, ',', interface, sizeof(interface)) != -1)
-					websWrite(wp, T("'%s'"), interface); // 9
-				else
-					websWrite(wp, T("'LAN'")); // 9
-				if (getNthValueSafe(6, one_rule, ',', comment, sizeof(comment)) == -1)
-					comment[0] = '\0';
-			}
+			if (rule.internal_id < rule_count)
+		    	    running_rules[rule.internal_id] = 1;
 			else
-				websWrite(wp, T(", -1, '%s'"), getLanWanNamebyIf(ifname)); // 8-9
+			    syslog(LOG_ERR, "fatal error in %s", __FUNCTION__);
 
-			websWrite(wp, T(", 0, '%s', 0 ]"), comment); // 10-12
-		}
-		nl++;
+			websWrite(wp, T("'%s'"), rule.iftype); // 9
+			websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
+		    break;
+		case 2:
+			websWrite(wp, T(", -1, ")); // 8
+			websWrite(wp, T("'%s'"), getLanWanNamebyIf(rule.iftype)); // 9
+    			websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
+		    break;
+
+		case 3:
+			websWrite(wp, T(", %d, "), rule.internal_id); // 8
+			websWrite(wp, T("'%s'"), rule.iftype); // 9
+    			websWrite(wp, T(", %d, "), ((strcmp(interface, "VPN")==0) ? isBridgeMode : 1)); // 10
+    			websWrite(wp, T("'%s', 0 ]"), rule.comment); // 11-12
+		    break;
+
+		default:
+		    syslog(LOG_ERR, "%s: unknown routing rule category number: %i", __FUNCTION__, rule.category);
+	    }
+
 	}
-
-	for (index=0; index < rule_count; index++)
-	{
-		if (running_rules[index])
-			continue;
-
-		if(getNthValueSafe(index, rrs, ';', one_rule, sizeof(one_rule)) == -1)
-			continue;
-
-		if(getNthValueSafe(0, one_rule, ',', dest_str, sizeof(dest_str)) == -1)
-			continue;
-
-		if(getNthValueSafe(1, one_rule, ',', netmask_str, sizeof(netmask_str)) == -1)
-			continue;
-
-		if(getNthValueSafe(2, one_rule, ',', gw_str, sizeof(gw_str)) == -1)
-			continue;
-
-		if(getNthValueSafe(3, one_rule, ',', interface, sizeof(interface)) == -1)
-			continue;
-
-		if(getNthValueSafe(4, one_rule, ',', ifname, sizeof(ifname)) == -1)
-			continue;
-
-		if(getNthValueSafe(6, one_rule, ',', comment, sizeof(comment)) == -1)
-			continue;
-
-		if (nl > 0)
-			websWrite(wp, T(",\n"));
-
-		websWrite(wp, T("[ '%s', '%s', '%s', '%s', 0, 0, 0, 0, %d, '%s', %d, '%s', 0 ]"),
-			ifname, dest_str, gw_str, netmask_str, index, interface,
-			((strcmp(interface, "VPN")==0) ? isBridgeMode : 1),
-			comment);
-		nl++;
-	}
-
-	fclose(fp);
 
 	if (running_rules)
 		free(running_rules);
+
+	free(table);
+
 	return 0;
 }
 
@@ -1115,8 +835,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	char_t	*host;
 	char_t	*reset		= websGetVar(wp, T("reset"), T("0"));
 
-	char	*opmode		= nvram_get(RT2860_NVRAM, "OperationMode");
-	char	*dhcpEnabled	= nvram_get(RT2860_NVRAM, "dhcpEnabled");
+	int opmode	= nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
+	int dhcpEnabled	= nvram_get_int(RT2860_NVRAM, "dhcpEnabled", -1);
 
 	lan_ip		= websGetVar(wp, T("lanIp"), T(""));
 	lan_nm		= websGetVar(wp, T("lanNetmask"), T(""));
@@ -1127,12 +847,12 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 6, "HostName", "lan_ipaddr", "lan_netmask");
-		if (!strcmp(opmode, "0"))
+		if (opmode != 0)
 		{
 			nvram_fromdef(RT2860_NVRAM, 3, "wan_gateway", "wan_primary_dns", "wan_secondary_dns");
 			nvram_set(RT2860_NVRAM, "wan_static_dns", "on");
 		}
-		if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
+		if (dhcpEnabled == 1) {
 			nvram_fromdef(RT2860_NVRAM, 4, "dhcpStart", "dhcpEnd", "dhcpMask", "dhcpGateway");
 		}
 	}
@@ -1144,7 +864,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "lan_netmask", lan_nm);
 
 		// configure gateway and dns (WAN) at bridge mode
-		if (!strncmp(opmode, "0", 2))
+		if (opmode == 0)
 		{
 			gw = websGetVar(wp, T("lanGateway"), T(""));
 			pd = websGetVar(wp, T("lanPriDns"), T(""));
@@ -1155,7 +875,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns", "on");
 		}
 
-		if (CHK_IF_DIGIT(dhcpEnabled, 1)) {
+		if (dhcpEnabled == 1) {
 			nvram_bufset(RT2860_NVRAM, "dhcpStart", start_ip);
 			nvram_bufset(RT2860_NVRAM, "dhcpEnd", end_ip);
 			nvram_bufset(RT2860_NVRAM, "dhcpMask", lan_nm);
@@ -1197,7 +917,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	char_t *wan_mtu;
 	char_t *st_en, *pd, *sd;
 
-	char *opmode = nvram_get(RT2860_NVRAM, "OperationMode");
+	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
 	ctype = ip = nm = gw = eth = user = pass = mac = vpn_srv = vpn_mode = l2tp_srv = l2tp_mode = NULL;
 
@@ -1215,7 +935,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		doSystem("fs factory_mac > /dev/console 2>&1");
 	}
 	else {
-		if (!strncmp(ctype, "STATIC", 7) || !strcmp(opmode, "0"))
+		if (!strncmp(ctype, "STATIC", 7) || opmode == 0)
 		{
 			FILE *fd;
 
@@ -1232,7 +952,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 			 * in Bridge Mode, lan and wan are bridged together and associated with
 			 * the same ip address
 			 */
-			if (NULL != opmode && !strcmp(opmode, "0"))
+			if (opmode == 0)
 			{
 				nvram_bufset(RT2860_NVRAM, "lan_ipaddr", ip);
 				nvram_bufset(RT2860_NVRAM, "lan_netmask", nm);
@@ -1281,7 +1001,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		}
 
 		// NAT
-		if (!strcmp(opmode, "0"))
+		if (opmode == 0)
 		{
 			nat_enable = websGetVar(wp, T("natEnabled"), T("off"));
 			nat_enable = (strcmp(nat_enable, "on") == 0) ? "1" : "0";
@@ -1402,9 +1122,9 @@ static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char address[INET6_ADDRSTRLEN] = "";
 	char lanif[IFNAMSIZ] = "";
 	char mask[16] = "";
-	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
 
-	if (!strcmp(opmode, "0"))
+	if (opmode == 0)
 		return websWrite(wp, T(""));
 
 	strcpy(lanif, getLanIfName());
@@ -1422,22 +1142,29 @@ static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char mask[16] = "";
 	FILE *fp;
 
-	char_t *opmode = nvram_get(RT2860_NVRAM, "IPv6OpMode");
+	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
 
-	if (!strcmp(opmode, "0"))
+	if (opmode == 0)
 		return websWrite(wp, T(""));
 
 	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
-		if (!strcmp(opmode, "1")) {
-			if (vpn_mode_enabled() == 1)
+
+		switch (opmode)
+		{
+		    case 1:
+			    if (vpn_mode_enabled() == 1)
 				strcpy(wanif, getPPPIfName());
-			else
+			    else
 				strcpy(wanif, getWanIfName());
-		} else if (!strcmp(opmode, "2")) {
-			strcpy(wanif, "6rd");
-		} else if (!strcmp(opmode, "3")) {
-			strcpy(wanif, "sit0");
+			break;
+		    case 2:
+			    strcpy(wanif, "6rd");
+			break;
+		    case 3:
+			    strcpy(wanif, "sit0");
+			break;
 		}
+
 	} else {
 		while ((fgets(tmpif, sizeof(tmpif), fp)) != NULL) {
 			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) ||

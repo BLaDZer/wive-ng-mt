@@ -166,11 +166,6 @@ int doSystem(char_t *fmt, ...)
 	return rc;
 }
 
-void reboot_now(void)
-{
-	doSystem("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
-}
-
 void redirect_wholepage(webs_t wp, const char *url)
 {
 	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/html\n"));

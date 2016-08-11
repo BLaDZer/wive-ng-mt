@@ -26,6 +26,8 @@ struct mem_stats {
 	unsigned long int sw_free;  // Swap free
 };
 
-void getcpudata(struct cpu_stats *st);
-void get_memdata(struct mem_stats *st);
+void getCPUData(struct cpu_stats *st);
+void getMemData(struct mem_stats *st);
+void getSyslogTail(char* log, int maxlen);
+
 #endif

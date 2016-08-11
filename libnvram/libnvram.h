@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -82,6 +83,7 @@ int nvram_set(int index, char *name, char *value);
 int nvram_bufset(int index, char *name, char *value);
 char *nvram_get(int index, char *name);
 char *nvram_get_copy(int index, char *name);
+int nvram_get_int(int index, char *name, int def);
 
 int nvram_commit(int index);
 int nvram_clear(int index);

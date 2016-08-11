@@ -162,52 +162,6 @@ int getIfIp(char *ifname, char *if_addr)
 }
 */
 
-char* getWanIfName(pool_t * pool)
-{
-    int mode = cwmp_nvram_get_int("OperationMode", -1);
-    int apc_cli_mode = cwmp_nvram_get_int("ApCliBridgeOnly", 0);
-
-    char *if_name = WAN_DEF;
-    char wan_if[16]; /* max 16 char in wan if name */
-    FILE *fp;
-
-    /* try read fron file exported from init.d */
-    fp = fopen("/tmp/wan_if_name", "r");
-    if (fp) {
-        /* get first wan_if in file */
-        while (fgets(wan_if, sizeof(wan_if), fp)) {
-	if (wan_if == NULL || wan_if[0] == '\n')
-	    continue;
-	if ((strstr(wan_if, ETH_SIG) != NULL) || (strstr(wan_if, BR_SIG) != NULL)) {
-	    fclose(fp);
-	    return strip_space(wan_if);
-	}
-        }
-        fclose(fp);
-    }
-
-    if_name = WAN_DEF;
-
-    switch (mode) 
-    {
-	case 0: if_name = "br0";break;
-//	case 1: case 4: if_name = WAN_DEF;break;
-	case 2: if_name = "ra0";break;
-	case 3:
-	    if (apc_cli_mode == 1) {
-		if_name = "br0";				/* Client-AP-Bridge */
-	    } else {
-		char *apc_cli_wanif = cwmp_nvram_pool_get(pool, "ApCliIfName");
-		if (apc_cli_wanif != NULL)
-		{
-	    	    if_name = apc_cli_wanif;			/* Client-AP-Gateway 2.4Ghz/5GHz */
-		}
-	    }
-	    break;
-    }
-
-    return if_name;
-}
 
 
 char* getPPPIfName(void)
@@ -247,7 +201,7 @@ char* getIntIp(pool_t * pool)
     }
 
     /* if vpn disabled always get ip from wanif */
-    if (getIfIp(getWanIfName(pool), if_addr) != -1) {
+    if (getIfIp(getWanIfName(), if_addr) != -1) {
 	cwmp_log_debug("getIntIp R %s", if_addr);
 	return pool_pstrdup(pool, if_addr);
     }
@@ -256,73 +210,6 @@ char* getIntIp(pool_t * pool)
     return 0;
 }
 
-
-/* Port statistics */
-int getHWStatistic(unsigned long long* rxtx_count) {
-#ifdef CONFIG_RAETH_SNMPD
-	char buf[1024];
-	FILE *fp;
-#endif
-	rxtx_count[0] = rxtx_count[1] = rxtx_count[2] = rxtx_count[3] = rxtx_count[4] = rxtx_count[5] = rxtx_count[6] = rxtx_count[7] = rxtx_count[8] = rxtx_count[9] = rxtx_count[10] = rxtx_count[11] = 0;
-
-#ifdef CONFIG_RAETH_SNMPD
-	fp = fopen(PROCREG_SNMP, "r");
-	if (fp == NULL) {
-		return -1;
-	}
-
-	while (fgets(buf, sizeof(buf), fp)) {
-		if (buf == NULL || buf[0] == '\n')
-		    continue;
-		if (6 == sscanf(buf, "rx64 counters: %llu %llu %llu %llu %llu %llu\n", &rxtx_count[0], &rxtx_count[1], &rxtx_count[2], &rxtx_count[3], &rxtx_count[4], &rxtx_count[5]))
-		    continue;
-		if (6 == sscanf(buf, "tx64 counters: %llu %llu %llu %llu %llu %llu\n", &rxtx_count[6], &rxtx_count[7], &rxtx_count[8], &rxtx_count[9], &rxtx_count[10], &rxtx_count[11]))
-		    break;
-	}
-	fclose(fp);
-#endif
-
-	int i;
-	for (i=0;i<12;i++) cwmp_log_debug("RX/TX Count %i : %llu", i, rxtx_count[i]);
-
-	return 0;
-}
-/*
-int getIfMac(char *ifname, char *if_hw, char separator)
-{
-	struct ifreq ifr;
-	char *ptr;
-	int skfd;
-
-	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
-	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
-		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-
-	ptr = (char *)&ifr.ifr_addr.sa_data;
-	if (separator) {
-		sprintf(if_hw, "%02X%02X%02X%02X%02X%02X",
-			(ptr[0] & 0377), (ptr[1] & 0377), (ptr[2] & 0377),
-			(ptr[3] & 0377), (ptr[4] & 0377), (ptr[5] & 0377));
-	}
-	else
-	{
-		sprintf(if_hw, "%02X%c%02X%c%02X%c%02X%c%02X%c%02X",
-			(ptr[0] & 0377), separator, (ptr[1] & 0377), separator, (ptr[2] & 0377), separator,
-			(ptr[3] & 0377), separator, (ptr[4] & 0377), separator, (ptr[5] & 0377));
-	}
-
-	close(skfd);
-	return 0;
-}
-*/
 ////////////////////////////////////////////////////////
 
 //#ifdef UPLOAD_FIRMWARE_SUPPORT

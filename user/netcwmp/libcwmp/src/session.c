@@ -455,7 +455,7 @@ int cwmp_session_connect(cwmp_session_t * session, const char * url)
         return rv;
     }
     cwmp_session_set_headers(session, 0);
-    cwmp_log_info("ACS session connect url: %s", url);
+    cwmp_log_debug("ACS session connect url: %s", url);
 
     return CWMP_OK;
 }
@@ -506,7 +506,7 @@ int cwmp_session_create_connection(cwmp_session_t * session)
         return rc;
     }
 
-    cwmp_log_info("dest host: %s, dest port: %d", session->dest->host, session->dest->port);
+    cwmp_log_debug("dest host: %s, dest port: %d", session->dest->host, session->dest->port);
 
     http_socket_set_sendtimeout(sock, 10);
 
