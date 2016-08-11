@@ -2289,6 +2289,7 @@
 <b>4.6.x</b><br>
 1) libwive: add more functions (~50% work end).<br>
 2) libnvram: move nvram_load_default and gen_wifi_config from nvram tool (for code reuse).<br>
+3) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
 <br>
 <br>
 <br>
