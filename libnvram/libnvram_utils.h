@@ -61,10 +61,12 @@ char* getPPPIfName(void);
 
 void static_routing_rebuild_etc(void);
 void firewall_rebuild_etc(void);
+int gen_wifi_config(int mode, int genmode);
 
 void STFs(int nvram, int index, char *flash_key, char *value);
 char *getNthValue(int index, char *values);
 char *setNthValue(int index, char *old_values, char *new_value);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);
 
+int nvram_load_default(void);
 #endif

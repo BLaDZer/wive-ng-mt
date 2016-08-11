@@ -2288,6 +2288,7 @@
 <br>
 <b>4.6.x</b><br>
 1) libwive: add more functions (~50% work end).<br>
+2) libnvram: move nvram_load_default and gen_wifi_config from nvram tool (for code reuse).<br>
 <br>
 <br>
 <br>
