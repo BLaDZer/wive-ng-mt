@@ -13,6 +13,7 @@
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery.flot.min.js"></script>
 		<script src="/js/jquery.flot.time.min.js"></script>
+		<script src="/js/jquery.flot.crosshair.min.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/lang/b28n.js"></script>
 		<script src="/js/ajax.js"></script>
@@ -32,11 +33,14 @@
 			var wirelessAvgTxLast5	= 0;
 
 			var lastRxTxCount	= [];		// Last RX/TX count for all clients
-			var lastAllRxTx		= [];		// Summary of last RX/TX count 
+			var plot;
+			var legends;
 			var plotData 		= [];		// Statistic of all clients
 			var plotMACs 		= [];		// List MACs for Ploting
 			var plotMACsAll		= 0;		// Plot All MAC's
-
+			var updateLegendTimeout = null;
+			var latestPosition = null;
+			
 			function initTranslation()
 			{
 				_TR("stalistTitle",					"stalist title");
@@ -84,10 +88,10 @@
 				_TR("typeQuality",					"stalist wireless plot type quality");
 				_TR("typeRxTx",						"stalist wireless plot type rxtx");
 				_TR("typeRxTxSum",					"stalist wireless plot type rxtx sum");
+				_TR("typeRxTxSumAll",					"stalist wireless plot type rxtx sum all");
 				_TR("typeTx",						"stalist wireless plot type tx");
 				_TR("typeRx",						"stalist wireless plot type rx");
 				_TR("wirelessPlotUnitName",			"stalist wireless plot unit");
-				_TR("unitBits",						"stalist wireless plot unit bits");
 				_TR("unitKB",						"stalist wireless plot unit kbits");
 				_TR("unitMB",						"stalist wireless plot unit mbits");
 				_TRV("disconnectAll",				"button disconnect all");
@@ -160,12 +164,22 @@
 						document.getElementById('tableWirelessPlot').style.width = "1100px";
 					}					
 				}
+				
 				if (getCookie('plotMACs') !== undefined) {
 					plotMACs = JSON.parse(getCookie('plotMACs'));
 				}
+				
 				if (getCookie('plotMACsAll') !== undefined) {
 					plotMACsAll = getCookie('plotMACsAll');
 				}
+
+				legends = $("#plotLegendTemp .legendLabel");
+				$("#plotGraph").bind("plothover", function (event, pos, item) {
+					latestPosition = pos;
+					if (!updateLegendTimeout) {
+						updateLegendTimeout = setTimeout(updateLegend, 50);
+					}
+				});
 				
 				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", startShowStationList);
 				showWarning();
@@ -401,7 +415,7 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';							//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';							//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'MBit/s' + '</td>';					//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'Mbit/s' + '</td>';					//TX RATE
 						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;										//RSSI
 						if (data.stationlist24[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi1;
@@ -436,20 +450,20 @@
 						}
 						
 						rx = +data.stationlist24[i].rxbytes.replace(/ /g, '');
-						if (rx >= (1024 * 1024 * 1024))
-							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GB";
-						else if (rx >= (1024 * 1024))
-							rx = (rx / 1024 / 1024).toFixed(2) + " MB";
-						else if (rx >= (1024))
-							rx = (rx / 1024).toFixed(0) + " KB";
+						if (rx >= (1000 * 1000 * 1000))
+							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+						else if (rx >= (1000 * 1000))
+							rx = (rx / 1000 / 1000).toFixed(2) + " MiB";
+						else if (rx >= (1000))
+							rx = (rx / 1000).toFixed(0) + " KiB";
 
 						tx = +data.stationlist24[i].txbytes.replace(/ /g, '');
-						if (tx >= (1024 * 1024 * 1024))
-							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GB";
-						else if (tx >= (1024 * 1024))
-							tx = (tx / 1024 / 1024).toFixed(2) + " MB";
-						else if (tx >= (1024))
-							tx = (tx / 1024).toFixed(0) + " KB";
+						if (tx >= (1000 * 1000 * 1000))
+							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+						else if (tx >= (1000 * 1000))
+							tx = (tx / 1000 / 1000).toFixed(2) + " MiB";
+						else if (tx >= (1000))
+							tx = (tx / 1000).toFixed(0) + " KiB";
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';						//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -537,20 +551,20 @@
 						}
 						
 						rx = +data.stationlist5[i].rxbytes.replace(/ /g, '');
-						if (rx >= (1024 * 1024 * 1024))
-							rx = (rx / 1024 / 1024 / 1024).toFixed(2) + " GB";
-						else if (rx >= (1024 * 1024))
-							rx = (rx / 1024 / 1024).toFixed(2) + " MB";
-						else if (rx >= (1024))
-							rx = (rx / 1024).toFixed(0) + " KB";
+						if (rx >= (1000 * 1000 * 1000))
+							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+						else if (rx >= (1000 * 1000))
+							rx = (rx / 1000 / 1000).toFixed(2) + " MiB";
+						else if (rx >= (1000))
+							rx = (rx / 1000).toFixed(0) + " KiB";
 
 						tx = +data.stationlist5[i].txbytes.replace(/ /g, '');
-						if (tx >= (1024 * 1024 * 1024))
-							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + " GB";
-						else if (tx >= (1024 * 1024))
-							tx = (tx / 1024 / 1024).toFixed(2) + "MB";
-						else if (tx >= (1024))
-							tx = (tx / 1024).toFixed(0) + " KB";
+						if (tx >= (1000 * 1000 * 1000))
+							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+						else if (tx >= (1000 * 1000))
+							tx = (tx / 1000 / 1000).toFixed(2) + "MiB";
+						else if (tx >= (1000))
+							tx = (tx / 1000).toFixed(0) + " KiB";
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';	//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -591,12 +605,12 @@
 					bytes = ((wirelessAvgRx24 - wirelessAvgRxLast24) / (updateTime / 1000) | 0);
 					wirelessAvgRxLast24 = wirelessAvgRx24;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgRx24 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgRx24 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgRx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgRx24 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgRx24 = bytes  * 8 + " Bits/s";
+						wirelessAvgRx24 = bytes  * 8 + " Bit/s";
 					else
 						wirelessAvgRx24 = "-";
 
@@ -606,12 +620,12 @@
 					bytes = ((+wirelessAvgTx24 - wirelessAvgTxLast24) / (updateTime / 1000) | 0);
 					wirelessAvgTxLast24 = wirelessAvgTx24;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgTx24 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgTx24 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgTx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgTx24 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgTx24 = bytes * 8 + " Bits/s";
+						wirelessAvgTx24 = bytes * 8 + " Bit/s";
 					else
 						wirelessAvgTx24 = "-";
 				}
@@ -636,12 +650,12 @@
 					bytes = ((+wirelessAvgRx5 - wirelessAvgRxLast5) / (updateTime / 1000) | 0);
 					wirelessAvgRxLast5 = wirelessAvgRx5;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgRx5 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgRx5 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgRx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgRx5 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgRx5 = bytes * 8 + " Bits/s";
+						wirelessAvgRx5 = bytes * 8 + " Bit/s";
 					else
 						wirelessAvgRx5 = "-";
 
@@ -651,12 +665,12 @@
 					bytes = ((+wirelessAvgTx5 - wirelessAvgTxLast5) / (updateTime / 1000) | 0);
 					wirelessAvgTxLast5 = wirelessAvgTx5;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgTx5 = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgTx5 = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgTx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgTx5 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgTx5 = bytes * 8 + " Bits/s";
+						wirelessAvgTx5 = bytes * 8 + " Bit/s";
 					else
 						wirelessAvgTx5 = "-";
 				}
@@ -675,12 +689,12 @@
 					bytes = ((+wirelessAvgRx - wirelessAvgRxLast) / (updateTime / 1000) | 0);
 					wirelessAvgRxLast = wirelessAvgRx;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgRx = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgRx = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgRx = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgRx = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgRx = bytes * 8 + " Bits/s";
+						wirelessAvgRx = bytes * 8 + " Bit/s";
 					else
 						wirelessAvgRx = "-";
 
@@ -690,12 +704,12 @@
 					bytes = ((+wirelessAvgTx - wirelessAvgTxLast) / (updateTime / 1000) | 0);
 					wirelessAvgTxLast = wirelessAvgTx;
 
-					if (bytes >= (1024 * 1024))
-						wirelessAvgTx = (bytes * 8 / 1024 / 1024).toFixed(2) + " MBits/s";
-					else if (bytes >= 1024)
-						wirelessAvgTx = (bytes * 8 / 1024).toFixed(0) + " KBits/s";
+					if (bytes >= (1000 * 1000))
+						wirelessAvgTx = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+					else if (bytes >= 1000)
+						wirelessAvgTx = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
 					else if (bytes > 0)
-						wirelessAvgTx = bytes * 8 + " Bits/s";
+						wirelessAvgTx = bytes * 8 + " Bit/s";
 					else
 						wirelessAvgTx = "-";
 				}
@@ -774,7 +788,7 @@
 						rxbytes = +data.stationlist24[i].rxbytes.replace(/ /g, '');
 						txbytes = +data.stationlist24[i].txbytes.replace(/ /g, '');
 
-						plotData.push([ mac_id, time, rate, rssi, quality, rxbytes, txbytes ]);
+						plotData.push([ mac_id, +time, +rate, +rssi, +quality, +rxbytes, +txbytes ]);
 					}
 				}
 
@@ -815,7 +829,7 @@
 				}
 
 				for (i = 0; i < MACs.length; i++) {
-					plotData.push([ MACs[i], time, null, null, null, null, null ]);
+					plotData.push([ MACs[i], +time, null, null, null, 0, 0 ]);
 
 					for (j = 0; j < plotData.length; j++) {
 						if (plotData[j][0] == MACs[i]) {
@@ -827,7 +841,6 @@
 						lastRxTxCount.splice(lastRxTxCount.indexOf(MACs[i].replace(/:/g, '')), 3);
 					}
 				}
-				setCookie('plotData', JSON.stringify(plotData));
 			}
 			
 			
@@ -837,12 +850,22 @@
 				var plotType		= document.getElementById('wirelessPlotType').selectedIndex;
 				var plotTime		= document.getElementById('wirelessPlotTime').selectedIndex;
 				var plotUnit		= document.getElementById('wirelessPlotUnit').selectedIndex;
-				var columns			= (wirelessMode == "Basic") ? 4 : 6;
 				var plotGraphData	= [];
 				var allRxTxTmp		= [];
+				var allRxTx;
 				var plotOptions;
 				var startTime;
-				var allRx, allTX;
+				var graphTime;
+
+				var legendDataMin	= undefined;
+				var legendDataMax	= undefined;
+				var legendDataAvg	= undefined;
+				var legendDataLast	= undefined;
+				var legendDataCount = 0;
+				var legendDataSum	= 0;
+				var legendUnit;				
+				var legendHtml		= "";
+				
 				var i = j = k = tmp = label = data = RxTxCount = labelRxTx = "";
 
 				if (plotType <= 2) 
@@ -850,42 +873,69 @@
 				else
 					document.getElementById('wirelessPlotUnit').disabled = false;
 				
+				
 				switch(plotTime) {
-					case 0:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 60 * 1000).getTime() };		break;	// 1M
-					case 1:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 2 * 60 * 1000).getTime() };		break;	// 2M
-					case 2:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 3 * 60 * 1000).getTime() };		break;	// 3M
-					case 3:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 4 * 60 * 1000).getTime() };		break;	// 4M
-					case 4:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 5 * 60 * 1000).getTime() };		break;	// 5M
-					case 5:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 10 * 60 * 1000).getTime() };		break;	// 10M
-					case 6:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 15 * 60 * 1000).getTime() };		break;	// 15M
-					case 7:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 20 * 60 * 1000).getTime() };		break;	// 20M
-					case 8:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 30 * 60 * 1000).getTime() };		break;	// 30M
-					case 9:		startTime = { mode: "time", timezone: "browser", min: new Date(time - 1 * 3600 * 1000).getTime() };		break;	// 1H
-					case 10:	startTime = { mode: "time", timezone: "browser", min: new Date(time - 3 * 3600 * 1000).getTime() };		break;	// 3H
-					case 11:	startTime = { mode: "time", timezone: "browser", min: new Date(time - 6 * 3600 * 1000).getTime() };		break;	// 6H
-					case 12:	startTime = { mode: "time", timezone: "browser" };														break;	// All time
+					case 0:		graphTime = new Date(time - 1 * 60 * 1000).getTime();		break;	// 1M
+					case 1:		graphTime = new Date(time - 2 * 60 * 1000).getTime();		break;	// 2M
+					case 2:		graphTime = new Date(time - 3 * 60 * 1000).getTime();		break;	// 3M
+					case 3:		graphTime = new Date(time - 4 * 60 * 1000).getTime();		break;	// 4M
+					case 4:		graphTime = new Date(time - 5 * 60 * 1000).getTime();		break;	// 5M
+					case 5:		graphTime = new Date(time - 10 * 60 * 1000).getTime();		break;	// 10M
+					case 6:		graphTime = new Date(time - 15 * 60 * 1000).getTime();		break;	// 15M
+					case 7:		graphTime = new Date(time - 20 * 60 * 1000).getTime();		break;	// 20M
+					case 8:		graphTime = new Date(time - 30 * 60 * 1000).getTime();		break;	// 30M
+					case 9:		graphTime = new Date(time - 1 * 3600 * 1000).getTime();		break;	// 1H
+					case 10:	graphTime = new Date(time - 3 * 3600 * 1000).getTime();		break;	// 3H
+					case 11:	graphTime = new Date(time - 6 * 3600 * 1000).getTime();		break;	// 6H
+					case 12:	graphTime = "All";											break;	// All
 				}
+				
+				if (plotTime == 12)
+					startTime = { mode: "time", timezone: "browser" }
+				else 
+					startTime = { mode: "time", timezone: "browser", min: graphTime };
+					
+
 				switch(plotType) {
-					case 0:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: 0 } }; 			        break;	// TX RATE
-					case 1:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: -100, max: 0 } };		break;	// RSSI
-					case 2:		plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { min: 0, max: 100 } };		break;	// QUALITY
-					default:	plotOptions = { legend: { position: "nw", container:$("#plotLegend"), noColumns: columns }, xaxis: startTime, yaxis: { 
-						tickFormatter: function (v, axis) {
-							if (plotUnit == 0) 
-								return (v / (1024 * 1024)).toFixed(2) + "M";
-							else if (plotUnit == 1) 
-								return (v / 1024).toFixed(2) + "K";
-							else
-								return v;
-						},
-						min: 0 } };								                														break;	// RX/TX COUNT
+					case 0:		// TX RATE
+								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: 0 } };
+								legendUnit = "Mbit/s";
+								break;
+					case 1:		// RSSI
+								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: -100, max: 0 } };
+								legendUnit = "dBm";
+								break;
+					case 2:		// QUALITY
+								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: 0, max: 100 } };
+								legendUnit = "%";
+								break;
+					default:	// RX/TX COUNT
+								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { 
+												tickFormatter: function (v, axis) {
+													if (plotUnit == 0) 
+														return (v / (1000 * 1000)).toFixed(0) + "M";
+													else if (plotUnit == 1) 
+														return (v / 1000).toFixed(0) + "K";
+												},
+												min: 0 } };
+								switch (plotUnit) {
+									case 0:		legendUnit = "Mbit/s";		break;
+									case 1:		legendUnit = "Kbit/s";		break;
+								}
+								break;
 				}
 
 				displayElement("tableWirelessPlot", plotMACs.length > 0)
 				
 				if (plotMACs.length > 0) {
 					for (i = 0; i < plotMACs.length; i++) {
-						data = "";
+						data			= "";
+						legendDataMin	= undefined;
+						legendDataMax	= undefined;
+						legendDataAvg	= undefined;
+						legendDataLast	= undefined;
+						legendDataCount = 0;
+						legendDataSum	= 0;
 
 						// Converting Lable format
 						label = "";
@@ -899,135 +949,259 @@
 						// Filling Data
 						if (plotType == 3)
 							labelRxTx = ' (RX)';
-						if (plotType != 4) {
-							data += '{ "label":"' + label + labelRxTx + '", ';
-							data += ' "data": [ ';
-						}
+						else if (plotType == 4)
+							labelRxTx = ' (RX+TX)';
+						
+						data += '{ "data": [ ';
 						for (j = 0; j < plotData.length; j++) {
+																
 							if (plotData[j][0] == plotMACs[i]) {
-								if (plotType == 4) {
+								if (plotType == 5) 		// RX+TX SUMMARY COUNT
 									allRxTxTmp.push( [ +plotData[j][1], +plotData[j][5], +plotData[j][6] ] );
-								} 
-								else {
+								else { 
 									if (data[data.length - 1] == "]")
 										data += ", ";
 									switch(plotType) {
-										case 0:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][2] + ' ]';	    break;	// TX RATE
-										case 1:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][3] + ' ]';	    break;	// RSSI
-										case 2:		data += '[ ' + plotData[j][1] + ', ' + plotData[j][4] + ' ]';	    break;	// QUALITY
-										case 3:		lastCount = "";
-											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-												lastRxTxCount.push(plotData[j][0]);
-												lastRxTxCount.push(plotData[j][5]);
-												lastRxTxCount.push(plotData[j][6]);
-												lastCount = plotData[j][5];
-											}
-											else {
-												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
-												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-											}
-											if (lastCount > +plotData[j][5])
-												lastCount = +plotData[j][5];
-											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
-											if (RxTxCount < 0)
-												RxTxCount = 0;
-											data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';                    break;	// RX/TX COUNT
-										case 5: lastCount = "";
-											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-												lastRxTxCount.push(plotData[j][0]);
-												lastRxTxCount.push(plotData[j][5]);
-												lastRxTxCount.push(plotData[j][6]);
-												lastCount = plotData[j][5];
-											}
-											else {
-												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
-												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-											}
-											if (lastCount > +plotData[j][5])
-												lastCount = +plotData[j][5];
-											RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
-											if (RxTxCount < 0)
-												RxTxCount = 0;
-											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';                    break;	// RX COUNT
-										case 6: lastCount = "";
-											if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-												lastRxTxCount.push(plotData[j][0]);
-												lastRxTxCount.push(plotData[j][5]);
-												lastRxTxCount.push(plotData[j][6]);
-												lastCount = plotData[j][6];
-											}
-											else {
-												lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
-												lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
-											}
-											RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000) | 0);
-											if (RxTxCount < 0)
-												RxTxCount = 0;
-											data += '[ ' + +plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';					break;	// TX COUNT
-									}
-								}
-							}
-						}
-						
-						if (plotType == 4) {
-							var allTime;
-							var lastAllRx;
-							var lastAllTx;
-							data += '{ "label":"Summary RX", "data": [';
-							for (i = 0; i < allRxTxTmp.length; i++) {
-								if (data[data.length - 1] == "]")
-									data += ", ";
-								allTime = allRxTxTmp[i][0];
-								allRx	= 0;
-								for (j = 0; j < allRxTxTmp.length; j++) {
-									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][1] != "-1")) {
-										allRx += +allRxTxTmp[j][1];
-										allRxTxTmp[j][1] = "-1";
-									}
-								}
-								if (lastAllRx == 0)
-									lastAllRx = allRx;
-								data += ' [ ' + allTime + ', ' + ((allRx - lastAllRx) / (updateTime / 1000) | 0) * 8 + ' ]';
-								lastAllRx = allRx;
-							}
-							data += ']}';
-							plotGraphData.push(JSON.parse(data));
-							data = '{ "label":"Summary TX", "data": [';
-							for (i = 0; i < allRxTxTmp.length; i++) {
-								if (data[data.length - 1] == "]")
-									data += ", ";
-								allTime = allRxTxTmp[i][0];
-								allTx	= 0;
-								for (j = 0; j < allRxTxTmp.length; j++) {
-									if ((allRxTxTmp[j][0] == allTime) && (allRxTxTmp[j][2] != "-1")) {
-										allTx += +allRxTxTmp[j][2];
-										allRxTxTmp[j][2] = "-1";
-									}
-								}
-								if (lastAllTx == 0)
-									lastAllTx = allTx;
-								data += '[ ' + allTime + ', ' + ((allTx - lastAllTx) / (updateTime / 1000) | 0) * 8 + ' ]';
-								lastAllTx = allTx;
-							}
-						}
-						
-						data += ' ] }';
-						plotGraphData.push(JSON.parse(data));
+										case 0:		// TX RATE
+													data += '[ ' + plotData[j][1] + ', ' + plotData[j][2] + ' ]';
 
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (plotData[j][2] !== null) {
+															if (legendDataMin === undefined) 
+																legendDataMin = +plotData[j][2];
+															else if (legendDataMin > +plotData[j][2])
+																legendDataMin = +plotData[j][2];
+															if (legendDataMax === undefined) 
+																legendDataMax = +plotData[j][2];
+															else if (legendDataMax < plotData[j][2])
+																legendDataMax = +plotData[j][2];
+															legendDataCount++;
+															legendDataSum += +plotData[j][2];
+															legendDataAvg = (legendDataSum / legendDataCount).toFixed(0);
+															legendDataLast = +plotData[j][2];
+														}
+													}
+													break;
+													
+										case 1:		// RSSI
+													data += '[ ' + plotData[j][1] + ', ' + plotData[j][3] + ' ]';
+
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (plotData[j][3] !== null) {
+															if (legendDataMin === undefined) 
+																legendDataMin = +plotData[j][3];
+															else if (legendDataMin > +plotData[j][3])
+																legendDataMin = +plotData[j][3];
+															if (legendDataMax === undefined) 
+																legendDataMax = +plotData[j][3];
+															else if (legendDataMax < plotData[j][3])
+																legendDataMax = +plotData[j][3];
+															legendDataCount++;
+															legendDataSum += +plotData[j][3];
+															legendDataAvg = (legendDataSum / legendDataCount).toFixed(0);
+															legendDataLast = +plotData[j][3];
+														}
+													}
+													
+													break;
+										case 2:		// QUALITY
+													data += '[ ' + plotData[j][1] + ', ' + plotData[j][4] + ' ]';
+
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (plotData[j][3] !== null) {
+															if (legendDataMin === undefined) 
+																legendDataMin = +plotData[j][4];
+															else if (legendDataMin > +plotData[j][4])
+																legendDataMin = +plotData[j][4];
+															if (legendDataMax === undefined) 
+																legendDataMax = +plotData[j][4];
+															else if (legendDataMax < plotData[j][4])
+																legendDataMax = +plotData[j][4];
+															legendDataCount++;
+															legendDataSum += +plotData[j][4];
+															legendDataAvg = (legendDataSum / legendDataCount).toFixed(0);
+															legendDataLast = +plotData[j][4];
+														}
+													}
+													break;
+													
+										case 3:		// RX/TX COUNT	
+													lastCount = "";
+													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]); lastRxTxCount.push(plotData[j][6]);
+														lastCount = plotData[j][5];
+													}
+													else {
+														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
+														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
+													}
+													if (lastCount > +plotData[j][5])
+														lastCount = +plotData[j][5];
+													RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
+													if (RxTxCount < 0)
+														RxTxCount = 0;
+													data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
+
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (legendDataMin === undefined) 
+															legendDataMin = RxTxCount * 8;
+														else if (legendDataMin > (RxTxCount * 8))
+															legendDataMin = RxTxCount * 8;
+
+														if (legendDataMax === undefined) 
+															legendDataMax = RxTxCount * 8;
+														else if (legendDataMax < (RxTxCount * 8))
+															legendDataMax = RxTxCount * 8;
+
+														legendDataCount++;
+														legendDataSum += RxTxCount * 8;
+														legendDataAvg = legendDataSum / legendDataCount | 0;
+														
+														legendDataLast = RxTxCount * 8;
+													}
+													break;
+
+										case 4: 	// RX+TX COUNT
+													lastCount = "";
+													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
+														lastCount = plotData[j][5] + plotData[j][6];
+													}
+													else {
+														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] + lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
+														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
+														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
+													}
+													if (lastCount > (plotData[j][5] + plotData[j][6]))
+														lastCount = plotData[j][5] + plotData[j][6];
+													RxTxCount = (((plotData[j][5] + plotData[j][6]) - lastCount) / (updateTime / 1000)).toFixed(0);
+													if (RxTxCount < 0)
+														RxTxCount = 0;
+													data += '[ ' + plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';  
+													
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (legendDataMin === undefined) 
+															legendDataMin = RxTxCount * 8;
+														else if (legendDataMin > (RxTxCount * 8))
+															legendDataMin = RxTxCount * 8;
+
+														if (legendDataMax === undefined) 
+															legendDataMax = RxTxCount * 8;
+														else if (legendDataMax < (RxTxCount * 8))
+															legendDataMax = RxTxCount * 8;
+
+														legendDataCount++;
+														legendDataSum += RxTxCount * 8;
+														legendDataAvg = legendDataSum / legendDataCount | 0;
+														
+														legendDataLast = RxTxCount * 8;
+													}
+													break;
+
+										case 6: 	// RX COUNT
+													lastCount = "";
+													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+														lastRxTxCount.push(plotData[j][0]);	lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
+														lastCount = plotData[j][5];
+													}
+													else {
+														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
+														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
+													}
+													if (lastCount > plotData[j][5])
+														lastCount = plotData[j][5];
+													RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000) | 0);
+													if (RxTxCount < 0)
+														RxTxCount = 0;
+													data += '[ ' + plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';
+
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (legendDataMin === undefined) 
+															legendDataMin = RxTxCount * 8;
+														else if (legendDataMin > (RxTxCount * 8))
+															legendDataMin = RxTxCount * 8;
+
+														if (legendDataMax === undefined) 
+															legendDataMax = RxTxCount * 8;
+														else if (legendDataMax < (RxTxCount * 8))
+															legendDataMax = RxTxCount * 8;
+
+														legendDataCount++;
+														legendDataSum += RxTxCount * 8;
+														legendDataAvg = legendDataSum / legendDataCount | 0;
+														
+														legendDataLast = RxTxCount * 8;
+													}
+													break;
+
+										case 7:		// TX COUNT
+													lastCount = "";
+													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
+														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
+														lastCount = plotData[j][6];
+													}
+													else {
+														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
+														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
+													}
+													RxTxCount = ((plotData[j][6] - lastCount) / (updateTime / 1000) | 0);
+													if (RxTxCount < 0)
+														RxTxCount = 0;
+													data += '[ ' + +plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
+
+													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+														if (legendDataMin === undefined) 
+															legendDataMin = RxTxCount * 8;
+														else if (legendDataMin > (RxTxCount * 8))
+															legendDataMin = RxTxCount * 8;
+
+														if (legendDataMax === undefined) 
+															legendDataMax = RxTxCount * 8;
+														else if (legendDataMax < (RxTxCount * 8))
+															legendDataMax = RxTxCount * 8;
+
+														legendDataCount++;
+														legendDataSum += RxTxCount * 8;
+														legendDataAvg = legendDataSum / legendDataCount | 0;
+														
+														legendDataLast = RxTxCount * 8;
+													}
+													break;
+									}
+								}
+							}
+						}
+					
+						if ((plotType >= 3) && (plotType != 5)) 
+							switch(plotUnit) {
+								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
+											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
+											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
+											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+											break;
+								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
+											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
+											legendDataAvg  = (legendDataAvg  / 1000).toFixed(0);
+											legendDataLast = (legendDataLast / 1000).toFixed(0);
+											break;
+							}
+						
+						if (plotType != 5) {
+							data += '], "label":"' + label + labelRxTx + '|' + legendDataMin +'|' + legendDataMax + '|' + legendDataAvg + '|' + legendDataLast + '" }';
+							plotGraphData.push(JSON.parse(data));
+						}
+	
 						if (plotType == 3) {
 							data = "";
-							labelRxTx = ' (TX) ';
-							data += '{ "label":"' + label + labelRxTx + '", ';
-							data += ' "data": [ ';
+							labelRxTx = ' (TX)';
+							data += '{ "data": [ ';
 							for (j = 0; j < plotData.length; j++) {
 								if (plotData[j][0] == plotMACs[i]) {
 									if (data[data.length - 1] == "]")
 										data += ", ";
 									lastCount = "";
 									if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-										lastRxTxCount.push(plotData[j][0]);
-										lastRxTxCount.push(plotData[j][5]);
-										lastRxTxCount.push(plotData[j][6]);
+										lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]); lastRxTxCount.push(plotData[j][6]);
 										lastCount = plotData[j][6];
 									}
 									else {
@@ -1038,15 +1212,232 @@
 									if (RxTxCount < 0)
 										RxTxCount = 0;
 									data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
+
+									if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
+										if (legendDataMin === undefined) 
+											legendDataMin = RxTxCount * 8;
+										else if (legendDataMin > (RxTxCount * 8))
+											legendDataMin = RxTxCount * 8;
+
+										if (legendDataMax === undefined) 
+											legendDataMax = RxTxCount * 8;
+										else if (legendDataMax < (RxTxCount * 8))
+											legendDataMax = RxTxCount * 8;
+
+										legendDataCount++;
+										legendDataSum += RxTxCount * 8;
+										legendDataAvg = legendDataSum / legendDataCount | 0;
+										
+										legendDataLast = RxTxCount * 8;
+									}
 								}
 							}
-							data += ' ] }';
+							switch(plotUnit) {
+								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
+											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
+											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
+											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+											break;
+								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0)
+											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
+											legendDataAvg  = (legendDataAvg  / 1000).toFixed(0);
+											legendDataLast = (legendDataLast / 1000).toFixed(0);
+											break;
+							}
+							data += '], "label":"' + label + labelRxTx + '|' + legendDataMin +'|' + legendDataMax + '|' + legendDataAvg + '|' + legendDataLast + '" }';
 							plotGraphData.push(JSON.parse(data));
 						}
 					}
-					$.plot($("#plotGraph"), plotGraphData, plotOptions);
+				
+					if (plotType == 5) {
+						var allTime;
+						var allRxTx		= 0;
+						var lastRxTx	= 0;
+						var tmp;
+						label			= "Summary RX+TX";
+						labelRxTx		= "";
+						data 			= '{ "data": [';
+
+						for (i = 0; i < allRxTxTmp.length; i++) {
+							if (allRxTxTmp[i][0] > 0) {
+								if (data[data.length - 1] == "]")
+									data += ", ";
+								allTime = allRxTxTmp[i][0];
+								allRxTx	= 0;
+								
+								for (j = 0; j < allRxTxTmp.length; j++) {
+									if (allRxTxTmp[j][0] == allTime) {
+										allRxTx += +allRxTxTmp[j][1] + +allRxTxTmp[j][2];
+										allRxTxTmp[j][0] = "-1";
+									}
+								}
+								if (lastRxTx == 0) {
+									lastRxTx = allRxTx;
+								}
+								
+								tmp = +((allRxTx - lastRxTx) / (updateTime / 1000)).toFixed(0) * 8;
+								
+								data += '[ ' + allTime + ', ' + tmp + ' ]';
+								
+								lastRxTx = allRxTx;
+
+								if ((graphTime == "All") || (allTime >= graphTime)) {
+									if (legendDataMin === undefined) 
+										legendDataMin = tmp;
+									else if (legendDataMin >  tmp)
+										legendDataMin = tmp;
+
+									if (legendDataMax === undefined) 
+										legendDataMax = tmp;
+									else if (legendDataMax < tmp)
+										legendDataMax = tmp;
+
+									legendDataCount++;
+									legendDataSum += tmp;
+									legendDataAvg = legendDataSum / legendDataCount | 0;
+									
+									legendDataLast = tmp;
+								}
+							}
+						}
+						switch(plotUnit) {
+							case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
+										legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
+										legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
+										legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+										break;
+							case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
+										legendDataMax  = (legendDataMax  / 1000).toFixed(0);
+										legendDataAvg  = (legendDataAvg  / 1000).toFixed(0);
+										legendDataLast = (legendDataLast / 1000).toFixed(0);
+										break;
+						}
+						data += '], "label":"' + label + labelRxTx + '|' + legendDataMin +'|' + legendDataMax + '|' + legendDataAvg + '|' + legendDataLast + '" }';
+						plotGraphData.push(JSON.parse(data));
+					}
+
+
+					
+					plot = $.plot($("#plotGraph"), plotGraphData, plotOptions);
+
+					legendHtml += '<table style="font-size:smaller;color:#545454">';
+					legendHtml += '<tbody>';
+					
+					var dataset = plot.getData();
+					for (i = 0; i < dataset.length; ++i) {
+						tmp = dataset[i].label.split("|");
+						
+						legendHtml += '<tr>';					
+						legendHtml += '<td class="legendColorBox">';
+						legendHtml += '<div style="border:1px solid #ccc;padding:1px">';
+						legendHtml += '<div style="width:4px;height:0;border:5px solid ' + dataset[i].color + ';overflow:hidden">';
+						legendHtml += '</div>';
+						legendHtml += '</div>';
+						legendHtml += '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 25%";">' + tmp[0] + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Min = ' + tmp[1] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Max = ' + tmp[2] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Avg = ' + tmp[3] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Last = ' + tmp[4] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Pos = ' + 0 + legendUnit + '</td>';
+						legendHtml += '<tr>';
+					} 
+					legendHtml += '</tbody>';
+					legendHtml += '</table>';
+					
+					document.getElementById('plotLegend').innerHTML = legendHtml;
 				}
 			}
+
+			function updateLegend(force) {
+				updateLegendTimeout = null;
+
+				var plotType = document.getElementById('wirelessPlotType').selectedIndex;
+				var plotUnit = document.getElementById('wirelessPlotUnit').selectedIndex;
+								var unit;
+				
+				var html = "";
+				var pos = latestPosition;
+				var axes = plot.getAxes();
+				var tmp = [];
+				
+				if ((pos.x < axes.xaxis.min || pos.x > axes.xaxis.max ||
+					pos.y < axes.yaxis.min || pos.y > axes.yaxis.max) && !force)  {
+					return;
+				}
+				
+				switch (plotType) {
+					case 0:		unit = "MBit/s";		break;
+					case 1:		unit = "dBm";			break;
+					case 2:		unit = "%";				break;
+					default:
+								switch (plotUnit) {
+									case 0:		unit = "Mbit/s";		break;
+									case 1:		unit = "Kbit/s";		break;
+								}
+								break;
+				}
+
+				html += '<table style="font-size:smaller;color:#545454">';
+				html += '<tbody>';
+				
+				var i, j, dataset = plot.getData();
+				for (i = 0; i < dataset.length; ++i) {
+
+					var series = dataset[i];
+
+					// Find the nearest points, x-wise
+
+					for (j = 0; j < series.data.length; ++j) {
+						if (series.data[j][0] > pos.x) {
+							break;
+						}
+					}
+
+					// Now Interpolate
+
+					var y,
+						p1 = series.data[j - 1],
+						p2 = series.data[j];
+
+					if (p1 == null) {
+						y = p2[1];
+					} else if (p2 == null) {
+						y = p1[1];
+					} else {
+						y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+					}
+					
+					if (plotType >= 3) 
+						switch (plotUnit) {
+							case 0:	y = (y / 1000 / 1000).toFixed(1);	break;
+							case 1:	y = (y / 1000).toFixed(0);			break;
+						}
+					else 
+						y = y.toFixed(0);
+
+					tmp = series.label.split("|");
+					
+					html += '<tr>';					
+					html += '<td class="legendColorBox">';
+					html += '<div style="border:1px solid #ccc;padding:1px">';
+					html += '<div style="width:4px;height:0;border:5px solid ' + series.color + ';overflow:hidden">';
+					html += '</div>';
+					html += '</div>';
+					html += '</td>';
+					html += '<td class="legendLabel" style="width: 25%";">' + tmp[0] + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + 'Min = ' + tmp[1] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + 'Max = ' + tmp[2] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + 'Avg = ' + tmp[3] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + 'Last = ' + tmp[4] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + 'Pos = ' + y + unit + '</td>';
+					html += '<tr>';
+				} 
+				html += '</tbody>';
+				html += '</table>';
+				
+				document.getElementById('plotLegend').innerHTML = html;
+			}			
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -1091,12 +1482,6 @@
 								<td style="text-align: center;" id="stalistWirelessSumTXRateData5"></td>
 							</tr>
 							<tr>
-								<td id="stalistWirelessSumTxRx" class="head">Average Bitrate:</td>
-								<td style="text-align: center;" id="stalistWirelessSumTxRxData"></td>
-								<td style="text-align: center;" id="stalistWirelessSumTxRxData24"></td>
-								<td style="text-align: center;" id="stalistWirelessSumTxRxData5"></td>
-							</tr>
-							<tr>
 								<td id="stalistWirelessSumRSSI" class="head">Average RSSI:</td>
 								<td style="text-align: center;" id="stalistWirelessSumRSSIData"></td>
 								<td style="text-align: center;" id="stalistWirelessSumRSSIData24"></td>
@@ -1107,6 +1492,12 @@
 								<td style="text-align: center;" id="stalistWirelessSumQualityData"></td>
 								<td style="text-align: center;" id="stalistWirelessSumQualityData24"></td>
 								<td style="text-align: center;" id="stalistWirelessSumQualityData5"></td>
+							</tr>
+							<tr>
+								<td id="stalistWirelessSumTxRx" class="head">RX/TX Bandwidth:</td>
+								<td style="text-align: center;" id="stalistWirelessSumTxRxData"></td>
+								<td style="text-align: center;" id="stalistWirelessSumTxRxData24"></td>
+								<td style="text-align: center;" id="stalistWirelessSumTxRxData5"></td>
 							</tr>
 						</table>
 						<br>
@@ -1121,9 +1512,10 @@
 										<option value="1" id="typeRSSI">RSSI</option>
 										<option value="2" id="typeQuality">Quality</option>
 										<option value="3" id="typeRxTx">Rx/Tx Bandwidth</option>
-										<option value="4" id="typeRxTxSum" selected>Rx/Tx Bandwidth Summary</option>
-										<option value="5" id="typeRx">Rx Bandwidth</option>
-										<option value="6" id="typeTx">Tx Bandwidth</option>
+										<option value="4" id="typeRxTxSum" selected>Rx+Tx Bandwidth</option>
+										<option value="5" id="typeRxTxSumAll">RX+TX Bandwidth Summary</option>
+										<option value="6" id="typeRx">Rx Bandwidth</option>
+										<option value="7" id="typeTx">Tx Bandwidth</option>
 									</select>
 								</td>
 								<td class="head"><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
@@ -1145,16 +1537,24 @@
 								</td>
 								<td class="head"><label for="wirelessPlotUnit" id="wirelessPlotUnitName">Graphic Unit: </label>
 									<select id="wirelessPlotUnit" name="wirelessPlotUnit" class="normal" onChange="showPlot();">
-										<option value="0" id="unitMB" selected>MBits/sec</option>
-										<option value="1" id="unitKB">KBits/sec</option>
-										<option value="2" id="unitBits">Bits/sec</option>
+										<option value="0" id="unitMB" selected>Mbit/s</option>
+										<option value="1" id="unitKB">Kbit/s</option>
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td colspan="3">
-									<div id="plotLegend" style="width: full;"></div>
-									<div id="plotGraph" style="width: full; height: 300px;"></div>
+									<div id="plotGraph" style="width: 100%; height: 300px;"></div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<div id="plotLegend" style="width: 100%;"></div>
+								</td>
+							</tr>
+							<tr style="display: none;">
+								<td colspan="3">
+									<div id="plotLegendTemp" style="width: 100%;"></div>
 								</td>
 							</tr>
 						</table>

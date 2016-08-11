@@ -396,7 +396,7 @@
   <message msgid="stalist wireless sum total 5" msgstr="5GHz" />
   <message msgid="stalist wireless sum aid" msgstr="Stations" />
   <message msgid="stalist wireless sum txrate" msgstr="Average TX Rate" />
-  <message msgid="stalist wireless sum rxtx" msgstr="Average TX/RX Bandwidth" />
+  <message msgid="stalist wireless sum rxtx" msgstr="TX/RX Bandwidth" />
   <message msgid="stalist wireless sum rssi" msgstr="Average RSSI" />
   <message msgid="stalist wireless sum quality" msgstr="Average Quality" />
   <message msgid="stalist wireless mode" msgstr="Wireless station list mode" />
@@ -407,7 +407,8 @@
   <message msgid="stalist wireless plot type rssi" msgstr="RSSI" />
   <message msgid="stalist wireless plot type quality" msgstr="Quality" />
   <message msgid="stalist wireless plot type rxtx" msgstr="RX/TX Bandwidth" />
-  <message msgid="stalist wireless plot type rxtx sum" msgstr="RX/TX Summary Bandwidth" />
+  <message msgid="stalist wireless plot type rxtx sum" msgstr="RX+TX Bandwidth" />
+  <message msgid="stalist wireless plot type rxtx sum all" msgstr="RX+TX Bandwidth Summary" />
   <message msgid="stalist wireless plot type rx" msgstr="RX Bandwidth" />
   <message msgid="stalist wireless plot type tx" msgstr="TX Bandwidth" />
   <message msgid="stalist wireless plot time" msgstr="Graphic time" />
@@ -425,7 +426,6 @@
   <message msgid="stalist wireless plot time 6h" msgstr="6 Hours" />
   <message msgid="stalist wireless plot time all" msgstr="All time" />
   <message msgid="stalist wireless plot unit" msgstr="Graphic unit " />
-  <message msgid="stalist wireless plot unit bits" msgstr="Bits/sec." />
   <message msgid="stalist wireless plot unit kbits" msgstr="KBits/sec." />
   <message msgid="stalist wireless plot unit mbits" msgstr="MBits/sec." />
 </po>

@@ -399,7 +399,7 @@
   <message msgid="stalist wireless sum total 5" msgstr="5ГГц" />  
   <message msgid="stalist wireless sum aid" msgstr="Количество подключений" />
   <message msgid="stalist wireless sum txrate" msgstr="Средняя скорость подключения" />
-  <message msgid="stalist wireless sum rxtx" msgstr="Средняя скорость передачи данных" />
+  <message msgid="stalist wireless sum rxtx" msgstr="Скорость передачи данных" />
   <message msgid="stalist wireless sum rssi" msgstr="Средний уровень принимаемого сигнала" />
   <message msgid="stalist wireless sum quality" msgstr="Среднее качество сигнала" />
   <message msgid="stalist wireless mode" msgstr="Режим отображения подключенных клиентов" />
@@ -410,7 +410,8 @@
   <message msgid="stalist wireless plot type rssi" msgstr="Уровень сигнала" />
   <message msgid="stalist wireless plot type quality" msgstr="Качество сигнала" />
   <message msgid="stalist wireless plot type rxtx" msgstr="Cкорость приема/передачи" />
-  <message msgid="stalist wireless plot type rxtx sum" msgstr="Суммарная скорость приема/передачи" />
+  <message msgid="stalist wireless plot type rxtx sum" msgstr="Скорость приема+передачи" />
+  <message msgid="stalist wireless plot type rxtx sum all" msgstr="Суммарная скорость приема+передачи" />  
   <message msgid="stalist wireless plot type rx" msgstr="Cкорость приема" />
   <message msgid="stalist wireless plot type tx" msgstr="Cкорость передачи" />
   <message msgid="stalist wireless plot time" msgstr="Время графика " />
@@ -428,7 +429,6 @@
   <message msgid="stalist wireless plot time 6h" msgstr="6 Часов" />
   <message msgid="stalist wireless plot time all" msgstr="Все время" />
   <message msgid="stalist wireless plot unit" msgstr="Единицы измерения " />
-  <message msgid="stalist wireless plot unit bits" msgstr="Бит/сек." />
   <message msgid="stalist wireless plot unit kbits" msgstr="КБит/сек." />
   <message msgid="stalist wireless plot unit mbits" msgstr="МБит/сек." />
 </po>
