@@ -1662,7 +1662,6 @@ static int get802_1XBuilt(int eid, webs_t wp, int argc, char_t **argv)
 static void disconnectSta(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *mac = websGetVar(wp, T("disconnectSta"), "");
-	char_t *submitUrl;
 
 	if ((mac != NULL) && (strlen(mac) > 0))
 	{
