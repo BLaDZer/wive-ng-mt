@@ -88,7 +88,7 @@
 				_TR("typeQuality",					"stalist wireless plot type quality");
 				_TR("typeRxTx",						"stalist wireless plot type rxtx");
 				_TR("typeRxTxSum",					"stalist wireless plot type rxtx sum");
-				_TR("typeRxTxSumAll",					"stalist wireless plot type rxtx sum all");
+				_TR("typeRxTxSumAll",				"stalist wireless plot type rxtx sum all");
 				_TR("typeTx",						"stalist wireless plot type tx");
 				_TR("typeRx",						"stalist wireless plot type rx");
 				_TR("wirelessPlotUnitName",			"stalist wireless plot unit");
@@ -297,6 +297,16 @@
 				showStationList();
 			}
 
+			function removeplotMACs(mac_id)
+			{
+				if (plotMACsAll == 1)
+					plotMACsAll = 0;
+				plotMACs.splice(plotMACs.indexOf(mac_id), 1);
+				setCookie('plotMACs', JSON.stringify(plotMACs));				
+				setCookie('plotMACsAll', plotMACsAll);
+				showStationList();
+			}
+
 			function addremoveplotMACsAll()
 			{
 				if (plotMACsAll == 0)
@@ -353,8 +363,8 @@
 				
 				html += '<table class="form" style="width: ' + wirelessTabeWidth + ';">';
 				html +=	'<tr>';
-				html += '<td class="title" colspan="' + (wirelessTableColumn / 2 | 0) + '" id="stalistWirelessStations">Wireless Station List</td>';
-				html += '<td class="title" colspan="' + (wirelessTableColumn - (wirelessTableColumn /2 | 0)) + '" style="text-align: right;">';
+				html += '<td class="title" colspan="' + (wirelessTableColumn - 1) + '" id="stalistWirelessStations">Wireless Station List</td>';
+				html += '<td class="title" colspan="1" style="width: 90px; text-align: right;">';
 				html += '<select name="stalistWirelessModeSelect" class="half" onChange="wirelessModeChange();">';
 				html += '<option value="Basic" id="stalistWirelessModeBasic" ' + i + '>Basic</option>';
 				html += '<option value="Advanced" id="stalistWirelessModeAdvanced" ' + j + '>Advanced</option>';
@@ -379,8 +389,7 @@
 				html +=	'<th id="stalistRSSI">RSSI</th>';
 				html +=	'<th id="stalistQuality">QUALITY</th>';
 				html +=	'<th id="stalistRxTxCount">RX/TX COUNT</th>';
-				html += '<th><div style="display: flex; height: 1.75em; align-items: center; width: 5em; margin: 0 auto;"><div style="margin: 0 auto;" id="stalistPlot">PLOT</div>';
-				html += '<div><input type="checkbox" id="checkbox_all" ' + plotAll + ' onClick="addremoveplotMACsAll();"></div></div></th>';
+				html += '<th title="' + _("stalist plot") + '"><input type="checkbox" id="checkbox_all" ' + plotAll + ' onClick="addremoveplotMACsAll();"></div></div></th>';
 				html +=	'<th id="stalistAction">ACTIONS</th>';
 				html +=	'</tr>';
 
@@ -415,7 +424,7 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';							//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';							//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist24[i].txrate +  'Mbit/s' + '</td>';					//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist24[i].txrate + _("stalist mbits") + '</td>';					//TX RATE
 						html += '<td style="text-align: center">' + data.stationlist24[i].rssi0;										//RSSI
 						if (data.stationlist24[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist24[i].rssi1;
@@ -451,19 +460,19 @@
 						
 						rx = +data.stationlist24[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1000 * 1000 * 1000))
-							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + _("stalist gibits");
 						else if (rx >= (1000 * 1000))
-							rx = (rx / 1000 / 1000).toFixed(2) + " MiB";
+							rx = (rx / 1000 / 1000).toFixed(2) + _("stalist mibits");
 						else if (rx >= (1000))
-							rx = (rx / 1000).toFixed(0) + " KiB";
+							rx = (rx / 1000).toFixed(0) + _("stalist kibits");
 
 						tx = +data.stationlist24[i].txbytes.replace(/ /g, '');
 						if (tx >= (1000 * 1000 * 1000))
-							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + _("stalist gibits");
 						else if (tx >= (1000 * 1000))
-							tx = (tx / 1000 / 1000).toFixed(2) + " MiB";
+							tx = (tx / 1000 / 1000).toFixed(2) + _("stalist mibits");
 						else if (tx >= (1000))
-							tx = (tx / 1000).toFixed(0) + " KiB";
+							tx = (tx / 1000).toFixed(0) + _("stalist kibits");
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';						//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -516,7 +525,7 @@
 							html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';							//LDPC
 							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';							//MODE
 						}
-						html += '<td style="text-align: center">' + data.stationlist5[i].txrate +  'MBit/s' + '</td>';					//TX RATE
+						html += '<td style="text-align: center">' + data.stationlist5[i].txrate + _("stalist mbits") + '</td>';					//TX RATE
 						html += '<td style="text-align: center">' + data.stationlist5[i].rssi0;											//RSSI
 						if (data.stationlist5[i].rssi1 !== undefined)
 							html += ', ' + data.stationlist5[i].rssi1;
@@ -552,19 +561,19 @@
 						
 						rx = +data.stationlist5[i].rxbytes.replace(/ /g, '');
 						if (rx >= (1000 * 1000 * 1000))
-							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+							rx = (rx / 1000 / 1000 / 1000).toFixed(2) + _("stalist gibits");
 						else if (rx >= (1000 * 1000))
-							rx = (rx / 1000 / 1000).toFixed(2) + " MiB";
+							rx = (rx / 1000 / 1000).toFixed(2) + _("stalist mibits");
 						else if (rx >= (1000))
-							rx = (rx / 1000).toFixed(0) + " KiB";
+							rx = (rx / 1000).toFixed(0) + _("stalist kibits");
 
 						tx = +data.stationlist5[i].txbytes.replace(/ /g, '');
 						if (tx >= (1000 * 1000 * 1000))
-							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + " GiB";
+							tx = (tx / 1000 / 1000 / 1000).toFixed(2) + _("stalist gibits");
 						else if (tx >= (1000 * 1000))
-							tx = (tx / 1000 / 1000).toFixed(2) + "MiB";
+							tx = (tx / 1000 / 1000).toFixed(2) + _("stalist mibits");
 						else if (tx >= (1000))
-							tx = (tx / 1000).toFixed(0) + " KiB";
+							tx = (tx / 1000).toFixed(0) + _("stalist kibits");
 
 						html += '<td style="text-align: center">' + rx +  ' / ' +  tx + '</td>';	//RX/TX BYTES
 						html += '<td style="text-align: center"><input type="checkbox" id="checkbox_' + mac_id + '" ' + checked + ' onClick="addremoveplotMACs(' + "'" + mac_id + "'" + ')"></td>';
@@ -606,11 +615,11 @@
 					wirelessAvgRxLast24 = wirelessAvgRx24;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgRx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgRx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgRx24 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgRx24 = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgRx24 = bytes  * 8 + " Bit/s";
+						wirelessAvgRx24 = bytes  * 8 + _("stalist bits");
 					else
 						wirelessAvgRx24 = "-";
 
@@ -621,11 +630,11 @@
 					wirelessAvgTxLast24 = wirelessAvgTx24;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgTx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgTx24 = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgTx24 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgTx24 = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgTx24 = bytes * 8 + " Bit/s";
+						wirelessAvgTx24 = bytes * 8 + _("stalist bits");
 					else
 						wirelessAvgTx24 = "-";
 				}
@@ -651,11 +660,11 @@
 					wirelessAvgRxLast5 = wirelessAvgRx5;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgRx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgRx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgRx5 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgRx5 = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgRx5 = bytes * 8 + " Bit/s";
+						wirelessAvgRx5 = bytes * 8 + _("stalist bits");
 					else
 						wirelessAvgRx5 = "-";
 
@@ -666,11 +675,11 @@
 					wirelessAvgTxLast5 = wirelessAvgTx5;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgTx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgTx5 = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgTx5 = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgTx5 = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgTx5 = bytes * 8 + " Bit/s";
+						wirelessAvgTx5 = bytes * 8 + _("stalist bits");
 					else
 						wirelessAvgTx5 = "-";
 				}
@@ -690,11 +699,11 @@
 					wirelessAvgRxLast = wirelessAvgRx;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgRx = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgRx = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgRx = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgRx = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgRx = bytes * 8 + " Bit/s";
+						wirelessAvgRx = bytes * 8 + _("stalist bits");
 					else
 						wirelessAvgRx = "-";
 
@@ -705,11 +714,11 @@
 					wirelessAvgTxLast = wirelessAvgTx;
 
 					if (bytes >= (1000 * 1000))
-						wirelessAvgTx = (bytes * 8 / 1000 / 1000).toFixed(2) + " Mbit/s";
+						wirelessAvgTx = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
 					else if (bytes >= 1000)
-						wirelessAvgTx = (bytes * 8 / 1000).toFixed(0) + " Kbit/s";
+						wirelessAvgTx = (bytes * 8 / 1000).toFixed(0) + _("stalist kbits");
 					else if (bytes > 0)
-						wirelessAvgTx = bytes * 8 + " Bit/s";
+						wirelessAvgTx = bytes * 8 + _("stalist bits");
 					else
 						wirelessAvgTx = "-";
 				}
@@ -843,7 +852,7 @@
 				}
 			}
 			
-			
+
 			function showPlot()
 			{
 				var time			= new Date().getTime();
@@ -899,11 +908,11 @@
 				switch(plotType) {
 					case 0:		// TX RATE
 								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: 0 } };
-								legendUnit = "Mbit/s";
+								legendUnit = _("stalist mbits");
 								break;
 					case 1:		// RSSI
 								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: -100, max: 0 } };
-								legendUnit = "dBm";
+								legendUnit = _("stalist dbm");
 								break;
 					case 2:		// QUALITY
 								plotOptions = { grid: {	hoverable: true, autoHighlight: false }, crosshair: { mode: "x" }, legend: { position: "nw", container:$("#plotLegendTemp"), noColumns: 0 }, xaxis: startTime, yaxis: { min: 0, max: 100 } };
@@ -919,8 +928,8 @@
 												},
 												min: 0 } };
 								switch (plotUnit) {
-									case 0:		legendUnit = "Mbit/s";		break;
-									case 1:		legendUnit = "Kbit/s";		break;
+									case 0:		legendUnit = _("stalist mbits");		break;
+									case 1:		legendUnit = _("stalist kbits");		break;
 								}
 								break;
 				}
@@ -1171,13 +1180,18 @@
 								}
 							}
 						}
-					
+
+						legendDataMin = ((legendDataMin === undefined) || (legendDataMin == "NaN")) ? 0 : legendDataMin;
+						legendDataMax = ((legendDataMax === undefined) || (legendDataMax == "NaN")) ? 0 : legendDataMax;
+						legendDataAvg = ((legendDataAvg === undefined) || (legendDataAvg == "NaN")) ? 0 : legendDataAvg;
+						legendDataLast = ((legendDataLast === undefined) || (legendDataLast == "NaN")) ? 0 : legendDataLast;
+						
 						if ((plotType >= 3) && (plotType != 5)) 
 							switch(plotUnit) {
-								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
-											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
-											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
-											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
+											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
+											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
+											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
 											break;
 								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
 											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1192,9 +1206,14 @@
 						}
 	
 						if (plotType == 3) {
-							data = "";
-							labelRxTx = ' (TX)';
-							data += '{ "data": [ ';
+							legendDataMin	= undefined;
+							legendDataMax	= undefined;
+							legendDataAvg	= undefined;
+							legendDataLast	= undefined;
+							legendDataCount = 0;
+							legendDataSum	= 0;
+							labelRxTx 		= ' (TX)';
+							data 			= '{ "data": [ ';
 							for (j = 0; j < plotData.length; j++) {
 								if (plotData[j][0] == plotMACs[i]) {
 									if (data[data.length - 1] == "]")
@@ -1232,11 +1251,16 @@
 									}
 								}
 							}
+
+							legendDataMin = ((legendDataMin === undefined) || (legendDataMin == "NaN"))  ? 0 : legendDataMin;
+							legendDataMax = ((legendDataMax === undefined) || (legendDataMax == "NaN")) ? 0 : legendDataMax;
+							legendDataAvg = ((legendDataAvg === undefined) || (legendDataAvg == "NaN")) ? 0 : legendDataAvg;
+							legendDataLast = ((legendDataLast === undefined) || (legendDataLast == "NaN")) ? 0 : legendDataLast;
 							switch(plotUnit) {
-								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
-											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
-											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
-											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
+											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
+											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
+											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
 											break;
 								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0)
 											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1250,6 +1274,12 @@
 					}
 				
 					if (plotType == 5) {
+						legendDataMin	= undefined;
+						legendDataMax	= undefined;
+						legendDataAvg	= undefined;
+						legendDataLast	= undefined;
+						legendDataCount = 0;
+						legendDataSum	= 0;
 						var allTime;
 						var allRxTx		= 0;
 						var lastRxTx	= 0;
@@ -1300,11 +1330,15 @@
 								}
 							}
 						}
+						legendDataMin = ((legendDataMin === undefined) || (legendDataMin == "NaN"))  ? 0 : legendDataMin;
+						legendDataMax = ((legendDataMax === undefined) || (legendDataMax == "NaN")) ? 0 : legendDataMax;
+						legendDataAvg = ((legendDataAvg === undefined) || (legendDataAvg == "NaN")) ? 0 : legendDataAvg;
+						legendDataLast = ((legendDataLast === undefined) || (legendDataLast == "NaN")) ? 0 : legendDataLast;
 						switch(plotUnit) {
-							case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);
-										legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2);
-										legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2);
-										legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2);
+							case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
+										legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
+										legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
+										legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
 										break;
 							case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
 										legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1335,17 +1369,19 @@
 						legendHtml += '</div>';
 						legendHtml += '</td>';
 						legendHtml += '<td class="legendLabel" style="width: 25%";">' + tmp[0] + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Min = ' + tmp[1] + legendUnit + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Max = ' + tmp[2] + legendUnit + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Avg = ' + tmp[3] + legendUnit + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Last = ' + tmp[4] + legendUnit + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 15%";">' + 'Pos = ' + 0 + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist min")  + tmp[1] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist max")  + tmp[2] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist avg")  + tmp[3] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist last") + tmp[4] + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist pos")  + "0.00" + legendUnit + '</td>';
+						legendHtml += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="removeplotMACs(' + "'" + tmp[0].replace(/:/g, '') + "'" + ');"></td>';
 						legendHtml += '<tr>';
 					} 
 					legendHtml += '</tbody>';
 					legendHtml += '</table>';
 					
 					document.getElementById('plotLegend').innerHTML = legendHtml;
+					initTranslation();
 				}
 			}
 
@@ -1367,13 +1403,13 @@
 				}
 				
 				switch (plotType) {
-					case 0:		unit = "MBit/s";		break;
-					case 1:		unit = "dBm";			break;
-					case 2:		unit = "%";				break;
+					case 0:		unit = _("stalist mbits");		break;
+					case 1:		unit = _("stalist dbm");		break;
+					case 2:		unit = "%";						break;
 					default:
 								switch (plotUnit) {
-									case 0:		unit = "Mbit/s";		break;
-									case 1:		unit = "Kbit/s";		break;
+									case 0:		unit = _("stalist mbits");		break;
+									case 1:		unit = _("stalist kbits");		break;
 								}
 								break;
 				}
@@ -1408,16 +1444,18 @@
 						y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
 					}
 					
-					if (plotType >= 3) 
-						switch (plotUnit) {
-							case 0:	y = (y / 1000 / 1000).toFixed(1);	break;
-							case 1:	y = (y / 1000).toFixed(0);			break;
-						}
+					if (y == null) 
+						y = 0;
 					else 
-						y = y.toFixed(0);
+						if (plotType >= 3) 
+							switch (plotUnit) {
+								case 0:	y = (y / 1000 / 1000).toFixed(2); y = (y >= 10) ? y.toFixed(0) : y;		break;
+								case 1:	y = (y / 1000).toFixed(0);												break;
+							}
+						else 
+							y = y.toFixed(0);
 
 					tmp = series.label.split("|");
-					
 					html += '<tr>';					
 					html += '<td class="legendColorBox">';
 					html += '<div style="border:1px solid #ccc;padding:1px">';
@@ -1426,17 +1464,19 @@
 					html += '</div>';
 					html += '</td>';
 					html += '<td class="legendLabel" style="width: 25%";">' + tmp[0] + '</td>';
-					html += '<td class="legendLabel" style="width: 15%";">' + 'Min = ' + tmp[1] + unit + '</td>';
-					html += '<td class="legendLabel" style="width: 15%";">' + 'Max = ' + tmp[2] + unit + '</td>';
-					html += '<td class="legendLabel" style="width: 15%";">' + 'Avg = ' + tmp[3] + unit + '</td>';
-					html += '<td class="legendLabel" style="width: 15%";">' + 'Last = ' + tmp[4] + unit + '</td>';
-					html += '<td class="legendLabel" style="width: 15%";">' + 'Pos = ' + y + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist min")  + tmp[1] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist max")  + tmp[2] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist avg")  + tmp[3] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist last") + tmp[4] + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist pos")  + y + unit + '</td>';
+					html += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="removeplotMACs(' + "'" + tmp[0].replace(/:/g, '') + "'" + ');"></td>';
 					html += '<tr>';
 				} 
 				html += '</tbody>';
 				html += '</table>';
 				
 				document.getElementById('plotLegend').innerHTML = html;
+				initTranslation();
 			}			
 		</script>
 	</head>
@@ -1506,7 +1546,7 @@
 								<td class="title" colspan="3" id="stalistWirelessPlot">Wireless Network Plot</td>
 							</tr>
 							<tr>
-								<td class="head"><label for="wirelessPlotType" id="wirelessPlotTypeName">Graphic Type: </label>
+								<td class="head" style="width: 33%"><label for="wirelessPlotType" id="wirelessPlotTypeName">Graphic Type: </label>
 									<select id="wirelessPlotType" name="wirelessPlotType" class="normal" onChange="showPlot();">
 										<option value="0" id="typeTxRate" selected>TX Rate</option>
 										<option value="1" id="typeRSSI">RSSI</option>
@@ -1518,7 +1558,7 @@
 										<option value="7" id="typeTx">Tx Bandwidth</option>
 									</select>
 								</td>
-								<td class="head"><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
+								<td class="head" style="width: 33%"><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
 									<select id="wirelessPlotTime" name="wirelessPlotTime" class="normal" onChange="showPlot();">
 										<option value="0" id="time1M" selected>1 Minute</option>
 										<option value="1" id="time2M">2 Minutes</option>
@@ -1535,7 +1575,7 @@
 										<option value="12" id="timeAll">All time</option>
 									</select>
 								</td>
-								<td class="head"><label for="wirelessPlotUnit" id="wirelessPlotUnitName">Graphic Unit: </label>
+								<td class="head" style="width: 34%"><label for="wirelessPlotUnit" id="wirelessPlotUnitName">Graphic Unit: </label>
 									<select id="wirelessPlotUnit" name="wirelessPlotUnit" class="normal" onChange="showPlot();">
 										<option value="0" id="unitMB" selected>Mbit/s</option>
 										<option value="1" id="unitKB">Kbit/s</option>

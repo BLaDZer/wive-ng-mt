@@ -386,12 +386,13 @@
   <message msgid="stalist wireless network" msgstr="Список активных подключений" />
   <message msgid="stalist wireless plot" msgstr="График подключений беспроводных клиентов" />  
   <message msgid="stalist mac address" msgstr="MAC Адрес" />
+  <message msgid="stalist mac address" msgstr="MAC Адрес" />
   <message msgid="stalist conn time" msgstr="Время подкл." />
   <message msgid="stalist mode" msgstr="Режим" />
-  <message msgid="stalist txrate" msgstr="Скорость передачи" />
+  <message msgid="stalist txrate" msgstr="Скор. передачи" />
   <message msgid="stalist rssi" msgstr="RSSI" />
   <message msgid="stalist quality" msgstr="Качество" />
-  <message msgid="stalist rxtx" msgstr="Получено/Отправлено" />
+  <message msgid="stalist rxtx" msgstr="Получ./Отпр." />
   <message msgid="stalist plot" msgstr="График" />
   <message msgid="stalist action" msgstr="Действие" />
   <message msgid="stalist wireless sum total" msgstr="Всего" />
@@ -431,4 +432,16 @@
   <message msgid="stalist wireless plot unit" msgstr="Единицы измерения " />
   <message msgid="stalist wireless plot unit kbits" msgstr="КБит/сек." />
   <message msgid="stalist wireless plot unit mbits" msgstr="МБит/сек." />
+  <message msgid="stalist mbits" msgstr="Мбит/с" />
+  <message msgid="stalist kbits" msgstr="Кбит/с" />
+  <message msgid="stalist bits" msgstr="Бит/с" />
+  <message msgid="stalist gibits" msgstr=" ГиБ" />
+  <message msgid="stalist mibits" msgstr=" МиБ" />
+  <message msgid="stalist kibits" msgstr=" КиБ" />
+  <message msgid="stalist dbm" msgstr="дБм" />
+  <message msgid="stalist min"  msgstr="Мин: " />
+  <message msgid="stalist max"  msgstr="Макс: " />
+  <message msgid="stalist avg"  msgstr="Сред: " />
+  <message msgid="stalist last" msgstr="Посл: " />
+  <message msgid="stalist pos"  msgstr="Поз: " />
 </po>

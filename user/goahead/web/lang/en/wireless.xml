@@ -426,6 +426,18 @@
   <message msgid="stalist wireless plot time 6h" msgstr="6 Hours" />
   <message msgid="stalist wireless plot time all" msgstr="All time" />
   <message msgid="stalist wireless plot unit" msgstr="Graphic unit " />
-  <message msgid="stalist wireless plot unit kbits" msgstr="KBits/sec." />
-  <message msgid="stalist wireless plot unit mbits" msgstr="MBits/sec." />
+  <message msgid="stalist wireless plot unit kbits" msgstr="Kbit/s" />
+  <message msgid="stalist wireless plot unit mbits" msgstr="Mbit/s" />
+  <message msgid="stalist mbits" msgstr="Mbit/s" />
+  <message msgid="stalist kbits" msgstr="Kbit/s" />
+  <message msgid="stalist bits" msgstr="Bit/s" />
+  <message msgid="stalist gibits" msgstr=" GiB" />
+  <message msgid="stalist mibits" msgstr=" MiB" />
+  <message msgid="stalist kibits" msgstr=" KiB" />  
+  <message msgid="stalist dbm" msgstr="dBm" />
+  <message msgid="stalist min"  msgstr="Min: " />
+  <message msgid="stalist max"  msgstr="Max: " />
+  <message msgid="stalist avg"  msgstr="Avg: " />
+  <message msgid="stalist last" msgstr="Last: " />
+  <message msgid="stalist pos"  msgstr="Pos: " />
 </po>
