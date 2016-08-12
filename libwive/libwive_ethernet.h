@@ -70,6 +70,6 @@ struct port_status {
 int linkspeed(const char *ifname, int sd);
 int linkduplex(const char *ifname, int sd);
 int linkstatus(const char *ifname, int sd);
-void portstatus(struct port_status *st, int portnm);
+int portstatus(struct port_status *st, int portnm);
 #endif
 #endif

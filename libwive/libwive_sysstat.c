@@ -61,6 +61,11 @@ void getMemData(struct mem_stats *st)
 	fclose(fp);
 }
 
+/* getSyslogTail -  Write the tail of syslog into variable
+ *
+ * arg: (out) log - initialized char array to store
+ * arg: maxlen - output variable byte size. Effective log character count would be maxlen-1.
+ */
 void getSyslogTail(char* log, int maxlen)
 {
 

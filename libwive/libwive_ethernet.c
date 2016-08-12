@@ -11,11 +11,16 @@
 
 #include "libwive.h"
 
-struct nic_counts* nicscounts() {
+/* nicscounts - Get software network interface statistics list
+ *
+ * arg: (out) elem_count - number of list elements
+ * return: nic_counts struct array
+ */
+struct nic_counts* nicscounts(int *elem_count) {
 	char buf[512];
 	FILE *fp = fopen(_PATH_PROCNET_DEV, "r");
 	int inum = 0;
-
+	(*elem_count) = 0;
 
 	if (fp == NULL)
 	{
@@ -94,11 +99,18 @@ struct nic_counts* nicscounts() {
 	}
 
 	fclose(fp);
+
+	(*elem_count) = inum;
 	return pst;
 
 }
 
 
+/* portscounts - Get hardware network port statistics
+ *
+ * arg: (out) st - output port_counts structure pointer
+ * return: 0 = OK, -1 = SNMPD unavailable, > 0 = error
+ */
 int portscounts(struct port_counts *st)
 {
 #ifdef CONFIG_RAETH_SNMPD
@@ -142,8 +154,13 @@ int portscounts(struct port_counts *st)
 }
 
 #if defined(CONFIG_ETHTOOL)
-/*
- * description: get link info from ethtool (return defaults values in error path for compat with webswrite)
+
+
+/* linkspeed - get link speed info from ethtool
+ *
+ * arg: ifname - interface to examine
+ * arg: sd - ioctl socket descriptor
+ * return: actual link speed or SPEED_10 in case of error for compat with webswrite
  */
 int linkspeed(const char *ifname, int sd) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
@@ -173,6 +190,12 @@ int linkspeed(const char *ifname, int sd) {
 	return SPEED_10;
 }
 
+/* linkduplex - get link duplex state from ethtool
+ *
+ * arg: ifname - interface to examine
+ * arg: sd - ioctl socket descriptor
+ * return: actual duplex state or DUPLEX_HALF in case of error for compat with webswrite
+ */
 int linkduplex(const char *ifname, int sd) {
 	struct ethtool_cmd ecmd = { .cmd = ETHTOOL_GSET, };
 	int iocret, duplex = DUPLEX_HALF;
@@ -198,6 +221,12 @@ int linkduplex(const char *ifname, int sd) {
 	return DUPLEX_HALF;
 }
 
+/* linkstatus - get link status from ethtool
+ *
+ * arg: ifname - interface to examine
+ * arg: sd - ioctl socket descriptor
+ * return: 1 = available, 0 = inavailable
+ */
 int linkstatus(const char *ifname, int sd) {
 	struct ethtool_value ethval = { .cmd = ETHTOOL_GLINK, };
 	int iocret, ret = 0;
@@ -220,7 +249,13 @@ int linkstatus(const char *ifname, int sd) {
 	    return 0;
 }
 
-void portstatus(struct port_status *st, int portnm)
+/* portstatus - get port status from ethtool
+ *
+ * arg: (out) st - port_status structure
+ * arg: portnm - port number
+ * return: 0 = OK
+ */
+int portstatus(struct port_status *st, int portnm)
 {
 	int sd = -1;
 	FILE *proc_file;
@@ -230,14 +265,14 @@ void portstatus(struct port_status *st, int portnm)
 
 	if (getIfIsReady(IOCTL_IF) != 1) {
 	    syslog(LOG_ERR, "ioctl iface down, %s", __FUNCTION__);
-	    return;
+	    return 1;
 	}
 
 	/* switch phy to needed port */
 	proc_file = fopen(PROCREG_GMAC, "w");
 	if (!proc_file) {
 	    syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
-	    return;
+	    return 2;
 	}
 	fprintf(proc_file, "%d\n", st->portnum);
 	fclose(proc_file);
@@ -245,7 +280,7 @@ void portstatus(struct port_status *st, int portnm)
 	sd = socket(AF_INET, SOCK_DGRAM, 0);
 	if(sd < 0) {
 	    syslog(LOG_ERR, "error ethtool socket open, %s", __FUNCTION__);
-	    return;
+	    return 3;
 	}
 
 	st->link = linkstatus(IOCTL_IF, sd);
@@ -253,5 +288,7 @@ void portstatus(struct port_status *st, int portnm)
 	st->duplex = linkduplex(IOCTL_IF, sd);
 
 	close(sd);
+
+	return 0;
 }
 #endif

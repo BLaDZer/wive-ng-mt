@@ -405,7 +405,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			// HT/VHT Modes
 			websWrite(wp, T("\"mode\":\"%s\", "), getPhyMode(pe->TxRate.field.MODE));
 			// Tx Rate
-			websWrite(wp, T("\"txrate\":\"%d\", "), getRate(pe->TxRate));
+			websWrite(wp, T("\"txrate\":\"%d\", "), getWlanRate(pe->TxRate));
 			// RSSI
 #if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
 			websWrite(wp, T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
@@ -451,7 +451,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 			// HT/VHT Modes
 			websWrite(wp, T("\"mode\":\"%s\", "), getPhyMode(pe->TxRate.field.MODE));
 			// Tx Rate
-			websWrite(wp, T("\"txrate\":\"%d\", "), getRate(pe->TxRate));
+			websWrite(wp, T("\"txrate\":\"%d\", "), getWlanRate(pe->TxRate));
 			// RSSI
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 			websWrite(wp, T("\"rssi0\":\"%d\", "), (int)(pe->AvgRssi0));

@@ -234,9 +234,10 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
     int i;
-    struct nic_counts* ncs = nicscounts();
+    int elem_count = 0;
+    struct nic_counts* ncs = nicscounts(&elem_count);
 
-    for (i=0;i<1024;i++)
+    for (i=0;i<elem_count;i++)
     {
 	struct nic_counts nc = ncs[i];
 	if (nc.ifname[0] == '\0')

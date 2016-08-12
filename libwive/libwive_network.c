@@ -223,8 +223,11 @@ void arplookup(char *ip, char *arp)
 }
 
 #ifdef CONFIG_USER_KABINET
-/* returns actual lanauth state+1 or 0 if lanauth process not found
-*/
+
+/* getLANAUTHState - Get lanauth state
+ *
+ * return: actual lanauth state+1 or 0 if lanauth process not found
+ */
 static int getLANAUTHState()
 {
 	FILE *fp;
@@ -344,6 +347,16 @@ int getVPNStatusCode()
 	return status;
 }
 
+/* (static) findRoutingRule - Find routing rule index inside rule list string and populate the fields
+ *
+ * arg: rrs           - semicolon-separated rule list string
+ * arg: (out) buf     - the whole rule from rrs
+ * arg: (out) dest    - destination address
+ * arg: (out) netmask - 
+ * arg: (out) gw      - gateway
+ * arg: (out) iface   - interface name
+ * return: rule index (0..N) or -1 if error
+ */
 static int findRoutingRule(char *rrs, char *buf, const char *dest, const char *netmask, const char* gw, const char *iface)
 {
 	char c_dest[32], c_netmask[32], c_iface[32], c_gw[32];
@@ -368,7 +381,12 @@ static int findRoutingRule(char *rrs, char *buf, const char *dest, const char *n
 	return -1;
 }
 
-
+/* parseRoutingTable - Generate routing rule table
+ *
+ * arg: rules_str          - semicolon-separated rule list string from NVRAM
+ * arg: (out) res_rule_num - output array length
+ * return: RoutingRule struct array (don't forget to free it afterwards) or NULL
+ */
 struct RoutingRule* parseRoutingTable(char* rules_str, int *res_rule_num)
 {
 	char   buff[512];
@@ -592,7 +610,14 @@ struct RoutingRule* parseRoutingTable(char* rules_str, int *res_rule_num)
 	return table;
 }
 
-
+/* removeRoutingRuleNvram - Remove routing rule from NVRAM
+ *
+ * arg: iftype  - interface type: 'LAN','WAN','VPN' or 'Custom'
+ * arg: dest    - destination ip address
+ * arg: netmask -
+ * arg: gw      - gateway
+ * return: 0 = OK
+ */
 int removeRoutingRuleNvram(const char *iftype, const char *dest, const char *netmask, const char *gw)
 {
 	char rule[256];
@@ -666,6 +691,16 @@ int removeRoutingRuleNvram(const char *iftype, const char *dest, const char *net
 	return 0;
 }
 
+/* addRoutingRuleNvram - Add routing rule to NVRAM
+ *
+ * arg: iftype    - interface type: 'LAN','WAN','VPN' or 'Custom'
+ * arg: dest      - destination ip address
+ * arg: netmask   -
+ * arg: gw        - gateway
+ * arg: ifname    - interface name
+ * arg: custom_if - interface name (when iftype == 'Custom')
+ * arg: comment   - text comment describing the rule
+ */
 void addRoutingRuleNvram(const char *iftype, const char *dest, const char *netmask, const char *gw, const char *ifname, const char *custom_if, const char *comment)
 {
 	char cmd[256];
@@ -700,9 +735,11 @@ void addRoutingRuleNvram(const char *iftype, const char *dest, const char *netma
 	free(tmp);
 }
 
-
-/*
- * description: write DHCP client list
+/* getDhcpClientList - Get DHCP client list
+ *
+ * arg: (out) rownum_out - number of output array entries
+ * arg: (out) written_at - leases file timestamp
+ * return: dyn_lease struct array (don't forget to free it afterwards) or NULL if error
  */
 struct dyn_lease* getDhcpClientList(int *rownum_out, uint64_t *written_at)
 {

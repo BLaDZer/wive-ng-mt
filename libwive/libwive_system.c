@@ -11,6 +11,9 @@
 
 #include "libwive.h"
 
+/* reboot_now -  Reboot the system
+ *
+ */
 void reboot_now(void)
 {
 	system("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");

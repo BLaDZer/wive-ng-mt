@@ -184,7 +184,12 @@ const int MCSMappingRateTable[] =
 	65, 130, 195, 260, 390, 520, 585, 650, 780, 867					// 11ac: 80Mhz, 400ns GI, MCS: 0~9
 };
 
-int getRate(MACHTTRANSMIT_SETTING HTSetting)
+/* getWlanRate - Get client rate in MBit/s
+ *
+ * args: HTSetting - input struct from getWlanStationTable(...)
+ * return: rate value in MBit/s
+ */
+int getWlanRate(MACHTTRANSMIT_SETTING HTSetting)
 {
 	int rate_count = sizeof(MCSMappingRateTable)/sizeof(int);
 	int rate_index = 0;
@@ -220,6 +225,11 @@ int getRate(MACHTTRANSMIT_SETTING HTSetting)
 	return (MCSMappingRateTable[rate_index] * num_ss_vht * 5)/10;
 }
 
+/* getWlanRadioModuleName - Get radio module interface name by its number
+ *
+ * args: radio_module_ind - radio module index (1..N)
+ * return: interface name or NULL
+ */
 char* getWlanRadioModuleName(int radio_module_ind)
 {
 	switch (radio_module_ind)
@@ -252,6 +262,12 @@ int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
 
 }
 
+/* getWlanChannelNum - Get the channel number for selected radio module
+ *
+ * arg: (out) table      - station table
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: channel number or 0.
+ */
 int getWlanChannelNum(int radio_module_ind)
 {
 	switch (radio_module_ind)
@@ -276,6 +292,12 @@ int getWlanChannelNum(int radio_module_ind)
 
 }
 
+/* getWlanCurrentMacAddr - Get radio module interface BSSID mac address by its number
+ *
+ * arg: (out) buf        - char[18] array to store the results
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: 0 = OK
+ */
 int getWlanCurrentMacAddr(char *buf, int radio_module_ind)
 {
 	strcpy(buf, "00:00:00:00:00:00");
@@ -290,8 +312,11 @@ int getWlanCurrentMacAddr(char *buf, int radio_module_ind)
 	return 0;
 }
 
-/*
- * description: get station link quality
+
+/* getWlanStationLinkQuality - Get percentage of station link quality
+ *
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: link quality (0..100) or zero in case of errors
  */
 int getWlanStationLinkQuality(int radio_module_ind)
 {
@@ -312,8 +337,10 @@ int getWlanStationLinkQuality(int radio_module_ind)
 	return (int)LinkStatus.ChannelQuality;
 }
 
-/*
- * get station current frequency in KHz
+/* getWlanStationLinkQuality - Get station current frequency
+ *
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: station frequency in KHz, < 0 in case of errors
  */
 int getWlanStationFrequencyKHz(int radio_module_ind)
 {
@@ -330,6 +357,11 @@ int getWlanStationFrequencyKHz(int radio_module_ind)
 
 }
 
+/* getWlanStationNoiseDbm - Get station current noise level
+ *
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: station noise level in Dbm, < 0 in case of errors
+ */
 int getWlanStationNoiseDbm(int radio_module_ind)
 {
 	unsigned char lNoise; // this value is (ULONG) in Ndis driver (NOTICE!!!)
@@ -382,7 +414,13 @@ static char bGetHTTxRateByBW_GI_MCS(int nBW, int nGI, int nMCS, double* dRate)
 	return 1; //true
 }
 
-int getLastTxRxRateFor11n(int nID, double* fLastTxRxRate)
+/* (static) getLastTxRxRateFor11n - Get station 11n RX/TX rate
+ *
+ * arg: nID                 - OID identifier: RT_OID_802_11_QUERY_LAST_TX_RATE or RT_OID_802_11_QUERY_LAST_RX_RATE
+ * arg: (out) fLastTxRxRate - output rate
+ * return: 0 = OK
+ */
+static int getLastTxRxRateFor11n(int nID, double* fLastTxRxRate)
 {
 	unsigned long lHTSetting;
 	MACHTTRANSMIT_SETTING HTSetting;
@@ -431,16 +469,31 @@ int getLastTxRxRateFor11n(int nID, double* fLastTxRxRate)
 	return 0;
 }
 
+/* getLastTxRxRateFor11n - Get station 11n TX rate
+ *
+ * arg: (out) fLastTxRxRate - output rate
+ * return: 0 = OK
+ */
 int getLastTxRateFor11n(double* fLastTxRate)
 {
     return getLastTxRxRateFor11n(RT_OID_802_11_QUERY_LAST_TX_RATE, fLastTxRate);
 }
 
+/* getLastTxRxRateFor11n - Get station 11n RX rate
+ *
+ * arg: (out) fLastTxRxRate - output rate
+ * return: 0 = OK
+ */
 int getLastRxRateFor11n(double* fLastRxRate)
 {
     return getLastTxRxRateFor11n(RT_OID_802_11_QUERY_LAST_RX_RATE, fLastRxRate);
 }
 
+/* getWlanHWRadioStatus - Get station hardware radio module status
+ *
+ * arg: radio_module_ind - radio module index (1..N)
+ * return: > 0 = On, 0 = Off, < 0 = Error
+ */
 int getWlanHWRadioStatus(int radio_module_ind)
 {
 	unsigned long RadioStatus=0;
@@ -450,7 +503,7 @@ int getWlanHWRadioStatus(int radio_module_ind)
     	    return -1;
 
 	if (OidQueryInformation(RT_OID_802_11_RADIO, "ra0", &RadioStatus, sizeof(RadioStatus)) < 0)
-	    return -1;
+	    return -2;
 
 	return RadioStatus==1;
 }

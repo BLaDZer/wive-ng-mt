@@ -11,6 +11,13 @@
 
 #include "libwive.h"
 
+/* parse_portforward_rule - Parse portforward rule into struct by its number
+ *
+ * arg: rulestr    - rules string to parse
+ * arg: (out) rule - output rule structure
+ * arg: rule_num   - index of rule to parse
+ * return: 0 = OK
+ */
 int parse_portforward_rule(char* rulestr, struct PortForwardRule* rule, int rule_num)
 {
 	int prf_int, prt_int, rprf_int, rprt_int;
@@ -112,6 +119,13 @@ int parse_portforward_rule(char* rulestr, struct PortForwardRule* rule, int rule
 	return 0;
 }
 
+/* parse_portfiltering_rule - Parse portfiltering rule into struct by its number
+ *
+ * arg: rulestr    - rules string to parse
+ * arg: (out) rule - output rule structure
+ * arg: rule_num   - index of rule to parse
+ * return: 0 = OK
+ */
 int parse_portfiltering_rule(char* rulestr, struct PortFilteringRule* rule, int rule_num)
 {
 	int sprf_int, sprt_int, dprf_int, dprt_int;

@@ -12,7 +12,7 @@ unsigned int ConvertRssiToSignalQuality(long RSSI);
 char* getBW(int BW);
 char* getPhyMode(int Mode);
 int getMCS(MACHTTRANSMIT_SETTING HTSetting);
-int getRate(MACHTTRANSMIT_SETTING HTSetting);
+int getWlanRate(MACHTTRANSMIT_SETTING HTSetting);
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind);
 int getWlanChannelNum(int radio_module_ind);
 
