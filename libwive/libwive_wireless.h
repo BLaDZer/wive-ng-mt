@@ -14,17 +14,17 @@ char* getPhyMode(int Mode);
 int getMCS(MACHTTRANSMIT_SETTING HTSetting);
 int getWlanRate(MACHTTRANSMIT_SETTING HTSetting);
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind);
+int getWlanCurrentMacAddr(char *buf, int radio_module_ind);
 int getWlanChannelNum(int radio_module_ind);
 
+#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 int getWlanStationLinkQuality(int radio_module_ind);
 int getWlanStationFrequencyKHz(int radio_module_ind);
 int getWlanStationNoiseDbm(int radio_module_ind);
-
-int getWlanCurrentMacAddr(char *buf, int radio_module_ind);
 
 int getLastTxRateFor11n(double* fLastTxRate);
 int getLastRxRateFor11n(double* fLastRxRate);
 
 int getWlanHWRadioStatus(int radio_module_ind);
-
+#endif
 #endif
