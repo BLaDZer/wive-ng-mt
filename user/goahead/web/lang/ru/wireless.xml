@@ -432,6 +432,7 @@
   <message msgid="stalist wireless plot unit" msgstr="Единицы измерения " />
   <message msgid="stalist wireless plot unit kbits" msgstr="КБит/сек." />
   <message msgid="stalist wireless plot unit mbits" msgstr="МБит/сек." />
+  <message msgid="stalist wireless plot clear button" msgstr="Очистить данные" />
   <message msgid="stalist mbits" msgstr="Мбит/с" />
   <message msgid="stalist kbits" msgstr="Кбит/с" />
   <message msgid="stalist bits" msgstr="Бит/с" />

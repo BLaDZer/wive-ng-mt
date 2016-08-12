@@ -428,6 +428,7 @@
   <message msgid="stalist wireless plot unit" msgstr="Graphic unit " />
   <message msgid="stalist wireless plot unit kbits" msgstr="Kbit/s" />
   <message msgid="stalist wireless plot unit mbits" msgstr="Mbit/s" />
+  <message msgid="stalist wireless plot clear button" msgstr="Clear Plot Data" />
   <message msgid="stalist mbits" msgstr="Mbit/s" />
   <message msgid="stalist kbits" msgstr="Kbit/s" />
   <message msgid="stalist bits" msgstr="Bit/s" />
