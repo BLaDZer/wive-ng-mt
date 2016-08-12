@@ -221,7 +221,6 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	if ( fd < 0 )
 	{
 		perror(NV_DEV);
-		NVFREE(nvr.value);
 		return "";
 	}
 
