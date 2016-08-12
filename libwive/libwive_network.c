@@ -399,11 +399,13 @@ struct RoutingRule* parseRoutingTable(char* rules_str, int *res_rule_num)
 	int rule_num;
 
 	int res_arr_capacity = 32;
-	struct RoutingRule* table = calloc(res_arr_capacity,sizeof(struct RoutingRule));
+	struct RoutingRule *table;
 
 	FILE *fp = fopen("/proc/net/route", "r");
 	if (!fp)
 		return NULL;
+
+	table = calloc(res_arr_capacity,sizeof(struct RoutingRule));
 
 	// Get routing table
 	if (rules_str == NULL)
@@ -415,6 +417,7 @@ struct RoutingRule* parseRoutingTable(char* rules_str, int *res_rule_num)
 		running_rules = calloc(1, sizeof(int) * rule_count);
 		if (!running_rules)
 		{
+			free(table);
 			fclose(fp);
 			return NULL;
 		}
@@ -746,7 +749,7 @@ struct dyn_lease* getDhcpClientList(int *rownum_out, uint64_t *written_at)
 	struct dyn_lease lease;
 	FILE *fp;
 	int leases_arr_capacity = 32;
-	struct dyn_lease *arr = calloc(leases_arr_capacity, sizeof(struct dyn_lease));
+	struct dyn_lease *arr;
 	int64_t curr;
 	int rownum;
 
@@ -773,6 +776,8 @@ struct dyn_lease* getDhcpClientList(int *rownum_out, uint64_t *written_at)
 	curr = time(NULL);
 	if (curr < (*written_at))
 		(*written_at) = curr; /* lease file from future! :) */
+
+	arr = calloc(leases_arr_capacity, sizeof(struct dyn_lease));
 
 	/* Output leases file */
 	while (fread(&lease, 1, sizeof(struct dyn_lease), fp) == sizeof(struct dyn_lease))
