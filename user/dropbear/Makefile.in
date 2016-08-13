@@ -215,7 +215,7 @@ sizes: dropbear
 	objdump -t dropbear|grep ".text"|cut -d "." -f 2|sort -rn
 
 clean: ltc-clean ltm-clean thisclean
-	rm -rf ./filesystem/*
+	rm -rf ./filesystem
 
 thisclean:
 	-rm -f dropbear dbclient dropbearkey dropbearconvert scp scp-progress \
