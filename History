@@ -2240,7 +2240,7 @@
 50) kernel: ralink_wifi: mt7620/mt7610/mt76x2: clear TXWI ack flags in Tx Ring before send disconnect to clients.<br>
 51) kernel: ralink_wifi: mt7603: fix broken AP -> AP-Client forwards on NoForwardingBTNBSSID=1.<br>
 52) kernel: ralink_wifi: mt7620/mt7610: fix IoT issue with Macbook. (AP Don't send BAOriSessionTearDown).<br>
-53) kernel: ralink_wifi: mt7620/mt7610: check our BSSID on receive DEAUTH frame..<br>
+53) kernel: ralink_wifi: mt7620/mt7610: check our BSSID on receive DEAUTH frame.<br>
 54) kernel: mips: fix possible corruption of cache mode by mprotect.<br>
 55) kernel: mips: fix siginfo.h to use strict posix types.<br>
 56) kernel: mips: remove cpu_has_safe_index_cacheops.<br>
@@ -2294,8 +2294,9 @@
 5) dropbear: up to 2016.74 version.<br>
 6) coovachilli: include address when complaining about static out of range.<br>
 7) goahead: more usable station list extended info.<br>
-8) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-9) kernel: net: netfilter: avoid race with exp->master ct.<br>
+8) kernel: ralink_wifi: fix set mcast rate from profile.<br>
+9) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+10) kernel: net: netfilter: avoid race with exp->master ct.<br>
 <br>
 <br>
 <br>
