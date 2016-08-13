@@ -19,7 +19,7 @@
 #define _BSD_SOURCE
 #define _GNU_SOURCE
 #define _XOPEN_SOURCE
-#define _XOPEN_SOURCE_EXTENDED
+#define _XOPEN_SOURCE_EXTENDED 1
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -31,17 +31,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <time.h>
-#if defined (__GLIBC__) && (__GLIBC__ < 2)
-# if defined(FREEBSD) || defined(OPENBSD)
-#  include <sys/signal.h>
-# elif defined(LINUX)
-#  include <bsd/signal.h>
-# elif defined(SOLARIS) || defined(NETBSD)
-#  include <signal.h>
-# endif
-#else
 # include <signal.h>
-#endif
 #ifndef LINUX
 # include <sys/socket.h>
 #endif
@@ -1617,6 +1607,7 @@ void do_control ()
             }
         }else{
             resf = NULL;
+            res_filename = NULL; /* to avoid 'may be used unitialized' warning */
         }
 
         /* Search for a handler based on request type */

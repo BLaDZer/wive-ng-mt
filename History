@@ -2290,10 +2290,11 @@
 1) libwive: add more functions and document it (~50% work end).<br>
 2) libnvram: move nvram_load_default and gen_wifi_config from nvram tool (for code reuse).<br>
 3) nodogsplash: up to version 2.0.0 (commit: b79e1163).<br>
-4) coovachilli: include address when complaining about static out of range.<br>
-5) goahead: more usable station list extended info.<br>
-6) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-7) kernel: net: netfilter: avoid race with exp->master ct.<br>
+4) xl2tpd: update to 1.3.8 version (commit: cec1ebe).<br>
+5) coovachilli: include address when complaining about static out of range.<br>
+6) goahead: more usable station list extended info.<br>
+7) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+8) kernel: net: netfilter: avoid race with exp->master ct.<br>
 <br>
 <br>
 <br>

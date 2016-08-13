@@ -1,0 +1,192 @@
+diff -uNrwB old/CHANGES new/CHANGES
+--- old/CHANGES	2016-03-31 21:43:51.000000000 +0500
++++ new/CHANGES	2016-08-12 05:56:53.000000000 +0500
+@@ -1,3 +1,18 @@
++v1.3.8 (August 11, 2016)
++* Another one fix for control buf handling in udp_xmit (Sergey Ryazanov)
++* Fixing minor bug in Linux that was introduced by 90368 (Samir Hussain)
++* Fix control buffer handling in udp_xmit (rsa9000)
++* Avoid using IP_PKTINFO with non-Linux systems (Sergey Ryazanov)
++* Remove duplicated UDP checksum disabling (Sergey Ryazanov)
++* Handle LDLIBS carefully (Sergey Ryazanov)
++* Avoid false-positive warning message from not smart compilers (Sergey Ryazanov)
++* Correctly activate XPG4v2 support (Sergey Ryazanov)
++* Simplify signal header inclusion (Sergey Ryazanov)
++* Adding info on the mailing lists (Samir Hussain)
++* Fixing minor spelling typo in code. (Samir Hussain)
++* Fixing minor spelling mistakes in xl2tpd.conf.5 and l2tpd.conf.sample (Samir Hussain)
++* Removing -fno-builtin from CFLAGS (Samir Hussain)
++
+ v1.3.7 (March 29, 2016)
+ * Adding defensive code to deal with error when pppd exits (Samir Hussain)
+ * Minor compilation fixes (Yousong Zhou)
+diff -uNrwB old/l2tp.h new/l2tp.h
+--- old/l2tp.h	2016-03-31 21:43:51.000000000 +0500
++++ new/l2tp.h	2016-08-12 05:56:53.000000000 +0500
+@@ -58,7 +58,7 @@
+ #define CONTROL_PIPE_REQ_LNS_REMOVE 'w'     /* Get status of LNS */
+ 
+ #define BINARY "xl2tpd"
+-#define SERVER_VERSION "xl2tpd-1.3.7"
++#define SERVER_VERSION "xl2tpd-1.3.8"
+ #define VENDOR_NAME "xelerance.com"
+ #ifndef PPPD
+ #define PPPD		"/usr/sbin/pppd"
+diff -uNrwB old/Makefile new/Makefile
+--- old/Makefile	2016-03-31 21:43:51.000000000 +0500
++++ new/Makefile	2016-08-12 05:56:53.000000000 +0500
+@@ -103,7 +103,7 @@
+ SRCS=${OBJS:.o=.c} ${HDRS}
+ CONTROL_SRCS=xl2tpd-control.c
+ #LIBS= $(OSLIBS) # -lefence # efence for malloc checking
+-LDLIBS= -lm
++LDLIBS+= -lm
+ EXEC=xl2tpd
+ CONTROL_EXEC=xl2tpd-control
+ 
+diff -uNrwB old/network.c new/network.c
+--- old/network.c	2016-03-31 21:43:51.000000000 +0500
++++ new/network.c	2016-08-12 05:56:53.000000000 +0500
+@@ -99,15 +99,6 @@
+ 
+ #endif
+ 
+-#ifdef SO_NO_CHECK
+-    /* turn off UDP checksums */
+-    arg=1;
+-    if (setsockopt(server_socket, SOL_SOCKET, SO_NO_CHECK , (void*)&arg,
+-                   sizeof(arg)) ==-1) {
+-      l2tp_log(LOG_INFO, "unable to turn off UDP checksums");
+-    }
+-#endif
+-
+ #ifdef USE_KERNEL
+     if (gconfig.forceuserspace)
+     {
+@@ -283,24 +274,20 @@
+ 
+ void udp_xmit (struct buffer *buf, struct tunnel *t)
+ {
+-    struct cmsghdr *cmsg;
++    struct cmsghdr *cmsg = NULL;
+     char cbuf[CMSG_SPACE(sizeof (unsigned int) + sizeof (struct in_pktinfo))];
+     unsigned int *refp;
+     struct msghdr msgh;
+     int err;
+     struct iovec iov;
+-    struct in_pktinfo *pktinfo;
+-    int finallen;
++    int finallen = 0;
+ 
+     /*
+      * OKAY, now send a packet with the right SAref values.
+      */
+     memset(&msgh, 0, sizeof(struct msghdr));
+-
+-    cmsg = NULL;
+     msgh.msg_control = cbuf;
+     msgh.msg_controllen = sizeof(cbuf);
+-    finallen = 0;
+ 
+     if (gconfig.ipsecsaref && t->refhim != IPSEC_SAREF_NULL) {
+ 	cmsg = CMSG_FIRSTHDR(&msgh);
+@@ -317,7 +304,9 @@
+ 	finallen = cmsg->cmsg_len;
+     }
+ 
++#ifdef LINUX
+     if (t->my_addr.ipi_addr.s_addr){
++	struct in_pktinfo *pktinfo;
+ 
+ 	if ( ! cmsg) {
+ 		cmsg = CMSG_FIRSTHDR(&msgh);
+@@ -335,8 +324,17 @@
+ 
+ 	finallen += cmsg->cmsg_len;
+     }
++#endif
+ 
++    /*
++     * Some OS don't like assigned buffer with zero length (e.g. OpenBSD),
++     * some OS don't like empty buffer with non-zero length (e.g. Linux).
++     * So make them all happy by assigning control buffer only if we really
++     * have something there and zero both fields otherwise.
++     */
+     msgh.msg_controllen = finallen;
++    if (!finallen)
++        msgh.msg_control = NULL;
+ 
+     iov.iov_base = buf->start;
+     iov.iov_len  = buf->len;
+@@ -563,13 +561,15 @@
+ 		for (cmsg = CMSG_FIRSTHDR(&msgh);
+ 			cmsg != NULL;
+ 			cmsg = CMSG_NXTHDR(&msgh,cmsg)) {
++#ifdef LINUX
+ 			/* extract destination(our) addr */
+ 			if (cmsg->cmsg_level == IPPROTO_IP && cmsg->cmsg_type == IP_PKTINFO) {
+ 				struct in_pktinfo* pktInfo = ((struct in_pktinfo*)CMSG_DATA(cmsg));
+ 				to = *pktInfo;
+-			}
++			} else
++#endif
+ 			/* extract IPsec info out */
+-			else if (gconfig.ipsecsaref && cmsg->cmsg_level == IPPROTO_IP
++			if (gconfig.ipsecsaref && cmsg->cmsg_level == IPPROTO_IP
+ 			&& cmsg->cmsg_type == gconfig.sarefnum) {
+ 				unsigned int *refp;
+ 
+diff -uNrwB old/osport.h new/osport.h
+--- old/osport.h	2016-03-31 21:43:51.000000000 +0500
++++ new/osport.h	2016-08-12 05:56:53.000000000 +0500
+@@ -35,4 +35,12 @@
+ 
+ #endif /* defined(SOLARIS) */
+ 
++#if !defined(LINUX)
++
++/* Declare empty structure to make code portable and keep simple */
++struct in_pktinfo {
++};
++
++#endif
++
+ #endif /* _OSPORT_H_ */
+diff -uNrwB old/xl2tpd.c new/xl2tpd.c
+--- old/xl2tpd.c	2016-03-31 21:43:51.000000000 +0500
++++ new/xl2tpd.c	2016-08-12 05:56:53.000000000 +0500
+@@ -17,7 +17,7 @@
+ #define _ISOC99_SOURCE
+ #define _XOPEN_SOURCE
+ #define _BSD_SOURCE
+-#define _XOPEN_SOURCE_EXTENDED
++#define _XOPEN_SOURCE_EXTENDED	1
+ #define _GNU_SOURCE
+ 
+ #include <stdlib.h>
+@@ -30,17 +30,7 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include <time.h>
+-#if (__GLIBC__ < 2)
+-# if defined(FREEBSD) || defined(OPENBSD)
+-#  include <sys/signal.h>
+-# elif defined(LINUX)
+-#  include <bsd/signal.h>
+-# elif defined(SOLARIS) || defined(NETBSD)
+ #  include <signal.h>
+-# endif
+-#else
+-# include <signal.h>
+-#endif
+ #ifndef LINUX
+ # include <sys/socket.h>
+ #endif
+@@ -1605,6 +1595,7 @@
+             }
+         }else{
+             resf = NULL;
++            res_filename = NULL; /* to avoid 'may be used unitialized' warning */
+         }
+ 
+         /* Search for a handler based on request type */

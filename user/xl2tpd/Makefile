@@ -110,7 +110,7 @@ OBJS=xl2tpd.o pty.o misc.o control.o avp.o call.o network.o avpsend.o scheduler.
 SRCS=${OBJS:.o=.c} ${HDRS}
 CONTROL_SRCS=xl2tpd-control.c
 EXEC=xl2tpd
-LDLIBS= -lm
+LDLIBS+= -lm
 CONTROL_EXEC=xl2tpd-control
 
 PREFIX?=./filesystem
