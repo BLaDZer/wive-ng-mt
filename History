@@ -2305,6 +2305,7 @@
 16) kernel: net: core: inline dev_alloc_skb() call.<br>
 17) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
 18) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+19) kernel: net: packet: race condition in packet_bind.<br>
 <br>
 <br>
 <br>
