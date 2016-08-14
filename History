@@ -2304,6 +2304,7 @@
 15) kernel: net: netfilter: avoid race with exp->master ct.<br>
 16) kernel: net: core: inline dev_alloc_skb() call.<br>
 17) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+18) kernel: net: packet: improve socket create/bind latency in some cases.<br>
 <br>
 <br>
 <br>
