@@ -13,6 +13,9 @@ while [ -e /tmp/vlanconfig_runing ]; do
 done
 touch /tmp/vlanconfig_runing
 
+# include kernel config
+. /etc/scripts/config.sh
+
 LOG="logger -t ESW"
 
 usage() {
@@ -30,13 +33,13 @@ usage() {
 }
 
 disable_all_ports() {
-        for port in `seq 0 4`; do
+        for port in `seq 0 $portnum`; do
 	    mii_mgr -s -p $port -r 0 -v 0x0800 > /dev/null 2>&1
 	done
 }
 
 enable_all_ports() {
-	for port in `seq 0 4`; do
+	for port in `seq 0 $portnum`; do
 	    mii_mgr -s -p $port -r 0 -v 0x9000 > /dev/null 2>&1
 	done
 }
@@ -101,7 +104,7 @@ reset_all_phys() {
 	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 	    # All ports down
 	    start=0
-	    end=4
+	    end="$portnum"
 	else
 	    # Ports down skip WAN port
 	    if [ "$wan_portN" = "0" ]; then
@@ -134,6 +137,10 @@ reset_wan_phys() {
 	    else
 		link_down 0
 		link_up 0
+	    fi
+	    if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
+		link_down 5
+		link_up 5
 	    fi
 	fi
 }
@@ -226,7 +233,10 @@ restore_onergmii()
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
 	done
 
-	switch reg w 3500 00008000		#port 5 link down
+	if [ "$CONFIG_RAETH_HAS_PORT5" != "y" ]; then
+	    switch reg w 3500 00008000		#port 5 link down
+	fi
+
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 
 	# do not restore cpuport mode if trgmii enabled
@@ -252,7 +262,7 @@ config_onergmii()
 	# cleanup switch
 	restore_onergmii
 
-	# prepare switch (skip port 5 - not used and link down)
+	# prepare switch
 	for port in `seq 6 7`; do
 	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
 	    switch reg w 2${port}10 81000000	#ports 6-7 special tag disable, is user port, admit all frames
@@ -263,18 +273,34 @@ config_onergmii()
 	    switch reg w 2${port}10 810000c0	#ports 0-4 as transparent port
 	done
 
-	if [ "$1" != "VLANS" ]; then
-	    $LOG "Config internal vlan parts switch mode $1"
-	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
-	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
-	    # replace W/L to 2/1 and add space after symbols for set pvids mask
-	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+	# skip port 5 if not enabled in config - not used and link down early
+	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
+	    switch reg w 2504 ff0003		#port 5 as security mode
+	    switch reg w 2510 810000c0		#port 5 as transparent port
+	fi
 
-	    # VLAN member ports index 0 vlan 1 mask1
-	    switch vlan set 0 1 $mask1
-	    # VLAN member ports index 1 vlan 2 $mask2
-	    switch vlan set 1 2 $mask2
+
+	if [ "$1" != "VLANS" ]; then
+	    PMODEMASK="$1"
+	    # replace W/L to 0/1 for create masks and add static mask suffix
+	    masklan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
+	    if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
+		# port 5 link with wan ports group
+		maskwan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "111" '}`
+		# add port 5 to WAN group
+		PMODEMASK="${PMODEMASK}W"
+	    else
+		maskwan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
+	    fi
+	    # replace W/L to 2/1 and add space after symbols for set pvids mask
+	    pvids=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
+
+	    $LOG "Config internal vlan parts switch mode $PMODEMASK, masklan:$masklan,maskwan:$maskwan,pvids:$pvids"
+
+	    # VLAN member ports index 0 vlan 1 masklan
+	    switch vlan set 0 1 $masklan
+	    # VLAN member ports index 1 vlan 2 maskwan
+	    switch vlan set 1 2 $maskwan
 
 	    index=0
 	    # set user ports pvid
@@ -282,10 +308,9 @@ config_onergmii()
 		switch pvid $index $pvid
 		let index=index+1
 	    done
-	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
 
 	    # config hawdware snooping
-	    config_igmpsnoop "$1"
+	    config_igmpsnoop "$PMODEMASK"
 
 	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
@@ -407,15 +432,17 @@ config_dualrgmii()
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7621 switch mode $1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
-	    mask1=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
-	    mask2=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
+	    masklan=`echo "$1" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "010" '}`
+	    maskwan=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "100" '}`
 	    # replace W/L to 2/1 and add space after symbols for set pvids mask
 	    pvids=`echo "$1" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
 
-	    # VLAN member ports index 0 vlan 1 mask1
-	    switch vlan set 0 1 $mask1
-	    # VLAN member ports index 1 vlan 2 $mask2
-	    switch vlan set 1 2 $mask2
+	    $LOG "Config internal vlan parts switch mode $1, masklan:$masklan,maskwan:$maskwan,pvids:$pvids"
+
+	    # VLAN member ports index 0 vlan 1 masklan
+	    switch vlan set 0 1 $masklan
+	    # VLAN member ports index 1 vlan 2 maskwan
+	    switch vlan set 1 2 $maskwan
 
 	    index=0
 	    # set user ports pvid
@@ -423,7 +450,6 @@ config_dualrgmii()
 		switch pvid $index $pvid
 		let index=index+1
 	    done
-	    $LOG "mask1:$mask1,mask2:$mask2,pvids:$pvids"
 
 	    # config hawdware snooping
 	    config_igmpsnoop "$1"
@@ -456,6 +482,12 @@ config_dualrgmii()
 }
 
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port`
+
+if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
+    portnum="5"
+else
+    portnum="4"
+fi
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
