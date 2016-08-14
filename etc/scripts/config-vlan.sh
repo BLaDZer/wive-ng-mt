@@ -33,13 +33,13 @@ usage() {
 }
 
 disable_all_ports() {
-        for port in `seq 0 $portnum`; do
+        for port in `seq 0 4`; do
 	    mii_mgr -s -p $port -r 0 -v 0x0800 > /dev/null 2>&1
 	done
 }
 
 enable_all_ports() {
-	for port in `seq 0 $portnum`; do
+	for port in `seq 0 4`; do
 	    mii_mgr -s -p $port -r 0 -v 0x9000 > /dev/null 2>&1
 	done
 }
@@ -104,7 +104,7 @@ reset_all_phys() {
 	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
 	    # All ports down
 	    start=0
-	    end="$portnum"
+	    end=4
 	else
 	    # Ports down skip WAN port
 	    if [ "$wan_portN" = "0" ]; then
@@ -137,10 +137,6 @@ reset_wan_phys() {
 	    else
 		link_down 0
 		link_up 0
-	    fi
-	    if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
-		link_down 5
-		link_up 5
 	    fi
 	fi
 }
@@ -246,7 +242,7 @@ restore_onergmii()
 
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 
-	# do not restore cpuport mode if trgmii enabled
+	# do not restore cpu port mode if trgmii enabled
 	if [ "$CONFIG_GE1_TRGMII_FORCE_1200" != "y" ]; then
 	    switch reg w 3600 0005e33b		#port 6 force up, 1000FD
 	fi
@@ -489,12 +485,6 @@ config_dualrgmii()
 }
 
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port`
-
-if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
-    portnum="5"
-else
-    portnum="4"
-fi
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
