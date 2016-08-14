@@ -293,7 +293,7 @@
 #define RTMP_SET_PACKET_NOBULKOUT(_p, _morebit)			(PACKET_CB(_p, 24) = _morebit)
 #define RTMP_GET_PACKET_NOBULKOUT(_p)					(PACKET_CB(_p, 24))
 #else
-#ifdef RTMP_RXPACKET_CLASSIFY
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 #define RTMP_SET_PACKET_ETHTYPE(_p, _morebit)			(PACKET_CB(_p, 24) = _morebit)
 #define RTMP_GET_PACKET_ETHTYPE(_p)						(PACKET_CB(_p, 24))
 #endif

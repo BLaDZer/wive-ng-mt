@@ -4721,10 +4721,10 @@ VOID APRxDataFrameAnnounce(
 					return;
 				}
 #endif /* CONFIG_HOTSPOT */
-#ifdef RTMP_RXPACKET_CLASSIFY
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 		if (pEntry && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
 			RTMP_RxPacketClassify(pAd, pRxBlk, pEntry);
-#endif
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 #ifdef STATS_COUNT_SUPPORT
 		if (pEntry
 			&& (IS_ENTRY_CLIENT(pEntry))
