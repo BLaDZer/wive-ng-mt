@@ -233,13 +233,15 @@ restore_onergmii()
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
 	done
 
-	if [ "$CONFIG_RAETH_HAS_PORT5" != "y" ]; then
+	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
+	    switch reg w 3500 0005e337		#port 5 force up, 100FD
+	else
 	    switch reg w 3500 00008000		#port 5 link down
 	fi
 
 	if [ "$CONFIG_RAETH_HAS_PORT4" = "y" ]; then
 	    switch reg w 7014 10e0000c		#disable internal EPHY 4
-	    switch reg w 3400 5e337		#port 4 force up, 100FD
+	    switch reg w 3400 0005e337		#port 4 force up, 100FD
 	fi
 
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
