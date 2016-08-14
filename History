@@ -2300,7 +2300,7 @@
 11) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 12) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
 13) kernel: net: netfilter: avoid race with exp->master ct.<br>
-14) kernel: ralink_wifi: mt76x2: fix force announse critical ampdu.<br>
+14) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
 <br>
 <br>
 <br>

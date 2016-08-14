@@ -5043,9 +5043,7 @@ typedef struct _RX_BLK
 #endif
 
 #ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
-	UCHAR Ping;
-	UCHAR Arp;
-	UCHAR Dhcp;
+	UCHAR CriticalPkt;
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 
 } RX_BLK;
@@ -6115,7 +6113,7 @@ VOID RTMP_RxPacketClassify(
 	IN RTMP_ADAPTER *pAd,
 	IN RX_BLK *pRxBlk,
 	IN MAC_TABLE_ENTRY *pEntry);
-#endif
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 
 #ifdef DBG
 BOOLEAN CheckICMPPacket(RTMP_ADAPTER *pAd, UCHAR *pSrcBuf, UINT8 Direction);
