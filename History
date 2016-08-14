@@ -2303,6 +2303,7 @@
 14) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
 15) kernel: net: netfilter: avoid race with exp->master ct.<br>
 16) kernel: net: core: inline dev_alloc_skb() call.<br>
+17) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
 <br>
 <br>
 <br>
