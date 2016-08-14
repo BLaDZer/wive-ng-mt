@@ -2298,10 +2298,11 @@
 9) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
 10) goahead: more usable station list extended info.<br>
 11) kernel: ralink_wifi: fix set mcast rate from profile.<br>
-12) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-13) kernel: net: netfilter: avoid race with exp->master ct.<br>
-14) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
-15) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
+12) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
+13) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
+14) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+15) kernel: net: netfilter: avoid race with exp->master ct.<br>
+16) kernel: net: core: inline dev_alloc_skb() call.<br>
 <br>
 <br>
 <br>
