@@ -133,7 +133,7 @@
 //usage:	IF_FEATURE_KMSG_SYSLOG(
 //usage:     "\n	-K		Log to kernel printk buffer (use dmesg to read it)"
 //usage:	)
-//usage:     "\n	-O FILE		Log to FILE (default:/var/log/messages, stdout if -)"
+//usage:     "\n	-O FILE		Log to FILE (default: /var/log/messages, stdout if -)"
 //usage:	IF_FEATURE_ROTATE_LOGFILE(
 //usage:     "\n	-s SIZE		Max size (KB) before rotation (default:200KB, 0=off)"
 //usage:     "\n	-b N		N rotated logs to keep (default:1, max=99, 0=purge)"

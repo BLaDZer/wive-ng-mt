@@ -234,7 +234,7 @@ static int FAST_FUNC config_file_action(const char *filename,
 	if (depth != 0) {
 		ext = strrchr(base, '.');
 		if (ext == NULL || strcmp(ext + 1, "conf"))
-		goto error;
+			goto error;
 	}
 
 	p = config_open2(filename, fopen_for_read);

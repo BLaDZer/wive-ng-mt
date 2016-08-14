@@ -45,5 +45,5 @@ int tcdrain(int fd)
 {
 	return ioctl(fd, TCSBRK, 1);
 }
-#endif
+# endif
 #endif

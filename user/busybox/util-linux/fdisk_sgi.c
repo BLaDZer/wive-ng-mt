@@ -671,19 +671,19 @@ sgi_set_volhdr(void)
 	int n;
 
 	for (n = 8; n < g_partitions; n++) {
-	if (!sgi_get_num_sectors(n)) {
-		/*
-		 * 5 cylinders is an arbitrary value I like
-		 * IRIX 5.3 stored files in the volume header
-		 * (like sash, symmon, fx, ide) with ca. 3200
-		 * sectors.
-		 */
+		if (!sgi_get_num_sectors(n)) {
+			/*
+			 * 5 cylinders is an arbitrary value I like
+			 * IRIX 5.3 stored files in the volume header
+			 * (like sash, symmon, fx, ide) with ca. 3200
+			 * sectors.
+			 */
 			if (g_heads * g_sectors * 5 < sgi_get_lastblock()) {
-			sgi_set_partition(n, 0, g_heads * g_sectors * 5, SGI_VOLHDR);
-			break;
+				sgi_set_partition(n, 0, g_heads * g_sectors * 5, SGI_VOLHDR);
+				break;
+			}
 		}
 	}
-}
 }
 
 static void

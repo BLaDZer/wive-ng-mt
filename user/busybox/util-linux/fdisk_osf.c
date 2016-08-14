@@ -370,8 +370,8 @@ bsd_select(void)
 				if (xbsd_create_disklabel() == 0)
 					return;
 				break;
+			}
 		}
-	}
 	}
 
 	if (t == 4) {

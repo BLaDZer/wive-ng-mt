@@ -265,7 +265,7 @@ int ubi_tools_main(int argc UNUSED_PARAM, char **argv)
 			int32_t t = vol_id;
 			xioctl(fd, UBI_IOCRMVOL, &t);
 		} else {
-		xioctl(fd, UBI_IOCRMVOL, &vol_id);
+			xioctl(fd, UBI_IOCRMVOL, &vol_id);
 		}
 	} else
 

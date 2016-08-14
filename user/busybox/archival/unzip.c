@@ -206,7 +206,7 @@ static uint32_t find_cdf_offset(void)
 	if (end < 0)
 		end = 0;
 	dbg("Looking for cdf_offset starting from 0x%"OFF_FMT"x", end);
-	xlseek(zip_fd, end, SEEK_SET);
+ 	xlseek(zip_fd, end, SEEK_SET);
 	full_read(zip_fd, buf, PEEK_FROM_END);
 
 	found = BAD_CDF_OFFSET;
@@ -241,7 +241,7 @@ static uint32_t find_cdf_offset(void)
 			 * I've seen a .zip archive which contained a .zip file,
 			 * uncompressed, and taking the first CDE was using
 			 * the CDE inside that file!
-		 */
+			 */
 		}
 	}
 	free(buf);
@@ -517,7 +517,7 @@ int unzip_main(int argc, char **argv)
 				" Length   Method    Size  Cmpr    Date    Time   CRC-32   Name\n"
 				"--------  ------  ------- ---- ---------- ----- --------  ----"
 				:
-				"  Length     Date   Time    Name\n"
+				"  Length      Date    Time    Name\n"
 				"---------  ---------- -----   ----"
 				);
 		}
@@ -652,7 +652,7 @@ int unzip_main(int argc, char **argv)
 					// seconds/2 are not shown, encoded in ----------- 0x001f
 				);
 				if (!verbose) {
-					//      "  Length     Date   Time    Name\n"
+					//      "  Length      Date    Time    Name\n"
 					//      "---------  ---------- -----   ----"
 					printf(       "%9u  " "%s   "         "%s\n",
 						(unsigned)zip_header.formatted.ucmpsize,
@@ -793,7 +793,7 @@ int unzip_main(int argc, char **argv)
 
 	if (listing && quiet <= 1) {
 		if (!verbose) {
-			//      "  Length     Date   Time    Name\n"
+			//	"  Length      Date    Time    Name\n"
 			//	"---------  ---------- -----   ----"
 			printf( " --------%21s"               "-------\n"
 				     "%9lu%21s"               "%u files\n",

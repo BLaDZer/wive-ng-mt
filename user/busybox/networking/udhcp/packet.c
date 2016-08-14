@@ -45,7 +45,7 @@ void FAST_FUNC udhcp_dump_packet(struct dhcp_packet *packet)
 		return;
 
 	bb_error_msg(
-		//" op %x"
+		//"op %x"
 		//" htype %x"
 		" hlen %x"
 		//" hops %x"

@@ -28,8 +28,8 @@
 //usage:#define chpasswd_full_usage "\n\n"
 //usage:       "Read user:password from stdin and update /etc/passwd\n"
 //usage:	IF_LONG_OPTS(
-//usage:     "\n	-e,--encrypted	Supplied passwords are in encrypted form"
-//usage:     "\n	-m,--md5	Use MD5 encryption instead of DES"
+//usage:     "\n	-e,--encrypted		Supplied passwords are in encrypted form"
+//usage:     "\n	-m,--md5		Use MD5 encryption instead of DES"
 //usage:     "\n	-c,--crypt-method	Use the specified method to encrypt the passwords"
 //usage:	)
 //usage:	IF_NOT_LONG_OPTS(
@@ -42,8 +42,8 @@
 
 #if ENABLE_LONG_OPTS
 static const char chpasswd_longopts[] ALIGN1 =
-	"encrypted\0" No_argument "e"
-	"md5\0"       No_argument "m"
+	"encrypted\0"    No_argument       "e"
+	"md5\0"          No_argument       "m"
 	"crypt-method\0" Required_argument "c"
 	;
 #endif

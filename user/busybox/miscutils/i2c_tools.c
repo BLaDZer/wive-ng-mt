@@ -980,7 +980,7 @@ int i2cdump_main(int argc UNUSED_PARAM, char **argv)
 		int blen = 0;
 
 		if (mode == I2C_SMBUS_BLOCK_DATA || mode == I2C_SMBUS_I2C_BLOCK_DATA)
-		blen = read_block_data(fd, mode, block);
+			blen = read_block_data(fd, mode, block);
 
 		if (mode == I2C_SMBUS_BYTE) {
 			res = i2c_smbus_write_byte(fd, first);
@@ -1279,7 +1279,7 @@ int i2cdetect_main(int argc UNUSED_PARAM, char **argv)
 	puts("     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
 	for (i = 0; i < 128; i += 16) {
 		printf("%02x: ", i);
-		for(j = 0; j < 16; j++) {
+		for (j = 0; j < 16; j++) {
 			fflush_all();
 
 			cmd = mode;

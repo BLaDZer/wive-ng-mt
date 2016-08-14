@@ -242,7 +242,7 @@ static unsigned parse_escapes(char *dest, const char *string, int len, char from
 		if ((*d = string[i++]) == '\0')
 			return d - dest;
 		d++;
-		}
+	}
 	*d = '\0';
 	return d - dest;
 }

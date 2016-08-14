@@ -698,7 +698,7 @@ static void display_files(struct dnode **dn, unsigned nfiles)
 			if (i < nfiles) {
 				if (column > 0) {
 					nexttab -= column;
-					printf("%*s ", nexttab, "");
+					printf("%*s", nexttab, "");
 					column += nexttab;
 				}
 				nexttab = column + column_width;

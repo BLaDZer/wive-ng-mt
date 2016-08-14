@@ -221,13 +221,13 @@ static int FAST_FUNC print_route(const struct sockaddr_nl *who UNUSED_PARAM,
 		if (r->rtm_dst_len != host_len) {
 			printf("%s/%u ",
 				rt_addr_n2a(r->rtm_family, RTA_DATA(tb[RTA_DST])),
-					r->rtm_dst_len
-					);
+				r->rtm_dst_len
+			);
 		} else {
 			printf("%s ", format_host(r->rtm_family,
 						RTA_PAYLOAD(tb[RTA_DST]),
 						RTA_DATA(tb[RTA_DST]))
-					);
+			);
 		}
 	} else if (r->rtm_dst_len) {
 		printf("0/%d ", r->rtm_dst_len);
@@ -238,13 +238,13 @@ static int FAST_FUNC print_route(const struct sockaddr_nl *who UNUSED_PARAM,
 		if (r->rtm_src_len != host_len) {
 			printf("from %s/%u ",
 				rt_addr_n2a(r->rtm_family, RTA_DATA(tb[RTA_SRC])),
-					r->rtm_src_len
-					);
+				r->rtm_src_len
+			);
 		} else {
 			printf("from %s ", format_host(r->rtm_family,
 						RTA_PAYLOAD(tb[RTA_SRC]),
 						RTA_DATA(tb[RTA_SRC]))
-					);
+			);
 		}
 	} else if (r->rtm_src_len) {
 		printf("from 0/%u ", r->rtm_src_len);
@@ -362,12 +362,11 @@ IF_FEATURE_IP_RULE(ARG_table,)
 		req.r.rtm_scope = RT_SCOPE_NOWHERE;
 
 	if (cmd != RTM_DELROUTE) {
-		if (RTPROT_BOOT != 0)
-		req.r.rtm_protocol = RTPROT_BOOT;
-		if (RT_SCOPE_UNIVERSE != 0)
 		req.r.rtm_scope = RT_SCOPE_UNIVERSE;
+		if (RTPROT_BOOT != 0)
+			req.r.rtm_protocol = RTPROT_BOOT;
 		if (RTN_UNICAST != 0)
-		req.r.rtm_type = RTN_UNICAST;
+			req.r.rtm_type = RTN_UNICAST;
 	}
 
 	mxrta->rta_type = RTA_METRICS;
@@ -484,21 +483,21 @@ IF_FEATURE_IP_RULE(ARG_table,)
 	}
 
 	if (!scope_ok) {
-	if (req.r.rtm_type == RTN_LOCAL || req.r.rtm_type == RTN_NAT)
-		req.r.rtm_scope = RT_SCOPE_HOST;
-	else
-	if (req.r.rtm_type == RTN_BROADCAST
-	 || req.r.rtm_type == RTN_MULTICAST
-	 || req.r.rtm_type == RTN_ANYCAST
-	) {
-		req.r.rtm_scope = RT_SCOPE_LINK;
-	}
-	else if (req.r.rtm_type == RTN_UNICAST || req.r.rtm_type == RTN_UNSPEC) {
-		if (cmd == RTM_DELROUTE)
-			req.r.rtm_scope = RT_SCOPE_NOWHERE;
-		else if (!(ok & gw_ok))
+		if (req.r.rtm_type == RTN_LOCAL || req.r.rtm_type == RTN_NAT)
+			req.r.rtm_scope = RT_SCOPE_HOST;
+		else
+		if (req.r.rtm_type == RTN_BROADCAST
+		 || req.r.rtm_type == RTN_MULTICAST
+		 || req.r.rtm_type == RTN_ANYCAST
+		) {
 			req.r.rtm_scope = RT_SCOPE_LINK;
-	}
+		}
+		else if (req.r.rtm_type == RTN_UNICAST || req.r.rtm_type == RTN_UNSPEC) {
+			if (cmd == RTM_DELROUTE)
+				req.r.rtm_scope = RT_SCOPE_NOWHERE;
+			else if (!(ok & gw_ok))
+				req.r.rtm_scope = RT_SCOPE_LINK;
+		}
 	}
 
 	if (req.r.rtm_family == AF_UNSPEC) {

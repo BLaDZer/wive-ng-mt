@@ -180,33 +180,33 @@ struct globals {
 
 	unsigned string_min;
 
-/* An array of specs describing how to format each input block.  */
+	/* An array of specs describing how to format each input block.  */
 	unsigned n_specs;
 	struct tspec *spec;
 
-/* Function that accepts an address and an optional following char,
-   and prints the address and char to stdout.  */
+	/* Function that accepts an address and an optional following char,
+	   and prints the address and char to stdout.  */
 	void (*format_address)(off_t, char);
 
-/* The difference between the old-style pseudo starting address and
-   the number of bytes to skip.  */
+	/* The difference between the old-style pseudo starting address and
+	   the number of bytes to skip.  */
 #if ENABLE_LONG_OPTS
 	off_t pseudo_offset;
 # define G_pseudo_offset G.pseudo_offset
 #endif
-/* When zero, MAX_BYTES_TO_FORMAT and END_OFFSET are ignored, and all
-   input is formatted.  */
+	/* When zero, MAX_BYTES_TO_FORMAT and END_OFFSET are ignored, and all
+	   input is formatted.  */
 
-/* The number of input bytes formatted per output line.  It must be
-   a multiple of the least common multiple of the sizes associated with
-   the specified output types.  It should be as large as possible, but
-   no larger than 16 -- unless specified with the -w option.  */
+	/* The number of input bytes formatted per output line.  It must be
+	   a multiple of the least common multiple of the sizes associated with
+	   the specified output types.  It should be as large as possible, but
+	   no larger than 16 -- unless specified with the -w option.  */
 	unsigned bytes_per_block; /* have to use unsigned, not size_t */
 
-/* A NULL-terminated list of the file-arguments from the command line.  */
+	/* A NULL-terminated list of the file-arguments from the command line.  */
 	const char *const *file_list;
 
-/* The input stream associated with the current file.  */
+	/* The input stream associated with the current file.  */
 	FILE *in_stream;
 
 	bool not_first;

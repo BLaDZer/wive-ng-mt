@@ -319,7 +319,6 @@ static void scale(ullong ul)
 	put(buf);
 }
 
-
 #define S_STAT(a) \
 typedef struct a { \
 	struct s_stat *next; \
@@ -418,7 +417,6 @@ static void FAST_FUNC collect_cpu(cpu_stat *s)
 	put(s->bar);
 }
 
-
 static s_stat* init_cpu(const char *param)
 {
 	int sz;
@@ -432,7 +430,6 @@ static s_stat* init_cpu(const char *param)
 	s->collect = collect_cpu;
 	return (s_stat*)s;
 }
-
 
 S_STAT(int_stat)
 	ullong old;
@@ -468,7 +465,6 @@ static s_stat* init_int(const char *param)
 	return (s_stat*)s;
 }
 
-
 S_STAT(ctx_stat)
 	ullong old;
 S_STAT_END(ctx_stat)
@@ -495,7 +491,6 @@ static s_stat* init_ctx(const char *param UNUSED_PARAM)
 	s->collect = collect_ctx;
 	return (s_stat*)s;
 }
-
 
 S_STAT(blk_stat)
 	const char* lookfor;
@@ -542,7 +537,6 @@ static s_stat* init_blk(const char *param UNUSED_PARAM)
 	return (s_stat*)s;
 }
 
-
 S_STAT(fork_stat)
 	ullong old;
 S_STAT_END(fork_stat)
@@ -584,7 +578,6 @@ static s_stat* init_fork(const char *param)
 	}
 	return (s_stat*)s;
 }
-
 
 S_STAT(if_stat)
 	ullong old[4];
@@ -631,7 +624,6 @@ static s_stat* init_if(const char *device)
 	s->device_colon = xasprintf("%s:", device);
 	return (s_stat*)s;
 }
-
 
 S_STAT(mem_stat)
 	char opt;
@@ -715,7 +707,6 @@ static s_stat* init_mem(const char *param)
 	return (s_stat*)s;
 }
 
-
 S_STAT(swp_stat)
 S_STAT_END(swp_stat)
 
@@ -738,7 +729,6 @@ static s_stat* init_swp(const char *param UNUSED_PARAM)
 	s->collect = collect_swp;
 	return (s_stat*)s;
 }
-
 
 S_STAT(fd_stat)
 S_STAT_END(fd_stat)

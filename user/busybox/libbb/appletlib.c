@@ -148,7 +148,7 @@ int FAST_FUNC find_applet_by_name(const char *name)
 
 /* The commented-out word-at-a-time code is ~40% faster, but +160 bytes.
  * "Faster" here saves ~0.5 microsecond of real time - not worth it.
-	 */
+ */
 #if 0 /*BB_UNALIGNED_MEMACCESS_OK && BB_LITTLE_ENDIAN*/
 	uint32_t n32;
 
@@ -229,7 +229,7 @@ int FAST_FUNC find_applet_by_name(const char *name)
 		while (ch == name[j]) {
 			if (ch == '\0') {
 				//bb_error_msg("found:'%s' i:%u", name, i);
-			return i;
+				return i;
 			}
 			ch = *++p;
 			j++;
@@ -786,10 +786,10 @@ static int busybox_main(char **argv)
 		const char *a = applet_names;
 		dup2(1, 2);
 		while (*a) {
-# if ENABLE_FEATURE_INSTALLER
+#  if ENABLE_FEATURE_INSTALLER
 			if (argv[1][6]) /* --list-full? */
 				full_write2_str(install_dir[APPLET_INSTALL_LOC(i)] + 1);
-# endif
+#  endif
 			full_write2_str(a);
 			full_write2_str("\n");
 			i++;

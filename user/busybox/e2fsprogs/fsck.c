@@ -448,7 +448,7 @@ static int wait_one(int flags)
 	}
  child_died:
 
-		status = WEXITSTATUS(status);
+	status = WEXITSTATUS(status);
 	if (WIFSIGNALED(status)) {
 		sig = WTERMSIG(status);
 		status = EXIT_UNCORRECTED;

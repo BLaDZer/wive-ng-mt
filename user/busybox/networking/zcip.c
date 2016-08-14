@@ -363,8 +363,8 @@ int zcip_main(int argc UNUSED_PARAM, char **argv)
 			// ones we'd care about.
 		}
 		if (timeout_ms >= 0) {
-		// Set deadline_us to the point in time when we timeout
-		deadline_us = MONOTONIC_US() + timeout_ms * 1000;
+			// Set deadline_us to the point in time when we timeout
+			deadline_us = MONOTONIC_US() + timeout_ms * 1000;
 		}
 
 		VDBG("...wait %d %s nsent=%u\n",
@@ -390,7 +390,7 @@ int zcip_main(int argc UNUSED_PARAM, char **argv)
 					send_arp_request(0, &null_ethaddr, chosen_nip);
 					continue;
 				}
-  				// Switch to announce state
+				// Switch to announce state
 				nsent = 0;
 				state = ANNOUNCE;
 				goto send_announce;

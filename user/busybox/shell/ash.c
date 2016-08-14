@@ -10589,7 +10589,7 @@ list(int nlflag)
 		switch (tok) {
 		case TNL:
 		case TEOF:
-				tokpushback = 1;
+			tokpushback = 1;
 			/* fall through */
 		case TBACKGND:
 		case TSEMI:

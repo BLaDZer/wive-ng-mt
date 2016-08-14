@@ -408,8 +408,8 @@ static void print_tunnel(struct ip_tunnel_parm *p)
 	char s4[INET_ADDRSTRLEN];
 
 	printf("%s: %s/ip  remote %s  local %s ",
-	       p->name,
-	       p->iph.protocol == IPPROTO_IPIP ? "ip" :
+		p->name,
+		p->iph.protocol == IPPROTO_IPIP ? "ip" :
 			p->iph.protocol == IPPROTO_GRE ? "gre" :
 			p->iph.protocol == IPPROTO_IPV6 ? "ipv6" :
 			"unknown",

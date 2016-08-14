@@ -156,7 +156,7 @@
 #if 0
 # define DBG(fmt, ...) bb_error_msg("%s: " fmt, __func__, ## __VA_ARGS__)
 #else
-#define DBG(...) ((void)0)
+# define DBG(...) ((void)0)
 #endif
 #define DBG_OPTION_PARSING 0
 
@@ -885,13 +885,13 @@ enum {
 	OPT_GZIP         = IF_FEATURE_SEAMLESS_GZ(  (1 << OPTBIT_GZIP        )) + 0, // z
 	OPT_XZ           = IF_FEATURE_SEAMLESS_XZ(  (1 << OPTBIT_XZ          )) + 0, // J
 	OPT_COMPRESS     = IF_FEATURE_SEAMLESS_Z(   (1 << OPTBIT_COMPRESS    )) + 0, // Z
-	OPT_NOPRESERVE_TIME = IF_FEATURE_TAR_NOPRESERVE_TIME((1 << OPTBIT_NOPRESERVE_TIME)) + 0, // m
+	OPT_NOPRESERVE_TIME  = IF_FEATURE_TAR_NOPRESERVE_TIME((1 << OPTBIT_NOPRESERVE_TIME)) + 0, // m
 	OPT_STRIP_COMPONENTS = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_STRIP_COMPONENTS)) + 0, // strip-components
-	OPT_NORECURSION     = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NORECURSION    )) + 0, // no-recursion
-	OPT_2COMMAND        = IF_FEATURE_TAR_TO_COMMAND(  (1 << OPTBIT_2COMMAND       )) + 0, // to-command
-	OPT_NUMERIC_OWNER   = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NUMERIC_OWNER  )) + 0, // numeric-owner
-	OPT_NOPRESERVE_PERM = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NOPRESERVE_PERM)) + 0, // no-same-permissions
-	OPT_OVERWRITE       = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_OVERWRITE      )) + 0, // overwrite
+	OPT_NORECURSION      = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NORECURSION    )) + 0, // no-recursion
+	OPT_2COMMAND         = IF_FEATURE_TAR_TO_COMMAND(  (1 << OPTBIT_2COMMAND       )) + 0, // to-command
+	OPT_NUMERIC_OWNER    = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NUMERIC_OWNER  )) + 0, // numeric-owner
+	OPT_NOPRESERVE_PERM  = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_NOPRESERVE_PERM)) + 0, // no-same-permissions
+	OPT_OVERWRITE        = IF_FEATURE_TAR_LONG_OPTIONS((1 << OPTBIT_OVERWRITE      )) + 0, // overwrite
 
 	OPT_ANY_COMPRESS = (OPT_BZIP2 | OPT_LZMA | OPT_GZIP | OPT_XZ | OPT_COMPRESS),
 };
@@ -1202,7 +1202,7 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 #if ENABLE_FEATURE_TAR_CREATE
 	/* Create an archive */
 	if (opt & OPT_CREATE) {
-#if SEAMLESS_COMPRESSION
+# if SEAMLESS_COMPRESSION
 		const char *zipMode = NULL;
 		if (opt & OPT_COMPRESS)
 			zipMode = "compress";
@@ -1214,7 +1214,7 @@ int tar_main(int argc UNUSED_PARAM, char **argv)
 			zipMode = "lzma";
 		if (opt & OPT_XZ)
 			zipMode = "xz";
-#endif
+# endif
 		/* NB: writeTarFile() closes tar_handle->src_fd */
 		return writeTarFile(tar_handle->src_fd, verboseFlag,
 				(opt & OPT_DEREFERENCE ? ACTION_FOLLOWLINKS : 0)

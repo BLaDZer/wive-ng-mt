@@ -1600,8 +1600,8 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				 */
 				if (timeout > rebind_timeout)
 					rebind_timeout = 0;
- 				if (timeout > tryagain_timeout)
- 					timeout = tryagain_timeout;
+				if (timeout > tryagain_timeout)
+					timeout = tryagain_timeout;
 				/* Keep unicasting the first renew only */
 				if (rebind_timeout == 0)
 					rebind_timeout = timeout / 2;

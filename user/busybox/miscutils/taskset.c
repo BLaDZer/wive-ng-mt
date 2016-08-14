@@ -85,7 +85,7 @@ static unsigned long long from_cpuset(cpu_set_t *mask)
 		return *(unsigned*)mask;
 	if (CPU_SETSIZE < 8*sizeof(long long))
 		return *(unsigned long*)mask;
-#if BB_BIG_ENDIAN
+# if BB_BIG_ENDIAN
 	if (sizeof(long long) > sizeof(long)) {
 		/* We can put two long in the long long, but they have to
 		 * be swapped: the least significant word comes first in the
@@ -93,7 +93,7 @@ static unsigned long long from_cpuset(cpu_set_t *mask)
 		unsigned long *p = (void*)mask;
 		return p[0] + ((unsigned long long)p[1] << (8*sizeof(long)));
 	}
-#endif
+# endif
 	return *(unsigned long long*)mask;
 }
 #endif

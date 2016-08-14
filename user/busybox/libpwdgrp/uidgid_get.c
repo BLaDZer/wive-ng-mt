@@ -43,15 +43,15 @@ int FAST_FUNC get_uidgid(struct bb_uidgid_t *u, const char *ug)
 		/* copies sz-1 bytes, stores terminating '\0' */
 		safe_strncpy(user, ug, sz);
 	}
-		n = bb_strtou(user, NULL, 10);
-		if (!errno) {
-			u->uid = n;
-			pwd = getpwuid(n);
-			/* If we have e.g. "500" string without user */
-			/* with uid 500 in /etc/passwd, we set gid == uid */
-			u->gid = pwd ? pwd->pw_gid : n;
-			goto skip;
-		}
+	n = bb_strtou(user, NULL, 10);
+	if (!errno) {
+		u->uid = n;
+		pwd = getpwuid(n);
+		/* If we have e.g. "500" string without user */
+		/* with uid 500 in /etc/passwd, we set gid == uid */
+		u->gid = pwd ? pwd->pw_gid : n;
+		goto skip;
+	}
 	/* it is not numeric */
 	pwd = getpwnam(user);
 	if (!pwd)
@@ -61,11 +61,11 @@ int FAST_FUNC get_uidgid(struct bb_uidgid_t *u, const char *ug)
 
  skip:
 	if (group) {
-			n = bb_strtou(group, NULL, 10);
-			if (!errno) {
-				u->gid = n;
-				return 1;
-			}
+		n = bb_strtou(group, NULL, 10);
+		if (!errno) {
+			u->gid = n;
+			return 1;
+		}
 		gr = getgrnam(group);
 		if (!gr)
 			return 0;

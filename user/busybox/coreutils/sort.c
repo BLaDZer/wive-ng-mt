@@ -487,7 +487,7 @@ int sort_main(int argc UNUSED_PARAM, char **argv)
 #endif
 	{
 		int ch = (option_mask32 & FLAG_z) ? '\0' : '\n';
-	for (i = 0; i < linecount; i++)
+		for (i = 0; i < linecount; i++)
 			printf("%s%c", lines[i], ch);
 	}
 

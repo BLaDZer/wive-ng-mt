@@ -97,7 +97,7 @@ void FAST_FUNC bb_verror_msg(const char *s, va_list p, const char* strerr)
 	}
 #endif
 	if (msg != stack_msg)
-	free(msg);
+		free(msg);
 }
 
 #ifdef VERSION_WITH_WRITEV

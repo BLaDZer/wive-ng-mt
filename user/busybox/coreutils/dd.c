@@ -355,7 +355,7 @@ int dd_main(int argc UNUSED_PARAM, char **argv)
 		if (what == OP_conv) {
 			G.flags |= parse_comma_flags(val, conv_words, "conv");
 			/*continue;*/
-			}
+		}
 		if (what == OP_iflag) {
 			G.flags |= parse_comma_flags(val, iflag_words, "iflag") << FLAG_IFLAG_SHIFT;
 			/*continue;*/

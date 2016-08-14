@@ -215,7 +215,7 @@ static int FAST_FUNC print_addrinfo(const struct sockaddr_nl *who UNUSED_PARAM,
 {
 	struct ifaddrmsg *ifa = NLMSG_DATA(n);
 	int len = n->nlmsg_len;
-	struct rtattr * rta_tb[IFA_MAX+1];
+	struct rtattr *rta_tb[IFA_MAX+1];
 
 	if (n->nlmsg_type != RTM_NEWADDR && n->nlmsg_type != RTM_DELADDR)
 		return 0;

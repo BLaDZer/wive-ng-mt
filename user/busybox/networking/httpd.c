@@ -308,7 +308,7 @@ struct globals {
 	Htaccess *script_i;     /* config script interpreters */
 #endif
 	char *iobuf;            /* [IOBUF_SIZE] */
-#define hdr_buf bb_common_bufsiz1
+#define        hdr_buf bb_common_bufsiz1
 #define sizeof_hdr_buf COMMON_BUFSIZE
 	char *hdr_ptr;
 	int hdr_cnt;

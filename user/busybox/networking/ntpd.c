@@ -138,7 +138,7 @@
  */
 #define SLEW_THRESHOLD 0.125
 /* Stepout threshold (sec). std ntpd uses 900 (11 mins (!)) */
-#define WATCH_THRESHOLD 128
+#define WATCH_THRESHOLD  128
 /* NB: set WATCH_THRESHOLD to ~60 when debugging to save time) */
 //UNUSED: #define PANIC_THRESHOLD 1000    /* panic threshold (sec) */
 
@@ -1704,7 +1704,7 @@ update_local_clock(peer_t *p)
 		}
 		if (tmx.offset < -(long)(SLEW_THRESHOLD * 1000000)) {
 			tmx.offset = -(long)(SLEW_THRESHOLD * 1000000);
-		tmx.constant--;
+			tmx.constant--;
 		}
 	}
 	if (tmx.constant < 0)

@@ -27,9 +27,9 @@
 #include "libbb.h"
 #if ENABLE_FEATURE_EJECT_SCSI
 /* Must be after libbb.h: they need size_t */
-#include "fix_u32.h"
-#include <scsi/sg.h>
-#include <scsi/scsi.h>
+# include "fix_u32.h"
+# include <scsi/sg.h>
+# include <scsi/scsi.h>
 #endif
 
 #define dev_fd 3
