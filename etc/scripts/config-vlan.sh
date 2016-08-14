@@ -237,6 +237,10 @@ restore_onergmii()
 	    switch reg w 3500 00008000		#port 5 link down
 	fi
 
+	if [ "$CONFIG_RAETH_HAS_PORT4" = "y" ]; then
+	    switch reg w 7014 10e0000c		#disable internal EPHY 4
+	fi
+
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 
 	# do not restore cpuport mode if trgmii enabled
