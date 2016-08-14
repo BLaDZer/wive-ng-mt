@@ -1699,12 +1699,9 @@ static inline int pskb_network_may_pull(struct sk_buff *skb, unsigned int len)
  * NET_IP_ALIGN(2) + ethernet_header(14) + IP_header(20/40) + ports(8)
  */
 #ifndef NET_SKB_PAD
-#if defined (CONFIG_RALINK_RT3052) || defined (CONFIG_RALINK_RT3352) ||  defined (CONFIG_RALINK_RT3883) || \
-    defined (CONFIG_RALINK_RT5350) || defined (CONFIG_RALINK_RT6855) || defined (CONFIG_RALINK_MT7620) || \
-    defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
-/* ralink depended hacks */
+#if 1 /* tunnels speedup hack */
 #define NET_SKB_PAD		96
-#define NET_SKB_PAD_ORIG	max(64, L1_CACHE_BYTES)
+#define NET_SKB_PAD_ORIG	max(32, L1_CACHE_BYTES)
 #else
 #define NET_SKB_PAD		max(32, L1_CACHE_BYTES)
 #define NET_SKB_PAD_ORIG	NET_SKB_PAD
