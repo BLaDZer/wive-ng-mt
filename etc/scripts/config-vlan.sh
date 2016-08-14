@@ -239,6 +239,7 @@ restore_onergmii()
 
 	if [ "$CONFIG_RAETH_HAS_PORT4" = "y" ]; then
 	    switch reg w 7014 10e0000c		#disable internal EPHY 4
+	    switch reg w 3400 5e337		#port 4 force up, 100FD
 	fi
 
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
