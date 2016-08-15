@@ -2300,12 +2300,13 @@
 11) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 12) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
 13) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
-14) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-15) kernel: net: netfilter: avoid race with exp->master ct.<br>
-16) kernel: net: core: inline dev_alloc_skb() call.<br>
-17) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-18) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-19) kernel: net: packet: race condition in packet_bind.<br>
+14) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
+15) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+16) kernel: net: netfilter: avoid race with exp->master ct.<br>
+17) kernel: net: core: inline dev_alloc_skb() call.<br>
+18) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+19) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+20) kernel: net: packet: race condition in packet_bind.<br>
 <br>
 <br>
 <br>

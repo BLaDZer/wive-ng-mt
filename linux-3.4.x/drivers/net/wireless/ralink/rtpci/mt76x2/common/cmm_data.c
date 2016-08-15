@@ -1328,16 +1328,10 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 
  ********************************************************************************/
 #define DEQUEUE_LOCK(lock, bIntContext, IrqFlags) 				\
-			do{													\
-				if (bIntContext == FALSE)						\
-				RTMP_IRQ_LOCK((lock), IrqFlags);		\
-			}while(0)
+	RTMP_IRQ_LOCK((lock), IrqFlags)
 
 #define DEQUEUE_UNLOCK(lock, bIntContext, IrqFlags)				\
-			do{													\
-				if (bIntContext == FALSE)						\
-					RTMP_IRQ_UNLOCK((lock), IrqFlags);	\
-			}while(0)
+	RTMP_IRQ_UNLOCK((lock), IrqFlags)
 
 
 /*
@@ -1902,8 +1896,13 @@ VOID TxDoneCleanupExec(
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)FunctionContext;
 	ULONG IrqFlags = 0;
-	UCHAR QueIdx;
 	int NeedCleanupTimer = 0;
+	UCHAR QueIdx;
+
+	if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RADIO_OFF |
+				 fRTMP_ADAPTER_RESET_IN_PROGRESS |
+				 fRTMP_ADAPTER_HALT_IN_PROGRESS)))
+		return;
 
 	DEQUEUE_LOCK(&pAd->irq_lock, FALSE, IrqFlags);
 	for( QueIdx=0; QueIdx<NUM_OF_TX_RING; QueIdx++ ) {
