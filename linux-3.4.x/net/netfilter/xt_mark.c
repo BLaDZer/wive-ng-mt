@@ -35,7 +35,9 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 
 	skb->mark = (skb->mark & ~info->mask) ^ info->mark;
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
+#if !defined(CONFIG_RA_HW_NAT_QDMA)
 	FOE_ALG_MARK(skb);
+#endif
 #endif
 #if defined(CONFIG_BCM_NAT)
 	FASTNAT_DENY(skb) = 1;

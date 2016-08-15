@@ -2308,7 +2308,8 @@
 19) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
 20) kernel: net: packet: improve socket create/bind latency in some cases.<br>
 21) kernel: net: packet: race condition in packet_bind.<br>
-22) kernel: net: netfilter: conntrack: Only need first 4 bytes to get l4proto ports.<br>
+22) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+23) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
 <br>
 <br>
 <br>
