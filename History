@@ -2311,6 +2311,7 @@
 22) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
 23) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
 24) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+25) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
 <br>
 <br>
 <br>
