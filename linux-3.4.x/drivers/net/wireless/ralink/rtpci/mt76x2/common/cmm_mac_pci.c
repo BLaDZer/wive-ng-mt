@@ -59,8 +59,6 @@ static INT desc_ring_free(RTMP_ADAPTER *pAd, RTMP_DMABUF *pDescRing)
 	return TRUE;
 }
 
-	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
-
 #ifdef RESOURCE_PRE_ALLOC
 VOID RTMPResetTxRxRingMemory(RTMP_ADAPTER *pAd)
 {
@@ -74,6 +72,8 @@ VOID RTMPResetTxRxRingMemory(RTMP_ADAPTER *pAd)
 #endif /* RT_BIG_ENDIAN */
 	PNDIS_PACKET pPacket;
 	ULONG IrqFlags = 0;
+
+	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
 
 	/* Free TxSwQueue Packet*/
 	for (index=0; index <NUM_OF_TX_RING; index++)
