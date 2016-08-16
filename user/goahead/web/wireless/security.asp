@@ -432,12 +432,14 @@ function securityMode(c_f)
 {
 	var security_mode;
 
+	var is5gh_support = '<% is5gh_support(); %>';
+	
 	changed = c_f;
 
 	hideWep();
 
 	displayElement( [
-		'div_security_shared_mode', 'div_wpa', 'div_wpa_algorithms', 'wpa_passphrase',
+		'div_security_shared_mode', 'div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_passphrase5',
 		'wpa_key_renewal_interval', 'wpa_PMK_Cache_Period', 'wpa_preAuthentication',
 		'div_radius_server', 'div_8021x_wep' // 802.1x
 		], false);
@@ -446,6 +448,7 @@ function securityMode(c_f)
 	document.security_form.cipher[1].disabled = true;
 	document.security_form.cipher[2].disabled = true;
 	document.security_form.passphrase.disabled = true;
+	document.security_form.passphraseinic.disabled = true;
 	document.security_form.keyRenewalInterval.disabled = true;
 	document.security_form.PMKCachePeriod.disabled = true;
 	document.security_form.PreAuthentication.disabled = true;
@@ -483,6 +486,12 @@ function securityMode(c_f)
 		document.getElementById("wpa_passphrase").style.display = '';
 		document.security_form.passphrase.disabled = false;
 
+		if (is5gh_support) {
+			document.getElementById("wpa_passphrase5").style.visibility = "visible";
+			document.getElementById("wpa_passphrase5").style.display = '';
+			document.security_form.passphraseinic.disabled = false;
+		}
+		
 		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
 		document.getElementById("wpa_key_renewal_interval").style.display = '';
 		document.security_form.keyRenewalInterval.disabled = false;
@@ -779,6 +788,7 @@ function LoadFields(MBSSID)
 	}
 
 	document.getElementById("passphrase").value = WPAPSK[MBSSID];
+	document.getElementById("passphraseinic").value = '<% getCfgGeneral(1, "WPAPSK1INIC"); %>';
 	document.getElementById("keyRenewalInterval").value = RekeyInterval[MBSSID];
 	document.getElementById("PMKCachePeriod").value = PMKCachePeriod[MBSSID];
 	if(PreAuth[MBSSID] == "0")
@@ -931,6 +941,7 @@ function initTranslation()
 	_TR("secreWPA", "secure wpa");
 	_TR("secureWPAAlgorithm", "secure wpa algorithm");
 	_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+	_TR("secureWPAPassPhraseInic", "secure wpa pass phrase inic");
 	_TR("secureWPAKeyRenewInterval", "secure wpa key renew interval");
 	_TR("secureWPAPMKCachePeriod", "secure wpa pmk cache period");
 	_TR("secureWPAPreAuth", "secure wpa preauth");
@@ -1155,6 +1166,10 @@ function showPassPhrase(id) {
             <tr id="wpa_passphrase" name="wpa_passphrase" style="visibility: hidden;">
               <td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
               <td><input type="password" name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('passphrase')"><font id="secureShowPass4">(show)</font></td>
+            </tr>
+            <tr id="wpa_passphrase5" name="wpa_passphrase5" style="display: none; ">
+              <td class="head" id="secureWPAPassPhraseInic">Pass Phrase 5GHz</td>
+              <td><input type="password" name="passphraseinic" id="passphraseinic" size="28" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('passphraseinic')"><font id="secureShowPass5">(show)</font></td>
             </tr>
             <tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
               <td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>

@@ -266,7 +266,7 @@
 
 			function addremoveplotMACs(mac_id, action)
 			{
-				if (mac_id = "*") {
+				if (mac_id == "*") {
 					if (plotMACsAll == 0)
 						plotMACsAll = 1;
 					else {
@@ -277,7 +277,7 @@
 				else {
 					if (action == "remove") {
 						if (plotMACsAll == 1)
-						plotMACsAll = 0;
+							plotMACsAll = 0;
 						plotMACs.splice(plotMACs.indexOf(mac_id), 1);
 					}
 					else {
@@ -422,7 +422,7 @@
 							rx = (rx / 1024).toFixed(0) + _("stalist kibits");
 
 						tx = +data.stationlist24[i].txbytes.replace(/ /g, '');
-						if (tx >= (1024 * 10240 * 1024))
+						if (tx >= (1024 * 1024 * 1024))
 							tx = (tx / 1024 / 1024 / 1024).toFixed(2) + _("stalist gibits");
 						else if (tx >= (1024 * 1024))
 							tx = (tx / 1024 / 1024).toFixed(2) + _("stalist mibits");
@@ -793,12 +793,8 @@
 					}
 				}
 
-				for (i = 0; i < MACs.length; i++) {
+				for (i = 0; i < MACs.length; i++) 
 					plotData.push([ MACs[i], +time, null, null, null, 0, 0 ]);
-					if (lastRxTxCount.indexOf(MACs[i]) != "-1") {
-						lastRxTxCount.splice(lastRxTxCount.indexOf(MACs[i].replace(/:/g, '')), 3);
-					}
-				}
 				sessionStorage.setItem('plotData', JSON.stringify(plotData));
 			}
 
@@ -900,6 +896,10 @@
 						legendDataLast	= undefined;
 						legendDataCount = 0;
 						legendDataSum	= 0;
+						
+						var lastCountRx	= -1;
+						var lastCountTx	= -1;
+						var lastTime	= 0;
 
 						label = "";
 						tmp = plotMACs[i].match(/(.{1,2})/gim);
@@ -916,8 +916,9 @@
 						
 						data += '{ "data": [ ';
 						for (j = 0; j < plotData.length; j++) {
+							if (plotData[j][1] < graphTime - 20000) 
+								continue;
 							if (plotData[j][0] == plotMACs[i]) {
-								console.log(plotData[j][0], plotData[j][1], plotData[j][2], plotData[j][3], plotData[j][4], plotData[j][5], plotData[j][6]);
 								if (plotType == 5) 		// RX+TX SUMMARY COUNT
 									allRxTxTmp.push( [ +plotData[j][1], +plotData[j][5], +plotData[j][6] ] );
 								else { 
@@ -988,20 +989,12 @@
 													break;
 													
 										case 3:		// RX/TX COUNT	
-													lastCount = "";
-													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]); lastRxTxCount.push(plotData[j][6]);
-														lastCount = plotData[j][5];
+													if (lastCountRx == -1 || lastCount > +plotData[j][5]) {
+														lastCountRx = plotData[j][5];
+														lastCount = lastCountRx;
 													}
-													else {
-														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
-														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-													}
-													if (lastCount > +plotData[j][5])
-														lastCount = +plotData[j][5];
 													RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000)).toFixed(0);
-													if (RxTxCount < 0)
-														RxTxCount = 0;
+													lastCount = +plotData[j][5];
 													data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
 
 													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
@@ -1021,21 +1014,21 @@
 													break;
 
 										case 4: 	// RX+TX COUNT
-													lastCount = "";
-													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
-														lastCount = plotData[j][5] + plotData[j][6];
+													if ((lastCountRx == -1 || lastCountTx == -1) || (lastCount > (+plotData[j][5] + +plotData[j][6]))) {
+														lastCountRx = plotData[j][5];
+														lastCountTx = plotData[j][6];
+														lastTime	= plotData[j][1];
+														lastCount	= lastCountRx + lastCountTx;
 													}
-													else {
-														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] + lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
-														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
-													}
-													if (lastCount > (plotData[j][5] + plotData[j][6]))
-														lastCount = plotData[j][5] + plotData[j][6];
-													RxTxCount = (((+plotData[j][5] + +plotData[j][6]) - lastCount) / (updateTime / 1000)).toFixed(0);
-													if (RxTxCount < 0)
-														RxTxCount = 0;
+
+													if (plotData[j][1] - lastTime > 6000)
+														RxTxCount = 0
+													else 
+														RxTxCount = (((+plotData[j][5] + +plotData[j][6]) - lastCount) / (updateTime / 1000)).toFixed(0);
+													
+													lastCount = +plotData[j][5] + +plotData[j][6];
+													lastTime = +plotData[j][1];
+													
 													data += '[ ' + plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';  
 													
 													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
@@ -1055,20 +1048,17 @@
 													break;
 
 										case 6: 	// RX COUNT
-													lastCount = "";
-													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-														lastRxTxCount.push(plotData[j][0]);	lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
-														lastCount = plotData[j][5];
+													if (lastCountRx == -1 || lastCount > +plotData[j][5]) {
+														lastCountRx = plotData[j][5];
+														lastCount	= lastCountRx;
+														lastTime	= plotData[j][1];
 													}
-													else {
-														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1];
-														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 1] = plotData[j][5];
-													}
-													if (lastCount > plotData[j][5])
-														lastCount = plotData[j][5];
-													RxTxCount = ((+plotData[j][5] - lastCount) / (updateTime / 1000)).toFixed(0);
-													if (RxTxCount < 0)
+													if (plotData[j][1] - lastTime > 6000)
 														RxTxCount = 0;
+													else 
+														RxTxCount = ((plotData[j][5] - lastCount) / (updateTime / 1000)).toFixed(0);
+													lastCount = plotData[j][5];
+													lastTime  = plotData[j][1];
 													data += '[ ' + plotData[j][1] + ', ' + RxTxCount  * 8 + ' ]';
 
 													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
@@ -1088,19 +1078,18 @@
 													break;
 
 										case 7:		// TX COUNT
-													lastCount = "";
-													if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-														lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]);	lastRxTxCount.push(plotData[j][6]);
-														lastCount = plotData[j][6];
+													if (lastCountTx == -1 || lastCount > +plotData[j][6]) {
+														lastCountTx = plotData[j][6];
+														lastCount	= lastCountTx;
+														lastTime	= plotData[j][1];
 													}
-													else {
-														lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
-														lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
-													}
-													RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000)).toFixed(0);;
-													if (RxTxCount < 0)
+													if (plotData[j][1] - lastTime > 6000)
 														RxTxCount = 0;
-													data += '[ ' + +plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
+													else 
+														RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000)).toFixed(0);;
+													lastCount = plotData[j][6];
+													lastTime  = plotData[j][1];
+													data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
 
 													if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
 														if (legendDataMin === undefined) 
@@ -1155,21 +1144,22 @@
 							labelRxTx 		= ' (TX)';
 							data 			= '{ "data": [ ';
 							for (j = 0; j < plotData.length; j++) {
+								if (plotData[j][1] < graphTime - 10000) 
+									continue;
 								if (plotData[j][0] == plotMACs[i]) {
 									if (data[data.length - 1] == "]")
 										data += ", ";
-									lastCount = 0;
-									if (lastRxTxCount.indexOf(plotData[j][0]) == "-1") {
-										lastRxTxCount.push(plotData[j][0]); lastRxTxCount.push(plotData[j][5]); lastRxTxCount.push(plotData[j][6]);
-										lastCount = +plotData[j][6];
+									if (lastCountTx == -1 || lastCount > +plotData[j][6]) {
+										lastCountTx = plotData[j][6];
+										lastCount	= lastCountTx;
+										lastTime	= plotData[j][1];
 									}
-									else {
-										lastCount = lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2];
-										lastRxTxCount[lastRxTxCount.indexOf(plotData[j][0]) + 2] = plotData[j][6];
-									}
-									RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000)).toFixed(0);
-									if (RxTxCount < 0)
+									if (plotData[j][1] - lastTime > 6000)
 										RxTxCount = 0;
+									else 
+										RxTxCount = ((+plotData[j][6] - lastCount) / (updateTime / 1000)).toFixed(0);
+									lastCount = plotData[j][6];
+									lastTime	= plotData[j][1];
 									data += '[ ' + plotData[j][1] + ', ' + RxTxCount * 8 + ' ]';
 
 									if ((graphTime == "All") || (plotData[j][1] >= graphTime)) {
@@ -1206,7 +1196,6 @@
 											break;
 							}
 							data += '], "label":"' + label + labelRxTx + '|' + legendDataMin +'|' + legendDataMax + '|' + legendDataAvg + '|' + legendDataLast + '" }';
-							console.log(data);
 							plotGraphData.push(JSON.parse(data));
 						}
 					}
@@ -1220,7 +1209,8 @@
 						legendDataSum	= 0;
 						var allTime;
 						var allRxTx		= 0;
-						var lastRxTx	= 0;
+						var lastRxTx	= -1;
+						var lastTime	= 0;
 						var tmp;
 						label			= "Summary RX+TX";
 						labelRxTx		= "";
@@ -1231,6 +1221,7 @@
 								if (data[data.length - 1] == "]")
 									data += ", ";
 								allTime = allRxTxTmp[i][0];
+								(lastTime == 0) ? allTime : lastTime;
 								allRxTx	= 0;
 								
 								for (j = 0; j < allRxTxTmp.length; j++) {
@@ -1239,15 +1230,19 @@
 										allRxTxTmp[j][0] = "-1";
 									}
 								}
-								if (lastRxTx == 0) {
+								if (lastRxTx == -1 || lastRxTx > allRxTx) {
 									lastRxTx = allRxTx;
 								}
 								
-								tmp = +((allRxTx - lastRxTx) / (updateTime / 1000)).toFixed(0) * 8;
-								
-								data += '[ ' + allTime + ', ' + tmp + ' ]';
+								if (allTime - lastTime > 6000)
+									tmp = 0;
+								else
+									tmp = ((allRxTx - lastRxTx) / (updateTime / 1000)).toFixed(0) * 8;
 								
 								lastRxTx = allRxTx;
+								lastTime = allTime;
+								
+								data += '[ ' + allTime + ', ' + tmp + ' ]';
 
 								if ((graphTime == "All") || (allTime >= graphTime)) {
 									if (legendDataMin === undefined) 
@@ -1288,6 +1283,7 @@
 						plotGraphData.push(JSON.parse(data));
 					}
 
+					
 					plot = $.plot($("#plotGraph"), plotGraphData, plotOptions);
 
 					legendHtml += '<table style="font-size:smaller;color:#545454">';
@@ -1309,7 +1305,7 @@
 						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist avg")  + tmp[3] + legendUnit + '</td>';
 						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist last") + tmp[4] + legendUnit + '</td>';
 						legendHtml += '<td class="legendLabel" style="width: 15%";">' + _("stalist pos")  + "0.00" + legendUnit + '</td>';
-						legendHtml += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="addremoveplotMACs(' + "'" + tmp[0].replace(/:/g, '') + "', 'remove'" + ');"></td>';
+						legendHtml += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="addremoveplotMACs(' + "'" + tmp[0].replace(/:/g, '').split(" ")[0] + "', 'remove'" + ');"></td>';
 						legendHtml += '<tr>';
 					} 
 
@@ -1393,7 +1389,7 @@
 					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist avg")  + tmp[3] + unit + '</td>';
 					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist last") + tmp[4] + unit + '</td>';
 					html += '<td class="legendLabel" style="width: 15%";">' + _("stalist pos")  + y + unit + '</td>';
-					html += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="addremoveplotMACs(' + "'" + tmp[0].replace(/:/g, '') + "', 'remove'" + ');"></td>';
+					html += '<td class="legendLabel" style="width: 5%";"><input type="checkbox" checked onClick="addremoveplotMACs(' + "'" + tmp[0].replace(/:/g, '').split(" ")[0] + "', 'remove'" + ');"></td>';
 					html += '<tr>';
 				} 
 				html += '</tbody>';

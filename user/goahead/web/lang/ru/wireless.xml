@@ -248,6 +248,7 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA алгоритмы" />
   <message msgid="secure wpa pass phrase" msgstr="Ключевая фраза" />
+  <message msgid="secure wpa pass phrase inic" msgstr="Ключевая фраза (5GHz)" />
   <message msgid="secure wpa show pass phrase" msgstr="(отобразить)" />
   <message msgid="secure wpa key renew interval" msgstr="Интервал смены ключа" />
   <message msgid="secure wpa pmk cache period" msgstr="Период кеширования PMK" />

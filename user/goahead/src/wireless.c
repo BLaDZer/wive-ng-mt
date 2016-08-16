@@ -1503,14 +1503,18 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 		STFs(nvram, mbssid, "IEEE8021X", "0");
 	}else if( !strcmp(security_mode, "WPAPSK")){ 				// !------------------       WPA Personal Mode ----------------
 		char *pass_phrase_str;
+		char *pass_phrase_inic_str;
 
 		confWPAGeneral(nvram, wp, mbssid);
 		LFW(pass_phrase_str, passphrase);
+		LFW(pass_phrase_inic_str, passphraseinic);
 		STFs(nvram, mbssid, "AuthMode", security_mode);
 		STFs(nvram, mbssid, "IEEE8021X", "0");
 		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
+		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
 	}else if( !strcmp(security_mode, "WPA2")){				// !------------------  WPA2 Enterprise Mode ----------------
 		char *pass_phrase_str;
+		char *pass_phrase_inic_str;
 		char *PMKCachePeriod;
 		char *PreAuth;
 
@@ -1520,24 +1524,29 @@ static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
 		confWPAGeneral(nvram, wp, mbssid);
 
 		LFW(pass_phrase_str, passphrase);
+		LFW(pass_phrase_inic_str, passphraseinic);
 		LFW(PMKCachePeriod, PMKCachePeriod);
 		LFW(PreAuth, PreAuthentication);
 
 		STFs(nvram, mbssid, "AuthMode", security_mode);
 		STFs(nvram, mbssid, "IEEE8021X", "0");
 		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
+		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
 		STF(nvram, mbssid, PMKCachePeriod);
 		STF(nvram, mbssid, PreAuth);
 	}else if( !strcmp(security_mode, "WPA2PSK") ||				// !------------------  WPA2 Personal Mode ----------------
 				!strcmp(security_mode, "WPAPSKWPA2PSK") ){ 	// !-------------   WPA PSK WPA2 PSK mixed
 		char *pass_phrase_str;
+		char *pass_phrase_inic_str;
 
 		confWPAGeneral(nvram, wp, mbssid);
 		LFW(pass_phrase_str, passphrase);
+		LFW(pass_phrase_inic_str, passphraseinic);
 
 		STFs(nvram, mbssid, "AuthMode", security_mode);
 		STFs(nvram, mbssid, "IEEE8021X", "0");
 		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
+		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
 	}else if( !strcmp(security_mode, "IEEE8021X")){				// !------------------ 802.1X WEP Mode ----------------
 		char *ieee8021x_wep;
 

@@ -2295,7 +2295,7 @@
 6) busybox: apply busybox-1.25.0-ip.patch.<br>
 7) coovachilli: include address when complaining about static out of range.<br>
 8) build_system: add templates for support SFP router.<br>
-9) nvram: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
+9) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 10) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
 11) goahead: more usable station list extended info.<br>
 12) kernel: ralink_wifi: fix set mcast rate from profile.<br>

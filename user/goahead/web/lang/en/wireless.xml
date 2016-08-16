@@ -246,6 +246,7 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA Algorithms" />
   <message msgid="secure wpa pass phrase" msgstr="Pass Phrase" />
+  <message msgid="secure wpa pass phrase inic" msgstr="Pass Phrase 5GHz" />
   <message msgid="secure wpa show pass phrase" msgstr="(show)" />
   <message msgid="secure wpa key renew interval" msgstr="Key Renewal Interval" />
   <message msgid="secure wpa pmk cache period" msgstr="PMK Cache Period" />
