@@ -1,6 +1,6 @@
 1) full russian ui (work end ~99%).
-2) wifi_drivers/goahead: add parse LastRx Rate and compute TX rate to human readable format.<br>
-3) need add in webui SCSEnable.
+2) wifi_drivers/goahead: add parse LastRx Rate.<br>
+3) need add in webui SCSEnable (smart carier sense MT7603 only).
 4) need add subchannel select for 5GHz module.
 5) need add checkbox in webui for allow access to LAN net from VPN server net.<br>
 6) need add LANVlans (this list vids divided by space or ,) and LANVlansIsolate (this list isolated vids) to switch managment.
