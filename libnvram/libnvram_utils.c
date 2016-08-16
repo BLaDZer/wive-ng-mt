@@ -1847,7 +1847,13 @@ int gen_wifi_config(int mode, int genmode)
     	FPRINT_DAT(RekeyMethod);
 	FPRINT_DAT(RekeyInterval);
 
-	FPRINT_DAT(WPAPSK1);
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (inic)
+	    fprintf(fp, "WPAPSK1=%s\n", nvram_get(mode, "WPAPSK1INIC"));
+	else
+#endif
+	    FPRINT_DAT(WPAPSK1);
+
 	FPRINT_DAT(WPAPSK2);
 	FPRINT_DAT(WPAPSK3);
 	FPRINT_DAT(WPAPSK4);

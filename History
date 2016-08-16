@@ -2295,24 +2295,25 @@
 6) busybox: apply busybox-1.25.0-ip.patch.<br>
 7) coovachilli: include address when complaining about static out of range.<br>
 8) build_system: add templates for support SFP router.<br>
-9) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
-10) goahead: more usable station list extended info.<br>
-11) kernel: ralink_wifi: fix set mcast rate from profile.<br>
-12) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
-13) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
-14) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
-15) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
-16) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-17) kernel: net: tcp: md5: fix lockdep annotation.<br>
-18) kernel: net: netfilter: avoid race with exp->master ct.<br>
-19) kernel: net: core: inline dev_alloc_skb() call.<br>
-20) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-21) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-22) kernel: net: packet: race condition in packet_bind.<br>
-23) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-24) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-25) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-26) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+9) nvram: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
+10) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
+11) goahead: more usable station list extended info.<br>
+12) kernel: ralink_wifi: fix set mcast rate from profile.<br>
+13) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
+14) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
+15) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
+16) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
+17) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+18) kernel: net: tcp: md5: fix lockdep annotation.<br>
+19) kernel: net: netfilter: avoid race with exp->master ct.<br>
+20) kernel: net: core: inline dev_alloc_skb() call.<br>
+21) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+22) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+23) kernel: net: packet: race condition in packet_bind.<br>
+24) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+25) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+26) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+27) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
 <br>
 <br>
 <br>

@@ -15,7 +15,8 @@ get_param()
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode IPv6OpMode \
 	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly ApCliIfName WdsIfName BssidIfName EntryLifeCheck \
-	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime FtMdId1 DyncVgaEnable SkipLongRangeVga VgaClamp`
+	BndStrgRssiDiff BndStrgRssiLow BndStrgAge BndStrgHoldTime BndStrgCheckTime FtMdId1 DyncVgaEnable SkipLongRangeVga VgaClamp \
+	WPAPSK1 WPAPSK1INIC`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -90,6 +91,13 @@ checkminimalconfig()
     if [ "$RadioOn" = "" ] || [ "$RadioOnINIC" = "" ]; then
 	nvram_set 2860 RadioOn 1
 	nvram_set 2860 RadioOnINIC 1
+    fi
+
+    #
+    #	after split root auth pass frase need shure copy old pass to new for 5GHz band on update from old procedure
+    #
+    if [ "$WPAPSK1INIC" = "" ] && [ "$WPAPSK1" != "" ]; then
+	nvram_set 2860 WPAPSK1INIC "$WPAPSK1"
     fi
 
     #

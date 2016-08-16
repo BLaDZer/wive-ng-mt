@@ -352,6 +352,7 @@ WirelessEvent=0
 WmmCapable=1
 WorkGroup=LOCALNET
 WPAPSK1=1234567890
+WPAPSK1INIC=1234567890
 xupnpd=0
 IdsEnable=0
 AuthFloodThreshold=64
