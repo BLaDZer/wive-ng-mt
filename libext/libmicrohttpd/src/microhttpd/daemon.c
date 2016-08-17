@@ -123,7 +123,6 @@
 #define USE_EPOLL_CREATE1 1
 #endif /* HAVE_EPOLL_CREATE1 && EPOLL_CLOEXEC */
 
-
 /**
  * Default implementation of the panic function,
  * prints an error message and aborts.
@@ -4046,7 +4045,7 @@ MHD_start_daemon_va (unsigned int flags,
 /* Supported since Linux 3.9, but often not present (or commented out)
    in the headers at this time; but 15 is reserved for this and
    thus should be safe to use. */
-#define SO_REUSEPORT 15
+//#define SO_REUSEPORT 15
 #endif
 #endif
 #ifdef SO_REUSEPORT
@@ -4062,14 +4061,19 @@ MHD_start_daemon_va (unsigned int flags,
 #endif
               goto free_and_fail;
             }
-#else
-          /* we're supposed to allow address:port re-use, but
-             on this platform we cannot; fail hard */
+#else  /* if SO_REUSEPORT not support use REUSEADDR */
+          if (0 > setsockopt (socket_fd,
+                              SOL_SOCKET,
+                              SO_REUSEADDR,
+                              (void*)&on, sizeof (on)))
+            {
 #ifdef HAVE_MESSAGES
-          MHD_DLOG (daemon,
-                    "Cannot allow listening address reuse: SO_REUSEPORT not defined\n");
+              MHD_DLOG (daemon,
+                        "setsockopt failed: %s\n",
+                        MHD_socket_last_strerr_ ());
 #endif
-          goto free_and_fail;
+              goto free_and_fail;
+            }
 #endif
 #endif
         }
