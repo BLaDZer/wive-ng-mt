@@ -2305,22 +2305,21 @@
 16) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
 17) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
 18) kernel: mips: fix memory regions reaching top of physical.<br>
-19) kernel: mips: use CPHYSADDR to implement mips32 __pa.<br>
-20) kernel: net: core: inline dev_alloc_skb() call.<br>
-21) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-22) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-23) kernel: net: packet: race condition in packet_bind.<br>
-24) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-25) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-26) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
-27) kernel: net: tcp: md5: fix lockdep annotation.<br>
-28) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-29) kernel: net: netfilter: avoid race with exp->master ct.<br>
-30) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-31) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-32) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-33) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-34) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+19) kernel: net: core: inline dev_alloc_skb() call.<br>
+20) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+21) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+22) kernel: net: packet: race condition in packet_bind.<br>
+23) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+24) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+25) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+26) kernel: net: tcp: md5: fix lockdep annotation.<br>
+27) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+28) kernel: net: netfilter: avoid race with exp->master ct.<br>
+29) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+30) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+31) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+32) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+33) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 <br>
 <br>
 <br>
