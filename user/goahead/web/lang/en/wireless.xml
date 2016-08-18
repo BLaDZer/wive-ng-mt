@@ -398,7 +398,7 @@
   <message msgid="stalist wireless sum total 5" msgstr="5GHz" />
   <message msgid="stalist wireless sum aid" msgstr="Stations" />
   <message msgid="stalist wireless sum txrate" msgstr="Average TX Rate" />
-  <message msgid="stalist wireless sum rxtx" msgstr="TX/RX Bandwidth" />
+  <message msgid="stalist wireless sum rxtx" msgstr="RX/TX Bandwidth" />
   <message msgid="stalist wireless sum rssi" msgstr="Average RSSI" />
   <message msgid="stalist wireless sum quality" msgstr="Average Quality" />
   <message msgid="stalist wireless mode" msgstr="Wireless station list mode" />

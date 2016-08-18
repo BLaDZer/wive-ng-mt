@@ -1126,10 +1126,10 @@
 
 						if (plotType >= 3) 
 							switch(plotUnit) {
-								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
-											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
-											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
-											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
+								case 0:		legendDataMin  = ((legendDataMin  / 1000 / 1000) >= 10) ? (legendDataMin / 1000 / 1000).toFixed(2) : (legendDataMin / 1000 / 1000).toFixed(0);
+											legendDataMax  = ((legendDataMax  / 1000 / 1000) >= 10) ? (legendDataMax / 1000 / 1000).toFixed(2) : (legendDataMax / 1000 / 1000).toFixed(0);
+											legendDataAvg  = ((legendDataAvg  / 1000 / 1000) >= 10) ? (legendDataAvg / 1000 / 1000).toFixed(2) : (legendDataAvg / 1000 / 1000).toFixed(0);
+											legendDataLast = ((legendDataLast / 1000 / 1000) >= 10) ? (legendDataLast / 1000 / 1000).toFixed(2) : (legendDataLast / 1000 / 1000).toFixed(0);
 											break;
 								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
 											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1192,10 +1192,10 @@
 							legendDataAvg = ((legendDataAvg === undefined) || (legendDataAvg == "NaN")) ? 0 : legendDataAvg;
 							legendDataLast = ((legendDataLast === undefined) || (legendDataLast == "NaN")) ? 0 : legendDataLast;
 							switch(plotUnit) {
-								case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
-											legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
-											legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
-											legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
+								case 0:		legendDataMin  = ((legendDataMin  / 1000 / 1000) >= 10) ? (legendDataMin / 1000 / 1000).toFixed(2) : (legendDataMin / 1000 / 1000).toFixed(0);
+											legendDataMax  = ((legendDataMax  / 1000 / 1000) >= 10) ? (legendDataMax / 1000 / 1000).toFixed(2) : (legendDataMax / 1000 / 1000).toFixed(0);
+											legendDataAvg  = ((legendDataAvg  / 1000 / 1000) >= 10) ? (legendDataAvg / 1000 / 1000).toFixed(2) : (legendDataAvg / 1000 / 1000).toFixed(0);
+											legendDataLast = ((legendDataLast / 1000 / 1000) >= 10) ? (legendDataLast / 1000 / 1000).toFixed(2) : (legendDataLast / 1000 / 1000).toFixed(0);
 											break;
 								case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0)
 											legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1276,10 +1276,10 @@
 						legendDataAvg = ((legendDataAvg === undefined) || (legendDataAvg == "NaN")) ? 0 : legendDataAvg;
 						legendDataLast = ((legendDataLast === undefined) || (legendDataLast == "NaN")) ? 0 : legendDataLast;
 						switch(plotUnit) {
-							case 0:		legendDataMin  = (legendDataMin  / 1000 / 1000).toFixed(2);	legendDataMin = (legendDataMin >= 10) ? legendDataMin.toFixed(0) : legendDataMin;
-										legendDataMax  = (legendDataMax  / 1000 / 1000).toFixed(2); legendDataMax = (legendDataMax >= 10) ? legendDataMax.toFixed(0) : legendDataMax;
-										legendDataAvg  = (legendDataAvg  / 1000 / 1000).toFixed(2); legendDataAvg = (legendDataAvg >= 10) ? legendDataAvg.toFixed(0) : legendDataAvg;
-										legendDataLast = (legendDataLast / 1000 / 1000).toFixed(2); legendDataLast = (legendDataLast >= 10) ? legendDataLast.toFixed(0) : legendDataLast;
+							case 0:		legendDataMin  = ((legendDataMin  / 1000 / 1000) >= 10) ? (legendDataMin / 1000 / 1000).toFixed(2) : (legendDataMin / 1000 / 1000).toFixed(0);
+										legendDataMax  = ((legendDataMax  / 1000 / 1000) >= 10) ? (legendDataMax / 1000 / 1000).toFixed(2) : (legendDataMax / 1000 / 1000).toFixed(0);
+										legendDataAvg  = ((legendDataAvg  / 1000 / 1000) >= 10) ? (legendDataAvg / 1000 / 1000).toFixed(2) : (legendDataAvg / 1000 / 1000).toFixed(0);
+										legendDataLast = ((legendDataLast / 1000 / 1000) >= 10) ? (legendDataLast / 1000 / 1000).toFixed(2) : (legendDataLast / 1000 / 1000).toFixed(0);
 										break;
 							case 1:		legendDataMin  = (legendDataMin  / 1000).toFixed(0);
 										legendDataMax  = (legendDataMax  / 1000).toFixed(0);
@@ -1376,7 +1376,7 @@
 					else 
 						if (plotType >= 3) 
 							switch (plotUnit) {
-								case 0:	y = (y / 1000 / 1000).toFixed(2); y = (y >= 10) ? y.toFixed(0) : y;		break;
+								case 0:	y = ((y / 1000 / 1000) >= 10) ? (y / 1000 / 1000).toFixed(2) : (y / 1000 / 1000).toFixed(0);		break;
 								case 1:	y = (y / 1000).toFixed(0);							break;
 							}
 						else 
