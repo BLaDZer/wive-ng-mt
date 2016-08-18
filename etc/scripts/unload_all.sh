@@ -40,14 +40,6 @@ unload_apps() {
     fi
 }
 
-free_mem_cahce() {
-    # small workaround for defrag and clean mem
-    sysctl -wq vm.min_free_kbytes=4096
-    sync
-    sysctl -wq vm.min_free_kbytes=2048
-    sync
-}
-
 disable_hotplug() {
     if [ -e /proc/sys/kernel/hotplug ]; then
 	echo "" > /proc/sys/kernel/hotplug
@@ -71,6 +63,3 @@ umount_all
 
 # unload all modules this is need after unmont
 unload_modules
-
-# this drop unneded caches to free more ram.
-free_mem_cahce
