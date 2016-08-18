@@ -158,7 +158,7 @@
   <message msgid="basic bandsteering age" msgstr="Inactive client entry age time" />
   <message msgid="basic bandsteering hold" msgstr="Time for holding 2.4G connection" />
   <message msgid="basic bandsteering check" msgstr="Time for deciding if a client is 2.4G only" />
-  <message msgid="basic bandsteering ssid" msgstr="SSID for 2.4GHz and 5GHz networks must be the same" />
+  <message msgid="basic bandsteering ssid" msgstr="SSID and Pass phrase for 2.4GHz and 5GHz networks must be the same" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />
@@ -246,7 +246,8 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA Algorithms" />
   <message msgid="secure wpa pass phrase" msgstr="Pass Phrase" />
-  <message msgid="secure wpa pass phrase inic" msgstr="Pass Phrase 5GHz" />
+  <message msgid="secure wpa pass phrase nic" msgstr="Pass Phrase (2.4GHz)" />
+  <message msgid="secure wpa pass phrase inic" msgstr="Pass Phrase (5GHz)" />
   <message msgid="secure wpa show pass phrase" msgstr="(show)" />
   <message msgid="secure wpa key renew interval" msgstr="Key Renewal Interval" />
   <message msgid="secure wpa pmk cache period" msgstr="PMK Cache Period" />

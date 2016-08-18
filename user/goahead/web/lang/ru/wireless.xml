@@ -143,7 +143,7 @@
   <message msgid="basic bandsteering age" msgstr="Помнить режим неактивного клиента" />
   <message msgid="basic bandsteering hold" msgstr="Таймаут запрета соединения в 2.4ГГц диапазоне" />
   <message msgid="basic bandsteering check" msgstr="Время на определение поддерживаемого диапазона" />
-  <message msgid="basic bandsteering ssid" msgstr="SSID для сети 2.4GHz и 5GHz должны быть одинаковыми" />
+  <message msgid="basic bandsteering ssid" msgstr="SSID и клюевая фраза для сетей 2.4GHz и 5GHz должны быть одинаковыми" />
 
   <message msgid="basic ids" msgstr="Предотвращение вторжений" />
   <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />
@@ -248,7 +248,8 @@
   <message msgid="secure wpa" msgstr="WPA" />
   <message msgid="secure wpa algorithm" msgstr="WPA алгоритмы" />
   <message msgid="secure wpa pass phrase" msgstr="Ключевая фраза" />
-  <message msgid="secure wpa pass phrase inic" msgstr="Ключевая фраза (5GHz)" />
+  <message msgid="secure wpa pass phrase nic" msgstr="Ключевая фраза (2.4ГГц)" />
+  <message msgid="secure wpa pass phrase inic" msgstr="Ключевая фраза (5ГГц)" />
   <message msgid="secure wpa show pass phrase" msgstr="(отобразить)" />
   <message msgid="secure wpa key renew interval" msgstr="Интервал смены ключа" />
   <message msgid="secure wpa pmk cache period" msgstr="Период кеширования PMK" />

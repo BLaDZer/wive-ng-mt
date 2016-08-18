@@ -22,6 +22,10 @@ var ACCESSPOLICYLIST_MAX	= 64;
 var changed = 0;
 var old_MBSSID;
 
+var is5gh_support = '<% is5gh_support(); %>';
+var SSIDnic = '<% getCfgGeneral(1, "SSID1"); %>';
+var SSIDinic = '<% getCfgGeneral(1, "SSID1INIC"); %>';
+
 var defaultShownMBSSID = 0;
 var SSID = new Array();
 var PreAuth = new Array();
@@ -366,6 +370,10 @@ function checkData(form)
 			}
 		}
 	}
+
+	if (SSIDnic == SSIDinic)
+		document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
+
 	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
@@ -432,8 +440,6 @@ function securityMode(c_f)
 {
 	var security_mode;
 
-	var is5gh_support = '<% is5gh_support(); %>';
-	
 	changed = c_f;
 
 	hideWep();
@@ -448,7 +454,6 @@ function securityMode(c_f)
 	document.security_form.cipher[1].disabled = true;
 	document.security_form.cipher[2].disabled = true;
 	document.security_form.passphrase.disabled = true;
-	document.security_form.passphraseinic.disabled = true;
 	document.security_form.keyRenewalInterval.disabled = true;
 	document.security_form.PMKCachePeriod.disabled = true;
 	document.security_form.PreAuthentication.disabled = true;
@@ -486,7 +491,7 @@ function securityMode(c_f)
 		document.getElementById("wpa_passphrase").style.display = '';
 		document.security_form.passphrase.disabled = false;
 
-		if (is5gh_support) {
+		if (is5gh_support && (SSIDnic != SSIDinic)) {
 			document.getElementById("wpa_passphrase5").style.visibility = "visible";
 			document.getElementById("wpa_passphrase5").style.display = '';
 			document.security_form.passphraseinic.disabled = false;
@@ -940,7 +945,13 @@ function initTranslation()
 
 	_TR("secreWPA", "secure wpa");
 	_TR("secureWPAAlgorithm", "secure wpa algorithm");
-	_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+	
+	if (is5gh_support && (SSIDnic != SSIDinic))
+		_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
+	else
+		_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+
+
 	_TR("secureWPAPassPhraseInic", "secure wpa pass phrase inic");
 	_TR("secureWPAKeyRenewInterval", "secure wpa key renew interval");
 	_TR("secureWPAPMKCachePeriod", "secure wpa pmk cache period");
