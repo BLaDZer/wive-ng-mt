@@ -2317,9 +2317,10 @@
 28) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
 29) kernel: net: netfilter: avoid race with exp->master ct.<br>
 30) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-31) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-32) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-33) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+31) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+32) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+33) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+34) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 <br>
 <br>
 <br>
