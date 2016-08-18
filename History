@@ -2315,8 +2315,9 @@
 26) kernel: net: packet: race condition in packet_bind.<br>
 27) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
 28) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-29) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-30) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+29) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+30) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+31) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
 <br>
 <br>
 <br>
