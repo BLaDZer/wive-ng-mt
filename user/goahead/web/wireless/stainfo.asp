@@ -541,11 +541,11 @@
 							wirelessAvgQuality5 += +data.stationlist5[i].quality0;
 
 						if (data.stationlist5[i].rssi != undefined)
-							wirelessAvgRSSI5 = +((+data.stationlist5[i].rssi2 + +data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 3).toFixed(0);
+							wirelessAvgRSSI5 += +((+data.stationlist5[i].rssi2 + +data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 3).toFixed(0);
 						else if (data.stationlist5[i].quality1 != undefined)
-							wirelessAvgRSSI5 = +((+data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 2).toFixed(0);
+							wirelessAvgRSSI5 += +((+data.stationlist5[i].rssi1 + +data.stationlist5[i].rssi0) / 2).toFixed(0);
 						else
-							wirelessAvgRSSI5 = +data.stationlist5[i].rssi0;
+							wirelessAvgRSSI5 += +data.stationlist5[i].rssi0;
 						
 						wirelessAvgTxRate5		+= +data.stationlist5[i].txrate;
 						wirelessAvgRx5			+= +data.stationlist5[i].rxbytes.replace(/ /g, '');
@@ -568,8 +568,6 @@
 					wirelessAvgRSSI24		= (wirelessAvgRSSI24 / wirelessAIDs24).toFixed(0);
 					wirelessAvgQuality24		= (wirelessAvgQuality24 / wirelessAIDs24).toFixed(0) + "%";
 					wirelessAvgTxRate24		= (wirelessAvgTxRate24 / wirelessAIDs24).toFixed(0);
-					wirelessAvgTx24			= (wirelessAvgTx24 / wirelessAIDs24).toFixed(0);
-					wirelessAvgRx24			= (wirelessAvgRx24 / wirelessAIDs24).toFixed(0);
 
 					// Average RX 2.4GHz
 					if (wirelessAvgRxLast24 == 0)
@@ -613,8 +611,6 @@
 					wirelessAvgRSSI5		= (wirelessAvgRSSI5 / wirelessAIDs5).toFixed(0);
 					wirelessAvgQuality5		= (wirelessAvgQuality5 / wirelessAIDs5).toFixed(0) + "%";
 					wirelessAvgTxRate5		= (wirelessAvgTxRate5 / wirelessAIDs5).toFixed(0);
-					wirelessAvgTx5			= (wirelessAvgTx5 / wirelessAIDs5).toFixed(0);
-					wirelessAvgRx5			= (wirelessAvgRx5 / wirelessAIDs5).toFixed(0);
 
 					// Average RX 5GHz
 					if (wirelessAvgRxLast5 == 0)
@@ -674,7 +670,7 @@
 					if (wirelessAvgTxLast == 0)
 						wirelessAvgTxLast = +wirelessAvgTx;
 					bytes = ((+wirelessAvgTx - wirelessAvgTxLast) / (updateTime / 1000)).toFixed(0);
-					wirelessAvgTxLast = wirelessAvgTx;
+					wirelessAvgTxLast = +wirelessAvgTx;
 
 					if (bytes >= (1000 * 1000))
 						wirelessAvgTx = (bytes * 8 / 1000 / 1000).toFixed(2) + _("stalist mbits");
