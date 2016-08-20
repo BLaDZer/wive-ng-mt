@@ -22,7 +22,7 @@ var ACCESSPOLICYLIST_MAX	= 64;
 var changed = 0;
 var old_MBSSID;
 
-var is5gh_support = '<% is5gh_support(); %>';
+var is5gh_support = ('<% is5gh_support(); %>' == '1') ? true : false;
 var SSIDnic = '<% getCfgGeneral(1, "SSID1"); %>';
 var SSIDinic = '<% getCfgGeneral(1, "SSID1INIC"); %>';
 

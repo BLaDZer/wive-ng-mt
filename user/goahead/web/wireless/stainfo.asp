@@ -150,34 +150,49 @@
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
 
-				if (getCookie('wirelessMode') !== undefined) {
-					wirelessMode = getCookie('wirelessMode');
-					if (wirelessMode == "Basic") {
-						wirelessTabeWidth	= "800px";
-						wirelessTableColumn	= 9;
-						document.getElementById('tableWirelessSummary').style.width = "800px";
-						document.getElementById('tableWirelessPlot').style.width = "800px";
-					}
-					else {
-						wirelessTabeWidth	= "1100px";
-						wirelessTableColumn	= 17;
-						document.getElementById('tableWirelessSummary').style.width = "1100px";
-						document.getElementById('tableWirelessPlot').style.width = "1100px";
-					}
+				if ((radio_on == 0) && ((is5gh_support == 0) || (radio_on_ac == 0))) {
+					deleteCookie('wirelessMode');
+					deleteCookie('plotMACs');
+					deleteCookie('plotMACsAll');
+					deleteCookie('wirelessPlotType');
+					deleteCookie('wirelessPlotTime');
+					deleteCookie('wirelessPlotUnit');
+					sessionStorage.clear();
+					wirelessTabeWidth = "800px";
+					wirelessTableColumn = 9;
+					document.getElementById('tableWirelessSummary').style.width = "800px";
+					document.getElementById('tableWirelessPlot').style.width = "800px";
 				}
+				else {
+					if (getCookie('wirelessMode') !== undefined) {
+						wirelessMode = getCookie('wirelessMode');
+						if (wirelessMode == "Basic") {
+							wirelessTabeWidth	= "800px";
+							wirelessTableColumn	= 9;
+							document.getElementById('tableWirelessSummary').style.width = "800px";
+							document.getElementById('tableWirelessPlot').style.width = "800px";
+						}
+						else {
+							wirelessTabeWidth	= "1100px";
+							wirelessTableColumn	= 17;
+							document.getElementById('tableWirelessSummary').style.width = "1100px";
+							document.getElementById('tableWirelessPlot').style.width = "1100px";
+						}
+					}
 
-				if (getCookie('plotMACs') !== undefined)
-					plotMACs = JSON.parse(getCookie('plotMACs'));
-				if (getCookie('plotMACsAll') !== undefined)
-					plotMACsAll = getCookie('plotMACsAll');
-				if (getCookie('wirelessPlotType') !== undefined)
-					document.getElementById('wirelessPlotType').selectedIndex = getCookie('wirelessPlotType');
-				if (getCookie('wirelessPlotTime') !== undefined)
-					document.getElementById('wirelessPlotTime').selectedIndex = getCookie('wirelessPlotTime');
-				if (getCookie('wirelessPlotUnit') !== undefined)
-					document.getElementById('wirelessPlotUnit').selectedIndex = getCookie('wirelessPlotUnit');
-				if (sessionStorage.getItem('plotData') != null)
-					plotData = JSON.parse(sessionStorage.getItem('plotData'));
+					if (getCookie('plotMACs') !== undefined)
+						plotMACs = JSON.parse(getCookie('plotMACs'));
+					if (getCookie('plotMACsAll') !== undefined)
+						plotMACsAll = getCookie('plotMACsAll');
+					if (getCookie('wirelessPlotType') !== undefined)
+						document.getElementById('wirelessPlotType').selectedIndex = getCookie('wirelessPlotType');
+					if (getCookie('wirelessPlotTime') !== undefined)
+						document.getElementById('wirelessPlotTime').selectedIndex = getCookie('wirelessPlotTime');
+					if (getCookie('wirelessPlotUnit') !== undefined)
+						document.getElementById('wirelessPlotUnit').selectedIndex = getCookie('wirelessPlotUnit');
+					if (sessionStorage.getItem('plotData') != null)
+						plotData = JSON.parse(sessionStorage.getItem('plotData'));
+				}
 
 				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", startShowStationList);
 				showWarning();

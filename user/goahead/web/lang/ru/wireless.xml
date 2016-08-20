@@ -143,7 +143,7 @@
   <message msgid="basic bandsteering age" msgstr="Помнить режим неактивного клиента" />
   <message msgid="basic bandsteering hold" msgstr="Таймаут запрета соединения в 2.4ГГц диапазоне" />
   <message msgid="basic bandsteering check" msgstr="Время на определение поддерживаемого диапазона" />
-  <message msgid="basic bandsteering ssid" msgstr="SSID и клюевая фраза для сетей 2.4GHz и 5GHz должны быть одинаковыми" />
+  <message msgid="basic bandsteering ssid" msgstr="SSID и ключевая фраза для сетей 2.4GHz и 5GHz должны быть одинаковыми" />
 
   <message msgid="basic ids" msgstr="Предотвращение вторжений" />
   <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />
@@ -402,7 +402,7 @@
   <message msgid="stalist wireless sum total 5" msgstr="5ГГц" />  
   <message msgid="stalist wireless sum aid" msgstr="Количество подключений" />
   <message msgid="stalist wireless sum txrate" msgstr="Средняя скорость подключения" />
-  <message msgid="stalist wireless sum rxtx" msgstr="Скорость передачи данных" />
+  <message msgid="stalist wireless sum rxtx" msgstr="Скорость приема/передачи данных" />
   <message msgid="stalist wireless sum rssi" msgstr="Средний уровень принимаемого сигнала" />
   <message msgid="stalist wireless sum quality" msgstr="Среднее качество сигнала" />
   <message msgid="stalist wireless mode" msgstr="Режим отображения подключенных клиентов" />

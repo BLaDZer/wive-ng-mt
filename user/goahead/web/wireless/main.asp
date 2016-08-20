@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Basic Wireless Settings</title>
+<title>Main Wireless Settings</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
@@ -2073,7 +2073,7 @@ function showRoamingMenu(){
 		<tr align="center">
 			<td><input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;
 				<input type="button" class="normal" value="Cancel" id="basicCancel" onClick="window.location.reload();">
-				<input type="hidden" name="submit-url" value="/wireless/basic.asp"></td>
+				<input type="hidden" name="submit-url" value="/wireless/main.asp"></td>
 		</tr>
 	</table>
 	</form>

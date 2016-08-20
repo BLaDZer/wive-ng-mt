@@ -64,45 +64,41 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	/* Output leases file */
 	for (rownum=0; rownum<row_len; rownum++)
 	{
-	    	struct dyn_lease lease = leases[rownum];
-		
-		// Output structure
-		// Host
-		websWrite(wp, T("<tr><td>%s&nbsp;</td>"), lease.hostname);
-		// MAC
-		websWrite(wp, T("<td id=\"dhclient_row%d_mac\">%02X"), rownum, lease.lease_mac[0]);
-		for (i = 1; i < 6; i++)
-			websWrite(wp, T(":%02X"), lease.lease_mac[i]);
-		// IP
-		addr.s_addr = lease.lease_nip;
-		websWrite(wp, T("</td><td id=\"dhclient_row%d_ip\">%s</td><td>"), rownum, inet_ntoa(addr));
+		struct dyn_lease lease = leases[rownum];
 
-		// Expire Date
 		expired_abs = ntohl(lease.expires) + written_at;
-		if (expired_abs > curr)
-		{
-			leasetime_t expires = expired_abs - curr;
-			unsigned d = expires / (24*60*60);
-			expires %= (24*60*60);
-			unsigned h = expires / (60*60);
-			expires %= (60*60);
-			unsigned m = expires / 60;
-			expires %= 60;
+		if (expired_abs > curr) {
+			// Output structure
+			// Host
+			websWrite(wp, T("<tr><td>%s&nbsp;</td>"), lease.hostname);
+			// MAC
+			websWrite(wp, T("<td id=\"dhclient_row%d_mac\">%02X"), rownum, lease.lease_mac[0]);
+			for (i = 1; i < 6; i++)
+				websWrite(wp, T(":%02X"), lease.lease_mac[i]);
+			// IP
+			addr.s_addr = lease.lease_nip;
+			websWrite(wp, T("</td><td id=\"dhclient_row%d_ip\">%s</td><td>"), rownum, inet_ntoa(addr));
 
-			if (d>0)
-				websWrite(wp, T("%u days "), d);
-			websWrite(wp, T("%02u:%02u:%02u</td>"), h, m, (unsigned)expires);
+			// Expire Date
+			if (expired_abs > curr)
+			{
+				leasetime_t expires = expired_abs - curr;
+				unsigned d = expires / (24*60*60);
+				expires %= (24*60*60);
+				unsigned h = expires / (60*60);
+				expires %= (60*60);
+				unsigned m = expires / 60;
+				expires %= 60;
+				if (d>0)
+					websWrite(wp, T("%u days "), d);
+				websWrite(wp, T("%02u:%02u:%02u</td>"), h, m, (unsigned)expires);
+			}
+
+			websWrite(wp, "<td id=\"dhclient_row%d_status\" style=\"text-align: center;\">"
+				"<input id=\"dhclient_row%d\" type=\"checkbox\" onchange=\"toggleDhcpTable(this);\"></td>",
+				rownum, rownum);
+			websWrite(wp, "</tr>\n");
 		}
-		else
-		{
-			websWrite(wp, T("expired</td>"));
-		}
-
-		websWrite(wp, "<td id=\"dhclient_row%d_status\" style=\"text-align: center;\">"
-			"<input id=\"dhclient_row%d\" type=\"checkbox\" onchange=\"toggleDhcpTable(this);\"></td>",
-			rownum, rownum);
-
-		websWrite(wp, "</tr>\n");
 	}
 
 	if (leases)

@@ -16,7 +16,7 @@
     <message msgid="button reset statistics" msgstr="Сбросить статистику" />
     <message msgid="button disconnect" msgstr="Отключить" />
     <message msgid="button disconnect all" msgstr="Отключить всех" />
-    <message msgid="button clear" msgstr="Отчистить" />
+    <message msgid="button clear" msgstr="Очистить" />
     <message msgid="button remove" msgstr="Удалить" />
 
     <message msgid="message apply" msgstr="Пожалуйста, подождите пока будут применены новые настройки..." />
