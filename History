@@ -2312,7 +2312,7 @@
 23) kernel: net: packet: race condition in packet_bind.<br>
 24) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
 25) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-26) kernel: net: tcp: increase sysctl_tcp_challenge_ack_limit to 1000 (CVE-2016-5696).<br>
+26) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
 27) kernel: net: tcp: md5: fix lockdep annotation.<br>
 28) kernel: net: tcp: consider recv buf for the initial window scale.<br>
 29) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
