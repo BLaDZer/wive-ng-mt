@@ -2293,7 +2293,7 @@
 4) xl2tpd: update to 1.3.8 version (commit: cec1ebe).<br>
 5) dropbear: up to 2016.74 version.<br>
 6) busybox: apply busybox-1.25.0-ip.patch, busybox-1.25.0-gzip.patch, busybox-1.25.0-ntpd.patch.<br>
-7) coovachilli: include address when complaining about static out of range.<br>
+7) coovachilli: up to 1.3.1.4 from git (commit 6c58a4c5).<br>
 8) libmicrohttp/nodogsplash: fix regression after add SO_REUSE_PORT support (3.4.x kernel not support this - rewrite to address reuse).<br>
 9) build_system: add templates for support SFP router.<br>
 10) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
