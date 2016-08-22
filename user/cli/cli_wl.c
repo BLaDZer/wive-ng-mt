@@ -105,15 +105,15 @@ int func_wl_status(int argc, char* argv[])
 	printf("error (%i)\n",ap_ret);
     else if (ap_ret==0) 
 	printf("disconnected\n");
-    else 
+    else
 	printf("connected (%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx)\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
     if (nvram_get_int(RT2860_NVRAM, "WdsEnable", 0) > 0)
     {
-    char wdsifname[IFNAMSIZ] = {0};
+	char wdsifname[IFNAMSIZ] = {0};
 
-    for (n=0;n<4;n++)
-    {
+	for (n=0;n<4;n++)
+	{
 	    RT_802_11_MAC_ENTRY entry = {0};
 	    snprintf(wdsifname, IFNAMSIZ-1, "wds%i",n);
 
