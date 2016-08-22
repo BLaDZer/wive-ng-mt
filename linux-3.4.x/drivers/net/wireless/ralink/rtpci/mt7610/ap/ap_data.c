@@ -3383,7 +3383,16 @@ NDIS_STATUS APHardTransmit(
 		}
 	}
 
-
+#ifdef DOT11K_RRM_SUPPORT
+#ifdef QUIET_SUPPORT
+	if ((pTxBlk->apidx < pAd->ApCfg.BssidNum)
+		&& IS_RRM_QUIET(pAd, pTxBlk->apidx))
+	{
+		RELEASE_NDIS_PACKET(pAd, pTxBlk->pPacket, NDIS_STATUS_FAILURE);
+		return NDIS_STATUS_FAILURE;
+	}
+#endif /* QUIET_SUPPORT */
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef HDR_TRANS_TX_SUPPORT
 #ifdef SOFT_ENCRYPT
@@ -3403,7 +3412,7 @@ NDIS_STATUS APHardTransmit(
 #endif // TXBF_SUPPORT //
 	}
 #endif /* HDR_TRANS_TX_SUPPORT */
-	
+
 	switch (pTxBlk->TxFrameType)
 	{
 #ifdef DOT11_N_SUPPORT
@@ -3419,17 +3428,6 @@ NDIS_STATUS APHardTransmit(
 				break;
 #endif /* DOT11_N_SUPPORT */
 		case TX_LEGACY_FRAME:
-
-#ifdef DOT11K_RRM_SUPPORT
-#ifdef QUIET_SUPPORT
-	if ((pTxBlk->apidx < pAd->ApCfg.BssidNum)
-		&& IS_RRM_QUIET(pAd, pTxBlk->apidx))
-	{
-		RELEASE_NDIS_PACKET(pAd, pTxBlk->pPacket, NDIS_STATUS_FAILURE);
-		return NDIS_STATUS_FAILURE;
-	}
-#endif /* QUIET_SUPPORT */
-#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef HDR_TRANS_TX_SUPPORT
 				if (pTxBlk->NeedTrans)
