@@ -74,7 +74,6 @@
 #include <net/inet_common.h>
 #include <linux/ipsec.h>
 #include <asm/unaligned.h>
-#include <linux/reciprocal_div.h>
 
 int sysctl_tcp_timestamps __read_mostly = 1;
 int sysctl_tcp_window_scaling __read_mostly = 1;
@@ -3643,15 +3642,17 @@ static void tcp_send_challenge_ack(struct sock *sk)
 	/* unprotected vars, we dont care of overwrites */
 	static u32 challenge_timestamp;
 	static unsigned int challenge_count;
-	u32 now = jiffies / HZ;
-	u32 count;
+	u32 count, now;
 
+	/* Then check host-wide RFC 5961 rate limit. */
+	now = jiffies / HZ;
 	if (now != challenge_timestamp) {
+		u64 x = random32();
 		u32 half = (sysctl_tcp_challenge_ack_limit + 1) >> 1;
 
 		challenge_timestamp = now;
-		WRITE_ONCE(challenge_count, half +
-		           reciprocal_divide(net_random(), sysctl_tcp_challenge_ack_limit));
+		x = (x * sysctl_tcp_challenge_ack_limit) >> 32;
+		WRITE_ONCE(challenge_count, half + (u32)x);
 	}
 	count = READ_ONCE(challenge_count);
 	if (count > 0) {
@@ -5197,7 +5198,7 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
 	/* step 3: check security and precedence [ignored] */
 
 	/* step 4: Check for a SYN
-	 * RFC 5691 4.2 : Send a challenge ack
+	 * RFC 5961 4.2 : Send a challenge ack
 	 */
 	if (th->syn) {
 syn_challenge:
