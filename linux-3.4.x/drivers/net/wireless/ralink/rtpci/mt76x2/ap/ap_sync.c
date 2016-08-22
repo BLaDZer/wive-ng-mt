@@ -660,13 +660,13 @@ VOID APPeerProbeReqAction(
 			TmpLen2 += TmpLen;
 
 #ifdef DOT11K_RRM_SUPPORT
-				if (IS_RRM_ENABLE(pAd, apidx)
-					&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
-				{
-					TmpLen2 = 0;
-					NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
-					RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
-				}		
+			if (IS_RRM_ENABLE(pAd, apidx)
+				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+			{
+				TmpLen2 = 0;
+				NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+				RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
+			}
 #endif /* DOT11K_RRM_SUPPORT */
 
 			/* need to do the padding bit check, and concatenate it */
