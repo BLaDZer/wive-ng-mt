@@ -86,6 +86,7 @@ dir_$(CONFIG_USER_DHCP6)                    += dhcp6
 dir_$(CONFIG_USER_ZEBRA)		    += quagga
 dir_$(CONFIG_USER_SNMPD)                    += snmpd
 dir_$(CONFIG_USER_CWMPD)                    += netcwmp
+dir_$(CONFIG_USER_CLI)                      += cli
 dir_$(CONFIG_USER_RADIUS)                   += freeradius
 
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump

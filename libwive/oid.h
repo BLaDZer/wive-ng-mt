@@ -579,4 +579,15 @@ typedef struct _PAIR_CHANNEL_FREQ_ENTRY
 	unsigned long   lFreq;
 } PAIR_CHANNEL_FREQ_ENTRY, *PPAIR_CHANNEL_FREQ_ENTRY;
 
+struct WLAN_AP_ENTRY {
+	unsigned char chan;
+	char ssid[33];
+	unsigned char bssid[6];
+	char security[23];
+	unsigned char signal_percent;
+	char wmode[8];
+	char extch[7];
+	char nt[4];
+};
+
 #endif

@@ -11,9 +11,9 @@
 
 #include "libwive.h"
 
-int RtpQueryInformation(unsigned long QueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
+int wlan_ioctl(unsigned long QueryCode, const char *DeviceName, struct iwreq *wrq)
 {
-	struct iwreq wrq;
+	int ret;
 	int s = socket(AF_INET, SOCK_DGRAM, 0);
 
 	if (s < 0) {
@@ -21,35 +21,69 @@ int RtpQueryInformation(unsigned long QueryCode, char *DeviceName, void *ptr, un
 		return -1;
 	}
 
+	strncpy(wrq->ifr_name, DeviceName, IFNAMSIZ - 1);
+	wrq->ifr_name[IFNAMSIZ - 1] = '\0';
+
+	ret = ioctl(s, QueryCode, wrq);
+
+	if (ret<0)
+	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
+
+	close(s);
+
+	return ret;
+}
+
+int RtpQueryInformation(unsigned long QueryCode, const char *DeviceName, void *ptr, unsigned long PtrLength)
+{
+	struct iwreq wrq;
+
 	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
-	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 
-	if (ioctl(s, QueryCode, &wrq) < 0) {
-	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
-	    close(s);
+	if (wlan_ioctl(QueryCode, DeviceName, &wrq))
+	{
+	    syslog(LOG_ERR, "wlan: ioctl failed, %s, (%lu, %s)", __FUNCTION__, QueryCode, DeviceName);
 	    return -1;
 	}
 
-	close(s);
+	return wrq.u.data.length;
+}
+
+int RtpSetInformation(const char *set_info, const char *DeviceName)
+{
+	struct iwreq wrq;
+        char *data = calloc(strlen(set_info)+1,sizeof(char));
+	if (!data)
+	{
+	    syslog(LOG_ERR, "wlan: unable to allocate data, %s, (%s, %s)", __FUNCTION__, set_info, DeviceName);
+	    return 1;
+	}
+
+        strcpy(data, set_info);
+
+	memset(&wrq, 0, sizeof(wrq));
+	wrq.u.data.length = strlen(data)+1;
+	wrq.u.data.pointer = data;
+	wrq.u.data.flags = 0;
+
+	if (wlan_ioctl(RTPRIV_IOCTL_SET, DeviceName, &wrq))
+	{
+	    syslog(LOG_ERR, "wlan: ioctl failed, %s, (%s, %s)", __FUNCTION__, set_info, DeviceName);
+	    free(data);
+	    return 2;
+	}
+
+	free(data);
 	return 0;
 }
 
-int OidQueryInformation(unsigned long OidQueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
+int OidQueryInformation(unsigned long OidQueryCode, const char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
-	int s = socket(AF_INET, SOCK_DGRAM, 0);
-
-	if (s < 0) {
-		syslog(LOG_ERR, "wlan: ioctl open sock failed, %s", __FUNCTION__);
-		return -1;
-	}
 
 	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
-	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 	wrq.u.data.flags = OidQueryCode;
@@ -57,18 +91,16 @@ int OidQueryInformation(unsigned long OidQueryCode, char *DeviceName, void *ptr,
 	if (OidQueryCode == OID_802_11_BSSID_LIST)
 		wrq.u.data.length = 8192;
 
-	if (ioctl(s, RT_PRIV_IOCTL, &wrq) < 0) {
-	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
-	    close(s);
+	if (wlan_ioctl(RT_PRIV_IOCTL, DeviceName, &wrq))
+	{
+	    syslog(LOG_ERR, "wlan: ioctl failed, %s, (%lu, %s)", __FUNCTION__, OidQueryCode, DeviceName);
 	    return -1;
 	}
 
-	close(s);
 	return 0;
 }
 
-
-int OidSetInformation(unsigned long OidQueryCode, char *DeviceName, void *ptr, unsigned long PtrLength)
+int OidSetInformation(unsigned long OidQueryCode, const char *DeviceName, void *ptr, unsigned long PtrLength)
 {
 	struct iwreq wrq;
 
@@ -250,6 +282,11 @@ char* getWlanRadioModuleName(int radio_module_ind)
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
 {
 	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	return getWlanStationTableIf(table, if_name);
+}
+
+int getWlanStationTableIf(RT_802_11_MAC_TABLE* table, char *if_name)
+{
 	if (if_name == NULL)
 	    return 2;
 
@@ -259,7 +296,6 @@ int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
 	}
 
 	return 0;
-
 }
 
 /* getWlanChannelNum - Get the channel number for selected radio module
@@ -310,6 +346,123 @@ int getWlanCurrentMacAddr(char *buf, int radio_module_ind)
 		return 2;
 
 	return 0;
+}
+
+/* getWlanAPMac - Get apclient connected access point mac address
+ * arg: if_name - interface name
+ * arg: (out) addr - char[ETH_ALEN] field for MAC.
+ * return: <0 = Error, 0 = Not connected, >0 = connected
+*/
+int getWlanAPMac(const char *if_name, char *addr)
+{
+
+	struct iwreq wrq;
+
+	memset(&wrq, 0, sizeof(wrq));
+
+	if (wlan_ioctl(SIOCGIWAP, if_name, &wrq) >= 0)
+	{
+	    //p_wrq.u.ap_addr.sa_family = ARPHRD_ETHER;
+	    memcpy(addr, wrq.u.ap_addr.sa_data, ETH_ALEN);
+	}
+	else
+	{
+	    syslog(LOG_ERR, "wlan: ioctl failed, %s, (%s)", __FUNCTION__, if_name);
+	    return -1;
+	}
+
+        return addr[0] || addr[1] || addr[2] || addr[3] || addr[4] || addr[5];
+}
+
+/* getWlanWDSEntry - Get WDS entry
+ * arg: if_name - interface name
+ * arg: (out) entry - output entry
+ * return: 0 = OK, 1 = not connected, -1 = Error
+*/
+int getWlanWDSEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
+{
+	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT, if_name, entry, sizeof(RT_802_11_MAC_ENTRY)) < 0) {
+		syslog(LOG_ERR, "wlan: ioctl -> RT_802_11_MAC_ENTRY failed, %s", __FUNCTION__);
+		return -1;
+	}
+
+	if (entry->Addr[0] || entry->Addr[1] || entry->Addr[2] || entry->Addr[3] || entry->Addr[4] || entry->Addr[5]) 
+	    return 0;
+	else 
+	    return 1;
+}
+
+int wlanAPScanText(const char *if_name, char* data, unsigned int data_len)
+{
+
+	if (RtpSetInformation("SiteSurvey=1", if_name))
+	{
+		syslog(LOG_ERR, "wlan: SiteSurvey ioctl set failed, %s", __FUNCTION__);
+		return 1;
+	}
+
+	sleep(4);
+
+	int out_data_len = RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
+
+	if (out_data_len <= 0)
+	{
+		syslog(LOG_ERR, "wlan: SiteSurvey ioctl get failed, %s", __FUNCTION__);
+		return 2;
+	}
+
+	return 0;
+}
+
+struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
+{
+    char data[8192];
+    int ent_capacity = 32;
+    int ent_cur = 0;
+    struct WLAN_AP_ENTRY* entries = calloc(ent_capacity, sizeof(struct WLAN_AP_ENTRY));
+    *(entry_num) = 0;
+
+    if (!entries)
+	return NULL;
+
+    if (wlanAPScanText(if_name, data, 8192))
+    {
+	syslog(LOG_ERR, "wlan: SiteSurvey failed, %s", __FUNCTION__);
+	return NULL;
+    }
+
+    char *ptr = strtok(data, "\n");
+
+    while (ptr)
+    {
+	struct WLAN_AP_ENTRY* entry = &entries[ent_cur];
+
+        int cnt = sscanf(ptr, "%hhu %s %hhx:%hhx:%hhx:%hhx:%hhx:%hhx %s %hhu %s %s %s", &entry->chan, entry->ssid, &entry->bssid[0], &entry->bssid[1], &entry->bssid[2], &entry->bssid[3], &entry->bssid[4], &entry->bssid[5], entry->security, &entry->signal_percent, entry->wmode, entry->extch, entry->nt);
+
+	if (cnt == 13)
+	{
+	    ent_cur++;
+
+	    if (ent_cur >= ent_capacity)
+	    {
+		ent_capacity += 32;
+		struct WLAN_AP_ENTRY* new_entries = realloc(entries, ent_capacity);
+		if (new_entries != NULL)
+		{
+		    entries = new_entries;
+		}
+		else
+		{
+		    break;
+		}
+	    }
+	}
+
+	ptr = strtok(NULL, "\n");
+    }
+
+    *(entry_num) = ent_cur;
+    return entries;
 }
 
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)

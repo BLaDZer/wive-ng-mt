@@ -84,6 +84,7 @@ bool 'Proxy ARP daemon'				CONFIG_USER_PARPROUTED
 bool 'ripd-zebra (RIP)' 			CONFIG_USER_ZEBRA
 bool 'snmpd'	                                CONFIG_USER_SNMPD
 bool 'netcwmpd opensource tr-069 agent'         CONFIG_USER_CWMPD
+bool 'command line interface'			CONFIG_USER_CLI
 bool 'miniupnpd'				CONFIG_USER_MINIUPNPD
 bool 'xupnpd'					CONFIG_USER_XUPNPD
 bool 'radvd (Router Advertisement Daemon)'	CONFIG_USER_RADVD
