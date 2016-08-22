@@ -250,6 +250,15 @@
 				showPlot();
 			}
 
+			function savePlotData() {
+				try {
+					sessionStorage.setItem('plotData', JSON.stringify(plotData));
+				} catch (e) {
+					plotData.splice(0, 12);
+					savePlotData();
+				}
+			}
+			
 			function disconnectStation(form, mac)
 			{
 				form.disconnectSta.value = mac;
@@ -263,15 +272,7 @@
 						plotMACs.splice(plotMACs.indexOf(mac.replace(/:/g, '')), 1);
 				}
 				setCookie('plotMACs', JSON.stringify(plotMACs));
-				try {
-					sessionStorage.setItem('plotData', JSON.stringify(plotData));
-				} catch (e) {
-					if (e == QUOTA_EXCEEDED_ERR) {
-						plotData.splice(0, 120);
-						sessionStorage.clear();
-						sessionStorage.setItem('plotData', JSON.stringify(plotData));
-					}
-				}
+				savePlotData();
 
 				var m_method	= $(form).attr('method');
 				var m_action	= $(form).attr('action');
@@ -812,15 +813,7 @@
 
 				for (i = 0; i < MACs.length; i++) 
 					plotData.push([ MACs[i], +time, null, null, null, 0, 0 ]);
-				try {
-					sessionStorage.setItem('plotData', JSON.stringify(plotData));
-				} catch (e) {
-					if (e == QUOTA_EXCEEDED_ERR) {
-						plotData.splice(0, 120);
-						sessionStorage.clear();
-						sessionStorage.setItem('plotData', JSON.stringify(plotData));
-					}
-				}
+				savePlotData();
 			}
 
 			function showPlot()
