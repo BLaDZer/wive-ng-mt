@@ -22,7 +22,8 @@ LOG="logger -t reconfig"
 addWds() {
         eval `nvram_buf_get 2860 WdsEnable WdsNum`
 	wdsif="$1"
-	if [ "$WdsEnable" = "1" ]; then
+	# WdsEnable must be 0...4, this mode of WDS work"
+	if [ "$WdsEnable" != "0" ] && [ "$WdsEnable" != "" ]; then
 	    if [ "$WdsNum" = "" ]; then
 		WdsNum=1
 	    fi
@@ -120,6 +121,11 @@ apcli_config() {
 	    addMBSSID $first_wlan_mbss
 	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
+	fi
+	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
+	    addWds $first_wlan_wds
+	elif [ "$second_wlan_wds" != "" ] && [ "$second_wlan_wds" = "$WdsIfName" ]; then
+	    addWds $second_wlan_wds
 	fi
 	# delete ra0 from bridge and down if only apcli-bridge
 	eval `nvram_buf_get 2860 ApCliClientOnly`
