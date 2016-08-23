@@ -9,6 +9,7 @@
 #include "libwive.h"
 
 #define STR_EQ(X,Y)	( X && Y && (strcmp(X,Y)==0) )
+#define STR_EQ_HELP(X)  ( STR_EQ(X,"help") || STR_EQ(X,"?") )
 
 #include "cli_wl.h"
 #include "cli_sw.h"

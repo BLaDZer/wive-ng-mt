@@ -4,7 +4,7 @@
 #include "cli.h"
 
 int func_wl(int argc, char* argv[]);
-int func_wl_stalist(char* iface, int argc, char* argv[]);
+int func_wl_stalist(int argc, char* argv[]);
 int func_wl_status(int argc, char* argv[]);
 int func_wl_scan(int argc, char* argv[]);
 

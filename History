@@ -2300,7 +2300,7 @@
 11) init.d: fix wds regression and coex with apcli mode.<br>
 12) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 13) goahead: more usable station list extended info.<br>
-14) cli: initial iplementation (now very simple).<br>
+14) cli: initial iplementation (now very simple, wl scan/stalist/status).<br>
 15) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 16) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
 17) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
