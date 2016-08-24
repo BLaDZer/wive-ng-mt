@@ -2323,21 +2323,22 @@
 34) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
 35) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
 36) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
-37) kernel: net: l2tp: Correctly return -EBADF from pppol2tp_getname.<br>
-38) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-39) kernel: net: packet: race condition in packet_bind.<br>
-40) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-41) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-42) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
-43) kernel: net: tcp: md5: fix lockdep annotation.<br>
-44) kernel: net: tcp: consider recv buf for the initial window scale.<br>
-45) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-46) kernel: net: netfilter: avoid race with exp->master ct.<br>
-47) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-48) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-49) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-50) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-51) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+37) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
+38) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
+39) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+40) kernel: net: packet: race condition in packet_bind.<br>
+41) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+42) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+43) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
+44) kernel: net: tcp: md5: fix lockdep annotation.<br>
+45) kernel: net: tcp: consider recv buf for the initial window scale.<br>
+46) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+47) kernel: net: netfilter: avoid race with exp->master ct.<br>
+48) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+49) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+50) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+51) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+52) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 <br>
 <br>
 <br>
