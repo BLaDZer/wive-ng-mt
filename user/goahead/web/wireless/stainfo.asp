@@ -21,6 +21,7 @@
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
+			var platform		= '<% getPlatform(); %>';
 			var updateTime		= 5000;
 			var wirelessMode	= "Basic";
 			var wirelessTabeWidth	= "800px";
@@ -174,7 +175,7 @@
 						}
 						else {
 							wirelessTabeWidth	= "1100px";
-							wirelessTableColumn	= 17;
+							wirelessTableColumn	= ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0)) ? 17 : 16;
 							document.getElementById('tableWirelessSummary').style.width = "1100px";
 							document.getElementById('tableWirelessPlot').style.width = "1100px";
 						}
@@ -227,7 +228,7 @@
 				else {
 					wirelessMode 		= "Advanced";
 					wirelessTabeWidth	= "1100px";
-					wirelessTableColumn	= 17;
+					wirelessTableColumn	= ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0)) ? 17 : 16;
 					document.getElementById('tableWirelessSummary').style.width = "1100px";
 					document.getElementById('tableWirelessPlot').style.width = "1100px";
 				}
@@ -382,7 +383,8 @@
 					html +=	'<th id="stalistBW">BW</th>';
 					html +=	'<th id="stalistSGI">SGI</th>';
 					html +=	'<th id="stalistSTBC">STBC</th>';
-					html +=	'<th id="stalistLDPC">LDPC</th>';
+					if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+						html +=	'<th id="stalistLDPC">LDPC</th>';
 					html +=	'<th id="stalistMODE">MODE</th>';
 				}
 				html +=	'<th id="stalistTxRate">TX RATE</th>';
@@ -418,7 +420,8 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist24[i].sgi + '</td>';				//SGI
 							html += '<td style="text-align: center">' + data.stationlist24[i].stbc + '</td>';				//STBC
-							html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';				//LDPC
+							if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+								html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';				//MODE
 						}
 						html += '<td style="text-align: center">' + data.stationlist24[i].txrate + _("stalist mbits") + '</td>';		//TX RATE
@@ -508,7 +511,8 @@
 							html += '<td style="text-align: center">' + data.stationlist5[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist5[i].sgi + '</td>';					//SGI
 							html += '<td style="text-align: center">' + data.stationlist5[i].stbc + '</td>';				//STBC
-							html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';				//LDPC
+							if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+								html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';				//MODE
 						}
 						html += '<td style="text-align: center">' + data.stationlist5[i].txrate + _("stalist mbits") + '</td>';			//TX RATE

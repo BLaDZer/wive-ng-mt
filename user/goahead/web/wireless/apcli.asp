@@ -43,7 +43,7 @@
 			function initValues()
 			{
 				var form					= document.wireless_apcli;
-				form.apcli_enable.value		= '<% getCfgGeneral(1, "ApCliEnable"); %>';
+				form.apcli_enable.checked	= '<% getCfgGeneral(1, "ApCliEnable"); %>' == '1';
 				form.apcli_ssid.value		= '<% getCfgGeneral(1, "ApCliSsid"); %>';
 				form.apcli_bssid.value		= '<% getCfgGeneral(1, "ApCliBssid"); %>';
 				form.apcli_mode.value		= '<% getCfgGeneral(1, "ApCliAuthMode"); %>';
@@ -60,7 +60,7 @@
 				if ((is5gh_support == 0) || ((radio_on == 0) && (radio_on_ac == 0))) {
 					form.apcli_interface.value = "apcli0";
 					displayElement('apcliWiFiMode_tr', false);
-				}  
+				}
 				else {
 					form.apcli_interface.disabled = (radio_on == 0) || (radio_on_ac == 0);
 					if (radio_on == 0) 
@@ -70,30 +70,40 @@
 					else
 						form.apcli_interface.value = apcli_mode;
 				}
+
+				ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);
+				setInterval('ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);', 5000);
+
 				securityModeSwitch(form);
 				apcliEnableSwitch(form);
 				showWarning();
 				initTranslation();
 			}
 
-			function checkValues(form) 
+			function checkValues(form)
 			{
-				if (form.apcli_bssid.value.length > 0) {
-					if (!validateMAC(form.apcli_bssid.value, false)) {
-						alert(_("apcli no correct bssid"));
-						form.apcli_bssid.focus();
-						form.apcli_bssid.select();
-						return false;
+				if (form.apcli_enable.checked) {
+					if (form.apcli_bssid.value.length > 0) {
+						if (!validateMAC(form.apcli_bssid.value, false)) {
+							alert(_("apcli no correct bssid"));
+							form.apcli_bssid.focus();
+							form.apcli_bssid.select();
+							return false;
+						}
 					}
-				}
 
-				if ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK')) {
-					if ((form.apcli_wpapsk.value.length < 8) || (form.apcli_wpapsk.value.length > 64)) {
-						alert(_("apcli long phrase"));
-						form.apcli_wpapsk.focus();
-						form.apcli_wpapsk.select();
-						return false;
-					}
+					if ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK'))
+						if (form.apcli_wpapsk.value.length < 8) {
+							alert(_("apcli short phrase"));
+							form.apcli_wpapsk.focus();
+							form.apcli_wpapsk.select();
+							return false;
+						} else if (form.apcli_wpapsk.value.length > 64) {
+							alert(_("apcli long phrase"));
+							form.apcli_wpapsk.focus();
+							form.apcli_wpapsk.select();
+							return false;
+						}
 					else
 						for (var i = 0; i < form.apcli_wpapsk.value.length; i++)
 							if ((form.apcli_wpapsk.value.charCodeAt(i) < 32) || (form.apcli_wpapsk.value.charCodeAt(i) > 126)) {
@@ -103,29 +113,47 @@
 								return false;
 							}
 				}
-				
+
 				form.apcli_interface.disabled = false; 
-				
+
 				if (!ajaxPostForm(_('apcli reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), 3);
 					form.reboot.value = "0";
 					form.submit();
 				}
 				return true;
 			}
-			
+
+			function showAPCliStatus()
+			{
+					var text;
+					var apcliStatus = document.getElementById('apcliStatusData').innerHTML;
+					var apcliEnable = '<% getCfgGeneral(1, "ApCliEnable"); %>';
+
+					if (apcliEnable == "0")
+						text = "<b><font color=\"#808080\">Disabled</font></b>";
+					else if (parseInt(apcliStatus) < 0)
+						text = "<b><font color=\"#FF0000\">Error (" + apcliStatus + ")</font></b>";
+					else if (parseInt(apcliStatus) == 0)
+						text = "<b><font color=\"#808080\">Disconnected</font></b>";
+					else
+						text = "<b><font color=\"#008000\">Connected (" + apcliStatus.toUpperCase() + ")</font></b> ";
+
+					ajaxModifyElementHTML('apcli_status', text);	
+			}
+
 			function securityModeSwitch(form)
 			{
 				var enc_type = '<% getCfgGeneral(1, "ApCliEncrypType"); %>';
 				form.apcli_enc.value = (enc_type != "") ? "AES" : enc_type;
-				displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK')) && (form.apcli_enable.value == 1));
+				displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK')) && (form.apcli_enable.checked == 1));
 			}
-			
+
 			function apcliEnableSwitch(form) 
 			{
 				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr', 
 								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk', 
-								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.value == 1);
+								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.checked == 1);
 				securityModeSwitch(form);
 			}
 
@@ -148,15 +176,15 @@
 					<hr />
 					<form method="POST" name="wireless_apcli" action="/goform/wirelessApcli">
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
+					<div id="apcliStatusData" style="display: none;"></div>
 					<table class="form">
 						<tr>
-							<td id="apcliEnable" class="title" style="width: 40%">AP Client Parameters</td>
-							<td class="title" style="text-align: right;">
-								<select name="apcli_enable" class="half" onChange="apcliEnableSwitch(this.form);">
-									<option value="0" id="apcli_enable_disable">Disable</option>
-									<option value="1" id="apcli_enable_enable">Enable</option>
-								</select>
-							</td>
+							<td id="apcliEnableTitle" class="title" colspan="2">AP Client Parameters</td>
+						</tr>
+						<tr> 
+							<td class="head" style="width: 40%"><input type="checkbox" name="apcli_enable" onClick="apcliEnableSwitch(this.form);">
+								<b id="apcliEnable">Enable AP Client</b></td>
+							<td id="apcli_status"></td>
 						</tr>
 						<tr id="apcliWiFiMode_tr">
 							<td id="apcliWiFiMode" class="head">APCLI Mode</td>

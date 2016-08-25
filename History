@@ -2300,45 +2300,46 @@
 11) init.d: fix wds regression and coex with apcli mode.<br>
 12) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 13) goahead: more usable station list extended info.<br>
-14) cli: initial iplementation (now very simple, wl scan/stalist/status).<br>
-15) kernel: ralink_wifi: fix set mcast rate from profile.<br>
-16) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
-17) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
-18) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
-19) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
-20) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
-21) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
-22) kernel: ralink_ppe: fix hang MT7621 PPE on manual unbind entry.<br>
-23) kernel: mips: fix memory regions reaching top of physical.<br>
-24) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
-25) kernel: usb: xhci: fix panic if disconnect.<br>
-26) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
-27) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
-28) kernel: usb: serial: option: add support for Telit LE920A4.<br>
-29) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
-30) kernel: tun: don't look at current when non-blocking.<br>
-31) kernel: net: core: inline dev_alloc_skb() call.<br>
-32) kernel: net: flow_dissector: support L2 GRE.<br>
-33) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-34) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
-35) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
-36) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
-37) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
-38) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
-39) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-40) kernel: net: packet: race condition in packet_bind.<br>
-41) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-42) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-43) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
-44) kernel: net: tcp: md5: fix lockdep annotation.<br>
-45) kernel: net: tcp: consider recv buf for the initial window scale.<br>
-46) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-47) kernel: net: netfilter: avoid race with exp->master ct.<br>
-48) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-49) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-50) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-51) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-52) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+14) goahead: add apcli connection status.<br>
+15) cli: initial iplementation (now very simple, wl scan/stalist/status).<br>
+16) kernel: ralink_wifi: fix set mcast rate from profile.<br>
+17) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
+18) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
+19) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
+20) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
+21) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
+22) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
+23) kernel: ralink_ppe: fix hang MT7621 PPE on manual unbind entry.<br>
+24) kernel: mips: fix memory regions reaching top of physical.<br>
+25) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
+26) kernel: usb: xhci: fix panic if disconnect.<br>
+27) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
+28) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
+29) kernel: usb: serial: option: add support for Telit LE920A4.<br>
+30) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
+31) kernel: tun: don't look at current when non-blocking.<br>
+32) kernel: net: core: inline dev_alloc_skb() call.<br>
+33) kernel: net: flow_dissector: support L2 GRE.<br>
+34) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+35) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
+36) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
+37) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
+38) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
+39) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
+40) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+41) kernel: net: packet: race condition in packet_bind.<br>
+42) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+43) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+44) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
+45) kernel: net: tcp: md5: fix lockdep annotation.<br>
+46) kernel: net: tcp: consider recv buf for the initial window scale.<br>
+47) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+48) kernel: net: netfilter: avoid race with exp->master ct.<br>
+49) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+50) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+51) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+52) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+53) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 <br>
 <br>
 <br>

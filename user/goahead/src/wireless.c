@@ -1187,7 +1187,6 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 parameter_fetch_t apcli_args[] =
 {
-	{ T("apcli_enable"),            "ApCliEnable",          0,       T("")         },
 	{ T("apcli_interface"),         "ApCliIfName",          0,       T("")         },
 	{ T("apcli_ssid"),              "ApCliSsid",            0,       T("")         },
 	{ T("apcli_bssid"),             "ApCliBssid",           0,       T("")         },
@@ -1203,15 +1202,21 @@ parameter_fetch_t apcli_args[] =
 /* goform/wirelessApcli */
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
-	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	char_t *reboot       = websGetVar(wp, T("reboot"), T("0"));
+	char_t *reset        = websGetVar(wp, T("reset"), T("0"));
+	char_t *apcli_enable = websGetVar(wp, T("apcli_enable"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 10, "ApCliEnable", "ApCliIfName", "ApCliSsid", "ApCliBssid", "ApCliAuthMode", 
 						"ApCliEncrypType", "ApCliWPAPSK", "ApCliAutoConnect", "ApCliClientOnly", "ApCliBridgeOnly");
 	}
 	else {
+		if (strcmp(apcli_enable, "on") == 0)
+		    apcli_enable="1";
+		else
+		    apcli_enable="0";
 		nvram_init(RT2860_NVRAM);
+		nvram_bufset(RT2860_NVRAM, "ApCliEnable", apcli_enable);
 		setupParameters(wp, apcli_args, 0);
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
@@ -1223,6 +1228,30 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	}
 	websHeader(wp);
 	websDone(wp, 204);
+}
+
+static int getAPCliStatus(int eid, webs_t wp, int argc, char_t **argv)
+{
+	char addr[ETH_ALEN] = { 0 };
+	char str[17];
+	char *apcliifname = nvram_get(RT2860_NVRAM, "ApCliIfName");
+	int ap_ret;
+
+	if (!strcmp(apcliifname, "apcli0")) {
+		ap_ret = getWlanAPMac("apcli0", addr);
+	}
+	else {
+		ap_ret = getWlanAPMac("apclii0", addr);
+	}
+
+	if (ap_ret <= 0)
+		websWrite(wp, T("%i"), ap_ret);
+	else {
+		sprintf(str, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+		websWrite(wp, T("%s"), str);
+	}
+
+	return ap_ret;
 }
 #endif
 
@@ -1787,7 +1816,10 @@ void formDefineWireless(void)
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessWds"), wirelessWds);
+#if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 	websFormDefine(T("wirelessApcli"), wirelessApcli);
+	websAspDefine(T("getAPCliStatus"), getAPCliStatus);
+#endif
 	websFormDefine(T("wirelessGetSecurity"), wirelessGetSecurity);
 	websFormDefine(T("APSecurity"), APSecurity);
 	websFormDefine(T("APDeleteAccessPolicyList"), APDeleteAccessPolicyList);
