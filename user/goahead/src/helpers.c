@@ -163,6 +163,12 @@ int doSystem(char_t *fmt, ...)
 	rc = system(cmd);
 	bfree(B_L, cmd);
 
+	/*
+ 	 * The system command itself failed
+ 	 */
+	if (rc == -1)
+	    syslog(LOG_ERR, "error system() call , %s", __FUNCTION__);
+
 	return rc;
 }
 
