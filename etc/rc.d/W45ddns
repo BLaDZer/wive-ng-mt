@@ -18,11 +18,11 @@ start() {
     fi
     $LOG "Starting DynDNS"
     if [ "$DDNSProvider" = "dyndns.org" ]; then
-        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background $logto
+        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system dyndns@$DDNSProvider --background $logto --verbose 0
     elif [ "$DDNSProvider" = "zoneedit.com" ] || [ "$DDNSProvider" = "no-ip.com" ]; then
-        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background $logto
+        inadyn -u $DDNSAccount -p $DDNSPassword -a $DDNS --dyndns_system default@$DDNSProvider --background $logto --verbose 0
     elif [ "$DDNSProvider" = "freedns.afraid.org" ]; then
-        inadyn -a $DDNS,$DDNSPassword --dyndns_system default@$DDNSProvider --background $logto
+        inadyn -a $DDNS,$DDNSPassword --dyndns_system default@$DDNSProvider --background $logto --verbose 0
     else
         $LOG "Unknown DDNS provider: $DDNSProvider"
     fi

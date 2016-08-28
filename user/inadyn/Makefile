@@ -36,11 +36,6 @@ COMMON_OBJ=$(OUTDIR)/base64utils.o $(OUTDIR)/dyndns.o \
 	$(OUTDIR)/os_unix.o $(OUTDIR)/os_windows.o $(OUTDIR)/tcp.o $(OUTDIR)/inadyn_cmd.o
 OBJ=$(COMMON_OBJ) $(CFG_OBJ)
 
-#modified by YYHuang 07/03/07
-# 1. change "gcc" to $(CC) 
-# 2. disable code of debug output:DBG_PRINT_DISABLED
-# 3. add optimize flags
-CFLAGS += -DDBG_PRINT_DISABLED -Os
 COMPILE=$(CC)  -Wall  -pedantic -c  $(ARCH_SPECIFIC_CFLAGS) $(CFLAGS) -o "$(OUTDIR)/$(*F).o" $(CFG_INC) "$<"
 LINK=$(CC) $(CFLAGS) -o "$(OUTFILE)" $(OBJ) $(CFG_LIB) $(ARCH_SPECIFIC_LIBS)
 
