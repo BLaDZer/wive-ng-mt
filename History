@@ -2304,7 +2304,7 @@
 15) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 16) goahead: more usable station list extended info.<br>
 17) goahead: add apcli connection status.<br>
-18) cli: initial iplementation (now very simple, wl scan/stalist/status).<br>
+18) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch).<br>
 19) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 20) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
 21) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>

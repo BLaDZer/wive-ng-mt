@@ -13,7 +13,8 @@
 
 void writeHeader(char* text) 
 {
-    printf(" * %s \n", text);
+    printf("     \n");
+    printf(" - %s \n", text);
     printf("---------------------------------------------------------------\n");
 }
 
@@ -22,15 +23,15 @@ void writeCmdHelp(char* cmd, char* description)
     printf(" %-20s -- %s\n",cmd, description);
 }
 
-
-int main(int argc, char* argv[])
+int func_cli(char* cmd, int argc, char* argv[])
 {
-    char* cmd = basename(argv[0]);
-    argc--;
-    argv++;
-
-    if (argc > 1 && STR_EQ(cmd, "cli"))
-	return main(argc, argv);
+    if (argc > 0 && STR_EQ(cmd, "cli"))
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+	return func_cli(cmd, argc, argv);
+    }
     else if (STR_EQ(cmd, "wl")) 
 	return func_wl(argc, argv);
     else if (STR_EQ(cmd, "sw")) 
@@ -42,7 +43,20 @@ int main(int argc, char* argv[])
 	writeCmdHelp("wl", "wireless settings");
 	writeCmdHelp("sw", "switch settings");
 	writeCmdHelp("fw", "firewall settings");
+        printf("\n");
     }
+
+    return 0;
+}
+
+
+int main(int argc, char* argv[])
+{
+    char* cmd = basename(argv[0]);
+    argc--;
+    argv++;
+
+    func_cli(cmd, argc, argv);
 
     return 0;
 }

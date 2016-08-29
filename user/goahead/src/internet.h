@@ -9,5 +9,7 @@
 #ifndef _h_INTERNET
 #define _h_INTERNET 1
 
+#include "helpers.h"
+
 void formDefineInternet(void);
 #endif

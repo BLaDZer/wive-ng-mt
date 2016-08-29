@@ -20,7 +20,7 @@ int showStationList(char* iface)
         return 1;
     }
 
-    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S. QUALITY|RX      |TX      \n");
+    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S.QUALITY|RX      |TX      \n");
 
     for (i = 0; i < table.Num; i++) 
     {
@@ -41,7 +41,7 @@ int showStationList(char* iface)
 
 //#if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
         printf("|%-4d %-4d", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
-        printf("|%-3d %-3d", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+        printf("|%-3d %-3d  ", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 /*#else
         printf("|%-4d %-4d %-4d", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
         printf("|%-3d %-3d %-3d", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
@@ -56,6 +56,7 @@ int showStationList(char* iface)
         printf("\n");
     }
 
+    printf("\n");
     return 0;
 
 }
@@ -72,6 +73,7 @@ int func_wl(int argc, char* argv[])
         writeCmdHelp("scan 2.4/5/<if>", "scan and show remote AP list");
         writeCmdHelp("stalist 2.4/5/<if>", "show connected client stations");
         writeCmdHelp("status","view wlan status");
+        printf("\n");
     }
     else
     if (STR_EQ(cmd, "stalist"))
@@ -86,7 +88,7 @@ int func_wl(int argc, char* argv[])
     else
     if (STR_EQ(cmd, "status"))
     {
-	return func_wl_status(argc, argv);
+        return func_wl_status(argc, argv);
     }
 
     return 0;
@@ -94,24 +96,25 @@ int func_wl(int argc, char* argv[])
 
 int func_wl_status(int argc, char* argv[])
 {
-    int n;
+    writeHeader("WLAN Status");
+
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
-    printf("Module status: %s\n", (radio_status>0)?"enabled":"disabled");
+    printf("Module status:         %s\n", (radio_status>0)?"enabled":"disabled");
 
     char mac[18] = {0};
 
     getWlanCurrentMacAddr(mac, 1);
 
-    printf("BSSID: %s\n", mac);
+    printf("BSSID:                 %s\n", mac);
 
     int chan_num = getWlanChannelNum(1);
     if (chan_num > 0)
     {
-        printf("Channel: %i\n", chan_num);
+        printf("Channel:               %i\n", chan_num);
     }
     else
     {
-        printf("Channel: auto\n");
+        printf("Channel:               auto\n");
     }
 
 // * * * APCli * * *
@@ -123,10 +126,10 @@ int func_wl_status(int argc, char* argv[])
     if (ap_ret <= 0) ap_ret = getWlanAPMac("apclii0", addr);
 #endif
 
-    printf("APCli status: ");
+    printf("APCli status:          ");
 
     if (ap_ret<0) 
-	printf("error (%i)\n",ap_ret);
+	printf("error (%i) \n",ap_ret);
     else if (ap_ret==0) 
 	printf("disconnected\n");
     else 
@@ -134,13 +137,17 @@ int func_wl_status(int argc, char* argv[])
 
 // * * * WDS * * *
 
+    writeHeader("WDS");
+
     int wds_enabled = nvram_get_int(RT2860_NVRAM, "WdsEnable", 0);
-    printf("WDS status: %s\n",wds_enabled?"enabled":"disabled");
+    printf("WDS status:            %s\n",wds_enabled?"enabled":"disabled");
 
     if (wds_enabled)
     {
         char wdsifname[IFNAMSIZ] = {0};
+        int n;
 
+        printf("WDS client list: \n");
         printf("|Aid|MAC Address      |Connected Time|PSM|Rx Bytes|Tx Bytes|\n");
 
         for (n=0;n<4;n++)
@@ -169,6 +176,7 @@ int func_wl_status(int argc, char* argv[])
         }
     }
 
+    printf("\n");
     return 0;
 }
 
@@ -248,6 +256,7 @@ int func_wl_scan(int argc, char* argv[])
     free(entries);
 */
 
+    printf("\n");
     return 0;
 }
 
@@ -256,7 +265,6 @@ int func_wl_stalist(int argc, char* argv[])
     char* cmd = (argc>0) ? argv[0] : NULL;
     argc--;
     argv++;
-
 
     if (!cmd) // show every band
     {
@@ -293,5 +301,6 @@ int func_wl_stalist(int argc, char* argv[])
     }
 
 
+    printf("\n");
     return 0;
 }

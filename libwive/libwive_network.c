@@ -11,6 +11,29 @@
 
 #include "libwive.h"
 
+const vpn_status_t vpn_statuses[] =
+{
+    { "disabled",     0x808080 },
+    { "offline",      0xff0000 },
+    { "connecting",   0xff8000 },
+    { "online",       0x00ff00 }
+};
+
+#ifdef CONFIG_USER_KABINET
+/*
+ * LANAUTH status
+ */
+const vpn_status_t lanauth_statuses[] =
+{
+    { "disabled",           0x808080 },
+    { "not started",        0x808080 },
+    { "offline",            0xff0000 },
+    { "kabinet networks",   0x33bb33 },
+    { "full access",        0x00ff00 }
+};
+#endif
+
+
 uint64_t hton64(uint64_t v)
 {
         return (((uint64_t)htonl(v)) << 32) | htonl(v >> 32);
@@ -280,7 +303,7 @@ static int getLANAUTHState()
 
 
 /*
- * Show PPTP VPN status
+ * Get VPN status
  */
 int getVPNStatusCode()
 {
@@ -346,6 +369,27 @@ int getVPNStatusCode()
 
 	return status;
 }
+
+/*
+ * Get VPN status string
+ */
+const char* getVPNStatusStr()
+{
+    const vpn_status_t *st_table = vpn_statuses;
+    int status = getVPNStatusCode();
+
+#ifdef CONFIG_USER_KABINET
+    int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
+
+    if (vpn_type == 3)
+    {
+        st_table = lanauth_statuses;
+    }
+#endif
+
+    return st_table[status].statusStr;
+}
+
 
 /* (static) findRoutingRule - Find routing rule index inside rule list string and populate the fields
  *
@@ -800,4 +844,47 @@ struct dyn_lease* getDhcpClientList(int *rownum_out, uint64_t *written_at)
 
 	*rownum_out = rownum;
 	return arr;
+}
+
+/* getDNSAddressStr
+ * arg: index         - dns index, 1 = Primary DNS, 2 = Secondary DNS
+ * arg: (out) out_buf - output char[16] buffer
+ * description: write DNS ip address accordingly
+ */
+int getDNSAddressStr(int index, char* out_buf)
+{
+        FILE *fp;
+        char buf[80] = {0}, ns_str[11], dns[16] = {0};
+        int idx = 0;
+
+        if (index != 1 && index != 2)
+        {
+            return 1;
+        }
+
+        fp = fopen("/etc/resolv.conf", "r");
+
+        if (fp == NULL)
+        {
+            return 2;
+        }
+
+        while ((fgets(buf, sizeof(buf), fp)) != NULL)
+        {
+            if (sscanf(buf, "%s %s", ns_str, dns) != 2)
+                continue;
+
+            if (strcasecmp(ns_str, "nameserver") != 0)
+                continue;
+
+            idx++;
+            if (idx == index) {
+                strncpy(out_buf, dns, 15);
+                out_buf[15] = '\0';
+                break;
+            }
+        }
+
+        fclose(fp);
+        return 0;
 }

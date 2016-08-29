@@ -13,13 +13,6 @@
 #include	"management.h"
 #include	"station.h"
 
-/*** VPN statuses ***/
-typedef struct vpn_status_t
-{
-	const char_t *status;
-	long          color;
-} vpn_status_t;
-
 
 parameter_fetch_t vpn_args[] =
 {
@@ -54,54 +47,16 @@ parameter_fetch_t lanauth_args[] =
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
-/*
- * VPN statuses
- */
-const vpn_status_t vpn_statuses[] =
-{
-
-	{ "disabled",     0x808080 },
-	{ "offline",      0xff0000 },
-	{ "connecting",   0xff8000 },
-	{ "online",       0x00ff00 }
-};
-
-#ifdef CONFIG_USER_KABINET
-/*
- * LANAUTH status
- */
-const vpn_status_t lanauth_statuses[] =
-{
-
-	{ "disabled",           0x808080 },
-	{ "not started",        0x808080 },
-	{ "offline",            0xff0000 },
-	{ "kabinet networks",   0x33bb33 },
-	{ "full access",        0x00ff00 }
-};
-#endif
 
 /*
  * Show PPTP VPN status
  */
 static int vpnShowVPNStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int status = getVPNStatusCode();
-	const vpn_status_t *st_table = vpn_statuses;
+        const char *status_str = getVPNStatusStr();
+        websWrite(wp, T("%s"), status_str);
 
-#ifdef CONFIG_USER_KABINET
-    	int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
-
-    	if (vpn_type == 3) {
-	    st_table = lanauth_statuses;
-	}
-#endif
-
-	// Output connection status
-	const vpn_status_t *st = &st_table[status];
-	websWrite(wp, T("%s"), st->status);
-
-	return 0;
+        return 0;
 }
 
 static void formVPNSetup(webs_t wp, char_t *path, char_t *query)

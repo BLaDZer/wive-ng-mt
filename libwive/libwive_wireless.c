@@ -388,7 +388,7 @@ int getWlanWDSEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
 
 	if (entry->Addr[0] || entry->Addr[1] || entry->Addr[2] || entry->Addr[3] || entry->Addr[4] || entry->Addr[5]) 
 	    return 0;
-	else 
+	else
 	    return 1;
 }
 
