@@ -417,13 +417,11 @@ int wlanAPScanText(const char *if_name, char* data, unsigned int data_len)
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
 {
     char data[8192];
+    char *ptr;
     int ent_capacity = 32;
     int ent_cur = 0;
-    struct WLAN_AP_ENTRY* entries = calloc(ent_capacity, sizeof(struct WLAN_AP_ENTRY));
+    struct WLAN_AP_ENTRY* entries;
     *(entry_num) = 0;
-
-    if (!entries)
-	return NULL;
 
     if (wlanAPScanText(if_name, data, 8192))
     {
@@ -431,7 +429,13 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
 	return NULL;
     }
 
-    char *ptr = strtok(data, "\n");
+    ptr = strtok(data, "\n");
+
+    entries = calloc(ent_capacity, sizeof(struct WLAN_AP_ENTRY));
+    if (!entries) {
+	syslog(LOG_ERR, "wlan: APScan memory alloc failed, %s", __FUNCTION__);
+	return NULL;
+    }
 
     while (ptr)
     {
