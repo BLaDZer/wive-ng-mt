@@ -598,7 +598,6 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 #endif
 	PNDIS_PACKET pPacket;
 	UCHAR FREE = 0;
-	TXD_STRUC TxD, *pOriTxD;
 #ifdef RT_BIG_ENDIAN
 	UCHAR tx_hw_info[TXD_SIZE];
 #endif /* RT_BIG_ENDIAN */
@@ -636,14 +635,8 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 			FREE++;
 #ifndef RT_BIG_ENDIAN
 			pTxD = (PTXD_STRUC) (pTxRing->Cell[pTxRing->TxSwFreeIdx].AllocVa);
-			pOriTxD = pTxD;
-			NdisMoveMemory(&TxD, pTxD, sizeof(TXD_STRUC));
-			pTxD = &TxD;
 #else
 			pDestTxD = (PTXD_STRUC) (pTxRing->Cell[pTxRing->TxSwFreeIdx].AllocVa);
-			pOriTxD = pDestTxD ;
-			//TxD = *pDestTxD;
-			//pTxD = &TxD;
 			NdisMoveMemory(&tx_hw_info[0], pDestTxD, TXD_SIZE);
 			pTxD = (PTXD_STRUC)&tx_hw_info[0];
 			RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
@@ -697,11 +690,8 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 				DBGPRINT(RT_DEBUG_OFF,("pTxRing->TxSwFreeIdx = %d\n", pTxRing->TxSwFreeIdx));
 			}
 
-#ifndef RT_BIG_ENDIAN
-			NdisMoveMemory(pOriTxD, pTxD, sizeof(TXD_STRUC));
-#else
+#ifdef RT_BIG_ENDIAN
 			RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
-			//*pDestTxD = TxD;
 			NdisMoveMemory(pDestTxD, pTxD, TXD_SIZE);
 #endif /* RT_BIG_ENDIAN */
 
@@ -738,14 +728,8 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 		FREE++;
 #ifndef RT_BIG_ENDIAN
 		pTxD = (PTXD_STRUC) (pTxRing->Cell[pTxRing->TxSwFreeIdx].AllocVa);
-		pOriTxD = pTxD;
-		NdisMoveMemory(&TxD, pTxD, sizeof(TXD_STRUC));
-		pTxD = &TxD;
 #else
 		pDestTxD = (PTXD_STRUC) (pTxRing->Cell[pTxRing->TxSwFreeIdx].AllocVa);
-		pOriTxD = pDestTxD ;
-		//TxD = *pDestTxD;
-		//pTxD = &TxD;
 		NdisMoveMemory(&tx_hw_info[0], pDestTxD, TXD_SIZE);
 		pTxD = (PTXD_STRUC)&tx_hw_info[0];
 		RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
@@ -825,8 +809,6 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 		//RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
 		//*pDestTxD = TxD;
 		//NdisMoveMemory(pDestTxD, pTxD, TXD_SIZE);
-#else
-		NdisMoveMemory(pOriTxD, pTxD, sizeof(TXD_STRUC));
 #endif
 
 #ifdef RALINK_ATE
@@ -856,24 +838,15 @@ kick_out:
 				INC_RING_INDEX(pAd->TxRing[QueIdx].TxCpuIdx, TX_RING_SIZE);
 #ifndef RT_BIG_ENDIAN
 				pTxD = (PTXD_STRUC) (pTxRing->Cell[pAd->TxRing[QueIdx].TxCpuIdx].AllocVa);
-				pOriTxD = pTxD;
-		        NdisMoveMemory(&TxD, pTxD, sizeof(TXD_STRUC));
-				pTxD = &TxD;
 #else
 		        pDestTxD = (PTXD_STRUC) (pTxRing->Cell[pAd->TxRing[QueIdx].TxCpuIdx].AllocVa);
-		        pOriTxD = pDestTxD ;
-		        //TxD = *pDestTxD;
-		        //pTxD = &TxD;
 				NdisMoveMemory(&tx_hw_info[0], pDestTxD, TXD_SIZE);
 				pTxD = (PTXD_STRUC)&tx_hw_info[0];
 		        RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
 #endif
 				pTxD->DMADONE = 0;
-#ifndef RT_BIG_ENDIAN
-        		NdisMoveMemory(pOriTxD, pTxD, sizeof(TXD_STRUC));
-#else
+#ifdef RT_BIG_ENDIAN
         		RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
-        		//*pDestTxD = TxD;
 				NdisMoveMemory(pDestTxD, pTxD, TXD_SIZE);
 #endif
 
