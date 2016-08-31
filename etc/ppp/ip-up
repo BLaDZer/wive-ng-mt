@@ -46,7 +46,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
     fi
 
     #Route to VPN server over WAN select
-    if [ "$vpnType" != "0" ]; then
+    if [ "$vpnType" != "0" ] && [ "$vpnDGW" = "1" ]; then
 	$LOG "Modify route table need for buggy nas"
 	#Remove auto route in VPN
 	ip -4 route del $PPP_REMOTE  > /dev/null 2>&1
