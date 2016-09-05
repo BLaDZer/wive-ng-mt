@@ -247,6 +247,12 @@ size_t rep_strlcpy(char *d, const char *s, size_t bufsize);
 size_t rep_strlcat(char *d, const char *s, size_t bufsize);
 #endif
 
+#ifndef HAVE_CLOSEFROM
+#define closefrom rep_closefrom
+int rep_closefrom(int lower);
+#endif
+
+
 #if (defined(BROKEN_STRNDUP) || !defined(HAVE_STRNDUP))
 #undef HAVE_STRNDUP
 #define strndup rep_strndup
@@ -425,7 +431,7 @@ int rep_dlclose(void *handle);
 #endif
 
 #ifndef PRINTF_ATTRIBUTE
-#if (__GNUC__ >= 3) && (__GNUC_MINOR__ >= 1 )
+#ifdef HAVE___ATTRIBUTE__
 /** Use gcc attribute to check printf fns.  a1 is the 1-based index of
  * the parameter containing the format, and a2 the index of the first
  * argument. Note that some gcc 2.x versions don't handle this
@@ -437,7 +443,7 @@ int rep_dlclose(void *handle);
 #endif
 
 #ifndef _DEPRECATED_
-#if (__GNUC__ >= 3) && (__GNUC_MINOR__ >= 1 )
+#ifdef HAVE___ATTRIBUTE__
 #define _DEPRECATED_ __attribute__ ((deprecated))
 #else
 #define _DEPRECATED_

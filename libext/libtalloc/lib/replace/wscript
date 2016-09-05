@@ -202,23 +202,15 @@ def configure(conf):
 
     # Check for atomic builtins. */
     conf.CHECK_CODE('''
-                    int main(void) {
                         int i;
                         (void)__sync_fetch_and_add(&i, 1);
-                        return 0;
-                    }
                     ''',
                     'HAVE___SYNC_FETCH_AND_ADD',
                     msg='Checking for __sync_fetch_and_add compiler builtin')
 
     conf.CHECK_CODE('''
-                    #include <stdint.h>
-                    #include <sys/atomic.h>
-                    int main(void) {
                         int32_t i;
                         atomic_add_32(&i, 1);
-                        return 0;
-                    }
                     ''',
                     'HAVE_ATOMIC_ADD_32',
                     headers='stdint.h sys/atomic.h',
@@ -264,6 +256,9 @@ def configure(conf):
         conf.CHECK_FUNCS_IN('getpeereid', 'bsd', headers='sys/types.h bsd/unistd.h')
     if not conf.CHECK_FUNCS_IN('setproctitle', 'setproctitle', headers='setproctitle.h'):
         conf.CHECK_FUNCS_IN('setproctitle', 'bsd', headers='sys/types.h bsd/unistd.h')
+
+    if not conf.CHECK_FUNCS('closefrom'):
+        conf.CHECK_FUNCS_IN('closefrom', 'bsd', headers='bsd/unistd.h')
 
     conf.CHECK_CODE('''
                 struct ucred cred;
@@ -690,6 +685,9 @@ def build(bld):
     if not bld.CONFIG_SET('HAVE_INET_PTON'):     REPLACE_SOURCE += ' inet_pton.c'
     if not bld.CONFIG_SET('HAVE_GETXATTR') or bld.CONFIG_SET('XATTR_ADDITIONAL_OPTIONS'):
                                                  REPLACE_SOURCE += ' xattr.c'
+
+    if not bld.CONFIG_SET('HAVE_CLOSEFROM'):
+        REPLACE_SOURCE += ' closefrom.c'
 
     bld.SAMBA_LIBRARY('replace',
                       source=REPLACE_SOURCE,

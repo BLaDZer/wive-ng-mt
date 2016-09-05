@@ -36,16 +36,16 @@
 
 #include "talloc_testsuite.h"
 
-static struct timeval timeval_current(void)
+static struct timeval private_timeval_current(void)
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	return tv;
 }
 
-static double timeval_elapsed(struct timeval *tv)
+static double private_timeval_elapsed(struct timeval *tv)
 {
-	struct timeval tv2 = timeval_current();
+	struct timeval tv2 = private_timeval_current();
 	return (tv2.tv_sec - tv->tv_sec) + 
 	       (tv2.tv_usec - tv->tv_usec)*1.0e-6;
 }
@@ -835,7 +835,7 @@ static bool test_speed(void)
 
 	printf("test: speed\n# TALLOC VS MALLOC SPEED\n");
 
-	tv = timeval_current();
+	tv = private_timeval_current();
 	count = 0;
 	do {
 		void *p1, *p2, *p3;
@@ -848,15 +848,15 @@ static bool test_speed(void)
 			talloc_free(p1);
 		}
 		count += 3 * loop;
-	} while (timeval_elapsed(&tv) < 5.0);
+	} while (private_timeval_elapsed(&tv) < 5.0);
 
-	fprintf(stderr, "talloc: %.0f ops/sec\n", count/timeval_elapsed(&tv));
+	fprintf(stderr, "talloc: %.0f ops/sec\n", count/private_timeval_elapsed(&tv));
 
 	talloc_free(ctx);
 
 	ctx = talloc_pool(NULL, 1024);
 
-	tv = timeval_current();
+	tv = private_timeval_current();
 	count = 0;
 	do {
 		void *p1, *p2, *p3;
@@ -869,13 +869,13 @@ static bool test_speed(void)
 			talloc_free(p1);
 		}
 		count += 3 * loop;
-	} while (timeval_elapsed(&tv) < 5.0);
+	} while (private_timeval_elapsed(&tv) < 5.0);
 
 	talloc_free(ctx);
 
-	fprintf(stderr, "talloc_pool: %.0f ops/sec\n", count/timeval_elapsed(&tv));
+	fprintf(stderr, "talloc_pool: %.0f ops/sec\n", count/private_timeval_elapsed(&tv));
 
-	tv = timeval_current();
+	tv = private_timeval_current();
 	count = 0;
 	do {
 		void *p1, *p2, *p3;
@@ -888,8 +888,8 @@ static bool test_speed(void)
 			free(p3);
 		}
 		count += 3 * loop;
-	} while (timeval_elapsed(&tv) < 5.0);
-	fprintf(stderr, "malloc: %.0f ops/sec\n", count/timeval_elapsed(&tv));
+	} while (private_timeval_elapsed(&tv) < 5.0);
+	fprintf(stderr, "malloc: %.0f ops/sec\n", count/private_timeval_elapsed(&tv));
 
 	printf("success: speed\n");
 
@@ -1795,11 +1795,11 @@ static bool test_pthread_talloc_passing(void)
 	 * They will use their own toplevel contexts.
 	 */
 	for (i = 0; i < NUM_THREADS; i++) {
-		(void)snprintf(str_array[i],
+		ret = snprintf(str_array[i],
 				20,
 				"thread:%d",
 				i);
-		if (str_array[i] == NULL) {
+		if (ret < 0) {
 			printf("snprintf %d failed\n", i);
 			return false;
 		}
@@ -1865,6 +1865,11 @@ static void test_magic_protection_abort(const char *reason)
 	}
 }
 
+static int test_magic_protection_destructor(int *ptr)
+{
+	_exit(404); /* Not 42 */
+}
+
 static bool test_magic_protection(void)
 {
 	void *pool = talloc_pool(NULL, 1024);
@@ -1883,6 +1888,7 @@ static bool test_magic_protection(void)
 	pid = fork();
 	if (pid == 0) {
 		talloc_set_abort_fn(test_magic_protection_abort);
+		talloc_set_destructor(p2, test_magic_protection_destructor);
 
 		/*
 		 * Simulate a security attack
