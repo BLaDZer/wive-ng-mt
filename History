@@ -2349,6 +2349,7 @@
 60) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
 61) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
 62) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+63) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
 <br>
 <br>
 <br>
