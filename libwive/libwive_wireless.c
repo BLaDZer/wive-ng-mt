@@ -38,7 +38,9 @@ int RtpQueryInformation(unsigned long QueryCode, const char *DeviceName, void *p
 {
 	struct iwreq wrq;
 
+	memset(ptr, 0, PtrLength);
 	memset(&wrq, 0, sizeof(wrq));
+
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 
@@ -83,7 +85,9 @@ int OidQueryInformation(unsigned long OidQueryCode, const char *DeviceName, void
 {
 	struct iwreq wrq;
 
+	memset(ptr, 0, PtrLength);
 	memset(&wrq, 0, sizeof(wrq));
+
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t)ptr;
 	wrq.u.data.flags = OidQueryCode;
