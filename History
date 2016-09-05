@@ -2341,13 +2341,14 @@
 52) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
 53) kernel: net: tcp: md5: fix lockdep annotation.<br>
 54) kernel: net: tcp: consider recv buf for the initial window scale.<br>
-55) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-56) kernel: net: netfilter: avoid race with exp->master ct.<br>
-57) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-58) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-59) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-60) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-61) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+55) kernel: net: tcp: fix use after free in tcp_xmit_retransmit_queue().<br>
+56) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+57) kernel: net: netfilter: avoid race with exp->master ct.<br>
+58) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+59) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+60) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+61) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+62) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 <br>
 <br>
 <br>
