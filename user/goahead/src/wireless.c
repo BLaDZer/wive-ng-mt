@@ -426,7 +426,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 	/* second radio module */
 	if (getWlanStationTable(&table, 2) != 0) {
 	    err = -1;
-	    syslog(LOG_ERR, "Unable to receive wlan station table 1"); 
+	    syslog(LOG_ERR, "Unable to receive wlan station table 2");
 	}
 	else {
 		if (err == 0)
