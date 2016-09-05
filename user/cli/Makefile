@@ -18,7 +18,7 @@ install:
 
 romfs:
 	$(ROMFSINST) -S /bin/$(CLI_EXEC)
-	$(ROMFSINST) -s /bin/cli /bin/fw
+	$(ROMFSINST) -s /bin/cli /bin/st
 	$(ROMFSINST) -s /bin/cli /bin/sw
 	$(ROMFSINST) -s /bin/cli /bin/wl
 
