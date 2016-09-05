@@ -798,11 +798,12 @@ struct dyn_lease* getDhcpClientList(int *rownum_out, uint64_t *written_at)
 	int rownum;
 
 	rownum = 0;
-	//if DHCP is disabled - just exit
+	/* if DHCP is disabled - just exit */
 	int dhcpEnabled = nvram_get_int(RT2860_NVRAM, "dhcpEnabled", 0);
 	if (!dhcpEnabled)
 		return 0;
 
+	/* refresh lease file */
 	system("killall -q -SIGUSR1 udhcpd > /dev/null 2>&1");
 
 	fp = fopen("/var/udhcpd.leases", "r");

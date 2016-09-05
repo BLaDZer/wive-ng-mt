@@ -10,22 +10,8 @@
 */
 #include "cli_wl.h"
 
-int showStationList(char* iface)
+void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 {
-    int i;
-    RT_802_11_MAC_TABLE table;
-
-    if (getWlanStationTableIf(&table, iface) != 0)
-    {
-        return 1;
-    }
-
-    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S.QUALITY|RX      |TX      \n");
-
-    for (i = 0; i < table.Num; i++) 
-    {
-        RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
-
         printf("%-3d", pe->Aid);
         printf("|%02X:%02X:%02X:%02X:%02X:%02X", pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
         printf("|%02u:%02u:%02u", (pe->ConnectedTime / (unsigned)3600), ((pe->ConnectedTime % (unsigned)3600) / (unsigned)60), (pe->ConnectedTime % (unsigned)60));
@@ -54,6 +40,25 @@ int showStationList(char* iface)
         free(tx_scaled_text);
 
         printf("\n");
+
+}
+
+int showStationList(char* iface)
+{
+    int i;
+    RT_802_11_MAC_TABLE table;
+
+    if (getWlanStationTableIf(&table, iface) != 0)
+    {
+        return 1;
+    }
+
+    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S.QUALITY|RX      |TX      \n");
+
+    for (i = 0; i < table.Num; i++) 
+    {
+        RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
+        printMacEntry(pe);
     }
 
     printf("\n");
@@ -73,6 +78,7 @@ int func_wl(int argc, char* argv[])
         writeCmdHelp("scan 2.4/5/<if>", "scan and show remote AP list");
         writeCmdHelp("stalist 2.4/5/<if>", "show connected client stations");
         writeCmdHelp("status","view wlan status");
+        writeCmdHelp("wds","view wds status");
         printf("\n");
     }
     else
@@ -90,7 +96,45 @@ int func_wl(int argc, char* argv[])
     {
         return func_wl_status(argc, argv);
     }
+    else
+    if (STR_EQ(cmd, "wds"))
+    {
+        return func_wl_wds(argc, argv);
+    }
 
+    return 0;
+}
+
+int func_wl_wds(int argc, char* argv[])
+{
+    writeHeader("WDS");
+
+    int wds_enabled = nvram_get_int(RT2860_NVRAM, "WdsEnable", 0);
+    printf("WDS status:            %s\n",wds_enabled?"enabled":"disabled");
+
+    if (wds_enabled)
+    {
+        char wdsifname[IFNAMSIZ] = {0};
+        int n;
+
+        printf("WDS client list: \n");
+        printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S.QUALITY|RX      |TX      \n");
+
+        for (n=0;n<4;n++)
+        {
+            RT_802_11_MAC_ENTRY entry = {0};
+            snprintf(wdsifname, IFNAMSIZ-1, "wds%i",n);
+
+            if (getWlanMacEntry(wdsifname, &entry) != 0)
+            {
+                continue;
+            }
+
+            printMacEntry(&entry);
+        }
+    }
+
+    printf("\n");
     return 0;
 }
 
@@ -129,52 +173,11 @@ int func_wl_status(int argc, char* argv[])
     printf("APCli status:          ");
 
     if (ap_ret<0) 
-	printf("error (%i) \n",ap_ret);
+        printf("error (%i) \n",ap_ret);
     else if (ap_ret==0) 
-	printf("disconnected\n");
+        printf("disconnected\n");
     else 
-	printf("connected (%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx)\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
-
-// * * * WDS * * *
-
-    writeHeader("WDS");
-
-    int wds_enabled = nvram_get_int(RT2860_NVRAM, "WdsEnable", 0);
-    printf("WDS status:            %s\n",wds_enabled?"enabled":"disabled");
-
-    if (wds_enabled)
-    {
-        char wdsifname[IFNAMSIZ] = {0};
-        int n;
-
-        printf("WDS client list: \n");
-        printf("|Aid|MAC Address      |Connected Time|PSM|Rx Bytes|Tx Bytes|\n");
-
-        for (n=0;n<4;n++)
-        {
-            RT_802_11_MAC_ENTRY entry = {0};
-            snprintf(wdsifname, IFNAMSIZ-1, "wds%i",n);
-
-            if (getWlanWDSEntry(wdsifname, &entry) != 0)
-            {
-                continue;
-            }
-
-            printf("|%3i", entry.Aid);
-            printf("|%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", entry.Addr[0],entry.Addr[1],entry.Addr[2],entry.Addr[3],entry.Addr[4],entry.Addr[5]);
-            printf("|%02u:%02u:%02u", (entry.ConnectedTime / (unsigned)3600), ((entry.ConnectedTime % (unsigned)3600) / (unsigned)60), (entry.ConnectedTime % (unsigned)60));
-            printf("|%3s", (entry.Psm==1)?"YES":"NO");
-
-            char *rx_scaled_text = scale(entry.RxBytes);
-            char *tx_scaled_text = scale(entry.TxBytes);
-            printf("|%8.8s", rx_scaled_text);
-            printf("|%8.8s", tx_scaled_text);
-            free(rx_scaled_text);
-            free(tx_scaled_text);
-
-            printf("|\n");
-        }
-    }
+        printf("connected (%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx)\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
     printf("\n");
     return 0;

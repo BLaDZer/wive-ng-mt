@@ -11,7 +11,7 @@
 
 #include "libwive.h"
 
-void getCPUData(struct cpu_stats *st)
+int getCPUData(struct cpu_stats *st)
 {
 	FILE *fp;
 	char line_buf[256];
@@ -21,7 +21,7 @@ void getCPUData(struct cpu_stats *st)
 	fp = fopen(PROC_CPU_STATISTIC, "r");
 	if(!fp){
 		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
-		return;
+		return 1;
 	}
 
 	if ((fgets(line_buf, sizeof(line_buf), fp)) != NULL) {
@@ -33,9 +33,11 @@ void getCPUData(struct cpu_stats *st)
 		}
 	}
 	fclose(fp);
+
+        return 0;
 }
 
-void getMemData(struct mem_stats *st)
+int getMemData(struct mem_stats *st)
 {
 	FILE *fp;
 	char line_buf[64];
@@ -45,7 +47,7 @@ void getMemData(struct mem_stats *st)
 	fp = fopen("/proc/meminfo", "r");
 	if(!fp){
 		syslog(LOG_ERR, "no proc, %s", __FUNCTION__);
-		return;
+		return 1;
 	}
 
 	if ((fgets(line_buf, sizeof(line_buf), fp) != NULL) && sscanf(line_buf, "MemTotal: %lu %*s", &st->total) == 1) {
@@ -59,6 +61,8 @@ void getMemData(struct mem_stats *st)
 		sscanf(line_buf, "Cached: %lu %*s", &st->cached);
 	}
 	fclose(fp);
+
+        return 0;
 }
 
 /* getSyslogTail -  Write the tail of syslog into variable

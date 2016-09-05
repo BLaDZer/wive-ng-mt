@@ -374,12 +374,12 @@ int getWlanAPMac(const char *if_name, char *addr)
         return addr[0] || addr[1] || addr[2] || addr[3] || addr[4] || addr[5];
 }
 
-/* getWlanWDSEntry - Get WDS entry
+/* getWlanMacEntry - Get single interface MAC entry
  * arg: if_name - interface name
  * arg: (out) entry - output entry
  * return: 0 = OK, 1 = not connected, -1 = Error
 */
-int getWlanWDSEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
+int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
 {
 	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT, if_name, entry, sizeof(RT_802_11_MAC_ENTRY)) < 0) {
 		syslog(LOG_ERR, "wlan: ioctl -> RT_802_11_MAC_ENTRY failed, %s", __FUNCTION__);

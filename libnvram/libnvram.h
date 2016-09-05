@@ -14,6 +14,8 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
+#include "libnvram_utils.h"
+
 #define NV_DEV				"/dev/nvram"
 #define DEFAULT_NVRAM                   "/etc/default/nvram_default"
 #define DEFAULT_FLASH_ZONE_NAME		"2860"

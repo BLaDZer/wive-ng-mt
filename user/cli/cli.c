@@ -32,17 +32,17 @@ int func_cli(char* cmd, int argc, char* argv[])
         argv++;
 	return func_cli(cmd, argc, argv);
     }
-    else if (STR_EQ(cmd, "wl")) 
+    else if (STR_EQ(cmd, "wl") || STR_EQ(cmd, "wlan"))
 	return func_wl(argc, argv);
-    else if (STR_EQ(cmd, "sw")) 
+    else if (STR_EQ(cmd, "sw") || STR_EQ(cmd, "switch")) 
 	return func_sw(argc, argv);
-    else if (STR_EQ(cmd, "fw")) 
-	return func_fw(argc, argv);
+    else if (STR_EQ(cmd, "st") || STR_EQ(cmd, "status")) 
+	return func_st(argc, argv);
     else
     {
 	writeCmdHelp("wl", "wireless settings");
 	writeCmdHelp("sw", "switch settings");
-	writeCmdHelp("fw", "firewall settings");
+	writeCmdHelp("st", "device information");
         printf("\n");
     }
 

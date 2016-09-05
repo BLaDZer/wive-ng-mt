@@ -22,7 +22,7 @@ int getWlanCurrentMacAddr(char *buf, int radio_module_ind);
 int getWlanChannelNum(int radio_module_ind);
 
 int getWlanAPMac(const char *if_name, char *addr);
-int getWlanWDSEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry);
+int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry);
 
 int wlanAPScanText(const char *if_name, char* data, unsigned int data_len);
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num);

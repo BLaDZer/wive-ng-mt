@@ -18,3 +18,36 @@ void reboot_now(void)
 {
 	system("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
 }
+
+const char* getSystemPlatform()
+{
+#if defined(CONFIG_RALINK_MT7620) && defined(CONFIG_RAETH_ESW)
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
+    return "MT7620 2T2R 2.4GHz, MT7610 1T1R 5GHz, 100FDX";
+#elif defined(CONFIG_RT_SECOND_IF_MT7612E)
+    return "MT7620 2T2R 2.4GHz, MT7612 2T2R 5GHz, 100FDX";
+#else
+    return "MT7620 2T2R 2.4GHz, 100FDX";
+#endif
+#elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
+#ifdef CONFIG_MT76X3_AP
+    return "MT7621 1000FDX MT7603 MT7612 2T2R dualband";
+#else
+    return "MT7621 1000FDX MT7602 MT7612 2T2R dualband";
+#endif
+#else
+    return "Unknown system platform";
+#endif
+    return 0;
+}
+
+long getSystemUptime()
+{
+    struct sysinfo sinf;
+
+    if (sysinfo(&sinf) == 0)
+        return sinf.uptime;
+
+    return 0;
+
+}

@@ -7,4 +7,6 @@ const char *normalizeSize(long long *size);
 char *racat(char *s, int i);
 int checkSemicolon(char *str);
 
+int secondsToTimeIntervalStr(char* timeStr, int strLen, long seconds);
+
 #endif

@@ -2157,3 +2157,27 @@ int gen_wifi_config(int mode, int genmode)
 	sync();
 	return 0;
 }
+
+/* strToIntDef - Convert whole char* string to integer or use default value
+ *
+ * arg: value - input string
+ * arg: def - default value
+ * return: converted value
+ */
+int strToIntDef(char* value, int def)
+{
+    char* endptr = value;
+
+    if (value == NULL) 
+        return def;
+
+    long val = strtol(value, &endptr, 10);
+
+    if (endptr[0] != '\0')
+        return def;
+
+    if (val > INT_MAX || val < INT_MIN)
+        return def;
+
+    return (int)val;
+}

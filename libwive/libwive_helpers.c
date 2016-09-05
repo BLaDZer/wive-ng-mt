@@ -82,3 +82,25 @@ int checkSemicolon(char *str)
 		return 1;
 	return 0;
 }
+
+/* secondsToTimeIntervalStr - Convert sec counter to human-readable time interval string format
+ *
+ * arg: (out)timeStr - time interval string
+ * arg: strLen - time interval string length
+ * arg: seconds - counter
+ * return: 0 = OK
+ */
+int secondsToTimeIntervalStr(char* timeStr, int strLen, long seconds)
+{
+    snprintf(timeStr, strLen, "%lu day%s, %lu hour%s, %lu min%s, %lu sec%s",
+        seconds/(unsigned)86400, ((seconds/(unsigned)86400) == 1)? "" : "s",
+        (seconds%(unsigned)86400)/(unsigned)3600, (((seconds%(unsigned)86400)/(unsigned)3600) == 1)? "" : "s",
+        (seconds%(unsigned)3600)/(unsigned)60, (((seconds%(unsigned)3600)/(unsigned)60) == 1)? "" : "s",
+        seconds%(unsigned)60, ((seconds%(unsigned)60) == 1)? "" : "s");
+
+    timeStr[strLen-1] = '\0';
+
+    return 0;
+
+}
+

@@ -2288,7 +2288,7 @@
 <br>
 <b>4.6.x</b><br>
 1) toolchain: update kernel headers and rebuild.<br>
-2) libwive: add more functions and document it (~50% work end).<br>
+2) libwive: add more functions and document it (~60% work end).<br>
 3) libnvram: move nvram_load_default and gen_wifi_config from nvram tool (for code reuse).<br>
 4) nodogsplash: up to version 2.0.0 (commit: b79e1163).<br>
 5) xl2tpd: update to 1.3.8 version (commit: cec1ebe).<br>
@@ -2305,7 +2305,7 @@
 16) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 17) goahead: more usable station list extended info.<br>
 18) goahead: add apcli connection status.<br>
-19) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch).<br>
+19) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch, st show,dhcp,l2tp,ntp,ddns,samba,vpn).<br>
 20) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 21) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
 22) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>

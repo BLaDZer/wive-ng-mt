@@ -69,4 +69,7 @@ char *setNthValue(int index, char *old_values, char *new_value);
 int deleteNthValueMulti(int index[], int count, char *value, char delimit);
 
 int nvram_load_default(void);
+
+int strToIntDef(char* value, int def);
+
 #endif

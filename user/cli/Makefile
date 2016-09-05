@@ -6,7 +6,7 @@ LDFLAGS += -Wl,--gc-sections
 LDLIBS  += -lwive -lnvram
 
 CLI_EXEC = cli
-CLI_OBJS = cli.o cli_fw.o cli_sw.o cli_wl.o
+CLI_OBJS = cli.o cli_st.o cli_sw.o cli_wl.o
 
 all: $(CLI_EXEC)
 
