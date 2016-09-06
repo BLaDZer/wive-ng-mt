@@ -16,6 +16,8 @@
  */
 void reboot_now(void)
 {
+	/* always flush stdout buffer before reboot */
+	fflush(stdout);
 	system("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
 }
 
