@@ -305,6 +305,9 @@ parameter_fetch_t service_misc_flags[] =
 /* goform/setMiscServices */
 static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 {
+	char_t *reboot;
+	char_t *submitUrl;
+
 	nvram_init(RT2860_NVRAM);
 
 	setupParameters(wp, service_misc_flags, 0);
@@ -327,24 +330,21 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	char_t *port_changed = websGetVar(wp, T("rmt_http_port_changed"), T("0"));
-	char_t *reboot_flag = websGetVar(wp, T("reboot"), T("0"));
-	char_t *submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-
-	if (CHK_IF_DIGIT(port_changed, 1) && CHK_IF_DIGIT(reboot_flag, 1))
+	reboot = websGetVar(wp, T("reboot"), T("1"));
+	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
+	if (CHK_IF_DIGIT(reboot, 0))
 	{
-		/* Output timer for reloading */
-		outputTimerForReload(wp, ""/* submitUrl */, 80000); 
-
-		/* Reboot */
-		reboot_now();
+		//restart some services instead full reload
+		doSystem("services_restart.sh misc");
+		websRedirect(wp, submitUrl);
 	}
 	else
 	{
-		//restart some services instead full reload
-		if (CHK_IF_DIGIT(port_changed, 0))
-			doSystem("services_restart.sh misc");
-		websRedirect(wp, submitUrl);
+		/* Output timer for reloading */
+		outputTimerForReload(wp, ""/* submitUrl */, 80000);
+
+		/* Reboot */
+		reboot_now();
 	}
 }
 

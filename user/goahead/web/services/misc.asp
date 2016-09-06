@@ -265,8 +265,6 @@ function CheckValue(form)
 		}
 	}
 
-	form.rmt_http_port_changed.value = (form.RemoteManagementPort.value != rmtManagementPort) ? '1' : '0';
-
 	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
@@ -393,8 +391,7 @@ function displayServiceStatus()
 function submitForm(form) {
 	if (form.RemoteManagementPort.value != rmtManagementPort) {
 		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', _("message reboot"), ajaxShowProgress)) {
-			form.reboot.value = "0";
-    		form.submit();
+    			form.submit();
 		}
 	} else {
 		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
@@ -833,7 +830,6 @@ function submitForm(form) {
               &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload()">
               <input type="hidden" value="/services/misc.asp" name="submit-url">
-              <input type="hidden" value="0" name="rmt_http_port_changed">
               <input type="hidden" value="1" name="reboot">
               <iframe id="setMiscReloader" name="setMiscReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
           </tr>

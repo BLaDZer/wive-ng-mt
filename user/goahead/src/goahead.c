@@ -342,7 +342,6 @@ int main(int argcn, char *argvc[])
 	return 0;
 }
 
-
 /******************************************************************************/
 /*
  *	Default error handler.  The developer should insert code to handle
