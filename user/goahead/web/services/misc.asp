@@ -389,15 +389,11 @@ function displayServiceStatus()
 }
 
 function submitForm(form) {
-	if (form.RemoteManagementPort.value != rmtManagementPort) {
-		if (!ajaxPostForm(_("services misc ask reboot"), form, 'setMiscReloader', _("message reboot"), ajaxShowProgress)) {
-    			form.submit();
-		}
-	} else {
-		ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
-		form.reboot.value = "0";
-		form.submit();
+	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+	if (form.RemoteManagementPort.value == rmtManagementPort) {
+		form.goaheadrestart.value = "0";
 	}
+	form.submit();
 }
 </script>
 </head>
@@ -830,7 +826,7 @@ function submitForm(form) {
               &nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload()">
               <input type="hidden" value="/services/misc.asp" name="submit-url">
-              <input type="hidden" value="1" name="reboot">
+              <input type="hidden" value="1" name="goaheadrestart">
               <iframe id="setMiscReloader" name="setMiscReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe></td>
           </tr>
         </table>

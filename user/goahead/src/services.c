@@ -305,7 +305,7 @@ parameter_fetch_t service_misc_flags[] =
 /* goform/setMiscServices */
 static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *reboot;
+	char_t *goaheadrestart;
 	char_t *submitUrl;
 
 	nvram_init(RT2860_NVRAM);
@@ -330,21 +330,18 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	reboot = websGetVar(wp, T("reboot"), T("1"));
+	goaheadrestart = websGetVar(wp, T("goaheadrestart"), T("1"));
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	if (CHK_IF_DIGIT(reboot, 0))
-	{
-		//restart some services instead full reload
-		doSystem("services_restart.sh misc");
-		websRedirect(wp, submitUrl);
-	}
-	else
-	{
-		/* Output timer for reloading */
-		outputTimerForReload(wp, ""/* submitUrl */, 80000);
 
-		/* Reboot */
-		reboot_now();
+	/* restart some services instead full reload */
+	doSystem("services_restart.sh misc");
+	if (CHK_IF_DIGIT(goaheadrestart, 1)) {
+		/* Output timer for reloading goahead, only for true redirect need, time set to really small */
+		outputTimerForReload(wp, "", 10);
+		/* Correct stop goahead and wait restart by webmon */
+		exit(0);
+	} else {
+		websRedirect(wp, submitUrl);
 	}
 }
 

@@ -223,4 +223,5 @@ void outputTimerForReload(webs_t wp, char_t *url, long delay)
 	}
 	websFooter(wp);
 	websDone(wp, 200);
+	fflush(stdout);
 }
