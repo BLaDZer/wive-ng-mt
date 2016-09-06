@@ -2327,38 +2327,39 @@
 38) kernel: mips-gic: use clockevents_config_and_register.<br>
 39) kernel: mips: dma: Fix BUG due to smp_processor_id() in preemptible code.<br>
 40) kernel: mips: provide nice way to access boot CPU's data.<br>
-41) kernel: mips: ptrace: Avoid smp_processor_id() in preemptible code.<br>
-42) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
-43) kernel: usb: xhci: fix panic if disconnect.<br>
-44) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
-45) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
-46) kernel: usb: serial: option: add support for Telit LE920A4.<br>
-47) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
-48) kernel: tun: don't look at current when non-blocking.<br>
-49) kernel: net: core: inline dev_alloc_skb() call.<br>
-50) kernel: net: flow_dissector: support L2 GRE.<br>
-51) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-52) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
-53) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
-54) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
-55) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
-56) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
-57) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-58) kernel: net: packet: race condition in packet_bind.<br>
-59) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-60) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-61) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
-62) kernel: net: tcp: md5: fix lockdep annotation.<br>
-63) kernel: net: tcp: consider recv buf for the initial window scale.<br>
-64) kernel: net: tcp: fix use after free in tcp_xmit_retransmit_queue().<br>
-65) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-66) kernel: net: netfilter: avoid race with exp->master ct.<br>
-67) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-68) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-69) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-70) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-71) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
-72) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
+41) kernel: mips: ptrace: avoid smp_processor_id() in preemptible code.<br>
+42) kernel: mips: oprofile: fix a preemption issue.<br>
+43) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
+44) kernel: usb: xhci: fix panic if disconnect.<br>
+45) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
+46) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
+47) kernel: usb: serial: option: add support for Telit LE920A4.<br>
+48) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
+49) kernel: tun: don't look at current when non-blocking.<br>
+50) kernel: net: core: inline dev_alloc_skb() call.<br>
+51) kernel: net: flow_dissector: support L2 GRE.<br>
+52) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+53) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
+54) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
+55) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
+56) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
+57) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
+58) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+59) kernel: net: packet: race condition in packet_bind.<br>
+60) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+61) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+62) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
+63) kernel: net: tcp: md5: fix lockdep annotation.<br>
+64) kernel: net: tcp: consider recv buf for the initial window scale.<br>
+65) kernel: net: tcp: fix use after free in tcp_xmit_retransmit_queue().<br>
+66) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+67) kernel: net: netfilter: avoid race with exp->master ct.<br>
+68) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+69) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+70) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+71) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+72) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+73) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
 <br>
 <br>
 <br>
