@@ -2298,7 +2298,7 @@
 9) busybox: apply busybox-1.25.0-ip.patch, busybox-1.25.0-gzip.patch, busybox-1.25.0-ntpd.patch.<br>
 10) busybox: udhcpc: run deconfig script in manual renew state too.<br>
 11) busybox: ash: do not leave SIGQUIT ignored on exec CMD.<br>
-12) coovachilli: up to 1.3.1.4 from git (commit 6c58a4c5).<br>
+12) coovachilli: up to 1.3.1.4 from git (commit 5e47364).<br>
 13) libmicrohttp/nodogsplash: fix regression after add SO_REUSE_PORT support (3.4.x kernel not support this - rewrite to address reuse).<br>
 14) build_system: add templates for support SFP router.<br>
 15) init.d: add limited support GSW port5 connect to external phy in one rgmii mode.<br>
