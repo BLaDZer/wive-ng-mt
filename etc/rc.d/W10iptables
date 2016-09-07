@@ -182,7 +182,7 @@ servicelimit() {
 	fi
 	# Chillispot rules
 	if [ "$chilli_enable" = "on" ]; then
-		$LOG "Chillispot allow reqests to 3990-3991 ports from $lan_if"
+		$LOG "Chillispot allow reqests to 3990-3991 ports from $chilli_net"
 		iptables -A servicelimit -i tun0 -s $chilli_net -j ACCEPT
 		iptables -A servicelimit ! -i $wan_if -s $chilli_net $STATE_NEW -p tcp --dport 3990:3991 -j ACCEPT
 	fi
