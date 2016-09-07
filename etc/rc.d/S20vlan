@@ -50,7 +50,7 @@ bridgewlvlan() {
 		ip link set "$2.${vid}" up
 	    fi
 	    $LOG "Move interface $3${count} from br0 and to new bridge brvl${vid}wl${count}"
-	    delif_from_br "$3${count}"
+	    delif_from_br br0 "$3${count}"
 	    brctl addif "brvl${vid}wl${count}" "$3${count}"
 	    ip link set "$3${count}" up
 	fi

@@ -250,15 +250,15 @@ flush_net_caches() {
 }
 
 delif_from_br() {
-    ip -4 addr flush dev $1 > /dev/null 2>&1
-    ip link set $1 down > /dev/null 2>&1
-    brctl delif br0 $1 > /dev/null 2>&1
+    ip -4 addr flush dev $2 > /dev/null 2>&1
+    ip link set $2 down > /dev/null 2>&1
+    brctl delif $1 $2 > /dev/null 2>&1
 }
 
 readdif_to_br() {
-    delif_from_br $1
-    brctl addif br0 $1
-    ip link set $1 up
+    delif_from_br $1 $2
+    brctl addif $1 $2
+    ip link set $2 up
 }
 
 set_vlan_map()

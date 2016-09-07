@@ -30,7 +30,7 @@ addWds() {
 	    let "wdsrealnum=$WdsNum-1"
     	    for ifnum in `seq 0 $wdsrealnum`; do
 		$LOG "Readd ${wdsif}${ifnum} in br0"
-		readdif_to_br ${wdsif}${ifnum}
+		readdif_to_br br0 ${wdsif}${ifnum}
     	    done
 	fi
 }
@@ -43,7 +43,7 @@ addMBSSID() {
 	    let "bssrealnum=$BssidNum-1"
 	    for ifnum in `seq 1 $bssrealnum`; do
 		$LOG "Readd ${mbssidif}${ifnum} in br0"
-		readdif_to_br ${mbssidif}${ifnum}
+		readdif_to_br br0 ${mbssidif}${ifnum}
 	    done
 	fi
 }
@@ -55,10 +55,10 @@ bridge_config() {
 	$LOG "Readd eth2 in br0"
 	readdif_to_br eth2
 	$LOG "Readd $first_wlan_root_if in br0"
-	readdif_to_br $first_wlan_root_if
+	readdif_to_br br0 $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
 	    $LOG "Readd $second_wlan_root_if in br0"
-	    readdif_to_br $second_wlan_root_if
+	    readdif_to_br br0 $second_wlan_root_if
 	fi
 	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
@@ -77,12 +77,12 @@ gate_config() {
 	# flush "$phys_lan_if" ip and remove from bridge
 	# add lan interface
 	$LOG "Readd $phys_lan_if in br0"
-	readdif_to_br $phys_lan_if
+	readdif_to_br br0 $phys_lan_if
 	$LOG "Readd $first_wlan_root_if in br0"
-	readdif_to_br $first_wlan_root_if
+	readdif_to_br br0 $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
 	    $LOG "Readd $second_wlan_root_if in br0"
-	    readdif_to_br $second_wlan_root_if
+	    readdif_to_br br0 $second_wlan_root_if
 	fi
 	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
@@ -103,18 +103,18 @@ apcli_config() {
 	$LOG "Readd eth2 in br0"
 	readdif_to_br eth2
 	$LOG "Readd $first_wlan_root_if in br0"
-	readdif_to_br $first_wlan_root_if
+	readdif_to_br br0 $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
 	    $LOG "Readd $second_wlan_root_if in br0"
-	    readdif_to_br $second_wlan_root_if
+	    readdif_to_br br0 $second_wlan_root_if
 	fi
 	if [ "$ApCliBridgeOnly" = "1" ]; then
 	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
 		$LOG "Readd $first_wlan_apcli in br0"
-		readdif_to_br $first_wlan_apcli
+		readdif_to_br br0 $first_wlan_apcli
 	    elif [ "$second_wlan_apcli" != "" ] && [ "$second_wlan_apcli" = "$ApCliIfName" ]; then
 		$LOG "Readd $second_wlan_apcli in br0"
-		readdif_to_br $second_wlan_apcli
+		readdif_to_br br0 $second_wlan_apcli
 	    fi
 	fi
 	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
@@ -132,10 +132,10 @@ apcli_config() {
 	if  [ "$ApCliClientOnly" = "1" ] && [ "$OperationMode" = "0" -o "$OperationMode" = "3" ]; then
 	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
     		echo "APCLI Only client mode enable, shutdown AP interface $first_wlan_root_if."
-    		delif_from_br $first_wlan_root_if
+    		delif_from_br br0 $first_wlan_root_if
     	    elif [ "$second_wlan_apcli" != "" ] && [ "$second_wlan_apcli" = "$ApCliIfName" ]; then
     		echo "APCLI Only client mode enable, shutdown AP interface $second_wlan_root_if."
-    		delif_from_br $second_wlan_root_if
+    		delif_from_br br0 $second_wlan_root_if
     	    fi
 	fi
 }
