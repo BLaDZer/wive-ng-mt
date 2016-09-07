@@ -13,11 +13,6 @@ if [ "$OperationMode" = "0" ]; then
 fi
 
 LOG="logger -t ChilliSpot"
-PARAMS="net dhcpstart dhcpend dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid \
-	radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease uamserver uamhomepage uamsecret"
-
-BOOLPARAMS="coanoipcheck uamanyip uamanydns"
-
 start() {
     if [ "$chilli_enable" = "on" ]; then
 	$LOG "Starting ChilliSpot"
@@ -75,7 +70,7 @@ start() {
 	    chmod 555 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
-	chilli --kname=chilli $uamallowed $macallowed $uamdomain $PARLINE $DEBUG --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc &
+	chilli $PARLINE &
 	) & # send to background
 	# statistics
     fi
@@ -94,28 +89,21 @@ stop() {
 }
 
 get_params() {
-    if [ ! -d /sys/module/xt_coova ]; then
-	modprobe -q xt_coova
-    fi
-    if [ ! -d /sys/module/tun ]; then
-	modprobe -q tun
-    fi
-
     eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamallowed chilli_macallowed chilli_uamdomain`
-    PARLINE="--dhcpif $lan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000"
+
+    # parse params
+    PARLINE=""
+    PARAMS="net dhcpstart dhcpend dns1 dns2 domain radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid \
+	radiusnasip radiuslocationid radiuslocationname radiusnasporttype coaport lease uamserver uamhomepage uamsecret"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`
 	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
     done
+    BOOLPARAMS="coanoipcheck uamanyip uamanydns"
     for i in $BOOLPARAMS; do
 	val=`nvram_get 2860 chilli_$i`
 	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
     done
-    if [ "$chilli_debug" = "1" ]; then
-	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
-    else
-	DEBUG="-f -F"
-    fi
     if [ "$chilli_uamallowed" ]; then
 	uamallowed="--uamallowed=$chilli_uamallowed"
     else
@@ -131,6 +119,13 @@ get_params() {
     else
 	uamdomain=""
     fi
+    if [ "$chilli_debug" = "1" ]; then
+	DEBUG="-d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    else
+	DEBUG="-f -F"
+    fi
+
+    # for future
     if [ "$IPv6OpMode" = "1" ]; then
 	ipvsix="--ipv6 --ipv6mode=6and4"
     elif [ "$IPv6OpMode" = "3" ]; then
@@ -138,7 +133,18 @@ get_params() {
     else
 	ipvsix=""
     fi
+
+    # compose options
+    PARLINE="$PARLINE $chilli_uamallowed $chilli_macallowed $chilli_uamdomain --dhcpif $lan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000"
+    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli $DEBUG"
+
     mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
+    if [ ! -d /sys/module/xt_coova ]; then
+	modprobe -q xt_coova
+    fi
+    if [ ! -d /sys/module/tun ]; then
+	modprobe -q tun
+    fi
 }
 
 case "$1" in
