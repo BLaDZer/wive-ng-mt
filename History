@@ -2305,7 +2305,7 @@
 16) init.d: fix wds regression and coex with apcli mode.<br>
 17) init.d: vpn: do not remove autoroute if dgw not enabled.<br>
 18) init.d: chillispot: rework parse options (prepare for multilan support).<br>
-19) init.d: chillispot: iptabled: drop depend from lan_if variable (prepare for multilan support).<br>
+19) init.d: chillispot: iptables: drop depend from lan_if variable (prepare for multilan support).<br>
 20) nvram/goahead: split WPAPSK1 and WPAPSK1INIC for allow set differents passwords to 2.4/5GHz radio.<br>
 21) goahead: more usable station list extended info.<br>
 22) goahead: add apcli connection status.<br>
