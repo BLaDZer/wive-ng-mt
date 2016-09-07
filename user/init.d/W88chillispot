@@ -136,12 +136,10 @@ get_params() {
 
     # compose options
     PARLINE="$PARLINE $chilli_uamallowed $chilli_macallowed $chilli_uamdomain --dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000"
-    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli $DEBUG"
+    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc $DEBUG"
 
     mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
-    if [ ! -d /sys/module/xt_coova ]; then
-	modprobe -q xt_coova
-    fi
+
     if [ ! -d /sys/module/tun ]; then
 	modprobe -q tun
     fi

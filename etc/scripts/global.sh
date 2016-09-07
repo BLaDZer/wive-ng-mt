@@ -13,7 +13,6 @@
 # 1 - AP Gateway (classic router mode)
 # 2 - ETH Converter (WAN - ra0 in STA mode, others LAN)
 # 3 - AP-Client/Bridge mode
-# 4 - Chillispot (classic router mode + chillispot)
 #############################################################
 
 # include kernel config
