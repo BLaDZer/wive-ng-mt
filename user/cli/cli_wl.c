@@ -222,12 +222,15 @@ int func_wl_scan(int argc, char* argv[])
 
     if (!cmd)
     {
+	printf("BAND 2.4GHz:\n");
         if (doAPScan("ra0"))
         {
             return 1;
         }
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
+	printf("\n");
+	printf("BAND 5GHz:\n");
         if (doAPScan("rai0"))
         {
             return 2;
@@ -249,12 +252,14 @@ int func_wl_scan(int argc, char* argv[])
 
         if (STR_EQ(iface, "2.4"))
         {
+	    printf("BAND 2.4GHz:\n");
             iface = "ra0";
         }
 #ifndef CONFIG_RT_SECOND_IF_NONE
         else
         if (STR_EQ(iface, "5"))
         {
+	    printf("BAND 5GHz:\n");
             iface = "rai0";
         }
 #endif
