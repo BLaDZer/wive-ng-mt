@@ -2367,6 +2367,7 @@
 78) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
 79) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
 80) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
+81) kernel: net: netfilter: gre: Use consistent GRE_* macros instead of ones defined by netfilter.<br>
 <br>
 <br>
 <br>
