@@ -2371,6 +2371,7 @@
 82) kernel: net: netfilter: gre: Use consistent GRE and PTTP header structure instead of the ones defined by netfilter.<br>
 83) kernel: net: netfilter: ftp: Remove the useless dlen==0 condition check in find_pattern.<br>
 84) kernel: net: netfilter: ftp: Remove the useless code.<br>
+85) kernel: net: netfilter: nf_ct_sip: correct parsing of continuation lines in SIP headers.<br>
 <br>
 <br>
 <br>
