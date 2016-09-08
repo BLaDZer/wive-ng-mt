@@ -2373,6 +2373,7 @@
 84) kernel: net: netfilter: ftp: Remove the useless code.<br>
 85) kernel: net: netfilter: nf_ct_sip: correct parsing of continuation lines in SIP headers.<br>
 86) kernel: net: netfilter: nf_ct_sip: correct allowed characters in Call-ID SIP header.<br>
+87) kernel: net: netfilter: nf_ct_sip: allow tab character in SIP headers.<br>
 <br>
 <br>
 <br>
