@@ -2369,6 +2369,7 @@
 80) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
 81) kernel: net: netfilter: gre: Use consistent GRE_* macros instead of ones defined by netfilter.<br>
 82) kernel: net: netfilter: gre: Use consistent GRE and PTTP header structure instead of the ones defined by netfilter.<br>
+83) kernel: net: netfilter: ftp: Remove the useless dlen==0 condition check in find_pattern.<br>
 <br>
 <br>
 <br>
