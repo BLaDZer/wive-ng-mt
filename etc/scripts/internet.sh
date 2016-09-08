@@ -53,7 +53,7 @@ bridge_config() {
 	# flush eth2 ip and remove from bridge
 	# in bridge mode add only eth2 NOT ADD "$phys_lan_if" or "$phys_wan_if"
 	$LOG "Readd eth2 in br0"
-	readdif_to_br eth2
+	readdif_to_br br0 eth2
 	$LOG "Readd $first_wlan_root_if in br0"
 	readdif_to_br br0 $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
@@ -101,7 +101,7 @@ apcli_config() {
 	# flush eth2 ip and remove from bridge
 	# in bridge mode add only eth2 NOT ADD "$phys_lan_if" or "$phys_wan_if"
 	$LOG "Readd eth2 in br0"
-	readdif_to_br eth2
+	readdif_to_br br0 eth2
 	$LOG "Readd $first_wlan_root_if in br0"
 	readdif_to_br br0 $first_wlan_root_if
 	if [ "$second_wlan_root_if" != "" ]; then
