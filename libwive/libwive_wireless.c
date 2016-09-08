@@ -26,7 +26,7 @@ int wlan_ioctl(unsigned long QueryCode, const char *DeviceName, struct iwreq *wr
 	ret = ioctl(s, QueryCode, wrq);
 
 	if (ret<0)
-	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
+	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s (%i)", __FUNCTION__, errno);
 
 	close(s);
 
@@ -91,9 +91,6 @@ int OidQueryInformation(unsigned long OidQueryCode, const char *DeviceName, void
 	wrq.u.data.pointer = (caddr_t)ptr;
 	wrq.u.data.flags = OidQueryCode;
 
-	if (OidQueryCode == OID_802_11_BSSID_LIST)
-		wrq.u.data.length = 8192;
-
 	if (wlan_ioctl(RT_PRIV_IOCTL, DeviceName, &wrq))
 	{
 	    syslog(LOG_ERR, "wlan: ioctl failed, %s, (%lu, %s)", __FUNCTION__, OidQueryCode, DeviceName);
@@ -107,27 +104,19 @@ int OidSetInformation(unsigned long OidQueryCode, const char *DeviceName, void *
 {
 	struct iwreq wrq;
 
-	int s = socket(AF_INET, SOCK_DGRAM, 0);
-
-	if (s < 0) {
-		syslog(LOG_ERR, "wlan: ioctl open sock failed, %s", __FUNCTION__);
-		return -1;
-	}
-
 	memset(&wrq, 0, sizeof(wrq));
 	strlcpy(wrq.ifr_name, DeviceName, sizeof(wrq.ifr_name));
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t) ptr;
 	wrq.u.data.flags = OidQueryCode | OID_GET_SET_TOGGLE;
 
-	if (ioctl(s, RT_PRIV_IOCTL, &wrq) < 0) {
+	if (wlan_ioctl(RT_PRIV_IOCTL, DeviceName, &wrq))
+	{
 	    syslog(LOG_ERR, "wlan: call ioctl sock failed, %s", __FUNCTION__);
-	    close(s);
 	    return -1;
 	}
 
-	close(s);
-	return (ioctl(s, RT_PRIV_IOCTL, &wrq));
+        return 0;
 }
 
 unsigned int ConvertRssiToSignalQuality(long RSSI)
@@ -527,7 +516,7 @@ static int parseSiteSurveyEntry(struct WLAN_AP_ENTRY* entry, char* line)
         arg_end--;
     }
 
-    strlcpy(entry->ssid, arg_start, IFNAMSIZ);
+    strlcpy(entry->ssid, arg_start, sizeof(entry->ssid));
 
     return 0;
 }
