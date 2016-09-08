@@ -58,8 +58,7 @@ int getIfIsReady(const char *ifname)
 	}
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
@@ -89,8 +88,7 @@ int getIfIp(const char *ifname, char *if_addr)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
 
 	retcode = ioctl(skfd, SIOCGIFADDR, &ifr);
@@ -121,8 +119,7 @@ int getIfMac(const char *ifname, char *if_hw, char separator)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
 		close(skfd);
@@ -163,8 +160,7 @@ int getIfNetmask(const char *ifname, char *if_net)
 		return -1;
 	}
 
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
@@ -880,8 +876,7 @@ int getDNSAddressStr(int index, char* out_buf)
 
             idx++;
             if (idx == index) {
-                strncpy(out_buf, dns, 15);
-                out_buf[15] = '\0';
+                strlcpy(out_buf, dns, 16);
                 break;
             }
         }

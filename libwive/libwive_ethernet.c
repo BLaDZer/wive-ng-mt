@@ -168,8 +168,7 @@ int linkspeed(const char *ifname, int sd) {
 	struct ifreq ifr;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		speed = ecmd.speed;
@@ -202,8 +201,7 @@ int linkduplex(const char *ifname, int sd) {
 	struct ifreq ifr;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_data = (caddr_t)&ecmd;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		duplex = ecmd.duplex;
@@ -233,8 +231,7 @@ int linkstatus(const char *ifname, int sd) {
 	struct ifreq ifr;
 
 	memset(&ifr, 0, sizeof(ifr));
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ - 1);
-	ifr.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_data = (caddr_t)&ethval;
 	if((iocret = ioctl(sd,SIOCETHTOOL,&ifr)) == 0)
 		ret = ethval.data;

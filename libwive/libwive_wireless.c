@@ -21,8 +21,7 @@ int wlan_ioctl(unsigned long QueryCode, const char *DeviceName, struct iwreq *wr
 		return -1;
 	}
 
-	strncpy(wrq->ifr_name, DeviceName, IFNAMSIZ - 1);
-	wrq->ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(wrq->ifr_name, DeviceName, sizeof(wrq->ifr_name));
 
 	ret = ioctl(s, QueryCode, wrq);
 
@@ -116,8 +115,7 @@ int OidSetInformation(unsigned long OidQueryCode, const char *DeviceName, void *
 	}
 
 	memset(&wrq, 0, sizeof(wrq));
-	strncpy(wrq.ifr_name, DeviceName, IFNAMSIZ - 1);
-	wrq.ifr_name[IFNAMSIZ - 1] = '\0';
+	strlcpy(wrq.ifr_name, DeviceName, sizeof(wrq.ifr_name));
 	wrq.u.data.length = PtrLength;
 	wrq.u.data.pointer = (caddr_t) ptr;
 	wrq.u.data.flags = OidQueryCode | OID_GET_SET_TOGGLE;
@@ -396,28 +394,150 @@ int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
 	    return 1;
 }
 
+/* wlanAPScanText - Scan for wireless access points (text output)
+ * arg: if_name - interface name
+ * arg: (out) data - output data buffer
+ * arg: data_len - maximum data buffer size
+ * return: num bytes read, <= 0 for errors
+*/
 int wlanAPScanText(const char *if_name, char* data, unsigned int data_len)
 {
 
 	if (RtpSetInformation("SiteSurvey=1", if_name))
 	{
 		syslog(LOG_ERR, "wlan: SiteSurvey ioctl set failed, %s", __FUNCTION__);
-		return 1;
+		return -1;
 	}
 
 	sleep(4);
 
-	int out_data_len = RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
-
-	if (out_data_len <= 0)
-	{
-		syslog(LOG_ERR, "wlan: SiteSurvey ioctl get failed, %s", __FUNCTION__);
-		return 2;
-	}
-
-	return 0;
+	return RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
 }
 
+/* parseSiteSurveyEntry - internal WLAN_AP_ENTRY parsing function
+ *
+ * arg: (out) entry - preallocated WLAN_AP_ENTRY struct pointer
+ * arg: line - input data to parse (will be destroyed during parse!)
+ * return: WLAN_AP_ENTRY array or NULL
+ */
+static int parseSiteSurveyEntry(struct WLAN_AP_ENTRY* entry, char* line)
+{
+    char* arg_start = NULL;
+    char* arg_end = NULL;
+    int arg_num = 0;
+    int is_delimiter = 1;
+    char* ptr;
+
+    if (line == NULL)
+    {
+        return 1;
+    }
+
+    for (ptr = line + strlen(line); ptr>line; ptr--)
+    {
+        int is_delimiter_symbol = (ptr[0] == ' ' || ptr[0] == '\0' || ptr[0] == '\n');
+
+        if (is_delimiter)
+        {
+            if (is_delimiter_symbol)
+            {
+                ptr[0] = '\0';
+            }
+            else
+            {
+                is_delimiter = 0;
+                arg_end = ptr;
+            }
+        }
+        else
+        if (!is_delimiter && is_delimiter_symbol)
+        {
+            is_delimiter = 1;
+            arg_start = ptr + 1;
+            arg_num++;
+
+            switch (arg_num)
+            {
+                case 1:
+                    strlcpy(entry->nt, arg_start, sizeof(entry->nt));
+                    break;
+                case 2:
+                    strlcpy(entry->extch, arg_start, sizeof(entry->extch));
+                    break;
+                case 3:
+                    strlcpy(entry->wmode, arg_start, sizeof(entry->wmode));
+                    break;
+                case 4:
+                    entry->signal_percent = strToIntDef(arg_start, 0);
+                    break;
+                case 5:
+                    strlcpy(entry->security, arg_start, sizeof(entry->security));
+                    break;
+                case 6:
+                    if (sscanf(arg_start, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", 
+                        &entry->bssid[0],
+                        &entry->bssid[1],
+                        &entry->bssid[2],
+                        &entry->bssid[3],
+                        &entry->bssid[4],
+                        &entry->bssid[5]) != 6)
+                    {
+                        return 2;
+                    }
+
+                    break;
+            }
+
+            if (arg_num == 6) break;
+        }
+    }
+
+    if (arg_num != 6)
+    {
+        return 3;
+    }
+
+    /* chan - ssid split */
+    arg_start[0] = '\0';
+
+    arg_start = strchr(line, ' ');
+
+    if (arg_start == NULL)
+    {
+        return 4;
+    }
+
+    arg_start[0] = '\0';
+    arg_start++;
+
+    entry->chan = strToIntDef(line, 0);
+
+
+    /* ssid trim left */
+    while (arg_start[0] == ' ')
+    {
+        arg_start++;
+    }
+
+    /* ssid trim right */
+    arg_end = arg_start + strlen(arg_start) - 1;
+    while (arg_end>arg_start && (arg_end[0] == ' '))
+    {
+        arg_end[0] = '\0';
+        arg_end--;
+    }
+
+    strlcpy(entry->ssid, arg_start, IFNAMSIZ);
+
+    return 0;
+}
+
+/* wlanAPScan - Scan for wireless access points (struct output)
+ *
+ * arg: if_name - interface name to scan
+ * arg: (out) entry_num - output array element count
+ * return: WLAN_AP_ENTRY array or NULL
+ */
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
 {
     char data[8192];
@@ -427,46 +547,46 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
     struct WLAN_AP_ENTRY* entries;
     *(entry_num) = 0;
 
-    if (wlanAPScanText(if_name, data, 8192))
+    if (wlanAPScanText(if_name, data, 8192) <= 0)
     {
-	syslog(LOG_ERR, "wlan: SiteSurvey failed, %s", __FUNCTION__);
-	return NULL;
+        syslog(LOG_ERR, "wlan: SiteSurvey failed, %s", __FUNCTION__);
+        return NULL;
     }
 
     ptr = strtok(data, "\n");
 
     entries = calloc(ent_capacity, sizeof(struct WLAN_AP_ENTRY));
     if (!entries) {
-	syslog(LOG_ERR, "wlan: APScan memory alloc failed, %s", __FUNCTION__);
-	return NULL;
+        syslog(LOG_ERR, "wlan: APScan memory alloc failed, %s", __FUNCTION__);
+        return NULL;
     }
 
     while (ptr)
     {
-	struct WLAN_AP_ENTRY* entry = &entries[ent_cur];
+        struct WLAN_AP_ENTRY* entry = &entries[ent_cur];
+        int err_code = parseSiteSurveyEntry(entry, ptr);
 
-        int cnt = sscanf(ptr, "%hhu %s %hhx:%hhx:%hhx:%hhx:%hhx:%hhx %s %hhu %s %s %s", &entry->chan, entry->ssid, &entry->bssid[0], &entry->bssid[1], &entry->bssid[2], &entry->bssid[3], &entry->bssid[4], &entry->bssid[5], entry->security, &entry->signal_percent, entry->wmode, entry->extch, entry->nt);
+        if (err_code == 0)
+        {
+            ent_cur++;
 
-	if (cnt == 13)
-	{
-	    ent_cur++;
+            if (ent_cur >= ent_capacity)
+            {
+                ent_capacity += 32;
 
-	    if (ent_cur >= ent_capacity)
-	    {
-		ent_capacity += 32;
-		struct WLAN_AP_ENTRY* new_entries = realloc(entries, ent_capacity);
-		if (new_entries != NULL)
-		{
-		    entries = new_entries;
-		}
-		else
-		{
-		    break;
-		}
-	    }
-	}
+                struct WLAN_AP_ENTRY* new_entries = realloc(entries, ent_capacity);
+                if (new_entries != NULL)
+                {
+                    entries = new_entries;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
 
-	ptr = strtok(NULL, "\n");
+        ptr = strtok(NULL, "\n");
     }
 
     *(entry_num) = ent_cur;

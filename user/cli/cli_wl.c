@@ -10,6 +10,37 @@
 */
 #include "cli_wl.h"
 
+int doAPScan(char* iface)
+{
+    int ent_count = 0;
+    struct WLAN_AP_ENTRY *entries = wlanAPScan(iface, &ent_count);
+
+    if (entries == NULL)
+    {
+        return 1;
+    }
+
+    printf("Ch|SSID                            |BSSID            |Security              |Signal|W-Mode |ExtCH|NT \n");
+
+    int n;
+    for (n=0;n<ent_count;n++)
+    {
+        printf("%-2u", entries[n].chan);
+        printf("|%-32.32s", entries[n].ssid);
+        printf("|%02X:%02X:%02X:%02X:%02X:%02X", entries[n].bssid[0], entries[n].bssid[1], entries[n].bssid[2], entries[n].bssid[3], entries[n].bssid[4], entries[n].bssid[5]);
+        printf("|%-22.22s", entries[n].security);
+        printf("|%-6u", entries[n].signal_percent);
+        printf("|%-7.7s", entries[n].wmode);
+        printf("|%-5.5s", entries[n].extch);
+        printf("|%-3.3s", entries[n].nt);
+        printf("\n");
+    }
+
+    free(entries);
+
+    return 0;
+}
+
 void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 {
         printf("%-3d", pe->Aid);
@@ -189,22 +220,18 @@ int func_wl_scan(int argc, char* argv[])
     argc--;
     argv++;
 
-    char data[8192];
-
     if (!cmd)
     {
-        if (wlanAPScanText("ra0", data, 8192))
+        if (doAPScan("ra0"))
         {
             return 1;
         }
-        printf("%s\n",data);
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
-        if (wlanAPScanText("rai0", data, 8192))
+        if (doAPScan("rai0"))
         {
             return 2;
         }
-        printf("%s\n",data);
 #endif
     }
     else
@@ -232,32 +259,12 @@ int func_wl_scan(int argc, char* argv[])
         }
 #endif
 
-        if (wlanAPScanText(iface, data, 8192))
+        if (doAPScan(iface))
         {
             return 3;
         }
-        printf("%s\n",data);
     }
 
-
-/* // Parsed wl-scan version for future use
-
-    int ent_count = 0;
-    struct WLAN_AP_ENTRY *entries = wlanAPScan("ra0", &ent_count);
-
-    if (entries == NULL)
-    {
-	return 2;
-    }
-
-    int n;
-    for (n=0;n<ent_count;n++)
-    {
-	puts(entries[n].ssid);
-    }
-
-    free(entries);
-*/
 
     printf("\n");
     return 0;

@@ -9,4 +9,8 @@ int checkSemicolon(char *str);
 
 int secondsToTimeIntervalStr(char* timeStr, int strLen, long seconds);
 
+#ifndef LIBBSD_STRING_H
+size_t strlcpy(char *dst, const char *src, size_t siz);
+#endif
+
 #endif
