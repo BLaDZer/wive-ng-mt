@@ -1209,12 +1209,15 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 10, "ApCliEnable", "ApCliIfName", "ApCliSsid", "ApCliBssid", "ApCliAuthMode", 
 						"ApCliEncrypType", "ApCliWPAPSK", "ApCliAutoConnect", "ApCliClientOnly", "ApCliBridgeOnly");
+	    websHeader(wp);
+	    websDone(wp, 204);
 	}
 	else {
 		if (strcmp(apcli_enable, "on") == 0)
 		    apcli_enable="1";
 		else
 		    apcli_enable="0";
+
 		nvram_init(RT2860_NVRAM);
 		nvram_bufset(RT2860_NVRAM, "ApCliEnable", apcli_enable);
 		setupParameters(wp, apcli_args, 0);
@@ -1224,10 +1227,11 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 		if (CHK_IF_DIGIT(reboot, 1)) {
 			outputTimerForReload(wp, "", 80000);
 			reboot_now();
+		} else {
+		    websHeader(wp);
+		    websDone(wp, 204);
 		}
 	}
-	websHeader(wp);
-	websDone(wp, 204);
 }
 
 static int getAPCliStatus(int eid, webs_t wp, int argc, char_t **argv)
