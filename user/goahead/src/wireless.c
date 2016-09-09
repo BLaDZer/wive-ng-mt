@@ -1202,7 +1202,6 @@ parameter_fetch_t apcli_args[] =
 /* goform/wirelessApcli */
 static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *reboot       = websGetVar(wp, T("reboot"), T("0"));
 	char_t *reset        = websGetVar(wp, T("reset"), T("0"));
 	char_t *apcli_enable = websGetVar(wp, T("apcli_enable"), T("0"));
 
@@ -1224,13 +1223,14 @@ static void wirelessApcli(webs_t wp, char_t *path, char_t *query)
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 
-		if (CHK_IF_DIGIT(reboot, 1)) {
-			outputTimerForReload(wp, "", 80000);
-			reboot_now();
-		} else {
-		    websHeader(wp);
-		    websDone(wp, 204);
-		}
+		/* prevent old apcliif start before band select */
+		doSystem("service wan stop");
+
+		/* reconfigure system */
+		doSystem("internet.sh");
+
+		websHeader(wp);
+		websDone(wp, 204);
 	}
 }
 

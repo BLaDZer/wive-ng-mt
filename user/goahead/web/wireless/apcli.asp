@@ -19,7 +19,7 @@
 
 			var radio_on				= "<% getCfgZero(1, "RadioOn"); %>";
 			var radio_on_ac				= "<% getCfgZero(1, "RadioOnINIC"); %>";
-			var is5gh_support			= '<% is5gh_support(); %>';			
+			var is5gh_support			= '<% is5gh_support(); %>';
 
 			function initTranslation() {
 				_TR("apcliTitle",						"apcli title");
@@ -132,13 +132,9 @@
 							}
 				}
 
-				form.apcli_interface.disabled = false; 
-
-				if (!ajaxPostForm(_('apcli reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 3);
-					form.reboot.value = "0";
-					form.submit();
-				}
+				form.apcli_interface.disabled = false;
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				form.submit();
 				return true;
 			}
 
@@ -167,10 +163,10 @@
 				displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK')) && (form.apcli_enable.checked == 1));
 			}
 
-			function apcliEnableSwitch(form) 
+			function apcliEnableSwitch(form)
 			{
-				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr', 
-								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk', 
+				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr',
+								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk',
 								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.checked == 1);
 				displayElement('apcliWiFiMode_tr', is5gh_support == 1 && radio_on == 1 && radio_on_ac == 1 && form.apcli_enable.checked == 1);
 				securityModeSwitch(form);
@@ -291,7 +287,6 @@
 							<td><input type="submit" class="normal" value="Apply"  id="apcliApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 5);">
-								<input type="hidden" value="1" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>
