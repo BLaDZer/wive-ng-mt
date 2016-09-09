@@ -60,7 +60,9 @@ function scanApHTTPrequestHandler()
 	{
 		if (scanApHTTPrequest.status == 200)
 		{
-			scanApData = JSON.parse(scanApHTTPrequest.responseText);
+			try {
+				scanApData = JSON.parse(scanApHTTPrequest.responseText);
+			} catch(e) {}
 			if (scanApFreq == "2.4") {
 				var div = document.getElementById('scanApPlot');
 				showElement('scanApPlot');
@@ -433,17 +435,16 @@ function showLegend()
 		html += '<table width="100%">';
 		html += '<tr>'
 		if (scanApCli == 1) 
-			html += '<th id="scanapLegendSelect">Select</th>'
-		html += '<th id="scanapLegendColor" style="width: 3%"></th>'
-		html += '<th id="scanapLegendChan" style="width: 10%">Channel</th>';
-		html += '<th id="scanapLegendSSID">SSID</th>';
-		html += '<th id="scanapLegendBSSID">BSSID</th>';
-		html += '<th id="scanapLegendSecurity">Security</th>';
-		html += '<th id="scanapLegendSignal" style="width: 7%">Signal</th>';
-		html += '<th id="scanapLegend80211">802.11</th>';
-		html += '<th id="scanapLegendType">Type</th>';
+			html += '<th>' + _("scanap legend select") + '</th>'
+		html += '<th style="width: 3%">' + _("scanap legend color") + '</th>'
+		html += '<th style="width: 10%">' + _("scanap legend chan") + '</th>';
+		html += '<th>' + _("scanap legend ssid") + '</th>';
+		html += '<th>' + _("scanap legend bssid") + '</th>';
+		html += '<th>' + _("scanap legend security") + '</th>';
+		html += '<th style="width: 7%">' + _("scanap legend signal") + '</th>';
+		html += '<th>' + _("scanap legend 80211") + '</th>';
+		html += '<th>' + _("scanap legend type") + '</th>';
 		html += '</tr>';
-	
 		for (i = 0; i < scanApData.wireless.length; i++) {
 			if (scanApData.wireless[i].ssid[0] == "0" && scanApData.wireless[i].ssid[1] == "x")
 				scanApData.wireless[i].ssid = convertHexToString(scanApData.wireless[i].ssid.substr(2, scanApData.wireless[i].ssid.length - 2));
@@ -517,14 +518,10 @@ function showLegend()
 	html += '</td>';
 	html += '</tr>';
 	html += '</table>';
-	if (scanApFreq == "2.4") {
+	if (scanApFreq == "2.4")
 		document.getElementById('scanApButtons_td').innerHTML = html;
-		document.getElementById('scanApButtonsINIC_td').innerHTML = "";
-	}
-	else {
+	else
 		document.getElementById('scanApButtonsINIC_td').innerHTML = html;
-		document.getElementById('scanApButtons_td').innerHTML = "";
-	}
 	initTranslation();
 }
 

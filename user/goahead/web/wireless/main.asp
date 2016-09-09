@@ -459,14 +459,6 @@
 				_TR("advDynVGALong_td_1", "adv dynvga long");
 				_TR("advDynVGAClamp", "adv dynvga clamp");
 				
-				_TR("scanapLegendColor",				"scanap legend color");
-				_TR("scanapLegendChan",					"scanap legend chan");
-				_TR("scanapLegendSSID",					"scanap legend ssid");
-				_TR("scanapLegendBSSID",				"scanap legend bssid");
-				_TR("scanapLegendSecurity",				"scanap legend security");
-				_TR("scanapLegendSignal",				"scanap legend signal");
-				_TR("scanapLegend80211",				"scanap legend 80211");
-				_TR("scanapLegendType",					"scanap legend type");
 				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
 				_TRV("scanapLegendButtonRefresh",		"scanap legend button refresh");
 				_TRV("scanapLegendButtonClose",			"scanap legend button close");

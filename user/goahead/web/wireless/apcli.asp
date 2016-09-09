@@ -43,15 +43,6 @@
 				_TRV("apcliApply",						"button apply");
 				_TRV("apcliCancel",						"button cancel");
 				_TRV("apcliReset",						"button reset");
-				_TR("scanapLegendSelect",				"scanap legend select");
-				_TR("scanapLegendColor",				"scanap legend color");
-				_TR("scanapLegendChan",					"scanap legend chan");
-				_TR("scanapLegendSSID",					"scanap legend ssid");
-				_TR("scanapLegendBSSID",				"scanap legend bssid");
-				_TR("scanapLegendSecurity",				"scanap legend security");
-				_TR("scanapLegendSignal",				"scanap legend signal");
-				_TR("scanapLegend80211",				"scanap legend 80211");
-				_TR("scanapLegendType",					"scanap legend type");
 				_TRV("scanapLegendButtonSelect",		"scanap legend button select");
 				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
 				_TRV("scanapLegendButtonRefresh",		"scanap legend button refresh");
