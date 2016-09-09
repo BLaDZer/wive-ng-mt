@@ -51,7 +51,7 @@ servicelimit() {
 	    $LOG "DHCP server allow"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi
-	if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
+	if [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
 	    $LOG "802.11f daemon allow to connect"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 3517 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p tcp --dport 3517 -j ACCEPT
@@ -589,7 +589,7 @@ get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable \
-	    FtSupport FastRoaming RADIUS_Server PreAuth dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
+	    FtSupport RADIUS_Server PreAuth dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled RadiusSrvEnable MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit QoSEnable`

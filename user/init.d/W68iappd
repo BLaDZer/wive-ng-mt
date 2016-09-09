@@ -14,7 +14,7 @@ LOG="logger -t iappd"
 start() {
     get_param
     if [ "$RadioOn" = "1" -o "$RadioOnINIC" = "1" ]; then
-	if [ "$FastRoaming" = "1" ] || [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
+	if [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$PreAuth" = "1" -a "$RADIUS_Server" != "" ]; then
 	    $LOG "Starting iappd 802.11f daemon"
 	    # ethernet if - lan_if
 	    # wlan if for recive data - standalone if or bridge interface
@@ -27,7 +27,7 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 FtSupport PreAuth RADIUS_Server FastRoaming`
+    eval `nvram_buf_get 2860 FtSupport PreAuth RADIUS_Server`
 }
 
 stop() {

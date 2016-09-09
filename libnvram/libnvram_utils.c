@@ -1503,16 +1503,16 @@ char *setNthValue(int index, char *old_values, char *new_value)
 
 	memset(ret, 0, 2048);
 	for (i = 0; i < 8; i++)
-		memset(buf[i], 0, 256);
+	    memset(buf[i], 0, 256);
 
 	/* copy original values */
 	for ( i = 0, p = old_values, q = strchr(p, ';')  ;
-	      i < 8 && q != NULL                         ;
-	      i++, p = q + 1, q = strchr(p, ';')         )
+		i < 8 && q != NULL                         ;
+		i++, p = q + 1, q = strchr(p, ';')         )
 		strncpy(buf[i], p, q - p);
 
 	if (i > 7) /* limit of buf size = 8 */
-	    i=7;
+		i=7;
 
 	strcpy(buf[i], p); /* the last one */
 
@@ -1521,6 +1521,14 @@ char *setNthValue(int index, char *old_values, char *new_value)
 
 	/* calculate maximum index */
 	index = (i > index)? i : index;
+
+	/* strip last unneded divider */
+	for (i = index; i >= 0; i--) {
+		if (strlen(buf[i]) == 0)
+			index--;
+		else
+		    break;
+	}
 
 	/* concatenate into a single string delimited by semicolons */
 	strcat(ret, buf[0]);
