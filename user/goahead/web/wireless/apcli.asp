@@ -12,32 +12,53 @@
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
+		<script src="/js/scanap.js"></script>
 		<script>
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
+			var radio_on				= "<% getCfgZero(1, "RadioOn"); %>";
+			var radio_on_ac				= "<% getCfgZero(1, "RadioOnINIC"); %>";
+			var is5gh_support			= '<% is5gh_support(); %>';			
+
 			function initTranslation() {
-				_TR("apcliTitle",			"apcli title");
-				_TR("apcliParameters",		"apcli param");
-				_TR("apcliAbout",			"apcli about");
-				_TR("apcliEnable",			"apcli client enable");
-				_TR("apcli_enable_enable",	"button enable");
-				_TR("apcli_enable_disable",	"button disable");
-				_TR("apcliOpen",			"apcli open");
-				_TR("apcliWiFiMode",		"apcli client wifi mode")
-				_TR("apcliSSID",			"station ssid");
-				_TR("apcliMAC",				"apcli mac");
-				_TR("apcliSecurityMode",	"secure security mode");
-				_TR("apcliEncryptionType",	"secure encryp type");
-				_TR("apcliPass",			"secure wpa pass phrase");
-				_TR("apcliShowPass",		"secure wpa show pass phrase");
-				_TR("apcliAutoscan",		"apcli enable autoscan");
-				_TR("apcliDisableIface",	"apcli disable iface");
-				_TR("apcliEnableBridge",	"apcli enable bridge");
-				_TR("basicAPCLIMode",		"basic apcli mode");  
-				_TRV("apcliApply",			"button apply");
-				_TRV("apcliCancel",			"button cancel");
-				_TRV("apcliReset",			"button reset");
+				_TR("apcliTitle",						"apcli title");
+				_TR("apcliParameters",					"apcli param");
+				_TR("apcliAbout",						"apcli about");
+				_TR("apcliEnable",						"apcli client enable");
+				_TR("apcli_enable_enable",				"button enable");
+				_TR("apcli_enable_disable",				"button disable");
+				_TR("apcliOpen",						"apcli open");
+				_TR("apcliWiFiMode",					"apcli client wifi mode")
+				_TR("apcliSSID",						"station ssid");
+				_TR("apcliMAC",							"apcli mac");
+				_TR("apcliSecurityMode",				"secure security mode");
+				_TR("apcliEncryptionType",				"secure encryp type");
+				_TR("apcliPass",						"secure wpa pass phrase");
+				_TR("apcliShowPass",					"secure wpa show pass phrase");
+				_TR("apcliAutoscan",					"apcli enable autoscan");
+				_TR("apcliDisableIface",				"apcli disable iface");
+				_TR("apcliEnableBridge",				"apcli enable bridge");
+				_TR("basicAPCLIMode",					"basic apcli mode");  
+				_TRV("apcliApply",						"button apply");
+				_TRV("apcliCancel",						"button cancel");
+				_TRV("apcliReset",						"button reset");
+				_TR("scanapLegendSelect",				"scanap legend select");
+				_TR("scanapLegendColor",				"scanap legend color");
+				_TR("scanapLegendChan",					"scanap legend chan");
+				_TR("scanapLegendSSID",					"scanap legend ssid");
+				_TR("scanapLegendBSSID",				"scanap legend bssid");
+				_TR("scanapLegendSecurity",				"scanap legend security");
+				_TR("scanapLegendSignal",				"scanap legend signal");
+				_TR("scanapLegend80211",				"scanap legend 80211");
+				_TR("scanapLegendType",					"scanap legend type");
+				_TRV("scanapLegendButtonSelect",		"scanap legend button select");
+				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
+				_TRV("scanapLegendButtonRefresh",		"scanap legend button refresh");
+				_TRV("scanapLegendButtonClose",			"scanap legend button close");
+				_TRV("scanapLegendButtonScanINIC",		"scanap legend button scan");
+				_TRV("scanapLegendButtonRefreshINIC",	"scanap legend button refresh");
+				_TRV("scanapLegendButtonCloseINIC",		"scanap legend button close");
 			}
 
 			function initValues()
@@ -51,10 +72,7 @@
 				form.apcli_apiface.checked	= '<% getCfgGeneral(1, "ApCliClientOnly"); %>' == '1';
 				form.apcli_bridge.checked	= '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';
 				form.apcli_wpapsk.value		= '<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>';
-				
-				var radio_on				= "<% getCfgZero(1, "RadioOn"); %>";
-				var radio_on_ac				= "<% getCfgZero(1, "RadioOnINIC"); %>";
-				var is5gh_support			= '<% is5gh_support(); %>';
+
 				var apcli_mode				= '<% getCfgGeneral(1, "ApCliIfName"); %>';
 
 				if ((is5gh_support == 0) || ((radio_on == 0) && (radio_on_ac == 0))) {
@@ -154,6 +172,7 @@
 				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr', 
 								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk', 
 								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.checked == 1);
+				displayElement('apcliWiFiMode_tr', is5gh_support == 1 && radio_on == 1 && radio_on_ac == 1 && form.apcli_enable.checked == 1);
 				securityModeSwitch(form);
 			}
 
@@ -184,22 +203,53 @@
 						<tr> 
 							<td class="head" style="width: 40%"><input type="checkbox" name="apcli_enable" onClick="apcliEnableSwitch(this.form);">
 								<b id="apcliEnable">Enable AP Client</b></td>
-							<td id="apcli_status"></td>
+							<td id="apcli_status" style="width: 60%"></td>
 						</tr>
 						<tr id="apcliWiFiMode_tr">
 							<td id="apcliWiFiMode" class="head">APCLI Mode</td>
-							<td><select name="apcli_interface" size="1" class="normal">
+							<td><select id="apcli_interface" name="apcli_interface" size="1" class="normal">
 								<option value="apcli0" selected id="1">2.4GHz</option>
 								<option value="apclii0" id="2">5GHz</option>
 							</select></td>
 						</tr>
 						<tr id="apcliSSID_tr">
 							<td id="apcliSSID" class="head">SSID</td>
-							<td><input name="apcli_ssid" class="normal" maxlength="32"></td>
+							<td>
+								<input id="apcli_ssid" name="apcli_ssid" class="normal" maxlength="32">
+								<input id="scanapLegendButtonScan" type="button" class="short" value="Scan" onClick="scanAp('apcli', 1);">
+							</td>
+						</tr>
+						<tr id="scanAp" style="display: none;">
+							<td colspan="2">
+								<div style="width: 785; height: 300px;">
+									<div id="scanApPlot" style="width: 100%; height: 300px; margin: 0 auto;">
+									</div>
+									<div id="scanApPreloader" style="display: none; width:100%; height: 100%">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr id="scanApButtons" style="display: none;">
+							<td colspan="2" id="scanApButtons_td"></td>
+						</tr>
+						<tr id="scanApINIC" style="display: none;">
+							<td colspan="2">
+								<div style="width: 785; height: 300px;">
+									<div id="scanApPlotINIC" style="width: 100%; height: 300px; margin: 0 auto;">
+									</div>
+									<div id="scanApPreloaderINIC" style="display: none; width:100%; height: 100%">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr id="scanApButtonsINIC" style="display: none;">
+							<td colspan="2" id="scanApButtonsINIC_td"></td>
 						</tr>
 						<tr id="apcliMAC_tr">
 							<td id="apcliMAC" class="head">MAC Address (Optional)</td>
-							<td><input name="apcli_bssid" class="normal"></td>
+							<td><input id="apcli_bssid" name="apcli_bssid" class="normal"></td>
 						</tr>
 						<tr id="apcliSecurityMode_tr">
 							<td id="apcliSecurityMode" class="head">Security Mode</td>

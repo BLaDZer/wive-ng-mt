@@ -447,4 +447,18 @@
   <message msgid="stalist avg"  msgstr="Сред: " />
   <message msgid="stalist last" msgstr="Посл: " />
   <message msgid="stalist pos"  msgstr="Поз: " />
+
+  <message msgid="scanap legend select" msgstr="Выбор" />
+  <message msgid="scanap legend color" msgstr="" />
+  <message msgid="scanap legend chan" msgstr="Канал" />
+  <message msgid="scanap legend ssid" msgstr="SSID" />
+  <message msgid="scanap legend bssid" msgstr="Широковещательный SSID" />
+  <message msgid="scanap legend security" msgstr="Безопасность" />
+  <message msgid="scanap legend signal" msgstr="Сигнал" />
+  <message msgid="scanap legend 80211" msgstr="802.11" />
+  <message msgid="scanap legend type" msgstr="Тип" />
+  <message msgid="scanap legend button scan" msgstr="Скан." />
+  <message msgid="scanap legend button select" msgstr="Выбрать" />
+  <message msgid="scanap legend button refresh" msgstr="Обновить" />
+  <message msgid="scanap legend button close" msgstr="Закрыть" />  
 </po>

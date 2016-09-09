@@ -443,4 +443,18 @@
   <message msgid="stalist avg"  msgstr="Avg: " />
   <message msgid="stalist last" msgstr="Last: " />
   <message msgid="stalist pos"  msgstr="Pos: " />
+
+  <message msgid="scanap legend select" msgstr="Select" />  
+  <message msgid="scanap legend color" msgstr="" />
+  <message msgid="scanap legend chan" msgstr="Channel" />
+  <message msgid="scanap legend ssid" msgstr="SSID" />
+  <message msgid="scanap legend bssid" msgstr="BSSID" />
+  <message msgid="scanap legend security" msgstr="Security" />
+  <message msgid="scanap legend signal" msgstr="Signal" />
+  <message msgid="scanap legend 80211" msgstr="802.11" />
+  <message msgid="scanap legend type" msgstr="Type" />
+  <message msgid="scanap legend button scan" msgstr="Scan" />
+  <message msgid="scanap legend button select" msgstr="Select" />
+  <message msgid="scanap legend button refresh" msgstr="Refresh" />
+  <message msgid="scanap legend button close" msgstr="Close" />  
 </po>

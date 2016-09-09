@@ -2314,66 +2314,67 @@
 25) goahead: add apcli connection status.<br>
 26) goahead: fix reboot after managment port change regression.<br>
 27) goahead: avoid full reboot after misc page applly.<br>
-28) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch, st show,dhcp,l2tp,ntp,ddns,samba,vpn).<br>
-29) kernel: ralink_wifi: fix set mcast rate from profile.<br>
-30) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
-31) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
-32) kernel: ralink_wifi: DMA remove bogus play with TXD block for Little-Endian in RTMPFreeTXDUponTxDmaDone().<br>
-33) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
-34) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
-35) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
-36) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
-37) kernel: ralink_ppe: fix hang MT7621 PPE on manual unbind entry.<br>
-38) kernel: mips: fix memory regions reaching top of physical.<br>
-39) kernel: mips: fix r4k clockevents registration.<br>
-40) kernel: mips: ralink system tick counter: use clockevents_config_and_register.<br>
-41) kernel: mips: RM7000: Double locking bug in rm7k_tc_disable().<br>
-42) kernel: mips: KEYS: 64-bit MIPS needs to use compat_sys_keyctl for 32-bit userspace.<br>
-43) kernel: mips: Lantiq: Fix build failure.<br>
-44) kernel: mips: move identification of VP(E) into proc.c from smp-mt.c.<br>
-45) kernel: mips-gic: use clockevents_config_and_register.<br>
-46) kernel: mips: dma: Fix BUG due to smp_processor_id() in preemptible code.<br>
-47) kernel: mips: provide nice way to access boot CPU's data.<br>
-48) kernel: mips: ptrace: avoid smp_processor_id() in preemptible code.<br>
-49) kernel: mips: oprofile: fix a preemption issue.<br>
-50) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
-51) kernel: usb: xhci: fix panic if disconnect.<br>
-52) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
-53) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
-54) kernel: usb: serial: option: add support for Telit LE920A4.<br>
-55) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
-56) kernel: tun: don't look at current when non-blocking.<br>
-57) kernel: net: core: inline dev_alloc_skb() call.<br>
-58) kernel: net: flow_dissector: support L2 GRE.<br>
-59) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
-60) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
-61) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
-62) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
-63) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
-64) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
-65) kernel: net: packet: improve socket create/bind latency in some cases.<br>
-66) kernel: net: packet: race condition in packet_bind.<br>
-67) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
-68) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
-69) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
-70) kernel: net: tcp: md5: fix lockdep annotation.<br>
-71) kernel: net: tcp: consider recv buf for the initial window scale.<br>
-72) kernel: net: tcp: fix use after free in tcp_xmit_retransmit_queue().<br>
-73) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
-74) kernel: net: netfilter: avoid race with exp->master ct.<br>
-75) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
-76) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
-77) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
-78) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
-79) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
-80) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
-81) kernel: net: netfilter: gre: Use consistent GRE_* macros instead of ones defined by netfilter.<br>
-82) kernel: net: netfilter: gre: Use consistent GRE and PTTP header structure instead of the ones defined by netfilter.<br>
-83) kernel: net: netfilter: ftp: Remove the useless dlen==0 condition check in find_pattern.<br>
-84) kernel: net: netfilter: ftp: Remove the useless code.<br>
-85) kernel: net: netfilter: nf_ct_sip: correct parsing of continuation lines in SIP headers.<br>
-86) kernel: net: netfilter: nf_ct_sip: correct allowed characters in Call-ID SIP header.<br>
-87) kernel: net: netfilter: nf_ct_sip: allow tab character in SIP headers.<br>
+28) goahead: add apscan support.<br>
+29) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch, st show,dhcp,l2tp,ntp,ddns,samba,vpn).<br>
+30) kernel: ralink_wifi: fix set mcast rate from profile.<br>
+31) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
+32) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
+33) kernel: ralink_wifi: DMA remove bogus play with TXD block for Little-Endian in RTMPFreeTXDUponTxDmaDone().<br>
+34) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
+35) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>
+36) kernel: ralink_wifi: mt76x2/mt76x3: fix wrong parse ICMP type in data queue reserve.<br>
+37) kernel: ralink_wifi: mt76x2/mt76x3: fix double free on RTMPFreeTXDUponTxDmaDone().<br>
+38) kernel: ralink_ppe: fix hang MT7621 PPE on manual unbind entry.<br>
+39) kernel: mips: fix memory regions reaching top of physical.<br>
+40) kernel: mips: fix r4k clockevents registration.<br>
+41) kernel: mips: ralink system tick counter: use clockevents_config_and_register.<br>
+42) kernel: mips: RM7000: Double locking bug in rm7k_tc_disable().<br>
+43) kernel: mips: KEYS: 64-bit MIPS needs to use compat_sys_keyctl for 32-bit userspace.<br>
+44) kernel: mips: Lantiq: Fix build failure.<br>
+45) kernel: mips: move identification of VP(E) into proc.c from smp-mt.c.<br>
+46) kernel: mips-gic: use clockevents_config_and_register.<br>
+47) kernel: mips: dma: Fix BUG due to smp_processor_id() in preemptible code.<br>
+48) kernel: mips: provide nice way to access boot CPU's data.<br>
+49) kernel: mips: ptrace: avoid smp_processor_id() in preemptible code.<br>
+50) kernel: mips: oprofile: fix a preemption issue.<br>
+51) kernel: sched/loadavg: fix loadavg artifacts on fully idle and on fully loaded systems.<br>
+52) kernel: usb: xhci: fix panic if disconnect.<br>
+53) kernel: usb: core: buffer: avoid NULL pointer dereferrence.<br>
+54) kerenl: usb: cdc-acm: fix wrong pipe type on rx interrupt xfers.<br>
+55) kernel: usb: serial: option: add support for Telit LE920A4.<br>
+56) kernel: usb: serial: option: add D-Link DWM-156/A3.<br>
+57) kernel: tun: don't look at current when non-blocking.<br>
+58) kernel: net: core: inline dev_alloc_skb() call.<br>
+59) kernel: net: flow_dissector: support L2 GRE.<br>
+60) kernel: net: decrease size of skb_shared_info (prevent page allocation failure on wireless path).<br>
+61) kernel: net: rps: inspect PPTP encapsulated by GRE to get flow hash.<br>
+62) kernel: net: pptp: refactor the struct and macros of PPTP codes.<br>
+63) kernel: net: l2tp: fix the connect status check in pppol2tp_getname.<br>
+64) kernel: net: l2tp: correctly return -EBADF from pppol2tp_getname.<br>
+65) kernel: net: l2tp: refactor the codes with existing macros instead of literal number.<br>
+66) kernel: net: packet: improve socket create/bind latency in some cases.<br>
+67) kernel: net: packet: race condition in packet_bind.<br>
+68) kernel: net: ipv6: don't call fib6_run_gc() until routing is ready.<br>
+69) kernel: net: ipv6: update ip6_rt_last_gc every time GC is run.<br>
+70) kernel: net: tcp: make challenge acks less predictable (CVE-2016-5696).<br>
+71) kernel: net: tcp: md5: fix lockdep annotation.<br>
+72) kernel: net: tcp: consider recv buf for the initial window scale.<br>
+73) kernel: net: tcp: fix use after free in tcp_xmit_retransmit_queue().<br>
+74) kernel: net: netfilter: replace strnicmp with strncasecmp.<br>
+75) kernel: net: netfilter: avoid race with exp->master ct.<br>
+76) kernel: net: netfilter: conntrack: only need first 4 bytes to get l4proto ports.<br>
+77) kernel: net: netfilter: conntrack: don't attempt to iterate over empty table.<br>
+78) kernel: net: netfilter: nf_conntrack_sip: CSeq 0 is a valid CSeq.<br>
+79) kernel: net: netfilter: xt_mark, xt_connmark: do not skip HW_NAT on RA_HW_NAT_QDMA enabled.<br>
+80) kernel: net: netfilter: nf_ct_h323: do not re-activate already expired timer.<br>
+81) kernel: net: netfilter: ctnetlink: reject new conntrack request with different l4proto.<br>
+82) kernel: net: netfilter: gre: Use consistent GRE_* macros instead of ones defined by netfilter.<br>
+83) kernel: net: netfilter: gre: Use consistent GRE and PTTP header structure instead of the ones defined by netfilter.<br>
+84) kernel: net: netfilter: ftp: Remove the useless dlen==0 condition check in find_pattern.<br>
+85) kernel: net: netfilter: ftp: Remove the useless code.<br>
+86) kernel: net: netfilter: nf_ct_sip: correct parsing of continuation lines in SIP headers.<br>
+87) kernel: net: netfilter: nf_ct_sip: correct allowed characters in Call-ID SIP header.<br>
+88) kernel: net: netfilter: nf_ct_sip: allow tab character in SIP headers.<br>
 <br>
 <br>
 <br>

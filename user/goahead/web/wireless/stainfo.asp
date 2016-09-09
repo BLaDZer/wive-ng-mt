@@ -182,9 +182,13 @@
 					}
 
 					if (getCookie('plotMACs') !== undefined)
-						plotMACs = JSON.parse(getCookie('plotMACs'));
+						try {
+							plotMACs = JSON.parse(getCookie('plotMACs'));
+						} catch (e) {}
 					if (getCookie('plotMACsAll') !== undefined)
-						plotMACsAll = getCookie('plotMACsAll');
+						try {
+							plotMACsAll = getCookie('plotMACsAll');
+						} catch (e) {}
 					if (getCookie('wirelessPlotType') !== undefined)
 						document.getElementById('wirelessPlotType').selectedIndex = getCookie('wirelessPlotType');
 					if (getCookie('wirelessPlotTime') !== undefined)
@@ -192,7 +196,9 @@
 					if (getCookie('wirelessPlotUnit') !== undefined)
 						document.getElementById('wirelessPlotUnit').selectedIndex = getCookie('wirelessPlotUnit');
 					if (sessionStorage.getItem('plotData') != null)
-						plotData = JSON.parse(sessionStorage.getItem('plotData'));
+						try {
+							plotData = JSON.parse(sessionStorage.getItem('plotData'));
+						} catch (e) {}
 				}
 
 				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", startShowStationList);
@@ -325,7 +331,12 @@
 			function showStationList()
 			{
 				var i, mac_id, checked, rx, tx, bytes;
-				var data			= JSON.parse(document.getElementById('stationListData').innerHTML);
+				try {
+					var data		= JSON.parse(document.getElementById('stationListData').innerHTML);
+				}
+				catch (e) {
+					var data		= [];
+				}
 				var html			= "";
 				var time			= new Date().getTime();
 				var MACs			= plotMACs.slice(0);
@@ -736,7 +747,12 @@
 			function getStationsCounters()
 			{
 				var i, mac_id;
-				var data 		= JSON.parse(document.getElementById('stationListData').innerHTML);
+				try {
+					var data	= JSON.parse(document.getElementById('stationListData').innerHTML);
+				}
+				catch (e) {
+					var data	= [];
+				}
 				var time 		= new Date().getTime();
 				var MACs		= plotMACs.slice(0);
 				var rate;												// Tx Rate for ploting

@@ -1785,6 +1785,48 @@ static int getClampBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #endif
 }
 
+static void getScanAp(webs_t wp, char_t *path, char_t *query)
+{
+	int i;
+	int ent_count = 0;
+	char str[18];
+	int inic;
+	struct WLAN_AP_ENTRY *entries;
+
+	sscanf(query, "%d", &inic);
+	if (inic == 0) {
+		entries = wlanAPScan("ra0", &ent_count);
+	}
+	else {
+		entries = wlanAPScan("rai0", &ent_count);
+	}
+
+	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
+	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
+	websWrite(wp, T("\n"));
+
+	websWrite(wp, T("{ \"wireless\": [ "));
+	for (i = 0; i < ent_count; i++)
+	{
+		websWrite(wp, T("{ "));
+
+		websWrite(wp, T("\"channel\":\"%d\", "), (unsigned char) entries[i].chan);
+		websWrite(wp, T("\"ssid\":\"%s\", "), entries[i].ssid);
+		sprintf(str, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", entries[i].bssid[0], entries[i].bssid[1], entries[i].bssid[2], entries[i].bssid[3], entries[i].bssid[4], entries[i].bssid[5]);
+		websWrite(wp, T("\"bssid\":\"%s\", "), str);
+		websWrite(wp, T("\"security\":\"%s\", "), entries[i].security);
+		websWrite(wp, T("\"signal\":\"%d\", "), (unsigned char) entries[i].signal_percent);
+		websWrite(wp, T("\"wmode\":\"%s\", "), entries[i].wmode);
+		websWrite(wp, T("\"extch\":\"%s\", "), entries[i].extch);
+		websWrite(wp, T("\"nt\":\"%s\""), entries[i].nt);
+
+		websWrite(wp, T(" }%s "), (i + 1 < ent_count) ? "," : "");
+	}
+	free(entries);
+	websWrite(wp, T("] }"));
+	websDone(wp, 200);
+}
+
 void formDefineWireless(void)
 {
 	websAspDefine(T("getVideoTurbineBuilt"), getVideoTurbineBuilt);
@@ -1813,6 +1855,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getFTBuilt"), getFTBuilt);
 	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
 	websAspDefine(T("getClampBuilt"), getClampBuilt);
+	websFormDefine(T("getScanAp"), getScanAp);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessWds"), wirelessWds);
