@@ -20,17 +20,17 @@ int doAPScan(char* iface)
         return 1;
     }
 
-    printf("Ch|SSID                            |BSSID            |Security              |Signal|W-Mode |ExtCH|NT \n");
+    printf("Ch |SSID                            |BSSID            |Security              |Signal|W-Mode  |ExtCH|NT \n");
 
     int n;
     for (n=0;n<ent_count;n++)
     {
-        printf("%-2u", entries[n].chan);
+        printf("%-3u", entries[n].chan);
         printf("|%-32.32s", entries[n].ssid);
         printf("|%02X:%02X:%02X:%02X:%02X:%02X", entries[n].bssid[0], entries[n].bssid[1], entries[n].bssid[2], entries[n].bssid[3], entries[n].bssid[4], entries[n].bssid[5]);
         printf("|%-22.22s", entries[n].security);
         printf("|%-6u", entries[n].signal_percent);
-        printf("|%-7.7s", entries[n].wmode);
+        printf("|%-8.8s", entries[n].wmode);
         printf("|%-5.5s", entries[n].extch);
         printf("|%-3.3s", entries[n].nt);
         printf("\n");
