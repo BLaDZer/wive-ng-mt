@@ -585,7 +585,7 @@ struct WLAN_AP_ENTRY {
 	unsigned char bssid[6];
 	char security[23];
 	unsigned char signal_percent;
-	char wmode[8];
+	char wmode[9];
 	char extch[7];
 	char nt[4];
 };
