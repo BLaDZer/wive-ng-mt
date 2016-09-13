@@ -147,7 +147,12 @@ dhcpradvdreconf() {
 	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
 	    $LOG "Use public DNS $DNSADRESSES"
 	fi
-
+	if [ "$dhcpv6Enabled" = "1" ]; then
+	    # use DHCPv6 for get DNS server adresses, need for Windows clients compat
+	    AdvOtherConfigFlag="on"
+	else
+	    AdvOtherConfigFlag="off"
+	fi
 	if [ "$radvdEnabled" = "1" ]; then
 	    $LOG "Configure radvd"
     	    printf "
@@ -158,7 +163,7 @@ dhcpradvdreconf() {
                 MaxRtrAdvInterval 10;
                 AdvDefaultPreference high;
                 AdvManagedFlag off;		# use RADVD for clients adresses set
-                AdvOtherConfigFlag on;		# use DHCPv6 for get DNS server adresses, need for Windows clients compat
+                AdvOtherConfigFlag $AdvOtherConfigFlag;
     		" > /etc/radvd.conf
 		if [ "$PREFIX" != "" ]; then
     		    printf "
