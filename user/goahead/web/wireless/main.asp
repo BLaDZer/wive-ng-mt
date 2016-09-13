@@ -1420,6 +1420,17 @@
 			<td colspan="2"><select name="wirelessmode" id="wirelessmode" class="normal" onChange="wirelessModeChange(this.form);">
 			</select></td>
 		</tr>
+		<tr id="div_txpw" name="div_txpw">
+			<td class="head" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
+			<td colspan="2"><select name="tx_power" class="normal">
+				<option value="5">5%</option>
+				<option value="10">10%</option>
+				<option value="20">20%</option>
+				<option value="40">40%</option>
+				<option value="70">70%</option>
+				<option value="100">100%</option>
+			</select></td>
+		</tr>
 		<tr id="div_11g_channel" name="div_11g_channel">
 			<td class="head" colspan="1" id="basicFreqG">Channel (2.4GHz)</td>
 			<td><select id="sz11gChannel" name="sz11gChannel" class="normal" onChange="ChannelOnChange(this.form);">
@@ -1448,17 +1459,6 @@
 		<tr id="scanApButtons" style="display: none;">
 			<td colspan="3" id="scanApButtons_td"></td>
 		</tr>
-		<tr id="div_txpw" name="div_txpw">
-			<td class="head" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
-			<td colspan="2"><select name="tx_power" class="normal">
-				<option value="5">5%</option>
-				<option value="10">10%</option>
-				<option value="20">20%</option>
-				<option value="40">40%</option>
-				<option value="70">70%</option>
-				<option value="100">100%</option>
-			</select></td>
-		</tr>
 	</table>
 	<table id="wireless_5" class="form">
 		<tr>
@@ -1477,6 +1477,17 @@
 			<td colspan="2"><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="wirelessModeChange(this.form);">
 			</select></td>
 		 </tr>
+		<tr id="div_txpw_ac" name="div_txpw_ac">
+			<td class="head" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
+			<td colspan="2"><select name="tx_powerac" class="normal">
+				<option value="5">5%</option>
+				<option value="10">10%</option>
+				<option value="20">20%</option>
+				<option value="40">40%</option>
+				<option value="70">70%</option>
+				<option value="100">100%</option>
+			</select></td>
+		</tr>
 		<tr id="div_11a_channel" name="div_11a_channel">
 			<td class="head" colspan="1" id="basicFreqA">Channel (5GHz)</td>
 			<td><select id="sz11aChannel" name="sz11aChannel" class="normal" onChange="ChannelOnChange(this.form);">
@@ -1504,17 +1515,6 @@
 		</tr>
 		<tr id="scanApButtonsINIC" style="display: none;">
 			<td colspan="3" id="scanApButtonsINIC_td"></td>
-		</tr>
-		<tr id="div_txpw_ac" name="div_txpw_ac">
-			<td class="head" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
-			<td colspan="2"><select name="tx_powerac" class="normal">
-				<option value="5">5%</option>
-				<option value="10">10%</option>
-				<option value="20">20%</option>
-				<option value="40">40%</option>
-				<option value="70">70%</option>
-				<option value="100">100%</option>
-			</select></td>
 		</tr>
 	</table>
 	<table id="div_all" name="div_all" class="form" style="display:none;">
