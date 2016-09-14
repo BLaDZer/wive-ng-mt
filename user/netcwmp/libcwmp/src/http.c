@@ -1567,8 +1567,7 @@ int http_write_request(http_socket_t * sock , http_request_t * request, cwmp_chu
                     len2);
     if(len2 > 0)
     {
-         if((dest->auth.active == CWMP_FALSE) && (dest->auth_type == HTTP_DIGEST_AUTH))
-        {
+	if((dest->auth.active == CWMP_FALSE) && (dest->auth_type == HTTP_DIGEST_AUTH)) {
             http_calc_digest_response(dest->user, dest->password,
                     dest->auth.realm, dest->auth.nonce, dest->auth.uri, dest->auth.cnonce, dest->auth.nc, dest->auth.qop, dest->auth.response);
 
@@ -1578,7 +1577,10 @@ int http_write_request(http_socket_t * sock , http_request_t * request, cwmp_chu
                             dest->auth.uri, dest->auth.response
                             //dest->auth.qop, dest->auth.nc, dest->auth.cnonce
                             );
-        }
+        } else  if((dest->auth.active == CWMP_FALSE) && (dest->auth_type == HTTP_BASIC_AUTH)) {
+	    //TODO here
+	    cwmp_log_error("auth failed, netcwmpd not support basic auth now.\n");
+	}
     }
 
     if(dest->cookie[0] != '\0')

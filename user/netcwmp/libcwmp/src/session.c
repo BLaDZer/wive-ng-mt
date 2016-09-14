@@ -1133,8 +1133,11 @@ int cwmp_session_send_request(cwmp_session_t * session)
             http_post(session->sock, request, NULL, session->envpool);
             rv = cwmp_session_recv_response(session);
         }
+    } else if(session->dest->auth_type == HTTP_BASIC_AUTH)
+    {
+	    //TODO here
+	    cwmp_log_error("send request failed, netcwmpd not support basic auth now.\n");
     }
-
 
     rv = http_post(session->sock, request, session->writers, session->envpool);
 
