@@ -700,7 +700,6 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 	system("nvram_show 2860 >> /tmp/mysystem.cfg");
 	system("tar -zcvf /tmp/mysystem.tar.gz /tmp/mysystem.cfg");
 	fromfile = "/tmp/mysystem.tar.gz";
-	//fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
 
 	cwmp_log_debug("DEBUG: cwmp_agent_upload_file: try 1 %s",tourl);
 
@@ -742,11 +741,7 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:devicelog_filename");
 
     }
-/*    else
-    {
-	fromfile = cwmp_conf_pool_get(cwmp->pool,"cwmp:vconf_filename");
-    }
-*/
+
     faultcode = http_send_file(fromfile, tourl);
 
     if(faultcode != CWMP_OK)
