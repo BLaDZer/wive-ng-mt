@@ -1,5 +1,5 @@
  
-AM_CPPFLAGS = -DUSE_CWMP_MEMORY_POOL -I./  -I$(top_srcdir)/libcwmp/src/inc  -I$(top_srcdir)/libpool/include  -I$(top_srcdir)/libxmlet/include   -I$(top_srcdir)/libcwmp/include  -I$(top_srcdir)/../../libnvram -I$(top_srcdir)/../../libwive -I$(top_srcdir)/../../linux/include/ -I$(top_srcdir)/../../
+AM_CPPFLAGS = -DUSE_CWMP_MEMORY_POOL -I./  -I$(top_srcdir)/libcwmp/src/inc  -I$(top_srcdir)/libpool/include  -I$(top_srcdir)/libxmlet/include   -I$(top_srcdir)/libcwmp/include  -I$(top_srcdir)/../../libnvram -I$(top_srcdir)/../../libwive -I$(top_srcdir)/../../lib/shared/include -I$(top_srcdir)/../../
 
 
 

@@ -57,7 +57,7 @@
 
 
 int getHWStatistic(unsigned long long* rxtx_count);
-//char* getIntIp(pool_t * pool);
+char* getIntIp(pool_t * pool);
 //int getIfMac(char *ifname, char *if_hw);
 int firmware_upgrade(char* filename);
 

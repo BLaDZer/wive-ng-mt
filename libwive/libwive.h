@@ -2,15 +2,13 @@
 #define _WIVE_H		1
 
 #include <linux/autoconf.h>			//kernel config
-#include <asm/types.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
 #include <ctype.h>
-#include <errno.h>
 #include <inttypes.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -25,7 +23,6 @@
 #include <linux/reboot.h>
 #include <linux/sockios.h>
 #include <linux/ethtool.h>
-#include <linux/autoconf.h>
 #include <linux/if_ether.h>
 #include <linux/wireless.h>
 #include <linux/route.h>

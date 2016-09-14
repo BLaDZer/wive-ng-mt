@@ -324,7 +324,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LIBRARIES = libpool.a
 libpool_a_SOURCES = pool.c
-AM_CPPFLAGS = -DUSE_CWMP_MEMORY_POOL  -I$(top_srcdir)/libpool/include 
+AM_CPPFLAGS = -DUSE_CWMP_MEMORY_POOL  -I$(top_srcdir)/libpool/include
 all: all-am
 
 .SUFFIXES:

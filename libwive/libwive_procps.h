@@ -1,8 +1,6 @@
 #ifndef _WIVE_PROCPS_H
 #define _WIVE_PROCPS_H	1
 
-#include <sys/types.h>
-
 #define CMDLINE_EXT             0x100
 #define CMDLINE_AEXT            0x10
 
