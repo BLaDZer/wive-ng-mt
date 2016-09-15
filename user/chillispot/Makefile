@@ -17,12 +17,8 @@ CONFOPTS  += --enable-uamanyip --enable-uamuiport
 CONFOPTS  += --enable-dhcpopt
 CONFOPTS  += --enable-multilan --enable-multiroute
 
-# for devices with more ram
-ifdef CONFIG_RALINK_MT7621
-CONFOPTS  += --enable-largelimits
-else
+# decrease mamory usage (with large limits only ~20 clients at 64Mb of ram work correct)
 CONFOPTS  += --disable-largelimits
-endif
 
 #DEBUG     := y
 ifdef DEBUG
