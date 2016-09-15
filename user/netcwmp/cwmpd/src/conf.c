@@ -33,7 +33,7 @@ void cwmp_conf_init(cwmp_t * cwmp)
     FUNCTION_TRACE();
 
     pool = cwmp->pool;
-    cwmp->httpd_port =  cwmp_conf_get_int("cwmpd:httpd_port"); //cwmp_nvram_get_int("cwmp:httpd_port",8080);
+    cwmp->httpd_port =  cwmp_conf_get_int("cwmpd:httpd_port");
 
     cwmp->acs_auth  =   cwmp_conf_get_int("cwmp:acs_auth");
     cwmp->cpe_auth  =   cwmp_conf_get_int("cwmp:cpe_auth");
@@ -50,17 +50,17 @@ void cwmp_conf_init(cwmp_t * cwmp)
     	cwmp->cpe_pwd = cwmp_conf_pool_get(pool, "cwmp:cpe_password");
     }
 
-    cwmp->acs_url   =   cwmp_nvram_pool_get(pool, "cwmp_acs_url"); //  "http://192.168.0.69:8000/otnms/acs/webservice.action";//cwmp_nvram_getdup(pool, "cwmp:acs_url");
+    cwmp->acs_url   =   cwmp_nvram_pool_get(pool, "cwmp_acs_url");
 
-    cwmp->cpe_mf    =   cwmp_conf_pool_get(pool, "cwmp:cpe_manufacture"); //     "ZTE"; //cwmp_nvram_getdup(pool, "cwmp:cpe_manufacture");
+    cwmp->cpe_mf    =   cwmp_conf_pool_get(pool, "cwmp:cpe_manufacture");	// "ZTE"
 
-    cwmp->cpe_oui   =   cwmp_conf_pool_get(pool, "cwmp:cpe_oui"); //   "00D0D0";cwmp_nvram_getdup(pool, "cwmp:cpe_oui");
+    cwmp->cpe_oui   =   cwmp_conf_pool_get(pool, "cwmp:cpe_oui");		// "00D0D0"
 
-    cwmp->cpe_sn    =   cwmp_nvram_pool_get(pool, "WAN_MAC_ADDR");//cwmp_conf_pool_get(pool, "cwmp:cpe_sn"); //    "0410400AA11AA2255"; //cwmp_nvram_getdup(pool, "cwmp:cpe_sn");
+    cwmp->cpe_sn    =   cwmp_nvram_pool_get(pool, "WAN_MAC_ADDR");		// "0410400AA11AA2255";
 
-    cwmp->cpe_name  =   cwmp_conf_pool_get(pool, "cwmp:cpe_name"); //  "00D0D0"; //cwmp_nvram_getdup(pool, "cwmp:cpe_name");
+    cwmp->cpe_name  =   cwmp_conf_pool_get(pool, "cwmp:cpe_name");		// "00D0D0";
 
-    cwmp->cpe_pc    =   cwmp_conf_pool_get(pool, "cwmp:cpe_pc"); //      "ZXECS EBG2100";
+    cwmp->cpe_pc    =   cwmp_conf_pool_get(pool, "cwmp:cpe_pc");		// "ZXECS EBG2100";
 
     cwmp_log_debug("url:%s\nmf:%s\noui:%s\nsn:%s\nname:%s\npc:%s\nhttpd port:%d\n",    cwmp->acs_url, cwmp->cpe_mf, cwmp->cpe_oui, cwmp->cpe_sn, cwmp->cpe_name, cwmp->cpe_pc,
                    cwmp->httpd_port);
