@@ -16,8 +16,13 @@ CONFOPTS  += --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
 CONFOPTS  += --enable-uamanyip --enable-uamuiport
 CONFOPTS  += --enable-dhcpopt
 CONFOPTS  += --enable-multilan --enable-multiroute
-# fix packet drops
+
+# for devices with more ram
+ifdef CONFIG_RALINK_MT7621
 CONFOPTS  += --enable-largelimits
+else
+CONFOPTS  += --disable-largelimits
+endif
 
 #DEBUG     := y
 ifdef DEBUG
