@@ -14,9 +14,9 @@
  *
  */
 
-#define _DEFAULT_SOURCE
 #define _ISOC99_SOURCE
 #define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #define _GNU_SOURCE
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED
@@ -117,7 +117,7 @@ int getPtyMaster_ptmx(char *ttybuf, int ttybuflen)
 int getPtyMaster_ptm(char *ttybuf, int ttybuflen)
 {
     int amaster, aslave;
-    char *tty = (char*) malloc(64);
+    char *tty = malloc(64);
 
     if((openpty(&amaster, &aslave, tty, NULL, NULL)) == -1)
     {
