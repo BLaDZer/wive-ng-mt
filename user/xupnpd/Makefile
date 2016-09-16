@@ -1,4 +1,3 @@
-DIRLIST_ETC=playlists
 DIRLIST_SHR=ui www profiles plugins
 
 all:
@@ -21,5 +20,4 @@ romfs:
 	mkdir -p $(ROMFSDIR)/share/xupnpd
 	cp -fv src/*.lua $(ROMFSDIR)/etc/xupnpd
 	cp -frv src/config/* $(ROMFSDIR)/etc/xupnpd/config
-	for i in $(DIRLIST_ETC); do cp -aprf src/$$i $(ROMFSDIR)/etc/xupnpd/$$i; done
 	for i in $(DIRLIST_SHR); do cp -aprf src/$$i $(ROMFSDIR)/share/xupnpd/$$i; done
