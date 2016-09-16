@@ -14,11 +14,11 @@ DIR	  := $(PWD)/coova-chilli-master
 
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-gnu-ld --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
 CONFOPTS  += --disable-tap --disable-json --disable-miniportal --disable-miniconfig --disable-layer3
-CONFOPTS  += --disable-ieee8021q --disable-multilan --disable-multiroute --disable-leakybucket
+CONFOPTS  += --disable-ieee8021q --disable-multilan --disable-multiroute --disable-dhcpopt --disable-leakybucket
 CONFOPTS  += --enable-chilliproxy --enable-chilliredir --enable-chilliquery
 CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid
 CONFOPTS  += --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
-CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-dhcpopt
+CONFOPTS  += --enable-uamanyip --enable-uamuiport
 
 # decrease mamory usage (with large limits only ~20 clients at 64Mb of ram work correct)
 CONFOPTS  += --disable-largelimits
