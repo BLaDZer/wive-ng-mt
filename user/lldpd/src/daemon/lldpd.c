@@ -44,7 +44,9 @@ static void		 usage(void);
 static struct protocol protos[] =
 {
 	{ LLDPD_MODE_LLDP, 1, "LLDP", 'l', lldp_send, lldp_decode, NULL,
-	  LLDP_MULTICAST_ADDR },
+	  LLDP_ADDR_NEAREST_BRIDGE,
+	  LLDP_ADDR_NEAREST_NONTPMR_BRIDGE,
+	  LLDP_ADDR_NEAREST_CUSTOMER_BRIDGE },
 #ifdef ENABLE_CDP
 	{ LLDPD_MODE_CDPV1, 0, "CDPv1", 'c', cdpv1_send, cdp_decode, cdpv1_guess,
 	  CDP_MULTICAST_ADDR },
@@ -485,7 +487,9 @@ lldpd_guess_type(struct lldpd *cfg, char *frame, int s)
 		if (!cfg->g_protocols[i].enabled)
 			continue;
 		if (cfg->g_protocols[i].guess == NULL) {
-			if (memcmp(frame, cfg->g_protocols[i].mac, ETHER_ADDR_LEN) == 0) {
+			if (memcmp(frame, cfg->g_protocols[i].mac1, ETHER_ADDR_LEN) == 0 ||
+			    memcmp(frame, cfg->g_protocols[i].mac2, ETHER_ADDR_LEN) == 0 ||
+			    memcmp(frame, cfg->g_protocols[i].mac3, ETHER_ADDR_LEN) == 0) {
 				log_debug("decode", "guessed protocol is %s (from MAC address)",
 				    cfg->g_protocols[i].name);
 				return cfg->g_protocols[i].mode;
@@ -1445,7 +1449,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	 * unless there is a very good reason. Most command-line options will
 	 * get deprecated at some point. */
 	char *popt, opts[] =
-		"H:vhkrdD:xX:m:u:4:6:I:C:p:M:P:S:iL:@                    ";
+		"H:vhkrdD:p:xX:m:u:4:6:I:C:p:M:P:S:iL:@                    ";
 	int i, found, advertise_version = 1;
 #ifdef ENABLE_LLDPMED
 	int lldpmed = 0, noinventory = 0;
@@ -1455,6 +1459,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	char *platform_override = NULL;
 	char *lsb_release = NULL;
 	const char *lldpcli = LLDPCLI_PATH;
+	const char *pidfile = LLDPD_PID_FILE;
 	int smart = 15;
 	int receiveonly = 0, version = 0;
 	int ctl;
@@ -1501,6 +1506,9 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			break;
 		case 'D':
 			log_accept(optarg);
+			break;
+		case 'p':
+			pidfile = optarg;
 			break;
 		case 'r':
 			receiveonly = 1;
@@ -1700,13 +1708,16 @@ lldpd_main(int argc, char *argv[], char *envp[])
 		log_debug("main", "daemonize");
 		if (daemon(0, 0) != 0)
 			fatal("main", "failed to detach daemon");
-		if ((pid = open(LLDPD_PID_FILE,
+		if ((pid = open(pidfile,
 			    O_TRUNC | O_CREAT | O_WRONLY, 0666)) == -1)
-			fatal("main", "unable to open pid file " LLDPD_PID_FILE);
+			fatal("main", "unable to open pid file " LLDPD_PID_FILE
+			    " (or the specified one)");
 		if (asprintf(&spid, "%d\n", getpid()) == -1)
-			fatal("main", "unable to create pid file " LLDPD_PID_FILE);
+			fatal("main", "unable to create pid file " LLDPD_PID_FILE
+			    " (or the specified one)");
 		if (write(pid, spid, strlen(spid)) == -1)
-			fatal("main", "unable to write pid file " LLDPD_PID_FILE);
+			fatal("main", "unable to write pid file " LLDPD_PID_FILE
+			    " (or the specified one)");
 		free(spid);
 		close(pid);
 	}

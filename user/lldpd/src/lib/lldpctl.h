@@ -725,6 +725,7 @@ typedef enum {
 	lldpctl_k_chassis_cap_available, /**< `(I)` Available capabalities (see `LLDP_CAP_*`) */
 	lldpctl_k_chassis_cap_enabled,	 /**< `(I)` Enabled capabilities (see `LLDP_CAP_*`) */
 	lldpctl_k_chassis_mgmt,		 /**< `(AL)` List of management addresses */
+	lldpctl_k_chassis_ttl,		 /**< `(I)` The chassis TTL */
 
 	lldpctl_k_chassis_med_type = 1900, /**< `(IS)` Chassis MED type. See `LLDP_MED_CLASS_*` */
 	lldpctl_k_chassis_med_cap,  /**< `(I)` Available MED capabilitied. See `LLDP_MED_CAP_*` */
@@ -782,6 +783,7 @@ typedef enum {
 	lldpctl_k_config_tx_hold, /**< `(I,WO)` Transmit hold interval. */
 	lldpctl_k_config_bond_slave_src_mac_type, /**< `(I,WO)` bond slave src mac type. */
 	lldpctl_k_config_lldp_portid_type, /**< `(I,WO)` LLDP PortID TLV Subtype */
+	lldpctl_k_config_lldp_agent_type, /**< `(I,WO)` LLDP agent type */
 
 	lldpctl_k_custom_tlvs = 5000,		/**< `(AL)` custom TLVs */
 	lldpctl_k_custom_tlvs_clear,		/** `(I,WO)` clear list of custom TLVs */

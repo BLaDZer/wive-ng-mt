@@ -73,7 +73,10 @@ static int _lldp_send(struct lldpd *global,
 	struct lldpd_mgmt *mgmt;
 	int proto;
 
-	u_int8_t mcastaddr[] = LLDP_MULTICAST_ADDR;
+	u_int8_t mcastaddr_regular[] = LLDP_ADDR_NEAREST_BRIDGE;
+	u_int8_t mcastaddr_nontpmr[] = LLDP_ADDR_NEAREST_NONTPMR_BRIDGE;
+	u_int8_t mcastaddr_customer[] = LLDP_ADDR_NEAREST_CUSTOMER_BRIDGE;
+	u_int8_t *mcastaddr;
 #ifdef ENABLE_DOT1
 	const u_int8_t dot1[] = LLDP_TLV_ORG_DOT1;
 	struct lldpd_vlan *vlan;
@@ -98,9 +101,15 @@ static int _lldp_send(struct lldpd *global,
 	pos = packet;
 
 	/* Ethernet header */
+	switch (global->g_config.c_lldp_agent_type) {
+	case LLDP_AGENT_TYPE_NEAREST_NONTPMR_BRIDGE: mcastaddr = mcastaddr_nontpmr; break;
+	case LLDP_AGENT_TYPE_NEAREST_CUSTOMER_BRIDGE: mcastaddr = mcastaddr_customer; break;
+	case LLDP_AGENT_TYPE_NEAREST_BRIDGE:
+	default: mcastaddr = mcastaddr_regular; break;
+	}
 	if (!(
 	      /* LLDP multicast address */
-	      POKE_BYTES(mcastaddr, sizeof(mcastaddr)) &&
+	      POKE_BYTES(mcastaddr, ETHER_ADDR_LEN) &&
 	      /* Source MAC address */
 	      POKE_BYTES(&hardware->h_lladdr, ETHER_ADDR_LEN) &&
 	      /* LLDP frame */
@@ -576,7 +585,7 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 {
 	struct lldpd_chassis *chassis;
 	struct lldpd_port *port;
-	const char lldpaddr[] = LLDP_MULTICAST_ADDR;
+	char lldpaddr[ETHER_ADDR_LEN];
 	const char dot1[] = LLDP_TLV_ORG_DOT1;
 	const char dot3[] = LLDP_TLV_ORG_DOT3;
 	const char med[] = LLDP_TLV_ORG_MED;
@@ -630,7 +639,10 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 		log_warnx("lldp", "too short frame received on %s", hardware->h_ifname);
 		goto malformed;
 	}
-	if (PEEK_CMP(lldpaddr, ETHER_ADDR_LEN) != 0) {
+	PEEK_BYTES(lldpaddr, ETHER_ADDR_LEN);
+	if (memcmp(lldpaddr, (const char [])LLDP_ADDR_NEAREST_BRIDGE, ETHER_ADDR_LEN) &&
+	    memcmp(lldpaddr, (const char [])LLDP_ADDR_NEAREST_NONTPMR_BRIDGE, ETHER_ADDR_LEN) &&
+	    memcmp(lldpaddr, (const char [])LLDP_ADDR_NEAREST_CUSTOMER_BRIDGE, ETHER_ADDR_LEN)) {
 		log_info("lldp", "frame not targeted at LLDP multicast address received on %s",
 		    hardware->h_ifname);
 		goto malformed;

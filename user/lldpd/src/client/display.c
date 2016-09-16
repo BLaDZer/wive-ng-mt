@@ -252,6 +252,9 @@ display_chassis(struct writer* w, lldpctl_atom_t* chassis, int details)
 	}
 	tag_datatag(w, "descr", "SysDescr",
 	    lldpctl_atom_get_str(chassis, lldpctl_k_chassis_descr));
+	if (details)
+		tag_datatag(w, "ttl", "TTL",
+		    lldpctl_atom_get_str(chassis, lldpctl_k_chassis_ttl));
 
 	/* Management addresses */
 	mgmts = lldpctl_atom_get(chassis, lldpctl_k_chassis_mgmt);
@@ -275,7 +278,7 @@ display_chassis(struct writer* w, lldpctl_atom_t* chassis, int details)
 }
 
 static void
-display_custom_tlvs(struct writer* w, lldpctl_atom_t* neighbor, int details)
+display_custom_tlvs(struct writer* w, lldpctl_atom_t* neighbor)
 {
 	lldpctl_atom_t *custom_list, *custom;
 	int have_custom_tlvs = 0;
@@ -614,7 +617,7 @@ display_interface(lldpctl_conn_t *conn, struct writer *w, int hidden,
 
 	lldpctl_atom_dec_ref(chassis);
 
-	display_custom_tlvs(w, neighbor, details);
+	display_custom_tlvs(w, neighbor);
 
 	tag_end(w);
 }
@@ -850,10 +853,14 @@ display_configuration(lldpctl_conn_t *conn, struct writer *w)
 		"Source MAC for LLDP frames on bond slaves",
 		lldpctl_atom_get_str(configuration,
 			lldpctl_k_config_bond_slave_src_mac_type));
-	tag_datatag(w, "lldp_portid-type",
-		"Portid TLV Subtype for lldp frames",
+	tag_datatag(w, "lldp-portid-type",
+		"Port ID TLV subtype for LLDP frames",
 		lldpctl_atom_get_str(configuration,
 			lldpctl_k_config_lldp_portid_type));
+	tag_datatag(w, "lldp-agent-type",
+		"Agent type",
+		lldpctl_atom_get_str(configuration,
+			lldpctl_k_config_lldp_agent_type));
 
 	tag_end(w);
 	tag_end(w);

@@ -178,13 +178,13 @@ liblldpd_la_DEPENDENCIES =  \
 	$(top_builddir)/src/libcommon-daemon-lib.la \
 	$(am__DEPENDENCIES_1)
 am__liblldpd_la_SOURCES_DIST = frame.h frame.c lldp-tlv.h client.c \
-	priv.c privsep_io.c interfaces.c event.c lldpd.c pattern.c \
-	probes.d trace.h protocols/lldp.c protocols/cdp.c \
-	protocols/cdp.h protocols/sonmp.c protocols/sonmp.h \
-	protocols/edp.c protocols/edp.h forward-linux.c \
-	interfaces-linux.c netlink.c dmi-linux.c priv-linux.c \
-	forward-bsd.c interfaces-bpf.c interfaces-bsd.c dmi-dummy.c \
-	priv-bsd.c dmi-freebsd.c dmi-openbsd.c dmi-osx.c \
+	priv.c privsep.c privsep_io.c privsep_fd.c interfaces.c \
+	event.c lldpd.c pattern.c probes.d trace.h protocols/lldp.c \
+	protocols/cdp.c protocols/cdp.h protocols/sonmp.c \
+	protocols/sonmp.h protocols/edp.c protocols/edp.h \
+	forward-linux.c interfaces-linux.c netlink.c dmi-linux.c \
+	priv-linux.c forward-bsd.c interfaces-bpf.c interfaces-bsd.c \
+	dmi-dummy.c priv-bsd.c dmi-freebsd.c dmi-openbsd.c dmi-osx.c \
 	forward-solaris.c interfaces-solaris.c agent.c agent_priv.c \
 	agent.h priv-seccomp.c
 am__dirstamp = $(am__leading_dot)dirstamp
@@ -227,7 +227,8 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @USE_SNMP_TRUE@	liblldpd_la-agent_priv.lo
 @USE_SECCOMP_TRUE@am__objects_9 = liblldpd_la-priv-seccomp.lo
 am_liblldpd_la_OBJECTS = liblldpd_la-frame.lo liblldpd_la-client.lo \
-	liblldpd_la-priv.lo liblldpd_la-privsep_io.lo \
+	liblldpd_la-priv.lo liblldpd_la-privsep.lo \
+	liblldpd_la-privsep_io.lo liblldpd_la-privsep_fd.lo \
 	liblldpd_la-interfaces.lo liblldpd_la-event.lo \
 	liblldpd_la-lldpd.lo liblldpd_la-pattern.lo \
 	protocols/liblldpd_la-lldp.lo protocols/liblldpd_la-cdp.lo \
@@ -545,13 +546,13 @@ man_MANS = lldpd.8
 noinst_LTLIBRARIES = liblldpd.la
 nodist_liblldpd_la_SOURCES = $(am__append_13)
 liblldpd_la_SOURCES = frame.h frame.c lldp-tlv.h client.c priv.c \
-	privsep_io.c interfaces.c event.c lldpd.c pattern.c probes.d \
-	trace.h protocols/lldp.c protocols/cdp.c protocols/cdp.h \
-	protocols/sonmp.c protocols/sonmp.h protocols/edp.c \
-	protocols/edp.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_14)
+	privsep.c privsep_io.c privsep_fd.c interfaces.c event.c \
+	lldpd.c pattern.c probes.d trace.h protocols/lldp.c \
+	protocols/cdp.c protocols/cdp.h protocols/sonmp.c \
+	protocols/sonmp.h protocols/edp.c protocols/edp.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_14)
 liblldpd_la_CFLAGS = $(AM_CFLAGS) $(LIBEVENT_CFLAGS) $(am__append_9) \
 	$(am__append_15)
 liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"' $(LIBEVENT_CFLAGS)
@@ -745,6 +746,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-priv-linux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-priv-seccomp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-priv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-privsep.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-privsep_fd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/liblldpd_la-privsep_io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@protocols/$(DEPDIR)/liblldpd_la-cdp.Plo@am__quote@
@@ -797,12 +800,26 @@ liblldpd_la-priv.lo: priv.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-priv.lo `test -f 'priv.c' || echo '$(srcdir)/'`priv.c
 
+liblldpd_la-privsep.lo: privsep.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-privsep.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-privsep.Tpo -c -o liblldpd_la-privsep.lo `test -f 'privsep.c' || echo '$(srcdir)/'`privsep.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-privsep.Tpo $(DEPDIR)/liblldpd_la-privsep.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='privsep.c' object='liblldpd_la-privsep.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-privsep.lo `test -f 'privsep.c' || echo '$(srcdir)/'`privsep.c
+
 liblldpd_la-privsep_io.lo: privsep_io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-privsep_io.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-privsep_io.Tpo -c -o liblldpd_la-privsep_io.lo `test -f 'privsep_io.c' || echo '$(srcdir)/'`privsep_io.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-privsep_io.Tpo $(DEPDIR)/liblldpd_la-privsep_io.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='privsep_io.c' object='liblldpd_la-privsep_io.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-privsep_io.lo `test -f 'privsep_io.c' || echo '$(srcdir)/'`privsep_io.c
+
+liblldpd_la-privsep_fd.lo: privsep_fd.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-privsep_fd.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-privsep_fd.Tpo -c -o liblldpd_la-privsep_fd.lo `test -f 'privsep_fd.c' || echo '$(srcdir)/'`privsep_fd.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-privsep_fd.Tpo $(DEPDIR)/liblldpd_la-privsep_fd.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='privsep_fd.c' object='liblldpd_la-privsep_fd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-privsep_fd.lo `test -f 'privsep_fd.c' || echo '$(srcdir)/'`privsep_fd.c
 
 liblldpd_la-interfaces.lo: interfaces.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-interfaces.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-interfaces.Tpo -c -o liblldpd_la-interfaces.lo `test -f 'interfaces.c' || echo '$(srcdir)/'`interfaces.c

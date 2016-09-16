@@ -79,9 +79,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = src/compat
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	setproctitle.c getline.c vsyslog.c strtonum.c realloc.c \
-	strlcpy.c malloc.c strnlen.c asprintf.c strndup.c daemon.c \
+DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am getline.c \
+	strtonum.c strndup.c malloc.c strlcpy.c daemon.c vsyslog.c \
+	setproctitle.c asprintf.c realloc.c strnlen.c \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \

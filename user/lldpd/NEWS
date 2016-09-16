@@ -1,3 +1,14 @@
+lldpd (0.9.4)
+  * Change:
+    + Make lldpd accepts a `-p` option to specify the PID file.
+    + Ability to change multicast MAC address to two additional values
+      to reach customer bridges.
+    + lldpcli will now display chassis TTL when detailed view is enabled.
+  * Fix:
+    + Fix setting of local value for port ID.
+    + Fix compilation with BSD make.
+    + Ensure lldpcli returns an error code on invalid commands.
+
 lldpd (0.9.3)
   * Change:
     + Do not rely on support of constructors for liblldpctl.

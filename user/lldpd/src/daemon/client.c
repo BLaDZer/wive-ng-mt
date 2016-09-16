@@ -95,6 +95,14 @@ client_handle_set_configuration(struct lldpd *cfg, enum hmsg_type *type,
 		cfg->g_config.c_lldp_portid_type = config->c_lldp_portid_type;
 		levent_update_now(cfg);
 	}
+	if (CHANGED(c_lldp_agent_type) &&
+	    config->c_lldp_agent_type > LLDP_AGENT_TYPE_UNKNOWN &&
+	    config->c_lldp_agent_type <= LLDP_AGENT_TYPE_MAX) {
+		log_debug("rpc", "change lldp agent type to %d",
+		    config->c_lldp_agent_type);
+		cfg->g_config.c_lldp_agent_type = config->c_lldp_agent_type;
+		levent_update_now(cfg);
+	}
 	/* Pause/resume */
 	if (CHANGED(c_paused)) {
 		log_debug("rpc", "client asked to %s lldpd",
@@ -327,11 +335,13 @@ _client_handle_set_port(struct lldpd *cfg,
 		port->p_id = strdup(set->local_id);
 		port->p_id_len = strlen(set->local_id);
 		port->p_id_subtype = LLDP_PORTID_SUBTYPE_LOCAL;
+		port->p_descr_force = 0;
 	}
 	if (set->local_descr) {
 		log_debug("rpc", "requested change to Port Description");
 		free(port->p_descr);
 		port->p_descr = strdup(set->local_descr);
+		port->p_descr_force = 1;
 	}
 	switch (set->rxtx) {
 	case LLDPD_RXTX_TXONLY:
