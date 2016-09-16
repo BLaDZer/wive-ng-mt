@@ -70,7 +70,7 @@ start() {
 	    chmod 555 /tmp/chilli_stat
 	    /tmp/chilli_stat &
 	fi
-	chilli $PARLINE &
+	nice -n -8 chilli $PARLINE &
 	) & # send to background
 	# statistics
     fi
