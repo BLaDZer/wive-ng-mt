@@ -108,7 +108,7 @@ get_params() {
     done
 
     if [ "$chilli_uamdomain" != "" ]; then
-	PARLINE="$PARLINE --redirdnsreq"
+	PARLINE="$PARLINE --redirdnsreq --dnsparanoia"
     fi
 
     if [ "$chilli_debug" = "1" ]; then
@@ -125,13 +125,16 @@ get_params() {
     #fi
 
     # compose options
-    PARLINE="$PARLINE --dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000"
-    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc"
+    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000 $PARLINE"
+    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
 
     mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
 
     if [ ! -d /sys/module/tun ]; then
 	modprobe -q tun
+    fi
+    if [ ! -d /sys/module/xt_coova ]; then
+	modprobe -q xt_coova
     fi
 }
 

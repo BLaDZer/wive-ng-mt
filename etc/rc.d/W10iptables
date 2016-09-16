@@ -242,6 +242,10 @@ forwardlimit() {
 	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
 	if [ "$chilli_enable" = "on" ]; then
     	    $LOG "Add forward rules for chillispot"
+	    if [ -d /sys/module/xt_coova ]; then
+		iptables -A FORWARD ! -o $wan_if -s $chilli_net -m coova --name chilli -j ACCEPT
+		iptables -A FORWARD ! -i $wan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
+	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
@@ -585,6 +589,14 @@ restartv6() {
 	fi
 }
 
+iptmodulesload() {
+	# this auto load needed iptables modules (do not remove this modules on the fly)
+	if [ -e /bin/chilli ] && [ "$chilli_enable" = "on" ] && [ ! -d /sys/module/xt_coova ]; then
+	    $LOG "Load xt_coova module for coova chilli daemon"
+	    modprobe -q xt_coova
+	fi
+}
+
 get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
@@ -683,6 +695,7 @@ stopv6() {
 case "$1" in
         start)
             get_param
+            iptmodulesload
             restart
             restartv6
             ;;
@@ -694,6 +707,7 @@ case "$1" in
 
         restart)
             get_param
+            iptmodulesload
             restart
             restartv6
             ;;
