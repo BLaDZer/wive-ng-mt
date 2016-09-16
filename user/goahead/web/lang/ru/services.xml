@@ -45,13 +45,6 @@
   <message msgid="services account settings" msgstr="Настройки учета трафика" />
   <message msgid="services account ipt" msgstr="Учет трафика" />
 
-  <message msgid="services status off" msgstr="отключено" />
-  <message msgid="services status work" msgstr="работает" />
-  <message msgid="services status starting" msgstr="запускается" />
-  <message msgid="services status details" msgstr="Информация" />
-  <message msgid="services status about" msgstr="О сервисе..." />
-  <message msgid="services status configure" msgstr="Настройка" />
-
   <message msgid="services l2tp title" msgstr="Настройки сервера L2TP" />
   <message msgid="services l2tp introduction" msgstr="Здесть вы можете настроить сервер L2TP." />
   <message msgid="services l2tp config" msgstr="Настройки сервера L2TP" />
@@ -78,78 +71,87 @@
   <message msgid="services samba no netbios" msgstr="Не указано NetBIOS имя." />
   <message msgid="services samba invalid os level" msgstr="Неверный уровень OS [0-255]." />
 
-  <message msgid="services misc title" msgstr="Прочие настройки" />
-  <message msgid="services misc introduction" msgstr="Здесь вы можете изменить настройки прочих сервисов." />
-  <message msgid="services misc setup" msgstr="Настройки прочих сервисов" />
-  <message msgid="services misc offload note" msgstr="В секции 'Механизм обработки' вы можете выбрать режим обработки(для IPoE/PPPoE рекомендуется использовать аппаратную обработку, а для L2TP/PPTP - комбинированный)." />
-  <message msgid="services misc software note" msgstr="В секции 'Программная обработка'(если выбран программный или комплексный режим обработки) вы можете выборочно отключить механизмы программной обработки(не рекомендуется отключать для PPTP/L2TP)." />
-  <message msgid="services misc important" msgstr="ВАЖНО: Если у вас возникают проблемы при работе с SIP или другими программами использующими UDP, то попробуйте отключить обработку UDP пакетов(некоторые обработки не правильно работают с UDP)." />
-  <message msgid="services misc offload setup" msgstr="Механизм обработки" />
-  <message msgid="services misc nat offload" msgstr="Режим обработки NAT" />
-  <message msgid="services misc software" msgstr="Програмный" />
-  <message msgid="services misc hardware" msgstr="Аппаратный" />
-  <message msgid="services misc complex" msgstr="Комбинированный" />
-  <message msgid="services misc wifi offload" msgstr="Аппаратная трансляция адресов для WiFi" />
-  <message msgid="services misc udp offload" msgstr="Аппаратная трансляция адресов для UDP" />
-  <message msgid="services misc ipv6 offload" msgstr="Аппаратная маршрутизация IPV6" />
-  <message msgid="services misc hw_nat" msgstr="Порог активации HW_NAT" />
-  <message msgid="services misc nat implementation" msgstr="Реализация NAT" />
-  <message msgid="services misc software title" msgstr="Програмная обработка" />
-  <message msgid="services misc nat fastpath" msgstr="Ускорение NAT" />
-  <message msgid="services misc route fastpath" msgstr="Ускорение маршрутизации" />
-  <message msgid="services misc netfilter fastpath" msgstr="Ускорение фильтра пакетов" />
-  <message msgid="services misc samba fastpath" msgstr="Ускорение траффика Samba" />
-  <message msgid="services misc remote setup" msgstr="Удалённое управление" />
-  <message msgid="services misc web remote" msgstr="Управление через HTTP" />
-  <message msgid="services misc web port" msgstr="Порт HTTP" />
-  <message msgid="services misc ssh remote" msgstr="Управление через SSH" />
-  <message msgid="services misc ssh port" msgstr="Порт SSH" />
-  <message msgid="services misc telnet remote" msgstr="Управление через Telnet" />
-  <message msgid="services misc services" msgstr="Сервис" />
-  <message msgid="services misc value" msgstr="Значение" />
-  <message msgid="services misc status" msgstr="Статус" />
-  <message msgid="services misc dnsproxy" msgstr="DNS прокси" />
-  <message msgid="services misc upnp" msgstr="Поддержка авто проброса портов UPNP" />
-  <message msgid="services misc snmp" msgstr="Поддержка SNMP" />
-  <message msgid="services misc snmp community" msgstr="Строка сообщества" />
-  <message msgid="services misc arppt" msgstr="ARP прокси" />
-  <message msgid="services misc cron" msgstr="Планировщик" />
-  <message msgid="services misc lltd" msgstr="Поддержка LLTD" />
-  <message msgid="services misc lldpd" msgstr="Поддержка LLDP" />
-  <message msgid="services misc cwmpd" msgstr="Поддержка CWMP (TR-069)" />
-  <message msgid="services misc cdp" msgstr="Поддержка CDP" />
-  <message msgid="services misc iptv" msgstr="Сервисы IPTV" />
-  <message msgid="services misc dinf" msgstr="Сервисы информации и статистики" />
-  <message msgid="services misc igmp" msgstr="IGMP прокси" />
-  <message msgid="services misc igmp multicast" msgstr="Поддержка IGMP snooping" />
-  <message msgid="services misc igmp fastleave" msgstr="Поддержка IGMP fast leave" />
-  <message msgid="services misc igmp unicast" msgstr="Преобразование мультикаста в уникаст" />
-  <message msgid="services misc udpxy" msgstr="Преобразование мультикаста в http" />
-  <message msgid="services misc udpxy port" msgstr="Порт UDPXY" />
-  <message msgid="services misc xupnpd" msgstr="DLNA медиа сервер" />
-  <message msgid="services misc pass through" msgstr="Прямой пропуск" />
-  <message msgid="services misc pass through pppoe" msgstr="Пропускать напрямую PPPOE" />
-  <message msgid="services misc pass through ipv6" msgstr="Пропускать напрямую IPv6" />
-  <message msgid="services misc watchers" msgstr="Системные" />
-  <message msgid="services misc watchdog" msgstr="Сторожевой таймер" />
-  <message msgid="services misc pinger" msgstr="Пинговалка ближайших узлов" />
-  <message msgid="services misc ping time" msgstr="Время проверки пингов" />
-  <message msgid="services misc ping interval" msgstr="Интервал проверки пингов" />
-  <message msgid="services misc others" msgstr="Остальные" />
-  <message msgid="services misc vlan double tag" msgstr="Поддержка двойного тегирования vlan" />
-  <message msgid="services misc reinit wan" msgstr="Переподнять WAN линк если DHCP не получил адрес" />
-  <message msgid="services misc dhcp renew" msgstr="Перезапросить адрес при подъёме WAN интерфейса" />
-  <message msgid="services misc ping from wan" msgstr="Разрешить icmp echo из WAN подсети" />
-  <message msgid="services misc stp" msgstr="Поддержка Spanning Tree" />
-  <message msgid="services misc dont modify ttl" msgstr="Не изменять TTL" />
-  <message msgid="services misc multicast ttl" msgstr="Не изменять TTL мультикаст трафика" />
-  <message msgid="services misc use pmtu" msgstr="Использовать автосогласование PMTU" />
-  <message msgid="services misc ask reboot" msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
-  <message msgid="services misc hwnat number" msgstr="Порог аппаратного NAT должен быть числом" />
-  <message msgid="services misc hwnat over" msgstr="Порог аппаратного NAT должен иметь значение от 0 до 500" />
-  <message msgid="services misc irqbalance" msgstr="Распределение прерываний по ядрам" />
-  <message msgid="services misc auto" msgstr="Автоматически" />
-  <message msgid="services misc hw" msgstr="Только аппаратный" />
-  <message msgid="services misc router" msgstr="Маршрутизация" />
-  <message msgid="services misc storage" msgstr="Локальные сервисы" />
+	<message msgid="services status off"				msgstr="отключено" />
+	<message msgid="services status work"				msgstr="работает" />
+	<message msgid="services status starting"			msgstr="запускается" />
+	<message msgid="services status details"			msgstr="Информация" />
+	<message msgid="services status about"				msgstr="О сервисе..." />
+	<message msgid="services status configure"			msgstr="Настройка" />
+
+	<message msgid="services misc title"				msgstr="Прочие настройки" />
+	<message msgid="services misc introduction"			msgstr="Здесь вы можете изменить настройки прочих сервисов." />
+	<message msgid="services misc setup"				msgstr="Настройки прочих сервисов" />
+	<message msgid="services misc offload note"			msgstr="В секции 'Механизм обработки' вы можете выбрать режим обработки(для IPoE/PPPoE рекомендуется использовать аппаратную обработку, а для L2TP/PPTP - комбинированный)." />
+	<message msgid="services misc software note"		msgstr="В секции 'Программная обработка'(если выбран программный или комплексный режим обработки) вы можете выборочно отключить механизмы программной обработки(не рекомендуется отключать для PPTP/L2TP)." />
+	<message msgid="services misc important"			msgstr="ВАЖНО: Если у вас возникают проблемы при работе с SIP или другими программами использующими UDP, то попробуйте отключить обработку UDP пакетов(некоторые обработки не правильно работают с UDP)." />
+	<message msgid="services misc offload setup"		msgstr="Механизм обработки" />
+	<message msgid="services misc nat offload"			msgstr="Режим обработки NAT" />
+	<message msgid="services misc software"				msgstr="Програмный" />
+	<message msgid="services misc hardware"				msgstr="Аппаратный" />
+	<message msgid="services misc complex"				msgstr="Комбинированный" />
+	<message msgid="services misc wifi offload"			msgstr="Аппаратная трансляция адресов для WiFi" />
+	<message msgid="services misc udp offload"			msgstr="Аппаратная трансляция адресов для UDP" />
+	<message msgid="services misc ipv6 offload"			msgstr="Аппаратная маршрутизация IPV6" />
+	<message msgid="services misc hw_nat"				msgstr="Порог активации HW_NAT" />
+	<message msgid="services misc nat implementation"	msgstr="Реализация NAT" />
+	<message msgid="services misc software title"		msgstr="Програмная обработка" />
+	<message msgid="services misc nat fastpath"			msgstr="Ускорение NAT" />
+	<message msgid="services misc route fastpath"		msgstr="Ускорение маршрутизации" />
+	<message msgid="services misc netfilter fastpath"	msgstr="Ускорение фильтра пакетов" />
+	<message msgid="services misc samba fastpath"		msgstr="Ускорение траффика Samba" />
+	<message msgid="services misc remote setup"			msgstr="Удалённое управление" />
+	<message msgid="services misc web remote"			msgstr="Управление через HTTP" />
+	<message msgid="services misc web port"				msgstr="Порт HTTP" />
+	<message msgid="services misc ssh remote"			msgstr="Управление через SSH" />
+	<message msgid="services misc ssh port"				msgstr="Порт SSH" />
+	<message msgid="services misc telnet remote"		msgstr="Управление через Telnet" />
+	<message msgid="services misc services"				msgstr="Сервис" />
+	<message msgid="services misc value"				msgstr="Значение" />
+	<message msgid="services misc status"				msgstr="Статус" />
+	<message msgid="services misc dnsproxy"				msgstr="DNS прокси" />
+	<message msgid="services misc upnp"					msgstr="Поддержка авто проброса портов UPNP" />
+	<message msgid="services misc snmp"					msgstr="Поддержка SNMP" />
+	<message msgid="services misc snmp community"		msgstr="Строка сообщества" />
+	<message msgid="services misc arppt"				msgstr="ARP прокси" />
+	<message msgid="services misc cron"					msgstr="Планировщик" />
+	<message msgid="services misc lltd"					msgstr="Поддержка LLTD" />
+	<message msgid="services misc lldpd"				msgstr="Поддержка LLDP" />
+	<message msgid="services misc cwmpd"				msgstr="Поддержка CWMP (TR-069)" />
+	<message msgid="services misc cdp"					msgstr="Поддержка CDP" />
+	<message msgid="services misc iptv"					msgstr="Сервисы IPTV" />
+	<message msgid="services misc dinf"					msgstr="Сервисы информации и статистики" />
+	<message msgid="services misc igmp"					msgstr="IGMP прокси" />
+	<message msgid="services misc igmp multicast"		msgstr="Поддержка IGMP snooping" />
+	<message msgid="services misc igmp fastleave"		msgstr="Поддержка IGMP fast leave" />
+	<message msgid="services misc igmp unicast"			msgstr="Преобразование мультикаста в уникаст" />
+	<message msgid="services misc igmp unicast all"		msgstr="Все" />
+	<message msgid="services misc udpxy"				msgstr="Преобразование мультикаста в http" />
+	<message msgid="services misc udpxy port"			msgstr="Порт UDPXY" />
+	<message msgid="services misc xupnpd"				msgstr="DLNA медиа сервер" />
+	<message msgid="services misc pass through"			msgstr="Прямой пропуск" />
+	<message msgid="services misc pass through pppoe"	msgstr="Пропускать напрямую PPPOE" />
+	<message msgid="services misc pass through ipv6"	msgstr="Пропускать напрямую IPv6" />
+	<message msgid="services misc watchers"				msgstr="Системные" />
+	<message msgid="services misc watchdog"				msgstr="Сторожевой таймер" />
+	<message msgid="services misc pinger"				msgstr="Пинговалка ближайших узлов" />
+	<message msgid="services misc ping time"			msgstr="Время проверки пингов" />
+	<message msgid="services misc ping interval"		msgstr="Интервал проверки пингов" />
+	<message msgid="services misc others"				msgstr="Остальные" />
+	<message msgid="services misc vlan double tag"		msgstr="Поддержка двойного тегирования vlan" />
+	<message msgid="services misc reinit wan"			msgstr="Переподнять WAN линк если DHCP не получил адрес" />
+	<message msgid="services misc dhcp renew"			msgstr="Перезапросить адрес при подъёме WAN интерфейса" />
+	<message msgid="services misc ping from wan"		msgstr="Разрешить icmp echo из WAN подсети" />
+	<message msgid="services misc stp"					msgstr="Поддержка Spanning Tree" />
+	<message msgid="services misc dont modify ttl"		msgstr="Не изменять TTL" />
+	<message msgid="services misc multicast ttl"		msgstr="Не изменять TTL мультикаст трафика" />
+	<message msgid="services misc use pmtu"				msgstr="Использовать автосогласование PMTU" />
+	<message msgid="services misc ask reboot"			msgstr="Для изменения настроек требуется перезагрузить маршрутизатор. Выполнить перезагрузку сейчас?" />
+	<message msgid="services misc hwnat over"			msgstr="Порог аппаратного NAT должен иметь значение от 0 до 500" />
+	<message msgid="services misc http over"			msgstr="HTTP порт должен иметь значение от 1 до 65535" />
+	<message msgid="services misc ssh over"				msgstr="SSH порт должен иметь значение от 1 до 65535" />
+	<message msgid="services misc irqbalance"			msgstr="Распределение прерываний по ядрам" />
+	<message msgid="services misc auto"					msgstr="Автоматически" />
+	<message msgid="services misc hw"					msgstr="Только аппаратный" />
+	<message msgid="services misc router"				msgstr="Маршрутизация" />
+	<message msgid="services misc storage"				msgstr="Локальные сервисы" />
 </po>

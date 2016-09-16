@@ -224,124 +224,135 @@ static int getIPTAccountBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 parameter_fetch_t service_misc_flags[] =
 {
-	{ T("stpEnbl"), "stpEnabled", 0, T("0") },
+	{ T("stpEnbl"),			"stpEnabled",		0, T("0")  },
 #ifdef CONFIG_USER_CDP
-	{ T("cdpEnbl"), "cdpEnabled", 0, T("0") },
+	{ T("cdpEnbl"),			"cdpEnabled",		0, T("0")  },
 #endif
 #ifdef CONFIG_USER_CWMPD
-	{ T("cwmpdEnbl"), "cwmpdEnabled", 0, T("0") },
-	{ T("cwmpACSUrl"), "cwmp_acs_url", 0, T("") },
+	{ T("cwmpdEnbl"),		"cwmpdEnabled",		0, T("0")  },
+	{ T("cwmpACSUrl"),		"cwmp_acs_url",		0, T("")   },
 #endif
 #ifdef CONFIG_USER_LLTD
-	{ T("lltdEnbl"), "lltdEnabled", 0, T("0") },
+	{ T("lltdEnbl"),		"lltdEnabled",		0, T("0")  },
 #endif
 #ifdef CONFIG_USER_LLDPD
-	{ T("lldpdEnbl"), "lldpdEnabled", 0, T("0") },
+	{ T("lldpdEnbl"),		"lldpdEnabled",		0, T("0")  },
 #endif
-	{ T("igmpEnbl"), "igmpEnabled", 0, T("0") },
-	{ T("igmpSnoop"), "igmpSnoopMode", 0, T("") },
-	{ T("igmpFastL"), "igmpFastLeave", 0, T("") },
-	{ T("igmpM2UConv"), "igmpM2UConvMode", 0, T("") },
+	{ T("igmpEnbl"),		"igmpEnabled",		0, T("0")  },
+	{ T("igmpSnoop"),		"igmpSnoopMode",	0, T("")   },
+	{ T("igmpFastL"),		"igmpFastLeave",	0, T("")   },
+	{ T("igmpM2UConv"),		"igmpM2UConvMode",	0, T("")   },
 #ifdef CONFIG_USER_MINIUPNPD
-	{ T("upnpEnbl"), "upnpEnabled", 0, T("0") },
+	{ T("upnpEnbl"),		"upnpEnabled",		0, T("0")  },
 #endif
 #ifdef CONFIG_USER_XUPNPD
-	{ T("xupnpdEnbl"), "xupnpd", 0, T("0") },
+	{ T("xupnpdEnbl"),		"xupnpd",		0, T("0")  },
 #endif
-	{ T("dnspEnbl"), "dnsPEnabled", 0, T("0") },
-	{ T("rmtHTTP"), "RemoteManagement", 0, T("0") },
-	{ T("RemoteManagementPort"), "RemoteManagementPort", 0, T("80") },
+	{ T("dnspEnbl"),		"dnsPEnabled",		0, T("0")  },
+	{ T("rmtHTTP"),			"RemoteManagement",	0, T("0")  },
+	{ T("RemoteManagementPort"),	"RemoteManagementPort",	0, T("80") },
 #ifdef CONFIG_USER_DROPBEAR
-	{ T("rmtSSH"), "RemoteSSH", 0, T("0") },
-	{ T("RemoteSSHPort"), "RemoteSSHPort", 0, T("22") },
+	{ T("rmtSSH"),			"RemoteSSH",		0, T("0")  },
+	{ T("RemoteSSHPort"),		"RemoteSSHPort",	0, T("22") },
 #endif
 #ifdef CONFIG_TELNETD
-	{ T("rmtTelnet"), "RemoteTelnet", 0, T("0") },
+	{ T("rmtTelnet"),		"RemoteTelnet", 0, T("0") },
 #endif
 #ifdef CONFIG_USER_UDPXY
-	{ T("udpxyMode"), "UDPXYMode", 0, T("0") },
-	{ T("udpxyPort"), "UDPXYPort", 0, T("81") },
+	{ T("udpxyMode"),		"UDPXYMode",		0, T("0")  },
+	{ T("udpxyPort"),		"UDPXYPort",		0, T("81") },
 #endif
-	{ T("watchdogEnable"), "WatchdogEnabled", 0, T("0") },
-	{ T("pingWANEnbl"), "WANPingFilter", 0, T("0") },
-	{ T("krnlPppoePass"), "pppoe_pass", 0, T("0") },
-	{ T("krnlIpv6Pass"), "ipv6_pass", 0, T("0") },
-	{ T("dhcpSwReset"), "dhcpSwReset", 0, T("0") },
-	{ T("vlanDoubleTag"), "vlanDoubleTag", 0, T("0") },
-	{ T("offloadMode"), "offloadMode", 0, T("0") },
-	{ T("hw_nat_wifiPT"), "hw_nat_wifi", 0, T("0") },
-	{ T("hw_nat_udpPT"), "hw_nat_udp", 0, T("0") },
-	{ T("hw_nat_sixPT"), "hw_nat_six", 0, T("0") },
-	{ T("natMode"), "nat_mode", 0, T("1") },
-	{ T("natFastpath"), "natFastpath", 0, T("0") },
-	{ T("routeFastpath"), "routeFastpath", 0, T("1") },
-	{ T("filterFastpath"), "filterFastpath", 0, T("1") },
+	{ T("watchdogEnable"),		"WatchdogEnabled",	0, T("0")  },
+	{ T("pingWANEnbl"),		"WANPingFilter",	0, T("0")  },
+	{ T("krnlPppoePass"),		"pppoe_pass",		0, T("0")  },
+	{ T("krnlIpv6Pass"),		"ipv6_pass",		0, T("0")  },
+	{ T("dhcpSwReset"),		"dhcpSwReset",		0, T("0")  },
+	{ T("vlanDoubleTag"),		"vlanDoubleTag",	0, T("0")  },
+	{ T("offloadMode"),		"offloadMode",		0, T("0")  },
+	{ T("hw_nat_wifiPT"),		"hw_nat_wifi",		0, T("0")  },
+	{ T("hw_nat_udpPT"),		"hw_nat_udp",		0, T("0")  },
+	{ T("hw_nat_sixPT"),		"hw_nat_six",		0, T("0")  },
+	{ T("natMode"),			"nat_mode",		0, T("1")  },
+	{ T("natFastpath"),		"natFastpath",		0, T("0")  },
+	{ T("routeFastpath"),		"routeFastpath",	0, T("1")  },
+	{ T("filterFastpath"),		"filterFastpath",	0, T("1")  },
 #ifdef CONFIG_CROND
-	{ T("CrondEnable"), "CrondEnable", 0, T("0") },
+	{ T("CrondEnable"),		"CrondEnable",		0, T("0")  },
 #endif
-	{ T("ForceRenewDHCP"), "ForceRenewDHCP", 0, T("1") },
+	{ T("ForceRenewDHCP"),		"ForceRenewDHCP",	0, T("1")  },
 #ifdef CONFIG_USER_PARPROUTED
-	{ T("arpPT"), "parproutedEnabled", 0, T("0") },
+	{ T("arpPT"),			"parproutedEnabled",	0, T("0")  },
 #endif
-	{ T("pingerEnable"), "pinger_check_on", 0, T("0") },
-	{ T("ping_check_time"), "ping_check_time", 0, T("0") },
-	{ T("ping_check_interval"), "ping_check_interval", 0, T("0") },
-	{ T("ttlStore"), "store_ttl", 0, T("0") },
-	{ T("ttlMcastStore"), "store_ttl_mcast", 0, T("0") },
+	{ T("pingerEnable"),		"pinger_check_on",	0, T("0")  },
+	{ T("ping_check_time"),		"ping_check_time",	0, T("0")  },
+	{ T("ping_check_interval"),	"ping_check_interval",	0, T("0")  },
+	{ T("ttlStore"),		"store_ttl",		0, T("0")  },
+	{ T("ttlMcastStore"),		"store_ttl_mcast",	0, T("0")  },
 #ifdef CONFIG_USER_SNMPD
-	{ T("SnmpdEnabled"), "snmpd", 0, T("0") },
-	{ T("snmpdcommunity"), "snmpdcommunity", 0, T("") },
+	{ T("SnmpdEnabled"),		"snmpd",		0, T("0")  },
+	{ T("snmpdcommunity"),		"snmpdcommunity",	0, T("")   },
 #endif
-	{ T("mssPmtu"), "mss_use_pmtu", 0, T("1") },
+	{ T("mssPmtu"),			"mss_use_pmtu",		0, T("1")  },
 #ifdef CONFIG_RALINK_MT7621
-	{ T("IRQBalance"), "IRQBalance", 0, T("auto") },
+	{ T("IRQBalance"),		"IRQBalance",		0, T("auto") },
 #endif
 #ifdef CONFIG_NETFILTER_FP_SMB
-	{ T("smbFastpath"), "smbFastpath", 0, T("0") },
+	{ T("smbFastpath"),		"smbFastpath",		0, T("0")  },
 #endif
-	{ NULL, NULL, 0, NULL } // Terminator
+	{ NULL,				NULL,			0, NULL    } // Terminator
 };
 
 /* goform/setMiscServices */
 static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *goaheadrestart;
-	char_t *submitUrl;
+	char_t *goaheadrestart	= websGetVar(wp, T("goaheadrestart"), T("1"));
+	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
-	nvram_init(RT2860_NVRAM);
-
-	setupParameters(wp, service_misc_flags, 0);
-
-	int nat_fp = nvram_get_int(RT2860_NVRAM, "offloadMode", -1);
-	if (nat_fp == 2 || nat_fp == 3)
-	{
-		char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
-		if (nat_th != NULL)
-			nvram_bufset(RT2860_NVRAM, "hw_nat_bind", nat_th);
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "cwmpdEnabled", "cwmp_acs_url", "lltdEnabled",
+						"lldpdEnabled", "igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode",
+						"upnpEnabled", "xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",
+						"RemoteSSH", "RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort",
+						"WatchdogEnabled", "WANPingFilter", "pppoe_pass", "ipv6_pass", "dhcpSwReset",
+						"vlanDoubleTag", "offloadMode", "hw_nat_wifi", "hw_nat_udp", "hw_nat_six",
+						"nat_mode", "natFastpath", "routeFastpath", "filterFastpath", "CrondEnable",
+						"ForceRenewDHCP", "parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval",
+						"store_ttl", "store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu",
+						"IRQBalance", "smbFastpath");
 	}
+	else {
+		nvram_init(RT2860_NVRAM);
+		setupParameters(wp, service_misc_flags, 0);
 
-	int dns_proxy = nvram_get_int(RT2860_NVRAM, "dnsPEnabled", 0);
-	if (dns_proxy == 1)
-	{
-		nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
-		nvram_bufset(RT2860_NVRAM, "dhcpSecDns", "");
+		int nat_fp = nvram_get_int(RT2860_NVRAM, "offloadMode", -1);
+		if (nat_fp == 2 || nat_fp == 3)
+		{
+			char_t *nat_th = websGetVar(wp, "hwnatThreshold", "50");
+			if (nat_th != NULL)
+				nvram_bufset(RT2860_NVRAM, "hw_nat_bind", nat_th);
+		}
+
+		int dns_proxy = nvram_get_int(RT2860_NVRAM, "dnsPEnabled", 0);
+		if (dns_proxy == 1)
+		{
+			nvram_bufset(RT2860_NVRAM, "dhcpPriDns", "");
+			nvram_bufset(RT2860_NVRAM, "dhcpSecDns", "");
+		}
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
-
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-	goaheadrestart = websGetVar(wp, T("goaheadrestart"), T("1"));
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 
 	/* restart some services instead full reload */
-	doSystem("services_restart.sh misc");
+	doSystem("services_restart.sh misc &");
 	if (CHK_IF_DIGIT(goaheadrestart, 1)) {
 		/* Output timer for reloading goahead, only for true redirect need, time set to really small */
-		outputTimerForReload(wp, "", 10);
+		outputTimerForReload(wp, "", 15000);
 		/* Correct stop goahead and wait restart by webmon */
 		exit(0);
 	} else {
-		websRedirect(wp, submitUrl);
+		websHeader(wp);
+		websDone(wp, 200);
 	}
 }
 
