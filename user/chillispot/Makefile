@@ -1,5 +1,9 @@
 .EXPORT_ALL_VARIABLES:
 
+# extreme save memory
+CFLAGS    += -membedded-data -muninit-const-in-rodata
+CFLAGS    += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
+
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
@@ -7,15 +11,14 @@
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
+
 CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-gnu-ld --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
-CONFOPTS  += --disable-tap --disable-json --disable-miniportal --disable-miniconfig --disable-layer3 --disable-leakybucket
-CONFOPTS  += --disable-ieee8021q
+CONFOPTS  += --disable-tap --disable-json --disable-miniportal --disable-miniconfig --disable-layer3
+CONFOPTS  += --disable-ieee8021q --disable-multilan --disable-multiroute --disable-leakybucket
 CONFOPTS  += --enable-chilliproxy --enable-chilliredir --enable-chilliquery
 CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid
 CONFOPTS  += --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
-CONFOPTS  += --enable-uamanyip --enable-uamuiport
-CONFOPTS  += --enable-dhcpopt
-CONFOPTS  += --enable-multilan --enable-multiroute
+CONFOPTS  += --enable-uamanyip --enable-uamuiport --enable-dhcpopt
 
 # decrease mamory usage (with large limits only ~20 clients at 64Mb of ram work correct)
 CONFOPTS  += --disable-largelimits

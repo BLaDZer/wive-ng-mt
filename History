@@ -2301,7 +2301,7 @@
 12) busybox: ash: do not leave SIGQUIT ignored on exec CMD.<br>
 13) coovachilli: up to 1.3.1.4 from git (commit 374af0af).<br>
 14) coovachilli: do not more need xt_coova in tun mode (this good for compat with offload engine).<br>
-15) coovachilli: enable multilan and multiroute support (prepare for multilan support).<br>
+15) coovachilli: rewiev build options for maximum decrease memory footprint.<br>
 16) libmicrohttp/nodogsplash: fix regression after add SO_REUSE_PORT support (3.4.x kernel not support this - rewrite to address reuse).<br>
 17) bstrlib: sync with git (commit f5af8c88).<br>
 18) build_system: add templates for support SFP router.<br>
@@ -2328,7 +2328,7 @@
 39) cli: initial implementation (wl scan/stalist/status, sw lan/wan/vpn/dhcp/status/switch, st show,dhcp,l2tp,ntp,ddns,samba,vpn).<br>
 40) kernel: ralink_wifi: fix set mcast rate from profile.<br>
 41) kernel: ralink_wifi: remove bogus fill IE_COUNTRY block (MTK copy-past bug).<br>
-42) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
+41) kernel: ralink_wifi: fix beacons IE_COUNTRY power constraint value (swing 16 <-> 20).<br>
 43) kernel: ralink_wifi: DMA remove bogus play with TXD block for Little-Endian in RTMPFreeTXDUponTxDmaDone().<br>
 44) kernel: ralink_wifi: mt76x2: remove redundant select pci_dev pointer for RBUS.<br>
 45) kernel: ralink_wifi: mt76x2/mt76x3: fix and refactor force announse critical ampdu.<br>

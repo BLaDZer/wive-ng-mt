@@ -46,7 +46,7 @@
 
 /* redir */
 #define REDIR_MAXLISTEN                   32
-#define REDIR_MAXTIME                    120 /* Seconds */
+#define REDIR_MAXTIME                     60 /* Seconds */
 #define REDIR_HTTP_MAX_TIME               20 /* Seconds */
 #define REDIR_HTTP_SELECT_TIME             3 /* Seconds */
 #define REDIR_RADIUS_MAX_TIME             60 /* Seconds */
@@ -64,7 +64,7 @@
 #define REDIR_LANGSIZE                    16
 #define REDIR_IDENTSIZE                   16
 
-#define REDIR_MAXCONN                     16
+#define REDIR_MAXCONN                     8
 
 #define REDIR_URL_LEN                   2048
 #define REDIR_SESSIONID_LEN               33
@@ -97,7 +97,11 @@
 #define TUN_SCRIPTSIZE   512
 #define TUN_ADDRSIZE     128
 #define TUN_NLBUFSIZE   1024
+#ifdef ENABLE_LARGELIMITS
 #define TUN_MAX_INTERFACES 32
+#else
+#define TUN_MAX_INTERFACES 2
+#endif
 
 #define TCP_MAX_OPTION_LEN 40
 
@@ -125,7 +129,7 @@
 #else
 #define PKT_MAX_LEN                     9000 /* Maximum packet size we receive */
 #define SESSION_PASS_THROUGH_MAX           8
-#define MAX_PASS_THROUGHS                128 /* Max number of allowed UAM pass-throughs */
+#define MAX_PASS_THROUGHS                 64 /* Max number of allowed UAM pass-throughs */
 #define MAX_REGEX_PASS_THROUGHS            8 /* Max number of allowed UAM pass-throughs */
 #define MAX_UAM_DOMAINS                   32 /* Max number of allowed UAM domains */
 #define MACOK_MAX                         16
