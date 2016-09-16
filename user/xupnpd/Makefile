@@ -15,6 +15,7 @@ romfs:
 	cp -fv src/xupnpd $(ROMFSDIR)/bin/xupnpd
 	rm -rf $(ROMFSDIR)/etc/xupnpd
 	mkdir -p $(ROMFSDIR)/etc/xupnpd
+	mkdir -p $(ROMFSDIR)/etc/xupnpd/playlists
 	mkdir -p $(ROMFSDIR)/etc/xupnpd/config
 	mkdir -p $(ROMFSDIR)/etc/xupnpd/config/postinit
 	mkdir -p $(ROMFSDIR)/share/xupnpd
