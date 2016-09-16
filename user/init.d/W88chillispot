@@ -125,8 +125,8 @@ get_params() {
     #fi
 
     # compose options
-    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000 \
-		--pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc $PARLINE"
+    PARLINE="$PARLINE --dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000"
+    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc"
 
     mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
 
