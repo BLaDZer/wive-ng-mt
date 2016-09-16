@@ -88,11 +88,8 @@ servicelimit() {
 	    if [ "$vpnType" = "2" ] || [ "$l2tp_srv_enabled" = "1" ]; then
 		iptables -A servicelimit -p udp --sport 500 -j ACCEPT
 		$LOG "Add vpnfilter rules for L2TP"
-		iptables -A servicelimit -p udp --dport 500 -j ACCEPT
-		iptables -A servicelimit -p udp --sport 1701 -j ACCEPT
-		iptables -A servicelimit -p udp --dport 1701 -j ACCEPT
-		iptables -A servicelimit -p udp --sport 4500 -j ACCEPT
-		iptables -A servicelimit -p udp --dport 4500 -j ACCEPT
+		iptables -A servicelimit -p udp -m multiport --dport 500,1701,4500 -j ACCEPT
+		iptables -A servicelimit -p udp -m multiport --sport 500,1701,4500 -j ACCEPT
 	    fi
 	fi
 	if [ "$LOCAL_PRT" != "" ]; then
