@@ -834,7 +834,7 @@ RC_TYPE dyn_dns_update_ip(DYN_DNS_CLIENT *p_self)
 	{
 		/*ask IP server something so he will respond and give me my IP */
 		rc = do_ip_server_transaction(p_self);
-		if (rc != RC_OK) && (p_self->dbg.level > 2)
+		if (rc != RC_OK && p_self->dbg.level > 2)
 		{
 			DBG_PRINTF((LOG_DEBUG,"D: DYNDNS: Error '%s' (0x%x) when talking to IP server\n",
 				errorcode_get_name(rc), rc));
