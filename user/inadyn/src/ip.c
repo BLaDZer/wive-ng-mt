@@ -226,7 +226,7 @@ RC_TYPE ip_recv(IP_SOCKET *p_self, char *p_buf, int max_recv_len, int *p_recv_le
 		{
 			
 			{
-				DBG_PRINTF((LOG_WARNING, MODULE_TAG "Error 0x%x in recv()\n", os_get_socket_error()));
+				DBG_PRINTF((LOG_DEBUG, MODULE_TAG "Error 0x%x in recv()\n", os_get_socket_error()));
 				rc = RC_IP_RECV_ERROR;
 			}
 			break;

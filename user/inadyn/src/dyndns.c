@@ -836,7 +836,7 @@ RC_TYPE dyn_dns_update_ip(DYN_DNS_CLIENT *p_self)
 		rc = do_ip_server_transaction(p_self);
 		if (rc != RC_OK)
 		{
-			DBG_PRINTF((LOG_WARNING,"W: DYNDNS: Error '%s' (0x%x) when talking to IP server\n",
+			DBG_PRINTF((LOG_DEBUG,"D: DYNDNS: Error '%s' (0x%x) when talking to IP server\n",
 				errorcode_get_name(rc), rc));
 			break;
 		}
