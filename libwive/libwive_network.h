@@ -64,6 +64,8 @@ int getIfNetmask(const char *ifname, char *if_net);
 
 #ifdef CONFIG_IPV6
 int getIfIPv6(const char *ifname, char *if_addr, char *netmask);
+int getIPv6IntIPAddr(char* address, char* mask);
+int getIPv6ExtIPAddr(char* address, char* mask);
 #endif
 
 void arplookup(char *ip, char *arp);
@@ -77,5 +79,7 @@ const char* getVPNStatusStr();
 
 struct dyn_lease* getDhcpClientList(int *rownum, uint64_t *written_at);
 int getDNSAddressStr(int index, char* out_buf);
+
+int getWANGateway(char* sgw);
 
 #endif

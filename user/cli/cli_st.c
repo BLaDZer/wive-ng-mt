@@ -243,9 +243,16 @@ int func_st_dhcp(int argc, char* argv[])
 
 int func_st_vpn(int argc, char* argv[])
 {
+    char vpn_ip_addr[16] = {0};
+
     writeHeader("VPN");
 
     printf("VPN Status:       %s \n",getVPNStatusStr());
+
+    if ((vpn_mode_enabled() == 1) && (getIfIp(getPPPIfName(), vpn_ip_addr) != -1) ) 
+    {
+        printf("VPN IP Address:   %s \n", vpn_ip_addr);
+    }
 
     printf("VPN Type:         ");
 
@@ -294,7 +301,18 @@ int func_st_vpn(int argc, char* argv[])
 
         printf("Username:         %s \n", nvram_get(RT2860_NVRAM, "vpnUser") );
         printf("Default gateway:  %s \n", nvram_get_int(RT2860_NVRAM, "vpnDGW", 0)?"enable":"disable" );
+
+        printf("\n");
+
+        printf("Allow MPPE:       %s \n", nvram_get(RT2860_NVRAM, "vpnMPPE") );
+        printf("Allow Debug:      %s \n", nvram_get(RT2860_NVRAM, "vpnDebug") );
+        printf("Adaptive LCP:     %s \n", nvram_get(RT2860_NVRAM, "vpnEnableLCP") );
+        printf("Peer DNS:         %s \n", nvram_get(RT2860_NVRAM, "vpnPeerDNS") );
+        printf("Enable NAT:       %s \n", nvram_get(RT2860_NVRAM, "vpnNAT") );
+        printf("Pure PPPoE:       %s \n", nvram_get_int(RT2860_NVRAM, "vpnPurePPPOE", 0)?"on":"off" );
+
     }
+
 
     printf("\n");
     return 0;
@@ -365,6 +383,7 @@ int func_st_show(int argc, char* argv[])
     func_sw_lan(0, argv_empty);
     func_sw_ipv6(0, argv_empty);
     func_sw_wan(0, argv_empty);
+    func_st_vpn(0, argv_empty);
     func_wl_status(0, argv_empty);
 
     printf("\n");

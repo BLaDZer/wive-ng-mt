@@ -525,53 +525,14 @@ static int getWanNetmask(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
 {
-	char   buff[256];
-	char   ifname[16];
-	int    nl = 0 ;
-	struct in_addr dest;
-	struct in_addr gw;
-	int    flgs, ref, use, metric;
-	unsigned long int d,g,m;
-	int    find_default_flag = 0;
-
 	char sgw[16];
-
-	FILE *fp = fopen("/proc/net/route", "r");
-
-	while ((fgets(buff, sizeof(buff), fp)) !=NULL) {
-		if (nl) {
-			int ifl = 0;
-			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0') {
-				ifname[ifl] = buff[ifl];
-				ifl++;
-			}
-			ifname[ifl] = 0;
-			buff[ifl] = 0;    /* interface */
-			if (sscanf(buff+ifl+1, "%lx%lx%X%d%d%d%lx",
-						&d, &g, &flgs, &ref, &use, &metric, &m)!=7) {
-				fclose(fp);
-				return websWrite(wp, T("format error"));
-			}
-
-			if (flgs&RTF_UP) {
-				dest.s_addr = d;
-				gw.s_addr   = g;
-				strcpy(sgw, (gw.s_addr==0 ? ifname : inet_ntoa(gw)));
-
-				if (dest.s_addr == 0) {
-					find_default_flag = 1;
-					break;
-				}
-			}
-		}
-		nl++;
+	switch (getWANGateway(sgw))
+	{
+		case 0: return websWrite(wp, T("%s"), sgw);
+		case 1: return websWrite(wp, T("format error"));
 	}
-	fclose(fp);
 
-	if (find_default_flag == 1)
-		return websWrite(wp, T("%s"), sgw);
-	else
-		return websWrite(wp, T(""));
+	return websWrite(wp, T(""));
 }
 
 
@@ -1073,67 +1034,31 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
-static int  getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
+static int getIPv6IntAddr(int eid, webs_t wp, int argc, char_t **argv) {
 	char address[INET6_ADDRSTRLEN] = "";
-	char lanif[IFNAMSIZ] = "";
 	char mask[16] = "";
-	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
 
-	if (opmode == 0)
+	if (getIPv6IntIPAddr(address, mask) != 0)
+	{
 		return websWrite(wp, T(""));
-
-	strcpy(lanif, getLanIfName());
-
-	if (getIfIPv6(lanif, address, mask) != 0)
-		return websWrite(wp, T(""));
+	}
 	else
+	{
 		return websWrite(wp, T("%s/%s"), address, mask);
+	}
 }
 
-static int  getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
+static int getIPv6ExtAddr(int eid, webs_t wp, int argc, char_t **argv) {
+
 	char address[INET6_ADDRSTRLEN] = "";
-	char tmpif[IFNAMSIZ] = "";
-	char wanif[IFNAMSIZ] = "";
 	char mask[16] = "";
-	FILE *fp;
 
-	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
-
-	if (opmode == 0)
+	if (getIPv6ExtIPAddr(address, mask) != 0)
+	{
 		return websWrite(wp, T(""));
-
-	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
-
-		switch (opmode)
-		{
-		    case 1:
-			    if (vpn_mode_enabled() == 1)
-				strcpy(wanif, getPPPIfName());
-			    else
-				strcpy(wanif, getWanIfName());
-			break;
-		    case 2:
-			    strcpy(wanif, "6rd");
-			break;
-		    case 3:
-			    strcpy(wanif, "sit0");
-			break;
-		}
-
-	} else {
-		while ((fgets(tmpif, sizeof(tmpif), fp)) != NULL) {
-			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) ||
-				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
-				strcpy(wanif, strip_space(tmpif));
-				break;
-			}
-		}
-		fclose(fp);
 	}
-
-	if (getIfIPv6(wanif, address, mask) != 0) {
-		return websWrite(wp, T(""));
-	} else {
+	else
+	{
 		return websWrite(wp, T("%s/%s"), address, mask);
 	}
 }

@@ -216,7 +216,79 @@ int getIfIPv6(const char *ifname, char *if_addr, char *netmask)
 		return 0;
 	}
 }
+
+/* getIPv6IntIPAddr
+ * arg: (out) address - char[INET6_ADDRSTRLEN] IP address buffer
+ * arg: (out) mask    - char[16] mask buffer
+ * description: get internal IPv6 address
+ */
+int getIPv6IntIPAddr(char* address, char* mask) {
+	char lanif[IFNAMSIZ] = "";
+	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
+
+	if (opmode == 0)
+		return 1;
+
+	strcpy(lanif, getLanIfName());
+
+	if (getIfIPv6(lanif, address, mask) != 0)
+		return 2;
+
+	return 0;
+}
+
+/* getIPv6ExtIPAddr
+ * arg: (out) address - char[INET6_ADDRSTRLEN] IP address buffer
+ * arg: (out) mask    - char[16] mask buffer
+ * description: get external IPv6 address
+ */
+int getIPv6ExtIPAddr(char* address, char* mask) {
+	char tmpif[IFNAMSIZ] = "";
+	char wanif[IFNAMSIZ] = "";
+	FILE *fp;
+
+	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
+
+	if (opmode == 0)
+		return 1;
+
+	if (NULL == (fp = fopen("/tmp/six_wan_if_name", "r"))) {
+
+		switch (opmode)
+		{
+		    case 1:
+			    if (vpn_mode_enabled() == 1)
+				strcpy(wanif, getPPPIfName());
+			    else
+				strcpy(wanif, getWanIfName());
+			break;
+		    case 2:
+			    strcpy(wanif, "6rd");
+			break;
+		    case 3:
+			    strcpy(wanif, "sit0");
+			break;
+		}
+
+	} else {
+		while ((fgets(tmpif, sizeof(tmpif), fp)) != NULL) {
+			if ((strstr(tmpif, ETH_SIG) != NULL) || (strstr(tmpif, BR_SIG) != NULL) ||
+				(strstr(tmpif, SIXRD_SIG) != NULL) || (strstr(tmpif, SIX2FOUR_SIG) != NULL)) {
+				strcpy(wanif, strip_space(tmpif));
+				break;
+			}
+		}
+		fclose(fp);
+	}
+
+	if (getIfIPv6(wanif, address, mask) != 0)
+		return 2;
+
+	return 0;
+}
+
 #endif
+
 
 void arplookup(char *ip, char *arp)
 {
@@ -884,3 +956,58 @@ int getDNSAddressStr(int index, char* out_buf)
         fclose(fp);
         return 0;
 }
+
+/* getWANGateway
+ * arg: (out) sgw - wan gateway, char[16] buffer
+ * description: write WAN gateway interface name to buffer
+ * return: 0 = OK
+ */
+int getWANGateway(char* sgw)
+{
+	char   buff[256];
+	char   ifname[16];
+	int    nl = 0 ;
+	struct in_addr dest;
+	struct in_addr gw;
+	int    flgs, ref, use, metric;
+	unsigned long int d,g,m;
+	int    find_default_flag = 0;
+
+	FILE *fp = fopen("/proc/net/route", "r");
+
+	while ((fgets(buff, sizeof(buff), fp)) !=NULL) {
+		if (nl) {
+			int ifl = 0;
+			while (buff[ifl]!=' ' && buff[ifl]!='\t' && buff[ifl]!='\0') {
+				ifname[ifl] = buff[ifl];
+				ifl++;
+			}
+			ifname[ifl] = 0;
+			buff[ifl] = 0;    /* interface */
+			if (sscanf(buff+ifl+1, "%lx%lx%X%d%d%d%lx",
+						&d, &g, &flgs, &ref, &use, &metric, &m)!=7) {
+				fclose(fp);
+				return 1;
+			}
+
+			if (flgs&RTF_UP) {
+				dest.s_addr = d;
+				gw.s_addr   = g;
+				strcpy(sgw, (gw.s_addr==0 ? ifname : inet_ntoa(gw)));
+
+				if (dest.s_addr == 0) {
+					find_default_flag = 1;
+					break;
+				}
+			}
+		}
+		nl++;
+	}
+	fclose(fp);
+
+	if (find_default_flag == 1)
+		return 0;
+	else
+		return 2;
+}
+
