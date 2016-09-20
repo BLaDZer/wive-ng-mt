@@ -40,9 +40,6 @@
 
   <message msgid="wan mac clone" msgstr="MAC Clone" />
 
-  <message msgid="lan title" msgstr="Local Area Network (LAN) Settings" />
-  <message msgid="lan introduction" msgstr="You can configure different network services here." />
-  <message msgid="lan setup" msgstr="LAN Setup" />
   <message msgid="lan dhcp type" msgstr="DHCP Type" />
   <message msgid="lan dhcp type server" msgstr="Server" />
   <message msgid="lan dhcp start" msgstr="Start IP Address" />
@@ -57,7 +54,6 @@
   <message msgid="lan snmp" msgstr="SNMP daemon (snmpd)" />
   <message msgid="lan igmpp" msgstr="Multicast route (igmpproxy)" />
   <message msgid="lan upnp" msgstr="Auto portmap service (miniupnpd)" />
-  <message msgid="lan accept dhcp opts" msgstr="Apply change network settings to dhcpd?" />
 
   <message msgid="dhcp title" msgstr="DHCP Client List" />
   <message msgid="dhcp introduction" msgstr="You can monitor DHCP clients here." />

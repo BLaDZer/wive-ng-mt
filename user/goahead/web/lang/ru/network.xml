@@ -1,7 +1,9 @@
 <po>
-    <message msgid="lan title" msgstr="Настройки локальной сети (LAN)" />
-    <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
-    <message msgid="lan setup" msgstr="Настройки LAN" />
+	<message msgid="lan title"				msgstr="Настройки локальной сети (LAN)" />
+	<message msgid="lan introduction"		msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
+	<message msgid="lan setup"				msgstr="Настройки LAN" />
+	<message msgid="lan accept dhcp opts"	msgstr="Применить изменения локальной сети в настройках dhcpd?" />	
+	
     <message msgid="inet hostname" msgstr="Имя хоста" />
     <message msgid="inet mac" msgstr="MAC адрес" />
     <message msgid="inet ip" msgstr="IP адрес" />

@@ -39,9 +39,7 @@
   <message msgid="wan address mode" msgstr="Тип адреса" />
   <message msgid="wan address mode static" msgstr="Статический" />
   <message msgid="wan address mode dynamic" msgstr="Динамический" />
-  <message msgid="lan title" msgstr="Настройки локальной сети (LAN)" />
-  <message msgid="lan introduction" msgstr="Здесь вы можете настроить нужные функции локальной сети и их параметры." />
-  <message msgid="lan setup" msgstr="Настройки LAN" />
+  
   <message msgid="lan dhcp type" msgstr="Тип DHCP" />
   <message msgid="lan dhcp type server" msgstr="Сервер" />
   <message msgid="lan dhcp start" msgstr="Начальный IP пула" />
@@ -57,7 +55,6 @@
   <message msgid="lan snmp" msgstr="Сервер статистики (snmpd)" />
   <message msgid="lan igmpp" msgstr="Маршрутизация мультикаста (igmpproxy)" />
   <message msgid="lan upnp" msgstr="Автоматический проброс портов (miniupnpd)" />
-  <message msgid="lan accept dhcp opts" msgstr="Применить изменения локальной сети в настройках dhcpd?" />
 
   <message msgid="dhcp title" msgstr="Список DHCP клиентов" />
   <message msgid="dhcp introduction" msgstr="Здесь вы можете увидеть DHCP клиентов." />

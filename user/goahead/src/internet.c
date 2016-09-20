@@ -917,7 +917,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		}
 
 		// NAT
-		if (opmode == 0)
+		if (opmode != 0)
 		{
 			nat_enable = websGetVar(wp, T("natEnabled"), T("off"));
 			nat_enable = (strcmp(nat_enable, "on") == 0) ? "1" : "0";

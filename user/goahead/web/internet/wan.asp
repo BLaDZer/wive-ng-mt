@@ -72,7 +72,7 @@
 				form.dhcpVendorClass.value	= dhcpVendor;
 				form.staticPriDns.value		= priDNS;
 				form.staticSecDns.value		= secDNS;
-				form.wanMac.value		= wanMac;
+				form.wanMac.value		= wanMac.toUpperCase();
 				
 				displayElement(document.getElementById("natRowDisplay"), opMode != "0");
 				form.natEnabled.checked = (nat == "1");
