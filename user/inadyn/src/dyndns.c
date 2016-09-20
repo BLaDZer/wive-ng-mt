@@ -988,13 +988,15 @@ int dyn_dns_main(DYN_DNS_CLIENT *p_dyndns, int argc, char* argv[])
 			rc = dyn_dns_update_ip(p_dyndns);
 			if (rc != RC_OK)
 			{
-				DBG_PRINTF((LOG_WARNING,"W:'%s' (0x%x) updating the IPs. (it %d)\n",
-					errorcode_get_name(rc), rc, iterations)); 
-                if (rc == RC_DYNDNS_RSP_NOTOK)
-                { 
-                    DBG_PRINTF((LOG_ERR,"E: The response of DYNDNS svr was an error! Aborting.\n"));
-                    break;              			
-                }
+				if (p_dyndns->dbg.level > 2) {
+				    DBG_PRINTF((LOG_DEBUG,"W:'%s' (0x%x) updating the IPs. (it %d)\n", errorcode_get_name(rc), rc, iterations));
+				}
+
+            			if (rc == RC_DYNDNS_RSP_NOTOK)
+            			{
+                		    DBG_PRINTF((LOG_ERR,"E: The response of DYNDNS svr was an error! Aborting.\n"));
+                		    break;
+				}
 			}
 			else /*count only the successful iterations */
 			{
