@@ -47,7 +47,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 	{															\
 		if ((__BufLen) > IAPP_MAX_RCV_PKT_SIZE)					\
 		{														\
-			printf("iapp> Command Length is too large!\n");		\
+			printf("iapp> CMD: Command Length is too large (len = %d)!\n", __BufLen);		\
 			__pBufMsg = NULL;									\
 		}														\
 		else													\
@@ -58,7 +58,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 	{															\
 		if ((__BufLen) > IAPP_MAX_RCV_PKT_SIZE)					\
 		{														\
-			printf("iapp> Response Length is too large!\n");	\
+			printf("iapp> RSP: Command Length is too large (len = %d)!\n", __BufLen);		\
 			__pBufMsg = NULL;									\
 		}														\
 		else													\
@@ -2201,7 +2201,10 @@ static VOID IAPP_RcvHandlerTcp(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
-		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> TCP Decrypt frame failed!\n");
+			return;
+		}
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (!pPktBuf) {
@@ -2683,6 +2686,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
+
 		DBGPRINT(RT_DEBUG_TRACE, "iapp> Recvfrom RRB RAW successfully! (len = %d)\n", SizeRcvMsg);
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
@@ -2698,15 +2702,19 @@ static VOID IAPP_RcvHandlerRawRRB(
 		SizeRcvMsg = pFrameRRB->FTActionLength;
 		IAPP_ENCRYPTED_DATA_SIZE_CAL(SizeRcvMsg);
 
-		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
+			return;
+		}
 
 		SizeRcvMsg += FT_RRB_HEADER_SIZE;
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
+
+
 		IAPP_CMD_BUF_ALLOCATE(pCmdBuf, pBufMsg, (sizeof(OID_REQ) + SizeRcvMsg));
 		if (pBufMsg == NULL)
 			return;
-		/* End of if */
 
 		OidReq = (POID_REQ) pBufMsg;
 		OidReq->OID = (RT_FT_ACTION_FORWARD | OID_GET_SET_TOGGLE);
@@ -2868,7 +2876,10 @@ static VOID IAPP_RcvHandlerUdp(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
-		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT);
+		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> UDP Decrypt frame failed!\n");
+			return;
+		}
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (!pPktBuf) {

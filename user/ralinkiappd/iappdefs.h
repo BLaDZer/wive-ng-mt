@@ -26,7 +26,6 @@
 
 /* Some Notes */
 
-#define IAPP_DS_LINK_LOST
 /*
 	When an AP continues to accept associations without a link to the DS,
 	it is a black hole in the WLAN, where STAs associate and cannot

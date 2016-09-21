@@ -79,10 +79,14 @@ typedef enum _BOOLEAN {
 #define NdisMoveMemory(__Dst, __Src, __Len)	memmove(__Dst, __Src, __Len)
 
 VOID os_alloc_mem(UCHAR *pAd, UCHAR **ppMem, UINT32 Size)
-{ *ppMem = (UCHAR *)malloc(Size); }
+{
+    *ppMem = (UCHAR *)malloc(Size);
+}
 
 VOID os_free_mem(UCHAR *pAd, VOID *pMem)
-{ free(pMem); }
+{
+    free(pMem);
+}
 
 
 /* Debug flag */
