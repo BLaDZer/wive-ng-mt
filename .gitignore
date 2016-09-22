@@ -384,6 +384,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/chillispot/coova-chilli-master/debian/Makefile
 /user/chillispot/coova-chilli-master/distro/Makefile
 /user/chillispot/coova-chilli-master/doc/Makefile
+/user/chillispot/coova-chilli-master/extern/.dirstamp
 /user/lldpd/osx/Makefile
 /user/lldpd/tests/Makefile
 /user/netcwmp/tests/src/Makefile
