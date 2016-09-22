@@ -2389,10 +2389,11 @@
 <br>
 <br>
 <b>4.7.x</b><br>
-1) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-2) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-3) kernel: net: packet: tx timestamping on tpacket ring.<br>
-4) kernel: net: socket: move ktime2ts to ktime header api.<br>
+1) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+2) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+3) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+4) kernel: net: packet: tx timestamping on tpacket ring.<br>
+5) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
