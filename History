@@ -2389,8 +2389,9 @@
 <br>
 <br>
 <b>4.7.x</b><br>
-1) kernel: mips: barrier: Add definitions of SYNC stype values.<br>
-2) kernel: net: packet: tx timestamping on tpacket ring.<br>
+1) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+2) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+3) kernel: net: packet: tx timestamping on tpacket ring.<br>
 <br>
 <br>
 <br>
