@@ -233,6 +233,15 @@ VOID APMakeBssBeacon(
 			}
 #endif /* EXT_BUILD_CHANNEL_LIST */
 
+#ifdef DOT11K_RRM_SUPPORT
+			if (pAd->CommonCfg.bDot11kRRMEnable == TRUE
+				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+			{
+				TmpLen2 = 0;
+				NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+				RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
+			}
+#endif /* DOT11K_RRM_SUPPORT */
 
 			/* need to do the padding bit check, and concatenate it */
 			if ((TmpLen2%2) == 0)
@@ -263,9 +272,29 @@ VOID APMakeBssBeacon(
 			DBGPRINT(RT_DEBUG_ERROR, ("%s: Allocate memory fail!!!\n", __FUNCTION__));
 	}
 
+#ifdef DOT11K_RRM_SUPPORT
+	if (pAd->CommonCfg.bDot11kRRMEnable == TRUE)
+	{
+		InsertTpcReportIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
+			RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
+		RRM_InsertRRMEnCapIE(pAd, pBeaconFrame+FrameLen, &FrameLen, apidx);
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 	/* AP Channel Report */
+#ifdef DOT11K_RRM_SUPPORT
+	for (i=0; i<MAX_NUM_OF_REGULATORY_CLASS; i++)
+	{
+		if (pAd->CommonCfg.RegulatoryClass[i] == 0)
+			break;
+
+		InsertChannelRepIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
+							(PSTRING)pAd->CommonCfg.CountryCode,
+							pAd->CommonCfg.RegulatoryClass[i]);
+
+	}
+#else
 	{
 		UCHAR APChannelReportIe = IE_AP_CHANNEL_REPORT;
 		ULONG	TmpLen;
@@ -289,7 +318,7 @@ VOID APMakeBssBeacon(
 							  1,                    &rclasslen,
 							  rclasslen,            rclass33,
 							  END_OF_ARGS);
-			FrameLen += TmpLen;		
+			FrameLen += TmpLen;
 		}
 	}
 
@@ -790,7 +819,6 @@ VOID APUpdateBeaconFrame(
 	}
 #endif /* A_BAND_SUPPORT */
 
-
 #ifdef DOT11_N_SUPPORT
 	if ((PhyMode >= PHY_11ABGN_MIXED) && 
 		(pMbss->DesiredHtPhyInfo.bHtEnable))
@@ -871,6 +899,7 @@ VOID APUpdateBeaconFrame(
 		}
 
 	}
+#endif /* DOT11K_RRM_SUPPORT */
 #endif /* DOT11_N_SUPPORT */
 
    	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */

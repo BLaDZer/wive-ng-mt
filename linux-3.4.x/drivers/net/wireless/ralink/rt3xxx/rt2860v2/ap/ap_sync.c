@@ -411,6 +411,23 @@ VOID APPeerProbeReqAction(
 		}
 #endif /* AP_QLOAD_SUPPORT */
 
+#ifdef DOT11K_RRM_SUPPORT
+		if (pAd->CommonCfg.bDot11kRRMEnable == TRUE)
+		{
+			InsertTpcReportIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+			RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
+			RRM_InsertRRMEnCapIE(pAd, pOutBuffer+FrameLen, &FrameLen, apidx);
+		}
+		INT loop;
+		for (loop=0; loop<MAX_NUM_OF_REGULATORY_CLASS; loop++)
+		{
+			if (pAd->CommonCfg.RegulatoryClass[loop] == 0)
+				break;
+			InsertChannelRepIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+								(PSTRING)pAd->CommonCfg.CountryCode,
+								pAd->CommonCfg.RegulatoryClass[loop]);
+		}
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
@@ -585,6 +602,16 @@ VOID APPeerProbeReqAction(
 		                          1,                 	&MaxTxPower,
 		                          END_OF_ARGS);
 		    TmpLen2 += TmpLen;
+
+#ifdef DOT11K_RRM_SUPPORT
+		    if ((pAd->CommonCfg.bDot11kRRMEnable == TRUE)
+				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
+		    {
+				TmpLen2 = 0;
+				NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+				RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
+		    }
+#endif /* DOT11K_RRM_SUPPORT */
 
 		    /* need to do the padding bit check, and concatenate it */
 		    if ((TmpLen2%2) == 0)

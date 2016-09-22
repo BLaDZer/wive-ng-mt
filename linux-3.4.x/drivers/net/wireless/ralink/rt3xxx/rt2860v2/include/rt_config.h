@@ -247,6 +247,8 @@
 #include "rt_txbf.h"
 #endif /* TXBF_SUPPORT */
 
+#ifdef DOT11K_RRM_SUPPORT
+#include "rrm.h"
+#endif /* DOT11K_RRM_SUPPORT */
 
 #endif	/* __RT_CONFIG_H__ */
-

@@ -489,7 +489,10 @@ VOID ap_cmm_peer_assoc_req_action(
         FrameLen += TmpLen;
     }                                                                          /* add WMM IE here */
 
-
+#ifdef DOT11K_RRM_SUPPORT
+    if (pAd->CommonCfg.bDot11kRRMEnable == TRUE)
+		RRM_InsertRRMEnCapIE(pAd, pOutBuffer+FrameLen, &FrameLen, pEntry->apidx);
+#endif /* DOT11K_RRM_SUPPORT */
 
     /* add WMM IE here */
     if (pAd->ApCfg.MBSSID[pEntry->apidx].bWmmCapable && CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE))

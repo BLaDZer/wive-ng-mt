@@ -164,3 +164,8 @@ config  RT2860V2_AP_DBG
 	bool "Debug support for AP mode"
 	default n
 	depends on RT2860V2_AP
+
+config  RT2860V2_AP_DOT11K_RRM_SUPPORT
+	bool "802.11k Radio Resource Management (very basic implementation)"
+	depends on RT2860V2_AP
+	default y

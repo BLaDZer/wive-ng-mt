@@ -2145,7 +2145,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(FtR0khId3);
 	FPRINT_DAT(FtR0khId4);
 #endif
-#if  defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if  defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_RT2860V2_AP_DOT11K_RRM_SUPPORT)
 	FPRINT_DAT(RRMEnable);  	/* Enable Resource Radio Managment */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {

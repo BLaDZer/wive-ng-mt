@@ -1568,6 +1568,8 @@ typedef struct _COMMON_CONFIG {
 	UCHAR SavedPhyMode;
 	USHORT Dsifs;		/* in units of usec */
 	ULONG PacketFilter;	/* Packet filter for receiving */
+
+	BOOLEAN bDot11kRRMEnable;
 	UINT8 RegulatoryClass[MAX_NUM_OF_REGULATORY_CLASS];
 
 	CHAR Ssid[MAX_LEN_OF_SSID];	/* NOT NULL-terminated */

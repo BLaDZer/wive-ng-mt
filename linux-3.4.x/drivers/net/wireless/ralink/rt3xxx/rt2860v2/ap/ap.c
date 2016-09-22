@@ -250,7 +250,11 @@ VOID APStartUp(
 		pMbss->CapabilityInfo =
 			CAP_GENERATE(1, 0, (pMbss->WepStatus != Ndis802_11EncryptionDisabled), TxPreamble, pAd->CommonCfg.bUseShortSlotTime, SpectrumMgmt);
 
-		
+#ifdef DOT11K_RRM_SUPPORT
+		if (pAd->CommonCfg.bDot11kRRMEnable == TRUE)
+			pMbss->CapabilityInfo |= RRM_CAP_BIT;
+#endif /* DOT11K_RRM_SUPPORT */
+
 		if (bWmmCapable == TRUE)
 		{
 			/*

@@ -210,6 +210,10 @@ rt2860v2_ap-objs += ../rt2860v2/ate/chips/rt6352_ate.o
 endif
 endif
 
+ifeq ($(CONFIG_RT2860V2_AP_DOT11K_RRM_SUPPORT),y)
+rt2860v2_ap-objs += ../rt2860v2/common/rrm_tlv.o
+endif
+
 ###################
 #  CFLAGS
 ##################
@@ -449,3 +453,7 @@ ifeq ($(CONFIG_RT2860V2_AP_BRIDGE_FASTPATH),y)
 EXTRA_CFLAGS += -DBG_FT_SUPPORT
 endif
 
+# provide basic tpc power and channel report (very small RRM implementation)
+ifeq ($(CONFIG_RT2860V2_AP_DOT11K_RRM_SUPPORT),y)
+EXTRA_CFLAGS += -DDOT11K_RRM_SUPPORT
+endif

@@ -256,7 +256,10 @@ int rt28xx_init(
 #endif /* P2P_SUPPORT */
 		)
 		APInitialize(pAd);
-#endif /* CONFIG_AP_SUPPORT */	
+#ifdef DOT11K_RRM_SUPPORT
+	pAd->CommonCfg.bDot11kRRMEnable = FALSE;
+#endif
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef BLOCK_NET_IF
 	initblockQueueTab(pAd);

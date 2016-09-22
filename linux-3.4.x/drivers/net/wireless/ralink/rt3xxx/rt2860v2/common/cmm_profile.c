@@ -2525,6 +2525,52 @@ NDIS_STATUS StoreConnectInfo(
 
 #endif /* CONFIG_STA_SUPPORT */ 
 
+#ifdef DOT11K_RRM_SUPPORT
+void RRM_ReadParametersFromFile(
+	IN PRTMP_ADAPTER pAd,
+	PSTRING tmpbuf,
+	PSTRING buffer)
+{
+	INT loop;
+	PSTRING macptr;
+
+	/* RRMEnable */
+	if (RTMPGetKeyParameter("RRMEnable", tmpbuf, 255, buffer, TRUE))
+	{
+		/* compat with new multissid config */
+		for (loop=0, macptr = rstrtok(tmpbuf,";");
+				(macptr && loop < MAX_MBSSID_NUM(pAd));
+					macptr = rstrtok(NULL,";"), loop++)
+		{
+			LONG Enable;
+			Enable = simple_strtol(macptr, 0, 10);
+			pAd->CommonCfg.bDot11kRRMEnable = (Enable > 0) ? TRUE : FALSE;
+			DBGPRINT(RT_DEBUG_TRACE, ("%s::(bDot11kRRMEnable[%d]=%d)\n", __FUNCTION__, loop, pAd->ApCfg.MBSSID[loop].CommonCfg.bDot11kRRMEnable));
+			if (Enable > 0)
+			    break;
+		}
+	}
+	else
+	{
+		pAd->CommonCfg.bDot11kRRMEnable = FALSE;
+	}
+
+	/* Regulatory Class */
+	if (RTMPGetKeyParameter("RegulatoryClass", tmpbuf, 255, buffer, TRUE))
+	{
+		LONG Value;
+		for (loop=0, macptr = rstrtok(tmpbuf,";");
+				(macptr && loop < MAX_NUM_OF_REGULATORY_CLASS);
+					macptr = rstrtok(NULL,";"), loop++)
+		{
+			Value = simple_strtol(macptr, 0, 10);
+			pAd->CommonCfg.RegulatoryClass[loop] = Value;
+		}
+	}
+
+	return;
+}
+#endif
 
 void RTMPSetCountryCode(RTMP_ADAPTER *pAd, PSTRING CountryCode)
 {
@@ -4512,7 +4558,9 @@ NDIS_STATUS	RTMPSetProfileParameters(
 
 					DBGPRINT(RT_DEBUG_ERROR, ("EntryLifeCheck=%ld\n", pAd->ApCfg.EntryLifeCheck));
 				}
-
+#ifdef DOT11K_RRM_SUPPORT
+				RRM_ReadParametersFromFile(pAd, tmpbuf, pBuffer);
+#endif /* DOT11K_RRM_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
 #ifdef RTMP_RBUS_SUPPORT
