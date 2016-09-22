@@ -2389,6 +2389,7 @@
 <br>
 <br>
 <b>4.7.x</b><br>
+1) kernel: net: packet: tx timestamping on tpacket ring.<br>
 <br>
 <br>
 <br>
