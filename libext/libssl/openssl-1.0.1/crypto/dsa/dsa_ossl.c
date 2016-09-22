@@ -264,6 +264,8 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
         if (!BN_copy(&kq, &k))
             goto err;
 
+        BN_set_flags(&kq, BN_FLG_CONSTTIME);
+
         /*
          * We do not want timing information to leak the length of k, so we
          * compute g^k using an equivalent exponent of fixed length. (This
