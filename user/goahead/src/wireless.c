@@ -1329,6 +1329,28 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 	return getSecurity(RT2860_NVRAM, wp, path, query);
 }
 
+
+static int getSSIDsList(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int i;
+	char *ssid;
+	int num_ssid = nvram_get_int(RT2860_NVRAM, "BssidNum", 1);
+	char *mbssid = nvram_get(RT2860_NVRAM, "BssidIfName");
+
+	websWrite(wp, T("{ \"wireless\": [ "));
+	for(i = 0; i < num_ssid; i++) {
+		ssid = nvram_get(RT2860_NVRAM, racat("SSID", i + 1));
+		if ((i == 0) && (strcmp(mbssid, "rai") == 0)) {
+			ssid = nvram_get(RT2860_NVRAM, "SSID1INIC");
+		}
+		websWrite(wp, T("{ \"ssid\":\"%s\" }%s"), ssid, (i + 1  == num_ssid) ? "" : ", ");
+	}
+	websWrite(wp, T(" ] }"));
+	return 0;
+}
+
+
+
 static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
 {
 	char_t *apselect, *newap_list;
@@ -1860,6 +1882,7 @@ void formDefineWireless(void)
 	websAspDefine(T("getEDCCABuilt"), getEDCCABuilt);
 	websAspDefine(T("getClampBuilt"), getClampBuilt);
 	websFormDefine(T("getScanAp"), getScanAp);
+	websAspDefine(T("getSSIDsList"), getSSIDsList);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
 	websFormDefine(T("wirelessWds"), wirelessWds);

@@ -68,6 +68,67 @@
   <message msgid="vpn ipsec pass thru" msgstr="Проброс IPSec" />
   <message msgid="vpn pptp pass thru" msgstr="Проброс PPTP" />
 
+  <message msgid="vlan invalid vlanid" msgstr="Введен неверный VLAN ID" />
+  <message msgid="vlan invalid vlan range" msgstr="Введен недопустимый списко VLAN" />
+  <message msgid="vlan reboot confirm" msgstr="Для применения настроек требуется перезагрузть маршрутизатор. Перезагрузить?" />
+  <message msgid="vlan port title" msgstr="Настройки Ethernet-портов" />
+  <message msgid="vlan port introduction" msgstr="Раздел для настройки Ethernet-портов маршрутизатора" />
+  <message msgid="vlan port status" msgstr="Состояние Ethernet-портов" />
+  <message msgid="vlan port status number" msgstr="№ (Имя)" />
+  <message msgid="vlan port status type" msgstr="Тип" />
+  <message msgid="vlan port status vlan" msgstr="VLAN" />
+  <message msgid="vlan port status mode" msgstr="Режим" />
+  <message msgid="vlan port status state" msgstr="Состояние" />
+  <message msgid="vlan port speed auto" msgstr="Автоопределение" />
+  <message msgid="vlan port speed 10h" msgstr="10Мбит/с Полудуплек" />
+  <message msgid="vlan port speed 10f" msgstr="10Мбит/с Полный дуплекс" />
+  <message msgid="vlan port speed 100h" msgstr="100Мбит/с Полудуплекс" />
+  <message msgid="vlan port speed 100f" msgstr="100Мбит/с Полный дуплекс" />
+  <message msgid="vlan port speed 1000h" msgstr="1Гбит/с Полудуплекс" />
+  <message msgid="vlan port speed 1000f" msgstr="1Гбит/с Полный дуплекс" />
+  <message msgid="vlan port management" msgstr="Настройка Ethernet-портов" />
+  <message msgid="vlan port management wan port" msgstr="Номер WAN порта" />
+  <message msgid="vlan port management lan port" msgstr="Первый порт LAN" />
+  <message msgid="vlan port management lan port near" msgstr="Ближе к WAN порту" />
+  <message msgid="vlan port management lan port distant" msgstr="Дальше от WAN порта" />
+  <message msgid="vlan port tv stb" msgstr="TV/STB/VLAN1" />
+  <message msgid="vlan port tv stb enable" msgstr="Включить: " />
+  <message msgid="vlan port tv stb mcast" msgstr="Mcast прокси: " />
+  <message msgid="vlan port tv stb vlanid" msgstr="VLAN ID: " />
+  <message msgid="vlan port sip stb" msgstr="SIP/STB/VLAN2" />
+  <message msgid="vlan port sip stb enable" msgstr="Включить: " />
+  <message msgid="vlan port sip stb mcast" msgstr="Mcast прокси: " />
+  <message msgid="vlan port sip stb vlanid" msgstr="VLAN ID: " />
+  <message msgid="vlan port mode" msgstr="Настройки порта" />
+  <message msgid="vlan port setup button" msgstr="Установить" />
+  <message msgid="vlan mode title" msgstr="WLAN VLAN / LAN VLAN" />
+  <message msgid="vlan mode introduction" msgstr="Раздел для настройки WLAN VLAN / LAN VLAN на маршрутизаторе" />
+  <message msgid="vlan mode settings" msgstr="Настройки WLAN/LAN VLAN" />
+  <message msgid="vlan mode select" msgstr="Режим" />
+  <message msgid="vlan mode select disable" msgstr="Выключено" />
+  <message msgid="vlan mode select wlan" msgstr="WLAN VLAN" />
+  <message msgid="vlan mode select lan" msgstr="LAN VLAN" />
+  <message msgid="vlan mode wlan ap" msgstr="Точка доступа" />
+  <message msgid="vlan mode wlan iface" msgstr="Интерфейс" />
+  <message msgid="vlan mode wlan vlan" msgstr="VLAN ID" />
+  <message msgid="vlan mode lan num" msgstr="№" />	
+  <message msgid="vlan mode lan vlanid" msgstr="VLAN ID" />	
+  <message msgid="vlan mode lan isolated" msgstr="Изоляция" />	
+  <message msgid="vlan mode lan add" msgstr="Добавить новый VLAN" />	
+  <message msgid="vlan mode lan apply" msgstr="Применить VLAN" />	
+  <message msgid="vlan mode lan table" msgstr="Состояние LAN VLAN" />	
+  <message msgid="vlan mode lan table num" msgstr="№" />	
+  <message msgid="vlan mode lan table vlan" msgstr="VLAN" />	
+  <message msgid="vlan mode lan table isolated" msgstr="Изоляция" />
+  <message msgid="vlan mode lan table action" msgstr="Действие" />	
+  <message msgid="vlan mode wlan table" msgstr="Состояние WLAN VLAN" />	
+  <message msgid="vlan mode wlan table ap" msgstr="Точка доступа" />	
+  <message msgid="vlan mode wlan table vlan" msgstr="VLAN" />	
+  <message msgid="vlan mode wlan table iface" msgstr="Интерфейс" />	
+  <message msgid="vlan mode wlan table action" msgstr="Действие" />	
+  <message msgid="vlan mode wlan apply" msgstr="Применить VLAN" />
+  <message msgid="vlan vlanid exist" msgstr="Введенный VLAN ID уже существует" />
+
   <message msgid="routing title" msgstr="Статические маршруты" />
   <message msgid="routing Introduction" msgstr="Вы можете здесь настроить статические маршруты или включить протокол динамической маршрутизации." />
   <message msgid="routing add rule" msgstr="Добавить маршрут" />

@@ -25,40 +25,40 @@
     <message msgid="management export settings" msgstr="Вы хотите загрузить настройки в файл?" />
     <message msgid="management ask reset factory" msgstr="Все настройки буду сброшены на заводские. Хотите продолжить?" />
 
-    <message msgid="status title" msgstr="Статус роутера" />
-    <message msgid="status introduction" msgstr="Сводная информация о статусе оборудования" />
-    <message msgid="status system information" msgstr="Информация о системе" />
-    <message msgid="status sdk version" msgstr="Версия ПО" />
-    <message msgid="status system date time" msgstr="Системное время" />
-    <message msgid="status system up time" msgstr="Продолжительность работы" />
-    <message msgid="status system platform" msgstr="Платформа" />
-    <message msgid="status op mode" msgstr="Режим работы" />
-    <message msgid="status internet config" msgstr="Настройки интернета" />
-    <message msgid="status connect type" msgstr="Тип WAN соединения" />
-    <message msgid="status int ipaddr" msgstr="IP адрес в VPN сети или интернете" />
-    <message msgid="status wan ipaddr" msgstr="IP адрес физического WAN интерфейса" />
-    <message msgid="status subnet mask" msgstr="Маска подсети WAN" />
-    <message msgid="status default gateway" msgstr="Шлюз" />
-    <message msgid="status primary dns" msgstr="Основной DNS" />
-    <message msgid="status secondary dns" msgstr="Вторичный DNS" />
-    <message msgid="status mac" msgstr="MAC адрес" />
-    <message msgid="status local network" msgstr="Локальная сеть" />
-    <message msgid="status lan ipaddr" msgstr="LAN IP адрес" />
-    <message msgid="status local netmask" msgstr="Маска подсети LAN" />
-    <message msgid="status ethernet port status" msgstr="Статус Ethernet-портов" />
-    <message msgid="status port management" msgstr="Настройка портов" />
-    <message msgid="status wan port" msgstr="WAN порт" />
-    <message msgid="status first lan port" msgstr="Первый LAN порт" />
-    <message msgid="status near" msgstr="Ближе к порту WAN" />
-    <message msgid="status distant" msgstr="Дальше от порта WAN" />
-    <message msgid="status ask reboot" msgstr="Для применения изменений требуется перезагрузка устройства. Выполнить перезагрузку сейчас?" />
-    <message msgid="status port mode 1" msgstr="Режим порта 1" />
-    <message msgid="status port mode 2" msgstr="Режим порта 2" />
-    <message msgid="status port mode 3" msgstr="Режим порта 3" />
-    <message msgid="status port mode 4" msgstr="Режим порта 4" />
-    <message msgid="status port mode 5" msgstr="Режим порта 5" />
-    <message msgid="status internal ipv6 address" msgstr="Внутренний IPv6 адрес" />
-    <message msgid="status external ipv6 address" msgstr="Внешний IPv6 адрес" />
+	<message msgid="status title" 					msgstr="Состояние маршрутизатора" />
+	<message msgid="status introduction"			msgstr="Сводная информация о состоянии оборудования" />
+	<message msgid="status system information"		msgstr="Информация о системе" />
+	<message msgid="status sdk version"				msgstr="Версия ПО" />
+	<message msgid="status system date time"		msgstr="Системное время" />
+	<message msgid="status system up time"			msgstr="Продолжительность работы" />
+	<message msgid="status system platform"			msgstr="Платформа" />
+	<message msgid="status op mode"					msgstr="Режим работы" />
+	<message msgid="status internet config"			msgstr="Настройки интернета" />
+	<message msgid="status connect type"			msgstr="Тип WAN соединения" />
+	<message msgid="status int ipaddr"				msgstr="IP адрес в VPN сети или интернете" />
+	<message msgid="status wan ipaddr"				msgstr="IP адрес физического WAN интерфейса" />
+	<message msgid="status subnet mask"				msgstr="Маска подсети WAN" />
+	<message msgid="status default gateway"			msgstr="Шлюз" />
+	<message msgid="status primary dns"				msgstr="Основной DNS" />
+	<message msgid="status secondary dns"			msgstr="Вторичный DNS" />
+	<message msgid="status mac"						msgstr="MAC адрес" />
+	<message msgid="status local network"			msgstr="Локальная сеть" />
+	<message msgid="status lan ipaddr"				msgstr="LAN IP адрес" />
+	<message msgid="status local netmask"			msgstr="Маска подсети LAN" />
+	<message msgid="status internal ipv6 address"	msgstr="Внутренний IPv6 адрес" />
+	<message msgid="status external ipv6 address"	msgstr="Внешний IPv6 адрес" />
+	<message msgid="status system up time day1"		msgstr="день" />
+	<message msgid="status system up time day2_4"	msgstr="дня" />
+	<message msgid="status system up time day5_0"	msgstr="дней" />
+	<message msgid="status system up time hour1"	msgstr="час" />
+	<message msgid="status system up time hour2_4"	msgstr="часа" />
+	<message msgid="status system up time hour5_0"	msgstr="часов" />
+	<message msgid="status system up time min1"		msgstr="минута" />
+	<message msgid="status system up time min2_4"	msgstr="минуты" />
+	<message msgid="status system up time min5_0"	msgstr="минут" />
+	<message msgid="status system up time sec1"		msgstr="секунда" />
+	<message msgid="status system up time sec2_4"	msgstr="секунды" />
+	<message msgid="status system up time sec5_0"	msgstr="секунд" />
 
     <message msgid="statistic title" msgstr="Статистика" />
     <message msgid="statistic introduction" msgstr=" Статистика устройства " />

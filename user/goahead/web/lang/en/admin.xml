@@ -26,41 +26,41 @@
     <message msgid="management export settings" msgstr="Do you want to export settings to file?" />
     <message msgid="management ask reset factory" msgstr="All settings will be reset to factory defaults. Really proceed?" />
 
-    <message msgid="status title" msgstr="Access Point Status" />
-    <message msgid="status introduction" msgstr="Let's take a look at the status of Wive-NG-MT." />
-    <message msgid="status system information" msgstr="System Info" />
-    <message msgid="status sdk version" msgstr="Firmware Version" />
-    <message msgid="status system date time" msgstr="System Time" />
-    <message msgid="status system up time" msgstr="System Uptime" />
-    <message msgid="status system platform" msgstr="System Platform" />
-    <message msgid="status op mode" msgstr="Operation Mode" />
-    <message msgid="status internet config" msgstr="Internet Configurations" />
-    <message msgid="status connect type" msgstr="WAN connection type" />
-    <message msgid="status int ipaddr" msgstr="VPN/Internet IP Address" />
-    <message msgid="status wan ipaddr" msgstr="Physical WAN IP Address" />
-    <message msgid="status subnet mask" msgstr="Subnet Mask" />
-    <message msgid="status default gateway" msgstr="Default Gateway" />
-    <message msgid="status primary dns" msgstr="Primary Domain Name Server" />
-    <message msgid="status secondary dns" msgstr="Secondary Domain Name Server" />
-    <message msgid="status mac" msgstr="MAC Address" />
-    <message msgid="status local network" msgstr="Local Network" />
-    <message msgid="status lan ipaddr" msgstr="Local IP Address" />
-    <message msgid="status local netmask" msgstr="Local Netmask" />
-    <message msgid="status ethernet port status" msgstr="Ethernet Port Status" />
-    <message msgid="status port management" msgstr="Port Management" />
-    <message msgid="status wan port" msgstr="WAN port" />
-    <message msgid="status first lan port" msgstr="First LAN port" />
-    <message msgid="status near" msgstr="Near to the WAN port" />
-    <message msgid="status distant" msgstr="Distant from the WAN port" />
-    <message msgid="status ask reboot" msgstr="The device must be restarted to apply port configuration changes. Do you want to proceed?" />
-    <message msgid="status port mode 1" msgstr="Port 1 mode" />
-    <message msgid="status port mode 2" msgstr="Port 2 mode" />
-    <message msgid="status port mode 3" msgstr="Port 3 mode" />
-    <message msgid="status port mode 4" msgstr="Port 4 mode" />
-    <message msgid="status port mode 5" msgstr="Port 5 mode" />
-    <message msgid="status internal ipv6 address" msgstr="Internal IPv6 Address" />
-    <message msgid="status external ipv6 address" msgstr="External IPv6 Address" />
-
+	<message msgid="status title"					msgstr="Access Point Status" />
+	<message msgid="status introduction"			msgstr="Let's take a look at the status of Wive-NG-MT." />
+	<message msgid="status system information"		msgstr="System Info" />
+	<message msgid="status sdk version"				msgstr="Firmware Version" />
+	<message msgid="status system date time"		msgstr="System Time" />
+	<message msgid="status system up time"			msgstr="System Uptime" />
+	<message msgid="status system platform"			msgstr="System Platform" />
+	<message msgid="status op mode"					msgstr="Operation Mode" />
+	<message msgid="status internet config"			msgstr="Internet Configurations" />
+	<message msgid="status connect type"			msgstr="WAN connection type" />
+	<message msgid="status int ipaddr"				msgstr="VPN/Internet IP Address" />
+	<message msgid="status wan ipaddr"				msgstr="Physical WAN IP Address" />
+	<message msgid="status subnet mask"				msgstr="Subnet Mask" />
+	<message msgid="status default gateway"			msgstr="Default Gateway" />
+	<message msgid="status primary dns"				msgstr="Primary Domain Name Server" />
+	<message msgid="status secondary dns"			msgstr="Secondary Domain Name Server" />
+	<message msgid="status mac"						msgstr="MAC Address" />
+	<message msgid="status local network"			msgstr="Local Network" />
+	<message msgid="status lan ipaddr"				msgstr="Local IP Address" />
+	<message msgid="status local netmask"			msgstr="Local Netmask" />
+	<message msgid="status internal ipv6 address"	msgstr="Internal IPv6 Address" />
+	<message msgid="status external ipv6 address"	msgstr="External IPv6 Address" />
+	<message msgid="status system up time day1"		msgstr="day" />
+	<message msgid="status system up time day2_4"	msgstr="days" />
+	<message msgid="status system up time day5_0"	msgstr="days" />
+	<message msgid="status system up time hour1"	msgstr="hour" />
+	<message msgid="status system up time hour2_4"	msgstr="hours" />
+	<message msgid="status system up time hour5_0"	msgstr="hours" />
+	<message msgid="status system up time min1"		msgstr="minute" />
+	<message msgid="status system up time min2_4"	msgstr="minutes" />
+	<message msgid="status system up time min5_0"	msgstr="minutes" />
+	<message msgid="status system up time sec1"		msgstr="second" />
+	<message msgid="status system up time sec2_4"	msgstr="seconds" />
+	<message msgid="status system up time sec5_0"	msgstr="seconds" />
+	
     <message msgid="statistic title" msgstr="Statistic" />
     <message msgid="statistic introduction" msgstr="Take a look at the Wive-NG-MT statistics " />
     <message msgid="statistic warning" msgstr="CAUTION! Hardware NAT enabled. Traffic counters on interfaces not present real traffic. For some technical and software reasons there is no guarantee that gathered statistics for interfaces in 'Hardware NAT offload mode' mode is correct now. To get correct statistics you need to shut down 'Hardware NAT offload mode' option on MISC Services configuration page." />

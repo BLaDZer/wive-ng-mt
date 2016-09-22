@@ -114,14 +114,16 @@ if (ipv6b == "1" && opmode != '0') {
 
 a.add(303, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
+a.add(304, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+
 if (opmode != '0')
-	a.add(304, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
+	a.add(305, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 
 if (swqos == '1')
-	a.add(306, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
+	a.add(307, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
 
 if (spot == '1' && opmode != '0')
-	a.add(305, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
+	a.add(306, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
 
 if (opmode == '2')
 {

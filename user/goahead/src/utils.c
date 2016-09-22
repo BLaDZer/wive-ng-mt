@@ -285,14 +285,13 @@ static int getSysUptime(int eid, webs_t wp, int argc, char_t **argv)
 	struct sysinfo sinf;
 
 	if (sysinfo(&sinf) == 0)
-	{
-	    return websWrite(wp, T("%d day%s, %d hour%s, %d min%s, %d sec%s"),
-			sinf.uptime/(unsigned)86400, ((sinf.uptime/(unsigned)86400) == 1)? "" : "s",
-    			(sinf.uptime%(unsigned)86400)/(unsigned)3600, (((sinf.uptime%(unsigned)86400)/(unsigned)3600) == 1)? "" : "s",
-			(sinf.uptime%(unsigned)3600)/(unsigned)60, (((sinf.uptime%(unsigned)3600)/(unsigned)60) == 1)? "" : "s",
-			sinf.uptime%(unsigned)60, ((sinf.uptime%(unsigned)60) == 1)? "" : "s");
-	} else
-	    return -1;
+		return websWrite(wp, T("{ \"day\":\"%d\", \"hour\":\"%d\", \"min\":\"%d\", \"sec\":\"%d\" }"),
+			sinf.uptime/(unsigned)86400,
+			(sinf.uptime%(unsigned)86400)/(unsigned)3600,
+			(sinf.uptime%(unsigned)3600)/(unsigned)60,
+			sinf.uptime%(unsigned)60);
+	else
+		return -1;
 }
 
 /*
@@ -347,59 +346,6 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	reboot_now();
 }
 
-static void setWanPort(webs_t wp, char_t *path, char_t *query)
-{
-	int i;
-	char w_name[20];
-	char* w_port = websGetVar(wp, T("wan_port"), T("0"));
-	char* l_port = websGetVar(wp, T("lan_port"), T("near"));
-	char* tv_port = websGetVar(wp, T("tv_stbEnabled"), T("off"));
-	char* sip_port = websGetVar(wp, T("sip_stbEnabled"), T("off"));
-	char* tv_port_mcast = websGetVar(wp, T("tv_stbMcast"), T("off"));
-	char* sip_port_mcast = websGetVar(wp, T("sip_stbMcast"), T("off"));
-	char* tv_portVLAN = websGetVar(wp, T("tv_stbVLAN"), T(""));
-	char* sip_portVLAN = websGetVar(wp, T("sip_stbVLAN"), T(""));
-
-	nvram_init(RT2860_NVRAM);
-
-	/* Set-up WAN port */
-	if ((w_port != NULL) && (strlen(w_port) == 1))
-	{
-		if ((w_port[0] >= '0') && (w_port[0] <= '4'))
-			nvram_bufset(RT2860_NVRAM, "wan_port", w_port);
-	}
-
-	/* Set-up first LAN port */
-	if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
-		nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
-
-	/* Now test values */
-	for (i=1; i<=5; i++)
-	{
-		snprintf(w_name, sizeof(w_name), "port%d_swmode", i);
-		w_port = websGetVar(wp, w_name, T("auto"));
-		if ((w_port != NULL) && (strlen(w_port)>0))
-			nvram_bufset(RT2860_NVRAM, w_name, w_port);
-	}
-
-	nvram_bufset(RT2860_NVRAM, "tv_port", (strcmp(tv_port, "on")==0) ? "1" : "0");
-	nvram_bufset(RT2860_NVRAM, "sip_port", (strcmp(sip_port, "on")==0) ? "1" : "0");
-	nvram_bufset(RT2860_NVRAM, "tv_port_mcast", (strcmp(tv_port_mcast, "on")==0) ? "1" : "0");
-	nvram_bufset(RT2860_NVRAM, "sip_port_mcast", (strcmp(sip_port_mcast, "on")==0) ? "1" : "0");
-	nvram_bufset(RT2860_NVRAM, "tv_portVLAN", tv_portVLAN);
-	nvram_bufset(RT2860_NVRAM, "sip_portVLAN", sip_portVLAN);
-
-	/* Commit & close NVRAM */
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-	/* Output timer for reloading */
-	outputTimerForReload(wp, "" /* submitUrl */, 80000);
-
-	/* Reboot */
-	reboot_now();
-}
-
 /* goform/reboot */
 static void reboot_web(webs_t wp, char_t *path, char_t *query)
 {
@@ -430,7 +376,6 @@ void formDefineUtilities(void)
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
 	websFormDefine(T("setOpMode"), setOpMode);
-	websFormDefine(T("setWanPort"), setWanPort);
 	websFormDefine(T("reboot"), reboot_web);
 	websAspDefine(T("gigaphy"), gigaphy);
 }

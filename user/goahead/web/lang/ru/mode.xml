@@ -1,14 +1,15 @@
 <po>
-    <message msgid="opmode title" msgstr="Настройка режима работы" />
-    <message msgid="opmode firmware version" msgstr="Текущая версия прошивки: " />
-    <message msgid="opmode introduction" msgstr="Здесь вы можете выбрать режим работы, подходящий для ваших задач." />
-    <message msgid="opmode mode bridge" msgstr="Мост" />
-    <message msgid="opmode mode bridge intro" msgstr="Все проводные и беспроводные интерфейсы объединены в один мост." />
-    <message msgid="opmode mode gateway" msgstr="Шлюз" />
-    <message msgid="opmode mode gateway intro" msgstr="Один проводной интерфейс используется для доступа в интернет(WAN), остальные проводные и беспроводные интерфейсы используются как локальные(LAN)." />
-    <message msgid="opmode mode e" msgstr="Ethernet конвертер" />
-    <message msgid="opmode mode e intro" msgstr="Беспроводной интерфейс рассматривается как WAN-порт, а проводные интерфейсы используются в качестве портов LAN." />
-    <message msgid="opmode mode a" msgstr="Клиент+AП+Шлюз(WISP)/Клиент+AП+Мост(Repeater)" />
-    <message msgid="opmode mode a intro" msgstr="Wi-Fi apcli интерфейс назначается как WAN, ethernet порты и Wi-Fi AP порт - как LAN. Либо все порты объединяются в единый мост." />
-    <message msgid="opmode confirm" msgstr="Для изменение режима работы необходимо выполнить перезагрузку маршрутизатора. Выполнить перезагрузку?" />
+	<message msgid="opmode title"				msgstr="Настройка режима работы" />
+	<message msgid="opmode firmware version"	msgstr="Текущая версия прошивки: " />
+	<message msgid="opmode introduction"		msgstr="Здесь вы можете выбрать режим работы, подходящий для ваших задач." />
+	<message msgid="opmode mode bridge"			msgstr="Мост" />
+	<message msgid="opmode mode bridge intro"	msgstr="Все проводные и беспроводные интерфейсы объединены в один мост." />
+	<message msgid="opmode mode gateway"		msgstr="Шлюз" />
+	<message msgid="opmode mode gateway intro"	msgstr="Один проводной интерфейс используется для доступа в интернет(WAN), остальные проводные и беспроводные интерфейсы используются как локальные(LAN)." />
+	<message msgid="opmode mode e"				msgstr="Ethernet конвертер" />
+	<message msgid="opmode mode e intro"		msgstr="Беспроводной интерфейс рассматривается как WAN-порт, а проводные интерфейсы используются в качестве портов LAN." />
+	<message msgid="opmode mode a"				msgstr="Клиент+AП+Шлюз(WISP)/Клиент+AП+Мост(Repeater)" />
+	<message msgid="opmode mode a intro"		msgstr="Wi-Fi apcli интерфейс назначается как WAN, ethernet порты и Wi-Fi AP порт - как LAN. Либо все порты объединяются в единый мост." />
+	<message msgid="opmode mode unknown"		msgstr="Неизвестно" />
+	<message msgid="opmode confirm"				msgstr="Для изменение режима работы необходимо выполнить перезагрузку маршрутизатора. Выполнить перезагрузку?" />
 </po>

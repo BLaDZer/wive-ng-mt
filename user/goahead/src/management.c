@@ -230,6 +230,29 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
+static int getPortStatusJSON(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_ETHTOOL)
+#if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
+	websWrite(wp, T("{ \"ethernet\": [ "));
+	int port;
+	for (port=4; port>-1; port--)
+	{
+		struct port_status pst;
+		char buf[256];
+
+		portstatus(&pst, port);
+
+		/* create string in new buffer and write to web (this more safe of direct write) */
+		snprintf(buf, sizeof(buf), ("{ \"port\": \"%d\", \"link\": \"%d\", \"speed\": \"%d\", \"duplex\": \"%s\" }%s"), pst.portnum, pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H", (pst.portnum == 0) ? "" : ", ");
+		websWrite(wp, T("%s"), buf);
+	}
+	websWrite(wp, T("] }"));
+#endif
+#endif
+	return 0;
+}
+
 
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -436,6 +459,7 @@ void formDefineManagement(void)
 	websAspDefine(T("getHWStatsBuilt"), getHWStatsBuilt);
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
 	websAspDefine(T("getPortStatus"), getPortStatus);
+	websAspDefine(T("getPortStatusJSON"), getPortStatusJSON);
 #ifdef CONFIG_DATE
 	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost);
 #endif

@@ -13,6 +13,7 @@
     <message msgid="treeapp wan" msgstr="Настройки WAN" />
     <message msgid="treeapp ipv6" msgstr="Настройки IPv6" />
     <message msgid="treeapp vpn" msgstr="Настройки VPN" />
+    <message msgid="treeapp vlan" msgstr="Настройки VLAN" />
     <message msgid="treeapp routing" msgstr="Маршрутизация" />
     <message msgid="treeapp hotspot" msgstr="Хот-спот" />
     <message msgid="treeapp qos" msgstr="Качество обслуживания" />
