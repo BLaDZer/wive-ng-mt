@@ -16,6 +16,9 @@ modules_install:
 modules_clean:
 	make -C ${KERNEL_DIR} M=$$PWD $@;
 
+distclean:
+	rm -f *.o *~ *.ko *.mod.c Module.markers modules.order Module.symvers libxt_coova.so
+
 clean:
 	rm -f *.o *~ *.ko *.mod.c Module.markers modules.order Module.symvers libxt_coova.so
 
@@ -40,6 +43,9 @@ all:
 	#echo ok
 
 install:
+	#echo ok
+
+distclean:
 	#echo ok
 
 clean:

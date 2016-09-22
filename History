@@ -2389,17 +2389,18 @@
 <br>
 <br>
 <b>4.7.x</b><br>
-1) goahead: implement vlan page and switch status refactoring.<br>
-2) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
-3) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-4) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-5) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-6) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-7) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-8) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-9) kernel: net: packet: tx timestamping on tpacket ring.<br>
-10) kernel: net: socket: move ktime2ts to ktime header api.<br>
-11) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+1) coovachilli: up to 1.3.1.4 from git (commit 9749d5eb).<br>
+2) goahead: implement vlan page and switch status refactoring.<br>
+3) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+4) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+5) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+6) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+7) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+8) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+9) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+10) kernel: net: packet: tx timestamping on tpacket ring.<br>
+11) kernel: net: socket: move ktime2ts to ktime header api.<br>
+12) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
 <br>
 <br>
 <br>
