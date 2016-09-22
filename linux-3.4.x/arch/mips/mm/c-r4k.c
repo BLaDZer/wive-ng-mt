@@ -64,9 +64,11 @@
  */
 static inline bool r4k_op_needs_ipi(unsigned int type)
 {
+#if defined(CONFIG_MIPS_CMP) && defined(CONFIG_IRQ_GIC)
 	/* The MIPS Coherence Manager (CM) globalizes address-based cache ops */
 	if (type == R4K_HIT)
 		return false;
+#endif
 	/*
 	 * Hardware doesn't globalize the required cache ops, so SMP calls may
 	 * be needed, but only if there are foreign CPUs (non-siblings with
