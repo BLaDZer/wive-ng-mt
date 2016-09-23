@@ -325,7 +325,7 @@ void tcp_slow_start(struct tcp_sock *tp)
 		tp->snd_cwnd_cnt -= snd_cwnd;
 		delta++;
 	}
-	tcp_snd_cwnd_set(tp, min(snd_cwnd + delta, tp->snd_cwnd_clamp));
+	tp->snd_cwnd = min(snd_cwnd + delta, tp->snd_cwnd_clamp);
 }
 EXPORT_SYMBOL_GPL(tcp_slow_start);
 

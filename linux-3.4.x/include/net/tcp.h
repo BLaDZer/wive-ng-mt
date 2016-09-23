@@ -557,14 +557,6 @@ static inline u32 __tcp_set_rto(const struct tcp_sock *tp)
 	return (tp->srtt >> 3) + tp->rttvar;
 }
 
-extern void tcp_snd_cwnd_bad(const struct tcp_sock *tp);
-static inline void tcp_snd_cwnd_set(struct tcp_sock *tp, u32 newval)
-{
-	if (unlikely(!newval))
-		tcp_snd_cwnd_bad(tp);
-	tp->snd_cwnd = newval;
-}
-
 static inline void __tcp_fast_path_on(struct tcp_sock *tp, u32 snd_wnd)
 {
 	tp->pred_flags = htonl((tp->tcp_header_len << 26) |

@@ -61,7 +61,7 @@ static void hybla_init(struct sock *sk)
 
 	/* set minimum rtt as this is the 1st ever seen */
 	ca->minrtt = tp->srtt;
-	tcp_snd_cwnd_set(tp, ca->rho);
+	tp->snd_cwnd = ca->rho;
 }
 
 static void hybla_state(struct sock *sk, u8 ca_state)
@@ -157,9 +157,9 @@ static void hybla_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 	}
 	/* clamp down slowstart cwnd to ssthresh value. */
 	if (is_slowstart)
-		tcp_snd_cwnd_set(tp, min(tp->snd_cwnd, tp->snd_ssthresh));
+		tp->snd_cwnd = min(tp->snd_cwnd, tp->snd_ssthresh);
 
-	tcp_snd_cwnd_set(tp, min_t(u32, tp->snd_cwnd, tp->snd_cwnd_clamp));
+	tp->snd_cwnd = min_t(u32, tp->snd_cwnd, tp->snd_cwnd_clamp);
 }
 
 static struct tcp_congestion_ops tcp_hybla __read_mostly = {

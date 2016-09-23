@@ -180,7 +180,7 @@ static void tcp_veno_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		if (tp->snd_cwnd < 2)
 			tp->snd_cwnd = 2;
 		else if (tp->snd_cwnd > tp->snd_cwnd_clamp)
-			tcp_snd_cwnd_set(tp, tp->snd_cwnd_clamp);
+			tp->snd_cwnd = tp->snd_cwnd_clamp;
 	}
 	/* Wipe the slate clean for the next rtt. */
 	/* veno->cntrtt = 0; */

@@ -239,8 +239,7 @@ static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 				 * truncation robs us of full link
 				 * utilization.
 				 */
-				tcp_snd_cwnd_set(tp, min(tp->snd_cwnd,
-							 (u32)target_cwnd + 1));
+				tp->snd_cwnd = min(tp->snd_cwnd, (u32)target_cwnd+1);
 				tp->snd_ssthresh = tcp_vegas_ssthresh(tp);
 
 			} else if (tp->snd_cwnd <= tp->snd_ssthresh) {
@@ -274,7 +273,7 @@ static void tcp_vegas_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 			if (tp->snd_cwnd < 2)
 				tp->snd_cwnd = 2;
 			else if (tp->snd_cwnd > tp->snd_cwnd_clamp)
-				tcp_snd_cwnd_set(tp, tp->snd_cwnd_clamp);
+				tp->snd_cwnd = tp->snd_cwnd_clamp;
 
 			tp->snd_ssthresh = tcp_current_ssthresh(sk);
 		}

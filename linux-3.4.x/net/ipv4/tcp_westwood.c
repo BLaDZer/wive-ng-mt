@@ -233,8 +233,7 @@ static void tcp_westwood_event(struct sock *sk, enum tcp_ca_event event)
 		break;
 
 	case CA_EVENT_COMPLETE_CWR:
-		tp->snd_ssthresh = tcp_westwood_bw_rttmin(sk);
-		tcp_snd_cwnd_set(tp, tp->snd_ssthresh);
+		tp->snd_cwnd = tp->snd_ssthresh = tcp_westwood_bw_rttmin(sk);
 		break;
 
 	case CA_EVENT_FRTO:

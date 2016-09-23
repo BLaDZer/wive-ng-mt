@@ -307,7 +307,7 @@ static void tcp_lp_pkts_acked(struct sock *sk, u32 num_acked, s32 rtt_us)
 	/* happened after inference
 	 * cut snd_cwnd into half */
 	else
-		tcp_snd_cwnd_set(tp, max(tp->snd_cwnd >> 1U, 1U));
+		tp->snd_cwnd = max(tp->snd_cwnd >> 1U, 1U);
 
 	/* record this drop time */
 	lp->last_drop = tcp_time_stamp;

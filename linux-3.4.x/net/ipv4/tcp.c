@@ -2870,33 +2870,6 @@ void tcp_done(struct sock *sk)
 }
 EXPORT_SYMBOL_GPL(tcp_done);
 
-void tcp_snd_cwnd_bad(const struct tcp_sock *tp)
-{
-	static bool warned = false;
-
-	if (!warned) {
-		const struct sock *sk = (struct sock *)tp;
-		const struct inet_sock *inet = inet_sk(sk);
-
-		warned = true;
-		if (sk->sk_family == AF_INET)
-			pr_err("TCP: zero snd_cwnd src:%pI4.%u dst:%pI4.%u\n",
-			       &inet->inet_saddr, ntohs(inet->inet_sport),
-			       &inet->inet_daddr, ntohs(inet->inet_dport));
-#if IS_ENABLED(CONFIG_IPV6)
-		else if (sk->sk_family == AF_INET6) {
-			const struct ipv6_pinfo *np = inet6_sk(sk);
-
-			pr_err("TCP: zero snd_cwnd src:%pI6.%u dst:%pI6.%u\n",
-			       &np->saddr, ntohs(inet->inet_sport),
-			       &np->daddr, ntohs(inet->inet_dport));
-		}
-#endif
-		WARN_ON_ONCE(1);
-	}
-}
-EXPORT_SYMBOL(tcp_snd_cwnd_bad);
-
 extern struct tcp_congestion_ops tcp_reno;
 
 static __initdata unsigned long thash_entries;

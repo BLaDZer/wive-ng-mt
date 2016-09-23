@@ -284,9 +284,8 @@ static void tcp_illinois_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		*/
 		delta = (tp->snd_cwnd_cnt * ca->alpha) >> ALPHA_SHIFT;
 		if (delta >= tp->snd_cwnd) {
-			tcp_snd_cwnd_set(tp,
-					 min(tp->snd_cwnd + delta / tp->snd_cwnd,
-					     (u32) tp->snd_cwnd_clamp));
+			tp->snd_cwnd = min(tp->snd_cwnd + delta / tp->snd_cwnd,
+					   (u32) tp->snd_cwnd_clamp);
 			tp->snd_cwnd_cnt = 0;
 		}
 	}

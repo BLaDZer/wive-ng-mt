@@ -959,7 +959,7 @@ reset:
 	if (tp->total_retrans > 1)
 		tp->snd_cwnd = 1;
 	else
-		tcp_snd_cwnd_set(tp, tcp_init_cwnd(tp, dst));
+		tp->snd_cwnd = tcp_init_cwnd(tp, dst);
 	tp->snd_cwnd_stamp = tcp_time_stamp;
 }
 
@@ -2567,8 +2567,8 @@ static void tcp_update_scoreboard(struct sock *sk, int fast_rexmit)
  */
 static inline void tcp_moderate_cwnd(struct tcp_sock *tp)
 {
-	tcp_snd_cwnd_set(tp, min(tp->snd_cwnd,
-				 tcp_packets_in_flight(tp) + tcp_max_burst(tp)));
+	tp->snd_cwnd = min(tp->snd_cwnd,
+			   tcp_packets_in_flight(tp) + tcp_max_burst(tp));
 	tp->snd_cwnd_stamp = tcp_time_stamp;
 }
 
@@ -2649,20 +2649,18 @@ static void tcp_undo_cwr(struct sock *sk, const bool undo_ssthresh)
 
 	if (tp->prior_ssthresh) {
 		const struct inet_connection_sock *icsk = inet_csk(sk);
-		u32 newval;
 
 		if (icsk->icsk_ca_ops->undo_cwnd)
-			newval = icsk->icsk_ca_ops->undo_cwnd(sk);
+			tp->snd_cwnd = icsk->icsk_ca_ops->undo_cwnd(sk);
 		else
-			newval = max(tp->snd_cwnd, tp->snd_ssthresh << 1);
-		tcp_snd_cwnd_set(tp, newval);
+			tp->snd_cwnd = max(tp->snd_cwnd, tp->snd_ssthresh << 1);
 
 		if (undo_ssthresh && tp->prior_ssthresh > tp->snd_ssthresh) {
 			tp->snd_ssthresh = tp->prior_ssthresh;
 			TCP_ECN_withdraw_cwr(tp);
 		}
 	} else {
-		tcp_snd_cwnd_set(tp, max(tp->snd_cwnd, tp->snd_ssthresh));
+		tp->snd_cwnd = max(tp->snd_cwnd, tp->snd_ssthresh);
 	}
 	tp->snd_cwnd_stamp = tcp_time_stamp;
 }
@@ -2815,7 +2813,7 @@ static inline void tcp_complete_cwr(struct sock *sk)
 			tp->snd_cwnd_stamp = tcp_time_stamp;
 		} else if (tp->snd_ssthresh < TCP_INFINITE_SSTHRESH) {
 			/* PRR algorithm. */
-			tcp_snd_cwnd_set(tp, tp->snd_ssthresh);
+			tp->snd_cwnd = tp->snd_ssthresh;
 			tp->snd_cwnd_stamp = tcp_time_stamp;
 		}
 	}
@@ -2872,9 +2870,9 @@ static void tcp_mtup_probe_success(struct sock *sk)
 
 	/* FIXME: breaks with very large cwnd */
 	tp->prior_ssthresh = tcp_current_ssthresh(sk);
-	tcp_snd_cwnd_set(tp, tp->snd_cwnd *
-			     tcp_mss_to_mtu(sk, tp->mss_cache) /
-			     icsk->icsk_mtup.probe_size);
+	tp->snd_cwnd = tp->snd_cwnd *
+		       tcp_mss_to_mtu(sk, tp->mss_cache) /
+		       icsk->icsk_mtup.probe_size;
 	tp->snd_cwnd_cnt = 0;
 	tp->snd_cwnd_stamp = tcp_time_stamp;
 	tp->snd_ssthresh = tcp_current_ssthresh(sk);
@@ -2964,7 +2962,7 @@ static void tcp_update_cwnd_in_recovery(struct sock *sk, int newly_acked_sacked,
 	}
 
 	sndcnt = max(sndcnt, (fast_rexmit ? 1 : 0));
-	tcp_snd_cwnd_set(tp, tcp_packets_in_flight(tp) + sndcnt);
+	tp->snd_cwnd = tcp_packets_in_flight(tp) + sndcnt;
 }
 
 /* Process an event, which can update packets-in-flight not trivially.

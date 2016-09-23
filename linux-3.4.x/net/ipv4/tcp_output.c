@@ -146,7 +146,7 @@ void tcp_cwnd_restart(struct sock *sk, s32 delta)
 
 	while ((delta -= inet_csk(sk)->icsk_rto) > 0 && cwnd > restart_cwnd)
 		cwnd >>= 1;
-	tcp_snd_cwnd_set(tp, max(cwnd, restart_cwnd));
+	tp->snd_cwnd = max(cwnd, restart_cwnd);
 	tp->snd_cwnd_stamp = tcp_time_stamp;
 	tp->snd_cwnd_used = 0;
 }
@@ -1162,7 +1162,7 @@ static void tcp_cwnd_application_limited(struct sock *sk)
 		u32 win_used = max(tp->snd_cwnd_used, init_win);
 		if (win_used < tp->snd_cwnd) {
 			tp->snd_ssthresh = tcp_current_ssthresh(sk);
-			tcp_snd_cwnd_set(tp, (tp->snd_cwnd + win_used) >> 1);
+			tp->snd_cwnd = (tp->snd_cwnd + win_used) >> 1;
 		}
 		tp->snd_cwnd_used = 0;
 	}

@@ -161,9 +161,11 @@ static void tcp_yeah_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 				    tp->snd_cwnd > yeah->reno_count) {
 					u32 reduction = min(queue / TCP_YEAH_GAMMA ,
 							    tp->snd_cwnd >> TCP_YEAH_EPSILON);
-					u32 tmp = tp->snd_cwnd - reduction;
 
-					tcp_snd_cwnd_set(tp, max(tmp, yeah->reno_count));
+					tp->snd_cwnd -= reduction;
+
+					tp->snd_cwnd = max(tp->snd_cwnd,
+							   yeah->reno_count);
 
 					tp->snd_ssthresh = tp->snd_cwnd;
 				}
