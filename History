@@ -2393,17 +2393,18 @@
 2) coovachilli: up to 1.3.1.4 from git (commit 9749d5eb).<br>
 3) openssl: update to 1.0.1u.<br>
 4) goahead: implement vlan page and switch status refactoring.<br>
-5) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
-6) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-7) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-8) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-9) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-10) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-11) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-12) kernel: net: packet: tx timestamping on tpacket ring.<br>
-13) kernel: net: socket: move ktime2ts to ktime header api.<br>
-14) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
-15) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
+6) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
+7) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+8) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
+9) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+10) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+11) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+12) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+13) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+14) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+15) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+16) kernel: net: packet: tx timestamping on tpacket ring.<br>
+17) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
