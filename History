@@ -2393,6 +2393,7 @@
 2) coovachilli: up to 1.3.1.4 from git (commit 9749d5eb).<br>
 3) openssl: update to 1.0.1u.<br>
 4) goahead: implement vlan page and switch status refactoring.<br>
+5) kernel: ralink_arch: pci: refactoring PCR code.<br>
 6) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
 7) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
 8) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
