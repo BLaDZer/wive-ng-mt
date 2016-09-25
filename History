@@ -2403,6 +2403,7 @@
 12) kernel: net: packet: tx timestamping on tpacket ring.<br>
 13) kernel: net: socket: move ktime2ts to ktime header api.<br>
 14) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+15) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
 <br>
 <br>
 <br>
