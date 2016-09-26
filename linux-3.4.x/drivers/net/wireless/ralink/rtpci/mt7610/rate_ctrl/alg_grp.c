@@ -1530,7 +1530,10 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 
 	/*  decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
+
+	/* Up Rate */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
+	pEntry->CurrTxRateIndex = CurrRateIdx;
 	UpRateIdx = MlmeSelectUpRate(pAd, pEntry, pCurrTxRate);
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 
