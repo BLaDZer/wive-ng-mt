@@ -161,7 +161,7 @@ struct neigh_table arp_tbl = {
 		.retrans_time		= 5 * HZ,
 		.gc_staletime		= 120 * HZ,
 		.reachable_time		= 60 * HZ,
-		.delay_probe_time	= 10 * HZ,
+		.delay_probe_time	= 2 * HZ,
 		.queue_len_bytes	= 64*1024,
 		.ucast_probes		= 4,
 		.mcast_probes		= 4,
@@ -171,10 +171,10 @@ struct neigh_table arp_tbl = {
 		.proxy_qlen		= 64,
 		.locktime		= 1 * HZ,
 	},
-	.gc_interval	= 30 * HZ,
-	.gc_thresh1	= 128,
-	.gc_thresh2	= 512,
-	.gc_thresh3	= 1024,
+	.gc_interval	= 20 * HZ,
+	.gc_thresh1	= 512,
+	.gc_thresh2	= 1024,
+	.gc_thresh3	= 2048,
 };
 EXPORT_SYMBOL(arp_tbl);
 

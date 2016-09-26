@@ -39,7 +39,7 @@ enum {
 
 #define MAX_RTR_SOLICITATION_DELAY	HZ
 
-#define ND_REACHABLE_TIME		(30*HZ)
+#define ND_REACHABLE_TIME		(60*HZ)
 #define ND_RETRANS_TIMER		HZ
 
 #include <linux/compiler.h>

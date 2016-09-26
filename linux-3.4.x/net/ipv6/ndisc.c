@@ -138,9 +138,9 @@ struct neigh_table nd_tbl = {
 		.tbl			= &nd_tbl,
 		.base_reachable_time	= ND_REACHABLE_TIME,
 		.retrans_time		= ND_RETRANS_TIMER,
-		.gc_staletime		= 60 * HZ,
+		.gc_staletime		= 120 * HZ,
 		.reachable_time		= ND_REACHABLE_TIME,
-		.delay_probe_time	= 5 * HZ,
+		.delay_probe_time	= 2 * HZ,
 		.queue_len_bytes	= 64*1024,
 		.ucast_probes		= 4,
 		.mcast_probes		= 4,
@@ -149,10 +149,10 @@ struct neigh_table nd_tbl = {
 		.proxy_delay		= (8 * HZ) / 10,
 		.proxy_qlen		= 64,
 	},
-	.gc_interval =	  30 * HZ,
-	.gc_thresh1 =	 128,
-	.gc_thresh2 =	 512,
-	.gc_thresh3 =	1024,
+	.gc_interval =	  20 * HZ,
+	.gc_thresh1 =	 512,
+	.gc_thresh2 =	 1024,
+	.gc_thresh3 =	2048,
 };
 
 /* ND options */
