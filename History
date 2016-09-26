@@ -2411,7 +2411,7 @@
 20) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
 21) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
 22) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
-23) kernel: net: tune arp chache timeouts for more suitable default values.<br>
+23) kernel: net: tune arp cache timeouts for more suitable default values.<br>
 24) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
 25) kernel: net: fix sk_mem_reclaim_partial().<br>
 26) kernel: net: avoid sk_forward_alloc overflows.<br>
