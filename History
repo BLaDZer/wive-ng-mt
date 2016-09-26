@@ -2404,9 +2404,10 @@
 13) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
 14) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
 15) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-16) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-17) kernel: net: packet: tx timestamping on tpacket ring.<br>
-18) kernel: net: socket: move ktime2ts to ktime header api.<br>
+16) kernel: net: avoid sk_forward_alloc overflows.<br>
+17) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+18) kernel: net: packet: tx timestamping on tpacket ring.<br>
+19) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
