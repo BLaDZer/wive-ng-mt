@@ -816,7 +816,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #ifdef IAPP_OS_LINUX
 	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -824,7 +824,7 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #ifdef IAPP_OS_VXWORKS
 	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
@@ -864,7 +864,7 @@ static BOOLEAN IAPP_IoctlToWLAN2(
 #ifdef IAPP_OS_LINUX
 	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -872,7 +872,7 @@ static BOOLEAN IAPP_IoctlToWLAN2(
 #ifdef IAPP_OS_VXWORKS
 	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
