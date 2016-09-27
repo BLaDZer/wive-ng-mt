@@ -694,17 +694,7 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #endif /* CONFIG_STA_SUPPORT */
 
 	/* auto-fall back settings */
-#ifdef RT6352
-	if (IS_RT6352(pAd))
-		RTMP_IO_WRITE32(pAd, HT_FBK_CFG1, 0xedcba980);
-#endif /* RT6352 */
-#ifdef DOT11N_SS3_SUPPORT
-	if (pAd->CommonCfg.TxStream >= 3)
-	{
-		RTMP_IO_WRITE32(pAd, TX_FBK_CFG_3S_0, 0x12111008);
-		RTMP_IO_WRITE32(pAd, TX_FBK_CFG_3S_1, 0x16151413);
-	}
-#endif /* DOT11N_SS3_SUPPORT */
+	AsicAutoFallbackInit(pAd);
 
 #ifdef STREAM_MODE_SUPPORT
 	RtmpStreamModeInit(pAd);

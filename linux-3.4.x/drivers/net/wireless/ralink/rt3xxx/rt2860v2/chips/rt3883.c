@@ -263,9 +263,6 @@ static RTMP_REG_PAIR	RT3883_MACRegTable[] =	{
 	{TX_TXBF_CFG_0,		0x8000FC21},	/* Force MCS0 for sounding response*/
 	{TX_TXBF_CFG_3,		0x00009c40},	/* ETxBF Timeout = 1 sec = 0x9c40*(25 usec)*/
 
-#ifdef RANGE_EXTEND
-	{HT_FBK_CFG1,			0xedcba980},	/* Fallback MCS8->MCS0 */
-#endif /* RANGE_EXTEND */
 	{TX_FBK_CFG_3S_0,	0x12111008},	/* default value*/
 	{TX_FBK_CFG_3S_1,	0x16151413},	/* default value*/
 };

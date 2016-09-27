@@ -75,7 +75,7 @@ static RTMP_REG_PAIR mt76x2_mac_cr_table[] = {
 	{0x210, 0x94ff0000},
 	{0x1478, 0x00000004},
 	{0x1384, 0x00001818},
-	{0x1358, 0xEDCBA980},
+	// {0x1358, 0xEDCBA980}, /* auto fallback must be enable later */
 	{0x1648, 0x00830083}, /* default use 2 stream to Tx HW auto gened packets */
 };
 static UCHAR mt76x2_mac_cr_nums = (sizeof(mt76x2_mac_cr_table) / sizeof(RTMP_REG_PAIR));
