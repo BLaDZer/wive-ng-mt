@@ -41,8 +41,11 @@ ALL_CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections
 
 SYSTEM=$(shell uname 2>/dev/null)
-ifneq (,$(filter $(SYSTEM),FreeBSD Darwin))
+ifneq (,$(filter $(SYSTEM),FreeBSD))
 MAKE := gmake
+GZIP := /usr/bin/gzip
+endif
+ifneq (,$(filter $(SYSTEM),Darwin))
 GZIP := /usr/bin/gzip
 endif
 
