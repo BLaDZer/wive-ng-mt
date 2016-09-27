@@ -300,7 +300,9 @@ INT AsicSetAutoFallBack(RTMP_ADAPTER *pAd, BOOLEAN enable)
 
 INT AsicAutoFallbackInit(RTMP_ADAPTER *pAd)
 {
+#ifdef RANGE_EXTEND
 	RTMP_IO_WRITE32(pAd, HT_FBK_CFG1, 0xedcba980);
+#endif
 #ifdef DOT11N_SS3_SUPPORT
 	if (pAd->CommonCfg.TxStream >= 3)
 	{

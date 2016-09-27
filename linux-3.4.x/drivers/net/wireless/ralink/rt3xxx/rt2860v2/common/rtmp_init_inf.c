@@ -735,7 +735,9 @@ int rt28xx_init(
 #endif /* CONFIG_STA_SUPPORT */
 
 	/* auto-fall back settings */
+#ifdef RANGE_EXTEND
 	RTMP_IO_WRITE32(pAd, HT_FBK_CFG1, 0xedcba980); /* Fallback MCS8->MCS0 */
+#endif /* RANGE_EXTEND */
 #ifdef DOT11N_SS3_SUPPORT
 	if (pAd->CommonCfg.TxStream >= 3)
 	{

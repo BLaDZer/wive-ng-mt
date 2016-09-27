@@ -355,7 +355,7 @@ skipUpdate:
 	if (IS_RT2883(pAd) || IS_RT3883(pAd)
 #ifdef AGS_SUPPORT
 		|| (bUseAGS == TRUE)
-#endif /* AGS_SUPPORT */ 
+#endif /* AGS_SUPPORT */
 	)
 	{
 		RTMP_IO_WRITE32(pAd, TX_FBK_CFG_3S_0, Ht3SSCfg0.word);
