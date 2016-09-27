@@ -685,9 +685,9 @@ VOID APQuickResponeForRateUpExec(
 				&& (pAd->CommonCfg.DebugFlags & DBF_FORCE_QUICK_DRS)==0
 #endif /* DBG_CTRL_SUPPORT */
 			)
-				ratio = RA_INTERVAL/DEF_QUICK_RA_TIME_INTERVAL;
+				ratio = RA_INTERVAL/pAd->ra_fast_interval;
 			else
-				ratio = (RA_INTERVAL-DEF_QUICK_RA_TIME_INTERVAL)/DEF_QUICK_RA_TIME_INTERVAL;
+				ratio = (RA_INTERVAL-pAd->ra_fast_interval)/pAd->ra_fast_interval;
 
 			/* downgrade TX quality if PER >= Rate-Down threshold */
 			if (TxErrorRatio >= TrainDown)
@@ -1856,7 +1856,7 @@ VOID MlmeOldRateAdapt(
 		{
 			if (!pAd->ApCfg.ApQuickResponeForRateUpTimerRunning)
 			{
-				RTMPSetTimer(&pAd->ApCfg.ApQuickResponeForRateUpTimer, DEF_QUICK_RA_TIME_INTERVAL);
+				RTMPSetTimer(&pAd->ApCfg.ApQuickResponeForRateUpTimer, pAd->ra_fast_interval);
 				pAd->ApCfg.ApQuickResponeForRateUpTimerRunning = TRUE;
 			}
 		}
@@ -1866,7 +1866,7 @@ VOID MlmeOldRateAdapt(
 		{
 			if (!pAd->StaCfg.StaQuickResponeForRateUpTimerRunning)
 			{
-				RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, DEF_QUICK_RA_TIME_INTERVAL);
+				RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, pAd->ra_fast_interval);
 				pAd->StaCfg.StaQuickResponeForRateUpTimerRunning = TRUE;
 			}
 		}

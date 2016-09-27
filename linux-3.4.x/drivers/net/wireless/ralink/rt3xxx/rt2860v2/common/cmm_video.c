@@ -146,7 +146,7 @@ VOID VideoTurbineDynamicTune(
 
 		/* reset to default rate adaptation simping interval */
 		if ((pAd->ra_interval != DEF_RA_TIME_INTRVAL) || 
-			(pAd->ra_interval != DEF_QUICK_RA_TIME_INTERVAL))
+			(pAd->ra_fast_interval != DEF_QUICK_RA_TIME_INTERVAL))
 			Set_RateAdaptInterval(pAd, "500:100");
 
 		TxSwQDepthAdjust(pAd, MAX_PACKETS_IN_QUEUE);

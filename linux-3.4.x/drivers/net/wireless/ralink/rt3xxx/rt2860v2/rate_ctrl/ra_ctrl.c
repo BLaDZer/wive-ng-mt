@@ -1657,7 +1657,7 @@ VOID MlmeRALog(
 
 		/*  Normalized throughput - packets per RA Interval */
 		if (raLogType==RAL_QUICK_DRS)
-			tp = (100-TxErrorRatio)*TxTotalCnt*RA_INTERVAL/(100*DEF_QUICK_RA_TIME_INTERVAL);
+			tp = (100-TxErrorRatio)*TxTotalCnt*RA_INTERVAL/(100*pAd->ra_fast_interval);
 		else if (pEntry->LastSecTxRateChangeAction==RATE_NO_CHANGE
 #ifdef DBG_CTRL_SUPPORT
 				&& (pAd->CommonCfg.DebugFlags & DBF_FORCE_QUICK_DRS)==0
@@ -1665,7 +1665,7 @@ VOID MlmeRALog(
 		)
 			tp = (100-TxErrorRatio)*TxTotalCnt/100;
 		else
-			tp = (100-TxErrorRatio)*TxTotalCnt*RA_INTERVAL/(100*(RA_INTERVAL-DEF_QUICK_RA_TIME_INTERVAL));
+			tp = (100-TxErrorRatio)*TxTotalCnt*RA_INTERVAL/(100*(RA_INTERVAL-pAd->ra_fast_interval));
 
 #ifdef TXBF_SUPPORT
 		/*  Compute BF ratio in the last interval */
