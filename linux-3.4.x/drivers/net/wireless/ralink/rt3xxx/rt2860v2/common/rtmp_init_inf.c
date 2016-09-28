@@ -422,10 +422,7 @@ int rt28xx_init(
 #ifdef RT6352_EP_SUPPORT
 		if (pAd->bExtPA == FALSE)
 #endif /* RT6352_EP_SUPPORT */
-		{
 			DoDPDCalibration(pAd);
-			pAd->DoDPDCurrTemperature = 0x7FFFFFFF;
-		}
 
 		/* Rx DCOC Calibration */
 		RxDCOC_Calibration(pAd);

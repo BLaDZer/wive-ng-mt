@@ -1322,7 +1322,7 @@ VOID MlmePeriodicExec(
 			else
 				pAd->macwd = 0;
 
-			if ((pAd->macwd > 1) && (pAd->bEnableMacWD == TRUE))
+			if (pAd->macwd > 1)
 			{
 				int count = 0;
 				BOOLEAN MAC_ready = FALSE;

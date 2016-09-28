@@ -3994,7 +3994,6 @@ struct _RTMP_ADAPTER {
 	BOOLEAN bUpdateBcnCntDone;
 
 	ULONG macwd;
-	BOOLEAN bEnableMacWD;
 	/* ---------------------------- */
 	/* DEBUG paramerts */
 	/* ---------------------------- */
@@ -4267,8 +4266,6 @@ struct _RTMP_ADAPTER {
 
 #ifdef RT6352
 	UCHAR RfBank;
-	UCHAR VGA_Gain0_idx;
-	UCHAR VGA_Gain1_idx;
 	BOOLEAN bCalibrationDone;
 	CHAR tx_bw_cal[2];	// bw cal value for RF_R32, 0:20M, 1:40M
 	CHAR rx_bw_cal[2];	// bw cal value for RF_R32, 0:20M, 1:40M
@@ -4281,8 +4278,6 @@ struct _RTMP_ADAPTER {
 	UCHAR Tx0_DPD_ALC_tag1_flag;
 	UCHAR Tx1_DPD_ALC_tag0_flag;
 	UCHAR Tx1_DPD_ALC_tag1_flag;
-	INT32 DoDPDCurrTemperature;
-	BOOLEAN DoDPDRunning;
 	INT32 DoCalibrationTemperature;
 	BOOLEAN bDoReCalibration;
 	UINT16 E2p_D0_Value;

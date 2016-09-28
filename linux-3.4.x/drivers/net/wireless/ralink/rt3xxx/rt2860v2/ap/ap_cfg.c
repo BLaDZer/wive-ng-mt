@@ -770,10 +770,6 @@ INT Set_P2pCli_WscSsid_Proc(
 #endif /* WSC_AP_SUPPORT */
 #endif /* P2P_SUPPORT */
 
-INT Set_MacWatchDog_Proc(
-	IN RTMP_ADAPTER	*pAd,
-	IN PSTRING arg);
-
 INT Set_DumpRF_Proc(
 	IN RTMP_ADAPTER	*pAd,
 	IN PSTRING arg);
@@ -1354,7 +1350,6 @@ static struct {
 	{"ModuleTxpower",				Set_ModuleTxpower_Proc},
 #endif /* SINGLE_SKU */
 
-	{"MacWatchDog",				Set_MacWatchDog_Proc},
 	{"DumpRF",					Set_DumpRF_Proc},
 	{"DumpBBP",					Set_DumpBBP_Proc},
 #ifdef RT6352
@@ -14370,21 +14365,6 @@ INT Set_P2pCli_WscSsid_Proc(
 }
 #endif /* WSC_AP_SUPPORT */
 #endif /* P2P_SUPPORT */
-
-INT Set_MacWatchDog_Proc(
-	IN RTMP_ADAPTER		*pAd,
-	IN PSTRING			arg)
-{
-	BOOLEAN bEnableWD;
-
-	bEnableWD = simple_strtol(arg, 0, 10);
-
-	pAd->bEnableMacWD = bEnableWD;
-
-	DBGPRINT(RT_DEBUG_TRACE, ("EnableMacWD = %d \n", pAd->bEnableMacWD));
-
-	return TRUE;
-}
 
 INT Set_DumpRF_Proc(
 	IN RTMP_ADAPTER	*pAd,

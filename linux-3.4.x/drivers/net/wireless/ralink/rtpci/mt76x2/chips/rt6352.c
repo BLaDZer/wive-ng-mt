@@ -1635,10 +1635,7 @@ static VOID RT6352_ChipSwitchChannel(
 #ifdef RT6352_EP_SUPPORT
 		if (pAd->bExtPA == FALSE)
 #endif /* RT6352_EP_SUPPORT */
-		{
 			DoDPDCalibration(pAd);
-			pAd->DoDPDCurrTemperature = 0x7FFFFFFF;
-		}
 
 		/* Rx DCOC Calibration */		
 		RxDCOC_Calibration(pAd);
@@ -4909,7 +4906,7 @@ static VOID RT6352_AsicMeasureFalseCCA(
 {
 	UINT32 reg;
 
-	/* Set to high gain LAN */
+	/* Set to high gain LNA */
 	//printk("Stored_BBP_R65=%x @%s \n", pAd->CommonCfg.MO_Cfg.Stored_BBP_R65, __FUNCTION__);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R65, pAd->CommonCfg.MO_Cfg.Stored_BBP_R65);
 

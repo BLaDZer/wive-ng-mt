@@ -5318,9 +5318,7 @@ MONITOR_STRUCT monitor_ctrl;
 	BOOLEAN bUpdateBcnCntDone;
 
 	ULONG macwd;
-#ifdef RT6352
-	BOOLEAN bEnableMacWD;
-#endif /* RT6352 */
+
 	/* ---------------------------- */
 	/* DEBUG paramerts */
 	/* ---------------------------- */
@@ -5511,8 +5509,6 @@ MONITOR_STRUCT monitor_ctrl;
 
 #ifdef RT6352
 	UCHAR RfBank;
-	UCHAR VGA_Gain0_idx;
-	UCHAR VGA_Gain1_idx;
 	BOOLEAN bCalibrationDone;
 	CHAR tx_bw_cal[2];	// bw cal value for RF_R32, 0:20M, 1:40M
 	CHAR rx_bw_cal[2];	// bw cal value for RF_R32, 0:20M, 1:40M
@@ -5520,12 +5516,11 @@ MONITOR_STRUCT monitor_ctrl;
 	UCHAR Tx0_DPD_ALC_tag1;
 	UCHAR Tx1_DPD_ALC_tag0;
 	UCHAR Tx1_DPD_ALC_tag1;
-
 	UCHAR Tx0_DPD_ALC_tag0_flag;
 	UCHAR Tx0_DPD_ALC_tag1_flag;
 	UCHAR Tx1_DPD_ALC_tag0_flag;
 	UCHAR Tx1_DPD_ALC_tag1_flag;
-	INT32 DoDPDCurrTemperature;
+
 	UINT16 E2p_D0_Value;
 	CHAR TemperatureRef25C;
 	BOOLEAN bRef25CVaild;

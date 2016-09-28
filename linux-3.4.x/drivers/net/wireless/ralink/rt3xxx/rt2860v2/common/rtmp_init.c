@@ -4084,7 +4084,6 @@ VOID	UserCfgInit(
 	pAd->Dot11_H.bDFSIndoor = 1;
 
 
-	pAd->bEnableMacWD = TRUE;
 	pAd->CommonCfg.bRcvBSSWidthTriggerEvents = FALSE;
 
 
