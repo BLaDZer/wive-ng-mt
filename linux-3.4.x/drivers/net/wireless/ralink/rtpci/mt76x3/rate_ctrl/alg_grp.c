@@ -1517,8 +1517,8 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 	*/
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp     = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown   = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp     = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown   = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
     else
 #endif /*  DOT11_N_SUPPORT */
@@ -1893,8 +1893,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 #ifdef DOT11_N_SUPPORT
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */
@@ -2203,8 +2203,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	*/
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */

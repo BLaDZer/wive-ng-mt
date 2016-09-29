@@ -661,6 +661,12 @@ VOID APMlmeSetTxRate(
 	}
 #endif /* DOT11_N_SUPPORT */
 
+	/* fix drop to CCK in 5GHz or pure OFDM modes */
+	if (tx_mode == MODE_CCK && (pAd->LatchRfRegs.Channel > 14 || (pAd->CommonCfg.PhyMode != PHY_11ABGN_MIXED && pAd->CommonCfg.PhyMode != PHY_11BGN_MIXED)))
+	{
+		tx_mode = MODE_OFDM;
+	}
+
 	if (pTxRate->CurrMCS < MCS_AUTO)
 		pEntry->HTPhyMode.field.MCS = pTxRate->CurrMCS;
 

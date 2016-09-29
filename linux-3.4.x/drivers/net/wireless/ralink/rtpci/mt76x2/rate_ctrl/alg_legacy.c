@@ -333,8 +333,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			TrainUp		= (pCurrTxRate->TrainUp << 1);
 			TrainDown	= (pCurrTxRate->TrainDown << 1);
 #else
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 #endif /* NOISE_TEST_ADJUST */
 		}
 		else
@@ -606,8 +606,8 @@ VOID APQuickResponeForRateUpExec(
 #ifdef DOT11_N_SUPPORT
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -1137,8 +1137,8 @@ VOID MlmeDynamicTxRateSwitching(
 		*/
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -1321,8 +1321,8 @@ VOID StaQuickResponeForRateUpExec(
 #ifdef DOT11_N_SUPPORT
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */

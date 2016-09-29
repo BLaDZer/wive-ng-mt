@@ -1618,12 +1618,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	CurrPhyITxBf = pEntry->phyITxBf;
 #endif /*  TXBF_SUPPORT */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
-
 #ifdef DOT11_N_SUPPORT
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */
@@ -1941,7 +1940,6 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 								pEntry->TxQuality[pCurrTxRate->upMcs1],
 								pEntry->TxQuality[pCurrTxRate->upMcs2]));
 
-
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore,
@@ -1951,8 +1949,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	*/
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /*  DOT11_N_SUPPORT */
@@ -2200,8 +2198,8 @@ VOID StaQuickResponeForRateUpExecAdapt(
 #ifdef DOT11_N_SUPPORT
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /* DOT11_N_SUPPORT */
@@ -2475,8 +2473,8 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	*/
 	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
 	{
-		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 	}
 	else
 #endif /* DOT11_N_SUPPORT */

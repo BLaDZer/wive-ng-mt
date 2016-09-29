@@ -262,6 +262,9 @@ EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS
 # switch to new channel or disable subchannels if channel very high load
 #EXTRA_CFLAGS += -DQLOAD_FUNC_BUSY_TIME_ALARM
 
+# optimistic rate trainup at big RSSI (more speed vs decrease interference immunity)
+#EXTRA_CFLAGS += -DOPTIMISTIC_TRAINUP
+
 ifneq ($(CONFIG_RA_HW_NAT_WIFI),y)
 EXTRA_CFLAGS += -DCONFIG_RA_NAT_NONE
 endif

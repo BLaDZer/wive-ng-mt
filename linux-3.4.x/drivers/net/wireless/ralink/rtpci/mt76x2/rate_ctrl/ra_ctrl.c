@@ -1273,8 +1273,8 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 #endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
-	/* fix drop to CCK in 5GHz */
-	if (tx_mode == MODE_CCK && pAd->LatchRfRegs.Channel > 14)
+	/* fix drop to CCK in 5GHz or pure OFDM modes */
+	if (tx_mode == MODE_CCK && (pAd->LatchRfRegs.Channel > 14 || !WMODE_CAP(pAd->CommonCfg.PhyMode, WMODE_B)))
 	{
 		tx_mode = MODE_OFDM;
 	}

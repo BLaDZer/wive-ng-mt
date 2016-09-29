@@ -332,8 +332,8 @@ VOID APMlmeDynamicTxRateSwitching(
 		*/
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -631,8 +631,8 @@ VOID APQuickResponeForRateUpExec(
 #ifdef DOT11_N_SUPPORT
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -1195,8 +1195,8 @@ VOID MlmeDynamicTxRateSwitching(
 		*/
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -1414,8 +1414,8 @@ VOID StaQuickResponeForRateUpExec(
 #ifdef DOT11_N_SUPPORT
 		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
 		{
-			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
-			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
+			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
 		}
 		else
 #endif /* DOT11_N_SUPPORT */
@@ -1577,9 +1577,9 @@ VOID StaQuickResponeForRateUpExec(
 				&& (pAd->CommonCfg.DebugFlags & DBF_FORCE_QUICK_DRS)==0
 #endif /* DBG_CTRL_SUPPORT */
 			)
-				ratio = RA_INTERVAL/DEF_QUICK_RA_TIME_INTERVAL;
+				ratio = RA_INTERVAL/pAd->ra_fast_interval;
 			else
-				ratio = (RA_INTERVAL-DEF_QUICK_RA_TIME_INTERVAL)/DEF_QUICK_RA_TIME_INTERVAL;
+				ratio = (RA_INTERVAL-pAd->ra_fast_interval)/pAd->ra_fast_interval;
 
 			OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
 
