@@ -2545,7 +2545,7 @@ void RRM_ReadParametersFromFile(
 			LONG Enable;
 			Enable = simple_strtol(macptr, 0, 10);
 			pAd->CommonCfg.bDot11kRRMEnable = (Enable > 0) ? TRUE : FALSE;
-			DBGPRINT(RT_DEBUG_TRACE, ("%s::(bDot11kRRMEnable[%d]=%d)\n", __FUNCTION__, loop, pAd->ApCfg.MBSSID[loop].CommonCfg.bDot11kRRMEnable));
+			DBGPRINT(RT_DEBUG_TRACE, ("%s::(bDot11kRRMEnable[%d]=%d)\n", __FUNCTION__, loop, pAd->CommonCfg.bDot11kRRMEnable));
 			if (Enable > 0)
 			    break;
 		}
