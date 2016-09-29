@@ -2419,13 +2419,14 @@
 28) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
 29) kernel: mips: separate extable.h, switch module.h to it.<br>
 30) kernel: mips: squash lines for simple wrapper functions.<br>
-31) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-32) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-33) kernel: net: fix sk_mem_reclaim_partial().<br>
-34) kernel: net: avoid sk_forward_alloc overflows.<br>
-35) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-36) kernel: net: packet: tx timestamping on tpacket ring.<br>
-37) kernel: net: socket: move ktime2ts to ktime header api.<br>
+31) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
+32) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+33) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+34) kernel: net: fix sk_mem_reclaim_partial().<br>
+35) kernel: net: avoid sk_forward_alloc overflows.<br>
+36) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+37) kernel: net: packet: tx timestamping on tpacket ring.<br>
+38) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>

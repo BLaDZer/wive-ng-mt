@@ -1628,6 +1628,8 @@ void __cpuinit r4k_cache_init(void)
 	flush_data_cache_page	= r4k_flush_data_cache_page;
 	flush_icache_range	= r4k_flush_icache_range;
 	local_flush_icache_range	= local_r4k_flush_icache_range;
+	__flush_icache_user_range	= r4k_flush_icache_range;
+	__local_flush_icache_user_range	= local_r4k_flush_icache_range;
 
 #if defined(CONFIG_DMA_NONCOHERENT)
 	if (coherentio) {

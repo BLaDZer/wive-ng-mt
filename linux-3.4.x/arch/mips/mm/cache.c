@@ -32,6 +32,8 @@ void (*flush_cache_page)(struct vm_area_struct *vma, unsigned long page,
 	unsigned long pfn);
 void (*flush_icache_range)(unsigned long start, unsigned long end);
 void (*local_flush_icache_range)(unsigned long start, unsigned long end);
+void (*__flush_icache_user_range)(unsigned long start, unsigned long end);
+void (*__local_flush_icache_user_range)(unsigned long start, unsigned long end);
 
 void (*__flush_cache_vmap)(void);
 void (*__flush_cache_vunmap)(void);
