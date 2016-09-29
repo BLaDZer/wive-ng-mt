@@ -154,7 +154,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
  #define CARD_INFO_PATH			"/etc/Wireless/iNIC/RT2860APCard.dat"
 #endif
 
-#define AP_DRIVER_VERSION		"4.1.0.0_pre"
+#define AP_DRIVER_VERSION		"4.1.0.0"
 
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
