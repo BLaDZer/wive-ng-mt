@@ -641,6 +641,9 @@ struct gengetopt_args_info
   int forcedns2port_arg;	/**< @brief Force all secondary DNS to a specific port (default='0').  */
   char * forcedns2port_orig;	/**< @brief Force all secondary DNS to a specific port original value given at command line.  */
   const char *forcedns2port_help; /**< @brief Force all secondary DNS to a specific port help description.  */
+  char * rfc7710uri_arg;	/**< @brief DHCP Captive Portal URI. Defaults to http://uamlisten:uamport/prelogin..  */
+  char * rfc7710uri_orig;	/**< @brief DHCP Captive Portal URI. Defaults to http://uamlisten:uamport/prelogin. original value given at command line.  */
+  const char *rfc7710uri_help; /**< @brief DHCP Captive Portal URI. Defaults to http://uamlisten:uamport/prelogin. help description.  */
   int ipv6_flag;	/**< @brief Enable IPv6 support (default=off).  */
   const char *ipv6_help; /**< @brief Enable IPv6 support help description.  */
   char * ipv6mode_arg;	/**< @brief IPv6 mode is either 6and4 (default), 4to6, or 6to4.  */
@@ -866,6 +869,7 @@ struct gengetopt_args_info
   unsigned int forcedns1port_given ;	/**< @brief Whether forcedns1port was given.  */
   unsigned int forcedns2_given ;	/**< @brief Whether forcedns2 was given.  */
   unsigned int forcedns2port_given ;	/**< @brief Whether forcedns2port was given.  */
+  unsigned int rfc7710uri_given ;	/**< @brief Whether rfc7710uri was given.  */
   unsigned int ipv6_given ;	/**< @brief Whether ipv6 was given.  */
   unsigned int ipv6mode_given ;	/**< @brief Whether ipv6mode was given.  */
   unsigned int ipv6only_given ;	/**< @brief Whether ipv6only was given.  */

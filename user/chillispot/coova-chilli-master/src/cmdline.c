@@ -251,6 +251,7 @@ const char *gengetopt_args_info_help[] = {
   "      --forcedns1port=INT       Force all DNS to a specific port  (default=`0')",
   "      --forcedns2=STRING        Force all secondary DNS to a specific address",
   "      --forcedns2port=INT       Force all secondary DNS to a specific port\n                                  (default=`0')",
+  "      --rfc7710uri=STRING       DHCP Captive Portal URI. Defaults to\n                                  http://uamlisten:uamport/prelogin.",
   "      --ipv6                    Enable IPv6 support  (default=off)",
   "      --ipv6mode=STRING         IPv6 mode is either 6and4 (default), 4to6, or\n                                  6to4",
   "      --ipv6only                Enable IPv6-Only  (default=off)",
@@ -523,6 +524,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->forcedns1port_given = 0 ;
   args_info->forcedns2_given = 0 ;
   args_info->forcedns2port_given = 0 ;
+  args_info->rfc7710uri_given = 0 ;
   args_info->ipv6_given = 0 ;
   args_info->ipv6mode_given = 0 ;
   args_info->ipv6only_given = 0 ;
@@ -893,6 +895,8 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->forcedns2_orig = NULL;
   args_info->forcedns2port_arg = 0;
   args_info->forcedns2port_orig = NULL;
+  args_info->rfc7710uri_arg = NULL;
+  args_info->rfc7710uri_orig = NULL;
   args_info->ipv6_flag = 0;
   args_info->ipv6mode_arg = NULL;
   args_info->ipv6mode_orig = NULL;
@@ -1144,9 +1148,10 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->forcedns1port_help = gengetopt_args_info_help[214] ;
   args_info->forcedns2_help = gengetopt_args_info_help[215] ;
   args_info->forcedns2port_help = gengetopt_args_info_help[216] ;
-  args_info->ipv6_help = gengetopt_args_info_help[217] ;
-  args_info->ipv6mode_help = gengetopt_args_info_help[218] ;
-  args_info->ipv6only_help = gengetopt_args_info_help[219] ;
+  args_info->rfc7710uri_help = gengetopt_args_info_help[217] ;
+  args_info->ipv6_help = gengetopt_args_info_help[218] ;
+  args_info->ipv6mode_help = gengetopt_args_info_help[219] ;
+  args_info->ipv6only_help = gengetopt_args_info_help[220] ;
   
 }
 
@@ -1507,6 +1512,8 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->forcedns2_arg));
   free_string_field (&(args_info->forcedns2_orig));
   free_string_field (&(args_info->forcedns2port_orig));
+  free_string_field (&(args_info->rfc7710uri_arg));
+  free_string_field (&(args_info->rfc7710uri_orig));
   free_string_field (&(args_info->ipv6mode_arg));
   free_string_field (&(args_info->ipv6mode_orig));
   
@@ -1970,6 +1977,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "forcedns2", args_info->forcedns2_orig, 0);
   if (args_info->forcedns2port_given)
     write_into_file(outfile, "forcedns2port", args_info->forcedns2port_orig, 0);
+  if (args_info->rfc7710uri_given)
+    write_into_file(outfile, "rfc7710uri", args_info->rfc7710uri_orig, 0);
   if (args_info->ipv6_given)
     write_into_file(outfile, "ipv6", 0, 0 );
   if (args_info->ipv6mode_given)
@@ -2792,6 +2801,7 @@ cmdline_parser_internal (
         { "forcedns1port",	1, NULL, 0 },
         { "forcedns2",	1, NULL, 0 },
         { "forcedns2port",	1, NULL, 0 },
+        { "rfc7710uri",	1, NULL, 0 },
         { "ipv6",	0, NULL, 0 },
         { "ipv6mode",	1, NULL, 0 },
         { "ipv6only",	0, NULL, 0 },
@@ -5655,6 +5665,20 @@ cmdline_parser_internal (
                 &(local_args_info.forcedns2port_given), optarg, 0, "0", ARG_INT,
                 check_ambiguity, override, 0, 0,
                 "forcedns2port", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* DHCP Captive Portal URI. Defaults to http://uamlisten:uamport/prelogin..  */
+          else if (strcmp (long_options[option_index].name, "rfc7710uri") == 0)
+          {
+          
+          
+            if (update_arg( (void *)&(args_info->rfc7710uri_arg), 
+                 &(args_info->rfc7710uri_orig), &(args_info->rfc7710uri_given),
+                &(local_args_info.rfc7710uri_given), optarg, 0, 0, ARG_STRING,
+                check_ambiguity, override, 0, 0,
+                "rfc7710uri", '-',
                 additional_error))
               goto failure;
           

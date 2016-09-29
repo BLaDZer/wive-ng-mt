@@ -2390,7 +2390,7 @@
 <br>
 <b>4.7.x</b><br>
 1) configs: mt7621: enable highmem support, work and tests ok now.<br>
-2) coovachilli: up to 1.3.1.4 from git (commit 9749d5eb).<br>
+2) coovachilli: up to 1.3.1.4 from git (commit 40fc8e0c).<br>
 3) openssl: update to 1.0.1u.<br>
 4) busybox: ash: in heredoc code, fix access past the end of allocated memory. Closes 9276.<br>
 5) goahead: implement vlan page and switch status refactoring.<br>
