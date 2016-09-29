@@ -2,7 +2,7 @@
 #define _ASM_MODULE_H
 
 #include <linux/list.h>
-#include <asm/uaccess.h>
+#include <asm/extable.h>
 
 struct mod_arch_specific {
 	/* Data Bus Error exception tables */
