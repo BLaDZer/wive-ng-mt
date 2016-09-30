@@ -2413,26 +2413,27 @@
 22) kernel: softirq: let ksoftirqd do its job.<br>
 23) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
 24) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-25) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
-26) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
-27) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
-28) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
-29) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
-30) kernel: asm-generic: make get_user() clear the destination on errors.<br>
-31) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-32) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-33) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-34) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
-35) kernel: mips: squash lines for simple wrapper functions.<br>
-36) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
-37) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
-38) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-39) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-40) kernel: net: fix sk_mem_reclaim_partial().<br>
-41) kernel: net: avoid sk_forward_alloc overflows.<br>
-42) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-43) kernel: net: packet: tx timestamping on tpacket ring.<br>
-44) kernel: net: socket: move ktime2ts to ktime header api.<br>
+25) kernel: kernel.h: make abs() work with 64-bit types.<br>
+26) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
+27) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
+28) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
+29) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
+30) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
+31) kernel: asm-generic: make get_user() clear the destination on errors.<br>
+32) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+33) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+34) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+35) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
+36) kernel: mips: squash lines for simple wrapper functions.<br>
+37) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
+38) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
+39) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+40) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+41) kernel: net: fix sk_mem_reclaim_partial().<br>
+42) kernel: net: avoid sk_forward_alloc overflows.<br>
+43) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+44) kernel: net: packet: tx timestamping on tpacket ring.<br>
+45) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
