@@ -8,6 +8,7 @@ LOG="logger -t vlan"
 ##########################################################################
 # Incoming VLAN prio to SKB priomap (ingress)
 # Outgoings SKB priomap to VLAN prio (egress)
+# 0-7 vlan prio to 0-7 skb prio (rewrite after add vlan prio in UI)
 ##########################################################################
 set_vlan_prio_map()
 {
