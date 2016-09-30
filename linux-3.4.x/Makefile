@@ -577,12 +577,15 @@ all: vmlinux
 include arch/mips/Makefile
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks $(call cc-disable-warning,maybe-uninitialized,)
+KBUILD_CFLAGS	+= -Os -fno-caller-saves -fno-reorder-blocks
 else
 KBUILD_CFLAGS	+= -O2
 endif
 
 KBUILD_CFLAGS   += $(call cc-option,-fno-delete-null-pointer-checks,)
+
+KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
+KBUILD_CFLAGS	+= $(call cc-disable-warning,frame-address,)
 
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
