@@ -35,7 +35,7 @@ doublevlantag() {
 ##########################################################################
 set_port_vlan_prio_map()
 {
-    for vlannum in `seq 0 1`; do
+    for vlannum in `seq 0 7`; do
 	# vlan priority tag => skb->priority mapping
         vconfig set_ingress_map $1 $vlannum $vlannum
 	# skb->priority => vlan priority tag mapping

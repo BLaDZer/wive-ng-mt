@@ -8,9 +8,12 @@ LOG="logger -t vlan"
 ##########################################################################
 # Incoming VLAN prio to SKB priomap (ingress)
 # Outgoings SKB priomap to VLAN prio (egress)
-# 0-7 vlan prio to 0-7 skb prio (rewrite after add vlan prio in UI)
+# 0-7 vlan prio to 0-7 skb prio
 ##########################################################################
-set_vlan_prio_map()
+# in future add user must be set egress mapping
+# add after rewrite after add vlan prio in UI
+##########################################################################
+set_default_vlan_prio_map()
 {
     for vlannum in `seq 0 7`; do
 	# vlan priority tag => skb->priority mapping
@@ -56,7 +59,7 @@ bridgewlvlan() {
 		$LOG "Add VLAN interface $2.${vid} to system"
 		vconfig add "$2" "${vid}"
 		hw_tx_vlan_map "${vid}"
-		set_vlan_prio_map "$2.${vid}"
+		set_default_vlan_prio_map "$2.${vid}"
 		$LOG "Add BRIDGE brvl${vid}wl${count} to system"
 		brctl addbr "brvl${vid}wl${count}"
 		ip link set "brvl${vid}wl${count}" up
@@ -101,7 +104,7 @@ start() {
 		$LOG "Add vlan to esw for TV/STB"
 		vconfig add $rootif 3
 		hw_tx_vlan_map "3"
-		set_vlan_prio_map "${rootif}.3"
+		set_default_vlan_prio_map "${rootif}.3"
 		brctl addif "$vlantvif" "${rootif}.3"
 		ip link set "${rootif}.3" up
 	    fi
@@ -118,7 +121,7 @@ start() {
 		$LOG "Add vlan to esw for SIP/STB"
 		vconfig add $rootif 4
 		hw_tx_vlan_map "4"
-		set_vlan_prio_map "${rootif}.4"
+		set_default_vlan_prio_map "${rootif}.4"
 		brctl addif "$vlansipif" "${rootif}.4"
 		ip link set "${rootif}.4" up
 	    fi
@@ -133,7 +136,7 @@ start() {
 		    $LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
 		    vconfig add "$phys_wan_if" "$vid"
 		    hw_tx_vlan_map "$vid"
-		    set_vlan_prio_map "${phys_wan_if}.${vid}"
+		    set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		    brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
 		    ip link set "${phys_wan_if}.${vid}" up
 		done
@@ -143,7 +146,7 @@ start() {
 		    $LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
 		    vconfig add "$phys_wan_if" "$vid"
 		    hw_tx_vlan_map "$vid"
-		    set_vlan_prio_map "${phys_wan_if}.${vid}"
+		    set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		    brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
 		    ip link set "${phys_wan_if}.${vid}" up
 		done
@@ -165,7 +168,7 @@ start() {
 		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
 		vconfig add "$phys_lan_if" "$vid"
 		hw_tx_vlan_map "$vid"
-		set_vlan_prio_map "${phys_lan_if}.${vid}"
+		set_default_vlan_prio_map "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
 	    done
