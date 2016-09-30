@@ -77,7 +77,7 @@ static void __fastpathsys wakeup_softirqd(void)
  * If ksoftirqd is scheduled, we do not want to process pending softirqs
  * right now. Let ksoftirqd handle this at its own rate, to get fairness.
  */
-static bool ksoftirqd_running(void)
+static bool __fastpathsys ksoftirqd_running(void)
 {
 	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
 
