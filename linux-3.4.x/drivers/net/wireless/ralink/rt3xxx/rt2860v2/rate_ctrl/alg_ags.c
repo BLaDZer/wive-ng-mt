@@ -936,7 +936,7 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 		/* */
 		if (!pAd->StaCfg.StaQuickResponeForRateUpTimerRunning)
 		{
-			RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, DEF_QUICK_RA_TIME_INTERVAL);
+			RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, ra_fast_interval);
 
 			pAd->StaCfg.StaQuickResponeForRateUpTimerRunning = TRUE;
 		}
@@ -960,8 +960,8 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 		/* Tx rate fast train down */
 		if (!pAd->StaCfg.StaQuickResponeForRateUpTimerRunning)
 		{
-			RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, DEF_QUICK_RA_TIME_INTERVAL);
-		
+			RTMPSetTimer(&pAd->StaCfg.StaQuickResponeForRateUpTimer, ra_fast_interval);
+
 			pAd->StaCfg.StaQuickResponeForRateUpTimerRunning = TRUE;
 		}
 

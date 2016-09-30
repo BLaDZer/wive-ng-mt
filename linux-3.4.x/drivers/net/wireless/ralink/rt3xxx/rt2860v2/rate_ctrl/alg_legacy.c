@@ -679,7 +679,7 @@ VOID APQuickResponeForRateUpExec(
 		{
 			ULONG OneSecTxNoRetryOKRationCount;
 
-			/* Compare throughput. LastTxCount is based on a 500 msec or 500-DEF_QUICK_RA_TIME_INTERVAL interval. */
+			/* Compare throughput. LastTxCount is based on a 500 msec or 500-ra_fast_interval interval. */
 			if ((pEntry->LastTimeTxRateChangeAction == RATE_NO_CHANGE)
 #ifdef DBG_CTRL_SUPPORT
 				&& (pAd->CommonCfg.DebugFlags & DBF_FORCE_QUICK_DRS)==0
@@ -1571,7 +1571,7 @@ VOID StaQuickResponeForRateUpExec(
 		{
 			ULONG OneSecTxNoRetryOKRationCount;
 
-			/* Compare throughput. LastTxCount is based on a 500 msec or 500-DEF_QUICK_RA_TIME_INTERVAL interval. */
+			/* Compare throughput. LastTxCount is based on a 500 msec or 500-ra_fast_interval interval. */
 			if ((pEntry->LastTimeTxRateChangeAction == RATE_NO_CHANGE)
 #ifdef DBG_CTRL_SUPPORT
 				&& (pAd->CommonCfg.DebugFlags & DBF_FORCE_QUICK_DRS)==0
