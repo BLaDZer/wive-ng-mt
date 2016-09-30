@@ -260,16 +260,6 @@ readdif_to_br() {
     ip link set $2 up
 }
 
-set_vlan_map()
-{
-    for vlannum in `seq 0 7`; do
-	# vlan priority tag => skb->priority mapping
-        vconfig set_ingress_map $1 $vlannum $vlannum
-	# skb->priority => vlan priority tag mapping
-        vconfig set_egress_map $1  $vlannum $vlannum
-    done
-}
-
 get_switch_type() {
     # mode 3 - vlan particion
     # mode 4 - dual rgmi mode

@@ -31,6 +31,19 @@ doublevlantag() {
 }
 
 ##########################################################################
+# VLAN to SKB priomap (0-7 ports number as PRIO)
+##########################################################################
+set_port_vlan_prio_map()
+{
+    for vlannum in `seq 0 7`; do
+	# vlan priority tag => skb->priority mapping
+        vconfig set_ingress_map $1 $vlannum $vlannum
+	# skb->priority => vlan priority tag mapping
+        vconfig set_egress_map $1  $vlannum $vlannum
+    done
+}
+
+##########################################################################
 # Configure vlans in kernel. Only one per start
 ##########################################################################
 configs_system_vlans() {
@@ -40,11 +53,11 @@ configs_system_vlans() {
 	    $LOG "Add vlans interfaces"
 	    if [ ! -d /proc/sys/net/ipv4/conf/eth2.1 ]; then
 		vconfig add eth2 1
-		set_vlan_map eth2.1
+		set_port_vlan_prio_map eth2.1
 	    fi
 	    if [ ! -d /proc/sys/net/ipv4/conf/eth2.2 ]; then
 		vconfig add eth2 2
-		set_vlan_map eth2.2
+		set_port_vlan_prio_map eth2.2
 	    fi
 	fi
     fi
