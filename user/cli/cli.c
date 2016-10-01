@@ -18,6 +18,14 @@ void writeHeader(char* text)
     printf("---------------------------------------------------------------\n");
 }
 
+int is_report(int argc, char* argv[])
+{
+    if (argc > 0 && STR_EQ(argv[0],"report"))
+        return 1;
+
+    return 0;
+}
+
 void writeCmdHelp(char* cmd, char* description)
 {
     printf(" %-20s -- %s\n",cmd, description);

@@ -17,12 +17,6 @@ int func_sw_ipv6(int argc, char* argv[])
     int dhcpc_enabled = nvram_get_int(RT2860_NVRAM, "IPv6Dhcpc", 0);
     int allow_forward = nvram_get_int(RT2860_NVRAM, "IPv6AllowForward", 0);
 
-    char* lan_ipaddr = nvram_get(RT2860_NVRAM, "IPv6IPAddr");
-    int lan_prefix = nvram_get_int(RT2860_NVRAM, "IPv6PrefixLen", 0);
-
-    char* wan_ipaddr = nvram_get(RT2860_NVRAM, "IPv6WANIPAddr");
-    int wan_prefix = nvram_get_int(RT2860_NVRAM, "IPv6WANPrefixLen", 0);
-
     char* dns_primary = nvram_get(RT2860_NVRAM, "IPv6DNSPrimary");
     char* dns_secondary = nvram_get(RT2860_NVRAM, "IPv6DNSSecondary");
 
@@ -34,6 +28,45 @@ int func_sw_ipv6(int argc, char* argv[])
     char address[INET6_ADDRSTRLEN] = "";
     char mask[16] = "";
 
+    if (is_report(argc, argv))
+    {
+        getIPv6IntIPAddr(address, mask);
+
+        printf("IPv6 Internal Address\t%s\n", address);
+        printf("IPv6 Internal Netmask\t%s\n", mask);
+
+        address[0] = '\0';
+        mask[0] = '\0';
+
+        getIPv6ExtIPAddr(address, mask);
+
+        printf("IPv6 External Address\t%s\n", address);
+        printf("IPv6 External Netmask\t%s\n", mask);
+
+        printf("IPv6 Default gateway\t%s\n", gateway);
+        printf("IPv6 Primary DNS\t%s\n", dns_primary);
+        printf("IPv6 Secondary DNS\t%s\n", dns_secondary);
+
+        printf("IPv6 Mode\t");
+        switch (ipv6_mode) {
+            case 0: printf("disabled\n"); break;
+            case 1: printf("native\n"); break;
+            case 2: printf("6to4\n"); break;
+            default: printf("unknown\n");
+        }
+
+        printf("IPv6 over VPN\t%s\n",over_vpn?"TRUE":"FALSE");
+        printf("IPv6 autoconfig by DHCP/RA\t%s\n",dhcpc_enabled?"1":"0");
+        printf("Access to LAN from internet\t%s\n",allow_forward?"1":"0");
+
+        printf("Router Advertisement(radvd)\t%s\n",radvd_enabled?"1":"0");
+        printf("Dynamic IPv6 configuration(dhcp6s)\t%s\n",dhcpv6_enabled?"1":"0");
+
+        printf("COMMIT\tipv6\n");
+
+        return 0;
+    }
+
     writeHeader("IPv6");
 
     printf("Internal IPv6 Address:              ");
@@ -42,6 +75,7 @@ int func_sw_ipv6(int argc, char* argv[])
     {
         printf("%s/%s", address, mask);
     }
+
     printf("\n");
 
     printf("External IPv6 Address:              ");
@@ -77,8 +111,6 @@ int func_sw_ipv6(int argc, char* argv[])
     if (!dhcpc_enabled)
     {
         printf("\n");
-        printf("LAN Address / Subnet Prefix Length: %s/%i \n", lan_ipaddr, lan_prefix);
-        printf("WAN Address / Subnet Prefix Length: %s/%i \n", wan_ipaddr, wan_prefix);
         printf("Default gateway:                    %s \n", gateway);
         printf("Primary DNS Address:                %s \n", dns_primary);
         printf("Secondary DNS Address:              %s \n", dns_secondary);
@@ -98,6 +130,15 @@ int func_sw_lan(int argc, char* argv[])
     char *hostname = nvram_get(RT2860_NVRAM, "HostName");
     char *lan_ipaddr = nvram_get(RT2860_NVRAM, "lan_ipaddr");
     char *lan_netmask = nvram_get(RT2860_NVRAM, "lan_netmask");
+
+    if (is_report(argc, argv))
+    {
+        printf("LAN Hostname\t%s\n", hostname);
+        printf("LAN IP Address\t%s\n", lan_ipaddr);
+        printf("LAN Netmask\t%s\n", lan_netmask);
+        printf("COMMIT\tlan\n");
+        return 0;
+    }
 
     writeHeader("LAN Setup");
 
@@ -128,6 +169,39 @@ int func_sw_wan(int argc, char* argv[])
     char wan_phy_addr[16] = {0};
     char wan_phy_netmask[16] = {0};
     char wan_phy_gw[16] = {0};
+
+    if (is_report(argc, argv))
+    {
+        getIfIp(getWanIfName(), wan_phy_addr);
+        getIfNetmask(getWanIfName(), wan_phy_netmask);
+        getWANGateway(wan_phy_gw);
+
+        printf("Connection mode\t%s\n", connMode);
+        printf("Physical WAN IP Addr\t%s\n", wan_phy_addr);
+        printf("Physical WAN Netmask\t%s\n", wan_phy_netmask);
+        printf("Physical WAN Gateway\t%s\n", wan_phy_gw);
+
+        if (STR_EQ(connMode, "STATIC"))
+        {
+            if (wan_ipaddr)  printf("WAN IP Address\t%s\n", wan_ipaddr);
+            if (wan_netmask) printf("WAN Netmask\t%s\n", wan_netmask);
+            if (wan_gateway) printf("WAN Default Gateway\t%s\n", wan_gateway);
+        }
+
+        if (wan_macaddr)     printf("WAN MAC Address\t%s\n", wan_macaddr);
+
+        printf("WAN Static DNS\t%s\n", STR_EQ(wan_static_dns, "on")?"1":"0");
+
+        if (getDNSAddressStr(1, dns_addr) == 0)
+            printf("Primary DNS Address\t%s\n", dns_addr);
+
+        if (getDNSAddressStr(2, dns_addr) == 0)
+            printf("Secondary DNS Address\t%s\n", dns_addr);
+
+        printf("COMMIT\twan\n");
+
+        return 0;
+    }
 
     writeHeader("WAN Connection");
 

@@ -11,6 +11,20 @@
 
 #include "cli_st.h"
 
+const char* getOpmodeStr(int opmode)
+{
+    switch (opmode)
+    {
+        case 0: return "AP-Bridge";
+        case 1: return "AP-Gateway";
+        case 2: return "Client-Gateway";
+        case 3: return "Client-AP-Gateway";
+    }
+
+    return "Unknown";
+
+}
+
 int getCurrentTimeStr(char* timeStr)
 {
     struct tm *utime;
@@ -241,9 +255,79 @@ int func_st_dhcp(int argc, char* argv[])
     return 0;
 }
 
+int func_st_vpn_report(int argc, char* argv[])
+{
+    char vpn_ip_addr[16] = {0};
+
+    int vpnType = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
+    int auth_method = nvram_get_int(RT2860_NVRAM, "vpnAuthProtocol",0);
+
+    getIfIp(getPPPIfName(), vpn_ip_addr);
+
+    printf("VPN Status\t%s\n",getVPNStatusStr());
+    printf("VPN IP Address\t%s\n", vpn_ip_addr);
+
+    printf("VPN Server\t%s\n", nvram_get(RT2860_NVRAM, "vpnServer") );
+    printf("VPN Interface\t%s\n", nvram_get(RT2860_NVRAM, "vpnInterface") );
+    printf("VPN Service name\t%s\n", nvram_get(RT2860_NVRAM, "vpnService") );
+    printf("VPN Username\t%s\n", nvram_get(RT2860_NVRAM, "vpnUser") );
+
+    printf("VPN Mode\t");
+    switch (vpnType)
+    {
+        case 0:
+            printf("pppoe\n");
+            break;
+
+        case 1:
+            printf("pptp\n");
+            break;
+
+        case 2:
+            printf("l2tp\n");
+            break;
+
+        case 3:
+            printf("kabinet\n");
+            break;
+    }
+
+    printf("VPN Auth method\t");
+    switch (auth_method)
+    {
+        case 0:  printf("auto\n"); break;
+        case 1:  printf("pap\n"); break;
+        case 2:  printf("chap\n"); break;
+        case 3:  printf("mschap\n"); break;
+        default: printf("unknown\n");
+    }
+
+
+    printf("VPN Default gateway\t%s\n", nvram_get_int(RT2860_NVRAM, "vpnDGW", 0)?"1":"0");
+    printf("Pure PPPoE\t%s\n",   nvram_get_int(RT2860_NVRAM, "vpnPurePPPOE", 0)?"1":"0" );
+
+    printf("Allow MPPE\t%s\n",   strcmp(nvram_get(RT2860_NVRAM, "vpnMPPE"), "on")?"0":"1");
+    printf("Allow Debug\t%s\n",  strcmp(nvram_get(RT2860_NVRAM, "vpnDebug"), "on")?"0":"1");
+    printf("Adaptive LCP\t%s\n", strcmp(nvram_get(RT2860_NVRAM, "vpnEnableLCP"), "on")?"0":"1");
+    printf("Peer DNS\t%s\n",     strcmp(nvram_get(RT2860_NVRAM, "vpnPeerDNS"), "on")?"0":"1");
+    printf("Enable NAT\t%s\n",   strcmp(nvram_get(RT2860_NVRAM, "vpnNAT"), "on")?"0":"1");
+
+
+    printf("COMMIT\tvpn\n");
+
+    return 0;
+}
+
 int func_st_vpn(int argc, char* argv[])
 {
     char vpn_ip_addr[16] = {0};
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_st_vpn_report(argc, argv);
+    }
 
     writeHeader("VPN");
 
@@ -254,7 +338,7 @@ int func_st_vpn(int argc, char* argv[])
         printf("VPN IP Address:   %s \n", vpn_ip_addr);
     }
 
-    printf("VPN Type:         ");
+    printf("VPN Mode:         ");
 
     int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
     switch (vpn_type)
@@ -318,6 +402,41 @@ int func_st_vpn(int argc, char* argv[])
     return 0;
 }
 
+int func_st_show_report(int argc, char* argv[])
+{
+    char timeStr[40] = {0};
+    struct mem_stats mem;
+    struct cpu_stats cpu;
+
+    printf("Firmware version\t%s\n", VERSIONPKG);
+
+    if (getCurrentTimeStr(timeStr) != 0)
+    {
+        timeStr[0] = '\0';
+    }
+
+    printf("System time\t%s\n", timeStr);
+
+    printf("Uptime\t%ld\n", getSystemUptime());
+    printf("Operation Mode\t%s\n", getOpmodeStr(nvram_get_int(RT2860_NVRAM, "OperationMode", -1)));
+
+    if (getMemData(&mem) == 0)
+    {
+        printf("Memory total\t%lu\n", mem.total);
+        printf("Memory free\t%lu\n", mem.free );
+    }
+
+
+    if (getCPUData(&cpu) == 0)
+    {
+        printf("CPU usage\t%.1f\n", cpu.busy*100.0f/cpu.total);
+    }
+
+    printf("COMMIT\tstatus\n");
+
+    return 0;
+}
+
 int func_st_show(int argc, char* argv[])
 {
     char timeStr[40];
@@ -325,6 +444,18 @@ int func_st_show(int argc, char* argv[])
     long uptime = getSystemUptime();
     struct mem_stats mem;
     struct cpu_stats cpu;
+
+    if (is_report(argc, argv))
+    {
+        func_st_show_report(argc,argv);
+        func_sw_lan(argc, argv);
+        func_sw_ipv6(argc, argv);
+        func_sw_wan(argc, argv);
+        func_st_vpn(argc, argv);
+        func_wl_status(argc, argv);
+        printf("COMMIT\tend\n");
+        return 0;
+    }
 
     writeHeader("Device Status");
 
@@ -341,28 +472,7 @@ int func_st_show(int argc, char* argv[])
     }
 
 
-    printf("Operation Mode:         ", timeStr);
-    switch (opmode)
-    {
-        case 0:
-                printf("AP-Bridge \n");
-            break;
-
-        case 1:
-                printf("AP-Gateway \n");
-            break;
-
-        case 2:
-                printf("Client-Gateway \n");
-            break;
-
-        case 3:
-                printf("Client-AP-Gateway \n");
-            break;
-
-        default:
-                printf("Unknown");
-    }
+    printf("Operation Mode:         %s \n", getOpmodeStr(opmode));
 
     printf("\n");
 
@@ -378,13 +488,11 @@ int func_st_show(int argc, char* argv[])
         printf("CPU usage:              %.1f %% \n", cpu.busy*100.0f/cpu.total);
     }
 
-    char* argv_empty[0];
-
-    func_sw_lan(0, argv_empty);
-    func_sw_ipv6(0, argv_empty);
-    func_sw_wan(0, argv_empty);
-    func_st_vpn(0, argv_empty);
-    func_wl_status(0, argv_empty);
+    func_sw_lan(argc, argv);
+    func_sw_ipv6(argc, argv);
+    func_sw_wan(argc, argv);
+    func_st_vpn(argc, argv);
+    func_wl_status(argc, argv);
 
     printf("\n");
     return 0;

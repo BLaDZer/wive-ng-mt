@@ -169,10 +169,90 @@ int func_wl_wds(int argc, char* argv[])
     return 0;
 }
 
+int func_wl_status_report(int argc, char* argv[])
+{
+    int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
+    char mac[18] = {0};
+    getWlanCurrentMacAddr(mac, 1);
+    int chan_num = getWlanChannelNum(1);
+
+    char addr[ETH_ALEN] = {0};
+
+    int ap_ret = getWlanAPMac("apcli0", addr);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    if (ap_ret <= 0) ap_ret = getWlanAPMac("apclii0", addr);
+#endif
+
+    printf("Radio Enabled\t%s\n", radio_status?"1":"0");
+    printf("BSSID\t%s\n", mac);
+    printf("Channel\t%i\n", chan_num);
+    printf("APCli Status\t%i\n", ap_ret);
+    printf("APCli Address\t%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+
+    printf("SSID to SSID isolation\t%s\n", nvram_get_int(RT2860_NVRAM, "NoForwardingBTNBSSID", 0)?"1":"0");
+    printf("LAN to WLAN isolation\t%s\n", nvram_get_int(RT2860_NVRAM, "LanWifiIsolate", 0)?"1":"0");
+
+    printf("SSID List\n");
+
+    char* hidden_ssid = nvram_get(RT2860_NVRAM, "HideSSID");
+    int hidden_ssid_len = strlen(hidden_ssid);
+
+    char* isolated_ssid = nvram_get(RT2860_NVRAM, "NoForwarding");
+    int isolated_ssid_len = strlen(isolated_ssid);
+
+    char* bcisolated_ssid = nvram_get(RT2860_NVRAM, "NoForwardingMBCast");
+    int bcisolated_ssid_len = strlen(bcisolated_ssid);
+
+    int ssid_num;
+    char ssid_nvram_id[6] = {0};
+
+    for (ssid_num=1; ssid_num <= 8; ssid_num++)
+    {
+        sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+
+        char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
+        if (ssid_name[0] == '\0')
+            break;
+
+        int is_hidden = 0;
+        int is_client_isolated = 0;
+        int is_broad_isolated = 0;
+        int str_ind = (ssid_num-1)*2;
+
+        if ((str_ind < hidden_ssid_len) && (hidden_ssid[str_ind] == '1'))
+        {
+            is_hidden = 1;
+        }
+
+        if ((str_ind < isolated_ssid_len) && (isolated_ssid[str_ind] == '1'))
+        {
+            is_client_isolated = 1;
+        }
+
+        if ((str_ind < bcisolated_ssid_len) && (bcisolated_ssid[str_ind] == '1'))
+        {
+            is_broad_isolated = 1;
+        }
+
+        printf("SSID Elem\t%i\t%s\t%i\t%i\t%i\n", ssid_num, ssid_name, is_hidden, is_client_isolated,is_broad_isolated);
+    }
+
+    printf("COMMIT\twlan\n");
+
+    return 0;
+}
+
 int func_wl_status(int argc, char* argv[])
 {
     int ssid_num;
     char ssid_nvram_id[6] = {0};
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_wl_status_report(argc, argv);
+    }
 
     writeHeader("WLAN Status");
 
