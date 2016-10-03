@@ -1153,6 +1153,7 @@
 				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
 				displayElement( [ 'basicVHT', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
 				displayElement( [ 'div_11n', 'advWirelessT', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], enableWireless == "1");
+				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (is5gh_support == 1 && enableWirelessAc == "1"));
 				
 				displayElement('basicMbssidModeT', ((enableWireless == 1) || (enableWirelessAc == 1)) && (is5gh_support == 1));
 				if ((enableWireless == 0) && (enableWirelessAc == 0)) {

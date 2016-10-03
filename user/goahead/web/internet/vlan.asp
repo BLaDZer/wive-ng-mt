@@ -16,49 +16,50 @@
 			Butterlate.setTextDomain("internet");
 			Butterlate.setTextDomain("buttons");
 
-			var wifiNIC			= [];
-			var wifiSSID		= [];
-			var wifiLan 		= [];
-			var wifiLanINIC 	= [];
-			var wifiWan			= [];
-			var wifiWanINIC 	= [];
-			var mbssid_mode 	= "";
-			var ssid_num		= "";
-			var vlanLan			= [];
-			var vlanLanIsolate	= [];
+			var wifiNIC					= [];
+			var wifiSSID				= [];
+			var wifiLan 				= [];
+			var wifiLanINIC 			= [];
+			var wifiWan					= [];
+			var wifiWanINIC 			= [];
+			var mbssid_mode 			= "";
+			var ssid_num				= "";
+			var vlanLan					= [];
+			var vlanLanIsolate			= [];
+			
+			var vlanTv					= '<% getCfgGeneral(1, "tv_portVLAN"); %>'.replace(/\s+/g, '').split(",");
+			var vlanTvPrio				= '<% getCfgGeneral(1, "tv_portVLANPRIO"); %>'.replace(/\s+/g, '').split(",");
+			var vlanSip					= '<% getCfgGeneral(1, "sip_portVLAN"); %>'.replace(/\s+/g, '').split(",");
+			var vlanSipPrio				= '<% getCfgGeneral(1, "sip_portVLANPRIO"); %>'.replace(/\s+/g, '').split(",");
+
+			var vlanMode_WifiLan		= '<% getCfgGeneral(1, "VlanWifiLan"); %>';
+			var vlanMode_WifiLanINIC	= '<% getCfgGeneral(1, "VlanWifiLanINIC"); %>';
+			var vlanMode_WifiWan		= '<% getCfgGeneral(1, "VlanWifiWan"); %>';
+			var vlanMode_WifiWanINIC	= '<% getCfgGeneral(1, "VlanWifiWanINIC"); %>';
+			var vlanMode_MBSSID_mode	= '<% getCfgGeneral(1, "BssidIfName"); %>';
+			var vlanMode_SSID_num		= '<% getCfgGeneral(1, "BssidNum"); %>';
+			var vlanMode_SsidList		= '<% getSSIDsList(); %>';
+			var vlanMode_VLANlan		= '<% getCfgGeneral(1, "VlanLan"); %>';
+			var vlanMode_VLANlanIsolate	= '<% getCfgGeneral(1, "VlanLanIsolate"); %>';
 
 			var is5gh_support	= '<% is5gh_support(); %>';
 
 			function initTranslation()
 			{
-				_TR("vlanPortTitle",				"vlan port title");
-				_TR("vlanPortIntroduction",			"vlan port introduction");
-				_TR("vlanPortStatus",				"vlan port status");
-				_TR("vlanPortNumber",				"vlan port status number");
-				_TR("vlanPortType",					"vlan port status type");
-				_TR("vlanPortVLAN",					"vlan port status vlan");
-				_TR("vlanPortMode",					"vlan port status mode");
-				_TR("vlanPortState",				"vlan port status state");
-				_TR("vlanPortManagement", 			"vlan port management");
-				_TR("vlanPort_wan_port",			"vlan port management wan port");
-				_TR("vlanPort_lan_port",			"vlan port management lan port");
-				_TR("vlanPort_lan_port_near",		"vlan port management lan port near");
-				_TR("vlanPort_lan_port_distant",	"vlan port management lan port distant");
-				_TR("tv_stb",						"vlan port tv stb");
-				_TR("tv_stb_enable",				"vlan port tv stb enable");
-				_TR("tv_stb_mcast",					"vlan port tv stb mcast");
-				_TR("tv_stb_vlanid",				"vlan port tv stb vlanid");
-				_TR("sip_stb",						"vlan port sip stb");
-				_TR("sip_stb_enable",				"vlan port sip stb enable");
-				_TR("sip_stb_mcast",				"vlan port sip stb mcast");
-				_TR("sip_stb_vlanid",				"vlan port sip stb vlanid");
-				_TR("vlanPortMode",					"vlan port mode");
-				_TR("port_mode_auto",				"vlan port speed auto");
-				_TR("port_mode_10h",				"vlan port speed 10h");
-				_TR("port_mode_10f",				"vlan port speed 10f");
-				_TR("port_mode_100h",				"vlan port speed 100h");
-				_TR("port_mode_100f",				"vlan port speed 100f");
-				_TR("port_mode_1000f",				"vlan port speed 1000f");
+				_TR("vlanTvSipTitle",				"vlan tvsip title");
+				_TR("vlanTvSipIntroduction",		"vlan tvsip introduction");
+				_TR("tv_stb",						"vlan tvsip tv stb");
+				_TR("tv_stb_enable",				"vlan tvsip tv stb enable");
+				_TR("tv_stb_mcast",					"vlan tvsip tv stb mcast");
+				_TR("tv_stb_vlanid",				"vlan vlanid");
+				_TR("tv_stb_prio",					"vlan tvsip vlanid prio");
+				_TR("sip_stb",						"vlan tvsip sip stb");
+				_TR("sip_stb_enable",				"vlan tvsip sip stb enable");
+				_TR("sip_stb_mcast",				"vlan tvsip sip stb mcast");
+				_TR("sip_stb_vlanid",				"vlan vlanid");
+				_TR("sip_stb_prio",					"vlan tvsip vlanid prio");
+				_TRV("tv_stbVLANbutton",			"vlan add button");
+				_TRV("sip_stbVLANbutton",			"vlan add button");
 				_TR("vlanWlanLanTitle",				"vlan mode title");
 				_TR("vlanWlanLanIntro",				"vlan mode introduction");
 				_TR("vlanModeSettings",				"vlan mode settings");
@@ -68,113 +69,93 @@
 				_TR("vlanMode_select_lan",			"vlan mode select lan");
 				_TR("vlanMode_wlan_ap",				"vlan mode wlan ap");
 				_TR("vlanMode_wlan_iface",			"vlan mode wlan iface");
-				_TR("vlanMode_wlan_vlan",			"vlan mode wlan vlan");
-				_TRV("vlanMode_wlan_apply",			"vlan mode wlan apply");
+				_TR("vlanMode_wlan_vlan",			"vlan vlanid");
+				_TRV("vlanMode_wlan_add",			"vlan add button");
 				_TR("vlanMode_lan_num",				"vlan mode lan num");
-				_TR("vlanMode_lan_vlanid",			"vlan mode lan vlanid");
+				_TR("vlanMode_lan_vlanid",			"vlan vlanid");
 				_TR("vlanMode_lan_isolated",		"vlan mode lan isolated");
-				_TRV("vlanMode_lan_add",			"vlan mode lan add");
-				_TRV("vlanMode_lan_apply",			"vlan mode lan apply");
-				_TRV("port_mode_setup",				"vlan port setup button");
-				_TR("vlanMode_lan_table",			"vlan mode lan table");
-				_TR("vlanMode_lan_table_num",		"vlan mode lan table num");
-				_TR("vlanMode_lan_table_vlan",		"vlan mode lan table vlan");
-				_TR("vlanMode_lan_table_isolated",	"vlan mode lan table isolated");
-				_TR("vlanMode_lan_table_action",	"vlan mode lan table action");
-				_TR("vlanMode_wlan_table",			"vlan mode wlan table");
-				_TR("vlanMode_wlan_table_ap",		"vlan mode wlan table ap");
-				_TR("vlanMode_wlan_table_vlan",		"vlan mode wlan table vlan");
-				_TR("vlanMode_wlan_table_iface",	"vlan mode wlan table iface");
-				_TR("vlanMode_wlan_table_action",	"vlan mode wlan table action");
+				_TRV("vlanMode_lan_add",			"vlan add button");
 				_TRV("vlanApply",					"button apply");
 				_TRV("vlanCancel",					"button cancel");
 				_TRV("vlanReset",					"button reset");
 				_TRV("vlanModeApply",				"button apply");
 				_TRV("vlanModeCancel",				"button cancel");
 				_TRV("vlanModeReset",				"button reset");
+				
+				var elements = document.getElementsByTagName('option');
+				for (var i = 0; i < elements.length; i++)
+					switch (elements[i].id) {
+						case 'disable':							elements[i].innerHTML = _("button disable");					break;
+						case 'enable':							elements[i].innerHTML = _("button enable");						break;
+					}				
 			}
 
 			function initValues()
 			{
-				var gigaphy					= '<% gigaphy(); %>';
-				var form					= document.lanCfg;
-
 				// Initializing variables
-				form.wan_port.selectedIndex	= ('<% getCfgGeneral(1, "wan_port"); %>' == '4') ? 1 : 0;
-				form.lan_port.selectedIndex	= ('<% getCfgGeneral(1, "lan_port"); %>' == 'near') ? 0 : 1;
-				form.port1_swmode.value		= '<% getCfgGeneral(1, "port1_swmode"); %>';
-				form.port2_swmode.value		= '<% getCfgGeneral(1, "port2_swmode"); %>';
-				form.port3_swmode.value		= '<% getCfgGeneral(1, "port3_swmode"); %>';
-				form.port4_swmode.value		= '<% getCfgGeneral(1, "port4_swmode"); %>';
-				form.port5_swmode.value		= '<% getCfgGeneral(1, "port5_swmode"); %>';
-				form.tv_stbEnabled.checked	= ('<% getCfgGeneral(1, "tv_port"); %>' == '1') ? true : false;
-				form.tv_stbMcast.checked	= ('<% getCfgGeneral(1, "tv_port_mcast"); %>' == '1') ? true : false;
-				form.tv_stbVLAN.value		= '<% getCfgGeneral(1, "tv_portVLAN"); %>';
-				form.sip_stbEnabled.checked	= ('<% getCfgGeneral(1, "sip_port"); %>' == '1') ? true : false;
-				form.sip_stbMcast.checked	= ('<% getCfgGeneral(1, "sip_port_mcast"); %>' == '1') ? true : false;
-				form.sip_stbVLAN.value		= '<% getCfgGeneral(1, "sip_portVLAN"); %>';
+				document.getElementById('tv_stbEnabled').value		= ('<% getCfgGeneral(1, "tv_port"); %>' == '1') ? "1" : "0";
+				document.getElementById('tv_stbMcast').value		= ('<% getCfgGeneral(1, "tv_port_mcast"); %>' == '1') ? "1" : "0";
+				document.getElementById('sip_stbEnabled').value		= ('<% getCfgGeneral(1, "sip_port"); %>' == '1') ? "1" : "0";
+				document.getElementById('sip_stbMcast').value		= ('<% getCfgGeneral(1, "sip_port_mcast"); %>' == '1') ? "1" : "0";
 
-				if (gigaphy == 0) {
-					form.port_mode.remove(5);
+				// Clearing empty table;
+				if ((vlanTv.length > 0 && vlanTv[0].length == "") || document.getElementById('tv_stbEnabled').value == 0) {
+					vlanTv = [];
+					vlanTvPrio = [];
 				}
-
-				switch (form.port1_swmode.value) {
-					case 'auto':	form.port_mode.selectedIndex = 0;	break;
-					case '10h':		form.port_mode.selectedIndex = 1;	break;
-					case '10f':		form.port_mode.selectedIndex = 2;	break;
-					case '100h':	form.port_mode.selectedIndex = 3;	break;
-					case '100f':	form.port_mode.selectedIndex = 4;	break;
-					case '1000f':	form.port_mode.selectedIndex = 5;	break;
+				if ((vlanSip.length > 0 && vlanSip[0].length == "")  || document.getElementById('sip_stbEnabled').value == 0) {
+					vlanSip = [];
+					vlanSipPrio = [];
 				}
+					
+				displayElement(['vlanPort_tv_stb_prio_tr', 'vlanPort_tv_stb_mcast_tr','vlanPort_tv_stb_vlan_tr'], document.getElementById('tv_stbEnabled').value == '1');
+				displayElement(['vlanPort_sip_stb_prio_tr', 'vlanPort_sip_stb_mcast_tr','vlanPort_sip_stb_vlan_tr'], document.getElementById('sip_stbEnabled').value == '1');
+				document.getElementById('tv_stbMcast').disabled = (vlanTv.length > 0) ? false : true;
+				document.getElementById('sip_stbMcast').disabled = (vlanSip.length > 0) ? false : true;
 
+				getWLANVLANvalues();
+				getLANVLANvalues();
+
+				if (vlanMode_WifiLan.length > 0 || vlanMode_WifiLanINIC.length > 0 ||
+				    vlanMode_WifiWan.length > 0 || vlanMode_WifiWanINIC.length > 0) 
+					document.getElementById('vlanMode_select').selectedIndex = 1;
+				if (vlanMode_VLANlan.length > 0 || vlanMode_VLANlanIsolate.length > 0)
+					document.getElementById('vlanMode_select').selectedIndex = 2;
+				
 				showWarning();
 				vlanModeChange();
-
-				ajaxLoadElement("vlanData", "/internet/vlan-portstatus.asp", initVariables);
-				setInterval('ajaxLoadElement("vlanData", "/internet/vlan-portstatus.asp", showPortStatus);', 2000);
-
-				initTranslation();
+				showTvSipVLAN();
 			}
 
 			function checkValues(form) 
 			{
-				// Checking TV/STB VLANs ID
-				if (form.tv_stbEnabled.checked)
-					if (!form.tv_stbVLAN.value.match(/[^0-9,\s]/gi)) {
-						var tmp = form.tv_stbVLAN.value.replace(/\s+/g, '').split(",");
-						for (var i = 0; i < tmp.length; i++)
-							if ((+tmp[i] <= 0) || (+tmp[i] > 4096)) {
-								alert(_("vlan invalid vlan range"));
-								form.tv_stbVLAN.select();
-								form.tv_stbVLAN.focus();
-								return false
-							}
+				//Generating TV/STB/VLAN1 VLAN list
+				var value		= "";
+				var valuePrio	= "";
+				for (var i = 0; i < vlanTv.length; i++) {
+					value		+= vlanTv[i];
+					valuePrio	+= (vlanTvPrio[i].length > 0) ? vlanTvPrio[i] : 0;
+					if (i + 1 < vlanTv.length) {
+						value		+= ",";
+						valuePrio	+= ",";
 					}
-					else {
-						alert(_("vlan invalid vlanid"));
-						form.tv_stbVLAN.select();
-						form.tv_stbVLAN.focus();
-						return false
+				}
+				document.getElementById('tv_stbVLAN').value = value;
+				document.getElementById('tv_stbVLANprio').value = valuePrio;
+				
+				//Generating SIP/STB/VLAN1 VLAN list
+				value		= "";
+				valuePrio	= "";
+				for (var i = 0; i < vlanSip.length; i++) {
+					value		+= vlanSip[i];
+					valuePrio	+= (vlanSipPrio[i].length > 0) ? vlanSipPrio[i] : 0;
+					if (i + 1 < vlanSip.length) {
+						value		+= ",";
+						valuePrio	+= ",";
 					}
-
-				// Checking SIP/STB VLANs ID
-				if (form.sip_stbEnabled.checked)
-					if (!form.sip_stbVLAN.value.match(/[^0-9,\s]/gi)) {
-						var tmp = form.sip_stbVLAN.value.replace(/\s+/g, '').split(",");
-						for (var i = 0; i < tmp.length; i++)
-							if ((tmp[i] <= 0) || (tmp[i] > 4096)) {
-								alert(_("vlan invalid vlan range"));
-								form.sip_stbVLAN.select();
-								form.sip_stbVLAN.focus();
-								return false
-							}
-					}
-					else {
-						alert(_("vlan invalid vlanid"));
-						form.sip_stbVLAN.select();
-						form.sip_stbVLAN.focus();
-						return false
-					}
+				}
+				document.getElementById('sip_stbVLAN').value = value;
+				document.getElementById('sip_stbVLANprio').value = valuePrio;
 
 				if (!ajaxPostForm(_('vlan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
@@ -220,6 +201,10 @@
 						if ((i + 1) < rai)
 							wifi_wan_inic += " ";
 					}
+					wifi_lan		= (wifi_lan == "0") ? "" : wifi_lan;
+					wifi_wan		= (wifi_wan == "0") ? "" : wifi_wan;
+					wifi_lan_inic	= (wifi_lan_inic == "0") ? "" : wifi_lan_inic;
+					wifi_wan_inic	= (wifi_wan_inic == "0") ? "" : wifi_wan_inic;
 				}
 				if (form.vlanMode_select.selectedIndex == 2) {
 					for (var i = 0; i < vlanLan.length; i++) {
@@ -249,233 +234,223 @@
 				return true;
 			}
 
-			function selectPort(port)
+			// Show TV/SIP VLAN list
+			function showTvSipVLAN()
 			{
-				if (port === undefined)
-					port = document.lanCfg.port_num.selectedIndex + 1;
-				else 
-					document.lanCfg.port_num.selectedIndex = port - 1;
-				switch (document.getElementById('port' + port + '_swmode').value) {
-					case 'auto':	document.lanCfg.port_mode.selectedIndex = 0;	break;
-					case '10h':		document.lanCfg.port_mode.selectedIndex = 1;	break;
-					case '10f':		document.lanCfg.port_mode.selectedIndex = 2;	break;
-					case '100h':	document.lanCfg.port_mode.selectedIndex = 3;	break;
-					case '100f':	document.lanCfg.port_mode.selectedIndex = 4;	break;
-					case '1000f':	document.lanCfg.port_mode.selectedIndex = 5;	break;
-				}
-				showPortStatus();
-			}
-
-			function setPort()
-			{
-				var port = document.lanCfg.port_num.selectedIndex + 1;
-				switch (document.lanCfg.port_mode.selectedIndex) {
-					case 0:		document.getElementById('port' + port + '_swmode').value = 'auto';	break;
-					case 1:		document.getElementById('port' + port + '_swmode').value = '10h';	break;
-					case 2:		document.getElementById('port' + port + '_swmode').value = '10f';	break;
-					case 3:		document.getElementById('port' + port + '_swmode').value = '100h';	break;
-					case 4:		document.getElementById('port' + port + '_swmode').value = '100f';	break;
-					case 5:		document.getElementById('port' + port + '_swmode').value = '1000f';	break;
-				}					
-			}
-
-			function checkSTBform()
-			{
-				var stbEnable	= document.getElementById("tv_stbEnabled");
-				var stbVLAN		= document.getElementById("tv_stbVLAN");
-				var stbMcast	= document.getElementById("tv_stbMcast");
-
-				if (stbEnable.checked) 
-				{
-					stbVLAN.disabled = false;
-					if (stbVLAN.value.length > 0) {
-						stbMcast.disabled = false;
-					} else {
-						stbMcast.disabled = true;
-					}
-				}
-				else {
-					stbVLAN.disabled = true;
-					stbMcast.disabled = true;
-				}
-			}
-
-			function checkSIPform()
-			{
-				var sipEnable	= document.getElementById("sip_stbEnabled");
-				var sipVLAN		= document.getElementById("sip_stbVLAN");
-				var sipMcast	= document.getElementById("sip_stbMcast");
-
-				if (sipEnable.checked) 
-				{
-					sipVLAN.disabled = false;
-					if (sipVLAN.value.length > 0) {
-						sipMcast.disabled = false;
-					} else {
-						sipMcast.disabled = true;
-					}
-				} else {
-					sipVLAN.disabled = true;
-					sipMcast.disabled = true;
-				}
-			}
-
-			function showPortStatus()
-			{
-				var portData;
-				try {
-					portData	= JSON.parse(document.getElementById('vlanPort_status').value);
-				} catch(e) {};
-				var portName	= "";
-				var portType	= "";
-				var portVLAN	= "";
-				var portMode	= [ document.getElementById('port1_swmode').value, 
-									document.getElementById('port2_swmode').value, 
-									document.getElementById('port3_swmode').value,
-									document.getElementById('port4_swmode').value,
-									document.getElementById('port5_swmode').value
-								  ];
-				var portState	= "";
-
-				var platform	= '<% getPlatform(); %>';
-
-				var wan			= '<% getCfgZero(1, "wan_port"); %>';
-
-				var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' != '1') ? -1 : (wan == 0) ? 1 : wan - 1;
-				var stb_vlan	= '<% getCfgZero(1, "tv_portVLAN"); %>';
-				var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' != '1') ? -1 : (wan == 0) ? 2 : wan - 2;
-				var sip_vlan	= '<% getCfgZero(1, "sip_portVLAN"); %>';
-
-				var html		= "";
-				var port_img	= "";
-				var port_text	= "";
-				var i;
-
-				html += '<table class="form">';
+				var html, i, prio;
+				var show = false;
+				
+				html  = '<table class="form">';
 				html += '<tr>';
-				html += '<td class="title" colspan="5" id="vlanPortStatus">Ethernet Port Status</td>';
+				html += '<td class="title" colspan="4">' + _("vlan tvsip status title") + '</td>';
 				html += '</tr>';
-				html += '<tr>'
-				html += '<th id="vlanPortNumber" style="width: 10%"># (Name)</th>';
-				html += '<th id="vlanPortType"   style="width: 20%">Type</th>';
-				html += '<th id="vlanPortVLAN"   style="width: 20%">VLAN</th>';
-				html += '<th id="vlanPortMode"   style="width: 20%">Mode</th>';
-				html += '<th id="vlanPortState"  style="width: 20%">State</th>';
-				html += '</tr>'
+				html += '<th style="width: 40%">' + _("vlan tvsip status port") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan vlanid") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan tvsip vlanid prio") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan action") + '</th>';
 
-				for (i = (portData.ethernet.length - 1); i >= 0; i--) {
-
-					html += '<tr>';
-
-					// Set port number and name 
-					if (portData.ethernet[i].port == 4) {
-						portName = "WAN";
+				for (i = 0; i < vlanTv.length; i++)
+					if (vlanTv[i].length > 0 && document.getElementById('tv_stbEnabled').value == "1") {
+						prio = (vlanTvPrio[i] == '') ? 0 : vlanTvPrio[i];
+						html += '<tr>';
+						html += '<td style="text-align: center;">' + _("vlan tvsip tv stb") + '</td>';
+						html += '<td style="text-align: center;">' + vlanTv[i] + '</td>';
+						html += '<td style="text-align: center;">' + prio + '</td>';
+						html += '<td style="text-align: center;">';
+						html += '<img src="/graphics/edit.png" alt="[+]" title="' + _("vlan edit record") + '" onClick="editTvSipVLAN(' + "'tv', " + i + ');"> ';
+						html += '<img src="/graphics/cross.png" alt="[-]" title="' + _("vlan delete record") + '" onClick="deleteTvSipVLAN(' + "'tv', " + i + ');">';
+						html += '</tr>';
+						show = true;
 					}
-					else
-						if (platform == "MT7620 2T2R 2.4GHz, 100FDX")	// SNR-CPE-W4N-MT
-							portName = (4 - portData.ethernet[i].port) + "X";
-						else if (platform == "MT7620 2T2R 2.4GHz, MT7610 1T1R 5GHz, 100FDX")	// SNR-CPE-MD1
-							portName = "LAN" + (4 - +portData.ethernet[i].port);
-					html += '<td style="text-align: center;">' + (+portData.ethernet[i].port + 1) + ' (' + portName + ')</td>';
 
-					// Set port type
-					if (portData.ethernet[i].port == wan)
-						portType = "WAN";
-					else if (portData.ethernet[i].port == stb_port)
-						portType = "STB";
-					else if (portData.ethernet[i].port == sip_port)
-						portType = "SIP";
-					else
-						portType = "LAN";
-					html += '<td style="text-align: center;">' + portType + '</td>';
-
-					if (document.getElementById('vlanPortStatus_type_port' + i).innerHTML != portType)
-						document.getElementById('vlanPortStatus_type_port' + i).innerHTML = portType;
-
-					// Set port vlan
-					if (i == stb_port)
-						portVLAN = stb_vlan;
-					else if (i == sip_port)
-						portVLAN = sip_vlan;
-					else
-						portVLAN = "-";
-					html += '<td style="text-align: center;">' + portVLAN + '</td>';
-
-					// Set port mode
-					switch (portMode[i]) {
-						case 'auto':		portMode[i] = _("vlan port speed auto");	break;
-						case '10h':			portMode[i] = _("vlan port speed 10h");		break;
-						case '10f':			portMode[i] = _("vlan port speed 10f");		break;
-						case '100h':		portMode[i] = _("vlan port speed 100h");	break;
-						case '100f':		portMode[i] = _("vlan port speed 100f");	break;
-						case '1000h':		portMode[i] = _("vlan port speed 1000h");	break;
-						case '1000f':		portMode[i] = _("vlan port speed 1000f");	break;
+				for (i = 0; i < vlanSip.length; i++)
+					if (vlanSip[i].length > 0 && document.getElementById('sip_stbEnabled').value == "1") {
+						prio = (vlanSipPrio[i] == '') ? 0 : vlanSipPrio[i];
+						html += '<tr>';
+						html += '<td style="text-align: center;">' + _("vlan tvsip sip stb") + '</td>';
+						html += '<td style="text-align: center;">' + vlanSip[i] + '</td>';
+						html += '<td style="text-align: center;">' + prio + '</td>';
+						html += '<td style="text-align: center;">';
+						html += '<img src="/graphics/edit.png" alt="[+]" title="' + _("vlan edit record") + '" onClick="editTvSipVLAN(' + "'sip', " + i + ');"> ';
+						html += '<img src="/graphics/cross.png" alt="[-]" title="' + _("vlan delete record") + '" onClick="deleteTvSipVLAN(' + "'sip', " + i + ');">';
+						html += '</tr>';
+						show = true;
 					}
-					html += '<td style="text-align: center;">' + portMode[i] + '</td>';
-
-					// Set port state and image
-					if (portData.ethernet[i].link == "1") {
-						portState = "Up ( " + portData.ethernet[i].speed + "Mbit/s ";
-						if (portData.ethernet[i].duplex == "F") {
-							portState += "Full-Duplex";
-							port_img = '<img src="/graphics/port_' + portData.ethernet[i].speed + 'f.gif">';
-						}
-						else {
-							portState += "Half-Duplex";
-							port_img = '<img src="/graphics/port_' + portData.ethernet[i].speed + 'h.gif">';
-						}
-						portState += " )";
-					}
-					else {
-						portState = "Down";
-						port_img = '<img src="/graphics/port_empty.gif">';
-					}
-					html += '<td style="text-align: center;">' + portState + '</td>';
-					
-					if (document.getElementById('vlanPortStatus_img_port' + (4 - i)).innerHTML != port_img)
-						document.getElementById('vlanPortStatus_img_port' + (4 - i)).innerHTML = port_img;
-
-					html += '</tr>';
-				}
 
 				html += '</table>';
-
-				document.getElementById('vlanPortStatus_table').innerHTML = html;
+				document.getElementById('vlanPort_status_table').innerHTML = html;
+				displayElement('vlanPort_status_table', show)
 				initTranslation();
 			}
 
-			function initVariables()
+			// Add TV/SIP VLAN
+			function addTvSipVLAN(type)
 			{
-				getWLANVLANvalues();
-				getLANVLANvalues();
+				var vlan, prio, num;
 
-				if (document.getElementById('vlanMode_WifiLan').value.length > 0 || document.getElementById('vlanMode_WifiLanINIC').value.length > 0 ||
-				    document.getElementById('vlanMode_WifiWan').value.length > 0 || document.getElementById('vlanMode_WifiWanINIC').value.length > 0) 
-					document.getElementById('vlanMode_select').selectedIndex = 1;
-				if (document.getElementById('vlanMode_VLANlan').value.length > 0 ||
-				    document.getElementById('vlanMode_VLANlanIsolate').value.length > 0)
-					document.getElementById('vlanMode_select').selectedIndex = 2;
+				if (type == 'tv') {
+					vlan	= document.getElementById('tv_stbVLANid').value;
+					prio	= document.getElementById('tv_stbVLANidPrio').value;
+					num		= document.getElementById('tv_stbVLANnum').value;
 
-				vlanModeChange();
-				showPortStatus();
+					// Check is VLAN valid
+					if (!validateNum(vlan) || vlan <= 0 || vlan > 4095) {
+						alert(_("vlan invalid vlanid"));
+						document.getElementById('tv_stbVLANid').select();
+						document.getElementById('tv_stbVLANid').focus();
+						return false
+					}
+
+					// Check is VLAN exist
+					for (var i = 0; i < vlanTv.length; i++) 
+						if (vlan == vlanTv[i] && num != i) {
+							alert(_("vlan vlanid exist"));
+							document.getElementById('tv_stbVLANid').select();
+							document.getElementById('tv_stbVLANid').focus();
+							return false;
+						}
+					for (var i = 0; i < vlanSip.length; i++) 
+						if (vlan == vlanSip[i]) {
+							alert(_("vlan vlanid exist"));
+							document.getElementById('tv_stbVLANid').select();
+							document.getElementById('tv_stbVLANid').focus();
+							return false;
+						}
+
+					if (num == "new") {
+						vlanTv.push(vlan);
+						vlanTvPrio.push(prio);
+					}
+					else {
+						vlanTv[num] = vlan;
+						vlanTvPrio[num] = prio;
+					}
+					document.getElementById('tv_stbVLANnum').value		= "new";
+					document.getElementById('tv_stbVLANid').value		= "";
+					document.getElementById('tv_stbVLANidPrio').value	= 0;
+					document.getElementById('tv_stbMcast').disabled		= false;
+				}
+				else {
+					vlan	= document.getElementById('sip_stbVLANid').value;
+					prio	= document.getElementById('sip_stbVLANidPrio').value;
+					num		= document.getElementById('sip_stbVLANnum').value;
+
+					// Check is VLAN valid
+					if (!validateNum(vlan) || vlan <= 0 || vlan > 4095) {
+						alert(_("vlan invalid vlanid"));
+						document.getElementById('sip_stbVLANid').select();
+						document.getElementById('sip_stbVLANid').focus();
+						return false;
+					}
+
+					// Check is VLAN exist
+					for (var i = 0; i < vlanSip.length; i++) 
+						if (vlan == vlanSip[i] && num != i) {
+							alert(_("vlan vlanid exist"));
+							document.getElementById('sip_stbVLANid').select();
+							document.getElementById('sip_stbVLANid').focus();
+							return false;
+						}
+					for (var i = 0; i < vlanTv.length; i++) 
+						if (vlan == vlanTv[i]) {
+							alert(_("vlan vlanid exist"));
+							document.getElementById('sip_stbVLANid').select();
+							document.getElementById('sip_stbVLANid').focus();
+							return false;
+						}
+
+					if (num == "new") {
+						vlanSip.push(vlan);
+						vlanSipPrio.push(prio);
+					}
+					else {
+						vlanSip[num] = vlan;
+						vlanSipPrio[num] = prio;
+					}
+					document.getElementById('sip_stbVLANnum').value		= "new";
+					document.getElementById('sip_stbVLANid').value		= "";
+					document.getElementById('sip_stbVLANidPrio').value	= 0;
+					document.getElementById('sip_stbMcast').disabled	= false;
+				}
+				showTvSipVLAN();
 			}
 
+			// Edit TV/SIP VLAN
+			function editTvSipVLAN(type, num)
+			{
+				if (type == 'tv') {
+					document.getElementById('tv_stbVLANid').value		= vlanTv[num];
+					document.getElementById('tv_stbVLANidPrio').value	= (vlanTvPrio[num].length > 0) ? vlanTvPrio[num] : 0;
+					document.getElementById('tv_stbVLANnum').value		= num;
+					document.getElementById('tv_stbVLANid').select();
+					document.getElementById('tv_stbVLANid').focus();
+				}
+				else {
+					document.getElementById('sip_stbVLANid').value		= vlanSip[num];
+					document.getElementById('sip_stbVLANidPrio').value	= (vlanSipPrio[num].length > 0) ? vlanSipPrio[num] : 0;
+					document.getElementById('sip_stbVLANnum').value		= num;
+					document.getElementById('sip_stbVLANid').select();
+					document.getElementById('sip_stbVLANid').focus();
+				}
+			}
+
+			// Delete TV/SIP VLAN
+			function deleteTvSipVLAN(type, num)
+			{
+				if (type == 'tv') {
+					vlanTv.splice(num, 1);
+					vlanTvPrio.splice(num, 1);
+					if (vlanTv.length == 0)
+						document.getElementById('tv_stbMcast').disabled = true;
+					document.getElementById('tv_stbVLANnum').value = "new";
+					document.getElementById('tv_stbVLANid').value = "";
+					document.getElementById('tv_stbVLANidPrio').value = 0;
+				}
+				else {
+					vlanSip.splice(num, 1);
+					vlanSipPrio.splice(num, 1);
+					if (vlanSip.length == 0)
+						document.getElementById('sip_stbMcast').disabled = true;
+					document.getElementById('sip_stbVLANnum').value = "new";
+					document.getElementById('sip_stbVLANid').value = "";
+					document.getElementById('sip_stbVLANidPrio').value = 0;
+				}
+				showTvSipVLAN();
+			}
+
+			// Enable/Disable mcast select
+			function enableMcast(type)
+			{
+				if (type == 'tv' && vlanTv.length > 0) {
+					document.getElementById(type + '_stbMcast').disabled = false;
+					return;
+				}
+				else if (type == 'sip' && vlanSip.length > 0) {
+					document.getElementById(type + '_stbMcast').disabled = false;
+					return;
+				}
+
+				vlan = document.getElementById(type + '_stbVLANid').value;
+				if (validateNum(vlan) && vlan > 0 && vlan < 4096)
+					document.getElementById(type + '_stbMcast').disabled = false;
+				else
+					document.getElementById(type + '_stbMcast').disabled = true;
+			}
+			
 			// Change mode LAN VLAN/WAN VLAN
 			function vlanModeChange()
 			{
 				var mode = document.getElementById('vlanMode_select').selectedIndex;
 
 				displayElement([ 'vlanModeWLANVLAN_table', 'vlanMode_wlan_ap_tr',   'vlanMode_wlan_iface_tr',  'vlanMode_wlan_vlan_tr', 'vlanMode_wlan_vlan_add' ], mode == 1);
-				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlan_tr', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr', 'vlanMode_lan_vlan_add' ],  mode == 2);
+				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr' ],  mode == 2);
 
 				if (mode == 1) {
 					changeWLANVLAN();
 					showWLANVLAN();
 				}
-				else if (mode == 2) {
-					changeLANVLAN();
+				else if (mode == 2)
 					showLANVLAN();
-				}
 			}
 
 			// Change interface and VLAN in settings table
@@ -522,7 +497,6 @@
 				document.getElementById("vlanMode_wlan_iface_select").selectedIndex = iface;
 			}
 
-			// Delete LAN VLAN
 			function deleteWLANVLAN(num, iface)
 			{
 				var id = 0;
@@ -548,8 +522,9 @@
 				showWLANVLAN();
 			}
 
-			function applyWLANVLAN()
+			function addWLANVLAN()
 			{
+				var edit	= document.getElementById('lan_id').value;
 				var num		= document.getElementById('vlanMode_wlan_ap_select').value;
 				var iface	= (document.getElementById('vlanMode_wlan_iface_select').value == 0) ? "LAN" : "WAN";
 				var vlan	= document.getElementById('vlanMode_wlan_vlan_input').value;
@@ -562,7 +537,7 @@
 						id++;
 				id--;
 
-				if (vlan.match(/[^0-9]/gi) || (vlan > 4096)) {
+				if (vlan.match(/[^0-9]/gi) || (vlan <= 0 || vlan >= 4096)) {
 					alert(_("vlan invalid vlanid"));
 					document.getElementById('vlanMode_wlan_vlan_input').select();
 					document.getElementById('vlanMode_wlan_vlan_input').focus();
@@ -600,18 +575,24 @@
 
 				changeWLANVLAN();
 				showWLANVLAN();
-			}			
+			}
 
-			// Get SSID list
+			function editWLANVLAN(num, iface, vlan)
+			{
+				document.getElementById('vlanMode_wlan_ap_select').value = num;
+				document.getElementById('vlanMode_wlan_iface_select').value = (iface == "LAN") ? 0 : 1;
+				document.getElementById('vlanMode_wlan_vlan_input').value = vlan;
+			}
+
 			function getWLANVLANvalues()
 			{
 				maxBSSID	= 4;
-				mbssid_mode = document.getElementById('vlanMode_MBSSID_mode').value;
-				ssid_num	= document.getElementById('vlanMode_SSID_num').value;
-				wifiLan 	= (document.getElementById('vlanMode_WifiLan').value.length > 0) ? document.getElementById('vlanMode_WifiLan').value.split(" ") : "0 0 0 0".split(" ");
-				wifiLanINIC = (document.getElementById('vlanMode_WifiLanINIC').value.length > 0) ? document.getElementById('vlanMode_WifiLanINIC').value.split(" ") : "0 0 0 0".split(" ");
-				wifiWan		= (document.getElementById('vlanMode_WifiWan').value.length > 0) ? document.getElementById('vlanMode_WifiWan').value.split(" ") : "0 0 0 0".split(" ");
-				wifiWanINIC = (document.getElementById('vlanMode_WifiWanINIC').value.length > 0) ? document.getElementById('vlanMode_WifiWanINIC').value.split(" ") : "0 0 0 0".split(" ");
+				mbssid_mode = vlanMode_MBSSID_mode;
+				ssid_num	= vlanMode_SSID_num;
+				wifiLan 	= (vlanMode_WifiLan.length > 0) ? vlanMode_WifiLan.split(" ") : "0 0 0 0".split(" ");
+				wifiLanINIC = (vlanMode_WifiLanINIC.length > 0) ? vlanMode_WifiLanINIC.split(" ") : "0 0 0 0".split(" ");
+				wifiWan		= (vlanMode_WifiWan.length > 0) ? vlanMode_WifiWan.split(" ") : "0 0 0 0".split(" ");
+				wifiWanINIC = (vlanMode_WifiWanINIC.length > 0) ? vlanMode_WifiWanINIC.split(" ") : "0 0 0 0".split(" ");
 
 				for (var i = 1; i < maxBSSID; i++) {
 					if (mbssid_mode == "ra")
@@ -643,10 +624,10 @@
 						ssid5 += " [5GHz]";
 					else 
 						ssid24 += " [2.4GHz]";
-				
+
 				try {
-					data	= JSON.parse(document.getElementById('vlanMode_SsidList').value);
-				} catch(e) {}
+					data	= JSON.parse(vlanMode_SsidList);
+				} catch(e) { return; }
 
 				if (mbssid_mode == "ra" && is5gh_support == 1) {
 					wifiNIC.push("rai");
@@ -667,22 +648,23 @@
 					wifiSSID.push(data.wireless[i].ssid);
 				}
 				for (i = 0; i < wifiSSID.length; i++)
-					addOption(document.wlanLanCfg.vlanMode_wlan_ap_select, wifiSSID[i], i);
+					addOption(document.getElementById('vlanMode_wlan_ap_select'), wifiSSID[i], i);
 			}
 
 			function showWLANVLAN()
 			{
 				var html, i, vlan, iface;
 				var ra = rai = 0;
+				var show = false;
 
 				html  = '<table class="form">';
 				html += '<tr>';
-				html += '<td class="title" colspan="4" id="vlanMode_wlan_table">WLAN VLAN Status</td>';
+				html += '<td class="title" colspan="4">' + _("vlan mode wlan table") + '</td>';
 				html += '</tr>';
-				html += '<th id="vlanMode_wlan_table_ap" style="width: 30%">Access Point</th>';
-				html += '<th id="vlanMode_wlan_table_iface" style="width: 30%">Interface</th>';
-				html += '<th id="vlanMode_wlan_table_vlan" style="width: 30%">VLAN</th>';
-				html += '<th id="vlanMode_wlan_table_action" style="width: 10%">Action</th>';
+				html += '<th style="width: 30%">' + _("vlan mode wlan table ap") + '</th>';
+				html += '<th style="width: 30%">' + _("vlan mode wlan table iface") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan vlanid") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan action") + '</th>';
 
 				for (i = 0; i < ssid_num; i++) {
 					if (wifiNIC[i] == "ra") {
@@ -719,26 +701,21 @@
 						html += '<td style="text-align: center;">' + wifiSSID[i] + '</td>';
 						html += '<td style="text-align: center;">' + iface + '</td>';
 						html += '<td style="text-align: center;">' + vlan + '</td>';
-						html += '<td style="text-align: center;">' + '<img src="/graphics/cross.png" onClick="deleteWLANVLAN(' + "'" + i + "', '" + iface + "'" + ');">' + '</td>';
+						html += '<td style="text-align: center;">';
+						html += '<img src="/graphics/edit.png" alt="[+]" title="' + _("vlan edit record") + '" onClick="editWLANVLAN(' + "'" + i + "', '" + iface + "', '" + vlan + "'" + ');"> ';
+						html += '<img src="/graphics/cross.png" alt="[-]" title="' + _("vlan delete record") + '" onClick="deleteWLANVLAN(' + "'" + i + "', '" + iface + "'" + ');">' + '</td>';
 						html += '</tr>';
+						show = true;
 					}
 				}
 
 				html += '</table>';
 				document.getElementById('vlanModeWLANVLAN_table').innerHTML = html;
-				initTranslation();
+				displayElement('vlanModeWLANVLAN_table', show)
 			}
 
-			function changeLANVLAN()
-			{
-				var vlanid = vlanLan[document.getElementById('vlanMode_lan_vlan_select').value - 1];
-				document.getElementById('vlanMode_lan_vlanid_input').value = vlanid;
-				if (vlanLanIsolate.indexOf(vlanid) >= 0)
-					document.getElementById('vlanMode_lan_isolated_input').checked = true;
-				else
-					document.getElementById('vlanMode_lan_isolated_input').checked = false;
-			}
-
+			// LAN VLAN
+			//----------------------------------------------------------------------------
 			function dontchangeLANVLAN(id)
 			{
 				if (document.getElementById(id).checked == true)
@@ -749,60 +726,57 @@
 
 			function getLANVLANvalues()
 			{
-				if (document.getElementById('vlanMode_VLANlan').value.length > 0)
-					vlanLan	= document.getElementById('vlanMode_VLANlan').value.split(" ");
-				if (document.getElementById('vlanMode_VLANlanIsolate').value.length > 0)	
-					vlanLanIsolate	= document.getElementById('vlanMode_VLANlanIsolate').value.split(" ");
-					
-				if (vlanLan.length == 0)
-					vlanLan.push("");
-				for (var i = 0; i <= vlanLan.length; i ++)
-					if (vlanLan[i] !== undefined)
-						addOption(document.wlanLanCfg.vlanMode_lan_vlan_select, i + 1, i + 1);
+				if (vlanMode_VLANlan.length > 0)
+					vlanLan	= vlanMode_VLANlan.split(" ");
+				if (vlanMode_VLANlanIsolate.length > 0)	
+					vlanLanIsolate	= vlanMode_VLANlanIsolate.split(" ");
 			}
 
 			function addLANVLAN()
 			{
-				var createVlan = true;
-				for (var i = 0; i < vlanLan.length; i++) {
-					if (vlanLan[i] == "") {
-						document.getElementById('vlanMode_lan_vlan_select').value = i + 1;
-						createVlan = false;
-					}
-				}
-				if (createVlan == true) {
-					addOption(document.wlanLanCfg.vlanMode_lan_vlan_select, vlanLan.length + 1, vlanLan.length + 1)
-					vlanLan.push("");
-					document.getElementById('vlanMode_lan_vlan_select').value = vlanLan.length;
-				}
-				changeLANVLAN();
-				showLANVLAN();
-			}
-
-			function applyLANVLAN()
-			{
-				var id		= document.getElementById('vlanMode_lan_vlan_select').value - 1;
+				var num		= document.getElementById('lan_id').value;
 				var vlan	= document.getElementById('vlanMode_lan_vlanid_input').value;
-
-				if (vlan.match(/[^0-9]/gi) || vlan > 4096 || vlan.length == 0) {
+				
+				if (!validateNum(vlan) || vlan <= 0 || vlan > 4095) {
 					alert(_("vlan invalid vlanid"));
-					document.getElementById('vlanMode_lan_vlanid_input').select();
 					document.getElementById('vlanMode_lan_vlanid_input').focus();
-					return false;
-				}
-
-				if (vlanLan.indexOf(vlan) != "-1") {
-					alert(_("vlan vlanid exist"));
 					document.getElementById('vlanMode_lan_vlanid_input').select();
-					document.getElementById('vlanMode_lan_vlanid_input').focus();
 					return false
 				}
 
-				vlanLan[id] = vlan;
-				if (document.getElementById('vlanMode_lan_isolated_input').checked == true) 
-					if (vlanLanIsolate.indexOf(vlan) == -1)
+				if (vlanLan.indexOf(vlan) != -1)
+					if (num == "new" || num != vlanLan.indexOf(vlan)) {
+						alert(_("vlan vlanid exist"));
+						document.getElementById('vlanMode_lan_vlanid_input').focus();
+						document.getElementById('vlanMode_lan_vlanid_input').select();
+						return false
+					}
+
+				if (num == "new") {
+					vlanLan.push(vlan);
+					if (document.getElementById('vlanMode_lan_isolated_input').checked)
 						vlanLanIsolate.push(vlan);
+				}
+				else {
+					if (vlanLanIsolate.indexOf(vlan) != -1)
+						vlanLanIsolate.splice(vlanLanIsolate.indexOf(vlan), 1);
+					vlanLan[num] = vlan;
+					if (document.getElementById('vlanMode_lan_isolated_input').checked)
+						vlanLanIsolate.push(vlan);
+				}
+				document.getElementById('vlanMode_lan_vlanid_input').value		= "";
+				document.getElementById('vlanMode_lan_isolated_input').checked	= false;
 				showLANVLAN();
+			}
+
+			function editLANVLAN(num) 
+			{
+				document.getElementById('vlanMode_lan_vlanid_input').value = vlanLan[num];
+				document.getElementById('vlanMode_lan_vlanid_input').select();
+				document.getElementById('vlanMode_lan_vlanid_input').focus();
+				document.getElementById('vlanMode_lan_isolated_input').checked = (vlanLanIsolate.indexOf(vlanLan[num]) != -1);
+				document.getElementById('lan_id').value = num;
+
 			}
 
 			function deleteLANVLAN(id)
@@ -810,17 +784,6 @@
 				if (vlanLanIsolate.indexOf(vlanLan[id]) >= 0)
 					vlanLanIsolate.splice(vlanLanIsolate.indexOf(vlanLan[id]), 1);
 				vlanLan.splice(id, 1);
-				document.wlanLanCfg.vlanMode_lan_vlan_select.options.length = 0;
-				for (var i = 0; i <= vlanLan.length; i ++)
-					if (vlanLan[i] !== undefined)
-						addOption(document.wlanLanCfg.vlanMode_lan_vlan_select, i + 1, i + 1);
-				if (document.getElementById('vlanMode_lan_vlan_select').value > vlanLan.length) {
-					document.getElementById('vlanMode_lan_vlan_select').value = 1;
-				}
-				if (vlanLan.length == 0)
-					addLANVLAN();
-
-				changeLANVLAN();
 				showLANVLAN();
 			}
 
@@ -831,17 +794,15 @@
 
 				html  = '<table class="form">';
 				html += '<tr>';
-				html += '<td class="title" colspan="4" id="vlanMode_lan_table">LAN VLAN Status</td>';
+				html += '<td class="title" colspan="4">' + _("vlan mode lan table") + '</td>';
 				html += '</tr>';
-				html += '<th id="vlanMode_lan_table_num" style="width: 10%">#</th>';
-				html += '<th id="vlanMode_lan_table_vlan" style="width: 40%">VLAN</th>';
-				html += '<th id="vlanMode_lan_table_isolated" style="width: 40%">Isolated</th>';
-				html += '<th id="vlanMode_lan_table_action" style="width: 10%">Action</th>';
+				html += '<th style="width: 40%">' + _("vlan vlanid") + '</th>';
+				html += '<th style="width: 40%">' + _("vlan mode lan table isolated") + '</th>';
+				html += '<th style="width: 20%">' + _("vlan action") + '</th>';
 
 				for (i = 0; i <= vlanLan.length; i++) {
 					if (vlanLan[i] !== undefined) {
 						html += '<tr>';
-						html += '<td style="text-align: center;">' + (i + 1) + '</td>';
 						html += '<td style="text-align: center;">' + vlanLan[i] + '</td>';
 
 						if (vlanLanIsolate.indexOf(vlanLan[i]) >= 0)
@@ -850,14 +811,15 @@
 							isolate = "";
 
 						html += '<td style="text-align: center;">' + '<input type="checkbox" id="vlanLan' + i + '" ' + isolate + ' onChange="dontchangeLANVLAN(' + "'vlanLan" + i + "'" + ');"></td>';
-						html += '<td style="text-align: center;">' + '<img src="/graphics/cross.png" onClick="deleteLANVLAN(' + i + ');">' + '</td>';
+						html += '<td style="text-align: center;">' + '<img src="/graphics/edit.png" alt="[+]" title="' + _("vlan edit record") + '" onClick="editLANVLAN(' + i + ');"> ';
+						html += '<img src="/graphics/cross.png" alt="[-]" title="' + _("vlan delete record") + '" onClick="deleteLANVLAN(' + i + ');">' + '</td>';
 						html += '</tr>';
 					}
 				}
 
 				html += '</table>';
 				document.getElementById('vlanModeLANVLAN_table').innerHTML = html;
-				initTranslation();
+				displayElement('vlanModeLANVLAN_table', vlanLan.length > 0);
 			}
 		</script>
 	</head>
@@ -865,97 +827,105 @@
 		<table class="body">
 			<tr id="warning"><tr>
 			<tr>
-			<td><h1 id="vlanPortTitle"></h1>
-				<p id="vlanPortIntroduction"></p>
+			<td><h1 id="vlanTvSipTitle"></h1>
+				<p id="vlanTvSipIntroduction"></p>
 				<hr>
 				<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-				<form method="POST" name="lanCfg" action="/goform/setPortVLAN">
-				<div id="vlanData" style="display: none;"></div>
-				<table align="center">
-					<tr>
-						<td id="vlanPortStatus_type_port0" style="text-align: center; font-weight: bold;"></td>
-						<td id="vlanPortStatus_type_port1" style="text-align: center; font-weight: bold;"></td>
-						<td id="vlanPortStatus_type_port2" style="text-align: center; font-weight: bold;"></td>
-						<td id="vlanPortStatus_type_port3" style="text-align: center; font-weight: bold;"></td>
-						<td id="vlanPortStatus_type_port4" style="text-align: center; font-weight: bold;"></td>
-					</tr>
-					<tr>
-						<td onClick="selectPort(5);"><img src="/graphics/port_yellow.gif"></td>
-						<td onClick="selectPort(4);"><img src="/graphics/port_blue.gif"></td>
-						<td onClick="selectPort(3);"><img src="/graphics/port_blue.gif"></td>
-						<td onClick="selectPort(2);"><img src="/graphics/port_blue.gif"></td>
-						<td onClick="selectPort(1);"><img src="/graphics/port_blue.gif"></td>
-					</tr>
-					<tr>
-						<td id="vlanPortStatus_img_port0" style="width: 64px; height: 17px;"></td>
-						<td id="vlanPortStatus_img_port1" style="width: 64px; height: 17px;"></td>
-						<td id="vlanPortStatus_img_port2" style="width: 64px; height: 17px;"></td>
-						<td id="vlanPortStatus_img_port3" style="width: 64px; height: 17px;"></td>
-						<td id="vlanPortStatus_img_port4" style="width: 64px; height: 17px;"></td>
-					</tr>
-				</table>
-				<br>
-				<div id="vlanPortStatus_table"></div>
-				<br>
+				<form method="POST" name="lanCfg" action="/goform/setTvSipVLAN">
+				<!-- TV/SIP VLAN -->
+				<div id="vlanPort_status_table"></div>
 				<table class="form">
-					<tr>
-						<td class="title" colspan="3" id="vlanPortManagement">Ethernet Port Management</td>
-					</tr>
-					<tr>
-						<td class="head" id="vlanPort_wan_port">WAN port</td>
-						<td colspan="2" id="vlanPort_wan_port_select">
-							<select name="wan_port" class="short">
-								<option value="0">1</option>
-								<option value="4">5</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="head" id="vlanPort_lan_port">First LAN port</td>
-						<td colspan="2" id="vlanPort_lan_port_select">
-							<select name="lan_port" class="mid">
-								<option value="near" id="vlanPort_lan_port_near">Near to the WAN port</option>
-								<option value="distant" id="vlanPort_lan_port_distant">Distant from the WAN port</option>
-							</select>
-						</td>
-					</tr>
-					<tr id="vlanPort_tv_stb_tr">
-						<td id="tv_stb" class="head">TV/STB/VLAN1</td>
-						<td id="tv_stb_en">
-							<font id="tv_stb_enable">Enable:</font><input id="tv_stbEnabled" name="tv_stbEnabled" type="checkbox" OnClick="checkSTBform();">
-							<font id="tv_stb_mcast">McastProxy:</font><input id="tv_stbMcast" name="tv_stbMcast" type="checkbox"></td>
-						<td id="tv_stb_vlan">
-							<font id="tv_stb_vlanid">VlanID(s):</font><input id="tv_stbVLAN" name="tv_stbVLAN" class="wide" size="30" maxlength="60" type="text" onKeyUp="checkSTBform();"></td>
-					</tr>
-					<tr id="sip_stb_tr">
-						<td id="sip_stb" class="head">SIP/STB/VLAN2</td>
-						<td id="sip_stb_en">
-							<font id="sip_stb_enable">Enable:</font><input id="sip_stbEnabled" name="sip_stbEnabled" type="checkbox" OnClick="checkSIPform();">
-							<font id="sip_stb_mcast">McastProxy:</font><input id="sip_stbMcast" name="sip_stbMcast" type="checkbox"></td>
-						<td id="sip_stb_vlan">
-							<font id="sip_stb_vlanid">VlanID(s):</font><input id="sip_stbVLAN" name="sip_stbVLAN" class="wide" size="30" maxlength="60" type="text" onKeyUp="checkSIPform();"></td>
-					</tr>
-					<tr>
-						<td class="head" id="vlanPortMode">Port Mode</td>
-						<td colspan="2" id="port_swmode">
-							<select name="port_num" class="short" onChange="selectPort();">
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-							</select>&nbsp;&nbsp;
-							<select name="port_mode" class="mid">
-								<option id="port_mode_auto"  value="auto" >Auto-Negotiation</option>
-								<option id="port_mode_10h"   value="10h"  >10Mbit/s Half-Duplex</option>
-								<option id="port_mode_10f"   value="10f"  >10Mbit/s Full-Duplex</option>
-								<option id="port_mode_100h"  value="100h" >100Mbit/s Half-Duplex</option>
-								<option id="port_mode_100f"  value="100f" >100Mbit/s Full-Duplex</option>
-								<option id="port_mode_1000f" value="1000f">1Gbit/s Full-Duplex</option>
-							</select>&nbsp;&nbsp;
-							<input type="button" id="port_mode_setup" value="Set" onClick="setPort();">
-						</td>
-					</tr>
+					<col style="width: 40%;"/>
+					<col style="width: 46%;"/>
+					<col style="width: 14%;"/>
+					<tbody>
+						<tr>
+							<td class="title" id="tv_stb" colspan="2"></td>
+							<td class="title" style="text-align:right;">
+								<select id="tv_stbEnabled" name="tv_stbEnabled" class="half" onChange="displayElement(['vlanPort_tv_stb_prio_tr', 'vlanPort_tv_stb_mcast_tr','vlanPort_tv_stb_vlan_tr'], document.getElementById('tv_stbEnabled').value == '1');">
+									<option value="0" id="disable"></option>
+									<option value="1" id="enable"></option>
+								</select>
+							</td>
+						</tr>
+						<tr id="vlanPort_tv_stb_prio_tr">
+							<td id="tv_stb_prio" class="head">PRIO</td>
+							<td id="tv_stb_prio_en" colspan="2">
+								<select id="tv_stbVLANidPrio" class="half">
+									<option value="0">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+								</select>
+							</td>
+						</tr>
+						<tr id="vlanPort_tv_stb_vlan_tr">
+							<td id="tv_stb_vlanid" class="head">VLAN ID</td>
+							<td colspan="2">
+								<input id="tv_stbVLANid" class="half" maxlength="4" type="text" onKeyUp="enableMcast('tv');">&nbsp;&nbsp;
+								<input id="tv_stbVLANbutton" type="button" value="Add / Edit" onClick="addTvSipVLAN('tv');">
+								<input id="tv_stbVLANnum" type="hidden" value="new">
+								<input id="tv_stbVLAN" name="tv_stbVLAN" type="hidden" value="">
+								<input id="tv_stbVLANprio" name="tv_stbVLANprio" type="hidden" value="">
+							</td>
+						</tr>
+						<tr id="vlanPort_tv_stb_mcast_tr">
+							<td id="tv_stb_mcast" class="head">McastProxy</td>
+							<td id="tv_stb_mcast_en" colspan="2">
+								<select id="tv_stbMcast" name="tv_stbMcast"  class="half">
+									<option value="0" id="disable">Disable</option>
+									<option value="1" id="enable">Enable</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="title" colspan="2" id="sip_stb"></td>
+							<td class="title" style="text-align:right;">
+								<select id="sip_stbEnabled" name="sip_stbEnabled" class="half" onChange="displayElement(['vlanPort_sip_stb_prio_tr', 'vlanPort_sip_stb_mcast_tr','vlanPort_sip_stb_vlan_tr'], document.getElementById('sip_stbEnabled').value == '1');">
+									<option value="0" id="disable">Disable</option>
+									<option value="1" id="enable">Enable</option>
+								</select>
+							</td>
+						</tr>
+						<tr id="vlanPort_sip_stb_prio_tr">
+							<td id="sip_stb_prio" class="head">PRIO</td>
+							<td id="sip_stb_prio_en" colspan="2">
+								<select id="sip_stbVLANidPrio" class="half">
+									<option value="0">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+								</select>
+							</td>
+						</tr>
+						<tr id="vlanPort_sip_stb_vlan_tr">
+							<td id="sip_stb_vlanid" class="head">VLAN ID(s)</td>
+							<td colspan="2">
+								<input id="sip_stbVLANid" class="half" maxlength="4" type="text" onKeyUp="enableMcast('sip');">&nbsp;&nbsp;
+								<input id="sip_stbVLANbutton" type="button" value="Add / Edit" onClick="addTvSipVLAN('sip');">
+								<input id="sip_stbVLANnum" type="hidden" value="new">
+								<input id="sip_stbVLAN" name="sip_stbVLAN" type="hidden" value="">
+								<input id="sip_stbVLANprio" name="sip_stbVLANprio" type="hidden" value="">
+							</td>
+						</tr>
+						<tr id="vlanPort_sip_stb_mcast_tr">
+							<td id="sip_stb_mcast" class="head">McastProxy</td>
+							<td id="sip_stb_mcast_en" colspan="2">
+								<select id="sip_stbMcast" name="sip_stbMcast" class="half">
+									<option value="0" id="disable">Disable</option>
+									<option value="1" id="enable">Enable</option>
+								</select>
+							</td>
+						</tr>
+					</tbody>
 				</table>
 				<br>
 				<table class="buttons">
@@ -963,11 +933,6 @@
 						<td><input type="submit" class="normal" value="Apply"  id="vlanApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
 							<input type="button" class="normal" value="Cancel" id="vlanCancel" onClick="window.location.reload();">&nbsp; &nbsp;
 							<input type="button" class="normal" value="Reset"  id="vlanReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
-							<input type="hidden" id="port1_swmode" name="port1_swmode">
-							<input type="hidden" id="port2_swmode" name="port2_swmode">
-							<input type="hidden" id="port3_swmode" name="port3_swmode">
-							<input type="hidden" id="port4_swmode" name="port4_swmode">
-							<input type="hidden" id="port5_swmode" name="port5_swmode">
 							<input type="hidden" value="1" name="reboot">
 							<input type="hidden" value="0" name="reset">
 						</td>
@@ -1002,13 +967,13 @@
 						<tr id="vlanMode_wlan_ap_tr">
 							<td id="vlanMode_wlan_ap" class="head">AP</td>
 							<td>
-								<select id="vlanMode_wlan_ap_select" name="vlanMode_wlan_ap_select" class="mid" onChange="changeWLANVLAN();"></select>
+								<select id="vlanMode_wlan_ap_select" class="mid" onChange="changeWLANVLAN();"></select>
 							</td>
 						</tr>
 						<tr id="vlanMode_wlan_iface_tr">
 							<td id="vlanMode_wlan_iface" class="head">Interface</td>
 							<td>
-								<select id="vlanMode_wlan_iface_select" name="vlanMode_wlan_iface_select" class="mid">
+								<select id="vlanMode_wlan_iface_select" class="half">
 									<option value="0">LAN</option>
 									<option value="1">WAN</option>
 								</select>
@@ -1016,37 +981,21 @@
 						</tr>
 						<tr id="vlanMode_wlan_vlan_tr">
 							<td id="vlanMode_wlan_vlan" class="head">VLAN</td>
-							<td><input id="vlanMode_wlan_vlan_input" name="vlanMode_wlan_vlan_input" class="mid"></td>
-						</tr>
-
-						
-						<tr id="vlanMode_lan_vlan_tr">
-							<td id="vlanMode_lan_num" class="head">#</td>
 							<td>
-								<select id="vlanMode_lan_vlan_select" name="vlanMode_lan_vlan_select" class="mid" onChange="changeLANVLAN();"></select>&nbsp; &nbsp;
-								<input type="button" class="normal" value="Add VLAN" id="vlanMode_lan_add" onClick="addLANVLAN();">
+								<input id="vlanMode_wlan_vlan_input" class="half" maxlength="4">&nbsp;&nbsp;
+								<input type="button" value="Add / Edit" id="vlanMode_wlan_add" onClick="addWLANVLAN();">
 							</td>
+						</tr>
+						<!-- LAN VLAN -->
+						<tr id="vlanMode_lan_isolated_tr">
+							<td id="vlanMode_lan_isolated" class="head">Isolated</td>
+							<td><input type="checkbox" id="vlanMode_lan_isolated_input"></td>
 						</tr>
 						<tr id="vlanMode_lan_vlanid_tr">
 							<td id="vlanMode_lan_vlanid" class="head">VLAN ID</td>
-							<td><input id="vlanMode_lan_vlanid_input" name="vlanMode_lan_vlanid_input" class="mid"></td>
-						</tr>
-						<tr id="vlanMode_lan_isolated_tr">
-							<td id="vlanMode_lan_isolated" class="head">Isolated</td>
-							<td><input type="checkbox" id="vlanMode_lan_isolated_input" name="vlanMode_lan_isolated_input"></td>
-						</tr>
-					</table>
-					<table class="buttons">
-						<tr id="vlanMode_wlan_vlan_add">
 							<td>
-								<input type="button" class="normal" value="Apply VLAN" id="vlanMode_wlan_apply" onClick="applyWLANVLAN();">
-							</td>
-						</tr>
-					</table>
-					<table class="buttons">
-						<tr id="vlanMode_lan_vlan_add">
-							<td>
-								<input type="button" class="normal" value="Apply VLAN" id="vlanMode_lan_apply" onClick="applyLANVLAN();">
+								<input id="vlanMode_lan_vlanid_input" class="half" maxlength="4">&nbsp;&nbsp;
+								<input type="button" value="Add / Edit" id="vlanMode_lan_add" onClick="addLANVLAN();">
 							</td>
 						</tr>
 					</table>
@@ -1056,6 +1005,7 @@
 							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
+								<input type="hidden" value="new" id="lan_id">
 								<input type="hidden" value="" name="wifi_lan">
 								<input type="hidden" value="" name="wifi_lan_inic">
 								<input type="hidden" value="" name="wifi_wan">

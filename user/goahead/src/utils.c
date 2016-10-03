@@ -346,6 +346,46 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	reboot_now();
 }
 
+static void setWanPort(webs_t wp, char_t *path, char_t *query)
+{
+	int i;
+	char w_name[20];
+	char* w_port = websGetVar(wp, T("wan_port"), T("0"));
+	char* l_port = websGetVar(wp, T("lan_port"), T("near"));
+
+	nvram_init(RT2860_NVRAM);
+
+	/* Set-up WAN port */
+	if ((w_port != NULL) && (strlen(w_port) == 1))
+	{
+		if ((w_port[0] >= '0') && (w_port[0] <= '4'))
+			nvram_bufset(RT2860_NVRAM, "wan_port", w_port);
+	}
+
+	/* Set-up first LAN port */
+	if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
+		nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
+
+	/* Now test values */
+	for (i=1; i<=5; i++)
+	{
+		snprintf(w_name, sizeof(w_name), "port%d_swmode", i);
+		w_port = websGetVar(wp, w_name, T("auto"));
+		if ((w_port != NULL) && (strlen(w_port)>0))
+			nvram_bufset(RT2860_NVRAM, w_name, w_port);
+	}
+
+	/* Commit & close NVRAM */
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
+
+	/* Output timer for reloading */
+	outputTimerForReload(wp, "" /* submitUrl */, 80000);
+
+	/* Reboot */
+	reboot_now();
+}
+
 /* goform/reboot */
 static void reboot_web(webs_t wp, char_t *path, char_t *query)
 {
@@ -376,6 +416,7 @@ void formDefineUtilities(void)
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
 	websFormDefine(T("setOpMode"), setOpMode);
+	websFormDefine(T("setWanPort"), setWanPort);
 	websFormDefine(T("reboot"), reboot_web);
 	websAspDefine(T("gigaphy"), gigaphy);
 }

@@ -60,6 +60,20 @@
 	<message msgid="status system up time sec1"		msgstr="second" />
 	<message msgid="status system up time sec2_4"	msgstr="seconds" />
 	<message msgid="status system up time sec5_0"	msgstr="seconds" />
+    <message msgid="status ethernet port status"	msgstr="Ethernet Port Status" />
+    <message msgid="status port management"			msgstr="Port Management" />
+    <message msgid="status wan port"				msgstr="WAN port" />
+    <message msgid="status first lan port"			msgstr="First LAN port" />
+    <message msgid="status near"					msgstr="Near to the WAN port" />
+    <message msgid="status distant"					msgstr="Distant from the WAN port" />
+    <message msgid="status ask reboot"				msgstr="The device must be restarted to apply port configuration changes. Do you want to proceed?" />
+    <message msgid="status port mode 1"				msgstr="Port 1 mode" />
+    <message msgid="status port mode 2"				msgstr="Port 2 mode" />
+    <message msgid="status port mode 3"				msgstr="Port 3 mode" />
+    <message msgid="status port mode 4"				msgstr="Port 4 mode" />
+    <message msgid="status port mode 5"				msgstr="Port 5 mode" />
+    <message msgid="status internal ipv6 address"	msgstr="Internal IPv6 Address" />
+    <message msgid="status external ipv6 address"	msgstr="External IPv6 Address" />
 	
     <message msgid="statistic title" msgstr="Statistic" />
     <message msgid="statistic introduction" msgstr="Take a look at the Wive-NG-MT statistics " />

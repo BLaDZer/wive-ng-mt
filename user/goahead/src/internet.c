@@ -810,46 +810,33 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
-/* goform/setPortVLAN */
-static void setPortVLAN(webs_t wp, char_t *path, char_t *query)
+/* goform/setTvSipVLAN */
+static void setTvSipVLAN(webs_t wp, char_t *path, char_t *query)
 {
-	char* wan_port		= websGetVar(wp, T("wan_port"), T("0"));
-	char* lan_port		= websGetVar(wp, T("lan_port"), T("near"));
-	char* tv_stb_enable	= websGetVar(wp, T("tv_stbEnabled"), T("off"));
-	char* sip_stb_enable	= websGetVar(wp, T("sip_stbEnabled"), T("off"));
-	char* tv_port_mcast	= websGetVar(wp, T("tv_stbMcast"), T("off"));
-	char* sip_port_mcast	= websGetVar(wp, T("sip_stbMcast"), T("off"));
-	char* tv_portVLAN	= websGetVar(wp, T("tv_stbVLAN"), T(""));
-	char* sip_portVLAN	= websGetVar(wp, T("sip_stbVLAN"), T(""));
-	char* port1_swmode	= websGetVar(wp, T("port1_swmode"), T(""));
-	char* port2_swmode	= websGetVar(wp, T("port2_swmode"), T(""));
-	char* port3_swmode	= websGetVar(wp, T("port3_swmode"), T(""));
-	char* port4_swmode	= websGetVar(wp, T("port4_swmode"), T(""));
-	char* port5_swmode	= websGetVar(wp, T("port5_swmode"), T(""));
-	char* reboot		= websGetVar(wp, T("reboot"), T(""));
-	char* reset		= websGetVar(wp, T("reset"), T(""));
+	char* tv_stb_enable	= websGetVar(wp, T("tv_stbEnabled"),   T("0"));
+	char* sip_stb_enable	= websGetVar(wp, T("sip_stbEnabled"),  T("0"));
+	char* tv_port_mcast	= websGetVar(wp, T("tv_stbMcast"),     T("0"));
+	char* sip_port_mcast	= websGetVar(wp, T("sip_stbMcast"),    T("0"));
+	char* tv_portVLAN	= websGetVar(wp, T("tv_stbVLAN"),      T(""));
+	char* sip_portVLAN	= websGetVar(wp, T("sip_stbVLAN"),     T(""));
+	char* tv_portVLANprio	= websGetVar(wp, T("tv_stbVLANprio"),  T(""));
+	char* sip_portVLANprio	= websGetVar(wp, T("sip_stbVLANprio"), T(""));
+	char* reboot		= websGetVar(wp, T("reboot"),          T("0"));
+	char* reset		= websGetVar(wp, T("reset"),           T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 13, "wan_port", "lan_port", "tv_port", "sip_port", "tv_port_mcast",
-						"sip_port_mcast", "tv_portVLAN", "sip_portVLAN", "port1_swmode", "port2_swmode",
-						"port3_swmode", "port4_swmode", "port5_swmode");
+		nvram_fromdef(RT2860_NVRAM, 8, "tv_port", "sip_port", "tv_port_mcast", "sip_port_mcast", "tv_portVLAN", "sip_portVLAN", "tv_portVLANPRIO", "sip_portVLANPRIO");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);
-		nvram_bufset(RT2860_NVRAM, "wan_port",       wan_port);
-		nvram_bufset(RT2860_NVRAM, "lan_port",       lan_port);
-		nvram_bufset(RT2860_NVRAM, "port1_swmode",   port1_swmode);
-		nvram_bufset(RT2860_NVRAM, "port2_swmode",   port2_swmode);
-		nvram_bufset(RT2860_NVRAM, "port3_swmode",   port3_swmode);
-		nvram_bufset(RT2860_NVRAM, "port4_swmode",   port4_swmode);
-		nvram_bufset(RT2860_NVRAM, "port5_swmode",   port5_swmode);
-		nvram_bufset(RT2860_NVRAM, "tv_port",        (strcmp(tv_stb_enable, "on") == 0) ? "1" : "0");
-		nvram_bufset(RT2860_NVRAM, "sip_port",       (strcmp(sip_stb_enable, "on") == 0) ? "1" : "0");
-		nvram_bufset(RT2860_NVRAM, "tv_port_mcast",  (strcmp(tv_port_mcast, "on") == 0) ? "1" : "0");
-		nvram_bufset(RT2860_NVRAM, "sip_port_mcast", (strcmp(sip_port_mcast, "on") == 0) ? "1" : "0");
-		nvram_bufset(RT2860_NVRAM, "tv_portVLAN",    tv_portVLAN);
-		nvram_bufset(RT2860_NVRAM, "sip_portVLAN",   sip_portVLAN);
-
+		nvram_bufset(RT2860_NVRAM, "tv_port",          tv_stb_enable);
+		nvram_bufset(RT2860_NVRAM, "sip_port",         sip_stb_enable);
+		nvram_bufset(RT2860_NVRAM, "tv_port_mcast",    tv_port_mcast);
+		nvram_bufset(RT2860_NVRAM, "sip_port_mcast",   sip_port_mcast);
+		nvram_bufset(RT2860_NVRAM, "tv_portVLAN",      tv_portVLAN);
+		nvram_bufset(RT2860_NVRAM, "sip_portVLAN",     sip_portVLAN);
+		nvram_bufset(RT2860_NVRAM, "tv_portVLANPRIO",  tv_portVLANprio);
+		nvram_bufset(RT2860_NVRAM, "sip_portVLANPRIO", sip_portVLANprio);
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
@@ -862,7 +849,7 @@ static void setPortVLAN(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
-/* goform/setPortVLAN */
+/* goform/setWlanLanVLAN */
 static void setWlanLanVLAN(webs_t wp, char_t *path, char_t *query)
 {
 	char* wifi_lan		= websGetVar(wp, T("wifi_lan"), T("0"));
@@ -1398,7 +1385,7 @@ void formDefineInternet(void) {
 	websAspDefine(T("getUSBModemBuilt"), getUSBModemBuilt);
 	websFormDefine(T("setLan"), setLan);
 	websFormDefine(T("setWan"), setWan);
-	websFormDefine(T("setPortVLAN"), setPortVLAN);
+	websFormDefine(T("setTvSipVLAN"), setTvSipVLAN);
 	websFormDefine(T("setWlanLanVLAN"), setWlanLanVLAN);
 	websAspDefine(T("getRadvdBuilt"), getRadvdBuilt);
 	websAspDefine(T("getDhcpv6Built"), getDhcpv6Built);
