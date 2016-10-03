@@ -554,7 +554,6 @@ static void __init arch_mem_init(char **cmdline_p)
 	device_tree_init();
 	sparse_init();
 	plat_swiotlb_setup();
-	paging_init();
 }
 
 static void __init resource_init(void)
@@ -636,6 +635,7 @@ void __init setup_arch(char **cmdline_p)
 	plat_smp_setup();
 
 	cpu_cache_init();
+	paging_init();
 }
 
 unsigned long kernelsp[NR_CPUS];

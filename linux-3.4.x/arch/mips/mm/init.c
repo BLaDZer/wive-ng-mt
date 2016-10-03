@@ -392,6 +392,9 @@ void __init mem_init(void)
 	num_physpages = ram;
 
 #ifdef CONFIG_HIGHMEM
+	if (cpu_has_dc_aliases)
+		return;
+
 	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++) {
 		struct page *page = pfn_to_page(tmp);
 

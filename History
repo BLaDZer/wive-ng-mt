@@ -2431,13 +2431,14 @@
 40) kernel: mips: squash lines for simple wrapper functions.<br>
 41) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
 42) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
-43) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-44) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-45) kernel: net: fix sk_mem_reclaim_partial().<br>
-46) kernel: net: avoid sk_forward_alloc overflows.<br>
-47) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-48) kernel: net: packet: tx timestamping on tpacket ring.<br>
-49) kernel: net: socket: move ktime2ts to ktime header api.<br>
+43) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
+44) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+45) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+46) kernel: net: fix sk_mem_reclaim_partial().<br>
+47) kernel: net: avoid sk_forward_alloc overflows.<br>
+48) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+49) kernel: net: packet: tx timestamping on tpacket ring.<br>
+50) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
