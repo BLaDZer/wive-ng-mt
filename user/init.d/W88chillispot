@@ -91,42 +91,44 @@ stop() {
 get_params() {
     eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain`
 
-    PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed \
-	    macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease \
-	    radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype"
-    BOOLPARAMS="coanoipcheck uamanyip uamanydns"
+    # add static defaults
+    # use /32 mask for clients (prevent client to client direct connect)
+    # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
+    # tune radius connection parametrs and txqlen
+    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --noc2c --childmax=64 --radiustimeout=30 --radiusretry=20 --txqlen=1000"
+    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
 
-    PARLINE=""
-    for i in $PARAMS; do
-	val=`nvram_get 2860 chilli_$i`
-	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
-    done
-
-    for i in $BOOLPARAMS; do
-	val=`nvram_get 2860 chilli_$i`
-	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
-    done
-
+    # uamdomain support depended by allow redirdnsreq
     if [ "$chilli_uamdomain" != "" ]; then
 	PARLINE="$PARLINE --redirdnsreq --dnsparanoia"
     fi
 
-    if [ "$chilli_debug" = "1" ]; then
-	PARLINE="$PARLINE -d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
-    else
-	PARLINE="$PARLINE -f -F"
-    fi
-
-    # for future
+    # for future support ipv6 (not comlite in upstream)
     #if [ "$IPv6OpMode" = "1" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6and4"
     #elif [ "$IPv6OpMode" = "3" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6to4"
     #fi
 
-    # compose options
-    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --radiustimeout=30 --radiusretry=20 --txqlen=1000 $PARLINE"
-    PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
+    # parse webui user tuned parametrs
+    PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease"
+    PARAMS="$PARAMS radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype"
+    for i in $PARAMS; do
+	val=`nvram_get 2860 chilli_$i`
+	[ -n "$val" ] && PARLINE="$PARLINE --$i $val"
+    done
+    BOOLPARAMS="coanoipcheck uamanyip uamanydns"
+    for i in $BOOLPARAMS; do
+	val=`nvram_get 2860 chilli_$i`
+	[ "$val" = "on" ] && PARLINE="$PARLINE --$i"
+    done
+
+    # debug parametrs
+    if [ "$chilli_debug" = "1" ]; then
+	PARLINE="$PARLINE -d -f -F --debugfacility=7 --logfacility=7 --loglevel=7"
+    else
+	PARLINE="$PARLINE -f -F"
+    fi
 
     mac=`echo $LAN_MAC_ADDR|sed s/:/-/g`
 
