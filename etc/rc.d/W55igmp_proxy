@@ -64,17 +64,15 @@ get_param() {
     ####################################
     # remap wan if to vlan bridge
     ####################################
-    if [ "$PortVlanEnabled" = "1" ]; then
-	if [ "$tv_port_mcast" = "1" ]; then
-	    wan_if="$vlantvif"
-	fi
-	if [ "$sip_port_mcast" = "1" ]; then
-	    wan_if="$vlansipif"
-	fi
-        $LOG "Replace route to multicast subnet via $wan_if."
-        ip -4 route replace "$mcast_net" dev "$wan_if"
-	sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
+    if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ] && [ "$tv_port_mcast" = "1" ]; then
+	wan_if="$vlantvif"
     fi
+    if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ] && [ "$sip_port_mcast" = "1" ]; then
+	wan_if="$vlansipif"
+    fi
+    $LOG "Replace route to multicast subnet via $wan_if."
+    ip -4 route replace "$mcast_net" dev "$wan_if"
+    sysctl -wq net.ipv4.conf.$wan_if.forwarding=1
 
     ####################################
     # wan port number set

@@ -36,15 +36,13 @@ servicelimit() {
 	    iptables -A servicelimit -p igmp -i $lan_if -j ACCEPT
 	    iptables -A servicelimit -d $mcast_net -i $wan_if -j ACCEPT
 	    iptables -A servicelimit -s $mcast_net -i $wan_if -j ACCEPT
-	    if [ "$PortVlanEnabled" = "1" ]; then
-		if [ "$tv_port_mcast" = "1" ]; then
+	    if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ] && [ "$tv_port_mcast" = "1" ]; then
 		    iptables -A servicelimit -d $mcast_net -i $vlantvif -j ACCEPT
 		    iptables -A servicelimit -s $mcast_net -i $vlantvif -j ACCEPT
-		fi
-		if [ "$sip_port_mcast" = "1" ]; then
+	    fi
+	    if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ] && [ "$sip_port_mcast" = "1" ]; then
 		    iptables -A servicelimit -d $mcast_net -i $vlansipif -j ACCEPT
 		    iptables -A servicelimit -s $mcast_net -i $vlansipif -j ACCEPT
-		fi
 	    fi
 	fi
 	if [ "$dhcpEnabled" = "1" ]; then
@@ -204,15 +202,13 @@ forwardlimit() {
 	    $LOG "Set igmp forward rules"
 	    iptables -A FORWARD -d $mcast_net -o $lan_if -j ACCEPT
 	    iptables -A FORWARD -s $mcast_net -i $lan_if -j ACCEPT
-	    if [ "$PortVlanEnabled" = "1" ]; then
-		if [ "$tv_port_mcast" = "1" ]; then
+	    if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ] && [ "$tv_port_mcast" = "1" ]; then
 		    iptables -A FORWARD -d $mcast_net -o $vlantvif -j ACCEPT
 		    iptables -A FORWARD -s $mcast_net -i $vlantvif -j ACCEPT
-		fi
-		if [ "$sip_port_mcast" = "1" ]; then
+	    fi
+	    if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ] && [ "$sip_port_mcast" = "1" ]; then
 		    iptables -A FORWARD -d $mcast_net -o $vlansipif -j ACCEPT
 		    iptables -A FORWARD -s $mcast_net -i $vlansipif -j ACCEPT
-		fi
 	    fi
 	fi
 	if [ "$ForwardSesLimit" != "" ] && [ "$ForwardSesLimit" != "0" ]; then
