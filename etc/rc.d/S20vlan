@@ -23,12 +23,34 @@ set_default_vlan_prio_map()
     done
 }
 
+set_egress_vlan_prio_map_tv()
+{
+    if [ "$tv_portVLANPRIO" != "" ]; then
+	# get prio for needed vid
+	qostag=`echo $tv_portVLANPRIO | awk -vPRIONUM=$2 {' print $PRIONUM '}`
+	if [ "$qostag" != "" ]; then
+	    vconfig set_egress_map $1 0 $qostag
+	fi
+    fi
+}
+
+set_egress_vlan_prio_map_sip()
+{
+    if [ "$sip_portVLANPRIO" != "" ]; then
+	# get prio for needed vid
+	qostag=`echo $sip_portVLANPRIO | awk -vPRIONUM=$2 {' print $PRIONUM '}`
+	if [ "$qostag" != "" ]; then
+	    vconfig set_egress_map $1 0 $qostag
+	fi
+    fi
+}
+
 idx=6
 hw_tx_vlan_map()
 {
     if [ -e /proc/mt7620/vlan_tx ]; then
 	# VIDs < 6 not need map
-	if [ "$vid" -lt "6" ]; then
+	if [ "$1" -lt "6" ]; then
 	    return
 	fi
 	# use slots 6..10 for custom VID
@@ -131,21 +153,27 @@ start() {
 	# ADD WAN VLANS FOR IPTV/SIP/ETC USAGE
 	##############################################
 	if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ]; then
+	    vidcount=0
 	    for vid in $tv_portVLAN; do
 		$LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
+		vidcount="$(($vidcount+1))"
 		vconfig add "$phys_wan_if" "$vid"
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
+		set_egress_vlan_prio_map_tv "${phys_wan_if}.${vid}" "$vidcount"
 		brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done
 	fi
 	if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ]; then
+	    vidcount=0
 	    for vid in $sip_portVLAN; do
 		$LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
+		vidcount="$(($vidcount+1))"
 		vconfig add "$phys_wan_if" "$vid"
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
+		set_egress_vlan_prio_map_sip "${phys_wan_if}.${vid}" "$vidcount"
 		brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done

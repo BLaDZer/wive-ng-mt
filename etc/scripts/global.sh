@@ -281,11 +281,15 @@ get_switch_type() {
 
 get_switch_part() {
     if [ "$OperationMode" = "1" ]; then
-	# get manual vlan parts
+	# get vlan parts for isolated ports
 	tv_portVLAN=`nvram_get 2860 tv_portVLAN | awk '{ gsub(","," "); print }'`
 	sip_portVLAN=`nvram_get 2860 sip_portVLAN | awk '{ gsub(","," "); print }'`
-	# manual vlan configured
+	# is vlan configured
 	if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [ "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
+	    # get priomap
+	    tv_portVLANPRIO=`nvram_get 2860 tv_portVLANPRIO | awk '{ gsub(","," "); print }'`
+	    sip_portVLANPRIO=`nvram_get 2860 sip_portVLANPRIO | awk '{ gsub(","," "); print }'`
+	    # set vlan bridge names
 	    vlantvif="vlantv"
 	    vlansipif="vlansip"
 	    switchpart="VLANS"
