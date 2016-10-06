@@ -31,8 +31,6 @@
 #include "ipsecmast.h"
 #include "misc.h"    /* for IPADDY macro */
 
-#include <math.h>
-
 char hostname[256];
 int server_socket;              /* Server socket */
 #ifdef USE_KERNEL
@@ -272,7 +270,7 @@ void control_xmit (void *b)
         tv.tv_usec = 0;
 
         if (buf->retries > 1)
-	    tv.tv_sec = 1*pow(2, buf->retries-1);
+	    tv.tv_sec = 1LL << (buf->retries-1);
 
         schedule (tv, control_xmit, buf);
 #ifdef DEBUG_CONTROL_XMIT
