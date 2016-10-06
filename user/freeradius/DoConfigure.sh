@@ -6,6 +6,10 @@ APROOTDIR=`pwd`
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
+# workaround of radius-devel magic...
+rm -rf $APROOTDIR/src/freeradius-devel
+ln -sf $APROOTDIR/src/include $APROOTDIR/src/freeradius-devel
+
 if [ ! -f Makefile ]; then
     cp -f Makefile.template Makefile
 fi

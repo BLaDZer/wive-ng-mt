@@ -155,6 +155,7 @@ distclean: clean
 		sed 's/\.in$$//' | \
 		while read file; do rm -f $$file; done
 	rm -rf filesystem
+	rm -rf src/freeradius-devel
 
 ######################################################################
 #

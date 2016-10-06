@@ -65,3 +65,5 @@ warnings.txt
 
 # Analyzer output
 /*.plist
+
+src/freeradius/src/freeradius-devel
