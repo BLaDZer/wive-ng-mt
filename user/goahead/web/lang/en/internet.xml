@@ -67,42 +67,43 @@
   <message msgid="vpn ipsec pass thru" msgstr="IPSec Passthrough" />
   <message msgid="vpn pptp pass thru" msgstr="PPTP Passthrough" />
 
-	<message msgid="vlan vlanid exist"				msgstr="VLAN ID already exist" />
+	<message msgid="vlan vlanid exist"			msgstr="VLAN ID already exist" />
 	<message msgid="vlan invalid vlanid"			msgstr="Entered invalid VLAN ID" />
 	<message msgid="vlan invalid vlan range"		msgstr="Invalid VLAN range" />
 	<message msgid="vlan reboot confirm"			msgstr="For apply settings needs to reboot you router. Do you want to proceed?" />
-	<message msgid="vlan tvsip title"				msgstr="TV/SIP Port Settings" />
+	<message msgid="vlan tvsip title"			msgstr="TV/SIP Port Settings" />
 	<message msgid="vlan tvsip introduction"		msgstr="Section to configure VLAN on TV/STB/SIP port" />
-	<message msgid="vlan tvsip tv stb"				msgstr="TV/STB/SIP Port 1" />
+	<message msgid="vlan tvsip tv stb"			msgstr="TV/STB/SIP Port 1" />
 	<message msgid="vlan tvsip tv stb mcast"		msgstr="Mcast proxy" />
-	<message msgid="vlan tvsip sip stb"				msgstr="TV/STB/SIP Port 2" />
+	<message msgid="vlan tvsip sip stb"			msgstr="TV/STB/SIP Port 2" />
 	<message msgid="vlan tvsip sip stb mcast"		msgstr="Mcast proxy" />
 	<message msgid="vlan tvsip status title"		msgstr="TV/STB/SIP VLAN Status" />
 	<message msgid="vlan tvsip status port"			msgstr="Port" />
-	<message msgid="vlan tvsip vlanid prio"			msgstr="PRIO" />
+	<message msgid="vlan tvsip vlanid prio"			msgstr="PRIO:" />
 	<message msgid="vlan tvsip need tv vlan"		msgstr="To work correctly, you must create one or more VLAN on the TV/STB/SIP Port 1" />
 	<message msgid="vlan tvsip need sip vlan"		msgstr="To work correctly, you must create one or more VLAN on the TV/STB/SIP Port 2" />
-	<message msgid="vlan edit record"				msgstr="Edit" />
-	<message msgid="vlan delete record"				msgstr="Delete" />
-	<message msgid="vlan action"					msgstr="Action" />
-	<message msgid="vlan vlanid"					msgstr="VLAN ID" />
-	<message msgid="vlan add button"				msgstr="Add / Edit" />
-	<message msgid="vlan mode title"				msgstr="WLAN VLAN / LAN VLAN" />
+	<message msgid="vlan edit record"			msgstr="Edit" />
+	<message msgid="vlan delete record"			msgstr="Delete" />
+	<message msgid="vlan action"				msgstr="Action" />
+	<message msgid="vlan vlan"				msgstr="VLAN" />
+	<message msgid="vlan vlanid"				msgstr="VLAN ID:" />
+	<message msgid="vlan add button"			msgstr="Add / Edit" />
+	<message msgid="vlan mode title"			msgstr="WLAN VLAN / LAN VLAN" />
 	<message msgid="vlan mode introduction"			msgstr="This section is used to configure the WLAN VLAN / LAN VLAN on Router" />
-	<message msgid="vlan mode settings"				msgstr="WLAN/LAN VLAN Settings" />
-	<message msgid="vlan mode select"				msgstr="Mode" />
+	<message msgid="vlan mode settings"			msgstr="WLAN/LAN VLAN Settings" />
+	<message msgid="vlan mode select"			msgstr="Mode" />
 	<message msgid="vlan mode select disable"		msgstr="Disable" />
 	<message msgid="vlan mode select wlan"			msgstr="WLAN VLAN" />
 	<message msgid="vlan mode select lan"			msgstr="LAN VLAN" />
-	<message msgid="vlan mode wlan ap"				msgstr="AP" />
+	<message msgid="vlan mode wlan ap"			msgstr="AP" />
 	<message msgid="vlan mode wlan iface"			msgstr="Interface" />
-	<message msgid="vlan mode lan isolated"			msgstr="Isolated" />	
-	<message msgid="vlan mode lan add"				msgstr="Add / Edit" />	
-	<message msgid="vlan mode lan table"			msgstr="LAN VLAN Status" />	
-	<message msgid="vlan mode lan table isolated"	msgstr="Isolated" />	
-	<message msgid="vlan mode wlan table"			msgstr="WLAN VLAN Status" />	
-	<message msgid="vlan mode wlan table ap"		msgstr="AP" />	
-	<message msgid="vlan mode wlan table iface"		msgstr="Interface" />	
+	<message msgid="vlan mode lan isolated"			msgstr="Isolated" />
+	<message msgid="vlan mode lan add"			msgstr="Add / Edit" />
+	<message msgid="vlan mode lan table"			msgstr="LAN VLAN Status" />
+	<message msgid="vlan mode lan table isolated"		msgstr="Isolated" />
+	<message msgid="vlan mode wlan table"			msgstr="WLAN VLAN Status" />
+	<message msgid="vlan mode wlan table ap"		msgstr="AP" />
+	<message msgid="vlan mode wlan table iface"		msgstr="Interface" />
 
   <message msgid="routing title" msgstr="Static Routing Settings" />
   <message msgid="routing Introduction" msgstr="You can add and remove custom Internet routing rules and/or enable dynamic routing exchange protocol here." />
