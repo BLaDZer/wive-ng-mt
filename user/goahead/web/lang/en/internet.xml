@@ -80,6 +80,8 @@
 	<message msgid="vlan tvsip status title"		msgstr="TV/STB/SIP VLAN Status" />
 	<message msgid="vlan tvsip status port"			msgstr="Port" />
 	<message msgid="vlan tvsip vlanid prio"			msgstr="PRIO" />
+	<message msgid="vlan tvsip need tv vlan"		msgstr="To work correctly, you must create one or more VLAN on the TV/STB/SIP Port 1" />
+	<message msgid="vlan tvsip need sip vlan"		msgstr="To work correctly, you must create one or more VLAN on the TV/STB/SIP Port 2" />
 	<message msgid="vlan edit record"				msgstr="Edit" />
 	<message msgid="vlan delete record"				msgstr="Delete" />
 	<message msgid="vlan action"					msgstr="Action" />
