@@ -21,8 +21,8 @@ CONFIG_LIB_OPENSSL=y
 # CONFIG_LIB_ICONV is not set
 # CONFIG_LIB_XML2 is not set
 # CONFIG_LIB_NEON is not set
-# CONFIG_LIB_TALLOC is not set
-# CONFIG_LIB_MICROHTTPD is not set
+CONFIG_LIB_TALLOC=y
+CONFIG_LIB_MICROHTTPD=y
 
 #
 # Network Applications
