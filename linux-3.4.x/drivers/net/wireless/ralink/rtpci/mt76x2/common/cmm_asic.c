@@ -3996,6 +3996,11 @@ VOID asic_change_tx_retry(
 		/* Tx RTS retry default 32 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
 		MacReg &= 0xFEFFFF00;
+#ifdef MT76x2
+		/* RTS fallback: ON */
+		if (IS_MT76x2(pAd))
+		    MacReg |= 0x01000000;
+#endif
 		MacReg |= 0x20;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 	}
@@ -4003,17 +4008,21 @@ VOID asic_change_tx_retry(
 	{
 		/* Tx date retry 7 */
 		TxRtyCfg = 0x4100070A;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
+		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);	
 
 		/* Tx RTS retry 3 */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
 		MacReg &= 0xFEFFFF00;
 		MacReg |= 0x00000003;
-		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 #ifdef MT76x2
+		/* RTS fallback: ON */
+		if (IS_MT76x2(pAd))
+		    MacReg |= 0x01000000;
+#endif
+		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
+#if 0
 		/* enable fallback to legacy (MCS0 -> OFDM 6, default for MT76x2) */
-		if(IS_MT76x2(pAd))
-		    RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
+		RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
 #endif
 	}
 }

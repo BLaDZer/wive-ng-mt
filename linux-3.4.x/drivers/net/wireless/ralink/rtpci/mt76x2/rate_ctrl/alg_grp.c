@@ -2634,6 +2634,7 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	MlmeNewRateAdapt(pAd, pEntry, UpRateIdx, DownRateIdx, TrainUp, TrainDown, TxErrorRatio);
 
 #ifdef DOT11_VHT_AC
+#ifdef RANGE_EXTEND
     {
         RTMP_RA_GRP_TB *pAGSCurrTxRate;
 
@@ -2678,6 +2679,7 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
             RTMP_IO_WRITE32(pAd, HT_FBK_CFG1, 0xEDCBA980);
         }
     }
+#endif
 #endif
 
 
