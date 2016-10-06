@@ -46,7 +46,7 @@ gen_configs() {
 # Generate passord files. Support 10 users
 configured=0
 echo > $ppp/chap-secrets
-for usernum in `seq 0 9`; do
+for usernum in `seq 0 $l2tp_srv_user_num`; do
     l2tp_srv_user=`nvram_get 2860 l2tp_srv_user"$usernum"`
     l2tp_srv_pass=`nvram_get 2860 l2tp_srv_pass"$usernum"`
     if [ "$l2tp_srv_user" != "" ] && [ "$l2tp_srv_pass" != "" ]; then
@@ -105,11 +105,17 @@ get_param() {
     ###########################################################################
     # get some variables
     ###########################################################################
-    eval `nvram_buf_get 2860 l2tp_srv_enabled l2tp_srv_ip_range l2tp_srv_ip_local l2tp_srv_user l2tp_srv_pass l2tp_srv_proxyarp \
-	    l2tp_srv_lcp_adapt l2tp_srv_mtu_size l2tp_srv_mru_size l2tp_srv_debug l2tp_srv_mppe_enabled`
+    eval `nvram_buf_get 2860 l2tp_srv_enabled l2tp_srv_user_num l2tp_srv_ip_range \
+				l2tp_srv_ip_local l2tp_srv_user l2tp_srv_pass l2tp_srv_proxyarp \
+				l2tp_srv_lcp_adapt l2tp_srv_mtu_size l2tp_srv_mru_size l2tp_srv_debug l2tp_srv_mppe_enabled`
     ###########################################################################
     # replace param for direct use
     ###########################################################################
+    if [ "$l2tp_srv_user_num" = "" ] || [ "$l2tp_srv_user_num" = "0" ]; then
+	# prevent start xl2tpd server if users not configured
+	l2tp_srv_user_num="0"
+	l2tp_srv_enabled="0"
+    fi
     if [ "$l2tp_srv_lcp_adapt" = "" ] || [ "$l2tp_srv_lcp_adapt" = "0" ]; then
 	l2tp_srv_lcp_adapt=
     else

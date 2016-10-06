@@ -18,6 +18,7 @@
     <message msgid="button disconnect all" msgstr="Отключить всех" />
     <message msgid="button clear" msgstr="Очистить" />
     <message msgid="button remove" msgstr="Удалить" />
+	<message msgid="button add edit" msgstr="Добавить / Изменить" />
 
     <message msgid="message apply" msgstr="Пожалуйста, подождите пока будут применены новые настройки..." />
     <message msgid="message reboot" msgstr="Пожалуйста, подождите пока маршрутизатор перезагрузится..." />

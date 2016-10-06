@@ -178,6 +178,7 @@ Key4Type=0
 KLogd=1
 l2tp_srv_debug=0
 l2tp_srv_enabled=0
+l2tp_srv_user_num=0
 l2tp_srv_ip_local=172.16.200.1
 l2tp_srv_ip_range=172.16.200.2-172.16.200.20
 l2tp_srv_lcp_adapt=1

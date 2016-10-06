@@ -583,104 +583,110 @@ int iptStatList(int eid, webs_t wp, int argc, char_t **argv)
 
 parameter_fetch_t service_l2tp_flags[] =
 {
-	{ T("l2tp_srv_ip_range"), "l2tp_srv_ip_range", 0, T("") },
-	{ T("l2tp_srv_ip_local"), "l2tp_srv_ip_local", 0, T("") },
-	{ T("l2tp_srv_lcp_adapt"), "l2tp_srv_lcp_adapt", 2, T("off") },
-	{ T("l2tp_srv_debug"), "l2tp_srv_debug", 2, T("off") },
-	{ T("l2tp_srv_nat_enabled"), "l2tp_srv_nat_enabled", 2, T("off") },
-	{ T("l2tp_srv_mppe_enabled"), "l2tp_srv_mppe_enabled", 2, T("off") },
-	{ T("l2tp_srv_proxyarp"), "l2tp_srv_proxyarp", 2, T("off") },
-	{ T("l2tp_srv_mtu_size"), "l2tp_srv_mtu_size", 0, T("1460") },
-	{ T("l2tp_srv_mru_size"), "l2tp_srv_mru_size", 0, T("1460") },
-	{ NULL, NULL, 0, NULL } // Terminator
+	{ T("l2tp_srv_ip_local"),	"l2tp_srv_ip_local",		0, T("")     },
+	{ T("l2tp_srv_ip_range"),	"l2tp_srv_ip_range",		0, T("")     },
+	{ T("l2tp_srv_lcp_adapt"),	"l2tp_srv_lcp_adapt",		2, T("off")  },
+	{ T("l2tp_srv_debug"),		"l2tp_srv_debug",		2, T("off")  },
+	{ T("l2tp_srv_nat_enabled"),	"l2tp_srv_nat_enabled",		2, T("off")  },
+	{ T("l2tp_srv_mppe_enabled"),	"l2tp_srv_mppe_enabled",	2, T("off")  },
+	{ T("l2tp_srv_proxyarp"),	"l2tp_srv_proxyarp",		2, T("off")  },
+	{ T("l2tp_srv_mtu_size"),	"l2tp_srv_mtu_size",		0, T("1460") },
+	{ T("l2tp_srv_mru_size"),	"l2tp_srv_mru_size",		0, T("1460") },
+	{ T("l2tp_srv_user_num"),	"l2tp_srv_user_num",		0, T("0")    },
+	{ NULL,				NULL,				0, NULL      } // Terminator
 };
 
 static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 {
-	char user_var[16] = "l2tp_srv_user0";
-	char pass_var[16] = "l2tp_srv_pass0";
-	char_t *submitUrl;
-	int i=0;
+	char user_var[16];
+	char pass_var[16];
+	int i, count;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 30, "l2tp_srv_enabled", "l2tp_srv_ip_range", "l2tp_srv_ip_local",
-			"l2tp_srv_lcp_adapt", "l2tp_srv_debug", "l2tp_srv_nat_enabled", "l2tp_srv_mppe_enabled",
-			"l2tp_srv_proxyarp", "l2tp_srv_mtu_size", "l2tp_srv_mru_size", "l2tp_srv_user0",
-			"l2tp_srv_user1", "l2tp_srv_user2", "l2tp_srv_user3", "l2tp_srv_user4", "l2tp_srv_user5",
-			"l2tp_srv_user6", "l2tp_srv_user7", "l2tp_srv_user8", "l2tp_srv_user9", "l2tp_srv_pass0",
-			"l2tp_srv_pass1", "l2tp_srv_pass2", "l2tp_srv_pass3", "l2tp_srv_pass4", "l2tp_srv_pass5",
-			"l2tp_srv_pass6", "l2tp_srv_pass7", "l2tp_srv_pass8", "l2tp_srv_pass9");
-		goto out;
-	}
-
-	char_t *l2tp_enabled = websGetVar(wp, T("l2tp_srv_enabled"), T("0"));
-
-	if (l2tp_enabled == NULL)
-		l2tp_enabled = "0";
-
-	nvram_init(RT2860_NVRAM);
-
-	if (CHK_IF_DIGIT(l2tp_enabled, 1))
-	{
-		nvram_bufset(RT2860_NVRAM, "l2tp_srv_enabled", "1");
-		setupParameters(wp, service_l2tp_flags, 0);
-
-		// Set-up logins
-		for (; i < 10; i++)
-		{
-			char_t *user = websGetVar(wp, user_var, "");
-			char_t *pass = websGetVar(wp, pass_var, "");
-
-			if (!(CHK_IF_SET(user) || CHK_IF_SET(pass)))
-			{
-				user = "";
-				pass = "";
-			}
-
-			nvram_bufset(RT2860_NVRAM, user_var, user);
-			nvram_bufset(RT2860_NVRAM, pass_var, pass);
-
-			user_var[13]++;
-			pass_var[13]++;
+		count = nvram_get_int(RT2860_NVRAM, "l2tp_srv_user_num", 0);
+		nvram_fromdef(RT2860_NVRAM, 11, "l2tp_srv_enabled", "l2tp_srv_ip_local", "l2tp_srv_ip_range", "l2tp_srv_lcp_adapt", "l2tp_srv_debug",
+			"l2tp_srv_nat_enabled", "l2tp_srv_mppe_enabled", "l2tp_srv_proxyarp", "l2tp_srv_mtu_size", "l2tp_srv_mru_size", "l2tp_srv_user_num");
+		nvram_init(RT2860_NVRAM);
+		for (i = 0; i < count; i++) {
+			sprintf(user_var, "l2tp_srv_user%d", i);
+			sprintf(pass_var, "l2tp_srv_pass%d", i);
+			nvram_bufset(RT2860_NVRAM, user_var, "");
+			nvram_bufset(RT2860_NVRAM, pass_var, "");
 		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
-	else
-		nvram_bufset(RT2860_NVRAM, "l2tp_srv_enabled", "0");
+	else {
+		char_t *l2tp_enabled = websGetVar(wp, T("l2tp_srv_enabled"), T("0"));
 
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
+		if (l2tp_enabled == NULL)
+			l2tp_enabled = "0";
 
-out:
+		nvram_init(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(l2tp_enabled, 1)) {
+			int oldcount = nvram_get_int(RT2860_NVRAM, "l2tp_srv_user_num", 0);
+			nvram_bufset(RT2860_NVRAM, "l2tp_srv_enabled", "1");
+			setupParameters(wp, service_l2tp_flags, 0);
+
+			// Set-up logins
+			char_t *l2tp_srv_user_num = websGetVar(wp, T("l2tp_srv_user_num"), T("0"));
+			count = atoi(l2tp_srv_user_num);
+			for (i = 0; i < count; i++) {
+				sprintf(user_var, "l2tp_srv_user%d", i);
+				sprintf(pass_var, "l2tp_srv_pass%d", i);
+
+				char_t *user = websGetVar(wp, user_var, "");
+				char_t *pass = websGetVar(wp, pass_var, "");
+
+				if (!(CHK_IF_SET(user) || CHK_IF_SET(pass))) {
+					user = "";
+					pass = "";
+				}
+
+				nvram_bufset(RT2860_NVRAM, user_var, user);
+				nvram_bufset(RT2860_NVRAM, pass_var, pass);
+			}
+			// Clear old logins
+			if (oldcount > count)
+				for (i = count; i < oldcount; i++) {
+					sprintf(user_var, "l2tp_srv_user%d", i);
+					sprintf(pass_var, "l2tp_srv_pass%d", i);
+					nvram_bufset(RT2860_NVRAM, user_var, "");
+					nvram_bufset(RT2860_NVRAM, pass_var, "");
+				}
+		}
+		else
+			nvram_bufset(RT2860_NVRAM, "l2tp_srv_enabled", "0");
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+	
 	firewall_rebuild();
-
 	doSystem("service vpnserver restart");
 
-	// Redirect if possible
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
+	websHeader(wp);
+	websDone(wp, 200);
 }
 
 static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 {
-	//                   01234567890123
-	char user_var[16] = "l2tp_srv_user0";
-	char pass_var[16] = "l2tp_srv_pass0";
-	int i = 0, output = 0;
+	char user_var[16];
+	char pass_var[16];
+	int count = nvram_get_int(RT2860_NVRAM, "l2tp_srv_user_num", 0);
+	int i;
 
-	nvram_init(RT2860_NVRAM);
-	for (; i < 10; i++)
-	{
-		char *user = nvram_get(RT2860_NVRAM, user_var);
-		char *pass = nvram_get(RT2860_NVRAM, pass_var);
-
-		if (CHK_IF_SET(user) || CHK_IF_SET(pass))
-			websWrite(wp, T("%s[ '%s', '%s' ]"), ((output++) > 0) ? ",\n\t" : "\t", user, pass);
-		user_var[13]++;
-		pass_var[13]++;
+	if (count > 0) {
+		for (i = 0; i < count; i++) {
+			sprintf(user_var, "l2tp_srv_user%d", i);
+			sprintf(pass_var, "l2tp_srv_pass%d", i);
+			char *user = nvram_get(RT2860_NVRAM, user_var);
+			char *pass = nvram_get(RT2860_NVRAM, pass_var);
+			websWrite(wp, T("[ '%s', '%s' ]%s"), user, pass, (i + 1 < count) ? ", " : " ");
+		}
 	}
-	nvram_close(RT2860_NVRAM);
-
 	return 0;
 }
 

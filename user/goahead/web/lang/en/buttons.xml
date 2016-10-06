@@ -18,6 +18,7 @@
     <message msgid="button disconnect all" msgstr="Disconnect All" />
     <message msgid="button clear" msgstr="Clear" />
     <message msgid="button remove" msgstr="Remove" />
+	<message msgid="button add edit" msgstr="Add / Edit" />
 
     <message msgid="message apply" msgstr="Please wait while settings are applied..." />
     <message msgid="message reboot" msgstr="Please wait while the router is rebooting..." />
