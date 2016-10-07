@@ -1,7 +1,7 @@
 var Profiles = [
 
 	// MANUAL
-	[ "manual",					// Profile 
+	[ "manual",					// Profile
 		_("hotspot manual"),		// Provider name
 		false,						// IP
 		false,						// Netmask
@@ -54,7 +54,7 @@ var Profiles = [
 	],
 
 	// HotSpotSystem
-	[   "hotspotsystem",			// Profile 
+	[   "hotspotsystem",			// Profile
 		"HotSpotSystem.com",		// Provider name
 		"192.168.182.0",			// IP
 		"255.255.255.0",			// Netmask
@@ -108,7 +108,7 @@ var Profiles = [
 	],
 
 	// MyWiFi
-	[   "mywifi",					// Profile 
+	[   "mywifi",					// Profile
 		"MyWifi",					// Provider name
 		"192.168.182.0",			// IP
 		"255.255.255.0",			// Netmask
@@ -214,7 +214,7 @@ var Profiles = [
 		true,
 		true
 	],
-	
+
 	// WiFi System
 	[	"wifisystem",				// Profile
 		"Wi-Fi System",				// Provider name
@@ -268,7 +268,7 @@ var Profiles = [
 		true,
 		true
 	],
-	
+
 	// NetByNet
 	[	"netbynet",					// Profile
 		"NetByNet",					// Provider name
@@ -322,8 +322,60 @@ var Profiles = [
 		false,
 		true
 	],
-	
-/*	
+
+	// hotspot.ots-net.ru
+	[ "hotspot.ots-net.ru",						// Profile
+		"hotspot.ots-net.ru",					// Provider name
+		"192.168.100.0",						// IP
+		"255.255.255.0",						// Netmask
+		"10",									// Start DHCP IP
+		"250",									// End DHCP IP
+		"192.168.100.1",						// Primary DNS
+		"192.168.100.1",						// Secondary DNS
+		false,									// Domain name
+		"300",									// Lease time
+		"radius.hotspot.ots-net.ru",			// Radius server auth address
+		"radius.hotspot.ots-net.ru",			// Radius server acct address
+		"W575876q",								// Radius server secret
+		false,									// Radius NAS ID
+		false,									// Radius Location ID
+		"Wive-NG-MT.lo",						// Radius Location Name
+		"3779",									// Radius CoA/DM port
+		"on",									// No IP check for CoA/DM request
+		"http://hotspot.ots-net.ru/snr/start",	// UAM server URL
+		"http://hotspot.ots-net.ru/snr",		// UAM homepage URL
+		false,									// UAM secret
+		"31.129.192.0/19,hotspot.ots-net.ru",	// UAM allowed hosts
+		"ots-net.ru",							// UAM allowed domains
+		false,									// Allow all DNS requests
+		false,									// Allowed MAC
+		true,
+		true,
+		false,
+		false,
+		true,
+		true,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		true,
+		false,
+		false,
+		false,
+		false
+	]
+/*
 	//Enforta
 	[	"enforta",					// Profile
 		"Enforta",					// Provider name
@@ -349,6 +401,6 @@ var Profiles = [
 		"",							// UAM allowed domains
 		false,						// Allow all DNS requests
 		false						// Allowed MAC
-	] 
+	]
 */
 ];

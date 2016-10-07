@@ -2402,51 +2402,52 @@
 11) goahead: implement vlan page and switch status refactoring.<br>
 12) goahead: webui: fix TV/SIP ports with vlans configured.<br>
 13) goahead: webui: rework vpn server page.<br>
-14) init.d: split set_vlan_map to set_port_vlan_prio_map and set_vlan_ingress_prio_map functions.<br>
-15) init.d: coova-chilli: setup clients for /32 network (client2client traffic isolate).<br>
-16) init.d: split sip/tv vlans logic, prevent create unused vlan bridges.<br>
-17) init.d: add qos prio for vlan based tv/sip ports.<br>
-18) cli: add report mode for easy remote get and parse info.<br>
-19) kernel: ralink_arch: pci: refactoring PCR code.<br>
-20) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
-21) kernel: ralink_raeth: fix lost disable EEE for 7350 gsw on link down.<br>
-22) kernel: ralink_wifi: disallow fallback per default.<br>
-23) kernel: ralink_wifi: decrase optimistic rate TrainUP (more interference immunity).<br>
-24) kernel: ralink_wifi: smallest rate adaptation interval for decrease packets drop at high interference.<br>
-25) kernel: ralink_wifi: prevent mode dropdown to CCK in pure OFDM modes.<br>
-26) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
-27) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
-28) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
-29) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
-30) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
-31) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
-32) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
-33) kernel: softirq: let ksoftirqd do its job.<br>
-34) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-35) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-36) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
-37) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
-38) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
-39) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
-40) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
-41) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
-42) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
-43) kernel: asm-generic: make get_user() clear the destination on errors.<br>
-44) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-45) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-46) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-47) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
-48) kernel: mips: squash lines for simple wrapper functions.<br>
-49) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
-50) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
-51) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
-52) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-53) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-54) kernel: net: fix sk_mem_reclaim_partial().<br>
-55) kernel: net: avoid sk_forward_alloc overflows.<br>
-56) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-57) kernel: net: packet: tx timestamping on tpacket ring.<br>
-58) kernel: net: socket: move ktime2ts to ktime header api.<br>
+14) goahead: webui: add profile for hotspot.ots-net.ru in chillipage.<br>
+15) init.d: split set_vlan_map to set_port_vlan_prio_map and set_vlan_ingress_prio_map functions.<br>
+16) init.d: coova-chilli: setup clients for /32 network (client2client traffic isolate).<br>
+17) init.d: split sip/tv vlans logic, prevent create unused vlan bridges.<br>
+18) init.d: add qos prio for vlan based tv/sip ports.<br>
+19) cli: add report mode for easy remote get and parse info.<br>
+20) kernel: ralink_arch: pci: refactoring PCR code.<br>
+21) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
+22) kernel: ralink_raeth: fix lost disable EEE for 7350 gsw on link down.<br>
+23) kernel: ralink_wifi: disallow fallback per default.<br>
+24) kernel: ralink_wifi: decrase optimistic rate TrainUP (more interference immunity).<br>
+25) kernel: ralink_wifi: smallest rate adaptation interval for decrease packets drop at high interference.<br>
+26) kernel: ralink_wifi: prevent mode dropdown to CCK in pure OFDM modes.<br>
+27) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+28) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
+29) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
+30) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
+31) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
+32) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+33) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
+34) kernel: softirq: let ksoftirqd do its job.<br>
+35) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+36) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+37) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
+38) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
+39) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
+40) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
+41) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
+42) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
+43) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
+44) kernel: asm-generic: make get_user() clear the destination on errors.<br>
+45) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+46) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+47) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+48) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
+49) kernel: mips: squash lines for simple wrapper functions.<br>
+50) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
+51) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
+52) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
+53) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+54) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+55) kernel: net: fix sk_mem_reclaim_partial().<br>
+56) kernel: net: avoid sk_forward_alloc overflows.<br>
+57) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+58) kernel: net: packet: tx timestamping on tpacket ring.<br>
+59) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>
