@@ -103,12 +103,17 @@ get_params() {
 	PARLINE="$PARLINE --redirdnsreq --dnsparanoia"
     fi
 
-    # for future support ipv6 (not comlite in upstream)
+    # for future support ipv6 (not complite in upstream)
     #if [ "$IPv6OpMode" = "1" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6and4"
     #elif [ "$IPv6OpMode" = "3" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6to4"
     #fi
+
+    # for future support openssl (in 4.7.3 wive-ng-mt version coova build with openssl support)
+    # minimal config for use this:
+    # need set--sslkeyfile, --sslcertfile and --sslcafile as path to cert.pem uploaded from rwfs
+    # only after upload correct cert file add --redirssl option to cooava
 
     # parse webui user tuned parametrs
     PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease"
