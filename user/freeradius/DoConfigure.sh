@@ -14,6 +14,7 @@ if [ ! -f Makefile ]; then
     cp -f Makefile.template Makefile
 fi
 if [ ! -f $APROOTDIR/configure ]; then
+    automake -a -c -f
     aclocal
     autoreconf -fi
     autoconf
