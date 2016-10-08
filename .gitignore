@@ -395,7 +395,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/freeradius/Makefile
 /user/freeradius/Make.inc
 /user/freeradius/configure
-/user/src/freeradius/src/freeradius-devel
+/user/freeradius/src/freeradius-devel
 
 #
 # exclude enerated files from kernel
