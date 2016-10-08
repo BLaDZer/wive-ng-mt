@@ -12,9 +12,9 @@ ln -sf $APROOTDIR/src/include $APROOTDIR/src/freeradius-devel
 
 if [ ! -f Makefile ]; then
     cp -f Makefile.template Makefile
+    automake --add-missing --force-missing --copy
 fi
 if [ ! -f $APROOTDIR/configure ]; then
-    automake -a -c -f
     aclocal
     autoreconf -fi
     autoconf
