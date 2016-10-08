@@ -663,7 +663,7 @@ static void l2tpConfig(webs_t wp, char_t *path, char_t *query)
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
-	
+
 	firewall_rebuild();
 	doSystem("service vpnserver restart");
 
@@ -690,6 +690,103 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
+static void radiusConfig(webs_t wp, char_t *path, char_t *query)
+{
+	char user_var[20];
+	char secret_var[20];
+	int i, count;
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
+	if (CHK_IF_DIGIT(reset, 1)) {
+		count = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
+		nvram_fromdef(RT2860_NVRAM, 2, "radius_srv_enabled", "radius_srv_user_num");
+		nvram_init(RT2860_NVRAM);
+		for (i = 0; i < count; i++) {
+			sprintf(user_var, "radius_srv_user%d", i);
+			sprintf(secret_var, "radius_srv_secret%d", i);
+			nvram_bufset(RT2860_NVRAM, user_var, "");
+			nvram_bufset(RT2860_NVRAM, secret_var, "");
+		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+	else {
+		char_t *radius_enabled = websGetVar(wp, T("radius_srv_enabled"), T("0"));
+
+		if (radius_enabled == NULL)
+			radius_enabled = "0";
+
+		nvram_init(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(radius_enabled, 1)) {
+			int oldcount = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
+			char_t *radius_user_num = websGetVar(wp, T("radius_srv_user_num"), T("0"));
+
+			nvram_bufset(RT2860_NVRAM, "radius_srv_enabled", "1");
+			nvram_bufset(RT2860_NVRAM, "radius_srv_user_num", radius_user_num);
+
+			// Set-up logins
+			char_t *radius_srv_user_num = websGetVar(wp, T("radius_srv_user_num"), T("0"));
+			count = atoi(radius_srv_user_num);
+			for (i = 0; i < count; i++) {
+				sprintf(user_var, "radius_srv_user%d", i);
+				sprintf(secret_var, "radius_srv_secret%d", i);
+
+				char_t *user = websGetVar(wp, user_var, "");
+				char_t *secret = websGetVar(wp, secret_var, "");
+
+				if (!(CHK_IF_SET(user) || CHK_IF_SET(secret))) {
+					user = "";
+					secret = "";
+				}
+
+				nvram_bufset(RT2860_NVRAM, user_var, user);
+				nvram_bufset(RT2860_NVRAM, secret_var, secret);
+			}
+			// Clear old logins
+			if (oldcount > count)
+				for (i = count; i < oldcount; i++) {
+					sprintf(user_var, "radius_srv_user%d", i);
+					sprintf(secret_var, "radius_srv_secret%d", i);
+					nvram_bufset(RT2860_NVRAM, user_var, "");
+					nvram_bufset(RT2860_NVRAM, secret_var, "");
+				}
+		}
+		else
+			nvram_bufset(RT2860_NVRAM, "radius_srv_enabled", "0");
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+
+	firewall_rebuild();
+	doSystem("service radius restart");
+
+	websHeader(wp);
+	websDone(wp, 200);
+}
+
+
+static int getRadiusUserList(int eid, webs_t wp, int argc, char_t **argv)
+{
+	char user_var[20];
+	char secret_var[20];
+	int count = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
+	int i;
+
+	if (count > 0) {
+		for (i = 0; i < count; i++) {
+			sprintf(user_var, "radius_srv_user%d", i);
+			sprintf(secret_var, "radius_srv_secret%d", i);
+			char *user = nvram_get(RT2860_NVRAM, user_var);
+			char *secret = nvram_get(RT2860_NVRAM, secret_var);
+			websWrite(wp, T("[ '%s', '%s' ]%s"), user, secret, (i + 1 < count) ? ", " : " ");
+		}
+	}
+	return 0;
+}
+
+
 static int isSMP(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RALINK_MT7621
 	return websWrite(wp, T("1"));
@@ -714,9 +811,11 @@ void formDefineServices(void)
 	websFormDefine(T("setMiscServices"), setMiscServices);
 	websFormDefine(T("formIptAccounting"), formIptAccounting);
 	websFormDefine(T("l2tpConfig"), l2tpConfig);
+	websFormDefine(T("radiusConfig"), radiusConfig);
 
 	// Define functions
 	websAspDefine(T("getL2TPUserList"), getL2TPUserList);
+	websAspDefine(T("getRadiusUserList"), getRadiusUserList);
 	websAspDefine(T("getDhcpCliList"), getDhcpCliList);
 	websAspDefine(T("iptStatList"), iptStatList);
 	websAspDefine(T("getARPptBuilt"), getARPptBuilt);

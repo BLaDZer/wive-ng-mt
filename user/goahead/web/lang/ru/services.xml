@@ -68,6 +68,18 @@
 	<message msgid="services l2tp uncorrect password"		msgstr="Введен некорректный пароль (символы пробела и доллара запрещены)." />
 	<message msgid="services l2tp exist login"			msgstr="Введенное имя пользователя уже существует" />
 
+	<message msgid="services radius title"						msgstr="Настройки RADIUS сервера" />
+	<message msgid="services radius introduction"				msgstr="Здесь вы можете настроить RADIUS сервер." />
+	<message msgid="services radius settings"					msgstr="Настройки RADIUS сервера" />
+	<message msgid="services radius enable"						msgstr="RADIUS сервер" />
+	<message msgid="services radius users"						msgstr="Пользователи" />
+	<message msgid="services radius login"						msgstr="Имя пользователя" />
+	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
+	<message msgid="services radius action"						msgstr="Действие" />
+	<message msgid="services radius uncorrect login"			msgstr="Введено некорректное имя пользователя (разрешены символы: a-z, A-Z, 0-9, _)" />
+	<message msgid="services radius uncorrect sharedsecret"		msgstr="Введен некорректный Shared Secret (символы пробела и доллара запрещены)." />
+	<message msgid="services radius exist login"				msgstr="Введенное имя пользователя уже существует" />
+	
   <message msgid="services samba title" msgstr="Настройки Samba/WINS" />
   <message msgid="services samba introduction" msgstr="Здесь вы можете настроить сервисы Samba/WINS." />
   <message msgid="services samba settings" msgstr="Настройки Samba/WINS" />

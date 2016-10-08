@@ -68,6 +68,18 @@
 	<message msgid="services l2tp uncorrect password"		msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
 	<message msgid="services l2tp exist login"			msgstr="Login already exist" />
 
+	<message msgid="services radius title"						msgstr="RADIUS Server Setup" />
+	<message msgid="services radius introduction"				msgstr="Here you can configure RADIUS server settings." />
+	<message msgid="services radius settings"					msgstr="RADIUS Server Settings" />
+	<message msgid="services radius enable"						msgstr="RADIUS Server" />
+	<message msgid="services radius users"						msgstr="RADIUS Users list" />
+	<message msgid="services radius login"						msgstr="Login" />
+	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
+	<message msgid="services radius action"						msgstr="Action" />
+	<message msgid="services radius uncorrect login"			msgstr="Please specify correct login (a-z, A-Z, 0-9, _)" />
+	<message msgid="services radius uncorrect sharedsecret"		msgstr="Please specify correct Shared Secret (spaces and dollar symbol are disallowed)." />
+	<message msgid="services radius exist login"				msgstr="Login already exist" />
+
   <message msgid="services samba title" msgstr="Samba/WINS Setup" />
   <message msgid="services samba introduction" msgstr="Here you can configure Samba/WINS service." />
   <message msgid="services samba settings" msgstr="Samba/WINS Settings" />

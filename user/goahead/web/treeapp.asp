@@ -84,6 +84,7 @@ var usbb = '<% getUSBBuilt(); %>';
 var storageb = '<% getStorageBuilt(); %>';
 var ftpb = '<% getFtpBuilt(); %>';
 var smbb = '<% getSmbBuilt(); %>';
+var radiusb = '<% getRadiusBuilt(); %>';
 var printersrvb = '<% getPrinterSrvBuilt(); %>';
 var usbmodemb = '<% getUSBModemBuilt(); %>';
 var syslogb = '<% getSysLogBuilt(); %>';
@@ -158,10 +159,11 @@ if (opmode != '0') {
 a.add(500, 0,   _("treeapp services"),          "javascript:a.oo(500);");
 a.add(501, 500, _("treeapp dhcp server"),       "javascript:go('services/dhcp.asp');");
 a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.asp');");
-a.add(503, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
-if (ddnsb == "1") a.add(504, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
-if (smbb == "1") a.add(505, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
-if (ipt_account == "1" && opmode != '0') a.add(506, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
+if (radiusb == "1") a.add(503, 500, _("treeapp radius"),             "javascript:go('services/radius.asp');");
+a.add(504, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
+if (ddnsb == "1") a.add(505, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
+if (smbb == "1") a.add(506, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
+if (ipt_account == "1" && opmode != '0') a.add(507, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
 a.add(510, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
 if (usbb == "1")
