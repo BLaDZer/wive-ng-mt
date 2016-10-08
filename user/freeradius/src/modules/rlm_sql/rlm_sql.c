@@ -498,8 +498,13 @@ int sql_set_user(rlm_sql_t *inst, REQUEST *request, char const *username)
 
 	fr_pair_value_strsteal(vp, expanded);
 	RDEBUG2("SQL-User-Name set to '%s'", vp->vp_strvalue);
-	vp->op = T_OP_SET;
-	radius_pairmove(request, &request->packet->vps, vp, false);	/* needs to be pair move else op is not respected */
+	vp->op = T_OP_SET;	
+
+	/*
+	 *	Delete any existing SQL-User-Name, and replace it with ours.
+	 */
+	fr_pair_delete_by_num(&request->packet->vps, vp->da->attr, vp->da->vendor, TAG_ANY);
+	fr_pair_add(&request->packet->vps, vp);
 
 	return 0;
 }
@@ -1006,7 +1011,7 @@ do { \
 		}
 	}
 
-	inst->ef = exfile_init(inst, 64, 30, true);
+	inst->ef = exfile_init(inst, 256, 30, true);
 	if (!inst->ef) {
 		cf_log_err_cs(conf, "Failed creating log file context");
 		return -1;
@@ -1500,10 +1505,11 @@ static rlm_rcode_t mod_checksimul(void *instance, REQUEST * request)
 
 	/* If simul_count_query is not defined, we don't do any checking */
 	if (!inst->config->simul_count_query) {
+		RWDEBUG("Simultaneous-Use checking requires 'simul_count_query' to be configured");
 		return RLM_MODULE_NOOP;
 	}
 
-	if ((!request->username) || (request->username->vp_length == '\0')) {
+	if ((!request->username) || (request->username->vp_length == 0)) {
 		REDEBUG("Zero Length username not permitted");
 
 		return RLM_MODULE_INVALID;

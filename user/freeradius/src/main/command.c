@@ -24,6 +24,7 @@
 #ifdef WITH_COMMAND_SOCKET
 
 #include <freeradius-devel/parser.h>
+#include <freeradius-devel/modcall.h>
 #include <freeradius-devel/md5.h>
 #include <freeradius-devel/channel.h>
 
@@ -1349,6 +1350,8 @@ static int command_debug_condition(rad_listen_t *listener, int argc, char *argv[
 		talloc_free(text);
 		return CMD_FAIL;
 	}
+
+	(void) modcall_pass2_condition(new_condition);
 
 	/*
 	 *	Delete old condition.
@@ -3041,7 +3044,12 @@ static int command_domain_recv_co(rad_listen_t *listener, fr_cs_buffer_t *co)
 /*
  *	Write 32-bit magic number && version information.
  */
-static int command_write_magic(int newfd, listen_socket_t *sock)
+static int command_write_magic(int newfd,
+#ifndef WITH_TCP
+			       UNUSED
+#endif
+			       listen_socket_t *sock
+	)
 {
 	ssize_t r;
 	uint32_t magic;
@@ -3066,6 +3074,7 @@ static int command_write_magic(int newfd, listen_socket_t *sock)
 	r = fr_channel_write(newfd, FR_CHANNEL_INIT_ACK, buffer, 8);
 	if (r <= 0) goto do_close;
 
+#ifdef WITH_TCP
 	/*
 	 *	Write an initial challenge
 	 */
@@ -3083,11 +3092,12 @@ static int command_write_magic(int newfd, listen_socket_t *sock)
 		r = fr_channel_write(newfd, FR_CHANNEL_AUTH_CHALLENGE, co->buffer, 16);
 		if (r <= 0) goto do_close;
 	}
+#endif
 
 	return 0;
 }
 
-
+#ifdef WITH_TCP
 static int command_tcp_recv(rad_listen_t *this)
 {
 	ssize_t r;
@@ -3126,6 +3136,7 @@ static int command_tcp_recv(rad_listen_t *this)
 	return command_domain_recv_co(this, co);
 }
 
+
 /*
  *	Should never be called.  The functions should just call write().
  */
@@ -3133,6 +3144,7 @@ static int command_tcp_send(UNUSED rad_listen_t *listener, UNUSED REQUEST *reque
 {
 	return 0;
 }
+#endif
 
 static int command_domain_recv(rad_listen_t *listener)
 {

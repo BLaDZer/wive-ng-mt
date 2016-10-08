@@ -13,14 +13,28 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$RadiusSrvEnable" = "1" ] || [ "$RadiusSrvEnable" = "2" ] ; then
-	$LOG "Starting radius daemon"
-	radiusd &
+    if [ "$radius_srv_enabled" = "1" ] || [ "$radius_srv_enabled" = "2" ]; then
+	# Generate password file.
+	configured=0
+	echo > $AUTHFILE
+	for usernum in `seq 0 $radius_srv_user_num`; do
+	    radius_srv_user=`nvram_get 2860 radius_srv_user"$usernum"`
+	    radius_srv_pass=`nvram_get 2860 radius_srv_pass"$usernum"`
+	    if [ "$radius_srv_user" != "" ] && [ "$radius_srv_pass" != "" ]; then
+		    printf "$radius_srv_user Cleartext-Password := "$radius_srv_pass"\n" >> $AUTHFILE
+		    configured=1
+	    fi
+	done
+	if [ "$configured" = "1" ]; then
+	    $LOG "Starting radius daemon"
+	    radiusd &
+	fi
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 RadiusSrvEnable`
+    eval `nvram_buf_get 2860 radius_srv_enabled radius_srv_user_num`
+    AUTHFILE="/etc/raddb/mods-config/files/authorize"
 }
 
 stop() {

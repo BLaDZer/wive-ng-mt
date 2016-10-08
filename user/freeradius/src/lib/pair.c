@@ -45,6 +45,26 @@ static int _fr_pair_free(VALUE_PAIR *vp) {
 	return 0;
 }
 
+static VALUE_PAIR *fr_pair_alloc(TALLOC_CTX *ctx)
+{
+	VALUE_PAIR *vp;
+
+	vp = talloc_zero(ctx, VALUE_PAIR);
+	if (!vp) {
+		fr_strerror_printf("Out of memory");
+		return NULL;
+	}
+
+	vp->op = T_OP_EQ;
+	vp->tag = TAG_ANY;
+	vp->type = VT_NONE;
+
+	talloc_set_destructor(vp, _fr_pair_free);
+
+	return vp;
+}
+
+
 /** Dynamically allocate a new attribute
  *
  * Allocates a new attribute and a new dictionary attr if no DA is provided.
@@ -65,20 +85,17 @@ VALUE_PAIR *fr_pair_afrom_da(TALLOC_CTX *ctx, DICT_ATTR const *da)
 		return NULL;
 	}
 
-	vp = talloc_zero(ctx, VALUE_PAIR);
+	vp = fr_pair_alloc(ctx);
 	if (!vp) {
 		fr_strerror_printf("Out of memory");
 		return NULL;
 	}
 
+	/*
+	 *	Use the 'da' to initialize more fields.
+	 */
 	vp->da = da;
-	vp->op = T_OP_EQ;
-	vp->tag = TAG_ANY;
-	vp->type = VT_NONE;
-
 	vp->vp_length = da->flags.length;
-
-	talloc_set_destructor(vp, _fr_pair_free);
 
 	return vp;
 }
@@ -105,10 +122,22 @@ VALUE_PAIR *fr_pair_afrom_num(TALLOC_CTX *ctx, unsigned int attr, unsigned int v
 
 	da = dict_attrbyvalue(attr, vendor);
 	if (!da) {
-		da = dict_unknown_afrom_fields(ctx, attr, vendor);
+		VALUE_PAIR *vp;
+
+		vp = fr_pair_alloc(ctx);
+		if (!vp) return NULL;
+
+		/*
+		 *	Ensure that the DA is parented by the VP.
+		 */
+		da = dict_unknown_afrom_fields(vp, attr, vendor);
 		if (!da) {
+			talloc_free(vp);
 			return NULL;
 		}
+
+		vp->da = da;
+		return vp;
 	}
 
 	return fr_pair_afrom_da(ctx, da);
@@ -1259,38 +1288,6 @@ finish:
 }
 
 
-static VALUE_PAIR *fr_pair_from_unkown(VALUE_PAIR *vp, DICT_ATTR const *da)
-{
-	ssize_t len;
-	VALUE_PAIR *vp2;
-
-	len = data2vp(NULL, NULL, NULL, NULL, da,
-		      vp->vp_octets, vp->vp_length, vp->vp_length,
-		      &vp2);
-	if (len < 0) return vp; /* it's really unknown */
-
-	if (vp2->da->flags.is_unknown) {
-		fr_pair_list_free(&vp2);
-		return vp;
-	}
-
-	/*
-	 *	Didn't parse all of it.  Return the "unknown" one.
-	 *
-	 *	FIXME: it COULD have parsed 2 attributes and
-	 *	then not the third, so returning 2 "knowns"
-	 *	and 1 "unknown" is likely preferable.
-	 */
-	if ((size_t) len < vp->vp_length) {
-		fr_pair_list_free(&vp2);
-		return vp;
-	}
-
-	fr_pair_steal(talloc_parent(vp), vp2);
-	fr_pair_list_free(&vp);
-	return vp2;
-}
-
 /** Create a valuepair from an ASCII attribute and value
  *
  * Where the attribute name is in the form:
@@ -1309,44 +1306,46 @@ static VALUE_PAIR *fr_pair_make_unknown(TALLOC_CTX *ctx,
 					char const *attribute, char const *value,
 					FR_TOKEN op)
 {
-	VALUE_PAIR	*vp;
+	VALUE_PAIR	*vp, *vp2;
 	DICT_ATTR const *da;
 
 	uint8_t 	*data;
 	size_t		size;
+	ssize_t		len;
 
-	da = dict_unknown_afrom_str(ctx, attribute);
-	if (!da) return NULL;
+	vp = fr_pair_alloc(ctx);
+	if (!vp) return NULL;
+
+	vp->da = dict_unknown_afrom_str(vp, attribute);
+	if (!vp->da) {
+		talloc_free(vp);
+		return NULL;
+	}
+
+	/*
+	 *	No value.  Nothing more to do.
+	 */
+	if (!value) return vp;
 
 	/*
 	 *	Unknown attributes MUST be of type 'octets'
 	 */
-	if (value && (strncasecmp(value, "0x", 2) != 0)) {
+	if (strncasecmp(value, "0x", 2) != 0) {
 		fr_strerror_printf("Unknown attribute \"%s\" requires a hex "
 				   "string, not \"%s\"", attribute, value);
-
-		dict_attr_free(&da);
+		talloc_free(vp);
 		return NULL;
 	}
 
 	/*
-	 *	We've now parsed the attribute properly, Let's create
-	 *	it.  This next stop also looks the attribute up in the
-	 *	dictionary, and creates the appropriate type for it.
+	 *	Convert the hex data to binary.
 	 */
-	vp = fr_pair_afrom_da(ctx, da);
-	if (!vp) {
-		dict_attr_free(&da);
-		return NULL;
-	}
-
-	vp->op = (op == 0) ? T_OP_EQ : op;
-
-	if (!value) return vp;
-
 	size = strlen(value + 2);
+
 	vp->vp_length = size >> 1;
-	data = talloc_array(vp, uint8_t, vp->vp_length);
+	vp->vp_octets = data = talloc_array(vp, uint8_t, vp->vp_length);
+	vp->type = VT_DATA;
+	vp->op = (op == 0) ? T_OP_EQ : op;
 
 	if (fr_hex2bin(data, vp->vp_length, value + 2, size) != vp->vp_length) {
 		fr_strerror_printf("Invalid hex string");
@@ -1354,18 +1353,43 @@ static VALUE_PAIR *fr_pair_make_unknown(TALLOC_CTX *ctx,
 		return NULL;
 	}
 
-	vp->vp_octets = data;
-	vp->type = VT_DATA;
-
 	/*
-	 *	Convert unknowns to knowns
+	 *	It's still unknown, return it as-is.
 	 */
 	da = dict_attrbyvalue(vp->da->attr, vp->da->vendor);
-	if (da) {
-		return fr_pair_from_unkown(vp, da);
+	if (!da) return vp;
+
+	/*
+	 *	It MIGHT be known.  See if we can decode the raw data
+	 *	into a valid attribute.
+	 */
+	len = data2vp(ctx, NULL, NULL, NULL, da,
+		      vp->vp_octets, vp->vp_length, vp->vp_length,
+		      &vp2);
+	if (len <= 0) return vp;
+
+	/*
+	 *	It's still unknown.  Return the original VP.
+	 */
+	if (vp2->da->flags.is_unknown) {
+		fr_pair_list_free(&vp2);
+		return vp;
 	}
 
-	return vp;
+	/*
+	 *	Didn't parse all of it.  Return the "unknown" one.
+	 *
+	 *	FIXME: it COULD have parsed 2 attributes and
+	 *	then not the third, so returning 2 "knowns"
+	 *	and 1 "unknown" is likely preferable.
+	 */
+	if ((size_t) len < vp->vp_length) {
+		fr_pair_list_free(&vp2);
+		return vp;
+	}
+
+	fr_pair_list_free(&vp);
+	return vp2;
 }
 
 
@@ -1614,11 +1638,13 @@ int fr_pair_mark_xlat(VALUE_PAIR *vp, char const *value)
 	 *	valuepair should not already have a value.
 	 */
 	if (vp->type != VT_NONE) {
+		fr_strerror_printf("Pair already has a value");
 		return -1;
 	}
 
 	raw = talloc_typed_strdup(vp, value);
 	if (!raw) {
+		fr_strerror_printf("Out of memory");
 		return -1;
 	}
 
@@ -1985,7 +2011,7 @@ int fr_pair_cmp(VALUE_PAIR *a, VALUE_PAIR *b)
 
 			if (!fr_assert(a->da->type == PW_TYPE_STRING)) return -1;
 
-			slen = regex_compile(NULL, &preg, a->vp_strvalue, a->vp_length, false, false, false, true);
+			slen = regex_compile(NULL, &preg, a->value.xlat, talloc_array_length(a->value.xlat) - 1, false, false, false, true);
 			if (slen <= 0) {
 				fr_strerror_printf("Error at offset %zu compiling regex for %s: %s",
 						   -slen, a->da->name, fr_strerror());

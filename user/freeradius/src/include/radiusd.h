@@ -167,6 +167,8 @@ typedef struct main_config {
 
 	bool		write_pid;			//!< write the PID file
 
+	bool		exiting;			//!< are we exiting?
+
 
 #ifdef ENABLE_OPENSSL_VERSION_CHECK
 	char const	*allow_vulnerable_openssl;	//!< The CVE number of the last security issue acknowledged.
@@ -273,8 +275,6 @@ struct rad_request {
 	bool			in_request_hash;
 #ifdef WITH_PROXY
 	bool			in_proxy_hash;
-
-	struct timeval		proxy_retransmit;
 
 	uint32_t		num_proxied_requests;	//!< How many times this request was proxied.
 							//!< Retransmissions are driven by requests from the NAS.

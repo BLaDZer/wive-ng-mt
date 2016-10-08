@@ -43,7 +43,7 @@ load_modules() {
 
 gen_configs() {
 
-# Generate passord files. Support 10 users
+# Generate password file.
 configured=0
 echo > $ppp/chap-secrets
 for usernum in `seq 0 $l2tp_srv_user_num`; do

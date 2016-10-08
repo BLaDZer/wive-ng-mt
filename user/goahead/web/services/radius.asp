@@ -55,14 +55,14 @@
 			function genRadiusTable()
 			{
 				var table, i;
-				
+
 				table  = '<table class="form">';
 				table += '<tr><td class="title" colspan="3">' + _("services radius users") + '</td></tr>';
 				table += '<tr><th style="width: 40%;">' + _("services radius login") + '</th><th style="width: 40%;">' + _("services radius sharedsecret") + '</th><th>' + _("services radius action") + '</th></tr>';
 
 				for (i = 0; i < users.length; i++) {
 					table += '<tr><td style="padding-left: 20px;">' + users[i][0] + '<input name="radius_srv_user' + i + '" type="hidden" value="' + users[i][0] + '"></td>';
-					table += '<td style="padding-left: 20px;">xxxx<input name="radius_srv_secret' + i + '" type="hidden" value="' + users[i][1] + '"></td>';
+					table += '<td style="padding-left: 20px;">xxxx<input name="radius_srv_pass' + i + '" type="hidden" value="' + users[i][1] + '"></td>';
 					table += '<td style="text-align: center;">';
 					table += '<img src="/graphics/edit.png" title="' + _("services dhcp edit record") + '" onClick="editUser(' + i + ');"> ';
 					table += '<img src="/graphics/cross.png" title="' + _("services dhcp delete record") + '" onClick="deleteUser(' + i + ');">';
@@ -77,7 +77,7 @@
 				table += '<input type="hidden" name="radius_srv_user_num" value="' + users.length + '">';
 				table += '</td></tr>';
 				table += '</table>';
-				
+
 				document.getElementById("radiusUserList").innerHTML = table;
 			}
 

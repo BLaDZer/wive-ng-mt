@@ -31,6 +31,28 @@ RCSID("$Id$")
 #include <pwd.h>
 #include <sys/uio.h>
 
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+
+/*
+ *	Some versions of Linux don't have closefrom(), but they will
+ *	have /proc.
+ *
+ *	BSD systems will generally have closefrom(), but not proc.
+ *
+ *	OSX doesn't have closefrom() or /proc/self/fd, but it does
+ *	have /dev/fd
+ */
+#ifdef __linux__
+#define CLOSEFROM_DIR "/proc/self/fd"
+#elif defined(__APPLE__)
+#define CLOSEFROM_DIR "/dev/fd"
+#else
+#undef HAVE_DIRENT_H
+#endif
+
+#endif
+
 #define FR_PUT_LE16(a, val)\
 	do {\
 		a[1] = ((uint16_t) (val)) >> 8;\
@@ -78,6 +100,28 @@ int fr_set_signal(int sig, sig_t func)
 	}
 #endif
 	return 0;
+}
+
+/** Uninstall a signal for a specific handler
+ *
+ * man sigaction says these are fine to call from a signal handler.
+ *
+ * @param sig SIGNAL
+ */
+int fr_unset_signal(int sig)
+{
+#ifdef HAVE_SIGACTION
+        struct sigaction act;
+
+        memset(&act, 0, sizeof(act));
+        act.sa_flags = 0;
+        sigemptyset(&act.sa_mask);
+        act.sa_handler = SIG_DFL;
+
+        return sigaction(sig, &act, NULL);
+#else
+        return signal(sig, SIG_DFL);
+#endif
 }
 
 static int _fr_trigger_talloc_ctx_free(fr_talloc_link_t *trigger)
@@ -322,7 +366,7 @@ int fr_pton4(fr_ipaddr_t *out, char const *value, ssize_t inlen, bool resolve, b
 
 		return 0;
 	}
-	
+
 	/*
 	 *	Copy the IP portion into a temporary buffer if we haven't already.
 	 */
@@ -1337,20 +1381,63 @@ int closefrom(int fd)
 {
 	int i;
 	int maxfd = 256;
+#ifdef HAVE_DIRENT_H
+	DIR *dir;
+#endif
+
+#ifdef F_CLOSEM
+	if (fcntl(fd, F_CLOSEM) == 0) {
+		return 0;
+	}
+#endif
+
+#ifdef F_MAXFD
+	maxfd = fcntl(fd, F_F_MAXFD);
+	if (maxfd >= 0) goto do_close;
+#endif
 
 #ifdef _SC_OPEN_MAX
 	maxfd = sysconf(_SC_OPEN_MAX);
 	if (maxfd < 0) {
-	  maxfd = 256;
+		maxfd = 256;
 	}
+#endif
+
+#ifdef HAVE_DIRENT_H
+	/*
+	 *	Use /proc/self/fd directory if it exists.
+	 */
+	dir = opendir(CLOSEFROM_DIR);
+	if (dir != NULL) {
+		long my_fd;
+		char *endp;
+		struct dirent *dp;
+
+		while ((dp = readdir(dir)) != NULL) {
+			my_fd = strtol(dp->d_name, &endp, 10);
+			if (my_fd <= 0) continue;
+
+			if (*endp) continue;
+
+			if (my_fd == dirfd(dir)) continue;
+
+			if ((my_fd >= fd) && (my_fd <= maxfd)) {
+				(void) close((int) my_fd);
+			}
+		}
+		(void) closedir(dir);
+		return 0;
+	}
+#endif
+
+#ifdef F_MAXFD
+do_close:
 #endif
 
 	if (fd > maxfd) return 0;
 
 	/*
 	 *	FIXME: return EINTR?
-	 *
-	 *	Use F_CLOSEM?
 	 */
 	for (i = fd; i < maxfd; i++) {
 		close(i);

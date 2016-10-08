@@ -41,6 +41,7 @@ typedef struct exfile_entry_t {
 struct exfile_t {
 	uint32_t	max_entries;	//!< How many file descriptors we keep track of.
 	uint32_t	max_idle;	//!< Maximum idle time for a descriptor.
+	time_t		last_cleaned;
 
 #ifdef HAVE_PTHREAD_H
 	pthread_mutex_t mutex;
@@ -124,6 +125,17 @@ exfile_t *exfile_init(TALLOC_CTX *ctx, uint32_t max_entries, uint32_t max_idle, 
 	return ef;
 }
 
+
+static void exfile_cleanup_entry(exfile_entry_t *entry)
+{
+	TALLOC_FREE(entry->filename);
+
+	close(entry->fd);
+	entry->hash = 0;
+	entry->fd = -1;
+	entry->dup = -1;
+}
+
 /** Open a new log file, or maybe an existing one.
  *
  * When multithreaded, the FD is locked via a mutex.  This way we're
@@ -137,7 +149,7 @@ exfile_t *exfile_init(TALLOC_CTX *ctx, uint32_t max_entries, uint32_t max_idle, 
  */
 int exfile_open(exfile_t *ef, char const *filename, mode_t permissions, bool append)
 {
-	uint32_t i, tries;
+	int i, tries, unused, oldest;
 	uint32_t hash;
 	time_t now = time(NULL);
 	struct stat st;
@@ -145,69 +157,81 @@ int exfile_open(exfile_t *ef, char const *filename, mode_t permissions, bool app
 	if (!ef || !filename) return -1;
 
 	hash = fr_hash_string(filename);
+	unused = -1;
 
 	PTHREAD_MUTEX_LOCK(&ef->mutex);
 
 	/*
-	 *	Clean up old entries.
+	 *	Clean up idle entries.
 	 */
-	for (i = 0; i < ef->max_entries; i++) {
-		if (!ef->entries[i].filename) continue;
-		if ((ef->entries[i].last_used + ef->max_idle) < now) {
+	if (now > (ef->last_cleaned + 1)) {
+		ef->last_cleaned = now;
+
+		for (i = 0; i < (int) ef->max_entries; i++) {
+			if (!ef->entries[i].filename) continue;
+
+			if ((ef->entries[i].last_used + ef->max_idle) >= now) continue;
+
 			/*
 			 *	This will block forever if a thread is
 			 *	doing something stupid.
 			 */
-			TALLOC_FREE(ef->entries[i].filename);
-			close(ef->entries[i].fd);
+			exfile_cleanup_entry(&ef->entries[i]);
 		}
 	}
 
 	/*
-	 *	Find the matching entry.
+	 *	Find the matching entry, or an unused one.
+	 *
+	 *	Also track which entry is the oldest, in case there
+	 *	are no unused entries.
 	 */
-	for (i = 0; i < ef->max_entries; i++) {
-		if (!ef->entries[i].filename) continue;
-
-		if (ef->entries[i].hash == hash) {
-			/*
-			 *	Same hash but different filename.  Give up.
-			 */
-			if (strcmp(ef->entries[i].filename, filename) != 0) {
-				PTHREAD_MUTEX_UNLOCK(&ef->mutex);
-				return -1;
-			}
-			/*
-			 *	Someone else failed to create the entry.
-			 */
-			if (!ef->entries[i].filename) {
-				PTHREAD_MUTEX_UNLOCK(&ef->mutex);
-				return -1;
-			}
-			goto do_return;
+	oldest = -1;
+	for (i = 0; i < (int) ef->max_entries; i++) {
+		if (!ef->entries[i].filename) {
+			if (unused < 0) unused = i;
+			continue;
 		}
+
+		if ((oldest < 0) ||
+		    (ef->entries[i].last_used < ef->entries[oldest].last_used)) {
+			oldest = i;
+		}
+
+		/*
+		 *	Hash comparisons are fast.  String comparisons are slow.
+		 */
+		if (ef->entries[i].hash != hash) continue;
+
+		/*
+		 *	But we still need to do string comparisons if
+		 *	the hash matches, because 1/2^16 filenames
+		 *	will result in a hash collision.  And that's
+		 *	enough filenames in a long-running server to
+		 *	ensure that it happens.
+		 */
+		if (strcmp(ef->entries[i].filename, filename) != 0) continue;
+
+		goto do_return;
 	}
 
 	/*
-	 *	Find an unused entry
+	 *	There are no unused entries, free the oldest one.
 	 */
-	for (i = 0; i < ef->max_entries; i++) {
-		if (!ef->entries[i].filename) break;
-	}
-
-	if (i >= ef->max_entries) {
-		fr_strerror_printf("Too many different filenames");
-		PTHREAD_MUTEX_UNLOCK(&(ef->mutex));
-		return -1;
+	if (unused < 0) {
+		exfile_cleanup_entry(&ef->entries[oldest]);
+		unused = oldest;
 	}
 
 	/*
 	 *	Create a new entry.
 	 */
+	i = unused;
 
 	ef->entries[i].hash = hash;
 	ef->entries[i].filename = talloc_strdup(ef->entries, filename);
 	ef->entries[i].fd = -1;
+	ef->entries[i].dup = -1;
 
 	ef->entries[i].fd = open(filename, O_RDWR | O_APPEND | O_CREAT, permissions);
 	if (ef->entries[i].fd < 0) {
@@ -260,10 +284,7 @@ do_return:
 		fr_strerror_printf("Failed to seek in file %s: %s", filename, strerror(errno));
 
 	error:
-		ef->entries[i].hash = 0;
-		TALLOC_FREE(ef->entries[i].filename);
-		close(ef->entries[i].fd);
-		ef->entries[i].fd = -1;
+		exfile_cleanup_entry(&ef->entries[i]);
 
 		PTHREAD_MUTEX_UNLOCK(&(ef->mutex));
 		return -1;
@@ -369,7 +390,7 @@ int exfile_close(exfile_t *ef, int fd)
 
 	PTHREAD_MUTEX_UNLOCK(&(ef->mutex));
 
-	fr_strerror_printf("Attempt to unlock file which does not exist");
+	fr_strerror_printf("Attempt to unlock file which is not tracked");
 	return -1;
 }
 

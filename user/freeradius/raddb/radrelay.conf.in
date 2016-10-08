@@ -5,7 +5,7 @@
 ##	Use with: radiusd -n radrelay
 ##
 ##	http://www.freeradius.org/
-##	$Id$
+##     $Id$
 ##
 
 ######################################################################
@@ -61,8 +61,7 @@ max_requests = 65536
 #  Logging section.
 #
 log {
-	destination = files
-	file = ${logdir}/${name}.log
+	destination = syslog
 }
 
 #

@@ -27,10 +27,9 @@ max_request_time = 30
 cleanup_delay = 5
 max_requests = 16384
 hostname_lookups = no
+
 log {
 	destination = syslog
-	colourise = yes
-	file = ${logdir}/radius.log
 	syslog_facility = daemon
 	stripped_names = no
 	auth = yes

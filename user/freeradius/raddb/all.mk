@@ -1,14 +1,12 @@
 #
 #  The list of files to install.
 #
-LOCAL_FILES :=		clients.conf dictionary radiusd.conf proxy.conf
+LOCAL_FILES :=         clients.conf dictionary radiusd.conf proxy.conf
 
 DEFAULT_SITES :=	default inner-tunnel
-
 LOCAL_SITES :=		$(addprefix raddb/sites-enabled/,$(DEFAULT_SITES))
 
-DEFAULT_MODULES :=	always attr_filter eap mschap preprocess files radutmp
-
+DEFAULT_MODULES :=     always attr_filter eap mschap preprocess files radutmp
 
 LOCAL_MODULES :=	$(addprefix raddb/mods-enabled/,$(DEFAULT_MODULES))
 

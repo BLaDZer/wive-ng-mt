@@ -496,7 +496,7 @@ void version_print(void)
 	CONF_ITEM *ci;
 	CONF_PAIR *cp;
 
-	if (DEBUG_ENABLED2) {
+	if (DEBUG_ENABLED3) {
 		int max = 0, len;
 
 		MEM(features = cf_section_alloc(NULL, "feature", NULL));
@@ -576,6 +576,7 @@ void version_print(void)
 #endif
 		DEBUG2("  ");
 	}
+	INFO("FreeRADIUS Version " RADIUSD_VERSION_STRING);
 	INFO("Copyright (C) 1999-2016 The FreeRADIUS server project and contributors");
 	INFO("There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A");
 	INFO("PARTICULAR PURPOSE");

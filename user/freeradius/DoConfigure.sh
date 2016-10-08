@@ -22,8 +22,8 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
-CONFOPTS="$CONFOPTS --with-threads --with-rlm_eap --with-rlm_mschap  --with-rlm_always --with-rlm_attr_filter --with-rlm_files --with-udpfromto --with-openssl --with-rlm_radutmp"
-CONFOPTS="$CONFOPTS --without-system-libtool --without-system-libltdl --disable-openssl-version-check --disable-developer --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --with-tcp --with-rlm_eap --with-rlm_mschap  --with-rlm_always --with-rlm_attr_filter --with-rlm_files --with-udpfromto --with-openssl --with-rlm_radutmp"
+CONFOPTS="$CONFOPTS --without-threads --without-system-libtool --without-system-libltdl --disable-openssl-version-check --disable-developer --enable-shared --disable-static"
 CONFOPTS="$CONFOPTS --without-rlm_eap_tnc --without-rlm_eap_pwd --without-rlm_eap_ikev2 --without-detail --without-rlm_pap --without-rlm_chap --without-rlm_passwd"
 CONFOPTS="$CONFOPTS --without-pcre --without-regex --without-rlm_digest --without-rlm_expr --without-rlm_cache --without-rlm_cache_eap"
 CONFOPTS="$CONFOPTS --without-rlm_linelog --without-rlm_realm --without-rlm_securid --without-rlm_sqlhpwippool --without-rlm_utf8"

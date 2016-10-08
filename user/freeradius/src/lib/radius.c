@@ -65,11 +65,6 @@ static void VP_HEXDUMP(char const *msg, uint8_t const *data, size_t len)
 
 
 /*
- *  The RFC says 4096 octets max, and most packets are less than 256.
- */
-#define MAX_PACKET_LEN 4096
-
-/*
  *	The maximum number of attributes which we allow in an incoming
  *	request.  If there are more attributes than this, the request
  *	is rejected.
@@ -1360,9 +1355,9 @@ static ssize_t vp2attr_rfc(RADIUS_PACKET const *packet,
 	ptr[0] = attribute & 0xff;
 	ptr[1] = 2;
 
-	if (room > ((unsigned) 255 - ptr[1])) room = 255 - ptr[1];
+	if (room > 255) room = 255;
 
-	len = vp2data_any(packet, original, secret, 0, pvp, ptr + ptr[1], room);
+	len = vp2data_any(packet, original, secret, 0, pvp, ptr + ptr[1], room - ptr[1]);
 	if (len <= 0) return len;
 
 	ptr[1] += len;
@@ -1447,12 +1442,10 @@ static ssize_t vp2attr_vsa(RADIUS_PACKET const *packet,
 
 	}
 
-	if (room > ((unsigned) 255 - (dv->type + dv->length))) {
-		room = 255 - (dv->type + dv->length);
-	}
+	if (room > 255) room = 255;
 
 	len = vp2data_any(packet, original, secret, 0, pvp,
-			  ptr + dv->type + dv->length, room);
+			  ptr + dv->type + dv->length, room - (dv->type + dv->length));
 	if (len <= 0) return len;
 
 	if (dv->length) ptr[dv->type + dv->length - 1] += len;
@@ -1552,11 +1545,11 @@ int rad_vp2vsa(RADIUS_PACKET const *packet, RADIUS_PACKET const *original,
 	lvalue = htonl(vp->da->vendor);
 	memcpy(ptr + 2, &lvalue, 4);
 
-	if (room > ((unsigned) 255 - ptr[1])) room = 255 - ptr[1];
+	if (room > 255) room = 255;
 
 	len = vp2attr_vsa(packet, original, secret, pvp,
 			  vp->da->attr, vp->da->vendor,
-			  ptr + ptr[1], room);
+			  ptr + ptr[1], room - ptr[1]);
 	if (len < 0) return len;
 
 #ifndef NDEBUG
@@ -1704,7 +1697,10 @@ int rad_vp2attr(RADIUS_PACKET const *packet, RADIUS_PACKET const *original,
 	 *	RFC format attributes take the fast path.
 	 */
 	if (!vp->da->vendor) {
-		if (vp->da->attr > 255) return 0;
+		if (vp->da->attr > 255) {
+			*pvp = vp->next;
+			return 0;
+		}
 
 		return rad_vp2rfc(packet, original, secret, pvp,
 				  start, room);
@@ -1812,7 +1808,7 @@ int rad_encode(RADIUS_PACKET *packet, RADIUS_PACKET const *original,
 	 */
 	reply = packet->vps;
 	while (reply) {
-		size_t last_len;
+		size_t last_len, room;
 		char const *last_name = NULL;
 
 		VERIFY_VP(reply);
@@ -1870,8 +1866,11 @@ int rad_encode(RADIUS_PACKET *packet, RADIUS_PACKET const *original,
 		}
 		last_name = reply->da->name;
 
-		len = rad_vp2attr(packet, original, secret, &reply, ptr,
-				  ((uint8_t *) data) + sizeof(data) - ptr);
+		room = ((uint8_t *) data) + sizeof(data) - ptr;
+
+		if (room <= 2) break;
+
+		len = rad_vp2attr(packet, original, secret, &reply, ptr, room);
 		if (len < 0) return -1;
 
 		/*

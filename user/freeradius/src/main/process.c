@@ -350,7 +350,7 @@ void radius_update_listener(rad_listen_t *this)
 static int request_num_counter = 1;
 #ifdef WITH_PROXY
 static int request_will_proxy(REQUEST *request) CC_HINT(nonnull);
-static int request_proxy(REQUEST *request, int retransmit) CC_HINT(nonnull);
+static int request_proxy(REQUEST *request) CC_HINT(nonnull);
 STATE_MACHINE_DECL(request_ping) CC_HINT(nonnull);
 
 STATE_MACHINE_DECL(request_response_delay) CC_HINT(nonnull);
@@ -1112,7 +1112,7 @@ static void request_cleanup_delay(REQUEST *request, int action)
 			return;
 		} /* else it's time to clean up */
 
-		request_done(request, REQUEST_DONE);
+		request_done(request, FR_ACTION_DONE);
 		break;
 
 	default:
@@ -1154,7 +1154,7 @@ static void request_response_delay(REQUEST *request, int action)
 
 	switch (action) {
 	case FR_ACTION_DUP:
-		ERROR("(%u) Discarding duplicate request from "
+		RDEBUG("(%u) Discarding duplicate request from "
 		      "client %s port %d - ID: %u due to delayed response",
 		      request->number, request->client->shortname,
 		      request->packet->src_port,request->packet->id);
@@ -1541,7 +1541,7 @@ static void request_running(REQUEST *request, int action)
 			 *	up the post proxy fail
 			 *	handler.
 			 */
-			if (request_proxy(request, 0) < 0) goto req_finished;
+			if (request_proxy(request) < 0) goto req_finished;
 		} else
 #endif
 		{
@@ -1583,14 +1583,15 @@ int request_receive(TALLOC_CTX *ctx, rad_listen_t *listener, RADIUS_PACKET *pack
 #ifdef WITH_ACCOUNTING
 	if (listener->type != RAD_LISTEN_DETAIL)
 #endif
+
+#ifdef WITH_TCP
 	{
 		sock = listener->data;
 		sock->last_packet = now.tv_sec;
 
-#ifdef WITH_TCP
 		packet->proto = sock->proto;
-#endif
 	}
+#endif
 
 	/*
 	 *	Skip everything if required.
@@ -2006,26 +2007,6 @@ static void tcp_socket_timer(void *ctx)
 
 #ifdef WITH_PROXY
 /*
- *	Add +/- 2s of jitter, as suggested in RFC 3539
- *	and in RFC 5080.
- */
-static void add_jitter(struct timeval *when)
-{
-	uint32_t jitter;
-
-	when->tv_sec -= 2;
-
-	jitter = fr_rand();
-	jitter ^= (jitter >> 10);
-	jitter &= ((1 << 22) - 1); /* 22 bits of 1 */
-
-	/*
-	 *	Add in ~ (4 * USEC) of jitter.
-	 */
-	tv_add(when, jitter);
-}
-
-/*
  *	Called by socket_del to remove requests with this socket
  */
 static int eol_proxy_listener(void *ctx, void *data)
@@ -2419,10 +2400,9 @@ static int process_proxy_reply(REQUEST *request, RADIUS_PACKET *reply)
 
 		} else {
 			vp = fr_pair_find_by_num(request->config, PW_RESPONSE_PACKET_TYPE, 0, TAG_ANY);
-			if (vp) {
+			if (vp && (vp->vp_integer != 256)) {
 				request->proxy_reply = rad_alloc_reply(request, request->proxy);
 				request->proxy_reply->code = vp->vp_integer;
-				fr_pair_delete_by_num(&request->config, PW_RESPONSE_PACKET_TYPE, 0, TAG_ANY);
 			}
 		}
 #ifdef WITH_COA
@@ -2487,7 +2467,6 @@ int request_proxy_reply(RADIUS_PACKET *packet)
 	}
 
 	request = fr_packet2myptr(REQUEST, proxy, proxy_p);
-	request->num_proxied_responses++; /* needs to be protected by lock */
 
 	PTHREAD_MUTEX_UNLOCK(&proxy_mutex);
 
@@ -2522,11 +2501,15 @@ int request_proxy_reply(RADIUS_PACKET *packet)
 	 *	Status-Server packets don't count as real packets.
 	 */
 	if (request->proxy->code != PW_CODE_STATUS_SERVER) {
+#ifdef WITH_TCP
 		listen_socket_t *sock = request->proxy_listener->data;
 
-		request->home_server->last_packet_recv = now.tv_sec;
 		sock->last_packet = now.tv_sec;
+#endif
+		request->home_server->last_packet_recv = now.tv_sec;
 	}
+
+	request->num_proxied_responses++;
 
 	/*
 	 *	If we have previously seen a reply, ignore the
@@ -3074,6 +3057,14 @@ do_home:
 
 		request->server = old_server;
 	} else {
+		char buffer[128];
+
+		RDEBUG2("Starting proxy to home server %s port %d",
+			inet_ntop(request->proxy->dst_ipaddr.af,
+				  &request->proxy->dst_ipaddr.ipaddr,
+				  buffer, sizeof(buffer)),
+			request->proxy->dst_port);
+
 		rcode = process_pre_proxy(pre_proxy_type, request);
 	}
 
@@ -3161,7 +3152,7 @@ static int proxy_to_virtual_server(REQUEST *request)
 }
 
 
-static int request_proxy(REQUEST *request, int retransmit)
+static int request_proxy(REQUEST *request)
 {
 	char buffer[128];
 
@@ -3227,11 +3218,8 @@ static int request_proxy(REQUEST *request, int retransmit)
 
 	}
 
-	gettimeofday(&request->proxy_retransmit, NULL);
-	if (!retransmit) {
-		request->proxy->timestamp = request->proxy_retransmit;
-	}
-	request->home_server->last_packet_sent = request->proxy_retransmit.tv_sec;
+	gettimeofday(&request->proxy->timestamp, NULL);
+	request->home_server->last_packet_sent = request->proxy->timestamp.tv_sec;
 
 	/*
 	 *	Encode the packet before we do anything else.
@@ -3298,7 +3286,8 @@ static int request_proxy_anew(REQUEST *request)
 
 #ifdef WITH_ACCOUNTING
 	/*
-	 *	Update the Acct-Delay-Time attribute.
+	 *	Update the Acct-Delay-Time attribute, since the LAST
+	 *	time we tried to retransmit this packet.
 	 */
 	if (request->packet->code == PW_CODE_ACCOUNTING_REQUEST) {
 		VALUE_PAIR *vp;
@@ -3311,7 +3300,7 @@ static int request_proxy_anew(REQUEST *request)
 			struct timeval now;
 
 			gettimeofday(&now, NULL);
-			vp->vp_integer += now.tv_sec - request->proxy_retransmit.tv_sec;
+			vp->vp_integer += now.tv_sec - request->proxy->timestamp.tv_sec;
 		}
 	}
 #endif
@@ -3343,7 +3332,7 @@ static int request_proxy_anew(REQUEST *request)
 	request->proxy->data = NULL;
 	request->proxy->data_len = 0;
 
-	if (request_proxy(request, 1) != 1) goto post_proxy_fail;
+	if (request_proxy(request) != 1) goto post_proxy_fail;
 
 	return 1;
 }
@@ -3371,6 +3360,7 @@ static void request_ping(REQUEST *request, int action)
 				 &request->proxy->dst_ipaddr.ipaddr,
 				 buffer, sizeof(buffer)),
 		       request->proxy->dst_port);
+		remove_from_proxy_hash(request);
 		break;
 
 	case FR_ACTION_PROXY_REPLY:
@@ -3418,9 +3408,30 @@ static void request_ping(REQUEST *request, int action)
 	}
 
 	rad_assert(!request->in_request_hash);
+	rad_assert(!request->in_proxy_hash);
 	rad_assert(request->ev == NULL);
 	NO_CHILD_THREAD;
 	request_done(request, FR_ACTION_DONE);
+}
+
+/*
+ *	Add +/- 2s of jitter, as suggested in RFC 3539
+ *	and in RFC 5080.
+ */
+static void add_jitter(struct timeval *when)
+{
+	uint32_t jitter;
+
+	when->tv_sec -= 2;
+
+	jitter = fr_rand();
+	jitter ^= (jitter >> 10);
+	jitter &= ((1 << 22) - 1); /* 22 bits of 1 */
+
+	/*
+	 *	Add in ~ (4 * USEC) of jitter.
+	 */
+	tv_add(when, jitter);
 }
 
 /*
@@ -3805,7 +3816,7 @@ static void proxy_wait_for_reply(REQUEST *request, int action)
 		 *	More than one retransmit a second is stupid,
 		 *	and should be suppressed by the proxy.
 		 */
-		when = request->proxy_retransmit;
+		when = request->proxy->timestamp;
 		when.tv_sec++;
 
 		if (timercmp(&now, &when, <)) {
@@ -3841,7 +3852,7 @@ static void proxy_wait_for_reply(REQUEST *request, int action)
 		rad_assert(request->proxy_listener != NULL);
 		FR_STATS_TYPE_INC(home->stats.total_requests);
 		home->last_packet_sent = now.tv_sec;
-		request->proxy_retransmit = now;
+		request->proxy->timestamp = now;
 		debug_packet(request, request->proxy, false);
 		request->proxy_listener->send(request->proxy_listener, request);
 		break;
@@ -4025,6 +4036,12 @@ static void request_coa_originate(REQUEST *request)
 			TALLOC_FREE(request->coa);
 			return;
 		}
+	}
+
+	if (!main_config.proxy_requests) {
+		RWDEBUG("Cannot originate CoA packets unless 'proxy_requests = yes'");
+			TALLOC_FREE(request->coa);
+		return;
 	}
 
 	coa = request->coa;
@@ -4385,6 +4402,17 @@ static void coa_wait_for_reply(REQUEST *request, int action)
 	case FR_ACTION_TIMER:
 		if (request_max_time(request)) break;
 
+		/*
+		 *	Don't do fail-over.  This is a 3.1 feature.
+		 */
+		if (!request->home_server ||
+		    (request->home_server->state == HOME_STATE_IS_DEAD) ||
+		    !request->proxy_listener ||
+		    (request->proxy_listener->status >= RAD_LISTEN_STATUS_EOL)) {
+			request_done(request, FR_ACTION_DONE);
+			break;
+		}
+
 		coa_retransmit(request);
 		break;
 
@@ -4672,7 +4700,6 @@ static void listener_free_cb(void *ctx)
 	rad_assert(this->next == NULL);
 	talloc_free(this);
 }
-#endif
 
 #ifdef WITH_PROXY
 static int proxy_eol_cb(void *ctx, void *data)
@@ -4712,7 +4739,8 @@ static int proxy_eol_cb(void *ctx, void *data)
 	 */
 	return 0;
 }
-#endif
+#endif	/* WITH_PROXY */
+#endif	/* WITH_TCP */
 
 static int event_new_fd(rad_listen_t *this)
 {
@@ -4795,7 +4823,7 @@ static int event_new_fd(rad_listen_t *this)
 					rad_panic("Failed to insert event");
 				}
 			}
-#endif
+#endif	/* WITH_TCP */
 			break;
 #endif	/* WITH_PROXY */
 
@@ -4822,7 +4850,7 @@ static int event_new_fd(rad_listen_t *this)
 					fr_exit(1);
 				}
 			}
-#endif
+#endif	/* WITH_TCP */
 			break;
 		} /* switch over listener types */
 
@@ -4899,7 +4927,7 @@ static int event_new_fd(rad_listen_t *this)
 			}
 			PTHREAD_MUTEX_UNLOCK(&proxy_mutex);
 		}
-#endif
+#endif	/* WITH_PROXY */
 
 		/*
 		 *	Requests are still using the socket.  Wait for
@@ -4931,7 +4959,7 @@ static int event_new_fd(rad_listen_t *this)
 		 */
 		this->status = RAD_LISTEN_STATUS_REMOVE_NOW;
 	} /* socket is at EOL */
-#endif
+#endif	  /* WITH_TCP */
 
 	/*
 	 *	Nuke the socket.
@@ -4940,8 +4968,8 @@ static int event_new_fd(rad_listen_t *this)
 		int devnull;
 #ifdef WITH_TCP
 		listen_socket_t *sock = this->data;
-#endif
 		struct timeval when;
+#endif
 
 		/*
 		 *      Re-open the socket, pointing it to /dev/null.
@@ -5002,7 +5030,7 @@ static int event_new_fd(rad_listen_t *this)
 			}
 			PTHREAD_MUTEX_UNLOCK(&proxy_mutex);
 		} else
-#endif
+#endif	/* WITH_PROXY */
 		{
 			INFO(" ... shutting down socket %s", buffer);
 
@@ -5033,8 +5061,8 @@ static int event_new_fd(rad_listen_t *this)
 				     &(sock->ev))) {
 			rad_panic("Failed to insert event");
 		}
-	}
 #endif	/* WITH_TCP */
+	}
 
 	return 1;
 }
@@ -5138,6 +5166,10 @@ static void handle_signal_self(int flag)
 #ifndef HAVE_PTHREAD_H
 void radius_signal_self(int flag)
 {
+	if (flag == RADIUS_SIGNAL_SELF_TERM) {
+		main_config.exiting = true;
+	}
+
 	return handle_signal_self(flag);
 }
 
@@ -5151,6 +5183,10 @@ void radius_signal_self(int flag)
 {
 	ssize_t rcode;
 	uint8_t buffer[16];
+
+	if (flag == RADIUS_SIGNAL_SELF_TERM) {
+		main_config.exiting = true;
+	}
 
 	/*
 	 *	The read MUST be non-blocking for this to work.

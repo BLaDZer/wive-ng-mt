@@ -234,6 +234,31 @@ static ssize_t CC_HINT(nonnull) xlat_home_server(UNUSED void *instance, REQUEST 
 		return 0;
 	}
 
+	if (strcmp(fmt, "state") == 0) {
+		char const *state;
+
+		switch (request->home_server->state) {
+		case HOME_STATE_ALIVE:
+			state = "alive";
+			break;
+
+		case HOME_STATE_ZOMBIE:
+			state = "zombie";
+			break;
+
+		case HOME_STATE_IS_DEAD:
+			state = "dead";
+			break;
+
+		default:
+			state = "unknown";
+			break;
+		}
+
+		strlcpy(out, state, outlen);
+		return strlen(out);
+	}
+
 	return xlat_cs(request->home_server->cs, fmt, out, outlen);
 }
 
@@ -249,6 +274,20 @@ static ssize_t CC_HINT(nonnull) xlat_server_pool(UNUSED void *instance, REQUEST 
 
 		*out = '\0';
 		return 0;
+	}
+
+	if (strcmp(fmt, "state") == 0) {
+		char const *state;
+
+		if (request->home_pool->in_fallback) {
+			state = "fallback";
+
+		} else {
+			state = "alive";
+		}
+
+		strlcpy(out, state, outlen);
+		return strlen(out);
 	}
 
 	return xlat_cs(request->home_pool->cs, fmt, out, outlen);
@@ -2653,7 +2692,11 @@ home_server_t *home_server_ldb(char const *realmname,
 }
 
 
-home_server_t *home_server_find(fr_ipaddr_t *ipaddr, uint16_t port, int proto)
+home_server_t *home_server_find(fr_ipaddr_t *ipaddr, uint16_t port,
+#ifndef WITH_TCP
+				UNUSED
+#endif
+				int proto)
 {
 	home_server_t myhome;
 

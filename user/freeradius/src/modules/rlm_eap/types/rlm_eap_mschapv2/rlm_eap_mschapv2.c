@@ -545,8 +545,15 @@ failure:
 	 *	The 'value_size' is the size of the response,
 	 *	which is supposed to be the response (48
 	 *	bytes) plus 1 byte of flags at the end.
+	 *
+	 *	NOTE: When using Cisco NEAT with EAP-MSCHAPv2, the
+	 *	      switch supplicant will send MSCHAPv2 data (EAP type = 26)
+	 *	      but will always set a value_size of 16 and NULL out the
+	 *	      peer challenge.
+	 *
 	 */
-	if (eap_ds->response->type.data[4] != 49) {
+	if ((eap_ds->response->type.data[4] != 49) &&
+	    (eap_ds->response->type.data[4] != 16)) {
 		REDEBUG("Response is of incorrect length %d", eap_ds->response->type.data[4]);
 		return 0;
 	}
@@ -650,7 +657,7 @@ packet_ready:
 		 */
 		if (inst->with_ntdomain_hack &&
 		    ((challenge = fr_pair_find_by_num(request->packet->vps, PW_USER_NAME, 0, TAG_ANY)) != NULL) &&
-		    ((username = strchr(challenge->vp_strvalue, '\\')) != NULL)) {
+		    ((username = memchr(challenge->vp_octets, '\\', challenge->vp_length)) != NULL)) {
 			/*
 			 *	Wipe out the NT domain.
 			 *

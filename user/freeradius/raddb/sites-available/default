@@ -1,5 +1,5 @@
 server default {
-listen {
+    listen {
 	type = auth
 	ipv4addr = *
 	port = 1812
@@ -9,50 +9,48 @@ listen {
 	      lifetime = 0
 	      idle_timeout = 30
 	}
-}
+    }
 
-listen {
+    listen {
 	ipv4addr = *
 	port = 1813
 	type = acct
 
 	limit {
 	}
-}
+    }
 
-authorize {
+    authorize {
 	preprocess
 	mschap
 	eap {
 		ok = return
 	}
 	files
-}
+    }
 
-
-authenticate {
+    authenticate {
 	Auth-Type MS-CHAP {
 		mschap
 	}
 	eap
-}
+    }
 
-
-preacct {
+    preacct {
 	preprocess
 	files
-}
+    }
 
-accounting {
+    accounting {
 	attr_filter.accounting_response
-}
+    }
 
 
-session {
+    session {
 	radutmp
-}
+    }
 
-post-auth {
+    post-auth {
 	update {
 		&reply: += &session-state:
 	}
@@ -64,12 +62,12 @@ post-auth {
 		eap
 		remove_reply_message_if_eap
 	}
-}
+    }
 
-pre-proxy {
-}
+    pre-proxy {
+    }
 
-post-proxy {
+    post-proxy {
 	eap
-}
+    }
 }

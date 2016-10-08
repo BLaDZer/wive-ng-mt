@@ -1,9 +1,6 @@
 Xeap.authorize {
 	cache_eap
 	if (ok) {
-		#
-		#	Expire previous cache entry
-		#
 		if (&control:State) {
 			update control {
 				&Cache-TTL := 0

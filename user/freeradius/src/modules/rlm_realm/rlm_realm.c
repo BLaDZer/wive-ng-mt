@@ -171,8 +171,11 @@ static int check_for_realm(void *instance, REQUEST *request, REALM **returnrealm
 	/*
 	 *	Try querying for the dynamic realm.
 	 */
-	if (!realm && inst->trust_router)
+	if (!realm && inst->trust_router) {
 		realm = tr_query_realm(request, realmname, inst->default_community, inst->rp_realm, inst->trust_router, inst->tr_port);
+	} else {
+		RDEBUG2("No trust router configured, skipping dynamic realm lookup");
+	}
 #endif
 
 	if (!realm) {
@@ -220,8 +223,14 @@ static int check_for_realm(void *instance, REQUEST *request, REALM **returnrealm
 	 *	entered.
 	 */
 	if (realm->name[0] != '~') realmname = realm->name;
-	pair_make_request("Realm", realmname, T_OP_EQ);
-	RDEBUG2("Adding Realm = \"%s\"", realmname);
+
+	/*
+	 *	A NULL realmname is allowed.
+	 */
+	if (realmname) {
+		pair_make_request("Realm", realmname, T_OP_EQ);
+		RDEBUG2("Adding Realm = \"%s\"", realmname);
+	}
 
 	talloc_free(namebuf);
 	username = NULL;
@@ -299,6 +308,8 @@ static int check_for_realm(void *instance, REQUEST *request, REALM **returnrealm
 		 *	send it there again.
 		 */
 		for (i = 0; i < realm->acct_pool->num_home_servers; i++) {
+			if (realm->acct_pool->servers[i]->ipaddr.af == AF_UNSPEC) continue;
+
 			if (fr_ipaddr_cmp(&realm->acct_pool->servers[i]->ipaddr, &my_ipaddr) == 0) {
 				RDEBUG2("Suppressing proxy due to FreeRADIUS-Proxied-To");
 				return RLM_MODULE_OK;
@@ -322,6 +333,8 @@ static int check_for_realm(void *instance, REQUEST *request, REALM **returnrealm
 		 *	send it there again.
 		 */
 		for (i = 0; i < realm->acct_pool->num_home_servers; i++) {
+			if (realm->acct_pool->servers[i]->ipaddr.af == AF_UNSPEC) continue;
+
 			if ((fr_ipaddr_cmp(&realm->acct_pool->servers[i]->ipaddr,
 					     &request->packet->src_ipaddr) == 0) &&
 			    (realm->acct_pool->servers[i]->port == request->packet->src_port)) {
@@ -378,6 +391,7 @@ static int mod_instantiate(CONF_SECTION *conf, void *instance)
 		if (!tr_init()) return -1;
 	} else {
 		rad_const_free(inst->trust_router);
+		inst->trust_router = NULL;
 	}
 #endif
 

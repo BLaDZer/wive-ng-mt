@@ -130,6 +130,7 @@ $INCLUDE dictionary.3gpp2
 $INCLUDE dictionary.acc
 $INCLUDE dictionary.acme
 $INCLUDE dictionary.actelis
+$INCLUDE dictionary.adtran
 $INCLUDE dictionary.airespace
 $INCLUDE dictionary.alcatel
 $INCLUDE dictionary.alcatel.sr
@@ -154,6 +155,7 @@ $INCLUDE dictionary.bt
 $INCLUDE dictionary.cablelabs
 $INCLUDE dictionary.cabletron
 $INCLUDE dictionary.camiant
+$INCLUDE dictionary.checkpoint
 $INCLUDE dictionary.chillispot
 $INCLUDE dictionary.cisco
 $INCLUDE dictionary.cisco.asa
@@ -250,6 +252,7 @@ $INCLUDE dictionary.riverstone
 $INCLUDE dictionary.roaringpenguin
 $INCLUDE dictionary.ruggedcom
 $INCLUDE dictionary.ruckus
+$INCLUDE dictionary.sangoma
 $INCLUDE dictionary.shasta
 $INCLUDE dictionary.sg
 $INCLUDE dictionary.shiva

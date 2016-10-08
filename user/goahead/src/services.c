@@ -703,7 +703,7 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 		nvram_init(RT2860_NVRAM);
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "radius_srv_user%d", i);
-			sprintf(secret_var, "radius_srv_secret%d", i);
+			sprintf(secret_var, "radius_srv_pass%d", i);
 			nvram_bufset(RT2860_NVRAM, user_var, "");
 			nvram_bufset(RT2860_NVRAM, secret_var, "");
 		}
@@ -730,7 +730,7 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 			count = atoi(radius_srv_user_num);
 			for (i = 0; i < count; i++) {
 				sprintf(user_var, "radius_srv_user%d", i);
-				sprintf(secret_var, "radius_srv_secret%d", i);
+				sprintf(secret_var, "radius_srv_pass%d", i);
 
 				char_t *user = websGetVar(wp, user_var, "");
 				char_t *secret = websGetVar(wp, secret_var, "");
@@ -747,7 +747,7 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 			if (oldcount > count)
 				for (i = count; i < oldcount; i++) {
 					sprintf(user_var, "radius_srv_user%d", i);
-					sprintf(secret_var, "radius_srv_secret%d", i);
+					sprintf(secret_var, "radius_srv_pass%d", i);
 					nvram_bufset(RT2860_NVRAM, user_var, "");
 					nvram_bufset(RT2860_NVRAM, secret_var, "");
 				}
@@ -777,7 +777,7 @@ static int getRadiusUserList(int eid, webs_t wp, int argc, char_t **argv)
 	if (count > 0) {
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "radius_srv_user%d", i);
-			sprintf(secret_var, "radius_srv_secret%d", i);
+			sprintf(secret_var, "radius_srv_pass%d", i);
 			char *user = nvram_get(RT2860_NVRAM, user_var);
 			char *secret = nvram_get(RT2860_NVRAM, secret_var);
 			websWrite(wp, T("[ '%s', '%s' ]%s"), user, secret, (i + 1 < count) ? ", " : " ");

@@ -1,3 +1,101 @@
+FreeRADIUS 3.0.12 Thur 29 Sep 2016 13:00:00 EDT urgency=medium
+	Feature improvements
+	* Add support for =~ and !~ in update sections.
+	  See "man unlang"
+	* Add dictionary.checkpoint.
+	* Simultaneous-Use prints out more information.
+	* Print WARNING in debug mode when packets may be
+	  truncated.
+	* Added expansions %{home_server:state} and
+	  %{home_server_pool:state}, which show the
+	  state of the server / pool.
+	* Mark rlm_sql_freetds as stable.
+	* Make rlm_perl less fragile.  Patch from
+	  Herwin Weststrate.
+	* Allow extended attributes to have "encrypt=2"
+	* Update dictionary.aruba.
+	* Add support for EAP-FAST.  This is an isolated
+	  feature which does not affect anything else.
+	* Update OpenSSL vulnerability list.  Use a version
+	  of OpenSSL released after September 20, 2016.
+	* EAP certificate verification is now done when
+	  "verify" is enabled and "ocsp" is disabled.
+	* New dhcpclient and rlm_rad_counter man pages.
+	* Minor abfab and moonshot additions.
+	* Pass CFLAGS through from environment in RPM builds.
+	  Allows more custom builds.
+	* Build with Heimdal in addtion to libkrb5.
+
+	Bug fixes
+	* Use correct typedef for older versions of sqlite.
+	* Update mssql schema to add priority
+	* don't complain on /dev/urandom in ldap
+	* fix == operator in update sections
+	* Don't create DHCP strings with many trailing zeros.
+	  Patch from Nicolas C.  Fixes #1526.
+	* Allow MS-CHAP change passwords instead of complaining
+	  on large buffer.
+	* Allow assignment or equality operator on SQL.
+	* Update aclocal tests for FreeBSD 10.  Patches from
+	  Mathieu Simon.
+	* Remove occasional hang in rlm_linelog.
+	* Copy VSAs to inner tunnel for TTLS and PEAP.
+	  Fixes #1544
+	* A few minor bugfixes caught in v3.1.x cleanup, and
+	  back-ported to v3.0.x.
+	* do_not_respond again works in post-proxy
+	* Allow realm "~^.*$" {} and User-Name with no realm.
+	* Fix leak when creating unknown attributes
+	* Fix Debian / logrotate.
+	* Make OpenSSL error functions thread-safe.
+	* Fix crash with rlm_sql and updating SQL-User-Name.
+	* Debian build updates.
+	* Allow regular expression comparisons in radclient
+	  fixes #1574.
+	* Fix memory leak on unknown attributes in detail file
+	  reader.
+	* Update example paths in "man" pages when installing
+	  them
+	* Build fixes for rlm_mschap.  Fixes #1489.
+	* BSD build fixes.  Patch from issue #1583.
+	* Be more careful about /lib/ when building.
+	  Fixes #1585.
+	* Correct ifdef placement error.  Fixes #1572.
+	* Allow for more files in internal "exfile" API
+	  So it will be possible to open more than 64
+	  "detail" files at the same time.
+	* Remove support for statically built EAP modules.
+	  Fixes #1591.
+	* Many fixes to rlm_python from Guillaume Pannatier.
+	* Use correct week adjustment in SQLcounter.
+	  Fixes #1608
+	* Minor fixes to allow compilation without DHCP,
+	  VMPS, or TCP.
+	* Fix checks for module / config file change on HUP.
+	* Compile regex comparisons when sent via
+	  "debug condition".  Fixes #1632.
+	* Update filenames in documentation and examples.
+	  Patch from Alan Buxey, #1655.
+	* Don't crash if SQL connection becomes unavailable.
+	  Fixes #1640.
+	* Disallow originate_coa when proxy_requests = no
+	  Fixes #1684.
+	* Free rad_perlconf_hv in correct perl context.
+	  Fixes #1675.
+	* Multiple fixes for Debian builds.  #1510, among
+	  others.
+	* Set OpenSSL FIPS compatibility flag when necessary.
+	* Pulled fixes for the build system over from other
+	  branches.
+	* Fix OCSP for RADIUS over TLS.
+	* Fix skip_if_ocsp_ok behavior.
+	* Better fixes for systems without closefrom() but
+	  which have /proc.  Fixes #1757.
+	* Minor build fixes back-ported from v4.0.x.
+	* build --whout-ascend-binary.  Fixes #1761.
+	* Be more aggressive about not opening new connections
+	  in debug mode after CTRL-C.  Address #1604.
+
 FreeRADIUS 3.0.11 Mon 25 Jan 2016 14:00:00 EST urgency=medium
 	Feature improvements
 	* "unlang" comparisons of IP addresses to IP prefixes

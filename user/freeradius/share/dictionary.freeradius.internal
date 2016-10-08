@@ -270,6 +270,8 @@ ATTRIBUTE	SSHA2-256-Password			1178	octets
 ATTRIBUTE	SSHA2-384-Password			1179	octets
 ATTRIBUTE	SSHA2-512-Password			1180	octets
 
+ATTRIBUTE	MS-CHAP-Peer-Challenge			1192	octets
+
 #
 #	Range:	1200-1279
 #		EAP-SIM (and other EAP type) weirdness.
@@ -791,7 +793,7 @@ VALUE	EAP-Type			IKEv2			49
 VALUE	EAP-Type			AKA2			50
 VALUE	EAP-Type			GPSK			51
 VALUE	EAP-Type			PWD			52
-VALUE	EAP-Type			EVEv1			53
+VALUE	EAP-Type			EKEv1			53
 
 #
 #	And this is what most people mean by MS-CHAPv2

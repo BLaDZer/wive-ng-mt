@@ -72,6 +72,11 @@ typedef enum {
 #define PW_RADIUS_TLS_PORT	       	2083
 #define PW_COA_UDP_PORT			3799
 
+/*
+ *  The RFC says 4096 octets max, and most packets are less than 256.
+ */
+#define MAX_PACKET_LEN 4096
+
 #include <freeradius-devel/rfc2865.h>
 #include <freeradius-devel/rfc2866.h>
 #include <freeradius-devel/rfc2867.h>
@@ -158,15 +163,20 @@ typedef enum {
 /*
  *	Microsoft has vendor code 311.
  */
-#define PW_MSCHAP_RESPONSE		1
-#define PW_MSCHAP_ERROR			2
-#define PW_MSCHAP_CPW_1			3
-#define PW_MSCHAP_CPW_2			4
-#define PW_MSCHAP_NT_ENC_PW		6
-#define PW_MSCHAP_CHALLENGE		11
-#define PW_MSCHAP2_RESPONSE		25
-#define PW_MSCHAP2_SUCCESS		26
-#define PW_MSCHAP2_CPW			27
+#define PW_MSCHAP_RESPONSE			1
+#define PW_MSCHAP_ERROR				2
+#define PW_MSCHAP_CPW_1				3
+#define PW_MSCHAP_CPW_2				4
+#define PW_MSCHAP_NT_ENC_PW			6
+#define PW_MSCHAP_MPPE_ENCRYPTION_POLICY	7
+#define PW_MSCHAP_MPPE_ENCRYPTION_TYPES		8
+#define PW_MSCHAP_CHALLENGE			11
+#define PW_MSCHAP_MPPE_SEND_KEY			16
+#define PW_MSCHAP_MPPE_RECV_KEY			17
+#define PW_MSCHAP2_RESPONSE			25
+#define PW_MSCHAP2_SUCCESS			26
+#define PW_MSCHAP2_CPW				27
+#define PW_MS_QUARANTINE_SOH			55
 
 /*
  * JANET's code for transporting eap channel binding data over ttls

@@ -122,7 +122,6 @@ struct conf_part {
 typedef struct cf_file_t {
 	char const	*filename;
 	CONF_SECTION	*cs;
-	bool		input;
 	struct stat	buf;
 } cf_file_t;
 
@@ -333,7 +332,6 @@ static FILE *cf_file_open(CONF_SECTION *cs, char const *filename)
 
 	file->filename = filename;
 	file->cs = cs;
-	file->input = true;
 
 	if (fstat(fd, &file->buf) == 0) {
 #ifdef S_IWOTH
@@ -362,10 +360,9 @@ static FILE *cf_file_open(CONF_SECTION *cs, char const *filename)
 }
 
 /*
- *	Do some checks on the file as an "input" file.  i.e. one read
- *	by a module.
+ *	Do some checks on the file
  */
-static bool cf_file_input(CONF_SECTION *cs, char const *filename)
+static bool cf_file_check(CONF_SECTION *cs, char const *filename, bool check_perms)
 {
 	cf_file_t *file;
 	CONF_DATA *cd;
@@ -383,12 +380,16 @@ static bool cf_file_input(CONF_SECTION *cs, char const *filename)
 
 	file->filename = filename;
 	file->cs = cs;
-	file->input = true;
 
 	if (stat(filename, &file->buf) < 0) {
-		ERROR("Unable to open file \"%s\": %s", filename, fr_syserror(errno));
+		ERROR("Unable to check file \"%s\": %s", filename, fr_syserror(errno));
 		talloc_free(file);
 		return false;
+	}
+
+	if (!check_perms) {
+		talloc_free(file);
+		return true;
 	}
 
 #ifdef S_IWOTH
@@ -440,11 +441,13 @@ static int file_callback(void *ctx, void *data)
 	 *	The file changed, we'll need to re-read it.
 	 */
 	if (buf.st_mtime != file->buf.st_mtime) {
-		if (!file->input) {
-			cb->rcode |= CF_FILE_CONFIG;
-		} else {
-			(void) cb->callback(cb->modules, file->cs);
+
+		if (cb->callback(cb->modules, file->cs)) {
 			cb->rcode |= CF_FILE_MODULE;
+			DEBUG3("HUP: Changed module file %s", file->filename);
+		} else {
+			DEBUG3("HUP: Changed config file %s", file->filename);
+			cb->rcode |= CF_FILE_CONFIG;
 		}
 	}
 
@@ -1384,7 +1387,7 @@ static inline int fr_item_validate_ipaddr(CONF_SECTION *cs, char const *name, PW
 int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *data, char const *dflt)
 {
 	int rcode;
-	bool deprecated, required, attribute, secret, file_input, cant_be_empty, tmpl, multi;
+	bool deprecated, required, attribute, secret, file_input, cant_be_empty, tmpl, multi, file_exists;
 	char **q;
 	char const *value;
 	CONF_PAIR *cp = NULL;
@@ -1399,6 +1402,7 @@ int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *d
 	attribute = (type & PW_TYPE_ATTRIBUTE);
 	secret = (type & PW_TYPE_SECRET);
 	file_input = (type == PW_TYPE_FILE_INPUT);	/* check, not and */
+	file_exists = (type == PW_TYPE_FILE_EXISTS);	/* check, not and */
 	cant_be_empty = (type & PW_TYPE_NOT_EMPTY);
 	tmpl = (type & PW_TYPE_TMPL);
 	multi = (type & PW_TYPE_MULTI);
@@ -1649,7 +1653,11 @@ int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *d
 		 *	to be caught as early as possible, during
 		 *	server startup.
 		 */
-		if (*q && file_input && !cf_file_input(cs, *q)) {
+		if (*q && file_input && !cf_file_check(cs, *q, true)) {
+			return -1;
+		}
+
+		if (*q && file_exists && !cf_file_check(cs, *q, false)) {
 			return -1;
 		}
 		break;

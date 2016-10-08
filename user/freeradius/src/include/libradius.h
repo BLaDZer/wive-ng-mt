@@ -205,7 +205,7 @@ extern const FR_NAME_NUMBER dict_attr_types[];
 extern const size_t dict_attr_sizes[PW_TYPE_MAX][2];
 extern const int fr_attr_max_tlv;
 extern const int fr_attr_shift[];
-extern const int fr_attr_mask[];
+extern const unsigned int fr_attr_mask[];
 
 /** dictionary attribute
  *
@@ -487,6 +487,7 @@ DICT_ATTR const	*dict_attrbytype(unsigned int attr, unsigned int vendor,
 				 PW_TYPE type);
 DICT_ATTR const	*dict_attrbyparent(DICT_ATTR const *parent, unsigned int attr,
 					   unsigned int vendor);
+DICT_ATTR const *dict_parent(unsigned int attr, unsigned int vendor);
 int		dict_attr_child(DICT_ATTR const *parent,
 				unsigned int *pattr, unsigned int *pvendor);
 DICT_VALUE	*dict_valbyattr(unsigned int attr, unsigned int vendor, int val);
@@ -703,6 +704,7 @@ void		fr_printf_log(char const *, ...) CC_HINT(format (printf, 1, 2));
  *	Several handy miscellaneous functions.
  */
 int		fr_set_signal(int sig, sig_t func);
+int		fr_unset_signal(int sig);
 int		fr_link_talloc_ctx_free(TALLOC_CTX *parent, TALLOC_CTX *child);
 char const	*fr_inet_ntop(int af, void const *src);
 char const 	*ip_ntoa(char *, uint32_t);
