@@ -448,6 +448,8 @@ int func_st_show(int argc, char* argv[])
     if (is_report(argc, argv))
     {
         func_st_show_report(argc,argv);
+        func_sw_interface(argc, argv);
+        func_sw_port(argc, argv);
         func_sw_lan(argc, argv);
         func_sw_ipv6(argc, argv);
         func_sw_wan(argc, argv);

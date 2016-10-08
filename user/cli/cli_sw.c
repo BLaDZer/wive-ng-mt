@@ -253,9 +253,43 @@ int func_sw_wan(int argc, char* argv[])
     return 0;
 }
 
+int func_sw_interface_report(int argc, char* argv[])
+{
+    int i;
+    int elem_count = 0;
+    struct nic_counts* ncs = nicscounts(&elem_count);
+
+    printf("IFSTATUSLIST\n");
+
+    for (i=0;i<elem_count;i++)
+    {
+        struct nic_counts nc = ncs[i];
+        if (nc.ifname[0] == '\0')
+            break;
+
+        if (!nc.is_available) {
+            continue;
+        }
+        else
+        {
+            printf("IFSTATUS\t%s\t%llu\t%llu\t%llu\t%llu\n", nc.ifname, nc.rx_bytes, nc.tx_bytes, nc.rx_packets, nc.tx_packets );
+        }
+    }
+
+    free(ncs);
+    return 0;
+
+}
 
 int func_sw_interface(int argc, char* argv[])
 {
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_sw_interface_report(argc, argv);
+    }
+
     writeHeader("Interface status");
 
     int i;
@@ -305,12 +339,37 @@ int func_sw_interface(int argc, char* argv[])
     return 0;
 }
 
+int func_sw_port_report(int argc, char* argv[])
+{
+    int port;
+    struct port_counts pcs;
+    portscounts(&pcs);
+
+    printf("PORTSTATUSLIST\n");
+    for (port=4; port>-1; port--)
+    {
+        struct port_status pst;
+        portstatus(&pst, port);
+        printf("PORTSTATUS\t%d\t%d\t%d\t%d\t%llu\t%llu\n", pst.portnum, pst.link, pst.speed, pst.duplex, pcs.rx_count[port], pcs.tx_count[port]);
+    }
+
+    return 0;
+}
+
 int func_sw_port(int argc, char* argv[])
 {
-    writeHeader("Port status");
     int port;
     struct port_counts pcs;
     int one_port = -1;
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_sw_port_report(argc, argv);
+    }
+
+    writeHeader("Port status");
 
     if (argc > 0)
     {
