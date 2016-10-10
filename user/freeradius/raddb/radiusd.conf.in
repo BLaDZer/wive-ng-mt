@@ -56,8 +56,8 @@ thread pool {
 	max_servers = 32
 	min_spare_servers = 2
 	max_spare_servers = 10
-	max_requests_per_server = 0
-	auto_limit_acct = no
+	max_requests_per_server = 16384
+	auto_limit_acct = yes
 }
 
 modules {

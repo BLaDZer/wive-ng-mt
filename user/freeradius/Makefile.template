@@ -329,7 +329,7 @@ romfs: install
 	cp -fva filesystem/etc/raddb/certs/server.pem $(ROMFSDIR)/etc/raddb/certs/
 	cp -fva filesystem/etc/raddb/certs/ca.pem $(ROMFSDIR)/etc/raddb/certs/
 	cp -fva filesystem/etc/raddb/certs/dh $(ROMFSDIR)/etc/raddb/certs/
-	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
+#	$(ROMFSINST) -S filesystem/etc/raddb/clients.conf /etc/raddb/clients.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/radiusd.conf /etc/raddb/radiusd.conf
 	$(ROMFSINST) -S filesystem/etc/raddb/proxy.conf /etc/raddb/proxy.conf
 	mkdir -p $(ROMFSDIR)/etc/raddb/mods-available
@@ -351,6 +351,6 @@ romfs: install
 	cp -rfva filesystem/etc/raddb/mods-config/files $(ROMFSDIR)/etc/raddb/mods-config/files
 	cp -rfva filesystem/etc/raddb/mods-config/attr_filter $(ROMFSDIR)/etc/raddb/mods-config/attr_filter
 	cp -rfva filesystem/etc/raddb/mods-config/preprocess $(ROMFSDIR)/etc/raddb/mods-config/preprocess
-	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
+#	$(ROMFSINST) -s /etc/raddb/mods-config/files/authorize /etc/raddb/users
 	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/hints /etc/raddb/hints
 	$(ROMFSINST) -s /etc/raddb/mods-config/preprocess/huntgroups /etc/raddb/huntgroups

@@ -13,7 +13,7 @@ LOG="logger -t apd"
 
 start() {
     get_param
-    if [ "$radius_srv_enabled" = "1" ] || [ "$radius_srv_enabled" = "2" ]; then
+    if [ "$radius_srv_enabled" = "1" -o "$radius_srv_enabled" = "2" ] && [ "$radius_srv_secret" != "" ]; then
 	# Generate password file.
 	configured=0
 	echo > $AUTHFILE
@@ -26,6 +26,69 @@ start() {
 	    fi
 	done
 	if [ "$configured" = "1" ]; then
+	    # write clients.conf
+	    printf "
+		client * {
+		    ipaddr = *
+		    proto = *
+		    secret = $radius_srv_secret
+		    require_message_authenticator = no
+		    nas_type = other
+		    limit {
+			lifetime = 0
+			idle_timeout = 30
+		    }
+		}
+	    " > $CLIENTSC
+	    # write proxy.conf
+	    printf "
+		proxy server {
+		    default_fallback = no
+		}
+
+		home_server localhost {
+		    type = auth
+		    ipaddr = 127.0.0.1
+		    port = 1812
+		    secret = wive-ng-mt
+		    response_window = 20
+		    zombie_period = 40
+		    revive_interval = 120
+		    status_check = status-server
+		    check_interval = 30
+		    check_timeout = 4
+		    num_answers_to_alive = 3
+		    max_outstanding = 65536
+		    coa {
+			irt = 2
+			mrt = 16
+			mrc = 5
+			mrd = 30
+		    }
+
+		    limit {
+			max_connections = 32
+			max_requests = 0
+			lifetime = 0
+			idle_timeout = 0
+		    }
+		}
+
+		home_server_pool my_auth_failover {
+		    type = fail-over
+		    home_server = localhost
+		}
+
+		realm LOCAL {
+		}
+
+		realm DEFAULT {
+		    type	= radius
+		    authhost	= LOCAL
+		    accthost	= LOCAL
+		}
+	    " > $PROXYCON
+
 	    $LOG "Starting radius daemon"
 	    radiusd &
 	fi
@@ -33,8 +96,10 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 radius_srv_enabled radius_srv_user_num`
+    eval `nvram_buf_get 2860 radius_srv_enabled radius_srv_user_num radius_srv_secret`
     AUTHFILE="/etc/raddb/mods-config/files/authorize"
+    CLIENTSC="/etc/raddb/clients.conf"
+    PROXYCON="/etc/raddb/proxy.conf"
 }
 
 stop() {
