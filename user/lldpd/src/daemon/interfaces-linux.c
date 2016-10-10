@@ -231,47 +231,6 @@ iflinux_is_bond(struct lldpd *cfg,
 	return 0;
 }
 
-/* Get the permanent MAC address using ethtool as a fallback There is a slight
- * difference with /proc/net/bonding method. The /proc/net/bonding method will
- * retrieve the MAC address of the interface before it was added to the
- * bond. The ethtool method will retrieve the real permanent MAC address. For
- * some devices, there is no such address (for example, virtual devices like
- * veth). */
-static void
-iflinux_get_permanent_mac_ethtool(struct lldpd *cfg,
-    struct interfaces_device_list *interfaces,
-    struct interfaces_device *iface)
-{
-	struct interfaces_device *master;
-	u_int8_t mac[ETHER_ADDR_LEN];
-
-	/* We could do that for any interface, but let's do that only for
-	 * aggregates. */
-	if ((master = iface->upper) == NULL || master->type != IFACE_BOND_T)
-		return;
-
-	log_debug("interfaces", "get MAC address for %s",
-	    iface->name);
-
-	if (priv_iface_mac(iface->name, mac, ETHER_ADDR_LEN) != 0) {
-		log_warnx("interfaces",
-		    "unable to get permanent MAC address for %s",
-		    master->name);
-		return;
-	}
-	size_t i;
-	for (i = 0; i < ETHER_ADDR_LEN; i++)
-		if (mac[i] != 0) break;
-	if (i == ETHER_ADDR_LEN) {
-		log_warnx("interfaces",
-		    "no permanent MAC address found for %s",
-		    master->name);
-		return;
-	}
-	memcpy(iface->address, mac,
-	    ETHER_ADDR_LEN);
-}
-
 static void
 iflinux_get_permanent_mac(struct lldpd *cfg,
     struct interfaces_device_list *interfaces,
@@ -304,7 +263,9 @@ iflinux_get_permanent_mac(struct lldpd *cfg,
 		f = priv_open(path);
 	}
 	if (f < 0) {
-		iflinux_get_permanent_mac_ethtool(cfg, interfaces, iface);
+		log_warnx("interfaces",
+		    "unable to get permanent MAC address for %s",
+		    master->name);
 		return;
 	}
 	if ((netbond = fdopen(f, "r")) == NULL) {
@@ -372,22 +333,25 @@ iflinux_macphy(struct lldpd_hardware *hardware)
 		{ADVERTISED_100baseT_Full, LLDP_DOT3_LINK_AUTONEG_100BASE_TXFD},
 		{ADVERTISED_1000baseT_Half, LLDP_DOT3_LINK_AUTONEG_1000BASE_T},
 		{ADVERTISED_1000baseT_Full, LLDP_DOT3_LINK_AUTONEG_1000BASE_TFD},
-		{ADVERTISED_10000baseT_Full, LLDP_DOT3_LINK_AUTONEG_OTHER},
+		{ADVERTISED_1000baseKX_Full, LLDP_DOT3_LINK_AUTONEG_1000BASE_XFD},
 		{ADVERTISED_Pause, LLDP_DOT3_LINK_AUTONEG_FDX_PAUSE},
 		{ADVERTISED_Asym_Pause, LLDP_DOT3_LINK_AUTONEG_FDX_APAUSE},
-		{ADVERTISED_2500baseX_Full, LLDP_DOT3_LINK_AUTONEG_OTHER},
 		{0,0}};
 
 	log_debug("interfaces", "ask ethtool for the appropriate MAC/PHY for %s",
 	    hardware->h_ifname);
-	if (priv_ethtool(hardware->h_ifname, &ethc, sizeof(struct ethtool_cmd)) == 0) {
+	if (priv_ethtool(hardware->h_ifname, &ethc) == 0) {
 		port->p_macphy.autoneg_support = (ethc.supported & SUPPORTED_Autoneg) ? 1 : 0;
 		port->p_macphy.autoneg_enabled = (ethc.autoneg == AUTONEG_DISABLE) ? 0 : 1;
 		for (j=0; advertised_ethtool_to_rfc3636[j][0]; j++) {
-			if (ethc.advertising & advertised_ethtool_to_rfc3636[j][0])
+			if (ethc.advertising & advertised_ethtool_to_rfc3636[j][0]) {
 				port->p_macphy.autoneg_advertised |= 
 				    advertised_ethtool_to_rfc3636[j][1];
+				ethc.advertising &= ~advertised_ethtool_to_rfc3636[j][0];
+			}
 		}
+		if (ethc.advertising)
+			port->p_macphy.autoneg_advertised |= LLDP_DOT3_LINK_AUTONEG_OTHER;
 		switch (ethc.speed) {
 		case SPEED_10:
 			port->p_macphy.mau_type = (ethc.duplex == DUPLEX_FULL) ? \
@@ -415,8 +379,12 @@ iflinux_macphy(struct lldpd_hardware *hardware)
 				    LLDP_DOT3_MAU_1000BASEXFD : LLDP_DOT3_MAU_1000BASEXHD;
 			break;
 		case SPEED_10000:
+			// For fiber, we tell 10GIGBASEX and for others,
+			// 10GIGBASER. It's not unusual to have 10GIGBASER on
+			// fiber either but we don't have 10GIGBASET for
+			// copper. No good solution.
 			port->p_macphy.mau_type = (ethc.port == PORT_FIBRE) ?	\
-					LLDP_DOT3_MAU_10GIGBASEX : LLDP_DOT3_MAU_10GIGBASER;
+					LLDP_DOT3_MAU_10GIGBASELR : LLDP_DOT3_MAU_10GIGBASECX4;
 			break;
 		}
 		if (ethc.port == PORT_AUI) port->p_macphy.mau_type = LLDP_DOT3_MAU_AUI;

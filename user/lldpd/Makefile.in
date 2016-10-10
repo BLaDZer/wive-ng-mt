@@ -117,6 +117,7 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
+	$(top_srcdir)/m4/ax_build_date_epoch.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
@@ -485,7 +486,7 @@ SUBDIRS = src/compat src src/daemon src/lib src/client
 EXTRA_DIST = $(DX_CONFIG) include get-version autogen.sh
 DIST_SUBDIRS = $(SUBDIRS)
 DISTCLEANFILES = ChangeLog filsystem
-dist_doc_DATA = README.md NEWS CONTRIBUTE.md
+dist_doc_DATA = README.md NEWS CONTRIBUTE.md LICENSE
 doc_DATA = ChangeLog
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 

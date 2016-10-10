@@ -331,6 +331,7 @@ static int _lldp_send(struct lldpd *global,
 #ifdef ENABLE_LLDPMED
 	if (port->p_med_cap_enabled) {
 		/* LLDP-MED cap */
+		if (port->p_med_cap_enabled & LLDP_MED_CAP_CAP) {
 		if (!(
 		      POKE_START_LLDP_TLV(LLDP_TLV_ORG) &&
 		      POKE_BYTES(med, sizeof(med)) &&
@@ -339,6 +340,7 @@ static int _lldp_send(struct lldpd *global,
 		      POKE_UINT8(chassis->c_med_type) &&
 		      POKE_END_LLDP_TLV))
 			goto toobig;
+		}
 
 		/* LLDP-MED inventory */
 #define LLDP_INVENTORY(value, subtype)					\

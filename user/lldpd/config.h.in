@@ -162,6 +162,9 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
+/* Define to 1 if typeof works with your compiler. */
+#undef HAVE_TYPEOF
+
 /* Define to 1 if the system has the type `uint32_t'. */
 #undef HAVE_UINT32_T
 
@@ -303,6 +306,9 @@
 
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
+
+/* Define to __typeof__ if your compiler spells it that way. */
+#undef typeof
 
 /* Compatibility with Linux u_int16_t */
 #undef u_int16_t

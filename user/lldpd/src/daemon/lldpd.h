@@ -37,6 +37,17 @@
 #include <netinet/in.h>
 #include <sys/un.h>
 
+#ifdef HOST_OS_LINUX
+# if defined(__clang__)
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Wdocumentation"
+# endif
+# include <linux/ethtool.h>
+# if defined(__clang__)
+#  pragma clang diagnostic pop
+# endif
+#endif
+
 #if HAVE_VFORK_H
 # include <vfork.h>
 #endif
@@ -123,6 +134,7 @@ u_int16_t frame_checksum(const u_int8_t *, int, int);
 
 /* event.c */
 void	 levent_loop(struct lldpd *);
+void	 levent_shutdown(struct lldpd *);
 void	 levent_hardware_init(struct lldpd_hardware *);
 void	 levent_hardware_add_fd(struct lldpd_hardware *, int);
 void	 levent_hardware_release(struct lldpd_hardware *);
@@ -204,10 +216,10 @@ char   	*priv_gethostname(void);
 #ifdef HOST_OS_LINUX
 int    	 priv_open(char*);
 void	 asroot_open(void);
-int    	 priv_ethtool(char*, void*, size_t);
+int    	 priv_ethtool(char*, struct ethtool_cmd*);
+# ifdef ENABLE_OLDIES
 void	 asroot_ethtool(void);
-int    	 priv_iface_mac(char*, void*, size_t);
-void	 asroot_iface_mac(void);
+# endif
 #endif
 int    	 priv_iface_init(int, char *);
 int	 asroot_iface_init_os(int, char *, int *);
@@ -228,7 +240,6 @@ enum priv_cmd {
 	PRIV_IFACE_MULTICAST,
 	PRIV_IFACE_DESCRIPTION,
 	PRIV_IFACE_PROMISC,
-	PRIV_IFACE_MAC,
 	PRIV_SNMP_SOCKET,
 };
 

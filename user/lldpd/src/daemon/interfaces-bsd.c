@@ -470,7 +470,11 @@ ifbsd_macphy(struct lldpd *cfg,
 {
 #ifdef ENABLE_DOT3
 	struct ifmediareq ifmr = {};
+#ifdef HAVE_TYPEOF
 	typeof(ifmr.ifm_ulist[0]) media_list[32] = {};
+#else
+	int media_list[32] = {};
+#endif
 	ifmr.ifm_ulist = media_list;
 	ifmr.ifm_count = 32;
 	struct lldpd_port *port = &hardware->h_lport;
@@ -537,6 +541,26 @@ ifbsd_macphy(struct lldpd *cfg,
 		 LLDP_DOT3_MAU_10GIGBASESR, LLDP_DOT3_MAU_10GIGBASESR},
 		{IFM_10G_CX4,
 		 LLDP_DOT3_MAU_10GIGBASELX4, LLDP_DOT3_MAU_10GIGBASELX4},
+#ifdef IFM_10G_T
+		{IFM_10G_T,
+		 LLDP_DOT3_MAU_10GIGBASECX4, LLDP_DOT3_MAU_10GIGBASECX4},
+#endif
+#ifdef IFM_10G_TWINAX
+		{IFM_10G_TWINAX,
+		 LLDP_DOT3_MAU_10GIGBASECX4, LLDP_DOT3_MAU_10GIGBASECX4},
+#endif
+#ifdef IFM_10G_TWINAX_LONG
+		{IFM_10G_TWINAX_LONG,
+		 LLDP_DOT3_MAU_10GIGBASECX4, LLDP_DOT3_MAU_10GIGBASECX4},
+#endif
+#ifdef IFM_10G_LRM
+		{IFM_10G_LRM,
+		 LLDP_DOT3_MAU_10GIGBASELR, LLDP_DOT3_MAU_10GIGBASELR},
+#endif
+#ifdef IFM_10G_SFP_CU
+		{IFM_10G_SFP_CU,
+		 LLDP_DOT3_MAU_10GIGBASECX4, LLDP_DOT3_MAU_10GIGBASECX4},
+#endif
 		{0, 0, 0}
 	};
 
@@ -579,13 +603,17 @@ ifbsd_macphy(struct lldpd *cfg,
 			continue;
 		}
 
+		int found = 0;
 		for (int j = 0; advertised_ifmedia_to_rfc3636[j][0]; j++) {
 			if (advertised_ifmedia_to_rfc3636[j][0] == media) {
 				port->p_macphy.autoneg_advertised |=
 				    advertised_ifmedia_to_rfc3636[j][1 + duplex];
+				found = 1;
 				break;
 			}
 		}
+		if (!found) port->p_macphy.autoneg_advertised |= \
+				LLDP_DOT3_LINK_AUTONEG_OTHER;
 	}
 
 	port->p_macphy.mau_type = 0;

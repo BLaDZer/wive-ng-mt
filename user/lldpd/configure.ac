@@ -90,6 +90,8 @@ AX_CFLAGS_GCC_OPTION([-Wno-sign-compare], [LLDP_CFLAGS]) dnl Should be fixed lat
 AX_LDFLAGS_OPTION([-Wl,-z,relro], [LLDP_LDFLAGS])
 AX_LDFLAGS_OPTION([-Wl,-z,now], [LLDP_LDFLAGS])
 
+AC_C_TYPEOF
+
 # Hardening
 AC_ARG_ENABLE([hardening],
   [AS_HELP_STRING([--enable-hardening],
@@ -172,7 +174,10 @@ _save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $libbsd_CFLAGS"
 LIBS="$LIBS $libbsd_LIBS"
 AC_MSG_CHECKING([if libbsd can be linked correctly])
-AC_LINK_IFELSE([AC_LANG_SOURCE([[int main() { return 0; }]])],
+  AC_TRY_LINK([
+@%:@include <sys/time.h>
+@%:@include <sys/types.h>
+],[],
   [
     AC_MSG_RESULT(yes)
     LLDP_CFLAGS="$LLDP_CFLAGS $libbsd_CFLAGS"
@@ -364,10 +369,8 @@ if test x"$os" = x"Linux"; then
     fi
 fi
 
-# Build date
-if test x"$SOURCE_DATE_EPOCH" != x; then
-   AC_DEFINE_UNQUOTED(BUILD_DATE, "[$SOURCE_DATE_EPOCH]", [Build date and time])
-fi
+AX_BUILD_DATE_EPOCH(BUILD_DATE, "%FT%TZ", [BUILD_DATE="(unknown)"])
+AC_DEFINE_UNQUOTED(BUILD_DATE, "[$BUILD_DATE]", [Build date and time])
 AC_DEFINE_UNQUOTED(LLDP_CC, "[$CC $LLDP_CFLAGS $LLDP_CPPFLAGS $CFLAGS $CPPFLAGS]", [C compiler command])
 AC_DEFINE_UNQUOTED(LLDP_LD, "[$LD $LLDP_LDFLAGS $LLDP_BIN_LDFLAGS $LDFLAGS $LIBS]", [Linker compiler command])
 

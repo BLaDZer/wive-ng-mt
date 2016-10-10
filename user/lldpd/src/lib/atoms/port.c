@@ -156,10 +156,12 @@ _lldpctl_atom_new_port(lldpctl_atom_t *atom, va_list ap)
 	if (port->parent)
 		lldpctl_atom_inc_ref((lldpctl_atom_t*)port->parent);
 
-	/* Internal atom. We are the parent, but our reference count is not
-	 * incremented. */
-	port->chassis = _lldpctl_new_atom(atom->conn, atom_chassis,
-		    port->port->p_chassis, port, 1);
+	if (port->port) {
+		/* Internal atom. We are the parent, but our reference count is
+		 * not incremented. */
+		port->chassis = _lldpctl_new_atom(atom->conn, atom_chassis,
+			    port->port->p_chassis, port, 1);
+	}
 	return 1;
 }
 
@@ -197,12 +199,12 @@ _lldpctl_atom_free_port(lldpctl_atom_t *atom)
 	TAILQ_INIT(&chassis_list);
 
 	if (port->parent) lldpctl_atom_dec_ref((lldpctl_atom_t*)port->parent);
-	else if (!hardware) {
+	else if (!hardware && port->port) {
 		/* No parent, no hardware, we assume a single neighbor: one
 		 * port, one chassis. */
 		if (port->port->p_chassis) {
-		lldpd_chassis_cleanup(port->port->p_chassis, 1);
-		port->port->p_chassis = NULL;
+			lldpd_chassis_cleanup(port->port->p_chassis, 1);
+			port->port->p_chassis = NULL;
 		}
 		lldpd_port_cleanup(port->port, 1);
 		free(port->port);
@@ -248,8 +250,8 @@ _lldpctl_atom_get_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 	switch (key) {
 	case lldpctl_k_port_chassis:
 		if (port->p_chassis) {
-		return _lldpctl_new_atom(atom->conn, atom_chassis,
-		    port->p_chassis, p, 0);
+			return _lldpctl_new_atom(atom->conn, atom_chassis,
+			    port->p_chassis, p, 0);
 		}
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 		return NULL;
@@ -286,7 +288,7 @@ _lldpctl_atom_get_atom_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 	default:
 		/* Compatibility: query the associated chassis too */
 		if (port->p_chassis)
-		return lldpctl_atom_get(p->chassis, key);
+			return lldpctl_atom_get(p->chassis, key);
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 		return NULL;
 	}
@@ -413,16 +415,19 @@ _lldpctl_atom_get_str_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 	char *ipaddress = NULL; size_t len;
 
 	/* Local port only */
-		switch (key) {
-		case lldpctl_k_port_name:
+	switch (key) {
+	case lldpctl_k_port_name:
 		if (hardware != NULL) return hardware->h_ifname;
 		break;
 	case lldpctl_k_port_status:
 		if (p->local) return map_lookup(port_status_map.map,
 		    LLDPD_RXTX_FROM_PORT(port));
 		break;
-		default: break;
-		}
+	default: break;
+	}
+
+	if (!port)
+		return NULL;
 
 	/* Local and remote port */
 	switch (key) {
@@ -575,6 +580,8 @@ _lldpctl_atom_get_int_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 		default: break;
 		}
 	}
+	if (!port)
+		return SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 
 	/* Local and remote port */
 	switch (key) {

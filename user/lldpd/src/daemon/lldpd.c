@@ -1232,6 +1232,7 @@ lldpd_exit(struct lldpd *cfg)
 	lldpd_all_chassis_cleanup(cfg);
 	free(cfg->g_default_local_port);
 	free(cfg->g_config.c_platform);
+	levent_shutdown(cfg);
 }
 
 /**
@@ -1417,7 +1418,8 @@ version_check(void)
 	version_convert(MIN_LINUX_KERNEL_VERSION, version_min, 3);
 	if (version_min[0] > version_cur[0] ||
 	    (version_min[0] == version_cur[0] && version_min[1] > version_cur[1]) ||
-	    (version_min[1] == version_cur[1] && version_min[2] > version_cur[2])) {
+	    (version_min[0] == version_cur[0] && version_min[1] == version_cur[1] &&
+		version_min[2] > version_cur[2])) {
 		log_warnx("lldpd", "minimal kernel version required is %s, got %s",
 		    MIN_LINUX_KERNEL_VERSION, uts.release);
 		log_warnx("lldpd", "lldpd may be unable to detect bonds and bridges correctly");
@@ -1692,20 +1694,13 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	/* Disable SIGHUP, until handlers are installed */
 	signal(SIGHUP, SIG_IGN);
 
-	/* Configuration with lldpcli */
-	if (lldpcli) {
-		log_debug("main", "invoking lldpcli for configuration");
-		if (lldpd_configure(use_syslog, debug, lldpcli, ctlname) == -1)
-			fatal("main", "unable to spawn lldpcli");
-	}
-
 	/* Daemonization, unless started by upstart, systemd or launchd or debug */
 #ifndef HOST_OS_OSX
 	if (daemonize &&
 	    !lldpd_started_by_upstart() && !lldpd_started_by_systemd()) {
 		int pid;
 		char *spid;
-		log_debug("main", "daemonize");
+		log_info("main", "going into background");
 		if (daemon(0, 0) != 0)
 			fatal("main", "failed to detach daemon");
 		if ((pid = open(pidfile,
@@ -1722,6 +1717,13 @@ lldpd_main(int argc, char *argv[], char *envp[])
 		close(pid);
 	}
 #endif
+
+	/* Configuration with lldpcli */
+	if (lldpcli) {
+		log_debug("main", "invoking lldpcli for configuration");
+		if (lldpd_configure(use_syslog, debug, lldpcli, ctlname) == -1)
+			fatal("main", "unable to spawn lldpcli");
+	}
 
 	/* Try to read system information from /etc/os-release if possible.
 	   Fall back to lsb_release for compatibility. */

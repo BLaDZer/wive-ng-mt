@@ -80,12 +80,13 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = src/compat
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am getline.c \
-	strtonum.c strndup.c malloc.c strlcpy.c daemon.c vsyslog.c \
-	setproctitle.c asprintf.c realloc.c strnlen.c \
+	strtonum.c strlcpy.c realloc.c malloc.c strndup.c strnlen.c \
+	daemon.c vsyslog.c asprintf.c setproctitle.c \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/args.m4 \
+	$(top_srcdir)/m4/ax_build_date_epoch.m4 \
 	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
