@@ -69,7 +69,7 @@
 	<message msgid="services l2tp exist login"			msgstr="Введенное имя пользователя уже существует" />
 
 	<message msgid="services radius title"						msgstr="Настройки RADIUS сервера" />
-	<message msgid="services radius introduction"				msgstr="Здесь вы можете настроить RADIUS сервер." />
+	<message msgid="services radius introduction"				msgstr="Здесь вы можете настроить RADIUS сервер для централизованной аутентификации пользователей с использованием 802.1x EAP-MSCHAPv2 протоколов." />
 	<message msgid="services radius settings"					msgstr="Настройки RADIUS сервера" />
 	<message msgid="services radius enable"						msgstr="RADIUS сервер" />
 	<message msgid="services radius users"						msgstr="Пользователи" />
