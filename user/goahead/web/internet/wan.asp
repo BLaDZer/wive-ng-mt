@@ -97,7 +97,7 @@
 			function CheckValues(form)
 			{
 				var c_type	= form.connectionType.value;
-				var wan_mtu	= form.wan_mtu.value * 1;
+				var wan_mtu	= +form.wan_mtu.value;
 				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
 				var lanIp	= '<% getCfgGeneral(1, "lan_ipaddr"); %>';
 
@@ -111,11 +111,17 @@
 						form.staticNetmask.focus();
 						return false;
 					}
-					if (form.staticGateway.value != "") 
+					if (form.staticGateway.value != "") {
 						if (!validateIP(form.staticGateway, true)) {
 							form.staticGateway.focus();
 							return false;
 						}
+						if (form.staticGateway.value == form.staticIp.value) {
+							alert(_("inet wan gw same"));
+							form.staticGateway.focus();
+							return false;
+						}
+					}
 					if ((opMode != "0") && (form.staticIp.value == lanIp)) {
 							alert(_("wan warning same lan"));
 							form.staticIp.focus();
@@ -157,6 +163,7 @@
 					alert(_("inet invalid mtu"));
 					return false;
 				}
+				form.wan_mtu.value = +form.wan_mtu.value + "";
 				if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>") {
 					if (!ajaxPostForm(_('wan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
 						ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);

@@ -404,6 +404,7 @@ RADIUS_Port=1812
 RADIUS_Server=
 radius_srv_enabled=0
 radius_srv_user_num=0
+radius_srv_secret=wive-ng-mt
 FtSupport=0
 FtRic=1;1;1;1
 FtOtd=0;0;0;0

@@ -771,9 +771,8 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	host		= websGetVar(wp, T("hostname"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 6, "HostName", "lan_ipaddr", "lan_netmask");
-		if (opmode != 0)
-		{
+		nvram_fromdef(RT2860_NVRAM, 3, "HostName", "lan_ipaddr", "lan_netmask");
+		if (opmode == 0) {
 			nvram_fromdef(RT2860_NVRAM, 3, "wan_gateway", "wan_primary_dns", "wan_secondary_dns");
 			nvram_set(RT2860_NVRAM, "wan_static_dns", "on");
 		}

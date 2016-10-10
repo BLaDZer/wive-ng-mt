@@ -274,8 +274,8 @@ var Profiles = [
 		"NetByNet",					// Provider name
 		false,						// IP
 		false,						// Netmask
-		"10",						// Start DHCP IP
-		"200",						// End DHCP IP
+		"0",						// Start DHCP IP
+		"0",						// End DHCP IP
 		false,						// Primary DNS
 		false,						// Secondary DNS
 		"NetByNet.lo",					// Domain name

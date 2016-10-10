@@ -152,15 +152,21 @@
 								return false;
 							}
 							// Check start IP
-							if ((tmp[4] == false) && !checkDigitRange(form.sStartIP.value, 1, 254)) {
+							if ((tmp[4] == false) && !checkDigitRange(form.sStartIP.value, 0, 254)) {
 								alert(_("hotspot expects number"));
 								form.sStartIP.focus();
 								form.sStartIP.select();
 								return false;
 							}
 							// Check end IP
-							if ((tmp[5] == false) && !checkDigitRange(form.sEndIP.value, 1, 254)) {
+							if ((tmp[5] == false) && !checkDigitRange(form.sEndIP.value, 0, 254)) {
 								alert(_("hotspot expects number"));
+								form.sEndIP.focus();
+								form.sEndIP.select();
+								return false;
+							}
+							if (tmp[5] == false && form.sEndIP.value < form.sStartIP.value) {
+								alert(_("hotspot endip low"));
 								form.sEndIP.focus();
 								form.sEndIP.select();
 								return false;

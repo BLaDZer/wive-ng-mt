@@ -74,10 +74,12 @@
 	<message msgid="services radius enable"						msgstr="RADIUS Server" />
 	<message msgid="services radius users"						msgstr="RADIUS Users list" />
 	<message msgid="services radius login"						msgstr="Login" />
+	<message msgid="services radius pass"						msgstr="Password" />
 	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
 	<message msgid="services radius action"						msgstr="Action" />
 	<message msgid="services radius uncorrect login"			msgstr="Please specify correct login (a-z, A-Z, 0-9, _)" />
-	<message msgid="services radius uncorrect sharedsecret"		msgstr="Please specify correct Shared Secret (spaces and dollar symbol are disallowed)." />
+	<message msgid="services radius uncorrect secret"			msgstr="Please specify correct Shared Secret (spaces and dollar symbol are disallowed)." />
+	<message msgid="services radius uncorrect pass"				msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
 	<message msgid="services radius exist login"				msgstr="Login already exist" />
 
   <message msgid="services samba title" msgstr="Samba/WINS Setup" />

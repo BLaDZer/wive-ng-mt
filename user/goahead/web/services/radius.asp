@@ -16,7 +16,7 @@
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
 
-			var users = [ <% getRadiusUserList(); %> ];		// Login/sharedsecret list
+			var users = [ <% getRadiusUserList(); %> ];		// Login/pass list
 
 
 			// Set translation
@@ -26,6 +26,7 @@
 				_TR("radiusServerIntroduction",	"services radius introduction");
 				_TR("radiusServerSettings",		"services radius settings");
 				_TR("radiusEnabled",			"services radius enable");
+				_TR("radiusSharedSecret",		"services radius sharedsecret");
 				_TR("radiusEnable",				"button enable");
 				_TR("radiusDisable",			"button disable");
 				
@@ -38,6 +39,7 @@
 			function initValues()
 			{
 				document.getElementById('radius_srv_enabled').value = ('<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '1') ? 1 : 0;
+				document.getElementById('radius_srv_secret').value = '<% getCfgGeneral(1, "radius_srv_secret"); %>';
 				radiusEnableSwitch();
 				genRadiusTable();
 				displayServiceStatus();
@@ -48,6 +50,13 @@
 			// Check values
 			function CheckValues()
 			{
+				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+				if (!re_pass.test(document.getElementById('radius_srv_secret').value)) {
+					alert(_("services radius uncorrect secret"));
+					document.getElementById('radius_srv_secret').select();
+					document.getElementById('radius_srv_secret').focus();
+					return false;
+				}				
 				ajaxShowTimer(document.radiusConfig, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
@@ -58,7 +67,7 @@
 
 				table  = '<table class="form">';
 				table += '<tr><td class="title" colspan="3">' + _("services radius users") + '</td></tr>';
-				table += '<tr><th style="width: 40%;">' + _("services radius login") + '</th><th style="width: 40%;">' + _("services radius sharedsecret") + '</th><th>' + _("services radius action") + '</th></tr>';
+				table += '<tr><th style="width: 40%;">' + _("services radius login") + '</th><th style="width: 40%;">' + _("services radius pass") + '</th><th>' + _("services radius action") + '</th></tr>';
 
 				for (i = 0; i < users.length; i++) {
 					table += '<tr><td style="padding-left: 20px;">' + users[i][0] + '<input name="radius_srv_user' + i + '" type="hidden" value="' + users[i][0] + '"></td>';
@@ -70,7 +79,7 @@
 				}
 
 				table += '<tr><td><input type="text" id="radiusLogin" maxlength="32" value="" style="width: 99%"></td>';
-				table += '<td><input type="password" id="radiusSharedSecret" maxlength="32" value="" style="width: 99%"></td>';
+				table += '<td><input type="password" id="radiusPass" maxlength="32" value="" style="width: 99%"></td>';
 				table += '<td style="text-align: center;">';
 				table += '<input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add edit") + '" onclick="addUser(this.form);">';
 				table += '<input type="hidden" id="radiusEdit" value="-1">';
@@ -86,7 +95,7 @@
 			{
 				var index	= document.getElementById('radiusEdit').value;
 				var login	= document.getElementById('radiusLogin').value;
-				var pass	= document.getElementById('radiusSharedSecret').value;
+				var pass	= document.getElementById('radiusPass').value;
 
 				// Check login
 				var re_login = /^[a-zA-Z0-9_]+$/;
@@ -110,18 +119,18 @@
 				// Check pass
 				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 				if (!re_pass.test(pass)) {
-					alert(_("services radius uncorrect sharedsecret"));
-					document.getElementById('radiusSharedSecret').select();
-					document.getElementById('radiusSharedSecret').focus();
+					alert(_("services radius uncorrect pass"));
+					document.getElementById('radiusPass').select();
+					document.getElementById('radiusPass').focus();
 					return false;
-				}	
+				}
 				
 				if (index == -1)
 					users.push([ login, pass ]);
 				else {
 					var index = document.getElementById('radiusEdit').value;
 					users[index][0] = document.getElementById('radiusLogin').value;
-					users[index][1] = document.getElementById('radiusSharedSecret').value;
+					users[index][1] = document.getElementById('radiusPass').value;
 				}
 				genRadiusTable();
 			}
@@ -137,14 +146,14 @@
 			function editUser(index)
 			{
 				document.getElementById('radiusLogin').value		= users[index][0];
-				document.getElementById('radiusSharedSecret').value	= users[index][1];
+				document.getElementById('radiusPass').value	= users[index][1];
 				document.getElementById('radiusEdit').value		= index;
 			}
 
 			// Show/hide radius settings
 			function radiusEnableSwitch()
 			{
-				displayElement([ 'radiusUserList' ], document.getElementById('radius_srv_enabled').value == 1);
+				displayElement([ 'radiusSharedSecret_tr', 'radiusUserList' ], document.getElementById('radius_srv_enabled').value == 1);
 				genRadiusTable();
 			}
 
@@ -196,6 +205,12 @@
 										</select>
 									</td>
 									<td id="radius_status" style="text-align: center;">&nbsp;</td>
+								</tr>
+								<tr id="radiusSharedSecret_tr">
+									<td class="head" id="radiusSharedSecret">Shared Secret</td>
+									<td colspan="2">
+										<input type="password" id="radius_srv_secret" name="radius_srv_secret" class="mid" maxlength="32">
+									</td>
 								</tr>
 							</tbody>
 						</table>

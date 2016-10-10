@@ -74,10 +74,12 @@
 	<message msgid="services radius enable"						msgstr="RADIUS сервер" />
 	<message msgid="services radius users"						msgstr="Пользователи" />
 	<message msgid="services radius login"						msgstr="Имя пользователя" />
+	<message msgid="services radius pass"						msgstr="Пароль" />
 	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
 	<message msgid="services radius action"						msgstr="Действие" />
 	<message msgid="services radius uncorrect login"			msgstr="Введено некорректное имя пользователя (разрешены символы: a-z, A-Z, 0-9, _)" />
-	<message msgid="services radius uncorrect sharedsecret"		msgstr="Введен некорректный Shared Secret (символы пробела и доллара запрещены)." />
+	<message msgid="services radius uncorrect pass"				msgstr="Введен некорректный пароль (символы пробела и доллара запрещены)." />
+	<message msgid="services radius uncorrect secret"			msgstr="Введен некорректный Shared Secret (символы пробела и доллара запрещены)." />
 	<message msgid="services radius exist login"				msgstr="Введенное имя пользователя уже существует" />
 	
   <message msgid="services samba title" msgstr="Настройки Samba/WINS" />

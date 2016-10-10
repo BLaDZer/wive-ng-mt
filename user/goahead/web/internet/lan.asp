@@ -92,21 +92,25 @@
 					return false;
 				}
 				if (opMode == "0") {
-					if (!validateIP(form.lanGateway, true))
-					{
+					if (!validateIP(form.lanGateway, true))	{
 						form.lanGateway.focus();
 						return false;
 					}
-					if (!validateIP(form.lanPriDns, true))
-					{
+					if (form.lanGateway.value == form.lanIp.value) {
+						alert(_("inet lan gw same"));
+						form.lanGateway.focus();
+						return false;
+					}
+					
+					if (!validateIP(form.lanPriDns, true)) {
 						form.lanPriDns.focus();
 						return false;
 					}
-					if (!validateIP(form.lanSecDns, true))
-					{
-						form.lanSecDns.focus();
-						return false;
-					}					
+					if (form.lanSecDns.value.length > 0)
+						if (!validateIP(form.lanSecDns, true)) {
+							form.lanSecDns.focus();
+							return false;
+						}
 				}
 
 				if (((form.lanIp.value != lanIp) || (form.lanNetmask.value != lanNetmask) && (dhcp == "1")) && opMode != '0') {
