@@ -27,8 +27,7 @@
 /*
  * The PCI controller list.
  */
-
-static struct pci_controller *hose_head, **hose_tail = &hose_head;
+static LIST_HEAD(controllers);
 
 unsigned long PCIBIOS_MIN_IO;
 unsigned long PCIBIOS_MIN_MEM;
@@ -125,8 +124,8 @@ void __devinit register_pci_controller(struct pci_controller *hose)
 		goto out;
 	}
 
-	*hose_tail = hose;
-	hose_tail = &hose->next;
+	INIT_LIST_HEAD(&hose->list);
+	list_add(&hose->list, &controllers);
 
 	/*
 	 * Do not panic here but later - this might happen before console init.
@@ -180,7 +179,7 @@ static int __init pcibios_init(void)
 	pcibios_set_cache_line_size();
 
 	/* Scan all of the recorded PCI controllers.  */
-	for (hose = hose_head; hose; hose = hose->next)
+	list_for_each_entry(hose, &controllers, list)
 		pcibios_scanbus(hose);
 
 	pci_fixup_irqs(pci_common_swizzle, pcibios_map_irq);

@@ -2446,13 +2446,14 @@
 55) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
 56) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
 57) kernel: mips: adjust MIPS64 CAC_BASE to reflect Config.K0.<br>
-58) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-59) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-60) kernel: net: fix sk_mem_reclaim_partial().<br>
-61) kernel: net: avoid sk_forward_alloc overflows.<br>
-62) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-63) kernel: net: packet: tx timestamping on tpacket ring.<br>
-64) kernel: net: socket: move ktime2ts to ktime header api.<br>
+58) kernel: mips: use struct list_head lists.<br>
+59) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+60) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+61) kernel: net: fix sk_mem_reclaim_partial().<br>
+62) kernel: net: avoid sk_forward_alloc overflows.<br>
+63) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+64) kernel: net: packet: tx timestamping on tpacket ring.<br>
+65) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>

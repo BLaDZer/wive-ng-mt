@@ -17,6 +17,7 @@
  */
 
 #include <linux/ioport.h>
+#include <linux/list.h>
 
 /*
  * Each pci channel is a top-level PCI bus seem by CPU.  A machine  with
@@ -24,7 +25,7 @@
  * single controller supporting multiple channels.
  */
 struct pci_controller {
-	struct pci_controller *next;
+	struct list_head list;
 	struct pci_bus *bus;
 
 	struct pci_ops *pci_ops;
