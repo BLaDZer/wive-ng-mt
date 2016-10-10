@@ -142,5 +142,3 @@ function ButterDictionary() {
     if(index!=-1) { this.keys.splice(index,1); this.values.splice(index,1); }
   };
 }
-
-

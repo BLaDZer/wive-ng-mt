@@ -69,7 +69,7 @@
 	<message msgid="services l2tp exist login"			msgstr="Login already exist" />
 
 	<message msgid="services radius title"						msgstr="RADIUS Server Setup" />
-	<message msgid="services radius introduction"				msgstr="Here you can configure RADIUS server settings for remore user autenticitate with 802.1x EAP-MSCHAPv2 protocols." />
+	<message msgid="services radius introduction"				msgstr="Here you can configure RADIUS server settings for remore user autenticitate with 802.1x (PEAP EAP-MSCHAPv2) protocol." />
 	<message msgid="services radius settings"					msgstr="RADIUS Server Settings" />
 	<message msgid="services radius enable"						msgstr="RADIUS Server" />
 	<message msgid="services radius users"						msgstr="RADIUS Users list" />
