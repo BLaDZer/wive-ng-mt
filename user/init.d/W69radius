@@ -107,6 +107,7 @@ reload() {
 	    killall -q -SIGHUP radiusd
 	else
 	    start
+	fi
     else
 	if [ "$is_run" != "" ]; then
 	    stop
