@@ -28,8 +28,14 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --with-ssl=$LIBS --with-zlib=$LIBS --disable-debug --disable-curldebug --disable-manual --without-random"
-CONFOPTS="$CONFOPTS --disable-dependency-tracking --disable-verbose --disable-rtsp"
+CONFOPTS="$CONFOPTS --with-ssl=$LIBS --with-zlib=$LIBS"
+CONFOPTS="$CONFOPTS --without-random --without-winssl --without-darwinssl --without-gnutls --without-polarssl --without-mbedtls --without-cyassl"
+CONFOPTS="$CONFOPTS --without-nss --without-axtls --without-ca-bundle --without-ca-path --without-ca-fallback --without-libpsl --without-libmetalink"
+CONFOPTS="$CONFOPTS --without-libssh2 --without-librtmp --without-winidn --without-libidn --without-nghttp2 --without-zsh-functions-dir"
+CONFOPTS="$CONFOPTS --disable-ldap --disable-ldaps --disable-rtsp --disable-dict --disable-telnet --disable-tftp --disable-pop3"
+CONFOPTS="$CONFOPTS --disable-imap --disable-smb --disable-smtp --disable-gopher"
+CONFOPTS="$CONFOPTS --disable-debug --disable-curldebug --disable-manual --disable-dependency-tracking --disable-verbose"
+
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 
 ./configure $CONFOPTS
