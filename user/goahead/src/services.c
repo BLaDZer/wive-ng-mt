@@ -762,7 +762,7 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 	}
 
 	firewall_rebuild();
-	doSystem("service radius restart");
+	doSystem("service radius reload");
 
 	websHeader(wp);
 	websDone(wp, 200);

@@ -182,10 +182,10 @@ if [ -e /bin/bndstrg ]; then
 fi
 
 ##########################################################
-# restart radius auth daemon				 #
+# reload radius auth daemon				 #
 ##########################################################
 if [ -e /bin/radiusd ]; then
-    service radius restart
+    service radius reload
 fi
 
 ##########################################################
