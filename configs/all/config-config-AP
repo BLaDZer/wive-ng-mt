@@ -12,12 +12,12 @@
 # CONFIG_LIB_ZLIB is not set
 # CONFIG_LIB_USB1 is not set
 CONFIG_LIB_EVENT=y
-# CONFIG_LIB_CURL is not set
 # CONFIG_LIB_PCAP is not set
 # CONFIG_LIB_NATPMP is not set
 CONFIG_LIB_NFNETLINK=y
 # CONFIG_LIB_NL is not set
 CONFIG_LIB_OPENSSL=y
+# CONFIG_LIB_CURL is not set
 # CONFIG_LIB_ICONV is not set
 # CONFIG_LIB_XML2 is not set
 # CONFIG_LIB_NEON is not set

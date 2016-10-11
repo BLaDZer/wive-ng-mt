@@ -11,8 +11,8 @@ INCLUDES=$LIBDIR/include
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
-CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
-CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
+CFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
+CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
 LDFLAGS="$BACKUPLDFLAGS -R$LIBS"
 
 export CFLAGS LDFLAGS CPPFLAGS
@@ -28,7 +28,7 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --with-ssl --disable-debug --disable-curldebug --disable-manual --without-random"
+CONFOPTS="$CONFOPTS --with-ssl=$LIBS --with-zlib=$LIBS --disable-debug --disable-curldebug --disable-manual --without-random"
 CONFOPTS="$CONFOPTS --disable-dependency-tracking --disable-verbose --disable-rtsp"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
 

@@ -7,17 +7,22 @@ comment 'Force build (Normally built when required)'
 bool 'Build libz'		CONFIG_LIB_ZLIB
 bool 'Build libusb1'		CONFIG_LIB_USB1
 bool 'Build libevent'		CONFIG_LIB_EVENT
-bool 'Build libcurl'		CONFIG_LIB_CURL
 bool 'Build libpcap'		CONFIG_LIB_PCAP
 bool 'Build libnatpmp'          CONFIG_LIB_NATPMP
 bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
 bool 'Build libnl'		CONFIG_LIB_NL
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
+bool 'Build libcurl'		CONFIG_LIB_CURL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
 bool 'Build libxml2'		CONFIG_LIB_XML2
 bool 'Build libneon'		CONFIG_LIB_NEON
 bool 'Build libtalloc'		CONFIG_LIB_TALLOC
 bool 'Build libmicrohttpd'	CONFIG_LIB_MICROHTTPD
+
+if [ "$CONFIG_LIB_CURL" = "y" ]; then
+    define_bool CONFIG_LIB_OPENSSL y
+    define_bool CONFIG_LIB_ZLIB y
+fi
 
 if [ "$CONFIG_LIB_XML2" = "y" ]; then
     define_bool CONFIG_LIB_ICONV y
