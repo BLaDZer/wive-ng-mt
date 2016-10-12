@@ -696,6 +696,8 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 	char pass_var[20];
 	int i, count;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+	char_t *radius_secret = websGetVar(wp, T("radius_srv_secret"), T(""));
+	char *ssecret = nvram_get(RT2860_NVRAM, "radius_srv_secret");
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		count = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
@@ -709,6 +711,7 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 		}
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
+		ssecret = nvram_get(RT2860_NVRAM, "radius_srv_secret");
 	}
 	else {
 		char_t *radius_enabled = websGetVar(wp, T("radius_srv_enabled"), T("0"));
@@ -721,7 +724,6 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 		if (CHK_IF_DIGIT(radius_enabled, 1)) {
 			int oldcount = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
 			char_t *radius_user_num = websGetVar(wp, T("radius_srv_user_num"), T("0"));
-			char_t *radius_secret = websGetVar(wp, T("radius_srv_secret"), T(""));
 
 			nvram_bufset(RT2860_NVRAM, "radius_srv_enabled", "1");
 			nvram_bufset(RT2860_NVRAM, "radius_srv_user_num", radius_user_num);
@@ -762,7 +764,10 @@ static void radiusConfig(webs_t wp, char_t *path, char_t *query)
 	}
 
 	firewall_rebuild();
-	doSystem("service radius reload");
+	if (!strcmp(radius_secret, ssecret))
+		doSystem("service radius reload");
+	else
+		doSystem("service radius restart");
 
 	websHeader(wp);
 	websDone(wp, 200);
