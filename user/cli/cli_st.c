@@ -409,6 +409,7 @@ int func_st_show_report(int argc, char* argv[])
     struct cpu_stats cpu;
 
     printf("Firmware version\t%s\n", VERSIONPKG);
+    printf("Device model\t%s\n", DEVNAME);
 
     if (getCurrentTimeStr(timeStr) != 0)
     {
@@ -455,6 +456,7 @@ int func_st_show(int argc, char* argv[])
         func_sw_wan(argc, argv);
         func_st_vpn(argc, argv);
         func_wl_status(argc, argv);
+        func_wl_stalist(argc, argv);
         printf("COMMIT\tend\n");
         return 0;
     }
@@ -462,6 +464,7 @@ int func_st_show(int argc, char* argv[])
     writeHeader("Device Status");
 
     printf("Firmware version:       %s \n", VERSIONPKG);
+    printf("Device model:           %s \n", DEVNAME);
 
     if (getCurrentTimeStr(timeStr) == 0)
     {

@@ -74,6 +74,61 @@ void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 
 }
 
+void printMacEntry_report(RT_802_11_MAC_ENTRY* pe, int band_num)
+{
+        char mac[18] = {0};
+
+        printf("STALISTELEM\t");
+
+        getWlanCurrentMacAddr(mac, band_num);
+
+        printf("%s\t", mac);
+        printf("%02X:%02X:%02X:%02X:%02X:%02X\t", pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
+        printf("%u\t", pe->ConnectedTime);
+        printf("%u\t", pe->Psm);
+        printf("%u\t", pe->MimoPs);
+        printf("%u\t", getMCS(pe->TxRate));
+        printf("%s\t", getBW(pe->TxRate.field.BW));
+        printf("%u\t", pe->TxRate.field.ShortGI);
+        printf("%u\t", pe->TxRate.field.STBC);
+        printf("%u\t", pe->TxRate.field.ldpc);
+        printf("%s\t", getPhyMode(pe->TxRate.field.MODE));
+        printf("%u\t", getWlanRate(pe->TxRate));
+
+        printf("%d\t%d\t", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
+        printf("%d\t%d\t", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
+
+        printf("%lu\t", pe->RxBytes);
+        printf("%lu\t", pe->TxBytes);
+
+        printf("\n");
+}
+
+
+int showStationList_report(char* iface)
+{
+    int i;
+    RT_802_11_MAC_TABLE table;
+    int band_num = (strcmp(iface,"ra0") == 0)?1:2;
+
+    if (getWlanStationTableIf(&table, iface) != 0)
+    {
+        return 1;
+    }
+
+    printf("STALIST\n");
+
+
+    for (i = 0; i < table.Num; i++) 
+    {
+        RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
+        printMacEntry_report(pe, band_num);
+    }
+
+    return 0;
+}
+
+
 int showStationList(char* iface)
 {
     int i;
@@ -173,8 +228,7 @@ int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
     char mac[18] = {0};
-    getWlanCurrentMacAddr(mac, 1);
-    int chan_num = getWlanChannelNum(1);
+    int chan_num;
 
     char addr[ETH_ALEN] = {0};
 
@@ -183,9 +237,26 @@ int func_wl_status_report(int argc, char* argv[])
     if (ap_ret <= 0) ap_ret = getWlanAPMac("apclii0", addr);
 #endif
 
-    printf("Radio Enabled\t%s\n", radio_status?"1":"0");
+    getWlanCurrentMacAddr(mac, 1);
+
+    /* FIXME: remove fallback */
     printf("BSSID\t%s\n", mac);
     printf("Channel\t%i\n", chan_num);
+
+    printf("BSSID 2.4\t%s\n", mac);
+    chan_num  = getWlanChannelNum(1);
+    printf("Channel 2.4\t%i\n", chan_num);
+    printf("Ext channel 2.4\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHA", 0));
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    getWlanCurrentMacAddr(mac, 2);
+    printf("BSSID 5\t%s\n", mac);
+    chan_num  = getWlanChannelNum(2);
+    printf("Channel 5\t%i\n", chan_num);
+    printf("Ext channel 5\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHAINIC", 0));
+#endif
+
+    printf("Radio Enabled\t%s\n", radio_status?"1":"0");
     printf("APCli Status\t%i\n", ap_ret);
     printf("APCli Address\t%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
@@ -204,11 +275,22 @@ int func_wl_status_report(int argc, char* argv[])
     int bcisolated_ssid_len = strlen(bcisolated_ssid);
 
     int ssid_num;
+    int band_num;
     char ssid_nvram_id[6] = {0};
 
+    for (band_num=1; band_num<=2; band_num++)
     for (ssid_num=1; ssid_num <= 8; ssid_num++)
     {
-        sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+        getWlanCurrentMacAddr(mac, band_num);
+
+        if (band_num == 2)
+        {
+            sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
+        }
+        else
+        {
+            sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+        }
 
         char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
         if (ssid_name[0] == '\0')
@@ -234,7 +316,14 @@ int func_wl_status_report(int argc, char* argv[])
             is_broad_isolated = 1;
         }
 
-        printf("SSID Elem\t%i\t%s\t%i\t%i\t%i\n", ssid_num, ssid_name, is_hidden, is_client_isolated,is_broad_isolated);
+        printf("SSID Elem\t");
+        printf("%i\t",ssid_num);
+        printf("%s\t",mac);
+        printf("%s\t",ssid_name);
+        printf("%i\t",is_hidden);
+        printf("%i\t",is_client_isolated);
+        printf("%i\t",is_broad_isolated);
+        printf("\n");
     }
 
     printf("COMMIT\twlan\n");
@@ -409,8 +498,24 @@ int func_wl_scan(int argc, char* argv[])
     return 0;
 }
 
+int func_wl_stalist_report(int argc, char* argv[])
+{
+#ifndef CONFIG_RT_SECOND_IF_NONE
+        showStationList_report("rai0");
+#endif
+        return showStationList_report("ra0");
+}
+
 int func_wl_stalist(int argc, char* argv[])
 {
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_wl_stalist_report(argc,argv);
+    }
+
     char* cmd = (argc>0) ? argv[0] : NULL;
     argc--;
     argv++;
