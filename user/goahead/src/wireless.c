@@ -1885,7 +1885,9 @@ void formDefineWireless(void)
 	websAspDefine(T("getSSIDsList"), getSSIDsList);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
+#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
 	websFormDefine(T("wirelessWds"), wirelessWds);
+#endif
 #if defined(CONFIG_RT2860V2_AP_APCLI) || defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
 	websFormDefine(T("wirelessApcli"), wirelessApcli);
 	websAspDefine(T("getAPCliStatus"), getAPCliStatus);
