@@ -240,11 +240,11 @@ int func_wl_status_report(int argc, char* argv[])
     getWlanCurrentMacAddr(mac, 1);
 
     /* FIXME: remove fallback */
-    printf("BSSID\t%s\n", mac);
-    printf("Channel\t%i\n", chan_num);
 
-    printf("BSSID 2.4\t%s\n", mac);
     chan_num  = getWlanChannelNum(1);
+    printf("BSSID\t%s\n", mac);
+    printf("BSSID 2.4\t%s\n", mac);
+    printf("Channel\t%i\n", chan_num);
     printf("Channel 2.4\t%i\n", chan_num);
     printf("Ext channel 2.4\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHA", 0));
 
