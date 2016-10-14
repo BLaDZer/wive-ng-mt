@@ -123,7 +123,9 @@ unsigned int ConvertRssiToSignalQuality(long RSSI)
 {
 	unsigned int signal_quality;
 
-	if (RSSI >= -50)
+	if (RSSI >= 0)
+		signal_quality = 0;
+	else if (RSSI >= -50)
 		signal_quality = 100;
 	else if (RSSI >= -80)    // between -50 ~ -80dbm
 		signal_quality = (unsigned int)(24 + ((RSSI + 80) * 26)/10);

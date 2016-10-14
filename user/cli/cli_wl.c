@@ -98,8 +98,8 @@ void printMacEntry_report(RT_802_11_MAC_ENTRY* pe, int band_num)
         printf("%d\t%d\t", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
         printf("%d\t%d\t", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 
-        printf("%lu\t", pe->RxBytes);
-        printf("%lu\t", pe->TxBytes);
+        printf("%llu\t", pe->RxBytes);
+        printf("%llu\t", pe->TxBytes);
 
         printf("\n");
 }
