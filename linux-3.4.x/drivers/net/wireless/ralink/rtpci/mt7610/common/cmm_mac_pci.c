@@ -1282,9 +1282,14 @@ VOID RTMPRingCleanUp(RTMP_ADAPTER *pAd, UCHAR RingType)
 		case QID_AC_VI:
 		case QID_AC_VO:
 		case QID_HCCA:
-			
+
+			if (NUM_OF_TX_RING <= RingType)
+			{
+				break;
+			}
+
 			pTxRing = &pAd->TxRing[RingType];
-			
+
 			RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);
 			/* We have to clean all descriptors in case some error happened with reset*/
 			for (i=0; i<TX_RING_SIZE; i++) /* We have to scan all TX ring*/

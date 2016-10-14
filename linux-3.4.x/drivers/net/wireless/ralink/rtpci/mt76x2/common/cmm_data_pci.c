@@ -518,6 +518,10 @@ VOID RtmpPCI_FinalWriteTxResource(
 
 	/* get Tx Ring Resource*/
 	pTxRing = &pAd->TxRing[pTxBlk->QueIdx];
+
+	if (FirstTxIdx >= TX_RING_SIZE)
+		return;
+
 	pTxWI = (TXWI_STRUC *) pTxRing->Cell[FirstTxIdx].DmaBuf.AllocVa;
 #ifdef RLT_MAC
 	if (pAd->chipCap.hif_type == HIF_RLT)
@@ -1830,6 +1834,7 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 			if (pHeader_802_11->FC.SubType == SUBTYPE_PROBE_RSP)
 			{
 				bInsertTimestamp = TRUE;
+				bAckRequired = FALSE;
 #ifdef CONFIG_AP_SUPPORT
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 				{

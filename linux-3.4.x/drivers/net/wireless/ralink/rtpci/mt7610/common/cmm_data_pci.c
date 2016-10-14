@@ -407,6 +407,10 @@ VOID RtmpPCI_FinalWriteTxResource(
 	
 	/* get Tx Ring Resource*/
 	pTxRing = &pAd->TxRing[pTxBlk->QueIdx];
+
+	if (FirstTxIdx >= TX_RING_SIZE)
+		return;
+
 	pTxWI = (TXWI_STRUC *) pTxRing->Cell[FirstTxIdx].DmaBuf.AllocVa;
 	pTxWI->TxWIMPDUByteCnt = totalMPDUSize;
 #ifdef RT_BIG_ENDIAN
@@ -1572,6 +1576,7 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 			if (pHeader_802_11->FC.SubType == SUBTYPE_PROBE_RSP)
 			{
 				bInsertTimestamp = TRUE;
+				bAckRequired = FALSE;
 			}
 		}
 	}

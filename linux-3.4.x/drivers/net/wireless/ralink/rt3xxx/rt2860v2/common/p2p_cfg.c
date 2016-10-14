@@ -1469,6 +1469,10 @@ INT RTMPAPSetInformation(
     	case RT_SET_APD_PID:
 			{
 				unsigned long apd_pid;
+				if(sizeof(apd_pid)!=wrq->u.data.length){
+					Status = -EFAULT;
+					break;
+				}
 				if (copy_from_user(&apd_pid, wrq->u.data.pointer, wrq->u.data.length))
 				{
 					Status = -EFAULT; 	
@@ -1483,6 +1487,10 @@ INT RTMPAPSetInformation(
     		}
 			break;
 		case RT_SET_DEL_MAC_ENTRY:
+		if(MAC_ADDR_LEN!=wrq->u.data.length){
+			Status = -EFAULT;
+			break;
+		}
     		if (copy_from_user(Addr, wrq->u.data.pointer, wrq->u.data.length))
 		{
 				Status = -EFAULT; 	

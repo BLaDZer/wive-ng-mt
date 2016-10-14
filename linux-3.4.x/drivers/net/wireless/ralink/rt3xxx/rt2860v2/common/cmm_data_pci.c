@@ -326,6 +326,10 @@ VOID RtmpPCI_FinalWriteTxResource(
 	
 	/* get Tx Ring Resource*/
 	pTxRing = &pAd->TxRing[pTxBlk->QueIdx];
+
+	if (FirstTxIdx >= TX_RING_SIZE)
+		return;
+
 	pTxWI = (PTXWI_STRUC) pTxRing->Cell[FirstTxIdx].DmaBuf.AllocVa;
 	pTxWI->MPDUtotalByteCount = totalMPDUSize;
 #ifdef RT_BIG_ENDIAN
@@ -1593,6 +1597,7 @@ NDIS_STATUS MlmeHardTransmitTxRing(
 			if (pHeader_802_11->FC.SubType == SUBTYPE_PROBE_RSP)
 			{
 				bInsertTimestamp = TRUE;
+				bAckRequired = FALSE;
 #ifdef CONFIG_AP_SUPPORT
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 				/* Find which MBSSID to be send this probeRsp */

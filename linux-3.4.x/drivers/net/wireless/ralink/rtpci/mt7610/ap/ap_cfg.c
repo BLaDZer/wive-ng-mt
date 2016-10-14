@@ -2234,6 +2234,10 @@ INT RTMPAPSetInformation(
     	case RT_SET_APD_PID:
 			{
 				unsigned long apd_pid;
+				if(sizeof(apd_pid)!=wrq->u.data.length){
+					Status = -EFAULT;
+					break;
+				}
 				if (copy_from_user(&apd_pid, wrq->u.data.pointer, wrq->u.data.length))
 				{
 					Status = -EFAULT; 	
@@ -2248,12 +2252,16 @@ INT RTMPAPSetInformation(
     		}
 			break;
 		case RT_SET_DEL_MAC_ENTRY:
-    		if (copy_from_user(Addr, wrq->u.data.pointer, wrq->u.data.length))
-		{
+		    if(MAC_ADDR_LEN!=wrq->u.data.length){
+			Status = -EFAULT;
+			break;
+		    }
+    		    if (copy_from_user(Addr, wrq->u.data.pointer, wrq->u.data.length))
+		    {
 				Status = -EFAULT; 	
-		}
-    		else
-    		{
+		    }
+    		    else
+    		    {
 			MAC_TABLE_ENTRY *pEntry = NULL;
 			
 			DBGPRINT(RT_DEBUG_TRACE, ("RT_SET_DEL_MAC_ENTRY::(%02x:%02x:%02x:%02x:%02x:%02x)\n", Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]));
@@ -2275,8 +2283,8 @@ INT RTMPAPSetInformation(
 #endif /* DOT11R_FT_SUPPORT */
 					MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
 			}
-    		}
-			break;
+    		    }
+		    break;
 #ifdef CON_WPS
 		case RT_OID_WSC_SET_CON_WPS_STOP:
 		{

@@ -54,6 +54,10 @@ VOID RtmpDrvMaxRateGet(
 	{
 	/*                	rate_index = 16 + ((UCHAR)pHtPhyMode->field.BW *16) + ((UCHAR)pHtPhyMode->field.ShortGI *32) + ((UCHAR)pHtPhyMode->field.MCS);
 */
+		/* map back to 1SS MCS , multiply by antenna numbers later */
+		if(MCS > 7)
+			MCS %= 8;
+
 		rate_index = 16 + ((UCHAR)BW *24) + ((UCHAR)ShortGI *48) + ((UCHAR)MCS);
 	}
 	else 

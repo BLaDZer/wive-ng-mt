@@ -1715,6 +1715,9 @@ void convert_reordering_packet_to_preAMSDU_or_802_3_packet(
 
 	ASSERT(pRxBlk->pRxPacket);
 
+	if(pRxBlk->pRxPacket == NULL)
+		return;
+
 	pRxPkt = RTPKT_TO_OSPKT(pRxBlk->pRxPacket);
 
 	RTMP_OS_PKT_INIT(pRxBlk->pRxPacket,

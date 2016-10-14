@@ -130,6 +130,7 @@ VOID RRM_InsertRRMEnCapIE(
 	else
 		return;
 
+	RrmEnCap.word = 0;
 	RrmEnCap.field.LinkMeasureCap = 1;
 	RrmEnCap.field.NeighborRepCap = 1;
 	RrmEnCap.field.ParallelMeasureCap = 0;
@@ -330,6 +331,19 @@ VOID RRM_InsertRequestIE(
 	OUT PULONG pFrameLen)
 {
 	UINT8 RequestIEs[] = {	0,		/* SSID */
+							1, /* Support Rate*/
+
+							50, /* Extended Support Rate*/
+							
+							45, /* HT IE*/
+							61, /* HT ADD*/
+
+							127, /* Ext Cap*/
+#ifdef DOT11_VHT_AC
+							191, /* VHT 1*/
+							192, /* VHT 2*/
+							195, /* VHT 3*/
+#endif /* DOT11_VHT_AC */
 							48,		/* RSN IE */
 							70,		/* RRM Capabilities. */
 							54,		/* Mobility Domain. */
@@ -339,7 +353,7 @@ VOID RRM_InsertRequestIE(
 	UINT8 IEId = IE_802_11D_REQUEST;
 	UINT8 Len;
 
-	Len = 5;
+	Len = 13;
 	MakeOutgoingFrame(	pFrameBuf,		&TempLen,
 						1,				&IEId,
 						1,				&Len,
@@ -442,7 +456,8 @@ VOID RRM_EnqueueBcnReq(
 	TotalLen += sizeof(RRM_BEACON_REQ_INFO);
 
 	/* inssert SSID sub field. */
-	if (pMlmeBcnReq->SsidLen != 0)
+	//Fix Voice Enterprise : Item V-E-4.3, case2 still need to include the SSID sub filed even SsidLen is 0
+	//if (pMlmeBcnReq->SsidLen != 0)		
 	{
 		RRM_InsertBcnReqSsidSubIE(pAd, (pOutBuffer+FrameLen),
 			&FrameLen, (PUCHAR)pMlmeBcnReq->pSsid, pMlmeBcnReq->SsidLen);
@@ -509,7 +524,7 @@ VOID RRM_EnqueueBcnReq(
 
 	MeasureReqInsert(pAd, MeasureReqToken);
 
-	MiniportMMRequest(pAd, QID_AC_BE, pOutBuffer, FrameLen);
+	MiniportMMRequest(pAd, (MGMT_USE_QUEUE_FLAG | QID_AC_BE), pOutBuffer, FrameLen);
 
 	if (pOutBuffer)
 		MlmeFreeMemory(pAd, pOutBuffer);
@@ -547,7 +562,7 @@ VOID RRM_EnqueueNeighborReq(
 	/* fill Dialog Token */
 	InsertDialogToken(pAd, (pOutBuffer + FrameLen), &FrameLen, DialogToken);
 
-	MiniportMMRequest(pAd, QID_AC_BE, pOutBuffer, FrameLen);
+	MiniportMMRequest(pAd, (MGMT_USE_QUEUE_FLAG | QID_AC_BE), pOutBuffer, FrameLen);
 
 	if (pOutBuffer)
 		MlmeFreeMemory(pAd, pOutBuffer);
@@ -738,7 +753,7 @@ VOID RRM_EnqueueNeighborRep(
 		}
 	}
 #endif /* AP_SCAN_SUPPORT */
-	MiniportMMRequest(pAd, QID_AC_BE, pOutBuffer, FrameLen);
+	MiniportMMRequest(pAd, (MGMT_USE_QUEUE_FLAG | QID_AC_BE), pOutBuffer, FrameLen);
 
 	if (pOutBuffer)
 		MlmeFreeMemory(pAd, pOutBuffer);
@@ -815,7 +830,7 @@ VOID RRM_EnqueueLinkMeasureReq(
 
 	MeasureReqInsert(pAd, DialogToken);
 
-	MiniportMMRequest(pAd, QID_AC_BE, pOutBuffer, FrameLen);
+	MiniportMMRequest(pAd, (MGMT_USE_QUEUE_FLAG | QID_AC_BE), pOutBuffer, FrameLen);
 
 	if (pOutBuffer)
 		MlmeFreeMemory(pAd, pOutBuffer);
@@ -928,7 +943,7 @@ VOID RRM_EnqueueTxStreamMeasureReq(
 
 	MeasureReqInsert(pAd, MeasureReqToken);
 
-	MiniportMMRequest(pAd, QID_AC_BE, pOutBuffer, FrameLen);
+	MiniportMMRequest(pAd, (MGMT_USE_QUEUE_FLAG | QID_AC_BE), pOutBuffer, FrameLen);
 
 	if (pOutBuffer)
 		MlmeFreeMemory(pAd, pOutBuffer);

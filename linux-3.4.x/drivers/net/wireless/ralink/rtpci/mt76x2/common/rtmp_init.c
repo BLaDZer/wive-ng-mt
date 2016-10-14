@@ -2954,7 +2954,8 @@ VOID RTMPMoveMemory(VOID *pDest, VOID *pSrc, ULONG Length)
 
 	for (Index = 0; Index < Length; Index++)
 	{
-		pMem1[Index] = pMem2[Index];
+		if (pMem1 && pMem2)
+		    pMem1[Index] = pMem2[Index];
 	}
 }
 

@@ -703,6 +703,14 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 		if (bNeedAppendExtIE == TRUE)
 		{
+			for (infoPos = (extInfoLen - 1); infoPos >= EXT_CAP_MIN_SAFE_LENGTH; infoPos--) 
+			{
+				if (pInfo[infoPos] == 0)
+					extInfoLen --;
+				else
+					break;
+			}
+
 			MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
 							1, &ExtCapIe,
 							1, &extInfoLen,

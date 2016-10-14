@@ -268,7 +268,6 @@ INT Set_BeaconReq_Proc(
 					}
 				}
 				break;
-			
 		}
 		ArgIdx++;
 	}	
@@ -679,7 +678,17 @@ VOID RRM_BeaconReportHandler(
 	if (NdisEqualMemory(pBcnRep->Bssid, ie_list->Bssid, MAC_ADDR_LEN) == FALSE)
 	{
 		DBGPRINT(RT_DEBUG_WARN, ("%s():BcnReq->BSSID not equal ie_list->Bssid!\n", __FUNCTION__));
+
+		if (NdisEqualMemory(ie_list->Bssid, ZERO_MAC_ADDR, MAC_ADDR_LEN))
+		{
+			COPY_MAC_ADDR(&ie_list->Addr2[0], pBcnRep->Bssid);
+			COPY_MAC_ADDR(&ie_list->Bssid[0], pBcnRep->Bssid);
+		}
 	}
+
+	if (ie_list->Channel == 0)
+		ie_list->Channel = pBcnRep->ChNumber;
+
 #ifdef AP_SCAN_SUPPORT
 	Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE);
 	if (Idx != BSS_NOT_FOUND)

@@ -6399,7 +6399,7 @@ NDIS_STATUS APInsertPsQueue(
 	IN MAC_TABLE_ENTRY *pMacEntry,
 	IN UCHAR QueIdx)
 {
-	ULONG IrqFlags;
+	ULONG IrqFlags = 0;
 #ifdef UAPSD_SUPPORT
 	/* put the U-APSD packet to its U-APSD queue by AC ID */
 	UINT32 ac_id = QueIdx - QID_AC_BE; /* should be >= 0 */

@@ -2528,7 +2528,8 @@ VOID RTMPMoveMemory(
 
 	for (Index = 0; Index < Length; Index++)
 	{
-		pMem1[Index] = pMem2[Index];
+		if (pMem1 && pMem2)
+		    pMem1[Index] = pMem2[Index];
 	}
 }
 
@@ -3911,7 +3912,7 @@ VOID CMDHandler(
 	NDIS_STATUS		NdisStatus = NDIS_STATUS_SUCCESS;                                                                                                               
 /*	ULONG			Now = 0;*/
 /*	NTSTATUS		ntStatus;*/
-/*	unsigned long	IrqFlags;*/
+/*	ULONG IrqFlags;*/
 	
 	while (pAd && pAd->CmdQ.size > 0)	
 	{                                                                                                                                                           

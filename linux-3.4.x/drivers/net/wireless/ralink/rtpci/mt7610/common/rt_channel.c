@@ -26,13 +26,20 @@ CH_FREQ_MAP CH_HZ_ID_MAP[]=
 			{40, 5200},
 			{44, 5220},
 			{48, 5240},
+			{50, 5250},        
 			{52, 5260},
+			{54, 5270},         
 			{56, 5280},
+			{58, 5290},        
 			{60, 5300},
+			{62, 5310},			
 			{64, 5320},
 			{149, 5745},
+			{151, 5755},             
 			{153, 5765},
+			{155, 5775},			
 			{157, 5785},
+			{159, 5795},			
 			{161, 5805},
 			{165, 5825},
 			{167, 5835},
@@ -42,16 +49,27 @@ CH_FREQ_MAP CH_HZ_ID_MAP[]=
 						
 			/* HiperLAN2 */
 			{100, 5500},
+			{102, 5510},			
 			{104, 5520},
+			{106, 5530},			
 			{108, 5540},
+			{110, 5550},		
 			{112, 5560},
+			{114, 5570},
 			{116, 5580},
+			{118, 5590},			
 			{120, 5600},
+			{122, 5610},			
 			{124, 5620},
+			{126, 5630},			
 			{128, 5640},
 			{132, 5660},
+			{134, 5670},			
 			{136, 5680},
+			{138, 5690},			
 			{140, 5700},
+			{142, 5710},	
+			{144, 5720},            
 						
 			/* Japan MMAC */
 			{34, 5170},
@@ -162,7 +180,6 @@ UINT16 const Country_Region_GroupNum_2GHZ = sizeof(Country_Region_ChDesc_2GHZ) /
 CH_DESC Country_Region0_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
-	{52, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
@@ -190,7 +207,6 @@ CH_DESC Country_Region3_ChDesc_5GHZ[] =
 CH_DESC Country_Region0_ChDesc_5GHZ[] =
 {
 	{36, 4, CHANNEL_DEFAULT_PROP},
-	{52, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
@@ -234,6 +250,7 @@ CH_DESC Country_Region6_ChDesc_5GHZ[] =
 CH_DESC Country_Region7_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
+	{100, 11, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}
 };
@@ -276,26 +293,27 @@ CH_DESC Country_Region11_ChDesc_5GHZ[] =
 	{}		
 };
 
+/* for FCC capable of using 144 , mapping of Country_Region1 */
 CH_DESC Country_Region12_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
+	{100, 12, CHANNEL_DEFAULT_PROP},
 	{}
 };
-
+/* for FCC capable of using 144 , mapping of Country_Region7 */
 CH_DESC Country_Region13_ChDesc_5GHZ[] =
 {
-	{52, 4, CHANNEL_DEFAULT_PROP},
-	{100, 11, CHANNEL_DEFAULT_PROP},
-	{149, 4, CHANNEL_DEFAULT_PROP},
+	{36, 8, CHANNEL_DEFAULT_PROP},
+	{100, 12, CHANNEL_DEFAULT_PROP},
+	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}	
 };
-
+/* for FCC capable of using 144 , mapping of Country_Region9 */
 CH_DESC Country_Region14_ChDesc_5GHZ[] =
 {
 	{36, 8, CHANNEL_DEFAULT_PROP},
 	{100, 5, CHANNEL_DEFAULT_PROP},
-	{136, 2, CHANNEL_DEFAULT_PROP},
+	{132, 4, CHANNEL_DEFAULT_PROP},
 	{149, 5, CHANNEL_DEFAULT_PROP},
 	{}	
 };
@@ -332,7 +350,7 @@ CH_DESC Country_Region19_ChDesc_5GHZ[] =
 {
 	{56, 3, CHANNEL_DEFAULT_PROP},
 	{100, 11, CHANNEL_DEFAULT_PROP},
-	{149, 5, CHANNEL_DEFAULT_PROP},
+	{149, 4, CHANNEL_DEFAULT_PROP},
 	{}
 };
 
@@ -626,7 +644,7 @@ CH_DESP Country_CA_ChDesp[] =
 	{ 1,   11, 27, BOTH, FALSE},	/*2402~2472MHz, Ch 1~11,   Max BW: 40 */
 	{ 36,   4, 17, IDOR, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */ 
 	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 100, 11, 20, BOTH, TRUE}, 	/*5490~5710MHz, Ch 100~140, Max BW: 40 */
+	{ 100, 12, 20, BOTH, TRUE}, 	/*5490~5710MHz, Ch 100~144, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };
@@ -1229,9 +1247,9 @@ CH_DESP Country_RO_ChDesp[] =
 CH_DESP Country_RU_ChDesp[] =
 {
 	{ 1,   14, 20, BOTH, FALSE},	/* 2.4 G, ch 1~14*/
-	{ 36,   4, 23, BOTH, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
-	{ 52,   4, 23, BOTH, FALSE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 149,  5, 23, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
+	{ 36,   4, 30, BOTH, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
+	{ 52,   4, 30, BOTH, FALSE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
+	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };
 /*Saint Barth'elemy*/		
@@ -1403,10 +1421,10 @@ CH_DESP Country_GB_ChDesp[] =
 CH_DESP Country_US_ChDesp[] =
 {
 	{ 1,   11, 27, BOTH, FALSE},	/*2402~2472MHz, Ch 1~11,   Max BW: 40 */
-	{ 36,   4, 17, IDOR, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
-	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 100,  5, 20, BOTH, TRUE}, 	/*5490~5600MHz, Ch 100~116, Max BW: 40 */
-	{ 132,  3, 20, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~140, Max BW: 40 */
+	{ 36,   4, 30, BOTH, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
+	{ 52,   4, 24, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
+	{ 100,  5, 24, BOTH, TRUE}, 	/*5490~5600MHz, Ch 100~116, Max BW: 40 */
+	{ 132,  4, 24, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~144, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };		
@@ -1478,8 +1496,8 @@ CH_DESP Country_NA_ChDesp[] =
 CH_DESP Country_WO_ChDesp[] =
 {
 	{ 1,   13, 20, BOTH, FALSE},	/* 2.4 G, ch 1~13*/
-	{ 36,   4, 17, BOTH, FALSE},	/* 5G band 1, ch 36~48*/
-	{ 149,	5, 22, BOTH, FALSE},	/* 5G band 4, ch 149~165*/
+	{ 1,   13, 20, BOTH, FALSE},	/*2402~2482MHz, Ch 1~13,   Max BW: 40 */
+	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 20 */		
 	{ 0},               	    	/* end*/
 };
 
@@ -1540,8 +1558,7 @@ CH_REGION ChRegion[] =
 	{"IL", CE, Country_IL_ChDesp, FALSE}, /* Israel */
 	{"IT", CE, Country_IT_ChDesp, TRUE}, /* Italy */
 	{"JM", CE, Country_JM_ChDesp, TRUE}, /* Jamaica */
-	{"JP", JAP,Country_JP_ChDesp, TRUE}, /* Japan */  
-	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */		
+	{"JP", JAP,Country_JP_ChDesp, FALSE}, /* Japan */		
 	{"JO", CE, Country_JO_ChDesp, TRUE}, /* Jordan */	
 	{"KZ", CE, Country_KZ_ChDesp, TRUE}, /* Kazakhstan */			
 	{"KE", CE, Country_KE_ChDesp, TRUE}, /* Kenya */	
@@ -1911,8 +1928,7 @@ COUNTRY_PROP CountryProp[]=
 	{"IL", CE, FALSE }, /* Israel */
 	{"IT", CE, TRUE }, /* Italy */
 	{"JM", CE, TRUE }, /* Jamaica */
-	{"JP", JAP, TRUE}, /* Japan */	
-	/* for unify mac ED must be ON to pass Japan CD cert - by CSD */	
+	{"JP", JAP, FALSE}, /* Japan */		
 	{"JO", CE, TRUE }, /* Jordan */	
 	{"KZ", CE, TRUE }, /* Kazakhstan */			
 	{"KE", CE, TRUE }, /* Kenya */	

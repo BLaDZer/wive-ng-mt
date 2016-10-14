@@ -1347,6 +1347,14 @@ VOID ap_cmm_peer_assoc_req_action(
 
 		if (bNeedAppendExtIE == TRUE)
 		{
+			for (infoPos = (extInfoLen - 1); infoPos >= EXT_CAP_MIN_SAFE_LENGTH; infoPos--)
+			{
+				if (pInfo[infoPos] == 0)
+					extInfoLen --;
+				else
+					break;
+			}
+
 			MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
 							1,			&ExtCapIe,
 							1,			&extInfoLen,
@@ -1355,7 +1363,7 @@ VOID ap_cmm_peer_assoc_req_action(
 			FrameLen += TmpLen;
 		}
 	}
-	
+
 	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
 {
 	ULONG TmpLen;

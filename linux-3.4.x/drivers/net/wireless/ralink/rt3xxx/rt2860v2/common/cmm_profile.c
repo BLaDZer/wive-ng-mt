@@ -219,7 +219,7 @@ int rtinet_aton(PSTRING cp, unsigned int *addr)
 	unsigned int 	val;
 	int         	base, n;
 	STRING        	c;
-	unsigned int    parts[4];
+	unsigned int    parts[4] = {0};
 	unsigned int    *pp = parts;
 
 	for (;;)

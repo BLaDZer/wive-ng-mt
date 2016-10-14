@@ -547,7 +547,7 @@ VOID APPeerProbeReqAction(
 		    ULONG TmpLen2=0;
 		    UCHAR TmpFrame[256];
 		    UCHAR CountryIe = IE_COUNTRY;
-		    UCHAR MaxTxPower=16;
+		    UCHAR MaxTxPower=20;
 
 #ifdef A_BAND_SUPPORT
 			/* 
