@@ -227,30 +227,31 @@ int func_wl_wds(int argc, char* argv[])
 int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
-    char mac[18] = {0};
+    char mac1[18] = {0};
+    char mac2[18] = {0};
     int chan_num;
 
     char addr[ETH_ALEN] = {0};
 
     int ap_ret = getWlanAPMac("apcli0", addr);
+    getWlanCurrentMacAddr(mac1, 1);
 #ifndef CONFIG_RT_SECOND_IF_NONE
     if (ap_ret <= 0) ap_ret = getWlanAPMac("apclii0", addr);
+    getWlanCurrentMacAddr(mac2, 2);
 #endif
 
-    getWlanCurrentMacAddr(mac, 1);
 
     /* FIXME: remove fallback */
 
     chan_num  = getWlanChannelNum(1);
-    printf("BSSID\t%s\n", mac);
-    printf("BSSID 2.4\t%s\n", mac);
+    printf("BSSID\t%s\n", mac1);
+    printf("BSSID 2.4\t%s\n", mac1);
     printf("Channel\t%i\n", chan_num);
     printf("Channel 2.4\t%i\n", chan_num);
     printf("Ext channel 2.4\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHA", 0));
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
-    getWlanCurrentMacAddr(mac, 2);
-    printf("BSSID 5\t%s\n", mac);
+    printf("BSSID 5\t%s\n", mac2);
     chan_num  = getWlanChannelNum(2);
     printf("Channel 5\t%i\n", chan_num);
     printf("Ext channel 5\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHAINIC", 0));
@@ -278,18 +279,27 @@ int func_wl_status_report(int argc, char* argv[])
     int band_num;
     char ssid_nvram_id[6] = {0};
 
-    for (band_num=1; band_num<=2; band_num++)
-    for (ssid_num=1; ssid_num <= 8; ssid_num++)
-    {
-        getWlanCurrentMacAddr(mac, band_num);
+    int bssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 0);
+    int mbssid_5ghz = strcmp(nvram_get(RT2860_NVRAM, "BssidIfName"), "rai") == 0;
 
-        if (band_num == 2)
+    for (band_num=1; band_num<=2; band_num++)
+    for (ssid_num=1; ssid_num <= bssid_num; ssid_num++)
+    {
+        char* mac = (band_num==1)?mac1:mac2;
+        sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+
+        if (ssid_num > 1)
         {
-            sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
+            if (mbssid_5ghz && band_num == 1) break;
+            else
+            if (!mbssid_5ghz && band_num == 2) break;
         }
         else
         {
-            sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+            if (band_num == 2)
+            {
+                sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
+            }
         }
 
         char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
@@ -396,9 +406,29 @@ int func_wl_status(int argc, char* argv[])
     char* bcisolated_ssid = nvram_get(RT2860_NVRAM, "NoForwardingMBCast");
     int bcisolated_ssid_len = strlen(bcisolated_ssid);
 
-    for (ssid_num=1; ssid_num <= 8; ssid_num++)
+    int bssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 0);
+    int mbssid_5ghz = (strcmp(nvram_get(RT2860_NVRAM, "BssidIfName"), "rai") == 0);
+
+    int band_num;
+
+    for (band_num=1; band_num <= 2; band_num++)
+    for (ssid_num=1; ssid_num <= bssid_num; ssid_num++)
     {
         sprintf(ssid_nvram_id, "SSID%i", ssid_num);
+
+        if (ssid_num > 1)
+        {
+            if (mbssid_5ghz && band_num == 1) break;
+            else
+            if (!mbssid_5ghz && band_num == 2) break;
+        }
+        else
+        {
+            if (band_num == 2)
+            {
+                sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
+            }
+        }
 
         char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
         if (ssid_name[0] == '\0')
