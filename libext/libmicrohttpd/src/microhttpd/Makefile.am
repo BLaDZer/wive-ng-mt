@@ -5,10 +5,6 @@ AM_CPPFLAGS = \
 
 AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS)
 
-if HAVE_W32
-MHD_W32_LIB = $(top_builddir)/src/platform/libplatform_interface.la
-endif
-
 lib_LTLIBRARIES = \
   libmicrohttpd.la
 
@@ -66,6 +62,11 @@ libmicrohttpd_la_SOURCES = \
   mhd_limits.h mhd_byteorder.h \
   sysfdsetsize.c sysfdsetsize.h \
   mhd_str.c mhd_str.h \
+  mhd_threads.c mhd_threads.h \
+  mhd_locks.h \
+  mhd_sockets.c mhd_sockets.h \
+  mhd_itc.c mhd_itc.h \
+  mhd_compat.c mhd_compat.h \
   response.c response.h
 libmicrohttpd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) $(MHD_LIB_CPPFLAGS) \
@@ -77,9 +78,7 @@ libmicrohttpd_la_LDFLAGS = \
   $(W32_MHD_LIB_LDFLAGS) \
   -version-info @LIB_VERSION_CURRENT@:@LIB_VERSION_REVISION@:@LIB_VERSION_AGE@
 libmicrohttpd_la_LIBADD = \
-  $(MHD_W32_LIB) $(MHD_LIBDEPS)
-libmicrohttpd_la_DEPENDENCIES = \
-  $(MHD_W32_LIB)
+  $(MHD_LIBDEPS)
 
 if HAVE_W32
 MHD_DLL_RES_SRC = microhttpd_dll_res.rc
@@ -140,6 +139,8 @@ endif
 
 
 check_PROGRAMS = \
+  test_str_compare \
+  test_str_to_value \
   test_shutdown_select \
   test_shutdown_poll \
   test_daemon
@@ -169,8 +170,7 @@ test_postprocessor_SOURCES = \
 test_postprocessor_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
 test_postprocessor_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
-  $(MHD_W32_LIB)
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_postprocessor_amp_SOURCES = \
   test_postprocessor_amp.c
@@ -184,8 +184,7 @@ test_postprocessor_large_SOURCES = \
 test_postprocessor_large_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
 test_postprocessor_large_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
-  $(MHD_W32_LIB)
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_shutdown_select_SOURCES = \
   test_shutdown_select.c
@@ -197,10 +196,16 @@ test_shutdown_select_LDADD = \
 endif
 
 test_shutdown_poll_SOURCES = \
-  test_shutdown_select.c
+  test_shutdown_select.c mhd_threads.h
 if USE_POSIX_THREADS
 test_shutdown_poll_CFLAGS = \
   $(AM_CFLAGS) $(PTHREAD_CFLAGS)
 test_shutdown_poll_LDADD = \
   $(PTHREAD_LIBS)
 endif
+
+test_str_compare_SOURCES = \
+  test_str.c test_helpers.h mhd_str.c
+
+test_str_to_value_SOURCES = \
+  test_str.c test_helpers.h mhd_str.c

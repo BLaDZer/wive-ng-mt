@@ -1,7 +1,5 @@
 /* MHD_config.h.in.  Generated from configure.ac by autoheader.  */
 
-#define _GNU_SOURCE  1
-
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
@@ -14,7 +12,7 @@
 /* Define to 1 if libmicrohttpd is compiled with digest Auth support. */
 #undef DAUTH_SUPPORT
 
-/* define to 0 to disable epoll support */
+/* Define to 1 to enable epoll support */
 #undef EPOLL_SUPPORT
 
 /* This is a FreeBSD system */
@@ -73,6 +71,9 @@
 /* Provides IPv6 headers */
 #undef HAVE_INET6
 
+/* Define to 1 if you have the <inetLib.h> header file. */
+#undef HAVE_INETLIB_H
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -121,6 +122,9 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #undef HAVE_NETINET_TCP_H
 
+/* Define to 1 if you have the <net/if.h> header file. */
+#undef HAVE_NET_IF_H
+
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
 
@@ -133,11 +137,30 @@
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
 
+/* Define to 1 if you have the <pthread_np.h> header file. */
+#undef HAVE_PTHREAD_NP_H
+
 /* Have PTHREAD_PRIO_INHERIT. */
 #undef HAVE_PTHREAD_PRIO_INHERIT
 
-/* Define if you have pthread_setname_np function. */
-#undef HAVE_PTHREAD_SETNAME_NP
+/* Define if you have Darwin form of pthread_setname_np(3) function. */
+#undef HAVE_PTHREAD_SETNAME_NP_DARWIN
+
+/* Define if you have GNU/Linux form of pthread_setname_np(3) function. */
+#undef HAVE_PTHREAD_SETNAME_NP_GNU
+
+/* Define if you have NetBSD form (or OSF1 form) of pthread_setname_np(3)
+   function. */
+#undef HAVE_PTHREAD_SETNAME_NP_NETBSD
+
+/* Define if you have FreeBSD form of pthread_set_name_np(3) function. */
+#undef HAVE_PTHREAD_SET_NAME_NP_FREEBSD
+
+/* Define to 1 if you have the `rand' function. */
+#undef HAVE_RAND
+
+/* Define to 1 if you have the `random' function. */
+#undef HAVE_RANDOM
 
 /* Define to 1 if you have the <search.h> header file. */
 #undef HAVE_SEARCH_H
@@ -151,12 +174,18 @@
 /* Do we have sockaddr_in.sin_len? */
 #undef HAVE_SOCKADDR_IN_SIN_LEN
 
+/* Define to 1 if you have the <sockLib.h> header file. */
+#undef HAVE_SOCKLIB_H
+
 /* SOCK_NONBLOCK is defined in a socket header */
 #undef HAVE_SOCK_NONBLOCK
 
 /* Define to 1 if you have the <stdbool.h> header file and it's required for
    _MHD_bool. */
 #undef HAVE_STDBOOL_H
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#undef HAVE_STDDEF_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -306,6 +335,9 @@
 /* Define to use pair of sockets instead of pipes for signaling */
 #undef MHD_DONT_USE_PIPES
 
+/* Define to 1 to disable setting name on generated threads */
+#undef MHD_NO_THREAD_NAMES
+
 /* gnuTLS lib version - used in conjunction with cURL */
 #undef MHD_REQ_CURL_GNUTLS_VERSION
 
@@ -401,6 +433,9 @@
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
+
+/* Enable GNU-specific header features */
+#undef _GNU_SOURCE
 
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE

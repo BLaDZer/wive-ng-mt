@@ -21,6 +21,7 @@
  * @file microhttpd.h
  * @brief public interface to libmicrohttpd
  * @author Christian Grothoff
+ * @author Karlson2k (Evgeny Grin)
  * @author Chris GauthierDickey
  *
  * All symbols defined in this header start with MHD.  MHD is a small
@@ -59,14 +60,6 @@
  * thread-safe (with the exception of #MHD_set_connection_value,
  * which must only be used in a particular context).
  *
- * NEW: Before including "microhttpd.h" you should add the necessary
- * includes to define the `uint64_t`, `size_t`, `fd_set`, `socklen_t`
- * and `struct sockaddr` data types (which headers are needed may
- * depend on your platform; for possible suggestions consult
- * "platform.h" in the MHD distribution).  If you have done so, you
- * should also have a line with "#define MHD_PLATFORM_H" which will
- * prevent this header from trying (and, depending on your platform,
- * failing) to include the right headers.
  *
  * @defgroup event event-loop control
  * MHD API to start and stop the HTTP server and manage the event loop.
@@ -99,11 +92,14 @@ extern "C"
    hence works on any platform, we use "standard" includes here
    to build out-of-the-box for beginning users on common systems.
 
-   Once you have a proper build system and go for more exotic
-   platforms, you should define MHD_PLATFORM_H in some header that
-   you always include *before* "microhttpd.h".  Then the following
-   "standard" includes won't be used (which might be a good
-   idea, especially on platforms where they do not exist). */
+   If generic headers don't work on your platform, include headers
+   which define 'va_list', 'size_t', 'ssize_t', 'intptr_t',
+   'uint16_t', 'uint32_t', 'uint64_t', 'off_t', 'struct sockaddr',
+   'socklen_t', 'fd_set' and "#define MHD_PLATFORM_H" before
+   including "microhttpd.h". Then the following "standard"
+   includes won't be used (which might be a good idea, especially
+   on platforms where they do not exist).
+   */
 #ifndef MHD_PLATFORM_H
 #include <stdarg.h>
 #include <stdint.h>
@@ -130,7 +126,7 @@ typedef intptr_t ssize_t;
  * Current version of the library.
  * 0x01093001 = 1.9.30-1.
  */
-#define MHD_VERSION 0x00095000
+#define MHD_VERSION 0x00095100
 
 /**
  * MHD-internal return code for "YES".
@@ -323,6 +319,7 @@ _MHD_DEPR_MACRO("Macro MHD_LONG_LONG_PRINTF is deprecated, use MHD_UNSIGNED_LONG
 #define MHD_HTTP_USE_PROXY 305
 #define MHD_HTTP_SWITCH_PROXY 306
 #define MHD_HTTP_TEMPORARY_REDIRECT 307
+#define MHD_HTTP_PERMANENT_REDIRECT 308
 
 #define MHD_HTTP_BAD_REQUEST 400
 #define MHD_HTTP_UNAUTHORIZED 401
@@ -580,7 +577,7 @@ enum MHD_FLAG
    * FD_SETSIZE`.  This option is not compatible with using an
    * 'external' `select()` mode (as there is no API to get the file
    * descriptors for the external select from MHD) and must also not
-   * be used in combination with #MHD_USE_EPOLL_LINUX_ONLY.
+   * be used in combination with #MHD_USE_EPOLL.
    */
   MHD_USE_POLL = 64,
 
@@ -608,18 +605,29 @@ enum MHD_FLAG
 
   /**
    * Use `epoll()` instead of `select()` or `poll()` for the event loop.
-   * This option is only available on Linux; using the option on
-   * non-Linux systems will cause #MHD_start_daemon to fail.  Using
+   * This option is only available on some systems; using the option on
+   * systems without epoll will cause #MHD_start_daemon to fail.  Using
    * this option is not supported with #MHD_USE_THREAD_PER_CONNECTION.
+   * @sa ::MHD_FEATURE_EPOLL
    */
-  MHD_USE_EPOLL_LINUX_ONLY = 512,
+  MHD_USE_EPOLL = 512,
+
+/** @deprecated */
+#define MHD_USE_EPOLL_LINUX_ONLY \
+  _MHD_DEPR_IN_MACRO("Value MHD_USE_EPOLL_LINUX_ONLY is deprecated, use MHD_USE_EPOLL") \
+  MHD_USE_EPOLL
 
   /**
    * Run using an internal thread (or thread pool) doing `epoll()`.
    * This option is only available on Linux; using the option on
    * non-Linux systems will cause #MHD_start_daemon to fail.
    */
-  MHD_USE_EPOLL_INTERNALLY_LINUX_ONLY = MHD_USE_SELECT_INTERNALLY | MHD_USE_EPOLL_LINUX_ONLY,
+  MHD_USE_EPOLL_INTERNALLY = MHD_USE_SELECT_INTERNALLY | MHD_USE_EPOLL,
+
+/** @deprecated */
+#define MHD_USE_EPOLL_INTERNALLY_LINUX_ONLY \
+  _MHD_DEPR_IN_MACRO("Value MHD_USE_EPOLL_INTERNALLY_LINUX_ONLY is deprecated, use MHD_USE_EPOLL_INTERNALLY") \
+  MHD_USE_EPOLL_INTERNALLY
 
   /**
    * Force MHD to use a signal pipe to notify the event loop (of
@@ -647,7 +655,7 @@ enum MHD_FLAG
   /**
    * Enable `epoll()` turbo.  Disables certain calls to `shutdown()`
    * and enables aggressive non-blocking optimisitc reads.
-   * Most effects only happen with #MHD_USE_EPOLL_LINUX_ONLY.
+   * Most effects only happen with #MHD_USE_EPOLL.
    * Enalbed always on W32 as winsock does not properly behave
    * with `shutdown()` and this then fixes potential problems.
    */
@@ -677,7 +685,10 @@ enum MHD_FLAG
  * @param ap arguments to @a fm
  * @ingroup logging
  */
-typedef void (*MHD_LogCallback)(void *cls, const char *fm, va_list ap);
+typedef void
+(*MHD_LogCallback)(void *cls,
+                   const char *fm,
+                   va_list ap);
 
 
 /**
@@ -2224,9 +2235,6 @@ enum MHD_UpgradeAction
    * Close the socket, the application is done with it.
    *
    * Takes no extra arguments.
-   *
-   * NOTE: it is unclear if we want to have this in the
-   * "final" API, this is all just ideas.
    */
   MHD_UPGRADE_ACTION_CLOSE = 0,
 
@@ -2237,11 +2245,19 @@ enum MHD_UpgradeAction
    * Takes no extra arguments.
    *
    * NOTE: it is unclear if we want to have this in the
-   * "final" API, this is all just ideas.
+   * "final" API, this is just an idea right now.
    */
   MHD_UPGRADE_ACTION_CORK
 
 };
+
+
+/**
+ * Handle given to the application to manage special
+ * actions relating to MHD responses that "upgrade"
+ * the HTTP protocol (i.e. to WebSockets).
+ */
+struct MHD_UpgradeResponseHandle;
 
 
 /**
@@ -2250,13 +2266,14 @@ enum MHD_UpgradeAction
  * It allows applications to perform 'special' actions on
  * the underlying socket from the upgrade.
  *
- * @param cls the closure (from `upgrade_action_cls`)
+ * @param urh the handle identifying the connection to perform
+ *            the upgrade @a action on.
  * @param action which action should be performed
  * @param ... arguments to the action (depends on the action)
  * @return #MHD_NO on error, #MHD_YES on success
  */
-typedef int
-(*MHD_UpgradeActionCallback)(void *cls,
+_MHD_EXTERN int
+MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
                              enum MHD_UpgradeAction action,
                              ...);
 
@@ -2289,28 +2306,35 @@ typedef int
  * of this function should never block (as it will still be called
  * from within the main event loop).
  *
- * @param cls closure
+ * @param cls closure, whatever was given to #MHD_create_response_for_upgrade().
  * @param connection original HTTP connection handle,
  *                   giving the function a last chance
  *                   to inspect the original HTTP request
+ * @param extra_in if we happened to have read bytes after the
+ *                 HTTP header already (because the client sent
+ *                 more than the HTTP header of the request before
+ *                 we sent the upgrade response),
+ *                 these are the extra bytes already read from @a sock
+ *                 by MHD.  The application should treat these as if
+ *                 it had read them from @a sock.
+ * @param extra_in_size number of bytes in @a extra_in
  * @param sock socket to use for bi-directional communication
  *        with the client.  For HTTPS, this may not be a socket
  *        that is directly connected to the client and thus certain
  *        operations (TCP-specific setsockopt(), getsockopt(), etc.)
  *        may not work as expected (as the socket could be from a
  *        socketpair() or a TCP-loopback)
- * @param upgrade_action function that can be used to perform actions
- *        on the @a sock (like those that cannot be done explicitly).
- *        Applications must use this callback to perform the
+ * @param urh argument for #MHD_upgrade_action()s on this @a connection.
+ *        Applications must eventually use this callback to perform the
  *        close() action on the @a sock.
- * @param upgrade_action_cls closure that must be passed to @a upgrade_action
  */
 typedef void
 (*MHD_UpgradeHandler)(void *cls,
                       struct MHD_Connection *connection,
+                      const char *extra_in,
+                      size_t extra_in_size,
                       MHD_SOCKET sock,
-                      MHD_UpgradeActionCallback upgrade_action,
-                      void *upgrade_action_cls);
+                      struct MHD_UpgradeResponseHandle *urh);
 
 
 /**
@@ -2342,7 +2366,7 @@ typedef void
  * @param upgrade_handler_cls closure for @a upgrade_handler
  * @return NULL on error (i.e. invalid arguments, out of memory)
  */
-struct MHD_Response *
+_MHD_EXTERN struct MHD_Response *
 MHD_create_response_for_upgrade (MHD_UpgradeHandler upgrade_handler,
 				 void *upgrade_handler_cls);
 #endif
@@ -2753,8 +2777,8 @@ enum MHD_FEATURE
 
   /**
    * Get whether `epoll()` is supported. If supported then Flags
-   * #MHD_USE_EPOLL_LINUX_ONLY and
-   * #MHD_USE_EPOLL_INTERNALLY_LINUX_ONLY can be used.
+   * #MHD_USE_EPOLL and
+   * #MHD_USE_EPOLL_INTERNALLY can be used.
    */
   MHD_FEATURE_EPOLL = 7,
 
@@ -2816,7 +2840,12 @@ enum MHD_FEATURE
    * offsets larger than 2 GiB. If not supported value of size+offset is
    * limited to 2 GiB.
    */
-  MHD_FEATURE_LARGE_FILE = 15
+  MHD_FEATURE_LARGE_FILE = 15,
+
+  /**
+   * Get whether MHD set names on generated threads.
+   */
+  MHD_THREAD_NAMES = 16
 };
 
 

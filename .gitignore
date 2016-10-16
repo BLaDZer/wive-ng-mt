@@ -21,6 +21,7 @@
 *.tab.h
 *.moc
 *.tmp
+*.h.in~
 .sgbuilt_user
 .libs
 .copts_*
@@ -31,7 +32,6 @@ lkc_defs.h
 libtool
 autom4te.cache
 autom4te.cache/*
-config.h.in~
 config.log
 configure.log
 config.status
@@ -388,7 +388,6 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/lldpd/osx/Makefile
 /user/lldpd/tests/Makefile
 /user/netcwmp/tests/src/Makefile
-/user/ethtool/ethtool-config.h.in~
 /user/strace/Makefile
 /user/strace/Mkaefile.in
 /user/strace/configure

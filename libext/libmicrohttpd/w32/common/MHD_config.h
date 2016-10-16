@@ -10,7 +10,11 @@
 #define MSVC 1
 
 /* Define to type which will be used as boolean type. */
+#if _MSC_VER+0 >= 1800
 #define _MHD_bool _Bool
+#else  /* before VS 2013 */
+#define _MHD_bool int
+#endif /* before VS 2013 */
 
 /* Define to 1 if your C compiler supports inline functions. */
 #define INLINE_FUNC 1
@@ -83,6 +87,11 @@
 #define HAVE_SNPRINTF 1
 #endif
 
+#if _MSC_VER >= 1800
+/* Define to 1 if you have the <inttypes.h> header file. */
+#define HAVE_INTTYPES_H 1
+#endif
+
 
 /* *** Headers information *** */
 /* Not really important as not used by code currently */
@@ -134,6 +143,9 @@
 
 /* Define to 1 if you have the <time.h> header file. */
 #define HAVE_TIME_H 1
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#define HAVE_STDDEF_H 1
 
 
 /* *** Other useful staff *** */

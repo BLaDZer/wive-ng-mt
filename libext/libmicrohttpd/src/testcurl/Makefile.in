@@ -116,18 +116,6 @@ host_triplet = @host@
 @ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@am__append_4 = \
 @ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@	test_digestauth test_digestauth_with_arguments
 
-@HAVE_W32_TRUE@am__append_5 = \
-@HAVE_W32_TRUE@ $(top_builddir)/src/platform/libplatform_interface.la
-
-@HAVE_W32_TRUE@am__append_6 = \
-@HAVE_W32_TRUE@ $(top_builddir)/src/platform/libplatform_interface.la
-
-@HAVE_W32_TRUE@am__append_7 = \
-@HAVE_W32_TRUE@  $(top_builddir)/src/platform/libplatform_interface.la
-
-@HAVE_W32_TRUE@am__append_8 = \
-@HAVE_W32_TRUE@  $(top_builddir)/src/platform/libplatform_interface.la
-
 subdir = src/testcurl
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(top_srcdir)/test-driver
@@ -240,8 +228,12 @@ test_get_response_cleanup_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_get_sendfile_OBJECTS = test_get_sendfile.$(OBJEXT)
 test_get_sendfile_OBJECTS = $(am_test_get_sendfile_OBJECTS)
+test_get_sendfile_DEPENDENCIES =  \
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_get_sendfile11_OBJECTS = test_get_sendfile.$(OBJEXT)
 test_get_sendfile11_OBJECTS = $(am_test_get_sendfile11_OBJECTS)
+test_get_sendfile11_DEPENDENCIES =  \
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_iplimit11_OBJECTS = test_iplimit.$(OBJEXT)
 test_iplimit11_OBJECTS = $(am_test_iplimit11_OBJECTS)
 test_iplimit11_DEPENDENCIES =  \
@@ -932,10 +924,10 @@ test_digestauth_with_arguments_LDADD = \
 test_get_sendfile_SOURCES = \
   test_get_sendfile.c
 
-test_get_sendfile_LDADD =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la @LIBCURL@ \
-	$(am__append_5)
-test_get_sendfile_DEPENDENCIES = $(am__append_6)
+test_get_sendfile_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  @LIBCURL@
+
 test_urlparse_SOURCES = \
   test_urlparse.c
 
@@ -1022,10 +1014,10 @@ test_get11_LDADD = \
 test_get_sendfile11_SOURCES = \
   test_get_sendfile.c
 
-test_get_sendfile11_LDADD =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la @LIBCURL@ \
-	$(am__append_7)
-test_get_sendfile11_DEPENDENCIES = $(am__append_8)
+test_get_sendfile11_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  @LIBCURL@
+
 test_post11_SOURCES = \
   test_post.c
 

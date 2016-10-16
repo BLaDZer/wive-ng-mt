@@ -30,8 +30,8 @@
  */
 
 #include "MHD_config.h"
-#include "platform_interface.h"
 #include "platform.h"
+#include "mhd_sockets.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -76,6 +76,8 @@
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #endif /* HAVE_STDBOOL_H */
+
+#include "mhd_threads.h"
 
 #ifndef SOMAXCONN
 #define SOMAXCONN 511
@@ -346,7 +348,7 @@ main (int argc, char *const *argv)
       shutdown (listen_socket, SHUT_RDWR);
 
       /* fprintf (stdout, "Waiting for thread to finish...\n"); */
-      if (0 != MHD_join_thread_(sel_thrd))
+      if (!MHD_join_thread_(sel_thrd))
         {
           MHD_socket_close_(listen_socket);
           fprintf (stderr, "Can't join select() thread\n");

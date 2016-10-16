@@ -29,20 +29,16 @@
 
 #include "platform.h"
 #include "microhttpd.h"
-#include "platform_interface.h"
 #if HTTPS_SUPPORT
 #include <gnutls/gnutls.h>
 #if GNUTLS_VERSION_MAJOR >= 3
 #include <gnutls/abstract.h>
 #endif
 #endif
-#if EPOLL_SUPPORT
-#include <sys/epoll.h>
-#endif
-#if HAVE_NETINET_TCP_H
-/* for TCP_FASTOPEN */
-#include <netinet/tcp.h>
-#endif
+#include "mhd_threads.h"
+#include "mhd_locks.h"
+#include "mhd_sockets.h"
+#include "mhd_itc.h"
 
 
 /**
@@ -206,7 +202,8 @@ struct MHD_NonceNc
  */
 void
 MHD_DLOG (const struct MHD_Daemon *daemon,
-	  const char *format, ...);
+	  const char *format,
+          ...);
 #endif
 
 
@@ -276,6 +273,20 @@ struct MHD_Response
    * either user-specified callback or "&free".
    */
   MHD_ContentReaderFreeCallback crfc;
+
+#if 0
+  /**
+   * Application function to call once we are done sending the headers
+   * of the response; NULL unless this is a response created with
+   * #MHD_create_response_for_upgrade().
+   */
+  MHD_UpgradeHandler upgrade_handler;
+
+  /**
+   * Closure for @e uh.
+   */
+  void *upgrade_handler_cls;
+#endif
 
   /**
    * Mutex to synchronize access to @e data, @e size and
@@ -516,7 +527,7 @@ typedef ssize_t
 struct MHD_Connection
 {
 
-#if EPOLL_SUPPORT
+#ifdef EPOLL_SUPPORT
   /**
    * Next pointer for the EDLL listing connections that are epoll-ready.
    */
@@ -573,14 +584,12 @@ struct MHD_Connection
   struct MHD_Response *response;
 
   /**
-   * The memory pool is created whenever we first read
-   * from the TCP stream and destroyed at the end of
-   * each request (and re-created for the next request).
-   * In the meantime, this pointer is NULL.  The
-   * pool is used for all connection-related data
-   * except for the response (which maybe shared between
-   * connections) and the IP address (which persists
-   * across individual requests).
+   * The memory pool is created whenever we first read from the TCP
+   * stream and destroyed at the end of each request (and re-created
+   * for the next request).  In the meantime, this pointer is NULL.
+   * The pool is used for all connection-related data except for the
+   * response (which maybe shared between connections) and the IP
+   * address (which persists across individual requests).
    */
   struct MemoryPool *pool;
 
@@ -602,8 +611,7 @@ struct MHD_Connection
   void *socket_context;
 
   /**
-   * Request method.  Should be GET/POST/etc.  Allocated
-   * in pool.
+   * Request method.  Should be GET/POST/etc.  Allocated in pool.
    */
   char *method;
 
@@ -611,7 +619,7 @@ struct MHD_Connection
    * Requested URL (everything after "GET" only).  Allocated
    * in pool.
    */
-  char *url;
+  const char *url;
 
   /**
    * HTTP version string (i.e. http/1.1).  Allocated
@@ -620,9 +628,8 @@ struct MHD_Connection
   char *version;
 
   /**
-   * Buffer for reading requests.   Allocated
-   * in pool.  Actually one byte larger than
-   * @e read_buffer_size (if non-NULL) to allow for
+   * Buffer for reading requests.  Allocated in pool.  Actually one
+   * byte larger than @e read_buffer_size (if non-NULL) to allow for
    * 0-termination.
    */
   char *read_buffer;
@@ -761,7 +768,7 @@ struct MHD_Connection
    */
   int in_idle;
 
-#if EPOLL_SUPPORT
+#ifdef EPOLL_SUPPORT
   /**
    * What is the state of this socket in relation to epoll?
    */
@@ -953,7 +960,7 @@ struct MHD_Daemon
    */
   struct MHD_Connection *cleanup_tail;
 
-#if EPOLL_SUPPORT
+#ifdef EPOLL_SUPPORT
   /**
    * Head of EDLL of connections ready for processing (in epoll mode).
    */
@@ -1137,7 +1144,7 @@ struct MHD_Daemon
    */
   int listening_address_reuse;
 
-#if EPOLL_SUPPORT
+#ifdef EPOLL_SUPPORT
   /**
    * File descriptor associated with our epoll loop.
    */

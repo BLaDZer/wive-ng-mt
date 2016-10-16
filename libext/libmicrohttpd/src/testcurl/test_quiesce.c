@@ -25,7 +25,6 @@
 
 #include "MHD_config.h"
 #include "platform.h"
-#include "platform_interface.h"
 #include <curl/curl.h>
 #include <microhttpd.h>
 #include <stdlib.h>
@@ -33,6 +32,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <pthread.h>
+#include "mhd_sockets.h" /* only macros used */
 
 #ifndef WINDOWS
 #include <unistd.h>
@@ -482,8 +482,8 @@ main (int argc, char *const *argv)
     }
   if (MHD_YES == MHD_is_feature_supported(MHD_FEATURE_EPOLL))
     {
-      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, 0, MHD_USE_EPOLL_LINUX_ONLY);
-      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, CPU_COUNT, MHD_USE_EPOLL_LINUX_ONLY);
+      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, 0, MHD_USE_EPOLL);
+      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, CPU_COUNT, MHD_USE_EPOLL);
     }
   if (errorCount != 0)
     fprintf (stderr, "Error (code: %u)\n", errorCount);

@@ -27,12 +27,12 @@
 
 #include "MHD_config.h"
 #include "platform.h"
-#include "platform_interface.h"
 #include <curl/curl.h>
 #include <microhttpd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "mhd_sockets.h" /* only macros used */
 
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -634,10 +634,10 @@ main (int argc, char *const *argv)
     }
   if (MHD_YES == MHD_is_feature_supported(MHD_FEATURE_EPOLL))
     {
-      errorCount += testInternalGet(MHD_USE_EPOLL_LINUX_ONLY);
-      errorCount += testMultithreadedPoolGet(MHD_USE_EPOLL_LINUX_ONLY);
-      errorCount += testUnknownPortGet(MHD_USE_EPOLL_LINUX_ONLY);
-      errorCount += testEmptyGet(MHD_USE_EPOLL_LINUX_ONLY);
+      errorCount += testInternalGet(MHD_USE_EPOLL);
+      errorCount += testMultithreadedPoolGet(MHD_USE_EPOLL);
+      errorCount += testUnknownPortGet(MHD_USE_EPOLL);
+      errorCount += testEmptyGet(MHD_USE_EPOLL);
     }
   if (errorCount != 0)
     fprintf (stderr, "Error (code: %u)\n", errorCount);

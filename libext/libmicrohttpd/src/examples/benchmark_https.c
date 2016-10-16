@@ -181,8 +181,8 @@ main (int argc, char *const *argv)
 					      (void *) PAGE,
 					      MHD_RESPMEM_PERSISTENT);
   d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL
-#if EPOLL_SUPPORT
-			| MHD_USE_EPOLL_LINUX_ONLY  | MHD_USE_EPOLL_TURBO
+#ifdef EPOLL_SUPPORT
+			| MHD_USE_EPOLL | MHD_USE_EPOLL_TURBO
 #endif
 			,
                         atoi (argv[1]),

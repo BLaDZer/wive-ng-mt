@@ -2401,73 +2401,74 @@
 10) xl2tpd: update to 1.3.8 version (sync with devtree commit: 6bb1402e).<br>
 11) freeradius: up to 3.0.12 version.<br>
 12) lldpd: up to 0.9.5 version.<br>
-13) libcurl: up to 7.50.3 version.<br>
-14) libcurl: fix build with openssl and zlib support.<br>
-15) busybox: ash: in heredoc code, fix access past the end of allocated memory. Closes 9276.<br>
-16) goahead: implement vlan page and switch status refactoring.<br>
-17) goahead: webui: fix TV/SIP ports with vlans configured.<br>
-18) goahead: webui: rework vpn server page.<br>
-19) goahead: webui: add profile for hotspot.ots-net.ru in chillipage.<br>
-20) goahead: webui: add radius server page.<br>
-21) init.d: split set_vlan_map to set_port_vlan_prio_map and set_vlan_ingress_prio_map functions.<br>
-22) init.d: coova-chilli: setup clients for /32 network (client2client traffic isolate).<br>
-23) init.d: split sip/tv vlans logic, prevent create unused vlan bridges.<br>
-24) init.d: add qos prio for vlan based tv/sip ports.<br>
-25) init.d: write logic for radiusd user managment.<br>
-26) init.d: radiusd: try reload configs without full restart if possible.<br>
-27) cli: add report mode for easy remote get and parse info.<br>
-28) kernel: ralink_arch: pci: refactoring PCR code.<br>
-29) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
-30) kernel: ralink_spi: increase rwfs partsize to 640Kb for 8Mb flash devices and 1Mb for 16/32Mb flash devices.<br>
-31) kernel: ralink_raeth: fix lost disable EEE for 7350 gsw on link down.<br>
-32) kernel: ralink_wifi: disallow fallback per default.<br>
-33) kernel: ralink_wifi: decrase optimistic rate TrainUP (more interference immunity).<br>
-34) kernel: ralink_wifi: smallest rate adaptation interval for decrease packets drop at high interference.<br>
-35) kernel: ralink_wifi: prevent mode dropdown to CCK in pure OFDM modes.<br>
-36) kernel: ralink_wifi: sanity check for apd daemon ioctl.<br>
-37) kernel: ralink_wifi: prevent some potentional null pointer dereferences.<br>
-38) kernel: ralink_wifi: do not need require ACK for probe requests.<br>
-39) kernel: ralink_wifi: update regional channel lists.<br>
-40) kernel: ralink_wifi: rrm: fix Voice Enterprise : Item V-E-4.3, case2 still need to include the SSID sub filed even SsidLen is 0.<br>
-41) kernel: ralink_wifi: rrm: send rrm report from managment ring.<br>
-42) kernel: ralink_wifi: rrm: fix report if auto channel select use.<br>
-43) kernel: ralink_wifi: rrm: fix padding/limit ie ext cap.<br>
-44) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
-45) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
-46) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
-47) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
-48) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
-49) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
-50) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
-51) kernel: softirq: let ksoftirqd do its job.<br>
-52) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-53) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-54) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
-55) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
-56) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
-57) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
-58) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
-59) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
-60) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
-61) kernel: asm-generic: make get_user() clear the destination on errors.<br>
-62) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-63) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-64) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-65) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
-66) kernel: mips: squash lines for simple wrapper functions.<br>
-67) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
-68) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
-69) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
-70) kernel: mips: use struct list_head lists.<br>
-71) kernel: mips: pci: make pcibios_set_cache_line_size an initcall.<br>
-72) kernel: mips: pci: inline pcibios_assign_all_busses.<br>
-73) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-74) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-75) kernel: net: fix sk_mem_reclaim_partial().<br>
-76) kernel: net: avoid sk_forward_alloc overflows.<br>
-77) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-78) kernel: net: packet: tx timestamping on tpacket ring.<br>
-79) kernel: net: socket: move ktime2ts to ktime header api.<br>
+13) libmicrohttpd: up to 0.9.51 version.<br>
+14) libcurl: up to 7.50.3 version.<br>
+15) libcurl: fix build with openssl and zlib support.<br>
+16) busybox: ash: in heredoc code, fix access past the end of allocated memory. Closes 9276.<br>
+17) goahead: implement vlan page and switch status refactoring.<br>
+18) goahead: webui: fix TV/SIP ports with vlans configured.<br>
+19) goahead: webui: rework vpn server page.<br>
+20) goahead: webui: add profile for hotspot.ots-net.ru in chillipage.<br>
+21) goahead: webui: add radius server page.<br>
+22) init.d: split set_vlan_map to set_port_vlan_prio_map and set_vlan_ingress_prio_map functions.<br>
+23) init.d: coova-chilli: setup clients for /32 network (client2client traffic isolate).<br>
+24) init.d: split sip/tv vlans logic, prevent create unused vlan bridges.<br>
+25) init.d: add qos prio for vlan based tv/sip ports.<br>
+26) init.d: write logic for radiusd user managment.<br>
+27) init.d: radiusd: try reload configs without full restart if possible.<br>
+28) cli: add report mode for easy remote get and parse info.<br>
+29) kernel: ralink_arch: pci: refactoring PCR code.<br>
+30) kernel: ralink_spi: use last stub item if flash chip not recognized.<br>
+31) kernel: ralink_spi: increase rwfs partsize to 640Kb for 8Mb flash devices and 1Mb for 16/32Mb flash devices.<br>
+32) kernel: ralink_raeth: fix lost disable EEE for 7350 gsw on link down.<br>
+33) kernel: ralink_wifi: disallow fallback per default.<br>
+34) kernel: ralink_wifi: decrase optimistic rate TrainUP (more interference immunity).<br>
+35) kernel: ralink_wifi: smallest rate adaptation interval for decrease packets drop at high interference.<br>
+36) kernel: ralink_wifi: prevent mode dropdown to CCK in pure OFDM modes.<br>
+37) kernel: ralink_wifi: sanity check for apd daemon ioctl.<br>
+38) kernel: ralink_wifi: prevent some potentional null pointer dereferences.<br>
+39) kernel: ralink_wifi: do not need require ACK for probe requests.<br>
+40) kernel: ralink_wifi: update regional channel lists.<br>
+41) kernel: ralink_wifi: rrm: fix Voice Enterprise : Item V-E-4.3, case2 still need to include the SSID sub filed even SsidLen is 0.<br>
+42) kernel: ralink_wifi: rrm: send rrm report from managment ring.<br>
+43) kernel: ralink_wifi: rrm: fix report if auto channel select use.<br>
+44) kernel: ralink_wifi: rrm: fix padding/limit ie ext cap.<br>
+45) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+46) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
+47) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
+48) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
+49) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
+50) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+51) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
+52) kernel: softirq: let ksoftirqd do its job.<br>
+53) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+54) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+55) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
+56) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
+57) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
+58) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
+59) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
+60) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
+61) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
+62) kernel: asm-generic: make get_user() clear the destination on errors.<br>
+63) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+64) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+65) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+66) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
+67) kernel: mips: squash lines for simple wrapper functions.<br>
+68) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
+69) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
+70) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
+71) kernel: mips: use struct list_head lists.<br>
+72) kernel: mips: pci: make pcibios_set_cache_line_size an initcall.<br>
+73) kernel: mips: pci: inline pcibios_assign_all_busses.<br>
+74) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+75) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+76) kernel: net: fix sk_mem_reclaim_partial().<br>
+77) kernel: net: avoid sk_forward_alloc overflows.<br>
+78) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+79) kernel: net: packet: tx timestamping on tpacket ring.<br>
+90) kernel: net: socket: move ktime2ts to ktime header api.<br>
 <br>
 <br>
 <br>

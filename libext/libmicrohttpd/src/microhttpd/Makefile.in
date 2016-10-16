@@ -102,9 +102,9 @@ host_triplet = @host@
 @ENABLE_HTTPS_TRUE@am__append_11 = \
 @ENABLE_HTTPS_TRUE@  connection_https.c connection_https.h
 
-check_PROGRAMS = test_shutdown_select$(EXEEXT) \
-	test_shutdown_poll$(EXEEXT) test_daemon$(EXEEXT) \
-	$(am__EXEEXT_1)
+check_PROGRAMS = test_str_compare$(EXEEXT) test_str_to_value$(EXEEXT) \
+	test_shutdown_select$(EXEEXT) test_shutdown_poll$(EXEEXT) \
+	test_daemon$(EXEEXT) $(am__EXEEXT_1)
 @HAVE_POSTPROCESSOR_TRUE@am__append_12 = \
 @HAVE_POSTPROCESSOR_TRUE@  test_postprocessor \
 @HAVE_POSTPROCESSOR_TRUE@  test_postprocessor_large \
@@ -167,11 +167,14 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
+libmicrohttpd_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__append_5)
 am__libmicrohttpd_la_SOURCES_DIST = connection.c connection.h \
 	reason_phrase.c daemon.c internal.c internal.h memorypool.c \
 	memorypool.h mhd_mono_clock.c mhd_mono_clock.h mhd_limits.h \
 	mhd_byteorder.h sysfdsetsize.c sysfdsetsize.h mhd_str.c \
-	mhd_str.h response.c response.h tsearch.c tsearch.h \
+	mhd_str.h mhd_threads.c mhd_threads.h mhd_locks.h \
+	mhd_sockets.c mhd_sockets.h mhd_itc.c mhd_itc.h mhd_compat.c \
+	mhd_compat.h response.c response.h tsearch.c tsearch.h \
 	postprocessor.c digestauth.c md5.c md5.h basicauth.c base64.c \
 	base64.h connection_https.c connection_https.h
 @HAVE_TSEARCH_FALSE@am__objects_1 = libmicrohttpd_la-tsearch.lo
@@ -188,8 +191,11 @@ am_libmicrohttpd_la_OBJECTS = libmicrohttpd_la-connection.lo \
 	libmicrohttpd_la-internal.lo libmicrohttpd_la-memorypool.lo \
 	libmicrohttpd_la-mhd_mono_clock.lo \
 	libmicrohttpd_la-sysfdsetsize.lo libmicrohttpd_la-mhd_str.lo \
-	libmicrohttpd_la-response.lo $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5)
+	libmicrohttpd_la-mhd_threads.lo \
+	libmicrohttpd_la-mhd_sockets.lo libmicrohttpd_la-mhd_itc.lo \
+	libmicrohttpd_la-mhd_compat.lo libmicrohttpd_la-response.lo \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5)
 libmicrohttpd_la_OBJECTS = $(am_libmicrohttpd_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -210,7 +216,7 @@ am_test_postprocessor_OBJECTS =  \
 	test_postprocessor-test_postprocessor.$(OBJEXT)
 test_postprocessor_OBJECTS = $(am_test_postprocessor_OBJECTS)
 test_postprocessor_DEPENDENCIES =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la $(MHD_W32_LIB)
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_postprocessor_amp_OBJECTS =  \
 	test_postprocessor_amp-test_postprocessor_amp.$(OBJEXT)
 test_postprocessor_amp_OBJECTS = $(am_test_postprocessor_amp_OBJECTS)
@@ -221,7 +227,7 @@ am_test_postprocessor_large_OBJECTS =  \
 test_postprocessor_large_OBJECTS =  \
 	$(am_test_postprocessor_large_OBJECTS)
 test_postprocessor_large_DEPENDENCIES =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la $(MHD_W32_LIB)
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_shutdown_poll_OBJECTS =  \
 	test_shutdown_poll-test_shutdown_select.$(OBJEXT)
 test_shutdown_poll_OBJECTS = $(am_test_shutdown_poll_OBJECTS)
@@ -240,6 +246,12 @@ test_shutdown_select_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_shutdown_select_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am_test_str_compare_OBJECTS = test_str.$(OBJEXT) mhd_str.$(OBJEXT)
+test_str_compare_OBJECTS = $(am_test_str_compare_OBJECTS)
+test_str_compare_LDADD = $(LDADD)
+am_test_str_to_value_OBJECTS = test_str.$(OBJEXT) mhd_str.$(OBJEXT)
+test_str_to_value_OBJECTS = $(am_test_str_to_value_OBJECTS)
+test_str_to_value_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -278,12 +290,14 @@ SOURCES = $(libmicrohttpd_la_SOURCES) $(test_daemon_SOURCES) \
 	$(test_postprocessor_SOURCES) \
 	$(test_postprocessor_amp_SOURCES) \
 	$(test_postprocessor_large_SOURCES) \
-	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES)
+	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES) \
+	$(test_str_compare_SOURCES) $(test_str_to_value_SOURCES)
 DIST_SOURCES = $(am__libmicrohttpd_la_SOURCES_DIST) \
 	$(test_daemon_SOURCES) $(test_postprocessor_SOURCES) \
 	$(test_postprocessor_amp_SOURCES) \
 	$(test_postprocessor_large_SOURCES) \
-	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES)
+	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES) \
+	$(test_str_compare_SOURCES) $(test_str_to_value_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -647,7 +661,6 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/microhttpd
 
 AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS) $(am__append_6)
-@HAVE_W32_TRUE@MHD_W32_LIB = $(top_builddir)/src/platform/libplatform_interface.la
 lib_LTLIBRARIES = \
   libmicrohttpd.la
 
@@ -658,9 +671,11 @@ MOSTLYCLEANFILES = $(am__append_2) $(am__append_4)
 libmicrohttpd_la_SOURCES = connection.c connection.h reason_phrase.c \
 	daemon.c internal.c internal.h memorypool.c memorypool.h \
 	mhd_mono_clock.c mhd_mono_clock.h mhd_limits.h mhd_byteorder.h \
-	sysfdsetsize.c sysfdsetsize.h mhd_str.c mhd_str.h response.c \
-	response.h $(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11)
+	sysfdsetsize.c sysfdsetsize.h mhd_str.c mhd_str.h \
+	mhd_threads.c mhd_threads.h mhd_locks.h mhd_sockets.c \
+	mhd_sockets.h mhd_itc.c mhd_itc.h mhd_compat.c mhd_compat.h \
+	response.c response.h $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11)
 libmicrohttpd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) $(MHD_LIB_CPPFLAGS) \
   -DBUILDING_MHD_LIB=1
@@ -673,11 +688,7 @@ libmicrohttpd_la_LDFLAGS = \
   $(W32_MHD_LIB_LDFLAGS) \
   -version-info @LIB_VERSION_CURRENT@:@LIB_VERSION_REVISION@:@LIB_VERSION_AGE@
 
-libmicrohttpd_la_LIBADD = $(MHD_W32_LIB) $(MHD_LIBDEPS) \
-	$(am__append_5)
-libmicrohttpd_la_DEPENDENCIES = \
-  $(MHD_W32_LIB)
-
+libmicrohttpd_la_LIBADD = $(MHD_LIBDEPS) $(am__append_5)
 @HAVE_W32_TRUE@MHD_DLL_RES_SRC = microhttpd_dll_res.rc
 @HAVE_W32_TRUE@MHD_DLL_RES_LO = libmicrohttpd_la-$(MHD_DLL_RES_SRC:.rc=.lo)
 @HAVE_W32_TRUE@EXTRA_libmicrohttpd_la_DEPENDENCIES = $(MHD_DLL_RES_LO)
@@ -695,8 +706,7 @@ test_postprocessor_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
 
 test_postprocessor_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
-  $(MHD_W32_LIB)
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_postprocessor_amp_SOURCES = \
   test_postprocessor_amp.c
@@ -714,8 +724,7 @@ test_postprocessor_large_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
 
 test_postprocessor_large_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
-  $(MHD_W32_LIB)
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_shutdown_select_SOURCES = \
   test_shutdown_select.c
@@ -727,13 +736,19 @@ test_shutdown_select_SOURCES = \
 @USE_POSIX_THREADS_TRUE@  $(PTHREAD_LIBS)
 
 test_shutdown_poll_SOURCES = \
-  test_shutdown_select.c
+  test_shutdown_select.c mhd_threads.h
 
 @USE_POSIX_THREADS_TRUE@test_shutdown_poll_CFLAGS = \
 @USE_POSIX_THREADS_TRUE@  $(AM_CFLAGS) $(PTHREAD_CFLAGS)
 
 @USE_POSIX_THREADS_TRUE@test_shutdown_poll_LDADD = \
 @USE_POSIX_THREADS_TRUE@  $(PTHREAD_LIBS)
+
+test_str_compare_SOURCES = \
+  test_str.c test_helpers.h mhd_str.c
+
+test_str_to_value_SOURCES = \
+  test_str.c test_helpers.h mhd_str.c
 
 all: all-am
 
@@ -843,6 +858,14 @@ test_shutdown_select$(EXEEXT): $(test_shutdown_select_OBJECTS) $(test_shutdown_s
 	@rm -f test_shutdown_select$(EXEEXT)
 	$(AM_V_CCLD)$(test_shutdown_select_LINK) $(test_shutdown_select_OBJECTS) $(test_shutdown_select_LDADD) $(LIBS)
 
+test_str_compare$(EXEEXT): $(test_str_compare_OBJECTS) $(test_str_compare_DEPENDENCIES) $(EXTRA_test_str_compare_DEPENDENCIES) 
+	@rm -f test_str_compare$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_str_compare_OBJECTS) $(test_str_compare_LDADD) $(LIBS)
+
+test_str_to_value$(EXEEXT): $(test_str_to_value_OBJECTS) $(test_str_to_value_DEPENDENCIES) $(EXTRA_test_str_to_value_DEPENDENCIES) 
+	@rm -f test_str_to_value$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_str_to_value_OBJECTS) $(test_str_to_value_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -858,19 +881,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-internal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-md5.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-memorypool.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_compat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_itc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_mono_clock.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_sockets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_str.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-mhd_threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-postprocessor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-reason_phrase.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-response.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-sysfdsetsize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-tsearch.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mhd_str.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_daemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor-test_postprocessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_shutdown_poll-test_shutdown_select.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_shutdown_select-test_shutdown_select.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -951,6 +980,34 @@ libmicrohttpd_la-mhd_str.lo: mhd_str.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_str.c' object='libmicrohttpd_la-mhd_str.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_str.lo `test -f 'mhd_str.c' || echo '$(srcdir)/'`mhd_str.c
+
+libmicrohttpd_la-mhd_threads.lo: mhd_threads.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-mhd_threads.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-mhd_threads.Tpo -c -o libmicrohttpd_la-mhd_threads.lo `test -f 'mhd_threads.c' || echo '$(srcdir)/'`mhd_threads.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-mhd_threads.Tpo $(DEPDIR)/libmicrohttpd_la-mhd_threads.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_threads.c' object='libmicrohttpd_la-mhd_threads.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_threads.lo `test -f 'mhd_threads.c' || echo '$(srcdir)/'`mhd_threads.c
+
+libmicrohttpd_la-mhd_sockets.lo: mhd_sockets.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-mhd_sockets.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-mhd_sockets.Tpo -c -o libmicrohttpd_la-mhd_sockets.lo `test -f 'mhd_sockets.c' || echo '$(srcdir)/'`mhd_sockets.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-mhd_sockets.Tpo $(DEPDIR)/libmicrohttpd_la-mhd_sockets.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_sockets.c' object='libmicrohttpd_la-mhd_sockets.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_sockets.lo `test -f 'mhd_sockets.c' || echo '$(srcdir)/'`mhd_sockets.c
+
+libmicrohttpd_la-mhd_itc.lo: mhd_itc.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-mhd_itc.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-mhd_itc.Tpo -c -o libmicrohttpd_la-mhd_itc.lo `test -f 'mhd_itc.c' || echo '$(srcdir)/'`mhd_itc.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-mhd_itc.Tpo $(DEPDIR)/libmicrohttpd_la-mhd_itc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_itc.c' object='libmicrohttpd_la-mhd_itc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_itc.lo `test -f 'mhd_itc.c' || echo '$(srcdir)/'`mhd_itc.c
+
+libmicrohttpd_la-mhd_compat.lo: mhd_compat.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-mhd_compat.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-mhd_compat.Tpo -c -o libmicrohttpd_la-mhd_compat.lo `test -f 'mhd_compat.c' || echo '$(srcdir)/'`mhd_compat.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-mhd_compat.Tpo $(DEPDIR)/libmicrohttpd_la-mhd_compat.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_compat.c' object='libmicrohttpd_la-mhd_compat.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_compat.lo `test -f 'mhd_compat.c' || echo '$(srcdir)/'`mhd_compat.c
 
 libmicrohttpd_la-response.lo: response.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-response.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-response.Tpo -c -o libmicrohttpd_la-response.lo `test -f 'response.c' || echo '$(srcdir)/'`response.c
@@ -1277,6 +1334,20 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+test_str_compare.log: test_str_compare$(EXEEXT)
+	@p='test_str_compare$(EXEEXT)'; \
+	b='test_str_compare'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_str_to_value.log: test_str_to_value$(EXEEXT)
+	@p='test_str_to_value$(EXEEXT)'; \
+	b='test_str_to_value'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test_shutdown_select.log: test_shutdown_select$(EXEEXT)
 	@p='test_shutdown_select$(EXEEXT)'; \
 	b='test_shutdown_select'; \

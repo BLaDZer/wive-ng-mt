@@ -32,28 +32,56 @@
 #include <limits.h>
 #endif /* HAVE_LIMITS_H */
 
+#ifndef UINT_MAX
+#ifdef __UINT_MAX__
+#define UINT_MAX __UINT_MAX__
+#else  /* ! __UINT_MAX__ */
+#define UINT_MAX ((unsigned int) ~((unsigned int)0))
+#endif /* ! __UINT_MAX__ */
+#endif /* !UINT_MAX */
+
 #ifndef LONG_MAX
+#ifdef __LONG_MAX__
+#define LONG_MAX __LONG_MAX__
+#else  /* ! __LONG_MAX__ */
 #define LONG_MAX ((long) ~(((uint64_t) 1) << (8 * sizeof(long) - 1)))
+#endif /* ! __LONG_MAX__ */
 #endif /* !OFF_T_MAX */
 
 #ifndef ULLONG_MAX
-#define ((MHD_UNSIGNED_LONG_LONG) ~((MHD_UNSIGNED_LONG_LONG)0))
+#define ULLONG_MAX ((MHD_UNSIGNED_LONG_LONG) ~((MHD_UNSIGNED_LONG_LONG)0))
 #endif /* !ULLONG_MAX */
 
 #ifndef INT32_MAX
+#ifdef __INT32_MAX__
+#define INT32_MAX __INT32_MAX__
+#else  /* ! __INT32_MAX__ */
 #define INT32_MAX ((int32_t)0x7FFFFFFF)
+#endif /* ! __INT32_MAX__ */
 #endif /* !INT32_MAX */
 
 #ifndef UINT32_MAX
+#ifdef __UINT32_MAX__
+#define UINT32_MAX __UINT32_MAX__
+#else  /* ! __UINT32_MAX__ */
 #define UINT32_MAX ((int32_t)0xFFFFFFFF)
-#endif /* !INT32_MAX */
+#endif /* ! __UINT32_MAX__ */
+#endif /* !UNT32_MAX */
 
 #ifndef UINT64_MAX
+#ifdef __UINT64_MAX__
+#define UINT64_MAX __UINT64_MAX__
+#else  /* ! __UINT64_MAX__ */
 #define UINT64_MAX ((uint64_t)0xFFFFFFFFFFFFFFFF)
+#endif /* ! __UINT64_MAX__ */
 #endif /* !INT32_MAX */
 
 #ifndef SIZE_MAX
+#ifdef __SIZE_MAX__
+#define SIZE_MAX __SIZE_MAX__
+#else  /* ! __SIZE_MAX__ */
 #define SIZE_MAX ((size_t) ~((size_t)0))
+#endif /* ! __SIZE_MAX__ */ 
 #endif /* !SIZE_MAX */
 
 #ifndef OFF_T_MAX

@@ -241,6 +241,7 @@ MHD_pool_reallocate (struct MemoryPool *pool,
     {
       /* fits */
       ret = &pool->memory[pool->pos];
+      if (0 != old_size)
       memmove (ret, old, old_size);
       pool->pos += asize;
       return ret;
@@ -273,6 +274,7 @@ MHD_pool_reset (struct MemoryPool *pool,
     {
       if (keep != pool->memory)
         {
+          if (0 != copy_bytes)
           memmove (pool->memory,
                    keep,
                    copy_bytes);
@@ -281,6 +283,7 @@ MHD_pool_reset (struct MemoryPool *pool,
     }
   pool->end = pool->size;
   /* technically not needed, but safer to zero out */
+  if (pool->size > copy_bytes)
   memset (&pool->memory[copy_bytes],
 	  0,
 	  pool->size - copy_bytes);

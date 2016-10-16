@@ -22,15 +22,15 @@
 #
 AC_PREREQ([2.60])
 LT_PREREQ([2.4.0])
-AC_INIT([libmicrohttpd],[0.9.50],[libmicrohttpd@gnu.org])
+AC_INIT([libmicrohttpd],[0.9.51],[libmicrohttpd@gnu.org])
 AM_INIT_AUTOMAKE([silent-rules] [subdir-objects])
 AC_CONFIG_HEADERS([MHD_config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AH_TOP([#define _GNU_SOURCE  1])
+AC_DEFINE([[_GNU_SOURCE]], [[1]], [Enable GNU-specific header features])
 
-LIB_VERSION_CURRENT=50
+LIB_VERSION_CURRENT=51
 LIB_VERSION_REVISION=0
-LIB_VERSION_AGE=38
+LIB_VERSION_AGE=39
 AC_SUBST(LIB_VERSION_CURRENT)
 AC_SUBST(LIB_VERSION_REVISION)
 AC_SUBST(LIB_VERSION_AGE)
@@ -100,18 +100,29 @@ AC_CHECK_TYPE([_Bool],
       ]])
   ])
 
+AX_CHECK_COMPILE_FLAG([[-Werror=attributes]], 
+                      [[errattr_CFLAGS="-Werror=attributes"]],
+                      [[errattr_CFLAGS=""]], [], [])
 AC_MSG_CHECKING([[for function inline keywords suppoted by $CC]])
 save_CFLAGS="$CFLAGS"
-AX_APPEND_FLAG([[-Werror=attributes]])
+CFLAGS="$CFLAGS $errattr_CFLAGS"
 inln_prfx="none"
 # Prefer always inline functions
-for inln_prfx_chk in "inline __attribute__((always_inline))" __forceinline inline __inline__ __inline _inline _Inline; do
+for inln_prfx_chk in InlineWithAttr __forceinline inline __inline__ __inline _inline _Inline; do
   # Try to link to avoid "symbol undefined" problems at build time
+  AS_IF([[test "x$inln_prfx_chk" = "xInlineWithAttr"]],
+    [
+     AS_IF([[test "x$errattr_CFLAGS" = "x"]],
+       [[ # Skip test with attribute as negative result can't be detected
+          inln_prfx_chk="__forceinline" # use next value
+       ]],[[inln_prfx_chk="inline __attribute__((always_inline))"]])
+    ])
   AC_LINK_IFELSE(
     [
      AC_LANG_PROGRAM(
        [[
          #ifdef __cplusplus
+#error This test is only for C.
          choke me
          #endif
          #ifdef HAVE_STDBOOL_H
@@ -132,7 +143,7 @@ for inln_prfx_chk in "inline __attribute__((always_inline))" __forceinline inlin
     [[ inln_prfx="$inln_prfx_chk" ]])
   test "x$inln_prfx" != "xnone" && break
 done
-AS_IF([[test "x$ac_cv_c_inline" != "xnone"]],
+AS_IF([[test "x$inln_prfx" != "xnone"]],
       [
        AC_DEFINE([INLINE_FUNC],[1],[Define to 1 if your C compiler supports inline functions.])
        AC_DEFINE_UNQUOTED([_MHD_inline],[static $inln_prfx],[Define to prefix which will be used with MHD inline functions.])
@@ -167,6 +178,7 @@ netbsd*)
      AC_DEFINE_UNQUOTED(SOMEBSD,1,[This is a BSD system])
      AC_DEFINE_UNQUOTED(NETBSD,1,[This is a NetBSD system])
      mhd_host_os='NetBSD'
+     shutdown_trig_select='yes'
      AC_MSG_RESULT([[$mhd_host_os]])
      ;;
 *solaris*)
@@ -246,7 +258,11 @@ test "x$with_threads" = "xpthreads" && with_threads='posix'
 
 # Check for posix threads support, regardless of configure parameters as
 # posix threads are used in some tests even on W32.
-AX_PTHREAD([HAVE_POSIX_THREADS='yes'],[HAVE_POSIX_THREADS='no'])
+AX_PTHREAD(
+  [
+    HAVE_POSIX_THREADS='yes'
+    AC_DEFINE([[HAVE_PTHREAD_H]],[[1]],[Define to 1 if you have the <pthread.h> header file.])
+  ],[[HAVE_POSIX_THREADS='no']])
 AM_CONDITIONAL([HAVE_POSIX_THREADS],[test "x$HAVE_POSIX_THREADS" = "xyes"])
 
 HAVE_W32_THREADS='no'
@@ -297,6 +313,142 @@ AM_CONDITIONAL([USE_POSIX_THREADS], [test "x$USE_THREADS" = "xposix"])
 AM_CONDITIONAL([USE_W32_THREADS], [test "x$USE_THREADS" = "xw32"])
 AC_MSG_RESULT([[$USE_THREADS]])
 
+AC_ARG_ENABLE([[thread-names]],
+   [AS_HELP_STRING([--disable-thread-names [auto] ],[do not set names on MHD generated threads])],
+   [], [enable_thread_names='auto'])
+
+if test "x$enable_thread_names" != "xno" && test "x$USE_THREADS" = "xposix"; then
+  # Check for thread name function
+  HAVE_THREAD_NAME_FUNC="no"
+  SAVE_LIBS="$LIBS"
+  SAVE_CFLAGS="$CFLAGS"
+  LIBS="$PTHREAD_LIBS $LIBS"
+  CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+  AC_CHECK_HEADERS([pthread_np.h])
+
+  # If pthread_setname_np(3) is not declared, it's not possible to detect
+  # form of pthread_setname_np(3) due to C "feature" "implicit declaration".
+  AC_CHECK_DECL([[pthread_setname_np]],[],[],[[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]])
+
+  AS_IF([[test "x$ac_cv_have_decl_pthread_setname_np" = "xyes"]],
+    [AC_MSG_CHECKING([[for pthread_setname_np(3) in NetBSD or OSF1 form]])
+     AC_LINK_IFELSE(
+      [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[int res = pthread_setname_np(pthread_self(), "name", 0);]])],
+        [AC_DEFINE([[HAVE_PTHREAD_SETNAME_NP_NETBSD]], [[1]], [Define if you have NetBSD form (or OSF1 form) of pthread_setname_np(3) function.])
+         HAVE_THREAD_NAME_FUNC="yes"
+         AC_MSG_RESULT([[yes]])],
+        [AC_MSG_RESULT([[no]])]
+        )
+    ])
+
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes" && test "x$ac_cv_have_decl_pthread_setname_np" = "xyes"]],
+    [AC_MSG_CHECKING([[for pthread_setname_np(3) in GNU/Linux form]])
+     AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[int res = pthread_setname_np(pthread_self(), "name");]])],
+        [AC_DEFINE([[HAVE_PTHREAD_SETNAME_NP_GNU]], [[1]], [Define if you have GNU/Linux form of pthread_setname_np(3) function.])
+         HAVE_THREAD_NAME_FUNC="yes"
+         AC_MSG_RESULT([[yes]])],
+        [AC_MSG_RESULT([[no]])]
+        )
+    ])
+
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes" && test "x$ac_cv_have_decl_pthread_setname_np" = "xyes"]],
+    [AC_MSG_CHECKING([[for pthread_setname_np(3) in Darwin form]])
+     AC_LINK_IFELSE(
+       [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[int res = pthread_setname_np("name");]])],
+        [AC_DEFINE([[HAVE_PTHREAD_SETNAME_NP_DARWIN]], [[1]], [Define if you have Darwin form of pthread_setname_np(3) function.])
+         HAVE_THREAD_NAME_FUNC="yes"
+         AC_MSG_RESULT([[yes]])],
+        [AC_MSG_RESULT([[no]])]
+        )
+    ])
+
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes"]],
+    [
+     AC_CHECK_DECL([[pthread_setname_np]],
+       [
+        AC_MSG_CHECKING([[for pthread_set_name_np(3) in FreeBSD form]])
+        AC_LINK_IFELSE(
+          [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[pthread_set_name_np(pthread_self(), "name");]])],
+          [AC_DEFINE([[HAVE_PTHREAD_SET_NAME_NP_FREEBSD]], [[1]], [Define if you have FreeBSD form of pthread_set_name_np(3) function.])
+           HAVE_THREAD_NAME_FUNC="yes"
+           AC_MSG_RESULT([[yes]])],
+          [AC_MSG_RESULT([[no]])]
+          )
+       ],[],[[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+       ]]
+     )
+    ])
+
+  LIBS="$SAVE_LIBS"
+  CFLAGS="$SAVE_CFLAGS"
+fi
+
+AS_IF(
+  [[test "x$enable_thread_names" != "xno"]],
+  [
+    AC_MSG_CHECKING([[whether to enable thread names]])
+    AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM([], [[
+#ifdef MHD_NO_THREAD_NAMES
+#error Thread names are disabled.
+choke me
+#endif
+
+/* Keep in sync with mhd_threads.h */
+#if defined(MHD_USE_POSIX_THREADS) && (defined(HAVE_PTHREAD_SETNAME_NP_GNU) || defined(HAVE_PTHREAD_SET_NAME_NP_FREEBSD) || defined(HAVE_PTHREAD_SETNAME_NP_DARWIN) || defined(HAVE_PTHREAD_SETNAME_NP_NETBSD) )
+int a = 1;
+#elif defined(MHD_USE_W32_THREADS) && defined(_MSC_FULL_VER)
+int b = 2;
+#else
+#error No thread name function is available.
+choke me
+#endif
+       ]])
+     ], [
+       enable_thread_names='yes'
+     ], [
+       AS_IF([[test "x$enable_thread_names" = "xyes"]],
+         [
+           AC_MSG_RESULT([[no]])
+           AC_MSG_ERROR([[thread names was explicitly requested, but thread name function is not available]])
+         ])
+       enable_thread_names='no'
+     ])
+  AC_MSG_RESULT([[$enable_thread_names]])
+  ])
+
+AS_IF([[test "x$enable_thread_names" = "xno"]],
+  [AC_DEFINE([[MHD_NO_THREAD_NAMES]], [[1]], [Define to 1 to disable setting name on generated threads])])
 
 AM_CONDITIONAL(HAVE_W32, [test "x$os_is_native_w32" = "xyes"])
 w32_shared_lib_exp=no
@@ -377,10 +529,9 @@ AC_ARG_ENABLE([[epoll]],
 if test "$enable_epoll" != "no"; then
   AX_HAVE_EPOLL
   if test "${ax_cv_have_epoll}" = "yes"; then
-    AC_DEFINE([EPOLL_SUPPORT],[1],[define to 1 to enable epoll support])
+    AC_DEFINE([[EPOLL_SUPPORT]],[[1]],[Define to 1 to enable epoll support])
     enable_epoll='yes'
   else
-    AC_DEFINE([EPOLL_SUPPORT],[0],[define to 0 to disable epoll support])
     if test "$enable_epoll" = "yes"; then
       AC_MSG_ERROR([[Support for epoll was explicitly requested but cannot be enabled on this platform.]])
     fi
@@ -400,28 +551,18 @@ fd = epoll_create1(EPOLL_CLOEXEC);]])],
     AC_DEFINE([[HAVE_EPOLL_CREATE1]], [[1]], [Define if you have epoll_create1 function.])])
 fi
 
-if test "x$HAVE_POSIX_THREADS" = "xyes"; then
-  # Check for pthread_setname_np()
-  SAVE_LIBS="$LIBS"
-  SAVE_CFLAGS="$CFLAGS"
-  LIBS="$PTHREAD_LIBS $LIBS"
-  CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-  AC_MSG_CHECKING([[for pthread_setname_np]])
-  AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM([[#include <pthread.h>]], [[  pthread_setname_np(pthread_self(), "name")]])],
-    [AC_DEFINE([[HAVE_PTHREAD_SETNAME_NP]], [[1]], [Define if you have pthread_setname_np function.])
-     AC_MSG_RESULT([[yes]])],
-    [AC_MSG_RESULT([[no]])] )
-  LIBS="$SAVE_LIBS"
-  CFLAGS="$SAVE_CFLAGS"
-fi
-
 # Check for headers that are ALWAYS required
-AC_CHECK_HEADERS([fcntl.h math.h errno.h limits.h stdio.h locale.h sys/stat.h sys/types.h pthread.h],,AC_MSG_ERROR([Compiling libmicrohttpd requires standard UNIX headers files]))
+AC_CHECK_HEADERS([fcntl.h math.h errno.h limits.h stdio.h locale.h sys/stat.h sys/types.h],,AC_MSG_ERROR([Compiling libmicrohttpd requires standard UNIX headers files]))
 
 # Check for optional headers
-AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h netdb.h netinet/in.h netinet/tcp.h time.h sys/socket.h sys/mman.h arpa/inet.h sys/select.h search.h endian.h machine/endian.h sys/endian.h sys/param.h sys/machine.h sys/byteorder.h machine/param.h sys/isa_defs.h])
+AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h netdb.h netinet/in.h netinet/tcp.h time.h sys/socket.h sys/mman.h arpa/inet.h sys/select.h search.h \
+  endian.h machine/endian.h sys/endian.h sys/param.h sys/machine.h sys/byteorder.h machine/param.h sys/isa_defs.h \
+  inttypes.h stddef.h unistd.h \
+  sockLib.h inetLib.h net/if.h])
 AM_CONDITIONAL([HAVE_TSEARCH], [test "x$ac_cv_header_search_h" = "xyes"])
+
+# Check for generic functions
+AC_CHECK_FUNCS([rand random])
 
 AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
    [ AC_DEFINE(HAVE_SOCKADDR_IN_SIN_LEN, 1, [Do we have sockaddr_in.sin_len?])
@@ -488,7 +629,8 @@ AC_CHECK_DECL([gmtime_s],
     AC_MSG_CHECKING([[whether gmtime_s is in C11 form]])
     AC_LINK_IFELSE(
         [ AC_LANG_PROGRAM(
-          [[ #define __STDC_WANT_LIB_EXT1__ 1
+          [[
+#define __STDC_WANT_LIB_EXT1__ 1
              #include <time.h>
              #ifdef __cplusplus
              extern "C"
@@ -509,7 +651,8 @@ AC_CHECK_DECL([gmtime_s],
           AC_MSG_CHECKING([[whether gmtime_s is in W32 form]])
           AC_LINK_IFELSE(
             [ AC_LANG_PROGRAM(
-              [[ #include <time.h>
+              [[
+#include <time.h>
                  #ifdef __cplusplus
                  extern "C"
                  #endif
@@ -534,12 +677,12 @@ AC_CHECK_DECL([gmtime_s],
 
 AC_CHECK_DECLS([SOCK_NONBLOCK], [AC_DEFINE([HAVE_SOCK_NONBLOCK], [1], [SOCK_NONBLOCK is defined in a socket header])], [],
                    [
-                    #if defined HAVE_SYS_TYPES_H
+#if defined(HAVE_SYS_TYPES_H)
                     #  include <sys/types.h>
                     #endif
-                    #if defined HAVE_SYS_SOCKET_H
+#if defined(HAVE_SYS_SOCKET_H)
                     #  include <sys/socket.h>
-                    #elif defined HAVE_WINSOCK2_H
+#elif defined(HAVE_WINSOCK2_H)
                     #  include <winsock2.h>
                     #endif
                    ])
@@ -574,7 +717,16 @@ AC_LINK_IFELSE(
 AC_MSG_CHECKING([[for gethrtime]])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
-    [[#include <sys/time.h>]], [[hrtime_t hrt = gethrtime(); ]])
+    [[
+#ifdef HAVE_SYS_TIME_H
+/* Solaris define gethrtime() in sys/time.h */
+#include <sys/time.h>
+#endif /* HAVE_SYS_TIME_H */
+#ifdef HAVE_TIME_H
+/* HP-UX define gethrtime() in time.h */
+#include <time.h>
+#endif /* HAVE_TIME_H */
+    ]], [[hrtime_t hrt = gethrtime(); ]])
   ],
   [
     AC_DEFINE([HAVE_GETHRTIME], [1], [Define to 1 if you have `gethrtime' function.])
@@ -939,7 +1091,6 @@ doc/examples/Makefile
 m4/Makefile
 src/Makefile
 src/include/Makefile
-src/platform/Makefile
 src/microhttpd/Makefile
 src/examples/Makefile
 src/testcurl/Makefile
@@ -958,6 +1109,7 @@ AC_MSG_NOTICE([libmicrohttpd ${PACKAGE_VERSION} Configuration Summary:
   Cross-compiling:   ${cross_compiling}
   Operating System:  ${host_os}
   Threading lib:     ${USE_THREADS}
+  Use thread names:  ${enable_thread_names}
   libcurl (testing): ${MSG_CURL}
   Target directory:  ${prefix}
   Messages:          ${enable_messages}
@@ -982,9 +1134,9 @@ else
 ])
 fi
 
-if test "x$enable_bauth" != "xyes" -o \
-        "x$enable_dauth" != "xyes" -o \
-        "x$enable_postprocessor" != "xyes"
+if test "x$enable_bauth" != "xyes" || \
+   test "x$enable_dauth" != "xyes" || \
+   test "x$enable_postprocessor" != "xyes"
 then
  AC_MSG_NOTICE([WARNING: This will be a custom build with missing symbols. Do NOT use this build in a distribution. Building with these kinds of configure options is only for custom builds for embedded systems.])
 fi

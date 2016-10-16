@@ -1,3 +1,62 @@
+Sat Aug 27 18:20:38 CEST 2016
+	Releasing libmicrohttpd 0.9.51. -CG
+
+Tue Aug 23 22:54:07 MSK 2016
+	Internal refactoring: W32 compatibility layer was finally
+	replaced with several specialized abstraction layers for
+	sockets, control pipes (inter-thread communication) and
+	generic functions. Now all major platform functions
+	(including threads and mutex) are implemented in thin
+	abstraction layers.
+	Improved performance on W32 due to eliminating
+	translation of error to POSIX codes and using W32 codes
+	directly (through macros).
+	Improved error reporting on all platforms.
+	Improved error handling and reporting on Darwin.
+	Minor fixes. -EG
+
+Tue Aug 16 15:14:30 MSK 2016
+	Minor improvement for monotonic clock.
+	Minor configure fix for non-bash shells. -EG
+
+Mon Aug 15 13:06:52 CEST 2016
+	Fixed possible crash due to write to read-only region of
+	memory given ill-formed HTTP request (write was otherwise
+	harmless, writing 0 to where there was already a 0).
+	Fixed issue with closed connection slots not immediately
+	being available again for new connections if we reached
+	our connection limit.
+	Avoid even accept()ing connections in certain thread modes
+	if we are at the connection limit and
+	MHD_USE_PIPE_FOR_SHUTDOWN is available. -CG
+
+Wed Aug 10 16:42:57 MSK 2016
+	Moved threads, locks and mutex abstraction to separate files,
+	some minor errors fixed, added support for thread name functions
+	on various platforms, added configure flag for disable thread
+	naming. -EG
+
+Sat Jul 23 20:45:51 CEST 2016
+	Added macro detection of speed/size compiler optimization.
+	Added different implementation of functions in mhd_str.c for
+	size optimization. Enabled automatically if compiler size
+	optimization is detected or MHD_FAVOR_SMALL_CODE is defined.
+	Added unit tests for all mhd_str.c functions. -EG
+
+Sat Jul 16 21:54:49 CEST 2016
+	Warn user if they sent connection into blocking
+	state by not processing all POST data, not suspending,
+	and not running in external select mode. -CG
+
+Fri Jul  8 21:35:07 CEST 2016
+	Fix FIXME in tutorial. -CG
+
+Fri Jul  8 15:57:06 CEST 2016
+	Adding support for 308 status code. -CG
+
+Sat Jun 25 13:49:31 CEST 2016
+	Use shutdown to trigger select on NetBSD. -EG
+
 Thu Jun  2 09:55:50 CEST 2016
 	Releasing libmicrohttpd 0.9.50. -CG
 

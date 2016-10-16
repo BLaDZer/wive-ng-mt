@@ -31,18 +31,9 @@
 #include "response.h"
 #include "mhd_mono_clock.h"
 #include "mhd_str.h"
-
-#if HAVE_NETINET_TCP_H
-/* for TCP_CORK */
-#include <netinet/tcp.h>
-#endif
-
-#if defined(_WIN32) && defined(MHD_W32_MUTEX_)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif /* !WIN32_LEAN_AND_MEAN */
-#include <windows.h>
-#endif /* _WIN32 && MHD_W32_MUTEX_ */
+#include "mhd_locks.h"
+#include "mhd_sockets.h"
+#include "mhd_compat.h"
 
 
 /**
@@ -155,9 +146,9 @@ socket_start_extra_buffering (struct MHD_Connection *connection)
 {
   int res = MHD_NO;
 #if defined(TCP_CORK) || defined(TCP_NOPUSH)
-  const _MHD_SOCKOPT_BOOL_TYPE on_val = 1;
+  const MHD_SCKT_OPT_BOOL_ on_val = 1;
 #if defined(TCP_NODELAY)
-  const _MHD_SOCKOPT_BOOL_TYPE off_val = 0;
+  const MHD_SCKT_OPT_BOOL_ off_val = 0;
 #endif /* TCP_NODELAY */
   if (!connection)
     return MHD_NO;
@@ -200,9 +191,9 @@ socket_start_no_buffering_flush (struct MHD_Connection *connection)
 {
 #if defined(TCP_CORK) || defined(TCP_NOPUSH)
   int res = MHD_YES;
-  const _MHD_SOCKOPT_BOOL_TYPE off_val = 0;
+  const MHD_SCKT_OPT_BOOL_ off_val = 0;
 #if defined(TCP_NODELAY)
-  const _MHD_SOCKOPT_BOOL_TYPE on_val = 1;
+  const MHD_SCKT_OPT_BOOL_ on_val = 1;
 #endif /* TCP_NODELAY */
 #if !defined(TCP_CORK)
   const int dummy = 0;
@@ -246,9 +237,9 @@ socket_start_no_buffering (struct MHD_Connection *connection)
 {
 #if defined(TCP_NODELAY)
   int res = MHD_YES;
-  const _MHD_SOCKOPT_BOOL_TYPE on_val = 1;
+  const MHD_SCKT_OPT_BOOL_ on_val = 1;
 #if defined(TCP_CORK) || defined(TCP_NOPUSH)
-  const _MHD_SOCKOPT_BOOL_TYPE off_val = 0;
+  const MHD_SCKT_OPT_BOOL_ off_val = 0;
 #endif /* TCP_CORK || TCP_NOPUSH */
   if (!connection)
     return MHD_NO;
@@ -285,9 +276,9 @@ socket_start_normal_buffering (struct MHD_Connection *connection)
 {
 #if defined(TCP_NODELAY)
   int res = MHD_YES;
-  const _MHD_SOCKOPT_BOOL_TYPE off_val = 0;
+  const MHD_SCKT_OPT_BOOL_ off_val = 0;
 #if defined(TCP_CORK)
-  _MHD_SOCKOPT_BOOL_TYPE cork_val = 0;
+  MHD_SCKT_OPT_BOOL_ cork_val = 0;
   socklen_t param_size = sizeof (cork_val);
 #endif /* TCP_CORK */
   if (!connection)
@@ -489,6 +480,19 @@ MHD_connection_close_ (struct MHD_Connection *connection,
 			      &connection->client_context,
 			      termination_code);
   connection->client_aware = MHD_NO;
+
+  /* if we were at the connection limit before and are in
+     thread-per-connection mode, signal the main thread
+     to resume accepting connections */
+  if ( (0 != (daemon->options & MHD_USE_THREAD_PER_CONNECTION)) &&
+       (MHD_INVALID_PIPE_ != daemon->wpipe[1]) &&
+       (1 != MHD_pipe_write_ (daemon->wpipe[1], "c", 1)) )
+    {
+#ifdef HAVE_MESSAGES
+      MHD_DLOG (daemon,
+                "failed to signal end of connection via pipe");
+#endif
+    }
 }
 
 
@@ -1533,6 +1537,7 @@ parse_initial_message_line (struct MHD_Connection *connection,
                             size_t line_len)
 {
   struct MHD_Daemon *daemon = connection->daemon;
+  const char *curi;
   char *uri;
   char *http_version;
   char *args;
@@ -1545,16 +1550,19 @@ parse_initial_message_line (struct MHD_Connection *connection,
   uri++;
   /* Skip any spaces. Not required by standard but allow
      to be more tolerant. */
-  while (' ' == uri[0] && (size_t)(uri - line) < line_len)
+  while ( (' ' == uri[0]) &&
+          ( (size_t)(uri - line) < line_len) )
     uri++;
   if (uri - line == line_len)
     {
-      uri = "";
+      curi = "";
+      uri = NULL;
       connection->version = "";
       args = NULL;
     }
   else
     {
+      curi = uri;
       /* Search from back to accept misformed URI with space */
       http_version = line + line_len - 1;
       /* Skip any trailing spaces */
@@ -1578,7 +1586,7 @@ parse_initial_message_line (struct MHD_Connection *connection,
   if (NULL != daemon->uri_log_callback)
     connection->client_context
       = daemon->uri_log_callback (daemon->uri_log_callback_cls,
-				  uri,
+				  curi,
 				  connection);
   if (NULL != args)
     {
@@ -1591,10 +1599,11 @@ parse_initial_message_line (struct MHD_Connection *connection,
 			    &connection_add_header,
 			    &unused_num_headers);
     }
+  if (NULL != uri)
   daemon->unescape_callback (daemon->unescape_callback_cls,
 			     connection,
 			     uri);
-  connection->url = uri;
+  connection->url = curi;
   return MHD_YES;
 }
 
@@ -1794,7 +1803,19 @@ process_request_body (struct MHD_Connection *connection)
 #endif
 		   );
       if (0 != processed)
+	{
         instant_retry = MHD_NO; /* client did not process everything */
+#ifdef HAVE_MESSAGES
+	  /* client did not process all POST data, complain if
+	     the setup was incorrect, which may prevent us from
+	     handling the rest of the request */
+	  if ( ( (0 != (connection->daemon->options & MHD_USE_THREAD_PER_CONNECTION)) ||
+		 (0 != (connection->daemon->options & MHD_USE_SELECT_INTERNALLY)) ) &&
+	       (MHD_NO == connection->suspended) )
+	    MHD_DLOG (connection->daemon,
+		      "WARNING: incomplete POST processing and connection not suspended will result in hung connection.\n");
+#endif
+	}
       used -= processed;
       if (connection->have_chunked_upload == MHD_YES)
         connection->current_chunk_offset += used;
@@ -1834,10 +1855,10 @@ do_read (struct MHD_Connection *connection)
                                      connection->read_buffer_offset);
   if (bytes_read < 0)
     {
-      const int err = MHD_socket_errno_;
-      if ((EINTR == err) || (EAGAIN == err) || (EWOULDBLOCK == err))
+      const int err = MHD_socket_get_error_ ();
+      if (MHD_SCKT_ERR_IS_EINTR_ (err) || MHD_SCKT_ERR_IS_EAGAIN_ (err))
 	  return MHD_NO;
-      if (ECONNRESET == err)
+      if (MHD_SCKT_ERR_IS_REMOTE_DISCNN_ (err))
         {
            CONNECTION_CLOSE_ERROR (connection, NULL);
 	   return MHD_NO;
@@ -1881,8 +1902,8 @@ do_write (struct MHD_Connection *connection)
 
   if (ret < 0)
     {
-      const int err = MHD_socket_errno_;
-      if ((EINTR == err) || (EAGAIN == err) || (EWOULDBLOCK == err))
+      const int err = MHD_socket_get_error_ ();
+      if (MHD_SCKT_ERR_IS_EINTR_ (err) || MHD_SCKT_ERR_IS_EAGAIN_ (err))
         return MHD_NO;
       CONNECTION_CLOSE_ERROR (connection, NULL);
       return MHD_YES;
@@ -2255,13 +2276,13 @@ MHD_connection_handle_write (struct MHD_Connection *connection)
                                       connection->continue_message_write_offset);
           if (ret < 0)
             {
-              const int err = MHD_socket_errno_;
-              if ((err == EINTR) || (err == EAGAIN) || (EWOULDBLOCK == err))
+              const int err = MHD_socket_get_error_ ();
+              if (MHD_SCKT_ERR_IS_EINTR_ (err) || MHD_SCKT_ERR_IS_EAGAIN_ (err))
                 break;
 #ifdef HAVE_MESSAGES
               MHD_DLOG (connection->daemon,
                         "Failed to send data: %s\n",
-                        MHD_socket_last_strerr_ ());
+                        MHD_socket_strerr_ (err));
 #endif
 	      CONNECTION_CLOSE_ERROR (connection, NULL);
               return MHD_YES;
@@ -2299,7 +2320,11 @@ MHD_connection_handle_write (struct MHD_Connection *connection)
             if (NULL != response->crc)
               (void) MHD_mutex_lock_ (&response->mutex);
             if (MHD_YES != try_ready_normal_body (connection))
+            {
+              if (NULL != response->crc)
+                (void) MHD_mutex_unlock_ (&response->mutex);
               break;
+            }
             data_write_offset = connection->response_write_position
                                 - response->data_start;
             if (data_write_offset > (uint64_t)SIZE_MAX)
@@ -2309,7 +2334,7 @@ MHD_connection_handle_write (struct MHD_Connection *connection)
                                         [(size_t)data_write_offset],
                                         response->data_size -
                                         (size_t)data_write_offset);
-            err = MHD_socket_errno_;
+            err = MHD_socket_get_error_ ();
 #if DEBUG_SEND_DATA
             if (ret > 0)
               fprintf (stderr,
@@ -2323,12 +2348,12 @@ MHD_connection_handle_write (struct MHD_Connection *connection)
               (void) MHD_mutex_unlock_ (&response->mutex);
             if (ret < 0)
               {
-                if ((err == EINTR) || (err == EAGAIN) || (EWOULDBLOCK == err))
+                if (MHD_SCKT_ERR_IS_EINTR_ (err) || MHD_SCKT_ERR_IS_EAGAIN_ (err))
                   return MHD_YES;
 #ifdef HAVE_MESSAGES
                 MHD_DLOG (connection->daemon,
                           "Failed to send data: %s\n",
-                          MHD_socket_last_strerr_ ());
+                          MHD_socket_strerr_ (err));
 #endif
                 CONNECTION_CLOSE_ERROR (connection, NULL);
                 return MHD_YES;
@@ -2400,7 +2425,7 @@ cleanup_connection (struct MHD_Connection *connection)
     }
   if (0 != (daemon->options & MHD_USE_THREAD_PER_CONNECTION))
     {
-      if (MHD_YES != MHD_mutex_lock_ (&daemon->cleanup_connection_mutex))
+      if (!MHD_mutex_lock_ (&daemon->cleanup_connection_mutex))
         MHD_PANIC ("Failed to acquire cleanup mutex\n");
     }
   else
@@ -2429,7 +2454,7 @@ cleanup_connection (struct MHD_Connection *connection)
   connection->resuming = MHD_NO;
   connection->in_idle = MHD_NO;
   if ( (0 != (daemon->options & MHD_USE_THREAD_PER_CONNECTION)) &&
-       (MHD_YES != MHD_mutex_unlock_(&daemon->cleanup_connection_mutex)) )
+       (!MHD_mutex_unlock_(&daemon->cleanup_connection_mutex)) )
     MHD_PANIC ("Failed to release cleanup mutex\n");
 }
 
@@ -2542,6 +2567,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
           if (MHD_CONNECTION_CLOSED == connection->state)
             continue;
           connection->state = MHD_CONNECTION_HEADERS_PROCESSED;
+          if (MHD_YES == connection->suspended)
+            break;
           continue;
         case MHD_CONNECTION_HEADERS_PROCESSED:
           call_connection_handler (connection); /* first call */
@@ -2570,6 +2597,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
             }
           connection->state = (0 == connection->remaining_upload_size)
             ? MHD_CONNECTION_FOOTERS_RECEIVED : MHD_CONNECTION_CONTINUE_SENT;
+          if (MHD_YES == connection->suspended)
+            break;
           continue;
         case MHD_CONNECTION_CONTINUE_SENDING:
           if (connection->continue_message_write_offset ==
@@ -2601,6 +2630,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
                 connection->state = MHD_CONNECTION_BODY_RECEIVED;
               else
                 connection->state = MHD_CONNECTION_FOOTERS_RECEIVED;
+              if (MHD_YES == connection->suspended)
+                break;
               continue;
             }
           break;
@@ -2621,6 +2652,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
           if (0 == line[0])
             {
               connection->state = MHD_CONNECTION_FOOTERS_RECEIVED;
+              if (MHD_YES == connection->suspended)
+                break;
               continue;
             }
           if (MHD_NO == process_header_line (connection, line))
@@ -2652,6 +2685,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
           if (0 == line[0])
             {
               connection->state = MHD_CONNECTION_FOOTERS_RECEIVED;
+              if (MHD_YES == connection->suspended)
+                break;
               continue;
             }
           continue;
@@ -2863,8 +2898,8 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
       return MHD_YES;
     }
   MHD_connection_update_event_loop_info (connection);
-#if EPOLL_SUPPORT
-  if (0 != (daemon->options & MHD_USE_EPOLL_LINUX_ONLY))
+#ifdef EPOLL_SUPPORT
+  if (0 != (daemon->options & MHD_USE_EPOLL))
     {
       switch (connection->event_loop_info)
         {
@@ -2914,7 +2949,7 @@ MHD_connection_handle_idle (struct MHD_Connection *connection)
 }
 
 
-#if EPOLL_SUPPORT
+#ifdef EPOLL_SUPPORT
 /**
  * Perform epoll() processing, possibly moving the connection back into
  * the epoll() set if needed.
@@ -2928,7 +2963,7 @@ MHD_connection_epoll_update_ (struct MHD_Connection *connection)
 {
   struct MHD_Daemon *daemon = connection->daemon;
 
-  if ( (0 != (daemon->options & MHD_USE_EPOLL_LINUX_ONLY)) &&
+  if ( (0 != (daemon->options & MHD_USE_EPOLL)) &&
        (0 == (connection->epoll_state & MHD_EPOLL_STATE_IN_EPOLL_SET)) &&
        (0 == (connection->epoll_state & MHD_EPOLL_STATE_SUSPENDED)) &&
        ( (0 == (connection->epoll_state & MHD_EPOLL_STATE_WRITE_READY)) ||
