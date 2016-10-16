@@ -848,7 +848,7 @@ VOID InsertChannelRepIE(
 	UINT8 Len;
 	UINT8 IEId = IE_AP_CHANNEL_REPORT;
 	PUCHAR pChListPtr = NULL;
-	DOT11_CHANNEL_SET *pChannelSet = NULL;
+	PDOT11_CHANNEL_SET pChannelSet = NULL;
 	UINT8 i,j;
 	UCHAR ChannelList[16] ={0};
 	UINT8 NumberOfChannels = 0;
