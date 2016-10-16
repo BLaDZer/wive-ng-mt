@@ -131,10 +131,10 @@ typedef u32 netdev_features_t;
 #define MAX_RX_LENGTH		1536
 #endif
 
-#if defined (CONFIG_RAETH_NAPI_GRO) && defined (CONFIG_RALINK_MT7621)
-#define NAPI_WEIGHT		64
+#if defined (CONFIG_RALINK_MT7621)
+#define NAPI_WEIGHT		128
 #else
-#define NAPI_WEIGHT		32
+#define NAPI_WEIGHT		64
 #endif
 
 ///////////////////////////////////////////////////////////////
