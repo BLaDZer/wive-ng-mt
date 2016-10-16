@@ -257,7 +257,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 
 		InsertChannelRepIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
 							(PSTRING)pAd->CommonCfg.CountryCode,
-							pAd->CommonCfg.RegulatoryClass[i]);
+							pAd->CommonCfg.RegulatoryClass[i], NULL);
 
 	}
 #else

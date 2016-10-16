@@ -265,6 +265,20 @@ INT Set_BeaconReq_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 					}
 				}
 				break;
+			case 8: /* Channel Report  List. */
+				{
+					RTMP_STRING *ChIdString;
+					int ChId;
+
+					ChId = 0;
+					while ((ChIdString = strsep((char **)&thisChar, "!")) != NULL)
+					{
+						BcnReq.ChRepList[ChId] =
+							(UINT8) simple_strtol(ChIdString, 0, 10);
+						ChId++;
+					}
+				}			
+				break;
 		}
 		ArgIdx++;
 	}	

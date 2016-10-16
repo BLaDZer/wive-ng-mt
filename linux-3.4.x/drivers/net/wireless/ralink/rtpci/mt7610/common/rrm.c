@@ -268,6 +268,20 @@ INT Set_BeaconReq_Proc(
 					}
 				}
 				break;
+			case 8: /* Channel Report  List. */
+				{
+					PSTRING ChIdString;
+					int ChId;
+
+					ChId = 0;
+					while ((ChIdString = strsep((char **)&thisChar, "!")) != NULL)
+					{
+						BcnReq.ChRepList[ChId] =
+							(UINT8) simple_strtol(ChIdString, 0, 10);
+						ChId++;
+					}
+				}			
+				break;
 		}
 		ArgIdx++;
 	}	

@@ -390,7 +390,7 @@ VOID APPeerProbeReqAction(
 					break;
 				InsertChannelRepIE(pAd, pOutBuffer+FrameLen, &FrameLen,
 									(PSTRING)pAd->CommonCfg.CountryCode,
-									pAd->CommonCfg.RegulatoryClass[loop]);
+									pAd->CommonCfg.RegulatoryClass[loop], NULL);
 			}
 		}
 

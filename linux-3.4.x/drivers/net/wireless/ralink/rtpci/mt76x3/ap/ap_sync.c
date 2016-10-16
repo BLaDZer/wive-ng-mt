@@ -484,7 +484,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 					break;
 				InsertChannelRepIE(pAd, pOutBuffer+FrameLen, &FrameLen,
 									(RTMP_STRING *)pAd->CommonCfg.CountryCode,
-									pAd->CommonCfg.RegulatoryClass[loop]);
+									pAd->CommonCfg.RegulatoryClass[loop], NULL);
 			}
 		}
 

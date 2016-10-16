@@ -169,7 +169,6 @@ UINT8 GetRegulatoryMaxTxPwr(RTMP_ADAPTER *pAd, UINT8 channel)
 		{
 			if (channel == pChannelSet->ChannelList[ChIdx])
 				return pChannelSet->MaxTxPwr;
-		
 		}
 		if (ChIdx == pChannelSet->NumberOfChannels)
 			return 0xff;
@@ -820,14 +819,13 @@ static UINT8 GetCurTxPwr(RTMP_ADAPTER *pAd, UINT8 Wcid)
 	return 16; /* 16 dBm */
 }
 
-
 /*
 	==========================================================================
 	Description:
 		Get Current Transmit Power.
-		
+
 	Parametrs:
-	
+
 	Return	: Current Time Stamp.
 	==========================================================================
  */
@@ -836,13 +834,19 @@ VOID InsertChannelRepIE(
 	OUT PUCHAR pFrameBuf,
 	OUT PULONG pFrameLen,
 	IN RTMP_STRING *pCountry,
-	IN UINT8 RegulatoryClass)
+	IN UINT8 RegulatoryClass,
+	IN UINT8 *ChReptList
+	)
 {
 	ULONG TempLen;
 	UINT8 Len;
 	UINT8 IEId = IE_AP_CHANNEL_REPORT;
 	PUCHAR pChListPtr = NULL;
 	DOT11_CHANNEL_SET *pChannelSet = NULL;
+	UINT8 i,j;
+	UCHAR ChannelList[16] ={0};
+	UINT8 NumberOfChannels = 0;
+	UINT8 *pChannelList = NULL;
 
 	Len = 1;
 	if (strncmp(pCountry, "RU", 2) == 0)
@@ -901,8 +905,33 @@ VOID InsertChannelRepIE(
 	if (pChannelSet->NumberOfChannels == 0)
 		return;
 
-	Len += pChannelSet->NumberOfChannels;
-	pChListPtr = pChannelSet->ChannelList;
+	if (ChReptList) // assign partial channel list
+	{
+		for (i=0; i <pChannelSet->NumberOfChannels; i++)
+		{
+			for (j=0; j <16; j++)
+			{
+				if (ChReptList[j] == pChannelSet->ChannelList[i])
+				{
+					ChannelList[NumberOfChannels++] = pChannelSet->ChannelList[i];
+				}
+			}
+		}
+
+		pChannelList = &ChannelList[0];
+	}
+	else
+	{
+		NumberOfChannels = pChannelSet->NumberOfChannels;	
+		pChannelList = pChannelSet->ChannelList;
+	}
+
+	DBGPRINT(RT_DEBUG_ERROR, ("%s: Requlatory class (%d), NumberOfChannels=%d, pChannelSet->NumberOfChannels=%d\n",
+						__FUNCTION__, RegulatoryClass,NumberOfChannels,pChannelSet->NumberOfChannels));
+
+	Len += NumberOfChannels;
+	pChListPtr = pChannelList;
+
 
 	if (Len > 1)
 	{
@@ -917,7 +946,6 @@ VOID InsertChannelRepIE(
 	}
 	return;
 }
-
 
 /*
 	==========================================================================

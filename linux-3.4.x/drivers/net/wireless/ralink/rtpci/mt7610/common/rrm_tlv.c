@@ -481,7 +481,9 @@ VOID RRM_EnqueueBcnReq(
 			ULONG FramelenTmp = FrameLen;
 			InsertChannelRepIE(pAd, (pOutBuffer+FrameLen), &FrameLen,
 								(PSTRING)pAd->CommonCfg.CountryCode,
-								pMlmeBcnReq->ChRepRegulatoryClass[idx]);
+								pMlmeBcnReq->ChRepRegulatoryClass[idx],
+								&pMlmeBcnReq->ChRepList[0]
+								);
 			TotalLen += (FrameLen - FramelenTmp);
 			idx ++;
 		}

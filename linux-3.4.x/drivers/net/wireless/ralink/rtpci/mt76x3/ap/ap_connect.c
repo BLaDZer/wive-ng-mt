@@ -433,7 +433,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 
 		InsertChannelRepIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
 							(RTMP_STRING *)pAd->CommonCfg.CountryCode,
-							pAd->CommonCfg.RegulatoryClass[i]);
+							pAd->CommonCfg.RegulatoryClass[i], NULL);
 
 	}
 #else
@@ -447,7 +447,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 				class 33, channel set 5-11
 		*/
 		UCHAR rclass32[]={32, 1, 2, 3, 4, 5, 6, 7};
-        UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
+		UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
 		UCHAR rclasslen = 8; /*sizeof(rclass32); */
 		if (PhyMode == (WMODE_B | WMODE_G | WMODE_GN))
 		{
@@ -745,7 +745,7 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
             InsertChannelRepIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
                                 (RTMP_STRING *)pAd->CommonCfg.CountryCode,
-                                pAd->CommonCfg.RegulatoryClass[i]);
+                                pAd->CommonCfg.RegulatoryClass[i], NULL);
 
         }
 #else
