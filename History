@@ -2469,6 +2469,7 @@
 78) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
 79) kernel: net: packet: tx timestamping on tpacket ring.<br>
 90) kernel: net: socket: move ktime2ts to ktime header api.<br>
+91) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
 <br>
 <br>
 <br>
