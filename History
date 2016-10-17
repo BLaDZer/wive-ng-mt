@@ -2475,6 +2475,7 @@
 84) kernel: net: socket: move ktime2ts to ktime header api.<br>
 85) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
 86) kernel: net: vlan: unnecessary to check if vlan_pcpu_stats is NULL.<br>
+87) kernel: net: vlan: free percpu stats in device destructor.<br>
 <br>
 <br>
 <br>
