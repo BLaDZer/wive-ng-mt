@@ -2485,6 +2485,11 @@
 94) kernel: usb: cdc-wdm: cleanup debug messages.<br>
 95) kernel: usb: cdc-wdm: add terminating newline.<br>
 96) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
+97) kernel: usb: hub: fix unbalanced reference count/memory leak/deadlocks.<br>
+98) kernel: usb: hub: fix up early-exit pathway in hub_activate.<br>
+99) kernel: usb: hub: change the locking in hub_activate.<br>
+100) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
+101) kernel: usb: avoid left shift by -1.<br>
 <br>
 <br>
 <br>
