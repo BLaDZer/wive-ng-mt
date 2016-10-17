@@ -2466,16 +2466,17 @@
 75) kernel: mips: use struct list_head lists.<br>
 76) kernel: mips: pci: make pcibios_set_cache_line_size an initcall.<br>
 77) kernel: mips: pci: inline pcibios_assign_all_busses.<br>
-78) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-79) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-80) kernel: net: fix sk_mem_reclaim_partial().<br>
-81) kernel: net: avoid sk_forward_alloc overflows.<br>
-82) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-83) kernel: net: packet: tx timestamping on tpacket ring.<br>
-84) kernel: net: socket: move ktime2ts to ktime header api.<br>
-85) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
-86) kernel: net: vlan: unnecessary to check if vlan_pcpu_stats is NULL.<br>
-87) kernel: net: vlan: free percpu stats in device destructor.<br>
+78) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+79) kernel: net: packet: tx timestamping on tpacket ring.<br>
+80) kernel: net: vlan: unnecessary to check if vlan_pcpu_stats is NULL.<br>
+81) kernel: net: vlan: free percpu stats in device destructor.<br>
+82) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+83) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+84) kernel: net: fix sk_mem_reclaim_partial().<br>
+85) kernel: net: avoid sk_forward_alloc overflows.<br>
+86) kernel: net: socket: move ktime2ts to ktime header api.<br>
+87) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
+88) kernel: net: introduce netdev_alloc_pcpu_stats() for drivers.<br>
 <br>
 <br>
 <br>
