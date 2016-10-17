@@ -558,27 +558,37 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
-	    /* add country IE, power constraint IE */
-		if (pAd->CommonCfg.bCountryFlag)
+		/* add Country IE and power-related IE */
+		if (pAd->CommonCfg.bCountryFlag ||
+			(pAd->CommonCfg.Channel > 14 && pAd->CommonCfg.bIEEE80211H == TRUE)
+#ifdef DOT11K_RRM_SUPPORT
+				|| IS_RRM_ENABLE(pAd, apidx)
+#endif /* DOT11K_RRM_SUPPORT */
+			)
 		{
 			ULONG TmpLen2=0;
 			UCHAR TmpFrame[256];
 			UCHAR CountryIe = IE_COUNTRY;
-			UCHAR MaxTxPower=20;
+			UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 
-#ifdef A_BAND_SUPPORT
-			/* 
-			Only 802.11a APs that comply with 802.11h are required to include
-			a Power Constrint Element(IE=32) in beacons and probe response frames
+			/*
+				Only APs that comply with 802.11h or 802.11k are required to include
+				the Power Constraint element (IE=32) and
+				the TPC Report element (IE=35) and
+				the VHT Transmit Power Envelope element (IE=195)
+				in beacon frames and probe response frames
 			*/
-			if (pAd->CommonCfg.Channel > 14 && pAd->CommonCfg.bIEEE80211H == TRUE)
+			if ((pAd->CommonCfg.Channel > 14 && pAd->CommonCfg.bIEEE80211H == TRUE)
+#ifdef DOT11K_RRM_SUPPORT
+					|| IS_RRM_ENABLE(pAd, apidx)
+#endif /* DOT11K_RRM_SUPPORT */
+			    )
 			{
 				/* prepare power constraint IE */
 				MakeOutgoingFrame(pOutBuffer+FrameLen,    &TmpLen,
 						3,                 	PowerConstraintIE,
 						END_OF_ARGS);
 						FrameLen += TmpLen;
-
 #ifdef DOT11_VHT_AC
 				if (WMODE_CAP_AC(PhyMode)) {
 					ULONG TmpLen;
@@ -596,12 +606,10 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 				}
 #endif /* DOT11_VHT_AC */
 			}
-#endif /* A_BAND_SUPPORT */
 
 			NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
 
 			/* prepare channel information */
-			MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 			MakeOutgoingFrame(TmpFrame+TmpLen2,     &TmpLen,
 					1,                 	&pAd->ChannelList[0].Channel,
 					1,                 	&pAd->ChannelListNum,

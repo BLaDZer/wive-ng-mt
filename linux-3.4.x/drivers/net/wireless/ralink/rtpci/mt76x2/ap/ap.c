@@ -895,6 +895,7 @@ VOID APStop(
 	{
 		RTMPCancelTimer(&pAd->ApCfg.CounterMeasureTimer, &Cancelled);
 		pAd->ApCfg.CMTimerRunning = FALSE;
+		pAd->ApCfg.BANClass3Data = FALSE;
 	}
 	
 #ifdef WAPI_SUPPORT

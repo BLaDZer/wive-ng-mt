@@ -3886,6 +3886,8 @@ VOID	UserCfgInit(
 
 		pAd->ApCfg.StaIdleTimeout = MAC_TABLE_AGEOUT_TIME;
 
+		pAd->ApCfg.BANClass3Data = FALSE;
+
 #ifdef IDS_SUPPORT
 		/* Default disable IDS threshold and reset all IDS counters*/
 		pAd->ApCfg.IdsEnable = FALSE;
