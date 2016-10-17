@@ -2478,12 +2478,13 @@
 87) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
 88) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
 89) kernel: usb: cdc-wdm: return correct error codes.<br>
-89) kernel: usb: cdc-wdm: unify error handling in write.<br>
-89) kernel: usb: cdc-wdm: error returns need to be translated.<br>
-89) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
-89) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
-89) kernel: usb: cdc-wdm: cleanup debug messages.<br>
-89) kernel: usb: cdc-wdm: add terminating newline.<br>
+90) kernel: usb: cdc-wdm: unify error handling in write.<br>
+91) kernel: usb: cdc-wdm: error returns need to be translated.<br>
+92) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
+93) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
+94) kernel: usb: cdc-wdm: cleanup debug messages.<br>
+95) kernel: usb: cdc-wdm: add terminating newline.<br>
+96) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
 <br>
 <br>
 <br>
