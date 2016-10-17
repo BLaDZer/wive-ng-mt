@@ -1000,10 +1000,12 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	}
 #endif /* AP_QLOAD_SUPPORT */
 
-#ifdef A_BAND_SUPPORT
-	/* 
-		Only 802.11a APs that comply with 802.11h are required to include a 
-		Power Constrint Element(IE=32) in beacons and probe response frames
+	/*
+		Only APs that comply with 802.11h or 802.11k are required to include
+		the Power Constraint element (IE=32) and
+		the TPC Report element (IE=35) and
+		the VHT Transmit Power Envelope element (IE=195)
+		in beacon frames and probe response frames
 	*/
 	if (((pComCfg->Channel > 14) && pComCfg->bIEEE80211H == TRUE)
 #ifdef DOT11K_RRM_SUPPORT
@@ -1042,7 +1044,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* DOT11_VHT_AC */
 
 	}
-#endif /* A_BAND_SUPPORT */
 
 #ifdef DOT11K_RRM_SUPPORT
 	if (IS_RRM_ENABLE(pAd, apidx))
