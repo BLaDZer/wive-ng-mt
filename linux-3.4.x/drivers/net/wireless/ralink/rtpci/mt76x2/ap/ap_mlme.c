@@ -37,11 +37,10 @@ extern int CoexChannelBw;
 #endif
 
 #ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
 
 int DetectOverlappingPeriodicRound;
 
-
-#ifdef DOT11N_DRAFT3
 VOID Bss2040CoexistTimeOut(
 	IN PVOID SystemSpecific1, 
 	IN PVOID FunctionContext, 
@@ -69,10 +68,6 @@ VOID Bss2040CoexistTimeOut(
 		SendBSS2040CoexistMgmtAction(pAd, MCAST_WCID, apidx, 0);
 	
 }
-#endif /* DOT11N_DRAFT3 */
-
-#endif /* DOT11_N_SUPPORT */
-
 
 VOID APDetectOverlappingExec(
 	IN PVOID SystemSpecific1, 
@@ -80,7 +75,6 @@ VOID APDetectOverlappingExec(
 	IN PVOID SystemSpecific2, 
 	IN PVOID SystemSpecific3) 
 {
-#ifdef DOT11_N_SUPPORT
 	PRTMP_ADAPTER	pAd = (RTMP_ADAPTER *)FunctionContext;
 
 	if (DetectOverlappingPeriodicRound == 0)
@@ -106,9 +100,9 @@ VOID APDetectOverlappingExec(
 		}
 		DetectOverlappingPeriodicRound--;
 	}
-#endif /* DOT11_N_SUPPORT */
 }
-
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
 
 /*
     ==========================================================================
