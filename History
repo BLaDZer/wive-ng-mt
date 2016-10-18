@@ -2491,6 +2491,13 @@
 100) kernel: usb: hub: change the locking in hub_activate.<br>
 101) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
 102) kernel: usb: avoid left shift by -1.<br>
+103) kernel: usb: usbip: fix potential out-of-bounds write.<br>
+104) kernel: usb: usb-storage: add support for write cache quirk.<br>
+105) kernel: usb: usb-storage: update usb devices for write cache quirk in quirk list.<br>
+106) kernel: usb: usb-storage: scsiglue: limit USB3 devices to 2048 sectors.<br>
+107) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
+108) kernel: sd: set to WCE if usb cache quirk is present.<br>
+109) kernel: sd: notify block layer when using temporary change to cache_type.<br>
 <br>
 <br>
 <br>
