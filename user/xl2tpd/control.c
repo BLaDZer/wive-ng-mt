@@ -1023,8 +1023,8 @@ int control_finish (struct tunnel *t, struct call *c)
         start_pppd (c, po);
         opt_destroy (po);
         l2tp_log (LOG_NOTICE,
-             "Call established with %s, Local: %d, Remote: %d, Serial: %d\n",
-             IPADDY (t->peer.sin_addr), c->ourcid, c->cid,
+             "Call established with %s, PID: %d, Local: %d, Remote: %d, Serial: %d\n",
+             IPADDY (t->peer.sin_addr), c->pppd, c->ourcid, c->cid,
              c->serno);
         break;
 #ifndef DISABLE_OCRP_OCCN

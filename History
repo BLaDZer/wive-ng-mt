@@ -2399,7 +2399,7 @@
 8) coovachilli: up to 1.3.2 from git (commit 078ed2df).<br>
 9) openssl: update to 1.0.1u.<br>
 10) radvd: update to 2.15 version.<br>
-11) xl2tpd: update to 1.3.8 version (sync with devtree commit: 6bb1402e).<br>
+11) xl2tpd: update to 1.3.8 version (sync with devtree commit: 5b0c9993).<br>
 12) freeradius: up to 3.0.12 version.<br>
 13) lldpd: up to 0.9.5 version.<br>
 14) libmicrohttpd: up to 0.9.51 version.<br>
