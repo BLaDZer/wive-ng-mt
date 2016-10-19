@@ -329,13 +329,13 @@ static int getWlan11gChannels(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getWlanChannel(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int value =  getWlanChannelNum(1);
+	int value =  getWlanChannelNum_nvram(1);
 	return websWrite(wp, T("%d"), value);
 }
 
 static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int value =  getWlanChannelNum(2);
+	int value =  getWlanChannelNum_nvram(2);
 	return websWrite(wp, T("%d"), value);
 }
 

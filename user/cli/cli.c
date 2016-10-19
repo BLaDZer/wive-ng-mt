@@ -64,6 +64,8 @@ int main(int argc, char* argv[])
     argc--;
     argv++;
 
+    openlog ("cli", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+
     func_cli(cmd, argc, argv);
 
     return 0;

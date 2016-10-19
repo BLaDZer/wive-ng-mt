@@ -53,7 +53,7 @@ void printMacEntry(RT_802_11_MAC_ENTRY* pe)
         printf("|%-3s", (pe->TxRate.field.ShortGI == 0) ? "NO" : "YES");
         printf("|%-4s", (pe->TxRate.field.STBC == 0) ? "NO" : "YES");
         printf("|%-4s", (pe->TxRate.field.ldpc == 0) ? "NO" : "YES");
-        printf("|%-4.4s", getPhyMode(pe->TxRate.field.MODE));
+        printf("|%-5.5s", getPhyMode(pe->TxRate.field.MODE));
         printf("|%-4d", getWlanRate(pe->TxRate));
 
 //#if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
@@ -65,8 +65,8 @@ void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 #endif*/
         char *rx_scaled_text = scale(pe->RxBytes);
         char *tx_scaled_text = scale(pe->TxBytes);
-        printf("|%8.8s", rx_scaled_text);
-        printf("|%8.8s", tx_scaled_text);
+        printf("|%9.9s", rx_scaled_text);
+        printf("|%9.9s", tx_scaled_text);
         free(rx_scaled_text);
         free(tx_scaled_text);
 
@@ -139,7 +139,7 @@ int showStationList(char* iface)
         return 1;
     }
 
-    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE|RATE|RSSI     |S.QUALITY|RX      |TX      \n");
+    printf("AID|MAC              |C. TIME |PSM|MMPS|MCS|BW|SGI|STBC|LDPC|MODE |RATE|RSSI     |S.QUALITY|RX       |TX       \n");
 
     for (i = 0; i < table.Num; i++) 
     {
@@ -243,7 +243,7 @@ int func_wl_status_report(int argc, char* argv[])
 
     /* FIXME: remove fallback */
 
-    chan_num  = getWlanChannelNum(1);
+    chan_num  = getWlanChannelNum_ioctl(1);
     printf("BSSID\t%s\n", mac1);
     printf("BSSID 2.4\t%s\n", mac1);
     printf("Channel\t%i\n", chan_num);
@@ -252,7 +252,7 @@ int func_wl_status_report(int argc, char* argv[])
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
     printf("BSSID 5\t%s\n", mac2);
-    chan_num  = getWlanChannelNum(2);
+    chan_num  = getWlanChannelNum_ioctl(2);
     printf("Channel 5\t%i\n", chan_num);
     printf("Ext channel 5\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHAINIC", 0));
 #endif
@@ -364,7 +364,7 @@ int func_wl_status(int argc, char* argv[])
     getWlanCurrentMacAddr(mac, 1);
     printf("BSSID:                  %s\n", mac);
 
-    int chan_num = getWlanChannelNum(1);
+    int chan_num = getWlanChannelNum_ioctl(1);
     if (chan_num > 0)
     {
         printf("Channel:                %i\n", chan_num);

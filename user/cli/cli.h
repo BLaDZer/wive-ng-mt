@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <syslog.h>
+
 #include "libwive.h"
 
 #define STR_EQ(X,Y)	( X && Y && (strcmp(X,Y)==0) )

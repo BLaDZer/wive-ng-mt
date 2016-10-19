@@ -262,7 +262,10 @@ int func_st_vpn_report(int argc, char* argv[])
     int vpnType = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
     int auth_method = nvram_get_int(RT2860_NVRAM, "vpnAuthProtocol",0);
 
-    getIfIp(getPPPIfName(), vpn_ip_addr);
+    if (vpn_mode_enabled() == 1)
+    {
+        getIfIp(getPPPIfName(), vpn_ip_addr);
+    }
 
     printf("VPN Status\t%s\n",getVPNStatusStr());
     printf("VPN IP Address\t%s\n", vpn_ip_addr);
