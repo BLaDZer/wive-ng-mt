@@ -334,10 +334,13 @@ struct xfrm_state_afinfo {
 						  struct sk_buff *skb);
 	int			(*transport_finish)(struct sk_buff *skb,
 						    int async);
+	void		(*local_error)(struct sk_buff *skb, u32 mtu);
 };
 
 extern int xfrm_state_register_afinfo(struct xfrm_state_afinfo *afinfo);
 extern int xfrm_state_unregister_afinfo(struct xfrm_state_afinfo *afinfo);
+extern struct xfrm_state_afinfo *xfrm_state_get_afinfo(unsigned int family);
+extern void xfrm_state_put_afinfo(struct xfrm_state_afinfo *afinfo);
 
 extern void xfrm_state_delete_tunnel(struct xfrm_state *x);
 
@@ -1460,6 +1463,7 @@ extern int xfrm_input_resume(struct sk_buff *skb, int nexthdr);
 extern int xfrm_output_resume(struct sk_buff *skb, int err);
 extern int xfrm_output(struct sk_buff *skb);
 extern int xfrm_inner_extract_output(struct xfrm_state *x, struct sk_buff *skb);
+extern void xfrm_local_error(struct sk_buff *skb, int mtu);
 extern int xfrm4_extract_header(struct sk_buff *skb);
 extern int xfrm4_extract_input(struct xfrm_state *x, struct sk_buff *skb);
 extern int xfrm4_rcv_encap(struct sk_buff *skb, int nexthdr, __be32 spi,
@@ -1478,6 +1482,7 @@ extern int xfrm4_output(struct sk_buff *skb);
 extern int xfrm4_output_finish(struct sk_buff *skb);
 extern int xfrm4_tunnel_register(struct xfrm_tunnel *handler, unsigned short family);
 extern int xfrm4_tunnel_deregister(struct xfrm_tunnel *handler, unsigned short family);
+extern void xfrm4_local_error(struct sk_buff *skb, u32 mtu);
 extern int xfrm6_extract_header(struct sk_buff *skb);
 extern int xfrm6_extract_input(struct xfrm_state *x, struct sk_buff *skb);
 extern int xfrm6_rcv_spi(struct sk_buff *skb, int nexthdr, __be32 spi);
@@ -1495,6 +1500,7 @@ extern int xfrm6_output(struct sk_buff *skb);
 extern int xfrm6_output_finish(struct sk_buff *skb);
 extern int xfrm6_find_1stfragopt(struct xfrm_state *x, struct sk_buff *skb,
 				 u8 **prevhdr);
+extern void xfrm6_local_error(struct sk_buff *skb, u32 mtu);
 
 #ifdef CONFIG_XFRM
 extern int xfrm4_udp_encap_rcv(struct sock *sk, struct sk_buff *skb);
@@ -1586,6 +1592,26 @@ static inline int xfrm_addr_cmp(const xfrm_address_t *a,
 static inline int xfrm_policy_id2dir(u32 index)
 {
 	return index & 7;
+}
+
+static inline bool xfrm6_addr_equal(const xfrm_address_t *a,
+									const xfrm_address_t *b)
+{
+	return ipv6_addr_equal((const struct in6_addr *)a,
+							(const struct in6_addr *)b);
+}
+
+static inline bool xfrm_addr_equal(const xfrm_address_t *a,
+									const xfrm_address_t *b,
+									sa_family_t family)
+{
+	switch (family) {
+		default:
+		case AF_INET:
+			return ((__force u32)a->a4 ^ (__force u32)b->a4) == 0;
+		case AF_INET6:
+			return xfrm6_addr_equal(a, b);
+	}
 }
 
 #ifdef CONFIG_XFRM

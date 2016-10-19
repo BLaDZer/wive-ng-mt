@@ -2471,35 +2471,47 @@
 80) kernel: net: vlan: free percpu stats in device destructor.<br>
 81) kernel: net: netfilter: nf_nat: handle routing changes in MASQUERADE target.<br>
 82) kernel: net: netfilter: nf_nat: also handle non-ESTABLISHED routing changes in MASQUERADE.<br>
-83) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-84) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-85) kernel: net: fix sk_mem_reclaim_partial().<br>
-86) kernel: net: avoid sk_forward_alloc overflows.<br>
-87) kernel: net: socket: move ktime2ts to ktime header api.<br>
-88) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
-89) kernel: net: introduce netdev_alloc_pcpu_stats() for drivers.<br>
-90) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-91) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-92) kernel: usb: cdc-wdm: return correct error codes.<br>
-93) kernel: usb: cdc-wdm: unify error handling in write.<br>
-94) kernel: usb: cdc-wdm: error returns need to be translated.<br>
-95) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
-96) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
-97) kernel: usb: cdc-wdm: cleanup debug messages.<br>
-98) kernel: usb: cdc-wdm: add terminating newline.<br>
-99) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
-100) kernel: usb: hub: fix unbalanced reference count/memory leak/deadlocks.<br>
-101) kernel: usb: hub: fix up early-exit pathway in hub_activate.<br>
-102) kernel: usb: hub: change the locking in hub_activate.<br>
-103) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
-104) kernel: usb: avoid left shift by -1.<br>
-105) kernel: usb: usbip: fix potential out-of-bounds write.<br>
-106) kernel: usb: usb-storage: add support for write cache quirk.<br>
-107) kernel: usb: usb-storage: update usb devices for write cache quirk in quirk list.<br>
-108) kernel: usb: usb-storage: scsiglue: limit USB3 devices to 2048 sectors.<br>
-109) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
-110) kernel: sd: set to WCE if usb cache quirk is present.<br>
-111) kernel: sd: notify block layer when using temporary change to cache_type.<br>
+83) kernel: net: xfrm: invalidate dst on policy insertion/deletion
+84) kernel: net: xfrm/xfrm_replay: avoid division by zero
+85) kernel: net: xfrm: use xfrm direction when lookup policy
+86) kernel: net: xfrm: make xfrm_state timer monotonic
+87) kernel: net: xfrm: announce deleation of temporary SA
+88) kernel: net: xfrm: force SA to be lookup again if SA in acquire state
+89) kernel: net: xfrm: simplify SA looking up when using wildcard source
+90) kernel: net: xfrm: decode sessions with output interface.
+91) kernel: net: xfrm: fix null pointer dereference when decoding sessions
+92) kernel: net: xfrm: reload skb header pointers after calling pskb_may_pull.
+93) kernel: net: xfrm: make local error reporting more robust
+94) kernel: net: xfrm: choose protocol family by skb protocol
+95) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+96) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+97) kernel: net: fix sk_mem_reclaim_partial().<br>
+98) kernel: net: avoid sk_forward_alloc overflows.<br>
+99) kernel: net: socket: move ktime2ts to ktime header api.<br>
+100) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
+101) kernel: net: introduce netdev_alloc_pcpu_stats() for drivers.<br>
+102) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+103) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+104) kernel: usb: cdc-wdm: return correct error codes.<br>
+105) kernel: usb: cdc-wdm: unify error handling in write.<br>
+106) kernel: usb: cdc-wdm: error returns need to be translated.<br>
+107) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
+108) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
+109) kernel: usb: cdc-wdm: cleanup debug messages.<br>
+110) kernel: usb: cdc-wdm: add terminating newline.<br>
+111) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
+112) kernel: usb: hub: fix unbalanced reference count/memory leak/deadlocks.<br>
+113) kernel: usb: hub: fix up early-exit pathway in hub_activate.<br>
+114) kernel: usb: hub: change the locking in hub_activate.<br>
+115) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
+116) kernel: usb: avoid left shift by -1.<br>
+117) kernel: usb: usbip: fix potential out-of-bounds write.<br>
+118) kernel: usb: usb-storage: add support for write cache quirk.<br>
+119) kernel: usb: usb-storage: update usb devices for write cache quirk in quirk list.<br>
+120) kernel: usb: usb-storage: scsiglue: limit USB3 devices to 2048 sectors.<br>
+121) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
+122) kernel: sd: set to WCE if usb cache quirk is present.<br>
+123) kernel: sd: notify block layer when using temporary change to cache_type.<br>
 <br>
 <br>
 <br>
