@@ -65,7 +65,6 @@ static int iwconfig_get_info(const char *ifname, struct iw_range *range)
     /* For new versions, we can check the version directly, for old versions
      * we use magic. 300 bytes is a also magic number, don't touch... */
     if (wrq.u.data.length < 300 || range->we_version_compiled <= 15) {
-        /* That's v10 or earlier. Ouch ! Let's make a guess...*/
         syslog(LOG_ERR, "wlan: range info unknown or old (<=15) version \n");
         return 2;
     }
