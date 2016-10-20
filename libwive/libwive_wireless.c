@@ -11,120 +11,43 @@
 
 #include "libwive.h"
 
-//TODO: REFACTOR
-static int _iw_get_range_info(const char *ifname, struct iw_range *range);
-static int _iw_freq_to_channel(double freq, const struct iw_range *range);
-static double _iw_freq2float(const struct iw_freq *in);
+static double iwconfig_freq2float(const struct iw_freq *in)
+{
+  int i;
+  double res = (double)in->m;
 
-static int _iw_freq_to_channel(double freq, const struct iw_range *range)
+  for(i = 0; i < in->e; i++)
+	res *= 10;
+
+  return res;
+
+}
+
+static int iwconfig_freq_to_channel(double freq, const struct iw_range *range)
 {
   double ref_freq;
   int k;
 
-  /* Check if it's a frequency or not already a channel */
-  if(freq < 1000)
-    return (int)freq;
+    /* Check if it's a frequency or not already a channel */
+    if(freq < 1000)
+	return (int)freq;
 
-  /* We compare the frequencies as double to ignore differences
-   * in encoding. Slower, but safer... */
-  for(k = 0; k < range->num_frequency; k++)
-    {
-      ref_freq = _iw_freq2float(&(range->freq[k]));
-      if(abs(freq - ref_freq) < 0.1f)
-	return(range->freq[k].i);
+    /* We compare the frequencies as double to ignore differences
+     * in encoding. Slower, but safer... */
+    for(k = 0; k < range->num_frequency; k++) {
+	ref_freq = iwconfig_freq2float(&(range->freq[k]));
+	if(abs(freq - ref_freq) < 0.1f)
+	    return(range->freq[k].i);
     }
-  /* Not found */
-  return -2;
+
+    /* Not found */
+    return -2;
 }
 
-static double _iw_freq2float(const struct iw_freq *in)
-{
-  int i;
-  double res = (double) in->m;
-  for(i = 0; i < in->e; i++) res *= 10;
-  return(res);
-//  return ((double) in->m) * pow(10,in->e);
-}
-
-/*
- * Constants fof WE-9->15
- */
-#define IW15_MAX_FREQUENCIES	16
-#define IW15_MAX_BITRATES	8
-#define IW15_MAX_TXPOWER	8
-#define IW15_MAX_ENCODING_SIZES	8
-#define IW15_MAX_SPY		8
-#define IW15_MAX_AP		8
-
-/****************************** TYPES ******************************/
-
-/*
- *	Struct iw_range up to WE-15
- */
-struct	iw15_range
-{
-	__u32		throughput;
-	__u32		min_nwid;
-	__u32		max_nwid;
-	__u16		num_channels;
-	__u8		num_frequency;
-	struct iw_freq	freq[IW15_MAX_FREQUENCIES];
-	__s32		sensitivity;
-	struct iw_quality	max_qual;
-	__u8		num_bitrates;
-	__s32		bitrate[IW15_MAX_BITRATES];
-	__s32		min_rts;
-	__s32		max_rts;
-	__s32		min_frag;
-	__s32		max_frag;
-	__s32		min_pmp;
-	__s32		max_pmp;
-	__s32		min_pmt;
-	__s32		max_pmt;
-	__u16		pmp_flags;
-	__u16		pmt_flags;
-	__u16		pm_capa;
-	__u16		encoding_size[IW15_MAX_ENCODING_SIZES];
-	__u8		num_encoding_sizes;
-	__u8		max_encoding_tokens;
-	__u16		txpower_capa;
-	__u8		num_txpower;
-	__s32		txpower[IW15_MAX_TXPOWER];
-	__u8		we_version_compiled;
-	__u8		we_version_source;
-	__u16		retry_capa;
-	__u16		retry_flags;
-	__u16		r_time_flags;
-	__s32		min_retry;
-	__s32		max_retry;
-	__s32		min_r_time;
-	__s32		max_r_time;
-	struct iw_quality	avg_qual;
-};
-
-
-union	iw_range_raw
-{
-	struct iw15_range	range15;	/* WE 9->15 */
-	struct iw_range		range;		/* WE 16->current */
-};
-
-/*
- * Offsets in iw_range struct
- */
-#define iwr15_off(f)	( ((char *) &(((struct iw15_range *) NULL)->f)) - \
-			  (char *) NULL)
-#define iwr_off(f)	( ((char *) &(((struct iw_range *) NULL)->f)) - \
-			  (char *) NULL)
-
-
-
-
-static int _iw_get_range_info(const char *ifname, struct iw_range *range)
+static int iwconfig_get_info(const char *ifname, struct iw_range *range)
 {
     struct iwreq wrq;
     char buffer[sizeof(struct iw_range) * 2]; /* Large enough */
-    union iw_range_raw *	range_raw;
 
 
     /* Cleanup */
@@ -134,74 +57,24 @@ static int _iw_get_range_info(const char *ifname, struct iw_range *range)
     wrq.u.data.length = sizeof(buffer);
     wrq.u.data.flags = 0;
 
-    if(wlan_ioctl(SIOCGIWRANGE, ifname, &wrq) < 0)
-    {
+    if (wlan_ioctl(SIOCGIWRANGE, ifname, &wrq) < 0) {
         syslog(LOG_ERR, "wlan: range info ioctl < 0 \n");
         return 1;
     }
 
-  /* Point to the buffer */
-    range_raw = (union iw_range_raw *) buffer;
-
-  /* For new versions, we can check the version directly, for old versions
-   * we use magic. 300 bytes is a also magic number, don't touch... */
-  if(wrq.u.data.length < 300)
-    {
+    /* For new versions, we can check the version directly, for old versions
+     * we use magic. 300 bytes is a also magic number, don't touch... */
+    if (wrq.u.data.length < 300 || range->we_version_compiled <= 15) {
         /* That's v10 or earlier. Ouch ! Let's make a guess...*/
-        syslog(LOG_ERR, "wlan: range info unknown old version \n");
+        syslog(LOG_ERR, "wlan: range info unknown or old (<=15) version \n");
         return 2;
     }
 
-    /* Check how it needs to be processed */
-    if(range->we_version_compiled > 15)
-    {
-      /* This is our native format, that's easy... */
-      /* Copy stuff at the right place, ignore extra */
-        memcpy((char *) range, buffer, sizeof(struct iw_range));
-    }
-    else
-    {
-      /* Zero unknown fields */
-      bzero((char *) range, sizeof(struct iw_range));
+    /* Copy stuff at the right place, ignore extra */
+    memcpy((char *) range, buffer, sizeof(struct iw_range));
 
-      /* Initial part unmoved */
-      memcpy((char *) range,
-	     buffer,
-	     iwr15_off(num_channels));
-      /* Frequencies pushed futher down towards the end */
-      memcpy((char *) range + iwr_off(num_channels),
-	     buffer + iwr15_off(num_channels),
-	     iwr15_off(sensitivity) - iwr15_off(num_channels));
-      /* This one moved up */
-      memcpy((char *) range + iwr_off(sensitivity),
-	     buffer + iwr15_off(sensitivity),
-	     iwr15_off(num_bitrates) - iwr15_off(sensitivity));
-      /* This one goes after avg_qual */
-      memcpy((char *) range + iwr_off(num_bitrates),
-	     buffer + iwr15_off(num_bitrates),
-	     iwr15_off(min_rts) - iwr15_off(num_bitrates));
-      /* Number of bitrates has changed, put it after */
-      memcpy((char *) range + iwr_off(min_rts),
-	     buffer + iwr15_off(min_rts),
-	     iwr15_off(txpower_capa) - iwr15_off(min_rts));
-      /* Added encoding_login_index, put it after */
-      memcpy((char *) range + iwr_off(txpower_capa),
-	     buffer + iwr15_off(txpower_capa),
-	     iwr15_off(txpower) - iwr15_off(txpower_capa));
-      /* Hum... That's an unexpected glitch. Bummer. */
-      memcpy((char *) range + iwr_off(txpower),
-	     buffer + iwr15_off(txpower),
-	     iwr15_off(avg_qual) - iwr15_off(txpower));
-      /* Avg qual moved up next to max_qual */
-      memcpy((char *) range + iwr_off(avg_qual),
-	     buffer + iwr15_off(avg_qual),
-	     sizeof(struct iw_quality));
-    }
-
-  return 0;
+    return 0;
 }
-
-
 
 
 int wlan_ioctl(unsigned long QueryCode, const char *DeviceName, struct iwreq *wrq)
@@ -526,9 +399,9 @@ int getWlanChannelNum_ioctl(int radio_module_ind)
 
     if (wlan_ioctl(SIOCGIWFREQ, ifname, &wrq) >= 0)
     {
-        double freq = _iw_freq2float(&(wrq.u.freq));
-        if(_iw_get_range_info(ifname, &range) == 0)
-            channel = _iw_freq_to_channel(freq, &range);
+        double freq = iwconfig_freq2float(&(wrq.u.freq));
+        if(iwconfig_get_info(ifname, &range) == 0)
+            channel = iwconfig_freq_to_channel(freq, &range);
         else
             syslog(LOG_ERR, "libwive wireless : %s - get range info failed!", __FUNCTION__); 
     }

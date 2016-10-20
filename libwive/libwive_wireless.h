@@ -1,7 +1,6 @@
 #ifndef _WIVE_WIRELESS_H
 #define _WIVE_WIRELESS_H	1
 
-#include <linux/wireless.h>
 #include "oid.h"
 
 int wlan_ioctl(unsigned long QueryCode, const char *DeviceName, struct iwreq *wrq);
