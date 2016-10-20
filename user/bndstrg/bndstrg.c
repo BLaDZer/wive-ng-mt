@@ -20,8 +20,6 @@
 #include "libnvram.h"
 #include "bndstrg.h"
 
-int DebugLevel = DEBUG_TRACE;
-
 extern struct bndstrg_drv_ops bndstrg_drv_wext_ops;
 
 int bndstrg_update_entry_statistics(
@@ -1090,7 +1088,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	return BND_STRG_SUCCESS;
 }
 
-int bndstrg_init(struct bndstrg *bndstrg, 
+int bndstrg_init(struct bndstrg *bndstrg,
 				 struct bndstrg_event_ops *event_ops,
 				 int drv_mode,
 				 int opmode,
@@ -1119,9 +1117,6 @@ int bndstrg_init(struct bndstrg *bndstrg,
 	bndstrg->drv_data = bndstrg->drv_ops->drv_inf_init(bndstrg, opmode, drv_mode);
 
 	ret = bndstrg_table_init(&bndstrg->table);
-
-	/* show param init in table */
-	bndstrg_event_table_info(bndstrg);
 
 	if (ret == BND_STRG_SUCCESS)
 		ret = eloop_register_timeout(1, 0, bndstrg_periodic_exec, NULL, bndstrg);

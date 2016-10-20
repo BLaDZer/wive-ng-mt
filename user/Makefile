@@ -123,6 +123,7 @@ dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
 
+#dir_$(CONFIG_USER_BNDSTR)                   := bndstrg
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"

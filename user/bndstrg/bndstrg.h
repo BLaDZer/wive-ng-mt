@@ -192,11 +192,10 @@ struct bndstrg {
 
 	/* control interface */
 	struct bndstrg_ctrl_iface *bndstrg_ctrl_iface;
-	
+
 	u8 version;
 
 	struct bndstrg_cli_table table;
-	
 };
 
 int bndstrg_init(struct bndstrg *bndstrg, struct bndstrg_event_ops *event_ops, int drv_mode, int opmode, int version);
