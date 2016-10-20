@@ -1338,6 +1338,7 @@ typedef struct _RT_802_11_HARDWARE_REGISTER {
 	ULONG Data;		/* R/W data buffer */
 } RT_802_11_HARDWARE_REGISTER, *PRT_802_11_HARDWARE_REGISTER;
 
+#if 0
 typedef struct _RT_802_11_AP_CONFIG {
 	ULONG EnableTxBurst;	/* 0-disable, 1-enable */
 	ULONG EnableTurboRate;	/* 0-disable, 1-enable 72/100mbps turbo rate */
@@ -1348,6 +1349,7 @@ typedef struct _RT_802_11_AP_CONFIG {
 	ULONG Rsv1;		/* must be 0 */
 	ULONG SystemErrorBitmap;	/* ignore upon SET, return system error upon QUERY */
 } RT_802_11_AP_CONFIG, *PRT_802_11_AP_CONFIG;
+#endif
 
 /* structure to query/set STA_CONFIG */
 typedef struct _RT_802_11_STA_CONFIG {

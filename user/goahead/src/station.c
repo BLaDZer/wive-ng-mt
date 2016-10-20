@@ -866,12 +866,7 @@ static int getStaLinkStatus(int eid, webs_t wp, int argc, char_t **argv)
 		}
 		if (G_bRadio)
 		{
-			RT_802_11_STA_CONFIG configSta;
-			OidQueryInformation(RT_OID_802_11_STA_CONFIG, "ra0", &configSta, sizeof(RT_802_11_STA_CONFIG));
-			if (configSta.HwRadioStatus == 0) // Hardware radio off
-				websWrite(wp, "RF Off");
-			else
-				websWrite(wp, "Disconnected");
+			websWrite(wp, "Disconnected");
 		}
 		else
 			websWrite(wp, "RF Off");

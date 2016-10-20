@@ -228,17 +228,6 @@ typedef struct PACKED _NDIS_802_11_SSID
 	unsigned char   Ssid[NDIS_802_11_LENGTH_SSID]; // SSID information field
 } NDIS_802_11_SSID, *PNDIS_802_11_SSID;
 
-typedef struct _RT_802_11_STA_CONFIG {
-	unsigned long   EnableTxBurst;      // 0-disable, 1-enable
-	unsigned long   EnableTurboRate;    // 0-disable, 1-enable 72/100mbps turbo rate
-	unsigned long   UseBGProtection;    // 0-AUTO, 1-always ON, 2-always OFF
-	unsigned long   UseShortSlotTime;   // 0-no use, 1-use 9-us short slot time when applicable
-	unsigned long   AdhocMode;          // 0-11b rates only (WIFI spec), 1 - b/g mixed, 2 - g only
-	unsigned long   HwRadioStatus;      // 0-OFF, 1-ON, default is 1, Read-Only
-	unsigned long   Rsv1;               // must be 0
-	unsigned long   SystemErrorBitmap;  // ignore upon SET, return system error upon QUERY
-} RT_802_11_STA_CONFIG, *PRT_802_11_STA_CONFIG;
-
 typedef struct _NDIS_802_11_CONFIGURATION_FH
 {
 	unsigned long   Length;             // Length of structure
