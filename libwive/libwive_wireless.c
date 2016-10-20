@@ -527,16 +527,10 @@ int getWlanChannelNum_ioctl(int radio_module_ind)
     if (wlan_ioctl(SIOCGIWFREQ, ifname, &wrq) >= 0)
     {
         double freq = _iw_freq2float(&(wrq.u.freq));
-        syslog(LOG_ERR, "libwive wireless : FREQUENCY IS %lf \n", freq);
-
         if(_iw_get_range_info(ifname, &range) == 0)
-        {
             channel = _iw_freq_to_channel(freq, &range);
-        }
         else
-        {
             syslog(LOG_ERR, "libwive wireless : %s - get range info failed!", __FUNCTION__); 
-        }
     }
     else
     {
