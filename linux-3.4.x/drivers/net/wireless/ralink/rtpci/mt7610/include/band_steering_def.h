@@ -25,9 +25,9 @@
 /* use daemon */
 #define BNDSTRG_DAEMON
 
-#define BND_STRG_MAX_TABLE_SIZE		64
+#define BND_STRG_MAX_TABLE_SIZE		512
 #define BND_STRG_TIMER_PERIOD		1000
-#define BND_STRG_AGE_TIME		800000	/* orig 150000 */
+#define BND_STRG_AGE_TIME		400000	/* orig 150000 */
 #define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
 #define BND_STRG_CHECK_TIME_5G		4000	/* orig 30000 */
 #define BND_STRG_RSSI_DIFF		20
