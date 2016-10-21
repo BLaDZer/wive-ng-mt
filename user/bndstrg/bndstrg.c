@@ -296,7 +296,7 @@ int bndstrg_check_conn_req(
 					(~fBND_STRG_CLIENT_LOW_RSSI_2G) : (~fBND_STRG_CLIENT_LOW_RSSI_5G);
 			}
 		}
-
+#if 0
 		if((bAllowStaConnectInHt == FALSE) && (FrameType == APMT2_PEER_PROBE_REQ))
 		{
 			if(band == BAND_2G)
@@ -305,7 +305,7 @@ int bndstrg_check_conn_req(
 			if(band == BAND_5G)
 				entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G;
 		}
-
+#endif
 	}
 
 	if (ret_val != BND_STRG_SUCCESS)
