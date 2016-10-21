@@ -565,8 +565,11 @@ SendAuth:
 										Elem->MsgType,
 										Elem->rssi_info,
 										&bBndStrgCheck);
-	if (bBndStrgCheck == FALSE)
+	if (bBndStrgCheck == FALSE) {
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
+		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
 		return;
+	}
 #endif /* BAND_STEERING */
 
 	 /* YF@20130102: Refuse the weak signal of AuthReq */

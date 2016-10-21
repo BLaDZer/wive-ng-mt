@@ -236,6 +236,7 @@ INT BndStrg_TableInit(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table)
 	BndStrg_SetInfFlags(pAd, table, TRUE);
 
 	table->Ops = &D_BndStrgOps;
+	table->DaemonPid = 0xffffffff;
 	table->RssiDiff = BND_STRG_RSSI_DIFF;
 	table->RssiLow = BND_STRG_RSSI_LOW;
 	table->AgeTime = BND_STRG_AGE_TIME;
@@ -487,6 +488,7 @@ INT BndStrg_Enable(PBND_STRG_CLI_TABLE table, BOOLEAN enable)
 		pAd = (PRTMP_ADAPTER) table->priv;
 		msg.Action = BNDSTRG_ONOFF;
 		msg.OnOff = table->bEnabled;
+		msg.Band = table->Band;
 		RtmpOSWrielessEventSend(
 			pAd->net_dev,
 			RT_WLAN_EVENT_CUSTOM,
@@ -512,6 +514,10 @@ INT BndStrg_SetInfFlags(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table, BOOLEAN bI
 		(table->b5GInfReady ^ bInfReady))
 	{
 		table->b5GInfReady = bInfReady;
+		if (bInfReady)
+			table->Band |= BAND_5G;
+		else
+			table->Band &= ~BAND_5G;
 
 		msg.Action = INF_STATUS_RSP_5G;
 		msg.b5GInfReady = table->b5GInfReady;
@@ -531,6 +537,10 @@ INT BndStrg_SetInfFlags(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table, BOOLEAN bI
 	else if (table->b2GInfReady ^ bInfReady)
 	{
 		table->b2GInfReady = bInfReady;
+		if (bInfReady)
+			table->Band |= BAND_24G;
+		else
+			table->Band &= ~BAND_24G;
 		msg.Action = INF_STATUS_RSP_2G;
 		msg.b2GInfReady = table->b2GInfReady;
 		RtmpOSWrielessEventSend(
@@ -670,10 +680,20 @@ static BOOLEAN D_CheckConnectionReq(
 								fBND_STRG_FRM_CHK_ASS_REQ,
 								fBND_STRG_FRM_CHK_ATH_REQ};
 	UINT32 frame_check_flags = 0;
+	CHAR i, rssi_max;
 
 	/* Send to daemon */
-	NdisCopyMemory(msg.Rssi, Rssi, 3);
+	rssi_max = pAd->CommonCfg.RxStream;
+	memset(msg.Rssi,0x80,sizeof(msg.Rssi));
+	for ( i = 0; i < rssi_max; i++)
+	{
+		msg.Rssi[i] = Rssi[i];
+	}
 	msg.Action= CONNECTION_REQ;
+	if (WMODE_CAP_5G(pAd->CommonCfg.PhyMode))
+		table->Band = BAND_5G;
+	else
+		table->Band = BAND_24G;
 	msg.Band = table->Band;
 	msg.FrameType = FrameType;
 	COPY_MAC_ADDR(msg.Addr, pSrcAddr);
@@ -940,7 +960,7 @@ INT D_SetMntAddr(
 }
 #endif /* BND_STRG_DBG */
 
-VOID D_MsgHandle(
+static VOID D_MsgHandle(
 			PRTMP_ADAPTER	pAd,
 			BNDSTRG_MSG *msg)
 {
@@ -952,6 +972,8 @@ VOID D_MsgHandle(
 	if (!table)
 		return;
 
+	if ((table->DaemonPid != 0xffffffff) && (table->DaemonPid != current->pid))
+		return;
 	switch (msg->Action)
 	{
 		case CLI_ADD:
@@ -959,6 +981,10 @@ VOID D_MsgHandle(
 				table->Ops->TableEntryAdd(table, msg->Addr, &entry);
 			break;
 						
+		case CLI_UPDATE:
+			/* ToDo */
+			break;
+
 		case CLI_DEL:
 			table->Ops->TableEntryDel(table, msg->Addr, 0xFF);
 			break;
@@ -988,6 +1014,19 @@ VOID D_MsgHandle(
 
 		case BNDSTRG_ONOFF:
 			BndStrg_Enable(table, msg->OnOff);
+			if (msg->OnOff) 
+				table->DaemonPid = current->pid;
+			else {
+				UINT32 i;
+				PBND_STRG_CLI_ENTRY entry = NULL;
+				for (i=0;i<BND_STRG_MAX_TABLE_SIZE;i++) {
+					entry = &table->Entry[i];
+					if (entry->bValid == TRUE) {
+						BndStrg_DeleteEntry(table, entry->Addr, i);
+					}
+				}
+				table->DaemonPid = 0xffffffff;
+			}
 			break;
 
 		default:

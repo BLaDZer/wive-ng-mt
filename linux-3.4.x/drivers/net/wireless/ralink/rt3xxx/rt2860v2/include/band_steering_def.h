@@ -25,7 +25,7 @@
 /* use daemon */
 #define BNDSTRG_DAEMON
 
-#define BND_STRG_MAX_TABLE_SIZE		512
+#define BND_STRG_MAX_TABLE_SIZE		128
 #define BND_STRG_TIMER_PERIOD		1000
 #define BND_STRG_AGE_TIME		400000	/* orig 150000 */
 #define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
@@ -84,6 +84,7 @@ typedef struct _BND_STRG_CLI_TABLE{
 #endif /* BND_STRG_DBG */
 	UINT8		Band;
 	UINT32 AutoOnOffThrd;   /* Threshold to auto turn bndstrg on/off by 2.4G false CCA */
+	UINT32          DaemonPid;
 	BOOLEAN bDaemonReady;
 } BND_STRG_CLI_TABLE, *PBND_STRG_CLI_TABLE;
 
@@ -163,6 +164,7 @@ enum ACTION_CODE{
 	CONNECTION_REQ = 1,
 	CLI_ADD,
 	CLI_DEL,
+	CLI_UPDATE,
 	CLI_AGING_REQ,
 	CLI_AGING_RSP,
 	INF_STATUS_QUERY,

@@ -242,7 +242,7 @@ int bndstrg_check_conn_req(
 		u8 			band,
 		unsigned char *pSrcAddr,
 		u8			FrameType,
-		s8 			*rssi,
+		s8 			MaxRssi,
 		u8 			bAllowStaConnectInHt)
 {
 	int 	ret_val = BND_STRG_SUCCESS;
@@ -261,14 +261,6 @@ int bndstrg_check_conn_req(
 
 	if (entry)
 	{
-		s8 MaxRssi = rssi[0], i;
-
-		for ( i = 1; i < 3; i++)
-		{
-			if (rssi[i])
-				MaxRssi = max(MaxRssi, rssi[i]);
-		}
-
 		if (band == BAND_2G)
 		{
 			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
@@ -335,16 +327,26 @@ int bndstrg_event_test(struct bndstrg *bndstrg)
 
 int bndstrg_event_conn_req(struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 {
+	s8 MaxRssi = -128, i;
+
+	/* -128 - stream not support by chip - skip it */
+	for (i = 0; i < 3; i++)
+	{
+		if (msg->Rssi[i] != 0 && msg->Rssi[i] != -128)
+			MaxRssi = max(MaxRssi,msg->Rssi[i]);
+	}
+
 	DBGPRINT(DEBUG_TRACE,
-			"%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, frame_type = %u, rssi = %d/%d/%d\n",
+			"%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, frame_type = %u, rssi = %d/%d/%d, maxrssi = %d\n",
 			PRINT_MAC(msg->Addr), msg->Band, msg->FrameType,
-			msg->Rssi[0], msg->Rssi[1], msg->Rssi[2]);
+			msg->Rssi[0], msg->Rssi[1], msg->Rssi[2], MaxRssi);
+
 
 	bndstrg_check_conn_req(&bndstrg->table,
 							msg->Band,
 							msg->Addr,
 							msg->FrameType,
-							msg->Rssi,
+							MaxRssi,
 							msg->bAllowStaConnectInHt);
 
 	return 0;
@@ -580,6 +582,10 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 
 		case CLI_DEL:
 			bndstrg_delete_entry(table, msg.Addr, msg.TalbeIndex);
+			break;
+
+		case CLI_UPDATE:
+			/* ToDo */
 			break;
 
 		case SET_RSSI_DIFF:
