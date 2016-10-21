@@ -145,6 +145,7 @@ typedef struct _BNDSTRG_MSG{
 	UINT32	Time;
 	UINT32	ConditionCheck;
 	UCHAR 	Addr[MAC_ADDR_LEN];
+	UINT8	bAllowStaConnectInHt;
 } BNDSTRG_MSG, *PBNDSTRG_MSG;
 
 typedef struct _BNDSTRG_CLI_EVENT{
