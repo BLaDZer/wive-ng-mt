@@ -46,7 +46,7 @@ static void driver_wext_event_wireless(struct driver_wext_data *drv,
          */
         os_memcpy(&iwe_buf, pos, IW_EV_LCP_LEN);
 		
-		DBGPRINT(DEBUG_INFO, "cmd = 0x%x len = %d\n", iwe->cmd, iwe->len);
+		//DBGPRINT(DEBUG_INFO, "cmd = 0x%x len = %d\n", iwe->cmd, iwe->len);
         
 		if (iwe->len <= IW_EV_LCP_LEN)
             return;
@@ -178,7 +178,7 @@ static int driver_wext_inf_status_query(
 					(struct driver_wext_data *)drv_data;	
 	struct bndstrg_msg msg;
 
-	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
+	//DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
 	msg.Action = INF_STATUS_QUERY;
 
 	ret = driver_wext_set_oid(
@@ -187,7 +187,7 @@ static int driver_wext_inf_status_query(
 				OID_BNDSTRG_MSG,
 				(char *) &msg,
 				sizeof(struct bndstrg_msg));
-	DBGPRINT(DEBUG_TRACE, "ret = %u\n", ret);
+	//DBGPRINT(DEBUG_TRACE, "ret = %u\n", ret);
 	return ret;
 }
 
@@ -222,15 +222,15 @@ static void driver_wext_event_rtm_newlink(void *ctx, struct ifinfomsg *ifi,
     struct driver_wext_data *drv = ctx;
     int attrlen, rta_len;
     struct rtattr *attr;
-    
+
     attrlen = len;
 
-   	DBGPRINT(DEBUG_TRACE, "attrlen=%d", attrlen);
+    //DBGPRINT(DEBUG_TRACE, "attrlen=%d", attrlen);
 
     attr = (struct rtattr *) buf;
     rta_len = RTA_ALIGN(sizeof(struct rtattr));
     while (RTA_OK(attr, attrlen)) {
-        DBGPRINT(DEBUG_TRACE, "rta_type=%02x\n", attr->rta_type);
+        //DBGPRINT(DEBUG_TRACE, "rta_type=%02x\n", attr->rta_type);
         if (attr->rta_type == IFLA_WIRELESS) {
             driver_wext_event_wireless(
                 drv, ctx,
