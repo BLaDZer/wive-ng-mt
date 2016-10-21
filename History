@@ -2407,7 +2407,7 @@
 16) libcurl: fix build with openssl and zlib support.<br>
 17) nodogsplash: fix resourse leak after migrate to libmicrohttpd.<br>
 18) bandsteering: fix command line options parse.<br>
-19) bandsteering: tune timeouts and increase mac table size to 256.<br>
+19) bandsteering: tune timeouts and increase mac table size to 128.<br>
 20) bandsteering: send UNSPECIFY_FAIL if need auth reject.<br>
 21) bandsteering: fix calc and copy rssi to daemon.<br>
 22) bandsteering: fix band report to daemon.<br>
