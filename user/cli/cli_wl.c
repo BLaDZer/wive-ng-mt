@@ -240,7 +240,6 @@ int func_wl_status_report(int argc, char* argv[])
     getWlanCurrentMacAddr(mac2, 2);
 #endif
 
-
     /* FIXME: remove fallback */
 
     chan_num  = getWlanChannelNum_ioctl(1);
@@ -276,18 +275,23 @@ int func_wl_status_report(int argc, char* argv[])
     int bcisolated_ssid_len = strlen(bcisolated_ssid);
 
     int ssid_num;
-    int band_num;
     char ssid_nvram_id[6] = {0};
 
     int bssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 0);
+    int band_num = 1;
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
     int mbssid_5ghz = strcmp(nvram_get(RT2860_NVRAM, "BssidIfName"), "rai") == 0;
 
     for (band_num=1; band_num<=2; band_num++)
+#endif
     for (ssid_num=1; ssid_num <= bssid_num; ssid_num++)
     {
         char* mac = (band_num==1)?mac1:mac2;
+
         sprintf(ssid_nvram_id, "SSID%i", ssid_num);
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
         if (ssid_num > 1)
         {
             if (mbssid_5ghz && band_num == 1) break;
@@ -301,6 +305,7 @@ int func_wl_status_report(int argc, char* argv[])
                 sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
             }
         }
+#endif
 
         char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
         if (ssid_name[0] == '\0')
@@ -407,15 +412,18 @@ int func_wl_status(int argc, char* argv[])
     int bcisolated_ssid_len = strlen(bcisolated_ssid);
 
     int bssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 0);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    int band_num;
     int mbssid_5ghz = (strcmp(nvram_get(RT2860_NVRAM, "BssidIfName"), "rai") == 0);
 
-    int band_num;
-
     for (band_num=1; band_num <= 2; band_num++)
+#endif
     for (ssid_num=1; ssid_num <= bssid_num; ssid_num++)
     {
         sprintf(ssid_nvram_id, "SSID%i", ssid_num);
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
         if (ssid_num > 1)
         {
             if (mbssid_5ghz && band_num == 1) break;
@@ -429,6 +437,7 @@ int func_wl_status(int argc, char* argv[])
                 sprintf(ssid_nvram_id, "SSID%iINIC", ssid_num);
             }
         }
+#endif
 
         char* ssid_name = nvram_get(RT2860_NVRAM, ssid_nvram_id);
         if (ssid_name[0] == '\0')
