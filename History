@@ -2519,6 +2519,7 @@
 128) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
 129) kernel: sd: set to WCE if usb cache quirk is present.<br>
 130) kernel: sd: notify block layer when using temporary change to cache_type.<br>
+131) kernel: mm, gup: close FOLL MAP_PRIVATE race (CVE-2016-5195).<br>
 <br>
 <br>
 <br>
