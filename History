@@ -2478,18 +2478,18 @@
 87) kernel: net: vlan: free percpu stats in device destructor.<br>
 88) kernel: net: netfilter: nf_nat: handle routing changes in MASQUERADE target.<br>
 89) kernel: net: netfilter: nf_nat: also handle non-ESTABLISHED routing changes in MASQUERADE.<br>
-90) kernel: net: xfrm: invalidate dst on policy insertion/deletion
-91) kernel: net: xfrm/xfrm_replay: avoid division by zero
-92) kernel: net: xfrm: use xfrm direction when lookup policy
-93) kernel: net: xfrm: make xfrm_state timer monotonic
-94) kernel: net: xfrm: announce deleation of temporary SA
-95) kernel: net: xfrm: force SA to be lookup again if SA in acquire state
-96) kernel: net: xfrm: simplify SA looking up when using wildcard source
-97) kernel: net: xfrm: decode sessions with output interface.
-98) kernel: net: xfrm: fix null pointer dereference when decoding sessions
-99) kernel: net: xfrm: reload skb header pointers after calling pskb_may_pull.
-100) kernel: net: xfrm: make local error reporting more robust
-101) kernel: net: xfrm: choose protocol family by skb protocol
+90) kernel: net: xfrm: invalidate dst on policy insertion/deletion.<br>
+91) kernel: net: xfrm/xfrm_replay: avoid division by zero.<br>
+92) kernel: net: xfrm: use xfrm direction when lookup policy.<br>
+93) kernel: net: xfrm: make xfrm_state timer monotonic.<br>
+94) kernel: net: xfrm: announce deleation of temporary SA.<br>
+95) kernel: net: xfrm: force SA to be lookup again if SA in acquire state.<br>
+96) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+97) kernel: net: xfrm: decode sessions with output interface.<br>
+98) kernel: net: xfrm: fix null pointer dereference when decoding sessions.<br>
+99) kernel: net: xfrm: reload skb header pointers after calling pskb_may_pull.<br>
+100) kernel: net: xfrm: make local error reporting more robust.<br>
+101) kernel: net: xfrm: choose protocol family by skb protocol.<br>
 102) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
 103) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
 104) kernel: net: fix sk_mem_reclaim_partial().<br>
