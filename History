@@ -2438,90 +2438,91 @@
 48) kernel: ralink_wifi: prevent some potentional null pointer dereferences.<br>
 49) kernel: ralink_wifi: do not need require ACK for probe requests.<br>
 50) kernel: ralink_wifi: update regional channel lists.<br>
-51) kernel: ralink_wifi: rrm: fix Voice Enterprise : Item V-E-4.3, case2 still need to include the SSID sub filed even SsidLen is 0.<br>
-52) kernel: ralink_wifi: rrm: send rrm report from managment ring.<br>
-53) kernel: ralink_wifi: rrm: fix report if auto channel select use.<br>
-54) kernel: ralink_wifi: rrm: fix padding/limit ie ext cap.<br>
-55) kernel: ralink_wifi: rrm: add channel report list req support.<br>
-56) kernel: ralink_wifi: rrm: fix send power constraint element at 2.4GHz.<br>
-57) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
-58) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
-59) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
-60) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
-61) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
-62) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
-63) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
-64) kernel: softirq: let ksoftirqd do its job.<br>
-65) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
-66) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
-67) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
-68) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
-69) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
-70) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
-71) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
-72) kernel: asm-generic: make get_user() clear the destination on errors.<br>
-73) kernel: mips: barrier: add definitions of SYNC stype values.<br>
-74) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
-75) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
-76) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
-77) kernel: mips: squash lines for simple wrapper functions.<br>
-78) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
-79) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
-80) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
-81) kernel: mips: use struct list_head lists.<br>
-82) kernel: mips: pci: make pcibios_set_cache_line_size an initcall.<br>
-83) kernel: mips: pci: inline pcibios_assign_all_busses.<br>
-84) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
-85) kernel: net: packet: tx timestamping on tpacket ring.<br>
-86) kernel: net: vlan: unnecessary to check if vlan_pcpu_stats is NULL.<br>
-87) kernel: net: vlan: free percpu stats in device destructor.<br>
-88) kernel: net: netfilter: nf_nat: handle routing changes in MASQUERADE target.<br>
-89) kernel: net: netfilter: nf_nat: also handle non-ESTABLISHED routing changes in MASQUERADE.<br>
-90) kernel: net: xfrm: invalidate dst on policy insertion/deletion.<br>
-91) kernel: net: xfrm/xfrm_replay: avoid division by zero.<br>
-92) kernel: net: xfrm: use xfrm direction when lookup policy.<br>
-93) kernel: net: xfrm: make xfrm_state timer monotonic.<br>
-94) kernel: net: xfrm: announce deleation of temporary SA.<br>
-95) kernel: net: xfrm: force SA to be lookup again if SA in acquire state.<br>
-96) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-97) kernel: net: xfrm: decode sessions with output interface.<br>
-98) kernel: net: xfrm: fix null pointer dereference when decoding sessions.<br>
-99) kernel: net: xfrm: reload skb header pointers after calling pskb_may_pull.<br>
-100) kernel: net: xfrm: make local error reporting more robust.<br>
-101) kernel: net: xfrm: choose protocol family by skb protocol.<br>
-102) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
-103) kernel: net: ipv6: do not increment mac header when it's unset.<br>
-104) kernel: net: ipv6: avoid taking locks at socket dismantle.<br>
-105) kernel: net: udp: must lock the socket in udp_disconnect().<br>
-106) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
-107) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
-108) kernel: net: fix sk_mem_reclaim_partial().<br>
-109) kernel: net: avoid sk_forward_alloc overflows.<br>
-110) kernel: net: socket: move ktime2ts to ktime header api.<br>
-111) kernel: net: introduce netdev_alloc_pcpu_stats() for drivers.<br>
-112) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
-113) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
-114) kernel: usb: cdc-wdm: return correct error codes.<br>
-115) kernel: usb: cdc-wdm: unify error handling in write.<br>
-116) kernel: usb: cdc-wdm: error returns need to be translated.<br>
-117) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
-118) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
-119) kernel: usb: cdc-wdm: cleanup debug messages.<br>
-120) kernel: usb: cdc-wdm: add terminating newline.<br>
-121) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
-122) kernel: usb: hub: fix unbalanced reference count/memory leak/deadlocks.<br>
-123) kernel: usb: hub: fix up early-exit pathway in hub_activate.<br>
-124) kernel: usb: hub: change the locking in hub_activate.<br>
-125) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
-126) kernel: usb: avoid left shift by -1.<br>
-127) kernel: usb: usbip: fix potential out-of-bounds write.<br>
-128) kernel: usb: usb-storage: add support for write cache quirk.<br>
-129) kernel: usb: usb-storage: update usb devices for write cache quirk in quirk list.<br>
-130) kernel: usb: usb-storage: scsiglue: limit USB3 devices to 2048 sectors.<br>
-131) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
-132) kernel: sd: set to WCE if usb cache quirk is present.<br>
-133) kernel: sd: notify block layer when using temporary change to cache_type.<br>
-134) kernel: mm, gup: close FOLL MAP_PRIVATE race (CVE-2016-5195).<br>
+51) kernel: ralink_wifi: fix restore burst mode in txop tune.<br>
+52) kernel: ralink_wifi: rrm: fix Voice Enterprise : Item V-E-4.3, case2 still need to include the SSID sub filed even SsidLen is 0.<br>
+53) kernel: ralink_wifi: rrm: send rrm report from managment ring.<br>
+54) kernel: ralink_wifi: rrm: fix report if auto channel select use.<br>
+55) kernel: ralink_wifi: rrm: fix padding/limit ie ext cap.<br>
+56) kernel: ralink_wifi: rrm: add channel report list req support.<br>
+57) kernel: ralink_wifi: rrm: fix send power constraint element at 2.4GHz.<br>
+58) kernel: ralink_wifi: mt7620: add very simple support of RRM (only TPC/Regulatore/APChannel reports).<br>
+59) kernel: ralink_wifi: mt7620: fix set quick rate adapt interval.<br>
+60) kernel: ralink_wifi: mt76x2: fix reset idle timeout and retransmits counter on broadcast/multicast activity.<br>
+61) kernel: ralink_wifi: mt76x2: disable buggy play with auto fallback in ra_alg_grp.<br>
+62) kernel: ralink_wifi: mt7610: fix set Entry CurrTxRateIndex in rate adapt logic.<br>
+63) kernel: ktime: add __must_check prefix to ktime_to_timespec_cond.<br>
+64) kernel: sched/core: fix a race between try_to_wake_up() and a woken up task.<br>
+65) kernel: softirq: let ksoftirqd do its job.<br>
+66) kernel: kernel.h: make abs() work with 64-bit types and remove abs64().<br>
+67) kernel: kernel.h: change abs() macro so it uses consistent return type.<br>
+68) kernel: asm-generic headers: uaccess.h to conditionally define segment_eq().<br>
+69) kernel: asm-generic: uaccess s/might_sleep/might_fault/.<br>
+70) kernel: asm-generic: uaccess: Allow arches to over-ride __{get,put}_user_fn().<br>
+71) kernel: asm-generic: {get,put}_user ptr argument evaluate only 1 time.<br>
+72) kernel: asm-generic: make copy_from_user() zero the destination properly.<br>
+73) kernel: asm-generic: make get_user() clear the destination on errors.<br>
+74) kernel: mips: barrier: add definitions of SYNC stype values.<br>
+75) kernel: mips: c-r4k: fix size calc when avoiding IPIs for small icache flushes.<br>
+76) kernel: mips: asm-offset.c: delete unused irq_cpustat_t struct offsets.<br>
+77) kernel: mips: fix possibility of deadlock when bringing CPUs online.<br>
+78) kernel: mips: squash lines for simple wrapper functions.<br>
+79) kernel: mips: c-r4k: split user/kernel flush_icache_range().<br>
+80) kernel: mips: cacheflush: use __flush_icache_user_range().<br>
+81) kernel: mips: fix detection of unsupported highmem with cache aliases.<br>
+82) kernel: mips: use struct list_head lists.<br>
+83) kernel: mips: pci: make pcibios_set_cache_line_size an initcall.<br>
+84) kernel: mips: pci: inline pcibios_assign_all_busses.<br>
+85) kernel: net: packet: minor: add generic tpacket_uhdr to access packet headers.<br>
+86) kernel: net: packet: tx timestamping on tpacket ring.<br>
+87) kernel: net: vlan: unnecessary to check if vlan_pcpu_stats is NULL.<br>
+88) kernel: net: vlan: free percpu stats in device destructor.<br>
+89) kernel: net: netfilter: nf_nat: handle routing changes in MASQUERADE target.<br>
+90) kernel: net: netfilter: nf_nat: also handle non-ESTABLISHED routing changes in MASQUERADE.<br>
+91) kernel: net: xfrm: invalidate dst on policy insertion/deletion.<br>
+92) kernel: net: xfrm/xfrm_replay: avoid division by zero.<br>
+93) kernel: net: xfrm: use xfrm direction when lookup policy.<br>
+94) kernel: net: xfrm: make xfrm_state timer monotonic.<br>
+95) kernel: net: xfrm: announce deleation of temporary SA.<br>
+96) kernel: net: xfrm: force SA to be lookup again if SA in acquire state.<br>
+97) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+98) kernel: net: xfrm: decode sessions with output interface.<br>
+99) kernel: net: xfrm: fix null pointer dereference when decoding sessions.<br>
+100) kernel: net: xfrm: reload skb header pointers after calling pskb_may_pull.<br>
+101) kernel: net: xfrm: make local error reporting more robust.<br>
+102) kernel: net: xfrm: choose protocol family by skb protocol.<br>
+103) kernel: net: ipv6: correctly add local routes when lo goes up.<br>
+104) kernel: net: ipv6: do not increment mac header when it's unset.<br>
+105) kernel: net: ipv6: avoid taking locks at socket dismantle.<br>
+106) kernel: net: udp: must lock the socket in udp_disconnect().<br>
+107) kernel: net: tune route/arp caches timeouts for more suitable default values.<br>
+108) kernel: net: get rid of an signed integer overflow in ip_idents_reserve().<br>
+109) kernel: net: fix sk_mem_reclaim_partial().<br>
+110) kernel: net: avoid sk_forward_alloc overflows.<br>
+111) kernel: net: socket: move ktime2ts to ktime header api.<br>
+112) kernel: net: introduce netdev_alloc_pcpu_stats() for drivers.<br>
+113) kernel: usb: serial: option: add WeTelecom WM-D200.<br>
+114) kernel: usb: serial: option: add WeTelecom 0x6802 and 0x6803 products.<br>
+115) kernel: usb: cdc-wdm: return correct error codes.<br>
+116) kernel: usb: cdc-wdm: unify error handling in write.<br>
+117) kernel: usb: cdc-wdm: error returns need to be translated.<br>
+118) kernel: usb: cdc-wdm: fix out-of-sync due to missing notifications.<br>
+119) kernel: usb: cdc-wdm: clear read pipeline in case of error.<br>
+120) kernel: usb: cdc-wdm: cleanup debug messages.<br>
+121) kernel: usb: cdc-wdm: add terminating newline.<br>
+122) kernel: usb: qmi_wwan: add support for Quectel EC21 and EC25.<br>
+123) kernel: usb: hub: fix unbalanced reference count/memory leak/deadlocks.<br>
+124) kernel: usb: hub: fix up early-exit pathway in hub_activate.<br>
+125) kernel: usb: hub: change the locking in hub_activate.<br>
+126) kernel: usb: remove race condition in usbfs/libusb when using reap-after-disconnect.<br>
+127) kernel: usb: avoid left shift by -1.<br>
+128) kernel: usb: usbip: fix potential out-of-bounds write.<br>
+129) kernel: usb: usb-storage: add support for write cache quirk.<br>
+130) kernel: usb: usb-storage: update usb devices for write cache quirk in quirk list.<br>
+131) kernel: usb: usb-storage: scsiglue: limit USB3 devices to 2048 sectors.<br>
+132) kernel: usb: usb-storage: scsiglue: further describe our 240 sector limit.<br>
+133) kernel: sd: set to WCE if usb cache quirk is present.<br>
+134) kernel: sd: notify block layer when using temporary change to cache_type.<br>
+135) kernel: mm, gup: close FOLL MAP_PRIVATE race (CVE-2016-5195).<br>
 <br>
 <br>
 <br>

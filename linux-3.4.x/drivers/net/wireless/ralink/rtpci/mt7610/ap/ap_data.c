@@ -3876,12 +3876,14 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 		if (
 #ifdef DOT11_N_SUPPORT
 			(pAd->WIFItestbed.bGreenField && pAd->MacTab.fAnyStationNonGF == TRUE) ||
-			((pAd->OneSecondnonBEpackets > nonBEpackets) || pAd->MacTab.fAnyStationMIMOPSDynamic) || 
+			((pAd->OneSecondnonBEpackets > nonBEpackets) || pAd->MacTab.fAnyStationMIMOPSDynamic) ||
 #endif /* DOT11_N_SUPPORT */
 			(pAd->MacTab.fAnyTxOPForceDisable))
 		{
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
 			{
+				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
+
 				if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE))
 				{
 					RegValue = pAd->CommonCfg.RestoreBurstMode;
@@ -3898,8 +3900,6 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 
 					RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
 				}
-
-				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
 
 				/* disable AC0(BE) TX_OP */
 				RegValue  &= 0xFFFFFF00; /* for WMM test */
