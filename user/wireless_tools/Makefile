@@ -206,6 +206,7 @@ install-iwmulticall:: iwmulticall
 	  ln -f -s iwconfig iwlist ; \
 	  ln -f -s iwconfig iwspy ; \
 	  ln -f -s iwconfig iwpriv ; \
+	  ln -f -s iwconfig iwevent ; \
 	  ln -f -s iwconfig iwgetid )
 
 romfs:
