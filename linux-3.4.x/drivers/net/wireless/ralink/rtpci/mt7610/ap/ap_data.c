@@ -3922,14 +3922,11 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 		}
 		else
 		{
-			if ((RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE) == 0)
-				|| (pAd->ApCfg.ChangeTxOpClient != pAd->MacTab.Size))
+			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE) == 0)
 			{
 				/* enable AC0(BE) TX_OP */
 				UCHAR	txop_value_burst = 0x20;	/* default txop for Tx-Burst */
 				UCHAR   txop_value = 0;
-
-				pAd->ApCfg.ChangeTxOpClient = pAd->MacTab.Size;
 #ifdef LINUX
 #ifdef RTMP_RBUS_SUPPORT
 				if (pAd->infType == RTMP_DEV_INF_RBUS)

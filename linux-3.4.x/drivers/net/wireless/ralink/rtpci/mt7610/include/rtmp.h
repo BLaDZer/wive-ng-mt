@@ -2826,7 +2826,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	BND_STRG_CLI_TABLE BndStrgTable;
 #endif /* BAND_STEERING */
 
-	UCHAR ChangeTxOpClient;
 	BOOLEAN fAllStatIsHighTraffic;
 	UCHAR fStaHighTrafficCount;
 	BOOLEAN fDisableTrafficCnt;

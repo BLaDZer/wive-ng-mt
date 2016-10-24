@@ -3967,7 +3967,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	UINT8 EthApCliIdx;
 	UCHAR RepeaterCliSize;
 #endif /* MAC_REPEATER_SUPPORT */
-	UCHAR ChangeTxOpClient;
 #ifdef BAND_STEERING
 	/* 
 		This is used to let user config band steering on/off by profile.

@@ -3829,7 +3829,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 		}
 #endif /* APCLI_SUPPORT */
 		pAd->ApCfg.EntryClientCount = 0;
-		pAd->ApCfg.ChangeTxOpClient = 0;
 	}
 
 #ifdef DYNAMIC_VGA_SUPPORT

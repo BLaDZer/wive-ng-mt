@@ -3960,7 +3960,6 @@ VOID	UserCfgInit(
 		}
 #endif /* APCLI_SUPPORT */
 		pAd->ApCfg.EntryClientCount = 0;
-		pAd->ApCfg.ChangeTxOpClient = 0;
 	}
 #endif /* CONFIG_AP_SUPPORT */
 

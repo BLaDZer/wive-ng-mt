@@ -1647,17 +1647,8 @@ if (pMacTable->fStationHighTrafficCount >= 3)
 pMacTable->fAllStaIsHighTraffic = TRUE;
 if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
 {
-/*UCHAR triggerBitMap = 0;
-if (pAd->ApCfg.fAllStatIsHighTraffic != pMacTable->fAllStaIsHighTraffic)
-triggerBitMap |= 1;
-if (pAd->ApCfg.ChangeTxOpClient != pAd->MacTab.Size)
-triggerBitMap |= 2;
-if (pAd->ApCfg.fStaHighTrafficCount != pMacTable->fStationHighTrafficCount)
-triggerBitMap |= 4;
-if (triggerBitMap != 0)*/
 	{
 		pAd->ApCfg.fAllStatIsHighTraffic = pMacTable->fAllStaIsHighTraffic;
-		pAd->ApCfg.ChangeTxOpClient = pAd->MacTab.Size;
 		pAd->ApCfg.fStaHighTrafficCount = pMacTable->fStationHighTrafficCount;
 		if (pAd->ApCfg.fAllStatIsHighTraffic == TRUE)
 		{
