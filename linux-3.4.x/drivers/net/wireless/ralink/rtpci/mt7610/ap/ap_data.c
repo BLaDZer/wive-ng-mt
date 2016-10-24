@@ -3927,6 +3927,9 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				/* enable AC0(BE) TX_OP */
 				UCHAR	txop_value_burst = 0x20;	/* default txop for Tx-Burst */
 				UCHAR   txop_value = 0;
+
+				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
+
 #ifdef LINUX
 #ifdef RTMP_RBUS_SUPPORT
 				if (pAd->infType == RTMP_DEV_INF_RBUS)
@@ -3977,8 +3980,6 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				if(pAd->MacTab.Size > 2) /* for Multi-Clients */
 					txop_value = 0;
 #endif /* MULTI_CLIENT_SUPPORT */
-
-				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
 
 				RegValue  &= 0xFFFFFF00;
 				/*if ((RegValue & 0x0000FF00) == 0x00005400)

@@ -1422,11 +1422,8 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 				UCHAR	txop_value_burst = 0x20;	/* default txop for Tx-Burst */
 				UCHAR   txop_value;
 
-#ifdef LINUX
-#endif /* LINUX */
-
 				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-				
+
 				if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE))
 					txop_value = 0x80;				
 				else if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))

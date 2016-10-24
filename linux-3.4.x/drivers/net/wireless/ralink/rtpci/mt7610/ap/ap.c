@@ -1643,17 +1643,20 @@ VOID MacTableMaintenance(
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef CONFIG_AP_SUPPORT
-if (pMacTable->fStationHighTrafficCount >= 3)
-pMacTable->fAllStaIsHighTraffic = TRUE;
-if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
-{
+	if (pMacTable->fStationHighTrafficCount >= 3)
+	    pMacTable->fAllStaIsHighTraffic = TRUE;
+	    if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
 	{
+	    {
 		pAd->ApCfg.fAllStatIsHighTraffic = pMacTable->fAllStaIsHighTraffic;
 		pAd->ApCfg.fStaHighTrafficCount = pMacTable->fStationHighTrafficCount;
 		if (pAd->ApCfg.fAllStatIsHighTraffic == TRUE)
 		{
 			UINT32 RegValue;
 			UCHAR txop_value = 0;
+
+			RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
+
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
 				txop_value = 0x80;
 			else if (pAd->CommonCfg.bEnableTxBurst)
@@ -1668,31 +1671,29 @@ if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
 				txop_value = 0;
 			}
 #endif /* MULTI_CLIENT_SUPPORT */
-				RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-				RegValue  &= 0xFFFFFF00;
-				RegValue  |= txop_value;
-				RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, RegValue);
-				DBGPRINT(RT_DEBUG_INFO, ("%s::condition (1) under HT/VHT mode\n", __FUNCTION__));
-			}
+			RegValue  &= 0xFFFFFF00;
+			RegValue  |= txop_value;
+			RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, RegValue);
+			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (1) under HT/VHT mode\n", __FUNCTION__));
+		}
 		else
 		{
-			//MAC_TABLE_ENTRY *pMacEntry = NULL; //unused
-			//UINT32 i = 0; //unused
 			UINT32 RegValue;
 			UCHAR txop_value = 0;
-			//BOOLEAN bEnableSpecificTxOp = FALSE; //unused
+
+			RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
+
 #ifdef MULTI_CLIENT_SUPPORT
 			asic_change_tx_retry(pAd, 1);
 			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.2) under HT/VHT mode\n", __FUNCTION__));
 #endif /* MULTI_CLIENT_SUPPORT */
 
 			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
-			txop_value = 0x80;
+				txop_value = 0x80;
 			else if (pAd->CommonCfg.bEnableTxBurst)
-			txop_value = 0x20;
+				txop_value = 0x20;
 			else
 			txop_value = 0;
-			RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
 			RegValue  &= 0xFFFFFF00;
 			RegValue  |= txop_value;
 			RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, RegValue);
