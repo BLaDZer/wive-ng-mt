@@ -205,7 +205,6 @@ install-iwmulticall:: iwmulticall
 	install -m 755 $< $(INSTALL_DIR)/iwconfig
 	( cd $(INSTALL_DIR) ; \
 	  ln -f -s iwconfig iwlist ; \
-	  ln -f -s iwconfig iwspy ; \
 	  ln -f -s iwconfig iwpriv ; \
 	  ln -f -s iwconfig iwgetid )
 
