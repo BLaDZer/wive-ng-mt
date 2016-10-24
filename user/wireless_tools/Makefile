@@ -215,6 +215,7 @@ romfs:
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwpriv
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwspy
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwgetid
+	$(ROMFSINST) -s /bin/iwmulticall /bin/iwevent
 ifndef BUILD_STATIC
 	$(ROMFSINST) -S /lib/$(IWLIB)
 	$(ROMFSINST) -s /lib/$(IWLIB) /lib/libiw.so
