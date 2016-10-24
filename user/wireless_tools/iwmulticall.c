@@ -25,7 +25,7 @@ extern int
 extern int
 	main_iwlist(int	argc,
 		    char **	argv);
-#ifndef WE_ESSENTIAL
+#if 0
 extern int
 	main_iwspy(int	argc,
 		   char **	argv);
@@ -78,10 +78,12 @@ extern int
 #undef iw_usage
 #undef main
 
+#if 0
 /* Get iwspy in there, it's not that big. */
 #define main(args...) main_iwspy(args)
 #include "iwspy.c"
 #undef main
+#endif
 
 /* Get iwpriv in there. Mandatory for HostAP and some other drivers. */
 #define main(args...) main_iwpriv(args)
@@ -128,8 +130,10 @@ main(int	argc,
     return(main_iwconfig(argc, argv));
   if(!strcmp(call_name, "iwlist"))
     return(main_iwlist(argc, argv));
+#if 0
   if(!strcmp(call_name, "iwspy"))
     return(main_iwspy(argc, argv));
+#endif
   if(!strcmp(call_name, "iwpriv"))
     return(main_iwpriv(argc, argv));
   if(!strcmp(call_name, "iwgetid"))
