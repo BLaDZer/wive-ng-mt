@@ -1201,7 +1201,7 @@
 
 			function CheckValue(form)
 			{
-				if (form.mssid_1.value == "")
+				if (form.mssid_1.value == "" &&  form.radioWirelessEnabled.value == 1)
 				{
 					alert(_("adv no mssid_1"));
 					form.mssid_1.focus();
@@ -1209,7 +1209,7 @@
 					return false;
 				}
 
-				if (form.mssidac_1.value == "")
+				if (form.mssidac_1.value == "" &&  form.radioWirelessEnabledAc.value == 1)
 				{
 					alert(_("adv no mssid_1"));
 					form.mssidac_1.focus();
