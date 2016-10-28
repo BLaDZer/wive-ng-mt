@@ -50,13 +50,15 @@
 			// Check values
 			function CheckValues()
 			{
-				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
-				if (!re_pass.test(document.getElementById('radius_srv_secret').value)) {
-					alert(_("services radius uncorrect secret"));
-					document.getElementById('radius_srv_secret').select();
-					document.getElementById('radius_srv_secret').focus();
-					return false;
-				}				
+				if (document.getElementById('radius_srv_enabled').value == 1) {
+					var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+					if (!re_pass.test(document.getElementById('radius_srv_secret').value)) {
+						alert(_("services radius uncorrect secret"));
+						document.getElementById('radius_srv_secret').select();
+						document.getElementById('radius_srv_secret').focus();
+						return false;
+					}
+				}
 				ajaxShowTimer(document.radiusConfig, 'timerReloader', _('message apply'), 15);
 				return true;
 			}

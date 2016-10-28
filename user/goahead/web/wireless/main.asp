@@ -1362,7 +1362,7 @@
 			}
 
 			function showAdvWirelessMenu(){
-				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advMaxStaNum_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
+				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
 							   'advEntryLifeCheck_tr', 'advShortPre_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
 							   'advEDMODE_tr', 'advStaRegion_tr' ];
 				if (statusAdvWirelessMenu == 0) {
@@ -1378,7 +1378,7 @@
 			}
 
 			function showRoamingMenu(){
-				var RoamingElement = [ 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicFtSupport_tr' ];
+				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicFtSupport_tr' ];
 				if (statusRoamingMenu == 0) {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic roaming"));
 					statusRoamingMenu = 1;
@@ -1810,11 +1810,6 @@
 			<td id="advRTS_td_2" width="50%"><input type="text" name="rts" class="normal" maxlength="4" value="<% getCfgZero(1, "RTSThreshold"); %>">
 				<font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
 		</tr>
-		<tr id="advMaxStaNum_tr">
-			<td id="advMaxStaNum_td_1" class="head" width="50%">Maximum clients per SSID</td>
-			<td id="advMaxStaNum_td_2" width="50%"><input type="text" name="maxstanum" class="normal" maxlength="3" value="">
-				<font color="#808080" id="advMaxStaNumRange">num</font><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
-		</tr>
 		<tr id="advStationKeepAlive_tr">
 			<td id="advStationKeepAlive_td_1" class="head" width="50%" >Station Keep-Alive</td>
 			<td id="advStationKeepAlive_td_2" width="50%"><input type="text" name="keepalive" class="normal" maxlength="3" value="">
@@ -1968,6 +1963,11 @@
 				<option value="0" id="disable">Disable</option>
 				<option value="1" id="enable">Enable</option>
 			</select></td>
+		</tr>
+		<tr id="advMaxStaNum_tr">
+			<td id="advMaxStaNum_td_1" class="head" width="50%">Maximum clients per SSID</td>
+			<td id="advMaxStaNum_td_2" width="50%"><input type="text" name="maxstanum" class="normal" maxlength="3" value="">
+				<font color="#808080" id="advMaxStaNumRange">num</font><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
 		</tr>
 	</table>
 	<table id="div_txbf" name="div_txbf" class="form" style="display:none;">
