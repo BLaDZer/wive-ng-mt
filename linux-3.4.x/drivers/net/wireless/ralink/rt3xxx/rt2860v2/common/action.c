@@ -246,6 +246,10 @@ VOID MlmeADDBAAction(
 		Frame.Category = CATEGORY_BA;
 		Frame.Action = ADDBA_REQ;
 		Frame.BaParm.AMSDUSupported = 0;
+
+		if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+			Frame.BaParm.AMSDUSupported = 1;
+
 		Frame.BaParm.BAPolicy = IMMED_BA;
 		Frame.BaParm.TID = pInfo->TID;
 		Frame.BaParm.BufSize = pInfo->BaBufSize;

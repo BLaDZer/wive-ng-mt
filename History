@@ -2531,9 +2531,11 @@
 3) coovachilli: up to 1.3.2 from git (commit da0047f).<br>
 4) nodogsplash: up to version 2.0.0 (commit: c3a1cf0f).<br>
 5) goahead: fix radius secret check.<br>
-6) goahead: move max clietns option to Basic Roaming (for AP load balance tune).<br>
+6) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
 7) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
 8) kernel: ralink_wifi: increase tx speed if only one client connected.<br>
+9) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+10) kernel: ralink_wifi: fix announse AMSDU supported.<br>
 <br>
 <br>
 <br>

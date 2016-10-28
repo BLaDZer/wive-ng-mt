@@ -1333,12 +1333,14 @@ VOID PeerAddBAReqAction(
 	/* What is the Status code??  need to check.*/
 	ADDframe.StatusCode = Status;
 	ADDframe.BaParm.BAPolicy = IMMED_BA;
-#ifdef DOT11_VHT_AC
-	if (pMacEntry && (pMacEntry->MaxHTPhyMode.field.MODE == MODE_VHT) && (Status == 0))
+
+	if (pMacEntry && Status == 0)
 		ADDframe.BaParm.AMSDUSupported = pAddreqFrame->BaParm.AMSDUSupported;
 	else
-#endif /* DOT11_VHT_AC */
 		ADDframe.BaParm.AMSDUSupported = 0;
+
+	if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+		ADDframe.BaParm.AMSDUSupported = 1;
 
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);

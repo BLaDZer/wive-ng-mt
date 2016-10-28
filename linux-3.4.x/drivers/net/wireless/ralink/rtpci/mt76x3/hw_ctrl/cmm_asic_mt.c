@@ -214,6 +214,8 @@ NTSTATUS MtCmdAsicUpdateProtect(RTMP_ADAPTER *pAd, PCmdQElmt CMDQelmt)
 	    Value &= ~RTS_THRESHOLD_MASK;
         Value &= ~RTS_PKT_NUM_THRESHOLD_MASK;
 
+#if 0
+
 		if ((
 #ifdef DOT11_N_SUPPORT
             (pAd->CommonCfg.BACapability.field.AmsduEnable) ||
@@ -225,6 +227,7 @@ NTSTATUS MtCmdAsicUpdateProtect(RTMP_ADAPTER *pAd, PCmdQElmt CMDQelmt)
             Value |= RTS_PKT_NUM_THRESHOLD(0x7F);
         }
         else
+#endif
         {
 #ifdef APCLI_CERT_SUPPORT
             if (pAd->bApCliCertForceRTS)
