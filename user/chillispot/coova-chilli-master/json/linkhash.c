@@ -271,7 +271,7 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
 
     /*------ all but last block: aligned reads and affect 32 bits of (a,b,c) */
     while (length > 12)
-{
+    {
       a += k[0];
       b += k[1];
       c += k[2];
@@ -279,7 +279,7 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
       length -= 12;
       k += 3;
     }
- 
+
     /*----------------------------- handle the last (probably partial) block */
     /*
      * "k[2]&0xffffff" actually reads beyond the end of the string, but
@@ -455,7 +455,7 @@ static unsigned long lh_char_hash(const void *k)
 #warning "racy random seed initializtion if used by multiple threads"
 		random_seed = seed; /* potentially racy */
 #endif
-}
+	}
 
 	return hashlittle((const char*)k, strlen((const char*)k), random_seed);
 }

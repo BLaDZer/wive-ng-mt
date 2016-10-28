@@ -86,7 +86,7 @@ int static chilliauth() {
   if (radius_init_q(radius, 4)) {
      syslog(LOG_ERR, "radius_init: Failed to initialize radius");
      radius_free(radius);
-    return ret;
+     return ret;
   }
 
   /* get dhcpif mac */

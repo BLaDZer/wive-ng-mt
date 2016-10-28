@@ -12,12 +12,12 @@
 #include "../config.h"
 
 #ifdef STDC_HEADERS
-#include <stdlib.h>
-#include <string.h>
+# include <stdlib.h>
+# include <string.h>
 #endif /* STDC_HEADERS */
 
 #if defined(HAVE_STRINGS_H) && !defined(_STRING_H) && !defined(__USE_BSD)
-#include <strings.h>
+# include <strings.h>
 #endif /* HAVE_STRINGS_H */
 
 #include "arraylist.h"

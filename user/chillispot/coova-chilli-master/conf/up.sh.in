@@ -33,7 +33,7 @@ run_up() {
 	    if [ "$LAYER3" != "1" ]
 	    then
 		ipt_in --dst $ADDR -j DROP
-
+		
 		[ -n "$UAMPORT" -a "$UAMPORT" != "0" ] && \
 		    ipt_in -p tcp -m tcp --dport $UAMPORT --dst $ADDR -j ACCEPT
 		
@@ -45,7 +45,7 @@ run_up() {
 			ipt_in -p tcp -m tcp --dport $port --dst $ADDR -j ACCEPT
 		    done
 		}
-		
+
 		[ -n "$HS_UDP_PORTS" ] && {
 		    for port in $HS_UDP_PORTS; do
 			ipt_in -p udp -m udp --dport $port --dst $ADDR -j ACCEPT

@@ -839,7 +839,7 @@ AM_CONDITIONAL(WITH_CONFIG, [test x"$enable_config" = xyes])
 AC_SUBST(sysconfdir)
 AC_CONFIG_FILES([Makefile 
 		 bstring/Makefile 
-		 conf/Makefile 
+		 conf/Makefile
 		 debian/Makefile
 		 distro/Makefile
 		 doc/Makefile

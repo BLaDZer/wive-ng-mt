@@ -56,7 +56,7 @@ struct printbuf* printbuf_new(void)
  */
 static int printbuf_extend(struct printbuf *p, int min_size)
 {
-  char *t;
+	char *t;
 	int new_size;
 
 	if (p->size >= min_size)
@@ -72,8 +72,8 @@ static int printbuf_extend(struct printbuf *p, int min_size)
 #endif /* PRINTBUF_DEBUG */
 	if(!(t = (char*)realloc(p->buf, new_size)))
 		return -1;
-    p->size = new_size;
-    p->buf = t;
+	p->size = new_size;
+	p->buf = t;
 	return 0;
 }
 
@@ -177,7 +177,6 @@ int sprintbuf(struct printbuf *p, const char *msg, ...)
     return size;
   }
 }
-
 
 void printbuf_reset(struct printbuf *p)
 {

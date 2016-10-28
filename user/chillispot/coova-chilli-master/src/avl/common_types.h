@@ -56,7 +56,7 @@
 
 #ifndef EXPORT
 /*! Macro to declare a function should be visible for other subsystems */
-#  define EXPORT __attribute__((visibility ("default")))
+#define EXPORT __attribute__((visibility ("default")))
 #endif
 
 /* give everyone an arraysize implementation */
