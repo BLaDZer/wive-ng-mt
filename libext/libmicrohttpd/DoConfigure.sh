@@ -27,6 +27,7 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-debug-mode --disable-dependency-tracking --disable-openssl"
+CONFOPTS="$CONFOPTS --without-gnutls --disable-https --disable-doc --disable-examples"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --disable-dependency-tracking"
 
 ./configure $CONFOPTS

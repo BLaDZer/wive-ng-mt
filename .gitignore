@@ -221,7 +221,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /libext/libnl/lib/libnl.a
 /libext/libtalloc/mips.txt
 /libext/libmicrohttpd/Makefile
-/libext/libmicrohttpd/Mkaefile.in
+/libext/libmicrohttpd/Makefile.in
 /libext/libmicrohttpd/configure
 
 #
