@@ -2530,6 +2530,7 @@
 2) toolchain: kernel headers update and rebuild.<br>
 3) coovachilli: up to 1.3.2 from git (commit da0047f).<br>
 4) nodogsplash: up to version 2.0.0 (commit: c3a1cf0f).<br>
+5) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
 <br>
 <br>
 <br>

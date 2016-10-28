@@ -4171,12 +4171,6 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 					txop_value = txop_value_burst;
 				else
 					txop_value = 0;
-
-#ifdef MULTI_CLIENT_SUPPORT
-				if(pAd->MacTab.Size > 2) /* for Multi-Clients */
-					txop_value = 0;
-#endif /* MULTI_CLIENT_SUPPORT */
-
 #ifdef APCLI_SUPPORT
 #ifdef TRAFFIC_BASED_TXOP
 				/* Traffic Base Txop Rule */
