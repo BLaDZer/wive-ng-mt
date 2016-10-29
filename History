@@ -2533,7 +2533,7 @@
 5) goahead: fix radius secret check.<br>
 6) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
 7) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-8) kernel: ralink_wifi: increase tx speed if only one client connected.<br>
+8) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
 9) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
 10) kernel: ralink_wifi: fix announse AMSDU supported.<br>
 <br>
