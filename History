@@ -2538,6 +2538,7 @@
 10) kernel: ralink_wifi: fix announse AMSDU supported.<br>
 11) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
 12) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+13) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>
