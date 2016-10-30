@@ -5087,6 +5087,9 @@ VOID APHandleRxDataFrame(
 
 	if (pRxInfo->U2M)
 	{
+#ifdef CONFIG_AP_SUPPORT
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+#endif
 #ifdef MT76x0
 		if (IS_MT76x0(pAd))
 		{
@@ -5587,6 +5590,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 
 	if (pRxInfo->U2M)
 	{
+#ifdef CONFIG_AP_SUPPORT
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+#endif
 #ifdef MT76x0
 		if (IS_MT76x0(pAd))
 		{

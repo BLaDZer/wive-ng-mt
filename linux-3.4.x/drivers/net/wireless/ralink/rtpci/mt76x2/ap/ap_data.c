@@ -5309,6 +5309,9 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 	if (pRxInfo->U2M)
 	{
+#ifdef CONFIG_AP_SUPPORT
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+#endif
 		pEntry->LastRxRate = (ULONG)(pRxBlk->rx_rate.word);
 #ifdef SMART_MESH
         Update_CliPktStats(pAd, pEntry, pHeader->Sequence, FALSE);
@@ -5911,6 +5914,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 
 	if (pRxInfo->U2M)
 	{
+#ifdef CONFIG_AP_SUPPORT
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+#endif
 		pEntry->LastRxRate = pRxBlk->rx_rate.word;
 #ifdef SMART_MESH
 		Update_CliPktStats(pAd, pEntry, pHeader->Sequence, FALSE);

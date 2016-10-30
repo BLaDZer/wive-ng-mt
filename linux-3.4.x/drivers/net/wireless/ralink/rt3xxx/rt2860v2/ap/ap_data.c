@@ -4473,6 +4473,9 @@ VOID APHandleRxDataFrame(
 
 	if (pRxD->U2M)
 	{
+#ifdef CONFIG_AP_SUPPORT
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+#endif
 		pEntry->LastRxRate = (ULONG)((pRxWI->MCS) + (pRxWI->BW <<7) + (pRxWI->ShortGI <<8) + (pRxWI->STBC <<9) + (pRxWI->PHYMODE <<14));
 
 #ifdef TXBF_SUPPORT
