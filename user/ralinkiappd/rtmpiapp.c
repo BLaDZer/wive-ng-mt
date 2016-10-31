@@ -2733,9 +2733,10 @@ static VOID IAPP_RcvHandlerRawRRB(
 		SizeRcvMsg = pFrameRRB->FTActionLength;
 		IAPP_ENCRYPTED_DATA_SIZE_CAL(SizeRcvMsg);
 
-		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-							pPktBuf+FT_RRB_HEADER_SIZE,
-							&SizeRcvMsg, wifi_if_idx, RT_FT_DATA_DECRYPT);
+		if(IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, wifi_if_idx, RT_FT_DATA_DECRYPT) == FALSE) {
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
+			return;
+		}
 
 		SizeRcvMsg += FT_RRB_HEADER_SIZE;
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
