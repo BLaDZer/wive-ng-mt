@@ -47,7 +47,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 	{															\
 		if ((__BufLen) > IAPP_MAX_RCV_PKT_SIZE)					\
 		{														\
-			printf("iapp> CMD: Command Length is too large (len = %d)!\n", __BufLen);		\
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> CMD: Command Length is too large (len = %d)!\n", __BufLen);		\
 			__pBufMsg = NULL;									\
 		}														\
 		else													\
@@ -58,7 +58,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 	{															\
 		if ((__BufLen) > IAPP_MAX_RCV_PKT_SIZE)					\
 		{														\
-			printf("iapp> RSP: Command Length is too large (len = %d)!\n", __BufLen);		\
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> RSP: Command Length is too large (len = %d)!\n", __BufLen);		\
 			__pBufMsg = NULL;									\
 		}														\
 		else													\
