@@ -71,13 +71,16 @@ typedef enum _BOOLEAN {
 
 
 /* BYTE Order */
-#define __BYTE_ORDER				__LITTLE_ENDIAN /* __BIG_ENDIAN */
+#define __BYTE_ORDER					__LITTLE_ENDIAN /* __BIG_ENDIAN */
 
 /* ReDefinition */
 #define NdisZeroMemory(__Dst, __Len)		memset(__Dst, 0, __Len)
 #define NdisFillMemory(__Dst, __Len, __Val)	memset(__Dst, __Val, __Len)
 #define NdisMoveMemory(__Dst, __Src, __Len)	memmove(__Dst, __Src, __Len)
+#define NdisCopyMemory(__Dst, __Src, __Len)	memcpy(__Dst, __Src, __Len)
+#define NdisCompareMemory(__Dst, __Src, __Len)	memcmp(__Dst, __Src, __Len)
 
+#if 0
 VOID os_alloc_mem(UCHAR *pAd, UCHAR **ppMem, UINT32 Size)
 {
     *ppMem = (UCHAR *)malloc(Size);
@@ -87,7 +90,10 @@ VOID os_free_mem(UCHAR *pAd, VOID *pMem)
 {
     free(pMem);
 }
-
+#else
+VOID os_alloc_mem(UCHAR *pAd, UCHAR **ppMem, UINT32 Size);
+VOID os_free_mem(UCHAR *pAd, VOID *pMem);
+#endif
 
 /* Debug flag */
 #define RT_DEBUG_OFF					0
@@ -102,11 +108,11 @@ extern INT32 RTDebugLevel;
 #ifdef SYSLOG
 #include <syslog.h>
 #define DBGPRINT(Level, fmt, args...)			\
-{                                   \
-    if (Level <= RTDebugLevel)      \
-    {                               \
+{										\
+    if (Level <= RTDebugLevel)			\
+    {									\
 	syslog(LOG_ERR, fmt, ## args);			\
-    }                               \
+    }									\
 }
 #else
 #define DBGPRINT(Level, fmt, args...)			\
@@ -118,17 +124,17 @@ extern INT32 RTDebugLevel;
 }
 #endif
 #else
-/* no debug information */
+    /* no debug information */
 #define DBGPRINT(Level, fmt, args...)
 #endif
 
-#define MAX_NUM_OF_EVENT				30  /* entry # in EVENT table */
+#define MAX_NUM_OF_EVENT			30  /* entry # in EVENT table */
 
 typedef struct _RT_802_11_EVENT_LOG {
 
-	ULONG	SystemTime;				/* timestammp (jiffies) */
+	ULONG	SystemTime;					/* timestammp (jiffies) */
 	UCHAR	TriggerAddr[ETH_ALEN];
-	UINT16	Event;					/* EVENT_xxx */
+	UINT16	Event;						/* EVENT_xxx */
 } RT_802_11_EVENT_LOG, *PRT_802_11_EVENT_LOG;
 
 typedef struct _RT_802_11_EVENT_TABLE {
@@ -156,7 +162,7 @@ typedef struct PACKED _RT_SIGNAL_STRUC {
 	UCHAR	MacAddr[ETH_ALEN];
 	UCHAR	CurrAPAddr[ETH_ALEN];
 
-#define FT_KDP_SIG_NOTHING			0x00 /* no signal */
+#define FT_KDP_SIG_NOTHING				0x00 /* no signal */
 #define FT_KDP_SIG_IAPP_ASSOCIATION		0x01 /* a station has associated */
 #define FT_KDP_SIG_IAPP_REASSOCIATION	0x02 /* a station has re-associated */
 #define FT_KDP_SIG_TERMINATE			0x03 /* terminate the daemon */

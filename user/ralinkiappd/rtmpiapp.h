@@ -67,8 +67,13 @@
 
 #define FT_KDP_DEFAULT_IF_ETH		"br0"
 #define FT_KDP_DEFAULT_IF_WLAN		"br0" /* used to receive command from WLAN */
+#ifndef CONFIG_RT_SECOND_IF_NONE
+
+/* Allways 5GHz drivers support FT */
+#define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"rai0" /* ioctl command to WLAN */
+#else
 #define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"ra0" /* ioctl command to WLAN */
-#define FT_KDP_DEFAULT_IF_WLAN2_IOCTL	"rai0" /* ioctl command to second WLAN */
+#endif
 
 /*
 	Inter-AP communications present opportunities to an attacker.
@@ -100,15 +105,21 @@
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-#define PF_PACKET				AF_INET
+#define PF_PACKET					AF_INET
 #define RT_IOCTL_IAPP				VX_RT_PRIV_IOCTL
 #define FT_KDP_WLAN_NAME			"ra"
 #define FT_KDP_WLAN_UNIT			0
 #define FT_KDP_ETH_NAME				"eth" /* must not use mirror */
-#define FT_KDP_BR_ETH_IF_NUM			2 /* eth0 and eth1 */
+#define FT_KDP_BR_ETH_IF_NUM		2 /* eth0 and eth1 */
 #define FT_KDP_BR_NAME				"mirror"
 #define FT_KDP_BR_UNIT				0
 #endif // IAPP_OS_VXWORKS //
+
+#define HASH_TABLE_SIZE		128
+#define MAX_NUM_OF_CLIENT	64
+
+#define MAC_ADDR_HASH(Addr)            (Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
+#define MAC_ADDR_HASH_INDEX(Addr)      (MAC_ADDR_HASH(Addr) & (HASH_TABLE_SIZE - 1))
 
 /* ---------------------------- MACRO Definition ---------------------------- */
 #define IAPP_LITTLE_ENDIAN /* __BIG_ENDIAN */
@@ -147,7 +158,10 @@
 #define IAPP_MEM_FILL(__Dst, __Val, __Len)	NdisFillMemory(__Dst, __Len, __Val)
 #define IAPP_MEM_MOVE(__Dst, __Src, __Len)	NdisMoveMemory(__Dst, __Src, __Len)
 
+#define IAPP_HEX_DUMP(__pPrompt, __pBuf, __Len)							\
+	IAPP_HexDump((CHAR *)__pPrompt, (CHAR *)__pBuf, __Len)
 
+#define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
 
 /* ---------------------------- Structure Definition ------------------------ */
 
@@ -384,18 +398,32 @@ typedef struct PACKED _FT_RRB_FRAME
 	UCHAR	FTActionFrame[0];
 } FT_RRB_FRAME;
 
+typedef struct _FT_CLIENT_INFO {
+	struct _FT_CLIENT_INFO *next;
+	INT if_idx;
+	UCHAR sta_mac[ETH_ALEN];
+	UCHAR ap_mac[ETH_ALEN];
+	UCHAR used;
+	UCHAR hash_idx;
+} FT_CLIENT_INFO;
+
+typedef struct _FT_CLIENT_TABLE {
+	FT_CLIENT_INFO *hash[HASH_TABLE_SIZE];
+	FT_CLIENT_INFO ft_sta_info[MAX_NUM_OF_CLIENT];
+	INT32 ft_sta_table_size;
+} FT_CLIENT_TABLE;
 
 /* IAPP control block */
 #define IAPP_ENCRYPT_KEY_MAX_SIZE		64
-
+#define MAX_WIFI_COUNT 2
 typedef struct _RTMP_IAPP {
 
 	CHAR			IfNameEth[IFNAMSIZ]; /* ethernet interface name */
 	CHAR			IfNameWlan[IFNAMSIZ]; /* wireless interface name */
-	CHAR			IfNameWlanIoctl[IFNAMSIZ]; /* wireless interface name */
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	CHAR			IfNameWlan2Ioctl[IFNAMSIZ]; /* wireless interface name */
-#endif
+	CHAR			IfNameWlanIoctl[MAX_WIFI_COUNT][IFNAMSIZ]; /* wireless interface name */
+	UCHAR			IfNameWlanMAC[MAX_WIFI_COUNT][ETH_ALEN]; /* wireless interface name */
+	INT32			IfNameWlanCount;
+
 	BOOLEAN			FlgIsTerminated; /* if terminate IAPP daemon */
 
 	struct in_addr	AddrOwn; /* IP address of ethernet interface */
@@ -449,7 +477,127 @@ typedef struct _RTMP_IAPP {
 	/* common key, ASCII, the last byte must be 0x00 */
 	CHAR			CommonKey[IAPP_ENCRYPT_KEY_MAX_SIZE+1];
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
+
+	FT_CLIENT_TABLE SelfFtStaTable;
 } RTMP_IAPP, *PRTMP_IAPP;
+
+/* key information */
+#define FT_IP_ADDRESS_SIZE				4
+#define FT_NONCE_SIZE					8
+
+#define FT_KDP_WPA_NAME_MAX_SIZE		16
+#define FT_KDP_R0KHID_MAX_SIZE			48
+#define FT_KDP_R1KHID_MAX_SIZE			6
+#define FT_KDP_S1KHID_MAX_SIZE			6
+#define FT_KDP_PMKR1_MAX_SIZE			32 /* 256-bit key */
+
+#define FT_R1KH_ENTRY_TABLE_SIZE		64
+#define FT_R1KH_ENTRY_HASH_TABLE_SIZE	FT_R1KH_ENTRY_TABLE_SIZE
+
+typedef struct PACKED _FT_KDP_PMK_KEY_INFO {
+
+	UCHAR	R0KHID[FT_KDP_R0KHID_MAX_SIZE];
+	UCHAR	R0KHIDLen;
+	UCHAR	PMKR0Name[FT_KDP_WPA_NAME_MAX_SIZE]; /* an ID that names the PMK-R0 */
+
+	UCHAR	R1KHID[FT_KDP_R1KHID_MAX_SIZE];
+	UCHAR	S1KHID[FT_KDP_S1KHID_MAX_SIZE];
+
+	/* reserved field */
+	UCHAR	RSV[4];
+
+} FT_KDP_PMK_KEY_INFO;
+
+typedef struct PACKED _FT_KDP_EVT_KEY_ELM
+{
+	/* must be 65535, Proprietary Information */
+#define FT_KDP_ELM_ID_PRI			65535
+	UINT16	ElmId;
+
+#define FT_KDP_ELM_PRI_LEN			(sizeof(FT_KDP_EVT_KEY_ELM)-4) 
+	UINT16	ElmLen;
+
+	/* must be 0x00 0x0E 0x2E, RALINK */
+#define FT_KDP_ELM_PRI_OUI_0		0x00
+#define FT_KDP_ELM_PRI_OUI_1		0x0E
+#define FT_KDP_ELM_PRI_OUI_2		0x2E
+#define FT_KDP_ELM_PRI_OUI_SIZE		3
+	UCHAR	OUI[3];
+
+	/* station MAC */
+	UCHAR	MacAddr[ETH_ALEN];
+	UCHAR	RSV[3];
+
+	/* used in request */
+	FT_KDP_PMK_KEY_INFO KeyInfo;
+
+	/* used in response */
+	UCHAR	PMKR1Name[FT_KDP_WPA_NAME_MAX_SIZE]; /* an ID that names the PMK-R1 */
+	UCHAR	PMKR1[FT_KDP_PMKR1_MAX_SIZE]; /* PMK R1 Key */
+	UCHAR	R0KH_MAC[ETH_ALEN]; /* MAC of R0KH */
+
+	/*
+		During a Fast BSS Transition a non-AP STA shall negotiate the same
+		pairwise cipher suite with Target APs as was negotiated in the FT
+		Initial Mobility Domain association. The target AP shall verify
+		that the same pairwise cipher suite selector is used, using the
+		pairwise cipher suite selector value in the PMK-R1 SA received from
+		the R0KH.
+	*/
+	UCHAR	PairwisChipher[4];
+	UCHAR	AkmSuite[4];
+
+	UINT32	KeyLifeTime;
+	UINT32	ReassocDeadline;
+} FT_KDP_EVT_KEY_ELM;
+
+
+/* ---------------------------- API Definition ------------------------ */
+
+VOID IAPP_HexDump(
+	CHAR	*pPromptStr,
+	CHAR	*pSrcBufVA,
+	UINT32	SrcBufLen);
+
+BOOLEAN IAPP_IoctlToWLAN(
+	RTMP_IAPP		*pCtrlBK,
+	INT32			Param,
+	CHAR			*pData,
+	INT32			*pDataLen,
+	UCHAR			ApIdx,
+	INT32			Flags);
+
+BOOLEAN mt_iapp_get_wifi_iface_mac(
+	RTMP_IAPP		*pCtrlBK);
+
+INT32 mt_iapp_find_ifidx_by_mac(
+	RTMP_IAPP		*pCtrlBK,
+	UCHAR			*WifiMAC);
+
+VOID mt_iapp_set_daemon_information(
+	RTMP_IAPP		*pCtrlBK,
+	pid_t 			*pPidAuth);
+
+VOID mt_iapp_ft_client_table_init(
+	RTMP_IAPP		*pCtrlBK);
+
+FT_CLIENT_INFO *mt_iapp_ft_client_look_up(
+	FT_CLIENT_TABLE		*pFtTable,
+	UCHAR *pAddr);
+
+FT_CLIENT_INFO *mt_iapp_ft_client_insert(
+	FT_CLIENT_TABLE		*pFtTable,
+	UCHAR 			*pStaAddr,
+	UCHAR 			*pApAddr,
+	INT32			ApIfIdx);
+
+VOID mt_iapp_ft_client_delete(
+	FT_CLIENT_TABLE		*pFtTable,
+	UCHAR 			*pStaAddr);
+
+INT32 mt_iapp_find_ifidx_by_sta_mac(
+	FT_CLIENT_TABLE		*pFtTable,
+	UCHAR			*pStaMAC);
 
 #endif /* __RTMP_IAPP_H__ */
 

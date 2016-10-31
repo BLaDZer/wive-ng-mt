@@ -2532,16 +2532,17 @@
 4) nodogsplash: up to version 2.0.0 (commit: c3a1cf0f).<br>
 5) busybox: udhcpc: check read of option length byte to be within packet.<br>
 6) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
-7) goahead: fix radius secret check.<br>
-8) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
-9) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-10) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-11) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-12) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-13) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-14) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-15) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-16) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+7) iappd: update to 1.1.0 version.<br>
+8) goahead: fix radius secret check.<br>
+9) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
+10) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+11) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+12) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+13) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+14) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+15) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+16) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+17) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>

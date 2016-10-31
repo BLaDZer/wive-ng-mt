@@ -65,7 +65,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 			__pBufMsg = __pRspBuf;								\
 	}
 
-static RTMP_IAPP IAPP_Ctrl_Block;
+static RTMP_IAPP	IAPP_Ctrl_Block;
 UINT32	IAPP_MemAllocNum=0, IAPP_MemFreeNum=0;
 
 /* Local Function */
@@ -88,40 +88,15 @@ static BOOLEAN IAPP_ArgumentParse(
 static BOOLEAN IAPP_DSIfInfoGet(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
 
-#ifndef CONFIG_RT_SECOND_IF_NONE
-#define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
-				{ IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); \
-				  IAPP_IoctlToWLAN2(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags); };
-#define IAPP_IOCTL_TO_WLAN_CRYPT(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
-				  IAPP_IoctlToWLAN2(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
-#else
-#define IAPP_IOCTL_TO_WLAN(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
-				  IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
-#define IAPP_IOCTL_TO_WLAN_CRYPT(__pCtrlBK, __Param, __pData, __pLen, __ApIdx, __Flags) \
-				  IAPP_IoctlToWLAN(__pCtrlBK, __Param, (CHAR *)(__pData), (INT32 *)(__pLen), __ApIdx, __Flags)
-#endif
-
-static BOOLEAN IAPP_IoctlToWLAN(
+BOOLEAN IAPP_IoctlToWLAN(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		INT32				Param,
 	IAPP_IN		CHAR				*pData,
 	IAPP_IN		INT32				*pDataLen,
 	IAPP_IN		UCHAR				ApIdx,
 	IAPP_IN		INT32				Flags);
-
-#ifndef CONFIG_RT_SECOND_IF_NONE
-static BOOLEAN IAPP_IoctlToWLAN2(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		INT32				Param,
-	IAPP_IN		CHAR				*pData,
-	IAPP_IN		INT32				*pDataLen,
-	IAPP_IN		UCHAR				ApIdx,
-	IAPP_IN		INT32				Flags);
-#endif
-
 static INT32 IAPP_IPC_MSG_Init(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
-
 static BOOLEAN IAPP_L2UpdateFrameSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		UCHAR				*pMac);
@@ -130,42 +105,45 @@ static BOOLEAN IAPP_MsgProcess(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		INT32				MsgSubType,
 	IAPP_IN		UCHAR				*pMsg,
-	IAPP_IN		INT32				Len);
+	IAPP_IN		INT32				Len,
+	IAPP_IN		INT32				if_idx);
 
 static BOOLEAN IAPP_SIG_Process(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		RT_SIGNAL_STRUC			*pSig,
-	IAPP_IN		INT32				Len,
-	IAPP_IN		UCHAR				*pCmdBuf,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		RTMP_IAPP		*pCtrlBK,
+	IAPP_IN		UCHAR			*WiFiMAC,
+	IAPP_IN		RT_SIGNAL_STRUC		*pSig,
+	IAPP_IN		INT32			Len,
+	IAPP_IN		UCHAR			*pCmdBuf,
+	IAPP_IN		UCHAR			*pRspBuf);
 
 static BOOLEAN IAPP_SocketClose(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
-
 static BOOLEAN IAPP_SocketOpen(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
 
 static VOID IAPP_Start(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK);
 
-#define IAPP_UDP_PACKET_SEND(__pCtrlBK, __pPkt, __Len, __pRspBuf)			\
-	IAPP_UDP_PacketSend(__pCtrlBK, (UCHAR *)(__pPkt), (UINT32)(__Len), __pRspBuf)
+#define IAPP_UDP_PACKET_SEND(__pCtrlBK, __pPkt, __Len, __pRspBuf, __IfIdx)			\
+	IAPP_UDP_PacketSend(__pCtrlBK, (UCHAR *)(__pPkt), (UINT32)(__Len), __pRspBuf, __IfIdx)
 static BOOLEAN IAPP_UDP_PacketSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		UCHAR				*pPkt,
 	IAPP_IN		UINT32				PktLen,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 
-#define IAPP_TCP_PACKET_SEND(__pCtrlBK, __pPkt, __Len, __PeerIP, __FlgUdp, __pRspBuf)	\
+#define IAPP_TCP_PACKET_SEND(__pCtrlBK, __pPkt, __Len, __PeerIP, __FlgUdp, __pRspBuf, __IfIdx)	\
 	IAPP_TCP_PacketSend(__pCtrlBK, (UCHAR *)(__pPkt), (UINT32)(__Len), \
-												__PeerIP, __FlgUdp, __pRspBuf)
+				__PeerIP, __FlgUdp, __pRspBuf, __IfIdx)
 static BOOLEAN IAPP_TCP_PacketSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		UCHAR				*pPkt,
 	IAPP_IN		UINT32				PktLen,
 	IAPP_IN		UINT32				PeerIP,
 	IAPP_IN		BOOLEAN				FlgUsingUdpWhenNoIP,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 
 static VOID IAPP_RcvHandler(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
@@ -226,51 +204,57 @@ static VOID IAPP_RcvHandlerApInfor(
 	IAPP_IN		UCHAR				Type,
 	IAPP_IN		UCHAR				*pPktBuf,
 	IAPP_IN		UINT32				PeerIP,
-	IAPP_IN		UCHAR				*pCmdBuf);
+	IAPP_IN		UCHAR				*pCmdBuf,
+	IAPP_IN		INT32				if_idx);
 
 static VOID IAPP_Usage(
 	VOID);
-
 static VOID IAPP_USR2Handle(
 	IAPP_IN		INT32				Sig);
-
 static VOID IAPP_TerminateHandle(
 	IAPP_IN		INT32				Sig);
 
 static VOID FT_KDP_SecurityBlockSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		UCHAR				*WifiMAC,
+	IAPP_IN		INT32				if_idx);
 static VOID FT_KDP_SecurityBlockAck(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 static VOID FT_KDP_InformationRequestSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 static VOID FT_KDP_InformationResponseSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 static VOID FT_KDP_InformationReportSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 static VOID FT_RRB_ActionForward(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
 	IAPP_IN		UINT16				PacketType,
 	IAPP_IN		UCHAR				*pMacDa,
 	IAPP_IN		UCHAR				*pMacSa,
 	IAPP_IN		UCHAR				*pMacAp,
-	IAPP_IN		UCHAR				*pRspBuf);
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx);
 
 
 
@@ -507,9 +491,6 @@ Note:
 	debug use
 ========================================================================
 */
-#define IAPP_HEX_DUMP(__pPrompt, __pBuf, __Len)							\
-	IAPP_HexDump((CHAR *)__pPrompt, (CHAR *)__pBuf, __Len)
-
 VOID IAPP_HexDump(
 	IAPP_IN		CHAR	*pPromptStr,
 	IAPP_IN		CHAR	*pSrcBufVA,
@@ -557,19 +538,17 @@ Note:
 */
 static BOOLEAN IAPP_ArgumentParse(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-    IAPP_IN		INT32				Argc,
+	IAPP_IN		INT32				Argc,
 	IAPP_IN		CHAR				*pArgv[])
 {
 #define IAPP_AGP_CMD_PARSE_NEXT_ONE		{ Argc--; pArgv++; }
 
+	INT i = 0;
 
 	/* init */
 	strcpy(pCtrlBK->IfNameEth, FT_KDP_DEFAULT_IF_ETH);
 	strcpy(pCtrlBK->IfNameWlan, FT_KDP_DEFAULT_IF_WLAN);
-	strcpy(pCtrlBK->IfNameWlanIoctl, FT_KDP_DEFAULT_IF_WLAN_IOCTL);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	strcpy(pCtrlBK->IfNameWlan2Ioctl, FT_KDP_DEFAULT_IF_WLAN2_IOCTL);
-#endif
+	strcpy(pCtrlBK->IfNameWlanIoctl[0], FT_KDP_DEFAULT_IF_WLAN_IOCTL);
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 #ifdef FT_KDP_KEY_FROM_DAEMON
@@ -605,6 +584,17 @@ static BOOLEAN IAPP_ArgumentParse(
 				IAPP_AGP_CMD_PARSE_NEXT_ONE;
 			} /* End of if */
 		}
+		else if (strncmp(pArgv[0], "-wi", 3) == 0)
+		{
+			/* wireless ioctl interface */
+			IAPP_AGP_CMD_PARSE_NEXT_ONE;
+
+			if (Argc > 0)
+			{
+				strcpy(pCtrlBK->IfNameWlanIoctl[pCtrlBK->IfNameWlanCount++], pArgv[0]);
+				IAPP_AGP_CMD_PARSE_NEXT_ONE;
+			} /* End of if */
+		}
 		else if (strncmp(pArgv[0], "-w", 2) == 0)
 		{
 			/* wireless interface */
@@ -616,30 +606,6 @@ static BOOLEAN IAPP_ArgumentParse(
 				IAPP_AGP_CMD_PARSE_NEXT_ONE;
 			} /* End of if */
 		}
-		else if (strncmp(pArgv[0], "-wi", 2) == 0)
-		{
-			/* wireless ioctl interface */
-			IAPP_AGP_CMD_PARSE_NEXT_ONE;
-
-			if (Argc > 0)
-			{
-				strcpy(pCtrlBK->IfNameWlanIoctl, pArgv[0]);
-				IAPP_AGP_CMD_PARSE_NEXT_ONE;
-			} /* End of if */
-		}
-#ifndef CONFIG_RT_SECOND_IF_NONE
-		else if (strncmp(pArgv[0], "-wn", 2) == 0)
-		{
-			/* wireless ioctl interface */
-			IAPP_AGP_CMD_PARSE_NEXT_ONE;
-
-			if (Argc > 0)
-			{
-				strcpy(pCtrlBK->IfNameWlan2Ioctl, pArgv[0]);
-				IAPP_AGP_CMD_PARSE_NEXT_ONE;
-			} /* End of if */
-		}
-#endif
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 #ifdef FT_KDP_KEY_FROM_DAEMON
 		else if (strncmp(pArgv[0], "-k", 2) == 0)
@@ -678,7 +644,16 @@ static BOOLEAN IAPP_ArgumentParse(
 	} /* End of while */
 
 label_exit:
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> -e=%s, -w=%s\n", pCtrlBK->IfNameEth, pCtrlBK->IfNameWlan);
+	if (pCtrlBK->IfNameWlanCount == 0)
+		pCtrlBK->IfNameWlanCount = 1;
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> -e=%s, -w=%s",
+			pCtrlBK->IfNameEth, pCtrlBK->IfNameWlan);
+
+	for (i = 0; i < pCtrlBK->IfNameWlanCount; i++) {
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> -wi=%s",
+			pCtrlBK->IfNameWlanIoctl[i]);
+	}
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IfNameWlanCount = %d\n", pCtrlBK->IfNameWlanCount);
 	return TRUE;
 } /* End of IAPP_ArgumentParse */
 
@@ -786,7 +761,7 @@ Return Value:
 Note:
 ========================================================================
 */
-static BOOLEAN IAPP_IoctlToWLAN(
+BOOLEAN IAPP_IoctlToWLAN(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		INT32				Param,
 	IAPP_IN		CHAR				*pData,
@@ -800,23 +775,29 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	memset(&Wrq, 0, sizeof(Wrq));
 
 #ifdef IAPP_OS_LINUX
-	if (strlen(pCtrlBK->IfNameWlanIoctl) >= sizeof(IfName))
+	if (strlen(pCtrlBK->IfNameWlanIoctl[ApIdx]) >= sizeof(IfName))
 		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN_IOCTL);
 	else
-		strcpy(IfName, pCtrlBK->IfNameWlanIoctl);
+		strcpy(IfName, pCtrlBK->IfNameWlanIoctl[ApIdx]);
+	/* End of if */
 
 	strncpy(Wrq.ifr_name, IfName, 11);
 	Wrq.ifr_name[11] = '\0';
+
 #endif
 
 	Wrq.u.data.flags = Flags;
 	Wrq.u.data.length = *pDataLen;
 	Wrq.u.data.pointer = (caddr_t) pData;
 
+	DBGPRINT(RT_DEBUG_WARN,
+				"iapp>[%s]IOCTL Flags = 0x%x!\n", IfName, Flags);
+
 #ifdef IAPP_OS_LINUX
 	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
 	{
-		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN,
+				"iapp> IOCTL 0x%x to wlan %s failed!\n", Flags, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_LINUX //
@@ -824,7 +805,8 @@ static BOOLEAN IAPP_IoctlToWLAN(
 #ifdef IAPP_OS_VXWORKS
 	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
 	{
-		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
+		DBGPRINT(RT_DEBUG_WARN,
+				"iapp> IOCTL 0x%x to wlan %s failed!\n", Param, IfName);
 		return FALSE;
 	} /* End of if */
 #endif // IAPP_OS_VXWORKS //
@@ -832,55 +814,6 @@ static BOOLEAN IAPP_IoctlToWLAN(
 	*pDataLen = Wrq.u.data.length;
 	return TRUE;
 } /* End of IAPP_IoctlToWLAN */
-
-#ifndef CONFIG_RT_SECOND_IF_NONE
-static BOOLEAN IAPP_IoctlToWLAN2(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		INT32				Param,
-	IAPP_IN		CHAR				*pData,
-	IAPP_IN		INT32				*pDataLen,
-	IAPP_IN		UCHAR				ApIdx,
-	IAPP_IN		INT32				Flags)
-{
-	CHAR   IfName[12]; /* in VxWorks, no iwreq.ifr_name */
-	struct iwreq Wrq;
-
-	memset(&Wrq, 0, sizeof(Wrq));
-
-#ifdef IAPP_OS_LINUX
-	if (strlen(pCtrlBK->IfNameWlanIoctl) >= sizeof(IfName))
-		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN2_IOCTL);
-	else
-		strcpy(IfName, pCtrlBK->IfNameWlan2Ioctl);
-
-	strncpy(Wrq.ifr_name, IfName, 11);
-	Wrq.ifr_name[11] = '\0';
-#endif
-
-	Wrq.u.data.flags = Flags;
-	Wrq.u.data.length = *pDataLen;
-	Wrq.u.data.pointer = (caddr_t) pData;
-
-#ifdef IAPP_OS_LINUX
-	if (ioctl(pCtrlBK->SocketIoctl, Param, &Wrq) < 0)
-	{
-		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
-		return FALSE;
-	} /* End of if */
-#endif // IAPP_OS_LINUX //
-
-#ifdef IAPP_OS_VXWORKS
-	if (muxIoctl(pCtrlBK->pDrvCookieTo, Param, &Wrq) == ERROR)
-	{
-		DBGPRINT(RT_DEBUG_WARN, "iapp> IOCTL 0x%x to wlan2 %s failed!\n", Param, IfName);
-		return FALSE;
-	} /* End of if */
-#endif // IAPP_OS_VXWORKS //
-
-	*pDataLen = Wrq.u.data.length;
-	return TRUE;
-} /* End of IAPP_IoctlToWLAN */
-#endif
 
 
 /*
@@ -975,7 +908,7 @@ static BOOLEAN IAPP_L2UpdateFrameSend(
 			return FALSE;
 		} /* End of if */
 
-	    pUpdatePkt->mBlkHdr.mFlags |= M_PKTHDR;
+		pUpdatePkt->mBlkHdr.mFlags |= M_PKTHDR;
 		pUpdatePkt->m_len = sizeof(FrameBody);
 
 		IAPP_MEM_MOVE(pUpdatePkt->m_data, pFrameL2, sizeof(FrameBody));
@@ -1017,7 +950,8 @@ static BOOLEAN IAPP_MsgProcess(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
 	IAPP_IN		INT32				MsgSubType,
 	IAPP_IN		UCHAR				*pMsg,
-	IAPP_IN		INT32				Len)
+	IAPP_IN		INT32				Len,
+	IAPP_IN		INT32				if_idx)
 {
 	switch(MsgSubType)
 	{
@@ -1038,9 +972,13 @@ static BOOLEAN IAPP_MsgProcess(
 
 			OID_req_p = (POID_REQ) pMsg;
 
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> Command to WLAN (OID=%x, LEN=%d)\n", OID_req_p->OID, OID_req_p->Len);
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Command to WLAN (OID=%x, LEN=%d)\n",
+						OID_req_p->OID, OID_req_p->Len);
 
-			IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, OID_req_p->Buf, &OID_req_p->Len, 0, OID_req_p->OID);
+			IAPP_IOCTL_TO_WLAN( \
+							pCtrlBK, RT_IOCTL_IAPP,
+							OID_req_p->Buf, &OID_req_p->Len,
+							if_idx, OID_req_p->OID);
 		} /* case IAPP_SET_OID_REQ */
 		break;
 
@@ -1077,19 +1015,33 @@ Note:
 ========================================================================
 */
 static BOOLEAN IAPP_SIG_Process(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
+	IAPP_IN		RTMP_IAPP		*pCtrlBK,
+	IAPP_IN		UCHAR			*WifiMAC,
 	IAPP_IN		RT_SIGNAL_STRUC		*pSig,
-	IAPP_IN		INT32				Len,
-	IAPP_IN		UCHAR				*pCmdBuf,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		INT32			Len,
+	IAPP_IN		UCHAR			*pCmdBuf,
+	IAPP_IN		UCHAR			*pRspBuf)
 {
 	FT_KDP_EVT_HEADER *pEvtHeader;
+	INT32 if_idx = -1;
 
-
+	if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, WifiMAC);
+	if (if_idx == -1) {
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - cannot find this wifi interface (%02x:%02x:%02x:%02x:%02x:%02x)\n", 
+				__FUNCTION__,
+				WifiMAC[0],
+				WifiMAC[1],
+				WifiMAC[2],
+				WifiMAC[3],
+				WifiMAC[4],
+				WifiMAC[5]);
+		return FALSE;
+	}
+	
 	pEvtHeader = (FT_KDP_EVT_HEADER *)(pSig->Content);
 
 	DBGPRINT(RT_DEBUG_TRACE,
-			"iapp> Sig = %d, pEvtHeader->EventLen = %d, "
+			"iapp> Sig = 0x%02x, pEvtHeader->EventLen = %d, "
 			"Peer IP = %d.%d.%d.%d\n",
 			pSig->Sig, pEvtHeader->EventLen,
 			IAPP_SHOW_IP_HTONL(pEvtHeader->PeerIpAddr));
@@ -1099,9 +1051,12 @@ static BOOLEAN IAPP_SIG_Process(
 		case FT_KDP_SIG_NOTHING:
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> NO event to handle.\n");
 			break;
-
 		case FT_KDP_SIG_IAPP_ASSOCIATION:
 		{
+#if 1
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SIG_IAPP_ASSOCIATION.\n");
+#else
+
 			/*
 				This service primitive is used when a STA associates with the
 				AP using an 802.11 association request frame.
@@ -1113,7 +1068,7 @@ static BOOLEAN IAPP_SIG_Process(
 				The second purpose of this primitive is to notify other APs
 				within the multicast domain, i.e., that portion of a network
 				in which a layer two frame addressed to a multicast address
-				can be received, of the STA¡¦s new association, to allow those
+				can be received, of the STAâ€™s new association, to allow those
 				APs to clean up context information left behind by STAs that
 				do not properly reassociate when moving from one AP to another,
 				but rather only use the 802.11 Association Request.
@@ -1141,7 +1096,8 @@ static BOOLEAN IAPP_SIG_Process(
 			pFrameNotify->AddressLen = ETH_ALEN;
 			IAPP_MEM_MOVE(pFrameNotify->MacAddr, pSig->MacAddr, ETH_ALEN);
 
-			/*
+			mt_iapp_ft_client_insert(&pCtrlBK->SelfFtStaTable, pSig->MacAddr, WifiMAC, if_idx);
+						/*
 				Send the ADD-notify with multicast address &
 				send the L2 update frame with broadcast address.
 			*/
@@ -1168,7 +1124,7 @@ static BOOLEAN IAPP_SIG_Process(
 				The Layer 2 Update frame does not open new potentials for
 				attacks against the WLAN or the STAs. However, the ADD-notify
 				is a UDP IP frame that COULD be sent from anywhere in the DS
-				and attack the AP¡¦s state for the STA.
+				and attack the APâ€™s state for the STA.
 			*/
 			IAPP_UDP_PACKET_SEND(pCtrlBK, pFrameNotify, DataLen, pRspBuf);
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
@@ -1176,30 +1132,29 @@ static BOOLEAN IAPP_SIG_Process(
 			DBGPRINT(RT_DEBUG_TRACE,
 					"iapp> (IAPP_SIG_ASSOCIATION), Rcv assoc signal, and send out "
 					"IAPP add-notify\n");
+#endif
 		} /* case IAPP_SIG_ASSOCIATION */
 		break;
 
-
 		case IAPP_SIG_REASSOCIATION:
-		/* test only, not support currently */
-		break;
+		    /* not support currently */
+		    break;
 
 		case FT_KDP_SIG_FT_ASSOCIATION:
 		{
 			/* a station has already associated with us */
 			/* so prepare and send out ADD_notify packet, L2 update frame */
 			RT_IAPP_ADD_NOTIFY IappAddNotify, *pFrameNotify;
-			UINT32 DataLen;
-
+			UINT32 DataLen;			
 
 			/* init */
-			IAPP_MEM_ZERO(&IappAddNotify, sizeof(IappAddNotify));
-
+			IAPP_MEM_ZERO(&IappAddNotify, sizeof(IappAddNotify));			
+			
 			/* make up the frame content */
 			pFrameNotify = &IappAddNotify;
 			pFrameNotify->IappHeader.Version = 0;
 			pFrameNotify->IappHeader.Command = IAPP_CMD_ADD_NOTIFY;
-			pFrameNotify->IappHeader.Identifier = 0;
+			pFrameNotify->IappHeader.Identifier = 0;			
 
 			DataLen = sizeof(RT_IAPP_ADD_NOTIFY);
 
@@ -1208,6 +1163,8 @@ static BOOLEAN IAPP_SIG_Process(
 
 			pFrameNotify->AddressLen = ETH_ALEN;
 			IAPP_MEM_MOVE(pFrameNotify->MacAddr, pSig->MacAddr, ETH_ALEN);
+			
+			mt_iapp_ft_client_insert(&pCtrlBK->SelfFtStaTable, pSig->MacAddr, WifiMAC, if_idx);
 
 			/* mark the notify is for 11r station */
 			pFrameNotify->Rsvd |= FT_KDP_ADD_NOTIFY_RSVD_11R_SUPPORT;
@@ -1220,7 +1177,7 @@ static BOOLEAN IAPP_SIG_Process(
 					"iapp> (FT_KDP_SIG_FT_ASSOCIATION) Rcv a assoc signal and send out "
 					"IAPP add-notify!\n");
 
-			IAPP_UDP_PACKET_SEND(pCtrlBK, pFrameNotify, DataLen, pRspBuf);
+			IAPP_UDP_PACKET_SEND(pCtrlBK, pFrameNotify, DataLen, pRspBuf, if_idx);
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
 		}
 		break;
@@ -1234,8 +1191,8 @@ static BOOLEAN IAPP_SIG_Process(
 				an STA has reassociated with the AP.
 
 				In IAPP, If the APME is utilizing caching, then the APME should
-				first lookup the STA¡¦s context in the IAPP cache using the
-				STA¡¦s MAC Address. If found (a cache hit), then an
+				first lookup the STAâ€™s context in the IAPP cache using the
+				STAâ€™s MAC Address. If found (a cache hit), then an
 				IAPP-MOVE.request does not have to be issued until after an
 				802.11 Reassociation Response frame. If the STA context is
 				not found in the cache (a cache miss), then the APME should
@@ -1264,16 +1221,19 @@ static BOOLEAN IAPP_SIG_Process(
 			pFrameNotify->AddressLen = ETH_ALEN;
 			IAPP_MEM_MOVE(pFrameNotify->MacAddr, pSig->MacAddr, ETH_ALEN);
 
+			mt_iapp_ft_client_insert(&pCtrlBK->SelfFtStaTable, pSig->MacAddr, WifiMAC, if_idx);
+
 			/*
 				Send the MOVE-notify with multicast address &
 				send the L2 update frame with broadcast address.
 			*/
 			IAPP_TCP_PACKET_SEND(pCtrlBK,
-								pFrameNotify,
-								sizeof(RT_IAPP_MOVE_NOTIFY),
-								pEvtHeader->PeerIpAddr,
-								TRUE,
-								pRspBuf);
+					pFrameNotify,
+					sizeof(RT_IAPP_MOVE_NOTIFY),
+					pEvtHeader->PeerIpAddr,
+					TRUE,
+					pRspBuf,
+					if_idx);
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
 
 			DBGPRINT(RT_DEBUG_TRACE,
@@ -1304,7 +1264,9 @@ static BOOLEAN IAPP_SIG_Process(
 			FT_KDP_SecurityBlockSend(pCtrlBK,
 									pEvtHeader,
 									pSig->Content+FT_KDP_EVT_HEADER_SIZE,
-									pRspBuf);
+									pRspBuf,
+									WifiMAC,
+									if_idx);
 			break;
 
 
@@ -1317,7 +1279,8 @@ static BOOLEAN IAPP_SIG_Process(
 									pSig->MacAddr,
 									pSig->MacAddrSa,
 									pSig->CurrAPAddr,
-									pRspBuf);
+									pRspBuf,
+									if_idx);
 			break;
 
 
@@ -1326,7 +1289,8 @@ static BOOLEAN IAPP_SIG_Process(
 			FT_KDP_SecurityBlockAck(pCtrlBK,
 									pEvtHeader,
 									pSig->Content+FT_KDP_EVT_HEADER_SIZE,
-									pRspBuf);
+									pRspBuf,
+									if_idx);
 			break;
 
 
@@ -1335,7 +1299,8 @@ static BOOLEAN IAPP_SIG_Process(
 			FT_KDP_InformationReportSend(pCtrlBK,
 									pEvtHeader,
 									pSig->Content+FT_KDP_EVT_HEADER_SIZE,
-									pRspBuf);
+									pRspBuf,
+									if_idx);
 			break;
 
 
@@ -1344,7 +1309,8 @@ static BOOLEAN IAPP_SIG_Process(
 			FT_KDP_InformationRequestSend(pCtrlBK,
 									pEvtHeader,
 									pSig->Content+FT_KDP_EVT_HEADER_SIZE,
-									pRspBuf);
+									pRspBuf,
+									if_idx);
 			break;
 
 
@@ -1353,7 +1319,8 @@ static BOOLEAN IAPP_SIG_Process(
 			FT_KDP_InformationResponseSend(pCtrlBK,
 									pEvtHeader,
 									pSig->Content+FT_KDP_EVT_HEADER_SIZE,
-									pRspBuf);
+									pRspBuf,
+									if_idx);
 			break;
 
 
@@ -1728,7 +1695,7 @@ static BOOLEAN IAPP_SocketOpen(
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open RAW socket failed!\n");
 		goto label_fail;
-	} /* End of if */
+	} /* End of if */	
 
 	pipeDevCreate(IAPP_KDP_PIPE_DRV, 5, sizeof(RT_SIGNAL_STRUC));
 	pCtrlBK->SocketRawDrv = open(IAPP_KDP_PIPE_DRV, O_RDWR, 0);
@@ -1833,7 +1800,6 @@ label_fail:
 	return FALSE;
 } /* End of IAPP_SocketOpen */
 
-
 /*
 ========================================================================
 Routine Description:
@@ -1866,6 +1832,8 @@ static VOID IAPP_Start(
 	gettimeofday(&backuptime, NULL);
 	IAPP_EventLogClean();
 #endif // IAPP_EVENT_LOG //
+
+	mt_iapp_ft_client_table_init(pCtrlBK);
 
 	/* waiting for local AP SysCmd or peer AP IAPP packets */
 	while(!pCtrlBK->FlgIsTerminated)
@@ -1920,16 +1888,18 @@ Note:
 ========================================================================
 */
 static BOOLEAN IAPP_UDP_PacketSend(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		UCHAR				*pPkt,
-	IAPP_IN		UINT32				PktLen,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		RTMP_IAPP	*pCtrlBK,
+	IAPP_IN		UCHAR		*pPkt,
+	IAPP_IN		UINT32		PktLen,
+	IAPP_IN		UCHAR		*pRspBuf,
+	IAPP_IN		INT32		if_idx)
 {
 	struct sockaddr_in AddrMulticast;
 	RT_IAPP_HEADER *pIappHdr;
 	UINT16 Identifier;
 	UCHAR *pBufEncrypt;
 	BOOLEAN Status;
+	UINT32 total_len;
 
 
 	/* init */
@@ -1947,30 +1917,36 @@ static BOOLEAN IAPP_UDP_PacketSend(
 	AddrMulticast.sin_addr.s_addr = pCtrlBK->AddrBroadcast.s_addr;
 	AddrMulticast.sin_port        = htons(IAPP_UDP_PORT);
 
-	IAPP_RSP_BUF_ALLOCATE(pRspBuf, pBufEncrypt, PktLen+IAPP_SECURITY_EXTEND_LEN);
+	IAPP_RSP_BUF_ALLOCATE(pRspBuf, pBufEncrypt, PktLen+IAPP_SECURITY_EXTEND_LEN+ETH_ALEN);
 	if (pBufEncrypt == NULL)
 		return FALSE;
 	/* End of if */
 	IAPP_MEM_MOVE(pBufEncrypt, pPkt, PktLen);
-
+	IAPP_MEM_MOVE(pBufEncrypt+PktLen, pCtrlBK->IfNameWlanMAC[if_idx], ETH_ALEN);
+	total_len = PktLen + ETH_ALEN;
+	
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
-#endif // FT_KDP_FUNC_PKT_ENCRYPT //
+	if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &total_len, if_idx, RT_FT_DATA_ENCRYPT) == FALSE) {
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
+		return FALSE;
+	}
 
+#endif // FT_KDP_FUNC_PKT_ENCRYPT //
+	
 	/* send out the packet */
 	if (sendto(pCtrlBK->SocketUdpSend,
 				pBufEncrypt,
-				PktLen,
+				total_len,
 				0,
 				(struct sockaddr *)&AddrMulticast,
-				sizeof(AddrMulticast)) != PktLen)
+				sizeof(AddrMulticast)) != (total_len))
 	{
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send UDP packet failed!\n");
 		Status = FALSE;
 	} /* End of if */
 
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send UDP packet ok (Len = %d)\n\n", PktLen);
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send UDP packet ok (Len = %d)\n\n", total_len);
 	return Status;
 } /* End of IAPP_UDP_PacketSend */
 
@@ -2176,7 +2152,7 @@ static VOID IAPP_RcvHandlerTcp(
 	INT32 SockNew;
 	socklen_t Length;
 	INT32 SizeRcvMsg;
-
+	INT32 if_idx = 0;
 
 	/* init */
 	IAPP_MEM_ZERO(&AddrPeer, sizeof(AddrPeer));
@@ -2195,13 +2171,21 @@ static VOID IAPP_RcvHandlerTcp(
 
 	if (SizeRcvMsg > 0)
 	{
+#ifdef FT_KDP_FUNC_PKT_ENCRYPT
+		INT32 decrypt_idx=0;
+#endif
 		DBGPRINT(RT_DEBUG_TRACE,
 				"iapp> Recv TCP successfully from %d.%d.%d.%d\n",
 				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr));
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
+		/* use last wireless interface for decrypt data, workaround for work with old 2.4GHZ drivers without FT support */
+		decrypt_idx = (pCtrlBK->IfNameWlanCount - 1);
+		if (decrypt_idx < 0)
+		    decrypt_idx = 0;
+
 		/* ioctl to decrypt */
-		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
+		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, decrypt_idx, RT_FT_DATA_DECRYPT) == FALSE) {
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> TCP Decrypt frame failed!\n");
 			return;
 		}
@@ -2224,7 +2208,7 @@ static VOID IAPP_RcvHandlerTcp(
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n", pIappHdr->Version);
-			IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
+			//IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
 
@@ -2253,7 +2237,7 @@ static VOID IAPP_RcvHandlerTcp(
 					that originated the IAPP MOVE-notify packet, and the APME
 					should issue an IAPPADD.request primitive of its own to
 					ensure that all Layer 2 devices are properly informed of
-					the correct location of the STA¡¦s most recent association.
+					the correct location of the STAâ€™s most recent association.
 				*/
 
 				DBGPRINT(RT_DEBUG_TRACE,
@@ -2277,7 +2261,7 @@ static VOID IAPP_RcvHandlerTcp(
 				UCHAR *pBufMsg;
 				UINT32 BufLen;
 				POID_REQ OidReq;
-
+				INT32 idx;
 
 				/* init */
 				pAckSB = (RT_IAPP_SEND_SECURITY_BLOCK *) pIappHdr;
@@ -2312,7 +2296,12 @@ static VOID IAPP_RcvHandlerTcp(
 
 				OidReq->Len = BufLen - sizeof(OID_REQ);
 
-				IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen);
+				/*
+					send to all wifi 11r interface.
+				*/
+				for (idx = 0; idx < pCtrlBK->IfNameWlanCount; idx++) {
+					IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen, idx);
+				}
 			}
 			break;
 
@@ -2321,11 +2310,12 @@ static VOID IAPP_RcvHandlerTcp(
 										IAPP_INFO_TYPE_RSP,
 										(UCHAR *)pIappHdr,
 										AddrPeer.sin_addr.s_addr,
-										pCmdBuf);
+										pCmdBuf,
+										if_idx);
 				break;
 
 			default:
-				IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
+				//IAPP_HEX_DUMP("Wrong TCP Frame Content: ", pPktBuf, SizeRcvMsg);
 				break;
 		}
 	} /* End of if */
@@ -2371,6 +2361,7 @@ static VOID IAPP_RcvHandlerMoveReq(
 	UCHAR *pBufMsg;
 	UINT32 BufLen;
 	POID_REQ OidReq;
+	INT32 if_idx;
 
 
 	/* sanity check */
@@ -2399,11 +2390,17 @@ static VOID IAPP_RcvHandlerMoveReq(
 	IAPP_MEM_MOVE(OidReq->Buf, pNotify->MacAddr, ETH_ALEN);
 	OidReq->Len = BufLen - sizeof(OID_REQ);
 
+	if_idx = mt_iapp_find_ifidx_by_sta_mac(&pCtrlBK->SelfFtStaTable, pNotify->MacAddr);
+	if (if_idx < 0) {
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> %s: cannot find wifi interface.\n", __FUNCTION__);
+		return;
+	}
+
 	/*
 		Note: RALINK AP driver delete the STATION MAC by MAC
 		address, do NOT care which BSS index.
 	*/
-	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen);
+	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen, if_idx);
 
 	DBGPRINT(RT_DEBUG_TRACE,
 			"iapp> (Receive IAPP_CMD_MOVE_NOTIFY for "
@@ -2418,7 +2415,10 @@ static VOID IAPP_RcvHandlerMoveReq(
 	pRsp->Status = IAPP_MOVE_RSP_STATUS_SUCCESS;
 
 	IAPP_TCP_PACKET_SEND(pCtrlBK, pRsp, sizeof(RT_IAPP_MOVE_RSP),
-						PeerIP, TRUE, pRspBuf);
+						PeerIP, TRUE, pRspBuf, if_idx);
+
+	mt_iapp_ft_client_delete(&pCtrlBK->SelfFtStaTable, pNotify->MacAddr);
+	
 } /* End of IAPP_RcvHandlerMoveReq */
 
 
@@ -2447,8 +2447,9 @@ static VOID IAPP_RcvHandlerSSB(
 {
 	RT_IAPP_SEND_SECURITY_BLOCK *pSendSB;
 	UCHAR *pBufMsg;
-	UINT32 BufLen;
+	UINT32 BufLen, if_idx;
 	POID_REQ OidReq;
+	FT_KDP_EVT_KEY_ELM kdp_info; 
 
 
 	/* init */
@@ -2476,9 +2477,17 @@ static VOID IAPP_RcvHandlerSSB(
 				pSendSB->InitVec, IAPP_SB_INIT_VEC_SIZE);
 	IAPP_MEM_MOVE(OidReq->Buf+FT_IP_ADDRESS_SIZE+IAPP_SB_INIT_VEC_SIZE,
 				pSendSB->SB, pSendSB->Length);
+	IAPP_MEM_MOVE(&kdp_info, pSendSB->SB, pSendSB->Length);
+	//IAPP_HEX_DUMP("kdp_info.MacAddr", kdp_info.MacAddr, ETH_ALEN);
+	if_idx = mt_iapp_find_ifidx_by_sta_mac(&pCtrlBK->SelfFtStaTable, kdp_info.MacAddr);
+	if (if_idx < 0) {
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> %s: cannot find wifi interface\n", __FUNCTION__);
+		return;
+	}
+	
 	OidReq->Len = BufLen - sizeof(OID_REQ);
 
-	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen);
+	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen, if_idx);
 
 #ifndef FT_KDP_FUNC_SOCK_COMM
 	/*
@@ -2488,7 +2497,7 @@ static VOID IAPP_RcvHandlerSSB(
 		So we poll the event automatically.
 	*/
 	/* receive event */
-	IAPP_USR2Handle(0);
+	IAPP_USR2Handle(0, if_idx);
 #endif // FT_KDP_FUNC_SOCK_COMM //
 } /* End of IAPP_RcvHandlerSSB */
 
@@ -2516,7 +2525,8 @@ static VOID IAPP_RcvHandlerApInfor(
 	IAPP_IN		UCHAR				Type,
 	IAPP_IN		UCHAR				*pPktBuf,
 	IAPP_IN		UINT32				PeerIP,
-	IAPP_IN		UCHAR				*pCmdBuf)
+	IAPP_IN		UCHAR				*pCmdBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	RT_IAPP_INFORMATION *pApIB;
 	UCHAR *pBufMsg;
@@ -2555,7 +2565,7 @@ static VOID IAPP_RcvHandlerApInfor(
 	IAPP_MEM_MOVE(OidReq->Buf+FT_IP_ADDRESS_SIZE, pApIB->IB, pApIB->Length);
 	OidReq->Len = BufLen - sizeof(OID_REQ);
 
-	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen);
+	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen, if_idx);
 
 #ifndef FT_KDP_FUNC_SOCK_COMM
 	/*
@@ -2565,7 +2575,7 @@ static VOID IAPP_RcvHandlerApInfor(
 		So we poll the event automatically.
 	*/
 	/* receive event */
-	IAPP_USR2Handle(0);
+	IAPP_USR2Handle(0, if_idx);
 #endif // FT_KDP_FUNC_SOCK_COMM //
 } /* End of IAPP_RcvHandlerApInfor */
 
@@ -2595,7 +2605,7 @@ static VOID IAPP_RcvHandlerRawDrv(
 	IAPP_IN		UCHAR				*pRspBuf)
 {
 	RT_SIGNAL_STRUC *pSignal;
-	INT32 SizeRcvMsg;
+	INT32 SizeRcvMsg;	
 
 #ifdef IAPP_OS_LINUX
 	struct sockaddr_in AddrPeer;
@@ -2623,11 +2633,18 @@ static VOID IAPP_RcvHandlerRawDrv(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
-		DBGPRINT(RT_DEBUG_TRACE, "iapp> Recvfrom RAW CMD successfully!\n");
+		UCHAR WifiMAC[ETH_ALEN];
+		
+		DBGPRINT(RT_DEBUG_TRACE,
+				"iapp> Recvfrom RAW CMD successfully (%d, %d)!\n",
+				IAPP_MemAllocNum, IAPP_MemFreeNum);
+		
+		NdisZeroMemory(WifiMAC, ETH_ALEN);
+		NdisCopyMemory(WifiMAC, pPktBuf, ETH_ALEN);
 
 		/* handle the signal context, assoicate or reassociate or terminate */
 		pSignal = (RT_SIGNAL_STRUC *)(pPktBuf + sizeof(FT_ETH_HEADER));
-		IAPP_SIG_Process(pCtrlBK, pSignal, SizeRcvMsg, pCmdBuf, pRspBuf);
+		IAPP_SIG_Process(pCtrlBK, WifiMAC, pSignal, SizeRcvMsg, pCmdBuf, pRspBuf);
 	} /* End of if */
 } /* End of IAPP_RcvHandlerRawDrv */
 
@@ -2686,12 +2703,26 @@ static VOID IAPP_RcvHandlerRawRRB(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
-
-		DBGPRINT(RT_DEBUG_TRACE, "iapp> Recvfrom RRB RAW successfully! (len = %d)\n", SizeRcvMsg);
+		INT32 wifi_if_idx = 0;
+		UCHAR WifiMAC[ETH_ALEN];
+		
+		DBGPRINT(RT_DEBUG_TRACE,
+				"iapp> Recvfrom RRB RAW successfully! (len = %d)\n",
+				SizeRcvMsg);
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
 		pFrameRRB = (FT_RRB_FRAME *)pPktBuf;
+
+		if ((wifi_if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, pPktBuf)) == -1) {
+			DBGPRINT(RT_DEBUG_ERROR,
+				"iapp> %s - Daemon doesn't hook this wifi interface. Ignore this packet.\n",
+				__FUNCTION__);
+			//IAPP_HEX_DUMP("802.3 Hdr: ", pPktBuf, 14);
+			return;
+		}
+		NdisZeroMemory(WifiMAC, ETH_ALEN);
+		NdisCopyMemory(WifiMAC, pPktBuf, ETH_ALEN);
 
 		/*
 			Note: Can not use "SizeRcvMsg - FT_RRB_HEADER_SIZE" to get the
@@ -2702,15 +2733,12 @@ static VOID IAPP_RcvHandlerRawRRB(
 		SizeRcvMsg = pFrameRRB->FTActionLength;
 		IAPP_ENCRYPTED_DATA_SIZE_CAL(SizeRcvMsg);
 
-		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
-			return;
-		}
+		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+							pPktBuf+FT_RRB_HEADER_SIZE,
+							&SizeRcvMsg, wifi_if_idx, RT_FT_DATA_DECRYPT);
 
 		SizeRcvMsg += FT_RRB_HEADER_SIZE;
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
-
-
 
 		IAPP_CMD_BUF_ALLOCATE(pCmdBuf, pBufMsg, (sizeof(OID_REQ) + SizeRcvMsg));
 		if (pBufMsg == NULL)
@@ -2724,7 +2752,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 		OidReq->Len = SizeRcvMsg;
 
 		IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg,
-						(sizeof(OID_REQ) + SizeRcvMsg));
+						(sizeof(OID_REQ) + SizeRcvMsg), wifi_if_idx);
 	} /* End of if */
 } /* End of IAPP_RcvHandlerRawRRB */
 
@@ -2845,7 +2873,7 @@ static VOID IAPP_RcvHandlerUdp(
 	RT_IAPP_HEADER *pIappHdr;
 	INT32 SizeRcvMsg;
 	socklen_t Length;
-
+	INT32 if_idx = -1, idx;
 
 	/* init */
 	IAPP_MEM_ZERO(&AddrPeer, sizeof(AddrPeer));
@@ -2861,6 +2889,9 @@ static VOID IAPP_RcvHandlerUdp(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
+#ifdef FT_KDP_FUNC_PKT_ENCRYPT
+		INT32 decrypt_idx = 0;
+#endif
 		DBGPRINT(RT_DEBUG_TRACE,
 				"iapp> Recvfrom UDP (len%d) successfully from %d.%d.%d.%d\n",
 				SizeRcvMsg,
@@ -2875,8 +2906,13 @@ static VOID IAPP_RcvHandlerUdp(
 #endif // IAPP_TEST //
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
+		/* use last wireless interface for decrypt data, workaround for work with old 2.4GHZ drivers without FT support */
+		decrypt_idx = (pCtrlBK->IfNameWlanCount - 1);
+		if (decrypt_idx < 0)
+		    decrypt_idx = 0;
+
 		/* ioctl to decrypt */
-		if (IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
+		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, decrypt_idx, RT_FT_DATA_DECRYPT) == FALSE) {
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> UDP Decrypt frame failed!\n");
 			return;
 		}
@@ -2897,14 +2933,18 @@ static VOID IAPP_RcvHandlerUdp(
 
 		if (pIappHdr->Version != IAPP_VERSION)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n", pIappHdr->Version);
-			IAPP_HEX_DUMP("Wrong UDP Frame Content: ", pPktBuf, SizeRcvMsg);
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP version not match %d!\n",
+					pIappHdr->Version);
+			//IAPP_HEX_DUMP("Wrong UDP Frame Content: ", pPktBuf, SizeRcvMsg);
 			return; /* version not match */
 		} /* End of if */
 
-
+#if 0
+		//IAPP_HEX_DUMP("UDP Frame Content: ", pPktBuf, SizeRcvMsg);
+#endif
 		/* handle the IAPP */
-		DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
+		DBGPRINT(RT_DEBUG_TRACE,
+				"iapp> IAPP SysCmd = %d\n", pIappHdr->Command);
 
 		switch(pIappHdr->Command)
 		{
@@ -2950,24 +2990,28 @@ static VOID IAPP_RcvHandlerUdp(
 					STA operation, as required by 802.11.
 				*/
 				/* not yet implement */
-
-				/* delete MAC Entry when receive a add-notify packet */
+				
 				BufLen = sizeof(OID_REQ) + FT_IP_ADDRESS_SIZE + ETH_ALEN;
 				IAPP_CMD_BUF_ALLOCATE(pCmdBuf, pBufMsg, BufLen);
 				if (pBufMsg == NULL)
 					break;
 
-				OidReq = (POID_REQ) pBufMsg;
-				OidReq->OID = (RT_SET_DEL_MAC_ENTRY | OID_GET_SET_TOGGLE);
-				IAPP_MEM_MOVE(OidReq->Buf, pNotify->MacAddr, ETH_ALEN);
-				OidReq->Len = ETH_ALEN;
+				if_idx = mt_iapp_find_ifidx_by_sta_mac(&pCtrlBK->SelfFtStaTable, pNotify->MacAddr);
 
-				/*
-					Note: RALINK AP driver delete the STATION MAC by MAC
-					address, do NOT care which BSS index.
-				*/
-				IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg,
-							(sizeof(INT32) + sizeof(INT32) + ETH_ALEN));
+				if (if_idx >= 0) {
+					/* delete MAC Entry when receive a add-notify packet */
+					OidReq = (POID_REQ) pBufMsg;
+					OidReq->OID = (RT_SET_DEL_MAC_ENTRY | OID_GET_SET_TOGGLE);
+					IAPP_MEM_MOVE(OidReq->Buf, pNotify->MacAddr, ETH_ALEN);
+					OidReq->Len = ETH_ALEN;
+					
+					/*
+						Note: RALINK AP driver delete the STATION MAC by MAC
+						address, do NOT care which BSS index.
+					*/
+					IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg,
+								(sizeof(INT32) + sizeof(INT32) + ETH_ALEN), if_idx);
+				}				
 
 				DBGPRINT(RT_DEBUG_TRACE,
 						"iapp> Receive IAPP_CMD_ADD_NOTIFY for "
@@ -2995,9 +3039,14 @@ static VOID IAPP_RcvHandlerUdp(
 
 					OidReq->Len = FT_IP_ADDRESS_SIZE+ETH_ALEN;
 
-					IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg,
+					/*
+						Send notify to all 11r interface.
+					*/
+					for (idx = 0; idx < pCtrlBK->IfNameWlanCount; idx++) {
+						IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg,
 								(sizeof(INT32) + sizeof(INT32) +
-								FT_IP_ADDRESS_SIZE + ETH_ALEN));
+								FT_IP_ADDRESS_SIZE + ETH_ALEN), idx);
+					}
 
 #ifndef FT_KDP_FUNC_SOCK_COMM
 					/*
@@ -3007,7 +3056,7 @@ static VOID IAPP_RcvHandlerUdp(
 						So we poll the event automatically.
 					*/
 					/* receive event */
-					IAPP_USR2Handle(0);
+					IAPP_USR2Handle(0, if_idx);
 #endif // FT_KDP_FUNC_SOCK_COMM //
 				} /* End of if */
 			} /* IAPP_CMD_ADD_NOTIFY */
@@ -3052,7 +3101,8 @@ static VOID IAPP_RcvHandlerUdp(
 										IAPP_INFO_TYPE_BC,
 										(UCHAR *)pIappHdr,
 										AddrPeer.sin_addr.s_addr,
-										pCmdBuf);
+										pCmdBuf,
+										if_idx);
 				break;
 
 
@@ -3061,7 +3111,8 @@ static VOID IAPP_RcvHandlerUdp(
 										IAPP_INFO_TYPE_REQ,
 										(UCHAR *)pIappHdr,
 										AddrPeer.sin_addr.s_addr,
-										pCmdBuf);
+										pCmdBuf,
+										if_idx);
 				break;
 
 
@@ -3120,7 +3171,7 @@ static VOID IAPP_USR2Handle(
 #ifndef FT_KDP_FUNC_SOCK_COMM
 	RT_SIGNAL_STRUC *pSigBuf;
 	INT32 DataLen;
-
+	INT32	if_idx = 0;
 
 	/* get signal context from AP driver */
 	DataLen = sizeof(RT_SIGNAL_STRUC);
@@ -3131,7 +3182,8 @@ static VOID IAPP_USR2Handle(
 		return;
 	} /* End of if */
 
-	IAPP_IOCTL_TO_WLAN(&IAPP_Ctrl_Block, RT_IOCTL_IAPP, pSigBuf, &DataLen, 0, RT_QUERY_SIGNAL_CONTEXT);
+	IAPP_IOCTL_TO_WLAN(&IAPP_Ctrl_Block, RT_IOCTL_IAPP,
+						pSigBuf, &DataLen, if_idx, RT_QUERY_SIGNAL_CONTEXT);
 
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> Receive a signal (Len = %d)!\n", DataLen);
 
@@ -3193,11 +3245,8 @@ VOID IAPP_Task(
 {
 	RTMP_IAPP *pCtrlBK = (RTMP_IAPP *)pContext;
 	pid_t PidAuth;
-//#ifdef IAPP_OS_LINUX
-	INT32 ComLen;
 
-
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> task start...\n");
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> (ver.%s) task start...\n", IAPP_DAEMON_VERSION);
 
 	/* here is the child background process */
 	if (IAPP_DSIfInfoGet(pCtrlBK) != TRUE)
@@ -3215,7 +3264,7 @@ VOID IAPP_Task(
 
 	/* init RV/TX Sockets */
 	/* setup the message queue to be synchronous */
-	IAPP_MsgProcess(pCtrlBK, IAPP_OPEN_SERVICE_REQ, NULL, 0);
+	IAPP_MsgProcess(pCtrlBK, IAPP_OPEN_SERVICE_REQ, NULL, 0, 0);
 
 	pCtrlBK->FlgIsRcvRunning = FALSE;
 	if (IAPP_SocketOpen(pCtrlBK) == FALSE)
@@ -3223,6 +3272,10 @@ VOID IAPP_Task(
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Open Socket failed\n");
 		goto label_err;
 	} /* End of if */
+
+	if (mt_iapp_get_wifi_iface_mac(pCtrlBK) == FALSE) {
+		goto label_err;
+	}
 
 	/* init signal functions, driver will use SIGUSR1/2 to inform us */
 	signal(SIGINT,  IAPP_TerminateHandle);
@@ -3248,21 +3301,18 @@ VOID IAPP_Task(
 
 	pCtrlBK->PID = PidAuth;
 
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> Process ID = 0x%x\n", PidAuth);
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Process ID = 0x%x (%d %d)\n",
+			PidAuth, IAPP_MemAllocNum, IAPP_MemFreeNum);
 
-	ComLen = sizeof(INT32);
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, &PidAuth, &ComLen, 0, RT_SET_IAPP_PID | OID_GET_SET_TOGGLE);
-
-#ifdef FT_KDP_KEY_FROM_DAEMON
-	ComLen = strlen(pCtrlBK->CommonKey);
-	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pCtrlBK->CommonKey, &ComLen, 0, RT_FT_KEY_SET | OID_GET_SET_TOGGLE);
-#endif // FT_KDP_KEY_FROM_DAEMON //
+	mt_iapp_set_daemon_information(pCtrlBK, &PidAuth);
 
 	/* start IAPP function (while FlgIsLoop in the function) */
 	IAPP_Start(pCtrlBK);
 
 	/* will not be here except terminate signal */
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_Task end!\n");
+
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> IAPP_Task ends (%d, %d)!\n",
+			IAPP_MemAllocNum, IAPP_MemFreeNum);
 
 label_err:
 	return;
@@ -3324,7 +3374,7 @@ STATUS IAPP_Init(INT32 Argc, CHAR *pArgv[])
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-	 pCtrlBK->PID = taskSpawn ("tIappFt", 100, 0, 5000,
+    pCtrlBK->PID = taskSpawn ("tIappFt", 100, 0, 5000,
 									(FUNCPTR) IAPP_Task, (INT32)pCtrlBK,
 									0, 0, 0, 0, 0, 0, 0, 0, 0);
 	if (pCtrlBK->PID == ERROR)
@@ -3368,11 +3418,13 @@ Note:
 */
 static BOOLEAN IAPP_TCP_PacketSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
+/*	IAPP_IN		UCHAR				*WifiMAC,*/
 	IAPP_IN		UCHAR				*pPkt,
 	IAPP_IN		UINT32				PktLen,
 	IAPP_IN		UINT32				PeerIP,
 	IAPP_IN		BOOLEAN				FlgUsingUdpWhenNoIP,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	INT32 SocketPeer = 0;
 	struct sockaddr_in AddrSockConn;
@@ -3427,19 +3479,23 @@ static BOOLEAN IAPP_TCP_PacketSend(
 	{
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to encrypt */
-		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+							pBufEncrypt, &PktLen, if_idx, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
+
+		//IAPP_HEX_DUMP("Send Content: ", pPkt, PktLen); //snowpin test
 
 		if (send(SocketPeer, pBufEncrypt, PktLen, 0) < 0)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n", IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n",
+					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
 			goto label_fail;
 		} /* End of if */
 	}
 	else
 	{
 		/* use broadcast UDP packet but UDP can not be guaranted, no retry */
-		IAPP_UDP_PACKET_SEND(pCtrlBK, pBufEncrypt, PktLen, pRspBuf);
+		IAPP_UDP_PACKET_SEND(pCtrlBK, pBufEncrypt, PktLen, pRspBuf, if_idx);
 	} /* End of if */
 
 	FuncStatus = TRUE;
@@ -3472,16 +3528,17 @@ Note:
 */
 static VOID FT_KDP_SecurityBlockSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		UCHAR				*WifiMAC,
+	IAPP_IN		INT32				if_idx)
 {
 	INT32 SocketPeer;
 	struct sockaddr_in AddrSockConn;
 	UCHAR *pBufFrame;
 	RT_IAPP_SEND_SECURITY_BLOCK *pIappSendSB;
-	UINT32 PktLen;
-
+	UINT32 PktLen, buf_len = 0;
 
 	/* init */
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockSend to %d.%d.%d.%d\n\n",	IAPP_SHOW_IP_HTONL(pEvtHdr->PeerIpAddr));
@@ -3519,36 +3576,37 @@ static VOID FT_KDP_SecurityBlockSend(
 	} /* End of if */
 
 	/* init frame buffer */
-	PktLen = sizeof(RT_IAPP_SEND_SECURITY_BLOCK) + pEvtHdr->EventLen;
+	buf_len = sizeof(RT_IAPP_SEND_SECURITY_BLOCK) + pEvtHdr->EventLen + ETH_ALEN; /* ETH_ALEN is the length of WIFI Interface MAC. */
 
-	IAPP_RSP_BUF_ALLOCATE(pRspBuf, pBufFrame, PktLen);
+	IAPP_RSP_BUF_ALLOCATE(pRspBuf, pBufFrame, buf_len);
 	if (pBufFrame == NULL)
 		goto label_fail;
 	/* End of if */
 
-	IAPP_PKT_ZERO(pBufFrame, PktLen);
+	IAPP_PKT_ZERO(pBufFrame, buf_len);
 
 	/* init the Security-Block-Send frame */
 	pIappSendSB = (RT_IAPP_SEND_SECURITY_BLOCK *)pBufFrame;
 	pIappSendSB->IappHeader.Version = 0;
 	pIappSendSB->IappHeader.Command = IAPP_CMD_FT_SEND_SECURITY_BLOCK;
 	pIappSendSB->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
-
 	PktLen = sizeof(RT_IAPP_SEND_SECURITY_BLOCK) + pEvtHdr->EventLen;
 	pIappSendSB->IappHeader.Length = SWAP_16(PktLen);
 
 	pIappSendSB->Length = pEvtHdr->EventLen;
 	IAPP_MEM_MOVE(pIappSendSB->SB, pEvt, pEvtHdr->EventLen);
+	IAPP_MEM_MOVE(pIappSendSB->SB + pEvtHdr->EventLen, WifiMAC, ETH_ALEN);
 
 	/* send out the frame */
 	if (pEvtHdr->PeerIpAddr != 0)
 	{
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to encrypt */
-		IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+		IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+							pBufFrame, &buf_len, if_idx, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
-		if (send(SocketPeer, pBufFrame, PktLen, 0) < 0)
+		if (send(SocketPeer, pBufFrame, buf_len, 0) < 0)
 		{
 			DBGPRINT(RT_DEBUG_ERROR, "iapp> Send socket failed %d.%d.%d.%d!\n",
 					IAPP_SHOW_IP(AddrSockConn.sin_addr.s_addr));
@@ -3558,7 +3616,7 @@ static VOID FT_KDP_SecurityBlockSend(
 	else
 	{
 		/* use broadcast UDP packet but UDP can not be guaranted, no retry */
-		IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, PktLen, pRspBuf);
+		IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, buf_len, pRspBuf, if_idx);
 	} /* End of if */
 
 label_fail:
@@ -3587,9 +3645,10 @@ Note:
 */
 static VOID FT_KDP_SecurityBlockAck(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	INT32 SocketPeer;
 	struct sockaddr_in AddrSockConn;
@@ -3599,7 +3658,7 @@ static VOID FT_KDP_SecurityBlockAck(
 
 
 	/* init */
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockSend\n");
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockAck\n");
 
 	SocketPeer = 0;
 	pBufFrame = NULL;
@@ -3652,7 +3711,8 @@ static VOID FT_KDP_SecurityBlockAck(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+						pBufFrame, &PktLen, if_idx, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* send out the frame */
@@ -3690,9 +3750,10 @@ Note:
 */
 static VOID FT_KDP_InformationRequestSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	UCHAR *pBufFrame;
 	RT_IAPP_INFORMATION *pIappInfor;
@@ -3726,7 +3787,7 @@ static VOID FT_KDP_InformationRequestSend(
 	IAPP_MEM_MOVE(pIappInfor->IB, pEvt, pEvtHdr->EventLen);
 
 	/* use broadcast UDP packet but UDP can not be guaranted, no retry */
-	IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, PktLen, pRspBuf);
+	IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, PktLen, pRspBuf, if_idx);
 } /* End of FT_KDP_InformationRequestSend */
 
 
@@ -3749,9 +3810,10 @@ Note:
 */
 static VOID FT_KDP_InformationResponseSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	INT32 SocketPeer;
 	struct sockaddr_in AddrSockConn;
@@ -3818,7 +3880,8 @@ static VOID FT_KDP_InformationResponseSend(
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
-	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pBufFrame, &PktLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+						pBufFrame, &PktLen, if_idx, RT_FT_DATA_ENCRYPT);
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* send out the frame */
@@ -3856,9 +3919,10 @@ Note:
 */
 static VOID FT_KDP_InformationReportSend(
 	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		FT_KDP_EVT_HEADER	*pEvtHdr,
+	IAPP_IN		FT_KDP_EVT_HEADER		*pEvtHdr,
 	IAPP_IN		VOID				*pEvt,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	UCHAR *pBufFrame;
 	RT_IAPP_INFORMATION *pIappInfor;
@@ -3894,7 +3958,7 @@ static VOID FT_KDP_InformationReportSend(
 	IAPP_MEM_MOVE(pIappInfor->IB, pEvt, pEvtHdr->EventLen);
 
 	/* use broadcast UDP packet but UDP can not be guaranted, no retry */
-	IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, PktLen, pRspBuf);
+	IAPP_UDP_PACKET_SEND(pCtrlBK, pBufFrame, PktLen, pRspBuf, if_idx);
 } /* End of FT_KDP_InformationReportSend */
 
 
@@ -3926,7 +3990,8 @@ static VOID FT_RRB_ActionForward(
 	IAPP_IN		UCHAR				*pMacDa,
 	IAPP_IN		UCHAR				*pMacSa,
 	IAPP_IN		UCHAR				*pMacAp,
-	IAPP_IN		UCHAR				*pRspBuf)
+	IAPP_IN		UCHAR				*pRspBuf,
+	IAPP_IN		INT32				if_idx)
 {
 	UCHAR *pBufFrame;
 	FT_RRB_FRAME *pFrameRRB;
@@ -3968,13 +4033,16 @@ static VOID FT_RRB_ActionForward(
 	/* the address of pEvtHdr->EventLen is not 4B align */
 	EvtLen = pEvtHdr->EventLen;
 
-	IAPP_IOCTL_TO_WLAN_CRYPT(pCtrlBK, RT_IOCTL_IAPP, pFrameRRB->FTActionFrame, &EvtLen, 0, RT_FT_DATA_ENCRYPT);
+	IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
+						pFrameRRB->FTActionFrame, &EvtLen,
+						if_idx, RT_FT_DATA_ENCRYPT);
 
 	/* reassign the packet length due to changed pEvtHdr->EventLen */
 	PktLen = sizeof(FT_RRB_FRAME) + EvtLen;
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 #ifdef IAPP_OS_LINUX
+{
 	/* send the RRB frame */
 	Status = send(pCtrlBK->SocketRawRRB, pBufFrame, PktLen, 0);
 	if (Status < 0)
@@ -3982,11 +4050,14 @@ static VOID FT_RRB_ActionForward(
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> Send RRB packet failed %d!\n", Status);
 		goto LabelFail;
 	} /* End of if */
+}
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
+{
 	M_BLK_ID pUpdatePkt;
 	UINT32 IdIfNum;
+
 
 	/* loop for eth0, eth1, eth2...... */
 	for(IdIfNum=0; IdIfNum<FT_KDP_BR_ETH_IF_NUM; IdIfNum++)
@@ -4011,6 +4082,7 @@ static VOID FT_RRB_ActionForward(
 			goto LabelFail;
 		} /* End of if */
 	} /* End of for */
+}
 #endif // IAPP_OS_VXWORKS //
 
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> Send RRB packet OK!\n");
