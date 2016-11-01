@@ -498,9 +498,7 @@ static int bndstrg_event_table_info(struct bndstrg *bndstrg)
 
 static int bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band)
 {
-	BND_STRG_DBGPRINT(DEBUG_OFF, "onoff = %u,band = %u\n", onoff, band);
-	DBGPRINT(DEBUG_ERROR,
-			 "%s(): onoff = %u,band = %u\n", __func__, onoff, band);
+	DBGPRINT(DEBUG_TRACE, "%s(): onoff = %u,band = %u\n", __func__, onoff, band);
 	if (!onoff)
 	{
 		bndstrg->table.Band = bndstrg->table.Band & ~band;
@@ -977,7 +975,7 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 	} else if (table->bEnabled == FALSE) {
 		/* If both 2G inf and 5G inf are ready, then tell driver to start running */
 		table->table_enable_cnt++;
-		DBGPRINT(DEBUG_OFF, "%s(): table->dbdc_mode=%d,table->Band=%d\n", __FUNCTION__,table->dbdc_mode,table->Band);
+		DBGPRINT(DEBUG_TRACE, "%s(): table->dbdc_mode=%d,table->Band=%d\n", __FUNCTION__,table->dbdc_mode,table->Band);
 		if (table->dbdc_mode == 1) {
 			if ((table->Band & BAND_2G) != BAND_2G) {
 				bndstrg_onoff(bndstrg, (char*)table->uc2GIfName, 1);
