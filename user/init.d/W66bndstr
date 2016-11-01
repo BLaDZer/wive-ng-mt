@@ -25,8 +25,8 @@ start() {
 
 get_param() {
     eval `nvram_buf_get 2860 BandSteering BandSteeringDebug SSID1 SSID1INIC`
-    if [ "$BandSteeringDebug" != "" ]; then
-	BandSteeringDebug="-d 4"
+    if [ "$BandSteeringDebug" != "" ] && [ "$BandSteeringDebug" != "0" ]; then
+	BandSteeringDebug="-d $BandSteeringDebug"
     fi
 }
 

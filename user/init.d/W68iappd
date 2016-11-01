@@ -33,8 +33,8 @@ get_param() {
     if [ "$second_wlan_root_if" != "" ]; then
 	IFADD="$IFADD -wi $second_wlan_root_if"
     fi
-    if [ "$IAPPDebug" != "" ]; then
-	IAPPDebug="-d 4"
+    if [ "$IAPPDebug" != "" ] && [ "$IAPPDebug" != "0" ]; then
+	IAPPDebug="-d $IAPPDebug"
     fi
 }
 
