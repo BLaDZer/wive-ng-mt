@@ -284,7 +284,7 @@ void ieee802_1x_tx_key(rtapd *rtapd, struct sta_info *sta, u8 id)
 					 RT_PRIV_IOCTL, 
 					 (char *)&WepKey, 
 					 sizeof(NDIS_802_11_KEY), 
-					 rtapd->prefix_wlan_name, 0, 
+					 rtapd->prefix_wlan_name, sta->ApIdx, 
 					 RT_OID_802_DOT1X_PMKID_CACHE))
 		{
 			DBGPRINT(RT_DEBUG_ERROR, "ieee802_1x_tx_key:RT_OID_802_DOT1X_PMKID_CACHE\n");
@@ -323,7 +323,7 @@ void ieee802_1x_tx_key(rtapd *rtapd, struct sta_info *sta, u8 id)
 					 RT_PRIV_IOCTL, 
 					 (char *)&WepKey, 
 					 sizeof(NDIS_802_11_KEY), 
-					 rtapd->prefix_wlan_name, 0, 
+					 rtapd->prefix_wlan_name, sta->ApIdx, 
 					 RT_OID_802_DOT1X_PMKID_CACHE))
 		{
 			DBGPRINT(RT_DEBUG_ERROR,"ieee802_1x_tx_key:RT_OID_802_DOT1X_PMKID_CACHE\n");
@@ -430,6 +430,34 @@ static void ieee802_1x_encapsulate_radius(rtapd *rtapd, struct sta_info *sta, u8
 		DBGPRINT(RT_DEBUG_ERROR,"Could not add EAP-Message\n");
 		goto fail;
 	}
+
+#if HOTSPOT_R2
+	if (sta->hs_ie_exist)
+	{
+		u32 vendor_id = htonl(RADIUS_VENDOR_ID_WFA);
+		u8 *pos;
+		struct radius_attr_vendor *vhdr;
+		
+		pos = buf;
+		memcpy(pos, &vendor_id, sizeof(vendor_id));
+		pos += sizeof(vendor_id);
+		vhdr = (struct radius_attr_vendor *) pos;
+		vhdr->vendor_type = RADIUS_VENDOR_ATTR_WFA_HS2STA;
+		pos = (u8 *) (vhdr + 1);
+		*pos = sta->hs_version;
+		pos += 1;
+		printf("ppsmod=%x\n", sta->ppsmo_id);
+		*pos = (sta->ppsmo_id >> 8)& 0xff;
+		*(pos+1) = sta->ppsmo_id & 0xff;
+		
+		vhdr->vendor_length = 5; //hlen + elen - sizeof(vendor_id);
+	
+		if (!Radius_msg_add_attr(msg, RADIUS_ATTR_VENDOR_SPECIFIC, buf, 5+sizeof(vendor_id))) //vhdr->vendor_length+sizeof(vendor_id)))
+		{
+			DBGPRINT(RT_DEBUG_ERROR,"Could not add WFA-Vendor Message\n");
+		}
+	}
+#endif
 
 	/* State attribute must be copied if and only if this packet is
 	 * Access-Request reply to the previous Access-Challenge */
@@ -659,6 +687,17 @@ void ieee802_1x_receive(
 
 		case IEEE802_1X_TYPE_EAPOL_START:
 			DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_START from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+#if HOTSPOT_R2
+			if ((len - sizeof(*hdr) > (datalen+3)) && (buf[len-8]==0x50) && (buf[len-7]==0x6f) && (buf[len-6]==0x9a) && (buf[len-5] == 0x12))
+			{
+				printf("HS2 PPSMO :len:%d\n", len - sizeof(*hdr));
+				printf("%02x:%02x:%02x:%02x\n", buf[len-4], buf[len-3], buf[len-2], buf[len-1]); 
+				sta->hs_version = buf[len-4];
+	            sta->hs_ie_exist = buf[len-3];
+    	        sta->ppsmo_id = (buf[len-1] << 8) | buf[len-2];
+
+			}
+#endif
 			sta->eapol_sm->auth_pae.eapStart = TRUE;
 			eapol_sm_step(sta->eapol_sm);
 			break;
@@ -798,6 +837,13 @@ static void ieee802_1x_get_keys(rtapd *rtapd, struct sta_info *sta,
 			keys->recv[16],keys->recv[17],keys->recv[18],keys->recv[19],\
 			keys->recv[20],keys->recv[21],keys->recv[22],keys->recv[23]);
 
+		printf( "PMK = %x %x %x %x %x %x %x ...%x \n",\
+            keys->recv[0],keys->recv[1],keys->recv[2],keys->recv[3],\
+            keys->recv[4],keys->recv[5],keys->recv[6],keys->recv[15]);
+        printf( "PMK[16] = %x %x %x %x %x %x %x %x \n",\
+            keys->recv[16],keys->recv[17],keys->recv[18],keys->recv[19],\
+            keys->recv[20],keys->recv[21],keys->recv[22],keys->recv[23]);
+
 		WepKey.KeyLength = keys->recv_len;
 		memcpy(WepKey.KeyMaterial, keys->recv, (keys->recv_len== 32?32:1));
 		memcpy(WepKey.addr, sta->addr, 6);
@@ -809,7 +855,7 @@ static void ieee802_1x_get_keys(rtapd *rtapd, struct sta_info *sta,
 						 RT_PRIV_IOCTL, 
 						 (char *)&WepKey, 
 						 sizeof(NDIS_802_11_KEY), 
-						 rtapd->prefix_wlan_name, 0, 
+						 rtapd->prefix_wlan_name, sta->ApIdx, 
 						 RT_OID_802_DOT1X_PMKID_CACHE))
 			{
 				DBGPRINT(RT_DEBUG_ERROR,"ieee802_1x_get_keys:RT_OID_802_DOT1X_PMKID_CACHE\n");
@@ -945,7 +991,105 @@ ieee802_1x_receive_auth(rtapd *rtapd, struct radius_msg *msg, struct radius_msg 
 			if (idle_timeout_set)
 				dot1x_set_IdleTimeoutAction(rtapd, sta, idle_timeout);
 	
+			printf("!!!access accept\n");	
 			ieee802_1x_get_keys(rtapd, sta, msg, req, shared_secret, shared_secret_len);
+
+#if HOTSPOT_R2
+			{
+				struct wnm_req_data wnmreq;
+				struct btm_req_data btmreq;
+				u32	session_len = 0;
+				char *buf;
+				//char tt[] = "https:// remediation-server.R2-testbed.wi-fi.org";
+				buf = Radius_msg_get_wfa_attr(msg, RADIUS_VENDOR_ATTR_WFA_REMEDIATION, &wnmreq.req_len);
+				
+					
+				if (buf)
+				{	
+					int k = 0;
+					wnmreq.ifindex = sta->ApIdx;
+					memcpy(wnmreq.peer_mac_addr, sta->addr, 6);
+					
+					if ((buf[0] == 0x00) || (buf[0] == 0x01))
+					{
+						printf("!!found Server Method,%d!!\n", buf[0]);
+						if ((wnmreq.req_len-1) != 0)
+							memcpy(wnmreq.req, &buf[1], wnmreq.req_len-1);
+
+						wnmreq.req[wnmreq.req_len-1] = buf[0];
+						wnmreq.type = 2;
+					}
+					else
+					{
+						memcpy(wnmreq.req, buf, wnmreq.req_len);
+						wnmreq.type = 0;
+					}
+					printf("got remediation message,len=%d,type=%d!!\n",wnmreq.req_len, wnmreq.type);
+					//for(k=0;k<wnmreq.req_len;k++)
+					//	printf("%c", buf[k]);
+					//printf("\n");
+					//printf("%02x.%02x.%02x.%02x.%02x.%02x\n",wnmreq.req[0],wnmreq.req[1],wnmreq.req[2],wnmreq.req[3],wnmreq.req[4],wnmreq.req[5]); 
+					if (RT_ioctl(rtapd->ioctl_sock, 
+								RT_PRIV_IOCTL, (char *)&wnmreq, sizeof(struct wnm_req_data), 
+					 			rtapd->prefix_wlan_name, sta->ApIdx, 
+								RT_OID_802_11_WNM_NOTIFY_REQ))
+        				DBGPRINT(RT_DEBUG_ERROR,"ioctl failed for ieee802_1x_send remediation url(len=%d)\n", wnmreq.req_len);
+					free(buf);
+				}
+				
+				buf = NULL;
+				buf = Radius_msg_get_wfa_attr(msg, RADIUS_VENDOR_ATTR_WFA_DEAUTH, &wnmreq.req_len);
+				
+				if (buf)
+				{	
+					int k = 0;
+					//u8 auth_delay[2];
+					wnmreq.ifindex = sta->ApIdx;
+					memcpy(wnmreq.peer_mac_addr, sta->addr, 6);
+					//auth_delay[0] = buf[1];
+					//buf[1] = buf[2];
+					//buf[2] = auth_delay[0];
+					memcpy(wnmreq.req, buf, wnmreq.req_len);
+					wnmreq.type = 1;
+					printf("got deauth imminent notice,len=%d!!\n",wnmreq.req_len);
+					//for(k=0;k<wnmreq.req_len;k++)
+					//	printf("%c", buf[k]);
+					//printf("\n");
+					//printf("%02x.%02x.%02x.%02x.%02x.%02x\n",wnmreq.req[0],wnmreq.req[1],wnmreq.req[2],wnmreq.req[3],wnmreq.req[4],wnmreq.req[5]); 
+					if (RT_ioctl(rtapd->ioctl_sock, 
+								RT_PRIV_IOCTL, (char *)&wnmreq, sizeof(struct wnm_req_data), 
+					 			rtapd->prefix_wlan_name, sta->ApIdx, 
+								RT_OID_802_11_WNM_NOTIFY_REQ))
+        				DBGPRINT(RT_DEBUG_ERROR,"ioctl failed for ieee802_1x_send remediation url(len=%d)\n", wnmreq.req_len);
+					free(buf);
+				}
+
+				buf = NULL;
+				
+				printf("wfa session info\n");	
+                buf = Radius_msg_get_wfa_attr(msg, RADIUS_VENDOR_ATTR_WFA_SESSION_INFO, &session_len);
+				if (buf)
+				{
+					printf("!!!!!got session information len=%d,%d\n", session_len, buf[0]);
+					btmreq.ifindex = sta->ApIdx;
+					memcpy(btmreq.peer_mac_addr, sta->addr, 6);
+					btmreq.req_len = 4+session_len;
+					btmreq.req[0] = 0x14; //mode
+					btmreq.req[1] = (buf[0]*60*10) & 0xff;
+					btmreq.req[2] = ((buf[0]*60*10) >> 8) & 0xff;
+					btmreq.req[3] = 200; //valid_interval;
+					btmreq.req[4] = session_len-1; //url len
+					memcpy(&btmreq.req[5], &buf[1], session_len-1); //url
+
+					if (RT_ioctl(rtapd->ioctl_sock, 
+								RT_PRIV_IOCTL, (char *)&btmreq, sizeof(struct btm_req_data), 
+					 			rtapd->prefix_wlan_name, sta->ApIdx, 
+								RT_OID_802_11_WNM_BTM_REQ))
+        				DBGPRINT(RT_DEBUG_ERROR,"ioctl failed for ieee802_1x_send btm url(len=%d)\n", btmreq.req_len);
+					free(buf);
+				}
+			}
+#endif			
 			break;
 
 		case RADIUS_CODE_ACCESS_REJECT:

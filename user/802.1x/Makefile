@@ -7,6 +7,9 @@ CFLAGS += -DMULTIPLE_RADIUS
 # If you want to support acl by mac radius server add following line, and ieee802_11_auth.o in OBJS
 CFLAGS += -DRADIUS_MAC_ACL_SUPPORT
 
+# If you want to support passpoint release 2 feature
+# CFLAGS +=  -DHOTSPOT_R2
+
 # If you want to debug daemon, add following line
 CFLAGS += -DDBG -DSYSLOG
 

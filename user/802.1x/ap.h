@@ -60,6 +60,13 @@ struct sta_info {
 
 	// From which raw socket
 	int						SockNum;
+	
+#if HOTSPOT_R2	
+	/* Hotspot-R2 related data */
+	u8						hs_version;
+	u8						hs_ie_exist;
+	u16						ppsmo_id;
+#endif	
 };
 
 #define MAX_STA_COUNT           1024

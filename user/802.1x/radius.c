@@ -692,3 +692,65 @@ int Radius_msg_get_attr(struct radius_msg *msg, u8 type, u8 *buf, size_t len)
 	return dlen;
 }
 
+#if HOTSPOT_R2
+u8 *Radius_msg_get_wfa_attr(struct radius_msg *msg, u8 wfa_subtype, size_t *alen)
+{
+	u8 *data, *pos;
+	int i;
+	size_t len;
+
+	if (msg == NULL)
+		return NULL;
+
+	for (i = 0; i < msg->attr_used; i++)
+	{
+		struct radius_attr_hdr *attr = msg->attrs[i];
+		int left;
+		u32 vendor_id;
+		struct radius_attr_vendor_wfa *wfa;
+
+		if (attr->type != RADIUS_ATTR_VENDOR_SPECIFIC)
+			continue;
+
+		left = attr->length - sizeof(*attr);
+		if (left < 4)
+			continue;
+
+		pos = (u8 *) (attr + 1);
+
+		memcpy(&vendor_id, pos, 4);
+		pos += 4;
+		left -= 4;
+
+		if (ntohl(vendor_id) != RADIUS_VENDOR_ID_WFA)
+			continue;
+
+		while (left >= sizeof(*wfa))
+		{
+			wfa = (struct radius_attr_vendor_wfa *) pos;
+			if (wfa->vendor_sublength > left)
+			{
+				left = 0;
+				continue;
+			}
+			if (wfa->vendor_subtype != wfa_subtype)
+			{
+				pos += wfa->vendor_sublength;
+				left -= wfa->vendor_sublength;
+				continue;
+			}
+
+			len = wfa->vendor_sublength - sizeof(*wfa);
+			data = (u8 *) malloc(len);
+			if (data == NULL)
+				return NULL;
+			memcpy(data, pos + sizeof(*wfa), len);
+			if (alen)
+				*alen = len;
+			return data;
+		}
+	}
+
+	return NULL;
+}
+#endif
