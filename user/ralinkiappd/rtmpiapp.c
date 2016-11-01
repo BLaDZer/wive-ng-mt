@@ -2711,18 +2711,26 @@ static VOID IAPP_RcvHandlerRawRRB(
 				SizeRcvMsg);
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
+		/* copy DA (detination adress) from packet */
+		NdisZeroMemory(WifiMAC, ETH_ALEN);
+		NdisCopyMemory(WifiMAC, pPktBuf, ETH_ALEN);
+
 		/* ioctl to decrypt */
 		pFrameRRB = (FT_RRB_FRAME *)pPktBuf;
 
-		if ((wifi_if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, pPktBuf)) == -1) {
-			DBGPRINT(RT_DEBUG_ERROR,
-				"iapp> %s - Daemon doesn't hook this wifi interface. Ignore this packet.\n",
-				__FUNCTION__);
+		wifi_if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, WifiMAC);
+		if (wifi_if_idx == -1) {
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - Daemon doesn't hook this wifi interface (%02x:%02x:%02x:%02x:%02x:%02x). Ignore this packet.\n",
+				__FUNCTION__,
+				WifiMAC[0],
+				WifiMAC[1],
+				WifiMAC[2],
+				WifiMAC[3],
+				WifiMAC[4],
+				WifiMAC[5]);
 			//IAPP_HEX_DUMP("802.3 Hdr: ", pPktBuf, 14);
 			return;
 		}
-		NdisZeroMemory(WifiMAC, ETH_ALEN);
-		NdisCopyMemory(WifiMAC, pPktBuf, ETH_ALEN);
 
 		/*
 			Note: Can not use "SizeRcvMsg - FT_RRB_HEADER_SIZE" to get the
