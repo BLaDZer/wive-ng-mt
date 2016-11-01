@@ -296,7 +296,7 @@ int bndstrg_check_conn_req(
 					(~fBND_STRG_CLIENT_LOW_RSSI_2G) : (~fBND_STRG_CLIENT_LOW_RSSI_5G);
 			}
 		}
-#if 0
+
 		if((bAllowStaConnectInHt == FALSE) && (FrameType == APMT2_PEER_PROBE_REQ))
 		{
 			if(band == BAND_2G)
@@ -305,7 +305,6 @@ int bndstrg_check_conn_req(
 			if(band == BAND_5G)
 				entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G;
 		}
-#endif
 	}
 
 	if (ret_val != BND_STRG_SUCCESS)
@@ -337,9 +336,9 @@ int bndstrg_event_conn_req(struct bndstrg *bndstrg, struct bndstrg_msg *msg)
 	}
 
 	DBGPRINT(DEBUG_TRACE,
-			"%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, frame_type = %u, rssi = %d/%d/%d, maxrssi = %d\n",
+			"%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, frame_type = %u, rssi = %d/%d/%d/%d, maxrssi = %d\n",
 			PRINT_MAC(msg->Addr), msg->Band, msg->FrameType,
-			msg->Rssi[0], msg->Rssi[1], msg->Rssi[2], MaxRssi);
+			msg->Rssi[0], msg->Rssi[1], msg->Rssi[2], msg->Rssi[3], MaxRssi);
 
 
 	bndstrg_check_conn_req(&bndstrg->table,
@@ -370,10 +369,8 @@ static int bndstrg_print_ctrlflags(u32 flags)
 						"\t\tSupport_5G = %s\n"
 						"\t\tAllow to connect 2G = %s\n"
 						"\t\tAllow to connect 5G = %s\n"
-#if 0
 						"\t\tHT Support 2G = %s\n"
 						"\t\tHT Support 5G = %s\n"
-#endif
 						"\t\tLow Rssi 2G = %s\n"
 						"\t\tLow Rssi 5G = %s\n"
 						"\t\t2G Only = %s\n"
@@ -382,10 +379,8 @@ static int bndstrg_print_ctrlflags(u32 flags)
 						(flags & fBND_STRG_CLIENT_SUPPORT_5G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) ? "yes" : "no",
-#if 0
 						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G) ? "no" : "yes",
 						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G) ? "no" : "yes",
-#endif
 						(flags & fBND_STRG_CLIENT_LOW_RSSI_2G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_LOW_RSSI_5G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_IS_2G_ONLY) ? "yes" : "no",
@@ -501,18 +496,29 @@ static int bndstrg_event_table_info(struct bndstrg *bndstrg)
 	return 0;
 }
 
-static int bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff)
+static int bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band)
 {
-	BND_STRG_DBGPRINT(DEBUG_TRACE, "onoff = %u\n", onoff);
-
-	bndstrg->table.bEnabled = onoff;
-
+	BND_STRG_DBGPRINT(DEBUG_OFF, "onoff = %u,band = %u\n", onoff, band);
+	DBGPRINT(DEBUG_ERROR,
+			 "%s(): onoff = %u,band = %u\n", __func__, onoff, band);
 	if (!onoff)
 	{
-		bndstrg->table.b2GInfReady = FALSE;
-		bndstrg->table.b5GInfReady = FALSE;
+		bndstrg->table.Band = bndstrg->table.Band & ~band;
+		if ((band & BAND_2G) == BAND_2G) {
+			bndstrg->table.b2GInfReady = FALSE;
+			memset(bndstrg->table.uc2GIfName,0x00,sizeof(bndstrg->table.uc2GIfName));
+		}
+		if ((band & BAND_5G) == BAND_5G) {
+			bndstrg->table.b5GInfReady = FALSE;
+			memset(bndstrg->table.uc5GIfName,0x00,sizeof(bndstrg->table.uc5GIfName));
+		}
+	} else {
+		bndstrg->table.Band = bndstrg->table.Band | band;
 	}
 
+	if (bndstrg->table.Band == (BAND_2G | BAND_5G)) {
+		bndstrg->table.bEnabled = TRUE;
+	}
 	return 0;
 }
 
@@ -530,11 +536,27 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 			break;
 
 		case INF_STATUS_RSP_2G:
+			table->status_queried = 1;
+			table->dbdc_mode = 0;
 			table->b2GInfReady = msg.b2GInfReady;
+			strcpy((char*)table->uc2GIfName,(char*)msg.uc2GIfName);
 			break;
 
 		case INF_STATUS_RSP_5G:
+			table->status_queried = 1;
+			table->dbdc_mode = 0;
 			table->b5GInfReady = msg.b5GInfReady;
+			strcpy((char*)table->uc5GIfName,(char*)msg.uc5GIfName);
+			break;
+
+		case INF_STATUS_RSP_DBDC:
+			//TBD
+			table->status_queried = 1;
+			table->dbdc_mode = 1;
+			table->b2GInfReady = msg.b2GInfReady;
+			strcpy((char*)table->uc2GIfName,(char*)msg.uc2GIfName);
+			table->b5GInfReady = msg.b5GInfReady;
+			strcpy((char*)table->uc5GIfName,(char*)msg.uc5GIfName);
 			break;
 
 		case TABLE_INFO:
@@ -546,7 +568,7 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 			break;
 
 		case BNDSTRG_ONOFF:
-			bndstrg_event_on_off(bndstrg, msg.OnOff);
+			bndstrg_event_on_off(bndstrg, msg.OnOff, msg.Band);
 			break;
 
 		case CLI_AGING_RSP:
@@ -567,6 +589,10 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 					case BAND_5G:
 						entry->AgingConfirmed[1] = 1;
 						break;
+					case (BAND_2G|BAND_5G):
+						entry->AgingConfirmed[0] = 1;
+						entry->AgingConfirmed[1] = 1;
+						break;
 					default:
 						BND_STRG_DBGPRINT(DEBUG_ERROR,
 						"Invalid Band (%u) from aging rsp\n", msg.Band);
@@ -582,10 +608,6 @@ int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 
 		case CLI_DEL:
 			bndstrg_delete_entry(table, msg.Addr, msg.TalbeIndex);
-			break;
-
-		case CLI_UPDATE:
-			/* ToDo */
 			break;
 
 		case SET_RSSI_DIFF:
@@ -933,18 +955,44 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 		goto end_of_periodic_exec;
 	}
 
+	if ((table->status_queried_cnt >= 3) || (table->table_enable_cnt >= 3)) {
+		DBGPRINT(DEBUG_OFF,
+				 "%s(): Give up (2G ready=%d,5G ready=%d)(status query cnt=%d,enable cnt=%d), re-exec bndstrg again.\n", __FUNCTION__,table->b2GInfReady,table->b5GInfReady,table->status_queried_cnt,table->table_enable_cnt);
+		eloop_terminate();
+		return;
+	}
 
-	if (table->b2GInfReady == FALSE) {
+	if (table->status_queried == 0) {//not query yet
+		table->status_queried_cnt++;
+		bndstrg_inf_status_query(bndstrg, IFNAME_2G);
+		goto end_of_periodic_exec;
+	} else if (table->b2GInfReady == FALSE) {
+		table->status_queried_cnt++;
 		bndstrg_inf_status_query(bndstrg, IFNAME_2G);
 		goto end_of_periodic_exec;
 	} else if (table->b5GInfReady == FALSE) {
+		table->status_queried_cnt++;
 		bndstrg_inf_status_query(bndstrg, IFNAME_5G);
 		goto end_of_periodic_exec;
 	} else if (table->bEnabled == FALSE) {
 		/* If both 2G inf and 5G inf are ready, then tell driver to start running */
-		table->bEnabled = TRUE;
-		bndstrg_onoff(bndstrg, IFNAME_2G, 1);
-		bndstrg_onoff(bndstrg, IFNAME_5G, 1);
+		table->table_enable_cnt++;
+		DBGPRINT(DEBUG_OFF, "%s(): table->dbdc_mode=%d,table->Band=%d\n", __FUNCTION__,table->dbdc_mode,table->Band);
+		if (table->dbdc_mode == 1) {
+			if ((table->Band & BAND_2G) != BAND_2G) {
+				bndstrg_onoff(bndstrg, (char*)table->uc2GIfName, 1);
+			}
+			if ((table->Band & BAND_5G) != BAND_5G) {
+				bndstrg_onoff(bndstrg, (char*)table->uc5GIfName, 1);
+			}
+		} else {
+			if ((table->Band & BAND_2G) != BAND_2G) {
+				bndstrg_onoff(bndstrg, (char*)IFNAME_2G, 1);
+			}
+			if ((table->Band & BAND_5G) != BAND_5G) {
+				bndstrg_onoff(bndstrg, (char*)IFNAME_5G, 1);
+			}
+		}
 		goto end_of_periodic_exec;
 	}
 
@@ -956,8 +1004,13 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 			elapsed_time = bndstrg_get_entry_elapsed_time(entry);
 			if (elapsed_time >= table->AgeTime)
 			{
-				bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_AGING_REQ);
-				bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_AGING_REQ);
+				if (table->dbdc_mode == 1) {
+					bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_AGING_REQ);
+					bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_AGING_REQ);
+				} else {
+					bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_AGING_REQ);
+					bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_AGING_REQ);
+				}
 				/*bndstrg_delete_entry(table, entry->Addr, i);*/
 			}
 			else
@@ -987,7 +1040,12 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 					entry->Control_Flags |= \
 						fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
 					/* tell driver this client can access 2G */
-					bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_ADD);
+					if (table->dbdc_mode == 1) {
+						bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_ADD);
+						bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_UPDATE);
+					} else {
+						bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_ADD);
+					}
 				}
 
 				if (!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY))
@@ -997,13 +1055,23 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 						entry->Control_Flags |= \
 							fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
 						/* tell driver this client can access 5G */
-						bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_ADD);
+						if (table->dbdc_mode == 1) {
+							bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_ADD);
+							bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_UPDATE);
+						} else {
+							bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_ADD);
+						}
 					} else {
 						entry->Control_Flags &= \
 							(~fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G);
 						/* tell driver this client cannot access 5G */
 						// TODO: make sure access table entry exisit
-						bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_DEL);
+						if (table->dbdc_mode == 1) {
+							// only update entry control flag for dbdc mode
+							bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_UPDATE);
+						} else {
+							bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_DEL);
+						}
 					}
 				}
 
@@ -1042,7 +1110,16 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	BndStrgCheckTime = (BndStrgCheckTime_s == NULL) ? 0 : atoi(BndStrgCheckTime_s);
 
 
+	/* disable band steering in driver before configure userspace daemon (prevent tables daemon and driver unconsystent) */
+	sprintf(cmd, "iwpriv ra0 set BndStrgEnable=0 && iwpriv rai0 set BndStrgEnable=0");
+	system(cmd);
+
 	memset(table, 0, sizeof(struct bndstrg_cli_table));
+
+	table->status_queried_cnt = 0;
+	table->table_enable_cnt = 0;
+	table->Band = 0;
+	table->bEnabled = 0;
 
 	if (BndStrgRssiDiff != 0) {
 	    table->RssiDiff= BndStrgRssiDiff;
@@ -1090,6 +1167,10 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
 								fBND_STRG_FRM_CHK_ATH_REQ;
 	table->bInitialized = TRUE;
+
+	/* configure OK - enable now */
+	sprintf(cmd, "iwpriv ra0 set BndStrgEnable=1 && iwpriv rai0 set BndStrgEnable=1");
+	system(cmd);
 
 	return BND_STRG_SUCCESS;
 }
@@ -1153,10 +1234,27 @@ static void bndstrg_terminate(int sig, void *signal_ctx)
 
 void bndstrg_run(struct bndstrg *bndstrg)
 {
+	struct bndstrg_cli_table *table = &bndstrg->table;
 
 	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
 
 	eloop_register_signal_terminate(bndstrg_terminate, bndstrg);
 
 	eloop_run();
+
+	if (table->dbdc_mode == 1) {
+		if ((table->Band & BAND_2G) == BAND_2G) {
+			bndstrg_onoff(bndstrg, table->uc2GIfName, 0);
+		}
+		if ((table->Band & BAND_5G) != BAND_5G) {
+			bndstrg_onoff(bndstrg, table->uc5GIfName, 0);
+		}
+	} else {
+		if ((table->Band & BAND_2G) != BAND_2G) {
+			bndstrg_onoff(bndstrg, IFNAME_2G, 0);
+		}
+		if ((table->Band & BAND_5G) != BAND_5G) {
+			bndstrg_onoff(bndstrg, IFNAME_5G, 0);
+		}
+	}
 }

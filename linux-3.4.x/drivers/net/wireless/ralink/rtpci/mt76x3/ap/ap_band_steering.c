@@ -980,9 +980,13 @@ static VOID D_MsgHandle(
 			if (!table->Ops->TableLookup(table, msg->Addr))
 				table->Ops->TableEntryAdd(table, msg->Addr, &entry);
 			break;
-						
+
 		case CLI_UPDATE:
-			/* ToDo */
+			entry = table->Ops->TableLookup(table, msg->Addr);
+			if (entry != NULL) {
+				entry->Control_Flags = msg->Control_Flags;
+				entry->elapsed_time = msg->elapsed_time;
+			}
 			break;
 
 		case CLI_DEL:

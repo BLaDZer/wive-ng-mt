@@ -64,6 +64,10 @@ int main(int argc, char *argv[])
 	struct bndstrg bndstrg;
 	pid_t child_pid;
 
+#ifdef SYSLOG
+	openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_DAEMON);
+#endif
+
 	/* options processing */
 	process_options(argc, argv);
 
@@ -71,9 +75,6 @@ int main(int argc, char *argv[])
 
 	if (child_pid == 0) {
 		int ret = 0;
-#ifdef SYSLOG
-		openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_DAEMON);
-#endif
 		DBGPRINT(DEBUG_OFF, "Initialize bndstrg\n");
 		ret = bndstrg_init(&bndstrg, &bndstrg_event_ops, 0, 0, 2);
 

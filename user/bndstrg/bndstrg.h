@@ -123,6 +123,7 @@ struct bndstrg_alg_control {
 struct bndstrg_cli_table {
 	u8		 bInitialized;
 	u8		 bEnabled;
+	u8		 Band;
 	u8		 b2GInfReady;
 	u8		 b5GInfReady;
 	char		 RssiDiff;			/* if Rssi2.4G > Rssi5G by RssiCheck, then allow client to connect 2.4G */
@@ -131,6 +132,12 @@ struct bndstrg_cli_table {
 	u32		HoldTime;		/* Time for holding 2.4G connection rsp (ms) */
 	u32		CheckTime_5G;	/* Time for deciding if a client is 2.4G only (ms) */
 	u32 		Size;
+	u8		uc2GIfName[32];
+	u8		uc5GIfName[32];
+	u8		status_queried;
+	u8		status_queried_cnt;
+	u8		table_enable_cnt;
+	u8		dbdc_mode;
 	struct bndstrg_alg_control	AlgCtrl;
 	struct bndstrg_cli_entry 	Entry[BND_STRG_MAX_TABLE_SIZE];
 	struct bndstrg_cli_entry* 	Hash[HASH_TABLE_SIZE];
@@ -142,8 +149,8 @@ struct bndstrg_cli_table {
 enum ACTION_CODE{
 	CONNECTION_REQ = 1,
 	CLI_ADD,
-	CLI_DEL,
 	CLI_UPDATE,
+	CLI_DEL,
 	CLI_AGING_REQ,
 	CLI_AGING_RSP,
 	INF_STATUS_QUERY,
@@ -159,6 +166,7 @@ enum ACTION_CODE{
 	SET_CHECK_TIME,
 	SET_MNT_ADDR,
 	SET_CHEK_CONDITIONS,
+	INF_STATUS_RSP_DBDC,
 };
 
 /* Use for I/O between driver and daemon */
@@ -170,8 +178,10 @@ struct bndstrg_msg{
 	u8 	OnOff;
 	u8	Band;
 	u8	b2GInfReady;
+	u8	uc2GIfName[32];
 	u8	b5GInfReady;
-	s8 	Rssi[3];
+	u8	uc5GIfName[32];
+	s8 	Rssi[4];
 	s8	RssiDiff;
 	s8 	RssiLow;
 	u8	FrameType;
@@ -179,6 +189,10 @@ struct bndstrg_msg{
 	u32	ConditionCheck;
 	unsigned char Addr[MAC_ADDR_LEN];
 	u8	bAllowStaConnectInHt;
+
+	//for entry updateuse
+	u32 Control_Flags;
+	u32 elapsed_time; /* ms */
 };
 
 struct bndstrg {

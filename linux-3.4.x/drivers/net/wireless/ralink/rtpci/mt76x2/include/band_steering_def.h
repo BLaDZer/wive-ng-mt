@@ -137,15 +137,19 @@ typedef struct _BNDSTRG_MSG{
 	BOOLEAN OnOff;
 	UINT8	Band;
 	BOOLEAN b2GInfReady;
+	UINT8	uc2GIfName[32];
 	BOOLEAN b5GInfReady;
-	CHAR 	Rssi[3];
+	UINT8	uc5GIfName[32];
+	CHAR 	Rssi[4];
 	CHAR 	RssiDiff;
 	CHAR 	RssiLow;
 	UINT8	FrameType;
 	UINT32	Time;
 	UINT32	ConditionCheck;
 	UCHAR 	Addr[MAC_ADDR_LEN];
-	UINT8	bAllowStaConnectInHt;
+	BOOLEAN bAllowStaConnectInHt;
+	UINT32  Control_Flags;
+	UINT32  elapsed_time; /* ms */
 } BNDSTRG_MSG, *PBNDSTRG_MSG;
 
 typedef struct _BNDSTRG_CLI_EVENT{
@@ -164,8 +168,8 @@ typedef struct _BNDSTRG_PROBE_EVENT{
 enum ACTION_CODE{
 	CONNECTION_REQ = 1,
 	CLI_ADD,
-	CLI_DEL,
 	CLI_UPDATE,
+	CLI_DEL,
 	CLI_AGING_REQ,
 	CLI_AGING_RSP,
 	INF_STATUS_QUERY,
@@ -181,6 +185,7 @@ enum ACTION_CODE{
 	SET_CHECK_TIME,
 	SET_MNT_ADDR,
 	SET_CHEK_CONDITIONS,
+	INF_STATUS_RSP_DBDC,
 };
 
 

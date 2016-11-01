@@ -159,6 +159,11 @@ static int driver_wext_accessible_cli(
 	msg.TalbeIndex = entry->TableIndex;
 	msg.Action = action;
 
+	if (action == CLI_UPDATE) {
+		msg.Control_Flags = entry->Control_Flags;
+		msg.elapsed_time = entry->elapsed_time;
+	}
+
 	ret = driver_wext_set_oid(
 				drv_wext_data,
 				ifname,

@@ -16,7 +16,7 @@ start() {
     if [ "$BandSteering" != "" ] && [ "$BandSteering" != "0" ] ; then
 	if [ "$RadioOn" = "1" ] && [ "$RadioOnINIC" = "1" ] && [ "$SSID1" = "$SSID1INIC" ]; then
 	    $LOG "Starting bandsteering daemon"
-	    bndstrg &
+	    bndstrg $BandSteeringDebug &
 	else
 	    $LOG "For bandsteering work are required enable all bands support and identical SSID for 2.4GHz and 5GHz modules. Please change it and restart."
 	fi
@@ -24,13 +24,16 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 BandSteering SSID1 SSID1INIC`
+    eval `nvram_buf_get 2860 BandSteering BandSteeringDebug SSID1 SSID1INIC`
+    if [ "$BandSteeringDebug" != "" ]; then
+	BandSteeringDebug="-d 4"
+    fi
 }
 
 stop() {
     pid=`pidof bndstrg`
     if [ "$pid" != "" ]; then
-	$LOG "Stopping bandsteering roaming daemon"
+	$LOG "Stopping bandsteering daemon"
 	killall -q bndstrg
 	killall -q -SIGKILL bndstrg
     fi
