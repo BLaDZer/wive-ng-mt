@@ -836,14 +836,14 @@ static void ieee802_1x_get_keys(rtapd *rtapd, struct sta_info *sta,
 		DBGPRINT(RT_DEBUG_INFO, "PMK[16] = %x %x %x %x %x %x %x %x \n",\
 			keys->recv[16],keys->recv[17],keys->recv[18],keys->recv[19],\
 			keys->recv[20],keys->recv[21],keys->recv[22],keys->recv[23]);
-
+#if 0
 		printf( "PMK = %x %x %x %x %x %x %x ...%x \n",\
-            keys->recv[0],keys->recv[1],keys->recv[2],keys->recv[3],\
-            keys->recv[4],keys->recv[5],keys->recv[6],keys->recv[15]);
-        printf( "PMK[16] = %x %x %x %x %x %x %x %x \n",\
-            keys->recv[16],keys->recv[17],keys->recv[18],keys->recv[19],\
-            keys->recv[20],keys->recv[21],keys->recv[22],keys->recv[23]);
-
+        	keys->recv[0],keys->recv[1],keys->recv[2],keys->recv[3],\
+        	keys->recv[4],keys->recv[5],keys->recv[6],keys->recv[15]);
+    		printf( "PMK[16] = %x %x %x %x %x %x %x %x \n",\
+        	keys->recv[16],keys->recv[17],keys->recv[18],keys->recv[19],\
+        	keys->recv[20],keys->recv[21],keys->recv[22],keys->recv[23]);
+#endif
 		WepKey.KeyLength = keys->recv_len;
 		memcpy(WepKey.KeyMaterial, keys->recv, (keys->recv_len== 32?32:1));
 		memcpy(WepKey.addr, sta->addr, 6);
@@ -990,8 +990,8 @@ ieee802_1x_receive_auth(rtapd *rtapd, struct radius_msg *msg, struct radius_msg 
 			/* Set idle timeout */
 			if (idle_timeout_set)
 				dot1x_set_IdleTimeoutAction(rtapd, sta, idle_timeout);
-	
-			printf("!!!access accept\n");	
+
+			// printf("!!!access accept\n");
 			ieee802_1x_get_keys(rtapd, sta, msg, req, shared_secret, shared_secret_len);
 
 #if HOTSPOT_R2
