@@ -1928,7 +1928,7 @@ static BOOLEAN IAPP_UDP_PacketSend(
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
 	if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &total_len, if_idx, RT_FT_DATA_ENCRYPT) == FALSE) {
-		DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
+		DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Encrypt frame failed!\n");
 		return FALSE;
 	}
 

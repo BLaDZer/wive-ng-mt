@@ -63,7 +63,7 @@
 #define FT_KDP_FUNC_SOCK_COMM		/* use socket to communicate with driver */
 #define FT_KDP_FUNC_PKT_ENCRYPT		/* do encryption for each IAPP packet */
 #define FT_KDP_SELECT_TIMEOUT		/* use timeout to wait for any packet */
-//#define FT_KDP_KEY_FROM_DAEMON		/* key is set in daemon */
+#define FT_KDP_KEY_FROM_DAEMON		/* key is set in daemon */
 
 #define FT_KDP_DEFAULT_IF_ETH		"br0"
 #define FT_KDP_DEFAULT_IF_WLAN		"br0" /* used to receive command from WLAN */
@@ -105,12 +105,12 @@
 #endif // IAPP_OS_LINUX //
 
 #ifdef IAPP_OS_VXWORKS
-#define PF_PACKET					AF_INET
+#define PF_PACKET				AF_INET
 #define RT_IOCTL_IAPP				VX_RT_PRIV_IOCTL
 #define FT_KDP_WLAN_NAME			"ra"
 #define FT_KDP_WLAN_UNIT			0
 #define FT_KDP_ETH_NAME				"eth" /* must not use mirror */
-#define FT_KDP_BR_ETH_IF_NUM		2 /* eth0 and eth1 */
+#define FT_KDP_BR_ETH_IF_NUM			2 /* eth0 and eth1 */
 #define FT_KDP_BR_NAME				"mirror"
 #define FT_KDP_BR_UNIT				0
 #endif // IAPP_OS_VXWORKS //
