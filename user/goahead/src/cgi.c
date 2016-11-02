@@ -259,7 +259,7 @@ void websCgiGatherOutput (cgiRec *cgip)
  *			Write the HTTP header on our first pass
  */
 			if (cgip->fplacemark == 0) {
-				websWrite(wp, T("HTTP/1.0 200 OK\r\n"));
+				websWrite(wp, T("HTTP/1.1 200 OK\r\n"));
 				websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 			}
 			lseek(fdout, cgip->fplacemark, SEEK_SET);

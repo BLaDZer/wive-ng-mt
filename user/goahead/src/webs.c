@@ -1063,27 +1063,27 @@ static void websParseRequest(webs_t wp)
 /*
  *		Parse the content length
  */
-		} else if (strcmp(key, T("content-length")) == 0) {
-         /*
-          * 11 Oct 02 BgP -- The server would crash if an attacker sent a POST
-          * message with a content-length value <= 0. We assume that anyone
-          * sending this is malicious, and the POST is read from the socket,
-          * but it is ignored, and the socket is closed.
-          */
-         wp->clen = atoi(value);
-         if (wp->clen > 0)
-         {
+		} else if (strcmp(key, T("content-length")) == 0 || strcmp(key, T("Content-Length")) == 0) {
+        	    /*
+		     * 11 Oct 02 BgP -- The server would crash if an attacker sent a POST
+		     * message with a content-length value <= 0. We assume that anyone
+		     * sending this is malicious, and the POST is read from the socket,
+		     * but it is ignored, and the socket is closed.
+		     */
+		    wp->clen = atoi(value);
+		    if (wp->clen > 0)
+		    {
 			   wp->flags |= WEBS_CLEN;
 			   websSetVar(wp, T("CONTENT_LENGTH"), value);
-         }
-         else
-         {
-            wp->clen = 0;
-         }
+		    }
+		    else
+		    {
+			    wp->clen = 0;
+		    }
 
-/*
- *		Parse the content type
- */
+		/*
+		 * Parse the content type
+		*/
 		} else if (strcmp(key, T("content-type")) == 0) {
 			websSetVar(wp, T("CONTENT_TYPE"), value);
 
@@ -1331,13 +1331,11 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 /*
  *		Redirect behaves much better when sent with HTTP/1.0
  */
-		if (redirect != NULL) {
+		if (redirect != NULL)
 			websWrite(wp, T("HTTP/1.0 %d %s\r\n"), code, websErrorMsg(code));
-			websWrite(wp, WEBS_CACHE_CONTROL_STRING);
-		} else {
+		else
 			websWrite(wp, T("HTTP/1.1 %d %s\r\n"), code, websErrorMsg(code));
-			websWrite(wp, WEBS_CACHE_CONTROL_STRING);
-		}
+		websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 
 /*
  *		By license terms the following line of code must not be modified.
@@ -1351,6 +1349,7 @@ void websResponse(webs_t wp, int code, char_t *message, char_t *redirect)
 			websWrite(wp, T("Date: %s\r\n"), date);
 			bfree(B_L, date);
 		}
+
 /*
  *		If authentication is required, send the auth header info
  */

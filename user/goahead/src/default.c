@@ -126,7 +126,7 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
 #ifdef WEBS_IF_MODIFIED_SUPPORT
 	if (flags & WEBS_IF_MODIFIED && !(flags & WEBS_ASP)) {
 		if (sbuf.mtime <= wp->since) {
-			websWrite(wp, T("HTTP/1.0 304 Use local copy\r\n"));
+			websWrite(wp, T("HTTP/1.1 304 Use local copy\r\n"));
 			websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 /*
  *			by license terms the following line of code must
@@ -149,7 +149,7 @@ int websDefaultHandler(webs_t wp, char_t *urlPrefix, char_t *webDir, int arg,
  *	Output the normal HTTP response header
  */
 	if ((date = websGetDateString(NULL)) != NULL) {
-		websWrite(wp, T("HTTP/1.0 200 OK\r\nDate: %s\r\n"), date);
+		websWrite(wp, T("HTTP/1.1 200 OK\r\nDate: %s\r\n"), date);
 /*
  *		By license terms the following line of code must not be modified.
  */
