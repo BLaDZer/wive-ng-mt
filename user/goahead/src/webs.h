@@ -149,7 +149,6 @@ int 	 websDecode64(char_t *outbuf, char_t *string, int buflen);
 void	 websDecodeUrl(char_t *token, char_t *decoded, int len);
 void  	 websDone(webs_t wp, int code);
 void  	 websError(webs_t wp, int code, char_t *msg, ...);
-/* function websErrorMsg() made 03 Jun 02 BgP */
 char_t 	*websErrorMsg(int code);
 void  	 websFooter(webs_t wp);
 int 	 websFormDefine(char_t *name, void (*fn)(webs_t wp, char_t *path, char_t *query));

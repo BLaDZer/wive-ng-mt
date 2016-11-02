@@ -42,24 +42,30 @@ char_t			*websIpaddrUrl = NULL;	/* URL to access server */
 
 /*********************************** Locals ***********************************/
 /*
- *	Standard HTTP error codes
+    Standard HTTP error codes
  */
-
 websErrorType websErrors[] = {
-	{ 200, T("Data follows") },
-	{ 204, T("No Content") },
-	{ 301, T("Redirect") },
-	{ 302, T("Redirect") },
-	{ 304, T("Use local copy") },
-	{ 400, T("Page not found") },
-	{ 401, T("Unauthorized") },
-	{ 403, T("Forbidden") },
-	{ 404, T("Site or Page Not Found") },
-	{ 405, T("Access Denied") },
-	{ 500, T("Web Error") },
-	{ 501, T("Not Implemented") },
-	{ 503, T("Site Temporarily Unavailable. Try again.") },
-	{ 0, NULL }
+    { 200, T("OK") },
+    { 201, T("Created") },
+    { 204, T("No Content") },
+    { 205, T("Reset Content") },
+    { 206, T("Partial Content") },
+    { 301, T("Redirect") },
+    { 302, T("Redirect") },
+    { 304, T("Not Modified") },
+    { 400, T("Bad Request") },
+    { 401, T("Unauthorized") },
+    { 402, T("Payment required") },
+    { 403, T("Forbidden") },
+    { 404, T("Not Found") },
+    { 405, T("Access Denied") },
+    { 406, T("Not Acceptable") },
+    { 408, T("Request Timeout") },
+    { 413, T("Request too large") },
+    { 500, T("Internal Server Error") },
+    { 501, T("Not Implemented") },
+    { 503, T("Service Unavailable") },
+    { 0, NULL }
 };
 
 #ifdef WEBS_LOG_SUPPORT
@@ -74,11 +80,9 @@ static int	websOpenCount = 0;		/* count of apps using this module */
 
 /**************************** Forward Declarations ****************************/
 
-
-/*static char_t 	*websErrorMsg(int code);*/
 static int 		websGetInput(webs_t wp, char_t **ptext, int *nbytes);
 static int 		websParseFirst(webs_t wp, char_t *text);
-static void 	websParseRequest(webs_t wp);
+static void 		websParseRequest(webs_t wp);
 static void		websSocketEvent(int sid, int mask, void* data);
 static int		websGetTimeSinceMark(webs_t wp);
 
@@ -1639,8 +1643,7 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
  */
 
 	buf = NULL;
-	fmtAlloc(&buf, WEBS_BUFSIZE, msg, websErrorMsg(code), 
-		websErrorMsg(code), userMsg);
+	fmtAlloc(&buf, WEBS_BUFSIZE, msg, websErrorMsg(code), websErrorMsg(code), userMsg);
 
 	if (buf == NULL) {
 		syslog(LOG_ERR, "error buffer allocation , %s", __FUNCTION__);
@@ -1657,19 +1660,17 @@ void websError(webs_t wp, int code, char_t *fmt, ...)
 /*
  *	Return the error message for a given code
  */
-
-/*static char_t *websErrorMsg(int code)*/
 char_t *websErrorMsg(int code)
 {
 	websErrorType	*ep;
 
+	a_assert(code >= 0);
 	for (ep = websErrors; ep->code; ep++) {
 		if (code == ep->code) {
 			return ep->msg;
 		}
 	}
-	a_assert(0);
-	return T("");
+	return websErrorMsg(500); /* if not find - use internal server error */
 }
 
 /******************************************************************************/
