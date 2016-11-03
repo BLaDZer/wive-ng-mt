@@ -117,6 +117,8 @@ a.add(303, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
 a.add(304, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
 
+a.add(308, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
+
 if (opmode != '0')
 	a.add(305, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 

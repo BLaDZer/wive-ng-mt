@@ -346,44 +346,55 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	reboot_now();
 }
 
-static void setWanPort(webs_t wp, char_t *path, char_t *query)
+static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 {
 	int i;
 	char w_name[20];
-	char* w_port = websGetVar(wp, T("wan_port"), T("0"));
-	char* l_port = websGetVar(wp, T("lan_port"), T("near"));
+	char_t *w_port = websGetVar(wp, T("wan_port"), T("0"));
+	char_t *l_port = websGetVar(wp, T("lan_port"), T("near"));
+	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
+	char_t *reset  = websGetVar(wp, T("reset"), T("near"));
 
-	nvram_init(RT2860_NVRAM);
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 7, "wan_port", "lan_port", "port1_swmode", "port2_swmode", "port3_swmode", "port4_swmode", "port5_swmode");
+	}
+	else {
+		nvram_init(RT2860_NVRAM);
 
-	/* Set-up WAN port */
-	if ((w_port != NULL) && (strlen(w_port) == 1))
-	{
-		if ((w_port[0] >= '0') && (w_port[0] <= '4'))
-			nvram_bufset(RT2860_NVRAM, "wan_port", w_port);
+		/* Set-up WAN port */
+		if ((w_port != NULL) && (strlen(w_port) == 1)) {
+			if ((w_port[0] >= '0') && (w_port[0] <= '4'))
+				nvram_bufset(RT2860_NVRAM, "wan_port", w_port);
+		}
+
+		/* Set-up first LAN port */
+		if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
+			nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
+
+		/* Now test values */
+		for (i = 1; i <= 5; i++) {
+			snprintf(w_name, sizeof(w_name), "port%d_swmode", i);
+			w_port = websGetVar(wp, w_name, T("auto"));
+			if ((w_port != NULL) && (strlen(w_port)>0))
+				nvram_bufset(RT2860_NVRAM, w_name, w_port);
+		}
+
+		/* Commit & close NVRAM */
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
 
-	/* Set-up first LAN port */
-	if ((l_port != NULL) && ((strcmp(l_port, "near") == 0) || (strcmp(l_port, "distant") == 0)))
-		nvram_bufset(RT2860_NVRAM, "lan_port", l_port);
+	if (CHK_IF_DIGIT(reboot, 1)) {
+		/* Output timer for reloading */
+		outputTimerForReload(wp, "" /* submitUrl */, 80000);
 
-	/* Now test values */
-	for (i=1; i<=5; i++)
-	{
-		snprintf(w_name, sizeof(w_name), "port%d_swmode", i);
-		w_port = websGetVar(wp, w_name, T("auto"));
-		if ((w_port != NULL) && (strlen(w_port)>0))
-			nvram_bufset(RT2860_NVRAM, w_name, w_port);
+		/* Reboot */
+		reboot_now();
 	}
-
-	/* Commit & close NVRAM */
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-	/* Output timer for reloading */
-	outputTimerForReload(wp, "" /* submitUrl */, 80000);
-
-	/* Reboot */
-	reboot_now();
+	else {
+		websHeader(wp);
+		websDone(wp, 200);
+	}
 }
 
 /* goform/reboot */
@@ -416,7 +427,7 @@ void formDefineUtilities(void)
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
 	websFormDefine(T("setOpMode"), setOpMode);
-	websFormDefine(T("setWanPort"), setWanPort);
+	websFormDefine(T("setEthernetPort"), setEthernetPort);
 	websFormDefine(T("reboot"), reboot_web);
 	websAspDefine(T("gigaphy"), gigaphy);
 }

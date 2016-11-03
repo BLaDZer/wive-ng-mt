@@ -29,6 +29,8 @@ function initTranslation()
   _TR("manAdmPasswd", "management administrator password");
   _TR("manAdmFirmware", "management firmware");
   _TR("uploadFWLocation", "management filename");
+  _TR("uploadFWtext", "management firmware text");
+  _TR("uploadFWnote", "management firmware note");
   _TR("manResetRWFS", "management reset rwfs");
   _TR("manRWFSUpload", "management upload rwfs");
   _TR("uploadRWFSLocation", "management filename");
@@ -271,6 +273,12 @@ function showWarning() {
                 <iframe id="firmwareReloader" name="firmwareReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
               </form></td>
           </tr>
+		  <tr>
+				<td colspan="2">
+				    <span id="uploadFWtext"></span><a href="https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/" target="_blank">https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/</a><br>
+					<span id="uploadFWnote"></span>
+				</td>
+		  </tr>
         </table>
         <!-- ================= RwFs ================= -->
         <table class="form">

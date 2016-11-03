@@ -204,4 +204,32 @@
     <message msgid="hotspot nodog block" msgstr="Block" />	
     <message msgid="hotspot nodog allow" msgstr="Allow" />
     <message msgid="hotspot profile change" msgstr="When changing profile recommended to reset the hotspot settings. Reset settings?" />
+
+	<message msgid="ethernet title"				msgstr="Ethernet Port Settings" />
+	<message msgid="ethernet introduction"			msgstr="You can set up ethernet port" />
+	<message msgid="ethernet reboot confirm"		msgstr="For apply settings needs to reboot you router. Reboot router?" />
+	<message msgid="ethernet port management"		msgstr="Ethernet Port Settings" />
+	<message msgid="ethernet wan port"			msgstr="WAN port" />
+	<message msgid="ethernet lan port"			msgstr="First LAN port" />
+	<message msgid="ethernet lan port near"			msgstr="Near to the WAN port" />
+	<message msgid="ethernet lan port distant"		msgstr="Distant from the WAN port" />
+	<message msgid="ethernet port 1 mode"			msgstr="Port 1 mode" />
+	<message msgid="ethernet port 2 mode"			msgstr="Port 2 mode" />
+	<message msgid="ethernet port 3 mode"			msgstr="Port 3 mode" />
+	<message msgid="ethernet port 4 mode"			msgstr="Port 4 mode" />
+	<message msgid="ethernet port 5 mode"			msgstr="Port 5 mode" />
+	<message msgid="ethernet port mode auto"		msgstr="Auto-Negotiation" />
+	<message msgid="ethernet port mode 10h"			msgstr="10Mbit/s Half-Duplex" />
+	<message msgid="ethernet port mode 10f"			msgstr="10Mbit/s Full-Duplex" />
+	<message msgid="ethernet port mode 100h"		msgstr="100Mbit/s Half-Duplex" />
+	<message msgid="ethernet port mode 100f"		msgstr="100Mbit/s Full-Duplex" />
+	<message msgid="ethernet port mode 1000h"		msgstr="1Gbit/s Half-Duplex" />
+	<message msgid="ethernet port mode 1000f"		msgstr="1Gbit/s Full-Duplex" />
+	<message msgid="ethernet port status head"		msgstr="Ethernet Ports Status" />
+	<message msgid="ethernet port status"			msgstr="Ports Status" />
+	<message msgid="ethernet port rx bytes"			msgstr="RX Bytes" />
+	<message msgid="ethernet port tx bytes"			msgstr="TX Bytes" />
+	<message msgid="ethernet gibits"			msgstr=" GiB" />
+	<message msgid="ethernet mibits"			msgstr=" MiB" />
+	<message msgid="ethernet kibits"			msgstr=" KiB" />
 </po>

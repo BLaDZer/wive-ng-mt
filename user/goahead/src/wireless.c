@@ -178,6 +178,11 @@ static int getWlan11aChannels(int eid, webs_t wp, int argc, char_t **argv)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
 					(36+4*idx == channel)? "selected" : "", 5180+20*idx,
 					"MHz (Channel ", 36+4*idx, ")</option>");
+		/* 132~144 */
+		for (idx = 24; idx < 28; idx++)
+			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=", 36+4*idx,
+				   	(36+4*idx == channel)? "selected" : "", 5180+20*idx,
+					"MHz (Channel ", 36+4*idx, ")</option>");
 		/* 149~165 */
 		for (idx = 28; idx < 33; idx++)
 			websWrite(wp, T("%s%d %s>%d%s%d%s"), "<option value=",

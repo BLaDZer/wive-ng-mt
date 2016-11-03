@@ -17,6 +17,7 @@
     <message msgid="treeapp routing" msgstr="Routing" />
     <message msgid="treeapp hotspot" msgstr="Hotspot" />
     <message msgid="treeapp qos" msgstr="QoS" />
+    <message msgid="treeapp ethernet" msgstr="Ethernet setup" />
 
     <message msgid="treeapp profile" msgstr="Profile" />
     <message msgid="treeapp link status" msgstr="Link Status" />

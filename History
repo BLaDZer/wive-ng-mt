@@ -2546,14 +2546,17 @@
 18) goahead: fix webheader format (parse issue by antiviral filters).<br>
 19) goahead: fix radius secret check.<br>
 20) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
-21) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-22) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-23) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-24) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-25) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-26) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-27) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-28) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+21) goahead: rework switch status, config page.<br>
+22) goahead: fix regulatory tables for RU.<br>
+23) goahead: add link for download firmware.<br>
+24) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+25) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+26) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+27) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+28) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+29) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+30) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+31) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>

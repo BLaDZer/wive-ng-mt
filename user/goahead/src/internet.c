@@ -850,11 +850,11 @@ static void setTvSipVLAN(webs_t wp, char_t *path, char_t *query)
 	}
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
-	    outputTimerForReload(wp, "", 80000);
-	    reboot_now();
+		outputTimerForReload(wp, "", 80000);
+		reboot_now();
 	} else {
-	    websHeader(wp);
-	    websDone(wp, 200);
+		websHeader(wp);
+		websDone(wp, 200);
 	}
 }
 

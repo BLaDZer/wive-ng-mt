@@ -201,5 +201,33 @@
     <message msgid="hotspot nodog pass attempts" msgstr="Число попыток ввода пароля" />
     <message msgid="hotspot nodog block" msgstr="Блокировать" />
     <message msgid="hotspot nodog allow" msgstr="Разрешить" />
-	<message msgid="hotspot profile change" msgstr="При смене профиля рекомендуется произвести сброс настроек хотспота. Сбросить настройки?" />
+    <message msgid="hotspot profile change" msgstr="При смене профиля рекомендуется произвести сброс настроек хотспота. Сбросить настройки?" />
+
+	<message msgid="ethernet title"				msgstr="Настройки физических портов" />
+	<message msgid="ethernet introduction"			msgstr="Здесь вы можете произвести настройки физических портов маршрутизатора." />
+	<message msgid="ethernet reboot confirm"		msgstr="Для применения настроек требуется перезагрузка маршрутизатора. Перезагрузить маршрутизатор?" />
+	<message msgid="ethernet port management"		msgstr="Настройки физических портов" />
+	<message msgid="ethernet wan port"			msgstr="WAN порт" />
+	<message msgid="ethernet lan port"			msgstr="Первый LAN порт" />
+	<message msgid="ethernet lan port near"			msgstr="Ближе к WAN порту" />
+	<message msgid="ethernet lan port distant"		msgstr="Дальше от WAN порта" />
+	<message msgid="ethernet port 1 mode"			msgstr="Режим порта 1" />
+	<message msgid="ethernet port 2 mode"			msgstr="Режим порта 2" />
+	<message msgid="ethernet port 3 mode"			msgstr="Режим порта 3" />
+	<message msgid="ethernet port 4 mode"			msgstr="Режим порта 4" />
+	<message msgid="ethernet port 5 mode"			msgstr="Режим порта 5" />
+	<message msgid="ethernet port mode auto"		msgstr="Автосогласование" />
+	<message msgid="ethernet port mode 10h"			msgstr="10Мбит/с Полудуплекс" />
+	<message msgid="ethernet port mode 10f"			msgstr="10Мбит/с Полный дуплекс" />
+	<message msgid="ethernet port mode 100h"		msgstr="100Мбит/с Полудуплекс" />
+	<message msgid="ethernet port mode 100f"		msgstr="100Мбит/с Полный дуплекс" />
+	<message msgid="ethernet port mode 1000h"		msgstr="1Гбит/с Полудуплекс" />
+	<message msgid="ethernet port mode 1000f"		msgstr="1Гбит/с Полный дуплекс" />
+	<message msgid="ethernet port status head"		msgstr="Состояние физических портов" />
+	<message msgid="ethernet port status"			msgstr="Состояние портов" />
+	<message msgid="ethernet port rx bytes"			msgstr="Принято байт" />
+	<message msgid="ethernet port tx bytes"			msgstr="Передано байт" />
+	<message msgid="ethernet gibits"			msgstr=" ГиБ" />
+	<message msgid="ethernet mibits"			msgstr=" МиБ" />
+	<message msgid="ethernet kibits"			msgstr=" КиБ" />
 </po>

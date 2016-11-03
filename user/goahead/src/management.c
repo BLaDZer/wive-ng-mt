@@ -212,28 +212,6 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 {
 #if defined(CONFIG_ETHTOOL)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
-	int port;
-
-	for (port=4; port>-1; port--)
-	{
-		struct port_status pst;
-		char buf[16];
-
-		portstatus(&pst, port);
-
-		/* create string in new buffer and write to web (this more safe of direct write) */
-		snprintf(buf, sizeof(buf), ("%s%d,%d,%s"), (pst.portnum == 4) ? "" : ";", pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H");
-		websWrite(wp, T("%s"), buf);
-	}
-#endif
-#endif
-	return 0;
-}
-
-static int getPortStatusJSON(int eid, webs_t wp, int argc, char_t **argv)
-{
-#if defined(CONFIG_ETHTOOL)
-#if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	websWrite(wp, T("{ \"ethernet\": [ "));
 	int port;
 	for (port=4; port>-1; port--)
@@ -256,47 +234,32 @@ static int getPortStatusJSON(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getAllNICStatisticASP(int eid, webs_t wp, int argc, char_t **argv)
 {
-    int i;
-    int elem_count = 0;
-    struct nic_counts* ncs = nicscounts(&elem_count);
+	int i;
+	int elem_count = 0;
+	struct nic_counts* ncs = nicscounts(&elem_count);
 
-    for (i=0;i<elem_count;i++)
-    {
-	struct nic_counts nc = ncs[i];
-	if (nc.ifname[0] == '\0')
-	    break;
+	websWrite(wp, T("{ \"iface\": [ "));
 
-	if (!nc.is_available) {
-	    // not extracted - print n/a
-	    websWrite(wp, T("<tr><td class=\"head\" colspan=\"2\">n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
-	    continue;
-	} else {
-		char strbuf[512];
-		char *rx_tmpstr, *tx_tmpstr;
+	for (i = 0; i < elem_count; i++)
+	{
+		struct nic_counts nc = ncs[i];
+		if (nc.ifname[0] == '\0')
+			break;
 
-		// scale bytes to K/M/G/Tb
-		rx_tmpstr = scale((uint64_t)nc.rx_bytes);
-		tx_tmpstr = scale((uint64_t)nc.tx_bytes);
-
-		if (rx_tmpstr && tx_tmpstr) {
-		    // format string in buffer
-		    snprintf(strbuf, sizeof(strbuf),
-				"<tr><td class=\"head\" colspan=\"2\">%s</td><td>%llu</td><td>%s</td><td>%llu</td><td>%s</td></tr>\n",
-										    nc.ifname, nc.rx_packets, rx_tmpstr, nc.tx_packets, tx_tmpstr);
-		    bfree(B_L, rx_tmpstr);
-		    bfree(B_L, tx_tmpstr);
-
-		    // write to web
-		    websWrite(wp, T("%s"), strbuf);
-		} else {
-		    websWrite(wp, T("<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>\n"));
-		} 
+		if (!nc.is_available)
+			continue;
+		else {
+			char strbuf[512];
+			snprintf(strbuf, sizeof(strbuf),
+				"{ \"name\":\"%s\", \"rx_packet\":\"%llu\", \"rx_bytes\":\"%llu\", \"tx_packet\":\"%llu\", \"tx_bytes\":\"%llu\" }%s",
+				nc.ifname, nc.rx_packets, nc.rx_bytes, nc.tx_packets, nc.tx_bytes, (i + 1 < elem_count) ? ", " : "");
+			websWrite(wp, T("%s"), strbuf);
+		}
 	}
 
-    }
-
-    free(ncs);
-    return 0;
+	websWrite(wp, T(" ] }"));
+	free(ncs);
+	return 0;
 }
 
 static int getMemTotalASP(int eid, webs_t wp, int argc, char_t **argv)
@@ -421,32 +384,41 @@ static int getHWStatsBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 	int i;
 	struct port_counts pcs;
+	char tmpstr[64];
 
 	portscounts(&pcs);
 
-	websWrite(wp, T("<tr>\n<td class=\"head\" id=\"stats_rx\">Rx</td>\n"));
+	websWrite(wp, T("{ \"rx_bytes\": [ "));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
 	for (i = 4; i >= 4; i--)
 #else
 	for (i = 4; i >= 0; i--)
 #endif
 	{
-		char *tmpstr = scale((uint64_t)pcs.rx_count[i]);
-		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
+		sprintf(tmpstr, "%llu", (uint64_t)pcs.rx_count[i]);
+		websWrite(wp, T("\"%s\""), tmpstr);
+#ifndef CONFIG_RTESW_SWITCH_ONEPORT
+		if (i > 0)
+			websWrite(wp, T(", "));
+#endif
 		bfree(B_L, tmpstr);
 	}
-	websWrite(wp, T("</tr>\n<tr>\n<td class=\"head\" id=\"stats_tx\">Tx</td>\n"));
+	websWrite(wp, T(" ], \"tx_bytes\": [ "));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
 	for (i = 4; i >= 4; i--)
 #else
 	for (i = 4; i >= 0; i--)
 #endif
 	{
-		char *tmpstr = scale((uint64_t)pcs.tx_count[i]);
-		websWrite(wp, T("<td>%s</td>\n"), tmpstr);
+		sprintf(tmpstr, "%llu", (uint64_t)pcs.tx_count[i]);
+		websWrite(wp, T("\"%s\""), tmpstr);
+#ifndef CONFIG_RTESW_SWITCH_ONEPORT
+		if (i > 0)
+			websWrite(wp, T(", "));
+#endif
 		bfree(B_L, tmpstr);
 	}
-	websWrite(wp, T("</tr>\n"));
+	websWrite(wp, T(" ] }"));
 	return 0;
 }
 
@@ -459,7 +431,6 @@ void formDefineManagement(void)
 	websAspDefine(T("getHWStatsBuilt"), getHWStatsBuilt);
 	websAspDefine(T("getHWStatistic"), getHWStatistic);
 	websAspDefine(T("getPortStatus"), getPortStatus);
-	websAspDefine(T("getPortStatusJSON"), getPortStatusJSON);
 #ifdef CONFIG_DATE
 	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost);
 #endif
