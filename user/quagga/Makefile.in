@@ -281,6 +281,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
 PIMD = @PIMD@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
+PROTOBUF_C_LIBS = @PROTOBUF_C_LIBS@
+PROTOC_C = @PROTOC_C@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
 RIPNGD = @RIPNGD@
@@ -362,21 +368,31 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ \
-         @ISISD@ @PIMD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@ @DOC@ m4 @pkgsrcdir@ \
-         redhat @SOLARIS@ tests
+SUBDIRS = lib qpb fpm m4 @ZEBRA@ @BGPD@ @RIPD@ @RIPNGD@ @OSPFD@ @OSPF6D@ \
+         @ISISD@ @PIMD@ @WATCHQUAGGA@ @VTYSH@ @OSPFCLIENT@
 
-DIST_SUBDIRS = lib zebra bgpd ripd ripngd ospfd ospf6d \
-	  isisd watchquagga vtysh ospfclient doc m4 pkgsrc redhat tests \
-	  solaris pimd
 
+# @DOC@ @pkgsrcdir@ redhat @SOLARIS@ tests
+DIST_SUBDIRS = lib qpb fpm zebra bgpd ripd ripngd ospfd ospf6d \
+	  isisd watchquagga vtysh ospfclient m4 pimd
+
+# doc  pkgsrc redhat tests solaris
 EXTRA_DIST = aclocal.m4 SERVICES TODO REPORTING-BUGS INSTALL.quagga.txt \
 	update-autotools \
 	vtysh/Makefile.in vtysh/Makefile.am \
 	tools/rrcheck.pl tools/rrlookup.pl tools/zc.pl \
-	tools/zebra.el tools/multiple-bgpd.sh \
-	fpm/fpm.h
+	tools/zebra.el tools/multiple-bgpd.sh
 
+
+#if HAVE_LATEX
+
+#HACKING.pdf: HACKING.tex
+#	$(LATEXMK) -pdf $<
+
+#clean-local:
+#	-$(LATEXMK) -C HACKING.tex
+
+#endif
 ACLOCAL_AMFLAGS = -I m4
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -770,10 +786,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@HAVE_LATEX_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic clean-libtool clean-local mostlyclean-am
+clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -845,27 +860,21 @@ uninstall-am:
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-am clean clean-cscope clean-generic \
-	clean-libtool clean-local cscope cscopelist-am ctags ctags-am \
-	dist dist-all dist-bzip2 dist-gzip dist-lzip dist-shar \
-	dist-tarZ dist-xz dist-zip distcheck distclean \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distcleancheck distdir distuninstallcheck dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am
+	clean-libtool cscope cscopelist-am ctags ctags-am dist \
+	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
+	dist-xz dist-zip distcheck distclean distclean-generic \
+	distclean-hdr distclean-libtool distclean-tags distcleancheck \
+	distdir distuninstallcheck dvi dvi-am html html-am info \
+	info-am install install-am install-data install-data-am \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am
 
-
-@HAVE_LATEX_TRUE@HACKING.pdf: HACKING.tex
-@HAVE_LATEX_TRUE@	$(LATEXMK) -pdf $<
-
-@HAVE_LATEX_TRUE@clean-local:
-@HAVE_LATEX_TRUE@	-$(LATEXMK) -C HACKING.tex
 
 romfs: install
 	$(ROMFSINST) -S ../init.d/W60dynroute /etc/rc.d/W60dynroute

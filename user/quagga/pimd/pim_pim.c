@@ -563,7 +563,7 @@ static int hello_send(struct interface *ifp,
 		   ifp->name)) {
     if (PIM_DEBUG_PIM_HELLO) {
       zlog_debug("%s: could not send PIM message on interface %s",
-	      __PRETTY_FUNCTION__, ifp->name);
+		 __PRETTY_FUNCTION__, ifp->name);
     }
     return -2;
   }
@@ -584,8 +584,8 @@ static int pim_hello_send(struct interface *ifp,
     ++pim_ifp->pim_ifstat_hello_sendfail;
 
     if (PIM_DEBUG_PIM_HELLO) {
-    zlog_warn("Could not send PIM hello on interface %s",
-	      ifp->name);
+      zlog_warn("Could not send PIM hello on interface %s",
+		ifp->name);
     }
     return -1;
   }

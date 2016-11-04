@@ -290,7 +290,7 @@ bgp_bind (struct peer *peer)
   ret = setsockopt (peer->fd, SOL_SOCKET, SO_BINDTODEVICE, 
 		    &ifreq, sizeof (ifreq));
   myerrno = errno;
-
+  
   if (bgpd_privs.change (ZPRIVS_LOWER) )
     zlog_err ("bgp_bind: could not lower privs");
 
@@ -453,7 +453,7 @@ bgp_listener (int sock, struct sockaddr *sa, socklen_t salen)
     setsockopt_ipv4_tos (sock, IPTOS_PREC_INTERNETCONTROL);
   else if (sa->sa_family == AF_INET6)
     setsockopt_ipv6_tclass (sock, IPTOS_PREC_INTERNETCONTROL);
-#  endif
+#endif
 
   sockopt_v6only (sa->sa_family, sock);
 

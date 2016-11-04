@@ -284,6 +284,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
 PIMD = @PIMD@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
+PROTOBUF_C_LIBS = @PROTOBUF_C_LIBS@
+PROTOC_C = @PROTOC_C@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
 RIPNGD = @RIPNGD@
@@ -408,7 +414,7 @@ quagga_TEXINFOS = appendix.texi basic.texi bgpd.texi filter.texi \
 	install.texi ipv6.texi kernel.texi main.texi ospf6d.texi ospfd.texi \
 	overview.texi protocol.texi ripd.texi ripngd.texi routemap.texi \
 	snmp.texi vtysh.texi routeserver.texi defines.texi $(figures_png) \
-	snmptrap.texi ospf_fundamentals.texi $(figures_txt)
+	snmptrap.texi ospf_fundamentals.texi isisd.texi $(figures_txt)
 
 man_MANS = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \

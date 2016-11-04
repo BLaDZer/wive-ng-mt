@@ -386,7 +386,7 @@ write_bgpPeerTable (int action, u_char *var_val,
   struct in_addr addr;
   struct peer *peer;
   long intval;
-  
+
   if (var_val_type != ASN_INTEGER) 
     {
       return SNMP_ERR_WRONGTYPE;

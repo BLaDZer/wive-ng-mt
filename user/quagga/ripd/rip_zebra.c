@@ -136,7 +136,7 @@ rip_zebra_read_ipv4 (int command, struct zclient *zclient, zebra_size_t length,
   struct in_addr nexthop;
   struct prefix_ipv4 p;
   unsigned char plength = 0;
-  
+
   s = zclient->ibuf;
   ifindex = 0;
   nexthop.s_addr = 0;

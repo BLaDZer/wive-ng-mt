@@ -1,10 +1,10 @@
 /*
- * IS-IS Rout(e)ing protocol               - isis_routemap.c
+ * IS-IS Rout(e)ing protocol - isis_routemap.c
  *
  * Copyright (C) 2013-2015 Christian Franke <chris@opensourcerouting.org>
  *
  * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public Licenseas published by the Free 
+ * under the terms of the GNU General Public License as published by the Free 
  * Software Foundation; either version 2 of the License, or (at your option) 
  * any later version.
  *
@@ -106,9 +106,9 @@ route_match_ip_address_prefix_list(void *rule, struct prefix *prefix,
 
 static void *
 route_match_ip_address_prefix_list_compile(const char *arg)
-    {
+{
   return XSTRDUP (MTYPE_ROUTE_MAP_COMPILED, arg);
-    }
+}
 
 static void
 route_match_ip_address_prefix_list_free (void *rule)
@@ -155,7 +155,7 @@ route_match_ipv6_address_free(void *rule)
 }
 
 static struct route_map_rule_cmd route_match_ipv6_address_cmd =
-    {
+{
   "ipv6 address",
   route_match_ipv6_address,
   route_match_ipv6_address_compile,
@@ -167,7 +167,7 @@ static struct route_map_rule_cmd route_match_ipv6_address_cmd =
 static route_map_result_t
 route_match_ipv6_address_prefix_list(void *rule, struct prefix *prefix,
                                      route_map_object_t type, void *object)
-	{
+{
   struct prefix_list *plist;
 
   if (type != RMAP_ISIS)
@@ -178,13 +178,13 @@ route_match_ipv6_address_prefix_list(void *rule, struct prefix *prefix,
     return RMAP_MATCH;
 
   return RMAP_NOMATCH;
-	}
+}
 
 static void *
 route_match_ipv6_address_prefix_list_compile(const char *arg)
 {
   return XSTRDUP (MTYPE_ROUTE_MAP_COMPILED, arg);
-    }
+}
 
 static void
 route_match_ipv6_address_prefix_list_free (void *rule)
@@ -230,7 +230,7 @@ route_set_metric_compile(const char *arg)
   if (arg[0] == '\0' || *endp != '\0' || metric > MAX_WIDE_PATH_METRIC)
     return NULL;
 
-  ret = XCALLOC(MTYPE_ROUTE_MAP_COMPILED, sizeof(ret));
+  ret = XCALLOC(MTYPE_ROUTE_MAP_COMPILED, sizeof(*ret));
   *ret = metric;
 
   return ret;
@@ -533,10 +533,10 @@ ALIAS(no_set_metric,
 );
 
 void
-isis_route_map_init (void)
+isis_route_map_init(void)
 {
-  route_map_init ();
-  route_map_init_vty ();
+  route_map_init();
+  route_map_init_vty();
 
   route_map_install_match(&route_match_ip_address_cmd);
   install_element(RMAP_NODE, &match_ip_address_cmd);

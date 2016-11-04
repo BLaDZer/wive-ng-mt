@@ -165,7 +165,7 @@ rta_copy (union sockunion *dest, caddr_t src) {
   if ((RTMADDRS) & (RTA)) \
     { \
       int len = SAROUNDUP ((PNT)); \
-        rta_copy((DEST), (PNT)); \
+      rta_copy((DEST), (PNT)); \
       (PNT) += len; \
     }
 
@@ -561,7 +561,7 @@ ifm_read (struct if_msghdr *ifm)
       ifp->ll_type = ZEBRA_LLT_UNKNOWN;
       ifp->hw_addr_len = 0;
       if (ifnlen)
-      {
+        {
 #ifdef HAVE_STRUCT_SOCKADDR_DL_SDL_LEN
           memcpy (&((struct zebra_if *)ifp->info)->sdl, sdl, sdl->sdl_len);
 #else
@@ -574,7 +574,7 @@ ifm_read (struct if_msghdr *ifm)
               memcpy (ifp->hw_addr, LLADDR(sdl), sdl->sdl_alen);
               ifp->hw_addr_len = sdl->sdl_alen;
             }
-      }
+        }
 
       if_add_update (ifp);
     }
@@ -686,7 +686,7 @@ ifam_read_mesg (struct ifa_msghdr *ifm,
 	    zlog_debug ("%s: ifindex %d, ifname %s, ifam_addrs 0x%x, "
 			"ifam_flags 0x%x, addr %s/%d broad %s dst %s "
 			"gateway %s",
-			__func__, ifm->ifam_index, 
+			__func__, ifm->ifam_index,
 			(ifnlen ? ifname : "(nil)"), ifm->ifam_addrs,
 			ifm->ifam_flags,
 			inet_ntop(family,&addr->sin.sin_addr,
@@ -774,7 +774,7 @@ ifam_read (struct ifa_msghdr *ifam)
 	 is KAME. */
       if (IN6_IS_ADDR_LINKLOCAL (&addr.sin6.sin6_addr))
         {
-	SET_IN6_LINKLOCAL_IFINDEX (addr.sin6.sin6_addr, 0);
+          SET_IN6_LINKLOCAL_IFINDEX (addr.sin6.sin6_addr, 0);
         }
 
       if (ifam->ifam_type == RTM_NEWADDR)

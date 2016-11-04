@@ -1068,7 +1068,7 @@ isis_spf_preload_tent (struct isis_spftree *spftree, int level,
 	      zlog_warn ("ISIS-Spf: No lsp (%p) found from root "
                   "to L%d DR %s on %s (ID %d)",
                   (void *)lsp, level, rawlspid_print (lsp_id),
-		  circuit->interface->name, circuit->circuit_id);
+                  circuit->interface->name, circuit->circuit_id);
               continue;
 	    }
 	  isis_spf_process_pseudo_lsp (spftree, lsp,
@@ -1692,8 +1692,4 @@ isis_spf_cmds_init ()
   install_element (VIEW_NODE, &show_isis_topology_cmd);
   install_element (VIEW_NODE, &show_isis_topology_l1_cmd);
   install_element (VIEW_NODE, &show_isis_topology_l2_cmd);
-
-  install_element (ENABLE_NODE, &show_isis_topology_cmd);
-  install_element (ENABLE_NODE, &show_isis_topology_l1_cmd);
-  install_element (ENABLE_NODE, &show_isis_topology_l2_cmd);
 }

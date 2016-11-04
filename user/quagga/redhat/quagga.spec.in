@@ -102,13 +102,13 @@
 %{!?release_rev:	%define		release_rev	01 }
 
 Summary: Routing daemon
-Name:		quagga
+Name:			quagga
 Version:		%{rpmversion}
 Release:		@CONFDATE@%{release_rev}%{?dist}
 License:		GPLv2+
-Group: System Environment/Daemons
+Group:			System Environment/Daemons
 Source0:		http://download.savannah.gnu.org/releases/quagga/%{name}-%{quaggaversion}.tar.gz
-URL:		http://www.quagga.net
+URL:			http://www.quagga.net
 Requires:		ncurses
 Requires(pre):	/sbin/install-info
 Requires(preun): /sbin/install-info
@@ -136,7 +136,7 @@ Requires(postun):	systemd
 Requires(pre):		initscripts >= 5.60
 %endif
 Provides:			routingdaemon = %{version}-%{release}
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+BuildRoot:			%{_tmppath}/%{name}-%{version}-root
 Obsoletes:			bird gated mrt zebra quagga-sysvinit
 
 %description
@@ -401,8 +401,8 @@ if [ "$1" -ge 1 ]; then
 	running_zebra="$restart_zebra"
 	restart_zebra=no
 	%if %{with_watchquagga}
-	running_watchquagga="$restart_watchquagga"
-	restart_watchquagga=no
+		running_watchquagga="$restart_watchquagga"
+		restart_watchquagga=no
 	%endif
 	
 	%if "%{initsystem}" == "systemd"
@@ -431,30 +431,30 @@ if [ "$1" -ge 1 ]; then
 		## init.d Version
 		##
 		%if %{with_watchquagga}
-	# Stop watchquagga first.
-	[ "$running_watchquagga" = yes ] && \
-		/etc/rc.d/init.d/watchquagga stop >/dev/null 2>&1
+			# Stop watchquagga first.
+			[ "$running_watchquagga" = yes ] && \
+				/etc/rc.d/init.d/watchquagga stop >/dev/null 2>&1
 		%endif
-	# Stop all daemons other than zebra and watchquagga.
-	for daemon in %all_daemons ; do
-		eval restart=\$restart_${daemon}
-		[ "$restart" = yes ] && \
+		# Stop all daemons other than zebra and watchquagga.
+		for daemon in %all_daemons ; do
+			eval restart=\$restart_${daemon}
+			[ "$restart" = yes ] && \
 				/etc/rc.d/init.d/${daemon} stop >/dev/null 2>&1
-	done
-	# Restart zebra.
-	[ "$running_zebra" = yes ] && \
-		/etc/rc.d/init.d/zebra restart >/dev/null 2>&1
-	# Start all daemons other than zebra and watchquagga.
-	for daemon in %all_daemons ; do
-		eval restart=\$restart_${daemon}
-		[ "$restart" = yes ] && \
+		done
+		# Restart zebra.
+		[ "$running_zebra" = yes ] && \
+			/etc/rc.d/init.d/zebra restart >/dev/null 2>&1
+		# Start all daemons other than zebra and watchquagga.
+		for daemon in %all_daemons ; do
+			eval restart=\$restart_${daemon}
+			[ "$restart" = yes ] && \
 				/etc/rc.d/init.d/${daemon} start >/dev/null 2>&1
-	done
+		done
 		%if %{with_watchquagga}
-	# Start watchquagga last.
-	# Avoid postun scriptlet error if watchquagga is not running. 
-	[ "$running_watchquagga" = yes ] && \
-		/etc/rc.d/init.d/watchquagga start >/dev/null 2>&1 || :
+			# Start watchquagga last.
+			# Avoid postun scriptlet error if watchquagga is not running. 
+			[ "$running_watchquagga" = yes ] && \
+				/etc/rc.d/init.d/watchquagga start >/dev/null 2>&1 || :
 		%endif	
 	%endif
 fi
@@ -473,12 +473,12 @@ fi
 	##
 	## init.d Version
 	##
-if [ "$1" = "0" ]; then
-	for daemon in %all_daemons ; do
-		/etc/rc.d/init.d/${daemon} stop  >/dev/null 2>&1
-		/sbin/chkconfig --del ${daemon}
-	done
-fi
+	if [ "$1" = "0" ]; then
+		for daemon in %all_daemons ; do
+			/etc/rc.d/init.d/${daemon} stop  >/dev/null 2>&1
+			/sbin/chkconfig --del ${daemon}
+		done
+	fi
 %endif
 /sbin/install-info --delete %{_infodir}/quagga.info.gz %{_infodir}/dir
 
@@ -512,7 +512,7 @@ rm -rf %{buildroot}
 %{_sbindir}/ripd
 %{_sbindir}/bgpd
 %if %{with_watchquagga}
-%{_sbindir}/watchquagga
+	%{_sbindir}/watchquagga
 %endif
 %{_sbindir}/ripngd
 %{_sbindir}/ospf6d

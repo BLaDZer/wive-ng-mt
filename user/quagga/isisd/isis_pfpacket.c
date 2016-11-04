@@ -233,12 +233,12 @@ isis_recv_pdu_bcast (struct isis_circuit *circuit, u_char * ssnpa)
 
   if ((bytesread < 0) || (s_addr.sll_ifindex != (int)circuit->interface->ifindex))
     {
-  if (bytesread < 0)
-    {
+      if (bytesread < 0)
+        {
           zlog_warn ("isis_recv_packet_bcast(): ifname %s, fd %d, "
                      "bytesread %d, recvfrom(): %s",
-                 circuit->interface->name, circuit->fd, bytesread,
-                 safe_strerror (errno));
+                     circuit->interface->name, circuit->fd, bytesread,
+                     safe_strerror (errno));
         }
       if (s_addr.sll_ifindex != (int)circuit->interface->ifindex)
         {
@@ -400,9 +400,9 @@ isis_send_pdu_p2p (struct isis_circuit *circuit, int level)
   /* lets try correcting the protocol */
   sa.sll_protocol = htons (0x00FE);
   rv = sendto(circuit->fd, circuit->snd_stream->data,
-		    stream_get_endp (circuit->snd_stream), 0, 
-		    (struct sockaddr *) &sa,
-		    sizeof (struct sockaddr_ll));
+	      stream_get_endp (circuit->snd_stream), 0,
+	      (struct sockaddr *) &sa,
+	      sizeof (struct sockaddr_ll));
   if (rv < 0)
     {
       zlog_warn("IS-IS pfpacket: could not transmit packet on %s: %s",

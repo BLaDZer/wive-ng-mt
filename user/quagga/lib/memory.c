@@ -425,8 +425,6 @@ memory_init (void)
   install_element (RESTRICTED_NODE, &show_memory_cmd);
 
   install_element (VIEW_NODE, &show_memory_cmd);
-
-  install_element (ENABLE_NODE, &show_memory_cmd);
 }
 
 /* Stats querying from users */
@@ -441,13 +439,13 @@ const char *
 mtype_memstr (char *buf, size_t len, unsigned long bytes)
 {
   unsigned int m, k;
-  
+
   /* easy cases */
   if (!bytes)
     return "0 bytes";
   if (bytes == 1)
     return "1 byte";
-    
+
   /*
    * When we pass the 2gb barrier mallinfo() can no longer report
    * correct data so it just does something odd...
@@ -460,7 +458,7 @@ mtype_memstr (char *buf, size_t len, unsigned long bytes)
 
   m = bytes >> 20;
   k = bytes >> 10;
-  
+
  if (m > 10)
     {
       if (bytes & (1 << 19))

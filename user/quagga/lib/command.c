@@ -212,6 +212,18 @@ argv_concat (const char **argv, int argc, int shift)
   return str;
 }
 
+static unsigned int
+cmd_hash_key (void *p)
+{
+  return (uintptr_t) p;
+}
+
+static int
+cmd_hash_cmp (const void *a, const void *b)
+{
+  return a == b;
+}
+
 /* Install top node of command vector. */
 void
 install_node (struct cmd_node *node, 
@@ -220,6 +232,7 @@ install_node (struct cmd_node *node,
   vector_set_index (cmdvec, node->node, node);
   node->func = func;
   node->cmd_vector = vector_init (VECTOR_MIN_SIZE);
+  node->cmd_hash = hash_create (cmd_hash_key, cmd_hash_cmp);
 }
 
 /* Breaking up string into each command piece. I assume given
@@ -608,7 +621,11 @@ install_element (enum node_type ntype, struct cmd_element *cmd)
   
   /* cmd_init hasn't been called */
   if (!cmdvec)
-    return;
+    {
+      fprintf (stderr, "%s called before cmd_init, breakage likely\n",
+               __func__);
+      return;
+    }
   
   cnode = vector_slot (cmdvec, ntype);
 
@@ -618,10 +635,23 @@ install_element (enum node_type ntype, struct cmd_element *cmd)
 	       ntype);
       exit (1);
     }
-
+  
+  if (hash_lookup (cnode->cmd_hash, cmd) != NULL)
+    {
+      fprintf (stderr, 
+               "Multiple command installs to node %d of command:\n%s\n",
+               ntype, cmd->string);
+      return;
+    }
+  
+  assert (hash_get (cnode->cmd_hash, cmd, hash_alloc_intern));
+  
   vector_set (cnode->cmd_vector, cmd);
   if (cmd->tokens == NULL)
     cmd->tokens = cmd_parse_format(cmd->string, cmd->doc);
+
+  if (ntype == VIEW_NODE)
+    install_element (ENABLE_NODE, cmd);
 }
 
 static const unsigned char itoa64[] =
@@ -1193,54 +1223,54 @@ cmd_word_match(struct cmd_token *token,
   switch (token->terminal)
     {
       case TERMINAL_VARARG:
-      return vararg_match;
+        return vararg_match;
 
       case TERMINAL_RANGE:
-      if (cmd_range_match(str, word))
-        return range_match;
+        if (cmd_range_match(str, word))
+          return range_match;
         break;
 
       case TERMINAL_IPV6:
-      match_type = cmd_ipv6_match(word);
-      if ((filter == FILTER_RELAXED && match_type != no_match)
+        match_type = cmd_ipv6_match(word);
+        if ((filter == FILTER_RELAXED && match_type != no_match)
           || (filter == FILTER_STRICT && match_type == exact_match))
-        return ipv6_match;
+          return ipv6_match;
         break;
 
       case TERMINAL_IPV6_PREFIX:
-      match_type = cmd_ipv6_prefix_match(word);
-      if ((filter == FILTER_RELAXED && match_type != no_match)
-          || (filter == FILTER_STRICT && match_type == exact_match))
-        return ipv6_prefix_match;
+        match_type = cmd_ipv6_prefix_match(word);
+        if ((filter == FILTER_RELAXED && match_type != no_match)
+            || (filter == FILTER_STRICT && match_type == exact_match))
+          return ipv6_prefix_match;
         break;
 
       case TERMINAL_IPV4:
-      match_type = cmd_ipv4_match(word);
-      if ((filter == FILTER_RELAXED && match_type != no_match)
-          || (filter == FILTER_STRICT && match_type == exact_match))
-        return ipv4_match;
+        match_type = cmd_ipv4_match(word);
+        if ((filter == FILTER_RELAXED && match_type != no_match)
+            || (filter == FILTER_STRICT && match_type == exact_match))
+          return ipv4_match;
         break;
 
       case TERMINAL_IPV4_PREFIX:
-      match_type = cmd_ipv4_prefix_match(word);
-      if ((filter == FILTER_RELAXED && match_type != no_match)
-          || (filter == FILTER_STRICT && match_type == exact_match))
-        return ipv4_prefix_match;
+        match_type = cmd_ipv4_prefix_match(word);
+        if ((filter == FILTER_RELAXED && match_type != no_match)
+            || (filter == FILTER_STRICT && match_type == exact_match))
+          return ipv4_prefix_match;
         break;
 
       case TERMINAL_OPTION:
       case TERMINAL_VARIABLE:
-      return extend_match;
+        return extend_match;
 
       case TERMINAL_LITERAL:
-      if (filter == FILTER_RELAXED && !strncmp(str, word, strlen(word)))
-        {
-          if (!strcmp(str, word))
-            return exact_match;
-          return partly_match;
-        }
-      if (filter == FILTER_STRICT && !strcmp(str, word))
-        return exact_match;
+        if (filter == FILTER_RELAXED && !strncmp(str, word, strlen(word)))
+          {
+            if (!strcmp(str, word))
+              return exact_match;
+            return partly_match;
+          }
+        if (filter == FILTER_STRICT && !strcmp(str, word))
+          return exact_match;
         break;
 
       default:
@@ -1972,49 +2002,49 @@ cmd_entry_function_desc (const char *src, struct cmd_token *token)
         return dst;
 
       case TERMINAL_RANGE:
-      if (cmd_range_match (dst, src))
-	return dst;
-      else
-	return NULL;
+        if (cmd_range_match (dst, src))
+          return dst;
+        else
+          return NULL;
 
       case TERMINAL_IPV6:
-      if (cmd_ipv6_match (src))
-	return dst;
-      else
-	return NULL;
+        if (cmd_ipv6_match (src))
+          return dst;
+        else
+          return NULL;
 
       case TERMINAL_IPV6_PREFIX:
-      if (cmd_ipv6_prefix_match (src))
-	return dst;
-      else
-	return NULL;
+        if (cmd_ipv6_prefix_match (src))
+          return dst;
+        else
+          return NULL;
 
       case TERMINAL_IPV4:
-      if (cmd_ipv4_match (src))
-	return dst;
-      else
-	return NULL;
+        if (cmd_ipv4_match (src))
+          return dst;
+        else
+          return NULL;
 
       case TERMINAL_IPV4_PREFIX:
-      if (cmd_ipv4_prefix_match (src))
-	return dst;
-      else
-	return NULL;
+        if (cmd_ipv4_prefix_match (src))
+          return dst;
+        else
+          return NULL;
 
-  /* Optional or variable commands always match on '?' */
+      /* Optional or variable commands always match on '?' */
       case TERMINAL_OPTION:
       case TERMINAL_VARIABLE:
-    return dst;
+        return dst;
 
       case TERMINAL_LITERAL:
-  /* In case of 'command \t', given src is NULL string. */
-  if (src == NULL)
-    return dst;
+        /* In case of 'command \t', given src is NULL string. */
+        if (src == NULL)
+          return dst;
 
-  if (strncmp (src, dst, strlen (src)) == 0)
-    return dst;
-  else
-    return NULL;
+        if (strncmp (src, dst, strlen (src)) == 0)
+          return dst;
+        else
+          return NULL;
 
       default:
         assert(0);
@@ -2208,41 +2238,41 @@ cmd_describe_command_real (vector vline, struct vty *vty, int *status)
   /* Make description vector. */
   for (i = 0; i < vector_active (matches); i++)
     {
-    if ((cmd_element = vector_slot (cmd_vector, i)) != NULL)
-      {
-        unsigned int j;
-        vector vline_trimmed;
+      if ((cmd_element = vector_slot (cmd_vector, i)) != NULL)
+	{
+	  unsigned int j;
+	  vector vline_trimmed;
 
 	  command_found++;
-        last_word = vector_slot(vline, vector_active(vline) - 1);
-        if (last_word == NULL || !strlen(last_word))
-          {
-            vline_trimmed = vector_copy(vline);
-            vector_unset(vline_trimmed, vector_active(vline_trimmed) - 1);
-
-            if (cmd_is_complete(cmd_element, vline_trimmed)
-                && desc_unique_string(matchvec, command_cr))
-              {
-                if (match != vararg_match)
-                  vector_set(matchvec, &token_cr);
-              }
-
-            vector_free(vline_trimmed);
-          }
-
-        match_vector = vector_slot (matches, i);
-        if (match_vector)
+	  last_word = vector_slot(vline, vector_active(vline) - 1);
+	  if (last_word == NULL || !strlen(last_word))
 	    {
-          for (j = 0; j < vector_active(match_vector); j++)
-            {
-              struct cmd_token *token = vector_slot(match_vector, j);
-              const char *string;
+	      vline_trimmed = vector_copy(vline);
+	      vector_unset(vline_trimmed, vector_active(vline_trimmed) - 1);
+
+	      if (cmd_is_complete(cmd_element, vline_trimmed)
+		  && desc_unique_string(matchvec, command_cr))
+		{
+		  if (match != vararg_match)
+		    vector_set(matchvec, &token_cr);
+		}
+
+	      vector_free(vline_trimmed);
+	    }
+
+	  match_vector = vector_slot (matches, i);
+	  if (match_vector)
+	    {
+	      for (j = 0; j < vector_active(match_vector); j++)
+		{
+		  struct cmd_token *token = vector_slot(match_vector, j);
+		  const char *string;
 
 		  string = cmd_entry_function_desc(command, token);
-              if (string && desc_unique_string(matchvec, string))
-                vector_set(matchvec, token);
-            }
-      }
+		  if (string && desc_unique_string(matchvec, string))
+		    vector_set(matchvec, token);
+		}
+	    }
 	}
     }
 
@@ -2449,13 +2479,13 @@ cmd_complete_command_real (vector vline, struct vty *vty, int *status, int islib
 
 	for (j = 0; j < vector_active (match_vector); j++)
 	  if ((token = vector_slot (match_vector, j)))
-		{
+            {
               string = cmd_entry_function (vector_slot (vline, index), token);
               if (string && cmd_unique_string (matchvec, string))
                 vector_set (matchvec, (islib != 0 ?
                                       XSTRDUP (MTYPE_TMP, string) :
                                       strdup (string) /* rl freed */));
-		}
+            }
       }
 
   /* We don't need cmd_vector any more. */
@@ -2510,15 +2540,15 @@ cmd_complete_command_real (vector vline, struct vty *vty, int *status, int islib
 
 	      /* Free matchvec. */
 	      for (i = 0; i < vector_active (matchvec); i++)
-		{
-		  if (vector_slot (matchvec, i))
+                {
+                  if (vector_slot (matchvec, i))
                     {
                       if (islib != 0)
-		    XFREE (MTYPE_TMP, vector_slot (matchvec, i));
+                        XFREE (MTYPE_TMP, vector_slot (matchvec, i));
                       else
                         free (vector_slot (matchvec, i));
                     }
-		}
+                }
 	      vector_free (matchvec);
 
 	      /* Make new matchvec. */
@@ -2602,8 +2632,12 @@ node_parent ( enum node_type node )
     case KEYCHAIN_KEY_NODE:
       ret = KEYCHAIN_NODE;
       break;
+    case LINK_PARAMS_NODE:
+      ret = INTERFACE_NODE;
+      break;
     default:
       ret = CONFIG_NODE;
+      break;
     }
 
   return ret;
@@ -2828,13 +2862,13 @@ command_config_read_one_line (struct vty *vty, struct cmd_element **cmd, int use
   int saved_node;
   int ret;
 
-      vline = cmd_make_strvec (vty->buf);
+  vline = cmd_make_strvec (vty->buf);
 
-      /* In case of comment line */
-      if (vline == NULL)
+  /* In case of comment line */
+  if (vline == NULL)
     return CMD_SUCCESS;
 
-      /* Execute configuration command : this is strict match */
+  /* Execute configuration command : this is strict match */
   ret = cmd_execute_command_strict (vline, vty, cmd);
 
   saved_node = vty->node;
@@ -2842,9 +2876,9 @@ command_config_read_one_line (struct vty *vty, struct cmd_element **cmd, int use
   while (!(use_daemon && ret == CMD_SUCCESS_DAEMON) &&
 	 ret != CMD_SUCCESS && ret != CMD_WARNING &&
 	 ret != CMD_ERR_NOTHING_TODO && vty->node != CONFIG_NODE) {
-	  vty->node = node_parent(vty->node);
-	  ret = cmd_execute_command_strict (vline, vty, NULL);
-	}
+    vty->node = node_parent(vty->node);
+    ret = cmd_execute_command_strict (vline, vty, NULL);
+  }
 
   // If climbing the tree did not work then ignore the command and
   // stay at the same node
@@ -2855,7 +2889,7 @@ command_config_read_one_line (struct vty *vty, struct cmd_element **cmd, int use
       vty->node = saved_node;
     }
 
-      cmd_free_strvec (vline);
+  cmd_free_strvec (vline);
 
   return ret;
 }
@@ -2973,6 +3007,9 @@ DEFUN (config_exit,
     case KEYCHAIN_KEY_NODE:
       vty->node = KEYCHAIN_NODE;
       break;
+    case LINK_PARAMS_NODE:
+      vty->node = INTERFACE_NODE;
+      break;
     default:
       break;
     }
@@ -3022,6 +3059,7 @@ DEFUN (config_end,
     case MASC_NODE:
     case PIM_NODE:
     case VTY_NODE:
+    case LINK_PARAMS_NODE:
       vty_config_unlock (vty);
       vty->node = ENABLE_NODE;
       break;
@@ -4105,15 +4143,36 @@ host_config_set (char *filename)
   host.config = XSTRDUP (MTYPE_HOST, filename);
 }
 
-void
-install_default (enum node_type node)
+const char *
+host_config_get (void)
+{
+  return host.config;
+}
+
+static void
+install_default_basic (enum node_type node)
 {
   install_element (node, &config_exit_cmd);
   install_element (node, &config_quit_cmd);
-  install_element (node, &config_end_cmd);
   install_element (node, &config_help_cmd);
   install_element (node, &config_list_cmd);
+}
 
+/* Install common/default commands for a privileged node */
+void
+install_default (enum node_type node)
+{
+  /* VIEW_NODE is inited below, via install_default_basic, and
+     install_element's of commands to VIEW_NODE automatically are
+     also installed to ENABLE_NODE.
+    
+     For all other nodes, we must ensure install_default_basic is
+     also called/
+   */
+  if (node != VIEW_NODE && node != ENABLE_NODE)
+    install_default_basic (node);
+  
+  install_element (node, &config_end_cmd);
   install_element (node, &config_write_terminal_cmd);
   install_element (node, &config_write_file_cmd);
   install_element (node, &config_write_memory_cmd);
@@ -4133,7 +4192,7 @@ cmd_init (int terminal)
 
   /* Allocate initial top vector of commands. */
   cmdvec = vector_init (VECTOR_MIN_SIZE);
-
+  
   /* Default host value settings. */
   host.name = NULL;
   host.password = NULL;
@@ -4156,10 +4215,8 @@ cmd_init (int terminal)
   install_element (VIEW_NODE, &show_version_cmd);
   if (terminal)
     {
-      install_element (VIEW_NODE, &config_list_cmd);
-      install_element (VIEW_NODE, &config_exit_cmd);
-      install_element (VIEW_NODE, &config_quit_cmd);
-      install_element (VIEW_NODE, &config_help_cmd);
+      install_default_basic (VIEW_NODE);
+      
       install_element (VIEW_NODE, &config_enable_cmd);
       install_element (VIEW_NODE, &config_terminal_length_cmd);
       install_element (VIEW_NODE, &config_terminal_no_length_cmd);
@@ -4167,10 +4224,6 @@ cmd_init (int terminal)
       install_element (VIEW_NODE, &show_commandtree_cmd);
       install_element (VIEW_NODE, &echo_cmd);
 
-      install_element (RESTRICTED_NODE, &config_list_cmd);
-      install_element (RESTRICTED_NODE, &config_exit_cmd);
-      install_element (RESTRICTED_NODE, &config_quit_cmd);
-      install_element (RESTRICTED_NODE, &config_help_cmd);
       install_element (RESTRICTED_NODE, &config_enable_cmd);
       install_element (RESTRICTED_NODE, &config_terminal_length_cmd);
       install_element (RESTRICTED_NODE, &config_terminal_no_length_cmd);
@@ -4186,15 +4239,9 @@ cmd_init (int terminal)
       install_element (ENABLE_NODE, &copy_runningconfig_startupconfig_cmd);
     }
   install_element (ENABLE_NODE, &show_startup_config_cmd);
-  install_element (ENABLE_NODE, &show_version_cmd);
-  install_element (ENABLE_NODE, &show_commandtree_cmd);
 
   if (terminal)
     {
-      install_element (ENABLE_NODE, &config_terminal_length_cmd);
-      install_element (ENABLE_NODE, &config_terminal_no_length_cmd);
-      install_element (ENABLE_NODE, &show_logging_cmd);
-      install_element (ENABLE_NODE, &echo_cmd);
       install_element (ENABLE_NODE, &config_logmsg_cmd);
 
       install_default (CONFIG_NODE);
@@ -4243,12 +4290,10 @@ cmd_init (int terminal)
       install_element (CONFIG_NODE, &no_service_terminal_length_cmd);
 
       install_element (VIEW_NODE, &show_thread_cpu_cmd);
-      install_element (ENABLE_NODE, &show_thread_cpu_cmd);
       install_element (RESTRICTED_NODE, &show_thread_cpu_cmd);
       
       install_element (ENABLE_NODE, &clear_thread_cpu_cmd);
       install_element (VIEW_NODE, &show_work_queues_cmd);
-      install_element (ENABLE_NODE, &show_work_queues_cmd);
     }
   install_element (CONFIG_NODE, &show_commandtree_cmd);
   srandom(time(NULL));
@@ -4322,6 +4367,9 @@ cmd_terminate ()
                 cmd_terminate_element(cmd_element);
 
             vector_free (cmd_node_v);
+            hash_clean (cmd_node->cmd_hash, NULL);
+            hash_free (cmd_node->cmd_hash);
+            cmd_node->cmd_hash = NULL;
           }
 
       vector_free (cmdvec);

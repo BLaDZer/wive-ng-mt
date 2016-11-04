@@ -95,7 +95,7 @@ decode_rd_ip (u_char *pnt, struct rd_ip *rd_ip)
 
 int
 bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr, 
-		      struct bgp_nlri *packet)
+                    struct bgp_nlri *packet)
 {
   u_char *pnt;
   u_char *lim;
@@ -129,7 +129,7 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
       prefixlen = *pnt++;
       p.family = afi2family (packet->afi);
       psize = PSIZE (prefixlen);
-
+      
       /* sanity check against packet data */
       if (prefixlen < VPN_PREFIXLEN_MIN_BYTES*8)
         {
@@ -151,15 +151,15 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
       
       /* sanity check against storage for the IP address portion */
       if ((psize - VPN_PREFIXLEN_MIN_BYTES) > (ssize_t) sizeof(p.u))
-	{
+        {
           plog_err (peer->log,
                     "%s [Error] Update packet error / VPNv4"
                     " (psize %u exceeds storage size (%zu)",
                     peer->host,
                     prefixlen - VPN_PREFIXLEN_MIN_BYTES*8, sizeof(p.u));
-	  return -1;
-	}
-	
+          return -1;
+        }
+      
       /* Sanity check against max bitlen of the address family */
       if ((psize - VPN_PREFIXLEN_MIN_BYTES) > prefix_blen (&p))
         {
@@ -171,7 +171,7 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
                     p.family, prefix_blen (&p));
           return -1;
         }
-
+      
       /* Copyr label to prefix. */
       tagpnt = pnt;
 
@@ -182,7 +182,7 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
       type = decode_rd_type (pnt + 3);
 
       switch (type)
-	{
+        {
         case RD_TYPE_AS:
           decode_rd_as (pnt + 5, &rd_as);
           break;
@@ -206,10 +206,10 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
 
       if (attr)
         bgp_update (peer, &p, attr, packet->afi, SAFI_MPLS_VPN,
-		    ZEBRA_ROUTE_BGP, BGP_ROUTE_NORMAL, &prd, tagpnt, 0);
+                    ZEBRA_ROUTE_BGP, BGP_ROUTE_NORMAL, &prd, tagpnt, 0);
       else
         bgp_withdraw (peer, &p, attr, packet->afi, SAFI_MPLS_VPN,
-		      ZEBRA_ROUTE_BGP, BGP_ROUTE_NORMAL, &prd, tagpnt);
+                      ZEBRA_ROUTE_BGP, BGP_ROUTE_NORMAL, &prd, tagpnt);
     }
   /* Packet length consistency check. */
   if (pnt != lim)
@@ -218,9 +218,9 @@ bgp_nlri_parse_vpn (struct peer *peer, struct attr *attr,
                 "%s [Error] Update packet error / VPNv4"
                 " (%zu data remaining after parsing)",
                 peer->host, lim - pnt);
-    return -1;
+      return -1;
     }
-
+  
   return 0;
 #undef VPN_PREFIXLEN_MIN_BYTES
 }
@@ -343,7 +343,6 @@ prefix_rd2str (struct prefix_rd *prd, char *buf, size_t size)
       snprintf (buf, size, "%s:%d", inet_ntoa (rd_ip.ip), rd_ip.val);
       return buf;
     }
-
   return NULL;
 }
 
@@ -598,8 +597,8 @@ bgp_show_mpls_vpn(
 		  route_vty_out (vty, &rm->p, ri, 0, SAFI_MPLS_VPN);
                 output_count++;
 	      }
-	      }
         }
+    }
 
   if (output_count == 0)
     {
@@ -649,7 +648,7 @@ DEFUN (show_bgp_ipv4_vpn_rd,
 
   ret = str2prefix_rd (argv[0], &prd);
   if (! ret)
-{
+    {
       vty_out (vty, "%% Malformed Route Distinguisher%s", VTY_NEWLINE);
       return CMD_WARNING;
     }
@@ -893,7 +892,6 @@ DEFUN (show_ip_bgp_vpnv4_rd_neighbor_advertised_routes,
   struct peer *peer;
   struct prefix_rd prd;
   union sockunion su;
-
   ret = str2sockunion (argv[1], &su);
   if (ret < 0)
     {
@@ -1064,22 +1062,4 @@ bgp_mplsvpn_init (void)
   install_element (VIEW_NODE, &show_bgp_ipv6_vpn_neighbor_advertised_routes_cmd);
   install_element (VIEW_NODE, &show_bgp_ipv6_vpn_rd_neighbor_advertised_routes_cmd);
   install_element (VIEW_NODE, &show_bgp_ipv6_vpn_rd_neighbor_routes_cmd);
-
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_rd_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_tags_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_rd_tags_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_neighbor_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_neighbor_advertised_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_rd_neighbor_advertised_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv4_vpn_rd_neighbor_routes_cmd);
-
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_rd_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_tags_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_rd_tags_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_neighbor_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_neighbor_advertised_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_rd_neighbor_advertised_routes_cmd);
-  install_element (ENABLE_NODE, &show_bgp_ipv6_vpn_rd_neighbor_routes_cmd);
 }

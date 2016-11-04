@@ -168,6 +168,8 @@ if_delete (struct interface *ifp)
 
   list_free (ifp->connected);
 
+  if_link_params_free (ifp);
+  
   XFREE (MTYPE_IF, ifp);
 }
 
@@ -547,7 +549,7 @@ if_dump_all (void)
   for (iter = vrf_first (); iter != VRF_ITER_INVALID; iter = vrf_next (iter))
     if ((intf_list = vrf_iter2iflist (iter)) != NULL)
       for (ALL_LIST_ELEMENTS_RO (intf_list, node, p))
-    if_dump (p);
+        if_dump (p);
 }
 
 DEFUN (interface_desc, 
@@ -1063,7 +1065,7 @@ if_terminate (vrf_id_t vrf_id, struct list **intf_list)
   *intf_list = NULL;
 
   if (vrf_id == VRF_DEFAULT)
-  iflist = NULL;
+    iflist = NULL;
 }
 
 const char *
@@ -1124,4 +1126,46 @@ if_link_type_str (enum zebra_link_type llt)
 #undef llts
     }
   return NULL;
+}
+
+struct if_link_params *
+if_link_params_get (struct interface *ifp)
+{
+  int i;
+  
+  if (ifp->link_params != NULL)
+    return ifp->link_params;
+  
+  struct if_link_params *iflp = XCALLOC(MTYPE_IF_LINK_PARAMS,
+                                      sizeof (struct if_link_params));
+  if (iflp == NULL) return NULL;
+  
+  /* Set TE metric == standard metric */
+  iflp->te_metric = ifp->metric;
+
+  /* Compute default bandwidth based on interface */
+  int bw = (float)((ifp->bandwidth ? ifp->bandwidth : DEFAULT_BANDWIDTH) 
+                   * TE_KILO_BIT / TE_BYTE);
+  
+  /* Set Max, Reservable and Unreserved Bandwidth */
+  iflp->max_bw = bw;
+  iflp->max_rsv_bw = bw;
+  for (i = 0; i < MAX_CLASS_TYPE; i++)
+    iflp->unrsv_bw[i] = bw;
+  
+  /* Update Link parameters status */
+  iflp->lp_status = LP_TE | LP_MAX_BW | LP_MAX_RSV_BW | LP_UNRSV_BW;
+
+  /* Finally attach newly created Link Parameters */
+  ifp->link_params = iflp;
+
+  return iflp;
+}
+
+void
+if_link_params_free (struct interface *ifp)
+{
+  if (ifp->link_params == NULL) return;
+  XFREE(MTYPE_IF_LINK_PARAMS, ifp->link_params);
+  ifp->link_params = NULL;
 }

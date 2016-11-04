@@ -95,7 +95,7 @@ static struct prefix_master prefix_master_orf_v4 =
 
 /* Static structure of BGP ORF prefix_list's master. */
 static struct prefix_master prefix_master_orf_v6 =
-{ 
+{
   {NULL, NULL},
   {NULL, NULL},
   1,
@@ -733,6 +733,11 @@ vty_prefix_list_install (struct vty *vty, afi_t afi, const char *name,
 	  vty_out (vty, "%% Malformed IPv6 prefix%s", VTY_NEWLINE);
 	  return CMD_WARNING;
 	}
+      break;
+    case AFI_ETHER:
+    default:
+      vty_out (vty, "%% Unrecognized AFI (%d)%s", afi, VTY_NEWLINE);
+      return CMD_WARNING;
       break;
     }
 
@@ -2686,23 +2691,11 @@ prefix_list_init_ipv4 (void)
   install_element (VIEW_NODE, &show_ip_prefix_list_detail_cmd);
   install_element (VIEW_NODE, &show_ip_prefix_list_detail_name_cmd);
 
-  install_element (ENABLE_NODE, &show_ip_prefix_list_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_name_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_name_seq_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_prefix_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_prefix_longer_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_prefix_first_match_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_summary_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_summary_name_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_detail_cmd);
-  install_element (ENABLE_NODE, &show_ip_prefix_list_detail_name_cmd);
-
   install_element (ENABLE_NODE, &clear_ip_prefix_list_cmd);
   install_element (ENABLE_NODE, &clear_ip_prefix_list_name_cmd);
   install_element (ENABLE_NODE, &clear_ip_prefix_list_name_prefix_cmd);
 }
 
-#ifdef HAVE_IPV6
 /* Prefix-list node. */
 static struct cmd_node prefix_ipv6_node =
 {
@@ -2763,22 +2756,10 @@ prefix_list_init_ipv6 (void)
   install_element (VIEW_NODE, &show_ipv6_prefix_list_detail_cmd);
   install_element (VIEW_NODE, &show_ipv6_prefix_list_detail_name_cmd);
 
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_name_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_name_seq_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_prefix_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_prefix_longer_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_prefix_first_match_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_summary_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_summary_name_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_detail_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_prefix_list_detail_name_cmd);
-
   install_element (ENABLE_NODE, &clear_ipv6_prefix_list_cmd);
   install_element (ENABLE_NODE, &clear_ipv6_prefix_list_name_cmd);
   install_element (ENABLE_NODE, &clear_ipv6_prefix_list_name_prefix_cmd);
 }
-#endif /* HAVE_IPV6 */
 
 void
 prefix_list_init ()

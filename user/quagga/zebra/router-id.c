@@ -208,8 +208,8 @@ router_id_write (struct vty *vty)
             vty_out (vty, "router-id %s vrf %u%s",
                      inet_ntoa (zvrf->rid_user_assigned.u.prefix4),
                      zvrf->vrf_id,
-	     VTY_NEWLINE);
-}
+                     VTY_NEWLINE);
+        }
 }
 
 DEFUN (router_id,

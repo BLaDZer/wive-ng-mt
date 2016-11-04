@@ -112,7 +112,8 @@ am_libisis_a_OBJECTS = isis_adjacency.$(OBJEXT) isis_lsp.$(OBJEXT) \
 	isis_zebra.$(OBJEXT) isis_dr.$(OBJEXT) isis_flags.$(OBJEXT) \
 	isis_dynhn.$(OBJEXT) iso_checksum.$(OBJEXT) isis_csm.$(OBJEXT) \
 	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_redist.$(OBJEXT) \
-	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT)
+	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT) isis_te.$(OBJEXT) \
+	isis_vty.$(OBJEXT)
 libisis_a_OBJECTS = $(am_libisis_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(examplesdir)"
 PROGRAMS = $(sbin_PROGRAMS)
@@ -122,7 +123,8 @@ am__objects_1 = isis_adjacency.$(OBJEXT) isis_lsp.$(OBJEXT) \
 	isis_zebra.$(OBJEXT) isis_dr.$(OBJEXT) isis_flags.$(OBJEXT) \
 	isis_dynhn.$(OBJEXT) iso_checksum.$(OBJEXT) isis_csm.$(OBJEXT) \
 	isis_events.$(OBJEXT) isis_spf.$(OBJEXT) isis_redist.$(OBJEXT) \
-	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT)
+	isis_route.$(OBJEXT) isis_routemap.$(OBJEXT) isis_te.$(OBJEXT) \
+	isis_vty.$(OBJEXT)
 am_isisd_OBJECTS = isis_main.$(OBJEXT) $(am__objects_1) \
 	isis_bpf.$(OBJEXT) isis_dlpi.$(OBJEXT) isis_pfpacket.$(OBJEXT)
 isisd_OBJECTS = $(am_isisd_OBJECTS)
@@ -349,6 +351,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
 PIMD = @PIMD@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
+PROTOBUF_C_LIBS = @PROTOBUF_C_LIBS@
+PROTOC_C = @PROTOC_C@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
 RIPNGD = @RIPNGD@
@@ -441,14 +449,15 @@ libisis_a_SOURCES = \
 	isis_adjacency.c isis_lsp.c dict.c isis_circuit.c isis_pdu.c \
 	isis_tlv.c isisd.c isis_misc.c isis_zebra.c isis_dr.c \
 	isis_flags.c isis_dynhn.c iso_checksum.c isis_csm.c isis_events.c \
-	isis_spf.c isis_redist.c isis_route.c isis_routemap.c
+	isis_spf.c isis_redist.c isis_route.c isis_routemap.c isis_te.c \
+	isis_vty.c
 
 noinst_HEADERS = \
 	isisd.h isis_pdu.h isis_tlv.h isis_adjacency.h isis_constants.h \
 	isis_lsp.h dict.h isis_circuit.h isis_misc.h isis_network.h \
 	isis_zebra.h isis_dr.h isis_flags.h isis_dynhn.h isis_common.h \
 	iso_checksum.h isis_csm.h isis_events.h isis_spf.h isis_redist.h \
-	isis_route.h isis_routemap.h \
+	isis_route.h isis_routemap.h isis_te.h \
 	include-netbsd/clnp.h include-netbsd/esis.h include-netbsd/iso.h
 
 isisd_SOURCES = \
@@ -579,7 +588,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_route.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_routemap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_spf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_te.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_tlv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_vty.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isis_zebra.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/isisd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iso_checksum.Po@am__quote@

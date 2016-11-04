@@ -85,6 +85,19 @@ vclient_close (struct vtysh_client *vclient)
     }
 }
 
+/* Return true if str begins with prefix, else return false */
+static int
+begins_with(const char *str, const char *prefix)
+{
+  if (!str || !prefix)
+    return 0;
+  size_t lenstr = strlen(str);
+  size_t lenprefix = strlen(prefix);
+  if (lenprefix >  lenstr)
+    return 0;
+  return strncmp(str, prefix, lenprefix) == 0;
+}
+
 /* Following filled with debug code to trace a problematic condition
  * under load - it SHOULD handle it. */
 #define ERR_WHERE_STRING "vtysh(): vtysh_client_execute(): "
@@ -163,11 +176,11 @@ vtysh_client_execute (struct vtysh_client *vclient, const char *line, FILE *fp)
        }
 
        /* At max look last four bytes */
-      if (nbytes >= 4)
-	{
-	  i = nbytes - 4;
+       if (nbytes >= 4)
+       {
+         i = nbytes - 4;
          numnulls = 0;
-	    }
+       }
        else
          i = 0;
 
@@ -178,30 +191,30 @@ vtysh_client_execute (struct vtysh_client *vclient, const char *line, FILE *fp)
             numnulls++;
          else
             numnulls = 0;
-	}
+       }
        /* We might have seen 3 consecutive nulls so store the ret code before updating pbuf*/
        ret = pbuf[nbytes-1];
-      pbuf += nbytes;
+       pbuf += nbytes;
 
-      /* See if a line exists in buffer, if so parse and consume it, and
+       /* See if a line exists in buffer, if so parse and consume it, and
         * reset read position. If 3 nulls has been encountered consume the buffer before 
         * next read.
         */
        if (((eoln = strrchr(buf, '\n')) == NULL) && (numnulls<3))
-	continue;
+         continue;
 
-      if (eoln >= ((buf + bufsz) - 1))
-	{
-	  fprintf (stderr, ERR_WHERE_STRING \
-		   "warning - eoln beyond buffer end.\n");
-	}
+       if (eoln >= ((buf + bufsz) - 1))
+       {
+          fprintf (stderr, ERR_WHERE_STRING \
+               "warning - eoln beyond buffer end.\n");
+       }
 
        /* If the config needs parsing, consume it */
        if(!fp)
-      vtysh_config_parse(buf);
+         vtysh_config_parse(buf);
 
-      eoln++;
-      left = (size_t)(buf + bufsz - eoln);
+       eoln++;
+       left = (size_t)(buf + bufsz - eoln);
        /*
         * This check is required since when a config line split between two consecutive reads, 
         * then buf will have first half of config line and current read will bring rest of the 
@@ -209,10 +222,10 @@ vtysh_client_execute (struct vtysh_client *vclient, const char *line, FILE *fp)
         * In this case we don't need to do memmove, because we have already seen 3 nulls.  
         */
        if(left < bufsz)
-      memmove(buf, eoln, left);
+         memmove(buf, eoln, left);
 
-      buf[bufsz-1] = '\0';
-      pbuf = buf + strlen(buf);
+       buf[bufsz-1] = '\0';
+       pbuf = buf + strlen(buf);
        /* got 3 or more trailing NULs? */
        if ((numnulls >=3) && (i < nbytes))
        {
@@ -221,12 +234,12 @@ vtysh_client_execute (struct vtysh_client *vclient, const char *line, FILE *fp)
     }
 
   if(!fp)
-  vtysh_config_parse (buf);
+    vtysh_config_parse (buf);
 
   XFREE(MTYPE_TMP, buf);
   return ret;
 }
-
+ 
 
 void
 vtysh_pager_init (void)
@@ -764,6 +777,12 @@ static struct cmd_node keychain_key_node =
   "%s(config-keychain-key)# "
 };
 
+struct cmd_node link_params_node =
+{
+  LINK_PARAMS_NODE,
+  "%s(config-link-params)# ",
+};
+
 /* Defined in lib/vty.c */
 extern struct cmd_node vty_node;
 
@@ -1131,6 +1150,9 @@ vtysh_exit (struct vty *vty)
     case KEYCHAIN_KEY_NODE:
       vty->node = KEYCHAIN_NODE;
       break;
+    case LINK_PARAMS_NODE:
+      vty->node = INTERFACE_NODE;
+      break;
     default:
       break;
     }
@@ -1402,6 +1424,44 @@ DEFUN (vtysh_show_work_queues,
       }
 
   return ret;
+}
+
+DEFUN (vtysh_show_work_queues_daemon,
+       vtysh_show_work_queues_daemon_cmd,
+       "show work-queues (zebra|ripd|ripngd|ospfd|ospf6d|bgpd|isisd)",
+       SHOW_STR
+       "Work Queue information\n"
+       "For the zebra daemon\n"
+       "For the rip daemon\n"
+       "For the ripng daemon\n"
+       "For the ospf daemon\n"
+       "For the ospfv6 daemon\n"
+       "For the bgp daemon\n"
+       "For the isis daemon\n")
+{
+  unsigned int i;
+  int ret = CMD_SUCCESS;
+
+  for (i = 0; i < array_size(vtysh_client); i++)
+    {
+      if (begins_with(vtysh_client[i].name, argv[0]))
+        break;
+    }
+
+  ret = vtysh_client_execute(&vtysh_client[i], "show work-queues\n", stdout);
+
+  return ret;
+}
+
+DEFUNSH (VTYSH_ZEBRA,
+         vtysh_link_params,
+         vtysh_link_params_cmd,
+         "link-params",
+         LINK_PARAMS_STR
+         )
+{
+  vty->node = LINK_PARAMS_NODE;
+  return CMD_SUCCESS;
 }
 
 /* Memory */
@@ -1897,6 +1957,7 @@ write_config_integrated(void)
   for (i = 0; i < array_size(vtysh_client); i++)
     vtysh_client_execute (&vtysh_client[i], line, NULL);
 
+  vtysh_config_write ();
   vtysh_config_dump (fp);
 
   fclose (fp);
@@ -2354,6 +2415,7 @@ vtysh_init_vty (void)
   install_node (&bgp_node, NULL);
   install_node (&rip_node, NULL);
   install_node (&interface_node, NULL);
+  install_node (&link_params_node, NULL);
   install_node (&rmap_node, NULL);
   install_node (&zebra_node, NULL);
   install_node (&bgp_vpnv4_node, NULL);
@@ -2383,6 +2445,7 @@ vtysh_init_vty (void)
   vtysh_install_default (BGP_NODE);
   vtysh_install_default (RIP_NODE);
   vtysh_install_default (INTERFACE_NODE);
+  vtysh_install_default (LINK_PARAMS_NODE);
   vtysh_install_default (RMAP_NODE);
   vtysh_install_default (ZEBRA_NODE);
   vtysh_install_default (BGP_VPNV4_NODE);
@@ -2477,6 +2540,8 @@ vtysh_init_vty (void)
   install_element (INTERFACE_NODE, &no_interface_desc_cmd);
   install_element (INTERFACE_NODE, &vtysh_end_all_cmd);
   install_element (INTERFACE_NODE, &vtysh_exit_interface_cmd);
+  install_element (LINK_PARAMS_NODE, &vtysh_end_all_cmd);
+  install_element (LINK_PARAMS_NODE, &vtysh_exit_interface_cmd);
   install_element (INTERFACE_NODE, &vtysh_quit_interface_cmd);
   install_element (CONFIG_NODE, &router_rip_cmd);
 #ifdef HAVE_IPV6
@@ -2500,6 +2565,7 @@ vtysh_init_vty (void)
 #ifdef HAVE_IPV6
   install_element (BGP_NODE, &address_family_ipv6_cmd);
   install_element (BGP_NODE, &address_family_ipv6_unicast_cmd);
+  install_element (BGP_NODE, &address_family_ipv6_multicast_cmd);
 #endif
   install_element (BGP_VPNV4_NODE, &exit_address_family_cmd);
   install_element (BGP_VPNV6_NODE, &exit_address_family_cmd);
@@ -2519,6 +2585,7 @@ vtysh_init_vty (void)
   install_element (CONFIG_NODE, &vtysh_no_interface_cmd);
   install_element (CONFIG_NODE, &vtysh_interface_vrf_cmd);
   install_element (CONFIG_NODE, &vtysh_no_interface_vrf_cmd);
+  install_element (INTERFACE_NODE, &vtysh_link_params_cmd);
   install_element (ENABLE_NODE, &vtysh_show_running_config_cmd);
   install_element (ENABLE_NODE, &vtysh_show_running_config_daemon_cmd);
   install_element (ENABLE_NODE, &vtysh_copy_runningconfig_startupconfig_cmd);
@@ -2528,7 +2595,7 @@ vtysh_init_vty (void)
   /* "write terminal" command. */
   install_element (ENABLE_NODE, &vtysh_write_terminal_cmd);
   install_element (ENABLE_NODE, &vtysh_write_terminal_daemon_cmd);
- 
+
   install_element (CONFIG_NODE, &vtysh_integrated_config_cmd);
   install_element (CONFIG_NODE, &no_vtysh_integrated_config_cmd);
 
@@ -2573,6 +2640,8 @@ vtysh_init_vty (void)
 
   install_element (VIEW_NODE, &vtysh_show_work_queues_cmd);
   install_element (ENABLE_NODE, &vtysh_show_work_queues_cmd);
+  install_element (ENABLE_NODE, &vtysh_show_work_queues_daemon_cmd);
+  install_element (VIEW_NODE, &vtysh_show_work_queues_daemon_cmd);
 
   install_element (VIEW_NODE, &vtysh_show_thread_cmd);
   install_element (ENABLE_NODE, &vtysh_show_thread_cmd);

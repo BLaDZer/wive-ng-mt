@@ -93,7 +93,7 @@ ripng_zebra_ipv6_send (struct route_node *rp, u_char cmd)
 
       zapi_ipv6_route (cmd, zclient,
                        (struct prefix_ipv6 *)&rp->p, &api);
-      
+
       if (IS_RIPNG_DEBUG_ZEBRA)
         {
           if (ripng->ecmp)
@@ -120,7 +120,7 @@ ripng_zebra_ipv6_add (struct route_node *rp)
 /* Delete ECMP routes from zebra. */
 void
 ripng_zebra_ipv6_delete (struct route_node *rp)
-    {
+{
   ripng_zebra_ipv6_send (rp, ZEBRA_IPV6_ROUTE_DELETE);
 }
 

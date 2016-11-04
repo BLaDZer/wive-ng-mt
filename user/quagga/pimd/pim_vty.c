@@ -159,21 +159,21 @@ int pim_interface_config_write(struct vty *vty)
       /* IF ip igmp query-interval */
       if (pim_ifp->igmp_default_query_interval != IGMP_GENERAL_QUERY_INTERVAL)
 	{
-      vty_out(vty, " %s %d%s",
-	      PIM_CMD_IP_IGMP_QUERY_INTERVAL,
-	      pim_ifp->igmp_default_query_interval,
-	      VTY_NEWLINE);
-      ++writes;
+	  vty_out(vty, " %s %d%s",
+		  PIM_CMD_IP_IGMP_QUERY_INTERVAL,
+		  pim_ifp->igmp_default_query_interval,
+		  VTY_NEWLINE);
+	  ++writes;
 	}
 
       /* IF ip igmp query-max-response-time */
       if (pim_ifp->igmp_query_max_response_time_dsec != IGMP_QUERY_MAX_RESPONSE_TIME_DSEC)
 	{
-      vty_out(vty, " %s %d%s",
-	      PIM_CMD_IP_IGMP_QUERY_MAX_RESPONSE_TIME_DSEC,
-	      pim_ifp->igmp_query_max_response_time_dsec,
-	      VTY_NEWLINE);
-      ++writes;
+	  vty_out(vty, " %s %d%s",
+		  PIM_CMD_IP_IGMP_QUERY_MAX_RESPONSE_TIME_DSEC,
+		  pim_ifp->igmp_query_max_response_time_dsec,
+		  VTY_NEWLINE);
+	  ++writes;
 	}
 
       /* IF ip igmp join */

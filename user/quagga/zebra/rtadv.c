@@ -482,7 +482,7 @@ rtadv_read (struct thread *thread)
   /* Register myself. */
   rtadv_event (zvrf, RTADV_READ, sock);
 
-  len = rtadv_recv_packet (sock, buf, BUFSIZ, &from, &ifindex, &hoplimit);
+  len = rtadv_recv_packet (sock, buf, sizeof (buf), &from, &ifindex, &hoplimit);
 
   if (len < 0) 
     {
@@ -517,38 +517,38 @@ rtadv_make_socket (vrf_id_t vrf_id)
   if (sock < 0)
     {
       close (sock);
-    return -1;
+      return -1;
     }
 
   ret = setsockopt_ipv6_pktinfo (sock, 1);
   if (ret < 0)
     {
       close (sock);
-    return ret;
+      return ret;
     }
   ret = setsockopt_ipv6_multicast_loop (sock, 0);
   if (ret < 0)
     {
       close (sock);
-    return ret;
+      return ret;
     }
   ret = setsockopt_ipv6_unicast_hops (sock, 255);
   if (ret < 0)
     {
       close (sock);
-    return ret;
+      return ret;
     }
   ret = setsockopt_ipv6_multicast_hops (sock, 255);
   if (ret < 0)
     {
       close (sock);
-    return ret;
+      return ret;
     }
   ret = setsockopt_ipv6_hoplimit (sock, 1);
   if (ret < 0)
     {
       close (sock);
-    return ret;
+      return ret;
     }
 
   ICMP6_FILTER_SETBLOCKALL(&filter);
@@ -1539,8 +1539,6 @@ rtadv_config_write (struct vty *vty, struct interface *ifp)
     {
       if (zif->rtadv.AdvSendAdvertisements)
 	vty_out (vty, " no ipv6 nd suppress-ra%s", VTY_NEWLINE);
-      else
-	vty_out (vty, " ipv6 nd suppress-ra%s", VTY_NEWLINE);
     }
 
   

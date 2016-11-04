@@ -124,8 +124,8 @@ dlpisend (int fd, const void *cbuf, size_t cbuflen,
        * For actual PDU transmission - recognizable buf dbuf != NULL,
        * the error is passed upwards and should not be printed here.
        */
-    zlog_debug ("%s: putmsg: %s", __func__, safe_strerror (errno));
-}
+      zlog_debug ("%s: putmsg: %s", __func__, safe_strerror (errno));
+    }
   return rv;
 }
 
@@ -638,7 +638,7 @@ isis_send_pdu_bcast (struct isis_circuit *circuit, int level)
   memcpy (sock_buff + LLC_LEN, circuit->snd_stream->data,
 	  stream_get_endp (circuit->snd_stream));
   rv = dlpisend(circuit->fd, dur, sizeof (*dur) + dur->dl_dest_addr_length,
-	    sock_buff, buflen, 0);
+                sock_buff, buflen, 0);
   if (rv < 0)
     {
       zlog_warn("IS-IS dlpi: could not transmit packet on %s: %s",

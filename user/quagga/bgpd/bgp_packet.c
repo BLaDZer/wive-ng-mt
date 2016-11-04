@@ -153,6 +153,8 @@ bgp_update_packet (struct peer *peer, afi_t afi, safi_t safi)
   struct bgp_info *binfo = NULL;
   bgp_size_t total_attr_len = 0;
   unsigned long attrlen_pos = 0;
+  int space_remaining = 0;
+  int space_needed = 0;
   size_t mpattrlen_pos = 0;
   size_t mpattr_pos = 0;
 
@@ -171,9 +173,12 @@ bgp_update_packet (struct peer *peer, afi_t afi, safi_t safi)
       if (adv->binfo)
         binfo = adv->binfo;
 
+      space_remaining = STREAM_CONCAT_REMAIN (s, snlri, STREAM_SIZE(s)) -
+                        BGP_MAX_PACKET_SIZE_OVERFLOW;
+      space_needed = BGP_NLRI_LENGTH + bgp_packet_mpattr_prefix_size (afi, safi, &rn->p);
+
       /* When remaining space can't include NLRI and it's length.  */
-      if (STREAM_CONCAT_REMAIN (s, snlri, STREAM_SIZE(s)) <=
-	  (BGP_NLRI_LENGTH + bgp_packet_mpattr_prefix_size(afi,safi,&rn->p)))
+      if (space_remaining < space_needed)
 	break;
 
       /* If packet is empty, set attribute. */
@@ -187,7 +192,7 @@ bgp_update_packet (struct peer *peer, afi_t afi, safi_t safi)
 	    prd = (struct prefix_rd *) &rn->prn->p;
           if (binfo)
             {
-	    from = binfo->peer;
+              from = binfo->peer;
               if (binfo->extra)
                 tag = binfo->extra->tag;
             }
@@ -217,6 +222,22 @@ bgp_update_packet (struct peer *peer, afi_t afi, safi_t safi)
                                                   &rn->p : NULL),
                                                  afi, safi,
 	                                         from, prd, tag);
+          space_remaining = STREAM_CONCAT_REMAIN (s, snlri, STREAM_SIZE(s)) -
+                            BGP_MAX_PACKET_SIZE_OVERFLOW;
+          space_needed = BGP_NLRI_LENGTH + bgp_packet_mpattr_prefix_size (afi, safi, &rn->p);;
+
+          /* If the attributes alone do not leave any room for NLRI then
+           * return */
+          if (space_remaining < space_needed)
+            {
+              zlog_err ("%s cannot send UPDATE, the attributes do not leave "
+                        "room for NLRI", peer->host);
+              /* Flush the FIFO update queue */
+              while (adv)
+                adv = bgp_advertise_clean (peer, adv->adj, afi, safi);
+              return NULL;
+            } 
+
 	}
 
       if (afi == AFI_IP && safi == SAFI_UNICAST)
@@ -347,6 +368,8 @@ bgp_withdraw_packet (struct peer *peer, afi_t afi, safi_t safi)
   size_t attrlen_pos = 0;
   size_t mplen_pos = 0;
   u_char first_time = 1;
+  int space_remaining = 0;
+  int space_needed = 0;
 
   s = peer->work;
   stream_reset (s);
@@ -357,8 +380,12 @@ bgp_withdraw_packet (struct peer *peer, afi_t afi, safi_t safi)
       adj = adv->adj;
       rn = adv->rn;
 
-      if (STREAM_REMAIN (s)
-	  < (BGP_NLRI_LENGTH + BGP_TOTAL_ATTR_LEN + PSIZE (rn->p.prefixlen)))
+      space_remaining = STREAM_REMAIN (s) -
+                        BGP_MAX_PACKET_SIZE_OVERFLOW;
+      space_needed = (BGP_NLRI_LENGTH + BGP_TOTAL_ATTR_LEN +
+                      bgp_packet_mpattr_prefix_size (afi, safi, &rn->p));
+
+      if (space_remaining < space_needed)
 	break;
 
       if (stream_empty (s))
@@ -978,7 +1005,7 @@ bgp_notify_send_with_data (struct peer *peer, u_char code, u_char sub_code,
 
     if (bgp_notify.data)
       {
-      XFREE (MTYPE_TMP, bgp_notify.data);
+        XFREE (MTYPE_TMP, bgp_notify.data);
         bgp_notify.data = NULL;
         bgp_notify.length = 0;
       }
@@ -1243,6 +1270,7 @@ bgp_open_receive (struct peer *peer, bgp_size_t size)
   int mp_capability;
   u_int8_t notify_data_remote_as[2];
   u_int8_t notify_data_remote_id[4];
+  u_int16_t *holdtime_ptr;
 
   realpeer = NULL;
   
@@ -1250,6 +1278,7 @@ bgp_open_receive (struct peer *peer, bgp_size_t size)
   version = stream_getc (peer->ibuf);
   memcpy (notify_data_remote_as, stream_pnt (peer->ibuf), 2);
   remote_as  = stream_getw (peer->ibuf);
+  holdtime_ptr = (u_int16_t *)stream_pnt (peer->ibuf);
   holdtime = stream_getw (peer->ibuf);
   memcpy (notify_data_remote_id, stream_pnt (peer->ibuf), 4);
   remote_id.s_addr = stream_get_ipv4 (peer->ibuf);
@@ -1522,9 +1551,10 @@ bgp_open_receive (struct peer *peer, bgp_size_t size)
 
   if (holdtime < 3 && holdtime != 0)
     {
-      bgp_notify_send (peer,
-		       BGP_NOTIFY_OPEN_ERR, 
-		       BGP_NOTIFY_OPEN_UNACEP_HOLDTIME);
+      bgp_notify_send_with_data (peer,
+		                 BGP_NOTIFY_OPEN_ERR,
+		                 BGP_NOTIFY_OPEN_UNACEP_HOLDTIME,
+                                 (u_int8_t *)holdtime_ptr, 2);
       return -1;
     }
     
@@ -1645,6 +1675,7 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
   memset (&attr, 0, sizeof (struct attr));
   memset (&extra, 0, sizeof (struct attr_extra));
   memset (&nlris, 0, sizeof nlris);
+
   attr.extra = &extra;
 
   s = peer->ibuf;
@@ -1685,7 +1716,7 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
       nlris[NLRI_WITHDRAW].safi = SAFI_UNICAST;
       nlris[NLRI_WITHDRAW].nlri = stream_pnt (s);
       nlris[NLRI_WITHDRAW].length = withdraw_len;
-
+      
       if (BGP_DEBUG (packet, PACKET_RECV))
 	zlog_debug ("%s [Update:RECV] Unfeasible NLRI received", peer->host);
 
@@ -1777,10 +1808,12 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
       
       stream_forward_getp (s, update_len);
     }
-
+  
   /* Parse any given NLRIs */
   for (i = NLRI_UPDATE; i < NLRI_TYPE_MAX; i++)
     {
+      if (!nlris[i].nlri) continue;
+      
       /* We use afi and safi as indices into tables and what not.  It would
        * be impossible, at this time, to support unknown afi/safis.  And
        * anyway, the peer needs to be configured to enable the afi/safi
@@ -1802,22 +1835,22 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
           continue;
         }
       
-  /* NLRI is processed only when the peer is configured specific
-     Address Family and Subsequent Address Family. */
+      /* NLRI is processed only when the peer is configured specific
+         Address Family and Subsequent Address Family. */
       if (!peer->afc[nlris[i].afi][nlris[i].safi])
-    {
+        {
           plog_info (peer->log,
                      "%s [Info] UPDATE for non-enabled AFI/SAFI %u/%u",
                      peer->host, nlris[i].afi, nlris[i].safi);
           continue;
         }
-
+      
       /* EoR handled later */
       if (nlris[i].length == 0)
         continue;
-
+      
       switch (i)
-	{
+        {
           case NLRI_UPDATE:
           case NLRI_MP_UPDATE:
             nlri_ret = bgp_nlri_parse (peer, NLRI_ATTR_ARG, &nlris[i]);
@@ -1825,8 +1858,8 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
           case NLRI_WITHDRAW:
           case NLRI_MP_WITHDRAW:
             nlri_ret = bgp_nlri_parse (peer, NULL, &nlris[i]);
-    }
-
+        }
+      
       if (nlri_ret < 0)
         {
           plog_err (peer->log, 
@@ -1838,9 +1871,9 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
                                : BGP_NOTIFY_UPDATE_OPT_ATTR_ERR);
           bgp_attr_unintern_sub (&attr);
           return -1;
-	}
+        }
     }
-
+  
   /* EoR checks.
    *
    * Non-MP IPv4/Unicast EoR is a completely empty UPDATE
@@ -1851,7 +1884,7 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
     {
       afi_t afi = 0;
       safi_t safi;
-
+      
       /* Non-MP IPv4/Unicast is a completely empty UPDATE - already
        * checked update and withdraw NLRI lengths are 0.
        */ 
@@ -1859,7 +1892,7 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
         {
           afi = AFI_IP;
           safi = SAFI_UNICAST;
-    }
+        }
       /* otherwise MP AFI/SAFI is an empty update, other than an empty
        * MP_UNREACH_NLRI attr (with an AFI/SAFI we recognise).
        */
@@ -1867,13 +1900,13 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
                && nlris[NLRI_MP_WITHDRAW].length == 0
                && bgp_afi_safi_valid_indices (nlris[NLRI_MP_WITHDRAW].afi,
                                               &nlris[NLRI_MP_WITHDRAW].safi))
-    {
+        {
           afi = nlris[NLRI_MP_WITHDRAW].afi;
           safi = nlris[NLRI_MP_WITHDRAW].safi;
         }
       
       if (afi && peer->afc[afi][safi])
-	{
+        {
 	  /* End-of-RIB received */
 	  SET_FLAG (peer->af_sflags[afi][safi],
 		    PEER_STATUS_EOR_RECEIVED);
@@ -1885,9 +1918,9 @@ bgp_update_receive (struct peer *peer, bgp_size_t size)
 	  if (BGP_DEBUG (normal, NORMAL))
 	    zlog (peer->log, LOG_DEBUG, "rcvd End-of-RIB for %s from %s",
 		  peer->host, afi_safi_print (afi, safi));
-	}
+        }
     }
-
+  
   /* Everything is done.  We unintern temporary structures which
      interned in bgp_attr_parse(). */
   bgp_attr_unintern_sub (&attr);
@@ -1964,7 +1997,7 @@ bgp_notify_receive (struct peer *peer, bgp_size_t size)
     bgp_notify_print(peer, &bgp_notify, "received");
     if (bgp_notify.data)
       {
-      XFREE (MTYPE_TMP, bgp_notify.data);
+        XFREE (MTYPE_TMP, bgp_notify.data);
         bgp_notify.data = NULL;
         bgp_notify.length = 0;
       }

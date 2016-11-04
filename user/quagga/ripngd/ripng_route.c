@@ -120,10 +120,10 @@ ripng_aggregate_add (struct prefix *p)
       /* Suppress normal route. */
       if ((list = rp->info) != NULL)
         for (ALL_LIST_ELEMENTS_RO (list, node, rinfo))
-	{
-	  aggregate->count++;
-	  rinfo->suppress++;
-	}
+          {
+            aggregate->count++;
+            rinfo->suppress++;
+          }
       /* Suppress aggregate route.  This may not need. */
       if (rp != top && (sub = rp->aggregate) != NULL)
 	{
@@ -159,10 +159,10 @@ ripng_aggregate_delete (struct prefix *p)
       /* Suppress normal route. */
       if ((list = rp->info) != NULL)
         for (ALL_LIST_ELEMENTS_RO (list, node, rinfo))
-	{
-	  aggregate->count--;
-	  rinfo->suppress--;
-	}
+          {
+            aggregate->count--;
+            rinfo->suppress--;
+          }
 
       if (rp != top && (sub = rp->aggregate) != NULL)
 	{

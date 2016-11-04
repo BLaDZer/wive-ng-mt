@@ -134,7 +134,7 @@ am_libospf_la_OBJECTS = ospfd.lo ospf_zebra.lo ospf_interface.lo \
 	ospf_network.lo ospf_packet.lo ospf_lsa.lo ospf_spf.lo \
 	ospf_route.lo ospf_ase.lo ospf_abr.lo ospf_ia.lo ospf_flood.lo \
 	ospf_lsdb.lo ospf_asbr.lo ospf_routemap.lo ospf_snmp.lo \
-	ospf_opaque.lo ospf_te.lo ospf_vty.lo ospf_api.lo \
+	ospf_opaque.lo ospf_te.lo ospf_ri.lo ospf_vty.lo ospf_api.lo \
 	ospf_apiserver.lo
 libospf_la_OBJECTS = $(am_libospf_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -297,6 +297,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
 PIMD = @PIMD@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
+PROTOBUF_C_LIBS = @PROTOBUF_C_LIBS@
+PROTOC_C = @PROTOC_C@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
 RIPNGD = @RIPNGD@
@@ -389,7 +395,7 @@ libospf_la_SOURCES = \
 	ospf_nsm.c ospf_dump.c ospf_network.c ospf_packet.c ospf_lsa.c \
 	ospf_spf.c ospf_route.c ospf_ase.c ospf_abr.c ospf_ia.c ospf_flood.c \
 	ospf_lsdb.c ospf_asbr.c ospf_routemap.c ospf_snmp.c \
-	ospf_opaque.c ospf_te.c ospf_vty.c ospf_api.c ospf_apiserver.c
+	ospf_opaque.c ospf_te.c ospf_ri.c ospf_vty.c ospf_api.c ospf_apiserver.c
 
 ospfdheaderdir = $(pkgincludedir)/ospfd
 ospfdheader_HEADERS = \
@@ -399,10 +405,10 @@ ospfdheader_HEADERS = \
 noinst_HEADERS = \
 	ospf_interface.h ospf_neighbor.h ospf_network.h ospf_packet.h \
 	ospf_zebra.h ospf_spf.h ospf_route.h ospf_ase.h ospf_abr.h ospf_ia.h \
-	ospf_flood.h ospf_snmp.h ospf_te.h ospf_vty.h ospf_apiserver.h
+	ospf_flood.h ospf_snmp.h ospf_te.h ospf_ri.h ospf_vty.h ospf_apiserver.h
 
 ospfd_SOURCES = ospf_main.c
-ospfd_LDADD = libospf.la ../lib/libzebra.la @LIBCAP@
+ospfd_LDADD = libospf.la ../lib/libzebra.la @LIBCAP@ @LIBM@
 EXTRA_DIST = OSPF-MIB.txt OSPF-TRAP-MIB.txt ChangeLog.opaque.txt
 examplesdir = $(exampledir)
 dist_examples_DATA = ospfd.conf.sample
@@ -556,6 +562,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_nsm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_opaque.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_packet.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_ri.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_route.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_routemap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ospf_snmp.Plo@am__quote@

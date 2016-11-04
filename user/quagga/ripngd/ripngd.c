@@ -425,8 +425,8 @@ ripng_garbage_collect (struct thread *t)
   if (list_isempty ((struct list *)rp->info))
     {
       list_free (rp->info);
-  rp->info = NULL;
-  route_unlock_node (rp);
+      rp->info = NULL;
+      route_unlock_node (rp);
     }
 
   /* Free RIPng routing information. */
@@ -551,7 +551,7 @@ ripng_ecmp_delete (struct ripng_info *rinfo)
   RIPNG_TIMER_OFF (rinfo->t_timeout);
 
   if (rinfo->metric != RIPNG_METRIC_INFINITY)
-  ripng_aggregate_decrement (rp, rinfo);
+    ripng_aggregate_decrement (rp, rinfo);
 
   if (listcount (list) > 1)
     {
@@ -608,32 +608,36 @@ ripng_timeout_update (struct ripng_info *rinfo)
 }
 
 static int
-ripng_incoming_filter (struct prefix_ipv6 *p, struct ripng_interface *ri)
+ripng_filter (int ripng_distribute, struct prefix_ipv6 *p,
+              struct ripng_interface *ri)
 {
   struct distribute *dist;
   struct access_list *alist;
   struct prefix_list *plist;
+  int distribute = ripng_distribute == RIPNG_FILTER_OUT ?
+      DISTRIBUTE_V6_OUT : DISTRIBUTE_V6_IN;
+  const char *inout = ripng_distribute == RIPNG_FILTER_OUT ? "out" : "in";
 
   /* Input distribute-list filtering. */
-  if (ri->list[RIPNG_FILTER_IN])
+  if (ri->list[ripng_distribute])
     {
-      if (access_list_apply (ri->list[RIPNG_FILTER_IN], 
+      if (access_list_apply (ri->list[ripng_distribute],
 			     (struct prefix *) p) == FILTER_DENY)
 	{
 	  if (IS_RIPNG_DEBUG_PACKET)
-	    zlog_debug ("%s/%d filtered by distribute in",
-		       inet6_ntoa (p->prefix), p->prefixlen);
+	    zlog_debug ("%s/%d filtered by distribute %s",
+                        inet6_ntoa (p->prefix), p->prefixlen, inout);
 	  return -1;
 	}
     }
-  if (ri->prefix[RIPNG_FILTER_IN])
+  if (ri->prefix[ripng_distribute])
     {
-      if (prefix_list_apply (ri->prefix[RIPNG_FILTER_IN], 
+      if (prefix_list_apply (ri->prefix[ripng_distribute],
 			     (struct prefix *) p) == PREFIX_DENY)
 	{
 	  if (IS_RIPNG_DEBUG_PACKET)
-	    zlog_debug ("%s/%d filtered by prefix-list in",
-		       inet6_ntoa (p->prefix), p->prefixlen);
+	    zlog_debug ("%s/%d filtered by prefix-list %s",
+                        inet6_ntoa (p->prefix), p->prefixlen, inout);
 	  return -1;
 	}
     }
@@ -642,104 +646,34 @@ ripng_incoming_filter (struct prefix_ipv6 *p, struct ripng_interface *ri)
   dist = distribute_lookup (NULL);
   if (dist)
     {
-      if (dist->list[DISTRIBUTE_IN])
+      if (dist->list[distribute])
 	{
-	  alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_IN]);
-	    
+	  alist = access_list_lookup (AFI_IP6, dist->list[distribute]);
+
 	  if (alist)
 	    {
 	      if (access_list_apply (alist,
 				     (struct prefix *) p) == FILTER_DENY)
 		{
 		  if (IS_RIPNG_DEBUG_PACKET)
-		    zlog_debug ("%s/%d filtered by distribute in",
-			       inet6_ntoa (p->prefix), p->prefixlen);
+		    zlog_debug ("%s/%d filtered by distribute %s",
+                                inet6_ntoa (p->prefix), p->prefixlen, inout);
 		  return -1;
 		}
 	    }
 	}
-      if (dist->prefix[DISTRIBUTE_IN])
+      if (dist->prefix[distribute])
 	{
-	  plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_IN]);
-	  
+	  plist = prefix_list_lookup (AFI_IP6, dist->prefix[distribute]);
+
 	  if (plist)
 	    {
 	      if (prefix_list_apply (plist,
 				     (struct prefix *) p) == PREFIX_DENY)
 		{
 		  if (IS_RIPNG_DEBUG_PACKET)
-		    zlog_debug ("%s/%d filtered by prefix-list in",
-			       inet6_ntoa (p->prefix), p->prefixlen);
-		  return -1;
-		}
-	    }
-	}
-    }
-  return 0;
-}
-
-static int
-ripng_outgoing_filter (struct prefix_ipv6 *p, struct ripng_interface *ri)
-{
-  struct distribute *dist;
-  struct access_list *alist;
-  struct prefix_list *plist;
-
-  if (ri->list[RIPNG_FILTER_OUT])
-    {
-      if (access_list_apply (ri->list[RIPNG_FILTER_OUT],
-			     (struct prefix *) p) == FILTER_DENY)
-	{
-	  if (IS_RIPNG_DEBUG_PACKET)
-	    zlog_debug ("%s/%d is filtered by distribute out",
-		       inet6_ntoa (p->prefix), p->prefixlen);
-	  return -1;
-	}
-    }
-  if (ri->prefix[RIPNG_FILTER_OUT])
-    {
-      if (prefix_list_apply (ri->prefix[RIPNG_FILTER_OUT],
-			     (struct prefix *) p) == PREFIX_DENY)
-	{
-	  if (IS_RIPNG_DEBUG_PACKET)
-	    zlog_debug ("%s/%d is filtered by prefix-list out",
-		       inet6_ntoa (p->prefix), p->prefixlen);
-	  return -1;
-	}
-    }
-
-  /* All interface filter check. */
-  dist = distribute_lookup (NULL);
-  if (dist)
-    {
-      if (dist->list[DISTRIBUTE_OUT])
-	{
-	  alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_OUT]);
-	    
-	  if (alist)
-	    {
-	      if (access_list_apply (alist,
-				     (struct prefix *) p) == FILTER_DENY)
-		{
-		  if (IS_RIPNG_DEBUG_PACKET)
-		    zlog_debug ("%s/%d filtered by distribute out",
-			       inet6_ntoa (p->prefix), p->prefixlen);
-		  return -1;
-		}
-	    }
-	}
-      if (dist->prefix[DISTRIBUTE_OUT])
-	{
-	  plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_OUT]);
-	  
-	  if (plist)
-	    {
-	      if (prefix_list_apply (plist,
-				     (struct prefix *) p) == PREFIX_DENY)
-		{
-		  if (IS_RIPNG_DEBUG_PACKET)
-		    zlog_debug ("%s/%d filtered by prefix-list out",
-			       inet6_ntoa (p->prefix), p->prefixlen);
+		    zlog_debug ("%s/%d filtered by prefix-list %s",
+                                inet6_ntoa (p->prefix), p->prefixlen, inout);
 		  return -1;
 		}
 	    }
@@ -779,22 +713,22 @@ ripng_route_process (struct rte *rte, struct sockaddr_in6 *from,
   /* Apply input filters. */
   ri = ifp->info;
 
-  ret = ripng_incoming_filter (&p, ri);
+  ret = ripng_filter (RIPNG_FILTER_IN, &p, ri);
   if (ret < 0)
     return;
 
   memset (&newinfo, 0, sizeof (newinfo));
-      newinfo.type = ZEBRA_ROUTE_RIPNG;
-      newinfo.sub_type = RIPNG_ROUTE_RTE;
-      if (ripng_nexthop->flag == RIPNG_NEXTHOP_ADDRESS)
-        newinfo.nexthop = ripng_nexthop->address;
-      else
-        newinfo.nexthop = from->sin6_addr;
-      newinfo.from   = from->sin6_addr;
-      newinfo.ifindex = ifp->ifindex;
-      newinfo.metric = rte->metric;
-      newinfo.metric_out = rte->metric; /* XXX */
-      newinfo.tag    = ntohs(rte->tag); /* XXX */
+  newinfo.type = ZEBRA_ROUTE_RIPNG;
+  newinfo.sub_type = RIPNG_ROUTE_RTE;
+  if (ripng_nexthop->flag == RIPNG_NEXTHOP_ADDRESS)
+    newinfo.nexthop = ripng_nexthop->address;
+  else
+    newinfo.nexthop = from->sin6_addr;
+  newinfo.from = from->sin6_addr;
+  newinfo.ifindex = ifp->ifindex;
+  newinfo.metric = rte->metric;
+  newinfo.metric_out = rte->metric; /* XXX */
+  newinfo.tag = ntohs (rte->tag);   /* XXX */
 
   /* Modify entry. */
   if (ri->routemap[RIPNG_FILTER_IN])
@@ -905,7 +839,7 @@ ripng_route_process (struct rte *rte, struct sockaddr_in6 *from,
 	  && rinfo->metric != RIPNG_METRIC_INFINITY)
         {
           route_unlock_node (rp);
-	return;
+          return;
         }
 
       /* Local static route. */
@@ -915,8 +849,8 @@ ripng_route_process (struct rte *rte, struct sockaddr_in6 *from,
 	  && rinfo->metric != RIPNG_METRIC_INFINITY)
         {
           route_unlock_node (rp);
-	return;
-    }
+          return;
+        }
     }
 
   if (!rinfo)
@@ -946,19 +880,19 @@ ripng_route_process (struct rte *rte, struct sockaddr_in6 *from,
 	  rte->metric < rinfo->metric)
 	{
           if (listcount (list) == 1)
-	    {
+            {
               if (newinfo.metric != RIPNG_METRIC_INFINITY)
                 ripng_ecmp_replace (&newinfo);
               else
                 ripng_ecmp_delete (rinfo);
-	    }
-	  else
-	    {
+            }
+          else
+            {
               if (newinfo.metric < rinfo->metric)
                 ripng_ecmp_replace (&newinfo);
               else /* newinfo.metric > rinfo->metric */
                 ripng_ecmp_delete (rinfo);
-	    }
+            }
 	}
       else /* same & no change */
         ripng_timeout_update (rinfo);
@@ -1017,7 +951,7 @@ ripng_redistribute_add (int type, int sub_type, struct prefix_ipv6 *p,
 	  return;
 	}
       }
-      
+
       rinfo = ripng_ecmp_replace (&newinfo);
       route_unlock_node (rp);
     }
@@ -1060,31 +994,31 @@ ripng_redistribute_delete (int type, int sub_type, struct prefix_ipv6 *p,
       if (list != NULL && listcount (list) != 0)
         {
           rinfo = listgetdata (listhead (list));
-      if (rinfo != NULL
-	  && rinfo->type == type 
-	  && rinfo->sub_type == sub_type 
-	  && rinfo->ifindex == ifindex)
-	{
-	  /* Perform poisoned reverse. */
-	  rinfo->metric = RIPNG_METRIC_INFINITY;
-	  RIPNG_TIMER_ON (rinfo->t_garbage_collect, 
-			ripng_garbage_collect, ripng->garbage_time);
-	  RIPNG_TIMER_OFF (rinfo->t_timeout);
+          if (rinfo != NULL
+              && rinfo->type == type
+              && rinfo->sub_type == sub_type
+              && rinfo->ifindex == ifindex)
+            {
+              /* Perform poisoned reverse. */
+              rinfo->metric = RIPNG_METRIC_INFINITY;
+              RIPNG_TIMER_ON (rinfo->t_garbage_collect,
+                              ripng_garbage_collect, ripng->garbage_time);
+              RIPNG_TIMER_OFF (rinfo->t_timeout);
 
-	  /* Aggregate count decrement. */
-	  ripng_aggregate_decrement (rp, rinfo);
+              /* Aggregate count decrement. */
+              ripng_aggregate_decrement (rp, rinfo);
 
-	  rinfo->flags |= RIPNG_RTF_CHANGED;
-	  
-          if (IS_RIPNG_DEBUG_EVENT)
+              rinfo->flags |= RIPNG_RTF_CHANGED;
+
+              if (IS_RIPNG_DEBUG_EVENT)
                 zlog_debug ("Poisone %s/%d on the interface %s with an "
                             "infinity metric [delete]",
-                       inet6_ntoa(p->prefix), p->prefixlen,
-                       ifindex2ifname(ifindex));
+                            inet6_ntoa (p->prefix), p->prefixlen,
+                            ifindex2ifname (ifindex));
 
-	  ripng_event (RIPNG_TRIGGERED_UPDATE, 0);
-	}
-    }
+              ripng_event (RIPNG_TRIGGERED_UPDATE, 0);
+            }
+        }
       route_unlock_node (rp);
     }
 }
@@ -1674,7 +1608,7 @@ ripng_output_process (struct interface *ifp, struct sockaddr_in6 *to,
 	    rinfo->nexthop_out = rinfo->nexthop;
 
 	  /* Apply output filters. */
-	  ret = ripng_outgoing_filter (p, ri);
+	  ret = ripng_filter (RIPNG_FILTER_OUT, p, ri);
 	  if (ret < 0)
 	    continue;
 
@@ -1781,7 +1715,7 @@ ripng_output_process (struct interface *ifp, struct sockaddr_in6 *to,
 	    for (ALL_LIST_ELEMENTS_RO (list, listnode, tmp_rinfo))
 	      if ((tmp_rinfo->type == ZEBRA_ROUTE_RIPNG) &&
 	           tmp_rinfo->ifindex == ifp->ifindex)
-	         rinfo->metric_out = RIPNG_METRIC_INFINITY;
+	        rinfo->metric_out = RIPNG_METRIC_INFINITY;
 	  }
 
 	  /* Add RTE to the list */
@@ -1803,7 +1737,7 @@ ripng_output_process (struct interface *ifp, struct sockaddr_in6 *to,
 	  memset(&aggregate->nexthop_out, 0, sizeof(aggregate->nexthop_out));
 
 	  /* Apply output filters.*/
-	  ret = ripng_outgoing_filter (p, ri);
+	  ret = ripng_filter (RIPNG_FILTER_OUT, p, ri);
 	  if (ret < 0)
 	    continue;
 
@@ -2823,9 +2757,9 @@ ripng_distribute_update (struct distribute *dist)
 
   ri = ifp->info;
 
-  if (dist->list[DISTRIBUTE_IN])
+  if (dist->list[DISTRIBUTE_V6_IN])
     {
-      alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_IN]);
+      alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_V6_IN]);
       if (alist)
 	ri->list[RIPNG_FILTER_IN] = alist;
       else
@@ -2834,9 +2768,9 @@ ripng_distribute_update (struct distribute *dist)
   else
     ri->list[RIPNG_FILTER_IN] = NULL;
 
-  if (dist->list[DISTRIBUTE_OUT])
+  if (dist->list[DISTRIBUTE_V6_OUT])
     {
-      alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_OUT]);
+      alist = access_list_lookup (AFI_IP6, dist->list[DISTRIBUTE_V6_OUT]);
       if (alist)
 	ri->list[RIPNG_FILTER_OUT] = alist;
       else
@@ -2845,9 +2779,9 @@ ripng_distribute_update (struct distribute *dist)
   else
     ri->list[RIPNG_FILTER_OUT] = NULL;
 
-  if (dist->prefix[DISTRIBUTE_IN])
+  if (dist->prefix[DISTRIBUTE_V6_IN])
     {
-      plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_IN]);
+      plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_V6_IN]);
       if (plist)
 	ri->prefix[RIPNG_FILTER_IN] = plist;
       else
@@ -2856,9 +2790,9 @@ ripng_distribute_update (struct distribute *dist)
   else
     ri->prefix[RIPNG_FILTER_IN] = NULL;
 
-  if (dist->prefix[DISTRIBUTE_OUT])
+  if (dist->prefix[DISTRIBUTE_V6_OUT])
     {
-      plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_OUT]);
+      plist = prefix_list_lookup (AFI_IP6, dist->prefix[DISTRIBUTE_V6_OUT]);
       if (plist)
 	ri->prefix[RIPNG_FILTER_OUT] = plist;
       else
@@ -2918,13 +2852,13 @@ ripng_clean()
 
             for (ALL_LIST_ELEMENTS_RO (list, listnode, rinfo))
               {
-        RIPNG_TIMER_OFF (rinfo->t_timeout);
-        RIPNG_TIMER_OFF (rinfo->t_garbage_collect);
+                RIPNG_TIMER_OFF (rinfo->t_timeout);
+                RIPNG_TIMER_OFF (rinfo->t_garbage_collect);
                 ripng_info_free (rinfo);
               }
             list_delete (list);
-        rp->info = NULL;
-        route_unlock_node (rp);
+            rp->info = NULL;
+            route_unlock_node (rp);
           }
 
         if ((aggregate = rp->aggregate) != NULL)
@@ -2932,7 +2866,7 @@ ripng_clean()
             ripng_aggregate_free (aggregate);
             rp->aggregate = NULL;
             route_unlock_node (rp);
-      }
+          }
     }
 
     /* Cancel the RIPng timers */
@@ -3092,9 +3026,6 @@ ripng_init ()
   /* Install ripng commands. */
   install_element (VIEW_NODE, &show_ipv6_ripng_cmd);
   install_element (VIEW_NODE, &show_ipv6_ripng_status_cmd);
-
-  install_element (ENABLE_NODE, &show_ipv6_ripng_cmd);
-  install_element (ENABLE_NODE, &show_ipv6_ripng_status_cmd);
 
   install_element (CONFIG_NODE, &router_ripng_cmd);
   install_element (CONFIG_NODE, &no_router_ripng_cmd);

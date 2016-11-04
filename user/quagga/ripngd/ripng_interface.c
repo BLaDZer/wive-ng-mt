@@ -168,7 +168,7 @@ ripng_if_down (struct interface *ifp)
   struct listnode *listnode = NULL, *nextnode = NULL;
 
   if (ripng)
-      for (rp = route_top (ripng->table); rp; rp = route_next (rp))
+    for (rp = route_top (ripng->table); rp; rp = route_next (rp))
       if ((list = rp->info) != NULL)
         for (ALL_LIST_ELEMENTS (list, listnode, nextnode, rinfo))
           if (rinfo->ifindex == ifp->ifindex)

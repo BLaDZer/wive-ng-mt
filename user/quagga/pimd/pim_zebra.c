@@ -273,17 +273,17 @@ static int pim_zebra_if_address_add(int command, struct zclient *zclient,
     struct in_addr primary_addr = pim_find_primary_addr(c->ifp);
     if (primary_addr.s_addr != p->u.prefix4.s_addr) {
       if (PIM_DEBUG_ZEBRA) {
-      /* but we had a primary address already */
+	/* but we had a primary address already */
 
-      char buf[BUFSIZ];
-      char old[100];
+	char buf[BUFSIZ];
+	char old[100];
 
-      prefix2str(p, buf, BUFSIZ);
-      pim_inet4_dump("<old?>", primary_addr, old, sizeof(old));
+	prefix2str(p, buf, BUFSIZ);
+	pim_inet4_dump("<old?>", primary_addr, old, sizeof(old));
 
-      zlog_warn("%s: %s primary addr old=%s: forcing secondary flag on new=%s",
-		__PRETTY_FUNCTION__,
-		c->ifp->name, old, buf);
+	zlog_warn("%s: %s primary addr old=%s: forcing secondary flag on new=%s",
+		  __PRETTY_FUNCTION__,
+		  c->ifp->name, old, buf);
       }
       SET_FLAG(c->flags, ZEBRA_IFA_SECONDARY);
     }
@@ -341,10 +341,10 @@ static void scan_upstream_rpf_cache()
   struct pim_upstream *up;
 
   for (ALL_LIST_ELEMENTS(qpim_upstream_list, up_node, up_nextnode, up)) {
-    struct in_addr      old_rpf_addr;
+    struct pim_rpf		old_rpf;
     enum pim_rpf_result rpf_result;
 
-    rpf_result = pim_rpf_update(up, &old_rpf_addr);
+    rpf_result = pim_rpf_update(up, &old_rpf);
     if (rpf_result == PIM_RPF_FAILURE)
       continue;
 
@@ -368,8 +368,8 @@ static void scan_upstream_rpf_cache()
 
     
 	/* send Prune(S,G) to the old upstream neighbor */
-	pim_joinprune_send(up->rpf.source_nexthop.interface,
-			   old_rpf_addr,
+	pim_joinprune_send(old_rpf.source_nexthop.interface,
+			   old_rpf.rpf_addr,
 			   up->source_addr,
 			   up->group_addr,
 			   0 /* prune */);

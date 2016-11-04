@@ -396,7 +396,7 @@ key_str2time (const char *time_str, const char *day_str, const char *month_str,
         _GET_LONG_RANGE(V,STR,tmpl < (MIN) || tmpl > (MAX))
 #define GET_LONG_RANGE0(V,STR,MAX) \
         _GET_LONG_RANGE(V,STR,tmpl > (MAX))
-      
+
   /* Check hour field of time_str. */
   colon = strchr (time_str, ':');
   if (colon == NULL)

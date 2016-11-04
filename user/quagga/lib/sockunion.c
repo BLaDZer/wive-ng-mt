@@ -172,10 +172,10 @@ sockunion2str (const union sockunion *su, char *buf, size_t len)
       snprintf (buf, len, "(unspec)");
       return buf;
     case AF_INET:
-    return inet_ntop (AF_INET, &su->sin.sin_addr, buf, len);
+      return inet_ntop (AF_INET, &su->sin.sin_addr, buf, len);
 #ifdef HAVE_IPV6
     case AF_INET6:
-    return inet_ntop (AF_INET6, &su->sin6.sin6_addr, buf, len);
+      return inet_ntop (AF_INET6, &su->sin6.sin6_addr, buf, len);
 #endif /* HAVE_IPV6 */
     }
   snprintf (buf, len, "(af %d)", sockunion_family(su));
@@ -430,7 +430,7 @@ sockopt_reuseaddr (int sock)
   return 0;
 }
 
-#if defined(SO_REUSEPORT) && !defined(__linux__)
+#ifdef SO_REUSEPORT
 int
 sockopt_reuseport (int sock)
 {

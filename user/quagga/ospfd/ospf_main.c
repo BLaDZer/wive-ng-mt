@@ -303,13 +303,14 @@ main (int argc, char **argv)
   /* OSPF vty inits. */
   ospf_vty_init ();
   ospf_vty_show_init ();
+  ospf_vty_clear_init ();
 
   ospf_route_map_init ();
 #ifdef HAVE_SNMP
   ospf_snmp_init ();
 #endif /* HAVE_SNMP */
   ospf_opaque_init ();
-
+  
   /* Get configuration file. */
   vty_read_config (config_file, config_default);
 

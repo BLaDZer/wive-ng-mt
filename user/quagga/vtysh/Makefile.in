@@ -284,6 +284,12 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
 PIMD = @PIMD@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+PROTOBUF_C_CFLAGS = @PROTOBUF_C_CFLAGS@
+PROTOBUF_C_LIBS = @PROTOBUF_C_LIBS@
+PROTOC_C = @PROTOC_C@
 RANLIB = @RANLIB@
 RIPD = @RIPD@
 RIPNGD = @RIPNGD@
@@ -749,8 +755,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_examplesDATA
 	uninstall-am uninstall-binPROGRAMS uninstall-dist_examplesDATA
 
 
-vtysh_cmd.c: $(vtysh_cmd_FILES)
-	./$(EXTRA_DIST) $(vtysh_cmd_FILES) > vtysh_cmd.c
+vtysh_cmd.c: $(vtysh_cmd_FILES) extract.pl
+	./extract.pl $(vtysh_cmd_FILES) > vtysh_cmd.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -563,41 +563,41 @@ community_list_match_delete (struct community *com,
     {
       val = community_val_get (com, i);
 
-  for (entry = list->head; entry; entry = entry->next)
-    {
-      if (entry->any)
+      for (entry = list->head; entry; entry = entry->next)
         {
-          if (entry->direct == COMMUNITY_PERMIT) 
+          if (entry->any)
             {
-                  com_index_to_delete[delete_index] = i;
-                  delete_index++;
-            }
-              break;
-        }
-
-          else if ((entry->style == COMMUNITY_LIST_STANDARD)
-          && (community_include (entry->u.com, COMMUNITY_INTERNET)
-                       || community_include (entry->u.com, val) ))
-        {
               if (entry->direct == COMMUNITY_PERMIT)
                 {
                   com_index_to_delete[delete_index] = i;
                   delete_index++;
                 }
-                break;
-        }
+              break;
+            }
 
-      else if ((entry->style == COMMUNITY_LIST_EXPANDED)
-                   && community_regexp_include (entry->reg, com, i))
-        {
-          if (entry->direct == COMMUNITY_PERMIT)
+          else if ((entry->style == COMMUNITY_LIST_STANDARD)
+                   && (community_include (entry->u.com, COMMUNITY_INTERNET)
+                       || community_include (entry->u.com, val) ))
+            {
+              if (entry->direct == COMMUNITY_PERMIT)
                 {
                   com_index_to_delete[delete_index] = i;
                   delete_index++;
                 }
-            break;
-        }
-    }
+              break;
+            }
+
+          else if ((entry->style == COMMUNITY_LIST_EXPANDED)
+                   && community_regexp_include (entry->reg, com, i))
+            {
+              if (entry->direct == COMMUNITY_PERMIT)
+                {
+                  com_index_to_delete[delete_index] = i;
+                  delete_index++;
+                }
+              break;
+            }
+         }
      }
 
   /* Delete all of the communities we flagged for deletion */

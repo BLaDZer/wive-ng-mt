@@ -216,7 +216,7 @@ usage(const char *progname, int status)
     fprintf(stderr, "Try `%s --help' for more information.\n", progname);
   else
     {
-    printf("Usage : %s [OPTION...] <daemon name> ...\n\n\
+      printf("Usage : %s [OPTION...] <daemon name> ...\n\n\
 Watchdog program to monitor status of quagga daemons and try to restart\n\
 them if they are down or unresponsive.  It determines whether a daemon is\n\
 up based on whether it can connect to the daemon's vty unix stream socket.\n\
@@ -324,8 +324,8 @@ Otherwise, the interval is doubled (but capped at the -M value).\n\n",
 		passing command-line arguments with embedded spaces.\n\
 -v, --version	Print program version\n\
 -h, --help	Display this help and exit\n",
-VTYDIR,DEFAULT_LOGLEVEL,LOG_EMERG,LOG_DEBUG,LOG_DEBUG,
-DEFAULT_MIN_RESTART,DEFAULT_MAX_RESTART,
+        VTYDIR,DEFAULT_LOGLEVEL,LOG_EMERG,LOG_DEBUG,LOG_DEBUG,
+        DEFAULT_MIN_RESTART,DEFAULT_MAX_RESTART,
         DEFAULT_PERIOD,DEFAULT_TIMEOUT,DEFAULT_RESTART_TIMEOUT,
         DEFAULT_PIDFILE);
     }

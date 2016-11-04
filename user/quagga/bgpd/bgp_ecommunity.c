@@ -645,7 +645,7 @@ ecommunity_ecom2str (struct ecommunity *ecom, int format)
       encode = *pnt++;
 
       switch (encode)
-	{
+        {
         case ECOMMUNITY_ENCODE_AS:
         case ECOMMUNITY_ENCODE_IP:
         case ECOMMUNITY_ENCODE_AS4:
@@ -665,12 +665,12 @@ ecommunity_ecom2str (struct ecommunity *ecom, int format)
             /* fall through */
 
         default:
-	  len = sprintf (str_buf + str_pnt, "?");
-	  str_pnt += len;
-	  first = 0;
-	  continue;
-	}
-      
+          len = sprintf (str_buf + str_pnt, "?");
+          str_pnt += len;
+          first = 0;
+          continue;
+        }
+
       /* Low-order octet of type. */
       type = *pnt++;
       if (type !=  ECOMMUNITY_ROUTE_TARGET && type != ECOMMUNITY_SITE_ORIGIN)

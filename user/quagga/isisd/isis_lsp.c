@@ -8,7 +8,7 @@
  * Copyright (C) 2013-2015   Christian Franke <chris@opensourcerouting.org>
  *
  * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public Licenseas published by the Free 
+ * under the terms of the GNU General Public License as published by the Free 
  * Software Foundation; either version 2 of the License, or (at your option) 
  * any later version.
  *
@@ -52,6 +52,7 @@
 #include "isisd/isis_csm.h"
 #include "isisd/isis_adjacency.h"
 #include "isisd/isis_spf.h"
+#include "isisd/isis_te.h"
 
 #ifdef TOPOLOGY_GENERATE
 #include "spgrid.h"
@@ -137,14 +138,16 @@ lsp_destroy (struct isis_lsp *lsp)
   if (!lsp)
     return;
 
-  for (ALL_LIST_ELEMENTS_RO (lsp->area->circuit_list, cnode, circuit))
-    {
-      if (circuit->lsp_queue == NULL)
-        continue;
-      for (ALL_LIST_ELEMENTS (circuit->lsp_queue, lnode, lnnode, lsp_in_list))
-        if (lsp_in_list == lsp)
-          list_delete_node(circuit->lsp_queue, lnode);
-    }
+  if (lsp->area->circuit_list) {
+    for (ALL_LIST_ELEMENTS_RO (lsp->area->circuit_list, cnode, circuit))
+      {
+        if (circuit->lsp_queue == NULL)
+          continue;
+        for (ALL_LIST_ELEMENTS (circuit->lsp_queue, lnode, lnnode, lsp_in_list))
+          if (lsp_in_list == lsp)
+            list_delete_node(circuit->lsp_queue, lnode);
+      }
+  }
   ISIS_FLAGS_CLEAR_ALL (lsp->SSNflags);
   ISIS_FLAGS_CLEAR_ALL (lsp->SRMflags);
 
@@ -591,7 +594,7 @@ lsp_new_from_stream_ptr (struct stream *stream,
 struct isis_lsp *
 lsp_new(struct isis_area *area, u_char * lsp_id,
 	u_int16_t rem_lifetime, u_int32_t seq_num,
-	 u_int8_t lsp_bits, u_int16_t checksum, int level)
+	u_int8_t lsp_bits, u_int16_t checksum, int level)
 {
   struct isis_lsp *lsp;
 
@@ -981,6 +984,8 @@ lsp_print_detail (struct isis_lsp *lsp, struct vty *vty, char dynhost)
       lspid_print (te_is_neigh->neigh_id, LSPid, dynhost, 0);
       vty_out (vty, "  Metric      : %-8d IS-Extended   : %s%s",
 	       GET_TE_METRIC(te_is_neigh), LSPid, VTY_NEWLINE);
+      if (IS_MPLS_TE(isisMplsTE))
+        mpls_te_print_detail(vty, te_is_neigh);
     }
 
   /* TE IPv4 tlv */
@@ -1086,6 +1091,64 @@ lsp_tlv_fit (struct isis_lsp *lsp, struct list **from, struct list **to,
 	  listnode_delete (*from, listgetdata (listhead (*from)));
 	}
       tlv_build_func (*to, lsp->pdu);
+    }
+  lsp->lsp_header->pdu_len = htons (stream_get_endp (lsp->pdu));
+  return;
+}
+
+/* Process IS_NEIGHBOURS TLV with TE subTLVs */
+static void
+lsp_te_tlv_fit (struct isis_lsp *lsp, struct list **from, struct list **to, int frag_thold)
+{
+  int count, size = 0;
+  struct listnode *node, *nextnode;
+  struct te_is_neigh *elem;
+
+  /* Start computing real size of TLVs */
+  for (ALL_LIST_ELEMENTS (*from, node, nextnode, elem))
+    size = size + elem->sub_tlvs_length + IS_NEIGHBOURS_LEN;
+
+  /* can we fit all ? */
+  if (!FRAG_NEEDED (lsp->pdu, frag_thold, size))
+    {
+      tlv_add_te_is_neighs (*from, lsp->pdu);
+      if (listcount (*to) != 0)
+        {
+          for (ALL_LIST_ELEMENTS (*from, node, nextnode, elem))
+            {
+              listnode_add (*to, elem);
+              list_delete_node (*from, node);
+            }
+        }
+      else
+        {
+          list_free (*to);
+          *to = *from;
+          *from = NULL;
+        }
+    }
+  else
+    {
+      /* fit all we can */
+      /* Compute remaining place in LSP PDU */
+      count = FRAG_THOLD (lsp->pdu, frag_thold) - 2 -
+        (STREAM_SIZE (lsp->pdu) - STREAM_REMAIN (lsp->pdu));
+      /* Determine size of TE SubTLVs */
+      elem = (struct te_is_neigh *)listgetdata ((struct listnode *)listhead (*from));
+      count = count - elem->sub_tlvs_length - IS_NEIGHBOURS_LEN;
+      if (count > 0)
+        {
+          while (count > 0)
+            {
+              listnode_add (*to, listgetdata ((struct listnode *)listhead (*from)));
+              listnode_delete (*from, listgetdata ((struct listnode *)listhead (*from)));
+
+              elem = (struct te_is_neigh *)listgetdata ((struct listnode *)listhead (*from));
+              count = count - elem->sub_tlvs_length - IS_NEIGHBOURS_LEN;
+            }
+
+          tlv_add_te_is_neighs (*to, lsp->pdu);
+        }
     }
   lsp->lsp_header->pdu_len = htons (stream_get_endp (lsp->pdu));
   return;
@@ -1460,7 +1523,7 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
       if (circuit->state != C_STATE_UP)
         {
           lsp_debug("ISIS (%s): Circuit is not up, ignoring.", area->area_tag);
-	continue;
+          continue;
         }
 
       /*
@@ -1481,7 +1544,10 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 		{
 		  ipreach =
 		    XMALLOC (MTYPE_ISIS_TLV, sizeof (struct ipv4_reachability));
-		  ipreach->metrics = circuit->metrics[level - 1];
+		  ipreach->metrics.metric_default = circuit->metric[level - 1];
+		  ipreach->metrics.metric_expense = METRICS_UNSUPPORTED;
+		  ipreach->metrics.metric_error = METRICS_UNSUPPORTED;
+		  ipreach->metrics.metric_delay = METRICS_UNSUPPORTED;
 		  masklen2ip (ipv4->prefixlen, &ipreach->mask);
 		  ipreach->prefix.s_addr = ((ipreach->mask.s_addr) &
 					    (ipv4->prefix.s_addr));
@@ -1506,7 +1572,7 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 					((ipv4->prefixlen + 7)/8) - 1);
 
 		  if (area->oldmetric)
-		    te_ipreach->te_metric = htonl (circuit->metrics[level - 1].metric_default);
+		    te_ipreach->te_metric = htonl (circuit->metric[level - 1]);
 		  else
 		    te_ipreach->te_metric = htonl (circuit->te_metric[level - 1]);
 
@@ -1541,7 +1607,7 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 
 	      if (area->oldmetric)
 		ip6reach->metric =
-			  htonl (circuit->metrics[level - 1].metric_default);
+			  htonl (circuit->metric[level - 1]);
 	      else
 		  ip6reach->metric = htonl (circuit->te_metric[level - 1]);
 
@@ -1580,17 +1646,20 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 		  else
 		    memcpy (is_neigh->neigh_id,
 			    circuit->u.bc.l2_desig_is, ISIS_SYS_ID_LEN + 1);
-		  is_neigh->metrics = circuit->metrics[level - 1];
+		  is_neigh->metrics.metric_default = circuit->metric[level - 1];
+		  is_neigh->metrics.metric_expense = METRICS_UNSUPPORTED;
+		  is_neigh->metrics.metric_error = METRICS_UNSUPPORTED;
+		  is_neigh->metrics.metric_delay = METRICS_UNSUPPORTED;
                   if (!memcmp (is_neigh->neigh_id, zero_id,
                                ISIS_SYS_ID_LEN + 1))
                     {
-                    XFREE (MTYPE_ISIS_TLV, is_neigh);
+                      XFREE (MTYPE_ISIS_TLV, is_neigh);
                       lsp_debug("ISIS (%s): No DIS for circuit, not adding old-style IS neighbor.",
                                 area->area_tag);
                     }
                   else
                     {
-                    listnode_add (tlv_data.is_neighs, is_neigh);
+                      listnode_add (tlv_data.is_neighs, is_neigh);
                       lsp_debug("ISIS (%s): Adding DIS %s.%02x as old-style neighbor",
                                 area->area_tag, sysid_print(is_neigh->neigh_id),
                                 LSP_PSEUDO_ID(is_neigh->neigh_id));
@@ -1612,25 +1681,33 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 		    memcpy (te_is_neigh->neigh_id,
 			    circuit->u.bc.l2_desig_is, ISIS_SYS_ID_LEN + 1);
 		  if (area->oldmetric)
-		    metric = circuit->metrics[level - 1].metric_default;
+		    metric = circuit->metric[level - 1];
 		  else
 		    metric = circuit->te_metric[level - 1];
 		  SET_TE_METRIC(te_is_neigh, metric);
                   if (!memcmp (te_is_neigh->neigh_id, zero_id,
                                ISIS_SYS_ID_LEN + 1))
                     {
-                    XFREE (MTYPE_ISIS_TLV, te_is_neigh);
+                      XFREE (MTYPE_ISIS_TLV, te_is_neigh);
                       lsp_debug("ISIS (%s): No DIS for circuit, not adding te-style IS neighbor.",
                                 area->area_tag);
                     }
                   else
                     {
-                    listnode_add (tlv_data.te_is_neighs, te_is_neigh);
+                      /* Check if MPLS_TE is activate */
+                      if (IS_MPLS_TE(isisMplsTE) && HAS_LINK_PARAMS(circuit->interface))
+                        /* Add SubTLVs & Adjust real size of SubTLVs */
+                        te_is_neigh->sub_tlvs_length = add_te_subtlvs(te_is_neigh->sub_tlvs, circuit->mtc);
+                      else
+                        /* Or keep only TE metric with no SubTLVs if MPLS_TE is off */
+                        te_is_neigh->sub_tlvs_length = 0;
+
+                      listnode_add (tlv_data.te_is_neighs, te_is_neigh);
                       lsp_debug("ISIS (%s): Adding DIS %s.%02x as te-style neighbor",
                                 area->area_tag, sysid_print(te_is_neigh->neigh_id),
                                 LSP_PSEUDO_ID(te_is_neigh->neigh_id));
+                    }
 		}
-	    }
 	    }
 	  else
 	    {
@@ -1651,7 +1728,10 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 		    }
 		  is_neigh = XCALLOC (MTYPE_ISIS_TLV, sizeof (struct is_neigh));
 		  memcpy (is_neigh->neigh_id, nei->sysid, ISIS_SYS_ID_LEN);
-		  is_neigh->metrics = circuit->metrics[level - 1];
+		  is_neigh->metrics.metric_default = circuit->metric[level - 1];
+		  is_neigh->metrics.metric_expense = METRICS_UNSUPPORTED;
+		  is_neigh->metrics.metric_error = METRICS_UNSUPPORTED;
+		  is_neigh->metrics.metric_delay = METRICS_UNSUPPORTED;
 		  listnode_add (tlv_data.is_neighs, is_neigh);
 		  lsp_debug("ISIS (%s): Adding old-style is reach for %s", area->area_tag,
                             sysid_print(is_neigh->neigh_id));
@@ -1670,6 +1750,18 @@ lsp_build (struct isis_lsp *lsp, struct isis_area *area)
 		  memcpy (te_is_neigh->neigh_id, nei->sysid, ISIS_SYS_ID_LEN);
 		  metric = circuit->te_metric[level - 1];
 		  SET_TE_METRIC(te_is_neigh, metric);
+		  /* Check if MPLS_TE is activate */
+                  if (IS_MPLS_TE(isisMplsTE) && HAS_LINK_PARAMS(circuit->interface))
+                    /* Update Local and Remote IP address for MPLS TE circuit parameters */
+                    /* NOTE sure that it is the pertinent place for that updates */
+                    /* Local IP address could be updated in isis_circuit.c - isis_circuit_add_addr() */
+                    /* But, where update remote IP address ? in isis_pdu.c - process_p2p_hello() ? */
+
+                    /* Add SubTLVs & Adjust real size of SubTLVs */
+                    te_is_neigh->sub_tlvs_length = add_te_subtlvs(te_is_neigh->sub_tlvs, circuit->mtc);
+                  else
+                    /* Or keep only TE metric with no SubTLVs if MPLS_TE is off */
+                    te_is_neigh->sub_tlvs_length = 0;
 		  listnode_add (tlv_data.te_is_neighs, te_is_neigh);
 		  lsp_debug("ISIS (%s): Adding te-style is reach for %s", area->area_tag,
                             sysid_print(te_is_neigh->neigh_id));
@@ -2010,7 +2102,7 @@ lsp_regenerate_schedule (struct isis_area *area, int level, int all_pseudo)
           sched_debug("ISIS (%s): Regeneration is already pending, nothing todo."
                       " (Due in %lld.%03lld seconds)", area->area_tag,
                       (long long)remain.tv_sec, (long long)remain.tv_usec / 1000);
-        continue;
+          continue;
         }
 
       lsp = lsp_search (id, area->lspdb[lvl - 1]);
@@ -2018,7 +2110,7 @@ lsp_regenerate_schedule (struct isis_area *area, int level, int all_pseudo)
         {
           sched_debug("ISIS (%s): We do not have any LSPs to regenerate, nothing todo.",
                       area->area_tag);
-        continue;
+          continue;
         }
 
       /*
@@ -2046,8 +2138,8 @@ lsp_regenerate_schedule (struct isis_area *area, int level, int all_pseudo)
                       " Scheduling for execution in %ld ms.", area->area_tag, timeout);
         }
 
-          area->lsp_regenerate_pending[lvl - 1] = 1;
-          if (lvl == IS_LEVEL_1)
+      area->lsp_regenerate_pending[lvl - 1] = 1;
+      if (lvl == IS_LEVEL_1)
         {
           THREAD_TIMER_MSEC_ON(master, area->t_lsp_refresh[lvl - 1],
                                lsp_l1_refresh, area, timeout);
@@ -2433,14 +2525,14 @@ lsp_regenerate_schedule_pseudo (struct isis_circuit *circuit, int level)
         {
           sched_debug("ISIS (%s): Level is not active on circuit",
                       area->area_tag);
-        continue;
+          continue;
         }
 
       if (circuit->u.bc.is_dr[lvl - 1] == 0)
         {
           sched_debug("ISIS (%s): This IS is not DR, nothing to do.",
                       area->area_tag);
-        continue;
+          continue;
         }
 
       if (circuit->lsp_regenerate_pending[lvl - 1])
@@ -2458,7 +2550,7 @@ lsp_regenerate_schedule_pseudo (struct isis_circuit *circuit, int level)
         {
           sched_debug("ISIS (%s): Pseudonode LSP does not exist yet, nothing to regenerate.",
                       area->area_tag);
-        continue;
+          continue;
         }
 
       /*
@@ -2481,12 +2573,12 @@ lsp_regenerate_schedule_pseudo (struct isis_circuit *circuit, int level)
                       " Scheduling for execution in %ld ms.", area->area_tag, timeout);
         }
 
-          circuit->lsp_regenerate_pending[lvl - 1] = 1;
+      circuit->lsp_regenerate_pending[lvl - 1] = 1;
 
-          if (lvl == IS_LEVEL_1)
+      if (lvl == IS_LEVEL_1)
         {
           THREAD_TIMER_MSEC_ON(master,
-                             circuit->u.bc.t_refresh_pseudo_lsp[lvl - 1],
+                               circuit->u.bc.t_refresh_pseudo_lsp[lvl - 1],
                                lsp_l1_refresh_pseudo, circuit, timeout);
         }
       else if (lvl == IS_LEVEL_2)

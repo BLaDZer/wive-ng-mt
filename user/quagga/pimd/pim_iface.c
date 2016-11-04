@@ -304,8 +304,8 @@ static void detect_secondary_address_change(struct interface *ifp,
 
   changed = 1; /* true */
   if (PIM_DEBUG_ZEBRA)
-  zlog_debug("FIXME T31 C15 %s: on interface %s: acting on any addr change",
-	     __PRETTY_FUNCTION__, ifp->name);
+    zlog_debug("FIXME T31 C15 %s: on interface %s: acting on any addr change",
+	      __PRETTY_FUNCTION__, ifp->name);
 
   if (!changed) {
     return;
@@ -1030,8 +1030,8 @@ int pim_if_igmp_join_add(struct interface *ifp,
     pim_inet4_dump("<grp?>", group_addr, group_str, sizeof(group_str));
     pim_inet4_dump("<src?>", source_addr, source_str, sizeof(source_str));
     zlog_debug("%s: issued static igmp join for channel (S,G)=(%s,%s) on interface %s",
-	       __PRETTY_FUNCTION__,
-	       source_str, group_str, ifp->name);
+	      __PRETTY_FUNCTION__,
+	      source_str, group_str, ifp->name);
   }
 
   return 0;

@@ -197,6 +197,7 @@ ospf_new (void)
     {
       new->dmetric[i].type = -1;
       new->dmetric[i].value = -1;
+      new->dtag[i] = 0;
     }
   new->default_metric = -1;
   new->ref_bandwidth = OSPF_DEFAULT_REF_BANDWIDTH;
@@ -255,7 +256,7 @@ ospf_lookup ()
   if (listcount (om->ospf) == 0)
     return NULL;
 
-  return listgetdata (listhead (om->ospf));
+  return listgetdata ((struct listnode *)listhead (om->ospf));
 }
 
 static int
@@ -741,7 +742,7 @@ ospf_network_new (struct in_addr area_id, int format)
   return new;
 }
 
-static void
+static void 
 add_ospf_interface (struct connected *co, struct ospf_area *area)
 {
   struct ospf_interface *oi;
@@ -754,9 +755,6 @@ add_ospf_interface (struct connected *co, struct ospf_area *area)
   oi->params = ospf_lookup_if_params (co->ifp, oi->address->u.prefix4);
   oi->output_cost = ospf_if_get_output_cost (oi);
 
-  /* Add pseudo neighbor. */
-  ospf_nbr_add_self (oi);
-
   /* Relate ospf interface to ospf instance. */
   oi->ospf = area->ospf;
 
@@ -764,6 +762,9 @@ add_ospf_interface (struct connected *co, struct ospf_area *area)
   /* If network type is specified previously,
      skip network type setting. */
   oi->type = IF_DEF_PARAMS (co->ifp)->type;
+
+  /* Add pseudo neighbor. */
+  ospf_nbr_self_reset (oi);
 
   ospf_area_add_if (oi->area, oi);
 
@@ -838,7 +839,7 @@ ospf_network_set (struct ospf *ospf, struct prefix_ipv4 *p,
 
   /* Update connected redistribute. */
   update_redistributed(ospf, 1);
-
+  
   ospf_area_check_free (ospf, area_id);
 
   return 1;
@@ -873,7 +874,7 @@ ospf_network_unset (struct ospf *ospf, struct prefix_ipv4 *p,
         continue;
       
       ospf_network_run_subnet (ospf, oi->connected, NULL, NULL);
-            }
+    }
   
   /* Update connected redistribute. */
   update_redistributed(ospf, 0);
@@ -881,7 +882,7 @@ ospf_network_unset (struct ospf *ospf, struct prefix_ipv4 *p,
   ospf_area_check_free (ospf, area_id);
   
   return 1;
-        }
+}
 
 /* Ensure there's an OSPF instance, as "ip ospf area" enabled OSPF means
  * there might not be any 'router ospf' config.
@@ -890,14 +891,14 @@ ospf_network_unset (struct ospf *ospf, struct prefix_ipv4 *p,
  */
 void
 ospf_interface_area_set (struct interface *ifp)
-	{
+{
   struct ospf *ospf = ospf_get();
   
   ospf_if_update (ospf, ifp);
   /* if_update does a update_redistributed */
   
   return;
-	}
+}
 
 void
 ospf_interface_area_unset (struct interface *ifp)
@@ -921,10 +922,10 @@ ospf_interface_area_unset (struct interface *ifp)
       
       ospf_network_run_subnet (ospf, oi->connected, NULL, NULL);
     }
-  
+
   /* Update connected redistribute. */
   update_redistributed (ospf, 0); /* interfaces possibly removed */
-
+  
   return;
 }
 
@@ -950,7 +951,7 @@ ospf_update_interface_area (struct connected *co, struct ospf_area *area)
   
   if (oi) 
     ospf_if_free (oi);
-
+  
   add_ospf_interface (co, area);
 }
 
@@ -966,29 +967,29 @@ ospf_update_interface_area (struct connected *co, struct ospf_area *area)
 static void
 ospf_network_run_subnet (struct ospf *ospf, struct connected *co,
                          struct prefix *p, struct ospf_area *given_area)
-        {
-           struct ospf_interface *oi;
+{
+  struct ospf_interface *oi;
   struct ospf_if_params *params;
   struct ospf_area *area = NULL;
   struct route_node *rn;
   int configed = 0;
-            
+  
   if (CHECK_FLAG(co->flags, ZEBRA_IFA_SECONDARY))
     return;
-            
+  
   if (co->address->family != AF_INET)
     return;
-
+  
   /* Try determine the appropriate area for this interface + address
    * Start by checking interface config 
    */   
   if (!(params = ospf_lookup_if_params (co->ifp, co->address->u.prefix4)))
     params = IF_DEF_PARAMS (co->ifp);
-            
+  
   if (OSPF_IF_PARAM_CONFIGURED(params, if_area))
     area = (ospf_area_get (ospf, params->if_area,
                            OSPF_AREA_ID_FORMAT_ADDRESS));
-
+  
   /* If we've found an interface and/or addr specific area, then we're
    * done
    */
@@ -997,25 +998,25 @@ ospf_network_run_subnet (struct ospf *ospf, struct connected *co,
       ospf_update_interface_area (co, area);
       return;
     }
-
+  
   /* Otherwise, only remaining possibility is a matching network statement */
   if (p)
     {
       assert (given_area != NULL);
-            
+      
       /* Which either was supplied as a parameter.. (e.g. cause a new
        * network/area was just added)..
        */
       if (p->family == co->address->family 
           && ospf_network_match_iface (co, p))
         ospf_update_interface_area (co, given_area);
-            
+      
       return;
     }
   
   /* Else we have to search the existing network/area config to see
    * if any match..
-             */
+   */
   for (rn = route_top (ospf->networks); rn; rn = route_next (rn))
     if (rn->info != NULL
         && ospf_network_match_iface (co, &rn->p))
@@ -1024,12 +1025,12 @@ ospf_network_run_subnet (struct ospf *ospf, struct connected *co,
         area = ospf_area_get (ospf, network->area_id, network->format);
         ospf_update_interface_area (co, area);
         configed = 1;
-          }
+      }
   
   /* If the subnet isn't in any area, deconfigure */
   if (!configed && (oi = ospf_if_table_lookup (co->ifp, co->address)))
     ospf_if_free (oi);
-    }
+}
 
 static void
 ospf_network_run_interface (struct ospf *ospf, struct interface *ifp,
