@@ -2531,33 +2531,34 @@
 3) coovachilli: up to 1.3.2 from git (commit da0047f).<br>
 4) nodogsplash: up to version 2.0.0 (commit: c3a1cf0f).<br>
 5) quagga: up to 1.1.0 version.<br>
-6) 802.1x: update to new version (5020 SDK).<br>
-7) iappd: update to 1.1.0 version (5020 SDK).<br>
-8) iappd: use set encrypt key from daemon.<br>
-9) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
-10) iappd: fix handle destination adress in recv RRB.<br>
-11) bndstr: update to new version (5020 SDK).<br>
-12) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
-13) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
-14) busybox: udhcpc: check read of option length byte to be within packet.<br>
-15) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
-16) goahead: more correct standart http code decode use.<br>
-17) goahead: send internal server error if not found error code.<br>
-18) goahead: allways use HTTP1.1 by default.<br>
-19) goahead: fix webheader format (parse issue by antiviral filters).<br>
-20) goahead: fix radius secret check.<br>
-21) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
-22) goahead: rework switch status, config page.<br>
-23) goahead: fix regulatory tables for RU.<br>
-24) goahead: add link for download firmware.<br>
-25) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-26) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-27) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-28) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-29) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-30) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-31) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-32) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+6) libcurl: up to 7.51.0 version.<br>
+7) 802.1x: update to new version (5020 SDK).<br>
+8) iappd: update to 1.1.0 version (5020 SDK).<br>
+9) iappd: use set encrypt key from daemon.<br>
+10) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
+11) iappd: fix handle destination adress in recv RRB.<br>
+12) bndstr: update to new version (5020 SDK).<br>
+13) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
+14) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
+15) busybox: udhcpc: check read of option length byte to be within packet.<br>
+16) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
+17) goahead: more correct standart http code decode use.<br>
+18) goahead: send internal server error if not found error code.<br>
+19) goahead: allways use HTTP1.1 by default.<br>
+20) goahead: fix webheader format (parse issue by antiviral filters).<br>
+21) goahead: fix radius secret check.<br>
+22) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
+23) goahead: rework switch status, config page.<br>
+24) goahead: fix regulatory tables for RU.<br>
+25) goahead: add link for download firmware.<br>
+26) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+27) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+28) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+29) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+30) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+31) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+32) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+33) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>

@@ -893,7 +893,8 @@ else
     OPT_ZLIB=""
   fi
 
-  CURL_CHECK_PKGCONFIG(zlib)
+  #CURL_CHECK_PKGCONFIG(zlib)
+  PKGCONFIG="no"
 
   if test "$PKGCONFIG" != "no" ; then
     LIBS="`$PKGCONFIG --libs-only-l zlib` $LIBS"
@@ -1476,7 +1477,8 @@ if test "$curl_ssl_msg" = "$init_ssl_msg" && test X"$OPT_SSL" != Xno; then
 
   if test "$PKGTEST" = "yes"; then
 
-    CURL_CHECK_PKGCONFIG(openssl, [$OPENSSL_PCDIR])
+    #CURL_CHECK_PKGCONFIG(openssl, [$OPENSSL_PCDIR])
+    PKGCONFIG="no"
 
     if test "$PKGCONFIG" != "no" ; then
       SSL_LIBS=`CURL_EXPORT_PCDIR([$OPENSSL_PCDIR]) dnl
