@@ -470,8 +470,6 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #ifdef DOT11K_RRM_SUPPORT
 		if (IS_RRM_ENABLE(pAd, apidx))
 		{
-			InsertTpcReportIE(pAd, pOutBuffer+FrameLen, &FrameLen,
-			RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
 			RRM_InsertRRMEnCapIE(pAd, pOutBuffer+FrameLen, &FrameLen, apidx);
 		}
 
@@ -569,7 +567,6 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			ULONG TmpLen2=0;
 			UCHAR TmpFrame[256];
 			UCHAR CountryIe = IE_COUNTRY;
-			UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 
 			/*
 				Only APs that comply with 802.11h or 802.11k are required to include
@@ -584,6 +581,10 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #endif /* DOT11K_RRM_SUPPORT */
 			    )
 			{
+				/* prepare TPC Report IE */
+				InsertTpcReportIE(pAd, pOutBuffer+FrameLen, &FrameLen,
+				RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
+
 				/* prepare power constraint IE */
 				MakeOutgoingFrame(pOutBuffer+FrameLen,    &TmpLen,
 						3,                 	PowerConstraintIE,
@@ -610,13 +611,17 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
 
 			/* prepare channel information */
+#ifdef EXT_BUILD_CHANNEL_LIST
+			BuildBeaconChList(pAd, TmpFrame, &TmpLen2);
+#else
+			UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 			MakeOutgoingFrame(TmpFrame+TmpLen2,     &TmpLen,
 					1,                 	&pAd->ChannelList[0].Channel,
 					1,                 	&pAd->ChannelListNum,
 					1,                 	&MaxTxPower,
 					END_OF_ARGS);
 			TmpLen2 += TmpLen;
-
+#endif /* EXT_BUILD_CHANNEL_LIST */
 #ifdef DOT11K_RRM_SUPPORT
 			if (IS_RRM_ENABLE(pAd, apidx)
 				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
@@ -1789,29 +1794,30 @@ VOID SupportRate(
 typedef struct
 {
 	UCHAR	regclass;		/* regulatory class */
-	UCHAR	spacing;		/* 0: 20Mhz, 1: 40Mhz */
+	UCHAR	spacing;		/* 0: 20Mhz, 1: 40Mhz, 2: 80Mhz */
 	UCHAR	channelset[16];	/* max 15 channels, use 0 as terminator */
 } REG_CLASS;
 
 REG_CLASS reg_class[] =
 {
-	{  1, 0, {36, 40, 44, 48, 0}},
-	{  2, 0, {52, 56, 60, 64, 0}},
-	{  3, 0, {149, 153, 157, 161, 0}},
-	{  4, 0, {100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 0}},
-	{  5, 0, {165, 0}},
-	{ 22, 1, {36, 44, 0}},
-	{ 23, 1, {52, 60, 0}},
-	{ 24, 1, {100, 108, 116, 124, 132, 0}},
-	{ 25, 1, {149, 157, 0}},
-	{ 26, 1, {149, 157, 0}},
-	{ 27, 1, {40, 48, 0}},
-	{ 28, 1, {56, 64, 0}},
-	{ 29, 1, {104, 112, 120, 128, 136, 0}},
-	{ 30, 1, {153, 161, 0}},
-	{ 31, 1, {153, 161, 0}},
-	{ 32, 1, {1, 2, 3, 4, 5, 6, 7, 0}},
-	{ 33, 1, {5, 6, 7, 8, 9, 10, 11, 0}},
+	{  1, BW_20, {36, 40, 44, 48, 0}},
+	{  2, BW_20, {52, 56, 60, 64, 0}},
+	{  3, BW_20, {149, 153, 157, 161, 0}},
+	{  4, BW_20, {100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 0}},
+	{  5, BW_20, {165, 0}},
+	{ 22, BW_40, {36, 44, 0}},
+	{ 23, BW_40, {52, 60, 0}},
+	{ 24, BW_40, {100, 108, 116, 124, 132, 140, 0}},
+	{ 25, BW_40, {149, 157, 0}},
+	{ 26, BW_40, {149, 157, 0}},
+	{ 27, BW_40, {40, 48, 0}},
+	{ 28, BW_40, {56, 64, 0}},
+	{ 29, BW_40, {104, 112, 120, 128, 136, 144, 0}},
+	{ 30, BW_40, {153, 161, 0}},
+	{ 31, BW_40, {153, 161, 0}},
+	{ 32, BW_40, {1, 2, 3, 4, 5, 6, 7, 0}},
+	{ 33, BW_40, {5, 6, 7, 8, 9, 10, 11, 0}},
+	{128, BW_80, {42, 58, 106, 122, 138, 155, 0}},
 	{ 0,  0, {0}}			/* end */
 };
 

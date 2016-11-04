@@ -669,7 +669,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	short_slot = websGetVar(wp, T("short_slot"), T("0"));
 	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
 	pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
-	rd_region = websGetVar(wp, T("rd_region"), T("CE"));
+	rd_region = websGetVar(wp, T("rd_region"), T("FCC"));
 	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
@@ -806,14 +806,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelectINIC", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTimeINIC", "0");
 		}
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_RT2860V2_AP_DOT11K_RRM_SUPPORT)
-		if (atoi(sz11aChannel) >= 149)
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "3");
-		else if (atoi(sz11aChannel) >= 52)
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "2");
-		else
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1");
-#endif
 	}
 #endif
 	if (CHK_IF_SET(sz11gChannel)) {
@@ -825,9 +817,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		    nvram_bufset(RT2860_NVRAM, "AutoChannelSelect", "0");
 		    nvram_bufset(RT2860_NVRAM, "ACSCheckTime", "0");
 		}
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_RT2860V2_AP_DOT11K_RRM_SUPPORT)
-		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "4");
-#endif
 	}
 
 	// Rate for a, b, g, n, ac
@@ -942,7 +931,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	//Radar Detect region
 	if ((rd_region == NULL) || (strlen(rd_region)<=0))
-		rd_region = "CE";
+		rd_region = "FCC";
 
 	//set to nvram
 	nvram_init(RT2860_NVRAM);
@@ -957,7 +946,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "RDRegion", rd_region);
 	//txburst and burst mode set in one place
 	nvram_bufset(RT2860_NVRAM, "TxBurst", tx_burst);
-	nvram_bufset(RT2860_NVRAM, "BurstMode", tx_burst);
+
+	//switch to normal txburst mode (speed regression with some adapters)
+	nvram_bufset(RT2860_NVRAM, "BurstMode", "0");
 
 	if (NULL != maxstanum) {
 		tmp = atoi(maxstanum);
@@ -1023,26 +1014,52 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "CountryCode", countrycode);
 	if (!strncmp(countrycode, "US", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
 	}
 	else if (!strncmp(countrycode, "JP", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "6");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
 	}
 	else if (!strncmp(countrycode, "RU", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "7");
+		/* set regulatory class for current county see spectrum.c for Russia, subbands divided ; */
+		if (strncmp(sz11gChannel, "0", 2))
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5;0;0;0;0");
+		else
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		if (strncmp(sz11aChannel, "0", 2))
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1;2;3;4;0");
+		else
+#endif
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
 	}
 	else if (!strncmp(countrycode, "FR", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "2");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
 	}
 	else if (!strncmp(countrycode, "TW", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "3");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
 	}
 	else if (!strncmp(countrycode, "IE", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "2");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
 	}
 	else if (!strncmp(countrycode, "HK", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "0");
-	} else  /* default RU */
-		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
+	} else { /* default uncknown */
+		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "7");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
+	}
 
 	// Set-up country region
 	nvram_bufset(RT2860_NVRAM, "CountryRegion", country_region);

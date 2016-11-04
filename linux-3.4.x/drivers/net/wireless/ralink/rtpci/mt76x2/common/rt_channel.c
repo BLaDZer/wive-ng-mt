@@ -1250,8 +1250,8 @@ CH_DESP Country_RU_ChDesp[] =
 {
 	{ 1,   14, 20, BOTH, FALSE},	/* 2.4 G, ch 1~14*/
 	{ 36,   4, 20, BOTH, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
-	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 132,  4, 30, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~144, Max BW: 40 */
+	{ 52,   4, 20, BOTH, FALSE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
+	{ 132,  4, 30, BOTH, FALSE}, 	/*5650~5710MHz, Ch 132~144, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };
@@ -1596,7 +1596,7 @@ CH_REGION ChRegion[] =
 	{"PR", CE, Country_PR_ChDesp, TRUE}, /* Puerto Rico */			
 	{"QA", CE, Country_QA_ChDesp, TRUE}, /* Qatar */			
 	{"RO", CE, Country_RO_ChDesp, TRUE}, /* Romania */			
-	{"RU", CE, Country_RU_ChDesp, FALSE}, /* Russian Federation */			
+	{"RU", FCC, Country_RU_ChDesp, FALSE}, /* Russian Federation */			
 	{"BL", CE, Country_BL_ChDesp, TRUE}, /* Saint Barth'elemy */			
 	{"SA", CE, Country_SA_ChDesp, TRUE}, /* Saudi Arabia */			
 	{"SG", CE, Country_SG_ChDesp, TRUE}, /* Singapore */			
@@ -2164,8 +2164,9 @@ BOOLEAN AC_ChannelGroupCheck(
 	{ /* 5G Band */
 		for (idx=0; idx<num_ch; idx++) {
 			if (Channel == vht_ch_group[idx]) {
-				if (((region == CE || region == JAP) && vht_ch_group[idx] >= 132) || ((region == FCC) && vht_ch_group[idx] >= 116 && vht_ch_group[idx] <= 128))
+				if (region == JAP && (vht_ch_group[idx] >= 132 && vht_ch_group[idx] <= 144))
 				{
+					/* prevent using 132~144 while Region is JAP */
 					continue;
 				}
 				else
@@ -2190,17 +2191,13 @@ BOOLEAN N_ChannelGroupCheck(
 	
 	if (Channel > 14)
 	{
-		if ((Channel == 36) || (Channel == 44) || (Channel == 52) 
-				|| (Channel == 60) || (Channel == 100) || (Channel == 108) 
-				|| (Channel == 116) || (Channel == 124) || (Channel == 132) 
-				|| (Channel == 149) || (Channel == 157))
+		if ((Channel == 36) || (Channel == 44) || (Channel == 52) || (Channel == 60) || (Channel == 100) || (Channel == 108) ||
+		    (Channel == 116) || (Channel == 124) || (Channel == 132) || (Channel == 140)|| (Channel == 149) || (Channel == 157))
 		{
 			RetVal = TRUE;
 		}
-		else if ((Channel == 40) || (Channel == 48) || (Channel == 56) 
-				|| (Channel == 64) || (Channel == 104) || (Channel == 112) 
-				|| (Channel == 120) || (Channel == 128) || (Channel == 136) 
-				|| (Channel == 153) || (Channel == 161))
+		else if ((Channel == 40) || (Channel == 48) || (Channel == 56) || (Channel == 64) || (Channel == 104) || (Channel == 112) ||
+				(Channel == 120) || (Channel == 128) || (Channel == 136) || (Channel == 144) || (Channel == 153) || (Channel == 161))
 		{
 			RetVal = TRUE;
 		}

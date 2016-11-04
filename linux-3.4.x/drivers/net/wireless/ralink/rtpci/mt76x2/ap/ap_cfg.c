@@ -828,6 +828,9 @@ static struct {
 	{"CountryCode",				Set_CountryCode_Proc},
 #ifdef EXT_BUILD_CHANNEL_LIST
 	{"ChGeography",				Set_ChGeography_Proc},
+	{"ChannelListAdd",				Set_ChannelListAdd_Proc},
+	{"ChannelListShow", 			Set_ChannelListShow_Proc},
+	{"ChannelListDel",				Set_ChannelListDel_Proc},
 #endif /* EXT_BUILD_CHANNEL_LIST */
 #ifdef SMART_MESH_MONITOR
 	// Set the address of monitered STA. 2013.11.29 Annie.

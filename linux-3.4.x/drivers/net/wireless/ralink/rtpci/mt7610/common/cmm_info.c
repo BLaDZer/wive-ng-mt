@@ -1004,9 +1004,9 @@ INT Set_ChannelListShow_Proc(
 	NdisMoveMemory(CountryCode, pAd->CommonCfg.CountryCode, 2);
 	if (pAd->CommonCfg.DfsType == MAX_RD_REGION)
 		pAd->CommonCfg.DfsType = pChRegion->DfsType;
-	DBGPRINT(RT_DEBUG_ERROR, ("=========================================\n"));
-	DBGPRINT(RT_DEBUG_ERROR, ("CountryCode:%s\n", CountryCode));
-	DBGPRINT(RT_DEBUG_ERROR, ("DfsType:%s\n",
+	DBGPRINT(RT_DEBUG_OFF, ("=========================================\n"));
+	DBGPRINT(RT_DEBUG_OFF, ("CountryCode:%s\n", CountryCode));
+	DBGPRINT(RT_DEBUG_OFF, ("DfsType:%s\n",
 					(pAd->CommonCfg.DfsType == JAP) ? "JAP" :
 					((pAd->CommonCfg.DfsType == FCC) ? "FCC" : "CE" )));
 					
@@ -1015,7 +1015,7 @@ INT Set_ChannelListShow_Proc(
 		PCH_DESP pChDesp = (PCH_DESP) pAd->CommonCfg.pChDesp;
 		for (EntryIdx = 0; pChDesp[EntryIdx].FirstChannel != 0; EntryIdx++)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("%u. {%3u, %2u, %2u, %s, %5s}.\n",
+			DBGPRINT(RT_DEBUG_OFF, ("%u. {%3u, %2u, %2u, %s, %5s}.\n",
 						EntryIdx,
 						pChDesp[EntryIdx].FirstChannel,
 						pChDesp[EntryIdx].NumOfCh,
@@ -1029,7 +1029,7 @@ INT Set_ChannelListShow_Proc(
 		DBGPRINT(RT_DEBUG_TRACE, ("Default channel list table:\n"));
 		for (EntryIdx = 0; pChRegion->pChDesp[EntryIdx].FirstChannel != 0; EntryIdx++)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("%u. {%3u, %2u, %2u, %s, %5s}.\n",
+			DBGPRINT(RT_DEBUG_OFF, ("%u. {%3u, %2u, %2u, %s, %5s}.\n",
 						EntryIdx,
 						pChRegion->pChDesp[EntryIdx].FirstChannel,
 						pChRegion->pChDesp[EntryIdx].NumOfCh,
@@ -1038,7 +1038,7 @@ INT Set_ChannelListShow_Proc(
 						(pChRegion->pChDesp[EntryIdx].DfsReq == TRUE) ? "TRUE" : "FALSE"));
 		}	
 	}
-	DBGPRINT(RT_DEBUG_ERROR, ("=========================================\n"));
+	DBGPRINT(RT_DEBUG_OFF, ("=========================================\n"));
 	return TRUE;
 }
 

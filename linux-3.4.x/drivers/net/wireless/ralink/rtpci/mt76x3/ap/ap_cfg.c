@@ -525,6 +525,9 @@ static struct {
 	{"CountryCode",				Set_CountryCode_Proc},
 #ifdef EXT_BUILD_CHANNEL_LIST
 	{"ChGeography",				Set_ChGeography_Proc},
+	{"ChannelListAdd",				Set_ChannelListAdd_Proc},
+	{"ChannelListShow", 			Set_ChannelListShow_Proc},
+	{"ChannelListDel",				Set_ChannelListDel_Proc},
 #endif /* EXT_BUILD_CHANNEL_LIST */
 	{"SSID",						Set_AP_SSID_Proc},
 #ifdef CONFIG_SNIFFER_SUPPORT

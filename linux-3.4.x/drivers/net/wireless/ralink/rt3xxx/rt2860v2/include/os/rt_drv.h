@@ -463,7 +463,7 @@ do{                                   \
 {                                                                               \
     if (!(x))                                                                   \
     {                                                                           \
-        printk(__FILE__ ":%d assert " #x "failed\n", __LINE__);    \
+        printk(__FILE__ ":%d assert " #x " failed\n", __LINE__);    \
     }                                                                           \
 }
 #else

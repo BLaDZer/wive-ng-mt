@@ -158,7 +158,7 @@ VOID BuildChannelList(
 
 		if (num > 0)
 		{
-			UCHAR RadarCh[15]={52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140};
+			UCHAR RadarCh[16]={52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144};
 #ifdef CONFIG_AP_SUPPORT
 			UCHAR q=0;
 #endif /* CONFIG_AP_SUPPORT */

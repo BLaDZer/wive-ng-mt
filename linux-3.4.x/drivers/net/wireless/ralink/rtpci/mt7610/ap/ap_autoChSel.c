@@ -30,26 +30,13 @@ static inline INT GetABandChOffset(
 	IN INT Channel)
 {
 #ifdef A_BAND_SUPPORT
-	UCHAR region = GetCountryRegionFromCountryCode(pAd);
-	if((region==CE || region==JAP) && Channel >= 140)
-		return 0;
-	if(region==FCC && Channel >= 116 && Channel <= 128)
-		return 0;
-	if ((Channel == 36) || (Channel == 44)
-			|| (Channel == 52) || (Channel == 60)
-			|| (Channel == 100) || (Channel == 108)
-			|| (Channel == 116) || (Channel == 124)
-			|| (Channel == 132) || (Channel == 149)
-			|| (Channel == 157))
+	if ((Channel == 36) || (Channel == 44) || (Channel == 52) || (Channel == 60) || (Channel == 100) || (Channel == 108) ||
+	    (Channel == 116) || (Channel == 124) || (Channel == 132) || (Channel == 149) || (Channel == 157))
 	{
 		return 1;
 	}
-	else if ((Channel == 40) || (Channel == 48)
-			|| (Channel == 56) || (Channel == 64)
-			|| (Channel == 104) || (Channel == 112)
-			|| (Channel == 120) || (Channel == 128)
-			|| (Channel == 136) || (Channel == 153)
-			|| (Channel == 161))
+	else if ((Channel == 40) || (Channel == 48) || (Channel == 56) || (Channel == 64) || (Channel == 104) || (Channel == 112) ||
+			(Channel == 120) || (Channel == 128) || (Channel == 136) || (Channel == 153) || (Channel == 161))
 	{
 		return -1;
 	}

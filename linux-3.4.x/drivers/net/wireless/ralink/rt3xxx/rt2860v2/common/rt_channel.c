@@ -1249,8 +1249,8 @@ CH_DESP Country_RU_ChDesp[] =
 {
 	{ 1,   14, 20, BOTH, FALSE},	/* 2.4 G, ch 1~14*/
 	{ 36,   4, 20, BOTH, FALSE},	/*5170~5250MHz, Ch 36~48, Max BW: 40 */
-	{ 52,   4, 20, BOTH, TRUE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
-	{ 132,  4, 30, BOTH, TRUE}, 	/*5650~5710MHz, Ch 132~144, Max BW: 40 */
+	{ 52,   4, 20, BOTH, FALSE}, 	/*5250~5330MHz, Ch 52~64, Max BW: 40 */
+	{ 132,  4, 30, BOTH, FALSE}, 	/*5650~5710MHz, Ch 132~144, Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 40 */
 	{ 0},               	    	/* end*/
 };
@@ -1595,7 +1595,7 @@ CH_REGION ChRegion[] =
 	{"PR", CE, Country_PR_ChDesp}, /* Puerto Rico */			
 	{"QA", CE, Country_QA_ChDesp}, /* Qatar */			
 	{"RO", CE, Country_RO_ChDesp}, /* Romania */			
-	{"RU", CE, Country_RU_ChDesp}, /* Russian Federation */			
+	{"RU", FCC, Country_RU_ChDesp}, /* Russian Federation */			
 	{"BL", CE, Country_BL_ChDesp}, /* Saint Barth'elemy */			
 	{"SA", CE, Country_SA_ChDesp}, /* Saudi Arabia */			
 	{"SG", CE, Country_SG_ChDesp}, /* Singapore */			
