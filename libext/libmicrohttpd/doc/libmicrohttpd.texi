@@ -11,7 +11,7 @@ This manual is for GNU libmicrohttpd
 (version @value{VERSION}, @value{UPDATED}), a library for embedding
 an HTTP(S) server into C applications.
 
-Copyright @copyright{} 2007--2015 Christian Grothoff
+Copyright @copyright{} 2007--2016 Christian Grothoff
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -109,9 +109,12 @@ example, using the @code{MHD_create_response_from_fd_at_offset} call
 to serve ranges from a file).  MHD does understands headers that
 control connection management (specifically, @code{Connection: close}
 and @code{Expect: 100 continue} are understood and handled
-automatically).  @code{Connection: upgrade} is not yet supported.
+automatically).  @code{Connection: upgrade} is supported by passing
+control over the socket (or something that behaves like the real
+socket in the case of TLS) to the application (after sending the
+desired HTTP response header).
 
-MHD also largely ignores the semantics of the different HTTP methods,
+MHD largely ignores the semantics of the different HTTP methods,
 so clients are left to handle those.  One exception is that MHD does
 understand @code{HEAD} and will only send the headers of the response
 and not the body, even if the client supplied a body.  (In fact,
@@ -158,7 +161,7 @@ Examples based on reports we've received from developers include:
 @cindex select
 
 MHD supports four basic thread modes and up to three event loop
-styes.
+styles.
 
 The four basic thread modes are external (MHD creates no threads,
 event loop is fully managed by the application), internal (MHD creates
@@ -559,10 +562,11 @@ connect HTTP clients to the HTTP server.  This option is incompatible
 with using a thread pool; if it is used,
 @code{MHD_OPTION_THREAD_POOL_SIZE} is ignored.
 
-@item MHD_USE_PIPE_FOR_SHUTDOWN
+@item MHD_USE_ITC
 @cindex quiesce
-Force MHD to use a signal pipe to notify the event loop (of threads)
-of our shutdown.  This is required if an appliction uses
+Force MHD to use a signal inter-thread communication channel to notify
+the event loop (of threads) of our shutdown and other events.
+This is required if an appliction uses
 @code{MHD_USE_INTERNAL_SELECT} or @code{MHD_USE_THREAD_PER_CONNECTION}
 and then performs @code{MHD_quiesce_daemon} (which eliminates our
 ability to signal termination via the listen socket).  In these modes,
@@ -578,14 +582,27 @@ process can continue to use the socket.
 @item MHD_USE_SUSPEND_RESUME
 Enables using @code{MHD_suspend_connection} and
 @code{MHD_resume_connection}, as performing these calls requires some
-additional pipes to be created, and code not using these calls should
-not pay the cost.
+additional inter-thred communication channels to be created, and code
+not using these calls should not pay the cost.
 
 @item MHD_USE_TCP_FASTOPEN
 @cindex listen
 Enable TCP_FASTOPEN on the listen socket.  TCP_FASTOPEN is currently
 supported on Linux >= 3.6.  On other systems using this option with
 cause @code{MHD_start_daemon} to fail.
+
+@item MHD_USE_TLS_EPOLL_UPGRADE
+@cindex epoll
+@cindex upgrade
+@cindex https
+@cindex tls
+This option must be set if you want to use @code{epoll()} in
+combination with a server offering TLS and then upgrade connections
+(via ``101 Switching Protocols'' responses).  This requires MHD to
+open up and process an extra socket, and hence we require this
+special flag in case this is really needed.   Note that using
+this option automatically implies @code{MHD_USE_EPOLL},
+@code{MHD_USE_TLS} and @code{MHD_USE_SUSPEND_RESUME}.
 
 @end table
 @end deftp
@@ -627,12 +644,12 @@ four for @code{stdin}, @code{stdout}, @code{stderr} and the server
 socket).  In other words, the default is as large as possible.
 
 If the connection limit is reached, MHD's behavior depends a bit on
-other options.  If @code{MHD_USE_PIPE_FOR_SHUTDOWN} was given, MHD
+other options.  If @code{MHD_USE_ITC} was given, MHD
 will stop accepting connections on the listen socket.  This will cause
 the operating system to queue connections (up to the @code{listen()}
 limit) above the connection limit.  Those connections will be held
 until MHD is done processing at least one of the active connections.
-If @code{MHD_USE_PIPE_FOR_SHUTDOWN} is not set, then MHD will continue
+If @code{MHD_USE_ITC} is not set, then MHD will continue
 to @code{accept()} and immediately @code{close()} these connections.
 
 Note that if you set a low connection limit, you can easily get into
@@ -1532,7 +1549,7 @@ server is behind NAT and needs to connect out to the
 HTTP client, or if you are building a proxy.
 
 If you use this API in conjunction with a internal select or a thread
-pool, you must set the option @code{MHD_USE_PIPE_FOR_SHUTDOWN} to
+pool, you must set the option @code{MHD_USE_ITC} to
 ensure that the freshly added connection is immediately processed by
 MHD.
 
@@ -1716,6 +1733,7 @@ response and we finally destroy it only when the daemon shuts down.
 * microhttpd-response headers:: Adding headers to a response.
 * microhttpd-response options:: Setting response options.
 * microhttpd-response inspect:: Inspecting a response object.
+* microhttpd-response upgrade:: Creating a response for protocol upgrades.
 @end menu
 
 @c ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2066,6 +2084,100 @@ We should not modify the value, unless we know what we are doing.
 @end deftypefun
 
 
+@c ------------------------------------------------------------
+@node microhttpd-response upgrade
+@section Creating a response for protocol upgrades
+@cindex WebSockets
+@cindex Upgrade
+@cindex HTTP2
+@cindex RFC2817
+
+With RFC 2817 a mechanism to switch protocols within HTTP was
+introduced.  Here, a client sends a request with a ``Connection:
+Upgrade'' header.  The server responds with a ``101 Switching
+Protocols'' response header, after which the two parties begin to
+speak a different (non-HTTP) protocol over the TCP connection.
+
+This mechanism is used for upgrading HTTP 1.1 connections to HTTP2 or
+HTTPS, as well as for implementing WebSockets.  Which protocol
+upgrade is performed is negotiated between server and client in
+additional headers, in particular the ``Upgrade'' header.
+
+MHD supports switching protocols using this mechanism only if the
+@code{MHD_USE_SUSPEND_RESUME} flag has been set when starting
+the daemon.  If this flag has been set, applications can upgrade
+a connection by queueing a response (using the
+@code{MHD_HTTP_SWITCHING_PROTOCOLS} status code) which must
+have been created with the following function:
+
+
+@deftypefun int MHD_create_response_for_upgrade (MHD_UpgradeHandler upgrade_handler, void *upgrade_handler_cls)
+Create a response suitable for switching protocols.  Returns @code{MHD_YES} on success.  @code{upgrade_handler} must not be @code{NULL}.
+
+When creating this type of response, the ``Connection: Upgrade''
+header will be set automatically for you.  MHD requires that you
+additionally set an ``Upgrade:'' header.  The ``Upgrade'' header
+must simply exist, the specific value is completely up to the
+application.
+
+@end deftypefun
+
+The @code{upgrade_handler} argument to the above has the following type:
+
+
+@deftypefn {Function Pointer} void {*MHD_UpgradeHandler} (void *cls, struct MHD_Connection *connection, const char *extra_in, size_t extra_in_size, MHD_socket sock, struct MHD_UpgradeResponseHandle *urh)
+This function will be called once MHD has transmitted the header of the response to the connection that is being upgraded.  At this point, the application is expected to take over the socket @code{sock} and speak the non-HTTP protocol to which the connection was upgraded.  MHD will no longer use the socket; this includes handling timeouts.  The application must call @code{MHD_upgrade_action} with an upgrade action of @code{MHD_UPGRADE_ACTION_CLOSE} when it is done processing the connection to close the socket.  The application must not call @code{MHD_stop_daemon} on the respective daemon as long as it is still handling the connection.  The arguments given to the @code{upgrade_handler} have the following meaning:
+
+@table @var
+@item cls
+matches the @code{upgrade_handler_cls} that was given to @code{MHD_create_response_for_upgrade}
+@item connection
+identifies the connection that is being upgraded;
+
+@item con_cls
+last value left in `*con_cls` in the `MHD_AccessHandlerCallback`
+
+@item extra_in
+buffer of bytes MHD read ``by accident'' from the socket already.  This can happen if the client eagerly transmits more than just the HTTP request.   The application should treat these as if it had read them from the socket.
+
+@item extra_in_size
+number of bytes in @code{extra_in}
+
+@item sock
+the socket which the application can now use directly for some bi-directional communication with the client. The application can henceforth use @code{recv()} and @code{send()} or @code{read()} and @code{write()} system calls on the socket.  However, @code{ioctl()} and @code{setsockopt()} functions will not work as expected when using HTTPS.  Such operations may be supported in the future via @code{MHD_upgrade_action}.   Most importantly, the application must never call @code{close()} on this socket.  Closing the socket must be done using @code{MHD_upgrade_action}.  However, while close is forbidden, the application may call @code{shutdown()} on the socket.
+
+@item urh
+argument for calls to @code{MHD_upgrade_action}.  Applications must eventually use this function to perform the @code{close()} action on the socket.
+@end table
+
+@end deftypefn
+
+@deftypefun int MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh, enum MHD_UpgradeAction action, ...)
+Perform special operations related to upgraded connections.
+
+@table @var
+@item urh
+identifies the upgraded connection to perform an action on
+
+@item action
+specifies the action to perform; further arguments to the function depend on the specifics of the action.
+@end table
+
+@end deftypefun
+
+
+@deftp {Enumeration} MHD_UpgradeAction
+Set of actions to be performed on upgraded connections.  Passed as an argument to
+@code{MHD_upgrade_action()}.
+
+@table @code
+@item MHD_UPGRADE_ACTION_CLOSE
+Closes the connection.  Must be called once the application is done with the client.  Takes no additional arguments.
+
+@end table
+@end deftp
+
+
 @c ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 @c ------------------------------------------------------------
@@ -2127,6 +2239,12 @@ Resume handling of network data for suspended connection.  It is safe
 to resume a suspended connection at any time.  Calling this function
 on a connection that was not previously suspended will result in
 undefined behavior.
+
+If you are using this function in ``external'' select mode, you must
+make sure to run @code{MHD_run} afterwards (before again calling
+@code{MHD_get_fdset}), as otherwise the change may not be reflected in
+the set returned by @code{MHD_get_fdset} and you may end up with a
+connection that is stuck until the next network activity.
 
 You can check whether a connection is currently suspended using
 @code{MHD_get_connection_info} by querying for
@@ -2545,7 +2663,7 @@ was specified and a client needs to learn what port
 is actually being used by MHD.
 No extra arguments should be passed.
 
-@item MHD_DAEMON_INFO_EPOLL_FD_LINUX_ONLY
+@item MHD_DAEMON_INFO_EPOLL_FD
 @cindex epoll
 Request the file-descriptor number that MHD is using for epoll.  If
 the build is not supporting epoll, NULL is returned; if we are using a
@@ -2609,13 +2727,16 @@ connection is desired.
 
 @item MHD_CONNECTION_INFO_CIPHER_ALGO
 What cipher algorithm is being used (HTTPS connections only).
-Takes no extra arguments.
 @code{NULL} is returned for non-HTTPS connections.
 
+Takes no extra arguments.
+
 @item MHD_CONNECTION_INFO_PROTOCOL,
-Takes no extra arguments.   Allows finding out the TLS/SSL protocol used
+Allows finding out the TLS/SSL protocol used
 (HTTPS connections only).
 @code{NULL} is returned for non-HTTPS connections.
+
+Takes no extra arguments.
 
 @item MHD_CONNECTION_INFO_CLIENT_ADDRESS
 Returns information about the address of the client.  Returns
@@ -2623,11 +2744,15 @@ essentially a @code{struct sockaddr **} (since the API returns
 a @code{union MHD_ConnectionInfo *} and that union contains
 a @code{struct sockaddr *}).
 
+Takes no extra arguments.
+
 @item MHD_CONNECTION_INFO_GNUTLS_SESSION,
 Takes no extra arguments.  Allows access to the underlying GNUtls session,
 including access to the underlying GNUtls client certificate
 (HTTPS connections only).  Takes no extra arguments.
 @code{NULL} is returned for non-HTTPS connections.
+
+Takes no extra arguments.
 
 @item MHD_CONNECTION_INFO_GNUTLS_CLIENT_CERT,
 Dysfunctional (never implemented, deprecated).  Use
@@ -2637,6 +2762,8 @@ and then call @code{gnutls_certificate_get_peers()}.
 @item MHD_CONNECTION_INFO_DAEMON
 Returns information about @code{struct MHD_Daemon} which manages
 this connection.
+
+Takes no extra arguments.
 
 @item MHD_CONNECTION_INFO_CONNECTION_FD
 Returns the file descriptor (usually a TCP socket) associated with
@@ -2650,10 +2777,14 @@ automatically (if the platform supports it).  As the connection
 callbacks are invoked in between, those might be used to set different
 values for TCP-CORK and TCP-NODELAY in the meantime.
 
+Takes no extra arguments.
+
 @item MHD_CONNECTION_INFO_CONNECTION_SUSPENDED
 Returns pointer to an integer that is @code{MHD_YES} if the connection
 is currently suspended (and thus can be safely resumed) and
 @code{MHD_NO} otherwise.
+
+Takes no extra arguments.
 
 @item MHD_CONNECTION_INFO_SOCKET_CONTEXT
 Returns the client-specific pointer to a @code{void *} that was
@@ -2662,6 +2793,8 @@ socket was first accepted.  Note that this is NOT the same as the
 @code{con_cls} argument of the @code{MHD_AccessHandlerCallback}.  The
 @code{con_cls} is fresh for each HTTP request, while the
 @code{socket_context} is fresh for each socket.
+
+Takes no extra arguments.
 
 @end table
 @end deftp
@@ -2769,7 +2902,7 @@ MHD_USE_EPOLL_INTERNALLY can be used.
 @item MHD_FEATURE_SHUTDOWN_LISTEN_SOCKET
 Get whether shutdown on listen socket to signal other
 threads is supported. If not supported flag
-MHD_USE_PIPE_FOR_SHUTDOWN is automatically forced.
+MHD_USE_ITC is automatically forced.
 
 @item MHD_FEATURE_SOCKETPAIR
 Get whether a @code{socketpair()} is used internally instead of

@@ -84,9 +84,9 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/MHD_config.h.in $(srcdir)/libmicrohttpd.pc.in \
-	$(top_srcdir)/w32/common/microhttpd_dll_res_vc.rc.in COPYING \
-	compile config.guess config.sub depcomp install-sh missing \
-	ltmain.sh
+	$(top_srcdir)/w32/common/microhttpd_dll_res_vc.rc.in ABOUT-NLS \
+	COPYING compile config.guess config.rpath config.sub depcomp \
+	install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_append_flag.m4 \
@@ -96,11 +96,17 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_have_epoll.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
+	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
+	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libcurl.m4 $(top_srcdir)/m4/libgcrypt.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/pkg.m4 \
-	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/mhd_sys_extentions.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -195,7 +201,7 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-DIST_SUBDIRS = contrib src m4 . doc
+DIST_SUBDIRS = contrib m4 src po . doc
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -265,6 +271,9 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
+GMSGFMT = @GMSGFMT@
+GMSGFMT_015 = @GMSGFMT_015@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_CPPFLAGS = @GNUTLS_CPPFLAGS@
 GNUTLS_LDFLAGS = @GNUTLS_LDFLAGS@
@@ -278,6 +287,8 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTLLIBS = @INTLLIBS@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCURL = @LIBCURL@
@@ -285,6 +296,8 @@ LIBCURL_CPPFLAGS = @LIBCURL_CPPFLAGS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
+LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -293,6 +306,8 @@ LIB_VERSION_CURRENT = @LIB_VERSION_CURRENT@
 LIB_VERSION_REVISION = @LIB_VERSION_REVISION@
 LIPO = @LIPO@
 LN_S = @LN_S@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -303,6 +318,9 @@ MHD_LIB_CPPFLAGS = @MHD_LIB_CPPFLAGS@
 MHD_LIB_LDFLAGS = @MHD_LIB_LDFLAGS@
 MHD_REQ_PRIVATE = @MHD_REQ_PRIVATE@
 MKDIR_P = @MKDIR_P@
+MSGFMT = @MSGFMT@
+MSGFMT_015 = @MSGFMT_015@
+MSGMERGE = @MSGMERGE@
 MS_LIB_TOOL = @MS_LIB_TOOL@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -324,6 +342,7 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+POSUB = @POSUB@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
@@ -333,7 +352,11 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
+XGETTEXT_015 = @XGETTEXT_015@
+XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 _libcurl_config = @_libcurl_config@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -394,7 +417,7 @@ top_srcdir = @top_srcdir@
 
 # This Makefile.am is in the public domain
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = contrib src m4 . $(am__append_1)
+SUBDIRS = contrib m4 src po . $(am__append_1)
 W32COMMON = w32/common/gen_dll_res.ps1 w32/common/microhttpd_dll_res_vc.rc.in w32/common/microhttpd_dll_res_vc.rc \
   w32/common/MHD_config.h w32/common/vs_dirs.props w32/common/common-build-settings.vcxproj \
   w32/common/libmicrohttpd-build-settings.vcxproj w32/common/libmicrohttpd-files.vcxproj w32/common/libmicrohttpd-filters.vcxproj \
@@ -404,18 +427,21 @@ W32COMMON = w32/common/gen_dll_res.ps1 w32/common/microhttpd_dll_res_vc.rc.in w3
 W32VS2013 = w32/VS2013/libmicrohttpd.vcxproj w32/VS2013/libmicrohttpd.vcxproj.filters \
   w32/VS2013/hellobrowser.vcxproj w32/VS2013/hellobrowser.vcxproj.filters \
   w32/VS2013/simplepost.vcxproj w32/VS2013/largepost.vcxproj \
-  w32/VS2013/libmicrohttpd.sln 
+  w32/VS2013/libmicrohttpd.sln
 
 W32VS2015 = w32/VS2015/libmicrohttpd.vcxproj w32/VS2015/libmicrohttpd.vcxproj.filters \
   w32/VS2015/hellobrowser.vcxproj w32/VS2015/hellobrowser.vcxproj.filters \
   w32/VS2015/simplepost.vcxproj w32/VS2015/largepost.vcxproj \
-  w32/VS2015/libmicrohttpd.sln 
+  w32/VS2015/libmicrohttpd.sln
 
-EXTRA_DIST = acinclude.m4 libmicrohttpd.pc.in \
+EXTRA_DIST = \
+  ABOUT-NLS \
+  acinclude.m4 \
+  libmicrohttpd.pc.in \
   $(W32COMMON) $(W32VS2013) $(W32VS2015)
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libmicrohttpd.pc 
+pkgconfig_DATA = libmicrohttpd.pc
 all: MHD_config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

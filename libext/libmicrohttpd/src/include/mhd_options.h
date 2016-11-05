@@ -33,6 +33,15 @@
 
 #include "MHD_config.h"
 
+/**
+ * Macro to make it easy to mark text for translation. Note that
+ * we do not actually call gettext() in MHD, but we do make it
+ * easy to create a ".po" file so that applications that do want
+ * to translate error messages can do so.
+ */
+#define _(String) (String)
+
+
 
 #ifndef _MHD_EXTERN
 #if defined(BUILDING_MHD_LIB) && defined(_WIN32) && \
@@ -56,7 +65,6 @@
 #define _MHD_FD_SETSIZE_IS_DEFAULT 1
 #endif /* !FD_SETSIZE && !WinSock*/
 
-#define _XOPEN_SOURCE_EXTENDED  1
 #if OS390
 #define _OPEN_THREADS
 #define _OPEN_SYS_SOCK_IPV6
@@ -93,7 +101,7 @@
 #endif /* HAVE_C11_GMTIME_S */
 
 #if defined(MHD_FAVOR_FAST_CODE) && defined(MHD_FAVOR_SMALL_CODE)
-#error MHD_FAVOR_FAST_CODE and MHD_FAVOR_SMALL_CODE are both defined. Cannot favor speed and size at the same time. 
+#error MHD_FAVOR_FAST_CODE and MHD_FAVOR_SMALL_CODE are both defined. Cannot favor speed and size at the same time.
 #endif /* MHD_FAVOR_FAST_CODE && MHD_FAVOR_SMALL_CODE */
 
 /* Define MHD_FAVOR_FAST_CODE to force fast code path or
@@ -101,7 +109,7 @@
 #if !defined(MHD_FAVOR_FAST_CODE) && !defined(MHD_FAVOR_SMALL_CODE)
 /* Try to detect user preferences */
 /* Defined by GCC and many compatible compilers */
-#ifdef __OPTIMIZE_SIZE__ 
+#ifdef __OPTIMIZE_SIZE__
 #define MHD_FAVOR_SMALL_CODE 1
 #elif __OPTIMIZE__
 #define MHD_FAVOR_FAST_CODE 1

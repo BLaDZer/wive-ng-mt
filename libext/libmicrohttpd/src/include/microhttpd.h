@@ -1,6 +1,6 @@
 /*
      This file is part of libmicrohttpd
-     Copyright (C) 2006-2015 Christian Grothoff (and other contributing authors)
+     Copyright (C) 2006-2016 Christian Grothoff (and other contributing authors)
 
      This library is free software; you can redistribute it and/or
      modify it under the terms of the GNU Lesser General Public
@@ -126,7 +126,7 @@ typedef intptr_t ssize_t;
  * Current version of the library.
  * 0x01093001 = 1.9.30-1.
  */
-#define MHD_VERSION 0x00095100
+#define MHD_VERSION 0x00095102
 
 /**
  * MHD-internal return code for "YES".
@@ -538,9 +538,18 @@ enum MHD_FLAG
   MHD_USE_DEBUG = 1,
 
   /**
-   * Run in HTTPS mode.
+   * Run in HTTPS mode.  The modern protocol is called TLS.
    */
+  MHD_USE_TLS = 2,
   MHD_USE_SSL = 2,
+
+#if 0
+  /* let's do this later once versions that define MHD_USE_TLS a more widely deployed. */
+  /** @deprecated */
+#define MHD_USE_SSL \
+  _MHD_DEPR_IN_MACRO("Value MHD_USE_SSL is deprecated, use MHD_USE_TLS") \
+  MHD_USE_TLS
+#endif
 
   /**
    * Run using one thread per connection.
@@ -630,22 +639,24 @@ enum MHD_FLAG
   MHD_USE_EPOLL_INTERNALLY
 
   /**
-   * Force MHD to use a signal pipe to notify the event loop (of
-   * threads) of our shutdown.  This is required if an appliction uses
-   * #MHD_USE_SELECT_INTERNALLY or #MHD_USE_THREAD_PER_CONNECTION and
-   * then performs #MHD_quiesce_daemon (which eliminates our ability
-   * to signal termination via the listen socket).  In these modes,
-   * #MHD_quiesce_daemon will fail if this option was not set.  Also,
-   * use of this option is automatic (as in, you do not even have to
-   * specify it), if #MHD_USE_NO_LISTEN_SOCKET is specified.  In
-   * "external" `select()` mode, this option is always simply ignored.
-   * MHD can be build for use a pair of sockets instead of a pipe.
-   * Pair of sockets is forced on W32.
-   *
-   * You must also use this option if you use internal select mode
-   * or a thread pool in conjunction with #MHD_add_connection.
+   * Use inter-thread communication channel.
+   * #MHD_USE_ITC can be used with internal select/poll/other
+   * or #MHD_USE_THREAD_PER_CONNECTION and is ignored with any
+   * "external" mode.
+   * It's required for use of #MHD_quiesce_daemon
+   * or #MHD_add_connection.
+   * This option is enforced by #MHD_USE_SUSPEND_RESUME or
+   * #MHD_USE_NO_LISTEN_SOCKET.
+   * #MHD_USE_ITC is always used automatically on platforms
+   * where select()/poll()/other ignore shutdown of listen
+   * socket.
    */
-  MHD_USE_PIPE_FOR_SHUTDOWN = 1024,
+  MHD_USE_ITC = 1024,
+
+/** @deprecated */
+#define MHD_USE_PIPE_FOR_SHUTDOWN \
+  _MHD_DEPR_IN_MACRO("Value MHD_USE_PIPE_FOR_SHUTDOWN is deprecated, use MHD_USE_ITC") \
+  MHD_USE_ITC
 
   /**
    * Use a single socket for IPv4 and IPv6.
@@ -663,16 +674,26 @@ enum MHD_FLAG
 
   /**
    * Enable suspend/resume functions, which also implies setting up
-   * pipes to signal resume.
+   * ITC to signal resume.
    */
-  MHD_USE_SUSPEND_RESUME = 8192 | MHD_USE_PIPE_FOR_SHUTDOWN,
+  MHD_USE_SUSPEND_RESUME = 8192 | MHD_USE_ITC,
 
   /**
    * Enable TCP_FASTOPEN option.  This option is only available on Linux with a
    * kernel >= 3.6.  On other systems, using this option cases #MHD_start_daemon
    * to fail.
    */
-  MHD_USE_TCP_FASTOPEN = 16384
+  MHD_USE_TCP_FASTOPEN = 16384,
+
+  /**
+   * You need to set this option if you want to use epoll() in
+   * combination with HTTPS connections and switching protocols via
+   * connection upgrades (via #MHD_create_response_for_upgrade()).
+   * This flag is required as under these circumstances we need to
+   * open up an extra file descriptor, which we do not want to do
+   * unless necessary.
+   */
+  MHD_USE_TLS_EPOLL_UPGRADE = 32768 | MHD_USE_SUSPEND_RESUME | MHD_USE_EPOLL | MHD_USE_TLS
 
 };
 
@@ -1202,7 +1223,7 @@ union MHD_ConnectionInfo
    * Socket-specific client context.  Points to the same address as
    * the "socket_context" of the #MHD_NotifyConnectionCallback.
    */
-  void **socket_context;
+  void *socket_context;
 };
 
 
@@ -1308,6 +1329,7 @@ enum MHD_DaemonInfoType
    * No extra arguments should be passed.
    */
   MHD_DAEMON_INFO_EPOLL_FD_LINUX_ONLY,
+  MHD_DAEMON_INFO_EPOLL_FD = MHD_DAEMON_INFO_EPOLL_FD_LINUX_ONLY,
 
   /**
    * Request the number of current connections handled by the daemon.
@@ -1618,7 +1640,7 @@ MHD_start_daemon (unsigned int flags,
  * that an existing thread is still using it).
  *
  * Note that some thread modes require the caller to have passed
- * #MHD_USE_PIPE_FOR_SHUTDOWN when using this API.  If this daemon is
+ * #MHD_USE_ITC when using this API.  If this daemon is
  * in one of those modes and this option was not given to
  * #MHD_start_daemon, this function will return #MHD_INVALID_SOCKET.
  *
@@ -1650,7 +1672,7 @@ MHD_stop_daemon (struct MHD_Daemon *daemon);
  *
  * If you use this API in conjunction with a internal select or a
  * thread pool, you must set the option
- * #MHD_USE_PIPE_FOR_SHUTDOWN to ensure that the freshly added
+ * #MHD_USE_ITC to ensure that the freshly added
  * connection is immediately processed by MHD.
  *
  * The given client socket will be managed (and closed!) by MHD after
@@ -1952,7 +1974,7 @@ MHD_queue_response (struct MHD_Connection *connection,
  * thread-per-connection!) for a while.
  *
  * If you use this API in conjunction with a internal select or a
- * thread pool, you must set the option #MHD_USE_PIPE_FOR_SHUTDOWN to
+ * thread pool, you must set the option #MHD_USE_ITC to
  * ensure that a resumed connection is immediately processed by MHD.
  *
  * Suspended connections continue to count against the total number of
@@ -1981,6 +2003,12 @@ MHD_suspend_connection (struct MHD_Connection *connection);
  * safe to resume a suspended connection at any time.  Calling this
  * function on a connection that was not previously suspended will
  * result in undefined behavior.
+ *
+ * If you are using this function in ``external'' select mode, you must
+ * make sure to run #MHD_run() afterwards (before again calling
+ * #MHD_get_fdset(), as otherwise the change may not be reflected in
+ * the set returned by #MHD_get_fdset() and you may end up with a
+ * connection that is stuck until the next network activity.
  *
  * @param connection the connection to resume
  */
@@ -2221,7 +2249,6 @@ MHD_create_response_from_fd_at_offset64 (uint64_t size,
                                          uint64_t offset);
 
 
-#if 0
 /**
  * Enumeration for actions MHD should perform on the underlying socket
  * of the upgrade.  This API is not finalized, and in particular
@@ -2236,18 +2263,7 @@ enum MHD_UpgradeAction
    *
    * Takes no extra arguments.
    */
-  MHD_UPGRADE_ACTION_CLOSE = 0,
-
-  /**
-   * Uncork the TCP write buffer (that is, tell the OS to transmit all
-   * bytes in the buffer now, and to not use TCP-CORKing).
-   *
-   * Takes no extra arguments.
-   *
-   * NOTE: it is unclear if we want to have this in the
-   * "final" API, this is just an idea right now.
-   */
-  MHD_UPGRADE_ACTION_CORK
+  MHD_UPGRADE_ACTION_CLOSE = 0
 
 };
 
@@ -2274,33 +2290,23 @@ struct MHD_UpgradeResponseHandle;
  */
 _MHD_EXTERN int
 MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
-                             enum MHD_UpgradeAction action,
-                             ...);
+                    enum MHD_UpgradeAction action,
+                    ...);
+
 
 /**
  * Function called after a protocol "upgrade" response was sent
  * successfully and the socket should now be controlled by some
  * protocol other than HTTP.
  *
- * Any data received on the socket will be made available in
- * 'data_in'.  The function should update 'data_in_size' to
- * reflect the number of bytes consumed from 'data_in' (the remaining
- * bytes will be made available in the next call to the handler).
+ * Any data already received on the socket will be made available in
+ * @e extra_in.  This can happen if the application sent extra data
+ * before MHD send the upgrade response.  The application should
+ * treat data from @a extra_in as if it had read it from the socket.
  *
- * Any data that should be transmitted on the socket should be
- * stored in 'data_out'.  '*data_out_size' is initially set to
- * the available buffer space in 'data_out'.  It should be set to
- * the number of bytes stored in 'data_out' (which can be zero).
- *
- * The return value is a BITMASK that indicates how the function
- * intends to interact with the event loop.  It can request to be
- * notified for reading, writing, request to UNCORK the send buffer
- * (which MHD is allowed to ignore, if it is not possible to uncork on
- * the local platform), to wait for the 'external' select loop to
- * trigger another round.  It is also possible to specify "no events"
- * to terminate the connection; in this case, the
- * #MHD_RequestCompletedCallback will be called and all resources of
- * the connection will be released.
+ * Note that the application must not close() @a sock directly,
+ * but instead use #MHD_upgrade_action() for special operations
+ * on @a sock.
  *
  * Except when in 'thread-per-connection' mode, implementations
  * of this function should never block (as it will still be called
@@ -2310,6 +2316,7 @@ MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
  * @param connection original HTTP connection handle,
  *                   giving the function a last chance
  *                   to inspect the original HTTP request
+ * @param con_cls last value left in `con_cls` of the `MHD_AccessHandlerCallback`
  * @param extra_in if we happened to have read bytes after the
  *                 HTTP header already (because the client sent
  *                 more than the HTTP header of the request before
@@ -2323,17 +2330,21 @@ MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
  *        that is directly connected to the client and thus certain
  *        operations (TCP-specific setsockopt(), getsockopt(), etc.)
  *        may not work as expected (as the socket could be from a
- *        socketpair() or a TCP-loopback)
+ *        socketpair() or a TCP-loopback).  The application is expected
+ *        to perform read()/recv() and write()/send() calls on the socket.
+ *        The application may also call shutdown(), but must not call
+ *        close() directly.
  * @param urh argument for #MHD_upgrade_action()s on this @a connection.
- *        Applications must eventually use this callback to perform the
- *        close() action on the @a sock.
+ *        Applications must eventually use this callback to (indirectly)
+ *        perform the close() action on the @a sock.
  */
 typedef void
 (*MHD_UpgradeHandler)(void *cls,
                       struct MHD_Connection *connection,
+                      void *con_cls,
                       const char *extra_in,
                       size_t extra_in_size,
-                      MHD_SOCKET sock,
+                      MHD_socket sock,
                       struct MHD_UpgradeResponseHandle *urh);
 
 
@@ -2362,14 +2373,14 @@ typedef void
  * information and then be used any number of times (as long as the
  * header information is not connection-specific).
  *
- * @param upgrade_handler function to call with the 'upgraded' socket
+ * @param upgrade_handler function to call with the "upgraded" socket
  * @param upgrade_handler_cls closure for @a upgrade_handler
  * @return NULL on error (i.e. invalid arguments, out of memory)
  */
 _MHD_EXTERN struct MHD_Response *
 MHD_create_response_for_upgrade (MHD_UpgradeHandler upgrade_handler,
 				 void *upgrade_handler_cls);
-#endif
+
 
 /**
  * Destroy a response object and associated resources.  Note that
@@ -2689,7 +2700,7 @@ union MHD_DaemonInfo
   size_t mac_key_size;
 
   /**
-   * Listen socket file descriptor, for #MHD_DAEMON_INFO_EPOLL_FD_LINUX_ONLY
+   * Socket, returned for #MHD_DAEMON_INFO_EPOLL_FD
    * and #MHD_DAEMON_INFO_LISTEN_FD.
    */
   MHD_socket listen_fd;
@@ -2742,7 +2753,7 @@ enum MHD_FEATURE
 
   /**
    * Get whether HTTPS is supported.  If supported then flag
-   * #MHD_USE_SSL and options #MHD_OPTION_HTTPS_MEM_KEY,
+   * #MHD_USE_TLS and options #MHD_OPTION_HTTPS_MEM_KEY,
    * #MHD_OPTION_HTTPS_MEM_CERT, #MHD_OPTION_HTTPS_MEM_TRUST,
    * #MHD_OPTION_HTTPS_MEM_DHPARAMS, #MHD_OPTION_HTTPS_CRED_TYPE,
    * #MHD_OPTION_HTTPS_PRIORITIES can be used.
@@ -2785,7 +2796,7 @@ enum MHD_FEATURE
   /**
    * Get whether shutdown on listen socket to signal other
    * threads is supported. If not supported flag
-   * #MHD_USE_PIPE_FOR_SHUTDOWN is automatically forced.
+   * #MHD_USE_ITC is automatically forced.
    */
   MHD_FEATURE_SHUTDOWN_LISTEN_SOCKET = 8,
 
@@ -2861,7 +2872,7 @@ enum MHD_FEATURE
  * @ingroup specialized
  */
 _MHD_EXTERN int
-MHD_is_feature_supported(enum MHD_FEATURE feature);
+MHD_is_feature_supported (enum MHD_FEATURE feature);
 
 
 #if 0                           /* keep Emacsens' auto-indent happy */

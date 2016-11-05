@@ -246,11 +246,15 @@ main ()
   if ((key_pem == NULL) || (cert_pem == NULL))
     {
       printf ("The key/certificate files could not be read.\n");
+      if (NULL != key_pem)
+        free (key_pem);
+      if (NULL != cert_pem)
+        free (cert_pem);
       return 1;
     }
 
   daemon =
-    MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, PORT, NULL,
+    MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS, PORT, NULL,
                       NULL, &answer_to_connection, NULL,
                       MHD_OPTION_HTTPS_MEM_KEY, key_pem,
                       MHD_OPTION_HTTPS_MEM_CERT, cert_pem, MHD_OPTION_END);

@@ -12,6 +12,10 @@
 /* Define to 1 if libmicrohttpd is compiled with digest Auth support. */
 #undef DAUTH_SUPPORT
 
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
+#undef ENABLE_NLS
+
 /* Define to 1 to enable epoll support */
 #undef EPOLL_SUPPORT
 
@@ -27,12 +31,24 @@
 /* Define to 1 if you have the `gmtime_s' function in C11 form. */
 #undef HAVE_C11_GMTIME_S
 
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
 /* Have clock_gettime */
 #undef HAVE_CLOCK_GETTIME
 
 /* Define to 1 if you have `clock_get_time', `host_get_clock_service' and
    `mach_port_deallocate' functions. */
 #undef HAVE_CLOCK_GET_TIME
+
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#undef HAVE_DCGETTEXT
 
 /* Define to 1 if you have the declaration of `SOCK_NONBLOCK', and to 0 if you
    don't. */
@@ -62,11 +78,17 @@
 /* Define to 1 if you have `gethrtime' function. */
 #undef HAVE_GETHRTIME
 
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
 
 /* Define to 1 if you have the <gnutls/gnutls.h> header file. */
 #undef HAVE_GNUTLS_GNUTLS_H
+
+/* Define if you have the iconv() function and it works. */
+#undef HAVE_ICONV
 
 /* Provides IPv6 headers */
 #undef HAVE_INET6
@@ -119,11 +141,17 @@
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
 
+/* Define to 1 if you have the <netinet/ip.h> header file. */
+#undef HAVE_NETINET_IP_H
+
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #undef HAVE_NETINET_TCP_H
 
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
+
+/* Define if you have usable pipe2(2) function */
+#undef HAVE_PIPE2_FUNC
 
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
@@ -207,6 +235,12 @@
 
 /* Define to 1 if you have the <sys/endian.h> header file. */
 #undef HAVE_SYS_ENDIAN_H
+
+/* Define to 1 if you have the <[sys/eventfd.h]> header file. */
+#undef HAVE_SYS_EVENTFD_H
+
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
 
 /* Define to 1 if you have the <sys/isa_defs.h> header file. */
 #undef HAVE_SYS_ISA_DEFS_H
@@ -332,9 +366,6 @@
    */
 #undef LT_OBJDIR
 
-/* Define to use pair of sockets instead of pipes for signaling */
-#undef MHD_DONT_USE_PIPES
-
 /* Define to 1 to disable setting name on generated threads */
 #undef MHD_NO_THREAD_NAMES
 
@@ -426,6 +457,15 @@
 # endif
 #endif
 
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef _ALL_SOURCE
+
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef _BSD_SOURCE
+
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef _DARWIN_C_SOURCE
+
 /* Enable large inode numbers on Mac OS X 10.5.  */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
@@ -434,7 +474,7 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
-/* Enable GNU-specific header features */
+/* Define to 1 to enable GNU-related header features */
 #undef _GNU_SOURCE
 
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
@@ -446,14 +486,47 @@
 /* defines how to decorate public symbols while building */
 #undef _MHD_EXTERN
 
+/* Define to use eventFD for inter-thread communication */
+#undef _MHD_ITC_EVENTFD
+
+/* Define to use pipe for inter-thread communication */
+#undef _MHD_ITC_PIPE
+
+/* Define to use socketpair for inter-thread communication */
+#undef _MHD_ITC_SOCKETPAIR
+
 /* Define to type which will be used as boolean type. */
 #undef _MHD_bool
 
 /* Define to prefix which will be used with MHD inline functions. */
 #undef _MHD_inline
 
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef _NETBSD_SOURCE
+
 /* Need with solaris or errno doesnt work */
 #undef _REENTRANT
+
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef _TANDEM_SOURCE
+
+/* Define to maximum value supported by system headers */
+#undef _XOPEN_SOURCE
+
+/* Define to 1 if _XOPEN_SOURCE is defined to value less than 500 and system
+   headers requre this symbol */
+#undef _XOPEN_SOURCE_EXTENDED
+
+/* Define to maximum value supported by system headers if _XOPEN_SOURCE is
+   defined to value less than 500 and headers do not support
+   _XOPEN_SOURCE_EXTENDED */
+#undef _XOPEN_VERSION
+
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef __BSD_VISIBLE
+
+/* Define to 1 if it is required by headers to expose additional symbols */
+#undef __EXTENSIONS__
 
 /* Define curl_free() as free() if our version of curl lacks curl_free. */
 #undef curl_free

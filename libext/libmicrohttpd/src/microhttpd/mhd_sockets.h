@@ -52,6 +52,9 @@
  * for socket function.
  */
 #if defined(MHD_POSIX_SOCKETS)
+#  ifdef HAVE_SYS_TYPES_H
+#    include <sys/types.h> /* required on old platforms */
+#  endif
 #  ifdef HAVE_SYS_SOCKET_H
 #    include <sys/socket.h>
 #  endif
@@ -95,9 +98,6 @@
 #  ifdef HAVE_STRING_H
 #    include <string.h> /* for strerror() */
 #  endif
-#  if defined(HAVE_SYS_TYPES_H)
-#    include <sys/types.h> /* required on old platforms */
-#  endif /* (!HAVE_SYS_SOCKET_H || !HAVE_SYS_SOCKET_H) && HAVE_SYS_TYPES_H */
 #elif defined(MHD_WINSOCK_SOCKETS)
 #  ifndef WIN32_LEAN_AND_MEAN
 #    define WIN32_LEAN_AND_MEAN 1
@@ -110,12 +110,30 @@
 #  include <poll.h>
 #endif
 
+#include <stddef.h>
+#if defined(_MSC_FULL_VER) && !defined (_SSIZE_T_DEFINED)
+#  include <stdint.h>
+#  define _SSIZE_T_DEFINED
+   typedef intptr_t ssize_t;
+#endif /* !_SSIZE_T_DEFINED */
+
+#include "mhd_limits.h"
+
 #ifdef _MHD_FD_SETSIZE_IS_DEFAULT
 #  define _MHD_SYS_DEFAULT_FD_SETSIZE FD_SETSIZE
 #else  /* ! _MHD_FD_SETSIZE_IS_DEFAULT */
 #  include "sysfdsetsize.h"
 #  define _MHD_SYS_DEFAULT_FD_SETSIZE get_system_fdsetsize_value()
 #endif /* ! _MHD_FD_SETSIZE_IS_DEFAULT */
+
+#ifndef MHD_PANIC
+#  include <stdio.h>
+#  include <stdlib.h>
+/* Simple implementation of MHD_PANIC, to be used outside lib */
+#  define MHD_PANIC(msg) do { fprintf (stderr,           \
+     "Abnormal termination at %d line in file %s: %s\n", \
+     (int)__LINE__, __FILE__, msg); abort();} while(0)
+#endif /* ! MHD_PANIC */
 
 #ifndef MHD_SOCKET_DEFINED
 /**
@@ -143,6 +161,12 @@
 #else  /* ! HAVE_SOCK_NONBLOCK */
 #  define MAYBE_SOCK_NONBLOCK 0
 #endif /* ! HAVE_SOCK_NONBLOCK */
+
+#ifdef MSG_NOSIGNAL
+#  define MAYBE_MSG_NOSIGNAL MSG_NOSIGNAL
+#else  /* ! MSG_NOSIGNAL */
+#  define MAYBE_MSG_NOSIGNAL 0
+#endif /* ! MSG_NOSIGNAL */
 
 #if !defined(SHUT_WR) && defined(SD_SEND)
 #  define SHUT_WR SD_SEND
@@ -190,19 +214,62 @@
 #endif
 
 /**
+ * MHD_SCKT_SEND_MAX_SIZE_ is maximum send()/recv() size value.
+ */
+#if !defined(MHD_WINSOCK_SOCKETS)
+#  define MHD_SCKT_SEND_MAX_SIZE_ SSIZE_MAX
+#else
+#  define MHD_SCKT_SEND_MAX_SIZE_ INT_MAX
+#endif
+
+/**
  * MHD_socket_close_(fd) close any FDs (non-W32) / close only socket
  * FDs (W32).  Note that on HP-UNIX, this function may leak the FD if
  * errno is set to EINTR.  Do not use HP-UNIX.
  *
  * @param fd descriptor to close
- * @return 0 on success (error codes like EINTR and EIO are counted as success,
- *           only EBADF counts as an error!)
+ * @return boolean true on success (error codes like EINTR and EIO are
+ *         counted as success, only EBADF counts as an error!),
+ *         boolean false otherwise.
  */
 #if !defined(MHD_WINSOCK_SOCKETS)
-#  define MHD_socket_close_(fd) (((0 != close(fd)) && (EBADF == errno)) ? -1 : 0)
+#  define MHD_socket_close_(fd) ((0 == close((fd))) || (EBADF != errno))
 #else
-#  define MHD_socket_close_(fd) closesocket((fd))
+#  define MHD_socket_close_(fd) (0 == closesocket((fd)))
 #endif
+
+/**
+ * MHD_socket_close_chk_(fd) close socket and abort execution
+ * if error is detected.
+ * @param fd socket to close
+ */
+#define MHD_socket_close_chk_(fd) do {        \
+    if (!MHD_socket_close_(fd))               \
+      MHD_PANIC(_("Close socket failed.\n")); \
+  } while(0)
+
+
+/**
+ * MHD_send_ is wrapper for system's send()
+ * @param s the socket to use
+ * @param b the buffer with data to send
+ * @param l the length of data in @a b
+ * @return ssize_t type value
+ */
+#define MHD_send_(s,b,l) \
+  ((ssize_t)send((s),(const void*)(b),((MHD_SCKT_SEND_SIZE_)l), MAYBE_MSG_NOSIGNAL))
+
+
+/**
+ * MHD_recv_ is wrapper for system's recv()
+ * @param s the socket to use
+ * @param b the buffer for data to receive
+ * @param l the length of @a b
+ * @return ssize_t type value
+ */
+#define MHD_recv_(s,b,l) \
+  ((ssize_t)recv((s),(void*)(b),((MHD_SCKT_SEND_SIZE_)l), 0))
+
 
 /**
  * Check whether FD can be added to fd_set with specified FD_SETSIZE.
@@ -259,8 +326,9 @@
 ( ( (((void*)(r) == (void*)0) || ((fd_set*)(r))->fd_count == 0) &&  \
     (((void*)(w) == (void*)0) || ((fd_set*)(w))->fd_count == 0) &&  \
     (((void*)(e) == (void*)0) || ((fd_set*)(e))->fd_count == 0) ) ? \
-  ( ((void*)(t) == (void*)0) ?                                      \
-    (Sleep((t)->tv_sec * 1000 + (t)->tv_usec / 1000), 0) : 0 ) :    \
+  ( ((void*)(t) == (void*)0) ? 0 :                                  \
+    (Sleep(((struct timeval*)(t))->tv_sec * 1000 +                  \
+           ((struct timeval*)(t))->tv_usec / 1000), 0) ) :          \
   (select((int)0,(r),(w),(e),(t))) )
 #endif
 
@@ -570,6 +638,30 @@
 #endif
 
 /* Socket functions */
+
+#if defined(MHD_POSIX_SOCKETS) && defined(AF_LOCAL)
+#  define MHD_socket_pair_(fdarr) (!socketpair(AF_LOCAL, SOCK_STREAM, 0, (fdarr)))
+#  if defined(HAVE_SOCK_NONBLOCK)
+#    define MHD_socket_pair_nblk_(fdarr) (!socketpair(AF_LOCAL, SOCK_STREAM | SOCK_NONBLOCK, 0, (fdarr)))
+#  endif /* HAVE_SOCK_NONBLOCK*/
+#elif defined(MHD_POSIX_SOCKETS) && defined(AF_UNIX)
+#  define MHD_socket_pair_(fdarr) (!socketpair(AF_UNIX, SOCK_STREAM, 0, (fdarr)))
+#  if defined(HAVE_SOCK_NONBLOCK)
+#    define MHD_socket_pair_nblk_(fdarr) (!socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0, (fdarr)))
+#  endif /* HAVE_SOCK_NONBLOCK*/
+#elif defined(MHD_WINSOCK_SOCKETS)
+   /**
+    * Create pair of mutually connected TCP/IP sockets on loopback address
+    * @param sockets_pair array to receive resulted sockets
+    * @param non_blk if set to non-zero value, sockets created in non-blocking mode
+    *                otherwise sockets will be in blocking mode
+    * @return non-zero if succeeded, zero otherwise
+    */
+   int MHD_W32_socket_pair_(SOCKET sockets_pair[2], int non_blk);
+
+#  define MHD_socket_pair_(fdarr) MHD_W32_socket_pair_((fdarr), 0)
+#  define MHD_socket_pair_nblk_(fdarr) MHD_W32_socket_pair_((fdarr), 1)
+#endif
 
 /**
  * Add @a fd to the @a set.  If @a fd is

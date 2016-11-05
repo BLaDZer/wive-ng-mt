@@ -96,19 +96,26 @@ MHD_pool_create (size_t max)
     pool->memory = MAP_FAILED;
   else
 #if defined(MAP_ANONYMOUS) && !defined(_WIN32)
-    pool->memory = mmap (NULL, max, PROT_READ | PROT_WRITE,
-			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    pool->memory = mmap (NULL,
+                         max,
+                         PROT_READ | PROT_WRITE,
+			 MAP_PRIVATE | MAP_ANONYMOUS,
+                         -1,
+                         0);
 #elif defined(_WIN32)
-    pool->memory = VirtualAlloc(NULL, max, MEM_COMMIT | MEM_RESERVE,
-        PAGE_READWRITE);
+    pool->memory = VirtualAlloc (NULL,
+                                 max,
+                                 MEM_COMMIT | MEM_RESERVE,
+                                 PAGE_READWRITE);
 #endif
 #else
   pool->memory = MAP_FAILED;
 #endif
-  if ((pool->memory == MAP_FAILED) || (pool->memory == NULL))
+  if ( (MAP_FAILED == pool->memory) ||
+       (NULL == pool->memory))
     {
       pool->memory = malloc (max);
-      if (pool->memory == NULL)
+      if (NULL == pool->memory)
         {
           free (pool);
           return NULL;
@@ -134,19 +141,35 @@ MHD_pool_create (size_t max)
 void
 MHD_pool_destroy (struct MemoryPool *pool)
 {
-  if (pool == NULL)
+  if (NULL == pool)
     return;
-  if (pool->is_mmap == MHD_NO)
+  if (MHD_NO == pool->is_mmap)
     free (pool->memory);
   else
 #if defined(MAP_ANONYMOUS) && !defined(_WIN32)
-    munmap (pool->memory, pool->size);
+    munmap (pool->memory,
+            pool->size);
 #elif defined(_WIN32)
-    VirtualFree(pool->memory, 0, MEM_RELEASE);
+    VirtualFree (pool->memory,
+                 0,
+                 MEM_RELEASE);
 #else
-    abort();
+    abort ();
 #endif
   free (pool);
+}
+
+
+/**
+ * Check how much memory is left in the @a pool
+ *
+ * @param pool pool to check
+ * @return number of bytes still available in @a pool
+ */
+size_t
+MHD_pool_get_free (struct MemoryPool *pool)
+{
+  return (pool->end - pool->pos);
 }
 
 
@@ -163,7 +186,8 @@ MHD_pool_destroy (struct MemoryPool *pool)
  */
 void *
 MHD_pool_allocate (struct MemoryPool *pool,
-		   size_t size, int from_end)
+		   size_t size,
+                   int from_end)
 {
   void *ret;
   size_t asize;
@@ -171,7 +195,8 @@ MHD_pool_allocate (struct MemoryPool *pool,
   asize = ROUND_TO_ALIGN (size);
   if ( (0 == asize) && (0 != size) )
     return NULL; /* size too close to SIZE_MAX */
-  if ((pool->pos + asize > pool->end) || (pool->pos + asize < pool->pos))
+  if ( (pool->pos + asize > pool->end) ||
+       (pool->pos + asize < pool->pos))
     return NULL;
   if (from_end == MHD_YES)
     {
@@ -214,9 +239,11 @@ MHD_pool_reallocate (struct MemoryPool *pool,
   size_t asize;
 
   asize = ROUND_TO_ALIGN (new_size);
-  if ( (0 == asize) && (0 != new_size) )
+  if ( (0 == asize) &&
+       (0 != new_size) )
     return NULL; /* new_size too close to SIZE_MAX */
-  if ((pool->end < old_size) || (pool->end < asize))
+  if ( (pool->end < old_size) ||
+       (pool->end < asize) )
     return NULL;                /* unsatisfiable or bogus request */
 
   if ( (pool->pos >= old_size) &&
@@ -228,7 +255,9 @@ MHD_pool_reallocate (struct MemoryPool *pool,
           /* fits */
           pool->pos += asize - old_size;
           if (asize < old_size)      /* shrinking - zero again! */
-            memset (&pool->memory[pool->pos], 0, old_size - asize);
+            memset (&pool->memory[pool->pos],
+                    0,
+                    old_size - asize);
           return old;
         }
       /* does not fit */
@@ -242,7 +271,9 @@ MHD_pool_reallocate (struct MemoryPool *pool,
       /* fits */
       ret = &pool->memory[pool->pos];
       if (0 != old_size)
-      memmove (ret, old, old_size);
+        memmove (ret,
+                 old,
+                 old_size);
       pool->pos += asize;
       return ret;
     }
@@ -270,23 +301,21 @@ MHD_pool_reset (struct MemoryPool *pool,
 		size_t copy_bytes,
                 size_t new_size)
 {
-  if (NULL != keep)
+  if ( (NULL != keep) &&
+       (keep != pool->memory) )
     {
-      if (keep != pool->memory)
-        {
-          if (0 != copy_bytes)
-          memmove (pool->memory,
-                   keep,
-                   copy_bytes);
-          keep = pool->memory;
-        }
+      if (0 != copy_bytes)
+        memmove (pool->memory,
+                 keep,
+                 copy_bytes);
+      keep = pool->memory;
     }
   pool->end = pool->size;
   /* technically not needed, but safer to zero out */
   if (pool->size > copy_bytes)
-  memset (&pool->memory[copy_bytes],
-	  0,
-	  pool->size - copy_bytes);
+    memset (&pool->memory[copy_bytes],
+            0,
+            pool->size - copy_bytes);
   if (NULL != keep)
     pool->pos = ROUND_TO_ALIGN (new_size);
   return keep;

@@ -73,14 +73,19 @@ callback(void *cls,
   r = MHD_create_response_from_callback (MHD_SIZE_UNKNOWN, 1024,
 					 &called_twice, cbc,
 					 &free);
-  MHD_queue_response(connection, MHD_HTTP_OK, r);
-  MHD_destroy_response(r);
+  MHD_queue_response (connection,
+                      MHD_HTTP_OK,
+                      r);
+  MHD_destroy_response (r);
   return MHD_YES;
 }
 
 
 static size_t
-discard_buffer (void *ptr, size_t size, size_t nmemb, void *ctx)
+discard_buffer (void *ptr,
+                size_t size,
+                size_t nmemb,
+                void *ctx)
 {
   return size * nmemb;
 }
@@ -169,7 +174,11 @@ main(int argc, char **argv)
 	}
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      select(maxposixs + 1, &rs, &ws, &es, &tv);
+      if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+        {
+          if (EINTR != errno)
+            abort ();
+        }
       if (NULL != multi)
 	{
 	  curl_multi_perform (multi, &running);

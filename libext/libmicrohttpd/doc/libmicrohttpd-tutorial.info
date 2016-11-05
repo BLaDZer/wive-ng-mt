@@ -1,4 +1,4 @@
-This is libmicrohttpd-tutorial.info, produced by makeinfo version 6.1
+This is libmicrohttpd-tutorial.info, produced by makeinfo version 6.3
 from libmicrohttpd-tutorial.texi.
 
 This tutorial documents GNU libmicrohttpd version 0.9.48, last updated 2
@@ -1371,9 +1371,13 @@ Looking up the cookie
 Since MHD parses the HTTP cookie header for us, looking up an existing
 cookie is straightforward:
 
-FIXME.
+const char *value;
 
-   Here, FIXME is the name we chose for our session cookie.
+value = MHD_lookup_connection_value (connection,
+                                     MHD_COOKIE_KIND,
+                                     "KEY");
+
+   Here, "KEY" is the name we chose for our session cookie.
 
 Setting the cookie header
 =========================
@@ -1383,12 +1387,25 @@ to set cookies.  In order to generate a unique cookie, our example
 creates a random 64-character text string to be used as the value of the
 cookie:
 
-FIXME.
+char value[128];
+char raw_value[65];
+
+for (unsigned int i=0;i<sizeof (raw_value);i++)
+  raw_value = 'A' + (rand () % 26); /* bad PRNG! */
+raw_value[64] = '\0';
+snprintf (value, sizeof (value),
+          "%s=%s",
+          "KEY",
+          raw_value);
 
    Given this cookie value, we can then set the cookie header in our
 HTTP response as follows:
 
-FIXME.
+assert (MHD_YES ==
+        MHD_set_connection_value (connection,
+                                  MHD_HEADER_KIND,
+                                  MHD_HTTP_HEADER_SET_COOKIE,
+                                  value));
 
 Remark: Session expiration
 ==========================
@@ -2593,12 +2610,12 @@ C.3 responseheaders.c
        if ( (-1 == (fd = open (FILENAME, O_RDONLY))) ||
             (0 != fstat (fd, &sbuf)) )
          {
-           /* error accessing file */
-           if (fd != -1)
-     	(void) close (fd);
            const char *errorstr =
              "<html><body>An internal server error has occured!\
                                    </body></html>";
+           /* error accessing file */
+           if (fd != -1)
+     	(void) close (fd);
            response =
      	MHD_create_response_from_buffer (strlen (errorstr),
      					 (void *) errorstr,
@@ -2752,6 +2769,11 @@ C.5 simplepost.c
      #include <stdio.h>
      #include <string.h>
      #include <stdlib.h>
+
+     #if defined(_MSC_VER) && _MSC_VER+0 <= 1800
+     /* Substitution is OK while return value is not used */
+     #define snprintf _snprintf
+     #endif
 
      #define PORT            8888
      #define POSTBUFFERSIZE  512
@@ -2953,6 +2975,17 @@ C.6 largepost.c
      #include <string.h>
      #include <microhttpd.h>
 
+     #ifdef _MSC_VER
+     #ifndef strcasecmp
+     #define strcasecmp(a,b) _stricmp((a),(b))
+     #endif /* !strcasecmp */
+     #endif /* _MSC_VER */
+
+     #if defined(_MSC_VER) && _MSC_VER+0 <= 1800
+     /* Substitution is OK while return value is not used */
+     #define snprintf _snprintf
+     #endif
+
      #define PORT            8888
      #define POSTBUFFERSIZE  512
      #define MAXCLIENTS      2
@@ -2994,6 +3027,8 @@ C.6 largepost.c
        "<html><body>An internal server error has occured.</body></html>";
      const char *fileexistspage =
        "<html><body>This file already exists.</body></html>";
+     const char* const postprocerror =
+       "<html><head><title>Error</title></head><body>Error processing POST data</body></html>";
 
 
      static int
@@ -3170,9 +3205,14 @@ C.6 largepost.c
 
            if (0 != *upload_data_size)
              {
-               MHD_post_process (con_info->postprocessor,
-                                 upload_data,
-                                 *upload_data_size);
+               if (MHD_post_process (con_info->postprocessor,
+                                     upload_data,
+                                     *upload_data_size) != MHD_YES)
+                 {
+                   return send_page (connection,
+                                     postprocerror,
+                                     MHD_HTTP_BAD_REQUEST);
+                 }
                *upload_data_size = 0;
 
                return MHD_YES;
@@ -4087,6 +4127,7 @@ C.8 tlsauthentication.c
          return 0;
      }
 
+
      static char *
      load_file (const char *filename)
      {
@@ -4095,15 +4136,15 @@ C.8 tlsauthentication.c
        long size;
 
        size = get_file_size (filename);
-       if (size == 0)
+       if (0 == size)
          return NULL;
 
        fp = fopen (filename, "rb");
-       if (!fp)
+       if (! fp)
          return NULL;
 
        buffer = malloc (size + 1);
-       if (!buffer)
+       if (! buffer)
          {
            fclose (fp);
            return NULL;
@@ -4119,6 +4160,7 @@ C.8 tlsauthentication.c
        fclose (fp);
        return buffer;
      }
+
 
      static int
      ask_for_authentication (struct MHD_Connection *connection, const char *realm)
@@ -4252,7 +4294,7 @@ C.8 tlsauthentication.c
          }
 
        daemon =
-         MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, PORT, NULL,
+         MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS, PORT, NULL,
                            NULL, &answer_to_connection, NULL,
                            MHD_OPTION_HTTPS_MEM_KEY, key_pem,
                            MHD_OPTION_HTTPS_MEM_CERT, cert_pem, MHD_OPTION_END);
@@ -4287,17 +4329,17 @@ Node: Supporting basic authentication27782
 Node: Processing POST data35190
 Node: Improved processing of POST data43853
 Node: Session management54564
-Node: Adding a layer of security57459
-Node: Bibliography72024
-Node: License text73218
-Node: Example programs98374
-Node: hellobrowser.c98687
-Node: logging.c100230
-Node: responseheaders.c101813
-Node: basicauthentication.c104439
-Node: simplepost.c106978
-Node: largepost.c112659
-Node: sessions.c120994
-Node: tlsauthentication.c143339
+Node: Adding a layer of security58078
+Node: Bibliography72643
+Node: License text73837
+Node: Example programs98993
+Node: hellobrowser.c99306
+Node: logging.c100849
+Node: responseheaders.c102432
+Node: basicauthentication.c105058
+Node: simplepost.c107597
+Node: largepost.c113433
+Node: sessions.c122430
+Node: tlsauthentication.c144775
 
 End Tag Table

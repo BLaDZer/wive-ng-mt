@@ -34,6 +34,7 @@
 #include <pthread.h>
 #include "mhd_sockets.h" /* only macros used */
 
+
 #ifndef WINDOWS
 #include <unistd.h>
 #include <sys/socket.h>
@@ -142,12 +143,16 @@ ServeOneRequest(void *param)
       if (MHD_YES != MHD_get_fdset (d, &rs, &ws, &es, &max))
         {
           MHD_stop_daemon (d);
-          MHD_socket_close_(fd);
+          MHD_socket_close_chk_(fd);
           return "MHD_get_fdset() failed";
         }
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      MHD_SYS_select_ (max + 1, &rs, &ws, &es, &tv);
+      if (-1 == MHD_SYS_select_ (max + 1, &rs, &ws, &es, &tv))
+        {
+          if (EINTR != errno)
+            abort ();
+        }
       MHD_run (d);
     }
   fd = MHD_quiesce_daemon (d);
@@ -199,12 +204,12 @@ testGet (int type, int pool_count, int poll_flag)
   cbc.size = 2048;
   cbc.pos = 0;
   if (pool_count > 0) {
-    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_PIPE_FOR_SHUTDOWN | poll_flag,
+    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_ITC | poll_flag,
                           11080, NULL, NULL, &ahc_echo, "GET",
                           MHD_OPTION_THREAD_POOL_SIZE, pool_count, MHD_OPTION_END);
 
   } else {
-    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_PIPE_FOR_SHUTDOWN | poll_flag,
+    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_ITC | poll_flag,
                           11080, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
   }
   if (d == NULL)
@@ -281,7 +286,7 @@ testGet (int type, int pool_count, int poll_flag)
       fprintf(stderr, "%s\n", cbc.buf);
       curl_easy_cleanup (c);
       MHD_stop_daemon (d);
-      MHD_socket_close_(fd);
+      MHD_socket_close_chk_(fd);
       return 4;
     }
   if (0 != strncmp ("/hello_world", cbc.buf, strlen ("/hello_world")))
@@ -289,7 +294,7 @@ testGet (int type, int pool_count, int poll_flag)
       fprintf(stderr, "%s\n", cbc.buf);
       curl_easy_cleanup (c);
       MHD_stop_daemon (d);
-      MHD_socket_close_(fd);
+      MHD_socket_close_chk_(fd);
       return 8;
     }
 
@@ -301,12 +306,12 @@ testGet (int type, int pool_count, int poll_flag)
       fprintf (stderr, "curl_easy_perform should fail\n");
       curl_easy_cleanup (c);
       MHD_stop_daemon (d);
-      MHD_socket_close_(fd);
+      MHD_socket_close_chk_(fd);
       return 2;
     }
   curl_easy_cleanup (c);
   MHD_stop_daemon (d);
-  MHD_socket_close_(fd);
+  MHD_socket_close_chk_(fd);
 
   return 0;
 }
@@ -342,7 +347,10 @@ testExternalGet ()
   cbc.size = 2048;
   cbc.pos = 0;
   d = MHD_start_daemon (MHD_USE_DEBUG,
-                        11080, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
+                        11080,
+                        NULL, NULL,
+                        &ahc_echo, "GET",
+                        MHD_OPTION_END);
   if (d == NULL)
     return 256;
   c = setupCURL(&cbc);
@@ -363,98 +371,107 @@ testExternalGet ()
       return 1024;
     }
 
-  for (i = 0; i < 2; i++) {
-    start = time (NULL);
-    while ((time (NULL) - start < 5) && (multi != NULL))
-      {
-        maxsock = MHD_INVALID_SOCKET;
-        maxposixs = -1;
-        FD_ZERO (&rs);
-        FD_ZERO (&ws);
-        FD_ZERO (&es);
-        curl_multi_perform (multi, &running);
-        mret = curl_multi_fdset (multi, &rs, &ws, &es, &maxposixs);
-        if (mret != CURLM_OK)
-          {
-            curl_multi_remove_handle (multi, c);
-            curl_multi_cleanup (multi);
-            curl_easy_cleanup (c);
-            MHD_stop_daemon (d);
-            return 2048;
-          }
-        if (MHD_YES != MHD_get_fdset (d, &rs, &ws, &es, &maxsock))
-          {
-            curl_multi_remove_handle (multi, c);
-            curl_multi_cleanup (multi);
-            curl_easy_cleanup (c);
-            MHD_stop_daemon (d);
-            return 4096;
-          }
-        tv.tv_sec = 0;
-        tv.tv_usec = 1000;
-        select (maxposixs + 1, &rs, &ws, &es, &tv);
-        curl_multi_perform (multi, &running);
-        if (running == 0)
-          {
-            msg = curl_multi_info_read (multi, &running);
-            if (msg == NULL)
-              break;
-            if (msg->msg == CURLMSG_DONE)
-              {
-                if (i == 0 && msg->data.result != CURLE_OK)
-                  printf ("%s failed at %s:%d: `%s'\n",
-                          "curl_multi_perform",
-                          __FILE__,
-                          __LINE__, curl_easy_strerror (msg->data.result));
-                else if (i == 1 && msg->data.result == CURLE_OK)
-                  printf ("%s should have failed at %s:%d\n",
-                          "curl_multi_perform",
-                          __FILE__,
-                          __LINE__);
-                curl_multi_remove_handle (multi, c);
-                curl_multi_cleanup (multi);
-                curl_easy_cleanup (c);
-                c = NULL;
-                multi = NULL;
-              }
-          }
-        MHD_run (d);
-      }
-
-      if (i == 0) {
-        /* quiesce the daemon on the 1st iteration, so the 2nd should fail */
-        fd = MHD_quiesce_daemon(d);
-        if (MHD_INVALID_SOCKET == fd)
-          {
-            fprintf (stderr,
-                     "MHD_quiesce_daemon failed.\n");
-            curl_multi_remove_handle (multi, c);
-            curl_multi_cleanup (multi);
-            curl_easy_cleanup (c);
-            MHD_stop_daemon (d);
-            return 2;
-          }
-        c = setupCURL (&cbc);
-        multi = curl_multi_init ();
-        mret = curl_multi_add_handle (multi, c);
-        if (mret != CURLM_OK)
+  for (i = 0; i < 2; i++)
+    {
+      start = time (NULL);
+      while ( (time (NULL) - start < 5) &&
+              (NULL != multi) )
         {
-          curl_multi_remove_handle (multi, c);
-          curl_multi_cleanup (multi);
-          curl_easy_cleanup (c);
-          MHD_stop_daemon (d);
-          return 32768;
+          maxsock = MHD_INVALID_SOCKET;
+          maxposixs = -1;
+          FD_ZERO (&rs);
+          FD_ZERO (&ws);
+          FD_ZERO (&es);
+          curl_multi_perform (multi, &running);
+          mret = curl_multi_fdset (multi, &rs, &ws, &es, &maxposixs);
+          if (mret != CURLM_OK)
+            {
+              curl_multi_remove_handle (multi, c);
+              curl_multi_cleanup (multi);
+              curl_easy_cleanup (c);
+              MHD_stop_daemon (d);
+              return 2048;
+            }
+          if (MHD_YES != MHD_get_fdset (d, &rs, &ws, &es, &maxsock))
+            {
+              curl_multi_remove_handle (multi, c);
+              curl_multi_cleanup (multi);
+              curl_easy_cleanup (c);
+              MHD_stop_daemon (d);
+              return 4096;
+            }
+          tv.tv_sec = 0;
+          tv.tv_usec = 1000;
+          if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+            {
+              if (EINTR != errno)
+                abort ();
+            }
+          curl_multi_perform (multi, &running);
+          if (0 == running)
+            {
+              msg = curl_multi_info_read (multi, &running);
+              if (NULL == msg)
+                break;
+              if (msg->msg == CURLMSG_DONE)
+                {
+                  if (i == 0 && msg->data.result != CURLE_OK)
+                    printf ("%s failed at %s:%d: `%s'\n",
+                            "curl_multi_perform",
+                            __FILE__,
+                            __LINE__,
+                            curl_easy_strerror (msg->data.result));
+                  else if ( (i == 1) &&
+                            (msg->data.result == CURLE_OK) )
+                    printf ("%s should have failed at %s:%d\n",
+                            "curl_multi_perform",
+                            __FILE__,
+                            __LINE__);
+                  curl_multi_remove_handle (multi, c);
+                  curl_multi_cleanup (multi);
+                  curl_easy_cleanup (c);
+                  c = NULL;
+                  multi = NULL;
+                }
+            }
+          MHD_run (d);
         }
-      }
+
+      if (0 == i)
+        {
+          /* quiesce the daemon on the 1st iteration, so the 2nd should fail */
+          fd = MHD_quiesce_daemon(d);
+          if (MHD_INVALID_SOCKET == fd)
+            {
+              fprintf (stderr,
+                       "MHD_quiesce_daemon failed.\n");
+              curl_multi_remove_handle (multi, c);
+              curl_multi_cleanup (multi);
+              curl_easy_cleanup (c);
+              MHD_stop_daemon (d);
+              return 2;
+            }
+          c = setupCURL (&cbc);
+          multi = curl_multi_init ();
+          mret = curl_multi_add_handle (multi, c);
+          if (mret != CURLM_OK)
+            {
+              curl_multi_remove_handle (multi, c);
+              curl_multi_cleanup (multi);
+              curl_easy_cleanup (c);
+              MHD_stop_daemon (d);
+              return 32768;
+            }
+        }
     }
-  if (multi != NULL)
+  if (NULL != multi)
     {
       curl_multi_remove_handle (multi, c);
       curl_easy_cleanup (c);
       curl_multi_cleanup (multi);
     }
   MHD_stop_daemon (d);
-  MHD_socket_close_ (fd);
+  MHD_socket_close_chk_ (fd);
   if (cbc.pos != strlen ("/hello_world"))
     return 8192;
   if (0 != strncmp ("/hello_world", cbc.buf, strlen ("/hello_world")))

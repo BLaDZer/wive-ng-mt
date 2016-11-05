@@ -1,3 +1,67 @@
+Mon Oct 17 19:08:18 CEST 2016
+	Fixed misc. issues relating to upgrade.
+	Releasing experimental 0.9.52. -CG
+
+Wed Oct 12 14:26:20 CEST 2016
+	Migrated repository from Subversion to Git. -CG
+
+Tue Oct 11 18:09:56 CEST 2016
+	Deprecated MHD_USE_SSL, use MHD_USE_TLS instead. -CG
+
+Tue Oct 11 18:14:40 MSK 2016
+	Code internal refactoring: 'pipes' renamed to 'inter-thread
+	communication (channels)/ITCs', as code can use different types
+	of communications.
+	Optimizations: ITCs now always created in non-blocking mode.
+	Added configure parameter to choose ITC type.
+	Updated documentation and comments.
+	Minor errors fixed (related to heavy load). -EG
+
+Thu Sep 22 17:51:04 CEST 2016
+	Implementing support for eventfd() instead of pipe() for
+	signaling (on platforms that support it); fixing #3557. -CG
+
+Thu Sep 22 11:03:43 CEST 2016
+	Simplify internal error handling logic by folding it into the
+	MHD_socket_close_, MHD_mutex_lock_, MHD_mutex_unlock_ and
+	MHD_mutex_destroy_ functions. -CG
+
+Tue Sep 13 22:20:26 MSK 2016
+	Added autoconf macro to enable maximum platform
+	features. Fixed compiling on Solaris. -EG
+
+Wed Sep  7 12:57:57 CEST 2016
+	Fixing #4641. -Hawk
+
+Wed Sep  7 00:28:59 CEST 2016
+	Adding remaining "_"-markups for i18n (#4614). -CG
+
+Tue Sep  6 23:39:56 CEST 2016
+	Allow out-of-order nonces for digest authentication (#4636). -CG
+
+Tue Sep  6 21:29:09 CEST 2016
+	Martin was right, "socket_context" should be "void *"
+	in `union MHD_ConnectionInfo`.  -MS
+
+Sun Sep  4 18:16:32 CEST 2016
+	Fixing potential memory leak (#4634). -CG
+
+Sun Sep  4 17:25:45 CEST 2016
+	Tests for "Upgrade" logic are now in place and passing.
+	However, still need to make sure code is portable. -CG
+
+Sat Sep  3 11:56:20 CEST 2016
+	Adding logic for handling HTTP "Upgrade" in thread-per-connection
+	mode. Also still untested. -CG
+
+Sat Aug 27 21:01:43 CEST 2016
+	Adding a few extra safety checks around HTTP "Upgrade"
+	(against wrong uses of API), and a testcase. -CG
+
+Sat Aug 27 20:07:53 CEST 2016
+	Adding completely *untested* logic for HTTP "Upgrade"
+	handling. -CG
+
 Sat Aug 27 18:20:38 CEST 2016
 	Releasing libmicrohttpd 0.9.51. -CG
 

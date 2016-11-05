@@ -20,21 +20,23 @@
 # Process this file with autoconf to produce a configure script.
 #
 #
-AC_PREREQ([2.60])
+AC_PREREQ([2.64])
 LT_PREREQ([2.4.0])
-AC_INIT([libmicrohttpd],[0.9.51],[libmicrohttpd@gnu.org])
+AC_INIT([GNU Libmicrohttpd],[0.9.52],[libmicrohttpd@gnu.org])
 AM_INIT_AUTOMAKE([silent-rules] [subdir-objects])
 AC_CONFIG_HEADERS([MHD_config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AC_DEFINE([[_GNU_SOURCE]], [[1]], [Enable GNU-specific header features])
 
-LIB_VERSION_CURRENT=51
+LIB_VERSION_CURRENT=52
 LIB_VERSION_REVISION=0
-LIB_VERSION_AGE=39
+LIB_VERSION_AGE=40
 AC_SUBST(LIB_VERSION_CURRENT)
 AC_SUBST(LIB_VERSION_REVISION)
 AC_SUBST(LIB_VERSION_AGE)
 
+# check for gettext
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.4])
 
 AC_MSG_CHECKING([[whether z/OS special settings are required]])
 if test `uname -s` = "OS/390"
@@ -67,12 +69,13 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_CANONICAL_HOST
 AC_PROG_CC_STDC
+MHD_SYS_EXT
 LT_INIT([win32-dll])
 LT_LANG([Windows Resource])
 
-PACKAGE_VERSION_MAJOR=${PACKAGE_VERSION%.*.*}
-PACKAGE_VERSION_MINOR=${PACKAGE_VERSION%.*}; PACKAGE_VERSION_MINOR=${PACKAGE_VERSION_MINOR#*.}
-PACKAGE_VERSION_SUBMINOR=${PACKAGE_VERSION#*.*.}
+PACKAGE_VERSION_MAJOR='m4_car(m4_unquote(m4_split(AC_PACKAGE_VERSION, [\.])))'
+PACKAGE_VERSION_MINOR='m4_argn(2, m4_unquote(m4_split(AC_PACKAGE_VERSION, [\.])))'
+PACKAGE_VERSION_SUBMINOR='m4_argn(3, m4_unquote(m4_split(AC_PACKAGE_VERSION, [\.])))'
 AC_SUBST([PACKAGE_VERSION_MAJOR])
 AC_SUBST([PACKAGE_VERSION_MINOR])
 AC_SUBST([PACKAGE_VERSION_SUBMINOR])
@@ -89,18 +92,18 @@ MHD_LIBDEPS_PKGCFG=''
 AC_CHECK_TYPE([_Bool],
   [ AC_DEFINE([_MHD_bool],[_Bool],[Define to type which will be used as boolean type.]) ],
   [
-    AC_CHECK_HEADER([stdbool.h], [ AC_DEFINE([HAVE_STDBOOL_H],[1],[Define to 1 if you have the <stdbool.h> header file and it's required for _MHD_bool.]) ])
+    AC_CHECK_HEADER([stdbool.h], [ AC_DEFINE([HAVE_STDBOOL_H],[1],[Define to 1 if you have the <stdbool.h> header file and it's required for _MHD_bool.]) ], [], [AC_INCLUDES_DEFAULT])
     AC_CHECK_TYPE([bool],
       [ AC_DEFINE([_MHD_bool],[bool]) ],
       [ AC_DEFINE([_MHD_bool],[int]) ],
       [[
-        #ifdef HAVE_STDBOOL_H
-        #include <stdbool.h>
-        #endif
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
+#endif
       ]])
   ])
 
-AX_CHECK_COMPILE_FLAG([[-Werror=attributes]], 
+AX_CHECK_COMPILE_FLAG([[-Werror=attributes]],
                       [[errattr_CFLAGS="-Werror=attributes"]],
                       [[errattr_CFLAGS=""]], [], [])
 AC_MSG_CHECKING([[for function inline keywords suppoted by $CC]])
@@ -121,13 +124,13 @@ for inln_prfx_chk in InlineWithAttr __forceinline inline __inline__ __inline _in
     [
      AC_LANG_PROGRAM(
        [[
-         #ifdef __cplusplus
+#ifdef __cplusplus
 #error This test is only for C.
-         choke me
-         #endif
-         #ifdef HAVE_STDBOOL_H
-         #include <stdbool.h>
-         #endif
+choke me
+#endif
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
+#endif
          static $inln_prfx_chk _MHD_bool cmpfn(int x, int y)
          { return x > y; }
          static $inln_prfx_chk int sumfn(int x, int y)
@@ -214,7 +217,7 @@ netbsd*)
      mhd_host_os='Windows (MinGW)'
      AC_MSG_RESULT([[$mhd_host_os]])
      LIBS="$LIBS -lws2_32"
-     AC_CHECK_HEADERS([winsock2.h ws2tcpip.h],, AC_MSG_ERROR([[Winsock2 headers are required for W32]]))
+     AC_CHECK_HEADERS([winsock2.h ws2tcpip.h], [], [AC_MSG_ERROR([[Winsock2 headers are required for W32]])], [AC_INCLUDES_DEFAULT])
      AC_CACHE_CHECK([for MS lib utility], [ac_cv_use_ms_lib_tool],
        [[mslibcheck=`lib 2>&1`
         if [[ $mslibcheck = "Microsoft (R) Library Manager"* ]]; then
@@ -324,7 +327,7 @@ if test "x$enable_thread_names" != "xno" && test "x$USE_THREADS" = "xposix"; the
   SAVE_CFLAGS="$CFLAGS"
   LIBS="$PTHREAD_LIBS $LIBS"
   CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-  AC_CHECK_HEADERS([pthread_np.h])
+  AC_CHECK_HEADERS([pthread_np.h],[],[],[AC_INCLUDES_DEFAULT])
 
   # If pthread_setname_np(3) is not declared, it's not possible to detect
   # form of pthread_setname_np(3) due to C "feature" "implicit declaration".
@@ -501,7 +504,7 @@ if test "$enable_poll" != "no"; then
     AC_CHECK_HEADERS([poll.h],
       [
         AC_CHECK_FUNCS([poll], [have_poll='yes'], [have_poll='no'])
-      ])
+      ], [], [AC_INCLUDES_DEFAULT])
   else
     AC_MSG_CHECKING([for WSAPoll()])
     AC_LINK_IFELSE([
@@ -552,13 +555,14 @@ fd = epoll_create1(EPOLL_CLOEXEC);]])],
 fi
 
 # Check for headers that are ALWAYS required
-AC_CHECK_HEADERS([fcntl.h math.h errno.h limits.h stdio.h locale.h sys/stat.h sys/types.h],,AC_MSG_ERROR([Compiling libmicrohttpd requires standard UNIX headers files]))
+AC_CHECK_HEADERS([fcntl.h math.h errno.h limits.h stdio.h locale.h sys/stat.h sys/types.h], [], [AC_MSG_ERROR([Compiling libmicrohttpd requires standard UNIX headers files])], [AC_INCLUDES_DEFAULT])
 
 # Check for optional headers
-AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h netdb.h netinet/in.h netinet/tcp.h time.h sys/socket.h sys/mman.h arpa/inet.h sys/select.h search.h \
+AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h time.h sys/mman.h search.h sys/ioctl.h \
+  sys/socket.h sys/select.h netdb.h netinet/in.h netinet/ip.h netinet/tcp.h arpa/inet.h \
   endian.h machine/endian.h sys/endian.h sys/param.h sys/machine.h sys/byteorder.h machine/param.h sys/isa_defs.h \
   inttypes.h stddef.h unistd.h \
-  sockLib.h inetLib.h net/if.h])
+  sockLib.h inetLib.h net/if.h], [], [], [AC_INCLUDES_DEFAULT])
 AM_CONDITIONAL([HAVE_TSEARCH], [test "x$ac_cv_header_search_h" = "xyes"])
 
 # Check for generic functions
@@ -569,59 +573,143 @@ AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
    ],
    [],
    [
-    #ifdef HAVE_SYS_TYPES_H
-      #include <sys/types.h>
-    #endif
-    #ifdef HAVE_SYS_SOCKET_H
-      #include <sys/socket.h>
-    #endif
-    #ifdef HAVE_NETINET_IN_H
-      #include <netinet/in.h>
-    #endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
    ])
 
 
-# Check for pipe/socketpair signaling
-AC_MSG_CHECKING([[whether to enable signaling by socketpair]])
+# Check for inter-thread signaling type
+AC_ARG_ENABLE([[itc]],
+  [AS_HELP_STRING([[--enable-itc=TYPE]], [use TYPE of inter-thread communication (pipe, socketpair, eventfd) [auto]])], [],
+  [[enable_itc='auto']]
+)
 
-AC_ARG_ENABLE([[socketpair]],
-	[AS_HELP_STRING([[--enable-socketpair[=ARG]]], [disable internal singalling by pipes and use socket pair instead (yes, no, try) [no]])], ,
-	[AS_IF([[test "x$os_is_windows" = "xyes"]], [enable_socketpair=yes], [enable_socketpair=no])]
-  )
+AS_CASE([[$enable_itc]],
+  [[pipe]], [[:]],
+  [[socketpair]], [[:]],
+  [[eventfd]], [[:]],
+  [[auto]], [AS_VAR_IF([[os_is_windows]], [["yes"]], [[enable_itc='socketpair']])],
+  [[eventFD]], [[enable_itc='eventfd']],
+  [[socket]], [[enable_itc='socketpair']],
+  [[no]], [AC_MSG_ERROR([[inter-thread communication cannot be disabled]])],
+    [AC_MSG_ERROR([[unrecognized type "$enable_itc" of inter-thread communication specified by "--enable-itc=$enable_itc"]])]
+)
+# AS_UNSET([[use_itc]])
 
-AS_IF(
-       [[test "x$enable_socketpair" != "xno"]],
-         [AS_IF([[test "x$os_is_windows" = "xyes"]],
-           [ AC_MSG_RESULT([[yes, forced on W32]]) ],
-           [ AC_LINK_IFELSE(
-             [ AC_LANG_PROGRAM([[
-				#ifdef HAVE_SYS_TYPES_H
-				#include <sys/types.h>
-				#endif
-				#ifdef HAVE_SYS_SOCKET_H
-				#include <sys/socket.h>
-				#endif
-				]],[[
-				  int sv[2];
-				  if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) != 0) return 1
-				]])
-             ],
-             [ AC_MSG_RESULT([[yes, socketpair in available]]) ],
-             [ AC_MSG_RESULT([[no, socketpair in not available]])
-              AS_IF([[test "x$enable_socketpair" = "xyes"]], [ AC_MSG_ERROR([[socketpair signalling cannot be enabled.]]) ])
-             ]
-             )
-           ]
-          )
-         ],
-       [
-        AC_MSG_RESULT([[no]])
-        AS_IF([[test "x$os_is_windows" = "xyes"]], [ AC_MSG_ERROR([[socketpair must be enabled on W32]]) ])
-       ]
-     )
-if test "x$enable_socketpair" = "xyes"; then
-	AC_DEFINE([[MHD_DONT_USE_PIPES]], [[1]], [Define to use pair of sockets instead of pipes for signaling])
-fi
+AS_IF([[test "x$enable_itc" = "xeventfd" || test "x$enable_itc" = "xauto"]], [
+  AS_VAR_IF([[os_is_native_w32]], [["yes"]], [], [
+    AC_CHECK_HEADERS([[sys/eventfd.h]], [], [], [AC_INCLUDES_DEFAULT])
+    AS_VAR_IF([[ac_cv_header_sys_eventfd_h]], [["yes"]], [
+      AC_CACHE_CHECK([whether eventfd(2) is usable], [[mhd_cv_eventfd_usable]], [
+        AC_LINK_IFELSE([
+          AC_LANG_PROGRAM([[
+#include <sys/eventfd.h>
+          ]], [[int ef = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK)
+          ]])
+        ], [[mhd_cv_eventfd_usable='yes']], [[mhd_cv_eventfd_usable='no']])
+      ])
+    ])
+  ])
+  AS_VAR_IF([[mhd_cv_eventfd_usable]], [["yes"]], [
+    use_itc='eventfd'
+    enable_itc="$use_itc"
+    AC_DEFINE([[_MHD_ITC_EVENTFD]], [[1]], [Define to use eventFD for inter-thread communication])
+  ], [
+    AS_VAR_IF([[enable_itc]], [["eventfd"]], [AC_MSG_ERROR([[eventfd(2) is not usable, consider using other type of inter-thread communication]])])
+  ])
+])
+
+AS_IF([[test "x$enable_itc" = "xpipe" || test "x$enable_itc" = "xauto"]], [
+  AS_VAR_IF([[os_is_native_w32]], [["yes"]], [], [
+    AC_CACHE_CHECK([[whether pipe(3) is usable]], [[mhd_cv_pipe_usable]], [
+      AC_LINK_IFELSE([
+        AC_LANG_PROGRAM([
+AC_INCLUDES_DEFAULT
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+        ], [[
+          int arr[2];
+          int res;
+          res = pipe(arr)
+        ]])
+      ], [[mhd_cv_pipe_usable='yes']], [[mhd_cv_pipe_usable='no']])
+    ])
+  ])
+  AS_VAR_IF([[mhd_cv_pipe_usable]], [["yes"]], [
+    use_itc='pipe'
+    enable_itc="$use_itc"
+    AC_DEFINE([[_MHD_ITC_PIPE]], [[1]], [Define to use pipe for inter-thread communication])
+    AC_CACHE_CHECK([[whether pipe2(2) is usable]], [[mhd_cv_pipe2_usable]], [
+      AC_LINK_IFELSE([
+        AC_LANG_PROGRAM([
+AC_INCLUDES_DEFAULT
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+        ], [[
+          int arr[2];
+          int res;
+          res = pipe2(arr, O_CLOEXEC | O_NONBLOCK)
+        ]])
+      ], [[mhd_cv_pipe2_usable='yes']], [[mhd_cv_pipe2_usable='no']])
+    ])
+    AS_VAR_IF([[mhd_cv_pipe2_usable]], [["yes"]],
+      [AC_DEFINE([[HAVE_PIPE2_FUNC]], [[1]], [Define if you have usable pipe2(2) function])])
+  ], [
+    AS_VAR_IF([[enable_itc]], [["pipe"]], [AC_MSG_ERROR([[pipe(3) is not usable, consider using other type of inter-thread communication]])])
+  ])
+])
+
+AS_IF([[test "x$enable_itc" = "xsocketpair" || test "x$enable_itc" = "xauto"]], [
+  AS_VAR_IF([[os_is_native_w32]], [["yes"]], [[mhd_cv_socketpair_usable='yes']], [
+    AC_CACHE_CHECK([[whether socketpair(3) is usable]], [[mhd_cv_socketpair_usable]], [
+      AC_LINK_IFELSE([
+        AC_LANG_PROGRAM([
+AC_INCLUDES_DEFAULT
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+        ], [[
+          int arr[2];
+          int res;
+#if defined(AF_LOCAL)
+          res = socketpair(AF_LOCAL, SOCK_STREAM, 0, arr);
+#elif defined(AF_UNIX)
+          res = socketpair(AF_UNIX, SOCK_STREAM, 0, arr);
+#else
+#error AF_LOCAL and AF_UNIX are both undefined
+          choke me now;
+#endif
+          if (res != 0) return 1
+        ]])
+      ], [[mhd_cv_socketpair_usable='yes']], [[mhd_cv_socketpair_usable='no']])
+    ])
+  ])
+  AS_VAR_IF([[mhd_cv_socketpair_usable]], [["yes"]], [
+    use_itc='socketpair'
+    enable_itc="$use_itc"
+    AC_DEFINE([[_MHD_ITC_SOCKETPAIR]], [[1]], [Define to use socketpair for inter-thread communication])
+  ], [
+    AS_VAR_IF([[enable_itc]], [["socketpair"]], [AC_MSG_ERROR([[socketpair(3) is not usable, consider using other type of inter-thread communication]])])
+  ])
+])
+
+AS_IF([[test -z "$use_itc"]], [AC_MSG_ERROR([[cannot find useable type of inter-thread communication]])])
+
 
 AC_CHECK_FUNCS_ONCE([accept4 gmtime_r memmem snprintf])
 AC_CHECK_DECL([gmtime_s],
@@ -631,10 +719,10 @@ AC_CHECK_DECL([gmtime_s],
         [ AC_LANG_PROGRAM(
           [[
 #define __STDC_WANT_LIB_EXT1__ 1
-             #include <time.h>
-             #ifdef __cplusplus
-             extern "C"
-             #endif
+#include <time.h>
+#ifdef __cplusplus
+extern "C"
+#endif
              struct tm* gmtime_s(const time_t* time, struct tm* result);
            ]], [[
              struct tm res;
@@ -653,10 +741,10 @@ AC_CHECK_DECL([gmtime_s],
             [ AC_LANG_PROGRAM(
               [[
 #include <time.h>
-                 #ifdef __cplusplus
-                 extern "C"
-                 #endif
-                 errno_t gmtime_s(struct tm* _tm, const time_t* time);
+#ifdef __cplusplus
+extern "C"
+#endif
+errno_t gmtime_s(struct tm* _tm, const time_t* time);
               ]], [[
                  struct tm res;
                  time_t t;
@@ -672,19 +760,19 @@ AC_CHECK_DECL([gmtime_s],
         ])
   ], [],
   [[#define __STDC_WANT_LIB_EXT1__ 1
-    #include<time.h>]])
+#include <time.h>]])
 
 
 AC_CHECK_DECLS([SOCK_NONBLOCK], [AC_DEFINE([HAVE_SOCK_NONBLOCK], [1], [SOCK_NONBLOCK is defined in a socket header])], [],
                    [
 #if defined(HAVE_SYS_TYPES_H)
-                    #  include <sys/types.h>
-                    #endif
+#  include <sys/types.h>
+#endif
 #if defined(HAVE_SYS_SOCKET_H)
-                    #  include <sys/socket.h>
+#  include <sys/socket.h>
 #elif defined(HAVE_WINSOCK2_H)
-                    #  include <winsock2.h>
-                    #endif
+#  include <winsock2.h>
+#endif
                    ])
 
 
@@ -696,8 +784,8 @@ AC_MSG_CHECKING([[for clock_get_time]])
 AC_LINK_IFELSE(
   [AC_LANG_PROGRAM(
     [[
-      #include <mach/clock.h>
-      #include <mach/mach.h>
+#include <mach/clock.h>
+#include <mach/mach.h>
     ]],
     [[
       clock_serv_t cs;
@@ -809,10 +897,11 @@ fi
 AM_CONDITIONAL([HAVE_CURL], [test "x$enable_curl" = "xyes"])
 
 AC_CHECK_LIB([[magic]], [[magic_open]],
-  [AC_CHECK_HEADERS([magic.h],
-   AM_CONDITIONAL(HAVE_MAGIC, true),
-   AM_CONDITIONAL(HAVE_MAGIC, false))],
-  AM_CONDITIONAL(HAVE_MAGIC, false))
+  [AC_CHECK_HEADERS([magic.h], [
+     AM_CONDITIONAL(HAVE_MAGIC, true),
+     AM_CONDITIONAL(HAVE_MAGIC, false)]
+     ,[] ,[AC_INCLUDES_DEFAULT])
+  ], [AM_CONDITIONAL(HAVE_MAGIC, false)])
 
 
 # large file support (> 4 GB)
@@ -863,7 +952,7 @@ then
   # LIBGCRYPT_CFLAGS can be actually a CPPFLAGS, so check them both
   SAVE_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $LIBGCRYPT_CFLAGS"
-  AC_CHECK_HEADERS([gcrypt.h], [], [have_gcrypt=no])
+  AC_CHECK_HEADERS([gcrypt.h], [], [have_gcrypt=no], [AC_INCLUDES_DEFAULT])
   CFLAGS="$SAVE_CFLAGS"
   CPPFLAGS="$SAVE_CPPFLAGS"
 fi
@@ -900,7 +989,7 @@ AC_ARG_WITH([[gnutls]],
                 GNUTLS_LIBS="-lgnutls"
                 AC_CHECK_LIB([gnutls], [gnutls_load_file], [AC_CHECK_LIB([gnutls], [gnutls_privkey_import_x509_raw], [have_gnutls_sni=yes])])
                 have_gnutls=yes
-              ])])
+              ])], [], [AC_INCLUDES_DEFAULT])
         AS_IF([test "x$have_gnutls" != "xyes"], [AC_MSG_ERROR([can't find usable libgnutls at specified prefix $with_gnutls])])
         LDFLAGS="$SAVE_LDFLAGS"
         CPPFLAGS="$SAVE_CPPFLAGS"
@@ -968,7 +1057,7 @@ AS_IF([test "x$with_gnutls" != "xno" && test "x$have_gnutls" != "xyes"],
             GNUTLS_LIBS="-lgnutls"
             AC_CHECK_LIB([gnutls], [gnutls_load_file], [AC_CHECK_LIB([gnutls], [gnutls_privkey_import_x509_raw], [have_gnutls_sni=yes])])
             have_gnutls=yes
-          ])])
+          ])], [], [AC_INCLUDES_DEFAULT])
       ])
   ])
 
@@ -1089,6 +1178,7 @@ doc/Makefile
 doc/doxygen/Makefile
 doc/examples/Makefile
 m4/Makefile
+po/Makefile.in
 src/Makefile
 src/include/Makefile
 src/microhttpd/Makefile
@@ -1110,6 +1200,7 @@ AC_MSG_NOTICE([libmicrohttpd ${PACKAGE_VERSION} Configuration Summary:
   Operating System:  ${host_os}
   Threading lib:     ${USE_THREADS}
   Use thread names:  ${enable_thread_names}
+  Inter-thread comm: ${use_itc}
   libcurl (testing): ${MSG_CURL}
   Target directory:  ${prefix}
   Messages:          ${enable_messages}

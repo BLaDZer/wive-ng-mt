@@ -91,7 +91,7 @@ ahc_echo (void *cls,
   struct MHD_Response *response;
   int ret;
 
-  if (0 != strcmp ("PUT", method))
+  if (0 != strcasecmp ("PUT", method))
     return MHD_NO;              /* unexpected method */
   if ((*done) == 0)
     {
@@ -387,7 +387,11 @@ testExternalPut ()
         }
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      select (maxposixs + 1, &rs, &ws, &es, &tv);
+      if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+        {
+          if (EINTR != errno)
+            abort ();
+        }
       curl_multi_perform (multi, &running);
       if (running == 0)
         {

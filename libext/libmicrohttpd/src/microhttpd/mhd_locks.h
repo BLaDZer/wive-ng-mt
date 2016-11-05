@@ -22,8 +22,9 @@
  * @file microhttpd/mhd_locks.h
  * @brief  Header for platform-independent locks abstraction
  * @author Karlson2k (Evgeny Grin)
+ * @author Christian Grothoff
  *
- * Provides basic abstraction for locks and mutex.
+ * Provides basic abstraction for locks/mutex.
  * Any functions can be implemented as macro on some platforms
  * unless explicitly marked otherwise.
  * Any function argument can be skipped in macro, so avoid
@@ -52,6 +53,15 @@
 #else
 #  error No base mutex API is available.
 #endif
+
+#ifndef MHD_PANIC
+#  include <stdio.h>
+#  include <stdlib.h>
+/* Simple implementation of MHD_PANIC, to be used outside lib */
+#  define MHD_PANIC(msg) do { fprintf (stderr,           \
+     "Abnormal termination at %d line in file %s: %s\n", \
+     (int)__LINE__, __FILE__, msg); abort();} while(0)
+#endif /* ! MHD_PANIC */
 
 #if defined(MHD_PTHREAD_MUTEX_)
   typedef pthread_mutex_t MHD_mutex_;
@@ -91,6 +101,17 @@
 #define MHD_mutex_destroy_(pmutex) (DeleteCriticalSection((pmutex)), !0)
 #endif
 
+/**
+ * Destroy previously initialised mutex and abort execution
+ * if error is detected.
+ * @param pmutex pointer to mutex
+ */
+#define MHD_mutex_destroy_chk_(pmutex) do {       \
+    if (!MHD_mutex_destroy_(pmutex))              \
+      MHD_PANIC(_("Failed to destroy mutex.\n")); \
+  } while(0)
+
+
 #if defined(MHD_PTHREAD_MUTEX_)
 /**
  * Acquire lock on previously initialised mutex.
@@ -111,25 +132,17 @@
 #define MHD_mutex_lock_(pmutex) (EnterCriticalSection((pmutex)), !0)
 #endif
 
-#if defined(MHD_PTHREAD_MUTEX_)
 /**
- * Try to acquire lock on previously initialised mutex.
- * Function returns immediately.
+ * Acquire lock on previously initialised mutex.
+ * If mutex was already locked by other thread, function
+ * blocks until mutex becomes available.
+ * If error is detected, execution will be aborted.
  * @param pmutex pointer to mutex
- * @return nonzero if mutex is locked, zero if
- *         mutex was not locked.
  */
-#define MHD_mutex_trylock_(pmutex) (!(pthread_mutex_trylock((pmutex))))
-#elif defined(MHD_W32_MUTEX_)
-/**
- * Try to acquire lock on previously initialised mutex.
- * Function returns immediately.
- * @param pmutex pointer to mutex
- * @return nonzero if mutex is locked, zero if
- *         mutex was not locked.
- */
-#define MHD_mutex_trylock_(pmutex) (TryEnterCriticalSection((pmutex))))
-#endif
+#define MHD_mutex_lock_chk_(pmutex) do {       \
+    if (!MHD_mutex_lock_(pmutex))              \
+      MHD_PANIC(_("Failed to lock mutex.\n")); \
+  } while(0)
 
 #if defined(MHD_PTHREAD_MUTEX_)
 /**
@@ -146,5 +159,16 @@
  */
 #define MHD_mutex_unlock_(pmutex) (LeaveCriticalSection((pmutex)), !0)
 #endif
+
+/**
+ * Unlock previously initialised and locked mutex.
+ * If error is detected, execution will be aborted.
+ * @param pmutex pointer to mutex
+ */
+#define MHD_mutex_unlock_chk_(pmutex) do {       \
+    if (!MHD_mutex_unlock_(pmutex))              \
+      MHD_PANIC(_("Failed to unlock mutex.\n")); \
+  } while(0)
+
 
 #endif /* ! MHD_LOCKS_H */

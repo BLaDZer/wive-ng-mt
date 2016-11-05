@@ -34,6 +34,7 @@
 #include <time.h>
 #include "mhd_sockets.h" /* only macros used */
 
+
 #ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
@@ -88,7 +89,7 @@ ahc_echo (void *cls,
   struct MHD_Response *response;
   int ret;
 
-  if (0 != strcmp (me, method))
+  if (0 != strcasecmp (me, method))
     return MHD_NO;              /* unexpected method */
   if (&ptr != *unused)
     {
@@ -349,7 +350,11 @@ testExternalGet ()
         }
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      select (maxposixs + 1, &rs, &ws, &es, &tv);
+      if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+        {
+          if (EINTR != errno)
+            abort ();
+        }
       curl_multi_perform (multi, &running);
       if (running == 0)
         {
@@ -489,7 +494,7 @@ testStopRace (int poll_flag)
     if (connect (fd, (struct sockaddr *)(&sin), sizeof(sin)) < 0)
     {
        fprintf(stderr, "connect error\n");
-       MHD_socket_close_ (fd);
+       MHD_socket_close_chk_ (fd);
        return 512;
     }
 
@@ -500,7 +505,7 @@ testStopRace (int poll_flag)
     /* printf("Stopping daemon\n"); */
     MHD_stop_daemon (d);
 
-    MHD_socket_close_ (fd);
+    MHD_socket_close_chk_ (fd);
 
     /* printf("good\n"); */
     return 0;
@@ -520,7 +525,7 @@ ahc_empty (void *cls,
   struct MHD_Response *response;
   int ret;
 
-  if (0 != strcmp ("GET", method))
+  if (0 != strcasecmp ("GET", method))
     return MHD_NO;              /* unexpected method */
   if (&ptr != *unused)
     {

@@ -81,7 +81,6 @@ ahc_echo (void *cls,
       return MHD_YES;
     }
   *unused = NULL;
-  ret = 0;
 
   hdr = MHD_lookup_connection_value (connection, MHD_COOKIE_KIND, "name1");
   if ((hdr == NULL) || (0 != strcmp (hdr, "var1")))
@@ -201,7 +200,11 @@ testExternalGet ()
         }
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      select (maxposixs + 1, &rs, &ws, &es, &tv);
+      if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+        {
+          if (EINTR != errno)
+            abort ();
+        }
       curl_multi_perform (multi, &running);
       if (running == 0)
         {

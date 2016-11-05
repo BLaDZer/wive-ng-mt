@@ -8,6 +8,8 @@ AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS)
 lib_LTLIBRARIES = \
   libmicrohttpd.la
 
+EXTRA_DIST = test_upgrade_common.c
+
 noinst_DATA =
 MOSTLYCLEANFILES =
 
@@ -65,9 +67,14 @@ libmicrohttpd_la_SOURCES = \
   mhd_threads.c mhd_threads.h \
   mhd_locks.h \
   mhd_sockets.c mhd_sockets.h \
-  mhd_itc.c mhd_itc.h \
-  mhd_compat.c mhd_compat.h \
+  mhd_itc.c mhd_itc.h mhd_itc_types.h \
+  mhd_compat.h \
   response.c response.h
+if HAVE_W32
+libmicrohttpd_la_SOURCES += \
+  mhd_compat.c
+endif
+
 libmicrohttpd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) $(MHD_LIB_CPPFLAGS) \
   -DBUILDING_MHD_LIB=1
@@ -143,7 +150,12 @@ check_PROGRAMS = \
   test_str_to_value \
   test_shutdown_select \
   test_shutdown_poll \
-  test_daemon
+  test_daemon \
+  test_upgrade
+
+if ENABLE_HTTPS
+  check_PROGRAMS += test_upgrade_ssl
+endif
 
 if HAVE_POSTPROCESSOR
 check_PROGRAMS += \
@@ -163,6 +175,16 @@ endif
 test_daemon_SOURCES = \
   test_daemon.c
 test_daemon_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+
+test_upgrade_SOURCES = \
+  test_upgrade.c
+test_upgrade_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+
+test_upgrade_ssl_SOURCES = \
+  test_upgrade_ssl.c
+test_upgrade_ssl_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_postprocessor_SOURCES = \

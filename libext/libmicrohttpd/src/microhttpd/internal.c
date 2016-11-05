@@ -86,20 +86,25 @@ MHD_state_to_string (enum MHD_CONNECTION_STATE state)
 #endif
 #endif
 
+
 #ifdef HAVE_MESSAGES
 /**
  * fprintf-like helper function for logging debug
  * messages.
  */
 void
-MHD_DLOG (const struct MHD_Daemon *daemon, const char *format, ...)
+MHD_DLOG (const struct MHD_Daemon *daemon,
+          const char *format,
+          ...)
 {
   va_list va;
 
   if (0 == (daemon->options & MHD_USE_DEBUG))
     return;
   va_start (va, format);
-  daemon->custom_error_log (daemon->custom_error_log_cls, format, va);
+  daemon->custom_error_log (daemon->custom_error_log_cls,
+                            format,
+                            va);
   va_end (va);
 }
 #endif
@@ -141,7 +146,9 @@ MHD_http_unescape (char *val)
       switch (*rpos)
 	{
 	case '%':
-          if (2 == MHD_strx_to_uint32_n_ (rpos + 1, 2, &num))
+          if (2 == MHD_strx_to_uint32_n_ (rpos + 1,
+                                          2,
+                                          &num))
 	    {
 	      *wpos = (char)((unsigned char) num);
 	      wpos++;
@@ -171,8 +178,8 @@ MHD_http_unescape (char *val)
  *        clobbered in the process!
  * @param cb function to call on each key-value pair found
  * @param[out] num_headers set to the number of headers found
- * @return #MHD_NO on failure (@a cb returned #MHD_NO), 
- *         #MHD_YES for success (parsing succeeded, @a cb always 
+ * @return #MHD_NO on failure (@a cb returned #MHD_NO),
+ *         #MHD_YES for success (parsing succeeded, @a cb always
  *                               returned #MHD_YES)
  */
 int
@@ -221,7 +228,7 @@ MHD_parse_arguments_ (struct MHD_Connection *connection,
 	  daemon->unescape_callback (daemon->unescape_callback_cls,
 				     connection,
 				     equals);
-	  if (MHD_YES != cb (connection, 
+	  if (MHD_YES != cb (connection,
 			     args,
 			     equals,
 			     kind))
@@ -264,7 +271,7 @@ MHD_parse_arguments_ (struct MHD_Connection *connection,
 				 equals);
       if (MHD_YES != cb (connection,
 			 args,
-			 equals, 
+			 equals,
 			 kind))
         return MHD_NO;
       (*num_headers)++;
