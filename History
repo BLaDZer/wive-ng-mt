@@ -2555,14 +2555,15 @@
 27) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
 28) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
 29) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-30) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-31) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-32) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-33) kernel: ralink_wifi: fix announce band freq ranges.<br>
-34) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-35) kernel: ptrace: fix regs_return_value for kernel context.<br>
-36) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-37) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+30) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
+31) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+32) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+33) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+34) kernel: ralink_wifi: fix announce band freq ranges.<br>
+35) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
+36) kernel: ptrace: fix regs_return_value for kernel context.<br>
+37) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+38) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>
