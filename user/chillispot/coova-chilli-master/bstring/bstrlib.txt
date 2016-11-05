@@ -596,8 +596,7 @@ bstrwrap.cpp.
 Version
 -------
 
-v1.0.0
-
+Current release: v1.0.0
 
 The version format v[Major].[Minor].[Update] is used to facilitate
 developers with backward compatibility in the core developer branch of the
@@ -637,7 +636,7 @@ Base Unicode support:
 utf8util.c      - C implemention of generic utf8 parsing functions.
 utf8util.h      - C head file for generic utf8 parsing functions.
 buniutil.c      - C implemention utf8 bstring packing and unpacking functions.
-buniutil.c      - C header file for utf8 bstring functions.
+buniutil.h      - C header file for utf8 bstring functions.
 
 Extra utility functions:
 bstraux.c       - C example that implements trivial additional functions.
@@ -3467,13 +3466,13 @@ only require a single allocation.  However, whenever a reallocation occurs,
 the header is replicated and the base pointer for the string is changed.
 That means references to the string are only valid so long as they are not
 resized after any such reference is cached.  The internal structure maintains
-a lot some state used to accelerate unicode manipulation.  This makes
+a lot some state used to accelerate unicode manipulation.  This state is
+dynamically updated according to usage (so, like Bstrlib, it supports both
+a binary mode and a Unicode mode basically all the time).  But this makes
 sustainable usage of the library essentially opaque.  This also creates a
 bottleneck for whatever extensions to the library one desires (write all
 extensions on top of the base library, put in a request to the author, or
-dedicate an expert to learn the internals of the library).  The library is
-committed to Unicode representation of its string data, and therefore cannot
-be used as a generic buffer library.
+dedicate an expert to learn the internals of the library).
 
 SDS
 ---

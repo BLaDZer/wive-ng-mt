@@ -2560,8 +2560,9 @@
 32) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
 33) kernel: ralink_wifi: fix announce band freq ranges.<br>
 34) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-35) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-36) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+35) kernel: ptrace: fix regs_return_value for kernel context.<br>
+36) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+37) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 <br>
 <br>
 <br>
