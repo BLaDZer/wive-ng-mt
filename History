@@ -2565,6 +2565,7 @@
 37) kernel: ptrace: fix regs_return_value for kernel context.<br>
 38) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
 39) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+40) kernel: net: xfrm: fix error return code.<br>
 <br>
 <br>
 <br>
