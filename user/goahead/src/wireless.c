@@ -590,7 +590,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 
 	// fetch from web input
-	wirelessmode = websGetVar(wp, T("wirelessmode"), T("9")); //9: bgn mode
+	wirelessmode = websGetVar(wp, T("wirelessmode"), T("7")); //7: gn mode
 	mode = atoi(wirelessmode);
 	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
@@ -632,7 +632,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("15")); //15: a/an/ac mode
+	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("14")); //14: a,an/ac mode
 	mode_ac = atoi(wirelessmodeac);
 	tx_power_ac = websGetVar(wp, T("tx_powerac"), T("100"));
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
@@ -737,7 +737,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
 	else if ((mode == 1)) //b
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "3");
-	else // bg,bgn (9,0)
+	else // bg,bgn,abgn (9,0,5)
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "15");
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
