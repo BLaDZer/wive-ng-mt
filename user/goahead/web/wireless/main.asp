@@ -734,13 +734,20 @@
 							channel_indexacnew = channel_indexac;
 							channel_indexacnew = channel_indexacnew / 4;
 							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 8;
+								channel_indexacnew = channel_indexacnew - 8;							
+						} else if ((channel_indexac >= 132) && (channel_indexac <= 144))
+						{
+							channel_indexacnew = channel_indexac;
+							channel_indexacnew = channel_indexacnew / 4;
+							if (channel_indexacnew != 0)
+								channel_indexacnew = channel_indexacnew - 24;
 						}
+						
 						else if (channel_indexac >= 149)
 						{
 							channel_indexacnew = channel_indexac - 1;
 							channel_indexacnew = channel_indexacnew / 4;
-							channel_indexacnew = channel_indexacnew - 28;
+							channel_indexacnew = channel_indexacnew - 24;
 						}
 						else
 						{
