@@ -2552,7 +2552,7 @@
 24) goahead: rework switch status, config page.<br>
 25) goahead: fix regulatory tables for RU.<br>
 26) goahead: add link for download firmware.<br>
-27) goahead: fix set BasicRate for iNIC.<br>
+27) goahead: fix set BasicRate in some cases.<br>
 28) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
 29) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
 30) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>

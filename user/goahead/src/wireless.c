@@ -730,12 +730,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// Virtual iface modes
 	nvram_bufset(RT2860_NVRAM, "BssidIfName", mbssid_mode);
 
-	// BasicRate: bg,bgn,n:15, b:3; g,gn:351
-	if ((mode == 4) || (mode == 7)) //g, gn
+	// BasicRate: a,an,ac: 336; bg,bgn:15; b:3; g,gn,n:351
+	if (mode == 2 || mode == 8 || mode == 11 || mode == 14 || mode == 15) //a, a/an, an, a/an/ac, an/ac
+		nvram_bufset(RT2860_NVRAM, "BasicRate", "336"); // a,an,ac
+	else if (mode == 4 || mode == 6 || mode == 7) //g, n, gn
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "351");
 	else if ((mode == 1)) //b
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "3");
-	else // bg,bgn,n
+	else // bg,bgn (9,0)
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "15");
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
