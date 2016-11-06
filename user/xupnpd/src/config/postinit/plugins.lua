@@ -8,5 +8,6 @@ plugins["generic"].disabled=false
 plugins["netstreamsat"].disabled=true
 plugins["arjlover"].disabled=true
 plugins["dreambox"].disabled=true
-plugins["hls"].disabled=true
+plugins["hls"].disabled=false
+plugins["vsetv"].disabled=true
 plugins["ag"].disabled=true
