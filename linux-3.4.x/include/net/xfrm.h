@@ -1609,26 +1609,6 @@ static inline int xfrm_policy_id2dir(u32 index)
 	return index & 7;
 }
 
-static inline bool xfrm6_addr_equal(const xfrm_address_t *a,
-									const xfrm_address_t *b)
-{
-	return ipv6_addr_equal((const struct in6_addr *)a,
-							(const struct in6_addr *)b);
-}
-
-static inline bool xfrm_addr_equal(const xfrm_address_t *a,
-									const xfrm_address_t *b,
-									sa_family_t family)
-{
-	switch (family) {
-		default:
-		case AF_INET:
-			return ((__force u32)a->a4 ^ (__force u32)b->a4) == 0;
-		case AF_INET6:
-			return xfrm6_addr_equal(a, b);
-	}
-}
-
 #ifdef CONFIG_XFRM
 static inline int xfrm_aevent_is_on(struct net *net)
 {
