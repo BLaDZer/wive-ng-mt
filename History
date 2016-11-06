@@ -2573,6 +2573,7 @@
 45) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
 46) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
 47) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+48) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
