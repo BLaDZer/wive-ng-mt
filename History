@@ -2566,6 +2566,8 @@
 38) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
 39) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 40) kernel: net: xfrm: fix error return code.<br>
+41) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+42) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>.
 <br>
 <br>
 <br>
