@@ -2570,6 +2570,7 @@
 42) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
 43) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
 44) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+45) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
 <br>
 <br>
 <br>
