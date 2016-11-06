@@ -2567,7 +2567,8 @@
 39) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
 40) kernel: net: xfrm: fix error return code.<br>
 41) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-42) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>.
+42) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+43) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
 <br>
 <br>
 <br>
