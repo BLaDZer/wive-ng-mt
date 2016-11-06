@@ -738,6 +738,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	else // bg,bgn,n
 		nvram_bufset(RT2860_NVRAM, "BasicRate", "15");
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	nvram_bufset(RT2860_NVRAM, "BasicRateINIC", "336"); // a,an,ac
+#endif
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
 	// Fill-in SSID
