@@ -2720,7 +2720,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 
 		wifi_if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, WifiMAC);
 		if (wifi_if_idx == -1) {
-			DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - Daemon doesn't hook this wifi interface (%02x:%02x:%02x:%02x:%02x:%02x). Ignore this packet.\n",
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - Daemon doesn't hook this wifi interface (%02x:%02x:%02x:%02x:%02x:%02x). Ignore this packet.\n",
 				__FUNCTION__,
 				WifiMAC[0],
 				WifiMAC[1],
