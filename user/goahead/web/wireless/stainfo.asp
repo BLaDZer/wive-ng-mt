@@ -24,7 +24,7 @@
 			var platform		= '<% getPlatform(); %>';
 			var updateTime		= 5000;
 			var wirelessMode	= "Basic";
-			var wirelessTabeWidth	= "800px";
+			var wirelessTabeWidth	= "750px";
 			var wirelessTableColumn = 9;
 			var wirelessAvgRxLast	= 0;
 			var wirelessAvgTxLast	= 0;
@@ -159,19 +159,19 @@
 					deleteCookie('wirelessPlotTime');
 					deleteCookie('wirelessPlotUnit');
 					sessionStorage.clear();
-					wirelessTabeWidth = "800px";
+					wirelessTabeWidth = "750px";
 					wirelessTableColumn = 9;
-					document.getElementById('tableWirelessSummary').style.width = "800px";
-					document.getElementById('tableWirelessPlot').style.width = "800px";
+					document.getElementById('tableWirelessSummary').style.width = "750px";
+					document.getElementById('tableWirelessPlot').style.width = "750px";
 				}
 				else {
 					if (getCookie('wirelessMode') !== undefined) {
 						wirelessMode = getCookie('wirelessMode');
 						if (wirelessMode == "Basic") {
-							wirelessTabeWidth	= "800px";
+							wirelessTabeWidth	= "750px";
 							wirelessTableColumn	= 9;
-							document.getElementById('tableWirelessSummary').style.width = "800px";
-							document.getElementById('tableWirelessPlot').style.width = "800px";
+							document.getElementById('tableWirelessSummary').style.width = "750px";
+							document.getElementById('tableWirelessPlot').style.width = "750px";
 						}
 						else {
 							wirelessTabeWidth	= "1100px";
@@ -226,10 +226,10 @@
 			{
 				if (document.sta.stalistWirelessModeSelect.selectedIndex == 0) {
 					wirelessMode			= "Basic";
-					wirelessTabeWidth		= "800px";
+					wirelessTabeWidth		= "750px";
 					wirelessTableColumn		= 9;
-					document.getElementById('tableWirelessSummary').style.width = "800px";
-					document.getElementById('tableWirelessPlot').style.width = "800px";
+					document.getElementById('tableWirelessSummary').style.width = "750px";
+					document.getElementById('tableWirelessPlot').style.width = "750px";
 				}
 				else {
 					wirelessMode 		= "Advanced";
@@ -1514,7 +1514,7 @@
 									</select>
 								</td>
 								<td class="head" style="width: 33%"><label for="wirelessPlotTime" id="wirelessPlotTimeName">Graphic Time: </label>
-									<select id="wirelessPlotTime" name="wirelessPlotTime" class="normal" onChange="plotModeChange();">
+									<select id="wirelessPlotTime" name="wirelessPlotTime" class="half" onChange="plotModeChange();">
 										<option value="0" id="time1M" selected>1 Minute</option>
 										<option value="1" id="time2M">2 Minutes</option>
 										<option value="2" id="time3M">3 Minutes</option>
@@ -1531,7 +1531,7 @@
 									</select>
 								</td>
 								<td class="head" style="width: 34%"><label for="wirelessPlotUnit" id="wirelessPlotUnitName">Graphic Unit: </label>
-									<select id="wirelessPlotUnit" name="wirelessPlotUnit" class="normal" onChange="plotModeChange();">
+									<select id="wirelessPlotUnit" name="wirelessPlotUnit" class="half" onChange="plotModeChange();">
 										<option value="0" id="unitMB" selected>Mbit/s</option>
 										<option value="1" id="unitKB">Kbit/s</option>
 									</select>

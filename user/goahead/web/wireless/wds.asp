@@ -304,7 +304,7 @@
 							<tr>
 								<td class="title" id="basicWDSTitle" colspan="4">Wireless Distribution System</td>
 								<td class="title" style="text-align:right">
-									<select name="wds_mode" id="wds_mode" class="normal" onChange="WdsModeOnChange(this.form);">
+									<select name="wds_mode" id="wds_mode" style="width: 120px" onChange="WdsModeOnChange(this.form);">
 										<option value=0 id="basicWDSDisable">Disable</option>
 										<option value=4 id="basicWDSLazyMode">Lazy Mode</option>
 										<option value=2 id="basicWDSBridgeMode">Bridge Mode</option>
@@ -347,7 +347,7 @@
 									</select>
 								</td>
 								<td><input type="password" type="text" id="wds_encryp_key0" name="wds_encryp_key0" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(0);"></td>
-								<td style="text-align: center"><input type="button" class="normal" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
 							</tr>
 							<tr id="div_wds1" style="display:none;">
 								<td style="text-align: center"><input type="text" name="wds_2" style="width: 98%"; value="" maxlength="17"></td>

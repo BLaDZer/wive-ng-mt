@@ -35,7 +35,7 @@
 	<message msgid="status system date time"		msgstr="System Time" />
 	<message msgid="status system up time"			msgstr="System Uptime" />
 	<message msgid="status system platform"			msgstr="System Platform" />
-	<message msgid="status op mode"					msgstr="Operation Mode" />
+	<message msgid="status system op mode"				msgstr="Operation Mode" />
 	<message msgid="status internet config"			msgstr="Internet Configurations" />
 	<message msgid="status connect type"			msgstr="WAN connection type" />
 	<message msgid="status int ipaddr"				msgstr="VPN/Internet IP Address" />

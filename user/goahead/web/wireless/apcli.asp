@@ -22,34 +22,28 @@
 			var is5gh_support			= '<% is5gh_support(); %>';
 
 			function initTranslation() {
-				_TR("apcliTitle",						"apcli title");
+				_TR("apcliTitle",					"apcli title");
 				_TR("apcliParameters",					"apcli param");
-				_TR("apcliAbout",						"apcli about");
-				_TR("apcliEnable",						"apcli client enable");
+				_TR("apcliAbout",					"apcli about");
+				_TR("apcliEnable",					"apcli client enable");
 				_TR("apcli_enable_enable",				"button enable");
 				_TR("apcli_enable_disable",				"button disable");
-				_TR("apcliOpen",						"apcli open");
+				_TR("apcliOpen",					"apcli open");
 				_TR("apcliWiFiMode",					"apcli client wifi mode")
-				_TR("apcliSSID",						"station ssid");
-				_TR("apcliMAC",							"apcli mac");
+				_TR("apcliSSID",					"station ssid");
+				_TR("apcliMAC",						"apcli mac");
 				_TR("apcliSecurityMode",				"secure security mode");
 				_TR("apcliEncryptionType",				"secure encryp type");
-				_TR("apcliPass",						"secure wpa pass phrase");
+				_TR("apcliPass",					"secure wpa pass phrase");
 				_TR("apcliShowPass",					"secure wpa show pass phrase");
 				_TR("apcliAutoscan",					"apcli enable autoscan");
 				_TR("apcliDisableIface",				"apcli disable iface");
 				_TR("apcliEnableBridge",				"apcli enable bridge");
-				_TR("basicAPCLIMode",					"basic apcli mode");  
-				_TRV("apcliApply",						"button apply");
-				_TRV("apcliCancel",						"button cancel");
-				_TRV("apcliReset",						"button reset");
-				_TRV("scanapLegendButtonSelect",		"scanap legend button select");
-				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
-				_TRV("scanapLegendButtonRefresh",		"scanap legend button refresh");
-				_TRV("scanapLegendButtonClose",			"scanap legend button close");
-				_TRV("scanapLegendButtonScanINIC",		"scanap legend button scan");
-				_TRV("scanapLegendButtonRefreshINIC",	"scanap legend button refresh");
-				_TRV("scanapLegendButtonCloseINIC",		"scanap legend button close");
+				_TR("basicAPCLIMode",					"basic apcli mode");
+				_TRV("scanapLegendButtonScan",				"scanap legend button scan");
+				_TRV("apcliApply",					"button apply");
+				_TRV("apcliCancel",					"button cancel");
+				_TRV("apcliReset",					"button reset");
 			}
 
 			function initValues()

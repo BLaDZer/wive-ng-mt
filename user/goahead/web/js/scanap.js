@@ -76,7 +76,7 @@ function scanApHTTPrequestHandler()
 				hideElement('scanApPreloaderINIC');
 			}
 			div.removeChild(div.firstChild);
-			var el = drawSVG(div, 'svg', { 'width': 785, 'height': 300 });
+			var el = drawSVG(div, 'svg', { 'width': 735, 'height': 300 });
 			showGraph(el, scanApFreq);
 			showLegend();
 		} else {
@@ -501,19 +501,19 @@ function showLegend()
 	html += '<tr>';
 	if (scanApCli == 1) {
 		html += '<td colspan="9" align="center">';
-		html +=	'<input id="scanapLegendButtonSelect" type="button" class="normal" value="Select" onClick="selectScanAp();">&nbsp;&nbsp;';
-		html +=	'<input id="scanapLegendButtonRefresh" type="button" class="normal" value="Refresh" onClick="refreshScanAp(' + "'apcli'" + ');">&nbsp;&nbsp;';
-		html += '<input id="scanapLegendButtonClose" type="button" class="normal" value="Close" onClick="closeScanAp(' + "'cli'" + ');">';
+		html +=	'<input type="button" class="normal" value="' + _("scanap legend button select") + '" onClick="selectScanAp();">&nbsp;&nbsp;';
+		html +=	'<input type="button" class="normal" value="' + _("scanap legend button refresh") + '" onClick="refreshScanAp(' + "'apcli'" + ');">&nbsp;&nbsp;';
+		html += '<input type="button" class="normal" value="' + _("scanap legend button close") + '" onClick="closeScanAp(' + "'cli'" + ');">';
 	}
 	else if (scanApFreq == "2.4") {
 		html += '<td colspan="8" align="center">';
-		html +=	'<input id="scanapLegendButtonRefresh" type="button" class="normal" value="Refresh" onClick="refreshScanAp(' + "'2.4'" + ');">&nbsp;&nbsp;';
-		html += '<input id="scanapLegendButtonClose" type="button" class="normal" value="Close" onClick="closeScanAp(' + "'2.4'" + ');">';
+		html +=	'<input type="button" class="normal" value="' + _("scanap legend button refresh") + '" onClick="refreshScanAp(' + "'2.4'" + ');">&nbsp;&nbsp;';
+		html += '<input type="button" class="normal" value="' + _("scanap legend button close") + '" onClick="closeScanAp(' + "'2.4'" + ');">';
 	}
 	else {
 		html += '<td colspan="8" align="center">';
-		html +=	'<input id="scanapLegendButtonRefreshINIC" type="button" class="normal" value="Refresh" onClick="refreshScanAp(' + "'5'" + ');">&nbsp;&nbsp;';
-		html += '<input id="scanapLegendButtonCloseINIC" type="button" class="normal" value="Close" onClick="closeScanAp(' + "'5'" + ');">';
+		html +=	'<input type="button" class="normal" value="' + _("scanap legend button refresh") + '" onClick="refreshScanAp(' + "'5'" + ');">&nbsp;&nbsp;';
+		html += '<input type="button" class="normal" value="' + _("scanap legend button close") + '" onClick="closeScanAp(' + "'5'" + ');">';
 	}
 	html += '</td>';
 	html += '</tr>';
@@ -522,7 +522,6 @@ function showLegend()
 		document.getElementById('scanApButtons_td').innerHTML = html;
 	else
 		document.getElementById('scanApButtonsINIC_td').innerHTML = html;
-	initTranslation();
 }
 
 // Refresh scan AP

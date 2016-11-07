@@ -56,6 +56,7 @@
   <message msgid="basic wds title" msgstr="Wireless Distribution System" />
   <message msgid="basic wds introduction" msgstr="Wireless Distribution System Settings" />
   <message msgid="basic wds mode" msgstr="WDS Mode" />
+  <message msgid="basic wds wifi mode" msgstr="WDS Mode Band" />  
   <message msgid="basic wds lazy mode" msgstr="Lazy Mode" />
   <message msgid="basic wds bridge mode" msgstr="Bridge Mode" />
   <message msgid="basic wds repeater mode" msgstr="Repeater Mode" />

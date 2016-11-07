@@ -248,12 +248,12 @@ function showWarning() {
             </tr>
             <tr>
               <td class="head" id="manAdmPasswd">Password</td>
-              <td><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
-              <td width="55%"><input type="password" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td width="145px"><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td><input type="password" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
             </tr>
             <tr>
               <td class="head" ></td>
-              <td colspan="3"><input type="hidden" name="submit-url" value="/adm/management.asp" >
+              <td colspan="2"><input type="hidden" name="submit-url" value="/adm/management.asp" >
                 <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
             </tr>
           </table>

@@ -459,13 +459,9 @@
 				_TR("advDynVGALong_td_1", "adv dynvga long");
 				_TR("advDynVGAClamp", "adv dynvga clamp");
 				
-				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
-				_TRV("scanapLegendButtonRefresh",		"scanap legend button refresh");
-				_TRV("scanapLegendButtonClose",			"scanap legend button close");
-				_TRV("scanapLegendButtonScanINIC",		"scanap legend button scan");
-				_TRV("scanapLegendButtonRefreshINIC",	"scanap legend button refresh");
-				_TRV("scanapLegendButtonCloseINIC",		"scanap legend button close");
-
+				_TRV("scanapLegendButtonScan", "scanap legend button scan");
+				_TRV("scanapLegendButtonScanINIC", "scanap legend button scan");
+				
 				_TRV("advApply", "button apply");
 				_TRV("advCancel", "button cancel");
 
@@ -1413,24 +1409,24 @@
 	<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 	<table id="wireless_24" class="form">
 		<tr>
-			<td class="title" colspan="3" id="basicWirelessNet">Wireless Network</td>
+			<td class="title" colspan="2" id="basicWirelessNet">Wireless Network</td>
 		</tr>
 		<tr id="basicWirelessEnabled">
 			<td id="basicWireless" class="head">Wireless</td>
 			<td width="165px"><select name="radioWirelessEnabled" class="normal" onChange="wirelessOnChange(this.form);">
 				<option value="0" id="disable">Disabled</option>
 				<option value="1" id="enable">Enabled</option>
-			</select></td>
-			<td>BSSID: <% getWlanCurrentMac(); %></td>
+			</select>
+			&nbsp;&nbsp;&nbsp;BSSID: <% getWlanCurrentMac(); %></td>
 		</tr>
 		<tr id="div_11g_basic" name="div_11g_basic">
 			<td class="head" id="basicNetMode" colspan="1">Network Mode</td>
-			<td colspan="2"><select name="wirelessmode" id="wirelessmode" class="normal" onChange="wirelessModeChange(this.form);">
+			<td><select name="wirelessmode" id="wirelessmode" class="normal" onChange="wirelessModeChange(this.form);">
 			</select></td>
 		</tr>
 		<tr id="div_txpw" name="div_txpw">
 			<td class="head" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
-			<td colspan="2"><select name="tx_power" class="normal">
+			<td><select name="tx_power" class="normal">
 				<option value="5">5%</option>
 				<option value="10">10%</option>
 				<option value="20">20%</option>
@@ -1448,13 +1444,12 @@
 				<option value="1" id="basicAutoBySTA">by STA count</option>
 				<option value="2" id="basicAutoByRSSI">by RSSI</option>
 				</select>&nbsp;&nbsp;<select name="checktime_g" style="normal" id="checktime_g">
-			</select></td>
-			<td>
+			</select>
 				<input id="scanapLegendButtonScan" type="button" class="short" value="Scan" onClick="scanAp('2.4');">
 			</td>
 		</tr>
 		<tr id="scanAp" style="display: none;">
-			<td colspan="3">
+			<td colspan="2">
 				<div style="width: 785; height: 300px;">
 					<div id="scanApPlot" style="width: 100%; height: 300px; margin: 0 auto;">
 					</div>
@@ -1465,29 +1460,29 @@
 			</td>
 		</tr>
 		<tr id="scanApButtons" style="display: none;">
-			<td colspan="3" id="scanApButtons_td"></td>
+			<td colspan="2" id="scanApButtons_td"></td>
 		</tr>
 	</table>
 	<table id="wireless_5" class="form">
 		<tr>
-			<td class="title" colspan="3" id="basicWirelessNetAc">Wireless Network</td>
+			<td class="title" colspan="2" id="basicWirelessNetAc">Wireless Network</td>
 		</tr>
 		<tr id="basicWirelessEnabledAc">
 			<td class="head" id="basicWirelessAC">Wireless (5GHz)</td>
 			<td width="165px"><select name="radioWirelessEnabledAc" class="normal" onChange="wirelessOnChange(this.form);">
 				<option value="0" id="disable">Disabled</option>
 				<option value="1" id="enable">Enabled</option>
-			</select></td>
-			<td>BSSID: <% getWlanCurrentMacAC(); %></td>
+			</select>
+			&nbsp;&nbsp;BSSID: <% getWlanCurrentMacAC(); %></td>
 		</tr>
 		<tr id="div_11a_basic" name="div_11a_basic">
 			<td id="basicAcNetMode" class="head">Network Mode (5GHz)</td>
-			<td colspan="2"><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="wirelessModeChange(this.form);">
+			<td><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="wirelessModeChange(this.form);">
 			</select></td>
 		 </tr>
 		<tr id="div_txpw_ac" name="div_txpw_ac">
 			<td class="head" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
-			<td colspan="2"><select name="tx_powerac" class="normal">
+			<td><select name="tx_powerac" class="normal">
 				<option value="5">5%</option>
 				<option value="10">10%</option>
 				<option value="20">20%</option>
@@ -1505,13 +1500,12 @@
 				<option value="1" id="basicAutoBySTA">by STA count</option>
 				<option value="2" id="basicAutoByRSSI">by RSSI</option>
 				</select>&nbsp;&nbsp;<select name="checktime_a" style="normal" id="checktime_a">
-			</select></td>
-			<td>
+			</select>
 				<input id="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" onClick="scanAp('5');">
 			</td>
 		</tr>
 		<tr id="scanApINIC" style="display: none;">
-			<td colspan="3">
+			<td colspan="2">
 				<div style="width: 785; height: 300px;">
 					<div id="scanApPlotINIC" style="width: 100%; height: 300px; margin: 0 auto;">
 					</div>
@@ -1522,7 +1516,7 @@
 			</td>
 		</tr>
 		<tr id="scanApButtonsINIC" style="display: none;">
-			<td colspan="3" id="scanApButtonsINIC_td"></td>
+			<td colspan="2" id="scanApButtonsINIC_td"></td>
 		</tr>
 	</table>
 	<table id="div_all" name="div_all" class="form" style="display:none;">

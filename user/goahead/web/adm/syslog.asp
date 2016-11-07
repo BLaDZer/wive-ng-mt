@@ -159,7 +159,7 @@ function syslogdSelect(form)
             </form></td>
         </tr>
         <tr>
-          <td><textarea style="font-size: 8pt; width: 680px; height: 480px; border: 1px solid;" name="syslog" id="syslog" wrap="off" readonly="1">
+          <td><textarea style="font-size: 8pt; width: 99%; height: 480px; border: 1px solid;" name="syslog" id="syslog" wrap="off" readonly="1">
 		</textarea></td>
         </tr>
         <tr>

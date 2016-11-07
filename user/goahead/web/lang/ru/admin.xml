@@ -34,7 +34,7 @@
 	<message msgid="status system date time"		msgstr="Системное время" />
 	<message msgid="status system up time"			msgstr="Продолжительность работы" />
 	<message msgid="status system platform"			msgstr="Платформа" />
-	<message msgid="status op mode"					msgstr="Режим работы" />
+	<message msgid="status system op mode"			msgstr="Режим работы" />
 	<message msgid="status internet config"			msgstr="Настройки интернета" />
 	<message msgid="status connect type"			msgstr="Тип WAN соединения" />
 	<message msgid="status int ipaddr"				msgstr="IP адрес в VPN сети или интернете" />

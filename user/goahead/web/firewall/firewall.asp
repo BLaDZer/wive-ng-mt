@@ -192,8 +192,8 @@
 					'<td rowspan="2"><input type="text" class="pfNormal" maxlength="15" name="ip_address" tabindex="5"></td>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="redirectFromPort" tabindex="6"></td>' + 
 					'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="7"></td>' + 
-					'<td rowspan="2"><input type="text" class="normal" maxlength="32" name="comment" tabindex="8"></td>' +
-					'<td rowspan="2" style="text-align: center;"><input type="button" class="half" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
+					'<td rowspan="2"><input type="text" style="width: 120px;" maxlength="32" name="comment" tabindex="8"></td>' +
+					'<td rowspan="2" style="text-align: center;"><input type="button" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="toPort" tabindex="4"></td>' + 

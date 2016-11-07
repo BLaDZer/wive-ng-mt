@@ -64,8 +64,8 @@ table {
 table.body {
 	border: 0px;
 	border-width: 0px;
-	min-width: 800px;
-	width: 800px;
+	min-width: 750px;
+	width: 750px;
 }
 
 td.title {
@@ -77,8 +77,8 @@ td.title {
 }
 
 table.warning {
-	min-width: 795px;
-	width: 795px;
+	min-width: 745px;
+	width: 745px;
 	border-bottom: 2px solid #FFBF00;
 	background-color: #ffffe0;
 }
@@ -177,8 +177,8 @@ td {
 }
 
 table.buttons {
-	min-width: 800px;
-	width: 800px;
+	min-width: 750px;
+	width: 750px;
 }
 
 table.buttons tr, table.buttons td {
@@ -186,8 +186,8 @@ table.buttons tr, table.buttons td {
 }
 
 table.form {
-	min-width: 800px;
-	width: 800px;
+	min-width: 750px;
+	width: 750px;
 	border-width: 1px;
 	border-style: solid;
 	border-spacing: 1px;

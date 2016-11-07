@@ -35,7 +35,7 @@
 				_TR("statusSysDateTime",	"status system date time");
 				_TR("statusSysUpTime",		"status system up time");
 				_TR("statusSysPlatform",	"status system platform");
-				_TR("statusOPMode",			"status op mode");
+				_TR("statusOpMode",			"status system op mode");
 
 				_TR("statusInternetConfig",	"status internet config");
 				_TR("statusConnectedType",	"status connect type");
@@ -101,7 +101,7 @@
 							<td class="title" colspan="2" id="statusSysInfo">System Info</td>
 						</tr>
 						<tr>
-							<td class="head" id="statusSDKversion" style="width: 40%">Firmware Version</td>
+							<td class="head" id="statusSDKversion">Firmware Version</td>
 							<td id="statusSDKversion_value"></td>
 						</tr>
 						<tr>
@@ -117,7 +117,7 @@
 							<td id="statusSysPlatform_value"></td>
 						</tr>
 						<tr>
-							<td class="head" id="statusOpMode">Operation Mode</span></td>
+							<td class="head" id="statusOpMode">Operation Mode</td>
 							<td id="statusOpMode_value"></td>
 						</tr>
 						<!-- ================= Internet Configurations ================= -->
