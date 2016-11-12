@@ -131,16 +131,16 @@ FT_CLIENT_INFO *mt_iapp_ft_client_look_up(
 
 	while (ft_entry)
 	{
-
+		clientnum++;
 		if (NdisCompareMemory(ft_entry->sta_mac, pAddr, ETH_ALEN) == 0) {
 			break;
 		} else {
-			ft_entry = ft_entry->next;
-			clientnum++;
-			if (clientnum >= MAX_NUM_OF_CLIENT) {
+			if (clientnum > MAX_NUM_OF_CLIENT) {
 				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
-				return NULL;
+				ft_entry = NULL;
+				break;
 			}
+			ft_entry = ft_entry->next;
 		}
 	}
 
