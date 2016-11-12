@@ -76,8 +76,6 @@ static BOOLEAN IAPP_EventLogHandle(
 	IAPP_IN		PRT_802_11_EVENT_TABLE	pEvtTab);
 static VOID IAPP_EventLog_Query(
 	VOID);
-static VOID IAPP_SM_InfoHandle(
-	IAPP_IN		CHAR				*pMsg);
 #endif // IAPP_EVENT_LOG //
 
 static BOOLEAN IAPP_ArgumentParse(
@@ -404,73 +402,6 @@ static VOID IAPP_EventLog_Query(
 					pEvtBuf, sizeof(RT_802_11_EVENT_TABLE));
 	IAPP_MEM_FREE(pEvtBuf);
 } /* End of IAPP_EventLog_Query */
-
-
-/*
-========================================================================
-Routine Description:
-	Send out private IAPP packet with security management information and
-	log current security management information to file.
-
-Arguments:
-	*pCtrlBK	- IAPP control blcok
-	*pMsg		- security management information
-
-Return Value:
-	None
-
-Note:
-========================================================================
-*/
-static VOID IAPP_SM_InfoHandle(
-	IAPP_IN		RTMP_IAPP			*pCtrlBK,
-	IAPP_IN		CHAR				*pMsg)
-{
-	PRT_802_11_EVENT_TABLE pEvtTab;
-	POID_REQ OID_req_p;
-	INT32 PktLen;
-
-
-	OID_req_p = (POID_REQ) pMsg;
-
-	DBGPRINT(RT_DEBUG_TRACE, "iapp> (Receive IAPP_QUERY_OID_REQ)\n");
-
-	/* IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP,
-			OID_req_p->Buf, &OID_req_p->Len, 0, OID_req_p->OID); */
-
-	pEvtTab = (PRT_802_11_EVENT_TABLE) OID_req_p->Buf;
-
-	if (OID_req_p->OID == RT_QUERY_EVENT_TABLE)
-	{
-		if ((OID_req_p->Len == sizeof(RT_802_11_EVENT_TABLE)) &&
-			(pEvtTab->Num != 0))
-		{
-			RT_IAPP_SECURITY_MONITOR SM;
-
-			/* just send valid Data, not whole structure */
-			PktLen = sizeof(UINT32) +
-					 (pEvtTab->Num * sizeof(RT_802_11_EVENT_LOG));
-
-			SM.IappHeader.Version = 0;
-			SM.IappHeader.Command = IAPP_CMD_SECURITY_MONITOR;
-
-			/* will be update before send out */
-			SM.IappHeader.Identifier = 0;
-			SM.IappHeader.Length = SWAP_16(sizeof(RT_IAPP_HEADER) + PktLen);
-			IAPP_MEM_MOVE(&SM.EvtTab, OID_req_p->Buf, PktLen);
-
-			/* send our events to all RALINK IAPP daemons in other AP */
-			IAPP_UDP_PACKET_SEND(pCtrlBK, &SM, (sizeof(RT_IAPP_HEADER) + PktLen, pRspBuf));
-
-			/* log our events */
-			IAPP_EventLogHandle((PRT_802_11_EVENT_TABLE)OID_req_p->Buf);
-		}
-		else
-		{
-			DBGPRINT(RT_DEBUG_INFO, "iapp> RT_QUERY_EVENT_TABLE invalid or zero in length!\n");
-		} /* End of if */
-	} /* End of if */
-} /* End of IAPP_SM_InfoHandle */
 #endif // IAPP_EVENT_LOG //
 
 /* ---------------------------- PRIVATE Function ---------------------------- */
@@ -984,7 +915,6 @@ static BOOLEAN IAPP_MsgProcess(
 
 
 		case IAPP_QUERY_OID_REQ: /* old SysCmd from 8021X deamon */
-//			IAPP_SM_InfoHandle(pMsg);
 			break;
 
 
@@ -1023,9 +953,8 @@ static BOOLEAN IAPP_SIG_Process(
 	IAPP_IN		UCHAR			*pRspBuf)
 {
 	FT_KDP_EVT_HEADER *pEvtHeader;
-	INT32 if_idx = -1;
+	INT32 if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, WifiMAC);
 
-	if_idx = mt_iapp_find_ifidx_by_mac(pCtrlBK, WifiMAC);
 	if (if_idx == -1) {
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - cannot find this wifi interface (%02x:%02x:%02x:%02x:%02x:%02x)\n", 
 				__FUNCTION__,
@@ -1037,7 +966,7 @@ static BOOLEAN IAPP_SIG_Process(
 				WifiMAC[5]);
 		return FALSE;
 	}
-	
+
 	pEvtHeader = (FT_KDP_EVT_HEADER *)(pSig->Content);
 
 	DBGPRINT(RT_DEBUG_TRACE,
@@ -3672,18 +3601,15 @@ static VOID FT_KDP_SecurityBlockAck(
 	IAPP_IN		UCHAR				*pRspBuf,
 	IAPP_IN		INT32				if_idx)
 {
-	INT32 SocketPeer;
+	INT32 SocketPeer = 0;
 	struct sockaddr_in AddrSockConn;
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	RT_IAPP_SEND_SECURITY_BLOCK *pIappSendSB;
 	UINT32 PktLen;
 
 
 	/* init */
 	DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SecurityBlockAck\n");
-
-	SocketPeer = 0;
-	pBufFrame = NULL;
 
 	/* open TCP socket to the peer */
 	SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -3837,9 +3763,9 @@ static VOID FT_KDP_InformationResponseSend(
 	IAPP_IN		UCHAR				*pRspBuf,
 	IAPP_IN		INT32				if_idx)
 {
-	INT32 SocketPeer;
+	INT32 SocketPeer = 0;
 	struct sockaddr_in AddrSockConn;
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	RT_IAPP_INFORMATION *pIappInfor;
 	UINT32 PktLen;
 
@@ -3850,9 +3776,6 @@ static VOID FT_KDP_InformationResponseSend(
 	if (pEvtHdr->PeerIpAddr == 0)
 		return;
 	/* End of if */
-
-	SocketPeer = 0;
-	pBufFrame = NULL;
 
 	/* open TCP socket to the peer */
 	SocketPeer = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
