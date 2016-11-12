@@ -122,18 +122,26 @@ FT_CLIENT_INFO *mt_iapp_ft_client_look_up(
 	FT_CLIENT_TABLE		*pFtTable,
 	UCHAR *pAddr)
 {
+	int clientnum = 0;
 	ULONG HashIdx;
 	FT_CLIENT_INFO *ft_entry = NULL;
-	
+
 	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
-	ft_entry = pFtTable->hash[HashIdx]; 
+	ft_entry = pFtTable->hash[HashIdx];
 
 	while (ft_entry)
 	{
-		if (NdisCompareMemory(ft_entry->sta_mac, pAddr, ETH_ALEN) == 0)
+
+		if (NdisCompareMemory(ft_entry->sta_mac, pAddr, ETH_ALEN) == 0) {
 			break;
-		else
+		} else {
 			ft_entry = ft_entry->next;
+			clientnum++;
+			if (clientnum >= MAX_NUM_OF_CLIENT) {
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
+				return NULL;
+			}
+		}
 	}
 
 	return ft_entry;
@@ -159,7 +167,7 @@ FT_CLIENT_INFO *mt_iapp_ft_client_insert(
 		ft_entry->used = 1;
 		return ft_entry;
 	}
-	
+
 	if (pFtTable->ft_sta_table_size >= MAX_NUM_OF_CLIENT) {
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - FT client table is full. (FtStaTableSize=%d)\n", 
 				__FUNCTION__, pFtTable->ft_sta_table_size);

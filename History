@@ -2537,47 +2537,48 @@
 9) 802.1x: update to new version (5020 SDK).<br>
 10) iappd: update to 1.1.0 version (5020 SDK).<br>
 11) iappd: use set encrypt key from daemon.<br>
-12) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
-13) iappd: fix handle destination adress in recv RRB.<br>
-14) bndstr: update to new version (5020 SDK).<br>
-15) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
-16) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
-17) busybox: udhcpc: check read of option length byte to be within packet.<br>
-18) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
-19) goahead: more correct standart http code decode use.<br>
-20) goahead: send internal server error if not found error code.<br>
-21) goahead: allways use HTTP1.1 by default.<br>
-22) goahead: fix webheader format (parse issue by antiviral filters).<br>
-23) goahead: fix radius secret check.<br>
-24) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
-25) goahead: rework switch status, config page.<br>
-26) goahead: fix regulatory tables for RU.<br>
-27) goahead: add link for download firmware.<br>
-28) goahead: fix set BasicRate in some cases.<br>
-29) goahead: optimize for use of small resolution devices.<br>
-30) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-31) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-32) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-33) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
-34) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-35) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-36) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-37) kernel: ralink_wifi: fix announce band freq ranges.<br>
-38) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-39) kernel: ptrace: fix regs_return_value for kernel context.<br>
-40) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-41) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-42) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-43) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-44) kernel: net: xfrm: fix error return code.<br>
-45) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-46) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-47) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-48) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-49) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-50) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-51) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-52) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+12) iappd: fix FT client table parse infinitive loop issue.<br>
+13) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
+14) iappd: fix handle destination adress in recv RRB.<br>
+15) bndstr: update to new version (5020 SDK).<br>
+16) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
+17) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
+18) busybox: udhcpc: check read of option length byte to be within packet.<br>
+19) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
+20) goahead: more correct standart http code decode use.<br>
+21) goahead: send internal server error if not found error code.<br>
+22) goahead: allways use HTTP1.1 by default.<br>
+23) goahead: fix webheader format (parse issue by antiviral filters).<br>
+24) goahead: fix radius secret check.<br>
+25) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
+26) goahead: rework switch status, config page.<br>
+27) goahead: fix regulatory tables for RU.<br>
+28) goahead: add link for download firmware.<br>
+29) goahead: fix set BasicRate in some cases.<br>
+30) goahead: optimize for use of small resolution devices.<br>
+31) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+32) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+33) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+34) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
+35) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+36) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+37) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+38) kernel: ralink_wifi: fix announce band freq ranges.<br>
+39) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
+40) kernel: ptrace: fix regs_return_value for kernel context.<br>
+41) kernel: mips: fix max_low_pfn with disabled highmem.<br>
+42) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+43) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+44) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+45) kernel: net: xfrm: fix error return code.<br>
+46) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+47) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+48) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+49) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+50) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+51) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+52) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+53) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>

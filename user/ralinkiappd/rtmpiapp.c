@@ -2393,7 +2393,7 @@ static VOID IAPP_RcvHandlerMoveReq(
 	if_idx = mt_iapp_find_ifidx_by_sta_mac(&pCtrlBK->SelfFtStaTable, pNotify->MacAddr);
 	if (if_idx < 0) {
 		DBGPRINT(RT_DEBUG_TRACE, "iapp> %s: cannot find wifi interface.\n", __FUNCTION__);
-		return;
+		goto delete_and_out;
 	}
 
 	/*
@@ -2414,11 +2414,24 @@ static VOID IAPP_RcvHandlerMoveReq(
 	pRsp->IappHeader.Command = IAPP_CMD_MOVE_RESPONSE;
 	pRsp->Status = IAPP_MOVE_RSP_STATUS_SUCCESS;
 
+	DBGPRINT(RT_DEBUG_TRACE,
+			"iapp> (Send IAPP_CMD_MOVE_RESPONSE for "
+			"%02x:%02x:%02x:%02x:%02x:%02x)\n",
+			pNotify->MacAddr[0], pNotify->MacAddr[1],
+			pNotify->MacAddr[2], pNotify->MacAddr[3],
+			pNotify->MacAddr[4], pNotify->MacAddr[5]);
+
 	IAPP_TCP_PACKET_SEND(pCtrlBK, pRsp, sizeof(RT_IAPP_MOVE_RSP),
 						PeerIP, TRUE, pRspBuf, if_idx);
 
+delete_and_out:
+	DBGPRINT(RT_DEBUG_TRACE, "iapp> Delete %02x:%02x:%02x:%02x:%02x:%02x from local table\n",
+			pNotify->MacAddr[0], pNotify->MacAddr[1],
+			pNotify->MacAddr[2], pNotify->MacAddr[3],
+			pNotify->MacAddr[4], pNotify->MacAddr[5]);
+
 	mt_iapp_ft_client_delete(&pCtrlBK->SelfFtStaTable, pNotify->MacAddr);
-	
+
 } /* End of IAPP_RcvHandlerMoveReq */
 
 
