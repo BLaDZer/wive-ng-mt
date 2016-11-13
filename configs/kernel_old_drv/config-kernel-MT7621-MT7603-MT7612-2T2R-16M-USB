@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.112.113 Kernel Configuration
+# Linux/mips 3.4.113.128 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1911,6 +1911,10 @@ CONFIG_RA_HW_NAT_PCI=y
 CONFIG_RA_HW_NAT_WIFI=y
 # CONFIG_RA_HW_NAT_DEBUG is not set
 CONFIG_BCM_NAT=y
+
+#
+# Ralink HW Crypto
+#
 
 #
 # Ralink Devices

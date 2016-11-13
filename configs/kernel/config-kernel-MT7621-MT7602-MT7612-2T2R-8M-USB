@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.112.111 Kernel Configuration
+# Linux/mips 3.4.113.128 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1807,7 +1807,6 @@ CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC=y
 CONFIG_MT76X2_AP_SNMP=y
 # CONFIG_MT76X2_AP_SINGLE_SKU is not set
 # CONFIG_MT76X2_AP_READ_MAC_FROM_MTD is not set
-# CONFIG_MT76X2_AP_MC_SUPPORT is not set
 # CONFIG_MT76X2_AP_ATE is not set
 CONFIG_MT76X2_AP_INTERFERENCE_REDUCE=y
 # CONFIG_MT76X2_AP_DBG is not set
@@ -1852,6 +1851,10 @@ CONFIG_RA_HW_NAT_PCI=y
 CONFIG_RA_HW_NAT_WIFI=y
 # CONFIG_RA_HW_NAT_DEBUG is not set
 CONFIG_BCM_NAT=y
+
+#
+# Ralink HW Crypto
+#
 
 #
 # Ralink Devices
