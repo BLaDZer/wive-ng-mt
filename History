@@ -2565,20 +2565,21 @@
 37) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
 38) kernel: ralink_wifi: fix announce band freq ranges.<br>
 39) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-40) kernel: ptrace: fix regs_return_value for kernel context.<br>
-41) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-42) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-43) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-44) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-45) kernel: net: xfrm: fix error return code.<br>
-46) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-47) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-48) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-49) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-50) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-51) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-52) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-53) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+40) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
+41) kernel: ptrace: fix regs_return_value for kernel context.<br>
+42) kernel: mips: fix max_low_pfn with disabled highmem.<br>
+43) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+44) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+45) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+46) kernel: net: xfrm: fix error return code.<br>
+47) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+48) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+49) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+50) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+51) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+52) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+53) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+54) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
