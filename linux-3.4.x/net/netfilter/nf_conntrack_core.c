@@ -96,14 +96,13 @@ EXPORT_SYMBOL_GPL(web_str_loaded);
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 static __always_inline unsigned int is_local_svc(u_int8_t protonm)
 {
-	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4/icmp proto must be skip from hardware offload
+	/* Local gre/esp/ah/ip-ip/ipv6_in_ipv4 proto must be skip from hardware offload
 	    and mark as interested by ALG  for correct tracking this */
 	switch (protonm) {
 	    case IPPROTO_IPIP:
 #if !defined(CONFIG_RA_HW_NAT_IPV6) || !defined(CONFIG_HNAT_V2)
 	    case IPPROTO_IPV6:
 #endif
-	    case IPPROTO_ICMP:
 	    case IPPROTO_GRE:
 	    case IPPROTO_ESP:
 	    case IPPROTO_AH:
@@ -1265,6 +1264,14 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		goto skip_alg_of;
 	}
 #endif
+
+#ifdef CONFIG_XFRM
+	if (skb_sec_path(skb)) {
+		skip_offload = SKIP_ALL;		/* skip all offloads */
+		goto skip_alg_of;
+	}
+#endif
+
 #if defined(CONFIG_BCM_NAT)
 	/*
 	* full skip not ipv4 and mcast/bcast traffic by software offload and filtering section
