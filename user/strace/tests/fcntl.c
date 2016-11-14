@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_fcntl
 
-# define TEST_SYSCALL_NAME fcntl
+# define TEST_SYSCALL_NR __NR_fcntl
+# define TEST_SYSCALL_STR "fcntl"
 # include "struct_flock.c"
 
 #define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
@@ -46,7 +44,7 @@ test_flock64_einval(const int cmd, const char *name)
 		.l_start = 0xdefaced1facefeed,
 		.l_len = 0xdefaced2cafef00d
 	};
-	syscall(TEST_SYSCALL_NR, 0, cmd, &fl);
+	invoke_test_syscall(cmd, &fl);
 	printf("%s(0, %s, %p) = %s\n",
 	       TEST_SYSCALL_STR, name, &fl, EINVAL_STR);
 }
@@ -61,7 +59,10 @@ test_flock64(void)
 #if !defined(F_GETOWN_EX) || F_GETOWN_EX != F_SETLK64
 	TEST_FLOCK64_EINVAL(F_SETLK64);
 #endif
+/* F_GETLK and F_SETLKW64 have conflicting values on mips64 */
+#if !defined(__mips64) || F_GETLK != F_SETLKW64
 	TEST_FLOCK64_EINVAL(F_SETLKW64);
+#endif
 #if !defined(F_SETOWN_EX) || F_SETOWN_EX != F_GETLK64
 	TEST_FLOCK64_EINVAL(F_GETLK64);
 #endif
@@ -70,9 +71,7 @@ test_flock64(void)
 int
 main(void)
 {
-	if (create_sample())
-		return 77;
-
+	create_sample();
 	test_flock();
 	test_flock64();
 
@@ -82,10 +81,6 @@ main(void)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_fcntl")
 
 #endif

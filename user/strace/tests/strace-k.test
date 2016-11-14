@@ -3,7 +3,7 @@
 # Ensure that strace -k works.
 #
 # Copyright (c) 2014 Masatake YAMATO <yamato@redhat.com>
-# Copyright (c) 2014-2015 Dmitry V. Levin <ldv@altlinux.org>
+# Copyright (c) 2014-2016 Dmitry V. Levin <ldv@altlinux.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,6 @@
 
 . "${srcdir=.}/init.sh"
 
-$STRACE -h | grep '^[[:space:]]*-k[[:space:]]' > /dev/null ||
-	skip_ 'strace -k is not available'
-
 # strace -k is implemented using /proc/$pid/maps
 [ -f /proc/self/maps ] ||
 	framework_skip_ '/proc/self/maps is not available'
@@ -44,7 +41,7 @@ run_prog ./stack-fcall
 run_strace -e getpid -k $args
 
 expected='getpid f3 f2 f1 f0 main '
-result=$(sed -n '1,/(main+0x[a-f0-9]\+) .*/ s/^.*(\([^+]\+\)+0x[a-f0-9]\+) .*/\1/p' "$LOG" |
+result=$(sed -r -n '1,/\(main\+0x[a-f0-9]+\) .*/ s/^.*\(([^+]+)\+0x[a-f0-9]+\) .*/\1/p' "$LOG" |
 	tr '\n' ' ')
 
 test "$result" = "$expected" || {

@@ -55,4 +55,4 @@ typedef struct {
 	char		d_name[1];
 } kernel_dirent;
 
-#endif
+#endif /* !STRACE_KERNEL_TYPES_H */

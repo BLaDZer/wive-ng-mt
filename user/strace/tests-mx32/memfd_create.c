@@ -1,25 +1,26 @@
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <unistd.h>
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_memfd_create
+
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)
 {
-	syscall(__NR_memfd_create, "strace", 7);
+	static const char text[] = "strace";
+	int rc = syscall(__NR_memfd_create, text, 7);
+
+	printf("memfd_create(\"%s\", %s) = %d %s (%m)\n",
+	       text, "MFD_CLOEXEC|MFD_ALLOW_SEALING|0x4", rc, errno2name());
+
+	puts("+++ exited with 0 +++");
 	return 0;
 }
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_memfd_create")
 
 #endif

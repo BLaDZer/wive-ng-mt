@@ -7,7 +7,7 @@
  * Copyright (c) 2009 Andreas Schwab <schwab@redhat.com>
  * Copyright (c) 2012 H.J. Lu <hongjiu.lu@intel.com>
  * Copyright (c) 2013 Denys Vlasenko <vda.linux@googlemail.com>
- * Copyright (c) 2014-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,24 +44,23 @@
  * which means that on x32 we need to use tcp->ext_arg[N] to get offset argument.
  * Use test/x32_lseek.c to test lseek decoding.
  */
-#if defined(LINUX_MIPSN32) || defined(X32)
+#if HAVE_STRUCT_TCB_EXT_ARG
 SYS_FUNC(lseek)
 {
-	long long offset;
-	int whence;
-
 	printfd(tcp, tcp->u_arg[0]);
-# ifdef X32
-	/* tcp->ext_arg is not initialized for i386 personality */
-	if (current_personality == 1)
+
+	long long offset;
+# if SUPPORTED_PERSONALITIES > 1
+	/* tcp->ext_arg is not initialized for compat personality */
+	if (current_personality == 1) {
 		offset = tcp->u_arg[1];
-	else
+	} else
 # endif
+	{
 	offset = tcp->ext_arg[1];
-	whence = tcp->u_arg[2];
-	if (whence == SEEK_SET)
-		tprintf(", %llu, ", offset);
-	else
+	}
+	int whence = tcp->u_arg[2];
+
 		tprintf(", %lld, ", offset);
 	printxval(whence_codes, whence, "SEEK_???");
 
@@ -70,15 +69,22 @@ SYS_FUNC(lseek)
 #else
 SYS_FUNC(lseek)
 {
-	long offset;
-	int whence;
-
 	printfd(tcp, tcp->u_arg[0]);
-	offset = tcp->u_arg[1];
-	whence = tcp->u_arg[2];
-	if (whence == SEEK_SET)
-		tprintf(", %lu, ", offset);
-	else
+
+	long offset =
+# if SUPPORTED_PERSONALITIES > 1 && SIZEOF_LONG > 4
+#  ifdef X86_64
+		current_personality == 1 ?
+			(long)(int) tcp->u_arg[1] : tcp->u_arg[1];
+#  else
+		current_wordsize == 4 ?
+			(long)(int) tcp->u_arg[1] : tcp->u_arg[1];
+#  endif
+# else
+		tcp->u_arg[1];
+# endif
+	int whence = tcp->u_arg[2];
+
 		tprintf(", %ld, ", offset);
 	printxval(whence_codes, whence, "SEEK_???");
 
@@ -103,14 +109,9 @@ SYS_FUNC(llseek)
 {
 	if (entering(tcp)) {
 		printfd(tcp, tcp->u_arg[0]);
-		if (tcp->u_arg[4] == SEEK_SET)
-			tprintf(", %llu, ",
-				((long long) tcp->u_arg[1]) << 32 |
-				(unsigned long long) (unsigned) tcp->u_arg[2]);
-		else
 			tprintf(", %lld, ",
-				((long long) tcp->u_arg[1]) << 32 |
-				(unsigned long long) (unsigned) tcp->u_arg[2]);
+			(zero_extend_signed_to_ull(tcp->u_arg[1]) << 32)
+			| zero_extend_signed_to_ull(tcp->u_arg[2]));
 	} else {
 		printnum_int64(tcp, tcp->u_arg[3], "%" PRIu64);
 		tprints(", ");

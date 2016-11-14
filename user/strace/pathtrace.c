@@ -174,6 +174,7 @@ pathtrace_match(struct tcb *tcp)
 	case SEN_faccessat:
 	case SEN_fchmodat:
 	case SEN_fchownat:
+	case SEN_fstatat64:
 	case SEN_futimesat:
 	case SEN_inotify_add_watch:
 	case SEN_mkdirat:
@@ -181,7 +182,6 @@ pathtrace_match(struct tcb *tcp)
 	case SEN_name_to_handle_at:
 	case SEN_newfstatat:
 	case SEN_openat:
-	case SEN_pipe2:
 	case SEN_readlinkat:
 	case SEN_unlinkat:
 	case SEN_utimensat:
@@ -216,6 +216,7 @@ pathtrace_match(struct tcb *tcp)
 	case SEN_mmap:
 	case SEN_mmap_4koff:
 	case SEN_mmap_pgoff:
+	case SEN_ARCH_mmap:
 		/* x, x, x, x, fd */
 		return fdmatch(tcp, tcp->u_arg[4]);
 
@@ -225,8 +226,9 @@ pathtrace_match(struct tcb *tcp)
 			upathmatch(tcp, tcp->u_arg[0]) ||
 			upathmatch(tcp, tcp->u_arg[2]);
 
+	case SEN_copy_file_range:
 	case SEN_splice:
-		/* fd, x, fd, x, x */
+		/* fd, x, fd, x, x, x */
 		return fdmatch(tcp, tcp->u_arg[0]) ||
 			fdmatch(tcp, tcp->u_arg[2]);
 
@@ -326,6 +328,7 @@ pathtrace_match(struct tcb *tcp)
 	case SEN_memfd_create:
 	case SEN_perf_event_open:
 	case SEN_pipe:
+	case SEN_pipe2:
 	case SEN_printargs:
 	case SEN_socket:
 	case SEN_socketpair:

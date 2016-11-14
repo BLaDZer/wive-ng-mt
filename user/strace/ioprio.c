@@ -51,11 +51,11 @@ enum {
 #define IOPRIO_PRIO_DATA(mask)	((mask) & IOPRIO_PRIO_MASK)
 
 static const char *
-sprint_ioprio(int ioprio)
+sprint_ioprio(unsigned int ioprio)
 {
 	static char outstr[256];
 	const char *str;
-	int class, data;
+	unsigned int class, data;
 
 	class = IOPRIO_PRIO_CLASS(ioprio);
 	data = IOPRIO_PRIO_DATA(ioprio);

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
  * Copyright (c) 2015 Andreas Schwab <schwab@suse.de>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
+#include "tests.h"
 #include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/sem.h>
+
+#include "xlat.h"
+#include "xlat/resource_flags.h"
 
 union semun {
 	int              val;    /* Value for SETVAL */
@@ -38,56 +43,76 @@ union semun {
 				    (Linux-specific) */
 };
 
+static int id = -1;
+
+static void
+cleanup(void)
+{
+	semctl(id, 0, IPC_RMID, 0);
+	printf("semctl\\(%d, 0, (IPC_64\\|)?IPC_RMID, \\[?0\\]?\\) += 0\n", id);
+	id = -1;
+}
+
 int
 main(void)
 {
-	int rc, id;
+	static const key_t private_key =
+		(key_t) (0xffffffff00000000ULL | IPC_PRIVATE);
+	static const key_t bogus_key = (key_t) 0xeca86420fdb97531ULL;
+	static const int bogus_semid = 0xfdb97531;
+	static const int bogus_semnum = 0xeca86420;
+	static const int bogus_size = 0xdec0ded1;
+	static const int bogus_flags = 0xface1e55;
+	static const int bogus_cmd = 0xdeadbeef;
+	static const unsigned long bogus_arg =
+		(unsigned long) 0xbadc0dedfffffaceULL;
+
+	int rc;
 	union semun un;
 	struct semid_ds ds;
 	struct seminfo info;
 
-	id = semget(IPC_PRIVATE, 1, 0600);
+	rc = semget(bogus_key, bogus_size, bogus_flags);
+	printf("semget\\(%#llx, %d, %s%s%s%#x\\|%#04o\\) += %s\n",
+	       zero_extend_signed_to_ull(bogus_key), bogus_size,
+	       IPC_CREAT & bogus_flags ? "IPC_CREAT\\|" : "",
+	       IPC_EXCL & bogus_flags ? "IPC_EXCL\\|" : "",
+	       IPC_NOWAIT & bogus_flags ? "IPC_NOWAIT\\|" : "",
+	       bogus_flags & ~(0777 | IPC_CREAT | IPC_EXCL | IPC_NOWAIT),
+	       bogus_flags & 0777, sprintrc_grep(rc));
+
+	id = semget(private_key, 1, 0600);
 	if (id < 0)
-		return 77;
+		perror_msg_and_skip("semget");
 	printf("semget\\(IPC_PRIVATE, 1, 0600\\) += %d\n", id);
+	atexit(cleanup);
+
+	rc = semctl(bogus_semid, bogus_semnum, bogus_cmd, bogus_arg);
+#ifdef __GLIBC__
+# define SEMCTL_BOGUS_ARG_FMT "(%#lx|\\[(%#lx|0)\\])"
+#else
+# define SEMCTL_BOGUS_ARG_FMT "(%#lx|\\[(%#lx|0)\\]|0)"
+#endif
+	printf("semctl\\(%d, %d, (IPC_64\\|)?%#x /\\* SEM_\\?\\?\\? \\*/"
+	       ", " SEMCTL_BOGUS_ARG_FMT "\\) += %s\n",
+	       bogus_semid, bogus_semnum, bogus_cmd,
+	       bogus_arg, bogus_arg, sprintrc_grep(rc));
 
 	un.buf = &ds;
 	if (semctl(id, 0, IPC_STAT, un))
-		goto fail;
+		perror_msg_and_skip("semctl IPC_STAT");
 	printf("semctl\\(%d, 0, (IPC_64\\|)?IPC_STAT, \\[?%p\\]?\\) += 0\n",
 	       id, &ds);
 
 	un.__buf = &info;
-	int max = semctl(0, 0, SEM_INFO, un);
-	if (max < 0)
-		goto fail;
-	printf("semctl\\(0, 0, (IPC_64\\|)?SEM_INFO, \\[?%p\\]?\\) += %d\n",
-	       &info, max);
+	rc = semctl(0, 0, SEM_INFO, un);
+	printf("semctl\\(0, 0, (IPC_64\\|)?SEM_INFO, \\[?%p\\]?\\) += %s\n",
+	       &info, sprintrc_grep(rc));
 
 	un.buf = &ds;
 	rc = semctl(id, 0, SEM_STAT, un);
-	if (rc != id) {
-		/*
-		 * In linux < v2.6.24-rc1 the first argument must be
-		 * an index in the kernel's internal array.
-		 */
-		if (-1 != rc || EINVAL != errno)
-			goto fail;
-		printf("semctl\\(%d, 0, (IPC_64\\|)?SEM_STAT, \\[?%p\\]?\\)"
-		       " += -1 EINVAL \\(Invalid argument\\)\n", id, &ds);
-	} else {
-		printf("semctl\\(%d, 0, (IPC_64\\|)?SEM_STAT, \\[?%p\\]?\\)"
-		       " += %d\n", id, &ds, id);
-	}
+	printf("semctl\\(%d, 0, (IPC_64\\|)?SEM_STAT, \\[?%p\\]?\\) += %s\n",
+	       id, &ds, sprintrc_grep(rc));
 
-	rc = 0;
-done:
-	if (semctl(id, 0, IPC_RMID, 0) < 0)
-		return 1;
-	printf("semctl\\(%d, 0, (IPC_64\\|)?IPC_RMID, \\[?0\\]?\\) += 0\n", id);
-	return rc;
-
-fail:
-	rc = 1;
-	goto done;
+	return 0;
 }

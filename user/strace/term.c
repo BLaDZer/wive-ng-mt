@@ -67,10 +67,10 @@ decode_termios(struct tcb *tcp, const long addr)
 	if (!(tios.c_lflag & ICANON))
 		tprintf("c_cc[VMIN]=%d, c_cc[VTIME]=%d, ",
 			tios.c_cc[VMIN], tios.c_cc[VTIME]);
-	tprintf("c_cc=\"");
+	tprints("c_cc=\"");
 	for (i = 0; i < NCCS; i++)
 		tprintf("\\x%02x", tios.c_cc[i]);
-	tprintf("\"}");
+	tprints("\"}");
 }
 
 static void
@@ -109,10 +109,10 @@ decode_termio(struct tcb *tcp, const long addr)
 		tprintf("c_cc[VMIN]=%d, c_cc[VTIME]=%d, ",
 			tio.c_cc[VMIN], tio.c_cc[VTIME]);
 #endif /* !_VMIN */
-	tprintf("c_cc=\"");
+	tprints("c_cc=\"");
 	for (i = 0; i < NCC; i++)
 		tprintf("\\x%02x", tio.c_cc[i]);
-	tprintf("\"}");
+	tprints("\"}");
 }
 
 static void
@@ -222,11 +222,11 @@ term_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
 	/* ioctls with a direct decodable arg */
 	case TCXONC:
 		tprints(", ");
-		printxval(tcxonc_options, arg, "TC???");
+		printxval_long(tcxonc_options, arg, "TC???");
 		break;
 	case TCFLSH:
 		tprints(", ");
-		printxval(tcflsh_options, arg, "TC???");
+		printxval_long(tcflsh_options, arg, "TC???");
 		break;
 	case TCSBRK:
 	case TCSBRKP:

@@ -26,6 +26,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef STRACE_LINUX_DUMMY_H
+#define STRACE_LINUX_DUMMY_H
+
 #ifndef HAVE_STRUCT___OLD_KERNEL_STAT
 #define	sys_oldfstat		printargs
 #define	sys_oldstat		printargs
@@ -44,6 +47,9 @@
 #   define	sys_set_thread_area	printargs
 #  endif
 # endif
+#endif
+#ifdef ALPHA
+# define	sys_getdtablesize	printargs
 #endif
 
 /* like another call */
@@ -95,13 +101,12 @@
 #define	sys_vfork		sys_fork
 
 /* printargs does the right thing */
-#define	sys_getpgid		printargs
+#define	sys_getpgrp		printargs
 #define	sys_getpid		printargs
 #define	sys_getppid		printargs
 #define	sys_gettid		printargs
 #define	sys_idle		printargs
 #define	sys_inotify_init	printargs
-#define	sys_ipc			printargs
 #define	sys_munlockall		printargs
 #define	sys_pause		printargs
 #define	sys_printargs		printargs
@@ -110,19 +115,21 @@
 #define	sys_setsid		printargs
 #define	sys_set_tid_address	printargs
 #define	sys_setup		printargs
-#define	sys_socketcall		printargs
 #define	sys_sync		printargs
-#define	sys_timer_delete	printargs
-#define	sys_timer_getoverrun	printargs
+#define	sys_syscall		printargs
 #define	sys_vhangup		printargs
 
-/* printargs_lu/ld does the right thing */
-#define	sys_alarm		printargs_lu
-#define	sys_getpgrp		printargs_lu
-#define	sys_getsid		printargs_lu
-#define	sys_nice		printargs_ld
-#define	sys_setpgid		printargs_lu
-#define	sys_setpgrp		printargs_lu
+/* printargs_u does the right thing */
+#define	sys_alarm		printargs_u
+
+/* printargs_d does the right thing */
+#define	sys_getpgid		printargs_d
+#define	sys_getsid		printargs_d
+#define	sys_nice		printargs_d
+#define	sys_setpgid		printargs_d
+#define	sys_setpgrp		printargs_d
+#define	sys_timer_delete	printargs_d
+#define	sys_timer_getoverrun	printargs_d
 
 /* unimplemented */
 #define	sys_afs_syscall		printargs
@@ -141,6 +148,7 @@
 #define	sys_query_module	printargs
 #define	sys_security		printargs
 #define	sys_stty		printargs
+#define	sys_timerfd		printargs
 #define	sys_tuxcall		printargs
 #define	sys_ulimit		printargs
 #define	sys_ustat		printargs
@@ -151,3 +159,5 @@
 #define	sys_oldolduname		printargs
 #define	sys_olduname		printargs
 #define	sys_sysfs		printargs
+
+#endif /* !STRACE_LINUX_DUMMY_H */

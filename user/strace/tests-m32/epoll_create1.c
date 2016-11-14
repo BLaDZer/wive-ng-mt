@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,31 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
+#include "tests.h"
 #include <fcntl.h>
+#include <asm/unistd.h>
+
+#if defined __NR_epoll_create1 && defined O_CLOEXEC
+
+# include <stdio.h>
 #include <unistd.h>
-#include <sys/syscall.h>
 
 int
 main(void)
 {
-#if defined __NR_epoll_create1 && defined O_CLOEXEC
-	(void) close(0);
-	if (syscall(__NR_epoll_create1, O_CLOEXEC))
-		return 77;
-	return syscall(__NR_epoll_create1, O_CLOEXEC | O_NONBLOCK) >= 0;
-#else
-        return 77;
-#endif
+	long rc = syscall(__NR_epoll_create1, O_CLOEXEC);
+	printf("epoll_create1(EPOLL_CLOEXEC) = %s\n", sprintrc(rc));
+
+	rc = syscall(__NR_epoll_create1, O_CLOEXEC | O_NONBLOCK);
+	printf("epoll_create1(EPOLL_CLOEXEC|%#x) = %s\n",
+	       O_NONBLOCK, sprintrc(rc));
+
+	puts("+++ exited with 0 +++");
+	return 0;
 }
+
+#else
+
+SKIP_MAIN_UNDEFINED("__NR_epoll_create1 && O_CLOEXEC")
+
+#endif

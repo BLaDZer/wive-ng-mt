@@ -15,6 +15,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Aaron Ucko <ucko@vax1.rockhurst.edu>
 	Adrien Kunysz <adrien@kunysz.be>
 	Ali Polatel <alip@exherbo.org>
+	Anchit Jain <anchitjain1234@gmail.com>
 	Andi Kleen <ak@linux.intel.com>
 	Andreas Schwab <schwab@linux-m68k.org>
 	Anton Blanchard <anton@samba.org>
@@ -43,7 +44,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Denys Vlasenko <vda.linux@googlemail.com>
 	Dmitry V. Levin <ldv@altlinux.org>
 	Douglas Mencken <dougmencken@gmail.com>
-	Dr. David Alan Gilbert <dave@treblig.org>
+	Dr. David Alan Gilbert <dgilbert@redhat.com>
 	Edgar E. Iglesias <edgar.iglesias@gmail.com>
 	Elliott Hughes <enh@google.com>
 	Elvira Khabirova <lineprinter0@gmail.com>
@@ -51,6 +52,8 @@ strace-devel@lists.sourceforge.net mailing list.
 	Etienne Gemsa <etienne.gemsa@lse.epita.fr>
 	Eugene Syromyatnikov <evgsyr@gmail.com>
 	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+	Fabien Siron <fabien.siron@epita.fr>
+	Fei Jie <feij.fnst@cn.fujitsu.com>
 	Felix Janda <felix.janda@posteo.de>
 	Fernando Luis Vazquez Cao <fernando@oss.ntt.co.jp>
 	Florian Lohoff <flo@rfc822.org>
@@ -70,9 +73,12 @@ strace-devel@lists.sourceforge.net mailing list.
 	Holger Hans Peter Freyther <holger@freyther.de>
 	Jakub Bogusz <qboosh@pld-linux.org>
 	Jakub Jelinek <jj@ultra.linux.cz>
+	James Clarke <jrtc27@jrtc27.com>
+	James Cowgill <james410@cowgill.org.uk>
 	James Hogan <james.hogan@imgtec.com>
 	James Yang <james.yang@freescale.com>
 	Jan Kratochvil <jan.kratochvil@redhat.com>
+	JayRJoshi <jay.r.joshi100@gmail.com>
 	Jeff Mahoney <jeffm@suse.com>
 	Jian Zhen <zhenjl@gmail.com>
 	Joe Ilacqua <spike@world.std.com>
@@ -81,6 +87,8 @@ strace-devel@lists.sourceforge.net mailing list.
 	John Spencer <maillist-strace@barfooze.de>
 	Ju"rgen Fluk <louis@marco.de>
 	Juergen Weigert <jnweiger@immd4.informatik.uni-erlangen.de>
+	Katerina Koukiou <k.koukiou@googlemail.com>
+	Keith Owens <kaos.ocs@gmail.com>
 	Keith Thompson <kst@alsys.com>
 	Kirill A. Shutemov <kirill@shutemov.name>
 	Kyle McMartin <kyle@mcmartin.ca>
@@ -102,16 +110,19 @@ strace-devel@lists.sourceforge.net mailing list.
 	Maxin B. John <maxin.john@enea.com>
 	Michael E Chastain <mec@duracef.shout.net>
 	Michael Holzheu <holzheu@de.ibm.com>
+	Michael Shigorin <mike@altlinux.org>
 	Michail Litvak <mci@owl.openwall.com>
 	Michal Ludvig <mludvig@suse.cz>
 	Mike Frysinger <vapier@gentoo.org>
 	Mike Stroyan <mike.stroyan@hp.com>
 	Muttley Meen <muttley.meen@gmail.com>
+	Nahim El Atmani <naam@lse.epita.fr>
 	Namhyung Kim <namhyung.kim@lge.com>
 	Nate Eldredge <nate@cartsys.com>
 	Nate Sammons <nate@users.sourceforge.net>
 	Neil Campbell <lists@thebatcave.org.uk>
 	Paolo Bonzini <pbonzini@redhat.com>
+	Patrik Jakobsson <patrik.jakobsson@linux.intel.com>
 	Paul Mundt <lethal@linux-sh.org>
 	Pavel Machek <pavel@ucw.cz>
 	Peter Jones <pjones@redhat.com>
@@ -125,6 +136,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Richard Braakman <dark@xs4all.nl>
 	Richard Henderson <richard@twiddle.tamu.edu>
 	Richard Hirst <rhirst@linuxcare.com>
+	Richard W.M. Jones <rjones@redhat.com>
 	Roland Borde <bo@uebemc.siemens.de>
 	Roland McGrath <roland@redhat.com>
 	Sami Farin <safari@u.safari.iki.fi>

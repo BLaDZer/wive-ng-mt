@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR__llseek
 
-#include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
 
 int
 main(void)
 {
-	const unsigned long high = 0xdefaced;
+	const unsigned long high = 0xfacefeed;
 	const unsigned long low = 0xdeadbeef;
-	const unsigned long long offset = 0xdefaceddeadbeef;
+	const long long offset = 0xfacefeeddeadbeefLL;
 	unsigned long long result;
-	int rc = syscall(__NR__llseek, -1, high, low, &result, SEEK_SET);
 
-	if (rc != -1 || EBADF != errno)
-		return 77;
-
-	printf("_llseek(-1, %llu, %p, SEEK_SET) = -1 EBADF (Bad file descriptor)\n",
-	       offset, &result);
+	long rc = syscall(__NR__llseek, -1, high, low, &result, SEEK_SET);
+	printf("_llseek(-1, %lld, %p, SEEK_SET) = %ld %s (%m)\n",
+	       offset, &result, rc, errno2name());
 
 	puts("+++ exited with 0 +++");
 	return 0;
@@ -58,10 +51,6 @@ main(void)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR__llseek")
 
 #endif

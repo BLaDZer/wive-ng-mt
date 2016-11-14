@@ -138,7 +138,7 @@ static bool skip_one_b_execve = 0;
 /* Are we "strace PROG" and need to hide everything until execve? */
 bool hide_log_until_execve = 0;
 
-static int exit_code = 0;
+static int exit_code;
 static int strace_child = 0;
 static int strace_tracer_pid = 0;
 
@@ -196,7 +196,7 @@ strerror(int err_no)
 #endif /* HAVE_STERRROR */
 
 static void
-usage()
+usage(void)
 {
 	printf("\
 usage: strace [-CdffhiqrtttTvVwxxy] [-I n] [-e expr]...\n\
@@ -218,7 +218,7 @@ Output format:\n\
   -x             print non-ascii strings in hex\n\
   -xx            print all strings in hex\n\
   -y             print paths associated with file descriptor arguments\n\
-  -yy            print ip:port pairs associated with socket file descriptors\n\
+  -yy            print protocol specific information associated with socket file descriptors\n\
 \n\
 Statistics:\n\
   -c             count time, calls, and errors for each syscall and report summary\n\
@@ -360,22 +360,26 @@ error_opt_arg(int opt, const char *arg)
 	error_msg_and_help("invalid -%c argument: '%s'", opt, arg);
 }
 
-#if USE_SEIZE
+static const char *ptrace_attach_cmd;
+
 static int
 ptrace_attach_or_seize(int pid)
 {
+#if USE_SEIZE
 	int r;
 	if (!use_seize)
-		return ptrace(PTRACE_ATTACH, pid, 0L, 0L);
+		return ptrace_attach_cmd = "PTRACE_ATTACH",
+		       ptrace(PTRACE_ATTACH, pid, 0L, 0L);
 	r = ptrace(PTRACE_SEIZE, pid, 0L, (unsigned long) ptrace_setoptions);
 	if (r)
-		return r;
+		return ptrace_attach_cmd = "PTRACE_SEIZE", r;
 	r = ptrace(PTRACE_INTERRUPT, pid, 0L, 0L);
-	return r;
-}
+	return ptrace_attach_cmd = "PTRACE_INTERRUPT", r;
 #else
-# define ptrace_attach_or_seize(pid) ptrace(PTRACE_ATTACH, (pid), 0, 0)
+		return ptrace_attach_cmd = "PTRACE_ATTACH",
+		       ptrace(PTRACE_ATTACH, pid, 0L, 0L);
 #endif
+}
 
 /*
  * Used when we want to unblock stopped traced process.
@@ -401,10 +405,8 @@ ptrace_restart(int op, struct tcb *tcp, int sig)
 		msg = "CONT";
 	if (op == PTRACE_DETACH)
 		msg = "DETACH";
-#ifdef PTRACE_LISTEN
 	if (op == PTRACE_LISTEN)
 		msg = "LISTEN";
-#endif
 	/*
 	 * Why curcol != 0? Otherwise sometimes we get this:
 	 *
@@ -447,7 +449,8 @@ set_cloexec_flag(int fd)
 	fcntl(fd, F_SETFD, newflags); /* never fails */
 }
 
-static void kill_save_errno(pid_t pid, int sig)
+static void
+kill_save_errno(pid_t pid, int sig)
 {
 	int saved_errno = errno;
 
@@ -691,19 +694,25 @@ newoutf(struct tcb *tcp)
 static void
 expand_tcbtab(void)
 {
-	/* Allocate some more TCBs and expand the table.
+	/* Allocate some (more) TCBs (and expand the table).
 	   We don't want to relocate the TCBs because our
 	   callers have pointers and it would be a pain.
 	   So tcbtab is a table of pointers.  Since we never
 	   free the TCBs, we allocate a single chunk of many.  */
-	unsigned int i = tcbtabsize;
-	struct tcb *newtcbs = xcalloc(tcbtabsize, sizeof(newtcbs[0]));
-	struct tcb **newtab = xreallocarray(tcbtab, tcbtabsize * 2,
-					    sizeof(tcbtab[0]));
-	tcbtabsize *= 2;
-	tcbtab = newtab;
-	while (i < tcbtabsize)
-		tcbtab[i++] = newtcbs++;
+	unsigned int new_tcbtabsize, alloc_tcbtabsize;
+	struct tcb *newtcbs;
+
+	if (tcbtabsize) {
+		alloc_tcbtabsize = tcbtabsize;
+		new_tcbtabsize = tcbtabsize * 2;
+	} else {
+		new_tcbtabsize = alloc_tcbtabsize = 1;
+	}
+
+	newtcbs = xcalloc(alloc_tcbtabsize, sizeof(newtcbs[0]));
+	tcbtab = xreallocarray(tcbtab, new_tcbtabsize, sizeof(tcbtab[0]));
+	while (tcbtabsize < new_tcbtabsize)
+		tcbtab[tcbtabsize++] = newtcbs++;
 }
 
 static struct tcb *
@@ -739,11 +748,44 @@ alloctcb(int pid)
 	error_msg_and_die("bug in alloctcb");
 }
 
+void *
+get_tcb_priv_data(const struct tcb *tcp)
+{
+	return tcp->_priv_data;
+}
+
+int
+set_tcb_priv_data(struct tcb *tcp, void *const priv_data,
+		  void (*const free_priv_data)(void *))
+{
+	if (tcp->_priv_data)
+		return -1;
+
+	tcp->_free_priv_data = free_priv_data;
+	tcp->_priv_data = priv_data;
+
+	return 0;
+}
+
+void
+free_tcb_priv_data(struct tcb *tcp)
+{
+	if (tcp->_priv_data) {
+		if (tcp->_free_priv_data) {
+			tcp->_free_priv_data(tcp->_priv_data);
+			tcp->_free_priv_data = NULL;
+		}
+		tcp->_priv_data = NULL;
+	}
+}
+
 static void
 droptcb(struct tcb *tcp)
 {
 	if (tcp->pid == 0)
 		return;
+
+	free_tcb_priv_data(tcp);
 
 #ifdef USE_LIBUNWIND
 	if (stack_trace_enabled) {
@@ -792,10 +834,6 @@ detach(struct tcb *tcp)
 	 * before detaching.  Arghh.  We go through hoops
 	 * to make a clean break of things.
 	 */
-#if defined(SPARC)
-# undef PTRACE_DETACH
-# define PTRACE_DETACH PTRACE_SUNDETACH
-#endif
 
 	if (!(tcp->flags & TCB_ATTACHED))
 		goto drop;
@@ -971,8 +1009,72 @@ process_opt_p_list(char *opt)
 }
 
 static void
+attach_tcb(struct tcb *const tcp)
+{
+	if (ptrace_attach_or_seize(tcp->pid) < 0) {
+		perror_msg("attach: ptrace(%s, %d)",
+			   ptrace_attach_cmd, tcp->pid);
+		droptcb(tcp);
+		return;
+	}
+
+	tcp->flags |= TCB_ATTACHED | TCB_STARTUP | post_attach_sigstop;
+	newoutf(tcp);
+	if (debug_flag)
+		error_msg("attach to pid %d (main) succeeded", tcp->pid);
+
+	char procdir[sizeof("/proc/%d/task") + sizeof(int) * 3];
+	DIR *dir;
+	unsigned int ntid = 0, nerr = 0;
+
+	if (followfork && tcp->pid != strace_child &&
+	    sprintf(procdir, "/proc/%d/task", tcp->pid) > 0 &&
+	    (dir = opendir(procdir)) != NULL) {
+		struct_dirent *de;
+
+		while ((de = read_dir(dir)) != NULL) {
+			if (de->d_fileno == 0)
+				continue;
+
+			int tid = string_to_uint(de->d_name);
+			if (tid <= 0 || tid == tcp->pid)
+				continue;
+
+			++ntid;
+			if (ptrace_attach_or_seize(tid) < 0) {
+				++nerr;
+				if (debug_flag)
+					perror_msg("attach: ptrace(%s, %d)",
+						   ptrace_attach_cmd, tid);
+				continue;
+			}
+			if (debug_flag)
+				error_msg("attach to pid %d succeeded", tid);
+
+			struct tcb *tid_tcp = alloctcb(tid);
+			tid_tcp->flags |= TCB_ATTACHED | TCB_STARTUP |
+					  post_attach_sigstop;
+			newoutf(tid_tcp);
+		}
+
+		closedir(dir);
+	}
+
+	if (!qflag) {
+		if (ntid > nerr)
+			error_msg("Process %u attached"
+				  " with %u threads",
+				  tcp->pid, ntid - nerr + 1);
+		else
+			error_msg("Process %u attached",
+				  tcp->pid);
+	}
+}
+
+static void
 startup_attach(void)
 {
+	pid_t parent_pid = strace_tracer_pid;
 	unsigned int tcbi;
 	struct tcb *tcp;
 
@@ -1015,94 +1117,31 @@ startup_attach(void)
 		if (tcp->flags & TCB_ATTACHED)
 			continue; /* no, we already attached it */
 
-		if (followfork && !daemonized_tracer) {
-			char procdir[sizeof("/proc/%d/task") + sizeof(int) * 3];
-			DIR *dir;
-
-			sprintf(procdir, "/proc/%d/task", tcp->pid);
-			dir = opendir(procdir);
-			if (dir != NULL) {
-				unsigned int ntid = 0, nerr = 0;
-				struct_dirent *de;
-
-				while ((de = read_dir(dir)) != NULL) {
-					struct tcb *cur_tcp;
-					int tid;
-
-					if (de->d_fileno == 0)
-						continue;
-					/* we trust /proc filesystem */
-					tid = atoi(de->d_name);
-					if (tid <= 0)
-						continue;
-					++ntid;
-					if (ptrace_attach_or_seize(tid) < 0) {
-						++nerr;
-						if (debug_flag)
-							error_msg("attach to pid %d failed", tid);
+		if (tcp->pid == parent_pid || tcp->pid == strace_tracer_pid) {
+			errno = EPERM;
+			perror_msg("attach: pid %d", tcp->pid);
+			droptcb(tcp);
 						continue;
 					}
-					if (debug_flag)
-						error_msg("attach to pid %d succeeded", tid);
-					cur_tcp = tcp;
-					if (tid != tcp->pid)
-						cur_tcp = alloctcb(tid);
-					cur_tcp->flags |= TCB_ATTACHED | TCB_STARTUP | post_attach_sigstop;
-					newoutf(cur_tcp);
-				}
-				closedir(dir);
+
+		attach_tcb(tcp);
+
 				if (interactive) {
 					sigprocmask(SIG_SETMASK, &empty_set, NULL);
 					if (interrupted)
 						goto ret;
 					sigprocmask(SIG_BLOCK, &blocked_set, NULL);
 				}
-				ntid -= nerr;
-				if (ntid == 0) {
-					perror_msg("attach: ptrace(PTRACE_ATTACH, ...)");
-					droptcb(tcp);
-					continue;
-				}
-				if (!qflag) {
-					if (ntid > 1)
-						error_msg("Process %u attached"
-							  " with %u threads",
-							  tcp->pid, ntid);
-					else
-						error_msg("Process %u attached",
-							  tcp->pid);
-				}
-				if (!(tcp->flags & TCB_ATTACHED)) {
-					/* -p PID, we failed to attach to PID itself
-					 * but did attach to some of its sibling threads.
-					 * Drop PID's tcp.
-					 */
-					droptcb(tcp);
-				}
-				continue;
-			} /* if (opendir worked) */
-		} /* if (-f) */
-		if (ptrace_attach_or_seize(tcp->pid) < 0) {
-			perror_msg("attach: ptrace(PTRACE_ATTACH, ...)");
-			droptcb(tcp);
-			continue;
-		}
-		tcp->flags |= TCB_ATTACHED | TCB_STARTUP | post_attach_sigstop;
-		newoutf(tcp);
-		if (debug_flag)
-			error_msg("attach to pid %d (main) succeeded", tcp->pid);
+	} /* for each tcbtab[] */
 
 		if (daemonized_tracer) {
 			/*
 			 * Make parent go away.
 			 * Also makes grandparent's wait() unblock.
 			 */
-			kill(getppid(), SIGKILL);
+		kill(parent_pid, SIGKILL);
+		strace_child = 0;
 		}
-
-		if (!qflag)
-			error_msg("Process %u attached", tcp->pid);
-	} /* for each tcbtab[] */
 
  ret:
 	if (interactive)
@@ -1174,6 +1213,70 @@ exec_or_die(void)
 
 	execv(params->pathname, params->argv);
 	perror_msg_and_die("exec");
+}
+
+/*
+ * Open a dummy descriptor for use as a placeholder.
+ * The descriptor is O_RDONLY with FD_CLOEXEC flag set.
+ * A read attempt from such descriptor ends with EOF,
+ * a write attempt is rejected with EBADF.
+ */
+static int
+open_dummy_desc(void)
+{
+	int fds[2];
+
+	if (pipe(fds))
+		perror_msg_and_die("pipe");
+	close(fds[1]);
+	set_cloexec_flag(fds[0]);
+	return fds[0];
+}
+
+/* placeholder fds status for stdin and stdout */
+static bool fd_is_placeholder[2];
+
+/*
+ * Ensure that all standard file descriptors are open by opening placeholder
+ * file descriptors for those standard file descriptors that are not open.
+ *
+ * The information which descriptors have been made open is saved
+ * in fd_is_placeholder for later use.
+ */
+static void
+ensure_standard_fds_opened(void)
+{
+	int fd;
+
+	while ((fd = open_dummy_desc()) <= 2) {
+		if (fd == 2)
+			break;
+		fd_is_placeholder[fd] = true;
+	}
+
+	if (fd > 2)
+		close(fd);
+}
+
+/*
+ * Redirect stdin and stdout unless they have been opened earlier
+ * by ensure_standard_fds_opened as placeholders.
+ */
+static void
+redirect_standard_fds(void)
+{
+	int i;
+
+	/*
+	 * It might be a good idea to redirect stderr as well,
+	 * but we sometimes need to print error messages.
+	 */
+	for (i = 0; i <= 1; ++i) {
+		if (!fd_is_placeholder[i]) {
+			close(i);
+			open_dummy_desc();
+		}
+	}
 }
 
 static void
@@ -1304,7 +1407,8 @@ startup_child(char **argv)
 
 			if (ptrace_attach_or_seize(pid)) {
 				kill_save_errno(pid, SIGKILL);
-				perror_msg_and_die("Can't attach to %d", pid);
+				perror_msg_and_die("attach: ptrace(%s, %d)",
+						   ptrace_attach_cmd, pid);
 			}
 			if (!NOMMU_SYSTEM)
 				kill(pid, SIGCONT);
@@ -1317,11 +1421,10 @@ startup_child(char **argv)
 		newoutf(tcp);
 	}
 	else {
-		/* With -D, we are *child* here, IOW: different pid. Fetch it: */
+		/* With -D, we are *child* here, the tracee is our parent. */
+		strace_child = strace_tracer_pid;
 		strace_tracer_pid = getpid();
-		/* The tracee is our parent: */
-		pid = getppid();
-		alloctcb(pid);
+		alloctcb(strace_child);
 		/* attaching will be done later, by startup_attach */
 		/* note: we don't do newoutf(tcp) here either! */
 
@@ -1346,6 +1449,18 @@ startup_child(char **argv)
 		 * to create a genuine separate stack and execute on it.
 		 */
 	}
+	/*
+	 * A case where straced process is part of a pipe:
+	 * { sleep 1; yes | head -n99999; } | strace -o/dev/null sh -c 'exec <&-; sleep 9'
+	 * If strace won't close its fd#0, closing it in tracee is not enough:
+	 * the pipe is still open, it has a reader. Thus, "head" will not get its
+	 * SIGPIPE at once, on the first write.
+	 *
+	 * Preventing it by redirecting strace's stdin/out.
+	 * (Don't leave fds 0 and 1 closed, this is bad practice: future opens
+	 * will reuse them, unexpectedly making a newly opened object "stdin").
+	 */
+	redirect_standard_fds();
 }
 
 #if USE_SEIZE
@@ -1447,10 +1562,8 @@ get_os_release(void)
 static void ATTRIBUTE_NOINLINE
 init(int argc, char *argv[])
 {
-	struct tcb *tcp;
 	int c, i;
 	int optF = 0;
-	unsigned int tcbi;
 	struct sigaction sa;
 
 	progname = argv[0] ? argv[0] : "strace";
@@ -1465,13 +1578,6 @@ init(int argc, char *argv[])
 	strace_tracer_pid = getpid();
 
 	os_release = get_os_release();
-
-	/* Allocate the initial tcbtab.  */
-	tcbtabsize = argc;	/* Surely enough for all -p args.  */
-	tcbtab = xcalloc(tcbtabsize, sizeof(tcbtab[0]));
-	tcp = xcalloc(tcbtabsize, sizeof(*tcp));
-	for (tcbi = 0; tcbi < tcbtabsize; tcbi++)
-		tcbtab[tcbi] = tcp++;
 
 	shared_log = stderr;
 	set_sortby(DEFAULT_SORTBY);
@@ -1619,13 +1725,12 @@ init(int argc, char *argv[])
 	memset(acolumn_spaces, ' ', acolumn);
 	acolumn_spaces[acolumn] = '\0';
 
-	/* Must have PROG [ARGS], or -p PID. Not both. */
-	if (!argv[0] == !nprocs) {
+	if (!argv[0] && !nprocs) {
 		error_msg_and_help("must have PROG [ARGS] or -p PID");
 	}
 
-	if (nprocs != 0 && daemonized_tracer) {
-		error_msg_and_help("-D and -p are mutually exclusive");
+	if (!argv[0] && daemonized_tracer) {
+		error_msg_and_help("PROG [ARGS] must be specified with -D");
 	}
 
 	if (!followfork)
@@ -1688,6 +1793,19 @@ init(int argc, char *argv[])
 		error_msg("ptrace_setoptions = %#x", ptrace_setoptions);
 	test_ptrace_seize();
 
+	/*
+	 * Is something weird with our stdin and/or stdout -
+	 * for example, may they be not open? In this case,
+	 * ensure that none of the future opens uses them.
+	 *
+	 * This was seen in the wild when /proc/sys/kernel/core_pattern
+	 * was set to "|/bin/strace -o/tmp/LOG PROG":
+	 * kernel runs coredump helper with fd#0 open but fd#1 closed (!),
+	 * therefore LOG gets opened to fd#1, and fd#1 is closed by
+	 * "don't hold up stdin/out open" code soon after.
+	 */
+	ensure_standard_fds_opened();
+
 	/* Check if they want to redirect the output. */
 	if (outfname) {
 		/* See if they want to pipe the output. */
@@ -1722,9 +1840,9 @@ init(int argc, char *argv[])
 		opt_intr = INTR_WHILE_WAIT;
 
 	/* argv[0]	-pPID	-oFILE	Default interactive setting
-	 * yes		0	0	INTR_WHILE_WAIT
+	 * yes		*	0	INTR_WHILE_WAIT
 	 * no		1	0	INTR_WHILE_WAIT
-	 * yes		0	1	INTR_NEVER
+	 * yes		*	1	INTR_NEVER
 	 * no		1	1	INTR_WHILE_WAIT
 	 */
 
@@ -1909,7 +2027,7 @@ maybe_allocate_tcb(const int pid, int status)
 		/* This can happen if a clone call used
 		 * CLONE_PTRACE itself.
 		 */
-		ptrace(PTRACE_CONT, pid, (char *) 0, 0);
+		ptrace(PTRACE_CONT, pid, NULL, 0);
 		error_msg("Stop of unknown pid %u seen, PTRACE_CONTed it", pid);
 		return NULL;
 	}
@@ -2014,7 +2132,7 @@ print_stopped(struct tcb *tcp, const siginfo_t *si, const unsigned int sig)
 		printleader(tcp);
 		if (si) {
 			tprintf("--- %s ", signame(sig));
-			printsiginfo(si, verbose(tcp));
+			printsiginfo(si);
 			tprints(" ---\n");
 		} else
 			tprintf("--- stopped by %s ---\n", signame(sig));
@@ -2302,6 +2420,8 @@ int
 main(int argc, char *argv[])
 {
 	init(argc, argv);
+
+	exit_code = !nprocs;
 
 	while (trace())
 		;

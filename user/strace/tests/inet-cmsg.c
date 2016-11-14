@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "tests.h"
 #include <assert.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -38,7 +38,7 @@
 static void
 print_pktinfo(const struct cmsghdr *c)
 {
-	printf("IP_PKTINFO, {ipi_ifindex=if_nametoindex(\"lo\")"
+	printf("IP_PKTINFO, cmsg_data={ipi_ifindex=if_nametoindex(\"lo\")"
 	       ", ipi_spec_dst=inet_addr(\"127.0.0.1\")"
 	       ", ipi_addr=inet_addr(\"127.0.0.1\")}");
 }
@@ -48,7 +48,7 @@ print_ttl(const struct cmsghdr *c)
 {
 	const unsigned int *ttl = (const unsigned int *) CMSG_DATA(c);
 
-	printf("IP_TTL, {ttl=%u}", *ttl);
+	printf("IP_TTL, cmsg_data=[%u]", *ttl);
 }
 
 static void
@@ -56,7 +56,7 @@ print_tos(const struct cmsghdr *c)
 {
 	const uint8_t *tos = (const uint8_t *) CMSG_DATA(c);
 
-	printf("IP_TOS, {tos=%x}", *tos);
+	printf("IP_TOS, cmsg_data=[%#x]", *tos);
 }
 
 static void
@@ -67,23 +67,25 @@ print_opts(const char *name, const struct cmsghdr *c)
 
 	printf("%s", name);
 	if (len) {
-		printf(", {opts=0x");
+		printf(", cmsg_data=[");
 		size_t i;
 		for (i = 0; i < len; ++i)
-			printf("%02x", opts[i]);
-		printf("}");
+			printf("%s0x%02x", i ? ", " : "", opts[i]);
+		printf("]");
 	}
 }
 
+#ifdef IP_ORIGDSTADDR
 static void
 print_origdstaddr(const struct cmsghdr *c)
 {
 	const struct sockaddr_in *sin =
 		(const struct sockaddr_in *) CMSG_DATA(c);
 
-	printf("IP_ORIGDSTADDR, {sa_family=AF_INET, sin_port=htons(%u)"
+	printf("IP_ORIGDSTADDR, cmsg_data={sa_family=AF_INET, sin_port=htons(%u)"
 	       ", sin_addr=inet_addr(\"127.0.0.1\")}", ntohs(sin->sin_port));
 }
+#endif
 
 int
 main(void)
@@ -94,22 +96,18 @@ main(void)
 	assert(!close(0));
 	assert(!close(3));
 
-	if (socket(PF_INET, SOCK_DGRAM, 0)) {
-		perror("socket");
-		return 77;
-	}
+	if (socket(AF_INET, SOCK_DGRAM, 0))
+		perror_msg_and_skip("socket");
 	struct sockaddr_in addr = {
 		.sin_family = AF_INET,
 		.sin_addr.s_addr = htonl(INADDR_LOOPBACK)
 	};
 	socklen_t len = sizeof(addr);
-	if (bind(0, (struct sockaddr *) &addr, len)) {
-		perror("bind");
-		return 77;
-	}
+	if (bind(0, (struct sockaddr *) &addr, len))
+		perror_msg_and_skip("bind");
 	assert(!getsockname(0, (struct sockaddr *) &addr, &len));
 
-	assert(socket(PF_INET, SOCK_DGRAM, 0) == 3);
+	assert(socket(AF_INET, SOCK_DGRAM, 0) == 3);
 	assert(!connect(3, (struct sockaddr *) &addr, len));
 
 	const int opt_1 = htonl(0x01000000);
@@ -147,11 +145,12 @@ main(void)
 	assert(recvmsg(0, &mh, 0) == (int) size);
 	assert(!close(0));
 
-	printf("recvmsg(0, {msg_name(%u)={sa_family=AF_INET, sin_port=htons(%u)"
-	       ", sin_addr=inet_addr(\"127.0.0.1\")}, msg_iov(1)=[{\"%s\", %zu}]"
-	       ", msg_controllen=%zu, [",
-	       (unsigned) mh.msg_namelen, ntohs(addr.sin_port),
-	       data, size, mh.msg_controllen);
+	printf("recvmsg(0, {msg_name={sa_family=AF_INET, sin_port=htons(%u)"
+	       ", sin_addr=inet_addr(\"127.0.0.1\")}, msg_namelen=%u"
+	       ", msg_iov=[{iov_base=\"%s\", iov_len=%u}], msg_iovlen=1"
+	       ", msg_control=[",
+	       ntohs(addr.sin_port), (unsigned) mh.msg_namelen,
+	       data, (unsigned) size);
 
 	struct cmsghdr *c;
 	for (c = CMSG_FIRSTHDR(&mh); c; c = CMSG_NXTHDR(&mh, c)) {
@@ -159,8 +158,8 @@ main(void)
 			continue;
 		if (c != control)
 			printf(", ");
-		printf("{cmsg_len=%zu, cmsg_level=SOL_IP, cmsg_type=",
-		       c->cmsg_len);
+		printf("{cmsg_len=%lu, cmsg_level=SOL_IP, cmsg_type=",
+		       (unsigned long) c->cmsg_len);
 		switch (c->cmsg_type) {
 			case IP_PKTINFO:
 				print_pktinfo(c);
@@ -188,7 +187,8 @@ main(void)
 		}
 		printf("}");
 	}
-	printf("], msg_flags=0}, 0) = %zu\n", size);
+	printf("], msg_controllen=%lu, msg_flags=0}, 0) = %u\n",
+	       (unsigned long) mh.msg_controllen, (unsigned) size);
 	puts("+++ exited with 0 +++");
 
 	return 0;

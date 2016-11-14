@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_ftruncate64
 
-#include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -41,13 +37,10 @@ int
 main(void)
 {
 	const off_t len = 0xdefaceddeadbeef;
+
 	int rc = ftruncate(-1, len);
-
-	if (rc != -1 || EBADF != errno)
-		return 77;
-
-	printf("ftruncate64(-1, %llu) = -1 EBADF (Bad file descriptor)\n",
-	       (unsigned long long) len);
+	printf("ftruncate64(-1, %llu) = %d %s (%m)\n",
+	       (unsigned long long) len, rc, errno2name());
 
 	puts("+++ exited with 0 +++");
 	return 0;
@@ -55,10 +48,6 @@ main(void)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_ftruncate64")
 
 #endif

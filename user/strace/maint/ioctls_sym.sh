@@ -177,8 +177,11 @@ __EOF__
 #include <linux/serial.h>
 __EOF__
 			;;
-		*drm/*_drm.h)
+		drm/sis_drm.h)
 			echo '#include <drm/drm.h>'
+			;;
+		*drm/*_drm.h)
+			echo '#include <drm/drm.h>' > "$tmpdir/drm.h"
 			;;
 		fbio.h|*/fbio.h)
 			cat <<'__EOF__'
@@ -187,17 +190,22 @@ __EOF__
 #undef FBIOPUTCMAP
 __EOF__
 			;;
+		*linux/atm_zatm.h)
+			cat <<'__EOF__'
+#include <linux/atm.h>
+#ifndef _LINUX_TIME_H
+# define _LINUX_TIME_H
+#endif
+#ifndef _UAPI_LINUX_TIME_H
+# define _UAPI_LINUX_TIME_H
+#endif
+__EOF__
+			;;
 		*linux/atm?*.h)
 			echo '#include <linux/atm.h>'
 			;;
 		*linux/auto_fs*.h)
 			echo 'typedef u32 compat_ulong_t;'
-			;;
-		*linux/btrfs.h)
-			cat <<'__EOF__'
-struct btrfs_ioctl_defrag_range_args { __u32 unused[12]; };
-#define BTRFS_LABEL_SIZE 256
-__EOF__
 			;;
 		*linux/coda.h|*android_alarm.h)
 			cat <<'__EOF__'
@@ -228,7 +236,7 @@ __EOF__
 		*linux/isdn_ppp.h|*linux/gsmmux.h)
 			echo '#include <linux/if.h>'
 			;;
-		*media/saa6588.h)
+		*media*/saa6588.h)
 			echo 'typedef struct poll_table_struct poll_table;'
 			;;
 		*linux/ivtvfb.h|*linux/meye.h|*media/*.h)
@@ -236,26 +244,28 @@ __EOF__
 			;;
 		*linux/kvm.h)
 			cat <<'__EOF__'
-#if defined __x86_64__ || defined __i386__
+#if !(defined __powerpc__)
 struct kvm_allocate_rma { __u32 unused[2]; };
 struct kvm_create_spapr_tce { __u32 unused[3]; };
+struct kvm_create_spapr_tce_64 { __u32 unused[8]; };
 struct kvm_get_htab_fd { __u32 unused[8]; };
 struct kvm_rtas_token_args { __u8 unused[128]; };
+#endif
+
+#if !(defined __arm64__ || defined __arm__)
 struct kvm_vcpu_init { __u32 unused[8]; };
-#elif defined __arm64__ || defined __arm__
-struct kvm_allocate_rma { __u32 unused[2]; };
+#endif
+
+#if !(defined __x86_64__ || defined __i386__)
 struct kvm_cpuid { __u32 unused[2]; };
 struct kvm_cpuid2 { __u32 unused[2]; };
-struct kvm_create_spapr_tce { __u32 unused[3]; };
 struct kvm_debugregs { __u32 unused[32]; };
-struct kvm_get_htab_fd { __u32 unused[8]; };
 struct kvm_lapic_state { __u32 unused[256]; };
 struct kvm_memory_alias { __u32 unused[8]; };
 struct kvm_msr_list { __u32 unused[1]; };
 struct kvm_msrs { __u32 unused[2]; };
 struct kvm_pit_state { __u32 unused[18]; };
 struct kvm_pit_state2 { __u32 unused[28]; };
-struct kvm_rtas_token_args { __u32 unused[128]; };
 struct kvm_vcpu_events { __u32 unused[16]; };
 struct kvm_x86_mce { __u32 unused[16]; };
 struct kvm_xcrs { __u32 unused[98]; };
@@ -298,6 +308,12 @@ __EOF__
 		*video/sstfb.h)
 			echo 'struct fb_info;'
 			;;
+		*xen/evtchn.h|*xen/gntdev.h)
+			cat <<'__EOF__'
+typedef uint32_t grant_ref_t;
+typedef uint16_t domid_t;
+__EOF__
+			;;
 		*xen/interface/*.h)
 			return 0 # false positives
 			;;
@@ -327,7 +343,7 @@ __EOF__
 		mkdir -p "$tmpdir/${f%/*}"
 	# Hard workarounds for some processed files.  Very fragile.
 	case "$f" in
-		*acpi/*|*linux/i2o.h|*media/exynos-fimc.h|*media/v4l2-subdev.h|*net/bluetooth/*)
+		*acpi/*|*linux/i2o.h|*media*/exynos-fimc.h|*media/v4l2-subdev.h|*net/bluetooth/*|net/nfc/nci_core.h)
 			# Fetch macros only.
 			grep "${r_define}${r_cmd_name}" < "$s" > "$tmpdir/$f"
 			;;

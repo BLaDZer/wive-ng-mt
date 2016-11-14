@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,27 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <errno.h>
+#include "tests.h"
 #include <fcntl.h>
+#include <asm/unistd.h>
+
+#if defined __NR_userfaultfd && defined O_CLOEXEC
+
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/syscall.h>
 
 int
 main(void)
 {
-#if defined __NR_userfaultfd && defined O_CLOEXEC
-	if (syscall(__NR_userfaultfd, 1 | O_NONBLOCK | O_CLOEXEC) != -1)
-		return 77;
-	printf("userfaultfd(O_NONBLOCK|O_CLOEXEC|0x1) = -1 %s\n",
-	       errno == ENOSYS ?
-			"ENOSYS (Function not implemented)" :
-			"EINVAL (Invalid argument)");
+	long rc = syscall(__NR_userfaultfd, 1 | O_NONBLOCK | O_CLOEXEC);
+	printf("userfaultfd(O_NONBLOCK|O_CLOEXEC|0x1) = %ld %s (%m)\n",
+	       rc, errno2name());
 	puts("+++ exited with 0 +++");
 	return 0;
-#else
-        return 77;
-#endif
 }
+
+#else
+
+SKIP_MAIN_UNDEFINED("__NR_userfaultfd && O_CLOEXEC")
+
+#endif

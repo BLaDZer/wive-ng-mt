@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,33 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_lseek
 
-#include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
-
 #include "kernel_types.h"
 
 int
 main(void)
 {
-	const kernel_ulong_t offset = (kernel_ulong_t) 0xdefaced0badc0deULL;
-	int rc;
+	const kernel_ulong_t offset = (kernel_ulong_t) 0xfacefeeddeadbeefULL;
 
-	if (sizeof(offset) > sizeof(long))
-		rc = lseek(-1, offset, SEEK_SET);
-	else
-		rc = syscall(__NR_lseek, -1L, offset, SEEK_SET);
-
-	if (rc != -1 || EBADF != errno)
-		return 77;
-
-	printf("lseek(-1, %llu, SEEK_SET) = -1 EBADF (Bad file descriptor)\n",
-	       (unsigned long long) offset);
+	if (sizeof(offset) > sizeof(long)) {
+		/*
+		 * Cannot use syscall because it takes long arguments.
+		 * Let's call lseek with hope it will invoke lseek syscall.
+		 */
+		long long rc = lseek(-1, offset, SEEK_SET);
+		printf("lseek(-1, %lld, SEEK_SET) = %lld %s (%m)\n",
+		       (long long) offset, rc, errno2name());
+	} else {
+		long rc = syscall(__NR_lseek, -1L, offset, SEEK_SET);
+		printf("lseek(-1, %ld, SEEK_SET) = %ld %s (%m)\n",
+		       (long) offset, rc, errno2name());
+	}
 
 	puts("+++ exited with 0 +++");
 	return 0;
@@ -62,10 +59,6 @@ main(void)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_lseek")
 
 #endif

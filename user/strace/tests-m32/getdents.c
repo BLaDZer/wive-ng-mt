@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_getdents
 
@@ -100,7 +97,6 @@ int
 main(int ac, const char **av)
 {
 	char *dname;
-	int rc;
 
 	assert(ac == 1);
 	assert(asprintf(&dname, "%s.test.tmp.dir", av[0]) > 0);
@@ -110,12 +106,19 @@ main(int ac, const char **av)
 	assert(!creat(fname, 0600));
 	assert(!close(0));
 	assert(!open(".", O_RDONLY | O_DIRECTORY));
-	while ((rc = syscall(__NR_getdents, 0, buf, sizeof(buf)))) {
+
+	unsigned long count = (unsigned long) 0xfacefeeddeadbeef;
+	long rc = syscall(__NR_getdents, (long) 0xdefacedffffffff, NULL, count);
+	printf("getdents(-1, NULL, %u) = %ld %s (%m)\n",
+	       (unsigned) count, rc, errno2name());
+
+	count = (unsigned long) 0xfacefeed00000000 | sizeof(buf);
+	while ((rc = syscall(__NR_getdents, 0, buf, count))) {
 		kernel_dirent *d;
-		int i;
+		long i;
 
 		if (rc < 0)
-			return 77;
+			perror_msg_and_skip("getdents");
 		printf("getdents(0, [");
 		for (i = 0; i < rc; i += d->d_reclen) {
 			d = (kernel_dirent *) &buf[i];
@@ -123,9 +126,9 @@ main(int ac, const char **av)
 				printf(", ");
 			print_dirent(d);
 		}
-		printf("], %zu) = %d\n", sizeof(buf), rc);
+		printf("], %u) = %ld\n", (unsigned) count, rc);
 	}
-	printf("getdents(0, [], %zu) = 0\n", sizeof(buf));
+	printf("getdents(0, [], %u) = 0\n", (unsigned) count);
 	puts("+++ exited with 0 +++");
 	assert(!unlink(fname));
 	assert(!chdir(".."));
@@ -136,10 +139,6 @@ main(int ac, const char **av)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_getdents")
 
 #endif

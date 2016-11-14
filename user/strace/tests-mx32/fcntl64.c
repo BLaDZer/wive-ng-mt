@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <sys/syscall.h>
+#include "tests.h"
+#include <asm/unistd.h>
 
 #ifdef __NR_fcntl64
 
-# define TEST_SYSCALL_NAME fcntl64
+# define TEST_SYSCALL_NR __NR_fcntl64
+# define TEST_SYSCALL_STR "fcntl64"
 # include "struct_flock.c"
 
 #define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
@@ -46,7 +44,7 @@ test_flock64_einval(const int cmd, const char *name)
 		.l_start = 0xdefaced1facefeed,
 		.l_len = 0xdefaced2cafef00d
 	};
-	syscall(TEST_SYSCALL_NR, 0, cmd, &fl);
+	invoke_test_syscall(cmd, &fl);
 	printf("%s(0, %s, {l_type=F_RDLCK, l_whence=SEEK_SET"
 	       ", l_start=%jd, l_len=%jd}) = %s\n", TEST_SYSCALL_STR, name,
 	       (intmax_t) fl.l_start, (intmax_t) fl.l_len, EINVAL_STR);
@@ -66,7 +64,7 @@ test_flock64(void)
 		.l_type = F_RDLCK,
 		.l_len = FILE_LEN
 	};
-	int rc = syscall(TEST_SYSCALL_NR, 0, F_SETLK64, &fl);
+	long rc = invoke_test_syscall(F_SETLK64, &fl);
 	printf("%s(0, F_SETLK64, {l_type=F_RDLCK, l_whence=SEEK_SET"
 	       ", l_start=0, l_len=%d}) = %s\n",
 	       TEST_SYSCALL_STR, FILE_LEN, rc ? EINVAL_STR : "0");
@@ -74,12 +72,12 @@ test_flock64(void)
 	if (rc)
 		return;
 
-	syscall(TEST_SYSCALL_NR, 0, F_GETLK64, &fl);
+	invoke_test_syscall(F_GETLK64, &fl);
 	printf("%s(0, F_GETLK64, {l_type=F_UNLCK, l_whence=SEEK_SET"
 	       ", l_start=0, l_len=%d, l_pid=0}) = 0\n",
 	       TEST_SYSCALL_STR, FILE_LEN);
 
-	syscall(TEST_SYSCALL_NR, 0, F_SETLK64, &fl);
+	invoke_test_syscall(F_SETLK64, &fl);
 	printf("%s(0, F_SETLK64, {l_type=F_UNLCK, l_whence=SEEK_SET"
 	       ", l_start=0, l_len=%d}) = 0\n",
 	       TEST_SYSCALL_STR, FILE_LEN);
@@ -88,9 +86,7 @@ test_flock64(void)
 int
 main(void)
 {
-	if (create_sample())
-		return 77;
-
+	create_sample();
 	test_flock();
 	test_flock64();
 
@@ -100,10 +96,6 @@ main(void)
 
 #else
 
-int
-main(void)
-{
-	return 77;
-}
+SKIP_MAIN_UNDEFINED("__NR_fcntl64")
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <errno.h>
+#include "tests.h"
 #include <stdio.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/mount.h>
-#include <sys/syscall.h>
+#include <asm/unistd.h>
+#include <unistd.h>
 
 #ifdef __NR_oldumount
 # define TEST_SYSCALL_STR "oldumount"
@@ -41,31 +41,28 @@
 # endif
 #endif
 
+#ifdef __NR_oldumount
+
 int
 main(void)
 {
-#ifdef __NR_oldumount
 	static const char sample[] = "umount.sample";
-	if (mkdir(sample, 0700)) {
-		perror(sample);
-		return 77;
-	}
-	(void) syscall(__NR_oldumount, sample);
-	printf("%s(\"%s\") = -1 ", TEST_SYSCALL_STR, sample);
-	switch (errno) {
-		case ENOSYS:
-			printf("ENOSYS (%m)\n");
-			break;
-		case EPERM:
-			printf("EPERM (%m)\n");
-			break;
-		default:
-			printf("EINVAL (%m)\n");
-	}
-	(void) rmdir(sample);
+	if (mkdir(sample, 0700))
+		perror_msg_and_fail("mkdir: %s", sample);
+
+	long rc = syscall(__NR_oldumount, sample);
+	printf("%s(\"%s\") = %ld %s (%m)\n",
+	       TEST_SYSCALL_STR, sample, rc, errno2name());
+
+	if (rmdir(sample))
+		perror_msg_and_fail("rmdir: %s", sample);
+
 	puts("+++ exited with 0 +++");
 	return 0;
-#else
-	return 77;
-#endif
 }
+
+#else
+
+SKIP_MAIN_UNDEFINED("__NR_oldumount")
+
+#endif
