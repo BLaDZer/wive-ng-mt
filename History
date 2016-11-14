@@ -2574,20 +2574,21 @@
 46) kernel: mips: fix max_low_pfn with disabled highmem.<br>
 47) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
 48) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-49) kernel: net: make default TX queue length a defined constant.<br>
-50) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-51) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-52) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-53) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-54) kernel: net: xfrm: fix error return code.<br>
-55) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-56) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-57) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-58) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-59) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-60) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-61) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-62) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+49) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
+50) kernel: net: make default TX queue length a defined constant.<br>
+51) kernel: net: mangle zero checksum in skb_checksum_help().<br>
+52) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+53) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+54) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+55) kernel: net: xfrm: fix error return code.<br>
+56) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+57) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+58) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+59) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+60) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+61) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+62) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+63) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
