@@ -59,6 +59,7 @@
 #include <net/ip.h>
 #include <net/dsa.h>
 #include <asm/uaccess.h>
+#include <net/pkt_sched.h>
 
 __setup("ether=", netdev_boot_setup);
 
@@ -339,11 +340,7 @@ void ether_setup(struct net_device *dev)
 	dev->hard_header_len 	= ETH_HLEN;
 	dev->mtu		= ETH_DATA_LEN;
 	dev->addr_len		= ETH_ALEN;
-#if defined(CONFIG_RAM_SIZE_AUTO)
-	dev->tx_queue_len	= 100;	/* Small bootmem save increase from userspace if needed */
-#else
-	dev->tx_queue_len	= 1000;	/* Ethernet wants good queues */
-#endif
+	dev->tx_queue_len       = DEFAULT_TX_QUEUE_LEN;
 	dev->flags		= IFF_BROADCAST|IFF_MULTICAST;
 	dev->priv_flags		|= IFF_TX_SKB_SHARING;
 
