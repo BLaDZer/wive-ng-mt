@@ -2577,19 +2577,20 @@
 49) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
 50) kernel: net: make default TX queue length a defined constant.<br>
 51) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-52) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
-53) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-54) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-55) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-56) kernel: net: xfrm: fix error return code.<br>
-57) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-58) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-59) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-60) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-61) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-62) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-63) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-64) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+52) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+53) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
+54) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
+55) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+56) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+57) kernel: net: xfrm: fix error return code.<br>
+58) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+59) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+60) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+61) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+62) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+63) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+64) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+65) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
