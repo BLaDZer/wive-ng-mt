@@ -2389,7 +2389,8 @@ static VOID IAPP_RcvHandlerSSB(
 {
 	RT_IAPP_SEND_SECURITY_BLOCK *pSendSB;
 	UCHAR *pBufMsg;
-	UINT32 BufLen, if_idx;
+	UINT32 BufLen;
+	INT32 if_idx;
 	POID_REQ OidReq;
 	FT_KDP_EVT_KEY_ELM kdp_info; 
 
@@ -2426,7 +2427,7 @@ static VOID IAPP_RcvHandlerSSB(
 		DBGPRINT(RT_DEBUG_TRACE, "iapp> %s: cannot find wifi interface\n", __FUNCTION__);
 		return;
 	}
-	
+
 	OidReq->Len = BufLen - sizeof(OID_REQ);
 
 	IAPP_MsgProcess(pCtrlBK, IAPP_SET_OID_REQ, pBufMsg, BufLen, if_idx);
