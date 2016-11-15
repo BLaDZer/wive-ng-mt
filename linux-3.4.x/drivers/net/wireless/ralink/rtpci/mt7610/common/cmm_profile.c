@@ -2678,6 +2678,9 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				case Rt802_11PreambleShort:
 					pAd->CommonCfg.TxPreamble = Rt802_11PreambleShort;
 					break;
+				case Rt802_11PreambleAuto:
+					pAd->CommonCfg.TxPreamble = Rt802_11PreambleAuto;
+					break;
 				case Rt802_11PreambleLong:
 				default:
 					pAd->CommonCfg.TxPreamble = Rt802_11PreambleLong;
