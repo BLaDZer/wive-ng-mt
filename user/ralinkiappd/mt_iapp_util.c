@@ -194,9 +194,18 @@ FT_CLIENT_INFO *mt_iapp_ft_client_insert(
 		pFtTable->hash[HashIdx] = ft_entry;
 	else
 	{
+		int clientnum = 0;
+
 		current_ft_entry = pFtTable->hash[HashIdx];
-		while (current_ft_entry->next != NULL)
+		while (current_ft_entry->next != NULL) {
 			current_ft_entry = current_ft_entry->next;
+			clientnum++;
+			if (clientnum > MAX_NUM_OF_CLIENT) {
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT record for insert clients not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
+				ft_entry = NULL;
+				break;
+			}
+		}
 		current_ft_entry->next = ft_entry;
 	}
 	return ft_entry;
@@ -206,13 +215,13 @@ VOID mt_iapp_ft_client_delete(
 	FT_CLIENT_TABLE		*pFtTable,
 	UCHAR 			*pStaAddr)
 {
-	UCHAR HashIdx = 0xFF;
+	UCHAR HashIdx;
 	FT_CLIENT_INFO *ft_entry = NULL;
 	FT_CLIENT_INFO *hash_ft_entry = NULL;
 	FT_CLIENT_INFO *pre_hash_ft_entry = NULL;
 
 	ft_entry = mt_iapp_ft_client_look_up(pFtTable, pStaAddr);
-	
+
 	if (ft_entry == NULL) {
 		DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - cannot find this entry (%02x:%02x:%02x:%02x:%02x:%02x)\n", 
 				__FUNCTION__,
@@ -229,15 +238,24 @@ VOID mt_iapp_ft_client_delete(
 	NdisZeroMemory(ft_entry->ap_mac, ETH_ALEN);
 	NdisZeroMemory(ft_entry->sta_mac, ETH_ALEN);
 	ft_entry->if_idx = -1;
-	
+
 	HashIdx = ft_entry->hash_idx;
 	hash_ft_entry = pFtTable->hash[HashIdx];
 	pre_hash_ft_entry = NULL;
 	if (hash_ft_entry != NULL)
 	{
+		int clientnum = 0;
+
 		/* update Hash list*/
 		do
 		{
+			clientnum++;
+			if (clientnum > MAX_NUM_OF_CLIENT) {
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client for delete not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
+				hash_ft_entry = NULL;
+				break;
+			}
+
 			if (hash_ft_entry == ft_entry)
 			{
 				if (pre_hash_ft_entry == NULL)
