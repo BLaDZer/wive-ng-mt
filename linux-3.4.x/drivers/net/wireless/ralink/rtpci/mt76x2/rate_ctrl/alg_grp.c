@@ -1655,10 +1655,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 
 	/*  Handle the low traffic case */
 	if ((TxCnt <= 15) &&
-	    ((pEntry->HTPhyMode.field.MODE == MODE_HTMIX)
+	    (pEntry->HTPhyMode.field.MODE == MODE_HTMIX
 #ifdef DOT11_VHT_AC
-	    || (pEntry->HTPhyMode.field.MODE == MODE_VHT))
+	    || pEntry->HTPhyMode.field.MODE == MODE_VHT
 #endif
+	    )
 	    && (pEntry->HTPhyMode.field.MCS > 1))
 	{
 		/*  Go back to the original rate */
