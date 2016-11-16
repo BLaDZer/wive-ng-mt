@@ -653,7 +653,7 @@ VOID APQuickResponeForRateUpExec(
 
 		pEntry->PER[CurrRateIdx] = (UCHAR)TxErrorRatio;
 
-       /* Compare throughput */
+    		/* Compare throughput */
 		do
 		{
 			ULONG OneSecTxNoRetryOKRationCount;

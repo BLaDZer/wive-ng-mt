@@ -71,6 +71,9 @@ UCHAR MlmeSelectUpRate(
 
 	while (1)
 	{
+		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pAd==NULL || pEntry->pTable==NULL)
+        		return 0;
+
 		if ((pEntry->HTCapability.MCSSet[2] == 0xff) && (pAd->CommonCfg.TxStream == 3))
 		{
 			switch (pEntry->mcsGroup)
@@ -222,6 +225,9 @@ UCHAR MlmeSelectDownRate(
 
 	/*  Loop until a valid down rate is found */
 	while (1) {
+		if (pAd==NULL || RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pEntry->pTable==NULL)
+        		    return 0;
+
 		pDownRate = PTX_RA_GRP_ENTRY(pEntry->pTable, DownRateIdx);
 
 		/*  Break out of loop if rate is valid */
@@ -661,6 +667,7 @@ UCHAR MlmeSelectTxRateAdapt(
 		else if ((pEntry->HTCapability.MCSSet[0] == 0xff) &&
 				(pEntry->HTCapability.MCSSet[1] == 0xff) &&
 				(pAd->CommonCfg.TxStream > 1) &&
+				(pEntry->MmpsMode != MMPS_STATIC) &&
 				((pAd->CommonCfg.TxStream == 2) || (pEntry->HTCapability.MCSSet[2] == 0x0)))
 		{
 			if (mcs[15]>=0 && (Rssi > (-72+RssiOffset)))

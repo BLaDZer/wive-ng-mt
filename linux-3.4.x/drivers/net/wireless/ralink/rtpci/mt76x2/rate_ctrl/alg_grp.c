@@ -131,6 +131,9 @@ UCHAR MlmeSelectUpRate(
 	UCHAR UpRateIdx = 0;
 	UCHAR grp_cnt;
 
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pAd==NULL || pEntry->pTable==NULL)
+        	return 0;
+
 #ifdef DOT11_VHT_AC
 	if ((pEntry->pTable == RateTableVht2S) || (pEntry->pTable == RateTableVht2S_BW20)
 					|| (pEntry->pTable == RateTableVht2S_BW40) || (pEntry->pTable == RateTableVht2S_MCS7)
@@ -161,6 +164,9 @@ UCHAR MlmeSelectUpRate(
 
 	while (1)
 	{
+		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry == NULL || pAd == NULL || pEntry->pTable==NULL)
+			return 0;
+
 		if (grp_cnt == 3)
 		{
 			switch (pEntry->mcsGroup)
@@ -300,11 +306,19 @@ UCHAR MlmeSelectDownRate(
 	IN PMAC_TABLE_ENTRY	pEntry,
 	IN UCHAR CurrRateIdx)
 {
-	UCHAR DownRateIdx = PTX_RA_GRP_ENTRY(pEntry->pTable, CurrRateIdx)->downMcs;
+	UCHAR DownRateIdx;
 	RTMP_RA_GRP_TB *pDownRate;
+
+	if (pAd==NULL || RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pEntry->pTable==NULL)
+        	return 0;
+
+	DownRateIdx = PTX_RA_GRP_ENTRY(pEntry->pTable, CurrRateIdx)->downMcs;
 
 	/*  Loop until a valid down rate is found */
 	while (1) {
+		if (pAd==NULL || RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pEntry->pTable==NULL)
+        		    return 0;
+
 		pDownRate = PTX_RA_GRP_ENTRY(pEntry->pTable, DownRateIdx);
 
 		/*  Break out of loop if rate is valid */
@@ -1015,6 +1029,7 @@ UCHAR MlmeSelectTxRateAdapt(
 		else if ((pEntry->HTCapability.MCSSet[0] == 0xff) &&
 				(pEntry->HTCapability.MCSSet[1] == 0xff) &&
 				(pAd->CommonCfg.TxStream > 1) &&
+				(pEntry->MmpsMode != MMPS_STATIC) &&
 #ifdef THERMAL_PROTECT_SUPPORT
 				(pAd->force_one_tx_stream == FALSE) &&
 #endif /* THERMAL_PROTECT_SUPPORT */
@@ -1154,7 +1169,7 @@ BOOLEAN MlmeRAHybridRule(
 
     DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %lu %lu\n", NewTxOkCount , pEntry->LastTxOkCount));
 
-	if ((120*NewTxOkCount > pAd->CommonCfg.TrainUpHighThrd*pEntry->LastTxOkCount) ||
+	if ((100*NewTxOkCount > pAd->CommonCfg.TrainUpHighThrd*pEntry->LastTxOkCount) ||
         (TxErrorRatio < 10))
 		return FALSE;
 
@@ -1745,6 +1760,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
+			MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, DRS_TX_QUALITY_WORST_BOUND);
+			pEntry->CurrTxRateIndex = pCurrTxRate->downMcs;
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));
 		}
 		else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
