@@ -1927,7 +1927,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 #endif /* DBG_CTRL_SUPPORT */
 
 	/*  Handle the low traffic case */
-	if ((TxCnt <= 15) && 
+	if ((TxCnt <= 15) &&
 		(pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
 		(pEntry->HTPhyMode.field.MCS > 1))
 	{

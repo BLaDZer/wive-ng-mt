@@ -1234,7 +1234,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		MlmeRALog(pAd, pEntry, RAL_QUICK_DRS, TxErrorRatio, TxTotalCnt);
 #endif /* DBG_CTRL_SUPPORT */
 
-	if (TxTotalCnt <= 30)
+	if (TxTotalCnt <= 15)
 	{
 		pEntry->ContinuelowTrafficCnt++;
 		if (pEntry->ContinuelowTrafficCnt >= pAd->CommonCfg.lowTrafficThrd)
@@ -1249,7 +1249,12 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	}
 
 	/*  Handle the low traffic case */
-	if (TxCnt <= 15)
+	if ((TxCnt <= 15) &&
+	    ((pEntry->HTPhyMode.field.MODE == MODE_HTMIX)
+#ifdef DOT11_VHT_AC
+	    || (pEntry->HTPhyMode.field.MODE == MODE_VHT))
+#endif
+	    && (pEntry->HTPhyMode.field.MCS > 1))
 	{
 		/*  Go back to the original rate */
 		MlmeRestoreLastRate(pEntry);

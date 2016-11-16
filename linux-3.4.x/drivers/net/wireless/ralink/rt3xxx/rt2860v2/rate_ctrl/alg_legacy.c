@@ -648,10 +648,10 @@ VOID APQuickResponeForRateUpExec(
 			MlmeRALog(pAd, pEntry, RAL_QUICK_DRS, TxErrorRatio, TxTotalCnt);
 #endif /* DBG_CTRL_SUPPORT */
 
-        if ((TxCnt <= 15) &&
-            (pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
-            (pEntry->HTPhyMode.field.MCS > 1))
-        {
+    	    if ((TxCnt <= 15) &&
+        	    (pEntry->HTPhyMode.field.MODE == MODE_HTMIX) &&
+        	    (pEntry->HTPhyMode.field.MCS > 1))
+    	    {
 			MlmeClearAllTxQuality(pEntry);
 
 			/* Set current up MCS at the worst quality */
@@ -666,11 +666,11 @@ VOID APQuickResponeForRateUpExec(
 			MlmeNewTxRate(pAd, pEntry);
 
 
-		// TODO: should we reset all OneSecTx counters?
-		/* RESET_ONE_SEC_TX_CNT(pEntry); */
+			// TODO: should we reset all OneSecTx counters?
+			/* RESET_ONE_SEC_TX_CNT(pEntry); */
 
-			continue;
-        }
+			return;
+    		}
 
 		pEntry->PER[CurrRateIdx] = (UCHAR)TxErrorRatio;
 
