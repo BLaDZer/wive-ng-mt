@@ -176,7 +176,10 @@
   <message msgid="adv fragment threshold range" msgstr="байт (диапазон 256 - 2346)" />
   <message msgid="adv rts threshold" msgstr="Пороговое значение RTS" />
   <message msgid="adv rts threshold range" msgstr="байт (диапазон 1 - 2347)" />
-  <message msgid="adv short preamble" msgstr="Короткая преамбула" />
+  <message msgid="adv preamble type" msgstr="Тип преамбулы" />
+  <message msgid="adv preamble type long" msgstr="Длинная" />
+  <message msgid="adv preamble type short" msgstr="Короткая" />
+  <message msgid="adv preamble type auto" msgstr="Автоматически" />
   <message msgid="adv short slot" msgstr="Короткий слот" />
   <message msgid="adv tx burst" msgstr="Непрерывная очередь передачи" />
   <message msgid="adv pkt aggregate" msgstr="Пакетная агрегация" />

@@ -571,7 +571,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
 
-	char_t *bg_protection, *beacon, *dtim, *fragment, *rts, *short_preamble, *maxstanum, *keepalive, *idletimeout;
+	char_t *bg_protection, *beacon, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *keepalive, *idletimeout;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
@@ -665,7 +665,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	dtim = websGetVar(wp, T("dtim"), T("1"));
 	fragment = websGetVar(wp, T("fragment"), T("2346"));
 	rts = websGetVar(wp, T("rts"), T("2347"));
-	short_preamble = websGetVar(wp, T("short_preamble"), T("0"));
+	preamble_type = websGetVar(wp, T("preamble_type"), T("0"));
 	short_slot = websGetVar(wp, T("short_slot"), T("0"));
 	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
 	pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
@@ -945,7 +945,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "DtimPeriod", dtim);
 	nvram_bufset(RT2860_NVRAM, "FragThreshold", fragment);
 	nvram_bufset(RT2860_NVRAM, "RTSThreshold", rts);
-	nvram_bufset(RT2860_NVRAM, "TxPreamble", short_preamble);
+	nvram_bufset(RT2860_NVRAM, "TxPreamble", preamble_type);
 	nvram_bufset(RT2860_NVRAM, "ShortSlot", short_slot);
 	nvram_bufset(RT2860_NVRAM, "PktAggregate", pkt_aggregate);
 	nvram_bufset(RT2860_NVRAM, "RDRegion", rd_region);
@@ -1120,7 +1120,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("dtim: %s<br>\n"), dtim);
 	websWrite(wp, T("fragment: %s<br>\n"), fragment);
 	websWrite(wp, T("rts: %s<br>\n"), rts);
-	websWrite(wp, T("short_preamble: %s<br>\n"), short_preamble);
+	websWrite(wp, T("preamble_type: %s<br>\n"), preamble_type);
 	websWrite(wp, T("short_slot: %s<br>\n"), short_slot);
 	websWrite(wp, T("tx_burst: %s<br>\n"), tx_burst);
 	websWrite(wp, T("pkt_aggregate: %s<br>\n"), pkt_aggregate);

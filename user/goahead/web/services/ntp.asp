@@ -166,66 +166,67 @@ function displayServiceStatus()
             <tr id="div_tz">
               <td class="head" id="ntpTimeZone">Time Zone:</td>
               <td colspan="2"><select name="time_zone" class="wide">
-                  <option value="UCT_-11" id="ntpMidIsland">(UTC-11:00) Midway Island, Samoa</option>
-                  <option value="UCT_-10" id="ntpHawaii">(UTC-10:00) Hawaii</option>
-                  <option value="NAS_-09" id="ntpAlaska">(UTC-09:00) Alaska</option>
-                  <option value="PST_-08" id="ntpPacific">(UTC-08:00) Pacific Time</option>
-                  <option value="MST_-07" id="ntpMountain">(UTC-07:00) Mountain Time</option>
-                  <option value="MST_-07" id="ntpArizona">(UTC-07:00) Arizona</option>
-                  <option value="CST_-06" id="ntpCentral">(UTC-06:00) Central Time</option>
-                  <option value="UCT_-06" id="ntpMidUS">(UTC-06:00) Middle America</option>
-                  <option value="UCT_-05" id="ntpIndianaEast">(UTC-05:00) Indiana East, Colombia</option>
-                  <option value="EST_-05" id="ntpEastern">(UTC-05:00) Eastern Time</option>
-                  <option value="AST_-04" id="ntpAtlantic">(UTC-04:00) Atlantic Time, Brazil West</option>
-                  <option value="UCT_-04" id="ntpBolivia">(UTC-04:00) Bolivia, Venezuela</option>
-                  <option value="UCT_-03" id="ntpGuyana">(UTC-03:00) Guyana</option>
-                  <option value="EBS_-03" id="ntpBrazilEast">(UTC-03:00) Brazil East, Greenland</option>
-                  <option value="NOR_-02" id="ntpMidAtlantic">(UTC-02:00) Mid-Atlantic</option>
-                  <option value="EUT_-01" id="ntpAzoresIslands">(UTC-01:00) Azores Islands</option>
-                  <option value="UCT_000" id="ntpGambia">(UTC) Gambia, Liberia, Morocco</option>
-                  <option value="GMT_000" id="ntpEngland">(UTC) England</option>
-                  <option value="MET_001" id="ntpCzechRepublic">(UTC+01:00) Czech Republic, N</option>
-                  <option value="MEZ_001" id="ntpGermany">(UTC+01:00) Germany</option>
-                  <option value="UCT_001" id="ntpTunisia">(UTC+01:00) Tunisia</option>
-                  <option value="EET_002" id="ntpGreece">(UTC+02:00) Greece, Turkey</option>
-                  <option value="EET-2EEST,M3.5.0/3,M10.5.0/4" id="">(UTC+02:00) Ukraine (Kiev), Latvia (Riga)</option>
-                  <option value="EET-2EEST,M3.5.0,M10.5.0/3" id="">(UTC+02:00) Belorussia (Minsk)</option>
-                  <option value="SAS_002" id="ntpSouthAfrica">(UTC+02:00) South Africa</option>
-                  <option value="IDDT">(UTC+02:00) Israel (Tel Aviv)</option>
-                  <option value="IST_003" id="ntpIraq">(UTC+03:00) Iraq, Jordan, Kuwait</option>
-                  <option value="EET-2" id="">(UTC+02:00) Russia (Kaliningrad)</option>
-                  <option value="MSK-3" id="ntpMoscowWinter">(UTC+03:00) Russia (Moscow, St.-Petersburg)</option>
+                  <option value="UCT_-11" id="ntpMidIsland"					>(UTC-11:00) Midway Island, Samoa</option>
+                  <option value="UCT_-10" id="ntpHawaii"					>(UTC-10:00) Hawaii</option>
+                  <option value="NAS_-09" id="ntpAlaska"					>(UTC-09:00) Alaska</option>
+                  <option value="PST_-08" id="ntpPacific"					>(UTC-08:00) Pacific Time</option>
+                  <option value="MST_-07" id="ntpMountain"					>(UTC-07:00) Mountain Time</option>
+                  <option value="MST_-07" id="ntpArizona"					>(UTC-07:00) Arizona</option>
+                  <option value="CST_-06" id="ntpCentral"					>(UTC-06:00) Central Time</option>
+                  <option value="UCT_-06" id="ntpMidUS"						>(UTC-06:00) Middle America</option>
+                  <option value="UCT_-05" id="ntpIndianaEast"				>(UTC-05:00) Indiana East, Colombia</option>
+                  <option value="EST_-05" id="ntpEastern"					>(UTC-05:00) Eastern Time</option>
+                  <option value="AST_-04" id="ntpAtlantic"					>(UTC-04:00) Atlantic Time, Brazil West</option>
+                  <option value="UCT_-04" id="ntpBolivia"					>(UTC-04:00) Bolivia, Venezuela</option>
+                  <option value="UCT_-03" id="ntpGuyana"					>(UTC-03:00) Guyana</option>
+                  <option value="EBS_-03" id="ntpBrazilEast"				>(UTC-03:00) Brazil East, Greenland</option>
+                  <option value="NOR_-02" id="ntpMidAtlantic"				>(UTC-02:00) Mid-Atlantic</option>
+                  <option value="EUT_-01" id="ntpAzoresIslands"				>(UTC-01:00) Azores Islands</option>
+                  <option value="UCT_000" id="ntpGambia"					>(UTC) Gambia, Liberia, Morocco</option>
+                  <option value="GMT_000" id="ntpEngland"					>(UTC) England</option>
+                  <option value="MET_001" id="ntpCzechRepublic"				>(UTC+01:00) Czech Republic, N</option>
+                  <option value="MEZ_001" id="ntpGermany"					>(UTC+01:00) Germany</option>
+                  <option value="UCT_001" id="ntpTunisia"					>(UTC+01:00) Tunisia</option>
+                  <option value="EET_002" id="ntpGreece"					>(UTC+02:00) Greece, Turkey</option>
+                  <option value="EET-2EEST,M3.5.0/3,M10.5.0/4" id="ntpKiev"	>(UTC+02:00) Ukraine (Kiev), Latvia (Riga)</option>
+                  <option value="EET-2EEST,M3.5.0,M10.5.0/3" id=""			>(UTC+02:00) Belorussia (Minsk)</option>
+                  <option value="SAS_002" id="ntpSouthAfrica"				>(UTC+02:00) South Africa</option>
+                  <option value="IDDT"										>(UTC+02:00) Israel (Tel Aviv)</option>
+                  <option value="EET-2" id=""								>(UTC+02:00) Russia (Kaliningrad)</option>
+                  <option value="IST_003" id="ntpIraq"						>(UTC+03:00) Iraq, Jordan, Kuwait</option>
+                  <option value="MSK-3" id="ntpMoscowWinter"				>(UTC+03:00) Russia (Moscow, St.-Petersburg)</option>
+                  <option value="SAMT-4"									>(UTC+04:00) Russia (Samara)</option>
                   <option value="AMT-4AMST,M3.5.0,M10.5.0/3" id="ntpArmenia">(UTC+04:00) Armenia (Yerevan)</option>
-                  <option value="AZT-4AZST,M3.5.0/4,M10.5.0/5">(UTC+04:00) Azebaydzhan (Baku)</option>
-                  <option value="GET-4">(UTC+04:00) Georgia (Tbilisi)</option>
-                  <option value="TMT-5">(UTC+05:00) Ashgabad</option>
-                  <option value="UZT-5">(UTC+04:00) Samarkand, Russia (Tashkent)</option>
-                  <option value="UCT_005" id="ntpPakistan">(UTC+05:00) Pakistan</option>
-                  <option value="YEKT-5">(UTC+05:00) Russia (Yekaterinburg)</option>
-                  <option value="UCT_006" id="ntpBangladesh">(UTC+06:00) Bangladesh</option>
-                  <option value="KGT-6" id="ntpBangladesh">(UTC+06:00) Kyrgyzstan (Bishkek)</option>
-                  <option value="NOVT-7">(UTC+07:00) Russia (Novosibirsk)</option>
-                  <option value="OMST-6">(UTC+06:00) Russia (Omsk)</option>
-                  <option value="UCT_007" id="ntpThailand">(UTC+07:00) Thailand</option>
-                  <option value="KRAT-7" id="ntpAustraliaWA">(UTC+07:00) Russia (Krasnoyarsk)</option>
-                  <option value="CST_008" id="ntpChinaCoast">(UTC+08:00) China Coast, Hong Kong</option>
-                  <option value="CCT_008" id="ntpTaipei">(UTC+08:00) Taipei</option>
-                  <option value="SST_008" id="ntpSingapore">(UTC+08:00) Singapore</option>
-                  <option value="AWS_008" id="ntpAustraliaWA">(UTC+08:00) Australia (WA)</option>
-                  <option value="ULAT-8">(UTC+08:00) Mongolia (Ulan-Bator)</option>
-                  <option value="IRKT-8">(UTC+08:00) Russia (Irkutsk)</option>
-                  <option value="JST_009" id="ntpJapan">(UTC+09:00) Japan</option>
-                  <option value="KST_009" id="ntpKorean">(UTC+09:00) North Korea, South Korea</option>
-                  <option value="AES_010" id="ntpAustraliaQLD">(UTC+10:00) Australia (QLD, TAS,NSW,ACT,VIC)</option>
-                  <option value="YAKT-09">(UTC+09:00) Russia (Yakutsk)</option>
-                  <option value="UCT_010" id="ntpGuam">(UTC+10:00) Guam</option>
-                  <option value="SAKT-10">(UTC+10:00) Russia (Sakhalin)</option>
-                  <option value="VLAT-10">(UTC+10:00) Russia (Vladivostok)</option>
-                  <option value="UCT_011" id="ntpSolomonIslands">(UTC+11:00) Solomon Islands</option>
-                  <option value="MAGT-10">(UTC+10:00) Russia (Magadan)</option>
-                  <option value="PETT-12">(UTC+12:00) Russia (Kamchatka)</option>
-                  <option value="UCT_012" id="ntpFiji">(UTC+12:00) Fiji</option>
-                  <option value="NZS_012" id="ntpNewZealand">(UTC+12:00) New Zealand</option>
+                  <option value="AZT-4AZST,M3.5.0/4,M10.5.0/5"				>(UTC+04:00) Azebaydzhan (Baku)</option>
+                  <option value="GET-4"										>(UTC+04:00) Georgia (Tbilisi)</option>
+                  <option value="TMT-5"										>(UTC+05:00) Ashgabad</option>
+                  <option value="UZT-5"										>(UTC+05:00) Samarkand, Tashkent</option>
+                  <option value="UCT_005" id="ntpPakistan"					>(UTC+05:00) Pakistan</option>
+                  <option value="YEKT-5"									>(UTC+05:00) Russia (Yekaterinburg)</option>
+                  <option value="UCT_006" id="ntpBangladesh"				>(UTC+06:00) Bangladesh</option>
+                  <option value="KGT-6" id="ntpBangladesh"					>(UTC+06:00) Kyrgyzstan (Bishkek)</option>
+                  <option value="OMST-6"									>(UTC+06:00) Russia (Omsk)</option>
+                  <option value="NOVT-7"									>(UTC+07:00) Russia (Novosibirsk)</option>
+                  <option value="KRAT-7"									>(UTC+07:00) Russia (Krasnoyarsk)</option>
+                  <option value="UCT_007" id="ntpThailand"					>(UTC+07:00) Thailand</option>
+                  <option value="CST_008" id="ntpChinaCoast"				>(UTC+08:00) China Coast, Hong Kong</option>
+                  <option value="CCT_008" id="ntpTaipei"					>(UTC+08:00) Taipei</option>
+                  <option value="SST_008" id="ntpSingapore"					>(UTC+08:00) Singapore</option>
+                  <option value="AWS_008" id="ntpAustraliaWA"				>(UTC+08:00) Australia (WA)</option>
+                  <option value="ULAT-8"									>(UTC+08:00) Mongolia (Ulan-Bator)</option>
+                  <option value="IRKT-8"									>(UTC+08:00) Russia (Irkutsk)</option>
+                  <option value="JST_009" id="ntpJapan"						>(UTC+09:00) Japan</option>
+                  <option value="KST_009" id="ntpKorean"					>(UTC+09:00) North Korea, South Korea</option>
+                  <option value="YAKT-09"									>(UTC+09:00) Russia (Yakutsk)</option>
+                  <option value="UCT_010" id="ntpGuam"						>(UTC+10:00) Guam</option>
+                  <option value="VLAT-10"									>(UTC+10:00) Russia (Vladivostok)</option>
+                  <option value="MAGT-11"									>(UTC+11:00) Russia (Magadan)</option>
+                  <option value="SAKT-11"									>(UTC+11:00) Russia (Sakhalin)</option>
+                  <option value="UCT_011" id="ntpSolomonIslands"			>(UTC+11:00) Solomon Islands</option>
+                  <option value="AES_011" id="ntpAustraliaQLD"				>(UTC+11:00) Australia (QLD, TAS,NSW,ACT,VIC)</option>
+                  <option value="PETT-12"									>(UTC+12:00) Russia (Kamchatka)</option>
+                  <option value="UCT_012" id="ntpFiji"						>(UTC+12:00) Fiji</option>
+                  <option value="NZS_012" id="ntpNewZealand"				>(UTC+12:00) New Zealand</option>
                 </select></td>
             </tr>
             <tr id="div_server">

@@ -74,7 +74,7 @@
 			var bssid_num = 1*'<% getBSSIDNum(); %>';
 
 			var bgProtection = '<% getCfgZero(1, "BGProtection"); %>';
-			var shortPreamble = '<% getCfgZero(1, "TxPreamble"); %>';
+			var preambleType = '<% getCfgZero(1, "TxPreamble"); %>';
 			var shortSlot = '<% getCfgZero(1, "ShortSlot"); %>';
 			var txBurst = '<% getCfgZero(1, "TxBurst"); %>';
 			var pktAggregate = '<% getCfgZero(1, "PktAggregate"); %>';
@@ -425,7 +425,10 @@
 				_TR("advFragRange", "adv fragment threshold range");
 				_TR("advRTS_td_1", "adv rts threshold");
 				_TR("advRTSRange", "adv rts threshold range");
-				_TR("advShortPre_td_1", "adv short preamble");
+				_TR("advPreambleType_td_1", "adv preamble type");
+				_TR("preamble_long", "adv preamble type long");
+				_TR("preamble_short", "adv preamble type short");
+				_TR("preamble_auto", "adv preamble type auto");
 				_TR("advShortSlot_td_1", "adv short slot");
 				_TR("advTxBurst_td_1", "adv tx burst");
 				_TR("advPktAggr_td_1", "adv pkt aggregate");
@@ -925,8 +928,8 @@
 				var datarateArray;
 				var AckPolicyArray = ackpolicy.split(";");
 
-				form.bg_protection.options.selectedIndex = 1*bgProtection;
-				form.short_preamble.options.selectedIndex = (shortPreamble == '1') ? 1 : 0;
+				form.bg_protection.options.selectedIndex = bgProtection;
+				form.preamble_type.options.selectedIndex = preambleType;
 				form.short_slot.options.selectedIndex = (shortSlot == '1') ? 1 : 0;
 				form.tx_burst.options.selectedIndex = (txBurst == '1') ? 1 : 0;
 				form.pkt_aggregate.options.selectedIndex = (pktAggregate == '1') ? 1 : 0;
@@ -1366,7 +1369,7 @@
 
 			function showAdvWirelessMenu(){
 				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
-							   'advEntryLifeCheck_tr', 'advShortPre_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
+							   'advEntryLifeCheck_tr', 'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
 							   'advEDMODE_tr', 'advStaRegion_tr' ];
 				if (statusAdvWirelessMenu == 0) {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("adv wireless"));
@@ -1826,11 +1829,12 @@
 			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">
 				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
 		</tr>
-		<tr id="advShortPre_tr">
-			<td id="advShortPre_td_1" class="head" width="50%">Short Preamble</td>
-			<td id="advShortPre_td_2" width="50%"><select name="short_preamble" size="1" class="normal">
-				<option value="0" selected id="disable">Disable</option>
-				<option value="1" id="enable">Enable</option>
+		<tr id="advPreambleType_tr">
+			<td id="advPreambleType_td_1" class="head" width="50%">Preamble Type</td>
+			<td id="advPreambleType_td_2" width="50%"><select name="preamble_type" size="1" class="normal">
+				<option value="0" selected id="preamble_long">Long</option>
+				<option value="1" id="preamble_short">Short</option>
+				<option value="2" id="preamble_auto">AUTO</option>
 			</select></td>
 		</tr>
 		<tr id="advShortSlot_tr">

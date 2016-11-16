@@ -176,7 +176,10 @@
   <message msgid="adv fragment threshold range" msgstr="bytes (range 256 - 2346)" />
   <message msgid="adv rts threshold" msgstr="RTS Threshold" />
   <message msgid="adv rts threshold range" msgstr="bytes (range 1 - 2347)" />
-  <message msgid="adv short preamble" msgstr="Short Preamble" />
+  <message msgid="adv preamble type" msgstr="Preamble Type" />
+  <message msgid="adv preamble type long" msgstr="Long" />
+  <message msgid="adv preamble type short" msgstr="Short" />
+  <message msgid="adv preamble type auto" msgstr="AUTO" />
   <message msgid="adv short slot" msgstr="Short Slot" />
   <message msgid="adv tx burst" msgstr="Tx Burst" />
   <message msgid="adv pkt aggregate" msgstr="Pkt Aggregate" />
