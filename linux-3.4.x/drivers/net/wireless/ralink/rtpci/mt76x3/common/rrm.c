@@ -251,6 +251,7 @@ INT Set_BeaconReq_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 						("%s: invalid Measure Mode. %d\n", 	__FUNCTION__, BcnReq.MeasureMode));
 					return TRUE;
 				}
+				break;
 			case 7: /* regulatory class. */
 				{
 					RTMP_STRING *RegClassString;
@@ -283,7 +284,7 @@ INT Set_BeaconReq_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		ArgIdx++;
 	}	
 
-	if (ArgIdx < 7 || ArgIdx > 8)
+	if (ArgIdx < 7 || ArgIdx > 9)
 	{
 		DBGPRINT(RT_DEBUG_ERROR,
 			("%s: invalid args (%d).\n", __FUNCTION__, ArgIdx));
