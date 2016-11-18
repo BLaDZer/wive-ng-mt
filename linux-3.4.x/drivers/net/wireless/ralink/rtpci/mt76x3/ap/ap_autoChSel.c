@@ -801,7 +801,7 @@ static inline UCHAR SelectClearChannelApCnt(
 
 				for (ll = channel_index - 1; ll > (channel_index - ChanOffset - 1); ll--)
 				{
-					if (ll >= 0 && < MAX_NUM_OF_CHANNELS+1)
+					if (ll >= 0 && ll < MAX_NUM_OF_CHANNELS+1)
 						pChannelInfo->dirtyness[ll]++;
 				}
 			}
