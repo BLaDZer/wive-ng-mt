@@ -84,7 +84,7 @@ static inline VOID AutoChBssEntrySet(
 	IN CHAR Rssi)
 {
 	COPY_MAC_ADDR(pBss->Bssid, pBssid);
-	if (SsidLen > 0)
+	if (SsidLen > 0 && SsidLen <= MAX_LEN_OF_SSID)
 	{
 		/* 
 			For hidden SSID AP, it might send beacon with SSID len equal to 0,
@@ -137,7 +137,7 @@ VOID UpdateChannelInfo(
 	if(pAd->pChannelInfo != NULL)
 	{
 		UINT32 BusyTime;
-		if (Alg == ChannelAlgCCA || Alg == ChannelAlgCombined)
+		if (Alg == ChannelAlgCCA)
 		{
 			UINT32 cca_cnt = AsicGetCCACnt(pAd);
 
@@ -387,7 +387,7 @@ static inline UCHAR SelectClearChannelCCA(
 			/* check neighbor channel */
 			for (loop=(channel_idx-1); loop >= (channel_idx-BelowBound); loop--)
 			{
-				if (loop < 0)
+				if (loop < 0 || loop >= MAX_NUM_OF_CHANNELS)
 					break;
 
 				if (pAd->ChannelList[loop+1].Channel - pAd->ChannelList[loop].Channel > 4)
@@ -801,7 +801,7 @@ static inline UCHAR SelectClearChannelApCnt(
 
 				for (ll = channel_index - 1; ll > (channel_index - ChanOffset - 1); ll--)
 				{
-					if (ll >= 0)
+					if (ll >= 0 < MAX_NUM_OF_CHANNELS+1)
 						pChannelInfo->dirtyness[ll]++;
 				}
 			}

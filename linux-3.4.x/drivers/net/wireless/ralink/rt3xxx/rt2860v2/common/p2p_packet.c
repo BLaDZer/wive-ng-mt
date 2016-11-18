@@ -1208,7 +1208,7 @@ VOID P2pReceGoNegoConfirmAction(
 		DBGPRINT(RT_DEBUG_ERROR, (" pP2pEntry[%d]->rule = %s. GoIntent = %d. My intent is %d. \n",  index, decodeMyRule(pP2pEntry->Rule), pP2pEntry->GoIntent, pP2PCtrl->GoIntentIdx));
 		/*DBGPRINT(RT_DEBUG_ERROR, ("---->P2P pP2PCtrl->SsidLength = %d. [%x %x %x..]\n", pP2PCtrl->SSIDLen, 
 								pP2PCtrl->SSID[0], pP2PCtrl->SSID[1], pP2PCtrl->SSID[2]));*/
-		if (SsidLen > 0)
+		if (SsidLen > 0 && SsidLen <= MAX_LEN_OF_SSID)
 		{
 			RTMPMoveMemory(pP2pEntry->Ssid, Ssid, 32);
 			pP2pEntry->SsidLen = SsidLen;
@@ -1358,7 +1358,7 @@ VOID P2pReceGoNegoRspAction(
 		if (!NdisEqualMemory(AllZero, IfAddr, MAC_ADDR_LEN))
 		RTMPMoveMemory(pP2pEntry->InterfaceAddr, IfAddr, MAC_ADDR_LEN);
 
-		if (SsidLen > 0)
+		if (SsidLen > 0 && SsidLen <= MAX_LEN_OF_SSID)
 		{
 			RTMPMoveMemory(pP2pEntry->Ssid, Ssid, SsidLen);
 			pP2pEntry->SsidLen = SsidLen;

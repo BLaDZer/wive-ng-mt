@@ -3616,7 +3616,7 @@ VOID BssEntrySet(
 	COPY_MAC_ADDR(pBss->Bssid, pBssid);
 	/* Default Hidden SSID to be TRUE, it will be turned to FALSE after coping SSID*/
 	pBss->Hidden = 1;	
-	if (SsidLen > 0)
+	if (SsidLen > 0 && SsidLen <= MAX_LEN_OF_SSID)
 	{
 		/* For hidden SSID AP, it might send beacon with SSID len equal to 0*/
 		/* Or send beacon /probe response with SSID len matching real SSID length,*/
