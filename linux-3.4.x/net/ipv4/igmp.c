@@ -1137,7 +1137,6 @@ static void igmpv3_del_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 {
 	struct ip_mc_list *pmc, *pmc_prev;
 	struct ip_sf_list *psf;
-	struct net *net = dev_net(in_dev->dev);
 	__be32 multiaddr = im->multiaddr;
 
 	spin_lock_bh(&in_dev->mc_tomb_lock);
