@@ -2588,15 +2588,16 @@
 60) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
 61) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
 62) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-63) kernel: net: xfrm: fix error return code.<br>
-64) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-65) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-66) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-67) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-68) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-69) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-70) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-71) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+63) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
+64) kernel: net: xfrm: fix error return code.<br>
+65) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+66) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+67) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+68) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+69) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+70) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+71) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+72) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
