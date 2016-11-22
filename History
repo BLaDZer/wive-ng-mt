@@ -2578,26 +2578,27 @@
 50) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
 51) kernel: ptrace: fix regs_return_value for kernel context.<br>
 52) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-53) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
-54) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
-55) kernel: net: make default TX queue length a defined constant.<br>
-56) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-57) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-58) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
-59) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
-60) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
-61) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-62) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-63) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
-64) kernel: net: xfrm: fix error return code.<br>
-65) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-66) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-67) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-68) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-69) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-70) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-71) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-72) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+53) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
+54) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
+55) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
+56) kernel: net: make default TX queue length a defined constant.<br>
+57) kernel: net: mangle zero checksum in skb_checksum_help().<br>
+58) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+59) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
+60) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
+61) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
+62) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+63) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+64) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
+65) kernel: net: xfrm: fix error return code.<br>
+66) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+67) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+68) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+69) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+70) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+71) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+72) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+73) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>
