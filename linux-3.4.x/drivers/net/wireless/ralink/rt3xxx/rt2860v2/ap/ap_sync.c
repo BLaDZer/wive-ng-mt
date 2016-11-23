@@ -853,7 +853,7 @@ VOID APPeerBeaconAction(
 	UCHAR         Bssid[MAC_ADDR_LEN], Addr2[MAC_ADDR_LEN];
 /*	CHAR          Ssid[MAX_LEN_OF_SSID]; */
 	CHAR          *Ssid = NULL;
-	UCHAR         SsidLen, MessageToMe=0, BssType, Channel;
+	UCHAR         SsidLen, MessageToMe=0, BssType, Channel=0;
 	UCHAR         Rates[MAX_LEN_OF_SUPPORTED_RATES];
 	PUCHAR        pRates = NULL;
 	UCHAR         RatesLen, DtimCount=0, DtimPeriod=0, BcastFlag=0;
@@ -932,7 +932,9 @@ VOID APPeerBeaconAction(
 	pVIE->Length = 0;
 	pRates = (PUCHAR)Rates;
 
+	/* Init the DUT's working channel from RX'D param first, actually we need to get the accurate Channel from wdev */
 	Channel = Elem->Channel;
+	/* PeerBeaconAndProbeRspSanity() may overwrite ie_list->Channel if beacon or  probe resp contain IE_DS_PARM */
 	RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, Elem->Rssi0, RSSI_0),
 							ConvertToRssi(pAd, Elem->Rssi1, RSSI_1),
 							ConvertToRssi(pAd, Elem->Rssi2, RSSI_2));

@@ -841,6 +841,7 @@ VOID APPeerBeaconAction(
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
 	UCHAR MaxSupportedRate = 0;
 	BCN_IE_LIST *ie_list = NULL;
+	UCHAR Channel = 0;
 	UINT32 MaxWcidNum;
 
 	MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
@@ -868,6 +869,9 @@ VOID APPeerBeaconAction(
 
 	pRates = (PUCHAR)Rates;
 
+	/* Init the DUT's working channel from RX'D param first, actually we need to get the accurate Channel from wdev */
+	Channel = Elem->Channel;
+	/* PeerBeaconAndProbeRspSanity() may overwrite ie_list->Channel if beacon or  probe resp contain IE_DS_PARM */
 	ie_list->Channel = Elem->Channel;
 	RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, Elem->Rssi0, RSSI_0),
 							ConvertToRssi(pAd, Elem->Rssi1, RSSI_1),
@@ -883,7 +887,7 @@ VOID APPeerBeaconAction(
 	{
 
 		/* ignore BEACON not in this channel */
-		if (ie_list->Channel != pAd->CommonCfg.Channel
+		if (ie_list->Channel != Channel
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
 			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
@@ -930,7 +934,7 @@ VOID APPeerBeaconAction(
 			}
 			else
 			{
-				if (ie_list->Channel != pAd->CommonCfg.Channel)
+				if (ie_list->Channel != Channel)
 					goto __End_Of_APPeerBeaconAction;
 			}
 		}
