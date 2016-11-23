@@ -124,7 +124,7 @@ VOID BuildChannelList(
 #endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
-				pAd->ChannelList[index+i].MaxTxPwr = 20;
+				pAd->ChannelList[index+i].MaxTxPwr = 30;
 			}
 
 			index += num;
@@ -247,7 +247,7 @@ VOID BuildChannelList(
 					if (pChannelList[i] == RadarCh[j])
 						pAd->ChannelList[index+i].DfsReq = TRUE;
 				}
-				pAd->ChannelList[index+i].MaxTxPwr = 20;
+				pAd->ChannelList[index+i].MaxTxPwr = 30;
 			}
 			index += num;
 
