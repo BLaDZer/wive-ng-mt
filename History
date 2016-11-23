@@ -2576,31 +2576,32 @@
 48) kernel: ralink_wifi: auto_ch_select: add some sanity checks.<br>
 49) kernel: ralink_wifi: fix skip beacon from different channel.<br>
 50) kernel: ralink_wifi: allow 30dBm tx power for ext PA devices and some country.<br>
-51) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
-52) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
-53) kernel: ptrace: fix regs_return_value for kernel context.<br>
-54) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-55) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
-56) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
-57) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
-58) kernel: net: make default TX queue length a defined constant.<br>
-59) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-60) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-61) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
-62) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
-63) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
-64) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-65) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-66) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
-67) kernel: net: xfrm: fix error return code.<br>
-68) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-69) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-70) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-71) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-72) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-73) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-74) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-75) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+51) kernel: ralink_wifi: skip DEAUTH with all zero mac addr.<br>
+52) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
+53) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
+54) kernel: ptrace: fix regs_return_value for kernel context.<br>
+55) kernel: mips: fix max_low_pfn with disabled highmem.<br>
+56) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
+57) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
+58) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
+59) kernel: net: make default TX queue length a defined constant.<br>
+60) kernel: net: mangle zero checksum in skb_checksum_help().<br>
+61) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+62) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
+63) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
+64) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
+65) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+66) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+67) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
+68) kernel: net: xfrm: fix error return code.<br>
+69) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+70) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+71) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+72) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+73) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+74) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+75) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+76) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>

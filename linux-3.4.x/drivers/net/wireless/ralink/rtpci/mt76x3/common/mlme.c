@@ -4090,6 +4090,12 @@ BOOLEAN MlmeEnqueueForRecv(
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
 
+		if(MAC_ADDR_EQUAL(ZERO_MAC_ADDR,pFrame->Hdr.Addr1) && pFrame->Hdr.FC.SubType == SUBTYPE_DEAUTH)
+		{
+			DBGPRINT_ERR(("%s(): receiving DEAUTH with (DA/BSSID) all zero mac addr, skip \n", __FUNCTION__));
+			return FALSE;
+		}
+
 #ifdef APCLI_SUPPORT
 		/*
 			Beacon must be handled by ap-sync state machine.
