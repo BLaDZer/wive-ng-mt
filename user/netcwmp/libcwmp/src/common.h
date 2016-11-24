@@ -47,25 +47,25 @@
 /* Connection */
 typedef struct fetchconn conn_t;
 struct fetchconn {
-	int		 sd;		/* socket descriptor */
-	char		*buf;		/* buffer */
-	size_t		 bufsize;	/* buffer size */
-	size_t		 buflen;	/* length of buffer contents */
-	int		 err;		/* last protocol reply code */
+    int		 sd;		/* socket descriptor */
+    char	*buf;		/* buffer */
+    size_t	 bufsize;	/* buffer size */
+    size_t	 buflen;	/* length of buffer contents */
+    int		 err;		/* last protocol reply code */
 #ifdef WITH_SSL
-	SSL		*ssl;		/* SSL handle */
-	SSL_CTX		*ssl_ctx;	/* SSL context */
-	X509		*ssl_cert;	/* server certificate */
-	SSL_METHOD	*ssl_meth;	/* SSL method */
+    SSL		*ssl;		/* SSL handle */
+    SSL_CTX	*ssl_ctx;	/* SSL context */
+    X509	*ssl_cert;	/* server certificate */
+    SSL_METHOD	*ssl_meth;	/* SSL method */
 #endif
-	int		 ref;		/* reference count */
+    int		 ref;		/* reference count */
 };
 
 /* Structure used for error message lists */
 struct fetcherr {
-	const int	 num;
-	const int	 cat;
-	const char	*string;
+    const int	 num;
+    const int	 cat;
+    const char	*string;
 };
 
 /* for _fetch_writev */
@@ -95,10 +95,10 @@ int		 _fetch_add_entry(struct url_ent **, int *, int *,
 		     const char *, struct url_stat *);
 int		 _fetch_netrc_auth(struct url *url);
 
-#define _ftp_seterr(n)	 _fetch_seterr(_ftp_errlist, n)
-#define _http_seterr(n)	 _fetch_seterr(_http_errlist, n)
-#define _netdb_seterr(n) _fetch_seterr(_netdb_errlist, n)
-#define _url_seterr(n)	 _fetch_seterr(_url_errlist, n)
+#define _ftp_seterr(n)          _fetch_seterr(_ftp_errlist, n)
+#define _http_seterr(n)         _fetch_seterr(_http_errlist, n)
+#define _netdb_seterr(n)        _fetch_seterr(_netdb_errlist, n)
+#define _url_seterr(n)          _fetch_seterr(_url_errlist, n)
 
 #define NDEBUG
 #ifndef NDEBUG
@@ -117,20 +117,20 @@ int		 _fetch_netrc_auth(struct url *url);
  * whole lot of trouble.
  */
 #if __MOJOSETUP__
-MojoInput	*_http_request(struct url *, const char *,
-		     struct url_stat *, struct url *, const char *);
-MojoInput	*_ftp_request(struct url *, const char *,
-		     struct url_stat *, struct url *, const char *);
+MojoInput *_http_request(struct url *, const char *,
+             struct url_stat *, struct url *, const char *);
+MojoInput *_ftp_request(struct url *, const char *,
+             struct url_stat *, struct url *, const char *);
 #else
-FILE		*_http_request(struct url *, const char *,
-		     struct url_stat *, struct url *, const char *);
-FILE		*_ftp_request(struct url *, const char *,
-		     struct url_stat *, struct url *, const char *);
+FILE *_http_request(struct url *, const char *,
+             struct url_stat *, struct url *, const char *);
+FILE *_ftp_request(struct url *, const char *,
+             struct url_stat *, struct url *, const char *);
 #endif
 
 /*
  * Check whether a particular flag is set
  */
-#define CHECK_FLAG(x)	(flags && strchr(flags, (x)))
+#define CHECK_FLAG(x)   (flags && strchr(flags, (x)))
 
 #endif

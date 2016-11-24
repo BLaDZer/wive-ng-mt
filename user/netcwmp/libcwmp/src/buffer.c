@@ -223,7 +223,7 @@ int cwmp_chunk_create(cwmp_chunk_t ** news, pool_t * pool)
     (*news) = PMALLOC(sizeof(cwmp_chunk_t));
     if (!(*news))
     {
-        cwmp_log_error("create array buffer out of memory\n");
+        cwmp_log_error("create array buffer out of memory");
         return CWMP_ENOMEM;
     }
     (*news)->buffer = NULL;
@@ -233,7 +233,7 @@ int cwmp_chunk_create(cwmp_chunk_t ** news, pool_t * pool)
     /*
        if (cwmp_buffer_create(&buffer, pool) != CWMP_OK)
        {
-       cwmp_log_error("create buffer out of memory\n");
+       cwmp_log_error("create buffer out of memory");
        PFREE(*news);
        return CWMP_ENOMEM;
        }
@@ -281,7 +281,7 @@ int cwmp_chunk_write_string(cwmp_chunk_t * cb, const char * str, size_t length, 
             {
                 if (cwmp_buffer_create(&buffer, pool) != CWMP_OK)
                 {
-                    cwmp_log_error("create buffer out of memory\n");
+                    cwmp_log_error("create buffer out of memory");
                     return CWMP_ERROR;
                 }
                 if (cb->current != NULL)
@@ -312,7 +312,7 @@ int cwmp_chunk_write_string(cwmp_chunk_t * cb, const char * str, size_t length, 
           {
           if (cwmp_buffer_create(&buffer, pool) != CWMP_OK)
           {
-          cwmp_log_error("create buffer out of memory\n");
+          cwmp_log_error("create buffer out of memory");
           return CWMP_ERROR;
           }
           cb->current->next = buffer;

@@ -29,7 +29,7 @@
 #include "cwmp_httpd.h"
 
 static int cwmp_max_threads;
-static int 				cwmp_worker_threaded;
+static int cwmp_worker_threaded;
 
 #ifdef WIN32
 #else
@@ -39,7 +39,7 @@ int
 cwmp_worker_thread_init(cwmp_t * cwmp, int num, size_t size)
 {
     int  err;
-
+    FUNCTION_TRACE();
     cwmp_max_threads = num;
 
     err = pthread_attr_init(&cwmp_worker_thread_attr);
@@ -84,6 +84,7 @@ static unsigned int __stdcall cwmp_worker_thread_httpd(cwmp_t * cwmp)
 static unsigned int cwmp_worker_thread_httpd(cwmp_t * cwmp)
 #endif
 {
+    FUNCTION_TRACE();
     return httpd_build_server(cwmp);
 }
 
@@ -102,9 +103,11 @@ void cwmp_worker_thread_start(cwmp_t * cwmp)
 {
 #ifdef WIN32
     unsigned tid1, tid2;
+    FUNCTION_TRACE();
     CreateThread(NULL, 0, cwmp_worker_thread_httpd, cwmp, 0, &tid1);
 #else
     pthread_t th1;
+    FUNCTION_TRACE();
     pthread_create(&th1, NULL, (void*)cwmp_worker_thread_httpd, cwmp);
 #endif
     cwmp_agent_session(cwmp);

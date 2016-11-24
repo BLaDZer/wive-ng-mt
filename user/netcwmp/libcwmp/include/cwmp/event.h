@@ -14,6 +14,7 @@
 #define __CWMPEVENT_H__
 
 #include <cwmp/types.h>
+#include <cwmp/cfg.h>
 
 typedef enum
 {
@@ -44,22 +45,23 @@ typedef enum
 #define POLICY_DISCARD_BOOT     1
 #define POLICY_NOT_RETRY        2
 
+enum event_reboot_flag {
+    EVENT_REBOOT_NONE_FLAG = 0,
+    EVENT_REBOOT_BOOTSTRAP_FLAG,
+    EVENT_REBOOT_ACS_FLAG,
+    EVENT_REBOOT_TRANSFERCOMPLETE_FLAG = 4,
+    EVENT_REBOOT_UNKNOWN_FLAG = 64
+};
 
-#define EVENT_REBOOT_NONE_FLAG   0
-#define EVENT_REBOOT_BOOTSTRAP_FLAG  1
-#define EVENT_REBOOT_ACS_FLAG     2
-#define EVENT_REBOOT_TRANSFERCOMPLETE_FLAG 4
-
-#define EVENT_REBOOT_UNKNOWN_FLAG 64
-
-
-
-#define TASK_DOWNLOAD_TAG  1
-#define TASK_UPLOAD_TAG  2
-#define TASK_REBOOT_TAG  3
-#define TASK_FACTORYRESET_TAG 4
-#define TASK_CALLBACK_TAG 5 
-#define TASK_NOTIFY_TAG 6
+enum event_task_tag {
+	TASK_DOWNLOAD_TAG = 1,
+	TASK_UPLOAD_TAG,
+	TASK_REBOOT_TAG,
+	TASK_FACTORYRESET_TAG,
+	TASK_CALLBACK_TAG,
+	TASK_NOTIFY_TAG,
+    TASK_RELOAD_TAG,
+};
 
 
 struct event_code_st
@@ -67,12 +69,10 @@ struct event_code_st
     int   	event;
     char *	code;
     char   	command_key[COMMAND_KEY_LEN+1];
-    int      	policy;     /* 0:始终不能丢弃，1:直到重启，丢弃  2:不需要retry，可以丢弃 */
-    int      	have_key;   /* 0: 没有 1:有*/
-    int      	ref;        /*事件发送次数*/
+    int      	ref;        /* events */
     int      	fault_code;
     time_t	start;
-    time_t	end;	
+    time_t	end;
 };
 
 
@@ -88,13 +88,14 @@ struct event_list_st
 
 typedef struct event_global_st
 {
-    int      	event_flag;        /*0 其他原因重启 1 reboot命令重启2由于升级导致的重启*/
+    enum event_reboot_flag event_flag;
     char   	event_key[COMMAND_KEY_LEN+1]; /* command key */
     int      	fault_code;
     time_t	start;
-    time_t	end;	
-	
-}event_global_t;
+    time_t	end;
+    /* source data, prevent write unchanged value */
+    char data[INI_BUFFERSIZE];
+} event_global_t;
 
 
 typedef struct transfer_st{
@@ -127,6 +128,9 @@ int cwmp_event_global_init(cwmp_t * cwmp);
 
 int cwmp_event_set_value(cwmp_t *cwmp,  int event,   int value, const char * cmd_key, int fault_code, time_t start, time_t end);
 int cwmp_event_clear_active(cwmp_t *cwmp);
+int cwmp_event_file_save(cwmp_t *cwmp);
+
+int cwmp_event_time_init(cwmp_t * cwmp, const char *stime);
 
 #endif
 

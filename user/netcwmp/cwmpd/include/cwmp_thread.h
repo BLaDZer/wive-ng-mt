@@ -27,11 +27,6 @@
 #ifndef __CWMP_THREAD_H__
 #define __CWMP_THREAD_H__
 
-
-
-
-
-
 #define cwmp_thread_key_create(key)   pthread_key_create(key, NULL)
 
 #define cwmp_thread_key_create_s  "the tls key creation"

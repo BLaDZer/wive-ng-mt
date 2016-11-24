@@ -97,8 +97,16 @@
 
 #endif /* TRDECL */
 
-
-
+/* from linux/ethtool.h */
+#ifndef DUPLEX_HALF
+# define DUPLEX_HALF     0x00
+#endif
+#ifndef DUPLEX_FULL
+# define DUPLEX_FULL     0x01
+#endif
+#ifndef DUPLEX_UNKNOWN
+# define DUPLEX_UNKNOWN      0xff
+#endif
 
 
 typedef enum  TRBOOLEAN
@@ -244,7 +252,9 @@ typedef int     (*parameter_add_handler_pt)(cwmp_t * cwmp, parameter_node_t * pa
 
 typedef int     (*parameter_del_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, int instance_number,  callback_register_func_t callback_reg);
 
-typedef int     (*parameter_refresh_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg ); 
+typedef int     (*parameter_refresh_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg );
+
+typedef int     (*parameter_reload_handler_pt)(cwmp_t * cwmp, callback_register_func_t callback_reg );
 
 typedef enum cwmp_type_t cwmp_type_t;
 

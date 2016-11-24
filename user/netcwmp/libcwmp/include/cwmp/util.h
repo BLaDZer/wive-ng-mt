@@ -18,6 +18,7 @@
 #include <cwmp/upload.h>
 
 #include <libwive.h>
+#include <stdbool.h>
 
 #define Public		/* Accessible outside this module     */
 #define Private static		/* Accessible only within this module */
@@ -43,7 +44,6 @@
 
 #include <linux/autoconf.h>
 
-
 #ifdef CONFIG_RAETH_GMAC2		/* dual phy/rgmii mode */
 #define WAN_DEF "eth3"
 #else
@@ -56,9 +56,13 @@
 #define VPN_DEF "ppp0"
 
 
+void string_randomize(char *buffer, size_t size);
+
 int getHWStatistic(unsigned long long* rxtx_count);
 char* getIntIp(pool_t * pool);
-//int getIfMac(char *ifname, char *if_hw);
+
+size_t nvram_get_tuple(const char *key, unsigned index, char *value, size_t value_size);
+
 int firmware_upgrade(char* filename);
 
 
@@ -273,12 +277,14 @@ static INLINE char * TRlefttrim(char   *s)
 
 void convert_to_hex(const char *Bin, char *Hex);
 
+void cwmp_hex_to_string(char *to, const unsigned char *p, size_t len);
+void cwmp_string_to_hex(char *in, char *out, size_t len);
 
 static INLINE int is_digit(const char *str)
 {
     int     i;
     int     n;
-    
+
     if(!str)
     {
         return -1;
@@ -296,9 +302,28 @@ static INLINE int is_digit(const char *str)
     return 0;
 }
 
+/* TODO: to libwive */
+enum upgrade_status {
+	/* no upgrade workers */
+	UPGRADE_NONE,
+	/* download image */
+	UPGRADE_DOWNLOAD,
+	/* check image */
+	UPGRADE_CHECK,
+	/* prepare to upgrade */
+	UPGRADE_PREPARE,
+	/* write image to nvram */
+	UPGRADE_WRITE
+};
 
 
+const char * upgrade_status_to_string(enum upgrade_status s);
 
+enum upgrade_status upgrade_get_status();
+
+bool upgrade_set_status(enum upgrade_status s);
+
+char * cwmp_base64_encode(const char *src);
 
 #endif
 

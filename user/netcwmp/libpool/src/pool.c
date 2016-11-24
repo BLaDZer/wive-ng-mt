@@ -76,7 +76,7 @@ static void *pool_palloc_large(pool_t *pool, size_t size);
 static void * pool_alloc(size_t size)
 {
 	void  *p;
-	//    cwmp_log_debug("------------------pool alloc size: %d------------------\n", size);
+	//    cwmp_log_debug("------------------pool alloc size: %d------------------", size);
 	p = malloc(size);
 
 	if (p == NULL)
@@ -175,7 +175,7 @@ void pool_destroy(pool_t *pool)
 
 	for (l = pool->large; l; l = l->next)
 	{
-//            cwmp_log_debug("destroy large alloc %p\n", l->alloc);
+//            cwmp_log_debug("destroy large alloc %p", l->alloc);
 		free(l->alloc);
 	}
 
@@ -227,7 +227,7 @@ void pool_clear(pool_t *pool)
 
 	for (l = pool->large; l; l = l->next)
 	{
-		//        cwmp_log_debug("clear large alloc %p\n", l->alloc);
+		//        cwmp_log_debug("clear large alloc %p", l->alloc);
 		free(l->alloc);
 	}
 
@@ -261,7 +261,7 @@ void * pool_palloc(pool_t *pool, size_t size)
 	if (size <= pool->max)
 	{
 
-		//cwmp_log_debug("palloc size(%d)/max(%d)\n", size, pool->max);
+		//cwmp_log_debug("palloc size(%d)/max(%d)", size, pool->max);
 		p = pool->current;
 
 		do
@@ -365,7 +365,7 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
 	void              *p;
 	pool_large_t  *large;
 	//FUNCTION_TRACE();
-	//cwmp_log_debug("alloc large memory: %d\n", size);
+	//cwmp_log_debug("alloc large memory: %d", size);
 	p = pool_alloc(size);
 	if (p == NULL)
 	{
@@ -375,7 +375,7 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
 	large = pool_palloc(pool, sizeof(pool_large_t));
 	if (large == NULL)
 	{
-		//        cwmp_log_debug("large is null, free p %p\n", p);
+		//        cwmp_log_debug("large is null, free p %p", p);
 		free(p);
 		return NULL;
 	}
@@ -400,6 +400,7 @@ pool_pmemalign(pool_t *pool, size_t size, size_t alignment)
 //	  return NULL;
 //	  }
 	 
+
 	//FUNCTION_TRACE();
 
 	large = pool_palloc(pool, sizeof(pool_large_t));

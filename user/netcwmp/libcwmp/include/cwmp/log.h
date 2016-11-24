@@ -34,14 +34,15 @@
 #define CWMP_LOG_DEBUG_SQL       0x400
 
 #ifdef WIN32
-#define FUNCTION_TRACE()	cwmp_log_debug("TRACE: %s()\n", __FUNCTION__)
+#define FUNCTION_TRACE()	cwmp_log_trace("%s()", __FUNCTION__)
 #else
-#define FUNCTION_TRACE()	cwmp_log_debug("TRACE: %s()\n", __func__)
+#define FUNCTION_TRACE()	cwmp_log_trace("%s()", __func__)
 #endif
 
 typedef struct cwmp_log_t cwmp_log_t;
 
 int cwmp_log_init(const char * filename, int level);
+void cwmp_log_set(const char * filename, int level);
 void cwmp_log_fini();
 
 
@@ -52,11 +53,7 @@ void cwmp_log_warn(const char * fmt, ...);
 void cwmp_log_error(const char * fmt, ...);
 void cwmp_log_alert(const char * fmt, ...);
 void cwmp_log_critical(const char * fmt, ...);
-void cwmp_log_tracer(int level, cwmp_log_t *log, const char * fmt, ...);
-
-
-
-
+void cwmp_log_trace(const char * fmt, ...);
 
 #endif
 

@@ -41,6 +41,8 @@ struct cwmp_session_t
     http_socket_t * sock;
     http_dest_t   * dest;
 
+	unsigned resend_counter;
+
     char 	id[128];
     char error_buffer[256];
 

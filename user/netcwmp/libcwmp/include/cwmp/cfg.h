@@ -20,6 +20,7 @@
 #define INI_BUFFERSIZE  128
 
 int 		cwmp_conf_get(const char * key, char *value);
+/* return pool_pstrdump()'ed value */
 char *	cwmp_conf_pool_get(pool_t * pool, const char * key);
 int		cwmp_conf_get_int(const char * key);
 int		cwmp_conf_set(const char * key, const char * value);
@@ -27,7 +28,7 @@ int		cwmp_conf_open(const char * file);
 
 int cwmp_nvram_set(const char * key, const char * value);
 char * cwmp_nvram_pool_get(pool_t * pool, const char * key);
-int cwmp_nvram_get(const char * key, char *value);
+char *cwmp_nvram_get(const char * key);
 int cwmp_nvram_get_int(const char * key, int def);
 int cwmp_nvram_get_bool_onoff(const char * key, int def);
 

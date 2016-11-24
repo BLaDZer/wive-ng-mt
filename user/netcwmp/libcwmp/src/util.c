@@ -6,21 +6,138 @@
  *                                                                      *
  *                                                                      *
  * Email: netcwmp ( & ) gmail dot com                                *
- *                                                                      *  
+ *                                                                      *
  ***********************************************************************/
 
- 
+
 #include "cwmp/util.h"
 #include "cwmp/log.h"
 #include "cwmp/cfg.h"
 #include "cwmp/md5.h"
-/*
+
+#include <paths.h>
+#include <sys/types.h>
+#include <signal.h>
+
+/* TODO: to libwive */
+#define UPGRADE_FILE _PATH_TMP "/z_upgrade_firmware"
+
+const char * upgrade_status_to_string(enum upgrade_status s)
+{
+	switch (s) {
+		case UPGRADE_NONE:
+			return NULL;
+		case UPGRADE_DOWNLOAD:
+			return "download";
+		case UPGRADE_CHECK:
+			return "check";
+		case UPGRADE_PREPARE:
+			return "prepare";
+		case UPGRADE_WRITE:
+			return "upgrade";
+	}
+	return NULL;
+}
+
+enum upgrade_status upgrade_get_status()
+{
+	char status[32] = {};
+	int pid = -1;
+	FILE *f = NULL;
+	if (access(UPGRADE_FILE, F_OK)) {
+		/* file not exists */
+		return UPGRADE_NONE;
+	}
+
+	if (access(UPGRADE_FILE, R_OK)) {
+		/* file exists, but not readable */
+		cwmp_log_critical(
+				"firmware upgrade: file '%s' not available for reading: %s",
+				UPGRADE_FILE, strerror(errno));
+		/* unknown behavior */
+		return UPGRADE_DOWNLOAD;
+	}
+
+	f = fopen(UPGRADE_FILE, "r");
+	if (!f) {
+		cwmp_log_critical(
+				"firmware upgrade: file '%s' not available for reading: %s",
+				UPGRADE_FILE, strerror(errno));
+		/* unknown behavior */
+		return UPGRADE_DOWNLOAD;
+	}
+	fscanf(f, "%d:%32s", &pid, status);
+	fclose(f);
+
+	/* check program state */
+	if (kill(pid, 0)) {
+		/* program not running */
+		unlink(UPGRADE_FILE);
+		return UPGRADE_NONE;
+	}
+
+	if (!strcmp(status, "download")) {
+		return UPGRADE_DOWNLOAD;
+	} else if (!strcmp(status, "check")) {
+		return UPGRADE_CHECK;
+	} else if (!strcmp(status, "prepare")) {
+		return UPGRADE_PREPARE;
+	} else if (!strcmp(status, "upgrade")) {
+		return UPGRADE_WRITE;
+	}
+
+	return UPGRADE_NONE;
+}
+
+bool upgrade_set_status(enum upgrade_status s)
+{
+	enum upgrade_status so = UPGRADE_NONE;
+	const char *status = NULL;
+	FILE *f = NULL;
+
+	status = upgrade_status_to_string(s);
+
+	if ((so = upgrade_get_status()) != UPGRADE_NONE) {
+/*		cwmp_log_error(
+				"firmware upgrade: set status to '%s' failed: "
+				"already in status: %s",
+				status, upgrade_status_to_string(so));*/
+	}
+
+	if (s == UPGRADE_NONE) {
+		if (!access(UPGRADE_FILE, F_OK)) {
+			/* file exists */
+			if (!unlink(UPGRADE_FILE)) {
+				/* delete file ok */
+				return true;
+			}
+			/* delete file failed */
+			return false;
+		}
+		/* file not exists */
+		return true;
+	}
+
+	f = fopen(UPGRADE_FILE, "w");
+	if (!f) {
+		cwmp_log_error(
+				"firmware upgrade: file %s not available for writing: %s",
+				UPGRADE_FILE, strerror(errno));
+		return false;
+	}
+
+	fprintf(f, "%d:%s", getpid(), status);
+	fclose(f);
+	return true;
+}
+
+
 static const char base64[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "abcdefghijklmnopqrstuvwxyz"
     "0123456789+/";
 
-static char * base64_encode(const char *src)
+char * cwmp_base64_encode(const char *src)
 {
     char *str, *dst;
     size_t l;
@@ -71,8 +188,8 @@ static char * base64_encode(const char *src)
     *dst = 0;
     return (str);
 }
-*/
-static void cwmp_hex_to_string(char *to, const unsigned char *p, size_t len)
+
+void cwmp_hex_to_string(char *to, const unsigned char *p, size_t len)
 {
     const char  *hex = "0123456789abcdef";
 
@@ -85,30 +202,60 @@ static void cwmp_hex_to_string(char *to, const unsigned char *p, size_t len)
     *to = '\0';
 }
 
+void cwmp_string_to_hex(char *in, char *out, size_t len)
+{
+    const char hex[16] = "0123456789ABCDEF";
+    size_t i = 0;;
+    size_t in_len = 0;
 
+    if (!out || !len || !in)
+        return;
+    in_len = strlen(in);
+
+    for (i = 0u; i < len - 1 && i < in_len * 2; i++) {
+        if (!(i % 2)) {
+            /* first nibble */
+            out[i] = hex[in[i / 2] >> 4 & 0xf];
+        } else {
+            /* second nibble */
+            out[i] = hex[in[i / 2] & 0xf];
+        }
+    }
+
+    out[i] = '\0';
+}
 
 void MD5(char *buf, ...)
 {
-    unsigned char   hash[HASHLEN];
     unsigned char   *p;
     va_list ap;
     MD5_CTX ctx;
 
     MD5Init(&ctx);
-
+	/*cwmp_log_debug("MD5(begin, target=%p)", buf);*/
     va_start(ap, buf);
     while ((p = va_arg(ap, unsigned char *)) != NULL)
     {
+		/*cwmp_log_debug("MD5(input): '%s', %d", p, strlen((char*)p));*/
         MD5Update(&ctx, p, strlen((char *) p));
     }
     va_end(ap);
+	/*cwmp_log_debug("MD5(end)");*/
 
-    MD5Final(hash, &ctx);
-
-    cwmp_hex_to_string(buf, hash, sizeof(hash));
+    MD5Final((unsigned char*)buf, &ctx);
 }
 
+void
+string_randomize(char *buffer, size_t size)
+{
+	const char base[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz0123456789+";
+	size_t i;
 
+	for (i = 0u; i < size; i++) {
+		buffer[i] = base[rand() % (sizeof(base) - 1)];
+	}
+}
 
 void convert_to_hex(const char *Bin, char *Hex)
 {
@@ -138,55 +285,6 @@ char *strip_space(char *str)
     return str;
 }
 
-/*
-int getIfIp(char *ifname, char *if_addr)
-{
-	struct ifreq ifr;
-	int skfd = 0;
-
-	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "open socket failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-
-	strncpy(ifr.ifr_name, ifname, IFNAMSIZ);
-	if (ioctl(skfd, SIOCGIFADDR, &ifr) < 0) {
-		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s\n", __FUNCTION__);
-		return -1;
-	}
-	strcpy(if_addr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-
-	close(skfd);
-	return 0;
-}
-*/
-
-
-
-char* getPPPIfName(void)
-{
-        FILE *fp;
-    char ppp_if[16]; /* max 16 char in vpn if name */
-
-    fp = fopen("/tmp/vpn_if_name", "r");
-    if (fp) {
-        /* get first ppp_if in file */
-        while (fgets(ppp_if, sizeof(ppp_if), fp)) {
-	if (ppp_if == NULL || ppp_if[0] == '\n')
-	    continue;
-	if (strstr(ppp_if, VPN_SIG) != NULL) {
-	    fclose(fp);
-	    return strip_space(ppp_if);
-	}
-        }
-        fclose(fp);
-    }
-
-    return VPN_DEF;
-}
-
-
 char* getIntIp(pool_t * pool)
 {
     char if_addr[16];
@@ -195,20 +293,60 @@ char* getIntIp(pool_t * pool)
 
     if (vpn_mode_enabled && vpnDGW) {
         if (getIfIp(getPPPIfName(), if_addr) != -1) {
-	    cwmp_log_debug("getIntIp R %s", if_addr);
-	    return pool_pstrdup(pool, if_addr);
+            cwmp_log_debug("getIntIp R %s", if_addr);
+            return pool_pstrdup(pool, if_addr);
         }
     }
 
     /* if vpn disabled always get ip from wanif */
     if (getIfIp(getWanIfName(), if_addr) != -1) {
-	cwmp_log_debug("getIntIp R %s", if_addr);
-	return pool_pstrdup(pool, if_addr);
+        cwmp_log_debug("getIntIp R %s", if_addr);
+        return pool_pstrdup(pool, if_addr);
     }
 
 
     return 0;
 }
+
+size_t nvram_get_tuple(const char *key, unsigned index, char *value, size_t value_size)
+{
+    char *v = NULL;
+    char *e = NULL;
+    char *s = NULL;
+    unsigned i = 0;
+    size_t len = 0u;
+
+    /* indexes started at 1 */
+    index++;
+
+    e = s = v = cwmp_nvram_get(key);
+    len = strlen(v);
+    while ((e = strchr(s, ';')) != NULL) {
+        if (++i == index)
+            break;
+        /* next */
+        s = ++e;
+    }
+    /* fix endpos */
+    if (!e) {
+        e = v + len;
+        i++;
+    }
+
+    if (i != index) {
+        s = e;
+        cwmp_log_error("%s: invalid index: %u, maximum: %u",
+                __func__, index, i);
+    }
+
+    memset(value, 0u, value_size);
+    len = (e - s);
+    if (len && value) {
+        snprintf(value, value_size, "%.*s", len, s);
+    }
+    return len;
+}
+
 
 ////////////////////////////////////////////////////////
 
@@ -293,7 +431,7 @@ char* ReadFile(char *name, unsigned long *fileLen)
 	fprintf(stderr, "Unable to open file %s", name);
 	return NULL;
     }
-    
+
     //Get file length
     fseek(file, 0, SEEK_END);
     *fileLen=ftell(file);
@@ -516,17 +654,25 @@ int firmware_upgrade(char* filename)
 {
 	unsigned long file_size = 0;
 
+	cwmp_log_trace("%s(filename='%s')", __func__, filename);
+
+	if (!upgrade_set_status(UPGRADE_CHECK)) {
+		return 3;
+	}
+
 	char* buffer = ReadFile(filename, &file_size);
-	if (buffer == NULL) 
+	if (buffer == NULL)
 	{
 	    cwmp_log_error("Check image error: unable to read image file: %s", filename);
+		upgrade_set_status(UPGRADE_NONE);
 	    return 1;
 	}
 
 #if defined(CONFIG_RT2880_ROOTFS_IN_FLASH)
 	if(file_size > MAX_IMG_SIZE || file_size < MIN_FIRMWARE_SIZE){
 		cwmp_log_error("Check image error: size incompatible image. Size: %d", (int)file_size);
-    		return 2;
+		upgrade_set_status(UPGRADE_NONE);
+		return 2;
 	}
 #endif
 
@@ -534,16 +680,22 @@ int firmware_upgrade(char* filename)
 	if (!checkimage(filename, 0, (int)file_size))
 	{
 		cwmp_log_error("Check image error: corrupted or uncompatable image. Size: %d", (int)file_size);
+		upgrade_set_status(UPGRADE_NONE);
 		return 3;
 	}
 
+	upgrade_set_status(UPGRADE_PREPARE);
 	system("fs restore > /dev/null 2>&1");
 
 	// flash write
+	upgrade_set_status(UPGRADE_WRITE);
 	if (mtd_write_firmware(filename, 0, (int)file_size) == -1) {
 		cwmp_log_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
+		upgrade_set_status(UPGRADE_NONE);
 		return -1;
 	}
+
+	upgrade_set_status(UPGRADE_NONE);
 
 //	sleep (3);
 //	reboot(RB_AUTOBOOT);
@@ -552,3 +704,4 @@ int firmware_upgrade(char* filename)
 //#else
 //#error "no upload support defined!"
 //#endif
+

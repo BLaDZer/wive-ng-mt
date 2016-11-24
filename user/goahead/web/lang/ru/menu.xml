@@ -40,6 +40,7 @@
     <message msgid="treeapp samba" msgstr="Сервер Samba/WINS" />
     <message msgid="treeapp accounting" msgstr="Учёт трафика" />
     <message msgid="treeapp radius" msgstr="Сервер RADIUS" />
+    <message msgid="treeapp cwmp" msgstr="CWMP (TR-069)" />
     <message msgid="treeapp miscellaneous" msgstr="Разное" />
 
     <message msgid="treeapp printersrv" msgstr="Настройки принтера" />

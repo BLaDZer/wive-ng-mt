@@ -13,6 +13,7 @@
 #ifndef __CWMP_H__
 #define __CWMP_H__
 
+#include <stdbool.h>
 #include <cwmp/xmlet.h>
 #include <cwmp/types.h>
 #include <cwmp/util.h>
@@ -27,9 +28,6 @@
 
 #define ASSERT assert
 #define XMLCAST(x)  ((XmlChar *)(x))
-
-
-
 
 
 
@@ -108,7 +106,8 @@
 #define CWMP_RPC_FACTORYRESET               "cwmp:FactoryReset"
 #define CWMP_RPC_FACTORYRESETRESPONSE       "cwmp:FactoryResetResponse"
 
-
+#define CWMP_RPC_PARAMETERNAMES "cwmp:ParameterNames"
+#define CWMP_RPC_PARAMETERNAMES_SHORT "ParameterNames"
 
 #define CWMP_INFORM_EVENT_CODE_0  "0 BOOTSTRAP"
 #define CWMP_INFORM_EVENT_CODE_1  "1 BOOT"
@@ -323,10 +322,11 @@ struct cwmp_st
 {
 	cwmp_t			* old_cwmp;
 	int new_request;
+	int new_event;
 	int httpd_port;
 
 	int    cpe_auth;
-	int    acs_auth;
+        int    acs_auth;
 
 	char * acs_url;
 	char * cpe_mf;
@@ -343,7 +343,7 @@ struct cwmp_st
 	char * event_filename;
 
 	pthread_mutex_t     event_mutex;
-	
+
 	event_list_t * el;
 
 	int	event_count;
@@ -357,7 +357,12 @@ struct cwmp_st
 	pool_t * pool;
 	parameter_node_t * root;
 
-	
+
+	struct {
+		bool periodic_enable;
+		unsigned long periodic_interval;
+		time_t periodic_time;
+	} conf;
 
 #ifdef USE_CWMP_OPENSSL
     SSL_CTX * ssl_ctx;
@@ -381,13 +386,18 @@ struct parameter_node_attr_st
 struct parameter_node_st
 {
 	char *    name;
+	char *    alias;
 	cwmp_byte_t	rw;	//read / writable
 	cwmp_byte_t     type;
 	cwmp_byte_t	inform;	//informable parameter
 	cwmp_byte_t	inform_sort;	//informable parameter sorting
-	
+
+	/* failback value field
+	 * use if setter not defined and getter returns fault code
+	 */
 	size_t		value_length;
 	char *          value;
+
 	parameter_node_attr_t attr;
 
 	parameter_node_t * parent;
@@ -401,6 +411,7 @@ struct parameter_node_st
 	parameter_add_handler_pt  	add;
 	parameter_del_handler_pt	del;
 	parameter_refresh_handler_pt	refresh;
+	parameter_reload_handler_pt		reload;
 
 	char * args;
 
@@ -461,7 +472,6 @@ struct fault_code_st
 
 
 typedef struct  envelope_t envelope_t;
-
 
 void cwmp_set_envelope_ns(const char * envstr, const char * encstr);
 
@@ -551,6 +561,8 @@ char *  cwmp_get_type_string(int type);
 int	cwmp_get_type_value(char * type);
 char *  cwmp_get_fault_string(int code);
 
+int cwmp_get_parameter_fullpath(parameter_node_t *param, char *out, size_t out_size);
+
 parameter_node_t * cwmp_get_parameter_node(parameter_node_t * root, const char * param_name);
 parameter_node_t * cwmp_get_parameter_path_node(parameter_node_t * parent, const char * param_name);
 
@@ -561,11 +573,9 @@ int     cwmp_write_doc_to_chunk(xmldoc_t *  doc, cwmp_chunk_t * chunk, pool_t * 
 xmldoc_t * cwmp_xml_parse_buffer(pool_t * pool, char * buffer);
 xmlnode_t * cwmp_xml_get_child_with_name(void * nodeptr, const char * nodeName);
 
+#define XmlNodeGetDocRoot(docptr)    XmlNodeGetFirstChild(& (docptr)->node)
 
-#define XmlNodeGetDocRoot(docptr)    XmlNodeGetFirstChild(XmlNodeGetFirstChild(& (docptr)->node))
-
-
-
+int callback_register_task(cwmp_t * cwmp, callback_func_t callback, void *data1, void *data2);
 
 #endif // CWMP_H
 

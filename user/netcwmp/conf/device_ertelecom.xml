@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cwmp>
+	<model>
+		<!--
+			https://www.broadband-forum.org/cwmp/tr-098-1-8-0.html
+
+			* shared attributes:
+				inform (boolean):
+					add this node to inform list
+				inform_sort (boolean):
+					sort in inform list
+				rw (boolean):
+					indicates to write to this object/parameter (set_func/add_func)
+				reload_func (parameter_reload_handler_pt):
+					reload service function
+					called after successful result set_func in param
+					and successful del_func in object
+					(unique call each reload_func on event/ACS task)
+
+			* object attributes:
+				add_func (parameter_add_handler_pt):
+					clone "{i}" subnode and set incremental name to this
+				del_func (parameter_del_handler_pt):
+					delete node
+					usefull for delete generated from "{i}" node
+
+			* parameter attributes:	
+				set_func (parameter_set_handler_pt):
+					set value function
+				get_func (parameter_get_handler_pt):
+					get value function
+		-->
+		<object name="InternetGatewayDevice">
+			<param name="DeviceSummary" inform="1" get_func="cpe_get_const_string" args=""/>
+			<object name="QueueManagement">
+				<!-- QoS:1 -->
+				<param name="Enable" rw="1" get_func="cpe_get_nvram_bool_onoff" set_func="cpe_set_nvram_bool_onoff" args="QoSEnable" reload_func="cpe_reload_qos"/>
+			</object>
+			<object name="UPnP">
+				<object name="Device">
+					<param name="Enable" rw="1" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
+					<param name="UPnPMediaServer" rw="1" get_func="cpe_get_nvram_bool" args="xupnpd" set_func="cpe_set_nvram_bool" reload_func="cpe_reload_all"/>
+					<param name="UPnPMediaRenderer" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPWLANAccessPoint" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPQoSDevice" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPQoSPolicyHolder" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPIGD" rw="1" get_func="cpe_get_nvram_bool" args="upnpEnabled" set_func="cpe_set_nvram_bool" reload_func="cpe_reload_all"/>
+					<param name="UPnPDMBasicMgmt" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPDMConfigurationMgmt" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="UPnPDMSoftwareMgmt" rw="1" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<object name="Capabilities">
+						<param name="UPnPArchitecture" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPArchitectureMinorVer" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPMediaServer" get_func="cpe_get_const_string" args="1"/>
+						<param name="UPnPMediaRenderer" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPWLANAccessPoint" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPBasicDevice" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPQoSDevice" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPQoSPolicyHolder" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPIGD" get_func="cpe_get_const_string" args="1"/>
+						<param name="UPnPDMBasicMgmt" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPDMConfigurationMgmt" get_func="cpe_get_const_string" args="0"/>
+						<param name="UPnPDMSoftwareMgmt" get_func="cpe_get_const_string" args="0"/>
+					</object>
+				</object>
+			</object>
+			<object name="Capabilities">
+				<param name="DownloadTransport" get_func="cpe_get_const_string" args="HTTP"/>
+				<param name="UploadTransport" get_func="cpe_get_const_string" args="HTTP"/>
+			</object>
+			<object name="UploadDiagnostics">
+				<param name="DiagnosticsState" rw="1" get_func="cpe_get_ud_state" set_func="cpe_set_ud_state" reload_func="cpe_reload_ud"/>
+				<param name="Interface" rw="1" get_func="cpe_get_ud_iface" set_func="cpe_set_ud_iface"/>
+				<param name="UploadURL" rw="1" get_func="cpe_get_ud_url" set_func="cpe_set_ud_url"/>
+				<param name="DSCP" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="0"/>
+				<param name="EthernetPriority" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="0"/>
+				<param name="TestFileLength" rw="1" get_func="cpe_get_ud_length" set_func="cpe_set_ud_length"/>
+				<param name="ROMTime" get_func="cpe_get_ud"/>
+				<param name="BOMTime" get_func="cpe_get_ud"/>
+				<param name="EOMTime" get_func="cpe_get_ud"/>
+				<param name="TotalBytesSent" get_func="cpe_get_ud"/>
+				<param name="TCPOpenRequestTime" get_func="cpe_get_ud"/>
+				<param name="TCPOpenResponseTime" get_func="cpe_get_ud"/>
+			</object>
+			<object name="DownloadDiagnostics">
+				<param name="DiagnosticsState" rw="1" get_func="cpe_get_dd_state" set_func="cpe_set_dd_state" reload_func="cpe_reload_dd"/>
+				<param name="Interface" rw="1" get_func="cpe_get_dd_iface" set_func="cpe_set_dd_iface"/>
+				<param name="DownloadURL" rw="1" get_func="cpe_get_dd_url" set_func="cpe_set_dd_url"/>
+				<param name="DSCP" rw="1" get_func="cpe_get_dd_dscp" set_func="cpe_set_dd_dscp"/>
+				<param name="EthernetPriority" rw="1" get_func="cpe_get_dd_epri" set_func="cpe_set_dd_epri"/>
+				<param name="ROMTime" get_func="cpe_get_dd_result"/>
+				<param name="BOMTime" get_func="cpe_get_dd_result"/>
+				<param name="EOMTime" get_func="cpe_get_dd_result"/>
+				<param name="TestBytesReceived" get_func="cpe_get_dd_result"/>
+				<param name="TotalBytesReceived" get_func="cpe_get_dd_result"/>
+				<param name="TCPOpenRequestTime" get_func="cpe_get_dd_result"/>
+				<param name="TCPOpenResponseTime" get_func="cpe_get_dd_result"/>
+			</object>
+			<param name="UserNumberOfEntries" get_func="cpe_get_const_string" args="2"/>
+			<object name="User">
+				<object name="1"> <!-- user management -->
+					<param name="Enable" get_func="cpe_get_const_string" set_func="cpe_set_null" args="1"/>
+					<param name="Username" get_func="cpe_get_nvram_string" set_func="cpe_set_user_name" args="Login" reload_func="cpe_reload_user"/>
+					<param name="Password" get_func="cpe_get_nvram_string" set_func="cpe_set_nvram_string" args="Password" reload_func="cpe_reload_user"/>
+				</object>
+				<object name="2"> <!-- operator managment -->
+					<param name="Enable" get_func="cpe_get_user_mngmt_enable" set_func="cpe_set_user_mngmt_enable" reload_func="cpe_reload_user"/>
+					<param name="Username" get_func="cpe_get_nvram_string" set_func="cpe_set_user_name" args="MngmtLogin" reload_func="cpe_reload_user"/>
+					<param name="Password" get_func="cpe_get_nvram_string" set_func="cpe_set_nvram_string" args="MngmtPassword" reload_func="cpe_reload_user"/>
+				</object>
+			</object>
+			<object name="Time">
+				<param name="Enable" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" set_func="cpe_set_nvram_bool" args="NTPEnabled"/>
+				<param name="Status" get_func="cpe_get_time_status"/>
+				<param name="NTPServer1" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string_or_empty" set_func="cpe_set_nvram_string" args="NTPServerIP"/>
+				<!-- not available
+				<param name="NTPServer2" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="cpe_set_null"/>
+				<param name="NTPServer3" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="cpe_set_null"/>
+				<param name="NTPServer4" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="cpe_set_null"/>
+				<param name="NTPServer5" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="cpe_set_null"/>
+				-->
+				<param name="CurrentLocalTime" get_func="cpe_get_time_localtime"/>
+				<param name="LocalTimeZoneName" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_time_zonename" set_func="cpe_set_nvram_string" args="TZ"/>
+				<!-- params: LocalTimeZone, DaylightSavingsUsed, DaylightSavingsStart, DaylightSavingsEnd are OBSOLETED -->
+			</object>
+			<object name="DeviceInfo">
+				<param name="SpecVersion" inform="1" get_func="cpe_get_const_string" args="1.0"/>
+				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
+				<param name="OUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
+				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string" />
+				<param name="HardwareVersion" inform="1" get_func="cpe_get_conf_string" args="env:DEVNAME" set_func="cpe_set_conf_string" />
+				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string"/>
+				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
+				<param name="ProductClass" inform="1" get_func="cpe_get_igd_di_productclass"/>
+				<param name="DeviceLog" inform="0" get_func="cpe_get_igd_di_devicelog"/>
+				<param name="ModelName" inform="1" get_func="cpe_get_const_string" args="Wive-NG"/>
+				<param name="ProvisioningCode" rw="1" inform="1" get_func="cpe_get_igd_di_provisioningcode" set_func="cpe_set_igd_di_provisioningcode"/>
+				<param name="UpTime" inform="1" get_func="cpe_get_igd_di_uptime"/>
+				<param name="FirstUseDate" get_func="cpe_get_const_string" args="0001-01-01T00:00:00Z"/>
+			</object>
+			<object name="ManagementServer">
+				<param name="ParameterKey" inform="1" get_func="cpe_get_ms_parameter_key"/>
+				<param name="ConnectionRequestURL" inform="1" get_func="cpe_get_igd_ms_connectionrequesturl"/>
+				<param name="ConnectionRequestUsername" rw="1" get_func="cpe_get_igd_ms_connectionrequestusername" set_func="cpe_set_igd_ms_connectionrequestusername"/>
+				<param name="ConnectionRequestPassword" rw="1" get_func="cpe_get_igd_ms_connectionrequestpassword" set_func="cpe_set_igd_ms_connectionrequestpassword"/>
+				<param name="URL" inform="1" get_func="cpe_get_igd_ms_url" set_func="cpe_set_igd_ms_url"/>
+				<param name="Username" rw="1" get_func="cpe_get_igd_ms_username" set_func="cpe_set_igd_ms_username"/>
+				<param name="Password" rw="1" get_func="cpe_get_igd_ms_password" set_func="cpe_set_igd_ms_password"/>
+				<param name="PeriodicInformEnable" rw="1" get_func="cpe_get_ms_periodic_inform_enable" set_func="cpe_set_ms_periodic_inform_enable"/>
+				<param name="PeriodicInformInterval" rw="1" get_func="cpe_get_ms_periodic_inform_interval" set_func="cpe_set_ms_periodic_inform_interval"/>
+				<param name="PeriodicInformTime" rw="1" get_func="cpe_get_ms_periodic_inform_time" set_func="cpe_set_ms_periodic_inform_time"/>
+			</object>
+			<object name="Services">
+				<object name="X_COM_IPTV">
+					<param name="IGMPVersion" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_lan_igmp_version" args="" set_func="cpe_set_igd_lan_igmp_version"/>
+				</object>
+			</object>
+			<object name="Layer3Forwarding">
+				<param name="DefaultConnectionService" reload_func="cpe_reload_all" get_func="cpe_get_igd_l3f_defaultconnection" args="" set_func="cpe_set_igd_l3f_defaultconnection"/>
+			</object>
+			<object name="LANDevice">
+			<object name="1">
+				<param name="LANEthernetInterfaceNumberOfEntries" get_func="cpe_get_LEIC_number"/>
+				<object name="LANEthernetInterfaceConfig" refresh_func="cpe_refresh_LEIC">
+					<object name="{i}">
+						<param name="Enable" rw="1" get_func="cpe_get_LEIC_Enable" set_func="cpe_set_LEIC_Enable"/>
+						<param name="Status" get_func="cpe_get_LEIC_Status"/>
+						<param name="Alias" rw="1" get_func="cpe_get_alias" set_func="cpe_set_alias"/>
+						<param name="Name" get_func="cpe_get_LEIC_Name"/>
+						<param name="MACAddress" get_func="cpe_get_LEIC_MAC"/>
+						<param name="MACAddressControlEnabled" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_LEIC_MACcontrol" set_func="cpe_set_LEIC_MACcontrol"/>
+						<param name="MaxBitRate" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_LEIC_MaxBitRate" set_func="cpe_set_LEIC_MaxBitRate"/>
+						<param name="DuplexMode" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_LEIC_DuplexMode" set_func="cpe_set_LEIC_DuplexMode"/>
+						<object name="Stats">
+							<param name="BytesSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="BytesReceived" get_func="cpe_get_LEIC_stats"/>
+							<!-- not available for raeth
+							<param name="PacketsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="PacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="ErrorsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="ErrorsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="UnicastPacketsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="UnicastPacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="DiscardPacketsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="DiscardPacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="MulticastPacketsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="MulticastPacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="BroadcastPacketsSent" get_func="cpe_get_LEIC_stats"/>
+							<param name="BroadcastPacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							<param name="UnknownProtoPacketsReceived" get_func="cpe_get_LEIC_stats"/>
+							-->
+						</object>
+					</object>
+				</object>
+				<object name="Hosts">
+					<param name="HostNumberOfEntries" get_func="cpe_get_hosts_count"/>
+					<object name="Host" refresh_func="cpe_refresh_hosts">
+						<object name="{i}">
+							<param name="IPAddress" get_func="cpe_get_hosts"/>
+							<param name="AddressSource" get_func="cpe_get_hosts"/>
+							<param name="LeaseTimeRemaining" get_func="cpe_get_hosts"/>
+							<param name="MACAddress" get_func="cpe_get_hosts"/>
+							<param name="HostName" get_func="cpe_get_hosts"/>
+							<param name="InterfaceType" get_func="cpe_get_hosts"/>
+						</object>
+					</object>
+				</object>
+				<object name="X_COM_IgmpSnoopingConfig">
+					<param name="Enable" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_lan_igmp_enabled" set_func="cpe_set_igd_lan_igmp_enabled"/>
+				</object>
+				<object name="LANHostConfigManagement">
+					<param name="DomainName" get_func="cpe_get_nvram_string" args="SmbNetBIOS"/>
+					<param name="IPInterfaceNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+					<object name="IPInterface">
+					<object name="1">
+						<param name="Alias" rw="1" set_func="cpe_set_alias" get_func="cpe_get_alias"/>
+						<param name="IPInterfaceIPAddress" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="lan_ipaddr" set_func="cpe_set_nvram_string"/>
+						<param name="IPInterfaceSubnetMask" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" set_func="cpe_set_nvram_string" args="lan_netmask"/>
+						<param name="IPInterfaceAddressingType" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_lhcm_ipi_addr_type" set_func="cpe_set_lhcm_ipi_addr_type"/>
+					</object>
+					</object>
+					<param name="DHCPStaticAddressNumberOfEntries" get_func="cpe_get_dhcpstatic_count"/>
+					<object name="DHCPStaticAddress" refresh_func="cpe_refresh_dhcpstatic" add_func="cpe_add_dhcpstatic">
+						<object name="{i}" del_func="cpe_del_dhcpstatic">
+							<param name="Enable" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="1"/>
+							<param name="Alias" rw="1" get_func="cpe_get_alias" set_func="cpe_set_alias"/>
+							<param name="Chaddr" rw="1" reload_func="cpe_reload_dhcpstatic" get_func="cpe_get_dhcpstatic_chaddr" set_func="cpe_set_dhcpstatic_chaddr"/>
+							<param name="Yiaddr" rw="1" reload_func="cpe_reload_dhcpstatic" get_func="cpe_get_dhcpstatic_yiaddr" set_func="cpe_set_dhcpstatic_yiaddr"/>
+						</object>
+					</object>
+					<param name="SubnetMask" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="lan_netmask" set_func="cpe_set_nvram_string"/>
+					<param name="DHCPServerEnable" reload_func="cpe_reload_all" rw="1" get_func="cpe_get_nvram_bool" args="dhcpEnabled" set_func="cpe_set_nvram_bool"/>
+					<param name="DHCPRelay" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+					<param name="MinAddress" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="dhcpStart" set_func="cpe_set_nvram_string"/>
+					<param name="MaxAddress" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="dhcpEnd" set_func="cpe_set_nvram_string"/>
+					<param name="DHCPLeaseTime" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="dhcpLease" set_func="cpe_set_nvram_string"/>
+				</object>
+				<param name="LANWLANConfigurationNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+				<object name="WLANConfiguration" refresh_func="cpe_refresh_wlanc">
+					<object name="{i}">
+						<param name="Alias" rw="1" get_func="cpe_get_alias" set_func="cpe_set_alias"/>
+						<!-- WiFiLAN:1 -->
+						<param name="Enable" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" args="RadioOn" set_func="cpe_set_nvram_bool"/>
+						<param name="Status" get_func="cpe_get_igd_wlanc_status"/>
+						<param name="BSSID" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_bssid" set_func="cpe_set_igd_wlanc_bssid"/>
+						<param name="MaxBitRate" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="Auto"/>
+						<param name="Channel" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_channel" set_func="cpe_set_igd_wlanc_channel"/>
+						<param name="SSID" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_ssid" set_func="cpe_set_igd_wlanc_ssid"/>
+						<param name="BeaconType" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_beacontype" set_func="cpe_set_igd_wlanc_beacontype"/>
+						<!--<param name="MACAddressControlEnabled" rw="1" reload_func="cpe_reload_all" get_func="" set_func=""/>-->
+						<param name="Standard" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_standard" set_func="cpe_set_igd_wlanc_standard"/>
+						<param name="WEPKeyIndex" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wepkey_index" set_func="cpe_set_igd_wlanc_wepkey_index"/>
+						<param name="KeyPassphrase" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_key" set_func="cpe_set_igd_wlanc_key"/>
+						<param name="WEPEncryptionLevel" get_func="cpe_get_const_string" args="104-bit"/>
+						<param name="BasicEncryptionModes" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_basicencryption" set_func="cpe_set_igd_wlanc_basicencryption"/>
+						<param name="BasicAuthenticationMode" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_basicauthmode" set_func="cpe_set_igd_wlanc_basicauthmode"/>
+						<param name="WPAEncryptionModes" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wpaencryption" set_func="cpe_set_igd_wlanc_wpaencryption"/>
+						<param name="WPAAuthenticationMode" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wpaauthmode" set_func="cpe_set_igd_wlanc_wpaauthmode"/>
+						<param name="PossibleChannels" get_func="cpe_get_igd_wlanc_possiblechannels"/>
+						<!--<param name="BasicDataTransmitRates" rw="1" reload_func="cpe_reload_all" get_func="" set_func=""/>-->
+						<!--<param name="OperationalDataTransmitRates" rw="1" reload_func="cpe_reload_all" get_func="" set_func=""/>-->
+						<!--<param name="PossibleDataTransmitRates" get_func=""/>-->
+						<param name="RadioEnabled" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_enabled" set_func="cpe_set_igd_wlanc_enabled"/>
+						<!--<param name="AutoRateFallBackEnabled" rw="1" reload_func="cpe_reload_all" get_func="" set_func=""/>-->
+						<param name="TotalBytesSent" get_func="cpe_get_igd_wlanc_tx_bytes"/>
+						<param name="TotalBytesReceived" get_func="cpe_get_igd_wlanc_rx_bytes"/>
+						<param name="TotalPacketsSent" get_func="cpe_get_igd_wlanc_tx_packets"/>
+						<param name="TotalPacketsReceived" get_func="cpe_get_igd_wlanc_rx_packets"/>
+						<object name="AssociatedDevice" refresh_func="cpe_refresh_igd_lan_wlan_associated">
+							<object name="{i}">
+								<param name="AssociatedDeviceMACAddress" get_func="cpe_get_igd_lan_wlan_assoc_mac"/>
+								<param name="AssociatedDeviceIPAddress" get_func="cpe_get_igd_lan_wlan_assoc_addr"/>
+								<param name="AssociatedDeviceAuthenticationState" get_func="cpe_get_igd_lan_wlan_assoc_state"/>
+							</object>
+						</object>
+						<object name="WEPKey">
+							<object name="1">
+								<param name="WEPKey" rw="1" get_func="cpe_get_igd_wlanc_wepkey" set_func="cpe_set_igd_wlanc_wepkey"/>
+							</object>
+							<object name="2">
+								<param name="WEPKey" rw="1" get_func="cpe_get_igd_wlanc_wepkey" set_func="cpe_set_igd_wlanc_wepkey"/>
+							</object>
+							<object name="3">
+								<param name="WEPKey" rw="1" get_func="cpe_get_igd_wlanc_wepkey" set_func="cpe_set_igd_wlanc_wepkey"/>
+							</object>
+							<object name="4">
+								<param name="WEPKey" rw="1" get_func="cpe_get_igd_wlanc_wepkey" set_func="cpe_set_igd_wlanc_wepkey"/>
+							</object>
+						</object>
+						<!-- PreSharedKey not supported
+						<object name="PreSharedKey" refresh_func="" add_func="">
+							<object name="{i}" del_func="">
+								<param name="PreSharedKey" rw="1" get_func="" set_func=""/>
+								<param name="KeyPassphrase" rw="1" get_func="" set_func=""/>
+							</object>
+						</object>
+						-->
+						<!-- WiFiLAN:2 -->
+						<param name="Name" get_func="cpe_get_wlanc_name"/>
+						<param name="AutoChannelEnable" reload_func="cpe_reload_all" rw="1" get_func="cpe_get_igd_wlanc_autochannel" set_func="cpe_set_igd_wlanc_autochannel"/>
+						<param name="SSIDAdvertisementEnabled" rw="1" get_func="cpe_get_igd_wlanc_ssidadv" set_func="cpe_set_igd_wlanc_ssidadv"/>
+						<param name="TransmitPowerSupported" get_func="cpe_get_const_string" args="5,10,20,40,70,100"/>
+						<param name="TransmitPower" rw="1" get_func="cpe_get_nvram_int" set_func="cpe_set_nvram_int" args="TxPower"/>
+						<object name="Stats">
+							<param name="ErrorsSent" get_func="cpe_get_igd_wlanc_stats"/>
+							<param name="ErrorsReceived" get_func="cpe_get_igd_wlanc_stats"/>
+							<!--<param name="UnicastPacketsSent" get_func="cpe_get_igd_wlanc_stats"/>--> <!-- not supported -->
+							<!--<param name="UnicastPacketsReceived" get_func="cpe_get_igd_wlanc_stats"/>-->
+							<param name="DiscardPacketsSent" get_func="cpe_get_igd_wlanc_stats"/>
+							<param name="DiscardPacketsReceived" get_func="cpe_get_igd_wlanc_stats"/>
+							<!--<param name="MulticastPacketsSent" get_func="cpe_get_igd_wlanc_stats"/>-->
+							<param name="MulticastPacketsReceived" get_func="cpe_get_igd_wlanc_stats"/>
+							<!--<param name="BroadcastPacketsSent" get_func="cpe_get_igd_wlanc_stats"/>-->
+							<!--<param name="BroadcastPacketsReceived" get_func="cpe_get_igd_wlanc_stats"/>-->
+							<!--<param name="UnknownProtoPacketsReceived" get_func="cpe_get_igd_wlanc_stats"/>-->
+						</object>
+						<!-- ? -->
+						<param name="TotalPSKFailures" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_pskfailures" set_func="cpe_set_igd_wlanc_pskfailures"/>
+						<param name="TotalIntegrityFailures" get_func="cpe_get_const_string" args="0"/>
+						<param name="IEEE11iAuthenticationMode" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_ieeeauthmode" set_func="cpe_set_igd_wlanc_ieeeauthmode"/>
+						<param name="IEEE11iEncryptionModes" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wpaencryption" set_func="cpe_set_igd_wlanc_wpaencryption"/>
+						<!-- WiFiWMM:1 -->
+						<param name="WMMSupported" get_func="cpe_get_const_string" args="1"/>
+						<param name="WMMEnable" rw="1" get_func="cpe_get_nvram_bool_onoff" set_func="cpe_set_nvram_bool_onoff" args="WmmCapable" reload_func="cpe_reload_all"/>
+					</object>
+				</object>
+			</object>
+			</object>
+			<param name="WANDeviceNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+			<object name="WANDevice">
+				<object name="1">
+					<object name="WANEthernetInterfaceConfig">
+						<param name="Enable" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="1"/>
+						<param name="Status" get_func="cpe_get_eic_status"/>
+						<param name="MACAddress" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string"/>
+						<param name="MaxBitRate" rw="1" get_func="cpe_get_wan_eic_mbr" set_func="cpe_set_wan_eic_mbr"/>
+						<param name="DuplexMode" rw="1" get_func="cpe_get_wan_eic_duplex" set_func="cpe_set_wan_eic_duplex"/>
+						<object name="Stats">
+							<param name="BytesSent" get_func="cpe_get_wan_eic_stats"/>
+							<param name="BytesReceived" get_func="cpe_get_wan_eic_stats"/>
+							<param name="PacketsSent" get_func="cpe_get_wan_eic_stats"/>
+							<param name="PacketsReceived" get_func="cpe_get_wan_eic_stats"/>
+						</object>
+					</object>
+					<param name="WANConnectionNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+					<object name="WANConnectionDevice" rw="1">
+						<object name="1" rw="1">
+							<object name="WANEthernetLinkConfig">
+								<param name="EthernetLinkStatus" get_func="cpe_get_wan_elc_status"/>
+							</object>
+							<param name="WANIPConnectionNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+							<object name="WANIPConnection" rw="1" add_func="cpe_set_null">
+								<object name="1">
+									<param name="Name" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="WAN" set_func="cpe_set_null"/>
+									<param name="DNSEnabled" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="1" set_func="cpe_set_igd_wan_ip_dnsenabled"/>
+									<param name="Enable" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
+									<param name="X_COM_IGMPEnabled" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="1" set_func="cpe_set_null"/>
+									<param name="MaxMTUSize" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="wan_manual_mtu" set_func="cpe_set_nvram_int"/>
+									<param name="NATEnabled" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" args="natEnabled" set_func="cpe_set_nvram_bool"/>
+									<param name="AddressingType" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip_addrtype" args="Static" set_func="cpe_set_igd_wan_ip_addrtype"/>
+									<param name="ExternalIPAddress" inform="1" type="s" get_func="cpe_get_igd_wan_ip"/>
+									<param name="SubnetMask" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_netmask" set_func="cpe_set_nvram_string"/>
+									<param name="DefaultGateway" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
+									<param name="DNSServers" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip_dnsservers" args="wan_primary_dns" set_func="cpe_set_igd_wan_ip_dnsservers"/>
+									<param name="MACAddress" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string"/>
+									<param name="DefaultConn" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
+									<object name="Stats">
+										<param name="EthernetBytesSent" get_func="cpe_get_igd_wan_ip_rxtxbytes" args="tx"/>
+										<param name="EthernetBytesReceived" get_func="cpe_get_igd_wan_ip_rxtxbytes" args="rx"/>
+										<param name="EthernetPacketsSent" get_func="cpe_get_igd_wan_ip_rxtxbytes" args="tx"/>
+										<param name="EthernetPacketsReceived" get_func="cpe_get_igd_wan_ip_rxtxbytes" args="rx"/>
+									</object>
+									<object name="PortMapping" rw="1" add_func="cpe_add_pm" refresh_func="cpe_refresh_pm">
+										<object name="{i}" del_func="cpe_del_pm" reload_func="cpe_reload_pm">
+											<param name="PortMappingEnabled" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="Alias" rw="1" set_func="cpe_set_alias" get_func="cpe_get_alias"/>
+											<param name="PortMappingLeaseDuration" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="RemoteHost" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="ExternalPort" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="ExternalPortEndRange" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="InternalPort" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="PortMappingProtocol" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="InternalClient" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="PortMappingDescription" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+										</object>
+									</object>
+								</object>
+							</object>
+							<param name="WANPPPConnectionNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+							<object name="WANPPPConnection" rw="1" add_func="cpe_add_null">
+								<object name="1">
+									<param name="PPPAuthenticationProtocol" rw="1" type="s"  reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ppp_authprot" args="" set_func="cpe_set_igd_wan_ppp_authprot"/>
+									<param name="PPPLCPEcho" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="vpnLCPInterval" set_func="cpe_set_nvram_int"/>
+									<param name="PPPLCPEchoRetry" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="vpnLCPFailure" set_func="cpe_set_nvram_int"/>
+									<param name="MaxMRUSize" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="vpnMTU" set_func="cpe_set_nvram_int"/>
+									<param name="NATEnabled" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" args="natEnabled" set_func="cpe_set_nvram_bool"/>
+									<param name="PPPoEServiceName" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ppp_servicename" args="vpnService" set_func="cpe_set_nvram_string"/>
+									<param name="Name" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="VPN" set_func="cpe_set_null"/>
+									<param name="TransportType" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="PPPoE" set_func="cpe_set_null"/>
+									<param name="Enable" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool_onoff" args="vpnEnabled" set_func="cpe_set_nvram_bool_onoff"/>
+									<param name="DefaultGateway" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
+									<param name="Username" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="vpnUser" set_func="cpe_set_nvram_string"/>
+									<param name="Password" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="vpnPassword" set_func="cpe_set_nvram_string"/>
+									<param name="ExternalIPAddress" get_func="cpe_get_igd_wan_ip"/>
+									<param name="DNSServers" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="wan_primary_dns" set_func="cpe_set_nvram_string"/>
+									<param name="MACAddress" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string"/>
+									<param name="ConnectionTrigger" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="AlwaysOn"/>
+									<param name="ConnectionStatus" get_func="cpe_get_igd_wan_ppp_stats"/>
+									<param name="Uptime" get_func="cpe_get_igd_wan_ppp_stats"/>
+									<param name="RemoteIPAddress" get_func="cpe_get_igd_wan_ppp_remote"/>
+									<object name="Stats">
+										<param name="EthernetBytesSent" get_func="cpe_get_igd_wan_ppp_stats"/>
+										<param name="EthernetBytesReceived" get_func="cpe_get_igd_wan_ppp_stats"/>
+										<param name="EthernetPacketsSent" get_func="cpe_get_igd_wan_ppp_stats"/>
+										<param name="EthernetPacketsReceived" get_func="cpe_get_igd_wan_ppp_stats"/>
+									</object>
+									<object name="PortMapping" rw="1" add_func="cpe_add_pm" refresh_func="cpe_refresh_pm">
+										<object name="{i}" del_func="cpe_del_pm" reload_func="cpe_reload_pm">
+											<param name="PortMappingEnabled" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="Alias" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_alias" get_func="cpe_get_alias"/>
+											<param name="PortMappingLeaseDuration" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="RemoteHost" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="ExternalPort" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="ExternalPortEndRange" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="InternalPort" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="PortMappingProtocol" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="InternalClient" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+											<param name="PortMappingDescription" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>
+										</object>
+									</object>
+								</object> 
+							</object> 
+						</object>
+					</object>
+				</object>
+			</object>
+			<object name="TraceRouteDiagnostics">
+				<param name="DiagnosticsState" get_func="cpe_get_trd_state" set_func="cpe_set_trd_state" reload_func="cpe_reload_trd"/>
+				<param name="Interface" get_func="cpe_get_trd_iface" set_func="cpe_set_trd_iface"/>
+				<param name="Host" get_func="cpe_get_trd_host" set_func="cpe_set_trd_host"/>
+				<param name="NumberOfTries" get_func="cpe_get_trd_tries" set_func="cpe_set_trd_tries"/>
+				<param name="Timeout" get_func="cpe_get_trd_timeout" set_func="cpe_set_trd_timeout"/>
+				<param name="DataBlockSize" get_func="cpe_get_trd_dbs" set_func="cpe_set_trd_dbs"/>
+				<param name="DSCP" get_func="cpe_get_trd_dscp" set_func="cpe_set_trd_dscp"/>
+				<param name="MaxHopCount" get_func="cpe_get_trd_mhc" set_func="cpe_set_trd_mhc"/>
+				<param name="ResponseTime" get_func="cpe_get_trd_response"/>
+				<param name="RouteHopsNumberOfEntries" get_func="cpe_get_trd_hop_count"/>
+				<object name="RouteHops">
+					<object name="{i}">
+						<param name="HopHost" get_func="cpe_get_trd_hop"/>
+						<param name="HopHostAddress" get_func="cpe_get_trd_hop"/>
+						<param name="HopErrorCode" get_func="cpe_get_trd_hop"/>
+						<param name="HopRTTimes" get_func="cpe_get_trd_hop"/>
+					</object>
+				</object>
+			</object>
+			<object name="IPPingDiagnostics">
+				<param name="DiagnosticsState" get_func="cpe_get_igd_ping_state" set_func="cpe_set_igd_ping_state"/>
+				<param name="Interface" get_func="cpe_get_igd_ping_iface" set_func="cpe_set_igd_ping_iface"/>
+				<param name="Host" get_func="cpe_get_igd_ping_host" set_func="cpe_set_igd_ping_host"/>
+				<param name="NumberOfRepetitions" get_func="cpe_get_igd_ping_repeat" set_func="cpe_set_igd_ping_repeat"/>
+				<param name="Timeout" get_func="cpe_get_igd_ping_timeout" set_func="cpe_set_igd_ping_timeout"/>
+				<param name="DataBlockSize" get_func="cpe_get_igd_ping_data_size" set_func="cpe_set_igd_ping_data_size"/>
+				<param name="DSCP" get_func="cpe_get_igd_ping_dscp" set_func="cpe_set_igd_ping_dscp"/>
+				<!-- result parameters -->
+				<param name="SuccessCount" get_func="cpe_get_igd_ping_success"/>
+				<param name="FailureCount" get_func="cpe_get_igd_ping_failure"/>
+				<param name="AverageResponseTime" get_func="cpe_get_igd_ping_average"/>
+				<param name="MinimumResponseTime" get_func="cpe_get_igd_ping_minimum"/>
+				<param name="MaximumResponseTime" get_func="cpe_get_igd_ping_maximum"/>
+			</object>
+		</object>
+	</model>
+	<inform>
+		<paramlist>
+		</paramlist>
+	</inform>
+	<rpc>
+  </rpc>
+</cwmp>

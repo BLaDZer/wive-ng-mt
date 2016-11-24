@@ -68,19 +68,52 @@
 	<message msgid="services l2tp uncorrect password"		msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
 	<message msgid="services l2tp exist login"			msgstr="Login already exist" />
 
-	<message msgid="services radius title"						msgstr="RADIUS Server Setup" />
-	<message msgid="services radius introduction"				msgstr="Here you can configure RADIUS server settings for remore user autenticitate with 802.1x (EAP-TTLS-PEAP-MSCHAPv2) protocol." />
-	<message msgid="services radius settings"					msgstr="RADIUS Server Settings" />
-	<message msgid="services radius enable"						msgstr="RADIUS Server" />
-	<message msgid="services radius users"						msgstr="RADIUS Users list" />
-	<message msgid="services radius login"						msgstr="Login" />
-	<message msgid="services radius pass"						msgstr="Password" />
-	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
-	<message msgid="services radius action"						msgstr="Action" />
-	<message msgid="services radius uncorrect login"			msgstr="Please specify correct login (a-z, A-Z, 0-9, _)" />
-	<message msgid="services radius uncorrect secret"			msgstr="Please specify correct Shared Secret (spaces and dollar symbol are disallowed)." />
-	<message msgid="services radius uncorrect pass"				msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
-	<message msgid="services radius exist login"				msgstr="Login already exist" />
+	<message msgid="services radius title"				msgstr="RADIUS Server Setup" />
+	<message msgid="services radius introduction"			msgstr="Here you can configure RADIUS server settings for remore user autenticitate with 802.1x (EAP-TTLS-PEAP-MSCHAPv2) protocol." />
+	<message msgid="services radius settings"			msgstr="RADIUS Server Settings" />
+	<message msgid="services radius enable"				msgstr="RADIUS Server" />
+	<message msgid="services radius users"				msgstr="RADIUS Users list" />
+	<message msgid="services radius login"				msgstr="Login" />
+	<message msgid="services radius pass"				msgstr="Password" />
+	<message msgid="services radius sharedsecret"			msgstr="Shared Secret" />
+	<message msgid="services radius action"				msgstr="Action" />
+	<message msgid="services radius uncorrect login"		msgstr="Please specify correct login (a-z, A-Z, 0-9, _)" />
+	<message msgid="services radius uncorrect secret"		msgstr="Please specify correct Shared Secret (spaces and dollar symbol are disallowed)." />
+	<message msgid="services radius uncorrect pass"			msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
+	<message msgid="services radius exist login"			msgstr="Login already exist" />
+
+	<message msgid="services cwmp title"				msgstr="CWMP (TR-069) Setup" />
+	<message msgid="services cwmp introduction"			msgstr="Here you can configure CWMP (TR-069) settings." />
+	<message msgid="services cwmp settings"				msgstr="CWMP (TR-069) Settings" />
+	<message msgid="services cwmp enabled"				msgstr="CWMP (TR-069)" />
+	<message msgid="services cwmp acs type"				msgstr="ACS Type" />
+	<message msgid="services cwmp acs url"				msgstr="ACS Address" />
+	<message msgid="services cwmp acs auth"				msgstr="ACS Authentification" />
+	<message msgid="services cwmp acs user"				msgstr="ACS Username" />
+	<message msgid="services cwmp acs pass"				msgstr="ACS Password" />
+	<message msgid="services cwmp cpe auth"				msgstr="CPE Authentification" />
+	<message msgid="services cwmp cpe user"				msgstr="CPE Username" />
+	<message msgid="services cwmp cpe pass"				msgstr="CPE Password" />
+	<message msgid="services cwmp advanced"				msgstr="Advanced settings" />
+	<message msgid="services cwmp adv log level"			msgstr="Log Level" />
+	<message msgid="services cwmp adv http port"			msgstr="HTTP Port" />
+	<message msgid="services cwmp adv http timeout"			msgstr="HTTP Timeout" />
+	<message msgid="services cwmp adv sesconn timeout"		msgstr="Session Connect Timeout" />
+	<message msgid="services cwmp adv sesresp timeout"		msgstr="Session Response Timeout" />
+	<message msgid="services cwmp adv cpe manufacture"		msgstr="CPE Manufacture" />
+	<message msgid="services cwmp adv cpe oui"			msgstr="CPE OUI" />
+	<message msgid="services cwmp adv cpe pc"			msgstr="CPE Product Class" />
+	<message msgid="services cwmp log crit"				msgstr="Critical" />
+	<message msgid="services cwmp log error"			msgstr="Error" />
+	<message msgid="services cwmp log warn"				msgstr="Warning" />
+	<message msgid="services cwmp log info"				msgstr="Info" />
+	<message msgid="services cwmp log debug"			msgstr="Debug" />
+	<message msgid="services cwmp log trace"			msgstr="Trace" />
+	<message msgid="services cwmp uncorrect url"			msgstr="Entered uncorrect URL address!" />
+	<message msgid="services cwmp uncorrect name"			msgstr="Entered uncorrect username (allow: a-z, A-Z, 0-9, _, -)" />
+	<message msgid="services cwmp uncorrect password"		msgstr="Entered uncorrect password (spaces and dollar symbol are disallowed)" />
+	<message msgid="services cwmp uncorrect port"			msgstr="Entered uncorrect port (allow: 1 - 65535)" />
+	<message msgid="services cwmp uncorrect timeout"		msgstr="Entered uncorrect timeout (allow only number)" />
 
   <message msgid="services samba title" msgstr="Samba/WINS Setup" />
   <message msgid="services samba introduction" msgstr="Here you can configure Samba/WINS service." />

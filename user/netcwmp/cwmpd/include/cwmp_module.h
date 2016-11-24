@@ -39,12 +39,4 @@
 #include "cwmp_type.h"
 #include "cwmp_conf.h"
 
-
-
-
-
-
-
-
-
 #endif

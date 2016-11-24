@@ -68,20 +68,53 @@
 	<message msgid="services l2tp uncorrect password"		msgstr="Введен некорректный пароль (символы пробела и доллара запрещены)." />
 	<message msgid="services l2tp exist login"			msgstr="Введенное имя пользователя уже существует" />
 
-	<message msgid="services radius title"						msgstr="Настройки RADIUS сервера" />
-	<message msgid="services radius introduction"				msgstr="Здесь вы можете настроить RADIUS сервер для централизованной аутентификации пользователей с использованием 802.1x (EAP-TTLS-PEAP-MSCHAPv2) протокола." />
-	<message msgid="services radius settings"					msgstr="Настройки RADIUS сервера" />
-	<message msgid="services radius enable"						msgstr="RADIUS сервер" />
-	<message msgid="services radius users"						msgstr="Пользователи" />
-	<message msgid="services radius login"						msgstr="Имя пользователя" />
-	<message msgid="services radius pass"						msgstr="Пароль" />
-	<message msgid="services radius sharedsecret"				msgstr="Shared Secret" />
-	<message msgid="services radius action"						msgstr="Действие" />
-	<message msgid="services radius uncorrect login"			msgstr="Введено некорректное имя пользователя (разрешены символы: a-z, A-Z, 0-9, _)" />
-	<message msgid="services radius uncorrect pass"				msgstr="Введен некорректный пароль (символы пробела и доллара запрещены)." />
-	<message msgid="services radius uncorrect secret"			msgstr="Введен некорректный Shared Secret (символы пробела и доллара запрещены)." />
-	<message msgid="services radius exist login"				msgstr="Введенное имя пользователя уже существует" />
-	
+	<message msgid="services radius title"				msgstr="Настройки RADIUS сервера" />
+	<message msgid="services radius introduction"			msgstr="Здесь вы можете настроить RADIUS сервер для централизованной аутентификации пользователей с использованием 802.1x (EAP-TTLS-PEAP-MSCHAPv2) протокола." />
+	<message msgid="services radius settings"			msgstr="Настройки RADIUS сервера" />
+	<message msgid="services radius enable"				msgstr="RADIUS сервер" />
+	<message msgid="services radius users"				msgstr="Пользователи" />
+	<message msgid="services radius login"				msgstr="Имя пользователя" />
+	<message msgid="services radius pass"				msgstr="Пароль" />
+	<message msgid="services radius sharedsecret"			msgstr="Shared Secret" />
+	<message msgid="services radius action"				msgstr="Действие" />
+	<message msgid="services radius uncorrect login"		msgstr="Введено некорректное имя пользователя (разрешены символы: a-z, A-Z, 0-9, _)" />
+	<message msgid="services radius uncorrect pass"			msgstr="Введен некорректный пароль (символы пробела и доллара запрещены)." />
+	<message msgid="services radius uncorrect secret"		msgstr="Введен некорректный Shared Secret (символы пробела и доллара запрещены)." />
+	<message msgid="services radius exist login"			msgstr="Введенное имя пользователя уже существует" />
+
+	<message msgid="services cwmp title"				msgstr="Настройки CWMP (TR-069)" />
+	<message msgid="services cwmp introduction"			msgstr="Здесь вы можете настроить CWMP (TR-069)." />
+	<message msgid="services cwmp settings"				msgstr="CWMP (TR-069) Настройки" />
+	<message msgid="services cwmp enabled"				msgstr="CWMP (TR-069)" />
+	<message msgid="services cwmp acs type"				msgstr="Тип ACS" />
+	<message msgid="services cwmp acs url"				msgstr="Адрес ACS" />
+	<message msgid="services cwmp acs auth"				msgstr="Авторизация ACS" />
+	<message msgid="services cwmp acs user"				msgstr="Имя пользователя ACS" />
+	<message msgid="services cwmp acs pass"				msgstr="Пароль ACS" />
+	<message msgid="services cwmp cpe auth"				msgstr="Авторизация CPE" />
+	<message msgid="services cwmp cpe user"				msgstr="Имя пользователя CPE" />
+	<message msgid="services cwmp cpe pass"				msgstr="Пароль CPE" />
+	<message msgid="services cwmp advanced"				msgstr="Расширенные настройки" />
+	<message msgid="services cwmp adv log level"			msgstr="Уровень журналирования" />
+	<message msgid="services cwmp adv http port"			msgstr="HTTP Порт" />
+	<message msgid="services cwmp adv http timeout"			msgstr="Время ожидания HTTP" />
+	<message msgid="services cwmp adv sesconn timeout"		msgstr="Время ожидания сеанса подключения" />
+	<message msgid="services cwmp adv sesresp timeout"		msgstr="Время ожидания ответа сеанса" />
+	<message msgid="services cwmp adv cpe manufacture"		msgstr="CPE Производитель" />
+	<message msgid="services cwmp adv cpe oui"			msgstr="CPE OUI" />
+	<message msgid="services cwmp adv cpe pc"			msgstr="CPE Класс продукта" />
+	<message msgid="services cwmp log crit"				msgstr="Critical" />
+	<message msgid="services cwmp log error"			msgstr="Error" />
+	<message msgid="services cwmp log warn"				msgstr="Warning" />
+	<message msgid="services cwmp log info"				msgstr="Info" />
+	<message msgid="services cwmp log debug"			msgstr="Debug" />
+	<message msgid="services cwmp log trace"			msgstr="Trace" />
+	<message msgid="services cwmp uncorrect url"			msgstr="Введен неверный URL адрес!" />
+	<message msgid="services cwmp uncorrect name"			msgstr="Введено неверное имя пользователя (разрешены символы: a-z, A-Z, 0-9, _, -)" />
+	<message msgid="services cwmp uncorrect password"		msgstr="Некорректно введен пароль (символы пробела и доллара запрещены)" />
+	<message msgid="services cwmp uncorrect port"			msgstr="Некорректно введен порт (разрешен диапазон: 1 - 65535)" />
+	<message msgid="services cwmp uncorrect timeout"		msgstr="Некорректно введена задержка (только число)" />
+
   <message msgid="services samba title" msgstr="Настройки Samba/WINS" />
   <message msgid="services samba introduction" msgstr="Здесь вы можете настроить сервисы Samba/WINS." />
   <message msgid="services samba settings" msgstr="Настройки Samba/WINS" />

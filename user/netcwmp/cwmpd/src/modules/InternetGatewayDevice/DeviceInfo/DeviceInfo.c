@@ -1,9 +1,9 @@
+/* vim: set et: */
 #define MAX_LOG_SIZE 32768
-//#define MAX_LOG_SIZE 1024
 ///////////////////// HELPERS /////////////////////
 
 // escape all XML chars and copy into new text buffer
-char* pool_xml_escape_text(char* buffer, size_t text_length, size_t buffer_size, pool_t * pool) 
+char* pool_xml_escape_text(char* buffer, size_t text_length, size_t buffer_size, pool_t * pool)
 {
     const int realloc_size = 1024; // block size for reallocation
 
@@ -14,40 +14,40 @@ char* pool_xml_escape_text(char* buffer, size_t text_length, size_t buffer_size,
     int resbuffer_size;
 
     resbuffer_size = buffer_size;
-    resbuffer = pool_palloc(pool,resbuffer_size); 
-    
+    resbuffer = pool_palloc(pool,resbuffer_size);
+
     if (!resbuffer) return NULL;
     ptr = resbuffer;
 
     for (i=0;i<text_length;i++)
     {
-	written = ptr - resbuffer;
+        written = ptr - resbuffer;
 
-	if ( written >= (resbuffer_size - 6) ) // resbuffer overloaded
-	{
-	    char* tmp_ptr = pool_prealloc(pool,resbuffer,resbuffer_size,resbuffer_size+realloc_size);
-	    if ( !tmp_ptr )
-	    {
-		// unable to allocate additional block, let's skip some characters
-		break; 
-	    }
+        if ( written >= (resbuffer_size - 6) ) // resbuffer overloaded
+        {
+            char* tmp_ptr = pool_prealloc(pool,resbuffer,resbuffer_size,resbuffer_size+realloc_size);
+            if ( !tmp_ptr )
+            {
+                // unable to allocate additional block, let's skip some characters
+                break;
+            }
 
-	    resbuffer = tmp_ptr;
-	    resbuffer_size += realloc_size;
-	    ptr = resbuffer + written;
-	}
+            resbuffer = tmp_ptr;
+            resbuffer_size += realloc_size;
+            ptr = resbuffer + written;
+        }
 
-	switch (buffer[i])
-	{
-	    case '\0':	ptr[0] = ' ';ptr++;		break;
-	    case '<':	memcpy(ptr,"&lt;",4);ptr+=4;	break;
-	    case '>':	memcpy(ptr,"&gt;",4);ptr+=4;	break;
-	    case '&':	memcpy(ptr,"&amp;",5);ptr+=5;	break;
-	    case '\"':	memcpy(ptr,"&quot;",6);ptr+=6;	break;
-	    case '\'':	memcpy(ptr,"&apos;",6);ptr+=6;	break;
+        switch (buffer[i])
+        {
+            case '\0':	ptr[0] = ' ';ptr++;		break;
+            case '<':	memcpy(ptr,"&lt;",4);ptr+=4;	break;
+            case '>':	memcpy(ptr,"&gt;",4);ptr+=4;	break;
+            case '&':	memcpy(ptr,"&amp;",5);ptr+=5;	break;
+            case '\"':	memcpy(ptr,"&quot;",6);ptr+=6;	break;
+            case '\'':	memcpy(ptr,"&apos;",6);ptr+=6;	break;
 
-	    default: ptr[0] = buffer[i];ptr++;
-	}
+            default: ptr[0] = buffer[i];ptr++;
+        }
     }
 
     ptr[0] = 0;
@@ -60,7 +60,7 @@ char* pool_xml_escape_text(char* buffer, size_t text_length, size_t buffer_size,
 //InternetGatewayDevice.DeviceInfo.Manufacturer
 int cpe_get_igd_di_manufacturer(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-    FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_manufacture");
     cwmp_log_debug("cpe_get_igd_di_manufacturer: value is %s", *value);
     return	FAULT_CODE_OK;
@@ -69,7 +69,7 @@ int cpe_get_igd_di_manufacturer(cwmp_t * cwmp, const char * name, char ** value,
 //InternetGatewayDevice.DeviceInfo.ManufacturerOUI
 int cpe_get_igd_di_manufactureroui(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-    FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_oui");
     return	FAULT_CODE_OK;
 }
@@ -77,7 +77,7 @@ int cpe_get_igd_di_manufactureroui(cwmp_t * cwmp, const char * name, char ** val
 //InternetGatewayDevice.DeviceInfo.ProductClass
 int cpe_get_igd_di_productclass(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-    FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_pc");
     return	FAULT_CODE_OK;
 }
@@ -86,7 +86,7 @@ int cpe_get_igd_di_productclass(cwmp_t * cwmp, const char * name, char ** value,
 /*
 int cpe_get_igd_di_serialnumber(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-	FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_sn");
     return	FAULT_CODE_OK;
 }
@@ -94,7 +94,7 @@ int cpe_get_igd_di_serialnumber(cwmp_t * cwmp, const char * name, char ** value,
 //InternetGatewayDevice.DeviceInfo.SpecVersion
 int cpe_get_igd_di_specversion(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-	FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_specver");
     return	FAULT_CODE_OK;
 }
@@ -102,7 +102,7 @@ int cpe_get_igd_di_specversion(cwmp_t * cwmp, const char * name, char ** value, 
 //InternetGatewayDevice.DeviceInfo.HardwareVersion
 int cpe_get_igd_di_hardwareversion(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-	FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_hwver");
     return	FAULT_CODE_OK;
 }
@@ -110,43 +110,47 @@ int cpe_get_igd_di_hardwareversion(cwmp_t * cwmp, const char * name, char ** val
 //InternetGatewayDevice.DeviceInfo.SoftwareVersion
 int cpe_get_igd_di_softwareversion(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-	FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_version");
     return	FAULT_CODE_OK;
 }
 */
 //InternetGatewayDevice.DeviceInfo.ProvisioningCode
-/*
 int cpe_get_igd_di_provisioningcode(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-	FUNCTION_TRACE();
+    DM_TRACE_GET();
     *value = cwmp_conf_pool_get(pool, "cwmp:cpe_prov");
     return	FAULT_CODE_OK;
 }
-*/
+
+int cpe_set_igd_di_provisioningcode(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
+{
+    DM_TRACE_SET();
+    cwmp_conf_set("cwmp:cpe_prov", value);
+    return FAULT_CODE_OK;
+}
+
 //InternetGatewayDevice.DeviceInfo.DeviceLog
 int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-//    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog");
-    FUNCTION_TRACE();
-
     long length, length2;
-    char* buffer = pool_palloc(pool,MAX_LOG_SIZE);
-    char* resbuffer;
+    char *buffer = pool_palloc(pool,MAX_LOG_SIZE);
+    char *resbuffer;
 
-    if (!buffer)
-    {
-	cwmp_log_error("cpe_get_igd_di_devicelog: unable to allocate devicelog buffer of size %u",MAX_LOG_SIZE);
-	return FAULT_CODE_9002; // 9002 Internal error
+    DM_TRACE_GET();
+
+    if (!buffer) {
+        cwmp_log_error("cpe_get_igd_di_devicelog: unable to allocate devicelog buffer of size %u",MAX_LOG_SIZE);
+        return FAULT_CODE_9002; // 9002 Internal error
     }
 
-    char* filename = cwmp_conf_pool_get(pool, "cwmp:devicelog_filename");
-    FILE * f = fopen(filename, "rt");
+    char *filename = cwmp_conf_pool_get(pool, "cwmp:devicelog_filename");
+    cwmp_log_error("cw %s", filename);
+    FILE *f = fopen(filename, "rt");
 
-    if (!f)
-    {
-	cwmp_log_error("cpe_get_igd_di_devicelog: unable to read device log from file (%s)",filename);
-	return FAULT_CODE_9002; // 9002 Internal error
+    if (!f) {
+        cwmp_log_error("cpe_get_igd_di_devicelog: unable to read device log from file (%s)",filename);
+        return FAULT_CODE_9002; // 9002 Internal error
     }
 
     fseek(f, 0, SEEK_END);
@@ -155,13 +159,12 @@ int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, ch
 
     if (length > MAX_LOG_SIZE) {
         fseek(f, length - MAX_LOG_SIZE-1, SEEK_SET);
-	length = MAX_LOG_SIZE;
+        length = MAX_LOG_SIZE;
     }
 
     length2 = fread(buffer, 1, length, f);
     cwmp_log_debug("cpe_get_igd_di_devicelog: devicelog file (%s) length is %lu, write length is %lu", filename, length, length2);
-    if (ferror(f)) 
-    {
+    if (ferror(f)) {
         cwmp_log_error("cpe_get_igd_di_devicelog: devicelog file (%s) read error %i", ferror(f));
     }
 
@@ -170,20 +173,39 @@ int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, ch
     resbuffer = pool_xml_escape_text(buffer, length2, MAX_LOG_SIZE, pool);
     if (!resbuffer) {
         cwmp_log_error("cpe_get_igd_di_devicelog: unable to escape buffer in pool");
-	*value = NULL;
-	return FAULT_CODE_9002; // 9002 Internal error
+        *value = NULL;
+        return FAULT_CODE_9002; // 9002 Internal error
     }
 
     length2 = strlen(resbuffer);
-    if (length2 > MAX_LOG_SIZE) 
-    {
-	// skip a couple of first characters to fit value buffer
-	resbuffer += length2-MAX_LOG_SIZE;
+    if (length2 > MAX_LOG_SIZE) {
+        // skip a couple of first characters to fit value buffer
+        resbuffer += length2-MAX_LOG_SIZE;
     }
 
     *value = resbuffer;
 
 //    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog OK");
+    return FAULT_CODE_OK;
+}
+
+int
+cpe_get_igd_di_uptime(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+    FILE *f = NULL;
+    char buf[42] = {};
+
+    DM_TRACE_GET();
+    f = fopen("/proc/uptime", "r");
+    if (!f) {
+        cwmp_log_error("%s: fopen('/proc/uptime', 'r') failed: %s",
+                name, strerror(errno));
+        return FAULT_CODE_9002;
+    }
+    fscanf(f, "%42[0-9]", buf);
+    fclose(f);
+
+    *value = pool_pstrdup(pool, buf);
     return FAULT_CODE_OK;
 }
 

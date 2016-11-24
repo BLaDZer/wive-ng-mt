@@ -228,10 +228,6 @@ parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_USER_CDP
 	{ T("cdpEnbl"),			"cdpEnabled",		0, T("0")  },
 #endif
-#ifdef CONFIG_USER_CWMPD
-	{ T("cwmpdEnbl"),		"cwmpdEnabled",		0, T("0")  },
-	{ T("cwmpACSUrl"),		"cwmp_acs_url",		0, T("")   },
-#endif
 #ifdef CONFIG_USER_LLTD
 	{ T("lltdEnbl"),		"lltdEnabled",		0, T("0")  },
 #endif
@@ -309,7 +305,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "cwmpdEnabled", "cwmp_acs_url", "lltdEnabled",
+		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "lltdEnabled",
 						"lldpdEnabled", "igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode",
 						"upnpEnabled", "xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",
 						"RemoteSSH", "RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort",
@@ -355,6 +351,60 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 		websDone(wp, 200);
 	}
 }
+
+
+/* goform/cwmpConfig */
+static void cwmpConfig(webs_t wp, char_t *path, char_t *query)
+{
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 17, "cwmpdEnabled", "cwmp_cpe_auth", "cwmp_acs_url", "cwmp_acs_auth", "cwmp_acs_username"
+						"cwmp_acs_password", "cwmp_cpe_auth", "cwmp_cpe_username", "cwmp_cpe_password", "cwmp_log_level",
+						"cwmpd_httpd_port", "cwmpd_http_timeout", "cwmpd_session_connect_timeout", "cwmpd_session_response_timeout", "cwmp_cpe_manufacture",
+						"cwmp_cpe_oui", "cwmp_cpe_pc");
+	}
+	else {
+		char_t *cwmp_enabled = websGetVar(wp, T("cwmp_enabled"), T("0"));
+
+		if (cwmp_enabled == NULL)
+			cwmp_enabled = "0";
+
+		nvram_init(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(cwmp_enabled, 1)) {
+			nvram_bufset(RT2860_NVRAM, "cwmpdEnabled",			"1");
+			nvram_bufset(RT2860_NVRAM, "cwmp_acs_type",			websGetVar(wp, T("cwmp_acs_type"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_acs_url",			websGetVar(wp, T("cwmp_acs_url"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_acs_auth",			websGetVar(wp, T("cwmp_acs_auth"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_acs_username",			websGetVar(wp, T("cwmp_acs_username"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_acs_password",			websGetVar(wp, T("cwmp_acs_password"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_auth",			websGetVar(wp, T("cwmp_cpe_auth"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_username",			websGetVar(wp, T("cwmp_cpe_username"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_password",			websGetVar(wp, T("cwmp_cpe_password"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_log_level",			websGetVar(wp, T("cwmpd_log_level"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_httpd_port",			websGetVar(wp, T("cwmpd_httpd_port"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_httpd_timeout",		websGetVar(wp, T("cwmpd_httpd_timeout"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_session_connect_timeout",	websGetVar(wp, T("cwmpd_session_connect_timeout"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_session_response_timeout",	websGetVar(wp, T("cwmpd_session_response_timeout"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_manufacture",		websGetVar(wp, T("cwmp_cpe_manufacture"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_oui",			websGetVar(wp, T("cwmp_cpe_oui"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_pc",			websGetVar(wp, T("cwmp_cpe_pc"), T("")));
+		}
+		else
+			nvram_bufset(RT2860_NVRAM, "cwmpdEnabled", "0");
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+
+	firewall_rebuild();
+	doSystem("service cwmpd restart");
+
+	websHeader(wp);
+	websDone(wp, 200);
+}
+
 
 //------------------------------------------------------------------------------
 // Samba/Wins setup
@@ -819,6 +869,7 @@ void formDefineServices(void)
 	websFormDefine(T("formIptAccounting"), formIptAccounting);
 	websFormDefine(T("l2tpConfig"), l2tpConfig);
 	websFormDefine(T("radiusConfig"), radiusConfig);
+	websFormDefine(T("cwmpConfig"), cwmpConfig);
 
 	// Define functions
 	websAspDefine(T("getL2TPUserList"), getL2TPUserList);

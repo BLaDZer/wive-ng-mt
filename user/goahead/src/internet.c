@@ -254,6 +254,15 @@ static int getRadiusBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+static int getCwmpBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_USER_CWMPD)
+       return websWrite(wp, T("1"));
+#else
+       return websWrite(wp, T("0"));
+#endif
+}
+
 static int getPrinterSrvBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_USER_P910ND
@@ -1393,6 +1402,7 @@ void formDefineInternet(void) {
 	websAspDefine(T("getFtpBuilt"), getFtpBuilt);
 	websAspDefine(T("getSmbBuilt"), getSmbBuilt);
 	websAspDefine(T("getRadiusBuilt"), getRadiusBuilt);
+	websAspDefine(T("getCwmpBuilt"), getCwmpBuilt);
 	websAspDefine(T("getPrinterSrvBuilt"), getPrinterSrvBuilt);
 	websAspDefine(T("getUSBModemBuilt"), getUSBModemBuilt);
 	websFormDefine(T("setLan"), setLan);

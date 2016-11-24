@@ -1,3 +1,4 @@
+/* vim: set et: */
 /************************************************************************
  *                                                                      *
  * Netcwmp/Opencwmp Project                                             *
@@ -24,6 +25,9 @@
  *                                                                      *
  ***********************************************************************/
 
+#include <time.h>
+#include <signal.h>
+#include <stdlib.h>
 #include "cwmpd.h"
 #include "modules/data_model.h"
 
@@ -54,16 +58,15 @@ static int cwmp_save_argv( int argc, char *const *argv)
 
 int cwmp_set_var(cwmp_t * cwmp)
 {
-    FUNCTION_TRACE();
-
+    cwmp_log_trace("%s(cwmp=%p)", __func__, (void*)cwmp);
 
     cwmp_bzero(cwmp, sizeof(cwmp_t));
-    cwmp->new_request = CWMP_TRUE;
     pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
     cwmp->pool = pool;
 
 
     cwmp_event_init(cwmp);
+    cwmp_event_time_init(cwmp, NULL);
 
     cwmp->queue = queue_create(pool);
 
@@ -79,12 +82,19 @@ void cwmp_init_ssl(cwmp_t * cwmp)
 }
 #endif
 
+static void signal_ignore_handler(int sig)
+{
+}
+
 int main(int argc, char **argv)
 {
 //    cwmp_pid_t pid;
+    int level = CWMP_LOG_INFO;
     cwmp_t * cwmp;
+    time_t seed = time(NULL);
+    srand((unsigned int)seed);
 
-
+    cwmp_log_init(NULL, level);
 //    nvram_init(RT2860_NVRAM);
 
 //    int syslog_enable = 0;
@@ -97,24 +107,24 @@ int main(int argc, char **argv)
 //    pid = getpid();
 
     cwmp_global_pool = pool_create(POOL_DEFAULT_SIZE);
-    cwmp = pool_palloc(cwmp_global_pool, sizeof(cwmp_t));
+    cwmp = pool_pcalloc(cwmp_global_pool, sizeof(cwmp_t));
 
     cwmp_conf_open("/etc/cwmp.conf");
 
     char* loglevel = cwmp_conf_pool_get(cwmp_global_pool,"cwmpd:log_level");
-    int level = CWMP_LOG_INFO;
+    char* log_filename = cwmp_conf_pool_get(cwmp_global_pool, "cwmpd:log_filename");
 
-    if (loglevel != NULL) 
+    if (loglevel != NULL)
     {
         if (strcasecmp(loglevel,"crit") == 0) level = CWMP_LOG_CRIT;
-	else if (strcasecmp(loglevel,"error") == 0) level = CWMP_LOG_ERROR;
+        else if (strcasecmp(loglevel,"error") == 0) level = CWMP_LOG_ERROR;
         else if (strcasecmp(loglevel,"warn") == 0) level = CWMP_LOG_WARN;
         else if (strcasecmp(loglevel,"info") == 0) level = CWMP_LOG_INFO;
         else if (strcasecmp(loglevel,"debug") == 0) level = CWMP_LOG_DEBUG;
         else if (strcasecmp(loglevel,"trace") == 0) level = CWMP_LOG_TRACE;
     }
 
-    cwmp_log_init(NULL, level);
+    cwmp_log_set(log_filename, level);
     cwmp_log_debug("DEBUG: current log level is \"%s\" (%i)", loglevel, level);
 
     cwmp_enable=cwmp_conf_get_int("cwmp:enable");
@@ -131,35 +141,20 @@ int main(int argc, char **argv)
     cwmp_conf_set("env:DEVNAME", DEVNAME);
     cwmp_conf_set("env:VERSIONPKG", VERSIONPKG);
 
-/*
-    char* envDevName = getenv("DEVNAME");
-    char* envVersion = getenv("VERSIONPKG");
-
-
-    if (envDevName != NULL) 
-    {
-	cwmp_log_error("DEVNAME parameter: %s", envDevName);
-    }
-    else
-    {
-	cwmp_log_error("DEVNAME parameter not found!");
-    }
-
-    if (envVersion != NULL) 
-    {
-	cwmp_conf_set("env:VERSIONPKG", envVersion);
-	cwmp_log_error("VERSIONPKG parameter: %s", envVersion);
-    }
-    else
-    {
-	cwmp_log_error("VERSIONPKG parameter not found!");
-    }
-*/
+    /* setup signals */
+    signal(SIGPIPE, signal_ignore_handler);
 #ifdef USE_CWMP_OPENSSL
     cwmp_init_ssl(cwmp);
 #endif
 
-    cwmp_model_load(cwmp, "/etc/device.xml");
+    char model_filename[255] = "/etc/device.xml";
+    char* acs_type = cwmp_conf_pool_get(cwmp_global_pool,"cwmp:acs_type");
+    if (acs_type != NULL)
+    {
+        sprintf(model_filename, "/etc/device_%s.xml",acs_type);
+    }
+
+    cwmp_model_load(cwmp, model_filename);
     cwmp_process_start_master(cwmp);
 
     return 0;

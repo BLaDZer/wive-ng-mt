@@ -3,6 +3,37 @@
 
 #include <cwmp/cwmp.h>
 
+#define DM_TRACE_REFRESH() \
+    cwmp_log_trace("%s(cwmp=%p, param_node=%p [name=%s], callback_reg=%p)",\
+            __func__, (void*)cwmp, (void*)param_node,\
+            (param_node ? param_node->name : ""),\
+            (void*)callback_reg);
+
+#define DM_TRACE_SET() \
+    cwmp_log_trace("%s(cwmp=%p, name=\"%s\", value=\"%s\", length=%d, args=\"%s\", callback_reg=%p)",\
+            __func__, (void*)cwmp, name, value, length, args, (void*)callback_reg);
+
+#define DM_TRACE_GET() \
+    cwmp_log_trace("%s(cwmp=%p, name=\"%s\", value=%p, args=\"%s\", pool=%p)",\
+            __func__, (void*)cwmp, name, (void*)value, args, (void*)pool);
+
+#define DM_TRACE_RELOAD() \
+    cwmp_log_trace("%s(cwmp=%p, callback_reg=%p)",\
+            __func__, (void*)cwmp, (void*)callback_reg);
+
+#define DM_TRACE_DEL() \
+    cwmp_log_trace("%s(cwmp=%p, param_node=%p [name=%s], instance_number=%d, callback_reg=%p)",\
+            __func__, (void*)cwmp, (void*)param_node,\
+            (param_node ? param_node->name : ""),\
+            instance_number, (void*)callback_reg);
+
+#define DM_TRACE_ADD() \
+    cwmp_log_trace("%s(cwmp=%p, param_node=%p [name=%s], pinstance_number=%p, callback_reg=%p)",\
+            __func__, (void*)cwmp, (void*)param_node,\
+            (param_node ? param_node->name : ""),\
+            (void*)pinstance_number, (void*)callback_reg);
+
+
 int get_index_after_paramname(parameter_node_t * param, const char * tag_name);
 void cwmp_model_load(cwmp_t * cwmp, const char * xmlfile);
 

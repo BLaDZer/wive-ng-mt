@@ -31,21 +31,21 @@
 #define cwmp_signal_value(n)      cwmp_signal_helper(n)
 
 #ifdef WIN32
-#define CWMP_SIG_SHUTDOWN    		TERM
+#define CWMP_SIG_SHUTDOWN               TERM
 #else
-#define CWMP_SIG_SHUTDOWN    		QUIT
+#define CWMP_SIG_SHUTDOWN               QUIT
 #endif
-#define CWMP_SIG_TERMINATE    		TERM
-#define CWMP_SIG_NOACCEPT      		WINCH
-#define CWMP_SIG_RECONFIGURE   	HUP
+#define CWMP_SIG_TERMINATE              TERM
+#define CWMP_SIG_NOACCEPT               WINCH
+#define CWMP_SIG_RECONFIGURE            HUP
 
 
 #if (CWMP_LINUXTHREADS)
-#define CWMP_SIG_REOPEN						INFO
-#define CWMP_SIG_CHANGEBIN				XCPU
+#define CWMP_SIG_REOPEN                 INFO
+#define CWMP_SIG_CHANGEBIN              XCPU
 #else
-#define CWMP_SIG_REOPEN        				USR1
-#define CWMP_SIG_CHANGEBIN				USR2
+#define CWMP_SIG_REOPEN                 USR1
+#define CWMP_SIG_CHANGEBIN              USR2
 #endif
 
 #endif

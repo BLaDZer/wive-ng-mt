@@ -27,12 +27,6 @@
 #ifndef __CWMP_CONF_H__
 #define __CWMP_CONF_H__
 
-
-
-
 void cwmp_conf_init(cwmp_t * cwmp);
-
-
-
 
 #endif

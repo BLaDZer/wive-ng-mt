@@ -560,6 +560,9 @@ static int
 XMLParserIsValidEndElement( XMLParser * xmlParser,
                             XmlNode *   newNode )
 {
+    if (!xmlParser->pCurElement)
+        return 0;
+
     return ( strcmp( xmlParser->pCurElement->element, newNode->nodeName )
              == 0 );
 }
@@ -1952,9 +1955,9 @@ XMLParserGetNextToken(
     {
         tokenLength = 1;
     }
-    else if ( *( xmlParser->curPtr ) == SLASH )
+    else if ( *( xmlParser->curPtr ) == SLASH)
     {
-        if ( *( xmlParser->curPtr + 1 ) == GREATERTHAN )    // token '/>' found
+        if ( *( xmlParser->curPtr + 1 ) == GREATERTHAN ) // token '/>'
         {
             tokenLength = 2;
             xmlParser->savePtr = xmlParser->curPtr; // fix
@@ -3286,6 +3289,10 @@ char * XmlStrduptrim(Pool * pool, const char * data)
     if (!data)
     {
         return NULL;
+    }
+    else if (!*data)
+    {
+        return PSTRDUP("");
     }
 
     memset(buffer, 0, XML_VALUE_SIZE_MAX);

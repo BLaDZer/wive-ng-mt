@@ -29,8 +29,6 @@
 
 #include "cwmp_module.h"
 
-
 int httpd_build_server(cwmp_t * cwmp);
-
 
 #endif

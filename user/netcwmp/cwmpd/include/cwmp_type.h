@@ -34,9 +34,6 @@
 #include <stdarg.h>
 #include <errno.h>
 
-
-
-
 #ifdef WIN32
 
 # include <winsock2.h>
@@ -74,15 +71,11 @@
 
 #include <cwmp/types.h>
 
-
-
 /*!
-* @file 	Common Platform Runtime Library
+* @file Common Platform Runtime Library
 * @author
 * @brief
 */
-
-
 
 
 #ifdef WIN32
@@ -91,20 +84,12 @@ typedef  int cwmp_sig_atomic_t ;
 typedef sig_atomic_t cwmp_sig_atomic_t ;
 #endif
 
-
-
-
-
 typedef unsigned int               cwmp_tls_key_t;
-
-
 
 typedef struct cwmp_process_t 		cwmp_process_t;
 
 typedef struct cwmp_signal_t 			cwmp_signal_t;
 typedef struct cwmp_channel_t  		cwmp_channel_t;
-
-
 
 
 /*
@@ -132,35 +117,20 @@ typedef struct cwmp_context_t cwmp_context_t;
 */
 
 
-
 #ifdef WIN32
 #define sleep(x)   Sleep(1000 * (x))
 #include <signal.h>
 #endif
 
 
-#define cwmp_bzero(b, len)		(void)memset(b, 0, len)
+#define cwmp_bzero(b, len)              (void)memset(b, 0, len)
 #ifdef WIN32
-#define cwmp_socket_nonblocking(s)	0
+#define cwmp_socket_nonblocking(s)      0
 #else
-#define cwmp_socket_nonblocking(s)  fcntl(s, F_SETFL, fcntl(s, F_GETFL) | O_NONBLOCK)
+#define cwmp_socket_nonblocking(s)      fcntl(s, F_SETFL, fcntl(s, F_GETFL) | O_NONBLOCK)
 #endif
 #define cwmp_value_helper(n)   #n
-#define cwmp_value(n)          		cwmp_value_helper(n)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#define cwmp_value(n)                   cwmp_value_helper(n)
 
 
 #endif

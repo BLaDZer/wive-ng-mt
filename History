@@ -2538,74 +2538,76 @@
 10) libmicrohttpd: up to 0.9.52 version.<br>
 11) strace: up to 4.14 version.<br>
 12) xupnpd: update hls and add vsetv.net plugins.<br>
-13) 802.1x: update to new version (5020 SDK).<br>
-14) iappd: update to 1.1.0 version (5020 SDK).<br>
-15) iappd: use set encrypt key from daemon.<br>
-16) iappd: fix FT client table parse infinitive loop issue.<br>
-17) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
-18) iappd: fix handle destination adress in recv RRB.<br>
-19) bndstr: update to new version (5020 SDK).<br>
-20) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
-21) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
-22) busybox: udhcpc: check read of option length byte to be within packet.<br>
-23) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
-24) goahead: more correct standart http code decode use.<br>
-25) goahead: send internal server error if not found error code.<br>
-26) goahead: allways use HTTP1.1 by default.<br>
-27) goahead: fix webheader format (parse issue by antiviral filters).<br>
-28) goahead: fix radius secret check.<br>
-29) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
-30) goahead: rework switch status, config page.<br>
-31) goahead: fix regulatory tables for RU.<br>
-32) goahead: add link for download firmware.<br>
-33) goahead: fix set BasicRate in some cases.<br>
-34) goahead: optimize for use of small resolution devices.<br>
-35) goahead: fix timezones for some regions.<br>
-36) goahead: add preamble type auto.<br>
-37) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-38) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-39) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-40) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
-41) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-42) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-43) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-44) kernel: ralink_wifi: fix announce band freq ranges.<br>
-45) kernel: ralink_wifi: fix set TxPreamble auto from profile (used per default, not need replace this).<br>
-46) kernel: ralink_wifi: avoid tx_rate dropdown in low traffic case (HT/VHT).<br>
-47) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-48) kernel: ralink_wifi: auto_ch_select: add some sanity checks.<br>
-49) kernel: ralink_wifi: fix skip beacon from different channel.<br>
-50) kernel: ralink_wifi: allow 30dBm tx power for ext PA devices and some country.<br>
-51) kernel: ralink_wifi: skip DEAUTH with all zero mac addr.<br>
-52) kernel: ralink_wifi: set HT_MpduDensity=4, fix MT7603 slowdown and compat with some clients.<br>
-53) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
-54) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
-55) kernel: ptrace: fix regs_return_value for kernel context.<br>
-56) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-57) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
-58) kernel: net: udp: avoid one cache line miss in recvmsg().<br>
-59) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
-60) kernel: net: make default TX queue length a defined constant.<br>
-61) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-62) kernel: net: fix bogus cast in skb_pagelen() and use unsigned variables.<br>
-63) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-64) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
-65) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
-66) kernel: net: l2tp: fix racy SOCK_ZAPPED flag check in l2tp_ip_bind().<br>
-67) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
-68) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
-69) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-70) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-71) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
-72) kernel: net: xfrm: fix error return code.<br>
-73) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-74) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-75) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-76) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-77) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-78) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-79) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-80) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+13) netcwmpd: add support ER-Telecom ACS.<br>
+14) 802.1x: update to new version (5020 SDK).<br>
+15) iappd: update to 1.1.0 version (5020 SDK).<br>
+16) iappd: use set encrypt key from daemon.<br>
+17) iappd: fix FT client table parse infinitive loop issue.<br>
+18) iappd: add IAPPDebug variable for easy enable/disable debug.<br>
+19) iappd: fix handle destination adress in recv RRB.<br>
+20) bndstr: update to new version (5020 SDK).<br>
+21) bndstr: fix userspace vs kernel space client tables unconsystent.<br>
+22) bndstr: add BandSteeringDebug variable for easy enable/disable debug.<br>
+23) busybox: udhcpc: check read of option length byte to be within packet.<br>
+24) busybox: udhcpc: check read of overload option data byte to be within packet.<br>
+25) goahead: more correct standart http code decode use.<br>
+26) goahead: send internal server error if not found error code.<br>
+27) goahead: allways use HTTP1.1 by default.<br>
+28) goahead: fix webheader format (parse issue by antiviral filters).<br>
+29) goahead: fix radius secret check.<br>
+30) goahead: move max clients option to Basic Roaming section (for AP load balance tune).<br>
+31) goahead: rework switch status, config page.<br>
+32) goahead: fix regulatory tables for RU.<br>
+33) goahead: add link for download firmware.<br>
+34) goahead: fix set BasicRate in some cases.<br>
+35) goahead: optimize for use of small resolution devices.<br>
+36) goahead: fix timezones for some regions.<br>
+37) goahead: add preamble type auto.<br>
+38) goahead: rework tr069 support.<br>
+39) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+40) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+41) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+42) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
+43) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+44) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+45) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+46) kernel: ralink_wifi: fix announce band freq ranges.<br>
+47) kernel: ralink_wifi: fix set TxPreamble auto from profile (used per default, not need replace this).<br>
+48) kernel: ralink_wifi: avoid tx_rate dropdown in low traffic case (HT/VHT).<br>
+49) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
+50) kernel: ralink_wifi: auto_ch_select: add some sanity checks.<br>
+51) kernel: ralink_wifi: fix skip beacon from different channel.<br>
+51) kernel: ralink_wifi: allow 30dBm tx power for ext PA devices and some country.<br>
+52) kernel: ralink_wifi: skip DEAUTH with all zero mac addr.<br>
+53) kernel: ralink_wifi: set HT_MpduDensity=4, fix MT7603 slowdown and compat with some clients.<br>
+54) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
+55) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
+56) kernel: ptrace: fix regs_return_value for kernel context.<br>
+57) kernel: mips: fix max_low_pfn with disabled highmem.<br>
+58) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
+59) kernel: net: udp: avoid one cache line miss in recvmsg().<br>
+60) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
+61) kernel: net: make default TX queue length a defined constant.<br>
+62) kernel: net: mangle zero checksum in skb_checksum_help().<br>
+63) kernel: net: fix bogus cast in skb_pagelen() and use unsigned variables.<br>
+64) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+65) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
+66) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
+67) kernel: net: l2tp: fix racy SOCK_ZAPPED flag check in l2tp_ip_bind().<br>
+68) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
+69) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
+70) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+71) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+72) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
+73) kernel: net: xfrm: fix error return code.<br>
+74) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+75) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+76) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+77) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+78) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+79) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+80) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+81) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>

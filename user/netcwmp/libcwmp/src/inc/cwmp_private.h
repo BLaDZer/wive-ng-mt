@@ -142,27 +142,27 @@ struct http_socket_t
     int type;
     int protocol;
     http_sockaddr_t * addr;
-    cwmp_int64_t           timeout;
+    ssize_t send_timeout;
+	ssize_t recv_timeout;
 
     int option;
     http_write_callback_pt write_callback;
     void *  write_calldata;
 
     int error_code;
-    
-    int use_ssl;
-    
-#ifdef USE_CWMP_OPENSSL    
-    SSL * ssl;
-#endif    
-    
-    
-    pool_t * pool;
-    
-    
-};
 
-int callback_register_task(cwmp_t * cwmp, callback_func_t callback, void *data1, void *data2);
+    int use_ssl;
+
+#ifdef USE_CWMP_OPENSSL
+    SSL * ssl;
+#endif
+
+
+    pool_t * pool;
+
+	struct http_statistics stat;
+
+};
 
 
 

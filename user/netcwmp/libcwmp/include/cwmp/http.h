@@ -13,10 +13,13 @@
 #ifndef __CWMPHTTP_H__
 #define __CWMPHTTP_H__
 
+#include <inttypes.h>
+#include <stdbool.h>
 #include <cwmp/types.h>
 #include <cwmp/cwmp.h>
 #include <cwmp/buffer.h>
 #include <cwmp/pool.h>
+#include <sys/time.h>
 
 #define CIPHER_LIST "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 
@@ -40,16 +43,18 @@
 #define HTTPP_VAR_ERROR_CODE    "__errorcode__"
 #define HTTPP_VAR_PASSWORD      "__password__"
 
-#define HTTP_NONE_AUTH      0x00
-#define HTTP_BASIC_AUTH     0x01
-#define HTTP_DIGEST_AUTH    0x02
-
-
+enum http_auth_type {
+	HTTP_NONE_AUTH	= 0x00,
+	HTTP_BASIC_AUTH	= 0x01,
+	HTTP_DIGEST_AUTH = 0x02,
+};
 
 #define HTTP_100		100
 #define HTTP_200		200
 #define HTTP_204		204
 #define HTTP_400		400
+#define HTTP_401		401
+#define HTTP_407		407
 
 
 
@@ -85,14 +90,30 @@ typedef size_t (*http_write_callback_pt)(char *data, size_t size, size_t nmemb, 
 
 struct http_digest_auth_t
 {
-	int		active; //digest auth
+	enum http_auth_type type;
+	 /* CDRouter will test largest size ConnectionRequest Username */
+	char	username[URL_USER_LEN+1];
+	char	password[URL_PWD_LEN+1];
+
 	char 	realm[MIN_DEFAULT_LEN+1];
-	char 	nonce[MIN_DEFAULT_LEN+1];
-	char 	cnonce[MIN_DEFAULT_LEN+1];
-	char    response[MIN_DEFAULT_LEN+1];
-	char    qop[MIN_DEFAULT_LEN+1];
-	char    nc[MIN_DEFAULT_LEN+1];
     char    uri[MIN_DEFAULT_LEN*4+1];
+
+	char 	nonce[MIN_DEFAULT_LEN+1];
+	/* if qop field received,
+	 * then work on RFC 2069
+	 * (without qop, cnonce and nc fields)
+	 */
+	bool rfc2617;
+	char    qop[MIN_DEFAULT_LEN+1];
+	char 	cnonce[MIN_DEFAULT_LEN+1];
+	size_t  nc;
+	char	nc_hex[9];
+	/* calculated response */
+	char    response[MIN_DEFAULT_LEN+1];
+	/* custom field, must be returned
+	 * to server, if defined
+	 */
+	char	opaque[128];
 };
 
 
@@ -104,10 +125,6 @@ struct http_dest_t
 
     int     port;
     char*   url;
-
-
-    char    user[URL_USER_LEN+1];
-    char    password[URL_PWD_LEN+1];
 
     const char *    proxy_name;
     const char *    proxy_auth;
@@ -121,7 +138,25 @@ struct http_dest_t
 
 };
 
-
+struct http_statistics
+{
+	/* dns query time */
+	struct timeval ns_query;
+	/* tcp connection open */
+	struct timeval tcp_connect;
+	/* tcp connected */
+	struct timeval tcp_response;
+	/* request begin (TR-098 ROMTime) */
+	struct timeval request;
+	/* begin transmission (TR-098 BOMTime) */
+	struct timeval transmission_rx;
+	struct timeval transmission_tx;
+	/* end transmission (TR-098 EOMTime) */
+	struct timeval transmission_rx_end;
+	struct timeval transmission_tx_end;
+	/* overall transmitted bytes */
+	uint64_t bytes_rx;
+};
 
 
 struct http_request_t
@@ -175,7 +210,7 @@ int http_socket_write (http_socket_t * sock, const char *buf, int bufsize);
 int http_socket_create(http_socket_t **news, int family, int type, int protocol, pool_t * pool);
 int http_socket_calloc(http_socket_t **news, pool_t * pool);
 int http_socket_server (http_socket_t **news, int port, int backlog, int timeout, pool_t * pool);
-int http_socket_connect(http_socket_t * sock, int family, const char * host, int port);
+int http_socket_connect(http_socket_t * sock, const char * host, int port);
 int http_socket_accept(http_socket_t *sock, http_socket_t ** news);
 void http_socket_close(http_socket_t * sock);
 void http_socket_destroy(http_socket_t * sock);
@@ -185,17 +220,19 @@ void http_socket_set_recvtimeout(http_socket_t * sock, int timeout);
 void http_socket_set_sendtimeout(http_socket_t * sock, int timeout);
 
 int http_check_digest_auth(const char * auth_realm, const char * auth, char * cpeuser, char * cpepwd);
-int http_parse_digest_auth(const char * auth, http_digest_auth_t * digest_auth);
+int http_parse_digest_auth(const char * auth, http_digest_auth_t * digest_auth, const char *back_uri);
 int http_parse_cookie(const char * cookie, char * dest_cookie);
 int http_socket_set_writefunction(http_socket_t * sock, http_write_callback_pt callback, void * calldata);
 
 int http_send_file(const char * fromfile, const char *tourl );
-int http_receive_file(const char *fromurl, const char * tofile);
+int http_receive_file(const char *fromurl, const char * tofile, struct http_statistics *hs);
+int http_send_diagnostics(size_t size, const char *tourl, struct http_statistics *hs);
 
 
 
 int http_post(http_socket_t * sock, http_request_t * request, cwmp_chunk_t * data, pool_t * pool);
 
+void saddr_char(char *str, size_t size, sa_family_t family, struct sockaddr *sa);
 
 #ifdef USE_CWMP_OPENSSL
 

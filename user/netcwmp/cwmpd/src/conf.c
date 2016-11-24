@@ -1,3 +1,4 @@
+/* vim: set et: */
 /************************************************************************
  *                                                                      *
  * Netcwmp/Opencwmp Project                                             *
@@ -30,39 +31,42 @@
 void cwmp_conf_init(cwmp_t * cwmp)
 {
     pool_t * pool;
-    FUNCTION_TRACE();
+    cwmp_log_trace("%s(cwmp=%p)", __func__, (void*)cwmp);
 
     pool = cwmp->pool;
-    cwmp->httpd_port =  cwmp_conf_get_int("cwmpd:httpd_port");
 
-    cwmp->acs_auth  =   cwmp_conf_get_int("cwmp:acs_auth");
+    cwmp->conf.periodic_interval = (unsigned long)cwmp_conf_get_int("cwmpd:inform_periodic_interval");
+    cwmp->conf.periodic_enable = (bool)cwmp_conf_get_int("cwmpd:inform_periodic_enable");
+    if (!cwmp->conf.periodic_interval) {
+        cwmp->conf.periodic_interval = 1lu;
+    }
+
+    cwmp->httpd_port =  cwmp_conf_get_int("cwmpd:httpd_port"); //cwmp_nvram_get_int("cwmp:httpd_port",8080);
+
     cwmp->cpe_auth  =   cwmp_conf_get_int("cwmp:cpe_auth");
 
-    if(cwmp->acs_auth)
-    {
-        cwmp->acs_user = cwmp_conf_pool_get(pool, "cwmp:acs_username");
-        cwmp->acs_pwd = cwmp_conf_pool_get(pool, "cwmp:acs_password");
-    }
+    cwmp->acs_user = cwmp_conf_pool_get(pool, "cwmp:acs_username");
+    cwmp->acs_pwd = cwmp_conf_pool_get(pool, "cwmp:acs_password");
 
     if(cwmp->cpe_auth)
     {
-	cwmp->cpe_user = cwmp_conf_pool_get(pool, "cwmp:cpe_username");
-    	cwmp->cpe_pwd = cwmp_conf_pool_get(pool, "cwmp:cpe_password");
+        cwmp->cpe_user = cwmp_conf_pool_get(pool, "cwmp:cpe_username");
+        cwmp->cpe_pwd = cwmp_conf_pool_get(pool, "cwmp:cpe_password");
     }
 
-    cwmp->acs_url   =   cwmp_nvram_pool_get(pool, "cwmp_acs_url");
+    cwmp->acs_url   =   cwmp_conf_pool_get(pool, "cwmp:acs_url"); //  "http://192.168.0.69:8000/otnms/acs/webservice.action";
 
-    cwmp->cpe_mf    =   cwmp_conf_pool_get(pool, "cwmp:cpe_manufacture");	// "ZTE"
+    cwmp->cpe_mf    =   cwmp_conf_pool_get(pool, "cwmp:cpe_manufacture"); //     "ZTE"; //cwmp_nvram_getdup(pool, "cwmp:cpe_manufacture");
 
-    cwmp->cpe_oui   =   cwmp_conf_pool_get(pool, "cwmp:cpe_oui");		// "00D0D0"
+    cwmp->cpe_oui   =   cwmp_conf_pool_get(pool, "cwmp:cpe_oui"); //   "00D0D0";cwmp_nvram_getdup(pool, "cwmp:cpe_oui");
 
-    cwmp->cpe_sn    =   cwmp_nvram_pool_get(pool, "WAN_MAC_ADDR");		// "0410400AA11AA2255";
+    cwmp->cpe_sn    =   cwmp_nvram_pool_get(pool, "WAN_MAC_ADDR");//cwmp_conf_pool_get(pool, "cwmp:cpe_sn"); //    "0410400AA11AA2255"; //cwmp_nvram_getdup(pool, "cwmp:cpe_sn");
 
-    cwmp->cpe_name  =   cwmp_conf_pool_get(pool, "cwmp:cpe_name");		// "00D0D0";
+    cwmp->cpe_name  =   cwmp_conf_pool_get(pool, "cwmp:cpe_name"); //  "00D0D0";
 
-    cwmp->cpe_pc    =   cwmp_conf_pool_get(pool, "cwmp:cpe_pc");		// "ZXECS EBG2100";
+    cwmp->cpe_pc    =   cwmp_conf_pool_get(pool, "cwmp:cpe_pc"); //      "ZXECS EBG2100";
 
-    cwmp_log_debug("url:%s\nmf:%s\noui:%s\nsn:%s\nname:%s\npc:%s\nhttpd port:%d\n",    cwmp->acs_url, cwmp->cpe_mf, cwmp->cpe_oui, cwmp->cpe_sn, cwmp->cpe_name, cwmp->cpe_pc,
+    cwmp_log_debug("url:%s\nmf:%s\noui:%s\nsn:%s\nname:%s\npc:%s\nhttpd port:%d",    cwmp->acs_url, cwmp->cpe_mf, cwmp->cpe_oui, cwmp->cpe_sn, cwmp->cpe_name, cwmp->cpe_pc,
                    cwmp->httpd_port);
     cwmp->event_filename = cwmp_conf_pool_get(pool, "cwmp:event_filename");
 }

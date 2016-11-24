@@ -1,3 +1,4 @@
+/* vim: set et: */
 /************************************************************************
  *                                                                      *
  * Netcwmp/Opencwmp Project                                             *
@@ -57,13 +58,13 @@ void setnonblocking(int fd)
     opts=fcntl(fd, F_GETFL);
     if (opts < 0)
     {
-        cwmp_log_error("setnonblocking fcntl GETFL failed: fd(%d)\n", fd);
+        cwmp_log_error("setnonblocking fcntl GETFL failed: fd(%d)", fd);
         return;
     }
     opts = opts | O_NONBLOCK;
     if (fcntl(fd, F_SETFL, opts) < 0)
     {
-        cwmp_log_error("setnonblocking fcntl SETFL failed: fd(%d)\n", fd);
+        cwmp_log_error("setnonblocking fcntl SETFL failed: fd(%d)", fd);
         return;
     }
     return;
@@ -74,15 +75,19 @@ int httpd_response_unauthorization(http_socket_t * sock)
 {
 
     char buffer[256];
-    char nonce[33];
+
+    char nonce[16];
+	char nonce_hex[33];
+
     FUNCTION_TRACE();
     AuthNonce ++;
-    TRsnprintf(buffer, 256,  "%d", AuthNonce);
+
+    TRsnprintf(buffer, sizeof(buffer),  "%d", AuthNonce);
     MD5(nonce, buffer, NULL);
 
-    nonce[32] = 0;
+	convert_to_hex(nonce, nonce_hex);
 
-    TRsnprintf(buffer, 256, RESPONSE_401, AuthQop, nonce, AuthOpaque, AuthRealm);
+    TRsnprintf(buffer, 256, RESPONSE_401, AuthQop, nonce_hex, AuthOpaque, AuthRealm);
 
 
     return	http_socket_write(sock, buffer, TRstrlen(buffer));
@@ -129,7 +134,7 @@ int httpd_build_server(cwmp_t * cwmp)
     rc = http_socket_server(&lsnsock, port, 5, -1, pool);
     if (rc != CWMP_OK)
     {
-        cwmp_log_error("build httpd server faild. %s\n", strerror(errno));
+        cwmp_log_error("build httpd server faild. %s", strerror(errno));
         exit(-1);
     }
 
@@ -158,16 +163,16 @@ int httpd_build_server(cwmp_t * cwmp)
         if ((nready = select(maxfd + 1, &rdset, NULL, NULL, &timeout)) <= 0)
         {
             sleep(1);
-            cwmp_log_debug("select new connection timeout. no new request.\n");
+            cwmp_log_debug("select new connection timeout. no new request.");
             now = time(NULL);
             for (i=0; i<MAX_CLIENT_NUMS; i++)
             {
-                //cwmp_log_debug("socket time: %d, timeout %d, fd is %d\n", sessionfd[i].time, now -  sessionfd[i].time,
+                //cwmp_log_debug("socket time: %d, timeout %d, fd is %d", sessionfd[i].time, now -  sessionfd[i].time,
                 //               sessionfd[i].sock == NULL? -1 : http_socket_get_fd(sessionfd[i].sock));
                 fd = http_socket_get_fd(sessionfd[i].sock);
                 if ((sessionfd[i].sock != NULL) && (now -  sessionfd[i].time > 15))
                 {
-                    cwmp_log_info("close a timeout socket. fd is %d.\n", fd);
+                    cwmp_log_info("close a timeout socket. fd is %d.", fd);
                     FD_CLR(fd, &readset);
                     //http_socket_close(sessionfd[i].sock);
                     http_socket_destroy(sessionfd[i].sock);
@@ -217,7 +222,7 @@ int httpd_build_server(cwmp_t * cwmp)
         }
 
         //readpool = pool_create(POOL_DEFAULT_SIZE);
-        cwmp_log_debug("nready is %d.\n", nready);
+        cwmp_log_debug("nready is %d.", nready);
         for (i=0; (i<MAX_CLIENT_NUMS) && (nready > 0) ; i++)
         {
             s = sessionfd[i].sock;
@@ -231,7 +236,7 @@ int httpd_build_server(cwmp_t * cwmp)
                 rc = http_read_request(s, request, http_socket_get_pool(s));
                 if (rc <= 0)
                 {
-                    httpd_response_unkonw_error(s);
+                    if (rc<0) httpd_response_unkonw_error(s);
                     goto faild;
                 }
 
@@ -253,21 +258,19 @@ int httpd_build_server(cwmp_t * cwmp)
 
                     cwmp_conf_get("cwmp:cpe_username", cpe_user);
                     cwmp_conf_get("cwmp:cpe_password", cpe_pwd);
-                    cwmp_log_debug("cpe username: %s, cpe password: %s\n", cpe_user, cpe_pwd);
+                    cwmp_log_debug("cpe username: %s, cpe password: %s", cpe_user, cpe_pwd);
 
                     if (http_check_digest_auth(AuthRealm, auth, cpe_user, cpe_pwd) != 0)
                     {
                         httpd_response_unauthorization(s);
-						goto faild;
+                        goto faild;
                     }
                 }
 
                 httpd_response_ok(s);
 
                 //get a new request from acs
-                cwmp->new_request = CWMP_YES;
-				cwmp_log_debug("set cwmp new request to %d\n", cwmp->new_request);
-				cwmp_event_set_value(cwmp, INFORM_CONNECTIONREQUEST, 1, NULL, 0, 0, 0);
+                cwmp_event_set_value(cwmp, INFORM_CONNECTIONREQUEST, 1, NULL, 0, 0, 0);
 faild:
 
                 FD_CLR(fd, &readset);
