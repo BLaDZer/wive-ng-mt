@@ -110,7 +110,6 @@
 
 				form.RemoteManagementPort.value				= '<% getCfgZero(1, "RemoteManagementPort"); %>';
 				form.RemoteSSHPort.value					= '<% getCfgZero(1, "RemoteSSHPort"); %>';
-				form.cwmpACSUrl.value						= '<% getCfgGeneral(1, "cwmp_acs_url"); %>';
 				form.hwnatThreshold.value					= '<% getCfgZero(1, "hw_nat_bind"); %>';
 				form.stpEnbl.options.selectedIndex			= '<% getCfgZero(1, "stpEnabled"); %>';
 				form.igmpEnbl.options.selectedIndex			= (igmpb == '1') ? '<% getCfgZero(1, "igmpEnabled"); %>' : 0;
@@ -123,7 +122,6 @@
 				form.cdpEnbl.options.selectedIndex			= '<% getCfgZero(1, "cdpEnabled"); %>';
 				form.lltdEnbl.options.selectedIndex			= '<% getCfgZero(1, "lltdEnabled"); %>';
 				form.lldpdEnbl.options.selectedIndex		= '<% getCfgZero(1, "lldpdEnabled"); %>';
-				form.cwmpdEnbl.options.selectedIndex		= '<% getCfgZero(1, "cwmpdEnabled"); %>';
 				form.krnlPppoePass.options.selectedIndex	= '<% getCfgZero(1, "pppoe_pass"); %>';
 				form.krnlIpv6Pass.options.selectedIndex		= '<% getCfgZero(1, "ipv6_pass"); %>';
 				form.pingWANEnbl.options.selectedIndex		= ('<% getCfgGeneral(1, "WANPingFilter"); %>' == '1') ? 1 : 0;
@@ -174,7 +172,6 @@
 				offloadModeSelect(form);
 				httpRmtSelect(form);
 				sshRmtSelect(form);
-				cwmpRmtSelect(form);
 				igmpSelect(form);
 				udpxySelect(form);
 				snmpdRmtSelect(form);
@@ -279,11 +276,6 @@
 				displayElement('ssh_rmt_port', form.rmtSSH.value != '0');
 			}
 
-			function cwmpRmtSelect(form)
-			{
-				displayElement('cwmp_acs_url', form.cwmpdEnbl.value != '0');
-			}
-
 			function udpxySelect(form)
 			{
 				displayElement('udpxy_port_row', form.udpxyMode.value != '0');
@@ -310,7 +302,6 @@
 					[ '<% getCfgGeneral(1, "snmpd"); %>',				'snmpd',		'snmpd', 		null,		'www.net-snmp.org/docs/man/snmpd.html' ],
 					[ '<% getCfgGeneral(1, "igmpEnabled"); %>',			'igmpProxy',	'igmpproxy', 	null,		'sourceforge.net/projects/igmpproxy' ],
 					[ '<% getCfgGeneral(1, "lltdEnabled"); %>',			'lltd',			'lld2d', 		null,		'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
-					[ '<% getCfgGeneral(1, "cwmpdEnabled"); %>',		'cwmpd',		'cwmpd', 		null,		'www.broadband-forum.org/technical/trlist.php' ],
 					[ '<% getCfgGeneral(1, "lldpdEnabled"); %>',		'lldpd',		'lldpd', 		null,		'vincentbernat.github.io/lldpd' ],
 					[ '<% getCfgGeneral(1, "upnpEnabled"); %>',			'upnp',			'miniupnpd',	null,		'miniupnp.free.fr/' ],
 					[ '<% getCfgGeneral(1, "cdpEnabled"); %>',			'cdp',			'cdp-send',		null,		'freecode.com/projects/cdp-tools' ],
@@ -392,7 +383,7 @@
 			}
 
 			function showRemoteManagementMenu() {
-				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'cwmpd', 'cwmp_acs_url', 'rmt_telnetd' ];
+				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd' ];
 				if (statusRemoteManagementMenu == 0) {
 					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 1;
@@ -400,7 +391,6 @@
 					displayElement('rmt_telnetd', '<% getTelnetdBuilt(); %>' == '1');
 					httpRmtSelect(document.miscServiceCfg);
 					sshRmtSelect(document.miscServiceCfg);
-					cwmpRmtSelect(document.miscServiceCfg);
 				} else {
 					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 0;
@@ -666,22 +656,6 @@
 					<tr id="ssh_rmt_port" style="display: none;">
 						<td class="head" id="miscSSHPort" style="width: 45%">Remote SSH port</td>
 						<td colspan="4"><input class="normal" name="RemoteSSHPort"></td>
-					</tr>
-					<tr id="cwmpd">
-						<td class="head" id="lCwmpd" style="width: 45%">CWMP (TR-069) agent</td>
-						<td>
-							<select name="cwmpdEnbl" class="normal" onchange="cwmpRmtSelect(this.form);">
-								<option value="0" id="disable">Disable</option>
-								<option value="1" id="enable">Enable</option>
-							</select>
-						</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr id="cwmp_acs_url" style="display: none;">
-						<td class="head" id="miscCwmpACSUrl" style="width: 45%">CWMP ACS address</td>
-						<td colspan="4"><input class="superwide" name="cwmpACSUrl"></td>
 					</tr>
 					<tr id="rmt_telnetd">
 						<td class="head" id="miscTelnetRemote" style="width: 45%">Remote Telnet</td>
