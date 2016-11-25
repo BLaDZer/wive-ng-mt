@@ -150,7 +150,8 @@ LIBS += $(shell pkg-config --static --libs-only-l libnetfilter_conntrack)
 endif # ($(TEST),1)
 
 CFLAGS := $(CFLAGS) -DIPTABLES_143
-LIBS += $(IPTABLESPATH)/libiptc/.libs/libip4tc.a $(IPTABLESPATH)/libiptc/.libs/libip6tc.a $(LIBCDIRSHARED)/lib/libnfnetlink.so
+LIBS += $(IPTABLESPATH)/libiptc/.libs/libip4tc.a $(IPTABLESPATH)/libiptc/.libs/libip6tc.a 
+#$(LIBCDIRSHARED)/lib/libnfnetlink.so
 
 #LDLIBS += -lnfnetlink
 

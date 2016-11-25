@@ -68,6 +68,10 @@ case "$MODE" in
 	####################################
 	# one band 7620N
 	####################################
+	"MT7620-2T2R-4M")
+	    # lite oneband release
+	    DEVNAME="SNR-CPE-W2N-MT"
+	    ;;
 	"MT7620-2T2R-8M")
 	    # white oneband release
 	    DEVNAME="SNR-CPE-W4N-MT"
@@ -195,6 +199,11 @@ elif [ "$MODE" = "MT7620-2T2R-8M-AP" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-AP					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7620-2T2R-4M" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-4M					$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-4M					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-4M					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 else
     echo "Config files not found."

@@ -27,7 +27,13 @@ BUILDDIR      = $(SRC)
 DESTDIR       =
 RPM_OPT_FLAGS =
 
-COPTS := -O2 -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
+ifdef CONFIG_USER_SMALLSIZE
+COPTS := -Os
+else
+COPTS := -O2
+endif
+
+COPTS += -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
 COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT
 
 ifndef CONFIG_IPV6

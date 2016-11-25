@@ -19,7 +19,7 @@ if [ -f ../../linux/.config ]; then
     if [ "$IPV6" != "0" ]; then
 	IPV6="--enable-ipv6"
     else
-	IPV6=""
+	IPV6="--disable-ipv6"
     fi
 fi
 
