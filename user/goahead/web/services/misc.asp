@@ -25,73 +25,73 @@
 			var statusPassThroughMenu		= 1;
 			var statusWatchersMenu			= 1;
 			var statusOthersMenu			= 1;
-			
+
 			function initTranslation()
 			{
-				_TR("miscTitle",					"services misc title");
+				_TR("miscTitle",				"services misc title");
 				_TR("miscIntroduction",				"services misc introduction");
 				_TR("miscOffloadEngine",			"services misc offload note");
 				_TR("miscSoftwareFastpath",			"services misc software note");
 				_TR("miscImportant",				"services misc important");
 				_TR("miscNATOffload",				"services misc nat offload");
-				_TR("miscSoftware",					"services misc software");
-				_TR("miscHardware",					"services misc hardware");
-				_TR("miscComplex",					"services misc complex");
+				_TR("miscSoftware",				"services misc software");
+				_TR("miscHardware",				"services misc hardware");
+				_TR("miscComplex",				"services misc complex");
 				_TR("miscWiFiOffload",				"services misc wifi offload");
 				_TR("miscUDPOffload",				"services misc udp offload");
 				_TR("miscIPV6offload",				"services misc ipv6 offload");
-				_TR("miscHW_NAT",					"services misc hw_nat");
-				_TR("miscNATimpl",					"services misc nat implementation");
+				_TR("miscHW_NAT",				"services misc hw_nat");
+				_TR("miscNATimpl",				"services misc nat implementation");
 				_TR("miscNATFastpath",				"services misc nat fastpath");
 				_TR("miscRouteFastpath",			"services misc route fastpath");
 				_TR("miscNFFastpath",				"services misc netfilter fastpath");
 				_TR("miscSmbFastpath",				"services misc samba fastpath");
 				_TR("miscWebRemote",				"services misc web remote");
-				_TR("miscWebPort",					"services misc web port");
+				_TR("miscWebPort",				"services misc web port");
 				_TR("miscSSHRemote",				"services misc ssh remote");
-				_TR("miscSSHPort",					"services misc ssh port");
+				_TR("miscSSHPort",				"services misc ssh port");
 				_TR("miscTelnetRemote",				"services misc telnet remote");
-				_TR("miscDnsp",						"services misc dnsproxy");
-				_TR("miscUpnp",						"services misc upnp");
-				_TR("miscSnmp",						"services misc snmp");
+				_TR("miscDnsp",					"services misc dnsproxy");
+				_TR("miscUpnp",					"services misc upnp");
+				_TR("miscSnmp",					"services misc snmp");
 				_TR("miscSnmpCommunity",			"services misc snmp community");
-				_TR("miscArppt",					"services misc arppt");
-				_TR("miscCron",						"services misc cron");
-				_TR("miscLltd",						"services misc lltd");
-				_TR("miscLldpd",					"services misc lldpd");
-				_TR("miscCdp",						"services misc cdp");
-				_TR("miscIgmpp",					"services misc igmp");
-				_TR("miscIgmppMC",					"services misc igmp multicast");
-				_TR("miscIgmppFL",					"services misc igmp fastleave");
+				_TR("miscArppt",				"services misc arppt");
+				_TR("miscCron",					"services misc cron");
+				_TR("miscLltd",					"services misc lltd");
+				_TR("miscLldpd",				"services misc lldpd");
+				_TR("miscCdp",					"services misc cdp");
+				_TR("miscIgmpp",				"services misc igmp");
+				_TR("miscIgmppMC",				"services misc igmp multicast");
+				_TR("miscIgmppFL",				"services misc igmp fastleave");
 				_TR("miscIgmppMC2UC",				"services misc igmp unicast");
 				_TR("miscIgmppMC2UCall",			"services misc igmp unicast all");
-				_TR("miscUdpxy",					"services misc udpxy");
+				_TR("miscUdpxy",				"services misc udpxy");
 				_TR("miscUDPXYPort",				"services misc udpxy port");
-				_TR("miscXupnpd",					"services misc xupnpd");
-				_TR("miscPTPPPoE",					"services misc pass through pppoe");
-				_TR("miscPTIPv6",					"services misc pass through ipv6");
-				_TR("miscWatchdog",					"services misc watchdog");
-				_TR("miscPinger",					"services misc pinger");
-				_TR("miscPingTime",					"services misc ping time");
+				_TR("miscXupnpd",				"services misc xupnpd");
+				_TR("miscPTPPPoE",				"services misc pass through pppoe");
+				_TR("miscPTIPv6",				"services misc pass through ipv6");
+				_TR("miscWatchdog",				"services misc watchdog");
+				_TR("miscPinger",				"services misc pinger");
+				_TR("miscPingTime",				"services misc ping time");
 				_TR("miscPingInterval",				"services misc ping interval");
 				_TR("miscVLANDoubleTag",			"services misc vlan double tag");
 				_TR("miscReinitWAN",				"services misc reinit wan");
 				_TR("miscDHCPRenew",				"services misc dhcp renew");
-				_TR("miscSysfwPingFrmWANFilterHead","services misc ping from wan");
-				_TR("miscStp",						"services misc stp");
+				_TR("miscSysfwPingFrmWANFilterHead",		"services misc ping from wan");
+				_TR("miscStp",					"services misc stp");
 				_TR("miscDontModifyTTL",			"services misc dont modify ttl");
 				_TR("miscDontModifyMCTTL",			"services misc multicast ttl");
-				_TR("miscUsePMTU",					"services misc use pmtu");
+				_TR("miscUsePMTU",				"services misc use pmtu");
 				_TR("miscIRQBalance",				"services misc irqbalance");
-				_TR("miscIGMPAuto",					"services misc auto");
-				_TR("miscIGMPHW",					"services misc hw");
-				_TR("miscAuto",						"services misc auto");
-				_TR("miscRouter",					"services misc router");
-				_TR("miscStorage",					"services misc storage");
+				_TR("miscIGMPAuto",				"services misc auto");
+				_TR("miscIGMPHW",				"services misc hw");
+				_TR("miscAuto",					"services misc auto");
+				_TR("miscRouter",				"services misc router");
+				_TR("miscStorage",				"services misc storage");
 
-				_TRV("miscApply",					"button apply");
-				_TRV("miscCancel",					"button cancel");
-				_TRV("miscReset",					"button reset");
+				_TRV("miscApply",				"button apply");
+				_TRV("miscCancel",				"button cancel");
+				_TRV("miscReset",				"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -103,37 +103,37 @@
 
 			function initValues()
 			{
-				var opmode									= '<% getCfgZero(1, "OperationMode"); %>';
-				var apcli_bridge							= '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>';
-				var igmpb									= '<% getIgmpProxyBuilt(); %>';
-				var form 									= document.miscServiceCfg;
+				var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+				var apcli_bridge = '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>';
+				var igmpb = '<% getIgmpProxyBuilt(); %>';
+				var form = document.miscServiceCfg;
 
-				form.RemoteManagementPort.value				= '<% getCfgZero(1, "RemoteManagementPort"); %>';
+				form.RemoteManagementPort.value					= '<% getCfgZero(1, "RemoteManagementPort"); %>';
 				form.RemoteSSHPort.value					= '<% getCfgZero(1, "RemoteSSHPort"); %>';
 				form.hwnatThreshold.value					= '<% getCfgZero(1, "hw_nat_bind"); %>';
-				form.stpEnbl.options.selectedIndex			= '<% getCfgZero(1, "stpEnabled"); %>';
-				form.igmpEnbl.options.selectedIndex			= (igmpb == '1') ? '<% getCfgZero(1, "igmpEnabled"); %>' : 0;
+				form.stpEnbl.options.selectedIndex				= '<% getCfgZero(1, "stpEnabled"); %>';
+				form.igmpEnbl.options.selectedIndex				= (igmpb == '1') ? '<% getCfgZero(1, "igmpEnabled"); %>' : 0;
 				form.igmpSnoop.value						= '<% getCfgGeneral(1, "igmpSnoopMode"); %>';
 				form.igmpFastL.value						= '<% getCfgGeneral(1, "igmpFastLeave"); %>';
 				form.igmpM2UConv.value						= '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';
-				form.upnpEnbl.options.selectedIndex			= '<% getCfgZero(1, "upnpEnabled"); %>';
-				form.xupnpdEnbl.options.selectedIndex		= '<% getCfgZero(1, "xupnpd"); %>';
-				form.dnspEnbl.options.selectedIndex			= '<% getCfgZero(1, "dnsPEnabled"); %>';
-				form.cdpEnbl.options.selectedIndex			= '<% getCfgZero(1, "cdpEnabled"); %>';
-				form.lltdEnbl.options.selectedIndex			= '<% getCfgZero(1, "lltdEnabled"); %>';
-				form.lldpdEnbl.options.selectedIndex		= '<% getCfgZero(1, "lldpdEnabled"); %>';
-				form.krnlPppoePass.options.selectedIndex	= '<% getCfgZero(1, "pppoe_pass"); %>';
-				form.krnlIpv6Pass.options.selectedIndex		= '<% getCfgZero(1, "ipv6_pass"); %>';
-				form.pingWANEnbl.options.selectedIndex		= ('<% getCfgGeneral(1, "WANPingFilter"); %>' == '1') ? 1 : 0;
-				form.arpPT.options.selectedIndex			= '<% getCfgZero(1, "parproutedEnabled"); %>';
-				form.hw_nat_wifiPT.options.selectedIndex	= ('<% getCfgGeneral(1, "hw_nat_wifi"); %>' == '1') ? 1 : 0;
-				form.hw_nat_udpPT.options.selectedIndex		= ('<% getCfgGeneral(1, "hw_nat_udp"); %>' == '1') ? 1 : 0;
-				form.hw_nat_sixPT.options.selectedIndex		= ('<% getCfgGeneral(1, "hw_nat_six"); %>' == '1') ? 1 : 0;
+				form.upnpEnbl.options.selectedIndex				= '<% getCfgZero(1, "upnpEnabled"); %>';
+				form.xupnpdEnbl.options.selectedIndex				= '<% getCfgZero(1, "xupnpd"); %>';
+				form.dnspEnbl.options.selectedIndex				= '<% getCfgZero(1, "dnsPEnabled"); %>';
+				form.cdpEnbl.options.selectedIndex				= '<% getCfgZero(1, "cdpEnabled"); %>';
+				form.lltdEnbl.options.selectedIndex				= '<% getCfgZero(1, "lltdEnabled"); %>';
+				form.lldpdEnbl.options.selectedIndex				= '<% getCfgZero(1, "lldpdEnabled"); %>';
+				form.krnlPppoePass.options.selectedIndex			= '<% getCfgZero(1, "pppoe_pass"); %>';
+				form.krnlIpv6Pass.options.selectedIndex				= '<% getCfgZero(1, "ipv6_pass"); %>';
+				form.pingWANEnbl.options.selectedIndex				= ('<% getCfgGeneral(1, "WANPingFilter"); %>' == '1') ? 1 : 0;
+				form.arpPT.options.selectedIndex				= '<% getCfgZero(1, "parproutedEnabled"); %>';
+				form.hw_nat_wifiPT.options.selectedIndex			= ('<% getCfgGeneral(1, "hw_nat_wifi"); %>' == '1') ? 1 : 0;
+				form.hw_nat_udpPT.options.selectedIndex				= ('<% getCfgGeneral(1, "hw_nat_udp"); %>' == '1') ? 1 : 0;
+				form.hw_nat_sixPT.options.selectedIndex				= ('<% getCfgGeneral(1, "hw_nat_six"); %>' == '1') ? 1 : 0;
 				form.pingerEnable.value						= ('<% getCfgZero(1, "pinger_check_on"); %>' == '1') ? '1' : '0';
-				form.mssPmtu.value							= ('<% getCfgGeneral(1, "mss_use_pmtu"); %>' == '0') ? '0' : '1';
-				form.natMode.value							= defaultNumber('<% getCfgGeneral(1, "nat_mode"); %>', '1');
-				form.rmtHTTP.value							= defaultNumber('<% getCfgGeneral(1, "RemoteManagement"); %>', '1');
-				form.rmtSSH.value							= defaultNumber('<% getCfgGeneral(1, "RemoteSSH"); %>', '1');
+				form.mssPmtu.value						= ('<% getCfgGeneral(1, "mss_use_pmtu"); %>' == '0') ? '0' : '1';
+				form.natMode.value						= defaultNumber('<% getCfgGeneral(1, "nat_mode"); %>', '1');
+				form.rmtHTTP.value						= defaultNumber('<% getCfgGeneral(1, "RemoteManagement"); %>', '1');
+				form.rmtSSH.value						= defaultNumber('<% getCfgGeneral(1, "RemoteSSH"); %>', '1');
 				form.rmtTelnet.value						= defaultNumber('<% getCfgGeneral(1, "RemoteTelnet"); %>', '0');
 				form.udpxyMode.value						= defaultNumber('<% getCfgGeneral(1, "UDPXYMode"); %>', '0');
 				form.udpxyPort.value						= defaultNumber('<% getCfgGeneral(1, "UDPXYPort"); %>', '81');
@@ -146,28 +146,13 @@
 				form.CrondEnable.value						= defaultNumber('<% getCfgGeneral(1, "CrondEnable"); %>', '0');
 				form.ForceRenewDHCP.value					= defaultNumber('<% getCfgGeneral(1, "ForceRenewDHCP"); %>', '1');
 				form.SnmpdEnabled.value						= defaultNumber('<% getCfgGeneral(1, "snmpd"); %>', '0');
-				form.ttlStore.value							= ('<% getCfgGeneral(1, "store_ttl"); %>' == '1') ? '1' : '0';
+				form.ttlStore.value						= ('<% getCfgGeneral(1, "store_ttl"); %>' == '1') ? '1' : '0';
 				form.ttlMcastStore.value					= ('<% getCfgGeneral(1, "store_ttl_mcast"); %>' == '1') ? '1' : '0';
 				form.offloadMode.value						= defaultNumber('<% getCfgGeneral(1, "offloadMode"); %>', '1');
 				form.IRQBalance.value						= '<% getCfgGeneral(1, "IRQBalance"); %>';
 				form.ping_check_time.value					= '<% getCfgGeneral(1, "ping_check_time"); %>';
-				form.ping_check_interval.value				= '<% getCfgGeneral(1, "ping_check_interval"); %>';
-				form.smbFastpath.options.selectedIndex		= ('<% getCfgGeneral(1, "smbFastpath"); %>' == '1') ? 1 : 0;
-
-				displayElement('rmt_telnetd',				'<% getTelnetdBuilt(); %>' == '1');
-				displayElement('parprouted',				'<% getARPptBuilt(); %>' == '1');
-				displayElement('cdp', 						'<% getCdpBuilt(); %>' == '1');
-				displayElement('lltd',						'<% getLltdBuilt(); %>' == '1');
-				displayElement('lldpd',						'<% getLldpdBuilt(); %>' == '1');
-				displayElement('snmpd',						'<% getSNMPDBuilt(); %>' == '1');
-				displayElement('igmpProxy',					(igmpb == '1') && (opmode != '0') && (apcli_bridge != '1'));
-				displayElement('igmpFastL',					((igmpb == '1') && (opmode != '0') && (apcli_bridge != '1')) || (opmode != '2'));
-				displayElement('igmpM2UConv',				opmode != '2');
-				displayElement('upnp',						'<% getUpnpBuilt(); %>' == '1');
-				displayElement('xupnpd',					'<% getXupnpdBuilt(); %>' == '1');
-				displayElement('dnsproxy',					'<% getDnsmasqBuilt(); %>' == '1');
-				displayElement('irqbalance',				'<% isSMP(); %>' == '1');
-				displayElement('smb_fastpath_row', 			'<% getSmbFPBuilt(); %>' == '1');
+				form.ping_check_interval.value					= '<% getCfgGeneral(1, "ping_check_interval"); %>';
+				form.smbFastpath.options.selectedIndex				= ('<% getCfgGeneral(1, "smbFastpath"); %>' == '1') ? 1 : 0;
 
 				offloadModeSelect(form);
 				httpRmtSelect(form);
@@ -178,8 +163,9 @@
 				pingerSelect(form);
 
 				displayServiceStatus();
-				
+
 				showWarning();
+
 				initTranslation();
 
 				showOffloadEngineMenu();
@@ -197,7 +183,7 @@
 			{
 				var rmtManagementPort	= '<% getCfgZero(1, "RemoteManagementPort"); %>';
 
-				// NAT Threshold 
+				// NAT Threshold
 				if (form.offloadMode.value >= 2)
 					if (!validateNum(form.hwnatThreshold.value, false) || form.hwnatThreshold.value < 0 || form.hwnatThreshold.value > 500) {
 						window.scrollTo(0, 0);
@@ -224,7 +210,7 @@
 						form.RemoteSSHPort.focus();
 						return false;
 					}
-					
+
 				if (form.RemoteManagementPort.value == rmtManagementPort) {
 					form.goaheadrestart.value = 0;
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
@@ -237,7 +223,7 @@
 
 			function offloadModeSelect(form)
 			{
-				var thresh		= document.miscServiceCfg.offloadMode.value;
+				var thresh	= document.miscServiceCfg.offloadMode.value;
 				var fastpathb	= '<% getFastPathBuilt(); %>';
 
 				// Mode
@@ -409,10 +395,10 @@
 					html +=	'<td class="title" onClick="showServicesMenu();" style="width: 80px;">' + _("services status configure") + '</td>';
 					ajaxModifyElementHTML('miscServices_row', html);
 					statusServicesMenu = 1;
-					displayElement(elements, 		true);
-					displayElement('dnsproxy',		'<% getDnsmasqBuilt(); %>' == '1');
-					displayElement('upnp',			'<% getUpnpBuilt(); %>' == '1');
-					displayElement('parprouted',	'<% getARPptBuilt(); %>' == '1');
+					displayElement(elements, true);
+					displayElement('dnsproxy', '<% getDnsmasqBuilt(); %>' == '1');
+					displayElement('upnp', '<% getUpnpBuilt(); %>' == '1');
+					displayElement('parprouted', '<% getARPptBuilt(); %>' == '1');
 				} else {
 					ajaxModifyElementHTML('miscServices_row', '<td class="title" colspan="5" onClick="showServicesMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc services") + '</td>');
 					statusServicesMenu = 0;
@@ -436,12 +422,12 @@
 					var apcli_bridge	= '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>';
 					var igmpb			= '<% getIgmpProxyBuilt(); %>';
 
-					displayElement(elements, 			true);
-					displayElement('igmpProxy',			igmpb == '1' && opmode != '0' && apcli_bridge != '1');
-					displayElement('igmpFastL',			(igmpb == '1' && opmode != '0' && apcli_bridge != '1') || opmode != '2');
-					displayElement('igmpM2UConv',		opmode != '2');
-					displayElement('udpxy_port_row',	document.miscServiceCfg.udpxyMode.selectedIndex == '1');
-					displayElement('xupnpd',			'<% getXupnpdBuilt(); %>' == '1');
+					displayElement(elements, true);
+					displayElement('igmpProxy', igmpb == '1' && opmode != '0' && apcli_bridge != '1');
+					displayElement('igmpFastL', (igmpb == '1' && opmode != '0' && apcli_bridge != '1') || opmode != '2');
+					displayElement('igmpM2UConv', opmode != '2');
+					displayElement('udpxy_port_row', document.miscServiceCfg.udpxyMode.selectedIndex == '1');
+					displayElement('xupnpd', '<% getXupnpdBuilt(); %>' == '1');
 				} else {
 					ajaxModifyElementHTML('miscIPTV_row', '<td class="title" colspan="5" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc iptv") + '</td>');
 					statusServicesIPTVMenu = 0;
@@ -460,8 +446,12 @@
 					html +=	'<td class="title" onClick="showServicesInfoMenu();" style="width: 80px;">' + _("services status configure") + '</td>';
 					ajaxModifyElementHTML('miscDINF_row', html);
 					statusServicesInfoMenu = 1;
-					displayElement(elements,			true);
-					displayElement('snmpCommunityRow',	document.miscServiceCfg.SnmpdEnabled.value != '0');
+					displayElement(elements, true);
+					displayElement('cdp', '<% getCdpBuilt(); %>' == '1');
+					displayElement('lltd', '<% getLltdBuilt(); %>' == '1');
+					displayElement('lldpd', '<% getLldpdBuilt(); %>' == '1');
+					displayElement('snmpd', '<% getSNMPDBuilt(); %>' == '1');
+					displayElement('snmpCommunityRow', document.miscServiceCfg.SnmpdEnabled.value != '0');
 				} else {
 					ajaxModifyElementHTML('miscDINF_row', '<td class="title" colspan="5" onClick="showServicesInfoMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc dinf") + '</td>');
 					statusServicesInfoMenu = 0;
@@ -501,9 +491,9 @@
 				if (statusOthersMenu == 0) {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc others"));
 					statusOthersMenu = 1;
-					displayElement(elements,				true);
-					displayElement('irqbalance',			'<% isSMP(); %>' == '1');
-					displayElement('mcast_store_ttl_row',	document.miscServiceCfg.igmpEnbl.value == '1');
+					displayElement(elements, true);
+					displayElement('irqbalance', '<% isSMP(); %>' == '1');
+					displayElement('mcast_store_ttl_row', document.miscServiceCfg.igmpEnbl.value == '1');
 				} else {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc others"));
 					statusOthersMenu = 0;

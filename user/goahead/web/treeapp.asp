@@ -84,6 +84,7 @@ var usbb = '<% getUSBBuilt(); %>';
 var storageb = '<% getStorageBuilt(); %>';
 var ftpb = '<% getFtpBuilt(); %>';
 var smbb = '<% getSmbBuilt(); %>';
+var webstrb = '<% getWebstrBuilt(); %>';
 var radiusb = '<% getRadiusBuilt(); %>';
 var cwmpb	= '<% getCwmpBuilt(); %>';
 var printersrvb = '<% getPrinterSrvBuilt(); %>';
@@ -155,7 +156,7 @@ if (opmode != '0') {
 	a.add(701, 700, _("treeapp firewall"),              "javascript:go('firewall/firewall.asp');");
 	a.add(703, 700, _("treeapp alg"),                   "javascript:go('firewall/alg.asp');");
 	a.add(704, 700, _("treeapp dmz"),                   "javascript:go('firewall/DMZ.asp');");
-	a.add(705, 700, _("treeapp content filtering"),     "javascript:go('firewall/content_filtering.asp');");
+	if (webstrb == "1") a.add(705, 700, _("treeapp content filtering"),     "javascript:go('firewall/content_filtering.asp');");
 }
 
 // Services

@@ -23,23 +23,23 @@
 
 			function initTranslation()
 			{
-			  _TR("FirewallTitle",				"firewall title");
-			  _TR("bridge_warning",				"firewall bridge warning");
-			  _TR("FirewallSet",				"firewall title");
-			  _TR("defSesLimit",				"firewall defailt session limit");
-			  _TR("forwardTitle",				"forward title");
+			  _TR("FirewallTitle",			"firewall title");
+			  _TR("bridge_warning",			"firewall bridge warning");
+			  _TR("FirewallSet",			"firewall title");
+			  _TR("defSesLimit",			"firewall defailt session limit");
+			  _TR("forwardTitle",			"forward title");
 			  _TR("forwardIntroduction",		"forward introduction");
-			  _TR("forwardVirtualSrv",			"forward virtual server");
-			  _TR("ForwardSesLimit",			"forward session limit");
+			  _TR("forwardVirtualSrv",		"forward virtual server");
+			  _TR("ForwardSesLimit",		"forward session limit");
 			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
 			  _TR("forwardVirtualSrvDisable",	"button disable");
 			  _TR("forwardVirtualSrvEnable",	"button enable");
-			  _TR("portTitle",					"port title");
-			  _TR("portIntroduction",			"port introduction");
-			  _TR("portBasicSet",				"port basic setting");
-			  _TR("portBasicFilter",			"port basic filter");
-			  _TR("portDisable",				"button disable");
-			  _TR("portEnable",					"button enable");
+			  _TR("portTitle",			"port title");
+			  _TR("portIntroduction",		"port introduction");
+			  _TR("portBasicSet",			"port basic setting");
+			  _TR("portBasicFilter",		"port basic filter");
+			  _TR("portDisable",			"button disable");
+			  _TR("portEnable",			"button enable");
 
 			  var elements = document.getElementsByTagName('input');
 			  for (i = 0; i < elements.length; i++)
@@ -549,7 +549,7 @@
 						<table class="buttons">
 							<tr>
 								<td><input type="hidden" name="portForwardRules" value="">
-								<input type="submit" class="half" id="apply" value="Apply">
+								<input type="submit" class="normal" id="apply" value="Apply">
 								<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
 						</table>

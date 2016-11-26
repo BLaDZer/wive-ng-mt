@@ -154,26 +154,6 @@ static void setFirewallDMZ(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
-/* goform/webContentFilterSetup */
-parameter_fetch_t content_filtering_args[] =
-{
-	{ T("urlFiltering"),		"websURLFilters",	0,	T("") },
-	{ T("hostFiltering"),		"websHostFilters",	0,	T("") },
-	{ T("websFilterProxy"),		"websFilterProxy",	2,	T("") },
-	{ T("websFilterJava"),		"websFilterJava",	2,	T("") },
-	{ T("websFilterActivex"),	"websFilterActivex",	2,	T("") },
-	{ T("websFilterCookies"),	"websFilterCookies",	2,	T("") },
-	{ NULL,				NULL,			0,	NULL  }  // Terminator
-};
-
-static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
-{
-	setupParameters(wp, content_filtering_args, 1);
-	firewall_rebuild();
-	websHeader(wp);
-	websDone(wp, 200);
-}
-
 /* goform/setFirewallAlg */
 parameter_fetch_t alg_params[] =
 {
@@ -210,6 +190,37 @@ static void setFirewall(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
+#ifdef CONFIG_NETFILTER_XT_MATCH_WEBSTR
+/* goform/webContentFilterSetup */
+parameter_fetch_t content_filtering_args[] =
+{
+	{ T("urlFiltering"),		"websURLFilters",	0,	T("") },
+	{ T("hostFiltering"),		"websHostFilters",	0,	T("") },
+	{ T("websFilterProxy"),		"websFilterProxy",	2,	T("") },
+	{ T("websFilterJava"),		"websFilterJava",	2,	T("") },
+	{ T("websFilterActivex"),	"websFilterActivex",	2,	T("") },
+	{ T("websFilterCookies"),	"websFilterCookies",	2,	T("") },
+	{ NULL,				NULL,			0,	NULL  }  // Terminator
+};
+
+static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
+{
+	setupParameters(wp, content_filtering_args, 1);
+	firewall_rebuild();
+	websHeader(wp);
+	websDone(wp, 200);
+}
+#endif
+
+static int getWebstrBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
+       return websWrite(wp, T("1"));
+#else
+       return websWrite(wp, T("0"));
+#endif
+}
+
 void formDefineFirewall(void)
 {
 	websAspDefine(T("getPortFilteringRules"), getPortFilteringRules);
@@ -219,6 +230,8 @@ void formDefineFirewall(void)
 	websFormDefine(T("setFirewall"), setFirewall);
 	websFormDefine(T("setFirewallDMZ"), setFirewallDMZ);
 	websFormDefine(T("setFirewallALG"), setFirewallALG);
+	websAspDefine(T("getWebstrBuilt"), getWebstrBuilt);
+#ifdef CONFIG_NETFILTER_XT_MATCH_WEBSTR
 	websFormDefine(T("webContentFilterSetup"), webContentFilterSetup);
-
+#endif
 }
