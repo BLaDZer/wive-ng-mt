@@ -23,6 +23,8 @@
 #
 #CFLAGS = -Wall -O -D_GNU_SOURCE -g -DDEBUG
 
+-include $(LINUX_CONFIG)
+
 IPTABLESPATH=../iptables
 CFLAGS += -Wall -Os -D_GNU_SOURCE -I$(IPTABLESPATH)
 LDFLAGS += $(ROOTDIR)/lib/lib -L$(IPTABLESPATH)/libiptc/ -L$(ROOTDIR)/lib/lib
@@ -150,8 +152,11 @@ LIBS += $(shell pkg-config --static --libs-only-l libnetfilter_conntrack)
 endif # ($(TEST),1)
 
 CFLAGS := $(CFLAGS) -DIPTABLES_143
-LIBS += $(IPTABLESPATH)/libiptc/.libs/libip4tc.a $(IPTABLESPATH)/libiptc/.libs/libip6tc.a 
-#$(LIBCDIRSHARED)/lib/libnfnetlink.so
+LIBS += $(IPTABLESPATH)/libiptc/.libs/libip4tc.a
+
+ifdef CONFIG_IPV6
+LIBS += $(IPTABLESPATH)/libiptc/.libs/libip6tc.a
+endif
 
 #LDLIBS += -lnfnetlink
 
