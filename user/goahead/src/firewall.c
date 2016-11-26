@@ -214,7 +214,7 @@ static void webContentFilterSetup(webs_t wp, char_t *path, char_t *query)
 
 static int getWebstrBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
        return websWrite(wp, T("1"));
 #else
        return websWrite(wp, T("0"));
