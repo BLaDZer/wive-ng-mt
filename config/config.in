@@ -167,6 +167,8 @@ if [ "$CONFIG_USER_IPROUTE2" = "y" ]; then
 fi
 bool 'ESW embedded Switch Command'	CONFIG_RTESW_SWITCH
 bool 'ESW only one port'		CONFIG_RTESW_SWITCH_ONEPORT
+bool 'ESW only two port'		CONFIG_RTESW_SWITCH_TWOPORT
+bool 'ESW only three port'		CONFIG_RTESW_SWITCH_THRPORT
 bool 'Software QOS support'		CONFIG_RALINKAPP_SWQOS
 if [ "$CONFIG_RALINKAPP_SWQOS" = "y" ]; then
     define_bool CONFIG_USER_IPROUTE2_TC
