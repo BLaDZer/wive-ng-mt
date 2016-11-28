@@ -501,7 +501,7 @@ int cwmp_session_create_connection(cwmp_session_t * session)
     }
 
     cwmp_log_debug("dest host: %s, dest port: %d", session->dest->host, session->dest->port);
-    if ((timeout = cwmp_conf_get_int("cwmpd:session_connect_timeout")) >= -1) {
+    if ((timeout = cwmp_conf_get_int_def("cwmpd:session_connect_timeout", 15)) >= -1) {
         http_socket_set_recvtimeout(sock, timeout);
         http_socket_set_sendtimeout(sock, timeout);
     } else {
@@ -527,7 +527,7 @@ int cwmp_session_create_connection(cwmp_session_t * session)
         }
 #endif
     }
-    if ((timeout = cwmp_conf_get_int("cwmpd:session_response_timeout")) >= -1) {
+    if ((timeout = cwmp_conf_get_int_def("cwmpd:session_response_timeout", 30)) >= -1) {
         http_socket_set_recvtimeout(sock, timeout);
         http_socket_set_sendtimeout(sock, timeout);
     } else {

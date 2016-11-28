@@ -642,6 +642,7 @@ int cpe_get_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, char ** va
             *value = "SharedAuthentication";
             break;
         case WLAN_EAP:
+        case WLAN_PSK: // FIXME: check if this is correct
             *value = "EAPAuthentication";
             break;
         default:

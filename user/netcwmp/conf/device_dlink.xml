@@ -2,7 +2,7 @@
 <cwmp>
 	<model>
 		<object name="InternetGatewayDevice">
-
+			<param name="DeviceSummary" inform="1" get_func="cpe_get_const_string" args=""/>
 
 			<object name="DeviceInfo">
 				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
@@ -14,11 +14,13 @@
 				<param name="ProductClass" inform="1" get_func="cpe_get_igd_di_productclass"/>
 				<param name="ProvisioningCode" rw="1" inform="1" get_func="cpe_get_conf_string" args="cwmp:cpe_prov" set_func="cpe_set_conf_string" reload_func="cpe_reload_all"/>
 				<param name="DeviceLog" inform="0" get_func="cpe_get_igd_di_devicelog"/>
+				<param name="SpecVersion" inform="1" get_func="cpe_get_const_string" args="1.0"/>
 			</object>
 
 			<object name="ManagementServer">
 				<param name="ConnectionRequestURL" inform="1" get_func="cpe_get_igd_ms_connectionrequesturl"/>
 				<param name="URL" inform="1" get_func="cpe_get_igd_ms_url" set_func="cpe_set_igd_ms_url"/>
+				<param name="ParameterKey" inform="1" get_func="cpe_get_ms_parameter_key"/>
 			</object>
 
 

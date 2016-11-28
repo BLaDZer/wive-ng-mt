@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     cwmp_log_set(log_filename, level);
     cwmp_log_debug("DEBUG: current log level is \"%s\" (%i)", loglevel, level);
 
-    cwmp_enable=cwmp_conf_get_int("cwmp:enable");
+    cwmp_enable=cwmp_conf_get_int_def("cwmp:enable", 0);
     if(!cwmp_enable)
     {
         exit(-1);

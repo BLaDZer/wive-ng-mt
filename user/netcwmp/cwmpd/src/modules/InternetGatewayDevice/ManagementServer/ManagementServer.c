@@ -126,7 +126,7 @@ int cpe_get_igd_ms_connectionrequesturl(cwmp_t * cwmp, const char * name, char *
         return FAULT_CODE_9002;
     }
 
-    int port = cwmp_conf_get_int("cwmpd:httpd_port");
+    int port = cwmp_conf_get_int_def("cwmpd:httpd_port", 1008);
     snprintf(buf, 256, "http://%s:%d", local_ip, port);
     *value = PSTRDUP(buf);
     return FAULT_CODE_OK;

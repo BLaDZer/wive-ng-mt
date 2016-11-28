@@ -172,14 +172,14 @@ char * cwmp_conf_pool_get(pool_t * pool, const char * key)
     return pool_pstrdup(pool, value);
 }
 
-int cwmp_conf_get_int(const char * key)
+int cwmp_conf_get_int_def(const char * key, int def)
 {
     char val[INI_BUFFERSIZE] = {};
 
     cwmp_log_trace("%s(\"%s\")", __func__, key);
 
     cwmp_conf_get(key, val);
-    return strtol(val, NULL, 10);
+    return strToIntDef(val, def);
 }
 
 

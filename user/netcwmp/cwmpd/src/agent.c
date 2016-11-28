@@ -239,7 +239,7 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
                  * '4 VALUE CHANGED' event emitted after 'lazy' setter
                  * (passive notification in SetParameterAttributesStruct)
                  */
-                if (cwmp_conf_get_int("cwmpd:notification") != 0) {
+                if (cwmp_conf_get_int_def("cwmpd:notification", 0) != 0) {
                     cwmp_log_info("http session: Periodic connection");
                     queue_push(cwmp->queue, NULL, TASK_NOTIFY_TAG);
                 }

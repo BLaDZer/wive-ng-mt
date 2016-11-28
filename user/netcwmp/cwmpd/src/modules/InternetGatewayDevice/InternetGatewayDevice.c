@@ -1,11 +1,16 @@
 
 int cpe_reload_all(cwmp_t *cwmp, callback_register_func_t callback_reg)
 {
-    char p[INI_BUFFERSIZE] = {};
+    char p[INI_BUFFERSIZE] = {0};
     int pid = 0;
 
     DM_TRACE_RELOAD();
     cwmp_conf_get("cwmpd:reload_script", p);
+
+    if (p[0] == '\0') {
+        strcpy(p, "/etc/scripts/internet.sh");
+    }
+
     if (*p) {
         if ((pid = fork()) == 0) {
             sleep(3);
