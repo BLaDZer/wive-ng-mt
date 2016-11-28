@@ -768,7 +768,10 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	bInsertTimestamp = FALSE;
 	if (pHeader_802_11->FC.Type == BTYPE_CNTL) /* must be PS-POLL*/
 	{
-		bAckRequired = FALSE;
+    		if (pHeader_802_11->FC.SubType == SUBTYPE_BLOCK_ACK_REQ)
+        	    bAckRequired = TRUE;
+		else
+		    bAckRequired = FALSE;
 	}
 	else /* BTYPE_MGMT or BTYPE_DATA(must be NULL frame)*/
 	{
@@ -789,6 +792,11 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 			else if ((pHeader_802_11->FC.SubType == SUBTYPE_PROBE_REQ) && (pHeader_802_11->FC.Type == BTYPE_MGMT))
 			{
 				bAckRequired = FALSE; /* Disable ACK to prevent retry 0x1f for Probe Request*/
+			}
+			else if ((pHeader_802_11->FC.SubType == SUBTYPE_DEAUTH) &&
+				 (MacTableLookup(pAd, pHeader_802_11->Addr1) == NULL))
+			{
+				bAckRequired = FALSE; /* Disable ACK to prevent retry 0x1f for Deauth */
 			}
 		}
 	}

@@ -1814,7 +1814,10 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 	bInsertTimestamp = FALSE;
 	if (pHeader_802_11->FC.Type == FC_TYPE_CNTL) /* must be PS-POLL */
 	{
-		bAckRequired = FALSE;
+    		if (pHeader_802_11->FC.SubType == SUBTYPE_BLOCK_ACK_REQ)
+        	    bAckRequired = TRUE;
+		else
+		    bAckRequired = FALSE;
 #ifdef VHT_TXBF_SUPPORT
 		if (pHeader_802_11->FC.SubType == SUBTYPE_VHT_NDPA)
 			pHeader_802_11->Duration = RTMPCalcDuration(pAd, MlmeRate, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE));

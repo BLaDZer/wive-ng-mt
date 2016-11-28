@@ -1032,6 +1032,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->CommonCfg.TxPowerDefault = 0xffffffff; /* AUTO*/
 	pAd->CommonCfg.TxPreamble = Rt802_11PreambleAuto; /* use Long preamble on TX by defaut*/
 	pAd->CommonCfg.bUseZeroToDisableFragment = FALSE;
+	pAd->bDisableRtsProtect = FALSE;
 	pAd->CommonCfg.RtsThreshold = 2347;
 	pAd->CommonCfg.FragmentThreshold = 2346;
 	pAd->CommonCfg.UseBGProtection = 0;    /* 0: AUTO*/

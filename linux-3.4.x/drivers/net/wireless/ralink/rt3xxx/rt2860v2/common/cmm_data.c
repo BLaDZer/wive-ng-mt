@@ -672,7 +672,10 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 			pHeader_802_11->FC.PwrMgmt = PWR_SAVE;
 		}
 #endif /* CONFIG_STA_SUPPORT */
-		bAckRequired = FALSE;
+    		if (pHeader_802_11->FC.SubType == SUBTYPE_BLOCK_ACK_REQ)
+        	    bAckRequired = TRUE;
+		else
+		    bAckRequired = FALSE;
 	}
 	else /* BTYPE_MGMT or BTYPE_DATA(must be NULL frame)*/
 	{

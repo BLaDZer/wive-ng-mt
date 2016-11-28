@@ -1561,7 +1561,10 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 	
 	bInsertTimestamp = FALSE;
 	if (pHeader_802_11->FC.Type == BTYPE_CNTL) /* must be PS-POLL*/
-		bAckRequired = FALSE;
+    		if (pHeader_802_11->FC.SubType == SUBTYPE_BLOCK_ACK_REQ)
+        	    bAckRequired = TRUE;
+		else
+		    bAckRequired = FALSE;
 	else /* BTYPE_MGMT or BTYPE_DATA(must be NULL frame)*/
 	{
 		if (pHeader_802_11->Addr1[0] & 0x01) /* MULTICAST, BROADCAST*/
