@@ -1574,9 +1574,6 @@ typedef struct _COMMON_CONFIG {
 	ULONG BasicRateBitmap;	/* backup basic ratebitmap */
 	ULONG BasicRateBitmapOld;	/* backup basic ratebitmap */
 
-	BOOLEAN bInServicePeriod;
-
-
 	BOOLEAN bAPSDAC_BE;
 	BOOLEAN bAPSDAC_BK;
 	BOOLEAN bAPSDAC_VI;

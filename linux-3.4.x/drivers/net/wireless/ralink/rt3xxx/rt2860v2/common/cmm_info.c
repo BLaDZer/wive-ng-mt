@@ -2389,14 +2389,11 @@ VOID	RTMPSetPhyMode(
 			Or some 11n stations will not connect to us if we do not put
 			supported/extended rate element in beacon.
 		*/
-		case PHY_11G:
 		case PHY_11BG_MIXED:
 		case PHY_11ABG_MIXED:
 #ifdef DOT11_N_SUPPORT
-		case PHY_11N_2_4G:
 		case PHY_11ABGN_MIXED:
 		case PHY_11BGN_MIXED:
-		case PHY_11GN_MIXED:
 #endif /* DOT11_N_SUPPORT */
 			pAd->CommonCfg.SupRate[0]  = 0x82;	  /* 1 mbps, in units of 0.5 Mbps, basic rate*/
 			pAd->CommonCfg.SupRate[1]  = 0x84;	  /* 2 mbps, in units of 0.5 Mbps, basic rate*/
@@ -2427,10 +2424,13 @@ VOID	RTMPSetPhyMode(
 			break;
 
 		case PHY_11A:
+		case PHY_11G:
 #ifdef DOT11_N_SUPPORT
 		case PHY_11AN_MIXED:
 		case PHY_11AGN_MIXED:
 		case PHY_11N_5G:
+		case PHY_11N_2_4G:
+		case PHY_11GN_MIXED:
 #endif /* DOT11_N_SUPPORT */
 			pAd->CommonCfg.SupRate[0]  = 0x8C;	  /* 6 mbps, in units of 0.5 Mbps, basic rate*/
 			pAd->CommonCfg.SupRate[1]  = 0x12;	  /* 9 mbps, in units of 0.5 Mbps*/

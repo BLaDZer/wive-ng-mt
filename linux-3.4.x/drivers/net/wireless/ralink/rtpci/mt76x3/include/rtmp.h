@@ -1879,9 +1879,9 @@ typedef struct _COMMON_CONFIG {
 	ULONG BasicRateBitmapOld;	/* backup basic ratebitmap */
 
 	BOOLEAN bInServicePeriod;
-
+#if defined (CONFIG_WIFI_PKT_FWD)
 	UCHAR EtherTrafficBand;
-
+#endif
 	BOOLEAN bAPSDAC_BE;
 	BOOLEAN bAPSDAC_BK;
 	BOOLEAN bAPSDAC_VI;

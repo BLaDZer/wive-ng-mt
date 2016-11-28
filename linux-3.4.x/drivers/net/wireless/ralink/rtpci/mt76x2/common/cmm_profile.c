@@ -2906,7 +2906,7 @@ NDIS_STATUS	RTMPSetProfileParameters(
 			if (pAd->CommonCfg.Channel > 14)
 				pAd->Dot11_H.org_ch = pAd->CommonCfg.Channel;
 		}
-
+#if defined (CONFIG_WIFI_PKT_FWD)
 		/* EtherTrafficBand */
 		if (RTMPGetKeyParameter("EtherTrafficBand", tmpbuf, 10, pBuffer, TRUE))
 		{
@@ -2916,7 +2916,7 @@ NDIS_STATUS	RTMPSetProfileParameters(
 			if (pAd->CommonCfg.EtherTrafficBand > EtherTrafficBand5G)
 				pAd->CommonCfg.EtherTrafficBand = EtherTrafficBand5G;
 		}
-
+#endif
 		/*WirelessMode*/
 		/*Note: BssidNum must be put before WirelessMode in dat file*/
 		if(RTMPGetKeyParameter("WirelessMode", tmpbuf, 32, pBuffer, TRUE))

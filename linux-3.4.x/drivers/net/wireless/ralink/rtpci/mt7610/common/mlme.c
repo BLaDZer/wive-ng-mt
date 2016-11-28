@@ -4144,7 +4144,6 @@ VOID APSDPeriodicExec(
 		RTMPSendNullFrame(pAd, pAd->CommonCfg.TxRate, TRUE);
 		pAd->CommonCfg.bNeedSendTriggerFrame = FALSE;
 		pAd->CommonCfg.TriggerTimerCount = 0;
-		pAd->CommonCfg.bInServicePeriod = TRUE;
 	}*/
 }
 

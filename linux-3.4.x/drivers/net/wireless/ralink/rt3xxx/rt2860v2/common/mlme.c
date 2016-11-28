@@ -2630,7 +2630,6 @@ VOID MlmeUpdateTxRates(
 	}
 
 /*===========================================================================*/
-/*===========================================================================*/
 	do
 	{
 #ifdef CONFIG_AP_SUPPORT
@@ -2800,46 +2799,52 @@ VOID MlmeUpdateTxRates(
 	{
 		switch (pSupRate[i] & 0x7f)
 		{
-			case 2:   Rate = RATE_1;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0001;	 break;
-			case 4:   Rate = RATE_2;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0002;	 break;
-			case 11:  Rate = RATE_5_5;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0004;	 break;
-			case 22:  Rate = RATE_11;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0008;	 break;
-			case 12:  Rate = RATE_6;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 0x0010;  break;
-			case 18:  Rate = RATE_9;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0020;	 break;
-			case 24:  Rate = RATE_12;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 0x0040;  break;
-			case 36:  Rate = RATE_18;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0080;	 break;
-			case 48:  Rate = RATE_24;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 0x0100;  break;
-			case 72:  Rate = RATE_36;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0200;	 break;
-			case 96:  Rate = RATE_48;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0400;	 break;
-			case 108: Rate = RATE_54;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 0x0800;	 break;
+			case 2:   Rate = RATE_1;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 0;	 break;
+			case 4:   Rate = RATE_2;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 1;	 break;
+			case 11:  Rate = RATE_5_5;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 2;	 break;
+			case 22:  Rate = RATE_11;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 3;	 break;
+			case 12:  Rate = RATE_6;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 4;  break;
+			case 18:  Rate = RATE_9;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 5;	 break;
+			case 24:  Rate = RATE_12;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 6;  break;
+			case 36:  Rate = RATE_18;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 7;	 break;
+			case 48:  Rate = RATE_24;	/*if (pSupRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 8;  break;
+			case 72:  Rate = RATE_36;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 9;	 break;
+			case 96:  Rate = RATE_48;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 10;	 break;
+			case 108: Rate = RATE_54;	if (pSupRate[i] & 0x80) BasicRateBitmap |= 1 << 11;	 break;
 			default:  Rate = RATE_1;	break;
 		}
-		if (MaxSupport < Rate)	MaxSupport = Rate;
 
-		if (MinSupport > Rate) MinSupport = Rate;		
+		if (MaxSupport < Rate)
+			MaxSupport = Rate;
+
+		if (MinSupport > Rate)
+			MinSupport = Rate;
 	}
 	
 	for (i=0; i<ExtRateLen; i++)
 	{
 		switch (pExtRate[i] & 0x7f)
 		{
-			case 2:   Rate = RATE_1;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0001;	 break;
-			case 4:   Rate = RATE_2;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0002;	 break;
-			case 11:  Rate = RATE_5_5;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0004;	 break;
-			case 22:  Rate = RATE_11;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0008;	 break;
-			case 12:  Rate = RATE_6;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 0x0010;  break;
-			case 18:  Rate = RATE_9;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0020;	 break;
-			case 24:  Rate = RATE_12;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 0x0040;  break;
-			case 36:  Rate = RATE_18;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0080;	 break;
-			case 48:  Rate = RATE_24;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 0x0100;  break;
-			case 72:  Rate = RATE_36;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0200;	 break;
-			case 96:  Rate = RATE_48;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0400;	 break;
-			case 108: Rate = RATE_54;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 0x0800;	 break;
-			default:  Rate = RATE_1;	break;
+			case 2:   Rate = RATE_1;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 0;	 break;
+			case 4:   Rate = RATE_2;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 1;	 break;
+			case 11:  Rate = RATE_5_5;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 2;	 break;
+			case 22:  Rate = RATE_11;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 3;	 break;
+			case 12:  Rate = RATE_6;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 4;  break;
+			case 18:  Rate = RATE_9;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 5;	 break;
+			case 24:  Rate = RATE_12;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 6;  break;
+			case 36:  Rate = RATE_18;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 7;	 break;
+			case 48:  Rate = RATE_24;	/*if (pExtRate[i] & 0x80)*/  BasicRateBitmap |= 1 << 8;  break;
+			case 72:  Rate = RATE_36;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 9;	 break;
+			case 96:  Rate = RATE_48;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 10;	 break;
+			case 108: Rate = RATE_54;	if (pExtRate[i] & 0x80) BasicRateBitmap |= 1 << 11;	 break;
+			default:  Rate = RATE_1;
+				break;
 		}
-		if (MaxSupport < Rate)	MaxSupport = Rate;
+		if (MaxSupport < Rate)
+			MaxSupport = Rate;
 
-		if (MinSupport > Rate) MinSupport = Rate;		
+		if (MinSupport > Rate)
+			MinSupport = Rate;
 	}
 
 	RTMP_IO_WRITE32(pAd, LEGACY_BASIC_RATE, BasicRateBitmap);
@@ -2851,7 +2856,8 @@ VOID MlmeUpdateTxRates(
 		pAd->CommonCfg.ExpectedACKRate[i] = CurrBasicRate;
 	}
 
-	DBGPRINT(RT_DEBUG_TRACE,("MlmeUpdateTxRates[MaxSupport = %d] = MaxDesire %d Mbps\n", RateIdToMbps[MaxSupport], RateIdToMbps[MaxDesire]));
+	DBGPRINT(RT_DEBUG_TRACE,("%s():[MaxSupport = %d] = MaxDesire %d Mbps\n",
+				__FUNCTION__, RateIdToMbps[MaxSupport], RateIdToMbps[MaxDesire]));
 	/* max tx rate = min {max desire rate, max supported rate}*/
 	if (MaxSupport < MaxDesire)
 		pAd->CommonCfg.MaxTxRate = MaxSupport;
@@ -2898,8 +2904,6 @@ VOID MlmeUpdateTxRates(
 	else
 	{
 		pAd->CommonCfg.TxRate = pAd->CommonCfg.MaxTxRate;
-		/*pHtPhy->field.MCS	= (pAd->CommonCfg.MaxTxRate > 3) ? (pAd->CommonCfg.MaxTxRate - 4) : pAd->CommonCfg.MaxTxRate;*/
-		/*pHtPhy->field.MODE	= (pAd->CommonCfg.MaxTxRate > 3) ? MODE_OFDM : MODE_CCK;*/
 
 		/* Choose the Desire Tx MCS in CCK/OFDM mode */
 		if (num > RATE_6)
@@ -2956,9 +2960,9 @@ VOID MlmeUpdateTxRates(
 		{
 		pMaxHtPhy->field.MCS = OfdmRateToRxwiMCS[pAd->CommonCfg.TxRate];
 		if (pAd->CommonCfg.MinTxRate >= RATE_6 && (pAd->CommonCfg.MinTxRate <= RATE_54))
-			{pMinHtPhy->field.MCS = OfdmRateToRxwiMCS[pAd->CommonCfg.MinTxRate];}
+				pMinHtPhy->field.MCS = OfdmRateToRxwiMCS[pAd->CommonCfg.MinTxRate];
 		else
-			{pMinHtPhy->field.MCS = pAd->CommonCfg.MinTxRate;}
+				pMinHtPhy->field.MCS = pAd->CommonCfg.MinTxRate;
 	}
 #endif /* CONFIG_STA_SUPPORT */
 #ifdef CONFIG_AP_SUPPORT
@@ -3035,9 +3039,9 @@ VOID MlmeUpdateTxRates(
 				break;
 			default: /* error*/
 				pAd->CommonCfg.MlmeRate = RATE_6;
-                        	pAd->CommonCfg.MlmeTransmit.field.MODE = MODE_OFDM;
+				pAd->CommonCfg.RtsRate = RATE_6;
+				pAd->CommonCfg.MlmeTransmit.field.MODE = MODE_OFDM;
 				pAd->CommonCfg.MlmeTransmit.field.MCS = OfdmRateToRxwiMCS[pAd->CommonCfg.MlmeRate];
-				pAd->CommonCfg.RtsRate = RATE_1;
 				break;
 		}
 		
@@ -6181,7 +6185,7 @@ VOID RTMPUpdateMlmeRate(
 				ProperMlmeRate = RATE_24;
 			
 			if (pAd->MlmeAux.Channel <= 14)
-			MinimumRate = RATE_1;
+				MinimumRate = RATE_1;
 			else
 				MinimumRate = RATE_6;
 			break;
@@ -6199,13 +6203,13 @@ VOID RTMPUpdateMlmeRate(
 		case PHY_11ABG_MIXED:
 			ProperMlmeRate = RATE_24;
 			if (pAd->MlmeAux.Channel <= 14)
-			   MinimumRate = RATE_1;
+				MinimumRate = RATE_1;
 			else
 				MinimumRate = RATE_6;
 			break;
 		default: /* error*/
-			ProperMlmeRate = RATE_1;
-			MinimumRate = RATE_1;
+			ProperMlmeRate = RATE_24;
+			MinimumRate = RATE_6;
 			break;
 	}
 
