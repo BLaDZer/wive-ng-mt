@@ -1363,7 +1363,6 @@ VOID MlmeUpdateTxRates(
 	}
 
 /*===========================================================================*/
-/*===========================================================================*/
 	do
 	{
 #ifdef CONFIG_AP_SUPPORT
@@ -3775,6 +3774,7 @@ VOID RTMPCheckRates(
 
 	========================================================================
 */
+#if 0
 VOID RTMPUpdateMlmeRate(
 	IN PRTMP_ADAPTER	pAd)
 {
@@ -3794,11 +3794,13 @@ VOID RTMPUpdateMlmeRate(
 #ifdef DOT11_N_SUPPORT
 		case (WMODE_B | WMODE_G | WMODE_GN | WMODE_A |WMODE_AN):
 		case (WMODE_B | WMODE_G | WMODE_GN):
+#ifdef DOT11_VHT_AC
+		case (WMODE_B | WMODE_G | WMODE_GN | WMODE_A |WMODE_AN | WMODE_AC):
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 			if ((pAd->MlmeAux.SupRateLen == 4) &&
 				(pAd->MlmeAux.ExtRateLen == 0))
-				/* B only AP*/
-				ProperMlmeRate = RATE_11;
+				ProperMlmeRate = RATE_11; /* B only AP */
 			else
 				ProperMlmeRate = RATE_24;
 			
@@ -3809,11 +3811,14 @@ VOID RTMPUpdateMlmeRate(
 			break;
 		case (WMODE_A):
 #ifdef DOT11_N_SUPPORT
-		case (WMODE_GN):	/* rt2860 need to check mlmerate for 802.11n*/
+		case (WMODE_GN):
 		case (WMODE_G | WMODE_GN):
 		case (WMODE_A | WMODE_G | WMODE_GN | WMODE_AN):
 		case (WMODE_A |WMODE_AN):
 		case (WMODE_AN):	
+#ifdef DOT11_VHT_AC
+		case (WMODE_A | WMODE_G | WMODE_GN | WMODE_AN | WMODE_AC):
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 			ProperMlmeRate = RATE_24;
 			MinimumRate = RATE_6;
@@ -3923,7 +3928,7 @@ VOID RTMPUpdateMlmeRate(
 
 	DBGPRINT(RT_DEBUG_TRACE, ("RTMPUpdateMlmeRate ==>   MlmeTransmit = 0x%x  \n" , pAd->CommonCfg.MlmeTransmit.word));
 }
-
+#endif
 
 CHAR RTMPAvgRssi(
 	IN PRTMP_ADAPTER	pAd,

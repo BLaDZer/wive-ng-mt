@@ -2453,7 +2453,7 @@ VOID ApCliUpdateMlmeRate(
 		}
 	}
 
-	DBGPRINT(RT_DEBUG_TRACE, ("RTMPUpdateMlmeRate ==>   MlmeTransmit = 0x%x  \n" , pAd->CommonCfg.MlmeTransmit.word));
+	DBGPRINT(RT_DEBUG_TRACE, ("ApCliUpdateMlmeRate ==>   MlmeTransmit = 0x%x  \n" , pAd->CommonCfg.MlmeTransmit.word));
 }
 
 

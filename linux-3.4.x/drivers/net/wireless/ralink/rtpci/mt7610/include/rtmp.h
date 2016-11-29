@@ -6479,9 +6479,6 @@ BOOLEAN RTMPCheckVht(
 	IN VHT_OP_IE *vht_op);
 #endif /* DOT11_VHT_AC */
 
-VOID RTMPUpdateMlmeRate(
-	IN PRTMP_ADAPTER	pAd);
-
 CHAR RTMPMaxRssi(
 	IN PRTMP_ADAPTER	pAd,
 	IN CHAR				Rssi0,
