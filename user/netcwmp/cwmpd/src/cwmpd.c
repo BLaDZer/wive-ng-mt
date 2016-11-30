@@ -88,23 +88,18 @@ static void signal_ignore_handler(int sig)
 
 int main(int argc, char **argv)
 {
-//    cwmp_pid_t pid;
     int level = CWMP_LOG_INFO;
     cwmp_t * cwmp;
     time_t seed = time(NULL);
     srand((unsigned int)seed);
 
     cwmp_log_init(NULL, level);
-//    nvram_init(RT2860_NVRAM);
-
-//    int syslog_enable = 0;
     int cwmp_enable = 0;
 
 #ifdef WIN32
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
-//    pid = getpid();
 
     cwmp_global_pool = pool_create(POOL_DEFAULT_SIZE);
     cwmp = pool_pcalloc(cwmp_global_pool, sizeof(cwmp_t));

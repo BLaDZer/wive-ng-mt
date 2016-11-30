@@ -388,7 +388,11 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/chillispot/coova-chilli-master/extern/.dirstamp
 /user/lldpd/osx/Makefile
 /user/lldpd/tests/Makefile
+/user/netcwmp/configure
+/user/netcwmp/Makefile
+/user/netcwmp/Makefile.in
 /user/netcwmp/tests/src/Makefile
+/user/netcwmp/tests/src/Makefile.in
 /user/strace/Makefile
 /user/strace/Mkaefile.in
 /user/strace/configure
