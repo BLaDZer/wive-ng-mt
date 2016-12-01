@@ -941,7 +941,7 @@ init_mc:
 #ifdef UBOOT_ROM
 //#define USE_PCIE_SRAM				1
 #define FE_SRAM_STACK                0xBE108000
-#define RALINK_CLKCFG0_REG     		(RALINK_SYSCTL_BASE+0x2C)
+//#define RALINK_CLKCFG0_REG     		(RALINK_SYSCTL_BASE+0x2C)
 #define RALINK_RSTCTRL_REG     		(RALINK_SYSCTL_BASE+0x34)
 
 
@@ -1846,10 +1846,13 @@ done_init_vpe1:
  * All vpe on all cores are running main in kernel mode with their own stack and shared globals.
  * Each VPE has at least one TC. TCs beyond the number of VPEs are bound to the highest numbered VPE.
  */
-
+#undef r4_temp_data
 #define r4_temp_data    $20
+#undef r5_temp_addr
 #define r5_temp_addr    $21
+#undef r6_temp_dest
 #define r6_temp_dest    $22
+#undef r7_temp_mark
 #define r7_temp_mark    $23
 /*
  * void relocate_code (addr_sp, gd, addr_moni)

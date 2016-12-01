@@ -24,6 +24,7 @@
 #include <common.h>
 #include <command.h>
 #include <net.h>
+#include <spi_api.h>
 
 #if (CONFIG_COMMANDS & CFG_CMD_NET)
 
