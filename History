@@ -2568,56 +2568,57 @@
 40) goahead: add preamble type auto.<br>
 41) goahead: rework tr069 support.<br>
 42) goahead: fix hide unused services.<br>
-43) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
-44) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
-45) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
-46) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
-47) kernel: ralink_wifi: mt7610: disable ACK to prevent retry 0x1f for deauth.<br>
-48) kernel: ralink_wifi: mt7610: fix subchannel select after scan for 80MHz mode.<br>
-49) kernel: ralink_wifi: mt76x2: remove IPhone6 IOT hack, this not correct and allready fixed in new IOS update.<br>
-50) kernel: ralink_wifi: fix set legacy rate support for pure OFDM modes.<br>
-51) kernel: ralink_wifi: fix announse AMSDU supported.<br>
-52) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
-53) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
-54) kernel: ralink_wifi: fix announce band freq ranges.<br>
-55) kernel: ralink_wifi: fix set TxPreamble auto from profile (used per default, not need replace this).<br>
-56) kernel: ralink_wifi: avoid tx_rate dropdown in low traffic case (HT/VHT).<br>
-57) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
-58) kernel: ralink_wifi: auto_ch_select: add some sanity checks.<br>
-59) kernel: ralink_wifi: fix skip beacon from different channel.<br>
-60) kernel: ralink_wifi: allow 30dBm tx power for ext PA devices and some country.<br>
-61) kernel: ralink_wifi: skip DEAUTH with all zero mac addr.<br>
-62) kernel: ralink_wifi: set HT_MpduDensity=4, fix MT7603 slowdown and compat with some clients.<br>
-63) kernel: ralink_wifi: fix ack req of req block ack managment frame send.<br>
-64) kernel: ralink_wifi: small tune trainup threshold for more stable link.<br>
-65) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
-66) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
-67) kernel: ptrace: fix regs_return_value for kernel context.<br>
-68) kernel: mips: fix max_low_pfn with disabled highmem.<br>
-69) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
-70) kernel: net: udp: avoid one cache line miss in recvmsg().<br>
-71) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
-72) kernel: net: make default TX queue length a defined constant.<br>
-73) kernel: net: mangle zero checksum in skb_checksum_help().<br>
-74) kernel: net: fix bogus cast in skb_pagelen() and use unsigned variables.<br>
-75) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
-76) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
-77) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
-78) kernel: net: l2tp: fix racy SOCK_ZAPPED flag check in l2tp_ip_bind().<br>
-79) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
-80) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
-81) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
-82) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
-83) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
-84) kernel: net: xfrm: fix error return code.<br>
-85) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
-86) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
-87) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
-88) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
-89) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
-90) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
-91) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
-92) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
+43) goahead: add one/two/three ports only devices.<br>
+44) kernel: ralink_wifi: do not disable tx_burst for multiclients mode (fix small slowdown).<br>
+45) kernel: ralink_wifi: improve tx speed at only one client connected.<br>
+46) kernel: ralink_wifi: mt7603: do not set 4K rts thres for MT_MAC (support only 2k amsdu agregation, fix speed issue with LG G2 and similar).<br>
+47) kernel: ralink_wifi: mt7610: fix rx sens tuning for long range.<br>
+48) kernel: ralink_wifi: mt7610: disable ACK to prevent retry 0x1f for deauth.<br>
+49) kernel: ralink_wifi: mt7610: fix subchannel select after scan for 80MHz mode.<br>
+50) kernel: ralink_wifi: mt76x2: remove IPhone6 IOT hack, this not correct and allready fixed in new IOS update.<br>
+51) kernel: ralink_wifi: fix set legacy rate support for pure OFDM modes.<br>
+52) kernel: ralink_wifi: fix announse AMSDU supported.<br>
+53) kernel: ralink_wifi: fix Update_Rssi_Sample for ApCfg.RssiSample (use for high power chip tune and dynvga).<br>
+54) kernel: ralink_wifi: fix regulatory table to Russia (add lost range).<br>
+55) kernel: ralink_wifi: fix announce band freq ranges.<br>
+56) kernel: ralink_wifi: fix set TxPreamble auto from profile (used per default, not need replace this).<br>
+57) kernel: ralink_wifi: avoid tx_rate dropdown in low traffic case (HT/VHT).<br>
+58) kernel: ralink_wifi: rrm: fix limit freq subbands if need.<br>
+59) kernel: ralink_wifi: auto_ch_select: add some sanity checks.<br>
+60) kernel: ralink_wifi: fix skip beacon from different channel.<br>
+61) kernel: ralink_wifi: allow 30dBm tx power for ext PA devices and some country.<br>
+62) kernel: ralink_wifi: skip DEAUTH with all zero mac addr.<br>
+63) kernel: ralink_wifi: set HT_MpduDensity=4, fix MT7603 slowdown and compat with some clients.<br>
+64) kernel: ralink_wifi: fix ack req of req block ack managment frame send.<br>
+65) kernel: ralink_wifi: small tune trainup threshold for more stable link.<br>
+66) kernel: ralink_raeth: fix init RTL8211F GPHY, allow read PHY EEE status.<br>
+67) kernel: ralink_raeth: fix init IC+ IP1001 GPHY.<br>
+68) kernel: ptrace: fix regs_return_value for kernel context.<br>
+69) kernel: mips: fix max_low_pfn with disabled highmem.<br>
+70) kernel: mips: irq gic: mask IRQ on handle_percpu_irq (IPI case) to prevent race condition.<br>
+71) kernel: net: udp: avoid one cache line miss in recvmsg().<br>
+72) kernel: net: clear sk_err_soft in sk_clone_lock().<br>
+73) kernel: net: make default TX queue length a defined constant.<br>
+74) kernel: net: mangle zero checksum in skb_checksum_help().<br>
+75) kernel: net: fix bogus cast in skb_pagelen() and use unsigned variables.<br>
+76) kernel: net: ipsec: add prototypes to support RALINK_HWCRYPTO.<br>
+77) kernel: net: igmp: do not remove igmp souce list info when set link down.<br>
+78) kernel: net: l2tp: fix negative assignment to unsigned int.<br>
+79) kernel: net: l2tp: fix racy SOCK_ZAPPED flag check in l2tp_ip_bind().<br>
+80) kernel: net: tcp: fix wrong checksum calculation on MTU probing.<br>
+81) kernel: net: tcp: fix overflow in __tcp_retransmit_skb().<br>
+82) kernel: net: netfilter: xt_multiport: use switch case instead of multiple condition checks.<br>
+83) kernel: net: netfilter: nfnetlink_log: use GFP_NOWARN for skb allocation.<br>
+84) kernel: net: netfilter: nfnetlink_queue: reject verdict request from different portid.<br>
+85) kernel: net: xfrm: fix error return code.<br>
+86) kernel: net: xfrm: convert several xfrm policy match functions to bool.<br>
+87) kernel: net: xfrm: use ipv6_addr_equal() where appropriate.<br>
+88) kernel: net: xfrm: convert xfrm_addr_cmp() to boolean xfrm_addr_equal().<br>
+89) kernel: net: xfrm: simplify SA looking up when using wildcard source.<br>
+90) kernel: net: xfrm: fix unexpected SA hard expiration after changing date.<br>
+91) kernel: net: xfrm: fix freed block size calculation in xfrm_policy_fini().<br>
+92) kernel: net: xfrm: force a garbage collection after deleting a policy.<br>
+93) kernel: net: xfrm: fix unlink race when policies are deleted.<br>
 <br>
 <br>
 <br>

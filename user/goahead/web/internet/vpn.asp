@@ -517,8 +517,8 @@
 						<tr>
 							<td><input name="lanauth_pass_changed" type="hidden">
 								<input value="0" name="reset" type="hidden">
-								<input class="mid" id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return checkValues(this.form);" >&nbsp;&nbsp;
-								<input class="mid" id="vCancel" value="Cancel" name="save" type="button" onClick="window.location.reload();" >&nbsp;&nbsp;
+								<input class="mid"    id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return checkValues(this.form);" >&nbsp;&nbsp;
+								<input class="normal" id="vCancel" value="Cancel" name="save" type="button" onClick="window.location.reload();" >&nbsp;&nbsp;
 								<input class="normal" id="vReset" value="Reset" name="reset_button" onClick="resetValues(this.form);" type="button"></td>
 						</tr>
 					</table>

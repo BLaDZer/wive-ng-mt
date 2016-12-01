@@ -112,23 +112,23 @@ if (opmode != '0')
 	a.add(302, 300, _("treeapp wan"),		"javascript:go('internet/wan.asp');");
 
 if (ipv6b == "1" && opmode != '0') {
-	a.add(307, 300, _("treeapp ipv6"), 		    "javascript:go('internet/ipv6.asp');");
+	a.add(303, 300, _("treeapp ipv6"), 		    "javascript:go('internet/ipv6.asp');");
 }
 
-a.add(303, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
+a.add(304, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
-a.add(304, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
 
-a.add(308, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
+a.add(306, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
 
 if (opmode != '0')
-	a.add(305, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
+	a.add(307, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 
 if (swqos == '1')
-	a.add(307, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
+	a.add(308, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
 
 if (spot == '1' && opmode != '0')
-	a.add(306, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
+	a.add(309, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
 
 if (opmode == '2')
 {
@@ -154,9 +154,9 @@ else
 if (opmode != '0') {
 	a.add(700,   0, _("treeapp firewall"),              "javascript:a.oo(700);");
 	a.add(701, 700, _("treeapp firewall"),              "javascript:go('firewall/firewall.asp');");
-	a.add(703, 700, _("treeapp alg"),                   "javascript:go('firewall/alg.asp');");
-	a.add(704, 700, _("treeapp dmz"),                   "javascript:go('firewall/DMZ.asp');");
-	if (webstrb == "1") a.add(705, 700, _("treeapp content filtering"),     "javascript:go('firewall/content_filtering.asp');");
+	a.add(702, 700, _("treeapp alg"),                   "javascript:go('firewall/alg.asp');");
+	a.add(703, 700, _("treeapp dmz"),                   "javascript:go('firewall/DMZ.asp');");
+	if (webstrb == "1") a.add(704, 700, _("treeapp content filtering"),     "javascript:go('firewall/content_filtering.asp');");
 }
 
 // Services
@@ -164,12 +164,12 @@ a.add(500, 0,   _("treeapp services"),          "javascript:a.oo(500);");
 a.add(501, 500, _("treeapp dhcp server"),       "javascript:go('services/dhcp.asp');");
 a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.asp');");
 if (radiusb == "1") a.add(503, 500, _("treeapp radius"),             "javascript:go('services/radius.asp');");
-if (cwmpb == "1") a.add(511, 500, _("treeapp cwmp"),             "javascript:go('services/cwmp.asp');");
-a.add(504, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
-if (ddnsb == "1") a.add(505, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
-if (smbb == "1") a.add(506, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
-if (ipt_account == "1" && opmode != '0') a.add(507, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
-a.add(510, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
+if (cwmpb == "1") a.add(504, 500, _("treeapp cwmp"),             "javascript:go('services/cwmp.asp');");
+a.add(505, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
+if (ddnsb == "1") a.add(506, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
+if (smbb == "1") a.add(507, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
+if (ipt_account == "1" && opmode != '0') a.add(508, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
+a.add(509, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
 if (usbb == "1")
 {
@@ -191,13 +191,11 @@ if (usbb == "1")
 
 a.add(900,   0, _("treeapp administration"),        "javascript:a.oo(900);");
 a.add(901, 900, _("treeapp management"),            "javascript:go('adm/management.asp');");
-a.add(904, 900, _("treeapp status"),                "javascript:go('adm/status.asp');");
+a.add(902, 900, _("treeapp status"),                "javascript:go('adm/status.asp');");
 if (syslogb == "1")
-{
-	a.add(908, 900, _("treeapp system log"),            "javascript:go('adm/syslog.asp');");
-}
-a.add(907, 900, _("treeapp sdk history"),           "javascript:go('cgi-bin/history.sh');");
-a.add(909, 900, _("treeapp reboot"),                       "javascript:rebootRouter(document.rebootForm, 'rebootReloader');");
+	a.add(903, 900, _("treeapp system log"),            "javascript:go('adm/syslog.asp');");
+a.add(904, 900, _("treeapp sdk history"),           "javascript:go('cgi-bin/history.sh');");
+a.add(905, 900, _("treeapp reboot"),                       "javascript:rebootRouter(document.rebootForm, 'rebootReloader');");
 document.write(a);
 
 </script>

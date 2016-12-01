@@ -952,8 +952,9 @@ function createSurveyProfile()
           <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
           <table class="buttons">
             <tr>
-              <td><input type="button" value="Add profile" onClick="addProfile();" >
-                <input type="submit" value="Save &amp; Activate Profile" ></td>
+              <td>
+					<input type="button" class="normal" value="Add profile" onClick="addProfile();" >&nbsp;&nbsp;
+					<input type="submit" class="normal" value="Save &amp; Activate Profile" ></td>
             </tr>
           </table>
           <input type="hidden" name="staProfile" value="<% getCfgGeneralHTML(1, "staProfile"); %>" >
@@ -1041,8 +1042,7 @@ function createSurveyProfile()
           <div id="ajxCtxStaGraph"></div>
           <table class="buttons">
             <tr>
-              <td><input type="button" class="normal" value="Scan" id="scanRescan" onClick="performStaScan();">
-                &nbsp;
+              <td><input type="button" class="normal" value="Scan" id="scanRescan" onClick="performStaScan();">&nbsp;&nbsp;
                 <input type="button" class="normal" name="addProfileButton" value="Create Profile" id="scanAddProfile" onClick="createSurveyProfile();"></td>
             </tr>
           </table>

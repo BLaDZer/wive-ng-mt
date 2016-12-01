@@ -346,6 +346,19 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	reboot_now();
 }
 
+static int getEthernetPortCount(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
+	return websWrite(wp, T("1"));
+#elif CONFIG_RTESW_SWITCH_TWOPORT
+	return websWrite(wp, T("2"));
+#elif CONFIG_RTESW_SWITCH_THRPORT
+	return websWrite(wp, T("3"));
+#else
+	return websWrite(wp, T("5"));
+#endif
+}
+
 static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 {
 	int i;
@@ -426,6 +439,7 @@ void formDefineUtilities(void)
 	websAspDefine(T("getSdkVersion"), getSdkVersion);
 	websAspDefine(T("getSysUptime"), getSysUptime);
 	websAspDefine(T("getSysDateTime"), getSysDateTime);
+	websAspDefine(T("getEthernetPortCount"), getEthernetPortCount);
 	websFormDefine(T("setOpMode"), setOpMode);
 	websFormDefine(T("setEthernetPort"), setEthernetPort);
 	websFormDefine(T("reboot"), reboot_web);

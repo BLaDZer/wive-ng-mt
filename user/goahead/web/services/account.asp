@@ -81,17 +81,22 @@ function initValue()
               </select></td>
           </tr>
           <tr>
-            <td colspan="2"><input type="submit" value="Apply"></td>
+            <td colspan="2"><input type="submit" class="normal" value="Apply"></td>
           </tr>
         </table>
         <table class="form">
           <% iptStatList(); %>
         </table>
-        <br>
-        <input type="hidden" value="/services/account.asp" name="submit-url">
-        <input type="button" class="normal" value="Refresh" onClick="window.location.reload();" id="accountRefresh">
-        <input type="hidden" value="0" name="reset">
-        <input type="button" class="normal" onClick="resetClick(this.form);" value="Reset Statistics" id="accountReset">
+		<table class="buttons">
+			<tr>
+				<td>
+					<input type="hidden" value="0" name="reset">
+					<input type="hidden" value="/services/account.asp" name="submit-url">
+					<input type="button" class="normal" value="Refresh" onClick="window.location.reload();" id="accountRefresh">&nbsp;&nbsp;
+					<input type="button" class="normal" onClick="resetClick(this.form);" value="Reset Statistics" id="accountReset">
+				</td>
+			</tr>
+		</table>
       </form>
       <div class="whitespace">&nbsp;</div></td>
   </tr>

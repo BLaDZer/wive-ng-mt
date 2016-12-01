@@ -273,7 +273,7 @@
 					'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
-					'<td colspan="2"><input type="text" tabindex="12" style="width: 105px" maxlength="17" name="mac_address"></td>' +
+					'<td colspan="2"><input type="text" tabindex="12" style="width: 140px" maxlength="17" name="mac_address"></td>' +
 					'<td><input type="text" tabindex="14" class="pfNormal" maxlength="15" name="sip_mask"></td>' +
 					'<td><input type="text" tabindex="16" class="pfShort" maxlength="5" name="sToPort" disabled="disabled"></td>' +
 					'<td><input type="text" tabindex="18" class="pfNormal" maxlength="15" name="dip_mask"></td>' +

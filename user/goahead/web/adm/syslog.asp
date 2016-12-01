@@ -2,12 +2,12 @@
 <html>
 <head>
 <title>System Log</title>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
+<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -123,30 +123,33 @@ function syslogdSelect(form)
           </tr>
           <tr>
             <td class="head" id="syslogEnabled">System logging daemon:</td>
-            <td><select name="SysLogd" onChange="syslogdSelect(this.form);">
+            <td><select name="SysLogd" onChange="syslogdSelect(this.form);" class="normal">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="klogdRow">
             <td class="head" id="syslogKernel">Kernel logging daemon:</td>
-            <td><select name="KLogd">
+            <td><select name="KLogd" class="normal">
                 <option value="0" id="disable">Disable</option>
                 <option value="1" id="enable">Enable</option>
               </select></td>
           </tr>
           <tr id="rmtSysLogIP" style="display: none;">
             <td class="head" id="syslogRemoteIP">Remote system log IP:</td>
-            <td><input name="RemoteSysLogIP" value='<% getCfgGeneral(1, "RemoteSysLogIP"); %>'></td>
+            <td><input name="RemoteSysLogIP" value='<% getCfgGeneral(1, "RemoteSysLogIP"); %>' class="normal"></td>
           </tr>
         </table>
         <table class="buttons">
           <tr>
-            <td><input type="submit" value="Apply" id="syslogApply">
-              <input type="hidden" name="submit-url" value="/adm/syslog.asp" ></td>
+            <td>
+				<input type="submit" value="Apply" id="syslogApply" class="normal">
+				<input type="hidden" name="submit-url" value="/adm/syslog.asp" >
+			</td>
           </tr>
         </table>
       </form>
+	  <br>
       <!-- ================= System log ================= -->
       <table class="form" id="syslog_view" style="display: none;">
         <tr>
@@ -154,8 +157,8 @@ function syslogdSelect(form)
         </tr>
         <tr>
           <td colspan="2"><form method="post" name="SubmitClearLog1" action="/goform/clearlog">
-              <input type="button" value="Refresh" id="syslogRefresh" name="refreshlog" onClick="refreshlogclick();">
-              <input type="button" value="Clear" id="syslogClear" name="clearlog" onClick="clearlogclick();">
+              <input class="normal" type="button" value="Refresh" id="syslogRefresh" name="refreshlog" onClick="refreshlogclick();">&nbsp;&nbsp;
+              <input class="normal" type="button" value="Clear" id="syslogClear" name="clearlog" onClick="clearlogclick();">
             </form></td>
         </tr>
         <tr>
@@ -164,8 +167,8 @@ function syslogdSelect(form)
         </tr>
         <tr>
           <td colspan="2"><form method="post" name="SubmitClearLog2" action="/goform/clearlog">
-              <input type="button" value="Refresh" id="syslogRefresh2" name="refreshlog" onClick="refreshlogclick();">
-              <input type="button" value="Clear" id="syslogClear2" name="clearlog" onClick="clearlogclick();">
+              <input class="normal" type="button" value="Refresh" id="syslogRefresh2" name="refreshlog" onClick="refreshlogclick();">&nbsp;&nbsp;
+              <input class="normal" type="button" value="Clear" id="syslogClear2" name="clearlog" onClick="clearlogclick();">
             </form></td>
         </tr>
       </table>

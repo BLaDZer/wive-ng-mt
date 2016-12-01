@@ -26,7 +26,9 @@
 			var ssid_num			= "";
 			var vlanLan			= [];
 			var vlanLanIsolate		= [];
-			
+			var ports			= <% getEthernetPortCount(); %>;
+			var opmode			= '<% getCfgZero(1, "OperationMode"); %>';
+
 			var vlanTv			= '<% getCfgGeneral(1, "tv_portVLAN"); %>'.replace(/\s+/g, '').split(",");
 			var vlanTvPrio			= '<% getCfgGeneral(1, "tv_portVLANPRIO"); %>'.replace(/\s+/g, '').split(",");
 			var vlanSip			= '<% getCfgGeneral(1, "sip_portVLAN"); %>'.replace(/\s+/g, '').split(",");
@@ -125,6 +127,9 @@
 				showWarning();
 				vlanModeChange();
 				showTvSipVLAN();
+				interceptVLANinput();
+				
+				displayElement([ 'vlanPort_table' ], ports == 5 && opmode != 0);
 			}
 
 			function checkValues(form) 
@@ -455,24 +460,31 @@
 				}
 				showTvSipVLAN();
 			}
-
-			// Enable/Disable mcast select
-			function enableMcast(type)
-			{
-				if (type == 'tv' && vlanTv.length > 0) {
-					document.getElementById(type + '_stbMcast').disabled = false;
+			
+			function interceptVLANinput() {
+				console.log('test');
+				setTimeout('interceptVLANinput();', 500);
+				
+				if (vlanTv.length > 0 && document.getElementById('tv_stbMcast').disabled == true) {
+					document.getElementById('tv_stbMcast').disabled = false;
 					return;
 				}
-				else if (type == 'sip' && vlanSip.length > 0) {
-					document.getElementById(type + '_stbMcast').disabled = false;
+				else if (vlanSip.length > 0 && document.getElementById('sip_stbMcast').disabled == true) {
+					document.getElementById('sip_stbMcast').disabled = false;
 					return;
 				}
-
-				vlan = document.getElementById(type + '_stbVLANid').value;
-				if (validateNum(vlan) && vlan > 0 && vlan < 4096)
-					document.getElementById(type + '_stbMcast').disabled = false;
+				
+				var vlan_tv		= document.getElementById('tv_stbVLANid').value;
+				var vlan_sip	= document.getElementById('sip_stbVLANid').value;
+				if (validateNum(vlan_tv) && vlan_tv > 0 && vlan_tv < 4096)
+					document.getElementById('tv_stbMcast').disabled = false;
 				else
-					document.getElementById(type + '_stbMcast').disabled = true;
+					document.getElementById('tv_stbMcast').disabled = true;
+
+				if (validateNum(vlan_sip) && vlan_sip > 0 && vlan_sip < 4096)
+					document.getElementById('sip_stbMcast').disabled = false;
+				else
+					document.getElementById('sip_stbMcast').disabled = true;
 			}
 
 			// Change mode LAN VLAN/WAN VLAN
@@ -481,6 +493,7 @@
 				var mode = document.getElementById('vlanMode_select').selectedIndex;
 
 				displayElement([ 'vlanModeWLANVLAN_table', 'vlanMode_wlan_ap_tr',   'vlanMode_wlan_iface_tr',  'vlanMode_wlan_vlan_tr', 'vlanMode_wlan_vlan_add' ], mode == 1);
+				displayElement([ 'vlanMode_wlan_iface_tr' ], mode == 1 && opmode != '0');
 				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr' ],  mode == 2);
 
 				if (mode == 1) {
@@ -865,14 +878,14 @@
 		<table class="body">
 			<tr id="warning"><tr>
 			<tr>
-			<td><h1 id="vlanTvSipTitle"></h1>
+			<td id="vlanPort_table"><h1 id="vlanTvSipTitle"></h1>
 				<p id="vlanTvSipIntroduction"></p>
 				<hr>
 				<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 				<form method="POST" name="lanCfg" action="/goform/setTvSipVLAN">
 				<!-- TV/SIP VLAN -->
 				<div id="vlanPort_status_table"></div>
-				<table class="form">
+				<table id="vlanPort_main_table" class="form">
 					<col style="width: 40%;"/>
 					<col style="width: 46%;"/>
 					<col style="width: 14%;"/>
@@ -890,7 +903,7 @@
 							<td id="tv_stb_vlan" class="head">VLAN</td>
 							<td colspan="2">
 								<span id="tv_stb_vlanid">VLAN ID:</span>
-								<input id="tv_stbVLANid" class="half" maxlength="4" type="text" onKeyUp="enableMcast('tv');">&nbsp;&nbsp;
+								<input id="tv_stbVLANid" class="half" maxlength="4" type="text">&nbsp;&nbsp;
 								<span id="tv_stb_prio">PRIO:</span>
 								<select id="tv_stbVLANidPrio">
 									<option value="0">0</option>
@@ -930,7 +943,7 @@
 							<td id="sip_stb_vlan" class="head">VLAN</td>
 							<td colspan="2">
 								<span id="sip_stb_vlanid">VLAN ID:</span>
-								<input id="sip_stbVLANid" class="half" maxlength="4" type="text" onKeyUp="enableMcast('sip');">&nbsp;&nbsp;
+								<input id="sip_stbVLANid" class="half" maxlength="4" type="text">&nbsp;&nbsp;
 								<span id="sip_stb_prio">PRIO</span>
 								<select id="sip_stbVLANidPrio">
 									<option value="0">0</option>
@@ -959,7 +972,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<table class="buttons">
+				<table id="vlanPort_button_table" class="buttons">
 					<tr>
 						<td><input type="submit" class="normal" value="Apply"  id="vlanApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
 							<input type="button" class="normal" value="Cancel" id="vlanCancel" onClick="window.location.reload();">&nbsp; &nbsp;

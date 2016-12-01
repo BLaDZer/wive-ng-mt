@@ -984,7 +984,6 @@
 						</td>
 					</tr>
 				</table>
-				<br>
 				<table class="buttons">
 					<tr>
 						<td>

@@ -177,9 +177,9 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="mid" value="Apply" id="lApply">&nbsp;&nbsp;
-								<input type="button"  class="mid" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button"  class="mid" value="Reset" id="lReset" onClick="resetValues(this.form);">
+							<td><input type="submit" class="normal" value="Apply"  id="lApply">&nbsp;&nbsp;
+								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
+								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form);">
 								<input type="hidden" name="reset" value="0">
 								<input name="dhcpStart" type="hidden">
 								<input name="dhcpEnd" type="hidden">

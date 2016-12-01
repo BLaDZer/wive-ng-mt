@@ -46,7 +46,7 @@
 	<message msgid="status secondary dns"			msgstr="Secondary Domain Name Server" />
 	<message msgid="status mac"						msgstr="MAC Address" />
 	<message msgid="status local network"			msgstr="Local Network" />
-	<message msgid="status lan ipaddr"				msgstr="Local IP Address" />
+	<message msgid="status local ipaddr"			msgstr="Local IP Address" />
 	<message msgid="status local netmask"			msgstr="Local Netmask" />
 	<message msgid="status internal ipv6 address"	msgstr="Internal IPv6 Address" />
 	<message msgid="status external ipv6 address"	msgstr="External IPv6 Address" />

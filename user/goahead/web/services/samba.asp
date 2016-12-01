@@ -181,11 +181,14 @@ function displayServiceStatus()
               </select></td>
           </tr>
         </table>
-        <br>
-        <input type="hidden" value="/services/samba.asp" name="submit-url">
-        <input type="submit" id="sambaApply" value="Apply">
-        <br>
-        <br>
+        <table class="buttons">
+			<tr>
+				<td>
+					<input type="hidden" value="/services/samba.asp" name="submit-url">
+					<input type="submit" class="normal" id="sambaApply" value="Apply">
+				</td>
+			</tr>
+		</table>
       </form>
       <div class="whitespace">&nbsp;</div></td>
   </tr>

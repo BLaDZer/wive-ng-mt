@@ -17,12 +17,14 @@
 			Butterlate.setTextDomain("mode");
 			Butterlate.setTextDomain("buttons");
 
-			var gwb			= '<% getGWBuilt(); %>';
+			var opmode		= '<% getCfgZero(1, "OperationMode"); %>';
+			var ports		= <% getEthernetPortCount(); %>;
+			var first_port	= (ports == 3) ? 2 : 0;
+			var ipv6mode	= '<% getCfgZero(1, "IPv6OpMode"); %>';
 			var wan_port	= '<% getCfgZero(1, "wan_port"); %>';
 			var lan_port	= '<% getCfgZero(1, "lan_port"); %>';
 			var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' == '1')  ? (wan_port == 0) ? 1 : wan - 1 : -1;
 			var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' == '1') ? (wan_port == 0) ? 2 : wan - 2 : -1;
-			var ports		= 5;
 
 			function initTranslation()
 			{
@@ -52,7 +54,7 @@
 				_TR("statusLocalNet",		"status local network");
 				_TR("statusLANIPAddr",		"status local ipaddr");
 				_TR("statusLANNetmask",		"status local netmask");
-				_TR("statusLANMAC",			"status local mac");
+				_TR("statusLANMAC",			"status mac");
 
 				_TR("statisticMMCPU",		"statistic memory and cpu");
 				_TR("statisticMMTotal",		"statistic memory total");
@@ -74,6 +76,7 @@
 			{
 				var nat_fp = '<% getCfgGeneral(1, "offloadMode"); %>';
 				displayElement('fastpath_warning', nat_fp == '2' || nat_fp == '3');
+
 				showWarning();
 				initTranslation();
 				reloadStat();
@@ -93,120 +96,121 @@
 					<div style="display:none;" id="fastpath_warning"></div>	
 					<hr>
 					<table class="form" >
-					<col style="width: 40%;" />
-					<col style="width: 60%;" />
-					<tbody>
-						<!-- ================= System Info ================= -->
-						<tr>
-							<td class="title" colspan="2" id="statusSysInfo">System Info</td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSDKversion">Firmware Version</td>
-							<td id="statusSDKversion_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSysDateTime">System Time</td>
-							<td id="statusSysDateTime_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSysUpTime">System Uptime</td>
-							<td id="statusSysUpTime_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSysPlatform">System Platform</td>
-							<td id="statusSysPlatform_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusOpMode">Operation Mode</td>
-							<td id="statusOpMode_value"></td>
-						</tr>
-						<!-- ================= Internet Configurations ================= -->
-						<tr>
-							<td class="title" colspan="2" id="statusInternetConfig">Internet Configuration</td>
-						</tr>
-						<tr>
-							<td class="head" id="statusConnectedType">Connection Mode</td>
-							<td id="statusConnectedType_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusINTIPAddr">Internet/VPN IP Address</td>
-							<td id="statusINTIPAddr_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusWANIPAddr">Physical WAN IP Address</td>
-							<td id="statusWANIPAddr_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSubnetMask">Subnet Mask</td>
-							<td id="statusSubnetMask_value"></td>
-						</tr>
-						<tr id="statusDefaultGW_tr">
-							<td class="head" id="statusDefaultGW">Default Gateway</td>
-							<td id="statusDefaultGW_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusPrimaryDNS">Primary Domain Name Server</td>
-							<td id="statusPrimaryDNS_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusSecondaryDNS">Secondary Domain Name Server</td>
-							<td id="statusSecondaryDNS_value"></td>
-						</tr>
-						<tr id="statusIPv6IntAddr_tr">
-							<td class="head" id="statusIPv6IntAddr">Internal IPv6 Address</td>
-							<td id="statusIPv6IntAddr_value"></td>
-						</tr>
-						<tr id="statusIPv6ExtAddr_tr">
-							<td class="head" id="statusIPv6ExtAddr">External IPv6 Address</td>
-							<td id="statusIPv6ExtAddr_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusWANMAC">MAC Address</td>
-							<td id="statusWANMAC_value"></td>
-						</tr>
-						<!-- ================= Local Network ================= -->
-						<tr>
-							<td class="title" colspan="2" id="statusLocalNet">Local Network</td>
-						</tr>
-						<tr>
-							<td class="head" id="statusLANIPAddr">Local IP Address</td>
-							<td id="statusLANIPAddr_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusLANNetmask">Local Netmask</td>
-							<td id="statusLANNetmask_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statusLANMAC">MAC Address</td>
-							<td id="statusLANMAC_value"></td>
-						</tr>
-					</tbody>
-				</table>
-				<!-- ==============  MEMORY and CPU  =============== -->
-				<table class="form">
-					<col style="width: 40%;" />
-					<col style="width: 60%;" />
-					<tbody>
-						<tr>
-							<td class="title" colspan="2" id="statisticMMCPU">Memory and CPU</td>
-						</tr>
-						<tr>
-							<td class="head" id="statisticMMTotal">Memory total</td>
-							<td id="statisticMMTotal_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statisticMMLeft">Memory left</td>
-							<td id="statisticMMLeft_value"></td>
-						</tr>
-						<tr>
-							<td class="head" id="statisticCpuUse">CPU usage</td>
-							<td id="statisticCpuUse_value"></td>
-						</tr>
-					</tbody>
-				</table>
-				<!-- =================  SOFT NETORK  ================= -->
-				<div id="ethernetStatus"></div>
-				<div id="statisticSWStats"></div>
+						<col style="width: 40%;" />
+						<col style="width: 60%;" />
+						<tbody>
+							<!-- ================= System Info ================= -->
+							<tr>
+								<td class="title" colspan="2" id="statusSysInfo">System Info</td>
+							</tr>
+							<tr>
+								<td class="head" id="statusSDKversion">Firmware Version</td>
+								<td id="statusSDKversion_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusSysDateTime">System Time</td>
+								<td id="statusSysDateTime_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusSysUpTime">System Uptime</td>
+								<td id="statusSysUpTime_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusSysPlatform">System Platform</td>
+								<td id="statusSysPlatform_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusOpMode">Operation Mode</td>
+								<td id="statusOpMode_value"></td>
+							</tr>
+							<!-- ==============  MEMORY and CPU  =============== -->
+							<tr>
+								<td class="title" colspan="2" id="statisticMMCPU">Memory and CPU</td>
+							</tr>
+							<tr>
+								<td class="head" id="statisticMMTotal">Memory total</td>
+								<td id="statisticMMTotal_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statisticMMLeft">Memory left</td>
+								<td id="statisticMMLeft_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statisticCpuUse">CPU usage</td>
+								<td id="statisticCpuUse_value"></td>
+							</tr>
+						</tbody>
+					</table>						
+					<table class="form" >
+						<col style="width: 40%;" />
+						<col style="width: 60%;" />
+						<tbody>
+							<!-- ================= Internet Configurations ================= -->
+							<tr>
+								<td class="title" colspan="2" id="statusInternetConfig">Internet Configuration</td>
+							</tr>
+							<tr id="statusConnectedType_tr">
+								<td class="head" id="statusConnectedType">Connection Mode</td>
+								<td id="statusConnectedType_value"></td>
+							</tr>
+							<tr id="statusINTIPAddr_tr">
+								<td class="head" id="statusINTIPAddr">Internet/VPN IP Address</td>
+								<td id="statusINTIPAddr_value"></td>
+							</tr>
+							<tr id="statusWANIPAddr_tr">
+								<td class="head" id="statusWANIPAddr">Physical WAN IP Address</td>
+								<td id="statusWANIPAddr_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusSubnetMask">Subnet Mask</td>
+								<td id="statusSubnetMask_value"></td>
+							</tr>
+							<tr id="statusDefaultGW_tr">
+								<td class="head" id="statusDefaultGW">Default Gateway</td>
+								<td id="statusDefaultGW_value"></td>
+							</tr>
+							<tr id="statusPrimaryDNS_tr">
+								<td class="head" id="statusPrimaryDNS">Primary Domain Name Server</td>
+								<td id="statusPrimaryDNS_value"></td>
+							</tr>
+							<tr id="statusSecondaryDNS_tr">
+								<td class="head" id="statusSecondaryDNS">Secondary Domain Name Server</td>
+								<td id="statusSecondaryDNS_value"></td>
+							</tr>
+							<tr id="statusIPv6IntAddr_tr">
+								<td class="head" id="statusIPv6IntAddr">Internal IPv6 Address</td>
+								<td id="statusIPv6IntAddr_value"></td>
+							</tr>
+							<tr id="statusIPv6ExtAddr_tr">
+								<td class="head" id="statusIPv6ExtAddr">External IPv6 Address</td>
+								<td id="statusIPv6ExtAddr_value"></td>
+							</tr>
+							<tr>
+								<td class="head" id="statusWANMAC">MAC Address</td>
+								<td id="statusWANMAC_value"></td>
+							</tr>
+							<!-- ================= Local Network ================= -->
+							<tr id="statusLocalNet_tr">
+								<td class="title" colspan="2" id="statusLocalNet">Local Network</td>
+							</tr>
+							<tr id="statusLANIPAddr_tr">
+								<td class="head" id="statusLANIPAddr">Local IP Address</td>
+								<td id="statusLANIPAddr_value"></td>
+							</tr>
+							<tr id="statusLANNetmask_tr">
+								<td class="head" id="statusLANNetmask">Local Netmask</td>
+								<td id="statusLANNetmask_value"></td>
+							</tr>
+							<tr id="statusLANMAC_tr">
+								<td class="head" id="statusLANMAC">MAC Address</td>
+								<td id="statusLANMAC_value"></td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- =================  SOFT NETORK  ================= -->
+					<div id="ethernetStatus"></div>
+					<div id="statisticSWStats"></div>
+				</td>
 			</tr>
 		</table>
 	</body>

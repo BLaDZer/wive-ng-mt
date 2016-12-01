@@ -1153,8 +1153,8 @@
 
 			function wirelessOnChange(form)
 			{
-				var enableWirelessAc = form.radioWirelessEnabledAc.value;
-				var enableWireless = form.radioWirelessEnabled.value;
+				var enableWirelessAc	= form.radioWirelessEnabledAc.value;
+				var enableWireless		= form.radioWirelessEnabled.value;
 				
 				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
 				displayElement( [ 'basicVHT', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
@@ -1162,7 +1162,7 @@
 				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (is5gh_support == 1 && enableWirelessAc == "1"));
 				
 				displayElement('basicMbssidModeT', ((enableWireless == 1) || (enableWirelessAc == 1)) && (is5gh_support == 1));
-				if ((enableWireless == 0) && (enableWirelessAc == 0)) {
+				if (enableWireless == 0 && enableWirelessAc == 0) {
 					hideElement('div_all');
 					hideElement('div_11n');
 					hideElement('basicVHT');
@@ -1185,7 +1185,13 @@
 					}
 					showElement('div_roaming');
 					displayElement( 'div_txbf', txbf_built == '1');
-					displayElement('div_bandsteering', bandsteeringBuilt == '1');
+					if ((enableWireless == 0 || enableWirelessAc == 0) || bandsteeringBuilt == '0') {
+						hideElement('div_bandsteering');
+						form.BandSteering.selectedIndex = 0;
+					}
+					else
+						bandSteeringChange(form);
+
 					showElement('div_ids');
 					displayElement('div_m2u', m2uBuilt == '1');
 					showElement('advSynVGA_table');	

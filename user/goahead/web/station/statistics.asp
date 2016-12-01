@@ -9,6 +9,7 @@
 <script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
@@ -65,7 +66,7 @@ function PageInit()
         <br />
         <table class="buttons">
           <tr>
-            <td><input type="submit" style="{width:120px;}" value="Reset Counters" id="statisticResetCounter"></td>
+            <td><input type="submit" class="normal" value="Reset Counters" id="statisticResetCounter"></td>
           </tr>
         </table>
       </form>

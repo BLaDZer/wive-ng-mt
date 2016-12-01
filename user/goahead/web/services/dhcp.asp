@@ -50,9 +50,9 @@ function genTable(disabled)
 		table += '" href="javascript:deleteIPItem(' + i + ');"' + disabled + '>';
 		table += '<img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
 	}
-	table += '<tr><td><input class="mid" value="" name="dhcpStaticMAC"' + disabled + '></td>';
-	table += '<td><input class="mid" value="" name="dhcpStaticIP"' + disabled + '></td>';
-	table += '<td><input class="half" value="" name="dhcpStaticDesc"' + disabled + '></td>';
+	table += '<tr><td><input style="width: 98%" value="" name="dhcpStaticMAC"' + disabled + '></td>';
+	table += '<td><input style="width: 98%" value="" name="dhcpStaticIP"' + disabled + '></td>';
+	table += '<td><input style="width: 98%" value="" name="dhcpStaticDesc"' + disabled + '></td>';
 	table += '<td style="text-align: center;"><input type="button" class="normal" title="';
 	table += _("services dhcp add record");
 	table += '" value="';

@@ -6,6 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <link rel="stylesheet" href="style/normal_ws.css" type="text/css">
+<link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -77,18 +78,18 @@ function setLanguage()
         <blockquote>
           <fieldset>
             <legend id="ovSelectLang">Select Language</legend>
-            <select name="langSelection" id="langSelection">
+            <select class="normal" name="langSelection" id="langSelection">
               <!-- added by initValue -->
             </select>
             &nbsp;&nbsp;
 	    <input type="hidden" name="submit-url" value="/overview.asp" >
-            <input type="submit" style="{width:50px;}" value="Apply" id="ovLangApply" onClick="return setLanguage()">
+            <input type="submit" class="normal" value="Apply" id="ovLangApply" onClick="return setLanguage()">
           </fieldset>
         </blockquote>
       </form>
       <blockquote>
         <fieldset>
-          <p> <a href="/adm/status.asp" id="ovStatus">Status</a><br />
+          <p><a href="/adm/status.asp" id="ovStatus">Status</a><br />
             <a href="/adm/statistic.asp" id="ovStatistic">Statistic</a><br />
             <a href="/adm/management.asp" id="ovManagement">Management</a><br />
             <div id="ovAbout"><hr /><br />

@@ -119,7 +119,7 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ"">
+								<td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Reset" id="dmzReset" name="reset_button" onClick="window.location.reload();">
 								</td>
 							</tr>

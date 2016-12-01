@@ -443,7 +443,7 @@ function init11NValues()
         </table>
         <table class="buttons">
           <tr align="center">
-            <td><input type="submit" style="{width:120px;}" value="Apply" id="staadvApply"></td>
+            <td><input type="submit" class="normal" value="Apply" id="staadvApply"></td>
           </tr>
         </table>
         <input type=hidden name=radiohiddenButton value="2">

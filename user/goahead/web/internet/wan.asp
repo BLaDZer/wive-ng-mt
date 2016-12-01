@@ -235,7 +235,7 @@
 						</tr>
 						<tr>
 							<td class="head"><b id="wConnectionType" style="width: 40%">Connection type</b></td>
-							<td style="width: 60%"><select name="connectionType" class="full" onChange="connectionTypeSwitch(this.form);">
+							<td style="width: 60%"><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
 								<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
 								<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>
 								<option id="wConnTypeZero"   value="ZERO">Zeroconf</option>
@@ -306,7 +306,6 @@
 							<td style="width: 60%"><input name="natEnabled" type="checkbox"></td>
 						</tr>
 					</table>
-					<br>
 					<table class="form">
 						<tr>
 							<td class="title" colspan="2" id="wMacAddress">MAC address</td>
@@ -319,7 +318,6 @@
 							</td>
 						</tr>
 					</table>
-					<br>
 					<table class="buttons">
 						<tr>
 							<td><input type="submit" class="normal" value="Apply" id="wApply">&nbsp;&nbsp;

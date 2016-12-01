@@ -15,14 +15,16 @@
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
 
-			var gwb			= '<% getGWBuilt(); %>';				// Only one port (pure AP device)
+			var opmode		= '<% getCfgZero(1, "OperationMode"); %>';
 			var gigaphy		= '<% gigaphy(); %>';
-			var wan_port	= '<% getCfgZero(1, "wan_port"); %>';
+			var wan_port	= <% getCfgZero(1, "wan_port"); %>;
 			var lan_port	= '<% getCfgZero(1, "lan_port"); %>';
-			var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' == '1')  ? (wan_port == 0) ? 1 : wan - 1 : -1;
-			var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' == '1') ? (wan_port == 0) ? 2 : wan - 2 : -1;
-			var ports		= 5;
-
+			var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' == '1')  ? (wan_port == 0) ? 1 : wan_port - 1 : -1;
+			var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' == '1') ? (wan_port == 0) ? 2 : wan_port - 2 : -1;
+			var ports		= <% getEthernetPortCount(); %>;
+			var first_port	= (ports == 3) ? 2 : 0;
+			var port_swmode	= [];
+			
 			function initTranslation() {
 				_TR("ethernetTitle",			"ethernet title");
 				_TR("ethernetIntroduction",		"ethernet introduction");
@@ -33,9 +35,16 @@
 				_TR("ethernetDistantFromWAN",	"ethernet lan port distant");
 				_TR("ethernetPort1Mode",		"ethernet port 1 mode");
 				_TR("ethernetPort2Mode",		"ethernet port 2 mode");
-				_TR("ethernetPort3Mode",		"ethernet port 3 mode");
-				_TR("ethernetPort4Mode",		"ethernet port 4 mode");
-				_TR("ethernetPort5Mode",		"ethernet port 5 mode");
+				if (ports == 3) {
+					_TR("ethernetPort3Mode",		"ethernet port 1 mode");
+					_TR("ethernetPort4Mode",		"ethernet port 2 mode");
+					_TR("ethernetPort5Mode",		"ethernet port 3 mode");
+				}
+				else {
+					_TR("ethernetPort3Mode",		"ethernet port 3 mode");
+					_TR("ethernetPort4Mode",		"ethernet port 4 mode");
+					_TR("ethernetPort5Mode",		"ethernet port 5 mode");
+				}
 
 				_TRV("ethernetApply",			"button apply");
 				_TRV("ethernetCancel",			"button cancel");
@@ -44,29 +53,53 @@
 
 			function initValues() {
 				// hide unused elements in pure AP mode
-				if (gwb == '0') {
-					hideElement(ethernetWANport_tr);
-					hideElement(ethernetFirstLANport_tr);
-					hideElement(ethernetPort2Mode_tr);
-					hideElement(ethernetPort3Mode_tr);
-					hideElement(ethernetPort4Mode_tr);
-					hideElement(ethernetPort5Mode_tr);
-					ports = 1;
-				} 
+				switch(ports) {
+					case 1:
+								hideElement(ethernetWANport_tr);
+								hideElement(ethernetFirstLANport_tr);
+								hideElement(ethernetPort2Mode_tr);
+								hideElement(ethernetPort3Mode_tr);
+								hideElement(ethernetPort4Mode_tr);
+								hideElement(ethernetPort5Mode_tr);
+								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>' ];
+								break;
+					case 2:
+								hideElement(ethernetWANport_tr);
+								hideElement(ethernetFirstLANport_tr);
+								hideElement(ethernetPort3Mode_tr);
+								hideElement(ethernetPort4Mode_tr);
+								hideElement(ethernetPort5Mode_tr);
+								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>' ];
+								break;
+					case 3:
+								hideElement(ethernetWANport_tr);
+								hideElement(ethernetFirstLANport_tr);
+								hideElement(ethernetPort1Mode_tr);
+								hideElement(ethernetPort2Mode_tr);
+								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
+								break;
+					default:
+								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
+				}
 
 				// Set WAN port number
-				if (wan_port > '0' && wan_port < '4')
-					wan_port = '4';
-
+				if (ports == 5 && ((wan_port > 0 && wan_port < (ports - 1)) || wan_port > (ports - 1)))
+					wan_port = ports - 1;
+					
 				// Set LAN port number
 				if (lan_port != 'near' && lan_port != 'distant')
 					lan_port = 'near';
 
+				if (opmode != 1) {
+					hideElement(ethernetWANport_tr);
+					hideElement(ethernetFirstLANport_tr);
+				}
+					
 				document.getElementById('wan_port').value = wan_port;
 				document.getElementById('lan_port').value = lan_port;
 
-				// Add Port speeds options
-				for (i = 1; i <= ports; i++) {
+				// Add Port speeds options & Show
+				for (i = first_port + 1; i <= first_port + ports; i++) {
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode auto"), 'auto');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10h"),  '10h');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10f"),  '10f');
@@ -74,12 +107,8 @@
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100f"), '100f');
 					if (gigaphy == '1')
 						addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 1000f"), '1000f');
-				}
-
-				// Show port speeds
-				var port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
-				for (i = 1; i < ports; i++)
 					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
+				}
 
 				function reloadStat() {
 					ajaxLoadScript('/internet/ethernet-stat.js');
