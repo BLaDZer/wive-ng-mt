@@ -1507,9 +1507,9 @@ int  cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, par
             {
                 switch (value[0])
                 {
-                    case '0': pn->inform = 0;
-                    case '1': pn->inform = 1;
-                    case '2': pn->inform = 1;
+                    case '0': pn->inform = 0; break;
+                    case '1': pn->inform = 1; break;
+                    case '2': pn->inform = 1; break;
                 }
             }
         }

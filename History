@@ -2538,7 +2538,7 @@
 10) libmicrohttpd: up to 0.9.52 version.<br>
 11) strace: up to 4.14 version.<br>
 12) xupnpd: update hls and add vsetv.net plugins.<br>
-13) netcwmpd: add support ER-Telecom ACS.<br>
+13) netcwmpd: add support ER-Telecom ("tr-098 1.8.0 compat) ACS.<br>
 14) netcwmpd: fix build with ssl support if openssl present on project.<br>
 15) 802.1x: update to new version (5020 SDK).<br>
 16) iappd: update to 1.1.0 version (5020 SDK).<br>

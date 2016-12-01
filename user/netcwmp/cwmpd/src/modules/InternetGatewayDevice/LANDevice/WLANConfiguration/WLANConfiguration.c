@@ -279,13 +279,13 @@ static void nvram_wlan_normalize(unsigned index, struct wlan_security_mode *wsm)
 {
     if (wsm->mode == WLAN_BASIC) {
         /* normalization for Basic mode */
-        if (wsm->authMode != WLAN_OPEN || wsm->authMode != WLAN_SHARED) {
+        if (wsm->authMode != WLAN_OPEN && wsm->authMode != WLAN_SHARED) {
             cwmp_log_info(
                     "WLANConfiguration: "
                     "set BasicAuthenticationMode to None for index %u", index + 1);
             wsm->authMode = WLAN_OPEN;
         }
-        if (wsm->encrypt != WLAN_NO_ENCRYPTION || wsm->encrypt != WLAN_WEP) {
+        if (wsm->encrypt != WLAN_NO_ENCRYPTION && wsm->encrypt != WLAN_WEP) {
             cwmp_log_info(
                     "WLANConfiguration: "
                     "set BasicEncryptionModes to None for index %u", index  + 1);
@@ -307,13 +307,14 @@ static void nvram_wlan_normalize(unsigned index, struct wlan_security_mode *wsm)
             default:
                 v = "";
         }
-        if (wsm->authMode != WLAN_PSK || wsm->authMode != WLAN_EAP) {
+
+        if (wsm->authMode != WLAN_PSK && wsm->authMode != WLAN_EAP) {
             cwmp_log_info(
                     "WLANConfiguration: "
                     "set %sAuthenticationMode to PSKAuthentication for index %u", v, index + 1);
             wsm->authMode = WLAN_PSK;
         }
-        if (wsm->encrypt != WLAN_AES || wsm->encrypt != WLAN_TKIP || wsm->encrypt != WLAN_TKIPAES) {
+        if (wsm->encrypt != WLAN_AES && wsm->encrypt != WLAN_TKIP && wsm->encrypt != WLAN_TKIPAES) {
             cwmp_log_info(
                     "WLANConfiguration: "
                     "set %sEncryptionModes to AESEncryption for index %u", v, index + 1);
@@ -424,10 +425,13 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
             case WLAN_NO_ENCRYPTION:
             case WLAN_WEP:
                 wsm->mode = WLAN_BASIC;
+                break;
+
             case WLAN_AES:
             case WLAN_TKIP:
             case WLAN_TKIPAES:
                 wsm->mode = WLAN_WPAand11i;
+                break;
         }
         wsm->authMode = wsm_orig.authMode;
     } else if (wsm->mode != WLAN_NULL) {
@@ -673,7 +677,8 @@ int cpe_set_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, const char
         wsm.authMode = WLAN_SHARED;
     } else if (!strcmp(value, "EAPAuthentication")) {
         /* not supported */
-        cwmp_log_info("%s: (index %u) Radius auth not supported");
+        cwmp_log_info("%s: (index %u) Radius auth not supported",
+                __func__, index);
         wsm.authMode = WLAN_OPEN;
     } else {
         cwmp_log_error("%s: (index %u) invalid value: '%s'",
@@ -1351,7 +1356,7 @@ int cpe_set_igd_wlanc_wepkey(cwmp_t *cwmp, const char *name, const char *value, 
     snprintf(tkey, sizeof(tkey), "Key%uType", key_id + 1);
     snprintf(key, sizeof(key), "Key%uStr%u", key_id + 1, wlan_id + 1);
 
-    if (length != 10 || length != 26) {
+    if (length != 10 && length != 26) {
         cwmp_log_trace("%s: invalid value length: %d, must be equal 10 or 26",
                 __func__, length);
         return FAULT_CODE_9007;

@@ -119,6 +119,7 @@ model_func_t ModelFunction[] =
     {"cpe_set_igd_wlanc_beacontype", cpe_set_igd_wlanc_beacontype},
     {"cpe_get_igd_wlanc_possiblechannels", cpe_get_igd_wlanc_possiblechannels},
 
+    {"cpe_get_igd_wan_ppp_count", cpe_get_igd_wan_ppp_count},
 
     {"cpe_get_igd_wan_ppp_authprot", cpe_get_igd_wan_ppp_authprot},
     {"cpe_set_igd_wan_ppp_authprot", cpe_set_igd_wan_ppp_authprot},

@@ -195,6 +195,7 @@ pm_alloc_upnp()
     if (!data) {
         cwmp_log_error("%s: calloc(%ld) failed: %s",
                 __func__, len, strerror(errno));
+        fclose(f);
         return NULL;
     }
 
@@ -695,7 +696,13 @@ cpe_get_pm(cwmp_t *cwmp, const char *name, char **value, char *args, pool_t *poo
     rule = name_to_rule(cwmp, name, param, sizeof(param), &ift_i);
 
     if (!rule)
+    {
+        if (!strcmp("PortMappingEnabled", param)) {
+            *value = "false";
+            return FAULT_CODE_OK;
+        }
         return FAULT_CODE_9005;
+    }
 
     enabled = cwmp_nvram_get("PortForwardEnable");
 

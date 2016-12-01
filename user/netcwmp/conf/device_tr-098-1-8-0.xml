@@ -266,6 +266,8 @@
 						<param name="TotalBytesReceived" get_func="cpe_get_igd_wlanc_rx_bytes"/>
 						<param name="TotalPacketsSent" get_func="cpe_get_igd_wlanc_tx_packets"/>
 						<param name="TotalPacketsReceived" get_func="cpe_get_igd_wlanc_rx_packets"/>
+
+						<param name="AssociatedDeviceNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
 						<object name="AssociatedDevice" refresh_func="cpe_refresh_igd_lan_wlan_associated">
 							<object name="{i}">
 								<param name="AssociatedDeviceMACAddress" get_func="cpe_get_igd_lan_wlan_assoc_mac"/>
@@ -386,7 +388,7 @@
 									</object>
 								</object>
 							</object>
-							<param name="WANPPPConnectionNumberOfEntries" get_func="cpe_get_const_string" args="1"/>
+							<param name="WANPPPConnectionNumberOfEntries" get_func="cpe_get_igd_wan_ppp_count" />
 							<object name="WANPPPConnection" rw="1" add_func="cpe_add_null">
 								<object name="1">
 									<param name="PPPAuthenticationProtocol" rw="1" type="s"  reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ppp_authprot" args="" set_func="cpe_set_igd_wan_ppp_authprot"/>
@@ -414,6 +416,7 @@
 										<param name="EthernetPacketsSent" get_func="cpe_get_igd_wan_ppp_stats"/>
 										<param name="EthernetPacketsReceived" get_func="cpe_get_igd_wan_ppp_stats"/>
 									</object>
+									<param name="PortMappingNumberOfEntries" get_func="cpe_get_const_string" args="0" />
 									<object name="PortMapping" rw="1" add_func="cpe_add_pm" refresh_func="cpe_refresh_pm">
 										<object name="{i}" del_func="cpe_del_pm" reload_func="cpe_reload_pm">
 											<param name="PortMappingEnabled" rw="1" reload_func="cpe_reload_pm" set_func="cpe_set_pm" get_func="cpe_get_pm"/>

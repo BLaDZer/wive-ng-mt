@@ -66,7 +66,7 @@ enum upgrade_status upgrade_get_status()
 		/* unknown behavior */
 		return UPGRADE_DOWNLOAD;
 	}
-	fscanf(f, "%d:%32s", &pid, status);
+	fscanf(f, "%d:%31s", &pid, status);
 	fclose(f);
 
 	/* check program state */

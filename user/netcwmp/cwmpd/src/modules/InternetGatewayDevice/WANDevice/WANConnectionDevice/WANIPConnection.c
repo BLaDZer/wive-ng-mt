@@ -49,11 +49,11 @@ int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value
 
     if (args[0] == 'r')
     {
-        snprintf(buf,1024,"%llu", pcs.rx_count[4-wan_port]);
+        snprintf(buf,sizeof(buf),"%llu", pcs.rx_count[4-wan_port]);
     }
     else
     {
-        snprintf(buf,1024,"%llu",pcs.tx_count[4-wan_port]);
+        snprintf(buf,sizeof(buf),"%llu",pcs.tx_count[4-wan_port]);
     }
 
     *value = pool_pstrdup(pool, buf);

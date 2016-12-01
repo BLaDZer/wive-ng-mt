@@ -81,14 +81,14 @@ static void * pool_alloc(size_t size)
 
 	if (p == NULL)
 	{
-		cwmp_log_error("malloc() %d bytes failed", size);
+		cwmp_log_error("malloc() %zu bytes failed", size);
 	}
 
 	return p;
 }
 
 
-
+/*
 #if (POOLITE_HAVE_POSIX_MEMALIGN)
 
 void * pool_memalign(size_t alignment, size_t size)
@@ -104,6 +104,7 @@ void * pool_memalign(size_t alignment, size_t size)
 }
 
 #elif (POOLITE_HAVE_MEMALIGN)
+
 
 static void * pool_memalign(size_t alignment, size_t size)
 {
@@ -121,7 +122,7 @@ static void * pool_memalign(size_t alignment, size_t size)
 }
 
 #endif
-
+*/
 
 pool_t * pool_create(size_t size)
 {

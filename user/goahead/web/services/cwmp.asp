@@ -95,9 +95,9 @@
 					opt[3].selected = true;	// Info
 
 				document.getElementById('cwmpd_httpd_port').value = ('<% getCfgGeneral(1, "cwmpd_httpd_port"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_httpd_port"); %>' : '1008';
-				document.getElementById('cwmpd_httpd_timeout').value = '<% getCfgGeneral(1, "cwmpd_httpd_timeout"); %>';
-				document.getElementById('cwmpd_session_connect_timeout').value = '<% getCfgGeneral(1, "cwmpd_session_connect_timeout"); %>';
-				document.getElementById('cwmpd_session_response_timeout').value = '<% getCfgGeneral(1, "cwmpd_session_response_timeout"); %>';
+				document.getElementById('cwmpd_httpd_timeout').value = ('<% getCfgGeneral(1, "cwmpd_httpd_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_httpd_timeout"); %>' : '5000';
+				document.getElementById('cwmpd_session_connect_timeout').value = ('<% getCfgGeneral(1, "cwmpd_session_connect_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_session_connect_timeout"); %>' : '15';
+				document.getElementById('cwmpd_session_response_timeout').value = ('<% getCfgGeneral(1, "cwmpd_session_response_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_session_response_timeout"); %>' : '30';
 
 				document.getElementById('cwmp_cpe_manufacture').value = '<% getCfgGeneral(1, "cwmp_cpe_manufacture"); %>';
 				document.getElementById('cwmp_cpe_oui').value = '<% getCfgGeneral(1, "cwmp_cpe_oui"); %>';
@@ -290,8 +290,8 @@
 									<td class="head" id="cwmpACStype">ACS Type</td>
 									<td colspan="2">
 										<select id="cwmp_acs_type" name="cwmp_acs_type" class="mid">
-											<option value="dlink" id="cwmpTypeDlink">D-Link</option>
-											<option value="ertelecom" id="cwmpTypeErtelecom">ER-Telecom</option>
+											<option value="tr-098-1-8-0" id="cwmpTypeErtelecom">TR-098 1.8.0</option>
+											<option value="dlink_101" id="cwmpTypeDlink">D-Link ACS 1.0.1</option>
 										</select>
 									</td>
 								</tr>

@@ -594,7 +594,7 @@ static void _print_param(parameter_node_t * param, int level)
                 (void*)param->reload,
                 cwmp_model_ptr_to_func(param->reload),
                 param->get ? ", " : "");
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
 
     if (param->get) {
@@ -603,7 +603,7 @@ static void _print_param(parameter_node_t * param, int level)
                 cwmp_model_ptr_to_func(param->get),
                 param->set ? ", " : ""
                 );
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
     if (param->set) {
         snprintf(func, sizeof(func), "set=%p[%s]%s",
@@ -611,7 +611,7 @@ static void _print_param(parameter_node_t * param, int level)
                 cwmp_model_ptr_to_func(param->set),
                 param->notify ? ", " : ""
                 );
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
     if (param->notify) {
         snprintf(func, sizeof(func), "notify=%p[%s]%s",
@@ -619,7 +619,7 @@ static void _print_param(parameter_node_t * param, int level)
                 cwmp_model_ptr_to_func(param->notify),
                 param->add ? ", " : ""
                 );
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
     if (param->add) {
         snprintf(func, sizeof(func), "add=%p[%s]%s",
@@ -627,7 +627,7 @@ static void _print_param(parameter_node_t * param, int level)
                 cwmp_model_ptr_to_func(param->add),
                 param->del ?  ", " : ""
                 );
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
     if (param->del) {
         snprintf(func, sizeof(func), "del=%p[%s]%s",
@@ -635,13 +635,13 @@ static void _print_param(parameter_node_t * param, int level)
                 cwmp_model_ptr_to_func(param->del),
                 param->refresh ?  ", " : ""
                 );
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
     if (param->refresh) {
         snprintf(func, sizeof(func), "refresh=%p[%s]",
                 (void*)param->refresh,
                 cwmp_model_ptr_to_func(param->refresh));
-        strncat(log, func, sizeof(log));
+        strncat(log, func, sizeof(log) - strlen(log) - 1);
     }
 
     cwmp_log_debug(log);

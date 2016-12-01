@@ -37,7 +37,7 @@ int cwmp_conf_open(const char * filename)
     char buf[INI_BUFFERSIZE] = {};
 
     cwmp_log_trace("%s(filename=\"%s\")", __func__, filename);
-    cwmp_conf_handle = malloc(sizeof(cwmp_conf_handle));
+    cwmp_conf_handle = malloc(sizeof(conf_t));
     if (!cwmp_conf_handle) {
         cwmp_log_error("conf malloc faild.");
         return CWMP_ERROR;

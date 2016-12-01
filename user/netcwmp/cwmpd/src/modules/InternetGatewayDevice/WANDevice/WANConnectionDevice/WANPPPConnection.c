@@ -93,7 +93,7 @@ time_t get_igd_wan_ppp_z_uptime()
 {
     unsigned kernel_time;
     unsigned pppoe_time;
-    const char *z_ppp_f = "/tmp/z_pppoe_started_at_uptime";
+    const char *z_ppp_f = "/tmp/vpn_if_name";
     const char *uptime_f = "/proc/uptime";
     FILE *f = NULL;
 
@@ -210,3 +210,13 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
     return FAULT_CODE_OK;
 }
 
+int cpe_get_igd_wan_ppp_count(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+    if (access("/tmp/vpn_if_name", R_OK) == 0) {
+        *value = pool_pstrdup(pool, "1");
+        return FAULT_CODE_OK;
+    }
+
+    *value = pool_pstrdup(pool, "0");
+    return FAULT_CODE_OK;
+}

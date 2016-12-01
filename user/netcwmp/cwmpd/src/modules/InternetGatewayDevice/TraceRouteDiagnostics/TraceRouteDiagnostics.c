@@ -521,7 +521,7 @@ cpe_get_trd_hop_count(cwmp_t *cwmp, const char *name, char **value, char *args, 
     char buf[42] = {};
     DM_TRACE_GET();
 
-    snprintf(buf, sizeof(buf), "%u", trd.hh_count);
+    snprintf(buf, sizeof(buf), "%zu", trd.hh_count);
     *value = pool_pstrdup(pool, buf);
     return FAULT_CODE_OK;
 }
