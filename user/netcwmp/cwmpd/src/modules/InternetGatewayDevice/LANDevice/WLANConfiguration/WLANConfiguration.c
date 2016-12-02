@@ -630,6 +630,7 @@ int cpe_get_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, char ** va
     }
 
     if (!nvram_wlan_load(index, &wsm)) {
+        cwmp_log_error("%s: unable to load wlan", __func__);
         return FAULT_CODE_9002;
     }
 
@@ -666,6 +667,7 @@ int cpe_set_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, const char
     DM_TRACE_SET();
 
     if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+
         return FAULT_CODE_9002;
     }
 
@@ -1626,12 +1628,15 @@ int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_reg
         if (!w) {
             continue;
         }
+        cwmp_log_debug("%s: new parameter id:%i, name: %s", __func__, w->id + 1, nc[i].ifname);
         cwmp_model_copy_parameter(param_node, &new_param, w->id + 1);
         wlanc.count++;
         if (!wlanc.root) {
             wlanc.root = w;
         }
     }
+
+    cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg);
 
     return FAULT_CODE_OK;
 }
