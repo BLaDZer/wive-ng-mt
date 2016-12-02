@@ -359,10 +359,10 @@ static void cwmpConfig(webs_t wp, char_t *path, char_t *query)
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 17, "cwmpdEnabled", "cwmp_cpe_auth", "cwmp_acs_url", "cwmp_acs_auth", "cwmp_acs_username"
-						"cwmp_acs_password", "cwmp_cpe_auth", "cwmp_cpe_username", "cwmp_cpe_password", "cwmp_log_level",
-						"cwmpd_httpd_port", "cwmpd_http_timeout", "cwmpd_session_connect_timeout", "cwmpd_session_response_timeout", "cwmp_cpe_manufacture",
-						"cwmp_cpe_oui", "cwmp_cpe_pc");
+		nvram_fromdef(RT2860_NVRAM, 19, "cwmpdEnabled", "cwmp_cpe_auth", "cwmp_acs_url", "cwmp_acs_auth", "cwmp_acs_username"
+						"cwmp_acs_password", "cwmp_cpe_auth", "cwmp_cpe_username", "cwmp_cpe_password", "cwmp_ca_file",
+						"cwmp_ca_password", "cwmp_log_level", "cwmpd_httpd_port", "cwmpd_http_timeout", "cwmpd_session_connect_timeout",
+						"cwmpd_session_response_timeout", "cwmp_cpe_manufacture", "cwmp_cpe_oui", "cwmp_cpe_pc");
 	}
 	else {
 		char_t *cwmp_enabled = websGetVar(wp, T("cwmp_enabled"), T("0"));
@@ -382,6 +382,8 @@ static void cwmpConfig(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_auth",			websGetVar(wp, T("cwmp_cpe_auth"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_username",			websGetVar(wp, T("cwmp_cpe_username"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_password",			websGetVar(wp, T("cwmp_cpe_password"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_ca_file",			websGetVar(wp, T("cwmp_ca_file"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmp_ca_password",			websGetVar(wp, T("cwmp_ca_password"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmpd_log_level",			websGetVar(wp, T("cwmpd_log_level"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmpd_httpd_port",			websGetVar(wp, T("cwmpd_httpd_port"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmpd_httpd_timeout",		websGetVar(wp, T("cwmpd_httpd_timeout"), T("")));
@@ -844,8 +846,16 @@ static int getRadiusUserList(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 
-static int isSMP(int eid, webs_t wp, int argc, char_t **argv) {
+static int getSMPBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #ifdef CONFIG_RALINK_MT7621
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
+static int getOpenSSLBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_LIB_OPENSSL
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -882,6 +892,7 @@ void formDefineServices(void)
 	websAspDefine(T("getSNMPDBuilt"), getSNMPDBuilt);
 	websAspDefine(T("getIPTAccountBuilt"), getIPTAccountBuilt);
 	websAspDefine(T("getProcessList"), getProcessList);
-	websAspDefine(T("isSMP"), isSMP);
+	websAspDefine(T("getSMPBuilt"), getSMPBuilt);
+	websAspDefine(T("getOpenSSLBuilt"), getOpenSSLBuilt);
 	websAspDefine(T("getSmbFPBuilt"), getSmbFPBuilt);
 }

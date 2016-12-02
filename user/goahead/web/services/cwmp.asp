@@ -33,6 +33,8 @@
 				_TR("cwmpCPEauth",			"services cwmp cpe auth");
 				_TR("cwmpCPEusername",		"services cwmp cpe user");
 				_TR("cwmpCPEpassword",		"services cwmp cpe pass");
+				_TR("cwmpCAfile",			"services cwmp ca file");
+				_TR("cwmpCApassword",		"services cwmp ca pass");
 				_TR("cwmpLogLevel",			"services cwmp adv log level");
 				_TR("cwmpHTTPport",			"services cwmp adv http port");
 				_TR("cwmpHTTPtimeout",		"services cwmp adv http timeout");
@@ -103,6 +105,10 @@
 				document.getElementById('cwmp_cpe_oui').value = '<% getCfgGeneral(1, "cwmp_cpe_oui"); %>';
 				document.getElementById('cwmp_cpe_pc').value = '<% getCfgGeneral(1, "cwmp_cpe_pc"); %>';
 
+				document.getElementById('cwmp_ca_file').value = ('<% getCfgGeneral(1, "cwmp_ca_file"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_ca_file"); %>' : '/etc/raddb/certs/ca.pem';
+				document.getElementById('cwmp_ca_password').value = ('<% getCfgGeneral(1, "cwmp_ca_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_ca_password"); %>' : '';
+				displayElement([ 'cwmpCAfile_tr', 'cwmpCApassword_tr' ], '<% getOpenSSLBuilt(); %>' == '1');
+
 				cwmpEnableSwitch();
 				showAdvancedMenu();
 
@@ -119,7 +125,8 @@
 					var re_name		= /^[a-zA-Z0-9_-]+$/;
 					var re_pass	= /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 					var re_num		= /^[0-9]+$/;
-					
+					var re_file		= /^[a-zA-Z0-9\_\.\-\/]+$/;
+
 					// Check ACS URL
 					if (!re_url.test(document.getElementById('cwmp_acs_url').value) || document.getElementById('cwmp_acs_url').value.length == 0) {
 						alert(_("services cwmp uncorrect url"));
@@ -156,6 +163,22 @@
 							alert(_("services cwmp uncorrect password"));
 							document.getElementById('cwmp_cpe_password').select();
 							document.getElementById('cwmp_cpe_password').focus();
+							return false;
+						}
+					}
+
+					// Check CA file & password
+					if ('<% getOpenSSLBuilt(); %>' == '1') {
+						if (!re_file.test(document.getElementById('cwmp_ca_file').value) || document.getElementById('cwmp_ca_file').value.length == 0) {
+							alert(_("services cwmp uncorrect ca file"));
+							document.getElementById('cwmp_ca_file').select();
+							document.getElementById('cwmp_ca_file').focus();
+							return false;
+						}
+						if (!re_pass.test(document.getElementById('cwmp_ca_password').value) && document.getElementById('cwmp_ca_password').value.length > 0) {
+							alert(_("services cwmp uncorrect password"));
+							document.getElementById('cwmp_ca_password').select();
+							document.getElementById('cwmp_ca_password').focus();
 							return false;
 						}
 					}
@@ -216,7 +239,7 @@
 			// Show/hide CWMP settings
 			function cwmpEnableSwitch()
 			{
-				displayElement([ 'cwmpACStype_tr', "cwmpACSurl_tr", 'cwmpCPEauth_tr', 'cwmpACSauth_tr', 'cwmpAdvanced_tr' ], document.getElementById('cwmp_enabled').value == 1);
+				displayElement([ 'cwmpACStype_tr', "cwmpACSurl_tr", 'cwmpCPEauth_tr', 'cwmpACSauth_tr', 'cwmpCAfile_tr', 'cwmpCApassword_tr', 'cwmpAdvanced_tr' ], document.getElementById('cwmp_enabled').value == 1);
 				displayElement([ 'cwmpCPEusername_tr', 'cwmpCPEpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_cpe_auth').value == 1);
 				displayElement([ 'cwmpACSusername_tr', 'cwmpACSpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_acs_auth').value == 1);
 				displayElement([ 'cwmpLogLevel_tr', 'cwmpHTTPport_tr', 'cwmpHTTPtimeout_tr', 'cwmpSesConnTimeout_tr', 'cwmpSesRespTimeout_tr',
@@ -341,6 +364,18 @@
 									<td class="head" id="cwmpCPEpassword">CPE Password</td>
 									<td colspan="2">
 										<input type="password" id="cwmp_cpe_password" name="cwmp_cpe_password" class="mid" />
+									</td>
+								</tr>
+								<tr id="cwmpCAfile_tr">
+									<td class="head" id="cwmpCAfile">SSL CA File</td>
+									<td colspan="2">
+										<input type="text" id="cwmp_ca_file" name="cwmp_ca_file" style="width: 99%" />
+									</td>
+								</tr>
+								<tr id="cwmpCApassword_tr">
+									<td class="head" id="cwmpCApassword">SSL CA Password</td>
+									<td colspan="2">
+										<input type="password" id="cwmp_ca_password" name="cwmp_ca_password" class="mid" />
 									</td>
 								</tr>
 								<tr id="cwmpAdvanced_tr">

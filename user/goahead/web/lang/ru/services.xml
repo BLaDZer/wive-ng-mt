@@ -94,6 +94,8 @@
 	<message msgid="services cwmp cpe auth"				msgstr="Авторизация CPE" />
 	<message msgid="services cwmp cpe user"				msgstr="Имя пользователя CPE" />
 	<message msgid="services cwmp cpe pass"				msgstr="Пароль CPE" />
+	<message msgid="services cwmp ca file"				msgstr="Файл SSL сертификата" />
+	<message msgid="services cwmp ca pass"				msgstr="Пароль SSL сертификата" />
 	<message msgid="services cwmp advanced"				msgstr="Расширенные настройки" />
 	<message msgid="services cwmp adv log level"			msgstr="Уровень журналирования" />
 	<message msgid="services cwmp adv http port"			msgstr="HTTP Порт" />
@@ -114,6 +116,7 @@
 	<message msgid="services cwmp uncorrect password"		msgstr="Некорректно введен пароль (символы пробела и доллара запрещены)" />
 	<message msgid="services cwmp uncorrect port"			msgstr="Некорректно введен порт (разрешен диапазон: 1 - 65535)" />
 	<message msgid="services cwmp uncorrect timeout"		msgstr="Некорректно введена задержка (только число)" />
+	<message msgid="services cwmp uncorrect ca file"		msgstr="Некорректно введен путь к файлу" />
 
   <message msgid="services samba title" msgstr="Настройки Samba/WINS" />
   <message msgid="services samba introduction" msgstr="Здесь вы можете настроить сервисы Samba/WINS." />

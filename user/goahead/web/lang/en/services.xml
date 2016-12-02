@@ -94,6 +94,8 @@
 	<message msgid="services cwmp cpe auth"				msgstr="CPE Authentification" />
 	<message msgid="services cwmp cpe user"				msgstr="CPE Username" />
 	<message msgid="services cwmp cpe pass"				msgstr="CPE Password" />
+	<message msgid="services cwmp ca file"				msgstr="SSL CA File" />
+	<message msgid="services cwmp ca pass"				msgstr="SSL CA Password" />
 	<message msgid="services cwmp advanced"				msgstr="Advanced settings" />
 	<message msgid="services cwmp adv log level"			msgstr="Log Level" />
 	<message msgid="services cwmp adv http port"			msgstr="HTTP Port" />
@@ -114,6 +116,7 @@
 	<message msgid="services cwmp uncorrect password"		msgstr="Entered uncorrect password (spaces and dollar symbol are disallowed)" />
 	<message msgid="services cwmp uncorrect port"			msgstr="Entered uncorrect port (allow: 1 - 65535)" />
 	<message msgid="services cwmp uncorrect timeout"		msgstr="Entered uncorrect timeout (allow only number)" />
+	<message msgid="services cwmp uncorrect ca file"		msgstr="Entered uncorrect file path" />
 
   <message msgid="services samba title" msgstr="Samba/WINS Setup" />
   <message msgid="services samba introduction" msgstr="Here you can configure Samba/WINS service." />

@@ -492,7 +492,7 @@
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc others"));
 					statusOthersMenu = 1;
 					displayElement(elements, true);
-					displayElement('irqbalance', '<% isSMP(); %>' == '1');
+					displayElement('irqbalance', '<% getSMPBuilt(); %>' == '1');
 					displayElement('mcast_store_ttl_row', document.miscServiceCfg.igmpEnbl.value == '1');
 				} else {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc others"));
