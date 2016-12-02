@@ -156,27 +156,28 @@ static u32 hash_conntrack_raw(const struct nf_conntrack_tuple *tuple)
 #if defined(CONFIG_NAT_CONE)
 	u32 a, b;
 
-	if (nf_conntrack_nat_mode == NAT_MODE_FCONE) {
-		return jhash2(tuple->dst.u3.all, sizeof(tuple->dst.u3.all) / sizeof(u32),
+	switch (nf_conntrack_nat_mode) {
+	    case NAT_MODE_FCONE:
+		    return jhash2(tuple->dst.u3.all, sizeof(tuple->dst.u3.all) / sizeof(u32),
 			      nf_conntrack_hash_rnd ^ (((__force __u16)tuple->dst.u.all << 16) | tuple->dst.protonum)); // dst ip & dst port & dst proto
+	    case NAT_MODE_RCONE:
+		{
+		    a = jhash2(tuple->src.u3.all, sizeof(tuple->src.u3.all) / sizeof(u32), tuple->src.l3num); //src ip & l3 proto
+		    b = jhash2(tuple->dst.u3.all, sizeof(tuple->dst.u3.all) / sizeof(u32), ((__force __u16)tuple->dst.u.all << 16) | tuple->dst.protonum); // dst ip & dst port & dst proto
+		    return jhash_2words(a, b, nf_conntrack_hash_rnd);
+		}
+	    default:
+		    break;
 	}
-	else if (nf_conntrack_nat_mode == NAT_MODE_RCONE) {
-		a = jhash2(tuple->src.u3.all, sizeof(tuple->src.u3.all) / sizeof(u32), tuple->src.l3num); //src ip & l3 proto
-		b = jhash2(tuple->dst.u3.all, sizeof(tuple->dst.u3.all) / sizeof(u32), ((__force __u16)tuple->dst.u.all << 16) | tuple->dst.protonum); // dst ip & dst port & dst proto
-		return jhash_2words(a, b, nf_conntrack_hash_rnd);
-	}
-	else
 #endif
-	{
-		/* The direction must be ignored, so we hash everything up to the
-		 * destination ports (which is a multiple of 4) and treat the last
-		 * three bytes manually.
-		 */
-		n = (sizeof(tuple->src) + sizeof(tuple->dst.u3)) / sizeof(u32);
-		return jhash2((u32 *)tuple, n, nf_conntrack_hash_rnd ^
-			      (((__force __u16)tuple->dst.u.all << 16) |
-			      tuple->dst.protonum));
-	}
+	/* The direction must be ignored, so we hash everything up to the
+	 * destination ports (which is a multiple of 4) and treat the last
+	 * three bytes manually.
+	 */
+	n = (sizeof(tuple->src) + sizeof(tuple->dst.u3)) / sizeof(u32);
+	return jhash2((u32 *)tuple, n, nf_conntrack_hash_rnd ^
+		      (((__force __u16)tuple->dst.u.all << 16) |
+		      tuple->dst.protonum));
 }
 
 static __always_inline u32 __hash_bucket(u32 hash, unsigned int size)
@@ -471,18 +472,18 @@ begin:
 }
 
 #if defined(CONFIG_NAT_CONE)
-static inline bool
+static __always_inline bool
 nf_ct_cone_tuple_equal(const struct nf_conntrack_tuple *t1,
 		       const struct nf_conntrack_tuple *t2)
 {
-	if (nf_conntrack_nat_mode == NAT_MODE_FCONE)
-		return __nf_ct_tuple_dst_equal(t1, t2);
-	else if (nf_conntrack_nat_mode == NAT_MODE_RCONE)
-		return (__nf_ct_tuple_dst_equal(t1, t2) &&
-			nf_inet_addr_cmp(&t1->src.u3, &t2->src.u3)  &&
-			t1->src.l3num == t2->src.l3num);
-	else
+	switch (nf_conntrack_nat_mode) {
+	    case NAT_MODE_FCONE:
+		    return __nf_ct_tuple_dst_equal(t1, t2);
+	    case NAT_MODE_RCONE:
+		    return (__nf_ct_tuple_dst_equal(t1, t2) && nf_inet_addr_cmp(&t1->src.u3, &t2->src.u3) && t1->src.l3num == t2->src.l3num);
+	    default:
 		return false;
+	}
 }
 
 static inline struct nf_conntrack_tuple_hash *
