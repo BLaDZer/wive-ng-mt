@@ -95,6 +95,7 @@
 					<p id="statusIntroduction">Let's take a look at the status.</p>
 					<div style="display:none;" id="fastpath_warning"></div>	
 					<hr>
+					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<table class="form" >
 						<col style="width: 40%;" />
 						<col style="width: 60%;" />

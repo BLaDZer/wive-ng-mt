@@ -78,19 +78,18 @@ function setLanguage()
         <blockquote>
           <fieldset>
             <legend id="ovSelectLang">Select Language</legend>
-            <select class="normal" name="langSelection" id="langSelection">
+            <select class="half" name="langSelection" id="langSelection">
               <!-- added by initValue -->
             </select>
             &nbsp;&nbsp;
 	    <input type="hidden" name="submit-url" value="/overview.asp" >
-            <input type="submit" class="normal" value="Apply" id="ovLangApply" onClick="return setLanguage()">
+            <input type="submit" class="half" value="Apply" id="ovLangApply" onClick="return setLanguage()">
           </fieldset>
         </blockquote>
       </form>
       <blockquote>
         <fieldset>
           <p><a href="/adm/status.asp" id="ovStatus">Status</a><br />
-            <a href="/adm/statistic.asp" id="ovStatistic">Statistic</a><br />
             <a href="/adm/management.asp" id="ovManagement">Management</a><br />
             <div id="ovAbout"><hr /><br />
             WIVE FIRMWARE IS FREE FOR THE NON-COMMERCIAL USE ONLY.

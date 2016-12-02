@@ -192,7 +192,7 @@
 							</tr>
 							<tr>
 								<td class="head" id="QoSStr" width="40%">Type of QoS</td>
-								<td width="60%"><select name="QoSSelect" onChange="QoSSelectChange(this.form);" class="wide">
+								<td width="60%"><select name="QoSSelect" onChange="QoSSelectChange(this.form);" style="width: 98%">
 									<option value="0" id="QoSDisable">Disable</option>
 									<option value="1" id="QoSSimple">Simple priority based QoS</option>
 									<option value="2" id="QoSShaper">Complex with shaper (ports based mark + HTB limit)</option>
@@ -204,7 +204,7 @@
 							</tr>
 							<tr id="QoSMode">
 								<td class="head" id="QoSModeStr" width="40%">Shape from:</td>
-								<td width="60%"><select name="QoSMode" class="full">
+								<td width="60%"><select name="QoSMode" class="half">
 									<option value="0" id="QoSAll">All</option>
 									<option value="1" id="QoSWAN">Only WAN</option>
 									<option value="2" id="QoSVPN">Only VPN</option>
@@ -212,32 +212,32 @@
 							</tr>
 							<tr id="QoSUpBW">
 								<td class="head" id="QoSUpBWStr" width="40%">Upload rate:</td>
-								<td width="60%"><input name="UpBW" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="UpBW" class="half" size="7" maxlength="7" type="text">
 									&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="QoSUpBWL">
 								<td class="head" id="QoSUpBWLStr" width="40%">Upload rate limit:</td>
-								<td width="60%"><input name="UpBWL" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="UpBWL" class="half" size="7" maxlength="7" type="text">
 									&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="QoSDownBW">
 								<td class="head" id="QoSDownBWStr" width="40%">Download rate:</td>
-								<td width="60%"><input name="DownBW" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="DownBW" class="half" size="7" maxlength="7" type="text">
 									&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="QoSDownBWL">
 								<td class="head" id="QoSDownBWLStr" width="40%">Download rate limit:</td>
-								<td width="60%"><input name="DownBWL" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="DownBWL" class="half" size="7" maxlength="7" type="text">
 									&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="QoSUPVPNBW">
 								<td class="head" id="QoSUPVPNBWStr" width="40%">Upload VPN rate:</td>
-								<td width="60%"><input name="UpVPNBW" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="UpVPNBW" class="half" size="7" maxlength="7" type="text">
 									&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="QoSUPVPNBWL">
 								<td class="head" id="QoSUPVPNBWLStr" width="40%">Upload VPN rate limit:</td>
-								<td width="60%"><input name="UpVPNBWL" class="short_qos" size="7" maxlength="7" type="text">
+								<td width="60%"><input name="UpVPNBWL" class="half" size="7" maxlength="7" type="text">
 								&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="PPortSettings">
@@ -245,22 +245,22 @@
 							</tr>
 							<tr id="user_Qos_HPP">
 								<td class="head" id="QoSHPP" width="40%">User High Priority Ports</td>
-								<td width="60%"><input name="QoS_HPP" class="superwide" size="60" maxlength="1024" type="text"></td>
+								<td width="60%"><input name="QoS_HPP" style="width: 98%" size="60" maxlength="1024" type="text"></td>
 							</tr>
 							<tr id="user_Qos_LPP">
 								<td class="head" id="QoSLPP" width="40%">User Low Priority Ports</td>
-								<td width="60%"><input name="QoS_LPP" class="superwide" size="60" maxlength="1024" type="text"></td>
+								<td width="60%"><input name="QoS_LPP" style="width: 98%" size="60" maxlength="1024" type="text"></td>
 							</tr>
 							<tr id="PDSCPSettings">
 								<td class="title" colspan="2" id="QoSSetupPDSCP">Priority DSCP settings</td>
 							</tr>
 							<tr id="user_Qos_HDSCP">
 								<td class="head" id="QoSHDSCP" width="40%">User High Priority DSCPs</td>
-								<td width="60%"><input name="QoS_HDSCP" class="superwide" size="60" maxlength="1024" type="text"></td>
+								<td width="60%"><input name="QoS_HDSCP" style="width: 98%" size="60" maxlength="1024" type="text"></td>
 							</tr>
 							<tr id="user_Qos_LDSCP">
 								<td class="head" id="QoSLDSCP" width="40%">User Low Priority DSCPs</td>
-								<td width="60%"><input name="QoS_LDSCP" class="superwide" size="60" maxlength="1024" type="text"></td>
+								<td width="60%"><input name="QoS_LDSCP" style="width: 98%" size="60" maxlength="1024" type="text"></td>
 							</tr>
 						</table>
 						<table class="buttons">

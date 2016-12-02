@@ -881,8 +881,8 @@
 			<td id="vlanPort_table"><h1 id="vlanTvSipTitle"></h1>
 				<p id="vlanTvSipIntroduction"></p>
 				<hr>
-				<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 				<form method="POST" name="lanCfg" action="/goform/setTvSipVLAN">
+				<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 				<!-- TV/SIP VLAN -->
 				<div id="vlanPort_status_table"></div>
 				<table id="vlanPort_main_table" class="form">
@@ -974,8 +974,8 @@
 				</table>
 				<table id="vlanPort_button_table" class="buttons">
 					<tr>
-						<td><input type="submit" class="normal" value="Apply"  id="vlanApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
-							<input type="button" class="normal" value="Cancel" id="vlanCancel" onClick="window.location.reload();">&nbsp; &nbsp;
+						<td><input type="submit" class="normal" value="Apply"  id="vlanApply"  onClick="return checkValues(this.form);">&nbsp;&nbsp;
+							<input type="button" class="normal" value="Cancel" id="vlanCancel" onClick="window.location.reload();">&nbsp;&nbsp;
 							<input type="button" class="normal" value="Reset"  id="vlanReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
 							<input type="hidden" value="1" name="reboot">
 							<input type="hidden" value="0" name="reset">
@@ -994,6 +994,7 @@
 					<div id="vlanModeWLANVLAN_table" style="display: none"></div>
 					<div id="vlanModeLANVLAN_table" style="display: none"></div>
 					<form method="POST" name="wlanLanCfg" action="/goform/setWlanLanVLAN">
+					<iframe name="timerReloader2" id="timerReloader2" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<table class="form">
 						<tr>
 							<td class="title" colspan="3" id="vlanModeSettings">WLAN VLANs / LAN VLANs Settings</td>
@@ -1045,8 +1046,8 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);">&nbsp; &nbsp;
-								<input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();">&nbsp; &nbsp;
+							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);">&nbsp;&nbsp;
+								<input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
 								<input type="hidden" value="new" id="lan_id">
 								<input type="hidden" value="" name="wifi_lan">

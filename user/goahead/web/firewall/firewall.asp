@@ -220,7 +220,7 @@
 				table += '<th>' + _("forward dst ip") + '</th>';
 				table += '<th rowspan="2" style="white-space: normal;">' + _("forward dst ports") + '</th>';
 				table += '<th rowspan="2">' + _("forward policy") + '</th>';
-				table += '<th rowspan="2">' + _("forward comment") + '</th>';
+				table += '<th rowspan="2">' + _("forward comment filter") + '</th>';
 				table += '<th rowspan="2">' + _("forward action") + '</th>';
 				table += '</tr><tr>';
 				table += '<th colspan="2">' + _("forward mac") + '</th>';
@@ -268,9 +268,9 @@
 					'<td><input type="text" tabindex="15" class="pfShort" maxlength="5" name="sFromPort" disabled="disabled"></td>' +
 					'<td><input type="text" tabindex="17" class="pfNormal" maxlength="15" name="dip_address"></td>' +
 					'<td><input type="text" tabindex="19" class="pfShort" maxlength="5" name="dFromPort" disabled="disabled"></td>' +
-					'<td rowspan="2"><select style="width:80px;" tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
-					'<td rowspan="2"><input tabindex="22" type="text" style="width:80px;" name="comment"></td>' +
-					'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" class="short" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
+					'<td rowspan="2"><select style="width:85px;" tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
+					'<td rowspan="2"><input tabindex="22" type="text" style="width:50px;" name="comment"></td>' +
+					'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
 					'<td colspan="2"><input type="text" tabindex="12" style="width: 140px" maxlength="17" name="mac_address"></td>' +
@@ -558,6 +558,7 @@
 					<h1 id="portTitle">MAC/IP/Port Filtering Settings</h1>
 					<p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
 					<hr>
+					<iframe name="timerReloader2" id="timerReloader2" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
 						<table class="form">
 							<tr>
@@ -590,6 +591,7 @@
 					<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
 					</div>
 					<hr>
+					<iframe name="timerReloader3" id="timerReloader3" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
 						<table class="form">
 							<tr>

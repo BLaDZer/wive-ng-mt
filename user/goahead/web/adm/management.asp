@@ -216,68 +216,66 @@ function showWarning() {
         <p style="color: #ff0000;">Caution! A corrupted image will hang up the system.</p>
       </div>
       <hr>
+	  <iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
       <p id="loading" style="display: none; color: #ff0000; font-size: 16px;"> Uploading firmware <br>
         <br id="manDontRemoveUSB">Please be patient and don't remove USB device if present... </p>
       <div id="staticControls">
         <!-- ================= Langauge Settings ================= -->
         <table class="form">
           <tr>
-            <td class="title" colspan="3" id="manLangSet">Language Settings</td>
+            <td class="title" colspan="2" id="manLangSet">Language Settings</td>
           </tr>
-			<tr>
-				<td class="head" id="manSelectLang">Select Language</td>
-					<td><form method="POST" name="Lang" action="/goform/setSysLang">
-						<select name="langSelection" id="langSelection" class="normal">
-							<!-- added by initValue -->
-						</select>
-					</td>
-					<td style="width: 227px">
-						<input type="hidden" name="submit-url" value="/adm/management.asp">&nbsp;&nbsp;
-						<input type="submit" class="normal" value="Apply" id="manLangApply" onClick="return setLanguage();">
-					</td>
-				</form>
-			</tr>
+          <tr>
+            <td class="head" id="manSelectLang" style="width: 192px">Select Language</td>
+            <td><form method="POST" name="Lang" action="/goform/setSysLang">
+                <select name="langSelection" id="langSelection" class="half">
+                  <!-- added by initValue -->
+                </select>
+                <input type="hidden" name="submit-url" value="/adm/management.asp" >
+                &nbsp;<input type="submit" class="half" value="Apply" id="manLangApply" onClick="return setLanguage();">
+                &nbsp; &nbsp;
+              </form></td>
+          </tr>
         </table>
-		<br>
         <!-- ================= Adm Settings ================= -->
         <form method="POST" name="Adm" action="/goform/setSysAdm" onSubmit="return AdmFormCheck(this);">
           <table class="form">
             <tr>
-              <td class="title" colspan="4" id="manAdmSet">Administrator Settings</td>
+              <td class="title" colspan="3" id="manAdmSet">Administrator Settings</td>
             </tr>
             <tr>
-				<td class="head" id="manAdmLodin">Login</td>
-				<td colspan="2"><input type="text" name="admuser" style="width: 99%" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
-				<td rowspan="2" style="width: 227px">
-					<input type="hidden" name="submit-url" value="/adm/management.asp">&nbsp;&nbsp;
-					<input type="submit" class="normal" value="Apply" id="manAdmApply">
-				</td>
+              <td class="head" id="manAdmLodin" style="width: 192px">Login</td>
+              <td colspan="2"><input type="text" class="normal" name="admuser" size="16" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
             </tr>
             <tr>
               <td class="head" id="manAdmPasswd">Password</td>
-              <td style="width: 145px"><input type="password" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
-              <td style="width: 145px"><input type="password" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td style="width: 162px"><input type="password" class="normal" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+              <td><input type="password" class="normal" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
+            </tr>
+            <tr>
+              <td class="head" ></td>
+              <td colspan="3"><input type="hidden" name="submit-url" value="/adm/management.asp" >
+                <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
             </tr>
           </table>
         </form>
         <!-- ================= Firmware ================= -->
         <table class="form">
           <tr>
-            <td colspan="3" class="title" id="manAdmFirmware">Firmware update</td>
+            <td colspan="2" class="title" id="manAdmFirmware">Firmware update</td>
           </tr>
           <tr>
             <td class="head" id="uploadFWLocation">Filename:</td>
-			<iframe id="firmwareReloader" name="firmwareReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-			<form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
-            <td class="value">
+            <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
                 <input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Replace(update) RWFS</span><br>
-                <input name="filename" size="20" maxlength="256" type="file">
-              </td>
-			 <td style="width: 227px">&nbsp;&nbsp;&nbsp;<input type="button" value="Update" id="uploadFWApply" class="normal" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);"></td>
-			</form>
+                <input name="filename" size="20" maxlength="256" type="file" style="max-width: 420px">
+                <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
+                <br>
+                <iframe id="firmwareReloader" name="firmwareReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+              </form></td>
           </tr>
 		  <tr>
-				<td colspan="3">
+				<td colspan="2">
 				    <span id="uploadFWtext"></span><a href="https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/" target="_blank">https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/</a><br>
 					<span id="uploadFWnote"></span>
 				</td>
@@ -286,54 +284,43 @@ function showWarning() {
         <!-- ================= RwFs ================= -->
         <table class="form">
           <tr>
-            <td colspan="3" class="title" id="manRWFSUpload">RW-FS Upload</td>
+            <td colspan="2" class="title" id="manRWFSUpload">RW-FS Upload</td>
           </tr>
           <tr>
             <td class="head" id="uploadRWFSLocation">Filename:</td>
-				<iframe id="RWFSReloader" name="RWFSReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-				<form method="POST" name="UploadRWFS" action="/cgi-bin/upload_rwfs.cgi" enctype="multipart/form-data">
-				<td class="value">
-					<input type="file" name="filename" maxlength="256">
-				</td>
-				<td style="width: 227px">
-					&nbsp;&nbsp;&nbsp;<input type="button" value="Load" id="uploadRWFSApply" class="normal" onClick="onUploadRWFSSubmit(this.form);">
-				</td>
-				</form>
-			</tr>
+            <td class="value"><form method="POST" name="UploadRWFS" action="/cgi-bin/upload_rwfs.cgi" enctype="multipart/form-data">
+                <input type="file" name="filename" maxlength="256" style="max-width: 420px">
+                <input type="button" value="Load" id="uploadRWFSApply" class="half" onClick="onUploadRWFSSubmit(this.form);">
+                <iframe id="RWFSReloader" name="RWFSReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+              </form></td>
+          </tr>
         </table>
         <!-- ================= Settings management ================= -->
         <table class="form">
           <tr>
-            <td class="title" colspan="3" id="manSettingsManag">Router Settings Management</td>
+            <td class="title" colspan="2" id="manSettingsManag">Router Settings Management</td>
           </tr>
           <tr>
             <td class="head" id="setmanExpSetButton">Backup Settings to file</td>
-            <td colspan="2">
-				<form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh" onsubmit="return confirm(_('management export settings'));">
-                &nbsp;&nbsp;&nbsp;<input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="normal">
-				</form>
-			</td>
+            <td><form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh"
+			onsubmit="return confirm(_('management export settings'));" >
+                <input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="half">
+              </form></td>
           </tr>
           <tr>
             <td class="head" id="setmanImpSetFileLocation">Load settings from file</td>
-			<iframe id="setmanReloader" name="setmanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-			<form method="POST" name="ImportSettings" action="/cgi-bin/upload_settings.cgi" enctype="multipart/form-data">
-            <td>
-				<input type="file" name="filename" maxlength="256">
-			</td>
-			<td style="width: 227px">
-				&nbsp;&nbsp;&nbsp;<input type="button" value="Load" id="setmanImpSetImport" class="normal" onClick="onImportSettings(this.form);">
-			</td>
-			</form>
+            <td><form method="POST" name="ImportSettings" action="/cgi-bin/upload_settings.cgi" enctype="multipart/form-data">
+                <input type="file" name="filename" maxlength="256" style="max-width: 420px">
+                <input type="button" value="Load" id="setmanImpSetImport" class="half" onClick="onImportSettings(this.form);">
+                <iframe id="setmanReloader" name="setmanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+              </form></td>
           </tr>
           <tr>
-			<iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-			<form method="GET" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
-			<td class="head" id="manResetToFactory">Reset to factory defaults</td>
-			<td colspan="2">
-                &nbsp;&nbsp;&nbsp;<input type="button" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="normal" onClick="onReset2DefaultsSubmit(this.form);">
-			</td>
-			</form>
+            <td class="head" id="manResetToFactory">Reset to factory defaults</td>
+            <td><form method="GET" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
+                <input type="button" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
+                <iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+              </form></td>
           </tr>
         </table>
       </div>

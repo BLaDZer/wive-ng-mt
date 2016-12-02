@@ -103,7 +103,7 @@
 				// Controls
 				table +=
 					'<tr>'+
-					'<td style="text-align: left; width: 25%;"><select name="filterType" tabindex="1"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
+					'<td style="text-align: left; width: 25%;"><select name="filterType" tabindex="1" class="normal"><option value="url">' + _("content filter block url") + '</option><option value="host">' + _("content filter block host") + '</option></select></td>' +
 					'<td style="text-align: left; width: 50%;"><input type="text" style="width: 99%" name="filterValue" tabindex="2" size="100"></td>' +
 					'<td style="text-align: center; width: 25%;"><input type="button" class="normal" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="3" onclick="addRule(this.form);"></td>' +
 					'</tr>';

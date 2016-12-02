@@ -2123,7 +2123,6 @@
 			</select></td>
 		</tr>
 	</table>
-	<br>
 	<table class="buttons">
 		<tr align="center">
 			<td><input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;

@@ -46,7 +46,7 @@
 	<message msgid="status mac"						msgstr="MAC адрес" />
 	<message msgid="status local network"			msgstr="Настройки локальной сети" />
 	<message msgid="status local ipaddr"			msgstr="LAN IP адрес" />
-	<message msgid="status local netmask"			msgstr="LAN Маска подсети" />
+	<message msgid="status local netmask"			msgstr="LAN маска подсети" />
 	<message msgid="status internal ipv6 address"	msgstr="Внутренний IPv6 адрес" />
 	<message msgid="status external ipv6 address"	msgstr="Внешний IPv6 адрес" />
 	<message msgid="status system up time day1"		msgstr="день" />

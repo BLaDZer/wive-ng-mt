@@ -420,8 +420,8 @@
 									<input type="hidden" name="wds_encryp_type">
 									<input type="hidden" name="wds_num">
 									<input type="hidden" name="reset" value="0">
-									<input type="submit" class="normal" value="Apply" id="basicWDSApply" onClick="return checkValues(this.form);">&nbsp; &nbsp;
-									<input type="button" class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()">&nbsp; &nbsp;
+									<input type="submit" class="normal" value="Apply" id="basicWDSApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
+									<input type="button" class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Reset" id="basicWDSReset" onClick="return resetValues(this.form, 30);">
 								</td>
 							</tr>

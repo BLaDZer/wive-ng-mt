@@ -33,6 +33,7 @@ function initTranslation()
   _TR("accountDisable", "button disable");
   _TR("accountEnable", "button enable");
 
+  _TRV("accountApply", "button apply");
   _TRV("accountRefresh", "button refresh");
   _TRV("accountReset", "button reset statistics");
 }
@@ -74,16 +75,19 @@ function initValue()
             <td class="title" colspan="2" id="accountSettings">IP Accounting Settings</td>
           </tr>
           <tr>
-            <td class="head" id="accountIPT">IPT accounting</td>
-            <td><select name="iptEnable" class="half">
+            <td class="head" id="accountIPT" style="width:40%">IPT accounting</td>
+            <td><select name="iptEnable" class="mid">
                 <option value="0" id="accountDisable">Disable</option>
                 <option value="1" id="accountEnable">Enable</option>
               </select></td>
           </tr>
-          <tr>
-            <td colspan="2"><input type="submit" class="normal" value="Apply"></td>
-          </tr>
         </table>
+		<table class="buttons">
+          <tr>
+            <td colspan="2"><input type="submit" class="normal" id="accountApply" value="Apply"></td>
+          </tr>
+		</table>
+		<br>
         <table class="form">
           <% iptStatList(); %>
         </table>

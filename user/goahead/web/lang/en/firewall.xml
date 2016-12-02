@@ -37,6 +37,7 @@
   <message msgid="forward dst ports" msgstr="Dst Ports" />
   <message msgid="forward nat" msgstr="Nat loopback" />
   <message msgid="forward comment" msgstr="Comment" />
+  <message msgid="forward comment filter" msgstr="Comment" />  
   <message msgid="forward action" msgstr="Action" />
   <message msgid="forward delete record" msgstr="Delete record" />
   <message msgid="forward no rules" msgstr="No port forwarding rules yet" />

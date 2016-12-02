@@ -149,8 +149,8 @@ function displayServiceStatus()
             <td class="title" colspan="3" id="manDdnsSet">DDNS Settings</td>
           </tr>
           <tr id="inadyn">
-            <td class="head" id="DdnsProvider">Dynamic DNS Provider</td>
-            <td><select onChange="DDNSupdateState()" name="DDNSProvider">
+            <td class="head" style="width: 40%" id="DdnsProvider">Dynamic DNS Provider</td>
+            <td><select onChange="DDNSupdateState()" name="DDNSProvider" class="mid">
                 <option value="none" id="manDdnsNone"> None </option>
                 <option value="dyndns.org"> dyndns.org </option>
                 <option value="freedns.afraid.org"> freedns.afraid.org </option>
@@ -161,22 +161,21 @@ function displayServiceStatus()
           </tr>
           <tr id="div_login">
             <td class="head" id="manDdnsAccount">Login</td>
-            <td colspan="2"><input size="16" name="Account" value="<% getCfgGeneral(1, "DDNSAccount"); %>" type="text"></td>
+            <td colspan="2"><input class="mid" name="Account" value="<% getCfgGeneral(1, "DDNSAccount"); %>" type="text"></td>
           </tr>
           <tr id="div_password">
             <td class="head" id="manDdnsPasswd">Password</td>
-            <td colspan="2"><input size="16" name="Password" value="<% getCfgGeneral(1, "DDNSPassword"); %>" type="password"></td>
+            <td colspan="2"><input class="mid" name="Password" value="<% getCfgGeneral(1, "DDNSPassword"); %>" type="password"></td>
           </tr>
           <tr id="div_dynname">
             <td class="head" id="manDdns">Dynamic Name</td>
-            <td colspan="2"><input size="32" name="DDNS" value="<% getCfgGeneral(1, "DDNS"); %>" type="text"></td>
+            <td colspan="2"><input class="mid" name="DDNS" value="<% getCfgGeneral(1, "DDNS"); %>" type="text"></td>
           </tr>
         </table>
         <table id="div_ddns_submit" class="buttons">
           <tr>
             <td><input type="hidden" name="submit-url" value="/services/ddns.asp" >
-              <input type="submit" class="normal" value="Apply" id="manDdnsApply">
-              &nbsp; &nbsp;
+              <input type="submit" class="normal" value="Apply" id="manDdnsApply">&nbsp;&nbsp;
               <input type="reset" class="normal" value="Cancel" id="manDdnsCancel" onClick="window.location.reload()"></td>
           </tr>
         </table>

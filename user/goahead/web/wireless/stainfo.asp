@@ -1442,6 +1442,7 @@
 				<td><h1 id="stalistTitle">Station List</h1>
 					<p id="stalistIntroduction"> Here you can monitor stations associated with this AP. </p>
 					<hr />
+					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form name="sta" action="/goform/disconnectSta" method="POST">
 						<div id="stationListData" style="display: none;"></div>
 						<div id="stationList"></div>

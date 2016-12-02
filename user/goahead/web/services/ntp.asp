@@ -151,8 +151,8 @@ function displayServiceStatus()
               <td class="title" colspan="3" id="ntpSetup">NTP Settings</td>
             </tr>
             <tr id="ntp_enabled_row">
-              <td class="head" id="ntpEnabled">NTP synchronization</td>
-              <td><select name="ntp_enabled" class="half" onChange="ntpChange(this.form);">
+              <td class="head" id="ntpEnabled" style="width: 40%">NTP synchronization</td>
+              <td><select name="ntp_enabled" class="mid" onChange="ntpChange(this.form);">
                 <option value="0" id="ntpDisable">Disable</option>
                 <option value="1" id="ntpEnable">Enable</option>
               </select></td>
@@ -161,7 +161,7 @@ function displayServiceStatus()
             <tr id="div_date">
               <td class="head" id="ntpCurrentTime">Current Host Time</td>
               <td colspan="2"><input class="wide" name="ntpcurrenttime" type="text" readonly="1">
-                <input type="button" class="normal" value="Sync with host" id="ntpSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()"></td>
+                &nbsp;&nbsp;&nbsp;<input type="button" class="normal" value="Sync with host" id="ntpSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()"></td>
             </tr>
             <tr id="div_tz">
               <td class="head" id="ntpTimeZone">Time Zone:</td>
@@ -242,8 +242,7 @@ function displayServiceStatus()
         <table class="buttons">
           <tr>
             <td><input type="hidden" value="/services/ntp.asp" name="submit-url">
-              <input type="submit" class="normal" value="Apply"  id="ntpApply">
-              &nbsp;&nbsp;
+              <input type="submit" class="normal" value="Apply"  id="ntpApply">&nbsp;&nbsp;
               <input type="reset"  class="normal" value="Cancel" id="ntpCancel" onClick="window.location.reload();"></td>
           </tr>
         </table>

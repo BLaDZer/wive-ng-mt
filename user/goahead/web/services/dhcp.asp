@@ -523,8 +523,7 @@ function displayServiceStatus()
         <table class="buttons">
           <tr>
             <td><input type="hidden" name="dhcpAssignIP" value="">
-              <input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">
-              &nbsp;&nbsp;
+              <input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">&nbsp;&nbsp;
               <input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">
               <input type="hidden" value="/services/dhcp.asp" name="submit-url"></td>
           </tr>

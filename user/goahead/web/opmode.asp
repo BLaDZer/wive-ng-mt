@@ -98,7 +98,7 @@
   <tr id="warning"></tr>
   <tr>
     <td><h1 id="oTitle">Operation Mode Configuration</h1>
-      <p><div id="oFirmVer">Current Firmware Version:</div> <% getSdkVersion(); %></p>
+      <p><div style="float:left" id="oFirmVer">Current Firmware Version: </div><div style="float:left">&nbsp;&nbsp;<% getSdkVersion(); %></div></p><br clear="all">
       <hr>
       <p id="oIntroduction">You can configure the operation mode suitable for your environment.</p>
       <hr>

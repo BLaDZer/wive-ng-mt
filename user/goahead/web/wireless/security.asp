@@ -1275,14 +1275,13 @@ for (aptable = 0; aptable < MBSSID_MAX; aptable++)
 	}
 
 	document.write("<tr><td class=\"head\">"+_("secure access policy new")+"</td>");
-	document.write("	<td><input name=\"newap_text_"+aptable+"\" id=\"newap_text_"+aptable+"\" size=\"16\" maxlength=\"20\"></td></tr></tbody></table>");
+	document.write("	<td><input class=\"mid\" name=\"newap_text_"+aptable+"\" id=\"newap_text_"+aptable+"\" size=\"16\" maxlength=\"20\"></td></tr></tbody></table>");
 }
 </script>
           <!-- <br> -->
           <table class="button">
             <tr>
-              <td><input class="normal" value="Apply" id="secureApply" type="submit">
-                &nbsp; &nbsp;
+              <td><input class="normal" value="Apply" id="secureApply" type="submit">&nbsp;&nbsp;
                 <input class="normal" value="Cancel" id="secureCancel" type="reset" onClick="window.location.reload();" >
                 <input type="hidden" name="submit-url" value="/wireless/security.asp" ></td>
             </tr>

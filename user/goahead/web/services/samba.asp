@@ -150,8 +150,8 @@ function displayServiceStatus()
             <td class="title" colspan="3" id="sambaSettings">Samba/WINS Settings</td>
           </tr>
           <tr id="samba">
-            <td class="head" id="sambaEnabled">Enable Samba</td>
-            <td><select name="SmbEnabled" class="half" onChange="smbEnabledSwitch(this.form);">
+            <td class="head" style="width: 40%" id="sambaEnabled">Enable Samba</td>
+            <td><select name="SmbEnabled" class="mid" onChange="smbEnabledSwitch(this.form);">
                 <option value="0" id="sambaDisable">Disable</option>
                 <option value="1" id="sambaEnable">Enable</option>
               </select></td>
@@ -171,11 +171,11 @@ function displayServiceStatus()
           </tr>
           <tr id="div_os_level">
             <td class="head" id="sambaOSLevel">OS level</td>
-            <td colspan="2"><input name="SmbOsLevel" class="half" value="<% getCfgGeneral(1, "SmbOsLevel"); %>" ></td>
+            <td colspan="2"><input name="SmbOsLevel" class="mid" value="<% getCfgGeneral(1, "SmbOsLevel"); %>" ></td>
           </tr>
           <tr id="div_time_server">
             <td class="head" id="sambaTimeServer">Enable time server</td>
-            <td colspan="2"><select name="SmbTimeserver" class="half">
+            <td colspan="2"><select name="SmbTimeserver" class="mid">
                 <option value="0" id="sambaDisable2">Disable</option>
                 <option value="1" id="sambaEnable2">Enable</option>
               </select></td>
