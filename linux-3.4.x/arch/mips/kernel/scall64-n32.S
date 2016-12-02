@@ -176,8 +176,8 @@ EXPORT(sysn32_call_table)
 	PTR	sys_socketpair
 	PTR	compat_sys_setsockopt
 	PTR	compat_sys_getsockopt
-	PTR	__sys_clone			/* 6055 */
-	PTR	__sys_fork
+	PTR	sys_clone			/* 6055 */
+	PTR	sys_fork
 	PTR	sys32_execve
 	PTR	sys_exit
 	PTR	compat_sys_wait4

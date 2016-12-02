@@ -181,8 +181,8 @@ sys_call_table:
 	PTR	sys_socketpair
 	PTR	sys_setsockopt
 	PTR	sys_getsockopt
-	PTR	__sys_clone			/* 5055 */
-	PTR	__sys_fork
+	PTR	sys_clone			/* 5055 */
+	PTR	sys_fork
 	PTR	sys_execve
 	PTR	sys_exit
 	PTR	sys_wait4
