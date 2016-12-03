@@ -4189,11 +4189,12 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 {
 	MAC_TABLE_ENTRY *pEntry = NULL;
 	RXINFO_STRUC *pRxInfo = pRxBlk->pRxInfo;
+#ifdef APCLI_SUPPORT
 	PCIPHER_KEY pWpaKey;
-
 	UCHAR			Wcid;
 	PHEADER_802_11	pHeader = pRxBlk->pHeader;
-#ifdef WPA_SUPPLICANT_SUPPORT 
+#endif /* APCLI_SUPPORT */
+#ifdef WPA_SUPPLICANT_SUPPORT
 	UCHAR	FromWhichBSSID = BSS0;
 #endif /* WPA_SUPPLICANT_SUPPORT */
 
@@ -4201,7 +4202,7 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		INC_COUNTER64(pAd->WlanCounters.WEPUndecryptableCount);
 
 	if (pRxInfo->CipherErr)
-	{		
+	{
 		if (pRxBlk->wcid < MAX_LEN_OF_MAC_TABLE)
 		{
 #ifdef APCLI_SUPPORT
