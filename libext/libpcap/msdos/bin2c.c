@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-static void Abort (char *fmt,...)
+static void Abort (const char *fmt,...)
 {
   va_list args;
   va_start (args, fmt);

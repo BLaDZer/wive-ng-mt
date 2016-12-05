@@ -21,8 +21,10 @@ if [ ! -f $APROOTDIR/Makefile.in ]; then
     cp -f $APROOTDIR/Makefile.in.tmpl $APROOTDIR/Makefile.in
 fi
 if [ ! -f $APROOTDIR/configure ]; then
+    libtoolize -c -f -i
+    aclocal --force
     autoreconf -fi
-    autoconf
+    autoconf --force
 fi
 if [ -f ../../linux/.config ]; then
     IPV6=`cat ../../linux/.config | grep "CONFIG_IPV6=y" -c`
@@ -35,8 +37,8 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem"
-CONFOPTS="$CONFOPTS --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --enable-shared"
 CONFOPTS="$CONFOPTS --with-pcap=linux"
-CONFOPTS="$CONFOPTS --disable-bluetooth --disable-canusb --disable-can --without-flex --without-bison --without-libnl $IPV6"
+CONFOPTS="$CONFOPTS --disable-bluetooth --without-libnl $IPV6"
 
 ./configure $CONFOPTS
