@@ -5,6 +5,7 @@ sudo: false
 #  - bash ./build_libmicrohttpd.sh --compile
 
 script:
+ - make checkstyle
  - make
 
 #env:

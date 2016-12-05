@@ -1,22 +1,10 @@
+<!DOCTYPE html>
 <html>
-<!-- Copyright (c) Wive-NG project (2010-2015) http://wive-ng.sf.net. All Rights Reserved. -->
 <head>
-<title>Wive-NG-MT router firmware - $gatewayname Вход</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta name="viewport" content="width=device-width">
-</head>
-<body bgcolor="#000000" text="#00FF05">
-<table border="0" cellpadding="2" cellspacing="0" width="100%">
-<tr>
-	<td align="center"><h1>$gatewayname</h1></td>
-</tr>
-<tr>
-	<td align="center" height="100%">
 <!--
 	A client is authenticated by requesting the page $authtarget.
 	So, href to it here, with an img or link text the user can click on.
+	Alternatively submit an HTTP form method=get, passing $authaction, $tok and $redir
 	Also, note that any images you reference must reside in the
 	subdirectory that is the value of $imagesdir (default: "images").
 
@@ -37,17 +25,67 @@
 	imagesdir: $imagesdir
 	pagesdir: $pagesdir
 
-	Variables that can be passed back via HTTP GET.
-	Just append them to the authentication link:
+	Additional Variables that can also be passed back via HTTP get.
+	Or just append them to the authentication link:
 	nodoguser
 	nodogpass
 	info
 	voucher
 -->
-	<a href="$authtarget"><img src="$imagesdir/splash.jpg" width="360" height="200" border="0" alt="Click to enter" title="Click to enter"></a>
-	<br><h2>Для входа нажмите на изображение.</h2><br>
-	</td>
-</tr>
-</table>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel='shortcut icon' href='$imagesdir/splash.jpg' type='image/x-icon' />
+<title>Wive-NG-MT router firmware - $gatewayname hotspot.</title>
+
+<style>
+body
+{
+background-color:black;
+color:#00FF05;
+text-align: center;
+}
+
+img
+{
+width: 40%;
+max-width: 360px;
+}
+
+input[type=button]
+{
+color:red;
+background-color:black;
+text-align:center;
+font-size: 1.0em;
+line-height: 2em;
+font-weight: bold;
+border: 5px solid;
+}
+</style>
+</head>
+
+<body>
+<b>$gatewayname Hotspot Gateway.</b>
+<br>
+<br>
+<b>
+<a href="$authtarget"><img src="$imagesdir/splash.jpg" border="0" alt="Click to enter" title="Click to enter"></a>
+</b>
+<br><br><br>
+<b>For access to the Internet, please click to image or continue button.</b>
+<br><br><br>
+
+<form>
+<input type="button" value="Continue" onClick="window.location.href='$authtarget'">
+</form>
+
+<br><br><br>
+<!-- Copyright (C) 2004-2016.  This software is released under the GNU GPL license. !-->
 </body>
 </html>

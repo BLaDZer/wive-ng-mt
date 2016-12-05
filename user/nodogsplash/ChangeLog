@@ -1,7 +1,19 @@
 
 nodogsplash (2.0.0)
 
+  * replace libhttp by libmicrohttpd [lynxis]
+  * implement string replace based template engine [lynxis]
+  * correct gatewaymac format to (00:11:22:33:44:ab) [lynxis]
+  * Allow an authenticated user to access the splashpage again. [lynxis]
+  * Allow an authenticated user to deauth themself using the denydir [lynxis]
+  * redirect wrong token auths to the splashpage [lynxis]
+  * support config redirectURL [lynxis]
+  * microhttpd: add content-type header to error messages [lynxis]
+  * prevent possible divison by zero and negative durations [mwarning]
+  * add debian support including systemd [efernandesng]
   * fix file descriptor leak [sfstudio]
+
+ -- Alexander Couzens <lynxis@fe80.eu> Thu, 10 Nov 2016 12:23:42 +0100
 
 nodogsplash (1.0.0)
 
@@ -24,8 +36,6 @@ nodogsplash (0.9-beta9.9.9)
     traffic was not blocked except on port 80 [mwarning]
   * make returned upload/download value by BinVoucher script
     optional, as stated in the documentation [mwarning]
-  * make variables clientmac and gatewaymac
-    available in the splash page [mwarning]
 
  -- Moritz Warning <moritzwarning@web.de>  Sun, 15 Jun 2014 22:55:12 +0200
 

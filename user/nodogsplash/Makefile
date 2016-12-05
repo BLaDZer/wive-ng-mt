@@ -29,8 +29,8 @@ clean:
 
 install:
 #ifeq(yes,$(STRIP))
-	strip nodogsplash
-	strip ndsctl
+#	strip nodogsplash
+#	strip ndsctl
 #endif
 	mkdir -p $(DESTDIR)/usr/bin/
 	cp ndsctl $(DESTDIR)/usr/bin/
@@ -38,7 +38,7 @@ install:
 	mkdir -p $(DESTDIR)/etc/nodogsplash/htdocs/images
 	cp resources/nodogsplash.conf $(DESTDIR)/etc/nodogsplash/
 	cp resources/splash.html $(DESTDIR)/etc/nodogsplash/htdocs/
-	cp resources/infoskel.html $(DESTDIR)/etc/nodogsplash/htdocs/
+#	cp resources/infoskel.html $(DESTDIR)/etc/nodogsplash/htdocs/
 	cp resources/splash.jpg $(DESTDIR)/etc/nodogsplash/htdocs/images/
 
 romfs:
@@ -55,12 +55,28 @@ checkastyle:
 	@command -v astyle >/dev/null 2>&1 || \
 	{ echo >&2 "We need 'astyle' but it's not installed. Aborting."; exit 1; }
 
+checkstyle: checkastyle
+	@if astyle \
+		--dry-run \
+		--lineend=linux \
+		--suffix=none \
+		--style=kr \
+		--indent=force-tab \
+		--formatted --recursive "src/*.c" "src/*.h" | grep -q -i formatted ; then \
+			echo Please fix formatting or run fixstyle ; false ; else \
+			echo Style looks ok. ; fi
+
 fixstyle: checkastyle
 	@echo "\033[1;34mChecking style ...\033[00m"
-	@astyle --lineend=linux --suffix=none --style=kr --indent=force-tab \
-	--formatted --recursive "src/*.c" "src/*.h"|grep formatted \
-	&& echo "\033[1;33mPrevious files have been corrected\033[00m" \
-	|| echo "\033[0;32mAll files are ok\033[00m"
+	@if astyle \
+		--dry-run \
+		--lineend=linux \
+		--suffix=none \
+		--style=kr \
+		--indent=force-tab \
+		--formatted --recursive "src/*.c" "src/*.h" | grep -q -i formatted ; then \
+			echo "\033[1;33mPrevious files have been corrected\033[00m" ; else \
+			echo "\033[0;32mAll files are ok\033[00m" ; fi
 
 DEBVERSION=$(shell dpkg-parsechangelog | grep ^Version |cut -f2 -d\  | sed -e 's/-[0-9]*$$//' )
 deb: clean
