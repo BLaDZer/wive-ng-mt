@@ -2495,7 +2495,7 @@ struct sk_buff *tcp_tso_segment(struct sk_buff *skb,
 	}
 
 	segs = skb_segment(skb, features);
-	if (IS_ERR(segs))
+	if (!segs || IS_ERR(segs))
 		goto out;
 
 	delta = htonl(oldlen + (thlen + mss));

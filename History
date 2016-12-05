@@ -2626,6 +2626,7 @@
 <b>4.9.x</b><br>
 1) kernel: net: cleanups in sock_setsockopt().<br>
 2) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+3) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
 <br>
 <br>
 <br>
