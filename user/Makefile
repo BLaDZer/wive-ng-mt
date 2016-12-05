@@ -55,7 +55,6 @@ dir_  =
 #base system application
 dir_$(CONFIG_USER_WIRELESS_TOOLS)           += wireless_tools
 dir_$(CONFIG_USER_802_1X)                   += 802.1x
-dir_$(CONFIG_USER_WIRELESS_IW_TOOL)         += iw
 dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
 ifdef CONFIG_BAND_STEERING
 dir_$(CONFIG_USER_BNDSTR)                   += bndstrg
