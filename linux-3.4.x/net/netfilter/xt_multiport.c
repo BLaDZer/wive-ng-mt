@@ -56,6 +56,8 @@ ports_match_v1(const struct xt_multiport_v1 *minfo,
 				    (src >= s && src <= e))
 					return true ^ minfo->invert;
 				break;
+			default:
+				break;
 			}
 		} else {
 			/* exact port matching */
@@ -73,6 +75,8 @@ ports_match_v1(const struct xt_multiport_v1 *minfo,
 			case XT_MULTIPORT_EITHER:
 				if (src == s || dst == s)
 					return true ^ minfo->invert;
+				break;
+			default:
 				break;
 			}
 		}
