@@ -2625,6 +2625,7 @@
 <br>
 <b>4.9.x</b><br>
 1) kernel: net: cleanups in sock_setsockopt().<br>
+2) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
 <br>
 <br>
 <br>
