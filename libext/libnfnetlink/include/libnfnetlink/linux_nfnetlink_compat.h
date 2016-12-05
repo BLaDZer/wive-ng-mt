@@ -1,5 +1,8 @@
 #ifndef _NFNETLINK_COMPAT_H
 #define _NFNETLINK_COMPAT_H
+
+#include <linux/types.h>
+
 #ifndef __KERNEL__
 /* Old nfnetlink macros for userspace */
 
@@ -18,10 +21,9 @@
  * ! nfnetlink use the same attributes methods. - J. Schulist.
  */
 
-struct nfattr
-{
-	u_int16_t nfa_len;
-	u_int16_t nfa_type;	/* we use 15 bits for the type, and the highest
+struct nfattr {
+	__u16 nfa_len;
+	__u16 nfa_type;	/* we use 15 bits for the type, and the highest
 				 * bit to indicate whether the payload is nested */
 };
 

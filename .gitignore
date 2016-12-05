@@ -218,6 +218,8 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /libext/libpcap/Mkaefile.in
 /libext/libpcap/configure
 /libext/libnl/configure
+/libext/libnl/Mkaefile.in
+/libext/libnl/Mkaefile
 /libext/libnl/lib/libnl.a
 /libext/libtalloc/mips.txt
 /libext/libmicrohttpd/Makefile

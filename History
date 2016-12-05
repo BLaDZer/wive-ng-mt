@@ -2630,11 +2630,12 @@
 4) irqbalance: update to 05.12.2016 git version (commit af39d140).<br>
 5) libpcap: up to 1.8.1 version.<br>
 6) tcpdump: up to 4.8.1 version.<br>
-7) kernel: net: cleanups in sock_setsockopt().<br>
-8) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-9) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-10) kernel: net: set skb->protocol properly for local output.<br>
-11) kernel: net: packet: fix race condition in packet_set_ring.<br>
+7) libnfnetlink: sync local header with kernel headers.<br>
+8) kernel: net: cleanups in sock_setsockopt().<br>
+9) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+10) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+11) kernel: net: set skb->protocol properly for local output.<br>
+12) kernel: net: packet: fix race condition in packet_set_ring.<br>
 <br>
 <br>
 <br>
