@@ -37,7 +37,6 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	SLIBNVRAM	=	-lnvram
 	SLIBWIVE	=	-lwive
 	SLIBICONV	=	-liconv
-	SLIBNL		=	-lnl
 	SLIBSSL		=	-lssl
 	SLIBCRYPTO	=	-lcrypto
 	SLIBCRYPT	=	-Wl,-Bstatic -Wl,-Bstatic -lcrypt
@@ -70,7 +69,6 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	LIBWIVE		=	$(SLIBWIVE)
 	LIBICONV	=	$(SLIBICONV)
 	LIBINTL		=	$(SLIBINTL)
-	LIBNL		=	$(SLIBNL)
 	LIBSSL		=	$(SLIBSSL)
 	LIBCRYPTO	=	$(SLIBCRYPTO)
 	LIBSTDCPP	=	$(SLIBSTDCPP)
