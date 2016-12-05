@@ -2624,6 +2624,7 @@
 <br>
 <br>
 <b>4.9.x</b><br>
+1) kernel: net: cleanups in sock_setsockopt().<br>
 <br>
 <br>
 <br>
