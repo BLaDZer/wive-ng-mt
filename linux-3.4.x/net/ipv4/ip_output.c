@@ -107,6 +107,8 @@ int __ip_local_out(struct sk_buff *skb)
 		return dst_output(skb);
 #endif
 
+	skb->protocol = htons(ETH_P_IP);
+
 	return nf_hook(NFPROTO_IPV4, NF_INET_LOCAL_OUT, skb, NULL,
 		       skb_dst(skb)->dev, dst_output);
 }
