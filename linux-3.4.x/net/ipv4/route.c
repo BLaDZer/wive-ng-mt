@@ -3021,7 +3021,7 @@ static int rt_fill_info(struct net *net,
 		    IPV4_DEVCONF_ALL(net, MC_FORWARDING)) {
 			int err = ipmr_get_route(net, skb,
 						 rt->rt_src, rt->rt_dst,
-						 r, nowait, portid);
+						 r, nowait);
 			if (err <= 0) {
 				if (!nowait) {
 					if (err == 0)
