@@ -1520,13 +1520,12 @@ static inline void tcp_mtu_check_reprobe(struct sock *sk)
  */
 static int tcp_mtu_probe(struct sock *sk)
 {
-	struct tcp_sock *tp = tcp_sk(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
+	struct tcp_sock *tp = tcp_sk(sk);
 	struct sk_buff *skb, *nskb, *next;
-	int len;
 	int probe_size;
 	int size_needed;
-	int copy;
+	int copy, len;
 	int mss_now;
 	int interval;
 
@@ -1534,11 +1533,11 @@ static int tcp_mtu_probe(struct sock *sk)
 	 * not in recovery,
 	 * have enough cwnd, and
 	 * not SACKing (the variable headers throw things off) */
-	if (!icsk->icsk_mtup.enabled ||
+	if (likely(!icsk->icsk_mtup.enabled ||
 	    icsk->icsk_mtup.probe_size ||
 	    inet_csk(sk)->icsk_ca_state != TCP_CA_Open ||
 	    tp->snd_cwnd < 11 ||
-	    tp->rx_opt.num_sacks || tp->rx_opt.dsack)
+	    tp->rx_opt.num_sacks || tp->rx_opt.dsack))
 		return -1;
 
 	/* Use binary search for probe_size between tcp_mss_base,

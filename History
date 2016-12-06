@@ -2636,8 +2636,9 @@
 10) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
 11) kernel: net: packet: fix race condition in packet_set_ring.<br>
 12) kernel: net: set skb->protocol properly for local output.<br>
-13) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-14) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+13) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+14) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+15) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
