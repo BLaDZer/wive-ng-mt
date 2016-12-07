@@ -118,6 +118,11 @@ get_params() {
     # minimal config for use this:
     # need set--sslkeyfile, --sslcertfile and --sslcafile as path to cert.pem uploaded from rwfs
     # only after upload correct cert file add --redirssl option to cooava
+    # use build time pregenerated sert file by default
+    #if [ -f /etc/raddb/certs/ca.pem ]; then
+    #	pemfile="/etc/raddb/certs/ca.pem"
+    #	PARLINE="$PARLINE --sslkeyfile=$pemfile --sslcertfile=$pemfile --sslcafile=$pemfile --redirssl"
+    #fi
 
     # parse webui user tuned parametrs
     PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease"
