@@ -89,14 +89,18 @@ stop() {
 }
 
 get_params() {
-    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain`
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain chilli_clisolate`
 
     # add static defaults
-    # use /32 mask for clients (prevent client to client direct connect)
     # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
     # tune radius connection parametrs and txqlen
-    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --noc2c --childmax=64 --radiustimeout=30 --radiusretry=20 --txqlen=1000"
+    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --childmax=64 --radiustimeout=10 --radiusretry=30 --txqlen=1000"
     PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
+
+    # use /32 mask for clients (prevent client to client direct connect)
+    if [ "$chilli_clisolate" == "1" ]; then
+    	PARLINE="$PARLINE --noc2c"
+    fi
 
     # uamdomain support depended by allow redirdnsreq
     if [ "$chilli_uamdomain" != "" ]; then

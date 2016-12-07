@@ -460,6 +460,7 @@ chilli_uamallowed=
 chilli_uamanyip=1
 chilli_uamanydns=1
 chilli_macallowed=
+chilli_clisolate=0
 nodogsplash_enable=0
 nodog_GatewayIPRange=0.0.0.0/0
 nodog_RedirectURL=http://wive-ng.sf.net

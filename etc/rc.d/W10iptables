@@ -238,6 +238,8 @@ forwardlimit() {
 	    if [ -d /sys/module/xt_coova ]; then
 		iptables -A FORWARD ! -o $wan_if -s $chilli_net -p tcp -m coova --name chilli -j ACCEPT
 		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p tcp -m coova --name chilli --dest -j ACCEPT
+		iptables -A FORWARD ! -o $wan_if -s $chilli_net -p udp -m coova --name chilli -j ACCEPT
+		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p udp -m coova --name chilli --dest -j ACCEPT
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then

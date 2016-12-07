@@ -2631,22 +2631,23 @@
 5) libpcap: up to 1.8.1 version.<br>
 6) tcpdump: up to 4.8.1 version.<br>
 7) libnfnetlink: sync local header with kernel headers.<br>
-8) init.d: iptables: use xt_coova only for tcp traffic (fix udp/icmp slowdown issue).<br>
-9) kernel: block: ioc_task_link() can't fail.<br>
-10) kernel: fork: remove the weak insanity.<br>
-11) kernel: fork: move thread info gfp flags to header.<br>
-12) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
-13) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
-14) kernel: fork: report pid reservation failure properly.<br>
-15) kernel: net: cleanups in sock_setsockopt().<br>
-16) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-17) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-18) kernel: net: packet: fix race condition in packet_set_ring.<br>
-19) kernel: net: bridge: set error code on failure.<br>
-20) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-21) kernel: net: set skb->protocol properly for local output.<br>
-22) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-23) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+8) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
+9) init.d: move isolated mode for chillispot to nvram.<br>
+10) kernel: block: ioc_task_link() can't fail.<br>
+11) kernel: fork: remove the weak insanity.<br>
+12) kernel: fork: move thread info gfp flags to header.<br>
+13) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
+14) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
+15) kernel: fork: report pid reservation failure properly.<br>
+16) kernel: net: cleanups in sock_setsockopt().<br>
+17) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+18) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+19) kernel: net: packet: fix race condition in packet_set_ring.<br>
+20) kernel: net: bridge: set error code on failure.<br>
+21) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+22) kernel: net: set skb->protocol properly for local output.<br>
+23) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+24) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
