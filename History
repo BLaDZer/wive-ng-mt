@@ -2633,15 +2633,16 @@
 7) libnfnetlink: sync local header with kernel headers.<br>
 8) kernel: block: ioc_task_link() can't fail.<br>
 9) kernel: fork: remove the weak insanity.<br>
-10) kernel: net: cleanups in sock_setsockopt().<br>
-11) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-12) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-13) kernel: net: packet: fix race condition in packet_set_ring.<br>
-14) kernel: net: bridge: set error code on failure.<br>
-15) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-16) kernel: net: set skb->protocol properly for local output.<br>
-17) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-18) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+10) kernel: fork: move thread info gfp flags to header.<br>
+11) kernel: net: cleanups in sock_setsockopt().<br>
+12) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+13) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+14) kernel: net: packet: fix race condition in packet_set_ring.<br>
+15) kernel: net: bridge: set error code on failure.<br>
+16) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+17) kernel: net: set skb->protocol properly for local output.<br>
+18) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+19) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
