@@ -232,12 +232,12 @@ forwardlimit() {
 	    iptables -N l2tpsrvfwd
 	    iptables -A FORWARD -j l2tpsrvfwd
 	fi
-	# enable forward for chillispot networks (really access manage direct from chillispot daemon)
+	# enable forward for chillispot networks (really access manage direct from chillispot daemon over tun)
 	if [ "$chilli_enable" = "on" ]; then
     	    $LOG "Add forward rules for chillispot"
 	    if [ -d /sys/module/xt_coova ]; then
-		iptables -A FORWARD ! -o $wan_if -s $chilli_net -m coova --name chilli -j ACCEPT
-		iptables -A FORWARD ! -i $wan_if -d $chilli_net -m coova --name chilli --dest -j ACCEPT
+		iptables -A FORWARD ! -o $wan_if -s $chilli_net -p tcp -m coova --name chilli -j ACCEPT
+		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p tcp -m coova --name chilli --dest -j ACCEPT
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
