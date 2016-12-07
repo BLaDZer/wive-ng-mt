@@ -2632,7 +2632,7 @@
 6) tcpdump: up to 4.8.1 version.<br>
 7) libnfnetlink: sync local header with kernel headers.<br>
 8) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
-9) init.d: move isolated mode for chillispot to nvram.<br>
+9) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
 10) kernel: block: ioc_task_link() can't fail.<br>
 11) kernel: fork: remove the weak insanity.<br>
 12) kernel: fork: move thread info gfp flags to header.<br>
