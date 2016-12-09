@@ -2647,10 +2647,11 @@
 21) kernel: net: packet: fix race condition in packet_set_ring.<br>
 22) kernel: net: bridge: set error code on failure.<br>
 23) kernel: net: set skb->protocol properly for local output.<br>
-24) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-25) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-26) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-27) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+24) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
+25) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+26) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+27) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+28) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
