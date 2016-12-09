@@ -167,6 +167,10 @@
     <message msgid="hotspot profile" msgstr="Имя профиля" />
     <message msgid="hotspot manual" msgstr="Вручную" />
     <message msgid="hotspot domain" msgstr="Имя доменна" />
+	<message msgid="hotspot drop dns" msgstr="Отбрасывать ответы DNS" />
+	<message msgid="hotspot drop dns full" msgstr="Отбрасывать ответы DNS (предварительная аутентификация) не содержащих A, CNAME, SOA, или MX записей" />
+	<message msgid="hotspot clisolate" msgstr="Использовать /32 маску для клиентов" />
+	<message msgid="hotspot clisolate full" msgstr="Использовать /32 маску для клиентов (предотвращать прямые соединения клиета с клиентом)" />
     <message msgid="hotspot radius auth" msgstr="Адрес RADIUS сервера аутентификации" />
     <message msgid="hotspot radius acct" msgstr="Адрес RADIUS сервера учёта" />
     <message msgid="hotspot radius secret" msgstr="Секретное слово RADIUS сервера" />

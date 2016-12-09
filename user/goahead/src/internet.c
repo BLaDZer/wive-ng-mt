@@ -1187,6 +1187,8 @@ parameter_fetch_t chilli_vars[] =
 	{ T("sUamDomain"),		"chilli_uamdomain",		0,       T("") },
 	{ T("sUamAnyDNS"),		"chilli_uamanydns",		0,       T("") },
 	{ T("sMacAllowed"),		"chilli_macallowed",		0,       T("") },
+	{ T("sC2Cisolate"),		"chilli_clisolate",		0,       T("") },
+	{ T("sDropDNS"),		"chilli_dnsparanoia",		0,       T("") },
 	{ NULL, 			NULL, 				0,       0     }  // Terminator
 };
 #endif
@@ -1260,15 +1262,15 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 	char_t *reset   = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 39, "chilli_enable", "chilli_profile", "chilli_dns1",
+		nvram_fromdef(RT2860_NVRAM, 41, "chilli_enable", "chilli_profile", "chilli_dns1",
 			"chilli_dns2", "chilli_domain", "chilli_dhcpstart", "chilli_dhcpend",
 			"chilli_lease", "chilli_radiusserver1", "chilli_radiusserver2",
 			"chilli_radiussecret", "chilli_radiusnasid", "chilli_radiuslocationid",
 			"chilli_radiuslocationname", "chilli_coaport", "chilli_coanoipcheck",
 			"chilli_uamserver", "chilli_uamhomepage", "chilli_uamsecret", "chilli_uamallowed",
-			"chilli_uamdomain", "chilli_uamanydns", "chilli_macallowed", "nodogsplash_enable",
-			"nodog_GatewayIPRange", "nodog_RedirectURL", "nodog_MaxClients",
-			"nodog_ClientIdleTimeout", "nodog_ClientForceTimeout", "nodog_AuthenticateImmediately",
+			"chilli_uamdomain", "chilli_uamanydns", "chilli_macallowed", "chilli_clisolate",
+			"chilli_dnsparanoia", "nodogsplash_enable", "nodog_GatewayIPRange", "nodog_RedirectURL", 
+			"nodog_MaxClients", "nodog_ClientIdleTimeout", "nodog_ClientForceTimeout", "nodog_AuthenticateImmediately",
 			"nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
 			"nodog_TrustedMACList", "nodog_PasswordAuthentication", "nodog_Password",
 			"nodog_UsernameAuthentication", "nodog_Username", "nodog_PasswordAttempts");

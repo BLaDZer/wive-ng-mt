@@ -26,6 +26,10 @@ var Profiles = [
 		false,						// UAM allowed domains
 		false,						// Allow all DNS requests
 		false,						// Allowed MAC
+		false,						// Client to Client isolate
+		false,						// Drop DNS responses
+		true,
+		true,
 		true,
 		true,
 		true,
@@ -75,10 +79,21 @@ var Profiles = [
 		"https://customer.hotspotsystem.com/customer/hotspotlogin.php",	// UAM server URL
 		"",							// UAM homepage URL
 		false,						// UAM secret
-		"194.149.46.0/24,198.241.128.0/17,66.211.128.0/17,216.113.128.0/17,70.42.128.0/17,128.242.125.0/24,216.52.17.0/24,62.249.232.74,155.136.68.77,155.136.66.34,66.4.128.0/17,66.211.128.0/17,66.235.128.0/17,88.221.136.146,195.228.254.149,195.228.254.152,203.211.140.157,203.211.150.204,www.paypal.com,mobile.paypal.com,www.paypalobjects.com,sstats.paypal-metrics.com,altfarm.mediaplex.com,live.adyen.com,www.worldpay.com,secure.worldpay.com,www.directebanking.com,betalen.rabobank.nl,ideal.ing.nl,ideal.abnamro.nl,www.ing.nl,www.hotspotsystem.com,customer.hotspotsystem.com,tech.hotspotsystem.com,a1.hotspotsystem.com,a2.hotspotsystem.com,a3.hotspotsystem.com,a4.hotspotsystem.com,a5.hotspotsystem.com,a6.hotspotsystem.com,a7.hotspotsystem.com,a8.hotspotsystem.com,a9.hotspotsystem.com,a10.hotspotsystem.com,a11.hotspotsystem.com,a12.hotspotsystem.com,a13.hotspotsystem.com,a14.hotspotsystem.com,a15.hotspotsystem.com,a16.hotspotsystem.com,a17.hotspotsystem.com,a18.hotspotsystem.com,a19.hotspotsystem.com,a20.hotspotsystem.com",  // UAM allowed hosts
+		"194.149.46.0/24,198.241.128.0/17,66.211.128.0/17,216.113.128.0/17,70.42.128.0/17,128.242.125.0/24,216.52.17.0/24,"+
+		"62.249.232.74,155.136.68.77,155.136.66.34,66.4.128.0/17,66.211.128.0/17,66.235.128.0/17,88.221.136.146,"+
+		"195.228.254.149,195.228.254.152,203.211.140.157,203.211.150.204,www.paypal.com,mobile.paypal.com,www.paypalobjects.com,"+
+		"sstats.paypal-metrics.com,altfarm.mediaplex.com,live.adyen.com,www.worldpay.com,secure.worldpay.com,www.directebanking.com,"+
+		"betalen.rabobank.nl,ideal.ing.nl,ideal.abnamro.nl,www.ing.nl,www.hotspotsystem.com,customer.hotspotsystem.com,tech.hotspotsystem.com,"+
+		"a1.hotspotsystem.com,a2.hotspotsystem.com,a3.hotspotsystem.com,a4.hotspotsystem.com,a5.hotspotsystem.com,a6.hotspotsystem.com,"+
+		"a7.hotspotsystem.com,a8.hotspotsystem.com,a9.hotspotsystem.com,a10.hotspotsystem.com,a11.hotspotsystem.com,a12.hotspotsystem.com,"+
+		"a13.hotspotsystem.com,a14.hotspotsystem.com,a15.hotspotsystem.com,a16.hotspotsystem.com,a17.hotspotsystem.com,a18.hotspotsystem.com,"+
+		"a19.hotspotsystem.com,a20.hotspotsystem.com,a21.hotspotsystem.com,a22.hotspotsystem.com,a23.hotspotsystem.com,a24.hotspotsystem.com,"+
+		"a25.hotspotsystem.com,a26.hotspotsystem.com,a27.hotspotsystem.com,a28.hotspotsystem.com,a29.hotspotsystem.com,a30.hotspotsystem.com",  // UAM allowed hosts
 		"paypal.com,paypalobjects.com,paypal-metrics.com,mediaplex.com,worldpay.com,adyen.com,hotspotsystem.com,geotrust.com", // UAM allowed domains
 		"off",						// Allow all DNS requests
 		false,						// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		//display Elements
 		true,
 		true,
@@ -104,7 +119,9 @@ var Profiles = [
 		false,
 		false,
 		false,
-		true
+		true,
+		false,
+		false
 	],
 
 	// MyWiFi
@@ -133,6 +150,8 @@ var Profiles = [
 		"login.wmtransfer.com,security.webmoney.ru,access.mywifi.com,webmoney.ru,wmtransfer.com,webmoney.com.mx", // UAM allowed domains
 		false,						// Allow all DNS requests
 		false,						// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		//display Elements
 		true,
 		true,
@@ -158,7 +177,9 @@ var Profiles = [
 		false,
 		false,
 		true,
-		true
+		true,
+		false,
+		false
 	],
 
 	// SAIWifi
@@ -187,6 +208,8 @@ var Profiles = [
 		"stat.saiwifi.ru,hotspot.saiwifi.ru",	 // UAM allowed domains
 		false,						// Allow all DNS requests
 		false,						// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		//display Elements
 		true,
 		true,
@@ -212,7 +235,9 @@ var Profiles = [
 		false,
 		false,
 		true,
-		true
+		true,
+		false,
+		false
 	],
 
 	// WiFi System
@@ -241,6 +266,8 @@ var Profiles = [
 		"wifisystem.ru,paymaster.ru,paypal.com,paypalobjects.com", // UAM allowed domains
 		false,						// Allow all DNS requests
 		false,						// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		//display Elements
 		true,
 		true,
@@ -266,7 +293,9 @@ var Profiles = [
 		false,
 		false,
 		true,
-		true
+		true,
+		false,
+		false
 	],
 
 	// NetByNet
@@ -295,6 +324,8 @@ var Profiles = [
 		false,						// UAM allowed domains
 		"off",						// Allow all DNS requests
 		false,						// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		//display Elements
 		true,
 		true,
@@ -320,7 +351,9 @@ var Profiles = [
 		false,
 		true,
 		false,
-		true
+		true,
+		false,
+		false
 	],
 
 	// hotspot.ots-net.ru
@@ -349,6 +382,8 @@ var Profiles = [
 		"ots-net.ru",							// UAM allowed domains
 		false,									// Allow all DNS requests
 		false,									// Allowed MAC
+		"0",						// Client to Client isolate
+		"0",						// Drop DNS responses
 		true,
 		true,
 		false,
@@ -370,6 +405,8 @@ var Profiles = [
 		false,
 		false,
 		true,
+		false,
+		false,
 		false,
 		false,
 		false,
