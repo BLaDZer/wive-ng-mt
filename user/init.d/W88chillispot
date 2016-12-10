@@ -94,7 +94,7 @@ get_params() {
     # add static defaults
     # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
     # tune radius connection parametrs and txqlen
-    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --childmax=64 --radiustimeout=10 --radiusretry=30 --txqlen=1000"
+    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --childmax=64 --radiustimeout=15 --radiusretry=30 --txqlen=1000"
     PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
 
     # use /32 mask for clients (prevent client to client direct connect)
@@ -107,25 +107,26 @@ get_params() {
 	PARLINE="$PARLINE --redirdnsreq"
     fi
 
-    # for future support ipv6 (not complite in upstream)
+    # for future support ipv6 (not complite in upstream need fix first)
     #if [ "$IPv6OpMode" = "1" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6and4"
     #elif [ "$IPv6OpMode" = "3" ]; then
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6to4"
     #fi
 
-    # for future support openssl (in 4.7.3 wive-ng-mt version coova build with openssl support)
-    # minimal config for use this:
-    # need set--sslkeyfile, --sslcertfile and --sslcafile as path to cert.pem uploaded from rwfs
-    # only after upload correct cert file add --redirssl option to cooava
-    # use build time pregenerated sert file by default
-    #if [ -f /etc/raddb/certs/ca.pem ]; then
-    #	pemfile="/etc/raddb/certs/ca.pem"
-    #	PARLINE="$PARLINE --sslkeyfile=$pemfile --sslcertfile=$pemfile --sslcafile=$pemfile --redirssl"
-    #fi
+    # for support openssl set --sslkeyfile, --sslcertfile and --sslcafile as path to pem files uploaded to rwfs
+    # default try use pregenerated certs for freeradius
+    pempath="/etc/raddb/certs"
+    keypemfile="${pempath}/server.pem"
+    sertpemfile="${pempath}/server.pem"
+    capemfile="${pempath}/ca.pem"
+    sslkeypass="whatever"
+    if [ -e $keypemfile ] && [ -e $sertpemfile ] && [ -e $capemfile ]; then
+    	PARLINE="$PARLINE --sslkeyfile=$keypemfile --sslkeypass=$sslkeypass --sslcertfile=$sertpemfile --sslcafile=$capemfile --redirssl"
+    fi
 
     # parse webui user tuned parametrs
-    PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease"
+    PARAMS="uamserver uamhomepage uamsecret uamdomain uamallowed macallowed net dhcpstart dhcpend dns1 dns2 domain coaport lease maxclients"
     PARAMS="$PARAMS radiuslisten radiusserver1 radiusserver2 radiussecret radiusnasid radiusnasip radiuslocationid radiuslocationname radiusnasporttype"
     for i in $PARAMS; do
 	val=`nvram_get 2860 chilli_$i`

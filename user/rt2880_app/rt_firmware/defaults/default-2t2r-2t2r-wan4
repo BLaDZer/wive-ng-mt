@@ -462,6 +462,7 @@ chilli_uamanydns=1
 chilli_macallowed=
 chilli_dnsparanoia=0
 chilli_clisolate=0
+chilli_maxclients=384
 nodogsplash_enable=0
 nodog_GatewayIPRange=0.0.0.0/0
 nodog_RedirectURL=http://wive-ng.sf.net
