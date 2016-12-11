@@ -114,16 +114,19 @@ get_params() {
     #	PARLINE="$PARLINE --ipv6 --ipv6mode=6to4"
     #fi
 
-    # path to pem files uploaded to rwfs default try use pregenerated certs for freeradius
-    pempath="/etc/chillispot"
+    # path to pem files uploaded to rwfs
+    pempath="/etc/certs"
     capemfile="${pempath}/ca.pem"
-    keypemfile="${pempath}/cert.key"
-    sertpemfile="${pempath}/cert.pem"
+    keypemfile="${pempath}/ca.key"
+    sertpemfile="${pempath}/ca.pem"
     sslkeypass=""
     if [ -e $capemfile ] && [ -e $keypemfile ] && [ -e $sertpemfile ]; then
+    	PARLINE="$PARLINE --sslcafile $capemfile --sslkeyfile $keypemfile --sslcertfile $sertpemfile --redirssl"
+	if [ "$sslkeypass" != "" ]; then
+    	    PARLINE="$PARLINE --sslkeypass $sslkeypass"
+	fi
 	# --uamuissl to turn on SSL on the uamuiport instead of simple HTTP (requires correct cert file from external validation center)
 	# may be in future...?
-    	PARLINE="$PARLINE --sslcafile $capemfile --sslkeyfile $keypemfile --sslkeypass $sslkeypass --sslcertfile $sertpemfile --redirssl"
     fi
 
     # parse webui user tuned parametrs
