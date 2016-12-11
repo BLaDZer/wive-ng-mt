@@ -115,11 +115,11 @@ get_params() {
     #fi
 
     # path to pem files uploaded to rwfs default try use pregenerated certs for freeradius
-    pempath="/etc/raddb/certs"
+    pempath="/etc/chillispot"
     capemfile="${pempath}/ca.pem"
-    keypemfile="${pempath}/server.key"
-    sertpemfile="${pempath}/server.pem"
-    sslkeypass="whatever"
+    keypemfile="${pempath}/cert.key"
+    sertpemfile="${pempath}/cert.pem"
+    sslkeypass=""
     if [ -e $capemfile ] && [ -e $keypemfile ] && [ -e $sertpemfile ]; then
 	# --uamuissl to turn on SSL on the uamuiport instead of simple HTTP (requires correct cert file from external validation center)
 	# may be in future...?
