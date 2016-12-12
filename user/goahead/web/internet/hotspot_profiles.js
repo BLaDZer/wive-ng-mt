@@ -28,6 +28,8 @@ var Profiles = [
 		false,							// Client to Client isolate
 		false,							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
+		true,
 		true,
 		true,
 		true,
@@ -96,6 +98,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		//display Elements
 		true,
 		true,
@@ -122,6 +125,7 @@ var Profiles = [
 		false,
 		false,
 		true,
+		false,
 		false,
 		false,
 		false
@@ -156,6 +160,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		//display Elements
 		true,
 		true,
@@ -182,6 +187,7 @@ var Profiles = [
 		false,
 		true,
 		true,
+		false,
 		false,
 		false,
 		false
@@ -216,6 +222,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		//display Elements
 		true,
 		true,
@@ -242,6 +249,8 @@ var Profiles = [
 		false,
 		true,
 		true,
+		false,
+		false,
 		false,
 		false,
 		false
@@ -276,6 +285,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		//display Elements
 		true,
 		true,
@@ -302,6 +312,7 @@ var Profiles = [
 		false,
 		true,
 		true,
+		false,
 		false,
 		false,
 		false
@@ -336,6 +347,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		//display Elements
 		true,
 		true,
@@ -362,6 +374,7 @@ var Profiles = [
 		true,
 		false,
 		true,
+		false,
 		false,
 		false,
 		false
@@ -396,6 +409,7 @@ var Profiles = [
 		"0",							// Client to Client isolate
 		"0",							// Drop DNS responses
 		false,							// Max Clients
+		false,							// HTTPS Redirect
 		true,
 		true,
 		false,
@@ -417,6 +431,7 @@ var Profiles = [
 		false,
 		false,
 		true,
+		false,
 		false,
 		false,
 		false,

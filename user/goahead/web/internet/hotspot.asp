@@ -35,6 +35,7 @@
 				_TR("sEndIP",				"lan dhcp end");
 				_TR("sPriDns",				"inet pri dns");
 				_TR("sSecDns",				"inet sec dns");
+				_TR("sHttpsRedirect",			"hotspot https redirect");
 				_TR("sDropDNS",				"hotspot drop dns");
 				_TR("sC2Cisolate",			"hotspot clisolate");
 				_TR("sMaxClients",			"hotspot max clients");
@@ -397,42 +398,43 @@
 				for(var i = 0; i < Profiles.length; i++) {
 					var tmp = Profiles[i];
 					if (tmp[0] == form.spotProfile.value) {
-						insertVal(form, "sIp",			(!tmp[2]) ? "<% getSpotIp(); %>" : tmp[2],					tmp[28+2]);
-						insertVal(form, "sNetmask",		(!tmp[3]) ? "<% getSpotNetmask(); %>" : tmp[3],					tmp[28+3]);
-						insertVal(form, "sStartIP",		(!tmp[4]) ? "<% getCfgGeneral(1, "chilli_dhcpstart"); %>" : tmp[4],		tmp[28+4]);
-						insertVal(form, "sEndIP",		(!tmp[5]) ? "<% getCfgGeneral(1, "chilli_dhcpend"); %>" : tmp[5],		tmp[28+5]);
-						insertVal(form, "sPriDns",		(!tmp[6]) ? "<% getCfgGeneral(1, "chilli_dns1"); %>" : tmp[6],			tmp[28+6]);
-						insertVal(form, "sSecDns",		(!tmp[7]) ? "<% getCfgGeneral(1, "chilli_dns2"); %>" : tmp[7],			tmp[28+7]);
-						insertVal(form, "sDomain",		(!tmp[8]) ? "<% getCfgGeneral(1, "chilli_domain"); %>" : tmp[8],		tmp[28+8]);
-						insertVal(form, "sLease",		(!tmp[9]) ? "<% getCfgGeneral(1, "chilli_lease"); %>" : tmp[9],			tmp[28+9]);
-						insertVal(form, "sRadServer1",		(!tmp[10]) ? "<% getCfgGeneral(1, "chilli_radiusserver1"); %>" : tmp[10],	tmp[28+10]);
-						insertVal(form, "sRadServer2",		(!tmp[11]) ? "<% getCfgGeneral(1, "chilli_radiusserver2"); %>" : tmp[11],	tmp[28+11]);
-						insertVal(form, "sRadSecret",		(!tmp[12]) ? "<% getCfgGeneral(1, "chilli_radiussecret"); %>" : tmp[12],	tmp[28+12]);
-						insertVal(form, "sNasId",		(!tmp[13]) ? "<% getCfgGeneral(1, "chilli_radiusnasid"); %>" : tmp[13],		tmp[28+13]);
-						insertVal(form, "sRadLocId",		(!tmp[14]) ? "<% getCfgGeneral(1, "chilli_radiuslocationid"); %>" : tmp[14],	tmp[28+14]);
-						insertVal(form, "sRadLocName",		(!tmp[15]) ? "<% getCfgGeneral(1, "chilli_radiuslocationname"); %>" : tmp[15],	tmp[28+15]);
-						insertVal(form, "sRadCoaPort",		(!tmp[16]) ? "<% getCfgGeneral(1, "chilli_coaport"); %>" : tmp[16],		tmp[28+16]);
-						insertVal(form, "sRadCoaNoIpCheck",	(!tmp[17]) ? "<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" : tmp[17],	tmp[28+17]);
+						insertVal(form, "sIp",			(!tmp[2]) ? "<% getSpotIp(); %>" : tmp[2],					tmp[29+2]);
+						insertVal(form, "sNetmask",		(!tmp[3]) ? "<% getSpotNetmask(); %>" : tmp[3],					tmp[29+3]);
+						insertVal(form, "sStartIP",		(!tmp[4]) ? "<% getCfgGeneral(1, "chilli_dhcpstart"); %>" : tmp[4],		tmp[29+4]);
+						insertVal(form, "sEndIP",		(!tmp[5]) ? "<% getCfgGeneral(1, "chilli_dhcpend"); %>" : tmp[5],		tmp[29+5]);
+						insertVal(form, "sPriDns",		(!tmp[6]) ? "<% getCfgGeneral(1, "chilli_dns1"); %>" : tmp[6],			tmp[29+6]);
+						insertVal(form, "sSecDns",		(!tmp[7]) ? "<% getCfgGeneral(1, "chilli_dns2"); %>" : tmp[7],			tmp[29+7]);
+						insertVal(form, "sDomain",		(!tmp[8]) ? "<% getCfgGeneral(1, "chilli_domain"); %>" : tmp[8],		tmp[29+8]);
+						insertVal(form, "sLease",		(!tmp[9]) ? "<% getCfgGeneral(1, "chilli_lease"); %>" : tmp[9],			tmp[29+9]);
+						insertVal(form, "sRadServer1",		(!tmp[10]) ? "<% getCfgGeneral(1, "chilli_radiusserver1"); %>" : tmp[10],	tmp[29+10]);
+						insertVal(form, "sRadServer2",		(!tmp[11]) ? "<% getCfgGeneral(1, "chilli_radiusserver2"); %>" : tmp[11],	tmp[29+11]);
+						insertVal(form, "sRadSecret",		(!tmp[12]) ? "<% getCfgGeneral(1, "chilli_radiussecret"); %>" : tmp[12],	tmp[29+12]);
+						insertVal(form, "sNasId",		(!tmp[13]) ? "<% getCfgGeneral(1, "chilli_radiusnasid"); %>" : tmp[13],		tmp[29+13]);
+						insertVal(form, "sRadLocId",		(!tmp[14]) ? "<% getCfgGeneral(1, "chilli_radiuslocationid"); %>" : tmp[14],	tmp[29+14]);
+						insertVal(form, "sRadLocName",		(!tmp[15]) ? "<% getCfgGeneral(1, "chilli_radiuslocationname"); %>" : tmp[15],	tmp[29+15]);
+						insertVal(form, "sRadCoaPort",		(!tmp[16]) ? "<% getCfgGeneral(1, "chilli_coaport"); %>" : tmp[16],		tmp[29+16]);
+						insertVal(form, "sRadCoaNoIpCheck",	(!tmp[17]) ? "<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" : tmp[17],	tmp[29+17]);
 						if(!tmp[17])
 							form.sRadCoaNoIpCheck.value = ("<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" == "on") ? "on" : "off";
-						insertVal(form, "sUamServer",		(!tmp[18]) ? "<% getCfgGeneral(1, "chilli_uamserver"); %>" : tmp[18],		tmp[28+18]);
-						insertVal(form, "sUamHomepage",		(!tmp[19]) ? "<% getCfgGeneral(1, "chilli_uamhomepage"); %>" : tmp[19],		tmp[28+19]);
-						insertVal(form, "sUamSecret",		(!tmp[20]) ? "<% getCfgGeneral(1, "chilli_uamsecret"); %>" : tmp[20],		tmp[28+20]);
-						insertVal(form, "sUamAllowed",		(!tmp[21]) ? "<% getCfgGeneral(1, "chilli_uamallowed"); %>" : tmp[21],		tmp[28+21]);
-						insertVal(form, "sUamDomain",		(!tmp[22]) ? "<% getCfgGeneral(1, "chilli_uamdomain"); %>" : tmp[22],		tmp[28+22]);
-						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? "<% getCfgGeneral(1, "chilli_uamanydns"); %>" : tmp[23],		tmp[28+23]);
+						insertVal(form, "sUamServer",		(!tmp[18]) ? "<% getCfgGeneral(1, "chilli_uamserver"); %>" : tmp[18],		tmp[29+18]);
+						insertVal(form, "sUamHomepage",		(!tmp[19]) ? "<% getCfgGeneral(1, "chilli_uamhomepage"); %>" : tmp[19],		tmp[29+19]);
+						insertVal(form, "sUamSecret",		(!tmp[20]) ? "<% getCfgGeneral(1, "chilli_uamsecret"); %>" : tmp[20],		tmp[29+20]);
+						insertVal(form, "sUamAllowed",		(!tmp[21]) ? "<% getCfgGeneral(1, "chilli_uamallowed"); %>" : tmp[21],		tmp[29+21]);
+						insertVal(form, "sUamDomain",		(!tmp[22]) ? "<% getCfgGeneral(1, "chilli_uamdomain"); %>" : tmp[22],		tmp[29+22]);
+						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? "<% getCfgGeneral(1, "chilli_uamanydns"); %>" : tmp[23],		tmp[29+23]);
 						if(!tmp[23])
 							form.sUamAnyDNS.value = ("<% getCfgGeneral(1, "chilli_uamanydns"); %>" == "on") ? "on" : "off";
-						insertVal(form, "sMacAllowed",		(!tmp[24]) ? "<% getCfgGeneral(1, "chilli_macallowed"); %>" : tmp[24],		tmp[28+24]);
-						insertVal(form, "sC2Cisolate",		(!tmp[25]) ? ("<% getCfgGeneral(1, "chilli_clisolate"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_clisolate"); %>" : tmp[25],		tmp[28+25]);
-						insertVal(form, "sDropDNS",		(!tmp[26]) ? ("<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" : tmp[26],		tmp[28+26]);
-						insertVal(form, "sMaxClients",		(!tmp[27]) ? ("<% getCfgGeneral(1, "chilli_maxclients"); %>" == "") ? 384 : "<% getCfgGeneral(1, "chilli_maxclients"); %>" : tmp[27],		tmp[28+27]);
+						insertVal(form, "sMacAllowed",		(!tmp[24]) ? "<% getCfgGeneral(1, "chilli_macallowed"); %>" : tmp[24],		tmp[29+24]);
+						insertVal(form, "sC2Cisolate",		(!tmp[25]) ? ("<% getCfgGeneral(1, "chilli_clisolate"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_clisolate"); %>" : tmp[25],		tmp[29+25]);
+						insertVal(form, "sDropDNS",		(!tmp[26]) ? ("<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" : tmp[26],		tmp[29+26]);
+						insertVal(form, "sMaxClients",		(!tmp[27]) ? ("<% getCfgGeneral(1, "chilli_maxclients"); %>" == "") ? 384 : "<% getCfgGeneral(1, "chilli_maxclients"); %>" : tmp[27],		tmp[29+27]);
+						insertVal(form, "sHttpsRedirect",	(!tmp[28]) ? ("<% getCfgGeneral(1, "chilli_https"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_https"); %>" : tmp[28],		tmp[29+28]);
 					}
 				}
 			}
 
 			function ModeOnChange(form) {
-				displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed", "row_sC2Cisolate", "row_sDropDNS", "row_sMaxClients"], (form.spotEnable.value == "1"));
+				displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed", "row_sC2Cisolate", "row_sDropDNS", "row_sMaxClients", "row_sHttpsRedirect"], (form.spotEnable.value == "1"));
 				displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], (form.spotEnable.value == "2"));
 
 				form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
@@ -566,6 +568,15 @@
 							<tr id="row_sEndIP" onMouseOver="showHint('spot_endip');" onMouseOut="hideHint();">
 								<td class="head" id="sEndIP">End IP</td>
 								<td><input class="normal" name="sEndIP" maxlength="3"></td>
+							</tr>
+							<tr id="row_sHttpsRedirect" onMouseOver="showHint('spot_httpsredirect');" onMouseOut="hideHint();">
+								<td class="head" id="sHttpsRedirect">HTTPS Redirect</td>
+								<td>
+									<select name="sHttpsRedirect" class="normal">
+										<option value="0" id="disable">Disable</option>
+										<option value="1" id="enable">Enable</option>
+									</select>
+								</td>
 							</tr>
 							<tr id="row_sC2Cisolate" onMouseOver="showHint('spot_c2cisolate');" onMouseOut="hideHint();">
 								<td class="head" id="sC2Cisolate">Use /32 mask for clients</td>
