@@ -10,6 +10,17 @@
 
 model_func_t ModelFunction[] =
 {
+// D-Link compatibility ---
+    {"cpe_get_igd_wlanc_standard_dlink101", cpe_get_igd_wlanc_standard_dlink101},
+    {"cpe_get_igd_wlanc_standard_dlink115", cpe_get_igd_wlanc_standard_dlink115},
+
+    {"cpe_set_igd_wlanc_standard_dlink101", cpe_set_igd_wlanc_standard_dlink101},
+    {"cpe_set_igd_wlanc_standard_dlink115", cpe_set_igd_wlanc_standard_dlink115},
+
+    {"cpe_get_igd_wlanc_dlink115_wparenewal", cpe_get_igd_wlanc_dlink115_wparenewal},
+    {"cpe_set_igd_wlanc_dlink115_wparenewal", cpe_set_igd_wlanc_dlink115_wparenewal},
+// ---
+
     {"cpe_reload_all", cpe_reload_all},
     {"cpe_get_alias", cpe_get_alias},
     {"cpe_set_alias", cpe_set_alias},
@@ -63,6 +74,7 @@ model_func_t ModelFunction[] =
 
     {"cpe_get_igd_wlanc_standard", cpe_get_igd_wlanc_standard},
     {"cpe_set_igd_wlanc_standard", cpe_set_igd_wlanc_standard},
+
 
     {"cpe_get_igd_wlanc_channel", cpe_get_igd_wlanc_channel},
     {"cpe_set_igd_wlanc_channel", cpe_set_igd_wlanc_channel},
@@ -149,7 +161,8 @@ model_func_t ModelFunction[] =
     {"cpe_get_igd_l3f_defaultconnection", cpe_get_igd_l3f_defaultconnection},
     {"cpe_set_igd_l3f_defaultconnection", cpe_set_igd_l3f_defaultconnection},
 
-   {"cpe_get_igd_wan_ip", cpe_get_igd_wan_ip},
+    {"cpe_get_igd_wan_ip", cpe_get_igd_wan_ip},
+    {"cpe_set_igd_wan_ip", cpe_set_igd_wan_ip},
 
     {"cpe_get_conf_string", cpe_get_conf_string},
     {"cpe_set_conf_string", cpe_set_conf_string},

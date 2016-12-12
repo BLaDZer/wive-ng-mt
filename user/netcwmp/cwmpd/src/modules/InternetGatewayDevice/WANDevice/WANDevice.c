@@ -27,6 +27,14 @@ int cpe_get_igd_wan_ip(cwmp_t * cwmp, const char * name, char ** value, char * a
     return FAULT_CODE_OK;
 }
 
+int cpe_set_igd_wan_ip(cwmp_t *cwmp, const char *name, const char *value, int length, char *args, callback_register_func_t callback_reg)
+{
+    DM_TRACE_SET();
+
+    cwmp_nvram_set("wan_ipaddr",value);
+
+    return FAULT_CODE_OK;
+}
 
 int  cpe_refresh_igd_wandevice(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
 {

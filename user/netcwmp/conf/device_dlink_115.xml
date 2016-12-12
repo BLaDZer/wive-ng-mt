@@ -248,7 +248,7 @@
 						<param name="SSID" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_ssid" set_func="cpe_set_igd_wlanc_ssid"/>
 						<param name="BeaconType" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_beacontype" set_func="cpe_set_igd_wlanc_beacontype"/>
 						<!--<param name="MACAddressControlEnabled" rw="1" reload_func="cpe_reload_all" get_func="" set_func=""/>-->
-						<param name="Standard" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_standard" set_func="cpe_set_igd_wlanc_standard"/>
+						<param name="Standard" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_standard_dlink115" set_func="cpe_set_igd_wlanc_standard_dlink115"/>
 						<param name="WEPKeyIndex" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wepkey_index" set_func="cpe_set_igd_wlanc_wepkey_index"/>
 						<param name="KeyPassphrase" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_key" set_func="cpe_set_igd_wlanc_key"/>
 						<param name="WEPEncryptionLevel" get_func="cpe_get_const_string" args="104-bit"/>
@@ -324,6 +324,9 @@
 						<!-- WiFiWMM:1 -->
 						<param name="WMMSupported" get_func="cpe_get_const_string" args="1"/>
 						<param name="WMMEnable" rw="1" get_func="cpe_get_nvram_bool_onoff" set_func="cpe_set_nvram_bool_onoff" args="WmmCapable" reload_func="cpe_reload_all"/>
+
+                                                <!-- D-Link -->
+						<param name="X_X_DLINK_WPA_Renewal" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_dlink115_wparenewal" set_func="cpe_set_igd_wlanc_dlink115_wparenewal"/>
 					</object>
 				</object>
 			</object>

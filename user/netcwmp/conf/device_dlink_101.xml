@@ -120,7 +120,7 @@
 					<param name="SSID" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_ssid" set_func="cpe_set_igd_wlanc_ssid"/>
 					<param name="Channel" noti_rw="1" rw="1" get_func="cpe_get_igd_wlanc_channel" args="Channel" set_func="cpe_set_igd_wlanc_channel" reload_func="cpe_reload_all"/>
 					<param name="AutoChannelEnable" noti_rw="1" rw="1" get_func="cpe_get_igd_wlanc_autochannel" args="" set_func="cpe_set_igd_wlanc_autochannel" reload_func="cpe_reload_all"/>
-					<param name="Standard" noti_rw="1" rw="1" get_func="cpe_get_igd_wlanc_standard" set_func="cpe_set_igd_wlanc_standard" reload_func="cpe_reload_all"/>
+					<param name="Standard" noti_rw="1" rw="1" get_func="cpe_get_igd_wlanc_standard_dlink101" set_func="cpe_set_igd_wlanc_standard_dlink101" reload_func="cpe_reload_all"/>
 					<param name="BeaconType" noti_rw="1" rw="1" get_func="cpe_get_igd_wlanc_beacontype" set_func="cpe_set_igd_wlanc_beacontype" reload_func="cpe_reload_all"/>
 					<param name="KeyPassphrase" noti_rw="1" rw="1" get_func="cpe_get_nvram_string" args="WPAPSK1" set_func="cpe_set_nvram_string" reload_func="cpe_reload_all"/>
 					<param name="TotalPSKFailures" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_pskfailures" set_func="cpe_set_igd_wlanc_pskfailures"/>

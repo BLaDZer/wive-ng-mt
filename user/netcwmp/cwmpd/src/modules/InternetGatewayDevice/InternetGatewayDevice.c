@@ -48,6 +48,8 @@ int cpe_reload_all(cwmp_t *cwmp, callback_register_func_t callback_reg)
 #include "LANDevice/X_COM_IgmpSnoopingConfig/X_COM_IgmpSnoopingConfig.c"
 #include "LANDevice/LANHostConfigManagement/LANHostConfigManagement.c"
 #include "LANDevice/WLANConfiguration/WLANConfiguration.c"
+#include "LANDevice/WLANConfiguration/WLANConfiguration_dlink101.c"
+#include "LANDevice/WLANConfiguration/WLANConfiguration_dlink115.c"
 #include "LANDevice/LANEthernetInterfaceConfig/LANEthernetInterfaceConfig.c"
 #include "LANDevice/Hosts/Hosts.c"
 #include "LANDevice/LANHostConfigManagement/DHCPStaticAddress/DHCPStaticAddress.c"

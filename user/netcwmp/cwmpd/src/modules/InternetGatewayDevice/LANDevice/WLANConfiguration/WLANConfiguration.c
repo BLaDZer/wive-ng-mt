@@ -420,7 +420,7 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
                 break;
         }
         wsm->encrypt = wsm_orig.encrypt;
-    } else if (!wsm->encrypt != WLAN_NULL) {
+    } else if (wsm->encrypt != WLAN_NULL) {
         switch (wsm->encrypt) {
             case WLAN_NO_ENCRYPTION:
             case WLAN_WEP:
@@ -430,7 +430,11 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
             case WLAN_AES:
             case WLAN_TKIP:
             case WLAN_TKIPAES:
-                wsm->mode = WLAN_WPAand11i;
+                wsm->mode = wsm_orig.mode;
+                if (wsm->mode != WLAN_WPA && wsm->mode != WLAN_11i && wsm->mode != WLAN_WPAand11i)
+                {
+                    wsm->mode = WLAN_WPAand11i;
+                }
                 break;
         }
         wsm->authMode = wsm_orig.authMode;
@@ -588,9 +592,9 @@ int cpe_get_igd_wlanc_standard(cwmp_t * cwmp, const char * name, char ** value, 
 
     switch (standard) {
 
-        case 0: stdstr = "b/g/n";break;
+        case 0: stdstr = "g";break;
         case 1: stdstr = "b";break;
-        case 4: stdstr = "g";break;
+        case 4: stdstr = "g-only";break;
         case 6: stdstr = "n";break;
         case 7: stdstr = "b/g/n";break;
         case 9: stdstr = "b/g/n";break;
@@ -609,7 +613,8 @@ int cpe_set_igd_wlanc_standard(cwmp_t * cwmp, const char * name, const char * va
     char* valStr = "9";
 
     if (strcmp(value, "n") == 0) valStr="6";else
-    if (strcmp(value, "g") == 0) valStr="4";else
+    if (strcmp(value, "g") == 0) valStr="0";else
+    if (strcmp(value, "g-only") == 0) valStr="4";else
     if (strcmp(value, "b") == 0) valStr="1";
 
     cwmp_nvram_set("WirelessMode", valStr);
@@ -734,6 +739,11 @@ int cpe_set_igd_wlanc_basicencryption(cwmp_t *cwmp, const char *name, const char
     struct wlan_security_mode wsm = {};
 
     DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
     if (!strcmp(value, "None")) {
         wsm.encrypt = WLAN_NO_ENCRYPTION;
     } else if (!strcmp(value, "WEPEncryption")) {
@@ -741,10 +751,6 @@ int cpe_set_igd_wlanc_basicencryption(cwmp_t *cwmp, const char *name, const char
     } else {
         cwmp_log_error("%s: invalid value: '%s'", __func__, value);
         return FAULT_CODE_9007;
-    }
-
-    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
-        return FAULT_CODE_9002;
     }
 
     nvram_wlan_save(index, &wsm);
@@ -764,6 +770,7 @@ int cpe_get_igd_wlanc_wpaauthmode(cwmp_t * cwmp, const char * name, char ** valu
     }
 
     if (!nvram_wlan_load(index, &wsm)) {
+        cwmp_log_error("%s: unable to load wlan", __func__);
         return FAULT_CODE_9002;
     }
 
@@ -892,6 +899,7 @@ int cpe_get_igd_wlanc_ieeeauthmode(cwmp_t * cwmp, const char * name, char ** val
     }
 
     if (!nvram_wlan_load(index, &wsm)) {
+        cwmp_log_error("%s: unable to load wlan", __func__);
         return FAULT_CODE_9002;
     }
 
@@ -952,6 +960,7 @@ int cpe_get_igd_wlanc_beacontype(cwmp_t * cwmp, const char * name, char ** value
     }
 
     if (!nvram_wlan_load(index, &wsm)) {
+        cwmp_log_error("%s: unable to load wlan", __func__);
         return FAULT_CODE_9002;
     }
 

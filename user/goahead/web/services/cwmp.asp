@@ -316,6 +316,7 @@
 										<select id="cwmp_acs_type" name="cwmp_acs_type" class="mid">
 											<option value="tr-098-1-8-0" id="cwmpTypeErtelecom">TR-098 1.8.0</option>
 											<option value="dlink_101" id="cwmpTypeDlink">D-Link ACS 1.0.1</option>
+											<option value="dlink_115" id="cwmpTypeDlink">D-Link ACS 1.1.5 (modified TR-098 1.8.0)</option>
 										</select>
 									</td>
 								</tr>
