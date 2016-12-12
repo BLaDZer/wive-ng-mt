@@ -2636,23 +2636,24 @@
 10) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
 11) goahead: update profile for hotspotsystem.com.<br>
 12) goahead: add isolated mode and chilli_dnsparanoia to web.<br>
-13) kernel: block: ioc_task_link() can't fail.<br>
-14) kernel: fork: remove the weak insanity.<br>
-15) kernel: fork: move thread info gfp flags to header.<br>
-16) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
-17) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
-18) kernel: fork: report pid reservation failure properly.<br>
-19) kernel: net: cleanups in sock_setsockopt().<br>
-20) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-21) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-22) kernel: net: packet: fix race condition in packet_set_ring.<br>
-23) kernel: net: bridge: set error code on failure.<br>
-24) kernel: net: set skb->protocol properly for local output.<br>
-25) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
-26) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-27) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-28) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-29) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+13) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
+14) kernel: block: ioc_task_link() can't fail.<br>
+15) kernel: fork: remove the weak insanity.<br>
+16) kernel: fork: move thread info gfp flags to header.<br>
+17) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
+18) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
+19) kernel: fork: report pid reservation failure properly.<br>
+20) kernel: net: cleanups in sock_setsockopt().<br>
+21) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+22) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+23) kernel: net: packet: fix race condition in packet_set_ring.<br>
+24) kernel: net: bridge: set error code on failure.<br>
+25) kernel: net: set skb->protocol properly for local output.<br>
+26) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
+27) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+28) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+29) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+30) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
