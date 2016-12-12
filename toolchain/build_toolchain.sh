@@ -72,6 +72,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -ay vim-enhanced --download-all --allow-force
 	urpmi --auto -ay zip --download-all --allow-force
 	urpmi --auto -ay pkg-config --download-all --allow-force
+	urpmi --auto -ay openssl --download-all --allow-force
     elif [ "$ISMAGEIA" = "1" ]; then
 	urpmi --auto bc --download-all
 	urpmi --auto flex --download-all
@@ -100,6 +101,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto vim-enhanced --download-all
 	urpmi --auto zip --download-all
 	urpmi --auto pkg-config --download-all
+	urpmi --auto openssl --download-all
     elif [ "$ISUBUNTU" = "1" ]; then
 	sudo apt-get update
 	sudo apt-get -y install build-essential
@@ -123,6 +125,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	sudo apt-get -y install vim-enhanced	# for build uboot
 	sudo apt-get -y install zip		# for build tools
 	sudo apt-get -y install pkg-config	# for build tools
+	sudo apt-get -y install openssl
     else
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
@@ -142,6 +145,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -a vim-enhanced- --download-all --allow-force
 	urpmi --auto -a zip- --download-all --allow-force
 	urpmi --auto -a pkg-config- --download-all --allow-force
+	urpmi --auto -a openssl- --download-all --allow-force
     fi
 fi
 

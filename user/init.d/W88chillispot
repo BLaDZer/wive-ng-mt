@@ -89,7 +89,7 @@ stop() {
 }
 
 get_params() {
-    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain chilli_clisolate`
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain chilli_clisolate chilli_https`
 
     # add static defaults
     # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
@@ -120,7 +120,7 @@ get_params() {
     keypemfile="${pempath}/ca.key"
     sertpemfile="${pempath}/ca.pem"
     sslkeypass=""
-    if [ -e $capemfile ] && [ -e $keypemfile ] && [ -e $sertpemfile ]; then
+    if [ "$chilli_https" = "1" ] && [ -e $capemfile ] && [ -e $keypemfile ] && [ -e $sertpemfile ]; then
     	PARLINE="$PARLINE --sslcafile $capemfile --sslkeyfile $keypemfile --sslcertfile $sertpemfile --redirssl"
 	if [ "$sslkeypass" != "" ]; then
     	    PARLINE="$PARLINE --sslkeypass $sslkeypass"

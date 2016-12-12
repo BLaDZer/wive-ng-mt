@@ -39,18 +39,8 @@ CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7628
 endif
 endif
 
-#for all cleanap
-SUBDIRS_APP = $(shell LC_ALL=C; ls)
-
-#
-# must run the vendor build first
-#
-VEND=$(ROOTDIR)/vendors
-dir_v = $(VEND)/$(CONFIG_VENDOR)/.
-
 dir_y =
-dir_n =
-dir_  =
+dir_all = $(shell LC_ALL=C; ls)
 
 #base system application
 dir_$(CONFIG_USER_WIRELESS_TOOLS)           += wireless_tools
@@ -121,6 +111,8 @@ dir_$(CONFIG_USER_STRACE)		    += strace
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
+# generate certs for apps
+dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
@@ -137,9 +129,9 @@ romfs:
 
 clean:
 	# ">>>>>>>>>>>>>>>>>>>>>>> CLEAN USERAPPS  <<<<<<<<<<<<<<<<<<<<<<<<"
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i clean; done
-	-for i in $(SUBDIRS_APP); do $(MAKE) -C $$i distclean; done
-	-for i in $(SUBDIRS_APP); do $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
+	-for i in $(dir_all); do $(MAKE) -C $$i clean; done
+	-for i in $(dir_all); do $(MAKE) -C $$i distclean; done
+	-for i in $(dir_all); do $(RM) -rf $(ROOTDIR)/user/$$i/filesystem/*; done
 	-$(MAKE) -C busybox mrproper;
 
 web:

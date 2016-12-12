@@ -21,19 +21,8 @@ UCLINUX_BUILD_USER=1
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections -Bsymbolic-functions
 
-#for all cleanap
-SUBDIRS_LIBS = $(shell LC_ALL=C; ls)
-
-#
-# must run the vendor build first
-#
-
-VEND=$(ROOTDIR)/vendors
-dir_v = $(VEND)/$(CONFIG_VENDOR)/.
-
 dir_y =
-dir_n =
-dir_  =
+dir_all = $(shell LC_ALL=C; ls)
 
 #base user libs
 dir_$(CONFIG_LIB_ZLIB)            += zlib
@@ -59,9 +48,9 @@ all:
 
 clean:
 	# ">>>>>>>>>>>>>>>>> START FULL LIB CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"
-	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i clean; done
-	-for i in $(SUBDIRS_LIBS); do $(MAKE) -C $$i distclean; done
-	-for i in $(SUBDIRS_LIBS); do $(RM) -rf $(ROOTDIR)/libext/$$i/filesystem/*; done
+	-for i in $(dir_all); do $(MAKE) -C $$i clean; done
+	-for i in $(dir_all); do $(MAKE) -C $$i distclean; done
+	-for i in $(dir_all); do $(RM) -rf $(ROOTDIR)/libext/$$i/filesystem/*; done
 
 # stubs for compat
 romfs:
