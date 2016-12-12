@@ -586,9 +586,6 @@ struct gengetopt_args_info
   const char *redirssl_help; /**< @brief Enable redirection of SSL/HTTP port (requires SSL support) help description.  */
   int uamuissl_flag;	/**< @brief Enable SSL/HTTPS support on the uamuiport (default=off).  */
   const char *uamuissl_help; /**< @brief Enable SSL/HTTPS support on the uamuiport help description.  */
-  char * dnslog_arg;	/**< @brief Log DNS requests to a file..  */
-  char * dnslog_orig;	/**< @brief Log DNS requests to a file. original value given at command line.  */
-  const char *dnslog_help; /**< @brief Log DNS requests to a file. help description.  */
   char * ipwhitelist_arg;	/**< @brief Binary IP White List file.  */
   char * ipwhitelist_orig;	/**< @brief Binary IP White List file original value given at command line.  */
   const char *ipwhitelist_help; /**< @brief Binary IP White List file help description.  */
@@ -852,7 +849,6 @@ struct gengetopt_args_info
   unsigned int natport_given ;	/**< @brief Whether natport was given.  */
   unsigned int redirssl_given ;	/**< @brief Whether redirssl was given.  */
   unsigned int uamuissl_given ;	/**< @brief Whether uamuissl was given.  */
-  unsigned int dnslog_given ;	/**< @brief Whether dnslog was given.  */
   unsigned int ipwhitelist_given ;	/**< @brief Whether ipwhitelist was given.  */
   unsigned int uamdomainfile_given ;	/**< @brief Whether uamdomainfile was given.  */
   unsigned int layer3_given ;	/**< @brief Whether layer3 was given.  */

@@ -234,7 +234,6 @@ const char *gengetopt_args_info_help[] = {
   "      --natport=INT             Port to use when oding nat on the WAN\n                                  (routeidx)  (default=`0')",
   "      --redirssl                Enable redirection of SSL/HTTP port (requires\n                                  SSL support)  (default=off)",
   "      --uamuissl                Enable SSL/HTTPS support on the uamuiport\n                                  (default=off)",
-  "      --dnslog=STRING           Log DNS requests to a file.",
   "      --ipwhitelist=STRING      Binary IP White List file",
   "      --uamdomainfile=STRING    Load uamdomains (regex) from file",
   "      --layer3                  Layer3 only  (default=off)",
@@ -507,7 +506,6 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->natport_given = 0 ;
   args_info->redirssl_given = 0 ;
   args_info->uamuissl_given = 0 ;
-  args_info->dnslog_given = 0 ;
   args_info->ipwhitelist_given = 0 ;
   args_info->uamdomainfile_given = 0 ;
   args_info->layer3_given = 0 ;
@@ -865,8 +863,6 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->natport_orig = NULL;
   args_info->redirssl_flag = 0;
   args_info->uamuissl_flag = 0;
-  args_info->dnslog_arg = NULL;
-  args_info->dnslog_orig = NULL;
   args_info->ipwhitelist_arg = NULL;
   args_info->ipwhitelist_orig = NULL;
   args_info->uamdomainfile_arg = NULL;
@@ -1123,35 +1119,34 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->natport_help = gengetopt_args_info_help[197] ;
   args_info->redirssl_help = gengetopt_args_info_help[198] ;
   args_info->uamuissl_help = gengetopt_args_info_help[199] ;
-  args_info->dnslog_help = gengetopt_args_info_help[200] ;
-  args_info->ipwhitelist_help = gengetopt_args_info_help[201] ;
-  args_info->uamdomainfile_help = gengetopt_args_info_help[202] ;
-  args_info->layer3_help = gengetopt_args_info_help[203] ;
-  args_info->ipsrcallowed_help = gengetopt_args_info_help[204] ;
+  args_info->ipwhitelist_help = gengetopt_args_info_help[200] ;
+  args_info->uamdomainfile_help = gengetopt_args_info_help[201] ;
+  args_info->layer3_help = gengetopt_args_info_help[202] ;
+  args_info->ipsrcallowed_help = gengetopt_args_info_help[203] ;
   args_info->ipsrcallowed_min = 0;
   args_info->ipsrcallowed_max = 0;
-  args_info->patricia_help = gengetopt_args_info_help[205] ;
-  args_info->redirdnsreq_help = gengetopt_args_info_help[206] ;
-  args_info->kname_help = gengetopt_args_info_help[207] ;
-  args_info->moddir_help = gengetopt_args_info_help[208] ;
-  args_info->module_help = gengetopt_args_info_help[209] ;
+  args_info->patricia_help = gengetopt_args_info_help[204] ;
+  args_info->redirdnsreq_help = gengetopt_args_info_help[205] ;
+  args_info->kname_help = gengetopt_args_info_help[206] ;
+  args_info->moddir_help = gengetopt_args_info_help[207] ;
+  args_info->module_help = gengetopt_args_info_help[208] ;
   args_info->module_min = 0;
   args_info->module_max = 0;
-  args_info->dhcpopt_help = gengetopt_args_info_help[210] ;
+  args_info->dhcpopt_help = gengetopt_args_info_help[209] ;
   args_info->dhcpopt_min = 0;
   args_info->dhcpopt_max = 0;
-  args_info->extadmvsa_help = gengetopt_args_info_help[211] ;
+  args_info->extadmvsa_help = gengetopt_args_info_help[210] ;
   args_info->extadmvsa_min = 0;
   args_info->extadmvsa_max = 0;
-  args_info->dhcpnotidle_help = gengetopt_args_info_help[212] ;
-  args_info->forcedns1_help = gengetopt_args_info_help[213] ;
-  args_info->forcedns1port_help = gengetopt_args_info_help[214] ;
-  args_info->forcedns2_help = gengetopt_args_info_help[215] ;
-  args_info->forcedns2port_help = gengetopt_args_info_help[216] ;
-  args_info->rfc7710uri_help = gengetopt_args_info_help[217] ;
-  args_info->ipv6_help = gengetopt_args_info_help[218] ;
-  args_info->ipv6mode_help = gengetopt_args_info_help[219] ;
-  args_info->ipv6only_help = gengetopt_args_info_help[220] ;
+  args_info->dhcpnotidle_help = gengetopt_args_info_help[211] ;
+  args_info->forcedns1_help = gengetopt_args_info_help[212] ;
+  args_info->forcedns1port_help = gengetopt_args_info_help[213] ;
+  args_info->forcedns2_help = gengetopt_args_info_help[214] ;
+  args_info->forcedns2port_help = gengetopt_args_info_help[215] ;
+  args_info->rfc7710uri_help = gengetopt_args_info_help[216] ;
+  args_info->ipv6_help = gengetopt_args_info_help[217] ;
+  args_info->ipv6mode_help = gengetopt_args_info_help[218] ;
+  args_info->ipv6only_help = gengetopt_args_info_help[219] ;
   
 }
 
@@ -1492,8 +1487,6 @@ cmdline_parser_release (struct gengetopt_args_info *args_info)
   free_string_field (&(args_info->natip_arg));
   free_string_field (&(args_info->natip_orig));
   free_string_field (&(args_info->natport_orig));
-  free_string_field (&(args_info->dnslog_arg));
-  free_string_field (&(args_info->dnslog_orig));
   free_string_field (&(args_info->ipwhitelist_arg));
   free_string_field (&(args_info->ipwhitelist_orig));
   free_string_field (&(args_info->uamdomainfile_arg));
@@ -1947,8 +1940,6 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "redirssl", 0, 0 );
   if (args_info->uamuissl_given)
     write_into_file(outfile, "uamuissl", 0, 0 );
-  if (args_info->dnslog_given)
-    write_into_file(outfile, "dnslog", args_info->dnslog_orig, 0);
   if (args_info->ipwhitelist_given)
     write_into_file(outfile, "ipwhitelist", args_info->ipwhitelist_orig, 0);
   if (args_info->uamdomainfile_given)
@@ -2784,7 +2775,6 @@ cmdline_parser_internal (
         { "natport",	1, NULL, 0 },
         { "redirssl",	0, NULL, 0 },
         { "uamuissl",	0, NULL, 0 },
-        { "dnslog",	1, NULL, 0 },
         { "ipwhitelist",	1, NULL, 0 },
         { "uamdomainfile",	1, NULL, 0 },
         { "layer3",	0, NULL, 0 },
@@ -5447,20 +5437,6 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->uamuissl_flag), 0, &(args_info->uamuissl_given),
                 &(local_args_info.uamuissl_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "uamuissl", '-',
-                additional_error))
-              goto failure;
-          
-          }
-          /* Log DNS requests to a file..  */
-          else if (strcmp (long_options[option_index].name, "dnslog") == 0)
-          {
-          
-          
-            if (update_arg( (void *)&(args_info->dnslog_arg), 
-                 &(args_info->dnslog_orig), &(args_info->dnslog_given),
-                &(local_args_info.dnslog_given), optarg, 0, 0, ARG_STRING,
-                check_ambiguity, override, 0, 0,
-                "dnslog", '-',
                 additional_error))
               goto failure;
           

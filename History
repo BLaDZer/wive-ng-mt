@@ -2627,7 +2627,7 @@
 1) build_system: pregenerate CA certs at build time.<br>
 2) nodogsplash: up to version 2.0.0 (commit: 2731ffc9).<br>
 3) nodogsplash: rework basic splashpage.<br>
-4) coovachilli: up to 1.3.2 from git (commit 262e2e51).<br>
+4) coovachilli: up to 1.3.2 from git (commit b6859ccf).<br>
 5) coovachilli: use sslredir if prebuilded or uploaded CA keys exist in /etc/certs.<br>
 6) netcwmpd: use prebuilded/uploaded CA cert from /etc/certs by default.<br>
 7) netcwmpd: add support last version of D-Link ACS (1.1.5).<br>
