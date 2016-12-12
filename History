@@ -2638,7 +2638,7 @@
 12) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
 13) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
 14) goahead: update profile for hotspotsystem.com.<br>
-15) goahead: add isolated mode and chilli_dnsparanoia to web.<br>
+15) goahead: add chilli_isolated, chilli_dnsparanoia and chilli max_clients to web.<br>
 16) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
 17) kernel: block: ioc_task_link() can't fail.<br>
 18) kernel: fork: remove the weak insanity.<br>

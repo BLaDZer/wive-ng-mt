@@ -192,6 +192,8 @@
     <message msgid="hotspot expects number" msgstr="This field expects number!" />
     <message msgid="hotspot endip low" msgstr="End IP must be greater or equal to Start IP" />
     <message msgid="hotspot mac list" msgstr="Please correctly fill out the list of MAC addresses!" />
+	<message msgid="hotspot max clients" msgstr="Maximum clients" />
+	<message msgid="hotspot max clients range" msgstr="Allowed range is 50-2000" />
     <message msgid="hotspot nodog ip range" msgstr="Range of IP addresses" />
     <message msgid="hotspot nodog url" msgstr="Redirected to URL after authentication" />
     <message msgid="hotspot nodog max clients" msgstr="Maximum number of users" />

@@ -1189,6 +1189,7 @@ parameter_fetch_t chilli_vars[] =
 	{ T("sMacAllowed"),		"chilli_macallowed",		0,       T("") },
 	{ T("sC2Cisolate"),		"chilli_clisolate",		0,       T("") },
 	{ T("sDropDNS"),		"chilli_dnsparanoia",		0,       T("") },
+	{ T("sMaxClients"),		"chilli_maxclients",		0,       T("") },
 	{ NULL, 			NULL, 				0,       0     }  // Terminator
 };
 #endif
@@ -1269,9 +1270,9 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 			"chilli_radiuslocationname", "chilli_coaport", "chilli_coanoipcheck",
 			"chilli_uamserver", "chilli_uamhomepage", "chilli_uamsecret", "chilli_uamallowed",
 			"chilli_uamdomain", "chilli_uamanydns", "chilli_macallowed", "chilli_clisolate",
-			"chilli_dnsparanoia", "nodogsplash_enable", "nodog_GatewayIPRange", "nodog_RedirectURL", 
-			"nodog_MaxClients", "nodog_ClientIdleTimeout", "nodog_ClientForceTimeout", "nodog_AuthenticateImmediately",
-			"nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
+			"chilli_dnsparanoia", "chilli_maxclients", "nodogsplash_enable", "nodog_GatewayIPRange",
+			"nodog_RedirectURL", "nodog_MaxClients", "nodog_ClientIdleTimeout", "nodog_ClientForceTimeout",
+			"nodog_AuthenticateImmediately", "nodog_MACMechanism", "nodog_BlockedMACList", "nodog_AllowedMACList",
 			"nodog_TrustedMACList", "nodog_PasswordAuthentication", "nodog_Password",
 			"nodog_UsernameAuthentication", "nodog_Username", "nodog_PasswordAttempts");
 	}
