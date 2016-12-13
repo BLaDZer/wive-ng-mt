@@ -2628,7 +2628,7 @@
 2) busybox: apply post busybox-1.25.1-setfiles.patch.<br>
 3) nodogsplash: up to version 2.0.0 (commit: 2731ffc9).<br>
 4) nodogsplash: rework basic splashpage.<br>
-5) coovachilli: up to 1.3.2 from git (commit b6859ccf).<br>
+5) coovachilli: up to 1.3.2 from git (commit 132d92b6).<br>
 6) coovachilli: use sslredir if prebuilded or uploaded CA keys exist in /etc/certs.<br>
 7) coovachilli: decrease chilli_lease to 4min (save mem and sync with default silence time in wifi).<br>
 8) netcwmpd: use prebuilded/uploaded CA cert from /etc/certs by default.<br>
