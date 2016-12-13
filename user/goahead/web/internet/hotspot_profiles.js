@@ -95,8 +95,8 @@ var Profiles = [
 		"paypal.com,paypalobjects.com,paypal-metrics.com,mediaplex.com,worldpay.com,adyen.com,hotspotsystem.com,geotrust.com", // UAM allowed domains
 		"off",							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		//display Elements
@@ -125,10 +125,10 @@ var Profiles = [
 		false,
 		false,
 		true,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true,
+		true
 	],
 
 	// MyWiFi
@@ -157,8 +157,8 @@ var Profiles = [
 		"login.wmtransfer.com,security.webmoney.ru,access.mywifi.com,webmoney.ru,wmtransfer.com,webmoney.com.mx", // UAM allowed domains
 		false,							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		//display Elements
@@ -187,10 +187,10 @@ var Profiles = [
 		false,
 		true,
 		true,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true,
+		true
 	],
 
 	// SAIWifi
@@ -219,8 +219,8 @@ var Profiles = [
 		"stat.saiwifi.ru,hotspot.saiwifi.ru",			// UAM allowed domains
 		false,							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		//display Elements
@@ -248,12 +248,11 @@ var Profiles = [
 		false,
 		false,
 		true,
+		false,
 		true,
-		false,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true
 	],
 
 	// WiFi System
@@ -282,8 +281,8 @@ var Profiles = [
 		"wifisystem.ru,paymaster.ru,paypal.com,paypalobjects.com", // UAM allowed domains
 		false,							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		//display Elements
@@ -312,10 +311,10 @@ var Profiles = [
 		false,
 		true,
 		true,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true,
+		true
 	],
 
 	// NetByNet
@@ -344,8 +343,8 @@ var Profiles = [
 		false,							// UAM allowed domains
 		"off",							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		//display Elements
@@ -374,10 +373,10 @@ var Profiles = [
 		true,
 		false,
 		true,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true,
+		true
 	],
 
 	// hotspot.ots-net.ru
@@ -406,8 +405,8 @@ var Profiles = [
 		"ots-net.ru",						// UAM allowed domains
 		false,							// Allow all DNS requests
 		false,							// Allowed MAC
-		"0",							// Client to Client isolate
-		"0",							// Drop DNS responses
+		false,							// Client to Client isolate
+		false,							// Drop DNS responses
 		false,							// Max Clients
 		false,							// HTTPS Redirect
 		true,
@@ -435,10 +434,10 @@ var Profiles = [
 		false,
 		false,
 		false,
-		false,
-		false,
-		false,
-		false
+		true,
+		true,
+		true,
+		true
 	]
 /*
 	//Enforta

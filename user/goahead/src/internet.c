@@ -1311,13 +1311,13 @@ static void setHotspot(webs_t wp, char_t *path, char_t *query)
 #ifdef CONFIG_USER_NODOGSPLASH
 		if(CHK_IF_DIGIT(enabled, 2)) {
 			setupParameters(wp, nodog_vars, 0);
-			nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+			nvram_bufset(RT2860_NVRAM, "chilli_enable", "off");
 		}
 		else
 #endif
 		if(CHK_IF_DIGIT(enabled, 0)) {
 #ifdef CONFIG_USER_CHILLISPOT
-			nvram_bufset(RT2860_NVRAM, "chilli_enable", "no");
+			nvram_bufset(RT2860_NVRAM, "chilli_enable", "off");
 #endif
 #ifdef CONFIG_USER_NODOGSPLASH
 			nvram_bufset(RT2860_NVRAM, "nodogsplash_enable", "0");

@@ -19,15 +19,17 @@
 			Butterlate.setTextDomain("internet");
 			Butterlate.setTextDomain("hint");
 			Butterlate.setTextDomain("buttons");
+			Butterlate.setTextDomain("services");
 
-			var old_profile 	= '<% getCfgZero(1, "chilli_profile"); %>';
-			var chilli_built 	= '<% getChilliBuilt(); %>' == '1';
-			var nodog_built 	= '<% getNoDogBuilt(); %>' == '1';
+			var old_profile		= '<% getCfgZero(1, "chilli_profile"); %>';
+			var chilli_built	= '<% getChilliBuilt(); %>' == '1';
+			var nodog_built		= '<% getNoDogBuilt(); %>' == '1';
 
 			function initTranslation() {
 				_TR("sTitle",				"hotspot title");
 				_TR("sIntroduction",			"hotspot introduction");
 				_TR("spotSetup",			"hotspot setup");
+				_TR("spotType",				"hotspot type");
 				_TR("spotProfile",			"hotspot profile");
 				_TR("sIp",				"inet ip");
 				_TR("sNetmask",				"inet netmask");
@@ -128,6 +130,8 @@
 				var prof = form.spotProfile;
 				prof.options.length = 0;
 				for(var i = 0; i < Profiles.length; i++) {
+					if (Profiles[i][1] == "hotspot manual")
+						Profiles[i][1] = _("hotspot manual");
 					addOption(prof, Profiles[i][1], Profiles[i][0]);
 					if(Profiles[i][0] == old_profile)
 						prof.value = old_profile;
@@ -138,6 +142,7 @@
 				ModeOnChange(form);
 				showWarning();
 				initTranslation();
+				displayServiceStatus();
 			}
 
 			function CheckValue(form) {
@@ -528,6 +533,26 @@
 					row.innerHTML = text;
 				}
 			}
+
+			// Display server status
+			function displayServiceHandler(response) {
+				var daemons = response.split(',');
+				var chilli	= '<% getCfgGeneral(1, "chilli_enable"); %>';
+				var nodog	= '<% getCfgGeneral(1, "nodogsplash_enable"); %>';
+
+				if ((chilli == 'off' || chilli == '') && (nodog == '0' || nodog == ''))
+					document.getElementById('spotSetup_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+				else
+					document.getElementById('spotSetup_status').innerHTML = (daemons.indexOf('chilli') >= 0 || daemons.indexOf('nodogsplash') >= 0) ?
+						'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+						'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+				setTimeout('displayServiceStatus();', 5000);
+			}
+
+			// Get server status
+			function displayServiceStatus() {
+				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
+			}
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -542,231 +567,243 @@
 					<form method="POST" name="spotCfgReset" action="/goform/resetHotspot"><input type="hidden" id="profile" name="profile"></form>
 					<form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
 						<table class="form">
-							<tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
-								<td class="title" id="spotSetup" style="width:40%">Hotspot Setup</td>
-								<td class="title" style="text-align:right; width: 60%"><select name="spotEnable" id="spotEnable" class="normal" onChange="ModeOnChange(this.form);"></select></td>
-							</tr>
-							<!-- Coova setup -->
-							<tr id="row_chilli" onMouseOver="showHint('spot_profile');" onMouseOut="hideHint();">
-								<td class="head" id="spotProfile">Chilli profile</td>
-								<td>
-									<select name="spotProfile" class="normal" onChange="ProfileOnChange(this.form);"></select>
-								</td>
-							</tr>
-							<tr id="row_sIp" onMouseOver="showHint('spot_ip');" onMouseOut="hideHint();">
-								<td class="head" id="sIp">Subnet Address</td>
-								<td><input class="normal" class="normal" name="sIp" maxlength="15"></td>
-							</tr>
-							<tr id="row_sNetmask" onMouseOver="showHint('spot_mask');" onMouseOut="hideHint();">
-								<td class="head" id="sNetmask">Subnet Mask</td>
-								<td><input class="normal" name="sNetmask" maxlength="15"></td>
-							</tr>
-							<tr id="row_sStartIP" onMouseOver="showHint('spot_startip');" onMouseOut="hideHint();">
-								<td class="head" id="sStartIP">Start IP</td>
-								<td><input class="normal" name="sStartIP" maxlength="3"></td>
-							</tr>
-							<tr id="row_sEndIP" onMouseOver="showHint('spot_endip');" onMouseOut="hideHint();">
-								<td class="head" id="sEndIP">End IP</td>
-								<td><input class="normal" name="sEndIP" maxlength="3"></td>
-							</tr>
-							<tr id="row_sHttpsRedirect" onMouseOver="showHint('spot_httpsredirect');" onMouseOut="hideHint();">
-								<td class="head" id="sHttpsRedirect">HTTPS Redirect</td>
-								<td>
-									<select name="sHttpsRedirect" class="normal">
-										<option value="0" id="disable">Disable</option>
-										<option value="1" id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_sC2Cisolate" onMouseOver="showHint('spot_c2cisolate');" onMouseOut="hideHint();">
-								<td class="head" id="sC2Cisolate">Use /32 mask for clients</td>
-								<td>
-									<select name="sC2Cisolate" class="normal">
-										<option value="0" id="disable">Disable</option>
-										<option value="1" id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_sMaxClients" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
-								<td class="head" id="sMaxClients">Maximum Clients</td>
-								<td><input class="normal" name="sMaxClients" maxlength="4"></td>
-							</tr>
-							<tr id="row_sPriDns" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
-								<td class="head" id="sPriDns">Primary DNS Server</td>
-								<td><input class="normal" name="sPriDns" maxlength="15"></td>
-							</tr>
-							<tr id="row_sSecDns" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
-								<td class="head" id="sSecDns">Secondary DNS Server</td>
-								<td><input class="normal" name="sSecDns" maxlength="15"></td>
-							</tr>
-							<tr id="row_sDropDNS" onMouseOver="showHint('spot_dropdns');" onMouseOut="hideHint();">
-								<td class="head" id="sDropDNS">Drop DNS responses</td>
-								<td>
-									<select name="sDropDNS" class="normal">
-										<option value="0" id="disable">Disable</option>
-										<option value="1" id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_sDomain" onMouseOver="showHint('spot_domain');" onMouseOut="hideHint();">
-								<td class="head" id="sDomain">Domain name</td>
-								<td><input class="normal" name="sDomain" maxlength="64"></td>
-							</tr>
-							<tr id="row_sLease" onMouseOver="showHint('spot_lease');" onMouseOut="hideHint();">
-								<td class="head" id="sLease">Lease time (sec)</td>
-								<td><input class="normal" name="sLease" maxlength="8"></td>
-							</tr>
-							<tr id="row_sRadServer1" onMouseOver="showHint('spot_auth');" onMouseOut="hideHint();">
-								<td class="head" id="sRadServer1">Radius server auth address</td>
-								<td><input class="normal" name="sRadServer1" maxlength="256"></td>
-							</tr>
-							<tr id="row_sRadServer2" onMouseOver="showHint('spot_acct');" onMouseOut="hideHint();">
-								<td class="head" id="sRadServer2">Radius server acct address</td>
-								<td><input class="normal" name="sRadServer2" maxlength="256"></td>
-							</tr>
-							<tr id="row_sRadSecret" onMouseOver="showHint('spot_rad_secret');" onMouseOut="hideHint();">
-								<td class="head" id="sRadSecret">Radius server secret</td>
-								<td><input class="normal" name="sRadSecret" maxlength="256" type="password"></td>
-							</tr>
-							<tr id="row_sNasId" onMouseOver="showHint('spot_nasid');" onMouseOut="hideHint();">
-								<td class="head" id="sNasId">Radius NAS ID</td>
-								<td><input class="normal" name="sNasId" maxlength="256"></td>
-							</tr>
-							<tr id="row_sRadLocId" onMouseOver="showHint('spot_locid');" onMouseOut="hideHint();">
-								<td class="head" id="sRadLocId">Radius Location ID</td>
-								<td><input class="normal" name="sRadLocId" maxlength="15"></td>
-							</tr>
-							<tr id="row_sRadLocName" onMouseOver="showHint('spot_locname');" onMouseOut="hideHint();">
-								<td class="head" id="sRadLocName">Radius Location Name</td>
-								<td><input class="normal" name="sRadLocName" maxlength="15"></td>
-							</tr>
-							<tr id="row_sRadCoaPort" onMouseOver="showHint('spot_port');" onMouseOut="hideHint();">
-								<td class="head" id="sRadCoaPort">Radius CoA/DM port</td>
-								<td><input class="normal" name="sRadCoaPort" maxlength="15"></td>
-							</tr>
-							<tr id="row_sRadCoaNoIpCheck" onMouseOver="showHint('spot_ipcheck');" onMouseOut="hideHint();">
-								<td class="head" id="sRadCoaNoIpCheck">No IP check for CoA/DM request</td>
-								<td>
-									<select name="sRadCoaNoIpCheck" class="normal">
-										<option value="off" id="disable">Disable</option>
-										<option value="on" id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_sUamServer" onMouseOver="showHint('spot_uamserver');" onMouseOut="hideHint();">
-								<td class="head" id="sUamServer">UAM server URL</td>
-								<td><input class="normal" name="sUamServer" maxlength="256"></td>
-							</tr>
-							<tr id="row_sUamHomepage" onMouseOver="showHint('spot_uamhomepage');" onMouseOut="hideHint();">
-								<td class="head" id="sUamHomepage">UAM homepage URL</td>
-								<td><input class="normal" name="sUamHomepage" maxlength="256"></td>
-							</tr>
-							<tr id="row_sUamSecret" onMouseOver="showHint('spot_uamsecret');" onMouseOut="hideHint();">
-								<td class="head" id="sUamSecret">UAM secret</td>
-								<td><input class="normal" name="sUamSecret" maxlength="256" type="password"></td>
-							</tr>
-							<tr id="row_sUamAllowed" onMouseOver="showHint('spot_uamallowed');" onMouseOut="hideHint();">
-								<td class="head" id="sUamAllowed">UAM allowed hosts</td>
-								<td><input class="normal" name="sUamAllowed" maxlength="1024"></td>
-							</tr>
-							<tr id="row_sUamDomain" onMouseOver="showHint('spot_uamdomain');" onMouseOut="hideHint();">
-								<td class="head" id="sUamDomain">UAM allowed domains</td>
-								<td><input class="normal" name="sUamDomain" maxlength="1024"></td>
-							</tr>
-							<tr id="row_sUamAnyDNS" onMouseOver="showHint('spot_uamdns');" onMouseOut="hideHint();">
-								<td class="head" id="sUamAnyDNS">Allow all DNS requests</td>
-								<td>
-									<select name="sUamAnyDNS" class="normal">
-										<option value="off" id="disable">Disable</option>
-										<option value="on" id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_sMacAllowed" onMouseOver="showHint('spot_macallowed');" onMouseOut="hideHint();">
-								<td class="head" id="sMacAllowed">Allowed MAC</td>
-								<td><input class="normal" name="sMacAllowed" maxlength="512"></td>
-							</tr>
-							<!-- Nodog setup -->
-							<tr id="row_GatewayIPRange" onMouseOver="showHint('GatewayIPRange');" onMouseOut="hideHint();">
-								<td class="head" id="GatewayIPRange">Range of IP addresses</td>
-								<td><input class="normal" name="GatewayIPRange" maxlength="128"></td>
-							</tr>
-							<tr id="row_RedirectURL" onMouseOver="showHint('RedirectURL');" onMouseOut="hideHint();">
-								<td class="head" id="RedirectURL">Redirected to URL after authentication</td>
-								<td><input class="normal" name="RedirectURL" maxlength="128"></td>
-							</tr>
-							<tr id="row_MaxClients" onMouseOver="showHint('MaxClients');" onMouseOut="hideHint();">
-								<td class="head" id="MaxClients">Maximum number of users</td>
-								<td><input class="normal" name="MaxClients" maxlength="128"></td>
-							</tr>
-							<tr id="row_ClientIdleTimeout" onMouseOver="showHint('ClientIdleTimeout');" onMouseOut="hideHint();">
-								<td class="head" id="ClientIdleTimeout">Inactivity before a user is 'deauthenticated'</td>
-								<td><input class="normal" name="ClientIdleTimeout" maxlength="128"></td>
-							</tr>
-							<tr id="row_ClientForceTimeout" onMouseOver="showHint('ClientForceTimeout');" onMouseOut="hideHint();">
-								<td class="head" id="ClientForceTimeout">Minutes before a user is 'deauthenticated'</td>
-								<td><input class="normal" name="ClientForceTimeout" maxlength="128"></td>
-							</tr>
-							<tr id="row_AuthenticateImmediately" onMouseOver="showHint('AuthenticateImmediately');" onMouseOut="hideHint();">
-								<td class="head" id="AuthenticateImmediately">Authenticate Immediately</td>
-								<td>
-									<select name="AuthenticateImmediately" class="normal">
-										<option value=0 id="disable">Disable</option>
-										<option value=1 id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_MACMechanism" onMouseOver="showHint('MACMechanism');" onMouseOut="hideHint();">
-								<td class="head" id="MACMechanism">MAC Mechanism</td>
-								<td>
-									<select name="MACMechanism" class="normal" onChange="MACMechanismOnChange(this.form);">
-										<option value="block" id="block">Block</option>
-										<option value="allow" id="allow">Allow</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_BlockedMACList" onMouseOver="showHint('BlockedMACList');" onMouseOut="hideHint();">
-								<td class="head" id="BlockedMACList">List Blocked MAC Addresses</td>
-								<td><input class="normal" name="BlockedMACList" maxlength="128"></td>
-							</tr>
-							<tr id="row_AllowedMACList" onMouseOver="showHint('AllowedMACList');" onMouseOut="hideHint();">
-								<td class="head" id="AllowedMACList">List Allowed MAC Addresses</td>
-								<td><input class="normal" name="AllowedMACList" maxlength="128"></td>
-							</tr>
-							<tr id="row_TrustedMACList" onMouseOver="showHint('TrustedMACList');" onMouseOut="hideHint();">
-								<td class="head" id="TrustedMACList">List Trusted MAC Addresses</td>
-								<td><input class="normal" name="TrustedMACList" maxlength="128"></td>
-							</tr>
-							<tr id="row_PasswordAuthentication" onMouseOver="showHint('PasswordAuthentication');" onMouseOut="hideHint();">
-								<td class="head" id="PasswordAuthentication">Password Authentication</td>
-								<td>
-									<select name="PasswordAuthentication" class="normal" onChange="MACMechanismOnChange(this.form);">
-										<option value=0 id="disable">Disable</option>
-										<option value=1 id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_Password" onMouseOver="showHint('Password');" onMouseOut="hideHint();">
-								<td class="head" id="Password">Password</td>
-								<td><input class="normal" type="password" name="Password" maxlength="128"></td>
-							</tr>
-							<tr id="row_UsernameAuthentication" onMouseOver="showHint('UsernameAuthentication');" onMouseOut="hideHint();">
-								<td class="head" id="UsernameAuthentication">Username Authentication</td>
-								<td>
-									<select name="UsernameAuthentication" class="normal" onChange="MACMechanismOnChange(this.form);">
-										<option value=0 id="disable">Disable</option>
-										<option value=1 id="enable">Enable</option>
-									</select>
-								</td>
-							</tr>
-							<tr id="row_Username" onMouseOver="showHint('Username');" onMouseOut="hideHint();">
-								<td class="head" id="Username">Username</td>
-								<td><input class="normal" name="Username" maxlength="128"></td>
-							</tr>
-							<tr id="row_PasswordAttempts" onMouseOver="showHint('PasswordAttempts');" onMouseOut="hideHint();">
-								<td class="head" id="PasswordAttempts">Password Attempts</td>
-								<td><input class="normal" name="PasswordAttempts" maxlength="128"></td>
-							</tr>
+							<col style="width: 40%" />
+							<col style="width: 50%" />
+							<col style="width: 10%" />
+							<tbody>
+								<tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
+									<td colspan="3" class="title" id="spotSetup">Hotspot Setup</td>
+								</tr>
+								<tr id="row_spotSetup">
+									<td class="head" id="spotType">Hotspot type</td>
+									<td>
+										<select name="spotEnable" id="spotEnable" class="mid" onChange="ModeOnChange(this.form);">
+										</select>
+									</td>
+									<td id="spotSetup_status" style="text-align: center"></td>
+								</tr>
+								<!-- Coova setup -->
+								<tr id="row_chilli" onMouseOver="showHint('spot_profile');" onMouseOut="hideHint();">
+									<td class="head" id="spotProfile">Chilli profile</td>
+									<td colspan="2">
+										<select name="spotProfile" class="mid" onChange="ProfileOnChange(this.form);"></select>
+									</td>
+								</tr>
+								<tr id="row_sIp" onMouseOver="showHint('spot_ip');" onMouseOut="hideHint();">
+									<td class="head" id="sIp">Subnet Address</td>
+									<td colspan="2"><input class="mid" name="sIp" maxlength="15"></td>
+								</tr>
+								<tr id="row_sNetmask" onMouseOver="showHint('spot_mask');" onMouseOut="hideHint();">
+									<td class="head" id="sNetmask">Subnet Mask</td>
+									<td colspan="2"><input class="mid" name="sNetmask" maxlength="15"></td>
+								</tr>
+								<tr id="row_sStartIP" onMouseOver="showHint('spot_startip');" onMouseOut="hideHint();">
+									<td class="head" id="sStartIP">Start IP</td>
+									<td colspan="2"><input class="mid" name="sStartIP" maxlength="3"></td>
+								</tr>
+								<tr id="row_sEndIP" onMouseOver="showHint('spot_endip');" onMouseOut="hideHint();">
+									<td class="head" id="sEndIP">End IP</td>
+									<td colspan="2"><input class="mid" name="sEndIP" maxlength="3"></td>
+								</tr>
+								<tr id="row_sC2Cisolate" onMouseOver="showHint('spot_c2cisolate');" onMouseOut="hideHint();">
+									<td class="head" id="sC2Cisolate">Use /32 mask for clients</td>
+									<td colspan="2">
+										<select name="sC2Cisolate" class="mid">
+											<option value="0" id="disable">Disable</option>
+											<option value="1" id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_sMaxClients" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
+									<td class="head" id="sMaxClients">Maximum Clients</td>
+									<td colspan="2"><input class="mid" name="sMaxClients" maxlength="4"></td>
+								</tr>
+								<tr id="row_sLease" onMouseOver="showHint('spot_lease');" onMouseOut="hideHint();">
+									<td class="head" id="sLease">Lease time (sec)</td>
+									<td colspan="2"><input class="mid" name="sLease" maxlength="8"></td>
+								</tr>
+								<tr id="row_sPriDns" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
+									<td class="head" id="sPriDns">Primary DNS Server</td>
+									<td colspan="2"><input class="mid" name="sPriDns" maxlength="15"></td>
+								</tr>
+								<tr id="row_sSecDns" onMouseOver="showHint('spot_dns');" onMouseOut="hideHint();">
+									<td class="head" id="sSecDns">Secondary DNS Server</td>
+									<td colspan="2"><input class="mid" name="sSecDns" maxlength="15"></td>
+								</tr>
+								<tr id="row_sDropDNS" onMouseOver="showHint('spot_dropdns');" onMouseOut="hideHint();">
+									<td class="head" id="sDropDNS">Drop DNS responses</td>
+									<td colspan="2">
+										<select name="sDropDNS" class="mid">
+											<option value="0" id="disable">Disable</option>
+											<option value="1" id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_sUamAnyDNS" onMouseOver="showHint('spot_uamdns');" onMouseOut="hideHint();">
+									<td class="head" id="sUamAnyDNS">Allow all DNS requests</td>
+									<td colspan="2">
+										<select name="sUamAnyDNS" class="mid">
+											<option value="off" id="disable">Disable</option>
+											<option value="on" id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_sDomain" onMouseOver="showHint('spot_domain');" onMouseOut="hideHint();">
+									<td class="head" id="sDomain">Domain name</td>
+									<td colspan="2"><input class="mid" name="sDomain" maxlength="64"></td>
+								</tr>
+								<tr id="row_sRadServer1" onMouseOver="showHint('spot_auth');" onMouseOut="hideHint();">
+									<td class="head" id="sRadServer1">Radius server auth address</td>
+									<td colspan="2"><input class="mid" name="sRadServer1" maxlength="256"></td>
+								</tr>
+								<tr id="row_sRadServer2" onMouseOver="showHint('spot_acct');" onMouseOut="hideHint();">
+									<td class="head" id="sRadServer2">Radius server acct address</td>
+									<td colspan="2"><input class="mid" name="sRadServer2" maxlength="256"></td>
+								</tr>
+								<tr id="row_sRadSecret" onMouseOver="showHint('spot_rad_secret');" onMouseOut="hideHint();">
+									<td class="head" id="sRadSecret">Radius server secret</td>
+									<td colspan="2"><input class="mid" name="sRadSecret" maxlength="256" type="password"></td>
+								</tr>
+								<tr id="row_sNasId" onMouseOver="showHint('spot_nasid');" onMouseOut="hideHint();">
+									<td class="head" id="sNasId">Radius NAS ID</td>
+									<td colspan="2"><input class="mid" name="sNasId" maxlength="256"></td>
+								</tr>
+								<tr id="row_sRadLocId" onMouseOver="showHint('spot_locid');" onMouseOut="hideHint();">
+									<td class="head" id="sRadLocId">Radius Location ID</td>
+									<td colspan="2"><input class="mid" name="sRadLocId" maxlength="15"></td>
+								</tr>
+								<tr id="row_sRadLocName" onMouseOver="showHint('spot_locname');" onMouseOut="hideHint();">
+									<td class="head" id="sRadLocName">Radius Location Name</td>
+									<td colspan="2"><input class="mid" name="sRadLocName" maxlength="15"></td>
+								</tr>
+								<tr id="row_sRadCoaPort" onMouseOver="showHint('spot_port');" onMouseOut="hideHint();">
+									<td class="head" id="sRadCoaPort">Radius CoA/DM port</td>
+									<td colspan="2"><input class="mid" name="sRadCoaPort" maxlength="15"></td>
+								</tr>
+								<tr id="row_sUamServer" onMouseOver="showHint('spot_uamserver');" onMouseOut="hideHint();">
+									<td class="head" id="sUamServer">UAM server URL</td>
+									<td colspan="2"><input class="mid" name="sUamServer" maxlength="256"></td>
+								</tr>
+								<tr id="row_sUamHomepage" onMouseOver="showHint('spot_uamhomepage');" onMouseOut="hideHint();">
+									<td class="head" id="sUamHomepage">UAM homepage URL</td>
+									<td colspan="2"><input class="mid" name="sUamHomepage" maxlength="256"></td>
+								</tr>
+								<tr id="row_sUamSecret" onMouseOver="showHint('spot_uamsecret');" onMouseOut="hideHint();">
+									<td class="head" id="sUamSecret">UAM secret</td>
+									<td colspan="2"><input class="mid" name="sUamSecret" maxlength="256" type="password"></td>
+								</tr>
+								<tr id="row_sUamAllowed" onMouseOver="showHint('spot_uamallowed');" onMouseOut="hideHint();">
+									<td class="head" id="sUamAllowed">UAM allowed hosts</td>
+									<td colspan="2"><input class="mid" name="sUamAllowed" maxlength="1024"></td>
+								</tr>
+								<tr id="row_sUamDomain" onMouseOver="showHint('spot_uamdomain');" onMouseOut="hideHint();">
+									<td class="head" id="sUamDomain">UAM allowed domains</td>
+									<td colspan="2"><input class="mid" name="sUamDomain" maxlength="1024"></td>
+								</tr>
+								<tr id="row_sMacAllowed" onMouseOver="showHint('spot_macallowed');" onMouseOut="hideHint();">
+									<td class="head" id="sMacAllowed">Allowed MAC</td>
+									<td colspan="2"><input class="mid" name="sMacAllowed" maxlength="512"></td>
+								</tr>
+								<tr id="row_sHttpsRedirect" onMouseOver="showHint('spot_httpsredirect');" onMouseOut="hideHint();">
+									<td class="head" id="sHttpsRedirect">HTTPS Redirect</td>
+									<td colspan="2">
+										<select name="sHttpsRedirect" class="mid">
+											<option value="0" id="disable">Disable</option>
+											<option value="1" id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_sRadCoaNoIpCheck" onMouseOver="showHint('spot_ipcheck');" onMouseOut="hideHint();">
+									<td class="head" id="sRadCoaNoIpCheck">No IP check for CoA/DM request</td>
+									<td colspan="2">
+										<select name="sRadCoaNoIpCheck" class="mid">
+											<option value="off" id="disable">Disable</option>
+											<option value="on" id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<!-- Nodog setup -->
+								<tr id="row_GatewayIPRange" onMouseOver="showHint('GatewayIPRange');" onMouseOut="hideHint();">
+									<td class="head" id="GatewayIPRange">Range of IP addresses</td>
+									<td colspan="2"><input class="mid" name="GatewayIPRange" maxlength="128"></td>
+								</tr>
+								<tr id="row_RedirectURL" onMouseOver="showHint('RedirectURL');" onMouseOut="hideHint();">
+									<td class="head" id="RedirectURL">Redirected to URL after authentication</td>
+									<td colspan="2"><input class="mid" name="RedirectURL" maxlength="128"></td>
+								</tr>
+								<tr id="row_MaxClients" onMouseOver="showHint('MaxClients');" onMouseOut="hideHint();">
+									<td class="head" id="MaxClients">Maximum number of users</td>
+									<td colspan="2"><input class="mid" name="MaxClients" maxlength="128"></td>
+								</tr>
+								<tr id="row_ClientIdleTimeout" onMouseOver="showHint('ClientIdleTimeout');" onMouseOut="hideHint();">
+									<td class="head" id="ClientIdleTimeout">Inactivity before a user is 'deauthenticated'</td>
+									<td colspan="2"><input class="mid" name="ClientIdleTimeout" maxlength="128"></td>
+								</tr>
+								<tr id="row_ClientForceTimeout" onMouseOver="showHint('ClientForceTimeout');" onMouseOut="hideHint();">
+									<td class="head" id="ClientForceTimeout">Minutes before a user is 'deauthenticated'</td>
+									<td colspan="2"><input class="mid" name="ClientForceTimeout" maxlength="128"></td>
+								</tr>
+								<tr id="row_AuthenticateImmediately" onMouseOver="showHint('AuthenticateImmediately');" onMouseOut="hideHint();">
+									<td class="head" id="AuthenticateImmediately">Authenticate Immediately</td>
+									<td colspan="2">
+										<select name="AuthenticateImmediately" class="mid">
+											<option value=0 id="disable">Disable</option>
+											<option value=1 id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_MACMechanism" onMouseOver="showHint('MACMechanism');" onMouseOut="hideHint();">
+									<td class="head" id="MACMechanism">MAC Mechanism</td>
+									<td colspan="2">
+										<select name="MACMechanism" class="mid" onChange="MACMechanismOnChange(this.form);">
+											<option value="block" id="block">Block</option>
+											<option value="allow" id="allow">Allow</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_BlockedMACList" onMouseOver="showHint('BlockedMACList');" onMouseOut="hideHint();">
+									<td class="head" id="BlockedMACList">List Blocked MAC Addresses</td>
+									<td colspan="2"><input class="mid" name="BlockedMACList" maxlength="128"></td>
+								</tr>
+								<tr id="row_AllowedMACList" onMouseOver="showHint('AllowedMACList');" onMouseOut="hideHint();">
+									<td class="head" id="AllowedMACList">List Allowed MAC Addresses</td>
+									<td colspan="2"><input class="mid" name="AllowedMACList" maxlength="128"></td>
+								</tr>
+								<tr id="row_TrustedMACList" onMouseOver="showHint('TrustedMACList');" onMouseOut="hideHint();">
+									<td class="head" id="TrustedMACList">List Trusted MAC Addresses</td>
+									<td colspan="2"><input class="mid" name="TrustedMACList" maxlength="128"></td>
+								</tr>
+								<tr id="row_PasswordAuthentication" onMouseOver="showHint('PasswordAuthentication');" onMouseOut="hideHint();">
+									<td class="head" id="PasswordAuthentication">Password Authentication</td>
+									<td colspan="2">
+										<select name="PasswordAuthentication" class="mid" onChange="MACMechanismOnChange(this.form);">
+											<option value=0 id="disable">Disable</option>
+											<option value=1 id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_Password" onMouseOver="showHint('Password');" onMouseOut="hideHint();">
+									<td class="head" id="Password">Password</td>
+									<td colspan="2"><input class="mid" type="password" name="Password" maxlength="128"></td>
+								</tr>
+								<tr id="row_UsernameAuthentication" onMouseOver="showHint('UsernameAuthentication');" onMouseOut="hideHint();">
+									<td class="head" id="UsernameAuthentication">Username Authentication</td>
+									<td colspan="2">
+										<select name="UsernameAuthentication" class="mid" onChange="MACMechanismOnChange(this.form);">
+											<option value=0 id="disable">Disable</option>
+											<option value=1 id="enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="row_Username" onMouseOver="showHint('Username');" onMouseOut="hideHint();">
+									<td class="head" id="Username">Username</td>
+									<td colspan="2"><input class="mid" name="Username" maxlength="128"></td>
+								</tr>
+								<tr id="row_PasswordAttempts" onMouseOver="showHint('PasswordAttempts');" onMouseOut="hideHint();">
+									<td class="head" id="PasswordAttempts">Password Attempts</td>
+									<td colspan="2"><input class="mid" name="PasswordAttempts" maxlength="128"></td>
+								</tr>
+							</tbody>
 						</table>
 						<table class="button">
 							<tr>

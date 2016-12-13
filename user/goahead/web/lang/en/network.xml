@@ -168,9 +168,10 @@
     <message msgid="hotspot profile" msgstr="Profile name" />
     <message msgid="hotspot manual" msgstr="Manual" />
     <message msgid="hotspot setup" msgstr="Hotspot Setup" />
+	<message msgid="hotspot type" msgstr="Hotspot type" />
     <message msgid="hotspot domain" msgstr="Domain name" />
 	<message msgid="hotspot https redirect" msgstr="HTTPS Redirect" />
-	<message msgid="hotspot drop dns" msgstr="Drop DNS responses (pre-authentication)" />
+	<message msgid="hotspot drop dns" msgstr="DNS paranoia" />
 	<message msgid="hotspot drop dns full" msgstr="Drop DNS responses (pre-authentication) containing any non- A, CNAME, SOA, or MX records" />
 	<message msgid="hotspot clisolate" msgstr="Use /32 mask for clients" />
 	<message msgid="hotspot clisolate full" msgstr="Use /32 mask for clients (prevent client to client direct connect)" />

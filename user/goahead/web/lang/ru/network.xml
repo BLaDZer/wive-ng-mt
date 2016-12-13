@@ -164,11 +164,12 @@
     <message msgid="hotspot title" msgstr="Настройки Хот-спот" />
     <message msgid="hotspot introduction" msgstr="" />
     <message msgid="hotspot setup" msgstr="Настройка хотспота" />
+    <message msgid="hotspot type" msgstr="Тип хотспота" />
     <message msgid="hotspot profile" msgstr="Имя профиля" />
     <message msgid="hotspot manual" msgstr="Вручную" />
     <message msgid="hotspot domain" msgstr="Имя доменна" />
 	<message msgid="hotspot https redirect" msgstr="Перенаправление HTTPS" />
-	<message msgid="hotspot drop dns" msgstr="Отбрасывать ответы DNS" />
+	<message msgid="hotspot drop dns" msgstr="DNS паранойя" />
 	<message msgid="hotspot drop dns full" msgstr="Отбрасывать ответы DNS (предварительная аутентификация) не содержащих A, CNAME, SOA, или MX записей" />
 	<message msgid="hotspot max clients" msgstr="Максимальное количество клиентов" />
 	<message msgid="hotspot max clients range" msgstr="Разрешен диапазон от 50 до 2000" />
