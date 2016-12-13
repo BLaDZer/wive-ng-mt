@@ -629,7 +629,7 @@ static void flush_stack(struct sock **stack, unsigned int count,
 
 		sk = stack[i];
 		if (skb1) {
-			if (sk_rcvqueues_full(sk, skb1, sk->sk_rcvbuf)) {
+			if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
 				kfree_skb(skb1);
 				goto drop;
 			}
@@ -810,7 +810,7 @@ int __udp6_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 
 	/* deliver */
 
-	if (sk_rcvqueues_full(sk, skb, sk->sk_rcvbuf)) {
+	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
 		sock_put(sk);
 		goto discard;
 	}
