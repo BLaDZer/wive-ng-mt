@@ -281,7 +281,7 @@ natrules() {
 	fi
 	#######################REDIR################################
 	if [ "$dnsPEnabled" = "1" ] && [ "$dnsToLocalRedir" = "1" ]; then
-	    $LOG "Redirect all DNS reqests to local DNS proxy."
+	    $LOG "Redirect all DNS requests to local DNS proxy."
 	    iptables -I PREROUTING -t nat -p udp --dport 53 -s $lan_ipaddr/$lan_netmask -j DNAT --to $lan_ipaddr:53
 	fi
 	#######################NAT##################################

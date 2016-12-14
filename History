@@ -2640,7 +2640,7 @@
 14) libnfnetlink: sync local header with kernel headers.<br>
 15) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
 16) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
-17) init.d: iptables: add support redirect all DNS reqest to local dns proxy.<br>
+17) init.d: iptables: add support redirect all DNS requests to local dns proxy.<br>
 18) goahead: update profile for hotspotsystem.com.<br>
 19) goahead: rework chillispot page.<br>
 20) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
