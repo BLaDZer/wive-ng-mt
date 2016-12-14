@@ -279,6 +279,11 @@ natrules() {
 		/etc/portforward_access
 	    fi
 	fi
+	#######################REDIR################################
+	if [ "$dnsPEnabled" = "1" ] && [ "$dnsToLocalRedir" = "1" ]; then
+	    $LOG "Redirect all DNS reqests to local DNS proxy."
+	    iptables -I PREROUTING -t nat -p udp --dport 53 -s $lan_ipaddr/$lan_netmask -j DNAT --to $lan_ipaddr:53
+	fi
 	#######################NAT##################################
 	if [ "$natEnabled" = "1" ]; then
 	    # default use SNAT istead of masqrade, more fast
@@ -599,7 +604,7 @@ get_param() {
 	    FtSupport RRMEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
-	    ForwardSesLimit QoSEnable`
+	    ForwardSesLimit dnsToLocalRedir QoSEnable`
 
     # use for route mode detect
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then

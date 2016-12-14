@@ -96,6 +96,7 @@ DMZEnable=0
 DMZIPAddress=
 DMZNATLoopback=0
 dnsPEnabled=1
+dnsToLocalRedir=0
 DtimPeriod=1
 EncrypType=NONE
 FastConnect=0
