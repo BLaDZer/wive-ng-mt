@@ -16,7 +16,7 @@
 
 ROOTDIR	:= $(shell pwd)
 
-all: tools prep_romfs linux lib_configure lib_only lib_install libnvram_only libwive_only libext_only user_only romfs image
+all: tools prep_romfs linux libs user_only romfs image
 
 CONFIG_VENDOR	:= Mediatek
 CONFIG_LINUXDIR := linux
@@ -51,7 +51,6 @@ HOSTCFLAGS   	:= -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame
 HOSTCXXFLAGS 	:= -O2
 
 ROMFSINST	:= romfs-inst.sh
-TFTPDIR		:= /images
 
 FIRMROOT	:= $(ROOTDIR)
 LINUXDIR	:= $(ROOTDIR)/$(CONFIG_LINUXDIR)
@@ -95,61 +94,52 @@ DIRS :=  $(ROOTDIR)/vendors $(ROOTDIR)/user $(ROOTDIR)/lib
 
 export LANG LC_COLLATE LC_MESSAGES LC_ALL
 export HOSTCC HOSTCXX HOSTCFLAGS HOSTCXXFLAGS CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-export ROOTDIR FIRMROOT
 export KCONFIG_NOTIMESTAMP
 export CONFIG_VENDOR CONFIG_LINUXDIR CONFIG_LIBCDIR LIBCDIR LIBCDIRSHARED CONFIG_LANGUAGE VENDOR PRODUCT CONFIG_SHELL
 export CONFIG_CROSS_COMPILER_PATH CROSS_COMPILE KERNEL_CROSS_COMPILE CROSS_COMPILER_PREFIX
 export CONFIG_CONFIG LINUX_CONFIG ARCH_CONFIG
 export DEVNAME REALNAME VERSIONPKG VERSIONSTR
-export ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR ROMFSINST
-export IMAGEDIR RELFILES TFTPDIR
-export HOST_NCPU DIRS PATH
-
-############################################################################
-
-.PHONY: oldconfig
-oldconfig:
-	@$(MAKE) oldconfig_linux
-	@$(MAKE) oldconfig_config
-
-oldconfig_config:
-	$(MAKEARCH) -C config oldconfig
-
-oldconfig_linux:
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) oldconfig
+export FIRMROOT DIRS ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR IMAGEDIR ROMFSINST
+export HOST_NCPU PATH
 
 ############################################################################
 #
 # normal make targets
 #
 
+.PHONY: oldconfig
+oldconfig:
+	if [ ! -f $(LINUXDIR)/.config ] ; then \
+		echo "ERROR: you need to do a 'make config' first" ; \
+		exit 1 ; \
+	fi
+	$(MAKEARCH) -C config oldconfig || exit 1
+	$(MAKEARCH_KERNEL) -C $(LINUXDIR) oldconfig || exit 1
+	$(MAKEARCH_KERNEL) -C $(LINUXDIR) prepare || exit 1
+	$(MAKEARCH_KERNEL) -C $(LINUXDIR) dep || exit 1
+
+.PHONY: libs
+libs: lib_configure lib_only lib_install libnvram_only libwive_only libext_only
+
 .PHONY: lib_configure
 lib_configure:
-	#######################UPDATE UCLIBC CONFIG#########################
-	$(MAKE) -C $(LIBCDIR) oldconfig
+	##########################UPDATE CONFIGS#############################
+	$(MAKEARCH) -C $(LIBCDIR) oldconfig || exit 1
 
 .PHONY: lib_install
 lib_install:
 	#####################COMPOSE LIBC SHARE HEADERS######################
 	mkdir -p $(LIBCDIRSHARED)
-	$(MAKE) -j$(HOST_NCPU) -C $(LIBCDIR) install_headers ARCH=mips PREFIX=$(LIBCDIRSHARED)/ DEVEL_PREFIX= MULTILIB_DIR=lib
+	$(MAKEARCH_KERNEL) -j$(HOST_NCPU) -C $(LIBCDIR) install_headers PREFIX=$(LIBCDIRSHARED)/ DEVEL_PREFIX= MULTILIB_DIR=lib || exit 1
 	#####################COMPOSE LIBC SHARE LIBC######################
 	mkdir -p $(LIBCDIRSHARED)/lib
 	cp -aprfv $(LIBCDIR)/lib/*.a $(LIBCDIRSHARED)/lib
 	cp -aprfv $(LIBCDIR)/lib/*.so* $(LIBCDIRSHARED)/lib
 
-.PHONY: toolchain_headers_update
-toolchain_headers_update:
-	############################UPDATE HEADERS###########################
-	$(RM) -rf $(ROOTDIR)/toolchain/include
-	$(RM) -rf $(ROOTDIR)/toolchain/usr/include
-	cp -Lrf $(LIBCDIRSHARED)/include $(ROOTDIR)/toolchain/include
-	cp -Lrf $(LIBCDIRSHARED)/include $(ROOTDIR)/toolchain/usr/include
-
 .PHONY: prep_romfs
 prep_romfs:
 	####################PREPARE-ROMFS####################
-	$(MAKEARCH) -C vendors romfs
+	$(MAKEARCH) -C vendors romfs || exit 1
 
 .PHONY: romfs
 romfs: romfs.subdirs modules_install romfs.post
@@ -191,16 +181,12 @@ romfs.post:
 	###################SET_COMPILE_DATE####################
 	date +%Y%m%d%H%M > $(ROMFSDIR)/etc/compile-date
 	###################APPS-INSTALLED######################
-	$(MAKEARCH) -C vendors romfs.post
+	$(MAKEARCH) -C vendors romfs.post || exit 1
 
 .PHONY: image
 image:
 	mkdir -p $(IMAGEDIR)
-	$(MAKEARCH) -C vendors image
-
-.PHONY: release
-release:
-	$(MAKE) -C release release
+	$(MAKEARCH) -C vendors image || exit 1
 
 #
 # fancy target that allows a vendor to have other top level
@@ -208,7 +194,7 @@ release:
 # vendor_flash target in the vendors directory
 #
 vendor_%:
-	$(MAKEARCH) -C vendors $@
+	$(MAKEARCH) -C vendors $@ || exit 1
 
 # for select build mode (one/multi thread)
 -include $(LINUX_CONFIG)
@@ -230,7 +216,7 @@ linux:
 	$(MAKEARCH_KERNEL) $(THREADS) -C $(LINUXDIR) $(LINUXTARGET) || exit 1
 	#################COMPOSE AND INSTALL SHARED HEADERS##################
 	mkdir -p $(LIBCDIRSHARED)
-	$(MAKEARCH_KERNEL) $(THREADS) -C $(LINUXDIR) headers_install ARCH=mips INSTALL_HDR_PATH=$(LIBCDIRSHARED) || exit 1
+	$(MAKEARCH_KERNEL) $(THREADS) -C $(LINUXDIR) headers_install INSTALL_HDR_PATH=$(LIBCDIRSHARED) || exit 1
 	cp -aprf $(LINUXDIR)/include/generated/* $(LIBCDIRSHARED)/include/linux
 	cp -aprf $(LINUXDIR)/include/linux/ralink_gpio.h $(LIBCDIRSHARED)/include/linux
 	find $(LIBCDIRSHARED) -type f -name ".*" -exec rm "{}" \;
@@ -238,29 +224,9 @@ linux:
 		ln -f $(LINUXDIR)/vmlinux $(LINUXDIR)/linux ; \
 	fi
 
-.PHONY: subdirs
-subdirs: lib linux
-	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -j$(HOST_NCPU) -C $$dir || exit 1 ; done
-
-.PHONY: dep
-dep:
-	if [ ! -f $(LINUXDIR)/.config ] ; then \
-		echo "ERROR: you need to do a 'make config' first" ; \
-		exit 1 ; \
-	fi
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) prepare
-	$(MAKEARCH_KERNEL) -C $(LINUXDIR) dep
-
 .PHONY: tools
 tools:
-	$(MAKE) -j$(HOST_NCPU) -C tools
-
-.PHONY: web_make
-web_make:
-	$(MAKE) -j$(HOST_NCPU) -C user web
-
-.PHONY: web
-web: web_make romfs image
+	$(MAKE) -j$(HOST_NCPU) -C tools || exit 1
 
 .PHONY: clean
 clean:
@@ -295,7 +261,7 @@ clean:
 	     t=`expr $(@) : '[^/]*/\(.*\)'`; \
 	     $(MAKEARCH) -j$(HOST_NCPU) -C $$d $$t;; \
 	*)   $(MAKEARCH) -j$(HOST_NCPU) -C $(@:_only=);; \
-	esac
+	esac || exit 1
 
 %_clean:
 	case "$(@)" in \
@@ -304,3 +270,15 @@ clean:
 	     $(MAKEARCH) -C $$d $$t;; \
 	*)   $(MAKEARCH) -C $(@:_clean=) clean;; \
 	esac
+
+############################################################################
+#
+# debug make targets
+#
+
+.PHONY: web_make
+web_make:
+	$(MAKEARCH) -j$(HOST_NCPU) -C user web || exit 1
+
+.PHONY: web
+web: web_make romfs image
