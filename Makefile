@@ -16,7 +16,7 @@
 
 ROOTDIR	:= $(shell pwd)
 
-all: tools prep_romfs linux libs user_only romfs image
+all: oldconfig tools prep_romfs linux libs user_only romfs image
 
 CONFIG_VENDOR	:= Mediatek
 CONFIG_LINUXDIR := linux
