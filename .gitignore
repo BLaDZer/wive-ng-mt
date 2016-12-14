@@ -35,6 +35,7 @@ autom4te.cache/*
 config.log
 configure.log
 config.status
+missing
 filesystem
 fulldump
 

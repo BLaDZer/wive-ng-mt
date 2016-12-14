@@ -4,6 +4,7 @@
 #
 # Copyright (c) 2001-2004, SnapGear (www.snapgear.com)
 # Copyright (c) 2001, Lineo
+# Copyright (c) 2010-2016, Wive-NG (wive-ng.sf.net)
 #
 
 ############################################################################
@@ -169,7 +170,7 @@ romfs.subdirs:
 
 .PHONY: modules_install
 modules_install:
-	#----------------------------INSTALL_MODULES----------------------------------
+	####################INSTALL_MODULES####################
 	. $(LINUXDIR)/.config; if [ "$$CONFIG_MODULES" = "y" ]; then \
 		[ -d $(ROMFSDIR)/lib/modules ] || mkdir -p $(ROMFSDIR)/lib/modules; \
 		$(MAKEARCH_KERNEL) -C $(LINUXDIR) INSTALL_MOD_PATH=$(ROMFSDIR) DEPMOD="$(ROOTDIR)/user/busybox/examples/depmod.pl" modules_install; \
@@ -239,7 +240,7 @@ linux:
 
 .PHONY: subdirs
 subdirs: lib linux
-	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir || exit 1 ; done
+	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -j$(HOST_NCPU) -C $$dir || exit 1 ; done
 
 .PHONY: dep
 dep:
@@ -252,11 +253,11 @@ dep:
 
 .PHONY: tools
 tools:
-	$(MAKE) -C tools
+	$(MAKE) -j$(HOST_NCPU) -C tools
 
 .PHONY: web_make
 web_make:
-	$(MAKE) -C user web
+	$(MAKE) -j$(HOST_NCPU) -C user web
 
 .PHONY: web
 web: web_make romfs image
@@ -281,7 +282,7 @@ clean:
 	##############REMOVE UNUSED FILES 1###########################
 	rm -f $(ROOTDIR)/etc/compile-date $(ROOTDIR)/etc/scripts/config.sh $(ROOTDIR)/config.tk $(ROOTDIR)/.tmp* $(ROOTDIR)/sdk_version.h $(ROOTDIR)/version $(LINUXDIR)/linux $(LINUXDIR)/arch/mips/ramdisk/*.gz
 	##############REMOVE UNUSED FILES 2###########################
-	find $(ROOTDIR) -type f -a \( -name '*.*~' -o -name '*.ko' -o -name '*.log' -o -name '*.old' -o -name 'config.log' -o -name 'stamp-h1' -o -name '.sgbuilt_user' -o -name '.config.cmd' \) | xargs rm -f
+	find $(ROOTDIR) -type f -a \( -name '*.*~' -o -name '*.ko' -o -name '*.log' -o -name '*.old' -o -name 'config.log' -o -name 'stamp-h1' -o -name '.sgbuilt_user' -o -name '.config.cmd' -o -name 'missing' \) | xargs rm -f
 	##############REMOVE UNUSED FILES 3###########################
 	find $(ROOTDIR)/lib $(ROOTDIR)/libext $(ROOTDIR)/user -type f -a \( -name '*.o' -o -name '*.a' -o -name '*.so' -o -name '*.lo' -o -name '*.la' \) | xargs rm -f
 	##############REMOVE UNUSED FOLDERS###########################
@@ -303,13 +304,3 @@ clean:
 	     $(MAKEARCH) -C $$d $$t;; \
 	*)   $(MAKEARCH) -C $(@:_clean=) clean;; \
 	esac
-
-%_default:
-	if [ ! -f "vendors/$(@:_default=)/config.device" ]; then \
-	    echo "vendors/$(@:_default=)/config.device must exist first"; \
-	    exit 1; \
-	fi
-	-$(MAKE) clean > /dev/null 2>&1
-	cp vendors/$(@:_default=)/config.device .config
-	$(MAKE) dep
-	$(MAKE) -j$(HOST_NCPU)
