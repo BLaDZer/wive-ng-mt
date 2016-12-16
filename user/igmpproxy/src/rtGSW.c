@@ -19,7 +19,7 @@
 #include "ra_ioctl.h"
 
 #define END_OF_MAC_TABLE		0xFFFFFFFF
-#define ITERATIONTIMEOUT		7000
+#define ITERATIONTIMEOUT		5000
 
 /* ioctl commands */
 #define RAETH_ESW_REG_READ		0x89F1
@@ -261,8 +261,9 @@ static void sync_internal_mac_table(void)
 			    reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 			    wait_switch_done();
 			    i++;
+		} else {
+			    usleep(ITERATIONTIMEOUT);
 		}
-		usleep(ITERATIONTIMEOUT);
 	}
 	internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
 	return;
