@@ -202,17 +202,16 @@ static void sync_internal_mac_table(void)
 			reg_read(REG_ESW_TABLE_ATRD, &value1);
 			if ((value1 & 0xff000000) == 0) {
 				my_log(LOG_INFO, 0, "*** rtGSW: found an unused entry (age = 3'b000), skip this record!");
-				/* NULL record for correct skip in lookup */
-				internal_mac_table[i].mac2 = 0;
-				internal_mac_table[i].vid = 0;
-				internal_mac_table[i].port_map = 0;
 				/* check this record is last ? */
 				if (value & 0x4000) {
 				    my_log(LOG_INFO, 0, "*** rtGSW: set end of table (unused record case). %d", i);
-				    internal_mac_table[i].mac1 = END_OF_MAC_TABLE; // set for this record end table flag (only for unused if record used set to next
-				    return;
+				    break;
 				} else {
+				    /* NULL record for correct skip in lookup */
 				    internal_mac_table[i].mac1 = 0;
+				    internal_mac_table[i].mac2 = 0;
+				    internal_mac_table[i].vid = 0;
+				    internal_mac_table[i].port_map = 0;
 				    reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 				    wait_switch_done();
 				    i++;
@@ -232,12 +231,7 @@ static void sync_internal_mac_table(void)
 			/* check this record is last ? */
 			if (value & 0x4000) {
 			    my_log(LOG_INFO, 0, "*** rtGSW: end of table (add record case). %d", i);
-			    internal_mac_table[i+1].mac1 = END_OF_MAC_TABLE;  // set for end table flag to next record
-			    /* NULL record for correct skip in lookup */
-			    internal_mac_table[i+1].mac2 = 0;
-			    internal_mac_table[i+1].vid = 0;
-			    internal_mac_table[i+1].port_map = 0;
-			    return;
+			    break;
 			} else {
 			    reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 			    wait_switch_done();
@@ -245,12 +239,7 @@ static void sync_internal_mac_table(void)
 			}
 		} else if (value & 0x4000) { //at_table_end
 			    my_log(LOG_INFO, 0, "*** rtGSW: found the last entry (end table case). %d", i);
-			    internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
-			    /* NULL record for correct skip in lookup */
-			    internal_mac_table[i].mac2 = 0;
-			    internal_mac_table[i].vid = 0;
-			    internal_mac_table[i].port_map = 0;
-			    return;
+			    break;
 		} else {
 			    my_log(LOG_INFO, 0, "*** rtGSW: unknow record - skip. %d", i);
 			    /* NULL record for correct skip in lookup */
@@ -264,7 +253,12 @@ static void sync_internal_mac_table(void)
 			    i++;
 		}
 	}
+
+	/* NULL record for correct skip in lookup */
 	internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
+	internal_mac_table[i].mac2 = 0;
+	internal_mac_table[i].vid = 0;
+	internal_mac_table[i].port_map = 0;
 	return;
 }
 
