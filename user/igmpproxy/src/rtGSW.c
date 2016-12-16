@@ -260,9 +260,8 @@ static void sync_internal_mac_table(void)
 			    internal_mac_table[i].port_map = 0;
 			    reg_write(REG_ESW_WT_MAC_ATC, 0x8005); //search for next address
 			    wait_switch_done();
-			    i++;
-		} else {
 			    usleep(ITERATIONTIMEOUT);
+			    i++;
 		}
 	}
 	internal_mac_table[i].mac1 = END_OF_MAC_TABLE;
