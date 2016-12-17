@@ -32,6 +32,7 @@
 			  _TR("forwardIntroduction",		"forward introduction");
 			  _TR("forwardVirtualSrv",		"forward virtual server");
 			  _TR("ForwardSesLimit",		"forward session limit");
+			  _TR("dnsToLocalRedir",		"forward dns redirect");
 			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
 			  _TR("forwardVirtualSrvDisable",	"button disable");
 			  _TR("forwardVirtualSrvEnable",	"button enable");
@@ -41,6 +42,8 @@
 			  _TR("portBasicFilter",		"port basic filter");
 			  _TR("portDisable",			"button disable");
 			  _TR("portEnable",			"button enable");
+			  _TR("dnsDisable",			"button disable");
+			  _TR("dnsEnable",			"button enable");
 
 			  var elements = document.getElementsByTagName('input');
 			  for (i = 0; i < elements.length; i++)
@@ -50,14 +53,17 @@
 
 			function initValues()
 			{
-				var opMode				= '<% getCfgZero(1, "OperationMode"); %>';
-				var pfwEnabled 			= '<% getCfgZero(1, "PortForwardEnable"); %>';
-				var filteringEnabled	= '<% getCfgZero(1, "IPPortFilterEnable"); %>';
+				displayElement('bridge_warning', '<% getCfgZero(1, "OperationMode"); %>' == '0'); // bridge mode
 
-				displayElement('bridge_warning', opMode == '0'); // bridge mode
-
-				document.portForward.portForwardEnabled.value = (pfwEnabled == '1') ? '1' : '0';
-				document.portFiltering.portFilterEnabled.value = (filteringEnabled == '1') ? '1' : '0';
+				document.portForward.portForwardEnabled.value	= ('<% getCfgZero(1, "PortForwardEnable"); %>' == '1') ? '1' : '0';
+				document.portFiltering.portFilterEnabled.value	= ('<% getCfgZero(1, "IPPortFilterEnable"); %>' == '1') ? '1' : '0';
+				document.Firewall.ForwardSesLimit.value		= ('<% getCfgZero(1, "ForwardSesLimit"); %>' == '') ? 0 : '<% getCfgZero(1, "ForwardSesLimit"); %>';
+				document.Firewall.dnsToLocalRedir.value		= ('<% getCfgZero(1, "dnsToLocalRedir"); %>' == '1') ? 1 : 0;
+				
+				if ('<% getCfgZero(1, "dnsPEnabled"); %>' == '0') {
+					document.Firewall.dnsToLocalRedir.value = 0;
+					displayElement('dnsToLocalRedirRow', false);
+				}
 
 				updateForwardingState(document.portForward);
 				updateFilteringState(document.portFiltering);
@@ -175,7 +181,7 @@
 						'<td>' + row[4] + '</td>' + // Destination IP
 						'<td>' + showPortRange(row[5], row[6]) + '</td>' + // Destination port range
 						'<td><input type="checkbox"' + ((row[7] != 0) ? ' checked="true">' : '>') + // NAT Loopback
-						'<td>' + row[8] + '&nbsp;</td>' + // Comment
+						'<td style="max-width: 120px;white-space: wrap; overflow: hidden;">' + row[8] + '&nbsp;</td>' + // Comment
 						'<td style="text-align: center;">' +
 						'<a style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteRuleItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 						'</tr>';
@@ -187,14 +193,14 @@
 				// Controls
 				table +=
 					'<tr>'+
-					'<td rowspan="2"><select name="fwdIface" tabindex="1"><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
-					'<td rowspan="2"><select name="protocol" tabindex="2"><option value="3" selected="selected">TCP&amp;UDP</option><option value="1">TCP</option><option value="2">UDP</option></select></td>' +
+					'<td rowspan="2"><select class="pfSmall" name="fwdIface" tabindex="1"><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
+					'<td rowspan="2"><select class="pfSmall" name="protocol" tabindex="2"><option value="3" selected="selected">TCP&amp;UDP</option><option value="1">TCP</option><option value="2">UDP</option></select></td>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="fromPort" tabindex="3" ></td>' + 
-					'<td rowspan="2"><input type="text" class="pfNormal" maxlength="15" name="ip_address" tabindex="5"></td>' +
+					'<td rowspan="2"><input class="pfSmall" type="text" class="pfNormal" maxlength="15" name="ip_address" tabindex="5"></td>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="redirectFromPort" tabindex="6"></td>' + 
 					'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="7"></td>' + 
-					'<td rowspan="2"><input type="text" style="width: 120px;" maxlength="32" name="comment" tabindex="8"></td>' +
-					'<td rowspan="2" style="text-align: center;"><input type="button" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
+					'<td rowspan="2"><input class="pfSmall" type="text" style="width: 95%;" maxlength="25" name="comment" tabindex="8"></td>' +
+					'<td rowspan="2" style="text-align: center;"><input class="pfSmall" type="button" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="toPort" tabindex="4"></td>' + 
@@ -221,7 +227,7 @@
 				table += '<th>' + _("forward dst ip") + '</th>';
 				table += '<th rowspan="2" style="white-space: normal;">' + _("forward dst ports") + '</th>';
 				table += '<th rowspan="2">' + _("forward policy") + '</th>';
-				table += '<th rowspan="2">' + _("forward comment filter") + '</th>';
+				table += '<th rowspan="2">' + _("forward comment") + '</th>';
 				table += '<th rowspan="2">' + _("forward action") + '</th>';
 				table += '</tr><tr>';
 				table += '<th colspan="2">' + _("forward mac") + '</th>';
@@ -242,7 +248,7 @@
 						'<td>' + showValue(row[7]) + '</td>' + // Destination IP
 						'<td rowspan="2" style="white-space: normal;">' + showPortRange(row[9], row[10]) + '</td>' + // Destination port range
 						showPolicy(row[11]) + // Policy
-						'<td rowspan="2">' + row[12] + '&nbsp;</td>' + // Comment
+						'<td rowspan="2" style="max-width: 90px; white-space: wrap; overflow: hidden;">' + row[12] + '&nbsp;</td>' + // Comment
 						'<td rowspan="2" style="text-align: center;"><a style="color: #ff0000;" title="' + _("forward delete record") + '" href="javascript:deleteForwardingItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a></td>' +
 						'</tr><tr>' +
 						'<td colspan="2">' + showValue(row[2]) + '</td>' + // MAC
@@ -263,18 +269,18 @@
 				// Controls
 				table +=
 					'<tr>'+
-					'<td><select name="interface" tabindex="10"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
-					'<td><select name="protocol" tabindex="11" onchange="javascript:protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
+					'<td><select class="pfSmall" name="interface" tabindex="10"><option value="LAN">LAN</option><option value="WAN" selected="selected">WAN</option><option value="VPN">VPN</option></select></td>' +
+					'<td><select class="pfSmall" name="protocol" tabindex="11" onchange="javascript:protocolChange(this.form);"><option value="5">None</option><option value="1">TCP</option><option value="2">UDP</option><option value="4">ICMP</option></select></td>' +
 					'<td><input type="text" tabindex="13" class="pfNormal" maxlength="15" name="sip_address"></td>' +
 					'<td><input type="text" tabindex="15" class="pfShort" maxlength="5" name="sFromPort" disabled="disabled"></td>' +
 					'<td><input type="text" tabindex="17" class="pfNormal" maxlength="15" name="dip_address"></td>' +
 					'<td><input type="text" tabindex="19" class="pfShort" maxlength="5" name="dFromPort" disabled="disabled"></td>' +
-					'<td rowspan="2"><select style="width:85px;" tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
-					'<td rowspan="2"><input tabindex="22" type="text" style="width:50px;" name="comment"></td>' +
-					'<td rowspan="2" style="text-align: center;"><input type="button" tabindex="23" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
+					'<td rowspan="2"><select class="pfSmall" style="width: 80px;" tabindex="21" name="policy"><option value="0"' + accept_sel + '>' + _("port filter action drop") + '</option><option value="1"' + drop_sel + '>' + _("port filter action accept") + '</option></select></td>' +
+					'<td rowspan="2"><input class="pfSmall" tabindex="22" type="text" style="width: 95%;" maxlength="18" name="comment"></td>' +
+					'<td rowspan="2" style="text-align: center;"><input class="pfSmall" type="button" tabindex="23" title="' + _("forward add record") + '" value="' + _("button add") + '" onclick="addFilteringItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
-					'<td colspan="2"><input type="text" tabindex="12" style="width: 140px" maxlength="17" name="mac_address"></td>' +
+					'<td colspan="2"><input class="pfSmall" type="text" tabindex="12" style="width: 95%" maxlength="17" name="mac_address"></td>' +
 					'<td><input type="text" tabindex="14" class="pfNormal" maxlength="15" name="sip_mask"></td>' +
 					'<td><input type="text" tabindex="16" class="pfShort" maxlength="5" name="sToPort" disabled="disabled"></td>' +
 					'<td><input type="text" tabindex="18" class="pfNormal" maxlength="15" name="dip_mask"></td>' +
@@ -532,19 +538,23 @@
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="portForward" action="/goform/portForward" onSubmit="return submitForwardForm(this);">
 						<table class="form">
-							<tr>
-								<td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
-							</tr>
-							<tr>
-								<td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
-								<td><select onChange="updateForwardingState(this.form);" name="portForwardEnabled" class="half">
-									<option value="0" id="forwardVirtualSrvDisable" selected="selected">Disable</option>
-									<option value="1" id="forwardVirtualSrvEnable">Enable</option>
-								</select></td>
-							</tr>
-							<tr id="portForwardingRow">
-								<td colspan="2" id="portForwardingTable"></td>
-							</tr>
+							<col style="width: 40%" />
+							<col style="width: 60%" />
+							<tbody>
+								<tr>
+									<td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
+								</tr>
+								<tr>
+									<td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
+									<td><select onChange="updateForwardingState(this.form);" name="portForwardEnabled" class="half">
+										<option value="0" id="forwardVirtualSrvDisable" selected="selected">Disable</option>
+										<option value="1" id="forwardVirtualSrvEnable">Enable</option>
+									</select></td>
+								</tr>
+								<tr id="portForwardingRow">
+									<td colspan="2" id="portForwardingTable"></td>
+								</tr>
+							</tbody>
 						</table>
 						<!-- Port forwarding rules -->
 						<table class="buttons">
@@ -555,6 +565,7 @@
 							</tr>
 						</table>
 					</form>
+					<br>
 					<!-- MAC / IP / Port Filtering -->
 					<h1 id="portTitle">MAC/IP/Port Filtering Settings</h1>
 					<p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
@@ -562,19 +573,23 @@
 					<iframe name="timerReloader2" id="timerReloader2" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
 						<table class="form">
-							<tr>
-								<td class="title" colspan="2" id="portBasicSet">Basic Settings</td>
-							</tr>
-							<tr>
-								<td class="head" id="portBasicFilter"> MAC/IP/Port Filtering </td>
-								<td><select name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
-									<option value="0" id="portDisable" selected="selected">Disable</option>
-									<option value="1" id="portEnable">Enable</option>
-								</select></td>
-							</tr>
-								<tr id="portFilteringRow">
-								<td id="portFilteringTable" colspan="2"></td>
-							</tr>
+							<col style="width: 40%" />
+							<col style="width: 60%" />
+							<tbody>
+								<tr>
+									<td class="title" colspan="2" id="portBasicSet">Basic Settings</td>
+								</tr>
+								<tr>
+									<td class="head" id="portBasicFilter"> MAC/IP/Port Filtering </td>
+									<td><select name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
+										<option value="0" id="portDisable" selected="selected">Disable</option>
+										<option value="1" id="portEnable">Enable</option>
+									</select></td>
+								</tr>
+									<tr id="portFilteringRow">
+									<td id="portFilteringTable" colspan="2"></td>
+								</tr>
+							</tbody>
 						</table>
 						<!-- MAC / IP / Port filtering rules -->
 						<table class="buttons">
@@ -586,6 +601,7 @@
 							</tr>
 						</table>
 					</form>
+					<br>
 					<!-- Other netfilter settings -->
 					<h1 id="FirewallTitle">Other Settings</h1>
 					<div style="display:none;" id="bridge_warning">
@@ -595,14 +611,27 @@
 					<iframe name="timerReloader3" id="timerReloader3" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
 						<table class="form">
-							<tr>
-								<td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
-							</tr>
-							<tr>
-								<td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
-								<td><input type="text" name="ForwardSesLimit" class="pfShort" maxlength="5" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
-									<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
-							</tr>
+							<col style="width: 40%" />
+							<col style="width: 60%" />
+							<tbody>
+								<tr>
+									<td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
+								</tr>
+								<tr>
+									<td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
+									<td><input type="text" name="ForwardSesLimit" class="half" maxlength="5" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
+										<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
+								</tr>
+								<tr id="dnsToLocalRedirRow">
+									<td class="head" id="dnsToLocalRedir">Redirect all DNS to Local server</td>
+									<td>
+										<select name="dnsToLocalRedir" class="half" value="<% getCfgZero(1, ""); %>">
+											<option value="0" id="dnsDisable" selected="selected">Disable</option>
+											<option value="1" id="dnsEnable">Enable</option>
+										</select>
+									</td>
+								</tr>
+							</tbody>
 						</table>
 						<table class="buttons">
 							<tr>

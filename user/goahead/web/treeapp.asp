@@ -20,31 +20,6 @@ var isFimwareUpload = 0;
 Butterlate.setTextDomain("menu");
 Butterlate.setTextDomain("buttons");
 
-function rebootRouter(form, reloader)
-{
-	if (!confirm(_('treeapp reboot confirm')))
-		return;
-
-	if (parent!=null)
-	{
-		var obj = parent.document.getElementById("homeFrameset");
-		if (obj != null)
-			obj.rows = "0,1*"; // Hide top logo
-		var obj = parent.document.getElementById("homeMenuFrameset");
-		if (obj != null)
-			obj.cols = "250,0"; // Hide menu
-	}
-
-	var submitForm = function()
-	{
-		form.submit();
-	};
-
-	form.target = reloader;
-
-	ajaxPopupWindow('ajxReboot', _("message reboot"), submitForm);
-}
-
 function initValue()
 {
 	var e = document.getElementById("openall");
@@ -196,7 +171,7 @@ a.add(902, 900, _("treeapp status"),                "javascript:go('adm/status.a
 if (syslogb == "1")
 	a.add(903, 900, _("treeapp system log"),            "javascript:go('adm/syslog.asp');");
 a.add(904, 900, _("treeapp sdk history"),           "javascript:go('cgi-bin/history.sh');");
-a.add(905, 900, _("treeapp reboot"),                       "javascript:rebootRouter(document.rebootForm, 'rebootReloader');");
+a.add(905, 900, _("treeapp reboot"),                       "javascript:go('reboot.asp');");
 document.write(a);
 
 </script>

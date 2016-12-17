@@ -1,87 +1,84 @@
 /****** Controls ******/
-select
-{
-	font-size: 13px;
+select {
+	font-size:	13px;
 }
 
-select.mid
-{
-	width: 196px;
+select.mid {
+	width:		200px;
 }
 
-select.half
-{
-	width: 100px;
+select.half {
+	width:		100px;
 }
 
-select.normal
-{
-	width: 160px;
+select.normal {
+	width:		160px;
 }
 
-select.wide
-{
-	width: 260px;
+select.wide {
+	width:		260px;
 }
 
-select.short
-{
-	width: 48px;
+select.short {
+	width:		48px;
 }
 
-input.mid
-{
-	width: 192px;
+select.pfSmall {
+	font-size:	95%;
 }
 
-input.normal
-{
-	width: 156px;
+input.mid {
+	width:		200px;
+	box-sizing:	border-box;
 }
 
-input.wide
-{
-	width: 256px;
-}
-input.superwide
-{
-	width: 400px;
-}
-input.half
-{
-	width: 94px;
-}
-input.short_qos
-{
-	width: 64px;
-}
-input.short
-{
-	width: 48px;
+input {
+	box-sizing:	border-box;
 }
 
-input.pfShort
-{
-	width: 40px;
+input.normal {
+	width:		160px;
 }
 
-input.pfNormal
-{
-	width: 100px;
+input.wide {
+	width:		260px;
+}
+input.superwide {
+	width:		400px;
+}
+input.half {
+	width:		100px;
+}
+input.short_qos {
+	width:		64px;
+}
+input.short {
+	width:		48px;
 }
 
-input.small
-{
-	width: 36px;
+input.pfShort {
+	font-size:	95%;
+	width: 		40px;
 }
 
-input.xsmall
-{
-	width: 24px;
+input.pfNormal {
+	font-size:	95%;
+	width:		100px;
 }
 
-span.radio
-{
-	width: 96px;
-	display: inline-block;
+input.pfSmall {
+	font-size:	95%;
+}
+
+input.small {
+	width:		36px;
+}
+
+input.xsmall {
+	width:		24px;
+}
+
+span.radio {
+	width:		96px;
+	display:	inline-block;
 }

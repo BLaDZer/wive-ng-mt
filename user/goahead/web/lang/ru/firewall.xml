@@ -29,6 +29,7 @@
   <message msgid="forward introduction" msgstr="Вы можете настроить правила проброса портов для открытия сервисов в Интернет." />
   <message msgid="forward virtual server" msgstr="Настройки проброса портов" />
   <message msgid="forward session limit" msgstr="Ограничить число TCP соединений с одного IP" />
+  <message msgid="forward dns redirect" msgstr="Перенаправлять DNS на локальный сервер" />  
   <message msgid="forward virtual server setting" msgstr="Настройки проброса портов" />
   <message msgid="forward interface" msgstr="Интерфейс" />
   <message msgid="forward protocol" msgstr="Протокол" />

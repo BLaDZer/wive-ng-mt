@@ -179,6 +179,7 @@ static void setFirewallALG(webs_t wp, char_t *path, char_t *query)
 parameter_fetch_t firewall_params[] =
 {
 	{ "ForwardSesLimit",	T("ForwardSesLimit"),	0,	T("0") },
+	{ "dnsToLocalRedir",	T("dnsToLocalRedir"),	0,	T("0") },
 	{ NULL,			NULL,			0,	NULL   }  // Terminator
 };
 

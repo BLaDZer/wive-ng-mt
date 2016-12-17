@@ -18,6 +18,16 @@
     <message msgid="inet lan wan same" msgstr="LAN IP address is identical to WAN" />
     <message msgid="inet lan gw same" msgstr="LAN IP address is identical to Gateway" />
     <message msgid="inet wan gw same" msgstr="WAN IP address is identical to Gateway" />
+	<message msgid="inet dns profile" msgstr="DNS profile" />
+	<message msgid="inet dns profile manual" msgstr="Manual" />
+	<message msgid="inet dns profile google" msgstr="Google DNS" />
+	<message msgid="inet dns profile yandex" msgstr="Yandex DNS" />
+	<message msgid="inet dns profile sky" msgstr="Sky DNS" />
+	<message msgid="inet dns profile open" msgstr="Open DNS" />
+	<message msgid="inet dns profile yandex title" msgstr="Yandex DNS profile" />
+	<message msgid="inet dns profile yandex basic" msgstr="Basic" />
+	<message msgid="inet dns profile yandex safe" msgstr="Safe" />
+	<message msgid="inet dns profile yandex family" msgstr="Family" />
 
     <message msgid="wan title" msgstr="Wide Area Network (WAN) Settings" />
     <message msgid="wan introduction" msgstr="You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type." />

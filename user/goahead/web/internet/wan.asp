@@ -15,6 +15,7 @@
 		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
+			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
 
 			function initTranslation()
@@ -31,6 +32,16 @@
 				_TR("wStaticIp",		"inet ip");
 				_TR("wStaticNetmask",		"inet netmask");
 				_TR("wStaticGateway",		"inet gateway");
+				_TR("wStaticDnsProfile",	"inet dns profile");
+				_TR("dnsProfileManual",		"inet dns profile manual");
+				_TR("dnsProfileGoogle",		"inet dns profile google");
+				_TR("dnsProfileYandex",		"inet dns profile yandex");
+				_TR("dnsProfileSky",		"inet dns profile sky");
+				_TR("dnsProfileOpen",		"inet dns profile open");
+				_TR("wStaticDnsYandexProfile",	"inet dns profile yandex title");
+				_TR("dnsProfileYandexBasic",	"inet dns profile yandex basic");
+				_TR("dnsProfileYandexSafe",	"inet dns profile yandex safe");
+				_TR("dnsProfileYandexFamily",	"inet dns profile yandex family");
 				_TR("wStaticPriDns",		"inet pri dns");
 				_TR("wStaticSecDns",		"inet sec dns");
 				_TR("wDhcpMode",		"wan dhcp mode");
@@ -51,29 +62,33 @@
 
 			function initValues()
 			{
-				var form	= document.wanCfg;
-				var mode 	= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
-				var nat		= '<% getCfgZero(1, "natEnabled"); %>';
-				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
-				var static_dns	= '<% getCfgZero(1, "wan_static_dns"); %>';
-				var wan_mtu	= defaultNumber("<% getCfgGeneral(1, "wan_manual_mtu"); %>", '0');
-				var wanIp	= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
-				var wanNetmask	= '<% getCfgGeneral(1, "wan_netmask"); %>';
-				var wanGateway	= '<% getCfgGeneral(1, "wan_gateway"); %>';
-				var dhcpReqIP	= '<% getCfgGeneral(1, "dhcpRequestIP"); %>';
-				var dhcpVendor	= '<% getCfgGeneral(1, "dhcpVendorClass"); %>';
-				var priDNS	= '<% getDns(1); %>';
-				var secDNS	= '<% getDns(2); %>';
-				var wanMac	= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>';
+				var form		= document.wanCfg;
+				var mode 		= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
+				var nat			= '<% getCfgZero(1, "natEnabled"); %>';
+				var opMode		= '<% getCfgZero(1, "OperationMode"); %>';
+				var static_dns		= '<% getCfgZero(1, "wan_static_dns"); %>';
+				var wan_mtu		= defaultNumber("<% getCfgGeneral(1, "wan_manual_mtu"); %>", '0');
+				var wanIp		= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
+				var wanNetmask		= '<% getCfgGeneral(1, "wan_netmask"); %>';
+				var wanGateway		= '<% getCfgGeneral(1, "wan_gateway"); %>';
+				var dhcpReqIP		= '<% getCfgGeneral(1, "dhcpRequestIP"); %>';
+				var dhcpVendor		= '<% getCfgGeneral(1, "dhcpVendorClass"); %>';
+				var dnsProfile		= '<% getCfgGeneral(1, "wan_static_dns_profile"); %>';
+				var dnsProfileYandex	= '<% getCfgGeneral(1, "wan_static_dns_profile_yandex"); %>';
+				var priDNS		= '<% getDns(1); %>';
+				var secDNS		= '<% getDns(2); %>';
+				var wanMac		= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>';
 
-				form.staticIp.value 		= wanIp;
-				form.staticNetmask.value	= wanNetmask;
-				form.staticGateway.value	= wanGateway;
-				form.dhcpReqIP.value		= dhcpReqIP;
-				form.dhcpVendorClass.value	= dhcpVendor;
-				form.staticPriDns.value		= priDNS;
-				form.staticSecDns.value		= secDNS;
-				form.wanMac.value		= wanMac.toUpperCase();
+				form.staticIp.value			= wanIp;
+				form.staticNetmask.value		= wanNetmask;
+				form.staticGateway.value		= wanGateway;
+				form.dhcpReqIP.value			= dhcpReqIP;
+				form.dhcpVendorClass.value		= dhcpVendor;
+				form.wStaticDnsProfile.value		= (dnsProfile == '') ? 'manual' : dnsProfile;
+				form.wStaticDnsYandexProfile.value	= (dnsProfileYandex == '') ? 'basic' : dnsProfileYandex; 
+				form.staticPriDns.value			= priDNS;
+				form.staticSecDns.value			= secDNS;
+				form.wanMac.value			= wanMac.toUpperCase();
 
 				displayElement(document.getElementById("natRowDisplay"), opMode != "0");
 				form.natEnabled.checked = (nat == "1");
@@ -90,6 +105,7 @@
 					}
 
 				connectionTypeSwitch(form);
+				dnsSwitchClick(form);
 				wanMtuChange(form);
 				showWarning();
 				initTranslation();
@@ -189,6 +205,9 @@
 					form.wStaticDnsEnable.checked = true;
 					form.wStaticDnsEnable.disabled = true;
 				}
+				else if (conn_type == 'ZERO') {
+					form.wStaticDnsEnable.checked = true;
+				}
 				else {
 					form.wStaticDnsEnable.disabled = false;
 				}
@@ -196,24 +215,58 @@
 				dnsSwitchClick(form);
 			}
 
-			function dnsSwitchClick(form)
-			{
-				displayElement( ['priDNSrow', 'secDNSrow' ], (form.wStaticDnsEnable.checked) || (form.connectionType.value == 'ZERO'));
-			}
-
-			function wanMtuChange(form)
-			{
-				if (form.wan_mtu_type.value == '1')
-				{
+			function wanMtuChange(form) {
+				if (form.wan_mtu_type.value == '1') {
 					form.wan_mtu.style.display = '';
 					form.wan_mtu.setAttribute('class', 'half');
 					form.wan_mtu_type.setAttribute('class', 'half');
 				}
-				else
-				{
+				else {
 					form.wan_mtu_type.setAttribute('class', 'mid');
 					form.wan_mtu.style.display = 'none';
 					form.wan_mtu.value = form.wan_mtu_type.value;
+				}
+			}
+			
+			function dnsSwitchClick(form) {
+				displayElement('staticDNSprofile',			form.wStaticDnsEnable.checked);
+				displayElement(['priDNSrow', 'secDNSrow'],	form.wStaticDnsEnable.checked && form.wStaticDnsProfile.value == 'manual');
+				displayElement('staticDNSyandexProfile',	form.wStaticDnsEnable.checked && form.wStaticDnsProfile.value == 'yandex');
+				document.getElementById('wStaticDnsProfile_learne').innerHTML = '';
+				switch (form.wStaticDnsProfile.value) {
+					case 'google':
+										form.staticPriDns.value = '8.8.8.8';
+										form.staticSecDns.value = '8.8.4.4';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://developers.google.com/speed/public-dns/" target="_blank">' + _('services status about') + '</a>';
+										break;
+
+					case 'yandex':		switch (form.wStaticDnsYandexProfile.value) {
+											case 'basic':
+															form.staticPriDns.value = '77.88.8.8';
+															form.staticSecDns.value = '77.88.8.1';
+															break;
+											case 'safe':
+															form.staticPriDns.value = '77.88.8.88';
+															form.staticSecDns.value = '77.88.8.2';
+															break;															
+											case 'family':
+															form.staticPriDns.value = '77.88.8.7';
+															form.staticSecDns.value = '77.88.8.3';
+															break;															
+										}
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://dns.yandex.ru/" target="_blank">' + _('services status about') + '</a>';
+										break;
+
+					case 'sky':
+										form.staticPriDns.value = '193.58.251.251';
+										form.staticSecDns.value = '';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.skydns.ru/" target="_blank">' + _('services status about') + '</a>';
+										break;
+					case 'open':
+										form.staticPriDns.value = '208.67.222.123';
+										form.staticSecDns.value = '208.67.220.123';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.opendns.com/home-internet-security/" target="_blank">' + _('services status about') + '</a>';
+										break;
 				}
 			}
 		</script>
@@ -231,93 +284,133 @@
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="wanCfg" action="/goform/setWan" onSubmit="return CheckValues(this);">
 					<table class="form">
-						<tr>
-							<td class="title" colspan="2" id="wConnection">WAN connection type</td>
-						</tr>
-						<tr>
-							<td class="head"><b id="wConnectionType" style="width: 40%">Connection type</b></td>
-							<td style="width: 60%"><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
-								<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
-								<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>
-								<option id="wConnTypeZero"   value="ZERO">Zeroconf</option>
-							</select></td>
-						</tr>
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<tbody>
+							<tr>
+								<td class="title" colspan="2" id="wConnection">WAN connection type</td>
+							</tr>
+							<tr>
+								<td class="head"><b id="wConnectionType">Connection type</b></td>
+								<td><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
+									<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
+									<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>
+									<option id="wConnTypeZero"   value="ZERO">Zeroconf</option>
+								</select></td>
+							</tr>
+						</tbody>
 					</table>
 					<!-- ================= STATIC Mode ================= -->
 					<table id="staticDHCP" class="form">
-						<tr>
-							<td class="title" colspan="2" id="wStaticMode">Static Mode</td>
-						</tr>
-						<tr>
-							<td class="head" id="wStaticIp" style="width: 40%">IP Address</td>
-							<td style="width: 60%"><input name="staticIp" class="mid"></td>
-						</tr>
-						<tr>
-							<td class="head" id="wStaticNetmask" style="width: 40%">Subnet Mask</td>
-							<td style="width: 60%"><input name="staticNetmask" class="mid"></td>
-						</tr>
-						<tr>
-							<td class="head" id="wStaticGateway" style="width: 40%">Default Gateway</td>
-							<td style="width: 60%"><input name="staticGateway" class="mid"></td>
-						</tr>
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<tbody>
+							<tr>
+								<td class="title" colspan="2" id="wStaticMode">Static Mode</td>
+							</tr>
+							<tr>
+								<td class="head" id="wStaticIp">IP Address</td>
+								<td><input name="staticIp" class="mid"></td>
+							</tr>
+							<tr>
+								<td class="head" id="wStaticNetmask">Subnet Mask</td>
+								<td><input name="staticNetmask" class="mid"></td>
+							</tr>
+							<tr>
+								<td class="head" id="wStaticGateway">Default Gateway</td>
+								<td><input name="staticGateway" class="mid"></td>
+							</tr>
+						</tbody>
 					</table>
 					<table class="form">
-						<tr>
-							<td class="title" colspan="2" id="wAdditionalOptions">Additional Options</td>
-						</tr>
-						<tr id="dhcpReqIPRow">
-							<td class="head" id="wReqFromDHCP" style="width: 40%">Request IP from DHCP (optional)</td>
-							<td style="width: 60%"><input name="dhcpReqIP" class="mid"></td>
-						</tr>
-						<tr id="dhcpVendorRow">
-							<td class="head" id="wDHCPVendorClass" style="width: 40%">Vendor class identifier (optional)</td>
-							<td style="width: 60%"><input name="dhcpVendorClass" class="mid"></td>
-						</tr>
-						<tr>
-							<td class="head" id="wMTU" style="width: 40%">WAN MTU</td>
-							<td style="width: 60%"><input name="wan_mtu" type="text" class="half" style="display:none;">
-								<select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="mid">
-									<option value="0" id="wAuto">AUTO</option>
-									<option value="1" selected="selected" id="wCustom">Custom</option>
-									<option value="1500">1500</option>
-									<option value="1492">1492</option>
-									<option value="1460">1460</option>
-									<option value="1440">1440</option>
-									<option value="1400">1400</option>
-									<option value="1300">1300</option>
-									<option value="1200">1200</option>
-									<option value="1000">1000</option>
-								</select>
-							</td>
-						</tr>
-						<tr id="staticDNSAssignRow">
-							<td class="head" id="wStaticDns" style="width: 40%">Assign static DNS Server</td>
-							<td style="width: 60%"><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" ></td>
-						</tr>
-						<tr id="priDNSrow" style="display:none;" >
-							<td class="head" id="wStaticPriDns" style="width: 40%">Primary DNS Server</td>
-							<td style="width: 60%"><input name="staticPriDns" class="mid"></td>
-						</tr>
-						<tr id="secDNSrow" style="display:none;" >
-							<td class="head" id="wStaticSecDns" style="width: 40%">Secondary DNS Server</td>
-							<td style="width: 60%"><input name="staticSecDns" class="mid"></td>
-						</tr>
-						<tr id="natRowDisplay">
-							<td class="head" id="wNatEnabled" style="width: 40%">Enable NAT</td>
-							<td style="width: 60%"><input name="natEnabled" type="checkbox"></td>
-						</tr>
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<tbody>
+							<tr>
+								<td class="title" colspan="2" id="wAdditionalOptions">Additional Options</td>
+							</tr>
+							<tr id="dhcpReqIPRow">
+								<td class="head" id="wReqFromDHCP">Request IP from DHCP (optional)</td>
+								<td><input name="dhcpReqIP" class="mid"></td>
+							</tr>
+							<tr id="dhcpVendorRow">
+								<td class="head" id="wDHCPVendorClass">Vendor class identifier (optional)</td>
+								<td><input name="dhcpVendorClass" class="mid"></td>
+							</tr>
+							<tr>
+								<td class="head" id="wMTU">WAN MTU</td>
+								<td><input name="wan_mtu" type="text" class="half" style="display:none;">
+									<select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="mid">
+										<option value="0" id="wAuto">AUTO</option>
+										<option value="1" selected="selected" id="wCustom">Custom</option>
+										<option value="1500">1500</option>
+										<option value="1492">1492</option>
+										<option value="1460">1460</option>
+										<option value="1440">1440</option>
+										<option value="1400">1400</option>
+										<option value="1300">1300</option>
+										<option value="1200">1200</option>
+										<option value="1000">1000</option>
+									</select>
+								</td>
+							</tr>
+							<tr id="staticDNSAssignRow">
+								<td class="head" id="wStaticDns">Assign static DNS Server</td>
+								<td><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" ></td>
+							</tr>
+							<tr id="staticDNSprofile">
+								<td class="head" id="wStaticDnsProfile">DNS Profile</td>
+								<td><div style="float: left">
+									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+										<option id="dnsProfileManual" value="manual">Manual</option>
+										<option id="dnsProfileGoogle" value="google">Google DNS</option>
+										<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
+										<option id="dnsProfileSky" value="sky">Sky DNS</option>
+										<option id="dnsProfileOpen" value="open">Open DNS</option>
+									</select>
+									</div>
+									<div id="wStaticDnsProfile_learne" style="float: left; margin: 3px 10px"></div>
+								</td>
+							</tr>
+							<tr id="staticDNSyandexProfile">
+								<td class="head" id="wStaticDnsYandexProfile">Yandex Profile</td>
+								<td>
+									<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+										<option id="dnsProfileYandexBasic" value="basic">Basic</option>
+										<option id="dnsProfileYandexSafe" value="safe">Safe</option>
+										<option id="dnsProfileYandexFamily" value="family">Family</option>
+									</select>
+								</td>
+							</tr>
+							<tr id="priDNSrow">
+								<td class="head" id="wStaticPriDns">Primary DNS Server</td>
+								<td><input name="staticPriDns" class="mid"></td>
+							</tr>
+							<tr id="secDNSrow">
+								<td class="head" id="wStaticSecDns">Secondary DNS Server</td>
+								<td><input name="staticSecDns" class="mid"></td>
+							</tr>
+							<tr id="natRowDisplay">
+								<td class="head" id="wNatEnabled">Enable NAT</td>
+								<td><input name="natEnabled" type="checkbox"></td>
+							</tr>
+						</tbody>
 					</table>
 					<table class="form">
-						<tr>
-							<td class="title" colspan="2" id="wMacAddress">MAC address</td>
-						</tr>
-						<tr id="MACrow">
-							<td class="head" id="wMacAddr" style="width: 40%">WAN MAC address</td>
-							<td style="width: 60%">
-								<input name="wanMac" id="wanMac" class="mid">
-								<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
-							</td>
-						</tr>
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<tbody>
+							<tr>
+								<td class="title" colspan="2" id="wMacAddress">MAC address</td>
+							</tr>
+							<tr id="MACrow">
+								<td class="head" id="wMacAddr">WAN MAC address</td>
+								<td>
+									<input name="wanMac" id="wanMac" class="mid">
+									<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
+								</td>
+							</tr>
+						</tbody>
 					</table>
 					<table class="buttons">
 						<tr>

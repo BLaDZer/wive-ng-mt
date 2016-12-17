@@ -209,8 +209,8 @@ function ajaxPopupWindow(popupID, message, onLoadAction) {
 
 	var d_width = popup.offsetWidth;
 	var d_height = popup.offsetHeight;
-	var x = Math.round((c_width - d_width)/2.0);
-	var y = Math.round((c_height - d_height)/2.0);
+	var x = Math.round((c_width - d_width - top.frames["menu"].document.documentElement.clientWidth)/2.0);
+	var y = Math.round((c_height - d_height - top.frames["title"].document.documentElement.clientHeight)/2.0);
 	x = (x < 0) ? 0 : x;
 	y = (y < 0) ? 0 : y;
 
@@ -242,20 +242,36 @@ function ajaxCloseWindow(popupID)
 
 function ajaxPostForm(question, form, reloader, message, handler)
 {
-	if (question != null)
-	{
+	if (question != null) {
 		if (!confirm(question))
 			return false;
 	}
 
-	if (parent!=null)
-	{
-		var obj = parent.document.getElementById("homeFrameset");
-		if (obj != null)
-			obj.rows = "0,1*"; // Hide top logo
-		var obj = parent.document.getElementById("homeMenuFrameset");
-		if (obj != null)
-			obj.cols = "0,1*"; // Hide menu
+	if (parent!=null) {
+		// Set shadow on title & menu
+		var frame_title				= top.frames["title"].document
+		var background_title			= frame_title.createElement('div');
+		var frame_menu				= top.frames["menu"].document;
+		var background_menu			= frame_menu.createElement('div');
+		background_title.id			= "reload_background";
+		background_title.style.backgroundColor	= '#c0c0c0';
+		background_title.style.position		= 'absolute';
+		background_title.style.opacity		= '0.5';
+		background_title.style.left		= '0px';
+		background_title.style.top		= '0px';
+		background_title.style.height		= frame_title.documentElement.clientHeight + 'px';
+		background_title.style.width		= frame_title.documentElement.clientWidth + 'px';
+		background_menu.id			= "reload_background";
+		background_menu.style.backgroundColor	= '#c0c0c0';
+		background_menu.style.position		= 'absolute';
+		background_menu.style.opacity		= '0.5';
+		background_menu.style.left		= '0px';
+		background_menu.style.top		= '0px';
+		background_menu.style.height		= frame_menu.documentElement.clientHeight+ 'px';
+		background_menu.style.width		= frame_menu.documentElement.clientWidth + 'px';
+
+		frame_title.body.appendChild(background_title);
+		frame_menu.body.appendChild(background_menu);
 	}
 	window.scrollTo(0, 0);
 	
@@ -374,17 +390,33 @@ function ajaxReloadDelayedPage(delay, url, local)
 
 function ajaxShowTimer(form, reloader, message, delay)
 {
-	var hmf = parent.document.getElementById("homeMenuFrameset");
-	var hmfOrigCols;
-	if (hmf != null)
-	{
-		hmfOrigCols = hmf.cols;
-		hmf.cols = "0, 1*";
-	}
-	
+	// Set shadow on title & menu
+	var frame_title				= top.frames["title"].document
+	var background_title			= frame_title.createElement('div');
+	var frame_menu				= top.frames["menu"].document;
+	var background_menu			= frame_menu.createElement('div');
+	background_title.id			= "reload_background";
+	background_title.style.backgroundColor	= '#c0c0c0';
+	background_title.style.position		= 'absolute';
+	background_title.style.opacity		= '0.5';
+	background_title.style.left		= '0px';
+	background_title.style.top		= '0px';
+	background_title.style.height		= frame_title.documentElement.clientHeight + 'px';
+	background_title.style.width		= frame_title.documentElement.clientWidth + 'px';
+	background_menu.id			= "reload_background";
+	background_menu.style.backgroundColor	= '#c0c0c0';
+	background_menu.style.position		= 'absolute';
+	background_menu.style.opacity		= '0.5';
+	background_menu.style.left		= '0px';
+	background_menu.style.top		= '0px';
+	background_menu.style.height		= frame_menu.documentElement.clientHeight+ 'px';
+	background_menu.style.width		= frame_menu.documentElement.clientWidth + 'px';
+
+	frame_title.body.appendChild(background_title);
+	frame_menu.body.appendChild(background_menu);
+
 	window.scrollTo(0, 0);
-	var submitForm = function()
-	{
+	var submitForm = function() {
 		form.submit();
 	};
 
@@ -403,23 +435,25 @@ function ajaxShowTimer(form, reloader, message, delay)
 	var elem = ajaxSearchElementById("ajxCounterIndicator");
 	var pw = ajaxGetRootWindow();
 
-	var reloader = function()
-	{
-		if (pw.currentProgressHandler == reloader)
-		{
+	var reloader = function() {
+		if (pw.currentProgressHandler == reloader) {
 			if (elem != null)
 				elem.innerHTML = delay;
 		}
-		if (delay > 0) // check counter
-		{
+		if (delay > 0) { // check counter
 			delay--;
 			pw.setTimeout(reloader, 1000);
 		}
-		else // Reload page
-		{
+		else {	// Reload page
 			ajaxCloseWindow('ajxLoadParams');
-			hmf.cols = hmfOrigCols
-			window.location.href=window.location.href;
+
+			// Remove shadow on title & menu
+			if (frame_title.getElementById('reload_background'))
+				frame_title.body.removeChild(frame_title.getElementById('reload_background'));
+			if (frame_menu.getElementById('reload_background'))
+				frame_menu.body.removeChild(frame_menu.getElementById('reload_background'));
+
+			window.location.href = window.location.href;
 		}
 	}
 	pw.currentProgressHandler = reloader;

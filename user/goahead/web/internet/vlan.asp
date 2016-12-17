@@ -463,7 +463,6 @@
 			}
 			
 			function interceptVLANinput() {
-				console.log('test');
 				setTimeout('interceptVLANinput();', 500);
 				
 				if (vlanTv.length > 0 && document.getElementById('tv_stbMcast').disabled == true) {

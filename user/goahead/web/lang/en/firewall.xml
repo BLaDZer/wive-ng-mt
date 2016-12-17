@@ -29,6 +29,7 @@
   <message msgid="forward introduction" msgstr="You can set up port forwarding to provide services to the Internet." />
   <message msgid="forward virtual server" msgstr="Port Forwarding Settings" />
   <message msgid="forward session limit" msgstr="Limit TCP session per ip" />
+  <message msgid="forward dns redirect" msgstr="Redirect all DNS to local server" />
   <message msgid="forward virtual server setting" msgstr="Port Forwarding Settings" />
   <message msgid="forward interface" msgstr="Interface" />
   <message msgid="forward protocol" msgstr="Protocol" />

@@ -65,6 +65,7 @@ table.body {
 	border: 0px;
 	border-width: 0px;
 	min-width: 750px;
+	max-width: 750px;
 	width: 750px;
 }
 
@@ -215,7 +216,6 @@ table.form th {
 table.form td {
 	white-space: nowrap;
 	font-size: 9pt; 
-
 	padding: 3px;
 	border-width: 1px;
 	border-style: solid;
@@ -256,19 +256,21 @@ table.form td.title {
 }
 
 table.small {
-	font-size: 10pt;
-	font-family: Arial, Helvetica, sans-serif;
 	color: #333333;
 	text-align: center;
 }
 
 table.small th {
+	font-size: 95%;
+	font-family: Arial, Helvetica, sans-serif;
 	background-color: #2C5EA4;
 	color: #FFFFFF;
 	font-weight: bold;
 }
 
 table.small td {
+	font-size: 95%;
+	font-family: Arial, Helvetica, sans-serif;
 	background-color: #E8F8FF;
 }
 
