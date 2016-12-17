@@ -178,14 +178,13 @@ static inline void wait_switch_done(void)
 {
 	int i, value;
 
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 100; i++) {
 	    reg_read(REG_ESW_WT_MAC_ATC, &value);
-	    if ((value & 0x8000) == 0 ){ //mac address busy
+	    if ((value & 0x8000) == 0 ) //mac address busy
 		break;
-	    }
-	    usleep(1000);
+	    usleep(200);
 	}
-	if (i == 20)
+	if (i == 100)
 	    my_log(LOG_WARNING, 0, "*** rtGSW: timeout.");
 }
 
@@ -314,7 +313,6 @@ void updateMacTable(struct group *entry, int delay_delete)
 
 	reg_write(REG_ESW_WT_MAC_ATA1, value);
 	my_log(LOG_INFO, 0, "REG_ESW_WT_MAC_ATA1 is 0x%x",value);
-
 
 	strncpy(tmpstr, &wholestr[8], 4);
 	tmpstr[4] = '\0';

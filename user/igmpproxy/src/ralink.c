@@ -878,8 +878,8 @@ static int portLookUpByIP(char *ip)
 		my_log(LOG_DEBUG, 0, "*** rtGSW: Warning, Can't get mac address for %s, try arping.", ip);
 		/* send an udp then wait. */
 		sendUDP(ip);
-		my_log(LOG_DEBUG, 0, "*** rtGSW: Wait 15 sec.");
-		usleep(15000);
+		my_log(LOG_DEBUG, 0, "*** rtGSW: Wait 25 msec.");
+		usleep(25000);
 		my_log(LOG_DEBUG, 0, "*** rtGSW: retry lookup.");
 		if(arpLookUp(ip, mac) == -1){
 			my_log(LOG_DEBUG, 0, "*** rtGSW: Give up for %s", ip);
