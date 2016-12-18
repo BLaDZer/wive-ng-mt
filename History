@@ -2664,10 +2664,11 @@
 38) kernel: net: set skb->protocol properly for local output.<br>
 39) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
 40) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
-41) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-42) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-43) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-44) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+41) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
+42) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+43) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+44) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+45) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>

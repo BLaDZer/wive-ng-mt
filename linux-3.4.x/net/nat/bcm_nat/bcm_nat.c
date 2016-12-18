@@ -76,8 +76,8 @@ static inline int __fastpathnet bcm_fast_path_output(struct sk_buff *skb)
 int __fastpathnet bcm_fast_path(struct sk_buff *skb)
 {
 	if (skb_dst(skb) == NULL) {
-		const struct iphdr *iph = ip_hdr(skb);
-		int err = ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
+		struct iphdr *iph = ip_hdr(skb);
+		int err = ip_route_input(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
 		if (unlikely(err)) {
 			kfree_skb(skb);
 			return -EINVAL;
@@ -159,8 +159,8 @@ int __fastpathnet bcm_do_fastnat(struct nf_conn *ct,
 			struct nf_conntrack_tuple target;
 
 			if (skb_dst(skb) == NULL && mtype == NF_NAT_MANIP_SRC) {
-				const struct iphdr *iph = ip_hdr(skb);
-				int err = ip_route_input_noref(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
+				struct iphdr *iph = ip_hdr(skb);
+				int err = ip_route_input(skb, iph->daddr, iph->saddr, iph->tos, skb->dev);
 				if (unlikely(err))
 					return NF_DROP;
 
