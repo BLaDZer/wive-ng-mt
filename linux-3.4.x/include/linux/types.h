@@ -169,11 +169,7 @@ typedef u32 dma_addr_t;
 #else
 #define __bitwise__
 #endif
-#ifdef __CHECK_ENDIAN__
 #define __bitwise __bitwise__
-#else
-#define __bitwise
-#endif
 
 typedef __u16 __bitwise __le16;
 typedef __u16 __bitwise __be16;
