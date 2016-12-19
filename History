@@ -2642,35 +2642,36 @@
 16) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
 17) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
 18) init.d: iptables: add support redirect all DNS requests to local dns proxy.<br>
-19) goahead: update profile for hotspotsystem.com.<br>
-20) goahead: rework chillispot page.<br>
-21) goahead: add profiles for google/sky/open/yandex dns services in static mode.<br>
-22) goahead: rework reboot counter.<br>
-23) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
-24) kernel: block: ioc_task_link() can't fail.<br>
-25) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
-26) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
-27) kernel: fork: remove the weak insanity.<br>
-28) kernel: fork: move thread info gfp flags to header.<br>
-29) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
-30) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
-31) kernel: fork: report pid reservation failure properly.<br>
-32) kernel: net: cleanups in sock_setsockopt().<br>
-33) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
-34) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-35) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-36) kernel: net: packet: fix race condition in packet_set_ring.<br>
-37) kernel: net: bridge: set error code on failure.<br>
-38) kernel: net: set skb->protocol properly for local output.<br>
-39) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
-40) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
-41) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
-42) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
-43) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
-44) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-45) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-46) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-47) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+19) init.d: kext: allow use skip filters and route fastpath in nodogsplash mode (after last kernel fastpaths fix).<br>
+20) goahead: update profile for hotspotsystem.com.<br>
+21) goahead: rework chillispot page.<br>
+22) goahead: add profiles for google/sky/open/yandex dns services in static mode.<br>
+23) goahead: rework reboot counter.<br>
+24) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
+25) kernel: block: ioc_task_link() can't fail.<br>
+26) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
+27) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
+28) kernel: fork: remove the weak insanity.<br>
+29) kernel: fork: move thread info gfp flags to header.<br>
+30) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
+31) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
+32) kernel: fork: report pid reservation failure properly.<br>
+33) kernel: net: cleanups in sock_setsockopt().<br>
+34) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
+35) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+36) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+37) kernel: net: packet: fix race condition in packet_set_ring.<br>
+38) kernel: net: bridge: set error code on failure.<br>
+39) kernel: net: set skb->protocol properly for local output.<br>
+40) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
+41) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
+42) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
+43) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
+44) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
+45) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+46) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+47) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+48) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>

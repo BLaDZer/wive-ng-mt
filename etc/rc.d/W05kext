@@ -67,18 +67,26 @@ offload() {
 	if [ "$offloadMode" = "1" ]; then
 	    hw_nat=0
 	    sw_nat=1
+	    sw_rtf=1
+	    sw_flf=1
 	    $LOG "NAT Offload mode software with selected fastpaths, hw_nat disabled."
 	elif [ "$offloadMode" = "2" ]; then
 	    hw_nat=1
 	    sw_nat=0
+	    sw_rtf=0
+	    sw_flf=0
 	    $LOG "NAT Offload mode hardware, all fastpaths disabled."
 	elif [ "$offloadMode" = "3" ]; then
 	    hw_nat=1
 	    sw_nat=1
+	    sw_rtf=1
+	    sw_flf=1
 	    $LOG "NAT Offload mode complex, enable hw_nat and selected software fastpaths."
 	else
 	    hw_nat=0
 	    sw_nat=0
+	    sw_rtf=0
+	    sw_flf=0
 	    $LOG "NAT Offload disabled by user, hw_nat and all fastpaths disabled."
 	fi
 	if [ "$nodogsplash_enable" = "1" ]; then
@@ -94,7 +102,7 @@ offload() {
 	        sysctl -wq net.netfilter.nf_conntrack_fastnat=0
 	    fi
 	    # configure software route offload
-	    if [ "$routeFastpath" != "0" ] && [ "$sw_nat" = "1" ]; then
+	    if [ "$routeFastpath" != "0" ] && [ "$sw_rtf" = "1" ]; then
 		$LOG "Route fastpath enabled."
 		sysctl -wq net.netfilter.nf_conntrack_fastroute=1
 	    else
@@ -103,7 +111,7 @@ offload() {
 	fi
 	if [ "$CONFIG_IP_NF_IPTABLES_SPEEDUP" = "y" ]; then
 	    # configure software netfilter offload
-	    if [ "$filterFastpath" != "0" ] && [ "$sw_nat" = "1" ]; then
+	    if [ "$filterFastpath" != "0" ] && [ "$sw_flf" = "1" ]; then
 		$LOG "Netfilter fastpath enabled."
 		sysctl -wq net.netfilter.nf_conntrack_skip_filter=1
 	    else
