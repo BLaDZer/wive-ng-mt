@@ -400,7 +400,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 {
 	unsigned char a0;
 	unsigned char new_portmap = 0;
-	struct group *entry = find_entry(m_ip_addr);
+	struct group *entry;
 	struct group *group_pos = group_list;
 
 	int delete_found = 0;
@@ -419,6 +419,7 @@ void remove_multicast_ip(uint32 m_ip_addr)
 	rtwifi_remove_multicast_ip(m_ip_addr);
 #endif
 
+	entry = find_entry(m_ip_addr);
 	if(!entry){
 		// This entry isn't in the list.
 		my_log(LOG_DEBUG, 0, "*** rtGSW: can't find group entry [%s].", inetFmt(htonl(m_ip_addr), s1));
@@ -524,14 +525,13 @@ static void update_group_port_map(struct group *entry)
 
 void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
 {
+	struct group_member *new_member;
+	struct group *entry;
 #if defined(CONFIG_PPE_MCAST)
 	char cmd[128];
-#endif
-	struct group_member *new_member;
-	struct group *entry = find_entry(m_ip_addr);
-#if defined(CONFIG_PPE_MCAST)
 	unsigned char *a;
 #endif
+
 	if(!auto_lan_snooping)
 		return;
 
@@ -541,6 +541,7 @@ void insert_multicast_ip(uint32 m_ip_addr, uint32 u_ip_addr)
     		return;
 	}
 
+	entry = find_entry(m_ip_addr);
 	if(!entry) {
 		// This entry isn't in the list, create one.
 		entry = build_entry(m_ip_addr);
