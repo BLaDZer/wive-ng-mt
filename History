@@ -2670,11 +2670,12 @@
 44) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
 45) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
 46) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
-47) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
-48) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-49) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-50) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-51) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+47) kernel: net: fastpath: use switch case instead of multiple condition checks.<br>
+48) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
+49) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+50) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+51) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+52) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>

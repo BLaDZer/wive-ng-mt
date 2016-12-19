@@ -93,6 +93,14 @@ int __fastpathnet bcm_fast_path(struct sk_buff *skb)
 	return bcm_fast_path_output(skb);
 }
 
+static inline int __fastpathnet bcm_setendpoint(struct sk_buff *skb)
+{
+	/* Change skb owner to output device */
+	skb->dev = skb_dst(skb)->dev;
+	skb->protocol = __constant_htons(ETH_P_IP);
+	return NF_FAST_NAT;
+}
+
 int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
 		struct sk_buff *skb,
 		unsigned int hooknum,
@@ -102,24 +110,21 @@ int __fastpathnet bcm_do_fastroute(struct nf_conn *ct,
         if (set_reply && !test_and_set_bit(IPS_SEEN_REPLY_BIT, &ct->status))
 	    nf_conntrack_event_cache(IPCT_ASSURED, ct);
 
-	if(hooknum == NF_INET_PRE_ROUTING) {
-	    FASTROUTE(skb) = 1;
-	    /* this function will handle routing decision. the next hoook will be input or forward chain */
-	    if (ip_rcv_finish(skb) == NF_FAST_NAT) {
-	        /* Change skb owner to output device */
-	        skb->dev = skb_dst(skb)->dev;
-	        skb->protocol = __constant_htons(ETH_P_IP);
-	        return NF_FAST_NAT;
-	    }
-	    /* this tell system no need to handle this packet. we will handle this. */
-	    return NF_STOLEN;
-	} else {
-	    if(hooknum == NF_INET_LOCAL_OUT) {
-		/* Change skb owner to output device */
-		skb->dev = skb_dst(skb)->dev;
-		skb->protocol = __constant_htons(ETH_P_IP);
-		return NF_FAST_NAT;
-	    }
+	switch (hooknum) {
+	    case NF_INET_PRE_ROUTING:
+		{
+		    FASTROUTE(skb) = 1;
+		    /* this function will handle routing decision. the next hoook will be input or forward chain */
+		    if (ip_rcv_finish(skb) == NF_FAST_NAT)
+			return bcm_setendpoint(skb);
+
+		    /* this tell system no need to handle this packet. we will handle this. */
+		    return NF_STOLEN;
+		}
+	    case NF_INET_LOCAL_OUT:
+		    return bcm_setendpoint(skb);
+	    default:
+		break;
 	}
 
 	/* return accept for continue normal processing */
