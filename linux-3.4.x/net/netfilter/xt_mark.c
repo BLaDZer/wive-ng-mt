@@ -40,7 +40,7 @@ mark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 #endif
 #endif
 #if defined(CONFIG_BCM_NAT)
-	FASTNAT_DENY(skb) = 1;
+	FASTNAT_DENY(skb);
 #endif
 	return XT_CONTINUE;
 }

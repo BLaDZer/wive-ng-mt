@@ -62,7 +62,7 @@ connmark_tg(struct sk_buff *skb, const struct xt_action_param *par)
 #endif
 #endif
 #if defined(CONFIG_BCM_NAT)
-			FASTNAT_DENY(skb) = 1;
+			FASTNAT_DENY(skb);
 #endif
 			ct->mark = newmark;
 			nf_conntrack_event_cache(IPCT_MARK, ct);

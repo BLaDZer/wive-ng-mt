@@ -23,7 +23,8 @@
 #define FASTROUTE(skb)		(skb->cb[CB_FAST_ROUTE])
 
 #define CB_FAST_NAT		(MAX_CB_OFFSET-2)
-#define FASTNAT_DENY(skb)	(skb->cb[CB_FAST_NAT])
+#define FASTNAT(skb)		(!(skb->cb[CB_FAST_NAT])) /* not 0 - disable */
+#define FASTNAT_DENY(skb)	(skb->cb[CB_FAST_NAT]=1)
 
 /*
  * conntrack fastforward flags

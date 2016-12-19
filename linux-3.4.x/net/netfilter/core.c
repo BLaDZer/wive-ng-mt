@@ -198,11 +198,6 @@ int __fastpathnet nf_hook_slow(u_int8_t pf, unsigned int hook, struct sk_buff *s
 next_hook:
 	verdict = nf_iterate(&nf_hooks[pf][hook], skb, hook, indev,
 			     outdev, &elem, okfn, hook_thresh);
-#if defined(CONFIG_BCM_NAT)
-	if (verdict == NF_FAST_NAT)
-	    ret = bcm_fast_path(skb);
-	else
-#endif
 	if (verdict == NF_ACCEPT || verdict == NF_STOP) {
 		ret = 1;
 	} else if ((verdict & NF_VERDICT_MASK) == NF_DROP) {
@@ -230,6 +225,16 @@ next_hook:
 			kfree_skb(skb);
 		}
 	}
+#if defined(CONFIG_BCM_NAT)
+	else if (verdict == NF_FAST_NAT) {
+	    if (nf_conntrack_fastnat || nf_conntrack_fastroute) {
+		ret = bcm_fast_path(skb);
+	    } else {
+		kfree_skb(skb);
+		ret = -EPERM;
+	    }
+	}
+#endif
 	rcu_read_unlock();
 	return ret;
 }

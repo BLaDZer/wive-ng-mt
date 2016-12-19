@@ -1347,18 +1347,18 @@ skip_alg_of:
 	    * software nat offload path send pkts to fastnat if adress changed (nat)
 	    */
 	    if (skip_offload == SKIP_NO) {
-		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP) && !FASTNAT_DENY(skb))
+		if (hooknum == NF_INET_PRE_ROUTING && (FASTNAT_ESTABLISHED(ctinfo) || protonum == IPPROTO_UDP) && FASTNAT(skb))
 		    ret = bcm_do_fastnat(ct, ctinfo, skb, l3proto, l4proto);
 	    } else {																	/* skip SW */
-		FASTNAT_DENY(skb) = 1;
+		FASTNAT_DENY(skb);
 	    }
 	}
 
 #endif
 	if (set_reply && !test_and_set_bit(IPS_SEEN_REPLY_BIT, &ct->status)) {
 #if defined(CONFIG_BCM_NAT)
-	    if (nf_conntrack_fastnat && pf == PF_INET && hooknum == NF_INET_LOCAL_OUT)
-		FASTNAT_DENY(skb) = 1;
+	    if (nf_conntrack_fastnat && hooknum == NF_INET_LOCAL_OUT) /* all local output deny for fastnat */
+		FASTNAT_DENY(skb);
 #endif
 		nf_conntrack_event_cache(IPCT_REPLY, ct);
 	}

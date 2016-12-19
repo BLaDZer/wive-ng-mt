@@ -285,16 +285,15 @@ int ip_local_deliver(struct sk_buff *skb)
 #endif
 	FOE_ALG_MARK(skb);
 #endif
+#if defined(CONFIG_NETFILTER_FP_SMB)
+	if ((skb->nf_fp_cache & NF_FP_CACHE_SMB) || nf_fp_smb_hook_in(skb))
+		return ip_local_deliver_finish(skb);
+#endif
 #if defined(CONFIG_BCM_NAT)
 	if(FASTROUTE(skb)) {
 	    FASTROUTE(skb) = 0;
 	    return ip_local_deliver_finish(skb);
 	}
-#endif
-
-#if defined(CONFIG_NETFILTER_FP_SMB)
-	if ((skb->nf_fp_cache & NF_FP_CACHE_SMB) || nf_fp_smb_hook_in(skb))
-		return ip_local_deliver_finish(skb);
 #endif
 
 	return NF_HOOK(NFPROTO_IPV4, NF_INET_LOCAL_IN, skb, skb->dev, NULL,
