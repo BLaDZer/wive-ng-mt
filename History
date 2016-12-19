@@ -2676,7 +2676,8 @@
 50) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
 51) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
 52) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
-53) kernel: cls_cgroup: Allow classifier cgroups to have their classid reset to 0.<br>
+53) kernel: cls_cgroup: allow classifier cgroups to have their classid reset to 0.<br>
+54) kernel: cgroup: net_cls: move sock_update_classid() declaration to cls_cgroup.h.<br>
 <br>
 <br>
 <br>
