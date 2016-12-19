@@ -2629,50 +2629,51 @@
 3) busybox: apply post busybox-1.25.1-setfiles.patch.<br>
 4) nodogsplash: up to version 2.0.0 (commit: 2731ffc9).<br>
 5) nodogsplash: rework basic splashpage.<br>
-6) coovachilli: up to 1.3.2 from git (commit 132d92b6).<br>
+6) coovachilli: up to 1.4 from git (commit 261659f6).<br>
 7) coovachilli: use sslredir if prebuilded or uploaded CA keys exist in /etc/certs.<br>
 8) coovachilli: decrease chilli_lease to 4min (save mem and sync with default silence time in wifi).<br>
 9) netcwmpd: use prebuilded/uploaded CA cert from /etc/certs by default.<br>
 10) netcwmpd: add support last version of D-Link ACS (1.1.5).<br>
-11) irqbalance: update to 05.12.2016 git version (commit af39d140).<br>
-12) libpcap: up to 1.8.1 version.<br>
-13) tcpdump: up to 4.8.1 version.<br>
-14) libnfnetlink: sync local header with kernel headers.<br>
-15) igmpproxy: try fix timeouted req with big size mac table in switch.<br>
-16) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
-17) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
-18) init.d: iptables: add support redirect all DNS requests to local dns proxy.<br>
-19) init.d: kext: allow use skip filters and route fastpath in nodogsplash mode (after last kernel fastpaths fix).<br>
-20) goahead: update profile for hotspotsystem.com.<br>
-21) goahead: rework chillispot page.<br>
-22) goahead: add profiles for google/sky/open/yandex dns services in static mode.<br>
-23) goahead: rework reboot counter.<br>
-24) kernel: linux/types.h: enable endian checks for all sparse builds.<br>
-25) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
-26) kernel: block: ioc_task_link() can't fail.<br>
-27) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
-28) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
-29) kernel: fork: remove the weak insanity.<br>
-30) kernel: fork: move thread info gfp flags to header.<br>
-31) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
-32) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
-33) kernel: fork: report pid reservation failure properly.<br>
-34) kernel: net: cleanups in sock_setsockopt().<br>
-35) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
-36) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-37) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-38) kernel: net: packet: fix race condition in packet_set_ring.<br>
-39) kernel: net: bridge: set error code on failure.<br>
-40) kernel: net: set skb->protocol properly for local output.<br>
-41) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
-42) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
-43) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
-44) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
-45) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
-46) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-47) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-48) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-49) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+11) netcwmpd: increase poll size (upstream patch).
+12) irqbalance: update to 05.12.2016 git version (commit af39d140).<br>
+13) libpcap: up to 1.8.1 version.<br>
+14) tcpdump: up to 4.8.1 version.<br>
+15) libnfnetlink: sync local header with kernel headers.<br>
+16) igmpproxy: try fix timeouted req with big size mac table in switch.<br>
+17) init.d: move isolated mode and chilli_dnsparanoia for chillispot to nvram.<br>
+18) init.d: iptables: use xt_coova only for tcp/udp traffic (fix icmp issue).<br>
+19) init.d: iptables: add support redirect all DNS requests to local dns proxy.<br>
+20) init.d: kext: allow use skip filters and route fastpath in nodogsplash mode (after last kernel fastpaths fix).<br>
+21) goahead: update profile for hotspotsystem.com.<br>
+22) goahead: rework chillispot page.<br>
+23) goahead: add profiles for google/sky/open/yandex dns services in static mode.<br>
+24) goahead: rework reboot counter.<br>
+25) kernel: linux/types.h: enable endian checks for all sparse builds.<br>
+26) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
+27) kernel: block: ioc_task_link() can't fail.<br>
+28) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
+29) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
+30) kernel: fork: remove the weak insanity.<br>
+31) kernel: fork: move thread info gfp flags to header.<br>
+32) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
+33) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
+34) kernel: fork: report pid reservation failure properly.<br>
+35) kernel: net: cleanups in sock_setsockopt().<br>
+36) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
+37) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+38) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+39) kernel: net: packet: fix race condition in packet_set_ring.<br>
+40) kernel: net: bridge: set error code on failure.<br>
+41) kernel: net: set skb->protocol properly for local output.<br>
+42) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
+43) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
+44) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
+45) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
+46) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
+47) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+48) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+49) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+50) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 <br>
 <br>
 <br>
