@@ -2251,7 +2251,8 @@ typedef	union GNU_PACKED _TX_STA_FIFO_STRUC	{
 #ifdef RT_BIG_ENDIAN
 typedef	union GNU_PACKED _TX_STA_FIFO_EXT_STRUC	{
 	struct	{
-		UINT32		Reserve:24;
+		UINT32		Reserve:16;
+		UINT32		pkt_id_65xx:8; /* pkt_id when run as rt65xx based chips */
 		UINT32		txRtyCnt:8;   /* frame Tx retry cnt */
 	}	field;
 	UINT32			word;
@@ -2260,7 +2261,8 @@ typedef	union GNU_PACKED _TX_STA_FIFO_EXT_STRUC	{
 typedef	union GNU_PACKED _TX_STA_FIFO_EXT_STRUC	{
 	struct	{
 		UINT32		txRtyCnt:8;   /* frame Tx retry cnt */
-		UINT32		Reserve:24;
+		UINT32		pkt_id_65xx:8;
+		UINT32		Reserve:16;
 	}	field;
 	UINT32			word;
 }	TX_STA_FIFO_EXT_STRUC, *PTX_STA_FIFO_EXT_STRUC;

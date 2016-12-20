@@ -2344,7 +2344,12 @@ VOID NICUpdateFifoStaCounters(
 			}
 
 			/* PID store Tx MCS Rate */
-			pid = (UCHAR)StaFifo.field.PidType;
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+			if (IS_RT65XX(pAd))
+				pid = (UCHAR)StaFifoExt.field.pkt_id_65xx;
+			else
+#endif /* FIFO_EXT_SUPPORT */
+				pid = (UCHAR)StaFifo.field.PidType;
 
 			pEntry = &pAd->MacTab.Content[wcid];
 

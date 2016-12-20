@@ -177,6 +177,11 @@ struct _RSSI_SAMPLE;
 #define IS_RT5592(_pAd)		(((_pAd)->MACVersion & 0xFFFF0000) == 0x55920000)
 #define REV_RT5592C 0x0221
 
+#define IS_RT65XX(_pAd)		((((_pAd)->MACVersion & 0xFFFF0000) == 0x65900000) ||\
+							 (((_pAd)->MACVersion & 0xfffff000) == 0x85592000) ||\
+							 (((_pAd)->MACVersion & 0xffff0000) == 0x76500000) ||\
+							 (((_pAd)->MACVersion & 0xffff0000) == 0x76620000))
+
 /* RT3592BC8 (WiFi + BT) */
 
 
