@@ -2681,6 +2681,7 @@
 55) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
 56) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 57) kernel: net: ipv6: ip6_tunnel: disable caching when the traffic class is inherited.<br>
+58) kernel: net: ipv6: check route protocol when deleting routes.<br>
 <br>
 <br>
 <br>
