@@ -1,25 +1,28 @@
 .EXPORT_ALL_VARIABLES:
 
-# extreme save memory
-CFLAGS    += -membedded-data -muninit-const-in-rodata
-CFLAGS    += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
-
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
 
+# extreme save memory
+CFLAGS    += -Os -fPIC -membedded-data -muninit-const-in-rodata
+#-ffunction-sections -fdata-sections
+CFLAGS    += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
+#LDFLAGS   += -ffunction-sections -fdata-sections -Wl,--gc-sections
+
+
 PWD	  := $(shell pwd)
 DIR	  := $(PWD)/coova-chilli-master
 
-
-CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --with-gnu-ld --with-poll --without-mmap --without-pcap --prefix=$(DIR)/filesystem
-CONFOPTS  += --disable-tap --disable-json --disable-miniportal --disable-miniconfig --disable-layer3
+CONFOPTS  := --host=mipsel-linux --enable-shared --disable-static --prefix=$(DIR)/filesystem
+CONFOPTS  += --with-gnu-ld --with-poll --without-mmap --without-pcap
+CONFOPTS  += --disable-tap --disable-json --disable-miniportal --disable-miniconfig --disable-layer3 --disable-wpad
 CONFOPTS  += --disable-ieee8021q --disable-multilan --disable-multiroute --disable-leakybucket
 CONFOPTS  += --enable-chilliproxy --enable-chilliredir --enable-chilliquery
-CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid
-CONFOPTS  += --enable-accounting-onoff --enable-redirdnsreq --enable-redirinject
+CONFOPTS  += --enable-sessionstate --enable-sessionid --enable-apsessionid --enable-location
+CONFOPTS  += --enable-accounting-onoff --enable-redirdnsreq --enable-forcedns --enable-redirinject
 CONFOPTS  += --enable-uamanyip --enable-uamuiport
-CONFOPTS  += --enable-dhcpopt --enable-location
+CONFOPTS  += --enable-dhcpopt --enable-dhcpradius
 
 # decrease mamory usage (with large limits only ~20 clients at 64Mb of ram work correct)
 CONFOPTS  += --disable-largelimits
