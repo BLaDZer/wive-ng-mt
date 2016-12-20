@@ -869,9 +869,9 @@ NDIS_STATUS MiniportMMRequest(RTMP_ADAPTER *pAd, UCHAR QueIdx, UCHAR *pData, UIN
 	ULONG IrqFlags = 0;
 	BOOLEAN bUseDataQ = FALSE;
 #endif /* RTMP_MAC_PCI */
-	BOOLEAN FlgDataQForce = FALSE, FlgIsLocked = FALSE;
+	BOOLEAN FlgDataQForce = FALSE, FlgIsLocked = FALSE, FlgIsCheckPS = FALSE;
 	int retryCnt = 0;
-	BOOLEAN			FlgIsCheckPS = FALSE;
+
 	ASSERT(Length <= MGMT_DMA_BUFFER_SIZE);
 
 	if ((QueIdx & MGMT_USE_QUEUE_FLAG) == MGMT_USE_QUEUE_FLAG)
@@ -897,12 +897,13 @@ NDIS_STATUS MiniportMMRequest(RTMP_ADAPTER *pAd, UCHAR QueIdx, UCHAR *pData, UIN
 	}
 #endif /* CONFIG_FPGA_MODE */
 #endif /* MT_PS */
-
+#ifdef CONFIG_HOTSPOT_R2
 	if ((QueIdx & MGMT_USE_PS_FLAG) == MGMT_USE_PS_FLAG)
 	{
 		FlgIsCheckPS = TRUE;
 		QueIdx &= (~MGMT_USE_PS_FLAG);
 	}
+#endif /* CONFIG_HOTSPOT_R2 */
 #ifdef RTMP_MAC_PCI
 	if (pAd->MACVersion == 0x28600100)
 	{

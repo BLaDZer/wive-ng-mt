@@ -194,7 +194,9 @@ typedef struct _UAPSD_INFO {
 /*+++Used for merge MiniportMMRequest() and MiniportDataMMRequest() into one function */
 #define MAX_DATAMM_RETRY	3
 #define MGMT_USE_QUEUE_FLAG	0x80
+#ifdef CONFIG_HOTSPOT_R2
 #define MGMT_USE_PS_FLAG	0x40
+#endif /* CONFIG_HOTSPOT_R2 */
 /*---Used for merge MiniportMMRequest() and MiniportDataMMRequest() into one function */
 /* The number of channels for per-channel Tx power offset */
 #ifdef CUSTOMER_DCC_FEATURE

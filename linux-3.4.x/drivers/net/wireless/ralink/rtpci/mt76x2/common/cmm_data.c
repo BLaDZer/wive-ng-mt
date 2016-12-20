@@ -335,7 +335,7 @@ NDIS_STATUS MiniportMMRequest(
 #ifdef RTMP_MAC_PCI
 	ULONG IrqFlags = 0;
 #endif /* RTMP_MAC_PCI */
-	BOOLEAN bUseDataQ = FALSE, FlgDataQForce = FALSE, FlgIsLocked = FALSE;
+	BOOLEAN bUseDataQ = FALSE, FlgDataQForce = FALSE, FlgIsLocked = FALSE, FlgIsCheckPS = FALSE;
 	int retryCnt = 0;
 #ifdef CUSTOMER_DCC_FEATURE
 #ifdef MBSS_802_11_STATISTICS
@@ -344,8 +344,6 @@ NDIS_STATUS MiniportMMRequest(
 	MAC_TABLE_ENTRY *pEntry = NULL;
 #endif // MBSS_802_11_STATISTICS //
 #endif
-	BOOLEAN FlgIsCheckPS = FALSE;
-
 	ASSERT(Length <= MGMT_DMA_BUFFER_SIZE);
 
 	if ((QueIdx & MGMT_USE_QUEUE_FLAG) == MGMT_USE_QUEUE_FLAG)
@@ -367,18 +365,19 @@ NDIS_STATUS MiniportMMRequest(
 		//bUseDataQ = TRUE;
 	}
 #endif /* CONFIG_FPGA_MODE */
+#ifdef CONFIG_HOTSPOT_R2
 	if ((QueIdx & MGMT_USE_PS_FLAG) == MGMT_USE_PS_FLAG)
 	{
 		FlgIsCheckPS = TRUE;
 		QueIdx &= (~MGMT_USE_PS_FLAG);
 	}
-
+#endif /* CONFIG_HOTSPOT_R2 */
 #ifdef RTMP_MAC_PCI
 	if (pAd->MACVersion == 0x28600100)
 	{
 		/* do not care about the version */
-		QueIdx = (bUseDataQ ==TRUE ? QueIdx : 3);
-		bUseDataQ = TRUE;
+//		QueIdx = (bUseDataQ ==TRUE ? QueIdx : 3);
+//		bUseDataQ = TRUE;
 	}
 
 	if (bUseDataQ)

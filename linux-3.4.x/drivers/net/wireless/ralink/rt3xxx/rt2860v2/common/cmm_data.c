@@ -456,7 +456,7 @@ NDIS_STATUS MlmeHardTransmit(
 	if ((pHeader_802_11->FC.Type == BTYPE_DATA) ||
 		(pHeader_802_11->FC.Type == BTYPE_MGMT))
 	{
-		if (pHeader_802_11->FC.SubType != SUBTYPE_QOS_NULL)
+		if ((pHeader_802_11->FC.Type == BTYPE_MGMT) || (pHeader_802_11->FC.SubType != SUBTYPE_QOS_NULL))
 			pEntry = MacTableLookup(pAd, pHeader_802_11->Addr1);
 	}
 
