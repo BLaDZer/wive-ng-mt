@@ -130,10 +130,6 @@ config  MT7610_AP_MCAST_RATE_SPECIFIC
 #	bool "Header Translation Rx Support"
 #	depends on MT7610_AP
 
-#config  MT7610_AP_CSO
-#	bool "CSO/TSO Support"
-#	depends on MT7610_AP
-
 choice
 	prompt "Tx Power Compensation"
 	depends on MT7610_AP

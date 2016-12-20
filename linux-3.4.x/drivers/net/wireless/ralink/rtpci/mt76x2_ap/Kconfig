@@ -171,10 +171,6 @@ config  MT76X2_AP_NETIF_BLOCK
 #	bool "Header Translation Rx support"
 #	depends on MT76X2_AP
 
-#config  MT76X2_AP_CSO
-#	bool "Checksum offload (CSO) support"
-#	depends on MT76X2_AP
-
 config  MT76X2_AP_DELAYED_TCP_ACK
 	bool "Delayed TCP ACK support"
 	depends on MT76X2_AP

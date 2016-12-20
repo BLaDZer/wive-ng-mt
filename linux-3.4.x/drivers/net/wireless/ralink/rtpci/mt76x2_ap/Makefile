@@ -226,10 +226,6 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_txbf.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_txbf_cal.o
 endif
 
-ifeq ($(CONFIG_MT76X2_AP_CSO),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/naf/net_acc.o
-endif
-
 ifeq ($(CONFIG_MT76X2_AP_VIDEO_TURBINE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_video.o
 endif
@@ -508,10 +504,6 @@ endif
 
 ifeq ($(CONFIG_MT76X2_AP_HDR_TRANS),y)
 EXTRA_CFLAGS += -DHDR_TRANS_SUPPORT
-endif
-
-ifeq ($(CONFIG_MT76X2_AP_CSO),y)
-EXTRA_CFLAGS += -DCONFIG_CSO_SUPPORT -DCONFIG_TSO_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_DELAYED_TCP_ACK),y)

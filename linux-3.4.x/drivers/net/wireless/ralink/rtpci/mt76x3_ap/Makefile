@@ -185,10 +185,6 @@ ifeq ($(CONFIG_MT76X3_AP_NETIF_BLOCK),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/netif_block.o
 endif
 
-ifeq ($(CONFIG_MT76X3_AP_CSO),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/naf/net_acc.o
-endif
-
 ifeq ($(CONFIG_MT76X3_AP_VIDEO_TURBINE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_video.o
 endif
@@ -421,10 +417,6 @@ endif
 
 ifeq ($(CONFIG_MT76X3_AP_HDR_TRANS),y)
 EXTRA_CFLAGS += -DHDR_TRANS_SUPPORT
-endif
-
-ifeq ($(CONFIG_MT76X3_AP_CSO),y)
-EXTRA_CFLAGS += -DCONFIG_CSO_SUPPORT -DCONFIG_TSO_SUPPORT
 endif
 
 ifeq ($(CONFIG_BAND_STEERING),y)

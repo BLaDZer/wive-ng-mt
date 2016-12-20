@@ -164,11 +164,6 @@ config MT76X3_AP_DELAYED_TCP_ACK
 #	depends on MT76X3_AP
 #	default n
 
-#config MT76X3_AP_CSO
-#	bool "Checksum offload (CSO) support"
-#	depends on MT76X3_AP
-#	default n
-
 config MT76X3_AP_NETIF_BLOCK
 	bool "NETIF Block"
 	depends on MT76X3_AP
