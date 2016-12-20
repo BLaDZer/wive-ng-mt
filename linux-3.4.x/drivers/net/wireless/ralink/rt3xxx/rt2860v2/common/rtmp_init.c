@@ -2298,7 +2298,7 @@ VOID NICUpdateFifoStaCounters(
 	TX_STA_FIFO_STRUC	StaFifo;
 #if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 	TX_STA_FIFO_EXT_STRUC	StaFifoExt;
-#endif
+#endif /* FIFO_EXT_SUPPORT */
 	MAC_TABLE_ENTRY		*pEntry = NULL;
 	UINT32				i = 0;
 	UCHAR				pid = 0, wcid = 0;

@@ -655,9 +655,6 @@ struct _RTMP_CHIP_CAP_ {
 	BOOLEAN FlgHwFifoExtCap;
 #endif /* FIFO_EXT_SUPPORT */
 
-#ifdef RTMP_MAC_PCI
-#endif /* RTMP_MAC_PCI */
-
 	enum ASIC_CAP asic_caps;
 	enum PHY_CAP phy_caps;
 	

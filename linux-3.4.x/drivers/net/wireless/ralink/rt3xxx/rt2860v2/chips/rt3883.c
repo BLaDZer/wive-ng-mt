@@ -2155,7 +2155,7 @@ VOID RT3883_Init(
 	pChipCap->FlgHwTxBfCap = TRUE;
 #endif /* TXBF_SUPPORT */
 #ifdef FIFO_EXT_SUPPORT
-	pChipCap->FlgHwFifoExtCap = TRUE;
+	pChipCap->FlgHwFifoExtCap = FALSE; /* orig TRUE, this incomplete in this driver version, fix after 3.4.x.x */
 #endif /* FIFO_EXT_SUPPORT */
 
 	pChipCap->RfReg17WtMethod= RF_REG_WT_METHOD_STEP_ON;

@@ -137,8 +137,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 
 #ifdef FIFO_EXT_SUPPORT
-			if (pAd->chipCap.FlgHwFifoExtCap)
-			{
+		if (pAd->chipCap.FlgHwFifoExtCap)
+		{
 				if (NicGetMacFifoTxCnt(pAd, pEntry))
 				{
 					ULONG 	HwTxCnt, HwErrRatio;
@@ -162,7 +162,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 
 					ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 				}
-			}
+		}
 #endif /* FIFO_EXT_SUPPORT */
 
 		/* Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
@@ -562,10 +562,10 @@ VOID APQuickResponeForRateUpExec(
 		}
 
 #ifdef FIFO_EXT_SUPPORT
-			if (pAd->chipCap.FlgHwFifoExtCap)
+		if (pAd->chipCap.FlgHwFifoExtCap)
+		{
+			if (NicGetMacFifoTxCnt(pAd, pEntry))
 			{
-				if (NicGetMacFifoTxCnt(pAd, pEntry))
-				{
 					ULONG	HwTxCnt, HwErrRatio;
 
 					HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
@@ -585,8 +585,8 @@ VOID APQuickResponeForRateUpExec(
 					TxCnt = HwTxCnt;
 
 					ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
-				}
 			}
+		}
 #endif /* FIFO_EXT_SUPPORT */
 
 #ifdef THERMAL_PROTECT_SUPPORT

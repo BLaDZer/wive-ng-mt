@@ -139,6 +139,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 
 #ifdef FIFO_EXT_SUPPORT
+		    if (pAd->chipCap.FlgHwFifoExtCap)
+		    {
 			if (pEntry->Aid >= 1 && pEntry->Aid <= 8)
 			{
 				ULONG 	HwTxCnt, HwErrRatio;
@@ -161,6 +163,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 				TxTotalCnt = HwTxCnt;
 				TxErrorRatio = HwErrRatio;
 			}
+		    }
 #endif /* FIFO_EXT_SUPPORT */
 		}
 
@@ -543,8 +546,10 @@ VOID APQuickResponeForRateUpExec(
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 
 #ifdef FIFO_EXT_SUPPORT
-			if ((pEntry->Aid >= 1) && (pEntry->Aid <= 8))
+			if (pAd->chipCap.FlgHwFifoExtCap)
 			{
+			    if ((pEntry->Aid >= 1) && (pEntry->Aid <= 8))
+			    {
 				ULONG	HwTxCnt, HwErrRatio;
 
 				NicGetMacFifoTxCnt(pAd, pEntry);
@@ -563,6 +568,7 @@ VOID APQuickResponeForRateUpExec(
 				TxErrorRatio = HwErrRatio;
 				TxTotalCnt = HwTxCnt;
 				TxCnt = HwTxCnt;
+			    }
 			}
 #endif /* FIFO_EXT_SUPPORT */
 		}

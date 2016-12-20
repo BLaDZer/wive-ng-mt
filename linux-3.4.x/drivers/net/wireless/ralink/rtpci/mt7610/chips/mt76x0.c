@@ -3413,7 +3413,7 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 	pChipCap->FlgHwTxBfCap = FALSE;
 #endif /* TXBF_SUPPORT */
 #ifdef FIFO_EXT_SUPPORT
-	pChipCap->FlgHwFifoExtCap = TRUE;
+	pChipCap->FlgHwFifoExtCap = FALSE; /* orig TRUE, this incomplete in this driver version, fix after 3.4.x.x */
 #endif /* FIFO_EXT_SUPPORT */
 
 

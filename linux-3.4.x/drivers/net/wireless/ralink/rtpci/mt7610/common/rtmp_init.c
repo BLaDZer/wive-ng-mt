@@ -1787,8 +1787,8 @@ VOID NICUpdateFifoStaCounters(
 	IN PRTMP_ADAPTER pAd)
 {
 	TX_STA_FIFO_STRUC	StaFifo;
-#ifdef FIFO_EXT_SUPPORT
-	TX_STA_FIFO_EXT_STRUC StaFifoExt;
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+	TX_STA_FIFO_EXT_STRUC	StaFifoExt;
 #endif /* FIFO_EXT_SUPPORT */
 	MAC_TABLE_ENTRY		*pEntry = NULL;
 	UINT32				i = 0;
@@ -1803,16 +1803,13 @@ VOID NICUpdateFifoStaCounters(
 		return;
 #endif /* RALINK_ATE */
 
-
-
-
 #ifdef MAC_REPEATER_SUPPORT
 	MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
 #endif /* MAC_REPEATER_SUPPORT */
 
 		do
 		{
-#ifdef FIFO_EXT_SUPPORT
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 			if (IS_RT65XX(pAd)) {
 				RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
 			}
@@ -1840,7 +1837,7 @@ VOID NICUpdateFifoStaCounters(
 			}
 
 			/* PID store Tx MCS Rate */
-#ifdef FIFO_EXT_SUPPORT
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 			if (IS_RT65XX(pAd))
 				pid = (UCHAR)StaFifoExt.field.pkt_id_65xx;
 			else
@@ -1922,7 +1919,7 @@ VOID NICUpdateFifoStaCounters(
 					//pEntry->NoBADataCountDown = 64;
 
 					/* Update the continuous transmission counter.*/
-#if defined (FIFO_EXT_SUPPORT)
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 					if (StaFifoExt.field.txRtyCnt > 0) {
 					    /* limit incriment by fifo */
 					    if (StaFifoExt.field.txRtyCnt > pAd->ApCfg.EntryLifeCheck / 8)
