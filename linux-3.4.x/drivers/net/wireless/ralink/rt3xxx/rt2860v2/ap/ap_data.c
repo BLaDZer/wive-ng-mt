@@ -1615,6 +1615,9 @@ VOID AP_AMPDU_Frame_Tx(
 	{
 		RTMPWriteTxWI_Data(pAd, (PTXWI_STRUC)(&pTxBlk->HeaderBuf[TXINFO_SIZE]), pTxBlk);
 
+		if (RTMP_GET_PACKET_LOWRATE(pTxBlk->pPacket))
+			pMacEntry->isCached = FALSE;
+
 		NdisZeroMemory((PUCHAR)(&pMacEntry->CachedBuf[0]), sizeof(pMacEntry->CachedBuf));
 		NdisMoveMemory((PUCHAR)(&pMacEntry->CachedBuf[0]), 
 						(PUCHAR)(&pTxBlk->HeaderBuf[TXINFO_SIZE]), 
