@@ -1237,8 +1237,8 @@ typedef union _REG_TRANSMIT_SETTING {
 typedef union _DESIRED_TRANSMIT_SETTING {
 #ifdef RT_BIG_ENDIAN
 	struct {
-		USHORT rsv:3;
-		USHORT FixedTxMode:2;	/* If MCS isn't AUTO, fix rate in CCK, OFDM or HT mode. */
+		USHORT rsv:2;
+		USHORT FixedTxMode:3;	/* If MCS isn't AUTO, fix rate in CCK, OFDM or HT mode. */
 		USHORT PhyMode:4;
 		USHORT MCS:7;	/* MCS */
 	} field;
@@ -1246,8 +1246,8 @@ typedef union _DESIRED_TRANSMIT_SETTING {
 	struct {
 		USHORT MCS:7;	/* MCS */
 		USHORT PhyMode:4;
-		USHORT FixedTxMode:2;	/* If MCS isn't AUTO, fix rate in CCK, OFDM or HT mode. */
-		USHORT rsv:3;
+		USHORT FixedTxMode:3;	/* If MCS isn't AUTO, fix rate in CCK, OFDM or HT mode. */
+		USHORT rsv:2;
 	} field;
 #endif
 	USHORT word;
