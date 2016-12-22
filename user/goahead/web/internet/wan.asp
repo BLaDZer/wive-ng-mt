@@ -183,12 +183,12 @@
 				form.wan_mtu.value = +form.wan_mtu.value + "";
 				if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>") {
 					if (!ajaxPostForm(_('wan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
-						ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 						form.reboot.value = "0";
 					}
 				}
 				else {
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 					form.reboot.value = "0";
 				}
 				return true;
@@ -416,7 +416,7 @@
 						<tr>
 							<td><input type="submit" class="normal" value="Apply" id="wApply">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form);">
+								<input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
 								<input type="hidden" value="1" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>

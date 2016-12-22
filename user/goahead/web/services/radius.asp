@@ -19,10 +19,8 @@
 
 			var users = [ <% getRadiusUserList(); %> ];		// Login/pass list
 
-
 			// Set translation
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("radiusServerTitle",		"services radius title");
 				_TR("radiusServerIntroduction",	"services radius introduction");
 				_TR("radiusServerSettings",		"services radius settings");
@@ -37,8 +35,7 @@
 			}
 
 			// Set inintal values
-			function initValues()
-			{
+			function initValues() {
 				document.getElementById('radius_srv_enabled').value = ('<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '1') ? 1 : 0;
 				document.getElementById('radius_srv_secret').value = '<% getCfgGeneral(1, "radius_srv_secret"); %>';
 				radiusEnableSwitch();
@@ -49,8 +46,7 @@
 			}
 
 			// Check values
-			function CheckValues()
-			{
+			function CheckValues() {
 				if (document.getElementById('radius_srv_enabled').value == 1) {
 					var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 					if (!re_pass.test(document.getElementById('radius_srv_secret').value)) {
@@ -59,13 +55,18 @@
 						document.getElementById('radius_srv_secret').focus();
 						return false;
 					}
+					// Check Users
+					if (users.length == 0) {
+						alert(_("services need users"));
+						document.getElementById('radiusLogin').focus();
+						return false;
+					}
 				}
 				ajaxShowTimer(document.radiusConfig, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
-			function genRadiusTable()
-			{
+			function genRadiusTable() {
 				var table, i;
 
 				table  = '<table class="form">';
@@ -94,8 +95,7 @@
 			}
 
 			// Add user/password
-			function addUser()
-			{
+			function addUser() {
 				var index	= document.getElementById('radiusEdit').value;
 				var login	= document.getElementById('radiusLogin').value;
 				var pass	= document.getElementById('radiusPass').value;
@@ -139,30 +139,26 @@
 			}
 
 			// Delete user/password
-			function deleteUser(index)
-			{
+			function deleteUser(index) {
 				users.splice(index, 1);
 				genRadiusTable();
 			}
 
 			// Edit user/password
-			function editUser(index)
-			{
+			function editUser(index) {
 				document.getElementById('radiusLogin').value		= users[index][0];
 				document.getElementById('radiusPass').value	= users[index][1];
 				document.getElementById('radiusEdit').value		= index;
 			}
 
 			// Show/hide radius settings
-			function radiusEnableSwitch()
-			{
+			function radiusEnableSwitch() {
 				displayElement([ 'radiusSharedSecret_tr', 'radiusUserList' ], document.getElementById('radius_srv_enabled').value == 1);
 				genRadiusTable();
 			}
 
 			// Display server status
-			function displayServiceHandler(response)
-			{
+			function displayServiceHandler(response) {
 				var daemons = response.split(',');
 
 				if ('<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '0' || '<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '')
@@ -176,8 +172,7 @@
 			}
 
 			// Get server status
-			function displayServiceStatus()
-			{
+			function displayServiceStatus() {
 				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 			}
 		</script>

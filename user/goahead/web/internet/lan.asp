@@ -16,11 +16,14 @@
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
+			Butterlate.setTextDomain("services");
 
 			var opMode		= '<% getCfgZero(1, "OperationMode"); %>';
 			var hostname		= '<% getCfgGeneral(1, "HostName"); %>';
 			var wanIp		= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
 			var gateway		= '<% getCfgGeneral(1, "wan_gateway"); %>';
+			var dnsProfile		= '<% getCfgGeneral(1, "wan_static_dns_profile"); %>';
+			var dnsProfileYandex	= '<% getCfgGeneral(1, "wan_static_dns_profile_yandex"); %>';
 			var dnsPrimary		= '<% getDns(1); %>';
 			var dnsSecondary	= '<% getDns(2); %>';
 			var lanIp		= '<% getLanIp(); %>';
@@ -30,8 +33,7 @@
 			var dhcpEnd		= '<% getCfgGeneral(1, "dhcpEnd"); %>';
 			var dhcpGateway		= '<% getCfgGeneral(1, "dhcpGateway"); %>';
 
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("lTitle",			"lan title");
 				_TR("lIntroduction",	"lan introduction");
 				_TR("lSetup",			"lan setup");
@@ -43,13 +45,22 @@
 				_TR("lNetmask",			"inet netmask");
 				_TR("lEnable",			"button enable");
 				_TR("lDisable",			"button disable");
+				_TR("wStaticDnsProfile",	"inet dns profile");
+				_TR("dnsProfileManual",		"inet dns profile manual");
+				_TR("dnsProfileGoogle",		"inet dns profile google");
+				_TR("dnsProfileYandex",		"inet dns profile yandex");
+				_TR("dnsProfileSky",		"inet dns profile sky");
+				_TR("dnsProfileOpen",		"inet dns profile open");
+				_TR("wStaticDnsYandexProfile",	"inet dns profile yandex title");
+				_TR("dnsProfileYandexBasic",	"inet dns profile yandex basic");
+				_TR("dnsProfileYandexSafe",	"inet dns profile yandex safe");
+				_TR("dnsProfileYandexFamily",	"inet dns profile yandex family");
 				_TRV("lApply",			"button apply");
 				_TRV("lCancel",			"button cancel");
 				_TRV("lReset",			"button reset");
 			}
 
-			function initValues()
-			{
+			function initValues() {
 				var form = document.lanCfg;
 
 				form.hostname.value	= hostname;
@@ -61,29 +72,29 @@
 				form.dhcpStart.value	= dhcpStart;
 				form.dhcpEnd.value	= dhcpEnd;
 				form.dhcpGateway.value	= dhcpGateway;
+				form.wStaticDnsProfile.value		= (dnsProfile == '') ? 'manual' : dnsProfile;
+				form.wStaticDnsYandexProfile.value	= (dnsProfileYandex == '') ? 'basic' : dnsProfileYandex;
 
-				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns' ], opMode == "0" );
+				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile' ], opMode == "0" );
 
+				dnsSwitchClick(form);
 				showWarning();
 				initTranslation();
 			}
 
-			function checkValues(form) 
-			{
+			function checkValues(form) {
 				var dhcp_edit = 0;
-				
+
 				if ((form.hostname.value == "") || (form.hostname.value.match(/[^A-Z0-9_-]/gi))) {
 					alert(_("inet hostname wrong"));
 					form.hostname.focus();
 					return false;
 				}
-				if (!validateIP(form.lanIp, true))
-				{
+				if (!validateIP(form.lanIp, true)) {
 					form.lanIp.focus();
 					return false;
 				}
-				if (!validateIPMask(form.lanNetmask, true))
-				{
+				if (!validateIPMask(form.lanNetmask, true)) {
 					form.lanNetmask.focus();
 					return false;
 				}
@@ -93,7 +104,7 @@
 					return false;
 				}
 				if (opMode == "0") {
-					if (!validateIP(form.lanGateway, true))	{
+					if (!validateIP(form.lanGateway, true)) {
 						form.lanGateway.focus();
 						return false;
 					}
@@ -136,6 +147,48 @@
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return false;
 			}
+
+			function dnsSwitchClick(form) {
+				displayElement(['brPriDns', 'brSecDns'],	opMode == '0' && form.wStaticDnsProfile.value == 'manual');
+				displayElement('staticDNSyandexProfile',	opMode == '0' && form.wStaticDnsProfile.value == 'yandex');
+				document.getElementById('wStaticDnsProfile_learne').innerHTML = '';
+				switch (form.wStaticDnsProfile.value) {
+					case 'google':
+										form.lanPriDns.value = '8.8.8.8';
+										form.lanSecDns.value = '8.8.4.4';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://developers.google.com/speed/public-dns/" target="_blank">' + _('services status about') + '</a>';
+										break;
+
+					case 'yandex':		switch (form.wStaticDnsYandexProfile.value) {
+											case 'basic':
+															form.lanPriDns.value = '77.88.8.8';
+															form.lanSecDns.value = '77.88.8.1';
+															break;
+											case 'safe':
+															form.lanPriDns.value = '77.88.8.88';
+															form.lanSecDns.value = '77.88.8.2';
+															break;
+											case 'family':
+															form.lanPriDns.value = '77.88.8.7';
+															form.lanSecDns.value = '77.88.8.3';
+															break;
+										}
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://dns.yandex.ru/" target="_blank">' + _('services status about') + '</a>';
+										break;
+
+					case 'sky':
+										form.lanPriDns.value = '193.58.251.251';
+										form.lanSecDns.value = '';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.skydns.ru/" target="_blank">' + _('services status about') + '</a>';
+										break;
+					case 'open':
+										form.lanPriDns.value = '208.67.222.123';
+										form.lanSecDns.value = '208.67.220.123';
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.opendns.com/home-internet-security/" target="_blank">' + _('services status about') + '</a>';
+										break;
+				}
+			}
+
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -166,6 +219,30 @@
 						<tr id="brGateway">
 							<td class="head" id="lGateway" style="width: 40%">Default Gateway</td>
 							<td style="width: 60%"><input name="lanGateway" class="mid" maxlength="15"></td>
+						</tr>
+						<tr id="staticDNSprofile">
+							<td class="head" id="wStaticDnsProfile">DNS Profile</td>
+							<td><div style="float: left">
+								<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<option id="dnsProfileManual" value="manual">Manual</option>
+									<option id="dnsProfileGoogle" value="google">Google DNS</option>
+									<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
+									<option id="dnsProfileSky" value="sky">Sky DNS</option>
+									<option id="dnsProfileOpen" value="open">Open DNS</option>
+								</select>
+								</div>
+								<div id="wStaticDnsProfile_learne" style="float: left; margin: 3px 10px"></div>
+							</td>
+						</tr>
+						<tr id="staticDNSyandexProfile">
+							<td class="head" id="wStaticDnsYandexProfile">Yandex Profile</td>
+							<td>
+								<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<option id="dnsProfileYandexBasic" value="basic">Basic</option>
+									<option id="dnsProfileYandexSafe" value="safe">Safe</option>
+									<option id="dnsProfileYandexFamily" value="family">Family</option>
+								</select>
+							</td>
 						</tr>
 						<tr id="brPriDns">
 							<td class="head" id="lPriDns" style="width: 40%">Primary DNS Server</td>

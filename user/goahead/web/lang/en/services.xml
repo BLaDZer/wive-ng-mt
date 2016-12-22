@@ -82,6 +82,7 @@
 	<message msgid="services radius uncorrect pass"			msgstr="Please specify correct password (spaces and dollar symbol are disallowed)." />
 	<message msgid="services radius exist login"			msgstr="Login already exist" />
 
+	<message msgid="services need users"				msgstr="It is necessary to add at least one user!" />
 	<message msgid="services cwmp title"				msgstr="CWMP (TR-069) Setup" />
 	<message msgid="services cwmp introduction"			msgstr="Here you can configure CWMP (TR-069) settings." />
 	<message msgid="services cwmp settings"				msgstr="CWMP (TR-069) Settings" />

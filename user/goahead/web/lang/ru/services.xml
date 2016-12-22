@@ -45,6 +45,7 @@
   <message msgid="services account settings" msgstr="Настройки учета трафика" />
   <message msgid="services account ipt" msgstr="Учет трафика" />
 
+	<message msgid="services need users"				msgstr="Необходимо добавить по крайней мере одного пользователя" />
 	<message msgid="services l2tp title"				msgstr="Настройки сервера L2TP" />
 	<message msgid="services l2tp introduction"			msgstr="Здесть вы можете настроить сервер L2TP." />
 	<message msgid="services l2tp config"				msgstr="Настройки сервера L2TP" />

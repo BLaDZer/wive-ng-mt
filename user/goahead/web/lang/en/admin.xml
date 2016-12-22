@@ -68,7 +68,7 @@
     <message msgid="statistic memory and cpu"		msgstr="Memory and CPU status" />
     <message msgid="statistic memory total"			msgstr="Memory total" />
     <message msgid="statistic memory left"			msgstr="Memory left" />
-	<message msgid="statistic memory mb"			msgstr=" MB" />	
+    <message msgid="statistic memory kib"			msgstr=" KiB" />
     <message msgid="statistic cpu usage"			msgstr="CPU usage" />
     <message msgid="statistic all interface"		msgstr="Network interfaces statistic" />
     <message msgid="statistic interface name"		msgstr="Interface name" />

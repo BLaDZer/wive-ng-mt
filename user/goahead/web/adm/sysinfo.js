@@ -22,8 +22,8 @@ document.getElementById('statusLANMAC_value').innerHTML			= '<% getLanMac(); %>'
 var mem_total	= '<% getMemTotalASP(); %>';
 var mem_free	= '<% getMemLeftASP(); %>';
 
-document.getElementById('statisticMMTotal_value').innerHTML		= (+mem_total / 1000).toFixed(0) + _("statistic memory mb");
-document.getElementById('statisticMMLeft_value').innerHTML		= (+mem_free / 1000).toFixed(0) + _("statistic memory mb") + ' (' + (+mem_free / (+mem_total / 100)).toFixed(0) + '%)';
+document.getElementById('statisticMMTotal_value').innerHTML		= +mem_total + _("statistic memory kib");
+document.getElementById('statisticMMLeft_value').innerHTML		= +mem_free + _("statistic memory kib") + ' (' + (+mem_free / (+mem_total / 100)).toFixed(0) + '%)';
 document.getElementById('statisticCpuUse_value').innerHTML		= '<% getCpuUsageASP(); %>';
 
 displayElement('statusINTIPAddr_tr',	document.getElementById('statusINTIPAddr_value').innerHTML != document.getElementById('statusWANIPAddr_value').innerHTML);

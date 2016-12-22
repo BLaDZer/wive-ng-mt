@@ -67,7 +67,7 @@
     <message msgid="statistic memory and cpu"		msgstr="Состояние Памяти и Процессора" />
     <message msgid="statistic memory total"			msgstr="Всего памяти" />
     <message msgid="statistic memory left"			msgstr="Свободно памяти" />
-	<message msgid="statistic memory mb"			msgstr=" МБ" />
+    <message msgid="statistic memory kib"			msgstr=" КиБ" />
     <message msgid="statistic cpu usage"			msgstr="Использование процессора" />
     <message msgid="statistic all interface"		msgstr="Статистика сетевых интерфейсов" />
     <message msgid="statistic interface name"		msgstr="Имя интерфейса" />

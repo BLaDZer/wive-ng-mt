@@ -142,6 +142,13 @@
 						}
 						document.getElementById('l2tp_srv_mru_size').value = +document.getElementById('l2tp_srv_mru_size').value;
 					}
+
+					// Check Users
+					if (users.length == 0) {
+						alert(_("services need users"));
+						document.getElementById('l2tpLogin').focus();
+						return false;
+					}
 				}
 				ajaxShowTimer(document.l2tpConfig, 'timerReloader', _('message apply'), 15);
 				return true;
