@@ -2659,7 +2659,7 @@
 33) kernel: ralink_wifi: mt7620/mt7610: remove use ext fifo counters in rate_alg.<br>
 34) kernel: ralink_wifi: mt7610: fix unrequested LUT enable.<br>
 35) kernel: ralink_wifi: mt7610: fix read FixTxMode for VHT from reg.<br>
-36) kernel: ralink_wifi: mt7620: fix lost clean isCached flag at AMPDU fram TX.<br>
+36) kernel: ralink_wifi: mt7620: fix lost clean isCached flag at AMPDU frame TX.<br>
 37) kernel: mips: return -ENODEV from weak implementation of rtc_mips_set_time.<br>
 38) kernel: mips: ensure bss section ends on a long-aligned address.<br>
 39) kernel: mips: fix mem=X@Y commandline processing.<br>
