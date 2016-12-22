@@ -369,6 +369,7 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 #endif /* FPGA_MODE */
 
 #ifdef MCS_LUT_SUPPORT
+	pTxWI->TxWILutEn = 0;
 	if ((RTMP_TEST_MORE_FLAG(pAd, fASIC_CAP_MCS_LUT)) && 
 		(pTxWI->TxWIWirelessCliID < 128) && 
 		(pMacEntry && pMacEntry->bAutoTxRateSwitch == TRUE))
@@ -386,7 +387,6 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 		rate_ctrl.field.MCS = pTxWI->TxWIMCS; 
 		if (rate_ctrl.word == pTransmit->word)
 			pTxWI->TxWILutEn = 1;
-		pTxWI->TxWILutEn = 0;
 	}
 
 #ifdef PEER_DELBA_TX_ADAPT
@@ -599,6 +599,7 @@ VOID RTMPWriteTxWI_Cache(
 #endif /* FPGA_MODE */
 
 #ifdef MCS_LUT_SUPPORT
+	pTxWI->TxWILutEn = 0;
 	if (RTMP_TEST_MORE_FLAG(pAd, fASIC_CAP_MCS_LUT) && 
 		(pTxWI->TxWIWirelessCliID < 128) && 
 		(pMacEntry && pMacEntry->bAutoTxRateSwitch == TRUE))
@@ -616,7 +617,6 @@ VOID RTMPWriteTxWI_Cache(
 		rate_ctrl.field.MCS = pTxWI->TxWIMCS; 
 		if (rate_ctrl.word == pTransmit->word)
 			pTxWI->TxWILutEn = 1;
-		pTxWI->TxWILutEn = 0;
 	}
 
 #ifdef PEER_DELBA_TX_ADAPT
