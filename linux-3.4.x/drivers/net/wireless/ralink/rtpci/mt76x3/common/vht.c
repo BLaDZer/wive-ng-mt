@@ -586,6 +586,7 @@ INT build_vht_ies(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR frm)
 	INT len = 0;
 	EID_STRUCT eid_hdr;
 
+	NdisZeroMemory(&eid_hdr, sizeof(EID_STRUCT));
 
 	eid_hdr.Eid = IE_VHT_CAP;
 	eid_hdr.Len = sizeof(VHT_CAP_IE);

@@ -387,12 +387,13 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 				/*
 					MT7650E2 support VHT_MCS8 & VHT_MCS9.
 				*/
-				vht_op.basic_mcs_set.mcs_ss1 = pAd->CommonCfg.vht_max_mcs_cap;
+				vht_op.basic_mcs_set.mcs_ss1 = (((pAd->CommonCfg.vht_bw == VHT_BW_2040)
+					&& (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_20)) ? VHT_MCS_CAP_8 : VHT_MCS_CAP_9);
 			}
 			else
 #endif /* MT76x0 */
-			vht_op.basic_mcs_set.mcs_ss1 = VHT_MCS_CAP_7;
-			break;			
+				vht_op.basic_mcs_set.mcs_ss1 = VHT_MCS_CAP_7;
+			break;
 	}
 
 #ifdef RT_BIG_ENDIAN
@@ -549,6 +550,7 @@ INT build_vht_ies(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR frm, UCHAR VhtMaxMcsCap)
 	INT len = 0;
 	EID_STRUCT eid_hdr;
 
+        NdisZeroMemory(&eid_hdr, sizeof(EID_STRUCT));
 
 	eid_hdr.Eid = IE_VHT_CAP;
 	eid_hdr.Len = sizeof(VHT_CAP_IE);
