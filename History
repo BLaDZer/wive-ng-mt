@@ -2666,37 +2666,38 @@
 40) kernel: mips: init: ensure reserved memory regions are not added to bootmem.<br>
 41) kernel: mips: init: ensure bootmem does not corrupt reserved memory.<br>
 42) kernel: mips: c-r4k: treat physically indexed dcaches as not aliasing.<br>
-43) kernel: pci: fix devfn for VPD access through function 0.<br>
-44) kernel: pci: use function 0 VPD for identical functions, regular VPD for others.<br>
-45) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
-46) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
-47) kernel: fork: remove the weak insanity.<br>
-48) kernel: fork: move thread info gfp flags to header.<br>
-49) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
-50) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
-51) kernel: fork: report pid reservation failure properly.<br>
-52) kernel: net: cleanups in sock_setsockopt().<br>
-53) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
-54) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
-55) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
-56) kernel: net: packet: fix race condition in packet_set_ring.<br>
-57) kernel: net: bridge: set error code on failure.<br>
-58) kernel: net: set skb->protocol properly for local output.<br>
-59) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
-60) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
-61) kernel: net: sock: reorganize struct sock for decrease size and chache miss.<br>
-62) kernel: net: netfilter: ipv6: expand skb head in ip6_route_me_harder after oif change.<br>
-63) kernel: net: netfilter: ipv4/6: propagate routing errors from ip_route_me_harder().<br>
-64) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
-65) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
-66) kernel: net: fastpath: use switch case instead of multiple condition checks.<br>
-67) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
-68) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
-69) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
-70) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
-71) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
-72) kernel: net: ipv6: ip6_tunnel: disable caching when the traffic class is inherited.<br>
-73) kernel: net: ipv6: check route protocol when deleting routes.<br>
+43) kernel: mips: sc-mips: L2 cache is inclusive of L1 dcache for CM3.<br>
+44) kernel: pci: fix devfn for VPD access through function 0.<br>
+45) kernel: pci: use function 0 VPD for identical functions, regular VPD for others.<br>
+46) kernel: locking/rtmutex: prevent dequeue vs. unlock race.<br>
+47) kernel: locking/rtmutex: use READ_ONCE() in rt_mutex_owner().<br>
+48) kernel: fork: remove the weak insanity.<br>
+49) kernel: fork: move thread info gfp flags to header.<br>
+50) kernel: fork: move the real prepare_to_copy() users to arch_dup_task_struct().<br>
+51) kernel: fork: call complete_vfork_done() after clearing child_tid and flushing rss-counters.<br>
+52) kernel: fork: report pid reservation failure properly.<br>
+53) kernel: net: cleanups in sock_setsockopt().<br>
+54) kernel: net: set SK_MEM_QUANTUM to 4096.<br>
+55) kernel: net: avoid signed overflows for SO_{SND|RCV}BUFFORCE.<br>
+56) kernel: net: check segs for NULL in some cases (prevent potentional null pointer dereference).<br>
+57) kernel: net: packet: fix race condition in packet_set_ring.<br>
+58) kernel: net: bridge: set error code on failure.<br>
+59) kernel: net: set skb->protocol properly for local output.<br>
+60) kernel: net: socket: preferred __aligned(size) for control buffer.<br>
+61) kernel: net: sock: remove skb argument from sk_rcvqueues_full.<br>
+62) kernel: net: sock: reorganize struct sock for decrease size and chache miss.<br>
+63) kernel: net: netfilter: ipv6: expand skb head in ip6_route_me_harder after oif change.<br>
+64) kernel: net: netfilter: ipv4/6: propagate routing errors from ip_route_me_harder().<br>
+65) kernel: net: fastpath: use ip_route_input instead of noref version.<br>
+66) kernel: net: fastpath: fix work with IMQ/NF_QUEUE/SMB_FASTPATH.<br>
+67) kernel: net: fastpath: use switch case instead of multiple condition checks.<br>
+68) kernel: net: tcp: do not create inetpeer on SYNACK message.<br>
+69) kernel: net: tcp: warn on bogus MSS and try to amend it.<br>
+70) kernel: net: tcp: tcp_mtu_probe() is likely to exit early.<br>
+71) kernel: net: ipv6: set skb->protocol on tcp, raw and ip6_append_data genereated skbs.<br>
+72) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
+73) kernel: net: ipv6: ip6_tunnel: disable caching when the traffic class is inherited.<br>
+74) kernel: net: ipv6: check route protocol when deleting routes.<br>
 <br>
 <br>
 <br>
