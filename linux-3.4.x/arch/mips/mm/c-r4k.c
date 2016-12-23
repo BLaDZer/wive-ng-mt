@@ -391,6 +391,10 @@ static inline void local_r4k___flush_cache_all(void * args)
 	r4k_blast_dcache();
 	r4k_blast_icache();
 
+	/* Physically indexed caches don't suffer from virtual aliasing */
+	if (c->dcache.flags & MIPS_CACHE_PINDEX)
+		c->dcache.flags &= ~MIPS_CACHE_ALIASES;
+
 	switch (current_cpu_type()) {
 	case CPU_R4000SC:
 	case CPU_R4000MC:
