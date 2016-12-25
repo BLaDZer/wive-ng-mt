@@ -2699,6 +2699,7 @@
 73) kernel: net: ipv6: allow IPv4-mapped address as next-hop.<br>
 74) kernel: net: ipv6: ip6_tunnel: disable caching when the traffic class is inherited.<br>
 75) kernel: net: ipv6: check route protocol when deleting routes.<br>
+76) kernel: net: ipv6: protect protocols not handling ipv4 from v4 connection/bind attempts.<br>
 <br>
 <br>
 <br>
