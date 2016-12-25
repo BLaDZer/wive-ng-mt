@@ -530,12 +530,12 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 			ptr += 2; // skip len
 
 			if (pComCfg->RegTransmitSetting.field.BW == BW_40) {
-				WIDE_BW_CH_SWITCH_IE wb_info;
+				WIDE_BW_CH_SWITCH_ELEMENT wb_info;
 
 				*ptr = IE_WIDE_BW_CH_SWITCH;
-				*(ptr + 1) = sizeof(WIDE_BW_CH_SWITCH_IE);
+				*(ptr + 1) = sizeof(WIDE_BW_CH_SWITCH_ELEMENT);
 				ptr += 2;
-				NdisZeroMemory(&wb_info, sizeof(WIDE_BW_CH_SWITCH_IE));
+				NdisZeroMemory(&wb_info, sizeof(WIDE_BW_CH_SWITCH_ELEMENT));
 				if (pComCfg->vht_bw == VHT_BW_2040)
 					wb_info.new_ch_width = 0;
 				else
@@ -545,8 +545,8 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 					wb_info.center_freq_1 = vht_cent_ch_freq(pAd, pComCfg->Channel);
 					wb_info.center_freq_2 = 0;
 				}
-				NdisMoveMemory(ptr, &wb_info, sizeof(WIDE_BW_CH_SWITCH_IE));
-				wb_len = sizeof(WIDE_BW_CH_SWITCH_IE);
+				NdisMoveMemory(ptr, &wb_info, sizeof(WIDE_BW_CH_SWITCH_ELEMENT));
+				wb_len = sizeof(WIDE_BW_CH_SWITCH_ELEMENT);
 				ptr += wb_len;
 				wb_len += 2;
 			}

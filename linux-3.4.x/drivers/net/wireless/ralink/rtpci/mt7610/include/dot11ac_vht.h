@@ -389,13 +389,11 @@ typedef struct GNU_PACKED _VHT_OP_IE{
 
 	The definition of upper subfields is the same as "VHT_OP_INFO"
 */
-typedef struct GNU_PACKED _WIDE_BW_CH_SWITCH_IE{
-	UINT8 e_id;
-	UINT len;
+typedef struct GNU_PACKED _WIDE_BW_CH_SWITCH_ELEMENT{
 	UINT8 new_ch_width;
 	UINT8 center_freq_1;
 	UINT8 center_freq_2;
-}WIDE_BW_CH_SWITCH_IE;
+}WIDE_BW_CH_SWITCH_ELEMENT;
 
 
 /*
