@@ -516,6 +516,8 @@ extern int			ipv6_rcv(struct sk_buff *skb,
 
 extern int			ip6_rcv_finish(struct sk_buff *skb);
 
+extern int ip6_dst_hoplimit(struct dst_entry *dst);
+
 static inline int ip6_sk_dst_hoplimit(struct ipv6_pinfo *np, struct flowi6 *fl6,
 				      struct dst_entry *dst)
 {
