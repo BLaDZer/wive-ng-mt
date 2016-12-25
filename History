@@ -2702,6 +2702,7 @@
 76) kernel: net: ipv6: check route protocol when deleting routes.<br>
 77) kernel: net: ipv6: protect protocols not handling ipv4 from v4 connection/bind attempts.<br>
 78) kernel: net: ipv6: introduce ip6_sk_dst_hoplimit.<br>
+79) kernel: net: ipv6: use inet6_iif instead of IP6CB()->iif.<br>
 <br>
 <br>
 <br>
