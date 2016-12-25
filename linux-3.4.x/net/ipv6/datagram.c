@@ -603,7 +603,7 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 		struct sockaddr_in6 sin6;
 		__be16 *ports = (__be16 *) skb_transport_header(skb);
 
-		if (skb_transport_offset(skb) + 4 <= skb->len) {
+		if (skb_transport_offset(skb) + 4 <= (int)skb->len) {
 			/* All current transport protocols have the port numbers in the
 			 * first four bytes of the transport header and this function is
 			 * written with this assumption in mind.
