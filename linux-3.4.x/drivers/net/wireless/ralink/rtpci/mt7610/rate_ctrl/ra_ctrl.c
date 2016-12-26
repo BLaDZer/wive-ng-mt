@@ -1586,8 +1586,6 @@ VOID MlmeRAInit(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 	pEntry->fLastSecAccordingRSSI = FALSE;
 	pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
 	pEntry->CurrTxRateIndex = 0;
-	pEntry->CurrTxRateStableTime = 0;
-	pEntry->TxRateUpPenalty = 0;
 
 	MlmeClearAllTxQuality(pEntry);
 }

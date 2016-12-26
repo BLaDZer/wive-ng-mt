@@ -716,8 +716,6 @@ typedef struct _COUNTER_DRS {
 	/* to record the each TX rate's quality. 0 is best, the bigger the worse. */
 	USHORT TxQuality[MAX_TX_RATE_INDEX+1];
 	UCHAR PER[MAX_TX_RATE_INDEX+1];
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
-	ULONG CurrTxRateStableTime;	/* # of second in current TX rate */
 	/*BOOLEAN         fNoisyEnvironment; */
 	BOOLEAN fLastSecAccordingRSSI;
 	UCHAR LastSecTxRateChangeAction;	/* 0: no change, 1:rate UP, 2:rate down */
@@ -2171,8 +2169,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR PER[MAX_TX_RATE_INDEX + 1];
 
 	UINT32 ContinueTxFailCnt;
-	UINT32 CurrTxRateStableTime;	/* # of second in current TX rate */
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
 #ifdef WDS_SUPPORT
 	BOOLEAN LockEntryTx;	/* TRUE = block to WDS Entry traffic, FALSE = not. */
 #endif /* WDS_SUPPORT */
@@ -2430,8 +2426,6 @@ typedef struct _WDS_TABLE_ENTRY {
 	USHORT OneSecTxOkCount;
 	USHORT OneSecTxRetryOkCount;
 	USHORT OneSecTxFailCount;
-	ULONG CurrTxRateStableTime;	/* # of second in current TX rate */
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
 } WDS_TABLE_ENTRY, *PWDS_TABLE_ENTRY;
 
 typedef struct _RT_802_11_WDS_ENTRY {

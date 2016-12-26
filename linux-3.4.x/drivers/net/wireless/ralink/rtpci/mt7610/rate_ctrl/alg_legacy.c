@@ -720,14 +720,12 @@ VOID APQuickResponeForRateUpExec(
 			/* if rate-up happen, clear all bad history of all TX rates */
 			if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 			{
-				pEntry->TxRateUpPenalty = 0;
 				if (pEntry->CurrTxRateIndex != CurrRateIdx)
 					MlmeClearTxQuality(pEntry);
 			}
 			/* if rate-down happen, only clear DownRate's bad history */
 			else if (pEntry->LastSecTxRateChangeAction == RATE_UP)
 			{
-				pEntry->TxRateUpPenalty = 0;           /* no penalty */
 				MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, 0);
 				pEntry->PER[pEntry->CurrTxRateIndex] = 0;
 			}
@@ -775,8 +773,6 @@ VOID MlmeOldRateAdapt(
 
 	pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
 
-	pEntry->CurrTxRateStableTime++;
-
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	if (TxErrorRatio >= TrainDown)
 	{
@@ -815,11 +811,7 @@ VOID MlmeOldRateAdapt(
 		{
 			bTrainUp = TRUE;
 			MlmeDecTxQuality(pEntry, CurrRateIdx);  /* quality very good in CurrRate */
-
-			if (pEntry->TxRateUpPenalty)
-				pEntry->TxRateUpPenalty --;
-			else
-				MlmeDecTxQuality(pEntry, UpRateIdx);    /* may improve next UP rate's quality */
+			MlmeDecTxQuality(pEntry, UpRateIdx);    /* may improve next UP rate's quality */
 		}
 
 		if (bTrainUp)
@@ -893,9 +885,6 @@ VOID MlmeOldRateAdapt(
 	/* Handle the rate change */
 	if (pEntry->LastSecTxRateChangeAction != RATE_NO_CHANGE)
 	{
-		pEntry->CurrTxRateStableTime = 0;
-		pEntry->TxRateUpPenalty = 0;
-
 		/* Save last rate information */
 		pEntry->lastRateIdx = CurrRateIdx;
 #ifdef TXBF_SUPPORT

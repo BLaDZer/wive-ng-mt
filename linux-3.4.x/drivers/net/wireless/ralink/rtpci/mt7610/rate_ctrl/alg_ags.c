@@ -740,9 +740,8 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 		BOOLEAN	bTrainUpDown = FALSE;
 		
 		DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA,
-					("%s: AGS: TxQuality[CurrRateIdx(%d)] = %d, UpPenalty:%d\n",
-					__FUNCTION__, CurrRateIdx,
-					pEntry->TxQuality[CurrRateIdx], pEntry->TxRateUpPenalty));
+					("%s: AGS: TxQuality[CurrRateIdx(%d)] = %d\n"
+					__FUNCTION__, CurrRateIdx, pEntry->TxQuality[CurrRateIdx]));
 			
 		if (AGSStatisticsInfo.TxErrorRatio >= TrainDown) /* Poor quality */
 		{
@@ -758,18 +757,12 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			bUpgradeQuality = TRUE;
 			
 			DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA,
-				("%s: AGS: (UP) pEntry->TxQuality[CurrRateIdx] = %d, pEntry->TxRateUpPenalty = %d\n",
-				__FUNCTION__, 
-				pEntry->TxQuality[CurrRateIdx], 
-				pEntry->TxRateUpPenalty));
+				("%s: AGS: (UP) pEntry->TxQuality[CurrRateIdx] = %d\n",
+				__FUNCTION__, pEntry->TxQuality[CurrRateIdx]));
 			
 			if (pEntry->TxQuality[CurrRateIdx])
 				pEntry->TxQuality[CurrRateIdx]--;	/* Good quality in the current Tx rate */
 
-			if (pEntry->TxRateUpPenalty)
-				pEntry->TxRateUpPenalty--;	/* no use for the parameter */
-			else
-			{
 				if (pEntry->TxQuality[pCurrTxRate->upMcs3] && (pCurrTxRate->upMcs3 != CurrRateIdx))
 					pEntry->TxQuality[pCurrTxRate->upMcs3]--;
 				
@@ -778,7 +771,6 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 				
 				if (pEntry->TxQuality[pCurrTxRate->upMcs1] && (pCurrTxRate->upMcs1 != CurrRateIdx))
 					pEntry->TxQuality[pCurrTxRate->upMcs1]--;
-			}
 		}
 		else if (pEntry->AGSCtrl.MCSGroup > 0) /* even if TxErrorRatio > TrainUp */
 		{
@@ -843,7 +835,6 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			__FUNCTION__, CurrRateIdx, pEntry->CurrTxRateIndex));
 		
 		pEntry->LastSecTxRateChangeAction = RATE_UP;
-		pEntry->TxRateUpPenalty = 0;
 		RTMPZeroMemory(pEntry->PER, sizeof(UCHAR) * (MAX_TX_RATE_INDEX+1));
 		pEntry->AGSCtrl.lastRateIdx = CurrRateIdx;
 
@@ -856,7 +847,6 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			__FUNCTION__, CurrRateIdx, pEntry->CurrTxRateIndex));
 		
 		pEntry->LastSecTxRateChangeAction = RATE_DOWN;
-		pEntry->TxRateUpPenalty = 0; /* No penalty */
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0;
 		pEntry->PER[pEntry->CurrTxRateIndex] = 0;
 		pEntry->AGSCtrl.lastRateIdx = CurrRateIdx;
@@ -1148,7 +1138,6 @@ VOID ApQuickResponeForRateUpExecAGS(
 		DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s: QuickAGS: ++TX rate from %d to %d\n", 
 			__FUNCTION__, CurrRateIdx, pEntry->CurrTxRateIndex));	
 		
-		pEntry->TxRateUpPenalty = 0;
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0; /*restore the TxQuality from max to 0 */
 		RTMPZeroMemory(pEntry->PER, sizeof(UCHAR) * (MAX_TX_RATE_INDEX+1));
 	}
@@ -1158,7 +1147,6 @@ VOID ApQuickResponeForRateUpExecAGS(
 		DBGPRINT_RAW(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s: QuickAGS: --TX rate from %d to %d\n", 
 			__FUNCTION__, CurrRateIdx, pEntry->CurrTxRateIndex));
 		
-		pEntry->TxRateUpPenalty = 0; /* No penalty */
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0;
 		pEntry->PER[pEntry->CurrTxRateIndex] = 0;
 	}

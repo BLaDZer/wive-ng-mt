@@ -884,8 +884,6 @@ typedef struct _COUNTER_DRS {
 	/* to record the each TX rate's quality. 0 is best, the bigger the worse. */
 	USHORT TxQuality[MAX_TX_RATE_INDEX+1];
 	UCHAR PER[MAX_TX_RATE_INDEX+1];
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
-	ULONG CurrTxRateStableTime;	/* # of second in current TX rate */
 	/*BOOLEAN         fNoisyEnvironment; */
 	BOOLEAN fLastSecAccordingRSSI;
 	UCHAR LastSecTxRateChangeAction;	/* 0: no change, 1:rate UP, 2:rate down */
@@ -3145,8 +3143,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	ULONG LastTxOkCount; /* TxSuccess count in last Rate Adaptation interval */
 	UCHAR LastTxPER;	/* Tx PER in last Rate Adaptation interval */
 	UCHAR PER[MAX_TX_RATE_INDEX + 1];
-	UINT32 CurrTxRateStableTime;	/* # of second in current TX rate */
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
 
 	UCHAR SupportRateMode; /* 1: CCK 2:OFDM 4: HT, 8:VHT */
 	BOOLEAN SupportCCKMCS[MAX_LEN_OF_CCK_RATES];
@@ -3555,8 +3551,6 @@ typedef struct _WDS_TABLE_ENTRY {
 	USHORT OneSecTxOkCount;
 	USHORT OneSecTxRetryOkCount;
 	USHORT OneSecTxFailCount;
-	ULONG CurrTxRateStableTime;	/* # of second in current TX rate */
-	UCHAR TxRateUpPenalty;	/* extra # of second penalty due to last unstable condition */
 } WDS_TABLE_ENTRY, *PWDS_TABLE_ENTRY;
 
 

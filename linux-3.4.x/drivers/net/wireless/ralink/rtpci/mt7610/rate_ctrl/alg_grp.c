@@ -870,7 +870,6 @@ VOID MlmeNewRateAdapt(
 	IN ULONG			TrainDown,
 	IN ULONG			TxErrorRatio)
 {
-	USHORT		phyRateLimit20 = 0;
 	BOOLEAN		bTrainUp = FALSE;
 #ifdef TXBF_SUPPORT
 	BOOLEAN 	invertTxBf = FALSE;
@@ -878,8 +877,6 @@ VOID MlmeNewRateAdapt(
 	UCHAR *pTable = pEntry->pTable;
 	UCHAR CurrRateIdx = pEntry->CurrTxRateIndex;
 	RTMP_RA_GRP_TB *pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
-
-	pEntry->CurrTxRateStableTime++;
 
 	pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
 
@@ -931,32 +928,27 @@ VOID MlmeNewRateAdapt(
 			bTrainUp = TRUE;
 			MlmeDecTxQuality(pEntry, CurrRateIdx);  /*  quality very good in CurrRate */
 
-			if (pEntry->TxRateUpPenalty) /* always == 0, always go to else */
-				pEntry->TxRateUpPenalty --;
-			else
-			{
-				/*
-					Decrement the TxQuality of the UpRate and all of the MCS groups.
-					Note that UpRate may mot equal one of the MCS groups if MlmeSelectUpRate
-					skipped over a rate that is not valid for this configuration.
-				*/
-				MlmeDecTxQuality(pEntry, UpRateIdx);
+			/*
+				Decrement the TxQuality of the UpRate and all of the MCS groups.
+				Note that UpRate may mot equal one of the MCS groups if MlmeSelectUpRate
+				skipped over a rate that is not valid for this configuration.
+			*/
+			MlmeDecTxQuality(pEntry, UpRateIdx);
 
-				if (pCurrTxRate->upMcs3!=CurrRateIdx &&
-					pCurrTxRate->upMcs3!=UpRateIdx)
-					MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs3);
+			if (pCurrTxRate->upMcs3!=CurrRateIdx &&
+				pCurrTxRate->upMcs3!=UpRateIdx)
+				MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs3);
 
-				if (pCurrTxRate->upMcs2!=CurrRateIdx &&
-						pCurrTxRate->upMcs2!=UpRateIdx &&
-						pCurrTxRate->upMcs2!=pCurrTxRate->upMcs3)
-					MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs2);
+			if (pCurrTxRate->upMcs2!=CurrRateIdx &&
+					pCurrTxRate->upMcs2!=UpRateIdx &&
+					pCurrTxRate->upMcs2!=pCurrTxRate->upMcs3)
+				MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs2);
 
-				if (pCurrTxRate->upMcs1!=CurrRateIdx &&
-						pCurrTxRate->upMcs1!=UpRateIdx &&
-						pCurrTxRate->upMcs1!=pCurrTxRate->upMcs3 &&
-						pCurrTxRate->upMcs1!=pCurrTxRate->upMcs2)
-					MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs1);
-			}
+			if (pCurrTxRate->upMcs1!=CurrRateIdx &&
+					pCurrTxRate->upMcs1!=UpRateIdx &&
+					pCurrTxRate->upMcs1!=pCurrTxRate->upMcs3 &&
+					pCurrTxRate->upMcs1!=pCurrTxRate->upMcs2)
+				MlmeDecTxQuality(pEntry, pCurrTxRate->upMcs1);
 		}
 		else if (pEntry->mcsGroup > 0) /* even if TxErrorRatio > TrainUp */
 		{
@@ -967,10 +959,6 @@ VOID MlmeNewRateAdapt(
 			MlmeDecTxQuality(pEntry, CurrRateIdx);  /*  quality very good in CurrRate */
 			MlmeDecTxQuality(pEntry, UpRateIdx);    /*  may improve next UP rate's quality */
 		}
-
-		/*  Don't try up rate if it's greater than the limit */
-		if ((phyRateLimit20 != 0) && (pUpRate->dataRate >= phyRateLimit20))
-			return;
 
 		/*  If UpRate is good then train up in current BF state */
 		if ((CurrRateIdx != UpRateIdx) && (MlmeGetTxQuality(pEntry, UpRateIdx) <= 0) && bTrainUp)
@@ -1049,9 +1037,6 @@ VOID MlmeNewRateAdapt(
 			DBGPRINT_RAW(RT_DEBUG_INFO,("DRS: %sTX rate from %d to %d \n",
 				pEntry->LastSecTxRateChangeAction==RATE_UP? "++": "--", CurrRateIdx, pEntry->CurrTxRateIndex));
 		}
-
-		pEntry->CurrTxRateStableTime = 0;
-		pEntry->TxRateUpPenalty = 0;
 
 		/*  Save last rate information */
 		pEntry->lastRateIdx = CurrRateIdx;
@@ -1438,7 +1423,6 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		/*  Clear Old Rate's TxQuality */
 		MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, 0);
 
-		pEntry->TxRateUpPenalty = 0;	/* redundant */
 		pEntry->PER[pEntry->CurrTxRateIndex] = 0;	/* redundant */
 
 		/*  Set new Tx rate */

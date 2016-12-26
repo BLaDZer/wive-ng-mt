@@ -791,9 +791,9 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 		BOOLEAN	bTrainUpDown = FALSE;
 
 		DBGPRINT_RAW(RT_DEBUG_TRACE,
-					("%s: AGS: TxQuality[CurrRateIdx(%d)] = %d, UpPenalty:%d\n",
+					("%s: AGS: TxQuality[CurrRateIdx(%d)] = %d\n",
 					__FUNCTION__, CurrRateIdx,
-					pEntry->TxQuality[CurrRateIdx], pEntry->TxRateUpPenalty));
+					pEntry->TxQuality[CurrRateIdx]));
 
 		if (pAGSStatisticsInfo->TxErrorRatio >= TrainDown) /* Poor quality */
 		{
@@ -810,11 +810,9 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 			bUpgradeQuality = TRUE;
 
 			DBGPRINT_RAW(RT_DEBUG_TRACE,
-				("%s: AGS: (UP) pEntry->TxQuality[CurrRateIdx] = %d, "
-				"pEntry->TxRateUpPenalty = %d\n",
+				("%s: AGS: (UP) pEntry->TxQuality[CurrRateIdx] = %d\n",
 				__FUNCTION__, 
-				pEntry->TxQuality[CurrRateIdx], 
-				pEntry->TxRateUpPenalty));
+				pEntry->TxQuality[CurrRateIdx]));
 
 			if (pEntry->TxQuality[CurrRateIdx])
 			{
@@ -822,32 +820,25 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 				pEntry->TxQuality[CurrRateIdx]--;
 			}
 
-			if (pEntry->TxRateUpPenalty) /* no use for the parameter */
+			if (pEntry->TxQuality[pCurrTxRate->upMcs3] &&
+				(pCurrTxRate->upMcs3 != CurrRateIdx))
 			{
-				pEntry->TxRateUpPenalty--;
+				/* hope do rate up next time for the MCS */
+				pEntry->TxQuality[pCurrTxRate->upMcs3]--;
 			}
-			else
+				
+			if (pEntry->TxQuality[pCurrTxRate->upMcs2] &&
+				(pCurrTxRate->upMcs2 != CurrRateIdx))
 			{
-				if (pEntry->TxQuality[pCurrTxRate->upMcs3] &&
-					(pCurrTxRate->upMcs3 != CurrRateIdx))
-				{
-					/* hope do rate up next time for the MCS */
-					pEntry->TxQuality[pCurrTxRate->upMcs3]--;
-				}
+				/* hope do rate up next time for the MCS */
+				pEntry->TxQuality[pCurrTxRate->upMcs2]--;
+			}
 				
-				if (pEntry->TxQuality[pCurrTxRate->upMcs2] &&
-					(pCurrTxRate->upMcs2 != CurrRateIdx))
-				{
-					/* hope do rate up next time for the MCS */
-					pEntry->TxQuality[pCurrTxRate->upMcs2]--;
-				}
-				
-				if (pEntry->TxQuality[pCurrTxRate->upMcs1] &&
-					(pCurrTxRate->upMcs1 != CurrRateIdx))
-				{
-					/* hope do rate up next time for the MCS */
-					pEntry->TxQuality[pCurrTxRate->upMcs1]--;
-				}
+			if (pEntry->TxQuality[pCurrTxRate->upMcs1] &&
+				(pCurrTxRate->upMcs1 != CurrRateIdx))
+			{
+				/* hope do rate up next time for the MCS */
+				pEntry->TxQuality[pCurrTxRate->upMcs1]--;
 			}
 		}
 		else if (pEntry->AGSCtrl.MCSGroup > 0) /*even if TxErrorRatio > TrainUp */
@@ -926,7 +917,6 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 			CurrRateIdx, 
 			pEntry->CurrTxRateIndex));
 		
-		pEntry->TxRateUpPenalty = 0;
 		pEntry->LastSecTxRateChangeAction = 1; /* Tx rate up */
 		RTMPZeroMemory(pEntry->PER, sizeof(UCHAR) * (MAX_TX_RATE_INDEX+1));
 		pEntry->AGSCtrl.lastRateIdx = CurrRateIdx;
@@ -951,7 +941,6 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 			CurrRateIdx, 
 			pEntry->CurrTxRateIndex));
 		
-		pEntry->TxRateUpPenalty = 0; /* No penalty */
 		pEntry->LastSecTxRateChangeAction = 2; /* Tx rate down */
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0;
 		pEntry->PER[pEntry->CurrTxRateIndex] = 0;
@@ -1329,7 +1318,6 @@ VOID StaQuickResponeForRateUpExecAGS(
 			CurrRateIdx, 
 			pEntry->CurrTxRateIndex));	
 		
-		pEntry->TxRateUpPenalty = 0;
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0; /*restore the TxQuality from max to 0 */
 		RTMPZeroMemory(pEntry->PER, sizeof(UCHAR) * (MAX_TX_RATE_INDEX+1));
 	}
@@ -1341,7 +1329,6 @@ VOID StaQuickResponeForRateUpExecAGS(
 			CurrRateIdx, 
 			pEntry->CurrTxRateIndex));
 		
-		pEntry->TxRateUpPenalty = 0; /* No penalty */
 		pEntry->TxQuality[pEntry->CurrTxRateIndex] = 0;
 		pEntry->PER[pEntry->CurrTxRateIndex] = 0;
 	}
