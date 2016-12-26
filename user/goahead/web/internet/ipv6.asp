@@ -75,6 +75,7 @@
 				var opmode_len			= form.ipv6_opmode.options.length;
 				var radvd				= '<% getCfgZero(1, "radvdEnabled"); %>';
 				var dhcpv6				= '<% getCfgZero(1, "dhcpv6Enabled"); %>';
+				var ipv6mtu				= ('<% getCfgGeneral(1, "IPv6ManualMTU"); %>' == '') ? '0' : '<% getCfgGeneral(1, "IPv6ManualMTU"); %>';
 
 				if (ipv66rdb == "1") {
 					form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
@@ -97,10 +98,24 @@
 				form.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
 				form.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
 
-				form.radvdEnbl.options.selectedIndex = 1*radvd;
-				form.dhcpv6Enbl.options.selectedIndex = 1*dhcpv6;
+				form.radvdEnbl.options.selectedIndex = +radvd;
+				form.dhcpv6Enbl.options.selectedIndex = +dhcpv6;
+
+				addOption(form.ipv6_manual_mtu_type, _('inet auto'), 0);
+				addOption(form.ipv6_manual_mtu_type, _('routing custom'), 1);
+				for (var i = 1500; i >= 1280; i -= 10)
+					addOption(form.ipv6_manual_mtu_type, i, i);
+
+				document.getElementById('ipv6_manual_mtu').value		= ipv6mtu;
+				document.getElementById('ipv6_manual_mtu_type').value	= 1;
+				for (var i = 0; i < form.ipv6_manual_mtu_type.options.length; i++)
+					if (form.ipv6_manual_mtu_type.options[i].value == ipv6mtu) {
+						form.ipv6_manual_mtu_type.value = form.ipv6_manual_mtu_type.options[i].value;
+						break;
+					}
 
 				SwitchOpMode(form);
+				ipv6MtuChange();
 
 				displayElement( 'radvd', radvdb == '1');
 				displayElement( 'dhcpv6', dhcpv6b == '1');
@@ -112,7 +127,7 @@
 			}
 
 			function checkValues(form) {
-				if ((form.ipv6_opmode.value == "1") &&  (!form.dhcp6c_enable.checked)) {
+				if ((form.ipv6_opmode.value == "1") && (!form.dhcp6c_enable.checked)) {
 					var ipv6_lan = form.ipv6_lan_ipaddr.value.replace(/\s+/g, '');
 					var ipv6_lan_prefix = form.ipv6_lan_prefix_len.value.replace(/\s+/g, '');
 					var ipv6_wan = form.ipv6_wan_ipaddr.value.replace(/\s+/g, '');
@@ -163,17 +178,38 @@
 						form.ipv6_static_dns_secondary.select();
 						return false;
 					}
+					if (!validateNum(document.getElementById('ipv6_manual_mtu').value) ||
+					    (document.getElementById('ipv6_manual_mtu_type').value != 0 && (document.getElementById('ipv6_manual_mtu').value > 1500 || document.getElementById('ipv6_manual_mtu').value < 80))) {
+						alert(_("inet invalid mtu"));
+						document.getElementById('ipv6_manual_mtu').select();
+						document.getElementById('ipv6_manual_mtu').focus();
+						return false;
+					}
+					else {
+						document.getElementById('ipv6_manual_mtu').value = +document.getElementById('ipv6_manual_mtu').value;
+					}
 					var addr = ipaddr.parse(ipv6_lan); form.ipv6_lan_ipaddr.value = addr.toString(); 
 					addr = ipaddr.parse(ipv6_wan); form.ipv6_wan_ipaddr.value = addr.toString();
 					addr = ipaddr.parse(ipv6_gw); form.ipv6_static_gw.value = addr.toString();
 					addr = ipaddr.parse(ipv6_dns_primary); form.ipv6_static_dns_primary.value = addr.toString();
 					addr = ipaddr.parse(ipv6_dns_secondary); form.ipv6_static_dns_secondary.value = addr.toString();
 					
+				} else if (form.ipv6_opmode.value == "1") {
+					if (!validateNum(document.getElementById('ipv6_manual_mtu').value) ||
+					    (document.getElementById('ipv6_manual_mtu_type').value != 0 && (document.getElementById('ipv6_manual_mtu').value > 1500 || document.getElementById('ipv6_manual_mtu').value < 80))) {
+						alert(_("inet invalid mtu"));
+						document.getElementById('ipv6_manual_mtu').select();
+						document.getElementById('ipv6_manual_mtu').focus();
+						return false;
+					}
+					else {
+						document.getElementById('ipv6_manual_mtu').value = +document.getElementById('ipv6_manual_mtu').value;
+					}
 				} else if (form.ipv6_opmode.value == "2") {
 					var v6rd_prefix = form.ipv6_6rd_prefix.value.replace(/\s+/g, '');
 					var v6rd_prefix_len = form.ipv6_6rd_prefix_len.value.replace(/\s+/g, '');
 					var v6rd_border_ipaddr = form.ipv6_6rd_border_ipaddr.value.replace(/\s+/g, '');
-				
+
 					if (!ipaddr.IPv6.isValid(v6rd_prefix)) {
 						alert(_("ipv6 invalid addr"));
 						form.ipv6_6rd_prefix.focus();
@@ -243,11 +279,22 @@
 
 				displayElement( 'IPv6AllowForwardRowDisplay', (opmode != "0"));
 				displayElement( 'v6invpn_tr', (opmode != "0") && (vpn == "on"));
-				displayElement( 'dhcp6cRowDisplay', (opmode == "1"));
+				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], (opmode == "1"));
 				displayElement( 'v6StaticTable', (opmode == "1") && (!form.dhcp6c_enable.checked));
 				displayElement( 'v66rdTable', (ipv66rdb == "1") && (opmode == "2"));
 				displayElement( '6to4Table', (opmode == "3"));
 				displayElement( 'daemons', (opmode != "0") && (radvdb == '1' || dhcpv6b == '1'));
+			}
+
+			function ipv6MtuChange() {
+				if (document.getElementById('ipv6_manual_mtu_type').value == '1') {
+					showElement('ipv6_manual_mtu');
+					document.getElementById('ipv6_manual_mtu').focus();
+				}
+				else {
+					hideElement('ipv6_manual_mtu');
+					document.getElementById('ipv6_manual_mtu').value = document.getElementById('ipv6_manual_mtu_type').value;
+				}
 			}
 
 			function displayServiceHandler(response)
@@ -332,6 +379,13 @@
 								<td id="IPv6AllowForward" class="head" width="45%">Allow access to LAN from internet</td>
 								<td width="55%"><input name="ipv6_allow_forward" type="checkbox"></td>
 							</tr>
+							<tr id="v6StaticMTU_tr">
+								<td id="v6StaticMTU" class="head" width="45%">MTU</td>
+								<td width="55%">
+									<input id="ipv6_manual_mtu" name="ipv6_manual_mtu" type="text" style="width: 130px; display: none;">
+									<select style="width: 130px" id="ipv6_manual_mtu_type" name="ipv6_manual_mtu_type" size="1" onChange="ipv6MtuChange();"></select>
+								</td>
+							</tr>
 						</table>
 						<!-- STATIC/DynaMIC IP -->
 						<table id="v6StaticTable" class="form" style="visibility: hidden;">
@@ -357,7 +411,7 @@
 							<tr>
 								<td id="v6StaticDNSsecondary" class="head" width="45%">Secondary DNS</td>
 								<td width="55%"><input name="ipv6_static_dns_secondary" maxlength=39 size=39></td>
-							</tr>			
+							</tr>
 						</table>
 						<!-- 6RD -->
 						<table id="v66rdTable" class="form" style="visibility: hidden;">
@@ -396,7 +450,7 @@
 							</tr>
 							<tr id="radvd">
 								<td class="head" id="v6Radvd" width="45%">Router Advertisement</td>
-								<td><select name="radvdEnbl" class="half" width="19%">
+								<td><select name="radvdEnbl" style="width: 130px">
 									<option value="0" id="v6RadvdD">Disable</option>
 									<option value="1" id="v6RadvdE">Enable</option>
 								</select></td>
@@ -405,7 +459,7 @@
 							</tr>
 							<tr id="dhcpv6">
 								<td class="head" id="v6Dhcpv6" width="45%">Dynamic IPv6 configuration</td>
-								<td><select name="dhcpv6Enbl" class="half" width="19%">
+								<td><select name="dhcpv6Enbl" style="width: 130px">
 									<option value="0" id="v6Dhcpv6D">Disable</option>
 									<option value="1" id="v6Dhcpv6E">Enable</option>
 								</select></td>

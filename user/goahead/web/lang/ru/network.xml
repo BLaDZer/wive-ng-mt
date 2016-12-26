@@ -119,6 +119,7 @@
     <message msgid="ipv6 invalid prefix" msgstr="Неверная длина префикса!" />
     <message msgid="ipv6 fill all" msgstr="Пожалуйста, заполните все поля!" />
     <message msgid="ipv6 invalid ipv4" msgstr="Неверный IPv4 адрес!" />
+	<message msgid="ipv6 mtu" msgstr="MTU" />
 
     <message msgid="qos title" msgstr="Настройки QoS" />
     <message msgid="qos introduction" msgstr="Здесь Вы можете установить правила, чтобы обеспечить требуемое качество обслуживания для конкретных приложений." />

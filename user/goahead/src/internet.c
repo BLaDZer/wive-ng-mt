@@ -1077,16 +1077,19 @@ parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *opmode;
-	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary;
+	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 12, "IPv6OpMode", "IPv6IPAddr",
+		nvram_fromdef(RT2860_NVRAM, 13, "IPv6OpMode", "IPv6IPAddr",
 			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
 			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc", "IPv6AllowForward",
-			"Ipv6InVPN", "radvdEnabled", "dhcpv6Enabled");
+			"Ipv6InVPN", "IPv6ManualMTU", "radvdEnabled", "dhcpv6Enabled");
+			int ipv6_mtu = nvram_get_int(RT2860_NVRAM, "IPv6ManualMTU", -1);
+			if (ipv6_mtu > 0)
+				nvram_set(RT2860_NVRAM, "IPv6ManualMTU", "0");
 	}
 	else {
 		opmode = websGetVar(wp, T("ipv6_opmode"), T("0"));
@@ -1101,6 +1104,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 			srv_ipaddr = websGetVar(wp, T("ipv6_static_gw"), T(""));
 			srv_dns_primary = websGetVar(wp, T("ipv6_static_dns_primary"), T(""));
 			srv_dns_secondary = websGetVar(wp, T("ipv6_static_dns_secondary"), T(""));
+			ipv6_manual_mtu = websGetVar(wp, T("ipv6_manual_mtu"), T("0"));
 
 			nvram_bufset(RT2860_NVRAM, "IPv6IPAddr", ipaddr);
 			nvram_bufset(RT2860_NVRAM, "IPv6PrefixLen", prefix_len);
@@ -1109,6 +1113,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "IPv6GWAddr", srv_ipaddr);
 			nvram_bufset(RT2860_NVRAM, "IPv6DNSPrimary", srv_dns_primary);
 			nvram_bufset(RT2860_NVRAM, "IPv6DNSSecondary", srv_dns_secondary);
+			nvram_bufset(RT2860_NVRAM, "IPv6ManualMTU", ipv6_manual_mtu);
 #if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
 		} else if (!strcmp(opmode, "2")) {
