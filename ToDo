@@ -1,12 +1,11 @@
-1) full russian ui (work end ~99%).
-2) wifi_drivers/goahead: add parse LastRx Rate.<br>
-3) need add in webui SCSEnable (smart carier sense MT7603 only).
-4) need add subchannel select for 5GHz module.
-5) need add checkbox in webui for allow access to LAN net from VPN server net.<br>
-6) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
-7) rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
-8) add change nvram settings without apply mode.
-9) in very far future: need add in firewall support xt_time matches for parental control.
-10) in very far future: need add perip shaper script and webui.
-11) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
-12) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).
+1) wifi_drivers/goahead: add parse LastRx Rate.<br>
+2) need add in webui SCSEnable (smart carier sense MT7603 only).
+3) need add subchannel select for 5GHz module.
+4) need add checkbox in webui for allow access to LAN net from VPN server net.<br>
+5) add download RWFS pak from ISP server and apply customized logic on the fly (in UI need add checkbox and editbox for url).
+6) rework bridge interfaes isolate function for allow isolate different iface by ui (bridge managment, isolate/m2u/fastleave/stp per ifaces).
+7) add change nvram settings without apply mode.
+8) in very far future: need add in firewall support xt_time matches for parental control.
+9) in very far future: need add perip shaper script and webui.
+10) in very far future: need add scripts and webui for support 3g usb dongles uses qmi protocol.
+11) in very far future: port support l2tp/pptp hardware NAT offload (really needed? in sdk very ugly code).

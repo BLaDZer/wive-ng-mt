@@ -2085,6 +2085,8 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 	/* 802.11x support */
 	FPRINT_DAT(IEEE8021X);
+	FPRINT_DAT(quiet_interval);
+	FPRINT_DAT(session_timeout_interval);
 	FPRINT_DAT(PreAuth);
 	FPRINT_DAT(PMKCachePeriod);
 	FPRINT_DAT(own_ip_addr);
