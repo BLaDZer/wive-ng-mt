@@ -49,7 +49,6 @@
  * cp stat meminfo loadavg proc
  * chroot . ./top -bn1 >top1.out
  */
-
 //config:config TOP
 //config:	bool "top"
 //config:	default y
@@ -103,6 +102,10 @@
 //config:	depends on TOP
 //config:	help
 //config:	  Enable 's' in top (gives lots of memory info).
+
+//applet:IF_TOP(APPLET(top, BB_DIR_USR_BIN, BB_SUID_DROP))
+
+//kbuild:lib-$(CONFIG_TOP) += top.o
 
 #include "libbb.h"
 #include "common_bufsiz.h"
@@ -728,12 +731,6 @@ static void reset_term(void)
 {
 	if (!OPT_BATCH_MODE)
 		tcsetattr_stdin_TCSANOW(&initial_settings);
-	if (ENABLE_FEATURE_CLEAN_UP) {
-		clearmems();
-# if ENABLE_FEATURE_TOP_CPU_USAGE_PERCENTAGE
-		free(prev_hist);
-# endif
-	}
 }
 
 static void sig_catcher(int sig)
@@ -1045,7 +1042,9 @@ static unsigned handle_input(unsigned scan_mask, unsigned interval)
 //usage:       "Provide a view of process activity in real time."
 //usage:   "\n""Read the status of all processes from /proc each SECONDS"
 //usage:   "\n""and display a screenful of them."
-//usage:   "\n""Keys:"
+//usage:   "\n"
+//usage:	IF_FEATURE_USE_TERMIOS(
+//usage:       "Keys:"
 //usage:   "\n""	N/M"
 //usage:                IF_FEATURE_TOP_CPU_USAGE_PERCENTAGE("/P")
 //usage:                IF_FEATURE_TOP_CPU_USAGE_PERCENTAGE("/T")
@@ -1065,6 +1064,7 @@ static unsigned handle_input(unsigned scan_mask, unsigned interval)
 //usage:   "\n""	Q,^C: exit"
 //usage:   "\n"
 //usage:   "\n""Options:"
+//usage:	)
 //usage:   "\n""	-b	Batch mode"
 //usage:   "\n""	-n N	Exit after N iterations"
 //usage:   "\n""	-d N	Delay between updates"
@@ -1258,5 +1258,11 @@ int top_main(int argc UNUSED_PARAM, char **argv)
 #if ENABLE_FEATURE_USE_TERMIOS
 	reset_term();
 #endif
+	if (ENABLE_FEATURE_CLEAN_UP) {
+		clearmems();
+#if ENABLE_FEATURE_TOP_CPU_USAGE_PERCENTAGE
+		free(prev_hist);
+#endif
+	}
 	return EXIT_SUCCESS;
 }

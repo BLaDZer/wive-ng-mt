@@ -52,8 +52,6 @@
 
 #include "usage_compressed.h"
 
-static void run_applet_and_exit(const char *name, char **argv) NORETURN;
-
 #if ENABLE_SHOW_USAGE && !ENABLE_FEATURE_COMPRESS_USAGE
 static const char usage_messages[] ALIGN1 = UNPACKED_USAGE;
 #else
@@ -331,21 +329,6 @@ static struct suid_config_t {
 
 static bool suid_cfg_readable;
 
-/* check if u is member of group g */
-static int ingroup(uid_t u, gid_t g)
-{
-	struct group *grp = getgrgid(g);
-	if (grp) {
-		char **mem;
-		for (mem = grp->gr_mem; *mem; mem++) {
-			struct passwd *pwd = getpwnam(*mem);
-			if (pwd && (pwd->pw_uid == u))
-				return 1;
-		}
-	}
-	return 0;
-}
-
 /* libbb candidate */
 static char *get_trimmed_slice(char *s, char *e)
 {
@@ -570,7 +553,22 @@ static inline void parse_config_file(void)
 # endif /* FEATURE_SUID_CONFIG */
 
 
-# if ENABLE_FEATURE_SUID
+# if ENABLE_FEATURE_SUID && NUM_APPLETS > 0
+/* check if u is member of group g */
+static int ingroup(uid_t u, gid_t g)
+{
+	struct group *grp = getgrgid(g);
+	if (grp) {
+		char **mem;
+		for (mem = grp->gr_mem; *mem; mem++) {
+			struct passwd *pwd = getpwnam(*mem);
+			if (pwd && (pwd->pw_uid == u))
+				return 1;
+		}
+	}
+	return 0;
+}
+
 static void check_suid(int applet_no)
 {
 	gid_t rgid;  /* real gid */
@@ -711,6 +709,8 @@ static void install_links(const char *busybox UNUSED_PARAM,
 # endif
 
 # if ENABLE_BUSYBOX
+static void run_applet_and_exit(const char *name, char **argv) NORETURN;
+
 /* If we were called as "busybox..." */
 static int busybox_main(char **argv)
 {
@@ -777,7 +777,7 @@ static int busybox_main(char **argv)
 			col += len2;
 			a += len2 - 1;
 		}
-		full_write2_str("\n\n");
+		full_write2_str("\n");
 		return 0;
 	}
 
@@ -841,6 +841,7 @@ static int busybox_main(char **argv)
 }
 # endif
 
+# if NUM_APPLETS > 0
 void FAST_FUNC run_applet_no_and_exit(int applet_no, char **argv)
 {
 	int argc = 1;
@@ -858,15 +859,15 @@ void FAST_FUNC run_applet_no_and_exit(int applet_no, char **argv)
 	 * "true" and "false" are also special.
 	 */
 	if (1
-#if defined APPLET_NO_test
+#  if defined APPLET_NO_test
 	 && applet_no != APPLET_NO_test
-#endif
-#if defined APPLET_NO_true
+#  endif
+#  if defined APPLET_NO_true
 	 && applet_no != APPLET_NO_true
-#endif
-#if defined APPLET_NO_false
+#  endif
+#  if defined APPLET_NO_false
 	 && applet_no != APPLET_NO_false
-#endif
+#  endif
 	) {
 		if (argc == 2 && strcmp(argv[1], "--help") == 0) {
 			/* Make "foo --help" exit with 0: */
@@ -876,21 +877,27 @@ void FAST_FUNC run_applet_no_and_exit(int applet_no, char **argv)
 	}
 	if (ENABLE_FEATURE_SUID)
 		check_suid(applet_no);
-	exit(applet_main[applet_no](argc, argv));
+	xfunc_error_retval = applet_main[applet_no](argc, argv);
+	/* Note: applet_main() may also not return (die on a xfunc or such) */
+	xfunc_die();
 }
+# endif /* NUM_APPLETS > 0 */
 
+# if ENABLE_BUSYBOX || NUM_APPLETS > 0
 static NORETURN void run_applet_and_exit(const char *name, char **argv)
 {
-	int applet;
-
-# if ENABLE_BUSYBOX
+#  if ENABLE_BUSYBOX
 	if (is_prefixed_with(name, "busybox"))
 		exit(busybox_main(argv));
-# endif
+#  endif
+#  if NUM_APPLETS > 0
 	/* find_applet_by_name() search is more expensive, so goes second */
-	applet = find_applet_by_name(name);
-	if (applet >= 0)
-		run_applet_no_and_exit(applet, argv);
+	{
+		int applet = find_applet_by_name(name);
+		if (applet >= 0)
+			run_applet_no_and_exit(applet, argv);
+	}
+#  endif
 
 	/*bb_error_msg_and_die("applet not found"); - links in printf */
 	full_write2_str(applet_name);
@@ -898,9 +905,9 @@ static NORETURN void run_applet_and_exit(const char *name, char **argv)
 	/* POSIX: "If a command is not found, the exit status shall be 127" */
 	exit(127);
 }
+# endif
 
 #endif /* !defined(SINGLE_APPLET_MAIN) */
-
 
 
 #if ENABLE_BUILD_LIBBUSYBOX
@@ -936,6 +943,14 @@ int main(int argc UNUSED_PARAM, char **argv)
 	 */
 	mallopt(M_MMAP_THRESHOLD, 32 * 1024 - 256);
 #endif
+#if 0 /*def M_TOP_PAD*/
+	/* When the program break is increased, then M_TOP_PAD bytes are added
+	 * to the sbrk(2) request. When the heap is trimmed because of free(3),
+	 * this much free space is preserved at the top of the heap.
+	 * glibc default seems to be way too big: 128k, but need to verify.
+	 */
+	mallopt(M_TOP_PAD, 8 * 1024);
+#endif
 
 #if !BB_MMU
 	/* NOMMU re-exec trick sets high-order bit in first byte of name */
@@ -946,6 +961,7 @@ int main(int argc UNUSED_PARAM, char **argv)
 #endif
 
 #if defined(SINGLE_APPLET_MAIN)
+
 	/* Only one applet is selected in .config */
 	if (argv[1] && is_prefixed_with(argv[0], "busybox")) {
 		/* "busybox <applet> <params>" should still work as expected */
@@ -954,20 +970,26 @@ int main(int argc UNUSED_PARAM, char **argv)
 	/* applet_names in this case is just "applet\0\0" */
 	lbb_prepare(applet_names IF_FEATURE_INDIVIDUAL(, argv));
 	return SINGLE_APPLET_MAIN(argc, argv);
-#else
-	lbb_prepare("busybox" IF_FEATURE_INDIVIDUAL(, argv));
 
-#if !ENABLE_BUSYBOX
+#elif !ENABLE_BUSYBOX && NUM_APPLETS == 0
+
+	full_write2_str(bb_basename(argv[0]));
+	full_write2_str(": no applets enabled\n");
+	exit(127);
+
+#else
+
+	lbb_prepare("busybox" IF_FEATURE_INDIVIDUAL(, argv));
+# if !ENABLE_BUSYBOX
 	if (argv[1] && is_prefixed_with(bb_basename(argv[0]), "busybox"))
 		argv++;
-#endif
+# endif
 	applet_name = argv[0];
 	if (applet_name[0] == '-')
 		applet_name++;
 	applet_name = bb_basename(applet_name);
-
 	parse_config_file(); /* ...maybe, if FEATURE_SUID_CONFIG */
-
 	run_applet_and_exit(applet_name, argv);
+
 #endif
 }

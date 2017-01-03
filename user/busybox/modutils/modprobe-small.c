@@ -8,19 +8,42 @@
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
 
-//applet:IF_MODPROBE_SMALL(APPLET(modprobe, BB_DIR_SBIN, BB_SUID_DROP))
-//applet:IF_MODPROBE_SMALL(APPLET_ODDNAME(depmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, depmod))
-//applet:IF_MODPROBE_SMALL(APPLET_ODDNAME(insmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, insmod))
-//applet:IF_MODPROBE_SMALL(APPLET_ODDNAME(lsmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, lsmod))
-//applet:IF_MODPROBE_SMALL(APPLET_ODDNAME(rmmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, rmmod))
+/* config MODPROBE_SMALL is defined in Config.src to ensure better "make config" order */
+
+//config:config FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE
+//config:	bool "Accept module options on modprobe command line"
+//config:	default y
+//config:	depends on MODPROBE_SMALL
+//config:	select PLATFORM_LINUX
+//config:	help
+//config:	  Allow insmod and modprobe take module options from command line.
+//config:
+//config:config FEATURE_MODPROBE_SMALL_CHECK_ALREADY_LOADED
+//config:	bool "Skip loading of already loaded modules"
+//config:	default y
+//config:	depends on MODPROBE_SMALL
+//config:	help
+//config:	  Check if the module is already loaded.
+
+//applet:IF_MODPROBE(IF_MODPROBE_SMALL(APPLET(modprobe, BB_DIR_SBIN, BB_SUID_DROP)))
+//applet:IF_DEPMOD(IF_MODPROBE_SMALL(APPLET_ODDNAME(depmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, depmod)))
+//applet:IF_INSMOD(IF_MODPROBE_SMALL(APPLET_ODDNAME(insmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, insmod)))
+//applet:IF_LSMOD(IF_MODPROBE_SMALL(APPLET_ODDNAME(lsmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, lsmod)))
+//applet:IF_RMMOD(IF_MODPROBE_SMALL(APPLET_ODDNAME(rmmod, modprobe, BB_DIR_SBIN, BB_SUID_DROP, rmmod)))
+
+//kbuild:lib-$(CONFIG_MODPROBE_SMALL) += modprobe-small.o
 
 #include "libbb.h"
 /* After libbb.h, since it needs sys/types.h on some systems */
 #include <sys/utsname.h> /* uname() */
 #include <fnmatch.h>
+#include <sys/syscall.h>
 
 extern int init_module(void *module, unsigned long len, const char *options);
 extern int delete_module(const char *module, unsigned flags);
+#ifdef __NR_finit_module
+# define finit_module(fd, uargs, flags) syscall(__NR_finit_module, fd, uargs, flags)
+#endif
 /* linux/include/linux/module.h has limit of 64 chars on module names */
 #undef MODULE_NAME_LEN
 #define MODULE_NAME_LEN 64
@@ -209,11 +232,34 @@ static int load_module(const char *fname, const char *options)
 	int r;
 	size_t len = MAXINT(ssize_t);
 	char *module_image;
+
+	if (!options)
+		options = "";
+
 	dbg1_error_msg("load_module('%s','%s')", fname, options);
 
-	module_image = xmalloc_open_zipped_read_close(fname, &len);
-	r = (!module_image || init_module(module_image, len, options ? options : "") != 0);
-	free(module_image);
+	/*
+	 * First we try finit_module if available.  Some kernels are configured
+	 * to only allow loading of modules off of secure storage (like a read-
+	 * only rootfs) which needs the finit_module call.  If it fails, we fall
+	 * back to normal module loading to support compressed modules.
+	 */
+	r = 1;
+# ifdef __NR_finit_module
+	{
+		int fd = open(fname, O_RDONLY | O_CLOEXEC);
+		if (fd >= 0) {
+			r = finit_module(fd, options, 0) != 0;
+			close(fd);
+		}
+	}
+# endif
+	if (r != 0) {
+		module_image = xmalloc_open_zipped_read_close(fname, &len);
+		r = (!module_image || init_module(module_image, len, options) != 0);
+		free(module_image);
+	}
+
 	dbg1_error_msg("load_module:%d", r);
 	return r; /* 0 = success */
 #else
@@ -884,7 +930,7 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 	IF_FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE(char *options;)
 
 	/* are we lsmod? -> just dump /proc/modules */
-	if ('l' == applet0) {
+	if (ENABLE_LSMOD && 'l' == applet0) {
 		xprint_and_close_file(xfopen_for_read("/proc/modules"));
 		return EXIT_SUCCESS;
 	}
@@ -894,14 +940,14 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 	/* Prevent ugly corner cases with no modules at all */
 	modinfo = xzalloc(sizeof(modinfo[0]));
 
-	if ('i' != applet0) { /* not insmod */
+	if (!ENABLE_INSMOD || 'i' != applet0) { /* not insmod */
 		/* Goto modules directory */
 		xchdir(CONFIG_DEFAULT_MODULES_DIR);
 	}
 	uname(&uts); /* never fails */
 
 	/* depmod? */
-	if ('d' == applet0) {
+	if (ENABLE_DEPMOD && 'd' == applet0) {
 		/* Supported:
 		 * -n: print result to stdout
 		 * -a: process all modules (default)
@@ -940,11 +986,11 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 	argv += optind;
 
 	/* are we rmmod? -> simulate modprobe -r */
-	if ('r' == applet0) {
+	if (ENABLE_RMMOD && 'r' == applet0) {
 		option_mask32 |= OPT_r;
 	}
 
-	if ('i' != applet0) { /* not insmod */
+	if (!ENABLE_INSMOD || 'i' != applet0) { /* not insmod */
 		/* Goto $VERSION directory */
 		xchdir(uts.release);
 	}
@@ -968,7 +1014,7 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 		argv[1] = NULL;
 #endif
 
-	if ('i' == applet0) { /* insmod */
+	if (ENABLE_INSMOD && 'i' == applet0) { /* insmod */
 		size_t len;
 		void *map;
 
@@ -988,7 +1034,7 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 	}
 
 	/* Try to load modprobe.dep.bb */
-	if ('r' != applet0) { /* not rmmod */
+	if (!ENABLE_RMMOD || 'r' != applet0) { /* not rmmod */
 		load_dep_bb();
 	}
 

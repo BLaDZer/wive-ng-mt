@@ -112,6 +112,14 @@
 //config:	help
 //config:	  Support mount -T (specifying an alternate fstab)
 
+/* On full-blown systems, requires suid for user mounts.
+ * But it's not unthinkable to have it available in non-suid flavor on some systems,
+ * for viewing mount table.
+ * Therefore we use BB_SUID_MAYBE instead of BB_SUID_REQUIRE: */
+//applet:IF_MOUNT(APPLET(mount, BB_DIR_BIN, IF_DESKTOP(BB_SUID_MAYBE) IF_NOT_DESKTOP(BB_SUID_DROP)))
+
+//kbuild:lib-$(CONFIG_MOUNT) += mount.o
+
 //usage:#define mount_trivial_usage
 //usage:       "[OPTIONS] [-o OPT] DEVICE NODE"
 //usage:#define mount_full_usage "\n\n"
@@ -268,7 +276,7 @@ enum {
 };
 
 
-#define OPTION_STR "o:t:rwanfvsiO:" IF_FEATURE_MOUNT_OTHERTAB("T:")
+#define OPTION_STR "o:*t:rwanfvsiO:" IF_FEATURE_MOUNT_OTHERTAB("T:")
 enum {
 	OPT_o = (1 << 0),
 	OPT_t = (1 << 1),
@@ -1931,7 +1939,6 @@ static int singlemount(struct mntent *mp, int ignore_busy)
 		int len;
 		char c;
 		char *hostname, *share;
-		char *dotted, *ip;
 		len_and_sockaddr *lsa;
 
 		// Parse mp->mnt_fsname of the form "//hostname/share[/dir1/dir2]"
@@ -1971,13 +1978,26 @@ static int singlemount(struct mntent *mp, int ignore_busy)
 		if (!lsa)
 			goto report_error;
 
-		// Insert "ip=..." option into options
-		dotted = xmalloc_sockaddr2dotted_noport(&lsa->u.sa);
-		if (ENABLE_FEATURE_CLEAN_UP) free(lsa);
-		ip = xasprintf("ip=%s", dotted);
-		if (ENABLE_FEATURE_CLEAN_UP) free(dotted);
-		parse_mount_options(ip, &filteropts);
-		if (ENABLE_FEATURE_CLEAN_UP) free(ip);
+		// If there is no "ip=..." option yet
+		if (!is_prefixed_with(filteropts, ",ip="+1)
+		 && !strstr(filteropts, ",ip=")
+		) {
+			char *dotted, *ip;
+			// Insert "ip=..." option into options
+			dotted = xmalloc_sockaddr2dotted_noport(&lsa->u.sa);
+			if (ENABLE_FEATURE_CLEAN_UP) free(lsa);
+			ip = xasprintf("ip=%s", dotted);
+			if (ENABLE_FEATURE_CLEAN_UP) free(dotted);
+// Note: IPv6 scoped addresses ("host%iface", see RFC 4007) should be
+// handled by libc in getnameinfo() (inside xmalloc_sockaddr2dotted_noport()).
+// Currently, glibc does not support that (has no NI_NUMERICSCOPE),
+// musl apparently does. This results in "ip=numericIPv6%iface_name"
+// (instead of _numeric_ iface_id) with glibc.
+// This probably should be fixed in glibc, not here.
+// The workaround is to manually specify correct "ip=ADDR%n" option.
+			parse_mount_options(ip, &filteropts);
+			if (ENABLE_FEATURE_CLEAN_UP) free(ip);
+		}
 
 		mp->mnt_type = (char*)"cifs";
 		rc = mount_it_now(mp, vfsflags, filteropts);
@@ -2167,7 +2187,7 @@ int mount_main(int argc UNUSED_PARAM, char **argv)
 
 	// Parse remaining options
 	// Max 2 params; -o is a list, -v is a counter
-	opt_complementary = "?2o::" IF_FEATURE_MOUNT_VERBOSE("vv");
+	opt_complementary = "?2" IF_FEATURE_MOUNT_VERBOSE("vv");
 	opt = getopt32(argv, OPTION_STR, &lst_o, &fstype, &O_optmatch
 			IF_FEATURE_MOUNT_OTHERTAB(, &fstabname)
 			IF_FEATURE_MOUNT_VERBOSE(, &verbose));

@@ -40,6 +40,32 @@
  * purpose. It is provided "as is" without express or implied warranty.
  ***********************************************************************
  */
+//config:config NTPD
+//config:	bool "ntpd"
+//config:	default y
+//config:	select PLATFORM_LINUX
+//config:	help
+//config:	  The NTP client/server daemon.
+//config:
+//config:config FEATURE_NTPD_SERVER
+//config:	bool "Make ntpd usable as a NTP server"
+//config:	default y
+//config:	depends on NTPD
+//config:	help
+//config:	  Make ntpd usable as a NTP server. If you disable this option
+//config:	  ntpd will be usable only as a NTP client.
+//config:
+//config:config FEATURE_NTPD_CONF
+//config:	bool "Make ntpd understand /etc/ntp.conf"
+//config:	default y
+//config:	depends on NTPD
+//config:	help
+//config:	  Make ntpd look in /etc/ntp.conf for peers. Only "server address"
+//config:	  is supported.
+
+//applet:IF_NTPD(APPLET(ntpd, BB_DIR_USR_SBIN, BB_SUID_DROP))
+
+//kbuild:lib-$(CONFIG_NTPD) += ntpd.o
 
 //usage:#define ntpd_trivial_usage
 //usage:	"[-dnqNw"IF_FEATURE_NTPD_SERVER("l -I IFACE")"] [-S PROG] [-p PEER]..."
@@ -2204,11 +2230,11 @@ static NOINLINE void ntp_init(char **argv)
 
 	/* Parse options */
 	peers = NULL;
-	opt_complementary = "dd:p::wn"         /* -d: counter; -p: list; -w implies -n */
+	opt_complementary = "dd:wn"  /* -d: counter; -p: list; -w implies -n */
 		IF_FEATURE_NTPD_SERVER(":Il"); /* -I implies -l */
 	opts = getopt32(argv,
 			"nqNx" /* compat */
-			"wp:S:"IF_FEATURE_NTPD_SERVER("l") /* NOT compat */
+			"wp:*S:"IF_FEATURE_NTPD_SERVER("l") /* NOT compat */
 			IF_FEATURE_NTPD_SERVER("I:") /* compat */
 			"d" /* compat */
 			"46aAbgL", /* compat, ignored */
@@ -2220,6 +2246,31 @@ static NOINLINE void ntp_init(char **argv)
 
 //	if (opts & OPT_x) /* disable stepping, only slew is allowed */
 //		G.time_was_stepped = 1;
+
+#if ENABLE_FEATURE_NTPD_SERVER
+	G_listen_fd = -1;
+	if (opts & OPT_l) {
+		G_listen_fd = create_and_bind_dgram_or_die(NULL, 123);
+		if (G.if_name) {
+			if (setsockopt_bindtodevice(G_listen_fd, G.if_name))
+				xfunc_die();
+		}
+		socket_want_pktinfo(G_listen_fd);
+		setsockopt_int(G_listen_fd, IPPROTO_IP, IP_TOS, IPTOS_LOWDELAY);
+	}
+#endif
+	/* I hesitate to set -20 prio. -15 should be high enough for timekeeping */
+	if (opts & OPT_N)
+		setpriority(PRIO_PROCESS, 0, -15);
+
+	/* add_peers() calls can retry DNS resolution (possibly forever).
+	 * Daemonize before them, or else boot can stall forever.
+	 */
+	if (!(opts & OPT_n)) {
+		bb_daemonize_or_rexec(DAEMON_DEVNULL_STDIO, argv);
+		logmode = LOGMODE_NONE;
+	}
+
 	if (peers) {
 		while (peers)
 			add_peers(llist_pop(&peers));
@@ -2248,26 +2299,6 @@ static NOINLINE void ntp_init(char **argv)
 		/* -l but no peers: "stratum 1 server" mode */
 		G.stratum = 1;
 	}
-#if ENABLE_FEATURE_NTPD_SERVER
-	G_listen_fd = -1;
-	if (opts & OPT_l) {
-		G_listen_fd = create_and_bind_dgram_or_die(NULL, 123);
-		if (opts & OPT_I) {
-			if (setsockopt_bindtodevice(G_listen_fd, G.if_name))
-				xfunc_die();
-		}
-		socket_want_pktinfo(G_listen_fd);
-		setsockopt_int(G_listen_fd, IPPROTO_IP, IP_TOS, IPTOS_LOWDELAY);
-	}
-#endif
-	if (!(opts & OPT_n)) {
-		bb_daemonize_or_rexec(DAEMON_DEVNULL_STDIO, argv);
-		logmode = LOGMODE_NONE;
-	}
-	/* I hesitate to set -20 prio. -15 should be high enough for timekeeping */
-	if (opts & OPT_N)
-		setpriority(PRIO_PROCESS, 0, -15);
-
 	/* If network is up, syncronization occurs in ~10 seconds.
 	 * We give "ntpd -q" 10 seconds to get first reply,
 	 * then another 50 seconds to finish syncing.
