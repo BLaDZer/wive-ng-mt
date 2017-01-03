@@ -1255,8 +1255,6 @@ VOID MlmeNewRateAdapt(
 	}
 	else
 	{
-		RTMP_RA_GRP_TB *pUpRate = PTX_RA_GRP_ENTRY(pTable, UpRateIdx);
-
 		/*  Upgrade TX quality if PER <= Rate-Up threshold */
 		if (TxErrorRatio <= TrainUp)
 		{
@@ -1328,6 +1326,8 @@ VOID MlmeNewRateAdapt(
 			}
 			else if (pEntry->eTxBfEnCond>0 || pEntry->iTxBfEn)
 			{
+				RTMP_RA_GRP_TB *pUpRate = PTX_RA_GRP_ENTRY(pTable, UpRateIdx);
+
 				/*  First try Up Rate with BF */
 				if ((CurrRateIdx != UpRateIdx) &&
 					 MlmeTxBfAllowed(pAd, pEntry, (RTMP_RA_LEGACY_TB *)pUpRate))

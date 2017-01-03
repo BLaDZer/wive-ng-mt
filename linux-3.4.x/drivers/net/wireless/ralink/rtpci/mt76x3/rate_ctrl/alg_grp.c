@@ -929,7 +929,7 @@ VOID MlmeNewRateAdapt(
 	}
 	else
 	{
-		RTMP_RA_GRP_TB *pUpRate = PTX_RA_GRP_ENTRY(pTable, UpRateIdx);
+		//RTMP_RA_GRP_TB *pUpRate = PTX_RA_GRP_ENTRY(pTable, UpRateIdx);
 
 		/*  Upgrade TX quality if PER <= Rate-Up threshold */
 		if (TxErrorRatio <= TrainUp)

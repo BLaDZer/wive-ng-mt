@@ -742,8 +742,9 @@ VOID MlmeNewRateAdapt(
 	}
 	else
 	{
+#if defined(RT2883) || defined(RT3883)
 		PRTMP_TX_RATE_SWITCH_3S pUpRate = PTX_RATE_SWITCH_ENTRY_3S(pTable, UpRateIdx);
-
+#endif
 		/*  Upgrade TX quality if PER <= Rate-Up threshold */
 		if (TxErrorRatio <= TrainUp)
 		{
@@ -818,6 +819,8 @@ VOID MlmeNewRateAdapt(
 			}
 			else if (pEntry->eTxBfEnCond>0 || pEntry->iTxBfEn)
 			{
+				PRTMP_TX_RATE_SWITCH pUpRate = PTX_RATE_SWITCH_ENTRY(pTable, UpRateIdx);
+
 				/*  First try Up Rate with BF */
 				if ((CurrRateIdx != UpRateIdx) &&
 					 MlmeTxBfAllowed(pAd, pEntry, (PRTMP_TX_RATE_SWITCH)pUpRate))
