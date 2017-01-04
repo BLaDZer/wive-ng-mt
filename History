@@ -2714,6 +2714,7 @@
 1) busybox: update to 1.26.1 version.<br>
 2) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
 3) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+4) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 <br>
 <br>
 <br>

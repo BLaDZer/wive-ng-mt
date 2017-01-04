@@ -533,6 +533,7 @@ static bool tcp_in_window(const struct nf_conn *ct,
 	if(ra_sw_nat_hook_rx != NULL)
 		return true;
 #else
+	bool in_recv_win;
 	struct net *net = nf_ct_net(ct);
 #endif
 
@@ -660,17 +661,21 @@ static bool tcp_in_window(const struct nf_conn *ct,
 		 receiver->td_end, receiver->td_maxend, receiver->td_maxwin,
 		 receiver->td_scale);
 
-	pr_debug("tcp_in_window: I=%i II=%i III=%i IV=%i\n",
-		 before(seq, sender->td_maxend + 1),
-		 after(end, sender->td_end - receiver->td_maxwin - 1),
-		 before(sack, receiver->td_end + 1),
-		 after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1));
-
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	res = true;
 #else
+	/* Is the ending sequence in the receive window (if available)? */
+	in_recv_win = !receiver->td_maxwin ||
+		      after(end, sender->td_end - receiver->td_maxwin - 1);
+
+	pr_debug("tcp_in_window: I=%i II=%i III=%i IV=%i\n",
+		 before(seq, sender->td_maxend + 1),
+		 (in_recv_win ? 1 : 0),
+		 before(sack, receiver->td_end + 1),
+		 after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1));
+
 	if (before(seq, sender->td_maxend + 1) &&
-	    after(end, sender->td_end - receiver->td_maxwin - 1) &&
+	    in_recv_win &&
 	    before(sack, receiver->td_end + 1) &&
 	    after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1)) {
 		/*
@@ -739,7 +744,7 @@ static bool tcp_in_window(const struct nf_conn *ct,
 			nf_log_packet(pf, 0, skb, NULL, NULL, NULL,
 			"nf_ct_tcp: %s ",
 			before(seq, sender->td_maxend + 1) ?
-			after(end, sender->td_end - receiver->td_maxwin - 1) ?
+			in_recv_win ?
 			before(sack, receiver->td_end + 1) ?
 			after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1) ? "BUG"
 			: "ACK is under the lower bound (possible overly delayed ACK)"
@@ -747,13 +752,13 @@ static bool tcp_in_window(const struct nf_conn *ct,
 			: "SEQ is under the lower bound (already ACKed data retransmitted)"
 			: "SEQ is over the upper bound (over the window of the receiver)");
 	}
-#endif
 
 	pr_debug("tcp_in_window: res=%u sender end=%u maxend=%u maxwin=%u "
 		 "receiver end=%u maxend=%u maxwin=%u\n",
 		 res, sender->td_end, sender->td_maxend, sender->td_maxwin,
 		 receiver->td_end, receiver->td_maxend, receiver->td_maxwin);
 
+#endif
 	return res;
 }
 
