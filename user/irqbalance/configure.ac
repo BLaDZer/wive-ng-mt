@@ -3,7 +3,7 @@ AC_PREREQ(2.12)dnl
 AM_CONFIG_HEADER(config.h)
 
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([foreign] [subdir-objects])
+AM_INIT_AUTOMAKE([foreign])
 AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
@@ -26,8 +26,6 @@ AC_CHECK_FUNCS(getopt_long)
 AC_CHECK_LIB(numa, numa_available)
 AC_CHECK_LIB(m, floor)
 
-AC_CHECK_LIB(curses, mvprintw)
-
 AC_C_CONST
 AC_C_INLINE
 AM_PROG_CC_C_O
@@ -37,10 +35,7 @@ AC_ARG_WITH([systemd],
 )
 AS_IF(
   [test "x$with_systemd" = xyes], [
-    PKG_CHECK_MODULES([SYSTEMD], [libsystemd], [journal_lib=yes], [journal_lib=no])
-    AS_IF([test "x$journal_lib" != "xyes"], [
     PKG_CHECK_MODULES([SYSTEMD], [libsystemd-journal], [journal_lib=yes])
-    ])
     AC_DEFINE(HAVE_LIBSYSTEMD, 1, [systemd support])
     AC_CHECK_LIB([systemd], [sd_journal_print_with_location])
     AC_CHECK_LIB([systemd], [sd_journal_print])
