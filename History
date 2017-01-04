@@ -2712,6 +2712,7 @@
 <br>
 <b>5.0.x</b><br>
 1) busybox: update to 1.26.1 version.<br>
+2) irqbalance: update to 04.01.2017 git version (commit bc4bd1e7).<br>
 <br>
 <br>
 <br>
