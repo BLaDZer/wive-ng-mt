@@ -359,10 +359,10 @@ static void cwmpConfig(webs_t wp, char_t *path, char_t *query)
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 19, "cwmpdEnabled", "cwmp_cpe_auth", "cwmp_acs_url", "cwmp_acs_auth", "cwmp_acs_username"
+		nvram_fromdef(RT2860_NVRAM, 21, "cwmpdEnabled", "cwmp_cpe_auth", "cwmp_acs_url", "cwmp_acs_auth", "cwmp_acs_username"
 						"cwmp_acs_password", "cwmp_cpe_auth", "cwmp_cpe_username", "cwmp_cpe_password", "cwmp_ca_file",
 						"cwmp_ca_password", "cwmp_log_level", "cwmpd_httpd_port", "cwmpd_http_timeout", "cwmpd_session_connect_timeout",
-						"cwmpd_session_response_timeout", "cwmp_cpe_manufacture", "cwmp_cpe_oui", "cwmp_cpe_pc");
+						"cwmpd_session_response_timeout", "cwmp_cpe_manufacture", "cwmp_cpe_oui", "cwmp_cpe_pc", "cwmpd_inform_periodic_enable", "cwmpd_inform_periodic_interval");
 	}
 	else {
 		char_t *cwmp_enabled = websGetVar(wp, T("cwmp_enabled"), T("0"));
@@ -392,6 +392,8 @@ static void cwmpConfig(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_manufacture",		websGetVar(wp, T("cwmp_cpe_manufacture"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_oui",			websGetVar(wp, T("cwmp_cpe_oui"), T("")));
 			nvram_bufset(RT2860_NVRAM, "cwmp_cpe_pc",			websGetVar(wp, T("cwmp_cpe_pc"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_inform_periodic_enable",	websGetVar(wp, T("cwmpd_inform_periodic_enable"), T("")));
+			nvram_bufset(RT2860_NVRAM, "cwmpd_inform_periodic_interval",	websGetVar(wp, T("cwmpd_inform_periodic_interval"), T("")));
 		}
 		else
 			nvram_bufset(RT2860_NVRAM, "cwmpdEnabled", "0");

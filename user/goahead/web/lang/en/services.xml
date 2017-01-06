@@ -98,6 +98,8 @@
 	<message msgid="services cwmp ca file"				msgstr="SSL CA File" />
 	<message msgid="services cwmp ca pass"				msgstr="SSL CA Password" />
 	<message msgid="services cwmp advanced"				msgstr="Advanced settings" />
+	<message msgid="services cwmp inform periodic"			msgstr="Periodic connect to ACS" />
+	<message msgid="services cwmp inform interval" 			msgstr="Periodic connect interval to ACS" />
 	<message msgid="services cwmp adv log level"			msgstr="Log Level" />
 	<message msgid="services cwmp adv http port"			msgstr="HTTP Port" />
 	<message msgid="services cwmp adv http timeout"			msgstr="HTTP Timeout" />

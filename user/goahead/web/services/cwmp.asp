@@ -50,6 +50,8 @@
 				_TR("cwmpLogInfo",			"services cwmp log info");
 				_TR("cwmpLogDebug",			"services cwmp log debug");
 				_TR("cwmpLogTrace",			"services cwmp log trace");
+				_TR("cwmpInformPeriodic",	"services cwmp inform periodic");
+				_TR("cwmpInformInterval",	"services cwmp inform interval");
 
 				_TRV("cwmpApply",			"button apply");
 				_TRV("cwmpCancel",			"button cancel");
@@ -61,16 +63,15 @@
 						elements[i].innerHTML = _("button disable");
 					else if (elements[i].id == "Enable")
 						elements[i].innerHTML = _("button enable");
-				
 			}
 
 			// Set inintal values
 			function initValues()
 			{
 				var i, opt, tmp;
-				
+
 				document.getElementById('cwmp_enabled').options.selectedIndex = '<% getCfgZero(1, "cwmpdEnabled"); %>'
-				
+
 				opt = document.getElementById('cwmp_acs_type').options;
 				for (var i = 0; i < opt.length;i++) {
 					if (opt[i].value == '<% getCfgGeneral(1, "cwmp_acs_type"); %>')
@@ -82,10 +83,13 @@
 				document.getElementById('cwmp_cpe_auth').options.selectedIndex = '<% getCfgZero(1, "cwmp_cpe_auth"); %>'
 				document.getElementById('cwmp_cpe_username').value = ('<% getCfgGeneral(1, "cwmp_cpe_username"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_cpe_username"); %>' : 'cwmp';
 				document.getElementById('cwmp_cpe_password').value = ('<% getCfgGeneral(1, "cwmp_cpe_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_cpe_password"); %>' : 'cwmp';
-				
+
 				document.getElementById('cwmp_acs_auth').options.selectedIndex = '<% getCfgZero(1, "cwmp_acs_auth"); %>'
 				document.getElementById('cwmp_acs_username').value = ('<% getCfgGeneral(1, "cwmp_acs_username"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_acs_username"); %>' : 'cwmp';
 				document.getElementById('cwmp_acs_password').value = ('<% getCfgGeneral(1, "cwmp_acs_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_acs_password"); %>' : 'cwmp';
+
+				document.getElementById('cwmpd_inform_periodic_enable').options.selectedIndex = '<% getCfgZero(1, "cwmpd_inform_periodic_enable"); %>';
+				document.getElementById('cwmpd_inform_periodic_interval').value = ('<% getCfgGeneral(1, "cwmpd_inform_periodic_interval"); %>' == '') ? 3600 : '<% getCfgGeneral(1, "cwmpd_inform_periodic_interval"); %>';
 
 				opt = document.getElementById('cwmpd_log_level').options;
 				tmp = '<% getCfgGeneral(1, "cwmpd_log_level"); %>';
@@ -194,7 +198,7 @@
 						document.getElementById('cwmpd_httpd_port').focus();
 						return false;
 					}
-					else 
+					else
 						document.getElementById('cwmpd_httpd_port').value = +document.getElementById('cwmpd_httpd_port').value;
 
 					// Check HTTP timeout
@@ -206,7 +210,7 @@
 						document.getElementById('cwmpd_httpd_timeout').focus();
 						return false;
 					}
-					else 
+					else
 						document.getElementById('cwmpd_httpd_timeout').value = +document.getElementById('cwmpd_httpd_timeout').value;
 
 					// Check Session Connect Timeout
@@ -218,7 +222,7 @@
 						document.getElementById('cwmpd_session_connect_timeout').focus();
 						return false;
 					}
-					else 
+					else
 						document.getElementById('cwmpd_session_connect_timeout').value = +document.getElementById('cwmpd_session_connect_timeout').value;
 
 					// Check Session Response Timeout
@@ -230,8 +234,20 @@
 						document.getElementById('cwmpd_session_response_timeout').focus();
 						return false;
 					}
-					else 
+					else
 						document.getElementById('cwmpd_session_response_timeout').value = +document.getElementById('cwmpd_session_response_timeout').value;
+
+					// Check Inform Periodic Interval
+					if (document.getElementById('cwmpd_inform_periodic_enable').value == 1 && (!re_num.test(document.getElementById('cwmpd_inform_periodic_interval').value) || document.getElementById('cwmpd_inform_periodic_interval').value <= 0)) {
+						if (statusAdvancedMenu == 0)
+							showAdvancedMenu();
+						alert(_("services cwmp uncorrect timeout"));
+						document.getElementById('cwmpd_inform_periodic_interval').select();
+						document.getElementById('cwmpd_inform_periodic_interval').focus();
+						return false;
+					}
+					else
+						document.getElementById('cwmpd_inform_periodic_interval').value = +document.getElementById('cwmpd_inform_periodic_interval').value;
 				}
 				ajaxShowTimer(document.cwmpConfig, 'timerReloader', _('message apply'), 15);
 				return true;
@@ -247,9 +263,15 @@
 								 'cwmpCPEmanifactire_tr', 'cwmpCPEoui_tr', 'cwmpCPEpc_tr' ], document.getElementById('cwmp_enabled').value == 1 && statusAdvancedMenu == 1);
 			}
 
+			// Show/hide CWMP Inform Periodic Interval
+			function cwmpPeriodicSwitch()
+			{
+				displayElement([ 'cwmpInterval_tr' ], statusAdvancedMenu == 1 && document.getElementById('cwmpd_inform_periodic_enable').value == 1);
+			}
+
 			function showAdvancedMenu() {
 				var elements = [ 'cwmpLogLevel_tr', 'cwmpHTTPport_tr', 'cwmpHTTPtimeout_tr', 'cwmpSesConnTimeout_tr', 'cwmpSesRespTimeout_tr',
-								 'cwmpCPEmanifactire_tr', 'cwmpCPEoui_tr', 'cwmpCPEpc_tr' ];
+								 'cwmpCPEmanifactire_tr', 'cwmpCPEoui_tr', 'cwmpCPEpc_tr', 'cwmpPeriodic_tr' ];
 				if (statusAdvancedMenu == 0) {
 					ajaxModifyElementHTML('cwmpAdvanced', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services cwmp advanced"));
 					statusAdvancedMenu = 1;
@@ -259,6 +281,7 @@
 					statusAdvancedMenu = 0;
 					displayElement(elements, false);
 				}
+				cwmpPeriodicSwitch();
 			}
 
 			// Display server status
@@ -382,6 +405,21 @@
 								</tr>
 								<tr id="cwmpAdvanced_tr">
 									<td class="title" colspan="3" id="cwmpAdvanced" onClick="showAdvancedMenu();">Advanced settings</td>
+								</tr>
+								<tr id="cwmpPeriodic_tr">
+									<td class="head" id="cwmpInformPeriodic">CPE Inform periodic</td>
+									<td colspan="2">
+										<select name="cwmpd_inform_periodic_enable" id="cwmpd_inform_periodic_enable" class="mid" onChange="cwmpPeriodicSwitch();">
+											<option value="0" id="Disable">Disable</option>
+											<option value="1" id="Enable">Enable</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="cwmpInterval_tr">
+									<td class="head" id="cwmpInformInterval">CPE Inform interval</td>
+									<td colspan="2">
+										<input id="cwmpd_inform_periodic_interval" name="cwmpd_inform_periodic_interval" class="mid" />
+									</td>
 								</tr>
 								<tr id="cwmpLogLevel_tr">
 									<td class="head" id="cwmpLogLevel">CPE Log Level</td>

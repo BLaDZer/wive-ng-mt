@@ -98,6 +98,8 @@
 	<message msgid="services cwmp ca file"				msgstr="Файл SSL сертификата" />
 	<message msgid="services cwmp ca pass"				msgstr="Пароль SSL сертификата" />
 	<message msgid="services cwmp advanced"				msgstr="Расширенные настройки" />
+	<message msgid="services cwmp inform periodic"			msgstr="Периодическое подключение к ACS" />
+	<message msgid="services cwmp inform interval" 			msgstr="Интервал периодического подключения к ACS" />
 	<message msgid="services cwmp adv log level"			msgstr="Уровень журналирования" />
 	<message msgid="services cwmp adv http port"			msgstr="HTTP Порт" />
 	<message msgid="services cwmp adv http timeout"			msgstr="Время ожидания HTTP" />
