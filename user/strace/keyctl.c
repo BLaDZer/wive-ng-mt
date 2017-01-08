@@ -282,7 +282,7 @@ SYS_FUNC(keyctl)
 		 * arguments.
 		 */
 		if (cmd != KEYCTL_SESSION_TO_PARENT)
-		tprints(", ");
+			tprints(", ");
 	}
 
 	switch (cmd) {

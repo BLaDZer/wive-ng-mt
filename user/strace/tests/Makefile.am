@@ -43,6 +43,7 @@ AM_LDFLAGS = $(ARCH_MFLAGS)
 libtests_a_SOURCES = \
 	errno2name.c \
 	error_msg.c \
+	fill_memory.c \
 	get_page_size.c \
 	hexdump_strdup.c \
 	hexquote_strndup.c \
@@ -50,6 +51,7 @@ libtests_a_SOURCES = \
 	libmmsg.c \
 	libsocketcall.c \
 	overflowuid.c \
+	pipe_maxfd.c \
 	print_quoted_string.c \
 	printflags.c \
 	printxval.c \
@@ -73,13 +75,16 @@ check_PROGRAMS = \
 	adjtimex \
 	aio \
 	alarm \
+	answer \
 	attach-f-p \
+	attach-f-p-cmd \
 	attach-p-cmd-cmd \
 	attach-p-cmd-p \
 	bpf \
 	brk \
 	btrfs \
 	caps \
+	caps-abbrev \
 	chmod \
 	chown \
 	chown32 \
@@ -90,6 +95,7 @@ check_PROGRAMS = \
 	copy_file_range \
 	count-f \
 	creat \
+	delete_module \
 	dup \
 	dup2 \
 	dup3 \
@@ -98,6 +104,7 @@ check_PROGRAMS = \
 	epoll_ctl \
 	epoll_pwait \
 	epoll_wait \
+	erestartsys \
 	eventfd \
 	execve \
 	execve-v \
@@ -107,7 +114,9 @@ check_PROGRAMS = \
 	fadvise64 \
 	fadvise64_64 \
 	fallocate \
+	fanotify_init \
 	fanotify_mark \
+	fault_injection \
 	fchdir \
 	fchmod \
 	fchmodat \
@@ -120,6 +129,7 @@ check_PROGRAMS = \
 	file_handle \
 	file_ioctl \
 	filter-unavailable \
+	finit_module \
 	flock \
 	fork-f \
 	fstat \
@@ -160,8 +170,13 @@ check_PROGRAMS = \
 	getuid32 \
 	getxxid \
 	inet-cmsg \
+	init_module \
+	inotify \
+	inotify_init1 \
 	ioctl \
 	ioctl_block \
+	ioctl_dm \
+	ioctl_dm-v \
 	ioctl_evdev \
 	ioctl_evdev-v \
 	ioctl_mtd \
@@ -171,12 +186,16 @@ check_PROGRAMS = \
 	ioctl_v4l2 \
 	ioperm \
 	iopl \
+	ioprio \
 	ip_mreq \
 	ipc \
 	ipc_msg \
 	ipc_msgbuf \
 	ipc_sem \
 	ipc_shm \
+	kcmp \
+	kexec_file_load \
+	kexec_load \
 	keyctl \
 	kill \
 	ksysent \
@@ -185,6 +204,7 @@ check_PROGRAMS = \
 	link \
 	linkat \
 	llseek \
+	lookup_dcookie \
 	lseek \
 	lstat \
 	lstat64 \
@@ -209,6 +229,9 @@ check_PROGRAMS = \
 	mount \
 	move_pages \
 	mq \
+	mq_sendrecv \
+	mq_sendrecv-read \
+	mq_sendrecv-write \
 	msg_control \
 	msg_control-v \
 	msg_name \
@@ -228,26 +251,41 @@ check_PROGRAMS = \
 	newfstatat \
 	nsyscalls \
 	old_mmap \
+	oldfstat \
+	oldlstat \
 	oldselect \
+	oldstat \
 	open \
 	openat \
 	pause \
 	pc \
+	perf_event_open_nonverbose \
 	perf_event_open \
+	perf_event_open_unabbrev \
 	personality \
 	pipe \
+	pkey_alloc \
+	pkey_free \
+	pkey_mprotect \
 	poll \
 	ppoll \
+	prctl-name \
+	prctl-pdeathsig \
 	prctl-seccomp-filter-v \
 	prctl-seccomp-strict \
+	prctl-tsc \
 	pread64-pwrite64 \
 	preadv \
 	preadv-pwritev \
 	preadv2-pwritev2 \
+	print_maxfd \
 	prlimit64 \
+	process_vm_readv \
+	process_vm_writev \
 	pselect6 \
 	ptrace \
 	pwritev \
+	qual_signal \
 	quotactl \
 	quotactl-v \
 	quotactl-xfs \
@@ -303,6 +341,7 @@ check_PROGRAMS = \
 	setgroups \
 	setgroups32 \
 	sethostname \
+	setns \
 	setregid \
 	setregid32 \
 	setresgid \
@@ -339,6 +378,7 @@ check_PROGRAMS = \
 	sysinfo \
 	syslog \
 	tee \
+	threads-execve \
 	time \
 	timer_create \
 	timer_xettime \
@@ -360,6 +400,7 @@ check_PROGRAMS = \
 	unix-pair-sendto-recvfrom \
 	unlink \
 	unlinkat \
+	unshare \
 	userfaultfd \
 	utime \
 	utimensat \
@@ -390,6 +431,9 @@ ftruncate64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 lstat64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 mmap64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 mq_LDADD = -lrt $(LDADD)
+mq_sendrecv_LDADD = -lrt $(LDADD)
+mq_sendrecv_read_LDADD = -lrt $(LDADD)
+mq_sendrecv_write_LDADD = -lrt $(LDADD)
 newfstatat_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 pc_LDADD = $(dl_LIBS) $(LDADD)
 pread64_pwrite64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
@@ -398,6 +442,7 @@ preadv_pwritev_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 pwritev_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 stat64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 statfs_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
+threads_execve_LDADD = -lrt -lpthread $(LDADD)
 times_LDADD = -lrt $(LDADD)
 truncate64_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
 uio_CPPFLAGS = $(AM_CPPFLAGS) -D_FILE_OFFSET_BITS=64
@@ -428,6 +473,7 @@ DECODER_TESTS = \
 	btrfs-w.test \
 	btrfs-vw.test \
 	caps.test \
+	caps-abbrev.test \
 	chmod.test \
 	chown.test \
 	chown32.test \
@@ -437,6 +483,7 @@ DECODER_TESTS = \
 	clock_xettime.test \
 	copy_file_range.test \
 	creat.test \
+	delete_module.test \
 	dup.test \
 	dup2.test \
 	dup3.test \
@@ -445,6 +492,7 @@ DECODER_TESTS = \
 	epoll_ctl.test \
 	epoll_pwait.test \
 	epoll_wait.test \
+	erestartsys.test \
 	eventfd.test \
 	execve-v.test \
 	execve.test \
@@ -454,7 +502,9 @@ DECODER_TESTS = \
 	fadvise64.test \
 	fadvise64_64.test \
 	fallocate.test \
+	fanotify_init.test \
 	fanotify_mark.test \
+	fault_injection-exit_group.test \
 	fchdir.test \
 	fchmod.test \
 	fchmodat.test \
@@ -466,6 +516,7 @@ DECODER_TESTS = \
 	fdatasync.test \
 	file_handle.test \
 	file_ioctl.test \
+	finit_module.test \
 	flock.test \
 	fstat.test \
 	fstat64.test \
@@ -505,8 +556,13 @@ DECODER_TESTS = \
 	getuid32.test \
 	getxxid.test \
 	inet-cmsg.test \
+	init_module.test \
+	inotify.test \
+	inotify_init1.test \
 	ioctl.test \
 	ioctl_block.test \
+	ioctl_dm.test \
+	ioctl_dm-v.test \
 	ioctl_evdev.test \
 	ioctl_evdev-v.test \
 	ioctl_mtd.test \
@@ -516,12 +572,16 @@ DECODER_TESTS = \
 	ioctl_v4l2.test \
 	ioperm.test \
 	iopl.test \
+	ioprio.test \
 	ip_mreq.test \
 	ipc.test \
 	ipc_msg.test \
 	ipc_msgbuf.test \
 	ipc_sem.test \
 	ipc_shm.test \
+	kcmp.test \
+	kexec_file_load.test \
+	kexec_load.test \
 	keyctl.test \
 	kill.test \
 	lchown.test \
@@ -529,6 +589,7 @@ DECODER_TESTS = \
 	link.test \
 	linkat.test \
 	llseek.test \
+	lookup_dcookie.test \
 	lseek.test \
 	lstat.test \
 	lstat64.test \
@@ -553,6 +614,9 @@ DECODER_TESTS = \
 	mount.test \
 	move_pages.test \
 	mq.test \
+	mq_sendrecv.test \
+	mq_sendrecv-read.test \
+	mq_sendrecv-write.test \
 	msg_control.test \
 	msg_control-v.test \
 	msg_name.test \
@@ -569,22 +633,35 @@ DECODER_TESTS = \
 	newfstatat.test \
 	nsyscalls.test \
 	old_mmap.test \
+	oldfstat.test \
+	oldlstat.test \
 	oldselect.test \
+	oldstat.test \
 	open.test \
 	openat.test \
 	pause.test \
+	perf_event_open_nonverbose.test \
 	perf_event_open.test \
+	perf_event_open_unabbrev.test \
 	personality.test \
 	pipe.test \
+	pkey_alloc.test \
+	pkey_free.test \
+	pkey_mprotect.test \
 	poll.test \
 	ppoll.test \
+	prctl-name.test \
+	prctl-pdeathsig.test \
 	prctl-seccomp-filter-v.test \
 	prctl-seccomp-strict.test \
+	prctl-tsc.test \
 	pread64-pwrite64.test \
 	preadv-pwritev.test \
 	preadv2-pwritev2.test \
 	preadv.test \
 	prlimit64.test \
+	process_vm_readv.test \
+	process_vm_writev.test \
 	pselect6.test \
 	ptrace.test \
 	pwritev.test \
@@ -640,6 +717,7 @@ DECODER_TESTS = \
 	setgroups.test \
 	setgroups32.test \
 	sethostname.test \
+	setns.test \
 	setregid.test \
 	setregid32.test \
 	setresgid.test \
@@ -695,6 +773,7 @@ DECODER_TESTS = \
 	unix-pair-sendto-recvfrom.test \
 	unlink.test \
 	unlinkat.test \
+	unshare.test \
 	userfaultfd.test \
 	utime.test \
 	utimensat.test \
@@ -723,16 +802,21 @@ MISC_TESTS = \
 	detach-running.test \
 	detach-sleeping.test \
 	detach-stopped.test \
+	fault_injection.test \
+	fault_syntax.test \
 	filter-unavailable.test \
 	fork-f.test \
 	ksysent.test \
 	opipe.test \
+	options-syntax.test \
 	pc.test \
+	qual_signal.test \
 	qual_syscall.test \
 	redirect.test \
 	redirect-fds.test \
 	restart_syscall.test \
 	signal_receive.test \
+	strace-C.test \
 	strace-E.test \
 	strace-S.test \
 	strace-T.test \
@@ -742,6 +826,7 @@ MISC_TESTS = \
 	strace-t.test \
 	strace-tt.test \
 	strace-ttt.test \
+	threads-execve.test \
 	vfork-f.test \
 	# end of MISC_TESTS
 
@@ -755,15 +840,23 @@ XFAIL_TESTS = $(XFAIL_TESTS_$(MPERS_NAME))
 TEST_LOG_COMPILER = env
 AM_TEST_LOG_FLAGS = STRACE_ARCH=$(ARCH) MIPS_ABI=$(MIPS_ABI) $(srcdir)/run.sh
 
+@VALGRIND_CHECK_RULES@
+VALGRIND_FLAGS = --quiet
+VALGRIND_SUPPRESSIONS_FILES = $(srcdir)/strace.supp
+
 EXTRA_DIST = init.sh run.sh match.awk \
 	     caps.awk \
+	     caps-abbrev.awk \
 	     count-f.expected \
 	     eventfd.expected \
 	     fadvise.h \
+	     fault_injection-exit_group.expected \
+	     fault_injection.sh \
 	     filter-unavailable.expected \
 	     fstatat.c \
 	     fstatx.c \
 	     getresugid.c \
+	     init_delete_module.h \
 	     ipc.sh \
 	     ipc_msgbuf.expected \
 	     ksysent.sed \
@@ -774,6 +867,7 @@ EXTRA_DIST = init.sh run.sh match.awk \
 	     pipe.expected \
 	     ppoll.expected \
 	     ppoll-v.expected \
+	     process_vm_readv_writev.c \
 	     quotactl.h \
 	     setfsugid.c \
 	     setreugid.c \
@@ -784,6 +878,8 @@ EXTRA_DIST = init.sh run.sh match.awk \
 	     sockname.c \
 	     statfs.expected \
 	     statx.sh \
+	     strace.supp \
+	     strace-C.expected \
 	     strace-E.expected \
 	     strace-T.expected \
 	     strace-ff.expected \

@@ -30,13 +30,13 @@
 
 #ifdef __NR_ftruncate64
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)
 {
-	const off_t len = 0xdefaceddeadbeef;
+	const off_t len = 0xdefaceddeadbeefULL;
 
 	int rc = ftruncate(-1, len);
 	printf("ftruncate64(-1, %llu) = %d %s (%m)\n",

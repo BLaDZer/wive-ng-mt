@@ -30,10 +30,10 @@
 
 #ifdef HAVE_MQUEUE_H
 
-#include <fcntl.h>
-#include <mqueue.h>
-#include <stdlib.h>
-#include <unistd.h>
+# include <fcntl.h>
+# include <mqueue.h>
+# include <stdlib.h>
+# include <unistd.h>
 # include <sys/stat.h>
 
 int

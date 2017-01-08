@@ -43,6 +43,7 @@ extern const struct xlat mtd_type_options[];
 extern const struct xlat mtd_flags_options[];
 extern const struct xlat mtd_otp_options[];
 extern const struct xlat mtd_nandecc_options[];
+extern const struct xlat mq_attr_flags[];
 extern const struct xlat sigev_value[];
 extern const struct xlat adjtimex_modes[];
 extern const struct xlat adjtimex_status[];

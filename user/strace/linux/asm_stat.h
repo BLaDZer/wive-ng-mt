@@ -1,7 +1,7 @@
 #ifndef STRACE_ASM_STAT_H
 #define STRACE_ASM_STAT_H
 
-#include "kernel_types.h"
+# include "kernel_types.h"
 
 # undef dev_t
 # undef gid_t
@@ -25,7 +25,7 @@
 # define time_t		__kernel_time_t
 # define uid_t		__kernel_uid_t
 
-#include <asm/stat.h>
+# include <asm/stat.h>
 
 # undef dev_t
 # undef gid_t

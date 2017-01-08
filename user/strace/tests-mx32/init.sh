@@ -166,7 +166,7 @@ match_diff()
 # dump both files and fail with ERROR_MESSAGE.
 match_grep()
 {
-	local output patterns error pattern failed=
+	local output patterns error pattern cnt failed=
 	if [ $# -eq 0 ]; then
 		output="$LOG"
 	else
@@ -186,14 +186,16 @@ match_grep()
 	check_prog wc
 	check_prog grep
 
+	cnt=1
 	while read -r pattern; do
 		LC_ALL=C grep -E -x -e "$pattern" < "$output" > /dev/null || {
 			test -n "$failed" || {
 				echo 'Failed patterns of expected output:'
 				failed=1
 			}
-			printf '%s\n' "$pattern"
+			printf '#%d: %s\n' "$cnt" "$pattern"
 		}
+		cnt=$(($cnt + 1))
 	done < "$patterns"
 	test -z "$failed" || {
 		echo 'Actual output:'
@@ -214,12 +216,55 @@ run_strace_match_diff()
 	rm -f "$EXP"
 }
 
+# Print kernel version code.
+# usage: kernel_version_code $(uname -r)
+kernel_version_code()
+{
+	(
+		set -f
+		IFS=.
+		set -- $1
+		v1="${1%%[!0-9]*}" && [ -n "$v1" ] || v1=0
+		v2="${2%%[!0-9]*}" && [ -n "$v2" ] || v2=0
+		v3="${3%%[!0-9]*}" && [ -n "$v3" ] || v3=0
+		echo "$(($v1 * 65536 + $v2 * 256 + $v3))"
+	)
+}
+
+# Usage: require_min_kernel_version_or_skip 3.0
+require_min_kernel_version_or_skip()
+{
+	local uname_r
+	uname_r="$(uname -r)"
+
+	[ "$(kernel_version_code "$uname_r")" -ge \
+	  "$(kernel_version_code "$1")" ] ||
+		skip_ "the kernel release $uname_r is not $1 or newer"
+}
+
+# Usage: grep_pid_status $pid GREP-OPTIONS...
+grep_pid_status()
+{
+	local pid
+	pid=$1; shift
+	cat < "/proc/$pid/status" | grep "$@"
+}
+
 check_prog cat
 check_prog rm
 
 rm -f "$LOG"
 
-: "${STRACE:=../strace}"
+[ -n "${STRACE-}" ] || {
+	STRACE=../strace
+	case "${LOG_COMPILER-} ${LOG_FLAGS-}" in
+		*--suppressions=*--error-exitcode=*--tool=*)
+			# add valgrind command prefix
+			STRACE="${LOG_COMPILER-} ${LOG_FLAGS-} $STRACE"
+			;;
+	esac
+}
+
 : "${TIMEOUT_DURATION:=60}"
 : "${SLEEP_A_BIT:=sleep 1}"
 

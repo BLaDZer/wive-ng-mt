@@ -31,8 +31,8 @@
 
 #ifdef __NR_readlinkat
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
 # define PREFIX "test.readlinkat"
 # define TARGET (PREFIX ".target")

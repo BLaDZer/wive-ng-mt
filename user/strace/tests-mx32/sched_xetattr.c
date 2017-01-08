@@ -30,22 +30,22 @@
 
 #if defined __NR_sched_getattr && defined __NR_sched_setattr
 
-#include <inttypes.h>
+# include <inttypes.h>
 # include <stdio.h>
-#include <unistd.h>
+# include <unistd.h>
 
 int
 main(void)
 {
-		struct {
-			uint32_t size;
-			uint32_t sched_policy;
-			uint64_t sched_flags;
+	struct {
+		uint32_t size;
+		uint32_t sched_policy;
+		uint64_t sched_flags;
 		int32_t  sched_nice;
-			uint32_t sched_priority;
-			uint64_t sched_runtime;
-			uint64_t sched_deadline;
-			uint64_t sched_period;
+		uint32_t sched_priority;
+		uint64_t sched_runtime;
+		uint64_t sched_deadline;
+		uint64_t sched_period;
 	} *sched_attr = tail_alloc(sizeof(*sched_attr));
 
 	long rc = syscall(__NR_sched_getattr, 0xdeadface, NULL, 0, 0);
@@ -88,7 +88,7 @@ main(void)
 	       ", sched_runtime=%" PRIu64 ", sched_deadline=%" PRIu64
 	       ", sched_period=%" PRIu64 "\\}, 0\\) += 0\n",
 	       sched_attr->size,
-		"SCHED_FLAG_RESET_ON_FORK",
+	       "SCHED_FLAG_RESET_ON_FORK",
 	       sched_attr->sched_nice,
 	       sched_attr->sched_priority,
 	       sched_attr->sched_runtime,

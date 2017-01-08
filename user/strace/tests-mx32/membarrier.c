@@ -31,9 +31,9 @@
 #ifdef __NR_membarrier
 
 # include <assert.h>
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
+# include <errno.h>
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)

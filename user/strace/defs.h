@@ -35,11 +35,11 @@
 #endif
 
 #include <features.h>
-# include <stdbool.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include <sys/types.h>
-# include <stddef.h>
+#include <stddef.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -68,7 +68,12 @@ const char *strerror(int);
 extern char *stpcpy(char *dst, const char *src);
 #endif
 
-#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+#ifndef offsetofend
+# define offsetofend(type, member) \
+	(offsetof(type, member) + sizeof(((type *)NULL)->member))
+#endif
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]) + MUST_BE_ARRAY(a))
 
 /* macros */
 #ifndef MAX
@@ -157,14 +162,14 @@ extern char *stpcpy(char *dst, const char *src);
 #endif
 
 #if defined TILE && defined __tilepro__
-#  define DEFAULT_PERSONALITY 1
+# define DEFAULT_PERSONALITY 1
 #else
 # define DEFAULT_PERSONALITY 0
 #endif
 
 #define PERSONALITY0_WORDSIZE SIZEOF_LONG
-# define PERSONALITY0_INCLUDE_PRINTERS_DECLS "native_printer_decls.h"
-# define PERSONALITY0_INCLUDE_PRINTERS_DEFS "native_printer_defs.h"
+#define PERSONALITY0_INCLUDE_PRINTERS_DECLS "native_printer_decls.h"
+#define PERSONALITY0_INCLUDE_PRINTERS_DEFS "native_printer_defs.h"
 
 #if SUPPORTED_PERSONALITIES > 1
 # define PERSONALITY1_WORDSIZE 4
@@ -205,6 +210,12 @@ typedef struct ioctlent {
 	unsigned int code;
 } struct_ioctlent;
 
+struct fault_opts {
+	uint16_t first;
+	uint16_t step;
+	uint16_t err;
+};
+
 #if defined LINUX_MIPSN32 || defined X32
 # define HAVE_STRUCT_TCB_EXT_ARG 1
 #else
@@ -235,6 +246,7 @@ struct tcb {
 	void (*_free_priv_data)(void *); /* Callback for freeing priv_data */
 	const struct_sysent *s_ent; /* sysent[scno] or dummy struct for bad scno */
 	const struct_sysent *s_prev_ent; /* for "resuming interrupted SYSCALL" msg */
+	struct fault_opts *fault_vec[SUPPORTED_PERSONALITIES];
 	struct timeval stime;	/* System time usage as of last process wait */
 	struct timeval dtime;	/* Delta for system time usage */
 	struct timeval etime;	/* Syscall entry time */
@@ -271,16 +283,19 @@ struct tcb {
 #define TCB_ATTACHED	0x08	/* We attached to it already */
 #define TCB_REPRINT	0x10	/* We should reprint this syscall on exit */
 #define TCB_FILTERED	0x20	/* This system call has been filtered out */
+#define TCB_FAULT_INJ	0x40	/* A syscall fault has been injected */
+#define TCB_HIDE_LOG	0x80	/* We should hide everything (until execve) */
+#define TCB_SKIP_DETACH_ON_FIRST_EXEC	0x100	/* -b execve should skip detach on first execve */
 
 /* qualifier flags */
 #define QUAL_TRACE	0x001	/* this system call should be traced */
 #define QUAL_ABBREV	0x002	/* abbreviate the structures of this syscall */
 #define QUAL_VERBOSE	0x004	/* decode the structures of this syscall */
 #define QUAL_RAW	0x008	/* print all args in hex for this syscall */
-#define QUAL_SIGNAL	0x010	/* report events with this signal */
-#define QUAL_READ	0x020	/* dump data read on this file descriptor */
-#define QUAL_WRITE	0x040	/* dump data written to this file descriptor */
-typedef uint8_t qualbits_t;
+#define QUAL_FAULT	0x010	/* fail this system call on purpose */
+#define QUAL_SIGNAL	0x100	/* report events with this signal */
+#define QUAL_READ	0x200	/* dump data read from this file descriptor */
+#define QUAL_WRITE	0x400	/* dump data written to this file descriptor */
 
 #define DEFAULT_QUAL_FLAGS (QUAL_TRACE | QUAL_ABBREV | QUAL_VERBOSE)
 
@@ -290,6 +305,7 @@ typedef uint8_t qualbits_t;
 #define verbose(tcp)	((tcp)->qual_flg & QUAL_VERBOSE)
 #define abbrev(tcp)	((tcp)->qual_flg & QUAL_ABBREV)
 #define filtered(tcp)	((tcp)->flags & TCB_FILTERED)
+#define hide_log(tcp)	((tcp)->flags & TCB_HIDE_LOG)
 
 #include "xlat.h"
 
@@ -389,7 +405,6 @@ extern bool count_wallclock;
 extern unsigned int qflag;
 extern bool not_failing_only;
 extern unsigned int show_fd_path;
-extern bool hide_log_until_execve;
 /* are we filtering traces based on paths? */
 extern const char **paths_selected;
 #define tracing_paths (paths_selected != NULL)
@@ -436,7 +451,6 @@ extern int read_int_from_file(const char *, int *);
 
 extern void set_sortby(const char *);
 extern void set_overhead(int);
-extern void qualify(const char *);
 extern void print_pc(struct tcb *);
 extern int trace_syscall(struct tcb *);
 extern void count_syscall(struct tcb *, const struct timeval *);
@@ -445,6 +459,13 @@ extern void call_summary(FILE *);
 extern void clear_regs(void);
 extern void get_regs(pid_t pid);
 extern int get_scno(struct tcb *tcp);
+/**
+ * Convert syscall number to syscall name.
+ *
+ * @param scno Syscall number.
+ * @return     String literal corresponding to the syscall number in case latter
+ *             is valid; NULL otherwise.
+ */
 extern const char *syscall_name(long scno);
 extern const char *err_name(unsigned long err);
 
@@ -473,8 +494,12 @@ extern int umoven(struct tcb *, long, unsigned int, void *);
 extern int umoven_or_printaddr(struct tcb *, long, unsigned int, void *);
 #define umove_or_printaddr(pid, addr, objp)	\
 	umoven_or_printaddr((pid), (addr), sizeof(*(objp)), (void *) (objp))
+extern int
+umoven_or_printaddr_ignore_syserror(struct tcb *tcp, const long addr,
+				    const unsigned int len, void *our_addr);
 extern int umovestr(struct tcb *, long, unsigned int, char *);
 extern int upeek(int pid, long, long *);
+extern int upoke(int pid, long, long);
 
 extern bool
 print_array(struct tcb *tcp,
@@ -510,11 +535,19 @@ extern const char *xlookup(const struct xlat *, const uint64_t);
 extern const char *xlat_search(const struct xlat *, const size_t, const uint64_t);
 
 extern unsigned long get_pagesize(void);
+extern int
+string_to_uint_ex(const char *str, char **endptr,
+		  unsigned int max_val, const char *accepted_ending);
 extern int string_to_uint(const char *str);
+static inline int
+string_to_uint_upto(const char *const str, unsigned int max_val)
+{
+	return string_to_uint_ex(str, NULL, max_val, NULL);
+}
 extern int next_set_bit(const void *bit_array, unsigned cur_bit, unsigned size_bits);
 
-#define QUOTE_0_TERMINATED			0x01
-#define QUOTE_OMIT_LEADING_TRAILING_QUOTES	0x02
+#define QUOTE_0_TERMINATED                      0x01
+#define QUOTE_OMIT_LEADING_TRAILING_QUOTES      0x02
 #define QUOTE_OMIT_TRAILING_0                   0x08
 
 extern int string_quote(const char *, char *, unsigned int, unsigned int);
@@ -534,9 +567,13 @@ extern int getllval(struct tcb *, unsigned long long *, int);
 extern int printllval(struct tcb *, const char *, int)
 	ATTRIBUTE_FORMAT((printf, 2, 0));
 
-extern void printaddr(long);
-extern void printxvals(const uint64_t, const char *, const struct xlat *, ...)
+extern void printaddr_ull(unsigned long long);
+extern int printxvals(const uint64_t, const char *, const struct xlat *, ...)
 	ATTRIBUTE_SENTINEL;
+extern int printxval_searchn(const struct xlat *xlat, size_t xlat_size,
+	uint64_t val, const char *dflt);
+#define printxval_search(xlat__, val__, dflt__) \
+	printxval_searchn(xlat__, ARRAY_SIZE(xlat__), val__, dflt__)
 extern long long getarg_ll(struct tcb *tcp, int argn);
 extern unsigned long long getarg_ull(struct tcb *tcp, int argn);
 extern int printargs(struct tcb *);
@@ -605,13 +642,6 @@ extern bool print_sockaddr_by_inode(const unsigned long, const enum sock_proto);
 extern bool print_sockaddr_by_inode_cached(const unsigned long);
 extern void print_dirfd(struct tcb *, int);
 extern int decode_sockaddr(struct tcb *, long, int);
-#ifdef ALPHA
-extern void printrusage32(struct tcb *, long);
-extern const char *sprint_timeval32(struct tcb *tcp, long);
-extern void print_timeval32(struct tcb *tcp, long);
-extern void print_timeval32_pair(struct tcb *tcp, long);
-extern void print_itimerval32(struct tcb *tcp, long);
-#endif
 extern void printuid(const char *, const unsigned int);
 extern void print_sigset_addr_len(struct tcb *, long, long);
 extern const char *sprintsigmask_n(const char *, const void *, unsigned int);
@@ -636,6 +666,16 @@ extern void print_struct_statfs64(struct tcb *tcp, long, unsigned long);
 
 extern void print_ifindex(unsigned int);
 
+struct number_set;
+extern struct number_set read_set;
+extern struct number_set write_set;
+extern struct number_set signal_set;
+
+extern bool is_number_in_set(unsigned int number, const struct number_set *);
+extern void qualify(const char *);
+extern unsigned int qual_flags(const unsigned int);
+
+extern int dm_ioctl(struct tcb *, const unsigned int, long);
 extern int file_ioctl(struct tcb *, const unsigned int, long);
 extern int fs_x_ioctl(struct tcb *, const unsigned int, long);
 extern int loop_ioctl(struct tcb *, const unsigned int, long);
@@ -664,6 +704,12 @@ extern void unwind_capture_stacktrace(struct tcb* tcp);
 #endif
 
 static inline void
+printaddr(unsigned long addr)
+{
+	printaddr_ull(addr);
+}
+
+static inline void
 printstr(struct tcb *tcp, long addr, long len)
 {
 	printstr_ex(tcp, addr, len, 0);
@@ -681,23 +727,36 @@ printflags_long(const struct xlat *x, unsigned long flags, const char *dflt)
 	return printflags64(x, flags, dflt);
 }
 
-static inline void
+static inline int
 printxval64(const struct xlat *x, const uint64_t val, const char *dflt)
 {
-	printxvals(val, dflt, x, NULL);
+	return printxvals(val, dflt, x, NULL);
 }
 
-static inline void
+static inline int
 printxval(const struct xlat *x, const unsigned int val, const char *dflt)
 {
-	printxvals(val, dflt, x, NULL);
+	return printxvals(val, dflt, x, NULL);
 }
 
-static inline void
+static inline int
 printxval_long(const struct xlat *x, const unsigned long val, const char *dflt)
 {
-	printxvals(val, dflt, x, NULL);
+	return printxvals(val, dflt, x, NULL);
 }
+
+#ifdef ALPHA
+typedef struct {
+	int tv_sec, tv_usec;
+} timeval32_t;
+
+extern void print_timeval32_t(const timeval32_t *);
+extern void printrusage32(struct tcb *, long);
+extern const char *sprint_timeval32(struct tcb *tcp, long);
+extern void print_timeval32(struct tcb *tcp, long);
+extern void print_timeval32_pair(struct tcb *tcp, long);
+extern void print_itimerval32(struct tcb *tcp, long);
+#endif
 
 /* Strace log generation machinery.
  *
@@ -751,6 +810,14 @@ extern unsigned current_wordsize;
 # define widen_to_long(v) ((long)(v))
 #endif
 
+#if SUPPORTED_PERSONALITIES > 1 && SIZEOF_LONG > 4
+# define widen_to_ulong(v) \
+	(current_wordsize == 4 ? (unsigned long) (uint32_t) (v) : \
+		(unsigned long) (v))
+#else
+# define widen_to_ulong(v) ((unsigned long)(v))
+#endif
+
 /*
  * Zero-extend a signed integer type to unsigned long long.
  */
@@ -775,8 +842,6 @@ extern const struct_sysent sysent0[];
 extern const char *const errnoent0[];
 extern const char *const signalent0[];
 extern const struct_ioctlent ioctlent0[];
-extern qualbits_t *qual_vec[SUPPORTED_PERSONALITIES];
-#define qual_flags (qual_vec[current_personality])
 
 #if SUPPORTED_PERSONALITIES > 1
 extern const struct_sysent *sysent;
@@ -794,17 +859,20 @@ extern unsigned nsyscalls;
 extern unsigned nerrnos;
 extern unsigned nsignals;
 extern unsigned nioctlents;
-extern unsigned num_quals;
+
+extern const unsigned int nsyscall_vec[SUPPORTED_PERSONALITIES];
+extern const struct_sysent *const sysent_vec[SUPPORTED_PERSONALITIES];
+extern struct fault_opts *fault_vec[SUPPORTED_PERSONALITIES];
 
 #ifdef IN_MPERS_BOOTSTRAP
 /* Transform multi-line MPERS_PRINTER_DECL statements to one-liners.  */
 # define MPERS_PRINTER_DECL(type, name, ...) MPERS_PRINTER_DECL(type, name, __VA_ARGS__)
 #else /* !IN_MPERS_BOOTSTRAP */
-#if SUPPORTED_PERSONALITIES > 1
-# include "printers.h"
-#else
-# include "native_printer_decls.h"
-#endif
+# if SUPPORTED_PERSONALITIES > 1
+#  include "printers.h"
+# else
+#  include "native_printer_decls.h"
+# endif
 # define MPERS_PRINTER_DECL(type, name, ...) type MPERS_FUNC_NAME(name)(__VA_ARGS__)
 #endif /* !IN_MPERS_BOOTSTRAP */
 

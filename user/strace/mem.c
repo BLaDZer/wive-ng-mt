@@ -102,10 +102,10 @@ SYS_FUNC(old_mmap)
 	unsigned int i;
 	for (i = 0; i < 6; i++)
 		u_arg[i] = narrow_arg[i];
-#else
+# else
 	if (umove_or_printaddr(tcp, tcp->u_arg[0], &u_arg))
 		return RVAL_DECODED | RVAL_HEX;
-#endif
+# endif
 	print_mmap(tcp, u_arg, (unsigned long) u_arg[5]);
 
 	return RVAL_DECODED | RVAL_HEX;
@@ -182,13 +182,27 @@ SYS_FUNC(munmap)
 	return RVAL_DECODED;
 }
 
-SYS_FUNC(mprotect)
+static int
+do_mprotect(struct tcb *tcp, bool has_pkey)
 {
 	printaddr(tcp->u_arg[0]);
 	tprintf(", %lu, ", tcp->u_arg[1]);
 	printflags_long(mmap_prot, tcp->u_arg[2], "PROT_???");
 
+	if (has_pkey)
+		tprintf(", %d", (int) tcp->u_arg[3]);
+
 	return RVAL_DECODED;
+}
+
+SYS_FUNC(mprotect)
+{
+	return do_mprotect(tcp, false);
+}
+
+SYS_FUNC(pkey_mprotect)
+{
+	return do_mprotect(tcp, true);
 }
 
 #include "xlat/mremap_flags.h"
@@ -273,6 +287,8 @@ SYS_FUNC(mincore)
 			unsigned long i;
 			tprints("[");
 			for (i = 0; i < len; i++) {
+				if (i)
+					tprints(", ");
 				if (abbrev(tcp) && i >= max_strlen) {
 					tprints("...");
 					break;

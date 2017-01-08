@@ -1,7 +1,7 @@
 /*
  * Check decoding of add_key syscall.
  *
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,9 +65,6 @@ do_add_key(const char *type, const char *type_str, const char *desc,
 	printf(") = %s\n", errstr);
 }
 
-# define _STR(_arg) #_arg
-# define ARG_STR(_arg) (_arg), #_arg
-
 int
 main(void)
 {
@@ -90,7 +87,7 @@ main(void)
 		const char *str;
 	} types[] = {
 		{ ARG_STR(NULL) },
-		{ (const char *) 0xfffffee1fffffbadULL, NULL },
+		{ bogus_type + sizeof(unterminated1), NULL },
 		{ bogus_type, NULL },
 		{ ARG_STR("\20\21\22\23\24") },
 		{ ARG_STR("user") },
@@ -101,7 +98,7 @@ main(void)
 		const char *str;
 	} descs[] = {
 		{ ARG_STR(NULL) },
-		{ (const char *) 0xfffff00dfffffca7ULL, NULL },
+		{ bogus_desc + sizeof(unterminated2), NULL },
 		{ bogus_desc, NULL },
 		{ ARG_STR("\25\26\27\30\31") },
 		{ ARG_STR("desc") },
@@ -114,7 +111,7 @@ main(void)
 		size_t plen;
 	} payloads[] = {
 		{ ARG_STR(NULL), 0 },
-		{ (const char *) 0xfffffacefffff157ULL, NULL,
+		{ bogus_payload + sizeof(unterminated3), NULL,
 			(size_t) 0xdeadbeefbadc0dedULL },
 		{ bogus_payload, _STR(""), 0 },
 		{ bogus_payload, _STR("\16\17\20\21\22"), 5 },

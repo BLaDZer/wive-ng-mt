@@ -47,11 +47,11 @@ printargv(struct tcb *tcp, long addr)
 	unsigned int n;
 
 	for (n = 0; addr; sep = ", ", addr += wordsize, ++n) {
-	union {
-		unsigned int p32;
-		unsigned long p64;
-		char data[sizeof(long)];
-	} cp;
+		union {
+			unsigned int p32;
+			unsigned long p64;
+			char data[sizeof(long)];
+		} cp;
 
 		if (umoven(tcp, addr, wordsize, cp.data)) {
 			if (sep == start_sep)
@@ -64,9 +64,9 @@ printargv(struct tcb *tcp, long addr)
 			if (sep == start_sep)
 				tprints(start_sep);
 			break;
-	}
+		}
 		if (abbrev(tcp) && n >= max_strlen) {
-		tprintf("%s...", sep);
+			tprintf("%s...", sep);
 			break;
 		}
 		tprints(sep);
@@ -110,7 +110,7 @@ decode_execve(struct tcb *tcp, const unsigned int index)
 	printpath(tcp, tcp->u_arg[index + 0]);
 	tprints(", ");
 
-		printargv(tcp, tcp->u_arg[index + 1]);
+	printargv(tcp, tcp->u_arg[index + 1]);
 	tprints(", ");
 
 	(abbrev(tcp) ? printargc : printargv) (tcp, tcp->u_arg[index + 2]);
@@ -138,7 +138,7 @@ SYS_FUNC(execv)
 {
 	printpath(tcp, tcp->u_arg[0]);
 	tprints(", ");
-		printargv(tcp, tcp->u_arg[1]);
+	printargv(tcp, tcp->u_arg[1]);
 
 	return RVAL_DECODED;
 }

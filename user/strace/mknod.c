@@ -35,7 +35,7 @@
 
 #include <fcntl.h>
 #include <sys/stat.h>
-# include <sys/sysmacros.h>
+#include <sys/sysmacros.h>
 
 static void
 decode_mknod(struct tcb *tcp, int offset)

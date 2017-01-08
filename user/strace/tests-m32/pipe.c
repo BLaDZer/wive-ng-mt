@@ -29,9 +29,9 @@
 
 #ifdef HAVE_PIPE2
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include <unistd.h>
 
 int
 main(void)

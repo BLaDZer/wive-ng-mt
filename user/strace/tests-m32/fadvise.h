@@ -1,7 +1,7 @@
 /*
  * Common definitions for fadvise64 and fadvise64_64 tests.
  *
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
@@ -37,13 +37,6 @@
 
 # include "xlat.h"
 # include "xlat/advise.h"
-
-# if WORDS_BIGENDIAN
-#  define LL_PAIR(HI, LO) (HI), (LO)
-# else
-#  define LL_PAIR(HI, LO) (LO), (HI)
-# endif
-# define LL_VAL_TO_PAIR(llval) LL_PAIR((long) ((llval) >> 32), (long) (llval))
 
 static void do_fadvise(long fd, long long offset, long long llen, long advice);
 

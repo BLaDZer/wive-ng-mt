@@ -30,10 +30,10 @@
 
 #ifdef __NR_ftruncate
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
-#include "kernel_types.h"
+# include "kernel_types.h"
 
 int
 main(void)

@@ -32,10 +32,10 @@
 
 #ifdef __NR_time
 
-#include <time.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <unistd.h>
+# include <time.h>
+# include <stdio.h>
+# include <stdint.h>
+# include <unistd.h>
 
 int
 main(void)

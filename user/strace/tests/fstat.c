@@ -32,8 +32,8 @@
 
 # define TEST_SYSCALL_NR __NR_fstat
 # define TEST_SYSCALL_STR "fstat"
-# define SAMPLE_SIZE ((kernel_ulong_t) 43147718418)
-#include "fstatx.c"
+# define SAMPLE_SIZE ((kernel_ulong_t) 43147718418ULL)
+# include "fstatx.c"
 
 #else
 

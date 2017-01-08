@@ -30,8 +30,8 @@
 
 #if defined __NR_get_robust_list && defined __NR_set_robust_list
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)

@@ -29,10 +29,10 @@
 
 #if defined(HAVE_PREADV) && defined(HAVE_PWRITEV)
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/uio.h>
-#include <assert.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/uio.h>
+# include <assert.h>
 
 int
 main(void)

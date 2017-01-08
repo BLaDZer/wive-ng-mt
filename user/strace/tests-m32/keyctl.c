@@ -1,7 +1,7 @@
 /*
  * Check decoding of keyctl syscall.
  *
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -128,7 +128,8 @@ print_arg(kernel_ulong_t arg, const char *str, const char *fmt, size_t size,
 		else if (size == sizeof(uint32_t))
 			printf(fmt, (uint32_t)arg);
 		else
-			print_quoted_string_limit((void *)arg, size, rc);
+			print_quoted_string_limit((void *) (uintptr_t) arg,
+						  size, rc);
 	}
 }
 
@@ -189,8 +190,6 @@ do_keyctl(kernel_ulong_t cmd, const char *cmd_str, ...)
 	}
 	printf(") = %s\n", errstr);
 }
-
-# define ARG_STR(_arg) (_arg), #_arg
 
 int
 main(void)

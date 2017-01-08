@@ -361,3 +361,6 @@
 [4360] = { 6,	TD,		SEN(printargs), "o32:copy_file_range"	},
 [4361] = { 6,	TD,		SEN(printargs), "o32:preadv2"		},
 [4362] = { 6,	TD,		SEN(printargs), "o32:pwritev2"		},
+[4363] = { 4,	TM|SI,		SEN(printargs), "o32:pkey_mprotect"		},
+[4364] = { 2,	0,		SEN(printargs), "o32:pkey_alloc"		},
+[4365] = { 1,	0,		SEN(printargs), "o32:pkey_free"		},

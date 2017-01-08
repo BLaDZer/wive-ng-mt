@@ -31,11 +31,11 @@
 #if defined IP_ADD_MEMBERSHIP && defined IPV6_ADD_MEMBERSHIP \
  && defined IPV6_JOIN_ANYCAST && defined HAVE_IF_INDEXTONAME
 
-#include <assert.h>
+# include <assert.h>
 # include <stdio.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+# include <unistd.h>
+# include <sys/socket.h>
+# include <arpa/inet.h>
 # include <net/if.h>
 
 int

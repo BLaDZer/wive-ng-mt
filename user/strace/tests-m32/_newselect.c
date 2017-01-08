@@ -32,7 +32,7 @@
 
 # define TEST_SYSCALL_NR __NR__newselect
 # define TEST_SYSCALL_STR "_newselect"
-#include "xselect.c"
+# include "xselect.c"
 
 #else
 

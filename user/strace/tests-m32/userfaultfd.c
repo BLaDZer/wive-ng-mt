@@ -31,8 +31,8 @@
 
 #if defined __NR_userfaultfd && defined O_CLOEXEC
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)

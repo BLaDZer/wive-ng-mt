@@ -161,23 +161,23 @@ print_iocb(struct tcb *tcp, const struct iocb *cb)
 
 static bool
 print_iocbp(struct tcb *tcp, void *elem_buf, size_t elem_size, void *data)
-	{
+{
 	unsigned long addr;
-			struct iocb cb;
+	struct iocb cb;
 
 	if (elem_size < sizeof(long)) {
 		addr = * (unsigned int *) elem_buf;
 	} else {
 		addr = * (unsigned long *) elem_buf;
-			}
+	}
 
-			tprints("{");
+	tprints("{");
 	if (!umove_or_printaddr(tcp, addr, &cb))
-				print_iocb(tcp, &cb);
-			tprints("}");
+		print_iocb(tcp, &cb);
+	tprints("}");
 
 	return true;
-		}
+}
 
 SYS_FUNC(io_submit)
 {
@@ -240,11 +240,11 @@ SYS_FUNC(io_getevents)
 		tprintf(", %ld, %ld, ",
 			widen_to_long(tcp->u_arg[1]),
 			widen_to_long(tcp->u_arg[2]));
-		} else {
+	} else {
 		struct io_event buf;
 		print_array(tcp, tcp->u_arg[3], tcp->u_rval, &buf, sizeof(buf),
 			    umoven_or_printaddr, print_io_event, 0);
-					tprints(", ");
+		tprints(", ");
 		/*
 		 * Since the timeout parameter is read by the kernel
 		 * on entering syscall, it has to be decoded the same way

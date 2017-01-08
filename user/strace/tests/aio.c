@@ -159,7 +159,7 @@ main(void)
 			.aio_fildes = 0xdefaced1,
 			.aio_buf = (unsigned long)data2,
 			.aio_nbytes = sizeof(data2),
-			.aio_offset = 0xdeadda7abadc0ded,
+			.aio_offset = 0xdeadda7abadc0dedULL,
 		},
 		{
 			.aio_data = 0,
@@ -267,7 +267,7 @@ main(void)
 	printf("io_getevents(%#lx, %ld, %ld, ["
 	       "{data=%#" PRI__x64 ", obj=%p, res=%u, res2=0}, "
 	       "{data=%#" PRI__x64 ", obj=%p, res=%u, res2=0}"
-	       "], {0, 123456789}) = %s\n",
+	       "], {tv_sec=0, tv_nsec=123456789}) = %s\n",
 	       *ctx, (long) nr, (long) (nr + 1),
 	       cb[0].aio_data, &cb[0], sizeof_data0,
 	       cb[1].aio_data, &cb[1], sizeof_data1,

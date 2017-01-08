@@ -62,22 +62,22 @@ print_user_offset_addr(const unsigned long addr)
 	const struct xlat *x;
 
 	for (x = struct_user_offsets; x->str; ++x) {
-				if (x->val >= addr)
-					break;
-			}
+		if (x->val >= addr)
+			break;
+	}
 
 	if (!x->str) {
 		printaddr(addr);
 	} else if (x->val > addr) {
 		if (x == struct_user_offsets) {
-				printaddr(addr);
+			printaddr(addr);
 		} else {
 			--x;
 			tprintf("%s + %lu",
 				x->str, addr - (unsigned long) x->val);
-			}
+		}
 	} else {
-				tprints(x->str);
+		tprints(x->str);
 	}
 }
 
@@ -110,7 +110,7 @@ SYS_FUNC(ptrace)
 			return RVAL_DECODED;
 		case PTRACE_PEEKUSER:
 		case PTRACE_POKEUSER:
-		tprints(", ");
+			tprints(", ");
 			print_user_offset_addr(addr);
 			break;
 		case PTRACE_GETREGSET:

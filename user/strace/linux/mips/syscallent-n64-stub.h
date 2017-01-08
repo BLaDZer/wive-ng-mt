@@ -321,3 +321,6 @@
 [5320] = { 6,	TD,		SEN(printargs), "n64:copy_file_range"	},
 [5321] = { 6,	TD,		SEN(printargs), "n64:preadv2"		},
 [5322] = { 6,	TD,		SEN(printargs), "n64:pwritev2"		},
+[5323] = { 4,	TM|SI,		SEN(printargs), "n64:pkey_mprotect"		},
+[5324] = { 2,	0,		SEN(printargs), "n64:pkey_alloc"		},
+[5325] = { 1,	0,		SEN(printargs), "n64:pkey_free"		},

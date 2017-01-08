@@ -45,8 +45,8 @@
 # if IN_MPERS_BOOTSTRAP
 #  define MPERS_DEFS "empty.h"
 # else
-# define MPERS_DEFS "native_defs.h"
-#endif
+#  define MPERS_DEFS "native_defs.h"
+# endif
 #endif
 
 #endif /* !STRACE_MPERS_TYPE_H */

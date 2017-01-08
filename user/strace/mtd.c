@@ -52,89 +52,89 @@ typedef struct mtd_oob_buf struct_mtd_oob_buf;
 static void
 decode_erase_info_user(struct tcb *tcp, const long addr)
 {
-		struct erase_info_user einfo;
+	struct erase_info_user einfo;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &einfo))
 		return;
 
 	tprintf("{start=%#x, length=%#x}", einfo.start, einfo.length);
-	}
+}
 
 static void
 decode_erase_info_user64(struct tcb *tcp, const long addr)
 {
-		struct erase_info_user64 einfo64;
+	struct erase_info_user64 einfo64;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &einfo64))
 		return;
 
-		tprintf("{start=%#" PRIx64 ", length=%#" PRIx64 "}",
-			(uint64_t) einfo64.start, (uint64_t) einfo64.length);
-	}
+	tprintf("{start=%#" PRIx64 ", length=%#" PRIx64 "}",
+		(uint64_t) einfo64.start, (uint64_t) einfo64.length);
+}
 
 static void
 decode_mtd_oob_buf(struct tcb *tcp, const long addr)
 {
 	struct_mtd_oob_buf mbuf;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &mbuf))
 		return;
 
 	tprintf("{start=%#x, length=%#x, ptr=", mbuf.start, mbuf.length);
 	printaddr((unsigned long) mbuf.ptr);
 	tprints("}");
-	}
+}
 
 static void
 decode_mtd_oob_buf64(struct tcb *tcp, const long addr)
 {
-		struct mtd_oob_buf64 mbuf64;
+	struct mtd_oob_buf64 mbuf64;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &mbuf64))
 		return;
 
 	tprintf("{start=%#" PRIx64 ", length=%#x, usr_ptr=%#" PRIx64 "}",
 		(uint64_t) mbuf64.start, mbuf64.length,
 		(uint64_t) mbuf64.usr_ptr);
-	}
+}
 
 static void
 decode_otp_info(struct tcb *tcp, const long addr)
 {
-		struct otp_info oinfo;
+	struct otp_info oinfo;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &oinfo))
 		return;
 
 	tprintf("{start=%#x, length=%#x, locked=%u}",
-			oinfo.start, oinfo.length, oinfo.locked);
-	}
+		oinfo.start, oinfo.length, oinfo.locked);
+}
 
 static void
 decode_otp_select(struct tcb *tcp, const long addr)
 {
-		unsigned int i;
+	unsigned int i;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &i))
 		return;
 
-		tprints("[");
-		printxval(mtd_otp_options, i, "MTD_OTP_???");
-		tprints("]");
-	}
+	tprints("[");
+	printxval(mtd_otp_options, i, "MTD_OTP_???");
+	tprints("]");
+}
 
 static void
 decode_mtd_write_req(struct tcb *tcp, const long addr)
 {
 	struct mtd_write_req mreq;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &mreq))
 		return;
 
@@ -153,88 +153,88 @@ decode_mtd_info_user(struct tcb *tcp, const long addr)
 {
 	struct mtd_info_user minfo;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &minfo))
 		return;
 
-		tprints("{type=");
-		printxval(mtd_type_options, minfo.type, "MTD_???");
-		tprints(", flags=");
-		printflags(mtd_flags_options, minfo.flags, "MTD_???");
+	tprints("{type=");
+	printxval(mtd_type_options, minfo.type, "MTD_???");
+	tprints(", flags=");
+	printflags(mtd_flags_options, minfo.flags, "MTD_???");
 	tprintf(", size=%#x, erasesize=%#x, writesize=%#x, oobsize=%#x"
 		", padding=%#" PRIx64 "}",
 		minfo.size, minfo.erasesize, minfo.writesize, minfo.oobsize,
-			(uint64_t) minfo.padding);
-	}
+		(uint64_t) minfo.padding);
+}
 
 static void
 decode_nand_oobinfo(struct tcb *tcp, const long addr)
 {
-		struct nand_oobinfo ninfo;
+	struct nand_oobinfo ninfo;
 	unsigned int i, j;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &ninfo))
 		return;
 
-		tprints("{useecc=");
-		printxval(mtd_nandecc_options, ninfo.useecc, "MTD_NANDECC_???");
+	tprints("{useecc=");
+	printxval(mtd_nandecc_options, ninfo.useecc, "MTD_NANDECC_???");
 	tprintf(", eccbytes=%#x", ninfo.eccbytes);
 
-		tprints(", oobfree={");
-		for (i = 0; i < ARRAY_SIZE(ninfo.oobfree); ++i) {
-			if (i)
-				tprints("}, ");
-			tprints("{");
-			for (j = 0; j < ARRAY_SIZE(ninfo.oobfree[0]); ++j) {
-				if (j)
-					tprints(", ");
-			tprintf("%#x", ninfo.oobfree[i][j]);
-			}
-		}
-
-		tprints("}}, eccpos={");
-		for (i = 0; i < ARRAY_SIZE(ninfo.eccpos); ++i) {
-			if (i)
+	tprints(", oobfree={");
+	for (i = 0; i < ARRAY_SIZE(ninfo.oobfree); ++i) {
+		if (i)
+			tprints("}, ");
+		tprints("{");
+		for (j = 0; j < ARRAY_SIZE(ninfo.oobfree[0]); ++j) {
+			if (j)
 				tprints(", ");
-		tprintf("%#x", ninfo.eccpos[i]);
+			tprintf("%#x", ninfo.oobfree[i][j]);
 		}
-
-		tprints("}");
 	}
+
+	tprints("}}, eccpos={");
+	for (i = 0; i < ARRAY_SIZE(ninfo.eccpos); ++i) {
+		if (i)
+			tprints(", ");
+		tprintf("%#x", ninfo.eccpos[i]);
+	}
+
+	tprints("}");
+}
 
 static void
 decode_nand_ecclayout_user(struct tcb *tcp, const long addr)
 {
-		struct nand_ecclayout_user nlay;
-		unsigned int i;
+	struct nand_ecclayout_user nlay;
+	unsigned int i;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &nlay))
 		return;
 
 	tprintf("{eccbytes=%#x, eccpos={", nlay.eccbytes);
-		for (i = 0; i < ARRAY_SIZE(nlay.eccpos); ++i) {
-			if (i)
-				tprints(", ");
+	for (i = 0; i < ARRAY_SIZE(nlay.eccpos); ++i) {
+		if (i)
+			tprints(", ");
 		tprintf("%#x", nlay.eccpos[i]);
-		}
-	tprintf("}, oobavail=%#x, oobfree={", nlay.oobavail);
-		for (i = 0; i < ARRAY_SIZE(nlay.oobfree); ++i) {
-			if (i)
-				tprints(", ");
-		tprintf("{offset=%#x, length=%#x}",
-				nlay.oobfree[i].offset, nlay.oobfree[i].length);
-		}
-		tprints("}");
 	}
+	tprintf("}, oobavail=%#x, oobfree={", nlay.oobavail);
+	for (i = 0; i < ARRAY_SIZE(nlay.oobfree); ++i) {
+		if (i)
+			tprints(", ");
+		tprintf("{offset=%#x, length=%#x}",
+			nlay.oobfree[i].offset, nlay.oobfree[i].length);
+	}
+	tprints("}");
+}
 
 static void
 decode_mtd_ecc_stats(struct tcb *tcp, const long addr)
 {
 	struct mtd_ecc_stats es;
 
-		tprints(", ");
+	tprints(", ");
 	if (umove_or_printaddr(tcp, addr, &es))
 		return;
 
@@ -251,7 +251,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 	case MEMUNLOCK:
 	case MEMISLOCKED:
 		decode_erase_info_user(tcp, arg);
-				break;
+		break;
 
 	case MEMERASE64:
 		decode_erase_info_user64(tcp, arg);
@@ -260,7 +260,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 	case MEMWRITEOOB:
 	case MEMREADOOB:
 		decode_mtd_oob_buf(tcp, arg);
-			break;
+		break;
 
 	case MEMWRITEOOB64:
 	case MEMREADOOB64:
@@ -269,7 +269,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 
 	case MEMWRITE:
 		decode_mtd_write_req(tcp, arg);
-			break;
+		break;
 
 	case OTPGETREGIONINFO:
 		if (entering(tcp))
@@ -281,7 +281,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 
 	case OTPSELECT:
 		decode_otp_select(tcp, arg);
-			break;
+		break;
 
 	case MTDFILEMODE:
 		tprints(", ");
@@ -290,9 +290,9 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 
 	case MEMGETBADBLOCK:
 	case MEMSETBADBLOCK:
-			tprints(", ");
+		tprints(", ");
 		printnum_int64(tcp, arg, "%" PRIu64);
-				break;
+		break;
 
 	case MEMGETINFO:
 		if (entering(tcp))
@@ -304,7 +304,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 		if (entering(tcp))
 			return 0;
 		decode_nand_oobinfo(tcp, arg);
-			break;
+		break;
 
 	case ECCGETLAYOUT:
 		if (entering(tcp))
@@ -316,7 +316,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 		if (entering(tcp))
 			return 0;
 		decode_mtd_ecc_stats(tcp, arg);
-			break;
+		break;
 
 	case OTPGETREGIONCOUNT:
 		if (entering(tcp))
@@ -336,9 +336,9 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 		if (entering(tcp)) {
 			struct region_info_user rinfo;
 
-		tprints(", ");
+			tprints(", ");
 			if (umove_or_printaddr(tcp, arg, &rinfo))
-		break;
+				break;
 			tprintf("{regionindex=%#x", rinfo.regionindex);
 			return 0;
 		} else {
@@ -352,7 +352,7 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *tcp,
 					rinfo.erasesize,
 					rinfo.numblocks);
 			tprints("}");
-		break;
+			break;
 		}
 
 	default:

@@ -34,15 +34,15 @@
 # define TEST_SYSCALL_STR "fcntl64"
 # include "struct_flock.c"
 
-#define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
+# define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
 
 static void
 test_flock64_einval(const int cmd, const char *name)
 {
 	struct_kernel_flock64 fl = {
 		.l_type = F_RDLCK,
-		.l_start = 0xdefaced1facefeed,
-		.l_len = 0xdefaced2cafef00d
+		.l_start = 0xdefaced1facefeedULL,
+		.l_len = 0xdefaced2cafef00dULL
 	};
 	invoke_test_syscall(cmd, &fl);
 	printf("%s(0, %s, {l_type=F_RDLCK, l_whence=SEEK_SET"
@@ -55,10 +55,10 @@ test_flock64(void)
 {
 	TEST_FLOCK64_EINVAL(F_SETLK64);
 	TEST_FLOCK64_EINVAL(F_SETLKW64);
-#ifdef F_OFD_SETLK
+# ifdef F_OFD_SETLK
 	TEST_FLOCK64_EINVAL(F_OFD_SETLK);
 	TEST_FLOCK64_EINVAL(F_OFD_SETLKW);
-#endif
+# endif
 
 	struct_kernel_flock64 fl = {
 		.l_type = F_RDLCK,

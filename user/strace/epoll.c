@@ -29,7 +29,7 @@
 
 #include "defs.h"
 #include <fcntl.h>
-# include <sys/epoll.h>
+#include <sys/epoll.h>
 
 SYS_FUNC(epoll_create)
 {
@@ -47,7 +47,7 @@ SYS_FUNC(epoll_create1)
 	return RVAL_DECODED | RVAL_FD;
 }
 
-# include "xlat/epollevents.h"
+#include "xlat/epollevents.h"
 
 static bool
 print_epoll_event(struct tcb *tcp, void *elem_buf, size_t elem_size, void *data)

@@ -84,7 +84,7 @@ int main(int ac, const char **av)
 
 	assert(sendmsg(sv[1], mh, 0) == (int) data_size);
 
-		assert(close(sv[1]) == 0);
+	assert(close(sv[1]) == 0);
 	assert(open("/dev/null", O_RDWR) == sv[1]);
 
 	for (i = 0; i < ac; ++i) {
@@ -99,7 +99,7 @@ int main(int ac, const char **av)
 	mh->msg_controllen = cmsg_size;
 
 	assert(recvmsg(0, mh, 0) == (int) data_size);
-		assert(close(0) == 0);
+	assert(close(0) == 0);
 
 	return 0;
 }

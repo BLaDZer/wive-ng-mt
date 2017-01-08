@@ -80,7 +80,8 @@ const unsigned int syscall_trap_sig = SIGTRAP | 0x80;
 
 cflag_t cflag = CFLAG_NONE;
 unsigned int followfork = 0;
-unsigned int ptrace_setoptions = PTRACE_O_TRACESYSGOOD | PTRACE_O_TRACEEXEC;
+unsigned int ptrace_setoptions = PTRACE_O_TRACESYSGOOD | PTRACE_O_TRACEEXEC
+				 | PTRACE_O_TRACEEXIT;
 unsigned int xflag = 0;
 bool debug_flag = 0;
 bool Tflag = 0;
@@ -133,10 +134,6 @@ bool not_failing_only = 0;
 unsigned int show_fd_path = 0;
 
 static bool detach_on_execve = 0;
-/* Are we "strace PROG" and need to skip detach on first execve? */
-static bool skip_one_b_execve = 0;
-/* Are we "strace PROG" and need to hide everything until execve? */
-bool hide_log_until_execve = 0;
 
 static int exit_code;
 static int strace_child = 0;
@@ -229,7 +226,7 @@ Statistics:\n\
 \n\
 Filtering:\n\
   -e expr        a qualifying expression: option=[!]all or option=[!]val1[,val2]...\n\
-     options:    trace, abbrev, verbose, raw, signal, read, write\n\
+     options:    trace, abbrev, verbose, raw, signal, read, write, fault\n\
   -P path        trace accesses to path\n\
 \n\
 Tracing:\n\
@@ -785,6 +782,10 @@ droptcb(struct tcb *tcp)
 	if (tcp->pid == 0)
 		return;
 
+	int p;
+	for (p = 0; p < SUPPORTED_PERSONALITIES; ++p)
+		free(tcp->fault_vec[p]);
+
 	free_tcb_priv_data(tcp);
 
 #ifdef USE_LIBUNWIND
@@ -1121,27 +1122,27 @@ startup_attach(void)
 			errno = EPERM;
 			perror_msg("attach: pid %d", tcp->pid);
 			droptcb(tcp);
-						continue;
-					}
+			continue;
+		}
 
 		attach_tcb(tcp);
 
-				if (interactive) {
-					sigprocmask(SIG_SETMASK, &empty_set, NULL);
-					if (interrupted)
-						goto ret;
-					sigprocmask(SIG_BLOCK, &blocked_set, NULL);
-				}
+		if (interactive) {
+			sigprocmask(SIG_SETMASK, &empty_set, NULL);
+			if (interrupted)
+				goto ret;
+			sigprocmask(SIG_BLOCK, &blocked_set, NULL);
+		}
 	} /* for each tcbtab[] */
 
-		if (daemonized_tracer) {
-			/*
-			 * Make parent go away.
-			 * Also makes grandparent's wait() unblock.
-			 */
+	if (daemonized_tracer) {
+		/*
+		 * Make parent go away.
+		 * Also makes grandparent's wait() unblock.
+		 */
 		kill(parent_pid, SIGKILL);
 		strace_child = 0;
-		}
+	}
 
  ret:
 	if (interactive)
@@ -1414,17 +1415,17 @@ startup_child(char **argv)
 				kill(pid, SIGCONT);
 		}
 		tcp = alloctcb(pid);
-		if (!NOMMU_SYSTEM)
-			tcp->flags |= TCB_ATTACHED | TCB_STARTUP | post_attach_sigstop;
-		else
-			tcp->flags |= TCB_ATTACHED | TCB_STARTUP;
+		tcp->flags |= TCB_ATTACHED | TCB_STARTUP
+			    | TCB_SKIP_DETACH_ON_FIRST_EXEC
+			    | (NOMMU_SYSTEM ? 0 : (TCB_HIDE_LOG | post_attach_sigstop));
 		newoutf(tcp);
 	}
 	else {
 		/* With -D, we are *child* here, the tracee is our parent. */
 		strace_child = strace_tracer_pid;
 		strace_tracer_pid = getpid();
-		alloctcb(strace_child);
+		tcp = alloctcb(strace_child);
+		tcp->flags |= TCB_SKIP_DETACH_ON_FIRST_EXEC | TCB_HIDE_LOG;
 		/* attaching will be done later, by startup_attach */
 		/* note: we don't do newoutf(tcp) here either! */
 
@@ -1638,7 +1639,7 @@ init(int argc, char *argv[])
 			break;
 		case 'r':
 			rflag = 1;
-			/* fall through to tflag++ */
+			break;
 		case 't':
 			tflag++;
 			break;
@@ -1709,8 +1710,8 @@ init(int argc, char *argv[])
 				die_out_of_memory();
 			break;
 		case 'I':
-			opt_intr = string_to_uint(optarg);
-			if (opt_intr <= 0 || opt_intr >= NUM_INTR_OPTS)
+			opt_intr = string_to_uint_upto(optarg, NUM_INTR_OPTS - 1);
+			if (opt_intr <= 0)
 				error_opt_arg(c, optarg);
 			break;
 		default:
@@ -1761,9 +1762,21 @@ init(int argc, char *argv[])
 			error_msg("-%c has no effect with -c", 'y');
 	}
 
+	if (rflag) {
+		if (tflag > 1)
+			error_msg("-tt has no effect with -r");
+		tflag = 1;
+	}
+
 #ifdef USE_LIBUNWIND
-	if (stack_trace_enabled)
+	if (stack_trace_enabled) {
+		unsigned int tcbi;
+
 		unwind_init();
+		for (tcbi = 0; tcbi < tcbtabsize; ++tcbi) {
+			unwind_tcb_init(tcbtab[tcbi]);
+		}
+	}
 #endif
 
 	/* See if they want to run as another user. */
@@ -1827,8 +1840,7 @@ init(int argc, char *argv[])
 	}
 
 	if (!outfname || outfname[0] == '|' || outfname[0] == '!') {
-		char *buf = xmalloc(BUFSIZ);
-		setvbuf(shared_log, buf, _IOLBF, BUFSIZ);
+		setvbuf(shared_log, NULL, _IOLBF, 0);
 	}
 	if (outfname && argv[0]) {
 		if (!opt_intr)
@@ -1855,9 +1867,6 @@ init(int argc, char *argv[])
 	 * in the startup_child() mode we kill the spawned process anyway.
 	 */
 	if (argv[0]) {
-		if (!NOMMU_SYSTEM || daemonized_tracer)
-			hide_log_until_execve = 1;
-		skip_one_b_execve = 1;
 		startup_child(argv);
 	}
 
@@ -2091,8 +2100,7 @@ print_signalled(struct tcb *tcp, const int pid, int status)
 	}
 
 	if (cflag != CFLAG_ONLY_STATS
-	 && (qual_flags[WTERMSIG(status)] & QUAL_SIGNAL)
-	) {
+	    && is_number_in_set(WTERMSIG(status), &signal_set)) {
 		printleader(tcp);
 #ifdef WCOREDUMP
 		tprintf("+++ killed by %s %s+++\n",
@@ -2126,9 +2134,8 @@ static void
 print_stopped(struct tcb *tcp, const siginfo_t *si, const unsigned int sig)
 {
 	if (cflag != CFLAG_ONLY_STATS
-	    && !hide_log_until_execve
-	    && (qual_flags[sig] & QUAL_SIGNAL)
-	   ) {
+	    && !hide_log(tcp)
+	    && is_number_in_set(sig, &signal_set)) {
 		printleader(tcp);
 		if (si) {
 			tprintf("--- %s ", signame(sig));
@@ -2159,6 +2166,43 @@ startup_tcb(struct tcb *tcp)
 			}
 		}
 	}
+}
+
+static void
+print_event_exit(struct tcb *tcp)
+{
+	if (entering(tcp) || filtered(tcp) || hide_log(tcp)
+	    || cflag == CFLAG_ONLY_STATS) {
+		return;
+	}
+
+	if (followfork < 2 && printing_tcp && printing_tcp != tcp
+	    && printing_tcp->curcol != 0) {
+		current_tcp = printing_tcp;
+		tprints(" <unfinished ...>\n");
+		fflush(printing_tcp->outf);
+		printing_tcp->curcol = 0;
+		current_tcp = tcp;
+	}
+
+	if ((followfork < 2 && printing_tcp != tcp)
+	    || (tcp->flags & TCB_REPRINT)) {
+		tcp->flags &= ~TCB_REPRINT;
+		printleader(tcp);
+		tprintf("<... %s resumed>", tcp->s_ent->sys_name);
+	}
+
+	if (!(tcp->sys_func_rval & RVAL_DECODED)) {
+		/*
+		 * The decoder has probably decided to print something
+		 * on exiting syscall which is not going to happen.
+		 */
+		tprints(" <unfinished ...>");
+	}
+	tprints(") ");
+	tabto();
+	tprints("= ?\n");
+	line_ended();
 }
 
 /* Returns true iff the main trace loop has to continue. */
@@ -2262,11 +2306,14 @@ trace(void)
 		if (os_release >= KERNEL_VERSION(3,0,0))
 			tcp = maybe_switch_tcbs(tcp, pid);
 
-		if (detach_on_execve && !skip_one_b_execve) {
-			detach(tcp); /* do "-b execve" thingy */
-			return true;
+		if (detach_on_execve) {
+			if (tcp->flags & TCB_SKIP_DETACH_ON_FIRST_EXEC) {
+				tcp->flags &= ~TCB_SKIP_DETACH_ON_FIRST_EXEC;
+			} else {
+				detach(tcp); /* do "-b execve" thingy */
+				return true;
+			}
 		}
-		skip_one_b_execve = 0;
 	}
 
 	/* Set current output file */
@@ -2308,10 +2355,14 @@ trace(void)
 
 	sig = WSTOPSIG(status);
 
-	if (event != 0) {
-		/* Ptrace event */
+	switch (event) {
+		case 0:
+			break;
+		case PTRACE_EVENT_EXIT:
+			print_event_exit(tcp);
+			goto restart_tracee_with_sig_0;
 #if USE_SEIZE
-		if (event == PTRACE_EVENT_STOP) {
+		case PTRACE_EVENT_STOP:
 			/*
 			 * PTRACE_INTERRUPT-stop or group-stop.
 			 * PTRACE_INTERRUPT-stop has sig == SIGTRAP here.
@@ -2324,9 +2375,10 @@ trace(void)
 					stopped = true;
 					goto show_stopsig;
 			}
-		}
+			/* fall through */
 #endif
-		goto restart_tracee_with_sig_0;
+		default:
+			goto restart_tracee_with_sig_0;
 	}
 
 	/*

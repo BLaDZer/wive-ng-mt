@@ -325,3 +325,6 @@
 [6324] = { 6,	TD,		SEN(printargs), "n32:copy_file_range"	},
 [6325] = { 6,	TD,		SEN(printargs), "n32:preadv2"		},
 [6326] = { 6,	TD,		SEN(printargs), "n32:pwritev2"		},
+[6327] = { 4,	TM|SI,		SEN(printargs), "n32:pkey_mprotect"		},
+[6328] = { 2,	0,		SEN(printargs), "n32:pkey_alloc"		},
+[6329] = { 1,	0,		SEN(printargs), "n32:pkey_free"		},

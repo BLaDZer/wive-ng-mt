@@ -30,14 +30,14 @@
 
 #ifdef __NR_sendfile
 
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
+# include <assert.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdint.h>
+# include <unistd.h>
+# include <sys/socket.h>
+# include <sys/stat.h>
 
 int
 main(int ac, const char **av)
@@ -107,7 +107,7 @@ main(int ac, const char **av)
 
 	if (p_off != p) {
 		uint64_t *p_off64 = (uint64_t *) p_off;
-		*p_off64 = 0xcafef00dfacefeed;
+		*p_off64 = 0xcafef00dfacefeedULL;
 		assert(syscall(__NR_sendfile, sv[1], reg_in, p_off64, 1) == -1);
 		printf("sendfile(%d, %d, [14627392582579060461], 1)"
 		       " = -1 EINVAL (%m)\n", sv[1], reg_in);

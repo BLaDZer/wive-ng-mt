@@ -30,13 +30,13 @@
 
 #ifdef __NR_readdir
 
-#include <assert.h>
-#include <dirent.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
+# include <assert.h>
+# include <dirent.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <string.h>
+# include <sys/stat.h>
+# include <unistd.h>
 
 static const char fname[] =
 	"A\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\n"

@@ -1,3 +1,2431 @@
+2016-12-14  Dmitry V. Levin  <ldv@altlinux.org>
+
+	xlat: provide fallback definitions for NETLINK_* constants.
+	As new constants have been added gradually over kernel releases, define
+	all constant values to make newer constants decoded properly when strace
+	is built with older kernel headers.
+
+	* xlat/netlink_protocols.in: Add default values for constants.
+	* net.c [!NETLINK_SOCK_DIAG && NETLINK_INET_DIAG]: Remove.
+	* socketutils.c: Likewise.
+
+2016-12-14  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: relax getaffinity return value check in tests/sched_xetaffinity.c
+	* tests/sched_xetaffinity.c (errstr): New variable.
+	(getaffinity, setaffinity): Initialize it.
+	(main): Use it.  Allow getaffinity return value to be less than
+	its cpusetsize argument.
+
+	tests: fix threads-execve.test for large pids.
+	* tests/threads-execve.c (main): Fix expected output for large pids.
+
+2016-12-13  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Prepare for 4.15 release.
+	* NEWS: Update for 4.15 release.
+
+	.mailmap: add addresses of Thomas De Schampheleire.
+	* .mailmap: Add both addresses of Thomas De Schampheleire here to avoid
+	duplications in CREDITS file.
+
+	Sync strace.spec and debian/ with packages.
+	* debian/control: Add Vcs-* metadata from 4.13-0.1.
+	* debian/watch: Sync with 4.13-0.1.
+	* strace.spec.in: Sync with 4.14.0.100.622a-1.
+
+2016-12-13  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: workaround a bug in GNU grep.
+	Workaround a bug introduced in GNU grep 2.27, for details see
+	https://lists.gnu.org/archive/html/bug-grep/2016-12/msg00011.html
+
+	* tests/init.sh (grep_pid_status): New function.
+	* tests/detach-running.test: Use it instead of grep to search
+	in /proc/$pid/status.
+	* tests/detach-sleeping.test: Likewise.
+	* tests/detach-stopped.test: Likewise.
+
+2016-12-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: fix typo in comment inside prctl-tsc.c.
+
+2016-12-13  Sean Stangl  <sstangl@mozilla.com>
+	    Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix libunwind segfault when -p is passed before -k.
+	* strace.c (init) [USE_LIBUNWIND]: Call unwind_tcb_init after
+	unwind_init for all allocated tcb structures if stack trace is enabled.
+	* unwind.c (unwind_tcb_init): Skip if tcb is already initialized.
+
+2016-12-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+	    Dmitry V. Levin  <ldv@altlinux.org>
+
+	Update NEWS.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: skip fault injection tests on unsupported platforms.
+	* tests/fault_injection.sh: New file.
+	* tests/Makefile.am (EXTRA_DIST): Add it.
+	* tests/fault_injection-exit_group.test: Use it.
+	* tests/fault_injection.test: Likewise.
+
+	tests: introduce require_min_kernel_version_or_skip function.
+	* tests/init.sh (kernel_version_code,
+	require_min_kernel_version_or_skip): New functions.
+	* tests/threads-execve.test: Use require_min_kernel_version_or_skip.
+
+2016-12-07  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: add descriptions to prctl-pdeathsig and prctl-tsc tests.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify prctl-pdeathsig.test and prctl-tsc.test.
+	Rrobustify remaining prctl tests against unrelated prctl invocations
+
+	* tests/prctl-pdeathsig.test: Filter out unrelated PR_GET_* and PR_SET_*
+	prctl calls.
+	* tests/prctl-tsc.test: Likewise.
+
+2016-12-07  Thomas De Schampheleire  <thomas.de_schampheleire@nokia.com>
+
+	Makefile.am: don't confuse CFLAGS and CFLAGS_FOR_BUILD.
+	Commit dc427d50d96b15c9a64d7e78d97ce4d194622a63 enabled a number of extra
+	warning flags through configure.ac.  The configure script will determine
+	dynamically if CC supports these flags before adding them to WARN_CFLAGS.
+
+	ioctlsort is compiled with CC_FOR_BUILD, rather than CC.  Nevertheless,
+	the flags passed to this compilation also include WARN_CFLAGS (through
+	AM_CFLAGS).  This is incorrect: in a cross-compilation use case, CC
+	and CC_FOR_BUILD are not the same.  The former is the cross-compiler,
+	the latter is the host compiler.  Both may be of different versions
+	and support different warning flags.
+
+	In particular, this posed a problem when cross-compiling with a host
+	compiler gcc 4.1, which does not support all the new flags:
+
+	    /usr/bin/gcc -DHAVE_CONFIG_H   -I./linux/arm -I./linux/arm -I./linux
+	    -I./linux -I. -I. -I/host-sysroot/usr/include -Wall -Wempty-body
+	    -Wformat-security -Wignored-qualifiers -Winit-self -Wlogical-op
+	    -Wmissing-parameter-type -Wnested-externs -Wold-style-declaration
+	    -Wold-style-definition -Wsign-compare -Wtype-limits -Wwrite-strings -O2
+	    -I/host-sysroot/usr/include -DIOCTLSORT_INC=\"ioctls_all0.h\" -c -o
+	    ioctlsort0.o ./ioctlsort.c
+	    cc1: error: unrecognized command line option "-Wempty-body"
+	    cc1: error: unrecognized command line option "-Wignored-qualifiers"
+	    cc1: error: unrecognized command line option "-Wlogical-op"
+	    cc1: error: unrecognized command line option "-Wmissing-parameter-type"
+	    cc1: error: unrecognized command line option "-Wold-style-declaration"
+	    cc1: error: unrecognized command line option "-Wtype-limits"
+	    make[2]: *** [ioctlsort0.o] Error 1
+
+	* Makefile.am (AM_CFLAGS_FOR_BUILD, AM_CPPFLAGS_FOR_BUILD): New
+	variables.
+	(ioctlsort_CPPFLAGS): Use AM_CPPFLAGS_FOR_BUILD instead of AM_CPPFLAGS.
+	(ioctlsort_CFLAGS): Use AM_CFLAGS_FOR_BUILD instead of AM_CFLAGS.
+	(ioctlsort_LDFLAGS): Use AM_LDFLAGS_FOR_BUILD instead of AM_LDFLAGS.
+	* m4/ax_prog_cc_for_build.m4 (AX_PROG_CC_FOR_BUILD): Redirect
+	WARN_CFLAGS and gl_unknown_warnings_are_errors, call st_WARN_CFLAGS,
+	substitute WARN_CFLAGS_FOR_BUILD.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	m4: prepare gl_WARN_ADD for simultaneous use of multiple compilers.
+	* m4/warnings.m4 (gl_COMPILER_OPTION_IF): Change gl_Flags to use
+	_AC_LANG_PREFIX[]FLAGS in unquoted form.  Change gl_Warn to use gl_Flags
+	instead of _AC_LANG_ABBREV.  Change notification message to mention
+	the variable name of the compiler.
+	(gl_UNKNOWN_WARNINGS_ARE_ERRORS): Do nothing if
+	gl_unknown_warnings_are_errors is set.
+	(gl_WARN_ADD): Change the use of gl_UNKNOWN_WARNINGS_ARE_ERRORS from
+	AC_REQUIRE to a regular call.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	AX_PROG_CC_FOR_BUILD: redirect more variables related to C compiler.
+	Some of these variables cannot be redirected using traditional
+	pushdef/popdef mechanism because of complex constructions like
+	[ac_cv_[]_AC_LANG_ABBREV[]_compiler_gnu] employed by autoconf macros.
+	Use st_SAVE_VAR/st_RESTORE_VAR to workaround this issue.
+
+	* m4/ax_prog_cc_for_build.m4: Redirect ac_cv_prog_cc_stdc,
+	ac_cv_prog_cc_c11, ac_cv_prog_cc_c99, ac_cv_prog_cc_c89,
+	am_cv_prog_cc_c_o, and am_cv_CC_dependencies_compiler_type using
+	pushdef/popdef.
+	Redirect ac_c_decl_warn_flag, ac_c_preproc_warn_flag, ac_c_werror_flag,
+	ac_compile, ac_compiler_gnu, ac_cpp, ac_cv_c_compiler_gnu,
+	ac_cv_c_decl_report, and ac_link using st_SAVE_VAR/st_RESTORE_VAR.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Move all gl_WARN_ADD calls to a separate m4 macro.
+	This is going to be needed for the upcoming AX_PROG_CC_FOR_BUILD
+	change.
+
+	* configure.ac: Call st_WARN_CFLAGS before AX_PROG_CC_FOR_BUILD.
+	Move all gl_WARN_ADD calls ...
+	* m4/st_warn_cflags.m4: ... here.
+
+2016-12-07  Dmitry V. Levin  <ldv@altlinux.org>
+
+	m4: introduce st_SAVE_VAR and st_RESTORE_VAR macros.
+	These new macros are going to be needed for the upcoming
+	AX_PROG_CC_FOR_BUILD change.
+
+	* m4/st_save_restore_var.m4: New file.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: add valgrind support to "make check"
+	* m4/ax_valgrind_check.m4: Import from the autoconf-archive package.
+	* configure.ac: Invoke AX_VALGRIND_CHECK.
+	* valgrind.supp: Move to tests/strace.supp.
+	* Makefile.am (EXTRA_DIST): Remove valgrind.supp.
+	* tests/Makefile.am: Add @VALGRIND_CHECK_RULES@.
+	(VALGRIND_FLAGS, VALGRIND_SUPPRESSIONS_FILES): New variables.
+	(EXTRA_DIST): Add strace.supp.
+	* tests/init.sh: Add valgrind command prefix to $STRACE when appropriate.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify threads-execve.test against race conditions.
+	Due to probabilistic nature of the test, try it several times.
+
+	* tests/threads-execve.c (NUMBER_OF_ITERATIONS): Change to 1.
+	* tests/threads-execve.test: Iterate up to 10 times.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: fix expected output in strace-ttt.test.
+	If strace -ttt is running too long, it might happen that time stamps
+	before and after its invocation differ for more than a second.
+	Adjust expected output to handle this rare but possible case.
+
+	* tests/strace-ttt.test: Allow any time stamp between start and finish
+	of strace invocation.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: fix expected output in strace-tt.test.
+	If strace -tt is running too long, it might happen that time stamps
+	before and after its invocation differ for more than a second.
+	Adjust expected output to handle this rare but possible case.
+
+	* tests/strace-tt.test: Allow any time stamp between start and finish
+	of strace invocation.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify redirect.test against race conditions.
+	Introduce a synchronization mechanism between the tracee and its peer.
+
+	* tests/redirect.test: Change timeout file to $OUT.  Let the tracee
+	remove $LOG, wait for $LOG removal in its peer.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify attach-f-p.test against race conditions.
+	Introduce a synchronization mechanism between attach-f-p and strace.
+
+	* tests/attach-f-p-cmd.c: New file.
+	* tests/Makefile.am (check_PROGRAMS): Add attach-f-p-cmd.
+	* tests/attach-f-p.c: Include <sys/stat.h>.
+	(main): Write to stdout instead of descriptor 3.  Wait for the peer
+	writing to stdout.
+	* tests/attach-f-p.test: Assume that ./attach-f-p-cmd works.
+	Use $OUT for expected output.  Use attach-f-p-cmd for unlocking $OUT.
+
+2016-12-06  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify attach-p-cmd.test against race conditions.
+	Introduce a synchronization mechanism between attach-p-cmd-p
+	and attach-p-cmd-cmd processes.
+
+	* tests/attach-p-cmd-cmd.c: Include <errno.h> and <sys/stat.h>.
+	(main): Wait for the lock directory creation by attach-p-cmd-p.
+	* tests/attach-p-cmd-p.c: Include <errno.h> and <sys/stat.h>.
+	(main): Create a lock directory and wait for its removal
+	by attach-p-cmd-cmd.
+	* tests/attach-p-cmd.test: Assume that test programs work.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Rewrite remaining qual_* parsers using bit sets.
+	* defs.h (struct fault_opts): Replace forward declaration
+	with a definition.
+	(qualbits_t, qualify_read, qualify_write, qualify_signals): Remove.
+	(qual_flags): New function prototype.
+	(nsyscall_vec, sysent_vec, fault_vec): New variable prototypes.
+	* qualify.c (abbrev_set, fault_set, raw_set, trace_set, verbose_set):
+	New variables.
+	(qualify_read, qualify_write, qualify_signals): Add static qualifier.
+	(find_errno_by_name, lookup_class, parse_fault_expression,
+	parse_fault_token, qual_flags, qualify, qualify_abbrev, qualify_fault,
+	qualify_raw, qualify_syscall, qualify_syscall_class,
+	qualify_syscall_name, qualify_syscall_number, qualify_syscall_tokens,
+	qualify_trace, qualify_verbose, strip_prefix): New functions.
+	* syscall.c (nsyscall_vec, nsysent_vec): Remove static qualifier.
+	(MAX_NSYSCALLS1, MAX_NSYSCALLS2, MAX_NSYSCALLS, qual_vec, qual_flags,
+	qual_fault, qual_syscall, qual_options, fault_opts, qualify_one,
+	qualify_scno, lookup_class, qualify_syscall_class, qualify_syscall_name,
+	qual_syscall_ex, qual_syscall, strip_prefix, find_errno_by_name,
+	parse_fault_token, parse_fault_expression, qual_fault, qualify): Remove.
+	(decode_socket_subcall, decode_ipc_subcall, decode_mips_subcall,
+	get_scno): Update use of qual_flags.
+	(inject_syscall_fault_entering): Update per-personality allocation
+	of tcp->fault_vec.
+	* tests/fault_injection-exit_group.test: Check parsing of inversed
+	fault sets.
+	* tests/fault_injection.test: Check parsing of -efault=none.
+	* tests/options-syntax.test: Check parsing of invalid syscall numbers.
+
+	Change qual_vec/qual_fault into static fixed size arrays.
+	* defs.h (qual_vec, num_quals): Remove.
+	(qual_flags): Move ...
+	* syscall.c: ... here.
+	(num_quals, num_faults, MIN_QUALS, reallocate_vec, reallocate_qual,
+	reallocate_fault): Remove.
+	(qual_vec, qual_fault): Change into static fixed size arrays.
+	(qualify_one): Remove reallocate_qual and reallocate_fault calls.
+	(qualify): Likewise.  Replace num_quals and num_faults with
+	MAX_NSYSCALLS.
+
+	Rewrite qual_signal using bit sets.
+	* defs.h (signal_set): New variable prototypes.
+	(qualify_signals): New function prototypes.
+	(QUAL_SIGNAL): Change to a value greater than 0xff.
+	(QUAL_FAULT): Change to a lower value.
+	* qualify.c (signal_set): New variable.
+	(sigstr_to_uint, qualify_signals): New functions.
+	* syscall.c (qual_signal): Remove.
+	(qual_options): Replace qual_signal with NULL.
+	(qualify): Use qualify_signals.
+	* strace.c (print_signalled, print_stopped): Use is_number_in_set
+	with signal_set argument.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Rewrite qual_desc using bit sets.
+	As a side effect, this also fixes support of negated sets
+	of descriptors.
+
+	* defs.h (struct number_set): New forward declaration.
+	(read_set, write_set): New variable prototypes.
+	(is_number_in_set, qualify_read, qualify_write): New function
+	prototypes.
+	(QUAL_READ, QUAL_WRITE): Change to values greater than 0xff.
+	* qualify.c: New file.
+	* Makefile.am (strace_SOURCES): Add it.
+	* syscall.c (qual_desc): Remove.
+	(qual_options): Replace qual_desc with NULL.
+	(qualify): Use qualify_read and qualify_write.
+	(dumpio): Use is_number_in_set.
+	* tests/options-syntax.test: Check invalid sets of descriptors.
+	* tests/readv.test: Check dumping of negated sets of descriptors.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: skip redirect-fds.test when strace is wrapped with valgrind.
+	valgrind is not as transparent as strace wrt standard descriptors,
+	so if strace is wrapped with valgrind, the test would check valgrind
+	transparency properties and fail imminently.
+
+	* tests/redirect-fds.test: Skip the test when $STRACE shows a presence
+	of valgrind.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Add valgrind.supp.
+	As valgrind is not quite happy about the way how get_cpuset_size uses
+	sched_getaffinity, add a suppression file for this case.
+
+	* valgrind.supp: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	affinity: pass 0 as a pid to sched_getaffinity.
+	* affinity.c (get_cpuset_size): Pass 0 instead of getpid()
+	to sched_getaffinity.
+
+	affinity: document the method of finding out the cpuset size.
+	* affinity.c (get_cpuset_size): Add a comment about sched_getaffinity.
+
+2016-12-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: make options-syntax.test tolerant of strace wrappers.
+	Change the test to allow wrappers like STRACE="valgrind ./strace".
+
+	* tests/options-syntax.test: Strip all words but last from $STRACE
+	variable in all contexts where the name of strace executable is expected
+	in its output.
+
+2016-12-04  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Do not allocate memory for line buffered output.
+	libc is perfectly capable of allocating memory for its buffers,
+	so let it do its job.
+
+	* strace.c (init): Do not allocate memory for setvbuf invocation.
+
+2016-12-04  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Update NEWS.
+
+	tests: use kernel_ulong_t as argument type in setfsuid/setfsgid tests.
+	* setfsugid.c: Include "kernel_types.h".
+	(main): Change type of entries of the "tests" array from long to
+	kernel_ulong_t.
+
+2016-12-04  Eugene Syromyatnikov  <evgsyr@gmail.com>
+	    Elvira Khabirova  <lineprinter0@gmail.com>
+
+	uid: print size as signed in setgroups/getgroups.
+	As this is the type used in kernel.
+
+	* uid.c (SYS_FUNC(setgroups), SYS_FUNC(getgroups)): Print size parameter
+	as "%d".
+	* tests/getgroups.c: Update expected output.
+	* tests/setgroups.c: Likewise.
+
+2016-12-04  Eugene Syromyatnikov  <evgsyr@gmail.com>
+	    Elvira Khabirova  <lineprinter0@gmail.com>
+
+	uid: use printuid for printing UID/GID value.
+	* uid.c (setfsuid, get_print_uid, print_gid): Use printuid.
+	* tests/setfsugid.c (printuid): New function.
+	(main): Use it to print UID/GID values.
+	* tests/setgroups.c: Likewise.
+	* tests/setugid.c (ugid2int): Remove.
+	(printuid): New function.
+	(main): Use it to print UID/GID values.
+
+2016-12-01  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: additional check for PTRACE_SETSIGINFO ptrace command.
+	* tests/ptrace.c (main): Add an additional PTRACE_SETSIGINFO check.
+
+2016-12-01  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall_name: clear __X32_SYSCALL_BIT from syscall number on x32.
+	* linux/x86_64/get_scno.c (X32_PERSONALITY_NUMBER): New macro.
+	* syscall.c (syscall_name) [X32_PERSONALITY_NUMBER && __X32_SYSCALL_BIT]:
+	Clear __X32_SYSCALL_BIT from scno on x32 personality.
+
+2016-12-01  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Print syscall names only for defined syscalls.
+	The string literal "__NR_syscall_4294967295" is semantically incorrect
+	as there is no such constant defined.
+
+	* syscall.c (syscall_name): Return NULL if there is no syscall
+	corresponding to the given number.
+	* defs.h (syscall_name): Document this behaviour.
+	* printsiginfo.c (print_si_info): Print syscall name with "__NR_" prefix
+	only if there is a syscall corresponding to si_syscall number; print
+	a plain syscall number otherwise.
+	* tests/ptrace.c (main): Update expected output.
+
+2016-12-01  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	affinity: print cpu set as an array.
+	* affinity.c: Add comma between elements of cpu set.
+	* tests/sched_xetaffinity.c (main): Update expected output.
+
+	statfs: fix printing format of f_fsid field.
+	* print_statfs.c: Print f_fsid as a structure containing field "val"
+	which, in turn, is an array of two elements that used to be printed
+	as members of f_fsid structure.
+	* tests/statfs.expected: Update expected output.
+	* tests/xstatfsx.c (print_statfs): Likewise.
+
+	swap: always print priority value.
+	* swapon.c (SYS_FUNC(swapon)): Do not check for non-zero the value
+	of the prio variable in order to print it.
+	* tests/swap.c (main): Update expected output.
+
+2016-12-01  Elvira Khabirova  <lineprinter0@gmail.com>
+
+	tests: show pattern line number in match_grep.
+	This makes debugging of failing test  a bit easier.
+
+	* tests/init.sh (match_grep): Add the cnt variable, increment it on every
+	pattern line read, print it as a prefix for non-matched pattern.
+
+2016-11-30  Eugene Syromyatnikov  <evgsyr@gmail.com>
+	    Elvira Khabirova  <lineprinter0@gmail.com>
+
+	futex: make output of the val3 argument of the FUTEX_WAKE_OP command more structured
+	It is a number which consists of several xlat values, not a structure.
+
+	* futex.c (SYS_FUNC(futex)): Modify output of the val3 argument
+	of the FUTEX_WAKE_OP futex syscall command.
+	* tests/futex.c (main): Update expected output.
+
+2016-11-30  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: additional checks for prctl-* tests.
+	* tests/prctl-pdeathsig.c (main): Additional checks.
+	* tests/prctl-tsc.c (main): Likewise.
+	* tests/prctl-pdeathsig.test: Update value of -a argument.
+	* tests/prctl-tsc.test: Likewise.
+
+2016-11-30  JingPiao Chen  <chenjingpiao@foxmail.com>
+
+	tests: add prctl-pdeathsig.test and prctl-tsc.test.
+	* tests/prctl-pdeathsig.c: New file.
+	* tests/prctl-tsc.c: Likewise.
+	* tests/prctl-pdeathsig.test: New test.
+	* tests/prctl-tsc.test: Likewise.
+	* tests/.gitignore: Add prctl-pdeathsig and prctl-tsc.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add prctl-pdeathsig.test and prctl-tsc.test.
+
+2016-11-30  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall: Simplify strip_prefix.
+	* syscall.c (strip_prefix): Use strncmp instead of strlen+memcmp.
+
+	util: fix integer overflow check in string_to_uint_ex.
+	* util.c (string_to_uint_ex): Fix the check for integer overflow
+	on systems where LONG_MAX == INT_MAX.
+
+	Check dumping of io syscalls when descriptor arguments are sensibly large
+	* tests/tests.h (pipe_maxfd): New prototype.
+	* tests/pipe_maxfd.c: New file.
+	* tests/print_maxfd.c: Likewise.
+	* tests/.gitignore: Add print_maxfd.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(libtests_a_SOURCES): Add pipe_maxfd.c.
+	* tests/readv.c (main): Use pipe_maxfd() instead of pipe(),
+	fds[0] instead of 0, fds[1] instead of 1.
+	* tests/readv.test: Use print_maxfd to specify dump descriptor numbers.
+
+	dumpio: remove useless check.
+	* syscall.c (dumpio): Remove SEN_printargs check.  Use tcp->s_ent->sen
+	directly.
+
+2016-11-29  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix dumping of io syscalls when descriptor argument has unused bits set.
+	* syscall.c (dumpio): Explicitly cast the first argument of syscall
+	to "int", the same way as the kernel does.
+	* tests/read-write.c: Include <asm/unistd.h> and "kernel_types.h".
+	(k_read, k_write): New functions.
+	(test_dump, main): Use them.
+
+	x32: fix preadv2-pwritev2.test.
+	* tests/preadv2-pwritev2.c: Include "kernel_types.h".
+	(main): Use kernel_ulong_t instead of unsigned long as types
+	of arguments of preadv2 and pwritev2 syscalls.
+
+	x32: wire up preadv2 and pwritev2 syscalls.
+	* linux/x32/syscallent.h [546]: Add preadv2 entry.
+	[547]: Add pwritev2 entry.
+
+2016-11-29  Eugene Syromyatnikov  <evgsyr@gmail.com>
+	    Elvira Khabirova  <lineprinter0@gmail.com>
+
+	signal: fix omission of field names in sigaction printers.
+	* signal.c (decode_old_sigaction, decode_new_sigaction): Add printing
+	of the field names.
+	* tests/sigaction.awk: Update expected output.
+
+2016-11-29  Elvira Khabirova  <lineprinter0@gmail.com>
+
+	Make date output format conform to ISO 8601.
+	* util.c (sprinttime): Make date output conform to ISO 8601.
+	* tests/utime.c (print_tm): Update expected output.
+	* tests/xstatx.c (print_time): Likewise.
+
+2016-11-29  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: rewrite utime.test without relying on libc utime wrapper.
+	* tests/utime.c (k_utime): New function, a thin wrapper around
+	syscall(__NR_utime).
+	(main): Use it instead of utime.
+	* tests/utime.test: Update.
+
+2016-11-29  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix meaning of negated sets in fault expressions.
+	Change the parser of fault expression to follow the POLA:
+	-e fault=!SET
+	means that all syscalls except those from SET are subject to fault
+	injection;
+	-e fault=!SET1:error=ERRNO1, -e fault=!SET2:error=ERRNO2
+	means that all syscalls except those from SET2 are subject to fault
+	injection with error code ERRNO2, and all syscalls from SET2 that are
+	not in SET1 are subject to fault injection with error code ERRNO1.
+
+	* syscall.c (qualify_scno, qualify_syscall_class, qualify_syscall_name):
+	Handle negated QUAL_FAULT case differently.
+	* tests/fault_syntax.test: Add checks of negated sets.
+
+2016-11-29  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	print_sigevent: fix field names of sigev_value structure.
+	* print_sigevent.c (print_sigevent): Change "int" to "sival_int", "ptr"
+	to "sival_ptr".
+	* tests/mq_sendrecv.c (main): Update expected output in accordance with
+	fixed field names.
+	* tests/timer_create.c (main): Likewise.
+
+	tests: add more utime checks.
+	* tests/utime.c: Include <unistd.h> and <asm/unistd.h>.
+	(main): Add checks for invalid pointers.
+
+	utime: fix omission of field names in utimbuf structure printing.
+	* utime.c (SYS_FUNC(utime)): Print struct utimbuf as a structure,
+	not as an array (use curly brackets instead of square ones).
+	Add field names to the output.
+	* tests/utime.c (main): Update expected output.
+
+	mem: print mincore output as an array.
+	* mem.c (SYS_FUNC(minore)): Print commas between elements.
+	* tests/mincore.c (print_mincore): Update expected output in accordance
+	with syscall decoder formatting change.
+
+2016-11-29  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	util: provide information whether xlat value has been found.
+	This is necessary for the upcoming change in the output format
+	of the val3 argument of the FUTEX_WAKE_OP futex command.
+
+	* defs.h (printxvals, printxval_searchn): Change return type to int.
+	(printxval64, printxval, printxval_long): Likewise.  Forward the value
+	returned by printxvals call.
+	* util.c (printxvals, printxval_searchn): Change return type to int,
+	return 1 if xlat value has been found, 0 otherwise.
+
+2016-11-29  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	util: check dflt argument for NULL in printxvals.
+	This is necessary for the upcoming change in the output format
+	of the val3 argument of the FUTEX_WAKE_OP futex command.
+
+	* util.c (printxvals): Do not print dflt if it is NULL.
+
+2016-11-29  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	capability: fix omission of capability structure field names.
+	* capability.c (print_cap_header, print_cap_data): Add field names
+	to the output.
+	* tests/caps.awk: Update test output.
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: fix "comparison between signed and unsigned" compilation warnings
+	* tests/readv.c (main): Cast r_len to int.
+	* tests/preadv2-pwritev2.c (dumpio): Likewise.
+
+	aarch64, arm, sparc: add comments on fault injection support in kernel.
+	* linux/aarch64/set_scno.c: Note the kernel commit that introduced
+	NT_ARM_SYSTEM_CALL support.
+	* linux/arm/set_scno.c: Note the kernel commit that introduced
+	PTRACE_SET_SYSCALL support.
+	* linux/sparc/set_scno.c: Note the kernel commit that introduced
+	reloading from the syscall number register.
+
+	tests: check -C option.
+	* tests/strace-C.expected: New file.
+	* tests/strace-C.test: New test.
+	* tests/Makefile.am (MISC_TESTS): Add strace-C.test.
+	(EXTRA_DIST): Add strace-C.expected.
+
+	tests: check basic options syntax.
+	* tests/options-syntax.test: New file.
+	* tests/Makefile.am (MISC_TESTS): Add it.
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix -r option syntax.
+	While -r option implies -t, it should not literally have the effect
+	of -t option, e.g. -rr should not increment tflag twice.
+
+	* strace.c (init): In the getopt loop, do not increment tflag for each
+	occurrence of -r option.  After the getopt loop, if rflag is set, set
+	tflag to 1.  Issue a warning that -tt has no effect with -r.
+
+2016-11-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Print timeval pair as an array of timeval entries.
+	* print_timeval.c (print_timeval_item): New function.
+	(print_timeval_pair): Use it as a print_function in print_array call.
+	* tests/futimesat.c (main): Update to test new behaviour.
+	* tests/utimes.c (main): Likewise.
+
+	tests: treat tv_sec/tv_usec as signed types in futimesat and utimes tests
+	* tests/futimesat.c: Print tv_sec and tv_usec fields as signed types.
+	* tests/utimes.c: Likewise.
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	alpha: print struct timeval32 consistently.
+	* defs.h [ALPHA] (timeval32_t): New type.
+	[ALPHA] (print_timeval32_t): New prototype.
+	* print_timeval.c [ALPHA] (timeval32_t): Remove.
+	[ALPHA] (print_timeval32_t): Remove static keyword.
+	* printrusage.c [ALPHA] (printrusage32): Use timeval32_t instead
+	of local definition of struct timeval32.  Use print_timeval32_t.
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Print struct timeval consistently.
+	Use print_struct_timeval interface to print struct timeval.
+
+	* print_timeval.c (print_struct_timeval): New mpers printer.
+	* print_timex.c (print_timex): Use it.
+	* printrusage.c (printrusage): Likewise.
+	* v4l2.c (print_v4l2_buffer): Likewise.
+	* tests/getrusage.c (main): Print tv_sec and tv_usec fields as signed.
+	* tests/waitid.c (sprint_rusage): Likewise.
+
+	Suggested-by: Eugene Syromyatnikov <evgsyr@gmail.com>
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Split print_time.c.
+	After commit v4.14-136-g151d1d1 that removed the last object common
+	for timespec and timeval parsers there is no need to keep them all
+	in a single file.
+
+	* print_timespec.c: New file.
+	* print_timeval.c: Likewise.
+	* Makefile.am (strace_SOURCES): Add them.
+	* print_time.c: Move all timespec related code to print_timespec.c.
+	Move all timeval related code to print_timeval.c.
+
+2016-11-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check decoding of threads when a non-leader thread invokes execve
+	* tests/threads-execve.c: New file.
+	* tests/threads-execve.test: New test.
+	* tests/.gitignore: Add threads-execve.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(threads_execve_LDADD): New variable.
+	(MISC_TESTS): Add threads-execve.test.
+
+2016-11-27  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check decoding of fault injected exit_group syscall.
+	* tests/answer.c: New file.
+	* tests/fault_injection-exit_group.expected: Likewise.
+	* tests/fault_injection-exit_group.test: New test.
+	* tests/.gitignore: Add answer.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add fault_injection-exit_group.test.
+	(EXTRA_DIST): Add fault_injection-exit_group.expected.
+
+2016-11-27  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Set PTRACE_O_TRACEEXIT option and handle PTRACE_EVENT_EXIT events.
+	Do not assume that some syscalls do not generate syscall-exit-stops.
+	When syscalls fail for any reason they may generate syscall-exit-stops.
+
+	The solution is to wait for an actual exit reported by PTRACE_EVENT_EXIT
+	and print the end of unfinished exiting syscall properly.
+
+	* exit.c: Remove.
+	* Makefile.am (strace_SOURCES): Remove exit.c.
+	* linux/dummy.h (sys_exit): Alias to printargs_d.
+	* strace.c (ptrace_setoptions): Add PTRACE_O_TRACEEXIT bit.
+	(print_event_exit): New function.
+	(trace): Use it in case of PTRACE_EVENT_EXIT.
+	* syscall.c (trace_syscall_entering): Remove special handling
+	of SEN_exit.
+
+2016-11-27  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Change printargs to return RVAL_DECODED.
+	As printargs is invoked as a generic syscall decoder only and
+	it is not supposed to print anything on exiting, change printargs
+	to return RVAL_DECODED so it would not be called on exiting at all.
+
+	* util.c (printargs): Print args unconditionally, return RVAL_DECODED.
+
+2016-11-26  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Enhance error diagnostics of exit/exit_group decoder.
+	* exit.c (SYS_FUNC(exit)): Print the name of syscall that has returned.
+
+2016-11-26  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Restrain from fault injection while the trace executes strace code.
+	There is little use in injections of faults into syscalls made by strace.
+
+	* syscall.c (trace_syscall_entering): Clear QUAL_FAULT bit from
+	tcp->qual_flg when tcp->flags has TCB_HIDE_LOG bit set.
+
+2016-11-26  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Move two global flags to tracee scope.
+	A simultaneous use of -p option and tracing of a command available
+	since commit v4.11-183-gfa8c286 introduces a race condition because
+	the flags whether the first exec has happened are global.
+
+	Fix the race by moving hide_log_until_execve and hide_log_until_execve
+	global variables to TCB_HIDE_LOG and TCB_SKIP_DETACH_ON_FIRST_EXEC bits
+	in struct tcb.flags, correspondingly.
+
+	* defs.h (TCB_HIDE_LOG, TCB_SKIP_DETACH_ON_FIRST_EXEC, hide_log):
+	New macros.
+	(hide_log_until_execve): Remove prototype.
+	* strace.c (skip_one_b_execve, hide_log_until_execve): Remove.
+	(startup_child): Set TCB_HIDE_LOG and TCB_SKIP_DETACH_ON_FIRST_EXEC bits
+	in the allocated tcb structure.
+	(init): Remove initialization of hide_log_until_execve and
+	skip_one_b_execve.
+	(print_stopped): Use hide_log() instead of hide_log_until_execve.
+	(trace): Check and clear TCB_SKIP_DETACH_ON_FIRST_EXEC flag instead
+	of skip_one_b_execve.
+	* syscall.c (trace_syscall_entering): Clear TCB_HIDE_LOG flag instead of
+	hide_log_until_execve.
+	(trace_syscall_entering, trace_syscall_exiting): Check hide_log()
+	instead of hide_log_until_execve.
+
+2016-11-26  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Treat execveat as an execve family syscall.
+	* syscall.c (trace_syscall_entering): Clear hide_log_until_execve flag
+	also when SEN_execveat is encountered.
+
+2016-11-25  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Change parser of fault expressions to conform the documentation.
+	Make expressions like fault=SYSCALL1,SYSCALL2:error=EPERM work
+	as documented, i.e. fail both SYSCALL1 and SYSCALL2 with EPERM.
+
+	* syscall.c (parse_fault_expression): Remove const qualifier from
+	"name" and "token: variables, as well as from the return value.
+	(qual_fault): Remove const qualifier from "name" variables.
+	Split "name" into comma delimited tokens and pass each token
+	to individual qual_syscall_ex call.
+	(qualify): For QUAL_FAULT options, pass the whole option value
+	to their qualify methods without prior splitting into comma
+	delimited tokens.
+	* tests/fault_injection.test: Check it.
+	* tests/fault_syntax.test: Check empty syscall sets.
+
+2016-11-24  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Simplify parse_fault_expression.
+	* syscall.c (parse_fault_expression): Rewrite iterator over strtok_r
+	in a more concise way.
+
+2016-11-26  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Fix omission of field names in printers of timeval structure.
+	* print_time.c (time_fmt): Remove.
+	(timeval_fmt): New constant.
+	(print_timeval_t, sprint_timeval, print_timeval32_t, sprint_timeval32):
+	Use it instead of time_fmt.
+	* print_timex.c (print_timex): Print field names of the time field.
+	* printrusage.c (printrusage, printrusage32): Print field names
+	of ru_utime and ru_stime fields.
+	* tests/adjtimex.c (main): Add field names to expected output.
+	* tests/clock_nanosleep.c (main): Likewise.
+	* tests/futimesat.c (main): Likewise.
+	* tests/getrusage.c (main): Likewise.
+	* tests/nanosleep.c (main): Likewise.
+	* tests/oldselect.expected: Likewise.
+	* tests/utimes.c (main): Likewise.
+	* tests/wait4.c (sprint_rusage): Likewise.
+	* tests/waitid.c (sprint_rusage): Likewise.
+	* tests/xetitimer.c (main): Likewise.
+	* tests/xettimeofday.c (main): Likewise.
+	* tests/xselect.c (main): Likewise.
+
+	Fix omission of field names in printers of timespec structure.
+	* print_time.c (timespec_fmt): New constant.
+	(print_timespec_t, sprint_timespec): Use it instead of time_fmt.
+	* tests/aio.c: Add field names to expected output.
+	* tests/clock_nanosleep.c (main): Likewise.
+	* tests/clock_xettime.c (main): Likewise.
+	* tests/futex.c (main): Likewise.
+	* tests/mq_sendrecv.c (do_send, do_recv): Likewise.
+	* tests/nanosleep.c (main): Likewise.
+	* tests/ppoll-v.expected: Likewise.
+	* tests/ppoll.expected: Likewise.
+	* tests/pselect6.c (main): Likewise.
+	* tests/recvmmsg-timeout.c (main): Likewise.
+	* tests/restart_syscall.c (main): Likewise.
+	* tests/rt_sigtimedwait.c (iterate, main): Likewise.
+	* tests/sched_rr_get_interval.c (main): Likewise.
+	* tests/semop.c (main): Likewise.
+	* tests/strace-T.expected: Likewise.
+	* tests/timer_xettime.c (main): Likewise.
+	* tests/timerfd_xettime.c (main): Likewise.
+	* tests/utimensat.c (print_ts): Likewise.
+
+2016-11-26  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: robustify prctl-name.test against unrelated prctl invocations.
+	* tests/prctl-name.test: Filter out unrelated PR_GET_* prctl calls.
+
+2016-11-22  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: cleanup prctl-name.c.
+	* tests/prctl-name.c (main): Remove "len" variable, rename "len1"
+	to "len".  Remove "name1" variable, use "name" instead.
+
+	Move KVM_* ioctl entries from ioctls_inc*.h to ioctls_arch*.h.
+	* linux/32/ioctls_inc_align32.h: Regenerate.
+	* linux/32/ioctls_inc_align64.h: Likewise.
+	* linux/64/ioctls_inc.h: Likewise.
+	* linux/arm/ioctls_arch0.h: Likewise.
+	* linux/i386/ioctls_arch0.h: Likewise.
+	* linux/powerpc/ioctls_arch0.h: Likewise.
+	* linux/s390/ioctls_arch0.h: Likewise.
+	* linux/s390x/ioctls_arch0.h: Likewise.
+	* linux/x32/ioctls_inc0.h: Likewise.
+	* linux/x86_64/ioctls_arch0.h: Likewise.
+
+	maint: add more workarounds for alpha and powerpc.
+	* maint/ioctls_sym.sh: Skip asm/core_*.h.  Filter out from
+	asm-generic/ioctls.h those macros that are defined using unavailable
+	struct termios2 on alpha and powerpc.
+
+2016-11-22  Andreas Schwab  <schwab@linux-m68k.org>
+
+	Add ioctl definitions for 16-bit alignment.
+	* Makefile.am (EXTRA_DIST): Add linux/32/ioctls_inc_align16.h.
+	* linux/32/ioctls_inc_align16.h: New file.
+	* linux/32/ioctls_inc.h [M68K]: Include it.
+
+2016-11-22  Dmitry V. Levin  <ldv@altlinux.org>
+
+	maint: move KVM_* constants from ioctls_inc.h to ioctls_arch.h.
+	* maint/ioctls_gen.sh: Place constants defined in linux/kvm.h
+	into ioctls_arch.h instead of ioctls_inc.h.
+
+2016-11-21  Dmitry V. Levin  <ldv@altlinux.org>
+
+	maint: harmonize use of ioctls_sym.sh.
+	* maint/ioctls_gen.sh: Consistently specify INCLUDES for all
+	ioctls_sym.sh invocations.  Use $mydir to specify ioctls_sym.sh
+	location.
+
+	maint: rework workarounds for linux/kvm.h.
+	* maint/ioctls_sym.sh: Remove pre-include linux/kvm.h workarounds.
+	Skip linux/kvm.h on those architectures that have no asm/kvm.h file.
+	Introduce post-process workarounds, add post-process workarounds
+	for linux/kvm.h.
+
+2016-11-20  Elvira Khabirova  <lineprinter0@gmail.com>
+
+	Restructure strace.1.
+	* strace.1 (OPTIONS): Add subsections.
+	(PROBLEMS): Rename to REPORTING BUGS.
+	(SEE ALSO): Move to the bottom.
+
+2016-11-20  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	prctl: implement decoding of PR_SET_FP_MODE and PR_GET_FP_MODE options.
+	* xlat/pr_fp_mode.in: New file.
+	* prctl.c: Include "xlat/pr_fp_mode.h".
+	(SYS_FUNC(prctl)): Add handling for PR_SET_FP_MODE and PR_GET_FP_MODE
+	options.
+
+	prctl: add braces for conditional blocks with else/else-if blocks having braces
+
+2016-11-20  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	prctl: cast arg2 to int in PR_SET_PTRACER handler.
+	Kernel code does this when compares it with -1 (apart from comparing it with
+	PR_SET_PTRACER_ANY, which is also -1) in security/yama/yama_lsm.c.
+
+	* prctl.c (SYS_FUNC(prctl)) <PR_SET_PTRACER>: Cast arg2 to int before
+	comparing it with -1.
+
+2016-11-20  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	prctl: use getarg_ull for option value retrieval.
+	The prctl syscall does not use compat on x32/n32, so argument types
+	are in fact kernel_ulong_t.
+
+	* prctl.c (print_prctl_args): Use getarg_ull, print as "%#llx" instead
+	of "%#lx".
+	(SYS_FUNC(prctl)): Use getarg_ull to store call arguments in arg2, arg3,
+	arg4, arg5 variables of type unsigned long long.  Use them in printing
+	routines.
+	(SYS_FUNC(arch_prctl)): Use getarg_ull to store call argument in addr
+	variable of type unsigned long long.  Print it as "%#llx" instead of
+	"%#lx".
+
+2016-11-20  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	block: add some definitions from <linux/blkpg.h>
+	This is done in order to fix build error on old distributions where
+	struct blkpg_ioctl_arg declaration is broken:
+
+	In file included from block.c:35:
+	/usr/include/linux/blkpg.h:36: error: expected ':', ',', ';', '}' or '__attribute__' before '*' token
+	block.c: In function 'print_blkpg_req':
+	block.c:113: error: 'struct_blkpg_ioctl_arg' has no member named 'data'
+
+	(from SLE10)
+
+	* block.c: Include <linux/ioctl.h> instead of <linux/blkpg.h>.
+	(BLKPG, BLKPG_DEVNAMELTH, BLKPG_VOLNAMELTH): New macros.
+	(struct_blkpg_ioctl_arg, struct_blkpg_partition): New definitions,
+	copied from blkpg_ioctl_arg and blkpg_partition structures defined
+	in <linux/blkpg.h>.
+
+2016-11-20  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	xlat: add values to new ARCH_* constants.
+	Since UAPI header declares them under CONFIG_CHECKPOINT_RESTORE
+	and they would never be defined in user space.
+
+	* xlat/archvals.in: Add numeric values to ARCH_MAP_VDSO_* constants.
+
+2016-11-20  Dmitry V. Levin  <ldv@altlinux.org>
+
+	prctl: include <linux/prctl.h> instead of <sys/prctl.h>
+	There are no users of prctl function in prctl.c, and all the rest
+	is provided by <linux/prctl.h> anyway.
+
+	* prctl.c: Include <linux/prctl.h> instead of <sys/prctl.h>.
+
+2016-11-20  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check decoding of prctl PR_GET_NAME/PR_SET_NAME operations.
+	* tests/prctl-name.c: New file.
+	* tests/prctl-name.test: New test.
+	* tests/.gitignore: Add prctl-name.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add prctl-name.test.
+
+	prctl: fix printing of PR_SET_NAME's argument.
+	* prctl.c (SYS_FUNC(prctl)): Use printstr_ex with QUOTE_0_TERMINATED
+	instead of printstr to print the argument of PR_SET_NAME and PR_GET_NAME
+	operations.
+
+	printstr_ex: fix handling of last byte when QUOTE_0_TERMINATED bit set.
+	* util.c (printstr_ex): Simplify handling of size == 0 case.
+	Do not artificially decrement size when QUOTE_0_TERMINATED bit is set.
+	Ensure that str[size] byte is non-zero if it hasn't been fetched.
+
+2016-11-19  Dmitry V. Levin  <ldv@altlinux.org>
+
+	printstr_ex: handle QUOTE_0_TERMINATED bit consistently.
+	When user_style has QUOTE_0_TERMINATED bit set, printstr_ex prints
+	the fetched string as a NUL-terminated.
+	After this change, the string is being fetched as a NUL-terminated, too.
+
+	* util.c (printstr_ex): Use umovestr instead of umoven
+	if QUOTE_0_TERMINATED bit is set.
+
+2016-11-19  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Cleanup fetch part of printstr_ex.
+	* util.c (printstr_ex): Initialize "style" early, unify error handling.
+
+2016-11-18  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Update prctl ARCH_* constants.
+	* xlat/archvals.in: Add ARCH_MAP_VDSO_X32, ARCH_MAP_VDSO_32, and
+	ARCH_MAP_VDSO_64 introduced by linux kernel commit v4.9-rc1~155^2~6.
+
+	Update V4L2_* constants.
+	* xlat/v4l2_device_capabilities_flags.in: Add V4L2_CAP_TOUCH introduced
+	by linux kernel commit v4.9-rc4~7^2~422.
+	* xlat/v4l2_input_types.in: Add V4L2_CAP_TOUCH introduced
+	by linux kernel commit v4.9-rc4~7^2~422.
+
+	Update fs *_MAGIC constants.
+	* xlat/fsmagic.in: Add DAXFS_MAGIC introduced by linux kernel commit
+	v4.9-rc1~45^2^2~5.
+
+	Update MS_* constants.
+	* xlat/mount_flags.in: Add MS_NOREMOTELOCK introduced
+	by linux kernel commit v4.9-rc1~57^2~1^2~7.
+
+	Update FALLOC_* constants.
+	* xlat/falloc_flags.in: Add FALLOC_FL_UNSHARE_RANGE introduced
+	by linux kernel commit v4.9-rc1~31^2~69.
+
+	Update BTRFS_* constants.
+	* xlat/btrfs_features_compat_ro.in: Add
+	BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID introduced
+	by linux kernel commit v4.9-rc1~7^2^2~4.
+
+	Update BPF_* constants.
+	* xlat/bpf_prog_types.in: Add BPF_PROG_TYPE_PERF_EVENT introduced
+	by linux kernel commit v4.9-rc1~127^2~302^2~4.
+
+2016-11-18  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	make-dist: use HEAD for making distribution package.
+	* make-dist: Use HEAD commit instead of master branch by default.
+
+2016-11-18  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: fix btrfs build error on some old systems.
+	Fix the following build error on SLE 11 SP4:
+
+	btrfs.c: In function 'btrfs_test_dev_replace_ioctl':
+	btrfs.c:1570: error: unknown field 'start' specified in initializer
+
+	* tests/btrfs.c (btrfs_test_dev_replace_ioctl): Move initialization
+	of struct btrfs_ioctl_dev_replace_args.start.srcdevid out of the
+	designated initializer.
+
+2016-11-18  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check decoding of ERESTARTSYS error code.
+	* tests/erestartsys.c: New file.
+	* tests/erestartsys.test: New test.
+	* tests/.gitignore: Add erestartsys.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add erestartsys.test.
+
+2016-11-18  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix signame usage in qual_signal.
+	Do not assume that the string returned by signame starts with "SIG"
+	prefix, this is not always the case.
+
+	* syscall.c (qual_signal): Skip signame return value
+	when it does not have "SIG" prefix.
+
+2016-11-18  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check -e signal=set syntax.
+	* tests/qual_signal.c: New file.
+	* tests/qual_signal.test: New test.
+	* tests/.gitignore: Add qual_signal.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(MISC_TESTS): Add qual_signal.test.
+
+2016-11-17  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Make -e fault= expressions cumulative.
+	Change the way how subsequent -e fault= expressions are interpreted
+	to implement a cumulative behavior.  For example,
+	-e fault=file:when=3+ -e fault=chdir
+	now specifies that all chdir syscalls and 3+ file related syscalls
+	except chdir are subject for fault injection.
+
+	* syscall.c (qualify): Do not reset qual_vec for QUAL_FAULT.
+	* tests/fault_injection.test: Check it.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: check syscall fault injection.
+	* tests/fault_injection.c: New file.
+	* tests/fault_injection.test: New test.
+	* tests/fault_syntax.test: Likewise.
+	* tests/.gitignore: Add fault_injection.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(MISC_TESTS): Add fault_injection.test and fault_syntax.test.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Implement syscall fault injection.
+	Introduce new -e fault=EXPR syntax that can be used to specify a subset
+	of syscalls that are subject of syscall fault injection, an error code
+	that has to be injected, and a frequency of injection.
+
+	The expression specifying syscall fault injection has the following
+	format: SET[:error=ERRNO][:when=FIRST[+[STEP]]]
+	where only SET is a required part and all the rest is optional.
+
+	The method used to implement syscall fault injection is the following:
+	on entering syscall the syscall number is substituted by an invalid
+	syscall number -1, and on exiting syscall the error code returned by
+	the kernel is substituted with the error code specified in the fault
+	expression.
+
+	This implementaion is based on the prototype developed
+	by Nahim El Atmani as a part of his GSoC 2016 strace project.
+
+	* defs.h (struct fault_opts): New forward declaration.
+	(struct tcb): Add fault_vec field.
+	(TCB_FAULT_INJ, QUAL_FAULT): New macros.
+	* strace.1: Document -e fault expression syntax.
+	* strace.c (usage): Mention -e fault expression.
+	(droptcb): Deallocate fault_vec member.
+	* syscall.c (qual_fault, arch_set_scno, arch_set_error): New prototypes.
+	(qual_options): Add "fault" option.
+	(struct fault_opts): New structure.
+	(num_faults): New variable.
+	(fault_vec): New array.
+	(syscall_fault_injected, tcb_fault_opts, reallocate_fault,
+	find_errno_by_name, qual_syscall_ex, strip_prefix, parse_fault_token,
+	parse_fault_expression, qual_fault, inject_syscall_fault_entering,
+	update_syscall_fault_exiting): New functions.
+	(qual_syscall): Use qual_syscall_ex.
+	(qualify_one): Add argument: a pointer to struct fault_opts, all callers
+	changed.  Copy struct fault_opts from the pointer to fault_vec.
+	Use reallocate_fault.
+	(qualify_scno, qualify_syscall_class, qualify_syscall_name): Add
+	argument: a pointer to struct fault_opts.
+	(qualify): Use reallocate_fault.  Do not check "all" class for
+	QUAL_FAULT qualifier.
+	(lookup_class): Check for "all" class.
+	(trace_syscall_entering): Use inject_syscall_fault_entering.
+	(trace_syscall_exiting): Use update_syscall_fault_exiting.  Clear
+	TCB_FAULT_INJ flag along with TCB_INSYSCALL.  Print " (INJECTED)" suffix
+	when the syscall has been injected successfully.
+	[ARCH_REGS_FOR_GETREGSET && !HAVE_GETREGS_OLD]
+	(ptrace_setregset): New function.
+	(ptrace_setregset_or_setregs): Define to ptrace_setregset.
+	[ARCH_REGS_FOR_GETREGS && !HAVE_GETREGS_OLD]
+	(ptrace_setregs): New function.
+	(ptrace_setregset_or_setregs): Define to ptrace_setregs.
+	[ptrace_setregset_or_setregs] (set_regs): New function.
+	Include "set_scno.c" and "set_error.c"
+	* NEWS: Mention this enhancement.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Implement arch specific methods of changing syscall number and error code
+	This introduces arch_set_error and arch_set_scno functions for each
+	supported architecture, needed to implement syscall fault injection.
+
+	* linux/aarch64/set_error.c: New file.
+	* linux/aarch64/set_scno.c: Likewise.
+	* linux/alpha/set_error.c: Likewise.
+	* linux/alpha/set_scno.c: Likewise.
+	* linux/arc/set_error.c: Likewise.
+	* linux/arc/set_scno.c: Likewise.
+	* linux/arm/set_error.c: Likewise.
+	* linux/arm/set_scno.c: Likewise.
+	* linux/avr32/set_error.c: Likewise.
+	* linux/avr32/set_scno.c: Likewise.
+	* linux/bfin/set_error.c: Likewise.
+	* linux/bfin/set_scno.c: Likewise.
+	* linux/crisv10/set_error.c: Likewise.
+	* linux/crisv10/set_scno.c: Likewise.
+	* linux/crisv32/set_error.c: Likewise.
+	* linux/crisv32/set_scno.c: Likewise.
+	* linux/hppa/set_error.c: Likewise.
+	* linux/hppa/set_scno.c: Likewise.
+	* linux/i386/set_error.c: Likewise.
+	* linux/i386/set_scno.c: Likewise.
+	* linux/ia64/set_error.c: Likewise.
+	* linux/ia64/set_scno.c: Likewise.
+	* linux/m68k/set_error.c: Likewise.
+	* linux/m68k/set_scno.c: Likewise.
+	* linux/metag/set_error.c: Likewise.
+	* linux/metag/set_scno.c: Likewise.
+	* linux/microblaze/set_error.c: Likewise.
+	* linux/microblaze/set_scno.c: Likewise.
+	* linux/mips/set_error.c: Likewise.
+	* linux/mips/set_scno.c: Likewise.
+	* linux/nios2/set_error.c: Likewise.
+	* linux/nios2/set_scno.c: Likewise.
+	* linux/or1k/set_error.c: Likewise.
+	* linux/or1k/set_scno.c: Likewise.
+	* linux/powerpc/set_error.c: Likewise.
+	* linux/powerpc/set_scno.c: Likewise.
+	* linux/powerpc64/set_error.c: Likewise.
+	* linux/powerpc64/set_scno.c: Likewise.
+	* linux/riscv/set_error.c: Likewise.
+	* linux/riscv/set_scno.c: Likewise.
+	* linux/s390/set_error.c: Likewise.
+	* linux/s390/set_scno.c: Likewise.
+	* linux/s390x/set_error.c: Likewise.
+	* linux/s390x/set_scno.c: Likewise.
+	* linux/sh/set_error.c: Likewise.
+	* linux/sh/set_scno.c: Likewise.
+	* linux/sh64/set_error.c: Likewise.
+	* linux/sh64/set_scno.c: Likewise.
+	* linux/sparc/set_error.c: Likewise.
+	* linux/sparc/set_scno.c: Likewise.
+	* linux/sparc64/set_error.c: Likewise.
+	* linux/sparc64/set_scno.c: Likewise.
+	* linux/tile/set_error.c: Likewise.
+	* linux/tile/set_scno.c: Likewise.
+	* linux/x32/set_error.c: Likewise.
+	* linux/x32/set_scno.c: Likewise.
+	* linux/x86_64/set_error.c: Likewise.
+	* linux/x86_64/set_scno.c: Likewise.
+	* linux/xtensa/set_error.c: Likewise.
+	* linux/xtensa/set_scno.c: Likewise.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	cris: add syscall tables.
+	The incomplete CRIS support introduced by commit v4.5.18-77-gea0e6e8
+	should not have been merged because it lacks essential parts, e.g.
+	syscall tables.
+
+	This change adds missing syscall tables for crisv10 and crisv32.
+
+	* linux/crisv10/syscallent.h: New file.
+	* linux/crisv32/syscallent.h: Likewise.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Introduce string_to_uint_ex and string_to_uint_upto functions.
+	* defs.h (string_to_uint_ex): New prototype.
+	(string_to_uint_upto): New function, a thin wrapper around
+	string_to_uint_ex.
+	* util.c (string_to_uint_ex): New function.
+	(string_to_uint): Change into a thin wrapper around string_to_uint_upto.
+	* strace.c (init): Use string_to_uint_upto.
+	* syscall.c (qualify_scno, qual_signal, qual_desc): Use
+	string_to_uint_upto instead of string_to_uint.
+
+2016-11-16  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Split qual_syscall into separate functions.
+	Split qual_syscall into qualify_scno, qualify_syscall_class,
+	and qualify_syscall_name.
+	This might be needed later to implement syscall fault injection.
+
+	* syscall.c (qualify_scno, qualify_syscall_class, qualify_syscall_name):
+	New functions.
+	(qual_syscall): Use them.
+
+2016-11-15  Dmitry V. Levin  <ldv@altlinux.org>
+
+	xtensa: wire up new syscalls.
+	* linux/xtensa/syscallent.h [342..347]: New entries.
+
+2016-11-14  Dmitry V. Levin  <ldv@altlinux.org>
+
+	arc: wire up new syscalls.
+	* linux/arc/syscallent.h [247, 248]: New entries.
+
+2016-11-13  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: fix potential compilation warning in ioctl_block.c.
+	ioctl_block.c:48: warning: 'init_magic' defined but not used
+
+	* tests/ioctl_block.c (init_magic): Define only for
+	[BLKTRACESETUP && HAVE_STRUCT_BLK_USER_TRACE_SETUP].
+
+2016-11-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Add support for pkey_mprotect, pkey_alloc, pkey_free syscalls.
+	* linux/32/syscallent.h: Add syscall entries for pkey_* calls.
+	* linux/64/syscallent.h: Likewise.
+	* linux/arm/syscallent.h: Likewise.
+	* linux/i386/syscallent.h: Likewise.
+	* linux/mips/syscallent-n32.h: Likewise.
+	* linux/mips/syscallent-n64.h: Likewise.
+	* linux/mips/syscallent-o32.h: Likewise.
+	* linux/x32/syscallent.h: Likewise.
+	* linux/x86_64/syscallent.h: Likewise.
+	* mem.c (do_mprotect): New function, common handler for mprotect and
+	pkey_mprotect.
+	(SYS_FUNC(mprotect)): Convert to wrapper around do_mprotect.
+	(SYS_FUNC(pkey_mprotect)): New function.
+	* xlat/pkey_access.in: New file.
+	* pkeys.c: New file containing implementation of pkey_alloc and
+	pkey_free.
+	* Makefile.am: Add it.
+	* NEWS: Mention this enhancement.
+	* tests/.gitignore: Add pkey_alloc, pkey_free, and pkey_mprotect.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add pkey_alloc.test, pkey_free.test, and
+	pkey_mprotect.test.
+	* tests/pkey_alloc.c: New file.
+	* tests/pkey_free.c: Likewise.
+	* tests/pkey_mprotect.c: Likewise.
+	* tests/pkey_alloc.test: New test.
+	* tests/pkey_free.test: Likewise.
+	* tests/pkey_mprotect.test: Likewise.
+
+2016-11-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: fix "constant is too large" compilation warnings.
+	alarm.c: In function 'main':
+	alarm.c:41: warning: integer constant is too large for 'long' type
+	aio.c: In function 'main':
+	aio.c:162: warning: integer constant is too large for 'long' type
+	btrfs.c: In function 'btrfs_test_sync_ioctls':
+	btrfs.c:202: warning: integer constant is too large for 'long' type
+	btrfs.c: In function 'btrfs_test_subvol_ioctls':
+	btrfs.c:289: warning: integer constant is too large for 'long' type
+	btrfs.c:290: warning: integer constant is too large for 'long' type
+	dup2.c: In function 'main':
+	dup2.c:12: warning: integer constant is too large for 'long' type
+	dup2.c:13: warning: integer constant is too large for 'long' type
+	dup3.c: In function 'main':
+	dup3.c:13: warning: integer constant is too large for 'long' type
+	dup3.c:14: warning: integer constant is too large for 'long' type
+	epoll_create.c: In function 'main':
+	epoll_create.c:12: warning: integer constant is too large for 'long' type
+	epoll_ctl.c: In function 'invoke_syscall':
+	epoll_ctl.c:14: warning: integer constant is too large for 'long' type
+	faccessat.c: In function 'main':
+	faccessat.c:13: warning: integer constant is too large for 'long' type
+	fchdir.c: In function 'main':
+	fchdir.c:12: warning: integer constant is too large for 'long' type
+	struct_flock.c: In function 'invoke_test_syscall':
+	struct_flock.c:48: warning: integer constant is too large for 'long' type
+	struct_flock.c: In function 'test_flock_einval':
+	struct_flock.c:58: warning: integer constant is too large for 'long' type
+	struct_flock.c:59: warning: integer constant is too large for 'long' type
+	fcntl64.c: In function 'test_flock64_einval':
+	fcntl64.c:44: warning: integer constant is too large for 'long' type
+	fcntl64.c:45: warning: integer constant is too large for 'long' type
+	fcntl.c: In function 'test_flock64_einval':
+	fcntl.c:44: warning: integer constant is too large for 'long' type
+	fcntl.c:45: warning: integer constant is too large for 'long' type
+	fdatasync.c: In function 'main':
+	fdatasync.c:12: warning: integer constant is too large for 'long' type
+	flock.c: In function 'main':
+	flock.c:13: warning: integer constant is too large for 'long' type
+	xstatx.c: In function 'main':
+	xstatx.c:255: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:290: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatx.c:294: warning: integer constant is too large for 'long' type
+	xstatfsx.c: In function 'main':
+	xstatfsx.c:113: warning: integer constant is too large for 'long' type
+	fsync.c: In function 'main':
+	fsync.c:12: warning: integer constant is too large for 'long' type
+	ftruncate64.c: In function 'main':
+	ftruncate64.c:39: warning: integer constant is too large for 'long' type
+	futimesat.c: In function 'main':
+	futimesat.c:52: warning: integer constant is too large for 'long' type
+	futimesat.c:59: warning: integer constant is too large for 'long' type
+	get_mempolicy.c: In function 'main':
+	get_mempolicy.c:83: warning: integer constant is too large for 'long' type
+	get_mempolicy.c:84: warning: integer constant is too large for 'long' type
+	get_mempolicy.c:85: warning: integer constant is too large for 'long' type
+	get_mempolicy.c:86: warning: integer constant is too large for 'long' type
+	getdents.c: In function 'main':
+	getdents.c:109: warning: integer constant is too large for 'long' type
+	getdents.c:110: warning: integer constant is too large for 'long' type
+	getdents.c:114: warning: integer constant is too large for 'long' type
+	getdents64.c: In function 'main':
+	getdents64.c:114: warning: integer constant is too large for 'long' type
+	getdents64.c:115: warning: integer constant is too large for 'long' type
+	getdents64.c:119: warning: integer constant is too large for 'long' type
+	xgetrlimit.c: In function 'main':
+	xgetrlimit.c:71: warning: integer constant is too large for 'long' type
+	ioctl_block.c:44: warning: integer constant is too large for 'long' type
+	ioctl_block.c: In function 'main':
+	ioctl_block.c:136: warning: integer constant is too large for 'long' type
+	ioctl_block.c:137: warning: integer constant is too large for 'long' type
+	ioctl_block.c:161: warning: integer constant is too large for 'long' type
+	ioctl_block.c:170: warning: integer constant is too large for 'long' type
+	ioctl_block.c:171: warning: integer constant is too large for 'long' type
+	ioctl_evdev.c:42: warning: integer constant is too large for 'long' type
+	ioctl_mtd.c:46: warning: integer constant is too large for 'long' type
+	ioctl_rtc.c:40: warning: integer constant is too large for 'long' type
+	ioperm.c: In function 'main':
+	ioperm.c:12: warning: integer constant is too large for 'long' type
+	ioctl_v4l2.c: In function 'main':
+	ioctl_v4l2.c:409: warning: integer constant is too large for 'long' type
+	ipc.c: In function 'ipc_call':
+	ipc.c:52: warning: integer constant is too large for 'long' type
+	kill.c: In function 'main':
+	kill.c:59: warning: integer constant is too large for 'long' type
+	kill.c:62: warning: integer constant is too large for 'long' type
+	kill.c:63: warning: integer constant is too large for 'long' type
+	kill.c:68: warning: integer constant is too large for 'long' type
+	linkat.c: In function 'main':
+	linkat.c:14: warning: integer constant is too large for 'long' type
+	linkat.c:15: warning: integer constant is too large for 'long' type
+	mbind.c: In function 'main':
+	mbind.c:41: warning: integer constant is too large for 'long' type
+	mbind.c:43: warning: integer constant is too large for 'long' type
+	mbind.c:44: warning: integer constant is too large for 'long' type
+	migrate_pages.c: In function 'main':
+	migrate_pages.c:41: warning: integer constant is too large for 'long' type
+	In file included from mkdirat.c:10:
+	umode_t.c: In function 'test_syscall':
+	umode_t.c:47: warning: integer constant is too large for 'long' type
+	mknod.c: In function 'call_mknod':
+	mknod.c:16: warning: integer constant is too large for 'long' type
+	mknod.c: In function 'main':
+	mknod.c:23: warning: integer constant is too large for 'long' type
+	mknod.c:49: warning: integer constant is too large for 'long' type
+	mknod.c:56: warning: integer constant is too large for 'long' type
+	mknodat.c:12: warning: integer constant is too large for 'long' type
+	mknodat.c: In function 'call_mknodat':
+	mknodat.c:17: warning: integer constant is too large for 'long' type
+	mknodat.c: In function 'main':
+	mknodat.c:24: warning: integer constant is too large for 'long' type
+	mknodat.c:50: warning: integer constant is too large for 'long' type
+	mknodat.c:57: warning: integer constant is too large for 'long' type
+	mmap.c: In function 'main':
+	mmap.c:51: warning: integer constant is too large for 'long' type
+	move_pages.c: In function 'print_stat_pages':
+	move_pages.c:139: warning: integer constant is too large for 'long' type
+	move_pages.c: In function 'print_move_pages':
+	move_pages.c:166: warning: integer constant is too large for 'long' type
+	move_pages.c: In function 'main':
+	move_pages.c:188: warning: integer constant is too large for 'long' type
+	mq_sendrecv.c: In function 'main':
+	mq_sendrecv.c:238: warning: integer constant is too large for 'long' type
+	mq_sendrecv.c:401: warning: integer constant is too large for 'long' type
+	mq_sendrecv.c:403: warning: integer constant is too large for 'long' type
+	nsyscalls.c: In function 'test_syscall':
+	nsyscalls.c:64: warning: integer constant is too large for 'long' type
+	nsyscalls.c:65: warning: integer constant is too large for 'long' type
+	nsyscalls.c:66: warning: integer constant is too large for 'long' type
+	nsyscalls.c:67: warning: integer constant is too large for 'long' type
+	nsyscalls.c:68: warning: integer constant is too large for 'long' type
+	nsyscalls.c:69: warning: integer constant is too large for 'long' type
+	preadv-pwritev.c: In function 'main':
+	preadv-pwritev.c:162: warning: comparison between signed and unsigned
+	prlimit64.c: In function 'main':
+	prlimit64.c:65: warning: integer constant is too large for 'long' type
+	prlimit64.c:70: warning: integer constant is too large for 'long' type
+	remap_file_pages.c: In function 'main':
+	remap_file_pages.c:42: warning: integer constant is too large for 'long' type
+	remap_file_pages.c:43: warning: integer constant is too large for 'long' type
+	remap_file_pages.c:45: warning: integer constant is too large for 'long' type
+	renameat.c: In function 'main':
+	renameat.c:15: warning: integer constant is too large for 'long' type
+	renameat.c:16: warning: integer constant is too large for 'long' type
+	rt_sigqueueinfo.c: In function 'main':
+	rt_sigqueueinfo.c:41: warning: integer constant is too large for 'long' type
+	rt_tgsigqueueinfo.c: In function 'k_tgsigqueueinfo':
+	rt_tgsigqueueinfo.c:45: warning: integer constant is too large for 'long' type
+	rt_tgsigqueueinfo.c:46: warning: integer constant is too large for 'long' type
+	rt_tgsigqueueinfo.c:47: warning: integer constant is too large for 'long' type
+	rt_tgsigqueueinfo.c: In function 'main':
+	rt_tgsigqueueinfo.c:67: warning: integer constant is too large for 'long' type
+	sendfile.c: In function 'main':
+	sendfile.c:110: warning: integer constant is too large for 'long' type
+	sendfile64.c: In function 'main':
+	sendfile64.c:100: warning: integer constant is too large for 'long' type
+	set_mempolicy.c: In function 'main':
+	set_mempolicy.c:129: warning: integer constant is too large for 'long' type
+	set_mempolicy.c:130: warning: integer constant is too large for 'long' type
+	setrlimit.c: In function 'main':
+	setrlimit.c:44: warning: integer constant is too large for 'long' type
+	socketcall.c: In function 'test_socketcall':
+	socketcall.c:58: warning: integer constant is too large for 'long' type
+	splice.c: In function 'main':
+	splice.c:41: warning: integer constant is too large for 'long' type
+	splice.c:42: warning: integer constant is too large for 'long' type
+	splice.c:45: warning: integer constant is too large for 'long' type
+	splice.c:46: warning: integer constant is too large for 'long' type
+	symlinkat.c: In function 'main':
+	symlinkat.c:12: warning: integer constant is too large for 'long' type
+	sync_file_range.c: In function 'main':
+	sync_file_range.c:42: warning: integer constant is too large for 'long' type
+	sync_file_range.c:43: warning: integer constant is too large for 'long' type
+	syslog.c: In function 'main':
+	syslog.c:14: warning: integer constant is too large for 'long' type
+	tee.c: In function 'main':
+	tee.c:41: warning: integer constant is too large for 'long' type
+	tee.c:42: warning: integer constant is too large for 'long' type
+	timer_create.c: In function 'main':
+	timer_create.c:52: warning: integer constant is too large for 'long' type
+	timer_create.c:84: warning: integer constant is too large for 'long' type
+	timer_create.c:85: warning: integer constant is too large for 'long' type
+	truncate64.c: In function 'main':
+	truncate64.c:41: warning: integer constant is too large for 'long' type
+	xgetrlimit.c: In function 'main':
+	xgetrlimit.c:71: warning: integer constant is too large for 'long' type
+	umode_t.c: In function 'test_syscall':
+	umode_t.c:46: warning: integer constant is too large for 'long' type
+	unlinkat.c: In function 'main':
+	unlinkat.c:13: warning: integer constant is too large for 'long' type
+	waitpid.c: In function 'main':
+	waitpid.c:43: warning: integer constant is too large for 'long' type
+	waitid.c: In function 'poison':
+	waitid.c:141: warning: integer constant is too large for 'long' type
+	xetpriority.c: In function 'main':
+	xetpriority.c:15: warning: integer constant is too large for 'long' type
+	xetpriority.c:19: warning: integer constant is too large for 'long' type
+	xetpriority.c:20: warning: integer constant is too large for 'long' type
+	xetpgid.c: In function 'main':
+	xetpgid.c:43: warning: integer constant is too large for 'long' type
+	xetpgid.c:47: warning: integer constant is too large for 'long' type
+	xetpgid.c:48: warning: integer constant is too large for 'long' type
+
+	(SLES 11SP4, i386)
+
+	* tests/alarm.c (main): Add proper suffix to integer constant.
+	* tests/aio.c (main): Likewise.
+	* tests/btrfs.c (btrfs_test_sync_ioctls, btrfs_test_subvol_ioctls): Likewise.
+	* tests/dup2.c (main): Likewise.
+	* tests/dup3.c (main): Likewise.
+	* tests/epoll_create.c (main): Likewise.
+	* tests/epoll_ctl.c (invoke_syscall): Likewise.
+	* tests/faccessat.c (main): Likewise.
+	* tests/fchdir.c (main): Likewise.
+	* tests/fcntl.c (test_flock64_einval): Likewise.
+	* tests/fcntl64.c (test_flock64_einval): Likewise.
+	* tests/fdatasync.c (main): Likewise.
+	* tests/flock.c (main): Likewise.
+	* tests/fstat64.c (SAMPLE_SIZE): Likewise.
+	* tests/fstat.c (SAMPLE_SIZE): Likewise.
+	* tests/fsync.c (main): Likewise.
+	* tests/ftruncate64.c (main): Likewise.
+	* tests/futimesat.c (main): Likewise.
+	* tests/get_mempolicy.c (main): Likewise.
+	* tests/getdents.c (main): Likewise.
+	* tests/getdents64.c (main): Likewise.
+	* tests/ioctl_block.c (lmagic, main): Likewise.
+	* tests/ioctl_evdev.c (lmagic): Likewise.
+	* tests/ioctl_mtd.c (lmagic): Likewise.
+	* tests/ioctl_rtc.c (lmagic): Likewise.
+	* tests/ioctl_v4l2.c (main): Likewise.
+	* tests/ioperm.c (main): Likewise.
+	* tests/ipc.c (ipc_call): Likewise.
+	* tests/kill.c (main): Likewise.
+	* tests/linkat.c (main): Likewise.
+	* tests/lstat64.c (SAMPLE_SIZE): Likewise.
+	* tests/lstat.c (SAMPLE_SIZE): Likewise.
+	* tests/mbind.c (main): Likewise.
+	* tests/migrate_pages.c (main): Likewise.
+	* tests/mkdirat.c (TEST_SYSCALL_PREFIX_ARGS): Likewise.
+	* tests/mknod.c (call_mknod, main): Likewise.
+	* tests/mknodat.c (fd, call_mknodat, main): Likewise.
+	* tests/mmap.c (main): Likewise.
+	* tests/move_pages.c (print_stat_pages, print_move_pages): Likewise.
+	* tests/mq_sendrecv.c (main): Likewise.
+	* tests/nsyscalls.c (test_syscall): Likewise.
+	* tests/prlimit64.c (main): Likewise.
+	* tests/remap_file_pages.c (main): Likewise.
+	* tests/renameat.c (main): Likewise.
+	* tests/rt_sigqueueinfo.c (main): Likewise.
+	* tests/rt_tgsigqueueinfo.c (k_tgsigqueueinfo, main): Likewise.
+	* tests/sendfile.c (main): Likewise.
+	* tests/sendfile64.c (main): Likewise.
+	* tests/set_mempolicy.c (main): Likewise.
+	* tests/setrlimit.c (main): Likewise.
+	* tests/socketcall.c (test_socketcall): Likewise.
+	* tests/splice.c (main): Likewise.
+	* tests/stat64.c (SAMPLE_SIZE): Likewise.
+	* tests/stat.c (SAMPLE_SIZE): Likewise.
+	* tests/struct_flock.c (invoke_test_syscall, test_flock_einval): Likewise.
+	* tests/symlinkat.c (main): Likewise.
+	* tests/sync_file_range.c (main): Likewise.
+	* tests/syslog.c (main): Likewise.
+	* tests/tee.c (main): Likewise.
+	* tests/timer_create.c (main): Likewise.
+	* tests/truncate64.c (main): Likewise.
+	* tests/umode_t.c (test_syscall): Likewise.
+	* tests/unlinkat.c (main): Likewise.
+	* tests/waitid.c (main): Likewise.
+	* tests/waitpid.c (main): Likewise.
+	* tests/xetpgid.c (main): Likewise.
+	* tests/xetpriority.c (main): Likewise.
+	* tests/xgetrlimit.c (main): Likewise.
+	* tests/xstatfsx.c (main) [CHECK_ODD_SIZE]: Likewise.
+	* tests/xstatx.c (main): Likewise.
+
+2016-11-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: fix "comparison between signed and unsigned" compilation warnings
+	preadv-pwritev.c: In function 'main':
+	preadv-pwritev.c:162: warning: comparison between signed and unsigned
+	readv.c: In function 'main':
+	readv.c:148: warning: comparison between signed and unsigned
+	recvmsg.c: In function 'main':
+	recvmsg.c:148: warning: comparison between signed and unsigned
+
+	* tests/preadv-pwritev.c (main): Cast r_len to int.
+	* tests/readv.c (main): Likewise.
+	* tests/recvmsg.c (main): Likewise.
+
+2016-11-13  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall.c: refactor getregs_old fallback in get_regs.
+	This change moves remaining arch specific getregs_old code into
+	appropriate arch subdirectories and removes unnecessary code
+	duplication.
+
+	* linux/getregs_old.h: New file.
+	* linux/powerpc/getregs_old.h: Likewise.
+	* linux/powerpc64/getregs_old.h: Likewise.
+	* linux/x86_64/getregs_old.h: Likewise.
+	* Makefile.am (EXTRA_DIST): Add them.
+	* syscall.c: Include "getregs_old.h".
+	[X86_64 || POWERPC]: Remove.
+	[ARCH_REGS_FOR_GETREGSET] (ptrace_getregset_or_getregs): Define
+	to ptrace_getregset.
+	[ARCH_REGS_FOR_GETREGS] (ptrace_getregset_or_getregs): Define
+	to ptrace_getregs.
+	(get_regs): Check for ptrace_getregset_or_getregs instead
+	of ARCH_REGS_FOR_GETREGSET and ARCH_REGS_FOR_GETREGS.  Use
+	ptrace_getregset_or_getregs instead of ptrace_getregset and
+	ptrace_getregs.  Check for HAVE_GETREGS_OLD instead of X86_64
+	and POWERPC.  Use use_getregs_old instead of getregset_support
+	and old_kernel.
+
+2016-11-13  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Rename BUILD_BUG_ON_ZERO macro.
+	In order to avoid name clash on distributions which decide to include
+	kernel headers instead of UAPI ones.  For example, on SLES 11SP4:
+
+	gcc -DHAVE_CONFIG_H -I./linux/x86_64 -I./linux -I. -Wall -O2 -c net.c
+	In file included from /usr/include/linux/sysctl.h:25:0,
+	                 from /usr/include/linux/netfilter.h:6,
+	                 from /usr/include/linux/netfilter_arp.h:8,
+	                 from /usr/include/linux/netfilter_arp/arp_tables.h:14,
+	                 from net.c:60:
+	net.c: In function 'print_packet_mreq':
+	gcc_compat.h:59:27: error: negative width in bit-field '<anonymous>'
+	 # define MUST_BE_ARRAY(a) BUILD_BUG_ON_ZERO(!SAME_TYPE((a), &(a)[0]))
+	                           ^
+	defs.h:76:53: note: in expansion of macro 'MUST_BE_ARRAY'
+	 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]) + MUST_BE_ARRAY(a))
+	                                                     ^
+	net.c:747:22: note: in expansion of macro 'ARRAY_SIZE'
+	   if (mreq.mr_alen > ARRAY_SIZE(mreq.mr_address))
+	                      ^
+	due to the fact BUILD_BUG_ON_ZERO is already defined in <linux/kernel.h>.
+
+	* gcc_compat.h (BUILD_BUG_ON_ZERO): Rename to FAIL_BUILD_ON_ZERO.
+	(MUST_BE_ARRAY): Update usage.
+
+2016-11-12  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall.c: factor out ptrace_getregs from get_regs.
+	Move the code that calls ptrace(PTRACE_GETREGS) to a separate function.
+
+	* syscall.c (ptrace_getregs): New function.
+	(get_regs): Use it.
+
+2016-11-12  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall.c: rename get_regset to ptrace_getregset.
+	* syscall.c (get_regset): Rename to ptrace_getregset.
+	(get_regs): Rename get_regset to ptrace_getregset.
+
+2016-11-12  Andreas Schwab  <schwab@linux-m68k.org>
+
+	m68k: switch to PTRACE_GETREGS.
+	* Makefile.am (EXTRA_DIST): Add linux/m68k/arch_regs.h, remove
+	linux/m68k/get_syscall_result.c.
+	* linux/m68k/arch_regs.c (m68k_d0, ARCH_PC_PEEK_ADDR): Don't
+	define.
+	(m68k_regs, m68k_usp_ptr, ARCH_PC_REG, ARCH_REGS_FOR_GETREGS):
+	Define.
+	* linux/m68k/arch_regs.h: New file.
+	* linux/m68k/arch_sigreturn.c (arch_sigreturn): Use m68k_usp_ptr.
+	* linux/m68k/get_error.c (get_error): Use m68k_regs.d0.
+	* linux/m68k/get_scno.c (arch_get_scno): Use m68k_regs.orig_d0.
+	* linux/m68k/get_syscall_args.c (get_syscall_args): Use m68k_regs.
+	* linux/m68k/get_syscall_result.c: Remove.
+
+	tests: do not run old_mmap test on m68k.
+	* tests/old_mmap.c: Skip test on m68k.
+
+2016-11-12  Dmitry V. Levin  <ldv@altlinux.org>
+
+	syscall.c: introduce reallocate_vec function.
+	This might be needed later to implement syscall fault injection.
+
+	* syscall.c (reallocate_vec): New function.
+	(reallocate_qual): Use it.
+
+2016-11-12  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Fix prototypes of qual_desc, qual_signal, and qual_syscall functions.
+	* syscall.c (qual_desc, qual_signal, qual_syscall): Fix prototypes.
+	(struct qual_options): Fix type of "qualify" member.
+
+2016-11-12  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	linux/x32/syscallent.h: fix syscallent array initialisation on x32.
+	Why gcc didn't complain about it? It is definitely an index clash.
+
+	* linux/x32/syscallent.h: Change initializer indices for empty records from
+	[327 ... 511] to [329 ... 511].
+
+2016-11-11  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Introduce upoke function.
+	This will be needed to implement fault injection on those architectures
+	that lack PTRACE_SETREGSET/PTRACE_SETREGS support.
+
+	* defs.h (upoke): New prototype.
+	* upoke.c: New file.
+	* Makefile.am (libstrace_a_SOURCES): Add it.
+
+2016-11-11  Gleb Fotengauer-Malinovskiy  <glebfm@altlinux.org>
+
+	Update ioctl entries from linux 4.9.
+	* linux/32/ioctls_inc_align32.h: Update from linux v4.9 using ioctls_gen.sh.
+	* linux/32/ioctls_inc_align64.h: Likewise.
+	* linux/64/ioctls_inc.h: Likewise.
+	* linux/x32/ioctls_inc0.h: Likewise.
+	* NEWS: Mention this.
+
+2016-11-10  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Update NEWS.
+
+2016-11-10  Mikulas Patocka  <mpatocka@redhat.com>
+	    Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Add support for decoding of DM_* ioctl commands.
+	* dm.c: New file.
+	* xlat/dm_flags.in: Likewise.
+	* Makefile.am (strace_SOURCES): Add dm.c.
+	* configure.ac (AC_CHECK_HEADERS): Add linux/dm-ioctl.h.
+	* defs.h (dm_ioctl): New prototype.
+	* ioctl.c (ioctl_decode) [HAVE_LINUX_DM_IOCTL_H]: Call dm_ioctl
+	for 0xfd ioctl type.
+	* tests/ioctl_dm.c: New file.
+	* tests/ioctl_dm-v.c: Likewise.
+	* tests/ioctl_dm.test: New test.
+	* tests/ioctl_dm-v.test: Likewise.
+	* tests/.gitignore: Add ioctl_dm and ioctl_dm-v.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add ioctl_dm.test and ioctl_dm-v.test.
+
+2016-11-10  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Introduce ALIGNOF macro.
+	* gcc_compat.h (ALIGNOF): New macro.
+
+2016-11-10  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	util: add support for QUOTE_0_TERMINATED in user_style to ptrintstr_ex.
+	This enables printing size-limited (expectedly) ASCIZ strings.
+
+	This is done by increasing umoven size limit for sized strings by one
+	byte above max_strlen (enabling copying possible NUL byte in case len is
+	greater than max_strlen) and decreasing size after copying by one byte
+	in case QUOTE_0_TERMINATED is set (due to user_style or usage of len of
+	-1).  As a result, there is one excess byte for string_quote in case
+	QUOTE_0_TERMINATED is set so string_quote can check for NUL termination
+	of strings up to size bytes in size (which is len or max_strlen, whatever
+	is greater).
+
+	The catch here is that when string is not properly NUL-terminated and
+	QUOTE_0_TERMINATED is provided in user_style and len is less than
+	max_strlen then last non-NUL byte is not printed.  But ellipsis is
+	printed instead, being indication that string is not terminated
+	properly.  QUOTE_OMIT_TRAILING_0 should be used instead in case this
+	behaviour is not intended.
+
+	* util.c (printstr_ex): Copy one excess byte in case of non-negative len
+	provided and it is more than max_strlen; handle case of max_strlen of 0
+	in case QUOTE_0_TERMINATED is set separately; check for need of printing
+	ellipsis by checking resulting style against QUOTE_0_TERMINATED.
+
+2016-11-09  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of mq_{notify,open,timedreceive,timedsend,unlink}
+	* tests/mq_sendrecv.c: New file.
+	* tests/mq_sendrecv-read.c: Likewise.
+	* tests/mq_sendrecv-write.c: Likewise.
+	* tests/mq_sendrecv.test: New test.
+	* tests/mq_sendrecv-read.test: Likewise.
+	* tests/mq_sendrecv-write.test: Likewise.
+	* tests/.gitignore: Add mq_sendrecv, mq_sendrecv-read,
+	and mq_sendrecv-write.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(mq_sendrecv_LDADD, mq_sendrecv_read_LDADD, mq_sendrecv_write_LDADD):
+	New variables.
+	(DECODER_TESTS): Add mq_sendrecv.test, mq_sendrecv-read.test,
+	and mq_sendrecv-write.test.
+
+2016-11-08  Dmitry V. Levin  <ldv@altlinux.org>
+
+	tests: skip times.test if CLOCK_PROCESS_CPUTIME_ID does not work.
+	* tests/times.c (main): Skip if clock_gettime consistenly returns zero
+	for CLOCK_PROCESS_CPUTIME_ID timer.
+
+2016-10-31  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: add tests for perf_event_attr structure decoding in perf_event_open
+	* configure.ac: Add checks for presence of various fields of struct
+	perf_event_attr defined in kernel headers.
+	* tests/perf_event_open.c: New file.
+	* tests/perf_event_open_unabbrev.c: Likewise.
+	* tests/perf_event_open.test: New test.
+	* tests/perf_event_open_unabbrev.test: Likewise.
+	* tests/.gitignore: Add perf_event_open, perf_event_open_unabbrev.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add perf_event_open.test, perf_event_open_unabbrev.test.
+
+	Implement decoding of perf_event_attr structure in perf_event_open syscall
+	* linux/perf_event_struct.h: New file, definition of struct perf_event_attr
+	from Linux 4.8
+	* Makefile.am (strace_SOURCES): Add it.
+	* xlat/hw_breakpoint_len.in: New file.
+	* xlat/hw_breakpoint_type.in: Likewise.
+	* xlat/perf_attr_size.in: Likewise.
+	* xlat/perf_branch_sample_type.in: Likewise.
+	* xlat/perf_event_read_format.in: Likewise.
+	* xlat/perf_event_sample_format.in: Likewise.
+	* xlat/perf_hw_cache_id.in: Likewise.
+	* xlat/perf_hw_cache_op_id.in: Likewise.
+	* xlat/perf_hw_cache_op_result_id.in: Likewise.
+	* xlat/perf_hw_id.in: Likewise.
+	* xlat/perf_sw_ids.in: Likewise.
+	* xlat/perf_type_id.in: Likewise.
+	* perf.c [HAVE_LINUX_PERF_EVENT_H]: Remove inclusion of
+	<linux/perf_event.h>.
+	(PRINT_XLAT): New macro for simplifying printing values from
+	sorted xlat.
+	(printxlat_search): New function, wrapper for xlat_search with behaviour
+	similar to printval.
+	(print_perf_event_attr): New print_event_attr structure fetching and
+	printing function.
+	(SYS_FUNC(perf_event_open)): Use print_perf_event_attr for displaying
+	attr argument contents.
+	* tests/perf_event_open.c: Renamed to
+	tests/perf_event_open_nonverbose.c.
+	* tests/perf_event_open.test: add -e verbose=none in order to preserve
+	output format being checked (in case verbose output is enabled,
+	contents of attr arguments are shown now); rename to
+	tests/perf_event_open_nonverbose.test; add -e trace=perf_event_open.
+
+	tests: fix name spelling.
+
+2016-10-30  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: fix name spelling.
+
+	Update NEWS.
+
+	Fix typo in comment in tests/quotactl.h.
+
+	tests: fix invalid pointer checks in quotactl test.
+	* tests/quotactl.h (bogus_special, bogus_addr): Move it...
+	* tests/quotactl.c (main): ... here; remove static and const qualifiers,
+	use memory after tail_alloc instead of magic numbers.
+	* tests/quotactl-xfs.c (main): Likewise.
+
+	tests: fix invalid pointer checks in getcpu test.
+	* test/getcpu.c (main): Replace magic numbers deemed invalid pointers
+	with addresses after memory returned by tail_alloc.
+
+	tests: fix invalid pointer checks in request_key test.
+	* test/request_key.c (main): Replace magic numbers deemed invalid pointers
+	with addresses after memory returned by tail_alloc.
+
+	tests: fix invalid pointer checks in add_key test.
+	* test/add_key.c (main): Replace magic numbers deemed invalid pointers
+	with addresses after memory returned by tail_alloc.
+
+	statfs: use printxval_search.
+	* print_statfs.c (print_statfs_type): Use printxval_search for printing
+	FS magic xlat value.
+
+	util: add printing helper for sorted xlat arrays.
+	* util.c (printxval_searchn): New function.
+	* defs.h (printxval_searchn): New prototype.
+	(printxval_search): New helper macro useful in conjunction with static
+	xlat arrays.
+
+	defs: add check for argument being array to ARRAY_SIZE macro.
+	* gcc_compat.h [GNUC_PREREQ(3, 0)] (BUILD_BUG_ON_ZERO): New macro.
+	(SAME_TYPE, MUST_BE_ARRAY): Likewise.
+	* defs.h (ARRAY_SIZE): Add MUST_BE_ARRAY for build-time type check.
+
+	tests: check decoding of oldfstat, oldlstat, and oldstat syscalls.
+	* tests/oldfstat.c: New file.
+	* tests/oldlstat.c: Likewise.
+	* tests/oldstat.c: Likewise.
+	* tests/oldfstat.test: New test.
+	* tests/oldlstat.test: Likewise.
+	* tests/oldstat.test: Likewise.
+	* tests/xstatx.c [!OLD_STAT]: define OLD_STAT to 0.
+	(print_stat) [OLD_STAT]: Print predefined values for
+	st_blksize/st_blocks.
+	(print_stat): Check for !OLD_STAT in nanosecond precision checks.
+	(main) [OLD_STAT]: Ignore EOVERFLOW.
+	(main): Test for successful rc in returned size value check;
+	print address only on non-successful rc.
+	* tests/.gitignore: Add oldfstat, oldlstat, and oldstat.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add oldfstat.test, oldlstat.test, and oldstat.test.
+
+	tests: additional tests of stat decoders.
+	* tests/fstatx.c (IS_FSTAT): Define to 1.
+	* tests/fstatat64.c [__GLIBC__ && __sparc64__] (TEST_BOGUS_STRUCT_STAT):
+	Define to 0.
+	* tests/xstatx.c [!IS_STAT] (IS_STAT): Define to 0.
+	[!TEST_BOGUS_STRUCT_STAT] (TEST_BOGUS_STRUCT_STAT): Define to 1.
+	(main): Add a check for non-available pointer and a check
+	for block device file.
+	* tests/statx.sh: Add tracing of /dev/full file, specify alignment.
+	* tests/fstat.test: Specify alignment.
+
+2016-10-30  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: prepare for additional tests of stat decoders.
+	PRINT_SYSCALL_HEADER/PRINT_SYSCALL_FOOTER now contain open/close brace
+	pair in order to save errno.  PRINT_SYSCALL_FOOTER now uses sprintrc for
+	printing rc/errno.
+
+	* tests/xstatx.c: Include <errno.h>.
+	(main): Update PRINT_SYSCALL_FOOTER call convention.
+	* tests/fstatat.c (PRINT_SYSCALL_HEADER): Add errno saving.
+	(PRINT_SYSCALL_FOOTER): Restore errno.
+	* tests/fstatx.c: Likewise.
+	* tests/lstatx.c: Likewise.
+
+2016-10-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Provide a safe definition of O_ACCMODE.
+	Some libcs e.g. musl are guilty of messing up with O_ACCMODE.
+
+	* open.c (O_ACCMODE): Redefine to 03.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Implement dumping of mq_timedsend and mq_timedreceive syscalls.
+	* syscall.c (dumpio): Add SEN_mq_timedreceive and SEN_mq_timedsend.
+
+	mq: print msg_prio as a pointer, not as an immediate value.
+	* mq.c (SYS_FUNC(mq_timedreceive)): Use printnum_int for printing
+	msg_prio argument.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: print msg payload only in case of successful mq_timedreceive call.
+	Also, use u_rval for determining message size.
+
+	* mq.c (SYS_FUNC(mq_timedreceive)): Check for syserror and non-negative
+	u_rval before calling printstr on msg_ptr argument, or use printaddr otherwise;
+	provide u_rval as string size.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: Print msg_prio parameter as unsigned int in mq_timedsend.
+	* mq.c (SYS_FUNC(mq_timedsend)): Change conversion specifier from "%ld"
+	to "%u", cast argument value to unsigned int.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: Properly print mq_flags field.
+	mq_flags field of struct mq_attr can contain only O_NONBLOCK flag (other
+	flags are treated as invalid by mq_getsetattr). Moreover, this field is
+	ignored by mq_open at all (O_NONBLOCK is set via oflag, not via attr
+	attribute).
+
+	* xlat/mq_attr_flags.in: New file.
+	* print_mq_attr.c: Include xlat/mq_attr_flags.h.
+	(printmqattr): New parameter, bool decode_flags; cast members of struct
+	mq_attr to long long type; use mq_attr_flags xlat for printing mq_flags;
+	print mq_flags as flags only in case decode_flags parameter is set
+	to true.
+	* mq.c (SYS_FUNC(mq_open)): Specify value of false for decode_flags
+	parameter of printmqattr call.
+	(SYS_FUNC(mq_getsetattr)): Specify value of true for decode_flags
+	parameter of printmqattr call.
+	* tests/mq.expected: Update expected output.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: Print msg_len parameter as kernel_ulong_t.
+	* mq.c (SYS_FUNC(mq_timedsend)): Change conversion specifier from "%lu"
+	to "%llu", use getarg_ull for obtaining msg_len parameter.
+	(SYS_FUNC(mq_timedreceive)): Likewise.
+
+	print_mq_attr: fix typo.
+	* print_mq_attr.c (printmqattr): Print field name "mq_curmsgs"
+	instead of "mq_curmsg".
+	* tests/mq.expected: Update expected output.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: print mqdes parameter as int.
+	It is defined as int in <linux/posix_types.h>.
+
+	* mq.c (SYS_FUNC(mq_timedsend)): Use "%d" conversion specifier instead
+	of "%ld" for printing mqdes (0th parameter), cast parameter value to
+	int.
+	(SYS_FUNC(mq_timedreceive)): Likewise.
+	(SYS_FUNC(mq_notify)): Likewise.
+	(SYS_FUNC(mq_getsetattr)): Likewise.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	mq: curly brackets usage fix.
+	Use curly brackets for denoting blocks in both of if branches if they
+	are already used in at least one branch.
+
+	tests: additional name_to_handle_at/open_by_handle_at checks.
+	* tests/file_handle.c: Additional name_to_handle_at/open_by_handle_at
+	checks.
+
+	tests: require only presence of __NR_* macros for file_handle test.
+	* tests/file_handle.c: replace fcntl.h include with asm/unistd.h.
+	[MAX_HANDLE_SZ]: change to defined __NR_name_to_handle_at
+	&& defined __NR_open_by_handle_at, add fcntl.h include
+	[!MAX_HANDLE_SZ]: Add definition of MAX_HANDLE_SZ and struct
+	file_handle.
+	(main): Change name_to_handle_at and open_by_handle_at calls to syscall.
+
+	tests: proper type conversion in keyctl test.
+	* tests/keyctl.c (printarg): Add intermediate conversion of arg to uintptr_t
+	since kernel_ulong_t may be of different size.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	file_handle: use separate xlat for name_ta_handle_at flags.
+	Since the only two flags supported are AT_SYMLINK_FOLLOW and
+	AT_EMPTY_PATH.
+
+	* xlat/name_to_handle_at_flags.in: New file.
+	* file_handle.c (SYS_FUNC(name_to_handle_at)): Use name_to_handle_at_flags
+	for printing flags parameter.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of kexec_file_load and kexec_load syscalls.
+	* tests/kexec_file_load.c: New file.
+	* tests/kexec_load.c: Likewise.
+	* tests/kexec_file_load.test: New test.
+	* tests/kexec_load.test: Likewise.
+	* tests/.gitignore: Add kexec_file_load and kexec_load.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add kexec_file_load.test and kexec_load.test.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	kexec: use widen_to_ulong since kexec_load has compat on x32/n32.
+	Curiously, kexec_load uses compat on x32/n32, so its parameters should
+	be 4 bytes in size on these ABIs.
+
+	* kexec.c (SYS_FUNC(kexec_load)): Use widen_to_ulong for casting
+	parameters to proper size on x32/n32.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	kexec: fix zeroing of higher bits of flags parameter in kexec_load.
+	* kexec.c (SYS_FUNC(kexec_load)): Perform type conversion before
+	negation in order to properly negate higher bits of KEXEC_ARCH_MASK.
+
+	kexec: add printing of struct kexec_segment field names.
+	* kexec.c (print_seg): Print field names of the kexec_segment structure.
+
+	tests: check decoding of unshare syscall.
+	* tests/unshare.c: New file.
+	* tests/unshare.test: New test.
+	* tests/.gitignore: Add unshare.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add unshare.test.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	clone: use kernel_ulong_t as type of flags parameter of unshare call.
+	Kernel declares flags parameter as long and looks like x32 and n32
+	implement no compat for this call.
+
+	* clone.c (SYS_FUNC(unshare)): Use getarg_ull and printflags64 for
+	obtaining and parsing flags parameter.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	clone: use separate flag list for unshare.
+	Not all clone flags could be passed to unshare (see check_unshare_flags
+	function in kernel/fork.c).
+
+	* xlat/unshare_flags.in: New file.
+	* clone.c (SYS_FUNC(unshare)): Use unshare_flags for printing flags
+	parameter.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of setns syscall.
+	* tests/setns.c: New file.
+	* tests/setns.test: New test.
+	* tests/.gitignore: Add setns.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add setns.test.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	clone: use separate xlat for nstype parameter of setns syscall.
+	nstype is not flag set but specific type value against which it is
+	compared in kernel (see kernel/nsproxy.c, SYSCALL_DEFINE2(setns, ...)).
+
+	* xlat/setns_types.in: New file.
+	* clone.c: Use printxval and setns_types for nstype parameter.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check non-verbose capget/capset output.
+	* tests/caps-abbrev.awk: New file.
+	* tests/caps-abbrev.c: Likewise.
+	* tests/caps-abbrev.test: New test.
+	* tests/.gitignore: Add caps-abbrev.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add caps-abbrev.test.
+	(EXTRA_DIST): Add caps-abbrev.awk.
+
+	tests: additional capset decoder checks.
+	* tests/caps.awk: Add patterns for additional checks.
+	* tests/caps.c: Implement additional checks.
+
+	tests: check decoding of fanotify_init syscall.
+	* tests/fanotify_init.c: New file.
+	* tests/fanotify_init.test: New test.
+	* tests/.gitignore: Add fanotify_init.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add fanotify_init.test.
+
+	tests: some additional checks for fanotify_mark.
+	* tests/fanotify_mark.c (do_call): New function.
+	(main): Use it.
+
+	tests: use sprintrc in tests/fanotify_mark.c.
+	* tests/fanotify.c (main): Use sprintrc.
+
+	tests: check decoding of {init,finit,delete}_module syscalls.
+	* tests/delete_module.c: New file.
+	* tests/finit_module.c: Likewise.
+	* tests/init_delete_module.h: Likewise.
+	* tests/init_module.c: Likewise.
+	* tests/delete_module.test: New test.
+	* tests/finit_module.test: Likewise.
+	* tests/init_module.test: Likewise.
+	* tests/.gitignore: Add delete_nodule, finit_module, and init_module.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add delete_module.test, finit_module.test,
+	and init_module.test.
+	(EXTRA_DIST): Add init_delete_module.h.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	bjm: use getarg_ull for retrieving first two parameters of init_module syscall
+	As init_module has no compat wrapper, its first parameter is a pointer
+	and the second is length, they both have the same size as kernel_ulong_t
+	type.
+
+	* bjm.c (SYS_FUNC(init_module)): Obtain first two parameters using
+	getarg_ull, print address argument using printaddr_ull, print length
+	argument using "%llu" conversion specifier.
+
+2016-10-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Add printaddr_ull, change printaddr into a thin wrapper around it.
+	* defs.h (printaddr_ull): New prototype.
+	(printaddr): Change to a static inline wrapper around printaddr_ull.
+	* util.c (printaddr): Rename to printaddr_ull, change argument type
+	to unsigned long long, change print format to %#llx.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	xlat: add values for MODULE_INIT_* constants.
+	* bjm.c (MODULE_INIT_IGNORE_MODVERSIONS, MODULE_INIT_IGNORE_VERMAGIC):
+	Remove.
+	* xlat/module_init_flags.in: Add values for
+	MODULE_INIT_IGNORE_MODVERSIONS and MODULE_INIT_IGNORE_VERMAGIC records.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Remove parser of create_module syscall.
+	Since create_module syscall is present only in kernels before Linux 2.6
+	and strace does not support those kernels, there is no use to keep this
+	parser any longer.
+
+	* bjm.c (SYS_FUNC(create_module)): Remove.
+	* linux/dummy.h (sys_create_module): Add stub alias.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of process_vm_readv and process_vm_writev syscalls
+	* tests/process_vm_readv.c: New file.
+	* tests/process_vm_readv_writev.c: Likewise.
+	* tests/process_vm_writev.c: Likewise.
+	* tests/process_vm_readv.test: New test.
+	* tests/process_vm_writev.test: Likewise.
+	* tests/.gitignore: Add process_vm_readv and process_vm_writev.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add process_vm_readv.test and process_vm_writev.test.
+	(EXTRA_DIST): Add process_vm_readv_writev.c.
+
+	process_vm: use widen_to_ulong for local_iovcnt, renote_iovcnt, and flags
+	* process_vm.c (SYS_FUNC(process_vm_readv),
+	SYS_FUNC(process_vm_writev)): Use widen_to_ulong for local_iovcnt,
+	renote_iovcnt, and flags parameters.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	defs: add widen_to_ulong macro.
+	This is similar to widen_to_long, but for unsigned values.
+
+	* defs.h (widen_to_ulong): New macro.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	process_vm: print pid argument as int.
+	* process_vm.c (SYS_FUNC(process_vm_readv),
+	SYS_FUNC(process_vm_writev)): Change conversion specifier for pid
+	argument from "%ld" to "%d".
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	process_vm: remove syserror check for iovec printing.
+	This check had been done by print_array inside tprint_iov anyway.
+
+	* process_vm.c (SYS_FUNC(process_vm_readv)): Use tprint_iov_upto for
+	printing local_iov; do not check for syserror, provide decode_iov
+	parameter to tprint_iov{,_upto} based on its value instead.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	io: use umoven_or_printaddr_ignore_syserror as umove function in tprint_iov_upto
+	This enables printing of iovec arrays even in case of failed syscall
+	(failed syscall doesn't mean that iovec itself is inaccessible and
+	useless).  One caveat here is that we should explicitly provide proper
+	IOV_DECODE_* value based on syserror value in case printing is performed
+	on exiting; we can't simply override it to IOV_DECODE_ADDR on exiting
+	when syserror is up, since this may be called by code which tries to
+	print iovec containing local data, which should be perfectly accessible
+	(on the other hand, there are no cases of such behaviour at the moment).
+
+	Since iovecs themselves are printed even if syscall has failed now,
+	preadv test is updated to reflect this.  It is notable, though, that this
+	is the only place where this case is checked.
+
+	* io.c (tprint_iov_upto): Specify umoven_or_printaddr_ignore_syserror
+	instead of umoven_or_printaddr as umoven_func parameter.
+	(SYS_FUNC(readv), do_preadv): Specify decode_iov parameter value
+	based on syserror(tcp) value.
+	* scsi.c: (print_sg_io_v3_res, print_sg_io_v4_res): Likewise.
+	* tests/preadv.c: Update expected output for the case when preadv
+	with singe-item iovec failed.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	Move umoven_or_printaddr_ignore_syserror to util.c.
+	* defs.h (umoven_or_printaddr_ignore_syserror): New prototype.
+	* v4l2.c (umoven_or_printaddr_ignore_syserror): Move ...
+	* util.c: ... here.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	v4l2: check for verbose flag in umoven_or_printaddr_ignore_syserror.
+	This change makes behaviour of umoven_or_printaddr_ignore_syserror in
+	line with umoven_or_printaddr when verbose flag is disabled.
+
+	* v4l2.c (umoven_or_printaddr_ignore_syserror): Simply call printaddr
+	when verbose flag is unset.
+
+2016-10-28  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of kcmp syscall.
+	* tests/kcmp.c: New file.
+	* tests/kcmp.test: New test.
+	* tests/.gitignore: Add kcmp.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add kcmp.test.
+
+2016-10-28  Dmitry V. Levin  <ldv@altlinux.org>
+
+	kcmp: print index parameters of unknown commands as kernel_ulong_t.
+	* lookup_dcookie.c (SYS_FUNC(kcmp)): Use getarg_ull to retrieve idx1
+	and idx2, print them using %#llx format in case of unknown command.
+
+2016-10-27  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: check decoding of inotify family syscalls.
+	* tests/inotify.c: New file.
+	* tests/inotify_init1.c: Likewise.
+	* tests/inotify.test: New test.
+	* tests/inotify_init1.test: Likewise.
+	* tests/.gitignore: Add inotify and inotify_init1.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add inotify.test and inotify_init1.test.
+
+	xlat: use IN_* prefix for inotify_init1 flag constants.
+	* xlat/inotify_init_flags.in: Replace O_* prefix with IN_* prefix for
+	O_NONBLOCK and O_CLOEXEC constants, provide fallback definitions.
+
+	tests: check decoding of lookup_dcookie syscall.
+	* tests/lookup_dcookie.c: New file.
+	* tests/lookup_dcookie.test: New test.
+	* tests/.gitignore: Add lookup_dcookie.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add lookup_dcookie.test.
+
+2016-10-27  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	lookup_dcookie: print len parameter as kernel_ulong_t.
+	It is size_t and without compat on x32/n32.
+
+	* lookup_dcookie.c (SYS_FUNC(lookup_dcookie)): Change conversion
+	specifier from "%lu" to "%llu", use getarg_ull for len argument
+	retrieval.
+
+2016-10-26  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	defs.h: add offsetofend macro.
+	Analogous to offsetof but returns structure offset after the specified
+	field.  Useful for checking whether specific field is present in obtained
+	data or specifying amount of data to copy based on the (last) field needed.
+
+	* defs.h (offsetofend): New macro.
+
+2016-10-26  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: move ARG_STR and similar macros to tests.h.
+	* tests/add_key.c (_STR, ARG_STR): Move ...
+	* tests/tests.h: ... here.
+	(ARG_ULL_STR): New macro.
+	* tests/keyctl.c (ARG_STR): Remove.
+	* tests/quotactl.h (ARG_STR): Likewise.
+	* tests/request_key.c (ARG_STR): Likewise.
+
+	tests: move LL_PAIR and LL_VAL_TO_PAIR macros to tests.h.
+	* tests/fadvise.h (LL_PAIR, LL_VAL_TO_PAIR): Move ...
+	* tests/tests.h: ... here.
+
+	tests: check decoding of ioprio_get and ioprio_set syscalls.
+	* tests/ioprio.c: New file.
+	* tests/ioprio.test: New test.
+	* tests/.gitignore: Add ioprio.
+	* tests/Makefile.am (check_PROGRAMS): Likewise.
+	(DECODER_TESTS): Add ioprio.test.
+
+2016-10-26  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	xlat: provide fallback definitions for CLOCK_* constants.
+	Since new values have been added gradually over various kernel versions,
+	it's better to define them explicitly in order to avoid situations when
+	strace built with older kernel headers cannot decode some recently
+	defined values.
+
+	* xlat/clocknames.in: Add values for constants.
+
+2016-10-26  Eugene Syromyatnikov  <evgsyr@gmail.com>
+
+	tests: move fill_memory and fill_memory_ex into a separate file.
+	* tests/fill_memory.c: New file.
+	* tests/Makefile.am (libtests_a_SOURCES): Add it.
+	* tests/quotactl.h (fill_memory, fill_memory_ex): Move to fill_memory.c.
+	* tests/tests.h (fill_memory, fill_memory_ex): New prototypes.
+
+	tests: add period parameter to fill_memory_ex.
+	* tests/quotactl.h (fill_memory_ex): Add period parameter,
+	use it as a divisor in non-constant part of value.
+	(fill_memory): Specify period of 0x80 to fill_memory_ex call.
+	* tests/quotactl-xfs.c (main): Likewise.
+
+2016-10-05  Dmitry V. Levin  <ldv@altlinux.org>
+
+	Post-release administrivia.
+	* NEWS: Add a header line for the next release.
+	* debian/changelog.in: Add a changelog entry for 4.14-1.
+	* strace.spec.in: Likewise.
+
 2016-10-04  Dmitry V. Levin  <ldv@altlinux.org>
 
 	Prepare for 4.14 release.

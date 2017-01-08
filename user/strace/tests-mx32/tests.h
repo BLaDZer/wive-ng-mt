@@ -67,6 +67,16 @@ void *tail_alloc(const size_t)
 void *tail_memdup(const void *, const size_t)
 	ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE((2));
 
+/*
+ * Fill memory (pointed by ptr, having size bytes) with different bytes (with
+ * values starting with start and resetting every period) in order to catch
+ * sign, byte order and/or alignment errors.
+ */
+void fill_memory_ex(char *ptr, size_t size, unsigned char start,
+		    unsigned char period);
+/* Shortcut for fill_memory_ex(ptr, size, 0x80, 0x80) */
+void fill_memory(char *ptr, size_t size);
+
 /* Close stdin, move stdout to a non-standard descriptor, and print. */
 void tprintf(const char *, ...)
 	ATTRIBUTE_FORMAT((printf, 1, 2));
@@ -127,6 +137,9 @@ struct timespec;
 int recv_mmsg(int, struct mmsghdr *, unsigned int, unsigned int, struct timespec *);
 int send_mmsg(int, struct mmsghdr *, unsigned int, unsigned int);
 
+/* Create a pipe with maximized descriptor numbers. */
+void pipe_maxfd(int pipefd[2]);
+
 # define ARRAY_SIZE(arg) ((unsigned int) (sizeof(arg) / sizeof((arg)[0])))
 # define LENGTH_OF(arg) ((unsigned int) sizeof(arg) - 1)
 
@@ -168,5 +181,16 @@ int send_mmsg(int, struct mmsghdr *, unsigned int, unsigned int);
 # define PRI__d64 PRI__64"d"
 # define PRI__u64 PRI__64"u"
 # define PRI__x64 PRI__64"x"
+
+# if WORDS_BIGENDIAN
+#  define LL_PAIR(HI, LO) (HI), (LO)
+# else
+#  define LL_PAIR(HI, LO) (LO), (HI)
+# endif
+# define LL_VAL_TO_PAIR(llval) LL_PAIR((long) ((llval) >> 32), (long) (llval))
+
+# define _STR(_arg) #_arg
+# define ARG_STR(_arg) (_arg), #_arg
+# define ARG_ULL_STR(_arg) _arg##ULL, #_arg
 
 #endif /* !STRACE_TESTS_H */

@@ -315,14 +315,14 @@ SYS_FUNC(timerfd_create)
 SYS_FUNC(timerfd_settime)
 {
 	if (entering(tcp)) {
-	printfd(tcp, tcp->u_arg[0]);
-	tprints(", ");
-	printflags(timerfdflags, tcp->u_arg[1], "TFD_???");
-	tprints(", ");
-	print_itimerspec(tcp, tcp->u_arg[2]);
-	tprints(", ");
+		printfd(tcp, tcp->u_arg[0]);
+		tprints(", ");
+		printflags(timerfdflags, tcp->u_arg[1], "TFD_???");
+		tprints(", ");
+		print_itimerspec(tcp, tcp->u_arg[2]);
+		tprints(", ");
 	} else {
-	print_itimerspec(tcp, tcp->u_arg[3]);
+		print_itimerspec(tcp, tcp->u_arg[3]);
 	}
 	return 0;
 }

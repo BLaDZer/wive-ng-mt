@@ -45,6 +45,7 @@ AC_SUBST(DEB_CHANGELOGTIME)
 
 AC_PROG_CC
 AC_PROG_CPP
+st_WARN_CFLAGS
 AX_PROG_CC_FOR_BUILD
 AC_PROG_INSTALL
 AC_PROG_RANLIB
@@ -249,29 +250,6 @@ esac
 AC_DEFINE_UNQUOTED([ENABLE_ARM_OABI], [$enable_arm_oabi],
 		   [Define to 1 if you want OABI support on ARM EABI.])
 
-gl_WARN_ADD([-Wall])
-gl_WARN_ADD([-Wempty-body])
-gl_WARN_ADD([-Wformat-security])
-gl_WARN_ADD([-Wignored-qualifiers])
-gl_WARN_ADD([-Winit-self])
-gl_WARN_ADD([-Wlogical-op])
-gl_WARN_ADD([-Wmissing-parameter-type])
-gl_WARN_ADD([-Wnested-externs])
-gl_WARN_ADD([-Wold-style-declaration])
-gl_WARN_ADD([-Wold-style-definition])
-gl_WARN_ADD([-Wsign-compare])
-gl_WARN_ADD([-Wtype-limits])
-gl_WARN_ADD([-Wwrite-strings])
-AC_ARG_ENABLE([gcc-Werror],
-  [AS_HELP_STRING([--enable-gcc-Werror], [turn on gcc's -Werror option])],
-  [case $enableval in
-     yes) gl_WARN_ADD([-Werror]) ;;
-     no)  ;;
-     *)   AC_MSG_ERROR([bad value $enableval for gcc-Werror option]) ;;
-   esac]
-)
-AC_SUBST([WARN_CFLAGS])
-
 AC_C_BIGENDIAN
 AC_C_TYPEOF
 
@@ -345,6 +323,30 @@ AC_CHECK_MEMBERS(m4_normalize([
 	siginfo_t.si_overrun
 ]),,, [#include <signal.h>])
 
+AC_CHECK_MEMBERS(m4_normalize([
+	struct perf_event_attr.precise_ip,
+	struct perf_event_attr.mmap_data,
+	struct perf_event_attr.sample_id_all,
+	struct perf_event_attr.exclude_host,
+	struct perf_event_attr.exclude_guest,
+	struct perf_event_attr.exclude_callchain_kernel,
+	struct perf_event_attr.exclude_callchain_user,
+	struct perf_event_attr.mmap2,
+	struct perf_event_attr.comm_exec,
+	struct perf_event_attr.use_clockid,
+	struct perf_event_attr.context_switch,
+	struct perf_event_attr.write_backward,
+	struct perf_event_attr.bp_type,
+	struct perf_event_attr.config1,
+	struct perf_event_attr.config2,
+	struct perf_event_attr.branch_sample_type,
+	struct perf_event_attr.sample_regs_user,
+	struct perf_event_attr.sample_stack_user,
+	struct perf_event_attr.sample_regs_intr,
+	struct perf_event_attr.aux_watermark,
+	struct perf_event_attr.sample_max_stack
+]),,, [#include <linux/perf_event.h>])
+
 AC_CHECK_HEADERS(m4_normalize([
 	asm/cachectl.h
 	asm/sysmips.h
@@ -352,6 +354,7 @@ AC_CHECK_HEADERS(m4_normalize([
 	elf.h
 	inttypes.h
 	linux/bsg.h
+	linux/dm-ioctl.h
 	linux/dqblk_xfs.h
 	linux/falloc.h
 	linux/fiemap.h
@@ -767,6 +770,9 @@ fi
 
 st_MPERS([m32], [aarch64|powerpc64|sparc64|tile|x32|x86_64])
 st_MPERS([mx32], [x86_64])
+
+AX_VALGRIND_DFLT([sgcheck], [off])
+AX_VALGRIND_CHECK
 
 AC_CONFIG_FILES([Makefile
 		 tests/Makefile

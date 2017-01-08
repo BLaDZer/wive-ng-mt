@@ -33,7 +33,7 @@
 #include <sys/sysinfo.h>
 
 int
-main (void)
+main(void)
 {
 	sysinfo(NULL);
 	printf("sysinfo(NULL) = -1 EFAULT (%m)\n");

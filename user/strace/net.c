@@ -55,7 +55,7 @@
 #if defined(HAVE_LINUX_IP_VS_H)
 # include <linux/ip_vs.h>
 #endif
-# include <linux/netlink.h>
+#include <linux/netlink.h>
 #if defined(HAVE_LINUX_NETFILTER_ARP_ARP_TABLES_H)
 # include <linux/netfilter_arp/arp_tables.h>
 #endif
@@ -68,8 +68,8 @@
 #if defined(HAVE_LINUX_NETFILTER_IPV6_IP6_TABLES_H)
 # include <linux/netfilter_ipv6/ip6_tables.h>
 #endif
-# include <linux/if_packet.h>
-# include <linux/icmp.h>
+#include <linux/if_packet.h>
+#include <linux/icmp.h>
 
 #include "xlat/socktypes.h"
 #include "xlat/sock_type_flags.h"
@@ -80,11 +80,7 @@
 #include "xlat/socketlayers.h"
 
 #include "xlat/inet_protocols.h"
-
-# if !defined NETLINK_SOCK_DIAG && defined NETLINK_INET_DIAG
-#  define NETLINK_SOCK_DIAG NETLINK_INET_DIAG
-# endif
-# include "xlat/netlink_protocols.h"
+#include "xlat/netlink_protocols.h"
 
 #ifdef HAVE_BLUETOOTH_BLUETOOTH_H
 # include <bluetooth/bluetooth.h>
@@ -160,6 +156,7 @@ SYS_FUNC(socket)
 		printxval(bt_protocols, tcp->u_arg[2], "BTPROTO_???");
 		break;
 #endif
+
 	default:
 		tprintf("%lu", tcp->u_arg[2]);
 		break;
@@ -206,11 +203,11 @@ decode_sockname(struct tcb *tcp)
 		tprints(", ");
 		if (fetch_socklen(tcp, &ulen, tcp->u_arg[1], tcp->u_arg[2])) {
 			set_tcb_priv_ulong(tcp, ulen);
-		return 0;
+			return 0;
 		} else {
-		printaddr(tcp->u_arg[1]);
-		tprints(", ");
-		printaddr(tcp->u_arg[2]);
+			printaddr(tcp->u_arg[1]);
+			tprints(", ");
+			printaddr(tcp->u_arg[2]);
 			return RVAL_DECODED;
 		}
 	}
@@ -332,12 +329,12 @@ SYS_FUNC(recvfrom)
 			return 0;
 		}
 		if (syserror(tcp)) {
-		/* from address */
+			/* from address */
 			printaddr(tcp->u_arg[4]);
-		/* from length */
+			/* from length */
 			tprintf(", [%d]", ulen);
-	return 0;
-}
+			return 0;
+		}
 		/* from address */
 		decode_sockaddr(tcp, tcp->u_arg[4], ulen > rlen ? rlen : ulen);
 		/* from length */
@@ -390,7 +387,7 @@ static int
 do_pipe(struct tcb *tcp, int flags_arg)
 {
 	if (exiting(tcp)) {
-				decode_pair_fd(tcp, tcp->u_arg[0]);
+		decode_pair_fd(tcp, tcp->u_arg[0]);
 		if (flags_arg >= 0) {
 			tprints(", ");
 			printflags(open_mode_flags, tcp->u_arg[flags_arg], "O_???");
@@ -539,7 +536,7 @@ print_tpacket_stats(struct tcb *tcp, long addr, int len)
 }
 #endif /* PACKET_STATISTICS */
 
-# include "xlat/icmpfilterflags.h"
+#include "xlat/icmpfilterflags.h"
 
 static void
 print_icmp_filter(struct tcb *tcp, const long addr, int len)

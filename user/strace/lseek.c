@@ -57,11 +57,11 @@ SYS_FUNC(lseek)
 	} else
 # endif
 	{
-	offset = tcp->ext_arg[1];
+		offset = tcp->ext_arg[1];
 	}
 	int whence = tcp->u_arg[2];
 
-		tprintf(", %lld, ", offset);
+	tprintf(", %lld, ", offset);
 	printxval(whence_codes, whence, "SEEK_???");
 
 	return RVAL_DECODED | RVAL_LUDECIMAL;
@@ -85,7 +85,7 @@ SYS_FUNC(lseek)
 # endif
 	int whence = tcp->u_arg[2];
 
-		tprintf(", %ld, ", offset);
+	tprintf(", %ld, ", offset);
 	printxval(whence_codes, whence, "SEEK_???");
 
 	return RVAL_DECODED | RVAL_UDECIMAL;
@@ -109,7 +109,7 @@ SYS_FUNC(llseek)
 {
 	if (entering(tcp)) {
 		printfd(tcp, tcp->u_arg[0]);
-			tprintf(", %lld, ",
+		tprintf(", %lld, ",
 			(zero_extend_signed_to_ull(tcp->u_arg[1]) << 32)
 			| zero_extend_signed_to_ull(tcp->u_arg[2]));
 	} else {

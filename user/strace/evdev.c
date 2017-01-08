@@ -32,7 +32,7 @@
 
 #include DEF_MPERS_TYPE(struct_ff_effect)
 
-#include <linux/ioctl.h>
+# include <linux/ioctl.h>
 # include <linux/input.h>
 
 typedef struct ff_effect struct_ff_effect;
@@ -43,22 +43,22 @@ typedef struct ff_effect struct_ff_effect;
 
 #ifdef HAVE_LINUX_INPUT_H
 
-#include "xlat/evdev_autorepeat.h"
-#include "xlat/evdev_ff_status.h"
-#include "xlat/evdev_ff_types.h"
-#include "xlat/evdev_keycode.h"
-#include "xlat/evdev_leds.h"
-#include "xlat/evdev_misc.h"
-#include "xlat/evdev_mtslots.h"
-#include "xlat/evdev_prop.h"
-#include "xlat/evdev_relative_axes.h"
-#include "xlat/evdev_snd.h"
-#include "xlat/evdev_switch.h"
-#include "xlat/evdev_sync.h"
+# include "xlat/evdev_autorepeat.h"
+# include "xlat/evdev_ff_status.h"
+# include "xlat/evdev_ff_types.h"
+# include "xlat/evdev_keycode.h"
+# include "xlat/evdev_leds.h"
+# include "xlat/evdev_misc.h"
+# include "xlat/evdev_mtslots.h"
+# include "xlat/evdev_prop.h"
+# include "xlat/evdev_relative_axes.h"
+# include "xlat/evdev_snd.h"
+# include "xlat/evdev_switch.h"
+# include "xlat/evdev_sync.h"
 
-#ifndef SYN_MAX
-# define SYN_MAX 0xf
-#endif
+# ifndef SYN_MAX
+#  define SYN_MAX 0xf
+# endif
 
 static void
 decode_envelope(void *const data)
@@ -106,47 +106,47 @@ ff_effect_ioctl(struct tcb *tcp, long arg)
 		ffe.replay.length,
 		ffe.replay.delay);
 
-		switch (ffe.type) {
-			case FF_CONSTANT:
+	switch (ffe.type) {
+		case FF_CONSTANT:
 			tprintf(", constant={level=%" PRId16,
-					ffe.u.constant.level);
-				decode_envelope(&ffe.u.constant.envelope);
-				tprints("}");
+				ffe.u.constant.level);
+			decode_envelope(&ffe.u.constant.envelope);
+			tprints("}");
 			break;
-			case FF_RAMP:
+		case FF_RAMP:
 			tprintf(", ramp={start_level=%" PRId16
 				", end_level=%" PRId16,
-					ffe.u.ramp.start_level,
-					ffe.u.ramp.end_level);
-				decode_envelope(&ffe.u.ramp.envelope);
-				tprints("}");
+				ffe.u.ramp.start_level,
+				ffe.u.ramp.end_level);
+			decode_envelope(&ffe.u.ramp.envelope);
+			tprints("}");
 			break;
-			case FF_PERIODIC:
+		case FF_PERIODIC:
 			tprintf(", periodic={waveform=%" PRIu16
-					", period=%" PRIu16
+				", period=%" PRIu16
 				", magnitude=%" PRId16
 				", offset=%" PRId16
-					", phase=%" PRIu16,
-					ffe.u.periodic.waveform,
-					ffe.u.periodic.period,
-					ffe.u.periodic.magnitude,
-					ffe.u.periodic.offset,
-					ffe.u.periodic.phase);
-				decode_envelope(&ffe.u.periodic.envelope);
+				", phase=%" PRIu16,
+				ffe.u.periodic.waveform,
+				ffe.u.periodic.period,
+				ffe.u.periodic.magnitude,
+				ffe.u.periodic.offset,
+				ffe.u.periodic.phase);
+			decode_envelope(&ffe.u.periodic.envelope);
 			tprintf(", custom_len=%u, custom_data=",
 				ffe.u.periodic.custom_len);
 			printaddr((unsigned long) ffe.u.periodic.custom_data);
 			tprints("}");
 			break;
-			case FF_RUMBLE:
-				tprintf(", rumble={strong_magnitude=%" PRIu16
-					", weak_magnitude=%" PRIu16 "}",
-					ffe.u.rumble.strong_magnitude,
-					ffe.u.rumble.weak_magnitude);
-				break;
-			default :
-				break;
-		}
+		case FF_RUMBLE:
+			tprintf(", rumble={strong_magnitude=%" PRIu16
+				", weak_magnitude=%" PRIu16 "}",
+				ffe.u.rumble.strong_magnitude,
+				ffe.u.rumble.weak_magnitude);
+			break;
+		default:
+			break;
+	}
 
 	tprints("}");
 
@@ -166,18 +166,18 @@ abs_ioctl(struct tcb *tcp, long arg)
 			absinfo.value,
 			absinfo.minimum);
 
-	if (!abbrev(tcp)) {
+		if (!abbrev(tcp)) {
 			tprintf("maximum=%u"
 				", fuzz=%u"
 				", flat=%u",
 				absinfo.maximum,
 				absinfo.fuzz,
 				absinfo.flat);
-#ifdef HAVE_STRUCT_INPUT_ABSINFO_RESOLUTION
+# ifdef HAVE_STRUCT_INPUT_ABSINFO_RESOLUTION
 			tprintf(", resolution=%u",
 				absinfo.resolution);
-#endif
-	} else {
+# endif
+		} else {
 			tprints("...");
 		}
 
@@ -196,14 +196,14 @@ keycode_ioctl(struct tcb *tcp, long arg)
 
 	if (!umove_or_printaddr(tcp, arg, &keycode)) {
 		tprintf("[%u, ", keycode[0]);
-	printxval(evdev_keycode, keycode[1], "KEY_???");
-	tprints("]");
+		printxval(evdev_keycode, keycode[1], "KEY_???");
+		tprints("]");
 	}
 
 	return 1;
 }
 
-#ifdef EVIOCGKEYCODE_V2
+# ifdef EVIOCGKEYCODE_V2
 static int
 keycode_V2_ioctl(struct tcb *tcp, long arg)
 {
@@ -239,7 +239,7 @@ keycode_V2_ioctl(struct tcb *tcp, long arg)
 
 	return 1;
 }
-#endif /* EVIOCGKEYCODE_V2 */
+# endif /* EVIOCGKEYCODE_V2 */
 
 static int
 getid_ioctl(struct tcb *tcp, long arg)
@@ -302,7 +302,7 @@ decode_bitset(struct tcb *tcp, long arg, const struct xlat decode_nr[],
 	return 1;
 }
 
-#ifdef EVIOCGMTSLOTS
+# ifdef EVIOCGMTSLOTS
 static int
 mtslots_ioctl(struct tcb *tcp, const unsigned int code, long arg)
 {
@@ -329,11 +329,12 @@ mtslots_ioctl(struct tcb *tcp, const unsigned int code, long arg)
 		tprintf("%s%d", i > 1 ? ", " : "", buffer[i]);
 
 	tprints("]}");
+
 	return 1;
 }
-#endif /* EVIOCGMTSLOTS */
+# endif /* EVIOCGMTSLOTS */
 
-#if defined EVIOCGREP || defined EVIOCSREP
+# if defined EVIOCGREP || defined EVIOCSREP
 static int
 repeat_ioctl(struct tcb *tcp, long arg)
 {
@@ -341,57 +342,57 @@ repeat_ioctl(struct tcb *tcp, long arg)
 	printpair_int(tcp, arg, "%u");
 	return 1;
 }
-#endif /* EVIOCGREP || EVIOCSREP */
+# endif /* EVIOCGREP || EVIOCSREP */
 
 static int
 bit_ioctl(struct tcb *tcp, const unsigned int ev_nr, const long arg)
 {
 	switch (ev_nr) {
-			case EV_SYN:
-				return decode_bitset(tcp, arg, evdev_sync,
-						SYN_MAX, "SYN_???");
-			case EV_KEY:
-				return decode_bitset(tcp, arg, evdev_keycode,
-						KEY_MAX, "KEY_???");
-			case EV_REL:
-				return decode_bitset(tcp, arg, evdev_relative_axes,
-						REL_MAX, "REL_???");
-			case EV_ABS:
+		case EV_SYN:
+			return decode_bitset(tcp, arg, evdev_sync,
+					     SYN_MAX, "SYN_???");
+		case EV_KEY:
+			return decode_bitset(tcp, arg, evdev_keycode,
+					     KEY_MAX, "KEY_???");
+		case EV_REL:
+			return decode_bitset(tcp, arg, evdev_relative_axes,
+					     REL_MAX, "REL_???");
+		case EV_ABS:
 			return decode_bitset(tcp, arg, evdev_abs,
 					     ABS_MAX, "ABS_???");
-			case EV_MSC:
+		case EV_MSC:
 			return decode_bitset(tcp, arg, evdev_misc,
 					     MSC_MAX, "MSC_???");
-#ifdef EV_SW
-			case EV_SW:
+# ifdef EV_SW
+		case EV_SW:
 			return decode_bitset(tcp, arg, evdev_switch,
 					     SW_MAX, "SW_???");
-#endif
-			case EV_LED:
+# endif
+		case EV_LED:
 			return decode_bitset(tcp, arg, evdev_leds,
 					     LED_MAX, "LED_???");
-			case EV_SND:
+		case EV_SND:
 			return decode_bitset(tcp, arg, evdev_snd,
 					     SND_MAX, "SND_???");
-			case EV_REP:
-				return decode_bitset(tcp, arg, evdev_autorepeat,
-						REP_MAX, "REP_???");
-			case EV_FF:
-				return decode_bitset(tcp, arg, evdev_ff_types,
-						FF_MAX, "FF_???");
-			case EV_PWR:
+		case EV_REP:
+			return decode_bitset(tcp, arg, evdev_autorepeat,
+					     REP_MAX, "REP_???");
+		case EV_FF:
+			return decode_bitset(tcp, arg, evdev_ff_types,
+					     FF_MAX, "FF_???");
+		case EV_PWR:
 			tprints(", ");
-				printnum_int(tcp, arg, "%d");
-				return 1;
-			case EV_FF_STATUS:
-				return decode_bitset(tcp, arg, evdev_ff_status,
-						FF_STATUS_MAX, "FF_STATUS_???");
-			default:
+			printnum_int(tcp, arg, "%d");
+			return 1;
+		case EV_FF_STATUS:
+			return decode_bitset(tcp, arg, evdev_ff_status,
+					     FF_STATUS_MAX, "FF_STATUS_???");
+		default:
 			tprints(", ");
 			printaddr(arg);
 			return 1;
-		}
 	}
+}
 
 static int
 evdev_read_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
@@ -408,24 +409,24 @@ evdev_read_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
 			return 1;
 		case EVIOCGID:
 			return getid_ioctl(tcp, arg);
-#ifdef EVIOCGREP
+# ifdef EVIOCGREP
 		case EVIOCGREP:
 			return repeat_ioctl(tcp, arg);
-#endif
+# endif
 		case EVIOCGKEYCODE:
 			return keycode_ioctl(tcp, arg);
-#ifdef EVIOCGKEYCODE_V2
+# ifdef EVIOCGKEYCODE_V2
 		case EVIOCGKEYCODE_V2:
 			return keycode_V2_ioctl(tcp, arg);
-#endif
+# endif
 	}
 
 	/* fixed-number variable-length commands */
 	switch (_IOC_NR(code)) {
-#ifdef EVIOCGMTSLOTS
+# ifdef EVIOCGMTSLOTS
 		case _IOC_NR(EVIOCGMTSLOTS(0)):
 			return mtslots_ioctl(tcp, code, arg);
-#endif
+# endif
 		case _IOC_NR(EVIOCGNAME(0)):
 		case _IOC_NR(EVIOCGPHYS(0)):
 		case _IOC_NR(EVIOCGUNIQ(0)):
@@ -435,19 +436,19 @@ evdev_read_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
 			else
 				printstr(tcp, arg, tcp->u_rval);
 			return 1;
-#ifdef EVIOCGPROP
+# ifdef EVIOCGPROP
 		case _IOC_NR(EVIOCGPROP(0)):
 			return decode_bitset(tcp, arg, evdev_prop,
 					     INPUT_PROP_MAX, "PROP_???");
-#endif
+# endif
 		case _IOC_NR(EVIOCGSND(0)):
 			return decode_bitset(tcp, arg, evdev_snd,
 					     SND_MAX, "SND_???");
-#ifdef EVIOCGSW
+# ifdef EVIOCGSW
 		case _IOC_NR(EVIOCGSW(0)):
 			return decode_bitset(tcp, arg, evdev_switch,
 					     SW_MAX, "SW_???");
-#endif
+# endif
 		case _IOC_NR(EVIOCGKEY(0)):
 			return decode_bitset(tcp, arg, evdev_keycode,
 					     KEY_MAX, "KEY_???");
@@ -472,25 +473,25 @@ evdev_write_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
 {
 	/* fixed-number fixed-length commands */
 	switch (code) {
-#ifdef EVIOCSREP
+# ifdef EVIOCSREP
 		case EVIOCSREP:
 			return repeat_ioctl(tcp, arg);
-#endif
+# endif
 		case EVIOCSKEYCODE:
 			return keycode_ioctl(tcp, arg);
-#ifdef EVIOCSKEYCODE_V2
+# ifdef EVIOCSKEYCODE_V2
 		case EVIOCSKEYCODE_V2:
 			return keycode_V2_ioctl(tcp, arg);
-#endif
+# endif
 		case EVIOCSFF:
 			return ff_effect_ioctl(tcp, arg);
 		case EVIOCRMFF:
 			tprintf(", %d", (int) arg);
 			return 1;
 		case EVIOCGRAB:
-#ifdef EVIOCREVOKE
+# ifdef EVIOCREVOKE
 		case EVIOCREVOKE:
-#endif
+# endif
 			tprintf(", %lu", arg);
 			return 1;
 # ifdef EVIOCSCLOCKID

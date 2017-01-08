@@ -30,15 +30,14 @@
 
 #ifdef __NR_getdents
 
-#include <assert.h>
-#include <dirent.h>
-#include <fcntl.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "kernel_types.h"
+# include <assert.h>
+# include <dirent.h>
+# include <fcntl.h>
+# include <stddef.h>
+# include <stdio.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# include "kernel_types.h"
 
 static const char fname[] =
 	"A\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\nA\n"
@@ -107,12 +106,13 @@ main(int ac, const char **av)
 	assert(!close(0));
 	assert(!open(".", O_RDONLY | O_DIRECTORY));
 
-	unsigned long count = (unsigned long) 0xfacefeeddeadbeef;
-	long rc = syscall(__NR_getdents, (long) 0xdefacedffffffff, NULL, count);
+	unsigned long count = (unsigned long) 0xfacefeeddeadbeefULL;
+	long rc = syscall(__NR_getdents, (long) 0xdefacedffffffffULL, NULL,
+			  count);
 	printf("getdents(-1, NULL, %u) = %ld %s (%m)\n",
 	       (unsigned) count, rc, errno2name());
 
-	count = (unsigned long) 0xfacefeed00000000 | sizeof(buf);
+	count = (unsigned long) 0xfacefeed00000000ULL | sizeof(buf);
 	while ((rc = syscall(__NR_getdents, 0, buf, count))) {
 		kernel_dirent *d;
 		long i;

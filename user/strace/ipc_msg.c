@@ -119,9 +119,9 @@ SYS_FUNC(msgrcv)
 			} else {
 				unsigned long pair[2];
 
-			if (fetch_msgrcv_args(tcp, tcp->u_arg[3], pair))
-				tprintf(", %lu, ", tcp->u_arg[1]);
-			else
+				if (fetch_msgrcv_args(tcp, tcp->u_arg[3], pair))
+					tprintf(", %lu, ", tcp->u_arg[1]);
+				else
 					tprint_msgrcv(tcp, pair[0],
 						      tcp->u_arg[1], pair[1]);
 			}

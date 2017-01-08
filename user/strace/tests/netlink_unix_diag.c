@@ -70,7 +70,7 @@ send_query(const int fd)
 		.iov_len = sizeof(req)
 	};
 	struct msghdr msg = {
-		.msg_name = (void*)&nladdr,
+		.msg_name = (void *) &nladdr,
 		.msg_namelen = sizeof(nladdr),
 		.msg_iov = &iov,
 		.msg_iovlen = 1
@@ -96,7 +96,7 @@ check_responses(const int fd)
 		.iov_len = sizeof(hdr_buf.buf)
 	};
 	struct msghdr msg = {
-		.msg_name = (void*)&nladdr,
+		.msg_name = (void *) &nladdr,
 		.msg_namelen = sizeof(nladdr),
 		.msg_iov = &iov,
 		.msg_iovlen = 1

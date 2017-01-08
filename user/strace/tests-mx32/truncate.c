@@ -30,9 +30,9 @@
 
 #ifdef __NR_truncate
 
-#include <stdio.h>
-#include <unistd.h>
-#include "kernel_types.h"
+# include <stdio.h>
+# include <unistd.h>
+# include "kernel_types.h"
 
 int
 main(void)

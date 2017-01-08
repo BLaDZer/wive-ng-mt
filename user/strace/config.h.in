@@ -683,6 +683,9 @@
 /* Define to 1 if you have the <linux/btrfs.h> header file. */
 #undef HAVE_LINUX_BTRFS_H
 
+/* Define to 1 if you have the <linux/dm-ioctl.h> header file. */
+#undef HAVE_LINUX_DM_IOCTL_H
+
 /* Define to 1 if you have the <linux/dqblk_xfs.h> header file. */
 #undef HAVE_LINUX_DQBLK_XFS_H
 
@@ -902,6 +905,76 @@
 
 /* Define to 1 if the system has the type `struct mmsghdr'. */
 #undef HAVE_STRUCT_MMSGHDR
+
+/* Define to 1 if `aux_watermark' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_AUX_WATERMARK
+
+/* Define to 1 if `bp_type' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_BP_TYPE
+
+/* Define to 1 if `branch_sample_type' is a member of `struct
+   perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_BRANCH_SAMPLE_TYPE
+
+/* Define to 1 if `comm_exec' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_COMM_EXEC
+
+/* Define to 1 if `config1' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_CONFIG1
+
+/* Define to 1 if `config2' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_CONFIG2
+
+/* Define to 1 if `context_switch' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_CONTEXT_SWITCH
+
+/* Define to 1 if `exclude_callchain_kernel' is a member of `struct
+   perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_EXCLUDE_CALLCHAIN_KERNEL
+
+/* Define to 1 if `exclude_callchain_user' is a member of `struct
+   perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_EXCLUDE_CALLCHAIN_USER
+
+/* Define to 1 if `exclude_guest' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_EXCLUDE_GUEST
+
+/* Define to 1 if `exclude_host' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_EXCLUDE_HOST
+
+/* Define to 1 if `mmap2' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_MMAP2
+
+/* Define to 1 if `mmap_data' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_MMAP_DATA
+
+/* Define to 1 if `precise_ip' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_PRECISE_IP
+
+/* Define to 1 if `sample_id_all' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_SAMPLE_ID_ALL
+
+/* Define to 1 if `sample_max_stack' is a member of `struct perf_event_attr'.
+   */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_SAMPLE_MAX_STACK
+
+/* Define to 1 if `sample_regs_intr' is a member of `struct perf_event_attr'.
+   */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_SAMPLE_REGS_INTR
+
+/* Define to 1 if `sample_regs_user' is a member of `struct perf_event_attr'.
+   */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_SAMPLE_REGS_USER
+
+/* Define to 1 if `sample_stack_user' is a member of `struct perf_event_attr'.
+   */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_SAMPLE_STACK_USER
+
+/* Define to 1 if `use_clockid' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_USE_CLOCKID
+
+/* Define to 1 if `write_backward' is a member of `struct perf_event_attr'. */
+#undef HAVE_STRUCT_PERF_EVENT_ATTR_WRITE_BACKWARD
 
 /* Define to 1 if the system has the type `struct ptrace_peeksiginfo_args'. */
 #undef HAVE_STRUCT_PTRACE_PEEKSIGINFO_ARGS

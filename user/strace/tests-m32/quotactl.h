@@ -1,7 +1,7 @@
 /*
  * Common definitions for Linux and XFS quota tests.
  *
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
@@ -69,8 +69,6 @@
 	printf("%s%s=%#llx", (prefix), #field,	\
 	       zero_extend_signed_to_ull((where)->field))
 
-# define ARG_STR(_arg) (_arg), #_arg
-
 typedef void (*print_cb)(long rc, void *addr, void *arg);
 
 enum check_quotactl_flag_bits {
@@ -90,22 +88,6 @@ enum check_quotactl_flags {
 	CQF_ADDR_CB   = 1 << CQF_ADDR_CB_BIT,
 };
 
-
-static inline void
-fill_memory_ex(char *ptr, size_t size, unsigned char start)
-{
-	size_t i;
-
-	for (i = 0; i < size; i++) {
-		ptr[i] = start + i % 80;
-	}
-}
-
-static inline void
-fill_memory(char *ptr, size_t size)
-{
-	fill_memory_ex(ptr, size, 0x80);
-}
 
 static inline void
 check_quota(uint32_t flags, int cmd, const char *cmd_str,
@@ -173,13 +155,9 @@ check_quota(uint32_t flags, int cmd, const char *cmd_str,
 
 
 static const int bogus_cmd = 0xbadc0ded;
-static const char * const bogus_special =
-	(const char *) (unsigned long) 0xfffffca7ffffc0deULL;
 static const int bogus_id = 0xca7faced;
-static void * const bogus_addr =
-	(void *) (unsigned long) 0xffffda7affffdeadULL;
 
-/* It is invalid anyway due to the flash in the end */
+/* It is invalid anyway due to the slash in the end */
 static const char *bogus_dev = "/dev/bogus/";
 static const char *bogus_dev_str = "\"/dev/bogus/\"";
 

@@ -52,7 +52,7 @@ print_xattr_val(struct tcb *tcp,
 	if (!addr || size > sizeof(buf))
 		printaddr(addr);
 	else if (!size || !umoven_or_printaddr(tcp, addr, size, buf)) {
-	/* Don't print terminating NUL if there is one. */
+		/* Don't print terminating NUL if there is one. */
 		if (size && buf[size - 1] == '\0')
 			--size;
 

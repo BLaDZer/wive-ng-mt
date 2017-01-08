@@ -40,11 +40,12 @@
 #  error PRINT_SYSCALL_FOOTER must be defined
 # endif
 
+# include <errno.h>
 # include <stdio.h>
 # include <stddef.h>
 # include <time.h>
 # include <unistd.h>
-#  include <sys/sysmacros.h>
+# include <sys/sysmacros.h>
 
 static void
 print_time(const time_t t)
@@ -56,12 +57,15 @@ print_time(const time_t t)
 
 	struct tm *p = localtime(&t);
 
-	if (p)
-		printf("%02d/%02d/%02d-%02d:%02d:%02d",
-		       p->tm_year + 1900, p->tm_mon + 1, p->tm_mday,
-		       p->tm_hour, p->tm_min, p->tm_sec);
-	else
+	if (p) {
+		char buf[256];
+
+		strftime(buf, sizeof(buf), "%FT%T%z", p);
+
+		printf("%s", buf);
+	} else {
 		printf("%llu", zero_extend_signed_to_ull(t));
+	}
 }
 
 # ifndef STRUCT_STAT
@@ -70,7 +74,7 @@ print_time(const time_t t)
 #  define STRUCT_STAT_IS_STAT64 0
 # endif
 # ifndef SAMPLE_SIZE
-#  define SAMPLE_SIZE 43147718418
+#  define SAMPLE_SIZE 43147718418ULL
 # endif
 
 typedef off_t libc_off_t;
@@ -93,11 +97,11 @@ typedef off_t libc_off_t;
 #  include "asm_stat.h"
 
 #  if STRUCT_STAT_IS_STAT64
-#  undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+#   undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
 #   if defined MPERS_IS_m32
 #    ifdef HAVE_M32_STRUCT_STAT64_ST_MTIME_NSEC
-#   define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#  endif
+#     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
+#    endif
 #   elif defined MPERS_IS_mx32
 #    ifdef HAVE_MX32_STRUCT_STAT64_ST_MTIME_NSEC
 #     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
@@ -110,12 +114,12 @@ typedef off_t libc_off_t;
 #    undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
 #    ifdef HAVE_M32_STRUCT_STAT_ST_MTIME_NSEC
 #     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#  endif
+#    endif
 #   elif defined MPERS_IS_mx32
 #    undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
 #    ifdef HAVE_MX32_STRUCT_STAT_ST_MTIME_NSEC
 #     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-# endif
+#    endif
 #   endif /*  MPERS_IS_m32 || MPERS_IS_mx32 */
 #  endif /* STRUCT_STAT_IS_STAT64 */
 
@@ -130,6 +134,18 @@ typedef off_t libc_off_t;
 #   undef st_mtime_nsec
 #   define st_mtime_nsec st_mtim.tv_nsec
 #  endif /* HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC */
+# endif
+
+# ifndef TEST_BOGUS_STRUCT_STAT
+#  define TEST_BOGUS_STRUCT_STAT 1
+# endif
+
+# ifndef IS_FSTAT
+#  define IS_STAT 0
+# endif
+
+# ifndef OLD_STAT
+#  define OLD_STAT 0
 # endif
 
 static void
@@ -167,8 +183,12 @@ print_stat(const STRUCT_STAT *st)
 	printf(", st_nlink=%llu", zero_extend_signed_to_ull(st->st_nlink));
 	printf(", st_uid=%llu", zero_extend_signed_to_ull(st->st_uid));
 	printf(", st_gid=%llu", zero_extend_signed_to_ull(st->st_gid));
+# if OLD_STAT
+	printf(", st_blksize=0, st_blocks=0");
+# else /* !OLD_STAT */
 	printf(", st_blksize=%llu", zero_extend_signed_to_ull(st->st_blksize));
 	printf(", st_blocks=%llu", zero_extend_signed_to_ull(st->st_blocks));
+# endif /* OLD_STAT */
 
 	switch (st->st_mode & S_IFMT) {
 	case S_IFCHR: case S_IFBLK:
@@ -182,19 +202,19 @@ print_stat(const STRUCT_STAT *st)
 
 	printf(", st_atime=");
 	print_time(sign_extend_unsigned_to_ll(st->st_atime));
-# ifdef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+# if defined(HAVE_STRUCT_STAT_ST_MTIME_NSEC) && !OLD_STAT
 	if (st->st_atime_nsec)
 		printf(".%09llu", zero_extend_signed_to_ull(st->st_atime_nsec));
 # endif
 	printf(", st_mtime=");
 	print_time(sign_extend_unsigned_to_ll(st->st_mtime));
-# ifdef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+# if defined(HAVE_STRUCT_STAT_ST_MTIME_NSEC) && !OLD_STAT
 	if (st->st_mtime_nsec)
 		printf(".%09llu", zero_extend_signed_to_ull(st->st_mtime_nsec));
 # endif
 	printf(", st_ctime=");
 	print_time(sign_extend_unsigned_to_ll(st->st_ctime));
-# ifdef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+# if defined(HAVE_STRUCT_STAT_ST_MTIME_NSEC) && !OLD_STAT
 	if (st->st_ctime_nsec)
 		printf(".%09llu", zero_extend_signed_to_ull(st->st_ctime_nsec));
 # endif
@@ -227,22 +247,50 @@ create_sample(const char *fname, const libc_off_t size)
 int
 main(void)
 {
+# if !IS_FSTAT
+	static const char full[] = "/dev/full";
+# endif
 	static const char sample[] = TEST_SYSCALL_STR ".sample";
 	STRUCT_STAT st[2];
 
-	int rc = create_sample(sample, SAMPLE_SIZE);
+	int rc;
+
+	rc = create_sample(sample, SAMPLE_SIZE);
 	if (rc) {
 		(void) unlink(sample);
 		return rc;
 	}
 
-	if (TEST_SYSCALL_INVOKE(sample, st)) {
-		perror(TEST_SYSCALL_STR);
-		(void) unlink(sample);
-		return 77;
+# if TEST_BOGUS_STRUCT_STAT
+	STRUCT_STAT *st_cut = tail_alloc(sizeof(long) * 4);
+	rc = TEST_SYSCALL_INVOKE(sample, st_cut);
+	PRINT_SYSCALL_HEADER(sample);
+	printf("%p", st_cut);
+	PRINT_SYSCALL_FOOTER(rc);
+# endif
+
+# if !IS_FSTAT
+	rc = TEST_SYSCALL_INVOKE(full, st);
+	PRINT_SYSCALL_HEADER(full);
+	if (rc)
+		printf("%p", st);
+	else
+		print_stat(st);
+	PRINT_SYSCALL_FOOTER(rc);
+# endif
+
+	if ((rc = TEST_SYSCALL_INVOKE(sample, st))) {
+# if OLD_STAT
+		if (errno != EOVERFLOW)
+# endif
+		{
+			perror(TEST_SYSCALL_STR);
+			(void) unlink(sample);
+			return 77;
+		}
 	}
 	(void) unlink(sample);
-	if (zero_extend_signed_to_ull(SAMPLE_SIZE) !=
+	if (!rc && zero_extend_signed_to_ull(SAMPLE_SIZE) !=
 	    zero_extend_signed_to_ull(st[0].st_size)) {
 		fprintf(stderr, "Size mismatch: "
 				"requested size(%llu) != st_size(%llu)\n",
@@ -284,6 +332,7 @@ main(void)
 				", sizeof(st_size) = %zu\n",
 			STRUCT_STAT_STR, offsetof(STRUCT_STAT, st_size),
 			sizeof(st[0].st_size));
+# if !OLD_STAT
 		fprintf(stderr, "offsetof(%s, st_blksize) = %zu"
 				", sizeof(st_blksize) = %zu\n",
 			STRUCT_STAT_STR, offsetof(STRUCT_STAT, st_blksize),
@@ -292,12 +341,16 @@ main(void)
 				", sizeof(st_blocks) = %zu\n",
 			STRUCT_STAT_STR, offsetof(STRUCT_STAT, st_blocks),
 			sizeof(st[0].st_blocks));
+# endif /* !OLD_STAT */
 		return 77;
 	}
 
 	PRINT_SYSCALL_HEADER(sample);
-	print_stat(st);
-	PRINT_SYSCALL_FOOTER;
+	if (rc)
+		printf("%p", st);
+	else
+		print_stat(st);
+	PRINT_SYSCALL_FOOTER(rc);
 
 	puts("+++ exited with 0 +++");
 	return 0;

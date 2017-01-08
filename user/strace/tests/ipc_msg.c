@@ -109,13 +109,13 @@ main(void)
 	       ", gid=%u, mode=%#o, key=%u, cuid=%u, cgid=%u\\}, msg_stime=%u"
 	       ", msg_rtime=%u, msg_ctime=%u, msg_qnum=%u, msg_qbytes=%u"
 	       ", msg_lspid=%u, msg_lrpid=%u\\}\\) += 0\n",
-		id, (unsigned) ds.msg_perm.uid, (unsigned) ds.msg_perm.gid,
-		(unsigned) ds.msg_perm.mode, (unsigned) ds.msg_perm.__key,
-		(unsigned) ds.msg_perm.cuid, (unsigned) ds.msg_perm.cgid,
-		(unsigned) ds.msg_stime, (unsigned) ds.msg_rtime,
-		(unsigned) ds.msg_ctime, (unsigned) ds.msg_qnum,
-		(unsigned) ds.msg_qbytes, (unsigned) ds.msg_lspid,
-		(unsigned) ds.msg_lrpid);
+	       id, (unsigned) ds.msg_perm.uid, (unsigned) ds.msg_perm.gid,
+	       (unsigned) ds.msg_perm.mode, (unsigned) ds.msg_perm.__key,
+	       (unsigned) ds.msg_perm.cuid, (unsigned) ds.msg_perm.cgid,
+	       (unsigned) ds.msg_stime, (unsigned) ds.msg_rtime,
+	       (unsigned) ds.msg_ctime, (unsigned) ds.msg_qnum,
+	       (unsigned) ds.msg_qbytes, (unsigned) ds.msg_lspid,
+	       (unsigned) ds.msg_lrpid);
 
 	if (msgctl(id, IPC_SET, &ds))
 		perror_msg_and_skip("msgctl IPC_SET");

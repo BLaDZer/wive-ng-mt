@@ -38,6 +38,8 @@
 #endif
 
 #include "xlat/clone_flags.h"
+#include "xlat/setns_types.h"
+#include "xlat/unshare_flags.h"
 
 #if defined IA64
 # define ARG_FLAGS	0
@@ -144,14 +146,14 @@ SYS_FUNC(setns)
 {
 	printfd(tcp, tcp->u_arg[0]);
 	tprints(", ");
-	printflags(clone_flags, tcp->u_arg[1], "CLONE_???");
+	printxval(setns_types, tcp->u_arg[1], "CLONE_NEW???");
 
 	return RVAL_DECODED;
 }
 
 SYS_FUNC(unshare)
 {
-	printflags_long(clone_flags, tcp->u_arg[0], "CLONE_???");
+	printflags64(unshare_flags, getarg_ull(tcp, 0), "CLONE_???");
 	return RVAL_DECODED;
 }
 

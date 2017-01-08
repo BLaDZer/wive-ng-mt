@@ -30,14 +30,14 @@
 
 #ifdef __NR_sendfile64
 
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
+# include <assert.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdint.h>
+# include <unistd.h>
+# include <sys/socket.h>
+# include <sys/stat.h>
 
 int
 main(int ac, const char **av)
@@ -97,7 +97,7 @@ main(int ac, const char **av)
 	       (unsigned long) stb.st_size + 1,
 	       (unsigned long) blen);
 
-	*p_off = 0xcafef00dfacefeed;
+	*p_off = 0xcafef00dfacefeedULL;
 	assert(syscall(__NR_sendfile64, sv[1], reg_in, p_off, 1) == -1);
 	printf("sendfile64(%d, %d, [14627392582579060461], 1)"
 		" = -1 EINVAL (%m)\n", sv[1], reg_in);

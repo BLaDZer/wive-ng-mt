@@ -2713,10 +2713,11 @@
 <b>5.0.x</b><br>
 1) busybox: update to 1.26.1 version.<br>
 2) radvd: update to 2.16-rc1 version.<br>
-3) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
-4) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
-5) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-6) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+3) strace: up to 4.15 version.<br>
+4) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
+5) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
+6) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+7) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 <br>
 <br>
 <br>

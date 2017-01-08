@@ -32,7 +32,7 @@
 
 # define TEST_SYSCALL_NR __NR_select
 # define TEST_SYSCALL_STR "select"
-#include "xselect.c"
+# include "xselect.c"
 
 #else
 

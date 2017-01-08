@@ -42,8 +42,8 @@ sprint_rusage(const struct rusage *const ru)
 {
 	static char buf[1024];
 	snprintf(buf, sizeof(buf),
-		 "{ru_utime={%llu, %llu}"
-		 ", ru_stime={%llu, %llu}"
+		 "{ru_utime={tv_sec=%lld, tv_usec=%lld}"
+		 ", ru_stime={tv_sec=%lld, tv_usec=%lld}"
 #if VERBOSE
 		 ", ru_maxrss=%llu"
 		 ", ru_ixrss=%llu"
@@ -62,10 +62,10 @@ sprint_rusage(const struct rusage *const ru)
 #else
 		 ", ...}"
 #endif
-		 , zero_extend_signed_to_ull(ru->ru_utime.tv_sec)
-		 , zero_extend_signed_to_ull(ru->ru_utime.tv_usec)
-		 , zero_extend_signed_to_ull(ru->ru_stime.tv_sec)
-		 , zero_extend_signed_to_ull(ru->ru_stime.tv_usec)
+		 , (long long) ru->ru_utime.tv_sec
+		 , (long long) ru->ru_utime.tv_usec
+		 , (long long) ru->ru_stime.tv_sec
+		 , (long long) ru->ru_stime.tv_usec
 #if VERBOSE
 		 , zero_extend_signed_to_ull(ru->ru_maxrss)
 		 , zero_extend_signed_to_ull(ru->ru_ixrss)
@@ -138,7 +138,7 @@ sprint_siginfo(const siginfo_t *const si, const char *const status_text)
 static unsigned long
 poison(unsigned int v)
 {
-	return (unsigned long) 0xfacefeed00000000 | v;
+	return (unsigned long) 0xfacefeed00000000ULL | v;
 }
 
 static long

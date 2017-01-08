@@ -129,7 +129,7 @@ main(void)
 	for (i = 0; i <= DEFAULT_STRLEN; ++i) {
 		a[i] = &str_a[i];
 		b[i] = &str_b[i];
-}
+	}
 	a[i] = b[i] = NULL;
 
 	syscall(__NR_execveat, -100, FILENAME, a, b, 0x1100);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -189,14 +189,14 @@ main(int argc, char *argv[])
 	/* uaddr is NULL */
 	CHECK_FUTEX(NULL, FUTEX_WAIT, VAL, tmout, uaddr2, VAL3,
 		(rc == -1) && (errno == EFAULT));
-	printf("futex(NULL, FUTEX_WAIT, %u, {%jd, %jd}) = %s\n",
+	printf("futex(NULL, FUTEX_WAIT, %u, {tv_sec=%jd, tv_nsec=%jd}) = %s\n",
 		VAL_PR, (intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec,
 		sprintrc(rc));
 
 	/* uaddr is faulty */
 	CHECK_FUTEX(uaddr + 1, FUTEX_WAIT, VAL, tmout, uaddr2, VAL3,
 		(rc == -1) && (errno == EFAULT));
-	printf("futex(%p, FUTEX_WAIT, %u, {%jd, %jd}) = %s\n",
+	printf("futex(%p, FUTEX_WAIT, %u, {tv_sec=%jd, tv_nsec=%jd}) = %s\n",
 		uaddr + 1, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, sprintrc(rc));
 
@@ -209,14 +209,15 @@ main(int argc, char *argv[])
 	/* uaddr is not as provided; uaddr2 is faulty but ignored */
 	CHECK_FUTEX(uaddr, FUTEX_WAIT, VAL, tmout, uaddr2 + 1, VAL3,
 		(rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT, %u, {%jd, %jd}) = %s\n",
+	printf("futex(%p, FUTEX_WAIT, %u, {tv_sec=%jd, tv_nsec=%jd}) = %s\n",
 		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, sprintrc(rc));
 
 	/* uaddr is not as provided; uaddr2 is faulty but ignored */
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_PRIVATE_FLAG | FUTEX_WAIT, VAL, tmout,
 		uaddr2 + 1, VAL3, (rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT_PRIVATE, %u, {%jd, %jd}) = %s\n",
+	printf("futex(%p, FUTEX_WAIT_PRIVATE, %u, {tv_sec=%jd, tv_nsec=%jd}) = "
+		"%s\n",
 		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, sprintrc(rc));
 
@@ -227,7 +228,7 @@ main(int argc, char *argv[])
 		FUTEX_CLOCK_REALTIME | FUTEX_WAIT,
 		VAL, tmout, uaddr2, VAL3, (rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec,
 		sprintrc(rc));
 
@@ -235,7 +236,7 @@ main(int argc, char *argv[])
 		FUTEX_CLOCK_REALTIME | FUTEX_PRIVATE_FLAG | FUTEX_WAIT ,
 		VAL, tmout, uaddr2, 0, (rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT_PRIVATE|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec,
 		sprintrc(rc));
 
@@ -253,21 +254,24 @@ main(int argc, char *argv[])
 
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_WAIT_BITSET, VAL, tmout, uaddr2 + 1,
 		VAL3, (rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT_BITSET, %u, {%jd, %jd}, %#x) = %s\n",
+	printf("futex(%p, FUTEX_WAIT_BITSET, %u, {tv_sec=%jd, tv_nsec=%jd}, "
+		"%#x) = %s\n",
 		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, VAL3_PR, sprintrc(rc));
 
 	/* val3 of 0 is invalid  */
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_WAIT_BITSET, VAL, tmout, uaddr2 + 1, 0,
 		(rc == -1) && (errno == EINVAL));
-	printf("futex(%p, FUTEX_WAIT_BITSET, %u, {%jd, %jd}, %#x) = %s\n",
+	printf("futex(%p, FUTEX_WAIT_BITSET, %u, {tv_sec=%jd, tv_nsec=%jd}, "
+		"%#x) = %s\n",
 		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, 0, sprintrc(rc));
 
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_PRIVATE_FLAG | FUTEX_WAIT_BITSET, VAL,
 		tmout, uaddr2 + 1, VAL3, (rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT_BITSET_PRIVATE, %u, {%jd, %jd}, %#x) = "
-		"%s\n", uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
+	printf("futex(%p, FUTEX_WAIT_BITSET_PRIVATE, %u, "
+		"{tv_sec=%jd, tv_nsec=%jd}, %#x) = %s\n",
+		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, VAL3_PR, sprintrc(rc));
 
 	/* Next 3 tests are with CLOCKRT bit set */
@@ -275,7 +279,7 @@ main(int argc, char *argv[])
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_CLOCK_REALTIME | FUTEX_WAIT_BITSET, VAL,
 		tmout, uaddr2 + 1, VAL3, (rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT_BITSET|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}, %#x) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}, %#x) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec, VAL3_PR,
 		sprintrc(rc));
 
@@ -283,7 +287,7 @@ main(int argc, char *argv[])
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_CLOCK_REALTIME | FUTEX_WAIT_BITSET, VAL,
 		tmout, uaddr2 + 1, 0, (rc == -1) && (errno == EINVAL));
 	printf("futex(%p, FUTEX_WAIT_BITSET|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}, %#x) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}, %#x) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec, 0,
 		sprintrc(rc));
 
@@ -291,7 +295,7 @@ main(int argc, char *argv[])
 		FUTEX_WAIT_BITSET, VAL, tmout, uaddr2 + 1, VAL3,
 		(rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT_BITSET_PRIVATE|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}, %#x) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}, %#x) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec, VAL3_PR,
 		sprintrc(rc));
 
@@ -470,42 +474,47 @@ main(int argc, char *argv[])
 		int err;
 		const char *errstr;
 	} wake_ops[] = {
-		{ 0x00000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x00fff000, "{FUTEX_OP_SET, 4095, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x00000fff, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_EQ, 4095}" },
-		{ 0x00ffffff, "{FUTEX_OP_SET, 4095, FUTEX_OP_CMP_EQ, 4095}" },
-		{ 0x10000000, "{FUTEX_OP_ADD, 0, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x20000000, "{FUTEX_OP_OR, 0, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x30000000, "{FUTEX_OP_ANDN, 0, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x40000000, "{FUTEX_OP_XOR, 0, FUTEX_OP_CMP_EQ, 0}" },
-		{ 0x50000000, "{0x5 /* FUTEX_OP_??? */, 0, FUTEX_OP_CMP_EQ, 0}",
+		{ 0x00000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0x00fff000, "FUTEX_OP_SET<<28|0xfff<<12|FUTEX_OP_CMP_EQ<<24|"
+			"0" },
+		{ 0x00000fff, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_EQ<<24|"
+			"0xfff" },
+		{ 0x00ffffff, "FUTEX_OP_SET<<28|0xfff<<12|FUTEX_OP_CMP_EQ<<24|"
+			"0xfff" },
+		{ 0x10000000, "FUTEX_OP_ADD<<28|0<<12|FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0x20000000, "FUTEX_OP_OR<<28|0<<12|FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0x30000000, "FUTEX_OP_ANDN<<28|0<<12|FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0x40000000, "FUTEX_OP_XOR<<28|0<<12|FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0x50000000, "0x5<<28 /* FUTEX_OP_??? */|0<<12|"
+			"FUTEX_OP_CMP_EQ<<24|0", ENOSYS, "ENOSYS" },
+		{ 0x70000000, "0x7<<28 /* FUTEX_OP_??? */|0<<12|"
+			"FUTEX_OP_CMP_EQ<<24|0", ENOSYS, "ENOSYS" },
+		{ 0x80000000, "FUTEX_OP_OPARG_SHIFT<<28|FUTEX_OP_SET<<28|0<<12|"
+			"FUTEX_OP_CMP_EQ<<24|0" },
+		{ 0xa0caffee, "FUTEX_OP_OPARG_SHIFT<<28|FUTEX_OP_OR<<28|"
+			"0xcaf<<12|FUTEX_OP_CMP_EQ<<24|0xfee" },
+		{ 0x01000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_NE<<24|0" },
+		{ 0x01234567, "FUTEX_OP_SET<<28|0x234<<12|FUTEX_OP_CMP_NE<<24|"
+			"0x567" },
+		{ 0x02000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_LT<<24|0" },
+		{ 0x03000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_LE<<24|0" },
+		{ 0x04000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_GT<<24|0" },
+		{ 0x05000000, "FUTEX_OP_SET<<28|0<<12|FUTEX_OP_CMP_GE<<24|0" },
+		{ 0x06000000, "FUTEX_OP_SET<<28|0<<12|"
+			"0x6<<24 /* FUTEX_OP_CMP_??? */|0", ENOSYS, "ENOSYS" },
+		{ 0x07000000, "FUTEX_OP_SET<<28|0<<12|"
+			"0x7<<24 /* FUTEX_OP_CMP_??? */|0", ENOSYS, "ENOSYS" },
+		{ 0x08000000, "FUTEX_OP_SET<<28|0<<12|"
+			"0x8<<24 /* FUTEX_OP_CMP_??? */|0", ENOSYS, "ENOSYS" },
+		{ 0x0f000000, "FUTEX_OP_SET<<28|0<<12|"
+			"0xf<<24 /* FUTEX_OP_CMP_??? */|0", ENOSYS, "ENOSYS" },
+		{ 0xbadfaced, "FUTEX_OP_OPARG_SHIFT<<28|FUTEX_OP_ANDN<<28|"
+			"0xdfa<<12|0xa<<24 /* FUTEX_OP_CMP_??? */|0xced",
 			ENOSYS, "ENOSYS" },
-		{ 0x70000000, "{0x7 /* FUTEX_OP_??? */, 0, FUTEX_OP_CMP_EQ, 0}",
+		{ 0xffffffff, "FUTEX_OP_OPARG_SHIFT<<28|"
+			"0x7<<28 /* FUTEX_OP_??? */|0xfff<<12|"
+			"0xf<<24 /* FUTEX_OP_CMP_??? */|0xfff",
 			ENOSYS, "ENOSYS" },
-		{ 0x80000000, "{FUTEX_OP_OPARG_SHIFT|FUTEX_OP_SET, 0, "
-			"FUTEX_OP_CMP_EQ, 0}" },
-		{ 0xa0caffee, "{FUTEX_OP_OPARG_SHIFT|FUTEX_OP_OR, 3247, "
-			"FUTEX_OP_CMP_EQ, 4078}" },
-		{ 0x01000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_NE, 0}" },
-		{ 0x01234567, "{FUTEX_OP_SET, 564, FUTEX_OP_CMP_NE, 1383}" },
-		{ 0x02000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_LT, 0}" },
-		{ 0x03000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_LE, 0}" },
-		{ 0x04000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_GT, 0}" },
-		{ 0x05000000, "{FUTEX_OP_SET, 0, FUTEX_OP_CMP_GE, 0}" },
-		{ 0x06000000, "{FUTEX_OP_SET, 0, 0x6 /* FUTEX_OP_CMP_??? */, "
-			"0}", ENOSYS, "ENOSYS" },
-		{ 0x07000000, "{FUTEX_OP_SET, 0, 0x7 /* FUTEX_OP_CMP_??? */, "
-			"0}", ENOSYS, "ENOSYS" },
-		{ 0x08000000, "{FUTEX_OP_SET, 0, 0x8 /* FUTEX_OP_CMP_??? */, "
-			"0}", ENOSYS, "ENOSYS" },
-		{ 0x0f000000, "{FUTEX_OP_SET, 0, 0xf /* FUTEX_OP_CMP_??? */, "
-			"0}", ENOSYS, "ENOSYS" },
-		{ 0xbadfaced, "{FUTEX_OP_OPARG_SHIFT|FUTEX_OP_ANDN, "
-			"3578, 0xa /* FUTEX_OP_CMP_??? */, 3309}", ENOSYS,
-			"ENOSYS" },
-		{ 0xffffffff, "{FUTEX_OP_OPARG_SHIFT|0x7 /* FUTEX_OP_??? */, "
-			"4095, 0xf /* FUTEX_OP_CMP_??? */, 4095}", ENOSYS,
-			"ENOSYS" },
 	};
 
 	for (i = 0; i < ARRAY_SIZE(wake_ops); i++) {
@@ -522,8 +531,8 @@ main(int argc, char *argv[])
 	CHECK_INVALID_CLOCKRT(FUTEX_WAKE_OP, ARG3 | ARG4 | ARG5 | ARG6,
 		"%u", "%u", "%#lx",
 		/* Decoding of the 0xdeadbee4 value */
-		"{FUTEX_OP_OPARG_SHIFT|0x5 /* FUTEX_OP_??? */, 2779, "
-		"0xe /* FUTEX_OP_CMP_??? */, 3812}");
+		"FUTEX_OP_OPARG_SHIFT<<28|0x5<<28 /* FUTEX_OP_??? */|0xadb<<12|"
+		"0xe<<24 /* FUTEX_OP_CMP_??? */|0xee4");
 
 	/* FUTEX_LOCK_PI - slow path for mutex lock with process inheritance
 	 *                 support. Expect that futex has 0 in unlocked case and
@@ -543,13 +552,14 @@ main(int argc, char *argv[])
 
 	CHECK_FUTEX_ENOSYS(uaddr + 1, FUTEX_LOCK_PI, VAL, tmout, uaddr2 + 1,
 		VAL3, (rc == -1) && (errno == EFAULT));
-	printf("futex(%p, FUTEX_LOCK_PI, {%jd, %jd}) = %s\n",
+	printf("futex(%p, FUTEX_LOCK_PI, {tv_sec=%jd, tv_nsec=%jd}) = %s\n",
 		uaddr + 1, (intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec,
 		sprintrc(rc));
 
 	CHECK_FUTEX_ENOSYS(uaddr + 1, FUTEX_PRIVATE_FLAG | FUTEX_LOCK_PI, VAL,
 		tmout, uaddr2 + 1, VAL3, (rc == -1) && (errno == EFAULT));
-	printf("futex(%p, FUTEX_LOCK_PI_PRIVATE, {%jd, %jd}) = %s\n",
+	printf("futex(%p, FUTEX_LOCK_PI_PRIVATE, {tv_sec=%jd, tv_nsec=%jd}) = "
+		"%s\n",
 		uaddr + 1, (intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec,
 		sprintrc(rc));
 
@@ -623,20 +633,22 @@ main(int argc, char *argv[])
 
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_WAIT_REQUEUE_PI, VAL, tmout, uaddr2,
 		VAL3, (rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI, %u, {%jd, %jd}, %p) = %s\n",
+	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI, %u, "
+		"{tv_sec=%jd, tv_nsec=%jd}, %p) = %s\n",
 		uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, uaddr2, sprintrc(rc));
 
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_PRIVATE_FLAG | FUTEX_WAIT_REQUEUE_PI,
 		VAL, tmout, uaddr2, VAL3, (rc == -1) && (errno == EAGAIN));
-	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI_PRIVATE, %u, {%jd, %jd}, %p) "
+	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI_PRIVATE, %u, "
+		"{tv_sec=%jd, tv_nsec=%jd}, %p) "
 		"= %s\n", uaddr, VAL_PR, (intmax_t) tmout->tv_sec,
 		(intmax_t) tmout->tv_nsec, uaddr2, sprintrc(rc));
 
 	CHECK_FUTEX_ENOSYS(uaddr, FUTEX_CLOCK_REALTIME | FUTEX_WAIT_REQUEUE_PI,
 		VAL, tmout, uaddr2, VAL3, (rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI|FUTEX_CLOCK_REALTIME, %u, "
-		"{%jd, %jd}, %p) = %s\n", uaddr, VAL_PR,
+		"{tv_sec=%jd, tv_nsec=%jd}, %p) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec, uaddr2,
 		sprintrc(rc));
 
@@ -644,7 +656,7 @@ main(int argc, char *argv[])
 		FUTEX_WAIT_REQUEUE_PI, VAL, tmout, uaddr2, VAL3,
 		(rc == -1) && (errno == EAGAIN));
 	printf("futex(%p, FUTEX_WAIT_REQUEUE_PI_PRIVATE|FUTEX_CLOCK_REALTIME, "
-		"%u, {%jd, %jd}, %p) = %s\n", uaddr, VAL_PR,
+		"%u, {tv_sec=%jd, tv_nsec=%jd}, %p) = %s\n", uaddr, VAL_PR,
 		(intmax_t) tmout->tv_sec, (intmax_t) tmout->tv_nsec, uaddr2,
 		sprintrc(rc));
 

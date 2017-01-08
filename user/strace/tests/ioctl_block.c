@@ -41,8 +41,9 @@
 #include "xlat.h"
 
 static const unsigned int magic = 0xdeadbeef;
-static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0ded;
+static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0dedULL;
 
+#if defined BLKTRACESETUP && defined HAVE_STRUCT_BLK_USER_TRACE_SETUP
 static void
 init_magic(void *addr, const unsigned int size)
 {
@@ -52,6 +53,7 @@ init_magic(void *addr, const unsigned int size)
 	for (; p <= end; ++p)
 		*(unsigned int *) p = magic + (p - (unsigned int *) addr);
 }
+#endif
 
 static struct xlat block_argless[] = {
 	XLAT(BLKRRPART),
@@ -133,8 +135,8 @@ main(void)
 	printf("ioctl(-1, BLKBSZSET, [%d]) = -1 EBADF (%m)\n", *val_int);
 
 	uint64_t *pair_int64 = tail_alloc(sizeof(*pair_int64) * 2);
-	pair_int64[0] = 0xdeadbeefbadc0ded;
-	pair_int64[1] = 0xfacefeedcafef00d;
+	pair_int64[0] = 0xdeadbeefbadc0dedULL;
+	pair_int64[1] = 0xfacefeedcafef00dULL;
 
 #ifdef BLKDISCARD
 	ioctl(-1, BLKDISCARD, pair_int64);
@@ -158,7 +160,7 @@ main(void)
 	blkpg->op = 3;
 	blkpg->flags = 0xdeadbeef;
 	blkpg->datalen = 0xbadc0ded;
-	blkpg->data = (void *) (unsigned long) 0xcafef00dfffffeed;
+	blkpg->data = (void *) (unsigned long) 0xcafef00dfffffeedULL;
 
 	ioctl(-1, BLKPG, blkpg);
 	printf("ioctl(-1, BLKPG, {%s, flags=%d, datalen=%d"
@@ -167,8 +169,8 @@ main(void)
 	       (unsigned long) blkpg->data);
 
 	struct blkpg_partition *const bp = tail_alloc(sizeof(*bp));
-	bp->start = 0xfac1fed2dad3bef4;
-	bp->length = 0xfac5fed6dad7bef8;
+	bp->start = 0xfac1fed2dad3bef4ULL;
+	bp->length = 0xfac5fed6dad7bef8ULL;
 	bp->pno = magic;
 	memset(bp->devname, 'A', sizeof(bp->devname));
 	memset(bp->volname, 'B', sizeof(bp->volname));

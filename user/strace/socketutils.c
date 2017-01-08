@@ -38,10 +38,6 @@
 #include <linux/rtnetlink.h>
 #include "xlat/netlink_protocols.h"
 
-#if !defined NETLINK_SOCK_DIAG && defined NETLINK_INET_DIAG
-# define NETLINK_SOCK_DIAG NETLINK_INET_DIAG
-#endif
-
 #include <sys/un.h>
 #ifndef UNIX_PATH_MAX
 # define UNIX_PATH_MAX sizeof(((struct sockaddr_un *) 0)->sun_path)
@@ -169,7 +165,7 @@ inet_parse_response(const char *const proto_name, const void *const data,
 			return -1;
 
 		if (asprintf(&details, "%s:[%s:%u->%s:%u]", proto_name,
-			src_buf, ntohs(diag_msg->id.idiag_sport),
+			     src_buf, ntohs(diag_msg->id.idiag_sport),
 			     dst_buf, ntohs(diag_msg->id.idiag_dport)) < 0)
 			return false;
 	} else {
@@ -221,7 +217,7 @@ receive_responses(const int fd, const unsigned long inode,
 			return false;
 		for (; NLMSG_OK(h, ret); h = NLMSG_NEXT(h, ret)) {
 			if (h->nlmsg_type != SOCK_DIAG_BY_FAMILY)
-					return false;
+				return false;
 			const int rc = parser(proto_name, NLMSG_DATA(h),
 					      h->nlmsg_len, inode);
 			if (rc > 0)
@@ -296,7 +292,7 @@ unix_parse_response(const char *proto_name, const void *data,
 			break;
 		case UNIX_DIAG_PEER:
 			if (RTA_PAYLOAD(attr) >= 4)
-				peer = *(uint32_t *)RTA_DATA(attr);
+				peer = *(uint32_t *) RTA_DATA(attr);
 			break;
 		}
 	}
@@ -309,28 +305,28 @@ unix_parse_response(const char *proto_name, const void *data,
 		return -1;
 
 	char peer_str[3 + sizeof(peer) * 3];
-		if (peer)
+	if (peer)
 		snprintf(peer_str, sizeof(peer_str), "->%u", peer);
 	else
 		peer_str[0] = '\0';
 
 	const char *path_str;
-		if (path_len) {
+	if (path_len) {
 		char *outstr = alloca(4 * path_len + 4);
 
 		outstr[0] = ',';
-			if (path[0] == '\0') {
+		if (path[0] == '\0') {
 			outstr[1] = '@';
 			string_quote(path + 1, outstr + 2,
 				     path_len - 1, QUOTE_0_TERMINATED);
-			} else {
+		} else {
 			string_quote(path, outstr + 1,
 				     path_len, QUOTE_0_TERMINATED);
-			}
+		}
 		path_str = outstr;
 	} else {
 		path_str = "";
-		}
+	}
 
 	char *details;
 	if (asprintf(&details, "%s:[%lu%s%s]", proto_name, inode,
@@ -338,7 +334,7 @@ unix_parse_response(const char *proto_name, const void *data,
 		return -1;
 
 	return cache_and_print_inode_details(inode, details);
-	}
+}
 
 static bool
 netlink_send_query(const int fd, const unsigned long inode)

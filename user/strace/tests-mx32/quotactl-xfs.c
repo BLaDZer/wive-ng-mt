@@ -1,7 +1,7 @@
 /*
  * Check decoding of quotactl xfs subcommands.
  *
- * Copyright (c) 2016 Eugene Syromiatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
  * All rights reserved.
  *
@@ -199,6 +199,9 @@ print_xquota_statv(int rc, void *ptr, void *arg)
 int
 main(void)
 {
+	char *bogus_special = (char *) tail_alloc(1) + 1;
+	void *bogus_addr = (char *) tail_alloc(1) + 1;
+
 	char bogus_special_str[sizeof(void *) * 2 + sizeof("0x")];
 	char bogus_addr_str[sizeof(void *) * 2 + sizeof("0x")];
 	char unterminated_str[sizeof(void *) * 2 + sizeof("0x")];
@@ -280,7 +283,7 @@ main(void)
 	check_quota(CQF_NONE, ARG_STR(QCMD(Q_XSETQLIM, PRJQUOTA)),
 		    bogus_special, bogus_special_str, 0, bogus_addr);
 
-	fill_memory_ex((char *) xdq, sizeof(*xdq), 0x8e);
+	fill_memory_ex((char *) xdq, sizeof(*xdq), 0x8e, 0x80);
 
 	check_quota(CQF_ADDR_CB, ARG_STR(QCMD(Q_XSETQLIM, PRJQUOTA)),
 		    bogus_dev, bogus_dev_str, 3141592653U,

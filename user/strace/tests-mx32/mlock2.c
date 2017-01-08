@@ -30,8 +30,8 @@
 
 #ifdef __NR_mlock2
 
-#include <stdio.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <unistd.h>
 
 int
 main(void)
