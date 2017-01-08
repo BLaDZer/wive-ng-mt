@@ -583,7 +583,6 @@ VOID Indicate_ARalink_Packet(
 PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 {
 	HEADER_802_11 *pHeader = pRxBlk->pHeader;
-	PNDIS_PACKET pRxPacket = pRxBlk->pRxPacket;
 	UCHAR *pData = pRxBlk->pData;
 	USHORT DataSize = pRxBlk->DataSize;
 	PNDIS_PACKET pRetPacket = NULL;
@@ -670,7 +669,8 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 done:
 	/* always release rx fragmented packet*/
-	RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
+	RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+	pRxBlk->pRxPacket = NULL;
 
 	/* return defragmented packet if packet is reassembled completely*/
 	/* otherwise return NULL*/

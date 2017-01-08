@@ -2718,9 +2718,10 @@
 5) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
 6) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
 7) kernel: ralink_wifi: fix seqence nubmer jam issue when Rx fragmentation.<br>
-8) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
-9) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-10) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+8) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
+9) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
+10) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+11) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 <br>
 <br>
 <br>
