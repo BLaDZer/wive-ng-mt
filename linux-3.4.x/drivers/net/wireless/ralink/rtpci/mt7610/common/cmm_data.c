@@ -2789,7 +2789,8 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 	UCHAR *pFragBuffer = NULL;
 	BOOLEAN bReassDone = FALSE;
 	UCHAR HeaderRoom = 0;
-
+	RXWI_STRUC *pRxWI = pRxBlk->pRxWI;
+	UINT8 RXWISize = pAd->chipCap.RXWISize;
 
 	ASSERT(pHeader);
 
@@ -2803,8 +2804,14 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 		{
 			ASSERT(pAd->FragFrame.pFragPacket);
 			pFragBuffer = GET_OS_PKT_DATAPTR(pAd->FragFrame.pFragPacket);
-			pAd->FragFrame.RxSize   = DataSize + HeaderRoom;
-			NdisMoveMemory(pFragBuffer,	 pHeader, pAd->FragFrame.RxSize);
+			/* Fix MT5396 crash issue when Rx fragmentation frame for Wi-Fi TGn 5.2.4 & 5.2.13 test items.
+			    Copy RxWI content to pFragBuffer.
+			*/
+			//pAd->FragFrame.RxSize   = DataSize + HeaderRoom;
+			//NdisMoveMemory(pFragBuffer,	 pHeader, pAd->FragFrame.RxSize);
+			pAd->FragFrame.RxSize = DataSize + HeaderRoom + RXWISize;
+			NdisMoveMemory(pFragBuffer, pRxWI, RXWISize);
+			NdisMoveMemory(pFragBuffer + RXWISize,	 pHeader, pAd->FragFrame.RxSize - RXWISize);
 			pAd->FragFrame.Sequence = pHeader->Sequence;
 			pAd->FragFrame.LastFrag = pHeader->Frag;	   /* Should be 0*/
 			ASSERT(pAd->FragFrame.LastFrag == 0);
@@ -2818,11 +2825,14 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 		{
 			/* Fragment is not the same sequence or out of fragment number order*/
 			/* Reset Fragment control blk*/
-			RESET_FRAGFRAME(pAd->FragFrame);
+			if (pHeader->Sequence != pAd->FragFrame.Sequence)
+				RESET_FRAGFRAME(pAd->FragFrame);
 			DBGPRINT(RT_DEBUG_ERROR, ("Fragment is not the same sequence or out of fragment number order.\n"));
 			goto done; /* give up this frame*/
 		}
-		else if ((pAd->FragFrame.RxSize + DataSize) > MAX_FRAME_SIZE)
+		/* Fix MT5396 crash issue when Rx fragmentation frame for Wi-Fi TGn 5.2.4 & 5.2.13 test items. */
+		//else if ((pAd->FragFrame.RxSize + DataSize) > MAX_FRAME_SIZE)
+		else if ((pAd->FragFrame.RxSize + DataSize) > MAX_FRAME_SIZE + RXWISize)
 		{
 			/* Fragment frame is too large, it exeeds the maximum frame size.*/
 			/* Reset Fragment control blk*/
@@ -2872,9 +2882,15 @@ done:
 			/* update RxBlk*/
 			pRetPacket = pAd->FragFrame.pFragPacket;
 			pAd->FragFrame.pFragPacket = pNewFragPacket;
-			pRxBlk->pHeader = (PHEADER_802_11) GET_OS_PKT_DATAPTR(pRetPacket);
+			/* Fix MT5396 crash issue when Rx fragmentation frame for Wi-Fi TGn 5.2.4 & 5.2.13 test items. */
+			//pRxBlk->pHeader = (PHEADER_802_11) GET_OS_PKT_DATAPTR(pRetPacket);
+			//pRxBlk->pData = (UCHAR *)pRxBlk->pHeader + HeaderRoom;
+			//pRxBlk->DataSize = pAd->FragFrame.RxSize - HeaderRoom;
+			//pRxBlk->pRxPacket = pRetPacket;
+			pRxBlk->pRxWI = (RXWI_STRUC *) GET_OS_PKT_DATAPTR(pRetPacket);
+			pRxBlk->pHeader = (PHEADER_802_11) ((UCHAR *)pRxBlk->pRxWI + RXWISize);
 			pRxBlk->pData = (UCHAR *)pRxBlk->pHeader + HeaderRoom;
-			pRxBlk->DataSize = pAd->FragFrame.RxSize - HeaderRoom;
+			pRxBlk->DataSize = pAd->FragFrame.RxSize - HeaderRoom - RXWISize;
 			pRxBlk->pRxPacket = pRetPacket;
 		}
 		else

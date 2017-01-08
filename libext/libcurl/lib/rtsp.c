@@ -36,6 +36,7 @@
 #include "strcase.h"
 #include "select.h"
 #include "connect.h"
+#include "strdup.h"
 /* The last 3 #include files should be in this order */
 #include "curl_printf.h"
 #include "curl_memory.h"
@@ -139,7 +140,7 @@ static CURLcode rtsp_setup_connection(struct connectdata *conn)
  * want to block the application forever while receiving a stream. Therefore,
  * we cannot assume that an RTSP socket is dead just because it is readable.
  *
- * Instead, if it is readable, run Curl_getconnectinfo() to peek at the socket
+ * Instead, if it is readable, run Curl_connalive() to peek at the socket
  * and distinguish between closed and data.
  */
 bool Curl_rtsp_connisdead(struct connectdata *check)
@@ -156,12 +157,9 @@ bool Curl_rtsp_connisdead(struct connectdata *check)
     /* socket is in an error state */
     ret_val = TRUE;
   }
-  else if((sval & CURL_CSELECT_IN) && check->data) {
-    /* readable with no error. could be closed or could be alive but we can
-       only check if we have a proper Curl_easy for the connection */
-    curl_socket_t connectinfo = Curl_getconnectinfo(check->data, &check);
-    if(connectinfo != CURL_SOCKET_BAD)
-      ret_val = FALSE;
+  else if(sval & CURL_CSELECT_IN) {
+    /* readable with no error. could still be closed */
+    ret_val = !Curl_connalive(check);
   }
 
   return ret_val;
@@ -614,9 +612,9 @@ static CURLcode rtsp_rtp_readwrite(struct Curl_easy *data,
 
   if(rtspc->rtp_buf) {
     /* There was some leftover data the last time. Merge buffers */
-    char *newptr = realloc(rtspc->rtp_buf, rtspc->rtp_bufsize + *nread);
+    char *newptr = Curl_saferealloc(rtspc->rtp_buf,
+                                    rtspc->rtp_bufsize + *nread);
     if(!newptr) {
-      Curl_safefree(rtspc->rtp_buf);
       rtspc->rtp_buf = NULL;
       rtspc->rtp_bufsize = 0;
       return CURLE_OUT_OF_MEMORY;

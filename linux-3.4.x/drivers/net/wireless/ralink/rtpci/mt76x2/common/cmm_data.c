@@ -3962,7 +3962,8 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		{
 			/* Fragment is not the same sequence or out of fragment number order*/
 			/* Reset Fragment control blk*/
-			RESET_FRAGFRAME(pAd->FragFrame);
+			if (pHeader->Sequence != pAd->FragFrame.Sequence)
+				RESET_FRAGFRAME(pAd->FragFrame);
 			DBGPRINT(RT_DEBUG_ERROR, ("Fragment is not the same sequence or out of fragment number order.\n"));
 			goto done;
 		}

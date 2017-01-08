@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -79,7 +79,8 @@
 #   if __INITIAL_POINTER_SIZE == 32
 /* Translate the path, but only if the path is a VMS file specification */
 /* The translation is usually only needed for older versions of VMS */
-static char * vms_translate_path(const char * path) {
+static char *vms_translate_path(const char *path)
+{
 char * unix_path;
 char * test_str;
 
@@ -111,8 +112,8 @@ char * test_str;
 #   endif
 #endif
 
-static char * vms_getenv(const char * envvar) {
-
+static char *vms_getenv(const char *envvar)
+{
 char * result;
 char * vms_path;
 
@@ -137,8 +138,8 @@ char * vms_path;
 
 static struct passwd vms_passwd_cache;
 
-static struct passwd * vms_getpwuid(uid_t uid) {
-
+static struct passwd * vms_getpwuid(uid_t uid)
+{
 struct passwd * my_passwd;
 
 /* Hack needed to support 64 bit builds, decc_getpwnam is 32 bit only */
@@ -170,7 +171,7 @@ char * unix_path;
     }
 
     /* Need to copy the structure returned */
-    /* Since curl is only using pw_dir, no need to fix up *
+  /* Since curl is only using pw_dir, no need to fix up */
     /* the pw_shell when running under Bash */
     vms_passwd_cache.pw_name = my_passwd->pw_name;
     vms_passwd_cache.pw_uid = my_passwd->pw_uid;

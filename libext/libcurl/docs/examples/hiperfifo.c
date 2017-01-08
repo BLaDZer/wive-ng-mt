@@ -230,7 +230,8 @@ static void remsock(SockInfo *f)
 
 
 /* Assign information to a SockInfo structure */
-static void setsock(SockInfo*f, curl_socket_t s, CURL*e, int act, GlobalInfo*g)
+static void setsock(SockInfo *f, curl_socket_t s, CURL *e, int act,
+                    GlobalInfo *g)
 {
   int kind =
      (act&CURL_POLL_IN?EV_READ:0)|(act&CURL_POLL_OUT?EV_WRITE:0)|EV_PERSIST;

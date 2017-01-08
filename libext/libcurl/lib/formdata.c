@@ -36,6 +36,7 @@
 #include "strcase.h"
 #include "sendf.h"
 #include "strdup.h"
+#include "rand.h"
 /* The last 3 #include files should be in this order */
 #include "curl_printf.h"
 #include "curl_memory.h"
@@ -948,8 +949,8 @@ void Curl_formclean(struct FormData **form_ptr)
     if(form->type <= FORM_CONTENT)
       free(form->line); /* free the line */
     free(form);       /* free the struct */
-
-  } while((form = next) != NULL); /* continue */
+    form = next;
+  } while(form); /* continue */
 
   *form_ptr = NULL;
 }
@@ -1030,8 +1031,8 @@ void curl_formfree(struct curl_httppost *form)
     free(form->contenttype); /* free the content type */
     free(form->showfilename); /* free the faked file name */
     free(form);       /* free the struct */
-
-  } while((form = next) != NULL); /* continue */
+    form = next;
+  } while(form); /* continue */
 }
 
 #ifndef HAVE_BASENAME
@@ -1373,8 +1374,8 @@ CURLcode Curl_getformdata(struct Curl_easy *data,
       if(result)
         break;
     }
-
-  } while((post = post->next) != NULL); /* for each field */
+    post = post->next;
+  } while(post); /* for each field */
 
   /* end-boundary for everything */
   if(!result)
@@ -1426,7 +1427,8 @@ int Curl_FormInit(struct Form *form, struct FormData *formdata)
    *
    */
 # define fopen_read vmsfopenread
-static FILE * vmsfopenread(const char *file, const char *mode) {
+static FILE * vmsfopenread(const char *file, const char *mode)
+{
   struct_stat statbuf;
   int result;
 
@@ -1569,8 +1571,12 @@ static char *formboundary(struct Curl_easy *data)
 {
   /* 24 dashes and 16 hexadecimal digits makes 64 bit (18446744073709551615)
      combinations */
-  return aprintf("------------------------%08x%08x",
-                 Curl_rand(data), Curl_rand(data));
+  unsigned int rnd[2];
+  CURLcode result = Curl_rand(data, &rnd[0], 2);
+  if(result)
+    return NULL;
+
+  return aprintf("------------------------%08x%08x", rnd[0], rnd[1]);
 }
 
 #else  /* CURL_DISABLE_HTTP */

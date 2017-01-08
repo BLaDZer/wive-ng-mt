@@ -40,6 +40,9 @@
 #include "curl_memory.h"
 #include "memdebug.h"
 
+/* For overflow checks. */
+#define CURL_SIZE_T_MAX         ((size_t)-1)
+
 
 /* ASN.1 OIDs. */
 static const char       cnOID[] = "2.5.4.3";    /* Common name. */
@@ -116,8 +119,8 @@ const char * Curl_getASN1Element(curl_asn1Element * elem,
      ending at `end'.
      Returns a pointer in source string after the parsed element, or NULL
      if an error occurs. */
-
-  if(beg >= end || !*beg)
+  if(!beg || !end || beg >= end || !*beg ||
+     (size_t)(end - beg) > CURL_ASN1_MAX)
     return (const char *) NULL;
 
   /* Process header byte. */
@@ -152,7 +155,7 @@ const char * Curl_getASN1Element(curl_asn1Element * elem,
     elem->end = beg;
     return beg + 1;
   }
-  else if(beg + b > end)
+  else if((unsigned)b > (size_t)(end - beg))
     return (const char *) NULL; /* Does not fit in source. */
   else {
     /* Get long length. */
@@ -163,7 +166,7 @@ const char * Curl_getASN1Element(curl_asn1Element * elem,
       len = (len << 8) | (unsigned char) *beg++;
     } while(--b);
   }
-  if((unsigned long) (end - beg) < len)
+  if(len > (size_t)(end - beg))
     return (const char *) NULL;  /* Element data does not fit in source. */
   elem->beg = beg;
   elem->end = beg + len;
@@ -198,15 +201,17 @@ static const char * bool2str(const char * beg, const char * end)
 static const char * octet2str(const char * beg, const char * end)
 {
   size_t n = end - beg;
-  char * buf;
+  char *buf = NULL;
 
   /* Convert an ASN.1 octet string to a printable string.
      Return the dynamically allocated string, or NULL if an error occurs. */
 
+  if(n <= (CURL_SIZE_T_MAX - 1) / 3) {
   buf = malloc(3 * n + 1);
   if(buf)
     for(n = 0; beg < end; n += 3)
       snprintf(buf + n, 4, "%02x:", *(const unsigned char *) beg++);
+  }
   return buf;
 }
 
@@ -282,6 +287,8 @@ utf8asn1str(char * * to, int type, const char * from, const char * end)
 
   if(inlength % size)
     return -1;  /* Length inconsistent with character size. */
+  if(inlength / size > (CURL_SIZE_T_MAX - 1) / 4)
+    return -1;  /* Too big. */
   buf = malloc(4 * (inlength / size) + 1);
   if(!buf)
     return -1;  /* Not enough memory. */
@@ -669,7 +676,7 @@ const char * Curl_DNtostr(curl_asn1Element * dn)
  * X509 parser.
  */
 
-void Curl_parseX509(curl_X509certificate * cert,
+int Curl_parseX509(curl_X509certificate *cert,
                     const char * beg, const char * end)
 {
   curl_asn1Element elem;
@@ -686,7 +693,8 @@ void Curl_parseX509(curl_X509certificate * cert,
   cert->certificate.end = end;
 
   /* Get the sequence content. */
-  Curl_getASN1Element(&elem, beg, end);
+  if(!Curl_getASN1Element(&elem, beg, end))
+    return -1;  /* Invalid bounds/size. */
   beg = elem.beg;
   end = elem.end;
 
@@ -749,6 +757,7 @@ void Curl_parseX509(curl_X509certificate * cert,
   }
   if(elem.tag == 3)
     Curl_getASN1Element(&cert->extensions, elem.beg, elem.end);
+  return 0;
 }
 
 static size_t copySubstring(char * to, const char * from)
@@ -889,7 +898,8 @@ CURLcode Curl_extract_certinfo(struct connectdata * conn,
   /* Prepare the certificate information for curl_easy_getinfo(). */
 
   /* Extract the certificate ASN.1 elements. */
-  Curl_parseX509(&cert, beg, end);
+  if(Curl_parseX509(&cert, beg, end))
+    return CURLE_OUT_OF_MEMORY;
 
   /* Subject. */
   ccp = Curl_DNtostr(&cert.subject);
@@ -1068,6 +1078,11 @@ CURLcode Curl_verifyhost(struct connectdata * conn,
   int matched = -1;
   size_t addrlen = (size_t) -1;
   ssize_t len;
+  const char * const hostname = SSL_IS_PROXY()? conn->http_proxy.host.name:
+                                                conn->host.name;
+  const char * const dispname = SSL_IS_PROXY()?
+                                  conn->http_proxy.host.dispname:
+                                  conn->host.dispname;
 #ifdef ENABLE_IPV6
   struct in6_addr addr;
 #else
@@ -1077,20 +1092,19 @@ CURLcode Curl_verifyhost(struct connectdata * conn,
   /* Verify that connection server matches info in X509 certificate at
      `beg'..`end'. */
 
-  if(!data->set.ssl.verifyhost)
+  if(!SSL_CONN_CONFIG(verifyhost))
     return CURLE_OK;
 
-  if(!beg)
+  if(Curl_parseX509(&cert, beg, end))
     return CURLE_PEER_FAILED_VERIFICATION;
-  Curl_parseX509(&cert, beg, end);
 
   /* Get the server IP address. */
 #ifdef ENABLE_IPV6
-  if(conn->bits.ipv6_ip && Curl_inet_pton(AF_INET6, conn->host.name, &addr))
+  if(conn->bits.ipv6_ip && Curl_inet_pton(AF_INET6, hostname, &addr))
     addrlen = sizeof(struct in6_addr);
   else
 #endif
-  if(Curl_inet_pton(AF_INET, conn->host.name, &addr))
+  if(Curl_inet_pton(AF_INET, hostname, &addr))
     addrlen = sizeof(struct in_addr);
 
   /* Process extensions. */
@@ -1113,7 +1127,7 @@ CURLcode Curl_verifyhost(struct connectdata * conn,
           len = utf8asn1str(&dnsname, CURL_ASN1_IA5_STRING,
                             name.beg, name.end);
           if(len > 0 && (size_t)len == strlen(dnsname))
-            matched = Curl_cert_hostcheck(dnsname, conn->host.name);
+            matched = Curl_cert_hostcheck(dnsname, hostname);
           else
             matched = 0;
           free(dnsname);
@@ -1131,12 +1145,12 @@ CURLcode Curl_verifyhost(struct connectdata * conn,
   switch (matched) {
   case 1:
     /* an alternative name matched the server hostname */
-    infof(data, "\t subjectAltName: %s matched\n", conn->host.dispname);
+    infof(data, "\t subjectAltName: %s matched\n", dispname);
     return CURLE_OK;
   case 0:
     /* an alternative name field existed, but didn't match and then
        we MUST fail */
-    infof(data, "\t subjectAltName does not match %s\n", conn->host.dispname);
+    infof(data, "\t subjectAltName does not match %s\n", dispname);
     return CURLE_PEER_FAILED_VERIFICATION;
   }
 
@@ -1168,14 +1182,14 @@ CURLcode Curl_verifyhost(struct connectdata * conn,
     }
     if(strlen(dnsname) != (size_t) len)         /* Nul byte in string ? */
       failf(data, "SSL: illegal cert name field");
-    else if(Curl_cert_hostcheck((const char *) dnsname, conn->host.name)) {
+    else if(Curl_cert_hostcheck((const char *) dnsname, hostname)) {
       infof(data, "\t common name: %s (matched)\n", dnsname);
       free(dnsname);
       return CURLE_OK;
     }
     else
       failf(data, "SSL: certificate subject name '%s' does not match "
-            "target host name '%s'", dnsname, conn->host.dispname);
+            "target host name '%s'", dnsname, dispname);
     free(dnsname);
   }
 

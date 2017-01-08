@@ -35,14 +35,50 @@
 #include "non-ascii.h"
 #include "connect.h"
 #include "curlx.h"
+#include "vtls/vtls.h"
 
 /* The last 3 #include files should be in this order */
 #include "curl_printf.h"
 #include "curl_memory.h"
 #include "memdebug.h"
 
-CURLcode Curl_proxy_connect(struct connectdata *conn)
+/*
+ * Perform SSL initialization for HTTPS proxy.  Sets
+ * proxy_ssl_connected connection bit when complete.  Can be
+ * called multiple times.
+ */
+static CURLcode https_proxy_connect(struct connectdata *conn, int sockindex)
 {
+#ifdef USE_SSL
+  CURLcode result = CURLE_OK;
+  DEBUGASSERT(conn->http_proxy.proxytype == CURLPROXY_HTTPS);
+  if(!conn->bits.proxy_ssl_connected[sockindex]) {
+    /* perform SSL initialization for this socket */
+    result =
+      Curl_ssl_connect_nonblocking(conn, sockindex,
+                                   &conn->bits.proxy_ssl_connected[sockindex]);
+    if(result)
+      conn->bits.close = TRUE; /* a failed connection is marked for closure to
+                                  prevent (bad) re-use or similar */
+  }
+  return result;
+#else
+  (void) conn;
+  (void) sockindex;
+  return CURLE_NOT_BUILT_IN;
+#endif
+}
+
+CURLcode Curl_proxy_connect(struct connectdata *conn, int sockindex)
+{
+  if(conn->http_proxy.proxytype == CURLPROXY_HTTPS) {
+    const CURLcode result = https_proxy_connect(conn, sockindex);
+    if(result)
+      return result;
+    if(!conn->bits.proxy_ssl_connected[sockindex])
+      return result; /* wait for HTTPS proxy SSL initialization to complete */
+  }
+
   if(conn->bits.tunnel_proxy && conn->bits.httpproxy) {
 #ifndef CURL_DISABLE_PROXY
     /* for [protocol] tunneled through HTTP proxy */
@@ -68,15 +104,20 @@ CURLcode Curl_proxy_connect(struct connectdata *conn)
     memset(&http_proxy, 0, sizeof(http_proxy));
     conn->data->req.protop = &http_proxy;
     connkeep(conn, "HTTP proxy CONNECT");
-    if(conn->bits.conn_to_host)
+    if(sockindex == SECONDARYSOCKET)
+      hostname = conn->secondaryhostname;
+    else if(conn->bits.conn_to_host)
       hostname = conn->conn_to_host.name;
     else
       hostname = conn->host.name;
-    if(conn->bits.conn_to_port)
+
+    if(sockindex == SECONDARYSOCKET)
+      remote_port = conn->secondary_port;
+    else if(conn->bits.conn_to_port)
       remote_port = conn->conn_to_port;
     else
       remote_port = conn->remote_port;
-    result = Curl_proxyCONNECT(conn, FIRSTSOCKET, hostname,
+    result = Curl_proxyCONNECT(conn, sockindex, hostname,
                                remote_port, FALSE);
     conn->data->req.protop = prot_save;
     if(CURLE_OK != result)
@@ -113,7 +154,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
   curl_off_t cl=0;
   bool closeConnection = FALSE;
   bool chunked_encoding = FALSE;
-  long check;
+  time_t check;
 
 #define SELECT_OK      0
 #define SELECT_ERROR   1
@@ -161,7 +202,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
         char *host=(char *)"";
         const char *proxyconn="";
         const char *useragent="";
-        const char *http = (conn->proxytype == CURLPROXY_HTTP_1_0) ?
+        const char *http = (conn->http_proxy.proxytype == CURLPROXY_HTTP_1_0) ?
           "1.0" : "1.1";
         bool ipv6_ip = conn->bits.ipv6_ip;
         char *hostheader;
@@ -244,7 +285,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
     }
 
     if(!blocking) {
-      if(0 == SOCKET_READABLE(tunnelsocket, 0))
+      if(!Curl_conn_data_pending(conn, sockindex))
         /* return so we'll be called again polling-style */
         return CURLE_OK;
       else {
@@ -269,7 +310,16 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
       nread=0;
       perline=0;
 
-      while((nread<BUFSIZE) && (keepon && !error)) {
+      while(nread < BUFSIZE && keepon && !error) {
+        int writetype;
+
+        if(Curl_pgrsUpdate(conn))
+          return CURLE_ABORTED_BY_CALLBACK;
+
+        if(ptr >= &data->state.buffer[BUFSIZE]) {
+          failf(data, "CONNECT response too large!");
+          return CURLE_RECV_ERROR;
+        }
 
         check = Curl_timeleft(data, NULL, TRUE);
         if(check <= 0) {
@@ -278,24 +328,22 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
           break;
         }
 
-        /* loop every second at least, less if the timeout is near */
-        switch (SOCKET_READABLE(tunnelsocket, check<1000L?check:1000)) {
-        case -1: /* select() error, stop reading */
+        /* Read one byte at a time to avoid a race condition. Wait at most one
+           second before looping to ensure continuous pgrsUpdates. */
+        result = Curl_read(conn, tunnelsocket, ptr, 1, &gotbytes);
+        if(result == CURLE_AGAIN) {
+          if(SOCKET_READABLE(tunnelsocket, check<1000L?check:1000) == -1) {
           error = SELECT_ERROR;
           failf(data, "Proxy CONNECT aborted due to select/poll error");
           break;
-        case 0: /* timeout */
+          }
+          continue;
+        }
+        else if(result) {
+            keepon = FALSE;
           break;
-        default:
-          DEBUGASSERT(ptr+BUFSIZE-nread <= data->state.buffer+BUFSIZE+1);
-          result = Curl_read(conn, tunnelsocket, ptr, BUFSIZE-nread,
-                             &gotbytes);
-          if(result==CURLE_AGAIN)
-            continue; /* go loop yourself */
-          else if(result)
-            keepon = FALSE;
+        }
           else if(gotbytes <= 0) {
-            keepon = FALSE;
             if(data->set.proxyauth && data->state.authproxy.avail) {
               /* proxy auth was requested and there was proxy auth available,
                  then deem this as "mere" proxy disconnect */
@@ -306,16 +354,12 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
               error = SELECT_ERROR;
               failf(data, "Proxy CONNECT aborted");
             }
+          keepon = FALSE;
+          break;
           }
-          else {
-            /*
-             * We got a whole chunk of data, which can be anything from one
-             * byte to a set of lines and possibly just a piece of the last
-             * line.
-             */
-            int i;
 
-            nread += gotbytes;
+        /* We got a byte of data */
+        nread++;
 
             if(keepon > TRUE) {
               /* This means we are currently ignoring a response-body */
@@ -325,7 +369,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
               if(cl) {
                 /* A Content-Length based body: simply count down the counter
                    and make sure to break out of the loop when we're done! */
-                cl -= gotbytes;
+            cl--;
                 if(cl<=0) {
                   keepon = FALSE;
                   break;
@@ -339,7 +383,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
 
                 /* now parse the chunked piece of data so that we can
                    properly tell when the stream ends */
-                r = Curl_httpchunk_read(conn, ptr, gotbytes, &tookcareof);
+            r = Curl_httpchunk_read(conn, ptr, 1, &tookcareof);
                 if(r == CHUNKE_STOP) {
                   /* we're done reading chunks! */
                   infof(data, "chunk reading DONE\n");
@@ -347,21 +391,20 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                   /* we did the full CONNECT treatment, go COMPLETE */
                   conn->tunnel_state[sockindex] = TUNNEL_COMPLETE;
                 }
-                else
-                  infof(data, "Read %zd bytes of chunk, continue\n",
-                        tookcareof);
               }
+          continue;
             }
-            else
-              for(i = 0; i < gotbytes; ptr++, i++) {
+
                 perline++; /* amount of bytes in this line so far */
-                if(*ptr == 0x0a) {
-                  char letter;
-                  int writetype;
+
+        /* if this is not the end of a header line then continue */
+        if(*ptr != 0x0a) {
+          ptr++;
+          continue;
+        }
 
                   /* convert from the network encoding */
-                  result = Curl_convert_from_network(data, line_start,
-                                                     perline);
+        result = Curl_convert_from_network(data, line_start, perline);
                   /* Curl_convert_from_network calls failf if unsuccessful */
                   if(result)
                     return result;
@@ -376,8 +419,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                   if(data->set.include_header)
                     writetype |= CLIENTWRITE_BODY;
 
-                  result = Curl_client_write(conn, writetype, line_start,
-                                             perline);
+        result = Curl_client_write(conn, writetype, line_start, perline);
 
                   data->info.header_size += (long)perline;
                   data->req.headerbytecount += (long)perline;
@@ -404,36 +446,27 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                       if(cl) {
                         infof(data, "Ignore %" CURL_FORMAT_CURL_OFF_T
                               " bytes of response-body\n", cl);
-
-                        /* remove the remaining chunk of what we already
-                           read */
-                        cl -= (gotbytes - i);
-
-                        if(cl<=0)
-                          /* if the whole thing was already read, we are done!
-                           */
-                          keepon=FALSE;
                       }
                       else if(chunked_encoding) {
                         CHUNKcode r;
+
+              infof(data, "Ignore chunked response-body\n");
+
                         /* We set ignorebody true here since the chunked
                            decoder function will acknowledge that. Pay
                            attention so that this is cleared again when this
                            function returns! */
                         k->ignorebody = TRUE;
-                        infof(data, "%zd bytes of chunk left\n", gotbytes-i);
 
                         if(line_start[1] == '\n') {
                           /* this can only be a LF if the letter at index 0
                              was a CR */
                           line_start++;
-                          i++;
                         }
 
                         /* now parse the chunked piece of data so that we can
                            properly tell when the stream ends */
-                        r = Curl_httpchunk_read(conn, line_start+1,
-                                                  gotbytes -i, &gotbytes);
+              r = Curl_httpchunk_read(conn, line_start + 1, 1, &gotbytes);
                         if(r == CHUNKE_STOP) {
                           /* we're done reading chunks! */
                           infof(data, "chunk reading DONE\n");
@@ -442,9 +475,6 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                              COMPLETE */
                           conn->tunnel_state[sockindex] = TUNNEL_COMPLETE;
                         }
-                        else
-                          infof(data, "Read %zd bytes of chunk, continue\n",
-                                gotbytes);
                       }
                       else {
                         /* without content-length or chunked encoding, we
@@ -453,22 +483,13 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                         keepon=FALSE;
                       }
                     }
-                    else {
+          else
                       keepon = FALSE;
-                      if(200 == data->info.httpproxycode) {
-                        if(gotbytes - (i+1))
-                          failf(data, "Proxy CONNECT followed by %zd bytes "
-                                "of opaque data. Data ignored (known bug #39)",
-                                gotbytes - (i+1));
-                      }
-                    }
                     /* we did the full CONNECT treatment, go to COMPLETE */
                     conn->tunnel_state[sockindex] = TUNNEL_COMPLETE;
-                    break; /* breaks out of for-loop, not switch() */
+          continue;
                   }
 
-                  /* keep a backup of the position we are about to blank */
-                  letter = line_start[perline];
                   line_start[perline]=0; /* zero terminate the buffer */
                   if((checkprefix("WWW-Authenticate:", line_start) &&
                       (401 == k->httpcode)) ||
@@ -488,22 +509,36 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                       return result;
                   }
                   else if(checkprefix("Content-Length:", line_start)) {
+          if(k->httpcode/100 == 2) {
+            /* A server MUST NOT send any Transfer-Encoding or
+               Content-Length header fields in a 2xx (Successful)
+               response to CONNECT. (RFC 7231 section 4.3.6) */
+            failf(data, "Content-Length: in %03d response",
+                  k->httpcode);
+            return CURLE_RECV_ERROR;
+          }
+
                     cl = curlx_strtoofft(line_start +
                                          strlen("Content-Length:"), NULL, 10);
                   }
-                  else if(Curl_compareheader(line_start,
-                                             "Connection:", "close"))
+        else if(Curl_compareheader(line_start, "Connection:", "close"))
                     closeConnection = TRUE;
                   else if(Curl_compareheader(line_start,
                                              "Transfer-Encoding:",
                                              "chunked")) {
+          if(k->httpcode/100 == 2) {
+            /* A server MUST NOT send any Transfer-Encoding or
+               Content-Length header fields in a 2xx (Successful)
+               response to CONNECT. (RFC 7231 section 4.3.6) */
+            failf(data, "Transfer-Encoding: in %03d response", k->httpcode);
+            return CURLE_RECV_ERROR;
+          }
                     infof(data, "CONNECT responded chunked\n");
                     chunked_encoding = TRUE;
                     /* init our chunky engine */
                     Curl_httpchunk_init(conn);
                   }
-                  else if(Curl_compareheader(line_start,
-                                             "Proxy-Connection:", "close"))
+        else if(Curl_compareheader(line_start, "Proxy-Connection:", "close"))
                     closeConnection = TRUE;
                   else if(2 == sscanf(line_start, "HTTP/1.%d %d",
                                       &subversion,
@@ -511,19 +546,14 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
                     /* store the HTTP code from the proxy */
                     data->info.httpproxycode = k->httpcode;
                   }
-                  /* put back the letter we blanked out before */
-                  line_start[perline]= letter;
 
                   perline=0; /* line starts over here */
-                  line_start = ptr+1; /* this skips the zero byte we wrote */
-                }
-              }
-          }
-          break;
-        } /* switch */
+        ptr = data->state.buffer;
+        line_start = ptr;
+      } /* while there's buffer left and loop is requested */
+
         if(Curl_pgrsUpdate(conn))
           return CURLE_ABORTED_BY_CALLBACK;
-      } /* while there's buffer left and loop is requested */
 
       if(error)
         return CURLE_RECV_ERROR;
@@ -538,8 +568,7 @@ CURLcode Curl_proxyCONNECT(struct connectdata *conn,
         if(conn->bits.close)
           /* the connection has been marked for closure, most likely in the
              Curl_http_auth_act() function and thus we can kill it at once
-             below
-          */
+             below */
           closeConnection = TRUE;
       }
 

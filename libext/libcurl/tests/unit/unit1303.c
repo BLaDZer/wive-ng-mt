@@ -69,7 +69,7 @@ struct timetest {
 };
 
 UNITTEST_START
-
+{
 struct timeval now;
 long timeout;
 unsigned int i;
@@ -141,6 +141,5 @@ for(i=0; i < sizeof(run)/sizeof(run[0]); i++) {
   if(timeout != run[i].result)
     fail(run[i].comment);
 }
-
-
+}
 UNITTEST_STOP

@@ -201,7 +201,7 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
         unsigned long lstep;
         errno = 0;
         lstep = strtoul(&pattern[4], &endp, 10);
-        if(errno || (*endp != ']'))
+        if(errno || &pattern[4] == endp || *endp != ']')
           step = -1;
         else {
           pattern = endp+1;
@@ -213,6 +213,9 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
       else if(end_c != ']')
         /* then this is wrong */
         rc = 0;
+      else
+        /* end_c == ']' */
+        pattern += 4;
     }
 
     *posp += (pattern - *patternp);

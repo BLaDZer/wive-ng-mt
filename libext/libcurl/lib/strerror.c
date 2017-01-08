@@ -715,9 +715,11 @@ const char *Curl_strerror(struct connectdata *conn, int err)
   buf[max] = '\0'; /* make sure the string is zero terminated */
 
   /* strip trailing '\r\n' or '\n'. */
-  if((p = strrchr(buf, '\n')) != NULL && (p - buf) >= 2)
+  p = strrchr(buf, '\n');
+  if(p && (p - buf) >= 2)
      *p = '\0';
-  if((p = strrchr(buf, '\r')) != NULL && (p - buf) >= 1)
+  p = strrchr(buf, '\r');
+  if(p && (p - buf) >= 1)
      *p = '\0';
 
   if(old_errno != ERRNO)
@@ -1035,9 +1037,11 @@ const char *Curl_sspi_strerror (struct connectdata *conn, int err)
     if(msg_formatted) {
       msgbuf[sizeof(msgbuf)-1] = '\0';
       /* strip trailing '\r\n' or '\n' */
-      if((p = strrchr(msgbuf, '\n')) != NULL && (p - msgbuf) >= 2)
+      p = strrchr(msgbuf, '\n');
+      if(p && (p - msgbuf) >= 2)
          *p = '\0';
-      if((p = strrchr(msgbuf, '\r')) != NULL && (p - msgbuf) >= 1)
+      p = strrchr(msgbuf, '\r');
+      if(p && (p - msgbuf) >= 1)
          *p = '\0';
       msg = msgbuf;
     }
