@@ -4474,7 +4474,7 @@ VOID APRxEAPOLFrameIndicate(
 
 #ifdef APCLI_SUPPORT
 #ifdef WPA_SUPPLICANT_SUPPORT
-	if (IS_ENTRY_APCLI(pEntry))
+	if (pEntry && IS_ENTRY_APCLI(pEntry))
 	{
 		APCLI_STRUCT *apcli_entry = &pAd->ApCfg.ApCliTab[pEntry->wdev_idx];
 

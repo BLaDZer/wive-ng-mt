@@ -612,7 +612,6 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		/* the first pkt of fragment, record it.*/
 		if (pHeader->FC.MoreFrag)
 		{
-			ASSERT(pAd->FragFrame.pFragPacket);
 			pFragBuffer = GET_OS_PKT_DATAPTR(pAd->FragFrame.pFragPacket);
 			/* Fix MT5396 crash issue when Rx fragmentation frame for Wi-Fi TGn 5.2.4 & 5.2.13 test items.
 			    Copy RxWI content to pFragBuffer.
@@ -626,6 +625,10 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			pAd->FragFrame.LastFrag = pHeader->Frag;	   /* Should be 0*/
 			ASSERT(pAd->FragFrame.LastFrag == 0);
 			goto done;	/* end of processing this frame*/
+		}
+		else if (!pAd->FragFrame.pFragPacket)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("ERR: pAd->FragFrame.pFragPacket is NULL.\n"));
 		}
 	}
 	else
@@ -769,7 +772,7 @@ VOID rx_eapol_frm_handle(
 
 
 
-	if (IS_ENTRY_AP(pEntry))
+	if (pEntry && IS_ENTRY_AP(pEntry))
 	{
 		{
 			to_mlme = TRUE;
@@ -778,7 +781,7 @@ VOID rx_eapol_frm_handle(
 	}
 
 #ifdef CONFIG_AP_SUPPORT
-	if (IS_ENTRY_CLIENT(pEntry))
+	if (pEntry && IS_ENTRY_CLIENT(pEntry))
 	{
 #ifdef DOT1X_SUPPORT
 		/* sent this frame to upper layer TCPIP */
@@ -1613,7 +1616,7 @@ ret:
 #endif /* defined(CONFIG_STA_SUPPORT) || defined(APCLI_SUPPORT) */
 
 
-VOID rx_data_frm_announce(
+static VOID rx_data_frm_announce(
 	IN RTMP_ADAPTER *pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
 	IN RX_BLK *pRxBlk,
@@ -1811,6 +1814,12 @@ static INT rx_chk_duplicate_frame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		return NDIS_STATUS_SUCCESS;
 	}
 
+	if ((pFmeCtrl->Type == FC_TYPE_DATA && pFmeCtrl->SubType == SUBTYPE_DATA_NULL) ||
+		(pFmeCtrl->Type == FC_TYPE_DATA && pFmeCtrl->SubType == SUBTYPE_QOS_NULL))
+	{
+		return NDIS_STATUS_SUCCESS;
+	}
+
 	/*check is vaild sta entry*/
 	if(wcid >= MAX_LEN_OF_TR_TABLE)
 	{
@@ -1823,6 +1832,7 @@ static INT rx_chk_duplicate_frame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	{
 		return NDIS_STATUS_SUCCESS;
 	}
+
 	/*check frame is QoS or Non-QoS frame*/
 	if(!(pFmeCtrl->SubType & 0x08))
 	{

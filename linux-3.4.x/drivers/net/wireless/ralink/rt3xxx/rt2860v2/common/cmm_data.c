@@ -4598,7 +4598,6 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 		/* the first pkt of fragment, record it.*/
 		if (pHeader->FC.MoreFrag)
 		{
-			ASSERT(pAd->FragFrame.pFragPacket);
 			pFragBuffer = GET_OS_PKT_DATAPTR(pAd->FragFrame.pFragPacket);
 			/* Fix MT5396 crash issue when Rx fragmentation frame for Wi-Fi TGn 5.2.4 & 5.2.13 test items.
 			    Copy RxWI content to pFragBuffer.
@@ -4612,6 +4611,10 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(
 			pAd->FragFrame.LastFrag = pHeader->Frag;	   /* Should be 0*/
 			ASSERT(pAd->FragFrame.LastFrag == 0);
 			goto done;	/* end of processing this frame*/
+		}
+		else if (!pAd->FragFrame.pFragPacket)
+		{
+			DBGPRINT(RT_DEBUG_ERROR, ("ERR: pAd->FragFrame.pFragPacket is NULL.\n"));
 		}
 	}
 	else	/*Middle & End of fragment*/

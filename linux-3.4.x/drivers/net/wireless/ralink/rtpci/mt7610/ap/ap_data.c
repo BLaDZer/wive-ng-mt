@@ -4454,7 +4454,7 @@ VOID APRxEAPOLFrameIndicate(
 
 #ifdef APCLI_SUPPORT
 #ifdef APCLI_WPA_SUPPLICANT_SUPPORT
-	if (IS_ENTRY_APCLI(pEntry))
+	if (pEntry && IS_ENTRY_APCLI(pEntry))
 	{
 		eapcode=ApcliWpaCheckEapCode(pAd, pRxBlk->pData, pRxBlk->DataSize, LENGTH_802_1_H);
 		printk("eapcode=%d\n",eapcode);
