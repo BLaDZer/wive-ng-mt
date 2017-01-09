@@ -111,11 +111,7 @@ INT wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, stru
 
 		if (allowToSend == TRUE)
 		{
-			RTMP_SET_PACKET_WCID(pPacket, wcid);
 			RTMP_SET_PACKET_WDEV(pPacket, wdev->wdev_idx);
-			NDIS_SET_PACKET_STATUS(pPacket, NDIS_STATUS_PENDING);
-			pAd->RalinkCounters.PendingNdisPacketCount++;
-			
 			/*
 				WIFI HNAT need to learn packets going to which interface from skb cb setting.
 				@20150325
@@ -144,8 +140,12 @@ INT wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, stru
 #endif
 #endif
 
-			if (wdev->tx_pkt_handle)
+			if (wdev->tx_pkt_handle) {
+				RTMP_SET_PACKET_WCID(pPacket, wcid);
+				NDIS_SET_PACKET_STATUS(pPacket, NDIS_STATUS_PENDING);
+				pAd->RalinkCounters.PendingNdisPacketCount++;
 				wdev->tx_pkt_handle(pAd, pPacket);
+			}
 			else
 			{
 				DBGPRINT(RT_DEBUG_ERROR, ("%s():tx_pkt_handle not assigned!\n", __FUNCTION__));

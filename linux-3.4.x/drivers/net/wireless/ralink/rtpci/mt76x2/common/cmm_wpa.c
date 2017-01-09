@@ -649,6 +649,8 @@ VOID RTMPToWirelessSta(
 			RTMP_SET_PACKET_NET_DEVICE_MBSSID(pPacket, pEntry->apidx);
 
 		RTMP_SET_PACKET_WCID(pPacket, (UCHAR)pEntry->wcid);
+		// TODO: shiang-usw, fix this!
+		RTMP_SET_PACKET_WDEV(pPacket, pEntry->wdev->wdev_idx);
 		RTMP_SET_PACKET_MOREDATA(pPacket, FALSE);
 
 #ifdef CONFIG_AP_SUPPORT
