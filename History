@@ -2722,8 +2722,9 @@
 9) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
 10) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
 11) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
-12) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-13) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+12) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
+13) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+14) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 <br>
 <br>
 <br>
