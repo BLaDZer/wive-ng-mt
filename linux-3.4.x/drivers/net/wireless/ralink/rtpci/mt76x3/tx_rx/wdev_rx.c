@@ -313,17 +313,17 @@ VOID Indicate_Legacy_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 	wdev = pAd->wdev_list[wdev_idx];
 
 //+++Add by shiang for debug
-if (1) {
 #ifdef HDR_TRANS_SUPPORT
+if (1) {
 	if (pRxBlk->bHdrRxTrans) {
 		pData = pRxBlk->pTransData;
 		data_len = pRxBlk->TransDataSize;
 	}
-#endif /* HDR_TRANS_SUPPORT */
 //	hex_dump("Indicate_Legacy_Packet", pData, data_len);
 //	hex_dump("802_11_hdr", (UCHAR *)pRxBlk->pHeader, LENGTH_802_11);
 }
 //---Add by shiang for debug
+#endif /* HDR_TRANS_SUPPORT */
 
 	/*
 		1. get 802.3 Header
