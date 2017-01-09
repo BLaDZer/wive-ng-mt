@@ -3828,6 +3828,11 @@ VOID CmmRxRalinkFrameIndicate(
 
 
 	ASSERT(pRxBlk->pRxPacket);
+	if (!pRxBlk->pRxPacket)
+	{
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
 
 	/* Ralink Aggregation frame*/
 	pAd->RalinkCounters.OneSecRxAggregationCount ++;

@@ -543,6 +543,11 @@ VOID Indicate_ARalink_Packet(
 	RTMP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
 
 	ASSERT(pRxBlk->pRxPacket);
+	if (!pRxBlk->pRxPacket)
+	{
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
 
 	pAd->RalinkCounters.OneSecRxARalinkCnt++;
 	Payload1Size = pRxBlk->DataSize - Msdu2Size;
