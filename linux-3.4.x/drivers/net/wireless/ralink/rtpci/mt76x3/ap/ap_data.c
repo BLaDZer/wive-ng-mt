@@ -509,13 +509,12 @@ static inline VOID APFindCipherAlgorithm(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 
 	ASSERT(pTxBlk->wdev_idx < WDEV_NUM_MAX);
 	wdev = pAd->wdev_list[pTxBlk->wdev_idx];
-
-	if (!TX_BLK_TEST_FLAG(pTxBlk, fTX_bApCliPacket))
-	ASSERT(wdev->func_idx < pAd->ApCfg.BssidNum);
+	//ASSERT(wdev->func_idx < pAd->ApCfg.BssidNum);
 
 #ifdef WAPI_SUPPORT
 	pMbss = &pAd->ApCfg.MBSSID[wdev->func_idx];
 #endif /* WAPI_SUPPORT */
+
 	// TODO: shiang-usw, we should use this check to replace rest of the codes!
 
 	/* These EAPoL frames must be clear before 4-way handshaking is completed. */
