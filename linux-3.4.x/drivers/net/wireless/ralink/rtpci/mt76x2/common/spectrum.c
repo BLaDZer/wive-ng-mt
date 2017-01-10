@@ -936,7 +936,7 @@ VOID InsertChannelRepIE(
 		pChannelList = pChannelSet->ChannelList;
 	}
 
-	DBGPRINT(RT_DEBUG_ERROR, ("%s: Requlatory class (%d), NumberOfChannels=%d, pChannelSet->NumberOfChannels=%d\n",
+	DBGPRINT(RT_DEBUG_TRACE, ("%s: Requlatory class (%d), NumberOfChannels=%d, pChannelSet->NumberOfChannels=%d\n",
 						__FUNCTION__, RegulatoryClass,NumberOfChannels,pChannelSet->NumberOfChannels));
 
 	Len += NumberOfChannels;
