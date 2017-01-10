@@ -374,7 +374,7 @@ INT build_vht_txpwr_envelope(RTMP_ADAPTER *pAd, UCHAR *buf)
 
 // TODO: fixme, we need the real tx_pwr value for each port.
 	for (len = 0; len < pwr_cnt; len++)
-		txpwr_env.tx_pwr_bw[len] = 15;
+		txpwr_env.tx_pwr_bw[len] = 30; /* 15dB */
 
 	len = 2 + pwr_cnt;
 	NdisMoveMemory(buf, &txpwr_env, len);

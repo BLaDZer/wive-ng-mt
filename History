@@ -2722,13 +2722,14 @@
 9) kernel: ralink_wifi: fix seqence nubmer jam issue when Rx fragmentation.<br>
 10) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
 11) kernel: ralink_wifi: fix FT GTK state after rekey set.<br>
-12) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
-13) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
-14) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
-15) kernel: net: change init_inodecache() return void.<br>
-16) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-17) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-18) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+12) kernel: ralink_wifi: fix max txpwr envelope in VHT_IECAP.<br>
+13) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
+14) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
+15) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
+16) kernel: net: change init_inodecache() return void.<br>
+17) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+18) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+19) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
 <br>
 <br>
 <br>
