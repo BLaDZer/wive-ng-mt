@@ -1672,6 +1672,7 @@ SendAssocResponse:
 
 			/* Update status and set Port as Secured */
 			pEntry->WpaState = AS_PTKINITDONE;
+			pEntry->GTKState = REKEY_ESTABLISHED;
 			pEntry->PrivacyFilter = Ndis802_11PrivFilterAcceptAll;
 			tr_entry->PortSecured = WPA_802_1X_PORT_SECURED;
 		}

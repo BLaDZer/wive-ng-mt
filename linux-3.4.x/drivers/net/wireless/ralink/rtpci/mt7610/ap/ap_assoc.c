@@ -1096,8 +1096,9 @@ VOID ap_cmm_peer_assoc_req_action(
 
 			/* Update status and set Port as Secured */
 			pEntry->WpaState = AS_PTKINITDONE;
+			pEntry->GTKState = REKEY_ESTABLISHED;
 			pEntry->PrivacyFilter = Ndis802_11PrivFilterAcceptAll;
-		    pEntry->PortSecured = WPA_802_1X_PORT_SECURED;
+			pEntry->PortSecured = WPA_802_1X_PORT_SECURED;
 		}
 
 		/* 	Record the MDIE & FTIE of (re)association response of
