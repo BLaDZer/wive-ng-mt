@@ -2723,9 +2723,10 @@
 10) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
 11) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
 12) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
-13) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-14) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-15) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+13) kernel: net: change init_inodecache() return void.<br>
+14) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+15) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+16) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
 <br>
 <br>
 <br>
