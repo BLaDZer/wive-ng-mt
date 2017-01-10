@@ -1337,12 +1337,8 @@ PNDIS_PACKET GetPacketFromRxRing(
 
 		/* update SDP0 to new buffer of rx packet */
 		pRxD->SDP0 = AllocPa;
-
-#ifdef RX_DMA_SCATTER
-		pRxD->SDL0 = RX_BUFFER_AGGRESIZE;
-#endif /* RX_DMA_SCATTER */
 	}
-	else 
+	else
 	{
 		/*DBGPRINT(RT_DEBUG_TRACE,("No Rx Buffer\n"));*/
 		pRxPacket = NULL;
@@ -1350,7 +1346,7 @@ PNDIS_PACKET GetPacketFromRxRing(
 	}
 
 	/* had handled one rx packet*/
-	*pRxPending = *pRxPending - 1;	
+	*pRxPending = *pRxPending - 1;
 
 #ifndef CACHE_LINE_32B
 

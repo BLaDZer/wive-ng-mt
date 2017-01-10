@@ -347,10 +347,6 @@ NDIS_STATUS RTMPInitTxRxRingMemory
 		pRxD->SDP0 = RTMP_GetPhysicalAddressLow(pDmaBuf->AllocPa);
 		pRxD->DDONE = 0;
 
-#ifdef RX_DMA_SCATTER
-		pRxD->SDL0 = RX_BUFFER_AGGRESIZE;
-#endif /* RX_DMA_SCATTER */
-
 #ifdef RT_BIG_ENDIAN
 		RTMPDescriptorEndianChange((PUCHAR)pRxD, TYPE_RXD);
 #endif
