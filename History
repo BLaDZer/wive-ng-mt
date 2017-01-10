@@ -2715,18 +2715,19 @@
 2) radvd: update to 2.16-rc1 version.<br>
 3) strace: up to 4.15 version.<br>
 4) libcurl: up to 7.52.1 version.<br>
-5) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
-6) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
-7) kernel: ralink_wifi: fix potentional null pointer dereference.<br>
-8) kernel: ralink_wifi: fix seqence nubmer jam issue when Rx fragmentation.<br>
-9) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
-10) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
-11) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
-12) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
-13) kernel: net: change init_inodecache() return void.<br>
-14) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-15) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-16) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+5) zlib: up to 1.2.10 version.<br>
+6) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
+7) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
+8) kernel: ralink_wifi: fix potentional null pointer dereference.<br>
+9) kernel: ralink_wifi: fix seqence nubmer jam issue when Rx fragmentation.<br>
+10) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
+11) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
+12) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
+13) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
+14) kernel: net: change init_inodecache() return void.<br>
+15) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+16) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+17) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
 <br>
 <br>
 <br>
