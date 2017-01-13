@@ -2732,6 +2732,7 @@
 19) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 20) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
 21) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+22) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
 <br>
 <br>
 <br>
