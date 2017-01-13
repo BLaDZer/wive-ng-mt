@@ -76,13 +76,17 @@ case "$MODE" in
 	    # white oneband release
 	    DEVNAME="SNR-CPE-W4N-MT"
 	    ;;
-	"MT7620-2T2R-8M-SFP")
-	    # 100mbit SFP router sample
-	    DEVNAME="SNR-CPE-SFP-MT"
+	"MT7620-2T2R-8M-IN")
+	    # oneband integrated 2 ports release
+	    DEVNAME="SNR-CPE-WI2-MT"
 	    ;;
 	"MT7620-2T2R-8M-AP")
 	    # celling one port AP release
-	    DEVNAME="SNR-CPE-AP1"
+	    DEVNAME="SNR-CPE-AP1-MT"
+	    ;;
+	"MT7620-2T2R-8M-SFP")
+	    # 100mbit SFP router sample
+	    DEVNAME="SNR-CPE-SFP-MT"
 	    ;;
 	*)
 	    echo "Not supported (unknown) mode or mode not set."
@@ -185,7 +189,7 @@ elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M" ]; then
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-8M" ]; then
+elif [ "$MODE" = "MT7620-2T2R-8M" -o "$MODE" = "MT7620-2T2R-8M-IN" -o "$MODE" = "MT7620-2T2R-8M-AP" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
@@ -194,11 +198,6 @@ elif [ "$MODE" = "MT7620-2T2R-8M-SFP" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M-SFP					$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-8M-AP" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-8M					$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-AP					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-4M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-4M					$ROOTDIR/linux/.config
@@ -209,8 +208,21 @@ else
     echo "Config files not found."
     exit 1
 fi
+
 #####################################################DIFF-MODES###########################################################################
-# enable ATE and others support for fabric
+# tune configs for submodels
+if [ "$DEVNAME" = "SNR-CPE-WI2-MT" ]; then
+    echo "Reconfigure apps for intergated WI2 device"
+    sed 's/# CONFIG_RTESW_SWITCH_TWOPORT is not set/CONFIG_RTESW_SWITCH_TWOPORT=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
+    mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
+elif [ "$DEVNAME" = "SNR-CPE-AP1-MT" ]; then
+    echo "Reconfigure apps for intergated AP1 device"
+    sed 's/# CONFIG_RTESW_SWITCH_ONEPORT is not set/CONFIG_RTESW_SWITCH_ONEPORT=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
+    mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
+fi
+
+#####################################################DIFF-MODES###########################################################################
+# build with ATE fabric only
 if [ "$FMODE" = "YES" ]; then
     echo "BUILD FABRIC MODE"
 
