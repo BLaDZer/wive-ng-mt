@@ -316,6 +316,7 @@ CONFIG_HW_HAS_PCI=y
 # CONFIG_PCI is not set
 # CONFIG_ARCH_SUPPORTS_MSI is not set
 CONFIG_MMU=y
+# CONFIG_PCCARD is not set
 
 #
 # Executable file formats
@@ -665,6 +666,8 @@ CONFIG_WEXT_PRIV=y
 #
 # Generic Driver Options
 #
+CONFIG_UEVENT_HELPER_PATH="/bin/mdev"
+# CONFIG_DEVTMPFS is not set
 CONFIG_STANDALONE=y
 # CONFIG_PREVENT_FIRMWARE_BUILD is not set
 # CONFIG_FW_LOADER is not set
