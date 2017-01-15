@@ -1827,8 +1827,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(MaxSPLength);
 	FPRINT_DAT(ShortSlot);
 	FPRINT_DAT(NoForwardingBTNBSSID);
-	FPRINT_DAT(session_timeout_interval);
-	FPRINT_DAT(quiet_interval);
 	FPRINT_DAT(IdleTimeout);
 
 	FPRINT_DAT(APSDCapable);
