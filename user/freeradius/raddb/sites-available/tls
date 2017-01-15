@@ -81,8 +81,8 @@ listen {
 	#  to refer to the "site1" sub-section of the "tls" section.
 	#
 	tls {
-		private_key_password = whatever
-		private_key_file = ${certdir}/server.pem
+		private_key_password =
+		private_key_file = ${certdir}/server.key
 
 		#  If Private key & Certificate are located in
 		#  the same file, then private_key_file &
@@ -130,7 +130,7 @@ listen {
 		#  write to files in its configuration
 		#  directory.
 		#
-#		random_file = /dev/urandom
+		random_file = /dev/urandom
 
 		#
 		#  The default fragment size is 1K.
@@ -376,7 +376,7 @@ home_server tls {
 	status_check = none
 
 	tls {
-		private_key_password = whatever
+		private_key_password =
 		private_key_file = ${certdir}/client.pem
 
 		#  If Private key & Certificate are located in

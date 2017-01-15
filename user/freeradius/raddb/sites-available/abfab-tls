@@ -10,7 +10,7 @@ listen {
 	proto = tcp
 
 	tls {
-		private_key_password = whatever
+		private_key_password =
 
 		# Moonshot tends to distribute certs separate from keys
 		private_key_file = ${certdir}/server.key

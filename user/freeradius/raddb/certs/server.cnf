@@ -45,10 +45,9 @@ input_password		= whatever
 output_password		= whatever
 
 [server]
-countryName		= FR
-stateOrProvinceName	= Radius
-localityName		= Somewhere
-organizationName	= Example Inc.
-emailAddress		= admin@example.org
-commonName		= "Example Server Certificate"
-
+countryName		= RU
+stateOrProvinceName	= Russia
+localityName		= Wive-NG
+organizationName	= Wive-NG
+emailAddress		= wive-ng@wive-ng.sf.net
+commonName		= wive-ng@wive-ng.sf.net

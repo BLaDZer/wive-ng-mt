@@ -49,7 +49,7 @@ eap inner-eap {
 	#  It might work, or it might not.
 	#
 	tls {
-		private_key_password = whatever
+		private_key_password =
 		private_key_file = ${certdir}/inner-server.pem
 
 		#  If Private key & Certificate are located in

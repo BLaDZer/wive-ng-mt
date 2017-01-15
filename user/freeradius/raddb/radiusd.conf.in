@@ -11,8 +11,8 @@ name = radiusd
 
 confdir = ${raddbdir}
 modconfdir = ${confdir}/mods-config
-certdir = ${confdir}/certs
-cadir   = ${confdir}/certs
+certdir = /etc/certs
+cadir   = /etc/certs
 run_dir = ${localstatedir}/run/${name}
 
 db_dir = ${raddbdir}

@@ -6,7 +6,7 @@
 
 
 #define MAC_ADDR_LEN				6
-#define MAX_MBSSID_NUM              16
+#define MAX_MBSSID_NUM              8
 #define WEP8021X_KEY_LEN            13
 
 #ifndef ETH_ALEN

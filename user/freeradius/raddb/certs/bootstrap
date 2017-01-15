@@ -10,6 +10,10 @@
 #
 #  $Id$
 #
+
+# skip bootstrap
+exit 0
+
 umask 027
 cd `dirname $0`
 

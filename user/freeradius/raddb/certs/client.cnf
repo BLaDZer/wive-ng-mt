@@ -45,9 +45,9 @@ input_password		= whatever
 output_password		= whatever
 
 [client]
-countryName		= FR
-stateOrProvinceName	= Radius
-localityName		= Somewhere
-organizationName	= Example Inc.
-emailAddress		= user@example.org
-commonName		= user@example.org
+countryName		= RU
+stateOrProvinceName	= Russia
+localityName		= Wive-NG
+organizationName	= Wive-NG
+emailAddress		= wive-ng@wive-ng.sf.net
+commonName		= wive-ng@wive-ng.sf.net

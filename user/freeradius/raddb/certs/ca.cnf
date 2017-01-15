@@ -47,12 +47,12 @@ output_password		= whatever
 x509_extensions		= v3_ca
 
 [certificate_authority]
-countryName		= FR
-stateOrProvinceName	= Radius
-localityName		= Somewhere
-organizationName	= Example Inc.
-emailAddress		= admin@example.org
-commonName		= "Example Certificate Authority"
+countryName		= RU
+stateOrProvinceName	= Russia
+localityName		= Wive-NG
+organizationName	= Wive-NG
+emailAddress		= wive-ng@wive-ng.sf.net
+commonName		= wive-ng@wive-ng.sf.net
 
 [v3_ca]
 subjectKeyIdentifier	= hash
