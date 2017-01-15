@@ -1800,6 +1800,17 @@ int gen_wifi_config(int mode, int genmode)
 		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_get(mode, "WmmCapable"));
 	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
 
+	FPRINT_DAT(APAifsn);
+	FPRINT_DAT(APCwmin);
+	FPRINT_DAT(APCwmax);
+	FPRINT_DAT(APTxop);
+	FPRINT_DAT(APACM);
+	FPRINT_DAT(BSSAifsn);
+	FPRINT_DAT(BSSCwmin);
+	FPRINT_DAT(BSSCwmax);
+	FPRINT_DAT(BSSTxop);
+	FPRINT_DAT(BSSACM);
+
 	FPRINT_DAT(CountryRegion);
 	FPRINT_DAT(CountryRegionABand);
 	FPRINT_DAT(CountryCode);
@@ -1824,7 +1835,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(BurstMode);
 	FPRINT_DAT(PktAggregate);
 	FPRINT_DAT(FragThreshold);
-	FPRINT_DAT(MaxSPLength);
 	FPRINT_DAT(ShortSlot);
 	FPRINT_DAT(NoForwardingBTNBSSID);
 	FPRINT_DAT(IdleTimeout);
@@ -1838,16 +1848,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(EntryLifeCheck);
 	FPRINT_DAT(HideSSID);
 	FPRINT_DAT(IEEE80211H);
-	FPRINT_DAT(APAifsn);
-	FPRINT_DAT(APCwmin);
-	FPRINT_DAT(APCwmax);
-	FPRINT_DAT(APTxop);
-	FPRINT_DAT(APACM);
-	FPRINT_DAT(BSSAifsn);
-	FPRINT_DAT(BSSCwmin);
-	FPRINT_DAT(BSSCwmax);
-	FPRINT_DAT(BSSTxop);
-	FPRINT_DAT(BSSACM);
 	FPRINT_DAT(AuthMode);
 	FPRINT_DAT(EncrypType);
     	FPRINT_DAT(RekeyMethod);
