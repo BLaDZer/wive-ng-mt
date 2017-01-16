@@ -5941,8 +5941,9 @@ VOID RT6352_Init(
 	pChipOps->ThermalPro1stCond = thermal_pro_1st_cond;
 	pChipOps->ThermalPro2ndCond = thermal_pro_2nd_cond;
 #endif /* THERMAL_PROTECT_SUPPORT */
-
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
+#endif /* WAPI_SUPPORT */
 	pChipCap->DPDCalPassLowThresTX0 = -999;
 	pChipCap->DPDCalPassLowThresTX1 = 0;
 	pChipCap->DPDCalPassHighThresTX0 = 5;

@@ -5579,9 +5579,9 @@ VOID RT6352_Init(
 	pChipOps->ThermalPro1stCond = thermal_pro_1st_cond;
 	pChipOps->ThermalPro2ndCond = thermal_pro_2nd_cond;
 #endif /* THERMAL_PROTECT_SUPPORT */
-
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
-
+#endif /* WAPI_SUPPORT */
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_3;
 	pChipCap->TXWISize = 20;
 	pChipCap->RXWISize = 24;

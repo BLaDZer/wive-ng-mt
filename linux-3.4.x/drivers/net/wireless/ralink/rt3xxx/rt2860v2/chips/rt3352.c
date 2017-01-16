@@ -367,9 +367,9 @@ VOID RT3352_Init(
 	pChipOps->InitDesiredTSSITable = RT3352_InitDesiredTSSITable;
 	pChipOps->AsicTxAlcGetAutoAgcOffset = RT3352_AsicTxAlcGetAutoAgcOffset;
 #endif /* RTMP_INTERNAL_TX_ALC */
-
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
-
+#endif /* WAPI_SUPPORT */
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_2;
 	pChipCap->TXWISize = 16;
 	pChipCap->RXWISize = 16;

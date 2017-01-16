@@ -631,8 +631,9 @@ struct _RTMP_CHIP_CAP {
 	
 	/* function */
 	/* use UINT8, not bit-or to speed up driver */
+#ifdef WAPI_SUPPORT
 	BOOLEAN FlgIsHwWapiSup;
-
+#endif /* WAPI_SUPPORT */
 	/* VCO calibration mode */
 	UINT8 VcoPeriod; /* default 10s */
 #define VCO_CAL_DISABLE		0	/* not support */

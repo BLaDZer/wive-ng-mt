@@ -2144,7 +2144,9 @@ VOID RT3883_Init(
 		Init chip capabilities
 	*/
 	pChipCap->SnrFormula = SNR_FORMULA2;
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
+#endif /* WAPI_SUPPORT */
 	pChipCap->VcoPeriod = 10;
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_2;
 	pChipCap->FlgIsHwAntennaDiversitySup = FALSE;

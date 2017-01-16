@@ -386,8 +386,9 @@ VOID RT5350_Init(
 	pChipCap->bbpRegTbSize = RT5350_NUM_BBP_REG_PARMS;
 	pChipCap->SnrFormula = SNR_FORMULA2;
 	pChipCap->RfReg17WtMethod = RF_REG_WT_METHOD_STEP_ON;
-
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
+#endif /* WAPI_SUPPORT */
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_2;	
 
 	if ((pAd->MACVersion & 0xffff) > 0x0102)

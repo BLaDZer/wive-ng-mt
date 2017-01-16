@@ -5693,7 +5693,9 @@ static const RTMP_CHIP_CAP MT76x2_ChipCap = {
 	.WPDMABurstSIZE = 3,
 #endif /* RTMP_MAC_PCI */
 	.SnrFormula = SNR_FORMULA3,
+#ifdef WAPI_SUPPORT
 	.FlgIsHwWapiSup = TRUE,
+#endif /* WAPI_SUPPORT */
 	.VcoPeriod = 10,
 	.FlgIsVcoReCalMode = VCO_CAL_DISABLE,
 	.FlgIsHwAntennaDiversitySup = FALSE,

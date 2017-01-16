@@ -3402,7 +3402,9 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 #endif
 
 	pChipCap->SnrFormula = SNR_FORMULA2;
+#ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
+#endif /* WAPI_SUPPORT */
 	pChipCap->VcoPeriod = 10;
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_3;
 	pChipCap->FlgIsHwAntennaDiversitySup = FALSE;

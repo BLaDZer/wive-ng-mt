@@ -629,8 +629,9 @@ struct _RTMP_CHIP_CAP_ {
 	
 	/* function */
 	/* use UINT8, not bit-or to speed up driver */
+#ifdef WAPI_SUPPORT
 	BOOLEAN FlgIsHwWapiSup;
-
+#endif /* WAPI_SUPPORT */
 #ifdef THERMAL_PROTECT_SUPPORT
 	BOOLEAN ThermalProtectSup;
 #endif /* THERMAL_PROTECT_SUPPORT */
