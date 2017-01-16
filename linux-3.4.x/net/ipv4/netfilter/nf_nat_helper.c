@@ -71,7 +71,7 @@ adjust_tcp_sequence(u32 seq,
 }
 
 /* Get the offset value, for conntrack */
-s32 nf_nat_get_offset(const struct nf_conn *ct,
+inline s32 nf_nat_get_offset(const struct nf_conn *ct,
 		      enum ip_conntrack_dir dir,
 		      u32 seq)
 {
@@ -90,7 +90,6 @@ s32 nf_nat_get_offset(const struct nf_conn *ct,
 
 	return offset;
 }
-EXPORT_SYMBOL_GPL(nf_nat_get_offset);
 
 /* Frobs data inside this packet, which is linear. */
 static void mangle_contents(struct sk_buff *skb,

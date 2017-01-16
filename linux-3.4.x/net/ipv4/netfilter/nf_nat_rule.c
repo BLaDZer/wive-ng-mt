@@ -89,7 +89,7 @@ static int ipt_snat_checkentry(const struct xt_tgchk_param *par)
 	return 0;
 }
 
-static int ipt_dnat_checkentry(const struct xt_tgchk_param *par)
+static inline int ipt_dnat_checkentry(const struct xt_tgchk_param *par)
 {
 	const struct nf_nat_ipv4_multi_range_compat *mr = par->targinfo;
 
@@ -101,7 +101,7 @@ static int ipt_dnat_checkentry(const struct xt_tgchk_param *par)
 	return 0;
 }
 
-static unsigned int
+static inline unsigned int
 alloc_null_binding(struct nf_conn *ct, unsigned int hooknum)
 {
 	/* Force range to this IP; let proto decide mapping for

@@ -325,7 +325,7 @@ struct ipt_entry *ipt_next_entry(const struct ipt_entry *entry)
 }
 
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
-static bool
+static inline bool
 ipt_handle_default_rule(struct ipt_entry *e, unsigned int *verdict)
 {
 	struct xt_entry_target *t;
@@ -655,7 +655,7 @@ static void cleanup_match(struct xt_entry_match *m, struct net *net)
 	module_put(par.match->me);
 }
 
-static int
+static inline int
 #ifdef CONFIG_IP_NF_IPTABLES_SPEEDUP
 check_entry(struct ipt_entry *e, const char *name)
 #else

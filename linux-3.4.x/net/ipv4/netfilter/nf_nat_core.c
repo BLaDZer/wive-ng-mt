@@ -490,7 +490,6 @@ int nf_nat_icmp_reply_translation(struct nf_conn *ct,
 
 	return 1;
 }
-EXPORT_SYMBOL_GPL(nf_nat_icmp_reply_translation);
 
 /* Protocol registration. */
 int nf_nat_protocol_register(const struct nf_nat_protocol *proto)
