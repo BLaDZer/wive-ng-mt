@@ -4,7 +4,16 @@ function portName(num) {
 					return "LAN";
 					break;
 		case 2:
-					return "LAN " + (num + 1);
+					if (opmode == 1) {
+						if (num == wan_port)
+							return "WAN";
+						else
+							return "LAN";
+					}
+					else {
+						if (num == 4) num = 1;
+						return "LAN " + (num + 1);
+					}
 					break;
 		default:
 				if (num == wan_port && opmode == 1) return "WAN";
@@ -51,22 +60,36 @@ html	+=	'	<tbody>' +
 			'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port status") + '</td>';
-
-for (i = first_port; i < first_port + ports; i++)
-	html +=	'<td style="text-align: center;">' + portName(i) + '<br>' + portImg(i) + '<br>' + portLink(i) + '</td>';
+if (ports == 2) {
+		html +=	'<td style="text-align: center;">' + portName(0) + '<br>' + portImg(0) + '<br>' + portLink(0) + '</td>';
+		html +=	'<td style="text-align: center;">' + portName(4) + '<br>' + portImg(4) + '<br>' + portLink(4) + '</td>';
+}
+else
+	for (i = first_port; i < first_port + ports; i++)
+		html +=	'<td style="text-align: center;">' + portName(i) + '<br>' + portImg(i) + '<br>' + portLink(i) + '</td>';
 
 html	+=	'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port rx bytes") + '</td>';
 
-for (i = first_port; i < first_port + ports; i++)
-	html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[i]) + '</td>';
+if (ports == 2) {
+	html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[0]) + '</td>';
+	html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[4]) + '</td>';
+}
+else
+	for (i = first_port; i < first_port + ports; i++)
+		html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[i]) + '</td>';
 		             
 html	+=	'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port tx bytes") + '</td>';
-for (i = first_port; i < first_port + ports; i++)
-	html +=	'<td  style="text-align: center;">' + portRXTX(portCount.tx_bytes[i]) + '</td>';
+if (ports == 2) {
+	html +=	'<td style="text-align: center;">' + portRXTX(portCount.tx_bytes[0]) + '</td>';
+	html +=	'<td style="text-align: center;">' + portRXTX(portCount.tx_bytes[4]) + '</td>';
+}
+else
+	for (i = first_port; i < first_port + ports; i++)
+		html +=	'<td  style="text-align: center;">' + portRXTX(portCount.tx_bytes[i]) + '</td>';
 
 html	+=	'		</tr>' +
 			'	</tbody>' +

@@ -34,14 +34,26 @@
 				_TR("ethernetFirstLANport",		"ethernet lan port");
 				_TR("ethernetNearToWAN", 		"ethernet lan port near");
 				_TR("ethernetDistantFromWAN",	"ethernet lan port distant");
-				_TR("ethernetPort1Mode",		"ethernet port 1 mode");
-				_TR("ethernetPort2Mode",		"ethernet port 2 mode");
 				if (ports == 3) {
+					_TR("ethernetPort1Mode",		"ethernet port 1 mode");
+					_TR("ethernetPort2Mode",		"ethernet port 2 mode");
 					_TR("ethernetPort3Mode",		"ethernet port 1 mode");
 					_TR("ethernetPort4Mode",		"ethernet port 2 mode");
 					_TR("ethernetPort5Mode",		"ethernet port 3 mode");
 				}
+				else if (ports == 2) {
+					if (opmode == 1) {
+						_TR("ethernetPort1Mode",		"ethernet port 1 mode");
+						_TR("ethernetPort5Mode",		"ethernet port 5 mode");
+					}
+					else {
+						_TR("ethernetPort1Mode",		"ethernet port 1 mode");
+						_TR("ethernetPort5Mode",		"ethernet port 2 mode");
+					}
+				}
 				else {
+					_TR("ethernetPort1Mode",		"ethernet port 1 mode");
+					_TR("ethernetPort2Mode",		"ethernet port 2 mode");
 					_TR("ethernetPort3Mode",		"ethernet port 3 mode");
 					_TR("ethernetPort4Mode",		"ethernet port 4 mode");
 					_TR("ethernetPort5Mode",		"ethernet port 5 mode");
@@ -62,26 +74,24 @@
 								hideElement(ethernetPort3Mode_tr);
 								hideElement(ethernetPort4Mode_tr);
 								hideElement(ethernetPort5Mode_tr);
-								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>' ];
 								break;
 					case 2:
-								hideElement(ethernetWANport_tr);
+								if (opmode != 1)
+									hideElement(ethernetWANport_tr);
 								hideElement(ethernetFirstLANport_tr);
+								hideElement(ethernetPort2Mode_tr);
 								hideElement(ethernetPort3Mode_tr);
 								hideElement(ethernetPort4Mode_tr);
-								hideElement(ethernetPort5Mode_tr);
-								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>' ];
 								break;
 					case 3:
 								hideElement(ethernetWANport_tr);
 								hideElement(ethernetFirstLANport_tr);
 								hideElement(ethernetPort1Mode_tr);
 								hideElement(ethernetPort2Mode_tr);
-								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
 								break;
-					default:
-								port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
 				}
+
+				port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
 
 				// Set WAN port number
 				if (ports == 5 && ((wan_port > 0 && wan_port < (ports - 1)) || wan_port > (ports - 1)))
@@ -100,7 +110,8 @@
 				document.getElementById('lan_port').value = lan_port;
 
 				// Add Port speeds options & Show
-				for (i = first_port + 1; i <= first_port + ports; i++) {
+				var j = (ports == 2) ? 5 : ports;
+				for (i = first_port + 1; i <= first_port + j; i++) {
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode auto"), 'auto');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10h"),  '10h');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10f"),  '10f');
@@ -208,10 +219,10 @@
 									<input type="hidden" name="reboot" value="0">
 								</td>
 							</tr>
-						</table>					
+						</table>
 					</form>
 				</td>
 			</tr>
 		</table>
 	</body>
-</html>		
+</html>

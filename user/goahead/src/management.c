@@ -214,7 +214,12 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 #if defined(CONFIG_RAETH_ESW) || defined(CONFIG_MT7530_GSW)
 	websWrite(wp, T("{ \"ethernet\": [ "));
 	int port;
-	for (port=4; port>-1; port--)
+
+#ifdef CONFIG_RTESW_SWITCH_ONEPORT
+	for (port = 4; port > 3; port--)
+#else
+	for (port = 4; port > -1; port--)
+#endif
 	{
 		struct port_status pst;
 		char buf[256];

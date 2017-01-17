@@ -1293,7 +1293,7 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 	char_t result[4096];
 	char_t *PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
 		   *Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod, *IEEE8021X;
-	char_t *RADIUS_Server, *RADIUS_Port, *RADIUS_Key, *session_timeout_interval;
+	char_t *RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
 
 	result[0] = '\0';
 
@@ -1332,8 +1332,8 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			LFF(result, nvram, RADIUS_Server, i);
 			LFF(result, nvram, RADIUS_Port, i);
 			LFF(result, nvram, RADIUS_Key, i);
-			LFF(result, nvram, session_timeout_interval, i);
-
+			strncat(result, nvram_get(nvram, "session_timeout_interval"), 4096);
+			strncat(result, "\r", 4096);
 			// access control related.
 			strncat(result, nvram_get(nvram, racat("AccessPolicy", i)), 4096);
 			strncat(result, "\r", 4096);
@@ -1457,7 +1457,10 @@ static void conf8021x(int nvram, webs_t wp, int mbssid)
 	    STFs(nvram, mbssid, "RADIUS_Server", RadiusServerIP);
 	    STFs(nvram, mbssid, "RADIUS_Port", RadiusServerPort);
 	    STFs(nvram, mbssid, "RADIUS_Key", RadiusServerSecret);
-	    STFs(nvram, mbssid, "session_timeout_interval", RadiusServerSessionTimeout);
+	    nvram_init(RT2860_NVRAM);
+	    nvram_bufset(nvram, "session_timeout_interval", RadiusServerSessionTimeout);
+	    nvram_commit(RT2860_NVRAM);
+	    nvram_close(RT2860_NVRAM);
 	}
 
 }
