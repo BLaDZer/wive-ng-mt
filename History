@@ -2742,9 +2742,10 @@
 29) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
 30) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
 31) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-32) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-33) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-34) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+32) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+33) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+34) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+35) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 <br>
 <br>
 <br>
