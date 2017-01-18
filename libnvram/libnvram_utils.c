@@ -1906,11 +1906,16 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(Key4Str7);
 	FPRINT_DAT(Key4Str8);
 
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (inic)
+	    fprintf(fp, "HT_BW=%s\n", nvram_get(mode, "HT_BWINIC"));
+	else
+#endif
+	    FPRINT_DAT(HT_BW);
 	FPRINT_DAT(HT_HTC);
 	FPRINT_DAT(HT_RDG);
 	FPRINT_DAT(HT_OpMode);
 	FPRINT_DAT(HT_MpduDensity);
-	FPRINT_DAT(HT_BW);
 	FPRINT_DAT(HT_AutoBA);
 	FPRINT_DAT(HT_BADecline);
 	FPRINT_DAT(HT_AMSDU);
