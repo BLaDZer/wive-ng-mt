@@ -75,6 +75,7 @@
   <message msgid="basic ht op mixed" msgstr="Disabled" />
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Ширина канала" />
+  <message msgid="basic ht channel bandwidth inic" msgstr="Ширина канала (5ГГц)" />
   <message msgid="basic ht guard interval" msgstr="Защитный интервал" />
   <message msgid="basic ldpc" msgstr="Контроль чётности" />
   <message msgid="basic ht rdg" msgstr="Обратный порядок передачи" />

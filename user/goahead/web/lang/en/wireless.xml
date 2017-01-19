@@ -74,6 +74,7 @@
   <message msgid="basic ht op mixed" msgstr="Disable" />
   <message msgid="basic ht op green" msgstr="Enable" />
   <message msgid="basic ht channel bandwidth" msgstr="Channel BandWidth" />
+  <message msgid="basic ht channel bandwidth inic" msgstr="Channel BandWidth (5GHz)" />
   <message msgid="basic ht guard interval" msgstr="Guard Interval" />
   <message msgid="basic stbc" msgstr="Space-Time Block Coding" />
   <message msgid="basic ldpc" msgstr="Low Disenty Parity Check" />

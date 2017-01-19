@@ -49,6 +49,7 @@
 			var ht_autoba = '<% getCfgZero(1, "HT_AutoBA"); %>';
 			var ht_badecline = '<% getCfgZero(1, "HT_BADecline"); %>';
 			var ht_bw = '<% getCfgZero(1, "HT_BW"); %>';
+			var ht_bwinic = '<% getCfgZero(1, "HT_BWINIC"); %>';
 
 			var vht_gi = '<% getCfgZero(1, "VHT_SGI"); %>';
 			var vht_stbc = '<% getCfgZero(1, "VHT_STBC"); %>';
@@ -330,6 +331,7 @@
 				_TR("basicHTMixedDisable", "basic ht op mixed");
 				_TR("basicHTMixedEnable", "basic ht op green");
 				_TR("basicHTChannelBW_td_1", "basic ht channel bandwidth");
+				_TR("basicHTChannelBWINIC_td_1", "basic ht channel bandwidth inic");
 				_TR("basicHTSTBC", "basic stbc");
 				_TR("basicHTGI", "basic ht guard interval");
 				_TR("basicHTLongGI", "wireless long");
@@ -576,6 +578,7 @@
 				form.abg_rate.disabled = true;
 				form.n_mode.disabled = true;
 				form.n_bandwidth.disabled = true;
+				form.n_bandwidthinic.disabled = true;
 				form.n_rdg.disabled = true;
 				form.n_gi.disabled = true;
 				form.n_stbc.disabled = true;
@@ -673,6 +676,8 @@
 
 					form.n_mode.disabled = false;
 					form.n_bandwidth.disabled = false;
+					if (is5gh_support == 1)
+						form.n_bandwidthinic.disabled = false;
 					form.n_rdg.disabled = false;
 					form.n_gi.disabled = false;
 					form.n_stbc.disabled = false;
@@ -713,6 +718,7 @@
 				}
 
 				form.n_bandwidth.options.selectedIndex = 1*ht_bw;
+				form.n_bandwidthinic.options.selectedIndex = 1*ht_bwinic;
 				form.dot11h.options.selectedIndex = 1*dot11hArray[0];
 				initChecktime(form);
 				GExtChannelDisplay(form);
@@ -1346,13 +1352,14 @@
 			}
 
 			function showHTPhysModeMenu(){
-				var HTPhysModeElement = [ 'basicHTChannelBW_tr', 'extension_channel', 'basicHTTxStream_tr', 'basicHTRxStream_tr', 'basicHTMCS_tr', 'basicHTGI_tr',
+				var HTPhysModeElement = [ 'basicHTChannelBW_tr', 'basicHTChannelBWINIC_tr', 'extension_channel', 'basicHTTxStream_tr', 'basicHTRxStream_tr', 'basicHTMCS_tr', 'basicHTGI_tr',
 							  'basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ];
 				if (statusHTPysModeMenu == 0) {
 					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic ht phy mode"));
 					statusHTPysModeMenu = 1;
 					displayElement(HTPhysModeElement, 1);
 					displayElement('extension_channel', document.getElementById('n_bandwidth').value == 1 );
+					displayElement('basicHTChannelBWINIC_tr', is5gh_support == 1);
 				} else {
 					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic ht phy mode"));
 					statusHTPysModeMenu = 0;
@@ -1651,6 +1658,13 @@
 		<tr id="basicHTChannelBW_tr">
 			<td id="basicHTChannelBW_td_1" class="head" width="50%">Channel BandWidth</td>
 			<td id="basicHTChannelBW_td_1" width="50%"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
+				<option value="0">20MHz</option>
+				<option value="1">20/40MHz</option>
+			</select></td>
+		</tr>
+		<tr id="basicHTChannelBWINIC_tr">
+			<td id="basicHTChannelBWINIC_td_1" class="head" width="50%">Channel BandWidth (5GHz)</td>
+			<td id="basicHTChannelBWINIC_td_1" width="50%"><select id="n_bandwidthinic" name="n_bandwidthinic" class="normal" onClick="GExtChannelDisplay(this.form);">
 				<option value="0">20MHz</option>
 				<option value="1">20/40MHz</option>
 			</select></td>

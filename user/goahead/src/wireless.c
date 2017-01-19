@@ -537,7 +537,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
+	char_t	*n_mode, *n_bandwidth, *n_bandwidthinic, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
 #if defined(CONFIG_RT2860V2_AP_IDS) || defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
 	char_t *ids_enable;
@@ -610,6 +610,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	n_mode = websGetVar(wp, T("n_mode"), T("1"));
 	n_bandwidth = websGetVar(wp, T("n_bandwidth"), T("1"));
+	n_bandwidthinic = websGetVar(wp, T("n_bandwidthinic"), T("1"));
 	n_gi = websGetVar(wp, T("n_gi"), T("1"));
 	n_stbc = websGetVar(wp, T("n_stbc"), T("1"));
 	n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
@@ -873,6 +874,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	if (is_ht) {
 		nvram_bufset(RT2860_NVRAM, "HT_OpMode", n_mode);
 		nvram_bufset(RT2860_NVRAM, "HT_BW", n_bandwidth);
+		nvram_bufset(RT2860_NVRAM, "HT_BWINIC", n_bandwidthinic);
 		nvram_bufset(RT2860_NVRAM, "HT_GI", n_gi);
 		nvram_bufset(RT2860_NVRAM, "HT_STBC", n_stbc);
 		nvram_bufset(RT2860_NVRAM, "HT_MCS", n_mcs);
@@ -1090,6 +1092,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	if (is_ht) {
 		websWrite(wp, T("n_mode: %s<br>\n"), n_mode);
 		websWrite(wp, T("n_bandwidth: %s<br>\n"), n_bandwidth);
+		websWrite(wp, T("n_bandwidthinic: %s<br>\n"), n_bandwidthinic);
 		websWrite(wp, T("n_gi: %s<br>\n"), n_gi);
 		websWrite(wp, T("n_stbc: %s<br>\n"), n_stbc);
 		websWrite(wp, T("n_mcs: %s<br>\n"), n_mcs);

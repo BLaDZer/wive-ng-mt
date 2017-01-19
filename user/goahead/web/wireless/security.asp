@@ -56,16 +56,13 @@ var AccessControlList = new Array();
 var security_modes_list =
 [
 	[ _("wireless disable"),	"Disable",	 0, 0 ],
-	[ "OPEN",			"OPEN",		 0, 0 ],
-	[ "SHARED",			"SHARED",	 0, 0 ],
 	[ "WEP",			"WEPAUTO",	 0, 0 ],
 	[ "WPA (Enterprise)",		"WPA",		 1, 1 ],
 	[ "WPA-PSK (Personal)",		"WPAPSK",	 0, 0 ],
 	[ "WPA2 (Enterprise)",		"WPA2",		 1, 1 ],
 	[ "WPA2-PSK (Personal)",	"WPA2PSK",	 0, 0 ],
 	[ "WPA1/2-PSK (Personal)",	"WPAPSKWPA2PSK", 0, 0 ],
-	[ "WPA1/2 (Enterprise)",	"WPA1WPA2",	 1, 1 ],
-	[ "802.1X",			"IEEE8021X",	 1, 1 ]
+	[ "WPA1/2 (Enterprise)",	"WPA1WPA2",	 1, 1 ]
 ];
 
 function checkMac(str){
