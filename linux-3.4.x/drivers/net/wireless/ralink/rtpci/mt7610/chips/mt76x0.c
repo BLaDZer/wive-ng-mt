@@ -1885,7 +1885,7 @@ static VOID MT76x0_ChipBBPAdjust(RTMP_ADAPTER *pAd)
 }
 
 
-void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char delta_pwr)
+static void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char delta_pwr)
 {
 	u32 value = 0;
 
@@ -2024,6 +2024,8 @@ void percentage_delta_pwr(RTMP_ADAPTER *ad)
 	RTMP_BBP_IO_WRITE32(ad, TXBE_R4, bbp_val);
 	DBGPRINT(RT_DEBUG_ERROR, ("%s::<After> total drop power = %d + %d dBm, TXBE_R4 = 0x%0x , PowerPercentageWithBBP = %d\n", 
 		__FUNCTION__, mac_drop_pwr , bbp_drop_pwr, bbp_val , ad->CommonCfg.TxPowerPercentageWithBBP));
+
+	MT76x0_adjust_per_rate_pwr_delta(ad, ad->hw_cfg.cent_ch, mac_drop_pwr*2);
 }
 
 

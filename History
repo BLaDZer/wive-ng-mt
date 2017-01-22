@@ -2731,24 +2731,25 @@
 18) kernel: ralink_wifi: shure avoid uncorrect reordered packets send to AMSDU.<br>
 19) kernel: ralink_wifi: fix FT GTK state after rekey set.<br>
 20) kernel: ralink_wifi: fix max txpwr envelope in VHT_IECAP.<br>
-21) kernel: ralink_wifi: mt7620: fix legacy only B mode support.<br>
-22) kernel: ralink_wifi: mt76x2/mt7610: fix tune tx power for VHT MCS2/3.<br>
-23) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
-24) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
-25) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
-26) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
-27) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
-28) kernel: net: netfilter: help gcc inline some functions.<br>
-29) kernel: net: change init_inodecache() return void.<br>
-30) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-31) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-32) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
-33) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-34) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-35) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-36) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-37) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-38) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+21) kernel: ralink_wifi: mt7610: fix ajust per rate TxPower regression.<br>
+22) kernel: ralink_wifi: mt7620: fix legacy only B mode support.<br>
+23) kernel: ralink_wifi: mt76x2/mt7610: fix tune tx power for VHT MCS2/3.<br>
+24) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
+25) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
+26) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
+27) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
+28) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
+29) kernel: net: netfilter: help gcc inline some functions.<br>
+30) kernel: net: change init_inodecache() return void.<br>
+31) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+32) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+33) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+34) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+35) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+36) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+37) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+38) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+39) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 <br>
 <br>
 <br>
