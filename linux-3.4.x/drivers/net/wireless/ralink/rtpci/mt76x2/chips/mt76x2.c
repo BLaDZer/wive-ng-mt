@@ -5128,7 +5128,6 @@ void mt7612_set_ed_cca(RTMP_ADAPTER *ad, BOOLEAN enable)
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::0x%x: 0x%08X\n", __FUNCTION__, TXOP_CTRL_CFG, mac_val));
 }
-#endif /* ED_MONITOR */
 
 void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 {
@@ -5174,6 +5173,7 @@ void dynamic_ed_cca_threshold_adjust(RTMP_ADAPTER * pAd)
 	DBGPRINT(RT_DEBUG_TRACE, ("%s:: lna_gain(%d), vga_gain(%d), lna_gain_mode(%d), y=%d, z=%d, 0x2308=0x%08x\n", 
 		__FUNCTION__, lna_gain, vga_gain, lna_gain_mode, y, z, reg_val));
 }
+#endif /* ED_MONITOR */
 
 #ifdef DYNAMIC_VGA_SUPPORT
 void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
