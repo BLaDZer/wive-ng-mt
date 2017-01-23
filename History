@@ -2753,6 +2753,7 @@
 40) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
 41) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
 42) kernel: percpu_counter: make APIs irq safe.<br>
+43) kernel: percpu_counter: fix __percpu_counter_add().<br>
 <br>
 <br>
 <br>
