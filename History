@@ -2721,7 +2721,7 @@
 8) strace: up to 4.15 version.<br>
 9) libcurl: up to 7.52.1 version.<br>
 10) zlib: up to 1.2.10 version.<br>
-11) nodogsplash: up to git version 2.0.0 (commit: 7ee37a81).<br>
+11) nodogsplash: up to git version 2.0.0 (commit: d3b8a31b).<br>
 12) goahead: add cwmpd_inform_periodic_enable and cwmpd_inform_periodic_interval options.<br>
 13) goahead: rework security page.<br>
 14) goahead: fix portstatus for WI2 device.<br>
