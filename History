@@ -2741,7 +2741,7 @@
 27) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
 28) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
 29) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
-30) kernel: mips: return directly in 32_mmap2().<br>
+30) kernel: mips: syscall: return directly in 32_mmap2() and mips_mmap().<br>
 31) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
 32) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
 33) kernel: percpu_counter: make APIs irq safe.<br>
