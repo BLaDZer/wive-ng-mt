@@ -2741,24 +2741,25 @@
 27) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
 28) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
 29) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
-30) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
-31) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
-32) kernel: percpu_counter: make APIs irq safe.<br>
-33) kernel: percpu_counter: fix __percpu_counter_add().<br>
-34) kernel: percpu_counter: make percpu_counters_lock irq-safe.<br>
-35) kernel: percpu_counter: percpu_counter_hotcpu_callback() cleanup.<br>
-36) kernel: net: netfilter: help gcc inline some functions.<br>
-37) kernel: net: change init_inodecache() return void.<br>
-38) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-39) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-40) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
-41) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-42) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-43) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-44) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-45) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-46) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
-47) kernel: net: remove bh disabling around percpu_counter accesses.<br>
+30) kernel: mips: return directly in 32_mmap2().<br>
+31) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
+32) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
+33) kernel: percpu_counter: make APIs irq safe.<br>
+34) kernel: percpu_counter: fix __percpu_counter_add().<br>
+35) kernel: percpu_counter: make percpu_counters_lock irq-safe.<br>
+36) kernel: percpu_counter: percpu_counter_hotcpu_callback() cleanup.<br>
+37) kernel: net: netfilter: help gcc inline some functions.<br>
+38) kernel: net: change init_inodecache() return void.<br>
+39) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
+40) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+41) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+42) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+43) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+44) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+45) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+46) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+47) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+48) kernel: net: remove bh disabling around percpu_counter accesses.<br>
 <br>
 <br>
 <br>
