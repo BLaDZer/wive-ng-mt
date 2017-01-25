@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# if app not exist
+if [ ! -e /bin/arpwatch ]; then
+    exit 0
+fi
+
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t arpwatch"
+
+start() {
+    get_param
+    if [ "$arpwatch" = "1" ]; then
+	$LOG "Starting arpwatch"
+	touch /tmp/arp.dat
+	arpwatch -N -f /tmp/arp.dat -i $lan_if &
+    fi
+}
+
+get_param() {
+    eval `nvram_buf_get 2860 arpwatch`
+}
+
+stop() {
+    pid=`pidof arpwatch`
+    if [ "$pid" != "" ]; then
+	$LOG "Stopping SNMPD"
+	killall -q arpwatch
+	killall -q -SIGKILL arpwatch
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            stop
+            start
+            ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+esac

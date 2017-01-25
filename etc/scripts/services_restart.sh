@@ -102,6 +102,9 @@ fi
 ##########################################################
 if [ "$MODE" = "misc" ] || [ "$MODE" = "all" ]; then
     service kext restart
+    if [ -e /etc/init.d/arpwatch ]; then
+	service arpwatch restart
+    fi
     if [ -e /etc/init.d/lld2d ]; then
 	service lld2d restart
     fi

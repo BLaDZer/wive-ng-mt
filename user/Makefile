@@ -79,6 +79,8 @@ dir_$(CONFIG_USER_CLI)                      += cli
 dir_$(CONFIG_USER_RADIUS)                   += freeradius
 
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
+dir_$(CONFIG_USER_ARPWATCH)		    += arpwatch
+
 dir_$(CONFIG_USER_SAMBA)		    += samba
 dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
 dir_$(CONFIG_USER_NODOGSPLASH)              += nodogsplash
@@ -113,6 +115,7 @@ dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
 # generate certs for apps
 dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
+
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"

@@ -259,6 +259,7 @@ SmbOsLevel=255
 SmbString=SERVER
 SmbTimeserver=0
 snmpd=0
+arpwatch=0
 snmpdcommunity=Wive-NG-MT
 SSID1=Wive-NG-MT
 staCur_SSID=
