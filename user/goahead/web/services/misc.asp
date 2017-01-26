@@ -61,6 +61,7 @@
 				_TR("miscLltd",					"services misc lltd");
 				_TR("miscLldpd",				"services misc lldpd");
 				_TR("miscCdp",					"services misc cdp");
+				_TR("miscArpwatch",				"services misc arpwatch");
 				_TR("miscIgmpp",				"services misc igmp");
 				_TR("miscIgmppMC",				"services misc igmp multicast");
 				_TR("miscIgmppFL",				"services misc igmp fastleave");
@@ -121,6 +122,7 @@
 				form.xupnpdEnbl.options.selectedIndex				= '<% getCfgZero(1, "xupnpd"); %>';
 				form.dnspEnbl.options.selectedIndex				= '<% getCfgZero(1, "dnsPEnabled"); %>';
 				form.cdpEnbl.options.selectedIndex				= '<% getCfgZero(1, "cdpEnabled"); %>';
+				form.arpwatchEnbl.options.selectedIndex				= '<% getCfgZero(1, "arpwatch"); %>';
 				form.lltdEnbl.options.selectedIndex				= '<% getCfgZero(1, "lltdEnabled"); %>';
 				form.lldpdEnbl.options.selectedIndex				= '<% getCfgZero(1, "lldpdEnabled"); %>';
 				form.krnlPppoePass.options.selectedIndex			= '<% getCfgZero(1, "pppoe_pass"); %>';
@@ -293,7 +295,8 @@
 					[ '<% getCfgGeneral(1, "upnpEnabled"); %>',			'upnp',			'miniupnpd',	null,		'miniupnp.free.fr/' ],
 					[ '<% getCfgGeneral(1, "cdpEnabled"); %>',			'cdp',			'cdp-send',		null,		'freecode.com/projects/cdp-tools' ],
 					[ '<% getCfgGeneral(1, "dnsPEnabled"); %>',			'dnsproxy',		'dnsmasq',		null,		'thekelleys.org.uk/dnsmasq/doc.html' ],
-					[ '<% getCfgGeneral(1, "parproutedEnabled"); %>',	'parprouted',	'parprouted',	null,		'freecode.com/projects/parprouted' ]
+					[ '<% getCfgGeneral(1, "parproutedEnabled"); %>',	'parprouted',	'parprouted',	null,		'freecode.com/projects/parprouted' ],
+					[ '<% getCfgGeneral(1, "arpwatch"); %>',			'arpwatch',		'arpwatch',		null,		'wikipedia.org/wiki/Arpwatch' ]
 				];
 
 				// Create associative array
@@ -437,7 +440,7 @@
 			}
 
 			function showServicesInfoMenu() {
-				var elements = [ 'snmpd', 'snmpCommunityRow', 'lltd', 'lldpd', 'cdp' ];
+				var elements = [ 'snmpd', 'snmpCommunityRow', 'lltd', 'lldpd', 'cdp', 'arpwatch' ];
 				var html;
 				if (statusServicesInfoMenu == 0) {
 					html =  '<td class="title" onClick="showServicesInfoMenu();"><img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc dinf") + '</td>';
@@ -452,6 +455,7 @@
 					displayElement('lltd', '<% getLltdBuilt(); %>' == '1');
 					displayElement('lldpd', '<% getLldpdBuilt(); %>' == '1');
 					displayElement('snmpd', '<% getSNMPDBuilt(); %>' == '1');
+					displayElement('arpwatch', '<% getARPwatchBuilt(); %>' == '1');
 					displayElement('snmpCommunityRow', document.miscServiceCfg.SnmpdEnabled.value != '0');
 				} else {
 					ajaxModifyElementHTML('miscDINF_row', '<td class="title" colspan="5" onClick="showServicesInfoMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc dinf") + '</td>');
@@ -834,6 +838,18 @@
 						<td class="head" id="miscCdp" style="width: 45%">CDP daemon</td>
 						<td>
 							<select name="cdpEnbl" class="normal">
+								<option value="0" id="disable">Disable</option>
+								<option value="1" id="enable">Enable</option>
+							</select>
+						</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr id="arpwatch">
+						<td class="head" id="miscArpwatch" style="width: 45%">ARPwatch</td>
+						<td>
+							<select name="arpwatchEnbl" class="normal">
 								<option value="0" id="disable">Disable</option>
 								<option value="1" id="enable">Enable</option>
 							</select>

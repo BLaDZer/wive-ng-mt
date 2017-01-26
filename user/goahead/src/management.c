@@ -227,7 +227,10 @@ static int getPortStatus(int eid, webs_t wp, int argc, char_t **argv)
 		portstatus(&pst, port);
 
 		/* create string in new buffer and write to web (this more safe of direct write) */
-		snprintf(buf, sizeof(buf), ("{ \"port\": \"%d\", \"link\": \"%d\", \"speed\": \"%d\", \"duplex\": \"%s\" }%s"), pst.portnum, pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H", (pst.portnum == 0) ? "" : ", ");
+		snprintf(buf, sizeof(buf), ("{ \"port\": \"%d\", \"link\": \"%d\", \"speed\": \"%d\", \"duplex\": \"%s\" }"), pst.portnum, pst.link, pst.speed, (pst.duplex == 1) ? "F" : "H");
+#ifndef CONFIG_RTESW_SWITCH_ONEPORT
+		snprintf(buf, sizeof(buf), ("%s%s"), buf, (pst.portnum == 0) ? "" : ", ");
+#endif
 		websWrite(wp, T("%s"), buf);
 	}
 	websWrite(wp, T("] }"));

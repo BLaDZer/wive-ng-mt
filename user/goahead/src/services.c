@@ -228,6 +228,9 @@ parameter_fetch_t service_misc_flags[] =
 #ifdef CONFIG_USER_CDP
 	{ T("cdpEnbl"),			"cdpEnabled",		0, T("0")  },
 #endif
+#ifdef CONFIG_USER_ARPWATCH
+	{ T("arpwatchEnbl"),		"arpwatch",		0, T("0")  },
+#endif
 #ifdef CONFIG_USER_LLTD
 	{ T("lltdEnbl"),		"lltdEnabled",		0, T("0")  },
 #endif
@@ -305,7 +308,7 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "lltdEnabled",
+		nvram_fromdef(RT2860_NVRAM, 48, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled",
 						"lldpdEnabled", "igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode",
 						"upnpEnabled", "xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",
 						"RemoteSSH", "RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort",
@@ -872,6 +875,14 @@ static int getSmbFPBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #endif
 }
 
+static int getARPwatchBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#ifdef CONFIG_USER_ARPWATCH
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
 void formDefineServices(void)
 {
 	// Define forms
@@ -897,4 +908,5 @@ void formDefineServices(void)
 	websAspDefine(T("getSMPBuilt"), getSMPBuilt);
 	websAspDefine(T("getOpenSSLBuilt"), getOpenSSLBuilt);
 	websAspDefine(T("getSmbFPBuilt"), getSmbFPBuilt);
+	websAspDefine(T("getARPwatchBuilt"), getARPwatchBuilt);
 }
