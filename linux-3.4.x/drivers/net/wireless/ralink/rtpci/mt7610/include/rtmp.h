@@ -6860,11 +6860,6 @@ VOID PeerPairMsg4Action(
 	IN MAC_TABLE_ENTRY  *pEntry,
 	IN MLME_QUEUE_ELEM *Elem);
 
-VOID WPAPairMsg3Retry(
-    IN PRTMP_ADAPTER    pAd, 
-    IN MAC_TABLE_ENTRY  *pEntry,
-    IN ULONG		TimeInterval);
-
 VOID PeerGroupMsg1Action(
 	IN  PRTMP_ADAPTER    pAd, 
 	IN  PMAC_TABLE_ENTRY pEntry,

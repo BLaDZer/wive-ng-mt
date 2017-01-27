@@ -1308,115 +1308,6 @@ VOID PeerPairMsg2Action(
 	DBGPRINT(RT_DEBUG_TRACE, ("<=== PeerPairMsg2Action: send Msg3 of 4-way \n"));
 }
 
-VOID WPAPairMsg3Retry(
-    IN PRTMP_ADAPTER    pAd, 
-    IN MAC_TABLE_ENTRY  *pEntry,
-    IN ULONG			TimeInterval
-)
-{
-	BOOLEAN             Cancelled;
-	PEAPOL_PACKET		pEapolFrame;
-	UCHAR   			*mpool;
-	PUINT8				pBssid = NULL;	
-	PUINT8				gtk_ptr = NULL;
-	UCHAR				default_key = 0;
-	UCHAR				group_cipher = Ndis802_11WEPDisabled;
-	PUINT8				rsnie_ptr = NULL;
-
-	UCHAR				rsnie_len = 0;
-	UCHAR 				TxTsc[6];
-	UCHAR               Header802_3[LENGTH_802_3];
-#ifdef CONFIG_AP_SUPPORT
-	UCHAR				apidx = 0;
-#endif /* CONFIG_AP_SUPPORT */
-
-	DBGPRINT(RT_DEBUG_TRACE, ("===> %s \n",__FUNCTION__));
-#ifdef CONFIG_AP_SUPPORT
-	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-	{
-		if (pEntry->apidx >= pAd->ApCfg.BssidNum)
-        		return;
-		else
-			apidx = pEntry->apidx;
-
-		pBssid = pAd->ApCfg.MBSSID[apidx].Bssid;
-		gtk_ptr = pAd->ApCfg.MBSSID[apidx].GTK;
-		group_cipher = pAd->ApCfg.MBSSID[apidx].GroupKeyWepStatus;
-		default_key = pAd->ApCfg.MBSSID[apidx].DefaultKeyId;
-
-		/* Get Group TxTsc form Asic*/
-		RTMPGetTxTscFromAsic(pAd, apidx, TxTsc);
-
-		if ((pEntry->AuthMode == Ndis802_11AuthModeWPA) || (pEntry->AuthMode == Ndis802_11AuthModeWPAPSK))
-		{
-			rsnie_len = pAd->ApCfg.MBSSID[apidx].RSNIE_Len[0];
-			rsnie_ptr = &pAd->ApCfg.MBSSID[apidx].RSN_IE[0][0];
-		}
-		else
-		{
-			if ((pEntry->AuthMode == Ndis802_11AuthModeWPA1PSKWPA2PSK) ||
-				(pEntry->AuthMode == Ndis802_11AuthModeWPA1WPA2)) 
-			{
-				rsnie_len = pAd->ApCfg.MBSSID[apidx].RSNIE_Len[1];
-				rsnie_ptr = &pAd->ApCfg.MBSSID[apidx].RSN_IE[1][0];
-			}
-			else
-			{
-				rsnie_len = pAd->ApCfg.MBSSID[apidx].RSNIE_Len[0];
-				rsnie_ptr = &pAd->ApCfg.MBSSID[apidx].RSN_IE[0][0];
-			}
-		}
-	}
-#endif /* CONFIG_AP_SUPPORT */
-
-	/* Allocate memory for input*/
-	os_alloc_mem(NULL, (PUCHAR *)&mpool, TX_EAPOL_BUFFER);
-	if (mpool == NULL)
-	{
-		DBGPRINT(RT_DEBUG_ERROR, ("!!!%s : no memory!!!\n", __FUNCTION__));
-		return;
-	}
-
-	pEapolFrame = (PEAPOL_PACKET)mpool;
-	NdisZeroMemory(pEapolFrame, TX_EAPOL_BUFFER);
-
-	/* delete retry timer*/
-	RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
-
-	/* Change state*/
-	pEntry->WpaState = AS_PTKINIT_NEGOTIATING;
-
-	/* Increment replay counter by 1*/
-	ADD_ONE_To_64BIT_VAR(pEntry->R_Counter);
-
-	/* Construct EAPoL message - Pairwise Msg 3*/
-	ConstructEapolMsg(pEntry,
-					  group_cipher,
-					  EAPOL_PAIR_MSG_3,
-					  default_key,
-					  pEntry->ANonce,
-					  TxTsc,
-					  (UCHAR *)gtk_ptr,
-					  (UCHAR *)rsnie_ptr,
-					  rsnie_len,
-					  pEapolFrame);
-
-	/* Make outgoing frame*/
-	MAKE_802_3_HEADER(Header802_3, pEntry->Addr, pBssid, EAPOL);
-	RTMPToWirelessSta(pAd, pEntry, Header802_3, LENGTH_802_3, 
-					  (PUCHAR)pEapolFrame, 
-					  CONV_ARRARY_TO_UINT16(pEapolFrame->Body_Len) + 4, 
-					  (pEntry->PortSecured == WPA_802_1X_PORT_SECURED) ? FALSE : TRUE);
-
-	RTMPSetTimer(&pEntry->RetryTimer, TimeInterval);
-
-	/* Update State*/
-	pEntry->WpaState = AS_PTKINIT_NEGOTIATING;
-
-	os_free_mem(NULL, mpool);
-
-}
-
 /*
 	========================================================================
 	
@@ -1796,12 +1687,11 @@ VOID PeerPairMsg4Action(
 		}
 		else
 		{
-        	    /* 5. init Group 2-way handshake if necessary.*/
-		    WPAStart2WayGroupHS(pAd, pEntry);
+        	/* 5. init Group 2-way handshake if necessary.*/
+	        WPAStart2WayGroupHS(pAd, pEntry);
 
-        	    pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
-			/* retry timer is set inside WPAStart2WayGroupHS */
-			//RTMPModTimer(&pEntry->RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
+        	pEntry->ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
+			RTMPModTimer(&pEntry->RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
 		}
     }while(FALSE);
     
@@ -1828,15 +1718,11 @@ VOID WPAStart2WayGroupHS(
 	PUINT8				gnonce_ptr = NULL;
 	PUINT8				gtk_ptr = NULL;
 	PUINT8				pBssid = NULL;
-	BOOLEAN                             Cancelled;
     
 	DBGPRINT(RT_DEBUG_TRACE, ("===> WPAStart2WayGroupHS\n"));
 
-	if ((!pEntry) || !IS_ENTRY_CLIENT(pEntry))
-    		return;
-
-	/* delete retry timer*/
-	RTMPCancelTimer(&pEntry->RetryTimer, &Cancelled);
+    if ((!pEntry) || !IS_ENTRY_CLIENT(pEntry))
+        return;
 
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
@@ -1900,7 +1786,6 @@ VOID WPAStart2WayGroupHS(
 
 	os_free_mem(NULL, mpool);
 
-    RTMPSetTimer(&pEntry->RetryTimer, PEER_MSG1_RETRY_EXEC_INTV);
     DBGPRINT(RT_DEBUG_TRACE, ("<=== WPAStart2WayGroupHS : send out Group Message 1 \n"));
         
     return;
