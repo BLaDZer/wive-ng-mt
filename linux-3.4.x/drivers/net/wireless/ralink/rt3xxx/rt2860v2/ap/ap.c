@@ -697,7 +697,7 @@ VOID APStartUp(
 	RTMPSetPiggyBack(pAd, pAd->CommonCfg.bPiggyBackCapable);
 #endif /* PIGGYBACK_SUPPORT */
 
-	ApLogEvent(pAd, pAd->CurrentAddress, EVENT_RESET_ACCESS_POINT);
+	//ApLogEvent(pAd, pAd->CurrentAddress, EVENT_RESET_ACCESS_POINT);
 	pAd->Mlme.PeriodicRound = 0;
 	pAd->Mlme.OneSecPeriodicRound = 0;
 	pAd->MacTab.MsduLifeTime = 5; /* default 5 seconds */
@@ -1209,7 +1209,7 @@ VOID MacTableMaintenance(
 			printk("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
 					pEntry->Addr[4],pEntry->Addr[5],pEntry->StaIdleTimeout);
-			ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
+			//ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 		}
 		else if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
 		{
@@ -1752,9 +1752,9 @@ VOID ApLogEvent(
 		RTMP_GetCurrentSystemTime(&pLog->SystemTime);
 		COPY_MAC_ADDR(pLog->Addr, pAddr);
 		pLog->Event = Event;
-		DBGPRINT_RAW(RT_DEBUG_TRACE,("LOG#%ld %02x:%02x:%02x:%02x:%02x:%02x %s\n",
-			pAd->EventTab.Num, pAddr[0], pAddr[1], pAddr[2], 
-			pAddr[3], pAddr[4], pAddr[5], pEventText[Event]));
+		printk("LOG#%ld %02x:%02x:%02x:%02x:%02x:%02x %s\n",
+			pAd->EventTab.Num, pAddr[0], pAddr[1], pAddr[2],
+			pAddr[3], pAddr[4], pAddr[5], pEventText[Event]);
 		pAd->EventTab.Num += 1;
 	}
 }

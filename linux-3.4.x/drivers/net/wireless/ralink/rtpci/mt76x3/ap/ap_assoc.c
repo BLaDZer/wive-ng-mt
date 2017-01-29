@@ -464,8 +464,9 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 	}
 #endif
 
-	if (pEntry->AuthMode < Ndis802_11AuthModeWPA)
+	if (pEntry->AuthMode < Ndis802_11AuthModeWPA) {
 		ApLogEvent(pAd, pEntry->Addr, EVENT_ASSOCIATED);
+	}
 
 	APUpdateCapabilityAndErpIe(pAd);
 #ifdef DOT11_N_SUPPORT

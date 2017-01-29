@@ -4027,7 +4027,7 @@ VOID P2P_GoStartUp(
 	RTMPSetPiggyBack(pAd, pAd->CommonCfg.bPiggyBackCapable);
 #endif /* PIGGYBACK_SUPPORT */
 
-	ApLogEvent(pAd, pAd->CurrentAddress, EVENT_RESET_ACCESS_POINT);
+	//ApLogEvent(pAd, pAd->CurrentAddress, EVENT_RESET_ACCESS_POINT);
 
 #if defined(WSC_AP_SUPPORT) || defined(WSC_STA_SUPPORT)
 		{
@@ -4561,7 +4561,7 @@ VOID P2PMacTableMaintenance(
 			DBGPRINT(RT_DEBUG_WARN, ("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
 					pEntry->Addr[0],pEntry->Addr[1],pEntry->Addr[2],pEntry->Addr[3],
 					pEntry->Addr[4],pEntry->Addr[5],pEntry->StaIdleTimeout));
-			ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
+			//ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 		}
 		else if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
 		{
