@@ -48,7 +48,7 @@
 #define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
 #define BND_STRG_CHECK_TIME_5G		4000	/* orig 30000 */
 #define BND_STRG_RSSI_DIFF		20
-#define BND_STRG_RSSI_LOW		-80
+#define BND_STRG_RSSI_LOW		-95
 
 #ifndef TRUE
 #define TRUE						1
