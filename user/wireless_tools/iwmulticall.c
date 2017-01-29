@@ -34,6 +34,9 @@ extern int
 	main_iwpriv(int	argc,
 		    char **	argv);
 extern int
+	main_iwevent(int	argc,
+		    char **	argv);
+extern int
 	main_iwgetid(int	argc,
 		     char **	argv);
 
@@ -99,7 +102,13 @@ extern int
 #undef iw_usage
 #undef main
 
-/* iwevent is useless for most people, don't grab it ? */
+/* Get iwevent in there. */
+#define main(args...) main_iwevent(args)
+#define iw_usage(args...) iwevent_usage(args)
+#include "iwevent.c"
+#undef iw_usage
+#undef main
+
 
 /* ifrename is big and useless for those systems */
 
@@ -136,6 +145,8 @@ main(int	argc,
 #endif
   if(!strcmp(call_name, "iwpriv"))
     return(main_iwpriv(argc, argv));
+  if(!strcmp(call_name, "iwevent"))
+    return(main_iwevent(argc, argv));
   if(!strcmp(call_name, "iwgetid"))
     return(main_iwgetid(argc, argv));
 

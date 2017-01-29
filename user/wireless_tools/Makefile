@@ -50,8 +50,8 @@ WEXT_HEADER = wireless.$(WE_VERSION).h
 # Targets to build
 STATIC=libiw.a
 DYNAMIC=libiw.so.$(WT_VERSION)
-PROGS= iwconfig iwlist iwpriv iwgetid
-#PROGS+=  iwspy  iwevent ifrename
+PROGS= iwconfig iwlist iwpriv iwgetid iwevent
+#PROGS+= iwspy ifrename
 MANPAGES8=iwconfig.8 iwlist.8 iwpriv.8 iwspy.8 iwgetid.8 iwevent.8 ifrename.8
 MANPAGES7=wireless.7
 MANPAGES5=iftab.5
@@ -206,6 +206,7 @@ install-iwmulticall:: iwmulticall
 	( cd $(INSTALL_DIR) ; \
 	  ln -f -s iwconfig iwlist ; \
 	  ln -f -s iwconfig iwpriv ; \
+	  ln -f -s iwconfig iwevent ; \
 	  ln -f -s iwconfig iwgetid )
 
 romfs:
@@ -214,6 +215,7 @@ romfs:
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwlist
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwpriv
 	$(ROMFSINST) -s /bin/iwmulticall /bin/iwgetid
+	$(ROMFSINST) -s /bin/iwmulticall /bin/iwevent
 ifndef BUILD_STATIC
 	$(ROMFSINST) -S /lib/$(IWLIB)
 	$(ROMFSINST) -s /lib/$(IWLIB) /lib/libiw.so

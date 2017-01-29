@@ -493,7 +493,7 @@ iw_usage(int status)
   exit(status);
 }
 
-static const struct option long_opts[] = {
+static const struct option iwgetid_long_opts[] = {
   { "ap", no_argument, NULL, 'a' },
   { "channel", no_argument, NULL, 'c' },
   { "freq", no_argument, NULL, 'f' },
@@ -520,7 +520,7 @@ main(int	argc,
   int	ret = -1;
 
   /* Check command line arguments */
-  while((opt = getopt_long(argc, argv, "acfhmprs", long_opts, NULL)) > 0)
+  while((opt = getopt_long(argc, argv, "acfhmprs", iwgetid_long_opts, NULL)) > 0)
     {
       switch(opt)
 	{

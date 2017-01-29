@@ -761,7 +761,7 @@ iw_usage(int status)
   exit(status);
 }
 /* Command line options */
-static const struct option long_opts[] = {
+static const struct option iwevent_long_opts[] = {
   { "help", no_argument, NULL, 'h' },
   { "version", no_argument, NULL, 'v' },
   { NULL, 0, NULL, 0 }
@@ -779,7 +779,7 @@ main(int	argc,
   int opt;
 
   /* Check command line options */
-  while((opt = getopt_long(argc, argv, "hv", long_opts, NULL)) > 0)
+  while((opt = getopt_long(argc, argv, "hv", iwevent_long_opts, NULL)) > 0)
     {
       switch(opt)
 	{
