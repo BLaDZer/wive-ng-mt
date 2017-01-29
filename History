@@ -2739,34 +2739,35 @@
 25) kernel: ralink_wifi: fix FT GTK state after rekey set.<br>
 26) kernel: ralink_wifi: add syslog support in not debug builds.<br>
 27) kernel: ralink_wifi: fix max txpwr envelope in VHT_IECAP.<br>
-28) kernel: ralink_wifi: mt7610: fix ajust per rate TxPower regression.<br>
-29) kernel: ralink_wifi: mt7620: fix legacy only B mode support.<br>
-30) kernel: ralink_wifi: mt76x2/mt7610: fix tune tx power for VHT MCS2/3.<br>
-31) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
-32) kernel: ralink_wifi: mt7620/mt7610: fix wpa auth msg retry procedure.<br>
-33) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
-34) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
-35) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
-36) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
-37) kernel: mips: syscall: return directly in 32_mmap2() and mips_mmap().<br>
-38) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
-39) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
-40) kernel: percpu_counter: make APIs irq safe.<br>
-41) kernel: percpu_counter: fix __percpu_counter_add().<br>
-42) kernel: percpu_counter: make percpu_counters_lock irq-safe.<br>
-43) kernel: percpu_counter: percpu_counter_hotcpu_callback() cleanup.<br>
+28) kernel: ralink_wifi: check probe rsp ignore rssi before band steering logic (save table size in BNDSTR logic).<br>
+29) kernel: ralink_wifi: mt7610: fix ajust per rate TxPower regression.<br>
+30) kernel: ralink_wifi: mt7620: fix legacy only B mode support.<br>
+31) kernel: ralink_wifi: mt76x2/mt7610: fix tune tx power for VHT MCS2/3.<br>
+32) kernel: ralink_wifi: mt7620/mt7610: fix MT5396 based STB crash issue when Rx fragmentation.<br>
+33) kernel: ralink_wifi: mt7620/mt7610: fix wpa auth msg retry procedure.<br>
+34) kernel: ralink_wifi: mt7603: skip check dublicate frame for NULL frames.<br>
+35) kernel: ralink_wifi: mt76x2: fix set packet wdev before really sent out to air.<br>
+36) kernel: linux/kernel.h: fix DIV_ROUND_CLOSEST to support negative divisors.<br>
+37) kernel: wext: handle NULL extra data in iwe_stream_add_point better.<br>
+38) kernel: mips: syscall: return directly in 32_mmap2() and mips_mmap().<br>
+39) kernel: percpu_counter: switch the protection of percpu_counter list to spinlock.<br>
+40) kernel: percpu_counter: __this_cpu_write() doesn't need to be protected by spinlock.<br>
+41) kernel: percpu_counter: make APIs irq safe.<br>
+42) kernel: percpu_counter: fix __percpu_counter_add().<br>
+43) kernel: percpu_counter: make percpu_counters_lock irq-safe.<br>
+44) kernel: percpu_counter: percpu_counter_hotcpu_callback() cleanup.<br>
 45) kernel: net: netfilter: help gcc inline some functions.<br>
 46) kernel: net: change init_inodecache() return void.<br>
 47) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
 48) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
 49) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
-49) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-50) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-51) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-52) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-53) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-54) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
-55) kernel: net: remove bh disabling around percpu_counter accesses.<br>
+50) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+51) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+52) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+53) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+54) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+55) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+56) kernel: net: remove bh disabling around percpu_counter accesses.<br>
 <br>
 <br>
 <br>

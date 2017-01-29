@@ -118,17 +118,6 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 		}
 
 
-#ifdef BAND_STEERING
-		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
-											NULL, 
-											ProbeReqParam.Addr2,
-											Elem->MsgType,
-											Elem->rssi_info,
-											&bBndStrgCheck);
-		if (bBndStrgCheck == FALSE)
-			return;
-#endif /* BAND_STEERING */
-
 		if (mbss->ProbeRspRssiThreshold != 0)
 		{
 			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
@@ -140,6 +129,17 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			    continue;
 			}
 		}
+
+#ifdef BAND_STEERING
+		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+											NULL, 
+											ProbeReqParam.Addr2,
+											Elem->MsgType,
+											Elem->rssi_info,
+											&bBndStrgCheck);
+		if (bBndStrgCheck == FALSE)
+			return;
+#endif /* BAND_STEERING */
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
