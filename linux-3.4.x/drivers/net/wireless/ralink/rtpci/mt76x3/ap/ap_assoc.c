@@ -2385,9 +2385,9 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &SeqNum, &Reason))
 		return;
 
-	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", 
-				SeqNum, PRINT_MAC(Addr2), Reason));
-    
+	printk("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
+				SeqNum, PRINT_MAC(Addr2), Reason);
+
 	pEntry = MacTableLookup(pAd, Addr2);
 	if (pEntry == NULL)
 		return;
@@ -2401,8 +2401,8 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 			@2016/1/26
 		*/
 		if (!MAC_ADDR_EQUAL(wdev->if_addr, Addr1)) {
-			DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - The DA of this DIS-ASSOC request is %02x:%02x:%02x:%02x:%02x:%02x, ignore.\n", 
-				PRINT_MAC(Addr1)));
+			printk("ASSOC - The DA of this DIS-ASSOC request is %02x:%02x:%02x:%02x:%02x:%02x, ignore.\n", 
+				PRINT_MAC(Addr1));
 			return;
 		}
 #ifdef DOT1X_SUPPORT
@@ -2433,7 +2433,7 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 			FBT_LINK_OFFLINE_NOTIFY);
 #endif /* ALL_NET_EVENT */
 
-        ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
+		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 
 		MacTableDeleteEntry(pAd, pEntry->wcid, Addr2);
 
@@ -2532,16 +2532,16 @@ VOID APMlmeKickOutSta(RTMP_ADAPTER *pAd, UCHAR *pStaAddr, UCHAR Wcid, USHORT Rea
 			RTMPAvgRssi(pAd, &pEntry->RssiSample),
 			FBT_LINK_OFFLINE_NOTIFY);
 #endif /* ALL_NET_EVENT */
-		
-        ApLogEvent(pAd, pStaAddr, EVENT_DISASSOCIATED);
+
+	    //ApLogEvent(pAd, pStaAddr, EVENT_DISASSOCIATED);
 
 	    /* 2. send out a DISASSOC request frame */
 	    NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
 	    if (NStatus != NDIS_STATUS_SUCCESS)
 	        return;
 	    
-	    DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - MLME disassociates %02x:%02x:%02x:%02x:%02x:%02x; Send DISASSOC request\n",
-	        		PRINT_MAC(pStaAddr)));
+	    printk("ASSOC - MLME disassociates %02x:%02x:%02x:%02x:%02x:%02x; Send DISASSOC request\n",
+	        		PRINT_MAC(pStaAddr));
 	    MgtMacHeaderInit(pAd, &DisassocHdr, SUBTYPE_DISASSOC, 0, pStaAddr, 
 							pAd->ApCfg.MBSSID[ApIdx].wdev.if_addr,
 							pAd->ApCfg.MBSSID[ApIdx].wdev.bssid);

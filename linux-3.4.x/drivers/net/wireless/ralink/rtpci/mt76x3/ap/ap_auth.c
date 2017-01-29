@@ -104,7 +104,7 @@ static VOID APMlmeDeauthReqAction(
 			FBT_LINK_OFFLINE_NOTIFY);
 #endif /* ALL_NET_EVENT */
 
-		ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
+		//ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
 
 		apidx = pEntry->func_tb_idx;
 

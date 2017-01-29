@@ -125,7 +125,7 @@ static VOID APMlmeDeauthReqAction(
 		
 		/* send wireless event - for deauthentication */
 		RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, pInfo->Addr, 0, 0);  
-		ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
+		//ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
 
 		apidx = pEntry->apidx;
 
