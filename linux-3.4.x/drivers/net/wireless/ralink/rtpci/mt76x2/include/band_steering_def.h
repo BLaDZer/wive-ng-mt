@@ -31,7 +31,7 @@
 #define BND_STRG_HOLD_TIME		8000	/* orig 90000 */
 #define BND_STRG_CHECK_TIME_5G		4000	/* orig 30000 */
 #define BND_STRG_RSSI_DIFF		20
-#define BND_STRG_RSSI_LOW		-95
+#define BND_STRG_RSSI_LOW		-88
 
 #define BND_STRG_AUTO_ONOFF_THRD 	4000
 #define P_BND_STRG_TABLE	(&pAd->ApCfg.BndStrgTable)
