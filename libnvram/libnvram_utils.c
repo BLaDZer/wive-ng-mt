@@ -1977,6 +1977,8 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(RADIUS_Key8);
 	FPRINT_DAT(MaxStaNum);
 
+	FPRINT_DAT(WirelessEvent);  /* send log message through wireless event for debug purpose */
+
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 	FPRINT_DAT(PSMode);
 	FPRINT_DAT(AutoConnect);
@@ -1985,9 +1987,6 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 #if defined(CONFIG_RT2860V2_EXT_CHANNEL_LIST) || defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X3_AP_EXT_CHANNEL_LIST)
 	FPRINT_DAT(ChannelGeography);
-#endif
-#if defined(CONFIG_RT2860V2_AP_DBG) || defined(CONFIG_MT7610_AP_DBG) || defined(CONFIG_MT76X2_AP_DBG) || defined(CONFIG_MT76X3_AP_DBG)
-	FPRINT_DAT(WirelessEvent);
 #endif
 #if defined(CONFIG_RT2860V2_AP_VIDEO_TURBINE) || defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
 	FPRINT_DAT(VideoTurbine);
