@@ -209,7 +209,7 @@ static VOID APPeerDeauthReqAction(
 
 		/* send wireless event - for deauthentication */
 		RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, Addr2, 0, 0);  
-		ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
+		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 		
         if (pEntry->CMTimerRunning == TRUE)
         {

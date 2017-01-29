@@ -204,7 +204,7 @@ static VOID APPeerDeauthReqAction(
 			FBT_LINK_OFFLINE_NOTIFY);
 #endif /* ALL_NET_EVENT */
 
-		ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
+		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 
 		if (pEntry->CMTimerRunning == TRUE)
 		{
