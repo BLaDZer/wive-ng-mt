@@ -139,9 +139,7 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_txbf.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/cmm_txbf_cal.o
 endif
 
-ifeq ($(CONFIG_MT76X2_AP_DBG),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/sys_log.o
-endif
 
 ###################
 #  CFLAGS

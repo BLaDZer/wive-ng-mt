@@ -219,9 +219,7 @@ endif
 #$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/os/linux/cfg80211/cfg80211.o
 #endif
 
-ifeq ($(CONFIG_MT76X3_AP_DEBUG),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/sys_log.o
-endif
 
 ###################
 #  CFLAGS
