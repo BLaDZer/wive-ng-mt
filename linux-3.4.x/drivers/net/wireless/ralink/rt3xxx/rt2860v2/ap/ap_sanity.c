@@ -228,9 +228,12 @@ BOOLEAN PeerAssocReqCmmSanity(
 				
 		break;
 		case IE_EXT_CAPABILITY:
-			if (eid_ptr->Len >= sizeof(EXT_CAP_INFO_ELEMENT))
+			if (eid_ptr->Len)
 			{
-				NdisMoveMemory(pExtCapInfo, eid_ptr->Octet, sizeof(EXT_CAP_INFO_ELEMENT));
+				INT ext_len = eid_ptr->Len;
+
+				ext_len = ext_len > sizeof(EXT_CAP_INFO_ELEMENT) ? sizeof(EXT_CAP_INFO_ELEMENT) : ext_len;
+				NdisMoveMemory(pExtCapInfo, eid_ptr->Octet, ext_len);
 				DBGPRINT(RT_DEBUG_WARN, ("PeerAssocReqSanity - IE_EXT_CAPABILITY!\n"));
 			}
 

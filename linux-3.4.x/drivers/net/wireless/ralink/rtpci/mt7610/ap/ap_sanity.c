@@ -198,9 +198,12 @@ BOOLEAN PeerAssocReqCmmSanity(
 				
 		break;
 		case IE_EXT_CAPABILITY:
-			if (eid_ptr->Len >= sizeof(EXT_CAP_INFO_ELEMENT))
+			if (eid_ptr->Len)
 			{
-				NdisMoveMemory(&ie_lists->ExtCapInfo, eid_ptr->Octet, sizeof(EXT_CAP_INFO_ELEMENT));
+				INT ext_len = eid_ptr->Len;
+
+				ext_len = ext_len > sizeof(EXT_CAP_INFO_ELEMENT) ? sizeof(EXT_CAP_INFO_ELEMENT) : ext_len;
+				NdisMoveMemory(&ie_lists->ExtCapInfo, eid_ptr->Octet, ext_len);
 				DBGPRINT(RT_DEBUG_WARN, ("PeerAssocReqSanity - IE_EXT_CAPABILITY!\n"));
 			}
 
@@ -387,7 +390,7 @@ BOOLEAN PeerAssocReqCmmSanity(
 				DBGPRINT(RT_DEBUG_WARN, ("%s():wrong IE_VHT_CAP, eid->Len = %d\n",
 							__FUNCTION__, eid_ptr->Len));
 			}
-
+			break;
 		case IE_VHT_OP:
 			if (eid_ptr->Len == sizeof(VHT_OP_IE))
 			{
@@ -395,6 +398,7 @@ BOOLEAN PeerAssocReqCmmSanity(
 				ie_lists->vht_op_len = eid_ptr->Len;
 				DBGPRINT(RT_DEBUG_TRACE, ("%s():IE_VHT_OP\n", __FUNCTION__));
 			}
+			break;
 #endif /* DOT11_VHT_AC */
             default:
                 break;

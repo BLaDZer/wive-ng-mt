@@ -759,16 +759,14 @@ BOOLEAN PeerBeaconAndProbeRspSanity_Old(
 #endif /* DOT11R_FT_SUPPORT */
 
 			case IE_EXT_CAPABILITY:
-				if (pEid->Len >= 1)
-				{
-					UCHAR MaxSize;
-					UCHAR MySize = sizeof(EXT_CAP_INFO_ELEMENT);
+			    if (pEid->Len >= 1)
+			    {
+				UCHAR cp_len, buf_space = sizeof(EXT_CAP_INFO_ELEMENT);
 
-					MaxSize = min(pEid->Len, MySize);
-
-					NdisMoveMemory(pExtCapInfo,&pEid->Octet[0], MaxSize);
-				}
-				break;
+				cp_len = min(pEid->Len, buf_space);
+				NdisMoveMemory(pExtCapInfo,&pEid->Octet[0], cp_len);
+			    }
+			    break;
             default:
                 break;
         }
