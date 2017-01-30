@@ -242,9 +242,13 @@ libmicrohttpd_cb(void *cls,
 	char *mac;
 	int ret;
 
+	debug(LOG_DEBUG, "access: %s %s", method, url);
+
 	/* only allow get */
-	if(0 != strcmp(method, "GET"))
+	if(0 != strcmp(method, "GET")) {
+		debug(LOG_DEBUG, "Unsupported http method %s", method);
 		return send_error(connection, 503);
+	}
 
 	/* switch between preauth, authenticated */
 	/* - always - set caching headers
@@ -873,14 +877,38 @@ const char *lookup_mimetype(const char *filename)
  */
 static int serve_file(struct MHD_Connection *connection, t_client *client, const char *url)
 {
+	struct stat stat_buf;
 	s_config *config = config_get_config();
 	struct MHD_Response *response;
 	char filename[PATH_MAX];
 	int ret = MHD_NO;
 	const char *mimetype = NULL;
-	size_t size;
+	off_t size;
 
 	snprintf(filename, PATH_MAX, "%s/%s", config->webroot, url);
+
+	/* check if file exists and is not a directory */
+	ret = stat(filename, &stat_buf);
+	if (!ret) {
+		/* stat failed */
+		return send_error(connection, 404);
+	}
+
+	if (!S_ISREG(stat_buf.st_mode)) {
+#ifdef S_ISLNK
+		/* ignore links */
+		if (!S_ISLNK(stat_buf.st_mode))
+#endif /* S_ISLNK */
+
+		if (url == NULL)
+			debug(LOG_ERR, "Corner case bug #164 triggered by NULL. Please report it. Sending 404");
+		else if (strlen(url) == 0)
+			debug(LOG_ERR, "Corner case bug #164 triggered by strlen. Please report it. Sending 404");
+		else if (url[0] == '/' && strlen(url) == 1)
+			debug(LOG_ERR, "Corner case bug #164 triggered by /. Please report it. Sending 404");
+
+		return send_error(connection, 404);
+	}
 
 	int fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -890,6 +918,9 @@ static int serve_file(struct MHD_Connection *connection, t_client *client, const
 
 	/* serving file and creating response */
 	size = lseek(fd, 0, SEEK_END);
+	if (size < 0)
+		return send_error(connection, 404);
+
 	response = MHD_create_response_from_fd(size, fd);
 	if (!response)
 		return send_error(connection, 503);
