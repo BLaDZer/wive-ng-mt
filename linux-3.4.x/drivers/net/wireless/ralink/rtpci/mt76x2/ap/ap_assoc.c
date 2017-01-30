@@ -1936,6 +1936,17 @@ SendAssocResponse:
 			{
 				pEntry->PMKID_CacheIdx = ENTRY_NOT_FOUND;
 				DBGPRINT(RT_DEBUG_ERROR, ("ASSOC - 2.PMKID not found \n"));
+
+				/* Enqueue a EAPOL-start message to trigger EAP SM */
+				if (pEntry->EnqueueEapolStartTimerRunning == EAPOL_START_DISABLE
+#ifdef HOSTAPD_SUPPORT
+					&& wdev->Hostapd == Hostapd_Diable
+#endif/*HOSTAPD_SUPPORT*/
+				)
+				{
+      	  			    pEntry->EnqueueEapolStartTimerRunning = EAPOL_START_1X;
+       	 			    RTMPSetTimer(&pEntry->EnqueueStartForPSKTimer, ENQUEUE_EAPOL_START_TIMER);
+				}
 			}
 		}
 		else if ((pEntry->AuthMode == Ndis802_11AuthModeWPA) ||
