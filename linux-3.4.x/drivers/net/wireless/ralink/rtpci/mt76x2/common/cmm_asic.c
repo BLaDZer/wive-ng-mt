@@ -1727,8 +1727,8 @@ VOID AsicSetEdcaParm(RTMP_ADAPTER *pAd, PEDCA_PARM pEdcaParm)
 		}
 		else
 		{
-			Ac2Cfg.field.AcTxop = 96;	/* AC_VI: 96*32us ~= 3ms*/
-			Ac3Cfg.field.AcTxop = 48;	/* AC_VO: 48*32us ~= 1.5ms*/
+			Ac2Cfg.field.AcTxop = 94;	/* AC_VI: 94*32us ~= 3ms*/
+			Ac3Cfg.field.AcTxop = 47;	/* AC_VO: 47*32us ~= 1.5ms*/
 		}
 		Ac2Cfg.field.Cwmin = pAd->wmm_cw_min;
 		Ac2Cfg.field.Cwmax = pAd->wmm_cw_max;
