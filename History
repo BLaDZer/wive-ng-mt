@@ -2781,6 +2781,7 @@
 67) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 68) kernel: usb: cdc_ether: fix handling connection notification.<br>
 69) kernel: usb: cdc-ether: usbnet_cdc_zte_status() can be static.<br>
+70) kernel: usb: qmi_wwan: add support for Telit LE922A PID 0x1040.<br>
 <br>
 <br>
 <br>
