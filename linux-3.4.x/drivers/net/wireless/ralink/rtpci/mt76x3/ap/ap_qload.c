@@ -697,6 +697,8 @@ VOID QBSS_LoadUpdate(
 		ChanUtilDe <<= 10; /* ms to us */
 
 		pAd->phy_ctrl.QloadChanUtil = (UINT8)(ChanUtilNu/ChanUtilDe);
+		if((ChanUtilNu/ChanUtilDe) >= 255)
+			pAd->phy_ctrl.QloadChanUtil = 255;
 
 		/* re-accumulate channel busy time */
 		pAd->phy_ctrl.QloadChanUtilBeaconCnt = 0;
