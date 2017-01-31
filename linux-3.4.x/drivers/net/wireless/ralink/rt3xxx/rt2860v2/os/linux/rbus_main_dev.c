@@ -195,6 +195,6 @@ VOID rt2880_module_exit(VOID)
 	wl_proc_exit();
 }
 
-MODULE_LICENSE("Proprietary");
+MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mediatek");
 MODULE_DESCRIPTION("MT7620 WiFi driver");

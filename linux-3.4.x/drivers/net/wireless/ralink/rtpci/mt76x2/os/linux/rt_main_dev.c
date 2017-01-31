@@ -40,7 +40,6 @@
 #endif
 #endif
 
-// TODO: shiang-6590, remove it when MP
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mediatek");
 MODULE_DESCRIPTION("MT76xx WiFi driver");
