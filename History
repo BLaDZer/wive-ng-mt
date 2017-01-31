@@ -2764,20 +2764,21 @@
 50) kernel: percpu_counter: fix __percpu_counter_add().<br>
 51) kernel: percpu_counter: make percpu_counters_lock irq-safe.<br>
 52) kernel: percpu_counter: percpu_counter_hotcpu_callback() cleanup.<br>
-53) kernel: net: netfilter: help gcc inline some functions.<br>
+53) kernel: net: remove bh disabling around percpu_counter accesses.<br>
 54) kernel: net: change init_inodecache() return void.<br>
 55) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
-56) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-57) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
-58) kernel: net: ipv6: remove skb_reserve in getroute.<br>
-59) kernel: net: ipv6: remove __sk_dst_reset() in tcp_v6_connect().<br>
-60) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-61) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-62) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-63) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-64) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-65) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
-66) kernel: net: remove bh disabling around percpu_counter accesses.<br>
+56) kernel: net: netfilter: help gcc inline some functions.<br>
+57) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+58) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+59) kernel: net: ipv4: tcp: dont cache output dst for syncookies.<br>
+60) kernel: net: ipv6: remove skb_reserve in getroute.<br>
+61) kernel: net: ipv6: remove __sk_dst_reset() in tcp_v6_connect().<br>
+62) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+63) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+64) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+65) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+66) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+67) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 <br>
 <br>
 <br>
