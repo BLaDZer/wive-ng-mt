@@ -2779,6 +2779,7 @@
 65) kernel: net: gro: enter slow-path if there is no tailroom.<br>
 66) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
 67) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+68) kernel: usb: cdc_ether: fix handling connection notification.<br>
 <br>
 <br>
 <br>
