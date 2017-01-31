@@ -229,6 +229,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 #
 /user/iptables/iptables/iptables-extensions.8
 /user/iptables/configure
+/user/iptables/Makefile
 /user/iptables/Makefile.in
 /user/iproute2/ip/static-syms.h
 /user/iproute2/tc/static-syms.h
