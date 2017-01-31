@@ -2780,6 +2780,7 @@
 66) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
 67) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 68) kernel: usb: cdc_ether: fix handling connection notification.<br>
+69) kernel: usb: cdc-ether: usbnet_cdc_zte_status() can be static.<br>
 <br>
 <br>
 <br>
