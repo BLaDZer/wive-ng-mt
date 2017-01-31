@@ -2782,6 +2782,7 @@
 68) kernel: usb: cdc_ether: fix handling connection notification.<br>
 69) kernel: usb: cdc-ether: usbnet_cdc_zte_status() can be static.<br>
 70) kernel: usb: qmi_wwan: add support for Telit LE922A PID 0x1040.<br>
+71) kernel: usb: serial: option: add support for Telit LE922A PIDs 0x1040, 0x1041.<br>
 <br>
 <br>
 <br>
