@@ -3178,15 +3178,14 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
 		MAC_TABLE_ENTRY *pEntry;
-		
-		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%d) > %d\n",
-					__FUNCTION__, PRINT_MAC(hdr->Addr2), 
-					wcid, MAX_LEN_OF_MAC_TABLE));
-//+++Add by shiang for debug
+
 		pEntry = MacTableLookup(pAd, hdr->Addr2);
 		if (pEntry)
 			return FALSE;
-//---Add by shiang for debug
+
+		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%d) > %d\n",
+					__FUNCTION__, PRINT_MAC(hdr->Addr2), 
+					wcid, MAX_LEN_OF_MAC_TABLE));
 
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
