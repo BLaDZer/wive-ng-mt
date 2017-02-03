@@ -2774,17 +2774,18 @@
 60) kernel: net: inet: remove now unused flag DST_NOPEER.<br>
 61) kernel: net: netfilter: help gcc inline some functions.<br>
 62) kernel: net: sched: fix soft lockup in tc_classify.<br>
-63) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
-64) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
-65) kernel: net: ipv4: tcp: dont cache output dst for syncookies.<br>
-66) kernel: net: ipv6: remove skb_reserve in getroute.<br>
-67) kernel: net: ipv6: remove __sk_dst_reset() in tcp_v6_connect().<br>
-68) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-69) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-70) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-71) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-72) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-73) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+63) kernel: net: drop secpath on free after gro merge.<br>
+64) kernel: net: netfilter: nf_conntrack: fix tcp_in_window for Fast Open.<br>
+65) kernel: net: ipv4: remove disable of bottom half in inet_rtm_getroute.<br>
+66) kernel: net: ipv4: tcp: dont cache output dst for syncookies.<br>
+67) kernel: net: ipv6: remove skb_reserve in getroute.<br>
+68) kernel: net: ipv6: remove __sk_dst_reset() in tcp_v6_connect().<br>
+69) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+70) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+71) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+72) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+73) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+74) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 <br>
 <br>
 <br>

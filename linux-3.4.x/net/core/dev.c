@@ -3895,7 +3895,9 @@ static void napi_reuse_skb(struct napi_struct *napi, struct sk_buff *skb)
 	skb->dev = napi->dev;
 	skb->skb_iif = 0;
 	skb->truesize = SKB_TRUESIZE(skb_end_offset(skb));
-
+#ifdef CONFIG_XFRM
+	secpath_reset(skb);
+#endif
 	napi->skb = skb;
 }
 
