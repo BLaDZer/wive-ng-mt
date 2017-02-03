@@ -136,10 +136,10 @@ choice
 	default MT7610_AP_TEMPERATURE_COMPENSATION
 
 	config MT7610_AP_TSSI_COMPENSATION
-	bool "TSSI DC Calibration & TSSI compensation Support"
+	bool "TSSI DC Calibration & TSSI compensation Support (Internal TX ALC)"
 
 	config MT7610_AP_TEMPERATURE_COMPENSATION
-	bool "Tx Power Temperature Compensation"
+	bool "Tx Power Temperature Compensation (External TX ALC)"
 endchoice
 
 config  MT7610_AP_SNMP
