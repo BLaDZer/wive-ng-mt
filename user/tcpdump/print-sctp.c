@@ -33,6 +33,8 @@
  * SUCH DAMAGE.
  */
 
+/* \summary: Stream Control Transmission Protocol (SCTP) printer */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -574,7 +576,7 @@ void sctp_print(netdissect_options *ndo,
       }
       chunkLengthRemaining = chunkLength;
 
-      align=chunkLength % 4;
+      align = chunkLength % 4;
       if (align != 0)
 	align = 4 - align;
 
@@ -691,7 +693,7 @@ void sctp_print(netdissect_options *ndo,
  	    sctpPacketLengthRemaining -= sizeof(*init);
 	    chunkLengthRemaining -= sizeof(*init);
 
-#if(0) /* ALC you can add code for optional params here */
+#if 0 /* ALC you can add code for optional params here */
 	    if( chunkLengthRemaining != 0 )
 	      ND_PRINT((ndo, " @@@@@ UNFINISHED @@@@@@%s\n",
 		     "Optional params present, but not printed."));
@@ -719,7 +721,7 @@ void sctp_print(netdissect_options *ndo,
             sctpPacketLengthRemaining -= sizeof(*init);
             chunkLengthRemaining -= sizeof(*init);
 
-#if(0) /* ALC you can add code for optional params here */
+#if 0 /* ALC you can add code for optional params here */
 	    if( chunkLengthRemaining != 0 )
 	      ND_PRINT((ndo, " @@@@@ UNFINISHED @@@@@@%s\n",
 		     "Optional params present, but not printed."));
@@ -775,7 +777,7 @@ void sctp_print(netdissect_options *ndo,
 	      }
               dupTSN = (const u_char *)bp;
 	      ND_PRINT((ndo, "\n\t\t[dup TSN #%u: %u] ", tsnNo+1,
-	          EXTRACT_32BITS(dupTSN)));
+	        EXTRACT_32BITS(dupTSN)));
 	    }
 	    break;
 	  }
@@ -785,7 +787,7 @@ void sctp_print(netdissect_options *ndo,
             sctpPacketLengthRemaining -= chunkLengthRemaining;
             chunkLengthRemaining = 0;
 	    break;
-	}
+	  }
 	}
 
       /*
@@ -795,8 +797,8 @@ void sctp_print(netdissect_options *ndo,
       bp += chunkLengthRemaining;
       sctpPacketLengthRemaining -= chunkLengthRemaining;
 
-	if (ndo->ndo_vflag < 2)
-	  sep = ", (";
+      if (ndo->ndo_vflag < 2)
+        sep = ", (";
 
       if (align != 0) {
 	/*

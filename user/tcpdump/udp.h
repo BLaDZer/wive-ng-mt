@@ -54,22 +54,22 @@ struct udphdr {
 #define ORACLE_SQLNET_PORT		66	/*XXX*/
 #endif
 #ifndef BOOTPS_PORT
-#define BOOTPS_PORT 67		/* RFC951 */
+#define BOOTPS_PORT			67	/* RFC951 */
 #endif
 #ifndef BOOTPC_PORT
-#define BOOTPC_PORT 68		/* RFC951 */
+#define BOOTPC_PORT			68	/* RFC951 */
 #endif
 #ifndef TFTP_PORT
-#define TFTP_PORT 69		/*XXX*/
+#define TFTP_PORT			69	/*XXX*/
 #endif
 #ifndef KERBEROS_PORT
-#define KERBEROS_PORT 88	/*XXX*/
+#define KERBEROS_PORT			88	/*XXX*/
 #endif
 #ifndef SUNRPC_PORT
-#define SUNRPC_PORT 111		/*XXX*/
+#define SUNRPC_PORT			111	/*XXX*/
 #endif
 #ifndef NTP_PORT
-#define NTP_PORT 123		/*XXX*/
+#define NTP_PORT			123	/*XXX*/
 #endif
 #ifndef NETBIOS_NS_PORT
 #define NETBIOS_NS_PORT			137	/* RFC 1001, RFC 1002 */
@@ -84,7 +84,7 @@ struct udphdr {
 #define SNMP_PORT			161	/*XXX*/
 #endif
 #ifndef SNMPTRAP_PORT
-#define SNMPTRAP_PORT 162	/*XXX*/
+#define SNMPTRAP_PORT			162	/*XXX*/
 #endif
 #ifndef BGP_PORT
 #define BGP_PORT			179	/*XXX*/
@@ -117,13 +117,13 @@ struct udphdr {
 #define CISCO_AUTORP_PORT		496	/*XXX*/
 #endif
 #ifndef ISAKMP_PORT
-#define ISAKMP_PORT 500		/*XXX*/
+#define ISAKMP_PORT			500	/*XXX*/
 #endif
 #ifndef SYSLOG_PORT
-#define SYSLOG_PORT 514         /* rfc3164 */
+#define SYSLOG_PORT			514	/* rfc3164 */
 #endif
 #ifndef RIP_PORT
-#define RIP_PORT 520		/*XXX*/
+#define RIP_PORT			520	/*XXX*/
 #endif
 #ifndef RIPNG_PORT
 #define RIPNG_PORT			521	/* RFC 2080 */
@@ -147,16 +147,16 @@ struct udphdr {
 #define LDAPS_PORT			636	/*XXX - LDAP over TLS/SSL */
 #endif
 #ifndef LDP_PORT
-#define LDP_PORT 646
+#define LDP_PORT			646
 #endif
 #ifndef DHCP_FAILOVER_PORT
 #define DHCP_FAILOVER_PORT		647	/*XXX*/
 #endif
 #ifndef AQDV_PORT
-#define AODV_PORT 654		/*XXX*/
+#define AODV_PORT			654	/*XXX*/
 #endif
 #ifndef OLSR_PORT
-#define OLSR_PORT 698           /* rfc3626 */
+#define OLSR_PORT			698	/* rfc3626 */
 #endif
 #ifndef LMP_PORT
 #define LMP_PORT			701	/* rfc4204 */
@@ -198,7 +198,7 @@ struct udphdr {
 #define RADIUS_PORT			1645	/*XXX*/
 #endif
 #ifndef RADIUS_ACCOUNTING_PORT
-#define RADIUS_ACCOUNTING_PORT 1646
+#define RADIUS_ACCOUNTING_PORT		1646
 #endif
 #ifndef RADIUS_CISCO_COA_PORT
 #define RADIUS_CISCO_COA_PORT		1700
@@ -210,10 +210,10 @@ struct udphdr {
 #define RADIUS_NEW_PORT			1812	/*XXX*/
 #endif
 #ifndef RADIUS_NEW_ACCOUNTING_PORT
-#define RADIUS_NEW_ACCOUNTING_PORT 1813
+#define RADIUS_NEW_ACCOUNTING_PORT	1813
 #endif
 #ifndef HSRP_PORT
-#define HSRP_PORT 1985		/*XXX*/
+#define HSRP_PORT			1985	/*XXX*/
 #endif
 #ifndef NFS_DAEMON_PORT
 #define NFS_DAEMON_PORT			2049	/*XXX*/
@@ -234,16 +234,16 @@ struct udphdr {
 #define VAT_PORT			3456	/*XXX*/
 #endif
 #ifndef MPLS_LSP_PING_PORT
-#define MPLS_LSP_PING_PORT      3503 /* draft-ietf-mpls-lsp-ping-02.txt */
+#define MPLS_LSP_PING_PORT		3503	/* draft-ietf-mpls-lsp-ping-02.txt */
 #endif
 #ifndef SUBVERSION_PORT
 #define SUBVERSION_PORT			3690	/*XXX*/
 #endif
 #ifndef BFD_CONTROL_PORT
-#define BFD_CONTROL_PORT        3784 /* draft-katz-ward-bfd-v4v6-1hop-00.txt */
+#define BFD_CONTROL_PORT		3784	/* RFC 5881 */
 #endif
 #ifndef BFD_ECHO_PORT
-#define BFD_ECHO_PORT           3785 /* draft-katz-ward-bfd-v4v6-1hop-00.txt */
+#define BFD_ECHO_PORT			3785	/* RFC 5881 */
 #endif
 #ifndef RADIUS_COA_PORT
 #define RADIUS_COA_PORT			3799	/* RFC 5176 */
@@ -258,10 +258,10 @@ struct udphdr {
 #define ISAKMP_PORT_NATT		4500	/* rfc3948 */
 #endif
 #ifndef WB_PORT
-#define WB_PORT			4567
+#define WB_PORT				4567
 #endif
 #ifndef VXLAN_PORT
-#define VXLAN_PORT              4789  /* RFC 7348 */
+#define VXLAN_PORT			4789	/* RFC 7348 */
 #endif
 #ifndef VXLAN_GPE_PORT
 #define VXLAN_GPE_PORT			4790	/* draft-ietf-nvo3-vxlan-gpe-01 */
@@ -276,7 +276,7 @@ struct udphdr {
 #define MULTICASTDNS_PORT		5353	/* RFC 6762 */
 #endif
 #ifndef AHCP_PORT
-#define AHCP_PORT 5359		/* draft-chroboczek-ahcp-00 */
+#define AHCP_PORT			5359	/* draft-chroboczek-ahcp-00 */
 #endif
 #ifndef GENEVE_PORT
 #define GENEVE_PORT			6081	/* draft-gross-geneve-02 */
@@ -285,10 +285,10 @@ struct udphdr {
 #define SFLOW_PORT			6343	/* http://www.sflow.org/developers/specifications.php */
 #endif
 #ifndef BABEL_PORT
-#define BABEL_PORT              6696  /* RFC 6126 errata */
+#define BABEL_PORT			6696	/* RFC 6126 errata */
 #endif
 #ifndef BABEL_PORT_OLD
-#define BABEL_PORT_OLD          6697  /* RFC 6126 */
+#define BABEL_PORT_OLD			6697	/* RFC 6126 */
 #endif
 #ifndef RX_PORT_LOW
 #define RX_PORT_LOW			7000	/*XXX*/

@@ -19,6 +19,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/* \summary: White Board printer */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -48,7 +50,7 @@ static const char tstr[] = "[|wb]";
 #define DOP_ROUNDUP(x)	((((int)(x)) + (DOP_ALIGN - 1)) & ~(DOP_ALIGN - 1))
 #define DOP_NEXT(d)\
 	((const struct dophdr *)((const u_char *)(d) + \
-			  DOP_ROUNDUP(EXTRACT_16BITS(&(d)->dh_len) + sizeof(*(d)))))
+				DOP_ROUNDUP(EXTRACT_16BITS(&(d)->dh_len) + sizeof(*(d)))))
 
 /*
  * Format of the whiteboard packet header.

@@ -20,6 +20,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/* \summary: IEEE 802.11 printer */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -1757,7 +1759,7 @@ ctrl_body_print(netdissect_options *ndo,
  */
 static void
 get_data_src_dst_mac(uint16_t fc, const u_char *p, const uint8_t **srcp,
-                  const uint8_t **dstp)
+                     const uint8_t **dstp)
 {
 #define ADDR1  (p + 4)
 #define ADDR2  (p + 10)
@@ -2037,7 +2039,7 @@ ieee802_11_print(netdissect_options *ndo,
 {
 	uint16_t fc;
 	u_int caplen, hdrlen, meshdrlen;
-	const uint8_t *src, *dst;
+	struct lladdr_info src, dst;
 	int llc_hdrlen;
 
 	caplen = orig_caplen;
@@ -2074,7 +2076,6 @@ ieee802_11_print(netdissect_options *ndo,
 	} else
 		meshdrlen = 0;
 
-
 	if (caplen < hdrlen) {
 		ND_PRINT((ndo, "%s", tstr));
 		return hdrlen;
@@ -2090,10 +2091,12 @@ ieee802_11_print(netdissect_options *ndo,
 	caplen -= hdrlen;
 	p += hdrlen;
 
+	src.addr_string = etheraddr_string;
+	dst.addr_string = etheraddr_string;
 	switch (FC_TYPE(fc)) {
 	case T_MGMT:
-		get_mgmt_src_dst_mac(p - hdrlen, &src, &dst);
-		if (!mgmt_body_print(ndo, fc, src, p, length)) {
+		get_mgmt_src_dst_mac(p - hdrlen, &src.addr, &dst.addr);
+		if (!mgmt_body_print(ndo, fc, src.addr, p, length)) {
 			ND_PRINT((ndo, "%s", tstr));
 			return hdrlen;
 		}
@@ -2115,15 +2118,15 @@ ieee802_11_print(netdissect_options *ndo,
 				return hdrlen;
 			}
 		} else {
-			get_data_src_dst_mac(fc, p - hdrlen, &src, &dst);
-			llc_hdrlen = llc_print(ndo, p, length, caplen, src, dst);
+			get_data_src_dst_mac(fc, p - hdrlen, &src.addr, &dst.addr);
+			llc_hdrlen = llc_print(ndo, p, length, caplen, &src, &dst);
 			if (llc_hdrlen < 0) {
-			/*
-			 * Some kinds of LLC packet we cannot
-			 * handle intelligently
-			 */
-			if (!ndo->ndo_suppress_default_print)
-				ND_DEFAULTPRINT(p, caplen);
+				/*
+				 * Some kinds of LLC packet we cannot
+				 * handle intelligently
+				 */
+				if (!ndo->ndo_suppress_default_print)
+					ND_DEFAULTPRINT(p, caplen);
 				llc_hdrlen = -llc_hdrlen;
 			}
 			hdrlen += llc_hdrlen;
@@ -2538,18 +2541,18 @@ print_chaninfo(netdissect_options *ndo,
 				ND_PRINT((ndo, " 11a/5Mhz"));
 			else
 				ND_PRINT((ndo, " 11a"));
-	}
-	if (IS_CHAN_ANYG(flags)) {
-		if (flags & IEEE80211_CHAN_HALF)
-			ND_PRINT((ndo, " 11g/10Mhz"));
-		else if (flags & IEEE80211_CHAN_QUARTER)
-			ND_PRINT((ndo, " 11g/5Mhz"));
-		else
-			ND_PRINT((ndo, " 11g"));
-	} else if (IS_CHAN_B(flags))
-		ND_PRINT((ndo, " 11b"));
-	if (flags & IEEE80211_CHAN_TURBO)
-		ND_PRINT((ndo, " Turbo"));
+		}
+		if (IS_CHAN_ANYG(flags)) {
+			if (flags & IEEE80211_CHAN_HALF)
+				ND_PRINT((ndo, " 11g/10Mhz"));
+			else if (flags & IEEE80211_CHAN_QUARTER)
+				ND_PRINT((ndo, " 11g/5Mhz"));
+			else
+				ND_PRINT((ndo, " 11g"));
+		} else if (IS_CHAN_B(flags))
+			ND_PRINT((ndo, " 11b"));
+		if (flags & IEEE80211_CHAN_TURBO)
+			ND_PRINT((ndo, " Turbo"));
 	}
 	/*
 	 * These apply to 11n.
@@ -2581,7 +2584,7 @@ print_radiotap_field(netdissect_options *ndo,
 			goto trunc;
 		ND_PRINT((ndo, "%" PRIu64 "us tsft ", tsft));
 		break;
-	}
+		}
 
 	case IEEE80211_RADIOTAP_FLAGS: {
 		uint8_t flagsval;
@@ -2601,7 +2604,7 @@ print_radiotap_field(netdissect_options *ndo,
 		if (flagsval & IEEE80211_RADIOTAP_F_BADFCS)
 			ND_PRINT((ndo, "bad-fcs "));
 		break;
-	}
+		}
 
 	case IEEE80211_RADIOTAP_RATE: {
 		uint8_t rate;
@@ -2668,7 +2671,7 @@ print_radiotap_field(netdissect_options *ndo,
 		 * CHANNEL.
 		 */
 		if (presentflags & (1 << IEEE80211_RADIOTAP_XCHANNEL))
-		break;
+			break;
 		print_chaninfo(ndo, frequency, flags, presentflags);
 		break;
 		}
@@ -3112,6 +3115,9 @@ ieee802_11_radio_print(netdissect_options *ndo,
 
 	len = EXTRACT_LE_16BITS(&hdr->it_len);
 
+	/*
+	 * If we don't have the entire radiotap header, just give up.
+	 */
 	if (caplen < len) {
 		ND_PRINT((ndo, "%s", tstr));
 		return caplen;
@@ -3119,13 +3125,13 @@ ieee802_11_radio_print(netdissect_options *ndo,
 	cpack_init(&cpacker, (const uint8_t *)hdr, len); /* align against header start */
 	cpack_advance(&cpacker, sizeof(*hdr)); /* includes the 1st bitmap */
 	for (last_presentp = &hdr->it_present;
-	     IS_EXTENDED(last_presentp) &&
-	     (const u_char*)(last_presentp + 1) <= p + len;
+	     (const u_char*)(last_presentp + 1) <= p + len &&
+	     IS_EXTENDED(last_presentp);
 	     last_presentp++)
 	  cpack_advance(&cpacker, sizeof(hdr->it_present)); /* more bitmaps */
 
 	/* are there more bitmap extensions than bytes in header? */
-	if (IS_EXTENDED(last_presentp)) {
+	if ((const u_char*)(last_presentp + 1) > p + len) {
 		ND_PRINT((ndo, "%s", tstr));
 		return caplen;
 	}

@@ -12,10 +12,12 @@
  * LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
  * FOR A PARTICULAR PURPOSE.
  *
- * UNIDIRECTIONAL LINK DETECTION (UDLD) as per RFC5171
- *
  * Original code by Carles Kishimoto <carles.kishimoto@gmail.com>
  */
+
+/* \summary: Cisco UniDirectional Link Detection (UDLD) protocol printer */
+
+/* specification: RFC 5171 */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -65,8 +67,8 @@ static const struct tok udld_flags_values[] = {
 /*
  * UDLD's Protocol Data Unit format:
  *
- * 0                   1                   2                   3
- * 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+ *  0                   1                   2                   3
+ *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * | Ver | Opcode  |     Flags     |           Checksum            |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -184,7 +186,7 @@ udld_print (netdissect_options *ndo, const u_char *pptr, u_int length)
 invalid:
     ND_PRINT((ndo, "%s", istr));
     return;
- trunc:
+trunc:
     ND_PRINT((ndo, "%s", tstr));
 }
 

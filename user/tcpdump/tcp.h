@@ -81,9 +81,10 @@ struct tcphdr {
 #define TCPOPT_SIGNATURE	19	/* Keyed MD5 (rfc2385) */
 #define    TCPOLEN_SIGNATURE		18
 #define TCP_SIGLEN 16			/* length of an option 19 digest */
-#define TCPOPT_AUTH             20      /* Enhanced AUTH option */
+#define TCPOPT_SCPS		20	/* SCPS-TP (CCSDS 714.0-B-2) */
 #define	TCPOPT_UTO		28	/* tcp user timeout (rfc5482) */
 #define	   TCPOLEN_UTO			4
+#define TCPOPT_TCPAO		29	/* TCP authentication option (rfc5925) */
 #define	TCPOPT_MPTCP		30	/* MPTCP options */
 #define TCPOPT_FASTOPEN		34	/* TCP Fast Open (rfc7413) */
 #define TCPOPT_EXPERIMENT2	254	/* experimental headers (rfc4727) */
@@ -98,7 +99,7 @@ struct tcphdr {
 #define SSH_PORT		22
 #endif
 #ifndef TELNET_PORT
-#define TELNET_PORT             23
+#define TELNET_PORT		23
 #endif
 #ifndef SMTP_PORT
 #define SMTP_PORT		25
@@ -116,7 +117,7 @@ struct tcphdr {
 #define NETBIOS_SSN_PORT	139	/* RFC 1001, RFC 1002 */
 #endif
 #ifndef BGP_PORT
-#define BGP_PORT                179
+#define BGP_PORT		179
 #endif
 #ifndef RPKI_RTR_PORT
 #define RPKI_RTR_PORT		323
@@ -134,10 +135,10 @@ struct tcphdr {
 #define LDP_PORT		646
 #endif
 #ifndef PPTP_PORT
-#define PPTP_PORT	        1723
+#define PPTP_PORT		1723
 #endif
 #ifndef NFS_PORT
-#define NFS_PORT	        2049
+#define NFS_PORT		2049
 #endif
 #ifndef OPENFLOW_PORT_OLD
 #define OPENFLOW_PORT_OLD	6633

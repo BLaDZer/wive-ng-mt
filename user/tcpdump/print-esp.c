@@ -21,6 +21,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+/* \summary: IPSEC Encapsulating Security Payload (ESP) printer */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -463,8 +465,9 @@ static void esp_print_decode_onesecret(netdissect_options *ndo, char *line,
 
 		secretfile = fopen(filename, FOPEN_READ_TXT);
 		if (secretfile == NULL) {
-			perror(filename);
-			exit(3);
+			(*ndo->ndo_error)(ndo, "print_esp: can't open %s: %s\n",
+			    filename, strerror(errno));
+			return;
 		}
 
 		while (fgets(fileline, sizeof(fileline)-1, secretfile) != NULL) {
@@ -506,11 +509,11 @@ static void esp_print_decode_onesecret(netdissect_options *ndo, char *line,
 		if (strtoaddr6(spikey, &sa1.daddr.in6) == 1) {
 			sa1.daddr_version = 6;
 		} else if (strtoaddr(spikey, &sa1.daddr.in4) == 1) {
-				sa1.daddr_version = 4;
-			} else {
-				(*ndo->ndo_warning)(ndo, "print_esp: can not decode IP# %s\n", spikey);
-				return;
-			}
+			sa1.daddr_version = 4;
+		} else {
+			(*ndo->ndo_warning)(ndo, "print_esp: can not decode IP# %s\n", spikey);
+			return;
+		}
 	}
 
 	if (decode) {
@@ -529,8 +532,14 @@ static void esp_print_decode_onesecret(netdissect_options *ndo, char *line,
 USES_APPLE_DEPRECATED_API
 static void esp_init(netdissect_options *ndo _U_)
 {
-
+	/*
+	 * 0.9.6 doesn't appear to define OPENSSL_API_COMPAT, so
+	 * we check whether it's undefined or it's less than the
+	 * value for 1.1.0.
+	 */
+#if !defined(OPENSSL_API_COMPAT) || OPENSSL_API_COMPAT < 0x10100000L
 	OpenSSL_add_all_algorithms();
+#endif
 	EVP_add_cipher_alias(SN_des_ede3_cbc, "3des");
 }
 USES_APPLE_RST
@@ -703,9 +712,9 @@ esp_print(netdissect_options *ndo,
 		ctx = EVP_CIPHER_CTX_new();
 		if (ctx != NULL) {
 			if (EVP_CipherInit(ctx, sa->evp, secret, NULL, 0) < 0)
-			(*ndo->ndo_warning)(ndo, "espkey init failed");
+				(*ndo->ndo_warning)(ndo, "espkey init failed");
 
-		p = ivoff;
+			p = ivoff;
 			EVP_CipherInit(ctx, NULL, NULL, p, 0);
 			EVP_Cipher(ctx, p + ivlen, p + ivlen, ep - (p + ivlen));
 			EVP_CIPHER_CTX_free(ctx);

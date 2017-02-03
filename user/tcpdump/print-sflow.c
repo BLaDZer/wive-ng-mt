@@ -12,12 +12,14 @@
  * LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
  * FOR A PARTICULAR PURPOSE.
  *
- * The SFLOW protocol as per http://www.sflow.org/developers/specifications.php
- *
  * Original code by Carles Kishimoto <carles.kishimoto@gmail.com>
  *
  * Expansion and refactoring by Rick Jones <rick.jones2@hp.com>
  */
+
+/* \summary: sFlow protocol printer */
+
+/* specification: http://www.sflow.org/developers/specifications.php */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -575,7 +577,6 @@ sflow_print_counter_sample(netdissect_options *ndo,
     u_int           type;
     u_int           index;
 
-
     if (len < sizeof(struct sflow_counter_sample_t))
 	return 1;
 
@@ -876,7 +877,6 @@ sflow_print(netdissect_options *ndo,
     u_int tlen;
     uint32_t sflow_sample_type, sflow_sample_len;
     uint32_t nsamples;
-
 
     tptr = pptr;
     tlen = len;

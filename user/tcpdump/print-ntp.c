@@ -18,10 +18,11 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * Format and print ntp packets.
  *	By Jeffrey Mogul/DECWRL
  *	loosely based on print-bootp.c
  */
+
+/* \summary: Network Time Protocol (NTP) printer */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -330,7 +331,7 @@ p_sfix(netdissect_options *ndo,
 
 	i = EXTRACT_16BITS(&sfp->int_part);
 	f = EXTRACT_16BITS(&sfp->fraction);
-	ff = f / 65536.0;	/* shift radix point by 16 bits */
+	ff = f / 65536.0;		/* shift radix point by 16 bits */
 	f = (int)(ff * 1000000.0);	/* Treat fraction as parts per million */
 	ND_PRINT((ndo, "%d.%06d", i, f));
 }
@@ -351,7 +352,7 @@ p_ntp_time(netdissect_options *ndo,
 	ff = uf;
 	if (ff < 0.0)		/* some compilers are buggy */
 		ff += FMAXINT;
-	ff = ff / FMAXINT;	/* shift radix point by 32 bits */
+	ff = ff / FMAXINT;			/* shift radix point by 32 bits */
 	f = (uint32_t)(ff * 1000000000.0);	/* treat fraction as parts per billion */
 	ND_PRINT((ndo, "%u.%09d", i, f));
 
@@ -419,7 +420,7 @@ p_ntp_delta(netdissect_options *ndo,
 	ff = f;
 	if (ff < 0.0)		/* some compilers are buggy */
 		ff += FMAXINT;
-	ff = ff / FMAXINT;	/* shift radix point by 32 bits */
+	ff = ff / FMAXINT;			/* shift radix point by 32 bits */
 	f = (uint32_t)(ff * 1000000000.0);	/* treat fraction as parts per billion */
 	ND_PRINT((ndo, "%s%d.%09d", signbit ? "-" : "+", i, f));
 }

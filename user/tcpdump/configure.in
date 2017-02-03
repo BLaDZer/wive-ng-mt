@@ -42,8 +42,8 @@ if test "$ac_cv_header_net_pfvar_h" = yes; then
 	#include <net/if.h>
 	#include <net/pfvar.h>])
 	if test "$ac_cv_header_net_if_pflog_h" = yes; then
-	LOCALSRC="print-pflog.c $LOCALSRC"
-fi
+		LOCALSRC="print-pflog.c $LOCALSRC"
+	fi
 fi
 AC_CHECK_HEADERS(netinet/if_ether.h, , , [#include <sys/types.h>
 #include <sys/socket.h>])
@@ -248,7 +248,7 @@ AC_LBL_LIBRARY_NET
 # and we define AF_INET6 and struct in6_addr ourselves.
 #
 AC_MSG_CHECKING([whether the operating system supports IPv6])
-  AC_COMPILE_IFELSE(
+AC_COMPILE_IFELSE(
     [
       AC_LANG_SOURCE(
 	[[
@@ -265,7 +265,7 @@ foo(struct in6_addr *addr)
 #else
 #error "AF_INET6 not defined"
 #endif
-        ]])
+	]])
     ],
     [
 	AC_MSG_RESULT(yes)
@@ -417,9 +417,6 @@ AC_CHECK_LIB(rpc, main)		dnl It's unclear why we might need -lrpc
 dnl Some platforms may need -lnsl for getrpcbynumber.
 AC_SEARCH_LIBS(getrpcbynumber, nsl,
     AC_DEFINE(HAVE_GETRPCBYNUMBER, 1, [define if you have getrpcbynumber()]))
-
-dnl AC_CHECK_LIB(z, uncompress)
-dnl AC_CHECK_HEADERS(zlib.h)
 
 AC_LBL_LIBPCAP(V_PCAPDEP, V_INCLS)
 
@@ -654,39 +651,39 @@ if test "$ac_cv_func_pcap_set_parser_debug" = "no" ; then
 	# OK, we don't have pcap_set_parser_debug() to set the libpcap
 	# filter expression parser debug flag; can we directly set the
 	# flag?
-AC_MSG_CHECKING(whether pcap_debug is defined by libpcap)
-AC_TRY_LINK([],
-   [
-	extern int pcap_debug;
-
-	return pcap_debug;
-   ],
-   ac_lbl_cv_pcap_debug_defined=yes,
-   ac_lbl_cv_pcap_debug_defined=no)
-if test "$ac_lbl_cv_pcap_debug_defined" = yes ; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(HAVE_PCAP_DEBUG, 1, [define if libpcap has pcap_debug])
-else
-	AC_MSG_RESULT(no)
-	#
-	# OK, what about "yydebug"?
-	#
-	AC_MSG_CHECKING(whether yydebug is defined by libpcap)
+	AC_MSG_CHECKING(whether pcap_debug is defined by libpcap)
 	AC_TRY_LINK([],
 	   [
-		extern int yydebug;
+		extern int pcap_debug;
 
-		return yydebug;
+		return pcap_debug;
 	   ],
-	   ac_lbl_cv_yydebug_defined=yes,
-	   ac_lbl_cv_yydebug_defined=no)
-	if test "$ac_lbl_cv_yydebug_defined" = yes ; then
+	   ac_lbl_cv_pcap_debug_defined=yes,
+	   ac_lbl_cv_pcap_debug_defined=no)
+	if test "$ac_lbl_cv_pcap_debug_defined" = yes ; then
 		AC_MSG_RESULT(yes)
-		AC_DEFINE(HAVE_YYDEBUG, 1, [define if libpcap has yydebug])
+		AC_DEFINE(HAVE_PCAP_DEBUG, 1, [define if libpcap has pcap_debug])
 	else
 		AC_MSG_RESULT(no)
+		#
+		# OK, what about "yydebug"?
+		#
+		AC_MSG_CHECKING(whether yydebug is defined by libpcap)
+		AC_TRY_LINK([],
+		   [
+			extern int yydebug;
+
+			return yydebug;
+		   ],
+		   ac_lbl_cv_yydebug_defined=yes,
+		   ac_lbl_cv_yydebug_defined=no)
+		if test "$ac_lbl_cv_yydebug_defined" = yes ; then
+			AC_MSG_RESULT(yes)
+			AC_DEFINE(HAVE_YYDEBUG, 1, [define if libpcap has yydebug])
+		else
+			AC_MSG_RESULT(no)
+		fi
 	fi
-fi
 fi
 AC_CHECK_FUNCS(pcap_set_optimizer_debug)
 AC_REPLACE_FUNCS(bpf_dump)	dnl moved to libpcap in 0.6
@@ -934,9 +931,9 @@ if test "$want_libcrypto" != "no"; then
 	#
 	AC_CHECK_HEADER(openssl/crypto.h,
 	[
-	AC_CHECK_LIB(crypto, DES_cbc_encrypt)
+		AC_CHECK_LIB(crypto, DES_cbc_encrypt)
 		if test "$ac_cv_lib_crypto_DES_cbc_encrypt" = "yes"; then
-	AC_CHECK_HEADERS(openssl/evp.h)
+			AC_CHECK_HEADERS(openssl/evp.h)
 			#
 			# OK, do we have EVP_CIPHER_CTX_new?
 			# If so, we use it to allocate an
