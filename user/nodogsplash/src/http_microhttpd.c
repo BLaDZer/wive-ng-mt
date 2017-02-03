@@ -56,6 +56,7 @@ static int encode_and_redirect_to_splashpage(struct MHD_Connection *connection, 
 static int redirect_to_splashpage(struct MHD_Connection *connection, t_client *client, const char *host, const char *url);
 static int send_error(struct MHD_Connection *connection, int error);
 static int send_redirect_temp(struct MHD_Connection *connection, const char *url);
+static int send_refresh(struct MHD_Connection *connection);
 static int is_foreign_hosts(struct MHD_Connection *connection, const char *host);
 static int is_splashpage(const char *host, const char *url);
 static int get_query(struct MHD_Connection *connection, char **collect_query);
@@ -300,19 +301,23 @@ static int check_authdir_match(const char *url, const char *authdir)
 static int check_token_is_valid(struct MHD_Connection *connection, t_client *client)
 {
 	/* token check */
-	struct collect_query_key query_key = { .key = "token" };
+	struct collect_query_key token_key = { .key = "token" };
+	struct collect_query_key tok_key = { .key = "tok" };
 
-	MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, &collect_query_key, &query_key);
+	MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, &collect_query_key, &token_key);
+	MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, &collect_query_key, &tok_key);
 
 	/* token not found in query string */
-	if (!query_key.value)
+	if (!token_key.value && !tok_key.value)
 		return 0;
 
-	/* token doesn't match */
-	if (strcmp(client->token, query_key.value))
-		return 0;
+	if (token_key.value && !strcmp(client->token, token_key.value))
+		return 1;
 
+	if (tok_key.value && !strcmp(client->token, tok_key.value))
 	return 1;
+
+	return 0;
 }
 
 
@@ -363,7 +368,10 @@ static int authenticate_client(struct MHD_Connection *connection,
 {
 	/* TODO: handle redirect_url == NULL */
 	auth_client_action(ip_addr, mac, AUTH_MAKE_AUTHENTICATED);
+	if (redirect_url)
 	return send_redirect_temp(connection, redirect_url);
+	else
+		return send_error(connection, 200);
 }
 
 /**
@@ -408,6 +416,14 @@ static int authenticated(struct MHD_Connection *connection,
 		return send_redirect_temp(connection, redirect_to_us);
 	}
 
+
+	/* check if this is an late request meaning the user tries to get the internet, but ended up here,
+	 * because the iptables rule came to late */
+	if (is_foreign_hosts(connection, host)) {
+		/* might happen if the firewall rule isn't yet installed */
+		return send_refresh(connection);
+	}
+
 	/* user doesn't wants the splashpage or tried to auth itself */
 	return serve_file(connection, client, url);
 }
@@ -425,7 +441,7 @@ static int preauthenticated(struct MHD_Connection *connection,
 							const char *url,
 							t_client *client)
 {
-	char *host = NULL;
+	const char *host = NULL;
 	const char *redirect_url;
 	s_config *config = config_get_config();
 
@@ -485,14 +501,20 @@ static int encode_and_redirect_to_splashpage(struct MHD_Connection *connection, 
 	int ret;
 	s_config *config = config_get_config();
 
-
 	memset(encoded, 0, sizeof(encoded));
+	if (originurl) {
 	if (uh_urlencode(encoded, 2048, originurl, strlen(originurl)) == -1) {
 		debug(LOG_WARNING, "could not encode url");
+		} else {
+			debug(LOG_DEBUG, "originurl: %s", originurl);
+		}
 	}
 
+	if (encoded[0])
 	safe_asprintf(&splashpageurl, "http://%s:%u%s?redir=%s", config->gw_address , config->gw_port, "/splash.html", encoded);
-	debug(LOG_DEBUG, "originurl: %s", originurl);
+	else
+		safe_asprintf(&splashpageurl, "http://%s:%u%s", config->gw_address , config->gw_port, "/splash.html");
+
 	debug(LOG_DEBUG, "splashpageurl: %s", splashpageurl);
 
 	ret = send_redirect_temp(connection, splashpageurl);
@@ -511,13 +533,20 @@ static int encode_and_redirect_to_splashpage(struct MHD_Connection *connection, 
 static int redirect_to_splashpage(struct MHD_Connection *connection, t_client *client, const char *host, const char *url)
 {
 	char *originurl = NULL;
-	char *query = "";
+	char *query = NULL;
+	int ret = 0;
 
 	get_query(connection, &query);
+	if (!query) {
+		/* no mem */
+		return send_error(connection, 503);
+	}
 
 	safe_asprintf(&originurl, "http://%s%s%s%s", host, url, strlen(query) ? "?" : "" , query);
-
-	return encode_and_redirect_to_splashpage(connection, originurl);
+	ret = encode_and_redirect_to_splashpage(connection, originurl);
+	free(originurl);
+	free(query);
+	return ret;
 }
 
 
@@ -581,6 +610,8 @@ static const char *get_redirect_url(struct MHD_Connection *connection)
 	return query_key.value;
 }
 
+/* save the query or empty string into **query.
+ * the call must free query later */
 static int get_query(struct MHD_Connection *connection, char **query)
 {
 	int element_counter;
@@ -625,10 +656,27 @@ static int get_query(struct MHD_Connection *connection, char **query)
 	return 0;
 }
 
+static int send_refresh(struct MHD_Connection *connection)
+{
+	struct MHD_Response *response = NULL;
+
+	const char *refresh = "<html><meta http-equiv=\"refresh\" content=\"1\"><head/></html>";
+	const char *mimetype = lookup_mimetype("foo.html");
+	int ret;
+
+	response = MHD_create_response_from_buffer(strlen(refresh), (char *)refresh, MHD_RESPMEM_PERSISTENT);
+	MHD_add_response_header(response, "Content-Type", mimetype);
+	MHD_add_response_header (response, MHD_HTTP_HEADER_CONNECTION, "close");
+	ret = MHD_queue_response(connection, 200, response);
+
+	return ret;
+}
+
 static int send_error(struct MHD_Connection *connection, int error)
 {
 	struct MHD_Response *response = NULL;
 	// cannot automate since cannot translate automagically between error number and MHD's status codes -- and cannot rely on MHD_HTTP_ values to provide an upper bound for an array
+	const char *page_200 = "<html><header><title>Authenticated</title><body><h1>Authenticated</h1></body></html>";
 	const char *page_400 = "<html><head><title>Error 400</title></head><body><h1>Error 400 - Bad Request</h1></body></html>";
 	const char *page_403 = "<html><head><title>Error 403</title></head><body><h1>Error 403 - Forbidden</h1></body></html>";
 	const char *page_404 = "<html><head><title>Error 404</title></head><body><h1>Error 404 - Not Found</h1></body></html>";
@@ -641,6 +689,12 @@ static int send_error(struct MHD_Connection *connection, int error)
 	int ret = MHD_NO;
 
 	switch (error) {
+	case 200:
+		response = MHD_create_response_from_buffer(strlen(page_200), (char *)page_200, MHD_RESPMEM_PERSISTENT);
+		MHD_add_response_header(response, "Content-Type", mimetype);
+		ret = MHD_queue_response(connection, error, response);
+		break;
+
 	case 400:
 		response = MHD_create_response_from_buffer(strlen(page_400), (char *)page_400, MHD_RESPMEM_PERSISTENT);
 		MHD_add_response_header(response, "Content-Type", mimetype);
@@ -692,14 +746,14 @@ static int send_error(struct MHD_Connection *connection, int error)
  */
 static int get_host_value_callback(void *cls, enum MHD_ValueKind kind, const char *key, const char *value)
 {
-	char **host = (char **)cls;
+	const char **host = (const char **)cls;
 	if (MHD_HEADER_KIND != kind) {
 		*host = NULL;
 		return MHD_NO;
 	}
 
 	if (!strcmp("Host", key)) {
-		*host = safe_strdup(value);
+		*host = value;
 		return MHD_NO;
 	}
 
@@ -773,7 +827,6 @@ static int show_splashpage(struct MHD_Connection *connection, t_client *client)
 	safe_asprintf(&denyaction, "http://%s:%d/%s/", config->gw_address, config->gw_port, config->denydir);
 	safe_asprintf(&authaction, "http://%s:%d/%s/", config->gw_address, config->gw_port, config->authdir);
 	safe_asprintf(&authtarget, "http://%s:%d/%s/?token=%s&redir=%s", config->gw_address, config->gw_port, config->authdir, client->token, redirect_url_encoded);
-	safe_asprintf(&authaction, "http://%s:%d/%s/", config->gw_address, config->gw_port, config->authdir);
 	safe_asprintf(&pagesdir, "/%s", config->pagesdir);
 	safe_asprintf(&imagesdir, "/%s", config->imagesdir);
 
@@ -782,7 +835,6 @@ static int show_splashpage(struct MHD_Connection *connection, t_client *client)
 	tmpl_set_variable(&templor, "authtarget", authtarget);
 	tmpl_set_variable(&templor, "clientip", client->ip);
 	tmpl_set_variable(&templor, "clientmac", client->mac);
-	//	tmpl_set_variable(&templor, "content", VERSION);
 	tmpl_set_variable(&templor, "denyaction", denyaction);
 	tmpl_set_variable(&templor, "error_msg", "");
 
@@ -797,16 +849,19 @@ static int show_splashpage(struct MHD_Connection *connection, t_client *client)
 
 	tmpl_set_variable(&templor, "redir", redirect_url);
 	tmpl_set_variable(&templor, "tok", client->token);
+	tmpl_set_variable(&templor, "token", client->token);
 	tmpl_set_variable(&templor, "uptime", uptime);
 	tmpl_set_variable(&templor, "version", VERSION);
 
 	tmpl_parse(&templor, splashpage_result, size + TMPLVAR_SIZE, splashpage_tmpl, size);
-	free(authaction);
-	free(denyaction);
-	free(maxclients);
-	free(nclients);
-	free(uptime);
 	free(splashpage_tmpl);
+	free(uptime);
+	free(nclients);
+	free(maxclients);
+	free(denyaction);
+	free(authaction);
+	free(authtarget);
+	free(pagesdir);
 	free(imagesdir);
 
 	response = MHD_create_response_from_buffer(strlen(splashpage_result), (void *)splashpage_result, MHD_RESPMEM_MUST_FREE);
@@ -889,7 +944,7 @@ static int serve_file(struct MHD_Connection *connection, t_client *client, const
 
 	/* check if file exists and is not a directory */
 	ret = stat(filename, &stat_buf);
-	if (!ret) {
+	if (ret) {
 		/* stat failed */
 		return send_error(connection, 404);
 	}
@@ -899,14 +954,6 @@ static int serve_file(struct MHD_Connection *connection, t_client *client, const
 		/* ignore links */
 		if (!S_ISLNK(stat_buf.st_mode))
 #endif /* S_ISLNK */
-
-		if (url == NULL)
-			debug(LOG_ERR, "Corner case bug #164 triggered by NULL. Please report it. Sending 404");
-		else if (strlen(url) == 0)
-			debug(LOG_ERR, "Corner case bug #164 triggered by strlen. Please report it. Sending 404");
-		else if (url[0] == '/' && strlen(url) == 1)
-			debug(LOG_ERR, "Corner case bug #164 triggered by /. Please report it. Sending 404");
-
 		return send_error(connection, 404);
 	}
 

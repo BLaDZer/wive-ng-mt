@@ -11,7 +11,7 @@
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 #endif
 
-const char *variable_names[18] = {
+const char *variable_names[19] = {
 	"authaction",
 	"authtarget",
 	"clientip",
@@ -28,6 +28,7 @@ const char *variable_names[18] = {
 	"redir",
 	"title",
 	"tok",
+	"token",
 	"uptime",
 	"version"
 };
@@ -135,7 +136,7 @@ int tmpl_set_variable(struct templater *templor, const char *name, const char *v
 	if(templor->variables[idx])
 		free((void *)templor->variables[idx]);
 
-	templor->variables[idx] = safe_strdup(value);
+	templor->variables[idx] = value;
 
 	return 0;
 }
