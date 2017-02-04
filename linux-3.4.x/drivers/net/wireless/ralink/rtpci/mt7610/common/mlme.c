@@ -854,13 +854,10 @@ VOID MlmePeriodicExec(
 			}
 
 			//dynamic VGA adjust
-#ifdef CONFIG_AP_SUPPORT
 			IF_DEV_CONFIG_OPMODE_ON_AP(pAd) {
 				if (pAd->Mlme.OneSecPeriodicRound % 1 == 0)
 					RTMP_ASIC_DYNAMIC_VGA_GAIN_CONTROL(pAd);
 			}
-#endif /* CONFIG_AP_SUPPORT */
-			
 		}
 #endif /* CONFIG_AP_SUPPORT */
 #endif /* DYNAMIC_VGA_SUPPORT */

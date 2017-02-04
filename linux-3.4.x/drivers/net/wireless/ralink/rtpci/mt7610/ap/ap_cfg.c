@@ -668,6 +668,10 @@ INT Set_EthRepeaterGid_Proc(
 #endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef DYNAMIC_VGA_SUPPORT
+INT Set_SkipLongRangeVga_Proc(
+		IN	PRTMP_ADAPTER	pAd, 
+		IN	PSTRING 	arg);
+
 INT	Set_DyncVgaEnable_Proc(
 	IN RTMP_ADAPTER		*pAd, 
 	IN	PSTRING			arg);
@@ -1233,7 +1237,8 @@ static struct {
 #endif /* MT76x0 */
 
 #ifdef DYNAMIC_VGA_SUPPORT
-	{"DyncVgaEnable",		Set_DyncVgaEnable_Proc},
+	{"DyncVgaEnable",	Set_DyncVgaEnable_Proc},
+	{"SkipLongRangeVga",	Set_SkipLongRangeVga_Proc},
 #endif /* DYNAMIC_VGA_SUPPORT */
 #ifdef ED_MONITOR
 	//let run-time turn on/off
@@ -12785,6 +12790,21 @@ INT Set_ReptMode_Enable_Proc(
 #endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef DYNAMIC_VGA_SUPPORT
+INT Set_SkipLongRangeVga_Proc(
+		IN	PRTMP_ADAPTER	pAd, 
+		IN	PSTRING 	arg)
+{
+	UINT Enable;	
+
+	Enable = simple_strtol(arg, 0, 10);
+
+	pAd->chipCap.skip_long_range_dync_vga = (Enable != 0)?TRUE:FALSE;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("Set_SkipLongRangeVga_Proc::(skip = %d)\n", pAd->chipCap.skip_long_range_dync_vga));
+
+	return TRUE;
+}
+
 INT Set_DyncVgaEnable_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING		arg)

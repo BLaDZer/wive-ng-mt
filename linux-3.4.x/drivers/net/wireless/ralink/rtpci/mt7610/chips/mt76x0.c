@@ -2716,6 +2716,47 @@ void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 		__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 
+static void mt7610_long_range_dync_vga(RTMP_ADAPTER * pAd)
+{
+	UCHAR val1;
+	UINT32 bbp_val1;
+	static UCHAR long_range_compensate_level = 0;
+
+	RTMP_BBP_IO_READ32(pAd, AGC1_R8, &bbp_val1);
+	/* start with initial gain in this phase */
+	val1 = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - long_range_compensate_level;
+
+	if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.MO_Cfg.nFalseCCATh) {
+		if (val1 > (pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 0x04)) {
+			val1 -= 0x02;
+			if(long_range_compensate_level + 0x02 <= 0x04)
+				long_range_compensate_level += 0x02;
+			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
+			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
+#ifdef DFS_SUPPORT
+			pAd->CommonCfg.RadarDetect.bAdjustDfsAgc = TRUE;
+#endif
+		}
+	} else if (pAd->RalinkCounters.OneSecFalseCCACnt <
+				pAd->CommonCfg.MO_Cfg.nLowFalseCCATh) {
+		if (val1 < pAd->CommonCfg.MO_Cfg.Stored_BBP_R66) {
+			val1 += 0x02;
+			long_range_compensate_level -= 0x02;
+			if(long_range_compensate_level < 0)
+				long_range_compensate_level = 0;
+			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
+			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
+#ifdef DFS_SUPPORT
+			pAd->CommonCfg.RadarDetect.bAdjustDfsAgc = TRUE;
+#endif
+		}
+	}
+	DBGPRINT(RT_DEBUG_TRACE,
+		("MT7610 long range one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n"
+		, pAd->RalinkCounters.OneSecFalseCCACnt, bbp_val1, bbp_val1));
+
+}
+
 #define shift_left16(x)			((x) << 16)
 #define shift_left8(x)			((x) << 8)
 
@@ -2761,13 +2802,23 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
 		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
 	{
-		no_dynamic_vga = TRUE; /* rssi too low, stop dynamic VGA , resume initial gain */
+		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
+		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
+
+		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
+		{
+			mt7610_long_range_dync_vga(pAd);
+		}
+		else
+		{
+			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
+		}
 	}
-	
+
 	if (((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) || no_dynamic_vga) {
-		default_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66;  			//44
-		eLNA_lower_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 8;		//3C
-	
+		default_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66;
+		eLNA_lower_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 8;
+
 		/* VGA settings : MT7610E_DynamicVGA_plus_micro_wave_20150120.pptx */
 		switch (mode & 0xFF)
 		{
@@ -3486,7 +3537,7 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 
 #ifdef DYNAMIC_VGA_SUPPORT
 	pChipCap->dynamic_vga_support = TRUE;
-	pChipCap->compensate_level = 0;
+	pChipCap->skip_long_range_dync_vga = FALSE;
 	pChipCap->avg_rssi_all = -90;
 	pChipCap->avg_rssi_0 = -90;
 	pChipCap->avg_rssi_1 = -90;

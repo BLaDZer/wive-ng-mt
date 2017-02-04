@@ -666,11 +666,11 @@ struct _RTMP_CHIP_CAP_ {
 
 #ifdef DYNAMIC_VGA_SUPPORT
 		BOOLEAN dynamic_vga_support;
-		INT32 compensate_level;
 		INT32 avg_rssi_0;
 		INT32 avg_rssi_1;
 		INT32 avg_rssi_all;
 		UCHAR dynamic_chE_mode;
+		BOOLEAN skip_long_range_dync_vga; /* for 7610 runtime turn long_range_dync_vga on/off , default do long_range_dync_vga */
 #endif
 
 
