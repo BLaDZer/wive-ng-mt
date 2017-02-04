@@ -54,15 +54,6 @@ fulldump
 /images/*
 /dev
 /dev/*
-/tools/bin/*
-/tools/mkimage/mkimage
-/tools/mksquash_xz-4.0/mksquashfs
-/tools/mksquash_xz-4.0/unsquashfs
-/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
-/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
-/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
-/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/unsquashfs
-/tools/sstrip/sstrip
 /etc/compile-date
 /etc/default/RT2860_default_novlan
 /etc/scripts/config.sh
@@ -418,6 +409,18 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 #
 # exclude enerated files from tools
 #
+/tools/bin/*
+/tools/mkimage/mkimage
+/tools/mksquash_xz-4.0/mksquashfs
+/tools/mksquash_xz-4.0/unsquashfs
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_Alone/lzma_alone
+/tools/mksquash_lzma-3.2/lzma443/C/7zip/Compress/LZMA_C/lzmadec
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/mksquashfs
+/tools/mksquash_lzma-3.2/squashfs3.2-r2/squashfs-tools/unsquashfs
+/tools/sstrip/sstrip
+/tools/xz/Makefile
+/tools/xz/Makefile.in
+/tools/xz/configure
 /tools/xz/libext/Makefile.in
 /tools/xz/lib/Makefile.in
 /tools/xz/Doxyfile
