@@ -96,8 +96,11 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
     ##########################################################################
     if [ "$CONFIG_RAETH_BOTH_GMAC" = "" ]; then
 	$LOG "ROOT_MACADDR $LAN_MAC_ADDR"
-	ifconfig eth2 hw ether "$LAN_MAC_ADDR"
-	ip link set eth2 up
+	# ralink wifi for optimal performance at alg work
+	# need mroe atomic traffic insert
+	# allways use small queue for eth2/ra* interfaces
+	# if need increase queue at bridge and others soft ifs
+	ifconfig eth2 hw ether "$LAN_MAC_ADDR" txqueuelen 50 up
 	configs_system_vlans
     fi
     ##########################################################################
