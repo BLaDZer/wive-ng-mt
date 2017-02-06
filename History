@@ -2784,12 +2784,13 @@
 70) kernel: net: ipv4: tcp: dont cache output dst for syncookies.<br>
 71) kernel: net: ipv6: remove skb_reserve in getroute.<br>
 72) kernel: net: ipv6: remove __sk_dst_reset() in tcp_v6_connect().<br>
-73) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
-74) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
-75) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
-76) kernel: net: gro: enter slow-path if there is no tailroom.<br>
-77) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
-78) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
+73) kernel: net: ipv6: addrconf: avoid addrconf_disable_change() using RCU read-side lock.<br>
+74) kernel: net: igmp: make igmp group member RFC 3376 compliant.<br>
+75) kernel: net: ipmr: drop ip_mr_init() mrt_cachep null check as we'll panic if it fails.<br>
+76) kernel: net: tcp: accept RST for rcv_nxt - 1 after receiving a FIN (fix compliant RFC 5961 3.2).<br>
+77) kernel: net: gro: enter slow-path if there is no tailroom.<br>
+78) kernel: net: gro: use min_t() in skb_gro_reset_offset().<br>
+79) kernel: net: gro: disable frag0 optimization on IPv6 ext headers.<br>
 <br>
 <br>
 <br>
