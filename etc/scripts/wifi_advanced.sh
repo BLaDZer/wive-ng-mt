@@ -53,13 +53,15 @@ else
     iwpriv "$1" set DyncVgaEnable=0
 fi
 
-if [ "$CONFIG_RT_FIRST_IF_MT7602E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7612E" = "y" ]; then
+if [ "$CONFIG_RT_FIRST_IF_MT7602E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7612E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7610E" = "y" -a "$2" = "5GHZ" ]; then
     # skip tune gain for long distanse clients
     if [ "$SkipLongRangeVga" = "1" ]; then
 	iwpriv "$1" set SkipLongRangeVga=1
     else
 	iwpriv "$1" set SkipLongRangeVga=0
     fi
+fi
+if [ "$CONFIG_RT_FIRST_IF_MT7602E" = "y" ] || [ "$CONFIG_RT_SECOND_IF_MT7612E" = "y" ]; then
     # limit dynamic maximum gain to reduce impact interference
     # 1 - -4dB, 2 - -8dB, 3 - -12dB, 4 - -16dB
     if [ "$VgaClamp" != "" ] && [ "$VgaClamp" != "0" ]; then
