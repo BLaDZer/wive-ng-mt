@@ -7,7 +7,7 @@
 ##
 AC_PREREQ(2.60)
 
-AC_INIT(Quagga, 1.1.0, [https://bugzilla.quagga.net])
+AC_INIT(Quagga, 1.2.0, [https://bugzilla.quagga.net])
 CONFIG_ARGS="$*"
 AC_SUBST(CONFIG_ARGS)
 AC_CONFIG_SRCDIR(lib/zebra.h)
@@ -76,12 +76,15 @@ AC_PROG_CPP
 AM_PROG_CC_C_O
 AC_PROG_RANLIB
 AC_PROG_EGREP
+PKG_PROG_PKG_CONFIG
+AC_PROG_CC_C99
 
 dnl autoconf 2.59 appears not to support AC_PROG_SED
 dnl AC_PROG_SED
 AC_CHECK_PROG([SED],[sed],[sed],[/bin/false])
 
-dnl pdflatex and latexmk are needed to build HACKING.pdf
+dnl Check for pdflatex and latexmk, in case someone wants to build
+dnl PDFs from TeX (as used to be case for HACKING)
 AC_CHECK_PROG([PDFLATEX],[pdflatex],[pdflatex],[/bin/false])
 AC_CHECK_PROG([LATEXMK],[latexmk],[latexmk],[/bin/false])
 if test "x$PDFLATEX" = "x/bin/false" -o "x$LATEXMK" = "x/bin/false"; then
@@ -90,6 +93,14 @@ else
 	HAVE_LATEX=true
 fi
 AM_CONDITIONAL([HAVE_LATEX], [test "x$HAVE_LATEX" = "xtrue"])
+dnl for making HACKING.pdf from HACKING.md using pandoc
+AC_CHECK_PROG([PANDOC],[pandoc],[pandoc],[/bin/false])
+if test "x$PDFLATEX" = "x/bin/false" -o "x$PANDOC" = "x/bin/false"; then
+	AC_MSG_WARN([Will not be able to make PDF versions of MD documents])
+else
+	HAVE_PANDOC=true
+fi
+AM_CONDITIONAL([HAVE_PANDOC], [test "x$HAVE_PANDOC" = "xtrue"])
 
 if test "x${GCC}" != "xyes" ; then
   AC_MSG_CHECKING([whether we are using SunPro compiler])
@@ -144,11 +155,11 @@ if test "x${cflags_specified}" = "x" ; then
         AC_MSG_RESULT([autodetecting])
 
         AC_C_FLAG([-diag-error 10006])
-        AC_C_FLAG([-std=gnu99])
         AC_C_FLAG([-g])
         AC_C_FLAG([-Os], [
           AC_C_FLAG([-O2])
         ])
+        AC_C_FLAG([-fstack-protector-strong])
         AC_C_FLAG([-fpie])
         AC_C_FLAG([-fno-omit-frame-pointer])
         AC_C_FLAG([-Wall])
@@ -245,6 +256,8 @@ AC_ARG_ENABLE(ospfd,
   AS_HELP_STRING([--disable-ospfd], [do not build ospfd]))
 AC_ARG_ENABLE(ospf6d,
   AS_HELP_STRING([--disable-ospf6d], [do not build ospf6d]))
+AC_ARG_ENABLE(nhrpd,
+  AS_HELP_STRING([--disable-nhrpd], [do not build nhrpd]))
 AC_ARG_ENABLE(watchquagga,
   AS_HELP_STRING([--disable-watchquagga], [do not build watchquagga]))
 AC_ARG_ENABLE(isisd,
@@ -405,16 +418,22 @@ AC_SUBST(ISIS_TOPOLOGY_INCLUDES)
 AC_SUBST(ISIS_TOPOLOGY_DIR)
 AC_SUBST(ISIS_TOPOLOGY_LIB)
 
-if test "${enable_user}" = "yes" || test x"${enable_user}" = x""; then
+if test x"${enable_user}" = x"no"; then
+  enable_user=""
+else
+  if test x"${enable_user}" = x"yes" || test x"${enable_user}" = x""; then
   enable_user="quagga"
-elif test "${enable_user}" = "no"; then
-  enable_user="root"
+  fi
+  AC_DEFINE_UNQUOTED(QUAGGA_USER, "${enable_user}", Quagga User)
 fi
 
-if test "${enable_group}" = "yes" || test x"${enable_group}" = x""; then
+if test x"${enable_group}" = x"no"; then
+  enable_group=""
+else
+  if test x"${enable_group}" = x"yes" || test x"${enable_group}" = x""; then
   enable_group="quagga"
-elif test "${enable_group}" = "no"; then
-  enable_group="root"
+  fi
+  AC_DEFINE_UNQUOTED(QUAGGA_GROUP, "${enable_group}", Quagga Group)
 fi
 
 if test x"${enable_vty_group}" = x"yes" ; then
@@ -427,8 +446,6 @@ fi
 AC_SUBST([enable_user])
 AC_SUBST([enable_group])
 AC_SUBST([enable_vty_group])
-AC_DEFINE_UNQUOTED(QUAGGA_USER, "${enable_user}", Quagga User)
-AC_DEFINE_UNQUOTED(QUAGGA_GROUP, "${enable_group}", Quagga Group)
 
 enable_configfile_mask=${enable_configfile_mask:-0600}
 AC_DEFINE_UNQUOTED(CONFIGFILE_MASK, ${enable_configfile_mask}, Mask for config files)
@@ -699,7 +716,7 @@ dnl	 [TODO] on Linux, and in [TODO] on Solaris.
 	      )]
 	    )]
 	  )
-         AC_CHECK_LIB(readline, main, LIBREADLINE="$LIBREADLINE -lreadline",,
+         AC_CHECK_LIB(readline, main, LIBREADLINE="-lreadline $LIBREADLINE",,
                       "$LIBREADLINE")
          if test $ac_cv_lib_readline_main = no; then
            AC_MSG_ERROR([vtysh needs libreadline but was not found and usable on your system.])
@@ -1186,6 +1203,17 @@ else
 fi
 AM_CONDITIONAL(OSPFD, test "x$OSPFD" = "xospfd")
 
+if test x"$opsys" != x"gnu-linux"; then
+	dnl NHRPd works currently with Linux only.
+	enable_nhrpd="no"
+fi
+if test "${enable_nhrpd}" = "no";then
+  NHRPD=""
+else
+  NHRPD="nhrpd"
+fi
+AM_CONDITIONAL(NHRPD, test "x$NHRPD" = "xnhrpd")
+
 if test "${enable_watchquagga}" = "no";then
   WATCHQUAGGA=""
 else
@@ -1241,6 +1269,7 @@ AC_SUBST(RIPD)
 AC_SUBST(RIPNGD)
 AC_SUBST(OSPFD)
 AC_SUBST(OSPF6D)
+AC_SUBST(NHRPD)
 AC_SUBST(WATCHQUAGGA)
 AC_SUBST(ISISD)
 AC_SUBST(PIMD)
@@ -1274,6 +1303,14 @@ AC_CHECK_LIB(c, regexec,
 fi
 AC_SUBST(HAVE_LIBPCREPOSIX)
 AC_SUBST(LIB_REGEX)
+
+dnl ------------------
+dnl check C-Ares library
+dnl ------------------
+if test "${enable_nhrpd}" != "no";then
+   PKG_CHECK_MODULES([CARES], [libcares])
+fi
+
 
 dnl ------------------
 dnl check Net-SNMP library
@@ -1551,6 +1588,7 @@ AC_DEFINE_UNQUOTED(PATH_RIPNGD_PID, "$quagga_statedir/ripngd.pid",ripngd PID)
 AC_DEFINE_UNQUOTED(PATH_BGPD_PID, "$quagga_statedir/bgpd.pid",bgpd PID)
 AC_DEFINE_UNQUOTED(PATH_OSPFD_PID, "$quagga_statedir/ospfd.pid",ospfd PID)
 AC_DEFINE_UNQUOTED(PATH_OSPF6D_PID, "$quagga_statedir/ospf6d.pid",ospf6d PID)
+AC_DEFINE_UNQUOTED(PATH_NHRPD_PID, "$quagga_statedir/nhrpd.pid",nhrpd PID)
 AC_DEFINE_UNQUOTED(PATH_ISISD_PID, "$quagga_statedir/isisd.pid",isisd PID)
 AC_DEFINE_UNQUOTED(PATH_PIMD_PID, "$quagga_statedir/pimd.pid",pimd PID)
 AC_DEFINE_UNQUOTED(PATH_WATCHQUAGGA_PID, "$quagga_statedir/watchquagga.pid",watchquagga PID)
@@ -1561,6 +1599,7 @@ AC_DEFINE_UNQUOTED(RIPNG_VTYSH_PATH, "$quagga_statedir/ripngd.vty",ripng vty soc
 AC_DEFINE_UNQUOTED(BGP_VTYSH_PATH, "$quagga_statedir/bgpd.vty",bgpd vty socket)
 AC_DEFINE_UNQUOTED(OSPF_VTYSH_PATH, "$quagga_statedir/ospfd.vty",ospfd vty socket)
 AC_DEFINE_UNQUOTED(OSPF6_VTYSH_PATH, "$quagga_statedir/ospf6d.vty",ospf6d vty socket)
+AC_DEFINE_UNQUOTED(NHRP_VTYSH_PATH, "$quagga_statedir/nhrpd.vty",nhrpd vty socket)
 AC_DEFINE_UNQUOTED(ISIS_VTYSH_PATH, "$quagga_statedir/isisd.vty",isisd vty socket)
 AC_DEFINE_UNQUOTED(PIM_VTYSH_PATH, "$quagga_statedir/pimd.vty",pimd vty socket)
 AC_DEFINE_UNQUOTED(DAEMON_VTY_DIR, "$quagga_statedir",daemon vty directory)
@@ -1588,7 +1627,7 @@ AC_CONFIG_FILES([Makefile lib/Makefile qpb/Makefile zebra/Makefile ripd/Makefile
 	  ripngd/Makefile bgpd/Makefile ospfd/Makefile watchquagga/Makefile
 	  ospf6d/Makefile isisd/Makefile vtysh/Makefile
 	  doc/Makefile ospfclient/Makefile tests/Makefile m4/Makefile
-	  pimd/Makefile
+	  pimd/Makefile nhrpd/Makefile
 	  tests/bgpd.tests/Makefile
 	  tests/libzebra.tests/Makefile
 	  redhat/Makefile

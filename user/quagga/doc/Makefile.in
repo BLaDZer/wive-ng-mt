@@ -86,9 +86,10 @@ target_triplet = @target@
 @OSPFD_TRUE@am__append_6 = ospfd.8
 @RIPD_TRUE@am__append_7 = ripd.8
 @RIPNGD_TRUE@am__append_8 = ripngd.8
-@VTYSH_TRUE@am__append_9 = vtysh.1
-@WATCHQUAGGA_TRUE@am__append_10 = watchquagga.8
-@ZEBRA_TRUE@am__append_11 = zebra.8
+@NHRPD_TRUE@am__append_9 = nhrpd.8
+@VTYSH_TRUE@am__append_10 = vtysh.1
+@WATCHQUAGGA_TRUE@am__append_11 = watchquagga.8
+@ZEBRA_TRUE@am__append_12 = zebra.8
 subdir = doc
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/defines.texi.in $(quagga_TEXINFOS) mdate-sh \
@@ -207,6 +208,8 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BGPD = @BGPD@
+CARES_CFLAGS = @CARES_CFLAGS@
+CARES_LIBS = @CARES_LIBS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -263,6 +266,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
+NHRPD = @NHRPD@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
@@ -280,6 +284,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PANDOC = @PANDOC@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PDFLATEX = @PDFLATEX@
 PERL = @PERL@
@@ -414,15 +419,16 @@ quagga_TEXINFOS = appendix.texi basic.texi bgpd.texi filter.texi \
 	install.texi ipv6.texi kernel.texi main.texi ospf6d.texi ospfd.texi \
 	overview.texi protocol.texi ripd.texi ripngd.texi routemap.texi \
 	snmp.texi vtysh.texi routeserver.texi defines.texi $(figures_png) \
-	snmptrap.texi ospf_fundamentals.texi isisd.texi $(figures_txt)
+	snmptrap.texi ospf_fundamentals.texi isisd.texi nhrpd.texi \
+	$(figures_txt)
 
 man_MANS = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11)
+	$(am__append_10) $(am__append_11) $(am__append_12)
 EXTRA_DIST = BGP-TypeCode draft-zebra-00.ms draft-zebra-00.txt \
 	bgpd.8 isisd.8 ospf6d.8 ospfclient.8 ospfd.8 ripd.8 \
-	ripngd.8 pimd.8 vtysh.1 watchquagga.8 zebra.8 \
+	ripngd.8 nhrpd.8 pimd.8 vtysh.1 watchquagga.8 zebra.8 \
 	mpls/ChangeLog.opaque.txt mpls/cli_summary.txt \
 	mpls/opaque_lsa.txt mpls/ospfd.conf \
 	$(figures_sources) $(figures_png) $(figures_txt) \

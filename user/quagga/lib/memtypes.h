@@ -132,6 +132,9 @@ enum
   MTYPE_BGP_AGGREGATE,
   MTYPE_BGP_ADDR,
   MTYPE_ENCAP_TLV,
+  MTYPE_LCOMMUNITY,
+  MTYPE_LCOMMUNITY_STR,
+  MTYPE_LCOMMUNITY_VAL,
   MTYPE_RIP,
   MTYPE_RIP_INFO,
   MTYPE_RIP_INTERFACE,
@@ -217,6 +220,14 @@ enum
   MTYPE_PIM_UPSTREAM,
   MTYPE_PIM_SSMPINGD,
   MTYPE_PIM_STATIC_ROUTE,
+  MTYPE_NHRP_IF,
+  MTYPE_NHRP_VC,
+  MTYPE_NHRP_PEER,
+  MTYPE_NHRP_CACHE,
+  MTYPE_NHRP_NHS,
+  MTYPE_NHRP_REGISTRATION,
+  MTYPE_NHRP_SHORTCUT,
+  MTYPE_NHRP_ROUTE,
   MTYPE_VTYSH_CONFIG,
   MTYPE_VTYSH_CONFIG_LINE,
   MTYPE_MAX,
@@ -232,6 +243,7 @@ extern struct memory_list memory_list_ospf[];
 extern struct memory_list memory_list_ospf6[];
 extern struct memory_list memory_list_isis[];
 extern struct memory_list memory_list_pim[];
+extern struct memory_list memory_list_nhrp[];
 extern struct memory_list memory_list_vtysh[];
 
 #endif /* _QUAGGA_MEMTYPES_H */

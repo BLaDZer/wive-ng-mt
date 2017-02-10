@@ -60,6 +60,7 @@ struct vtysh_client
   { .fd = -1, .name = "bgpd", .flag = VTYSH_BGPD, .path = BGP_VTYSH_PATH},
   { .fd = -1, .name = "isisd", .flag = VTYSH_ISISD, .path = ISIS_VTYSH_PATH},
   { .fd = -1, .name = "pimd", .flag = VTYSH_PIMD, .path = PIM_VTYSH_PATH},
+  { .fd = -1, .name = "nhrpd", .flag = VTYSH_NHRPD, .path = NHRP_VTYSH_PATH},
 };
 
 
@@ -137,6 +138,7 @@ vtysh_client_execute (struct vtysh_client *vclient, const char *line, FILE *fp)
 	{
 	  fprintf (stderr, ERR_WHERE_STRING \
 		   "warning - pbuf beyond buffer end.\n");
+	  XFREE(MTYPE_TMP, buf);
 	  return CMD_WARNING;
 	}
 
@@ -443,7 +445,7 @@ vtysh_config_from_file (struct vty *vty, FILE *fp)
   int ret;
   struct cmd_element *cmd;
 
-  while (fgets (vty->buf, VTY_BUFSIZ, fp))
+  while (fgets (vty->buf, vty->max, fp))
     {
       ret = command_config_read_one_line (vty, &cmd, 1);
 
@@ -1336,8 +1338,7 @@ ALIAS_SH (VTYSH_ZEBRA,
 	 "Interface's name\n"
 	 VRF_CMD_HELP_STR)
 
-/* TODO Implement "no interface command in isisd. */
-DEFSH (VTYSH_ZEBRA|VTYSH_RIPD|VTYSH_RIPNGD|VTYSH_OSPFD|VTYSH_OSPF6D,
+DEFSH (VTYSH_INTERFACE,
        vtysh_no_interface_cmd,
        "no interface IFNAME",
        NO_STR
@@ -1461,6 +1462,17 @@ DEFUNSH (VTYSH_ZEBRA,
          )
 {
   vty->node = LINK_PARAMS_NODE;
+  return CMD_SUCCESS;
+}
+
+DEFUNSH (VTYSH_ZEBRA,
+	 exit_link_params,
+	 exit_link_params_cmd,
+	 "exit-link-params",
+	 "Exit from Link Params configuration node\n")
+{
+  if (vty->node == LINK_PARAMS_NODE)
+    vty->node = INTERFACE_NODE;
   return CMD_SUCCESS;
 }
 
@@ -1899,6 +1911,9 @@ DEFUN (vtysh_write_terminal_daemon,
       if (strcmp(vtysh_client[i].name, argv[0]) == 0)
 	break;
     }
+
+  if (i == array_size(vtysh_client))
+    return CMD_ERR_NO_MATCH;
 
   ret = vtysh_client_execute(&vtysh_client[i], "show running-config\n", stdout);
 
@@ -2540,6 +2555,7 @@ vtysh_init_vty (void)
   install_element (INTERFACE_NODE, &no_interface_desc_cmd);
   install_element (INTERFACE_NODE, &vtysh_end_all_cmd);
   install_element (INTERFACE_NODE, &vtysh_exit_interface_cmd);
+  install_element (LINK_PARAMS_NODE, &exit_link_params_cmd);
   install_element (LINK_PARAMS_NODE, &vtysh_end_all_cmd);
   install_element (LINK_PARAMS_NODE, &vtysh_exit_interface_cmd);
   install_element (INTERFACE_NODE, &vtysh_quit_interface_cmd);

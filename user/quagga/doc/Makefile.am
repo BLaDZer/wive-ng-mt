@@ -50,7 +50,8 @@ quagga_TEXINFOS = appendix.texi basic.texi bgpd.texi filter.texi \
 	install.texi ipv6.texi kernel.texi main.texi ospf6d.texi ospfd.texi \
 	overview.texi protocol.texi ripd.texi ripngd.texi routemap.texi \
 	snmp.texi vtysh.texi routeserver.texi defines.texi $(figures_png) \
-	snmptrap.texi ospf_fundamentals.texi isisd.texi $(figures_txt)
+	snmptrap.texi ospf_fundamentals.texi isisd.texi nhrpd.texi \
+	$(figures_txt)
 
 .png.eps:
 	$(PNGTOEPS) $< "$@"
@@ -95,6 +96,10 @@ if RIPNGD
 man_MANS += ripngd.8
 endif
 
+if NHRPD
+man_MANS += nhrpd.8
+endif
+
 if VTYSH
 man_MANS += vtysh.1
 endif
@@ -109,7 +114,7 @@ endif
 
 EXTRA_DIST = BGP-TypeCode draft-zebra-00.ms draft-zebra-00.txt \
 	bgpd.8 isisd.8 ospf6d.8 ospfclient.8 ospfd.8 ripd.8 \
-	ripngd.8 pimd.8 vtysh.1 watchquagga.8 zebra.8 \
+	ripngd.8 nhrpd.8 pimd.8 vtysh.1 watchquagga.8 zebra.8 \
 	mpls/ChangeLog.opaque.txt mpls/cli_summary.txt \
 	mpls/opaque_lsa.txt mpls/ospfd.conf \
 	$(figures_sources) $(figures_png) $(figures_txt) \
