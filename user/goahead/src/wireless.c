@@ -579,6 +579,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	char_t *dyn_vga_long, *dyn_vga_clamp;
 #endif
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
+	char_t *dyn_vga_long;
+#endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	char_t *mcast_mode, *mcast_mcs;
 #endif
@@ -678,6 +681,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 	dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
+#endif
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
+	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 #endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
@@ -1007,6 +1013,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	nvram_bufset(RT2860_NVRAM, "SkipLongRangeVga", dyn_vga_long);
 	nvram_bufset(RT2860_NVRAM, "VgaClamp", dyn_vga_clamp);
+#endif
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
+	nvram_bufset(RT2860_NVRAM, "SkipLongRangeVga", dyn_vga_long);
 #endif
 #if defined(CONFIG_RT2860V2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);
@@ -1837,7 +1846,7 @@ static int getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getClampBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E) || defined(CONFIG_RT_SECOND_IF_MT7610E)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

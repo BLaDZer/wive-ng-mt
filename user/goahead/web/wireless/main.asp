@@ -956,7 +956,7 @@
 
 				displayElement('advDynVGALong_tr', clamp == '1');
 				form.advDynVGALong.options.selectedIndex = (advDynVGALong == '1') ? 1 : 0;
-				displayElement('advDynVGAClamp_tr', clamp == '1');
+				displayElement('advDynVGAClamp_tr', clamp == '1' && is5gh_1t1r == '0');
 				form.advDynVGAClamp.options.selectedIndex = 1*advDynVGAClamp;
 
 				if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
