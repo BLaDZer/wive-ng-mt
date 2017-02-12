@@ -534,6 +534,7 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	int fhoff, nhoff;
 	u8 prevhdr;
 	struct sk_buff *ret_skb = NULL;
+	struct net *net = dev_net(skb_dst(skb)->dev);
 
 	/* Jumbo payload inhibits frag. header */
 	if (ipv6_hdr(skb)->payload_len == 0) {
@@ -544,7 +545,7 @@ struct sk_buff *nf_ct_frag6_gather(struct sk_buff *skb, u32 user)
 	if (find_prev_fhdr(skb, &prevhdr, &nhoff, &fhoff) < 0)
 		return skb;
 
-	if (!net->nf_frag.frags.high_thresh)
+	if (!net->ipv6.frags.high_thresh)
 		return skb;
 
 	clone = skb_clone(skb, GFP_ATOMIC);
