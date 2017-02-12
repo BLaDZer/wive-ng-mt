@@ -2800,6 +2800,7 @@
 2) goahead: add skip long range VGA option for MT7610 radio.<br>
 3) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
 4) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+5) kernel: net: tcp: take care of truncations done by sk_filter().<br>
 <br>
 <br>
 <br>
