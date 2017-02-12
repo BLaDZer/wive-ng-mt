@@ -2798,6 +2798,7 @@
 <b>5.1.x</b><br>
 1) quagga: up to 1.2.0 version.<br>
 2) goahead: add skip long range VGA option for MT7610 radio.<br>
+3) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
 <br>
 <br>
 <br>

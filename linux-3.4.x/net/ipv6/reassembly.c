@@ -578,6 +578,9 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
 		return 1;
 	}
 
+	if (!net->ipv6.frags.high_thresh)
+		goto fail_mem;
+
 	if (atomic_read(&net->ipv6.frags.mem) > net->ipv6.frags.high_thresh)
 		ip6_evictor(net, ip6_dst_idev(skb_dst(skb)));
 
@@ -594,6 +597,7 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
 		return ret;
 	}
 
+fail_mem:
 	IP6_INC_STATS_BH(net, ip6_dst_idev(skb_dst(skb)), IPSTATS_MIB_REASMFAILS);
 	kfree_skb(skb);
 	return -1;
