@@ -2801,6 +2801,7 @@
 3) xl2tpd: up to 1.3.9 version.<br>
 4) goahead: add skip long range VGA option for MT7610 radio.<br>
 5) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+6) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
 7) kernel: tty: limit terminal size to 4M chars.<br>
 8) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
 9) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
