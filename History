@@ -2798,12 +2798,13 @@
 <b>5.1.x</b><br>
 1) quagga: up to 1.2.0 version.<br>
 2) usb-modeswitch: up to 2.5.0 version (data up to 20170205).<br>
-3) goahead: add skip long range VGA option for MT7610 radio.<br>
-4) kernel: tty: limit terminal size to 4M chars.<br>
-5) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-6) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-7) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-8) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+3) xl2tpd: up to 1.3.9 version.<br>
+4) goahead: add skip long range VGA option for MT7610 radio.<br>
+5) kernel: tty: limit terminal size to 4M chars.<br>
+6) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+7) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+8) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+9) kernel: net: tcp: take care of truncations done by sk_filter().<br>
 <br>
 <br>
 <br>
