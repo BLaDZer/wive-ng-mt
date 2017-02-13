@@ -2395,7 +2395,7 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 
 
 		/* 3. U-NII upper band: 149, 151, 153; 157, 159, 161; 165, 167, 169; 171, 173 (including central frequency in BW 40MHz)*/
-		choffset = 14 + 12 + 16;
+		choffset = 14 + 12 + 17;
 		ASSERT((pAd->TxPower[choffset].Channel == 149));
 		for (i = 0; i < 6; i++)
 		{
@@ -2409,8 +2409,7 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 				pAd->TxPower[idx + choffset + 1].Power = Power.field.Byte1;
 		}
 
-		/* choffset = 14 + 12 + 16 + 7; */
-		choffset = 14 + 12 + 16 + 11;
+		choffset = 14 + 12 + 17 + 11;
 
 #ifdef DOT11_VHT_AC
 		ASSERT((pAd->TxPower[choffset].Channel == 42));
