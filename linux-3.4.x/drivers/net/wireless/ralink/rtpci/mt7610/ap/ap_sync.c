@@ -752,6 +752,17 @@ VOID APPeerProbeReqAction(
 			FrameLen += TempLen1;
 	    }
 
+    	    /* add Simple Config Information Element */
+    	    if ((pAd->ApCfg.MBSSID[apidx].WscControl.WscConfMode > WSC_DISABLE) && (pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.ValueLen))
+    	    {
+    		ULONG WscTmpLen = 0;
+    		MakeOutgoingFrame(pOutBuffer+FrameLen,                                  &WscTmpLen,
+    						  pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.ValueLen,   pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.Value,
+                              END_OF_ARGS);
+    		FrameLen += WscTmpLen;
+    	    }
+#endif /* WSC_AP_SUPPORT */
+
 #ifdef DOT11R_FT_SUPPORT
 		/* The Mobility Domain information element (MDIE) is present in Probe-
 		** Request frame when dot11FastBssTransitionEnable is set to true. */
@@ -765,18 +776,6 @@ VOID APPeerProbeReqAction(
 							pFtCfg->FtMdId, FtCap);
 		}
 #endif /* DOT11R_FT_SUPPORT */
-
-        /* add Simple Config Information Element */
-        if ((pAd->ApCfg.MBSSID[apidx].WscControl.WscConfMode > WSC_DISABLE) && (pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.ValueLen))
-        {
-    		ULONG WscTmpLen = 0;
-    		MakeOutgoingFrame(pOutBuffer+FrameLen,                                  &WscTmpLen,
-    						  pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.ValueLen,   pAd->ApCfg.MBSSID[apidx].WscIEProbeResp.Value,
-                              END_OF_ARGS);
-    		FrameLen += WscTmpLen;
-        }
-#endif /* WSC_AP_SUPPORT */
-
 
 #ifdef RT_CFG80211_SUPPORT
 		if (pAd->ApCfg.MBSSID[apidx].ProbRespExtraIeLen != 0)
