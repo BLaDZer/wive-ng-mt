@@ -2802,12 +2802,13 @@
 4) goahead: add skip long range VGA option for MT7610 radio.<br>
 5) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
 6) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-7) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
-8) kernel: tty: limit terminal size to 4M chars.<br>
-9) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-10) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-11) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-12) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+7) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+8) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
+9) kernel: tty: limit terminal size to 4M chars.<br>
+10) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+11) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+12) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+13) kernel: net: tcp: take care of truncations done by sk_filter().<br>
 <br>
 <br>
 <br>

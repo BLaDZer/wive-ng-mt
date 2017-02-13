@@ -864,7 +864,28 @@ VOID ap_cmm_peer_assoc_req_action(
 	/* 2. qualify this STA's auth_asoc status in the MAC table, decide StatusCode */
 	StatusCode = APBuildAssociation(pAd, pEntry, ie_list, MaxSupportedRate, &Aid);
 
+#ifdef DOT11R_FT_SUPPORT
+	if (pEntry->apidx < pAd->ApCfg.BssidNum)
+	{
+		pFtCfg = &(pAd->ApCfg.MBSSID[pEntry->apidx].FtCfg);
+		if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
+			&& (StatusCode == MLME_SUCCESS))
+			StatusCode = FT_AssocReqHandler(pAd, isReassoc, pFtCfg, pEntry,
+							&ie_list->FtInfo, &FtInfoBuf);
 
+		/* just silencely discard this frame */
+		if (StatusCode == 0xFFFF)
+			goto LabelOK;
+	}
+#endif /* DOT11R_FT_SUPPORT */
+
+#ifdef DOT11K_RRM_SUPPORT
+	if ((pEntry->apidx < pAd->ApCfg.BssidNum)
+		&& IS_RRM_ENABLE(pAd, pEntry->apidx))
+	{
+		pEntry->RrmEnCap.word = ie_list->RrmEnCap.word;
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_VHT_AC
 	if (ie_list->vht_cap_len)
@@ -1275,28 +1296,6 @@ VOID ap_cmm_peer_assoc_req_action(
 	 	}
 #endif /* DOT11N_DRAFT3 */
 
-#ifdef DOT11R_FT_SUPPORT
-	if (pEntry->apidx < pAd->ApCfg.BssidNum)
-	{
-		pFtCfg = &(pAd->ApCfg.MBSSID[pEntry->apidx].FtCfg);
-		if ((pFtCfg->FtCapFlag.Dot11rFtEnable)
-			&& (StatusCode == MLME_SUCCESS))
-			StatusCode = FT_AssocReqHandler(pAd, isReassoc, pFtCfg, pEntry,
-							&ie_list->FtInfo, &FtInfoBuf);
-
-		/* just silencely discard this frame */
-		if (StatusCode == 0xFFFF)
-			goto LabelOK;
-	}
-#endif /* DOT11R_FT_SUPPORT */
-
-#ifdef DOT11K_RRM_SUPPORT
-	if ((pEntry->apidx < pAd->ApCfg.BssidNum)
-		&& IS_RRM_ENABLE(pAd, pEntry->apidx))
-	{
-		pEntry->RrmEnCap.word = ie_list->RrmEnCap.word;
-	}
-#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11_VHT_AC
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
