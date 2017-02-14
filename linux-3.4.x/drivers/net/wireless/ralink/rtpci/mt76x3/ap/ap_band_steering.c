@@ -94,7 +94,7 @@ INT Set_BndStrg_RssiLow(
 
 	table->RssiLow = RssiLow;
 	DBGPRINT(RT_DEBUG_OFF, 
-			("%s(): RssiLow = %u\n", __FUNCTION__, table->RssiLow));
+			("%s(): RssiLow = %d\n", __FUNCTION__, table->RssiLow));
 
 	return TRUE;
 }
@@ -840,7 +840,7 @@ static INT D_SetRssiLow(
 
 	table->RssiLow = RssiLow;
 	DBGPRINT(RT_DEBUG_OFF, 
-			("%s(): RssiLow = %u\n", __FUNCTION__, table->RssiLow));
+			("%s(): RssiLow = %d\n", __FUNCTION__, table->RssiLow));
 
 	msg.Action = SET_RSSI_LOW;
 	msg.RssiLow = RssiLow;
