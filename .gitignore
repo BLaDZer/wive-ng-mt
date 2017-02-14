@@ -363,6 +363,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/quagga/doc/defines.texi
 /user/quagga/pimd/Makefile
 /user/quagga/vtysh/vtysh_cmd.c
+/user/quagga/nhrpd/Makefile
 /user/tcpdump/Makefile
 /user/tcpdump/Mkaefile.in
 /user/tcpdump/configure
