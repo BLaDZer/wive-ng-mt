@@ -2801,12 +2801,13 @@
 3) xl2tpd: up to 1.3.9 version.<br>
 4) goahead: add skip long range VGA option for MT7610 radio.<br>
 5) band steering: tune parametrs for faster band detect.<br>
-6) kernel: ralink_wifi: fix bndstr debug.<br>
-7) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-8) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-9) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-10) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
-11) kernel: tty: limit terminal size to 4M chars.<br>
+6) band steering: more safe allowed 5GHz logic.<br>
+7) kernel: ralink_wifi: fix bndstr debug.<br>
+8) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+9) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+10) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+11) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
+12) kernel: tty: limit terminal size to 4M chars.<br>
 13) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
 14) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
 15) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>

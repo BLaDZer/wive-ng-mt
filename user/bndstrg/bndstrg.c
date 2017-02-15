@@ -880,10 +880,10 @@ static u8 _bndstrg_allow_sta_conn_5g(
 #ifdef BND_STRG_QA
 			if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
 				BND_STRG_PRINTQAMSG(table, entry,
-				RED("check 5G HT support. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" does not support HT.\n"), PRINT_MAC(entry->Addr));
+				RED("check 5G HT support: [legacy] client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				" is allowed to connect 5G for safe.\n"), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
-			return FALSE;
+			return TRUE;
 		}
 
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
@@ -918,10 +918,11 @@ static u8 _bndstrg_allow_sta_conn_5g(
 			}
 #endif
 		}
-		else if(entry->statistics[1].Rssi == 0)
+		else if(entry->statistics[1].Rssi == 0 || entry->statistics[1].Rssi <= -127)
 		{
-			DBGPRINT(DEBUG_ERROR,RED("%s(): Wrong RSSI value!\n"), __FUNCTION__);
-			return FALSE;
+			DBGPRINT(DEBUG_ERROR,RED("Unknown RSSI value for client (%02x:%02x:%02x:%02x:%02x:%02x)! Allow to connect 5G for safe by default.\n"),
+						    PRINT_MAC(entry->Addr));
+			return TRUE;
 		}
 	}
 	BND_STRG_PRINTQAMSG(table, entry,
