@@ -123,23 +123,32 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
+#ifdef BAND_STEERING
+			/* collect probe req from long range cliens for band steering */
+			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 10))) {
+				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->rssi_info, &bBndStrgCheck);
+				    if (bBndStrgCheck == FALSE)
+					    return;
+			}
+#endif /* BAND_STEERING */
 
 			if (rssi != 0 && rssi < mbss->ProbeRspRssiThreshold) {
 			    DBGPRINT(RT_DEBUG_INFO, ("%s: PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", wdev->if_dev->name, mbss->ProbeRspRssiThreshold, rssi));
 			    continue;
 			}
-		}
+		} else {
 
 #ifdef BAND_STEERING
-		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+		    BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 											NULL, 
 											ProbeReqParam.Addr2,
 											Elem->MsgType,
 											Elem->rssi_info,
 											&bBndStrgCheck);
-		if (bBndStrgCheck == FALSE)
-			return;
+		    if (bBndStrgCheck == FALSE)
+			    return;
 #endif /* BAND_STEERING */
+		}
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);

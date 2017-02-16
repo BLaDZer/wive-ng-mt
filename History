@@ -2804,15 +2804,16 @@
 6) band steering: more safe allowed 5GHz logic.<br>
 7) kernel: ralink_wifi: fix bndstr debug.<br>
 8) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
-9) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-10) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-11) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-12) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
-13) kernel: tty: limit terminal size to 4M chars.<br>
-14) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-15) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-16) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-17) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+9) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
+10) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+11) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+12) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+13) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
+14) kernel: tty: limit terminal size to 4M chars.<br>
+15) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+16) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+17) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+18) kernel: net: tcp: take care of truncations done by sk_filter().<br>
 <br>
 <br>
 <br>

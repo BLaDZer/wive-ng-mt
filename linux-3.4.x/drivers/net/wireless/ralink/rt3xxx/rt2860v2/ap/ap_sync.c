@@ -173,15 +173,23 @@ VOID APPeerProbeReqAction(
 			CHAR rssi = RTMPAvgMRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
+#ifdef BAND_STEERING
+			/* collect probe req from long range cliens for band steering */
+			if (rssi != 0 && (rssi > (pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold - 10))) {
+				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, &bBndStrgCheck);
+				    if (bBndStrgCheck == FALSE)
+						return;
+			}
+#endif /* BAND_STEERING */
 
 			if (rssi != 0 && rssi < pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold) {
 			    DBGPRINT(RT_DEBUG_INFO, ("PROBE_RSP Threshold = %d , PROBE RSSI = %d\n", pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold, rssi));
 			    continue;
 			}
-		}
+		} else {
 
 #ifdef BAND_STEERING
-		BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+		    BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
 										Addr2,
 										Elem->MsgType,
@@ -189,9 +197,10 @@ VOID APPeerProbeReqAction(
 										Elem->Rssi1,
 										Elem->Rssi2,
 										&bBndStrgCheck);
-		if (bBndStrgCheck == FALSE)
-			return;
+		    if (bBndStrgCheck == FALSE)
+			    return;
 #endif /* BAND_STEERING */
+		}
 
 		/* allocate and send out ProbeRsp frame */
 		NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
