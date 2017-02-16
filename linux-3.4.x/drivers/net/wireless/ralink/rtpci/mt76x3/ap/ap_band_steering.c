@@ -570,7 +570,7 @@ BOOLEAN BndStrg_IsClientStay(
 	
 	if (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI &&
 		table->Band == BAND_5G &&
-		(Rssi < (table->RssiLow - 10/*Test*/)))
+		(Rssi < (table->RssiLow)))
 	{
 		BNDSTRG_MSG msg;
 
@@ -786,7 +786,7 @@ static INT D_SetEnable(
 	DBGPRINT(RT_DEBUG_OFF, 
 			("%s(): enable = %u\n", __FUNCTION__,  enable));
 
-	if (!(pAd->ApCfg.BandSteering ^ enable))
+	if (!(table->bEnabled ^ enable))
 	{
 		/* Already enabled/disabled */
 		BND_STRG_DBGPRINT(RT_DEBUG_OFF, /* TRACE */
@@ -795,7 +795,7 @@ static INT D_SetEnable(
 		return BND_STRG_SUCCESS;
 	}
 
-	pAd->ApCfg.BandSteering = (enable) ? TRUE : FALSE;
+	pAd->ApCfg.BandSteering = enable;
 
 	if (enable)
 		ret_val = BndStrg_Init(pAd);
