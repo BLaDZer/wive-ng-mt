@@ -2813,7 +2813,12 @@
 15) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
 16) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
 17) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-18) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+18) kernel: net: do not block BH while processing socket backlog.<br>
+19) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+20) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+21) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+22) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+23) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
 <br>
 <br>
 <br>
