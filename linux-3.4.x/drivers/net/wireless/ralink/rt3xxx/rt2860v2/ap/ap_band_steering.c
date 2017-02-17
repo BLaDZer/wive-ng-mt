@@ -51,7 +51,7 @@ INT Set_BndStrg_Enable(
 	PSTRING			arg)
 {
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
-	BOOLEAN enable = (BOOLEAN) simple_strtol(arg, 0, 10);
+	UCHAR enable = (UCHAR) simple_strtol(arg, 0, 10);
 
 	if (table->Ops)
 		table->Ops->SetEnable(table, enable);
@@ -776,7 +776,7 @@ static VOID D_InfStatusRsp(PBND_STRG_CLI_TABLE table, BNDSTRG_MSG *msg)
 /* For IOCTL */
 static INT D_SetEnable(
 			PBND_STRG_CLI_TABLE table,
-			BOOLEAN enable)
+			UCHAR enable)
 {
 	INT ret_val = BND_STRG_SUCCESS;
 	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER) table->priv;

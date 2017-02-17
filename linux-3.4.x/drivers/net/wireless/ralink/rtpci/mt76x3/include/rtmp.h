@@ -3319,7 +3319,7 @@ typedef struct _AP_ADMIN_CONFIG {
 		This is used to let user config band steering on/off by profile.
 		0: OFF / 1: ON / 2: Auto ONOFF
 	*/
-	BOOLEAN BandSteering; 
+	UCHAR BandSteering; 
 	BND_STRG_CLI_TABLE BndStrgTable;
 #endif /* BAND_STEERING */
 

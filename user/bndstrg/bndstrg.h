@@ -175,7 +175,7 @@ enum ACTION_CODE{
 struct bndstrg_msg{
 	u8	Action;
 	u8	ReturnCode;
-	u8	TalbeIndex;
+	u32	TalbeIndex;
 	u8 	OnOff;
 	u8	Band;
 	u8	b2GInfReady;

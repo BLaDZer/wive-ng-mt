@@ -134,7 +134,7 @@ enum BND_STRG_CONDITION_CHECK_FLAGS {
 typedef struct _BNDSTRG_MSG{
 	UINT8	 Action;
 	UINT8	 ReturnCode;
-	UINT8	 TalbeIndex;
+	UINT32	 TalbeIndex;
 	BOOLEAN OnOff;
 	UINT8	Band;
 	BOOLEAN b2GInfReady;
