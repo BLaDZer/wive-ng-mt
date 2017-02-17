@@ -2808,18 +2808,19 @@
 10) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
 11) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
 12) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-13) kernel: mips: sync-r4k: Fix KERN_CONT fallout.<br>
-14) kernel: tty: limit terminal size to 4M chars.<br>
-15) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-16) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-17) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-18) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-19) kernel: net: do not block BH while processing socket backlog.<br>
-20) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-21) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-22) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-23) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-24) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+13) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+14) kernel: mips: disable stack checks on MIPS kernels.<br>
+15) kernel: tty: limit terminal size to 4M chars.<br>
+16) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+17) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+18) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+19) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+20) kernel: net: do not block BH while processing socket backlog.<br>
+21) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+22) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+23) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+24) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+25) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
 <br>
 <br>
 <br>
