@@ -104,7 +104,7 @@ struct bndstrg_entry_stat {
 
 struct bndstrg_cli_entry {
 	u8 				bValid;
-	u8				TableIndex;
+	u32				TableIndex;
 	u8				bConnected;
 	u8				AgingConfirmed[2]; /* confirm this sta is not connected to our 2.4G or 5G interface before aging */
 	u32 				Control_Flags;
