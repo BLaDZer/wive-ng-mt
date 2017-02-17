@@ -1095,6 +1095,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 		return BND_STRG_SUCCESS;
 
 	/* get params */
+	BandSteering_s     = nvram_get(RT2860_NVRAM, "BandSteering");
 	BndStrgRssiDiff_s  = nvram_get(RT2860_NVRAM, "BndStrgRssiDiff");
 	BndStrgRssiLow_s   = nvram_get(RT2860_NVRAM, "BndStrgRssiLow");
 	BndStrgAge_s       = nvram_get(RT2860_NVRAM, "BndStrgAge");
@@ -1102,7 +1103,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	BndStrgCheckTime_s = nvram_get(RT2860_NVRAM, "BndStrgCheckTime");
 
 	/* convert to int */
-	BandSteering  = (BandSteering_s == NULL) ? 0 : atoi(BandSteering_s);
+	BandSteering = (BandSteering_s == NULL) ? 0 : atoi(BandSteering_s);
 	BndStrgRssiDiff  = (BndStrgRssiDiff_s == NULL) ? 0 : atoi(BndStrgRssiDiff_s);
 	BndStrgRssiLow   = (BndStrgRssiLow_s == NULL) ? 0 : atoi(BndStrgRssiLow_s);
 	BndStrgAge       = (BndStrgAge_s == NULL) ? 0 : atoi(BndStrgAge_s);

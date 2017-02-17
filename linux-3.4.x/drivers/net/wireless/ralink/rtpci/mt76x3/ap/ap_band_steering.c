@@ -55,10 +55,6 @@ INT Set_BndStrg_Enable(
 
 	if (table->Ops)
 		table->Ops->SetEnable(table, enable);
-	else if (enable) {
-		pAd->ApCfg.BandSteering = enable;
-		BndStrg_Init(pAd);
-	}
 
 	return TRUE;
 }
