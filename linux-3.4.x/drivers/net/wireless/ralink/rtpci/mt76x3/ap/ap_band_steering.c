@@ -323,7 +323,7 @@ INT BndStrg_InsertEntry(
 
 	if (entry) {
 		/* add this MAC entry into HASH table */
-		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+		HashIdx = BND_MAC_ADDR_HASH_INDEX(pAddr);
 		if (table->Hash[HashIdx] == NULL) {
 			table->Hash[HashIdx] = entry;
 		} else {
@@ -350,7 +350,7 @@ INT BndStrg_DeleteEntry(PBND_STRG_CLI_TABLE table, PUCHAR pAddr, UINT32 Index)
 
 
 	NdisAcquireSpinLock(&table->Lock);
-	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+	HashIdx = BND_MAC_ADDR_HASH_INDEX(pAddr);
 	if (Index >= BND_STRG_MAX_TABLE_SIZE)
 	{
 		entry = table->Hash[HashIdx];
@@ -421,7 +421,7 @@ PBND_STRG_CLI_ENTRY BndStrg_TableLookup(PBND_STRG_CLI_TABLE table, PUCHAR pAddr)
 	ULONG HashIdx;
 	BND_STRG_CLI_ENTRY *entry = NULL;
 	
-	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+	HashIdx = BND_MAC_ADDR_HASH_INDEX(pAddr);
 	entry = table->Hash[HashIdx];
 
 	while (entry && entry->bValid)

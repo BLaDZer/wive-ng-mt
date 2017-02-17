@@ -87,7 +87,7 @@
 	_max1 > _max2 ? _max1 : _max2; })
 
 #define MAC_ADDR_HASH(Addr)			(Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
-#define MAC_ADDR_HASH_INDEX(Addr)		(MAC_ADDR_HASH(Addr) & (HASH_TABLE_SIZE - 1))
+#define MAC_ADDR_HASH_INDEX(Addr)		(MAC_ADDR_HASH(Addr) & (BND_HASH_TABLE_SIZE - 1))
 #define MAC_ADDR_EQUAL(pAddr1,pAddr2)           !memcmp((void *)(pAddr1), (void *)(pAddr2), MAC_ADDR_LEN)
 #define PRINT_MAC(addr)				addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]
 #endif /* __UTIL_H__ */

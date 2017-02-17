@@ -96,6 +96,7 @@ INT BndStrg_MsgHandle(PRTMP_ADAPTER pAd, RTMP_IOCTL_INPUT_STRUCT *wrq);
 #define BND_STRG_PRINTQAMSG(_Level, _Fmt)
 #endif /* BND_STRG_QA */
 
+#define BND_MAC_ADDR_HASH_INDEX(Addr)               (MAC_ADDR_HASH(Addr) & (BND_HASH_TABLE_SIZE - 1))
 #endif /* BAND_STEERING */
 #endif /* _BAND_STEERING_H_ */
 

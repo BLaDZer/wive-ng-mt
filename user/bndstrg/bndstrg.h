@@ -35,20 +35,21 @@
 #define IFNAME_2G "ra0"
 #define IFNAME_5G "rai0"
 
-#define HASH_TABLE_SIZE			256
+#define BND_STRG_MAX_TABLE_SIZE		512
+#define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
+#define BND_STRG_TIMER_PERIOD		1000
+#define BND_STRG_AGE_TIME		600000	/* orig 150000 */
+#define BND_STRG_HOLD_TIME		3000	/* orig 90000 */
+#define BND_STRG_CHECK_TIME_5G		6000	/* orig 30000 */
+#define BND_STRG_RSSI_DIFF		15	/* allow to 2.4 GHz connect */
+#define BND_STRG_RSSI_LOW		-88
+
 #define MAC_ADDR_LEN			6
 #define BAND_5G				1
 #define BAND_2G				2
 #define APMT2_PEER_PROBE_REQ		0
 #define APMT2_PEER_AUTH_REQ		3
 
-#define BND_STRG_MAX_TABLE_SIZE		128
-#define BND_STRG_TIMER_PERIOD		1000
-#define BND_STRG_AGE_TIME		300000	/* orig 150000 */
-#define BND_STRG_HOLD_TIME		3000	/* orig 90000 */
-#define BND_STRG_CHECK_TIME_5G		6000	/* orig 30000 */
-#define BND_STRG_RSSI_DIFF		15	/* allow to 2.4 GHz connect */
-#define BND_STRG_RSSI_LOW		-88
 
 #ifndef TRUE
 #define TRUE						1
@@ -140,7 +141,7 @@ struct bndstrg_cli_table {
 	u8		dbdc_mode;
 	struct bndstrg_alg_control	AlgCtrl;
 	struct bndstrg_cli_entry 	Entry[BND_STRG_MAX_TABLE_SIZE];
-	struct bndstrg_cli_entry* 	Hash[HASH_TABLE_SIZE];
+	struct bndstrg_cli_entry* 	Hash[BND_HASH_TABLE_SIZE];
 #ifdef BND_STRG_DBG
 	unsigned char MonitorAddr[MAC_ADDR_LEN];
 #endif /* BND_STRG_DBG */
