@@ -1087,8 +1087,8 @@ end_of_periodic_exec:
 int bndstrg_table_init(struct bndstrg_cli_table *table)
 {
 	u32 BndStrgAge = 0, BndStrgHoldTime = 0, BndStrgCheckTime = 0;
-	char BndStrgRssiDiff = 0, BndStrgRssiLow = 0;
-	char *BndStrgRssiDiff_s, *BndStrgRssiLow_s, *BndStrgAge_s, *BndStrgHoldTime_s, *BndStrgCheckTime_s;
+	char BandSteering = 0, BndStrgRssiDiff = 0, BndStrgRssiLow = 0;
+	char *BandSteering_s, *BndStrgRssiDiff_s, *BndStrgRssiLow_s, *BndStrgAge_s, *BndStrgHoldTime_s, *BndStrgCheckTime_s;
 	char cmd[256];
 
 	if (table->bInitialized == TRUE)
@@ -1102,6 +1102,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	BndStrgCheckTime_s = nvram_get(RT2860_NVRAM, "BndStrgCheckTime");
 
 	/* convert to int */
+	BandSteering  = (BandSteering_s == NULL) ? 0 : atoi(BandSteering_s);
 	BndStrgRssiDiff  = (BndStrgRssiDiff_s == NULL) ? 0 : atoi(BndStrgRssiDiff_s);
 	BndStrgRssiLow   = (BndStrgRssiLow_s == NULL) ? 0 : atoi(BndStrgRssiLow_s);
 	BndStrgAge       = (BndStrgAge_s == NULL) ? 0 : atoi(BndStrgAge_s);
@@ -1168,7 +1169,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	table->bInitialized = TRUE;
 
 	/* configure OK - enable now */
-	sprintf(cmd, "iwpriv ra0 set BndStrgEnable=1 && iwpriv rai0 set BndStrgEnable=1");
+	sprintf(cmd, "iwpriv ra0 set BndStrgEnable=%u && iwpriv rai0 set BndStrgEnable=%u", BandSteering, BandSteering);
 	system(cmd);
 
 	return BND_STRG_SUCCESS;
