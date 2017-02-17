@@ -746,10 +746,12 @@ static VOID D_InfStatusRsp(PBND_STRG_CLI_TABLE table, BNDSTRG_MSG *msg)
 		// TODO: Use Avg False CCA
 		if (pAd->RalinkCounters.OneSecFalseCCACnt > table->AutoOnOffThrd &&
 			table->bEnabled == FALSE) {
+			printk("bandsteering: enable (FalseCCA high)");
 			table->Ops->SetEnable(table, 1);
 			return;
 		} else if (pAd->RalinkCounters.OneSecFalseCCACnt < table->AutoOnOffThrd &&
 			table->bEnabled == TRUE){
+			printk("bandsteering: auto disable (FalseCCA low)");
 			table->Ops->SetEnable(table, 0);
 			return;
 		}
