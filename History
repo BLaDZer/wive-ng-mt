@@ -2805,25 +2805,26 @@
 7) band steering: increase mac table size to 512 entry.<br>
 8) band steering: fix enable procedure.<br>
 9) band steering: fix auto mode work.<br>
-10) kernel: ralink_wifi: fix bndstr debug.<br>
-11) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
-12) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
-13) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-14) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-15) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-16) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
-17) kernel: mips: disable stack checks on MIPS kernels.<br>
-18) kernel: tty: limit terminal size to 4M chars.<br>
-19) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-20) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-21) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-22) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-23) kernel: net: do not block BH while processing socket backlog.<br>
-24) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-25) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-26) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-27) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-28) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+10) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
+11) kernel: ralink_wifi: fix bndstr debug.<br>
+12) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
+13) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
+14) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+15) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+16) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+17) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+18) kernel: mips: disable stack checks on MIPS kernels.<br>
+19) kernel: tty: limit terminal size to 4M chars.<br>
+20) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+21) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+22) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+23) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+24) kernel: net: do not block BH while processing socket backlog.<br>
+25) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+26) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+27) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+28) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+29) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
 <br>
 <br>
 <br>

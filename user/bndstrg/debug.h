@@ -70,10 +70,13 @@ extern int DebugLevel;
 #ifdef BND_STRG_QA
 #define BND_STRG_PRINTQAMSG(_table, _entry, fmt, args...) \
 {	\
-	if (MAC_ADDR_EQUAL(_table->MonitorAddr, _entry->Addr))	\
+	if (MAC_ADDR_EQUAL(_table->MonitorAddr, _entry->Addr)) {	\
 		DBGPRINT(DEBUG_OFF, fmt, ## args); \
+	} else { \
+		DBGPRINT(DEBUG_TRACE, fmt, ## args); \
+	} \
 }
-#else
+#else  /* BND_STRG_QA */
 #define BND_STRG_PRINTQAMSG(_Level, _Fmt)
 #endif /* BND_STRG_QA */
 #endif /* __DEBUG_H__ */

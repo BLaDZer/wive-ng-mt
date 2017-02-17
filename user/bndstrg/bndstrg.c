@@ -925,9 +925,11 @@ static u8 _bndstrg_allow_sta_conn_5g(
 			return TRUE;
 		}
 	}
+#if 0
 	BND_STRG_PRINTQAMSG(table, entry,
 	YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
 	" is allowed to connect 5G.\n"),PRINT_MAC(entry->Addr));
+#endif
 	return TRUE;
 }
 
