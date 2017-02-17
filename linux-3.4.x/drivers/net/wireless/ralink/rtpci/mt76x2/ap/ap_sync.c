@@ -143,7 +143,7 @@ VOID APPeerProbeReqAction(
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
-			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 10))) {
+			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 8))) {
 				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, &bBndStrgCheck);
 				    if (bBndStrgCheck == FALSE)
 					    return;
