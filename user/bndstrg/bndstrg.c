@@ -82,7 +82,7 @@ int bndstrg_insert_entry(
 	struct bndstrg_cli_entry **entry_out)
 {
 	int i;
-	unsigned char HashIdx;
+	unsigned long HashIdx;
 	struct bndstrg_cli_entry *entry = NULL, *this_entry = NULL;
 	int ret_val = BND_STRG_SUCCESS;
 
@@ -97,7 +97,7 @@ int bndstrg_insert_entry(
 		entry = &table->Entry[i];
 
 		/* pick up the first available vacancy*/
-		if (entry->bValid == FALSE)	{
+		if (!entry->bValid)	{
 			memset(entry, 0, sizeof(struct bndstrg_cli_entry));
 			/* Fill Entry */
 			get_current_system_tick(&entry->tp);
@@ -136,7 +136,7 @@ int bndstrg_insert_entry(
 
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
-	u16 HashIdx;
+	unsigned long HashIdx;
 	struct bndstrg_cli_entry *entry, *pre_entry, *this_entry;
 	int ret_val = BND_STRG_SUCCESS;
 
@@ -1000,7 +1000,7 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 	for (i = 0; i < BND_STRG_MAX_TABLE_SIZE; i++)
 	{
 		entry = &table->Entry[i];
-		if (entry->bValid == TRUE)
+		if (entry->bValid)
 		{
 			elapsed_time = bndstrg_get_entry_elapsed_time(entry);
 			if (elapsed_time >= table->AgeTime)

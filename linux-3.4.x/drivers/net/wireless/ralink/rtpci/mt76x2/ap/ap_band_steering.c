@@ -292,7 +292,7 @@ INT BndStrg_InsertEntry(
 	PBND_STRG_CLI_ENTRY *entry_out)
 {
 	INT i;
-	UCHAR HashIdx;
+	ULONG HashIdx;
 	PBND_STRG_CLI_ENTRY entry = NULL, this_entry = NULL;
 	INT ret_val = BND_STRG_SUCCESS;
 
@@ -307,7 +307,7 @@ INT BndStrg_InsertEntry(
 		entry = &table->Entry[i];
 
 		/* pick up the first available vacancy*/
-		if (entry->bValid == FALSE)	{
+		if (!entry->bValid)	{
 			NdisZeroMemory(entry, sizeof(BND_STRG_CLI_ENTRY));
 			/* Fill Entry */
 			RTMP_GetCurrentSystemTick(&entry->jiffies);
@@ -340,7 +340,7 @@ INT BndStrg_InsertEntry(
 
 INT BndStrg_DeleteEntry(PBND_STRG_CLI_TABLE table, PUCHAR pAddr, UINT32 Index)
 {
-	USHORT HashIdx;
+	ULONG HashIdx;
 	PBND_STRG_CLI_ENTRY entry, pre_entry, this_entry;
 	INT ret_val = BND_STRG_SUCCESS;
 
@@ -402,6 +402,8 @@ INT BndStrg_DeleteEntry(PBND_STRG_CLI_TABLE table, PUCHAR pAddr, UINT32 Index)
 
 			NdisZeroMemory(entry->Addr, MAC_ADDR_LEN);
 			entry->pNext = NULL;
+			entry->elapsed_time = 0;
+			entry->jiffies = 0;
 			entry->bValid = FALSE;
 			table->Size--;
 		}
@@ -988,7 +990,7 @@ static VOID D_MsgHandle(
 			break;
 
 		case CLI_DEL:
-			table->Ops->TableEntryDel(table, msg->Addr, 0xFF);
+			table->Ops->TableEntryDel(table, msg->Addr, BND_STRG_MAX_TABLE_SIZE);
 			break;
 
 		case CLI_AGING_REQ:
@@ -999,7 +1001,7 @@ static VOID D_MsgHandle(
 			{
 				/* we can aging the entry if it is not in the mac table */
 				msg->ReturnCode = BND_STRG_SUCCESS;
-				table->Ops->TableEntryDel(table, msg->Addr, 0xFF);
+				table->Ops->TableEntryDel(table, msg->Addr, BND_STRG_MAX_TABLE_SIZE);
 			}
 			else
 			{
@@ -1023,7 +1025,7 @@ static VOID D_MsgHandle(
 				PBND_STRG_CLI_ENTRY entry = NULL;
 				for (i=0;i<BND_STRG_MAX_TABLE_SIZE;i++) {
 					entry = &table->Entry[i];
-					if (entry->bValid == TRUE) {
+					if (entry->bValid) {
 						BndStrg_DeleteEntry(table, entry->Addr, i);
 					}
 				}

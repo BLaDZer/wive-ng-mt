@@ -104,13 +104,13 @@ struct bndstrg_entry_stat {
 
 struct bndstrg_cli_entry {
 	u8 				bValid;
+	u32 				Control_Flags;
 	u32				TableIndex;
+	u32				elapsed_time; /* ms */
+	u8 				Addr[MAC_ADDR_LEN];
 	u8				bConnected;
 	u8				AgingConfirmed[2]; /* confirm this sta is not connected to our 2.4G or 5G interface before aging */
-	u32 				Control_Flags;
 	struct timespec 	tp;		/* timestamp when insert-entry */
-	u32  			elapsed_time; /* ms */
-	u8 				Addr[MAC_ADDR_LEN];
 	struct bndstrg_entry_stat statistics[2]; /* 2.4G/5G */
 	struct bndstrg_cli_entry *pNext;
 };
