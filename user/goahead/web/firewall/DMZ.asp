@@ -10,15 +10,15 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("firewall");
 			Butterlate.setTextDomain("buttons");
 
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("dmzTitle", 		"dmz title");
 				_TR("dmzIntroduction",	"dmz introduction");
 				_TR("dmzSetting",		"dmz title");
@@ -30,35 +30,23 @@
 				_TR("dmzIPAddr",		"dmz ipaddr");
 				_TR("bridge_warning",	"firewall bridge warning");
 				_TRV("dmzApply",		"button apply");
+				_TRV("dmzCancel",		"button cancel");
 				_TRV("dmzReset",		"button reset");
 			}
 
-			function initValues()
-			{
-				var form	= document.DMZ;
-				var dmzEnable	= '<% getCfgZero(1, "DMZEnable"); %>';
-				var dmzLoopback = '<% getCfgZero(1, "DMZNATLoopback"); %>';
-				var dmzIPAddr	= '<% getCfgZero(1, "DMZIPAddress"); %>';
-				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
+			function initValues() {
+				document.DMZ.elements.DMZEnabled.options.selectedIndex = +NVRAM_DMZEnable;
+				document.DMZ.dmzLoopback.value = NVRAM_DMZNATLoopback;
+				document.DMZ.DMZIPAddress.value = NVRAM_DMZIPAddress;
 
-				if (dmzIPAddr == "0")
-					dmzIPAddr = "";
-				
-				displayElement('bridge_warning', opMode == '0');
+				displayElement('bridge_warning', NVRAM_OperationMode == '0');
 
-				if (dmzEnable == '1')
-					form.elements.DMZEnabled.options.selectedIndex = 1;
-					
-				form.dmzLoopback.value = dmzLoopback;
-				form.DMZIPAddress.value = dmzIPAddr;
-				
-				dmzEnableSwitch(form);
+				dmzEnableSwitch(document.DMZ);
 				showWarning();
 				initTranslation();
 			}
 
-			function checkValues(form)
-			{
+			function checkValues(form) {
 				if (form.DMZEnabled.options.selectedIndex && !validateIP(form.DMZIPAddress, true)) {
 					form.DMZIPAddress.focus();
 					return false;
@@ -67,16 +55,13 @@
 				return true;
 			}
 
-			function dmzEnableSwitch(form)
-			{
+			function dmzEnableSwitch(form) {
 				enableElements([form.DMZIPAddress, form.dmzLoopback], form.DMZEnabled.value == '1');
 				displayElement([ 'dmzAdress', 'dmzLoopback' ], form.DMZEnabled.value == '1');
 			}
 
-			function dmzLoopbackWarning(form)
-			{
-				if (form.dmzLoopback.value == '1')
-				{
+			function dmzLoopbackWarning(form) {
+				if (form.dmzLoopback.value == '1') {
 					if (!confirm(_("dmz confirm")))
 						form.dmzLoopback.value='0';
 				}
@@ -120,8 +105,11 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="dmzReset" name="reset_button" onClick="window.location.reload();">
+								<td>
+									<input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ">&nbsp;&nbsp;
+									<input type="button" class="normal" value="Cancel" id="dmzCancel" name="cancel_button" onClick="window.location.reload();">&nbsp;&nbsp;
+									<input type="button" class="normal" value="Reset" id="dmzReset" onClick="resetValues(this.form);">
+									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
 						</table>

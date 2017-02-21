@@ -27,17 +27,17 @@ document.getElementById('statisticMMLeft_value').innerHTML		= +mem_free + _("sta
 document.getElementById('statisticCpuUse_value').innerHTML		= '<% getCpuUsageASP(); %>';
 
 displayElement('statusINTIPAddr_tr',	document.getElementById('statusINTIPAddr_value').innerHTML != document.getElementById('statusWANIPAddr_value').innerHTML);
-if (opmode == 0) {
+if (NVRAM_OperationMode == 0) {
 	showElement('statusINTIPAddr_tr');
 	if (document.getElementById('statusINTIPAddr_value').innerHTML == document.getElementById('statusWANIPAddr_value').innerHTML)
 		hideElement('statusWANIPAddr_tr');
 }
 displayElement('statusDefaultGW_tr',	'<% getWanGateway(); %>' != '');
-displayElement('statusIPv6IntAddr_tr',	'<% getIPv6Built(); %>' == '1' && ipv6mode != '0');
-displayElement('statusIPv6ExtAddr_tr',	'<% getIPv6Built(); %>' == '1' && ipv6mode != '0');
+displayElement('statusIPv6IntAddr_tr',	'<% getIPv6Built(); %>' == '1' && NVRAM_IPv6OpMode != '0');
+displayElement('statusIPv6ExtAddr_tr',	'<% getIPv6Built(); %>' == '1' && NVRAM_IPv6OpMode != '0');
 displayElement('statusPrimaryDNS_tr',	document.getElementById('statusPrimaryDNS_value').innerHTML != '');
 displayElement('statusSecondaryDNS_tr',	document.getElementById('statusSecondaryDNS_value').innerHTML != '');
-displayElement([ 'statusLocalNet_tr', 'statusLANIPAddr_tr', 'statusLANNetmask_tr', 'statusLANMAC_tr', 'statusConnectedType_tr' ],	opmode != '0');
+displayElement([ 'statusLocalNet_tr', 'statusLANIPAddr_tr', 'statusLANNetmask_tr', 'statusLANMAC_tr', 'statusConnectedType_tr' ],	NVRAM_OperationMode != '0');
 
 showInterfaces();
 

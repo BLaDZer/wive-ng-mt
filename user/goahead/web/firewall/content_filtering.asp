@@ -10,8 +10,9 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
-		<script src="/js/controls.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/controls.js"></script>
 		<script>
 			Butterlate.setTextDomain("firewall");
 			Butterlate.setTextDomain("buttons");
@@ -36,19 +37,16 @@
 			function initValues()
 			{
 				var st = {
-					'proxy'   : '<% getCfgZero(1, "websFilterProxy"); %>',
-					'java'    : '<% getCfgZero(1, "websFilterJava"); %>',
-					'activex' : '<% getCfgZero(1, "websFilterActivex"); %>',
-					'cookies' : '<% getCfgZero(1, "websFilterCookies"); %>'
+					'proxy'   : NVRAM_websFilterProxy,
+					'java'    : NVRAM_websFilterJava,
+					'activex' : NVRAM_websFilterActivex,
+					'cookies' : NVRAM_websFilterCookies
 				};
-				var urls      = '<% getCfgGeneral(1, "websURLFilters"); %>';
-				var hosts     = '<% getCfgGeneral(1, "websHostFilters"); %>';
-				var opMode    = '<% getCfgZero(1, "OperationMode"); %>';
 
-				displayElement('bridge_warning', opMode == '0'); // bridge mode
+				displayElement('bridge_warning', NVRAM_OperationMode == '0'); // bridge mode
 
-				addAllRules(urls, 'url');
-				addAllRules(hosts, 'host');
+				addAllRules(NVRAM_websURLFilters, 'url');
+				addAllRules(NVRAM_websHostFilters, 'host');
 
 				for (var field in st)
 					setElementChecked('websFilter_' + field, st[field] == '1');
@@ -58,12 +56,11 @@
 				initTranslation();
 			}
 
-			function checkValues(form)
-			{
+			function checkValues(form) {
 				var ents = { 'url' : [], 'host': [] };
 
 				// Separate into 2 arrays
-				for (var i=0; i<filteringRules.length; i++)
+				for (var i = 0; i < filteringRules.length; i++)
 					ents[filteringRules[i][0]].push(filteringRules[i][1]);
 
 				form.urlFiltering.value  = ents['url'].join(';');
@@ -73,16 +70,14 @@
 				return true;
 			}
 			
-			function genFilteringTable()
-			{
+			function genFilteringTable() {
 				var table = '<table class="small" style="width: 100%"><tr>' +
 					'<th>' + _("content filter table type") + '</th>' +
 					'<th>' + _("content filter table value") + '</th>' +
 					'<th>' + _("content filter table action") + '</th></tr>';
 
-				for (var i=0; i<filteringRules.length; i++)
-				{
-					var row = filteringRules[i];
+				for (var i = 0; i < filteringRules.length; i++) {
+					var row  = filteringRules[i];
 					var type = _("content filter unknown");
 
 					if (row[0] == 'url')
@@ -117,21 +112,16 @@
 					elem.innerHTML = table;
 			}
 
-			function addRule(form)
-			{
-				if (form.filterType.value == "url") 
-				{
-					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9:\/._-]/gi)))
-					{
+			function addRule(form) {
+				if (form.filterType.value == "url") {
+					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9:\/._-]/gi))) {
 						alert(_("content filter wrong url"));
 						form.filterValue.focus();
 						return;
 					}
 				}
-				else if (form.filterType.value == "host") 
-				{
-					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9._-]/gi)))
-					{
+				else if (form.filterType.value == "host") {
+					if ((form.filterValue.value == "") || (form.filterValue.value.match(/[^A-ZА-Я0-9._-]/gi))) {
 						alert(_("content filter wrong host"));
 						form.filterValue.focus();
 						return;
@@ -147,23 +137,18 @@
 				genFilteringTable();
 			}
 
-			function deleteRule(index)
-			{
-				if ((index>=0) && (index < filteringRules.length))
-				{
+			function deleteRule(index) {
+				if ((index>=0) && (index < filteringRules.length)) {
 					filteringRules.splice(index, 1);
 					genFilteringTable();
 				}
 			}
 
-			function addAllRules(list, type)
-			{
-				if (list.length > 0)
-				{
+			function addAllRules(list, type) {
+				if (list.length > 0) {
 					entries = list.split(';');
 					for (var i=0; i<entries.length; i++)
-						if (!entries[i].match(/[^A-ZА-Я0-9:\\._-]/gi))
-							filteringRules.push( [ type, entries[i] ] );
+						filteringRules.push( [ type, entries[i] ] );
 				}
 			}
 		</script>

@@ -337,6 +337,7 @@ static void clearlog(webs_t wp, char_t *path, char_t *query)
 	truncate("/var/log/messages", 0);
 	doSystem("service syslog start");
 
+	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
 	websDone(wp, 200);
 }
 

@@ -78,16 +78,18 @@ function ajaxPostRequest(uri, content, refresh, handler)
 			// Free resources
 			if (handler != null)
 			{
-				handler(xmlHttp.responseText);
-				handler = null;
+				if (xmlHttp.status == 200) {
+					handler(xmlHttp.responseText);
+					handler = null;
+					xmlHttp.onreadystatechange = null;
+					xmlHttp = null;
+				}
 			}
 
 			if (refresh)
 				window.location.reload();
 
 			// Free resources
-			xmlHttp.onreadystatechange = null;
-			xmlHttp = null;
 		}
 	}
 
@@ -536,12 +538,11 @@ function getBrowser() {
 }
 
 function showWarning() {
-	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
-	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
-	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+	var warning_access_password	= NVRAM_Login == "Admin";
+	var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
+	var warning_wireless_key	= NVRAM_WPAPSK1 == "1234567890";
+	var warningHTML			= '';
 
-	var warningHTML = "";
-	
 	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
 		warningHTML += '<tr><td>';
 		warningHTML += '<table class="warning">';

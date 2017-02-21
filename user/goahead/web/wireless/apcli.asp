@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
@@ -18,30 +19,26 @@
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
-			var radio_on				= "<% getCfgZero(1, "RadioOn"); %>";
-			var radio_on_ac				= "<% getCfgZero(1, "RadioOnINIC"); %>";
-			var is5gh_support			= '<% is5gh_support(); %>';
-
 			function initTranslation() {
 				_TR("apcliTitle",					"apcli title");
-				_TR("apcliParameters",					"apcli param");
+				_TR("apcliParameters",				"apcli param");
 				_TR("apcliAbout",					"apcli about");
 				_TR("apcliEnable",					"apcli client enable");
-				_TR("apcli_enable_enable",				"button enable");
-				_TR("apcli_enable_disable",				"button disable");
+				_TR("apcli_enable_enable",			"button enable");
+				_TR("apcli_enable_disable",			"button disable");
 				_TR("apcliOpen",					"apcli open");
-				_TR("apcliWiFiMode",					"apcli client wifi mode")
+				_TR("apcliWiFiMode",				"apcli client wifi mode")
 				_TR("apcliSSID",					"station ssid");
 				_TR("apcliMAC",						"apcli mac");
-				_TR("apcliSecurityMode",				"secure security mode");
-				_TR("apcliEncryptionType",				"secure encryp type");
+				_TR("apcliSecurityMode",			"secure security mode");
+				_TR("apcliEncryptionType",			"secure encryp type");
 				_TR("apcliPass",					"secure wpa pass phrase");
-				_TR("apcliShowPass",					"secure wpa show pass phrase");
-				_TR("apcliAutoscan",					"apcli enable autoscan");
-				_TR("apcliDisableIface",				"apcli disable iface");
-				_TR("apcliEnableBridge",				"apcli enable bridge");
-				_TR("basicAPCLIMode",					"basic apcli mode");
-				_TRV("scanapLegendButtonScan",				"scanap legend button scan");
+				_TR("apcliShowPass",				"secure wpa show pass phrase");
+				_TR("apcliAutoscan",				"apcli enable autoscan");
+				_TR("apcliDisableIface",			"apcli disable iface");
+				_TR("apcliEnableBridge",			"apcli enable bridge");
+				_TR("basicAPCLIMode",				"basic apcli mode");
+				_TRV("scanapLegendButtonScan",		"scanap legend button scan");
 				_TRV("apcliApply",					"button apply");
 				_TRV("apcliCancel",					"button cancel");
 				_TRV("apcliReset",					"button reset");
@@ -50,26 +47,26 @@
 			function initValues()
 			{
 				var form					= document.wireless_apcli;
-				form.apcli_enable.checked	= '<% getCfgGeneral(1, "ApCliEnable"); %>' == '1';
-				form.apcli_ssid.value		= '<% getCfgGeneral(1, "ApCliSsid"); %>';
-				form.apcli_bssid.value		= '<% getCfgGeneral(1, "ApCliBssid"); %>';
-				form.apcli_mode.value		= '<% getCfgGeneral(1, "ApCliAuthMode"); %>';
-				form.apcli_autoscan.checked	= '<% getCfgGeneral(1, "ApCliAutoConnect"); %>' == '1';
-				form.apcli_apiface.checked	= '<% getCfgGeneral(1, "ApCliClientOnly"); %>' == '1';
-				form.apcli_bridge.checked	= '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>' == '1';
-				form.apcli_wpapsk.value		= '<% getCfgGeneralHTML(1, "ApCliWPAPSK"); %>';
+				form.apcli_enable.checked	= NVRAM_ApCliEnable == '1';
+				form.apcli_ssid.value		= NVRAM_ApCliSsid;
+				form.apcli_bssid.value		= NVRAM_ApCliBssid;
+				form.apcli_mode.value		= NVRAM_ApCliAuthMode;
+				form.apcli_autoscan.checked	= NVRAM_ApCliAutoConnect == '1';
+				form.apcli_apiface.checked	= NVRAM_ApCliClientOnly == '1';
+				form.apcli_bridge.checked	= NVRAM_ApCliBridgeOnly == '1';
+				form.apcli_wpapsk.value		= NVRAM_ApCliWPAPSK;
 
-				var apcli_mode				= '<% getCfgGeneral(1, "ApCliIfName"); %>';
+				var apcli_mode				= NVRAM_ApCliIfName;
 
-				if ((is5gh_support == 0) || ((radio_on == 0) && (radio_on_ac == 0))) {
+				if ((BUILD_5GHZ_SUPPORT == 0) || ((NVRAM_RadioOn == 0) && (NVRAM_RadioOnINIC == 0))) {
 					form.apcli_interface.value = "apcli0";
 					displayElement('apcliWiFiMode_tr', false);
 				}
 				else {
-					form.apcli_interface.disabled = (radio_on == 0) || (radio_on_ac == 0);
-					if (radio_on == 0) 
+					form.apcli_interface.disabled = (NVRAM_RadioOn == 0) || (NVRAM_RadioOnINIC == 0);
+					if (NVRAM_RadioOn == 0) 
 						form.apcli_interface.value = "apclii0"
-					else if (radio_on_ac == 0)
+					else if (NVRAM_RadioOnINIC == 0)
 						form.apcli_interface.value = "apcli0"
 					else
 						form.apcli_interface.value = apcli_mode;
@@ -154,7 +151,7 @@
 				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr',
 								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk',
 								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.checked == 1);
-				displayElement('apcliWiFiMode_tr', is5gh_support == 1 && radio_on == 1 && radio_on_ac == 1 && form.apcli_enable.checked == 1);
+				displayElement('apcliWiFiMode_tr', BUILD_5GHZ_SUPPORT == 1 && NVRAM_RadioOn == 1 && NVRAM_RadioOnINIC == 1 && form.apcli_enable.checked == 1);
 				securityModeSwitch(form);
 			}
 

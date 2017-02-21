@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
@@ -18,14 +19,8 @@
 			Butterlate.setTextDomain("mode");
 			Butterlate.setTextDomain("buttons");
 
-			var opmode		= '<% getCfgZero(1, "OperationMode"); %>';
-			var ports		= <% getEthernetPortCount(); %>;
-			var first_port	= (ports == 3) ? 2 : 0;
-			var ipv6mode	= '<% getCfgZero(1, "IPv6OpMode"); %>';
-			var wan_port	= '<% getCfgZero(1, "wan_port"); %>';
-			var lan_port	= '<% getCfgZero(1, "lan_port"); %>';
-			var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' == '1')  ? (wan_port == 0) ? 1 : wan - 1 : -1;
-			var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' == '1') ? (wan_port == 0) ? 2 : wan - 2 : -1;
+			NVRAM_stb_port	= (NVRAM_stb_port == '1') ? (NVRAM_wan_port == '0') ? 1 : +NVRAM_wan_port - 1 : -1;
+			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
 
 			function initTranslation()
 			{
@@ -75,8 +70,7 @@
 
 			function InitValue()
 			{
-				var nat_fp = '<% getCfgGeneral(1, "offloadMode"); %>';
-				displayElement('fastpath_warning', nat_fp == '2' || nat_fp == '3');
+				displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
 
 				showWarning();
 				initTranslation();

@@ -1,332 +1,330 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript" src="/js/ajax.js"></script>
-<script type="text/javascript" src="/js/validation.js"></script>
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<link rel="stylesheet" href="/style/controls.css" type="text/css">
-<link rel="stylesheet" href="/style/windows.css" type="text/css">
-<title>System Management</title>
-<script language="JavaScript" type="text/javascript">
+	<head>
+		<title>System Management</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+		<link rel="stylesheet" href="/style/controls.css" type="text/css">
+		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
+		<script src="/js/validation.js"></script>
+		<script>
+			Butterlate.setTextDomain("admin");
+			Butterlate.setTextDomain("buttons");
 
-Butterlate.setTextDomain("admin");
-Butterlate.setTextDomain("buttons");
+			function initTranslation() {
+			  _TR("manTitle",					"management title");
+			  _TR("manIntroduction",			"management introduction");
+			  _TR("loading",					"management uploading firmware");
+			  _TR("manDontRemoveUSB",			"management dont remove usb");
+			  _TR("manLangSet",					"management language settings");
+			  _TR("manSelectLang",				"management language select");
+			  _TR("manAdmSet",					"management administrator settings");
+			  _TR("manAdmLodin",				"management administrator login");
+			  _TR("manAdmPasswd",				"management administrator password");
+			  _TR("manAdmFirmware",				"management firmware");
+			  _TR("uploadFWLocation",			"management filename");
+			  _TR("uploadFWtext",				"management firmware text");
+			  _TR("uploadFWnote",				"management firmware note");
+			  _TR("manResetRWFS",				"management reset rwfs");
+			  _TR("manRWFSUpload",				"management upload rwfs");
+			  _TR("uploadRWFSLocation",			"management filename");
+			  _TR("manSettingsManag",			"management settings");
+			  _TR("setmanExpSetButton",			"management backup file");
+			  _TR("setmanImpSetFileLocation",	"management upload file");
+			  _TR("manResetToFactory", 			"management reset factory");
 
-function initTranslation()
-{
-  _TR("manTitle", "management title");
-  _TR("manIntroduction", "management introduction");
-  _TR("loading", "management uploading firmware");
-  _TR("manDontRemoveUSB", "management dont remove usb");
-  _TR("manLangSet", "management language settings");
-  _TR("manSelectLang", "management language select");
-  _TR("manAdmSet", "management administrator settings");
-  _TR("manAdmLodin", "management administrator login");
-  _TR("manAdmPasswd", "management administrator password");
-  _TR("manAdmFirmware", "management firmware");
-  _TR("uploadFWLocation", "management filename");
-  _TR("uploadFWtext", "management firmware text");
-  _TR("uploadFWnote", "management firmware note");
-  _TR("manResetRWFS", "management reset rwfs");
-  _TR("manRWFSUpload", "management upload rwfs");
-  _TR("uploadRWFSLocation", "management filename");
-  _TR("manSettingsManag", "management settings");
-  _TR("setmanExpSetButton", "management backup file");
-  _TR("setmanImpSetFileLocation", "management upload file");
-  _TR("manResetToFactory", "management reset factory");
-
-  _TRV("manLangApply", "button apply");
-  _TRV("manAdmApply", "button apply");
-  _TRV("uploadFWApply", "button update");
-  _TRV("uploadRWFSApply", "button load");
-  _TRV("setmanExpSetExport", "button backup");
-  _TRV("setmanImpSetImport", "button load");
-  _TRV("setmanLoadDefault", "button reset");
-}
-
-function SubmitForm(message, form)
-{
-	if (confirm(message))
-		form.submit();
-}
-
-function AdmFormCheck(form)
-{
-	var re_login = /^[a-zA-Z0-9_]+$/;
-	if (!re_login.test(form.admuser.value))
-	{
-		alert(_("management uncorrect login"));
-		form.admuser.focus();
-		return false;
-	}
-
-	var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
-	if (!re_pass.test(form.admpass.value))
-	{
-		alert(_("management uncorrect password"));
-		form.admpass.focus();
-		return false;
-	}
-	
-	if (form.admpass.value != form.admpassconf.value) {
-		alert(_("management password confirmation")); 
-		form.admpass.value = "";
-		form.admpassconf.value = "";
-		form.admpass.focus();
-		return false;
-	}
-	
-	return true;
-}
-
-function initValue()
-{
-	var lang_element = document.getElementById("langSelection");
-	var lang_en = "<% getLangBuilt("en"); %>";
-	var lang_ru = "<% getLangBuilt("ru"); %>";
-
-	lang_element.options.length = 0;
-	if (lang_en == "1")
-		lang_element.options[lang_element.length] = new Option('English', 'en');
-	if (lang_ru == "1")
-		lang_element.options[lang_element.length] = new Option('Russian', 'ru');
-
-	if (document.cookie.length > 0)
-	{
-		var s = document.cookie.indexOf("language=");
-		var e = document.cookie.indexOf(";", s);
-		var lang = "en";
-		var i;
-
-		if (s != -1)
-		{
-			if (e == -1)
-				lang = document.cookie.substring(s+9);
-			else
-				lang = document.cookie.substring(s+9, e);
-		}
-		for (i=0; i<lang_element.options.length; i++) {
-			if (lang == lang_element.options[i].value) {
-				lang_element.options.selectedIndex = i;
-				break;
+			  _TRV("manLangApply", 				"button apply");
+			  _TRV("manAdmApply", 				"button apply");
+			  _TRV("uploadFWApply", 			"button update");
+			  _TRV("uploadRWFSApply", 			"button load");
+			  _TRV("setmanExpSetExport", 		"button backup");
+			  _TRV("setmanImpSetImport", 		"button load");
+			  _TRV("setmanLoadDefault", 		"button reset");
 			}
-		}
-	}
-	showWarning();
-	initTranslation();
-	// Firmware
-	document.getElementById("loading").style.display="none";
-}
 
-function setLanguage()
-{
-	document.cookie="language="+document.Lang.langSelection.value+"; path=/";
-	parent.menu.location.reload();
-	return true;
-}
+			function initValue() {
+				var lang_element = document.getElementById("langSelection");
 
-function onUploadFirmwareSubmit(form)
-{
-	if (checkFilePresent(form.filename))
-		ajaxPostForm(
-			_("management dont power off"),
-			form,
-			'firmwareReloader',
-			_("message upgrade"),
-			ajaxShowProgress);
-}
+				lang_element.options.length = 0;
+				if (BUILD_LangEN == '1')
+					lang_element.options[lang_element.length] = new Option('English', 'en');
+				if (BUILD_LangRU == '1')
+					lang_element.options[lang_element.length] = new Option('Russian', 'ru');
 
-function onImportSettings(form)
-{
-	if (checkFilePresent(form.filename))
-		ajaxPostForm(
-			_("management ask upload settings"),
-			form,
-			'setmanReloader',
-			_("message config"),
-			ajaxShowProgress);
-}
+				if (document.cookie.length > 0) {
+					var s = document.cookie.indexOf("language=");
+					var e = document.cookie.indexOf(";", s);
+					var lang = "en";
+					var i;
 
-function onUploadRWFSSubmit(form)
-{
-	if (checkFilePresent(form.filename))
-		ajaxPostForm(
-			_("management ask upload rwfs"),
-			form,
-			'RWFSReloader',
-			_("message rwfs"),
-			ajaxShowProgress);
-}
+					if (s != -1) {
+						if (e == -1)
+							lang = document.cookie.substring(s+9);
+						else
+							lang = document.cookie.substring(s+9, e);
+					}
 
-function onReset2DefaultsSubmit(form)
-{
-    ajaxPostForm(
-      _("management ask reset factory"),
-      form,
-      'defaultsReloader',
-      _("message config"),
-      ajaxShowProgress);
-}
+					for (i=0; i<lang_element.options.length; i++) {
+						if (lang == lang_element.options[i].value) {
+							lang_element.options.selectedIndex = i;
+							break;
+						}
+					}
+				}
+				
+				document.getElementById('admuser').value			= NVRAM_Login;
+				document.getElementById('admpass').value			= NVRAM_Password;
+				document.getElementById('admpassconf').value		= NVRAM_Password;
+				document.getElementById("loading").style.display	= "none";
 
-function showWarning() {
-	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
-	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
-	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+				showWarning();
+				initTranslation();
+			}
 
-	var warningHTML = "";
-	
-	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
-		warningHTML += '<tr><td>';
-		warningHTML += '<table class="warning">';
-		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
-		if  (warning_access_password) {
-			warningHTML += '<tr>';
-			warningHTML += '<td class="warning" colspan="2">' + _("warning access password") + '</td>';
-			warningHTML += '</tr>';
-		}
-		if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
-			warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
-		}
-		if  (warning_wireless_security || warning_wireless_key) {
-			warningHTML += '<tr>';
-			warningHTML += '<td class="warning">' + _("warning wireless security") + '</td>';
-			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/security.asp");\'></td>';
-			warningHTML += '</tr>';
-		}
-		warningHTML += '</table>';
-		warningHTML += '</td></tr><br>';
-		ajaxModifyElementHTML('warning', warningHTML);
-	}
-}
-</script>
-</head>
-<body bgcolor="#FFFFFF" onLoad="initValue();">
-<table class="body" style="width:600px;">
-  <tr id="warning"></tr>
-  <tr>
-    <td><h1 id="manTitle">System Management</h1>
-      <div id="manIntroduction">
-        <p>You can select language and set administrator login and password here.</p>
-        <p>You can also upgrade the Wive-NG-MT firmware to obtain new functionality.
-          It takes about 2 minute to upload firmware &amp; upgrade flash. Please be patient.</p>
-        <p style="color: #ff0000;">Caution! A corrupted image will hang up the system.</p>
-      </div>
-      <hr>
-	  <iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-      <p id="loading" style="display: none; color: #ff0000; font-size: 16px;"> Uploading firmware <br>
-        <br id="manDontRemoveUSB">Please be patient and don't remove USB device if present... </p>
-      <div id="staticControls">
-        <!-- ================= Langauge Settings ================= -->
-        <table class="form">
-          <tr>
-            <td class="title" colspan="2" id="manLangSet">Language Settings</td>
-          </tr>
-          <tr>
-            <td class="head" id="manSelectLang" style="width: 192px">Select Language</td>
-            <td><form method="POST" name="Lang" action="/goform/setSysLang">
-                <select name="langSelection" id="langSelection" class="half">
-                  <!-- added by initValue -->
-                </select>
-                <input type="hidden" name="submit-url" value="/adm/management.asp" >
-                &nbsp;<input type="submit" class="half" value="Apply" id="manLangApply" onClick="return setLanguage();">
-                &nbsp; &nbsp;
-              </form></td>
-          </tr>
-        </table>
-        <!-- ================= Adm Settings ================= -->
-        <form method="POST" name="Adm" action="/goform/setSysAdm" onSubmit="return AdmFormCheck(this);">
-          <table class="form">
-            <tr>
-              <td class="title" colspan="3" id="manAdmSet">Administrator Settings</td>
-            </tr>
-            <tr>
-              <td class="head" id="manAdmLodin" style="width: 192px">Login</td>
-              <td colspan="2"><input type="text" class="normal" name="admuser" size="16" maxlength="16" value='<% getCfgGeneral(1, "Login"); %>'></td>
-            </tr>
-            <tr>
-              <td class="head" id="manAdmPasswd">Password</td>
-              <td style="width: 162px"><input type="password" class="normal" name="admpass" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
-              <td><input type="password" class="normal" name="admpassconf" size="16" maxlength="32" value='<% getCfgGeneral(1, "Password"); %>'></td>
-            </tr>
-            <tr>
-              <td class="head" ></td>
-              <td colspan="3"><input type="hidden" name="submit-url" value="/adm/management.asp" >
-                <input type="submit" class="half" value="Apply" id="manAdmApply"></td>
-            </tr>
-          </table>
-        </form>
-        <!-- ================= Firmware ================= -->
-        <table class="form">
-          <tr>
-            <td colspan="2" class="title" id="manAdmFirmware">Firmware update</td>
-          </tr>
-          <tr>
-            <td class="head" id="uploadFWLocation">Filename:</td>
-            <td class="value"><form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
-                <input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Replace(update) RWFS</span><br>
-                <input name="filename" size="20" maxlength="256" type="file" style="max-width: 420px">
-                <input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
-                <br>
-                <iframe id="firmwareReloader" name="firmwareReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-              </form></td>
-          </tr>
-		  <tr>
-				<td colspan="2">
-				    <span id="uploadFWtext"></span><a href="https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/" target="_blank">https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/</a><br>
-					<span id="uploadFWnote"></span>
+			function AdmFormCheck(form) {
+				var re_login = /^[a-zA-Z0-9_]+$/;
+				if (!re_login.test(form.admuser.value)) {
+					alert(_("management uncorrect login"));
+					form.admuser.select();
+					form.admuser.focus();
+					return false;
+				}
+
+				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+				if (!re_pass.test(form.admpass.value)) {
+					alert(_("management uncorrect password"));
+					form.admpass.select();
+					form.admpass.focus();
+					return false;
+				}
+				
+				if (form.admpass.value != form.admpassconf.value) {
+					alert(_("management password confirmation")); 
+					form.admpass.value = "";
+					form.admpassconf.value = "";
+					form.admpass.focus();
+					return false;
+				}
+				return true;
+			}
+
+
+			function setLanguage() {
+				document.cookie = "language="+document.Lang.langSelection.value+"; path=/";
+				parent.menu.location.reload();
+				return true;
+			}
+
+			function onUploadFirmwareSubmit(form) {
+				if (checkFilePresent(form.filename))
+					ajaxPostForm(
+						_("management dont power off"),
+						form,
+						'firmwareReloader',
+						_("message upgrade"),
+						ajaxShowProgress);
+			}
+
+			function onImportSettings(form) {
+				if (checkFilePresent(form.filename))
+					ajaxPostForm(
+						_("management ask upload settings"),
+						form,
+						'setmanReloader',
+						_("message config"),
+						ajaxShowProgress);
+			}
+
+			function onUploadRWFSSubmit(form) {
+				if (checkFilePresent(form.filename))
+					ajaxPostForm(
+						_("management ask upload rwfs"),
+						form,
+						'RWFSReloader',
+						_("message rwfs"),
+						ajaxShowProgress);
+			}
+
+			function onReset2DefaultsSubmit(form) {
+				ajaxPostForm(
+				  _("management ask reset factory"),
+				  form,
+				  'defaultsReloader',
+				  _("message config"),
+				  ajaxShowProgress);
+			}
+
+			function showWarning() {
+				var warning_access_password		= NVRAM_Login == "Admin";
+				var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
+				var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
+				var warningHTML					= "";
+
+				if (warning_access_password || warning_wireless_security || warning_wireless_key) {
+					warningHTML += '<tr><td>';
+					warningHTML += '<table class="warning">';
+					warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
+					if  (warning_access_password) {
+						warningHTML += '<tr>';
+						warningHTML += '<td class="warning" colspan="2">' + _("warning access password") + '</td>';
+						warningHTML += '</tr>';
+					}
+					if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
+						warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
+					}
+					if  (warning_wireless_security || warning_wireless_key) {
+						warningHTML += '<tr>';
+						warningHTML += '<td class="warning">' + _("warning wireless security") + '</td>';
+						warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/security.asp");\'></td>';
+						warningHTML += '</tr>';
+					}
+					warningHTML += '</table>';
+					warningHTML += '</td></tr><br>';
+					ajaxModifyElementHTML('warning', warningHTML);
+				}
+			}
+		</script>
+	</head>
+	<body bgcolor="#FFFFFF" onLoad="initValue();">
+		<table class="body" style="width:600px;">
+			<tr id="warning"></tr>
+			<tr>
+				<td>
+					<h1 id="manTitle">System Management</h1>
+					<div id="manIntroduction">
+						<p>You can select language and set administrator login and password here.</p>
+						<p>You can also upgrade the Wive-NG-MT firmware to obtain new functionality.</p>
+						<p>It takes about 2 minute to upload firmware &amp; upgrade flash. Please be patient.</p>
+						<p style="color: #ff0000;">Caution! A corrupted image will hang up the system.</p>
+					</div>
+					<hr>
+					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
+					<p id="loading" style="display: none; color: #ff0000; font-size: 16px;"> Uploading firmware <br>
+						<br id="manDontRemoveUSB">Please be patient and don't remove USB device if present... 
+					</p>
+					<div id="staticControls">
+						<!-- ================= Langauge Settings ================= -->
+						<table class="form">
+							<tr>
+								<td class="title" colspan="2" id="manLangSet">Language Settings</td>
+							</tr>
+							<tr>
+								<td class="head" id="manSelectLang" style="width: 192px">Select Language</td>
+								<td>
+									<form method="POST" name="Lang" action="/goform/setSysLang">
+										<select name="langSelection" id="langSelection" class="half"></select>
+										<input type="hidden" name="submit-url" value="/adm/management.asp">&nbsp;
+										<input type="submit" class="half" value="Apply" id="manLangApply" onClick="return setLanguage();">&nbsp;&nbsp;
+									</form>
+								</td>
+							</tr>
+						</table>
+						<!-- ================= Adm Settings ================= -->
+						<form method="POST" name="Adm" action="/goform/setSysAdm" onSubmit="return AdmFormCheck(this);">
+							<table class="form">
+								<tr>
+									<td class="title" colspan="3" id="manAdmSet">Administrator Settings</td>
+								</tr>
+								<tr>
+									<td class="head" id="manAdmLodin" style="width: 192px">Login</td>
+									<td colspan="2"><input type="text" class="normal" id="admuser" name="admuser" size="16" maxlength="16"></td>
+								</tr>
+								<tr>
+									<td class="head" id="manAdmPasswd">Password</td>
+									<td style="width: 162px"><input type="password" class="normal" id="admpass" name="admpass" size="16" maxlength="32"></td>
+									<td><input type="password" class="normal" id="admpassconf" name="admpassconf" size="16" maxlength="32"></td>
+								</tr>
+								<tr>
+									<td class="head" ></td>
+									<td colspan="3">
+										<input type="hidden" name="submit-url" value="/adm/management.asp">
+										<input type="submit" class="half" value="Apply" id="manAdmApply">
+									</td>
+								</tr>
+							</table>
+						</form>
+						<!-- ================= Firmware ================= -->
+						<table class="form">
+							<tr>
+								<td colspan="2" class="title" id="manAdmFirmware">Firmware update</td>
+							</tr>
+							<tr>
+								<td class="head" id="uploadFWLocation">Filename:</td>
+								<td class="value">
+									<form method="POST" name="UploadFirmware" action="/cgi-bin/upload.cgi" enctype="multipart/form-data">
+										<input type="checkbox" name="reset_rwfs" checked="checked"><span id="manResetRWFS">Replace(update) RWFS</span><br>
+										<input name="filename" size="20" maxlength="256" type="file" style="max-width: 420px">
+										<input type="button" value="Update" id="uploadFWApply" class="half" name="UploadFirmwareSubmit" onClick="onUploadFirmwareSubmit(this.form);">
+										<br>
+										<iframe id="firmwareReloader" name="firmwareReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<span id="uploadFWtext"></span><a href="https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/" target="_blank">https://sourceforge.net/projects/wive-ng/files/wive-ng-mt/</a><br>
+									<span id="uploadFWnote"></span>
+								</td>
+							</tr>
+						</table>
+						<!-- ================= RwFs ================= -->
+						<table class="form">
+							<tr>
+								<td colspan="2" class="title" id="manRWFSUpload">RW-FS Upload</td>
+							</tr>
+							<tr>
+								<td class="head" id="uploadRWFSLocation">Filename:</td>
+								<td class="value">
+									<form method="POST" name="UploadRWFS" action="/cgi-bin/upload_rwfs.cgi" enctype="multipart/form-data">
+										<input type="file" name="filename" maxlength="256" style="max-width: 420px">
+										<input type="button" value="Load" id="uploadRWFSApply" class="half" onClick="onUploadRWFSSubmit(this.form);">
+										<iframe id="RWFSReloader" name="RWFSReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+									</form>
+								</td>
+							</tr>
+						</table>
+						<!-- ================= Settings management ================= -->
+						<table class="form">
+							<tr>
+								<td class="title" colspan="2" id="manSettingsManag">Router Settings Management</td>
+							</tr>
+							<tr>
+								<td class="head" id="setmanExpSetButton">Backup Settings to file</td>
+								<td>
+									<form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh" onsubmit="return confirm(_('management export settings'));">
+										<input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="half">
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td class="head" id="setmanImpSetFileLocation">Load settings from file</td>
+								<td>
+									<form method="POST" name="ImportSettings" action="/cgi-bin/upload_settings.cgi" enctype="multipart/form-data">
+										<input type="file" name="filename" maxlength="256" style="max-width: 420px">
+										<input type="button" value="Load" id="setmanImpSetImport" class="half" onClick="onImportSettings(this.form);">
+										<iframe id="setmanReloader" name="setmanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td class="head" id="manResetToFactory">Reset to factory defaults</td>
+								<td>
+									<form method="GET" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
+										<input type="button" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
+										<iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+									</form>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</td>
-		  </tr>
-        </table>
-        <!-- ================= RwFs ================= -->
-        <table class="form">
-          <tr>
-            <td colspan="2" class="title" id="manRWFSUpload">RW-FS Upload</td>
-          </tr>
-          <tr>
-            <td class="head" id="uploadRWFSLocation">Filename:</td>
-            <td class="value"><form method="POST" name="UploadRWFS" action="/cgi-bin/upload_rwfs.cgi" enctype="multipart/form-data">
-                <input type="file" name="filename" maxlength="256" style="max-width: 420px">
-                <input type="button" value="Load" id="uploadRWFSApply" class="half" onClick="onUploadRWFSSubmit(this.form);">
-                <iframe id="RWFSReloader" name="RWFSReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-              </form></td>
-          </tr>
-        </table>
-        <!-- ================= Settings management ================= -->
-        <table class="form">
-          <tr>
-            <td class="title" colspan="2" id="manSettingsManag">Router Settings Management</td>
-          </tr>
-          <tr>
-            <td class="head" id="setmanExpSetButton">Backup Settings to file</td>
-            <td><form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh"
-			onsubmit="return confirm(_('management export settings'));" >
-                <input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="half">
-              </form></td>
-          </tr>
-          <tr>
-            <td class="head" id="setmanImpSetFileLocation">Load settings from file</td>
-            <td><form method="POST" name="ImportSettings" action="/cgi-bin/upload_settings.cgi" enctype="multipart/form-data">
-                <input type="file" name="filename" maxlength="256" style="max-width: 420px">
-                <input type="button" value="Load" id="setmanImpSetImport" class="half" onClick="onImportSettings(this.form);">
-                <iframe id="setmanReloader" name="setmanReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-              </form></td>
-          </tr>
-          <tr>
-            <td class="head" id="manResetToFactory">Reset to factory defaults</td>
-            <td><form method="GET" name="LoadDefaultSettings" action="/goform/LoadDefaultSettings">
-                <input type="button" value="Reset" id="setmanLoadDefault" name="LoadDefault" class="half" onClick="onReset2DefaultsSubmit(this.form);">
-                <iframe name="defaultsReloader" id="defaultsReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-              </form></td>
-          </tr>
-        </table>
-      </div>
-      <div class="whitespace">&nbsp;</div></td>
-  </tr>
-</table>
-</body>
+			</tr>
+		</table>
+	</body>
 </html>

@@ -10,9 +10,11 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
+
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("hint");
@@ -62,16 +64,16 @@
 						}
 
 				// Set variables
-				document.getElementById('l2tp_srv_enabled').options.selectedIndex	= <% getCfgZero(1, "l2tp_srv_enabled"); %>;
-				document.getElementById('l2tp_srv_ip_local').value					= '<% getCfgGeneral(1, "l2tp_srv_ip_local"); %>';
-				document.getElementById('l2tp_srv_ip_range').value					= '<% getCfgGeneral(1, "l2tp_srv_ip_range"); %>';
-				document.getElementById('l2tp_srv_mtu_size').value					= '<% getCfgGeneral(1, "l2tp_srv_mtu_size"); %>';
-				document.getElementById('l2tp_srv_mru_size').value					= '<% getCfgGeneral(1, "l2tp_srv_mru_size"); %>';
-				document.getElementById('l2tp_srv_lcp_adapt').checked				= <% getCfgZero(1, "l2tp_srv_lcp_adapt"); %>	== 1;
-				document.getElementById('l2tp_srv_debug').checked					= <% getCfgZero(1, "l2tp_srv_debug"); %>		== 1;
-				document.getElementById('l2tp_srv_nat_enabled').checked				= <% getCfgZero(1, "l2tp_srv_nat_enabled"); %>	== 1;
-				document.getElementById('l2tp_srv_mppe_enabled').checked			= <% getCfgZero(1, "l2tp_srv_mppe_enabled"); %>	== 1;
-				document.getElementById('l2tp_srv_proxyarp').checked				= <% getCfgZero(1, "l2tp_srv_proxyarp"); %>		== 1;
+				document.getElementById('l2tp_srv_enabled').options.selectedIndex	= +NVRAM_l2tp_srv_enabled;
+				document.getElementById('l2tp_srv_ip_local').value					= NVRAM_l2tp_srv_ip_local;
+				document.getElementById('l2tp_srv_ip_range').value					= NVRAM_l2tp_srv_ip_range;
+				document.getElementById('l2tp_srv_mtu_size').value					= NVRAM_l2tp_srv_mtu_size;
+				document.getElementById('l2tp_srv_mru_size').value					= NVRAM_l2tp_srv_mru_size;
+				document.getElementById('l2tp_srv_lcp_adapt').checked				= NVRAM_l2tp_srv_lcp_adapt 		== '1';
+				document.getElementById('l2tp_srv_debug').checked					= NVRAM_l2tp_srv_debug			== '1';
+				document.getElementById('l2tp_srv_nat_enabled').checked				= NVRAM_l2tp_srv_nat_enabled	== '1';
+				document.getElementById('l2tp_srv_mppe_enabled').checked			= NVRAM_l2tp_srv_mppe_enabled	== '1';
+				document.getElementById('l2tp_srv_proxyarp').checked				= NVRAM_l2tp_srv_proxyarp		== '1';
 
 				// Set-up MTU & MRU
 				for (i = 0; i < document.getElementById('l2tp_srv_mtu_sel').options.length; i++)

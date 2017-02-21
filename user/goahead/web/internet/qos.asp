@@ -9,31 +9,16 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/js/share.js"></script>
+		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/lang/b28n.js"></script>
 		<script>
 			Butterlate.setTextDomain("buttons");
 			Butterlate.setTextDomain("network");
 
-			var QoSSelect	= '<% getCfgGeneral(1, "QoSEnable"); %>';
-			var QoSMode		= '<% getCfgGeneral(1, "QoSMode"); %>';
-			var UpBW		= '<% getCfgGeneral(1, "QoS_rate_up"); %>';
-			var UpBWL		= '<% getCfgGeneral(1, "QoS_rate_limit_up"); %>';
-			var DownBW		= '<% getCfgGeneral(1, "QoS_rate_down"); %>';
-			var DownBWL		= '<% getCfgGeneral(1, "QoS_rate_limit_down"); %>';
-			var UpVPNBW		= '<% getCfgGeneral(1, "QoS_rate_vpn_up"); %>';
-			var UpVPNBWL	= '<% getCfgGeneral(1, "QoS_rate_vpn_limit_up"); %>';
-			var QoS_HPP		= '<% getCfgGeneral(1, "QoS_high_pp"); %>';
-			var QoS_LPP		= '<% getCfgGeneral(1, "QoS_low_pp"); %>';
-			var QoS_HDSCP	= '<% getCfgGeneral(1, "QoS_high_dscp"); %>';
-			var QoS_LDSCP	= '<% getCfgGeneral(1, "QoS_low_dscp"); %>';
-
-
-			function initTranslation() 
-			{
+			function initTranslation() {
 			  _TR("QoSTitleStr",		"qos title");
 			  _TR("QoSIntroStr",		"qos introduction");
 			  _TR("QoSSetupStr",		"qos setup");
@@ -68,30 +53,28 @@
 			  _TRV("QoSReset",			"button reset");
 			}
 
-			function initValues() 
-			{
+			function initValues() {
 				var form = document.QoSSetup;
 				
-				form.QoSSelect.value	= QoSSelect;
-				form.QoSMode.value		= QoSMode;
-				form.UpBW.value			= UpBW;
-				form.UpBWL.value		= UpBWL;
-				form.DownBW.value		= DownBW;
-				form.DownBWL.value		= DownBWL;
-				form.UpVPNBW.value		= UpVPNBW;
-				form.UpVPNBWL.value		= UpVPNBWL;
-				form.QoS_HPP.value		= QoS_HPP;
-				form.QoS_LPP.value		= QoS_LPP;
-				form.QoS_HDSCP.value	= QoS_HDSCP;
-				form.QoS_LDSCP.value	= QoS_LDSCP;
+				form.QoSSelect.value	= NVRAM_QoSEnable;
+				form.QoSMode.value		= +NVRAM_QoSMode;
+				form.UpBW.value			= NVRAM_QoS_rate_up;
+				form.UpBWL.value		= NVRAM_QoS_rate_limit_up;
+				form.DownBW.value		= NVRAM_QoS_rate_down;
+				form.DownBWL.value		= NVRAM_QoS_rate_limit_down;
+				form.UpVPNBW.value		= NVRAM_QoS_rate_vpn_up;
+				form.UpVPNBWL.value		= NVRAM_QoS_rate_vpn_limit_up;
+				form.QoS_HPP.value		= NVRAM_QoS_high_pp;
+				form.QoS_LPP.value		= NVRAM_QoS_low_pp;
+				form.QoS_HDSCP.value	= NVRAM_QoS_high_dscp;
+				form.QoS_LDSCP.value	= NVRAM_QoS_low_dscp;
 					
 				QoSSelectChange(form);
 				showWarning();
 				initTranslation();
 			}
 
-			function checkValues(form)
-			{
+			function checkValues(form) {
 				if (!validateNum(form.UpBW.value)) {
 					alert(_("qos invalid bw"));
 					form.UpBW.focus();
@@ -167,13 +150,9 @@
 				return true;
 			}
 
-			function QoSSelectChange(form)
-			{
-				var complex_on = form.QoSSelect.value == '2';
-				var nat_fp = defaultNumber("<% getCfgGeneral(1, "offloadMode"); %>", "1");
-
-				displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP', 'PDSCPSettings' ], complex_on );
-				displayElement('fastpath_warning', (nat_fp == '2') || (nat_fp == '3'));
+			function QoSSelectChange(form) {
+				displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP', 'PDSCPSettings' ], form.QoSSelect.value == '2' );
+				displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
 			}
 		</script>
 	</head>

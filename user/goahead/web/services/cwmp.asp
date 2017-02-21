@@ -10,9 +10,10 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
@@ -20,8 +21,7 @@
 			var statusAdvancedMenu	= 1;
 
 			// Set translation
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("cwmpTitle",			"services cwmp title");
 				_TR("cwmpIntroduction",		"services cwmp introduction");
 				_TR("cwmpSettings",			"services cwmp settings");
@@ -66,53 +66,42 @@
 			}
 
 			// Set inintal values
-			function initValues()
-			{
+			function initValues() {
 				var i, opt, tmp;
 
-				document.getElementById('cwmp_enabled').options.selectedIndex = '<% getCfgZero(1, "cwmpdEnabled"); %>'
+				document.getElementById('cwmp_enabled').options.selectedIndex = NVRAM_cwmpdEnabled;
 
 				opt = document.getElementById('cwmp_acs_type').options;
-				for (var i = 0; i < opt.length;i++) {
-					if (opt[i].value == '<% getCfgGeneral(1, "cwmp_acs_type"); %>')
+				for (var i = 0; i < opt.length;i++)
+					if (opt[i].value == NVRAM_cwmp_acs_type)
 						opt[i].selected = true;
-				}
 
-				document.getElementById('cwmp_acs_url').value = '<% getCfgGeneral(1, "cwmp_acs_url"); %>';
-
-				document.getElementById('cwmp_cpe_auth').options.selectedIndex = '<% getCfgZero(1, "cwmp_cpe_auth"); %>'
-				document.getElementById('cwmp_cpe_username').value = ('<% getCfgGeneral(1, "cwmp_cpe_username"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_cpe_username"); %>' : 'cwmp';
-				document.getElementById('cwmp_cpe_password').value = ('<% getCfgGeneral(1, "cwmp_cpe_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_cpe_password"); %>' : 'cwmp';
-
-				document.getElementById('cwmp_acs_auth').options.selectedIndex = '<% getCfgZero(1, "cwmp_acs_auth"); %>'
-				document.getElementById('cwmp_acs_username').value = ('<% getCfgGeneral(1, "cwmp_acs_username"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_acs_username"); %>' : 'cwmp';
-				document.getElementById('cwmp_acs_password').value = ('<% getCfgGeneral(1, "cwmp_acs_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_acs_password"); %>' : 'cwmp';
-
-				document.getElementById('cwmpd_inform_periodic_enable').options.selectedIndex = '<% getCfgZero(1, "cwmpd_inform_periodic_enable"); %>';
-				document.getElementById('cwmpd_inform_periodic_interval').value = ('<% getCfgGeneral(1, "cwmpd_inform_periodic_interval"); %>' == '') ? 3600 : '<% getCfgGeneral(1, "cwmpd_inform_periodic_interval"); %>';
+				document.getElementById('cwmp_acs_url').value									= NVRAM_cwmp_acs_url;
+				document.getElementById('cwmp_cpe_auth').options.selectedIndex					= NVRAM_cwmp_cpe_auth;
+				document.getElementById('cwmp_cpe_username').value								= NVRAM_cwmp_cpe_username;
+				document.getElementById('cwmp_cpe_password').value								= NVRAM_cwmp_cpe_password;
+				document.getElementById('cwmp_acs_auth').options.selectedIndex					= NVRAM_cwmp_acs_auth;
+				document.getElementById('cwmp_acs_username').value								= NVRAM_cwmp_acs_username;
+				document.getElementById('cwmp_acs_password').value								= NVRAM_cwmp_acs_password;
+				document.getElementById('cwmpd_inform_periodic_enable').options.selectedIndex	= NVRAM_cwmpd_inform_periodic_enable;
+				document.getElementById('cwmpd_inform_periodic_interval').value					= NVRAM_cwmpd_inform_periodic_interval;
 
 				opt = document.getElementById('cwmpd_log_level').options;
-				tmp = '<% getCfgGeneral(1, "cwmpd_log_level"); %>';
-				if (tmp.length > 0) {
-					for (var i = 0; i < opt.length;i++)
-						if (opt[i].value == tmp) 
-							opt[i].selected = true;
-				}
-				else
-					opt[3].selected = true;	// Info
+				for (var i = 0; i < opt.length; i++)
+					if (opt[i].value == NVRAM_cwmpd_log_level) 
+						opt[i].selected = true;
 
-				document.getElementById('cwmpd_httpd_port').value = ('<% getCfgGeneral(1, "cwmpd_httpd_port"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_httpd_port"); %>' : '1008';
-				document.getElementById('cwmpd_httpd_timeout').value = ('<% getCfgGeneral(1, "cwmpd_httpd_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_httpd_timeout"); %>' : '5000';
-				document.getElementById('cwmpd_session_connect_timeout').value = ('<% getCfgGeneral(1, "cwmpd_session_connect_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_session_connect_timeout"); %>' : '15';
-				document.getElementById('cwmpd_session_response_timeout').value = ('<% getCfgGeneral(1, "cwmpd_session_response_timeout"); %>' != '') ? '<% getCfgGeneral(1, "cwmpd_session_response_timeout"); %>' : '30';
+				document.getElementById('cwmpd_httpd_port').value								= NVRAM_cwmpd_httpd_port;
+				document.getElementById('cwmpd_httpd_timeout').value							= NVRAM_cwmpd_httpd_timeout;
+				document.getElementById('cwmpd_session_connect_timeout').value					= NVRAM_cwmpd_session_connect_timeout;
+				document.getElementById('cwmpd_session_response_timeout').value					= NVRAM_cwmpd_session_response_timeout;
+				document.getElementById('cwmp_cpe_manufacture').value							= NVRAM_cwmp_cpe_manufacture;
+				document.getElementById('cwmp_cpe_oui').value									= NVRAM_cwmp_cpe_oui;
+				document.getElementById('cwmp_cpe_pc').value									= NVRAM_cwmp_cpe_pc;
 
-				document.getElementById('cwmp_cpe_manufacture').value = '<% getCfgGeneral(1, "cwmp_cpe_manufacture"); %>';
-				document.getElementById('cwmp_cpe_oui').value = '<% getCfgGeneral(1, "cwmp_cpe_oui"); %>';
-				document.getElementById('cwmp_cpe_pc').value = '<% getCfgGeneral(1, "cwmp_cpe_pc"); %>';
-
-				document.getElementById('cwmp_ca_file').value = ('<% getCfgGeneral(1, "cwmp_ca_file"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_ca_file"); %>' : '/etc/raddb/certs/ca.pem';
-				document.getElementById('cwmp_ca_password').value = ('<% getCfgGeneral(1, "cwmp_ca_password"); %>' != '') ? '<% getCfgGeneral(1, "cwmp_ca_password"); %>' : '';
-				displayElement([ 'cwmpCAfile_tr', 'cwmpCApassword_tr' ], '<% getOpenSSLBuilt(); %>' == '1');
+				document.getElementById('cwmp_ca_file').value									= NVRAM_cwmp_ca_file;
+				document.getElementById('cwmp_ca_password').value								= NVRAM_cwmp_ca_password;
+				displayElement([ 'cwmpCAfile_tr', 'cwmpCApassword_tr' ], BUILD_OPENSSL == '1');
 
 				cwmpEnableSwitch();
 				showAdvancedMenu();
@@ -123,8 +112,7 @@
 			}
 
 			// Check values
-			function CheckValues()
-			{
+			function CheckValues() {
 				if (document.getElementById('cwmp_enabled').value == 1) {
 					var re_url		= /^[а-яА-Яa-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 					var re_name		= /^[a-zA-Z0-9_-]+$/;
@@ -173,7 +161,7 @@
 					}
 
 					// Check CA file & password
-					if ('<% getOpenSSLBuilt(); %>' == '1') {
+					if (BUILD_OPENSSL == '1') {
 						if (!re_file.test(document.getElementById('cwmp_ca_file').value) || document.getElementById('cwmp_ca_file').value.length == 0) {
 							alert(_("services cwmp uncorrect ca file"));
 							document.getElementById('cwmp_ca_file').select();
@@ -254,8 +242,7 @@
 			}
 
 			// Show/hide CWMP settings
-			function cwmpEnableSwitch()
-			{
+			function cwmpEnableSwitch() {
 				displayElement([ 'cwmpACStype_tr', "cwmpACSurl_tr", 'cwmpCPEauth_tr', 'cwmpACSauth_tr', 'cwmpCAfile_tr', 'cwmpCApassword_tr', 'cwmpAdvanced_tr' ], document.getElementById('cwmp_enabled').value == 1);
 				displayElement([ 'cwmpCPEusername_tr', 'cwmpCPEpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_cpe_auth').value == 1);
 				displayElement([ 'cwmpACSusername_tr', 'cwmpACSpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_acs_auth').value == 1);
@@ -264,8 +251,7 @@
 			}
 
 			// Show/hide CWMP Inform Periodic Interval
-			function cwmpPeriodicSwitch()
-			{
+			function cwmpPeriodicSwitch() {
 				displayElement([ 'cwmpInterval_tr' ], statusAdvancedMenu == 1 && document.getElementById('cwmpd_inform_periodic_enable').value == 1);
 			}
 
@@ -285,11 +271,10 @@
 			}
 
 			// Display server status
-			function displayServiceHandler(response)
-			{
+			function displayServiceHandler(response) {
 				var daemons = response.split(',');
 
-				if ('<% getCfgGeneral(1, "cwmpdEnabled"); %>' == '0' || '<% getCfgGeneral(1, "cwmpdEnabled"); %>' == '')
+				if (NVRAM_cwmpdEnabled == '0')
 					document.getElementById('cwmp_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 				else
 					document.getElementById('cwmp_status').innerHTML = (daemons.indexOf('cwmpd') >= 0) ?

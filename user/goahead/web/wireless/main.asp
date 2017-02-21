@@ -10,95 +10,90 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/scanap.js"></script>
 		<script> 
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
-			var radio_on = "<% getCfgZero(1, "RadioOn"); %>";
-			var radio_on_ac = "<% getCfgZero(1, "RadioOnINIC"); %>";
+			var radio_on			= NVRAM_RadioOn;
+			var radio_on_ac			= NVRAM_RadioOnINIC;
+			var wmode				= NVRAM_WirelessMode;
+			var wmodeac				= NVRAM_WirelessModeINIC;
+			var channel_index		= WLAN_CHANNEL_INDEX;
+			var channel_indexac		= WLAN_CHANNEL_INDEX_AC;
+			var txPower				= NVRAM_TxPower;
+			var txPowerAC			= NVRAM_TxPowerINIC;
+			var mbssidapisolated 	= NVRAM_NoForwardingBTNBSSID;
+			var fxtxmode			= NVRAM_FixedTxMode;
+			var countrycode			= NVRAM_CountryCode;
+			var tx_stream_idx		= NVRAM_HT_TxStream;
+			var rx_stream_idx		= NVRAM_HT_RxStream;
+			var ht_mode				= NVRAM_HT_OpMode;
+			var ht_gi				= NVRAM_HT_GI;
+			var ht_stbc				= NVRAM_HT_STBC;
+			var ht_mcs				= NVRAM_HT_MCS;
+			var ht_htc				= NVRAM_HT_HTC;
+			var ht_rdg				= NVRAM_HT_RDG;
+			var ht_extcha			= NVRAM_HT_EXTCHA;
+			var ht_amsdu			= NVRAM_HT_AMSDU;
+			var ht_autoba			= NVRAM_HT_AutoBA;
+			var ht_badecline		= NVRAM_HT_BADecline;
+			var ht_bw				= NVRAM_HT_BW;
+			var ht_bwinic			= NVRAM_HT_BWINIC;
 
-			var wmode = "<% getCfgZero(1, "WirelessMode"); %>";
-			var wmodeac = "<% getCfgZero(1, "WirelessModeINIC"); %>";
+			var vht_gi				= NVRAM_VHT_SGI;
+			var vht_stbc			= NVRAM_VHT_STBC;
+			var vht_ldpc			= NVRAM_VHT_LDPC;
+			var vht_bw				= NVRAM_VHT_BW;
+			var vht_bwsig			= NVRAM_VHT_BW_SIGNAL;
 
-			var channel_index  = '<% getWlanChannel(); %>';
-			var channel_indexac  = '<% getWlanChannelAC(); %>';
+			var bandsteeringBuilt	= BUILD_BANDSTEERING;
+			var mbssid				= BUILD_MBSSID;
+			var mbssid_mode			= NVRAM_BssidIfName;
 
-			var txPower = '<% getCfgZero(1, "TxPower"); %>';
-			var txPowerAC = '<% getCfgZero(1, "TxPowerINIC"); %>';
+			var is3t3r				= BUILD_WLAN_3T3R;
+			var is5gh_support		= BUILD_5GHZ_SUPPORT;
+			var is5gh_1t1r			= BUILD_5GHZ_1T1R;
+			var platform			= PLATFORM;
 
-			var mbssidapisolated = '<% getCfgZero(1, "NoForwardingBTNBSSID"); %>';
-			var fxtxmode = '<% getCfgGeneral(1, "FixedTxMode"); %>';
-			var countrycode = '<% getCfgGeneral(1, "CountryCode"); %>';
+			var ids_built			= BUILD_IDS_ENABLE == '1';
+			var txbf_built			= BUILD_TXBF;
 
-			var tx_stream_idx = '<% getCfgZero(1, "HT_TxStream"); %>';
-			var rx_stream_idx = '<% getCfgZero(1, "HT_RxStream"); %>';
+			var dfs_built			= BUILD_DFS == '1';
+			var rrm_built			= BUILD_RRM == '1';
+			var ft_built			= BUILD_FT == '1';
 
-			var ht_mode = '<% getCfgZero(1, "HT_OpMode"); %>';
-			var ht_gi = '<% getCfgZero(1, "HT_GI"); %>';
-			var ht_stbc = '<% getCfgZero(1, "HT_STBC"); %>';
-			var ht_mcs = '<% getCfgZero(1, "HT_MCS"); %>';
-			var ht_htc = '<% getCfgZero(1, "HT_HTC"); %>';
-			var ht_rdg = '<% getCfgZero(1, "HT_RDG"); %>';
-			var ht_extcha = '<% getCfgZero(1, "HT_EXTCHA"); %>';
-			var ht_amsdu = '<% getCfgZero(1, "HT_AMSDU"); %>';
-			var ht_autoba = '<% getCfgZero(1, "HT_AutoBA"); %>';
-			var ht_badecline = '<% getCfgZero(1, "HT_BADecline"); %>';
-			var ht_bw = '<% getCfgZero(1, "HT_BW"); %>';
-			var ht_bwinic = '<% getCfgZero(1, "HT_BWINIC"); %>';
+			var bssid_num			= BSSID_NUM;
 
-			var vht_gi = '<% getCfgZero(1, "VHT_SGI"); %>';
-			var vht_stbc = '<% getCfgZero(1, "VHT_STBC"); %>';
-			var vht_ldpc = '<% getCfgZero(1, "VHT_LDPC"); %>';
-			var vht_bw = '<% getCfgGeneral(1, "VHT_BW"); %>';
-			var vht_bwsig = '<% getCfgGeneral(1, "VHT_BW_SIGNAL"); %>';
+			var bgProtection		= NVRAM_BGProtection;
+			var preambleType		= NVRAM_TxPreamble;
+			var shortSlot			= NVRAM_ShortSlot;
+			var txBurst				= NVRAM_TxBurst;
+			var pktAggregate		= NVRAM_PktAggregate;
+			var m2uBuilt			= BUILD_WLAN_M2U;
+			var m2uEnabled			= NVRAM_M2UEnabled;
+			var McastPhyMode		= NVRAM_McastPhyMode;
+			var mcastMcs			= NVRAM_McastMcs;
+			var video_turbine_built	= BUILD_VIDEO_TURBINE;
+			var video_turbine		= NVRAM_VideoTurbine;
 
-			var bandsteeringBuilt = '<% getBandSteeringBuilt(); %>';
-			var mbssid = "<% getMBSSIDBuilt(); %>";
-			var mbssid_mode = '<% getCfgGeneral(1, "BssidIfName"); %>';
+			var clamp				= BUILD_CLAMP;
+			var dyn_vga				= NVRAM_DyncVgaEnable;
+			var advDynVGALong		= NVRAM_SkipLongRangeVga;
+			var advDynVGAClamp		= NVRAM_VgaClamp;
 
-			var is3t3r = '<% is3t3r(); %>';
-			var is5gh_support = '<% is5gh_support(); %>';
-			var is5gh_1t1r = '<% is5gh_1t1r(); %>';
-			var platform = '<% getPlatform(); %>';
-
-			var ids_built ='<% getIdsEnableBuilt(); %>' == '1';
-			var txbf_built = '<% getTXBFBuilt(); %>';
-
-			var dfs_built = '<% getDFSBuilt(); %>' == '1';
-			var rrm_built = '<% getRRMBuilt(); %>' == '1';
-			var ft_built = '<% getFTBuilt(); %>' == '1';
-
-			var bssid_num = 1*'<% getBSSIDNum(); %>';
-
-			var bgProtection = '<% getCfgZero(1, "BGProtection"); %>';
-			var preambleType = '<% getCfgZero(1, "TxPreamble"); %>';
-			var shortSlot = '<% getCfgZero(1, "ShortSlot"); %>';
-			var txBurst = '<% getCfgZero(1, "TxBurst"); %>';
-			var pktAggregate = '<% getCfgZero(1, "PktAggregate"); %>';
-			var m2uBuilt = '<% getWlanM2UBuilt(); %>';
-			var m2uEnabled = '<% getCfgZero(1, "M2UEnabled"); %>';
-			var McastPhyMode = defaultNumber('<% getCfgZero(1, "McastPhyMode"); %>', '2');
-			var mcastMcs = defaultNumber('<% getCfgZero(1, "McastMcs"); %>', '0');
-			var video_turbine_built = '<% getVideoTurbineBuilt(); %>';
-			var video_turbine = '<% getCfgZero(1, "VideoTurbine"); %>';
-
-			var clamp = '<% getClampBuilt(); %>';
-			var dyn_vga = '<% getCfgZero(1, "DyncVgaEnable"); %>';
-			var advDynVGALong = '<% getCfgZero(1, "SkipLongRangeVga"); %>';
-			var advDynVGAClamp = '<% getCfgZero(1, "VgaClamp"); %>';
-
-			var maxstanum = '<% getCfgZero(1, "MaxStaNum"); %>'.split(";")[0];
-			var keepalive = '<% getCfgZero(1, "StationKeepAlive"); %>'.split(";")[0];
-			var idletimeout = '<% getCfgZero(1, "IdleTimeout"); %>';
-			var ackpolicy = '<% getCfgZero(1, "AckPolicy"); %>';
-			var wmmCapable = '<% getCfgZero(1, "WmmCapable"); %>';
-			var EDCCABuilt = '<% getEDCCABuilt(); %>';
-			var ED_MODE = '<% getCfgZero(1, "ED_MODE"); %>';
+			var maxstanum			= NVRAM_MaxStaNum.split(";")[0];
+			var keepalive			= NVRAM_StationKeepAlive.split(";")[0];
+			var idletimeout			= NVRAM_IdleTimeout;
+			var ackpolicy			= NVRAM_AckPolicy;
+			var wmmCapable			= NVRAM_WmmCapable;
+			var EDCCABuilt			= BUILD_EDCCA;
+			var ED_MODE				= NVRAM_ED_MODE;
 
 			var statusAdvWirelessMenu = 1;
 			var statusHTPysModeMenu = 1;
@@ -129,8 +124,8 @@
 			function bandSteeringChange(form, userselect) {
 				if (bandsteeringBuilt == 1) {
 					displayElement('div_bandsteering', true);
-					displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], form.BandSteering.value == "1");
-					if ((form.BandSteering.value == "1") && (userselect == 1)) {
+					displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], form.BandSteering.value == "1" || form.BandSteering.value == "2");
+					if ((form.BandSteering.value == "1" || form.BandSteering.value == "2") && (userselect == 1)) {
 						alert(_("basic bandsteering ssid"));
 					}	
 				}
@@ -195,10 +190,10 @@
 			}
 
 			function AutoChannelSelect(form) {
-				var autoselectmode_g = 1*<% getCfgZero(1, "AutoChannelSelect"); %>;
-				var autoselectmode_a = 1*<% getCfgZero(1, "AutoChannelSelectINIC"); %>;
-				var checktime_g = <% getCfgZero(1, "ACSCheckTime"); %> - 1;
-				var checktime_a = <% getCfgZero(1, "ACSCheckTimeINIC"); %> - 1;
+				var autoselectmode_g	= +NVRAM_AutoChannelSelect;
+				var autoselectmode_a	= +NVRAM_AutoChannelSelectINIC;
+				var checktime_g			= +NVRAM_ACSCheckTime - 1;
+				var checktime_a			= +NVRAM_ACSCheckTimeINIC - 1;
 
 				form.autoselect_g.options.selectedIndex = (autoselectmode_g <= 1) ? 0 : 1;
 				form.autoselect_a.options.selectedIndex = (autoselectmode_a <= 1) ? 0 : 1;
@@ -464,6 +459,7 @@
 				_TR("advDynVGA_td_1", "adv dynvga mode");
 				_TR("advDynVGALong_td_1", "adv dynvga long");
 				_TR("advDynVGAClamp", "adv dynvga clamp");
+				_TR("bandauto", "adv preamble type auto");
 				
 				_TRV("scanapLegendButtonScan", "scanap legend button scan");
 				_TRV("scanapLegendButtonScanINIC", "scanap legend button scan");
@@ -557,6 +553,44 @@
 
 				form.radioWirelessEnabled.options.selectedIndex = radio_on;
 				form.radioWirelessEnabledAc.options.selectedIndex = (is5gh_support == 1) ? radio_on_ac : 0;
+					
+				form.bssid_num.value				= NVRAM_BssidNum;
+				form.mssid_1.value					= NVRAM_SSID1;
+				form.mssid_2.value					= NVRAM_SSID2;
+				form.mssid_3.value					= NVRAM_SSID3;
+				form.mssid_4.value					= NVRAM_SSID4;
+				form.mssid_5.value					= NVRAM_SSID5;
+				form.mssid_6.value					= NVRAM_SSID6;
+				form.mssid_7.value					= NVRAM_SSID7;
+				form.mssid_8.value					= NVRAM_SSID8;
+				form.mssidac_1.value				= NVRAM_SSID1INIC;
+				form.beacon.value					= NVRAM_BeaconPeriod;
+				form.dtim.value						= NVRAM_DtimPeriod;
+				form.fragment.value					= NVRAM_FragThreshold;
+				form.rts.value						= NVRAM_RTSThreshold;
+				form.EntryLifeCheck.value			= NVRAM_EntryLifeCheck;
+				form.ApProbeRspTimes.value			= NVRAM_ApProbeRspTimes;
+				form.BandDeltaRssi.value			= NVRAM_BandDeltaRssi;
+				form.AuthRspFail.value				= NVRAM_AuthRspFail;
+				form.AuthRspRssi.value				= NVRAM_AuthRspRssi;
+				form.AssocReqRssiThres.value		= NVRAM_AssocReqRssiThres;
+				form.AssocRspIgnor.value			= NVRAM_AssocRspIgnor;
+				form.ProbeRspRssi.value				= NVRAM_ProbeRspRssi;
+				form.KickStaRssiLow.value			= NVRAM_KickStaRssiLow;
+				form.KickStaRssiLowPSM.value		= NVRAM_KickStaRssiLowPSM;
+				form.KickStaRssiLowDelay.value		= NVRAM_KickStaRssiLowDelay;
+				form.BndStrgRssiDiff.value			= NVRAM_BndStrgRssiDiff;
+				form.BndStrgRssiLow.value			= NVRAM_BndStrgRssiLow;
+				form.BndStrgAge.value				= NVRAM_BndStrgAge;
+				form.BndStrgHoldTime.value			= NVRAM_BndStrgHoldTime;
+				form.BndStrgCheckTime.value			= NVRAM_BndStrgCheckTime;
+				form.AuthFloodThreshold.value		= NVRAM_AuthFloodThreshold;
+				form.AssocReqFloodThreshold.value	= NVRAM_AssocReqFloodThreshold;
+				form.ReassocReqFloodThreshold.value	= NVRAM_ReassocReqFloodThreshold;
+				form.ProbeReqFloodThreshold.value	= NVRAM_ProbeReqFloodThreshold;
+				form.DisassocFloodThreshold.value	= NVRAM_DisassocFloodThreshold;
+				form.DeauthFloodThreshold.value		= NVRAM_DeauthFloodThreshold;
+				form.EapReqFloodThreshold.value		= NVRAM_EapReqFloodThreshold;
 
 				// Hide & disable elements
 				hideElement("div_11a_basic");
@@ -702,14 +736,14 @@
 				ssidDisplay(form);
 
 				// Initialize bssid
-				var HiddenSSID  = '<% getCfgZero(1, "HideSSID"); %>';
-				var APIsolated = '<% getCfgZero(1, "NoForwarding"); %>';
-				var NoForwardingMBCast = '<% getCfgZero(1, "NoForwardingMBCast"); %>';
-				var IEEE80211H = '<% getCfgZero(1, "IEEE80211H"); %>';
-				var HiddenSSIDArray = HiddenSSID.split(";");
-				var APIsolatedArray = APIsolated.split(";");
-				var NoForwardingMBCastArray = NoForwardingMBCast.split(";");
-				var dot11hArray = IEEE80211H.split(";");
+				var HiddenSSID				= NVRAM_HideSSID;
+				var APIsolated				= NVRAM_NoForwarding;
+				var NoForwardingMBCast		= NVRAM_NoForwardingMBCast;
+				var IEEE80211H				= NVRAM_IEEE80211H;
+				var HiddenSSIDArray			= HiddenSSID.split(";");
+				var APIsolatedArray			= APIsolated.split(";");
+				var NoForwardingMBCastArray	= NoForwardingMBCast.split(";");
+				var dot11hArray				= IEEE80211H.split(";");
 
 				for (i=0; i<bssid_num; i++) {
 					form.hssid[i].checked = (HiddenSSIDArray[i] == "1");
@@ -872,8 +906,8 @@
 					form.tx_stream.options[2] = new Option("3", "3");
 				}
 
-				var txpath = '<% getCfgGeneral(1, "TXPath"); %>';
-				var rxpath = '<% getCfgGeneral(1, "RXPath"); %>';
+				var txpath = NVRAM_TXPath;
+				var rxpath = NVRAM_RXPath;
 				if (txpath == "1")
 				{
 					hideElement("basicHTTx2Stream");
@@ -904,29 +938,29 @@
 				hideElement("div_auto_a");
 				hideElement("div_auto_g");
 				AutoChannelSelect(form);
-				form.BandSteering.options.selectedIndex = ('<% getCfgGeneral(1, "BandSteering"); %>' ==  '1') ? 1 : 0;
+				form.BandSteering.options.selectedIndex = NVRAM_BandSteering;
 				bandSteeringChange(form);
-				form.FastRoaming.options.selectedIndex = ('<% getCfgGeneral(1, "FastRoaming"); %>' ==  '1') ? 1 : 0;
+				form.FastRoaming.options.selectedIndex = NVRAM_FastRoaming;
 				fastRoamingChange(form);
-				form.IdsEnable.options.selectedIndex = ('<% getCfgGeneral(1, "IdsEnable"); %>' ==  '1') ? 1 : 0;
+				form.IdsEnable.options.selectedIndex = NVRAM_IdsEnable;
 				idsChange(form);
 
 				if (txbf_built == '1') {
-					form.ITxBfEn.options.selectedIndex = ('<% getCfgGeneral(1, "ITxBfEn"); %>' ==  '1') ? 1 : 0;
-					form.ETxBfeeEn.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfeeEn"); %>' ==  '1') ? 1 : 0;
-					form.ETxBfEnCond.options.selectedIndex = ('<% getCfgGeneral(1, "ETxBfEnCond"); %>' ==  '1') ? 1 : 0;
+					form.ITxBfEn.options.selectedIndex = NVRAM_ITxBfEn;
+					form.ETxBfeeEn.options.selectedIndex = NVRAM_ETxBfeeEn;
+					form.ETxBfEnCond.options.selectedIndex = NVRAM_ETxBfEnCond;
 				}
 				displayElement( 'div_txbf', txbf_built == '1');
 
-				var rrm = '<% getCfgZero(1, "RRMEnable"); %>';
-				var ft = '<% getCfgZero(1, "FtSupport"); %>';
+				var rrm = NVRAM_RRMEnable;
+				var ft = NVRAM_FtSupport;
 				var rrmArray = rrm.split(";");
 				var ftArray = ft.split(";");
 				form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
 				form.FtSupport.options.selectedIndex = 1*ftArray[0];
 
-				var LanWifiIsolate = '<% getCfgZero(1, "LanWifiIsolate"); %>';
-				var opmode = '<% getCfgZero(1, "OperationMode"); %>';
+				var LanWifiIsolate = NVRAM_LanWifiIsolate;
+				var opmode = NVRAM_OperationMode;
 				form.LanWifiIsolate.options.selectedIndex = 1*LanWifiIsolate;
 				displayElement( 'div_LanWifiIsolate', (opmode != '0') || (opmode != '2') || (opmode != '3'));
 
@@ -959,8 +993,8 @@
 				displayElement('advDynVGAClamp_tr', clamp == '1' && is5gh_1t1r == '0');
 				form.advDynVGAClamp.options.selectedIndex = 1*advDynVGAClamp;
 
-				if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > <% getMaxStaNum(); %>)
-					form.maxstanum.value = 1*'<% getMaxStaNum(); %>';
+				if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > MAX_STA_NUM)
+					form.maxstanum.value = 1*MAX_STA_NUM;
 				else
 					form.maxstanum.value = maxstanum;
 
@@ -1199,7 +1233,7 @@
 					else
 						bandSteeringChange(form);
 
-					showElement('div_ids');
+					displayElement('div_ids', ids_built);
 					displayElement('div_m2u', m2uBuilt == '1');
 					showElement('advSynVGA_table');	
 				}
@@ -1301,7 +1335,7 @@
 					return false;
 				}
 
-				if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > <% getMaxStaNum(); %>)
+				if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > MAX_STA_NUM)
 				{
 					alert(_("adv invalid max sta num"));
 					form.maxstanum.focus();
@@ -1403,6 +1437,7 @@
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic roaming"));
 					statusRoamingMenu = 1;
 					displayElement(RoamingElement, 1);
+					displayElement(basicFtSupport_tr, ft_built);
 					fastRoamingChange(document.wireless_basic);
 				} else {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic roaming"));
@@ -1550,8 +1585,8 @@
 		</tr>
 		<tr id="div_11g_name" name="div_11g_name">
 			<td class="head" id="basicSSID" colspan="1">Network Name (2.4GHz)</td>
-				<input type="hidden" name="bssid_num" value="<% getCfgGeneral(1, "BssidNum"); %>">
-			<td colspan="1"><input class="normal" type="text" name="mssid_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1"); %>"></td>
+				<input type="hidden" name="bssid_num">
+			<td colspan="1"><input class="normal" type="text" name="mssid_1" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="0"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="0"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="0"></td>
@@ -1559,7 +1594,7 @@
 		</tr>
 		<tr id="div_hssid1" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>1</td>
-			<td colspan="1"><input class="normal" name="mssid_2" maxlength="32" value="<% getCfgGeneral(1, "SSID2"); %>"></td>
+			<td colspan="1"><input class="normal" name="mssid_2" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="1"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="1"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="1"></td>
@@ -1567,7 +1602,7 @@
 		</tr>
 		<tr id="div_hssid2" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>2</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_3" maxlength="32" value="<% getCfgGeneral(1, "SSID3"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_3" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="2"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="2"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="2"></td>
@@ -1575,7 +1610,7 @@
 		</tr>
 		<tr id="div_hssid3" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>3</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_4" maxlength="32" value="<% getCfgGeneral(1, "SSID4"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_4" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="3"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="3"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="3"></td>
@@ -1583,7 +1618,7 @@
 		</tr>
 		<tr id="div_hssid4" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>4</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_5" maxlength="32" value="<% getCfgGeneral(1, "SSID5"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_5" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="4"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="4"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="4"></td>
@@ -1591,7 +1626,7 @@
 		</tr>
 		<tr id="div_hssid5" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>5</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_6" maxlength="32" value="<% getCfgGeneral(1, "SSID6"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_6" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="5"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="5"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="5"></td>
@@ -1599,7 +1634,7 @@
 		</tr>
 		<tr id="div_hssid6" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>6</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_7" maxlength="32" value="<% getCfgGeneral(1, "SSID7"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_7" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="6"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="6"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="6"></td>
@@ -1607,7 +1642,7 @@
 		</tr>
 		<tr id="div_hssid7" style="display:none;">
 			<td class="head" colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="basicMSSID">Multiple SSID</span>7</td>
-			<td colspan="1"><input class="normal" type="text" name="mssid_8" maxlength="32" value="<% getCfgGeneral(1, "SSID8"); %>"></td>
+			<td colspan="1"><input class="normal" type="text" name="mssid_8" maxlength="32"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="hssid" value="7"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="isolated_ssid" value="7"></td>
 			<td colspan="1" align="center"><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
@@ -1615,7 +1650,7 @@
 		</tr>
 		<tr id="div_11a_name" name="div_11a_name">
 			<td class="head" id="basicAcSSID" colspan="1">Network Name (5GHz)</td>
-			<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" value="<% getCfgGeneral(1, "SSID1INIC"); %>"></td>
+			<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32"></td>
 		</tr>
 		<tr id="basicMbssidModeT">
 			<td class="head" id="basicMBSSIDMode" colspan="1">MBSSID Mode</td>
@@ -1817,22 +1852,22 @@
 		</tr>
 		<tr id="advBeaconInterval_tr">
 			<td id="advBeaconInterval_td_1" class="head" width="50%">Beacon Interval</td>
-			<td id="advBeaconInterval_td_2" width="50%"><input type="text" name="beacon" class="normal" maxlength="3" value="<% getCfgZero(1, "BeaconPeriod"); %>">
+			<td id="advBeaconInterval_td_2" width="50%"><input type="text" name="beacon" class="normal" maxlength="3">
 				<font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
 		</tr>
 		<tr id="advDTIM_tr">
 			<td id="advDTIM_td_1" class="head" width="50%">Data Beacon Rate</td>
-			<td id="advDTIM_td_2" width="50%"><input type="text" name="dtim" class="normal" maxlength="3" value="<% getCfgZero(1, "DtimPeriod"); %>">
+			<td id="advDTIM_td_2" width="50%"><input type="text" name="dtim" class="normal" maxlength="3">
 				<font color="#808080" id="advDTIMRange">(range 1 - 255)</font></td>
 		</tr>
 		<tr id="advFrag_tr">
 			<td id="advFrag_td_1" class="head" width="50%">Fragment Threshold</td>
-			<td id="advFrag_td_2" width="50%"><input type="text" name="fragment" class="normal" maxlength="4" value="<% getCfgZero(1, "FragThreshold"); %>">
+			<td id="advFrag_td_2" width="50%"><input type="text" name="fragment" class="normal" maxlength="4">
 				<font color="#808080" id="advFragRange">(range 256 - 2346)</font></td>
 		</tr>
 		<tr id="advRTS_tr">
 			<td id="advRTS_td_1" class="head" width="50%">RTS Threshold</td>
-			<td id="advRTS_td_2" width="50%"><input type="text" name="rts" class="normal" maxlength="4" value="<% getCfgZero(1, "RTSThreshold"); %>">
+			<td id="advRTS_td_2" width="50%"><input type="text" name="rts" class="normal" maxlength="4">
 				<font color="#808080" id="advRTSRange">(range 1 - 2347)</font></td>
 		</tr>
 		<tr id="advStationKeepAlive_tr">
@@ -1847,7 +1882,7 @@
 		</tr>
 		<tr id="advEntryLifeCheck_tr">
 			<td id="advEntryLifeCheck_td_1" class="head" width="50%">EntryLifeCheck</td>
-			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4" value="<% getCfgZero(1, "EntryLifeCheck"); %>">
+			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4">
 				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
 		</tr>
 		<tr id="advPreambleType_tr">
@@ -1938,43 +1973,43 @@
 		</tr>
 		<tr id="basicApProbeRspTimes_tr">
 			<td id="basicApProbeRspTimes_td_1" class="head" width="50%">Limit probe reqest per client</td>
-			<td id="basicApProbeRspTimes_td_2" width="50%"><input type="text" name="ApProbeRspTimes" class="normal" maxlength="4" value="<% getCfgZero(1, "ApProbeRspTimes"); %>"><font id="basicApProbeRspTimes_range" color="#808080"> 0 - 10 times, default 3</font></td>
+			<td id="basicApProbeRspTimes_td_2" width="50%"><input type="text" name="ApProbeRspTimes" class="normal" maxlength="4"><font id="basicApProbeRspTimes_range" color="#808080"> 0 - 10 times, default 3</font></td>
 		</tr>
 		<tr id="basicBandDeltaRssi_tr">
 			<td id="basicBandDeltaRssi_td_1" class="head" width="50%">Delta threshold rssi level for 5GHz band</td>
-			<td id="basicBandDeltaRssi_td_2" width="50%"><input type="text" name="BandDeltaRssi" class="normal" maxlength="4" value="<% getCfgZero(1, "BandDeltaRssi"); %>"><font id="basicBandDeltaRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicBandDeltaRssi_td_2" width="50%"><input type="text" name="BandDeltaRssi" class="normal" maxlength="4"><font id="basicBandDeltaRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicAuthRspFail_tr">
 			<td id="basicAuthRspFail_td_1" class="head" width="50%">Reject auth req due to weak signal</td>
-			<td id="basicAuthRspFail_td_2" width="50%"><input type="text" name="AuthRspFail" class="normal" maxlength="4" value="<% getCfgZero(1, "AuthRspFail"); %>"><font id="basicAuthRspFail_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicAuthRspFail_td_2" width="50%"><input type="text" name="AuthRspFail" class="normal" maxlength="4"><font id="basicAuthRspFail_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicAuthRspRssi_tr">
 			<td id="basicAuthRspRssi_td_1" class="head" width="50%">Ignore auth req due to weak signal</td>
-			<td id="basicAuthRspRssi_td_2" width="50%"><input type="text" name="AuthRspRssi" class="normal" maxlength="4" value="<% getCfgZero(1, "AuthRspRssi"); %>"><font id="basicAuthRspRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicAuthRspRssi_td_2" width="50%"><input type="text" name="AuthRspRssi" class="normal" maxlength="4"><font id="basicAuthRspRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicAssocReqRssiThres_tr">
 			<td id="basicAssocReqRssiThres_td_1" class="head" width="50%">Reject assoc req due to weak signal</td>
-			<td id="basicAssocReqRssiThres_td_2" width="50%"><input type="text" name="AssocReqRssiThres" class="normal" maxlength="4" value="<% getCfgZero(1, "AssocReqRssiThres"); %>"><font id="basicAssocReqRssiThres_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicAssocReqRssiThres_td_2" width="50%"><input type="text" name="AssocReqRssiThres" class="normal" maxlength="4"><font id="basicAssocReqRssiThres_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicAssocRspIgnor_tr">
 			<td id="basicAssocRspIgnor_td_1" class="head" width="50%">Ignore assoc req due to weak signal</td>
-			<td id="basicAssocRspIgnor_td_2" width="50%"><input type="text" name="AssocRspIgnor" class="normal" maxlength="4" value="<% getCfgZero(1, "AssocRspIgnor"); %>"><font id="basicAssocRspIgnor_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicAssocRspIgnor_td_2" width="50%"><input type="text" name="AssocRspIgnor" class="normal" maxlength="4"><font id="basicAssocRspIgnor_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicProbeRspRssi_tr">
 			<td id="basicProbeRspRssi_td_1" class="head" width="50%">Auto disonnect sta if rssi low at probe requests</td>
-			<td id="basicProbeRspRssi_td_2" width="50%"><input type="text" name="ProbeRspRssi" class="normal" maxlength="4" value="<% getCfgZero(1, "ProbeRspRssi"); %>"><font id="basicProbeRspRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicProbeRspRssi_td_2" width="50%"><input type="text" name="ProbeRspRssi" class="normal" maxlength="4"><font id="basicProbeRspRssi_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicKickStaRssiLow_tr">
 			<td id="basicKickStaRssiLow_td_1" class="head" width="50%">Auto disonnect sta if rssi low (active clients)</td>
-			<td id="basicKickStaRssiLow_td_2" width="50%"><input type="text" name="KickStaRssiLow" class="normal" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLow"); %>"><font id="basicKickStaRssiLow_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicKickStaRssiLow_td_2" width="50%"><input type="text" name="KickStaRssiLow" class="normal" maxlength="4"><font id="basicKickStaRssiLow_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicKickStaRssiLowPSM_tr">
 			<td id="basicKickStaRssiLowPSM_td_1" class="head" width="50%">Auto disonnect sta if rssi low (powersave clients)</td>
-			<td id="basicKickStaRssiLowPSM_td_2" width="50%"><input type="text" name="KickStaRssiLowPSM" class="normal" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLowPSM"); %>"><font id="basicKickStaRssiLowPSM_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
+			<td id="basicKickStaRssiLowPSM_td_2" width="50%"><input type="text" name="KickStaRssiLowPSM" class="normal" maxlength="4"><font id="basicKickStaRssiLowPSM_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
 		<tr id="basicKickStaRssiLowDelay_tr">
 			<td id="basicKickStaRssiLowDelay_td_1" class="head" width="50%">How time rssi check before kick</td>
-			<td id="basicKickStaRssiLowDelay_td_2" width="50%"><input type="text" name="KickStaRssiLowDelay" class="normal" maxlength="4" value="<% getCfgZero(1, "KickStaRssiLowDelay"); %>"><font id="basicKickStaRssiLowDelay_range" color="#808080"> 0 - 200 seconds, default 5 </font></td>
+			<td id="basicKickStaRssiLowDelay_td_2" width="50%"><input type="text" name="KickStaRssiLowDelay" class="normal" maxlength="4"><font id="basicKickStaRssiLowDelay_range" color="#808080"> 0 - 200 seconds, default 5 </font></td>
 		</tr>
 		<tr id="basicRRMEnable_tr">
 			<td id="basicRRMEnable_td_1" class="head" width="50%">RRMEnable</td>
@@ -2027,28 +2062,29 @@
 				<select name="BandSteering" size="1" class="half" onChange="bandSteeringChange(this.form, 1);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
+					<option value="2" id="bandauto">Auto</option>
 				</select>
 			</td>
 		</tr>
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
 			<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
-			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2" value="<% getCfgZero(1, "BndStrgRssiDiff"); %>"><font color="#808080"> 0 - 40 db, default 20</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2"><font color="#808080"> 0 - 40 db, default 20</font></td>
 		</tr>
 		<tr id="row_BndStrgRssiLow" style="display:none;">
 			<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller</td>
-			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4" value="<% getCfgZero(1, "BndStrgRssiLow"); %>"><font color="#808080"> 0 - -100 db, default -80</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4"><font color="#808080"> 0 - -100 db, default -80</font></td>
 		</tr>
 		<tr id="row_BndStrgAge" style="display:none;">
 			<td class="head" id="basicBndStrgAge" width="50%">Inactive client entry age time</td>
-			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6" value="<% getCfgZero(1, "BndStrgAge"); %>"><font color="#808080"> ms, default 800000</font></td>
+			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6"><font color="#808080"> ms, default 800000</font></td>
 		</tr>
 		<tr id="row_BndStrgHoldTime" style="display:none;">
 			<td class="head" id="basicBndStrgHoldTime" width="50%">Time for holding 2.4G connection</td>
-			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4" value="<% getCfgZero(1, "BndStrgHoldTime"); %>"><font color="#808080"> ms, default 8000</font></td>
+			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4"><font color="#808080"> ms, default 8000</font></td>
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
 			<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
-			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4" value="<% getCfgZero(1, "BndStrgCheckTime"); %>"><font color="#808080"> ms, default 4000</font></td>
+			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4"><font color="#808080"> ms, default 4000</font></td>
 		</tr>
 	</table>
 	<table id="div_ids" name="div_ids" class="form" style="display:none;">
@@ -2063,31 +2099,31 @@
 		</tr>
 		<tr id="row_AuthFloodThreshold" style="display:none;">
 			<td class="head" id="basicAuthFloodThreshold" width="50%">Authentication</td>
-			<td width="50%"><input type="text" name="AuthFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "AuthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="AuthFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_AssocReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicAssocReqFloodThreshold" width="50%">Association request</td>
-			<td width="50%"><input type="text" name="AssocReqFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "AssocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="AssocReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_ReassocReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicReassocReqFloodThreshold" width="50%">Reassociation request</td>
-			<td width="50%"><input type="text" name="ReassocReqFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "ReassocReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="ReassocReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_ProbeReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicProbeReqFloodThreshold" width="50%">Probe request</td>
-			<td width="50%"><input type="text" name="ProbeReqFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "ProbeReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="ProbeReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_DisassocFloodThreshold" style="display:none;">
 			<td class="head" id="basicDisassocFloodThreshold" width="50%">Disassociation</td>
-			<td width="50%"><input type="text" name="DisassocFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "DisassocFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="DisassocFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_DeauthFloodThreshold" style="display:none;">
 			<td class="head" id="basicDeauthFloodThreshold" width="50%">Deauthentication</td>
-			<td width="50%"><input type="text" name="DeauthFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "DeauthFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="DeauthFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 		<tr id="row_EapReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicEapReqFloodThreshold" width="50%">EAP request</td>
-			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4" value="<% getCfgZero(1, "EapReqFloodThreshold"); %>"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
 		</tr>
 	</table>
 	<table id="div_m2u" name="div_m2u" class="form">

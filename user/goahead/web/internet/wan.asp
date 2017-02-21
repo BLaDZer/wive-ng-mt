@@ -10,96 +10,78 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
 
-			function initTranslation()
-			{
-				_TR("wTitle",			"wan title");
-				_TR("wIntroduction",		"wan introduction");
-				_TR("wConnectionType",		"wan connection type");
-				_TR("wConnection",		"wan connection");
-				_TR("wConnTypeStatic",		"wan connection type static");
-				_TR("wConnTypeDhcp",		"wan connection type dhcp");
-				_TR("wConnTypeZero",		"wan connection type zero");
-				_TR("wStaticMode",		"wan static mode");
-				_TR("wStaticDns",		"wan static dns");
-				_TR("wStaticIp",		"inet ip");
-				_TR("wStaticNetmask",		"inet netmask");
-				_TR("wStaticGateway",		"inet gateway");
-				_TR("wStaticDnsProfile",	"inet dns profile");
-				_TR("dnsProfileManual",		"inet dns profile manual");
-				_TR("dnsProfileGoogle",		"inet dns profile google");
-				_TR("dnsProfileYandex",		"inet dns profile yandex");
-				_TR("dnsProfileSky",		"inet dns profile sky");
-				_TR("dnsProfileOpen",		"inet dns profile open");
+			function initTranslation() {
+				_TR("wTitle",					"wan title");
+				_TR("wIntroduction",			"wan introduction");
+				_TR("wConnectionType",			"wan connection type");
+				_TR("wConnection",				"wan connection");
+				_TR("wConnTypeStatic",			"wan connection type static");
+				_TR("wConnTypeDhcp",			"wan connection type dhcp");
+				_TR("wConnTypeZero",			"wan connection type zero");
+				_TR("wStaticMode",				"wan static mode");
+				_TR("wStaticDns",				"wan static dns");
+				_TR("wStaticIp",				"inet ip");
+				_TR("wStaticNetmask",			"inet netmask");
+				_TR("wStaticGateway",			"inet gateway");
+				_TR("wStaticDnsProfile",		"inet dns profile");
+				_TR("dnsProfileManual",			"inet dns profile manual");
+				_TR("dnsProfileGoogle",			"inet dns profile google");
+				_TR("dnsProfileYandex",			"inet dns profile yandex");
+				_TR("dnsProfileSky",			"inet dns profile sky");
+				_TR("dnsProfileOpen",			"inet dns profile open");
 				_TR("wStaticDnsYandexProfile",	"inet dns profile yandex title");
 				_TR("dnsProfileYandexBasic",	"inet dns profile yandex basic");
-				_TR("dnsProfileYandexSafe",	"inet dns profile yandex safe");
+				_TR("dnsProfileYandexSafe",		"inet dns profile yandex safe");
 				_TR("dnsProfileYandexFamily",	"inet dns profile yandex family");
-				_TR("wStaticPriDns",		"inet pri dns");
-				_TR("wStaticSecDns",		"inet sec dns");
-				_TR("wDhcpMode",		"wan dhcp mode");
-				_TR("wAdditionalOptions",	"wan additional options");
-				_TR("wReqFromDHCP",		"wan request from dhcp");
-				_TR("wDHCPVendorClass",		"wan dhcp vendor class");
-				_TR("wMTU",			"wan mtu");
-				_TR("wAuto",			"inet auto");
-				_TR("wCustom",			"routing custom");
-				_TR("wNatEnabled",		"wan nat enabled");
-				_TR("wMacAddress",		"inet mac");
-				_TR("wMacAddr",			"wan mac");
-				_TRV("wApply",			"button apply");
-				_TRV("wCancel",			"button cancel");
-				_TRV("wReset",			"button reset");
-				_TRV("WanMacRestore",		"button restore factory");
+				_TR("wStaticPriDns",			"inet pri dns");
+				_TR("wStaticSecDns",			"inet sec dns");
+				_TR("wDhcpMode",				"wan dhcp mode");
+				_TR("wAdditionalOptions",		"wan additional options");
+				_TR("wReqFromDHCP",				"wan request from dhcp");
+				_TR("wDHCPVendorClass",			"wan dhcp vendor class");
+				_TR("wMTU",						"wan mtu");
+				_TR("wAuto",					"inet auto");
+				_TR("wCustom",					"routing custom");
+				_TR("wNatEnabled",				"wan nat enabled");
+				_TR("wMacAddress",				"inet mac");
+				_TR("wMacAddr",					"wan mac");
+				_TRV("wApply",					"button apply");
+				_TRV("wCancel",					"button cancel");
+				_TRV("wReset",					"button reset");
+				_TRV("WanMacRestore",			"button restore factory");
 			}
 
-			function initValues()
-			{
-				var form		= document.wanCfg;
-				var mode 		= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
-				var nat			= '<% getCfgZero(1, "natEnabled"); %>';
-				var opMode		= '<% getCfgZero(1, "OperationMode"); %>';
-				var static_dns		= '<% getCfgZero(1, "wan_static_dns"); %>';
-				var wan_mtu		= defaultNumber("<% getCfgGeneral(1, "wan_manual_mtu"); %>", '0');
-				var wanIp		= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
-				var wanNetmask		= '<% getCfgGeneral(1, "wan_netmask"); %>';
-				var wanGateway		= '<% getCfgGeneral(1, "wan_gateway"); %>';
-				var dhcpReqIP		= '<% getCfgGeneral(1, "dhcpRequestIP"); %>';
-				var dhcpVendor		= '<% getCfgGeneral(1, "dhcpVendorClass"); %>';
-				var dnsProfile		= '<% getCfgGeneral(1, "wan_static_dns_profile"); %>';
-				var dnsProfileYandex	= '<% getCfgGeneral(1, "wan_static_dns_profile_yandex"); %>';
-				var priDNS		= '<% getDns(1); %>';
-				var secDNS		= '<% getDns(2); %>';
-				var wanMac		= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>';
+			function initValues() {
+				var form							= document.wanCfg;
+				form.staticIp.value					= NVRAM_wan_ipaddr;
+				form.staticNetmask.value			= NVRAM_wan_netmask;
+				form.staticGateway.value			= NVRAM_wan_gateway;
+				form.dhcpReqIP.value				= NVRAM_dhcpRequestIP;
+				form.dhcpVendorClass.value			= NVRAM_dhcpVendorClass;
+				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
+				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex; 
+				form.staticPriDns.value				= PRIMARY_DNS;
+				form.staticSecDns.value				= SECONDARY_DNS;
+				form.wanMac.value					= NVRAM_WAN_MAC_ADDR;
 
-				form.staticIp.value			= wanIp;
-				form.staticNetmask.value		= wanNetmask;
-				form.staticGateway.value		= wanGateway;
-				form.dhcpReqIP.value			= dhcpReqIP;
-				form.dhcpVendorClass.value		= dhcpVendor;
-				form.wStaticDnsProfile.value		= (dnsProfile == '') ? 'manual' : dnsProfile;
-				form.wStaticDnsYandexProfile.value	= (dnsProfileYandex == '') ? 'basic' : dnsProfileYandex; 
-				form.staticPriDns.value			= priDNS;
-				form.staticSecDns.value			= secDNS;
-				form.wanMac.value			= wanMac.toUpperCase();
+				displayElement(document.getElementById("natRowDisplay"), NVRAM_OperationMode != "0");
+				form.natEnabled.checked 			= (NVRAM_natEnabled == '1');
 
-				displayElement(document.getElementById("natRowDisplay"), opMode != "0");
-				form.natEnabled.checked = (nat == "1");
+				form.connectionType.value 			= NVRAM_wanConnectionMode;
+				form.wStaticDnsEnable.checked 		= NVRAM_wan_static_dns == 'on';
 
-				form.connectionType.value = mode;
-				form.wStaticDnsEnable.checked = (static_dns == "on");
-
-				form.wan_mtu.value = wan_mtu;
-				for (var i=0; i < form.wan_mtu_type.options.length; i++)
-					if (form.wan_mtu_type.options[i].value == wan_mtu)
-					{
+				form.wan_mtu.value = NVRAM_wan_manual_mtu;
+				for (var i = 0; i < form.wan_mtu_type.options.length; i++)
+					if (form.wan_mtu_type.options[i].value == NVRAM_wan_manual_mtu) {
 						form.wan_mtu_type.value = form.wan_mtu_type.options[i].value;
 						break;
 					}
@@ -111,12 +93,9 @@
 				initTranslation();
 			}
 
-			function CheckValues(form)
-			{
+			function CheckValues(form) {
 				var c_type	= form.connectionType.value;
 				var wan_mtu	= +form.wan_mtu.value;
-				var opMode	= '<% getCfgZero(1, "OperationMode"); %>';
-				var lanIp	= '<% getCfgGeneral(1, "lan_ipaddr"); %>';
 
 				if (c_type == "STATIC") {
 					form.wStaticDnsEnable.disabled = false;
@@ -139,7 +118,7 @@
 							return false;
 						}
 					}
-					if ((opMode != "0") && (form.staticIp.value == lanIp)) {
+					if ((NVRAM_OperationMode != "0") && (form.staticIp.value == NVRAM_lan_ipaddr)) {
 							alert(_("wan warning same lan"));
 							form.staticIp.focus();
 							return false;
@@ -181,7 +160,7 @@
 					return false;
 				}
 				form.wan_mtu.value = +form.wan_mtu.value + "";
-				if (form.wanMac.value != "<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>") {
+				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR) {
 					if (!ajaxPostForm(_('wan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
 						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 						form.reboot.value = "0";
@@ -194,8 +173,7 @@
 				return true;
 			}
 
-			function connectionTypeSwitch(form)
-			{
+			function connectionTypeSwitch(form) 			{
 				var conn_type = form.connectionType.value;
 				displayElement('staticDHCP', conn_type == 'STATIC');
 				displayElement(['dhcpReqIPRow', 'dhcpVendorRow'], conn_type == 'DHCP');

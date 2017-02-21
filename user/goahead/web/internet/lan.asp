@@ -10,28 +10,14 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
 			Butterlate.setTextDomain("services");
-
-			var opMode		= '<% getCfgZero(1, "OperationMode"); %>';
-			var hostname		= '<% getCfgGeneral(1, "HostName"); %>';
-			var wanIp		= '<% getCfgGeneral(1, "wan_ipaddr"); %>';
-			var gateway		= '<% getCfgGeneral(1, "wan_gateway"); %>';
-			var dnsProfile		= '<% getCfgGeneral(1, "wan_static_dns_profile"); %>';
-			var dnsProfileYandex	= '<% getCfgGeneral(1, "wan_static_dns_profile_yandex"); %>';
-			var dnsPrimary		= '<% getDns(1); %>';
-			var dnsSecondary	= '<% getDns(2); %>';
-			var lanIp		= '<% getLanIp(); %>';
-			var lanNetmask		= '<% getLanNetmask(); %>';
-			var dhcp 		= '<% getCfgZero(1, "dhcpEnabled"); %>';
-			var dhcpStart		= '<% getCfgGeneral(1, "dhcpStart"); %>';
-			var dhcpEnd		= '<% getCfgGeneral(1, "dhcpEnd"); %>';
-			var dhcpGateway		= '<% getCfgGeneral(1, "dhcpGateway"); %>';
 
 			function initTranslation() {
 				_TR("lTitle",			"lan title");
@@ -62,20 +48,20 @@
 
 			function initValues() {
 				var form = document.lanCfg;
+			
+				form.hostname.value					= NVRAM_HostName;
+				form.lanIp.value					= LAN_IP;
+				form.lanNetmask.value				= LAN_NETMASK;
+				form.lanGateway.value				= NVRAM_wan_gateway;
+				form.lanPriDns.value				= PRIMARY_DNS;
+				form.lanSecDns.value				= SECONDARY_DNS;
+				form.dhcpStart.value				= NVRAM_dhcpStart;
+				form.dhcpEnd.value					= NVRAM_dhcpEnd;
+				form.dhcpGateway.value				= NVRAM_dhcpGateway;
+				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
+				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex;
 
-				form.hostname.value	= hostname;
-				form.lanIp.value	= lanIp;
-				form.lanNetmask.value	= lanNetmask;
-				form.lanGateway.value	= gateway;
-				form.lanPriDns.value	= dnsPrimary;
-				form.lanSecDns.value	= dnsSecondary;
-				form.dhcpStart.value	= dhcpStart;
-				form.dhcpEnd.value	= dhcpEnd;
-				form.dhcpGateway.value	= dhcpGateway;
-				form.wStaticDnsProfile.value		= (dnsProfile == '') ? 'manual' : dnsProfile;
-				form.wStaticDnsYandexProfile.value	= (dnsProfileYandex == '') ? 'basic' : dnsProfileYandex;
-
-				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile' ], opMode == "0" );
+				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile' ], NVRAM_OperationMode == '0' );
 
 				dnsSwitchClick(form);
 				showWarning();
@@ -98,12 +84,12 @@
 					form.lanNetmask.focus();
 					return false;
 				}
-				if ((opMode != "0") && (form.lanIp.value == wanIp)) {
+				if (NVRAM_OperationMode != '0' && form.lanIp.value == NVRAM_wan_ipaddr) {
 					alert(_("inet lan wan same"));
 					form.lanIp.focus();
 					return false;
 				}
-				if (opMode == "0") {
+				if (NVRAM_OperationMode == "0") {
 					if (!validateIP(form.lanGateway, true)) {
 						form.lanGateway.focus();
 						return false;
@@ -125,7 +111,7 @@
 						}
 				}
 
-				if (((form.lanIp.value != lanIp) || (form.lanNetmask.value != lanNetmask) && (dhcp == "1")) && opMode != '0') {
+				if ((form.lanIp.value != LAN_IP || form.lanNetmask.value != LAN_NETMASK && NVRAM_dhcpEnabled == '1') && NVRAM_OperationMode != '0') {
 					if (confirm(_("lan accept dhcp opts"))) {
 						var ip = form.lanIp.value.split(".");
 						var mask = form.lanNetmask.value.split(".");
@@ -139,7 +125,7 @@
 						ip_end[3] = ((ip_end[3] - ip[3]) > ip[3]) ? ip_end[3] : ip[3];
 						form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + (ip_start[3] * 1 + 1);
 						form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + (ip_end[3] - 1);
-						if (form.dhcpGateway.value == lanIp)
+						if (form.dhcpGateway.value == LAN_IP)
 							form.dhcpGateway.value = form.lanIp.value;
 					}
 				}
@@ -149,8 +135,8 @@
 			}
 
 			function dnsSwitchClick(form) {
-				displayElement(['brPriDns', 'brSecDns'],	opMode == '0' && form.wStaticDnsProfile.value == 'manual');
-				displayElement('staticDNSyandexProfile',	opMode == '0' && form.wStaticDnsProfile.value == 'yandex');
+				displayElement(['brPriDns', 'brSecDns'],	NVRAM_OperationMode == '0' && form.wStaticDnsProfile.value == 'manual');
+				displayElement('staticDNSyandexProfile',	NVRAM_OperationMode == '0' && form.wStaticDnsProfile.value == 'yandex');
 				document.getElementById('wStaticDnsProfile_learne').innerHTML = '';
 				switch (form.wStaticDnsProfile.value) {
 					case 'google':

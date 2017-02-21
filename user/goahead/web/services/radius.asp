@@ -10,9 +10,10 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
@@ -36,8 +37,8 @@
 
 			// Set inintal values
 			function initValues() {
-				document.getElementById('radius_srv_enabled').value = ('<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '1') ? 1 : 0;
-				document.getElementById('radius_srv_secret').value = '<% getCfgGeneral(1, "radius_srv_secret"); %>';
+				document.getElementById('radius_srv_enabled').value = NVRAM_radius_srv_enabled;
+				document.getElementById('radius_srv_secret').value	= NVRAM_radius_srv_secret;
 				radiusEnableSwitch();
 				genRadiusTable();
 				displayServiceStatus();
@@ -161,7 +162,7 @@
 			function displayServiceHandler(response) {
 				var daemons = response.split(',');
 
-				if ('<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '0' || '<% getCfgGeneral(1, "radius_srv_enabled"); %>' == '')
+				if (NVRAM_radius_srv_enabled == '0')
 					document.getElementById('radius_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 				else
 					document.getElementById('radius_status').innerHTML = (daemons.indexOf('radiusd') >= 0) ?

@@ -15,16 +15,16 @@
 		<script src="/js/jquery.flot.min.js"></script>
 		<script src="/js/jquery.flot.time.min.js"></script>
 		<script src="/js/jquery.flot.crosshair.min.js"></script>
-		<script src="/js/controls.js"></script>
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/controls.js"></script>
 		<script>
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
-			var platform		= '<% getPlatform(); %>';
-			var updateTime		= 5000;
-			var wirelessMode	= "Basic";
+			var updateTime			= 5000;
+			var wirelessMode		= "Basic";
 			var wirelessTabeWidth	= "750px";
 			var wirelessTableColumn = 9;
 			var wirelessAvgRxLast	= 0;
@@ -33,31 +33,31 @@
 			var wirelessAvgTxLast24	= 0;
 			var wirelessAvgRxLast5	= 0;
 			var wirelessAvgTxLast5	= 0;
-			var lastRxTxCount	= [];		// Last RX/TX count for all clients
+			var lastRxTxCount		= [];		// Last RX/TX count for all clients
 			var plot;
-			var plotData 		= [];		// Statistic of all clients
-			var plotMACs 		= [];		// List MACs for Ploting
-			var plotMACsAll		= 0;		// Plot All MAC's
+			var plotData 			= [];		// Statistic of all clients
+			var plotMACs 			= [];		// List MACs for Ploting
+			var plotMACsAll			= 0;		// Plot All MAC's
 			var legends;
 			var updateLegendTimeout	= null;
-			var latestPosition	= null;
+			var latestPosition		= null;
 
 			function initTranslation()
 			{
-				_TR("stalistTitle",			"stalist title");
-				_TR("stalistIntroduction",		"stalist introduction");
+				_TR("stalistTitle",					"stalist title");
+				_TR("stalistIntroduction",			"stalist introduction");
 				_TR("stalistWirelessSummary",		"stalist wireless summary");
 				_TR("stalistWirelessStations",		"stalist wireless network");
-				_TR("stalistWirelessPlot",		"stalist wireless plot");
-				_TR("stalistMacAddr",			"stalist mac address");
-				_TR("stalistConnTime",			"stalist conn time");
-				_TR("stalistMODE",			"stalist mode");
-				_TR("stalistTxRate",			"stalist txrate");
-				_TR("stalistRSSI",			"stalist rssi");
-				_TR("stalistQuality",			"stalist quality");
-				_TR("stalistRxTxCount",			"stalist rxtx");
-				_TR("stalistPlot",			"stalist plot");
-				_TR("stalistAction",			"stalist action");
+				_TR("stalistWirelessPlot",			"stalist wireless plot");
+				_TR("stalistMacAddr",				"stalist mac address");
+				_TR("stalistConnTime",				"stalist conn time");
+				_TR("stalistMODE",					"stalist mode");
+				_TR("stalistTxRate",				"stalist txrate");
+				_TR("stalistRSSI",					"stalist rssi");
+				_TR("stalistQuality",				"stalist quality");
+				_TR("stalistRxTxCount",				"stalist rxtx");
+				_TR("stalistPlot",					"stalist plot");
+				_TR("stalistAction",				"stalist action");
 				_TR("stalistWirelessNameSum",		"stalist wireless sum total");
 				_TR("stalistWirelessNameSum24",		"stalist wireless sum total 24");
 				_TR("stalistWirelessNameSum5",		"stalist wireless sum total 5");
@@ -66,55 +66,51 @@
 				_TR("stalistWirelessSumTxRx",		"stalist wireless sum rxtx");
 				_TR("stalistWirelessSumRSSI",		"stalist wireless sum rssi");
 				_TR("stalistWirelessSumQuality",	"stalist wireless sum quality");
-				_TR("stalistWirelessMode",		"stalist wireless mode");
+				_TR("stalistWirelessMode",			"stalist wireless mode");
 				_TR("stalistWirelessModeBasic",		"stalist wireless mode basic");
 				_TR("stalistWirelessModeAdvanced",	"stalist wireless mode advanced");
-				_TR("wirelessPlotTypeName",		"stalist wireless plot type");
-				_TR("wirelessPlotTimeName",		"stalist wireless plot time");
-				_TR("time1M",				"stalist wireless plot time 1m");
-				_TR("time2M",				"stalist wireless plot time 2m");
-				_TR("time3M",				"stalist wireless plot time 3m");
-				_TR("time4M",				"stalist wireless plot time 4m");
-				_TR("time5M",				"stalist wireless plot time 5m");
-				_TR("time10M",				"stalist wireless plot time 10m");
-				_TR("time15M",				"stalist wireless plot time 15m");
-				_TR("time20M",				"stalist wireless plot time 20m");
-				_TR("time30M",				"stalist wireless plot time 30m");
-				_TR("time1H",				"stalist wireless plot time 1h");
-				_TR("time3H",				"stalist wireless plot time 3h");
-				_TR("time6H",				"stalist wireless plot time 6h");
-				_TR("timeAll",				"stalist wireless plot time all");
-				_TR("typeTxRate",			"stalist wireless plot type txrate");
-				_TR("typeRSSI",				"stalist wireless plot type rssi");
-				_TR("typeQuality",			"stalist wireless plot type quality");
-				_TR("typeRxTx",				"stalist wireless plot type rxtx");
-				_TR("typeRxTxSum",			"stalist wireless plot type rxtx sum");
-				_TR("typeRxTxSumAll",			"stalist wireless plot type rxtx sum all");
-				_TR("typeTx",				"stalist wireless plot type tx");
-				_TR("typeRx",				"stalist wireless plot type rx");
-				_TR("wirelessPlotUnitName",		"stalist wireless plot unit");
-				_TR("unitKB",				"stalist wireless plot unit kbits");
-				_TR("unitMB",				"stalist wireless plot unit mbits");
-				_TRV("clearPlot",			"stalist wireless plot clear button");
-				_TRV("disconnectAll",			"button disconnect all");
+				_TR("wirelessPlotTypeName",			"stalist wireless plot type");
+				_TR("wirelessPlotTimeName",			"stalist wireless plot time");
+				_TR("time1M",						"stalist wireless plot time 1m");
+				_TR("time2M",						"stalist wireless plot time 2m");
+				_TR("time3M",						"stalist wireless plot time 3m");
+				_TR("time4M",						"stalist wireless plot time 4m");
+				_TR("time5M",						"stalist wireless plot time 5m");
+				_TR("time10M",						"stalist wireless plot time 10m");
+				_TR("time15M",						"stalist wireless plot time 15m");
+				_TR("time20M",						"stalist wireless plot time 20m");
+				_TR("time30M",						"stalist wireless plot time 30m");
+				_TR("time1H",						"stalist wireless plot time 1h");
+				_TR("time3H",						"stalist wireless plot time 3h");
+				_TR("time6H",						"stalist wireless plot time 6h");
+				_TR("timeAll",						"stalist wireless plot time all");
+				_TR("typeTxRate",					"stalist wireless plot type txrate");
+				_TR("typeRSSI",						"stalist wireless plot type rssi");
+				_TR("typeQuality",					"stalist wireless plot type quality");
+				_TR("typeRxTx",						"stalist wireless plot type rxtx");
+				_TR("typeRxTxSum",					"stalist wireless plot type rxtx sum");
+				_TR("typeRxTxSumAll",				"stalist wireless plot type rxtx sum all");
+				_TR("typeTx",						"stalist wireless plot type tx");
+				_TR("typeRx",						"stalist wireless plot type rx");
+				_TR("wirelessPlotUnitName",			"stalist wireless plot unit");
+				_TR("unitKB",						"stalist wireless plot unit kbits");
+				_TR("unitMB",						"stalist wireless plot unit mbits");
+				_TRV("clearPlot",					"stalist wireless plot clear button");
+				_TRV("disconnectAll",				"button disconnect all");
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
 					if(elements[i].id == "disconnect")
 						elements[i].value = _("button disconnect");
 			}
 
-			function initValues()
-			{
-				var is5gh_support	= '<% is5gh_support(); %>';
-				var radio_on		= '<% getCfgZero(1, "RadioOn"); %>';
-				var radio_on_ac		= '<% getCfgZero(1, "RadioOnINIC"); %>';
+			function initValues() {
 				var time		= new Date(new Date().getTime() - 24 * 3600 * 1000).getTime();
 
-				if ((radio_on == 0) && (radio_on_ac == 0)) {
+				if ((NVRAM_RadioOn == 0) && (NVRAM_RadioOnINIC == 0)) {
 					hideElement('tableWirelessSummary');
 				}
 
-				if (radio_on == 0) {
+				if (NVRAM_RadioOn == 0) {
 					hideElement('stalistWirelessNameSum24');
 					hideElement('stalistWirelessSumAIDData24');
 					hideElement('stalistWirelessSumTXRateData24');
@@ -125,7 +121,7 @@
 					document.getElementById('stalistWirelessNameSum5').style.width = "30%";
 				}
 
-				if (radio_on_ac == 0) {
+				if (NVRAM_RadioOnINIC == 0) {
 					hideElement('stalistWirelessNameSum5');
 					hideElement('stalistWirelessSumAIDData5');
 					hideElement('stalistWirelessSumTXRateData5');
@@ -136,7 +132,7 @@
 					document.getElementById('stalistWirelessNameSum24').style.width = "30%";
 				}
 
-				if (is5gh_support == 0) {
+				if (BUILD_5GHZ_SUPPORT == 0) {
 					hideElement('stalistWirelessNameSum5');
 					hideElement('stalistWirelessSumAIDData5');
 					hideElement('stalistWirelessSumTXRateData5');
@@ -152,7 +148,7 @@
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
 
-				if ((radio_on == 0) && ((is5gh_support == 0) || (radio_on_ac == 0))) {
+				if ((NVRAM_RadioOn == 0) && ((BUILD_5GHZ_SUPPORT == 0) || (NVRAM_RadioOnINIC == 0))) {
 					deleteCookie('wirelessMode');
 					deleteCookie('plotMACs');
 					deleteCookie('plotMACsAll');
@@ -176,7 +172,7 @@
 						}
 						else {
 							wirelessTabeWidth	= "1100px";
-							wirelessTableColumn	= ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0)) ? 17 : 16;
+							wirelessTableColumn	= ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0)) ? 17 : 16;
 							document.getElementById('tableWirelessSummary').style.width = "1100px";
 							document.getElementById('tableWirelessPlot').style.width = "1100px";
 						}
@@ -235,7 +231,7 @@
 				else {
 					wirelessMode 		= "Advanced";
 					wirelessTabeWidth	= "1100px";
-					wirelessTableColumn	= ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0)) ? 17 : 16;
+					wirelessTableColumn	= ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0)) ? 17 : 16;
 					document.getElementById('tableWirelessSummary').style.width = "1100px";
 					document.getElementById('tableWirelessPlot').style.width = "1100px";
 				}
@@ -343,10 +339,10 @@
 				var MACs			= plotMACs.slice(0);
 				var plotAll			= "";
 
-				var wirelessAIDs		= 0;
-				var wirelessAIDs24		= 0;
-				var wirelessAIDs5		= 0;
-				var wirelessAvgRSSI		= 0;
+				var wirelessAIDs			= 0;
+				var wirelessAIDs24			= 0;
+				var wirelessAIDs5			= 0;
+				var wirelessAvgRSSI			= 0;
 				var wirelessAvgRSSI24		= 0;
 				var wirelessAvgRSSI5		= 0;
 				var wirelessAvgQuality		= 0;
@@ -355,12 +351,12 @@
 				var wirelessAvgTxRate		= 0;
 				var wirelessAvgTxRate24		= 0;
 				var wirelessAvgTxRate5		= 0;
-				var wirelessAvgRx		= 0;
-				var wirelessAvgTx		= 0;
-				var wirelessAvgRx24		= 0;
-				var wirelessAvgTx24		= 0;
-				var wirelessAvgRx5		= 0;
-				var wirelessAvgTx5		= 0;
+				var wirelessAvgRx			= 0;
+				var wirelessAvgTx			= 0;
+				var wirelessAvgRx24			= 0;
+				var wirelessAvgTx24			= 0;
+				var wirelessAvgRx5			= 0;
+				var wirelessAvgTx5			= 0;
 
 				if (wirelessMode == "Basic") {
 					i = "selected";
@@ -395,7 +391,7 @@
 					html +=	'<th id="stalistBW">BW</th>';
 					html +=	'<th id="stalistSGI">SGI</th>';
 					html +=	'<th id="stalistSTBC">STBC</th>';
-					if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+					if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
 						html +=	'<th id="stalistLDPC">LDPC</th>';
 					html +=	'<th id="stalistMODE">MODE</th>';
 				}
@@ -432,7 +428,7 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist24[i].sgi + '</td>';				//SGI
 							html += '<td style="text-align: center">' + data.stationlist24[i].stbc + '</td>';				//STBC
-							if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+							if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
 								html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';				//MODE
 						}
@@ -523,7 +519,7 @@
 							html += '<td style="text-align: center">' + data.stationlist5[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist5[i].sgi + '</td>';					//SGI
 							html += '<td style="text-align: center">' + data.stationlist5[i].stbc + '</td>';				//STBC
-							if ((platform.indexOf('MT7602') > 0) || (platform.indexOf('MT7612') > 0))
+							if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
 								html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';				//MODE
 						}

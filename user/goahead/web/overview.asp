@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/lang/b28n.js"></script>
+<script type="text/javascript" src="/js/nvram.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
 Butterlate.setTextDomain("view");
@@ -27,8 +28,8 @@ function initTranslation()
 function initValue()
 {
 	var lang_element = document.getElementById("langSelection");
-	var lang_en = "<% getLangBuilt("en"); %>";
-	var lang_ru = "<% getLangBuilt("ru"); %>";
+	var lang_en = BUILD_LangEN;
+	var lang_ru = BUILD_LangRU;
 
 	initTranslation();
 	if (lang_en == "1")

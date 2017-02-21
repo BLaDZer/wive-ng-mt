@@ -10,23 +10,16 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("buttons");
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("services");
 
-			var ipv66rdb	= '<% getIPv66rdBuilt(); %>';
-			var ip6to4b		= '<% getIP6to4Built(); %>';
-			var vpn			= '<% getCfgZero(1, "vpnEnabled"); %>';
-			var vpnv6		= '<% getCfgZero(1, "Ipv6InVPN"); %>';
-			var radvdb		= '<% getRadvdBuilt(); %>';
-			var dhcpv6b		= '<% getDhcpv6Built(); %>';
-
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("v6Title",				"ipv6 title");
 				_TR("v6Introduction",		"ipv6 introduction");
 				_TR("v6ConnType",			"ipv6 connection type");
@@ -66,50 +59,38 @@
 				_TRV("v6Reset",				"button reset");
 			}
 
-			function initValues()
-			{
-				var form				= document.ipv6_cfg;
-				var opmode				= '<% getCfgZero(1, "IPv6OpMode"); %>';
-				var dhcp6c				= '<% getCfgZero(1, "IPv6Dhcpc"); %>';
-				var ipv6_allow_forward	= '<% getCfgZero(1, "IPv6AllowForward"); %>';
-				var opmode_len			= form.ipv6_opmode.options.length;
-				var radvd				= '<% getCfgZero(1, "radvdEnabled"); %>';
-				var dhcpv6				= '<% getCfgZero(1, "dhcpv6Enabled"); %>';
-				var ipv6mtu				= ('<% getCfgGeneral(1, "IPv6ManualMTU"); %>' == '') ? '0' : '<% getCfgGeneral(1, "IPv6ManualMTU"); %>';
+			function initValues() {
+				var form = document.ipv6_cfg;
 
-				if (ipv66rdb == "1") {
+				if (BUILD_IPV6_6RD == '1')
 					form.ipv6_opmode.options[2] = new Option(_("ipv6 6rd"), "2");
-					opmode_len++;
-				}
-				if (ip6to4b == "1") {
-					form.ipv6_opmode.options[opmode_len] = new Option(_("ipv6 6to4"), "3");
-					opmode_len++;
-				}
+				if (BUILD_IPV6_TO4 == '1')
+					form.ipv6_opmode.options[form.ipv6_opmode.options.length] = new Option(_("ipv6 6to4"), "3");
 
-				if (opmode == "1")
+				if (NVRAM_IPv6OpMode == '1')
 					form.ipv6_opmode.options.selectedIndex = 1;
-				else if (opmode == "2")
+				else if (NVRAM_IPv6OpMode == '2')
 					form.ipv6_opmode.options.selectedIndex = 2;
-				else if (opmode == "3")
-					form.ipv6_opmode.options.selectedIndex = opmode_len - 1;
+				else if (NVRAM_IPv6OpMode == '3')
+					form.ipv6_opmode.options.selectedIndex = form.ipv6_opmode.options.length - 1;
 
-				form.dhcp6c_enable.checked = (dhcp6c == "1");
+				form.dhcp6c_enable.checked 				= NVRAM_IPv6Dhcpc == '1';
 
-				form.ipv6_allow_forward.checked = (ipv6_allow_forward == "1");
-				form.ipv6_Ipv6InVPN.checked = (vpnv6 == "1");
+				form.ipv6_allow_forward.checked			= NVRAM_IPv6AllowForward == '1';
+				form.ipv6_Ipv6InVPN.checked				= NVRAM_Ipv6InVPN == '1';
 
-				form.radvdEnbl.options.selectedIndex = +radvd;
-				form.dhcpv6Enbl.options.selectedIndex = +dhcpv6;
+				form.radvdEnbl.options.selectedIndex 	= +NVRAM_radvdEnabled;
+				form.dhcpv6Enbl.options.selectedIndex 	= +NVRAM_dhcpv6Enabled;
 
 				addOption(form.ipv6_manual_mtu_type, _('inet auto'), 0);
 				addOption(form.ipv6_manual_mtu_type, _('routing custom'), 1);
 				for (var i = 1500; i >= 1280; i -= 10)
 					addOption(form.ipv6_manual_mtu_type, i, i);
 
-				document.getElementById('ipv6_manual_mtu').value		= ipv6mtu;
+				document.getElementById('ipv6_manual_mtu').value		= NVRAM_IPv6ManualMTU;
 				document.getElementById('ipv6_manual_mtu_type').value	= 1;
 				for (var i = 0; i < form.ipv6_manual_mtu_type.options.length; i++)
-					if (form.ipv6_manual_mtu_type.options[i].value == ipv6mtu) {
+					if (form.ipv6_manual_mtu_type.options[i].value == NVRAM_IPv6ManualMTU) {
 						form.ipv6_manual_mtu_type.value = form.ipv6_manual_mtu_type.options[i].value;
 						break;
 					}
@@ -117,8 +98,8 @@
 				SwitchOpMode(form);
 				ipv6MtuChange();
 
-				displayElement( 'radvd', radvdb == '1');
-				displayElement( 'dhcpv6', dhcpv6b == '1');
+				displayElement( 'radvd', BUILD_RADVD == '1');
+				displayElement( 'dhcpv6', BUILD_DHCPV6 == '1');
 
 				initTranslation();
 
@@ -205,7 +186,7 @@
 					else {
 						document.getElementById('ipv6_manual_mtu').value = +document.getElementById('ipv6_manual_mtu').value;
 					}
-				} else if (form.ipv6_opmode.value == "2") {
+				} else if (form.ipv6_opmode.value == '2') {
 					var v6rd_prefix = form.ipv6_6rd_prefix.value.replace(/\s+/g, '');
 					var v6rd_prefix_len = form.ipv6_6rd_prefix_len.value.replace(/\s+/g, '');
 					var v6rd_border_ipaddr = form.ipv6_6rd_border_ipaddr.value.replace(/\s+/g, '');
@@ -228,7 +209,7 @@
 						form.ipv6_6rd_border_ipaddr.select();
 						return false;
 					}
-				} else if (form.ipv6_opmode.value == "3") {
+				} else if (form.ipv6_opmode.value == '3') {
 					var v6SrvAddr = form.IPv6SrvAddr.value.replace(/\s+/g, '');
 					if (!ipaddr.IPv4.isValid(v6SrvAddr)) {
 						alert(_("ipv6 invalid ipv4"));
@@ -248,42 +229,35 @@
 			{
 				var opmode = form.ipv6_opmode.value;
 
-				enableElements( [ form.ipv6_allow_forward ], (opmode != "0"));
-				enableElements( [ form.ipv6_Ipv6InVPN ], (opmode != "0") && (vpn == "on"));
-				enableElements( [ form.dhcp6c_enable ], (opmode == "1"));
-				enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], (opmode == "1") && (!form.dhcp6c_enable.checked));
-				enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], (ipv66rdb == "1") && (opmode == "2"));
-				enableElements( [ form.IPv6SrvAddr ], opmode == "3");
+				enableElements( [ form.ipv6_allow_forward ], opmode != '0');
+				enableElements( [ form.ipv6_Ipv6InVPN ], opmode != '0' && NVRAM_vpnEnabled == 'on');
+				enableElements( [ form.dhcp6c_enable ], opmode == '1');
+				enableElements( [ form.ipv6_lan_ipaddr, form.ipv6_lan_prefix_len, form.ipv6_wan_ipaddr, form.ipv6_wan_prefix_len, form.ipv6_static_gw ], opmode == '1' && !form.dhcp6c_enable.checked);
+				enableElements( [ form.ipv6_6rd_prefix, form.ipv6_6rd_prefix_len, form.ipv6_6rd_border_ipaddr ], BUILD_IPV6_6RD == '1' && opmode == '2');
+				enableElements( [ form.IPv6SrvAddr ], opmode == '3');
 
-				if (opmode == "1") {
-					form.ipv6_lan_ipaddr.value				= '<% getCfgGeneral(1, "IPv6IPAddr"); %>';
-					form.ipv6_lan_prefix_len.value			= '<% getCfgGeneral(1, "IPv6PrefixLen"); %>';
-					form.ipv6_wan_ipaddr.value				= '<% getCfgGeneral(1, "IPv6WANIPAddr"); %>';
-					form.ipv6_wan_prefix_len.value			= '<% getCfgGeneral(1, "IPv6WANPrefixLen"); %>';
-					form.ipv6_static_gw.value				= '<% getCfgGeneral(1, "IPv6GWAddr"); %>';
-					form.ipv6_static_dns_primary.value		= '<% getCfgGeneral(1, "IPv6DNSPrimary"); %>';
-					form.ipv6_static_dns_secondary.value	= '<% getCfgGeneral(1, "IPv6DNSSecondary"); %>';
-					if (!form.ipv6_static_dns_primary.value)
-						form.ipv6_static_dns_primary.value	= "2001:4860:4860::8888";
-					if (!form.ipv6_static_dns_secondary.value)
-						form.ipv6_static_dns_secondary.value = "2001:4860:4860::8844";
-				} else if (opmode == "2") {
-					form.ipv6_6rd_prefix.value				= '<% getCfgGeneral(1, "IPv6IPAddr"); %>';
-					form.ipv6_6rd_prefix_len.value			= '<% getCfgGeneral(1, "IPv6PrefixLen"); %>';
-					form.ipv6_6rd_border_ipaddr.value		= '<% getCfgGeneral(1, "IPv6SrvAddr"); %>';
-				} else if (opmode == "3") {
-					form.IPv6SrvAddr.value					= '<% getCfgGeneral(1, "IPv6SrvAddr"); %>';
-					if (form.IPv6SrvAddr.value == "")
-						form.IPv6SrvAddr.value = "192.88.99.1";
-				}
+				if (opmode == '1') {
+					form.ipv6_lan_ipaddr.value				= NVRAM_IPv6IPAddr;
+					form.ipv6_lan_prefix_len.value			= NVRAM_IPv6PrefixLen;
+					form.ipv6_wan_ipaddr.value				= NVRAM_IPv6WANIPAddr;
+					form.ipv6_wan_prefix_len.value			= NVRAM_IPv6WANPrefixLen;
+					form.ipv6_static_gw.value				= NVRAM_IPv6GWAddr;
+					form.ipv6_static_dns_primary.value		= NVRAM_IPv6DNSPrimary;
+					form.ipv6_static_dns_secondary.value	= NVRAM_IPv6DNSSecondary;
+				} else if (opmode == '2') {
+					form.ipv6_6rd_prefix.value				= NVRAM_IPv6IPAddr;
+					form.ipv6_6rd_prefix_len.value			= NVRAM_IPv6PrefixLen;
+					form.ipv6_6rd_border_ipaddr.value		= NVRAM_IPv6SrvAddr;
+				} else if (opmode == '3')
+					form.IPv6SrvAddr.value					= NVRAM_IPv6SrvAddr;
 
-				displayElement( 'IPv6AllowForwardRowDisplay', (opmode != "0"));
-				displayElement( 'v6invpn_tr', (opmode != "0") && (vpn == "on"));
-				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], (opmode == "1"));
-				displayElement( 'v6StaticTable', (opmode == "1") && (!form.dhcp6c_enable.checked));
-				displayElement( 'v66rdTable', (ipv66rdb == "1") && (opmode == "2"));
-				displayElement( '6to4Table', (opmode == "3"));
-				displayElement( 'daemons', (opmode != "0") && (radvdb == '1' || dhcpv6b == '1'));
+				displayElement( 'IPv6AllowForwardRowDisplay', opmode != '0');
+				displayElement( 'v6invpn_tr', opmode != '0' && NVRAM_vpnEnabled == 'on');
+				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], opmode == '1');
+				displayElement( 'v6StaticTable', opmode == '1' && !form.dhcp6c_enable.checked);
+				displayElement( 'v66rdTable', BUILD_IPV6_6RD == '1' && opmode == '2');
+				displayElement( '6to4Table', opmode == '3');
+				displayElement( 'daemons', opmode != '0' && (BUILD_RADVD == '1' || BUILD_DHCPV6 == '1'));
 			}
 
 			function ipv6MtuChange() {
@@ -297,14 +271,13 @@
 				}
 			}
 
-			function displayServiceHandler(response)
-			{
+			function displayServiceHandler(response) {
 				var form = document.miscServiceCfg;
 
 				var services = [
 					// turned_on, row_id, daemon_id
-					[ '<% getCfgGeneral(1, "radvdEnabled"); %>', 'radvd', 'radvd', 'www.litech.org/radvd' ],
-					[ '<% getCfgGeneral(1, "dhcpv6Enabled"); %>', 'dhcpv6', 'dhcp6s', 'wide-dhcpv6.sourceforge.net' ]
+					[ NVRAM_radvdEnabled, 'radvd', 'radvd', 'www.litech.org/radvd' ],
+					[ NVRAM_dhcpv6Enabled, 'dhcpv6', 'dhcp6s', 'wide-dhcpv6.sourceforge.net' ]
 				];
 
 				// Create associative array
@@ -314,8 +287,7 @@
 					daemons[tmp[i]] = 1;
 
 				// Now display all services
-				for (var i=0; i<services.length; i++)
-				{
+				for (var i=0; i<services.length; i++) {
 					var service = services[i];
 					var row = document.getElementById(service[1]);
 					var tds = [];
@@ -323,8 +295,7 @@
 						if (row.childNodes[j].nodeName == 'TD')
 							tds.push(row.childNodes[j]);
 
-					if (row != null)
-					{
+					if (row != null) {
 						// Fill-up about
 						tds[2].innerHTML = (service[3] != null) ? '<a href="http://' + service[3] + '" target="_blank">' + _("services status about") + '</a>' : "&nbsp;";
 						// Fill-up status
@@ -340,8 +311,7 @@
 				serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
 			}
 
-			function displayServiceStatus()
-			{
+			function displayServiceStatus() {
 				ajaxPerformRequest('/internet/services-stat.asp', displayServiceHandler);
 			}
 		</script>

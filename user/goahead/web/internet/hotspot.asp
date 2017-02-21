@@ -10,9 +10,10 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script src="hotspot_profiles.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
@@ -21,63 +22,62 @@
 			Butterlate.setTextDomain("buttons");
 			Butterlate.setTextDomain("services");
 
-			var old_profile		= '<% getCfgZero(1, "chilli_profile"); %>';
-			var chilli_built	= '<% getChilliBuilt(); %>' == '1';
-			var nodog_built		= '<% getNoDogBuilt(); %>' == '1';
+			var SPOT_IP		= '<% getSpotIp(); %>';
+			var SPOT_NETMASK	= '<% getSpotNetmask(); %>';
 
 			function initTranslation() {
-				_TR("sTitle",				"hotspot title");
+				_TR("sTitle",					"hotspot title");
 				_TR("sIntroduction",			"hotspot introduction");
-				_TR("spotSetup",			"hotspot setup");
-				_TR("spotType",				"hotspot type");
-				_TR("spotProfile",			"hotspot profile");
-				_TR("sIp",				"inet ip");
-				_TR("sNetmask",				"inet netmask");
-				_TR("sStartIP",				"lan dhcp start");
-				_TR("sEndIP",				"lan dhcp end");
-				_TR("sPriDns",				"inet pri dns");
-				_TR("sSecDns",				"inet sec dns");
+				_TR("spotSetup",				"hotspot setup");
+				_TR("spotType",					"hotspot type");
+				_TR("spotProfile",				"hotspot profile");
+				_TR("sIp",						"inet ip");
+				_TR("sNetmask",					"inet netmask");
+				_TR("sStartIP",					"lan dhcp start");
+				_TR("sEndIP",					"lan dhcp end");
+				_TR("sPriDns",					"inet pri dns");
+				_TR("sSecDns",					"inet sec dns");
 				_TR("sHttpsRedirect",			"hotspot https redirect");
-				_TR("sDropDNS",				"hotspot drop dns");
-				_TR("sC2Cisolate",			"hotspot clisolate");
-				_TR("sMaxClients",			"hotspot max clients");
-				_TR("sDomain",				"hotspot domain");
-				_TR("sLease",				"lan dhcp lease");
-				_TR("sRadServer1",			"hotspot radius auth");
-				_TR("sRadServer2",			"hotspot radius acct");
-				_TR("sRadSecret",			"hotspot radius secret");
-				_TR("sNasId",				"hotspot radius nas");
-				_TR("sRadLocId",			"hotspot radius location id");
-				_TR("sRadLocName",			"hotspot radius location name");
-				_TR("sRadCoaPort",			"hotspot radius coa port");
+				_TR("sDropDNS",					"hotspot drop dns");
+				_TR("sC2Cisolate",				"hotspot clisolate");
+				_TR("sMaxClients",				"hotspot max clients");
+				_TR("sDomain",					"hotspot domain");
+				_TR("sLease",					"lan dhcp lease");
+				_TR("sRadServer1",				"hotspot radius auth");
+				_TR("sRadServer2",				"hotspot radius acct");
+				_TR("sRadSecret",				"hotspot radius secret");
+				_TR("sNasId",					"hotspot radius nas");
+				_TR("sRadLocId",				"hotspot radius location id");
+				_TR("sRadLocName",				"hotspot radius location name");
+				_TR("sRadCoaPort",				"hotspot radius coa port");
 				_TR("sRadCoaNoIpCheck",			"hotspot radius no check ip");
-				_TR("sUamServer",			"hotspot uam server");
-				_TR("sUamHomepage",			"hotspot uam homepage");
-				_TR("sUamSecret",			"hotspot uam secret");
-				_TR("sUamAllowed",			"hotspot uam allowed");
-				_TR("sUamDomain",			"hotspot uam domain");
-				_TR("sUamAnyDNS",			"hotspot uam any dns");
-				_TR("sMacAllowed",			"hotspot uam mac");
+				_TR("sUamServer",				"hotspot uam server");
+				_TR("sUamHomepage",				"hotspot uam homepage");
+				_TR("sUamSecret",				"hotspot uam secret");
+				_TR("sUamAllowed",				"hotspot uam allowed");
+				_TR("sUamDomain",				"hotspot uam domain");
+				_TR("sUamAnyDNS",				"hotspot uam any dns");
+				_TR("sMacAllowed",				"hotspot uam mac");
 				_TR("GatewayIPRange",			"hotspot nodog ip range");
-				_TR("RedirectURL",			"hotspot nodog url");
-				_TR("MaxClients",			"hotspot nodog max clients");
+				_TR("RedirectURL",				"hotspot nodog url");
+				_TR("MaxClients",				"hotspot nodog max clients");
 				_TR("ClientIdleTimeout",		"hotspot nodog idle timeout");
 				_TR("ClientForceTimeout",		"hotspot nodog force timeout");
-				_TR("AuthenticateImmediately",		"hotspot nodog auth");
-				_TR("MACMechanism",			"hotspot nodog mechanism");
+				_TR("AuthenticateImmediately",	"hotspot nodog auth");
+				_TR("MACMechanism",				"hotspot nodog mechanism");
 				_TR("BlockedMACList",			"hotspot nodog blocked list");
 				_TR("AllowedMACList",			"hotspot nodog allowed list");
 				_TR("TrustedMACList",			"hotspot nodog trusted list");
-				_TR("PasswordAuthentication",		"hotspot nodog pass");
-				_TR("block",				"hotspot nodog block");
-				_TR("allow",				"hotspot nodog allow");
-				_TR("Password",				"vpn password");
-				_TR("UsernameAuthentication",		"hotspot nodog user");
-				_TR("Username",				"vpn username");
+				_TR("PasswordAuthentication",	"hotspot nodog pass");
+				_TR("block",					"hotspot nodog block");
+				_TR("allow",					"hotspot nodog allow");
+				_TR("Password",					"vpn password");
+				_TR("UsernameAuthentication",	"hotspot nodog user");
+				_TR("Username",					"vpn username");
 				_TR("PasswordAttempts",			"hotspot nodog pass attempts");
-				_TRV("sApply",				"button apply");
-				_TRV("sCancel",				"button cancel");
-				_TRV("sReset",				"button reset");
+				_TRV("sApply",					"button apply");
+				_TRV("sCancel",					"button cancel");
+				_TRV("sReset",					"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -89,40 +89,39 @@
 
 			function initValues() {
 				var form	= document.spotCfg;
-				var nat_fp	= defaultNumber('<% getCfgGeneral(1, "offloadMode"); %>', "1");
 				var enabled = form.spotEnable;
 
-				form.AuthenticateImmediately.value		= ('<% getCfgGeneral(1, "nodog_AuthenticateImmediately"); %>' == "1") ? "1" : "0";
-				form.MACMechanism.value 			= ('<% getCfgGeneral(1, "nodog_MACMechanism"); %>' == "allow") ? "allow" : "block";
-				form.PasswordAuthentication.value		= ('<% getCfgGeneral(1, "nodog_PasswordAuthentication"); %>' == "1") ? "1" : "0";
-				form.UsernameAuthentication.value		= ('<% getCfgGeneral(1, "nodog_UsernameAuthentication"); %>' == "1") ? "1" : "0";
-				form.GatewayIPRange.value			= '<% getCfgGeneral(1, "nodog_GatewayIPRange"); %>';
-				form.RedirectURL.value				= '<% getCfgGeneral(1, "nodog_RedirectURL"); %>';
-				form.MaxClients.value				= '<% getCfgGeneral(1, "nodog_MaxClients"); %>';
-				form.ClientIdleTimeout.value			= '<% getCfgGeneral(1, "nodog_ClientIdleTimeout"); %>';
-				form.ClientForceTimeout.value			= '<% getCfgGeneral(1, "nodog_ClientForceTimeout"); %>';
-				form.BlockedMACList.value			= '<% getCfgGeneral(1, "nodog_BlockedMACList"); %>';
-				form.AllowedMACList.value			= '<% getCfgGeneral(1, "nodog_AllowedMACList"); %>';
-				form.TrustedMACList.value			= '<% getCfgGeneral(1, "nodog_TrustedMACList"); %>';
-				form.Password.value				= '<% getCfgGeneral(1, "nodog_Password"); %>';
-				form.Username.value				= '<% getCfgGeneral(1, "nodog_Username"); %>';
-				form.PasswordAttempts.value			= '<% getCfgGeneral(1, "nodog_PasswordAttempts"); %>';
-				form.chilliEnable.value				= '<% getCfgZero(1, "chilli_enable"); %>';
-				form.nodogEnable.value				= '<% getCfgZero(1, "nodogsplash_enable"); %>';
-
+				form.AuthenticateImmediately.value	= NVRAM_nodog_AuthenticateImmediately;
+				form.MACMechanism.value 			= NVRAM_nodog_MACMechanism;
+				form.PasswordAuthentication.value	= NVRAM_nodog_PasswordAuthentication;
+				form.UsernameAuthentication.value	= NVRAM_nodog_UsernameAuthentication;
+				form.GatewayIPRange.value			= NVRAM_nodog_GatewayIPRange;
+				form.RedirectURL.value				= NVRAM_nodog_RedirectURL;
+				form.MaxClients.value				= NVRAM_nodog_MaxClients;
+				form.ClientIdleTimeout.value		= NVRAM_nodog_ClientIdleTimeout;
+				form.ClientForceTimeout.value		= NVRAM_nodog_ClientForceTimeout;
+				form.BlockedMACList.value			= NVRAM_nodog_BlockedMACList;
+				form.AllowedMACList.value			= NVRAM_nodog_AllowedMACList;
+				form.TrustedMACList.value			= NVRAM_nodog_TrustedMACList;
+				form.Password.value					= NVRAM_nodog_Password;
+				form.Username.value					= NVRAM_nodog_Username;
+				form.PasswordAttempts.value			= NVRAM_nodog_PasswordAttempts;
+				form.chilliEnable.value				= NVRAM_chilli_enable;
+				form.nodogEnable.value				= NVRAM_nodogsplash_enable;
+				
 				document.getElementById('sC2Cisolate').title	= _("hotspot clisolate full");
-				document.getElementById('sDropDNS').title	= _("hotspot drop dns full");
+				document.getElementById('sDropDNS').title		= _("hotspot drop dns full");
 
 				enabled.options.length = 0;
 				addOption(enabled, _("button disable"), "0");
-				if(chilli_built)
+				if(BUILD_CHILLI == '1')
 					addOption(enabled, "ChilliSpot", "1");
-				if(nodog_built)
+				if(BUILD_NODOG == '1')
 					addOption(enabled, "NoDogSplash", "2");
 
-				if(chilli_built && (form.chilliEnable.value == "on"))
+				if(BUILD_CHILLI == '1' && (form.chilliEnable.value == 'on'))
 					enabled.value = "1";
-				else if(nodog_built && (form.nodogEnable.value == "1"))
+				else if(BUILD_NODOG == '1' && (form.nodogEnable.value == '1'))
 					enabled.value = "2";
 				else
 					enabled.value = "0";
@@ -133,10 +132,10 @@
 					if (Profiles[i][1] == "hotspot manual")
 						Profiles[i][1] = _("hotspot manual");
 					addOption(prof, Profiles[i][1], Profiles[i][0]);
-					if(Profiles[i][0] == old_profile)
-						prof.value = old_profile;
+					if(Profiles[i][0] == NVRAM_chilli_profile)
+						prof.value = NVRAM_chilli_profile;
 				}
-				if(old_profile == "0")
+				if(NVRAM_chilli_profile == '0')
 					prof.options.selectedIndex == 0;
 
 				ModeOnChange(form);
@@ -390,7 +389,7 @@
 			}
 
 			function ProfileOnChange(form) {
-				if (form.spotProfile.value != "manual" && form.spotProfile.value != old_profile && old_profile != "manual" && old_profile != "0") {
+				if (form.spotProfile.value != "manual" && form.spotProfile.value != NVRAM_chilli_profile && NVRAM_chilli_profile != 'manual' && NVRAM_chilli_profile != '0') {
 					if (confirm(_("hotspot profile change"))) {
 						var br			= getBrowser();
 						resetform		= document.spotCfgReset;
@@ -403,44 +402,40 @@
 				for(var i = 0; i < Profiles.length; i++) {
 					var tmp = Profiles[i];
 					if (tmp[0] == form.spotProfile.value) {
-						insertVal(form, "sIp",			(!tmp[2]) ? "<% getSpotIp(); %>" : tmp[2],					tmp[29+2]);
-						insertVal(form, "sNetmask",		(!tmp[3]) ? "<% getSpotNetmask(); %>" : tmp[3],					tmp[29+3]);
-						insertVal(form, "sStartIP",		(!tmp[4]) ? "<% getCfgGeneral(1, "chilli_dhcpstart"); %>" : tmp[4],		tmp[29+4]);
-						insertVal(form, "sEndIP",		(!tmp[5]) ? "<% getCfgGeneral(1, "chilli_dhcpend"); %>" : tmp[5],		tmp[29+5]);
-						insertVal(form, "sPriDns",		(!tmp[6]) ? "<% getCfgGeneral(1, "chilli_dns1"); %>" : tmp[6],			tmp[29+6]);
-						insertVal(form, "sSecDns",		(!tmp[7]) ? "<% getCfgGeneral(1, "chilli_dns2"); %>" : tmp[7],			tmp[29+7]);
-						insertVal(form, "sDomain",		(!tmp[8]) ? "<% getCfgGeneral(1, "chilli_domain"); %>" : tmp[8],		tmp[29+8]);
-						insertVal(form, "sLease",		(!tmp[9]) ? "<% getCfgGeneral(1, "chilli_lease"); %>" : tmp[9],			tmp[29+9]);
-						insertVal(form, "sRadServer1",		(!tmp[10]) ? "<% getCfgGeneral(1, "chilli_radiusserver1"); %>" : tmp[10],	tmp[29+10]);
-						insertVal(form, "sRadServer2",		(!tmp[11]) ? "<% getCfgGeneral(1, "chilli_radiusserver2"); %>" : tmp[11],	tmp[29+11]);
-						insertVal(form, "sRadSecret",		(!tmp[12]) ? "<% getCfgGeneral(1, "chilli_radiussecret"); %>" : tmp[12],	tmp[29+12]);
-						insertVal(form, "sNasId",		(!tmp[13]) ? "<% getCfgGeneral(1, "chilli_radiusnasid"); %>" : tmp[13],		tmp[29+13]);
-						insertVal(form, "sRadLocId",		(!tmp[14]) ? "<% getCfgGeneral(1, "chilli_radiuslocationid"); %>" : tmp[14],	tmp[29+14]);
-						insertVal(form, "sRadLocName",		(!tmp[15]) ? "<% getCfgGeneral(1, "chilli_radiuslocationname"); %>" : tmp[15],	tmp[29+15]);
-						insertVal(form, "sRadCoaPort",		(!tmp[16]) ? "<% getCfgGeneral(1, "chilli_coaport"); %>" : tmp[16],		tmp[29+16]);
-						insertVal(form, "sRadCoaNoIpCheck",	(!tmp[17]) ? "<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" : tmp[17],	tmp[29+17]);
-						if(!tmp[17])
-							form.sRadCoaNoIpCheck.value = ("<% getCfgGeneral(1, "chilli_coanoipcheck"); %>" == "on") ? "on" : "off";
-						insertVal(form, "sUamServer",		(!tmp[18]) ? "<% getCfgGeneral(1, "chilli_uamserver"); %>" : tmp[18],		tmp[29+18]);
-						insertVal(form, "sUamHomepage",		(!tmp[19]) ? "<% getCfgGeneral(1, "chilli_uamhomepage"); %>" : tmp[19],		tmp[29+19]);
-						insertVal(form, "sUamSecret",		(!tmp[20]) ? "<% getCfgGeneral(1, "chilli_uamsecret"); %>" : tmp[20],		tmp[29+20]);
-						insertVal(form, "sUamAllowed",		(!tmp[21]) ? "<% getCfgGeneral(1, "chilli_uamallowed"); %>" : tmp[21],		tmp[29+21]);
-						insertVal(form, "sUamDomain",		(!tmp[22]) ? "<% getCfgGeneral(1, "chilli_uamdomain"); %>" : tmp[22],		tmp[29+22]);
-						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? "<% getCfgGeneral(1, "chilli_uamanydns"); %>" : tmp[23],		tmp[29+23]);
-						if(!tmp[23])
-							form.sUamAnyDNS.value = ("<% getCfgGeneral(1, "chilli_uamanydns"); %>" == "on") ? "on" : "off";
-						insertVal(form, "sMacAllowed",		(!tmp[24]) ? "<% getCfgGeneral(1, "chilli_macallowed"); %>" : tmp[24],		tmp[29+24]);
-						insertVal(form, "sC2Cisolate",		(!tmp[25]) ? ("<% getCfgGeneral(1, "chilli_clisolate"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_clisolate"); %>" : tmp[25],		tmp[29+25]);
-						insertVal(form, "sDropDNS",		(!tmp[26]) ? ("<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_dnsparanoia"); %>" : tmp[26],		tmp[29+26]);
-						insertVal(form, "sMaxClients",		(!tmp[27]) ? ("<% getCfgGeneral(1, "chilli_maxclients"); %>" == "") ? 384 : "<% getCfgGeneral(1, "chilli_maxclients"); %>" : tmp[27],		tmp[29+27]);
-						insertVal(form, "sHttpsRedirect",	(!tmp[28]) ? ("<% getCfgGeneral(1, "chilli_https"); %>" == "") ? 0 : "<% getCfgGeneral(1, "chilli_https"); %>" : tmp[28],		tmp[29+28]);
+						insertVal(form, "sIp",				(!tmp[2])  ? SPOT_IP 							: tmp[2],	tmp[29+2]);
+						insertVal(form, "sNetmask",			(!tmp[3])  ? SPOT_NETMASK						: tmp[3],	tmp[29+3]);
+						insertVal(form, "sStartIP",			(!tmp[4])  ? NVRAM_chilli_dhcpstart				: tmp[4],	tmp[29+4]);
+						insertVal(form, "sEndIP",			(!tmp[5])  ? NVRAM_chilli_dhcpend				: tmp[5],	tmp[29+5]);
+						insertVal(form, "sPriDns",			(!tmp[6])  ? NVRAM_chilli_dns1					: tmp[6],	tmp[29+6]);
+						insertVal(form, "sSecDns",			(!tmp[7])  ? NVRAM_chilli_dns2					: tmp[7],	tmp[29+7]);
+						insertVal(form, "sDomain",			(!tmp[8])  ? NVRAM_chilli_domain				: tmp[8],	tmp[29+8]);
+						insertVal(form, "sLease",			(!tmp[9])  ? NVRAM_chilli_lease					: tmp[9],	tmp[29+9]);
+						insertVal(form, "sRadServer1",		(!tmp[10]) ? NVRAM_chilli_radiusserver1 		: tmp[10],	tmp[29+10]);
+						insertVal(form, "sRadServer2",		(!tmp[11]) ? NVRAM_chilli_radiusserver2 		: tmp[11],	tmp[29+11]);
+						insertVal(form, "sRadSecret",		(!tmp[12]) ? NVRAM_chilli_radiussecret			: tmp[12],	tmp[29+12]);
+						insertVal(form, "sNasId",			(!tmp[13]) ? NVRAM_chilli_radiusnasid			: tmp[13],	tmp[29+13]);
+						insertVal(form, "sRadLocId",		(!tmp[14]) ? NVRAM_chilli_radiuslocationid		: tmp[14],	tmp[29+14]);
+						insertVal(form, "sRadLocName",		(!tmp[15]) ? NVRAM_chilli_radiuslocationname	: tmp[15],	tmp[29+15]);
+						insertVal(form, "sRadCoaPort",		(!tmp[16]) ? NVRAM_chilli_coaport				: tmp[16],	tmp[29+16]);
+						insertVal(form, "sRadCoaNoIpCheck",	(!tmp[17]) ? NVRAM_chilli_coanoipcheck			: tmp[17],	tmp[29+17]);
+						insertVal(form, "sUamServer",		(!tmp[18]) ? NVRAM_chilli_coanoipcheck			: tmp[18],	tmp[29+18]);
+						insertVal(form, "sUamHomepage",		(!tmp[19]) ? NVRAM_chilli_coanoipcheck			: tmp[19],	tmp[29+19]);
+						insertVal(form, "sUamSecret",		(!tmp[20]) ? NVRAM_chilli_coanoipcheck			: tmp[20],	tmp[29+20]);
+						insertVal(form, "sUamAllowed",		(!tmp[21]) ? NVRAM_chilli_coanoipcheck			: tmp[21],	tmp[29+21]);
+						insertVal(form, "sUamDomain",		(!tmp[22]) ? NVRAM_chilli_uamdomain				: tmp[22],	tmp[29+22]);
+						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? NVRAM_chilli_coanoipcheck			: tmp[23],	tmp[29+23]);
+						insertVal(form, "sMacAllowed",		(!tmp[24]) ? NVRAM_chilli_macallowed			: tmp[24],	tmp[29+24]);
+						insertVal(form, "sC2Cisolate",		(!tmp[25]) ? NVRAM_chilli_clisolate				: tmp[25],	tmp[29+25]);
+						insertVal(form, "sDropDNS",			(!tmp[26]) ? NVRAM_chilli_dnsparanoia			: tmp[26],	tmp[29+26]);
+						insertVal(form, "sMaxClients",		(!tmp[27]) ? NVRAM_chilli_maxclients			: tmp[27],	tmp[29+27]);
+						insertVal(form, "sHttpsRedirect",	(!tmp[28]) ? NVRAM_chilli_https					: tmp[28],	tmp[29+28]);
 					}
 				}
 			}
 
 			function ModeOnChange(form) {
-				displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed", "row_sC2Cisolate", "row_sDropDNS", "row_sMaxClients", "row_sHttpsRedirect"], (form.spotEnable.value == "1"));
-				displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], (form.spotEnable.value == "2"));
+				displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed", "row_sC2Cisolate", "row_sDropDNS", "row_sMaxClients", "row_sHttpsRedirect"], form.spotEnable.value == '1');
+				displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], form.spotEnable.value == '2');
 
 				form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
 				form.nodogEnable.value = (form.spotEnable.value == "2") ? "1" : "0";
@@ -454,8 +449,8 @@
 			function MACMechanismOnChange(form) {
 				displayElement("row_AllowedMACList", form.MACMechanism.value == "allow");
 				displayElement("row_BlockedMACList", form.MACMechanism.value == "block");
-				displayElement("row_Password", (form.PasswordAuthentication.value*1) == 1);
-				displayElement("row_Username", (form.UsernameAuthentication.value*1) == 1);
+				displayElement("row_Password", +form.PasswordAuthentication.value == 1);
+				displayElement("row_Username", +form.UsernameAuthentication.value == 1);
 			}
 
 			function insertVal(form, row, val, disp) {
@@ -509,21 +504,21 @@
 				if (document.spotCfg.spotEnable.value == "2") // hints for nodog
 					switch(key) {
 						case 'GatewayIPRange':			text += _("hint nodog ip range");			break;
-						case 'RedirectURL':			text += _("hint nodog url");				break;
-						case 'MaxClients':			text += _("hint nodog max clients");			break;
+						case 'RedirectURL':				text += _("hint nodog url");				break;
+						case 'MaxClients':				text += _("hint nodog max clients");		break;
 						case 'ClientIdleTimeout':		text += _("hint nodog idle");				break;
 						case 'ClientForceTimeout':		text += _("hint nodog force");				break;
-						case 'AuthenticateImmediately':		text += _("hint nodog auth immediately");		break;
+						case 'AuthenticateImmediately':	text += _("hint nodog auth immediately");	break;
 						case 'MACMechanism':			text += _("hint nodog mac"); 				break;
 						case 'BlockedMACList':			text += _("hint nodog blocked");			break;
 						case 'AllowedMACList':			text += _("hint nodog allowed");			break;
 						case 'TrustedMACList':			text += _("hint nodog trusted");			break;
-						case 'PasswordAuthentication':		text += _("hint nodog auth pass");			break;
-						case 'Password':			text += _("hint nodog pass");				break;
-						case 'UsernameAuthentication':		text += _("hint nodog auth user");			break;
-						case 'Username':			text += _("hint nodog user");				break;
+						case 'PasswordAuthentication':	text += _("hint nodog auth pass");			break;
+						case 'Password':				text += _("hint nodog pass");				break;
+						case 'UsernameAuthentication':	text += _("hint nodog auth user");			break;
+						case 'Username':				text += _("hint nodog user");				break;
 						case 'PasswordAttempts':		text += _("hint nodog attempts");			break;
-						default:				show = false;
+						default:						show = false;
 					}
 				else
 					show = false;
@@ -537,10 +532,8 @@
 			// Display server status
 			function displayServiceHandler(response) {
 				var daemons = response.split(',');
-				var chilli	= '<% getCfgGeneral(1, "chilli_enable"); %>';
-				var nodog	= '<% getCfgGeneral(1, "nodogsplash_enable"); %>';
 
-				if ((chilli == 'off' || chilli == '') && (nodog == '0' || nodog == ''))
+				if (NVRAM_chilli_enable == 'off' && NVRAM_nodogsplash_enable == '0')
 					document.getElementById('spotSetup_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 				else
 					document.getElementById('spotSetup_status').innerHTML = (daemons.indexOf('chilli') >= 0 || daemons.indexOf('nodogsplash') >= 0) ?

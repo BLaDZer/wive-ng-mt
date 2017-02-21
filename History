@@ -2800,38 +2800,40 @@
 2) usb-modeswitch: up to 2.5.0 version (data up to 20170205).<br>
 3) xl2tpd: up to 1.3.9 version.<br>
 4) goahead: add skip long range VGA option for MT7610 radio.<br>
-5) band steering: tune parametrs for faster band detect.<br>
-6) band steering: more safe allowed 5GHz logic.<br>
-7) band steering: increase mac table size to 512 entry.<br>
-8) band steering: fix enable procedure.<br>
-9) band steering: fix auto mode work.<br>
-10) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
-11) kernel: ralink_wifi: fix bndstr debug.<br>
-12) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
-13) kernel: ralink_wifi: fix garbage collector work.<br>
-14) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
-15) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-16) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-17) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-18) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
-19) kernel: mips: disable stack checks on MIPS kernels.<br>
-20) kernel: tty: limit terminal size to 4M chars.<br>
-21) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-22) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-23) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-24) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-25) kernel: net: do not block BH while processing socket backlog.<br>
-26) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
-27) kernel: net: ping: fix a null pointer dereference.<br>
-28) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-29) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-30) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
-31) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-32) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-33) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-34) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-35) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-36) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+5) goahead: fix webstr content filter work.<br>
+6) goahead: webui consolidate get parameters from nvram to one place.<br>
+7) band steering: tune parametrs for faster band detect.<br>
+8) band steering: more safe allowed 5GHz logic.<br>
+9) band steering: increase mac table size to 512 entry.<br>
+10) band steering: fix enable procedure.<br>
+11) band steering: fix auto mode work.<br>
+12) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
+13) kernel: ralink_wifi: fix bndstr debug.<br>
+14) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
+15) kernel: ralink_wifi: fix garbage collector work.<br>
+16) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
+17) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+18) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+19) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+20) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+21) kernel: mips: disable stack checks on MIPS kernels.<br>
+22) kernel: tty: limit terminal size to 4M chars.<br>
+23) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+24) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+25) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+26) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+27) kernel: net: do not block BH while processing socket backlog.<br>
+28) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
+29) kernel: net: ping: fix a null pointer dereference.<br>
+30) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+31) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+32) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+33) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+34) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+35) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+36) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+37) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+38) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
 <br>
 <br>
 <br>

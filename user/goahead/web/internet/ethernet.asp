@@ -10,21 +10,17 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
 
-			var opmode		= '<% getCfgZero(1, "OperationMode"); %>';
-			var gigaphy		= '<% gigaphy(); %>';
-			var wan_port	= <% getCfgZero(1, "wan_port"); %>;
-			var lan_port	= '<% getCfgZero(1, "lan_port"); %>';
-			var stb_port	= ('<% getCfgZero(1, "tv_port"); %>' == '1')  ? (wan_port == 0) ? 1 : wan_port - 1 : -1;
-			var sip_port	= ('<% getCfgZero(1, "sip_port"); %>' == '1') ? (wan_port == 0) ? 2 : wan_port - 2 : -1;
-			var ports		= <% getEthernetPortCount(); %>;
-			var first_port	= (ports == 3) ? 2 : 0;
-			var port_swmode	= [];
+			NVRAM_stb_port	= (NVRAM_stb_port == '1') ? (NVRAM_wan_port == '0') ? 1 : +NVRAM_wan_port - 1 : -1;
+			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
+
+			var port_swmode	= [ NVRAM_port1_swmode, NVRAM_port2_swmode, NVRAM_port3_swmode, NVRAM_port4_swmode, NVRAM_port5_swmode ];
 			
 			function initTranslation() {
 				_TR("ethernetTitle",			"ethernet title");
@@ -34,15 +30,15 @@
 				_TR("ethernetFirstLANport",		"ethernet lan port");
 				_TR("ethernetNearToWAN", 		"ethernet lan port near");
 				_TR("ethernetDistantFromWAN",	"ethernet lan port distant");
-				if (ports == 3) {
+				if (ETHER_PORTS == 3) {
 					_TR("ethernetPort1Mode",		"ethernet port 1 mode");
 					_TR("ethernetPort2Mode",		"ethernet port 2 mode");
 					_TR("ethernetPort3Mode",		"ethernet port 1 mode");
 					_TR("ethernetPort4Mode",		"ethernet port 2 mode");
 					_TR("ethernetPort5Mode",		"ethernet port 3 mode");
 				}
-				else if (ports == 2) {
-					if (opmode == 1) {
+				else if (ETHER_PORTS == 2) {
+					if (NVRAM_OperationMode == 1) {
 						_TR("ethernetPort1Mode",		"ethernet port 1 mode");
 						_TR("ethernetPort5Mode",		"ethernet port 5 mode");
 					}
@@ -66,7 +62,7 @@
 
 			function initValues() {
 				// hide unused elements in pure AP mode
-				switch(ports) {
+				switch(ETHER_PORTS) {
 					case 1:
 								hideElement(ethernetWANport_tr);
 								hideElement(ethernetFirstLANport_tr);
@@ -76,7 +72,7 @@
 								hideElement(ethernetPort5Mode_tr);
 								break;
 					case 2:
-								if (opmode != 1)
+								if (NVRAM_OperationMode != 1)
 									hideElement(ethernetWANport_tr);
 								hideElement(ethernetFirstLANport_tr);
 								hideElement(ethernetPort2Mode_tr);
@@ -91,33 +87,31 @@
 								break;
 				}
 
-				port_swmode = [ '<% getCfgZero(1, "port1_swmode"); %>', '<% getCfgZero(1, "port2_swmode"); %>', '<% getCfgZero(1, "port3_swmode"); %>', '<% getCfgZero(1, "port4_swmode"); %>', '<% getCfgZero(1, "port5_swmode"); %>' ];
-
 				// Set WAN port number
-				if (ports == 5 && ((wan_port > 0 && wan_port < (ports - 1)) || wan_port > (ports - 1)))
-					wan_port = ports - 1;
+				if (ETHER_PORTS == 5 && ((NVRAM_wan_port > 0 && NVRAM_wan_port < (ETHER_PORTS - 1)) || NVRAM_wan_port > (ETHER_PORTS - 1)))
+					NVRAM_wan_port = ETHER_PORTS - 1;
 					
 				// Set LAN port number
-				if (lan_port != 'near' && lan_port != 'distant')
-					lan_port = 'near';
+				if (NVRAM_lan_port != 'near' && NVRAM_lan_port != 'distant')
+					NVRAM_lan_port = 'near';
 
-				if (opmode != 1) {
+				if (NVRAM_OperationMode != 1) {
 					hideElement(ethernetWANport_tr);
 					hideElement(ethernetFirstLANport_tr);
 				}
 					
-				document.getElementById('wan_port').value = wan_port;
-				document.getElementById('lan_port').value = lan_port;
+				document.getElementById('wan_port').value = NVRAM_wan_port;
+				document.getElementById('lan_port').value = NVRAM_lan_port;
 
 				// Add Port speeds options & Show
-				var j = (ports == 2) ? 5 : ports;
-				for (i = first_port + 1; i <= first_port + j; i++) {
+				var j = (ETHER_PORTS == 2) ? 5 : ETHER_PORTS;
+				for (i = ETHER_FIRST_PORT + 1; i <= ETHER_FIRST_PORT + j; i++) {
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode auto"), 'auto');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10h"),  '10h');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10f"),  '10f');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100h"), '100h');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100f"), '100f');
-					if (gigaphy == '1')
+					if (BUILD_GIGAPHY == '1')
 						addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 1000f"), '1000f');
 					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
 				}

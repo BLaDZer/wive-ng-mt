@@ -10,45 +10,29 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("internet");
 			Butterlate.setTextDomain("buttons");
 
-			var wifiNIC			= [];
-			var wifiSSID			= [];
-			var wifiLan			= [];
-			var wifiLanINIC			= [];
-			var wifiWan			= [];
-			var wifiWanINIC			= [];
-			var mbssid_mode			= "";
-			var ssid_num			= "";
-			var vlanLan			= [];
-			var vlanLanIsolate		= [];
-			var ports			= <% getEthernetPortCount(); %>;
-			var opmode			= '<% getCfgZero(1, "OperationMode"); %>';
+			var wifiNIC					= [];
+			var wifiSSID				= [];
+			var wifiLan					= [];
+			var wifiLanINIC				= [];
+			var wifiWan					= [];
+			var wifiWanINIC				= [];
+			var vlanLan					= [];
+			var vlanLanIsolate			= [];
 
-			var vlanTv			= '<% getCfgGeneral(1, "tv_portVLAN"); %>'.replace(/\s+/g, '').split(",");
-			var vlanTvPrio			= '<% getCfgGeneral(1, "tv_portVLANPRIO"); %>'.replace(/\s+/g, '').split(",");
-			var vlanSip			= '<% getCfgGeneral(1, "sip_portVLAN"); %>'.replace(/\s+/g, '').split(",");
-			var vlanSipPrio			= '<% getCfgGeneral(1, "sip_portVLANPRIO"); %>'.replace(/\s+/g, '').split(",");
+			var vlanTv					= NVRAM_tv_portVLAN.replace(/\s+/g, '').split(",");
+			var vlanTvPrio				= NVRAM_tv_portVLANPRIO.replace(/\s+/g, '').split(",");
+			var vlanSip					= NVRAM_sip_portVLAN.replace(/\s+/g, '').split(",");
+			var vlanSipPrio				= NVRAM_sip_portVLANPRIO.replace(/\s+/g, '').split(",");
 
-			var vlanMode_WifiLan		= '<% getCfgGeneral(1, "VlanWifiLan"); %>';
-			var vlanMode_WifiLanINIC	= '<% getCfgGeneral(1, "VlanWifiLanINIC"); %>';
-			var vlanMode_WifiWan		= '<% getCfgGeneral(1, "VlanWifiWan"); %>';
-			var vlanMode_WifiWanINIC	= '<% getCfgGeneral(1, "VlanWifiWanINIC"); %>';
-			var vlanMode_MBSSID_mode	= '<% getCfgGeneral(1, "BssidIfName"); %>';
-			var vlanMode_SSID_num		= '<% getCfgGeneral(1, "BssidNum"); %>';
-			var vlanMode_SsidList		= '<% getSSIDsList(); %>';
-			var vlanMode_VLANlan		= '<% getCfgGeneral(1, "VlanLan"); %>';
-			var vlanMode_VLANlanIsolate	= '<% getCfgGeneral(1, "VlanLanIsolate"); %>';
-
-			var is5gh_support		= '<% is5gh_support(); %>';
-
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("vlanTvSipTitle",		"vlan tvsip title");
 				_TR("vlanTvSipIntroduction",	"vlan tvsip introduction");
 				_TR("tv_stb",			"vlan tvsip tv stb");
@@ -119,10 +103,10 @@
 				getWLANVLANvalues();
 				getLANVLANvalues();
 
-				if (vlanMode_WifiLan.length > 0 || vlanMode_WifiLanINIC.length > 0 ||
-				    vlanMode_WifiWan.length > 0 || vlanMode_WifiWanINIC.length > 0) 
+				if (NVRAM_VlanWifiLan.length > 0 || NVRAM_VlanWifiLanINIC.length > 0 ||
+				    NVRAM_VlanWifiWan.length > 0 || NVRAM_VlanWifiWanINIC.length > 0) 
 					document.getElementById('vlanMode_select').selectedIndex = 1;
-				if (vlanMode_VLANlan.length > 0 || vlanMode_VLANlanIsolate.length > 0)
+				if (NVRAM_VlanLan.length > 0 || NVRAM_VlanLanIsolate.length > 0)
 					document.getElementById('vlanMode_select').selectedIndex = 2;
 				
 				showWarning();
@@ -130,7 +114,7 @@
 				showTvSipVLAN();
 				interceptVLANinput();
 				
-				displayElement([ 'vlanPort_table' ], ports == 5 && opmode != 0);
+				displayElement([ 'vlanPort_table' ], ETHER_PORTS == 5 && NVRAM_OperationMode != '0');
 			}
 
 			function checkValues(form) 
@@ -197,7 +181,7 @@
 				var ra = rai		= 0;
 				
 				if (form.vlanMode_select.selectedIndex == 1) {
-					for (var i = 0; i < ssid_num; i++)
+					for (var i = 0; i < NVRAM_BssidNum; i++)
 						if (wifiNIC[i] == "ra")
 							ra++;
 						else 
@@ -493,7 +477,7 @@
 				var mode = document.getElementById('vlanMode_select').selectedIndex;
 
 				displayElement([ 'vlanModeWLANVLAN_table', 'vlanMode_wlan_ap_tr',   'vlanMode_wlan_iface_tr',  'vlanMode_wlan_vlan_tr', 'vlanMode_wlan_vlan_add' ], mode == 1);
-				displayElement([ 'vlanMode_wlan_iface_tr' ], mode == 1 && opmode != '0');
+				displayElement([ 'vlanMode_wlan_iface_tr' ], mode == 1 && NVRAM_OperationMode != '0');
 				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr' ],  mode == 2);
 
 				if (mode == 1) {
@@ -638,15 +622,13 @@
 			function getWLANVLANvalues()
 			{
 				maxBSSID	= 4;
-				mbssid_mode	= vlanMode_MBSSID_mode;
-				ssid_num	= vlanMode_SSID_num;
-				wifiLan		= (vlanMode_WifiLan.length > 0) ? vlanMode_WifiLan.split(" ") : "0 0 0 0".split(" ");
-				wifiLanINIC	= (vlanMode_WifiLanINIC.length > 0) ? vlanMode_WifiLanINIC.split(" ") : "0 0 0 0".split(" ");
-				wifiWan		= (vlanMode_WifiWan.length > 0) ? vlanMode_WifiWan.split(" ") : "0 0 0 0".split(" ");
-				wifiWanINIC	= (vlanMode_WifiWanINIC.length > 0) ? vlanMode_WifiWanINIC.split(" ") : "0 0 0 0".split(" ");
+				wifiLan		= (NVRAM_VlanWifiLan.length > 0) ? NVRAM_VlanWifiLan.split(" ") : "0 0 0 0".split(" ");
+				wifiLanINIC	= (NVRAM_VlanWifiLanINIC.length > 0) ? NVRAM_VlanWifiLanINIC.split(" ") : "0 0 0 0".split(" ");
+				wifiWan		= (NVRAM_VlanWifiWan.length > 0) ? NVRAM_VlanWifiWan.split(" ") : "0 0 0 0".split(" ");
+				wifiWanINIC	= (NVRAM_VlanWifiWanINIC.length > 0) ? NVRAM_VlanWifiWanINIC.split(" ") : "0 0 0 0".split(" ");
 
 				for (var i = 1; i < maxBSSID; i++) {
-					if (mbssid_mode == "ra")
+					if (NVRAM_BssidIfName == "ra")
 						if (wifiLanINIC[i] != 0 || wifiWanINIC[i] != 0) {
 							wifiLanINIC[i] = 0;
 							wifiWanINIC[i] = 0;
@@ -671,28 +653,28 @@
 				var data, i;
 
 				if (ssid24 == ssid5) 
-					if (mbssid_mode == "ra")
+					if (NVRAM_BssidIfName == "ra")
 						ssid5 += " [5GHz]";
 					else
 						ssid24 += " [2.4GHz]";
 
 				try {
-					data	= JSON.parse(vlanMode_SsidList);
+					data	= JSON.parse(SSID_LIST);
 				} catch(e) { return; }
 
-				if (mbssid_mode == "ra" && is5gh_support == 1) {
+				if (NVRAM_BssidIfName == "ra" && BUILD_5GHZ_SUPPORT == 1) {
 					wifiNIC.push("rai");
 					wifiSSID.push(ssid5);
-					ssid_num++;
+					NVRAM_BssidNum++;
 				}
-				else if (mbssid_mode == "rai" && is5gh_support == 1) {
+				else if (NVRAM_BssidIfName == "rai" && BUILD_5GHZ_SUPPORT == 1) {
 					wifiNIC.push("ra");
 					wifiSSID.push(ssid24);
-					ssid_num++;
+					NVRAM_BssidNum++;
 				}
 
 				for (i = 0; i < data.wireless.length; i ++) {
-					if (mbssid_mode == "ra")
+					if (NVRAM_BssidIfName == "ra")
 						wifiNIC.push("ra");
 					else
 						wifiNIC.push("rai");
@@ -717,7 +699,7 @@
 				html += '<th style="width: 20%">' + _("vlan vlanid") + '</th>';
 				html += '<th style="width: 20%">' + _("vlan action") + '</th>';
 
-				for (i = 0; i < ssid_num; i++) {
+				for (i = 0; i < NVRAM_BssidNum; i++) {
 					if (wifiNIC[i] == "ra") {
 						if (wifiLan[ra] != "0") {
 							vlan  = wifiLan[ra];
@@ -777,10 +759,10 @@
 
 			function getLANVLANvalues()
 			{
-				if (vlanMode_VLANlan.length > 0)
-					vlanLan	= vlanMode_VLANlan.split(" ");
-				if (vlanMode_VLANlanIsolate.length > 0)	
-					vlanLanIsolate	= vlanMode_VLANlanIsolate.split(" ");
+				if (NVRAM_VlanLan.length > 0)
+					vlanLan	= NVRAM_VlanLan.split(" ");
+				if (NVRAM_VlanLanIsolate.length > 0)	
+					vlanLanIsolate	= NVRAM_VlanLanIsolate.split(" ");
 			}
 
 			function addLANVLAN()

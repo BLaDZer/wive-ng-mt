@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
@@ -18,32 +19,11 @@
 			Butterlate.setTextDomain("hint");
 			Butterlate.setTextDomain("buttons");
 
-			var vpnEnabled			= '<% getCfgGeneral(1, "vpnEnabled"); %>';
-			var vpnType				= '<% getCfgGeneral(1, "vpnType"); %>';
-			var vpnServerIP 		= (vpnType != '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
-			var vpnACName			= (vpnType == '0') ? '<% getCfgGeneral(1, "vpnServer"); %>' : '';
-			var vpnInterface		= '<% getCfgGeneral(1, "vpnInterface"); %>';
-			var mppe				= '<% getCfgGeneral(1, "vpnMPPE"); %>';
-			var peerdns				= '<% getCfgGeneral(1, "vpnPeerDNS"); %>';
-			var debug				= '<% getCfgGeneral(1, "vpnDebug"); %>';
-			var nat					= '<% getCfgGeneral(1, "vpnNAT"); %>';
-			var dgw					= '<% getCfgGeneral(1, "vpnDGW"); %>';
-			var vpn_auth			= '<% getCfgGeneral(1, "vpnAuthProtocol"); %>';
-			var lcp					= '<% getCfgGeneral(1, "vpnEnableLCP"); %>';
-			var pure_pppoe			= '<% getCfgGeneral(1, "vpnPurePPPOE"); %>';
-			var lcp_errors			= '<% getCfgGeneral(1, "vpnLCPFailure"); %>';
-			var lcp_int				= '<% getCfgGeneral(1, "vpnLCPInterval"); %>';
-			var vpn_test			= '<% getCfgGeneral(1, "vpnTestReachable"); %>';
-			var lanauth_access		= '<% getCfgGeneral(1, "LANAUTH_LVL"); %>';
-			var vpn_mtu_field		= '<% getCfgGeneral(1, "vpnMTU"); %>';
-			var vpn_user			= '<% getCfgGeneral(1, "vpnUser"); %>';
-			var vpn_pass			= '<% getCfgGeneral(1, "vpnPassword"); %>';
-			var vpn_pppoe_service	= '<% getCfgGeneral(1, "vpnService"); %>';
+			var vpnServerIP 		= (NVRAM_vpnType != '0') ? NVRAM_vpnServer : '';
+			var vpnACName			= (NVRAM_vpnType == '0') ? NVRAM_vpnServer : '';
+			var table_vpn_params	= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
 
-			var table_vpn_params= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
-
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("vTitle",			"vpn title");
 				_TR("vIntroduction",	"vpn introduction");
 				_TR("vConfig",			"vpn config");
@@ -84,91 +64,70 @@
 				_TRV("vReset",			"button reset");
 			}
 
-			function initValues()
-			{
+			function initValues() {
 				var form = document.formVPNSetup;
-				var kabinet_built = '<% getLANAUTHBuilt(); %>';
 
-				if (kabinet_built != '0') {
+				if (BUILD_KABINET != '0') {
 					if (form.vpn_type.options.length == 3)
 						form.vpn_type.options[form.vpn_type.options.length] = new Option(_("vpn kabinet auth"), '3');
-					form.lanauth_access.value = lanauth_access;
+					form.lanauth_access.value = NVRAM_LANAUTH_LVL;
 				}
 
-				if (vpnInterface == 'WAN')
+				if (NVRAM_vpnInterface == 'WAN')
 					form.vpn_pppoe_iface.selectedIndex = '1'
-				else if (vpnInterface == 'LAN')
+				else if (NVRAM_vpnInterface == 'LAN')
 					form.vpn_pppoe_iface.selectedIndex = '0';
 					
-				form.vpn_enabled.checked		= (vpnEnabled == 'on');
-				form.vpn_mppe.checked			= (mppe == 'on');
-				form.vpn_peerdns.checked		= (peerdns == 'on');
-				form.vpn_debug.checked			= (debug == 'on');
-				form.vpn_nat.checked			= (nat == 'on');
-				form.vpn_type.value				= vpnType;
-				form.vpn_dgw.value				= dgw;
-				form.vpn_lcp.checked			= (lcp == 'on');
-				form.vpn_pure_pppoe.checked		= (pure_pppoe == '1');
-				form.vpn_test_reachable.checked	= (vpn_test == '1');
-				form.vpn_auth_type.value		= vpn_auth;
-				form.vpn_lcp_errors.value		= lcp_errors;
-				form.vpn_lcp_interval.value		= lcp_int;
-				form.vpn_mtu_field.value		= vpn_mtu_field;
-				form.vpn_user.value				= vpn_user;
-				form.vpn_pass.value				= vpn_pass;
-				form.vpn_pppoe_service.value	= vpn_pppoe_service;
+				form.vpn_enabled.checked		= NVRAM_vpnEnabled == 'on';
+				form.vpn_mppe.checked			= NVRAM_vpnMPPE == 'on';
+				form.vpn_peerdns.checked		= NVRAM_vpnPeerDNS == 'on';
+				form.vpn_debug.checked			= NVRAM_vpnDebug == 'on';
+				form.vpn_nat.checked			= NVRAM_vpnNAT == 'on';
+				form.vpn_type.value				= NVRAM_vpnType;
+				form.vpn_dgw.value				= NVRAM_vpnDGW;
+				form.vpn_lcp.checked			= NVRAM_vpnEnableLCP == 'on';
+				form.vpn_pure_pppoe.checked		= NVRAM_vpnPurePPPOE == '1';
+				form.vpn_test_reachable.checked	= NVRAM_vpnTestReachable == '1';
+				form.vpn_auth_type.value		= NVRAM_vpnAuthProtocol;
+				form.vpn_lcp_errors.value		= NVRAM_vpnLCPFailure;
+				form.vpn_lcp_interval.value		= NVRAM_vpnLCPInterval;
+				form.vpn_mtu_field.value		= NVRAM_vpnMTU;
+				form.vpn_user.value				= NVRAM_vpnUser;
+				form.vpn_pass.value				= NVRAM_vpnPassword;
+				form.vpn_pppoe_service.value	= NVRAM_vpnService;
 
 				/* Check if option was set */
 				var vpn_mtu_select = document.getElementById('vpn_mtu_select');
-				for (var i=0; i < vpn_mtu_select.options.length; i++)
-					if (form.vpn_mtu_type.options[i].value == form.vpn_mtu.value)
-					{
+				for (var i = 0; i < vpn_mtu_select.options.length; i++)
+					if (form.vpn_mtu_type.options[i].value == form.vpn_mtu.value) {
 						form.vpn_mtu_type.value = form.vpn_mtu_select.options[i].value;
 						break;
 					}
 
 				vpnSwitchClick(form);
 				mtuChange(form);
-				showVPNStatus();
-				setInterval(function () {
-					var status 		= '<% vpnShowVPNStatus(); %>';
-					var text		= "<b><font color=\"";
-					switch(status) {
-						case 'disabled':			text += "#808080";	break;
-						case 'not started':			text += "#808080";	break;
-						case 'offline':				text += "#FF0000";	break;
-						case 'connecting':			text += "#FF8000";	break;
-						case 'online':				text += "#00FF00";	break;
-						case 'kabinet networks':		text += "#33BB33";	break;
-						case 'full access':			text += "#00FF00";	break;
-					}
-					text += "\">" + status + "</font></b>";
-					ajaxModifyElementHTML('vpn_status_col', text);	
-				}, 5000); 
 				showWarning();
 				initTranslation();
+
+				ajaxLoadScript('/internet/vpn-stat.js');
+				setInterval(ajaxLoadScript('/internet/vpn-stat.js'), 5000); 
 			}
 
-			function checkValues(form)
-			{
-				if (form.vpn_pass.value.match(/[\s\$]/))
-				{
+			function checkValues(form) {
+				if (form.vpn_pass.value.match(/[\s\$]/)) {
 					alert(_("vpn alert password"));
 					form.vpn_pass.focus();
 					return false;
 				}
 
-				if (form.vpn_type.value != "0" && form.vpn_type.value != "3" )
-				{
-					if (form.vpn_user.value.match(/[\s\$]/))
-					{
+				if (form.vpn_type.value != "0" && form.vpn_type.value != "3" ) {
+					if (form.vpn_user.value.match(/[\s\$]/)) {
 						alert(_("vpn alert username"));
 						form.vpn_user.focus();
 						return false;
 					}
 
-					if ((!validateIP(form.vpn_server, false)) && (!validateDNS(form.vpn_server, false)))
-					{
+					if ((!validateIP(form.vpn_server, false)) && (!validateDNS(form.vpn_server, false))) {
 						alert(_("vpn alert invalid ip"));
 						form.vpn_type.focus();
 						return false;
@@ -182,8 +141,7 @@
 				return true;				
 			}				
 
-			function vpnSwitchClick(form)
-			{
+			function vpnSwitchClick(form) {
 				enableElements( [
 					form.vpn_server, 
 					form.vpn_auth_type,
@@ -216,8 +174,7 @@
 					selectType(form);
 			}
 
-			function selectType(form)
-			{
+			function selectType(form) {
 				var vpn_server_col	= document.getElementById("vpn_server_col");
 				var pppoe_on		= form.vpn_type.value == '0';
 				var pptp_on			= form.vpn_type.value == '1';
@@ -244,44 +201,23 @@
 				vpn_server_col.innerHTML = '<b>' + vpn_server + '</b>';
 			}
 			
-			function mtuChange(form)
-			{
+			function mtuChange(form) {
 				var vpn_mtu_select = document.getElementById("vpn_mtu_select");
 				var vpn_mtu_field  = document.getElementById("vpn_mtu_field");
 
-				if (form.vpn_mtu_type.value == '1')
-				{
+				if (form.vpn_mtu_type.value == '1') {
 					vpn_mtu_field.style.display = '';
 					vpn_mtu_select.setAttribute("class", "half");
 					vpn_mtu_field.setAttribute("class", "half");
 				}
-				else
-				{
+				else {
 					vpn_mtu_select.setAttribute("class", "mid");
 					vpn_mtu_field.style.display = 'none';
 					form.vpn_mtu.value = form.vpn_mtu_type.value;
 				}
 			}
 
-			function showVPNStatus()
-			{
-				var status 		= '<% vpnShowVPNStatus(); %>';
-				var text		= "<b><font color=\"";
-				switch(status) {
-					case 'disabled':			text += "#808080";	break;
-					case 'not started':			text += "#808080";	break;
-					case 'offline':				text += "#FF0000";	break;
-					case 'connecting':			text += "#FF8000";	break;
-					case 'online':				text += "#00FF00";	break;
-					case 'kabinet networks':		text += "#33BB33";	break;
-					case 'full access':			text += "#00FF00";	break;
-				}
-				text += "\">" + status + "</font></b>";
-				ajaxModifyElementHTML('vpn_status_col', text);
-			}
-			
-			function showHint(key)
-			{
+			function showHint(key) {
 				var row = document.getElementById('vpn_hint_row');
 				var form = document.formVPNSetup;
 				var text = '<div class="hint"><font color="#0000ff"><b>HINT:</b></font>&nbsp;';
@@ -342,8 +278,7 @@
 				}
 			}
 			
-			function hideHint()
-			{
+			function hideHint() {
 				var row = document.getElementById('vpn_hint_row');
 				row.innerHTML = '';
 			}
@@ -351,7 +286,7 @@
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
 		<table class="body">
-			<tr id="warning"><tr>
+			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="vTitle">Virtual Private Network setup</h1>
 					<p id="vIntroduction"> This page is used to configure the <acronym title="Virtual Private Network">VPN</acronym> tunnel on your Router. </p>

@@ -10,9 +10,10 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("firewall");
 			Butterlate.setTextDomain("buttons");
@@ -24,26 +25,26 @@
 
 			function initTranslation()
 			{
-			  _TR("FirewallTitle",			"firewall title");
-			  _TR("bridge_warning",			"firewall bridge warning");
-			  _TR("FirewallSet",			"firewall title");
-			  _TR("defSesLimit",			"firewall defailt session limit");
-			  _TR("forwardTitle",			"forward title");
+			  _TR("FirewallTitle",				"firewall title");
+			  _TR("bridge_warning",				"firewall bridge warning");
+			  _TR("FirewallSet",				"firewall title");
+			  _TR("defSesLimit",				"firewall defailt session limit");
+			  _TR("forwardTitle",				"forward title");
 			  _TR("forwardIntroduction",		"forward introduction");
-			  _TR("forwardVirtualSrv",		"forward virtual server");
-			  _TR("ForwardSesLimit",		"forward session limit");
-			  _TR("dnsToLocalRedir",		"forward dns redirect");
+			  _TR("forwardVirtualSrv",			"forward virtual server");
+			  _TR("ForwardSesLimit",			"forward session limit");
+			  _TR("dnsToLocalRedir",			"forward dns redirect");
 			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
 			  _TR("forwardVirtualSrvDisable",	"button disable");
 			  _TR("forwardVirtualSrvEnable",	"button enable");
-			  _TR("portTitle",			"port title");
-			  _TR("portIntroduction",		"port introduction");
-			  _TR("portBasicSet",			"port basic setting");
-			  _TR("portBasicFilter",		"port basic filter");
-			  _TR("portDisable",			"button disable");
-			  _TR("portEnable",			"button enable");
-			  _TR("dnsDisable",			"button disable");
-			  _TR("dnsEnable",			"button enable");
+			  _TR("portTitle",					"port title");
+			  _TR("portIntroduction",			"port introduction");
+			  _TR("portBasicSet",				"port basic setting");
+			  _TR("portBasicFilter",			"port basic filter");
+			  _TR("portDisable",				"button disable");
+			  _TR("portEnable",					"button enable");
+			  _TR("dnsDisable",					"button disable");
+			  _TR("dnsEnable",					"button enable");
 
 			  var elements = document.getElementsByTagName('input');
 			  for (i = 0; i < elements.length; i++)
@@ -51,16 +52,15 @@
 					elements[i].value = _("button apply");
 			}
 
-			function initValues()
-			{
-				displayElement('bridge_warning', '<% getCfgZero(1, "OperationMode"); %>' == '0'); // bridge mode
+			function initValues() {
+				displayElement('bridge_warning', NVRAM_OperationMode == '0'); // bridge mode
 
-				document.portForward.portForwardEnabled.value	= ('<% getCfgZero(1, "PortForwardEnable"); %>' == '1') ? '1' : '0';
-				document.portFiltering.portFilterEnabled.value	= ('<% getCfgZero(1, "IPPortFilterEnable"); %>' == '1') ? '1' : '0';
-				document.Firewall.ForwardSesLimit.value		= ('<% getCfgZero(1, "ForwardSesLimit"); %>' == '') ? 0 : '<% getCfgZero(1, "ForwardSesLimit"); %>';
-				document.Firewall.dnsToLocalRedir.value		= ('<% getCfgZero(1, "dnsToLocalRedir"); %>' == '1') ? 1 : 0;
+				document.portForward.portForwardEnabled.value	= NVRAM_PortForwardEnable;
+				document.portFiltering.portFilterEnabled.value	= NVRAM_IPPortFilterEnable;
+				document.Firewall.ForwardSesLimit.value			= NVRAM_ForwardSesLimit;
+				document.Firewall.dnsToLocalRedir.value			= NVRAM_dnsToLocalRedir;
 				
-				if ('<% getCfgZero(1, "dnsPEnabled"); %>' == '0') {
+				if (NVRAM_dnsPEnabled == '0') {
 					document.Firewall.dnsToLocalRedir.value = 0;
 					displayElement('dnsToLocalRedirRow', false);
 				}
@@ -72,37 +72,32 @@
 				initTranslation();
 			}
 
-			function submitForwardForm(form)
-			{
+			function submitForwardForm(form) {
 				form.portForwardRules.value = genTableData(portForwardingRules, form);
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
-			function submitFilterForm(form)
-			{
+			function submitFilterForm(form) {
 				form.portFilteringRules.value = genTableData(portFilteringRules, form);
 				form.defaultFirewallPolicy.value = defaultFilterPolicy;
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
-			function submitFirewallForm(form)
-			{
+			function submitFirewallForm(form) {
 				form.ForwardSesLimit.value = defaultNumber(form.ForwardSesLimit.value, "0");
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 			
-			function showPortRange(from, to)
-			{
+			function showPortRange(from, to) {
 				if (from == '')
 					return '*';
 				return (to != '') ? from + '<br>-<br>' + to : from;
 			}
 
-			function showProtocol(proto)
-			{
+			function showProtocol(proto) {
 				if (proto == '1')
 					return 'TCP';
 				if (proto == '2')
@@ -116,29 +111,24 @@
 				return 'unknown';
 			}
 
-			function showValue(value)
-			{
+			function showValue(value) {
 				return (value != '') ? value : '*';
 			}
 
-			function showPolicy(policy)
-			{
+			function showPolicy(policy) {
 				var color = (policy == '1') ? '#3da42c' : '#dd3b3b';
 				var text  = (policy == '1') ? 'accept' : 'drop';
 				return '<td rowspan="2" style="color: ' + color + ';">' + text + '</td>';
 			}
 
-			function checkComment(element)
-			{
+			function checkComment(element) {
 				var comment = element.value;
 				return comment.replace(/[,;]/g, ' ');
 			}
 
 
-			function checkIPMask(ip, mask)
-			{
-				if (ip.value != '')
-				{
+			function checkIPMask(ip, mask) {
+				if (ip.value != '') {
 					// First validate IP
 					if (!validateIP(ip, true))
 						return false;
@@ -148,8 +138,7 @@
 						if (!validateIPMask(mask, true))
 							return false;
 				}
-				else if (mask.value != '')
-				{
+				else if (mask.value != '') {
 					alert(_("forward ip not mask") + mask.value);
 					ip.focus();
 					return false;
@@ -158,8 +147,7 @@
 				return true;
 			}
 			
-			function genRulesTable()
-			{
+			function genRulesTable() {
 				var disabled = (portForwardingRules.length >= MAX_RULES) ? ' disabled="disabled"' : '';
 
 				var table = '<table class="small" style="width: 100%"><tr>';
@@ -172,8 +160,7 @@
 				table += '<th>' + _("forward comment") + '</th>';
 				table += '<th>' + _("forward action") + '</th></tr>';
 
-				for (var i=0; i<portForwardingRules.length; i++)
-				{
+				for (var i=0; i<portForwardingRules.length; i++) {
 					var row = portForwardingRules[i];
 					table += '<tr>' + '<td>' + row[0] + '</td>' + // Interface
 						'<td>' + showProtocol(row[1]) + '</td>' + // Protocol
@@ -211,12 +198,11 @@
 				table += '</table>';
 
 				var elem = document.getElementById("portForwardingTable");
-				if (elem!=null)
+				if (elem != null)
 					elem.innerHTML = table;
 			}
 
-			function genFilteringTable()
-			{
+			function genFilteringTable() {
 				var disabled = (portFilteringRules.length >= MAX_RULES) ? ' disabled="disabled"' : '';
 
 				var table = '<table class="small" style="width: 100%;"><tr>';
@@ -235,8 +221,7 @@
 				table += '<th>' + _("forward mask") + '</th>';
 				table += '</tr>';
 
-				for (var i=0; i<portFilteringRules.length; i++)
-				{
+				for (var i = 0; i < portFilteringRules.length; i++) {
 					var row = portFilteringRules[i];
 
 					table +=
@@ -295,13 +280,11 @@
 					elem.innerHTML = table;
 			}
 
-			function changedefaultFilterPolicy(form)
-			{
+			function changedefaultFilterPolicy(form) {
 				defaultFilterPolicy = form.defaultFilteringPolicy.value;
 			}
 
-			function protocolChange(form)
-			{
+			function protocolChange(form) {
 				var dis = !((form.protocol.value == '1') || (form.protocol.value == '2'));
 				form.sFromPort.disabled = dis;
 				form.sToPort.disabled   = dis;
@@ -309,53 +292,44 @@
 				form.dToPort.disabled   = dis;
 			}
 
-			function deleteRuleItem(index)
-			{
-				if ((index>=0) && (index < portForwardingRules.length))
-				{
+			function deleteRuleItem(index) {
+				if ((index >= 0) && (index < portForwardingRules.length)) {
 					portForwardingRules.splice(index, 1);
 					genRulesTable();
 				}
 			}
 
-			function deleteForwardingItem(index)
-			{
-				if ((index>=0) && (index < portFilteringRules.length))
-				{
+			function deleteForwardingItem(index) {
+				if ((index>=0) && (index < portFilteringRules.length)) {
 					portFilteringRules.splice(index, 1);
 					genFilteringTable();
 				}
 			}
 
-			function getPortDistance(fromPort, toPort)
-			{
+			function getPortDistance(fromPort, toPort) {
 				var result = -1;
 
-				if (fromPort.value != '')
-				{
+				if (fromPort.value != '') {
 					if (!validatePort(fromPort, true))
 						return;
 
 					result = 0;
 
-					if (toPort.value != '')
-					{
+					if (toPort.value != '') {
 						if (!validatePort(toPort, true))
 							return;
 
 						// Calculate port distance
 						result = toPort.value - fromPort.value;
 
-						if (result < 0)
-						{
+						if (result < 0) {
 							alert(_("forward alert port"));
 							fromPort.focus();
 							return null;
 						}
 					}
 				}
-				else if (toPort.value != '')
-				{
+				else if (toPort.value != '') {
 					alert(_("forward port specified"));
 					fromPort.focus();
 					return null;
@@ -364,8 +338,7 @@
 				return result;
 			}
 
-			function addRuleItem(form)
-			{
+			function addRuleItem(form) {
 				if (!validateIP(form.ip_address, true))
 					return;
 
@@ -380,19 +353,15 @@
 					return;
 
 				// Check distances
-				if (srcDistance >= 0)
-				{
-					if (dstDistance >= 0) // Destination ports are defined
-					{
-						if (srcDistance != dstDistance)
-						{
+				if (srcDistance >= 0) {
+					if (dstDistance >= 0) { // Destination ports are defined
+						if (srcDistance != dstDistance) {
 							alert(_("forward port not match src") + srcDistance + _("forward port not match dst") + dstDistance);
 							return;
 						}
 					}
 				}
-				else if (dstDistance >= 0)
-				{
+				else if (dstDistance >= 0) {
 					alert(_("forward src port not def"));
 					form.fromPort.focus();
 					return;
@@ -424,11 +393,9 @@
 				genRulesTable();
 			}
 
-			function addFilteringItem(form)
-			{
+			function addFilteringItem(form) {
 				if (form.mac_address.value != '')
-					if (!validateMAC(form.mac_address.value))
-					{
+					if (!validateMAC(form.mac_address.value)) {
 						form.mac_address.focus();
 						return;
 					}
@@ -443,8 +410,7 @@
 				var dstDistance = -1;
 
 				// If protocol is UDP or TCP, check port range
-				if ((form.protocol.value == '1') || (form.protocol.value == '2'))
-				{
+				if ((form.protocol.value == '1') || (form.protocol.value == '2')) {
 					// Check source ports
 					srcDistance = getPortDistance(form.sFromPort, form.sToPort);
 					if (srcDistance == null)
@@ -490,32 +456,27 @@
 				genFilteringTable();
 			}
 
-			function updateForwardingState(form)
-			{
+			function updateForwardingState(form) {
 				var ena = form.portForwardEnabled.value == '1';
 				displayElement('portForwardingRow', ena);
 				if (ena)
 					genRulesTable();
 			}
 
-			function updateFilteringState(form)
-			{
+			function updateFilteringState(form) {
 				var ena = form.portFilterEnabled.value == '1';
 				displayElement('portFilteringRow', ena);
 				if (ena)
 					genFilteringTable();
 			}
 
-			function genTableData(rules, form)
-			{
+			function genTableData(rules, form) {
 				var values = "";
-				for (var i=0; i<rules.length; i++)
-				{
+				for (var i = 0; i < rules.length; i++) {
 					var rule = rules[i];
 					var row = '';
 
-					for (var j=0; j<rule.length; j++)
-					{
+					for (var j = 0; j < rule.length; j++) {
 						if (row != '')
 							row += ',';
 						row += rule[j];
@@ -619,13 +580,13 @@
 								</tr>
 								<tr>
 									<td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
-									<td><input type="text" name="ForwardSesLimit" class="half" maxlength="5" value="<% getCfgZero(1, "ForwardSesLimit"); %>">
+									<td><input type="text" name="ForwardSesLimit" class="half" maxlength="5">
 										<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
 								</tr>
 								<tr id="dnsToLocalRedirRow">
 									<td class="head" id="dnsToLocalRedir">Redirect all DNS to Local server</td>
 									<td>
-										<select name="dnsToLocalRedir" class="half" value="<% getCfgZero(1, ""); %>">
+										<select name="dnsToLocalRedir" class="half">
 											<option value="0" id="dnsDisable" selected="selected">Disable</option>
 											<option value="1" id="dnsEnable">Enable</option>
 										</select>

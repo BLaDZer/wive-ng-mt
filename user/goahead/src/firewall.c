@@ -133,21 +133,27 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 static void setFirewallDMZ(webs_t wp, char_t *path, char_t *query)
 {
 	char *dmzEnable, *dmzIPaddr, *dmzLoopback;
+	char *reset = websGetVar(wp, T("reset"), T("0"));
 
-	dmzEnable   = websGetVar(wp, T("DMZEnabled"), T(""));
-	dmzIPaddr   = websGetVar(wp, T("DMZIPAddress"), T(""));
-	dmzLoopback = websGetVar(wp, T("dmzLoopback"), T("off"));
-
-	if (CHK_IF_DIGIT(dmzEnable, 1)) {
-		nvram_init(RT2860_NVRAM);
-		nvram_bufset(RT2860_NVRAM, "DMZEnable", dmzEnable);
-		nvram_bufset(RT2860_NVRAM, "DMZIPAddress", dmzIPaddr);
-		nvram_bufset(RT2860_NVRAM, "DMZNATLoopback", dmzLoopback);
-		nvram_commit(RT2860_NVRAM);
-		nvram_close(RT2860_NVRAM);
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 3, "DMZEnabled", "DMZIPAddress", "dmzLoopback");
 	}
 	else {
-		nvram_set(RT2860_NVRAM, "DMZEnable", "0");
+		dmzEnable   = websGetVar(wp, T("DMZEnabled"), T(""));
+		dmzIPaddr   = websGetVar(wp, T("DMZIPAddress"), T(""));
+		dmzLoopback = websGetVar(wp, T("dmzLoopback"), T("off"));
+
+		if (CHK_IF_DIGIT(dmzEnable, 1)) {
+			nvram_init(RT2860_NVRAM);
+			nvram_bufset(RT2860_NVRAM, "DMZEnable", dmzEnable);
+			nvram_bufset(RT2860_NVRAM, "DMZIPAddress", dmzIPaddr);
+			nvram_bufset(RT2860_NVRAM, "DMZNATLoopback", dmzLoopback);
+			nvram_commit(RT2860_NVRAM);
+			nvram_close(RT2860_NVRAM);
+		}
+		else {
+			nvram_set(RT2860_NVRAM, "DMZEnable", "0");
+		}
 	}
 	firewall_rebuild();
 	websHeader(wp);
@@ -191,7 +197,7 @@ static void setFirewall(webs_t wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
-#ifdef CONFIG_NETFILTER_XT_MATCH_WEBSTR
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
 /* goform/webContentFilterSetup */
 parameter_fetch_t content_filtering_args[] =
 {
@@ -232,7 +238,7 @@ void formDefineFirewall(void)
 	websFormDefine(T("setFirewallDMZ"), setFirewallDMZ);
 	websFormDefine(T("setFirewallALG"), setFirewallALG);
 	websAspDefine(T("getWebstrBuilt"), getWebstrBuilt);
-#ifdef CONFIG_NETFILTER_XT_MATCH_WEBSTR
+#if defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR) || defined(CONFIG_NETFILTER_XT_MATCH_WEBSTR_MODULE)
 	websFormDefine(T("webContentFilterSetup"), webContentFilterSetup);
 #endif
 }

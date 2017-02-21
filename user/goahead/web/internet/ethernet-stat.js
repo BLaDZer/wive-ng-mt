@@ -1,11 +1,11 @@
 function portName(num) {
-	switch (ports) {
+	switch (ETHER_PORTS) {
 		case 1:
 					return "LAN";
 					break;
 		case 2:
-					if (opmode == 1) {
-						if (num == wan_port)
+					if (NVRAM_OperationMode == '1') {
+						if (num == NVRAM_wan_port)
 							return "WAN";
 						else
 							return "LAN";
@@ -16,10 +16,10 @@ function portName(num) {
 					}
 					break;
 		default:
-				if (num == wan_port && opmode == 1) return "WAN";
-				if (num == sip_port) return "SIP";
-				if (num == stb_port) return "TV";
-				return (lan_port == 'near') ? "LAN " + (ports + first_port - 1 - num) : "LAN " + (num + 1);
+				if (num == NVRAM_wan_port && NVRAM_OperationMode == '1') return "WAN";
+				if (num == NVRAM_sip_port) return "SIP";
+				if (num == NVRAM_stb_port) return "TV";
+				return (NVRAM_lan_port == 'near') ? "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - 1 - num) : "LAN " + (num + 1);
 	}
 }
 
@@ -51,8 +51,8 @@ var i;
 var html =	'' +
 			'<table class="form">' +
 			'	<col style="width: 40%;" />';
-for (i = first_port; i < first_port + ports; i++)
-	html +=	'	<col style="width: ' + ((100 - 40) / ports).toFixed(0) + '%;  text-align: center;" />';
+for (i = ETHER_FIRST_PORT; i < ETHER_FIRST_PORT + ETHER_PORTS; i++)
+	html +=	'	<col style="width: ' + ((100 - 40) / ETHER_PORTS).toFixed(0) + '%;  text-align: center;" />';
 
 html	+=	'	<tbody>' +
 			'		<tr>' +
@@ -60,35 +60,35 @@ html	+=	'	<tbody>' +
 			'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port status") + '</td>';
-if (ports == 2) {
+if (ETHER_PORTS == 2) {
 		html +=	'<td style="text-align: center;">' + portName(0) + '<br>' + portImg(0) + '<br>' + portLink(0) + '</td>';
 		html +=	'<td style="text-align: center;">' + portName(4) + '<br>' + portImg(4) + '<br>' + portLink(4) + '</td>';
 }
 else
-	for (i = first_port; i < first_port + ports; i++)
+	for (i = ETHER_FIRST_PORT; i < ETHER_FIRST_PORT + ETHER_PORTS; i++)
 		html +=	'<td style="text-align: center;">' + portName(i) + '<br>' + portImg(i) + '<br>' + portLink(i) + '</td>';
 
 html	+=	'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port rx bytes") + '</td>';
 
-if (ports == 2) {
+if (ETHER_PORTS == 2) {
 	html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[0]) + '</td>';
 	html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[4]) + '</td>';
 }
 else
-	for (i = first_port; i < first_port + ports; i++)
+	for (i = ETHER_FIRST_PORT; i < ETHER_FIRST_PORT + ETHER_PORTS; i++)
 		html +=	'<td style="text-align: center;">' + portRXTX(portCount.rx_bytes[i]) + '</td>';
 		             
 html	+=	'		</tr>' +
 			'		<tr>' +
 			'			<td class="head">' + _("ethernet port tx bytes") + '</td>';
-if (ports == 2) {
+if (ETHER_PORTS == 2) {
 	html +=	'<td style="text-align: center;">' + portRXTX(portCount.tx_bytes[0]) + '</td>';
 	html +=	'<td style="text-align: center;">' + portRXTX(portCount.tx_bytes[4]) + '</td>';
 }
 else
-	for (i = first_port; i < first_port + ports; i++)
+	for (i = ETHER_FIRST_PORT; i < ETHER_FIRST_PORT + ETHER_PORTS; i++)
 		html +=	'<td  style="text-align: center;">' + portRXTX(portCount.tx_bytes[i]) + '</td>';
 
 html	+=	'		</tr>' +

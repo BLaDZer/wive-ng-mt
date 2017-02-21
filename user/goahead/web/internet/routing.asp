@@ -10,18 +10,15 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/js/ajax.js"></script>
 		<script>
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
 
-			var opmode			= "<% getCfgZero(1, "OperationMode"); %>";
-			var routingRules	= [ <% getRoutingTable(); %> ];
-
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("routingTitle", 					"routing title");
 				_TR("routingIntroduction", 				"routing introduction");
 				_TR("routingAddRule", 					"routing add rule");
@@ -60,17 +57,13 @@
 				_TRV("routingReset2",					"button reset");
 			}
 
-			function initValues()
-			{
-				var form		= document.editRouting;
-				var dform		= document.dynamicRouting;
-				var rip_ena		= '<% getCfgZero(1, "RIPEnable"); %>';
-				var dr_built	= '<% getDynamicRoutingBuilt(); %>';
+			function initValues() {
+				var form	= document.editRouting;
+				var dform	= document.dynamicRouting;
+				var ifc		= form.interface.options;
 
-				var ifc = form.interface.options;
 				ifc.add(new Option("LAN", "LAN"));
-				if (opmode != '0')
-				{
+				if (NVRAM_OperationMode != '0') {
 					ifc.add(new Option("WAN", "WAN"));
 					ifc.add(new Option("VPN", "VPN"));
 				}
@@ -81,8 +74,8 @@
 				hideElement('routingNetmaskRow');
 
 				// Dynamic routing
-				dform.RIPSelect.selectedIndex = (rip_ena == '1') ? 1 : 0;
-				displayElement('dynamicRoutingDiv', dr_built == '1');
+				dform.RIPSelect.selectedIndex = NVRAM_RIPEnable;
+				displayElement('dynamicRoutingDiv', BUILD_DYNAMIC_ROUTING == '1');
 
 				genRoutingTable();
 				showWarning();
@@ -91,33 +84,29 @@
 
 			function checkValues(form) {
 				var trans = [];
-				for (var i=0; i < routingRules.length; i++)
+				for (var i=0; i < ROUTING_TABLE.length; i++)
 				{
-					if (routingRules[i][12] != 0)
-						trans.push(routingRules[i]);
+					if (ROUTING_TABLE[i][12] != 0)
+						trans.push(ROUTING_TABLE[i]);
 				}
 				form.routingTableDiff.value = trans.join(';');
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
-			function hostnetChange(form)
-			{
+			function hostnetChange(form) {
 				displayElement('routingNetmaskRow', form.hostnet.value == 'net');
 			}
 
-			function interfaceChange(form)
-			{
+			function interfaceChange(form) {
 				displayElement('customInterfaceRow', form.interface.value == 'Custom');
 			}
 
-			function wrapDel(str, idle)
-			{
+			function wrapDel(str, idle) {
 				return (idle == 1) ? "<del>" + str + "</del>" : str;
 			}
 
-			function genRoutingTable()
-			{
+			function genRoutingTable() {
 				var html = '<table class="form">';
 				
 				html += '<tr><td class="title" colspan="11" id="routingCurrentRoutingTableRules">Current Routing table in the system:</td></tr>'; // Header
@@ -133,15 +122,14 @@
 					'<th id="routingTableComment" align="center">Comment</th>'+
 					'<th id="routingAction">Actions</th></tr>';
 				
-				for (var i=0; i<routingRules.length; i++)
-				{
-					var row = routingRules[i];
+				for (var i = 0; i < ROUTING_TABLE.length; i++) {
+					var row = ROUTING_TABLE[i];
 					if (row[12] == 2) // Record was deleted?
 						continue;
 					
-					var style = (row[8] > -1) ? ' style="background-color: #cccccc;"' : ''; // Category
-					var d = row[10];
-					var iface = (row[9] == 'Custom') ? (row[9] + ' (' + row[0] + ')') : row[9];
+					var style	= (row[8] > -1) ? ' style="background-color: #cccccc;"' : ''; // Category
+					var d		= row[10];
+					var iface	= (row[9] == 'Custom') ? (row[9] + ' (' + row[0] + ')') : row[9];
 					
 					html += '<tr' + style + '>';
 					html += '<td style="text-align: center;">' + (i+1) + '</td>' + // rownum
@@ -164,36 +152,32 @@
 				setInnerHTML('ajxCtxRoutingTable', html);
 			}
 
-			function removeRoutingItem(index)
-			{
-				if ((index<0) || (index >= routingRules.length))
+			function removeRoutingItem(index) {
+				if ((index<0) || (index >= ROUTING_TABLE.length))
 					return;
-				var row = routingRules[index];
+				var row = ROUTING_TABLE[index];
 				if (row[8] > -1)
 				{
 					if (row[12] == 1)
-						routingRules.splice(index, 1); // Remove rule if was added, then deleted in same transaction
+						ROUTING_TABLE.splice(index, 1); // Remove rule if was added, then deleted in same transaction
 					else
 						row[12] = 2; // Mark rule as deleted if existed
 					genRoutingTable();
 				}
 			}
 
-			function addRoutingRule(form)
-			{
+			function addRoutingRule(form) {
 				var row = [ '', '0.0.0.0', '0.0.0.0', '0.0.0.0',  1, 0, 0, 0,  0, 'LAN', 0, '', 1 ]; // New rule
 
 				// Destination
-				if (!validateIP(form.dest, true))
-				{
+				if (!validateIP(form.dest, true)) {
 					form.dest.focus();
 					return false;
 				}
 				row[1] = form.dest.value;
 
 				// Netmask
-				if (form.hostnet.value == 'net')
-				{
+				if (form.hostnet.value == 'net') {
 					if (!validateIPMask(form.netmask, true))
 					{
 						form.netmask.focus();
@@ -205,8 +189,7 @@
 					row[3] = '255.255.255.255';
 
 				// Gateway
-				if (!validateIP(form.gateway, true))
-				{
+				if (!validateIP(form.gateway, true)) {
 					form.gateway.focus();
 					return false;
 				}
@@ -219,8 +202,7 @@
 				
 				// Comment
 				row[11] = form.comment.value;
-				if (row[11].match(/[^A-ZА-Я0-9\s.]/gi))
-				{
+				if (row[11].match(/[^A-ZА-Я0-9\s.]/gi)) {
 					alert(_("routing unsup chars"));
 					form.comment.focus();
 					return;
@@ -235,7 +217,7 @@
 				hostnetChange(form);
 
 				// Add row & rebuild table
-				routingRules.push(row);
+				ROUTING_TABLE.push(row);
 				genRoutingTable();
 			}
 

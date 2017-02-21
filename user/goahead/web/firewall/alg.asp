@@ -9,32 +9,31 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
-		<script src="/lang/b28n.js"></script>
 		<script>
 			Butterlate.setTextDomain("firewall");
 			Butterlate.setTextDomain("buttons");
 			
-			function initTranslation()
-			{
-				_TR("algTitle", "alg title");
-				_TR("algIntroduction", "alg introduction");
-				_TR("algSetting", "alg setting");
-				_TRV("algApply", "button apply");
+			function initTranslation() {
+				_TR("algTitle",			"alg title");
+				_TR("algIntroduction",	"alg introduction");
+				_TR("algSetting",		"alg setting");
+				_TRV("algApply",		"button apply");
 			}
 
-			function initValues()
-			{
+			function initValues() {
 				var st = {
-					'ftp':   '<% getCfgZero(1, "fwAlgFTP"); %>',
-					'gre':   '<% getCfgZero(1, "fwAlgGRE"); %>',
-					'h323':  '<% getCfgZero(1, "fwAlgH323"); %>',
-					'ipsec': '<% getCfgZero(1, "fwAlgIPSec"); %>',
-					'l2tp':  '<% getCfgZero(1, "fwAlgL2TP"); %>',
-					'pptp':  '<% getCfgZero(1, "fwAlgPPTP"); %>',
-					'sip':   '<% getCfgZero(1, "fwAlgSIP"); %>',
-					'rtsp':  '<% getCfgZero(1, "fwAlgRTSP"); %>'
+					'ftp':   NVRAM_fwAlgFTP,
+					'gre':   NVRAM_fwAlgGRE,
+					'h323':  NVRAM_fwAlgH323,
+					'ipsec': NVRAM_fwAlgIPSec,
+					'l2tp':  NVRAM_fwAlgL2TP,
+					'pptp':  NVRAM_fwAlgPPTP,
+					'sip':   NVRAM_fwAlgSIP,
+					'rtsp':  NVRAM_fwAlgRTSP
 				};
 				
 				for (var field in st)
@@ -47,7 +46,7 @@
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
 		<table class="body">
-			<tr id="warning"><tr>
+			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="algTitle">ALG Settings</h1>
 					<p id="algIntroduction">On this page you can enable/disable ALG services.</p>

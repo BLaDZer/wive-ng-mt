@@ -10,29 +10,17 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<script src="/lang/b28n.js"></script>
-		<script src="/js/controls.js"></script>
+		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/controls.js"></script>
 		<script>
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
-			var wdsNum			= '<% getCfgZero(1, "WdsNum"); %>';
-			var wdsPhyMode		= '<% getCfgZero(1, "WdsPhyMode"); %>'.split(';');
-			var wdsEncrypType	= '<% getCfgGeneral(1, "WdsEncrypType"); %>'.split(';');
-			var wdsEncrypKey0	= '<% getCfgGeneral(1, "Wds0Key"); %>';
-			var wdsEncrypKey1	= '<% getCfgGeneral(1, "Wds1Key"); %>';
-			var wdsEncrypKey2	= '<% getCfgGeneral(1, "Wds2Key"); %>';
-			var wdsEncrypKey3	= '<% getCfgGeneral(1, "Wds3Key"); %>';
-			var is5gh			= '<% getCfgGeneral(1, "WdsIfName"); %>' == 'wdsi';
-			var is5gh_1t1r		= '<% is5gh_1t1r(); %>' == '1';
-			var is5gh_support	= '<% is5gh_support(); %>';
-			var wds_interface	= '<% getCfgGeneral(1, "WdsIfName"); %>';
-			var radio_on		= "<% getCfgZero(1, "RadioOn"); %>";
-			var radio_on_ac		= "<% getCfgZero(1, "RadioOnINIC"); %>";
-			var WDS_NUM_MAX		= 4;
+			var wdsPhyMode		= NVRAM_WdsPhyMode.split(';');
+			var wdsEncrypType	= NVRAM_WdsEncrypType.split(';');
 
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("basicWDS",				"basic wds title");
 				_TR("basicWDSIntroduction",	"basic wds introduction");
 				_TR("basicWDSTitle",		"basic wds mode");
@@ -57,18 +45,16 @@
 						elements[i].value = _("button remove");
 			}
 
-			function initValues()
-			{
+			function initValues() {
 				var form	= document.wireless_wds;
-				var wdsMode	= '<% getCfgZero(1, "WdsEnable"); %>';
-				var wdsList	= '<% getCfgGeneral(1, "WdsList"); %>'.split(';');
+				var wdsList	= NVRAM_WdsList.split(';');
 				
 				var wdslistArray;
 				var wdsEncTypeArray;
 				
-				form.wds_num.value = ('<% getCfgZero(1, "WdsNum"); %>' < 1) ? 1 : '<% getCfgZero(1, "WdsNum"); %>';
+				form.wds_num.value = (NVRAM_WdsNum < 1) ? 1 : NVRAM_WdsNum;
 
-				switch(wdsMode) {
+				switch(NVRAM_WdsEnable) {
 					case '0':	form.wds_mode.options.selectedIndex = 0;	break;
 					case '2':	form.wds_mode.options.selectedIndex = 2;	break;
 					case '3':	form.wds_mode.options.selectedIndex = 3;	break;
@@ -79,7 +65,7 @@
 
 					var phy_mode = form.elements['wds_phy_mode' + (i + 1)];
 
-					if (!is5gh_1t1r && is5gh)
+					if (!BUILD_5GHZ_1T1R && NVRAM_WdsIfName == 'wdsi')
 						addOption(phy_mode, 'VHT', 'VHT');
 
 					switch(wdsPhyMode[i].toUpperCase()) {
@@ -101,21 +87,21 @@
 					if (wdsList.length > i)
 						form.elements['wds_' + (i+1)].value = wdsList[i];
 
-					form.elements['wds_encryp_key' + i].value = eval('wdsEncrypKey' + i);
+					form.elements['wds_encryp_key' + i].value = eval('NVRAM_Wds' + i + 'Key');
 				}
 
-				if ((is5gh_support == 0) || ((radio_on == 0) && (radio_on_ac == 0))) {
+				if ((BUILD_5GHZ_SUPPORT == 0) || (NVRAM_RadioOn == 0 && NVRAM_RadioOnINIC == 0)) {
 					form.wds_interface.value = "wds";
 					displayElement('basicWdsInterfaceT', false);
 				} 
 				else {
-					form.wds_interface.disabled = (radio_on == 0) || (radio_on_ac == 0);
-					if (radio_on == 0) 
+					form.wds_interface.disabled = NVRAM_RadioOn == 0 || NVRAM_RadioOnINIC == 0;
+					if (NVRAM_RadioOn == 0) 
 						form.wds_interface.value = "wdsi"
-					else if (radio_on_ac == 0)
+					else if (NVRAM_RadioOnINIC == 0)
 						form.wds_interface.value = "wds"
 					else
-						form.wds_interface.value = wds_interface;
+						form.wds_interface.value = NVRAM_WdsIfName;
 				}	
 
 				WdsModeOnChange(form);
@@ -131,7 +117,7 @@
 
 				if (form.wds_mode.options.selectedIndex != 0)
 				{
-					for (i = 0; i < wdsNum; i++)
+					for (i = 0; i < NVRAM_WdsNum; i++)
 						if (!CheckEncKey(form, i))
 							return false;
 
@@ -183,7 +169,7 @@
 					enableElements( [ eval("form.wds_" + (i + 1)) ], form.wds_mode.options.selectedIndex > 1);
 					WdsSecurityOnChange(form, i);
 				}
-				displayElement('basicWdsInterfaceT', (form.wds_mode.options.selectedIndex >= 1) && ((is5gh_support != 0) && ((radio_on != 0) || (radio_on_ac != 0))))
+				displayElement('basicWdsInterfaceT', (form.wds_mode.options.selectedIndex >= 1) && ((BUILD_5GHZ_SUPPORT != 0) && (NVRAM_RadioOn != 0 || NVRAM_RadioOnINIC != 0)))
 				enableElements(form.basicWDSAdd, count < WDS_NUM_MAX);
 				form.wds_num.value = count;
 			}
@@ -198,7 +184,7 @@
 					form.elements['wds_encryp_type' + (count - 1)].options.selectedIndex = 0;
 					form.elements['wds_encryp_key' + (count - 1)].value = '';
 					form.wds_num.value = count;
-					wdsNum++;
+					NVRAM_WdsNum++;
 				}
 				wdsDisplay(form);
 			}
@@ -221,7 +207,7 @@
 				hideElement('div_wds' + count);
 				enableElements(form.basicWDSAdd, (count < WDS_NUM_MAX));
 				form.wds_num.value = count;
-				wdsNum--;
+				NVRAM_wdsNum--;
 			}
 
 			function WdsSecurityOnChange(form, i) {

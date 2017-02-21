@@ -7,8 +7,9 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript" src="/js/controls.js"></script>
+<script type="text/javascript" src="/js/nvram.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
+<script type="text/javascript" src="/js/controls.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
@@ -17,15 +18,8 @@
 Butterlate.setTextDomain("wireless");
 Butterlate.setTextDomain("buttons");
 
-var MBSSID_MAX 			= 8;
-var ACCESSPOLICYLIST_MAX	= 64;
-
 var changed = 0;
 var old_MBSSID;
-
-var is5gh_support = ('<% is5gh_support(); %>' == '1') ? true : false;
-var SSIDnic = '<% getCfgGeneral(1, "SSID1"); %>';
-var SSIDinic = '<% getCfgGeneral(1, "SSID1INIC"); %>';
 
 var defaultShownMBSSID = 0;
 var SSID = new Array();
@@ -56,7 +50,7 @@ var AccessControlList = new Array();
 var security_modes_list =
 [
 	[ _("wireless disable"),	"Disable",	 0, 0 ],
-	[ "WEP",			"WEPAUTO",	 0, 0 ],
+	[ "WEP",					"WEPAUTO",	 0, 0 ],
 	[ "WPA (Enterprise)",		"WPA",		 1, 1 ],
 	[ "WPA-PSK (Personal)",		"WPAPSK",	 0, 0 ],
 	[ "WPA2 (Enterprise)",		"WPA2",		 1, 1 ],
@@ -369,7 +363,7 @@ function checkData(form)
 		}
 	}
 
-	if (SSIDnic == SSIDinic)
+	if (NVRAM_SSID1 == NVRAM_SSID1INIC)
 		document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
 
 	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
@@ -489,7 +483,7 @@ function securityMode(c_f)
 		document.getElementById("wpa_passphrase").style.display = '';
 		document.security_form.passphrase.disabled = false;
 
-		if (is5gh_support && (SSIDnic != SSIDinic)) {
+		if (BUILD_5GHZ_SUPPORT && (NVRAM_SSID1 != NVRAM_SSID1INIC)) {
 			document.getElementById("wpa_passphrase5").style.visibility = "visible";
 			document.getElementById("wpa_passphrase5").style.display = '';
 			document.security_form.passphraseinic.disabled = false;
@@ -732,7 +726,6 @@ function LoadFields(MBSSID)
 	var result;
 
 	// Security Policy
-	var b8021x = '<% get802_1XBuilt(); %>';
 	var sp_select = document.getElementById("security_mode");
 	sp_select.options.length = 0;
 
@@ -742,7 +735,7 @@ function LoadFields(MBSSID)
 		var setup = true;
 		if ((mode[3] > 0) && (MBSSID > 0)) // 802.1x support only for MBSSID 0
 			setup = false;
-		if ((mode[2] > 0) && (b8021x == '0'))
+		if ((mode[2] > 0) && (BUILD_8021X == '0'))
 			setup = false;
 
 		if (setup)
@@ -791,7 +784,7 @@ function LoadFields(MBSSID)
 	}
 
 	document.getElementById("passphrase").value = WPAPSK[MBSSID];
-	document.getElementById("passphraseinic").value = '<% getCfgGeneral(1, "WPAPSK1INIC"); %>';
+	document.getElementById("passphraseinic").value = NVRAM_WPAPSK1INIC;
 	document.getElementById("keyRenewalInterval").value = RekeyInterval[MBSSID];
 	document.getElementById("PMKCachePeriod").value = PMKCachePeriod[MBSSID];
 	if(PreAuth[MBSSID] == "0")
@@ -944,7 +937,7 @@ function initTranslation()
 	_TR("secreWPA", "secure wpa");
 	_TR("secureWPAAlgorithm", "secure wpa algorithm");
 	
-	if (is5gh_support && (SSIDnic != SSIDinic))
+	if (BUILD_5GHZ_SUPPORT && (NVRAM_SSID1 != NVRAM_SSID1INIC))
 		_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
 	else
 		_TR("secureWPAPassPhrase", "secure wpa pass phrase");
@@ -1029,9 +1022,9 @@ function onPreAuthenticationClick(type)
 }
 
 function showWarning() {
-	var warning_access_password = '<% getCfgGeneral(1, "Password"); %>' == "Admin";
-	var warning_wireless_security = '<% getCfgGeneral(1, "AuthMode"); %>' == "OPEN";
-	var warning_wireless_key = '<% getCfgGeneral(1, "WPAPSK1"); %>' == "1234567890";
+	var warning_access_password		= NVRAM_Password == "Admin";
+	var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
+	var warning_wireless_key		= NVRAM_WPAPSK1  == "1234567890";
 
 	var warningHTML = "";
 	
