@@ -2823,11 +2823,12 @@
 25) kernel: net: do not block BH while processing socket backlog.<br>
 26) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
 27) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-28) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-29) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-30) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-31) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-32) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+28) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+29) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+30) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+31) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+32) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+33) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
 <br>
 <br>
 <br>
