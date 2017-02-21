@@ -686,7 +686,7 @@ static BOOLEAN D_CheckConnectionReq(
 
 	/* check mac is random probe req need skip bnd_str logic for this req */
 	if (NdisEqualMemory(pSrcAddr, ANDROID_RANDOM_OUI, 3)) {
-	    BND_STRG_DBGPRINT(RT_DEBUG_TRACE, ("This (%02x:%02x:%02x:%02x:%02x:%02x) ANDROID probe req from random generated mac, skip this\n", PRINT_MAC(pSrcAddr));
+	    BND_STRG_DBGPRINT(RT_DEBUG_TRACE, ("This (%02x:%02x:%02x:%02x:%02x:%02x) ANDROID probe req from random generated mac, skip this\n", PRINT_MAC(pSrcAddr)));
 	    return TRUE;
 	}
 
