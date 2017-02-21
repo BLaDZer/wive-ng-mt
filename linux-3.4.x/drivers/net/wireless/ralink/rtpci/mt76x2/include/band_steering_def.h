@@ -216,7 +216,8 @@ typedef struct _BNDSTRG_OPS {
 			struct _RTMP_ADAPTER *pAd,
 			PUCHAR pSrcAddr,
 			UINT8 FrameType,
-			PCHAR Rssi);
+			PCHAR Rssi,
+			BOOLEAN bAllowStaConnectInHt);
 
 	INT (*SetEnable)(
 			PBND_STRG_CLI_TABLE table,

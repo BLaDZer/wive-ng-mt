@@ -437,7 +437,8 @@ BOOLEAN BndStrg_CheckConnectionReq(
 		PRTMP_ADAPTER	pAd,
 		PUCHAR pSrcAddr,
 		UINT8 FrameType,
-		PCHAR Rssi)
+		PCHAR Rssi,
+		BOOLEAN bAllowStaConnectInHt)
 {
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
@@ -447,7 +448,8 @@ BOOLEAN BndStrg_CheckConnectionReq(
 										pAd,
 										pSrcAddr,
 										FrameType,
-										Rssi);
+										Rssi,
+										bAllowStaConnectInHt);
 	}
 	
 	return TRUE;
@@ -668,7 +670,8 @@ static BOOLEAN D_CheckConnectionReq(
 			PRTMP_ADAPTER pAd,
 			PUCHAR pSrcAddr,
 			UINT8 FrameType,
-			PCHAR Rssi)
+			PCHAR Rssi,
+			BOOLEAN bAllowStaConnectInHt)
 {
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 	BNDSTRG_MSG msg;
@@ -694,6 +697,7 @@ static BOOLEAN D_CheckConnectionReq(
 		table->Band = BAND_24G;
 	msg.Band = table->Band;
 	msg.FrameType = FrameType;
+	msg.bAllowStaConnectInHt = bAllowStaConnectInHt;
 	COPY_MAC_ADDR(msg.Addr, pSrcAddr);
 	D_BndStrgSendMsg(pAd, &msg);
 

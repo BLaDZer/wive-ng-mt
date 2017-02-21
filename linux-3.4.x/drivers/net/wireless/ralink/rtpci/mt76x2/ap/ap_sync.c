@@ -58,6 +58,7 @@ VOID APPeerProbeReqAction(
 	CHAR idx = 0;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
 	UCHAR Addr2[MAC_ADDR_LEN];
 	PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
@@ -144,7 +145,9 @@ VOID APPeerProbeReqAction(
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
 			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 8))) {
-				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, &bBndStrgCheck);
+				    if (WMODE_CAP_N(wdev->PhyMode))
+						bAllowStaConnectInHt = TRUE;
+				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, bAllowStaConnectInHt, &bBndStrgCheck);
 				    if (bBndStrgCheck == FALSE)
 					    return;
 			}
@@ -157,6 +160,8 @@ VOID APPeerProbeReqAction(
 		} else {
 
 #ifdef BAND_STEERING
+		    if (WMODE_CAP_N(wdev->PhyMode))
+				bAllowStaConnectInHt = TRUE;
 		    BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
 										ProbeReqParam.Addr2,
@@ -164,6 +169,7 @@ VOID APPeerProbeReqAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
+										bAllowStaConnectInHt,
 										&bBndStrgCheck);
 		    if (bBndStrgCheck == FALSE)
 			    return;

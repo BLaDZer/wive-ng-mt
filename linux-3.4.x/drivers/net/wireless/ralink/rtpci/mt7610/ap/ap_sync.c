@@ -110,6 +110,7 @@ VOID APPeerProbeReqAction(
 
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
 
 #ifdef WSC_AP_SUPPORT
@@ -171,7 +172,9 @@ VOID APPeerProbeReqAction(
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
 			if (rssi != 0 && (rssi > (pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold - 8))) {
-				BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, &bBndStrgCheck);
+				if (WMODE_CAP_N(wdev->PhyMode))
+					    bAllowStaConnectInHt = TRUE;
+				BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, bAllowStaConnectInHt, &bBndStrgCheck);
 				if (bBndStrgCheck == FALSE)
 					return;
 			}
@@ -183,6 +186,8 @@ VOID APPeerProbeReqAction(
 		} else {
 
 #ifdef BAND_STEERING
+		    if (WMODE_CAP_N(wdev->PhyMode))
+				    bAllowStaConnectInHt = TRUE;
 		    BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
 										Addr2,
@@ -190,6 +195,7 @@ VOID APPeerProbeReqAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
+										bAllowStaConnectInHt,
 										&bBndStrgCheck);
 		    if (bBndStrgCheck == FALSE)
 			    return;

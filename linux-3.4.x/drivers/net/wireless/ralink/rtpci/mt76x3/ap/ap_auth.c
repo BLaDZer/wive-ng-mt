@@ -564,6 +564,7 @@ SendAuth:
 										auth_info.addr2,
 										Elem->MsgType,
 										Elem->rssi_info,
+										FALSE,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);

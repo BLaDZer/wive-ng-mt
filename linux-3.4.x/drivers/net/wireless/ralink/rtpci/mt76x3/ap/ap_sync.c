@@ -58,6 +58,7 @@ VOID APPeerProbeReqAction(
 	CHAR idx = 0;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
 
 #ifdef WSC_AP_SUPPORT
@@ -126,7 +127,9 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
 			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 8))) {
-				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->rssi_info, &bBndStrgCheck);
+				    if (WMODE_CAP_N(wdev->PhyMode))
+						bAllowStaConnectInHt = TRUE;
+				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->rssi_info, bAllowStaConnectInHt, &bBndStrgCheck);
 				    if (bBndStrgCheck == FALSE)
 					    return;
 			}
@@ -139,11 +142,15 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 		} else {
 
 #ifdef BAND_STEERING
+		    if (WMODE_CAP_N(wdev->PhyMode))
+				bAllowStaConnectInHt = TRUE;
+
 		    BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 											NULL, 
 											ProbeReqParam.Addr2,
 											Elem->MsgType,
 											Elem->rssi_info,
+											bAllowStaConnectInHt,
 											&bBndStrgCheck);
 		    if (bBndStrgCheck == FALSE)
 			    return;

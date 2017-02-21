@@ -382,6 +382,7 @@ static VOID APPeerAuthReqAtIdleAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
+										FALSE,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);

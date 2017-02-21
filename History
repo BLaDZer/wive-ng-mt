@@ -2812,28 +2812,30 @@
 14) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
 15) kernel: ralink_wifi: fix garbage collector work.<br>
 16) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
-17) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-18) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-19) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-20) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
-21) kernel: mips: disable stack checks on MIPS kernels.<br>
-22) kernel: tty: limit terminal size to 4M chars.<br>
-23) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-24) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-25) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-26) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-27) kernel: net: do not block BH while processing socket backlog.<br>
-28) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
-29) kernel: net: ping: fix a null pointer dereference.<br>
-30) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-31) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-32) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
-33) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-34) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-35) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-36) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-37) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-38) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+17) kernel: ralink_wifi: band steering: add AllowStaConnectInHt check (more compat with new API of daemon).<br>
+18) kernel: ralink_wifi: band steering: fix rssi array init.<br>
+19) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+20) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+21) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+22) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+23) kernel: mips: disable stack checks on MIPS kernels.<br>
+24) kernel: tty: limit terminal size to 4M chars.<br>
+25) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+26) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+27) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+28) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+29) kernel: net: do not block BH while processing socket backlog.<br>
+30) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
+31) kernel: net: ping: fix a null pointer dereference.<br>
+32) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+33) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+34) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+35) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+36) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+37) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+38) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+39) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+40) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
 <br>
 <br>
 <br>
