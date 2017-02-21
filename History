@@ -2825,12 +2825,13 @@
 27) kernel: net: ping: fix a null pointer dereference.<br>
 28) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
 29) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-30) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-31) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-32) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-33) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-34) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-35) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+30) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+31) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+32) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+33) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+34) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+35) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+36) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
 <br>
 <br>
 <br>
