@@ -270,6 +270,15 @@ int bndstrg_check_conn_req(
 		{
 			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_5G;
 			statistics = &entry->statistics[1];
+			/* correction wrong 2GHz only flag set for some dualband clients */
+			if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) {
+#ifdef BND_STRG_QA
+				BND_STRG_PRINTQAMSG(table, entry,
+				YLW("recived annonce by 5G. client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				" force drop 2.4GHz only flag for allow connect to 5G.\n"), PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
+				entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
+			}
 		}
 		else
 		{
