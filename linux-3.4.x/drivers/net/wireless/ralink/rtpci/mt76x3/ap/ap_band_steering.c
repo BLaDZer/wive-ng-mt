@@ -665,6 +665,7 @@ static VOID D_ShowTableEntries(PBND_STRG_CLI_TABLE table)
 	D_BndStrgSendMsg(pAd, &msg);
 }
 
+UCHAR ANDROID_RANDOM_OUI[]  = {0xda, 0xa1, 0x19};
 
 static BOOLEAN D_CheckConnectionReq(
 			PRTMP_ADAPTER pAd,
@@ -682,6 +683,12 @@ static BOOLEAN D_CheckConnectionReq(
 								fBND_STRG_FRM_CHK_ATH_REQ};
 	UINT32 frame_check_flags = 0;
 	CHAR i, rssi_max;
+
+	/* check mac is random probe req need skip bnd_str logic for this req */
+	if (NdisEqualMemory(pSrcAddr, ANDROID_RANDOM_OUI, 3)) {
+	    printk("This (%02x:%02x:%02x:%02x:%02x:%02x) ANDROID probe req from random generated mac, skip this\n", PRINT_MAC(pSrcAddr));
+	    return TRUE;
+	}
 
 	/* Send to daemon */
 	rssi_max = pAd->CommonCfg.RxStream;
