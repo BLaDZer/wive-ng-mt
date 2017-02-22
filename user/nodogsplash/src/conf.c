@@ -287,8 +287,7 @@ config_parse_opcode(const char *cp, const char *filename, int linenum)
 		if (strcasecmp(cp, keywords[i].name) == 0)
 			return keywords[i].opcode;
 
-	debug(LOG_ERR, "%s: line %d: Bad configuration option: %s",
-		  filename, linenum, cp);
+	debug(LOG_ERR, "%s: line %d: Bad configuration option: %s", filename, linenum, cp);
 	return oBadOption;
 }
 
@@ -986,7 +985,13 @@ config_read(const char *filename)
 				exit(-1);
 			}
 			break;
-
+		case oCheckInterval:
+			if (sscanf(p1, "%i", &config.checkinterval) < 1 || config.checkinterval < 1) {
+				debug(LOG_ERR, "Bad arg %s to option %s on line %d in %s", p1, s, linenum, filename);
+				debug(LOG_ERR, "Exiting...");
+				exit(-1);
+			}
+			break;
 		case oSyslogFacility:
 			if(sscanf(p1, "%d", &config.syslog_facility) < 1) {
 				debug(LOG_ERR, "Bad arg %s to option %s on line %d in %s", p1, s, linenum, filename);

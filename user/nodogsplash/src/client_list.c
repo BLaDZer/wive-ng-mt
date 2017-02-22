@@ -207,8 +207,7 @@ client_list_add_client(const char ip[])
 		client = _client_list_append(ip, mac, token);
 		free(token);
 	} else {
-		debug(LOG_INFO, "Client %s %s token %s already on client list",
-			  ip, mac, client->token);
+		debug(LOG_INFO, "Client %s %s token %s already on client list", ip, mac, client->token);
 	}
 	free(mac);
 	return client;
@@ -258,9 +257,9 @@ client_list_find_by_ip(const char ip[])
 }
 
 /**
- * Finds a  client by its Mac, returns NULL if the client could not
+ * Finds a client by its MAC, returns NULL if the client could not
  * be found
- * @param mac Mac we are looking for in the linked list
+ * @param mac MAC we are looking for in the linked list
  * @return Pointer to the client, or NULL if not found
  */
 t_client *

@@ -41,13 +41,12 @@ typedef struct _t_counters {
  */
 typedef struct	_t_client {
 	struct	_t_client *next;        /**< @brief Pointer to the next client */
-	char	*ip;			/**< @brief Client Ip address */
-	char	*mac;			/**< @brief Client Mac address */
+	char *ip;				/**< @brief Client IP address */
+	char *mac;			/**< @brief Client MAC address */
 	char	*token;			/**< @brief Client token */
 	unsigned int fw_connection_state; /**< @brief Connection state in the firewall */
 	time_t added_time;		/**< @brief Time client added to list */
-	t_counters	counters;	/**< @brief Counters for input/output of
-				   the client. */
+	t_counters counters;	/**< @brief Counters for input/output of the client. */
 	int attempts;                 /**< @brief Number of authentication attempts */
 	int download_limit;           /**< @brief Download limit, kb/s */
 	int upload_limit;             /**< @brief Upload limit, kb/s */
@@ -71,10 +70,9 @@ t_client *client_list_add_client(const char ip[]);
 t_client *client_list_find(const char ip[], const char mac[]);
 
 /** @brief Finds a client only by its IP */
-t_client *client_list_find_by_ip(const char ip[]); /* needed by fw_iptables.c, auth.c
-					     * and ndsctl_thread.c */
+t_client *client_list_find_by_ip(const char ip[]); /* needed by fw_iptables.c, auth.c * and ndsctl_thread.c */
 
-/** @brief Finds a client only by its Mac */
+/** @brief Finds a client only by its MAC */
 t_client *client_list_find_by_mac(const char mac[]); /* needed by ndsctl_thread.c */
 
 /** @brief Finds a client by its token */

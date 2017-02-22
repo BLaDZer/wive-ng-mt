@@ -194,8 +194,7 @@ tc_init_tc()
 		ret = execute(cmd ,tc_quiet);
 		free(cmd);
 		if( ret != 0 ) {
-			debug(LOG_ERR, "Could not set %s up. Download limiting will not work",
-				  download_imqname);
+			debug(LOG_ERR, "Could not set %s up. Download limiting will not work", download_imqname);
 		} else {
 			/* jump to the imq in mangle CHAIN_INCOMING */
 			rc |= iptables_do_command("-t mangle -A " CHAIN_INCOMING " -j IMQ --todev %d ", download_imq);
@@ -208,8 +207,7 @@ tc_init_tc()
 		ret = execute(cmd ,tc_quiet);
 		free(cmd);
 		if( ret != 0 ) {
-			debug(LOG_ERR, "Could not set %s up. Upload limiting will not work",
-				  upload_imqname);
+			debug(LOG_ERR, "Could not set %s up. Upload limiting will not work", upload_imqname);
 			rc = -1;
 		} else {
 			/* jump to the imq in mangle CHAIN_OUTGOING */

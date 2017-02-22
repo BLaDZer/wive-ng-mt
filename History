@@ -2797,49 +2797,50 @@
 <br>
 <b>5.1.x</b><br>
 1) quagga: up to 1.2.0 version.<br>
-2) usb-modeswitch: up to 2.5.0 version (data up to 20170205).<br>
-3) xl2tpd: up to 1.3.9 version.<br>
-4) goahead: add skip long range VGA option for MT7610 radio.<br>
-5) goahead: fix webstr content filter work.<br>
-6) goahead: webui consolidate get parameters from nvram to one place.<br>
-7) band steering: tune parametrs for faster band detect.<br>
-8) band steering: more safe allowed 5GHz logic.<br>
-9) band steering: increase mac table size to 512 entry.<br>
-10) band steering: fix enable procedure.<br>
-11) band steering: fix auto mode work.<br>
-12) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
-13) band steering: allow force back from 2.4GHz to 5GHz.<br>
-14) kernel: ralink_wifi: fix bndstr debug.<br>
-15) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
-16) kernel: ralink_wifi: fix garbage collector work.<br>
-17) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
-18) kernel: ralink_wifi: band steering: add AllowStaConnectInHt check (more compat with new API of daemon).<br>
-19) kernel: ralink_wifi: band steering: fix rssi array init.<br>
-20) kernel: ralink_wifi: band steering: skip android randomized mac probe req from process (da:a1:19:xx:xx:xx).<br>
-21) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-22) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-23) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-24) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
-25) kernel: mips: disable stack checks on MIPS kernels.<br>
-26) kernel: tty: limit terminal size to 4M chars.<br>
-27) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-28) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-29) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-30) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-31) kernel: net: do not block BH while processing socket backlog.<br>
-32) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
-33) kernel: net: ping: fix a null pointer dereference.<br>
-34) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-35) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-36) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
-37) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
-38) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
-39) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-40) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-41) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-42) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-43) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-44) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+2) nodogsplash: up to git version 2.0.0-1 (commit: 1dff66e7).<br>
+3) usb-modeswitch: up to 2.5.0 version (data up to 20170205).<br>
+4) xl2tpd: up to 1.3.9 version.<br>
+5) goahead: add skip long range VGA option for MT7610 radio.<br>
+6) goahead: fix webstr content filter work.<br>
+7) goahead: webui consolidate get parameters from nvram to one place.<br>
+8) band steering: tune parametrs for faster band detect.<br>
+9) band steering: more safe allowed 5GHz logic.<br>
+10) band steering: increase mac table size to 512 entry.<br>
+11) band steering: fix enable procedure.<br>
+12) band steering: fix auto mode work.<br>
+13) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
+14) band steering: allow force back from 2.4GHz to 5GHz.<br>
+15) kernel: ralink_wifi: fix bndstr debug.<br>
+16) kernel: ralink_wifi: fix bndstr on/off by daemon.<br>
+17) kernel: ralink_wifi: fix garbage collector work.<br>
+18) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
+19) kernel: ralink_wifi: band steering: add AllowStaConnectInHt check (more compat with new API of daemon).<br>
+20) kernel: ralink_wifi: band steering: fix rssi array init.<br>
+21) kernel: ralink_wifi: band steering: skip android randomized mac probe req from process (da:a1:19:xx:xx:xx).<br>
+22) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+23) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+24) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+25) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+26) kernel: mips: disable stack checks on MIPS kernels.<br>
+27) kernel: tty: limit terminal size to 4M chars.<br>
+28) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+29) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+30) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+31) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+32) kernel: net: do not block BH while processing socket backlog.<br>
+33) kernel: net: use a work queue to defer net_disable_timestamp() work.<br>
+34) kernel: net: ping: fix a null pointer dereference.<br>
+35) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+36) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+37) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+38) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
+39) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
+40) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+41) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+42) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+43) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+44) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+45) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
 <br>
 <br>
 <br>

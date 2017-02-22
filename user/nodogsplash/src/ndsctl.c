@@ -160,8 +160,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "block") == 0) {
 		config.command = NDSCTL_BLOCK;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to block\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to block\n");
 			usage();
 			exit(1);
 		}
@@ -169,8 +168,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "unblock") == 0) {
 		config.command = NDSCTL_UNBLOCK;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to unblock\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to unblock\n");
 			usage();
 			exit(1);
 		}
@@ -178,8 +176,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "allow") == 0) {
 		config.command = NDSCTL_ALLOW;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to allow\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to allow\n");
 			usage();
 			exit(1);
 		}
@@ -187,8 +184,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "unallow") == 0) {
 		config.command = NDSCTL_UNALLOW;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to unallow\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to unallow\n");
 			usage();
 			exit(1);
 		}
@@ -196,8 +192,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "trust") == 0) {
 		config.command = NDSCTL_TRUST;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to trust\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to trust\n");
 			usage();
 			exit(1);
 		}
@@ -205,8 +200,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "untrust") == 0) {
 		config.command = NDSCTL_UNTRUST;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify a "
-					"MAC address to untrust\n");
+			fprintf(stderr, "ndsctl: Error: You must specify a MAC address to untrust\n");
 			usage();
 			exit(1);
 		}
@@ -214,8 +208,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "auth") == 0) {
 		config.command = NDSCTL_AUTH;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify an IP "
-					"address to auth\n");
+			fprintf(stderr, "ndsctl: Error: You must specify an IP address to auth\n");
 			usage();
 			exit(1);
 		}
@@ -223,8 +216,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "deauth") == 0) {
 		config.command = NDSCTL_DEAUTH;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify an IP "
-					"or a Mac address to deauth\n");
+			fprintf(stderr, "ndsctl: Error: You must specify an IP or a MAC address to deauth\n");
 			usage();
 			exit(1);
 		}
@@ -232,8 +224,7 @@ parse_commandline(int argc, char **argv)
 	} else if (strcmp(*(argv + optind), "loglevel") == 0) {
 		config.command = NDSCTL_LOGLEVEL;
 		if ((argc - (optind + 1)) <= 0) {
-			fprintf(stderr, "ndsctl: Error: You must specify an integer "
-					"loglevel to loglevel\n");
+			fprintf(stderr, "ndsctl: Error: You must specify an integer loglevel to loglevel\n");
 			usage();
 			exit(1);
 		}
@@ -273,8 +264,7 @@ connect_to_server(const char sock_name[])
 	sa_un.sun_family = AF_UNIX;
 	strncpy(sa_un.sun_path, sock_name, (sizeof(sa_un.sun_path) - 1));
 
-	if (connect(sock, (struct sockaddr *)&sa_un,
-				strlen(sa_un.sun_path) + sizeof(sa_un.sun_family))) {
+	if (connect(sock, (struct sockaddr *)&sa_un, strlen(sa_un.sun_path) + sizeof(sa_un.sun_family))) {
 		fprintf(stderr, "ndsctl: nodogsplash probably not started (Error: %s)\n", strerror(errno));
 		exit(1);
 	}
@@ -291,8 +281,7 @@ send_request(int sock, const char request[])
 	while (len != strlen(request)) {
 		written = write(sock, (request + len), strlen(request) - len);
 		if (written == -1) {
-			fprintf(stderr, "Write to nodogsplash failed: %s\n",
-					strerror(errno));
+			fprintf(stderr, "Write to nodogsplash failed: %s\n", strerror(errno));
 			exit(1);
 		}
 		len += written;
@@ -316,8 +305,7 @@ ndsctl_action(const char cmd[], const char ifyes[], const char ifno[])
 
 	sock = connect_to_server(config.socket);
 
-	snprintf(request, sizeof(request)-strlen(NDSCTL_TERMINATOR),
-			 "%s %s", cmd, config.param);
+	snprintf(request, sizeof(request)-strlen(NDSCTL_TERMINATOR), "%s %s", cmd, config.param);
 	strcat(request, NDSCTL_TERMINATOR);
 
 	len = send_request(sock, request);
@@ -338,8 +326,7 @@ ndsctl_action(const char cmd[], const char ifyes[], const char ifno[])
 	} else if (strcmp(buffer, "No") == 0) {
 		printf(ifno, config.param);
 	} else {
-		fprintf(stderr, "ndsctl: Error: nodogsplash sent an abnormal "
-				"reply.\n");
+		fprintf(stderr, "ndsctl: Error: nodogsplash sent an abnormal reply.\n");
 	}
 
 	shutdown(sock, 2);

@@ -406,8 +406,7 @@ iptables_fw_init(void)
 			rc |= iptables_allow_mac(pa->mac);
 		}
 	} else {
-		debug(LOG_ERR, "Unknown MAC mechanism: %d",
-			  macmechanism);
+		debug(LOG_ERR, "Unknown MAC mechanism: %d", macmechanism);
 		rc = -1;
 	}
 

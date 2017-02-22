@@ -99,8 +99,7 @@ auth_client_action(const char ip[], const char mac[], t_authaction action)
 
 	/* Client should already have hit the server and be on the client list */
 	if (client == NULL) {
-		debug(LOG_ERR, "Client %s %s action %d is not on client list",
-			  ip, mac, action);
+		debug(LOG_ERR, "Client %s %s action %d is not on client list", ip, mac, action);
 		UNLOCK_CLIENT_LIST();
 		return;
 	}

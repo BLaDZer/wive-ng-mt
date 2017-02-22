@@ -171,12 +171,9 @@ typedef struct {
 	char *username;			/**< @brief Username for username authentication */
 	char *password;			/**< @brief Password for password authentication */
 	int passwordattempts;		/**< @brief Number of attempted password authentications allowed */
-	int clienttimeout;		/**< @brief How many CheckIntervals before an inactive client
-				   must be re-authenticated */
-	int clientforceout;		/**< @brief How many CheckIntervals before a client
-				   must be re-authenticated */
-	int checkinterval;		/**< @brief Period the the client timeout check
-				   thread will run, in seconds */
+	int clienttimeout;		/**< @brief How many CheckIntervals before an inactive client must be re-authenticated */
+	int clientforceout;		/**< @brief How many CheckIntervals before a client must be re-authenticated */
+	int checkinterval;		/**< @brief Period the the client timeout check thread will run, in seconds */
 	int authenticate_immediately;	/**< @brief boolean, whether to auth noninteractively */
 	int set_mss;			/**< @brief boolean, whether to set mss */
 	int mss_value;			/**< @brief int, mss value; <= 0 clamp to pmtu */

@@ -111,12 +111,10 @@ thread_ndsctl(void *arg)
 	unlink(sock_name);
 
 	debug(LOG_DEBUG, "Filling sockaddr_un");
-	strcpy(sa_un.sun_path, sock_name); /* XXX No size check because we
-				      * check a few lines before. */
+	strcpy(sa_un.sun_path, sock_name); /* XXX No size check because we check a few lines before. */
 	sa_un.sun_family = AF_UNIX;
 
-	debug(LOG_DEBUG, "Binding socket (%s) (%d)", sa_un.sun_path,
-		  strlen(sock_name));
+	debug(LOG_DEBUG, "Binding socket (%s) (%d)", sa_un.sun_path, strlen(sock_name));
 
 	/* Which to use, AF_UNIX, PF_UNIX, AF_LOCAL, PF_LOCAL? */
 	if (bind(sock, (struct sockaddr *)&sa_un, strlen(sock_name) + sizeof(sa_un.sun_family))) {
