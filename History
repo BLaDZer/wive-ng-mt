@@ -2843,6 +2843,7 @@
 45) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
 46) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
 47) kernel: net: netfilter: restart search if moved to other chain.<br>
+48) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
 <br>
 <br>
 <br>
