@@ -2846,6 +2846,7 @@
 48) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
 49) kernel: net: ipv6: ip6_tunnel: Clear IP6CB in ip6tunnel_xmit().<br>
 50) kernel: net: rtnl: reset calcit fptr in rtnl_unregister().<br>
+51) kernel: net: ping: check minimum size on ICMP header length.<br>
 <br>
 <br>
 <br>
