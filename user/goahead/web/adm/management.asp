@@ -161,8 +161,8 @@
 			}
 
 			function showWarning() {
-				var warning_access_password		= NVRAM_Login == "Admin";
-				var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
+				var warning_access_password		= NVRAM_Password == "Admin";
+				var warning_wireless_security		= NVRAM_AuthMode == "OPEN";
 				var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
 				var warningHTML					= "";
 
