@@ -2062,7 +2062,7 @@
 				<select name="BandSteering" size="1" class="half" onChange="bandSteeringChange(this.form, 1);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
-					<option value="2" id="bandauto">Auto</option>
+					<!-- <option value="2" id="bandauto">Auto</option> -->
 				</select>
 			</td>
 		</tr>
