@@ -2849,6 +2849,7 @@
 51) kernel: net: netfilter: nf_ct_sip: Use mod_timer_pending().<br>
 52) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
 53) kernel: net: ipv6: ip6_tunnel: Clear IP6CB in ip6tunnel_xmit().<br>
+54) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
 <br>
 <br>
 <br>
