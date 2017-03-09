@@ -2855,6 +2855,7 @@
 57) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
 58) kernel: net: ipv6: ip6_tunnel: Clear IP6CB in ip6tunnel_xmit().<br>
 59) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
+60) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
 <br>
 <br>
 <br>
