@@ -5742,6 +5742,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 			goto discard;
 
 		if (th->syn) {
+			bool acceptable;
+
 			if (th->fin)
 				goto discard;
 			/* It is possible that we process SYN packets from backlog,
