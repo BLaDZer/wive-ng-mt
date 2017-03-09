@@ -2857,6 +2857,7 @@
 59) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
 60) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
 61) kernel: net: ipv6: ignore null_entry in inet6_rtm_getroute() too.<br>
+62) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
 <br>
 <br>
 <br>
