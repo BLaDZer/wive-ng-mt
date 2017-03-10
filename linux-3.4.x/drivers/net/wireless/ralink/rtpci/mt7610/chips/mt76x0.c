@@ -2726,10 +2726,10 @@ static void mt7610_long_range_dync_vga(RTMP_ADAPTER * pAd)
 	val1 = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - long_range_compensate_level;
 
 	if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.MO_Cfg.nFalseCCATh) {
-		if (val1 > (pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 0x04)) {
-			val1 -= 0x02;
-			if(long_range_compensate_level + 0x02 <= 0x04)
-				long_range_compensate_level += 0x02;
+		if (val1 > (pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 0x02)) {
+			val1 -= 0x01;
+			if(long_range_compensate_level + 0x01 <= 0x02)
+				long_range_compensate_level += 0x01;
 			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
 #ifdef DFS_SUPPORT
@@ -2739,8 +2739,8 @@ static void mt7610_long_range_dync_vga(RTMP_ADAPTER * pAd)
 	} else if (pAd->RalinkCounters.OneSecFalseCCACnt <
 				pAd->CommonCfg.MO_Cfg.nLowFalseCCATh) {
 		if (val1 < pAd->CommonCfg.MO_Cfg.Stored_BBP_R66) {
-			val1 += 0x02;
-			long_range_compensate_level -= 0x02;
+			val1 += 0x01;
+			long_range_compensate_level -= 0x01;
 			if(long_range_compensate_level < 0)
 				long_range_compensate_level = 0;
 			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
@@ -2801,17 +2801,8 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
 		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
 	{
-		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
 		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
-
-		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
-		{
-			mt7610_long_range_dync_vga(pAd);
-		}
-		else
-		{
-			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
-		}
+		pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
 	}
 
 	if (((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) || no_dynamic_vga) {
@@ -2868,7 +2859,16 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 
 		DBGPRINT(RT_DEBUG_TRACE, ("%s:: updated dynamic_chE_mode(0x%x)\n", 
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode));
-	} 
+	}
+
+	/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 1dB dync vga */
+	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
+		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
+		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
+	{
+		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
+			mt7610_long_range_dync_vga(pAd);
+	}
 
 	return no_dynamic_vga;
 }
