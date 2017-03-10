@@ -125,15 +125,15 @@
   <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
   <message msgid="basic roaming probe times range" msgstr="  0 - 10 times, default 3" />
-  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, default -8" />
   <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, default 0 (off)" />
   <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
-  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, default -68" />
   <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, default 0 (off)" />
-  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default 0 (off)" />
-  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default 0 (off)" />
-  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 5" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
+  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default -76" />
+  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default -80" />
+  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 6" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -80" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
   <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
   
@@ -146,6 +146,13 @@
   <message msgid="basic ids disassoc" msgstr="Disassociation flood threshold" />
   <message msgid="basic ids deauth" msgstr="Deauthentication flood threshold" />
   <message msgid="basic ids eap" msgstr="EAP request flood threshold" />
+  <message msgid="basic ids auth default" msgstr="default 64" />
+  <message msgid="basic ids assoc default" msgstr="default 64" />
+  <message msgid="basic ids reassoc default" msgstr="default 64" />
+  <message msgid="basic ids probe default" msgstr="default 64" />
+  <message msgid="basic ids disassoc default" msgstr="default 64" />
+  <message msgid="basic ids deauth default" msgstr="default 64" />
+  <message msgid="basic ids eap default" msgstr="default 64" />
   <message msgid="basic txbf" msgstr="Beamforming" />
   <message msgid="basic itxbfen" msgstr="TX Beamforming" />
   <message msgid="basic etxbfeeen" msgstr="BFee feature" />
@@ -161,6 +168,11 @@
   <message msgid="basic bandsteering hold" msgstr="Time for holding 2.4G connection" />
   <message msgid="basic bandsteering check" msgstr="Time for deciding if a client is 2.4G only" />
   <message msgid="basic bandsteering ssid" msgstr="SSID and Pass phrase for 2.4GHz and 5GHz networks must be the same" />
+  <message msgid="basic bandsteering rssidiff default" msgstr="0 - 40 db, default 15" />
+  <message msgid="basic bandsteering rssilow default" msgstr="0 - -100 db, default -88" />
+  <message msgid="basic bandsteering age default" msgstr="ms, default 600000" />
+  <message msgid="basic bandsteering hold default" msgstr="ms, default 3000" />
+  <message msgid="basic bandsteering check default" msgstr="ms, default 6000" />
 
   <message msgid="adv title" msgstr="Advanced Wireless Settings" />
   <message msgid="adv introduction" msgstr="You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates." />

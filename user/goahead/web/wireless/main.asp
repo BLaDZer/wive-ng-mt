@@ -141,10 +141,7 @@
 
 			function fastRoamingChange(form) {
 				displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr"], form.FastRoaming.value == "1");
-				if (is5gh_support == 1)
-				{
-					displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1");
-				}
+				displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1" && is5gh_support == '1');
 			}
 
 			function idsChange(form) {
@@ -382,12 +379,17 @@
 				_TR("basicRRMEnable_td_1", "basic roaming rrm");
 				_TR("basicFtSupport_td_1", "basic roaming ft");
 
-				_TR("band_steering", "basic bandsteering");
-				_TR("basicBndStrgRssiDiff", "basic bandsteering rssidiff");
-				_TR("basicBndStrgRssiLow", "basic bandsteering rssilow");
-				_TR("basicBndStrgAge", "basic bandsteering age");
-				_TR("basicBndStrgHoldTime", "basic bandsteering hold");
-				_TR("basicBndStrgCheckTime", "basic bandsteering check");
+				_TR("band_steering",			"basic bandsteering");
+				_TR("basicBndStrgRssiDiff",		"basic bandsteering rssidiff");
+				_TR("basicBndStrgRssiLow",		"basic bandsteering rssilow");
+				_TR("basicBndStrgAge",			"basic bandsteering age");
+				_TR("basicBndStrgHoldTime",		"basic bandsteering hold");
+				_TR("basicBndStrgCheckTime",		"basic bandsteering check");
+				_TR("basicBndStrgRssiDiff_default",	"basic bandsteering rssidiff default");
+				_TR("basicBndStrgRssiLow_default",	"basic bandsteering rssilow default");
+				_TR("basicBndStrgAge_default",		"basic bandsteering age default");
+				_TR("basicBndStrgHoldTime_default",	"basic bandsteering hold default");
+				_TR("basicBndStrgCheckTime_default",	"basic bandsteering check default");
 
 				_TR("basicIDS", "basic ids");
 				_TR("ids", "basic ids");
@@ -398,6 +400,14 @@
 				_TR("basicDisassocFloodThreshold", "basic ids disassoc");
 				_TR("basicDeauthFloodThreshold", "basic ids deauth");
 				_TR("basicEapReqFloodThreshold", "basic ids eap");
+				_TR("basicAuthFloodThreshold_default",			"basic ids auth default");
+				_TR("basicAssocReqFloodThreshold_default",		"basic ids assoc default");
+				_TR("basicReassocReqFloodThreshold_default",		"basic ids reassoc default");
+				_TR("basicProbeReqFloodThreshold_default",		"basic ids probe default");
+				_TR("basicDisassocFloodThreshold_default",		"basic ids disassoc default");
+				_TR("basicDeauthFloodThreshold_default",		"basic ids deauth default");
+				_TR("basicEapReqFloodThreshold_default",		"basic ids eap default");
+
 				_TR("basicTxBf", "basic txbf");
 				_TR("basicETxBfeeEn", "basic etxbfeeen");
 				_TR("basicETxBfEnCond", "basic etxbfencond");
@@ -2068,23 +2078,23 @@
 		</tr>
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
 			<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
-			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2"><font color="#808080"> 0 - 40 db, default 15</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2">&nbsp;<span id="basicBndStrgRssiDiff_default" style="color: #808080">0 - 40 db, default 15</span></td>
 		</tr>
 		<tr id="row_BndStrgRssiLow" style="display:none;">
 			<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller</td>
-			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4"><font color="#808080"> 0 - -100 db, default -88</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgRssiLow_default" style="color: #808080">0 - -100 db, default -88</span></td>
 		</tr>
 		<tr id="row_BndStrgAge" style="display:none;">
 			<td class="head" id="basicBndStrgAge" width="50%">Inactive client entry age time</td>
-			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6"><font color="#808080"> ms, default 600000</font></td>
+			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6">&nbsp;<span id="basicBndStrgAge_default" style="color: #808080">ms, default 600000</span></td>
 		</tr>
 		<tr id="row_BndStrgHoldTime" style="display:none;">
 			<td class="head" id="basicBndStrgHoldTime" width="50%">Time for holding 2.4G connection</td>
-			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4"><font color="#808080"> ms, default 3000</font></td>
+			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgHoldTime_default" style="color: #808080">ms, default 3000</span></td>
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
 			<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
-			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4"><font color="#808080"> ms, default 6000</font></td>
+			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgCheckTime_default" style="color: #808080">ms, default 6000</span></td>
 		</tr>
 	</table>
 	<table id="div_ids" name="div_ids" class="form" style="display:none;">
@@ -2099,31 +2109,31 @@
 		</tr>
 		<tr id="row_AuthFloodThreshold" style="display:none;">
 			<td class="head" id="basicAuthFloodThreshold" width="50%">Authentication</td>
-			<td width="50%"><input type="text" name="AuthFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="AuthFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicAuthFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_AssocReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicAssocReqFloodThreshold" width="50%">Association request</td>
-			<td width="50%"><input type="text" name="AssocReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="AssocReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicAssocReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_ReassocReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicReassocReqFloodThreshold" width="50%">Reassociation request</td>
-			<td width="50%"><input type="text" name="ReassocReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="ReassocReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicReassocReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_ProbeReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicProbeReqFloodThreshold" width="50%">Probe request</td>
-			<td width="50%"><input type="text" name="ProbeReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="ProbeReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicProbeReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_DisassocFloodThreshold" style="display:none;">
 			<td class="head" id="basicDisassocFloodThreshold" width="50%">Disassociation</td>
-			<td width="50%"><input type="text" name="DisassocFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="DisassocFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicDisassocFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_DeauthFloodThreshold" style="display:none;">
 			<td class="head" id="basicDeauthFloodThreshold" width="50%">Deauthentication</td>
-			<td width="50%"><input type="text" name="DeauthFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="DeauthFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicDeauthFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 		<tr id="row_EapReqFloodThreshold" style="display:none;">
 			<td class="head" id="basicEapReqFloodThreshold" width="50%">EAP request</td>
-			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4"><font color="#808080"> default 64</font></td>
+			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicEapReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 	</table>
 	<table id="div_m2u" name="div_m2u" class="form">
