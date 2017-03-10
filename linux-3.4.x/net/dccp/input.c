@@ -612,7 +612,8 @@ int dccp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 			local_bh_enable();
 			if (!acceptable)
 				return 1;
-			goto discard;
+			kfree_skb(skb);
+			return 0;
 		}
 		if (dh->dccph_type == DCCP_PKT_RESET)
 			goto discard;
