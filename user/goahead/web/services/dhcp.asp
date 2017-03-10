@@ -113,7 +113,17 @@
 						form.dhcpGateway.focus();
 						return false;
 					}
-					
+					if (!validateNum(form.dhcpLease.value, false) || +form.dhcpLease.value < 0) {
+						console.log(form.dhcpLease.value);
+						alert(_("services dhcp invalid lease"));
+						form.dhcpLease.focus();
+						return false;
+					}
+					if (!validateNum(form.dhcpARPPTimeout.value, false) || +form.dhcpARPPTimeout.value < 0) {
+						alert(_("services dhcp invalid arptimeout"));
+						form.dhcpARPPTimeout.focus();
+						return false;
+					}
 					genIPTableData(form);
 				}
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
@@ -248,8 +258,8 @@
 				
 				enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease, form.dhcpARPPTimeout ], dhcp_on);
 				displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList', 'arpping' ], dhcp_on );
-				enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && NVRAM_dnsPEnabled == '1');
-				displayElement( [ 'pridns', 'secdns' ], NVRAM_dnsPEnabled == '1' && dhcp_on);
+				enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && NVRAM_dnsPEnabled != '1');
+				displayElement( [ 'pridns', 'secdns' ], dhcp_on && NVRAM_dnsPEnabled != '1');
 				
 				genTable(!dhcp_on);
 				displayServiceStatus();
@@ -454,7 +464,7 @@
 						<tr>
 							<td>
 								<input type="hidden" name="dhcpAssignIP" value="">
-								<input type="submit" class="normal" value="Apply" id="lApply" onClick="TimeoutReload(20);">&nbsp;&nbsp;
+								<input type="submit" class="normal" value="Apply" id="lApply">&nbsp;&nbsp;
 								<input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">
 								<input type="hidden" value="/services/dhcp.asp" name="submit-url">
 							</td>

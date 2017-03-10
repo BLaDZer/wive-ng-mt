@@ -245,7 +245,7 @@
 			}
 
 			function igmpSelect(form) {
-				displayElement('mcast_store_ttl_row', form.igmpEnbl.value == '1');
+				displayElement('mcast_store_ttl_row', form.igmpEnbl.value == '1' && statusOthersMenu == '1');
 			}
 
 			function httpRmtSelect(form) {

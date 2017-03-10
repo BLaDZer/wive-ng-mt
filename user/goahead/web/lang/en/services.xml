@@ -10,6 +10,8 @@
   <message msgid="services dhcp invalid mac" msgstr="You have entered invalid MAC address" />
   <message msgid="services dhcp invalid ip" msgstr="You have entered invalid IP address" />
   <message msgid="services dhcp invalid desc" msgstr="Please specify correct descripton (a-z, A-Z, 0-9, _)." />
+  <message msgid="services dhcp invalid lease" msgstr="You have entered invalid Lease Time" />
+  <message msgid="services dhcp invalid arptimeout" msgstr="You have entered invalid address conflict check timeout" />
   <message msgid="services dhcp ask overwrite mac" msgstr="Do you want to overwrite existing record in static table for MAC address " />
   <message msgid="services dhcp ask overwrite ip" msgstr="Do you want to overwrite existing record in static table for IP address " />
   <message msgid="services dhcp start" msgstr="Start IP Address" />

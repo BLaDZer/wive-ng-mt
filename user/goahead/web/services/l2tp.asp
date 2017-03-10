@@ -114,8 +114,8 @@
 					var startIp	= range[0].split('.');
 					var stopIp	= range[1].split('.');
 					if (!validateIP(range[0]) || !validateIP(range[1]) ||
-						!(startIp[0] <= stopIp[0] && startIp[1] <= stopIp[1] && 
-						  startIp[2] <= stopIp[2] && startIp[3] <= stopIp[3] &&
+						!(+startIp[0] <= +stopIp[0] && +startIp[1] <= +stopIp[1] && 
+						  +startIp[2] <= +stopIp[2] && +startIp[3] <= +stopIp[3] &&
 						  range[0] != range[1])) {
 						alert(_("services l2tp invalid ip range"));
 						document.getElementById('l2tp_srv_ip_range').select();

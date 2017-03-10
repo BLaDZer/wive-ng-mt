@@ -10,6 +10,8 @@
   <message msgid="services dhcp invalid mac" msgstr="Вы ввели неправильный MAC адрес" />
   <message msgid="services dhcp invalid ip" msgstr="Вы ввели неправильный IP адрес" />
   <message msgid="services dhcp invalid desc" msgstr="Пожалуйста, укажите правльное описание (a-z, A-Z, 0-9, _)." />
+  <message msgid="services dhcp invalid lease" msgstr="Вы ввели неправильный срок аренды адреса" />
+  <message msgid="services dhcp invalid arptimeout" msgstr="Вы ввели неправильный таймаут проверки конфликта адресов" />
   <message msgid="services dhcp ask overwrite mac" msgstr="Желаете изменить запись для MAC адреса " />
   <message msgid="services dhcp ask overwrite ip" msgstr="Желаете изменить запись для IP адреса " />
   <message msgid="services dhcp start" msgstr="Начальный IP адрес" />
