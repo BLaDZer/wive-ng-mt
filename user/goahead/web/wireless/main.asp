@@ -2068,23 +2068,23 @@
 		</tr>
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
 			<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
-			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2"><font color="#808080"> 0 - 40 db, default 20</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2"><font color="#808080"> 0 - 40 db, default 15</font></td>
 		</tr>
 		<tr id="row_BndStrgRssiLow" style="display:none;">
 			<td class="head" id="basicBndStrgRssiLow" width="50%">Force fallback to 2.4GHz if rssi smaller</td>
-			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4"><font color="#808080"> 0 - -100 db, default -80</font></td>
+			<td width="50%"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4"><font color="#808080"> 0 - -100 db, default -88</font></td>
 		</tr>
 		<tr id="row_BndStrgAge" style="display:none;">
 			<td class="head" id="basicBndStrgAge" width="50%">Inactive client entry age time</td>
-			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6"><font color="#808080"> ms, default 800000</font></td>
+			<td width="50%"><input type="text" name="BndStrgAge" class="normal" maxlength="6"><font color="#808080"> ms, default 600000</font></td>
 		</tr>
 		<tr id="row_BndStrgHoldTime" style="display:none;">
 			<td class="head" id="basicBndStrgHoldTime" width="50%">Time for holding 2.4G connection</td>
-			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4"><font color="#808080"> ms, default 8000</font></td>
+			<td width="50%"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4"><font color="#808080"> ms, default 3000</font></td>
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
 			<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
-			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4"><font color="#808080"> ms, default 4000</font></td>
+			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4"><font color="#808080"> ms, default 6000</font></td>
 		</tr>
 	</table>
 	<table id="div_ids" name="div_ids" class="form" style="display:none;">
