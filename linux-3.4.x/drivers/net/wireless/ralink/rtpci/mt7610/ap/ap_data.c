@@ -6620,7 +6620,7 @@ NDIS_STATUS APInsertPsQueue(
 	else
 #endif /* UAPSD_SUPPORT */
 	{
-		if (pMacEntry->PsQueue.Number >= MAX_PACKETS_IN_PS_QUEUE)
+		if ((pMacEntry->PsQueue.Number >= MAX_PACKETS_IN_PS_QUEUE) || (pAd->TxSwQueue[QueIdx].Number >= (pAd->TxSwQMaxLen + MAX_PACKETS_IN_PS_QUEUE)))
 		{
 			RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);			
 			return NDIS_STATUS_FAILURE;			

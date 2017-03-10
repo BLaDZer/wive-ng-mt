@@ -2537,14 +2537,14 @@ VOID PeerBeacon(
 					}
 #endif /* PCIE_PS_SUPPORT */
 				} 
-				else if ((pAd->TxSwQueue[QID_AC_BK].Number != 0)													||
-						(pAd->TxSwQueue[QID_AC_BE].Number != 0)														||
-						(pAd->TxSwQueue[QID_AC_VI].Number != 0)														||
-						(pAd->TxSwQueue[QID_AC_VO].Number != 0)														||
-						(RTMPFreeTXDRequest(pAd, QID_AC_BK, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS)	||
-						(RTMPFreeTXDRequest(pAd, QID_AC_BE, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS)	||
-						(RTMPFreeTXDRequest(pAd, QID_AC_VI, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS)	||
-						(RTMPFreeTXDRequest(pAd, QID_AC_VO, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS)	||
+				else if ((pAd->TxSwQueue[QID_AC_BK].Number != 0) ||
+						(pAd->TxSwQueue[QID_AC_BE].Number != 0) ||
+						(pAd->TxSwQueue[QID_AC_VI].Number != 0) ||
+						(pAd->TxSwQueue[QID_AC_VO].Number != 0) ||
+						(RTMPFreeTXDRequest(pAd, QID_AC_BK, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS) ||
+						(RTMPFreeTXDRequest(pAd, QID_AC_BE, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS) ||
+						(RTMPFreeTXDRequest(pAd, QID_AC_VI, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS) ||
+						(RTMPFreeTXDRequest(pAd, QID_AC_VO, TX_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS) ||
 						(RTMPFreeTXDRequest(pAd, QID_MGMT, MGMT_RING_SIZE - 1, &FreeNumber) != NDIS_STATUS_SUCCESS)) 
 				{
 					/* TODO: consider scheduled HCCA. might not be proper to use traditional DTIM-based power-saving scheme */
