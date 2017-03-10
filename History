@@ -2827,42 +2827,43 @@
 29) kernel: mips: disable stack checks on MIPS kernels.<br>
 30) kernel: mips: end spinlocks with .insn.<br>
 31) kernel: mips: mt7621: fix coherent Manager CMP & CPC memory mapped size.<br>
-32) kernel: tty: limit terminal size to 4M chars.<br>
-33) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-34) kernel: sched/core: better document the try_to_wake_up() barriers.<br>
-35) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-36) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-37) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-38) kernel: net: do not block BH while processing socket backlog.<br>
-39) kernel: net: don't call strlen() on the user buffer in packet_bind_spkt().<br>
-40) kernel: net: net_enable_timestamp() can be called from irq contexts.<br>
-41) kernel: net: ping: fix a null pointer dereference.<br>
-42) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-43) kernel: net: l2tp: avoid use-after-free caused by l2tp_ip_backlog_recv.<br>
-44) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-45) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
-46) kernel: net: rtnl: reset calcit fptr in rtnl_unregister().<br>
-47) kernel: net: ping: check minimum size on ICMP header length.<br>
-48) kernel: net: route: add missing nla_policy entry for RTA_MARK attribute.<br>
-49) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
-50) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
-51) kernel: net: packet: round up linear to header len.<br>
-52) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-53) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-54) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-55) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-56) kernel: net: tcp/dccp: block BH for SYN processing.<br>
-57) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-58) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
-59) kernel: net: netfilter: restart search if moved to other chain.<br>
-60) kernel: net: netfilter: nf_conntrack_sip: extend request line validation.<br>
-61) kernel: net: netfilter: nf_ct_sip: use mod_timer_pending().<br>
-62) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
-63) kernel: net: ipv6: ip6_tunnel: clear IP6CB in ip6tunnel_xmit().<br>
-64) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
-65) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
-66) kernel: net: ipv6: ignore null_entry in inet6_rtm_getroute() too.<br>
-67) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
+32) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+33) kernel: sched/core: better document the try_to_wake_up() barriers.<br>
+34) kernel: tty: limit terminal size to 4M chars.<br>
+35) kernel: usb: xhci_mtk: avoid direct usage wMaxPacketSize (endian issue).<br>
+36) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+37) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+38) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+39) kernel: net: do not block BH while processing socket backlog.<br>
+40) kernel: net: don't call strlen() on the user buffer in packet_bind_spkt().<br>
+41) kernel: net: net_enable_timestamp() can be called from irq contexts.<br>
+42) kernel: net: ping: fix a null pointer dereference.<br>
+43) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+44) kernel: net: l2tp: avoid use-after-free caused by l2tp_ip_backlog_recv.<br>
+45) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+46) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+47) kernel: net: rtnl: reset calcit fptr in rtnl_unregister().<br>
+48) kernel: net: ping: check minimum size on ICMP header length.<br>
+49) kernel: net: route: add missing nla_policy entry for RTA_MARK attribute.<br>
+50) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
+51) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
+52) kernel: net: packet: round up linear to header len.<br>
+53) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+54) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+55) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+56) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+57) kernel: net: tcp/dccp: block BH for SYN processing.<br>
+58) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+59) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+60) kernel: net: netfilter: restart search if moved to other chain.<br>
+61) kernel: net: netfilter: nf_conntrack_sip: extend request line validation.<br>
+62) kernel: net: netfilter: nf_ct_sip: use mod_timer_pending().<br>
+63) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
+64) kernel: net: ipv6: ip6_tunnel: clear IP6CB in ip6tunnel_xmit().<br>
+65) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
+66) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
+67) kernel: net: ipv6: ignore null_entry in inet6_rtm_getroute() too.<br>
+68) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
 <br>
 <br>
 <br>
