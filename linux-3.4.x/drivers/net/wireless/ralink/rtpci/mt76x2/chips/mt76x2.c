@@ -5242,10 +5242,10 @@ static void mt76x2_long_range_dync_vga(RTMP_ADAPTER * pAd)
 	val1 = pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - long_range_compensate_level;
 		
 	if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.lna_vga_ctl.nFalseCCATh) {
-		if (val1 > (pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - 0x02)) {
-			val1 -= 0x01;
-			if(long_range_compensate_level + 0x01 <= 0x02)
-				long_range_compensate_level += 0x01;
+		if (val1 > (pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0 - 0x04)) {
+			val1 -= 0x02;
+			if(long_range_compensate_level + 0x02 <= 0x04)
+				long_range_compensate_level += 0x02;
 			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
 			RTMP_BBP_IO_WRITE32(pAd, AGC1_R8, bbp_val1);
 			if (pAd->CommonCfg.RxStream >= 2) { 			
@@ -5258,8 +5258,8 @@ static void mt76x2_long_range_dync_vga(RTMP_ADAPTER * pAd)
 	} else if (pAd->RalinkCounters.OneSecFalseCCACnt < 
 				pAd->CommonCfg.lna_vga_ctl.nLowFalseCCATh) {
 		if (val1 < pAd->CommonCfg.lna_vga_ctl.agc_vga_ori_0) {
-			val1 += 0x01;				
-			long_range_compensate_level -= 0x01;
+			val1 += 0x02;				
+			long_range_compensate_level -= 0x02;
 			if(long_range_compensate_level < 0)
 				long_range_compensate_level = 0;				
 			bbp_val1 = (bbp_val1 & 0xffff80ff) | (val1 << 8);
@@ -5386,8 +5386,18 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
 		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
 	{
+    		/* MT7662_SW_based_solution_20151202_longestDist_FalseCCA_reduceGain2db_tradeoff.pptx */
+		/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 2dB dync vga */		
 		no_dynamic_vga = TRUE; /* keep this TRUE to skip original dync vga flow */
-		pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
+
+		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
+		{
+			mt76x2_long_range_dync_vga(pAd);
+		}
+		else
+		{
+			pAd->chipCap.dynamic_chE_mode = 0xEE; /* to restore to initial */
+		}
 	}
 
 	if ((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) {
@@ -5564,15 +5574,6 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode, pAd->chipCap.dynamic_chE_trigger, value));
 	} else
 		pAd->chipCap.dynamic_chE_trigger = FALSE;
-
-	/* workaround for init gain falseCCA too high issue , 20151202 modify this phase to do 1dB dync vga */
-	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
-		|| ((pAd->chipCap.avg_rssi_all <= -79) && (pAd->CommonCfg.BBPCurrentBW == BW_40))
-		|| ((pAd->chipCap.avg_rssi_all <= -82) && (pAd->CommonCfg.BBPCurrentBW == BW_20)))
-	{
-		if(pAd->chipCap.skip_long_range_dync_vga != TRUE)
-			mt76x2_long_range_dync_vga(pAd);
-	}
 
 	return no_dynamic_vga;
 }
