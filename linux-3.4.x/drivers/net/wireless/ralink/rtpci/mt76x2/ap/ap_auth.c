@@ -504,6 +504,12 @@ SendAuth:
 	if (bBndStrgCheck == FALSE) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL, apidx);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
+
+                /* If this STA exists, delete it. */
+                if (pEntry)
+                        MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+
+                RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
 		return;
 	}
 #endif /* BAND_STEERING */
