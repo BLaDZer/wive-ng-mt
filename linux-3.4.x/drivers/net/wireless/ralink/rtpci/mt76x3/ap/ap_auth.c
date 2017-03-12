@@ -567,9 +567,9 @@ SendAuth:
 										FALSE,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE) {
-		//APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
-		//return;
+		return;
 	}
 #endif /* BAND_STEERING */
 

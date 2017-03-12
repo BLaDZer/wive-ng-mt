@@ -391,9 +391,9 @@ static VOID APPeerAuthReqAtIdleAction(
 										FALSE,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE) {
-		//APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
+		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
-		//return;
+		return;
 	}
 #endif /* BAND_STEERING */
 
