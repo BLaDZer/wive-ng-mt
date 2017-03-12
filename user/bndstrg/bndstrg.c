@@ -788,7 +788,7 @@ static u8 _bndstrg_allow_sta_conn_2g(
 
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
 		    (entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G) &&
-		    !(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G))
+		    /* !(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) */)
 		{
 #ifdef BND_STRG_QA
 			BND_STRG_PRINTQAMSG(table, entry,

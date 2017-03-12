@@ -2815,63 +2815,64 @@
 17) band steering: fix auto mode work.<br>
 18) band steering: more human readable debug messages in syslog (loglevel >= 3).<br>
 19) band steering: allow force back from 2.4GHz to 5GHz.<br>
-20) kernel: ralink_wifi: band steering: fix bndstr debug.<br>
-21) kernel: ralink_wifi: band steering: fix bndstr on/off by daemon.<br>
-22) kernel: ralink_wifi: band steering: fix garbage collector work.<br>
-23) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
-24) kernel: ralink_wifi: band steering: add AllowStaConnectInHt check (more compat with new API of daemon).<br>
-25) kernel: ralink_wifi: band steering: fix rssi array init.<br>
-26) kernel: ralink_wifi: band steering: skip android randomized mac probe req from process (da:a1:19:xx:xx:xx).<br>
-27) kernel: ralink_wifi: band steering: add safe delta thres for fix unneded kick 5GHz clietns.<br>
-28) kernel: ralink_wifi: band steering: fix delete entry if auth check fail.<br>
-29) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
-30) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
-31) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
-32) kernel: ralink_wifi: mt7620: fix DMA idle wait on init rings.<br>
-33) kernel: ralink_wifi: mt76x2/mt7610: fix limit mcast ps queue size.<br>
-34) kernel: ralink_wifi: mt76x2/mt7610: fix mcs_lut work at tx_adapt enabled.<br>
-35) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
-36) kernel: mips: disable stack checks on MIPS kernels.<br>
-37) kernel: mips: end spinlocks with .insn.<br>
-38) kernel: mips: mt7621: fix coherent Manager CMP & CPC memory mapped size.<br>
-39) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
-40) kernel: sched/core: better document the try_to_wake_up() barriers.<br>
-41) kernel: tty: limit terminal size to 4M chars.<br>
-42) kernel: usb: xhci_mtk: avoid direct usage wMaxPacketSize (endian issue).<br>
-43) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
-44) kernel: net: dccp: fix freeing skb too early for IPV6_RECVPKTINFO.<br>
-45) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
-46) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
-47) kernel: net: do not block BH while processing socket backlog.<br>
-48) kernel: net: don't call strlen() on the user buffer in packet_bind_spkt().<br>
-49) kernel: net: net_enable_timestamp() can be called from irq contexts.<br>
-50) kernel: net: ping: fix a null pointer dereference.<br>
-51) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
-52) kernel: net: l2tp: avoid use-after-free caused by l2tp_ip_backlog_recv.<br>
-53) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
-54) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
-55) kernel: net: rtnl: reset calcit fptr in rtnl_unregister().<br>
-56) kernel: net: ping: check minimum size on ICMP header length.<br>
-57) kernel: net: route: add missing nla_policy entry for RTA_MARK attribute.<br>
-58) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
-59) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
-60) kernel: net: packet: round up linear to header len.<br>
-61) kernel: net: tcp: take care of truncations done by sk_filter().<br>
-62) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
-63) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
-64) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
-65) kernel: net: tcp/dccp: block BH for SYN processing.<br>
-66) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
-67) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
-68) kernel: net: netfilter: restart search if moved to other chain.<br>
-69) kernel: net: netfilter: nf_conntrack_sip: extend request line validation.<br>
-70) kernel: net: netfilter: nf_ct_sip: use mod_timer_pending().<br>
-71) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
-72) kernel: net: ipv6: ip6_tunnel: clear IP6CB in ip6tunnel_xmit().<br>
-73) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
-74) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
-75) kernel: net: ipv6: ignore null_entry in inet6_rtm_getroute() too.<br>
-76) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
+20) band steering: allow connect to 2.4GHz for all if rssi very low.<br>
+21) kernel: ralink_wifi: band steering: fix bndstr debug.<br>
+22) kernel: ralink_wifi: band steering: fix bndstr on/off by daemon.<br>
+23) kernel: ralink_wifi: band steering: fix garbage collector work.<br>
+24) kernel: ralink_wifi: band steering: collect probe req info from long range clients (ProbeRspRssi - 10dB).<br>
+25) kernel: ralink_wifi: band steering: add AllowStaConnectInHt check (more compat with new API of daemon).<br>
+26) kernel: ralink_wifi: band steering: fix rssi array init.<br>
+27) kernel: ralink_wifi: band steering: skip android randomized mac probe req from process (da:a1:19:xx:xx:xx).<br>
+28) kernel: ralink_wifi: band steering: add safe delta thres for fix unneded kick 5GHz clietns.<br>
+29) kernel: ralink_wifi: band steering: fix delete entry if auth check fail.<br>
+30) kernel: ralink_wifi: mt7610: fix channel offset in eeprom.<br>
+31) kernel: ralink_wifi: mt7610: fix insert MDIE element at probe req action.<br>
+32) kernel: ralink_wifi: mt7610: fix handle FT assoc req.<br>
+33) kernel: ralink_wifi: mt7620: fix DMA idle wait on init rings.<br>
+34) kernel: ralink_wifi: mt76x2/mt7610: fix limit mcast ps queue size.<br>
+35) kernel: ralink_wifi: mt76x2/mt7610: fix mcs_lut work at tx_adapt enabled.<br>
+36) kernel: mips: sync-r4k: fix KERN_CONT fallout.<br>
+37) kernel: mips: disable stack checks on MIPS kernels.<br>
+38) kernel: mips: end spinlocks with .insn.<br>
+39) kernel: mips: mt7621: fix coherent Manager CMP & CPC memory mapped size.<br>
+40) kernel: sched/core: fix an SMP ordering race in try_to_wake_up() vs. schedule().<br>
+41) kernel: sched/core: better document the try_to_wake_up() barriers.<br>
+42) kernel: tty: limit terminal size to 4M chars.<br>
+43) kernel: usb: xhci_mtk: avoid direct usage wMaxPacketSize (endian issue).<br>
+44) kernel: net/llc: avoid BUG_ON() in skb_orphan().<br>
+45) kernel: net: dccp: fix freeing skb too early for IPV6_RECVPKTINFO.<br>
+46) kernel: net: disable fragment reassembly if high_thresh is set to zero.<br>
+47) kernel: net: ratelimit warnings about dst entry refcount underflow or overflow.<br>
+48) kernel: net: do not block BH while processing socket backlog.<br>
+49) kernel: net: don't call strlen() on the user buffer in packet_bind_spkt().<br>
+50) kernel: net: net_enable_timestamp() can be called from irq contexts.<br>
+51) kernel: net: ping: fix a null pointer dereference.<br>
+52) kernel: net: ocfs2, scsi_tcp: block BH in TCP callbacks.<br>
+53) kernel: net: l2tp: avoid use-after-free caused by l2tp_ip_backlog_recv.<br>
+54) kernel: net: ipv4: keep skb->dst around in presence of IP options.<br>
+55) kernel: net: igmp: fix memory leak in igmpv3/mld_del_delrec().<br>
+56) kernel: net: rtnl: reset calcit fptr in rtnl_unregister().<br>
+57) kernel: net: ping: check minimum size on ICMP header length.<br>
+58) kernel: net: route: add missing nla_policy entry for RTA_MARK attribute.<br>
+59) kernel: net: sock: use USEC_PER_SEC macro instead of literal 1000000.<br>
+60) kernel: net: socket: fix recvmmsg not returning error from sock_error.<br>
+61) kernel: net: packet: round up linear to header len.<br>
+62) kernel: net: tcp: take care of truncations done by sk_filter().<br>
+63) kernel: net: tcp: make tcp_sendmsg() aware of socket backlog.<br>
+64) kernel: net: tcp: guarantee forward progress in tcp_sendmsg().<br>
+65) kernel: net: tcp: tcp_probe: use spin_lock_bh().<br>
+66) kernel: net: tcp/dccp: block BH for SYN processing.<br>
+67) kernel: net: tcp: fix 0 divide in __tcp_select_window().<br>
+68) kernel: net: tcp: avoid infinite loop in tcp_splice_read().<br>
+69) kernel: net: netfilter: restart search if moved to other chain.<br>
+70) kernel: net: netfilter: nf_conntrack_sip: extend request line validation.<br>
+71) kernel: net: netfilter: nf_ct_sip: use mod_timer_pending().<br>
+72) kernel: net: ipv6: don't use ufo handling on later transformed packets.<br>
+73) kernel: net: ipv6: ip6_tunnel: clear IP6CB in ip6tunnel_xmit().<br>
+74) kernel: net: ipv6: check sk sk_type and protocol early in ip_mroute_set/getsockopt.<br>
+75) kernel: net: ipv6: orphan skbs in reassembly unit.<br>
+76) kernel: net: ipv6: ignore null_entry in inet6_rtm_getroute() too.<br>
+77) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
 <br>
 <br>
 <br>
