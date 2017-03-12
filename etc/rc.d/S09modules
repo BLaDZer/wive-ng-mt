@@ -35,16 +35,17 @@ start() {
 	# set flag wireless modules loaded
 	touch /tmp/wireless_modules_loaded
 
-	# root interfaces must be up first
-	$LOG "WiFi interfaces up."
-	ifconfig $first_wlan_root_if txqueuelen	"$txqueuelen"
-	ip link set $first_wlan_root_if up
+	# first up 5GHz band (allow connect to 5GHz radio first, band steering after reload issue fix)
 	if [ "$second_wlan_root_if" != "" ]; then
 	    $LOG "WiFi $second_wlan_root_if interface up."
 	    # others modes
 	    ifconfig $second_wlan_root_if txqueuelen	"$txqueuelen"
 	    ip link set $second_wlan_root_if up
 	fi
+	# second up 2.4GHz radio
+	$LOG "WiFi $first_wlan_root_if interface up."
+	ifconfig $first_wlan_root_if txqueuelen	"$txqueuelen"
+	ip link set $first_wlan_root_if up
 
 	# apcli mode sta interface
 	if [ "$OperationMode" = "3" ]; then
