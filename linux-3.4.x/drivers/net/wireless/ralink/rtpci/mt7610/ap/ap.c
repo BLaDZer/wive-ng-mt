@@ -1330,6 +1330,7 @@ VOID MacTableMaintenance(
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
 				bDisconnectSta = TRUE;
+				printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n", PRINT_MAC(pEntry->Addr));
 			}
 		}
 #endif /* BAND_STEERING */

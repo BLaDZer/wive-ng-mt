@@ -568,9 +568,10 @@ BOOLEAN BndStrg_IsClientStay(
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 	CHAR Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 	
+	/* kick client only if rssi < RssiLow - delta safe value (default -88-8=-96dB), prevent unneded kick 5GHz clients */
 	if (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI &&
 		table->Band == BAND_5G &&
-		(Rssi < (table->RssiLow)))
+		(Rssi < (table->RssiLow - 8)))
 	{
 		BNDSTRG_MSG msg;
 
