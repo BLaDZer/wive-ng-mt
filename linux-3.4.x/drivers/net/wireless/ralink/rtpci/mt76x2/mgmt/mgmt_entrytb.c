@@ -1186,22 +1186,7 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 
 
 #ifdef PEER_DELBA_TX_ADAPT
-			RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
-#ifdef RT6352
-			if (IS_RT6352(pAd))
-			{
-				UINT32 MacReg = 0;
-				
-				if (pEntry->bPeerDelBaTxAdaptEn)
-				{
-					/* Disable Tx Mac look up table (Ressume original setting) */
-					RTMP_IO_READ32(pAd, TX_FBK_LIMIT, &MacReg);
-					MacReg &= ~(1 << 18);
-					RTMP_IO_WRITE32(pAd, TX_FBK_LIMIT, MacReg);
-					DBGPRINT(RT_DEBUG_TRACE, ("%s():TX_FBK_LIMIT = 0x%08x\n", __FUNCTION__, MacReg));
-				}
-			}
-#endif /* RT6352 */
+			Peer_DelBA_Tx_Adapt_Disable(pAd, pEntry);
 			pEntry->bPeerDelBaTxAdaptEn = 0;
 			RTMPReleaseTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
 #endif /* PEER_DELBA_TX_ADAPT */

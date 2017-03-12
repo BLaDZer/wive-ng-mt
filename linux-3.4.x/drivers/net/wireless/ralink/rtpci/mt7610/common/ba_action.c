@@ -2310,8 +2310,7 @@ VOID Peer_DelBA_Tx_Adapt_Enable(
 	
 	if (pEntry)
 	{	
-		USHORT RegId = 0;
-		UINT32 MacReg = 0;
+		UINT32 MacReg = 0, BitLUT;
 		BOOLEAN Cancelled;
 
 		pEntry->bPeerDelBaTxAdaptEn = 1;
@@ -2319,14 +2318,21 @@ VOID Peer_DelBA_Tx_Adapt_Enable(
 
 		/* Enable Tx Mac look up table */
 		RTMP_IO_READ32(pAd, TX_FBK_LIMIT, &MacReg);
-		if ((MacReg & (1 << 18)) == 0) {
+		BitLUT = (MacReg & ((1 << 18)));
+		if (BitLUT)
+		{
+			/* Keep original register setting in this flag */
+			pEntry->bPeerDelBaTxAdaptEn |= BitLUT;
+		}
+		else
+		{
 			MacReg |= (1 << 18);
 			RTMP_IO_WRITE32(pAd, TX_FBK_LIMIT, MacReg);
 		}
 
-		RegId = 0x1C00 + (pEntry->Aid << 3);
-		RTMP_IO_WRITE32(pAd, RegId, 0x2007); /* Legacy OFDM / no STBC / LGI / BW20 / MCS 7 */
-		RTMPSetTimer(&pEntry->DelBA_tx_AdaptTimer, 1000); /* 1000ms */
+		/* OFDM54 / BW20 / LGI / no STBC/ Legacy OFDM */
+		set_lut_phy_rate(pAd, pEntry->Aid, 7, 0, 0, 0, 1);
+		RTMPSetTimer(&pEntry->DelBA_tx_AdaptTimer, 800); /* 800ms */
 		DBGPRINT(RT_DEBUG_TRACE,
 				("%s():MacReg = 0x%08x, bPeerDelBaTxAdaptEn = 0x%x\n",
 				__FUNCTION__, MacReg, pEntry->bPeerDelBaTxAdaptEn));
@@ -2355,9 +2361,13 @@ VOID Peer_DelBA_Tx_Adapt_Disable(
 
 	if (pEntry && pEntry->bPeerDelBaTxAdaptEn)
 	{
+		UINT32 BitLUT;
 		BOOLEAN Cancelled;
-			UINT32 MacReg = 0;
 
+		BitLUT = (pEntry->bPeerDelBaTxAdaptEn & (1 << 18));
+		if (!BitLUT)
+		{
+			UINT32 MacReg = 0;
 			/* Disable Tx Mac look up table (Ressume original setting) */
 			RTMP_IO_READ32(pAd, TX_FBK_LIMIT, &MacReg);
 			MacReg &= ~(1 << 18);
@@ -2366,6 +2376,7 @@ VOID Peer_DelBA_Tx_Adapt_Disable(
 					("%s():TX_FBK_LIMIT = 0x%08x\n",
 					__FUNCTION__, MacReg));
 
+		}
 		/* TODO: ressume MSC rate of the MAC look up table? */
 		pEntry->bPeerDelBaTxAdaptEn = 0;
 		RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);

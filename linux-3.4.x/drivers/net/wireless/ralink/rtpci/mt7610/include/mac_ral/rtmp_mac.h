@@ -2466,5 +2466,12 @@ INT rtmp_mac_set_band(struct _RTMP_ADAPTER *pAd, int  band);
 INT rtmp_mac_set_ctrlch(struct _RTMP_ADAPTER *pAd, INT extch);
 INT rtmp_mac_set_mmps(struct  _RTMP_ADAPTER *pAd, INT ReduceCorePower);
 
+#ifdef MCS_LUT_SUPPORT
+INT set_lut_phy_rate(
+		struct _RTMP_ADAPTER *pAd, UINT8 wcid,
+		UINT8 mcs, UINT8 bw, 	UINT8 gi,
+		UINT8 stbc, UINT8 mode);
+#endif /* MCS_LUT_SUPPORT */
+
 #endif /* __RTMP_MAC_H__ */
 

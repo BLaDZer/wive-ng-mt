@@ -646,6 +646,29 @@ VOID RTMPWriteTxWI_Cache(
 }
 
 
+#ifdef MCS_LUT_SUPPORT
+INT set_lut_phy_rate(
+	RTMP_ADAPTER *pAd, UINT8 wcid,
+	UINT8 mcs, UINT8 bw, 	UINT8 gi,
+	UINT8 stbc, UINT8 mode)
+{
+	UINT32 mac_reg = 0;
+	USHORT reg_id = 0x1C00 + (wcid << 3);
+	
+#ifdef RLT_MAC
+	mac_reg = (mcs | (bw << 7) | (gi << 9) | (stbc << 10) | (mode << 13));
+#endif /* RLT_MAC */
+#ifdef RTMP_MAC
+	mac_reg = (mcs | (bw << 7) | (gi << 8) | (stbc << 9) | (mode << 14));
+#endif /* RTMP_MAC */
+
+	if (mac_reg)
+		RTMP_IO_WRITE32(pAd, reg_id, mac_reg);
+
+	return TRUE;
+}
+#endif /* MCS_LUT_SUPPORT */
+
 INT rtmp_mac_set_band(RTMP_ADAPTER *pAd, int  band)
 {
 	UINT32 val, band_cfg;

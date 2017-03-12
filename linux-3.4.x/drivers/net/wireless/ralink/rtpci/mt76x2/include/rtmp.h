@@ -11112,6 +11112,14 @@ VOID PeerDelBATxAdaptTimeOut(
 	IN PVOID FunctionContext,
 	IN PVOID SystemSpecific2,
 	IN PVOID SystemSpecific3);   
+
+VOID Peer_DelBA_Tx_Adapt_Enable(
+	IN PRTMP_ADAPTER pAd,
+	IN PMAC_TABLE_ENTRY pEntry);
+
+VOID Peer_DelBA_Tx_Adapt_Disable(
+	IN PRTMP_ADAPTER pAd,
+	IN PMAC_TABLE_ENTRY pEntry);
 #endif /* PEER_DELBA_TX_ADAPT */
 
 #ifdef MULTI_CLIENT_SUPPORT
