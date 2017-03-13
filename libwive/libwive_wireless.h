@@ -38,6 +38,10 @@ int getLastTxRateFor11n(double* fLastTxRate);
 int getLastRxRateFor11n(double* fLastRxRate);
 
 int getWlanHWRadioStatus(int radio_module_ind);
+
+int wlanDisconnectStation(const char *if_name, char* mac_addr);
+int wlanDisconnectAllStations(const char *if_name);
+
 #endif
 
 #endif

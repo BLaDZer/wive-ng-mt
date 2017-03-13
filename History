@@ -2877,7 +2877,8 @@
 <br>
 <br>
 <b>5.2.x</b><br>
-1) kernel: ralink_wifi: mt7610: implement safe mcs at start transition and low traffic case.<br>
+1) cli: add stakill command for disconnect selected sta.<br>
+2) kernel: ralink_wifi: mt7610: implement safe mcs at start transition and low traffic case.<br>
 <br>
 <br>
 <br>
