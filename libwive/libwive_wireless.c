@@ -676,6 +676,46 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
     return entries;
 }
 
+/* wlanDisconnectStation - disconnect client station
+ *
+ * arg: if_name - interface name
+ * return: 0 = OK, 1 = Wrong MAC, 2 = ioctl error
+ */
+int wlanDisconnectStation(const char *if_name, char* mac_addr)
+{
+        if (strlen(mac_addr) != 17) 
+            return 1;
+
+        char rtp_str[64] = {0};
+        snprintf(rtp_str,64,"DisConnectSta=%s", mac_addr);
+
+	if (RtpSetInformation(rtp_str, if_name))
+	{
+		syslog(LOG_ERR, "wlan: DisconnectSta (%s,%s) ioctl set failed, %s", if_name, mac_addr, __FUNCTION__);
+		return 2;
+	}
+
+	return 0;
+}
+
+/* wlanDisconnectAllStations - disconnect all client stations
+ *
+ * arg: if_name - interface name
+ * return: 0 = OK
+ */
+
+int wlanDisconnectAllStations(const char *if_name)
+{
+
+	if (RtpSetInformation("DisConnectAllSta=1", if_name))
+	{
+		syslog(LOG_ERR, "wlan: DisconnectAllSta (%s) ioctl set failed, %s", if_name, __FUNCTION__);
+		return 1;
+	}
+
+	return 0;
+}
+
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 /* getWlanStationLinkQuality - Get percentage of station link quality
  *
@@ -871,46 +911,5 @@ int getWlanHWRadioStatus(int radio_module_ind)
 
 	return RadioStatus==1;
 }
-
-/* wlanDisconnectStation - disconnect client station
- *
- * arg: if_name - interface name
- * return: 0 = OK, 1 = Wrong MAC, 2 = ioctl error
- */
-int wlanDisconnectStation(const char *if_name, char* mac_addr)
-{
-        if (strlen(mac_addr) != 17) 
-            return 1;
-
-        char rtp_str[64] = {0};
-        snprintf(rtp_str,64,"DisConnectSta=%s", mac_addr);
-
-	if (RtpSetInformation(rtp_str, if_name))
-	{
-		syslog(LOG_ERR, "wlan: DisconnectSta (%s,%s) ioctl set failed, %s", if_name, mac_addr, __FUNCTION__);
-		return 2;
-	}
-
-	return 0;
-}
-
-/* wlanDisconnectAllStations - disconnect all client stations
- *
- * arg: if_name - interface name
- * return: 0 = OK
- */
-
-int wlanDisconnectAllStations(const char *if_name)
-{
-
-	if (RtpSetInformation("DisConnectAllSta=1", if_name))
-	{
-		syslog(LOG_ERR, "wlan: DisconnectAllSta (%s) ioctl set failed, %s", if_name, __FUNCTION__);
-		return 1;
-	}
-
-	return 0;
-}
-
 
 #endif

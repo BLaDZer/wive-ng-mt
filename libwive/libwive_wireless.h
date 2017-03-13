@@ -29,6 +29,9 @@ int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry);
 int wlanAPScanText(const char *if_name, char* data, unsigned int data_len);
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num);
 
+int wlanDisconnectStation(const char *if_name, char* mac_addr);
+int wlanDisconnectAllStations(const char *if_name);
+
 #if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 int getWlanStationLinkQuality(int radio_module_ind);
 int getWlanStationFrequencyKHz(int radio_module_ind);
@@ -38,9 +41,6 @@ int getLastTxRateFor11n(double* fLastTxRate);
 int getLastRxRateFor11n(double* fLastRxRate);
 
 int getWlanHWRadioStatus(int radio_module_ind);
-
-int wlanDisconnectStation(const char *if_name, char* mac_addr);
-int wlanDisconnectAllStations(const char *if_name);
 
 #endif
 
