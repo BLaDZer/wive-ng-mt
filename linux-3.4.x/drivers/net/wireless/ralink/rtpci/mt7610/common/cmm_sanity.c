@@ -320,6 +320,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity_Old(
     ULONG				Length = 0;
 	UCHAR				*pPeerWscIe = NULL;
 	INT					PeerWscIeLen = 0;
+    BOOLEAN                         bWscCheck = TRUE;
     UCHAR				LatchRfChannel = 0;
 
 
@@ -648,16 +649,33 @@ BOOLEAN PeerBeaconAndProbeRspSanity_Old(
 				else if (NdisEqualMemory(pEid->Octet, WPS_OUI, 4)
  						 )
                 {
-					if (PeerWscIeLen >= 512)
-						DBGPRINT(RT_DEBUG_ERROR, ("%s: PeerWscIeLen = %d (>= 512)\n", __FUNCTION__, PeerWscIeLen));
-					if (pPeerWscIe && (PeerWscIeLen < 512))
+					if (pPeerWscIe)
 					{
-						NdisMoveMemory(pPeerWscIe+PeerWscIeLen, pEid->Octet+4, pEid->Len-4);
-						PeerWscIeLen += (pEid->Len - 4);
+						/* Ignore old WPS IE fragments, if we get the version 0x10 */
+						if (pEid->Octet[4] == 0x10) //First WPS IE will have version 0x10
+						{
+							NdisMoveMemory(pPeerWscIe, pEid->Octet+4, pEid->Len - 4);
+							PeerWscIeLen = (pEid->Len - 4);
+						}
+						else // reassembly remanning, other IE fragmentations will not have version 0x10
+						{
+							if ((PeerWscIeLen +(pEid->Len - 4)) <= 512)
+							{
+								NdisMoveMemory(pPeerWscIe+PeerWscIeLen, pEid->Octet+4, pEid->Len - 4);
+								PeerWscIeLen += (pEid->Len - 4);
+							}
+							else /* ((PeerWscIeLen +(pEid->Len - 4)) > 512) */
+							{
+								bWscCheck = FALSE;
+								DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! Sum of All PeerWscIeLen = %d (> 512)\n", __FUNCTION__, (PeerWscIeLen +(pEid->Len - 4))));
+							}
+						}
 					}
-					
-
-					
+					else
+					{
+						bWscCheck = FALSE;
+						DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! pPeerWscIe is empty!\n", __FUNCTION__));
+					}
                 }
 
                 
@@ -788,7 +806,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity_Old(
 			Sanity |= 0x4;
 		}
 
-		if (pPeerWscIe && (PeerWscIeLen > 0) && (PeerWscIeLen < 512))
+		if (pPeerWscIe && (PeerWscIeLen > 0) && (PeerWscIeLen < 512) && ( bWscCheck == TRUE))
 		{
 			UCHAR WscIe[] = {0xdd, 0x00, 0x00, 0x50, 0xF2, 0x04};
 			Ptr = (PUCHAR) pVIE;
@@ -803,7 +821,7 @@ SanityCheck:
 	if (pPeerWscIe)
 		os_free_mem(NULL, pPeerWscIe);
 
-	if (Sanity != 0x7)
+	if (( Sanity != 0x7 ) || ( bWscCheck == FALSE))
 	{
 		DBGPRINT(RT_DEBUG_LOUD, ("%s() - missing field, Sanity=0x%02x\n", __FUNCTION__, Sanity));
 		return FALSE;
@@ -844,6 +862,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 	ULONG Length = 0;
 	UCHAR *pPeerWscIe = NULL;
 	INT PeerWscIeLen = 0;
+	BOOLEAN bWscCheck = TRUE;
 	UCHAR LatchRfChannel = 0;
 	
 
@@ -1157,15 +1176,33 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 			else if (NdisEqualMemory(pEid->Octet, WPS_OUI, 4)
 			)
 			{
-				if (PeerWscIeLen >= 512)
-				DBGPRINT(RT_DEBUG_ERROR, ("%s: PeerWscIeLen = %d (>= 512)\n", __FUNCTION__, PeerWscIeLen));
-				if (pPeerWscIe && (PeerWscIeLen < 512))
+				if (pPeerWscIe)
 				{
-				NdisMoveMemory(pPeerWscIe+PeerWscIeLen, pEid->Octet+4, pEid->Len-4);
-				PeerWscIeLen += (pEid->Len - 4);
+					/* Ignore old WPS IE fragments, if we get the version 0x10 */
+					if (pEid->Octet[4] == 0x10) //First WPS IE will have version 0x10
+					{
+						NdisMoveMemory(pPeerWscIe, pEid->Octet+4, pEid->Len - 4);
+						PeerWscIeLen = (pEid->Len - 4);
+					}
+					else // reassembly remanning, other IE fragmentations will not have version 0x10
+					{
+						if ((PeerWscIeLen +(pEid->Len - 4)) <= 512)
+						{
+							NdisMoveMemory(pPeerWscIe+PeerWscIeLen, pEid->Octet+4, pEid->Len - 4);
+							PeerWscIeLen += (pEid->Len - 4);
+						}
+						else /* ((PeerWscIeLen +(pEid->Len - 4)) > 512) */
+						{
+							bWscCheck = FALSE;
+							DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! Sum of All PeerWscIeLen = %d (> 512)\n", __FUNCTION__, (PeerWscIeLen +(pEid->Len - 4))));
+						}
+					}
 				}
-
-
+				else
+				{
+					bWscCheck = FALSE;
+					DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! pPeerWscIe is empty!\n", __FUNCTION__));
+				}
 			}
 
 
@@ -1322,7 +1359,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 		Sanity |= 0x4;
 	}
 
-	if (pPeerWscIe && (PeerWscIeLen > 0) && (PeerWscIeLen < 512))
+	if (pPeerWscIe && (PeerWscIeLen > 0) && (PeerWscIeLen < 512)  && ( bWscCheck == TRUE))
 	{
 		UCHAR WscIe[] = {0xdd, 0x00, 0x00, 0x50, 0xF2, 0x04};
 		Ptr = (PUCHAR) pVIE;
@@ -1337,7 +1374,7 @@ SanityCheck:
 	if (pPeerWscIe)
 		os_free_mem(NULL, pPeerWscIe);
 
-	if (Sanity != 0x7)
+	if ((Sanity != 0x7) || ( bWscCheck == FALSE))
 	{
 		DBGPRINT(RT_DEBUG_LOUD, ("%s() - missing field, Sanity=0x%02x\n", __FUNCTION__, Sanity));
 		return FALSE;
@@ -2088,6 +2125,7 @@ BOOLEAN PeerProbeReqSanity(
 #ifdef WSC_INCLUDED
 	UCHAR		*pPeerWscIe = NULL;
 	UINT		PeerWscIeLen = 0;
+	BOOLEAN         bWscCheck = TRUE;
 #endif /* WSC_INCLUDED */
 #endif /* CONFIG_AP_SUPPORT */
 	UINT		total_ie_len = 0;	
@@ -2151,12 +2189,32 @@ BOOLEAN PeerProbeReqSanity(
 					WscCheckPeerDPID(pAd, Fr, eid_data, eid_len);
 
 #ifdef CONFIG_AP_SUPPORT
-					if (PeerWscIeLen >= 512)
-						DBGPRINT(RT_DEBUG_ERROR, ("APPeerProbeReqSanity : PeerWscIeLen = %d (>= 512)\n", PeerWscIeLen));
-					if (pPeerWscIe && (PeerWscIeLen < 512))
+					if (pPeerWscIe)
 					{
-						NdisMoveMemory(pPeerWscIe+PeerWscIeLen, eid_data+4, eid_len-4);
-						PeerWscIeLen += (eid_len - 4);
+						/* Ignore old WPS IE fragments, if we get the version 0x10 */
+						if (*(eid_data+4) == 0x10) //First WPS IE will have version 0x10
+						{
+							NdisMoveMemory(pPeerWscIe, eid_data+4, eid_len-4);
+							PeerWscIeLen = (eid_len-4);
+						}
+						else // reassembly remanning, other IE fragmentations will not have version 0x10
+						{
+							if ((PeerWscIeLen +(eid_len-4)) <= 512)
+							{
+								NdisMoveMemory(pPeerWscIe+PeerWscIeLen, eid_data+4, eid_len-4);
+								PeerWscIeLen += (eid_len-4);
+							}
+							else /* ((PeerWscIeLen +(eid_len-4)) > 512) */
+							{
+								bWscCheck = FALSE;
+								DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! Sum of All PeerWscIeLen = %d (> 512)\n", __FUNCTION__, (PeerWscIeLen +(eid_len-4))));
+							}
+						}
+					}
+					else
+					{
+						bWscCheck = FALSE;
+						DBGPRINT(RT_DEBUG_ERROR, ("%s: Error!!! pPeerWscIe is empty!\n", __FUNCTION__));
 					}
 #endif /* CONFIG_AP_SUPPORT */
 #endif /* WSC_INCLUDED */
@@ -2174,7 +2232,7 @@ BOOLEAN PeerProbeReqSanity(
 
 #ifdef CONFIG_AP_SUPPORT
 #ifdef WSC_INCLUDED
-	if (pPeerWscIe && (PeerWscIeLen > 0))
+	if (pPeerWscIe && (PeerWscIeLen > 0) && (bWscCheck == TRUE))
 	{
 		for (apidx = 0; apidx < pAd->ApCfg.BssidNum; apidx++)
 		{

@@ -2879,6 +2879,7 @@
 <b>5.2.x</b><br>
 1) cli: add disconnect command for disconnect selected sta.<br>
 2) kernel: ralink_wifi: mt7610: implement safe mcs at start transition and low traffic case.<br>
+3) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
 <br>
 <br>
 <br>
