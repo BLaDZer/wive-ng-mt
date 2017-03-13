@@ -2168,6 +2168,8 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR LastTxPER;	/* Tx PER in last Rate Adaptation interval */
 	UCHAR PER[MAX_TX_RATE_INDEX + 1];
 
+	UCHAR  LastSaveRateIdx;
+
 	UINT32 ContinueTxFailCnt;
 #ifdef WDS_SUPPORT
 	BOOLEAN LockEntryTx;	/* TRUE = block to WDS Entry traffic, FALSE = not. */
@@ -2254,6 +2256,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT32 TXMCSFailed[MAX_MCS_SET];
 	UINT32 TXMCSAutoFallBack[MAX_MCS_SET][MAX_MCS_SET];
 
+	CHAR RX_RSSI_MCS;
 
 #ifdef WAPI_SUPPORT
 	BOOLEAN WapiUskRekeyTimerRunning;

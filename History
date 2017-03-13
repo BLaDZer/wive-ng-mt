@@ -2876,5 +2876,9 @@
 78) kernel: net: ipv6: reorder icmpv6_init() and ip6_mr_init().<br>
 <br>
 <br>
+<b>5.2.x</b><br>
+1) kernel: ralink_wifi: mt7610: implement safe mcs at start transition and low traffic case.<br>
+<br>
+<br>
 <br>
 <br>

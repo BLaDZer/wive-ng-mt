@@ -25,6 +25,60 @@
 #ifdef NEW_RATE_ADAPT_SUPPORT
 #include "rt_config.h"
 
+VOID MlmeCaliRSSITable(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, CHAR Rssi, PUCHAR pTable)
+{
+    CHAR    ii;
+    UCHAR   EstiTxRateIdx = 0;
+    UCHAR   WiFiMode, CurrMCSRate;
+    CHAR    mcs[24];
+    RTMP_RA_GRP_TB *pEstiTxRate, *pCurrTxRate;
+
+    pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, pEntry->CurrTxRateIndex);
+
+    WiFiMode = pCurrTxRate->Mode;
+    CurrMCSRate = pCurrTxRate->CurrMCS;
+
+    DBGPRINT(RT_DEBUG_TRACE ,("RSSI %d\n", Rssi));
+
+    if((WiFiMode == MODE_CCK) || (WiFiMode == MODE_OFDM))
+    {
+        pEntry->RX_RSSI_MCS = 0;
+        return;
+    }
+
+    // Cover 16dB, about 4~5 MCS Steps
+    for(ii = 4; ii > -12; ii--)
+    {
+        UCHAR   EstiMCSRate;
+        /* Check existence and get index of each MCS */
+        MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
+        EstiTxRateIdx = MlmeSelectTxRateAdapt(pAd, pEntry, mcs, Rssi, ii);
+        pEstiTxRate = PTX_RA_GRP_ENTRY(pTable, EstiTxRateIdx);
+        EstiMCSRate = pEstiTxRate->CurrMCS;
+
+        pEntry->RX_RSSI_MCS = ii;
+
+        if((WiFiMode == MODE_HTMIX) || (WiFiMode == MODE_HTGREENFIELD))
+        {
+            DBGPRINT(RT_DEBUG_TRACE ,("HT Mode %d | %d\n", (EstiMCSRate & 0x07), (CurrMCSRate & 0x07)));
+            if((EstiMCSRate  & 0x07) == (CurrMCSRate & 0x07))
+            {
+                break;
+            }
+        }
+        else
+        {
+            DBGPRINT(RT_DEBUG_TRACE ,("VHT Mode %d | %d\n", EstiMCSRate, CurrMCSRate));
+            if(EstiMCSRate == CurrMCSRate)
+            {
+                break;
+            }
+        }
+    }
+
+    return;
+}
+
 
 /*
 	MlmeSetMcsGroup - set initial mcsGroup based on supported MCSs
@@ -286,6 +340,93 @@ UCHAR MlmeSelectDownRate(
 	return DownRateIdx;
 }
 
+
+/*
+	MlmeSupportMaxRate - Limit Max Rate in the table of supported MCSs
+		pAd - pointer to adapter
+		pEntry - MAC Table entry. pEntry->pTable is a rate table with mcsGroup values
+*/
+VOID MlmeLimitMaxRate(
+	IN struct _RTMP_ADAPTER     *pAd,
+	IN struct _MAC_TABLE_ENTRY  *pEntry,
+	IN UCHAR			        *pRateIdx,
+	IN UCHAR                    ucDirection)
+{
+	PUCHAR 			pTable;
+	RTMP_RA_GRP_TB 	*pCurrTxRate, *pUpTxRate;
+	UCHAR 			CurrRateIdx, UpRateIdx;
+	UCHAR			MAXMCSRate;
+
+   	pTable = pEntry->pTable;
+
+    // Check Current Max Limit MCS Rate
+    if(ucDirection == RATE_NO_CHANGE)
+    {
+        CurrRateIdx = *pRateIdx;
+	    pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
+
+       	DBGPRINT(RT_DEBUG_INFO, ("Max MCS %X\n", pEntry->MaxHTPhyMode.field.MCS));
+
+        if(pCurrTxRate->CurrMCS == MCS_32)
+  	    	return;
+
+        //CCK / OFDM without Limit
+        if(pCurrTxRate->Mode < MODE_HTMIX)
+   		    return;
+
+	    if(pEntry->SupportRateMode & SUPPORT_VHT_MODE) {
+	        MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS & 0x0F;
+    	}
+	    else if(pEntry->SupportRateMode & SUPPORT_HT_MODE) {
+		    if(pCurrTxRate->CurrMCS > MCS_8) { // 7610 Support Only 1SS
+			    MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS | 0x08;
+    		}
+	    	else {
+		    	MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS;
+            }
+	    }
+    	else {
+		    return;
+    	}
+
+	    while(pCurrTxRate->CurrMCS > MAXMCSRate) {
+		    if(pCurrTxRate->CurrMCS == MCS_0)
+			    break;
+
+    		CurrRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
+	    	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
+    	}
+
+    	*pRateIdx = CurrRateIdx;
+
+	    return;
+    }
+    // Check Max Limit MCS Rate when happen up rate process
+    else if(ucDirection == RATE_UP)
+    {
+        UpRateIdx = *pRateIdx;
+	    pUpTxRate = PTX_RA_GRP_ENTRY(pTable, UpRateIdx);
+
+        if(pUpTxRate->CurrMCS == MCS_32)
+  	    	return;
+
+        //CCK / OFDM without Limit
+        if(pUpTxRate->Mode < MODE_HTMIX)
+   		    return;
+
+	    if(pEntry->SupportRateMode & SUPPORT_VHT_MODE) {
+		    if(pUpTxRate->CurrMCS > (pEntry->MaxHTPhyMode.field.MCS & 0x0F))
+			    *pRateIdx = pEntry->CurrTxRateIndex;
+    	}
+     	else if(pEntry->SupportRateMode & SUPPORT_HT_MODE) {
+        	if((pUpTxRate->CurrMCS & 0x07) > (pEntry->MaxHTPhyMode.field.MCS & 0x07))
+	        	*pRateIdx = pEntry->CurrTxRateIndex;
+       	}
+	    return;
+    }
+    else
+   		return;
+}
 
 /*
 	MlmeGetSupportedMcsAdapt - fills in the table of supported MCSs
@@ -880,6 +1021,7 @@ VOID MlmeNewRateAdapt(
 
 	pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
 
+	pEntry->LastSaveRateIdx = pEntry->CurrTxRateIndex;
 
 	if (TxErrorRatio >= TrainDown)
 	{
@@ -1534,12 +1676,24 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	/*  decide the next upgrade rate and downgrade rate, if any */
 	CurrRateIdx = pEntry->CurrTxRateIndex;
 
-	/* Up Rate */
+	//Current Rate and Check Max MCS Rate
+	MlmeLimitMaxRate(pAd, pEntry, &CurrRateIdx, RATE_NO_CHANGE);
+
+	//Up Rate and Check Max MCS Rate
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 	pEntry->CurrTxRateIndex = CurrRateIdx;
 	UpRateIdx = MlmeSelectUpRate(pAd, pEntry, pCurrTxRate);
+	MlmeLimitMaxRate(pAd, pEntry, &UpRateIdx, RATE_UP);
+
+	//Down Rate
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 
+	DBGPRINT(RT_DEBUG_TRACE, ("Average PER %lu, Cur %d, Up %d, Dn %d\n", TxErrorRatio,
+								CurrRateIdx, UpRateIdx, DownRateIdx));
+
+	DBGPRINT(RT_DEBUG_TRACE, ("RAA:Tx Quality 1SS %d, 2SS %d\n",
+								pEntry->TxQuality[pCurrTxRate->upMcs1],
+								pEntry->TxQuality[pCurrTxRate->upMcs2]));
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore, 
@@ -1600,46 +1754,54 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			CHAR RssiOffset = 0;
 
 			//pEntry->lowTrafficCount = 0;
-
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
 
 			if ((pTable == RateSwitchTable11BGN2S) || (pTable == RateSwitchTable11BGN2SForABand) ||
 				(pTable == RateSwitchTable11N2S) || (pTable == RateSwitchTable11N2SForABand))
 			{
-				RssiOffset = 2;
+				RssiOffset = -12;
 			}
 			else if (ADAPT_RATE_TABLE(pTable))
 			{
-				RssiOffset = 0;
+				RssiOffset = -12;
 			}
 			else
 			{
 				RssiOffset = 5;
 			}
 
-#ifdef NOISE_TEST_ADJUST
-			if (pAd->MacTab.Size > 5) {
-				if (Rssi > -73)
-					Rssi = -73;
-				else
-					RssiOffset += 3;
-			}
-#endif /* NOISE_TEST_ADJUST */
-			/* Select the Tx rate based on the RSSI */
-			TxRateIdx = MlmeSelectTxRateAdapt(pAd, pEntry, mcs, Rssi, RssiOffset);
-				pEntry->lastRateIdx = pEntry->CurrTxRateIndex;
-				MlmeSetMcsGroup(pAd, pEntry);
+		TxRateIdx = pEntry->CurrTxRateIndex;
 
-				pEntry->CurrTxRateIndex = TxRateIdx;
+               /* Select the Tx rate based on the RSSI */
+	        if((pEntry->lowTrafficCount == pAd->CommonCfg.lowTrafficThrd) &&
+	           (pEntry->LastSaveRateIdx != 0xFF)) {
+                // Get Latest Rate Index to calibration once
+                MlmeCaliRSSITable(pAd, pEntry, Rssi, pTable);
+                TxRateIdx = MlmeSelectTxRateAdapt(pAd, pEntry, mcs, Rssi, pEntry->RX_RSSI_MCS);
+                DBGPRINT(RT_DEBUG_TRACE,("Update New MCS with Cali RSSI:%d\n", pEntry->RX_RSSI_MCS));
+	        }
+	        else if((pEntry->lowTrafficCount > 60) || (pEntry->LastSaveRateIdx == 0xFF)) {
+                // 30 second and First Time
+                // Low Packet with holding safe MCS Rate
+                TxRateIdx = MlmeSelectTxRateAdapt(pAd, pEntry, mcs, Rssi, RssiOffset);
+       			pEntry->lowTrafficCount = pAd->CommonCfg.lowTrafficThrd;
+       			DBGPRINT(RT_DEBUG_TRACE,("Update New MCS with RSSI\n"));
+	        }
+
+			MlmeLimitMaxRate(pAd, pEntry, &TxRateIdx, RATE_NO_CHANGE);
+			pEntry->lastRateIdx = pEntry->CurrTxRateIndex;
+			MlmeSetMcsGroup(pAd, pEntry);
+			pEntry->CurrTxRateIndex = TxRateIdx;
+
 #ifdef TXBF_SUPPORT
-				pEntry->phyETxBf = pEntry->phyITxBf = FALSE;
+			//pEntry->phyETxBf = pEntry->phyITxBf = FALSE;
 #endif /* TXBF_SUPPORT */
-				MlmeNewTxRate(pAd, pEntry);
-				if (!pEntry->fLastSecAccordingRSSI)
-				{
-					DBGPRINT(RT_DEBUG_INFO,("DRS: TxTotalCnt <= 15, switch to MCS%d according to RSSI (%d), RssiOffset=%d\n", pEntry->HTPhyMode.field.MCS, Rssi, RssiOffset));
-				}
+			MlmeNewTxRate(pAd, pEntry);
+			if (!pEntry->fLastSecAccordingRSSI)
+			{
+				DBGPRINT(RT_DEBUG_INFO,("DRS: TxTotalCnt <= 15, switch to MCS%d according to RSSI (%d), RssiOffset=%d\n", pEntry->HTPhyMode.field.MCS, Rssi, RssiOffset));
+			}
 
 			MlmeClearAllTxQuality(pEntry);	/* clear all history */
 			pEntry->fLastSecAccordingRSSI = TRUE;
