@@ -452,7 +452,8 @@ VOID WpaEAPOLKeyAction(
 	                        	pAd->MacTab.Content[i].GTKState = REKEY_NEGOTIATING;
 	                        	WPAStart2WayGroupHS(pAd, &pAd->MacTab.Content[i]);
 								pAd->MacTab.Content[i].ReTryCounter = GROUP_MSG1_RETRY_TIMER_CTR;
-								RTMPModTimer(&pAd->MacTab.Content[i].RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
+								/* retry timer is set inside WPAStart2WayGroupHS */
+								//RTMPModTimer(&pAd->MacTab.Content[i].RetryTimer, PEER_MSG3_RETRY_EXEC_INTV);
 	                    	}
 	                	}
 
