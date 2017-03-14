@@ -1428,8 +1428,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	if (pAd->MacTab.Size == 1)
 		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
 	else
-		//OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
+		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + (TxSuccess >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	/* the only situation when pEntry->TxQuality[CurrRateIdx] = DRS_TX_QUALITY_WORST_BOUND but no rate change */
