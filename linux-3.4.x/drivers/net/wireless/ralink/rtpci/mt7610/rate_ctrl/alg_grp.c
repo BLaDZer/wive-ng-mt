@@ -378,8 +378,8 @@ VOID MlmeLimitMaxRate(
 	        MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS & 0x0F;
     	}
 	    else if(pEntry->SupportRateMode & SUPPORT_HT_MODE) {
-		    if(pCurrTxRate->CurrMCS > MCS_8) { // 7610 Support Only 1SS
-			    MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS | 0x08;
+		    if(pCurrTxRate->CurrMCS > MCS_7) { // 7610 Support Only 1SS
+			    MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS | 0x07;
     		}
 	    	else {
 		    	MAXMCSRate = pEntry->MaxHTPhyMode.field.MCS;
