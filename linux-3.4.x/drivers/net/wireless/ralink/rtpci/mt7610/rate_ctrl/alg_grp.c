@@ -274,8 +274,13 @@ UCHAR MlmeSelectDownRate(
 	IN PMAC_TABLE_ENTRY	pEntry,
 	IN UCHAR CurrRateIdx)
 {
-	UCHAR DownRateIdx = PTX_RA_GRP_ENTRY(pEntry->pTable, CurrRateIdx)->downMcs;
+	UCHAR DownRateIdx;
 	RTMP_RA_GRP_TB *pDownRate;
+
+	if (pAd==NULL || RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pEntry->pTable==NULL)
+        	return 0;
+
+	DownRateIdx = PTX_RA_GRP_ENTRY(pEntry->pTable, CurrRateIdx)->downMcs;
 
 	/*  Loop until a valid down rate is found */
 	while (1) {
@@ -1423,7 +1428,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	if (pAd->MacTab.Size == 1)
 		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
 	else
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + (TxSuccess >> 1);
+		//OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
+		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	/* the only situation when pEntry->TxQuality[CurrRateIdx] = DRS_TX_QUALITY_WORST_BOUND but no rate change */
@@ -1492,6 +1498,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
+			MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, DRS_TX_QUALITY_WORST_BOUND);
+			pEntry->CurrTxRateIndex = pCurrTxRate->downMcs;
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));
 		}
 		else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
@@ -1503,7 +1511,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			}
 			else
 			{
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio < TrainUp)\n"));
+                DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainUp)\n"));
 			}
 		}
 		else
@@ -1817,6 +1825,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			eTxBFProbing(pAd, pEntry);
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* TXBF_SUPPORT */
+
+    		pEntry->fLastSecAccordingRSSI = TRUE;
 
 		return;
 	}
