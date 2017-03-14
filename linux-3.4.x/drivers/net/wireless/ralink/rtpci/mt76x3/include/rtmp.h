@@ -2593,7 +2593,6 @@ typedef struct _MAC_TABLE_ENTRY {
 
 	UCHAR ucMaxTxRetryCnt;
 
-	BOOLEAN fgDisableCCK;
 #ifdef NEW_RATE_ADAPT_SUPPORT
 	UCHAR lowTrafficCount;
 	UCHAR fewPktsCnt;

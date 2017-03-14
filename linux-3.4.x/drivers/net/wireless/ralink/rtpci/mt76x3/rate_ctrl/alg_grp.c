@@ -277,7 +277,6 @@ UCHAR MlmeSelectDownRate(
 #ifdef DBG_CTRL_SUPPORT
 				&& ((pAd->CommonCfg.DebugFlags & DBF_DISABLE_CCK)==0)
 #endif /* DBG_CTRL_SUPPORT */
-				&& (pEntry->fgDisableCCK == FALSE)
 			)
 				break;
 		}
