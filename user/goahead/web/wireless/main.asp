@@ -2094,7 +2094,7 @@
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
 			<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
-			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgCheckTime_default" style="color: #808080">ms, default 6000</span></td>
+			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgCheckTime_default" style="color: #808080">ms, default 5000</span></td>
 		</tr>
 	</table>
 	<table id="div_ids" name="div_ids" class="form" style="display:none;">
