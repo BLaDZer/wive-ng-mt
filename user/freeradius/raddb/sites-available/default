@@ -62,6 +62,9 @@ server default {
 		eap
 		remove_reply_message_if_eap
 	}
+
+	Post-Auth-Type Challenge {
+	}
     }
 
     pre-proxy {

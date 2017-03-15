@@ -72,13 +72,15 @@ security {
 
 	# reject_delay && status_server don't apply when we are
 	# only reading accounting packets from the detail file
+
+@openssl_version_check_config@
 }
 
 #
 #  If you need more modules, add them here.
 #
 modules {
-	$INCLUDE ${confdir}/modules/always
+	$INCLUDE ${confdir}/mods-enabled/always
 }
 
 #
@@ -134,6 +136,7 @@ realm radrelay {
 	acct_pool = radrelay
 }
 
+server radrelay {
 #
 #  Read the detail file.
 #
@@ -162,4 +165,5 @@ preacct {
 	update control {
 		Proxy-To-Realm := "radrelay"
 	}
+}
 }

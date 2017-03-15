@@ -20,6 +20,7 @@ eap {
 		random_file = /dev/urandom
 		ca_path = ${cadir}
 		cipher_list = "DEFAULT"
+		cipher_server_preference = no
 		ecdh_curve = "prime256v1"
 		cache {
 			enable = yes

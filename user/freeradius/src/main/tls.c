@@ -1189,6 +1189,7 @@ static CONF_PARSER tls_server_config[] = {
 	{ "allow_expired_crl", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, fr_tls_server_conf_t, allow_expired_crl), NULL },
 	{ "check_cert_cn", FR_CONF_OFFSET(PW_TYPE_STRING, fr_tls_server_conf_t, check_cert_cn), NULL },
 	{ "cipher_list", FR_CONF_OFFSET(PW_TYPE_STRING, fr_tls_server_conf_t, cipher_list), NULL },
+	{ "cipher_server_preference", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, fr_tls_server_conf_t, cipher_server_preference), NULL },
 	{ "check_cert_issuer", FR_CONF_OFFSET(PW_TYPE_STRING, fr_tls_server_conf_t, check_cert_issuer), NULL },
 	{ "require_client_cert", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, fr_tls_server_conf_t, require_client_cert), NULL },
 
@@ -1389,6 +1390,21 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 			goto error;
 		}
 
+		/*
+		 *	Set the filename to be temporarily write-only.
+		 */
+		if (request) {
+			VALUE_PAIR *vp;
+
+			vp = fr_pair_afrom_num(request->state_ctx, PW_TLS_CACHE_FILENAME, 0);
+			if (vp) {
+				fr_pair_value_strcpy(vp, filename);
+				fr_pair_add(&request->state, vp);
+			}
+
+			(void) fchmod(fd, S_IWUSR);
+		}
+
 		todo = blob_len;
 		p = sess_blob;
 		while (todo > 0) {
@@ -1411,7 +1427,11 @@ error:
 	return 0;
 }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
 static SSL_SESSION *cbtls_get_session(SSL *ssl, unsigned char *data, int len, int *copy)
+#else
+static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int len, int *copy)
+#endif
 {
 	size_t			size;
 	char			buffer[2 * MAX_SESSION_SIZE + 1];
@@ -1453,16 +1473,6 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, unsigned char *data, int len, in
 
 		struct stat	st;
 		VALUE_PAIR	*vps = NULL;
-
-		/* read in the cached VPs from the .vps file */
-		snprintf(filename, sizeof(filename), "%s%c%s.vps",
-			 conf->session_cache_path, FR_DIR_SEP, buffer);
-		rv = pairlist_read(talloc_ctx, filename, &pairlist, 1);
-		if (rv < 0) {
-			/* not safe to un-persist a session w/o VPs */
-			RWDEBUG("Failed loading persisted VPs for session %s", buffer);
-			goto err;
-		}
 
 		/* load the actual SSL session */
 		snprintf(filename, sizeof(filename), "%s%c%s.asn1", conf->session_cache_path, FR_DIR_SEP, buffer);
@@ -1516,6 +1526,16 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, unsigned char *data, int len, in
 		sess = d2i_SSL_SESSION(NULL, o, st.st_size);
 		if (!sess) {
 			RWDEBUG("Failed loading persisted session: %s", ERR_error_string(ERR_get_error(), NULL));
+			goto err;
+		}
+
+		/* read in the cached VPs from the .vps file */
+		snprintf(filename, sizeof(filename), "%s%c%s.vps",
+			 conf->session_cache_path, FR_DIR_SEP, buffer);
+		rv = pairlist_read(talloc_ctx, filename, &pairlist, 1);
+		if (rv < 0) {
+			/* not safe to un-persist a session w/o VPs */
+			RWDEBUG("Failed loading persisted VPs for session %s", buffer);
 			goto err;
 		}
 
@@ -1910,8 +1930,11 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 	char		cn_str[1024];
 	char		buf[64];
 	X509		*client_cert;
-	X509_CINF	*client_inf;
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+	const STACK_OF(X509_EXTENSION) *ext_list;
+#else
 	STACK_OF(X509_EXTENSION) *ext_list;
+#endif
 	SSL		*ssl;
 	int		err, depth, lookup, loc;
 	fr_tls_server_conf_t *conf;
@@ -2016,7 +2039,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 		rdebug_pair(L_DBG_LVL_2, request, vp, NULL);
 	}
 
-	X509_NAME_oneline(X509_get_issuer_name(ctx->current_cert), issuer,
+	X509_NAME_oneline(X509_get_issuer_name(client_cert), issuer,
 			  sizeof(issuer));
 	issuer[sizeof(issuer) - 1] = '\0';
 	if (certs && identity && (lookup <= 1) && issuer[0]) {
@@ -2053,14 +2076,14 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 #ifdef GEN_EMAIL
 				case GEN_EMAIL:
 					vp = fr_pair_make(talloc_ctx, certs, cert_attr_names[FR_TLS_SAN_EMAIL][lookup],
-						      (char *) ASN1_STRING_data(name->d.rfc822Name), T_OP_SET);
+						      (char const *) ASN1_STRING_get0_data(name->d.rfc822Name), T_OP_SET);
 					rdebug_pair(L_DBG_LVL_2, request, vp, NULL);
 					break;
 #endif	/* GEN_EMAIL */
 #ifdef GEN_DNS
 				case GEN_DNS:
 					vp = fr_pair_make(talloc_ctx, certs, cert_attr_names[FR_TLS_SAN_DNS][lookup],
-						      (char *) ASN1_STRING_data(name->d.dNSName), T_OP_SET);
+						      (char const *) ASN1_STRING_get0_data(name->d.dNSName), T_OP_SET);
 					rdebug_pair(L_DBG_LVL_2, request, vp, NULL);
 					break;
 #endif	/* GEN_DNS */
@@ -2071,7 +2094,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 					    /* we've got a UPN - Must be ASN1-encoded UTF8 string */
 					    if (name->d.otherName->value->type == V_ASN1_UTF8STRING) {
 						    vp = fr_pair_make(talloc_ctx, certs, cert_attr_names[FR_TLS_SAN_UPN][lookup],
-								  (char *) ASN1_STRING_data(name->d.otherName->value->value.utf8string), T_OP_SET);
+								  (char const *) ASN1_STRING_get0_data(name->d.otherName->value->value.utf8string), T_OP_SET);
 						    rdebug_pair(L_DBG_LVL_2, request, vp, NULL);
 						break;
 					    } else {
@@ -2109,8 +2132,13 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 	}
 
 	if (lookup == 0) {
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+		ext_list = X509_get0_extensions(client_cert);
+#else
+		X509_CINF	*client_inf;
 		client_inf = client_cert->cert_info;
 		ext_list = client_inf->extensions;
+#endif
 	} else {
 		ext_list = NULL;
 	}
@@ -2170,7 +2198,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 
 	REXDENT();
 
-	switch (ctx->error) {
+	switch (X509_STORE_CTX_get_error(ctx)) {
 	case X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT:
 		RERROR("issuer=%s", issuer);
 		break;
@@ -2409,38 +2437,6 @@ static int set_ecdh_curve(SSL_CTX *ctx, char const *ecdh_curve, bool disable_sin
 #endif
 #endif
 
-/*
- * DIE OPENSSL DIE DIE DIE
- *
- * What a palaver, just to free some data attached the
- * session. We need to do this because the "remove" callback
- * is called when refcount > 0 sometimes, if another thread
- * is using the session
- */
-static void sess_free_vps(UNUSED void *parent, void *data_ptr,
-				UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
-				UNUSED long argl, UNUSED void *argp)
-{
-	VALUE_PAIR *vp = data_ptr;
-	if (!vp) return;
-
-	DEBUG2(LOG_PREFIX ": Freeing cached session VPs");
-
-	fr_pair_list_free(&vp);
-}
-
-static void sess_free_certs(UNUSED void *parent, void *data_ptr,
-				UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
-				UNUSED long argl, UNUSED void *argp)
-{
-	VALUE_PAIR **certs = data_ptr;
-	if (!certs) return;
-
-	DEBUG2(LOG_PREFIX ": Freeing cached session Certificates");
-
-	fr_pair_list_free(certs);
-}
-
 /** Add all the default ciphers and message digests reate our context.
  *
  * This should be called exactly once from main, before reading the main config
@@ -2451,12 +2447,12 @@ void tls_global_init(void)
 	SSL_load_error_strings();	/* readable error messages (examples show call before library_init) */
 	SSL_library_init();		/* initialize library */
 	OpenSSL_add_all_algorithms();	/* required for SHA2 in OpenSSL < 0.9.8o and 1.0.0.a */
-	OPENSSL_config(NULL);
+	CONF_modules_load_file(NULL, NULL, 0);
 
 	/*
 	 *	Initialize the index for the certificates.
 	 */
-	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_certs);
+	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
 }
 
 #ifdef ENABLE_OPENSSL_VERSION_CHECK
@@ -2513,7 +2509,11 @@ int tls_global_version_check(char const *acknowledged)
  */
 void tls_global_cleanup(void)
 {
+#if OPENSSL_VERSION_NUMBER < 0x10000000L
 	ERR_remove_state(0);
+#elif OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+	ERR_remove_thread_state(NULL);
+#endif
 	ENGINE_cleanup();
 	CONF_modules_unload(1);
 	ERR_free_strings();
@@ -2805,6 +2805,15 @@ post_ca:
 	 */
 	ctx_options |= SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS;
 
+	if (conf->cipher_server_preference) {
+		/*
+		 *      SSL_OP_CIPHER_SERVER_PREFERENCE to follow best practice
+		 *      of nowday's TLS: do not allow poorly-selected ciphers from
+		 *      client to take preference
+		 */
+		ctx_options |= SSL_OP_CIPHER_SERVER_PREFERENCE;
+	}
+
 	SSL_CTX_set_options(ctx, ctx_options);
 
 	/*
@@ -2860,7 +2869,7 @@ post_ca:
 
 		SSL_CTX_set_quiet_shutdown(ctx, 1);
 		if (fr_tls_ex_index_vps < 0)
-			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_vps);
+			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
 	}
 
 	/*

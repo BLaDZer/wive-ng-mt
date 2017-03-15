@@ -436,7 +436,7 @@ static ssize_t mschap_xlat(void *instance, REQUEST *request,
 		char const *p;
 
 		p = fmt + 8;	/* 7 is the length of 'NT-Hash' */
-		if ((p == '\0')	 || (outlen <= 32))
+		if ((*p == '\0') || (outlen <= 32))
 			return 0;
 
 		while (isspace(*p)) p++;
@@ -459,7 +459,7 @@ static ssize_t mschap_xlat(void *instance, REQUEST *request,
 		char const *p;
 
 		p = fmt + 8;	/* 7 is the length of 'LM-Hash' */
-		if ((p == '\0') || (outlen <= 32))
+		if ((*p == '\0') || (outlen <= 32))
 			return 0;
 
 		while (isspace(*p)) p++;
@@ -560,6 +560,7 @@ static const CONF_PARSER module_config[] = {
 	{ "retry_msg", FR_CONF_OFFSET(PW_TYPE_STRING, rlm_mschap_t, retry_msg), NULL },
 	{ "winbind_username", FR_CONF_OFFSET(PW_TYPE_STRING | PW_TYPE_TMPL, rlm_mschap_t, wb_username), NULL },
 	{ "winbind_domain", FR_CONF_OFFSET(PW_TYPE_STRING | PW_TYPE_TMPL, rlm_mschap_t, wb_domain), NULL },
+	{ "winbind_retry_with_normalised_username", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, rlm_mschap_t, wb_retry_with_normalised_username), "no" },
 #ifdef __APPLE__
 	{ "use_open_directory", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, rlm_mschap_t, open_directory), "yes" },
 #endif
@@ -1405,7 +1406,8 @@ static rlm_rcode_t mschap_error(rlm_mschap_t *inst, REQUEST *request, unsigned c
 	char		*p;
 
 	if ((mschap_result == -648) ||
-	    (smb_ctrl && ((smb_ctrl->vp_integer & ACB_PW_EXPIRED) != 0))) {
+	    ((mschap_result == 0) &&
+	     (smb_ctrl && ((smb_ctrl->vp_integer & ACB_PW_EXPIRED) != 0)))) {
 		REDEBUG("Password has expired.  User should retry authentication");
 		error = 648;
 
@@ -1969,6 +1971,17 @@ static rlm_rcode_t CC_HINT(nonnull) mod_authenticate(void *instance, REQUEST *re
 		rcode = mschap_error(inst, request, *response->vp_octets,
 				     mschap_result, mschap_version, smb_ctrl);
 		if (rcode != RLM_MODULE_OK) return rcode;
+
+#ifdef WITH_AUTH_WINBIND
+		if (inst->wb_retry_with_normalised_username) {
+			if ((response_name = fr_pair_find_by_num(request->packet->vps, PW_MS_CHAP_USER_NAME, 0, TAG_ANY))) {
+				if (strcmp(username_string, response_name->vp_strvalue)) {
+					RDEBUG2("Changing username %s to %s", username_string, response_name->vp_strvalue);
+					username_string = response_name->vp_strvalue;
+				}
+			}
+		}
+#endif
 
 		mschap_auth_response(username_string,		/* without the domain */
 				     nthashhash,		/* nt-hash-hash */

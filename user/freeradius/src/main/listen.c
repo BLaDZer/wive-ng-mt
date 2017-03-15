@@ -1325,12 +1325,6 @@ static int auth_socket_send(rad_listen_t *listener, REQUEST *request)
 			       fr_strerror());
 		return -1;
 	}
-
-	if (request->reply->data_len > (MAX_PACKET_LEN - 100)) {
-		RWARN("Packet is large, and possibly truncated - %zd vs max %d",
-		      request->reply->data_len, MAX_PACKET_LEN);
-	}
-
 	return 0;
 }
 
@@ -1371,11 +1365,6 @@ static int acct_socket_send(rad_listen_t *listener, REQUEST *request)
 		return -1;
 	}
 
-	if (request->reply->data_len > (MAX_PACKET_LEN - 100)) {
-		RWARN("Packet is large, and possibly truncated - %zd vs max %d",
-		      request->reply->data_len, MAX_PACKET_LEN);
-	}
-
 	return 0;
 }
 #endif
@@ -1396,11 +1385,6 @@ static int proxy_socket_send(rad_listen_t *listener, REQUEST *request)
 		RERROR("Failed sending proxied request: %s",
 			       fr_strerror());
 		return -1;
-	}
-
-	if (request->proxy->data_len > (MAX_PACKET_LEN - 100)) {
-		RWARN("Packet is large, and possibly truncated - %zd vs max %d",
-		      request->proxy->data_len, MAX_PACKET_LEN);
 	}
 
 	return 0;
@@ -2115,7 +2099,7 @@ static int client_socket_encode(UNUSED rad_listen_t *listener, REQUEST *request)
 	}
 
 	if (request->reply->data_len > (MAX_PACKET_LEN - 100)) {
-		RWARN("Packet is large, and possibly truncated - %zd vs max %d",
+		RWDEBUG("Packet is large, and possibly truncated - %zd vs max %d",
 		      request->reply->data_len, MAX_PACKET_LEN);
 	}
 
@@ -2174,7 +2158,7 @@ static int proxy_socket_encode(UNUSED rad_listen_t *listener, REQUEST *request)
 	}
 
 	if (request->proxy->data_len > (MAX_PACKET_LEN - 100)) {
-		RWARN("Packet is large, and possibly truncated - %zd vs max %d",
+		RWDEBUG("Packet is large, and possibly truncated - %zd vs max %d",
 		      request->proxy->data_len, MAX_PACKET_LEN);
 	}
 
@@ -2936,7 +2920,7 @@ static const FR_NAME_NUMBER listen_compare[] = {
 	{ NULL, 0 },
 };
 
-static int _free_proto_handle(lt_dlhandle *handle)
+static int _free_proto_handle(fr_dlhandle *handle)
 {
 	dlclose(*handle);
 	return 0;
@@ -2949,7 +2933,7 @@ static rad_listen_t *listen_parse(CONF_SECTION *cs, char const *server)
 	rad_listen_t	*this;
 	CONF_PAIR	*cp;
 	char const	*value;
-	lt_dlhandle	handle;
+	fr_dlhandle	handle;
 	CONF_SECTION	*server_cs;
 	char		buffer[32];
 
@@ -2968,10 +2952,10 @@ static rad_listen_t *listen_parse(CONF_SECTION *cs, char const *server)
 	}
 
 	snprintf(buffer, sizeof(buffer), "proto_%s", value);
-	handle = lt_dlopenext(buffer);
+	handle = fr_dlopenext(buffer);
 	if (handle) {
 		fr_protocol_t	*proto;
-		lt_dlhandle	*marker;
+		fr_dlhandle	*marker;
 
 		proto = dlsym(handle, buffer);
 		if (!proto) {
@@ -2990,7 +2974,7 @@ static rad_listen_t *listen_parse(CONF_SECTION *cs, char const *server)
 		/*
 		 *	Ensure handle gets closed if config section gets freed
 		 */
-		marker = talloc(cs, lt_dlhandle);
+		marker = talloc(cs, fr_dlhandle);
 		*marker = handle;
 		talloc_set_destructor(marker, _free_proto_handle);
 
