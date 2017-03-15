@@ -161,6 +161,8 @@ int func_wl(int argc, char* argv[])
 
     if (!cmd || STR_EQ_HELP(cmd))
     {
+        writeCmdHelp("disconnect <band> <mac>", "disconnect client station by MAC");
+        writeCmdHelp("disconnect <band> all", "disconnect all client stations");
         writeCmdHelp("scan 2.4/5/<if>", "scan and show remote AP list");
         writeCmdHelp("stalist 2.4/5/<if>", "show connected client stations");
         writeCmdHelp("status","view wlan status");
@@ -187,6 +189,13 @@ int func_wl(int argc, char* argv[])
     {
         return func_wl_wds(argc, argv);
     }
+    else
+    if (STR_EQ(cmd, "disconnect"))
+    {
+        return func_wl_disconnect(argc, argv);
+    }
+
+
 
     return 0;
 }
@@ -551,64 +560,131 @@ int func_wl_stalist_iface(char* iface, int argc, char* argv[])
     argc--;
     argv++;
 
-    if (!cmd)
-    {
-        showStationList(iface);
-        return 0;
-    }
-
-    if (STR_EQ_HELP(cmd))
+    if (cmd && STR_EQ_HELP(cmd))
     {
         writeCmdHelp("stalist <if>", "show connected client stations");
-        writeCmdHelp("stalist <if> disconnect <mac>", "disconnect client station by MAC");
         printf("\n");
     }
     else
-    if (STR_EQ(cmd,"disconnect"))
     {
-        func_wl_stalist_iface_disconnect(iface, argc, argv);
+        showStationList(iface);
     }
 
     return 0;
 
 }
 
-int func_wl_stalist_iface_disconnect(char* iface, int argc, char* argv[])
+int func_wl_disconnect(int argc, char* argv[])
 {
-    int ret;
     char* cmd = (argc>0) ? argv[0] : NULL;
+    argc--;
+    argv++;
+    char* mac = (argc>0) ? argv[0] : NULL;
     argc--;
     argv++;
 
     if (!cmd || STR_EQ_HELP(cmd))
     {
-        writeCmdHelp("stalist <if> disconnect <mac>", "disconnect client station by MAC");
-        writeCmdHelp("stalist <if> disconnect all", "disconnect all client stations");
+        writeCmdHelp("disconnect <band> <mac>", "disconnect client station by MAC");
+        writeCmdHelp("disconnect <band> all", "disconnect all client stations");
         printf("\n");
         return 0;
     }
 
-    if (STR_EQ(cmd, "all"))
+    int ret_code = 0;
+
+    if (STR_EQ(cmd, "2.4"))
+    {
+        ret_code = func_wl_disconnect_iface("ra0", mac);
+        if (ret_code > 0) 
+        {
+            printf("WLAN Disconnect %s from 2.4GHz error %i! \n", mac, ret_code);
+            return 1;
+        }
+    }
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    else
+    if (STR_EQ(cmd, "5"))
+    {
+        ret_code = func_wl_disconnect_iface("rai0", mac);
+        if (ret_code > 0) 
+        {
+            printf("WLAN Disconnect %s from 5GHz error %i! \n", mac, ret_code);
+            return 1;
+        }
+    }
+#endif
+    else
+    {
+        if (mac != NULL)
+        {
+            ret_code = func_wl_disconnect_iface(cmd, mac);
+            if (ret_code > 0) 
+            {
+                printf("WLAN Disconnect %s from %s error %i! \n", mac, cmd, ret_code);
+                return 1;
+            }
+        }
+        else
+        {
+            ret_code = func_wl_disconnect_iface("ra0", cmd);
+            int is_err = 0;
+
+            if (ret_code > 0) 
+            {
+                printf("WLAN Disconnect %s from 2.4GHz error %i! \n", cmd, ret_code);
+                is_err = 1;
+            }
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+            ret_code = func_wl_disconnect_iface("rai0", cmd);
+            if (ret_code > 0) 
+            {
+                printf("WLAN Disconnect %s from 5GHz error %i! \n", cmd, ret_code);
+                is_err = 1;
+            }
+#endif
+
+            if (is_err)
+            {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+
+}
+
+int func_wl_disconnect_iface(char* iface, char* mac)
+{
+    int ret;
+
+    if (mac == NULL)
+    {
+        return 1;
+    }
+
+    if (STR_EQ(mac, "all"))
     {
         ret = wlanDisconnectAllStations(iface);
         if (ret != 0)
         {
-            printf("WLAN Disconnect All from %s error %i! \n", iface, ret);
+            return 2;
         }
-
     }
     else
-    if (strlen(cmd) == 17)
+    if (strlen(mac) == 17)
     {
-        ret = wlanDisconnectStation(iface, cmd);
+        ret = wlanDisconnectStation(iface, mac);
         if (ret != 0)
         {
-            printf("WLAN Disconnect %s from %s error %i! \n", cmd, iface, ret);
+            return 2;
         }
     }
     else
     {
-        printf("Wrong MAC format! Use XX:XX:XX:XX:XX:XX . \n");
+        return 3;
     }
 
     return 0;
@@ -644,13 +720,9 @@ int func_wl_stalist(int argc, char* argv[])
         writeCmdHelp("stalist <if>", "show connected client stations at specified interface");
 
         writeCmdHelp("stalist 2.4", "show connected client stations at 2.4GHz");
-        writeCmdHelp("stalist 2.4 disconnect <mac>", "disconnect 2.4GHz client station by MAC");
-        writeCmdHelp("stalist 2.4 disconnect all", "disconnect all 2.4GHz client stations");
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
         writeCmdHelp("stalist 5", "show connected client stations at 5GHz");
-        writeCmdHelp("stalist 5 disconnect <mac>", "disconnect 5GHz client station by MAC");
-        writeCmdHelp("stalist 5 disconnect all", "disconnect all 5GHz client stations");
 #endif
     }
     else
