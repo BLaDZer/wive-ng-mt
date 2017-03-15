@@ -2877,10 +2877,11 @@
 <br>
 <br>
 <b>5.2.x</b><br>
-1) cli: add disconnect command for disconnect selected sta.<br>
-2) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
-3) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
-4) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
+1) xl2tpd: sync with upstrean (commit 4473b036).<br>
+2) cli: add disconnect command for disconnect selected sta.<br>
+3) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
+4) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
+5) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
 <br>
 <br>
 <br>
