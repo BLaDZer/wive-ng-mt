@@ -2883,18 +2883,19 @@
 4) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
 5) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
 6) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
-7) kernel: tty: n_hdlc, fix lockdep false positive.<br>
-8) kernel: net: l2tp: do not use udp_ioctl().<br>
-9) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-10) kernel: net: packet: fix races in fanout_add().<br>
-11) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
-12) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
-13) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
-14) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
-15) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
-16) kernel: net: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
-17) kernel: net: tun: Fix TUN_PKT_STRIP setting.<br>
-18) kernel: net: tun: read vnet_hdr_sz once.<br>
+7) kernel: list: introduce list_first_entry_or_null.<br>
+8) kernel: tty: n_hdlc, fix lockdep false positive.<br>
+9) kernel: net: l2tp: do not use udp_ioctl().<br>
+10) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+11) kernel: net: packet: fix races in fanout_add().<br>
+12) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+13) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+14) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
+15) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
+16) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
+17) kernel: net: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
+18) kernel: net: tun: Fix TUN_PKT_STRIP setting.<br>
+19) kernel: net: tun: read vnet_hdr_sz once.<br>
 <br>
 <br>
 <br>
