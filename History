@@ -2886,6 +2886,7 @@
 7) kernel: net: l2tp: do not use udp_ioctl().<br>
 8) kernel: net: packet: fix races in fanout_add().<br>
 9) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+10) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
 <br>
 <br>
 <br>
