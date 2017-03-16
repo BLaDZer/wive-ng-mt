@@ -1905,7 +1905,7 @@ static int copy_msghdr_from_user(struct msghdr *kmsg,
 
 static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 			  struct msghdr *msg_sys, unsigned int flags,
-			  struct used_address *used_address)
+			  struct used_address *used_address, int *residue)
 {
 	struct compat_msghdr __user *msg_compat =
 	    (struct compat_msghdr __user *)msg;
@@ -2007,6 +2007,8 @@ static int ___sys_sendmsg(struct socket *sock, struct msghdr __user *msg,
 			memcpy(&used_address->name, msg_sys->msg_name,
 			       used_address->name_len);
 	}
+	if (residue && err >= 0)
+		*residue = total_len - err;
 
 out_freectl:
 	if (ctl_buf != ctl)
@@ -2032,7 +2034,7 @@ long __sys_sendmsg(int fd, struct msghdr __user *msg, unsigned flags)
 	if (!sock)
 		goto out;
 
-	err = ___sys_sendmsg(sock, msg, &msg_sys, flags, NULL);
+	err = ___sys_sendmsg(sock, msg, &msg_sys, flags, NULL, NULL);
 
 	fput_light(sock->file, fput_needed);
 out:
@@ -2059,6 +2061,7 @@ int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 	struct compat_mmsghdr __user *compat_entry;
 	struct msghdr msg_sys;
 	struct used_address used_address;
+	int residue;
 
 	if (vlen > UIO_MAXIOV)
 		vlen = UIO_MAXIOV;
@@ -2077,7 +2080,8 @@ int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 	while (datagrams < vlen) {
 		if (MSG_CMSG_COMPAT & flags) {
 			err = ___sys_sendmsg(sock, (struct msghdr __user *)compat_entry,
-					     &msg_sys, flags, &used_address);
+					     &msg_sys, flags, &used_address,
+					     &residue);
 			if (err < 0)
 				break;
 			err = __put_user(err, &compat_entry->msg_len);
@@ -2085,7 +2089,8 @@ int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 		} else {
 			err = ___sys_sendmsg(sock,
 					     (struct msghdr __user *)entry,
-					     &msg_sys, flags, &used_address);
+					     &msg_sys, flags, &used_address,
+					     &residue);
 			if (err < 0)
 				break;
 			err = put_user(err, &entry->msg_len);
@@ -2095,6 +2100,8 @@ int __sys_sendmmsg(int fd, struct mmsghdr __user *mmsg, unsigned int vlen,
 		if (err)
 			break;
 		++datagrams;
+		if (residue)
+			break;
 		cond_resched();
 	}
 

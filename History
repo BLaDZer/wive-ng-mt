@@ -2884,9 +2884,10 @@
 5) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
 6) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
 7) kernel: net: l2tp: do not use udp_ioctl().<br>
-8) kernel: net: packet: fix races in fanout_add().<br>
-9) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
-10) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+8) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+9) kernel: net: packet: fix races in fanout_add().<br>
+10) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+11) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
 <br>
 <br>
 <br>
