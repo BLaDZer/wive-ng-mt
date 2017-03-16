@@ -2883,6 +2883,7 @@
 4) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
 5) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
 6) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
+7) kernel: net: l2tp: do not use udp_ioctl().<br>
 <br>
 <br>
 <br>
