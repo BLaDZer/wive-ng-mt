@@ -2888,6 +2888,7 @@
 9) kernel: net: packet: fix races in fanout_add().<br>
 10) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
 11) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+12) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
 <br>
 <br>
 <br>
