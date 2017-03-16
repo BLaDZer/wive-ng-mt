@@ -2884,6 +2884,7 @@
 5) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
 6) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
 7) kernel: net: l2tp: do not use udp_ioctl().<br>
+8) kernel: net: packet: fix races in fanout_add().<br>
 <br>
 <br>
 <br>
