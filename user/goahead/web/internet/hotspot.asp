@@ -418,12 +418,12 @@
 						insertVal(form, "sRadLocName",		(!tmp[15]) ? NVRAM_chilli_radiuslocationname	: tmp[15],	tmp[29+15]);
 						insertVal(form, "sRadCoaPort",		(!tmp[16]) ? NVRAM_chilli_coaport				: tmp[16],	tmp[29+16]);
 						insertVal(form, "sRadCoaNoIpCheck",	(!tmp[17]) ? NVRAM_chilli_coanoipcheck			: tmp[17],	tmp[29+17]);
-						insertVal(form, "sUamServer",		(!tmp[18]) ? NVRAM_chilli_coanoipcheck			: tmp[18],	tmp[29+18]);
-						insertVal(form, "sUamHomepage",		(!tmp[19]) ? NVRAM_chilli_coanoipcheck			: tmp[19],	tmp[29+19]);
-						insertVal(form, "sUamSecret",		(!tmp[20]) ? NVRAM_chilli_coanoipcheck			: tmp[20],	tmp[29+20]);
-						insertVal(form, "sUamAllowed",		(!tmp[21]) ? NVRAM_chilli_coanoipcheck			: tmp[21],	tmp[29+21]);
+						insertVal(form, "sUamServer",		(!tmp[18]) ? NVRAM_chilli_uamserver				: tmp[18],	tmp[29+18]);
+						insertVal(form, "sUamHomepage",		(!tmp[19]) ? NVRAM_chilli_uamhomepage			: tmp[19],	tmp[29+19]);
+						insertVal(form, "sUamSecret",		(!tmp[20]) ? NVRAM_chilli_uamsecret				: tmp[20],	tmp[29+20]);
+						insertVal(form, "sUamAllowed",		(!tmp[21]) ? NVRAM_chilli_uamallowed			: tmp[21],	tmp[29+21]);
 						insertVal(form, "sUamDomain",		(!tmp[22]) ? NVRAM_chilli_uamdomain				: tmp[22],	tmp[29+22]);
-						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? NVRAM_chilli_coanoipcheck			: tmp[23],	tmp[29+23]);
+						insertVal(form, "sUamAnyDNS",		(!tmp[23]) ? NVRAM_chilli_uamanydns				: tmp[23],	tmp[29+23]);
 						insertVal(form, "sMacAllowed",		(!tmp[24]) ? NVRAM_chilli_macallowed			: tmp[24],	tmp[29+24]);
 						insertVal(form, "sC2Cisolate",		(!tmp[25]) ? NVRAM_chilli_clisolate				: tmp[25],	tmp[29+25]);
 						insertVal(form, "sDropDNS",			(!tmp[26]) ? NVRAM_chilli_dnsparanoia			: tmp[26],	tmp[29+26]);
@@ -636,8 +636,8 @@
 									<td class="head" id="sUamAnyDNS">Allow all DNS requests</td>
 									<td colspan="2">
 										<select name="sUamAnyDNS" class="mid">
-											<option value="off" id="disable">Disable</option>
-											<option value="on" id="enable">Enable</option>
+											<option value="0" id="disable">Disable</option>
+											<option value="1" id="enable">Enable</option>
 										</select>
 									</td>
 								</tr>
@@ -710,8 +710,8 @@
 									<td class="head" id="sRadCoaNoIpCheck">No IP check for CoA/DM request</td>
 									<td colspan="2">
 										<select name="sRadCoaNoIpCheck" class="mid">
-											<option value="off" id="disable">Disable</option>
-											<option value="on" id="enable">Enable</option>
+											<option value="0" id="disable">Disable</option>
+											<option value="1" id="enable">Enable</option>
 										</select>
 									</td>
 								</tr>
