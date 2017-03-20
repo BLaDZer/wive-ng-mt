@@ -483,7 +483,7 @@ function securityMode(c_f)
 		document.getElementById("wpa_passphrase").style.display = '';
 		document.security_form.passphrase.disabled = false;
 
-		if (BUILD_5GHZ_SUPPORT && (NVRAM_SSID1 != NVRAM_SSID1INIC)) {
+		if (BUILD_5GHZ_SUPPORT == 1 && (NVRAM_SSID1 != NVRAM_SSID1INIC)) {
 			document.getElementById("wpa_passphrase5").style.visibility = "visible";
 			document.getElementById("wpa_passphrase5").style.display = '';
 			document.security_form.passphraseinic.disabled = false;
@@ -937,7 +937,7 @@ function initTranslation()
 	_TR("secreWPA", "secure wpa");
 	_TR("secureWPAAlgorithm", "secure wpa algorithm");
 	
-	if (BUILD_5GHZ_SUPPORT && (NVRAM_SSID1 != NVRAM_SSID1INIC))
+	if (BUILD_5GHZ_SUPPORT == 1 && (NVRAM_SSID1 != NVRAM_SSID1INIC))
 		_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
 	else
 		_TR("secureWPAPassPhrase", "secure wpa pass phrase");

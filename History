@@ -2882,23 +2882,24 @@
 3) cli: add disconnect command for disconnect selected sta.<br>
 4) goahead: chillispot: fix UAM apply in apcli mode.<br>
 5) goahead: chillispot: fix default allow all dns request option.<br>
-6) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
-7) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
-8) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
-9) kernel: list: introduce list_first_entry_or_null.<br>
-10) kernel: tty: n_hdlc, fix lockdep false positive.<br>
-11) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
-12) kernel: net: l2tp: do not use udp_ioctl().<br>
-13) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-14) kernel: net: packet: fix races in fanout_add().<br>
-15) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
-16) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
-17) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
-18) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
-19) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
-20) kernel: net: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
-21) kernel: net: tun: Fix TUN_PKT_STRIP setting.<br>
-21) kernel: net: tun: read vnet_hdr_sz once.<br>
+6) goahead: fix hide 5Ghz password at W4N.<br>
+7) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
+8) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
+9) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
+10) kernel: list: introduce list_first_entry_or_null.<br>
+11) kernel: tty: n_hdlc, fix lockdep false positive.<br>
+12) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
+13) kernel: net: l2tp: do not use udp_ioctl().<br>
+14) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+15) kernel: net: packet: fix races in fanout_add().<br>
+16) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+17) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+18) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
+19) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
+20) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
+21) kernel: net: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
+22) kernel: net: tun: Fix TUN_PKT_STRIP setting.<br>
+23) kernel: net: tun: read vnet_hdr_sz once.<br>
 <br>
 <br>
 <br>
