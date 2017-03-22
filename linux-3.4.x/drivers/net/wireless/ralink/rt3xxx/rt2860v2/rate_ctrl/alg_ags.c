@@ -1183,7 +1183,7 @@ VOID StaQuickResponeForRateUpExecAGS(
 		else if ((pEntry->LastSecTxRateChangeAction == 2) &&
 				(CurrRateIdx != UpRateIdx)) /* Tx rate up */
 		{
-			if ((pAGSStatisticsInfo->TxErrorRatio >= 50) ||
+			if ((pAGSStatisticsInfo->TxErrorRatio >= 40) ||
 				(pAGSStatisticsInfo->TxErrorRatio >= TrainDown)) /* Poor quality */
 			{
 				if (InitTxRateIdx == AGS3x3HTRateTable[1])

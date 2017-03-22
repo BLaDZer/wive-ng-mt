@@ -1139,8 +1139,8 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			useOldRate = TxErrorRatio >= TrainDown;
 		if (useOldRate)
 		{
-			/*  If PER>50% or TP<lastTP/2 then double the TxQuality delay */
-			if ((TxErrorRatio > 50) || (OneSecTxNoRetryOKRationCount < pEntry->LastTxOkCount/2))
+			/*  If PER>40% or TP<lastTP/2 then double the TxQuality delay */
+			if ((TxErrorRatio > 40) || (OneSecTxNoRetryOKRationCount < pEntry->LastTxOkCount/2))
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND*2);
 			else
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
@@ -1166,7 +1166,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	}
 	else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 	{
-		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
+		if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));
@@ -1708,8 +1708,8 @@ VOID StaQuickResponeForRateUpExecAdapt(
 			useOldRate = TxErrorRatio >= TrainDown;
 		if (useOldRate)
 		{
-			/* If PER>50% or TP<lastTP/2 then double the TxQuality delay */
-			if ((TxErrorRatio > 50) || (OneSecTxNoRetryOKRationCount < pEntry->LastTxOkCount/2))
+			/* If PER>40% or TP<lastTP/2 then double the TxQuality delay */
+			if ((TxErrorRatio > 40) || (OneSecTxNoRetryOKRationCount < pEntry->LastTxOkCount/2))
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND*2);
 			else
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
@@ -1733,7 +1733,7 @@ VOID StaQuickResponeForRateUpExecAdapt(
 	}
 	else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 	{
-		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown))
+		if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown))
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));

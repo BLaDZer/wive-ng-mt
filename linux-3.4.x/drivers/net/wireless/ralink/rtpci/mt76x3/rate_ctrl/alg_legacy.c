@@ -705,7 +705,7 @@ VOID APQuickResponeForRateUpExec(
 			else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 			{
 				/* if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) */
-				if ((TxErrorRatio >= 50) && (TxErrorRatio >= TrainDown))
+				if ((TxErrorRatio >= 40) && (TxErrorRatio >= TrainDown))
 				{
 				}
 				else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
