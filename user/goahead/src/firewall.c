@@ -86,6 +86,7 @@ void firewall_rebuild(void)
 	//rebuild firewall scripts in etc
 	firewall_rebuild_etc();
 	doSystem("service iptables restart");
+	doSystem("echo f > /proc/net/nf_conntrack");
 }
 
 /* goform/portForward */
@@ -124,7 +125,6 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	firewall_rebuild();
-	doSystem("echo f > /proc/net/nf_conntrack");
 	websHeader(wp);
 	websDone(wp, 200);
 }
