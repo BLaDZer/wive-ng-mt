@@ -2890,25 +2890,23 @@
 11) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
 12) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
 13) kernel: list: introduce list_first_entry_or_null.<br>
-14) kernel: delete redundant definition of SMP_CACHE_BYTES.<br>
-15) kernel: delete unused definition of SMP_CACHE_SHIFT.<br>
-16) kernel: tty: n_hdlc, fix lockdep false positive.<br>
-17) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
-18) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
-19) kernel: net: l2tp: do not use udp_ioctl().<br>
-20) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-21) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
-22) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
-23) kernel: net: tun: read vnet_hdr_sz once.<br>
-24) kernel: net: packet: fix races in fanout_add().<br>
-25) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
-26) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
-27) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
-28) kernel: net: ipv6: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
-29) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
-30) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
-31) kernel: net: ipv6: set route type for anycast routes.<br>
-32) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
+14) kernel: tty: n_hdlc, fix lockdep false positive.<br>
+15) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
+16) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
+17) kernel: net: l2tp: do not use udp_ioctl().<br>
+18) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+19) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
+20) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
+21) kernel: net: tun: read vnet_hdr_sz once.<br>
+22) kernel: net: packet: fix races in fanout_add().<br>
+23) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+24) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+25) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
+26) kernel: net: ipv6: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
+27) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
+28) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
+29) kernel: net: ipv6: set route type for anycast routes.<br>
+30) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
 <br>
 <br>
 <br>
