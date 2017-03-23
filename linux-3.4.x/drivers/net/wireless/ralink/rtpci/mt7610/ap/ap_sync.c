@@ -256,6 +256,57 @@ VOID APPeerProbeReqAction(
 			FrameLen += TmpLen;
 		}
 
+#ifdef A_BAND_SUPPORT
+		/* add Channel switch announcement IE */
+		if (((pAd->CommonCfg.Channel > 14)
+			&& (pAd->CommonCfg.bIEEE80211H == 1)
+			&& (pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
+		)
+		{
+			UCHAR CSAIe = IE_CHANNEL_SWITCH_ANNOUNCEMENT;
+			UCHAR CSALen = 3;
+			UCHAR CSAMode = 1;
+			UCHAR Period;
+			Period = pAd->Dot11_H.CSCount;
+			MakeOutgoingFrame(pOutBuffer+FrameLen,	&TmpLen,
+				1,	&CSAIe,
+				1,	&CSALen,
+				1,	&CSAMode,
+				1,	&pAd->CommonCfg.Channel,
+				1,	&Period,
+				END_OF_ARGS);
+			FrameLen += TmpLen;
+#ifdef DOT11_VHT_AC
+			if (WMODE_CAP_AC(PhyMode) && (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40)) {
+				WIDE_BW_CH_SWITCH_ELEMENT wb_info;
+				UCHAR CSWIe = IE_CH_SWITCH_WRAPPER;
+				UCHAR ch_sw_wrapper = 5;
+				UCHAR WBCSIe = IE_WIDE_BW_CH_SWITCH;
+				UCHAR WBCSLen = 3;
+
+				NdisZeroMemory(&wb_info, sizeof(WIDE_BW_CH_SWITCH_ELEMENT));
+				if (pAd->CommonCfg.vht_bw == VHT_BW_2040)
+					wb_info.new_ch_width = 0;
+				else
+					wb_info.new_ch_width = 1;
+
+				if (pAd->CommonCfg.vht_bw == VHT_BW_80) {
+					wb_info.center_freq_1 = vht_cent_ch_freq(pAd, pAd->CommonCfg.Channel);
+					wb_info.center_freq_2 = 0;
+				}
+				MakeOutgoingFrame(pOutBuffer+FrameLen,	&TmpLen,
+					1,	&CSWIe,
+					1,	&ch_sw_wrapper,
+					1,	&WBCSIe,
+					1,	&WBCSLen,
+					3,	&wb_info,
+					END_OF_ARGS);
+				FrameLen += TmpLen;
+			}
+#endif /* DOT11_VHT_AC */
+		}
+#endif /* A_BAND_SUPPORT */
+
 #ifdef DOT11_N_SUPPORT
 		if (WMODE_CAP_N(PhyMode) &&
 			(pAd->ApCfg.MBSSID[apidx].DesiredHtPhyInfo.bHtEnable))

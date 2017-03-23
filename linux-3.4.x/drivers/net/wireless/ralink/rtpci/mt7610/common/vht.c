@@ -175,7 +175,8 @@ done:
 */
 UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 {
-	INT idx = 0;
+	INT idx = 0, ch_idx = 0;
+	BOOLEAN ch_support_bw_80 = FALSE;
 
 
 	if (pAd->CommonCfg.vht_bw < VHT_BW_80 || prim_ch < 36)
@@ -184,6 +185,27 @@ UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 		pAd->CommonCfg.vht_cent_ch2 = 0;
 		return prim_ch;
 	}
+
+#ifdef RT_CFG80211_SUPPORT
+#else
+	/* 
+	sanity check , if this channel has no BW80 capability, use first channel in channel list 
+	ex: when CH144 is not availble , group CH 132~140 won't have BW80 cap , shouldn't be used.
+	*/
+	for ( ch_idx = 0; ch_idx <  pAd->ChannelListNum; ch_idx++)
+	{
+		if ((pAd->ChannelList[ch_idx].Channel == prim_ch) && (pAd->ChannelList[ch_idx].Flags & CHANNEL_80M_CAP))
+			ch_support_bw_80 = TRUE;
+	}
+
+	if(ch_support_bw_80 == FALSE)
+	{
+		pAd->CommonCfg.Channel = FirstChannel(pAd);
+		DBGPRINT(RT_DEBUG_OFF, ("vht_cent_ch_freq: channel(%d) don't have BW80 capability, use first channel in channel list=%d \n"
+		, prim_ch, pAd->CommonCfg.Channel));
+		prim_ch = FirstChannel(pAd);
+	}
+#endif /* RT_CFG80211_SUPPORT */
 
 	while (vht_ch_80M[idx].ch_up_bnd != 0)
 	{

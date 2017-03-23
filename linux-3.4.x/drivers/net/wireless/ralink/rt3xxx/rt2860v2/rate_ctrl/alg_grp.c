@@ -595,34 +595,7 @@ UCHAR MlmeSelectTxRateAdapt(
 		pCurrTxRate - pointer to Rate table entry for rate
 		TxErrorRatio - the PER
 */
-static ULONG MlmeRAEstimateThroughput(
-	IN PRTMP_ADAPTER 	pAd,
-	IN PMAC_TABLE_ENTRY	pEntry,
-	IN PRTMP_TX_RATE_SWITCH_3S	pCurrTxRate,
-	IN ULONG			TxErrorRatio)
-{
-	ULONG estTP = (100-TxErrorRatio)*pCurrTxRate->dataRate;
-
-	/*  Adjust rates for MCS32-40MHz mapped to MCS0-20MHz and for non-CCK 40MHz */
-	if (pCurrTxRate->CurrMCS == MCS_32)
-	{
-#ifdef DBG_CTRL_SUPPORT
-		if ((pAd->CommonCfg.DebugFlags & DBF_DISABLE_20MHZ_MCS0)==0)
-			estTP /= 2;
-#endif /* DBG_CTRL_SUPPORT */
-	}
-	else if ((pCurrTxRate->Mode==MODE_HTMIX) || (pCurrTxRate->Mode==MODE_HTGREENFIELD))
-	{
-		if (pEntry->MaxHTPhyMode.field.BW==BW_40 
-#ifdef DBG_CTRL_SUPPORT
-			|| (pAd->CommonCfg.DebugFlags & DBF_FORCE_40MHZ)
-#endif /* DBG_CTRL_SUPPORT */
-		)
-			estTP *= 2;
-	}
-
-	return estTP;
-}
+/*Nobody uses it currently*/
 
 /*
 	MlmeRAHybridRule - decide whether to keep the new rate or use old rate
@@ -640,18 +613,12 @@ BOOLEAN MlmeRAHybridRule(
 	IN ULONG			NewTxOkCount,
 	IN ULONG			TxErrorRatio)
 {
-	ULONG newTP, oldTP;
-
-	if (100*NewTxOkCount < pAd->CommonCfg.TrainUpLowThrd*pEntry->LastTxOkCount)
-		return TRUE;
+	DBGPRINT(RT_DEBUG_TRACE, ("RAA : Tx OK Counter %lu %lu\n", NewTxOkCount , pEntry->LastTxOkCount));
 
 	if (100*NewTxOkCount > pAd->CommonCfg.TrainUpHighThrd*pEntry->LastTxOkCount)
 		return FALSE;
 
-	newTP = MlmeRAEstimateThroughput(pAd, pEntry, pCurrTxRate, TxErrorRatio);
-	oldTP = MlmeRAEstimateThroughput(pAd, pEntry, PTX_RATE_SWITCH_ENTRY_3S(pEntry->pTable, pEntry->lastRateIdx), pEntry->LastTxPER);
-
-	return (oldTP > newTP);
+	return TRUE;
 }
 
 /*
