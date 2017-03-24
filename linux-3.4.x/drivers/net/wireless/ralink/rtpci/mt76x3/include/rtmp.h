@@ -1904,7 +1904,6 @@ typedef struct _COMMON_CONFIG {
 	UCHAR MaxSPLength;
 
 	BOOLEAN bNeedSendTriggerFrame;
-	BOOLEAN bAPSDForcePowerSave;	/* Force power save mode, should only use in APSD-STAUT */
 	ULONG TriggerTimerCount;
 	UCHAR BBPCurrentBW;	/* BW_10, BW_20, BW_40, BW_80 */
 	REG_TRANSMIT_SETTING RegTransmitSetting;	/*registry transmit setting. this is for reading registry setting only. not useful. */
@@ -9279,6 +9278,7 @@ VOID MultiChannelTimerStop(RTMP_ADAPTER *pAd);
 VOID MultiChannelTimerStart(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY  *pEntry);
 #endif /* CONFIG_MULTI_CHANNEL */
 
+#ifdef CONFIG_STA_SUPPORT
 VOID RtmpPrepareHwNullFrame(
 	IN RTMP_ADAPTER *pAd,
 	IN PMAC_TABLE_ENTRY pEntry,
@@ -9289,7 +9289,7 @@ VOID RtmpPrepareHwNullFrame(
 	IN UCHAR PwrMgmt,
 	IN BOOLEAN bWaitACK,
 	IN CHAR Index);
-
+#endif /* CONFIG_STA_SUPPORT */
 
 VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
 VOID dev_rx_ctrl_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);

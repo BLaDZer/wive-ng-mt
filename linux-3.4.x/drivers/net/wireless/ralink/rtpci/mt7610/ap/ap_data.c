@@ -6700,14 +6700,7 @@ VOID	ApCliRTMPSendNullFrame(
 	COPY_MAC_ADDR(pHeader_802_11->Addr2, pApCliEntry->CurrentAddress);
 	COPY_MAC_ADDR(pHeader_802_11->Addr3, pMacEntry->Addr);
 
-	if (pAd->CommonCfg.bAPSDForcePowerSave)
-	{
-		pHeader_802_11->FC.PwrMgmt = PWR_SAVE;
-	}
-	else
-	{
-		pHeader_802_11->FC.PwrMgmt = 0;
-	}
+	pHeader_802_11->FC.PwrMgmt = 0;
 	pHeader_802_11->Duration = pAd->CommonCfg.Dsifs + RTMPCalcDuration(pAd, TxRate, 14);
 
 	/* sequence is increased in MlmeHardTx */

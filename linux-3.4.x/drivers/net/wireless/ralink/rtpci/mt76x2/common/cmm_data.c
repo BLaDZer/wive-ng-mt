@@ -4257,7 +4257,7 @@ body:
 	}
 }
 
-
+#ifdef CONFIG_STA_SUPPORT
 VOID RtmpPrepareHwNullFrame(
 	IN PRTMP_ADAPTER pAd,
 	IN PMAC_TABLE_ENTRY pEntry,
@@ -4388,13 +4388,13 @@ VOID RtmpPrepareHwNullFrame(
 		{
 			longValue =  *ptr + (*(ptr + 1) << 8) + (*(ptr + 2) << 16) + (*(ptr + 3) << 24);
 			if (Index == 0)
-				RTMP_IO_WRITE32(pAd, pAd->chipCap.BcnBase[14] + i, longValue);
+				RTMP_IO_WRITE32(pAd, pAd->NullBufOffset[0] + i, longValue);
 			else if (Index == 1)
-				RTMP_IO_WRITE32(pAd, pAd->chipCap.BcnBase[15] + i, longValue);
-				
+				RTMP_IO_WRITE32(pAd, pAd->NullBufOffset[1] + i, longValue);
+
 			ptr += 4;
 		}
-		
+
 		ptr = pNullFrame;
 #ifdef RT_BIG_ENDIAN
 		RTMPFrameEndianChange(pAd, ptr, DIR_WRITE, FALSE);
@@ -4402,11 +4402,11 @@ VOID RtmpPrepareHwNullFrame(
 		for (i= 0; i< Length; i+=4)
 		{
 			longValue =  *ptr + (*(ptr + 1) << 8) + (*(ptr + 2) << 16) + (*(ptr + 3) << 24);
-			if (Index == 0) //for ra0 
-				RTMP_IO_WRITE32(pAd, pAd->chipCap.BcnBase[14] + TXWISize+ i, longValue);
+			if (Index == 0) //for ra0
+				RTMP_IO_WRITE32(pAd, pAd->NullBufOffset[0] + TXWISize+ i, longValue);
 			else if (Index == 1) //for p2p0
-				RTMP_IO_WRITE32(pAd, pAd->chipCap.BcnBase[15] + TXWISize+ i, longValue);
-				
+				RTMP_IO_WRITE32(pAd, pAd->NullBufOffset[1] + TXWISize+ i, longValue);
+
 			ptr += 4;
 		}
 	}
@@ -4415,7 +4415,7 @@ VOID RtmpPrepareHwNullFrame(
 		MlmeFreeMemory(pAd, pNullFrame);
 
 }
-
+#endif /* CONFIG_STA_SUPPORT */
 
 // TODO: shiang-usw, modify the op_mode assignment for this function!!!
 VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
@@ -4465,7 +4465,6 @@ VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		{
 			if ((pHeader->FC.SubType != SUBTYPE_BEACON) && (pHeader->FC.SubType != SUBTYPE_PROBE_REQ))
 			{
-
 				if (pHeader->FC.SubType == SUBTYPE_ACTION)
 				{					
 #ifdef APCLI_SUPPORT

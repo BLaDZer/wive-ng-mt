@@ -481,10 +481,7 @@ VOID ApCliRTMPSendNullFrame(
 		COPY_MAC_ADDR(wifi_hdr->Addr2, pApCliEntry->wdev.if_addr);
 	COPY_MAC_ADDR(wifi_hdr->Addr3, pMacEntry->Addr);
 
-	if (pAd->CommonCfg.bAPSDForcePowerSave)
-		wifi_hdr->FC.PwrMgmt = PWR_SAVE;
-	else
-		wifi_hdr->FC.PwrMgmt = PwrMgmt;
+	wifi_hdr->FC.PwrMgmt = PwrMgmt;
 	wifi_hdr->Duration = pAd->CommonCfg.Dsifs + RTMPCalcDuration(pAd, TxRate, 14);
 
 	/* sequence is increased in MlmeHardTx */
@@ -506,8 +503,7 @@ VOID ApCliRTMPSendNullFrame(
 #endif/*APCLI_SUPPORT*/
 #endif /* CONFIG_AP_SUPPORT */
 
-
-
+#ifdef CONFIG_STA_SUPPORT
 VOID RtmpPrepareHwNullFrame(
 	IN PRTMP_ADAPTER pAd,
 	IN PMAC_TABLE_ENTRY pEntry,
@@ -670,7 +666,7 @@ VOID RtmpPrepareHwNullFrame(
 	if (pNullFrame)
 		MlmeFreeMemory(pAd, pNullFrame);
 }
-
+#endif /* CONFIG_STA_SUPPORT */
 
 /*
 	==========================================================================

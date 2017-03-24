@@ -10907,6 +10907,10 @@ VOID MultiChannelTimerStop(RTMP_ADAPTER *pAd);
 VOID MultiChannelTimerStart(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY  *pEntry);
 #endif /* CONFIG_MULTI_CHANNEL */
 
+VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
+VOID dev_rx_ctrl_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
+	
+#ifdef CONFIG_STA_SUPPORT
 VOID RtmpPrepareHwNullFrame(
 	IN RTMP_ADAPTER *pAd,
 	IN PMAC_TABLE_ENTRY pEntry,
@@ -10918,11 +10922,6 @@ VOID RtmpPrepareHwNullFrame(
 	IN BOOLEAN bWaitACK,
 	IN CHAR Index);
 
-
-VOID dev_rx_mgmt_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
-VOID dev_rx_ctrl_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
-	
-#ifdef CONFIG_STA_SUPPORT
 BOOLEAN RtmpPktPmBitCheck(RTMP_ADAPTER *pAd);
 VOID RtmpPsActiveExtendCheck(RTMP_ADAPTER *pAd);
 VOID RtmpPsModeChange(RTMP_ADAPTER *pAd, UINT32 PsMode);

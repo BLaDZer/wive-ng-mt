@@ -1089,7 +1089,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif /* UAPSD_SUPPORT */
 	pAd->CommonCfg.bNeedSendTriggerFrame = FALSE;
 	pAd->CommonCfg.TriggerTimerCount = 0;
-	pAd->CommonCfg.bAPSDForcePowerSave = FALSE;
 	/*pAd->CommonCfg.bCountryFlag = FALSE;*/
 	pAd->CommonCfg.TxStream = 0;
 	pAd->CommonCfg.RxStream = 0;
