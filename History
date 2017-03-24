@@ -2880,37 +2880,38 @@
 1) build_system: add profile for AP2 dualband celling AP support.<br>
 2) freeradius: up to 3.0.13 version.<br>
 3) xl2tpd: sync with upstrean (commit 4473b036).<br>
-4) cli: add disconnect command for disconnect selected sta.<br>
-5) init.d: disable arp_filter only for lan_if and only if igmpproxy is work.<br>
-6) init.d: pppoe_client: fix check connect if in br0.<br>
-7) goahead: chillispot: fix UAM apply in apcli mode.<br>
-8) goahead: chillispot: fix default allow all dns request option.<br>
-9) goahead: fix hide 5Ghz password at W4N.<br>
-10) goahead: move conntrack flush to firewall_rebuild (fix apply some rules on the fly).<br>
-11) kernel: ralink_wifi: rate_ctl: more agressive rate drop down at high PER level.<br>
-12) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
-13) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
-14) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
-15) kernel: ralink_wifi: mt7610: fix central channel freq sanity check.<br>
-16) kernel: ralink_wifi: mt7610: add lost 802.11ac IE in probe req.<br>
-17) kernel: list: introduce list_first_entry_or_null.<br>
-18) kernel: tty: n_hdlc, fix lockdep false positive.<br>
-19) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
-20) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
-21) kernel: net: l2tp: do not use udp_ioctl().<br>
-22) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-23) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
-24) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
-25) kernel: net: tun: read vnet_hdr_sz once.<br>
-26) kernel: net: packet: fix races in fanout_add().<br>
-27) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
-28) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
-29) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
-30) kernel: net: ipv6: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
-31) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
-32) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
-33) kernel: net: ipv6: set route type for anycast routes.<br>
-34) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
+4) pppd: rp_pppoe: allow connect over raX/apcliX ifaces.<br>
+5) cli: add disconnect command for disconnect selected sta.<br>
+6) init.d: disable arp_filter only for lan_if and only if igmpproxy is work.<br>
+7) init.d: pppoe_client: fix check connect if in br0.<br>
+8) goahead: chillispot: fix UAM apply in apcli mode.<br>
+9) goahead: chillispot: fix default allow all dns request option.<br>
+10) goahead: fix hide 5Ghz password at W4N.<br>
+11) goahead: move conntrack flush to firewall_rebuild (fix apply some rules on the fly).<br>
+12) kernel: ralink_wifi: rate_ctl: more agressive rate drop down at high PER level.<br>
+13) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
+14) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
+15) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
+16) kernel: ralink_wifi: mt7610: fix central channel freq sanity check.<br>
+17) kernel: ralink_wifi: mt7610: add lost 802.11ac IE in probe req.<br>
+18) kernel: list: introduce list_first_entry_or_null.<br>
+19) kernel: tty: n_hdlc, fix lockdep false positive.<br>
+20) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
+21) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
+22) kernel: net: l2tp: do not use udp_ioctl().<br>
+23) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+24) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
+25) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
+26) kernel: net: tun: read vnet_hdr_sz once.<br>
+27) kernel: net: packet: fix races in fanout_add().<br>
+28) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
+29) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
+30) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
+31) kernel: net: ipv6: mld: fix memory leak in igmpv3/mld_del_delrec().<br>
+32) kernel: net: ipv6: fix ip6_tnl_parse_tlv_enc_lim().<br>
+33) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
+34) kernel: net: ipv6: set route type for anycast routes.<br>
+35) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
 <br>
 <br>
 <br>
