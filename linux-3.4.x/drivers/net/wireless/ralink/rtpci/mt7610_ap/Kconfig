@@ -38,7 +38,7 @@ config  MT7610_AP_MBSS_NEW_MBSSID_MODE
 	bool "New MBSSID mode support"
 	depends on MT7610_AP
 	depends on MT7610_AP_MBSS
-	default n
+	default y
 
 config  MT7610_AP_APCLI
 	bool "AP-Client Support"
