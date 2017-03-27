@@ -1972,11 +1972,12 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 #endif
 
 	pTxD->LastSec0 = 1;
-	pTxD->LastSec1 = 1;
+	pTxD->LastSec1 = 0;
 	pTxD->SDLen0 = (SrcBufLen - TXINFO_SIZE);
 	pTxD->SDLen1 = 0;
 	pTxD->SDPtr0 = SrcBufPA;
-	//pTxD->DMADONE = 0;
+	pTxD->Burst = 0;
+
 	ral_write_txd(pAd, pTxD, pTxInfo, TRUE, FIFO_EDCA);
 
 #ifdef VHT_TXBF_SUPPORT

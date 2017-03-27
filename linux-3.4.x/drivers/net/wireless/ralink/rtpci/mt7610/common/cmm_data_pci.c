@@ -1642,13 +1642,15 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 #endif
 	SrcBufPA = PCI_MAP_SINGLE(pAd, (pSrcBufVA + TXINFO_SIZE), (SrcBufLen - TXINFO_SIZE), 0, RTMP_PCI_DMA_TODEVICE);
 
-	ral_write_txd(pAd, NULL, pTxD, pTxInfo, TRUE, FIFO_EDCA);
 	pTxD->LastSec0 = 1;
 	pTxD->LastSec1 = 0;
 	pTxD->SDLen0 = (SrcBufLen - TXINFO_SIZE);
 	pTxD->SDLen1 = 0;
 	pTxD->SDPtr0 = SrcBufPA;
 	pTxD->DMADONE = 0;
+	pTxD->Burst = 0;
+
+	ral_write_txd(pAd, NULL, pTxD, pTxInfo, TRUE, FIFO_EDCA);
 
 #ifdef RT_BIG_ENDIAN
 	RTMPDescriptorEndianChange((PUCHAR)pTxD, TYPE_TXD);
