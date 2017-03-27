@@ -1498,13 +1498,13 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 	PHEADER_802_11 pHeader_802_11;
 	BOOLEAN bAckRequired, bInsertTimestamp;
 	ULONG SrcBufPA;
-	UCHAR MlmeRate;
+	UCHAR MlmeRate, wcid, tx_rate;
 	ULONG SwIdx = pAd->TxRing[QueIdx].TxCpuIdx;
 	TXWI_STRUC *pFirstTxWI;
 	ULONG FreeNum;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
-
+	HTTRANSMIT_SETTING *transmit;
 
 	RTMP_QueryPacketInfo(pPacket, &PacketInfo, &pSrcBufVA, &SrcBufLen);
 	if (pSrcBufVA == NULL)
@@ -1614,26 +1614,26 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 		For inter-frame gap, the number is for this frame and next frame
 		For MLME rate, we will fix as 2Mb to match other vendor's implement
 	*/
-/*	pAd->CommonCfg.MlmeTransmit.field.MODE = 1;*/
-	
-/* management frame doesn't need encryption. so use RESERVED_WCID no matter u are sending to specific wcid or not */
+	/*	pAd->CommonCfg.MlmeTransmit.field.MODE = 1;*/
+
+	/* management frame doesn't need encryption. so use RESERVED_WCID no matter u are sending to specific wcid or not */
 	/* Only beacon use Nseq=TRUE. So here we use Nseq=FALSE.*/
 	if (pMacEntry == NULL)
 	{
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
-						0, RESERVED_WCID, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), PID_MGMT, 0,
-						(UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS, IFS_BACKOFF, FALSE,
-						&pAd->CommonCfg.MlmeTransmit);
+		wcid = RESERVED_WCID;
+		tx_rate = (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS;
+		transmit = &pAd->CommonCfg.MlmeTransmit;
 	}
 	else
 	{
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE,
-					bInsertTimestamp, FALSE, bAckRequired, FALSE,
-					0, pMacEntry->Aid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE),
-					pMacEntry->MaxHTPhyMode.field.MCS, 0,
-					(UCHAR)pMacEntry->MaxHTPhyMode.field.MCS,
-					IFS_BACKOFF, FALSE, &pMacEntry->MaxHTPhyMode);
+		wcid = pMacEntry->Aid;
+		tx_rate = (UCHAR)pMacEntry->MaxHTPhyMode.field.MCS;
+		transmit = &pMacEntry->MaxHTPhyMode;
 	}
+
+	RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
+					0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), PID_MGMT, 0,
+					tx_rate, IFS_BACKOFF, FALSE, transmit);
 
 	pAd->TxRing[QueIdx].Cell[SwIdx].pNdisPacket = pPacket;
 	pAd->TxRing[QueIdx].Cell[SwIdx].pNextNdisPacket = NULL;

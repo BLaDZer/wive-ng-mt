@@ -525,11 +525,11 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	UINT			SrcBufLen;
 	PHEADER_802_11	pHeader_802_11;
 	BOOLEAN 		bAckRequired, bInsertTimestamp;
-	UCHAR			MlmeRate;
+	UCHAR			MlmeRate, wcid, tx_rate;
 	PTXWI_STRUC 	pFirstTxWI;
 	MAC_TABLE_ENTRY	*pMacEntry = NULL;
-	UCHAR			PID;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
+	HTTRANSMIT_SETTING *transmit;
 #ifdef CONFIG_AP_SUPPORT
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 	UCHAR TxPwrAdj = 0;
@@ -762,40 +762,26 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 		management frame doesn't need encryption. 
 		so use RESERVED_WCID no matter u are sending to specific wcid or not
 	*/
-	PID = PID_MGMT;
-
-
 	if (pMacEntry == NULL)
 	{
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
-		0, RESERVED_WCID, (SrcBufLen - TXINFO_SIZE - TXWISize), PID, 0,  (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS, IFS_BACKOFF, FALSE, &pAd->CommonCfg.MlmeTransmit);
-
+		wcid = RESERVED_WCID;
+		tx_rate = (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS;
+		transmit = &pAd->CommonCfg.MlmeTransmit;
 #ifdef SPECIFIC_TX_POWER_SUPPORT
 		if (IS_RT6352(pAd))
-        	pFirstTxWI->TxPwrAdj = TxPwrAdj;
-#endif /* SPECIFIC_TX_POWER_SUPPORT */		
+			pFirstTxWI->TxPwrAdj = TxPwrAdj;
+#endif /* SPECIFIC_TX_POWER_SUPPORT */
 	}
 	else
 	{
-#ifdef P2P_SUPPORT
-		/* P2P Test Case 6.1.12, only OFDM rate can be captured by sniffer */
-		if ((pAd->P2pCfg.bLowRateQoSNULL == TRUE) &&
-			((pHeader_802_11->FC.Type == BTYPE_DATA) &&
-			(pHeader_802_11->FC.SubType == SUBTYPE_QOS_NULL)))
-		{
-			DBGPRINT(RT_DEBUG_INFO, ("%s:: Using Low Rate to send QOS NULL!!\n", __FUNCTION__));
-			pMacEntry->MaxHTPhyMode.field.MODE = 1;
-			pMacEntry->MaxHTPhyMode.field.MCS = MCS_RATE_54;
-		}
-#endif /* P2P_SUPPORT */
-		/* dont use low rate to send QoS Null data frame */
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE,
-					bInsertTimestamp, FALSE, bAckRequired, FALSE,
-					0, pMacEntry->Aid, (SrcBufLen - TXINFO_SIZE - TXWISize),
-					pMacEntry->MaxHTPhyMode.field.MCS, 0,
-					(UCHAR)pMacEntry->MaxHTPhyMode.field.MCS,
-					IFS_BACKOFF, FALSE, &pMacEntry->MaxHTPhyMode);
+		wcid = pMacEntry->Aid;
+		tx_rate = (UCHAR)pMacEntry->MaxHTPhyMode.field.MCS;
+		transmit = &pMacEntry->MaxHTPhyMode;
 	}
+
+	RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
+					0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize), PID_MGMT, 0,
+					tx_rate, IFS_BACKOFF, FALSE, transmit);
 
 #ifdef RT_BIG_ENDIAN
 	RTMPWIEndianChange(pAd, (PUCHAR)pFirstTxWI, TYPE_TXWI);

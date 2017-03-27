@@ -1888,9 +1888,9 @@ NDIS_STATUS MlmeHardTransmitTxRing(RTMP_ADAPTER *pAd, UCHAR QueIdx, PNDIS_PACKET
 		For inter-frame gap, the number is for this frame and next frame
 		For MLME rate, we will fix as 2Mb to match other vendor's implement
 	*/
-/*	pAd->CommonCfg.MlmeTransmit.field.MODE = 1;*/
-	
-/* management frame doesn't need encryption. so use RESERVED_WCID no matter u are sending to specific wcid or not */
+	/*	pAd->CommonCfg.MlmeTransmit.field.MODE = 1;*/
+
+	/* management frame doesn't need encryption. so use RESERVED_WCID no matter u are sending to specific wcid or not */
 	/* Only beacon use Nseq=TRUE. So here we use Nseq=FALSE.*/
 	if (pMacEntry == NULL)
 	{

@@ -714,12 +714,11 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 	UINT SrcBufLen;
 	HEADER_802_11 *pHeader_802_11;
 	BOOLEAN bAckRequired, bInsertTimestamp;
-	UCHAR MlmeRate;
+	UCHAR MlmeRate, wcid, tx_rate;
 	TXWI_STRUC *pFirstTxWI;
 	MAC_TABLE_ENTRY *pMacEntry = NULL;
-	UCHAR PID;
 	UINT8 TXWISize = pAd->chipCap.TXWISize;
-
+	HTTRANSMIT_SETTING *transmit;
 
 	RTMP_QueryPacketInfo(pPacket, &PacketInfo, &pSrcBufVA, &SrcBufLen);
 
@@ -840,26 +839,22 @@ NDIS_STATUS MlmeHardTransmitMgmtRing(
 		management frame doesn't need encryption. 
 		so use RESERVED_WCID no matter u are sending to specific wcid or not
 	*/
-	PID = PID_MGMT;
-
-
 	if (pMacEntry == NULL)
 	{
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
-						0, RESERVED_WCID, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), PID, 0,
-						(UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS, IFS_BACKOFF, FALSE,
-						&pAd->CommonCfg.MlmeTransmit);
+		wcid = RESERVED_WCID;
+		tx_rate = (UCHAR)pAd->CommonCfg.MlmeTransmit.field.MCS;
+		transmit = &pAd->CommonCfg.MlmeTransmit;
 	}
 	else
 	{
-		/* dont use low rate to send QoS Null data frame */
-		RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE,
-					bInsertTimestamp, FALSE, bAckRequired, FALSE,
-					0, pMacEntry->Aid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE),
-					pMacEntry->MaxHTPhyMode.field.MCS, 0,
-					(UCHAR)pMacEntry->MaxHTPhyMode.field.MCS,
-					IFS_BACKOFF, FALSE, &pMacEntry->MaxHTPhyMode);
+		wcid = pMacEntry->Aid;
+		tx_rate = (UCHAR)pMacEntry->MaxHTPhyMode.field.MCS;
+		transmit = &pMacEntry->MaxHTPhyMode;
 	}
+
+	RTMPWriteTxWI(pAd, pFirstTxWI, FALSE, FALSE, bInsertTimestamp, FALSE, bAckRequired, FALSE,
+					0, wcid, (SrcBufLen - TXINFO_SIZE - TXWISize - TSO_SIZE), PID_MGMT, 0,
+					tx_rate, IFS_BACKOFF, FALSE, transmit);
 
 #ifdef RT_BIG_ENDIAN
 	RTMPWIEndianChange(pAd, (PUCHAR)pFirstTxWI, TYPE_TXWI);
