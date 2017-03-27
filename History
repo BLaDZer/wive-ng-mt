@@ -2916,6 +2916,7 @@
 37) kernel: usb: sierra_net: add support for IPv6 and Dual-Stack Link Sense Indications.<br>
 38) kernel: usb: sierra_net: skip validating irrelevant fields for IDLE LSIs.<br>
 39) kernel: usb: sierra_net: fix bogus alternate-setting assumption.<br>
+40) kernel: usb: qcserial: add Dell DW5570 QDL.<br>
 <br>
 <br>
 <br>
