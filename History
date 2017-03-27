@@ -2919,6 +2919,7 @@
 40) kernel: usb: qcserial: add Dell DW5570 QDL.<br>
 41) kernel: usb: qcserial: add Dell DW5811e.<br>
 42) kernel: usb: option: add Quectel UC15, UC20, EC21, and EC25 modems.<br>
+43) kernel: usb: qmi_wwan: add Dell DW5811e.<br>
 <br>
 <br>
 <br>
