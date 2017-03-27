@@ -2914,6 +2914,7 @@
 35) kernel: net: ipv6: set route type for anycast routes.<br>
 36) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
 37) kernel: usb: sierra_net: add support for IPv6 and Dual-Stack Link Sense Indications.<br>
+38) kernel: usb: sierra_net: skip validating irrelevant fields for IDLE LSIs.<br>
 <br>
 <br>
 <br>
