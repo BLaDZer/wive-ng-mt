@@ -2913,6 +2913,7 @@
 34) kernel: net: ipv6: pointer math error in ip6_tnl_parse_tlv_enc_lim().<br>
 35) kernel: net: ipv6: set route type for anycast routes.<br>
 36) kernel: net: ipv6: avoid write to a possibly cloned skb.<br>
+37) kernel: usb: sierra_net: add support for IPv6 and Dual-Stack Link Sense Indications.<br>
 <br>
 <br>
 <br>
