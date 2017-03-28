@@ -1871,9 +1871,10 @@ static void ap_assoc_info_debugshow(
 	IN	HT_CAPABILITY_IE	*pHTCapability)
 {
 	PUCHAR	sAssoc = isReassoc ? (PUCHAR)"ReASSOC" : (PUCHAR)"ASSOC";
+	CHAR *pRange = (pAd->CommonCfg.Channel <= 14) ? "2.4" : "5";
 
-	printk(HTCapability_Len ? "%s Assign 11n HT STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n" : "%s Assign Legacy STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n",
-		sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
+	printk(HTCapability_Len ? "%sGHz AP %s Assign 11n HT STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n" : "%sGHz AP %s Assign Legacy STA - AID=%d %02x:%02x:%02x:%02x:%02x:%02x\n",
+		pRange, sAssoc, pEntry->Aid, PRINT_MAC(pEntry->Addr));
 
 #ifdef DOT11_N_SUPPORT
 	if (HTCapability_Len && (pAd->CommonCfg.PhyMode >= PHY_11ABGN_MIXED))
