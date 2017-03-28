@@ -390,7 +390,7 @@ static VOID APPeerAuthReqAtIdleAction(
 										Elem->Rssi2,
 										FALSE,
 										&bBndStrgCheck);
-	if (bBndStrgCheck == FALSE) {
+	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
 

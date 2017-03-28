@@ -130,7 +130,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 				    if (WMODE_CAP_N(wdev->PhyMode))
 						bAllowStaConnectInHt = TRUE;
 				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->rssi_info, bAllowStaConnectInHt, &bBndStrgCheck);
-				    if (bBndStrgCheck == FALSE)
+				    if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
 					    return;
 			}
 #endif /* BAND_STEERING */
@@ -152,7 +152,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 											Elem->rssi_info,
 											bAllowStaConnectInHt,
 											&bBndStrgCheck);
-		    if (bBndStrgCheck == FALSE)
+		    if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
 			    return;
 #endif /* BAND_STEERING */
 		}

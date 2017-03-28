@@ -1172,10 +1172,10 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	else
 	    table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
 
-	table->AlgCtrl.ConditionCheck = /*fBND_STRG_CND_RSSI_DIFF | \
+	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_NONE; /*fBND_STRG_CND_RSSI_DIFF | \
 								fBND_STRG_CND_2G_PERSIST | \
-								fBND_STRG_CND_HT_SUPPORT | \ */
-								fBND_STRG_CND_5G_RSSI;
+								fBND_STRG_CND_HT_SUPPORT | \
+								fBND_STRG_CND_5G_RSSI; */
 	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
 								fBND_STRG_FRM_CHK_ATH_REQ;
 	table->bInitialized = TRUE;

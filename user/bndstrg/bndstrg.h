@@ -92,9 +92,10 @@ enum bndstrg_frame_check_flags {
 
 enum bndstrg_condition_check_flags {
 	fBND_STRG_CND_RSSI_DIFF			= (1 << 0),
-	fBND_STRG_CND_2G_PERSIST			= (1 << 1),
+	fBND_STRG_CND_2G_PERSIST		= (1 << 1),
 	fBND_STRG_CND_HT_SUPPORT		= (1 << 2),
 	fBND_STRG_CND_5G_RSSI			= (1 << 3),
+	fBND_STRG_CND_NONE			= (1 << 4),
 };
 
 struct bndstrg_entry_stat {

@@ -175,7 +175,7 @@ VOID APPeerProbeReqAction(
 				if (WMODE_CAP_N(PhyMode))
 					    bAllowStaConnectInHt = TRUE;
 				BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, bAllowStaConnectInHt, &bBndStrgCheck);
-				if (bBndStrgCheck == FALSE)
+				if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
 					return;
 			}
 #endif /* BAND_STEERING */
@@ -197,7 +197,7 @@ VOID APPeerProbeReqAction(
 										Elem->Rssi2,
 										bAllowStaConnectInHt,
 										&bBndStrgCheck);
-		    if (bBndStrgCheck == FALSE)
+		    if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
 			    return;
 #endif /* BAND_STEERING */
 		}

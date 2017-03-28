@@ -581,7 +581,7 @@ static VOID ApCliCtrlProbeRspAction(
 		}
 
 #ifdef DOT11_N_SUPPORT
-		if ((pAd->CommonCfg.Channel < 14)
+		if ((pAd->CommonCfg.Channel <= 14)
 #ifdef MAC_REPEATER_SUPPORT
 			&& (CliIdx == 0xFF)
 #endif /* MAC_REPEATER_SUPPORT */

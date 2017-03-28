@@ -566,7 +566,7 @@ SendAuth:
 										Elem->rssi_info,
 										FALSE,
 										&bBndStrgCheck);
-	if (bBndStrgCheck == FALSE) {
+	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
 
