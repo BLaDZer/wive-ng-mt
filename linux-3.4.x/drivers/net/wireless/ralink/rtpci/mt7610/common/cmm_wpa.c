@@ -4126,7 +4126,7 @@ VOID	ConstructEapolKeyData(
 	IN	UCHAR			RSNIE_LEN,
 	OUT PEAPOL_PACKET   pMsg)
 {
-	UCHAR		*mpool, *Key_Data, *eGTK;  	  
+	UCHAR		*mpool = NULL, *Key_Data, *eGTK;  	  
 	ULONG		data_offset;
 	BOOLEAN		bWPA2Capable = FALSE;
 	BOOLEAN		GTK_Included = FALSE;

@@ -765,7 +765,7 @@ VOID AES_CCM_MAC (
         for (Temp_Index = 0; Temp_Index < Copy_Length; Temp_Index++)
         {
         	if((Temp_Index + Block_Index) < AES_BLOCK_SIZES)
-            	Block[Temp_Index + Block_Index] = AAD[ADD_Index + Temp_Index];
+            		Block[Temp_Index + Block_Index] = AAD[ADD_Index + Temp_Index];
         }        
         for (Temp_Index = 0; Temp_Index < AES_BLOCK_SIZES; Temp_Index++)
             Block[Temp_Index] ^= Block_MAC[Temp_Index];
