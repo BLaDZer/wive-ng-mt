@@ -2896,36 +2896,37 @@
 17) kernel: ralink_wifi: decrease channel scan time.<br>
 18) kernel: ralink_wifi: fix os_alloc_mem work in atomic context.<br>
 19) kernel: ralink_wifi: rate_ctl: more agressive rate drop down at high PER level.<br>
-20) kernel: ralink_wifi: band_steering: only statistic accumulate from 5GHz if, do not really block access or kick.<br>
-21) kernel: ralink_wifi: mt76x2: use nullbuff instead bcn for transmit null frames.<br>
-22) kernel: ralink_wifi: mt76x2/7610: fix fill TxDecriptor info.<br>
-23) kernel: ralink_wifi: mt7603: ap_autoChSel: fix memory leak.<br>
-24) kernel: ralink_wifi: mt7603: if used BMC need 5 TX_RINGS.<br>
-25) kernel: ralink_wifi: mt7620: turn on FEQ control by default.<br>
-26) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
-27) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
-28) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
-29) kernel: ralink_wifi: mt7610: fix central channel freq sanity check.<br>
-30) kernel: ralink_wifi: mt7610: add lost 802.11ac IE in probe req.<br>
-31) kernel: list: introduce list_first_entry_or_null.<br>
-32) kernel: usb: sierra_net: add support for IPv6 and Dual-Stack Link Sense Indications.<br>
-33) kernel: usb: sierra_net: skip validating irrelevant fields for IDLE LSIs.<br>
-34) kernel: usb: sierra_net: fix bogus alternate-setting assumption.<br>
-35) kernel: usb: qcserial: add Dell DW5570 QDL.<br>
-36) kernel: usb: qcserial: add Dell DW5811e.<br>
-37) kernel: usb: option: add Quectel UC15, UC20, EC21, and EC25 modems.<br>
-38) kernel: usb: qmi_wwan: add Dell DW5811e.<br>
-39) kernel: usb: option, qmi_wwan: add "D-Link DWM-222 A1" device id, Issue #699.<br>
-40) kernel: tty: n_hdlc, fix lockdep false positive.<br>
-41) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
-42) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
-43) kernel: net: make in_aton() 32-bit internally.<br>
-44) kernel: net: l2tp: do not use udp_ioctl().<br>
-45) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
-46) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
-47) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
-48) kernel: net: tun: read vnet_hdr_sz once.<br>
-49) kernel: net: packet: fix races in fanout_add().<br>
+20) kernel: ralink_wifi: rate_ctl: fix fill rate table.<br>
+21) kernel: ralink_wifi: band_steering: only statistic accumulate from 5GHz if, do not really block access or kick.<br>
+22) kernel: ralink_wifi: mt76x2: use nullbuff instead bcn for transmit null frames.<br>
+23) kernel: ralink_wifi: mt76x2/7610: fix fill TxDecriptor info.<br>
+24) kernel: ralink_wifi: mt7603: ap_autoChSel: fix memory leak.<br>
+25) kernel: ralink_wifi: mt7603: if used BMC need 5 TX_RINGS.<br>
+26) kernel: ralink_wifi: mt7620: turn on FEQ control by default.<br>
+27) kernel: ralink_wifi: mt7610: rate_ctl: implement safe mcs at start transition and low traffic case.<br>
+28) kernel: ralink_wifi: mt7610: rate_ctl: more correct mcs drop down at TxError.<br>
+29) kernel: ralink_wifi: mt7610: skip old wps ie fragment from probe rsp.<br>
+30) kernel: ralink_wifi: mt7610: fix central channel freq sanity check.<br>
+31) kernel: ralink_wifi: mt7610: add lost 802.11ac IE in probe req.<br>
+32) kernel: list: introduce list_first_entry_or_null.<br>
+33) kernel: usb: sierra_net: add support for IPv6 and Dual-Stack Link Sense Indications.<br>
+34) kernel: usb: sierra_net: skip validating irrelevant fields for IDLE LSIs.<br>
+35) kernel: usb: sierra_net: fix bogus alternate-setting assumption.<br>
+36) kernel: usb: qcserial: add Dell DW5570 QDL.<br>
+37) kernel: usb: qcserial: add Dell DW5811e.<br>
+38) kernel: usb: option: add Quectel UC15, UC20, EC21, and EC25 modems.<br>
+39) kernel: usb: qmi_wwan: add Dell DW5811e.<br>
+40) kernel: usb: option, qmi_wwan: add "D-Link DWM-222 A1" device id, Issue #699.<br>
+41) kernel: tty: n_hdlc, fix lockdep false positive.<br>
+42) kernel: tty: n_hdlc: get rid of racy n_hdlc.tbuf.<br>
+43) kernel: net/core: relax BUILD_BUG_ON in netdev_stats_to_stats64.<br>
+44) kernel: net: make in_aton() 32-bit internally.<br>
+45) kernel: net: l2tp: do not use udp_ioctl().<br>
+46) kernel: net: sock: fix sendmmsg for partial sendmsg.<br>
+47) kernel: net: tcp: permit user set TCP_MAXSEG to default value.<br>
+48) kernel: net: tun: fix TUN_PKT_STRIP setting.<br>
+49) kernel: net: tun: read vnet_hdr_sz once.<br>
+50) kernel: net: packet: fix races in fanout_add().<br>
 51) kernel: net: packet: call fanout_release, while UNREGISTERING a netdev.<br>
 52) kernel: net: packet: do not call fanout_release from atomic contexts.<br>
 53) kernel: net: ipv6: mld: do not remove mld souce list info when set link down.<br>
