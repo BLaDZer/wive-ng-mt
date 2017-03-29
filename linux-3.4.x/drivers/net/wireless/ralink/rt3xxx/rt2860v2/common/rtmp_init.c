@@ -1573,6 +1573,16 @@ NDIS_STATUS NICInitBBP(
 	/* Initialize BBP register to default value*/
 	for (Index = 0; Index < NUM_BBP_REG_PARMS; Index++)
 	{
+		if (Index == BBP_R105)
+		{
+		    /*
+			kurtis:0x01 ori 0x05 is for rt2860E to turn on FEQ control.
+			It is safe for rt2860D and before, because Bit 7:2
+			are reserved in rt2860D and before.
+		    */
+		    BBPRegTable[Index].Value=0x01;
+		    DBGPRINT(RT_DEBUG_TRACE, ("RBUS:BBP[%d] = %x\n",(INT)Index,	BBPRegTable[Index].Value));
+		}
 		RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd,
 				BBPRegTable[Index].Register,
 				BBPRegTable[Index].Value);
