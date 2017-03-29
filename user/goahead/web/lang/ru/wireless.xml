@@ -267,6 +267,7 @@
   <message msgid="secure wpa pass phrase nic" msgstr="Ключевая фраза (2.4ГГц)" />
   <message msgid="secure wpa pass phrase inic" msgstr="Ключевая фраза (5ГГц)" />
   <message msgid="secure wpa show pass phrase" msgstr="(отобразить)" />
+  <message msgid="secure wpa show pass phrase wds" msgstr="Отобразить ключ шифрования" />
   <message msgid="secure wpa key renew interval" msgstr="Интервал смены ключа" />
   <message msgid="secure wpa pmk cache period" msgstr="Период кеширования PMK" />
   <message msgid="secure wpa preauth" msgstr="Пре-аутентификация" />

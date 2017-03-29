@@ -461,6 +461,7 @@
 				</form>
 				<br>
 				<div id="vpn_hint_row">&nbsp;</div>
+				<div class="whitespace">&nbsp;</div>
 			</tr>
 		</table>
 	</body>

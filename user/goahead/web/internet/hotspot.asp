@@ -812,6 +812,7 @@
 						</table>
 					</form>
 					<div id="hint_row">&nbsp;</div>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

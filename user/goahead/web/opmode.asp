@@ -127,6 +127,7 @@
 					  <iframe id="setmodeReloader" name="setmodeReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					</center>
 					</form>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

@@ -316,6 +316,7 @@
 							</table>
 						</form>
 					</div>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

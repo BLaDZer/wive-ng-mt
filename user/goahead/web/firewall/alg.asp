@@ -88,6 +88,7 @@
 							</tr>
 						</table>
 					</form>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

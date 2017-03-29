@@ -486,6 +486,7 @@
 						</table>
 					</form>
 					<div id="l2tp_hint_row">&nbsp;</div>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

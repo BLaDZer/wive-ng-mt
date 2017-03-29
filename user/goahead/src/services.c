@@ -308,16 +308,16 @@ static void setMiscServices(webs_t wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 48, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled",
-						"lldpdEnabled", "igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode",
-						"upnpEnabled", "xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",
-						"RemoteSSH", "RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort",
-						"WatchdogEnabled", "WANPingFilter", "pppoe_pass", "ipv6_pass", "dhcpSwReset",
-						"vlanDoubleTag", "offloadMode", "hw_nat_wifi", "hw_nat_udp", "hw_nat_six",
-						"nat_mode", "natFastpath", "routeFastpath", "filterFastpath", "CrondEnable",
-						"ForceRenewDHCP", "parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval",
-						"store_ttl", "store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu",
-						"IRQBalance", "smbFastpath");
+		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
+						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
+						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort", "RemoteSSH",
+						"RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort", "WatchdogEnabled",
+						"WANPingFilter", "pppoe_pass", "ipv6_pass", "dhcpSwReset", "vlanDoubleTag",
+						"offloadMode", "hw_nat_wifi", "hw_nat_udp", "hw_nat_six", "nat_mode",
+						"natFastpath", "routeFastpath", "filterFastpath", "CrondEnable", "ForceRenewDHCP",
+						"parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval", "store_ttl",
+						"store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu", "IRQBalance",
+						"smbFastpath", "hw_nat_bind");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);

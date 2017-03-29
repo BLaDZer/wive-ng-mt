@@ -252,6 +252,7 @@
 						</tr>
 					</table>
 				</form>
+				<div class="whitespace">&nbsp;</div>
 			</tr>
 		</table>
 	</body>

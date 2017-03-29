@@ -104,6 +104,9 @@
 						form.wds_interface.value = NVRAM_WdsIfName;
 				}	
 
+				for (var i = 0; i < WDS_NUM_MAX; i++)
+					document.getElementById('showPhassPhrase_' + i).title = _("secure wpa show pass phrase wds");
+
 				WdsModeOnChange(form);
 				showWarning();
 				initTranslation();
@@ -207,7 +210,7 @@
 				hideElement('div_wds' + count);
 				enableElements(form.basicWDSAdd, (count < WDS_NUM_MAX));
 				form.wds_num.value = count;
-				NVRAM_wdsNum--;
+				NVRAM_WdsNum--;
 			}
 
 			function WdsSecurityOnChange(form, i) {
@@ -333,7 +336,7 @@
 										<option value="AES">AES</option>
 									</select>
 								</td>
-								<td><input type="password" type="text" id="wds_encryp_key0" name="wds_encryp_key0" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(0);"></td>
+								<td><input type="password" type="text" id="wds_encryp_key0" name="wds_encryp_key0" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_0" type="checkbox" onChange="showPassPhrase(0);"></span></td>
 								<td style="text-align: center"><input type="button" style="width: 120px" value="Add" id="basicWDSAdd" onClick="wdsAdd(this.form);"></td>
 							</tr>
 							<tr id="div_wds1" style="display:none;">
@@ -354,8 +357,8 @@
 										<option value="AES">AES</option>
 									</select>
 								</td>
-								<td><input type="password" type="text" id="wds_encryp_key1" name="wds_encryp_key1" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(1);"></td>
-								<td style="text-align: center"><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 1);"></td>
+								<td><input type="password" type="text" id="wds_encryp_key1" name="wds_encryp_key1" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_1" type="checkbox" onChange="showPassPhrase(1);"></span></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 1);"></td>
 							</tr>
 							<tr id="div_wds2" style="display:none;">
 								<td style="text-align: center"><input type="text" name="wds_3" style="width: 98%"; value="" maxlength="17"></td>
@@ -375,8 +378,8 @@
 										<option value="AES">AES</option>
 									</select>
 								</td>
-								<td><input type="password" type="text" id="wds_encryp_key2" name="wds_encryp_key2" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(2);"></td>
-								<td style="text-align: center"><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 2);"></td>
+								<td><input type="password" type="text" id="wds_encryp_key2" name="wds_encryp_key2" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_2" type="checkbox" onChange="showPassPhrase(2);"></span></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 2);"></td>
 							</tr>
 							<tr id="div_wds3" style="display:none;">
 								<td style="text-align: center"><input type="text" name="wds_4" style="width: 98%"; value="" maxlength="17"></td>
@@ -396,8 +399,8 @@
 										<option value="AES">AES</option>
 									</select>
 								</td>
-								<td><input type="password" type="text" id="wds_encryp_key3" name="wds_encryp_key3" class="normal" value=""><input type="checkbox" onChange="showPassPhrase(3);"></td>
-								<td style="text-align: center"><input type="button" class="normal" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 3);"></td>
+								<td><input type="password" type="text" id="wds_encryp_key3" name="wds_encryp_key3" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_3" type="checkbox" onChange="showPassPhrase(3);"></span></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(this.form, 3);"></td>
 							</tr>
 						</table>
 						<table class="buttons">
@@ -414,6 +417,7 @@
 							</tr>
 						</table>
 					</form>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

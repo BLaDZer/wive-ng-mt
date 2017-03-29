@@ -400,6 +400,7 @@
 							</td>
 						</tr>
 					</table>
+					<div class="whitespace">&nbsp;</div>
 				</form>
 			</tr>
 		</table>

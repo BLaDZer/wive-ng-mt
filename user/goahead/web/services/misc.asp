@@ -413,7 +413,7 @@
 					displayElement('igmpProxy', BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1');
 					displayElement('igmpFastL', (BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') || NVRAM_OperationMode != '2');
 					displayElement('igmpM2UConv', NVRAM_OperationMode != '2');
-					displayElement('udpxy_port_row', document.miscServiceCfg.udpxyMode.selectedIndex == '1');
+					displayElement('udpxy_port_row', document.miscServiceCfg.udpxyMode.selectedIndex != '0');
 					displayElement('xupnpd', BUILD_XUPNPD == '1');
 				} else {
 					ajaxModifyElementHTML('miscIPTV_row', '<td class="title" colspan="5" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc iptv") + '</td>');
@@ -988,14 +988,15 @@
 					<tr>
 						<td>
 							<input type="submit" class="normal" value="Apply"  id="miscApply">&nbsp;&nbsp;
-							<input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload()">&nbsp;&nbsp;
-							<input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form)">&nbsp;&nbsp;
+							<input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();">&nbsp;&nbsp;
+							<input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form);">
 							<input type="hidden" value="1" name="goaheadrestart">
 							<input type="hidden" value="0" name="reset">
 						</td>
 					</tr>
 				</table>
 				</form>
+				<div class="whitespace">&nbsp;</div>
 			</tr>
 		</table>
 	</body>

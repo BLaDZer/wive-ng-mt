@@ -206,6 +206,7 @@
 					<!-- =================  SOFT NETORK  ================= -->
 					<div id="ethernetStatus"></div>
 					<div id="statisticSWStats"></div>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

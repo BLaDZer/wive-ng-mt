@@ -156,6 +156,7 @@
 							</td>
 						</tr>
 					</table>
+					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

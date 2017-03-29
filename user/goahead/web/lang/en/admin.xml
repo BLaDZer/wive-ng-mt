@@ -1,6 +1,6 @@
 <po>
     <message msgid="management title" msgstr="System Management" />
-    <message msgid="management introduction" msgstr="You can select language and set administrator login and password here. You can also upgrade the Wive-NG-MT firmware to obtain new functionality. It takes about 2 minute to upload firmware &amp; upgrade flash. Please be patient. Caution! A corrupted image will hang up the system." />
+    <message msgid="management introduction" msgstr="You can select language and set administrator login and password here. You can also upgrade the Wive-NG-MT firmware to obtain new functionality. It takes about 5 minutes to upload firmware &amp; upgrade flash. Please be patient. Caution! A corrupted image will hang up the system." />
     <message msgid="management uploading firmware" msgstr="Uploading firmware" />
     <message msgid="management dont remove usb" msgstr="Please be patient and don't remove USB device if present..." />
     <message msgid="management language settings" msgstr="Language Settings" />
