@@ -80,7 +80,7 @@
 #endif /* MT7603_FPGA */
 #define SHORT_CHANNEL_TIME          90        /* unit: msec */
 #define MIN_CHANNEL_TIME            110        /* unit: msec, for dual band scan */
-#define MAX_CHANNEL_TIME            140       /* unit: msec, for single band scan */
+#define MAX_CHANNEL_TIME            60       /* 140 */ /* unit: msec, for single band scan */
 #define FAST_ACTIVE_SCAN_TIME	    30 		  /* Active scan waiting for probe response time */
 
 #define AUTO_CHANNEL_SEL_TIMEOUT		400		/* uint: msec */
