@@ -378,7 +378,8 @@ if (0) {
 		pOSPkt->dev = get_netdev_from_bssid(pAd, wdev_idx);
 		pOSPkt->data = pRxBlk->pTransData;
 		pOSPkt->len = pRxBlk->TransDataSize;
-		pOSPkt->tail = pOSPkt->data + pOSPkt->len;
+
+		skb_set_tail_pointer(pOSPkt, pOSPkt->len);
 		//printk("%s: rx trans ...%d\n", __FUNCTION__, __LINE__);
 	}
 	else

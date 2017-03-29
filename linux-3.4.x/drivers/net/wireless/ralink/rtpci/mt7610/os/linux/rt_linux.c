@@ -198,7 +198,14 @@ NDIS_STATUS os_alloc_mem(
 	OUT UCHAR **mem,
 	IN ULONG size)
 {
-	*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+	if(in_atomic())
+	{
+		*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+	}
+	else
+	{		
+		*mem = (PUCHAR) kmalloc(size, GFP_KERNEL);
+	}
 	if (*mem) {
 #ifdef VENDOR_FEATURE4_SUPPORT
 		OS_NumOfMemAlloc++;
@@ -521,12 +528,12 @@ PNDIS_PACKET duplicate_pkt_with_VLAN(
 		/* copy header (maybe +VLAN tag) */
 		VLAN_Size = VLAN_8023_Header_Copy(VLAN_VID, VLAN_Priority,
 						  pHeader802_3, HdrLen,
-						  skb->tail, FromWhichBSSID,
+						  GET_OS_PKT_DATATAIL(skb), FromWhichBSSID,
 						  TPID);
 		skb_put(skb, HdrLen + VLAN_Size);
 
 		/* copy data body */
-		NdisMoveMemory(skb->tail, pData, DataSize);
+		NdisMoveMemory(GET_OS_PKT_DATATAIL(skb), pData, DataSize);
 		skb_put(skb, DataSize);
 		skb->dev = pNetDev;	/*get_netdev_from_bssid(pAd, FromWhichBSSID); */
 		pPacket = OSPKT_TO_RTPKT(skb);

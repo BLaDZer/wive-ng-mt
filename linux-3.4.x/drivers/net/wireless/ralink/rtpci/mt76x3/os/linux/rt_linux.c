@@ -239,7 +239,14 @@ NDIS_STATUS os_alloc_mem(
 	OUT UCHAR **mem,
 	IN ULONG size)
 {
-	*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+	if(in_atomic())
+	{
+		*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+	}
+	else
+	{		
+		*mem = (PUCHAR) kmalloc(size, GFP_KERNEL);
+	}
 	if (*mem) {
 #ifdef VENDOR_FEATURE4_SUPPORT
 		OS_NumOfMemAlloc++;
@@ -459,7 +466,7 @@ PNDIS_PACKET ClonePacket(PNET_DEV ndev, PNDIS_PACKET pkt, UCHAR *buf, ULONG sz)
 		pClonedPkt->dev = pRxPkt->dev;
 		pClonedPkt->data = buf;
 		pClonedPkt->len = sz;
-		pClonedPkt->tail = pClonedPkt->data + pClonedPkt->len;
+		skb_set_tail_pointer(pClonedPkt, pClonedPkt->len);
 	}
 
 	return pClonedPkt;
@@ -511,13 +518,13 @@ PNDIS_PACKET duplicate_pkt_vlan(
 		/* copy header (maybe with VLAN tag) */
 		VLAN_Size = VLAN_8023_Header_Copy(VLAN_VID, VLAN_Priority,
 						  pHeader802_3, HdrLen,
-						  skb->tail,
+						  GET_OS_PKT_DATATAIL(skb),
 						  TPID);
 
 		skb_put(skb, HdrLen + VLAN_Size);
 
 		/* copy data body */
-		NdisMoveMemory(skb->tail, pData, DataSize);
+		NdisMoveMemory(GET_OS_PKT_DATATAIL(skb), pData, DataSize);
 		skb_put(skb, DataSize);
 		skb->dev = pNetDev;
 		pPacket = OSPKT_TO_RTPKT(skb);
@@ -682,7 +689,8 @@ void wlan_802_11_to_802_3_packet(
 	pOSPkt->dev = pNetDev;
 	pOSPkt->data = pData;
 	pOSPkt->len = DataSize;
-	pOSPkt->tail = pOSPkt->data + pOSPkt->len;
+
+	skb_set_tail_pointer(pOSPkt, pOSPkt->len);
 
 	/* copy 802.3 header */
 #ifdef CONFIG_AP_SUPPORT
