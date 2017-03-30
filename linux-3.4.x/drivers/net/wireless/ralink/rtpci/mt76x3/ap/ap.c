@@ -1479,8 +1479,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		if (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout)
 		{
 			bDisconnectSta = TRUE;
-			printk("ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
-					PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout);
+			printk("%s ageout %02x:%02x:%02x:%02x:%02x:%02x after %d-sec silence\n",
+				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout);
 			//ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 		}
 		else if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
@@ -1492,8 +1492,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (pEntry->PsMode != PWR_SAVE)
 			{
 				bDisconnectSta = TRUE;
-				printk("STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
-					PRINT_MAC(pEntry->Addr),
+				printk("%s STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
+					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr),
 					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 			}
 		}
@@ -1503,7 +1503,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
 				bDisconnectSta = TRUE;
-				printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n", PRINT_MAC(pEntry->Addr));
+				printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n",
+					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr));
 			}
 		}
 #endif /* BAND_STEERING */
