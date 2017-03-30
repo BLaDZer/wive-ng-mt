@@ -64,10 +64,10 @@ static RTMP_REG_PAIR mt76x2_mac_cr_table[] = {
 	{TX_PWR_CFG_8, 0x3A},
 	{TX_PWR_CFG_9, 0x3A},
 	{MT7662_EFUSE_CTRL, 0xD000},
-	{PER_PORT_PAUSE_ENABLE_CONTROL1, 0xA},
+	{PER_PORT_PAUSE_ENABLE_CONTROL1, 0x0},
 	{0x824, 0x60401c18}, //change the FCE threshold from 0x60402c28 to 0x60401c18
 #ifdef TXBF_SUPPORT
-	{TX_TXBF_CFG_0,		0x4002FC21},	/* Force MCS2 for sounding response*/
+	{TX_TXBF_CFG_0,		0x4004FC21},	/* Force MCS4 for sounding response*/
 	{TX_TXBF_CFG_1,		0xFE23727F},	
 	{TX_TXBF_CFG_2,		0xFFFFFFFF},	/* The explicit TxBF feedback is applied only when the value of (local TSF timer) - 
 	                                                               (TSF timestamp of the feedback frame) is greater then or equal to 0xFFFFFFFF */
@@ -1115,6 +1115,10 @@ static void mt76x2_switch_channel(RTMP_ADAPTER *ad, u8 channel, BOOLEAN scan)
 
 	if ((ad->CommonCfg.TxStream == 1) && (ad->CommonCfg.RxStream == 1))
 		tx_rx_setting = 0x101;
+	else if ((ad->CommonCfg.TxStream == 2) && (ad->CommonCfg.RxStream == 1))
+		tx_rx_setting = 0x201;
+	else if ((ad->CommonCfg.TxStream == 1) && (ad->CommonCfg.RxStream == 2))
+		tx_rx_setting = 0x102;
 	else if ((ad->CommonCfg.TxStream == 2) && (ad->CommonCfg.RxStream == 2))
 		tx_rx_setting = 0x202;
 	else 
@@ -1882,10 +1886,10 @@ static void mt76x2_init_mac_cr(RTMP_ADAPTER *ad)
 		RTMP_IO_WRITE32(ad, 0x504, 0x0);
 	}
 	
-	/* Decrease MAC OFDM SIFS from 16 to 13us */ 
+	/* Decrease MAC OFDM SIFS from 16 to 14us */ 
 	RTMP_IO_READ32(ad, XIFS_TIME_CFG, &value);
 	value = value & (~XIFS_TIME_OFDM_SIFS_MASK);
-	value |= XIFS_TIME_OFDM_SIFS(0x0D);
+	value |= XIFS_TIME_OFDM_SIFS(0x0e);
 	RTMP_IO_WRITE32(ad, XIFS_TIME_CFG, value);
 
 	RTMP_IO_READ32(ad, BKOFF_SLOT_CFG, &value);
