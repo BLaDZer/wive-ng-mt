@@ -142,11 +142,19 @@ UCHAR MT76x0_EeBuffer[EEPROM_SIZE] =
 
 static RTMP_REG_PAIR	MT76x0_MACRegTable[] = {
 	{IOCFG_6,			0xA0040080},
-	{PBF_SYS_CTRL,		0x80c00},
+	{PBF_SYS_CTRL,			0x80c00},
+	{0x80,				0xFF000403},
+	{0x20, 				0x00E00FFF},
+	{MAC_SYS_CTRL,			0xC},
 	{PBF_CFG,			0x77723c1f},
-	{FCE_PSE_CTRL,		0x1},
+	{FCE_PSE_CTRL,			0x1},
 
-	{AMPDU_MAX_LEN_20M1S,	0xAAA99887},
+	/* Keep the default setting of 0x1018 for MT7650. @20120830 */
+	/* {MAX_LEN_CFG,			MAX_AGGREGATION_SIZE | 0x00001000},	*/
+	
+	{PWR_PIN_CFG,		0x0},
+
+	{AMPDU_MAX_LEN_20M1S,	0xBAA99887}, /* Recommended by JerryCK @20120905 */
 
 	{TX_SW_CFG0,		0x601}, /* Delay bb_tx_pe for proper tx_mcs_pwr update */
 	{TX_SW_CFG1,		0x00040000}, /* Set rf_tx_pe deassert time to 1us by Chee's comment @MT7650_CR_setting_1018.xlsx */
@@ -206,7 +214,8 @@ static RTMP_REG_PAIR MT76x0_BBP_Init_Tab[] = {
 	{CORE_R42, 0x00000000},
 	{CORE_R44, 0x00000000},
 
-	{IBI_R11, 0x0FDE8081},
+	/* Disable Tx FIFO empty check for hang issue - MT7650E3_BBP_CR_20121225 */
+	{IBI_R11, 0x00000080},
 	
 	/*
 		0x2300[5] Default Antenna:
@@ -225,7 +234,6 @@ static RTMP_REG_PAIR MT76x0_BBP_Init_Tab[] = {
 	{AGC1_R24, 0x00002F3A},
 	{AGC1_R25, 0x8000005A},
 	{AGC1_R26, 0x007C2005},
-	{AGC1_R33, 0x00003238},
 	{AGC1_R34, 0x000A0C0C},
 	{AGC1_R37, 0x2121262C},
 	{AGC1_R41, 0x38383E45},
@@ -263,21 +271,37 @@ static RTMP_REG_PAIR MT76x0_BBP_Init_Tab[] = {
 	{RXFE_R3, 0x00000000},
 	{RXFE_R4, 0x00000000},
 
-	{RXO_R13, 0x00000192},
+	{RXO_R13, 0x00000092},
 	{RXO_R14, 0x00060612},
 	{RXO_R15, 0xC8321B18},
 	{RXO_R16, 0x0000001E},
 	{RXO_R17, 0x00000000},
 	{RXO_R18, 0xCC00A993},
 	{RXO_R19, 0xB9CB9CB9},
-	{RXO_R20, 0x26c00057},
 	{RXO_R21, 0x00000001},
 	{RXO_R24, 0x00000006},
-	{RXO_R28, 0x0000003F},
 };
 static UCHAR MT76x0_BBP_Init_Tab_Size = (sizeof(MT76x0_BBP_Init_Tab) / sizeof(RTMP_REG_PAIR));
 
 MT76x0_BBP_Table MT76x0_BPP_SWITCH_Tab[] = {
+	
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R8, 0x0E344EF0}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R8, 0x122C54F2}},
+
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R14, 0x310F2E39}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R14, 0x310F2A3F}},
+
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R32, 0x00003230}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R32, 0x0000181C}},
+
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R33, 0x00003240}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R33, 0x00003218}},
+
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R35, 0x11112016}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R35, 0x11112016}},
+
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{RXO_R28, 0x0000008A}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{RXO_R28, 0x0000008A}},	
 	
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R4, 0x1FEDA049}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R4, 0x1FECA054}},
@@ -285,9 +309,6 @@ MT76x0_BBP_Table MT76x0_BPP_SWITCH_Tab[] = {
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R6, 0x00000045}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R6, 0x0000000A}},
 	
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R8, 0x16344EF0}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R8, 0x122C54F2}},
-
 	{RF_G_BAND | RF_BW_20,	{AGC1_R12, 0x05052879}},
 	{RF_G_BAND | RF_BW_40,	{AGC1_R12, 0x050528F9}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R12, 0x050528F9}},
@@ -295,12 +316,6 @@ MT76x0_BBP_Table MT76x0_BPP_SWITCH_Tab[] = {
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R13, 0x35050004}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R13, 0x2C3A0406}},
 	
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R14, 0x310F2E3C}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R14, 0x310F2A3F}},
-
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R26, 0x007C2005}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R26, 0x007C2005}},
-
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R27, 0x000000E1}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R27, 0x000000EC}},
 
@@ -309,22 +324,16 @@ MT76x0_BBP_Table MT76x0_BPP_SWITCH_Tab[] = {
 	{RF_A_BAND | RF_BW_40,	{AGC1_R28, 0x00060801}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_80,	{AGC1_R28, 0x00060806}},
 
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R31, 0x00000E23}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R31, 0x00000E13}},
-
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R32, 0x00003218}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R32, 0x0000181C}},
-
-	{RF_G_BAND | RF_BW_20,	{AGC1_R35, 0x11111616}},
-	{RF_G_BAND | RF_BW_40,	{AGC1_R35, 0x11111516}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R35, 0x11111111}},
+	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R31, 0x00000F23}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R31, 0x00000F13}},
 
 	{RF_G_BAND | RF_BW_20,	{AGC1_R39, 0x2A2A3036}},
 	{RF_G_BAND | RF_BW_40,	{AGC1_R39, 0x2A2A2C36}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,    {AGC1_R39, 0x2A2A2A2A}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R39, 0x2A2A3036}},
+	{RF_A_BAND | RF_BW_80,							{AGC1_R39, 0x2A2A2A36}},
 	{RF_G_BAND | RF_BW_20,	{AGC1_R43, 0x27273438}},
 	{RF_G_BAND | RF_BW_40,	{AGC1_R43, 0x27272D38}},
-	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R43, 0x27271A1A}},
+	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R43, 0x27272B30}},
 
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R51, 0x17171C1C}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R51, 0xFFFFFFFF}},
@@ -333,7 +342,8 @@ MT76x0_BBP_Table MT76x0_BPP_SWITCH_Tab[] = {
 	{RF_G_BAND | RF_BW_40,	{AGC1_R53, 0x2626322F}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R53, 0xFFFFFFFF}},
 
-	{RF_G_BAND | RF_BW_20 | RF_BW_40,				{AGC1_R55, 0x40404040}},
+	{RF_G_BAND | RF_BW_20,							{AGC1_R55, 0x40404E58}},
+	{RF_G_BAND | RF_BW_40,							{AGC1_R55, 0x40405858}},
 	{RF_A_BAND | RF_BW_20 | RF_BW_40 | RF_BW_80,	{AGC1_R55, 0xFFFFFFFF}},
 	
 	{RF_G_BAND | RF_BW_20 | RF_BW_40,	{AGC1_R58, 0x00001010}},
@@ -354,7 +364,7 @@ static BANK_RF_REG_PAIR MT76x0_RF_Central_RegTb[] = {
 	/*
 		R3 ~ R7: VCO Cal.
 	*/	
-	{RF_BANK0,	RF_R03, 0x63}, /* VCO Freq Cal - No Bypass, VCO Amp Cal - No Bypass */
+	{RF_BANK0,	RF_R03, 0x73}, /* VCO Freq Cal - No Bypass, VCO Amp Cal - No Bypass */
 	{RF_BANK0,	RF_R04, 0x30}, /* R4 b<7>=1, VCO cal */
 	{RF_BANK0,	RF_R05, 0x00},
 	{RF_BANK0,	RF_R06, 0x41}, /* Set the open loop amplitude to middle since bypassing amplitude calibration */
@@ -384,7 +394,7 @@ static BANK_RF_REG_PAIR MT76x0_RF_Central_RegTb[] = {
 		XO
 	*/
 	{RF_BANK0,	RF_R20, 0x22},
-	{RF_BANK0,	RF_R21, 0x10},
+	{RF_BANK0,	RF_R21, 0x12},
 	{RF_BANK0,	RF_R23, 0x00},
 	{RF_BANK0,	RF_R24, 0x33}, /* See band selection for R24<1:0> */
 	{RF_BANK0,	RF_R25, 0x00},
@@ -439,7 +449,6 @@ static BANK_RF_REG_PAIR MT76x0_RF_2G_Channel_0_RegTb[] = {
 	*/
 	/* RF_R00 Change in SelectBand6590 */
 
-	{RF_BANK5,	RF_R02, 0x00}, /* 0x1D: 5G+2G+BT(MT7650E),  0x0C: 5G+2G(MT7610U), 0x00: 5G only (MT7610E) */
 	{RF_BANK5,	RF_R03, 0x00},
 
 	/*
@@ -1169,6 +1178,9 @@ VOID SelectBandMT76x0(
 	
 	DBGPRINT(RT_DEBUG_TRACE, ("%s: -->\n", __FUNCTION__));
 
+	if (IS_MT7610E(pAd))
+		rlt_rf_write(pAd, RF_BANK5, RF_R02, 0x00); /* 5G only */
+
 	if (Channel <= 14) 
 	{
 
@@ -1607,6 +1619,9 @@ static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
 					MT76x0_RF_2G_Channel_0_RegTb[IdReg].Value);
 	}
 
+	if (IS_MT7610E(pAd))
+		rlt_rf_write(pAd, RF_BANK5, RF_R02, 0x00); /* 5G only */
+
 	for(IdReg = 0; IdReg < MT76x0_RF_5G_Channel_0_RegTb_Size; IdReg++)
 	{
 		rlt_rf_write(pAd, 
@@ -1659,6 +1674,7 @@ static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
 		E2: B0.R21<0>: xo_cxo<0>, B0.R22<7:0>: xo_cxo<8:1> 
 	*/
 	RFValue = (UCHAR)(pAd->RfFreqOffset & 0xFF);
+	RFValue = min(RFValue, 0xBF); /* Max of 9-bit built-in crystal oscillator C1 code */
 	rlt_rf_write(pAd, RF_BANK0, RF_R22, RFValue);
 	
 	rlt_rf_read(pAd, RF_BANK0, RF_R22, &RFValue);
@@ -1771,7 +1787,25 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 	MacReg &= ~(0x00000200);
 	RTMP_IO_WRITE32(pAd, 0x110, MacReg);
 
+#ifdef MCS_LUT_SUPPORT
+	RTMP_IO_READ32(pAd, TX_FBK_LIMIT, &MacReg);
+	if (RTMP_TEST_MORE_FLAG(pAd, fASIC_CAP_MCS_LUT))
+		MacReg |= 0x40000;
+	else
+		MacReg &= (~0x40000);
+	RTMP_IO_WRITE32(pAd, TX_FBK_LIMIT, MacReg);
+#endif /* MCS_LUT_SUPPORT */
 
+	/* A workaround solution for EU bandwidth adaptation test */
+	if ((pAd->CommonCfg.Channel > 14) &&
+		(pAd->CommonCfg.bIEEE80211H == TRUE) &&
+		(pAd->CommonCfg.BBPCurrentBW == BW_80)) {
+		/* Improve BW Adaptation */
+		RTMP_IO_READ32(pAd, TXOP_CTRL_CFG, &MacReg);
+		MacReg = (MacReg & 0xFFFF) | (0x410 << 16);
+		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, MacReg);
+		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, 0x3);
+	}
 
 	return;
 }
@@ -2132,6 +2166,14 @@ static VOID MT76x0_ChipSwitchChannel(
 			break;
 		}
 	}	
+
+	/* set Japan Tx filter at channel 14 */
+	RTMP_BBP_IO_READ32(pAd, CORE_R1, &RegValue);
+	if (Channel == 14)
+		RegValue |= 0x20;		
+	else
+		RegValue &= (~0x20);
+	RTMP_BBP_IO_WRITE32(pAd, CORE_R1, RegValue);
 
 	for (Index = 0; Index < MT76x0_BPP_SWITCH_Tab_Size; Index++)
 	{
@@ -2577,7 +2619,9 @@ VOID MT76x0_DisableTxRx(
 			return;
 		}
 	}
-	
+
+	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_POLL_IDLE);
+
 	if (MTxCycle >= 2000)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("Check RxQ page count max\n"));
@@ -3473,7 +3517,12 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 
 	pChipCap->asic_caps |= (fASIC_CAP_PMF_ENC);
 	pChipCap->asic_caps |= (fASIC_CAP_MCS_LUT);
-	pChipCap->phy_caps = (fPHY_CAP_24G | fPHY_CAP_5G);
+#if 0 /* current driver not work with USB */
+	if (IS_MT7610U(pAd))
+		pChipCap->phy_caps = (fPHY_CAP_24G | fPHY_CAP_5G);
+	else
+#endif
+		pChipCap->phy_caps = fPHY_CAP_5G;
 	pChipCap->phy_caps |= (fPHY_CAP_HT | fPHY_CAP_VHT);
 
 	pChipCap->RfReg17WtMethod = RF_REG_WT_METHOD_STEP_ON;
@@ -4446,6 +4495,8 @@ VOID MT76x0_Calibration(
 	/* Restore 0x2124 & TX_ALC_CFG_0 after calibration completed */
 	RTMP_IO_WRITE32(pAd, 0x2124, reg_val);
 	RTMP_IO_WRITE32(pAd, TX_ALC_CFG_0, reg_tx_alc);
+
+	RTMPusecDelay(100000); // TODO: check response packet from FW
 
 	/*
 		14. RXDC Calibration parameter
