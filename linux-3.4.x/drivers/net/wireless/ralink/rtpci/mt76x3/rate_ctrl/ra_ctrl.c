@@ -2285,7 +2285,7 @@ VOID RTMPSetSupportMCS(
 		}
 		else
 		{
-			NdisMoveMemory(&SupportedRates[SupRateLen], ExtRate, MAX_LEN_OF_SUPPORTED_RATES - SupRateLen);
+			NdisMoveMemory(&SupportedRates[SupRateLen], ExtRate, MAX_LEN_OF_SUPPORTED_RATES - ExtRateLen);
 			SupportedRatesLen = MAX_LEN_OF_SUPPORTED_RATES;
 
 		}
