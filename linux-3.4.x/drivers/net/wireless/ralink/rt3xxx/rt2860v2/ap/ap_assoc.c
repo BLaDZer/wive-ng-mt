@@ -1097,7 +1097,8 @@ VOID APPeerDisassocReqAction(
 	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &SeqNum, &Reason))
     		return;
 
-	printk("ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
+	printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
+								pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
 								SeqNum, Addr2[0],Addr2[1],Addr2[2],Addr2[3],Addr2[4],Addr2[5],Reason);
 
 	pEntry = MacTableLookup(pAd, Addr2);
