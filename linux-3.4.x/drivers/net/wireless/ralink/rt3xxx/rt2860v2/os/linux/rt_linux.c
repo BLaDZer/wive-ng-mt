@@ -204,7 +204,18 @@ NDIS_STATUS os_alloc_mem(
 	OUT UCHAR **mem,
 	IN ULONG size)
 {
-	*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+#ifdef CONFIG_PREEMPT
+	if(in_atomic())
+	{
+		*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+	}
+	else
+	{		
+		*mem = (PUCHAR) kmalloc(size, GFP_KERNEL);
+	}
+#else
+		*mem = (PUCHAR) kmalloc(size, GFP_ATOMIC);
+#endif
 	if (*mem) {
 #ifdef VENDOR_FEATURE4_SUPPORT
 		OS_NumOfMemAlloc++;
@@ -212,7 +223,7 @@ NDIS_STATUS os_alloc_mem(
 
 		return NDIS_STATUS_SUCCESS;
 	} else
-		return (NDIS_STATUS_FAILURE);
+		return NDIS_STATUS_FAILURE;
 }
 
 NDIS_STATUS os_alloc_mem_suspend(
