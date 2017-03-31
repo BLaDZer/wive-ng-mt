@@ -136,7 +136,8 @@ static VOID APMlmeDeauthReqAction(
         if (NStatus != NDIS_STATUS_SUCCESS) 
             return;
 
-        printk ("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n",
+        printk ("%s AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n",
+				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
 				pInfo->Addr[0], pInfo->Addr[1], pInfo->Addr[2],
 				pInfo->Addr[3], pInfo->Addr[4], pInfo->Addr[5]);
            		
@@ -222,7 +223,7 @@ static VOID APPeerDeauthReqAction(
 
 		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
 
-        printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum,
+        printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum,
 		Addr2[0], Addr2[1], Addr2[2], Addr2[3], Addr2[4], Addr2[5], Reason);
 
 #ifdef MAC_REPEATER_SUPPORT

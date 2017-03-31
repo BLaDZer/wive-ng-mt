@@ -2890,7 +2890,7 @@
 11) goahead: chillispot: fix default allow all dns request option.<br>
 12) goahead: fix hide 5Ghz password at W4N.<br>
 13) goahead: move conntrack flush to firewall_rebuild (fix apply some rules on the fly).<br>
-14) kernel: ralink_wifi: show band in ap assign/kick/ageout messages.<br>
+14) kernel: ralink_wifi: show band in ap assign/kick/ageout/deauth messages.<br>
 15) kernel: ralink_wifi: use new mbssid mode per default (now work correct).<br>
 16) kernel: ralink_wifi: fix managment frames paraments.<br>
 17) kernel: ralink_wifi: fix check aes block sizes.<br>

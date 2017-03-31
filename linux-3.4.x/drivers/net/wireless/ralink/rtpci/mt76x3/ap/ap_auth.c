@@ -116,7 +116,7 @@ static VOID APMlmeDeauthReqAction(
         if (NStatus != NDIS_STATUS_SUCCESS) 
             return;
 
-        printk("AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(pInfo->Addr));
+        printk("%s AUTH - Send DE-AUTH req to %02x:%02x:%02x:%02x:%02x:%02x\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pInfo->Addr));
 
         MgtMacHeaderInit(pAd, &Hdr, SUBTYPE_DEAUTH, 0, pInfo->Addr,
 						pAd->ApCfg.MBSSID[apidx].wdev.if_addr,
@@ -227,7 +227,7 @@ static VOID APPeerDeauthReqAction(
 						DBGPRINT(RT_DEBUG_TRACE,("%s: receive not client de-auth ###\n", __FUNCTION__));
 					}
 #endif /* APCLI_SUPPORT */
-		printk("AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", SeqNum, PRINT_MAC(Addr2), Reason);
+		printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum, PRINT_MAC(Addr2), Reason);
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
