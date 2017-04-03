@@ -2955,6 +2955,7 @@
 5) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
 6) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
 7) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
+8) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 <br>
 <br>
 <br>

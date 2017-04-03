@@ -1110,8 +1110,8 @@ typedef struct GNU_PACKED _OID_BA_ORI_ENTRY {
 } OID_BA_ORI_ENTRY, *POID_BA_ORI_ENTRY;
 
 typedef struct _QUERYBA_TABLE {
-	OID_BA_ORI_ENTRY BAOriEntry[32];
-	OID_BA_REC_ENTRY BARecEntry[32];
+	OID_BA_ORI_ENTRY BAOriEntry[MAX_LEN_OF_MAC_TABLE];
+	OID_BA_REC_ENTRY BARecEntry[MAX_LEN_OF_MAC_TABLE];
 	UCHAR OriNum;		/* Number of below BAOriEntry */
 	UCHAR RecNum;		/* Number of below BARecEntry */
 } QUERYBA_TABLE, *PQUERYBA_TABLE;
