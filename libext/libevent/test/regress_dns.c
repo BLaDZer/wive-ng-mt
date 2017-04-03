@@ -1714,10 +1714,10 @@ testleak_cleanup(const struct testcase_t *testcase, void *env_)
 	ok = 1;
 end:
 	if (env) {
-	if (env->dns_base)
-		evdns_base_free(env->dns_base, 0);
-	if (env->base)
-		event_base_free(env->base);
+		if (env->dns_base)
+			evdns_base_free(env->dns_base, 0);
+		if (env->base)
+			event_base_free(env->base);
 		free(env);
 	}
 	return ok;

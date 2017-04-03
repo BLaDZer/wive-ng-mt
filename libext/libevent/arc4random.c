@@ -302,17 +302,17 @@ static int arc4_seed_urandom_helper_(const char *fname)
 	size_t n;
 
 	fd = evutil_open_closeonexec(fname, O_RDONLY, 0);
-		if (fd<0)
+	if (fd<0)
 		return -1;
-		n = read_all(fd, buf, sizeof(buf));
-		close(fd);
-		if (n != sizeof(buf))
-			return -1;
-		arc4_addrandom(buf, sizeof(buf));
+	n = read_all(fd, buf, sizeof(buf));
+	close(fd);
+	if (n != sizeof(buf))
+		return -1;
+	arc4_addrandom(buf, sizeof(buf));
 	evutil_memclear_(buf, sizeof(buf));
-		arc4_seeded_ok = 1;
-		return 0;
-	}
+	arc4_seeded_ok = 1;
+	return 0;
+}
 
 static int
 arc4_seed_urandom(void)
@@ -402,6 +402,7 @@ arc4_stir(void)
 	 */
 	for (i = 0; i < 12*256; i++)
 		(void)arc4_getbyte();
+
 	arc4_count = BYTES_BEFORE_RESEED;
 
 	return 0;

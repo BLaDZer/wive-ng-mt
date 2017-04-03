@@ -788,7 +788,7 @@ consider_reading(struct bufferevent_openssl *bev_ssl)
 
 		if (bev_ssl->bev.read_suspended)
 			break;
-
+        
 		/* Read all pending data.  This won't hit the network
 		 * again, and will (most importantly) put us in a state
 		 * where we don't need to read anything else until the
@@ -949,7 +949,7 @@ be_openssl_writeeventcb(evutil_socket_t fd, short what, void *ptr)
 		_bufferevent_run_eventcb(&bev_ssl->bev.bev,
 		    BEV_EVENT_TIMEOUT|BEV_EVENT_WRITING);
 	} else {
-	consider_writing(bev_ssl);
+		consider_writing(bev_ssl);
 	}
 	_bufferevent_decref_and_unlock(&bev_ssl->bev.bev);
 }
