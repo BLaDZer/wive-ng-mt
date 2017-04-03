@@ -479,7 +479,7 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 #endif /* RT_BIG_ENDIAN */
 
 #ifdef RTMP_PCI_SUPPORT
-
+#if 0
 	if (rx_blk->PDMALen != RMAC_RX_PKT_RX_BYTE_COUNT(rxd_0->word))
 	{
 
@@ -488,7 +488,7 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 		return 0;
 	
 	}
-
+#endif
 	if (RMAC_RX_PKT_RX_BYTE_COUNT(rxd_0->word) > RX_BUFFER_AGGRESIZE)
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("drop rx length = 0x%x packet\n", 
@@ -645,6 +645,7 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 			ac_idx = WMM_UP2AC_MAP[qos_p[0]];
 #endif /* UAPSD_SUPPORT */
 
+			RX_BLK_SET_FLAG(rx_blk, fRX_RETRIEVE);
 			if ((tr_entry->ps_state == APPS_RETRIEVE_GOING) 
 				|| (tr_entry->ps_state == APPS_RETRIEVE_START_PS))
 			{
@@ -733,9 +734,6 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 						WLAN_MR_TIM_BIT_SET(ad, tr_entry->func_tb_idx, tr_entry->wcid);
 #endif /* CONFIG_AP_SUPPORT */
 					}
-
-					RX_BLK_SET_FLAG(rx_blk, fRX_RETRIEVE);
-
 				}
 			}
 			else
