@@ -2950,6 +2950,7 @@
 <b>5.3.x</b><br>
 1) ntfs-3g: update to 2017.3.23 version.<br>
 2) libtalloc: update to 2.1.9 version.<br>
+3) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
 <br>
 <br>
 <br>

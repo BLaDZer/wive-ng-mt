@@ -1045,10 +1045,15 @@ static const RTMP_CHIP_CAP MT7603_ChipCap = {
 #endif /* CONFIG_WIFI_TEST */
 	.hif_type = HIF_MT,
 	.rf_type = RF_MT,
+#ifdef RTMP_PCI_SUPPORT
+	.RxBAWinSize = 21,
+#endif
+#ifdef RTMP_USB_SUPPORT
 	.RxBAWinSize = 64,
-	.AMPDUFactor = 3,
+#endif
 
-    .BiTxOpOn = 1,
+	.AMPDUFactor = 2,
+	.BiTxOpOn = 1,
 };
 
 
