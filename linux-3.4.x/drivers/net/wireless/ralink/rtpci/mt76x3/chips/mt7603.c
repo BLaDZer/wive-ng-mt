@@ -1021,11 +1021,9 @@ static const RTMP_CHIP_CAP MT7603_ChipCap = {
 #ifdef RTMP_PCI_SUPPORT
 	.cmd_padding_len = 0,
 #endif
-#ifdef MT7603_E1
 	.fw_header_image = MT7603_FirmwareImage,
-	.fw_len = sizeof(MT7603_FirmwareImage),
-#endif /* MT7603_E1 */
 	.fw_bin_file_name = "mtk/MT7603.bin",
+	.fw_len = sizeof(MT7603_FirmwareImage),
 #ifdef CARRIER_DETECTION_SUPPORT
 	.carrier_func = TONE_RADAR_V2,
 #endif
