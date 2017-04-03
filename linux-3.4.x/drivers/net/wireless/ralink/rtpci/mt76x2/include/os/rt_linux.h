@@ -1054,15 +1054,16 @@ do{                    \
 		(RTPKT_TO_OSPKT(_pkt)->len) = (_len)
 		
 #define GET_OS_PKT_DATATAIL(_pkt) \
-		(RTPKT_TO_OSPKT(_pkt)->tail)
+		skb_tail_pointer(RTPKT_TO_OSPKT(_pkt))
 #define SET_OS_PKT_DATATAIL(_pkt, _start, _len)	\
-		((RTPKT_TO_OSPKT(_pkt))->tail) = (PUCHAR)((_start) + (_len))
+		(skb_set_tail_pointer(RTPKT_TO_OSPKT(_pkt), \
+		(_len)-(int)(GET_OS_PKT_DATAPTR(_pkt)-(_start))))
 		
 #define GET_OS_PKT_HEAD(_pkt) \
 		(RTPKT_TO_OSPKT(_pkt)->head)
 
 #define GET_OS_PKT_END(_pkt) \
-		(RTPKT_TO_OSPKT(_pkt)->end)
+		skb_end_pointer(RTPKT_TO_OSPKT(_pkt))
 
 #define GET_OS_PKT_NETDEV(_pkt) \
 		(RTPKT_TO_OSPKT(_pkt)->dev)

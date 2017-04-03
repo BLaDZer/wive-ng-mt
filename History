@@ -2953,6 +2953,7 @@
 3) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
 4) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
 5) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
+6) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
 <br>
 <br>
 <br>

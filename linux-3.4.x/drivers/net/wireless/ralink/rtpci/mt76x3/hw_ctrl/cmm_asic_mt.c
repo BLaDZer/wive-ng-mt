@@ -6191,9 +6191,9 @@ INT32 AsicDMASchedulerInit(RTMP_ADAPTER *pAd, INT mode)
 		UINT32 max_bmcast_page_count = MAX_BMCAST_SIZE/page_size;
 		UINT32 max_mcucmd_page_count = MAX_MCUCMD_SIZE/page_size;
 		UINT32 max_data_page_count = MAX_DATA_SIZE/page_size;
-		UINT32 mcu_restore_val;
-		UINT32 bcn_restore_val;
-		UINT32 mbc_restore_val;
+		UINT32 mcu_restore_val=0;
+		UINT32 bcn_restore_val=0;
+		UINT32 mbc_restore_val=0;
 
 		/* Highest Priority Q7: Beacon > Q8: MC/BC > Q5: MCU CMD */
 		mac_val = 0x55555553;
