@@ -189,7 +189,7 @@ def configure(conf):
                        ''',
                     define='HAVE_IPV6',
                     lib='nsl socket',
-                    headers='sys/socket.h netdb.h netinet/in.h')
+                    headers='sys/socket.h netdb.h netinet/in.h net/if.h')
 
     if conf.CONFIG_SET('HAVE_SYS_UCONTEXT_H') and conf.CONFIG_SET('HAVE_SIGNAL_H'):
         conf.CHECK_CODE('''
@@ -376,7 +376,7 @@ removeea setea
         if conf.CHECK_FUNCS_IN('dgettext gettext', '', checklibc=True, headers='libintl.h'):
             # save for dependency definitions
             conf.env.intl_libs=''
-        # others (e.g. FreeBSD) have seperate libintl
+        # others (e.g. FreeBSD) have separate libintl
         elif conf.CHECK_FUNCS_IN('dgettext gettext', 'intl', checklibc=False, headers='libintl.h'):
             # save for dependency definitions
             conf.env.intl_libs='intl'
@@ -482,6 +482,9 @@ removeea setea
 
     if conf.CONFIG_SET('HAVE_PORT_CREATE') and conf.CONFIG_SET('HAVE_PORT_H'):
         conf.DEFINE('HAVE_SOLARIS_PORTS', 1)
+
+    if conf.CHECK_FUNCS('eventfd', headers='sys/eventfd.h'):
+        conf.DEFINE('HAVE_EVENTFD', 1)
 
     conf.CHECK_HEADERS('poll.h')
     conf.CHECK_FUNCS('poll')
@@ -701,9 +704,10 @@ def build(bld):
                       deps='crypt dl nsl socket rt attr' + extra_libs)
 
     bld.SAMBA_SUBSYSTEM('replace-test',
-                      source='''test/testsuite.c test/strptime.c
-                      test/os2_delete.c test/getifaddrs.c''',
-                      deps='replace')
+                        source='''test/testsuite.c test/strptime.c
+                        test/os2_delete.c test/getifaddrs.c''',
+                        deps='replace',
+                        cflags="-Wno-format-length")
 
     if bld.env.standalone_replace:
         bld.SAMBA_BINARY('replace_testsuite',

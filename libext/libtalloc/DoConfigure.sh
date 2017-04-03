@@ -22,6 +22,6 @@ if [ ! -f configure ]; then
 fi
 
 CONFOPTS="--hostcc=gcc --cross-compile --cross-answers=mips.txt"
-CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --without-gettext --disable-python"
+CONFOPTS="$CONFOPTS --prefix=$APROOTDIR/filesystem --without-gettext --disable-python --disable-rpath"
 
 ./configure $CONFOPTS

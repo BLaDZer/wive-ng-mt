@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 APPNAME = 'talloc'
-VERSION = '2.1.8'
+VERSION = '2.1.9'
 
 
 blddir = 'bin'
@@ -41,6 +41,10 @@ def configure(conf):
     conf.RECURSE('lib/replace')
 
     conf.env.standalone_talloc = conf.IN_LAUNCH_DIR()
+
+    conf.define('TALLOC_BUILD_VERSION_MAJOR', int(VERSION.split('.')[0]))
+    conf.define('TALLOC_BUILD_VERSION_MINOR', int(VERSION.split('.')[1]))
+    conf.define('TALLOC_BUILD_VERSION_RELEASE', int(VERSION.split('.')[2]))
 
     conf.env.disable_python = getattr(Options.options, 'disable_python', False)
 
@@ -141,13 +145,11 @@ def build(bld):
             bld.SAMBA_PYTHON('pytalloc',
                             'pytalloc.c',
                             deps='talloc ' + name,
-                            enabled=True,
                             realname='talloc.so')
 
             bld.SAMBA_PYTHON('test_pytalloc',
                             'test_pytalloc.c',
                             deps='pytalloc',
-                            enabled=True,
                             realname='_test_pytalloc.so',
                             install=False)
 
