@@ -23,7 +23,7 @@ ALL_OBJS=$(CORE_OBJS) $(WIN_OBJS) $(EXTRA_OBJS)
 STATIC_LIBS=libevent_core.lib libevent_extras.lib libevent.lib
 
 
-all: static_libs tests
+all: static_libs
 
 static_libs: $(STATIC_LIBS)
 
@@ -43,5 +43,11 @@ clean:
 	$(MAKE) /F Makefile.nmake clean
 
 tests:
-	cd test
-	$(MAKE) /F Makefile.nmake
+	echo
+
+shared: install
+	cp -vfa ./filesystem/lib/*.so*	$(LIBCDIRSHARED)/lib
+	-cp -vfa ./filesystem/lib/*.la*	$(LIBCDIRSHARED)/lib
+	cp -vfra ./filesystem/include/*	$(LIBCDIRSHARED)/include
+	rm -rf ./filesystem
+

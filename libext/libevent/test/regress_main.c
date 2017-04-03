@@ -284,7 +284,7 @@ basic_test_cleanup(const struct testcase_t *testcase, void *ptr)
 		if (data->base) {
 			event_base_assert_ok(data->base);
 			event_base_free(data->base);
-		}
+	}
 	}
 
 	free(data);

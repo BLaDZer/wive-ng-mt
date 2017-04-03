@@ -271,9 +271,9 @@ test_bufferevent_watermarks_impl(int use_pair)
 
 end:
 	if (bev1)
-		bufferevent_free(bev1);
+	bufferevent_free(bev1);
 	if (bev2)
-		bufferevent_free(bev2);
+	bufferevent_free(bev2);
 }
 
 static void
@@ -383,9 +383,9 @@ test_bufferevent_filters_impl(int use_pair)
 
 end:
 	if (bev1)
-		bufferevent_free(bev1);
+	bufferevent_free(bev1);
 	if (bev2)
-		bufferevent_free(bev2);
+	bufferevent_free(bev2);
 
 }
 

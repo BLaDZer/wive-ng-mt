@@ -2259,7 +2259,7 @@ end:
 	if (ev2)
 		event_free(ev2);
 	if (dfd >= 0)
-		close(dfd);
+	close(dfd);
 }
 #endif
 

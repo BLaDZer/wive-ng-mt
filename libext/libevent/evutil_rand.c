@@ -80,8 +80,8 @@ ev_arc4random_buf(void *buf, size_t n)
 		void (*tptr)(void *,size_t) =
 		    (void (*)(void*,size_t))arc4random_buf;
 		if (tptr != NULL) {
-			return arc4random_buf(buf, n);
-		}
+		return arc4random_buf(buf, n);
+	}
 	}
 #endif
 	/* Make sure that we start out with b at a 4-byte alignment; plenty

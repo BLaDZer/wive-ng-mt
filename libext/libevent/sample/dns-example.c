@@ -164,7 +164,7 @@ main(int c, char **v) {
 		else if (!strcmp(v[idx], "-c")) {
 			if (idx + 1 < c)
 				resolv_conf = v[++idx];
-			else
+		else
 				fprintf(stderr, "-c needs an argument\n");
 		} else
 			fprintf(stderr, "Unknown option %s\n", v[idx]);
@@ -204,7 +204,7 @@ main(int c, char **v) {
 		int res;
 #ifdef WIN32
 		if (resolv_conf == NULL)
-			res = evdns_base_config_windows_nameservers(evdns_base);
+		res = evdns_base_config_windows_nameservers(evdns_base);
 		else
 #endif
 			res = evdns_base_resolv_conf_parse(evdns_base,

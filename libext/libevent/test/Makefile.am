@@ -54,7 +54,7 @@ regress_SOURCES = regress.c regress_buffer.c regress_http.c regress_dns.c \
 	$(regress_thread_SOURCES) $(regress_zlib_SOURCES)
 if PTHREADS
 regress_thread_SOURCES = regress_thread.c
-PTHREAD_LIBS += ../libevent_pthreads.la
+PTHREAD_LIBS = ../libevent_pthreads.la
 endif
 if BUILD_WIN32
 regress_thread_SOURCES = regress_thread.c

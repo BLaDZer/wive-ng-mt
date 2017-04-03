@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Niels Provos and Nick Mathewson
+ * Copyright (c) 2007-2012 Niels Provos and Nick Mathewson
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,17 +23,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef KQUEUE_INTERNAL_H_INCLUDED_
-#define KQUEUE_INTERNAL_H_INCLUDED_
+#ifndef _EVUTIL_H_
+#define _EVUTIL_H_
 
-/** Notification function, used to tell an event base to wake up from another
- * thread.  Only works when event_kq_add_notify_event_() has previously been
- * called successfully on that base. */
-int event_kq_notify_base_(struct event_base *base);
+/** @file evutil.h
 
-/** Prepare a kqueue-using event base to receive notifications via an internal
- * EVFILT_USER event.  Return 0 on sucess, -1 on failure.
- */
-int event_kq_add_notify_event_(struct event_base *base);
+  Utility and compatibility functions for Libevent.
 
-#endif
+  The <evutil.h> header is deprecated in Libevent 2.0 and later; please
+  use <event2/util.h> instead.
+*/
+
+#include <event2/util.h>
+
+#endif /* _EVUTIL_H_ */
