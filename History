@@ -2954,6 +2954,7 @@
 4) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
 5) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
 6) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+7) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
 <br>
 <br>
 <br>
