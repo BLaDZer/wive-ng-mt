@@ -5583,7 +5583,7 @@ BOOLEAN MlmeQueueFull(
 	if (SendId == 0)
 		Ans = ((Queue->Num >= (MAX_LEN_OF_MLME_QUEUE / 2)) || Queue->Entry[Queue->Tail].Occupied);
 	else
-		Ans = (Queue->Num == MAX_LEN_OF_MLME_QUEUE)  || Queue->Entry[Queue->Tail].Occupied;
+		Ans = ((Queue->Num == MAX_LEN_OF_MLME_QUEUE)  || Queue->Entry[Queue->Tail].Occupied);
 	NdisReleaseSpinLock(&(Queue->Lock));
 
 	return Ans;
