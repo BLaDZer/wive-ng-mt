@@ -31,6 +31,7 @@ headers = \
 	ntfstime.h	\
 	object_id.h	\
 	param.h	\
+	plugin.h	\
 	realpath.h	\
 	reparse.h	\
 	runlist.h	\

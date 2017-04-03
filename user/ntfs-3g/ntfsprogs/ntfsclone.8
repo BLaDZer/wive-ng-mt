@@ -4,7 +4,7 @@
 .\" Copyright (c) 2010\-2013 Jean-Pierre Andre.
 .\" This file may be copied under the terms of the GNU Public License.
 .\"
-.TH NTFSCLONE 8 "February 2013" "ntfs-3g 2016.2.22"
+.TH NTFSCLONE 8 "February 2013" "ntfs-3g 2017.3.23"
 .SH NAME
 ntfsclone \- Efficiently clone, image, restore or rescue an NTFS
 .SH SYNOPSIS
@@ -185,12 +185,14 @@ Clone NTFS to the non\-existent
 If
 .I FILE
 is '\-' then clone to the
-standard output.
+standard output. This option cannot be used for creating a partition,
+use \fB\-\-overwrite\fR for an existing partition.
 .TP
 \fB\-O\fR, \fB\-\-overwrite\fR FILE
 Clone NTFS to
 .IR FILE ,
-overwriting if exists.
+which can be an existing partition or a regular file which will be
+overwritten if it exists.
 .TP
 \fB\-s\fR, \fB\-\-save\-image\fR
 Save to the special image format. This is the most efficient way space and
@@ -235,8 +237,11 @@ inconsistency are saved too.
 Do not wipe the timestamps, to be used only with the
 .B \-\-metadata
 option.
-
-
+.TP
+\fB\-\-full\-logfile\fR
+Include the Windows log file in the copy. This is only useful for
+extracting metadata, saving or cloning a file system which was not
+properly unmounted from Windows.
 .TP
 \fB\-\-new\-serial\fR, or
 .TP

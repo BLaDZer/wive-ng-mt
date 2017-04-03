@@ -412,16 +412,23 @@ static const char *reparse_type_name(le32 tag)
 {
 	const char *name;
 
-	if (tag == IO_REPARSE_TAG_MOUNT_POINT)
+	switch (tag) {
+	case IO_REPARSE_TAG_MOUNT_POINT :
 		name = " (mount point)";
-	else
-		if (tag == IO_REPARSE_TAG_SYMLINK)
+		break;
+	case IO_REPARSE_TAG_SYMLINK :
 			name = " (symlink)";
-		else
-			if (tag == IO_REPARSE_TAG_WOF)
+		break;
+	case IO_REPARSE_TAG_WOF :
 				name = " (Wof compressed)";
-			else
+		break;
+	case IO_REPARSE_TAG_DEDUP :
+		name = " (deduplicated)";
+		break;
+	default :
 				name = "";
+		break;
+	}
 	return (name);
 }
 
