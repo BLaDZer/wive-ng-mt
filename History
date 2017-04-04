@@ -2950,12 +2950,13 @@
 <b>5.3.x</b><br>
 1) ntfs-3g: update to 2017.3.23 version.<br>
 2) libtalloc: update to 2.1.9 version.<br>
-3) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
-4) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
-5) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
-6) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-7) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
-8) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
+3) defaults: tune default roam params for more smooth work at 5GHz.<br>
+4) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
+5) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
+6) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
+7) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+8) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
+9) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 <br>
 <br>
 <br>
