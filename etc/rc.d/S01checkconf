@@ -14,7 +14,7 @@ get_param()
 {
     # get parametrs
     eval `nvram_buf_get 2860 IS_WIVE CHECKMAC Login Password OperationMode \
-	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly WPAPSK1 WPAPSK1INIC RegulatoryClass RegulatoryClassINIC HT_BWINIC`
+	RadioOn RadioOnINIC ApCliBridgeOnly ApCliClientOnly WPAPSK1 WPAPSK1INIC RegulatoryClass RegulatoryClassINIC HT_BWINIC BeaconPeriodINIC`
 
     # default mac vendor mask for generate new macs if need
     VENDMASK="F8:F0:82"
@@ -89,6 +89,14 @@ checkminimalconfig()
     #
     if [ "$HT_BWINIC" = "" ]; then
 	nvram_set 2860 HT_BWINIC "1"
+    fi
+
+    #
+    #	after update to 5.3.0 need correct BeaconPeriodINIC parametr
+    #
+    if [ "$HT_BWINIC" = "" ]; then
+	nvram_set 2860 BeaconPeriod "180"
+	nvram_set 2860 BeaconPeriodINIC "80"
     fi
 }
 

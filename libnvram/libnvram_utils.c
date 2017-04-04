@@ -1824,7 +1824,13 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(SSID7);
 	FPRINT_DAT(SSID8);
 
-	FPRINT_DAT(BeaconPeriod);
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (inic)
+	    fprintf(fp, "BeaconPeriod=%s\n", nvram_get(mode, "BeaconPeriodINIC"));
+	else
+#endif
+	    FPRINT_DAT(BeaconPeriod);
+
 	FPRINT_DAT(DtimPeriod);
 	FPRINT_DAT(DisableOLBC);
 	FPRINT_DAT(BGProtection);
