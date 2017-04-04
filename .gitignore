@@ -231,6 +231,7 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 /user/dropbear/Makefile
 /user/dropbear/configure
 /user/ntfs-3g/Makefile
+/user/ntfs-3g/Makefile.in
 /user/ntfs-3g/configure
 /user/ntfs-3g/src/Makefile
 /user/ntfs-3g/src/Makefile.in
