@@ -94,7 +94,7 @@ checkminimalconfig()
     #
     #	after update to 5.3.0 need correct BeaconPeriodINIC parametr
     #
-    if [ "$HT_BWINIC" = "" ]; then
+    if [ "$BeaconPeriodINIC" = "" ]; then
 	nvram_set 2860 BeaconPeriod "180"
 	nvram_set 2860 BeaconPeriodINIC "80"
     fi
