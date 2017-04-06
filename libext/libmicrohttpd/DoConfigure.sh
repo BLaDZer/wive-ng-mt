@@ -21,7 +21,7 @@ if [ ! -f $APROOTDIR/configure ]; then
     autoreconf -fi
     sh ./autogen.sh
 fi
-if [ ! -f $APROOTDIR/Makefile.in ]; then
+if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
     automake --add-missing --force-missing --copy
 fi
 

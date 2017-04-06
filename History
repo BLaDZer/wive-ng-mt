@@ -2948,18 +2948,19 @@
 <br>
 <br>
 <b>5.3.x</b><br>
-1) ntfs-3g: update to 2017.3.23 version.<br>
-2) libtalloc: update to 2.1.9 version.<br>
-3) defaults: tune default roam params for more smooth work at 5GHz.<br>
-4) libnvram/goahead: split BeaconPeriod to two variables and set BeaconPeriod=160, BeaconPeriodINIC=80 (for help band steering).<br>
-5) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
-6) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
-7) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
-8) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-9) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
-10) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-11) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-12) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+1) build_system: fix install missing files.<br>
+2) ntfs-3g: update to 2017.3.23 version.<br>
+3) libtalloc: update to 2.1.9 version.<br>
+4) defaults: tune default roam params for more smooth work at 5GHz.<br>
+5) libnvram/goahead: split BeaconPeriod to two variables and set BeaconPeriod=160, BeaconPeriodINIC=80 (for help band steering).<br>
+6) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
+7) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
+8) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
+9) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+10) kernel: ralink_wifi: set Quick RA 70 msec after rate change.<br>
+11) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
+12) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+13) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
 <br>
 <br>
 <br>

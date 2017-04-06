@@ -10,7 +10,7 @@ HTARGET=mipsel-linux
 rm -rf $APROOTDIR/src/freeradius-devel
 ln -sf $APROOTDIR/src/include $APROOTDIR/src/freeradius-devel
 
-if [ ! -f Makefile ]; then
+if [ ! -f $APROOTDIR/Makefile ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
     cp -f Makefile.template Makefile
     automake --add-missing --force-missing --copy
 fi
