@@ -182,6 +182,7 @@
   <message msgid="adv basic data rate default" msgstr="Default(1-2-5.5-11 Mbps)" />
   <message msgid="adv basic data rate all" msgstr="All(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Beacon Interval" />
+  <message msgid="adv beacon interval inic" msgstr="Beacon Interval (5GHz)" />
   <message msgid="adv beacon interval range" msgstr="ms (range 20 - 999)" />
   <message msgid="adv dtim" msgstr="Data Beacon Rate" />
   <message msgid="adv dtim range" msgstr="times (range 1 - 255)" />
@@ -241,6 +242,10 @@
   <message msgid="adv dynvga mode" msgstr="Adaptive LNA Gain" />
   <message msgid="adv dynvga long" msgstr="Skip auto gain for long distance clients" />
   <message msgid="adv dynvga clamp" msgstr="Clamp maximum LNA GAIN in dynvga mode" />
+  
+  <message msgid="raoming invalid BndStrgRssiDiff" msgstr="Invalid RSSI diff value" />
+  <message msgid="raoming invalid BndStrgRssiLow" msgstr="Invalid RSSI value" />
+  <message msgid="raoming invalid number" msgstr="Entered invalid value" />
 
   <message msgid="secure select ssid" msgstr="Select SSID" />
   <message msgid="secure ssid title" msgstr="Wireless Security/Encryption Settings" />

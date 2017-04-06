@@ -182,6 +182,7 @@
   <message msgid="adv basic data rate default" msgstr="Стандартные(1-2-5.5-11 Mbps)" />
   <message msgid="adv basic data rate all" msgstr="Все(1-2-5.5-6-11-12-24 Mbps)" />
   <message msgid="adv beacon interval" msgstr="Интервал маяка" />
+  <message msgid="adv beacon interval inic" msgstr="Интервал маяка (5ГГц)" />
   <message msgid="adv beacon interval range" msgstr="мс (диапазон 20 - 999)" />
   <message msgid="adv dtim" msgstr="Интервал оповещения" />
   <message msgid="adv dtim range" msgstr="количество (диапазон 1 - 255)" />
@@ -243,6 +244,10 @@
   <message msgid="adv dynvga long" msgstr="Отключить АРУ для дальних клиентов" />
   <message msgid="adv dynvga clamp" msgstr="Ограничение уровня АРУ" />
 
+  <message msgid="raoming invalid BndStrgRssiDiff" msgstr="Не верно указана дельта RSSI" />
+  <message msgid="raoming invalid BndStrgRssiLow" msgstr="Не верно указана нижняя граница RSSI" />
+  <message msgid="raoming invalid number" msgstr="Некорректно введено значение" />
+  
   <message msgid="secure select ssid" msgstr="Выберите SSID" />
   <message msgid="secure ssid title" msgstr="Настройки безопасности/шифрования" />
   <message msgid="secure ssid introduction" msgstr="Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных (рекомендуется использовать WPA2-PSK+AES)." />

@@ -203,8 +203,6 @@
 				displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
 				displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
 				displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
-				displayElement('scanapLegendButtonScan', (form.sz11gChannel.options.selectedIndex != 0));
-				displayElement('scanapLegendButtonScanINIC', (form.sz11aChannel.options.selectedIndex != 0));
 			}
 
 			function GExtChannelDisplay(form) {
@@ -428,7 +426,9 @@
 				_TR("advBGProOff", "wireless off");
 
 				_TR("advBeaconInterval_td_1", "adv beacon interval");
+				_TR("advBeaconIntervalINIC_td_1", "adv beacon interval inic");
 				_TR("advBeaconIntervalRange", "adv beacon interval range");
+				_TR("advBeaconIntervalINICRange", "adv beacon interval range");
 				_TR("advDTIM_td_1", "adv dtim");
 				_TR("advDTIMRange", "adv dtim range");
 				_TR("advFrag_td_1", "adv fragment threshold");
@@ -564,7 +564,7 @@
 				var form = document.wireless_basic;
 
 				form.radioWirelessEnabled.options.selectedIndex = radio_on;
-				form.radioWirelessEnabledAc.options.selectedIndex = (is5gh_support == 1) ? radio_on_ac : 0;
+				form.radioWirelessEnabledAc.options.selectedIndex = (is5gh_support == '1') ? radio_on_ac : 0;
 					
 				form.bssid_num.value				= NVRAM_BssidNum;
 				form.mssid_1.value					= NVRAM_SSID1;
@@ -577,6 +577,7 @@
 				form.mssid_8.value					= NVRAM_SSID8;
 				form.mssidac_1.value				= NVRAM_SSID1INIC;
 				form.beacon.value					= NVRAM_BeaconPeriod;
+				form.beaconINIC.value				= NVRAM_BeaconPeriodINIC;
 				form.dtim.value						= NVRAM_DtimPeriod;
 				form.fragment.value					= NVRAM_FragThreshold;
 				form.rts.value						= NVRAM_RTSThreshold;
@@ -649,7 +650,7 @@
 				form.wirelessmode.options[index++] = new Option(_("basic bgn"), "9");
 
 				// Init 5GHz
-				if (is5gh_support == 1)
+				if (is5gh_support == '1')
 				{
 					indexac = form.wirelessmodeac.options.length;
 
@@ -690,7 +691,7 @@
 				showElement("div_all");
 
 				// Display AC
-				if (is5gh_support == 1)
+				if (is5gh_support == '1')
 				{
 					// Set-up TX power AC combo
 					for (var i=0; i<form.tx_powerac.options.length; i++)
@@ -722,7 +723,7 @@
 
 					form.n_mode.disabled = false;
 					form.n_bandwidth.disabled = false;
-					if (is5gh_support == 1)
+					if (is5gh_support == '1')
 						form.n_bandwidthinic.disabled = false;
 					form.n_rdg.disabled = false;
 					form.n_gi.disabled = false;
@@ -731,11 +732,11 @@
 				}
 
 				// Display VHT modes
-				if ((is5gh_support == 1) && ((wmodeac*1) >= 14))
+				if ((is5gh_support == '1') && ((wmodeac*1) >= 14))
 				{
 					showElement("basicVHT");
 
-					if (is5gh_1t1r == 1)
+					if (is5gh_1t1r == '1')
 					{
 						hideElement("basicVHTLDCP_tr");
 					}
@@ -775,7 +776,7 @@
 				if ((channel_index + 1) > current_channel_length)
 					form.sz11gChannel.options.selectedIndex = 0;
 
-				if (is5gh_support == 1)
+				if (is5gh_support == '1')
 				{
 					// Calculate current channel
 					var channel_indexacnew;
@@ -1181,7 +1182,7 @@
 					show14channel(false);
 				}
 
-				if (is5gh_support == 1)
+				if (is5gh_support == '1')
 				{
 					form.sz11aChannel.disabled = false;
 					showElementEx("div_11a_channel", style_display_on());
@@ -1212,9 +1213,9 @@
 				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
 				displayElement( [ 'basicVHT', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
 				displayElement( [ 'div_11n', 'advWirelessT', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], enableWireless == "1");
-				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (is5gh_support == 1 && enableWirelessAc == "1"));
+				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (is5gh_support == '1' && enableWirelessAc == "1"));
 				
-				displayElement('basicMbssidModeT', ((enableWireless == 1) || (enableWirelessAc == 1)) && (is5gh_support == 1));
+				displayElement('basicMbssidModeT', ((enableWireless == 1) || (enableWirelessAc == 1)) && (is5gh_support == '1'));
 				if (enableWireless == 0 && enableWirelessAc == 0) {
 					hideElement('div_all');
 					hideElement('div_11n');
@@ -1249,7 +1250,7 @@
 					displayElement('div_m2u', m2uBuilt == '1');
 					showElement('advSynVGA_table');	
 				}
-				if (is5gh_support == 0) {
+				if (is5gh_support == '0') {
 					hideElement('wireless_5');
 					hideElement('basicVHT');
 				}
@@ -1282,65 +1283,45 @@
 					return false;
 				}
 				
-				
-				if (form.beacon.value == "")
-				{
-					alert(_("adv no beacon"));
-					form.beacon.focus();
-					form.beacon.select();
-					return false;
-				}
-
 				if (isNaN(form.beacon.value) || form.beacon.value < 20 || form.beacon.value > 999)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid beacon"));
 					form.beacon.focus();
 					form.beacon.select();
 					return false;
 				}
 
-				if (form.dtim.value == "" )
+				if ((isNaN(form.beaconINIC.value) || form.beaconINIC.value < 20 || form.beaconINIC.value > 999) && is5gh_support == '1')
 				{
-					alert(_("adv no dtim"));
-					form.dtim.focus();
-					form.dtim.select();
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					alert(_("adv invalid beacon"));
+					form.beaconINIC.focus();
+					form.beaconINIC.select();
 					return false;
 				}
 
 				if (isNaN(form.dtim.value) || form.dtim.value < 1 || form.dtim.value > 255)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid dtim"));
 					form.dtim.focus();
 					form.dtim.select();
 					return false;
 				}
 
-				if (form.fragment.value == "" )
-				{
-					alert(_("adv no frag len"));
-					form.fragment.focus();
-					form.fragment.select();
-					return false;
-				}
-
 				if (isNaN(form.fragment.value) || form.fragment.value < 1 || form.fragment.value > 2346)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid frag len"));
 					form.fragment.focus();
 					form.fragment.select();
 					return false;
 				}
 
-				if (form.rts.value == "" )
-				{
-					alert(_("adv no rts"));
-					form.rts.focus();
-					form.rts.select();
-					return false;
-				}
-
 				if (isNaN(form.rts.value) || form.rts.value < 1 || form.rts.value > 2347)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid rts"));
 					form.rts.focus();
 					form.rts.select();
@@ -1349,6 +1330,7 @@
 
 				if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > MAX_STA_NUM)
 				{
+					if (statusRoamingMenu == 0) showRoamingMenu();
 					alert(_("adv invalid max sta num"));
 					form.maxstanum.focus();
 					form.maxstanum.select();
@@ -1357,14 +1339,16 @@
 
 				if (isNaN(form.keepalive.value) || form.keepalive.value < 10 || form.keepalive.value > 300)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid keepalive"));
 					form.keepalive.focus();
 					form.keepalive.select();
 					return false;
 				}
 
-					if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 300)
+				if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 300)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid idletimeout"));
 					form.idletimeout.focus();
 					form.idletimeout.select();
@@ -1373,10 +1357,111 @@
 
 				if (isNaN(form.EntryLifeCheck.value) || form.EntryLifeCheck.value < 256 || form.EntryLifeCheck.value > 4096)
 				{
+					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid entrylifecheck"));
 					form.EntryLifeCheck.focus();
 					form.EntryLifeCheck.select();
 					return false;
+				}
+
+				if (form.BandSteering.value == 1) {
+					if (isNaN(form.BndStrgRssiDiff.value) || form.BndStrgRssiDiff.value < 0 || form.BndStrgRssiDiff.value > 40)
+					{
+						alert(_("raoming invalid BndStrgRssiDiff"));
+						form.BndStrgRssiDiff.focus();
+						form.BndStrgRssiDiff.select();
+						return false;
+					}
+					
+					if (isNaN(form.BndStrgRssiLow.value) || form.BndStrgRssiLow.value < -100 || form.BndStrgRssiLow.value > 0)
+					{
+						alert(_("raoming invalid BndStrgRssiLow"));
+						form.BndStrgRssiLow.focus();
+						form.BndStrgRssiLow.select();
+						return false;
+					}
+
+					if (isNaN(form.BndStrgAge.value) && form.BndStrgAge.value > 0)
+					{
+						alert(_("raoming invalid number"));
+						form.BndStrgAge.focus();
+						form.BndStrgAge.select();
+						return false;
+					}
+
+					if (isNaN(form.BndStrgHoldTime.value) && form.BndStrgHoldTime.value > 0)
+					{
+						alert(_("raoming invalid number"));
+						form.BndStrgHoldTime.focus();
+						form.BndStrgHoldTime.select();
+						return false;
+					}
+
+					if (isNaN(form.BndStrgCheckTime.value) && form.BndStrgCheckTime.value > 0)
+					{
+						alert(_("raoming invalid number"));
+						form.BndStrgCheckTime.focus();
+						form.BndStrgCheckTime.select();
+						return false;
+					}
+				}
+
+				if (form.IdsEnable.value == 1) {
+					if (isNaN(form.AuthFloodThreshold.value) && form.AuthFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.AuthFloodThreshold.focus();
+						form.AuthFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.AssocReqFloodThreshold.value) && form.AssocReqFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.AssocReqFloodThreshold.focus();
+						form.AssocReqFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.ReassocReqFloodThreshold.value) && form.ReassocReqFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.ReassocReqFloodThreshold.focus();
+						form.ReassocReqFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.ProbeReqFloodThreshold.value) && form.ProbeReqFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.ProbeReqFloodThreshold.focus();
+						form.ProbeReqFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.DisassocFloodThreshold.value) && form.DisassocFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.DisassocFloodThreshold.focus();
+						form.DisassocFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.DeauthFloodThreshold.value) && form.DeauthFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.DeauthFloodThreshold.focus();
+						form.DeauthFloodThreshold.select();
+						return false;
+					}
+
+					if (isNaN(form.EapReqFloodThreshold.value) && form.EapReqFloodThreshold.value >= 0)
+					{
+						alert(_("raoming invalid number"));
+						form.EapReqFloodThreshold.focus();
+						form.EapReqFloodThreshold.select();
+						return false;
+					}
 				}
 
 				form.mbssid_mode.disabled = false;
@@ -1405,7 +1490,7 @@
 					statusHTPysModeMenu = 1;
 					displayElement(HTPhysModeElement, 1);
 					displayElement('extension_channel', document.getElementById('n_bandwidth').value == 1 );
-					displayElement('basicHTChannelBWINIC_tr', is5gh_support == 1);
+					displayElement('basicHTChannelBWINIC_tr', is5gh_support == '1');
 				} else {
 					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic ht phy mode"));
 					statusHTPysModeMenu = 0;
@@ -1428,13 +1513,14 @@
 			}
 
 			function showAdvWirelessMenu(){
-				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
+				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
 							   'advEntryLifeCheck_tr', 'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
 							   'advEDMODE_tr', 'advStaRegion_tr' ];
 				if (statusAdvWirelessMenu == 0) {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("adv wireless"));
 					statusAdvWirelessMenu = 1;
 					displayElement(AdvWirelessElement, 1);
+					displayElement('advBeaconIntervalINIC_tr', is5gh_support == '1')
 					displayElement('advEDMODE_tr', EDCCABuilt == "1");
 				} else {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("adv wireless"));
@@ -1523,7 +1609,7 @@
 						<div id="scanApPreloader" style="display: none; width:100%; height: 100%">
 							<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
 						</div>
-					</div>			
+					</div>
 				</td>
 			</tr>
 			<tr id="scanApButtons" style="display: none;">
@@ -1882,6 +1968,11 @@
 			<td id="advBeaconInterval_td_1" class="head" width="50%">Beacon Interval</td>
 			<td id="advBeaconInterval_td_2" width="50%"><input type="text" name="beacon" class="normal" maxlength="3">
 				<font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
+		</tr>
+		<tr id="advBeaconIntervalINIC_tr">
+			<td id="advBeaconIntervalINIC_td_1" class="head" width="50%">Beacon Interval (5GHz)</td>
+			<td id="advBeaconIntervalINIC_td_2" width="50%"><input type="text" name="beaconINIC" class="normal" maxlength="3">
+				<font color="#808080" id="advBeaconIntervalINICRange">(range 20 - 999)</font></td>
 		</tr>
 		<tr id="advDTIM_tr">
 			<td id="advDTIM_td_1" class="head" width="50%">Data Beacon Rate</td>

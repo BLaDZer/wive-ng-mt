@@ -571,7 +571,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
 
-	char_t *bg_protection, *beacon, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *keepalive, *idletimeout;
+	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *keepalive, *idletimeout;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
@@ -666,6 +666,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
 	beacon = websGetVar(wp, T("beacon"), T("100"));
+	beaconinic = websGetVar(wp, T("beaconINIC"), T("100"));
 	dtim = websGetVar(wp, T("dtim"), T("1"));
 	fragment = websGetVar(wp, T("fragment"), T("2346"));
 	rts = websGetVar(wp, T("rts"), T("2347"));
@@ -950,6 +951,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "BGProtection", bg_protection);
 	nvram_bufset(RT2860_NVRAM, "BeaconPeriod", beacon);
+	nvram_bufset(RT2860_NVRAM, "BeaconPeriodINIC", beaconinic);
 	nvram_bufset(RT2860_NVRAM, "DtimPeriod", dtim);
 	nvram_bufset(RT2860_NVRAM, "FragThreshold", fragment);
 	nvram_bufset(RT2860_NVRAM, "RTSThreshold", rts);

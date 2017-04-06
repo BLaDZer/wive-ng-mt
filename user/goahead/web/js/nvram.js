@@ -440,7 +440,8 @@ var NVRAM_ETxBfEnCond					= '<% getCfgGeneral(1, "ETxBfEnCond"); %>';						NVRAM
 var NVRAM_RRMEnable						= '<% getCfgGeneral(1, "RRMEnable"); %>';						NVRAM_RRMEnable						= (NVRAM_RRMEnable != '')						? NVRAM_RRMEnable						: '0';
 var NVRAM_FtSupport						= '<% getCfgGeneral(1, "FtSupport"); %>';						NVRAM_FtSupport						= (NVRAM_FtSupport != '')						? NVRAM_FtSupport						: '0';
 var NVRAM_LanWifiIsolate				= '<% getCfgGeneral(1, "LanWifiIsolate"); %>';					NVRAM_LanWifiIsolate				= (NVRAM_LanWifiIsolate != '')					? NVRAM_LanWifiIsolate					: '0';
-var NVRAM_BeaconPeriod 					= '<% getCfgGeneral(1, "BeaconPeriod"); %>';					NVRAM_BeaconPeriod					= (NVRAM_BeaconPeriod != '')					? NVRAM_BeaconPeriod					: '90';
+var NVRAM_BeaconPeriod 					= '<% getCfgGeneral(1, "BeaconPeriod"); %>';					NVRAM_BeaconPeriod					= (NVRAM_BeaconPeriod != '')					? NVRAM_BeaconPeriod					: '160';
+var NVRAM_BeaconPeriodINIC				= '<% getCfgGeneral(1, "BeaconPeriodINIC"); %>';				NVRAM_BeaconPeriodINIC				= (NVRAM_BeaconPeriod != '')					? NVRAM_BeaconPeriodINIC				: '80';
 var NVRAM_DtimPeriod 					= '<% getCfgGeneral(1, "DtimPeriod"); %>';						NVRAM_DtimPeriod					= (NVRAM_DtimPeriod != '')						? NVRAM_DtimPeriod						: '1';
 var NVRAM_FragThreshold 				= '<% getCfgGeneral(1, "FragThreshold"); %>';					NVRAM_FragThreshold					= (NVRAM_FragThreshold != '')					? NVRAM_FragThreshold					: '2346';
 var NVRAM_RTSThreshold 					= '<% getCfgGeneral(1, "RTSThreshold"); %>';					NVRAM_RTSThreshold					= (NVRAM_RTSThreshold != '')					? NVRAM_RTSThreshold					: '2347';
