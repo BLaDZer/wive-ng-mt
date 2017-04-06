@@ -1485,6 +1485,14 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 	DBGPRINT(RT_DEBUG_TRACE | DBG_FUNC_RA, ("Average PER %d, Cur %x, Up %x, Dn %x\n", Rate1ErrorRatio
 								, CurrRateIdx, UpRateIdx, DownRateIdx));
 
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore, the algorithm tends to choose the mcs lower than the optimal one.
@@ -2168,6 +2176,14 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	DBGPRINT(RT_DEBUG_INFO, ("Average PER %lu, Cur %x, Up %x, Dn %x\n", TxErrorRatio,
 								CurrRateIdx, UpRateIdx, DownRateIdx));
 
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore, 

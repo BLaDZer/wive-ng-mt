@@ -1944,6 +1944,14 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 								pEntry->TxQuality[pCurrTxRate->upMcs1],
 								pEntry->TxQuality[pCurrTxRate->upMcs2]));
 
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore,
