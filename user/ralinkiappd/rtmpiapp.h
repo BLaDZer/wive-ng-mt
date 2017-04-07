@@ -115,11 +115,25 @@
 #define FT_KDP_BR_UNIT				0
 #endif // IAPP_OS_VXWORKS //
 
-#define HASH_TABLE_SIZE		128
-#define MAX_NUM_OF_CLIENT	64
+/* key information */
+#define FT_IP_ADDRESS_SIZE				4
+#define FT_NONCE_SIZE					8
 
-#define MAC_ADDR_HASH(Addr)            (Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
-#define MAC_ADDR_HASH_INDEX(Addr)      (MAC_ADDR_HASH(Addr) & (HASH_TABLE_SIZE - 1))
+#define FT_KDP_WPA_NAME_MAX_SIZE		16
+#define FT_KDP_R0KHID_MAX_SIZE			48
+#define FT_KDP_R1KHID_MAX_SIZE			6
+#define FT_KDP_S1KHID_MAX_SIZE			6
+#define FT_KDP_PMKR1_MAX_SIZE			32 /* 256-bit key */
+
+#define FT_R1KH_ENTRY_TABLE_SIZE		64
+#define FT_R1KH_ENTRY_HASH_TABLE_SIZE	FT_R1KH_ENTRY_TABLE_SIZE
+
+/* local table of clients, must more of key table for reuse */
+#define FT_MAX_NUM_OF_CLIENT			(FT_R1KH_ENTRY_TABLE_SIZE*2)
+#define FT_CLIENTS_HASH_TABLE_SIZE		(FT_MAX_NUM_OF_CLIENT*2)
+
+#define FT_MAC_ADDR_HASH(Addr)            (Addr[0] ^ Addr[1] ^ Addr[2] ^ Addr[3] ^ Addr[4] ^ Addr[5])
+#define FT_MAC_ADDR_HASH_INDEX(Addr)      (FT_MAC_ADDR_HASH(Addr) & (FT_CLIENTS_HASH_TABLE_SIZE - 1))
 
 /* ---------------------------- MACRO Definition ---------------------------- */
 #define IAPP_LITTLE_ENDIAN /* __BIG_ENDIAN */
@@ -408,8 +422,8 @@ typedef struct _FT_CLIENT_INFO {
 } FT_CLIENT_INFO;
 
 typedef struct _FT_CLIENT_TABLE {
-	FT_CLIENT_INFO *hash[HASH_TABLE_SIZE];
-	FT_CLIENT_INFO ft_sta_info[MAX_NUM_OF_CLIENT];
+	FT_CLIENT_INFO *hash[FT_CLIENTS_HASH_TABLE_SIZE];
+	FT_CLIENT_INFO ft_sta_info[FT_MAX_NUM_OF_CLIENT];
 	INT32 ft_sta_table_size;
 } FT_CLIENT_TABLE;
 
@@ -481,18 +495,6 @@ typedef struct _RTMP_IAPP {
 	FT_CLIENT_TABLE SelfFtStaTable;
 } RTMP_IAPP, *PRTMP_IAPP;
 
-/* key information */
-#define FT_IP_ADDRESS_SIZE				4
-#define FT_NONCE_SIZE					8
-
-#define FT_KDP_WPA_NAME_MAX_SIZE		16
-#define FT_KDP_R0KHID_MAX_SIZE			48
-#define FT_KDP_R1KHID_MAX_SIZE			6
-#define FT_KDP_S1KHID_MAX_SIZE			6
-#define FT_KDP_PMKR1_MAX_SIZE			32 /* 256-bit key */
-
-#define FT_R1KH_ENTRY_TABLE_SIZE		64
-#define FT_R1KH_ENTRY_HASH_TABLE_SIZE	FT_R1KH_ENTRY_TABLE_SIZE
 
 typedef struct PACKED _FT_KDP_PMK_KEY_INFO {
 

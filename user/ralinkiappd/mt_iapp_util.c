@@ -113,7 +113,7 @@ VOID mt_iapp_ft_client_table_init(
 {
 	INT i;
 	NdisZeroMemory(&pCtrlBK->SelfFtStaTable, sizeof(pCtrlBK->SelfFtStaTable));
-	for (i=0; i< HASH_TABLE_SIZE; i++)
+	for (i=0; i< FT_CLIENTS_HASH_TABLE_SIZE; i++)
 		pCtrlBK->SelfFtStaTable.hash[i] = NULL;
 	return;
 }
@@ -126,13 +126,13 @@ FT_CLIENT_INFO *mt_iapp_ft_client_look_up(
 	ULONG HashIdx;
 	FT_CLIENT_INFO *ft_entry = NULL;
 
-	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+	HashIdx = FT_MAC_ADDR_HASH_INDEX(pAddr);
 	ft_entry = pFtTable->hash[HashIdx];
 
 	while (ft_entry)
 	{
 		clientnum++;
-		if (clientnum > MAX_NUM_OF_CLIENT) {
+		if (clientnum > FT_MAX_NUM_OF_CLIENT) {
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
 			ft_entry = NULL;
 			break;
@@ -168,13 +168,13 @@ FT_CLIENT_INFO *mt_iapp_ft_client_insert(
 		return ft_entry;
 	}
 
-	if (pFtTable->ft_sta_table_size >= MAX_NUM_OF_CLIENT) {
+	if (pFtTable->ft_sta_table_size >= FT_MAX_NUM_OF_CLIENT) {
 		DBGPRINT(RT_DEBUG_ERROR, "iapp> %s - FT client table is full. (FtStaTableSize=%d)\n", 
 				__FUNCTION__, pFtTable->ft_sta_table_size);
 		return NULL;
 	}
 
-	for (idx = 0; idx < MAX_NUM_OF_CLIENT; idx++) {
+	for (idx = 0; idx < FT_MAX_NUM_OF_CLIENT; idx++) {
 		ft_entry = &pFtTable->ft_sta_info[idx];
 		if (ft_entry->used)
 			continue;
@@ -188,7 +188,7 @@ FT_CLIENT_INFO *mt_iapp_ft_client_insert(
 	}
 	pFtTable->ft_sta_table_size++;
 
-	HashIdx = MAC_ADDR_HASH_INDEX(pStaAddr);
+	HashIdx = FT_MAC_ADDR_HASH_INDEX(pStaAddr);
 	ft_entry->hash_idx = HashIdx;
 	if (pFtTable->hash[HashIdx] == NULL)
 		pFtTable->hash[HashIdx] = ft_entry;
@@ -200,7 +200,7 @@ FT_CLIENT_INFO *mt_iapp_ft_client_insert(
 		while (current_ft_entry->next != NULL) {
 			current_ft_entry = current_ft_entry->next;
 			clientnum++;
-			if (clientnum > MAX_NUM_OF_CLIENT) {
+			if (clientnum > FT_MAX_NUM_OF_CLIENT) {
 				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT record for insert clients not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
 				ft_entry = NULL;
 				break;
@@ -250,7 +250,7 @@ VOID mt_iapp_ft_client_delete(
 		do
 		{
 			clientnum++;
-			if (clientnum > MAX_NUM_OF_CLIENT) {
+			if (clientnum > FT_MAX_NUM_OF_CLIENT) {
 				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client for delete not found. (clientnum=%d)\n", __FUNCTION__, clientnum);
 				hash_ft_entry = NULL;
 				break;
