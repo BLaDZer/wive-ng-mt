@@ -251,7 +251,7 @@ VOID mt_iapp_ft_client_delete(
 		{
 			clientnum++;
 			if (clientnum > MAX_NUM_OF_CLIENT) {
-				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client for delete not found or FT client table full. (clientnum=%d)\n", __FUNCTION__, clientnum);
+				DBGPRINT(RT_DEBUG_TRACE, "iapp> %s - FT client for delete not found. (clientnum=%d)\n", __FUNCTION__, clientnum);
 				hash_ft_entry = NULL;
 				break;
 			}

@@ -1183,6 +1183,12 @@ static BOOLEAN IAPP_SIG_Process(
 		case FT_KDP_SIG_KEY_TIMEOUT:
 		{
 			/* inform other APs the key timeouts */
+			/* delete record after key timeouted */
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> Delete %02x:%02x:%02x:%02x:%02x:%02x from local table by key timeouted\n",
+			    pSig->MacAddr[0], pSig->MacAddr[1],
+			    pSig->MacAddr[2], pSig->MacAddr[3],
+			    pSig->MacAddr[4], pSig->MacAddr[5]);
+			mt_iapp_ft_client_delete(&pCtrlBK->SelfFtStaTable, pSig->MacAddr);
 		}
 		break;
 
