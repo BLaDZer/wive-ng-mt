@@ -6,7 +6,8 @@ APROOTDIR=`pwd`
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
-if [ ! -f $APROOTDIR/Makefile.in ]; then
+if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
+    automake --add-missing --force-missing --copy
     ./autogen.sh
 fi
 if [ ! -f $APROOTDIR/configure ]; then
