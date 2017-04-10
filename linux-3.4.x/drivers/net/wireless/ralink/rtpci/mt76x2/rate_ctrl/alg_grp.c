@@ -1617,8 +1617,17 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	CurrPhyITxBf = pEntry->phyITxBf;
 #endif /*  TXBF_SUPPORT */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
+
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1945,7 +1954,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 								pEntry->TxQuality[pCurrTxRate->upMcs2]));
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1959,7 +1968,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		By increasing the thresholds, the chosen mcs will be closer to the
 		optimal mcs
 	*/
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -2207,8 +2216,16 @@ VOID StaQuickResponeForRateUpExecAdapt(
 #endif /* TXBF_SUPPORT */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -2477,12 +2494,20 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	UpRateIdx = MlmeSelectUpRate(pAd, pEntry, pCurrTxRate);
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 
+#ifdef DOT11_VHT_AC
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	{
+		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+	}
+	else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
 	/*
 		when Rssi > -65, there is a lot of interference usually. therefore, the algorithm tends to choose the mcs lower than the optimal one.
 		by increasing the thresholds, the chosen mcs will be closer to the optimal mcs
 	*/
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));

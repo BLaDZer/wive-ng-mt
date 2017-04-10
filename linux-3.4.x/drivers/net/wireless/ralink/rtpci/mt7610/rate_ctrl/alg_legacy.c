@@ -307,7 +307,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -320,7 +320,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			tends to choose the mcs lower than the optimal one.
 			by increasing the thresholds, the chosen mcs will be closer to the optimal mcs
 		*/
-		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40))
 		{
 			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -596,8 +596,16 @@ VOID APQuickResponeForRateUpExec(
 #endif /* TXBF_SUPPORT */
 		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, CurrRateIdx);
 
+#ifdef DOT11_VHT_AC
+		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
+		{
+			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
+			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
+		}
+		else
+#endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
-		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+		if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40))
 		{
 			TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
