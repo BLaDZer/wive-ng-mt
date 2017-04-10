@@ -2594,7 +2594,6 @@ typedef struct _MAC_TABLE_ENTRY {
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 	UCHAR lowTrafficCount;
-	UCHAR fewPktsCnt;
 	BOOLEAN perThrdAdj;
 	UCHAR mcsGroup;/* the mcs group to be tried */
 	UINT8 TrafficLoading; /* Zero Traffic / Low Traffic / High Traffic */
