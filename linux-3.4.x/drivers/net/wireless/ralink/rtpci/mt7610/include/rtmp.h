@@ -2085,8 +2085,8 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR lastRateIdx;
 	UCHAR *pTable;	/* Pointer to this entry's Tx Rate Table */
 
-	UCHAR lowTrafficCount;
 #ifdef NEW_RATE_ADAPT_SUPPORT
+	UCHAR lowTrafficCount;
 	BOOLEAN perThrdAdj;
 	UCHAR mcsGroup;/* the mcs group to be tried */
 #endif /* NEW_RATE_ADAPT_SUPPORT */

@@ -372,8 +372,6 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			CHAR	mcs[24];
 			CHAR	RssiOffset = 0;
 
-			pEntry->lowTrafficCount++;
-
 			/* Check existence and get the index of each MCS */
 			MlmeGetSupportedMcs(pAd, pTable, mcs);
 
@@ -414,8 +412,6 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif /* TXBF_SUPPORT */
 			continue;
 		}
-
-		pEntry->lowTrafficCount = 0;
 
 		if (pEntry->fLastSecAccordingRSSI == TRUE)
 		{
@@ -1158,7 +1154,7 @@ VOID MlmeDynamicTxRateSwitching(
 		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && pEntry->perThrdAdj == 1)
+		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));

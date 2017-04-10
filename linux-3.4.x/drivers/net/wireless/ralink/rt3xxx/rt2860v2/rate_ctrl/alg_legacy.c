@@ -378,9 +378,7 @@ VOID APMlmeDynamicTxRateSwitching(
     		{
 			UCHAR	TxRateIdx;
 			CHAR	mcs[24];
-#ifdef NEW_RATE_ADAPT_SUPPORT
-			pEntry->lowTrafficCount++;
-#endif
+
 			/* Check existence and get the index of each MCS */
 			MlmeGetSupportedMcs(pAd, pTable, mcs);
 
@@ -419,9 +417,7 @@ VOID APMlmeDynamicTxRateSwitching(
 #endif /* TXBF_SUPPORT */
 			continue;
     		}
-#ifdef NEW_RATE_ADAPT_SUPPORT
-		pEntry->lowTrafficCount = 0;
-#endif
+
 		if (pEntry->fLastSecAccordingRSSI == TRUE)
 		{
 			pEntry->fLastSecAccordingRSSI = FALSE;
