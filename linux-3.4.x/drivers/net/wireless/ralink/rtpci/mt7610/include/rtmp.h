@@ -2817,8 +2817,6 @@ typedef struct _AP_ADMIN_CONFIG {
 
 	BOOLEAN fAllStatIsHighTraffic;
 	UCHAR fStaHighTrafficCount;
-	BOOLEAN fDisableTrafficCnt;
-	USHORT StalowTrafficThrd;
 } AP_ADMIN_CONFIG, *PAP_ADMIN_CONFIG;
 
 #ifdef IGMP_SNOOP_SUPPORT

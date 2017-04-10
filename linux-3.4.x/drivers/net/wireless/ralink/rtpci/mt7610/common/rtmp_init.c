@@ -3256,8 +3256,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef CONFIG_AP_SUPPORT
 	pAd->ApCfg.fAllStatIsHighTraffic = FALSE;
-	pAd->ApCfg.fDisableTrafficCnt = FALSE;
-	pAd->ApCfg.StalowTrafficThrd = 15;
 #endif /* CONFIG_AP_SUPPORT */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<-- UserCfgInit\n"));
