@@ -721,7 +721,7 @@ BOOLEAN IAPP_IoctlToWLAN(
 	Wrq.u.data.length = *pDataLen;
 	Wrq.u.data.pointer = (caddr_t) pData;
 
-	DBGPRINT(RT_DEBUG_WARN,
+	DBGPRINT(RT_DEBUG_TRACE,
 				"iapp>[%s]IOCTL Flags = 0x%x!\n", IfName, Flags);
 
 #ifdef IAPP_OS_LINUX
