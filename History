@@ -2966,6 +2966,7 @@
 15) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
 16) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
 17) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+18) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
 <br>
 <br>
 <br>
