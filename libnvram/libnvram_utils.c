@@ -1853,7 +1853,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(StationKeepAlive);
 	FPRINT_DAT(EntryLifeCheck);
 	FPRINT_DAT(HideSSID);
-	FPRINT_DAT(IEEE80211H);
 	FPRINT_DAT(AuthMode);
 	FPRINT_DAT(EncrypType);
     	FPRINT_DAT(RekeyMethod);
@@ -2020,6 +2019,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ETxBfIncapable);
 #endif
 #if defined(CONFIG_RT2860V2_AP_DFS) || defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+	FPRINT_DAT(IEEE80211H);
 	FPRINT_DAT(CSPeriod);
 	FPRINT_DAT(DfsIndoor);
 	FPRINT_DAT(SymRoundFromCfg);
