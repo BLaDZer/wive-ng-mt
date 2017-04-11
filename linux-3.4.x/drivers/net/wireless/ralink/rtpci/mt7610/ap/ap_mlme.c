@@ -212,10 +212,6 @@ VOID APMlmePeriodicExec(
 	
 	APUpdateCapabilityAndErpIe(pAd);
 
-#ifdef DOT11R_FT_SUPPORT
-	FT_R1KHInfoMaintenance(pAd);
-#endif /* DOT11R_FT_SUPPORT */
-
 #ifdef APCLI_SUPPORT
 	if (pAd->Mlme.OneSecPeriodicRound % 2 == 0)
 		ApCliIfMonitor(pAd);
@@ -289,6 +285,10 @@ VOID APMlmePeriodicExec(
 #endif /* !DFS_SUPPORT */
 		}
 #endif /* A_BAND_SUPPORT */
+
+#ifdef DOT11R_FT_SUPPORT
+	FT_R1KHInfoMaintenance(pAd);
+#endif /* DOT11R_FT_SUPPORT */
 
 	/* resume Improved Scanning*/
 	if ((pAd->ApCfg.bImprovedScan) &&

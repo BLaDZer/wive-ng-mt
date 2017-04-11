@@ -50,7 +50,7 @@
 #define FT_KDP_TEST
 
 #define FT_KDP_RALINK_PASSPHRASE		"Ralink"
-#define FT_KDP_KEY_DEFAULT				"12345678"
+#define FT_KDP_KEY_DEFAULT				"1234567812345678"
 #define FT_KDP_KEY_ENCRYPTION_EXTEND	8 /* 8B for AES encryption extend size */
 #define FT_DEFAULT_MDID					"RT"
 
