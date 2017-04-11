@@ -1213,7 +1213,10 @@ VOID PeerPairMsg2Action(
 							 pEntry->FT_PMK_R1,
 							 pEntry->FT_PMK_R1_NAME);
 
-			ptk_len = 32+16;
+			if (pEntry->WepStatus == Ndis802_11Encryption2Enabled)
+			    ptk_len = 32+32;
+			else
+			    ptk_len = 32+16;
 
 			FT_DerivePTK(pEntry->FT_PMK_R1,
 						   pEntry->FT_PMK_R1_NAME,
