@@ -5276,7 +5276,7 @@ static void mt76x2_long_range_dync_vga(RTMP_ADAPTER * pAd)
 #endif
 		}			
 	}		
-	DBGPRINT(RT_DEBUG_TRACE,
+	DBGPRINT(RT_DEBUG_LOUD,
 		("MT76x2 long range one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n"
 		, pAd->RalinkCounters.OneSecFalseCCACnt, bbp_val1, bbp_val1));
 
@@ -5383,7 +5383,7 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		}
 	}
 
-	DBGPRINT(RT_DEBUG_INFO, ("%s:: dynamic ChE mode(0x%x)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: dynamic ChE mode(0x%x)\n", 
 		__FUNCTION__, mode));
 
 	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
@@ -5569,12 +5569,12 @@ static BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 				RTMP_BBP_IO_WRITE32(pAd, AGC1_R9, value); /* BBP 0x2324 */
 				break;
 			default:
-				DBGPRINT(RT_DEBUG_ERROR, ("%s:: no such dynamic ChE mode(0x%x)\n", 
+				DBGPRINT(RT_DEBUG_LOUD, ("%s:: no such dynamic ChE mode(0x%x)\n", 
 					__FUNCTION__, mode));
 				break;
 		}
 
-		DBGPRINT(RT_DEBUG_WARN, ("%s:: updated dynamic_chE_mode(0x%x), dynamic_chE_trigger(%d), agc_vga: 0%x\n", 
+		DBGPRINT(RT_DEBUG_LOUD, ("%s: updated dynamic_chE_mode(0x%x), dynamic_chE_trigger(%d), agc_vga: 0%x\n", 
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode, pAd->chipCap.dynamic_chE_trigger, value));
 	} else
 		pAd->chipCap.dynamic_chE_trigger = FALSE;
@@ -5595,7 +5595,7 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 		UCHAR VgaGainLowerBound = 0x10;
 
 		if (dynamic_channel_model_adjust(pAd) == TRUE) {
-			DBGPRINT(RT_DEBUG_INFO, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
+			DBGPRINT(RT_DEBUG_LOUD, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
 			return;
 		}
 
@@ -5617,11 +5617,11 @@ void MT76x2_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 			val2 = ((bbp_val2 & (0x00007f00)) >> 8) & 0x7f;
 		}
 
-		DBGPRINT(RT_DEBUG_INFO, ("vga_init_0 = %x, vga_init_1 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc_vga_init_0, pAd->CommonCfg.lna_vga_ctl.agc_vga_init_1));
-		DBGPRINT(RT_DEBUG_INFO, ("ori AGC1_R8 = %x, ori AGC1_R9 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc1_r8_backup, pAd->CommonCfg.lna_vga_ctl.agc1_r9_backup));
-		DBGPRINT(RT_DEBUG_TRACE,
+		DBGPRINT(RT_DEBUG_LOUD, ("vga_init_0 = %x, vga_init_1 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc_vga_init_0, pAd->CommonCfg.lna_vga_ctl.agc_vga_init_1));
+		DBGPRINT(RT_DEBUG_LOUD, ("ori AGC1_R8 = %x, ori AGC1_R9 = %x\n",  pAd->CommonCfg.lna_vga_ctl.agc1_r8_backup, pAd->CommonCfg.lna_vga_ctl.agc1_r9_backup));
+		DBGPRINT(RT_DEBUG_LOUD,
 			("MT76x2 one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n", pAd->RalinkCounters.OneSecFalseCCACnt, val1, val2));
-		DBGPRINT(RT_DEBUG_INFO, ("compensate level = %x\n", pAd->chipCap.compensate_level));
+		DBGPRINT(RT_DEBUG_LOUD, ("compensate level = %x\n", pAd->chipCap.compensate_level));
 
 
 		if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.lna_vga_ctl.nFalseCCATh) {

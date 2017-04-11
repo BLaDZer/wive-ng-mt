@@ -2797,7 +2797,7 @@ static void mt7610_long_range_dync_vga(RTMP_ADAPTER * pAd)
 #endif
 		}
 	}
-	DBGPRINT(RT_DEBUG_TRACE,
+	DBGPRINT(RT_DEBUG_LOUD,
 		("MT7610 long range one second False CCA=%d, fixed agc_vga_0:0%x, fixed agc_vga_1:0%x\n"
 		, pAd->RalinkCounters.OneSecFalseCCACnt, bbp_val1, bbp_val1));
 
@@ -2841,7 +2841,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 		}
 	}
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s:: dynamic ChE mode(0x%x)\n", 
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: dynamic ChE mode(0x%x)\n", 
 		__FUNCTION__, mode));
 
 	if (((pAd->chipCap.avg_rssi_all <= -76) && (pAd->CommonCfg.BBPCurrentBW == BW_80))
@@ -2908,12 +2908,12 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 				break;
 		
 			default:
-				DBGPRINT(RT_DEBUG_ERROR, ("%s:: no such dynamic ChE mode(0x%x)\n", 
+				DBGPRINT(RT_DEBUG_LOUD, ("%s:: no such dynamic ChE mode(0x%x)\n", 
 					__FUNCTION__, mode));
 				break;
 		}
 
-		DBGPRINT(RT_DEBUG_TRACE, ("%s:: updated dynamic_chE_mode(0x%x)\n", 
+		DBGPRINT(RT_DEBUG_LOUD, ("%s: updated dynamic_chE_mode(0x%x)\n", 
 			__FUNCTION__, pAd->chipCap.dynamic_chE_mode));
 	} 
 
@@ -2923,7 +2923,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 void MT76x0_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 {
 	if (dynamic_channel_model_adjust(pAd) == TRUE) {
-		DBGPRINT(RT_DEBUG_TRACE, ("%s:: no need to do dynamic vga\n", __FUNCTION__));			
+		DBGPRINT(RT_DEBUG_LOUD, ("%s: no need to do dynamic vga\n", __FUNCTION__));			
 		return;
 	}	
 	
@@ -2937,7 +2937,7 @@ void MT76x0_AsicDynamicVgaGainControl(RTMP_ADAPTER *pAd)
 		RTMP_BBP_IO_READ32(pAd, bbp_reg, &bbp_val);
 		val = ((bbp_val & (0x0000ff00)) >> 8) & 0xff;
 
-		DBGPRINT(RT_DEBUG_TRACE,
+		DBGPRINT(RT_DEBUG_LOUD,
 			("0x10 one second False CCA=%d, fixed R66 at 0x%x\n", pAd->RalinkCounters.OneSecFalseCCACnt, val));
 
 		if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.MO_Cfg.nFalseCCATh)
