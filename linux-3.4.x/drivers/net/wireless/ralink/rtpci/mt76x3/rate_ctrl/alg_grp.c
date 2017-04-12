@@ -1486,7 +1486,7 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 								, CurrRateIdx, UpRateIdx, DownRateIdx));
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (Rate1ErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1498,7 +1498,7 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 		when Rssi > -65, there is a lot of interference usually. therefore, the algorithm tends to choose the mcs lower than the optimal one.
 		by increasing the thresholds, the chosen mcs will be closer to the optimal mcs
 	*/
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (Rate1ErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp     = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown   = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
