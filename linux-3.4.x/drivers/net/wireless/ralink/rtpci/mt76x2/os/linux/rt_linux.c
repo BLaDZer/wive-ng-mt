@@ -90,7 +90,11 @@ static inline void netdev_priv_set(struct net_device *dev, void *priv)
 }
 
 
+#ifdef DBG
+ULONG RTDebugLevel = RT_DEBUG_ERROR;
+#else
 ULONG RTDebugLevel = RT_DEBUG_OFF;
+#endif
 ULONG RTDebugFunc = 0;
 
 #ifdef OS_ABL_FUNC_SUPPORT

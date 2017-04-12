@@ -1648,7 +1648,7 @@ void __exit rt_pci_cleanup_module(void);
 #define RTMP_OS_TXRXHOOK_CALL(hook,packet,queIdx,priv) RtmpOsTxRxHookCall(hook,packet,queIdx,priv)
 #define RTMP_OS_TXRXHOOK_INIT() RtmpOsTxRxHookInit()
 #else
-#define RTMP_OS_TXRXHOOK_CALL(hook,packet,queIdx,priv) if(priv!=NULL)
+#define RTMP_OS_TXRXHOOK_CALL(hook,packet,queIdx,priv) if(priv!=NULL) {}
 #define RTMP_OS_TXRXHOOK_INIT()
 #endif
 
