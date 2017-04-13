@@ -354,7 +354,7 @@ static inline int neigh_hh_output(const struct hh_cache *hh, struct sk_buff *skb
 			/* this is inlined by gcc */
 			memcpy(skb->data - HH_DATA_MOD, hh->hh_data, HH_DATA_MOD);
 		} else {
-			unsigned int = HH_DATA_ALIGN(hh_len);
+			unsigned int hh_alen = HH_DATA_ALIGN(hh_len);
 
 			memcpy(skb->data - hh_alen, hh->hh_data, hh_alen);
 		}
