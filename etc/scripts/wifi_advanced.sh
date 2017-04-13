@@ -46,6 +46,11 @@ if [ "$CONFIG_RT2860V2_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT7610_AP_IGMP_SNOOP
     fi
 fi
 
+# MT7603 do not support DYNVGA&Co
+if [ "$CONFIG_RT_FIRST_IF_MT7603E" = "y" ] && [ "$1" = "ra0" ]; then
+    exit 0
+fi
+
 # enable/disable dynamic LNA gain
 if [ "$DyncVgaEnable" = "1" ]; then
     iwpriv "$1" set DyncVgaEnable=1
