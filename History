@@ -2960,20 +2960,21 @@
 10) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
 11) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
 12) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
-13) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
-14) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
-15) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
-16) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-17) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-18) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+13) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
+14) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
+15) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
+16) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
+17) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+18) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 19) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-20) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
-21) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
-22) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-23) kernel: net: neigh: make ->hh_len 32-bit.<br>
-24) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-25) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-26) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+20) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+21) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
+22) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
+23) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
+24) kernel: net: neigh: make ->hh_len 32-bit.<br>
+25) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+26) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+27) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
 <br>
 <br>
 <br>

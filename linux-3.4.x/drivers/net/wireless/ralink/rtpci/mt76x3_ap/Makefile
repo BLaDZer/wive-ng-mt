@@ -95,7 +95,7 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/chips/mt7603.o
 
 ifeq ($(CONFIG_MT76X3_AP_ATE),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/mt_mac/mt_ate.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/inf/ate_pci.o
+#$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/inf/ate_pci.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/ate_agent.o
 ifeq ($(CONFIG_MT76X3_AP_QA),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ate/qa_agent.o
