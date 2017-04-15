@@ -188,7 +188,7 @@ servicelimit() {
 	    $LOG "Allow rate limited ping from all interfaces."
 	fi
 	# allow ratelimit ping request
-	iptables -A servicelimit -p icmp --icmp-type echo-request -m limit --limit 10/s -j ACCEPT
+	iptables -A servicelimit -p icmp --icmp-type echo-request -m limit --limit 25/s -j ACCEPT
 	iptables -A servicelimit -p icmp --icmp-type echo-request -j DROP
 	# allow all others icmp messages (mtu probing and others)
         iptables -A servicelimit  -p icmp ! --icmp-type echo-request -j ACCEPT
