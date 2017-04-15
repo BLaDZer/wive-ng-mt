@@ -498,7 +498,7 @@ servicelimitv6() {
     	    ip6tables -A INPUT -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	else
 	    $LOG "V6: Allow ratelimited icmp echo requests to router."
-	    ip6tables -A INPUT -p ipv6-icmp --icmpv6-type echo-request -m limit --limit 10/s -j ACCEPT
+	    ip6tables -A INPUT -p ipv6-icmp --icmpv6-type echo-request -m limit --limit 25/s -j ACCEPT
 	    ip6tables -A INPUT -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	fi
 
@@ -531,7 +531,7 @@ forwardlimitv6() {
     	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	else
 	    $LOG "V6: Allow ratelimited icmp echo requests to clients."
-	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -m limit --limit 10/s -j ACCEPT
+	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -m limit --limit 25/s -j ACCEPT
 	    ip6tables -A FORWARD -p ipv6-icmp --icmpv6-type echo-request -j DROP
 	fi
 
