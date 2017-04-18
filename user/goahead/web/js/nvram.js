@@ -139,6 +139,7 @@ var NVRAM_dhcpRequestIP					= '<% getCfgGeneral(1, "dhcpRequestIP"); %>'; 					N
 var NVRAM_dhcpVendorClass				= '<% getCfgGeneral(1, "dhcpVendorClass"); %>'; 				NVRAM_dhcpVendorClass 				= (NVRAM_dhcpVendorClass !='')					? NVRAM_dhcpVendorClass					: '';
 var NVRAM_wan_static_dns_profile		= '<% getCfgGeneral(1, "wan_static_dns_profile"); %>'; 			NVRAM_wan_static_dns_profile 		= (NVRAM_wan_static_dns_profile !='')			? NVRAM_wan_static_dns_profile			: 'manual';
 var NVRAM_wan_static_dns_profile_yandex	= '<% getCfgGeneral(1, "wan_static_dns_profile_yandex"); %>'; 	NVRAM_wan_static_dns_profile_yandex = (NVRAM_wan_static_dns_profile_yandex !='')	? NVRAM_wan_static_dns_profile_yandex	: 'basic';
+var NVRAM_wan_static_dns_profile_adguard= '<% getCfgGeneral(1, "wan_static_dns_profile_adguard"); %>'; 	NVRAM_wan_static_dns_profile_adguard= (NVRAM_wan_static_dns_profile_adguard !='')	? NVRAM_wan_static_dns_profile_adguard	: 'default';
 var NVRAM_WAN_MAC_ADDR					= '<% getCfgGeneral(1, "WAN_MAC_ADDR"); %>'; 					NVRAM_WAN_MAC_ADDR					= (NVRAM_WAN_MAC_ADDR !='')						? NVRAM_WAN_MAC_ADDR.toUpperCase()		: '00:0C:43:30:52:62';
 var NVRAM_vpnEnabled					= '<% getCfgGeneral(1, "vpnEnabled"); %>'; 						NVRAM_vpnEnabled 					= (NVRAM_vpnEnabled !='')						? NVRAM_vpnEnabled						: 'off';
 var NVRAM_vpnType						= '<% getCfgGeneral(1, "vpnType"); %>'; 						NVRAM_vpnType 						= (NVRAM_vpnType !='')							? NVRAM_vpnType							: '0';

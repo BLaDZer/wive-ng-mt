@@ -24,11 +24,15 @@
 	<message msgid="inet dns profile yandex" msgstr="Yandex DNS" />
 	<message msgid="inet dns profile sky" msgstr="Sky DNS" />
 	<message msgid="inet dns profile open" msgstr="Open DNS" />
+	<message msgid="inet dns profile adguard" msgstr="AdGuard DNS" />
 	<message msgid="inet dns profile yandex title" msgstr="Профиль Yandex DNS" />
 	<message msgid="inet dns profile yandex basic" msgstr="Базовый" />
 	<message msgid="inet dns profile yandex safe" msgstr="Безопасный" />
 	<message msgid="inet dns profile yandex family" msgstr="Семейный" />	
-
+	<message msgid="inet dns profile adguard title" msgstr="Профиль AdGuard DNS" />
+	<message msgid="inet dns profile adguard default" msgstr="По умолчанию" />
+	<message msgid="inet dns profile adguard family" msgstr="Семейный" />
+	
     <message msgid="wan title" msgstr="Настройки Wide Area Network (WAN)" />
     <message msgid="wan introduction" msgstr="Вы можете выбрать тип подключения, который применим к вашим условиям. Также вы можете изменить параметры для выбраного типа подключения." />
     <message msgid="wan connection" msgstr="Подключение WAN" />

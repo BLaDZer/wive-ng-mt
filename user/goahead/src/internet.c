@@ -765,7 +765,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*lan_ip, *lan_nm;
 	char_t	*start_ip, *end_ip, *dgw;
-	char_t	*gw = NULL, *pd = NULL, *sd = NULL, *dns_profile = NULL, *dns_y_profile = NULL;
+	char_t	*gw = NULL, *pd = NULL, *sd = NULL, *dns_profile = NULL, *dns_y_profile = NULL, *dns_ag_profile = NULL;
 	char_t	*host;
 	char_t	*reset		= websGetVar(wp, T("reset"), T("0"));
 
@@ -780,11 +780,12 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 	host		= websGetVar(wp, T("hostname"), T("0"));
 	dns_profile	= websGetVar(wp, T("wStaticDnsProfile"), T("manual"));
 	dns_y_profile	= websGetVar(wp, T("wStaticDnsYandexProfile"), T("basic"));
+	dns_ag_profile	= websGetVar(wp, T("wStaticDnsAdguardProfile"), T("default"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 3, "HostName", "lan_ipaddr", "lan_netmask");
 		if (opmode == 0) {
-			nvram_fromdef(RT2860_NVRAM, 5, "wan_gateway", "wan_primary_dns", "wan_secondary_dns", "wan_static_dns_profile", "wan_static_dns_profile_yandex");
+			nvram_fromdef(RT2860_NVRAM, 6, "wan_gateway", "wan_primary_dns", "wan_secondary_dns", "wan_static_dns_profile", "wan_static_dns_profile_yandex", "wan_static_dns_profile_adguard");
 			nvram_set(RT2860_NVRAM, "wan_static_dns", "on");
 		}
 		if (dhcpEnabled == 1) {
@@ -809,6 +810,7 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile", dns_profile);
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile_yandex", dns_y_profile);
+			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile_adguard", dns_ag_profile);
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns", "on");
 		}
 
@@ -929,7 +931,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
 
 	char_t *wan_mtu;
-	char_t *st_en, *pd, *sd, *st_pr, *st_pr_ya;
+	char_t *st_en, *pd, *sd, *st_pr, *st_pr_ya, *st_pr_ag;
 
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
@@ -942,10 +944,10 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 15, "wanConnectionMode", "wan_ipaddr", "wan_netmask", "wan_gateway", 
-						"dhcpRequestIP", "dhcpVendorClass", "natEnabled",
-						"wan_static_dns", "wan_static_dns_profile", "wan_static_dns_profile_yandex", "wan_primary_dns", "wan_secondary_dns"
-						"wan_mtu", "wan_manual_mtu", "CHECKMAC" );
+		nvram_fromdef(RT2860_NVRAM, 16, "wanConnectionMode", "wan_ipaddr", "wan_netmask", "wan_gateway", "dhcpRequestIP",
+						"dhcpVendorClass", "natEnabled", "wan_static_dns", "wan_static_dns_profile", "wan_static_dns_profile_yandex",
+						"wan_static_dns_profile_adguard", "wan_primary_dns", "wan_secondary_dns", "wan_mtu", "wan_manual_mtu",
+						"CHECKMAC" );
 		doSystem("fs factory_mac > /dev/console 2>&1");
 	}
 	else {
@@ -1004,6 +1006,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 		st_en = websGetVar(wp, T("wStaticDnsEnable"), T("off"));
 		st_pr = websGetVar(wp, T("wStaticDnsProfile"), T("manual"));
 		st_pr_ya = websGetVar(wp, T("wStaticDnsYandexProfile"), T("basic"));
+		st_pr_ag = websGetVar(wp, T("wStaticDnsAdguardProfile"), T("default"));
 		pd = websGetVar(wp, T("staticPriDns"), T(""));
 		sd = websGetVar(wp, T("staticSecDns"), T(""));
 
@@ -1017,6 +1020,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "wan_secondary_dns", sd);
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile", st_pr);
 			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile_yandex", st_pr_ya);
+			nvram_bufset(RT2860_NVRAM, "wan_static_dns_profile_adguard", st_pr_ag);
 		}
 
 		// NAT

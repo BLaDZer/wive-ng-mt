@@ -2957,31 +2957,33 @@
 7) iappd: remove local key entry by key timeouts record.<br>
 8) init.d: skip dynvga tune for mt7603 (not suppoted by chip).<br>
 9) init.d: iptables: drop now unneded accept rules for L2TP client mode.<br>
-10) init.d: iptables: increase icmp echo limit to 25 packets/s.<br>
-11) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
-12) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
-13) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
-14) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
-15) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
-16) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
-17) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
-18) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
-19) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
-20) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-21) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-22) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-23) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-24) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
-25) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
-26) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-27) kernel: give up on gcc ilog2() constant optimizations.<br>
-28) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
-29) kernel: net: neigh: make ->hh_len 32-bit.<br>
-30) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-31) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-32) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-33) kernel: net: netfilter: don't track fragmented packets.<br>
-34) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+10) goahead: add DNS profile for AdGuard.<br>
+11) goahead: stalist: fix save stadata.<br>
+12) init.d: iptables: increase icmp echo limit to 25 packets/s.<br>
+13) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
+14) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
+15) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
+16) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
+17) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
+18) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
+19) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
+20) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
+21) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
+22) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+23) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
+24) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+25) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+26) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
+27) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
+28) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
+29) kernel: give up on gcc ilog2() constant optimizations.<br>
+30) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
+31) kernel: net: neigh: make ->hh_len 32-bit.<br>
+32) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+33) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+34) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+35) kernel: net: netfilter: don't track fragmented packets.<br>
+36) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>

@@ -37,10 +37,14 @@
 				_TR("dnsProfileYandex",		"inet dns profile yandex");
 				_TR("dnsProfileSky",		"inet dns profile sky");
 				_TR("dnsProfileOpen",		"inet dns profile open");
+				_TR("dnsProfileAdguard",		"inet dns profile adguard");
 				_TR("wStaticDnsYandexProfile",	"inet dns profile yandex title");
 				_TR("dnsProfileYandexBasic",	"inet dns profile yandex basic");
 				_TR("dnsProfileYandexSafe",	"inet dns profile yandex safe");
 				_TR("dnsProfileYandexFamily",	"inet dns profile yandex family");
+				_TR("wStaticDnsAdguardProfile",	"inet dns profile adguard title");
+				_TR("dnsProfileAdguardDefault",	"inet dns profile adguard default");
+				_TR("dnsProfileAdguardFamily",	"inet dns profile adguard family");
 				_TRV("lApply",			"button apply");
 				_TRV("lCancel",			"button cancel");
 				_TRV("lReset",			"button reset");
@@ -60,8 +64,9 @@
 				form.dhcpGateway.value				= NVRAM_dhcpGateway;
 				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
 				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex;
+				form.wStaticDnsAdguardProfile.value	= NVRAM_wan_static_dns_profile_adguard; 
 
-				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile' ], NVRAM_OperationMode == '0' );
+				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile', 'staticDNSadguardProfile' ], NVRAM_OperationMode == '0' );
 
 				dnsSwitchClick(form);
 				showWarning();
@@ -137,6 +142,7 @@
 			function dnsSwitchClick(form) {
 				displayElement(['brPriDns', 'brSecDns'],	NVRAM_OperationMode == '0' && form.wStaticDnsProfile.value == 'manual');
 				displayElement('staticDNSyandexProfile',	NVRAM_OperationMode == '0' && form.wStaticDnsProfile.value == 'yandex');
+				displayElement('staticDNSadguardProfile',	NVRAM_OperationMode == '0' && form.wStaticDnsProfile.value == 'adguard');
 				document.getElementById('wStaticDnsProfile_learne').innerHTML = '';
 				switch (form.wStaticDnsProfile.value) {
 					case 'google':
@@ -167,10 +173,24 @@
 										form.lanSecDns.value = '';
 										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.skydns.ru/" target="_blank">' + _('services status about') + '</a>';
 										break;
+
 					case 'open':
 										form.lanPriDns.value = '208.67.222.123';
 										form.lanSecDns.value = '208.67.220.123';
 										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://www.opendns.com/home-internet-security/" target="_blank">' + _('services status about') + '</a>';
+										break;
+
+					case 'adguard':		switch (form.wStaticDnsAdguardProfile.value) {
+											case 'default':
+															form.lanPriDns.value = '176.103.130.130';
+															form.lanSecDns.value = '176.103.130.131';
+															break;
+											case 'family':
+															form.lanPriDns.value = '176.103.130.132';
+															form.lanSecDns.value = '176.103.130.134';
+															break;															
+										}
+										document.getElementById('wStaticDnsProfile_learne').innerHTML = '<a href="https://adguard.com/adguard-dns/overview.html" target="_blank">' + _('services status about') + '</a>';
 										break;
 				}
 			}
@@ -215,6 +235,7 @@
 									<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
 									<option id="dnsProfileSky" value="sky">Sky DNS</option>
 									<option id="dnsProfileOpen" value="open">Open DNS</option>
+									<option id="dnsProfileAdguard" value="adguard">AdGuard DNS</option>
 								</select>
 								</div>
 								<div id="wStaticDnsProfile_learne" style="float: left; margin: 3px 10px"></div>
@@ -227,6 +248,15 @@
 									<option id="dnsProfileYandexBasic" value="basic">Basic</option>
 									<option id="dnsProfileYandexSafe" value="safe">Safe</option>
 									<option id="dnsProfileYandexFamily" value="family">Family</option>
+								</select>
+							</td>
+						</tr>
+						<tr id="staticDNSadguardProfile">
+							<td class="head" id="wStaticDnsAdguardProfile">AdGuard Profile</td>
+							<td>
+								<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<option id="dnsProfileAdguardDefault" value="default">Default</option>
+									<option id="dnsProfileAdguardFamily" value="family">Family</option>
 								</select>
 							</td>
 						</tr>

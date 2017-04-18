@@ -11,11 +11,12 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 
 		<!--[if IE]><script src="/js/excanvas.min.js"></script><![endif]-->
+		<script src="/lang/b28n.js"></script>
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery.flot.min.js"></script>
 		<script src="/js/jquery.flot.time.min.js"></script>
 		<script src="/js/jquery.flot.crosshair.min.js"></script>
-		<script src="/lang/b28n.js"></script>
+		<script src="/js/html2canvas.min.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
@@ -96,6 +97,7 @@
 				_TR("unitKB",						"stalist wireless plot unit kbits");
 				_TR("unitMB",						"stalist wireless plot unit mbits");
 				_TRV("clearPlot",					"stalist wireless plot clear button");
+				_TRV("savePlot",					"stalist wireless plot image button");
 				_TRV("disconnectAll",				"button disconnect all");
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
@@ -105,6 +107,10 @@
 
 			function initValues() {
 				var time		= new Date(new Date().getTime() - 24 * 3600 * 1000).getTime();
+				
+				var browser = getBrowser();
+				if (browser.browser == 'ie' && browser.versionShort < 10)
+					displayElement('savePlot', false);
 
 				if ((NVRAM_RadioOn == 0) && (NVRAM_RadioOnINIC == 0)) {
 					hideElement('tableWirelessSummary');
@@ -262,7 +268,22 @@
 					savePlotData();
 				}
 			}
-			
+
+			function savePlotImage() {
+				html2canvas(document.getElementById('tableWirelessPlot'), {
+					onrendered: function (canvas) {
+						var date = new Date();
+						var name = 'plot_' + ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '-' +
+											 ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' +
+											 (date.getFullYear()) + '_' +
+											 ((date.getHours() < 10) ? '0' + date.getHours() : date.getHours()) + '-' +
+											 ((date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes()) + '-' +
+											 ((date.getSeconds() < 10) ? '0' + date.getSeconds() : date.getSeconds()) + '.png';
+						canvas.toBlob(function(blob) { saveAs(blob, name); }, "image/jpeg");
+					}
+				});				
+			}
+
 			function disconnectStation(form, mac)
 			{
 				form.disconnectSta.value = mac;
@@ -1494,7 +1515,7 @@
 							</tr>
 						</table>
 						<br>
-						<table id="tableWirelessPlot" class="form" style="display: none;">
+						<table id="tableWirelessPlot" class="form" style="display: none; background-color: #FFFFFF">
 							<tr>
 								<td class="title" colspan="3" id="stalistWirelessPlot">Wireless Network Plot</td>
 							</tr>
@@ -1554,7 +1575,8 @@
 						<table id="tableWirelessPlotButton" class="button" style="display: none;">
 							<tr>
 								<td>
-									<input type="button" id="clearPlot" value="Clear Plot" class="normal" onClick="clearPlotData();">
+									<input type="button" id="clearPlot" value="Clear Plot" class="normal" onClick="clearPlotData();">&nbsp;&nbsp;
+									<input type="button" id="savePlot" value="Save Plot" style="min-width: 160px" onClick="savePlotImage();">
 								</td>
 							</tr>
 						</table
