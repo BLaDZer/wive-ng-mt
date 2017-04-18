@@ -130,12 +130,14 @@ int func_sw_lan(int argc, char* argv[])
     char *hostname = nvram_get(RT2860_NVRAM, "HostName");
     char *lan_ipaddr = nvram_get(RT2860_NVRAM, "lan_ipaddr");
     char *lan_netmask = nvram_get(RT2860_NVRAM, "lan_netmask");
+    char *lan_macaddr = nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
 
     if (is_report(argc, argv))
     {
         printf("LAN Hostname\t%s\n", hostname);
         printf("LAN IP Address\t%s\n", lan_ipaddr);
         printf("LAN Netmask\t%s\n", lan_netmask);
+        if (lan_macaddr)     printf("LAN MAC Address\t%s\n", lan_macaddr);
         printf("COMMIT\tlan\n");
         return 0;
     }
@@ -148,6 +150,8 @@ int func_sw_lan(int argc, char* argv[])
         printf("LAN IP Address:         %s\n", lan_ipaddr);
     if (lan_netmask)
         printf("LAN Netmask:            %s\n", lan_netmask);
+    if (lan_macaddr)
+        printf("LAN MAC Address:        %s\n", lan_macaddr);
 
     printf("\n");
     return 0;

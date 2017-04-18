@@ -423,6 +423,7 @@ int func_st_show_report(int argc, char* argv[])
 
     printf("Uptime\t%ld\n", getSystemUptime());
     printf("Operation Mode\t%s\n", getOpmodeStr(nvram_get_int(RT2860_NVRAM, "OperationMode", -1)));
+    printf("ApCli Bridge Only\t%i\n", nvram_get_int(RT2860_NVRAM, "ApCliBridgeOnly", -1));
 
     if (getMemData(&mem) == 0)
     {
