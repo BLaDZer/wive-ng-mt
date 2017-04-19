@@ -2984,10 +2984,11 @@
 34) kernel: net: neigh: make ->hh_len 32-bit.<br>
 35) kernel: net: packet: fix overflow in check for priv area size.<br>
 36) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-37) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-38) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-39) kernel: net: netfilter: don't track fragmented packets.<br>
-40) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+37) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
+38) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+39) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+40) kernel: net: netfilter: don't track fragmented packets.<br>
+41) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>
