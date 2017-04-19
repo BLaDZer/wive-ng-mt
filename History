@@ -2970,28 +2970,29 @@
 20) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
 21) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
 22) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
-23) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
-24) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-25) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-26) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+23) kernel: ralink_wifi: mt7610: usr radar detect silence mode for AP.<br>
+24) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
+25) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+26) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 27) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-28) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
-29) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
-30) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-31) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
-32) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
-33) kernel: give up on gcc ilog2() constant optimizations.<br>
-34) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
-35) kernel: net: neigh: make ->hh_len 32-bit.<br>
-36) kernel: net: packet: fix overflow in check for priv area size.<br>
-37) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-38) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
-39) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
-40) kernel: net: ipv6: send unsolicited NA on admin up.<br>
-41) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-42) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-43) kernel: net: netfilter: don't track fragmented packets.<br>
-44) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+28) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+29) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
+30) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
+31) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
+32) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
+33) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
+34) kernel: give up on gcc ilog2() constant optimizations.<br>
+35) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
+36) kernel: net: neigh: make ->hh_len 32-bit.<br>
+37) kernel: net: packet: fix overflow in check for priv area size.<br>
+38) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+39) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
+40) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
+41) kernel: net: ipv6: send unsolicited NA on admin up.<br>
+42) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+43) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+44) kernel: net: netfilter: don't track fragmented packets.<br>
+45) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>

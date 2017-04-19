@@ -4104,7 +4104,7 @@ VOID	UserCfgInit(
 	/* 802.11H and DFS related params*/
 	pAd->Dot11_H.CSCount = 0;
 	pAd->Dot11_H.CSPeriod = 10;
-	pAd->Dot11_H.RDMode = RD_NORMAL_MODE;
+	pAd->Dot11_H.RDMode = RD_SILENCE_MODE;
 	pAd->Dot11_H.bDFSIndoor = 1;
 
 
