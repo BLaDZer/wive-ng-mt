@@ -177,6 +177,7 @@ struct ipv6_devconf {
 	__s32		disable_ipv6;
 	__s32		accept_dad;
 	__s32		force_tllao;
+	__s32           ndisc_notify;
 	void		*sysctl;
 };
 
@@ -218,6 +219,7 @@ enum {
 	DEVCONF_DISABLE_IPV6,
 	DEVCONF_ACCEPT_DAD,
 	DEVCONF_FORCE_TLLAO,
+	DEVCONF_NDISC_NOTIFY,
 	DEVCONF_MLDV1_UNSOLICITED_REPORT_INTERVAL,
 	DEVCONF_MLDV2_UNSOLICITED_REPORT_INTERVAL,
 	DEVCONF_MAX
