@@ -906,15 +906,20 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	// VHT_Modes
 	if (is_vht)
 	{
-#if defined(CONFIG_MT7610_AP_MODULE)
-		// for 1T1R module always disable (support only in STA mode for 1T1R)
-		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
-		nvram_bufset(RT2860_NVRAM, "HT_LDPC", "0");
+// STBC for 1T1R module (as 7610) always disable (support only in STA mode for 1T1R)
+#if (CONFIG_RT_SECOND_CARD == 7610)
+		nvram_bufset(RT2860_NVRAM, "VHT_STBC", "0");
 #else
+		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
+#endif
+// LDPC support ONLY for 7602/7612
+#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
 		nvram_bufset(RT2860_NVRAM, "HT_LDPC", ac_ldpc);
+#else
+		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", "0");
+		nvram_bufset(RT2860_NVRAM, "HT_LDPC", "0");
 #endif
-		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 		nvram_bufset(RT2860_NVRAM, "VHT_SGI", ac_gi);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW", ac_bw);
 		nvram_bufset(RT2860_NVRAM, "VHT_BW_SIGNAL", ac_bwsig);

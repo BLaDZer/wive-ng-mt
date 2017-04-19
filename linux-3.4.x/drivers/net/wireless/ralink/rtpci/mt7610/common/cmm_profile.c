@@ -1649,7 +1649,7 @@ static void VHTParametersHook(
 	{
 		Value = simple_strtol(pValueStr, 0, 10);
 
-		pAd->CommonCfg.vht_stbc = (Value == 1 ? STBC_USE : STBC_NONE);
+		pAd->CommonCfg.vht_stbc = ((Value == 1 && pAd->Antenna.field.TxPath >= 2) ? STBC_USE : STBC_NONE);
 		DBGPRINT(RT_DEBUG_TRACE, ("VHT: STBC = %d\n",
 					pAd->CommonCfg.vht_stbc));
 	}
@@ -1992,7 +1992,7 @@ static void HTParametersHook(
     if (RTMPGetKeyParameter("HT_STBC", pValueStr, 25, pInput, TRUE))
 	{
 		Value = simple_strtol(pValueStr, 0, 10);
-		if (Value == STBC_USE)
+		if (Value == STBC_USE && pAd->Antenna.field.TxPath >= 2)
 		{		
 			pAd->CommonCfg.RegTransmitSetting.field.STBC = STBC_USE;
 		}

@@ -2929,7 +2929,7 @@ INT	Set_HtStbc_Proc(
 	
 	Value = simple_strtol(arg, 0, 10);
 	
-	if (Value == STBC_USE)
+	if (Value == STBC_USE && pAd->Antenna.field.TxPath >= 2)
 		pAd->CommonCfg.RegTransmitSetting.field.STBC = STBC_USE;
 	else if ( Value == STBC_NONE )
 		pAd->CommonCfg.RegTransmitSetting.field.STBC = STBC_NONE;
@@ -3491,7 +3491,7 @@ INT	Set_VhtStbc_Proc(
 	
 	Value = simple_strtol(arg, 0, 10);
 	
-	if (Value == STBC_USE)
+	if (Value == STBC_USE && pAd->Antenna.field.TxPath >= 2)
 		pAd->CommonCfg.vht_stbc = STBC_USE;
 	else if ( Value == STBC_NONE )
 		pAd->CommonCfg.vht_stbc = STBC_NONE;
