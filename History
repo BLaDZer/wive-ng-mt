@@ -2977,15 +2977,16 @@
 27) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
 28) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
 29) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-30) kernel: give up on gcc ilog2() constant optimizations.<br>
-31) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
-32) kernel: net: neigh: make ->hh_len 32-bit.<br>
-33) kernel: net: packet: fix overflow in check for priv area size.<br>
-34) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-35) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-36) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-37) kernel: net: netfilter: don't track fragmented packets.<br>
-38) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+30) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
+31) kernel: give up on gcc ilog2() constant optimizations.<br>
+32) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
+33) kernel: net: neigh: make ->hh_len 32-bit.<br>
+34) kernel: net: packet: fix overflow in check for priv area size.<br>
+35) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+36) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+37) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+38) kernel: net: netfilter: don't track fragmented packets.<br>
+39) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>
