@@ -256,7 +256,9 @@
 			function clearPlotData()
 			{
 				plotData = [];
+				plotMACs = [];
 				sessionStorage.removeItem('plotData');
+				showStationList();
 				showPlot();
 			}
 
