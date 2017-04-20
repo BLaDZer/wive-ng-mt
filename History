@@ -2990,7 +2990,7 @@
 40) kernel: net: neigh: make ->hh_len 32-bit.<br>
 41) kernel: net: packet: fix overflow in check for priv area size.<br>
 42) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-43) kernel: net: ipv4: Refine the ipv4_default_advmss.<br>
+43) kernel: net: ipv4: refine the ipv4_default_advmss (RFC 2675, Section 5.1 compliant).<br>
 44) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
 45) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
 46) kernel: net: ipv6: send unsolicited NA on admin up.<br>
