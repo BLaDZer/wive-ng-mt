@@ -178,7 +178,7 @@
 						}
 						else {
 							wirelessTabeWidth	= "1100px";
-							wirelessTableColumn	= ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0)) ? 17 : 16;
+							wirelessTableColumn	= (BUILD_LDPC_SUPPORT == '1') ? 17 : 16;
 							document.getElementById('tableWirelessSummary').style.width = "1100px";
 							document.getElementById('tableWirelessPlot').style.width = "1100px";
 						}
@@ -237,7 +237,7 @@
 				else {
 					wirelessMode 		= "Advanced";
 					wirelessTabeWidth	= "1100px";
-					wirelessTableColumn	= ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0)) ? 17 : 16;
+					wirelessTableColumn	= (BUILD_LDPC_SUPPORT == '1') ? 17 : 16;
 					document.getElementById('tableWirelessSummary').style.width = "1100px";
 					document.getElementById('tableWirelessPlot').style.width = "1100px";
 				}
@@ -414,7 +414,7 @@
 					html +=	'<th id="stalistBW">BW</th>';
 					html +=	'<th id="stalistSGI">SGI</th>';
 					html +=	'<th id="stalistSTBC">STBC</th>';
-					if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
+					if (BUILD_LDPC_SUPPORT == '1')
 						html +=	'<th id="stalistLDPC">LDPC</th>';
 					html +=	'<th id="stalistMODE">MODE</th>';
 				}
@@ -451,7 +451,7 @@
 							html += '<td style="text-align: center">' + data.stationlist24[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist24[i].sgi + '</td>';				//SGI
 							html += '<td style="text-align: center">' + data.stationlist24[i].stbc + '</td>';				//STBC
-							if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
+							if (BUILD_LDPC_SUPPORT == '1')
 								html += '<td style="text-align: center">' + data.stationlist24[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist24[i].mode + '</td>';				//MODE
 						}
@@ -542,7 +542,7 @@
 							html += '<td style="text-align: center">' + data.stationlist5[i].bw + '</td>';					//BW
 							html += '<td style="text-align: center">' + data.stationlist5[i].sgi + '</td>';					//SGI
 							html += '<td style="text-align: center">' + data.stationlist5[i].stbc + '</td>';				//STBC
-							if ((PLATFORM.indexOf('MT7602') > 0) || (PLATFORM.indexOf('MT7612') > 0))
+							if (BUILD_LDPC_SUPPORT == '1')
 								html += '<td style="text-align: center">' + data.stationlist5[i].ldpc + '</td>';			//LDPC
 							html += '<td style="text-align: center">' + data.stationlist5[i].mode + '</td>';				//MODE
 						}

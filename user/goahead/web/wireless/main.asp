@@ -1504,7 +1504,7 @@
 					ajaxModifyElementHTML('basicVHTPhyMode', '<img id="basicVHTPhyModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic vht phy mode"));
 					statusVHTPysModeMenu = 1;
 					displayElement(VHTPhysModeElement, 1);
-					displayElement('basicVHTLDCP_tr', platform.indexOf('MT7602') > 0 || platform.indexOf('MT7612') > 0);
+					displayElement('basicVHTLDCP_tr', BUILD_LDPC_SUPPORT == '1');
 				} else {
 					ajaxModifyElementHTML('basicVHTPhyMode', '<img id="basicVHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic vht phy mode"));
 					statusVHTPysModeMenu = 0;

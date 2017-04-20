@@ -240,10 +240,14 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
     return websWrite(wp, T("MT7620 2T2R 2.4GHz, 100FDX"));
 #endif
 #elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
-#ifdef CONFIG_MT76X3_AP
-    return websWrite(wp, T("MT7621 1000FDX MT7603 MT7612 2T2R dualband"));
+#if defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7610E)
+    return websWrite(wp, T("MT7621 CPU, MT7603 2T2R 2.4GHz, MT7610 1T1R 5GHz, 1000FDX"));
+#elif defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
+    return websWrite(wp, T("MT7621 CPU, MT7603 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
+#elif defined(CONFIG_RT_FIRST_IF_MT7602E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
+    return websWrite(wp, T("MT7621 CPU, MT7602 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
 #else
-    return websWrite(wp, T("MT7621 1000FDX MT7602 MT7612 2T2R dualband"));
+    return websWrite(wp, T("MT7621 CPU, 1000FDX unknown radio."));
 #endif
 #else
     return websWrite(wp, T("Unknown switch mode"));

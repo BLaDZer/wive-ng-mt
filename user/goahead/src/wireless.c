@@ -1752,6 +1752,15 @@ static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
+static int getLDPCBuilt(int eid, webs_t wp, int argc, char_t **argv)
+{
+#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
 static int getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
 #ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
@@ -1917,6 +1926,7 @@ void formDefineWireless(void)
 	websAspDefine(T("is3t3r"), is3t3r);
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
+	websAspDefine(T("getLDPCBuilt"), getLDPCBuilt);
 	websAspDefine(T("getTXBFBuilt"), getTXBFBuilt);
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
