@@ -30,6 +30,7 @@ var BUILD_LangEN						= '<% getLangBuilt("en"); %>';
 var BUILD_LangRU						= '<% getLangBuilt("ru"); %>';
 var BUILD_KABINET						= '<% getLANAUTHBuilt(); %>';
 var BUILD_LDPC_SUPPORT						= '<% getLDPCBuilt(); %>';
+var BUILD_VHT_STBC_SUPPORT					= '<% getVHTSTBCBuilt(); %>';
 var BUILD_5GHZ_SUPPORT						= '<% is5gh_support(); %>';
 var BUILD_5GHZ_1T1R						= '<% is5gh_1t1r(); %>' == '1';
 var BUILD_GIGAPHY						= '<% gigaphy(); %>';

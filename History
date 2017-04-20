@@ -2963,7 +2963,7 @@
 13) goahead: add DNS profile for AdGuard.<br>
 14) goahead: stalist: fix save stadata.<br>
 15) goahead: stalist: fix clear plot data.<br>
-16) goahead: fix LDPC/STBC disable for 7610.<br>
+16) goahead: disable and hide LDPC/STBC for 7610.<br>
 17) goahead: fix model string for MEx devices.<br>
 18) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
 19) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>

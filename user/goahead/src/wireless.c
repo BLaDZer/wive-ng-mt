@@ -1813,6 +1813,14 @@ static int getBSSIDNum(int eid, webs_t wp, int argc, char_t **argv)
 	return websWrite(wp, T("%d"), MAX_NUMBER_OF_BSSID);
 }
 
+static int getVHTSTBCBuilt(int eid, webs_t wp, int argc, char_t **argv) {
+#if defined(CONFIG_RT_SECOND_IF_NONE) || defined(CONFIG_RT_SECOND_IF_MT7610E)
+	return websWrite(wp, T("0"));
+#else
+	return websWrite(wp, T("1"));
+#endif
+}
+
 static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 #if defined(CONFIG_USER_BNDSTR) && defined(CONFIG_BAND_STEERING)
 	return websWrite(wp, T("1"));
@@ -1927,6 +1935,7 @@ void formDefineWireless(void)
 	websAspDefine(T("is5gh_support"), is5gh_support);
 	websAspDefine(T("is5gh_1t1r"), is5gh_1t1r);
 	websAspDefine(T("getLDPCBuilt"), getLDPCBuilt);
+	websAspDefine(T("getVHTSTBCBuilt"), getVHTSTBCBuilt);
 	websAspDefine(T("getTXBFBuilt"), getTXBFBuilt);
 	websAspDefine(T("getMaxStaNum"), getMaxStaNum);
 	websAspDefine(T("getBSSIDNum"), getBSSIDNum);
