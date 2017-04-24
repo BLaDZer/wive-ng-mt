@@ -4132,6 +4132,7 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 					MAC_TABLE_ENTRY *pEntry = NULL;
 					UINT32 i = 0;
 
+					txop_value = txop_value_burst;
 		                	for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
 						pEntry = &pAd->MacTab.Content[i];
 
@@ -4161,7 +4162,7 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 #ifdef APCLI_SUPPORT
 #ifdef TRAFFIC_BASED_TXOP
 				/* Traffic Base Txop Rule */
-				if (((txop_value == 0) || (txop_value == 0x20)) &&
+				if ((txop_value == txop_value_burst) &&
 					((pAd->StaTxopAbledCnt >= 1) || (pAd->ApClientTxopAbledCnt >= 1))) {
 					txop_value = 0x60;
 				}

@@ -3495,6 +3495,7 @@ VOID dynamic_tune_be_tx_op(
 					MAC_TABLE_ENTRY *pEntry = NULL;
 					UINT32 i = 0;
 
+					txop_value = txop_value_burst;
 		                	for (i = 1; i< MAX_LEN_OF_MAC_TABLE; i++) {
 						pEntry = &pAd->MacTab.Content[i];
 						if (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC))
