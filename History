@@ -2965,56 +2965,57 @@
 15) goahead: stalist: fix clear plot data.<br>
 16) goahead: disable and hide LDPC/STBC for 7610.<br>
 17) goahead: fix model string for MEx devices.<br>
-18) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
-19) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
-20) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
-21) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
-22) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
-23) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
-24) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
-25) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
-26) kernel: ralink_wifi: mt7610: use radar detect silence mode for AP.<br>
-27) kernel: ralink_wifi: mt7610: do not support HT/VHT_STBC TX.<br>
-28) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
-29) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-30) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-31) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+18) kernel: ralink_arch: fix MT7621 & MT7628 watchdog reset output.<br>
+19) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
+20) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
+21) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>
+22) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
+23) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
+24) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
+25) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
+26) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
+27) kernel: ralink_wifi: mt7610: use radar detect silence mode for AP.<br>
+28) kernel: ralink_wifi: mt7610: do not support HT/VHT_STBC TX.<br>
+29) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
+30) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+31) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 32) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-33) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
-34) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
-35) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-36) kernel: keys: guard against null match function in keyring_search_aux().<br>
-37) kernel: mmc: block: don't use CMD23 with very old MMC cards.<br>
-38) kernel: scsi: fix use-after-free.<br>
-39) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
-40) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
-41) kernel: give up on gcc ilog2() constant optimizations.<br>
-42) kernel: swapfile: fix memory corruption via malformed swapfile.<br>
-43) kernel: ubifs: fix assertion in layout_in_gaps().<br>
-44) kernel: ubifs: fix xattr_names length in exit paths.<br>
-45) kernel: ubifs: abort readdir upon error.<br>
-46) kernel: ubifs: fix regression in ubifs_readdir().<br>
-47) kernel: ubifs: fix journal replay wrt. xattr nodes.<br>
-48) kernel: ext4: fix hang when processing corrupted orphaned inode list.<br>
-49) kernel: ext4: check for extents that wrap around.<br>
-50) kernel: ext4: don't call ext4_should_journal_data() on the journal inode.<br>
-51) kernel: ext4: short-cut orphan cleanup on error.<br>
-52) kernel: ext4: fix mballoc breakage with 64k block size.<br>
-53) kernel: ext4: fix stack memory corruption with 64k block size.<br>
-54) kernel: ext4: release bh in make_indexed_dir.<br>
-55) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
-56) kernel: net: neigh: make ->hh_len 32-bit.<br>
-57) kernel: net: packet: fix overflow in check for priv area size.<br>
-58) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-59) kernel: net: ipv4: refine the ipv4_default_advmss (RFC 2675, Section 5.1 compliant).<br>
-60) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
-61) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
-62) kernel: net: ipv6: send unsolicited NA on admin up.<br>
-63) kernel: net: ipv6: dccp: add missing bind_conflict to dccp_ipv6_mapped.<br>
-64) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-65) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-66) kernel: net: netfilter: don't track fragmented packets.<br>
-67) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+33) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+34) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
+35) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
+36) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
+37) kernel: keys: guard against null match function in keyring_search_aux().<br>
+38) kernel: mmc: block: don't use CMD23 with very old MMC cards.<br>
+39) kernel: scsi: fix use-after-free.<br>
+40) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
+41) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
+42) kernel: give up on gcc ilog2() constant optimizations.<br>
+43) kernel: swapfile: fix memory corruption via malformed swapfile.<br>
+44) kernel: ubifs: fix assertion in layout_in_gaps().<br>
+45) kernel: ubifs: fix xattr_names length in exit paths.<br>
+46) kernel: ubifs: abort readdir upon error.<br>
+47) kernel: ubifs: fix regression in ubifs_readdir().<br>
+48) kernel: ubifs: fix journal replay wrt. xattr nodes.<br>
+49) kernel: ext4: fix hang when processing corrupted orphaned inode list.<br>
+50) kernel: ext4: check for extents that wrap around.<br>
+51) kernel: ext4: don't call ext4_should_journal_data() on the journal inode.<br>
+52) kernel: ext4: short-cut orphan cleanup on error.<br>
+53) kernel: ext4: fix mballoc breakage with 64k block size.<br>
+54) kernel: ext4: fix stack memory corruption with 64k block size.<br>
+55) kernel: ext4: release bh in make_indexed_dir.<br>
+56) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
+57) kernel: net: neigh: make ->hh_len 32-bit.<br>
+58) kernel: net: packet: fix overflow in check for priv area size.<br>
+59) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+60) kernel: net: ipv4: refine the ipv4_default_advmss (RFC 2675, Section 5.1 compliant).<br>
+61) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
+62) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
+63) kernel: net: ipv6: send unsolicited NA on admin up.<br>
+64) kernel: net: ipv6: dccp: add missing bind_conflict to dccp_ipv6_mapped.<br>
+65) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+66) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+67) kernel: net: netfilter: don't track fragmented packets.<br>
+68) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>
