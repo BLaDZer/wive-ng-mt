@@ -2975,51 +2975,52 @@
 25) kernel: ralink_wifi: mt7603: fix set rx from mcu flag.<br>
 26) kernel: ralink_wifi: mt7603: fix extended channel list support build.<br>
 27) kernel: ralink_wifi: mt7603: fix ate mode crash.<br>
-28) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
-29) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
-30) kernel: ralink_wifi: mt7610: use radar detect silence mode for AP.<br>
-31) kernel: ralink_wifi: mt7610: do not support HT/VHT_STBC TX.<br>
-32) kernel: ralink_wifi: wmm: fix incorrect handle AC0 TxOp.<br>
-33) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
-34) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
-35) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
-36) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+28) kernel: ralink_wifi: mt7603: fix pkt aggregate regression, RX buffer must be have one length.<br>
+29) kernel: ralink_wifi: mt7610: FT_R1KHInfoMaintenance move to end of APMlmePeriodicExec.<br>
+30) kernel: ralink_wifi: mt7610: fix pkt len for FT-PSK+TKIP mode.<br>
+31) kernel: ralink_wifi: mt7610: use radar detect silence mode for AP.<br>
+32) kernel: ralink_wifi: mt7610: do not support HT/VHT_STBC TX.<br>
+33) kernel: ralink_wifi: wmm: fix incorrect handle AC0 TxOp.<br>
+34) kernel: ralink_wifi: increase FT entry table size to 256 records.<br>
+35) kernel: ralink_wifi: use native skb_*_pointer functions instead of direct coding.<br>
+36) kernel: ralink_wifi: fix BAOriEntry size (must be as max table size).<br>
 37) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
-38) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
-39) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
-40) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
-41) kernel: keys: guard against null match function in keyring_search_aux().<br>
-42) kernel: mmc: block: don't use CMD23 with very old MMC cards.<br>
-43) kernel: scsi: fix use-after-free.<br>
-44) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
-45) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
-46) kernel: give up on gcc ilog2() constant optimizations.<br>
-47) kernel: swapfile: fix memory corruption via malformed swapfile.<br>
-48) kernel: ubifs: fix assertion in layout_in_gaps().<br>
-49) kernel: ubifs: fix xattr_names length in exit paths.<br>
-50) kernel: ubifs: abort readdir upon error.<br>
-51) kernel: ubifs: fix regression in ubifs_readdir().<br>
-52) kernel: ubifs: fix journal replay wrt. xattr nodes.<br>
-53) kernel: ext4: fix hang when processing corrupted orphaned inode list.<br>
-54) kernel: ext4: check for extents that wrap around.<br>
-55) kernel: ext4: don't call ext4_should_journal_data() on the journal inode.<br>
-56) kernel: ext4: short-cut orphan cleanup on error.<br>
-57) kernel: ext4: fix mballoc breakage with 64k block size.<br>
-58) kernel: ext4: fix stack memory corruption with 64k block size.<br>
-59) kernel: ext4: release bh in make_indexed_dir.<br>
-60) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
-61) kernel: net: neigh: make ->hh_len 32-bit.<br>
-62) kernel: net: packet: fix overflow in check for priv area size.<br>
-63) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
-64) kernel: net: ipv4: refine the ipv4_default_advmss (RFC 2675, Section 5.1 compliant).<br>
-65) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
-66) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
-67) kernel: net: ipv6: send unsolicited NA on admin up.<br>
-68) kernel: net: ipv6: dccp: add missing bind_conflict to dccp_ipv6_mapped.<br>
-69) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
-70) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
-71) kernel: net: netfilter: don't track fragmented packets.<br>
-72) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
+38) kernel: ralink_wifi: rate_ctl: correct lower mcs to optimal if RSSI allow max mcs for link.<br>
+39) kernel: ralink_wifi: rate_ctl: set Quick RA 70 msec after rate change.<br>
+40) kernel: ralink_wifi: rate_ctl: fix rate fast up/down jam at high PER issue.<br>
+41) kernel: ralink_wifi: rate_ctl: tune high PER thresh for MCS3/MCS4 modes.<br>
+42) kernel: keys: guard against null match function in keyring_search_aux().<br>
+43) kernel: mmc: block: don't use CMD23 with very old MMC cards.<br>
+44) kernel: scsi: fix use-after-free.<br>
+45) kernel: proc/sysctl: fix the int overflow for jiffies conversion.<br>
+46) kernel: cpumask: add helper and use cpumask_available() for check of cpumask variable.<br>
+47) kernel: give up on gcc ilog2() constant optimizations.<br>
+48) kernel: swapfile: fix memory corruption via malformed swapfile.<br>
+49) kernel: ubifs: fix assertion in layout_in_gaps().<br>
+50) kernel: ubifs: fix xattr_names length in exit paths.<br>
+51) kernel: ubifs: abort readdir upon error.<br>
+52) kernel: ubifs: fix regression in ubifs_readdir().<br>
+53) kernel: ubifs: fix journal replay wrt. xattr nodes.<br>
+54) kernel: ext4: fix hang when processing corrupted orphaned inode list.<br>
+55) kernel: ext4: check for extents that wrap around.<br>
+56) kernel: ext4: don't call ext4_should_journal_data() on the journal inode.<br>
+57) kernel: ext4: short-cut orphan cleanup on error.<br>
+58) kernel: ext4: fix mballoc breakage with 64k block size.<br>
+59) kernel: ext4: fix stack memory corruption with 64k block size.<br>
+60) kernel: ext4: release bh in make_indexed_dir.<br>
+61) kernel: net: unix: properly re-increment inflight counter of GC discarded candidates.<br>
+62) kernel: net: neigh: make ->hh_len 32-bit.<br>
+63) kernel: net: packet: fix overflow in check for priv area size.<br>
+64) kernel: net: ipv4: fix multipath RTM_GETROUTE behavior when iif is given.<br>
+65) kernel: net: ipv4: refine the ipv4_default_advmss (RFC 2675, Section 5.1 compliant).<br>
+66) kernel: net: ipv6: drop non loopback packets claiming to originate from ::1.<br>
+67) kernel: net: ipv6: add knob to send unsolicited ND on link-layer address change.<br>
+68) kernel: net: ipv6: send unsolicited NA on admin up.<br>
+69) kernel: net: ipv6: dccp: add missing bind_conflict to dccp_ipv6_mapped.<br>
+70) kernel: net: netfilter: xt_TCPMSS: refactor the codes to decrease one condition check and more readable.<br>
+71) kernel: net: netfilter: xt_TCPMSS: fix use after free in tcpmss_mangle_packet.<br>
+72) kernel: net: netfilter: don't track fragmented packets.<br>
+73) kernel: net: netfilter: connmark: ignore skbs with magic untracked conntrack objects.<br>
 <br>
 <br>
 <br>

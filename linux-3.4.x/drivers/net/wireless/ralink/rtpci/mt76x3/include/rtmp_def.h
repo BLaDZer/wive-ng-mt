@@ -80,11 +80,7 @@
 #ifdef MEMORY_OPTIMIZATION
 #define MAX_RX_PROCESS		32
 #else
-#ifdef BB_SOC
-#define MAX_RX_PROCESS		64
-#else
 #define MAX_RX_PROCESS		128	/*64 //32 */
-#endif /* BB_SOC */
 #endif
 #define NUM_OF_LOCAL_TXBUF      2
 #define TXD_SIZE		16	/* TXD_SIZE = TxD + TxInfo */
@@ -104,7 +100,6 @@
 #define MGMT_DMA_BUFFER_SIZE    1600	/*2048 */
 
 #define RX_BUFFER_AGGRESIZE     3840	/*3904 //3968 //4096 //2048 //4096 */
-#define RX1_BUFFER_SIZE         1700    /* 1700 //512 */
 #define RX_BUFFER_NORMSIZE      3840	/*3904 //3968 //4096 //2048 //4096 */
 #define TX_BUFFER_NORMSIZE		RX_BUFFER_NORMSIZE
 #define MAX_FRAME_SIZE          2346	/* Maximum 802.11 frame size */

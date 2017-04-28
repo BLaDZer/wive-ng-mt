@@ -1471,7 +1471,7 @@ VOID mt_asic_init_txrx_ring(RTMP_ADAPTER *pAd)
 	/* Init RX Ring0 Base/Size/Index pointer CSR */
 	for (i = 0; i < NUM_OF_RX_RING; i++) {
 		RTMP_RX_RING *rx_ring;
-		UINT16 RxRingSize = (i == 0) ? RX_RING_SIZE : RX1_RING_SIZE;
+		UINT16 RxRingSize = RX_RING_SIZE;
 
 		rx_ring = &pAd->RxRing[i];
 		offset = i * 0x10;

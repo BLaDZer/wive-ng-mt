@@ -1782,7 +1782,7 @@ INT	Show_DescInfo_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 
 	for (QueIdx = 0; QueIdx < NUM_OF_RX_RING; QueIdx++) 
 	{
-		UINT16 RxRingSize = (QueIdx == 0) ? RX_RING_SIZE : RX1_RING_SIZE;
+		UINT16 RxRingSize = RX_RING_SIZE;
 		pRxRing = &pAd->RxRing[QueIdx];
 		
 		DBGPRINT(RT_DEBUG_OFF, ("Rx Ring %d ---------------------------------\n", QueIdx));

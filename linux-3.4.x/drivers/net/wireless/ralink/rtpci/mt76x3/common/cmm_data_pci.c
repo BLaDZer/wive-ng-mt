@@ -93,7 +93,7 @@ VOID dumpRxRing(RTMP_ADAPTER *pAd, INT ring_idx)
 	RTMP_RX_RING *pRxRing;
 	RXD_STRUC *pRxD;
 	int index;
-	int RxRingSize = (ring_idx == 0) ? RX_RING_SIZE : RX1_RING_SIZE;
+	int RxRingSize = RX_RING_SIZE;
 
 	pRxRing = &pAd->RxRing[ring_idx];
 	for (index = 0; index < RxRingSize; index++)
@@ -1705,12 +1705,6 @@ PNDIS_PACKET GetPacketFromRxRing(
 	UINT8 rx_hw_hdr_len = pAd->chipCap.RXWISize;
 	UINT16 RxRingSize = RX_RING_SIZE;
 	UINT16 RxBufferSize = RX_BUFFER_AGGRESIZE;
-
-	if (RxRingNo != 0)
-	{
-		RxRingSize = RX1_RING_SIZE;
-		RxBufferSize = RX1_BUFFER_SIZE;
-	}
 
 	pRxRing = &pAd->RxRing[RxRingNo];
 	pRxRingLock = &pAd->RxRingLock[RxRingNo];
