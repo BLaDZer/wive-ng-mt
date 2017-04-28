@@ -2960,14 +2960,15 @@
 10) init.d: iptables: drop now unneded accept rules for L2TP client mode.<br>
 11) init.d: iptables: increase icmp echo limit to 25 packets/s.<br>
 12) cli: add apclimode and lan mac address show.<br>
-13) goahead: add DNS profile for AdGuard.<br>
-14) goahead: stalist: fix save stadata.<br>
-15) goahead: stalist: fix clear plot data.<br>
-16) goahead: disable and hide LDPC/STBC for 7610.<br>
-17) goahead: fix model string for MEx devices.<br>
-18) kernel: ralink_arch: fix MT7621 & MT7628 watchdog reset output.<br>
-19) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
-20) kernel: ralink_hwnat: fix IPv6 SIT checksum calculation.<br>
+13) cli: add managment functions.<br>
+14) goahead: add DNS profile for AdGuard.<br>
+15) goahead: stalist: fix save stadata.<br>
+16) goahead: stalist: fix clear plot data.<br>
+17) goahead: disable and hide LDPC/STBC for 7610.<br>
+18) goahead: fix model string for MEx devices.<br>
+19) kernel: ralink_arch: fix MT7621 & MT7628 watchdog reset output.<br>
+20) kernel: ralink_gpio: mt7621: swith I2C pins to GPIO mode (need for ME1).<br>
+21) kernel: ralink_hwnat: fix IPv6 SIT checksum calculation.<br>
 22) kernel: ralink_wifi: mt76x2: DynamicVGA: fix mt76x2_long_range_dync_vga() routine.<br>
 23) kernel: ralink_wifi: mt7603: fix correct set RxBAWinSize and AMPDUFactor for pci-e version.<br>
 24) kernel: ralink_wifi: mt7603: remove uncorrect retryve pkt size check.<br>

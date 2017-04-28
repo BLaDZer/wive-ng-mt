@@ -393,6 +393,100 @@ int nvram_set(int index, char *name, char *value)
 	return rc;
 }
 
+size_t nvram_get_tuple(int index, char *key, unsigned elem_index, char *value, size_t value_size)
+{
+    char *v = NULL;
+    char *e = NULL;
+    char *s = NULL;
+    unsigned i = 0;
+    size_t len = 0u;
+
+    /* indexes started at 1 */
+    elem_index++;
+
+    e = s = v = nvram_get(index, key);
+    len = strlen(v);
+    while ((e = strchr(s, ';')) != NULL) {
+        if (++i == elem_index)
+            break;
+        /* next */
+        s = ++e;
+    }
+    /* fix endpos */
+    if (!e) {
+        e = v + len;
+        i++;
+    }
+
+    if (i != elem_index) {
+        s = e;
+        RANV_PRINT("invalid index: %u, maximum: %u", elem_index, i);
+    }
+
+    memset(value, 0u, value_size);
+    len = (e - s);
+    if (len && value) {
+        snprintf(value, value_size, "%.*s", len, s);
+    }
+    return len;
+}
+
+void nvram_set_tuple(int index, char *key, unsigned elem_index, const char *value)
+{
+    char *v = NULL;
+    char *e = NULL;
+    char *s = NULL;
+    unsigned i = 0;
+    char *nv = NULL;
+
+    size_t vlen = 0u;
+    size_t len = 0u;
+    size_t value_len = strlen(value);
+
+    /* indexes started at 1 */
+    elem_index++;
+
+    e = s = v = nvram_get(index, key);
+    vlen = strlen(v);
+    while ((e = strchr(s, ';')) != NULL) {
+        if (++i == elem_index)
+            break;
+        s = ++e;
+    }
+    /* fix endpos */
+    if (!e) {
+        e = v + vlen;
+        i++;
+    }
+
+    if (i != elem_index) {
+        i = elem_index - i;
+        s = e;
+    } else {
+        i = 0;
+    }
+
+    /* format new nvram value */
+    len = vlen - (e - s) + value_len + i + 1;
+    nv = calloc(1, len);
+    if (!nv) {
+        RANV_PRINT("calloc(%zu) failed", len);
+        return;
+    }
+
+    if (i) {
+        snprintf(nv, len, "%s%*.0s%s", v, i, "", value);
+        memset(nv + vlen, ';', i);
+    } else {
+        snprintf(nv, len, "%.*s%s%s", (s - v), v, value, e);
+    }
+    nvram_set(index, (char*)key, nv);
+    free(nv);
+
+    return;
+}
+
+
 /*
  * write flash from cache
  */

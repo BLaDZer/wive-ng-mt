@@ -87,6 +87,9 @@ char *nvram_get(int index, char *name);
 char *nvram_get_copy(int index, char *name);
 int nvram_get_int(int index, char *name, int def);
 
+size_t nvram_get_tuple(int index, char *key, unsigned elem_index, char *value, size_t value_size);
+void nvram_set_tuple(int index, char *key, unsigned elem_index, const char *value);
+
 int nvram_commit(int index);
 int nvram_clear(int index);
 int nvram_renew(int mode, char *fname);

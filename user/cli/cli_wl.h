@@ -11,6 +11,7 @@ int func_wl_stalist_iface(char* iface, int argc, char* argv[]);
 int func_wl_disconnect(int argc, char* argv[]);
 int func_wl_disconnect_iface(char* iface, char* mac);
 
+int func_wl_set(int argc, char* argv[]);
 int func_wl_status(int argc, char* argv[]);
 int func_wl_scan(int argc, char* argv[]);
 int func_wl_wds(int argc, char* argv[]);

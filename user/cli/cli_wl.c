@@ -10,6 +10,130 @@
 */
 #include "cli_wl.h"
 
+char* wirelessModeNameToId(char* val)
+{
+    if (STR_EQ(val,"b-g"))
+    {
+        return "0";
+    }
+    else
+    if (STR_EQ(val,"b"))
+    {
+        return "1";
+    }
+    else
+    if (STR_EQ(val,"a"))
+    {
+        return "2";
+    }
+    else
+    if (STR_EQ(val,"g"))
+    {
+        return "4";
+    }
+    else
+    if (STR_EQ(val,"n"))
+    {
+        return "6";
+    }
+    else
+    if (STR_EQ(val,"g-n"))
+    {
+        return "7";
+    }
+    else
+    if (STR_EQ(val,"a-an"))
+    {
+        return "8";
+    }
+    else
+    if (STR_EQ(val,"b-g-n"))
+    {
+        return "9";
+    }
+    else
+    if (STR_EQ(val,"an"))
+    {
+        return "11";
+    }
+    else
+    if (STR_EQ(val,"a-an-ac"))
+    {
+        return "14";
+    }
+    else
+    if (STR_EQ(val,"an-ac"))
+    {
+        return "15";
+    }
+
+    return NULL;
+}
+
+char* wirelessModeIdToName(char* val)
+{
+    if (STR_EQ(val,"0"))
+    {
+        return "b-g";
+    }
+    else
+    if (STR_EQ(val,"1"))
+    {
+        return "b";
+    }
+    else
+    if (STR_EQ(val,"2"))
+    {
+        return "a";
+    }
+    else
+    if (STR_EQ(val,"4"))
+    {
+        return "g";
+    }
+    else
+    if (STR_EQ(val,"6"))
+    {
+        return "n";
+    }
+    else
+    if (STR_EQ(val,"7"))
+    {
+        return "g-n";
+    }
+    else
+    if (STR_EQ(val,"8"))
+    {
+        return "a-an";
+    }
+    else
+    if (STR_EQ(val,"9"))
+    {
+        return "b-g-n";
+    }
+    else
+    if (STR_EQ(val,"11"))
+    {
+        return "an";
+    }
+    else
+    if (STR_EQ(val,"14"))
+    {
+        return "a-an-ac";
+    }
+    else
+    if (STR_EQ(val,"15"))
+    {
+        return "an-ac";
+    }
+
+
+    return NULL;
+}
+
+
+
+
 int doAPScan(char* iface)
 {
     int ent_count = 0;
@@ -161,6 +285,7 @@ int func_wl(int argc, char* argv[])
 
     if (!cmd || STR_EQ_HELP(cmd))
     {
+        writeCmdHelp("set 2.4/5 <param>", "change wlan parameters");
         writeCmdHelp("disconnect <band> <mac>", "disconnect client station by MAC");
         writeCmdHelp("disconnect <band> all", "disconnect all client stations");
         writeCmdHelp("scan 2.4/5/<if>", "scan and show remote AP list");
@@ -183,6 +308,11 @@ int func_wl(int argc, char* argv[])
     if (STR_EQ(cmd, "status"))
     {
         return func_wl_status(argc, argv);
+    }
+    else
+    if (STR_EQ(cmd, "set"))
+    {
+        return func_wl_set(argc, argv);
     }
     else
     if (STR_EQ(cmd, "wds"))
@@ -236,6 +366,9 @@ int func_wl_wds(int argc, char* argv[])
 int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
+    int auto_channel = nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0);
+    int tx_power = nvram_get_int(RT2860_NVRAM, "TxPower", 100);
+
     char mac1[18] = {0};
     char mac2[18] = {0};
     int chan_num;
@@ -252,17 +385,28 @@ int func_wl_status_report(int argc, char* argv[])
     /* FIXME: remove fallback */
 
     chan_num  = getWlanChannelNum_ioctl(1);
+    
+
     printf("BSSID\t%s\n", mac1);
     printf("BSSID 2.4\t%s\n", mac1);
     printf("Channel\t%i\n", chan_num);
     printf("Channel 2.4\t%i\n", chan_num);
     printf("Ext channel 2.4\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHA", 0));
 
+    printf("AutoChannel 2.4\t%i\n", auto_channel);
+    printf("Tx Power 2.4\t%i\n", tx_power);
+
 #ifndef CONFIG_RT_SECOND_IF_NONE
     printf("BSSID 5\t%s\n", mac2);
     chan_num  = getWlanChannelNum_ioctl(2);
     printf("Channel 5\t%i\n", chan_num);
     printf("Ext channel 5\t%i\n", nvram_get_int(RT2860_NVRAM, "HT_EXTCHAINIC", 0));
+
+    auto_channel = nvram_get_int(RT2860_NVRAM, "AutoChannelSelectINIC", 0);
+    printf("AutoChannel 5\t%i\n", auto_channel);
+
+    tx_power = nvram_get_int(RT2860_NVRAM, "TxPowerINIC", 100);
+    printf("Tx Power 5\t%i\n", tx_power);
 #endif
 
     printf("Radio Enabled\t%s\n", radio_status?"1":"0");
@@ -354,6 +498,258 @@ int func_wl_status_report(int argc, char* argv[])
 
     return 0;
 }
+
+int func_wl_set24(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc -= 2;
+        argv += 2;
+
+        if (STR_EQ(cmd, "tx-power"))
+        {
+            int power_val = strToIntDef(val, 0);
+            if (power_val > 0 && power_val <= 100)
+            {
+                char power_str[8] = {0};
+                sprintf((char*)power_str, "%i", power_val);
+                nvram_set(RT2860_NVRAM, "TxPower", power_str);
+            }
+            else
+            {
+                printf("tx-power parameter out of range.");
+            }
+        }
+        else
+        if (STR_EQ(cmd, "mode"))
+        {
+            char* modeId = wirelessModeNameToId(val);
+            if (modeId)
+            {
+                nvram_set(RT2860_NVRAM, "WirelessMode", modeId);
+            }
+        }
+        else
+        if (STR_EQ(cmd, "channel"))
+        {
+            int chan_num = strToIntDef(val, 0);
+
+            if (chan_num >= 0)
+            {
+                nvram_set(RT2860_NVRAM, "channel", val);
+                nvram_set(RT2860_NVRAM, "AutoChannelSelect", (chan_num == 0)?"1":"0");
+            }
+            else
+            {
+                printf("channel parameter out of range.");
+            }
+        }
+        else
+        if (STR_EQ(cmd, "enabled"))
+        {
+            nvram_set(RT2860_NVRAM, "RadioOn", STR_EQ(val,"on")?"1":"0");
+        }
+        else
+        if (argc > 0 && STR_EQ(cmd, "ssid") && STR_EQ(val,"1"))
+        {
+            nvram_set(RT2860_NVRAM, "SSID1", argv[0]);
+            argv++;
+            argc--;
+        }
+        else
+        if (argc > 0 && STR_EQ(cmd, "hidden"))
+        {
+            int ssid_num = strToIntDef(val, 0);
+            if (ssid_num <= 0 || ssid_num > 8)
+            {
+                goto help;
+            }
+
+            nvram_set_tuple(RT2860_NVRAM, "HideSSID", ssid_num-1, STR_EQ(argv[0],"on")?"1":"0");
+            argv++;
+            argc--;
+        }
+        else
+        if (argc > 0 && STR_EQ(cmd, "isolate-clients"))
+        {
+            int ssid_num = strToIntDef(val, 0);
+            if (ssid_num <= 0 || ssid_num > 8)
+            {
+                goto help;
+            }
+
+            nvram_set_tuple(RT2860_NVRAM, "NoForwarding", ssid_num-1, STR_EQ(argv[0],"on")?"1":"0");
+            argv++;
+            argc--;
+        }
+        else
+        if (argc > 0 && STR_EQ(cmd, "isolate-broadcast"))
+        {
+            int ssid_num = strToIntDef(val, 0);
+            if (ssid_num <= 0 || ssid_num > 8)
+            {
+                goto help;
+            }
+
+            nvram_set_tuple(RT2860_NVRAM, "NoForwardingMBCast", ssid_num-1, STR_EQ(argv[0],"on")?"1":"0");
+            argv++;
+            argc--;
+        }
+        else
+        {
+            printf("Unknown command '%s'!\n", cmd);
+            goto help;
+        }
+    }
+
+help:
+    writeCmdHelp("enabled on/off","enable or disable radio module");
+    writeCmdHelp("channel <num>","change current wlan channel");
+    writeCmdHelp("tx-power 5/10/20/40/70/100","change TX Power level (%%)");
+    writeCmdHelp("mode b/g/n/b-g/g-n/b-g-n","change wlan 2.4GHz network mode");
+    writeCmdHelp("ssid 1 <name>","change first ssid name");
+    writeCmdHelp("hidden 1 <name>","change first ssid hidden mode");
+    writeCmdHelp("isolate-clients 1 <name>","change first ssid client isolation");
+    writeCmdHelp("isolate-broadcast 1 <name>","change first ssid broadcast isolation");
+
+    return 0;
+
+}
+
+int func_wl_set5(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc -= 2;
+        argv += 2;
+
+        if (STR_EQ(cmd, "tx-power"))
+        {
+            int power_val = strToIntDef(val, 0);
+            if (power_val > 0 && power_val <= 100)
+            {
+                char power_str[8] = {0};
+                sprintf((char*)power_str, "%i", power_val);
+                nvram_set(RT2860_NVRAM, "TxPowerINIC", power_str);
+            }
+            else
+            {
+                printf("tx-power parameter out of range.");
+            }
+        }
+        else
+        if (STR_EQ(cmd, "mode"))
+        {
+            char* modeId = wirelessModeNameToId(val);
+                if (modeId)
+            {
+                nvram_set(RT2860_NVRAM, "WirelessModeINIC", modeId);
+            }
+        }
+        else
+        if (STR_EQ(cmd, "channel"))
+        {
+            int chan_num = strToIntDef(val, 0);
+            if (chan_num >= 0)
+            {
+                nvram_set(RT2860_NVRAM, "channelINIC", val);
+                nvram_set(RT2860_NVRAM, "AutoChannelSelectINIC", (chan_num == 0)?"1":"0");
+            }
+            else
+            {
+                printf("channel parameter out of range.");
+            }
+        }
+        else
+        if (STR_EQ(cmd, "enabled"))
+        {
+            nvram_set(RT2860_NVRAM, "RadioOnINIC", STR_EQ(val,"on")?"1":"0");
+        }
+        else
+        if (argc > 0 && STR_EQ(cmd, "ssid") && STR_EQ(val,"1"))
+        {
+            nvram_set(RT2860_NVRAM, "SSID1INIC", argv[0]);
+            argv++;
+            argc--;
+        }
+        else
+        {
+            printf("Unknown command '%s'!\n", cmd);
+            goto help;
+        }
+    }
+
+    return 0;
+
+help:
+    writeCmdHelp("2.4 <command> <value>","change wlan 2.4GHz band parameter");
+    writeCmdHelp("5 <command> <value>","change wlan 5GHz band parameter");
+    writeCmdHelp("5 enabled on/off","enable or disable radio module");
+    writeCmdHelp("5 channel <num>","change current wlan channel");
+    writeCmdHelp("5 tx-power 5/10/20/40/70/100","change TX Power level (%%)");
+    writeCmdHelp("5 mode a/a-an/an/a-an-ac/an-ac","change wlan 5GHz network mode");
+    writeCmdHelp("5 ssid 1 <name>","change first ssid name");
+
+    return 0;
+
+}
+
+int func_wl_set(int argc, char* argv[])
+{
+    char* band = NULL;
+    char* cmd = NULL;
+    char* val = NULL;
+
+    if (argc < 2)
+    {
+        goto help;
+    }
+
+    band = argv[0];
+    argc--;
+    argv++;
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc -= 2;
+        argv += 2;
+
+        if (STR_EQ(band, "2.4"))
+        {
+            return func_wl_set24(argc,argv);
+        }
+#ifndef CONFIG_RT_SECOND_IF_NONE
+        else
+        if (STR_EQ(band, "5"))
+        {
+            return func_wl_set5(argc,argv);
+        }
+#endif
+        else goto help;
+
+    }
+
+    return 0;
+
+help:
+    writeCmdHelp("2.4 <command> <value>","change wlan 2.4GHz band parameter");
+    writeCmdHelp("5 <command> <value>","change wlan 5GHz band parameter");
+
+    return 0;
+}
+
 
 int func_wl_status(int argc, char* argv[])
 {

@@ -61,8 +61,6 @@ void string_randomize(char *buffer, size_t size);
 int getHWStatistic(unsigned long long* rxtx_count);
 char* getIntIp(pool_t * pool);
 
-size_t nvram_get_tuple(const char *key, unsigned index, char *value, size_t value_size);
-
 int firmware_upgrade(char* filename);
 
 

@@ -10,8 +10,99 @@
 */
 #include "cli_sw.h"
 
+int func_sw_ipv6_set(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    if (argc<2)
+    {
+        goto help;
+    }
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc-=2;
+        argv+=2;
+
+    if (STR_EQ(cmd, "external-ip"))
+    {
+        nvram_set(RT2860_NVRAM, "ipv6_wan_ipaddr", val);
+    }
+    else if (STR_EQ(cmd, "internal-ip"))
+    {
+        nvram_set(RT2860_NVRAM, "ipv6_lan_ipaddr", val);
+    }
+    else if (STR_EQ(cmd, "mode"))
+    {
+        if (STR_EQ(val, "off") || STR_EQ(val, "disabled"))
+        {
+            nvram_set(RT2860_NVRAM, "IPv6OpMode", "0");
+        }
+        else
+        if (STR_EQ(val, "native"))
+        {
+            nvram_set(RT2860_NVRAM, "IPv6OpMode", "1");
+        }
+        else
+        if (STR_EQ(val, "6to4"))
+        {
+            nvram_set(RT2860_NVRAM, "IPv6OpMode", "3");
+        }
+        else goto help;
+    }
+    else
+    {
+        goto help;
+    }
+
+    return 0;
+
+    }
+
+return 0;
+
+help:
+//    writeCmdHelp("hostname <value>","change device hostname");
+//    writeCmdHelp("ip <value>","change device lan ip address");
+//    writeCmdHelp("netmask <value>","change device netmask");
+    
+    return 0;
+}
+
+
 int func_sw_ipv6(int argc, char* argv[])
 {
+    char* cmd = NULL;
+
+    if (argc>0)
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (argc>0 && STR_EQ(cmd, "show"))
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (STR_EQ_HELP(cmd))
+    {
+        writeCmdHelp("show","display current ipv6 parameters");
+        writeCmdHelp("set","change device ipv6 parameters");
+        return 0;
+    }
+    else
+    if (STR_EQ(cmd, "set"))
+    {
+        return func_sw_ipv6_set(argc, argv);
+    }
+
     int ipv6_mode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", 0);
     int over_vpn = nvram_get_int(RT2860_NVRAM, "Ipv6InVPN", 0);
     int dhcpc_enabled = nvram_get_int(RT2860_NVRAM, "IPv6Dhcpc", 0);
@@ -28,7 +119,7 @@ int func_sw_ipv6(int argc, char* argv[])
     char address[INET6_ADDRSTRLEN] = "";
     char mask[16] = "";
 
-    if (is_report(argc, argv))
+    if (STR_EQ(cmd, "report"))
     {
         getIPv6IntIPAddr(address, mask);
 
@@ -125,14 +216,90 @@ int func_sw_ipv6(int argc, char* argv[])
     return 0;
 }
 
+
+int func_sw_lan_set(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    if (argc < 2)
+    {
+        goto help;
+    }
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc -= 2;
+        argv += 2;
+
+        if (STR_EQ(cmd, "hostname"))
+        {
+            nvram_set(RT2860_NVRAM, "HostName", val);
+        }
+        else if (STR_EQ(cmd, "ip"))
+        {
+            nvram_set(RT2860_NVRAM, "lan_ipaddr", val);
+        }
+        else if (STR_EQ(cmd, "netmask"))
+        {
+            nvram_set(RT2860_NVRAM, "lan_netmask", val);
+        }
+
+        else
+        {
+            printf("Unknown command '%s'!\n", cmd);
+            goto help;
+        }
+    }
+
+    return 0;
+
+help:
+    writeCmdHelp("hostname <value>","change device hostname");
+    writeCmdHelp("ip <value>","change device lan ip address");
+    writeCmdHelp("netmask <value>","change device netmask");
+    
+    return 0;
+}
+
 int func_sw_lan(int argc, char* argv[])
 {
+    char* cmd = NULL;
+
+    if (argc>0)
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (STR_EQ(cmd, "show"))
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (STR_EQ_HELP(cmd))
+    {
+        writeCmdHelp("show","display current lan parameters");
+        writeCmdHelp("set","change device lan parameters");
+        return 0;
+    }
+    else
+    if (STR_EQ(cmd, "set"))
+    {
+        return func_sw_lan_set(argc, argv);
+    }
+
     char *hostname = nvram_get(RT2860_NVRAM, "HostName");
     char *lan_ipaddr = nvram_get(RT2860_NVRAM, "lan_ipaddr");
     char *lan_netmask = nvram_get(RT2860_NVRAM, "lan_netmask");
     char *lan_macaddr = nvram_get(RT2860_NVRAM, "LAN_MAC_ADDR");
 
-    if (is_report(argc, argv))
+    if (STR_EQ(cmd, "report"))
     {
         printf("LAN Hostname\t%s\n", hostname);
         printf("LAN IP Address\t%s\n", lan_ipaddr);
@@ -157,9 +324,133 @@ int func_sw_lan(int argc, char* argv[])
     return 0;
 }
 
+int func_sw_wan_set(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    if (argc<2)
+    {
+        goto help;
+    }
+
+    while (argc>1)
+    {
+        cmd = argv[0];
+        val = argv[1];
+        argc -= 2;
+        argv += 2;
+
+        if (STR_EQ(cmd, "ip"))
+        {
+            nvram_set(RT2860_NVRAM, "wan_ipaddr", val);
+        }
+        else if (STR_EQ(cmd, "netmask"))
+        {
+            nvram_set(RT2860_NVRAM, "wan_netmask", val);
+        }
+        else if (STR_EQ(cmd, "mode") && ( STR_EQ(val, "STATIC") || STR_EQ(val, "DHCP") || STR_EQ(val, "ZERO") ) )
+        {
+            nvram_set(RT2860_NVRAM, "wanConnectionMode", val);
+        }
+
+        else if (STR_EQ(cmd, "gw") || STR_EQ(cmd, "gateway"))
+        {
+            if (STR_EQ(val, "none"))
+            {
+                nvram_set(RT2860_NVRAM, "wan_gateway", "");
+            }
+            else
+            {
+                nvram_set(RT2860_NVRAM, "wan_gateway", val);
+            }
+        }
+        else if (STR_EQ(cmd, "static-dns"))
+        {
+            if (STR_EQ(val, "on"))
+            {
+                nvram_set(RT2860_NVRAM, "wan_static_dns", "on");
+            }
+            else
+            {
+                nvram_set(RT2860_NVRAM, "wan_static_dns", "off");
+            }
+        }
+        else if (STR_EQ(cmd, "static-dns-primary"))
+        {
+            nvram_set(RT2860_NVRAM, "wan_primary_dns", val);
+        }
+        else if (STR_EQ(cmd, "static-dns-secondary"))
+        {
+            nvram_set(RT2860_NVRAM, "wan_secondary_dns", val);
+        }
+        else if (STR_EQ(cmd, "nat"))
+        {
+            if (STR_EQ(val, "on") ) 
+            {
+                nvram_set(RT2860_NVRAM, "natEnabled", "1");
+            }
+            else
+            {
+                nvram_set(RT2860_NVRAM, "natEnabled", "0");
+            }
+        }
+        else
+        {
+            printf("Unknown command '%s'!\n", cmd);
+            goto help;
+        }
+    }
+
+    return 0;
+
+help:
+    writeCmdHelp("ip <value>","change device wan ip address");
+    writeCmdHelp("netmask <value>","change device wan netmask");
+    writeCmdHelp("gw <value>","change device wan gateway");
+
+    writeCmdHelp("mode STATIC/DHCP/ZERO","change device wan mode");
+
+    writeCmdHelp("static-dns <on/off>","use static dns");
+    writeCmdHelp("static-dns-primary <addr>","primary static dns address");
+    writeCmdHelp("static-dns-secondary <addr>","secondary static dns address");
+
+    writeCmdHelp("nat <on/off>","enable/disable nat");
+    
+    return 0;
+}
+
 
 int func_sw_wan(int argc, char* argv[])
 {
+    char* cmd = NULL;
+
+    if (argc>0)
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (argc > 0 && STR_EQ(cmd, "show"))
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+
+    if (STR_EQ_HELP(cmd))
+    {
+        writeCmdHelp("show","display current wan parameters");
+        writeCmdHelp("set","change device wan parameters");
+        return 0;
+    }
+    else
+    if (STR_EQ(cmd, "set"))
+    {
+        return func_sw_wan_set(argc, argv);
+    }
+
     char dns_addr[16] = {0};
 
     char *connMode = nvram_get(RT2860_NVRAM, "wanConnectionMode");
@@ -169,12 +460,13 @@ int func_sw_wan(int argc, char* argv[])
     char *wan_macaddr = nvram_get(RT2860_NVRAM, "WAN_MAC_ADDR");
 
     char *wan_static_dns = nvram_get(RT2860_NVRAM, "wan_static_dns");
+    char *wan_nat_enabled = nvram_get(RT2860_NVRAM, "natEnabled");
 
     char wan_phy_addr[16] = {0};
     char wan_phy_netmask[16] = {0};
     char wan_phy_gw[16] = {0};
 
-    if (is_report(argc, argv))
+    if (STR_EQ(cmd, "report"))
     {
         getIfIp(getWanIfName(), wan_phy_addr);
         getIfNetmask(getWanIfName(), wan_phy_netmask);
@@ -201,6 +493,9 @@ int func_sw_wan(int argc, char* argv[])
 
         if (getDNSAddressStr(2, dns_addr) == 0)
             printf("Secondary DNS Address\t%s\n", dns_addr);
+
+
+        printf("WAN Enable NAT\t%s\n", wan_nat_enabled);
 
         printf("COMMIT\twan\n");
 

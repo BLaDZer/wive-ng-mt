@@ -55,7 +55,7 @@ int cpe_set_igd_wlanc_dlink115_wparenewal(cwmp_t * cwmp, const char * name, cons
     rekey_int = strToIntDef((char*)value, 3600);
     snprintf(rekey_str, sizeof(rekey_str)-1,"%i", rekey_int);
 
-    nvram_set_tuple("RekeyInterval", id, rekey_str);
+    nvram_set_tuple(RT2860_NVRAM, "RekeyInterval", id, rekey_str);
     return FAULT_CODE_OK;
 }
 
@@ -70,7 +70,7 @@ int cpe_get_igd_wlanc_dlink115_wparenewal(cwmp_t * cwmp, const char * name, char
         return FAULT_CODE_9002;
     }
 
-    nvram_get_tuple("RekeyInterval", id, v, sizeof(v));
+    nvram_get_tuple(RT2860_NVRAM, "RekeyInterval", id, v, sizeof(v));
     *value = pool_pstrdup(pool, v);
 
     return FAULT_CODE_OK;

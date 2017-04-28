@@ -10,4 +10,14 @@ int func_sw_wan(int argc, char* argv[]);
 int func_sw_port(int argc, char* argv[]);
 int func_sw_interface(int argc, char* argv[]);
 
+int func_sw_lan_set(int argc, char* argv[]);
+int func_sw_lan_apply(int argc, char* argv[]);
+
+int func_sw_wan_set(int argc, char* argv[]);
+int func_sw_wan_apply(int argc, char* argv[]);
+
+int func_sw_ipv6_set(int argc, char* argv[]);
+int func_sw_ipv6_apply(int argc, char* argv[]);
+
+
 #endif

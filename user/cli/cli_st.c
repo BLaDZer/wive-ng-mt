@@ -25,6 +25,24 @@ const char* getOpmodeStr(int opmode)
 
 }
 
+int getOpmodeInt(char* opmode)
+{
+    int i;
+    char mode_lower[20] = {0};
+
+    for (i = 0; (opmode[i])&&(i<sizeof(mode_lower)); i++) 
+    {
+        mode_lower[i] = tolower(opmode[i]);
+    }
+
+    if (strcmp(mode_lower, "ap-bridge") == 0) return 0;
+    if (strcmp(mode_lower, "ap-gateway") == 0) return 1;
+    if (strcmp(mode_lower, "client-gateway") == 0) return 2;
+    if (strcmp(mode_lower, "client-ap-gateway") == 0) return 3;
+
+    return -1;
+}
+
 int getCurrentTimeStr(char* timeStr)
 {
     struct tm *utime;
@@ -413,6 +431,7 @@ int func_st_show_report(int argc, char* argv[])
 
     printf("Firmware version\t%s\n", VERSIONPKG);
     printf("Device model\t%s\n", DEVNAME);
+    printf("Stagger protocol version\t%i\n", getStaggerProtoVersion());
 
     if (getCurrentTimeStr(timeStr) != 0)
     {
@@ -507,6 +526,65 @@ int func_st_show(int argc, char* argv[])
     return 0;
 }
 
+int func_st_apply(int argc, char* argv[])
+{
+    return reload_all_settings();
+}
+
+int func_st_set(int argc, char* argv[])
+{
+    char* cmd = NULL;
+    char* val = NULL;
+
+    if (argc>0)
+    {
+        cmd = argv[0];
+        argc--;
+        argv++;
+    }
+    else
+    {
+        goto help;
+    }
+
+    if (argc > 0)
+    {
+        val = argv[0];
+        argv++;
+        argc--;
+    }
+    else goto help;
+
+    if (STR_EQ(cmd, "operation-mode"))
+    {
+
+        int opmode = getOpmodeInt(val);
+        if (opmode >= 0)
+        {
+            char opmode_char[20] = {0};
+            snprintf(opmode_char, 19, "%i", opmode);
+            nvram_set(RT2860_NVRAM, "OperationMode", opmode_char);
+        }
+        else
+        {
+            printf("Unknown opmode!\n");
+            goto help;
+        }
+    }
+    else
+    {
+        goto help;
+    }
+
+    return 0;
+
+help:
+    writeCmdHelp("operation-mode <value>","set device operation mode");
+    
+    return 0;
+}
+
+
 
 /* status functions */
 int func_st(int argc, char* argv[])
@@ -528,6 +606,16 @@ int func_st(int argc, char* argv[])
     if (STR_EQ(cmd, "dhcp"))
     {
         return func_st_dhcp(argc, argv);
+    }
+    else
+    if (STR_EQ(cmd, "set"))
+    {
+        return func_st_set(argc, argv);
+    }
+    else
+    if (STR_EQ(cmd, "apply"))
+    {
+        return func_st_apply(argc, argv);
     }
     else
     if (STR_EQ(cmd, "l2tp"))
@@ -556,7 +644,10 @@ int func_st(int argc, char* argv[])
     }
     else
     {
-        writeCmdHelp("show","general device information");
+        writeCmdHelp("show","show general device information");
+        writeCmdHelp("set","set general device parameters");
+        writeCmdHelp("apply","apply general device parameters");
+
         writeCmdHelp("dhcp","dhcp info");
         writeCmdHelp("l2tp","L2TP Server info");
         writeCmdHelp("ntp","Network time synchronization info");

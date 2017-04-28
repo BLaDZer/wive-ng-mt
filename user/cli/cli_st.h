@@ -9,5 +9,7 @@ int func_st_show(int arfc, char* argv[]);
 int func_st_vpn(int argc, char* argv[]);
 int func_st_dhcp(int argc, char* argv[]);
 
+int func_st_set(int arfc, char* argv[]);
+int func_st_apply(int arfc, char* argv[]);
 
 #endif

@@ -308,46 +308,6 @@ char* getIntIp(pool_t * pool)
     return 0;
 }
 
-size_t nvram_get_tuple(const char *key, unsigned index, char *value, size_t value_size)
-{
-    char *v = NULL;
-    char *e = NULL;
-    char *s = NULL;
-    unsigned i = 0;
-    size_t len = 0u;
-
-    /* indexes started at 1 */
-    index++;
-
-    e = s = v = cwmp_nvram_get(key);
-    len = strlen(v);
-    while ((e = strchr(s, ';')) != NULL) {
-        if (++i == index)
-            break;
-        /* next */
-        s = ++e;
-    }
-    /* fix endpos */
-    if (!e) {
-        e = v + len;
-        i++;
-    }
-
-    if (i != index) {
-        s = e;
-        cwmp_log_error("%s: invalid index: %u, maximum: %u",
-                __func__, index, i);
-    }
-
-    memset(value, 0u, value_size);
-    len = (e - s);
-    if (len && value) {
-        snprintf(value, value_size, "%.*s", len, s);
-    }
-    return len;
-}
-
-
 ////////////////////////////////////////////////////////
 
 //#ifdef UPLOAD_FIRMWARE_SUPPORT

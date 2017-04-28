@@ -217,64 +217,6 @@ struct wlan_security_mode {
     enum wlan_encryption encrypt;
 };
 
-static void nvram_set_tuple(const char *key, unsigned index, const char *value)
-{
-    char *v = NULL;
-    char *e = NULL;
-    char *s = NULL;
-    unsigned i = 0;
-    char *nv = NULL;
-
-    size_t vlen = 0u;
-    size_t len = 0u;
-    size_t value_len = strlen(value);
-
-    /* indexes started at 1 */
-    index++;
-
-    e = s = v = cwmp_nvram_get(key);
-    vlen = strlen(v);
-    while ((e = strchr(s, ';')) != NULL) {
-        if (++i == index)
-            break;
-        s = ++e;
-    }
-    /* fix endpos */
-    if (!e) {
-        e = v + vlen;
-        i++;
-    }
-
-    if (i != index) {
-        cwmp_log_info("%s: grow list from %u i to %u", __func__, i, index);
-        i = index - i;
-        s = e;
-    } else {
-        i = 0;
-    }
-
-    /* format new nvram value */
-    len = vlen - (e - s) + value_len + i + 1;
-    nv = calloc(1, len);
-    if (!nv) {
-        cwmp_log_error("%s: calloc(%"PRIuPTR") failed: %s",
-                __func__,
-                len, strerror(errno));
-        return;
-    }
-
-    if (i) {
-        snprintf(nv, len, "%s%*.0s%s", v, i, "", value);
-        memset(nv + vlen, ';', i);
-    } else {
-        snprintf(nv, len, "%.*s%s%s", (s - v), v, value, e);
-    }
-    cwmp_nvram_set(key, nv);
-    free(nv);
-
-    return;
-}
-
 static void nvram_wlan_normalize(unsigned index, struct wlan_security_mode *wsm)
 {
     if (wsm->mode == WLAN_BASIC) {
@@ -335,10 +277,10 @@ static bool nvram_wlan_load(unsigned index, struct wlan_security_mode *wsm)
 {
     char auth[128] = {};
     char encr[128] = {};
-    if (!nvram_get_tuple("AuthMode", index, auth, sizeof(auth))) {
+    if (!nvram_get_tuple(RT2860_NVRAM, "AuthMode", index, auth, sizeof(auth))) {
         cwmp_log_error("WLANConfiguration: undefined nvram's AuthMode value for index %u", index + 1);
     }
-    if (!nvram_get_tuple("EncrypType", index, encr, sizeof(encr))) {
+    if (!nvram_get_tuple(RT2860_NVRAM, "EncrypType", index, encr, sizeof(encr))) {
         cwmp_log_error("WLANConfiguration: undefined nvram's EncrypType value for index %u", index + 1);
     }
 
@@ -492,8 +434,8 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
     }
 
     /* write */
-    nvram_set_tuple("AuthMode", index, auth);
-    nvram_set_tuple("EncrypType", index, encr);
+    nvram_set_tuple(RT2860_NVRAM, "AuthMode", index, auth);
+    nvram_set_tuple(RT2860_NVRAM, "EncrypType", index, encr);
 
     return true;
 }
@@ -1323,7 +1265,7 @@ int cpe_set_igd_wlanc_wepkey_index(cwmp_t *cwmp, const char *name, const char *v
         return FAULT_CODE_9002;
     }
 
-    nvram_set_tuple("DefaultKeyID", id, value);
+    nvram_set_tuple(RT2860_NVRAM, "DefaultKeyID", id, value);
 
     return FAULT_CODE_OK;
 }
@@ -1339,7 +1281,7 @@ int cpe_get_igd_wlanc_wepkey_index(cwmp_t * cwmp, const char * name, char ** val
         return FAULT_CODE_9002;
     }
 
-    nvram_get_tuple("DefaultKeyID", id, v, sizeof(v));
+    nvram_get_tuple(RT2860_NVRAM, "DefaultKeyID", id, v, sizeof(v));
 
     *value = pool_pstrdup(pool, v);
 
@@ -1380,7 +1322,7 @@ int cpe_set_igd_wlanc_wepkey(cwmp_t *cwmp, const char *name, const char *value, 
         return FAULT_CODE_9007;
     }
 
-    nvram_set_tuple(tkey, wlan_id, "0");
+    nvram_set_tuple(RT2860_NVRAM, tkey, wlan_id, "0");
     cwmp_nvram_set(key, value);
     return FAULT_CODE_OK;
 }
@@ -1408,7 +1350,7 @@ int cpe_get_igd_wlanc_wepkey(cwmp_t * cwmp, const char * name, char ** value, ch
     snprintf(tkey, sizeof(tkey), "Key%uType", key_id + 1);
     snprintf(key, sizeof(key), "Key%uStr%u", key_id + 1, wlan_id + 1);
 
-    nvram_get_tuple(tkey, wlan_id, tval, sizeof(tval));
+    nvram_get_tuple(RT2860_NVRAM, tkey, wlan_id, tval, sizeof(tval));
     if (*tval == '0') {
         /* hex value */
         *value = cwmp_nvram_pool_get(pool, key);
@@ -1583,9 +1525,9 @@ int cpe_set_igd_wlanc_ssidadv(cwmp_t * cwmp, const char * name, const char * val
     }
 
     if (*value == '1') {
-        nvram_set_tuple("HideSSID", id, "0");
+        nvram_set_tuple(RT2860_NVRAM, "HideSSID", id, "0");
     } else {
-        nvram_set_tuple("HideSSID", id, "1");
+        nvram_set_tuple(RT2860_NVRAM, "HideSSID", id, "1");
     }
     return FAULT_CODE_OK;
 }
@@ -1601,7 +1543,7 @@ int cpe_get_igd_wlanc_ssidadv(cwmp_t * cwmp, const char * name, char ** value, c
         return FAULT_CODE_9002;
     }
 
-    nvram_get_tuple("HideSSID", id, v, sizeof(v));
+    nvram_get_tuple(RT2860_NVRAM, "HideSSID", id, v, sizeof(v));
     if (*v == '1') {
         *value = "0";
     } else {
@@ -1719,7 +1661,7 @@ int cpe_set_igd_wlanc_pskfailures(cwmp_t * cwmp, const char * name, const char *
         return FAULT_CODE_9002;
     }
 
-    nvram_set_tuple("RekeyInterval", id, value);
+    nvram_set_tuple(RT2860_NVRAM, "RekeyInterval", id, value);
 
     return FAULT_CODE_OK;
 }
@@ -1735,7 +1677,7 @@ int cpe_get_igd_wlanc_pskfailures(cwmp_t * cwmp, const char * name, char ** valu
         return FAULT_CODE_9002;
     }
 
-    nvram_get_tuple("RekeyInterval", id, v, sizeof(v));
+    nvram_get_tuple(RT2860_NVRAM, "RekeyInterval", id, v, sizeof(v));
 
     *value = pool_pstrdup(pool, v);
     return FAULT_CODE_OK;
