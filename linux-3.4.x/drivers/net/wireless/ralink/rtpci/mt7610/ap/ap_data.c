@@ -3535,6 +3535,10 @@ BOOLEAN APCheckClass2Class3Error(
 	{
 		MAC_TABLE_ENTRY *pEntry;
 
+		/* not allow reserved wcid data to process as client data, always return TRUE, Microtik uncorrect bcast data frames issue */
+		if (Wcid >= RESERVED_WCID)
+			return TRUE;
+
 		pEntry = MacTableLookup(pAd, pHeader->Addr2);
 		if (pEntry)
 			return FALSE;

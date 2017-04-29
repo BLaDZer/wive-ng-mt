@@ -3912,6 +3912,10 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	{
 		MAC_TABLE_ENTRY *pEntry;
 
+		/* not allow reserved wcid data to process as client data, always return TRUE, Microtik uncorrect bcast data frames issue */
+		if (wcid >= RESERVED_WCID)
+			return TRUE;
+
 		pEntry = MacTableLookup(pAd, hdr->Addr2);
 		if (pEntry)
 			return FALSE;
