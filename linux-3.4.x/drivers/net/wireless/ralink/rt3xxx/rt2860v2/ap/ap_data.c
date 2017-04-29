@@ -3106,7 +3106,7 @@ BOOLEAN APCheckClass2Class3Error(
 		if (pEntry)
 			return FALSE;
 
-		DBGPRINT(RT_DEBUG_WARN, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
+		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
 					__FUNCTION__, PRINT_MAC(pHeader->Addr2),
 					Wcid, MAX_LEN_OF_MAC_TABLE));
 

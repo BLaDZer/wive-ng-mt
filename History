@@ -3024,6 +3024,7 @@
 <br>
 <br>
 <b>5.4.x</b><br>
+1) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
 <br>
 <br>
 <br>

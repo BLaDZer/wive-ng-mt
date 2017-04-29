@@ -738,7 +738,7 @@ VOID APCls2errAction(
 				break;
 		}
 
-		if (idx == pAd->ApCfg.BssidNum)
+		if (idx >= pAd->ApCfg.BssidNum)
 			return;
 	}
 

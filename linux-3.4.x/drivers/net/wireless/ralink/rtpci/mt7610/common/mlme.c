@@ -1707,7 +1707,6 @@ VOID MlmeUpdateHtTxRates(
 	PHTTRANSMIT_SETTING pMaxHtPhy = NULL;
 	PHTTRANSMIT_SETTING pMinHtPhy = NULL;	
 	BOOLEAN *auto_rate_cur_p;
-	
 	DBGPRINT(RT_DEBUG_TRACE,("%s()===> \n", __FUNCTION__));
 
 	auto_rate_cur_p = NULL;
@@ -1842,7 +1841,40 @@ VOID MlmeUpdateHtTxRates(
 		*auto_rate_cur_p = FALSE;
 	else
 		*auto_rate_cur_p = TRUE;
-	
+
+#ifdef DOT11_VHT_AC
+	if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode)) {
+		pDesireHtPhy->bVhtEnable = TRUE;
+		rtmp_set_vht(pAd, pDesireHtPhy);
+		if (pDesireHtPhy->bVhtEnable == TRUE) {
+			PHTTRANSMIT_SETTING pHtPhy = NULL;
+			PHTTRANSMIT_SETTING pMaxHtPhy = NULL;
+			PHTTRANSMIT_SETTING pMinHtPhy = NULL;
+
+			pHtPhy		= &pAd->ApCfg.MBSSID[apidx].HTPhyMode;
+			pMaxHtPhy	= &pAd->ApCfg.MBSSID[apidx].MaxHTPhyMode;
+			pMinHtPhy	= &pAd->ApCfg.MBSSID[apidx].MinHTPhyMode;
+
+			pMaxHtPhy->field.MODE = MODE_VHT;
+			if (pDesireHtPhy->vht_bw == VHT_BW_2040) {//use HT BW setting
+				if (pHtPhy->field.BW == BW_20)
+					pMaxHtPhy->field.MCS = 8;
+				else
+					pMaxHtPhy->field.MCS = 9;
+			} else if(pDesireHtPhy->vht_bw == VHT_BW_80) {
+				pMaxHtPhy->field.BW = BW_80;
+				pMaxHtPhy->field.MCS = 9;
+			}
+			pMaxHtPhy->field.ShortGI = pAd->CommonCfg.vht_sgi_80;
+			/* Decide ht rate*/
+			pHtPhy->field.BW = pMaxHtPhy->field.BW;
+			pHtPhy->field.MODE = pMaxHtPhy->field.MODE;
+			pHtPhy->field.MCS = pMaxHtPhy->field.MCS;
+			pHtPhy->field.ShortGI = pMaxHtPhy->field.ShortGI;
+		}
+	}
+#endif /* DOT11_VHT_AC */
+
 	DBGPRINT(RT_DEBUG_TRACE, (" %s():<---.AMsduSize = %d  \n", __FUNCTION__, pAd->CommonCfg.DesiredHtPhy.AmsduSize ));
 	DBGPRINT(RT_DEBUG_TRACE,("TX: MCS[0] = %x (choose %d), BW = %d, ShortGI = %d, MODE = %d,  \n", pActiveHtPhy->MCSSet[0],pHtPhy->field.MCS,
 		pHtPhy->field.BW, pHtPhy->field.ShortGI, pHtPhy->field.MODE));
