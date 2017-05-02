@@ -3027,6 +3027,7 @@
 1) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
 2) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
 3) kernel: net: ping: implement proper locking.<br>
+4) kernel: net: remove unnecessary carrier status check.<br>
 <br>
 <br>
 <br>
