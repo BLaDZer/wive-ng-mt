@@ -632,8 +632,8 @@ get_param() {
 	lan_ip_prf=`ipcalc "$lan_ipaddr" "$lan_netmask" -ps | cut -f 2- -d =`
     fi
     # macros
-    STATE_NEW="-m conntrack --ctstate NEW"
-    STATE_EST="-m conntrack --ctstate RELATED,ESTABLISHED"
+    STATE_NEW="-m state --state NEW"
+    STATE_EST="-m state --state ESTABLISHED,RELATED"
     CONNLIMIT="-m connlimit --connlimit-above"
 }
 
