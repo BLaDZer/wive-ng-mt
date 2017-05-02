@@ -3024,12 +3024,13 @@
 <br>
 <br>
 <b>5.4.x</b><br>
-1) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
-2) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
-3) kernel: net: ping: implement proper locking.<br>
-4) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-5) kernel: net: remove unnecessary carrier status check.<br>
-6) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+1) nodogsplash: up to git version 2.0.0-1 (commit: 80ace46b).<br>
+2) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
+3) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
+4) kernel: net: ping: implement proper locking.<br>
+5) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+6) kernel: net: remove unnecessary carrier status check.<br>
+7) kernel: net: initialize msg.msg_flags in recvfrom.<br>
 <br>
 <br>
 <br>
