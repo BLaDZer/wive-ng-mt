@@ -1,0 +1,453 @@
+diff -uNrwB miniupnpd-2.0.20161216/bsd/getroute.c miniupnpd-2.0.20170421/bsd/getroute.c
+--- miniupnpd-2.0.20161216/bsd/getroute.c	2016-12-16 14:23:18.000000000 +0500
++++ miniupnpd-2.0.20170421/bsd/getroute.c	2017-01-30 21:59:23.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: getroute.c,v 1.13 2016/12/16 09:11:18 nanard Exp $ */
++/* $Id: getroute.c,v 1.14 2017/01/30 16:59:44 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2015 Thomas Bernard
++ * (c) 2006-2017 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -20,8 +20,9 @@
+ #include "../config.h"
+ #include "../upnputils.h"
+ 
++/* SA_SIZE() is a multiple of sizeof(long) with a minimum value of sizeof(long) */
+ #ifndef SA_SIZE
+-#define SA_SIZE(sa) (SA_LEN(sa))
++#define SA_SIZE(sa) (((SA_LEN(sa)) == 0) ? sizeof(long) : (1 + (((SA_LEN(sa)) - 1) | (sizeof(long) - 1))))
+ #endif /* SA_SIZE */
+ 
+ int
+@@ -102,7 +103,8 @@
+ 				}
+ 				sa = (struct sockaddr *)p;
+ 				sockaddr_to_string(sa, tmp, sizeof(tmp));
+-				syslog(LOG_DEBUG, "type=%d sa_len=%d sa_family=%d %s",
++				syslog(LOG_DEBUG, "offset=%3d type=%2d sa_len=%d sa_family=%d %s",
++				       (int)(p - m_rtmsg.m_space),
+ 				       i, SA_LEN(sa), sa->sa_family, tmp);
+ 				if(i == RTA_IFA) {
+ 					size_t len = 0;
+@@ -134,14 +136,7 @@
+ 						*index = sdl->sdl_index;
+ 				}
+ #endif
+-				/* at least 4 bytes per address are reserved,
+-				 * that is true with OpenBSD 4.3.
+-				 * The test is only useful when SA_SIZE() is not properly
+-				 * defined, as it should be always >= sizeof(long) */
+-				if(SA_SIZE(sa) > 0)
+ 					p += SA_SIZE(sa);
+-				else
+-					p += sizeof(long);
+ 			}
+ 		}
+ 	}
+diff -uNrwB miniupnpd-2.0.20161216/Changelog.txt miniupnpd-2.0.20170421/Changelog.txt
+--- miniupnpd-2.0.20161216/Changelog.txt	2016-12-16 14:23:16.000000000 +0500
++++ miniupnpd-2.0.20170421/Changelog.txt	2017-04-21 16:59:37.000000000 +0500
+@@ -1,4 +1,12 @@
+-$Id: Changelog.txt,v 1.430 2016/12/16 09:14:40 nanard Exp $
++$Id: Changelog.txt,v 1.431 2017/04/21 11:30:23 nanard Exp $
++
++2017/03/13:
++  default to client address for AddPortMapping when <NewInternalClient>
++    is empty
++  pass ext_if_name to add_pinhole()
++
++2016/12/23:
++  Fix UDA-1.2.10 Man header empty or invalid
+ 
+ 2016/12/16:
+   Do not try to open IPv6 sockets once it is disabled
+diff -uNrwB miniupnpd-2.0.20161216/genconfig.sh miniupnpd-2.0.20170421/genconfig.sh
+--- miniupnpd-2.0.20161216/genconfig.sh	2016-12-16 14:04:07.000000000 +0500
++++ miniupnpd-2.0.20170421/genconfig.sh	2017-04-21 16:23:56.000000000 +0500
+@@ -1,5 +1,7 @@
+ #! /bin/sh
+-# $Id: genconfig.sh,v 1.91 2016/10/07 09:06:04 nanard Exp $
++# $Id: genconfig.sh,v 1.92 2017/04/21 11:19:08 nanard Exp $
++# vim: tabstop=4 shiftwidth=4 noexpandtab
++#
+ # miniupnp daemon
+ # http://miniupnp.free.fr or http://miniupnp.tuxfamily.org/
+ # (c) 2006-2016 Thomas Bernard
+@@ -58,6 +60,10 @@
+ CONFIGMACRO="CONFIG_H_INCLUDED"
+ 
+ MINIUPNPD_DATE=`date +"%Y%m%d"`
++if [ -n "$SOURCE_DATE_EPOCH" ]; then
++	MINIUPNPD_DATE=`date --utc --date="@$SOURCE_DATE_EPOCH" +"%Y%m%d"`
++fi
++
+ # Facility to syslog
+ LOG_MINIUPNPD="LOG_DAEMON"
+ 
+@@ -166,11 +172,11 @@
+ 		HAVE_IP_MREQN=1
+ 		# new way to see which one to use PF or IPF.
+ 		# see http://miniupnp.tuxfamily.org/forum/viewtopic.php?p=957
+-		if [ -f /etc/rc.subr ] && [ -f /etc/rc.conf ] ; then
++		if [ -f /etc/rc.subr ] && [ -f /etc/default/rc.conf ] ; then
+ 			# source file with handy subroutines like checkyesno
+ 			. /etc/rc.subr
+ 			# source config file so we can probe vars
+-			. /etc/rc.conf
++			. /etc/default/rc.conf
+ 			if checkyesno ipfilter_enable; then
+ 				echo "Using ipf"
+ 			FW=ipf
+diff -uNrwB miniupnpd-2.0.20161216/INSTALL miniupnpd-2.0.20170421/INSTALL
+--- miniupnpd-2.0.20161216/INSTALL	2016-02-09 14:38:33.000000000 +0500
++++ miniupnpd-2.0.20170421/INSTALL	2017-04-21 16:23:56.000000000 +0500
+@@ -123,6 +123,23 @@
+ Edit the /etc/miniupnpd.conf file to set options. Almost all options are
+ also available through command line switches.
+ 
++A basic configuration would set :
++ext_ifname :   WAN network interface (interface connected to the internet)
++listening_ip : LAN network interface (network where to supply NAT traversal)
++enable_natpmp=yes
++enable_upnp=yes
++and the permission rules (see below).
++
++Historically, LAN had to be specified by IP/mask, such as
++listening_ip=192.168.0.1/24
++but if you compiled with IPv6 support, you need to specify an interface name :
++listening_ip=eth0
++The current code assumes there is only one IPv4 address assigned to LAN
++interfaces. That is not the case with some CARP setup, there is then a risk
++the wrong mask would be picked. You can force the mask when using interface
++names :
++listtening_ip=eth0/24
++
+ Miniupnpd supports some kind of security check for allowing or disallowing
+ redirection to be made. The UPnP permission rules are read from the
+ miniupnpd.conf configuration file.
+diff -uNrwB miniupnpd-2.0.20161216/Makefile miniupnpd-2.0.20170421/Makefile
+--- miniupnpd-2.0.20161216/Makefile	2016-02-11 01:32:17.000000000 +0500
++++ miniupnpd-2.0.20170421/Makefile	2017-04-21 16:59:37.000000000 +0500
+@@ -1,4 +1,4 @@
+-# $Id: Makefile,v 1.88 2016/02/10 20:32:43 nanard Exp $
++# $Id: Makefile,v 1.89 2017/04/21 11:28:42 nanard Exp $
+ # MiniUPnP project
+ # http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+ # Author: Thomas Bernard
+@@ -46,8 +46,8 @@
+ 
+ # better way to find if we are using ipf or pf
+ .if $(OSNAME) == "FreeBSD"
+-.if exists(/etc/rc.subr) && exists(/etc/rc.conf)
+-FWNAME != . /etc/rc.subr; . /etc/rc.conf; \
++.if exists(/etc/rc.subr) && exists(/etc/default/rc.conf)
++FWNAME != . /etc/rc.subr; . /etc/default/rc.conf; \
+           if checkyesno ipfilter_enable; then \
+           echo "ipf"; elif checkyesno pf_enable; then \
+           echo "pf"; elif checkyesno firewall_enable; then \
+diff -uNrwB miniupnpd-2.0.20161216/minissdp.c miniupnpd-2.0.20170421/minissdp.c
+--- miniupnpd-2.0.20161216/minissdp.c	2016-02-21 00:13:40.000000000 +0500
++++ miniupnpd-2.0.20170421/minissdp.c	2017-04-21 16:23:56.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: minissdp.c,v 1.84 2016/02/20 19:08:40 nanard Exp $ */
++/* $Id: minissdp.c,v 1.85 2017/04/21 11:23:43 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2016 Thomas Bernard
++ * (c) 2006-2017 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -17,6 +17,10 @@
+ #include <syslog.h>
+ 
+ #include "config.h"
++#if defined(ENABLE_IPV6) && defined(UPNP_STRICT)
++#include <ifaddrs.h>
++#endif /* defined(ENABLE_IPV6) && defined(UPNP_STRICT) */
++
+ #include "upnpdescstrings.h"
+ #include "miniupnpdpath.h"
+ #include "upnphttp.h"
+@@ -116,6 +120,29 @@
+ }
+ #endif
+ 
++
++#if defined(ENABLE_IPV6) && defined(UPNP_STRICT)
++static int get_link_local_addr(unsigned scope_id, struct in6_addr * addr6)
++{
++	struct ifaddrs * ifap;
++	struct ifaddrs * ife;
++	if(getifaddrs(&ifap)<0) {
++		syslog(LOG_ERR, "getifaddrs: %m");
++		return -1;
++	}
++	for(ife = ifap; ife != NULL; ife = ife->ifa_next) {
++		if(ife->ifa_addr == NULL) continue;
++		if(ife->ifa_addr->sa_family != AF_INET6) continue;
++		if(!IN6_IS_ADDR_LINKLOCAL(&(((const struct sockaddr_in6 *)ife->ifa_addr)->sin6_addr))) continue;
++		if(scope_id != if_nametoindex(ife->ifa_name)) continue;
++		memcpy(addr6, &(((const struct sockaddr_in6 *)ife->ifa_addr)->sin6_addr), sizeof(struct in6_addr));
++		break;
++	}
++	freeifaddrs(ifap);
++	return 0;
++}
++#endif /* defined(ENABLE_IPV6) && defined(UPNP_STRICT) */
++
+ /* Open and configure the socket listening for
+  * SSDP udp packets sent on 239.255.255.250 port 1900
+  * SSDP v6 udp packets sent on FF02::C, or FF05::C, port 1900 */
+@@ -889,7 +916,26 @@
+ 				mx_value = atoi(mx);
+ 				syslog(LOG_DEBUG, "MX: %.*s (value=%d)", mx_len, mx, mx_value);
+ 			}
+-#endif
++#endif /* defined(UPNP_STRICT) || defined(DELAY_MSEARCH_RESPONSE) */
++#if defined(UPNP_STRICT)
++			/* Fix UDA-1.2.10 Man header empty or invalid */
++			else if((i < n - 4) && (strncasecmp(bufr+i, "man:", 3) == 0))
++			{
++				const char * man;
++				int man_len;
++				man = bufr+i+4;
++				man_len = 0;
++				while((*man == ' ' || *man == '\t') && (man < bufr + n))
++					man++;
++				while(man[man_len]!='\r' && man[man_len]!='\n'
++				     && (man + man_len < bufr + n))
++					man_len++;
++				if(strncmp(man, "\"ssdp:discover\"", 15) != 0) {
++					syslog(LOG_INFO, "ignoring SSDP packet MAN empty or invalid header");
++					return;
++				}
++			}
++#endif /* defined(UPNP_STRICT) */
+ 		}
+ #ifdef UPNP_STRICT
+ 		/* For multicast M-SEARCH requests, if the search request does
+@@ -943,10 +989,13 @@
+ 				/* retrieve the IPv6 address which
+ 				 * will be used locally to reach sender */
+ 				memset(&addr6, 0, sizeof(addr6));
+-				if(get_src_for_route_to (sender, &addr6, &addr6_len, &index) < 0) {
++				if(IN6_IS_ADDR_LINKLOCAL(&(((struct sockaddr_in6 *)sender)->sin6_addr))) {
++					get_link_local_addr(((struct sockaddr_in6 *)sender)->sin6_scope_id, &addr6);
++				} else if(get_src_for_route_to (sender, &addr6, &addr6_len, &index) < 0) {
+ 					syslog(LOG_WARNING, "get_src_for_route_to() failed, using %s", ipv6_addr_for_http_with_brackets);
+ 					announced_host = ipv6_addr_for_http_with_brackets;
+-				} else {
++				}
++				if(announced_host == NULL) {
+ 					if(inet_ntop(AF_INET6, &addr6,
+ 					             announced_host_buf+1,
+ 					             sizeof(announced_host_buf) - 2)) {
+diff -uNrwB miniupnpd-2.0.20161216/miniupnpd.c miniupnpd-2.0.20170421/miniupnpd.c
+--- miniupnpd-2.0.20161216/miniupnpd.c	2016-12-16 14:23:17.000000000 +0500
++++ miniupnpd-2.0.20170421/miniupnpd.c	2017-04-21 16:23:56.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: miniupnpd.c,v 1.218 2016/12/16 09:13:28 nanard Exp $ */
++/* $Id: miniupnpd.c,v 1.219 2017/04/21 11:22:38 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2016 Thomas Bernard
+@@ -1855,9 +1855,11 @@
+ 
+ 	if(
+ #ifdef ENABLE_NATPMP
+-        !GETFLAG(ENABLENATPMPMASK) &&
++	   !GETFLAG(ENABLENATPMPMASK) && !GETFLAG(ENABLEUPNPMASK)
++#else
++	   !GETFLAG(ENABLEUPNPMASK)
+ #endif
+-        !GETFLAG(ENABLEUPNPMASK) ) {
++	   ) {
+ 		syslog(LOG_ERR, "Why did you run me anyway?");
+ 		return 0;
+ 	}
+diff -uNrwB miniupnpd-2.0.20161216/netfilter/iptables_display.sh miniupnpd-2.0.20170421/netfilter/iptables_display.sh
+--- miniupnpd-2.0.20161216/netfilter/iptables_display.sh	2016-02-09 14:38:36.000000000 +0500
++++ miniupnpd-2.0.20170421/netfilter/iptables_display.sh	2017-04-21 16:23:57.000000000 +0500
+@@ -1,5 +1,5 @@
+ #! /bin/sh
+-# $Id: iptables_display.sh,v 1.6 2016/02/09 09:37:44 nanard Exp $
++# $Id: iptables_display.sh,v 1.7 2017/04/21 11:16:09 nanard Exp $
+ IPTABLES=/sbin/iptables
+ 
+ #display all chains relative to miniupnpd
+diff -uNrwB miniupnpd-2.0.20161216/netfilter/iptables_flush.sh miniupnpd-2.0.20170421/netfilter/iptables_flush.sh
+--- miniupnpd-2.0.20161216/netfilter/iptables_flush.sh	2016-02-09 14:38:36.000000000 +0500
++++ miniupnpd-2.0.20170421/netfilter/iptables_flush.sh	2017-04-21 16:23:57.000000000 +0500
+@@ -1,5 +1,5 @@
+ #! /bin/sh
+-# $Id: iptables_flush.sh,v 1.5 2016/02/09 09:37:44 nanard Exp $
++# $Id: iptables_flush.sh,v 1.6 2017/04/21 11:16:09 nanard Exp $
+ IPTABLES=/sbin/iptables
+ 
+ #flush all rules owned by miniupnpd
+diff -uNrwB miniupnpd-2.0.20161216/netfilter/iptables_init_and_clean.sh miniupnpd-2.0.20170421/netfilter/iptables_init_and_clean.sh
+--- miniupnpd-2.0.20161216/netfilter/iptables_init_and_clean.sh	2016-02-09 14:38:36.000000000 +0500
++++ miniupnpd-2.0.20170421/netfilter/iptables_init_and_clean.sh	2017-04-21 16:23:57.000000000 +0500
+@@ -1,9 +1,10 @@
+ #! /bin/sh
+-# $Id: iptables_init_and_clean.sh,v 1.6 2016/02/09 09:37:44 nanard Exp $
++# $Id: iptables_init_and_clean.sh,v 1.7 2017/04/21 11:16:09 nanard Exp $
+ # Improved Miniupnpd iptables init script.
+ # Checks for state of filter before doing anything..
+ 
+ IPTABLES="`which iptables`" || exit 1
++IPTABLES="$IPTABLES -w"
+ IP="`which ip`" || exit 1
+ 
+ #EXTIF=eth0
+diff -uNrwB miniupnpd-2.0.20161216/netfilter/iptables_init.sh miniupnpd-2.0.20170421/netfilter/iptables_init.sh
+--- miniupnpd-2.0.20161216/netfilter/iptables_init.sh	2016-02-09 14:38:36.000000000 +0500
++++ miniupnpd-2.0.20170421/netfilter/iptables_init.sh	2017-04-21 16:23:57.000000000 +0500
+@@ -1,6 +1,7 @@
+ #! /bin/sh
+-# $Id: iptables_init.sh,v 1.9 2016/02/09 09:37:44 nanard Exp $
++# $Id: iptables_init.sh,v 1.10 2017/04/21 11:16:09 nanard Exp $
+ IPTABLES="`which iptables`" || exit 1
++IPTABLES="$IPTABLES -w"
+ IP="`which ip`" || exit 1
+ 
+ #change this parameters :
+diff -uNrwB miniupnpd-2.0.20161216/netfilter/iptables_removeall.sh miniupnpd-2.0.20170421/netfilter/iptables_removeall.sh
+--- miniupnpd-2.0.20161216/netfilter/iptables_removeall.sh	2016-02-09 14:38:36.000000000 +0500
++++ miniupnpd-2.0.20170421/netfilter/iptables_removeall.sh	2017-04-21 16:23:57.000000000 +0500
+@@ -1,6 +1,7 @@
+ #! /bin/sh
+-# $Id: iptables_removeall.sh,v 1.9 2016/02/09 09:37:44 nanard Exp $
++# $Id: iptables_removeall.sh,v 1.10 2017/04/21 11:16:09 nanard Exp $
+ IPTABLES="`which iptables`" || exit 1
++IPTABLES="$IPTABLES -w"
+ IP="`which ip`" || exit 1
+ 
+ #change this parameters :
+diff -uNrwB miniupnpd-2.0.20161216/README miniupnpd-2.0.20170421/README
+--- miniupnpd-2.0.20161216/README	2016-02-09 14:38:33.000000000 +0500
++++ miniupnpd-2.0.20170421/README	2017-04-21 16:23:56.000000000 +0500
+@@ -20,17 +20,17 @@
+ IGD2 is still not enabled by default because of interoperability
+ issues.
+ 
+-Support for the NAT Port Mapping Protocol (NAT-PMP) has been
+-added. See information about NAT-PMP here :
+-http://miniupnp.free.fr/nat-pmp.html
++In addition to UPnP IGD, miniUPnPd supports NAT-PMP and PCP :
+ 
+-NAT-PMP is the precursor of Port Control Protocol (PCP).
++See information about NAT Port Mapping Protocol (NAT-PMP) here :
++http://miniupnp.free.fr/nat-pmp.html
++NAT-PMP is the precursor of Port Control Protocol (PCP, RFC 6887).
+ In 2013, support for PCP has been added too.
+ 
+ Read the INSTALL file for instructions to compile, install and
+ configure miniupnpd on your system.
+ 
+-Report bugs to miniupnp@free.fr on the web forum
++Report bugs to miniupnp@free.fr or on the web forum
+ http://miniupnp.tuxfamily.org/forum/
+ or using https://github.com/miniupnp/miniupnp/issues
+ 
+diff -uNrwB miniupnpd-2.0.20161216/upnppinhole.c miniupnpd-2.0.20170421/upnppinhole.c
+--- miniupnpd-2.0.20161216/upnppinhole.c	2016-12-16 14:23:18.000000000 +0500
++++ miniupnpd-2.0.20170421/upnppinhole.c	2017-04-21 16:23:56.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: upnppinhole.c,v 1.9 2016/12/16 09:13:30 nanard Exp $ */
++/* $Id: upnppinhole.c,v 1.10 2017/04/21 11:21:26 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2016 Thomas Bernard
++ * (c) 2006-2017 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -141,7 +141,7 @@
+ 		return (r >= 0) ? 1 : r;
+ 	}
+ #if defined(USE_PF) || defined(USE_NETFILTER)
+-	*uid = add_pinhole (0/*ext_if_name*/, raddr, rport,
++	*uid = add_pinhole (ext_if_name, raddr, rport,
+ 	                    iaddr, iport, proto, desc, timestamp);
+ 	return *uid >= 0 ? 1 : -1;
+ #else
+diff -uNrwB miniupnpd-2.0.20161216/upnpsoap.c miniupnpd-2.0.20170421/upnpsoap.c
+--- miniupnpd-2.0.20161216/upnpsoap.c	2016-02-21 00:13:41.000000000 +0500
++++ miniupnpd-2.0.20170421/upnpsoap.c	2017-04-21 16:23:56.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: upnpsoap.c,v 1.147 2016/02/20 19:12:00 nanard Exp $ */
++/* $Id: upnpsoap.c,v 1.148 2017/04/21 11:20:27 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2016 Thomas Bernard
++ * (c) 2006-2017 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -17,6 +17,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include <netdb.h>
++#include <ctype.h>
+ 
+ #include "macros.h"
+ #include "config.h"
+@@ -388,12 +389,19 @@
+ 
+ 	ParseNameValue(h->req_buf + h->req_contentoff, h->req_contentlen, &data);
+ 	int_ip = GetValueFromNameValueList(&data, "NewInternalClient");
+-	if (!int_ip)
++	if (int_ip) {
++		/* trim */
++		while(int_ip[0] == ' ')
++			int_ip++;
++	}
++#ifdef UPNP_STRICT
++	if (!int_ip || int_ip[0] == '\0')
+ 	{
+ 		ClearNameValueList(&data);
+ 		SoapError(h, 402, "Invalid Args");
+ 		return;
+ 	}
++#endif
+ 
+ 	/* IGD 2 MUST support both wildcard and specific IP address values
+ 	 * for RemoteHost (only the wildcard value was REQUIRED in release 1.0) */
+@@ -409,6 +417,16 @@
+ #endif
+ #endif
+ 
++#ifndef UPNP_STRICT
++	/* if <NewInternalClient> arg is empty, use client address
++	 * see https://github.com/miniupnp/miniupnp/issues/236 */
++	if (!int_ip || int_ip[0] == '\0')
++	{
++		int_ip = h->clientaddr_str;
++		memcpy(&result_ip, &(h->clientaddr), sizeof(struct in_addr));
++	}
++	else
++#endif
+ 	/* if ip not valid assume hostname and convert */
+ 	if (inet_pton(AF_INET, int_ip, &result_ip) <= 0)
+ 	{
+@@ -1604,8 +1622,14 @@
+ 		goto clear_and_exit;
+ 	}
+ 	/* I guess it is useless to convert int_ip to literal ipv6 address */
++	if(rem_host)
++	{
++		/* trim */
++		while(isspace(rem_host[0]))
++			rem_host++;
++	}
+ 	/* rem_host should be converted to literal ipv6 : */
+-	if(rem_host && (rem_host[0] != '\0'))
++	if(rem_host && (rem_host[0] != '\0') && (rem_host[0] != '*'))
+ 	{
+ 		struct addrinfo *ai, *p;
+ 		struct addrinfo hints;

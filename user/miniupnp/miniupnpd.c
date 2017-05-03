@@ -1,4 +1,4 @@
-/* $Id: miniupnpd.c,v 1.218 2016/12/16 09:13:28 nanard Exp $ */
+/* $Id: miniupnpd.c,v 1.219 2017/04/21 11:22:38 nanard Exp $ */
 /* MiniUPnP project
  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
  * (c) 2006-2016 Thomas Bernard
@@ -1856,9 +1856,11 @@ main(int argc, char * * argv)
 
 	if(
 #ifdef ENABLE_NATPMP
-        !GETFLAG(ENABLENATPMPMASK) &&
+	   !GETFLAG(ENABLENATPMPMASK) && !GETFLAG(ENABLEUPNPMASK)
+#else
+	   !GETFLAG(ENABLEUPNPMASK)
 #endif
-        !GETFLAG(ENABLEUPNPMASK) ) {
+	   ) {
 		syslog(LOG_ERR, "Why did you run me anyway?");
 		return 0;
 	}
