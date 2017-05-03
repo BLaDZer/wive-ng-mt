@@ -3308,14 +3308,14 @@ start_kick:
 
 	========================================================================
 */
-VOID RTMPDeQueuePacket(
+inline VOID RTMPDeQueuePacket(
 	IN RTMP_ADAPTER *pAd,
 	IN BOOLEAN in_hwIRQ,
 	IN UCHAR QIdx,
 	IN INT wcid,
 	IN INT max_cnt)
 {
-	//NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
+	NDIS_STATUS Status = NDIS_STATUS_SUCCESS;
 	INT Count = 0, round  = 0;
 	TX_BLK TxBlk, *pTxBlk = &TxBlk;
 	UCHAR QueIdx = 0;
@@ -3325,7 +3325,6 @@ VOID RTMPDeQueuePacket(
 #ifdef DATA_QUEUE_RESERVE
 	INT real_tx = 0;
 #endif /* DATA_QUEUE_RESERVE */
-
 
 #ifdef DBG_DIAGNOSE
 	if (pAd->DiagStruct.inited)
@@ -3349,29 +3348,41 @@ VOID RTMPDeQueuePacket(
 		DEQUEUE_LOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
 
 		rtmp_deq_req(pAd, max_cnt, &deq_info);
+
+		DEQUEUE_UNLOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
+
 		if (deq_info.status == NDIS_STATUS_FAILURE) {
-			DEQUEUE_UNLOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
 			break;
 		}
-
-		QueIdx = deq_info.cur_q;
 
 #ifdef DBG_DEQUE
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_TXQ, ("%s(): deq_info:cur_wcid=%d, cur_qidx=%d, pkt_cnt=%d, pkt_bytes=%d\n",
 			__FUNCTION__, deq_info.cur_wcid, QueIdx, deq_info.pkt_cnt, deq_info.pkt_bytes));
 #endif
 
+		QueIdx = deq_info.cur_q;
 		NdisZeroMemory((UCHAR *)pTxBlk, sizeof(TX_BLK));
 
 		RTMP_START_DEQUEUE(pAd, QueIdx, IrqFlags);
 
+		DEQUEUE_LOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
+
 		deq_packet_gatter(pAd, &deq_info, pTxBlk, in_hwIRQ);
+
+		DEQUEUE_UNLOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
+
+
 		if (pTxBlk->TotalFrameNum) {
 #ifdef DATA_QUEUE_RESERVE
 			real_tx += pTxBlk->TotalFrameNum;
 #endif /* DATA_QUEUE_RESERVE */
 			ASSERT(pTxBlk->wdev);
-			ASSERT(pTxBlk->wdev->wdev_hard_tx);
+			if (pTxBlk->wdev)
+				ASSERT(pTxBlk->wdev->wdev_hard_tx);
+
+			if (IS_PCI_INF(pAd) || IS_RBUS_INF(pAd))
+				DEQUEUE_LOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
+
 			if (pTxBlk->wdev && pTxBlk->wdev->wdev_hard_tx) {
 				pTxBlk->wdev->wdev_hard_tx(pAd, pTxBlk);
 			}
@@ -3383,14 +3394,18 @@ VOID RTMPDeQueuePacket(
 
 #ifdef CONFIG_AP_SUPPORT
 				IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-					/*Status =*/ APHardTransmit(pAd, pTxBlk);
+					Status = APHardTransmit(pAd, pTxBlk);
 #endif /* CONFIG_AP_SUPPORT */
 			}
+			if (IS_PCI_INF(pAd) || IS_RBUS_INF(pAd))
+				DEQUEUE_UNLOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
 
 			Count += pTxBlk->TotalFrameNum;
 		}
 
 		RTMP_STOP_DEQUEUE(pAd, QueIdx, IrqFlags);
+
+		DEQUEUE_LOCK(&pAd->irq_lock, in_hwIRQ, IrqFlags);
 
 		rtmp_deq_report(pAd, &deq_info);
 
@@ -3409,13 +3424,14 @@ VOID RTMPDeQueuePacket(
 		}
 #endif /* RTMP_MAC_PCI */
 
+#ifdef DBG
 		if (round >= 1024) {
 			DBGPRINT(RT_DEBUG_OFF, ("%s():ForceToBreak!!Buggy here?\n", __FUNCTION__));
 			break;
 		}
+#endif /* DBG */
 
 	}while(1);
-
 
 #ifdef DATA_QUEUE_RESERVE
 	if(pAd->bDump)
@@ -3431,7 +3447,6 @@ VOID RTMPDeQueuePacket(
 			 			}
 	}
 #endif /* DATA_QUEUE_RESERVE */
-
 
 #ifdef DBG_DEQUE
 	DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_TXQ,
@@ -3455,7 +3470,7 @@ VOID RTMPDeQueuePacket(
 
 
 #ifdef BLOCK_NET_IF
-	ASSERT((QueIdx < NUM_OF_TX_RING));
+	ASSERT((QueIdx < WMM_NUM_OF_AC));
 	if ((pAd->blockQueueTab[QueIdx].SwTxQueueBlockFlag == TRUE)
 		&& /* (pAd->TxSwQueue[QueIdx].Number < 1)*/
 		(pAd->tx_swq[QueIdx].enqIdx == pAd->tx_swq[QueIdx].deqIdx)
@@ -3464,7 +3479,6 @@ VOID RTMPDeQueuePacket(
 		releaseNetIf(&pAd->blockQueueTab[QueIdx]);
 	}
 #endif /* BLOCK_NET_IF */
-
 #if defined (LED_SOFT_SUPPORT)
 	if (Count > 0 && pAd->MacTab.Size > 0)
 		ralink_gpio_led_blink(LED_SOFT_BLINK_GPIO);

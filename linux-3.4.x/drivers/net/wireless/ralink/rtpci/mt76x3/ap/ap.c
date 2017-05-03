@@ -1746,9 +1746,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 
 			if ((bPreAnyStationInPsm == TRUE) &&  (tr_entry->tx_queue[QID_AC_BE].Head != NULL)) {
 					if (tr_entry->tx_queue[QID_AC_BE].Number > MAX_PACKETS_IN_MCAST_PS_QUEUE)
-					RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, wcid, MAX_PACKETS_IN_MCAST_PS_QUEUE);
+						RTMPDeQueuePacket(pAd, FALSE, WMM_NUM_OF_AC, wcid, MAX_PACKETS_IN_MCAST_PS_QUEUE);
 					else
-						RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, wcid, tr_entry->tx_queue[QID_AC_BE].Number);
+						RTMPDeQueuePacket(pAd, FALSE, WMM_NUM_OF_AC, wcid, tr_entry->tx_queue[QID_AC_BE].Number);
 			}
 		}
 	}

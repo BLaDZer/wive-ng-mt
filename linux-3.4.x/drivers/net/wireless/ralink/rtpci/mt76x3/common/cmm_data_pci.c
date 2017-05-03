@@ -1269,7 +1269,7 @@ BOOLEAN	RTMPHandleTxRingDmaDoneInterrupt(
 	/* Make sure to release Tx ring resource*/
 	RTMP_IRQ_UNLOCK(&pAd->irq_lock, IrqFlags);
 
-	RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, WCID_ALL, MAX_TX_PROCESS);
+	RTMPDeQueuePacket(pAd, FALSE, WMM_NUM_OF_AC, WCID_ALL, MAX_TX_PROCESS);
 
 	return  bReschedule;
 }

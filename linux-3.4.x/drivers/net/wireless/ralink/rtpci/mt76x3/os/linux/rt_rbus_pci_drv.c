@@ -1216,7 +1216,7 @@ static void uapsd_eosp_sent_tasklet(unsigned long data)
 	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER) data;
 #endif /* WORKQUEUE_BH */
 
-	RTMPDeQueuePacket(pAd, FALSE, NUM_OF_TX_RING, WCID_ALL, MAX_TX_PROCESS);
+	RTMPDeQueuePacket(pAd, FALSE, WMM_NUM_OF_AC, WCID_ALL, MAX_TX_PROCESS);
 }
 #endif /* UAPSD_SUPPORT */
 
