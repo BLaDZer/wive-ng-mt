@@ -3033,10 +3033,11 @@
 7) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
 8) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
 9) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
-10) kernel: net: ping: implement proper locking.<br>
-11) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-12) kernel: net: remove unnecessary carrier status check.<br>
-13) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+10) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
+12) kernel: net: ping: implement proper locking.<br>
+13) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+14) kernel: net: remove unnecessary carrier status check.<br>
+15) kernel: net: initialize msg.msg_flags in recvfrom.<br>
 <br>
 <br>
 <br>
