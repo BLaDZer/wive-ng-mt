@@ -1250,7 +1250,7 @@ NDIS_STATUS IgmpPktClone(
 
 				if (PsMode == PWR_SAVE)
 				{
-					APInsertPsQueue(pAd, pSkbClone, pMacEntry, QueIdx);
+					APInsertPsQueue(pAd, pSkbClone, pMacEntry, QueIdx, MCAST_WCID);
 #ifdef IGMP_MESH
 					clone_cnt++;
 #endif /* IGMP_MESH */

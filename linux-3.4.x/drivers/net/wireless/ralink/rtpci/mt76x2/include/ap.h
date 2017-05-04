@@ -84,6 +84,7 @@ NDIS_STATUS APInsertPsQueue(
 	IN PRTMP_ADAPTER pAd,
 	IN PNDIS_PACKET pPacket,
 	IN MAC_TABLE_ENTRY *pMacEntry,
+	IN UCHAR Wcid,
 	IN UCHAR QueIdx);
 
 #ifdef TXBF_SUPPORT

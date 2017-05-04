@@ -670,7 +670,7 @@ static VOID CmdPsClearRsp(struct cmd_msg *msg, char *Data, UINT16 Len)
 	//struct wtbl_entry tb_entry;
 	UINT32 WlanIndex;
 	//union WTBL_1_DW3 *dw3 = (union WTBL_1_DW3 *)&tb_entry.wtbl_1.wtbl_1_d3.word;
-	unsigned char q_idx = 0;
+	unsigned char q_idx = QID_AC_BE;
 
 	EvtPsClear = (struct _CMD_AP_PS_CLEAR_STRUC_T *)Data;
 	WlanIndex = le2cpu32(EvtPsClear->u4WlanIdx);

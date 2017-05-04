@@ -566,7 +566,7 @@ NDIS_STATUS APSendPacket(
 	else if ((PsMode == PWR_SAVE) && pMacEntry &&
 				IS_ENTRY_CLIENT(pMacEntry) && (Sst == SST_ASSOC))
 	{
-		if (APInsertPsQueue(pAd, pPacket, pMacEntry, QueIdx) != NDIS_STATUS_SUCCESS)
+		if (APInsertPsQueue(pAd, pPacket, pMacEntry, QueIdx, Wcid) != NDIS_STATUS_SUCCESS)
 			return NDIS_STATUS_FAILURE;
 	}
 	/* 3. otherwise, transmit the frame */
@@ -5437,7 +5437,8 @@ NDIS_STATUS APInsertPsQueue(
 	IN PRTMP_ADAPTER pAd,
 	IN PNDIS_PACKET pPacket,
 	IN MAC_TABLE_ENTRY *pMacEntry,
-	IN UCHAR QueIdx)
+	IN UCHAR QueIdx,
+	IN UCHAR Wcid)
 {
 	ULONG IrqFlags = 0;
 #ifdef UAPSD_SUPPORT
@@ -5445,7 +5446,7 @@ NDIS_STATUS APInsertPsQueue(
 	UINT32 ac_id = QueIdx - QID_AC_BE; /* should be >= 0 */
 
 
-	if (UAPSD_MR_IS_UAPSD_AC(pMacEntry, ac_id))
+	if ((Wcid < MAX_LEN_OF_MAC_TABLE) && UAPSD_MR_IS_UAPSD_AC(pMacEntry, ac_id))
 		UAPSD_PacketEnqueue(pAd, pMacEntry, pPacket, ac_id);
 	else
 #endif /* UAPSD_SUPPORT */
@@ -5465,7 +5466,8 @@ NDIS_STATUS APInsertPsQueue(
 
 	/* mark corresponding TIM bit in outgoing BEACON frame */
 #ifdef UAPSD_SUPPORT
-	if (UAPSD_MR_IS_NOT_TIM_BIT_NEEDED_HANDLED(pMacEntry, QueIdx))
+	if ((Wcid < MAX_LEN_OF_MAC_TABLE)
+		&& (UAPSD_MR_IS_NOT_TIM_BIT_NEEDED_HANDLED(pMacEntry, QueIdx)))
 	{
 		/* 1. the station is UAPSD station;
 		2. one of AC is non-UAPSD (legacy) AC;

@@ -403,6 +403,7 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 #ifdef UAPSD_SUPPORT
 		if (IS_ENTRY_CLIENT(tr_entry) 
 			&& (tr_entry->PsMode == PWR_SAVE)
+			&& (wcid < MAX_LEN_OF_MAC_TABLE)
 			&& UAPSD_MR_IS_UAPSD_AC(&pAd->MacTab.Content[wcid], QueIdx))
 		{
 			UAPSD_PacketEnqueue(pAd, &pAd->MacTab.Content[wcid], pPacket, QueIdx, FALSE);
@@ -440,7 +441,8 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 			{
 				/* mark corresponding TIM bit in outgoing BEACON frame */
 #ifdef UAPSD_SUPPORT
-				if (UAPSD_MR_IS_NOT_TIM_BIT_NEEDED_HANDLED(&pAd->MacTab.Content[wcid], QueIdx))
+				if ((wcid < MAX_LEN_OF_MAC_TABLE)
+					&& (UAPSD_MR_IS_NOT_TIM_BIT_NEEDED_HANDLED(&pAd->MacTab.Content[wcid], QueIdx)))
 				{
 					/*
 						1. the station is UAPSD station;

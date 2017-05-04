@@ -2405,7 +2405,7 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	if (pEntry == NULL)
 		return;
 
-	if (pEntry->wcid < MAX_LEN_OF_MAC_TABLE)
+	if (Elem->Wcid < MAX_LEN_OF_MAC_TABLE)
     {
 
 		wdev = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev;
@@ -2448,7 +2448,7 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 
-		MacTableDeleteEntry(pAd, pEntry->wcid, Addr2);
+		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
