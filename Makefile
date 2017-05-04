@@ -198,13 +198,11 @@ vendor_%:
 
 # for select build mode (one/multi thread)
 -include $(LINUX_CONFIG)
-ifeq ($(CONFIG_RT2860V2_STA),m)
+ifeq ($(CONFIG_MT76X2_STA),m)
 # Added by Steven@Ralink FIXME!!!
 # In linux-2.6, it do not support VPATH in Makefile.
-# But we need to use drivers/net/wireless/rt2860v2 to build ap and sta driver.
+# But we need to use drivers/net/wireless/* to build ap and sta driver.
 # Workaround: Don't build ap and sta driver at the same time.
-THREADS="-j1"
-else ifeq ($(CONFIG_MT76X2_STA),m)
 THREADS="-j1"
 else
 THREADS="-j$(HOST_NCPU)"

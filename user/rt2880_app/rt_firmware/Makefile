@@ -6,9 +6,6 @@
 
 CHIP7620 :=
 ifdef CONFIG_RALINK_MT7620
-ifeq ($(CONFIG_RT_FIRST_CARD),2860)
-CHIP7620 := y
-endif
 ifeq ($(CONFIG_RT_FIRST_CARD),7620)
 CHIP7620 := y
 endif

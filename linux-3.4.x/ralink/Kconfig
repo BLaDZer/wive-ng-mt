@@ -29,10 +29,6 @@ choice
 	config RT_FIRST_IF_NONE
 	bool "None"
 
-	config RT_FIRST_IF_RT2860
-	bool "RT2860v2 APSoC (RTMP driver 2.7.x.x)"
-	depends on (RALINK_RT3052 || RALINK_RT3352 || RALINK_RT5350 || RALINK_RT3883 || RALINK_MT7620)
-
 	config RT_FIRST_IF_MT7620
 	bool "MT7620 APSoC (RLT driver 3.0.x.x)"
 	depends on RALINK_MT7620
@@ -80,11 +76,11 @@ choice
 
 	config RT_FIRST_IF_EEPROM_EFUSE
 	bool "eFUSE on-die"
-	depends on !(RT_FIRST_IF_RT2860 || RT_FIRST_IF_MT7620)
+	depends on !(RT_FIRST_IF_MT7620)
 
 	config RT_FIRST_IF_EEPROM_PROM
 	bool "EEPROM chip"
-	depends on !(RT_FIRST_IF_RT2860 || RT_FIRST_IF_MT7620)
+	depends on !(RT_FIRST_IF_MT7620)
 endchoice
 
 config  RT_FIRST_IF_RF_OFFSET
@@ -95,7 +91,6 @@ config  RT_FIRST_IF_RF_OFFSET
 config  RT_FIRST_CARD
 	int
 	default 0    if RT_FIRST_IF_NONE
-	default 2860 if RT_FIRST_IF_RT2860
 	default 7620 if RT_FIRST_IF_MT7620
 	default 7628 if RT_FIRST_IF_MT7628
 	default 7610 if RT_FIRST_IF_MT7610E
@@ -214,31 +209,22 @@ config MAX_CLIENTS
 	depends on !(RT_SECOND_IF_NONE && RT_FIRST_IF_NONE)
 	default 56
 
-if (RT_FIRST_IF_RT2860)
-menu "AP MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
-source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_ap/Kconfig"
-endmenu
-menu "Client MODE Ralink APSoC RT3xxx/RT5xxx/MT7620 wireless driver"
-source "drivers/net/wireless/ralink/rt3xxx/rt2860v2_sta/Kconfig"
-endmenu
-endif
-
 if (RT_FIRST_IF_MT7610E || RT_SECOND_IF_MT7610E)
 menu "AP MODE MediaTek MT7610E PCIe Wireless Driver"
-source "drivers/net/wireless/ralink/rtpci/mt7610_ap/Kconfig"
+source "drivers/net/wireless/ralink/mt7610_ap/Kconfig"
 endmenu
 endif
 
 if (RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7612E || RT_FIRST_IF_MT7602E || RT_SECOND_IF_MT7612E || RT_SECOND_IF_MT7602E)
 menu "AP MODE MediaTek MT7620/MT7602E/MT7612E RBUS/PCIe Wireless Driver"
-source "drivers/net/wireless/ralink/rtpci/mt76x2_ap/Kconfig"
-source "drivers/net/wireless/ralink/rtpci/mt76x2_sta/Kconfig"
+source "drivers/net/wireless/ralink/mt76x2_ap/Kconfig"
+source "drivers/net/wireless/ralink/mt76x2_sta/Kconfig"
 endmenu
 endif
 
 if (RT_FIRST_IF_MT7603E || RT_SECOND_IF_MT7603E)
 menu "AP MODE MediaTek MT7603E PCIe Wireless driver"
-source "drivers/net/wireless/ralink/rtpci/mt76x3_ap/Kconfig"
+source "drivers/net/wireless/ralink/mt76x3_ap/Kconfig"
 endmenu
 endif
 

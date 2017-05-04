@@ -52,13 +52,13 @@ getFirstWlanIfName() {
     if [ "$CONFIG_RT_FIRST_IF_NONE" = "" ]; then
 	first_wlan_root_if="ra0"			# is first root interface name
 	first_wlan="ra"					# this is mask name vifs for first wlan module
-	if [ "$CONFIG_RT2860V2_AP_MBSS" != "" ] || [ "$CONFIG_MT76X2_AP_MBSS" != "" ] || [ "$CONFIG_MT76X3_AP_MBSS" != "" ]; then
+	if [ "$CONFIG_MT76X2_AP_MBSS" != "" ] || [ "$CONFIG_MT76X3_AP_MBSS" != "" ]; then
 	    first_wlan_mbss="ra"			# this is mask name vifs for first mbss wlan module
 	fi
-	if [ "$CONFIG_RT2860V2_AP_APCLI" != "" ] || [ "$CONFIG_MT76X2_AP_APCLI" != "" ] || [ "$CONFIG_MT76X3_AP_APCLI" != "" ]; then
+	if [ "$CONFIG_MT76X2_AP_APCLI" != "" ] || [ "$CONFIG_MT76X3_AP_APCLI" != "" ]; then
 	    first_wlan_apcli="apcli0"			# this is name vif for first acli wlan module
 	fi
-	if [ "$CONFIG_RT2860V2_AP_WDS" != "" ] || [ "$CONFIG_MT76X2_AP_WDS" != "" ] || [ "$CONFIG_MT76X3_AP_WDS" != "" ]; then
+	if [ "$CONFIG_MT76X2_AP_WDS" != "" ] || [ "$CONFIG_MT76X3_AP_WDS" != "" ]; then
 	    first_wlan_wds="wds"			# this is mask name vifs for first wds wlan module
 	fi
     fi

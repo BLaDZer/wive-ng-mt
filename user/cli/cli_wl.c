@@ -179,14 +179,9 @@ void printMacEntry(RT_802_11_MAC_ENTRY* pe)
         printf("|%-4s", (pe->TxRate.field.ldpc == 0) ? "NO" : "YES");
         printf("|%-5.5s", getPhyMode(pe->TxRate.field.MODE));
         printf("|%-4d", getWlanRate(pe->TxRate));
-
-//#if defined(CONFIG_RT_FIRST_IF_RT2860) || defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
         printf("|%-4d %-4d", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
         printf("|%-3d %-3d  ", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
-/*#else
-        printf("|%-4d %-4d %-4d", (int)(pe->AvgRssi0), (int)(pe->AvgRssi1), (int)(pe->AvgRssi2));
-        printf("|%-3d %-3d %-3d", ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1), ConvertRssiToSignalQuality(pe->AvgRssi2));
-#endif*/
+
         char *rx_scaled_text = scale(pe->RxBytes);
         char *tx_scaled_text = scale(pe->TxBytes);
         printf("|%9.9s", rx_scaled_text);

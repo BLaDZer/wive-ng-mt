@@ -166,7 +166,7 @@ static int getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_AP_WDS) || defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -175,7 +175,7 @@ static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RT2860V2_AP_MBSS) || defined(CONFIG_MT7610_AP_MBSS) || defined(CONFIG_MT76X2_AP_MBSS)
+#if defined(CONFIG_MT7610_AP_MBSS) || defined(CONFIG_MT76X2_AP_MBSS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

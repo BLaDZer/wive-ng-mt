@@ -32,7 +32,7 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num);
 int wlanDisconnectStation(const char *if_name, char* mac_addr);
 int wlanDisconnectAllStations(const char *if_name);
 
-#if defined(CONFIG_RT2860V2_STA) || defined(CONFIG_RT2860V2_STA_MODULE) || defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
 int getWlanStationLinkQuality(int radio_module_ind);
 int getWlanStationFrequencyKHz(int radio_module_ind);
 int getWlanStationNoiseDbm(int radio_module_ind);

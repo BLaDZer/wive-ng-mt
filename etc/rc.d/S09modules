@@ -72,9 +72,6 @@ load_wireless_modules() {
 	    mac=""
 	fi
 	$LOG "Load wifi STA module."
-	if [ "$CONFIG_RT2860V2_STA" != "" ]; then
-    	    modprobe -q rt2860v2_sta "$mac"
-	fi
 	if [ "$CONFIG_MT76X2_STA" != "" ]; then
 	    modprobe -q mt76x2_sta
 	fi
@@ -83,9 +80,6 @@ load_wireless_modules() {
 	fi
     else
 	$LOG "Load wifi AP module."
-	if [ "$CONFIG_RT2860V2_AP" != "" ]; then
-    	    modprobe -q rt2860v2_ap
-	fi
 	if [ "$CONFIG_MT7610_AP" != "" ]; then
 	    modprobe -q mt7610_ap
 	fi
@@ -219,7 +213,7 @@ stop() {
 
 wifi_unload() {
     $LOG "Unload wireless modules."
-    mod="rt2860v2_ap rt2860v2_sta mt7610_ap mt76x2_ap mt76x2_sta mt76x3_ap mt76x3_sta"
+    mod="mt7610_ap mt76x2_ap mt76x2_sta mt76x3_ap"
     for module in $mod
     do
 	if [ -d /sys/module/$module ]; then

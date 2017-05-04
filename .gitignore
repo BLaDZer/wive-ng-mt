@@ -455,10 +455,9 @@ libext/libssl/openssl-1.0.1/Makefile.bak
 # prevent upload ATE in git
 #
 /user/rt2880_app/ated/*
-/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
-/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
-/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
-/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x3/ate
+/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
+/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
+/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
 
 #
 # exclude toolchain

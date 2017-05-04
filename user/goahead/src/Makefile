@@ -75,9 +75,7 @@ CFLAGS += -DWF_USE_IPV6
 endif
 
 # external apps flags
-ifneq ("$(CONFIG_RT2860V2_STA)", "")
-DEPEND_FILES += station.o
-else ifneq ("$(CONFIG_MT76X2_STA)", "")
+ifneq ("$(CONFIG_MT76X2_STA)", "")
 DEPEND_FILES += station.o
 else ifneq ("$(CONFIG_MT76X3_STA)", "")
 DEPEND_FILES += station.o

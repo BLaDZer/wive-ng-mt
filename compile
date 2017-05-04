@@ -2,7 +2,7 @@
 
 DOS2UNIX=NO
 FULLREBUILD=NO
-VERSIONPKG="5.4.4.RU.`date +%d%m%Y`"
+VERSIONPKG="6.0.0.RU.`date +%d%m%Y`"
 
 #---Set_env_ROOTDIR_to_current_dir---#
 ROOTDIR=`pwd`
@@ -110,13 +110,8 @@ if [ "$2" = "YES" ]; then
 fi
 
 #-------OLDCMODE---------#
-if [ "$3" = "YES" ]; then
-    # old drivers config path
-    KCOPATH="$ROOTDIR/configs/kernel_old_drv"
-else
-    # current drivers config path
-    KCOPATH="$ROOTDIR/configs/kernel"
-fi
+# current drivers config path
+KCOPATH="$ROOTDIR/configs/kernel"
 
 # use for product id and model name
 export REALNAME="$MODE"
@@ -245,14 +240,12 @@ if [ "$FMODE" = "YES" ]; then
     echo "Copy ATE code to tree"
     mkdir -p $ROOTDIR/user/rt2880_app/ated
     cp -rf /mnt/svalka/linux/ate/ated/* $ROOTDIR/user/rt2880_app/ated
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rt3xxx/rt2860v2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rt3xxx/rt2860v2/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt7610/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt7610/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x2/ate
-    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x3/ate
-    cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt76x3/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/rtpci/mt76x3/ate
+    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
+    cp -rf /mnt/svalka/linux/ate/ate/mt7610/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
+    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
+    cp -rf /mnt/svalka/linux/ate/ate/mt76x2/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
+    mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
+    cp -rf /mnt/svalka/linux/ate/ate/mt76x3/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate
 
     echo "Reconfigure kernel"
     sed 's/# CONFIG_RT2860V2_AP_ATE is not set/CONFIG_RT2860V2_AP_ATE=y/g' $ROOTDIR/linux/.config > $ROOTDIR/linux/.config.tmp
