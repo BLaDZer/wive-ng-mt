@@ -3425,63 +3425,6 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #endif /* APCLI_SUPPORT */	
 }
 
-#ifdef RLT_MAC_DBG
-static int dump_next_valid = 0;
-#endif
-BOOLEAN APCheckVaildDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
-{
-	HEADER_802_11 *pHeader = pRxBlk->pHeader;
-	BOOLEAN isVaild = FALSE;
-
-	do
-	{
-		if (pHeader->FC.ToDs == 0)
-			break;
-
-#ifdef IDS_SUPPORT
-		if ((pHeader->FC.FrDs == 0) && (pRxBlk->wcid == RESERVED_WCID)) /* not in RX WCID MAC table */
-		{
-			if (++pAd->ApCfg.RcvdMaliciousDataCount > pAd->ApCfg.DataFloodThreshold)
-				break;
-		}
-#endif /* IDS_SUPPORT */
-	
-		/* check if Class2 or 3 error */
-		if ((pHeader->FC.FrDs == 0) && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader))) 
-			break;
-
-//+++Add by shiang for debug
-#ifdef RLT_MAC_DBG
-		if (pAd->chipCap.hif_type == HIF_RLT) {
-			if (pRxBlk->wcid >= MAX_LEN_OF_MAC_TABLE) {
-				MAC_TABLE_ENTRY *pEntry = NULL;
-
-				DBGPRINT(RT_DEBUG_WARN, ("ErrWcidPkt: seq=%d\n", pHeader->Sequence));
-				pEntry = MacTableLookup(pAd, pHeader->Addr2);
-				if (pEntry && (pEntry->Sst == SST_ASSOC) && IS_ENTRY_CLIENT(pEntry))
-					pRxBlk->wcid = pEntry->wcid;
-
-				dump_next_valid = 1;
-			}
-			else if (dump_next_valid)
-			{
-				DBGPRINT(RT_DEBUG_WARN, ("NextValidWcidPkt: seq=%d\n", pHeader->Sequence));
-				dump_next_valid = 0;
-			}
-		}
-#endif /* RLT_MAC_DBG */
-//---Add by shiang for debug
-
-		if(pAd->ApCfg.BANClass3Data == TRUE)
-			break;
-
-		isVaild = TRUE;
-	} while (0);
-
-	return isVaild;
-}
-
-
 INT ap_rx_pkt_allow(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 {
 	RXINFO_STRUC *pRxInfo = pRxBlk->pRxInfo;

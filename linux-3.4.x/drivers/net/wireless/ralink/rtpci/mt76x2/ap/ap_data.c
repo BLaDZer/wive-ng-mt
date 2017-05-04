@@ -4298,18 +4298,6 @@ BOOLEAN APCheckVaildDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			break;
 #endif /* APCLI_SUPPORT */
 
-#ifdef IDS_SUPPORT
-		if ((pHeader->FC.FrDs == 0) && (pRxBlk->wcid == RESERVED_WCID)) /* not in RX WCID MAC table */
-		{
-			if (++pAd->ApCfg.RcvdMaliciousDataCount > pAd->ApCfg.DataFloodThreshold)
-				break;
-		}
-#endif /* IDS_SUPPORT */
-	
-		/* check if Class2 or 3 error */
-		if ((pHeader->FC.FrDs == 0) && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader))) 
-			break;
-
 //+++Add by shiang for debug
 #ifdef RLT_MAC_DBG
 		if (pAd->chipCap.hif_type == HIF_RLT) {
@@ -4975,6 +4963,10 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	}
 #endif /* IDS_SUPPORT */
 
+	/* check if Class2 or 3 error */
+	if (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader))
+		goto err;
+
 	if (pRxInfo->U2M)
 	{
 		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
@@ -5226,8 +5218,14 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		pEntry = PACInquiry(pAd, pRxBlk->wcid);
 
 		/*	can't find associated STA entry then filter invlid data frame */
-		if (!pEntry)
+		if (!pEntry) {
+#ifdef CONFIG_AP_SUPPORT
+			/* check if Class2 or 3 error */
+			if ((pFmeCtrl->FrDs == 0) && (pFmeCtrl->ToDs == 1))
+				APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader);
+#endif /* CONFIG_AP_SUPPORT */
 			goto err;
+		}
 
 		FromWhichBSSID = pEntry->apidx;
 
@@ -5289,7 +5287,6 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	}
 
 	ASSERT(pEntry->Aid == pRxBlk->wcid);
-
 
 #ifdef DOT11_N_SUPPORT
 #ifndef DOT11_VHT_AC

@@ -3031,17 +3031,18 @@
 5) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
 6) kernel: ralink_wifi: always set TIM bit for WCID_ALL/RESERVED.<br>
 7) kernel: ralink_wifi: always send deauth on class2/3 error to client.<br>
-8) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
-9) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
-10) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
-11) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
-12) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
-13) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
-14) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
-15) kernel: net: ping: implement proper locking.<br>
-16) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-17) kernel: net: remove unnecessary carrier status check.<br>
-18) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+8) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
+9) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
+10) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
+11) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
+12) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
+13) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
+14) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
+15) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
+16) kernel: net: ping: implement proper locking.<br>
+17) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+18) kernel: net: remove unnecessary carrier status check.<br>
+19) kernel: net: initialize msg.msg_flags in recvfrom.<br>
 <br>
 <br>
 <br>

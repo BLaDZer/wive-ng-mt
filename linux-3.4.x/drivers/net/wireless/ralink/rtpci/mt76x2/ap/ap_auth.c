@@ -853,7 +853,6 @@ VOID APCls2errAction(
 	}
 	else
 	{
-
 		apidx = get_apidx_by_addr(pAd, pHeader->Addr1);		
 		if (apidx >= pAd->ApCfg.BssidNum)
 		{
