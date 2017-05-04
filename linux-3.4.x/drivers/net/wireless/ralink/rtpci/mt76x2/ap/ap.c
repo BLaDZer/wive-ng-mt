@@ -1371,8 +1371,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			}
 		}
 #ifdef BAND_STEERING
-		/* workaround for DEASSOC PSM bug, do not disconnect powersaved clients. BUGGY!!! */
-		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE  && pEntry->PsMode != PWR_SAVE)
+		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
 		{
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
@@ -1394,14 +1393,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			    )) {
 				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
 				    pEntry->RssiLowStaKickOutDelayCount = 0;
-				    /* workaround for DEASSOC PSM bug
-				     * accumulate statistic for all clients - kick only in active state
-				    */
-				    if (pEntry->PsMode != PWR_SAVE) {
-					bDisconnectSta = TRUE;
-					printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
-				    }
+				    bDisconnectSta = TRUE;
+				    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
+					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
 				}
 			} else
 				pEntry->RssiLowStaKickOutDelayCount = 0;

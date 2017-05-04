@@ -127,7 +127,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #define AP_PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME	"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define AP_NIC_DEVICE_NAME		"RT2860AP"
-#define AP_DRIVER_VERSION		"2.7.2.0.P20"
+#define AP_DRIVER_VERSION		"2.7.2.0.P21"
 #ifdef MULTIPLE_CARD_SUPPORT
 #define CARD_INFO_PATH			"/etc/Wireless/RT2860/RT2860APCard.dat"
 #endif /* MULTIPLE_CARD_SUPPORT */
@@ -140,7 +140,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #define PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #endif /* P2P_SUPPORT */
 #define AP_PROFILE_PATH_RBUS		"/etc/Wireless/RT2860/RT2860.dat"
-#define RT2880_AP_DRIVER_VERSION	"1.0.0.0"
+#define RT2880_AP_DRIVER_VERSION	"1.0.0.0.P21"
 #endif /* RTMP_RBUS_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -148,7 +148,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #ifdef CONFIG_STA_SUPPORT
 #ifdef RTMP_MAC_PCI
 #define STA_PROFILE_PATH		"/etc/Wireless/RT2860/RT2860.dat"
-#define STA_DRIVER_VERSION		"2.6.2.0.P20"
+#define STA_DRIVER_VERSION		"2.6.2.0.P21"
 #ifdef MULTIPLE_CARD_SUPPORT
 #define CARD_INFO_PATH			"/etc/Wireless/RT2860/RT2860STACard.dat"
 #endif /* MULTIPLE_CARD_SUPPORT */
@@ -159,7 +159,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #define RTMP_FIRMWARE_FILE_NAME		"/etc/Wireless/MT7620_AP_2T2R-4L_V15.BIN"
 #define PROFILE_PATH			"/etc/Wireless/RT2860/RT2860.dat"
 #define STA_PROFILE_PATH_RBUS		"/etc/Wireless/RT2860/RT2860.dat"
-#define RT2880_STA_DRIVER_VERSION	"1.0.0.0"
+#define RT2880_STA_DRIVER_VERSION	"1.0.0.0.P21"
 #endif /* RTMP_RBUS_SUPPORT */
 
 extern	const struct iw_handler_def rt28xx_iw_handler_def;
