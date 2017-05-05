@@ -50,6 +50,9 @@ static char const RCSID[] =
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/socket.h>
+#include <linux/if.h>
+
 #ifdef HAVE_NET_IF_ARP_H
 #include <net/if_arp.h>
 #endif
