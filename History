@@ -3041,10 +3041,11 @@
 15) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
 16) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
 17) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
-18) kernel: net: ping: implement proper locking.<br>
-19) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-20) kernel: net: remove unnecessary carrier status check.<br>
-21) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+18) kernel: net: remove unnecessary carrier status check.<br>
+19) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+20) kernel: net: ping: implement proper locking.<br>
+21) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+22) kernel: net: neigh: guard against NULL solicit() method.<br>
 <br>
 <br>
 <br>
