@@ -179,7 +179,7 @@ static int __init pcibios_init(void)
 	struct pci_controller *hose;
 
 	/* Scan all of the recorded PCI controllers.  */
-	list_for_each_entry(hose, &controllers, list)
+	list_for_each_entry_reverse(hose, &controllers, list)
 		pcibios_scanbus(hose);
 
 	pci_fixup_irqs(pci_common_swizzle, pcibios_map_irq);
