@@ -2093,9 +2093,6 @@ typedef struct _MAC_TABLE_ENTRY {
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 	enum RATE_ADAPT_ALG rateAlg;
 
-	UCHAR ContinuelowTrafficCnt;
-	BOOLEAN ContinuelowTraffic;
-	
 #ifdef PEER_DELBA_TX_ADAPT
 	BOOLEAN bPeerDelBaTxAdaptEn;
 	RALINK_TIMER_STRUCT DelBA_tx_AdaptTimer;
@@ -2386,7 +2383,6 @@ typedef struct _MAC_TABLE {
 #endif				/* WAPI_SUPPORT */
 
 #ifdef CONFIG_AP_SUPPORT	
-	BOOLEAN fAllStaIsHighTraffic;
 	UCHAR fStationHighTrafficCount;
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -2816,8 +2812,6 @@ typedef struct _AP_ADMIN_CONFIG {
 	BND_STRG_CLI_TABLE BndStrgTable;
 #endif /* BAND_STEERING */
 
-	BOOLEAN fAllStatIsHighTraffic;
-	UCHAR fStaHighTrafficCount;
 } AP_ADMIN_CONFIG, *PAP_ADMIN_CONFIG;
 
 #ifdef IGMP_SNOOP_SUPPORT

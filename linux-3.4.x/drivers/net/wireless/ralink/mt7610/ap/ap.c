@@ -1039,11 +1039,6 @@ VOID MacTableMaintenance(
 	pMacTable->fAnyWapiStation = FALSE;
 #endif /* WAPI_SUPPORT */
 
-#ifdef CONFIG_AP_SUPPORT
-	pMacTable->fAllStaIsHighTraffic = FALSE;
-	pMacTable->fStationHighTrafficCount = 0;
-#endif /* CONFIG_AP_SUPPORT */
-
 #ifdef MAC_REPEATER_SUPPORT
 	if (pAd->ApCfg.bMACRepeaterEn == TRUE)
 		MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
@@ -1490,13 +1485,6 @@ VOID MacTableMaintenance(
 		if (pEntry->RssiSample.AvgRssi0 > -62)
 			bDisableSF = TRUE;
 #endif /* MT76x0 */
-#ifdef CONFIG_AP_SUPPORT
-	if (pEntry->ContinuelowTraffic == FALSE)
-	{
-		pMacTable->fStationHighTrafficCount++;
-	}
-#endif /* CONFIG_AP_SUPPORT */
-
 	}
 
 #ifdef MT76x0
@@ -1643,68 +1631,6 @@ VOID MacTableMaintenance(
 		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, pMacTable->fAnyStationNonGF);
 	}
 #endif /* DOT11_N_SUPPORT */
-
-#ifdef CONFIG_AP_SUPPORT
-	if (pMacTable->fStationHighTrafficCount >= 3)
-	    pMacTable->fAllStaIsHighTraffic = TRUE;
-	    if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE))
-	{
-	    {
-		pAd->ApCfg.fAllStatIsHighTraffic = pMacTable->fAllStaIsHighTraffic;
-		pAd->ApCfg.fStaHighTrafficCount = pMacTable->fStationHighTrafficCount;
-		if (pAd->ApCfg.fAllStatIsHighTraffic == TRUE)
-		{
-			UINT32 RegValue;
-			UCHAR txop_value = 0;
-
-			RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-
-			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
-				txop_value = 0x80;
-			else if (pAd->CommonCfg.bEnableTxBurst)
-				txop_value = 0x20;
-			else
-				txop_value = 0;
-#ifdef MULTI_CLIENT_SUPPORT
-			asic_change_tx_retry(pAd, pAd->ApCfg.EntryClientCount);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.1) under HT/VHT mode\n", __FUNCTION__));
-			if(pAd->MacTab.Size > 2) /* for Multi-Clients */
-			{
-				txop_value = 0;
-			}
-#endif /* MULTI_CLIENT_SUPPORT */
-			RegValue  &= 0xFFFFFF00;
-			RegValue  |= txop_value;
-			RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, RegValue);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (1) under HT/VHT mode\n", __FUNCTION__));
-		}
-		else
-		{
-			UINT32 RegValue;
-			UCHAR txop_value = 0;
-
-			RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &RegValue);
-
-#ifdef MULTI_CLIENT_SUPPORT
-			asic_change_tx_retry(pAd, 1);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (0.2) under HT/VHT mode\n", __FUNCTION__));
-#endif /* MULTI_CLIENT_SUPPORT */
-
-			if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
-				txop_value = 0x80;
-			else if (pAd->CommonCfg.bEnableTxBurst)
-				txop_value = 0x20;
-			else
-			txop_value = 0;
-			RegValue  &= 0xFFFFFF00;
-			RegValue  |= txop_value;
-			RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, RegValue);
-			DBGPRINT(RT_DEBUG_INFO, ("%s::condition (2) under HT/VHT mode\n", __FUNCTION__));
-		}
-	}
-}
-#endif /* CONFIG_AP_SUPPORT */
-
 
 #ifdef RTMP_MAC_PCI
 	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);

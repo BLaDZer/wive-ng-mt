@@ -3255,10 +3255,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->ed_block_tx_threshold = 2;
 #endif /* ED_MONITOR */
 
-#ifdef CONFIG_AP_SUPPORT
-	pAd->ApCfg.fAllStatIsHighTraffic = FALSE;
-#endif /* CONFIG_AP_SUPPORT */
-
 	DBGPRINT(RT_DEBUG_TRACE, ("<-- UserCfgInit\n"));
 }
 

@@ -1208,20 +1208,6 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		MlmeRALog(pAd, pEntry, RAL_QUICK_DRS, TxErrorRatio, TxTotalCnt);
 #endif /* DBG_CTRL_SUPPORT */
 
-	if (TxTotalCnt <= 15)
-	{
-		pEntry->ContinuelowTrafficCnt++;
-		if (pEntry->ContinuelowTrafficCnt >= pAd->CommonCfg.lowTrafficThrd)
-		{
-			pEntry->ContinuelowTrafficCnt = 0;
-			pEntry->ContinuelowTraffic = TRUE;
-		}
-	}
-	else
-	{
-		pEntry->ContinuelowTraffic = FALSE;
-	}
-
 	/*  Handle the low traffic case */
 	if ((TxCnt <= 15) &&
 	    (pEntry->HTPhyMode.field.MODE == MODE_HTMIX
