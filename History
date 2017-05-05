@@ -3044,10 +3044,11 @@
 18) kernel: net: remove unnecessary carrier status check.<br>
 19) kernel: net: initialize msg.msg_flags in recvfrom.<br>
 20) kernel: net: ping: implement proper locking.<br>
-21) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-22) kernel: net: neigh: guard against NULL solicit() method.<br>
-23) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-24) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+21) kernel: net: neigh: guard against NULL solicit() method.<br>
+22) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+23) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+24) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+25) kernel: net: packet: fix overflow in check for tp_reserve.<br>
 <br>
 <br>
 <br>
