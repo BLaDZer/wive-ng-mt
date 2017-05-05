@@ -77,6 +77,18 @@ int is_name_synthetic(int flags, char *name, struct all_addr *addr)
       
       *p = 0;	
       
+ #ifdef HAVE_IPV6
+      if (prot == AF_INET6 && strstr(tail, "--ffff-") == tail)
+	{
+	  /* special hack for v4-mapped. */
+	  memcpy(tail, "::ffff:", 7);
+	  for (p = tail + 7; *p; p++)
+	    if (*p == '-')
+	      *p = '.';
+	}
+      else
+#endif
+	{
       /* swap . or : for - */
       for (p = tail; *p; p++)
 	if (*p == '-')
@@ -88,6 +100,7 @@ int is_name_synthetic(int flags, char *name, struct all_addr *addr)
 	      *p = ':';
 #endif
 	  }
+	}
       
       if (hostname_isequal(c->domain, p+1) && inet_pton(prot, tail, addr))
 	{
@@ -169,8 +182,9 @@ int is_rev_synth(int flag, struct all_addr *addr, char *name)
 	   inet_ntop(AF_INET6, &addr->addr.addr6, name+1, ADDRSTRLEN);
 	 }
 
+       /* V4-mapped have periods.... */
        for (p = name; *p; p++)
-	 if (*p == ':')
+	 if (*p == ':' || *p == '.')
 	   *p = '-';
 
        strncat(name, ".", MAXDNAME);

@@ -18,14 +18,16 @@
 #define MAX_PROCS 10 /* max no children for TCP requests */
 #define CHILD_LIFETIME 150 /* secs 'till terminated (RFC1035 suggests > 120s) */
 #define TCP_MAX_QUERIES 100 /* Maximum number of queries per incoming TCP connection */
+#define TCP_BACKLOG 32  /* kernel backlog limit for TCP connections */
 #define EDNS_PKTSZ 4096 /* default max EDNS.0 UDP packet from RFC5625 */
 #define SAFE_PKTSZ 1280 /* "go anywhere" UDP packet size */
-#define KEYBLOCK_LEN 40 /* choose to mininise fragmentation when storing DNSSEC keys */
+#define KEYBLOCK_LEN 40 /* choose to minimise fragmentation when storing DNSSEC keys */
 #define DNSSEC_WORK 50 /* Max number of queries to validate one question */
 #define TIMEOUT 10 /* drop UDP queries after TIMEOUT seconds */
 #define FORWARD_TEST 50 /* try all servers every 50 queries */
 #define FORWARD_TIME 20 /* or 20 seconds */
 #define SERVERS_LOGGED 30 /* Only log this many servers when logging state */
+#define LOCALS_LOGGED 8 /* Only log this many local addresses when logging state */
 #define RANDOM_SOCKS 64 /* max simultaneous random ports */
 #define LEASE_RETRY 60 /* on error, retry writing leasefile after LEASE_RETRY seconds */
 #define CACHESIZ 150 /* default cache size */
@@ -105,7 +107,7 @@ HAVE_IDN
 	 *-i18n makefile targets, even if HAVE_IDN is not explicitly set.
 
 HAVE_CONNTRACK
-   define this to include code which propogates conntrack marks from
+   define this to include code which propagates conntrack marks from
    incoming DNS queries to the corresponding upstream queries. This adds
    a build-dependency on libnetfilter_conntrack, but the resulting binary will
    still run happily on a kernel without conntrack support.
@@ -126,6 +128,9 @@ HAVE_LOOP
 
 HAVE_INOTIFY
    use the Linux inotify facility to efficiently re-read configuration files.
+
+NO_ID
+   Don't report *.bind CHAOS info to clients, forward such requests upstream instead.
 
 NOTES:
    For Linux you should define
@@ -182,7 +187,7 @@ NOTES:
 
 /* platform dependent options. */
 
-/* Must preceed __linux__ since uClinux defines __linux__ too. */
+/* Must precede __linux__ since uClinux defines __linux__ too. */
 #if defined(__uClinux__)
 #define HAVE_LINUX_NETWORK
 #define HAVE_GETOPT_LONG
@@ -220,7 +225,7 @@ NOTES:
       defined(__DragonFly__) || \
       defined(__FreeBSD_kernel__)
 #define HAVE_BSD_NETWORK
-/* Later verions of FreeBSD have getopt_long() */
+/* Later versions of FreeBSD have getopt_long() */
 #if defined(optional_argument) && defined(required_argument)
 #   define HAVE_GETOPT_LONG
 #endif
@@ -333,7 +338,7 @@ NOTES:
 #endif
 
 /* Define a string indicating which options are in use.
-   DNSMASQP_COMPILE_OPTS is only defined in dnsmasq.c */
+   DNSMASQ_COMPILE_OPTS is only defined in dnsmasq.c */
 
 #ifdef DNSMASQ_COMPILE_OPTS
 
@@ -373,6 +378,7 @@ static char *compile_opts =
      "no-"
 #  endif  
      "DHCPv6 "
+#endif
 #  if !defined(HAVE_SCRIPT)
      "no-scripts "
 #  else
@@ -381,7 +387,6 @@ static char *compile_opts =
 #    endif
      "Lua "
 #  endif
-#endif
 #ifndef HAVE_TFTP
 "no-"
 #endif
@@ -402,6 +407,9 @@ static char *compile_opts =
 "no-"
 #endif
 "DNSSEC "
+#ifdef NO_ID
+"no-ID "
+#endif
 #ifndef HAVE_LOOP
 "no-"
 #endif

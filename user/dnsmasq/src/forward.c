@@ -853,7 +853,8 @@ void reply_query(int fd, int family, time_t now)
      we get a good reply from another server. Kill it when we've
      had replies from all to avoid filling the forwarding table when
      everything is broken */
-  if (forward->forwardall == 0 || --forward->forwardall == 1 || RCODE(header) != REFUSED)
+  if (forward->forwardall == 0 || --forward->forwardall == 1 ||
+      (RCODE(header) != REFUSED && RCODE(header) != SERVFAIL))
     {
       int check_rebind = 0, no_cache_dnssec = 0, cache_secure = 0, bogusanswer = 0;
 
@@ -896,7 +897,7 @@ void reply_query(int fd, int family, time_t now)
 		    status = dnssec_validate_ds(now, header, n, daemon->namebuff, daemon->keyname, forward->class);
 		  else
 		    status = dnssec_validate_reply(now, header, n, daemon->namebuff, daemon->keyname, &forward->class, 
-						   option_bool(OPT_DNSSEC_NO_SIGN), NULL, NULL);
+						   option_bool(OPT_DNSSEC_NO_SIGN) && (server->flags && SERV_DO_DNSSEC), NULL, NULL);
 		}
 	      
 	      /* Can't validate, as we're missing key data. Put this
@@ -1038,7 +1039,7 @@ void reply_query(int fd, int family, time_t now)
 	      if (!forward->dependent)
 		break;
 	      
-	      /* validated subsdiary query, (and cached result)
+	      /* validated subsidiary query, (and cached result)
 		 pop that and return to the previous query we were working on. */
 	      struct frec *prev = forward->dependent;
 	      free_frec(forward);
@@ -1326,8 +1327,8 @@ void receive_query(struct listener *listen, time_t now)
 	{
 	  struct irec *iface;
 	  
-	  /* get the netmask of the interface whch has the address we were sent to.
-	     This is no neccessarily the interface we arrived on. */
+	  /* get the netmask of the interface which has the address we were sent to.
+	     This is no necessarily the interface we arrived on. */
 	  
 	  for (iface = daemon->interfaces; iface; iface = iface->next)
 	    if (iface->addr.sa.sa_family == AF_INET &&
@@ -1448,7 +1449,7 @@ void receive_query(struct listener *listen, time_t now)
 }
 
 #ifdef HAVE_DNSSEC
-/* Recurse up the key heirarchy */
+/* Recurse up the key hierarchy */
 static int tcp_key_recurse(time_t now, int status, struct dns_header *header, size_t n, 
 			   int class, char *name, char *keyname, struct server *server, 
 			   int have_mark, unsigned int mark, int *keycount)
@@ -1465,6 +1466,7 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
       char *domain;
       size_t m; 
       unsigned char c1, c2;
+      struct server *firstsendto = NULL;
             
       /* limit the amount of work we do, to avoid cycling forever on loops in the DNS */
       if (--(*keycount) == 0)
@@ -1474,7 +1476,8 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
       else if (status == STAT_NEED_DS)
 	new_status = dnssec_validate_ds(now, header, n, name, keyname, class);
       else 
-	new_status = dnssec_validate_reply(now, header, n, name, keyname, &class, option_bool(OPT_DNSSEC_NO_SIGN), NULL, NULL);
+	new_status = dnssec_validate_reply(now, header, n, name, keyname, &class,
+					   option_bool(OPT_DNSSEC_NO_SIGN) && (server->flags && SERV_DO_DNSSEC), NULL, NULL);
       
       if (new_status != STAT_NEED_DS && new_status != STAT_NEED_KEY)
 	break;
@@ -1503,43 +1506,41 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
       /* Find server to forward to. This will normally be the 
 	 same as for the original query, but may be another if
 	 servers for domains are involved. */		      
-      if (search_servers(now, NULL, F_QUERY, keyname, &type, &domain, NULL) == 0)
+      if (search_servers(now, NULL, F_QUERY, keyname, &type, &domain, NULL) != 0)
 	{
-	  struct server *start = server, *new_server = NULL;
+	  new_status = STAT_ABANDONED;
+	  break;
+	}
+	
 	  type &= ~SERV_DO_DNSSEC;
 			   
 	  while (1)
 	    {
-	      if (type == (start->flags & SERV_TYPE) &&
-		  (type != SERV_HAS_DOMAIN || hostname_isequal(domain, start->domain)) &&
-		  !(start->flags & (SERV_LITERAL_ADDRESS | SERV_LOOP)))
+	  if (!firstsendto)
+	    firstsendto = server;
+	  else
 		{
-		  new_server = start;
-		  if (server == start)
+	      if (!(server = server->next))
+		server = daemon->servers;
+	      if (server == firstsendto)
 		    {
-		      new_server = NULL;
+		  /* can't find server to accept our query. */
+		  new_status = STAT_ABANDONED;
 		      break;
 		    }
 		}
 			       
-	      if (!(start = start->next))
-		start = daemon->servers;
-	      if (start == server)
-		break;
-	    }
-       
+	  if (type != (server->flags & SERV_TYPE) ||
+	      (type == SERV_HAS_DOMAIN && !hostname_isequal(domain, server->domain)) ||
+	      (server->flags & (SERV_LITERAL_ADDRESS | SERV_LOOP)))
+	    continue;
 
-	  if (new_server)
-	    {
-	      server = new_server;
+	retry:
 	      /* may need to make new connection. */
 	      if (server->tcpfd == -1)
 		{
 		  if ((server->tcpfd = socket(server->addr.sa.sa_family, SOCK_STREAM, 0)) == -1)
-		    {
-		      new_status = STAT_ABANDONED;
-		      break;
-		    }
+		continue; /* No good, next server */
 
 #ifdef HAVE_CONNTRACK
 		  /* Copy connection mark of incoming query to outgoing connection. */
@@ -1552,27 +1553,34 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
 		    {
 		      close(server->tcpfd);
 		      server->tcpfd = -1;
-		      new_status = STAT_ABANDONED;
-		      break;
+		  continue; /* No good, next server */
 		    }
 
+	      server->flags &= ~SERV_GOT_TCP;
 		}
-	    }
-	}
-
       
       if (!read_write(server->tcpfd, packet, m + sizeof(u16), 0) ||
 	  !read_write(server->tcpfd, &c1, 1, 1) ||
 	  !read_write(server->tcpfd, &c2, 1, 1) ||
 	  !read_write(server->tcpfd, payload, (c1 << 8) | c2, 1))
 	{
-	  new_status = STAT_ABANDONED;
-	  break;
+	      close(server->tcpfd);
+	      server->tcpfd = -1;
+	      /* We get data then EOF, reopen connection to same server,
+		 else try next. This avoids DoS from a server which accepts
+		 connections and then closes them. */
+	      if (server->flags & SERV_GOT_TCP)
+		goto retry;
+	      else
+		continue;
 	}
 
-      m = (c1 << 8) | c2;
+	  server->flags |= SERV_GOT_TCP;
       
+	  m = (c1 << 8) | c2;
       new_status = tcp_key_recurse(now, new_status, new_header, m, class, name, keyname, server, have_mark, mark, keycount);
+	  break;
+	}
       
       if (new_status != STAT_OK)
 	break;
@@ -1587,7 +1595,7 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
 
 
 /* The daemon forks before calling this: it should deal with one connection,
-   blocking as neccessary, and then return. Note, need to be a bit careful
+   blocking as necessary, and then return. Note, need to be a bit careful
    about resources for debug mode, when the fork is suppressed: that's
    done by the caller. */
 unsigned char *tcp_request(int confd, time_t now,
@@ -1799,7 +1807,7 @@ unsigned char *tcp_request(int confd, time_t now,
 		  unsigned int crc = questions_crc(header, (unsigned int)size, daemon->namebuff);
 #endif		  
 		  /* Loop round available servers until we succeed in connecting to one.
-		     Note that this code subtley ensures that consecutive queries on this connection
+		     Note that this code subtly ensures that consecutive queries on this connection
 		     which can go to the same server, do so. */
 		  while (1) 
 		    {
@@ -1820,6 +1828,7 @@ unsigned char *tcp_request(int confd, time_t now,
 			  (last_server->flags & (SERV_LITERAL_ADDRESS | SERV_LOOP)))
 			continue;
 		      
+		    retry:
 		      if (last_server->tcpfd == -1)
 			{
 			  if ((last_server->tcpfd = socket(last_server->addr.sa.sa_family, SOCK_STREAM, 0)) == -1)
@@ -1839,6 +1848,9 @@ unsigned char *tcp_request(int confd, time_t now,
 			      continue;
 			    }
 			  
+			  last_server->flags &= ~SERV_GOT_TCP;
+			}
+		      
 #ifdef HAVE_DNSSEC
 			  if (option_bool(OPT_DNSSEC_VALID) && (last_server->flags & SERV_DO_DNSSEC))
 			    {
@@ -1856,7 +1868,6 @@ unsigned char *tcp_request(int confd, time_t now,
 				header->hb4 |= HB4_CD;
 			    }
 #endif
-			}
 		      
 		      *length = htons(size);
 
@@ -1871,9 +1882,17 @@ unsigned char *tcp_request(int confd, time_t now,
 			{
 			  close(last_server->tcpfd);
 			  last_server->tcpfd = -1;
+			  /* We get data then EOF, reopen connection to same server,
+			     else try next. This avoids DoS from a server which accepts
+			     connections and then closes them. */
+			  if (last_server->flags & SERV_GOT_TCP)
+			    goto retry;
+			  else
 			  continue;
 			} 
 		      
+		      last_server->flags |= SERV_GOT_TCP;
+
 		      m = (c1 << 8) | c2;
 		      
 		      if (last_server->addr.sa.sa_family == AF_INET)

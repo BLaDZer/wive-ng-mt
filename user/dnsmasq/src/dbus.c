@@ -549,8 +549,7 @@ static DBusMessage *dbus_add_lease(DBusMessage* message)
     return dbus_message_new_error_printf(message, DBUS_ERROR_INVALID_ARGS,
 					 "Invalid IP address '%s'", ipaddr);
    
-  hw_len = parse_hex((char*)hwaddr, dhcp_chaddr, DHCP_CHADDR_MAX, NULL,
-		     &hw_type);
+  hw_len = parse_hex((char*)hwaddr, dhcp_chaddr, DHCP_CHADDR_MAX, NULL, &hw_type);
   if (hw_type == 0 && hw_len != 0)
     hw_type = ARPHRD_ETHER;
 
