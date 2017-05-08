@@ -434,26 +434,20 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 #define APCLI_IF_UP_CHECK(pAd, ifidx) (RtmpOSNetDevIsUp((pAd)->ApCfg.ApCliTab[(ifidx)].wdev.if_dev) == TRUE)
 
 #ifdef RTMP_MAC_PCI
-#ifdef MEMORY_OPTIMIZATION
-#define TX_RING_SIZE            64
-#define RX_RING_SIZE            64
-#define MGMT_RING_SIZE          32
-#else
 #ifdef DOT11_VHT_AC
 #define TX_RING_SIZE            256
-#define RX_RING_SIZE            256
+#define RX_RING_SIZE            128
 #else
 #define TX_RING_SIZE            128
-#define RX_RING_SIZE            128
+#define RX_RING_SIZE            64
 #endif /* DOT11_VHT_AC */
 #define MGMT_RING_SIZE          128
-#endif /* MEMORY_OPTIMIZATION */
+
 #define MAX_TX_PROCESS          TX_RING_SIZE
 #define MAX_DMA_DONE_PROCESS    TX_RING_SIZE
 #define MAX_TX_DONE_PROCESS     TX_RING_SIZE
-#define LOCAL_TXBUF_SIZE        2
 
-#define RX1_RING_SIZE		32
+#define RX1_RING_SIZE		RX_RING_SIZE/2
 #endif /* RTMP_MAC_PCI */
 
 #define RTMP_OS_NETDEV_SET_PRIV		RtmpOsSetNetDevPriv
