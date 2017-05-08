@@ -500,6 +500,12 @@ struct rx_signal_info{
 }
 #endif /* DOT11_VHT_AC */
 
+#ifdef DATA_QUEUE_RESERVE
+/*
+	This value must small than MAX_PACKETS_IN_QUEUE
+*/
+#define FIFO_RSV_FOR_HIGH_PRIORITY 	64
+#endif /* DATA_QUEUE_RESERVE */
 
 /*
 	Common fragment list structure -  Identical to the scatter gather frag list structure

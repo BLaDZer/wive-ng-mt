@@ -433,6 +433,9 @@ typedef union _CAPTURE_MODE_PACKET_BUFFER {
 #define SQ_ENQ_RESERVE_PERAC 	(SQ_ENQ_NORMAL_MAX/2)
 
 #ifdef DATA_QUEUE_RESERVE
+/*
+	This value must small than MAX_PACKETS_IN_QUEUE
+*/
 #define FIFO_RSV_FOR_HIGH_PRIORITY 	64
 #endif /* DATA_QUEUE_RESERVE */
 
