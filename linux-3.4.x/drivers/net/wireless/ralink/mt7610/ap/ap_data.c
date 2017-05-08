@@ -3524,7 +3524,7 @@ NDIS_STATUS APCheckRxError(
 	error, and perform error action (DEAUTH or DISASSOC) accordingly
   ========================================================================
 */
-BOOLEAN APCheckClass2Class3Error(
+static BOOLEAN APChkCls2Cls3Err(
 	IN	PRTMP_ADAPTER	pAd,
 	IN 	ULONG Wcid, 
 	IN	PHEADER_802_11	pHeader)
@@ -3535,14 +3535,8 @@ BOOLEAN APCheckClass2Class3Error(
 	{
 		MAC_TABLE_ENTRY *pEntry;
 
-		/* not allow reserved wcid data to process as client data, always send DEAUTH and return TRUE, Microtik uncorrect bcast data frames issue */
-		if (Wcid >= RESERVED_WCID) {
-			APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, pHeader);
-			return TRUE;
-		}
-
 		pEntry = MacTableLookup(pAd, pHeader->Addr2);
-		if (pEntry)
+		if (pEntry && IS_ENTRY_CLIENT(pEntry))
 			return FALSE;
 
 		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
@@ -3552,8 +3546,7 @@ BOOLEAN APCheckClass2Class3Error(
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, pHeader);
 		return TRUE;
 	}
-
-	if (pAd->MacTab.Content[Wcid].Sst == SST_ASSOC)
+	else if (pAd->MacTab.Content[Wcid].Sst == SST_ASSOC)
 		; /* okay to receive this DATA frame */
 	else if (pAd->MacTab.Content[Wcid].Sst == SST_AUTH)
 	{
@@ -4086,63 +4079,6 @@ VOID APRxDErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 	pAd->Counters8023.RxErrors++;
 	/* DBGPRINT(RT_DEBUG_TRACE, ("<--APRxDErrorHandle\n")); */
-}
-
-#ifdef RLT_MAC_DBG
-static int dump_next_valid = 0;
-#endif
-BOOLEAN APCheckVaildDataFrame(
-	IN RTMP_ADAPTER *pAd,
-	IN RX_BLK *pRxBlk)
-{
-	PHEADER_802_11 pHeader = pRxBlk->pHeader;
-	RXWI_STRUC *pRxWI = pRxBlk->pRxWI;
-	BOOLEAN isVaild = FALSE;
-
-	do
-	{
-#ifndef APCLI_SUPPORT
-		/* should not drop Ap-Client packet. */
-		if (pHeader->FC.ToDs == 0)
-			break; /* give up this frame */
-#endif /* APCLI_SUPPORT */
-	
-		/* check if Class2 or 3 error */
-		if ((pHeader->FC.FrDs == 0) && (APCheckClass2Class3Error(pAd, pRxWI->RxWIWirelessCliID, pHeader))) 
-			break; /* give up this frame */
-
-//+++Add by shiang for debug
-#ifdef RLT_MAC_DBG
-		if (pRxWI->RxWIWirelessCliID >= MAX_LEN_OF_MAC_TABLE) {
-				MAC_TABLE_ENTRY *pEntry = NULL;
-
-				pEntry = MacTableLookup(pAd, pHeader->Addr2);
-				if (pEntry && (pEntry->Sst == SST_ASSOC) && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
-				{
-					pRxWI->RxWIWirelessCliID = pEntry->Aid;
-					dump_next_valid = 1;
-				}
-		}
-		else if (dump_next_valid)
-		{
-				DBGPRINT(RT_DEBUG_ERROR, ("NextValidWcidPkt: seq=%d, ts=0x%02x%02x%02x%02x\n",
-									pHeader->Sequence,
-									pRxBlk->pRxWI->RXWI_N.rssi[0],
-									pRxBlk->pRxWI->RXWI_N.rssi[1],
-									pRxBlk->pRxWI->RXWI_N.rssi[2],
-									pRxBlk->pRxWI->RXWI_N.rssi[3]));
-				dump_next_valid = 0;
-		}
-#endif /* RLT_MAC_DBG */
-//---Add by shiang for debug
-
-		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
-			break; /* give up this frame */
-
-		isVaild = TRUE;
-	} while (0);
-
-	return isVaild;
 }
 
 /* For TKIP frame, calculate the MIC value */
@@ -4858,23 +4794,6 @@ VOID APHandleRxDataFrame(
 	REPEATER_CLIENT_ENTRY *pReptEntry = NULL;
 #endif /* MAC_REPEATER_SUPPORT */
 
-	if (APCheckVaildDataFrame(pAd, pRxBlk) != TRUE)
-	{
-		goto err;		
-	}
-	
-#ifdef IDS_SUPPORT
-	/*
-		Replay attack detection
-		Detect a spoofed data frame from a rogue AP, ignore it.
-	*/
-	if (pFmeCtrl->FrDs == 1 && 
-		(RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
-	{
-		goto err;
-	}
-#endif /* IDS_SUPPORT */
-
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{
@@ -5031,13 +4950,27 @@ VOID APHandleRxDataFrame(
 	}
 	else
 	{
+#ifdef IDS_SUPPORT
+		/*
+			Replay attack detection
+			drop it if detect a spoofed data frame from a rogue AP
+		*/
+		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
+			goto err;
+#endif /* IDS_SUPPORT */
+
+		/* check if Class2 or 3 error */
+		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
+			goto err;
+
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
+			goto err;
+
 		pEntry = PACInquiry(pAd, pRxWI->RxWIWirelessCliID);
 
 		/*	can't find associated STA entry then filter invlid data frame */
 		if (!pEntry)
-		{		
 			goto err;
-		}
 
 		FromWhichBSSID = pEntry->apidx;
 
@@ -5412,24 +5345,6 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	COUNTER_RALINK *pCounter = &pAd->RalinkCounters;
 	UCHAR *pData;
 
-
-	if (APCheckVaildDataFrame(pAd, pRxBlk) != TRUE)
-	{
-		goto err;		
-	}
-
-#ifdef IDS_SUPPORT
-	/*
-		Replay attack detection
-		Detect a spoofed data frame from a rogue AP, ignore it.
-	*/
-	if (pFmeCtrl->FrDs == 1 && 
-		(RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
-	{
-		goto err;
-	}
-#endif /* IDS_SUPPORT */
-
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{
@@ -5549,6 +5464,22 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	}
 	else
 	{
+#ifdef IDS_SUPPORT
+		/*
+			Replay attack detection
+			drop it if detect a spoofed data frame from a rogue AP
+		*/
+		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
+			goto err;
+#endif /* IDS_SUPPORT */
+
+		/* check if Class2 or 3 error */
+		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
+			goto err;
+
+		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
+			goto err;
+
 		pEntry = PACInquiry(pAd, pRxWI->RxWIWirelessCliID);
 
 		/*	can't find associated STA entry then filter invlid data frame */

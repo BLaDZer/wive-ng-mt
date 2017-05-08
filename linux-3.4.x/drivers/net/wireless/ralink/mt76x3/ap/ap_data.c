@@ -3181,14 +3181,8 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 	{
 		MAC_TABLE_ENTRY *pEntry;
 
-		/* not allow reserved wcid data to process as client data, always send DEAUTH and return TRUE, Microtik uncorrect bcast data frames issue */
-		if (wcid >= RESERVED_WCID) {
-			APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
-			return TRUE;
-		}
-
 		pEntry = MacTableLookup(pAd, hdr->Addr2);
-		if (pEntry)
+		if (pEntry && IS_ENTRY_CLIENT(pEntry))
 			return FALSE;
 
 		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%d) > %d\n",
@@ -3198,8 +3192,7 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
 	}
-
-	if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
+	else if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
 		; /* okay to receive this DATA frame */
 	else if (pAd->MacTab.Content[wcid].Sst == SST_AUTH)
 	{
@@ -3553,7 +3546,7 @@ INT ap_rx_pkt_allow(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #endif /* RLT_MAC_DBG */
 //---Add by shiang for debug
 
-	if(pAd->ApCfg.BANClass3Data == TRUE)
+	if(pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 		return FALSE;
 
 #ifdef STATS_COUNT_SUPPORT

@@ -455,8 +455,14 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	BOOLEAN bBndStrgCheck = TRUE;
 #endif /* BAND_STEERING */
 
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
 
-	if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
 		return;

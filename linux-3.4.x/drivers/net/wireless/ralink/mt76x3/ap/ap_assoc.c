@@ -1185,7 +1185,14 @@ VOID ap_cmm_peer_assoc_req_action(
 
 
 	/* disallow new association */
-	if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
+	if (pAd == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("%s: pAd is NULL\n",__FUNCTION__));
+ 		return;
+	}
+
+	/* disallow new association */
+	if (pAd->ApCfg.BANClass3Data == TRUE)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
 		return;

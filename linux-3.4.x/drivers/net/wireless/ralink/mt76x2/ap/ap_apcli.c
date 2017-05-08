@@ -515,11 +515,6 @@ BOOLEAN ApCliLinkUp(RTMP_ADAPTER *pAd, UCHAR ifIndex)
 		PhyMode = wdev->PhyMode;
 #endif /* APCLI_AUTO_BW_SUPPORT */
 
-		printk("!!! APCLI LINK UP - IF(%s%d) AuthMode(%d)=%s, WepStatus(%d)=%s!\n",
-					INF_APCLI_DEV_NAME, ifIndex, 
-					wdev->AuthMode, GetAuthMode(wdev->AuthMode),
-					wdev->WepStatus, GetEncryptType(wdev->WepStatus));
-
 #if defined (CONFIG_WIFI_PKT_FWD)
 #ifdef MAC_REPEATER_SUPPORT
 		if (CliIdx == 0xFF)

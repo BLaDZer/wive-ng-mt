@@ -104,11 +104,6 @@ NDIS_STATUS APCheckRxError(
 	IN RXINFO_STRUC *pRxInfo,
 	IN UCHAR Wcid);
 
-BOOLEAN APCheckClass2Class3Error(
-    IN  PRTMP_ADAPTER   pAd,
-	IN ULONG Wcid, 
-	IN  PHEADER_802_11  pHeader);
-
 VOID APHandleRxPsPoll(
 	IN	PRTMP_ADAPTER	pAd,
 	IN	PUCHAR			pAddr,

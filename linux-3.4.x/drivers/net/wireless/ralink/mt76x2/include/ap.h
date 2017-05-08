@@ -105,13 +105,8 @@ VOID APRxErrorHandle(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk);
 
 INT APCheckRxError(RTMP_ADAPTER *pAd, RXINFO_STRUC *pRxInfo, RX_BLK *pRxBlk);
 
-BOOLEAN APChkCls2Cls3Err(
-	IN RTMP_ADAPTER *pAd,
-	IN UCHAR Wcid, 
-	IN HEADER_802_11 *pHeader);
-
 VOID RTMPDescriptorEndianChange(UCHAR *pData, ULONG DescriptorType);
-    
+
 VOID RTMPFrameEndianChange(
     IN  RTMP_ADAPTER *pAd,
     IN  UCHAR *pData,
