@@ -1262,6 +1262,12 @@ do{                    \
 #define RTMP_GET_PACKET_MGMT_PKT_DATA_QUE(_p)		\
 		(RTPKT_TO_OSPKT(_p)->cb[CB_OFF+20] & 0x01)
 
+/* [CB_OFF+21]  */
+#ifdef DATA_QUEUE_RESERVE
+#define RTMP_SET_PACKET_ICMP(_p, _flg)   (RTPKT_TO_OSPKT(_p)->cb[CB_OFF+21] = _flg)
+#define RTMP_GET_PACKET_ICMP(_p)         (RTPKT_TO_OSPKT(_p)->cb[CB_OFF+21])
+#endif /* DATA_QUEUE_RESERVE */
+
 #define RTMP_SET_PACKET_5VT(_p, _flg)   (RTPKT_TO_OSPKT(_p)->cb[CB_OFF+22] = _flg)
 #define RTMP_GET_PACKET_5VT(_p)         (RTPKT_TO_OSPKT(_p)->cb[CB_OFF+22])
 

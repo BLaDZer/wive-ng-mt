@@ -507,6 +507,13 @@ typedef struct _RTMP_SCATTER_GATHER_LIST {
     }                                                                   \
 }
 
+#ifdef DATA_QUEUE_RESERVE
+/*
+	This value must small than MAX_PACKETS_IN_QUEUE
+*/
+#define FIFO_RSV_FOR_HIGH_PRIORITY 	64
+#endif /* DATA_QUEUE_RESERVE */
+
 /*
 	Enqueue this frame to MLME engine
 	We need to enqueue the whole frame because MLME need to pass data type
@@ -3302,6 +3309,10 @@ struct _RTMP_ADAPTER {
 	/* Maximum allowed tx software Queue length */
 	UINT32					TxSwQMaxLen;
 
+#ifdef DATA_QUEUE_RESERVE
+	UINT32 TxRsvLen; /* High priority data Queue reserve len */
+#endif /* DATA_QUEUE_RESERVE */
+
 	RTMP_DMABUF MgmtDescRing;	/* Shared memory for MGMT descriptors */
 	RTMP_MGMT_RING MgmtRing;
 	NDIS_SPIN_LOCK MgmtRingLock;	/* Prio Ring spinlock */
@@ -5212,13 +5223,12 @@ BOOLEAN RTMPFreeTXDUponTxDmaDone(
 	IN UCHAR            QueIdx);
 
 BOOLEAN RTMPCheckEtherType(
-	IN	PRTMP_ADAPTER	pAd, 
+	IN	PRTMP_ADAPTER	pAd,
 	IN	PNDIS_PACKET	pPacket,
 	IN	PMAC_TABLE_ENTRY pMacEntry,
 	IN	UCHAR			OpMode,
 	OUT PUCHAR pUserPriority,
 	OUT PUCHAR pQueIdx);
-
 
 VOID RTMPCckBbpTuning(
 	IN	PRTMP_ADAPTER	pAd, 

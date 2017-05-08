@@ -3035,13 +3035,15 @@
 9) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
 10) kernel: ralink_wifi: always set TIM bit for WCID_ALL/RESERVED.<br>
 11) kernel: ralink_wifi: always send deauth on class2/3 error to client.<br>
-13) kernel: ralink_wifi: mt7620: allow different queue for data/eapol.<br>
-14) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
-15) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
-16) kernel: ralink_wifi: mt76x2: ids replay attack check, and class2/3 data checks need only for AP path in RxPktHandle.<br>
-17) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
-18) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
-19) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
+12) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
+13) kernel: ralink_wifi: mt76x2: ids replay attack check, and class2/3 data checks need only for AP path in RxPktHandle.<br>
+14) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
+15) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
+16) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
+16) kernel: ralink_wifi: mt7610: fix ether type check function.<br>
+17) kernel: ralink_wifi: mt7610: implement data queue reserve logic.<br>
+18) kernel: ralink_wifi: mt7620: allow different queue for data/eapol.<br>
+19) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
 20) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
 21) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
 22) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>

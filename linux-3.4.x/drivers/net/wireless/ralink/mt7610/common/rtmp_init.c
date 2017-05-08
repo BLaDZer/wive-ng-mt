@@ -2812,7 +2812,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 	/* Tx Sw queue length setting */
 	pAd->TxSwQMaxLen = MAX_PACKETS_IN_QUEUE;
-	
+
+#ifdef DATA_QUEUE_RESERVE
+	pAd->TxRsvLen = FIFO_RSV_FOR_HIGH_PRIORITY;
+#endif /* DATA_QUEUE_RESERVE */
+
 	pAd->CommonCfg.bRalinkBurstMode = FALSE;
 
 

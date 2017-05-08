@@ -2028,6 +2028,19 @@ VOID DisassocParmFill(
 	DisassocReq->Reason = Reason;
 }
 
+#define ETH_TYPE_VLAN	0x8100
+#define ETH_TYPE_IPv4	0x0800
+#define ETH_TYPE_IPv6	0x86dd
+#define ETH_TYPE_ARP	0x0806
+#define ETH_TYPE_EAPOL	0x888e
+#define ETH_TYPE_WAI	0x88b4
+
+#define IP_VER_CODE_V4	0x40
+#define IP_VER_CODE_V6	0x60
+#define IP_PROTO_UDP	0x11
+#define IP_HDR_LEN		20
+#define ETH_HDR_LEN		14
+
 
 BOOLEAN RTMPCheckEtherType(
 	IN	PRTMP_ADAPTER	pAd,
@@ -2037,21 +2050,13 @@ BOOLEAN RTMPCheckEtherType(
 	OUT PUCHAR pUserPriority,
 	OUT PUCHAR pQueIdx)
 {
-	USHORT	TypeLen;
-	UCHAR	Byte0, Byte1;
-	PUCHAR	pSrcBuf;
-	UINT32	pktLen;
-	UINT16 	srcPort, dstPort;
+	UINT16 TypeLen;
+	UCHAR Byte0, Byte1, *pSrcBuf, up = 0;
 #ifdef CONFIG_AP_SUPPORT
+	BOOLEAN isMcast = FALSE;
 	MULTISSID_STRUCT *pMbss = NULL;
-#endif /* CONFIG_AP_SUPPORT */
 	BOOLEAN bWmmReq;
 
-#ifdef CONFIG_AP_SUPPORT
-/*	if (IS_ENTRY_CLIENT(pMacEntry))*/
-/*		 pMbss = pMacEntry->pMbss;*/
-/*	else*/
-/*		 pMbss = &pAd->ApCfg.MBSSID[MAIN_MBSSID];*/
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
 		/* for APClient, WDS, Mesh, they use MAIN BSS */
@@ -2061,12 +2066,7 @@ BOOLEAN RTMPCheckEtherType(
 			apidx = MAIN_MBSSID;
 		pMbss = &pAd->ApCfg.MBSSID[apidx];
 	}
-#endif /* CONFIG_AP_SUPPORT */
 
-	/*
-		for bc/mc packets, if it has VLAN tag or DSCP field, we also need
-		to get UP for IGMP use.
-	*/
 	bWmmReq = (
 #ifdef CONFIG_AP_SUPPORT
 				(
@@ -2076,19 +2076,20 @@ BOOLEAN RTMPCheckEtherType(
 				&& ((pMacEntry) &&
 					((VALID_WCID(pMacEntry->Aid) && CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_WMM_CAPABLE))
 						|| (pMacEntry->Aid == MCAST_WCID)));
-
+#endif
 	pSrcBuf = GET_OS_PKT_DATAPTR(pPacket);
-	pktLen = GET_OS_PKT_LEN(pPacket);
-
 	ASSERT(pSrcBuf);
 
 	RTMP_SET_PACKET_SPECIFIC(pPacket, 0);
-	
-	/* get Ethernet protocol field*/
-	TypeLen = (pSrcBuf[12] << 8) | pSrcBuf[13];
 
-	pSrcBuf += LENGTH_802_3;	/* Skip the Ethernet Header.*/
-	
+#ifdef CONFIG_AP_SUPPORT
+	if(IS_MULTICAST_MAC_ADDR(pSrcBuf))
+		isMcast = TRUE;
+#endif /* CONFIG_AP_SUPPORT */
+
+	/* get Ethernet protocol field and skip the Ethernet Header */
+	TypeLen = (pSrcBuf[12] << 8) | pSrcBuf[13];
+	pSrcBuf += LENGTH_802_3;
 	if (TypeLen <= 1500)
 	{	/* 802.3, 802.3 LLC*/
 		/*
@@ -2096,6 +2097,8 @@ BOOLEAN RTMPCheckEtherType(
 			DSAP(1) + SSAP(1) + Control(1) +
 			if the DSAP = 0xAA, SSAP=0xAA, Contorl = 0x03, it has a 5-bytes SNAP header.
 				=> + SNAP (5, OriginationID(3) + etherType(2))
+			else
+				=> It just has 3-byte LLC header, maybe a legacy ether type frame. we didn't handle it
 		*/
 		if (pSrcBuf[0] == 0xAA && pSrcBuf[1] == 0xAA && pSrcBuf[2] == 0x03)
 		{
@@ -2103,32 +2106,30 @@ BOOLEAN RTMPCheckEtherType(
 			RTMP_SET_PACKET_LLCSNAP(pPacket, 1);
 			TypeLen = (USHORT)((Byte0 << 8) + Byte1);
 			pSrcBuf += 8; /* Skip this LLC/SNAP header*/
-		}
-		else
-		{
-			/*It just has 3-byte LLC header, maybe a legacy ether type frame. we didn't handle it.*/
+		} else {
+			return FALSE;
 		}
 	}
 	
 	/* If it's a VLAN packet, get the real Type/Length field.*/
-	if (TypeLen == 0x8100)
+	if (TypeLen == ETH_TYPE_VLAN)
 	{
 #ifdef CONFIG_AP_SUPPORT
 		USHORT VLAN_VID = 0;
 
-		/* 0x8100 means VLAN packets */
+		/*
+			802.3 VLAN packets format:
+			
+			DstMAC(6B) + SrcMAC(6B)
+			+ 802.1Q Tag Type (2B = 0x8100) + Tag Control Information (2-bytes) 
+			+ Length/Type(2B) 
+			+ data payload (42-1500 bytes)
+			+ FCS(4B)
 
-		/* Dest. MAC Address (6-bytes) +
-		   Source MAC Address (6-bytes) +
-		   Length/Type = 802.1Q Tag Type (2-byte) +
-		   Tag Control Information (2-bytes) +
-		   Length / Type (2-bytes) +
-		   data payload (0-n bytes) +
-		   Pad (0-p bytes) +
-		   Frame Check Sequence (4-bytes) */
+			VLAN tag: 3-bit UP + 1-bit CFI + 12-bit VLAN ID
+		*/
 
-		/* No matter unicast or multicast */
-		/*if (IS_ENTRY_CLIENT(pMacEntry))*/
+		/* No matter unicast or multicast, discard it if not my VLAN packet. */
 #ifdef WDS_VLAN_SUPPORT
 		if (IS_ENTRY_WDS(pMacEntry))
 		{
@@ -2143,7 +2144,6 @@ BOOLEAN RTMPCheckEtherType(
 		{
 			VLAN_VID = pMbss->VLAN_VID;
 		}
-
 		if (VLAN_VID != 0)
 		{
 			/* check if the packet is my VLAN */
@@ -2152,11 +2152,8 @@ BOOLEAN RTMPCheckEtherType(
 
 			vlan_id = cpu2be16(vlan_id);
 			vlan_id = vlan_id & 0x0FFF; /* 12 bit */
-			if (vlan_id != VLAN_VID)
-			{
-				/* not my VLAN packet, discard it */
+			if (vlan_id != VLAN_VID)	/* not my VLAN packet, discard it */
 				return FALSE;
-			}
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -2164,111 +2161,104 @@ BOOLEAN RTMPCheckEtherType(
 		Sniff2BytesFromNdisBuffer((PNDIS_BUFFER)pSrcBuf, 2, &Byte0, &Byte1);
 		TypeLen = (USHORT)((Byte0 << 8) + Byte1);
 
-		/* only use VLAN tag */
-		if (bWmmReq)
-		{
-			*pUserPriority = (*pSrcBuf & 0xe0) >> 5;
-			*pQueIdx = MapUserPriorityToAccessCategory[*pUserPriority];
-		}
+		/* only use VLAN tag as UserPriority setting */
+		up = (*pSrcBuf & 0xe0) >> 5;
 
 		pSrcBuf += 4; /* Skip the VLAN Header.*/
-	}
-	else if (TypeLen == 0x0800)
+	} 
+	else if (TypeLen == ETH_TYPE_IPv4)
 	{
-		if (bWmmReq)
-		{
-			if ((*pSrcBuf & 0xf0) == 0x40) /* IPv4 */
-			{
-				/*
-					Version - 4-bit Internet Protocol version number.
-					Length - 4-bit IP header length.
-					Traffic Class - 8-bit TOS field.
-				*/
-				*pUserPriority = (*(pSrcBuf + 1) & 0xe0) >> 5;
-			}
-
-			*pQueIdx = MapUserPriorityToAccessCategory[*pUserPriority];
-		}
+		/*
+			0       4       8          14  15                      31(Bits)
+			+---+----+-----+----+---------------+
+			|Ver |  IHL |DSCP |ECN |    TotalLen           |
+			+---+----+-----+----+---------------+
+			Ver    - 4bit Internet Protocol version number.
+			IHL    - 4bit Internet Header Length
+			DSCP - 6bit Differentiated Services Code Point(TOS)
+			ECN   - 2bit Explicit Congestion Notification
+			TotalLen - 16bit IP entire packet length(include IP hdr)
+		*/
+		up = (*(pSrcBuf + 1) & 0xe0) >> 5;
 	}
-	else if (TypeLen == 0x86dd)
+	else if (TypeLen == ETH_TYPE_IPv6)
 	{
-		if (bWmmReq)
-		{
-			if ((*pSrcBuf & 0xf0) == 0x60) /* IPv6 */
-			{
-				/*
-					Version - 4-bit Internet Protocol version number.
-					Traffic Class - 8-bit traffic class field.
-				*/
-				*pUserPriority = ((*pSrcBuf) & 0x0e) >> 1;
-			}
-
-			*pQueIdx = MapUserPriorityToAccessCategory[*pUserPriority];
-		}
+		/*
+			0       4       8        12     16                      31(Bits)
+			+---+----+----+----+---------------+
+			|Ver | TrafficClas |  Flow Label                   |
+			+---+----+----+--------------------+
+			Ver           - 4bit Internet Protocol version number.
+			TrafficClas - 8bit traffic class field, the 6 most-significant bits used for DSCP
+		*/
+		up = ((*pSrcBuf) & 0x0e) >> 1;
 	}
+
+#ifdef RTMP_RBUS_SUPPORT
+#ifdef VIDEO_TURBINE_SUPPORT
+	if (pAd->VideoTurbine.Enable)
+	{
+		/* Ralink_VideoTurbine Out-band QoS */
+		struct sk_buff *pSkbPkt = RTPKT_TO_OSPKT(pPacket);
+
+		if(pSkbPkt->cb[40]==0x0E)
+			up = (pSkbPkt->cb[41] & 0xe0) >> 5;
+	}
+#endif /* VIDEO_TURBINE_SUPPORT */
+#endif /* RTMP_RBUS_SUPPORT */
 
 	switch (TypeLen)
 	{
-		case 0x0800:
+		case ETH_TYPE_IPv4:
 			{
-				/* return AC_BE if packet is not IPv4*/
-				if (bWmmReq && (*pSrcBuf & 0xf0) != 0x40)
+				UINT8 ipv4_proto = *(pSrcBuf + 9);
+
+				ASSERT((GET_OS_PKT_LEN(pPacket) > (ETH_HDR_LEN + IP_HDR_LEN)));	/* 14 for ethernet header, 20 for IP header*/
+				RTMP_SET_PACKET_IPV4(pPacket, 1);
+
+#ifdef DATA_QUEUE_RESERVE
+				if (ipv4_proto == 0x01)
 				{
-					*pUserPriority = 0;
-					*pQueIdx = QID_AC_BE;
+					RTMP_SET_PACKET_ICMP(pPacket, 1);
 				}
 				else
-					RTMP_SET_PACKET_IPV4(pPacket, 1);
-
-				ASSERT((pktLen > 34));
-				if (*(pSrcBuf + 9) == 0x11)
-				{	/* udp packet*/
-					ASSERT((pktLen > 34));	/* 14 for ethernet header, 20 for IP header*/
-					
-					pSrcBuf += 20;	/* Skip the IP header*/
+#endif /* DATA_QUEUE_RESERVE */
+				if (ipv4_proto == IP_PROTO_UDP)
+				{
+					UINT16 srcPort, dstPort;
+	
+					pSrcBuf += IP_HDR_LEN;
 					srcPort = OS_NTOHS(get_unaligned((PUINT16)(pSrcBuf)));
 					dstPort = OS_NTOHS(get_unaligned((PUINT16)(pSrcBuf+2)));
 		
 					if ((srcPort==0x44 && dstPort==0x43) || (srcPort==0x43 && dstPort==0x44))
-					{	/*It's a BOOTP/DHCP packet*/
+					{
+						/*It's a BOOTP/DHCP packet*/
 						RTMP_SET_PACKET_DHCP(pPacket, 1);
 					}
 				}
 			}
 			break;
-		case 0x86dd:
+		case ETH_TYPE_ARP:
 			{
-				/* return AC_BE if packet is not IPv6 */
-				if (bWmmReq &&
-					((*pSrcBuf & 0xf0) != 0x60))
-				{
-					*pUserPriority = 0;
-					*pQueIdx = QID_AC_BE;
-				}
-			}
-			break;
-		case 0x0806:
-			{
-				/*ARP Packet.*/
 				RTMP_SET_PACKET_DHCP(pPacket, 1);
 			}
 			break;
-		case 0x888e:
+		case ETH_P_IPV6:
 			{
-				/* EAPOL Packet.*/
-				RTMP_SET_PACKET_EAPOL(pPacket, 1);
+				/* return AC_BE if packet is not IPv6 */
+				if ((*pSrcBuf & 0xf0) != 0x60)
+					up = 0;
 			}
+			break;
+		case ETH_TYPE_EAPOL:
+			RTMP_SET_PACKET_EAPOL(pPacket, 1);
 			break;
 #ifdef WAPI_SUPPORT
-		case 0x88b4:
-			{
-				/* WAI Packet.*/
-				/*hex_dump("WAI Packet", pSrcBuf, pktLen);*/
-				RTMP_SET_PACKET_WAI(pPacket, 1);
-			}
+		case ETH_TYPE_WAI:
+			RTMP_SET_PACKET_WAI(pPacket, 1);
 			break;
 #endif /* WAPI_SUPPORT */
-
 
 		default:
 			break;
@@ -2286,17 +2276,28 @@ BOOLEAN RTMPCheckEtherType(
 		BE here and when we issue a BA session, the BA session will
 		be BE session, not VO session.
 	*/
-	if (pAd->CommonCfg.APEdcaParm.bACM[*pQueIdx])
+	if (pAd->CommonCfg.APEdcaParm.bACM[MapUserPriorityToAccessCategory[up]])
+		up = 0;
+
+
+	/*
+		Set WMM when
+		1. bWmmReq
+		2. Receiver's capability
+			a). bc/mc packets
+				->Need to get UP for IGMP use
+			b). unicast packets
+				-> CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_WMM_CAPABLE)
+		3. has VLAN tag or DSCP fields in IPv4/IPv6 hdr		
+	*/
+	if (bWmmReq && (up <= 7))
 	{
-		*pUserPriority = 0;
-		*pQueIdx		 = QID_AC_BE;
+		*pUserPriority = up;
+		*pQueIdx = MapUserPriorityToAccessCategory[up];
 	}
 
-
 	return TRUE;
-	
 }
-
 
 VOID Update_Rssi_Sample(
 	IN RTMP_ADAPTER *pAd,
