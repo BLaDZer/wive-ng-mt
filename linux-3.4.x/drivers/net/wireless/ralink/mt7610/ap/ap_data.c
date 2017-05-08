@@ -4598,7 +4598,10 @@ VOID APRxDataFrameAnnounce(
 				MLDSnooping(pAd, pDA, pSA,  pData, get_netdev_from_bssid(pAd, FromWhichBSSID));
 		}
 #endif /* IGMP_SNOOP_SUPPORT */
-
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+		if (pEntry && (IS_ENTRY_CLIENT(pEntry) || IS_ENTRY_APCLI(pEntry)))
+			RTMP_RxPacketClassify(pAd, pRxBlk, pEntry);
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 #ifdef STATS_COUNT_SUPPORT
 		if (pEntry
 			&& (IS_ENTRY_CLIENT(pEntry))

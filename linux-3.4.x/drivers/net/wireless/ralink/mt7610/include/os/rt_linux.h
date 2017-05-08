@@ -1284,6 +1284,11 @@ do{                    \
 /* [CB_OFF+28], 1B, Iverson patch for WMM A5-T07 ,WirelessStaToWirelessSta do not bulk out aggregate */
 #define RTMP_SET_PACKET_NOBULKOUT(_p, _morebit)			(RTPKT_TO_OSPKT(_p)->cb[CB_OFF+28] = _morebit)
 #define RTMP_GET_PACKET_NOBULKOUT(_p)				(RTPKT_TO_OSPKT(_p)->cb[CB_OFF+28])
+#else
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+#define RTMP_SET_PACKET_ETHTYPE(_p, _morebit)			(PACKET_CB(_p, 28) = _morebit)
+#define RTMP_GET_PACKET_ETHTYPE(_p)						(PACKET_CB(_p, 28))
+#endif
 #endif /* INF_AMAZON_SE */
 
 

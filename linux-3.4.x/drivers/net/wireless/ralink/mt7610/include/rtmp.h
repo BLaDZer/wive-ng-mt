@@ -4208,6 +4208,9 @@ typedef struct _RX_BLK_
 	UCHAR *pTransData;
 	USHORT TransDataSize;
 #endif /* HDR_TRANS_SUPPORT */
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+	UCHAR CriticalPkt;
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 } RX_BLK;
 
 
@@ -5230,6 +5233,13 @@ BOOLEAN RTMPCheckEtherType(
 	OUT PUCHAR pUserPriority,
 	OUT PUCHAR pQueIdx);
 
+#ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
+VOID RTMP_RxPacketClassify(
+	IN RTMP_ADAPTER *pAd,
+	IN RX_BLK *pRxBlk,
+	IN MAC_TABLE_ENTRY *pEntry);
+#endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
+
 VOID RTMPCckBbpTuning(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	UINT			TxRate);
@@ -6039,7 +6049,6 @@ VOID CntlOidDLSSetupProc(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem);
 #endif /* QOS_DLS_SUPPORT */
-
 
 VOID LinkUp(
 	IN  PRTMP_ADAPTER   pAd,
