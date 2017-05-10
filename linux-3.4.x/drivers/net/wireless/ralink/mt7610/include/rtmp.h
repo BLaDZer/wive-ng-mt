@@ -2159,8 +2159,10 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT32      OneSecRxSGICount;      	/* unicast-to-me Short GI count */
 
 #ifdef FIFO_EXT_SUPPORT
-	UINT32		fifoTxSucCnt;
-	UINT32		fifoTxRtyCnt;
+	UINT32 fifoTxSucCnt;
+	UINT32 fifoTxRtyCnt;
+	BOOLEAN bUseHwFifoExt;	/* Tx counter is by hardware FIFO Ext */
+	UCHAR hwFifoExtIdx;		/* The index of hardware Tx Counter. This variable is valid only if bUseHwFifoExt is TRUE. */
 #endif /* FIFO_EXT_SUPPORT */
 
 
@@ -3152,6 +3154,14 @@ typedef enum{
 }PKT_DROP_DIECTION;
 
 
+#ifdef FIFO_EXT_SUPPORT
+#define FIFO_EXT_HW_SIZE		8
+typedef struct _FIFO_EXT_ENTRY
+{
+	UCHAR wcid;
+	UINT32 hwTxCntCROffset;
+} FIFO_EXT_ENTRY, *PFIFO_EXT_ENTRY;
+#endif /*  FIFO_EXT_SUPPORT */
 
 
 typedef struct _BBP_RESET_CTL
@@ -3640,6 +3650,10 @@ struct _RTMP_ADAPTER {
 	COUNTER_RALINK RalinkCounters;	/* Ralink propriety counters */
 	/* COUNTER_DRS DrsCounters;	*/ /* counters for Dynamic TX Rate Switching */
 	PRIVATE_STRUC PrivateInfo;	/* Private information & counters */
+
+#ifdef FIFO_EXT_SUPPORT
+	FIFO_EXT_ENTRY FifoExtTbl[FIFO_EXT_HW_SIZE];
+#endif /*  FIFO_EXT_SUPPORT */
 
 	/* flags, see fRTMP_ADAPTER_xxx flags */
 	ULONG Flags;		/* Represent current device status */
@@ -4779,9 +4793,8 @@ VOID NICUpdateRawCounters(
 	IN  PRTMP_ADAPTER   pAd);
 
 #ifdef CONFIG_AP_SUPPORT
-VOID ClearTxRingClientAck(
-	IN PRTMP_ADAPTER pAd,
-	IN MAC_TABLE_ENTRY *pEntry);
+VOID ClearTxRingClientAck(IN PRTMP_ADAPTER pAd, IN MAC_TABLE_ENTRY *pEntry);
+VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSuccess, ULONG TxRetransmit);
 #endif /* CONFIG_AP_SUPPORT */
 
 #ifdef FIFO_EXT_SUPPORT
@@ -4789,12 +4802,12 @@ BOOLEAN NicGetMacFifoTxCnt(
 	IN RTMP_ADAPTER *pAd,
 	IN MAC_TABLE_ENTRY *pEntry);
 
-VOID AsicFifoExtSet(
-	IN RTMP_ADAPTER *pAd);
-
-VOID AsicFifoExtEntryClean(
-	IN RTMP_ADAPTER * pAd, 
-	IN MAC_TABLE_ENTRY *pEntry);
+BOOLEAN IsFifoExtTblAvailable(IN RTMP_ADAPTER *pAd, IN UCHAR *pTblIdx);
+VOID FifoExtTblUpdateEntry(IN RTMP_ADAPTER *pAd, IN UCHAR tblIdx, IN UCHAR wcid);
+VOID FifoExtTblRmReptEntry(IN RTMP_ADAPTER *pAd, IN UCHAR wcid);
+VOID FifoExtTableInit(RTMP_ADAPTER *pAd);
+VOID AsicFifoExtSet(RTMP_ADAPTER *pAd);
+VOID AsicFifoExtEntryClean(RTMP_ADAPTER * pAd, MAC_TABLE_ENTRY *pEntry);
 #endif /* FIFO_EXT_SUPPORT */
 
 VOID NicResetRawCounters(RTMP_ADAPTER *pAd);

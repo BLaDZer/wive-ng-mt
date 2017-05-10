@@ -245,8 +245,20 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 				RTMPCancelTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
 			}
 
+#ifdef FIFO_EXT_SUPPORT
+			UCHAR hwFifoExtIdx = 0;
+			BOOLEAN bUseHwFifoExt = FALSE;
+
+			hwFifoExtIdx = pEntry->hwFifoExtIdx;
+			bUseHwFifoExt = pEntry->bUseHwFifoExt;
+#endif /* FIFO_EXT_SUPPORT */
 
 			NdisZeroMemory(pEntry, sizeof(MAC_TABLE_ENTRY));
+
+#ifdef FIFO_EXT_SUPPORT
+			pEntry->hwFifoExtIdx = hwFifoExtIdx;
+			pEntry->bUseHwFifoExt = bUseHwFifoExt;
+#endif /* FIFO_EXT_SUPPORT */
 
 #ifdef WFA_VHT_PF
 #ifdef IP_ASSEMBLY
@@ -270,6 +282,10 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 				pEntry->MaxSupportedRate = RATE_11;
 				pEntry->CurrTxRate = RATE_11;
 				NdisZeroMemory(pEntry, sizeof(MAC_TABLE_ENTRY));
+#ifdef FIFO_EXT_SUPPORT
+				pEntry->hwFifoExtIdx = hwFifoExtIdx;
+				pEntry->bUseHwFifoExt = bUseHwFifoExt;
+#endif /* FIFO_EXT_SUPPORT */
 				pEntry->PairwiseKey.KeyLen = 0;
 				pEntry->PairwiseKey.CipherAlg = CIPHER_NONE;
 			}
@@ -729,6 +745,10 @@ BOOLEAN MacTableDeleteEntry(
 			else if (IS_ENTRY_APCLI(pEntry))
 			{
 				RTMPReleaseTimer(&pEntry->RetryTimer, &Cancelled);
+#ifdef FIFO_EXT_SUPPORT
+				if (pAd->chipCap.FlgHwFifoExtCap && pEntry->bUseHwFifoExt)
+					FifoExtTblRmReptEntry(pAd, wcid);
+#endif
 			}
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */

@@ -1781,20 +1781,57 @@ VOID ClearTxRingClientAck(
 	}
 }
 #endif /* RTMP_MAC_PCI */
+
+VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSuccess, ULONG TxRetransmit)
+{
+#ifdef RT65xx
+	if (IS_RT65XX(pAd)) {
+        	if (pAd->MacTab.Size <= 8) {
+#ifdef UAPSD_SUPPORT
+		    /* check the EOSP packet by RateCtrl's way */
+		    UAPSD_SP_AUE_Handle(pAd, pEntry, TRUE);
+#endif /* UAPSD_SUPPORT */
+		    if ((TxSuccess == 0) && (TxRetransmit > 0))
+		    {
+			    /* prevent fast drop long range clients */
+			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
+					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
+
+			    /* No TxPkt ok in this period as continue tx fail */
+			    pEntry->ContinueTxFailCnt += TxRetransmit;
+		    } else {
+			    pEntry->ContinueTxFailCnt = 0;
+		    }
+
+		    if (TxSuccess > 0)
+			pEntry->NoDataIdleCount = 0;
+
+		    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
+		}
+	}
+	else
+#endif /* RT65xx */
+	{
+		return;
+	}
+}
 #endif /* CONFIG_AP_SUPPORT */
 
 VOID NICUpdateFifoStaCounters(
 	IN PRTMP_ADAPTER pAd)
 {
-	TX_STA_FIFO_STRUC	StaFifo;
-#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+#ifdef FIFO_EXT_SUPPORT
 	TX_STA_FIFO_EXT_STRUC	StaFifoExt;
 #endif /* FIFO_EXT_SUPPORT */
+	TX_STA_FIFO_STRUC	StaFifo;
 	MAC_TABLE_ENTRY		*pEntry = NULL;
 	UINT32				i = 0;
 	UCHAR				pid = 0, wcid = 0;
 	INT32				reTry;
 	UCHAR				succMCS;
+#ifdef RT65xx
+	UCHAR				PhyMode;
+#endif /* RT65xx */
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
 
 #ifdef RALINK_ATE		
@@ -1803,16 +1840,24 @@ VOID NICUpdateFifoStaCounters(
 		return;
 #endif /* RALINK_ATE */
 
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RT65xx
+	if (pAd->MacTab.Size <= 8) {
+		/* mark by UAPSD Accurate Issue */
+		if (IS_RT65XX(pAd))
+			return;
+	}
+#endif /* RT65xx */
+#endif /* CONFIG_AP_SUPPORT */
+
 #ifdef MAC_REPEATER_SUPPORT
 	MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
 #endif /* MAC_REPEATER_SUPPORT */
 
 		do
 		{
-#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
-			if (IS_RT65XX(pAd)) {
-				RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
-			}
+#ifdef FIFO_EXT_SUPPORT
+			RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
 #endif /* FIFO_EXT_SUPPORT */
 			RTMP_IO_READ32(pAd, TX_STA_FIFO, &StaFifo.word);
 
@@ -1837,10 +1882,23 @@ VOID NICUpdateFifoStaCounters(
 			}
 
 			/* PID store Tx MCS Rate */
-#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+#ifdef FIFO_EXT_SUPPORT
+#ifdef RT65xx
 			if (IS_RT65XX(pAd))
-				pid = (UCHAR)StaFifoExt.field.pkt_id_65xx;
+			{
+				PhyMode = StaFifo.field.PhyMode;
+				if((PhyMode == 2) || (PhyMode == 3))
+				{
+ 					pid = (UCHAR)StaFifoExt.field.PidType & 0xF;
+				}
+				else if(PhyMode == 4)
+				{
+					pid = (UCHAR)StaFifoExt.field.PidType & 0xF;
+					pid += (((UCHAR)StaFifoExt.field.PidType & 0x10) ? 10 : 0);
+				}
+			}
 			else
+#endif /* RT65xx */
 #endif /* FIFO_EXT_SUPPORT */
 			pid = (UCHAR)StaFifo.field.PidType;
 
@@ -1919,14 +1977,17 @@ VOID NICUpdateFifoStaCounters(
 					//pEntry->NoBADataCountDown = 64;
 
 					/* Update the continuous transmission counter.*/
-#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
+#ifdef CONFIG_AP_SUPPORT
+#ifdef FIFO_EXT_SUPPORT
+					/* fo 65xx incriment in ApTxFailCntUpdate function */
 					if (StaFifoExt.field.txRtyCnt > 0) {
-					    /* limit incriment by fifo */
-					    if (StaFifoExt.field.txRtyCnt > pAd->ApCfg.EntryLifeCheck / 8)
+						/* limit incriment by fifo */
+						if (StaFifoExt.field.txRtyCnt > pAd->ApCfg.EntryLifeCheck / 8)
 						pEntry->ContinueTxFailCnt += pAd->ApCfg.EntryLifeCheck / 8;
-					    else
+					else
 						pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
-					 } else
+					} else
+#endif
 #endif
 					pEntry->ContinueTxFailCnt++;
 
@@ -2024,25 +2085,115 @@ VOID NICUpdateFifoStaCounters(
 
 }
 
-
 #ifdef FIFO_EXT_SUPPORT
-BOOLEAN NicGetMacFifoTxCnt(
-	IN RTMP_ADAPTER *pAd,
-	IN MAC_TABLE_ENTRY *pEntry)
+BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
-	if (pEntry->Aid >= 1 && pEntry->Aid <= 8)
+	if (pEntry->bUseHwFifoExt)
 	{
 		WCID_TX_CNT_STRUC wcidTxCnt;
-		UINT32 regAddr;
-		
-		regAddr = WCID_TX_CNT_0 + (pEntry->Aid - 1) * 4;
-		RTMP_IO_READ32(pAd, regAddr, &wcidTxCnt.word);
+
+		RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 
 		pEntry->fifoTxSucCnt += wcidTxCnt.field.succCnt;
 		pEntry->fifoTxRtyCnt += wcidTxCnt.field.reTryCnt;
+
+		return TRUE;
 	}
 
+	return FALSE;
+}
+
+
+/*
+	The 8 entries will be dynamically replaced to apcli-repeater entry, starting from tail of table, at most replace 4 entries:
+		{ CLI, CLI, CLI, CLI, CLI, CLI, CLI, CLI}			still 4 vacancy entries
+	--> { CLI, CLI, CLI, CLI, CLI, CLI, CLI, APCLI}			still 3 vacancy entries
+	--> { CLI, CLI, CLI, CLI, CLI, CLI, APCLI, APCLI}		still 2 vacancy entries
+	--> { CLI, CLI, CLI, CLI, CLI, APCLI, APCLI, APCLI}		still 1 vacancy entry
+	--> { CLI, CLI, CLI, CLI, APCLI, APCLI, APCLI, APCLI}	no vacancy entry
+*/
+BOOLEAN IsFifoExtTblAvailable(IN RTMP_ADAPTER *pAd, IN UCHAR *pTblIdx)
+{
+	MAC_TABLE_ENTRY *pEntry;
+	int vacancy = -1;	/* initialized by a invalid value */
+	int i;
+
+	for (i = (FIFO_EXT_HW_SIZE - 1); i >= 4; i --)
+	{
+		pEntry = &pAd->MacTab.Content[pAd->FifoExtTbl[i].wcid];
+
+		if (IS_ENTRY_APCLI(pEntry))
+			continue;
+
+		/* The first non-ApCli entry (starting from tail) */
+		vacancy = i;
+		break;
+	}
+
+	if (vacancy == -1)
+		return FALSE;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("FIFO_EXT: find vacancy entry %d\n", vacancy));
+	*pTblIdx = (UCHAR)vacancy;
 	return TRUE;
+}
+
+
+VOID FifoExtTblUpdateEntry(IN RTMP_ADAPTER *pAd, IN UCHAR tblIdx, IN UCHAR wcid)
+{
+	MAC_TABLE_ENTRY *pNewEntry, *pOldEntry;
+	UCHAR oldWcid;
+
+	if (tblIdx >= FIFO_EXT_HW_SIZE)
+		return;
+
+	oldWcid = pAd->FifoExtTbl[tblIdx].wcid;
+	if (oldWcid == wcid)
+		return;
+
+	pOldEntry = &pAd->MacTab.Content[oldWcid];	
+	pNewEntry = &pAd->MacTab.Content[wcid];
+
+	/* Clear the old one */
+	pOldEntry->bUseHwFifoExt = FALSE;
+
+	/* Set the new one */
+	pNewEntry->hwFifoExtIdx = tblIdx;
+	pNewEntry->bUseHwFifoExt = TRUE;
+
+	/* Update global setting */
+	pAd->FifoExtTbl[tblIdx].wcid = wcid;
+	RTMP_IO_WRITE8(pAd, WCID_MAPPING_0 + tblIdx, wcid);
+}
+
+
+const UCHAR PreDefWcid[] = {1, 2, 3, 4, 5, 6, 7, 8};
+
+VOID FifoExtTblRmReptEntry(IN RTMP_ADAPTER *pAd, IN UCHAR wcid)
+{ 
+	MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[wcid];
+	UCHAR tblIdx = pEntry->hwFifoExtIdx;
+
+	FifoExtTblUpdateEntry(pAd, tblIdx, PreDefWcid[tblIdx]);
+}
+
+VOID FifoExtTableInit(IN RTMP_ADAPTER *pAd)
+{
+	if (pAd->chipCap.FlgHwFifoExtCap)
+	{
+		UCHAR i, wcid;
+
+		for (i = 0; i < FIFO_EXT_HW_SIZE; i ++)
+		{
+			wcid = PreDefWcid[i];
+			pAd->FifoExtTbl[i].wcid = wcid;
+			pAd->FifoExtTbl[i].hwTxCntCROffset = WCID_TX_CNT_0 + (i * 4);
+
+			/* set pEntry */
+			pAd->MacTab.Content[wcid].hwFifoExtIdx = i;
+			pAd->MacTab.Content[wcid].bUseHwFifoExt = TRUE;
+		}
+	}
 }
 
 
@@ -2050,31 +2201,36 @@ VOID AsicFifoExtSet(IN RTMP_ADAPTER *pAd)
 {
 	if (pAd->chipCap.FlgHwFifoExtCap)
 	{
-		RTMP_IO_WRITE32(pAd, WCID_MAPPING_0, 0x04030201);
-		RTMP_IO_WRITE32(pAd, WCID_MAPPING_1, 0x08070605);
+		UCHAR i;
+		UINT32 WcidSet;
+
+		WcidSet = 0;
+		for (i = 0; i < 4; i ++)
+			WcidSet |= (pAd->FifoExtTbl[i].wcid << (i * 8));
+
+		RTMP_IO_WRITE32(pAd, WCID_MAPPING_0, WcidSet);
+
+		WcidSet = 0;
+		for (i = 0; i < 4; i ++)
+			WcidSet |= (pAd->FifoExtTbl[i + 4].wcid << (i * 8));
+ 
+		RTMP_IO_WRITE32(pAd, WCID_MAPPING_1, WcidSet);
 	}
 }
 
 
-VOID AsicFifoExtEntryClean(
-	IN RTMP_ADAPTER * pAd, 
-	IN MAC_TABLE_ENTRY *pEntry)
+VOID AsicFifoExtEntryClean(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
 	WCID_TX_CNT_STRUC wcidTxCnt;
-	UINT32 regAddr;
 			
 	if (pAd->chipCap.FlgHwFifoExtCap)
 	{
-		/* We clean the fifo info when MCS is 0 and Aid is from 1~8 */
-		if (pEntry->Aid >=1  && pEntry->Aid <= 8)
-		{		
-			regAddr = WCID_TX_CNT_0 + (pEntry->Aid - 1) * 4;
-			RTMP_IO_READ32(pAd, regAddr, &wcidTxCnt.word);
-		}
+		/* We clean the fifo info when entry Tx Counter is controlled by hw */
+		if (pEntry->bUseHwFifoExt)
+			RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 	}
 }
 #endif /* FIFO_EXT_SUPPORT */
-
 
 /*
 	========================================================================

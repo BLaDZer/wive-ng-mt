@@ -1720,7 +1720,7 @@ typedef	union _TX_STA_CNT2_STRUC {
 #ifdef RT_BIG_ENDIAN
 typedef	union _TX_STA_FIFO_STRUC {
 	struct {
-		UINT32		Reserve:2;
+		UINT32		PhyMode:2;
 		UINT32		iTxBF:1; /* iTxBF enable */
 		UINT32		Sounding:1; /* Sounding enable */
 		UINT32		eTxBF:1; /* eTxBF enable */
@@ -1747,7 +1747,7 @@ typedef	union _TX_STA_FIFO_STRUC {
 		UINT32		eTxBF:1;
 		UINT32		Sounding:1;
 		UINT32		iTxBF:1;
-		UINT32		Reserve:2;
+		UINT32		PhyMode:2;
 	} field;
 	UINT32 word;
 } TX_STA_FIFO_STRUC;
@@ -1996,14 +1996,14 @@ typedef	union _MPDU_DEN_CNT_STRUC {
 } MPDU_DEN_CNT_STRUC;
 #endif
 
-
+#ifdef FIFO_EXT_SUPPORT
 /* TX_STA_FIFO_EXT_STRUC: TX retry cnt for specific frame */
 #define TX_STA_FIFO_EXT		0x1798		/* Only work after RT53xx */
 #ifdef RT_BIG_ENDIAN
 typedef	union _TX_STA_FIFO_EXT_STRUC {
 	struct {
-		UINT32 rsv:16;
-		UINT32 pkt_id_65xx:8; /* pkt_id when run as rt65xx based chips */
+		UINT32		Reserve:16;
+		UINT32		PidType:8;				
 		UINT32		txRtyCnt:8;   /* frame Tx retry cnt */
 	} field;
 	UINT32 word;
@@ -2012,15 +2012,15 @@ typedef	union _TX_STA_FIFO_EXT_STRUC {
 typedef	union _TX_STA_FIFO_EXT_STRUC {
 	struct {
 		UINT32		txRtyCnt:8;
-		UINT32 pkt_id_65xx:8;
-		UINT32 rsv:16;
+		UINT32		PidType:8;
+		UINT32		Reserve:16;
 	} field;
 	UINT32 word;
 } TX_STA_FIFO_EXT_STRUC;
 #endif
 
 
-#ifdef FIFO_EXT_SUPPORT
+
 #define WCID_TX_CNT_0	0x176c
 #define WCID_TX_CNT_1	0x1770
 #define WCID_TX_CNT_2	0x1774
@@ -2072,8 +2072,6 @@ typedef	union _WCID_MAPPING_STRUC {
 } WCID_MAPPINGT_STRUC;
 #endif
 #endif /* FIFO_EXT_SUPPORT */
-
-
 
 /* Security key table memory, base address = 0x1000 */
 #define MAC_WCID_BASE		0x1800 /*8-bytes(use only 6-bytes) * 256 entry = */

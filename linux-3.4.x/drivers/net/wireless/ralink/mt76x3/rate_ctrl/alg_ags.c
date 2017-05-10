@@ -274,14 +274,15 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 				else
 					HwErrRatio = 0;
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
-						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 
 				TxSuccess = pEntry->fifoTxSucCnt;
 				TxRetransmit = pEntry->fifoTxRtyCnt;
 				TxTotalCnt = HwTxCnt;
 				TxErrorRatio = HwErrRatio;
+
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
+						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 			}
 		}
 #endif /*  FIFO_EXT_SUPPORT */
@@ -965,14 +966,15 @@ VOID ApQuickResponeForRateUpExecAGS(
 					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 				else
 					HwErrRatio = 0;
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
-						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 
 				TxSuccess = pEntry->fifoTxSucCnt;
 				TxRetransmit = pEntry->fifoTxRtyCnt;
 				TxTotalCnt = HwTxCnt;
 				TxErrorRatio = HwErrRatio;
+
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
+						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 			}
 		}
 #endif /*  FIFO_EXT_SUPPORT */

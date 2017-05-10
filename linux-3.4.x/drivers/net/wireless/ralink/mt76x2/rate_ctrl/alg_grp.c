@@ -1575,16 +1575,15 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 				HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 			else
 				HwErrRatio = 0;
-
-			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRation(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
-					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
-					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-
 			TxSuccess = pEntry->fifoTxSucCnt;
 			TxRetransmit = pEntry->fifoTxRtyCnt;
 			TxErrorRatio = HwErrRatio;
 			TxTotalCnt = HwTxCnt;
 			TxCnt = HwTxCnt;
+
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRation(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 
 			ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 		}
@@ -1907,16 +1906,16 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			else
 				HwErrRatio = 0;
 
-			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
-					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
-					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-
 			TxSuccess = pEntry->fifoTxSucCnt;
 			TxRetransmit = pEntry->fifoTxRtyCnt;
 			TxTotalCnt = HwTxCnt;
 			TxErrorRatio = HwErrRatio;
 
 			ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 		}
 #endif /*  FIFO_EXT_SUPPORT */
 
@@ -2455,6 +2454,7 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 
 		if (TxTotalCnt)
 			TxErrorRatio = ((pEntry->OneSecTxRetryOkCount + pEntry->OneSecTxFailCount) * 100) / TxTotalCnt;
+	}
 
 #ifdef FIFO_EXT_SUPPORT
 		if (pEntry->bUseHwFifoExt)
@@ -2468,17 +2468,16 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 			if (HwTxCnt)
 				HwErrRatio = (wcidTxCnt.field.reTryCnt * 100) / HwTxCnt;
 
-			DBGPRINT(RT_DEBUG_TRACE ,("%s():TxErrRatio(Wcid:%d, MCS:%d, Hw:0x%x-0x%x, Sw:0x%x-%x)\n",
-					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
-					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-
 			TxSuccess = wcidTxCnt.field.succCnt;
 			TxRetransmit = wcidTxCnt.field.reTryCnt;
 			TxErrorRatio = HwErrRatio;
 			TxTotalCnt = HwTxCnt;
+
+			DBGPRINT(RT_DEBUG_TRACE ,("%s():TxErrRatio(Wcid:%d, MCS:%d, Hw:0x%x-0x%x, Sw:0x%x-%x)\n",
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 		}
 #endif /* FIFO_EXT_SUPPORT */
-	}
 
 	/* Save LastTxOkCount, LastTxPER and last MCS action for StaQuickResponeForRateUpExec */
 	pEntry->LastTxOkCount = TxSuccess;

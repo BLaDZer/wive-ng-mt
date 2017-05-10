@@ -461,6 +461,7 @@ VOID APStartUp(
 	AsicDelWcidTab(pAd, WCID_ALL);
 
 #ifdef FIFO_EXT_SUPPORT
+	FifoExtTableInit(pAd);
 	AsicFifoExtSet(pAd);
 #endif /* FIFO_EXT_SUPPORT */
 
