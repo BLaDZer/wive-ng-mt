@@ -1180,7 +1180,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -60) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1188,7 +1188,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	else
 #endif /*  DOT11_VHT_AC */
 #ifdef DOT11_N_SUPPORT
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode == MODE_HTMIX) && (TxErrorRatio < 30) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp		= (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown	= (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1511,7 +1511,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	/* Down Rate */
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -60) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1525,7 +1525,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 		By increasing the thresholds, the chosen mcs will be closer to the 
 		optimal mcs
 	*/
-	if ((Rssi > -65) && (pCurrTxRate->Mode >= MODE_HTMIX) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode == MODE_HTMIX) && (TxErrorRatio < 30) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));

@@ -465,7 +465,7 @@ VOID MlmeDynamicTxRateSwitchingAGS(
 				UpRateIdx, DownRateIdx));
 
 #ifdef DOT11_N_SUPPORT
-	if ((pAGSStatisticsInfo->RSSI > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+	if ((pAGSStatisticsInfo->RSSI > -65) && (pCurrTxRate->Mode == MODE_HTMIX))
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
@@ -890,7 +890,7 @@ VOID StaQuickResponeForRateUpExecAGS(
 
 	pCurrTxRate = (RTMP_RA_AGS_TB *)(&pTable[(CurrRateIdx + 1) * SIZE_OF_AGS_RATE_TABLE_ENTRY]);
 
-	if ((pAGSStatisticsInfo->RSSI > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+	if ((pAGSStatisticsInfo->RSSI > -65) && (pCurrTxRate->Mode == MODE_HTMIX))
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
@@ -1390,7 +1390,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 				UpRateIdx, DownRateIdx));
 
 #ifdef DOT11_N_SUPPORT
-	if ((AGSStatisticsInfo.RSSI > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+	if ((AGSStatisticsInfo.RSSI > -65) && (pCurrTxRate->Mode == MODE_HTMIX))
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
@@ -1858,7 +1858,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 
 	pCurrTxRate = (RTMP_RA_AGS_TB *)(&pTable[(CurrRateIdx + 1) * SIZE_OF_AGS_RATE_TABLE_ENTRY]);
 
-	if ((AGSStatisticsInfo.RSSI > -65) && (pCurrTxRate->Mode >= MODE_HTMIX))
+	if ((AGSStatisticsInfo.RSSI > -65) && (pCurrTxRate->Mode == MODE_HTMIX))
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> 1));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> 1));
