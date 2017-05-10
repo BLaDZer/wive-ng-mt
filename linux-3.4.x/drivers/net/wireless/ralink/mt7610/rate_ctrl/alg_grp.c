@@ -1138,9 +1138,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
-			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
+			/* imperic coefficient for consystent ExtFifo ErrRate and current rate adapt table in current driver = 3 */
+			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt) / 3;
 		else
 			HwErrRatio = 0;
+
 		TxSuccess = pEntry->fifoTxSucCnt;
 		TxRetransmit = pEntry->fifoTxRtyCnt;
 		TxErrorRatio = HwErrRatio;
@@ -1455,7 +1457,8 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
-			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
+			/* imperic coefficient for consystent ExtFifo ErrRate and current rate adapt table in current driver = 3 */
+			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt) / 3;
 		else
 			HwErrRatio = 0;
 

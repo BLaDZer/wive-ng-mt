@@ -269,7 +269,8 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
-			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
+			/* imperic coefficient for consystent ExtFifo ErrRate and current rate adapt table in current driver = 3 */
+			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt) / 3;
 		else
 			HwErrRatio = 0;
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
@@ -956,7 +957,8 @@ VOID ApQuickResponeForRateUpExecAGS(
 
 			HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 			if (HwTxCnt)
-				HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
+				/* imperic coefficient for consystent ExtFifo ErrRate and current rate adapt table in current driver = 3 */
+				HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt) / 3;
 			else
 				HwErrRatio = 0;
 

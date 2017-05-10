@@ -400,7 +400,8 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 
 #ifdef RTMP_MAC_PCI
 #ifdef DOT11_VHT_AC
-#define TX_RING_SIZE            256
+/* 7610 limit ring size of 128 (one stream limit or bug?) */
+#define TX_RING_SIZE            128
 #define RX_RING_SIZE            128
 #else
 #define TX_RING_SIZE            128
