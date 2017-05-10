@@ -1180,7 +1180,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1511,7 +1511,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	/* Down Rate */
 	DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));

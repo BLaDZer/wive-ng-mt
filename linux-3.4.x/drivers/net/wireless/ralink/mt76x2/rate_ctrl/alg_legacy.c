@@ -326,7 +326,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
+		if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -616,7 +616,7 @@ VOID APQuickResponeForRateUpExec(
 		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
+		if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1154,7 +1154,7 @@ VOID MlmeDynamicTxRateSwitching(
 		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT))
+		if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1356,7 +1356,7 @@ VOID StaQuickResponeForRateUpExec(
 		pCurrTxRate = PTX_RA_LEGACY_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -72) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
+		if ((Rssi > -68) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 40))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
