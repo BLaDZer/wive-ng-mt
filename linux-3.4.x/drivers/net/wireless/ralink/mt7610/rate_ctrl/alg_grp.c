@@ -1465,11 +1465,11 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 		TxTotalCnt = HwTxCnt;
 		TxErrorRatio = HwErrRatio;
 
-		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
-
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
 				__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
 				HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
+
+		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 	}
 #endif /*  FIFO_EXT_SUPPORT */
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
