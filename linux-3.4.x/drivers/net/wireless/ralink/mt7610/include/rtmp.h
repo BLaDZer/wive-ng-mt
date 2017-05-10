@@ -1867,10 +1867,6 @@ typedef struct _COMMON_CONFIG {
 #ifdef DYNAMIC_VGA_SUPPORT
 	MO_CFG_STRUCT MO_Cfg;	/* data structure for mitigating microwave interference */
 #endif /* DYNAMIC_VGA_SUPPORT */
-
-#ifdef MULTI_CLIENT_SUPPORT
-	UINT txRetryCfg;
-#endif /* MULTI_CLIENT_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
 #ifdef DBG_CTRL_SUPPORT

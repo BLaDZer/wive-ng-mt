@@ -3980,45 +3980,32 @@ VOID asic_change_tx_retry(
 {
 	UINT32	TxRtyCfg, MacReg = 0;
 
-	if (pAd->CommonCfg.txRetryCfg == 0) {
-		/* txRetryCfg is invalid, should not be 0 */
-		DBGPRINT(RT_DEBUG_TRACE, ("txRetryCfg=%x\n", pAd->CommonCfg.txRetryCfg));
-		return;
-	}
-
-	if (num < 3)
+	if (num < 2)
 	{
-		/* Tx date retry default 15 */
+		/* Tx data retry 31/15 (thres 2000) */
 		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
-		TxRtyCfg = ((TxRtyCfg & 0xffff0000) | (pAd->CommonCfg.txRetryCfg & 0x0000ffff));
+		TxRtyCfg &= 0xf0000000;
+		TxRtyCfg |= 0x07d01f0f;
 		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
-		/* Tx RTS retry default 32 */
+		/* Tx RTS retry default 32, disable RTS fallback */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
 		MacReg &= 0xFEFFFF00;
-#ifdef MT76x2
-		/* RTS fallback: ON */
-		if (IS_MT76x2(pAd))
-		    MacReg |= 0x01000000;
-#endif
 		MacReg |= 0x20;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 	}
 	else
 	{
-		/* Tx date retry 7 */
-		TxRtyCfg = 0x4100070A;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);	
+		/* Tx data retry 7/11 (thres 256)  */
+		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
+		TxRtyCfg &= 0xf0000000;
+		TxRtyCfg |= 0x0100070B;
+		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
-		/* Tx RTS retry 3 */
+		/* Tx RTS retry 3, enable RTS fallback */
 		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
 		MacReg &= 0xFEFFFF00;
-		MacReg |= 0x00000003;
-#ifdef MT76x2
-		/* RTS fallback: ON */
-		if (IS_MT76x2(pAd))
-		    MacReg |= 0x01000000;
-#endif
+		MacReg |= 0x01000003;
 		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 #if 0
 		/* enable fallback to legacy (MCS0 -> OFDM 6, default for MT76x2) */
