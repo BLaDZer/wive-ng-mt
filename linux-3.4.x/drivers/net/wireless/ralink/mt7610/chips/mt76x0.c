@@ -1921,7 +1921,7 @@ static VOID MT76x0_ChipBBPAdjust(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 }
 
-
+#if 0
 static void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char delta_pwr)
 {
 	u32 value = 0;
@@ -1963,8 +1963,10 @@ static void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char 
 	value |= TX_PWR_HT_VHT_STBC_MCS_7(ad->chipCap.rate_pwr_table.STBC[7].MCS_Power + delta_pwr);
 	RTMP_IO_WRITE32(ad, TX_PWR_CFG_9, value);
 }
+#endif
 
 #define MIN_TSSI_WORKABLE_PWR 20 //10 dB
+
 void percentage_delta_pwr(RTMP_ADAPTER *ad)
 {
 	CHAR mac_drop_pwr = 0, tx_alc_ch_init_0 = 0, tx_alc_ch_init_1 = 0, orig_mac_pwr = 0;
@@ -2062,9 +2064,8 @@ void percentage_delta_pwr(RTMP_ADAPTER *ad)
 	DBGPRINT(RT_DEBUG_ERROR, ("%s::<After> total drop power = %d + %d dBm, TXBE_R4 = 0x%0x , PowerPercentageWithBBP = %d\n", 
 		__FUNCTION__, mac_drop_pwr , bbp_drop_pwr, bbp_val , ad->CommonCfg.TxPowerPercentageWithBBP));
 
-	MT76x0_adjust_per_rate_pwr_delta(ad, ad->hw_cfg.cent_ch, mac_drop_pwr*2);
+	//MT76x0_adjust_per_rate_pwr_delta(ad, ad->hw_cfg.cent_ch, mac_drop_pwr*2);
 }
-
 
 static VOID MT76x0_ChipSwitchChannel(
 	struct _RTMP_ADAPTER *pAd,

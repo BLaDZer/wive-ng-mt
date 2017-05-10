@@ -115,7 +115,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif /* AGS_SUPPORT */
 
 		/* NICUpdateFifoStaCounters(pAd); */
-
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 		if (pAd->MacTab.Size == 1)
 		{
 			TX_STA_CNT1_STRUC StaTx1;
@@ -133,6 +133,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -450,7 +451,7 @@ VOID APQuickResponeForRateUpExec(
 	PUCHAR					pTable;
 	UCHAR					TableSize = 0;
 	UCHAR					CurrRateIdx;
-	ULONG					AccuTxTotalCnt, TxTotalCnt, TxCnt;
+	ULONG					TxTotalCnt = 0, TxCnt = 0;
 	ULONG					TxErrorRatio = 0;
 	MAC_TABLE_ENTRY			*pEntry;
 	RTMP_RA_LEGACY_TB *pCurrTxRate;
@@ -517,7 +518,7 @@ VOID APQuickResponeForRateUpExec(
 
 		Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
-
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 		if (pAd->MacTab.Size == 1)
 		{
             TX_STA_CNT1_STRUC		StaTx1;
@@ -531,7 +532,7 @@ VOID APQuickResponeForRateUpExec(
 			TxFailCount = TxStaCnt0.field.TxFailCount;
 			TxTotalCnt = TxRetransmit + TxSuccess + TxFailCount;
 
-			AccuTxTotalCnt = pAd->RalinkCounters.OneSecTxNoRetryOkCount + 
+			TxCnt = pAd->RalinkCounters.OneSecTxNoRetryOkCount + 
 					 pAd->RalinkCounters.OneSecTxRetryOkCount + 
 					 pAd->RalinkCounters.OneSecTxFailCount;
 
@@ -543,9 +544,9 @@ VOID APQuickResponeForRateUpExec(
 			else
 				Rssi = pEntry->RssiSample.AvgRssi0;
 
-			TxCnt = AccuTxTotalCnt;
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;

@@ -228,13 +228,14 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 	BOOLEAN bTxRateChanged = TRUE, bUpgradeQuality = FALSE;
 	UCHAR TrainUp = 0, TrainDown = 0, next_grp;
 	CHAR RssiOffset = 0;
-	ULONG TxTotalCnt, TxErrorRatio = 0;
+	ULONG TxTotalCnt = 0, TxErrorRatio = 0;
 	ULONG TxSuccess, TxRetransmit, TxFailCount;
 	AGS_STATISTICS_INFO AGSStatisticsInfo = {0};
 
 
 	DBGPRINT_RAW(RT_DEBUG_TRACE, ("AGS: ---> %s\n", __FUNCTION__));
-	
+
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC	StaTx1;
@@ -252,6 +253,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -913,7 +915,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 	ULONG OneSecTxNoRetryOKRationCount = 0;
 	MAC_TABLE_ENTRY *pEntry;
 	AGS_STATISTICS_INFO AGSStatisticsInfo = {0};
-	ULONG TxTotalCnt, TxErrorRatio = 0;
+	ULONG TxTotalCnt = 0, TxErrorRatio = 0;
 	ULONG TxSuccess, TxRetransmit, TxFailCount;
 
 
@@ -924,6 +926,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 	pTable = pEntry->pTable;
 	TableSize = pTable[0];
 
+#if defined (FIFO_EXT_SUPPORT) || defined (TX_STA_FIFO_EXT_SUPPORT)
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -941,6 +944,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
