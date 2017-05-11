@@ -1356,7 +1356,7 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 		}
 		else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 		{
-			if(TxErrorRatio >= TrainUp)
+			if(TxErrorRatio >= TrainUp) {
 				MlmeRestoreLastRate(pEntry);
 				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) bad tx ok count (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
 			}
