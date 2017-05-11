@@ -260,7 +260,7 @@ UCHAR MlmeSelectDownRate(
     
 	/*  Loop until a valid down rate is found */
 	while (1) {
-		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pAd==NULL || pEntry->pTable==NULL)
+		if (pAd==NULL || RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) || pEntry==NULL || pAd==NULL || pEntry->pTable==NULL)
 				return 0;
 
 		pDownRate = PTX_RA_GRP_ENTRY(pEntry->pTable, DownRateIdx);
@@ -1280,14 +1280,8 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 	else
 		ratio = (RA_INTERVAL - pAd->ra_fast_interval) / pAd->ra_fast_interval;
 
-/*
-	if (pAd->MacTab.Size == 1)
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-	else
-		OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
-*/
-
-	OneSecTxNoRetryOKRationCount = Rate1SuccessCnt * ratio;
+	//OneSecTxNoRetryOKRationCount = Rate1SuccessCnt * ratio;
+	OneSecTxNoRetryOKRationCount = (Rate1SuccessCnt * ratio) + ((Rate1SuccessCnt * ratio) >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	/* the only situation when pEntry->TxQuality[CurrRateIdx] = DRS_TX_QUALITY_WORST_BOUND but no rate change */
@@ -1362,13 +1356,19 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 		}
 		else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 		{
-			MlmeRestoreLastRate(pEntry);
-			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) bad tx ok count (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
+			if(TxErrorRatio >= TrainUp)
+				MlmeRestoreLastRate(pEntry);
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) bad tx ok count (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainUp)\n"));
+			}
 		}
 		else
 		{
-			MlmeSetMcsGroup(pAd, pEntry);
-			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) keep rate-down (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
+				MlmeSetMcsGroup(pAd, pEntry);
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) keep rate-down (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
 		}
 	}
 
@@ -1486,7 +1486,7 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 								, CurrRateIdx, UpRateIdx, DownRateIdx));
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (Rate1ErrorRatio < 30) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (Rate1ErrorRatio < FASTRATEUPERRTH) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1498,7 +1498,7 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 		when Rssi > -65, there is a lot of interference usually. therefore, the algorithm tends to choose the mcs lower than the optimal one.
 		by increasing the thresholds, the chosen mcs will be closer to the optimal mcs
 	*/
-	if ((Rssi > -65) && (pCurrTxRate->Mode == MODE_HTMIX) && (Rate1ErrorRatio < 30) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -65) && (pCurrTxRate->Mode == MODE_HTMIX) && (Rate1ErrorRatio < FASTRATEUPERRTH) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp     = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown   = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
