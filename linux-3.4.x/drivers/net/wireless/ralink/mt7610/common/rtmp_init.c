@@ -1857,7 +1857,9 @@ VOID NICUpdateFifoStaCounters(
 		do
 		{
 #ifdef FIFO_EXT_SUPPORT
-			RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
+			if (IS_RT65XX(pAd)) {
+			    RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
+			}
 #endif /* FIFO_EXT_SUPPORT */
 			RTMP_IO_READ32(pAd, TX_STA_FIFO, &StaFifo.word);
 
