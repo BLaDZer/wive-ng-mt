@@ -1707,10 +1707,14 @@ enum WIFI_MODE{
 #define RA_RATE		5					/* RA every fifth 100msec period */
 #define RA_INTERVAL		(RA_RATE*100)	/* RA Interval in msec */
 
+#ifdef FIFO_EXT_SUPPORT
 /* Rate Adaptation simpling interval setting */
+#define DEF_QUICK_RA_TIME_INTERVAL		100 /* Quick RA 100 msec after rate change */
+#define DEF_RA_TIME_INTRVAL			500
+#else
 #define DEF_QUICK_RA_TIME_INTERVAL		70 /* Quick RA 70 msec after rate change */
-
 #define DEF_RA_TIME_INTRVAL			160
+#endif
 
 /*definition of DRS */
 #define MAX_TX_RATE_INDEX			33		/* Maximum Tx Rate Table Index value */
