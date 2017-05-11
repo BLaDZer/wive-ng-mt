@@ -1446,8 +1446,6 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 	asic_mcs_lut_update(pAd, pEntry);
 	pEntry->LastTxRate = (USHORT) (pEntry->HTPhyMode.word);
 #endif /* MCS_LUT_SUPPORT */
-
-
 }
 #endif /* CONFIG_AP_SUPPORT */
 

@@ -914,50 +914,48 @@ VOID MlmeDynamicTxRateSwitching(
 				pEntry->OneSecTxRetryOkCount,
 				pEntry->OneSecTxFailCount));
 
+		}
+
 #ifdef FIFO_EXT_SUPPORT
-			if (pAd->chipCap.FlgHwFifoExtCap)
+		if (pAd->chipCap.FlgHwFifoExtCap)
+		{
+			if (NicGetMacFifoTxCnt(pAd, pEntry))
 			{
-				if (NicGetMacFifoTxCnt(pAd, pEntry))
-				{
-					ULONG 	HwTxCnt, HwErrRatio;
+				ULONG 	HwTxCnt, HwErrRatio;
 
-					HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
-					if (HwTxCnt)
-						HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
-					else
-						HwErrRatio = 0;
+				HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
+				if (HwTxCnt)
+					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
+				else
+					HwErrRatio = 0;
 
-					TxSuccess = pEntry->fifoTxSucCnt;
-					TxRetransmit = pEntry->fifoTxRtyCnt;
-					TxTotalCnt = HwTxCnt;
-					TxErrorRatio = HwErrRatio;
+				TxSuccess = pEntry->fifoTxSucCnt;
+				TxRetransmit = pEntry->fifoTxRtyCnt;
+				TxTotalCnt = HwTxCnt;
+				TxErrorRatio = HwErrRatio;
 
-					DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,
-							("%s():Aid:%d, MCS:%d, CuTxRaIdx=%d,TxErrRatio(Hw:%d-%d%%, Sw:%d-%d%%)\n", 
-							__FUNCTION__, pEntry->Aid, pEntry->HTPhyMode.field.MCS,
-							pEntry->CurrTxRateIndex,
-							HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-				}
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,
+						("%s():Aid:%d, MCS:%d, CuTxRaIdx=%d,TxErrRatio(Hw:%d-%d%%, Sw:%d-%d%%)\n", 
+						__FUNCTION__, pEntry->Aid, pEntry->HTPhyMode.field.MCS,
+						pEntry->CurrTxRateIndex,
+						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 			}
+		}
 #endif /* FIFO_EXT_SUPPORT */
 
-
 #ifdef AGS_SUPPORT
-			if (SUPPORT_AGS(pAd))
-			{
-				
-				/* Gather the statistics information*/
-				
-				AGSStatisticsInfo.RSSI = Rssi;
-				AGSStatisticsInfo.TxErrorRatio = TxErrorRatio;
-				AGSStatisticsInfo.AccuTxTotalCnt = TxTotalCnt;
-				AGSStatisticsInfo.TxTotalCnt = TxTotalCnt;
-				AGSStatisticsInfo.TxSuccess = pEntry->OneSecTxNoRetryOkCount;
-				AGSStatisticsInfo.TxRetransmit = pEntry->OneSecTxRetryOkCount;
-				AGSStatisticsInfo.TxFailCount = pEntry->OneSecTxFailCount;
-			}
-#endif /* AGS_SUPPORT */
+		if (SUPPORT_AGS(pAd))
+		{
+			/* Gather the statistics information*/
+			AGSStatisticsInfo.RSSI = Rssi;
+			AGSStatisticsInfo.TxErrorRatio = TxErrorRatio;
+			AGSStatisticsInfo.AccuTxTotalCnt = TxTotalCnt;
+			AGSStatisticsInfo.TxTotalCnt = TxTotalCnt;
+			AGSStatisticsInfo.TxSuccess = pEntry->OneSecTxNoRetryOkCount;
+			AGSStatisticsInfo.TxRetransmit = pEntry->OneSecTxRetryOkCount;
+			AGSStatisticsInfo.TxFailCount = pEntry->OneSecTxFailCount;
 		}
+#endif /* AGS_SUPPORT */
 
 		if (TxTotalCnt)
 		{
@@ -1428,52 +1426,48 @@ VOID StaQuickResponeForRateUpExec(
 			TxTotalCnt = TxRetransmit + TxSuccess + TxFailCount;
 			if (TxTotalCnt)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+		}
 
 #ifdef FIFO_EXT_SUPPORT
-			if (pAd->chipCap.FlgHwFifoExtCap)
+		if (pAd->chipCap.FlgHwFifoExtCap)
+		{
+			if (pEntry->bUseHwFifoExt)
 			{
-				if (pEntry->bUseHwFifoExt)
-				{
-					WCID_TX_CNT_STRUC wcidTxCnt;
-					ULONG HwTxCnt, HwErrRatio = 0;
+				WCID_TX_CNT_STRUC wcidTxCnt;
+				ULONG HwTxCnt, HwErrRatio = 0;
 
-					RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
+				RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 
-					HwTxCnt = wcidTxCnt.field.succCnt + wcidTxCnt.field.reTryCnt;
-					if (HwTxCnt)
-						HwErrRatio = (wcidTxCnt.field.reTryCnt * 100) / HwTxCnt;
+				HwTxCnt = wcidTxCnt.field.succCnt + wcidTxCnt.field.reTryCnt;
+				if (HwTxCnt)
+					HwErrRatio = (wcidTxCnt.field.reTryCnt * 100) / HwTxCnt;
 
-					TxSuccess = wcidTxCnt.field.succCnt;
-					TxRetransmit = wcidTxCnt.field.reTryCnt;
-					TxErrorRatio = HwErrRatio;
-					TxTotalCnt = HwTxCnt;
+				TxSuccess = wcidTxCnt.field.succCnt;
+				TxRetransmit = wcidTxCnt.field.reTryCnt;
+				TxErrorRatio = HwErrRatio;
+				TxTotalCnt = HwTxCnt;
 
-					DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s():TxErrRatio(wcid:%d, MCS:%d, Hw:0x%x-0x%x, Sw:0x%x-%x)\n", 
-						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
+				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA, ("%s():TxErrRatio(wcid:%d, MCS:%d, Hw:0x%x-0x%x, Sw:0x%x-%x)\n", 
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 
-				}
 			}
+		}
 #endif /* FIFO_EXT_SUPPORT */
 
 #ifdef AGS_SUPPORT
-			if (SUPPORT_AGS(pAd))
-			{
-				
-				/* Gather the statistics information*/
-				
-				AGSStatisticsInfo.RSSI = Rssi;
-				AGSStatisticsInfo.TxErrorRatio = TxErrorRatio;
-				AGSStatisticsInfo.AccuTxTotalCnt = TxTotalCnt;
-				AGSStatisticsInfo.TxTotalCnt = TxTotalCnt;
-				AGSStatisticsInfo.TxSuccess = pEntry->OneSecTxNoRetryOkCount;
-				AGSStatisticsInfo.TxRetransmit = pEntry->OneSecTxRetryOkCount;
-				AGSStatisticsInfo.TxFailCount = pEntry->OneSecTxFailCount;
-			}
-#endif /* AGS_SUPPORT */
+		if (SUPPORT_AGS(pAd))
+		{
+			/* Gather the statistics information*/
+			AGSStatisticsInfo.RSSI = Rssi;
+			AGSStatisticsInfo.TxErrorRatio = TxErrorRatio;
+			AGSStatisticsInfo.AccuTxTotalCnt = TxTotalCnt;
+			AGSStatisticsInfo.TxTotalCnt = TxTotalCnt;
+			AGSStatisticsInfo.TxSuccess = pEntry->OneSecTxNoRetryOkCount;
+			AGSStatisticsInfo.TxRetransmit = pEntry->OneSecTxRetryOkCount;
+			AGSStatisticsInfo.TxFailCount = pEntry->OneSecTxFailCount;
 		}
 
-#ifdef AGS_SUPPORT
 		if (AGS_IS_USING(pAd, pTable))
 		{
 			

@@ -950,26 +950,26 @@ VOID ApQuickResponeForRateUpExecAGS(
 	}
 
 #ifdef FIFO_EXT_SUPPORT
-		if (NicGetMacFifoTxCnt(pAd, pEntry))
-		{
-			ULONG 	HwTxCnt, HwErrRatio;
+	if (NicGetMacFifoTxCnt(pAd, pEntry))
+	{
+		ULONG 	HwTxCnt, HwErrRatio;
 
-			HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
-			if (HwTxCnt)
-				HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
-			else
-				HwErrRatio = 0;
-			TxSuccess = pEntry->fifoTxSucCnt;
-			TxRetransmit = pEntry->fifoTxRtyCnt;
-			TxTotalCnt = HwTxCnt;
-			TxErrorRatio = HwErrRatio;
+		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
+		if (HwTxCnt)
+			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
+		else
+			HwErrRatio = 0;
+		TxSuccess = pEntry->fifoTxSucCnt;
+		TxRetransmit = pEntry->fifoTxRtyCnt;
+		TxTotalCnt = HwTxCnt;
+		TxErrorRatio = HwErrRatio;
 
-			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
-					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
+		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
+				__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+				HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 
-			ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
-		}
+		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+	}
 #endif /*  FIFO_EXT_SUPPORT */
 
 	DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,

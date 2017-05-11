@@ -955,9 +955,6 @@ VOID APMlmeSetTxRate(
 }
 #endif /* CONFIG_AP_SUPPORT */
 
-
-
-
 VOID MlmeSelectTxRateTable(
 	IN PRTMP_ADAPTER pAd,
 	IN PMAC_TABLE_ENTRY pEntry,
