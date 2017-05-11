@@ -1129,13 +1129,12 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 #ifdef FIFO_EXT_SUPPORT
 	if (NicGetMacFifoTxCnt(pAd, pEntry))
 	{
-		ULONG 	HwTxCnt, HwErrRatio;
+		ULONG HwTxCnt, HwErrRatio = 0;
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
 			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
-		else
-			HwErrRatio = 0;
+
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
 				__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
 				HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
@@ -1818,13 +1817,11 @@ VOID ApQuickResponeForRateUpExecAGS(
 #ifdef FIFO_EXT_SUPPORT
 	if (NicGetMacFifoTxCnt(pAd, pEntry))
 	{
-		ULONG 	HwTxCnt, HwErrRatio;
+		ULONG HwTxCnt, HwErrRatio = 0;
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
 			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
-		else
-			HwErrRatio = 0;
 
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
 				__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 

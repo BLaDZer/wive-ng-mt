@@ -1824,35 +1824,33 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 
 		if (TxTotalCnt)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+	}
 
 #if defined(RTMP_MAC) || defined(RLT_MAC)
 #ifdef FIFO_EXT_SUPPORT
-		if ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT)) {
-			if ((pEntry->wcid >= 1) && (pEntry->wcid <= 8))
-			{
-				ULONG 	HwTxCnt, HwErrRatio;
+	if ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT)) {
+		if ((pEntry->wcid >= 1) && (pEntry->wcid <= 8))
+		{
+			ULONG HwTxCnt, HwErrRatio = 0;
 
-				NicGetMacFifoTxCnt(pAd, pEntry);
-				HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
-				if (HwTxCnt)
-					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
-				else
-					HwErrRatio = 0;
-				
-				TxSuccess = pEntry->fifoTxSucCnt;
-				TxRetransmit = pEntry->fifoTxRtyCnt;
-				TxErrorRatio = HwErrRatio;
-				TxTotalCnt = HwTxCnt;
-				TxCnt = HwTxCnt;
+			NicGetMacFifoTxCnt(pAd, pEntry);
+			HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
+			if (HwTxCnt)
+				HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRation(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
-						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-			}
+			TxSuccess = pEntry->fifoTxSucCnt;
+			TxRetransmit = pEntry->fifoTxRtyCnt;
+			TxErrorRatio = HwErrRatio;
+			TxTotalCnt = HwTxCnt;
+			TxCnt = HwTxCnt;
+
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRation(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 		}
+	}
 #endif /*  FIFO_EXT_SUPPORT */
 #endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
-	}
 
 
 	DBGPRINT(RT_DEBUG_INFO, ("Quick PER %lu, Total Cnt %lu\n", TxErrorRatio, TxTotalCnt));
@@ -2139,34 +2137,32 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 
 		if (TxTotalCnt)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+	}
 
 #if defined(RTMP_MAC) || defined(RLT_MAC)
 #ifdef FIFO_EXT_SUPPORT
-		if ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT)) {
-			if (pEntry->wcid >= 1 && pEntry->wcid <= 8)
-			{
-				ULONG HwTxCnt, HwErrRatio;
+	if ((pAd->chipCap.hif_type == HIF_RTMP) || (pAd->chipCap.hif_type == HIF_RLT)) {
+		if (pEntry->wcid >= 1 && pEntry->wcid <= 8)
+		{
+			ULONG HwTxCnt, HwErrRatio = 0;
 
-				NicGetMacFifoTxCnt(pAd, pEntry);
-				HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
-				if (HwTxCnt)
-					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
-				else
-					HwErrRatio = 0;
+			NicGetMacFifoTxCnt(pAd, pEntry);
+			HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
+			if (HwTxCnt)
+				HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 
-				TxSuccess = pEntry->fifoTxSucCnt;
-				TxRetransmit = pEntry->fifoTxRtyCnt;
-				TxTotalCnt = HwTxCnt;
-				TxErrorRatio = HwErrRatio;
+			TxSuccess = pEntry->fifoTxSucCnt;
+			TxRetransmit = pEntry->fifoTxRtyCnt;
+			TxTotalCnt = HwTxCnt;
+			TxErrorRatio = HwErrRatio;
 
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
-						__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
-						HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-			}
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n", 
+					__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS, 
+					HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
 		}
+	}
 #endif /*  FIFO_EXT_SUPPORT */
 #endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
-	}
 
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
 	pEntry->LastTxOkCount = TxSuccess;

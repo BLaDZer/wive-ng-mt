@@ -147,13 +147,11 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		{
 				if (NicGetMacFifoTxCnt(pAd, pEntry))
 				{
-					ULONG 	HwTxCnt, HwErrRatio;
+					ULONG HwTxCnt, HwErrRatio = 0;
 
 					HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 					if (HwTxCnt)
 						HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
-					else
-						HwErrRatio = 0;
 
 					TxSuccess = pEntry->fifoTxSucCnt;
 					TxRetransmit = pEntry->fifoTxRtyCnt;
@@ -561,13 +559,11 @@ VOID APQuickResponeForRateUpExec(
 		{
 			if (NicGetMacFifoTxCnt(pAd, pEntry))
 			{
-					ULONG	HwTxCnt, HwErrRatio;
+					ULONG HwTxCnt, HwErrRatio = 0;
 
 					HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 					if (HwTxCnt)
 						HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
-					else
-						HwErrRatio = 0;
 
 					TxSuccess = pEntry->fifoTxSucCnt;
 					TxRetransmit = pEntry->fifoTxRtyCnt;

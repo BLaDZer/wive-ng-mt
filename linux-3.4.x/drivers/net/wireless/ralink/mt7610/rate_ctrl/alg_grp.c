@@ -1134,13 +1134,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 #ifdef FIFO_EXT_SUPPORT
 	if (NicGetMacFifoTxCnt(pAd, pEntry))
 	{
-		ULONG 	HwTxCnt, HwErrRatio;
+		ULONG HwTxCnt, HwErrRatio = 0;
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
 			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
-		else
-			HwErrRatio = 0;
 
 		TxSuccess = pEntry->fifoTxSucCnt;
 		TxRetransmit = pEntry->fifoTxRtyCnt;
@@ -1452,13 +1450,11 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 #ifdef FIFO_EXT_SUPPORT
 	if (NicGetMacFifoTxCnt(pAd, pEntry))
 	{
-		ULONG HwTxCnt, HwErrRatio;
+		ULONG HwTxCnt, HwErrRatio = 0;
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
 			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
-		else
-			HwErrRatio = 0;
 
 		TxSuccess = pEntry->fifoTxSucCnt;
 		TxRetransmit = pEntry->fifoTxRtyCnt;
