@@ -23,6 +23,8 @@ ifdef CONFIG_USB_MODESWITCH
 	$(ROMFSINST) -S modems.conf /etc/modems.conf
 	$(ROMFSINST) -S ../init.d/W85modemhelper /etc/rc.d/W85modemhelper
 	$(ROMFSINST) -s /etc/rc.d/W85modemhelper /etc/init.d/modemhelper
+	$(ROMFSINST) -S udhcpc-wwan-script /etc/scripts/udhcpc-wwan-script
+	$(ROMFSINST) -s /etc/scripts/udhcpc-wwan-script /bin/udhcpc-wwan-script
 	$(ROMFSINST) -S modem.sh /etc/scripts/modem.sh
 	$(ROMFSINST) -s /etc/scripts/modem.sh /bin/modem.sh
 endif

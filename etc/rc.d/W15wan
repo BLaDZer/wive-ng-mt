@@ -97,7 +97,7 @@ udhcpc_conf() {
     # remove routes updated flags
     rm -f /tmp/routes_applied
 
-    # small wait and start dhcp client
+    # start dhcp client
     (udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 }
 

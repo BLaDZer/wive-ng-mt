@@ -19,113 +19,133 @@ start() {
     get_param
 
     if [ "$MODEMENABLED" = "1" ]; then
-	if [ -e /var/run/ppp-$MDEFIFN.pid -o -e /var/run/$MDEFIFN.pid ]; then
-    	    rm -f /tmp/modem_helper
-	    echo "pppd: already started!"
-	    RETURN=1
-	    return
-	fi
-
         $LOG "Start Modemhelper"
+	if [ "$MODEMTYPE" = "2" ]; then
+	    # NCM MODE
+	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ -e $MNGMTPORT ]; then
+		# switch to NCM mode
+		echo -ne '\r\nAT^NDISDUP=1,1,"internet"\r\n' > $MNGMTPORT
+		sleep 1
+		ip link set $NCMIF up
+	    fi
+	    UDHCPCOPTS="-i $NCMIF -S -R -T 5 -a -s /etc/scripts/udhcpc-wwan-script -p /var/run/udhcpc_wwan.pid"
+	    # start dhcp client
+	    (udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
+	else
+	    # PPP MODE
+	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ -e $MNGMTPORT ]; then
+		# switch to PPP mode
+		ip link set $NCMIF down
+		echo -ne '\r\nAT^NDISDUP=0,0,"internet"\r\n' > $MNGMTPORT
+		sleep 1
+	    fi
+	    if [ -e /var/run/ppp-$MDEFIFN.pid -o -e /var/run/$MDEFIFN.pid ]; then
+    		rm -f /tmp/modem_helper
+		echo "pppd: already started!"
+		RETURN=1
+		return
+	    fi
 
-	# if first start need wait
-	if [ ! -e /tmp/modem_ready ]; then
-	    $LOG "Wait device ready before connect"
-	    # set not first time flag
-	    touch /tmp/modem_ready
-	    # wait goahead start and ready
-    	    while [ ! -e /tmp/bootgood ]; do
-		# Sleep until file does exists/is created
-		sleep 3
-	    done
-	    # waith others services start
-	    sleep 15
-	fi
+	    # if first start need wait
+	    if [ ! -e /tmp/modem_ready ] && [ "$MODEMTYPE" != "2" ]; then
+		$LOG "Wait device ready before connect"
+		# set not first time flag
+		touch /tmp/modem_ready
+		# wait goahead start and ready
+    		while [ ! -e /tmp/bootgood ]; do
+		    # Sleep until file does exists/is created
+		    sleep 3
+		done
+		# wait others services start
+		sleep 15
+	    fi
+	    mkdir -p $PPPDIR/peers
 
-	mkdir -p $PPPDIR/peers
-	# generate new chat scripts
-	if [ "$MODEMTYPE" = "0" ]; then
-	    $LOG "Prepare chat-file for WCDMA/UMTS/GPRS modems"
-	    echo "	ABORT '~'
-	ABORT 'BUSY'
-	ABORT 'NO CARRIER'
-	ABORT 'ERROR'
-	REPORT 'CONNECT'
-	'' 'ATZ'" > $PPPDIR/peers/chat
-	if [ "$MODEMATENABLED" = "1" ]; then
-	if [ "$MODEMAT1" != "" ]; then
-        echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
-	fi
-	if [ "$MODEMAT2" != "" ]; then
+	    # generate new chat scripts
+	    if [ "$MODEMTYPE" = "0" ]; then
+		$LOG "Prepare chat-file for WCDMA/UMTS/GPRS modems"
+		echo "	ABORT '~'
+	    ABORT 'BUSY'
+	    ABORT 'NO CARRIER'
+	    ABORT 'ERROR'
+	    REPORT 'CONNECT'
+	    '' 'ATZ'" > $PPPDIR/peers/chat
+	    if [ "$MODEMATENABLED" = "1" ]; then
+	    if [ "$MODEMAT1" != "" ]; then
+    		echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
+	    fi
+	    if [ "$MODEMAT2" != "" ]; then
 		echo "	'' '$MODEMAT2'" >> $PPPDIR/peers/chat
-	fi
-	if [ "$MODEMAT3" != "" ]; then
+	    fi
+	    if [ "$MODEMAT3" != "" ]; then
 		echo "	'' '$MODEMAT3'" >> $PPPDIR/peers/chat
-	fi
-	fi
+	    fi
+	    fi
 		echo "	SAY 'Calling WCDMA/UMTS/GPRS'
-	'' 'AT+CGDCONT=1,\"IP\",\"$MODEMAPN\"'
-	'OK' 'ATD$MODEMDIALNUMBER'
-	'CONNECT' ''" >> $PPPDIR/peers/chat
-	elif [ "$MODEMTYPE" = "1" ]; then
-	    $LOG "Prepare chat-file for CDMA/EVDO modems"
-	    echo "	ABORT '~'
-	ABORT 'BUSY'
-	ABORT 'NO CARRIER'
-	ABORT 'ERROR'
-	ABORT 'NO DIAL TONE'
-	ABORT 'NO ANSWER'
-	ABORT 'DELAYED'
-	REPORT 'CONNECT'
-	'' 'ATZ'" > $PPPDIR/peers/chat
-	if [ "$MODEMATENABLED" = "1" ]; then
-	if  [ "$MODEMAT1" != "" ]; then
-	    echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
-	fi
-	if  [ "$MODEMAT2" != "" ]; then
-	    echo "	'' '$MODEMAT2'" >> $PPPDIR/peers/chat
-	fi
-	if [ "$MODEMAT3" != "" ]; then
-	    echo "	'' '$MODEMAT3'" >> $PPPDIR/peers/chat
-	fi
-	fi
-	    echo "	SAY 'Calling CDMA/EVDO'
-	'' 'ATDT#777'
-	'CONNECT' 'ATO'
-	'' ''" >> $PPPDIR/peers/chat
-	fi
+		'' 'AT+CGDCONT=1,\"IP\",\"$MODEMAPN\"'
+		'OK' 'ATD$MODEMDIALNUMBER'
+		'CONNECT' ''" >> $PPPDIR/peers/chat
+	    elif [ "$MODEMTYPE" = "1" ]; then
+		$LOG "Prepare chat-file for CDMA/EVDO modems"
+		echo "	ABORT '~'
+		ABORT 'BUSY'
+		ABORT 'NO CARRIER'
+		ABORT 'ERROR'
+		ABORT 'NO DIAL TONE'
+		ABORT 'NO ANSWER'
+		ABORT 'DELAYED'
+		REPORT 'CONNECT'
+		'' 'ATZ'" > $PPPDIR/peers/chat
+		if [ "$MODEMATENABLED" = "1" ]; then
+	    if  [ "$MODEMAT1" != "" ]; then
+		echo "	'' '$MODEMAT1'" >> $PPPDIR/peers/chat
+	    fi
+	    if  [ "$MODEMAT2" != "" ]; then
+		echo "	'' '$MODEMAT2'" >> $PPPDIR/peers/chat
+	    fi
+	    if [ "$MODEMAT3" != "" ]; then
+		echo "	'' '$MODEMAT3'" >> $PPPDIR/peers/chat
+	    fi
+	    fi
+		echo "	SAY 'Calling CDMA/EVDO'
+		'' 'ATDT#777'
+		'CONNECT' 'ATO'
+		'' ''" >> $PPPDIR/peers/chat
+	    fi
 
-	$LOG "Generate ppp options file"
-	echo "
-	$MODEMDEBUG
-	$MODEMPORT
-	$MODEMSPEED
-	linkname $MDEFIFN
-	crtscts
-	noipdefault
-	lock
-	ipcp-accept-local
-	lcp-echo-interval 60
-	lcp-echo-failure 6
-	$MODEMMTU
-	$MODEMMRU
-	usepeerdns
-	defaultroute
-	noauth
-	maxfail 0
-	holdoff 5
-	nodetach
-	persist
-	user $MODEMUSERNAME
-	password $MODEMPASSWORD
-	connect \"/usr/sbin/chat -s -S -V -t 60 -f $PPPDIR/peers/chat 2> $CHATLOG\"" > $OPTFILE
+	    $LOG "Generate ppp options file"
+	    echo "
+	    $MODEMDEBUG
+	    $MODEMPORT
+	    $MODEMSPEED
+	    linkname $MDEFIFN
+	    crtscts
+	    noipdefault
+	    lock
+	    ipcp-accept-local
+	    lcp-echo-interval 60
+	    lcp-echo-failure 6
+	    $MODEMMTU
+	    $MODEMMRU
+	    usepeerdns
+	    defaultroute
+	    noauth
+	    maxfail 0
+	    holdoff 5
+	    nodetach
+	    persist
+	    user $MODEMUSERNAME
+	    password $MODEMPASSWORD
+	    connect \"/usr/sbin/chat -s -S -V -t 60 -f $PPPDIR/peers/chat 2> $CHATLOG\"" > $OPTFILE
 
-	$LOG "Starting GSM_modem pppd..."
-	pppd call dialup $PPPDOPT & >> $CHATLOG
+	    $LOG "Starting GSM_modem pppd..."
+	    pppd call dialup $PPPDOPT & >> $CHATLOG
+	fi
     fi
 }
 
 stop() {
+    # PPP MODE
     # first send HUP for terminate connections and try some times
     # second send TERM for exit pppd process
     # if process not terminated send KILL
@@ -136,32 +156,49 @@ stop() {
     fi
 
     if [ "$pid" != "" ]; then
-	$LOG "Stopping modemhelper"
-
-        # close connection
+	$LOG "Stopping modemhelper ppp"
+	# close connection
         kill -SIGHUP "$pid"
 
 	# terminate pppd
 	count=0
         while kill $pid > /dev/null 2>&1; do
-	    if [ "$count" = "2" ]; then
+	    if [ "$count" = "3" ]; then
 		kill -SIGKILL "$pid"  > /dev/null 2>&1
 		count=0
-		sleep 2
+		sleep 1
 	    fi
 	    count="$(($count+1))"
-	    sleep 2
+	    sleep 1
 	done
 	rm -f /var/run/ppp-$MDEFIFN.pid
 	rm -f /var/run/$MDEFIFN.pid
 	rm -f $PPPDIR/peers/chat
     fi
+
+    # NCM MODE
+    if [ -e /var/run/udhcpc_wwan.pid ]; then
+	pid=`cat /var/run/udhcpc_wwan.pid`
+	if [ "$pid" != "" ]; then
+	    $LOG "Stopping modemhelper dhcp"
+	    while kill -q $pid; do
+		# wait release procedure
+		sleep 1
+		kill -q -SIGKILL $pid
+	    done
+	fi
+    fi
+    ip link set $NCMIF down > /dev/null 2>&1
 }
 
 get_param() {
     # get local param always
     eval `nvram_buf_get 2860 MODEMENABLED MODEMTYPE WMODEMPORT MODEMSPEED MODEMUSERNAME \
 	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU MODEMAPN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
+
+    # need add auto detect logic
+    MNGMTPORT="/dev/ttyUSB0"
+    NCMIF="wwan0"
 
     # check base needed parametrs
     if [ "$MODEMTYPE" = "" ]; then

@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# Wive-NG udhcpc script
+
+# include global config
+. /etc/scripts/global.sh
+
+[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
+
+LOG="logger -t udhcpc-wwan"
+
+#############################################################################################################################
+
+if [ "$broadcast" != "" ]; then
+    BROADCAST="broadcast $broadcast"
+fi
+
+if [ "$subnet" != "" ]; then
+    NETMASK="netmask $subnet"
+fi
+
+case "$1" in
+    deconfig)
+	$LOG "All deconfig $interface."
+	# disable forward for paranoid users
+	sysctl -wq net.ipv4.conf.$interface.forwarding=0
+	# generate random ip from zeroconfig range end set
+	# this is hack for some ISPs checked client alive by arping
+	rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+	ip -4 addr flush dev $interface
+	ip -4 addr replace $rndip/32 dev $interface
+	# never need down iface
+	ip link set $interface up
+    ;;
+
+    leasefail)
+	$LOG "Lease fail $interface."
+	# disable forward for paranoid users
+	sysctl -wq net.ipv4.conf.$interface.forwarding=0
+    ;;
+
+    renew|bound)
+    ########################################################################################################
+    # IP/NETMASK
+    ########################################################################################################
+	$LOG "Renew ip adress $ip and $NETMASK for $interface from dhcp"
+	ifconfig $interface $ip $BROADCAST $NETMASK
+
+    ########################################################################################################
+    # DGW
+    ########################################################################################################
+        #
+	# update routes if first exec script or new ip selected
+	# default route with metric 0 is through $iface?
+	#
+	# Get default gateway
+	if [ "$router" != "" ]; then
+	    # if ip not changed not need delete old default route
+	    # this is workaroud for ppp used tunnels up over not default routes
+	    $LOG "Deleting default route dev $interface"
+	    while ip -4 route del default dev $interface ; do
+	        :
+	    done
+	    # low cost stub for all default not replaced routes to WAN
+	    ip route replace default dev $interface metric 300
+
+	    $LOG "Flush route cache"
+	    ip route flush cache
+	fi
+
+    ;;
+esac
