@@ -23,7 +23,7 @@ symlink_pcui() {
 
 get_param() {
     # get local param always
-    eval `nvram_buf_get 2860 MODEMENABLED WMODEMPORT`
+    eval `nvram_buf_get 2860 WMODEMPORT`
     PPPDIR="/etc/ppp"
     OPTFILE="$PPPDIR/peers/dialup"
 }

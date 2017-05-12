@@ -60,7 +60,7 @@ parameter_fetch_t usb_modem_args[] =
 	{ T("modem_user"), "MODEMUSERNAME", 0, T("") },
 	{ T("modem_pass"), "MODEMPASSWORD", 0, T("") },
 	{ T("modem_dialn"), "MODEMDIALNUMBER", 0, T("") },
-	{ T("modem_apn"), "APN", 0, T("") },
+	{ T("modem_apn"), "MODEMAPN", 0, T("") },
 	{ T("at_enabled"), "MODEMATENABLED", 2, T("off") },
 	{ T("mdebug_enabled"), "MODEMDEBUG", 2, T("off") },
 	{ T("modem_at1"), "MODEMAT1", 0, T("") },

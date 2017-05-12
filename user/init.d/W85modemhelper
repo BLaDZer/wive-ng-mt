@@ -64,7 +64,7 @@ start() {
 	fi
 	fi
 		echo "	SAY 'Calling WCDMA/UMTS/GPRS'
-	'' 'AT+CGDCONT=1,\"IP\",\"$APN\"'
+	'' 'AT+CGDCONT=1,\"IP\",\"$MODEMAPN\"'
 	'OK' 'ATD$MODEMDIALNUMBER'
 	'CONNECT' ''" >> $PPPDIR/peers/chat
 	elif [ "$MODEMTYPE" = "1" ]; then
@@ -161,7 +161,7 @@ stop() {
 get_param() {
     # get local param always
     eval `nvram_buf_get 2860 MODEMENABLED MODEMTYPE WMODEMPORT MODEMSPEED MODEMUSERNAME \
-	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU APN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
+	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU MODEMAPN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
 
     # check base needed parametrs
     if [ "$MODEMTYPE" = "" ]; then

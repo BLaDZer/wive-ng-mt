@@ -54,22 +54,32 @@ case $TYPE in
 	    $LOG "${ACTION} ${idVendor}:${idProduct} may be 3G modem in zero CD mode. Call usb_modeswitch"
 	    usb_modeswitch -v ${idVendor} -p ${idProduct} -c /share/usb_modeswitch/${idVendor}:${idProduct}
 	else
-	    $LOG "${ACTION} ${idVendor}:${idProduct} may be storage"
-	    if [ ! -d /sys/module/usb-storage ]; then
-		$LOG "Load module usb-storage and wait initialization to complete"
-		modprobe -q usb-storage
-		sleep 3
-		count=0
-		while [ ! -d /sys/module/usb_storage ]; do
+	    modemmode=`cat /etc/modems.conf | grep "${idVendor}:${idProduct}" -c`
+	    if [ "$modemmode" != "0" ]; then
+		$LOG "${ACTION} ${idVendor}:${idProduct} modem in modem mode, try load option driver"
+		modprobe -q option
+		if [ "$idVendor" = "12d1" ]; then
+		    $LOG "Huawei modem. Try load module huawei_cdc_ncm"
+		    modprobe -q huawei_cdc_ncm
+		fi
+	    else
+		$LOG "${ACTION} ${idVendor}:${idProduct} may be storage"
+		if [ ! -d /sys/module/usb-storage ]; then
+		    $LOG "Load module usb-storage and wait initialization to complete"
 		    modprobe -q usb-storage
-		    if [ "$count" = "5" ]; then
-			$LOG "modprobe usb-storage failed!!! please fix me"
-			exit 1
-		    fi
-		    count="$(($count+1))"
-		    sleep 5
-		done
-		$LOG "usb_storage init complete"
+		    sleep 3
+		    count=0
+		    while [ ! -d /sys/module/usb_storage ]; do
+			modprobe -q usb-storage
+			if [ "$count" = "5" ]; then
+			    $LOG "modprobe usb-storage failed!!! please fix me"
+			    exit 1
+			fi
+			count="$(($count+1))"
+			sleep 5
+		    done
+		    $LOG "usb_storage init complete"
+		fi
 	    fi
 	fi
         ;;
