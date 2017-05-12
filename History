@@ -3033,46 +3033,47 @@
 6) igmpproxy: fix last memeber query interval to be 1sec per rfc2236.<br>
 7) igmpproxy: rework and increase max multicast origins to 32.<br>
 8) pppd: fix build in some cases.<br>
-9) kernel: ralink_raeth: allways use NAPI_WEIGHT=64.<br>
-10) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
-11) kernel: ralink_wifi: always set TIM bit for WCID_ALL/RESERVED.<br>
-12) kernel: ralink_wifi: always send deauth on class2/3 error to client.<br>
-13) kernel: ralink_wifi: rate_alg: tune fast up/down thresholds for more noise immunity.<br>
-14) kernel: ralink_wifi: tune TxRetry limits.<br>
-15) kernel: ralink_wifi: increase rate adapt interval for ext_fifo mode (this mode need fixed time of get error info from BBP).<br>
-16) kernel: ralink_wifi: always use ext_fifo counters for AID 0..8.<br>
-17) kernel: ralink_wifi: always more strong fast rate up limits.<br>
-18) kernel: ralink_wifi: fix lock/unlock in TPC error path.<br>
-19) kernel: ralink_wifi: fix report current TxPwr on TPREQ.<br>
-20) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
-21) kernel: ralink_wifi: mt76x2: ids replay attack check, and class2/3 data checks need only for AP path in RxPktHandle.<br>
-22) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
-23) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
-24) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
-25) kernel: ralink_wifi: mt7610: fix ether type check function.<br>
-26) kernel: ralink_wifi: mt7610: implement and enable data queue reserve logic.<br>
-27) kernel: ralink_wifi: mt7610: implement and enable force annonce critical AMPDU.<br>
-28) kernel: ralink_wifi: mt7610: reimplement and enable ext tx fifo support.<br>
-29) kernel: ralink_wifi: mt7610: limit tx ring size (concurent issue, BBP bug?).<br>
-30) kernel: ralink_wifi: mt7620: allow different queue for data/eapol.<br>
-31) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
-32) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
-33) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
-34) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
-35) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
-36) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
-37) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
-38) kernel: mips: pci: scan PCI controllers in reverse order.<br>
-39) kernel: net: remove unnecessary carrier status check.<br>
-40) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-41) kernel: net: ping: implement proper locking.<br>
-42) kernel: net: neigh: guard against NULL solicit() method.<br>
-43) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-44) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-45) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-46) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-47) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-48) kernel: net: l2tp: take reference on sessions being dumped.<br>
+9) init.d: power off USB befor first stage boot complete.<br>
+10) kernel: ralink_raeth: allways use NAPI_WEIGHT=64.<br>
+11) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
+12) kernel: ralink_wifi: always set TIM bit for WCID_ALL/RESERVED.<br>
+13) kernel: ralink_wifi: always send deauth on class2/3 error to client.<br>
+14) kernel: ralink_wifi: rate_alg: tune fast up/down thresholds for more noise immunity.<br>
+15) kernel: ralink_wifi: tune TxRetry limits.<br>
+16) kernel: ralink_wifi: increase rate adapt interval for ext_fifo mode (this mode need fixed time of get error info from BBP).<br>
+17) kernel: ralink_wifi: always use ext_fifo counters for AID 0..8.<br>
+18) kernel: ralink_wifi: always more strong fast rate up limits.<br>
+19) kernel: ralink_wifi: fix lock/unlock in TPC error path.<br>
+20) kernel: ralink_wifi: fix report current TxPwr on TPREQ.<br>
+21) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
+22) kernel: ralink_wifi: mt76x2: ids replay attack check, and class2/3 data checks need only for AP path in RxPktHandle.<br>
+23) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
+24) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
+25) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
+26) kernel: ralink_wifi: mt7610: fix ether type check function.<br>
+27) kernel: ralink_wifi: mt7610: implement and enable data queue reserve logic.<br>
+28) kernel: ralink_wifi: mt7610: implement and enable force annonce critical AMPDU.<br>
+29) kernel: ralink_wifi: mt7610: reimplement and enable ext tx fifo support.<br>
+30) kernel: ralink_wifi: mt7610: limit tx ring size (concurent issue, BBP bug?).<br>
+31) kernel: ralink_wifi: mt7620: allow different queue for data/eapol.<br>
+32) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
+33) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
+34) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
+35) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
+36) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
+37) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
+38) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
+39) kernel: mips: pci: scan PCI controllers in reverse order.<br>
+40) kernel: net: remove unnecessary carrier status check.<br>
+41) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+42) kernel: net: ping: implement proper locking.<br>
+43) kernel: net: neigh: guard against NULL solicit() method.<br>
+44) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+45) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+46) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+47) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+48) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+49) kernel: net: l2tp: take reference on sessions being dumped.<br>
 <br>
 <br>
 <br>

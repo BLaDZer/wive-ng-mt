@@ -85,6 +85,11 @@ config RALINK_GPIO_VPN_LED
 	depends on RALINK_GPIO_LED && PPP && RALINK_GPIO_LED_VPN
 	default 39
 
+config RALINK_GPIO_PWR_USB
+	int "GPIO for on/off USB port power."
+	depends on RALINK_GPIO
+	default 0
+
 config RALINK_HSDMA
 	tristate "Ralink SoC HSDMA Support"
 	depends on RALINK_MT7621
