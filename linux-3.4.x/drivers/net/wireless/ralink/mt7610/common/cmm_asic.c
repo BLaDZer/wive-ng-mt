@@ -704,21 +704,17 @@ VOID AsicDisableRDG(
 	RTMP_IO_WRITE32(pAd, TX_LINK_CFG, TxLinkCfg.word);
 
 	RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &Data);
-	
+
 	Data  &= 0xFFFFFF00;
-	/*Data  |= 0x20;*/
-#ifndef WIFI_TEST
-	/*if ( pAd->CommonCfg.bEnableTxBurst )	*/
-	/*	Data |= 0x60;  for performance issue not set the TXOP to 0*/
-#endif
+
+	/* For CWC test, change txop from 0x30 to 0x20 in TxBurst mode*/
 	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE) 
+		&& (pAd->CommonCfg.bEnableTxBurst == TRUE)
 #ifdef DOT11_N_SUPPORT
 		&& (pAd->MacTab.fAnyStationMIMOPSDynamic == FALSE)
 #endif /* DOT11_N_SUPPORT */
 	)
 	{
-		/* For CWC test, change txop from 0x30 to 0x20 in TxBurst mode*/
-		if (pAd->CommonCfg.bEnableTxBurst)
 		Data |= 0x20;
 	}
 	RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, Data);
