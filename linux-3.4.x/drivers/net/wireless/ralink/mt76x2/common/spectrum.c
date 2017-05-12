@@ -355,9 +355,10 @@ NDIS_STATUS	MeasureReqTabInit(
 
 /*	pAd->CommonCfg.pMeasureReqTab = kmalloc(sizeof(MEASURE_REQ_TAB), GFP_ATOMIC);*/
 	os_alloc_mem(pAd, (UCHAR **)&(pAd->CommonCfg.pMeasureReqTab), sizeof(MEASURE_REQ_TAB));
-	if (pAd->CommonCfg.pMeasureReqTab)
+	if (pAd->CommonCfg.pMeasureReqTab) {
 		NdisZeroMemory(pAd->CommonCfg.pMeasureReqTab, sizeof(MEASURE_REQ_TAB));
 		NdisAllocateSpinLock(pAd, &pAd->CommonCfg.MeasureReqTabLock);
+	}
 	else
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s Fail to alloc memory for pAd->CommonCfg.pMeasureReqTab.\n", __FUNCTION__));
@@ -574,12 +575,11 @@ NDIS_STATUS	TpcReqTabInit(
 {
 	NDIS_STATUS     Status = NDIS_STATUS_SUCCESS;
 
-	NdisAllocateSpinLock(pAd, &pAd->CommonCfg.TpcReqTabLock);
-
-/*	pAd->CommonCfg.pTpcReqTab = kmalloc(sizeof(TPC_REQ_TAB), GFP_ATOMIC);*/
 	os_alloc_mem(pAd, (UCHAR **)&(pAd->CommonCfg.pTpcReqTab), sizeof(TPC_REQ_TAB));
-	if (pAd->CommonCfg.pTpcReqTab)
+	if (pAd->CommonCfg.pTpcReqTab) {
 		NdisZeroMemory(pAd->CommonCfg.pTpcReqTab, sizeof(TPC_REQ_TAB));
+		NdisAllocateSpinLock(pAd, &pAd->CommonCfg.TpcReqTabLock);
+	}
 	else
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s Fail to alloc memory for pAd->CommonCfg.pTpcReqTab.\n", __FUNCTION__));
@@ -592,12 +592,11 @@ NDIS_STATUS	TpcReqTabInit(
 VOID TpcReqTabExit(
 	IN PRTMP_ADAPTER pAd)
 {
-	NdisFreeSpinLock(&pAd->CommonCfg.TpcReqTabLock);
-
-	if (pAd->CommonCfg.pTpcReqTab)
-/*		kfree(pAd->CommonCfg.pTpcReqTab);*/
+	if (pAd->CommonCfg.pTpcReqTab) {
 		os_free_mem(NULL, pAd->CommonCfg.pTpcReqTab);
-	pAd->CommonCfg.pTpcReqTab = NULL;
+		pAd->CommonCfg.pTpcReqTab = NULL;
+		NdisFreeSpinLock(&pAd->CommonCfg.TpcReqTabLock);
+	}
 
 	return;
 }

@@ -571,7 +571,6 @@ NDIS_STATUS TpcReqTabInit(RTMP_ADAPTER *pAd)
 	os_alloc_mem(pAd, (UCHAR **)&(pAd->CommonCfg.pTpcReqTab), sizeof(TPC_REQ_TAB));
 	if (pAd->CommonCfg.pTpcReqTab) {
 		NdisZeroMemory(pAd->CommonCfg.pTpcReqTab, sizeof(TPC_REQ_TAB));
-
 		NdisAllocateSpinLock(pAd, &pAd->CommonCfg.TpcReqTabLock);
 	}
 	else
@@ -589,7 +588,6 @@ VOID TpcReqTabExit(RTMP_ADAPTER *pAd)
 	if (pAd->CommonCfg.pTpcReqTab) {
 		os_free_mem(NULL, pAd->CommonCfg.pTpcReqTab);
 		pAd->CommonCfg.pTpcReqTab = NULL;
-
 		NdisFreeSpinLock(&pAd->CommonCfg.TpcReqTabLock);
 	}
 
