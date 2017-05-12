@@ -3069,6 +3069,7 @@
 42) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
 43) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
 44) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+45) kernel: net: l2tp: take reference on sessions being dumped.<br>
 <br>
 <br>
 <br>
