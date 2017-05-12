@@ -110,6 +110,56 @@ UCHAR	SES_OUI[] = {0x00, 0x90, 0x4c};
 UCHAR	ZeroSsid[32] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 
+VOID set_default_ap_edca_param(RTMP_ADAPTER *pAd)
+{
+	pAd->CommonCfg.APEdcaParm.bValid = TRUE;
+	pAd->CommonCfg.APEdcaParm.Aifsn[0] = 3;
+	pAd->CommonCfg.APEdcaParm.Aifsn[1] = 7;
+	pAd->CommonCfg.APEdcaParm.Aifsn[2] = 1;
+	pAd->CommonCfg.APEdcaParm.Aifsn[3] = 1;
+
+	pAd->CommonCfg.APEdcaParm.Cwmin[0] = 4;
+	pAd->CommonCfg.APEdcaParm.Cwmin[1] = 4;
+	pAd->CommonCfg.APEdcaParm.Cwmin[2] = 3;
+	pAd->CommonCfg.APEdcaParm.Cwmin[3] = 2;
+
+	pAd->CommonCfg.APEdcaParm.Cwmax[0] = 6;
+	pAd->CommonCfg.APEdcaParm.Cwmax[1] = 10;
+	pAd->CommonCfg.APEdcaParm.Cwmax[2] = 4;
+	pAd->CommonCfg.APEdcaParm.Cwmax[3] = 3;
+
+	pAd->CommonCfg.APEdcaParm.Txop[0]  = 0;
+	pAd->CommonCfg.APEdcaParm.Txop[1]  = 0;
+	pAd->CommonCfg.APEdcaParm.Txop[2]  = 94;	
+	pAd->CommonCfg.APEdcaParm.Txop[3]  = 47;	
+}
+
+
+#ifdef CONFIG_AP_SUPPORT
+VOID set_default_sta_edca_param(RTMP_ADAPTER *pAd)
+{
+	pAd->ApCfg.BssEdcaParm.bValid = TRUE;
+	pAd->ApCfg.BssEdcaParm.Aifsn[0] = 3;
+	pAd->ApCfg.BssEdcaParm.Aifsn[1] = 7;
+	pAd->ApCfg.BssEdcaParm.Aifsn[2] = 2;
+	pAd->ApCfg.BssEdcaParm.Aifsn[3] = 2;
+
+	pAd->ApCfg.BssEdcaParm.Cwmin[0] = 4;
+	pAd->ApCfg.BssEdcaParm.Cwmin[1] = 4;
+	pAd->ApCfg.BssEdcaParm.Cwmin[2] = 3;
+	pAd->ApCfg.BssEdcaParm.Cwmin[3] = 2;
+
+	pAd->ApCfg.BssEdcaParm.Cwmax[0] = 10;
+	pAd->ApCfg.BssEdcaParm.Cwmax[1] = 10;
+	pAd->ApCfg.BssEdcaParm.Cwmax[2] = 4;
+	pAd->ApCfg.BssEdcaParm.Cwmax[3] = 3;
+
+	pAd->ApCfg.BssEdcaParm.Txop[0]  = 0;
+	pAd->ApCfg.BssEdcaParm.Txop[1]  = 0;
+	pAd->ApCfg.BssEdcaParm.Txop[2]  = 94;	/*96; */
+	pAd->ApCfg.BssEdcaParm.Txop[3]  = 47;	/*48; */
+}
+#endif /* CONFIG_AP_SUPPORT */
 
 UCHAR dot11_max_sup_rate(INT SupRateLen, UCHAR *SupRate, INT ExtRateLen, UCHAR *ExtRate)
 {

@@ -8881,6 +8881,9 @@ VOID RtmpCleanupPsQueue(
 UCHAR dot11_2_ra_rate(UCHAR MaxSupportedRateIn500Kbps);
 UCHAR dot11_max_sup_rate(INT SupRateLen, UCHAR *SupRate, INT ExtRateLen, UCHAR *ExtRate);
 
+VOID set_default_ap_edca_param(RTMP_ADAPTER *pAd);
+VOID set_default_sta_edca_param(RTMP_ADAPTER *pAd);
+
 VOID mgmt_tb_set_mcast_entry(RTMP_ADAPTER *pAd);
 VOID set_entry_phy_cfg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
 VOID MacTableReset(RTMP_ADAPTER *pAd);

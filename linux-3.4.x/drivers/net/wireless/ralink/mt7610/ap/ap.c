@@ -361,64 +361,20 @@ VOID APStartUp(
 	{
 		/* EDCA parameters used for AP's own transmission */
 		if (pAd->CommonCfg.APEdcaParm.bValid == FALSE)
-		{	
-			pAd->CommonCfg.APEdcaParm.bValid = TRUE;
-			pAd->CommonCfg.APEdcaParm.Aifsn[0] = 3;
-			pAd->CommonCfg.APEdcaParm.Aifsn[1] = 7;
-			pAd->CommonCfg.APEdcaParm.Aifsn[2] = 1;
-			pAd->CommonCfg.APEdcaParm.Aifsn[3] = 1;
-
-			pAd->CommonCfg.APEdcaParm.Cwmin[0] = 4;
-			pAd->CommonCfg.APEdcaParm.Cwmin[1] = 4;
-			pAd->CommonCfg.APEdcaParm.Cwmin[2] = 3;
-			pAd->CommonCfg.APEdcaParm.Cwmin[3] = 2;
-
-			pAd->CommonCfg.APEdcaParm.Cwmax[0] = 6;
-			pAd->CommonCfg.APEdcaParm.Cwmax[1] = 10;
-			pAd->CommonCfg.APEdcaParm.Cwmax[2] = 4;
-			pAd->CommonCfg.APEdcaParm.Cwmax[3] = 3;
-
-			pAd->CommonCfg.APEdcaParm.Txop[0]  = 0;
-			pAd->CommonCfg.APEdcaParm.Txop[1]  = 0;
-			pAd->CommonCfg.APEdcaParm.Txop[2]  = 94;	/*96; */
-			pAd->CommonCfg.APEdcaParm.Txop[3]  = 47;	/*48; */
-		}
-		AsicSetEdcaParm(pAd, &pAd->CommonCfg.APEdcaParm);
+			set_default_ap_edca_param(pAd);
 
 		/* EDCA parameters to be annouced in outgoing BEACON, used by WMM STA */
 		if (pAd->ApCfg.BssEdcaParm.bValid == FALSE)
-		{
-			pAd->ApCfg.BssEdcaParm.bValid = TRUE;
-			pAd->ApCfg.BssEdcaParm.Aifsn[0] = 3;
-			pAd->ApCfg.BssEdcaParm.Aifsn[1] = 7;
-			pAd->ApCfg.BssEdcaParm.Aifsn[2] = 2;
-			pAd->ApCfg.BssEdcaParm.Aifsn[3] = 2;
+			set_default_sta_edca_param(pAd);
 
-			pAd->ApCfg.BssEdcaParm.Cwmin[0] = 4;
-			pAd->ApCfg.BssEdcaParm.Cwmin[1] = 4;
-			pAd->ApCfg.BssEdcaParm.Cwmin[2] = 3;
-			pAd->ApCfg.BssEdcaParm.Cwmin[3] = 2;
-
-			pAd->ApCfg.BssEdcaParm.Cwmax[0] = 10;
-			pAd->ApCfg.BssEdcaParm.Cwmax[1] = 10;
-			pAd->ApCfg.BssEdcaParm.Cwmax[2] = 4;
-			pAd->ApCfg.BssEdcaParm.Cwmax[3] = 3;
-
-			pAd->ApCfg.BssEdcaParm.Txop[0]  = 0;
-			pAd->ApCfg.BssEdcaParm.Txop[1]  = 0;
-			pAd->ApCfg.BssEdcaParm.Txop[2]  = 94;	/*96; */
-			pAd->ApCfg.BssEdcaParm.Txop[3]  = 47;	/*48; */
-		}
+		AsicSetEdcaParm(pAd, &pAd->CommonCfg.APEdcaParm);
 	}
 	else
 		AsicSetEdcaParm(pAd, NULL);
 
 #ifdef DOT11_N_SUPPORT
 	if (!WMODE_CAP_N(pAd->CommonCfg.PhyMode))
-	{
-		/* Patch UI */
-		pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth = BW_20;
-	}
+		pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth = BW_20; /* Patch UI */
 
 	/* init */
 	if (pAd->CommonCfg.bRdg)

@@ -376,35 +376,14 @@ VOID RTMPSetHT(
 		rt_ht_cap->ShortGIfor20 = 0;
 		rt_ht_cap->ShortGIfor40 = 0;
 	}
-	
+
 	/* We support link adaptation for unsolicit MCS feedback, set to 2.*/
 	pAd->CommonCfg.AddHTInfo.ControlChan = pAd->CommonCfg.Channel;
 	/* 1, the extension channel above the control channel. */
-	
+
 	/* EDCA parameters used for AP's own transmission*/
 	if (pAd->CommonCfg.APEdcaParm.bValid == FALSE)
-	{
-		pAd->CommonCfg.APEdcaParm.bValid = TRUE;
-		pAd->CommonCfg.APEdcaParm.Aifsn[0] = 3;
-		pAd->CommonCfg.APEdcaParm.Aifsn[1] = 7;
-		pAd->CommonCfg.APEdcaParm.Aifsn[2] = 1;
-		pAd->CommonCfg.APEdcaParm.Aifsn[3] = 1;
-	
-		pAd->CommonCfg.APEdcaParm.Cwmin[0] = 4;
-		pAd->CommonCfg.APEdcaParm.Cwmin[1] = 4;
-		pAd->CommonCfg.APEdcaParm.Cwmin[2] = 3;
-		pAd->CommonCfg.APEdcaParm.Cwmin[3] = 2;
-
-		pAd->CommonCfg.APEdcaParm.Cwmax[0] = 6;
-		pAd->CommonCfg.APEdcaParm.Cwmax[1] = 10;
-		pAd->CommonCfg.APEdcaParm.Cwmax[2] = 4;
-		pAd->CommonCfg.APEdcaParm.Cwmax[3] = 3;
-
-		pAd->CommonCfg.APEdcaParm.Txop[0]  = 0;
-		pAd->CommonCfg.APEdcaParm.Txop[1]  = 0;
-		pAd->CommonCfg.APEdcaParm.Txop[2]  = 94;	
-		pAd->CommonCfg.APEdcaParm.Txop[3]  = 47;	
-	}
+		set_default_ap_edca_param(pAd);
 	AsicSetEdcaParm(pAd, &pAd->CommonCfg.APEdcaParm);
 
 #ifdef TXBF_SUPPORT
