@@ -822,7 +822,11 @@ static UINT8 GetCurTxPwr(
 	IN PRTMP_ADAPTER pAd,
 	IN UINT8 Wcid)
 {
-	return 16; /* 16 dBm */
+	UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
+	if (!MaxTxPower)
+	    return 20; /* dbm */
+	else
+	    return MaxTxPower;
 }
 
 /*

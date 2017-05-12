@@ -811,9 +811,15 @@ static UINT64 GetCurrentTimeStamp(RTMP_ADAPTER *pAd)
 	Return	: Current Time Stamp.
 	==========================================================================
  */
-static UINT8 GetCurTxPwr(RTMP_ADAPTER *pAd, UINT8 Wcid)
+static UINT8 GetCurTxPwr(
+	IN PRTMP_ADAPTER pAd,
+	IN UINT8 Wcid)
 {
-	return 16; /* 16 dBm */
+	UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
+	if (!MaxTxPower)
+	    return 20; /* dbm */
+	else
+	    return MaxTxPower;
 }
 
 /*
