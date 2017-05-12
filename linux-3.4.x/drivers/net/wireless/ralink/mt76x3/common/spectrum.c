@@ -352,7 +352,6 @@ NDIS_STATUS	MeasureReqTabInit(RTMP_ADAPTER *pAd)
 	os_alloc_mem(pAd, (UCHAR **)&(pAd->CommonCfg.pMeasureReqTab), sizeof(MEASURE_REQ_TAB));
 	if (pAd->CommonCfg.pMeasureReqTab) {
 		NdisZeroMemory(pAd->CommonCfg.pMeasureReqTab, sizeof(MEASURE_REQ_TAB));
-
 		NdisAllocateSpinLock(pAd, &pAd->CommonCfg.MeasureReqTabLock);
 	}
 	else
@@ -370,7 +369,6 @@ VOID MeasureReqTabExit(RTMP_ADAPTER *pAd)
 	if (pAd->CommonCfg.pMeasureReqTab) {
 		os_free_mem(NULL, pAd->CommonCfg.pMeasureReqTab);
 		pAd->CommonCfg.pMeasureReqTab = NULL;
-
 		NdisFreeSpinLock(&pAd->CommonCfg.MeasureReqTabLock);
 	}
 	return;
