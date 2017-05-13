@@ -62,7 +62,7 @@ case "$1" in
 	        :
 	    done
 	    # low cost stub for all default not replaced routes to WAN
-	    ip route replace default dev $interface metric 300
+	    ip route replace default dev $interface metric 5
 
 	    $LOG "Flush route cache"
 	    ip route flush cache

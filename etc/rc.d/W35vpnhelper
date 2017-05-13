@@ -4,7 +4,7 @@
 . /etc/scripts/global.sh
 
 # get local param always
-eval `nvram_buf_get 2860 vpnInterface vpnUser vpnPassword l2tp_srv_enabled MODEMENABLED`
+eval `nvram_buf_get 2860 vpnInterface vpnUser vpnPassword l2tp_srv_enabled`
 
 # constants
 LOG="logger -t vpnhelper"
@@ -96,7 +96,7 @@ stop() {
 	fi
 
 	# safe terminate pppd if l2tp server enabled
-	if [ "$l2tp_srv_enabled" = "1" ] || [ "$MODEMENABLED" = "1" ]; then
+	if [ "$l2tp_srv_enabled" = "1" ] || [ "$MODEMENABLED" = "1" -a "$MODEMTYPE" != "2" ]; then
 	    # first send HUP for terminate connections and try some times
 	    # second send TERM for exit pppd process
 	    # if process not terminated send KILL

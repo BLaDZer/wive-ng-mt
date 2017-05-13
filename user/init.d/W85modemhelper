@@ -7,12 +7,11 @@ fi
 
 touch /tmp/modem_helper
 
+# get params
+. /etc/scripts/global.sh
+
 # constants
 LOG="logger -t modem helper"
-
-# default interface name
-MDEFIFN="ppp_modem"
-RETURN=0
 
 start() {
     # get local params
@@ -22,7 +21,7 @@ start() {
         $LOG "Start Modemhelper"
 	if [ "$MODEMTYPE" = "2" ]; then
 	    # NCM MODE
-	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ -e $MNGMTPORT ]; then
+	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
 		# switch to NCM mode
 		echo -ne '\r\nAT^NDISDUP=1,1,"internet"\r\n' > $MNGMTPORT
 		sleep 1
@@ -33,17 +32,17 @@ start() {
 	    (udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	else
 	    # PPP MODE
-	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ -e $MNGMTPORT ]; then
+	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
 		# switch to PPP mode
 		ip link set $NCMIF down
 		echo -ne '\r\nAT^NDISDUP=0,0,"internet"\r\n' > $MNGMTPORT
 		sleep 1
 	    fi
-	    if [ -e /var/run/ppp-$MDEFIFN.pid -o -e /var/run/$MDEFIFN.pid ]; then
+	    if [ -e /var/run/ppp-$mdm_if.pid -o -e /var/run/$mdm_if.pid ]; then
     		rm -f /tmp/modem_helper
 		echo "pppd: already started!"
-		RETURN=1
-		return
+		rm -f /tmp/modem_helper
+		exit 1
 	    fi
 
 	    # if first start need wait
@@ -118,7 +117,7 @@ start() {
 	    $MODEMDEBUG
 	    $MODEMPORT
 	    $MODEMSPEED
-	    linkname $MDEFIFN
+	    linkname $mdm_if
 	    crtscts
 	    noipdefault
 	    lock
@@ -149,8 +148,8 @@ stop() {
     # first send HUP for terminate connections and try some times
     # second send TERM for exit pppd process
     # if process not terminated send KILL
-    if [ -e /var/run/ppp-$MDEFIFN.pid ]; then
-	pid=`grep '^[0-9]\{1,\}$' /var/run/ppp-$MDEFIFN.pid`
+    if [ -e /var/run/ppp-$mdm_if.pid ]; then
+	pid=`grep '^[0-9]\{1,\}$' /var/run/ppp-$mdm_if.pid`
     else
         pid=`ps w| awk '/pppd call dialup.*ppp_modem/ && !/awk/ { print $1; }'`
     fi
@@ -171,8 +170,8 @@ stop() {
 	    count="$(($count+1))"
 	    sleep 1
 	done
-	rm -f /var/run/ppp-$MDEFIFN.pid
-	rm -f /var/run/$MDEFIFN.pid
+	rm -f /var/run/ppp-$mdm_if.pid
+	rm -f /var/run/$mdm_if.pid
 	rm -f $PPPDIR/peers/chat
     fi
 
@@ -181,10 +180,10 @@ stop() {
 	pid=`cat /var/run/udhcpc_wwan.pid`
 	if [ "$pid" != "" ]; then
 	    $LOG "Stopping modemhelper dhcp"
-	    while kill -q $pid; do
+	    while kill $pid > /dev/null 2>&1; do
 		# wait release procedure
 		sleep 1
-		kill -q -SIGKILL $pid
+		kill -SIGKILL "$pid"  > /dev/null 2>&1
 	    done
 	fi
     fi
@@ -193,11 +192,15 @@ stop() {
 
 get_param() {
     # get local param always
-    eval `nvram_buf_get 2860 MODEMENABLED MODEMTYPE WMODEMPORT MODEMSPEED MODEMUSERNAME \
+    eval `nvram_buf_get 2860 WMODEMPORT MODEMSPEED MODEMUSERNAME \
 	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU MODEMAPN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
 
     # need add auto detect logic
-    MNGMTPORT="/dev/ttyUSB0"
+    if [ -e /dev/pcui ]; then
+	MNGMTPORT="/dev/pcui"
+    fi
+
+    # default NCM ifname
     NCMIF="wwan0"
 
     # check base needed parametrs
@@ -247,7 +250,7 @@ get_param() {
     PPPDIR="/etc/ppp"
     OPTFILE="$PPPDIR/peers/dialup"
     CHATLOG="/var/log/chat.log"
-    PPPDOPT="file $OPTFILE ifname $MDEFIFN $MODEMDEBUG -detach"
+    PPPDOPT="file $OPTFILE ifname $mdm_if $MODEMDEBUG -detach"
 }
 
 case "$1" in
@@ -265,8 +268,6 @@ case "$1" in
 	    ;;
 	*)
 	    echo $"Usage: $0 {start|stop|restart}"
-	    RETURN=1
 esac
 
 rm -f /tmp/modem_helper
-exit $RETURN

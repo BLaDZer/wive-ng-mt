@@ -90,6 +90,8 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 
 			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
+
+			doSystem("service modemhelper restart");
 		}
 	else if (0 == strcmp(submit, "connect"))
 		{
@@ -136,42 +138,27 @@ static int modemShowStatus(int eid, webs_t wp, int argc, char_t **argv)
 			// Status is at least 'offline' now
 			status++;
 
-			// Try to find pppd
-			int found = procps_count("pppd");
+			// Try to search for 'modem' of 'wwan0" devices
+			FILE * fd = fopen(_PATH_PROCNET_DEV, "r");
 
-			if (found>0)
+			if (fd != NULL)
 			{
-				// Now status is at least 'connecting'
-				//status++;
+				char_t line[256];
 
-				// Try to search for 'ppp_modem' device
-				FILE * fd = fopen(_PATH_PROCNET_DEV, "r");
-
-				if (fd != NULL)
+				// Read all ifaces and check match
+				while ((fgets(line, sizeof(line), fd)) != NULL)
 				{
-					//int ppp_id;
-					char_t line[256];
-
-					// Read all ifaces and check match
-					while ((fgets(line, sizeof(line), fd)) != NULL)
+					if(strstr(line,"modem") || strstr(line,"wwan0"))
 					{
-						if(strstr(line,"ppp_modem"))
-						{
-							status++; // Status is set to 'connected'
-							break; // Do not search more
-						}
+						status++; // Status is set to 'connected'
+						break; // Do not search more
 					}
-					fclose(fd);
 				}
-				else
-				{
-					syslog(LOG_WARNING, "cannot open %s (%s).", _PATH_PROCNET_DEV, strerror(errno));
-				}
+				fclose(fd);
 			}
-			else if (found<0)
+			else
 			{
-				//syslog(LOG_WARNING, "cannot serach process 'pppd': %s\n", strerror(-found));
-				;
+				syslog(LOG_WARNING, "cannot open %s (%s).", _PATH_PROCNET_DEV, strerror(errno));
 			}
 	}
 

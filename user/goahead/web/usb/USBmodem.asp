@@ -25,19 +25,19 @@ function showHint(key)
 	var form = document.usbmodem;
 	var text = '<div class="hint"><font color="#0000ff"><b>HINT:</b></font>&nbsp;';
 	var show = true;
-	
+
 	if (key=='modem_enabled')
-		text += 'Enable USB 3G/GPRS/CDMA modem support and USB modem connections control.';
+		text += 'Enable USB 4G/3G/GPRS/CDMA modem support and USB modem connections control.';
 	else if (key=='modem_status')
 		text += 'This indicator shows current state of modem connection.';
 	else if (form.modem_enabled.value == '1')
-	{	
+	{
 		if (key=='modem_type')
 			text += 'Specify USB modem type.';
 		else if (key=='modem_port')
-			text += 'Manually specify USB modem port (ttyUSB0-ttyUSB9, ttyACM0) or set to AUTO for automatic port search.';	
+			text += 'Manually specify USB modem port (ttyUSB0-ttyUSB9, ttyACM0) or set to AUTO for automatic port search.';
 		else if (key=='modem_speed')
-			text += 'Manually specify USB modem port speed(57600-115200-230400) or set to AUTO for automatic select speed.';	
+			text += 'Manually specify USB modem port speed(57600-115200-230400) or set to AUTO for automatic select speed.';
 		else if (key=='modem_mtu')
 			text += 'Specify Maximum Transfer Unit/Maximum Recieve Unit size in octets.';
 		else if (key=='modem_user')
@@ -45,7 +45,7 @@ function showHint(key)
 		else if (key=='modem_pass')
 			text += 'Specify password given by your mobile ISP.';
 		else if (key=='modem_dialn')
-			text += 'Specify telephone number given by your mobile ISP.';	
+			text += 'Specify telephone number given by your mobile ISP.';
 		else if (key=='modem_apn')
 			text += 'Specify Access Point Name (APN) for access to network given by your mobile ISP.';
 		else if (key=='modem_atm')
@@ -57,7 +57,7 @@ function showHint(key)
 	}
 	else
 		show = false;
-	
+
 	if (show)
 	{
 		text += '</div>';
@@ -106,11 +106,11 @@ function CheckValue(form)
 function selectModemType(form)
 {
 	var gsm_on = form.modem_type.value == '0';
-	var cdma_on = form.modem_type.value == '1';
+	var ncm_on = form.modem_type.value == '2';
 
 	// Display mode-dependent elements
-	displayElement( 'modem_dialn_row', gsm_on);
-	displayElement( 'modem_apn_row', gsm_on);
+	displayElement( 'modem_dialn_row', (gsm_on || ncm_on));
+	displayElement( 'modem_apn_row', (gsm_on || ncm_on));
 }
 
 function bodyOnLoad(form)
@@ -223,8 +223,9 @@ function showModemStatus()
           <tr id="modem_type_row" onMouseOver="showHint('modem_type')" onMouseOut="hideHint('modem_type')">
             <td class="head">Modem type:</td>
             <td><select name="modem_type" onChange="selectModemType(this.form);" class="mid">
-                <option value="0">WCDMA/UMTS/GPRS</option>
-                <option value="1">CDMA/EVDO</option>
+                <option value="0">PPP LTE/WCDMA/UMTS/GPRS</option>
+                <option value="1">PPP CDMA/EVDO</option>
+                <option value="2">NCM LTE/WCDMA/UMTS/GPRS</option>
               </select></td>
           </tr>
           <tr id="modem_port_row" onMouseOver="showHint('modem_port')" onMouseOut="hideHint('modem_port')">

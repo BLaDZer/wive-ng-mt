@@ -83,7 +83,7 @@ servicelimit() {
 	    iptables -A servicelimit -p udp --dport 1701 -j ACCEPT
 	    iptables -A servicelimit -p udp --sport 1701 -j ACCEPT
 	fi
-	if [ "$PPP_CONNECT" = "on" ] && [ "$vpnType" = "1" ]; then
+	if [ "$VPN_CONNECT" = "on" ] && [ "$vpnType" = "1" ]; then
 	    $LOG "Add vpnfilter rules for PPTP"
 	    iptables -A servicelimit -p gre -j ACCEPT
 	    iptables -A servicelimit -p tcp --sport 1723 -j ACCEPT
@@ -181,7 +181,7 @@ servicelimit() {
 	if [ "$WANPingFilter" = "0" ] && [ "$ROUTE_MODE" = "on" ]; then
     	    $LOG "icmp drop ping from wan $wan_if"
     	    iptables -A servicelimit -i $wan_if -p icmp --icmp-type echo-request -j DROP
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+	    if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
     	        iptables -A servicelimit -i $real_wan_if -p icmp --icmp-type echo-request -j DROP
 	    fi
 	else
@@ -212,7 +212,7 @@ forwardlimit() {
 	if [ "$ForwardSesLimit" != "" ] && [ "$ForwardSesLimit" != "0" ]; then
 	    $LOG "Limit per user tcp sessions to $ForwardSesLimit"
 	    iptables -A FORWARD -o $wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+	    if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
 	    fi
 	fi
@@ -240,7 +240,7 @@ forwardlimit() {
 		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p udp -m coova --name chilli --dest -j ACCEPT
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+	    if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
 	    fi
 	fi
@@ -303,6 +303,16 @@ natrules() {
 		    iptables -t nat -A POSTROUTING -o $wan_if -s $chilli_net -j MASQUERADE
 		fi
 	    fi
+	    # for 3G/4G allways use masqrade for avoid rebuild rules every connect
+	    if [ "$MODEMENABLED" = "1" ]; then
+		if [ "$chilli_enable" != "on" ]; then
+		    $LOG "Add MASQRADE from $lan_ipaddr/$lan_netmask to $mdm_if."
+		    iptables -t nat -A POSTROUTING -o $mdm_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
+		else
+		    $LOG "Add MASQRADE from $chilli_net to $wan_if."
+		    iptables -t nat -A POSTROUTING -o $mdm_if -s $chilli_net -j MASQUERADE
+		fi
+	    fi
 	fi
 }
 
@@ -353,7 +363,7 @@ dmzrules() {
 		# all packets join to DMZ
     		iptables -t nat -A PREROUTING -j DMZ
 	    fi
-    	    if [ "$PPP_CONNECT" = "on" ] || [ "$l2tp_srv_enabled" = "1" ]; then
+    	    if [ "$VPN_CONNECT" = "on" ] || [ "$l2tp_srv_enabled" = "1" ]; then
 		# filter VPN transport packets
         	if [ "$vpnType" = "1" ]; then
 		    # pptp
@@ -454,7 +464,7 @@ restart() {
 	    clampmss
 	    tunettl
 	fi
-	if [ "$PPP_CONNECT" = "on" ]; then
+	if [ "$VPN_CONNECT" = "on" ]; then
 	    vpnrules
 	fi
 	if [ "$ROUTE_MODE" = "on" ]; then
@@ -513,7 +523,7 @@ forwardlimitv6() {
 	if [ "$ForwardSesLimit" != "" ] && [ "$ForwardSesLimit" != "0" ]; then
 	    $LOG "Limit per user tcp sessions to $ForwardSesLimit"
 	    ip6tables -A FORWARD -o $wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
-	    if [ "$PPP_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+	    if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		ip6tables -A FORWARD -o $real_wan_if -p tcp --tcp-flags SYN SYN $CONNLIMIT $ForwardSesLimit --connlimit-mask 32 -j DROP
 	    fi
 	fi
@@ -601,7 +611,7 @@ get_param() {
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable \
 	    FtSupport RRMEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
-	    l2tp_srv_enabled radius_srv_enabled MODEMENABLED store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
+	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit dnsToLocalRedir QoSEnable`
 
     # use for route mode detect
@@ -611,10 +621,10 @@ get_param() {
 	ROUTE_MODE="off"
     fi
     # if ppp enabled and not lanauth mode (type6 is lanauth not real ppp)
-    if [ "$MODEMENABLED" = "1" ] || [ "$vpnEnabled" = "on" -a "$vpnType" != "6" ]; then
-	PPP_CONNECT="on"
+    if [ "$vpnEnabled" = "on" -a "$vpnType" != "6" ]; then
+	VPN_CONNECT="on"
     else
-	PPP_CONNECT="off"
+	VPN_CONNECT="off"
     fi
     # if start one of this services need allow udp packets to local port range
     if [ "$SmbEnabled" = "1" ] || [ "$xupnpd" = "1" ] || [ "$upnpEnabled" = "1" ]; then
