@@ -64,12 +64,12 @@ case "$1" in
 	    # low cost stub for all default not replaced routes to WAN
 	    ip route replace default dev $interface metric 5
 
-	    # enable forward for this if
-	    sysctl -wq net.ipv4.conf.$interface.forwarding=1
-
 	    $LOG "Flush route cache"
 	    ip route flush cache
 	fi
+
+    # enable forward for this if
+    sysctl -wq net.ipv4.conf.$interface.forwarding=1
 
     ;;
 esac
