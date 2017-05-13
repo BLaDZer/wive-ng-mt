@@ -3035,7 +3035,7 @@
 8) pppd: fix build in some cases.<br>
 9) goahead: add NCM modem type.<br>
 10) goahead: fix status modem connected.<br>
-11) init.d: power off USB befor first stage boot complete.<br>
+11) init.d: power off USB before first stage boot complete.<br>
 12) init.d: fix 3G/4G huawei modems detect and work in ppp mode.<br>
 13) init.d: basic support NCM mode for 3G/4G modems.<br>
 14) init.d: iptables: split NAT rules for VPN/MODEMS.<br>

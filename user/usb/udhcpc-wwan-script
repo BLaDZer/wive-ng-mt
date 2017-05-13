@@ -49,20 +49,24 @@ case "$1" in
     ########################################################################################################
     # DGW
     ########################################################################################################
-        #
-	# update routes if first exec script or new ip selected
-	# default route with metric 0 is through $iface?
-	#
 	# Get default gateway
 	if [ "$router" != "" ]; then
-	    # if ip not changed not need delete old default route
-	    # this is workaroud for ppp used tunnels up over not default routes
 	    $LOG "Deleting default route dev $interface"
 	    while ip -4 route del default dev $interface ; do
 	        :
 	    done
 	    # low cost stub for all default not replaced routes to WAN
-	    ip route replace default dev $interface metric 5
+	    ip route replace default dev $interface metric 1000
+
+	    # get DGW
+	    metric=0
+	    for raddr in $router ; do
+	            if [ "$metric" = "0" ]; then
+			    first_dgw="$raddr"
+			    $LOG "Set fist default gateway to $first_dgw dev $interface via "$first_dgw" metric 0"
+			    ip -4 route replace default dev "$interface" via "$first_dgw" metric 0
+		    fi
+	    done
 
 	    $LOG "Flush route cache"
 	    ip route flush cache

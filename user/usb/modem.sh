@@ -6,19 +6,15 @@
 #
 ##########################################################################################################
 
-LOG="logger -t 3G"
+LOG="logger -t 3G/4G"
 
 symlink_modem() {
-    if [ ! -e /dev/modem ]; then
-	ln -fs /dev/$MDEV /dev/modem
-	MODEMFINDED=1
-    fi
+    ln -fs /dev/$MDEV /dev/modem
+    MODEMFINDED=1
 }
 
 symlink_pcui() {
-    if [ ! -e /dev/pcui ]; then
-	ln -fs /dev/$MDEV /dev/pcui
-    fi
+    ln -fs /dev/$MDEV /dev/pcui
 }
 
 get_param() {
@@ -40,7 +36,7 @@ if [ -z "$ACTION" ]; then
     ACTION="add"
 fi
 
-if [ "$ACTION" = "add" -a ! -e "/dev/modem" ]; then
+if [ "$ACTION" = "add" ]; then
     for path in $(find /sys/devices -name "$MDEV" | sort -r 2>/dev/null); do
         DEVPATH=${path#/sys}
     done
@@ -65,9 +61,9 @@ if [ "$ACTION" = "add" -a ! -e "/dev/modem" ]; then
 	fi
     fi
 
-    if [ "$MDEV" = "$WMODEMPORT" ] || [ "$WMODEMPORT" = "AUTO" -a "$MODEMFINDED" = "1" ]; then
-	$LOG "Modem added. Starting helper service -$MDEV-"
-	service modemhelper start
+    if [ "$MDEV" = "$WMODEMPORT" ] || [ "$MODEMFINDED" = "1" ]; then
+	$LOG "Modem added. Starting helper service for -$MDEV-"
+	service modemhelper restart
     fi
 elif [ "$ACTION" = "remove" ]; then
 	if [ -e "/dev/modem" ]; then
