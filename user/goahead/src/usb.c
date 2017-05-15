@@ -91,6 +91,7 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
 
+			doSystem("service iptables restart");
 			doSystem("service modemhelper restart");
 		}
 	else if (0 == strcmp(submit, "connect"))
