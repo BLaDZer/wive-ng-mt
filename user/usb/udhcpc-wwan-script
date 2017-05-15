@@ -95,9 +95,15 @@ case "$1" in
 	    # parse dnsservers
 	    for daddr in $dns ; do
 		echo nameserver $daddr >> $RESOLV_CONF_WWAN
-		if [ "$first_dgw" != "" ] && [ "$daddr" != "$first_dgw" ]; then
+		if [ "$first_dgw" != "" ]; then
 		    $LOG "Add static route to DNS $daddr dev $interface"
 		    ip route replace "$daddr" via "$first_dgw" dev "$interface"
+		else
+		    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
+		    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
+			$LOG "Add static route to DNS $ROUTE_NS dev $interface"
+			ip route replace $ROUTE_NS dev $interface
+            	    fi
 		fi
 	    done
 	    if [ "$wan_static_dns" != "on" ]; then

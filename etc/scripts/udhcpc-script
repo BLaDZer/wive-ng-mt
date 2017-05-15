@@ -283,13 +283,18 @@ case "$1" in
 		    fi
 		    if [ "$dns" != "" ]; then
 			$LOG "Renew DNS from dhcp $dns $domain"
-			# parce dnsservers
+			# parse dnsservers
 			for daddr in $dns ; do
 	    		    echo nameserver $daddr >> $RESOLV_CONF
-			    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
-			    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
-				$LOG "Add static route to DNS $ROUTE_NS dev $interface"
-				ip route replace $ROUTE_NS dev $interface
+			    if [ "$first_dgw" != "" ]; then
+				$LOG "Add static route to DNS via $first_dgw dev $interface"
+				ip route replace $first_dgw dev $interface
+			    else
+				ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
+				if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
+				    $LOG "Add static route to DNS $ROUTE_NS dev $interface"
+				    ip route replace $ROUTE_NS dev $interface
+				fi
 			    fi
 			done
 		    else
