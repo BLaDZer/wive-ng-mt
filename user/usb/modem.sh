@@ -24,8 +24,6 @@ get_param() {
     OPTFILE="$PPPDIR/peers/dialup"
 }
 
-[ -z "`echo $DEVPATH | grep tty/$MDEV`" ] && exit 0
-
 get_param
 if [ ! -e /etc/modems.conf ]; then
     $LOG "Error - modems.conf not found."

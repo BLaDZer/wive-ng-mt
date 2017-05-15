@@ -37,7 +37,17 @@ case "$1" in
 	ip -4 addr replace $rndip/32 dev $interface
 	# never need down iface
 	ip link set $interface up
-	rm -f $RESOLV_CONF_WWAN
+	if [ -e /tmp/default.gw ]; then
+	    olddgw=`cat /tmp/default.gw`
+	    $LOG "Restore gw to $olddgw via $wan_if for switch to cable"
+	    ip route replace default via $olddgw dev $wan_if
+	fi
+	if [ -e $RESOLV_CONF_BACK ]; then
+	    $LOG "Restore $RESOLV_CONF from $RESOLV_CONF_BACK"
+	    cp -f $RESOLV_CONF_BACK $RESOLV_CONF
+	    service dnsserver reload
+	fi
+	rm -f $RESOLV_CONF_WWAN $RESOLV_CONF_BACK
     ;;
 
     leasefail)
@@ -95,15 +105,17 @@ case "$1" in
 	    # parse dnsservers
 	    for daddr in $dns ; do
 		echo nameserver $daddr >> $RESOLV_CONF_WWAN
-		if [ "$first_dgw" != "" ]; then
-		    $LOG "Add static route to DNS $daddr dev $interface"
-		    ip route replace "$daddr" via "$first_dgw" dev "$interface"
-		else
-		    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
-		    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
-			$LOG "Add static route to DNS $ROUTE_NS dev $interface"
-			ip route replace $ROUTE_NS dev $interface
-            	    fi
+		if [ "$first_dgw" != "$daddr" ]; then
+		    if [ "$first_dgw" != "" ]; then
+			$LOG "Add static route to DNS $daddr dev $interface"
+			ip route replace "$daddr" via "$first_dgw" dev "$interface"
+		    else
+			ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
+			if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
+			    $LOG "Add static route to DNS $ROUTE_NS dev $interface"
+			    ip route replace $ROUTE_NS dev $interface
+            		fi
+		    fi
 		fi
 	    done
 	    if [ "$wan_static_dns" != "on" ]; then
@@ -111,7 +123,8 @@ case "$1" in
 		    $LOG "Replace DNS from $interface to $RESOLV_CONF"
 		    cp -f $RESOLV_CONF $RESOLV_CONF_BACK
 		fi
-		cat $RESOLV_CONF_WWAN > $RESOLV_CONF
+		cp -f $RESOLV_CONF_WWAN $RESOLV_CONF
+		service dnsserver reload
 	    else
 		$LOG "Do not touch $RESOLV_CONF, static DNS configured."
 	    fi
