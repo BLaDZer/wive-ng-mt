@@ -1044,7 +1044,7 @@ static const RTMP_CHIP_CAP MT7603_ChipCap = {
 	.hif_type = HIF_MT,
 	.rf_type = RF_MT,
 	.TxAggLimit = 64,
-	.RxBAWinSize = 64,
+	.RxBAWinSize = 21,
 	.AMPDUFactor = 2,
 	.BiTxOpOn = 1,
 };
