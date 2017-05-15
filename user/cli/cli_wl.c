@@ -499,6 +499,11 @@ int func_wl_set24(int argc, char* argv[])
     char* cmd = NULL;
     char* val = NULL;
 
+    if (argc < 2)
+    {
+        goto help;
+    }
+
     while (argc>1)
     {
         cmd = argv[0];
@@ -532,16 +537,16 @@ int func_wl_set24(int argc, char* argv[])
         else
         if (STR_EQ(cmd, "channel"))
         {
-            int chan_num = strToIntDef(val, 0);
+            int chan_num = strToIntDef(val, -1);
 
             if (chan_num >= 0)
             {
-                nvram_set(RT2860_NVRAM, "channel", val);
+                nvram_set(RT2860_NVRAM, "Channel", val);
                 nvram_set(RT2860_NVRAM, "AutoChannelSelect", (chan_num == 0)?"1":"0");
             }
             else
             {
-                printf("channel parameter out of range.");
+                printf("channel parameter should be > 0 or == 0 (Auto). \n");
             }
         }
         else
@@ -596,21 +601,28 @@ int func_wl_set24(int argc, char* argv[])
             argc--;
         }
         else
+        if (STR_EQ_HELP(cmd))
+        {
+            goto help;
+        }
+        else
         {
             printf("Unknown command '%s'!\n", cmd);
             goto help;
         }
     }
 
+    return 0;
+
 help:
     writeCmdHelp("enabled on/off","enable or disable radio module");
-    writeCmdHelp("channel <num>","change current wlan channel");
+    writeCmdHelp("channel <num>","change current wlan channel (0 = auto)");
     writeCmdHelp("tx-power 5/10/20/40/70/100","change TX Power level (%%)");
     writeCmdHelp("mode b/g/n/b-g/g-n/b-g-n","change wlan 2.4GHz network mode");
     writeCmdHelp("ssid 1 <name>","change first ssid name");
-    writeCmdHelp("hidden 1 <name>","change first ssid hidden mode");
-    writeCmdHelp("isolate-clients 1 <name>","change first ssid client isolation");
-    writeCmdHelp("isolate-broadcast 1 <name>","change first ssid broadcast isolation");
+    writeCmdHelp("hidden 1 on/off","change first ssid hidden mode");
+    writeCmdHelp("isolate-clients 1 on/off","change first ssid client isolation");
+    writeCmdHelp("isolate-broadcast 1 on/off","change first ssid broadcast isolation");
 
     return 0;
 
@@ -620,6 +632,11 @@ int func_wl_set5(int argc, char* argv[])
 {
     char* cmd = NULL;
     char* val = NULL;
+
+    if (argc < 2)
+    {
+        goto help;
+    }
 
     while (argc>1)
     {
@@ -657,7 +674,7 @@ int func_wl_set5(int argc, char* argv[])
             int chan_num = strToIntDef(val, 0);
             if (chan_num >= 0)
             {
-                nvram_set(RT2860_NVRAM, "channelINIC", val);
+                nvram_set(RT2860_NVRAM, "ChannelINIC", val);
                 nvram_set(RT2860_NVRAM, "AutoChannelSelectINIC", (chan_num == 0)?"1":"0");
             }
             else
@@ -669,6 +686,11 @@ int func_wl_set5(int argc, char* argv[])
         if (STR_EQ(cmd, "enabled"))
         {
             nvram_set(RT2860_NVRAM, "RadioOnINIC", STR_EQ(val,"on")?"1":"0");
+        }
+        else
+        if (STR_EQ_HELP(cmd))
+        {
+            goto help;
         }
         else
         if (argc > 0 && STR_EQ(cmd, "ssid") && STR_EQ(val,"1"))
@@ -690,7 +712,7 @@ help:
     writeCmdHelp("2.4 <command> <value>","change wlan 2.4GHz band parameter");
     writeCmdHelp("5 <command> <value>","change wlan 5GHz band parameter");
     writeCmdHelp("5 enabled on/off","enable or disable radio module");
-    writeCmdHelp("5 channel <num>","change current wlan channel");
+    writeCmdHelp("5 channel <value>","change current wlan channel");
     writeCmdHelp("5 tx-power 5/10/20/40/70/100","change TX Power level (%%)");
     writeCmdHelp("5 mode a/a-an/an/a-an-ac/an-ac","change wlan 5GHz network mode");
     writeCmdHelp("5 ssid 1 <name>","change first ssid name");
@@ -702,10 +724,8 @@ help:
 int func_wl_set(int argc, char* argv[])
 {
     char* band = NULL;
-    char* cmd = NULL;
-    char* val = NULL;
 
-    if (argc < 2)
+    if (argc < 1)
     {
         goto help;
     }
@@ -714,27 +734,18 @@ int func_wl_set(int argc, char* argv[])
     argc--;
     argv++;
 
-    while (argc>1)
+    if (STR_EQ(band, "2.4"))
     {
-        cmd = argv[0];
-        val = argv[1];
-        argc -= 2;
-        argv += 2;
-
-        if (STR_EQ(band, "2.4"))
-        {
-            return func_wl_set24(argc,argv);
-        }
-#ifndef CONFIG_RT_SECOND_IF_NONE
-        else
-        if (STR_EQ(band, "5"))
-        {
-            return func_wl_set5(argc,argv);
-        }
-#endif
-        else goto help;
-
+        return func_wl_set24(argc,argv);
     }
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    else
+    if (STR_EQ(band, "5"))
+    {
+        return func_wl_set5(argc,argv);
+    }
+#endif
+    else goto help;
 
     return 0;
 
