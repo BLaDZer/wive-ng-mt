@@ -826,13 +826,10 @@ struct _RTMP_CHIP_CAP {
 	UCHAR TmrEnable;
 #endif
 
-
-	UINT8 TxBAWinSize;
+	UINT8 TxAggLimit;
 	UINT8 RxBAWinSize;
 	UINT8 AMPDUFactor;
-    UINT8 BiTxOpOn;
-
-    UINT32  CurrentTxOP;
+	UINT8 BiTxOpOn;
 };
 
 

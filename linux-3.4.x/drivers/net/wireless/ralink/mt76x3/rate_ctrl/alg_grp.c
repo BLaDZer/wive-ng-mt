@@ -1467,7 +1467,7 @@ static VOID HighTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX
 		if ( HwAggRateIndex == 0 )
 		{
 			pEntry->LastSecTxRateChangeAction = RATE_NO_CHANGE;
-			/* MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, (DBG_LVL_INFO  | DBG_FUNC_RA),("DRS: MCS is according to RSSI, and ignore tuning this sec \n")); */
+			/* DBGPRINT(RT_DEBUG_TRACE, ("DRS: MCS is according to RSSI, and ignore tuning this sec \n")); */
 
 			/* reset all OneSecTx counters */
 			RESET_ONE_SEC_TX_CNT(pEntry);

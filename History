@@ -3071,17 +3071,18 @@
 45) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
 46) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
 47) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
-48) kernel: mips: pci: scan PCI controllers in reverse order.<br>
-49) kernel: net: remove unnecessary carrier status check.<br>
-50) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-51) kernel: net: ping: implement proper locking.<br>
-52) kernel: net: neigh: guard against NULL solicit() method.<br>
-53) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-54) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-55) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-56) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-57) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-58) kernel: net: l2tp: take reference on sessions being dumped.<br>
+48) kernel: ralink_wifi: mt7603: fix agregation size limit.<br>
+49) kernel: mips: pci: scan PCI controllers in reverse order.<br>
+50) kernel: net: remove unnecessary carrier status check.<br>
+51) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+52) kernel: net: ping: implement proper locking.<br>
+53) kernel: net: neigh: guard against NULL solicit() method.<br>
+54) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+55) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+56) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+57) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+58) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+59) kernel: net: l2tp: take reference on sessions being dumped.<br>
 <br>
 <br>
 <br>

@@ -966,6 +966,7 @@ static const RTMP_CHIP_CAP MT7636_ChipCap = {
 #endif /* CONFIG_WIFI_TEST */
 	.hif_type = HIF_MT,
 	.rf_type = RF_MT,
+	.TxAggLimit = 21;
 	.RxBAWinSize = 21,
 	.AMPDUFactor = 2,
 };

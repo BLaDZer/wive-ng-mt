@@ -544,7 +544,7 @@ static VOID ApCliTrialConnectRetryTimeoutAction(PRTMP_ADAPTER pAd, MLME_QUEUE_EL
 		pApCliEntry->NewRootApRetryCnt = 0;//cleanup retry count
 		//pApCliEntry->Enable = FALSE;
 		//	sprintf(tempBuf, "%d", pApCliEntry->TrialCh);
-		//	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_TRACE, ("Follow new rootAP Switch to channel :%s\n", tempBuf));
+		//	DBGPRINT(RT_DEBUG_TRACE, ("Follow new rootAP Switch to channel :%s\n", tempBuf));
 		//	Set_Channel_Proc(pAd, tempBuf);//APStartUp will regenerate beacon.
 		pApCliEntry->TrialCh=0;
 	}

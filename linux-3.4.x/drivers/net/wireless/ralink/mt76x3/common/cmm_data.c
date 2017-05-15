@@ -4563,82 +4563,58 @@ INT TxOPUpdatingAlgo(RTMP_ADAPTER *pAd)
 #ifdef APCLI_SUPPORT
 	UINT apcliNum = 0, ifIndex = 0;
 #endif /* APCLI_SUPPORT */
-        //DBGPRINT(RT_DEBUG_TRACE, ("lala_1: [Tx Total Byte Count] = %lu\n", pAd->TxTotalByteCnt));
-        //DBGPRINT(RT_DEBUG_TRACE, ("lala_1: [Rx Total Byte Count] = %lu\n", pAd->RxTotalByteCnt));
 
-        if ((TxTotalByteCnt == 0) || (RxTotalByteCnt == 0))
-        {
-            /* Avoid to divide 0, when doing the traffic calculating */
-           // DBGPRINT(RT_DEBUG_TRACE, ("Not expected one of them is 0, TxTotalByteCnt = %lu, RxTotalByteCnt = %lu\n", TxTotalByteCnt, RxTotalByteCnt));
-           UpdateTxOP = 0x0;
-           
-        }
-        else if ((pAd->MacTab.Size == 1) && TxopEnabled)
-        {
-            if ((((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20) > pAd->CommonCfg.ManualTxopThreshold)
-            { /* TxopThreshold unit is Mbps */
-                if (TxTotalByteCnt > RxTotalByteCnt)
-                {
-                    if ((TxTotalByteCnt/RxTotalByteCnt) >= pAd->CommonCfg.ManualTxopUpBound)
-                    { /* Boundary unit is Ratio */
-                        DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %lu >= %d) Should be enable TxOP to 0x60\n", 
-                                TxTotalByteCnt/RxTotalByteCnt, pAd->CommonCfg.ManualTxopUpBound));
-			    UpdateTxOP = 0x60; // Tx
-                    }
-                    else if ((TxTotalByteCnt/RxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
-                    {
-                        if (pAd->chipCap.BiTxOpOn) 
-                        {
-				UpdateTxOP = 0x60;
-                        }
-                        else
-                        {
-                            DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %lu <= %d) Should be disable TxOP to 0x0\n", 
-                                        TxTotalByteCnt/RxTotalByteCnt, pAd->CommonCfg.ManualTxopLowBound));
-				UpdateTxOP = 0x0;
-                        }
-                    } 
-                    else
-                    {
-                        DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %d < %lu < %d) Keep the last TxOP setting\n", 
-                                pAd->CommonCfg.ManualTxopLowBound, TxTotalByteCnt/RxTotalByteCnt, pAd->CommonCfg.ManualTxopUpBound));
-                    }
-                }
-                else
-                {
-                    if ((RxTotalByteCnt/TxTotalByteCnt) >= pAd->CommonCfg.ManualTxopUpBound)
-                    { /* Boundary unit is Ratio */
-                        DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %lu >= %d) Should be enable TxOP to 0x60\n", 
-                                RxTotalByteCnt/TxTotalByteCnt, pAd->CommonCfg.ManualTxopUpBound));
-						UpdateTxOP = 0x60;
-                    }
-                    else if ((RxTotalByteCnt/TxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
-                    {
-                        if (pAd->chipCap.BiTxOpOn) 
-                        {
-				UpdateTxOP = 0x60;
-                        }
-                        else
-                        {
-                            DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %lu <= %d) Should be disable TxOP to 0x0\n", 
-                                        RxTotalByteCnt/TxTotalByteCnt, pAd->CommonCfg.ManualTxopLowBound));
-				UpdateTxOP = 0x0;
-                        }
-                    } 
-                    else
-                    {
-                        DBGPRINT(RT_DEBUG_TRACE, ("(Ratio: %d < %lu < %d) Keep the last TxOP setting\n", pAd->CommonCfg.ManualTxopLowBound, RxTotalByteCnt/TxTotalByteCnt, pAd->CommonCfg.ManualTxopUpBound));
-                    }
-                }
-            }
-            else
-            {
-                DBGPRINT(RT_DEBUG_TRACE, ("Current TP=%lu < Threshold(%lu), turn-off TxOP\n", 
-                        (((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20), pAd->CommonCfg.ManualTxopThreshold));
-                
-		  UpdateTxOP = 0x0;
-            }
-        }
+	if ((TxTotalByteCnt == 0) || (RxTotalByteCnt == 0))
+	{
+		/* Avoid to divide 0, when doing the traffic calculating */
+		//DBGPRINT(RT_DEBUG_TRACE, ("Not expected one of them is 0, TxTotalByteCnt = %lu, RxTotalByteCnt = %lu\n", (ULONG)TxTotalByteCnt, (ULONG)RxTotalByteCnt));
+	}
+	else if ((pAd->MacTab.Size == 1) && TxopEnabled)
+	{
+		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE) == TRUE)
+		{
+			UpdateTxOP = 0x80; // Tx/Rx/Bi
+		}
+		else if ((((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20) > pAd->CommonCfg.ManualTxopThreshold)
+		{ /* TxopThreshold unit is Mbps */
+			if (TxTotalByteCnt > RxTotalByteCnt)
+			{
+				if ((TxTotalByteCnt/RxTotalByteCnt) >= pAd->CommonCfg.ManualTxopUpBound)
+				{ /* Boundary unit is Ratio */
+					UpdateTxOP = 0x60; // Tx
+				}
+				else if ((TxTotalByteCnt/RxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
+				{
+					UpdateTxOP = 0x0; // Bi
+				}
+				else
+			        {
+					// No change TxOP
+				}
+			}
+			else
+			{
+				if ((RxTotalByteCnt/TxTotalByteCnt) >= pAd->CommonCfg.ManualTxopUpBound)
+				{ /* Boundary unit is Ratio */
+					UpdateTxOP = 0x0; // Rx
+				}
+				else if ((RxTotalByteCnt/TxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
+				{
+					UpdateTxOP = 0x0; // Bi
+				}
+				else
+			        {
+					// No change TxOP
+				}
+			}
+		}
+		else
+		{
+			DBGPRINT(RT_DEBUG_TRACE,("Current TP=%lu < Threshold(%lu), turn-off TxOP\n",
+						(ULONG)(((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20), (ULONG)pAd->CommonCfg.ManualTxopThreshold));
+			UpdateTxOP = 0x0;
+		}
+	}
         else if (pAd->MacTab.Size > 1)
         {
 		UpdateTxOP = 0x0;

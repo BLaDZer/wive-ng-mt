@@ -2855,7 +2855,7 @@ UINT16 AsicGetTidSn(RTMP_ADAPTER *pAd, UCHAR Wcid, UCHAR Tid)
 }
 
 
-static UCHAR ba_range[] = {4, 5, 8, 10, 16, 20, 21, 42};
+static UCHAR ba_range[] = {4, 5, 8, 10, 16, 20, 21, 45};
 VOID AsicUpdateBASession(RTMP_ADAPTER *pAd, UCHAR wcid, UCHAR tid, UINT16 sn, UCHAR basize, BOOLEAN isAdd, INT ses_type)
 {
 	struct wtbl_entry ent;
@@ -5978,7 +5978,7 @@ VOID MTSdioMlmeRadioOn(PRTMP_ADAPTER pAd)
 	UINT32 Value=0;
 	UINT32 counter=0;
 
-	MTWF_LOG(DBG_CAT_ALL, DBG_LVL_TRACE,("%s()\n", __func__));
+	DBGPRINT(RT_DEBUG_TRACE, ("%s()\n", __func__));
 
     	/* Clear Radio off flag*/
 	RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF);
@@ -5988,11 +5988,11 @@ VOID MTSdioMlmeRadioOn(PRTMP_ADAPTER pAd)
 
 	while(!GET_W_FW_OWN_REQ_SET(Value)) {
 		RTMP_SDIO_READ32(pAd, WHLPCR, &Value);
-		MTWF_LOG(DBG_CAT_ALL, DBG_LVL_OFF, ("%s(): Request FW-Own processing: %x\n",__FUNCTION__,Value));
+		DBGPRINT(RT_DEBUG_TRACE, ("%s(): Request FW-Own processing: %x\n",__FUNCTION__,Value));
 		counter++;
 		RtmpOsMsDelay(50);
 		if(counter >100){
-			MTWF_LOG(DBG_CAT_ALL, DBG_LVL_ERROR, ("%s:  FW-Own back Faiure\n",__FUNCTION__));
+			DBGPRINT(RT_DEBUG_TRACE, ("%s:  FW-Own back Faiure\n",__FUNCTION__));
 			break;
 		}
 	}
