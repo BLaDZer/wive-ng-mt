@@ -289,8 +289,7 @@ case "$1" in
 			    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
 			    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
 				$LOG "Add static route to DNS $ROUTE_NS dev $interface"
-				REPLACE="ip route replace $ROUTE_NS dev $interface"
-				$REPLACE
+				ip route replace $ROUTE_NS dev $interface
 			    fi
 			done
 		    else

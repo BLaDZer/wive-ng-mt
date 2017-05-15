@@ -10,6 +10,12 @@
 LOG="logger -t udhcpc-wwan"
 
 #############################################################################################################################
+RESOLV_CONF="/etc/resolv.conf"
+RESOLV_CONF_WWAN="/tmp/resolv.conf.$interface"
+RESOLV_CONF_BACK="/tmp/resolv.conf.$interface.tmp"
+
+# Get DGW/MTU config
+eval `nvram_buf_get 2860 MODEMMTU MODEMDGW`
 
 if [ "$broadcast" != "" ]; then
     BROADCAST="broadcast $broadcast"
@@ -31,46 +37,81 @@ case "$1" in
 	ip -4 addr replace $rndip/32 dev $interface
 	# never need down iface
 	ip link set $interface up
+	rm -f $RESOLV_CONF_WWAN
     ;;
 
     leasefail)
 	$LOG "Lease fail $interface."
 	# disable forward for paranoid users
 	sysctl -wq net.ipv4.conf.$interface.forwarding=0
+	rm -f $RESOLV_CONF_WWAN
     ;;
 
     renew|bound)
     ########################################################################################################
-    # IP/NETMASK
+    # IP/NETMASK/MTU
     ########################################################################################################
 	$LOG "Renew ip adress $ip and $NETMASK for $interface from dhcp"
 	ifconfig $interface $ip $BROADCAST $NETMASK
 
+        if [ "$mtu" ] && [ "$MODEMMTU" = "AUTO" -o "$MODEMMTU" = "" ]; then
+	    $LOG "Set MTU to $mtu bytes from dhcp server"
+	    ip link set mtu $mtu dev $interface
+	fi
     ########################################################################################################
     # DGW
     ########################################################################################################
-	# Get default gateway
 	if [ "$router" != "" ]; then
 	    $LOG "Deleting default route dev $interface"
 	    while ip -4 route del default dev $interface ; do
 	        :
 	    done
-	    # low cost stub for all default not replaced routes to WAN
-	    ip route replace default dev $interface metric 1000
 
 	    # get DGW
 	    metric=0
 	    for raddr in $router ; do
-	            if [ "$metric" = "0" ]; then
-			    first_dgw="$raddr"
-			    $LOG "Set fist default gateway to $first_dgw dev $interface via "$first_dgw" metric 0"
-			    ip -4 route replace default dev "$interface" via "$first_dgw" metric 0
+		if [ "$metric" = "0" ]; then
+		    first_dgw="$raddr"
+		    if [ "$MODEMDGW" = "1" ]; then
+			$LOG "Set fist default gateway to $first_dgw dev $interface via $first_dgw metric 0"
+			ip -4 route replace default dev "$interface" via "$first_dgw" metric 0
+		    else
+			$LOG "Add low cost default route stub for $interface via $first_dgw"
+			ip -4 route replace default dev "$interface" via "$first_dgw" metric 1000
 		    fi
+		fi
 	    done
 
 	    $LOG "Flush route cache"
 	    ip route flush cache
 	fi
+
+    ########################################################################################################
+    # DNS/WINS and services
+    ########################################################################################################
+	rm -f $RESOLV_CONF_WWAN
+	if  [ "$dns" != "" ]; then
+	    $LOG "Renew DNS from dhcp $dns"
+	    # parse dnsservers
+	    for daddr in $dns ; do
+		echo nameserver $daddr >> $RESOLV_CONF_WWAN
+		if [ "$first_dgw" != "" ] && [ "$daddr" != "$first_dgw" ]; then
+		    $LOG "Add static route to DNS $daddr dev $interface"
+		    ip route replace "$daddr" via "$first_dgw" dev "$interface"
+		fi
+	    done
+	    if [ "$wan_static_dns" != "on" ]; then
+		if [ ! -e $RESOLV_CONF_BACK ]; then
+		    $LOG "Replace DNS from $interface to $RESOLV_CONF"
+		    cp -f $RESOLV_CONF $RESOLV_CONF_BACK
+		fi
+		cat $RESOLV_CONF_WWAN > $RESOLV_CONF
+	    else
+		$LOG "Do not touch $RESOLV_CONF, static DNS configured."
+	    fi
+	fi
+	# read for all write by root
+	chmod 644 "$RESOLV_CONF" > /dev/null 2>&1
 
     # enable forward for this if
     sysctl -wq net.ipv4.conf.$interface.forwarding=1
