@@ -238,10 +238,25 @@ forwardlimit() {
 		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p tcp -m coova --name chilli --dest -j ACCEPT
 		iptables -A FORWARD ! -o $wan_if -s $chilli_net -p udp -m coova --name chilli -j ACCEPT
 		iptables -A FORWARD ! -i $wan_if -d $chilli_net -p udp -m coova --name chilli --dest -j ACCEPT
+		if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
+		    iptables -A FORWARD ! -o $real_wan_if -s $chilli_net -p tcp -m coova --name chilli -j ACCEPT
+		    iptables -A FORWARD ! -i $real_wan_if -d $chilli_net -p tcp -m coova --name chilli --dest -j ACCEPT
+		    iptables -A FORWARD ! -o $real_wan_if -s $chilli_net -p udp -m coova --name chilli -j ACCEPT
+		    iptables -A FORWARD ! -i $real_wan_if -d $chilli_net -p udp -m coova --name chilli --dest -j ACCEPT
+		fi
+		if [ "$MODEMENABLED" = "1" ]; then
+		    iptables -A FORWARD ! -o $mdm_if -s $chilli_net -p tcp -m coova --name chilli -j ACCEPT
+		    iptables -A FORWARD ! -i $mdm_if -d $chilli_net -p tcp -m coova --name chilli --dest -j ACCEPT
+		    iptables -A FORWARD ! -o $mdm_if -s $chilli_net -p udp -m coova --name chilli -j ACCEPT
+		    iptables -A FORWARD ! -i $mdm_if -d $chilli_net -p udp -m coova --name chilli --dest -j ACCEPT
+		fi
 	    fi
 	    iptables -A FORWARD -o $wan_if -s $chilli_net -j ACCEPT
 	    if [ "$VPN_CONNECT" = "on" ] && [ "$real_wan_if" != "" ]; then
 		iptables -A FORWARD -o $real_wan_if -s $chilli_net -j ACCEPT
+	    fi
+	    if [ "$MODEMENABLED" = "1" ]; then
+		iptables -A FORWARD -o $mdm_if -s $chilli_net -j ACCEPT
 	    fi
 	fi
 	# enable forward only from local network to any in normal mode
@@ -309,7 +324,7 @@ natrules() {
 		    $LOG "Add MASQRADE from $lan_ipaddr/$lan_netmask to $mdm_if."
 		    iptables -t nat -A POSTROUTING -o $mdm_if -s $lan_ipaddr/$lan_netmask -j MASQUERADE
 		else
-		    $LOG "Add MASQRADE from $chilli_net to $wan_if."
+		    $LOG "Add MASQRADE from $chilli_net to $mdm_if."
 		    iptables -t nat -A POSTROUTING -o $mdm_if -s $chilli_net -j MASQUERADE
 		fi
 	    fi
