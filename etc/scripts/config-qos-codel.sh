@@ -21,6 +21,7 @@ qos_tc() {
     if [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
 	tc qdisc add dev $wan_if root fq_codel		> /dev/null 2>&1
 	tc qdisc add dev $real_wan_if root fq_codel	> /dev/null 2>&1
+	tc qdisc add dev $mdm_if root fq_codel		> /dev/null 2>&1
     fi
 }
 

@@ -9,6 +9,8 @@ parameter_fetch_t QoS_args[] =
 	{ T("DownBWL"),		"QoS_rate_limit_down",		0, T("")  },
 	{ T("UpVPNBW"),		"QoS_rate_vpn_up",		0, T("")  },
 	{ T("UpVPNBWL"),	"QoS_rate_vpn_limit_up",	0, T("")  },
+	{ T("UpMDMBW"),		"QoS_rate_mdm_up",		0, T("")  },
+	{ T("UpMDMBWL"),	"QoS_rate_mdm_limit_up",	0, T("")  },
 	{ T("QoS_HPP"),		"QoS_high_pp",			0, T("")  },
 	{ T("QoS_LPP"),		"QoS_low_pp",			0, T("")  },
 	{ T("QoS_HDSCP"),	"QoS_high_dscp",		0, T("")  },

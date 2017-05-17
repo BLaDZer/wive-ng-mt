@@ -36,6 +36,8 @@
 			  _TR("QoSDownBWLStr",		"qos download limit");
 			  _TR("QoSUPVPNBWStr",		"qos upload vpn rate");
 			  _TR("QoSUPVPNBWLStr",		"qos upload vpn limit");
+			  _TR("QoSUPMDMBWStr",		"qos upload mdm rate");
+			  _TR("QoSUPMDMBWLStr",		"qos upload mdm limit");
 			  _TR("QoSSetupPPort",		"qos priority port");
 			  _TR("QoSHPP",				"qos high priority ports");
 			  _TR("QoSLPP",				"qos low priority ports");
@@ -64,6 +66,8 @@
 				form.DownBWL.value		= NVRAM_QoS_rate_limit_down;
 				form.UpVPNBW.value		= NVRAM_QoS_rate_vpn_up;
 				form.UpVPNBWL.value		= NVRAM_QoS_rate_vpn_limit_up;
+				form.UpMDMBW.value		= NVRAM_QoS_rate_mdm_up;
+				form.UpMDMBWL.value		= NVRAM_QoS_rate_mdm_limit_up;
 				form.QoS_HPP.value		= NVRAM_QoS_high_pp;
 				form.QoS_LPP.value		= NVRAM_QoS_low_pp;
 				form.QoS_HDSCP.value	= NVRAM_QoS_high_dscp;
@@ -103,6 +107,16 @@
 				if (!validateNum(form.UpVPNBWL.value)) {
 					alert(_("qos invalid bw"));
 					form.UpVPNBWL.focus();
+					return false;
+				}
+				if (!validateNum(form.UpMDMBW.value)) {
+					alert(_("qos invalid bw"));
+					form.UpMDMBW.focus();
+					return false;
+				}
+				if (!validateNum(form.UpMDMBWL.value)) {
+					alert(_("qos invalid bw"));
+					form.UpMDMBWL.focus();
 					return false;
 				}
 				if (form.QoS_HPP.value.match(/[^0-9\s]/gi)) {
@@ -151,7 +165,7 @@
 			}
 
 			function QoSSelectChange(form) {
-				displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP', 'PDSCPSettings' ], form.QoSSelect.value == '2' );
+				displayElement( [ 'BWSettings', 'QoSMode', 'PPortSettings', 'QoSUpBW', 'QoSUpBWL', 'QoSDownBW', 'QoSDownBWL', 'QoSUPVPNBW', 'QoSUPVPNBWL', 'QoSUPMDMBW', 'QoSUPMDMBWL', 'user_Qos_HPP', 'user_Qos_LPP', 'user_Qos_HDSCP', 'user_Qos_LDSCP', 'PDSCPSettings' ], form.QoSSelect.value == '2' );
 				displayElement('fastpath_warning', NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
 			}
 		</script>
@@ -218,6 +232,16 @@
 							<tr id="QoSUPVPNBWL">
 								<td class="head" id="QoSUPVPNBWLStr" width="40%">Upload VPN rate limit:</td>
 								<td width="60%"><input name="UpVPNBWL" class="half" size="7" maxlength="7" type="text">
+								&nbsp;&nbsp;KBits/sec</td>
+							</tr>
+							<tr id="QoSUPMDMBW">
+								<td class="head" id="QoSUPMDMBWStr" width="40%">Upload modem rate:</td>
+								<td width="60%"><input name="UpMDMBW" class="half" size="7" maxlength="7" type="text">
+									&nbsp;&nbsp;KBits/sec</td>
+							</tr>
+							<tr id="QoSUPMDMBWL">
+								<td class="head" id="QoSUPMDMBWLStr" width="40%">Upload modem rate limit:</td>
+								<td width="60%"><input name="UpMDMBWL" class="half" size="7" maxlength="7" type="text">
 								&nbsp;&nbsp;KBits/sec</td>
 							</tr>
 							<tr id="PPortSettings">

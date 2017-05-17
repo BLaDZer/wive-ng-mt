@@ -137,6 +137,8 @@
     <message msgid="qos download limit" msgstr="Лимит загрузки:" />
     <message msgid="qos upload vpn rate" msgstr="Скорость отдачи по VPN:" />
     <message msgid="qos upload vpn limit" msgstr="Лимит отдачи по VPN:" />
+    <message msgid="qos upload mdm rate" msgstr="Скорость отдачи через модем:" />
+    <message msgid="qos upload mdm limit" msgstr="Лимит отдачи через модем:" />
     <message msgid="qos priority port" msgstr="Настройка приоритета портов" />
     <message msgid="qos high priority ports" msgstr="Порты с высоким приоритетом" />
     <message msgid="qos low priority ports" msgstr="Порты с низким приоритетом" />

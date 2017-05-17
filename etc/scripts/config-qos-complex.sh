@@ -11,14 +11,18 @@
 LOG="logger -t Complex QoS"
 
 # get config
-eval `nvram_buf_get 2860 igmpEnabled offloadMode QoSMode QoS_rate_down QoS_rate_limit_down QoS_rate_up QoS_rate_limit_up QoS_rate_vpn_up QoS_rate_vpn_limit_up`
+eval `nvram_buf_get 2860 igmpEnabled offloadMode QoSMode QoS_rate_down QoS_rate_limit_down \
+			    QoS_rate_up QoS_rate_limit_up \
+			    QoS_rate_vpn_up QoS_rate_vpn_limit_up \
+			    QoS_rate_mdm_up QoS_rate_mdm_limit_up`
 
 IPTSCR="/etc/qos_firewall"
 INCOMING="iptables -A shaper_pre -t mangle"
 OUTGOING="iptables -A shaper_post -t mangle"
 
 # maximum hw link rate
-MAX_LINK_RATE="100"
+MAX_LINK_RATE_DOWN="100"
+MAX_LINK_RATE_UP="100"
 
 # default high prio ports
 DEFHIG_PTCP="22,23,53,80,81,110,443,1720,5060,8080"
@@ -141,11 +145,11 @@ qos_tc_lan() {
     # add htb
     tc qdisc add dev $lan_if root handle 1: htb default 22
     # root class
-    tc class add dev $lan_if parent 1:  classid 1:1 htb rate ${MAX_LINK_RATE}mbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
+    tc class add dev $lan_if parent 1:  classid 1:1 htb rate ${MAX_LINK_RATE_DOWN}mbit ceil ${MAX_LINK_RATE_DOWN}mbit quantum 1500 burst 1024k
     # all trafs limit
-    tc class add dev $lan_if parent 1:1 classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
+    tc class add dev $lan_if parent 1:1 classid 1:2 htb rate ${QoS_rate_down}kbit ceil ${MAX_LINK_RATE_DOWN}mbit quantum 1500 burst 1024k
     # overload class for mcast and local connections
-    tc class add dev $lan_if parent 1:1 classid 1:3 htb rate ${MAX_LINK_RATE}mbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 1024k
+    tc class add dev $lan_if parent 1:1 classid 1:3 htb rate ${MAX_LINK_RATE_DOWN}mbit ceil ${MAX_LINK_RATE_DOWN}mbit quantum 1500 burst 1024k
 
     # subclass prio with rates limits
     tc class add dev $lan_if parent 1:2 classid 1:20 htb rate ${QoS_rate_limit_down}kbit ceil ${QoS_rate_down}kbit prio 1 quantum 1500 burst 256k
@@ -183,7 +187,7 @@ gos_tc_wan() {
     ##################################################################################################################################
     $LOG "All outgoing $wan_if rate: normal $QoS_rate_limit_up , maximum $QoS_rate_up (kbit/s)"
     tc qdisc add dev $wan_if root handle 1: htb default 24
-    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit ceil ${MAX_LINK_RATE}mbit quantum 1500 burst 512k
+    tc class add dev $wan_if parent 1:  classid 1:1 htb rate ${QoS_rate_up}kbit ceil ${MAX_LINK_RATE_UP}mbit quantum 1500 burst 512k
 
     tc class add dev $wan_if parent 1:1 classid 1:23 htb rate ${QoS_rate_limit_up}kbit ceil ${QoS_rate_up}kbit prio 0 quantum 1500 burst 128k
     tc class add dev $wan_if parent 1:1 classid 1:24 htb rate $((9*QoS_rate_limit_up/10))kbit ceil $((9*QoS_rate_up/10))kbit prio 1 quantum 1500 burst 64k
@@ -218,10 +222,26 @@ if [ "$vpnEnabled" = "on" ] && [ "$QoSMode" = "0" -o "$QoSMode" = "2" ] && [ "$w
     # reload global
     . /etc/scripts/global.sh
     # check device ready
-    if [ "$real_wan_if" != "" ] && [ -e "/sys/devices/virtual/net/$real_wan_if" ]; then
+    if [ "$real_wan_if" != "" ] && [ -e "/proc/sys/net/ipv4/conf/$real_wan_if" ]; then
 	wan_if="$real_wan_if"
 	QoS_rate_up="$QoS_rate_vpn_up"
 	QoS_rate_limit_up="$QoS_rate_vpn_limit_up"
+	qos_nf_if
+	gos_tc_wan
+    fi
+fi
+
+# build rules for MODEM
+if [ "$MODEMENABLED" = "1" ]; then
+    # reload global
+    . /etc/scripts/global.sh
+    # check device ready
+    if [ -e "/proc/sys/net/ipv4/conf/$mdm_if" ]; then
+	# limit of real modem speed (real max upload for 4G 150+ modems ~50Mbit)
+	MAX_LINK_RATE_UP="50"
+	wan_if="$mdm_if"
+	QoS_rate_up="$QoS_rate_mdm_up"
+	QoS_rate_limit_up="$QoS_rate_mdm_limit_up"
 	qos_nf_if
 	gos_tc_wan
     fi

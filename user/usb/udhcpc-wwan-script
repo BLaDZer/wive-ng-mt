@@ -132,6 +132,12 @@ case "$1" in
 	# read for all write by root
 	chmod 644 "$RESOLV_CONF" > /dev/null 2>&1
 
+    # rebuild shaper rules
+    service shaper restart
+
+    # rebuild firewall rules
+    service iptables restart
+
     # enable forward for this if
     sysctl -wq net.ipv4.conf.$interface.forwarding=1
 
