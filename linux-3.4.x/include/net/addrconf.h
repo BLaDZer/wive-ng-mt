@@ -15,6 +15,8 @@
 
 #define IPV6_MAX_ADDRESSES		16
 
+#define ADDRCONF_NOTIFY_PRIORITY	0
+
 #include <linux/in.h>
 #include <linux/in6.h>
 
