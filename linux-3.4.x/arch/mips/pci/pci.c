@@ -125,7 +125,7 @@ void __devinit register_pci_controller(struct pci_controller *hose)
 	}
 
 	INIT_LIST_HEAD(&hose->list);
-	list_add(&hose->list, &controllers);
+	list_add_tail(&hose->list, &controllers);
 
 	/*
 	 * Do not panic here but later - this might happen before console init.
