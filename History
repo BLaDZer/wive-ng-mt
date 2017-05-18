@@ -3080,16 +3080,17 @@
 54) kernel: mips: pci: scan PCI controllers in reverse order.<br>
 55) kernel: mips: pci: add controllers before the specified head.<br>
 56) kernel: mips: sanitize __access_ok().<br>
-57) kernel: net: remove unnecessary carrier status check.<br>
-58) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-59) kernel: net: ping: implement proper locking.<br>
-60) kernel: net: neigh: guard against NULL solicit() method.<br>
-61) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-62) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-63) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-64) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-65) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-66) kernel: net: l2tp: take reference on sessions being dumped.<br>
+57) kernel: mips: mm: fixed mappings: correct initialisation.<br>
+58) kernel: net: remove unnecessary carrier status check.<br>
+59) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+60) kernel: net: ping: implement proper locking.<br>
+61) kernel: net: neigh: guard against NULL solicit() method.<br>
+62) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+63) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+64) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+65) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+66) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+67) kernel: net: l2tp: take reference on sessions being dumped.<br>
 <br>
 <br>
 <br>
