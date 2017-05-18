@@ -70,6 +70,7 @@ static inline struct inet_peer *rt6_get_peer(struct rt6_info *rt)
 	return rt->rt6i_peer;
 }
 
+extern void			ip6_route_init_special_entries(void);
 extern void			ip6_route_input(struct sk_buff *skb);
 
 extern struct dst_entry *	ip6_route_output(struct net *net,

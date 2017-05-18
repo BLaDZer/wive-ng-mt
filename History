@@ -3090,10 +3090,11 @@
 64) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
 65) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
 66) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-67) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-68) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-69) kernel: net: l2tp: take reference on sessions being dumped.<br>
-70) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
+67) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
+68) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+69) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+70) kernel: net: l2tp: take reference on sessions being dumped.<br>
+71) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
 <br>
 <br>
 <br>
