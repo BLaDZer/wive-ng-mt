@@ -3092,6 +3092,7 @@
 66) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
 67) kernel: net: packet: fix overflow in check for tp_reserve.<br>
 68) kernel: net: l2tp: take reference on sessions being dumped.<br>
+69) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
 <br>
 <br>
 <br>
