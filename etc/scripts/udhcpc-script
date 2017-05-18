@@ -287,7 +287,7 @@ case "$1" in
 			for daddr in $dns ; do
 	    		    echo nameserver $daddr >> $RESOLV_CONF
 			    if [ "$first_dgw" != "$daddr" ]; then
-				if [ "$first_dgw" != "" ]; then
+				if [ "$first_dgw" != "" ] && [ "$MODEMENABLED" = "1" ]; then
 				    $LOG "Add static route to DNS $daddr via $first_dgw dev $interface"
 				    ip route replace "$daddr" via "$first_dgw" dev "$interface"
 				else
