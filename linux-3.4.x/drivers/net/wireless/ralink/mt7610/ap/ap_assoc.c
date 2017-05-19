@@ -967,7 +967,7 @@ VOID ap_cmm_peer_assoc_req_action(
 		{
 		    MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 							wdev->Bssid);
-		    StatusCode = MLME_UNSPECIFY_FAIL;
+		    StatusCode = MLME_ASSOC_REJ_UNABLE_HANDLE_STA;
 		    MakeOutgoingFrame(pOutBuffer,               &FrameLen,
 	                      sizeof(HEADER_802_11),    &AssocRspHdr,
 	                      2,                        &CapabilityInfoForAssocResp,

@@ -1107,12 +1107,14 @@ SendAssocResponse:
 	if (pMbss->AssocReqFailRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AssocReqFailRssiThreshold)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to Weak Signal.\n"));
+		StatusCode = MLME_ASSOC_REJ_UNABLE_HANDLE_STA;
 		bAssocSkip = TRUE;
 	}
 
 	if (pMbss->AssocReqNoRspRssiThreshold != 0 && rssi != 0 && rssi < pMbss->AssocReqNoRspRssiThreshold)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("Ignore this ASSOC_NO_RSP_REQ due to Weak Signal.\n"));
+		StatusCode = MLME_ASSOC_REJ_UNABLE_HANDLE_STA;
 		bAssocNoRsp = TRUE;
 	}
 
@@ -1120,6 +1122,7 @@ SendAssocResponse:
 	if((pMbss->SmartMeshCfg.bHiFiPeerFilter == TRUE) && 
 		(pEntry && (pEntry->bHyperFiPeer == FALSE)))
 	{
+		StatusCode = MLME_UNSPECIFY_FAIL;
 		bAssocNoRsp = TRUE;
 		DBGPRINT(RT_DEBUG_ERROR, ("Reject this ASSOC_REQ due to not desired Hyper-Fi peer(%02X:%02X:%02X:%02X:%02X:%02X).\n",PRINT_MAC(pEntry->Addr)));
 	}
@@ -1130,6 +1133,7 @@ SendAssocResponse:
 		((wsc_ctrl->WscMode == 2) && (wsc_ctrl->bWscPBCAddrMode == TRUE)) &&
 		(pEntry && pEntry->bWscCapable && !MAC_ADDR_EQUAL(wsc_ctrl->WscPBCAddr,pEntry->Addr)))
 	{
+		StatusCode = MLME_UNSPECIFY_FAIL;
 		bAssocNoRsp = TRUE;
 		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_REQ due not desired PBC MAC target.\n"));
 	}
@@ -1142,7 +1146,6 @@ SendAssocResponse:
 		{
 			MgtMacHeaderInit(pAd, &AssocRspHdr, SubType, 0, ie_list->Addr2, 
 								wdev->if_addr, wdev->bssid);
-			StatusCode = MLME_UNSPECIFY_FAIL;
 			MakeOutgoingFrame(pOutBuffer, &FrameLen,
 				      sizeof(HEADER_802_11),    &AssocRspHdr,
 			              2,                        &CapabilityInfoForAssocResp,
