@@ -274,6 +274,7 @@ static VOID APPeerAuthReqAtIdleAction(
 	CHAR rssi;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
 
 	if (pAd == NULL)
@@ -382,6 +383,9 @@ static VOID APPeerAuthReqAtIdleAction(
     }
 
 #ifdef BAND_STEERING
+	if (WMODE_CAP_N(pAd->CommonCfg.PhyMode))
+		    bAllowStaConnectInHt = TRUE;
+
 	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL,
 										Addr2,
@@ -389,7 +393,7 @@ static VOID APPeerAuthReqAtIdleAction(
 										Elem->Rssi0,
 										Elem->Rssi1,
 										Elem->Rssi2,
-										FALSE,
+										bAllowStaConnectInHt,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL);

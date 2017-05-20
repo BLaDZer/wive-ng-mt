@@ -812,6 +812,10 @@ VOID ap_cmm_peer_assoc_req_action(
 #endif /* WSC_AP_SUPPORT */
     BOOLEAN bAssocSkip = FALSE;
 	BOOLEAN bAssocNoRsp = FALSE;
+#ifdef BAND_STEERING
+	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
+#endif /* BAND_STEERING */
 	CHAR rssi;
 #ifdef RT_BIG_ENDIAN
 	UINT32 tmp_1;
@@ -1098,6 +1102,26 @@ SendAssocResponse:
 	/* TODO: need to check rate in support rate element, not number */
 	if (FlgIs11bSta == 1)
 		SupRateLen = 4;
+
+#ifdef BAND_STEERING
+	if (WMODE_CAP_N(wdev->PhyMode))
+		bAllowStaConnectInHt = TRUE;
+
+	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
+										NULL,
+										ie_list->Addr2,
+										Elem->MsgType,
+										Elem->Rssi0,
+										Elem->Rssi1,
+										Elem->Rssi2,
+										bAllowStaConnectInHt,
+										&bBndStrgCheck);
+	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
+		bAssocSkip = TRUE;
+		StatusCode = MLME_ASSOC_REJ_UNABLE_HANDLE_STA;
+		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to BandSteering.\n"));
+	}
+#endif /* BAND_STEERING */
 
 	/* YF@20120419: Refuse the weak signal of AssocReq */
 	rssi = RTMPAvgMRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),

@@ -35,6 +35,7 @@ int bndstrg_update_entry_statistics(
 		case APMT2_PEER_PROBE_REQ:
 			break;
 
+		case APMT2_PEER_ASSOC_REQ: /* assoc/auth this strong indicator for client band */
 		case APMT2_PEER_AUTH_REQ:
 			statistics->AuthReqCount++;
 			break;
@@ -275,9 +276,17 @@ int bndstrg_check_conn_req(
 #ifdef BND_STRG_QA
 				BND_STRG_PRINTQAMSG(table, entry,
 				YLW("recived annonce by 5G. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" force drop 2.4GHz only flag for allow connect to 5G.\n"), PRINT_MAC(entry->Addr));
+				" force drop 2.4G only flag.\n"), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
+				/* drop 2.4G only and set 5G support flags */
 				entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
+				/* if rssi in 5G good force allow 5G connect. */
+				if (!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G)) {
+				    entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
+				    BND_STRG_PRINTQAMSG(table, entry,
+				    YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				    " RSSI good, force allow 5G connect.\n"), PRINT_MAC(entry->Addr));
+				}
 			}
 		}
 		else
@@ -894,7 +903,6 @@ static u8 _bndstrg_allow_sta_conn_5g(
 #endif /* BND_STRG_QA */
 			return TRUE;
 		}
-
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
 			(entry->statistics[1].Rssi != 0))
 		{
@@ -907,10 +915,7 @@ static u8 _bndstrg_allow_sta_conn_5g(
 				" is allowed to connect 5G.\n"),
 				entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
-#if 1 /* TODO: move to 2.4G check */
-				entry->Control_Flags &=  (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-				/* bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);*/
-#endif
+				entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
 				return TRUE;
 			}
 #if 0 /* not reject 5GHz clients by RSSIDIFF, this bad practic */
@@ -1042,10 +1047,22 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 #endif /* BND_STRG_QA */
 					entry->Control_Flags |= \
 						fBND_STRG_CLIENT_IS_2G_ONLY;
+				} else if (elapsed_time >= table->CheckTime_5G &&
+					(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_5G) &&
+					(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY))
+				{
+					/*	If have one or more req to 5GHz - drop 2.4G only flag */
+#ifdef BND_STRG_QA
+					BND_STRG_PRINTQAMSG(table, entry,
+					YLW("Receive some frame by 5G interface within %u seconds,"
+					" drop client (%02x:%02x:%02x:%02x:%02x:%02x) 2.4G only flag.\n"),
+					table->CheckTime_5G/1000, PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
+					entry->Control_Flags &= \
+						(~fBND_STRG_CLIENT_IS_2G_ONLY);
 				}
 
-				if (!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G) &&
-					_bndstrg_allow_sta_conn_2g(table, entry) == TRUE)
+				if(!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G) && (_bndstrg_allow_sta_conn_2g(table, entry) == TRUE))
 				{
 					entry->Control_Flags |= \
 						fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
@@ -1055,6 +1072,24 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 						bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_UPDATE);
 					} else {
 						bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_ADD);
+					}
+				} else {
+					/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
+					if(!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) &&
+					    (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) &&
+					    !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G)) {
+
+					    entry->Control_Flags &= \
+						(~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+
+					    /* tell driver this client cannot access 2G */
+					    // TODO: make sure access table entry exisit
+					    if (table->dbdc_mode == 1) {
+						    // only update entry control flag for dbdc mode
+						    bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_UPDATE);
+					    } else {
+						    bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);
+					    }
 					}
 				}
 
@@ -1172,12 +1207,13 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	else
 	    table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
 
-	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_NONE; /*fBND_STRG_CND_RSSI_DIFF | \
+	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_5G_RSSI; /*fBND_STRG_CND_RSSI_DIFF | \
 								fBND_STRG_CND_2G_PERSIST | \
 								fBND_STRG_CND_HT_SUPPORT | \
 								fBND_STRG_CND_5G_RSSI; */
 	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
-								fBND_STRG_FRM_CHK_ATH_REQ;
+								fBND_STRG_FRM_CHK_ATH_REQ | \
+								fBND_STRG_FRM_CHK_ASS_REQ;
 	table->bInitialized = TRUE;
 
 	/* configure OK - enable now */

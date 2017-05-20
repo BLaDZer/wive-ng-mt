@@ -453,6 +453,7 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	CHAR rssi;
 #ifdef BAND_STEERING
 	BOOLEAN bBndStrgCheck = TRUE;
+	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
 
 	if (pAd == NULL)
@@ -565,12 +566,15 @@ SendAuth:
     }
 
 #ifdef BAND_STEERING
+	if (WMODE_CAP_N(wdev->PhyMode))
+		bAllowStaConnectInHt = TRUE;
+
 	BND_STRG_CHECK_CONNECTION_REQ(	pAd,
 										NULL, 
 										auth_info.addr2,
 										Elem->MsgType,
 										Elem->rssi_info,
-										FALSE,
+										bAllowStaConnectInHt,
 										&bBndStrgCheck);
 	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);

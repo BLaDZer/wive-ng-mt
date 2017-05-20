@@ -239,9 +239,8 @@ INT BndStrg_TableInit(PRTMP_ADAPTER pAd, PBND_STRG_CLI_TABLE table)
 	table->HoldTime = BND_STRG_HOLD_TIME;
 	table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
 	table->AutoOnOffThrd = BND_STRG_AUTO_ONOFF_THRD;
-	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_NONE; /* fBND_STRG_CND_5G_RSSI */;
-	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
-								fBND_STRG_FRM_CHK_ATH_REQ;
+	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_5G_RSSI;
+	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | fBND_STRG_FRM_CHK_ASS_REQ | fBND_STRG_FRM_CHK_ATH_REQ;
 	table->priv = (VOID *) pAd;
 	table->bInitialized = TRUE;
 
@@ -730,7 +729,7 @@ static BOOLEAN D_CheckConnectionReq(
 			BND_STRG_PRINTQAMSG(table, pSrcAddr,
 			(RED("%s: check %s request failed. client's (%02x:%02x:%02x:%02x:%02x:%02x)"
 			" request is ignored. \n"), (table->Band == BAND_24G ? "2.4G" : "5G"),
-			FrameType == 0 ? ("probe") : (FrameType == 3 ? "auth" : "unknow"),
+			FrameType == 0 ? ("probe") : (FrameType == 2 ? ("assoc") : (FrameType == 3 ? "auth" : "unknow")),
 			PRINT_MAC(pSrcAddr)));
 #endif
 			return FALSE;
