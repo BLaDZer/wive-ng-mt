@@ -1969,7 +1969,7 @@ COUNTRY_PROP CountryProp[]=
 	{"PR", CE, TRUE }, /* Puerto Rico */			
 	{"QA", CE, TRUE }, /* Qatar */			
 	{"RO", CE, TRUE }, /* Romania */			
-	{"RU", CE, FALSE }, /* Russian Federation */			
+	{"RU", FCC, FALSE }, /* Russian Federation */			
 	{"BL", CE, TRUE }, /* Saint Barth'elemy */			
 	{"SA", CE, TRUE }, /* Saudi Arabia */			
 	{"SG", CE, TRUE }, /* Singapore */			
