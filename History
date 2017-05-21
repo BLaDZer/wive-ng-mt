@@ -3027,7 +3027,7 @@
 1) build_system: full replace old rt2860 driver for 7620 to new mt76x2.<br>
 2) build_system: update backups calibs for new ME1 device.<br>
 3) dropbear: up to 2016.74 version.<br>
-4) dnsmasq: up to 2.77test5 version.<br>
+4) dnsmasq: up to 2.77rc4 version.<br>
 5) nodogsplash: up to git version 2.0.0-1 (commit: 80ace46b).<br>
 6) miniupnpd: up to 2.0.20170421 version.<br>
 7) igmpproxy: fix last memeber query interval to be 1sec per rfc2236.<br>

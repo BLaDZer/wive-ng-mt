@@ -3849,8 +3849,11 @@ err:
 	  {
 	    alias = canonicalise_opt(arg);
 	    
+	    if (!alias || !target)
+	      ret_err(_("bad CNAME"));
+	    
 	    for (new = daemon->cnames; new; new = new->next)
-	      if (hostname_isequal(new->alias, arg))
+	      if (hostname_isequal(new->alias, alias))
 		ret_err(_("duplicate CNAME"));
 	    new = opt_malloc(sizeof(struct cname));
 	    new->next = daemon->cnames;

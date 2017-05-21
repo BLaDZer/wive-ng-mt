@@ -145,7 +145,7 @@ void dhcp_packet(time_t now, int pxe_fd)
   struct cmsghdr *cmptr;
   struct iovec iov;
   ssize_t sz; 
-  int iface_index = 0, unicast_dest = 0, is_inform = 0;
+  int iface_index = 0, unicast_dest = 0, is_inform = 0, loopback = 0;
   int rcvd_iface_index;
   struct in_addr iface_addr;
   struct iface_param parm;
@@ -223,9 +223,13 @@ void dhcp_packet(time_t now, int pxe_fd)
 	}
 #endif
 	
-  if (!indextoname(daemon->dhcpfd, iface_index, ifr.ifr_name))
+  if (!indextoname(daemon->dhcpfd, iface_index, ifr.ifr_name) ||
+      ioctl(daemon->dhcpfd, SIOCGIFFLAGS, &ifr) != 0)
     return;
-
+  
+  mess = (struct dhcp_packet *)daemon->dhcp_packet.iov_base;
+  loopback = !mess->giaddr.s_addr && (ifr.ifr_flags & IFF_LOOPBACK);
+  
 #ifdef HAVE_LINUX_NETWORK
   /* ARP fiddling uses original interface even if we pretend to use a different one. */
   strncpy(arp_req.arp_dev, ifr.ifr_name, 16);
@@ -286,7 +290,7 @@ void dhcp_packet(time_t now, int pxe_fd)
       else
 	{
 	  if (iface_check(AF_INET, NULL, ifr.ifr_name, NULL))
-	  my_syslog(MS_DHCP | LOG_WARNING, _("DHCP packet received on %s which has no address"), ifr.ifr_name);
+	    my_syslog(MS_DHCP | LOG_WARNING, _("DHCP packet received on %s which has no address"), ifr.ifr_name);
 	  return;
 	}
       
@@ -331,7 +335,7 @@ void dhcp_packet(time_t now, int pxe_fd)
 
       /* We're relaying this request */
       if  (parm.relay_local.s_addr != 0 &&
-	   relay_upstream4(parm.relay, (struct dhcp_packet *)daemon->dhcp_packet.iov_base, (size_t)sz, iface_index))
+	   relay_upstream4(parm.relay, mess, (size_t)sz, iface_index))
 	return;
 
       /* May have configured relay, but not DHCP server */
@@ -340,14 +344,14 @@ void dhcp_packet(time_t now, int pxe_fd)
 
       lease_prune(NULL, now); /* lose any expired leases */
       iov.iov_len = dhcp_reply(parm.current, ifr.ifr_name, iface_index, (size_t)sz, 
-			       now, unicast_dest, &is_inform, pxe_fd, iface_addr, recvtime);
+			       now, unicast_dest, loopback, &is_inform, pxe_fd, iface_addr, recvtime);
       lease_update_file(now);
       lease_update_dns(0);
       
       if (iov.iov_len == 0)
 	return;
     }
-  
+
   msg.msg_name = &dest;
   msg.msg_namelen = sizeof(dest);
   msg.msg_control = NULL;
@@ -647,7 +651,7 @@ struct dhcp_config *config_find_by_address(struct dhcp_config *configs, struct i
    This wrapper handles a cache and load-limiting.
    Return is NULL is address in use, or a pointer to a cache entry
    recording that it isn't. */
-struct ping_result *do_icmp_ping(time_t now, struct in_addr addr, unsigned int hash)
+struct ping_result *do_icmp_ping(time_t now, struct in_addr addr, unsigned int hash, int loopback)
 {
   static struct ping_result dummy;
   struct ping_result *r, *victim = NULL;
@@ -671,9 +675,9 @@ struct ping_result *do_icmp_ping(time_t now, struct in_addr addr, unsigned int h
       }
   
   /* didn't find cached entry */
-  if ((count >= max) || option_bool(OPT_NO_PING))
+  if ((count >= max) || option_bool(OPT_NO_PING) || loopback)
     {
-      /* overloaded, or configured not to check, return "not in use" */
+      /* overloaded, or configured not to check, loopback interface, return "not in use" */
       dummy.hash = 0;
       return &dummy;
     }
@@ -705,7 +709,7 @@ struct ping_result *do_icmp_ping(time_t now, struct in_addr addr, unsigned int h
 
 int address_allocate(struct dhcp_context *context,
 		     struct in_addr *addrp, unsigned char *hwaddr, int hw_len, 
-		     struct dhcp_netid *netids, time_t now)   
+		     struct dhcp_netid *netids, time_t now, int loopback)   
 {
   /* Find a free address: exclude anything in use and anything allocated to
      a particular hwaddr/clientid/hostname in our configuration.
@@ -720,7 +724,7 @@ int address_allocate(struct dhcp_context *context,
      dispersal even with similarly-valued "strings". */ 
   for (j = 0, i = 0; i < hw_len; i++)
     j = hwaddr[i] + (j << 6) + (j << 16) - j;
-  
+
   /* j == 0 is marker */
   if (j == 0)
     j = 1;
@@ -762,26 +766,26 @@ int address_allocate(struct dhcp_context *context,
 		 ((ntohl(addr.s_addr) & 0xff) != 0xff && ((ntohl(addr.s_addr) & 0xff) != 0x0))))
 	      {
 		struct ping_result *r;
-
-		if ((r = do_icmp_ping(now, addr, j)))
-			{
-			  /* consec-ip mode: we offered this address for another client
-			     (different hash) recently, don't offer it to this one. */
+		
+		if ((r = do_icmp_ping(now, addr, j, loopback)))
+ 		  {
+		    /* consec-ip mode: we offered this address for another client
+		       (different hash) recently, don't offer it to this one. */
 		    if (!option_bool(OPT_CONSEC_ADDR) || r->hash == j)
 		      {
 			*addrp = addr;
-			  return 1;
-			}
-		    }
-		else
-		      {
-			/* address in use: perturb address selection so that we are
-			   less likely to try this address again. */
-			if (!option_bool(OPT_CONSEC_ADDR))
-			  c->addr_epoch++;
+			return 1;
 		      }
+		  }
+		else
+		  {
+		    /* address in use: perturb address selection so that we are
+		       less likely to try this address again. */
+		    if (!option_bool(OPT_CONSEC_ADDR))
+		      c->addr_epoch++;
+		  }
 	      }
-
+	    
 	    addr.s_addr = htonl(ntohl(addr.s_addr) + 1);
 	    
 	    if (addr.s_addr == htonl(ntohl(c->end.s_addr) + 1))
