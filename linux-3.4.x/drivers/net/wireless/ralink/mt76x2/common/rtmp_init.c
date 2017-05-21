@@ -2012,7 +2012,6 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 	{
 		pEntry->FIFOCount++;
 		pEntry->OneSecTxFailCount++;
-		pEntry->TotalTxFailCount++;
 #ifdef CONFIG_AP_SUPPORT
 		pEntry->StatTxFailCount += pEntry->OneSecTxFailCount;
 		pAd->ApCfg.MBSSID[pEntry->apidx].StatTxFailCount += pEntry->StatTxFailCount;

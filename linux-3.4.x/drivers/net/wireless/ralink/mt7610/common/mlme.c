@@ -1168,7 +1168,7 @@ VOID MlmeCalculateChannelQuality(
 	IN PMAC_TABLE_ENTRY pMacEntry,
 	IN ULONG Now32)
 {
-	ULONG TxOkCnt, TxCnt, TxPER, TxPRR;
+	ULONG TxOkCnt, TxCnt/*, TxPER */, TxPRR;
 	ULONG RxCnt, RxPER;
 	UCHAR NorRssi;
 	CHAR  MaxRssi;
@@ -1216,12 +1216,12 @@ VOID MlmeCalculateChannelQuality(
 	TxCnt = TxOkCnt + OneSecTxFailCount;
 	if (TxCnt < 5) 
 	{
-		TxPER = 0;
+		/* TxPER = 0; */
 		TxPRR = 0;
 	}
 	else 
 	{
-		TxPER = (OneSecTxFailCount * 100) / TxCnt; 
+		/* TxPER = (OneSecTxFailCount * 100) / TxCnt; */
 		TxPRR = ((TxCnt - OneSecTxNoRetryOkCount) * 100) / TxCnt;
 	}
 

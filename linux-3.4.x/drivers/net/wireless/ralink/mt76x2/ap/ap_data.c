@@ -2875,6 +2875,7 @@ VOID AP_Legacy_Frame_Tx_Hdr_Trns(
 		{
 			INC_COUNTER64(pMacEntry->TxPackets);
 			pMacEntry->TxBytes+=pTxBlk->SrcBufLen;
+			pMacEntry->OneSecTxBytes += pTxBlk->SrcBufLen;
 		}
 	}
 
