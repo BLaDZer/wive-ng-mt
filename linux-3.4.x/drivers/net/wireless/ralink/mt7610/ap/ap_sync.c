@@ -276,6 +276,18 @@ VOID APPeerProbeReqAction(
 				1,	&Period,
 				END_OF_ARGS);
 			FrameLen += TmpLen;
+#ifdef DOT11_N_SUPPORT
+   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement && (pAd->CommonCfg.Channel > 14))
+			{
+				HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE	HtExtChannelSwitchIe;
+
+				build_ext_channel_switch_ie(pAd, &HtExtChannelSwitchIe);
+				MakeOutgoingFrame(pOutBuffer + FrameLen, &TmpLen,
+								  sizeof(HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE), &HtExtChannelSwitchIe,
+								  END_OF_ARGS);
+				FrameLen += TmpLen;
+			}
+#endif /* A_BAND_SUPPORT */
 #ifdef DOT11_VHT_AC
 			if (WMODE_CAP_AC(PhyMode) && (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_40)) {
 				WIDE_BW_CH_SWITCH_ELEMENT wb_info;
@@ -318,19 +330,7 @@ VOID APPeerProbeReqAction(
 			ADD_HT_INFO_IE	addHTInfoTmp;
 #endif
 
-#ifdef A_BAND_SUPPORT
-   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement && (pAd->CommonCfg.Channel > 14))
-			{
-				HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE	HtExtChannelSwitchIe;
-
-				build_ext_channel_switch_ie(pAd, &HtExtChannelSwitchIe);
-				MakeOutgoingFrame(pOutBuffer + FrameLen, &TmpLen,
-								  sizeof(HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE), &HtExtChannelSwitchIe,
-								  END_OF_ARGS);
-				FrameLen += TmpLen;
-			}
-#endif /* A_BAND_SUPPORT */
-
+			/* YF@20120419: Fix IOT Issue with Atheros STA on Windows 7 When IEEE80211H flag turn on. */
 			HtLen = sizeof(pAd->CommonCfg.HtCapability);
 			AddHtLen = sizeof(pAd->CommonCfg.AddHTInfo);
 			/*New extension channel offset IE is included in Beacon, Probe Rsp or channel Switch Announcement Frame */
@@ -405,6 +405,42 @@ VOID APPeerProbeReqAction(
 			FrameLen += TmpLen;
 		}
 
+		/* Extended Capabilities IE */
+		{
+			ULONG TmpLen;
+			EXT_CAP_INFO_ELEMENT	extCapInfo;
+			UCHAR extInfoLen = sizeof(EXT_CAP_INFO_ELEMENT);
+
+			NdisZeroMemory(&extCapInfo, extInfoLen);
+
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
+			/* P802.11n_D1.10, HT Information Exchange Support */
+			if ((pAd->CommonCfg.PhyMode >= PHY_11ABGN_MIXED) && (pAd->CommonCfg.Channel <= 14) &&
+				(pAd->ApCfg.MBSSID[apidx].DesiredHtPhyInfo.bHtEnable) &&
+				(pAd->CommonCfg.bBssCoexEnable == TRUE))
+			{
+				extCapInfo.BssCoexistMgmtSupport = 1;
+			}
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+
+			MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
+								1, 			&ExtCapIe,
+								1, 			&extInfoLen,
+								extInfoLen, 	&extCapInfo,
+								END_OF_ARGS);
+
+			FrameLen += TmpLen;
+		}
+
+#ifdef AP_QLOAD_SUPPORT
+		if (pAd->FlgQloadEnable != 0)
+		{
+			FrameLen += QBSS_LoadElementAppend(pAd, pOutBuffer+FrameLen);
+		}
+#endif /* AP_QLOAD_SUPPORT */
+
 		/* add WMM IE here */
 		if (pAd->ApCfg.MBSSID[apidx].bWmmCapable)
 		{
@@ -430,13 +466,6 @@ VOID APPeerProbeReqAction(
 							  END_OF_ARGS);
 			FrameLen += TmpLen;
 		}
-
-#ifdef AP_QLOAD_SUPPORT
-		if (pAd->FlgQloadEnable != 0)
-		{
-			FrameLen += QBSS_LoadElementAppend(pAd, pOutBuffer+FrameLen);
-		}
-#endif /* AP_QLOAD_SUPPORT */
 
 #ifdef DOT11K_RRM_SUPPORT
 		if (IS_RRM_ENABLE(pAd, apidx))
@@ -533,26 +562,25 @@ VOID APPeerProbeReqAction(
 			add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back
 		                                  Byte0.b3=1 for rssi-feedback 
 		 */
-{
-	ULONG TmpLen;
-	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
+	{
+	    ULONG TmpLen;
+	    UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
 
-	if (pAd->CommonCfg.bAggregationCapable)
+	    if (pAd->CommonCfg.bAggregationCapable)
 		RalinkSpecificIe[5] |= 0x1;
-	if (pAd->CommonCfg.bPiggyBackCapable)
+	    if (pAd->CommonCfg.bPiggyBackCapable)
 		RalinkSpecificIe[5] |= 0x2;
 #ifdef DOT11_N_SUPPORT
-	if (pAd->CommonCfg.bRdg)
+	    if (pAd->CommonCfg.bRdg)
 		RalinkSpecificIe[5] |= 0x4;
 #endif /* DOT11_N_SUPPORT */
 #ifdef RSSI_FEEDBACK
-	if (bRequestRssi == TRUE)
-	{
-	    MAC_TABLE_ENTRY *pEntry=NULL;
+	    if (bRequestRssi == TRUE)
+	    {
+		MAC_TABLE_ENTRY *pEntry=NULL;
 
 		DBGPRINT(RT_DEBUG_ERROR, ("SYNC - Send PROBE_RSP to %02x:%02x:%02x:%02x:%02x:%02x...\n",
 									PRINT_MAC(Addr2)));
-    
 		RalinkSpecificIe[5] |= 0x8;
 		pEntry = MacTableLookup(pAd, Addr2);
 
@@ -562,47 +590,14 @@ VOID APPeerProbeReqAction(
 			RalinkSpecificIe[7] = (UCHAR)pEntry->RssiSample.AvgRssi1;
 			RalinkSpecificIe[8] = (UCHAR)pEntry->RssiSample.AvgRssi2;
 		}
-	}
+	    }
 #endif /* RSSI_FEEDBACK */
-	MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
+	    MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
 						9, RalinkSpecificIe,
 						END_OF_ARGS);
-	FrameLen += TmpLen;
+	    FrameLen += TmpLen;
 
-}
-
-#ifdef A_BAND_SUPPORT
-		/* add Channel switch announcement IE */
-		if ((pAd->CommonCfg.Channel > 14)
-			&& (pAd->CommonCfg.bIEEE80211H == 1)
-			&& (pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
-		{
-			UCHAR CSAIe=IE_CHANNEL_SWITCH_ANNOUNCEMENT;
-			UCHAR CSALen=3;
-			UCHAR CSAMode=1;
-
-			MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen,
-							  1,                        &CSAIe,
-							  1,                        &CSALen,
-							  1,                        &CSAMode,
-							  1,                        &pAd->CommonCfg.Channel,
-							  1,                        &pAd->Dot11_H.CSCount,
-							  END_OF_ARGS);
-			FrameLen += TmpLen;
-#ifdef DOT11_N_SUPPORT
-   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement)
-			{
-				HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE	HtExtChannelSwitchIe;
-
-				build_ext_channel_switch_ie(pAd, &HtExtChannelSwitchIe);
-				MakeOutgoingFrame(pOutBuffer + FrameLen,             &TmpLen,
-								  sizeof(HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE),	&HtExtChannelSwitchIe,
-								  END_OF_ARGS);
-				FrameLen += TmpLen;
-			}
-#endif /* DOT11_N_SUPPORT */
-		}
-#endif /* A_BAND_SUPPORT */
+	}
 
 		/* add Country IE and power-related IE */
 		if (pAd->CommonCfg.bCountryFlag ||
@@ -702,6 +697,39 @@ VOID APPeerProbeReqAction(
 		    }
 		    FrameLen += TmpLen;
 		}/* Country IE - */
+
+#ifdef A_BAND_SUPPORT
+		/* add Channel switch announcement IE */
+		if ((pAd->CommonCfg.Channel > 14)
+			&& (pAd->CommonCfg.bIEEE80211H == 1)
+			&& (pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
+		{
+			UCHAR CSAIe=IE_CHANNEL_SWITCH_ANNOUNCEMENT;
+			UCHAR CSALen=3;
+			UCHAR CSAMode=1;
+
+			MakeOutgoingFrame(pOutBuffer+FrameLen,      &TmpLen,
+							  1,                        &CSAIe,
+							  1,                        &CSALen,
+							  1,                        &CSAMode,
+							  1,                        &pAd->CommonCfg.Channel,
+							  1,                        &pAd->Dot11_H.CSCount,
+							  END_OF_ARGS);
+			FrameLen += TmpLen;
+#ifdef DOT11_N_SUPPORT
+   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement)
+			{
+				HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE	HtExtChannelSwitchIe;
+
+				build_ext_channel_switch_ie(pAd, &HtExtChannelSwitchIe);
+				MakeOutgoingFrame(pOutBuffer + FrameLen,             &TmpLen,
+								  sizeof(HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE),	&HtExtChannelSwitchIe,
+								  END_OF_ARGS);
+				FrameLen += TmpLen;
+			}
+#endif /* DOT11_N_SUPPORT */
+		}
+#endif /* A_BAND_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 		if (WMODE_CAP_N(PhyMode) &&

@@ -9,7 +9,7 @@ VERSION=0.40
 srcdir=.
 
 # So that libtommath can include Dropbear headers for options and m_burn()
-CFLAGS += -I$(srcdir)/../libtomcrypt/src/headers/ -I$(srcdir)/../
+CFLAGS += -I. -I$(srcdir) -I../libtomcrypt/src/headers/ -I$(srcdir)/../libtomcrypt/src/headers/ -I../ -I$(srcdir)/../
 
 ifndef IGNORE_SPEED
 
