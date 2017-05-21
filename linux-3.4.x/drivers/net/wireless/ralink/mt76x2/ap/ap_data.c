@@ -3924,7 +3924,8 @@ static BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hd
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
 	}
-	else if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
+
+	if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
 		; /* okay to receive this DATA frame */
 	else if (pAd->MacTab.Content[wcid].Sst == SST_AUTH)
 	{
@@ -5134,6 +5135,10 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	}
 	else
 	{
+		/* check if Class2 or 3 error */
+		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
+			goto err;
+
 #ifdef IDS_SUPPORT
 		/*
 			Replay attack detection
@@ -5142,10 +5147,6 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk) == TRUE))
 			goto err;
 #endif /* IDS_SUPPORT */
-
-		/* check if Class2 or 3 error */
-		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
-			goto err;
 
 		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			goto err;
@@ -5743,6 +5744,11 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	}
 	else
 	{
+
+		/* check if Class2 or 3 error */
+		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
+			goto err;
+
 #ifdef IDS_SUPPORT
 		/*
 			Replay attack detection
@@ -5751,10 +5757,6 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk) == TRUE))
 			goto err;
 #endif /* IDS_SUPPORT */
-
-		/* check if Class2 or 3 error */
-		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
-			goto err;
 
 		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			goto err;

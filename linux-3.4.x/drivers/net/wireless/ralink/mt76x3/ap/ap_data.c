@@ -3192,7 +3192,8 @@ BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hdr)
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, hdr);
 		return TRUE;
 	}
-	else if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
+
+	if (pAd->MacTab.Content[wcid].Sst == SST_ASSOC)
 		; /* okay to receive this DATA frame */
 	else if (pAd->MacTab.Content[wcid].Sst == SST_AUTH)
 	{
@@ -3498,6 +3499,10 @@ INT ap_rx_pkt_allow(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	}
 #endif /* defined(WDS_SUPPORT) || defined(CLIENT_WDS) */
 
+	/* check if Class2 or 3 error */
+	if (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader))
+		return FALSE;
+
 	if (!pEntry) {
 #ifdef IDS_SUPPORT
 		if ((pHeader->FC.FrDs == 0) && (pRxBlk->wcid == RESERVED_WCID)) /* not in RX WCID MAC table */
@@ -3519,10 +3524,6 @@ INT ap_rx_pkt_allow(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 
 		return FALSE;
 	}
-
-	/* check if Class2 or 3 error */
-	if (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader))
-		return FALSE;
 
 //+++Add by shiang for debug
 #ifdef RLT_MAC_DBG

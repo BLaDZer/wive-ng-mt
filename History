@@ -3065,7 +3065,7 @@
 39) kernel: ralink_wifi: fix report current TxPwr on TPREQ.<br>
 40) kernel: ralink_wifi: try use MLME_ASSOC_REJ_UNABLE_HANDLE_STA reason code in assoc roaming limits via Rssi.<br>
 41) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
-42) kernel: ralink_wifi: mt76x2: ids replay attack check, and class2/3 data checks need only for AP path in RxPktHandle.<br>
+42) kernel: ralink_wifi: mt76x2: ids replay attack check need only for AP path in RxPktHandle.<br>
 43) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
 44) kernel: ralink_wifi: mt7610: fix RDG disable.<br>
 45) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
