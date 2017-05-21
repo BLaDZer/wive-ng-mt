@@ -3549,13 +3549,9 @@ BOOLEAN APCheckClass2Class3Error(
 		if (pEntry && IS_ENTRY_CLIENT(pEntry))
 			return FALSE;
 
-/*		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
+		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
 					__FUNCTION__, PRINT_MAC(pHeader->Addr2),
 					Wcid, MAX_LEN_OF_MAC_TABLE));
-*/
-		printk("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%ld) > %d\n",
-					__FUNCTION__, PRINT_MAC(pHeader->Addr2),
-					Wcid, MAX_LEN_OF_MAC_TABLE);
 
 		APCls2errAction(pAd, MAX_LEN_OF_MAC_TABLE, pHeader);
 		return TRUE;
