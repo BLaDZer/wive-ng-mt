@@ -1494,23 +1494,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr),
 				pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 		}
-
-#ifdef BAND_STEERING
-#ifdef BAND_STEERING_CLIENTSTAY
-		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
-		{
-			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
-			{
-				bDisconnectSta = TRUE;
-				printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n",
-					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr));
-			}
-		}
-#endif /* BAND_STEERING_CLIENTSTAY */
-#endif /* BAND_STEERING */
-
 		/* kickout low RSSI clients */
-		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && IS_ENTRY_CLIENT(pEntry))
+		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC)))
 		{
 			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
@@ -1527,6 +1512,20 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			} else
 				pEntry->RssiLowStaKickOutDelayCount = 0;
 		}
+
+#ifdef BAND_STEERING
+#ifdef BAND_STEERING_CLIENTSTAY
+		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
+		{
+			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
+			{
+				bDisconnectSta = TRUE;
+				printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n",
+					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr));
+			}
+		}
+#endif /* BAND_STEERING_CLIENTSTAY */
+#endif /* BAND_STEERING */
 
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		if (pAd->SCSCtrl.SCSEnable == SCS_ENABLE)
