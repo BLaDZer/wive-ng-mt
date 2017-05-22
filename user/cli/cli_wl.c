@@ -361,6 +361,15 @@ int func_wl_wds(int argc, char* argv[])
 int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
+    char* wireless_mode = nvram_get(RT2860_NVRAM, "WirelessMode");
+    char* wireless_mode_str = wirelessModeIdToName(wireless_mode);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    int radio_status_5 = nvram_get_int(RT2860_NVRAM, "RadioOnINIC", 0);
+    char* wireless_mode_5 = nvram_get(RT2860_NVRAM, "WirelessModeINIC");
+    char* wireless_mode_5_str = wirelessModeIdToName(wireless_mode_5);
+#endif
+
     int auto_channel = nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0);
     int tx_power = nvram_get_int(RT2860_NVRAM, "TxPower", 100);
 
@@ -380,7 +389,9 @@ int func_wl_status_report(int argc, char* argv[])
     /* FIXME: remove fallback */
 
     chan_num  = getWlanChannelNum_ioctl(1);
-    
+
+    printf("Radio Enabled\t%s\n", radio_status?"1":"0");
+    printf("Wireless Mode 2.4\t%s\n", wireless_mode_str);
 
     printf("BSSID\t%s\n", mac1);
     printf("BSSID 2.4\t%s\n", mac1);
@@ -392,6 +403,9 @@ int func_wl_status_report(int argc, char* argv[])
     printf("Tx Power 2.4\t%i\n", tx_power);
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
+    printf("Radio Enabled 5\t%s\n", radio_status_5?"1":"0");
+    printf("Wireless Mode 5\t%s\n", wireless_mode_5_str);
+
     printf("BSSID 5\t%s\n", mac2);
     chan_num  = getWlanChannelNum_ioctl(2);
     printf("Channel 5\t%i\n", chan_num);
@@ -404,7 +418,6 @@ int func_wl_status_report(int argc, char* argv[])
     printf("Tx Power 5\t%i\n", tx_power);
 #endif
 
-    printf("Radio Enabled\t%s\n", radio_status?"1":"0");
     printf("APCli Status\t%i\n", ap_ret);
     printf("APCli Address\t%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
@@ -772,8 +785,21 @@ int func_wl_status(int argc, char* argv[])
     writeHeader("WLAN Status");
 
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
-    printf("Module status:          %s\n", (radio_status>0)?"enabled":"disabled");
+    char* wireless_mode = nvram_get(RT2860_NVRAM, "WirelessMode");
+    char* wireless_mode_str = wirelessModeIdToName(wireless_mode);
 
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    int radio_status_5 = nvram_get_int(RT2860_NVRAM, "RadioOnINIC", 0);
+    char* wireless_mode_5 = nvram_get(RT2860_NVRAM, "WirelessModeINIC");
+    char* wireless_mode_5_str = wirelessModeIdToName(wireless_mode_5);
+#endif
+
+    printf("Module status:          %s\n", (radio_status>0)?"enabled":"disabled");
+    printf("Wireless mode:          %s\n", wireless_mode_str);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+    printf("Module status (5GHz):   %s\n", (radio_status_5>0)?"enabled":"disabled");
+    printf("Wireless mode (5GHz):   %s\n", wireless_mode_5_str);
+#endif
 
     char mac[18] = {0};
 
