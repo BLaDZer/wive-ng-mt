@@ -1483,21 +1483,20 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pEntry->StaIdleTimeout);
 			//ApLogEvent(pAd, pEntry->Addr, EVENT_AGED_OUT);
 		}
-		else if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
+		else if ((pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck) && (pEntry->PsMode != PWR_SAVE))
 		{
 			/*
 				AP have no way to know that the PwrSaving STA is leaving or not.
 				So do not disconnect for PwrSaving STA.
 			*/
-			if (pEntry->PsMode != PWR_SAVE)
-			{
-				bDisconnectSta = TRUE;
-				printk("%s STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
-					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr),
-					pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
-			}
+			bDisconnectSta = TRUE;
+			printk("%s STA-%02x:%02x:%02x:%02x:%02x:%02x had left (tx error %d of %lu)\n",
+				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr),
+				pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 		}
+
 #ifdef BAND_STEERING
+#ifdef BAND_STEERING_CLIENTSTAY
 		else if (pAd->ApCfg.BndStrgTable.bEnabled == TRUE)
 		{
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
@@ -1507,7 +1506,27 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr));
 			}
 		}
+#endif /* BAND_STEERING_CLIENTSTAY */
 #endif /* BAND_STEERING */
+
+		/* kickout low RSSI clients */
+		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && IS_ENTRY_CLIENT(pEntry))
+		{
+			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
+			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
+			if (avgRssi != 0 && (
+				    (pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
+				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
+			    )) {
+				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+				    pEntry->RssiLowStaKickOutDelayCount = 0;
+				    bDisconnectSta = TRUE;
+				    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
+								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+				}
+			} else
+				pEntry->RssiLowStaKickOutDelayCount = 0;
+		}
 
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		if (pAd->SCSCtrl.SCSEnable == SCS_ENABLE)
@@ -1543,25 +1562,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		}
 #endif /* ALL_NET_EVENT */
 
-
-		/* kickout low RSSI clients */
-		if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && IS_ENTRY_CLIENT(pEntry))
-		{
-			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
-			if (avgRssi != 0 && (
-				    (pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
-				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
-			    )) {
-				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
-				    pEntry->RssiLowStaKickOutDelayCount = 0;
-				    bDisconnectSta = TRUE;
-				    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
-				}
-			} else
-				pEntry->RssiLowStaKickOutDelayCount = 0;
-		}
 
 		if (bDisconnectSta)
 		{
