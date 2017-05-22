@@ -380,6 +380,8 @@ endif
 
 ifeq ($(CONFIG_BAND_STEERING),y)
 EXTRA_CFLAGS += -DBAND_STEERING
+# allow kick clients from and steering
+#EXTRA_CFLAGS += -DBAND_STEERING_CLIENTSTAY
 endif
 
 ifeq ($(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT),y)
