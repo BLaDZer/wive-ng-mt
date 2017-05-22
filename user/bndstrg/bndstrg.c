@@ -303,7 +303,8 @@ int bndstrg_check_conn_req(
 			ret_val = BND_STRG_UNEXP;
 		}
 
-		if (statistics->Rssi != 0 && statistics->Rssi != -127)
+		/* RSSI always in range -126..-1, real -90..-20 */
+		if (statistics->Rssi != 0 && statistics->Rssi > -127)
 		{
 			if (statistics->Rssi < (table->RssiLow))
 			{
@@ -805,6 +806,7 @@ static u8 _bndstrg_allow_sta_conn_2g(
 			" is allowed to connect 2.4G.\n"),
 			entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
+			/* RSSI always in range -126..-1, real -90..-20 */
 			if (entry->statistics[1].Rssi > -127 && entry->statistics[1].Rssi != 0) {
 			    /* drop Rssi stat for correct return to 5GHz if need */
 			    entry->statistics[1].Rssi = 0;
@@ -936,6 +938,7 @@ static u8 _bndstrg_allow_sta_conn_5g(
 			}
 #endif
 		}
+		/* RSSI always in range -126..-1, real -90..-20, 0 or -127 values is not current statistic aviable */
 		else if(entry->statistics[1].Rssi == 0 || entry->statistics[1].Rssi <= -127)
 		{
 			DBGPRINT(DEBUG_ERROR,RED("Unknown RSSI value for client (%02x:%02x:%02x:%02x:%02x:%02x)! Allow to connect 5G for safe by default.\n"),
