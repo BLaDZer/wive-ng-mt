@@ -1023,7 +1023,7 @@ VOID MacTableMaintenance(
 #endif /* MAC_REPEATER_SUPPORT */
 
 #ifdef MT76x0
-			if (pEntry->RssiSample.AvgRssi0 > -62)
+			if (pEntry->RssiSample.AvgRssi0 > -62 || pAd->chipCap.avg_rssi_all > -62)
 				bDisableSF = TRUE;
 #endif /* MT76x0 */
 
@@ -1437,7 +1437,7 @@ VOID MacTableMaintenance(
 		}
 #endif /* WFA_VHT_PF */
 #ifdef MT76x0
-		if (pEntry->RssiSample.AvgRssi0 > -62)
+		if (pEntry->RssiSample.AvgRssi0 > -62 || pAd->chipCap.avg_rssi_all > -62)
 			bDisableSF = TRUE;
 #endif /* MT76x0 */
 	}
