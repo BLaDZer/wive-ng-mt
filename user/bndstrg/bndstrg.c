@@ -303,7 +303,7 @@ int bndstrg_check_conn_req(
 			ret_val = BND_STRG_UNEXP;
 		}
 
-		if (statistics->Rssi != 0)
+		if (statistics->Rssi != 0 && statistics->Rssi != -127)
 		{
 			if (statistics->Rssi < (table->RssiLow))
 			{
