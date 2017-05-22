@@ -805,7 +805,11 @@ static u8 _bndstrg_allow_sta_conn_2g(
 			" is allowed to connect 2.4G.\n"),
 			entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
-			return TRUE;
+			if (entry->statistics[1].Rssi > -127 && entry->statistics[1].Rssi != 0) {
+			    /* drop Rssi stat for correct return to 5GHz if need */
+			    entry->statistics[1].Rssi = 0;
+			    return TRUE;
+			}
 		}
 
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) && 
