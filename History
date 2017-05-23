@@ -3041,7 +3041,7 @@
 15) bandsteering: rework fallback from 5GHz to 2.4GHz logic.<br>
 16) bandsteering: more correct fast jump from 2.4GHz to 5GHz.<br>
 17) bandsteering: deduction of the client in 5 GHz range is more correct.<br>
-18) bandsteering: add sanity check and drop value Rssi for 5GHz if allow to 2.4GHz mode.<br>
+18) bandsteering: add sanity check for drop value Rssi for 5GHz if 2.4GHz allowed.<br>
 19) init.d: power off USB before first stage boot complete.<br>
 20) init.d: fix 3G/4G huawei modems detect and work in ppp mode.<br>
 21) init.d: basic support NCM mode for 3G/4G modems.<br>
