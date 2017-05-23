@@ -3114,6 +3114,7 @@
 <br>
 <b>6.1.x</b><br>
 1) kernel: ralink_wifi: mt7610: tune some BBP params for speedup.<br>
+2) kernel: ralink_wifi: mt7610: more correct txretry count calculate by fifo.<br>
 <br>
 <br>
 <br>

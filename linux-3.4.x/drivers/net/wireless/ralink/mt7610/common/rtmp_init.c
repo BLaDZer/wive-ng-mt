@@ -2039,10 +2039,16 @@ VOID NICUpdateFifoStaCounters(
 #ifdef WDS_SUPPORT
 				pEntry->LockEntryTx = FALSE;
 #endif /* WDS_SUPPORT */
+	}
 
-			}
+#ifdef RT65xx
+	if (IS_MT76x0(pAd))
+	{
+		PhyMode = StaFifo.field.PhyMode;
+		if((PhyMode == 2) || (PhyMode == 3))
+		{
+  	    		succMCS = StaFifo.field.SuccessRate & 0xF;
 
-			succMCS = StaFifo.field.SuccessRate & 0x7F;
 #ifdef DOT11N_SS3_SUPPORT
 			if (pEntry->HTCapability.MCSSet[2] == 0xff)
 			{
@@ -2056,7 +2062,79 @@ VOID NICUpdateFifoStaCounters(
 				pEntry->TXMCSExpected[pid]++;
 				if (pid == succMCS)
 					pEntry->TXMCSSuccessful[pid]++;
-				else 
+				else
+					pEntry->TXMCSAutoFallBack[pid][succMCS]++;
+			}
+			else
+				pEntry->TXMCSFailed[pid]++;
+
+#ifdef DOT11N_SS3_SUPPORT
+			if (pid >= 16 && succMCS <= 8)
+				succMCS += (2 - (succMCS >> 3)) * 7;
+#endif /* DOT11N_SS3_SUPPORT */
+
+			reTry = pid - succMCS;
+
+			if (reTry > 0)
+			{
+				/* MCS8 falls back to 0 */
+				if (pid>=8 && succMCS==0)
+					reTry -= 7;
+		    		//else if ((pid >= 12) && succMCS <=7)
+			    	//	reTry -= 4;
+
+				pEntry->OneSecTxRetryOkCount += reTry;
+			}
+		}
+		else if(PhyMode == 4)
+		{
+  	    		succMCS = StaFifo.field.SuccessRate & 0xF;
+			succMCS += ((StaFifo.field.SuccessRate & 0x10) ? 10 : 0);
+			//DBGPRINT(0, ("%s()Succ MCS :TxMCS(%d):PHYMode(%d)\n", __FUNCTION__, pid, PhyMode));
+		    	if (StaFifo.field.TxSuccess)
+		    	{
+		    		pEntry->TXMCSExpected[pid]++;
+
+			    	if (pid == succMCS)
+			    		pEntry->TXMCSSuccessful[pid]++;
+			    	else
+			    		pEntry->TXMCSAutoFallBack[pid][succMCS]++;
+		    	}
+		    	else
+			{
+				pEntry->TXMCSFailed[pid]++;
+			}
+
+			reTry = pid - succMCS;
+
+			if (reTry > 0)
+			{
+				/* MCS10 falls back to 0 */
+				if (pid >= 10 && succMCS == 0)
+					reTry -= 9;
+
+				pEntry->OneSecTxRetryOkCount += reTry;
+			}
+		}
+	} else
+#endif /* RT65xx */
+		{
+			succMCS = StaFifo.field.SuccessRate & 0x7F;
+
+#ifdef DOT11N_SS3_SUPPORT
+			if (pEntry->HTCapability.MCSSet[2] == 0xff)
+			{
+				if (succMCS > pid)
+					pid = pid + 16;
+			}
+#endif /* DOT11N_SS3_SUPPORT */
+
+			if (StaFifo.field.TxSuccess)
+			{
+				pEntry->TXMCSExpected[pid]++;
+				if (pid == succMCS)
+					pEntry->TXMCSSuccessful[pid]++;
+				else
 					pEntry->TXMCSAutoFallBack[pid][succMCS]++;
 			}
 			else
@@ -2081,10 +2159,10 @@ VOID NICUpdateFifoStaCounters(
 
 				pEntry->OneSecTxRetryOkCount += reTry;
 			}
+		}
 
-			i++;	/* ASIC store 16 stack*/
-		} while ( i < (TX_RING_SIZE<<1) );
-
+		i++;	/* ASIC store 16 stack*/
+	} while ( i < (TX_RING_SIZE<<1) );
 }
 
 #ifdef FIFO_EXT_SUPPORT
