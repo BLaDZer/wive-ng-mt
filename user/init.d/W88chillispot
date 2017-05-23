@@ -102,8 +102,8 @@ get_params() {
     # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
     # tune radius connection parametrs
     # for correct work ring/rate alg in MTK/Ralink do not use txqlen more when 250 pkts
-    # optimal txqlen for tun if = txqlen in_if + txqlen out_if
-    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --childmax=64 --radiustimeout=15 --radiusretry=30 --txqlen=160"
+    # optimal txqlen for tun if = 4 * txlen br0 + txqlen wan_if
+    PARLINE="--dhcpif=$lan_if --routeif=$wan_if --childmax=64 --radiustimeout=15 --radiusretry=30 --txqlen=400"
     PARLINE="$PARLINE --pidfile /var/run/chilli.pid --cmdsocket /var/run/chilli.sock --unixipc /var/run/chilli.ipc --kname=chilli"
 
     # use /32 mask for clients (prevent client to client direct connect)
