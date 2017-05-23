@@ -5948,7 +5948,6 @@ BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd)
 		UAPSD_MR_SP_SUSPEND(pAd);
 #endif /* UAPSD_SUPPORT */
 
-#ifdef VENDOR_FEATURE1_SUPPORT
 		/*
 			Note:
 
@@ -5959,14 +5958,11 @@ BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd)
 			Based on different platform, try to find the best value to
 			replace '4' here (overflow rate target is about 0%).
 		*/
-		if (++pAd->FifoUpdateDone >= 4)
+		if (++pAd->FifoUpdateDone >= FIFO_STAT_READ_PERIOD)
 		{
 			NICUpdateFifoStaCounters(pAd);
 			pAd->FifoUpdateDone = 0;
 		}
-#else
-		NICUpdateFifoStaCounters(pAd);
-#endif /* VENDOR_FEATURE1_SUPPORT */
 #endif /* RTMP_MAC_PCI */
 
 		/* 

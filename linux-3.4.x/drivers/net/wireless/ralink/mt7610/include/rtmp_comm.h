@@ -37,6 +37,12 @@
 #endif	/* WSC_LED_SUPPORT */
 #endif /* VENDOR_FEATURE3_SUPPORT */
 
+#ifdef VENDOR_FEATURE1_SUPPORT
+#define FIFO_STAT_READ_PERIOD		4
+#else
+#define FIFO_STAT_READ_PERIOD		0
+#endif /* VENDOR_FEATURE1_SUPPORT */
+
 /* ======================== Before include files ============================ */ 
 /*
 	14 channels @2.4G +  12@UNII(lower/middle) + 16@HiperLAN2 + 11@UNII(upper) + 0 @Japan + 1 as NULL termination

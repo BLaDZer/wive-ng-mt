@@ -708,7 +708,6 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 #endif /* RALINK_QA */
 #endif /* RALINK_ATE */
 
-#ifdef VENDOR_FEATURE1_SUPPORT
 		/*
 			Note:
 
@@ -719,14 +718,11 @@ BOOLEAN  RTMPFreeTXDUponTxDmaDone(
 			Based on different platform, try to find the best value to
 			replace '4' here (overflow rate target is about 0%).
 		*/
-		if (++pAd->FifoUpdateRx >= 4)
+		if (++pAd->FifoUpdateRx >= FIFO_STAT_READ_PERIOD)
 		{
 			NICUpdateFifoStaCounters(pAd);
 			pAd->FifoUpdateRx = 0;
 		}
-#else
-		NICUpdateFifoStaCounters(pAd);
-#endif /* VENDOR_FEATURE1_SUPPORT */
 
 		/* Note : If (pAd->ate.bQATxStart == TRUE), we will never reach here. */
 		FREE++;

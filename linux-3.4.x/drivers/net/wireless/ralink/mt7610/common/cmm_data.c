@@ -1633,15 +1633,12 @@ VOID RTMPDeQueuePacket(
 			DEQUEUE_UNLOCK(&pAd->irq_lock, bIntContext, IrqFlags);
 			/* static rate also need NICUpdateFifoStaCounters() function.*/
 			/*if (OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_TX_RATE_SWITCH_ENABLED))*/
-#ifdef VENDOR_FEATURE1_SUPPORT
-			if (++pAd->FifoUpdateDone >= 4)
+			if (++pAd->FifoUpdateDone >= FIFO_STAT_READ_PERIOD)
 			{
+				// TODO: shiang-usw, check this because of REG access here!!
 				NICUpdateFifoStaCounters(pAd);
 				pAd->FifoUpdateDone = 0;
 			}
-#else
-			NICUpdateFifoStaCounters(pAd);
-#endif /* VENDOR_FEATURE1_SUPPORT */
 #endif /* RTMP_MAC_PCI */
 
 		}

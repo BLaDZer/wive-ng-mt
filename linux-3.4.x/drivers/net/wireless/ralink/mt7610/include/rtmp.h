@@ -3861,9 +3861,7 @@ struct _RTMP_ADAPTER {
 	EXT_CAP_INFO_ELEMENT ExtCapInfo;
 
 
-#ifdef VENDOR_FEATURE1_SUPPORT
 	UCHAR FifoUpdateDone, FifoUpdateRx;
-#endif /* VENDOR_FEATURE1_SUPPORT */
 
 	UINT8 RFICType;
 
