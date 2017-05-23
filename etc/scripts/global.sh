@@ -28,7 +28,7 @@ vpn_def_if="ppp0"
 # need more atomic traffic insert
 # allways use small queue for eth2/ra* interfaces
 # if need increase queue at bridge and others soft ifs
-txqueuelen="50"
+txqueuelen="80"
 
 mcast_net="224.0.0.0/4"
 upnmp_net="239.0.0.0/8"
