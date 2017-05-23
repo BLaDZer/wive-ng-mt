@@ -3112,5 +3112,9 @@
 86) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
 <br>
 <br>
+<b>6.1.x</b><br>
+1) kernel: ralink_wifi: mt7610: tune some BBP params for speedup.<br>
+<br>
+<br>
 <br>
 <br>

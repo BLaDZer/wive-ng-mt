@@ -149,16 +149,21 @@ static RTMP_REG_PAIR	MT76x0_MACRegTable[] = {
 	{PBF_CFG,			0x77723c1f},
 	{FCE_PSE_CTRL,			0x1},
 
-	/* Keep the default setting of 0x1018 for MT7650. @20120830 */
-	/* {MAX_LEN_CFG,			MAX_AGGREGATION_SIZE | 0x00001000},	*/
-	
-	{PWR_PIN_CFG,		0x0},
+	{MAX_LEN_CFG, MAX_AGGREGATION_SIZE | 0x003E3000},
+	{AMPDU_MAX_LEN_20M1S_MCS0_7, 0xAAA99887},
+	{AMPDU_MAX_LEN_20M1S_MCS8_9, 0xAA},
 
-	{AMPDU_MAX_LEN_20M1S,	0xBAA99887}, /* Recommended by JerryCK @20120905 */
+	{PWR_PIN_CFG,		0x0},
 
 	{TX_SW_CFG0,		0x601}, /* Delay bb_tx_pe for proper tx_mcs_pwr update */
 	{TX_SW_CFG1,		0x00040000}, /* Set rf_tx_pe deassert time to 1us by Chee's comment @MT7650_CR_setting_1018.xlsx */
 	{TX_SW_CFG2,		0x0},
+
+	{TXOP_CTRL_CFG, 0x0400583F},
+	{TX_RTS_CFG, 0x00092B20},
+	{TX_TIMEOUT_CFG, 0x000A2290},
+	{TX_RTY_CFG, 0x47D01F0F},
+	{EXP_ACK_TIME, 0x002C00DC},
 
 // TODO: shiang-6590, check what tx report will send to us when following default value set as 2
 	{0xa44,					0x0}, /* disable Tx info report */
@@ -186,6 +191,7 @@ static RTMP_REG_PAIR	MT76x0_MACRegTable[] = {
 	{0x1238, 0x001700C8}, /* Disable bt_abort_tx_en(0x1238[21] = 0) which is not used at MT7650 @MT7650_E3_CR_setting_1115.xlsx */
 	{LDO_CTRL_0, 0x00A647B6}, /* PMU_OCLEVEL<5:1> from default <5'b10010> to <5'b11011> for normal driver */
 	{LDO_CTRL1, 0x6B006464}, /* Default LDO_DIG supply 1.26V, change to 1.2V */
+	{LEGACY_BASIC_RATE, 0x0000017F},
 	{HT_BASIC_RATE, 0x00004003}, /*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
 	{HT_CTRL_CFG, 0x000001FF},	/*MT7650_E6_MAC_CR_setting_20140821.xlsx , fix RDG issue with 7628 */
 	{TXOP_HLDR_ET,  0x00000000}, /* 76x0 don't need TGac, initial disable secondary EDCCA */
@@ -216,7 +222,7 @@ static RTMP_REG_PAIR MT76x0_BBP_Init_Tab[] = {
 
 	/* Disable Tx FIFO empty check for hang issue - MT7650E3_BBP_CR_20121225 */
 	{IBI_R11, 0x00000080},
-	
+
 	/*
 		0x2300[5] Default Antenna:
 		0 for WIFI main antenna
@@ -1145,17 +1151,18 @@ static VOID FullCalibration(
 static VOID InitFce(
 	PRTMP_ADAPTER pAd)
 {
-	L2_STUFFING_STRUC L2Stuffing;
+	L2_STUFFING_STRUC reg;
 
-	L2Stuffing.word = 0;
+	reg.word = 0;
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s: -->\n", __FUNCTION__));
+#ifdef RTMP_PCI_SUPPORT
 
-	RTMP_IO_READ32(pAd, FCE_L2_STUFF, &L2Stuffing.word);
-	L2Stuffing.field.FS_WR_MPDU_LEN_EN = 0;
-	RTMP_IO_WRITE32(pAd, FCE_L2_STUFF, L2Stuffing.word);
-
-	DBGPRINT(RT_DEBUG_TRACE, ("%s: <--\n", __FUNCTION__));
+	/* test the TP on MT7620/ MT7621 platform, the TP is not degrade */
+	RTMP_IO_WRITE32(pAd, 0x708, 0x1401);
+	RTMP_IO_READ32(pAd, FCE_L2_STUFF, &reg.word);
+	reg.field.FS_WR_MPDU_LEN_EN = 0;
+	RTMP_IO_WRITE32(pAd, FCE_L2_STUFF, reg.word);
+#endif
 }
 
 
