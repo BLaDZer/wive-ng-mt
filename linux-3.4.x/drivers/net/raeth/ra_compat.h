@@ -131,7 +131,7 @@ typedef u32 netdev_features_t;
 #define MAX_RX_LENGTH		1536
 #endif
 
-#define NAPI_WEIGHT		64
+#define NAPI_WEIGHT		128
 
 ///////////////////////////////////////////////////////////////
 

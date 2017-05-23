@@ -3054,7 +3054,7 @@
 28) init.d: iptables add session limit for modemmode.<br>
 29) init.d: add qos support for modem mode.<br>
 30) init.d: small tune txqlen for tun mode.<br>
-31) kernel: ralink_raeth: allways use NAPI_WEIGHT=64.<br>
+31) kernel: ralink_raeth: allways use NAPI_WEIGHT=128.<br>
 32) kernel: ralink_wifi: not allow reserved wcid data to process as client data, always return TRUE (Microtik flood uncorrect bcast data frames issue).<br>
 33) kernel: ralink_wifi: always set TIM bit for WCID_ALL/RESERVED.<br>
 34) kernel: ralink_wifi: always send deauth on class2/3 error to client.<br>
