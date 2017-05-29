@@ -953,6 +953,7 @@ VOID PeerHTAction(
 {
 	UCHAR Action = Elem->Msg[LENGTH_802_11+1];
 	MAC_TABLE_ENTRY *pEntry;
+	UCHAR oldMmpsMode;
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
 
 #ifdef MAC_REPEATER_SUPPORT
@@ -983,6 +984,7 @@ VOID PeerHTAction(
 		case SMPS_ACTION:
 			/* 7.3.1.25*/
  			DBGPRINT(RT_DEBUG_TRACE,("ACTION - SMPS action----> \n"));
+			oldMmpsMode = pEntry->MmpsMode;
 			if (((Elem->Msg[LENGTH_802_11+2] & 0x1) == 0))
 				pEntry->MmpsMode = MMPS_ENABLE;
 			else if (((Elem->Msg[LENGTH_802_11+2] & 0x2) == 0))
@@ -990,6 +992,16 @@ VOID PeerHTAction(
 			else
 				pEntry->MmpsMode = MMPS_DYNAMIC;
 
+#ifdef CONFIG_AP_SUPPORT
+			if (oldMmpsMode != pEntry->MmpsMode)
+			{
+				if (!pEntry->MmpsMode == MMPS_DYNAMIC) {
+					IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+						APMlmeDynamicTxRateSwitching(pAd);
+
+				}
+			}
+#endif /* CONFIG_AP_SUPPORT */
 			DBGPRINT(RT_DEBUG_TRACE,("Aid(%d) MIMO PS = %d\n", Elem->Wcid, pEntry->MmpsMode));
 			/* rt2860c : add something for smps change.*/
 			break;
