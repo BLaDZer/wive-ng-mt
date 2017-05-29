@@ -247,7 +247,6 @@ NDIS_STATUS APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	UINT SrcBufLen;
 	UINT AllowFragSize;
 	UCHAR NumberOfFrag;
-	UCHAR RTSRequired;
 	UCHAR QueIdx, UserPriority, apidx = MAIN_MBSSID;
 	SST Sst = SST_ASSOC;
 	UCHAR PsMode = PWR_ACTIVE, Rate;
