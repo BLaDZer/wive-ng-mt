@@ -941,8 +941,10 @@ static u8 _bndstrg_allow_sta_conn_5g(
 		/* RSSI always in range -126..-1, real -90..-20, 0 or -127 values is not current statistic aviable */
 		else if(entry->statistics[1].Rssi == 0 || entry->statistics[1].Rssi <= -127)
 		{
+#if 0
 			DBGPRINT(DEBUG_ERROR,RED("Unknown RSSI value for client (%02x:%02x:%02x:%02x:%02x:%02x)! Allow to connect 5G for safe by default.\n"),
 						    PRINT_MAC(entry->Addr));
+#endif
 			return TRUE;
 		}
 	}
