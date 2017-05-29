@@ -3116,6 +3116,7 @@
 90) kernel: net: packet: fix overflow in check for tp_reserve.<br>
 91) kernel: net: l2tp: take reference on sessions being dumped.<br>
 92) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
+93) kernel: net: make struct dst_entry::dev first member.<br>
 <br>
 <br>
 <br>
