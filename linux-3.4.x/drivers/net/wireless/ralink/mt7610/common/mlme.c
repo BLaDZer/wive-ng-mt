@@ -776,7 +776,7 @@ VOID MlmePeriodicExec(
 	/* by default, execute every 500ms */
 	if ((pAd->ra_interval) && 
 		((pAd->Mlme.PeriodicRound % (pAd->ra_interval / 100)) == 0) && 
-		RTMPAutoRateSwitchCheck(pAd)/*(OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_TX_RATE_SWITCH_ENABLED))*/
+		1 //RTMPAutoRateSwitchCheck(pAd)/*(OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_TX_RATE_SWITCH_ENABLED))*/
 	)
 	{
 #ifdef CONFIG_AP_SUPPORT
