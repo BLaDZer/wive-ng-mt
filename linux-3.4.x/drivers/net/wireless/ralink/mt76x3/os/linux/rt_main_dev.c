@@ -363,6 +363,9 @@ PNET_DEV RtmpPhyNetDevInit(VOID *pAd, RTMP_OS_NETDEV_OP_HOOK *pNetDevHook)
 
 	RTMP_DRIVER_OP_MODE_GET(pAd, &OpMode);
 
+	/* set default txqlen, may be overwriten by ifconfig */
+        net_dev->tx_queue_len = 100;
+
 	/* put private data structure */
 	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);
 

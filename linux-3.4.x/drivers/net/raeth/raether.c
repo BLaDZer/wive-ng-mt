@@ -198,6 +198,9 @@ fill_dev_features(struct net_device *dev)
 
 #endif /* RAETH_SDMA */
 
+	/* set default txqlen, may be overwriten by ifconfig */
+        dev->tx_queue_len = 100;
+
 	dev->features = dev->hw_features;
 	dev->vlan_features = dev->features & ~(NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX);
 }
