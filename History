@@ -3095,25 +3095,26 @@
 69) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
 70) kernel: ralink_wifi: mt7603: fix agregation size limit.<br>
 71) kernel: sched/fair: do not announce throttled next buddy in dequeue_task_fair().<br>
-72) kernel: mips: pci: scan PCI controllers in reverse order.<br>
-73) kernel: mips: pci: add controllers before the specified head.<br>
-74) kernel: mips: mm: fixed mappings: correct initialisation.<br>
-75) kernel: mips: mm: adjust PKMAP location.<br>
-76) kernel: mips: highmem: ensure that we don't use more than one page for PTEs.<br>
-77) kernel: net: remove unnecessary carrier status check.<br>
-78) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-79) kernel: net: ping: implement proper locking.<br>
-80) kernel: net: neigh: guard against NULL solicit() method.<br>
-81) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
-82) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-83) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-84) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-85) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
-86) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
-87) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-88) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-89) kernel: net: l2tp: take reference on sessions being dumped.<br>
-90) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
+72) kernel: sched/fair: initialize throttle_count for new task-groups lazily.<br>
+73) kernel: mips: pci: scan PCI controllers in reverse order.<br>
+74) kernel: mips: pci: add controllers before the specified head.<br>
+75) kernel: mips: mm: fixed mappings: correct initialisation.<br>
+76) kernel: mips: mm: adjust PKMAP location.<br>
+77) kernel: mips: highmem: ensure that we don't use more than one page for PTEs.<br>
+78) kernel: net: remove unnecessary carrier status check.<br>
+79) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+80) kernel: net: ping: implement proper locking.<br>
+81) kernel: net: neigh: guard against NULL solicit() method.<br>
+82) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
+83) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+84) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+85) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+86) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
+87) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
+88) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+89) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+90) kernel: net: l2tp: take reference on sessions being dumped.<br>
+91) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
 <br>
 <br>
 <br>

@@ -265,7 +265,7 @@ struct cfs_rq {
 	s64 runtime_remaining;
 
 	u64 throttled_timestamp;
-	int throttled, throttle_count;
+	int throttled, throttle_count, throttle_uptodate;
 	struct list_head throttled_list;
 #endif /* CONFIG_CFS_BANDWIDTH */
 #endif /* CONFIG_FAIR_GROUP_SCHED */
