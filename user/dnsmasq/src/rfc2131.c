@@ -383,7 +383,7 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	    {
 	      len = option_uint(opt, offset + 4 , 1);
 	      /* Need to take care that bad data can't run us off the end of the packet */
-	      if ((offset + len + 5 <= (option_len(opt))) &&
+	      if ((offset + len + 5 <= (unsigned)(option_len(opt))) &&
 		  (option_uint(opt, offset, 4) == (unsigned int)o->u.encap))
 		for (o2 = offset + 5; o2 < offset + len + 5; o2 += elen + 1)
 		  { 
@@ -834,9 +834,12 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	  else
 	    mess->siaddr = context->local; 
 	  
+	  if (strchr(service->basename, '.'))
 	  snprintf((char *)mess->file, sizeof(mess->file), 
-		   strchr(service->basename, '.') ? "%s" :"%s.%d", 
-		   service->basename, layer);
+		"%s.%d", service->basename, layer);
+	  else
+	    snprintf((char *)mess->file, sizeof(mess->file),
+		"%s", service->basename);
 	  
 	  option_put(mess, end, OPTION_MESSAGE_TYPE, 1, DHCPACK);
 	  option_put(mess, end, OPTION_SERVER_IDENTIFIER, INADDRSZ, htonl(context->local.s_addr));
