@@ -1710,7 +1710,7 @@ enum WIFI_MODE{
 /* Rate Adaptation simpling interval setting */
 #define DEF_QUICK_RA_TIME_INTERVAL		100 /* Quick RA 100 msec after rate change */
 #define DEF_RA_TIME_INTRVAL			500
-#define FASTRATEUPERRTH                         20 /* < 20% errors to allow fast up rate */
+#define FASTRATEUPERRTH                         25 /* < 25% errors to allow fast up rate */
 
 /*definition of DRS */
 #define MAX_TX_RATE_INDEX			33		/* Maximum Tx Rate Table Index value */

@@ -305,7 +305,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15))
+		if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < FASTRATEUPERRTH))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -563,7 +563,7 @@ VOID APQuickResponeForRateUpExec(
 
 					HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 					if (HwTxCnt)
-						HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
+					HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 
 					TxSuccess = pEntry->fifoTxSucCnt;
 					TxRetransmit = pEntry->fifoTxRtyCnt;
@@ -579,6 +579,7 @@ VOID APQuickResponeForRateUpExec(
 			}
 		}
 #endif /* FIFO_EXT_SUPPORT */
+
 		CurrRateIdx = pEntry->CurrTxRateIndex;
 #ifdef TXBF_SUPPORT
 		CurrPhyETxBf = pEntry->phyETxBf;
@@ -701,13 +702,16 @@ VOID APQuickResponeForRateUpExec(
 			else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 			{
 				/* if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) */
-				if ((TxErrorRatio >= 40) && (TxErrorRatio >= TrainDown))
+				if ((TxErrorRatio >= 50) && (TxErrorRatio >= TrainDown))
 				{
 				}
 				else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 				{
 					if(TxErrorRatio >= TrainUp)
+					{
 					    MlmeRestoreLastRate(pEntry);
+				}
+							
 				}
 				else
 				{
@@ -812,9 +816,11 @@ VOID MlmeOldRateAdapt(
 #endif /* TXBF_SUPPORT */
 		if (CurrRateIdx != DownRateIdx)
 		{
+			{
 			pEntry->CurrTxRateIndex = DownRateIdx;
 			pEntry->LastSecTxRateChangeAction = RATE_DOWN;
 		}
+	}
 	}
 	else
 	{

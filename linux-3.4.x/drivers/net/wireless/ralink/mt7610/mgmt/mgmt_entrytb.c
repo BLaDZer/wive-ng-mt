@@ -84,7 +84,7 @@ VOID asic_change_tx_retry(
 	IN USHORT num)
 {
 	UINT32	TxRtyCfg, MacReg = 0;
-
+#if 0   /* big retry limit is poor work at interference, allways use 7/11 */
 	if (num < 2)
 	{
 		/* Tx data retry 31/15 (thres 2000) */
@@ -101,6 +101,7 @@ VOID asic_change_tx_retry(
 	}
 	else
 	{
+#endif
 		/* Tx data retry 7/11 (thres 256)  */
 		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
 		TxRtyCfg &= 0xf0000000;
@@ -118,8 +119,8 @@ VOID asic_change_tx_retry(
 			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
 		else
 			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1010);
-#endif
 	}
+#endif
 }
 
 VOID pkt_aggr_num_change(

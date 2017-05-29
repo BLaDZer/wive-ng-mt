@@ -1347,7 +1347,7 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 	}
 	else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 	{
-		if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
+		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
 			MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, DRS_TX_QUALITY_WORST_BOUND);
@@ -1872,7 +1872,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < FASTRATEUPERRTH) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -2015,7 +2015,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	}
 	else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 	{
-		if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
+		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));

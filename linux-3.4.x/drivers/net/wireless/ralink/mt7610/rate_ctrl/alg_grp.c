@@ -1174,7 +1174,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	pCurrTxRate = PTX_RA_GRP_ENTRY(pTable, CurrRateIdx);
 
 #ifdef DOT11_VHT_AC
-	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15) && pEntry->perThrdAdj == 1)
+	if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < FASTRATEUPERRTH) && pEntry->perThrdAdj == 1)
 	{
 		TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 		TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -1305,7 +1305,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	}
 	else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 	{
-		if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
+		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
 			MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, DRS_TX_QUALITY_WORST_BOUND);
@@ -1473,6 +1473,9 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
 	pEntry->LastTimeTxRateChangeAction = pEntry->LastSecTxRateChangeAction;
 
+	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
+		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
+
 	/* different calculation in APQuickResponeForRateUpExec() */
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
@@ -1557,8 +1560,6 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			CHAR mcs[24];
 			CHAR RssiOffset = 0;
 
-			//pEntry->lowTrafficCount = 0;
-
 			/* Check existence and get index of each MCS */
 			MlmeGetSupportedMcsAdapt(pAd, pEntry, GI_400, mcs);
 
@@ -1586,18 +1587,18 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 #endif /* NOISE_TEST_ADJUST */
 			/* Select the Tx rate based on the RSSI */
 			TxRateIdx = MlmeSelectTxRateAdapt(pAd, pEntry, mcs, Rssi, RssiOffset);
-				pEntry->lastRateIdx = pEntry->CurrTxRateIndex;
-				MlmeSetMcsGroup(pAd, pEntry);
+			pEntry->lastRateIdx = pEntry->CurrTxRateIndex;
+			MlmeSetMcsGroup(pAd, pEntry);
 
-				pEntry->CurrTxRateIndex = TxRateIdx;
+			pEntry->CurrTxRateIndex = TxRateIdx;
 #ifdef TXBF_SUPPORT
-				pEntry->phyETxBf = pEntry->phyITxBf = FALSE;
+			pEntry->phyETxBf = pEntry->phyITxBf = FALSE;
 #endif /* TXBF_SUPPORT */
-				MlmeNewTxRate(pAd, pEntry);
-				if (!pEntry->fLastSecAccordingRSSI)
-				{
-					DBGPRINT(RT_DEBUG_INFO,("DRS: TxTotalCnt <= 15, switch to MCS%d according to RSSI (%d), RssiOffset=%d\n", pEntry->HTPhyMode.field.MCS, Rssi, RssiOffset));
-				}
+			MlmeNewTxRate(pAd, pEntry);
+			if (!pEntry->fLastSecAccordingRSSI)
+			{
+				DBGPRINT(RT_DEBUG_INFO,("DRS: TxTotalCnt <= 15, switch to MCS%d according to RSSI (%d), RssiOffset=%d\n", pEntry->HTPhyMode.field.MCS, Rssi, RssiOffset));
+			}
 
 			MlmeClearAllTxQuality(pEntry);	/* clear all history */
 			pEntry->fLastSecAccordingRSSI = TRUE;

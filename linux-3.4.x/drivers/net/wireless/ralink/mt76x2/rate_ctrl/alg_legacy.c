@@ -324,7 +324,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		}
 
 #ifdef DOT11_VHT_AC
-		if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < 15))
+		if ((Rssi > -55) && (pCurrTxRate->Mode >= MODE_VHT) && (TxErrorRatio < FASTRATEUPERRTH))
 		{
 			TrainUp = (pCurrTxRate->TrainUp + (pCurrTxRate->TrainUp >> RA_TRAINDIV));
 			TrainDown = (pCurrTxRate->TrainDown + (pCurrTxRate->TrainDown >> RA_TRAINDIV));
@@ -726,7 +726,7 @@ VOID APQuickResponeForRateUpExec(
 			else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 			{
 				/* if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) */
-				if ((TxErrorRatio >= 40) && (TxErrorRatio >= TrainDown))
+				if ((TxErrorRatio >= 50) && (TxErrorRatio >= TrainDown))
 				{
 				}
 				else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
@@ -1555,7 +1555,7 @@ VOID StaQuickResponeForRateUpExec(
 			else if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 			{
 				/* Note: AP had "(TxErrorRatio >= 50) && (TxErrorRatio >= TrainDown)" */
-				if ((TxErrorRatio >= 40) || (TxErrorRatio >= TrainDown))
+				if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown))
 				{
 					DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));
 				}

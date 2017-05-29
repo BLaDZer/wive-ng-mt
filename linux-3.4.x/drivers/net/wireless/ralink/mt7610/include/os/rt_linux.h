@@ -1235,19 +1235,7 @@ do{                    \
 #define RTMP_GET_PACKET_CLEAR_EAP_FRAME(_p)         (RTPKT_TO_OSPKT(_p)->cb[CB_OFF+12])
 
 
-#ifdef DOT11_VHT_AC
-#ifdef WFA_VHT_PF
-#define MAX_PACKETS_IN_QUEUE				2048 /*(512)*/
-#else
-#ifdef NOISE_TEST_ADJUST
-#define MAX_PACKETS_IN_QUEUE				2048 /*(512)*/
-#else
 #define MAX_PACKETS_IN_QUEUE				1024 /*(512)*/
-#endif /* NOISE_TEST_ADJUST */
-#endif /* WFA_VHT_PF */
-#else
-#define MAX_PACKETS_IN_QUEUE				(512)
-#endif /* DOT11_VHT_AC */
 
 
 /* use bit3 of cb[CB_OFF+16] */

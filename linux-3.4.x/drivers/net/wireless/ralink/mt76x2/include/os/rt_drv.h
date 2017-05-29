@@ -181,15 +181,7 @@ typedef char 				* PNDIS_BUFFER;
 #define NDIS_PACKET_TYPE_PROMISCUOUS	4
 #endif /* CONFIG_STA_SUPPORT */
 
-#ifdef DOT11_VHT_AC
-#ifdef NOISE_TEST_ADJUST
-#define MAX_PACKETS_IN_QUEUE				2048 /*(512)*/
-#else
 #define MAX_PACKETS_IN_QUEUE				1024 /*(512)*/
-#endif /* NOISE_TEST_ADJUST */
-#else
-#define MAX_PACKETS_IN_QUEUE				(512)
-#endif /* DOT11_VHT_AC */
 
 /***********************************************************************************
  *	OS signaling related constant definitions
