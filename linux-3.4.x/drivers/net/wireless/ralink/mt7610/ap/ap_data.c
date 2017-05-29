@@ -444,30 +444,7 @@ NDIS_STATUS APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 	}
 
 	/* Save fragment number to Ndis packet reserved field */
-	RTMP_SET_PACKET_FRAGMENTS(pPacket, NumberOfFrag);  
-
-	/*
-		STEP 2. Check the requirement of RTS; decide packet TX rate
-		If multiple fragment required, RTS is required only for the first fragment
-		if the fragment size large than RTS threshold
-	*/
-
-	if (NumberOfFrag > 1)
-		RTSRequired = (pAd->CommonCfg.FragmentThreshold > pAd->CommonCfg.RtsThreshold) ? 1 : 0;
-	else
-		RTSRequired = (PacketInfo.TotalPacketLength > pAd->CommonCfg.RtsThreshold) ? 1 : 0;
-
-	/* RTS/CTS may also be required in order to protect OFDM frame */
-	if ((Rate >= RATE_FIRST_OFDM_RATE) && 
-		(Rate <= RATE_LAST_OFDM_RATE) && 
-		OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_BG_PROTECTION_INUSED))
-		RTSRequired = 1;
-
-	/* Save RTS requirement to Ndis packet reserved field */
-	RTMP_SET_PACKET_RTS(pPacket, RTSRequired);
-	RTMP_SET_PACKET_TXRATE(pPacket, Rate);
-	
-
+	RTMP_SET_PACKET_FRAGMENTS(pPacket, NumberOfFrag);
 
 	/* detect AC Category of tx packets to tune AC0(BE) TX_OP (MAC reg 0x1300) */
 	detect_wmm_traffic(pAd, UserPriority, 1);
@@ -5098,6 +5075,8 @@ VOID APHandleRxDataFrame(
 			RTMP_UPDATE_PROTECT(pAd, 8 , ALLN_SETPROTECT, FALSE, FALSE);
 		pEntry->bIAmBadAtheros = TRUE;
 
+		if (pEntry->WepStatus != Ndis802_11WEPDisabled)
+			pEntry->MpduDensity = 6;
 	}
 #endif /* WFA_VHT_PF */
 #endif /* DOT11_VHT_AC */
