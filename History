@@ -3091,42 +3091,43 @@
 65) kernel: ralink_wifi: mt7610: fix MPDU tune for bad atheros case.<br>
 66) kernel: ralink_wifi: mt7610: fix potentional nullpointer dereference.<br>
 67) kernel: ralink_wifi: mt7610: fix rate adapt volatile issue.<br>
-68) kernel: ralink_wifi: mt7620: allow use different queue for data/eapol.<br>
-69) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
-70) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
-71) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
-72) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
-73) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
-74) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
-75) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
-76) kernel: ralink_wifi: mt7603: fix agregation size limit.<br>
-77) kernel: sched/fair: do not announce throttled next buddy in dequeue_task_fair().<br>
-78) kernel: sched/fair: initialize throttle_count for new task-groups lazily.<br>
-79) kernel: mips: pci: scan PCI controllers in reverse order.<br>
-80) kernel: mips: pci: add controllers before the specified head.<br>
-81) kernel: mips: mm: fixed mappings: correct initialisation.<br>
-82) kernel: mips: mm: adjust PKMAP location.<br>
-83) kernel: mips: highmem: ensure that we don't use more than one page for PTEs.<br>
-84) kernel: net: remove unnecessary carrier status check.<br>
-85) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-86) kernel: net: ping: implement proper locking.<br>
-87) kernel: net: neigh: guard against NULL solicit() method.<br>
-88) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
-89) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-90) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-91) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-92) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
-93) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
-94) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-95) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-96) kernel: net: l2tp: take reference on sessions being dumped.<br>
-97) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
-98) kernel: net: make struct dst_entry::dev first member.<br>
+68) kernel: ralink_wifi: mt7610: rework rate_adapt tune from ext_fifo.<br>
+69) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS (full inplement later).<br>
+70) kernel: ralink_wifi: mt7610: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
+71) kernel: ralink_wifi: mt7620: allow use different queue for data/eapol.<br>
+72) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
+73) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
+74) kernel: ralink_wifi: mt7603: optimize lock/unlock in RTMPDeQueuePacket.<br>
+75) kernel: ralink_wifi: mt7603: fix DeQueuePacket of BCM_USE (NUM_OF_TX_RING != WMM_NUM_OF_AC).<br>
+76) kernel: ralink_wifi: mt7603: fix sanity check in APPeerDisassocReqAction.<br>
+77) kernel: ralink_wifi: mt7603: mgmt_entrytb: fix cap flags set and sanity checks.<br>
+78) kernel: ralink_wifi: mt7603: limit number of packets DeQueue at one time.<br>
+79) kernel: ralink_wifi: mt7603: fix agregation size limit.<br>
+80) kernel: sched/fair: do not announce throttled next buddy in dequeue_task_fair().<br>
+81) kernel: sched/fair: initialize throttle_count for new task-groups lazily.<br>
+82) kernel: mips: pci: scan PCI controllers in reverse order.<br>
+83) kernel: mips: pci: add controllers before the specified head.<br>
+84) kernel: mips: mm: fixed mappings: correct initialisation.<br>
+85) kernel: mips: mm: adjust PKMAP location.<br>
+86) kernel: mips: highmem: ensure that we don't use more than one page for PTEs.<br>
+87) kernel: net: remove unnecessary carrier status check.<br>
+88) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+89) kernel: net: ping: implement proper locking.<br>
+90) kernel: net: neigh: guard against NULL solicit() method.<br>
+91) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
+92) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+93) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+94) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+95) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
+96) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
+97) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+98) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+99) kernel: net: l2tp: take reference on sessions being dumped.<br>
+100) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
+101) kernel: net: make struct dst_entry::dev first member.<br>
 <br>
 <br>
 <b>6.0.x</b><br>
-1) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS (full inplement later).<br>
-2) kernel: ralink_wifi: mt7610: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
 <br>
 <br>
 <br>

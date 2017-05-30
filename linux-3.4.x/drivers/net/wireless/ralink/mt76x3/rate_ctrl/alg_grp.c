@@ -1172,7 +1172,7 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 	RTMP_RA_GRP_TB *pCurrTxRate;
 	UCHAR					TrainUp, TrainDown;
 	CHAR					Rssi, ratio;
-	ULONG					OneSecTxNoRetryOKRationCount;
+	ULONG					OneSecTxNoRetryOKRationCount = 0;
 	BOOLEAN					rateChanged;
 
 	MT_TX_COUNTER TxInfo;
@@ -1775,7 +1775,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	UCHAR					TrainUp, TrainDown;
 	CHAR					Rssi, ratio;
 	ULONG					TxSuccess, TxRetransmit, TxFailCount;
-	ULONG					OneSecTxNoRetryOKRationCount;
+	ULONG					OneSecTxNoRetryOKRationCount = 0;
 	BOOLEAN					rateChanged;
 
 	pEntry = &pAd->MacTab.Content[idx];
@@ -1784,7 +1784,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	pTable = pEntry->pTable;
 
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1814,6 +1814,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		TxCnt = AccuTxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -1946,10 +1947,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	else
 		ratio = (RA_INTERVAL - pAd->ra_fast_interval) / pAd->ra_fast_interval;
 
-	if (pAd->MacTab.Size == 1)
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-	else
-		OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
+	OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	/* the only situation when pEntry->TxQuality[CurrRateIdx] = DRS_TX_QUALITY_WORST_BOUND but no rate change */
@@ -2112,6 +2110,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	pTable = pEntry->pTable;
 	TxTotalCnt = TxSuccess = TxRetransmit = TxFailCount = TxErrorRatio = 0;
 
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -2129,6 +2128,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;

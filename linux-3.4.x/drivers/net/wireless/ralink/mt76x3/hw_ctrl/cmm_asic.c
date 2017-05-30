@@ -1444,8 +1444,11 @@ VOID dynamic_tune_be_tx_op(RTMP_ADAPTER *pAd, ULONG nonBEpackets)
 						if ((pEntry->HTPhyMode.field.MODE == MODE_HTMIX || pEntry->HTPhyMode.field.MODE == MODE_HTGREENFIELD) &&
 							(((pAd->CommonCfg.TxStream == 2) && (pEntry->HTPhyMode.field.MCS >= MCS_14)) ||
 							((pAd->CommonCfg.TxStream == 1) && (pEntry->HTPhyMode.field.MCS >= MCS_6)))) {
-							txop_value = 0x60;
-							DBGPRINT(RT_DEBUG_INFO, ("%s::enable Tx burst to 0x60 under HT/VHT mode\n", __FUNCTION__));
+							/* >= 2T2R try use 0x60 mode at -65, on one stream - -60 */
+							if (pAd->chipCap.avg_rssi_all > -65) {
+								txop_value = 0x60;
+								DBGPRINT(RT_DEBUG_INFO, ("%s::enable Tx burst to 0x60 under HT/VHT mode\n", __FUNCTION__));
+							}
 						}
 					}
 				}

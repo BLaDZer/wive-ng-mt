@@ -1848,7 +1848,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 		return;
 #endif /* RALINK_ATE */
 
-
+#if 0 /* this break rate_adapt without fifo */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RT65xx
 	if (pAd->MacTab.Size <= 8) {
@@ -1858,7 +1858,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 	}
 #endif /* RT65xx */
 #endif /* CONFIG_AP_SUPPORT */
-
+#endif
 
 	do
 	{
@@ -2317,7 +2317,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 #ifdef FIFO_EXT_SUPPORT
 BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
-	if (pEntry->bUseHwFifoExt)
+	if (pEntry->bUseHwFifoExt && pEntry->wcid <= 8)
 	{
 		WCID_TX_CNT_STRUC wcidTxCnt;
 

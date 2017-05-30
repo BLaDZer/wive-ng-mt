@@ -46,7 +46,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 	MAC_TABLE_ENTRY *pEntry;
 	RTMP_RA_LEGACY_TB *pCurrTxRate, *pTmpTxRate = NULL;
 	CHAR Rssi, TmpIdx = 0;
-	ULONG TxTotalCnt, TxErrorRatio = 0, TxSuccess, TxRetransmit, TxFailCount;
+	ULONG TxTotalCnt = 0, TxErrorRatio = 0, TxSuccess = 0, TxRetransmit = 0,  TxFailCount = 0;
 	UINT32					MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
 
 #ifdef RALINK_ATE
@@ -113,8 +113,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			continue;
 		}
 #endif /* AGS_SUPPORT */
-
-		/* NICUpdateFifoStaCounters(pAd); */
+#ifndef MULTI_CLIENT_SUPPORT
 		if (pAd->MacTab.Size == 1)
 		{
 			TX_STA_CNT1_STRUC StaTx1;
@@ -132,6 +131,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -514,7 +514,7 @@ VOID APQuickResponeForRateUpExec(
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 
 		Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-
+#ifndef MULTI_CLIENT_SUPPORT
 		if (pAd->MacTab.Size == 1)
 		{
         		TX_STA_CNT1_STRUC		StaTx1;
@@ -542,6 +542,7 @@ VOID APQuickResponeForRateUpExec(
 
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -649,7 +650,7 @@ VOID APQuickResponeForRateUpExec(
        /* Compare throughput */
 		do
 		{
-			ULONG OneSecTxNoRetryOKRationCount;
+			ULONG OneSecTxNoRetryOKRationCount = 0;
 
 			/*
 				Compare throughput.
@@ -670,15 +671,7 @@ VOID APQuickResponeForRateUpExec(
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
 			}
 
-			if (pAd->MacTab.Size == 1)
-			{
-				OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-			}
-			else
-			{
-				OneSecTxNoRetryOKRationCount = TxSuccess * ratio + (TxSuccess >> 1);
-				//OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
-			}
+			OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 			/* perform DRS - consider TxRate Down first, then rate up. */
 			if (pEntry->LastSecTxRateChangeAction == RATE_UP)

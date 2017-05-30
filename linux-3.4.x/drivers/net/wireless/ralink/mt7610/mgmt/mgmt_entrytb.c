@@ -84,42 +84,21 @@ VOID asic_change_tx_retry(
 	IN USHORT num)
 {
 	UINT32	TxRtyCfg, MacReg = 0;
-#if 0   /* big retry limit is poor work at interference, allways use 7/11 */
-	if (num < 2)
-	{
-		/* Tx data retry 31/15 (thres 2000) */
-		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
-		TxRtyCfg &= 0xf0000000;
-		TxRtyCfg |= 0x07d01f0f;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
-		/* Tx RTS retry default 32, disable RTS fallback */
-		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
-		MacReg &= 0xFEFFFF00;
-		MacReg |= 0x20;
-		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
-	}
-	else
-	{
-#endif
-		/* Tx data retry 7/11 (thres 256)  */
-		RTMP_IO_READ32(pAd, TX_RTY_CFG, &TxRtyCfg);
-		TxRtyCfg &= 0xf0000000;
-		TxRtyCfg |= 0x0100070B;
-		RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
+	TxRtyCfg = 0x4100070A;
+	RTMP_IO_WRITE32(pAd, TX_RTY_CFG, TxRtyCfg);
 
-		/* Tx RTS retry 3, enable RTS fallback */
-		RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
-		MacReg &= 0xFEFFFF00;
-		MacReg |= 0x01000003;
-		RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
+	/* Tx RTS retry 3, enable RTS fallback */
+	RTMP_IO_READ32(pAd, TX_RTS_CFG, &MacReg);
+	MacReg &= 0xFEFFFF00;
+	MacReg |= 0x01000003;
+	RTMP_IO_WRITE32(pAd, TX_RTS_CFG, MacReg);
 #if 0
-		/* enable fallback legacy */
-		if (pAd->CommonCfg.Channel > 14)
-			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
-		else
-			RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1010);
-	}
+	/* enable fallback legacy */
+	if (pAd->CommonCfg.Channel > 14)
+		RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1818);
+	else
+		RTMP_IO_WRITE32(pAd, HT_FBK_TO_LEGACY, 0x1010);
 #endif
 }
 

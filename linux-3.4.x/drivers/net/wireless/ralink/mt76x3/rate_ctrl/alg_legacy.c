@@ -148,7 +148,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif /* AGS_SUPPORT */
 
 		/* NICUpdateFifoStaCounters(pAd); */
-
+#ifndef MULTI_CLIENT_SUPPORT
 		if (pAd->MacTab.Size == 1)
 		{
 			TX_STA_CNT1_STRUC StaTx1;
@@ -166,6 +166,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 				TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -531,10 +532,10 @@ VOID APQuickResponeForRateUpExec(
 
 		Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
-
+#ifndef MULTI_CLIENT_SUPPORT
 		if (pAd->MacTab.Size == 1)
 		{
-            TX_STA_CNT1_STRUC		StaTx1;
+	                TX_STA_CNT1_STRUC		StaTx1;
 			TX_STA_CNT0_STRUC		TxStaCnt0;
 
        		/* Update statistic counter */
@@ -560,6 +561,7 @@ VOID APQuickResponeForRateUpExec(
 			TxCnt = AccuTxTotalCnt;
 		}
 		else
+#endif
 		{
 			TxRetransmit = pEntry->OneSecTxRetryOkCount;
 			TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -677,7 +679,7 @@ VOID APQuickResponeForRateUpExec(
        /* Compare throughput */
 		do
 		{
-			ULONG OneSecTxNoRetryOKRationCount;
+			ULONG OneSecTxNoRetryOKRationCount = 0;
 
 			/*
 				Compare throughput.
@@ -698,14 +700,7 @@ VOID APQuickResponeForRateUpExec(
 				MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
 			}
 
-			if (pAd->MacTab.Size == 1)
-			{
-				OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-			}
-			else
-			{
-				OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
-			}
+			OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 			/* perform DRS - consider TxRate Down first, then rate up. */
 			if (pEntry->LastSecTxRateChangeAction == RATE_UP)

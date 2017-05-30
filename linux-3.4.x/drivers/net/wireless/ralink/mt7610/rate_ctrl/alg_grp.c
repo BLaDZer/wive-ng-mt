@@ -1079,7 +1079,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	UCHAR					TrainUp, TrainDown;
 	CHAR					Rssi, ratio;
 	ULONG					TxSuccess, TxRetransmit, TxFailCount;
-	ULONG					OneSecTxNoRetryOKRationCount;
+	ULONG					OneSecTxNoRetryOKRationCount = 0;
 	BOOLEAN					rateChanged;
 #ifdef TXBF_SUPPORT
 	BOOLEAN					CurrPhyETxBf, CurrPhyITxBf;
@@ -1090,7 +1090,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 
 	pTable = pEntry->pTable;
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1118,6 +1118,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			Rssi = pEntry->RssiSample.AvgRssi0;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -1236,10 +1237,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	else
 		ratio = (RA_INTERVAL - pAd->ra_fast_interval) / pAd->ra_fast_interval;
 
-	if (pAd->MacTab.Size == 1)
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-	else
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
+	OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
 	/* the only situation when pEntry->TxQuality[CurrRateIdx] = DRS_TX_QUALITY_WORST_BOUND but no rate change */
@@ -1418,7 +1416,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 
 	pEntry = &pAd->MacTab.Content[i]; /* point to information of the individual station */
 	pTable = pEntry->pTable;
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1436,6 +1434,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -1454,20 +1453,21 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 
 		HwTxCnt = pEntry->fifoTxSucCnt + pEntry->fifoTxRtyCnt;
 		if (HwTxCnt)
-			HwErrRatio = ((pEntry->fifoTxRtyCnt * 100) / HwTxCnt);
+			HwErrRatio = (pEntry->fifoTxRtyCnt * 100) / HwTxCnt;
 
 		TxSuccess = pEntry->fifoTxSucCnt;
 		TxRetransmit = pEntry->fifoTxRtyCnt;
 		TxTotalCnt = HwTxCnt;
 		TxErrorRatio = HwErrRatio;
 
+		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
+
 		DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("%s()=>Wcid:%d, MCS:%d, TxErrRatio(Hw:0x%lx-0x%lx, Sw:0x%lx-%lx)\n",
 				__FUNCTION__, pEntry->wcid, pEntry->HTPhyMode.field.MCS,
 				HwTxCnt, HwErrRatio, TxTotalCnt, TxErrorRatio));
-
-		ApTxFailCntUpdate(pAd, pEntry, TxSuccess, TxRetransmit);
 	}
 #endif /*  FIFO_EXT_SUPPORT */
+
 	/*  Save LastTxOkCount, LastTxPER and last MCS action for APQuickResponeForRateUpExec */
 	pEntry->LastTxOkCount = TxSuccess;
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;

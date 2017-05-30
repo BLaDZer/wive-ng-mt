@@ -1098,7 +1098,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 
 
 	DBGPRINT_RAW(RT_DEBUG_TRACE, ("AGS: ---> %s\n", __FUNCTION__));
-	
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC	StaTx1;
@@ -1116,6 +1116,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -1787,6 +1788,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 	pTable = pEntry->pTable;
 	TableSize = pTable[0];
 
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1804,6 +1806,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;

@@ -3521,9 +3521,8 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 	pChipCap->FlgHwTxBfCap = FALSE;
 #endif /* TXBF_SUPPORT */
 #ifdef FIFO_EXT_SUPPORT
-	pChipCap->FlgHwFifoExtCap = FALSE;
+	pChipCap->FlgHwFifoExtCap = TRUE;
 #endif /* FIFO_EXT_SUPPORT */
-
 	pChipCap->asic_caps |= (fASIC_CAP_PMF_ENC);
 	pChipCap->asic_caps |= (fASIC_CAP_MCS_LUT);
 #if 0 /* current driver not work with USB */

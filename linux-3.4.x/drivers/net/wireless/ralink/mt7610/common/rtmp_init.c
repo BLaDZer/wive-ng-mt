@@ -1840,6 +1840,7 @@ VOID NICUpdateFifoStaCounters(
 		return;
 #endif /* RALINK_ATE */
 
+#if 0 /* this break rate_adapt without fifo */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RT65xx
 	if (pAd->MacTab.Size <= 8) {
@@ -1849,6 +1850,7 @@ VOID NICUpdateFifoStaCounters(
 	}
 #endif /* RT65xx */
 #endif /* CONFIG_AP_SUPPORT */
+#endif
 
 #ifdef MAC_REPEATER_SUPPORT
 	MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
@@ -2168,14 +2170,18 @@ VOID NICUpdateFifoStaCounters(
 #ifdef FIFO_EXT_SUPPORT
 BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
-	if (pEntry->bUseHwFifoExt)
+	if (pEntry->bUseHwFifoExt && pEntry->wcid <= 8)
 	{
 		WCID_TX_CNT_STRUC wcidTxCnt;
 
 		RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 
 		pEntry->fifoTxSucCnt += wcidTxCnt.field.succCnt;
-		pEntry->fifoTxRtyCnt += wcidTxCnt.field.reTryCnt;
+		/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
+		if (wcidTxCnt.field.reTryCnt > 150)
+		    pEntry->fifoTxRtyCnt += 150;
+		else
+		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 3);
 
 		return TRUE;
 	}

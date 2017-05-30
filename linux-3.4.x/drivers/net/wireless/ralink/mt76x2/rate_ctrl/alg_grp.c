@@ -1497,14 +1497,14 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 {
 	PUCHAR					pTable;
 	UCHAR					CurrRateIdx;
-	ULONG					AccuTxTotalCnt, TxTotalCnt, TxCnt;
+	ULONG					TxTotalCnt, TxCnt;
 	ULONG					TxErrorRatio = 0;
 	MAC_TABLE_ENTRY			*pEntry;
 	RTMP_RA_GRP_TB *pCurrTxRate;
 	UCHAR					TrainUp, TrainDown;
 	CHAR					Rssi, ratio;
 	ULONG					TxSuccess, TxRetransmit, TxFailCount;
-	ULONG					OneSecTxNoRetryOKRationCount;
+	ULONG					OneSecTxNoRetryOKRationCount = 0;
 	BOOLEAN					rateChanged;
 #ifdef TXBF_SUPPORT
 	BOOLEAN					CurrPhyETxBf, CurrPhyITxBf;
@@ -1521,6 +1521,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1538,7 +1539,7 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		pAd->RadioStatsCounter.TotalTxCount += (StaTx1.field.TxSuccess + TxStaCnt0.field.TxFailCount + StaTx1.field.TxRetransmit + TxStaCnt0.field.TxBeaconCount);
 		pAd->RadioStatsCounter.TxRetryCount += StaTx1.field.TxRetransmit;
 #endif
-		AccuTxTotalCnt = pAd->RalinkCounters.OneSecTxNoRetryOkCount +
+		TxCnt = pAd->RalinkCounters.OneSecTxNoRetryOkCount +
 							pAd->RalinkCounters.OneSecTxRetryOkCount +
 							pAd->RalinkCounters.OneSecTxFailCount;
 
@@ -1550,10 +1551,9 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 			Rssi = (pEntry->RssiSample.AvgRssi0 + pEntry->RssiSample.AvgRssi1) >> 1;
 		else
 			Rssi = pEntry->RssiSample.AvgRssi0;
-
-		TxCnt = AccuTxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -1679,10 +1679,6 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 	else
 		ratio = (RA_INTERVAL - pAd->ra_fast_interval) / pAd->ra_fast_interval;
 
-	if (pAd->MacTab.Size == 1)
-		OneSecTxNoRetryOKRationCount = (TxSuccess * ratio);
-	else
-		//OneSecTxNoRetryOKRationCount = pEntry->OneSecTxNoRetryOkCount * ratio + (pEntry->OneSecTxNoRetryOkCount >> 1);
         OneSecTxNoRetryOKRationCount = (TxSuccess * ratio) + ((TxSuccess * ratio) >> 1);
 
 	/* Downgrade TX quality if PER >= Rate-Down threshold */
@@ -1862,7 +1858,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 	pEntry = &pAd->MacTab.Content[i]; /* point to information of the individual station */
 	pTable = pEntry->pTable;
 	TxTotalCnt = TxSuccess = TxRetransmit = TxFailCount = TxErrorRatio = 0;
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -1884,6 +1880,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -2154,7 +2151,7 @@ VOID StaQuickResponeForRateUpExecAdapt(
 	UCHAR					TrainUp, TrainDown;
 	CHAR					ratio;
 	ULONG					TxSuccess, TxRetransmit, TxFailCount;
-	ULONG					OneSecTxNoRetryOKRationCount;
+	ULONG					OneSecTxNoRetryOKRationCount = 0;
 	BOOLEAN					rateChanged;
 #ifdef TXBF_SUPPORT
 	BOOLEAN					CurrPhyETxBf, CurrPhyITxBf;
@@ -2163,7 +2160,7 @@ VOID StaQuickResponeForRateUpExecAdapt(
 
 	pEntry = &pAd->MacTab.Content[i];
 	pTable = pEntry->pTable;
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC		StaTx1;
@@ -2177,6 +2174,7 @@ VOID StaQuickResponeForRateUpExecAdapt(
 		TxFailCount = TxStaCnt0.field.TxFailCount;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -2453,7 +2451,7 @@ VOID MlmeDynamicTxRateSwitchingAdapt(
 	}
 
 #ifdef FIFO_EXT_SUPPORT
-	if (pEntry->bUseHwFifoExt)
+	if (NicGetMacFifoTxCnt(pAd, pEntry))
 	{
 		WCID_TX_CNT_STRUC wcidTxCnt;
 		ULONG HwTxCnt, HwErrRatio = 0;

@@ -228,13 +228,12 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 	BOOLEAN bTxRateChanged = TRUE, bUpgradeQuality = FALSE;
 	UCHAR TrainUp = 0, TrainDown = 0, next_grp;
 	CHAR RssiOffset = 0;
-	ULONG TxTotalCnt = 0, TxErrorRatio = 0;
-	ULONG TxSuccess, TxRetransmit, TxFailCount;
+	ULONG TxTotalCnt = 0, TxErrorRatio = 0, TxSuccess = 0, TxRetransmit = 0, TxFailCount = 0;
 	AGS_STATISTICS_INFO AGSStatisticsInfo = {0};
 
 
 	DBGPRINT_RAW(RT_DEBUG_TRACE, ("AGS: ---> %s\n", __FUNCTION__));
-
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC	StaTx1;
@@ -252,6 +251,7 @@ VOID ApMlmeDynamicTxRateSwitchingAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
@@ -921,6 +921,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 	pTable = pEntry->pTable;
 	TableSize = pTable[0];
 
+#ifndef MULTI_CLIENT_SUPPORT
 	if (pAd->MacTab.Size == 1)
 	{
 		TX_STA_CNT1_STRUC StaTx1;
@@ -938,6 +939,7 @@ VOID ApQuickResponeForRateUpExecAGS(
 			TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
 	}
 	else
+#endif
 	{
 		TxRetransmit = pEntry->OneSecTxRetryOkCount;
 		TxSuccess = pEntry->OneSecTxNoRetryOkCount;
