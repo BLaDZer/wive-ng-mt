@@ -265,7 +265,7 @@ if [ "$FMODE" = "YES" ]; then
     sed 's/# CONFIG_RALINKAPP_ATED is not set/CONFIG_RALINKAPP_ATED=y/g' $ROOTDIR/config/.config > $ROOTDIR/config/.config.tmp
     mv -f $ROOTDIR/config/.config.tmp $ROOTDIR/config/.config
 fi
-exit 0 
+
 #for wantusoid`s like.
 if [ "$DOS2UNIX" = "YES" ] ; then
 echo ---------------------------------DOS2UNIX--------------------------------
