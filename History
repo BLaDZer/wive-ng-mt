@@ -3125,6 +3125,8 @@
 <br>
 <br>
 <b>6.0.x</b><br>
+1) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS (full inplement later).<br>
+2) kernel: ralink_wifi: mt7610: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
 <br>
 <br>
 <br>

@@ -221,7 +221,6 @@ UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 	return prim_ch;
 }
 
-
 INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap, VHT_OP_IE *op)
 {
 	pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
@@ -234,7 +233,61 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
 		pEntry->MaxHTPhyMode.field.STBC = (cap->vht_cap.rx_stbc > 1 ? 1 : 0);
 	}
-				
+
+	return TRUE;
+}
+
+INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap, VHT_OP_IE *op)
+{
+	RT_PHY_INFO *ht_phyinfo;
+	MULTISSID_STRUCT *wdev;
+
+	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
+
+	pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
+
+	if (!wdev) 
+		return FALSE;
+
+
+	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
+	pAd->MacTab.fAnyStationNonGF = TRUE;
+
+	/*
+	if (op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
+	{
+		pEntry->MaxHTPhyMode.field.BW= BW_80;
+		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
+		pEntry->MaxHTPhyMode.field.STBC = (cap->vht_cap.rx_stbc > 1 ? 1 : 0);
+	}
+	*/
+	if (pEntry->MaxHTPhyMode.field.BW == BW_40) {
+		ht_phyinfo = &wdev->DesiredHtPhyInfo;
+		if (ht_phyinfo) {
+			DBGPRINT(RT_DEBUG_TRACE, ("%s: DesiredHtPhyInfo->vht_bw=%d, ch_width=%d\n", __FUNCTION__, ht_phyinfo->vht_bw, cap->vht_cap.ch_width));
+			if((ht_phyinfo->vht_bw == VHT_BW_2040)) {
+				pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 & (cap->vht_cap.sgi_80M));
+				pEntry->MaxHTPhyMode.field.STBC = ((pAd->CommonCfg.vht_stbc & cap->vht_cap.rx_stbc) > 1 ? 1 : 0);
+			} else if((ht_phyinfo->vht_bw >= VHT_BW_80) && (cap->vht_cap.ch_width == 0)) {
+				if (op != NULL) {
+					if(op->vht_op_info.ch_width == 0) { //peer support VHT20,40
+						pEntry->MaxHTPhyMode.field.BW = BW_40;
+					} else {
+						pEntry->MaxHTPhyMode.field.BW = BW_80;
+					}
+				} else {
+					/* can not know peer capability, use it's maximum capability */
+					pEntry->MaxHTPhyMode.field.BW = BW_80;
+				}
+				pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 & (cap->vht_cap.sgi_80M));
+				pEntry->MaxHTPhyMode.field.STBC = ((pAd->CommonCfg.vht_stbc & cap->vht_cap.rx_stbc) > 1 ? 1 : 0);
+			} else if((ht_phyinfo->vht_bw == VHT_BW_80) && (cap->vht_cap.ch_width != 0)) {
+				pEntry->MaxHTPhyMode.field.BW = BW_80;
+				pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 & (cap->vht_cap.sgi_80M));
+				pEntry->MaxHTPhyMode.field.STBC = ((pAd->CommonCfg.vht_stbc& cap->vht_cap.rx_stbc) > 1 ? 1 : 0);
+			}
+		}
+	}
 	return TRUE;
 }
 

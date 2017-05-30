@@ -285,29 +285,25 @@ static USHORT update_associated_mac_entry(
 		{
 			VHT_CAP_INFO *vht_cap_info = &ie_list->vht_cap.vht_cap;
 
+			/* 
 			pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
 			if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
 				pEntry->MaxHTPhyMode.field.BW = BW_80;
 
+			*/
+			ap_vht_mode_adjust(pAd, pEntry, &ie_list->vht_cap, (ie_list->vht_op_len == 0) ? NULL:&ie_list->vht_op);
 			pEntry->VhtMaxRAmpduFactor = ie_list->vht_cap.vht_cap.max_ampdu_exp;
 
 			DBGPRINT(RT_DEBUG_TRACE, ("Orig HT MaxRAmpduFactor %d , VHT MaxRAmpduFactor %d \n"
 			,ie_list->HTCapability.HtCapParm.MaxRAmpduFactor,ie_list->vht_cap.vht_cap.max_ampdu_exp));
 
-			if ((ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_9) && 
-				(pAd->CommonCfg.vht_max_mcs_cap == VHT_MCS_CAP_9))
-			{
-#ifdef MT76x0
-				/* 
-					MCS[3:0]=0~8 are supported for BW = VHT 20Mhz
-					MCS[3:0]=0~9 are supported for BW = VHT 40 or 80Mhz
-				*/
-				if (IS_MT76x0(pAd) && 
-					(pEntry->MaxHTPhyMode.field.BW == BW_20))
+			/* TODO: implement get_vht_max_mcs to get peer max MCS */
+			if ((ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_9)
+			    && (pAd->CommonCfg.vht_max_mcs_cap == VHT_MCS_CAP_9)) {
+				if ((pEntry->MaxHTPhyMode.field.BW == BW_20))
 					pEntry->MaxHTPhyMode.field.MCS = 8;
 				else
-#endif /* MT76x0 */
-				pEntry->MaxHTPhyMode.field.MCS = 9;
+					pEntry->MaxHTPhyMode.field.MCS = 9;
 			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
 				pEntry->MaxHTPhyMode.field.MCS = 8;
 			} else if (ie_list->vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {

@@ -347,7 +347,7 @@ static USHORT update_associated_mac_entry(
 			VHT_CAP_INFO *vht_cap_info = &ie_list->vht_cap.vht_cap;
 
 			pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
-			if ((pEntry->MaxHTPhyMode.field.BW== BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
+			if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80))
 				pEntry->MaxHTPhyMode.field.BW = BW_80;
 			
 			pEntry->VhtMaxRAmpduFactor = ie_list->vht_cap.vht_cap.max_ampdu_exp;
