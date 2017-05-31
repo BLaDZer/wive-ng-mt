@@ -119,7 +119,7 @@ UCHAR mcsToLowerMcs[] = {
 #endif /* MFB_SUPPORT */
 
 
-#ifdef ETXBF_EN_COND3_SUPPORT
+//#ifdef ETXBF_EN_COND3_SUPPORT
 UCHAR groupShift[] = {4, 4, 4}; 
 UCHAR groupMethod[] = {0, 0, 0, 0, 0, 0, 0, 0,
 						0, 0, 1, 0, 1, 1, 1, 1,
@@ -130,7 +130,7 @@ SHORT groupThrd[] = {-8, 4, 20, 32, 52, 68, 80, 88,
 UINT dataRate[] = {65, 130, 195, 260, 390, 520, 585, 650,
 				130, 260, 390, 520, 780, 1040, 1170, 1300,
 				190, 390, 585, 780, 1170, 1560, 1755, 1950};
-#endif /* ETXBF_EN_COND3_SUPPORT */
+//#endif /* ETXBF_EN_COND3_SUPPORT */
 
 
 VOID rtmp_asic_set_bf(
@@ -946,13 +946,12 @@ VOID handleHtcField(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	UCHAR mfb = ((PHT_CONTROL)(pRxBlk->pData))-> MFBorASC;
 	UCHAR mfsi = ((PHT_CONTROL)(pRxBlk->pData))-> MFSI;
 	UCHAR legalMfb = 0, legalMfbIdx=0, smoothMfb = 0;
-	RXWI_STRUC *pRxWI = pRxBlk->pRxWI;
 	MAC_TABLE_ENTRY *pEntry = NULL;	
 	UCHAR i, j;
 	UCHAR *pTable;
 	UCHAR TableSize = 0;
 	UCHAR InitTxRateIdx;
-	UCHAR snr[] = {pRxWI->SNR0, pRxWI->SNR1, pRxWI->SNR2};
+	UCHAR snr[] = {pRxBlk->snr[0], pRxBlk->snr[1], pRxBlk->snr[2]};
 	UCHAR snrTemp1[3];
 	UCHAR snrTemp;
 	UCHAR streams;
