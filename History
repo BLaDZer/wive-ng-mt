@@ -3127,6 +3127,7 @@
 101) kernel: net: l2tp: take reference on sessions being dumped.<br>
 102) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
 103) kernel: net: make struct dst_entry::dev first member.<br>
+104) kernel: net: llc: add lock_sock in llc_ui_bind to avoid a race condition.<br>
 <br>
 <br>
 <br>
