@@ -289,7 +289,7 @@
   <message msgid="secure no key" msgstr="Please input wpapsk key!" />
   <message msgid="secure choose algo" msgstr="Please choose a WPA Algorithms." />
   <message msgid="secure renewal" msgstr="Please input a valid key renewal interval" />
-  <message msgid="secure renewal short" msgstr="Warning: A short key renewal interval." />
+  <message msgid="secure renewal wrong" msgstr="Key renewal interval must be in range 10 - 86400 seconds." />
   <message msgid="secure choose wep" msgstr="Please choose the 802.1x WEP option." />
   <message msgid="secure choose preauth" msgstr="Please choose the Pre-Authentication options." />
   <message msgid="secure no pmk" msgstr="Please input the PMK Cache Period." />
@@ -306,6 +306,8 @@
   <message msgid="secure invalid wep key" msgstr="WEP key contains invalid characters." />
   <message msgid="secure long wep key" msgstr="Please input 10 or 26 characters of WEP key!" />
   <message msgid="secure invalid key" msgstr="Invalid WEP key format!" />
+  <message msgid="secure key seconds" msgstr=" seconds (range: 10 - 86400)" />
+  <message msgid="secure key minutes" msgstr=" minutes" />
   <message msgid="secure confirm" msgstr="Are you sure to ignore changed?" />
 
   <message msgid="apcli title" msgstr="AP Client Feature" />

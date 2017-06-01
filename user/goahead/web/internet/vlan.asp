@@ -627,17 +627,7 @@
 				wifiWan		= (NVRAM_VlanWifiWan.length > 0) ? NVRAM_VlanWifiWan.split(" ") : "0 0 0 0".split(" ");
 				wifiWanINIC	= (NVRAM_VlanWifiWanINIC.length > 0) ? NVRAM_VlanWifiWanINIC.split(" ") : "0 0 0 0".split(" ");
 
-				for (var i = 1; i < maxBSSID; i++) {
-					if (NVRAM_BssidIfName == "ra")
-						if (wifiLanINIC[i] != 0 || wifiWanINIC[i] != 0) {
-							wifiLanINIC[i] = 0;
-							wifiWanINIC[i] = 0;
-						}
-					else
-						if (wifiLan[i] != 0 || wifiWan[i] != 0) {
-							wifiLan[i] = 0;
-							wifiWan[i] = 0;
-						}
+				for (var i = 0; i < maxBSSID; i++) {
 					if (wifiLan[i] === undefined)
 						wifiLan[i] = 0;
 					if (wifiWan[i] === undefined)

@@ -301,20 +301,6 @@ function checkData(form)
 			return false;
 		}
 
-		if(document.security_form.cipher[0].checked != true && 
-		   document.security_form.cipher[1].checked != true &&
-   		   document.security_form.cipher[2].checked != true){
-   		   alert(_("secure choose algo"));
-   		   return false;
-		}
-
-		if(checkAllNum(document.security_form.keyRenewalInterval.value) == false){
-			alert(_("secure renewal"));
-			return false;
-		}
-		if(document.security_form.keyRenewalInterval.value < 60){
-			alert(_("secure renewal short"));
-		}
 		if(check_wpa() == false)
 			return false;
 	}
@@ -383,8 +369,11 @@ function check_wpa()
 		alert(_("secure renewal"));
 		return false;
 	}
-	if(document.security_form.keyRenewalInterval.value < 60){
-		alert(_("secure renewal short"));
+	if(document.security_form.keyRenewalInterval.value < 10 || document.security_form.keyRenewalInterval.value > 86400){
+		alert(_("secure renewal wrong"));
+		document.security_form.keyRenewalInterval.select();
+		document.security_form.keyRenewalInterval.focus();
+		return false;
 	}
 	return true;
 }
@@ -966,6 +955,8 @@ function initTranslation()
 	_TR("secureShowPass3", "secure wpa show pass phrase");
 	_TR("secureShowPass4", "secure wpa show pass phrase");
 	_TR("secureShowPass5", "secure wpa show pass phrase");
+	_TR("secureKeySeconds", "secure key seconds");
+	_TR("secureKeyMinutes", "secure key minutes");
 	
 	_TRV("secureApply", "wireless apply");
 	_TRV("secureCancel", "wireless cancel");
@@ -1175,13 +1166,11 @@ function showPassPhrase(id) {
             </tr>
             <tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
               <td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
-              <td><input name="keyRenewalInterval" id="keyRenewalInterval" size="4" maxlength="4" value="3600" onKeyUp="setChange(1)">
-                seconds </td>
+              <td><input name="keyRenewalInterval" id="keyRenewalInterval" size="4" maxlength="5" value="3600" onKeyUp="setChange(1)"><span id="secureKeySeconds">seconds</span></td>
             </tr>
             <tr id="wpa_PMK_Cache_Period" name="wpa_PMK_Cache_Period" style="visibility: hidden;">
               <td class="head" id="secureWPAPMKCachePeriod">PMK Cache Period</td>
-              <td><input name="PMKCachePeriod" id="PMKCachePeriod" size="4" maxlength="4" value="" onKeyUp="setChange(1)">
-                minute </td>
+              <td><input name="PMKCachePeriod" id="PMKCachePeriod" size="4" maxlength="4" value="" onKeyUp="setChange(1)"><span id="secureKeyMinutes">minute</span></td>
             </tr>
             <tr id="wpa_preAuthentication" name="wpa_preAuthentication" style="visibility: hidden;">
               <td class="head" id="secureWPAPreAuth">Pre-Authentication</td>

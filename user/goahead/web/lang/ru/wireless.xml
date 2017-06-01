@@ -290,7 +290,7 @@
   <message msgid="secure no key" msgstr="Пожалуйста, введите ключ WPA-PSK!" />
   <message msgid="secure choose algo" msgstr="Пожалуйста, выберите алгоритм WPA." />
   <message msgid="secure renewal" msgstr="Пожалуйста, введите правильный интервал обновления ключа" />
-  <message msgid="secure renewal short" msgstr="Внимание: Короткий интервал обновления ключа." />
+  <message msgid="secure renewal wrong" msgstr="Интервал обновления должен находится в диапазоне от 10 до 86400 секунд." />
   <message msgid="secure choose wep" msgstr="Пожалуйста, выберите опцию 802.1x WEP." />
   <message msgid="secure choose preauth" msgstr="Пожалуйста, выберите опции пред-авторизации." />
   <message msgid="secure no pmk" msgstr="Пожалуйста, введите период кеширования PMK." />
@@ -307,6 +307,8 @@
   <message msgid="secure invalid wep key" msgstr="WEP ключ содержит недопустимые символы." />
   <message msgid="secure long wep key" msgstr="Пожалуйста, введите 10 или 26 символов WEP ключа!" />
   <message msgid="secure invalid key" msgstr="Неверный формат WEP ключа!" />
+  <message msgid="secure key seconds" msgstr=" секунд  (диапазон: 10 - 86400)" />
+  <message msgid="secure key minutes" msgstr=" минут" />
   <message msgid="secure confirm" msgstr="Вы действительно хотите потерять текущие изменения?" />
 
   <message msgid="apcli title" msgstr="Клиент AP" />
