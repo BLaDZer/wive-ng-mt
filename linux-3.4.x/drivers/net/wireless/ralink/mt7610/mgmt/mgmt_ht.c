@@ -35,6 +35,8 @@ INT ht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, HT_CAPABILITY_IE 
 		pAd->MacTab.fAnyStation20Only = TRUE;
 	}
 
+	pEntry->MaxHTPhyMode.field.STBC = (peer->HtCapInfo.RxSTBC & (pAd->CommonCfg.DesiredHtPhy.TxSTBC));
+
 	return TRUE;
 }
 
