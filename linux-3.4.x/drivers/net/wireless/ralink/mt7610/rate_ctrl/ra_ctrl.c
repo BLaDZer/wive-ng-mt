@@ -2179,7 +2179,7 @@ VOID RTMPSetSupportMCS(
 		}
 
 #ifdef DOT11_VHT_AC
-		if ((vht_cap_len > 0)&& (vht_cap != NULL))
+		if ((vht_cap_len > 0)&& (vht_cap != NULL) && pDesired_ht_phy->bVhtEnable)
 		{
 			/* Currently we only support for MCS0~MCS7, so don't check mcs_map */
 			NdisZeroMemory(&pEntry->SupportVHTMCS[0], sizeof(pEntry->SupportVHTMCS));
