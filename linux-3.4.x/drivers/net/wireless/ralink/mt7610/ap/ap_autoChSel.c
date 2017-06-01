@@ -423,7 +423,11 @@ static inline UCHAR SelectClearChannelCCA(
 					pAd->ChannelList[channel_idx].Channel,
 					pChannelInfo->dirtyness[channel_idx],
 					pChannelInfo->FalseCCA[channel_idx],
+#ifdef AP_QLOAD_SUPPORT
 					pChannelInfo->chanbusytime[channel_idx],
+#else
+					0,
+#endif /* AP_QLOAD_SUPPORT */
 					(pChannelInfo->SkipList[channel_idx] == TRUE) ? "TRUE" : "FALSE");
 	}
 	printk("=====================================================\n");
@@ -855,7 +859,11 @@ static inline UCHAR SelectClearChannelApCnt(
 					pAd->ChannelList[channel_index].Channel,
 					pChannelInfo->dirtyness[channel_index], 
 					pChannelInfo->ApCnt[channel_index],
+#ifdef AP_QLOAD_SUPPORT
 					pChannelInfo->chanbusytime[channel_index],
+#else
+				0,
+#endif /* AP_QLOAD_SUPPORT */
 					(pChannelInfo->SkipList[channel_index] == TRUE) ? "TRUE" : "FALSE");
 	printk("=====================================================\n");
 
@@ -1242,3 +1250,48 @@ UCHAR APAutoSelectChannel(RTMP_ADAPTER *pAd, ChannelSel_Alg Alg)
 		
 	return ch;
 }
+
+
+#ifdef AP_SCAN_SUPPORT
+/*
+   ==========================================================================
+   Description:
+       trigger Auto Channel Selection every period of ACSCheckTime.
+
+   NOTE:
+       This function is called in a 1-sec mlme periodic check.
+   ==========================================================================
+ */
+VOID AutoChannelSelCheck(RTMP_ADAPTER *pAd)
+{
+   /* Do nothing if ACSCheckTime is not configured or AP is doing site survey */
+   if (pAd->ApCfg.ACSCheckTime == 0 || ApScanRunning(pAd))
+       return;
+   else
+       pAd->ApCfg.ACSCheckCount++;
+
+   if (pAd->ApCfg.ACSCheckCount >= pAd->ApCfg.ACSCheckTime)
+   {
+       /* Reset Counter */
+       pAd->ApCfg.ACSCheckCount = 0;
+
+       /* Do Auto Channel Selection only when no client is associated */
+       if (pAd->MacTab.Size != 0)
+       {
+           DBGPRINT(RT_DEBUG_TRACE,
+                   ("%s(): ignore Channel Selection checking because has %u associated clients\n",
+                   __FUNCTION__, pAd->MacTab.Size));
+           return;
+       }
+       else
+       {
+           /* Do Auto Channel Selection */
+           DBGPRINT(RT_DEBUG_TRACE,
+                   ("%s(): Scanning channels for channel selection.\n", __FUNCTION__));
+           ApSiteSurvey(pAd, NULL, SCAN_PASSIVE, TRUE);
+       }
+   }
+
+}
+#endif /* AP_SCAN_SUPPORT */
+

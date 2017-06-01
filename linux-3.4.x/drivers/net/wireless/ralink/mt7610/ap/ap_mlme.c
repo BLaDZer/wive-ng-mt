@@ -209,7 +209,11 @@ VOID APMlmePeriodicExec(
 	CliWds_ProxyTabMaintain(pAd);
 #endif /* CLIENT_WDS */
 	}
-	
+
+#ifdef AP_SCAN_SUPPORT
+	AutoChannelSelCheck(pAd);
+#endif /* AP_SCAN_SUPPORT */
+
 	APUpdateCapabilityAndErpIe(pAd);
 
 #ifdef APCLI_SUPPORT

@@ -359,6 +359,12 @@ INT Set_AutoChannelSel_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg);
 
+#ifdef AP_SCAN_SUPPORT
+INT Set_AutoChannelSelCheckTime_Proc(
+   IN  PRTMP_ADAPTER   pAd,
+   IN  PSTRING         arg);
+#endif /* AP_SCAN_SUPPORT */
+
 INT	Set_BADecline_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg);
@@ -834,6 +840,7 @@ static struct {
 #ifdef AP_SCAN_SUPPORT
 	{"SiteSurvey",					Set_SiteSurvey_Proc},
 	{"AutoChannelSel",				Set_AutoChannelSel_Proc},
+	{"ACSCheckTime",				Set_AutoChannelSelCheckTime_Proc},
 #endif /* AP_SCAN_SUPPORT */
 	{"ResetCounter",				Set_ResetStatCounter_Proc},
 	{"DisConnectSta",				Set_DisConnectSta_Proc},
@@ -6503,11 +6510,39 @@ INT Set_AutoChannelSel_Proc(
 		ApSiteSurvey(pAd, &Ssid, SCAN_PASSIVE, TRUE);
 	else
 		ApSiteSurvey(pAd, &Ssid, SCAN_ACTIVE, TRUE);
-    
+
     return TRUE;
 
 }
 
+/*
+    ==========================================================================
+    Description:
+        Set a periodic check time for auto channel selection (unit: hour)
+   Arguments:
+       pAdapter                    Pointer to our adapter
+
+    Return Value:
+        TRUE if success, FALSE otherwise
+
+    Note:
+        Usage:
+               iwpriv ra0 set ACSCheckTime=3  (unit: hour)
+
+    ==========================================================================
+*/
+INT Set_AutoChannelSelCheckTime_Proc(
+   IN  PRTMP_ADAPTER   pAd,
+   IN  PSTRING     arg)
+{
+   UINT8 Hour = simple_strtol(arg, 0, 10);
+
+   pAd->ApCfg.ACSCheckTime = Hour*3600; /* Hour to second */
+   pAd->ApCfg.ACSCheckCount = 0; /* Reset counter */
+   DBGPRINT(RT_DEBUG_TRACE, ("%s(): ACSCheckTime=%u seconds(%u hours)\n",
+                               __FUNCTION__, pAd->ApCfg.ACSCheckTime, Hour));
+   return TRUE;
+}
 #endif /* AP_SCAN_SUPPORT */
 
 INT Show_DriverInfo_Proc(

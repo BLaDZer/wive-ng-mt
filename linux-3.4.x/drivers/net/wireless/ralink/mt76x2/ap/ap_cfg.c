@@ -1005,6 +1005,7 @@ static struct {
 #ifdef AP_SCAN_SUPPORT
 	{"SiteSurvey",					Set_SiteSurvey_Proc},
 	{"AutoChannelSel",				Set_AutoChannelSel_Proc},
+	{"ACSCheckTime",				Set_AutoChannelSelCheckTime_Proc},
 #ifdef CUSTOMER_DCC_FEATURE
 	{"ApScanChannel",				Set_ApScan_Proc},
 	{"ApDisableSTAConnect",			Set_ApDisableSTAConnect_Proc},
@@ -1015,7 +1016,6 @@ static struct {
 #ifdef AP_PARTIAL_SCAN_SUPPORT
 	{"PartialScan",				Set_PartialScan_Proc},
 #endif /* AP_PARTIAL_SCAN_SUPPORT */
-	{"ACSCheckTime",				Set_AutoChannelSelCheckTime_Proc},
 #endif /* AP_SCAN_SUPPORT */
 	{"ResetCounter",				Set_ResetStatCounter_Proc},
 	{"DisConnectSta",				Set_DisConnectSta_Proc},
