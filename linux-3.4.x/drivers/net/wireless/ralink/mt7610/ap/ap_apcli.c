@@ -264,6 +264,42 @@ BOOLEAN ApCliCheckHt(
 }
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef DOT11_VHT_AC
+BOOLEAN ApCliCheckVht(
+	IN PRTMP_ADAPTER pAd,
+	IN UCHAR Wcid,
+	IN MAC_TABLE_ENTRY  *pEntry,
+	IN VHT_CAP_IE *vht_cap,
+	IN VHT_OP_IE *vht_op)
+{
+	VHT_CAP_INFO *vht_cap_info = &vht_cap->vht_cap;
+
+	// TODO: shiang-6590, not finish yet!!!!
+	if (Wcid >= MAX_LEN_OF_MAC_TABLE)
+		return FALSE;
+	DBGPRINT(RT_DEBUG_TRACE, ("============>ApCliCheckVht\n"));
+	/* Save Peer Capability*/
+	if (vht_cap_info->sgi_80M)
+		CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE);
+
+	if (vht_cap_info->sgi_160M)
+		CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI160_CAPABLE);
+
+	if (pAd->CommonCfg.vht_stbc) {
+		if (vht_cap_info->tx_stbc)
+			CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_TXSTBC_CAPABLE);
+		if (vht_cap_info->rx_stbc)
+			CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_RXSTBC_CAPABLE);
+	}
+
+	pEntry->VhtMaxRAmpduFactor = vht_cap_info->max_ampdu_exp;
+	DBGPRINT(RT_DEBUG_WARN, ("%s():pEntry->VhtMaxRAmpduFactor =%d\n",
+		__FUNCTION__, pEntry->VhtMaxRAmpduFactor)); 
+
+	return TRUE;
+}
+#endif /* DOT11_VHT_AC */
+
 /*
     ==========================================================================
 
@@ -631,8 +667,10 @@ BOOLEAN ApCliLinkUp(
 
 
 #ifdef DOT11_VHT_AC
-			if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && pApCliEntry->ApCliMlmeAux.vht_cap_len &&  pApCliEntry->ApCliMlmeAux.vht_op_len)
-                         vht_mode_adjust(pAd, pMacEntry, &(pApCliEntry->ApCliMlmeAux.vht_cap), &(pApCliEntry->ApCliMlmeAux.vht_op));
+			if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && pApCliEntry->ApCliMlmeAux.vht_cap_len &&  pApCliEntry->ApCliMlmeAux.vht_op_len) {
+                    		vht_mode_adjust(pAd, pMacEntry, &(pApCliEntry->ApCliMlmeAux.vht_cap), &(pApCliEntry->ApCliMlmeAux.vht_op));
+				ApCliCheckVht(pAd, pMacEntry->Aid, pMacEntry, &(pApCliEntry->ApCliMlmeAux.vht_cap), &(pApCliEntry->ApCliMlmeAux.vht_op));
+			}
 #endif /* DOT11_VHT_AC */
 
 			pMacEntry->HTPhyMode.word = pMacEntry->MaxHTPhyMode.word;

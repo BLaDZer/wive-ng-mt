@@ -269,58 +269,58 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 					CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_MCSFEEDBACK_CAPABLE);
 				
 				CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
+#ifdef DOT11_VHT_AC
+				if ((pAd->WdsTab.WdsEntry[WdsTabIdx].PhyMode >= MODE_VHT) &&
+				    (pAd->CommonCfg.Channel > 14))
+				{
+					VHT_CAP_IE vht_cap;
+					VHT_CAP_INFO *vht_cap_info;
+					build_vht_cap_ie(pAd, (UCHAR *)&vht_cap, pAd->CommonCfg.vht_max_mcs_cap);
+
+					vht_cap_info = (VHT_CAP_INFO *)&vht_cap;
+
+					pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
+					if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (pAd->WdsTab.WdsEntry[pEntry->MatchWDSTabIdx].DesiredHtPhyInfo.vht_bw == VHT_BW_80))
+						pEntry->MaxHTPhyMode.field.BW = BW_80;
+
+					/* TODO: implement get_vht_max_mcs to get peer max MCS */
+					if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_9) {
+						if ((pEntry->MaxHTPhyMode.field.BW == BW_20))
+							pEntry->MaxHTPhyMode.field.MCS = 8;
+						else
+							pEntry->MaxHTPhyMode.field.MCS = 9;
+					} else if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
+						pEntry->MaxHTPhyMode.field.MCS = 8;
+					} else if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {
+						pEntry->MaxHTPhyMode.field.MCS = 7;
+					}
+
+					if (vht_cap_info->sgi_80M)
+						CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE);
+
+					if (vht_cap_info->sgi_160M)
+						CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI160_CAPABLE);
+
+					if (pAd->CommonCfg.vht_stbc)
+					{
+						if (vht_cap_info->tx_stbc)
+							CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_TXSTBC_CAPABLE);
+						if (vht_cap_info->rx_stbc)
+							CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_RXSTBC_CAPABLE);
+					}
+					NdisMoveMemory(&pEntry->vht_cap_ie, &vht_cap, sizeof(VHT_CAP_IE));
+				}
+				else
+				{
+					NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
+				}
+#endif /* DOT11_VHT_AC */
 			}
 			else
 			{
 				NdisZeroMemory(&pEntry->HTCapability, sizeof(HT_CAPABILITY_IE));
 			}
 #endif /* DOT11_N_SUPPORT */
-#ifdef DOT11_VHT_AC
-			if ((pAd->WdsTab.WdsEntry[WdsTabIdx].PhyMode >= MODE_VHT) &&
-				(pAd->CommonCfg.Channel > 14))
-			{
-				VHT_CAP_IE vht_cap;
-				VHT_CAP_INFO *vht_cap_info;
-				build_vht_cap_ie(pAd, (UCHAR *)&vht_cap, pAd->CommonCfg.vht_max_mcs_cap);
-
-				vht_cap_info = (VHT_CAP_INFO *)&vht_cap;
-
-				pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
-				if ((pEntry->MaxHTPhyMode.field.BW == BW_40) && (pAd->WdsTab.WdsEntry[pEntry->MatchWDSTabIdx].DesiredHtPhyInfo.vht_bw == VHT_BW_80))
-					pEntry->MaxHTPhyMode.field.BW = BW_80;
-
-				/* TODO: implement get_vht_max_mcs to get peer max MCS */
-				if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_9) {
-					if ((pEntry->MaxHTPhyMode.field.BW == BW_20))
-						pEntry->MaxHTPhyMode.field.MCS = 8;
-					else
-						pEntry->MaxHTPhyMode.field.MCS = 9;
-				} else if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_8) {
-					pEntry->MaxHTPhyMode.field.MCS = 8;
-				} else if (vht_cap.mcs_set.rx_mcs_map.mcs_ss1 == VHT_MCS_CAP_7) {
-					pEntry->MaxHTPhyMode.field.MCS = 7;
-				}
-
-				if (vht_cap_info->sgi_80M)
-					CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE);
-
-				if (vht_cap_info->sgi_160M)
-					CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_SGI160_CAPABLE);
-
-				if (pAd->CommonCfg.vht_stbc)
-				{
-					if (vht_cap_info->tx_stbc)
-						CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_TXSTBC_CAPABLE);
-					if (vht_cap_info->rx_stbc)
-						CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_VHT_RXSTBC_CAPABLE);
-				}
-				NdisMoveMemory(&pEntry->vht_cap_ie, &vht_cap, sizeof(VHT_CAP_IE));
-			}
-			else
-			{
-				NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
-			}
-#endif /* DOT11_VHT_AC */
 
 			/*if (!OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_TX_RATE_SWITCH_ENABLED)) */
 			if (pAd->WdsTab.WdsEntry[WdsTabIdx].bAutoTxRateSwitch == FALSE)

@@ -339,7 +339,7 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 		{
 			NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 		}
-			pEntry->force_op_mode = FALSE;
+		pEntry->force_op_mode = FALSE;
 #endif /* DOT11_VHT_AC */
 
 
