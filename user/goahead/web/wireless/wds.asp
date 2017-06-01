@@ -65,8 +65,8 @@
 
 					var phy_mode = form.elements['wds_phy_mode' + (i + 1)];
 
-					if (!BUILD_5GHZ_1T1R && NVRAM_WdsIfName == 'wdsi')
-						addOption(phy_mode, 'VHT', 'VHT');
+					if (NVRAM_WdsIfName == 'wds')
+						phy_mode.options[4].style.display = 'none';
 
 					switch(wdsPhyMode[i].toUpperCase()) {
 						case 'CCK':			phy_mode.options.selectedIndex = 0;		break;
@@ -224,6 +224,19 @@
 				wdsDisplay(form);
 			}
 
+			function wdsInterfaceClick() {
+				for (var i = 0; i < WDS_NUM_MAX; i++) {
+					var phy_mode = document.wireless_wds.elements['wds_phy_mode' + (i + 1)];
+					if (document.wireless_wds.wds_interface.value == 'wds') {
+						phy_mode.options[4].style.display = 'none';
+						if (phy_mode.options.selectedIndex == 4)
+							phy_mode.options.selectedIndex = 2;
+					}
+					else
+						phy_mode.options[4].style.display = 'block';
+				}
+			}
+
 			function CheckEncKey(form, i)
 			{
 				var key = document.getElementById("wds_encryp_key" + i).value;
@@ -305,7 +318,7 @@
 							<tr id="basicWdsInterfaceT" style="display:none;">
 								<td class="head" id="basicWDSInterface" colspan="1">WDS Mode</td>
 								<td colspan="5">
-									<select name="wds_interface" size="1" class="normal">
+									<select name="wds_interface" size="1" class="normal" onChange="wdsInterfaceClick();">
 										<option value="wds" selected id="1">2.4GHz</option>
 										<option value="wdsi" id="2">5GHz</option>
 									</select>
@@ -326,6 +339,7 @@
 										<option value="OFDM">OFDM</option>
 										<option value="HTMIX">HTMIX</option>
 										<option value="GREENFIELD">GREENFIELD</option>
+										<option value="VHT">VHT</option>
 									</select>
 								</td>
 								<td style="text-align: center">
@@ -347,6 +361,7 @@
 										<option value="OFDM">OFDM</option>
 										<option value="HTMIX">HTMIX</option>
 										<option value="GREENFIELD">GREENFIELD</option>
+										<option value="VHT">VHT</option>
 									</select>
 								</td>
 								<td style="text-align: center">
@@ -368,6 +383,7 @@
 										<option value="OFDM">OFDM</option>
 										<option value="HTMIX">HTMIX</option>
 										<option value="GREENFIELD">GREENFIELD</option>
+										<option value="VHT">VHT</option>
 									</select>
 								</td>
 								<td style="text-align: center">
@@ -389,6 +405,7 @@
 										<option value="OFDM">OFDM</option>
 										<option value="HTMIX">HTMIX</option>
 										<option value="GREENFIELD">GREENFIELD</option>
+										<option value="VHT">VHT</option>
 									</select>
 								</td>
 								<td style="text-align: center">
