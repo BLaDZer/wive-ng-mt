@@ -1840,7 +1840,7 @@ VOID NICUpdateFifoStaCounters(
 		return;
 #endif /* RALINK_ATE */
 
-#if 0 /* this break rate_adapt without fifo */
+#if 0 /* this break rate_adapt without fifo or with fifo at aid > 8 */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RT65xx
 	if (pAd->MacTab.Size <= 8) {
