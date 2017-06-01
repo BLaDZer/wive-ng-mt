@@ -229,7 +229,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 
 	if (op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
 	{
-		pEntry->MaxHTPhyMode.field.BW= BW_80;
+		pEntry->MaxHTPhyMode.field.BW = BW_80;
 		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
 		pEntry->MaxHTPhyMode.field.STBC = (cap->vht_cap.rx_stbc > 1 ? 1 : 0);
 	}
@@ -253,14 +253,6 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
 	pAd->MacTab.fAnyStationNonGF = TRUE;
 
-	/*
-	if (op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
-	{
-		pEntry->MaxHTPhyMode.field.BW= BW_80;
-		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
-		pEntry->MaxHTPhyMode.field.STBC = (cap->vht_cap.rx_stbc > 1 ? 1 : 0);
-	}
-	*/
 	if (pEntry->MaxHTPhyMode.field.BW == BW_40) {
 		ht_phyinfo = &wdev->DesiredHtPhyInfo;
 		if (ht_phyinfo) {

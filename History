@@ -3074,31 +3074,31 @@
 48) kernel: ralink_wifi: check client is assoc in kickout sta roam path (more accurate handoff params calc).<br>
 49) kernel: ralink_wifi: fix rateadapt after SMPS mode changed by client.<br>
 50) kernel: ralink_wifi: fix STBC set in ht_mode adjust.<br>
-51) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
-52) kernel: ralink_wifi: mt76x2: ids replay attack check need only for AP path in RxPktHandle.<br>
-53) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
-54) kernel: ralink_wifi: mt7610: more accurate RXO_R18 tune.<br>
-55) kernel: ralink_wifi: mt7610: fix RDG disable.<br>
-56) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
-57) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
-58) kernel: ralink_wifi: mt7610: fix ether type check function.<br>
-59) kernel: ralink_wifi: mt7610: implement and enable data queue reserve logic.<br>
-60) kernel: ralink_wifi: mt7610: implement and enable force annonce critical AMPDU.<br>
-61) kernel: ralink_wifi: mt7610: reimplement and enable ext tx fifo support.<br>
-62) kernel: ralink_wifi: mt7610: limit tx ring size (concurent issue, BBP bug?).<br>
-63) kernel: ralink_wifi: mt7610: fix lost EXTIE cap in probe req.<br>
-64) kernel: ralink_wifi: mt7610: fix order some capability in probe req.<br>
-65) kernel: ralink_wifi: mt7610: tune some BBP params for speedup.<br>
-66) kernel: ralink_wifi: mt7610: more correct txretry count calculate by fifo.<br>
-67) kernel: ralink_wifi: mt7610: remove play with RTS/CTS (need only for STA).<br>
-68) kernel: ralink_wifi: mt7610: fix MPDU tune for bad atheros case.<br>
-69) kernel: ralink_wifi: mt7610: fix potentional nullpointer dereference.<br>
-70) kernel: ralink_wifi: mt7610: fix rate adapt volatile issue.<br>
-71) kernel: ralink_wifi: mt7610: add sanity checks vht mode options.<br>
-72) kernel: ralink_wifi: mt7610: rework rate_adapt tune from ext_fifo.<br>
-73) kernel: ralink_wifi: mt7610: implement periodic channel rescan.<br>
-74) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS.<br>
-75) kernel: ralink_wifi: mt7610: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
+51) kernel: ralink_wifi: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
+52) kernel: ralink_wifi: mt76x2: fix class2/3 error detect (last fix at PSM bug series).<br>
+53) kernel: ralink_wifi: mt76x2: ids replay attack check need only for AP path in RxPktHandle.<br>
+54) kernel: ralink_wifi: mt76x2: remove PSM bug workaround in BandSteering and Roaming code.<br>
+55) kernel: ralink_wifi: mt7610: more accurate RXO_R18 tune.<br>
+56) kernel: ralink_wifi: mt7610: fix RDG disable.<br>
+57) kernel: ralink_wifi: mt7610: add sanity check for VHT mode in MlmeUpdateHtTxRates for shure of always true PHY config.<br>
+58) kernel: ralink_wifi: mt7610: fix dynamic TxBurst tune.<br>
+59) kernel: ralink_wifi: mt7610: fix ether type check function.<br>
+60) kernel: ralink_wifi: mt7610: implement and enable data queue reserve logic.<br>
+61) kernel: ralink_wifi: mt7610: implement and enable force annonce critical AMPDU.<br>
+62) kernel: ralink_wifi: mt7610: reimplement and enable ext tx fifo support.<br>
+63) kernel: ralink_wifi: mt7610: limit tx ring size (concurent issue, BBP bug?).<br>
+64) kernel: ralink_wifi: mt7610: fix lost EXTIE cap in probe req.<br>
+65) kernel: ralink_wifi: mt7610: fix order some capability in probe req.<br>
+66) kernel: ralink_wifi: mt7610: tune some BBP params for speedup.<br>
+67) kernel: ralink_wifi: mt7610: more correct txretry count calculate by fifo.<br>
+68) kernel: ralink_wifi: mt7610: remove play with RTS/CTS (need only for STA).<br>
+69) kernel: ralink_wifi: mt7610: fix MPDU tune for bad atheros case.<br>
+70) kernel: ralink_wifi: mt7610: fix potentional nullpointer dereference.<br>
+71) kernel: ralink_wifi: mt7610: fix rate adapt volatile issue.<br>
+72) kernel: ralink_wifi: mt7610: add sanity checks vht mode options.<br>
+73) kernel: ralink_wifi: mt7610: rework rate_adapt tune from ext_fifo.<br>
+74) kernel: ralink_wifi: mt7610: implement periodic channel rescan.<br>
+75) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS.<br>
 76) kernel: ralink_wifi: mt7620: allow use different queue for data/eapol.<br>
 77) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>
 78) kernel: ralink_wifi: mt7603: fix uapsd frames handle.<br>
