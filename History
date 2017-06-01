@@ -3095,7 +3095,7 @@
 69) kernel: ralink_wifi: mt7610: fix rate adapt volatile issue.<br>
 70) kernel: ralink_wifi: mt7610: add sanity checks vht mode options.<br>
 71) kernel: ralink_wifi: mt7610: rework rate_adapt tune from ext_fifo.<br>
-72) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS (full inplement later).<br>
+72) kernel: ralink_wifi: mt7610: basic implement VHT support for WDS.<br>
 73) kernel: ralink_wifi: mt7610: reimplement vht_mode_adjust for AP mode (try fix compat with some ugly clients).<br>
 74) kernel: ralink_wifi: mt7620: allow use different queue for data/eapol.<br>
 75) kernel: ralink_wifi: mt7620: allow force annonce critical AMPDU.<br>

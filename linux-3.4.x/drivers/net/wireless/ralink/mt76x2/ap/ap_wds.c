@@ -346,11 +346,14 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 
 
 			}
-#endif /* DOT11_N_SUPPORT */
 			else
 			{
 				NdisZeroMemory(&pEntry->HTCapability, sizeof(HT_CAPABILITY_IE));
+#ifdef DOT11_VHT_AC
+				NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
+#endif /* DOT11_VHT_AC */
 			}
+#endif /* DOT11_N_SUPPORT */
 
 			// for now, we set this by default!
 			CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET);
@@ -900,7 +903,7 @@ VOID WdsPeerBeaconProc(
 
 			pEntry->MaxHTPhyMode.field.BW = BW_20;
 			pEntry->MinHTPhyMode.field.BW = BW_20;
-#ifdef DOT11_N_SUPPORT
+
 			pEntry->HTCapability.MCSSet[0] = 0;
 			pEntry->HTCapability.MCSSet[1] = 0;
 			NdisZeroMemory(&pEntry->HTCapability, sizeof(HT_CAPABILITY_IE));
@@ -909,9 +912,6 @@ VOID WdsPeerBeaconProc(
 #ifdef DOT11_VHT_AC 
 			NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 #endif /* DOT11_VHT_AC */
-
-#endif /* DOT11_N_SUPPORT */
-
 		}
 #endif /* DOT11_N_SUPPORT */
 

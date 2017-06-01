@@ -1102,7 +1102,12 @@ VOID APPeerBeaconAction(
 			{
 				WdsPeerBeaconProc(pAd, pEntry, ie_list->CapabilityInfo,
 								MaxSupportedRate, RatesLen, bWmmCapable,
-								ie_list->RalinkIe, &ie_list->HtCapability,
+								ie_list->RalinkIe,
+#ifdef DOT11_VHT_AC
+								ie_list->vht_cap_len,
+								&ie_list->vht_cap_ie,
+#endif /* DOT11_VHT_AC */
+								&ie_list->HtCapability,
 								ie_list->HtCapabilityLen);
 			}
 		} while(FALSE);
