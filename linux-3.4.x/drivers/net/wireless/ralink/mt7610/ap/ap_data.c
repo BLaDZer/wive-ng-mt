@@ -55,29 +55,41 @@ VOID RTMP_BASetup(
 	IN PMAC_TABLE_ENTRY pMacEntry,
 	IN UINT8 UserPriority)
 {
-	if (pMacEntry && (pMacEntry->NoBADataCountDown == 0) && IS_HT_STA(pMacEntry))
+#ifdef CONFIG_AP_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{
-		/* Don't care the status of the portSecured status. */
-		if (((pMacEntry->TXBAbitmap & (1<<UserPriority)) == 0) /*&& (pMacEntry->PortSecured == WPA_802_1X_PORT_SECURED)*/
-			 /*
-				For IOT compatibility, BA session can be bulit when following conditions matched
-					1. It is Ralink chip or
-					2. It is OPEN or AES mode,
-			*/
-			 && ((IS_ENTRY_CLIENT(pMacEntry) && CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_RALINK_CHIPSET)) || 
-				 IS_ENTRY_MESH(pMacEntry) || IS_ENTRY_WDS(pMacEntry) ||
-			 	 (IS_ENTRY_APCLI(pMacEntry) && (pAd->MlmeAux.APRalinkIe != 0x0) && (pMacEntry->PortSecured == WPA_802_1X_PORT_SECURED)) || 
-			 	 (pMacEntry->WepStatus == Ndis802_11WEPDisabled ||
-					pMacEntry->WepStatus == Ndis802_11Encryption3Enabled
-#ifdef WAPI_SUPPORT
-					|| pMacEntry->WepStatus == Ndis802_11EncryptionSMS4Enabled
-#endif /* WAPI_SUPPORT */
-					))
-			)
+		if (pMacEntry && (pMacEntry->NoBADataCountDown == 0) && IS_HT_STA(pMacEntry))
 		{
-			BAOriSessionSetUp(pAd, pMacEntry, UserPriority, 0, 10, FALSE);
+			BOOLEAN isRalink = FALSE;
+			/* Don't care the status of the portSecured status. */
+#ifdef APCLI_SUPPORT
+			if (IS_ENTRY_APCLI(pMacEntry))
+			{
+				if (pMacEntry->apidx < MAX_APCLI_NUM) {
+					if (pAd->ApCfg.ApCliTab[pMacEntry->apidx].ApCliMlmeAux.APRalinkIe != 0)
+					isRalink = TRUE;
+				}
+			}
+#endif /* APCLI_SUPPORT */
+
+			if (((pMacEntry->TXBAbitmap & (1<<UserPriority)) == 0) 
+				/* && (pMacEntry->PortSecured == WPA_802_1X_PORT_SECURED) */
+				&& ((IS_ENTRY_CLIENT(pMacEntry) && CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_RALINK_CHIPSET)) || 
+					 IS_ENTRY_MESH(pMacEntry) || IS_ENTRY_WDS(pMacEntry) ||
+				 	 (IS_ENTRY_APCLI(pMacEntry) && (isRalink == TRUE) && (pMacEntry->PortSecured == WPA_802_1X_PORT_SECURED)) || 
+				 	 (pMacEntry->WepStatus == Ndis802_11WEPDisabled ||
+						pMacEntry->WepStatus == Ndis802_11Encryption3Enabled
+#ifdef WAPI_SUPPORT
+						|| pMacEntry->WepStatus == Ndis802_11EncryptionSMS4Enabled
+#endif /* WAPI_SUPPORT */
+						))
+				)
+			{
+				BAOriSessionSetUp(pAd, pMacEntry, UserPriority, 0, 10, FALSE);
+			}
 		}
 	}
+#endif /* CONFIG_AP_SUPPORT */
 }
 #endif /* DOT11_N_SUPPORT */
 

@@ -1794,11 +1794,12 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 		    if ((TxSuccess == 0) && (TxRetransmit > 0))
 		    {
 			    /* prevent fast drop long range clients */
-			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
-					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
-
 			    /* No TxPkt ok in this period as continue tx fail */
-			    pEntry->ContinueTxFailCnt += TxRetransmit;
+			    /* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
+			    if (TxRetransmit > 150)
+				pEntry->ContinueTxFailCnt += 150;
+			    else
+				pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
 		    } else {
 			    pEntry->ContinueTxFailCnt = 0;
 		    }
@@ -1977,19 +1978,20 @@ VOID NICUpdateFifoStaCounters(
 				if (pEntry->FIFOCount >= 1)
 				{			
 					DBGPRINT(RT_DEBUG_TRACE, ("#"));
-
-					//pEntry->NoBADataCountDown = 64;
-
+#ifdef DOT11_N_SUPPORT
+					pEntry->NoBADataCountDown = 64;
+#endif
 					/* Update the continuous transmission counter.*/
 #ifdef CONFIG_AP_SUPPORT
 #ifdef FIFO_EXT_SUPPORT
 					/* fo 65xx incriment in ApTxFailCntUpdate function */
 					if (StaFifoExt.field.txRtyCnt > 0) {
 						/* limit incriment by fifo */
-						if (StaFifoExt.field.txRtyCnt > pAd->ApCfg.EntryLifeCheck / 8)
-						pEntry->ContinueTxFailCnt += pAd->ApCfg.EntryLifeCheck / 8;
-					else
-						pEntry->ContinueTxFailCnt += StaFifoExt.field.txRtyCnt;
+						 /* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
+						if (StaFifoExt.field.txRtyCnt > 150)
+						    pEntry->ContinueTxFailCnt += 150;
+						else
+						    pEntry->ContinueTxFailCnt += (StaFifoExt.field.txRtyCnt / 3);
 					} else
 #endif
 #endif

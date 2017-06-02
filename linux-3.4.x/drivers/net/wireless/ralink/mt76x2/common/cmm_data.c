@@ -257,7 +257,7 @@ VOID RTMP_BASetup(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, UINT8 UPriority)
 #endif /* APCLI_SUPPORT */
 
 			if (((pEntry->TXBAbitmap & (1<<UPriority)) == 0) 
-				&& (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)
+				/* && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED) */
 				&& ((IS_ENTRY_CLIENT(pEntry) && CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_RALINK_CHIPSET)) || 
 					 IS_ENTRY_MESH(pEntry) || IS_ENTRY_WDS(pEntry) ||
 				 	 (IS_ENTRY_APCLI(pEntry) && (isRalink == TRUE) && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)) || 

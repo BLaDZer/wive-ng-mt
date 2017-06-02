@@ -1803,11 +1803,12 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 		    if ((TxSuccess == 0) && (TxRetransmit > 0))
 		    {
 			    /* prevent fast drop long range clients */
-			    if (TxRetransmit > pAd->ApCfg.EntryLifeCheck / 8)
-					TxRetransmit = pAd->ApCfg.EntryLifeCheck / 8;
-
 			    /* No TxPkt ok in this period as continue tx fail */
-			    pEntry->ContinueTxFailCnt += TxRetransmit;
+			    /* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
+			    if (TxRetransmit > 150)
+				pEntry->ContinueTxFailCnt += 150;
+			    else
+				pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
 		    } else {
 			    pEntry->ContinueTxFailCnt = 0;
 		    }
@@ -2023,7 +2024,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 		{
 			DBGPRINT(RT_DEBUG_TRACE, ("#"));
 #ifdef DOT11_N_SUPPORT
-			//pEntry->NoBADataCountDown = 64;
+			pEntry->NoBADataCountDown = 64;
 #endif /* DOT11_N_SUPPORT */
 
 			/* Update the continuous transmission counter.*/
