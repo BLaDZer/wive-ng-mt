@@ -2381,8 +2381,8 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 			/* prevent fast drop long range clients */
 			/* No TxPkt ok in this period as continue tx fail */
 			/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
-			if (TxRetransmit > 150)
-			    pEntry->ContinueTxFailCnt += 150;
+			if (TxRetransmit > 512)
+			    pEntry->ContinueTxFailCnt += 170;
 			else
 			    pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
 		}

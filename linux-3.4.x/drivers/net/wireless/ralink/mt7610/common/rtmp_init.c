@@ -1796,8 +1796,8 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 			    /* prevent fast drop long range clients */
 			    /* No TxPkt ok in this period as continue tx fail */
 			    /* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
-			    if (TxRetransmit > 150)
-				pEntry->ContinueTxFailCnt += 150;
+			    if (TxRetransmit > 512)
+				pEntry->ContinueTxFailCnt += 170;
 			    else
 				pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
 		    } else {
@@ -1860,9 +1860,7 @@ VOID NICUpdateFifoStaCounters(
 		do
 		{
 #ifdef FIFO_EXT_SUPPORT
-			if (IS_RT65XX(pAd)) {
-			    RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
-			}
+			RTMP_IO_READ32(pAd, TX_STA_FIFO_EXT, &StaFifoExt.word);
 #endif /* FIFO_EXT_SUPPORT */
 			RTMP_IO_READ32(pAd, TX_STA_FIFO, &StaFifo.word);
 
@@ -1879,7 +1877,7 @@ VOID NICUpdateFifoStaCounters(
 #endif /* INCLUDE_DEBUG_QUEUE */
 #endif /* DBG_CTRL_SUPPORT */
 
-		/* ignore NoACK and MGMT frame use 0xFF as WCID */
+			/* ignore NoACK and MGMT frame use 0xFF as WCID */
 			if ((StaFifo.field.TxAckRequired == 0) || (wcid >= MaxWcidNum))
 			{
 				i++;
@@ -1988,8 +1986,8 @@ VOID NICUpdateFifoStaCounters(
 					if (StaFifoExt.field.txRtyCnt > 0) {
 						/* limit incriment by fifo */
 						 /* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
-						if (StaFifoExt.field.txRtyCnt > 150)
-						    pEntry->ContinueTxFailCnt += 150;
+						if (StaFifoExt.field.txRtyCnt > 512)
+						    pEntry->ContinueTxFailCnt += 170;
 						else
 						    pEntry->ContinueTxFailCnt += (StaFifoExt.field.txRtyCnt / 3);
 					} else
@@ -2179,11 +2177,16 @@ BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 		RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 
 		pEntry->fifoTxSucCnt += wcidTxCnt.field.succCnt;
-		/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
-		if (wcidTxCnt.field.reTryCnt > 150)
+		/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction 
+		   step by step down thres for more accurate rate tune, this only 7610 issue */
+		if (wcidTxCnt.field.reTryCnt > 500)
+		    pEntry->fifoTxRtyCnt += 350;
+		else if (wcidTxCnt.field.reTryCnt > 300)
+		    pEntry->fifoTxRtyCnt += 200;
+		else if (wcidTxCnt.field.reTryCnt > 150)
 		    pEntry->fifoTxRtyCnt += 150;
 		else
-		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 3);
+		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 2);
 
 		return TRUE;
 	}
