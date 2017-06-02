@@ -2170,7 +2170,7 @@ VOID NICUpdateFifoStaCounters(
 #ifdef FIFO_EXT_SUPPORT
 BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 {
-	if (pEntry->bUseHwFifoExt && pEntry->wcid <= 8)
+	if (pEntry->wcid >= 1 && pEntry->bUseHwFifoExt)
 	{
 		WCID_TX_CNT_STRUC wcidTxCnt;
 
