@@ -2177,16 +2177,21 @@ BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 		RTMP_IO_READ32(pAd, pAd->FifoExtTbl[pEntry->hwFifoExtIdx].hwTxCntCROffset, &wcidTxCnt.word);
 
 		pEntry->fifoTxSucCnt += wcidTxCnt.field.succCnt;
+
 		/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction 
 		   step by step down thres for more accurate rate tune, this only 7610 issue */
-		if (wcidTxCnt.field.reTryCnt > 500)
+		if (wcidTxCnt.field.reTryCnt > 450)
 		    pEntry->fifoTxRtyCnt += 350;
 		else if (wcidTxCnt.field.reTryCnt > 300)
 		    pEntry->fifoTxRtyCnt += 200;
 		else if (wcidTxCnt.field.reTryCnt > 150)
 		    pEntry->fifoTxRtyCnt += 150;
-		else
+		else if (wcidTxCnt.field.reTryCnt > 80)
+		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 3);
+		else if (wcidTxCnt.field.reTryCnt > 10)
 		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 2);
+		else
+		    pEntry->fifoTxRtyCnt += wcidTxCnt.field.reTryCnt;
 
 		return TRUE;
 	}
