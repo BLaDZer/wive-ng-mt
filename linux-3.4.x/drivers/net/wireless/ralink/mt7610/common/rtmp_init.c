@@ -2044,7 +2044,7 @@ VOID NICUpdateFifoStaCounters(
 	}
 
 #ifdef RT65xx
-	if (IS_MT76x0(pAd))
+	if (IS_MT76x0(pAd) || IS_RT65XX(pAd))
 	{
 		PhyMode = StaFifo.field.PhyMode;
 		if((PhyMode == 2) || (PhyMode == 3))
@@ -2156,8 +2156,8 @@ VOID NICUpdateFifoStaCounters(
 				/* MCS8 falls back to 0 */
 				if (pid>=8 && succMCS==0)
 					reTry -= 7;
-				else if ((pid >= 12) && succMCS <=7)
-					reTry -= 4;
+				//else if ((pid >= 12) && succMCS <=7)
+					//reTry -= 4;
 
 				pEntry->OneSecTxRetryOkCount += reTry;
 			}
@@ -2178,18 +2178,12 @@ BOOLEAN NicGetMacFifoTxCnt(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 
 		pEntry->fifoTxSucCnt += wcidTxCnt.field.succCnt;
 
-		/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction 
+		/* error counter in ext_fifo ~2 times (with unreal big peaks) more then soft, need correction
 		   step by step down thres for more accurate rate tune, this only 7610 issue */
-		if (wcidTxCnt.field.reTryCnt > 450)
-		    pEntry->fifoTxRtyCnt += 350;
-		else if (wcidTxCnt.field.reTryCnt > 300)
-		    pEntry->fifoTxRtyCnt += 200;
-		else if (wcidTxCnt.field.reTryCnt > 150)
-		    pEntry->fifoTxRtyCnt += 150;
-		else if (wcidTxCnt.field.reTryCnt > 80)
-		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 3);
-		else if (wcidTxCnt.field.reTryCnt > 10)
-		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt / 2);
+		if (wcidTxCnt.field.reTryCnt > 400)     /* if >400 - or really client lost connection, or this UFO value */
+		    pEntry->fifoTxRtyCnt += 400;
+		else if (wcidTxCnt.field.reTryCnt > 50) /* if txretry > 50pps really only ~80% lost true */
+		    pEntry->fifoTxRtyCnt += (wcidTxCnt.field.reTryCnt * 80 / 100);
 		else
 		    pEntry->fifoTxRtyCnt += wcidTxCnt.field.reTryCnt;
 

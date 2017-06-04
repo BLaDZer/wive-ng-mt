@@ -657,68 +657,39 @@ VOID AsicSetBssid(
 
 }
 
-
 #ifdef DOT11_N_SUPPORT
-/*
-	==========================================================================
-	Description:
-
-	IRQL = DISPATCH_LEVEL
-	
-	==========================================================================
- */
-VOID AsicEnableRDG(
-	IN PRTMP_ADAPTER pAd) 
+INT AsicSetRDG(RTMP_ADAPTER *pAd, BOOLEAN bEnable)
 {
-	TX_LINK_CFG_STRUC	TxLinkCfg;
-	UINT32				Data = 0;
-
+	TX_LINK_CFG_STRUC TxLinkCfg;
+	UINT32 Data = 0;
+	
 	RTMP_IO_READ32(pAd, TX_LINK_CFG, &TxLinkCfg.word);
-	TxLinkCfg.field.TxRDGEn = 1;
+	TxLinkCfg.field.TxRDGEn =  (bEnable ? 1 : 0);
 	RTMP_IO_WRITE32(pAd, TX_LINK_CFG, TxLinkCfg.word);
 
 	RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &Data);
-	Data  &= 0xFFFFFF00;
-	Data  |= 0x80;
-	RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, Data);
-}
-
-/*
-	==========================================================================
-	Description:
-
-	IRQL = DISPATCH_LEVEL
-	
-	==========================================================================
- */
-VOID AsicDisableRDG(
-	IN PRTMP_ADAPTER pAd) 
-{
-	TX_LINK_CFG_STRUC	TxLinkCfg;
-	UINT32				Data = 0;
-
-
-
-	RTMP_IO_READ32(pAd, TX_LINK_CFG, &TxLinkCfg.word);
-	TxLinkCfg.field.TxRDGEn = 0;
-	RTMP_IO_WRITE32(pAd, TX_LINK_CFG, TxLinkCfg.word);
-
-	RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &Data);
-
-	Data  &= 0xFFFFFF00;
-
-	/* For CWC test, change txop from 0x30 to 0x20 in TxBurst mode*/
-	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE) 
-		&& (pAd->CommonCfg.bEnableTxBurst == TRUE)
+	Data &= 0xFFFFFF00;
+	if (bEnable) {
+		Data |= 0x80;
+	} else {
+		/* For CWC test, change txop from 0x30 to 0x20 in TxBurst mode*/
+		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_DYNAMIC_BE_TXOP_ACTIVE) 
+			&& (pAd->CommonCfg.bEnableTxBurst == TRUE)
 #ifdef DOT11_N_SUPPORT
-		&& (pAd->MacTab.fAnyStationMIMOPSDynamic == FALSE)
+			&& (pAd->MacTab.fAnyStationMIMOPSDynamic == FALSE)
 #endif /* DOT11_N_SUPPORT */
-	)
-	{
-		Data |= 0x20;
+		)
+			Data |= 0x20;
 	}
 	RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, Data);
 
+
+	if (bEnable)
+		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
+	else
+		RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
+
+	return TRUE;
 }
 #endif /* DOT11_N_SUPPORT */
 
@@ -1976,43 +1947,18 @@ VOID RtmpStreamModeInit(
 }
 #endif // STREAM_MODE_SUPPORT //
 
-
 #ifdef DOT11_N_SUPPORT
-/*
-	==========================================================================
-	Description:
-
-	IRQL = DISPATCH_LEVEL
-	
-	==========================================================================
- */
-VOID AsicEnableRalinkBurstMode(
-	IN PRTMP_ADAPTER pAd) 
+INT AsicSetRalinkBurstMode(RTMP_ADAPTER *pAd, BOOLEAN enable)
 {
 	UINT32				Data = 0;
 
 	RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &Data);
+	if (enable)
+	{
 	pAd->CommonCfg.RestoreBurstMode = Data;
 	Data  &= 0xFFF00000;
 	Data  |= 0x86380;
-	RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, Data);
-}
-
-/*
-	==========================================================================
-	Description:
-
-	IRQL = DISPATCH_LEVEL
-	
-	==========================================================================
- */
-VOID AsicDisableRalinkBurstMode(
-	IN PRTMP_ADAPTER pAd) 
-{
-	UINT32				Data = 0;
-
-	RTMP_IO_READ32(pAd, EDCA_AC0_CFG, &Data);
-
+	} else {
 	Data = pAd->CommonCfg.RestoreBurstMode;
 	Data &= 0xFFFFFF00;
 
@@ -2027,13 +1973,17 @@ VOID AsicDisableRalinkBurstMode(
 		else if (pAd->CommonCfg.bEnableTxBurst)
 			Data |= 0x20;
 	}
+	}
 	RTMP_IO_WRITE32(pAd, EDCA_AC0_CFG, Data);
+
+	if (enable)
+		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
+	else
+		RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
+
+	return TRUE;
 }
 #endif // DOT11_N_SUPPORT //
-
-
-#ifdef WOW_SUPPORT
-#endif /* WOW_SUPPORT */
 
 
 INT AsicSetPreTbttInt(RTMP_ADAPTER *pAd, BOOLEAN enable)

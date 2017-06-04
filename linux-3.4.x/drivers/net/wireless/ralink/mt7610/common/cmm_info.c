@@ -6048,18 +6048,10 @@ INT	Set_BurstMode_Proc(
 
 	Value = simple_strtol(arg, 0, 10);
 
-	if (Value == 1)
-	{
-		pAd->CommonCfg.bRalinkBurstMode= TRUE;
-		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-		AsicEnableRalinkBurstMode(pAd);
-	}
-	else
-	{
-		pAd->CommonCfg.bRalinkBurstMode = FALSE;
-		RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-		AsicDisableRalinkBurstMode(pAd);
-	}
+	Value = simple_strtol(arg, 0, 10);
+	pAd->CommonCfg.bRalinkBurstMode = ((Value == 1) ? TRUE : FALSE);
+
+	AsicSetRalinkBurstMode(pAd, pAd->CommonCfg.bRalinkBurstMode);
 
 	DBGPRINT(RT_DEBUG_TRACE, ("Set_BurstMode_Proc ::%s\n", 
 				(pAd->CommonCfg.bRalinkBurstMode == TRUE) ? "enabled" : "disabled"));

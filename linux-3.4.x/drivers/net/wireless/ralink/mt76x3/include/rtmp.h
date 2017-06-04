@@ -2901,6 +2901,7 @@ typedef struct _MAC_TABLE {
 #endif /* WAPI_SUPPORT */
 
 	USHORT MsduLifeTime; /* life time for PS packet */
+	BOOLEAN fTxBurstRetune;	/* Need retune TxBurst parametrs now */
 } MAC_TABLE, *PMAC_TABLE;
 #ifdef CONFIG_SNIFFER_SUPPORT
 #define MONITOR_MODE_OFF  0

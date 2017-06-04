@@ -894,6 +894,10 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 
 		if (pAd->CommonCfg.bWmm)
 			asic_tune_be_wmm(pAd, size);
+
+		/* force retune tx_burst settings */
+		if (pAd->CommonCfg.bEnableTxBurst)
+		    pAd->MacTab.fTxBurstRetune = TRUE;
 	}
 #endif /* MULTI_CLIENT_SUPPORT */
 #endif // CONFIG_AP_SUPPORT //
@@ -1235,6 +1239,10 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 
 			if (pAd->CommonCfg.bWmm)
 				asic_tune_be_wmm(pAd, size);
+
+			/* force retune tx_burst settings */
+			if (pAd->CommonCfg.bEnableTxBurst)
+				pAd->MacTab.fTxBurstRetune = TRUE;
 		}
 #endif /* MULTI_CLIENT_SUPPORT */
 

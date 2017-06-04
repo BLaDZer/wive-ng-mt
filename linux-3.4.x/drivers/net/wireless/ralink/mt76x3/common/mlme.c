@@ -1521,8 +1521,8 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 			{
 #endif /* APCLI_CERT_SUPPORT */		
 #endif /* APCLI_SUPPORT */
-		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-			dynamic_tune_be_tx_op(pAd, 50);	/* change form 100 to 50 for WMM WiFi test @20070504*/
+			    IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+				dynamic_tune_be_tx_op(pAd, 50);	/* change form 100 to 50 for WMM WiFi test @20070504*/
 #ifdef APCLI_SUPPORT
 #ifdef APCLI_CERT_SUPPORT
 			}

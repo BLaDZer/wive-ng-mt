@@ -3504,6 +3504,7 @@ typedef struct _MAC_TABLE {
 
 	USHORT MsduLifeTime; /* life time for PS packet */
 	BOOLEAN	fMcastPsQEnable;
+	BOOLEAN fTxBurstRetune;	/* Need retune TxBurst parametrs now */
 } MAC_TABLE, *PMAC_TABLE;
 
 #ifdef CONFIG_SNIFFER_SUPPORT

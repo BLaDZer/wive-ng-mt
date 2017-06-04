@@ -376,28 +376,9 @@ VOID APStartUp(
 	if (!WMODE_CAP_N(pAd->CommonCfg.PhyMode))
 		pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth = BW_20; /* Patch UI */
 
-	/* init */
-	if (pAd->CommonCfg.bRdg)
-	{	
-		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-		AsicEnableRDG(pAd);
-	}
-	else	
-	{
-		RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-		AsicDisableRDG(pAd);
-	}
+	AsicSetRDG(pAd, pAd->CommonCfg.bRdg);
 
-	if (pAd->CommonCfg.bRalinkBurstMode)
-	{
-		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-		AsicEnableRalinkBurstMode(pAd);
-	}
-	else
-	{
-		RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-		AsicDisableRalinkBurstMode(pAd);
-	}
+	AsicSetRalinkBurstMode(pAd, pAd->CommonCfg.bRalinkBurstMode);
 #endif /* DOT11_N_SUPPORT */
 
 	COPY_MAC_ADDR(pAd->ApCfg.MBSSID[BSS0].Bssid, pAd->CurrentAddress);
@@ -981,6 +962,7 @@ VOID MacTableMaintenance(
 	pMacTable->fAnyStation20Only = FALSE;
 	pMacTable->fAnyStationIsLegacy = FALSE;
 	pMacTable->fAnyStationMIMOPSDynamic = FALSE;
+	pMacTable->fTxBurstRetune = FALSE;
 #ifdef GREENAP_SUPPORT
 	/*Support Green AP */
 	pMacTable->fAnyStationIsHT=FALSE;
@@ -1024,11 +1006,13 @@ VOID MacTableMaintenance(
 
 #ifdef MT76x0
 
-			if (pEntry->RssiSample.AvgRssi0 > -62
+			if (
 #ifdef DYNAMIC_VGA_SUPPORT
-			    || pAd->chipCap.avg_rssi_all > -62
+			    pAd->chipCap.avg_rssi_all > -62
+#else
+			    pEntry->RssiSample.AvgRssi0 > -62
 #endif /* DYNAMIC_VGA_SUPPORT */
-			    )
+			)
 				bDisableSF = TRUE;
 #endif /* MT76x0 */
 
@@ -1063,18 +1047,7 @@ VOID MacTableMaintenance(
 			}
 
 			if (bRdgActive != RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
-			{
-				if (bRdgActive)
-				{
-					RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-					AsicEnableRDG(pAd);
-				}
-				else
-				{
-					RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-					AsicDisableRDG(pAd);
-				}
-			}
+				AsicSetRDG(pAd, bRdgActive);
 
 			continue;
 		}
@@ -1236,8 +1209,8 @@ VOID MacTableMaintenance(
 					if (CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE))
 						bQosNull = TRUE;
 
-					DBGPRINT(RT_DEBUG_WARN, ("7620 keep alive(%u) !!!\n", pEntry->Aid));
-		            ApEnqueueNullFrame(pAd, pEntry->Addr, pEntry->CurrTxRate,
+					DBGPRINT(RT_DEBUG_WARN, ("keep alive(%u) !!!\n", pEntry->Aid));
+		        		ApEnqueueNullFrame(pAd, pEntry->Addr, pEntry->CurrTxRate,
 	    	                           pEntry->Aid, pEntry->apidx, bQosNull, TRUE, 0);
 				}
 			}
@@ -1561,32 +1534,10 @@ VOID MacTableMaintenance(
 #endif /* GREENAP_SUPPORT */
 
 	if (bRdgActive != RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE))
-	{
-		if (bRdgActive)
-		{
-			RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-			AsicEnableRDG(pAd);
-		}
-		else
-		{
-			RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RDG_ACTIVE);
-			AsicDisableRDG(pAd);
-		}
-	}
+		AsicSetRDG(pAd, bRdgActive);
 
 	if (bRalinkBurstMode != RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE))
-	{
-		if (bRalinkBurstMode)
-		{
-			RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-			AsicEnableRalinkBurstMode(pAd);
-		}
-		else
-		{
-			RTMP_CLEAR_FLAG(pAd, fRTMP_ADAPTER_RALINK_BURST_MODE);
-			AsicDisableRalinkBurstMode(pAd);
-		}
-	}
+		AsicSetRalinkBurstMode(pAd, bRalinkBurstMode);
 #endif /* DOT11_N_SUPPORT */
 
 
@@ -1595,6 +1546,11 @@ VOID MacTableMaintenance(
 		AsicUpdateProtect(pAd, pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, ALLN_SETPROTECT, FALSE, pMacTable->fAnyStationNonGF);
 	}
 #endif /* DOT11_N_SUPPORT */
+
+#ifdef CONFIG_AP_SUPPORT
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+		dynamic_tune_be_tx_op(pAd, 50);	/* change form 100 to 50 for WMM WiFi test @20070504*/
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef RTMP_MAC_PCI
 	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);

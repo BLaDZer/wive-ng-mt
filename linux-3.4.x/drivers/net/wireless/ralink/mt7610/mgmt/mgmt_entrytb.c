@@ -584,14 +584,18 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 #ifdef MULTI_CLIENT_SUPPORT
 	/* for Multi-Clients */
 	if (pAd->MacTab.Size < MAX_LEN_OF_MAC_TABLE) 
-	{	
+	{
 		USHORT size;
 
 		size = pAd->ApCfg.EntryClientCount;
 		asic_change_tx_retry(pAd, size);
-		
+
 		if (pAd->CommonCfg.bWmm)
 			asic_tune_be_wmm(pAd, size);
+
+		/* force retune tx_burst settings */
+		if (pAd->CommonCfg.bEnableTxBurst)
+		    pAd->MacTab.fTxBurstRetune = TRUE;
 	}
 #endif /* MULTI_CLIENT_SUPPORT */
 #endif // CONFIG_AP_SUPPORT //
@@ -879,15 +883,19 @@ BOOLEAN MacTableDeleteEntry(
 #ifdef MULTI_CLIENT_SUPPORT
 	/* for Multi-Clients */
 	if (pAd->MacTab.Size < MAX_LEN_OF_MAC_TABLE) 
-	{	
+	{
 		USHORT size;
 
 		size = pAd->ApCfg.EntryClientCount;
 
 		asic_change_tx_retry(pAd, size);
-		
+
 		if (pAd->CommonCfg.bWmm)
 			asic_tune_be_wmm(pAd, size);
+
+		/* force retune tx_burst settings */
+		if (pAd->CommonCfg.bEnableTxBurst)
+		    pAd->MacTab.fTxBurstRetune = TRUE;
 	}
 #endif /* MULTI_CLIENT_SUPPORT */
 

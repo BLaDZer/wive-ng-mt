@@ -1217,6 +1217,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 	pMacTable->fAnyStation20Only = FALSE;
 	pMacTable->fAnyStationIsLegacy = FALSE;
 	pMacTable->fAnyStationMIMOPSDynamic = FALSE;
+	pMacTable->fTxBurstRetune = FALSE;
 #ifdef GREENAP_SUPPORT
 	/*Support Green AP */
 	pMacTable->fAnyStationIsHT=FALSE;
@@ -1887,6 +1888,11 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #endif /* MT_MAC */
 	
 #endif /* DOT11_N_SUPPORT */
+
+#ifdef CONFIG_AP_SUPPORT
+		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+			dynamic_tune_be_tx_op(pAd, 50);	/* change form 100 to 50 for WMM WiFi test @20070504*/
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef RTMP_MAC_PCI
 	RTMP_IRQ_LOCK(&pAd->irq_lock, IrqFlags);

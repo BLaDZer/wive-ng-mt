@@ -2390,7 +2390,7 @@ typedef struct _MAC_TABLE {
 #ifdef CONFIG_AP_SUPPORT	
 	UCHAR fStationHighTrafficCount;
 #endif /* CONFIG_AP_SUPPORT */
-
+	BOOLEAN fTxBurstRetune;	/* Need retune TxBurst parametrs now */
 } MAC_TABLE, *PMAC_TABLE;
 
 
@@ -5020,11 +5020,7 @@ VOID UpdateBssScanParm(
 	IN OVERLAP_BSS_SCAN_IE APBssScan);
 #endif /* DOT11N_DRAFT3 */
 
-VOID AsicEnableRalinkBurstMode(
-	IN PRTMP_ADAPTER pAd);
-
-VOID AsicDisableRalinkBurstMode(
-	IN PRTMP_ADAPTER pAd);
+INT AsicSetRalinkBurstMode(RTMP_ADAPTER *pAd, BOOLEAN enable);
 #endif /* DOT11_N_SUPPORT */
 	
 VOID ActHeaderInit(
@@ -5355,11 +5351,7 @@ VOID AsicSetExtendedMacAddr(
 #endif /* RLT_MAC */
 
 #ifdef DOT11_N_SUPPORT
-VOID AsicEnableRDG(
-	IN PRTMP_ADAPTER pAd);
-
-VOID AsicDisableRDG(
-	IN PRTMP_ADAPTER pAd);
+INT AsicSetRDG(RTMP_ADAPTER *pAd, BOOLEAN bEnable);
 #endif /* DOT11_N_SUPPORT */
 
 VOID AsicDisableSync(
