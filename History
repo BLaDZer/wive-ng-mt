@@ -3122,22 +3122,23 @@
 96) kernel: mips: highmem: ensure that we don't use more than one page for PTEs.<br>
 97) kernel: usb: net: cdc_ncm: fix TX zero padding.<br>
 98) kernel: usb: net: usb: qmi_wwan: add QMI_QUIRK_SET_DTR for Telit PID 0x1201.<br>
-99) kernel: net: remove unnecessary carrier status check.<br>
-100) kernel: net: initialize msg.msg_flags in recvfrom.<br>
-101) kernel: net: ping: implement proper locking.<br>
-102) kernel: net: neigh: guard against NULL solicit() method.<br>
-103) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
-104) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
-105) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
-106) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
-107) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
-108) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
-109) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
-110) kernel: net: packet: fix overflow in check for tp_reserve.<br>
-111) kernel: net: l2tp: take reference on sessions being dumped.<br>
-112) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
-113) kernel: net: make struct dst_entry::dev first member.<br>
-114) kernel: net: llc: add lock_sock in llc_ui_bind to avoid a race condition.<br>
+99) kernel: usb: net: qmi_wwan: add Telit ME910 support.<br>
+100) kernel: net: remove unnecessary carrier status check.<br>
+101) kernel: net: initialize msg.msg_flags in recvfrom.<br>
+102) kernel: net: ping: implement proper locking.<br>
+103) kernel: net: neigh: guard against NULL solicit() method.<br>
+104) kernel: net: ipv4, ipv6: ensure raw socket message is big enough to hold an IP header.<br>
+105) kernel: net: ipv6: send unsolicited NA if enabled for all interfaces.<br>
+106) kernel: net: ipv6: ip6mr: fix notification device destruction.<br>
+107) kernel: net: ipv6: check raw payload size correctly in ioctl.<br>
+108) kernel: net: ipv6: initialize route null entry in addrconf_init().<br>
+109) kernel: net: ipv6: reorder ip6_route_dev_notifier after ipv6_dev_notf.<br>
+110) kernel: net: packet: fix overflow in check for tp_frame_nr.<br>
+111) kernel: net: packet: fix overflow in check for tp_reserve.<br>
+112) kernel: net: l2tp: take reference on sessions being dumped.<br>
+113) kernel: net: tcp: do not underestimate skb->truesize in tcp_trim_head().<br>
+114) kernel: net: make struct dst_entry::dev first member.<br>
+115) kernel: net: llc: add lock_sock in llc_ui_bind to avoid a race condition.<br>
 <br>
 <br>
 <br>
