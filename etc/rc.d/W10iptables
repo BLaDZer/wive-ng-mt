@@ -49,7 +49,7 @@ servicelimit() {
 	    $LOG "DHCP server allow"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 67 -j ACCEPT
 	fi
-	if [ "$FtSupport" != "" -a "$FtSupport" != "0" -a "$FtSupport" != "0;0;0;0" ] || [ "$RRMEnable" != "" -a "$RRMEnable" != "0" -a "$RRMEnable" != "0;0;0;0" ]; then
+	if [ "$iaappneed" = "1" ]; then
 	    $LOG "802.11f daemon allow to connect"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 3517 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if -p tcp --dport 3517 -j ACCEPT
@@ -630,7 +630,7 @@ get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable \
-	    FtSupport RRMEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
+	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit dnsToLocalRedir QoSEnable`
@@ -662,6 +662,18 @@ get_param() {
 	lan_ip_acc=`ipcalc "$lan_ipaddr" "$lan_netmask" -ns | cut -f 2- -d =`
 	lan_ip_prf=`ipcalc "$lan_ipaddr" "$lan_netmask" -ps | cut -f 2- -d =`
     fi
+
+    # check for need rules for iaapd
+    FtSupport=`nvram_get 2860 FtSupport | awk '{ gsub(";"," "); print }'`
+    RRMEnable=`nvram_get 2860 RRMEnable | awk '{ gsub(";"," "); print }'`
+    iaappneed=0
+    for iaappneed in $FtSupport $RRMEnable
+    do
+	if [ "$iaappneed" = "1" ]; then
+	    break
+	fi
+    done
+
     # macros
     STATE_NEW="-m state --state NEW"
     STATE_EST="-m state --state ESTABLISHED,RELATED"
