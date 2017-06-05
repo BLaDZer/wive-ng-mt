@@ -3028,7 +3028,7 @@
 2) build_system: update backups calibs for new ME1 device.<br>
 3) build_system: toolchain: headers up and rebuild.<br>
 4) dropbear: up to 2016.74 version.<br>
-5) dnsmasq: up to 2.77rc5 version.<br>
+5) dnsmasq: up to 2.77 version.<br>
 6) nodogsplash: up to git version 2.0.0-1 (commit: 80ace46b).<br>
 7) miniupnpd: up to 2.0.20170421 version.<br>
 8) igmpproxy: fix last memeber query interval to be 1sec per rfc2236.<br>
