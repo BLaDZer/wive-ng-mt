@@ -744,26 +744,12 @@ VOID APMlmeSetTxRate(
 	UCHAR tx_mode = pTxRate->Mode;
 	UCHAR tx_bw = pTxRate->BW;
 
-#ifdef DOT11_N_SUPPORT
-	if (tx_mode == MODE_HTMIX || tx_mode == MODE_HTGREENFIELD)
-	{
-		if ((pTxRate->STBC) && (pEntry->MaxHTPhyMode.field.STBC) && (pAd->Antenna.field.TxPath >= 2))
-			pEntry->HTPhyMode.field.STBC = STBC_USE;
-		else
-			pEntry->HTPhyMode.field.STBC = STBC_NONE;
-
-		if ((pTxRate->ShortGI || pAd->WIFItestbed.bShortGI) && (pEntry->MaxHTPhyMode.field.ShortGI))
-			pEntry->HTPhyMode.field.ShortGI = GI_400;
-		else
-			pEntry->HTPhyMode.field.ShortGI = GI_800;
-	}
-
 #ifdef DOT11_VHT_AC
 	if (tx_mode == MODE_VHT)
 	{
 		RTMP_RA_GRP_TB *pAdaptTbEntry = (RTMP_RA_GRP_TB *)pTxRate;
 		UCHAR bw_cap = BW_20;
-		
+
 		if (pEntry->MaxHTPhyMode.field.BW != pAdaptTbEntry->BW)
 		{
 			switch (pEntry->MaxHTPhyMode.field.BW)
@@ -789,8 +775,27 @@ VOID APMlmeSetTxRate(
 		}
 		else
 			tx_bw = pAdaptTbEntry->BW;
+	}
+#endif /* DOT11_VHT_AC */
 
-		if ((CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE)) &&
+#ifdef DOT11_N_SUPPORT
+	if (tx_mode == MODE_HTMIX || tx_mode == MODE_HTGREENFIELD)
+	{
+		if ((pTxRate->STBC) && (pEntry->MaxHTPhyMode.field.STBC) && (pAd->Antenna.field.TxPath >= 2))
+			pEntry->HTPhyMode.field.STBC = STBC_USE;
+		else
+			pEntry->HTPhyMode.field.STBC = STBC_NONE;
+
+		if ((pTxRate->ShortGI || pAd->WIFItestbed.bShortGI) && (pEntry->MaxHTPhyMode.field.ShortGI))
+			pEntry->HTPhyMode.field.ShortGI = GI_400;
+		else
+			pEntry->HTPhyMode.field.ShortGI = GI_800;
+	}
+
+#ifdef DOT11_VHT_AC
+	if (tx_mode == MODE_VHT)
+	{
+		if ( CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI80_CAPABLE) &&
 			(pTxRate->ShortGI
 #ifdef WFA_VHT_PF
 			|| pAd->vht_force_sgi
@@ -844,8 +849,8 @@ VOID APMlmeSetTxRate(
 		pEntry->HTPhyMode.field.BW = BW_80;
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
-	if ((pEntry->pTable == RateTableVht2S) 
-		|| (pEntry->pTable == RateTableVht1S) 
+	if ((pEntry->pTable == RateTableVht2S)
+		|| (pEntry->pTable == RateTableVht1S)
 		|| (pEntry->pTable == RateTableVht1S_MCS7)
 		|| (pEntry->pTable == RateTableVht1S_BW20_MCS8))
 	{
@@ -864,6 +869,17 @@ VOID APMlmeSetTxRate(
 			pEntry->HTPhyMode.field.STBC = STBC_USE;
 		}
 #endif /* WFA_VHT_PF */
+	}
+	else if (IS_VHT_STA(pEntry))
+	{
+		UCHAR bw_max = pEntry->MaxHTPhyMode.field.BW;
+
+		if ((bw_max != BW_10) &&
+			(bw_max > pAd->CommonCfg.BBPCurrentBW))
+		{
+			bw_max = pAd->CommonCfg.BBPCurrentBW;
+		}
+		pEntry->HTPhyMode.field.BW = bw_max;
 	}
 #endif /* NEW_RATE_ADAPT_SUPPORT */
 
