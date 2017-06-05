@@ -1009,7 +1009,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	i = 1;
 	for (ssid=0; ssid < ssid_num; ssid++) {
 		tokenadv = (i != ssid_num) ? ";" : "";
-		sprintf(ackpolicy, "%s%s", ackpolicy, (strchr(ackpolicy_ssid, ssid + '0') != NULL) ? "0" : "1");
+		sprintf(ackpolicy, "%s%s", ackpolicy, ackpolicy_ssid);
 		sprintf(ackpolicy, "%s%s", ackpolicy, tokenadv);
 		i++;
 	}
