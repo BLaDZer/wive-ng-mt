@@ -3,6 +3,7 @@
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
+-include $(VERSION_CONFIG)
 
 #for all cleanap
 SUBDIRS_APP = $(shell LC_ALL=C; ls)

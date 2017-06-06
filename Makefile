@@ -62,6 +62,7 @@ SCRIPTSDIR	:= $(ROOTDIR)/config/scripts
 LINUX_CONFIG	:= $(LINUXDIR)/.config
 ARCH_CONFIG	:= $(ROOTDIR)/vendors/config/mips/config.arch
 CONFIG_CONFIG	:= $(ROOTDIR)/config/.config
+VERSION_CONFIG	:= $(ROOTDIR)/version
 PATH		:= $(PATH):$(ROOTDIR):$(ROOTDIR)/tools:$(ROOTDIR)/toolchain/bin:$(ROOTDIR)/lib/lib:$(ROOTDIR)/lib/include:$(LINUXDIR):$(LIBCDIR)
 
 # May use a different compiler
@@ -76,7 +77,7 @@ HOST_NCPU		:= $(shell if [ -f /proc/cpuinfo ]; then n=`grep -c processor /proc/c
 CONFIG_SHELL		:= $(shell if [ -x "$$BASH" ]; then echo $$BASH; else if [ -x /bin/bash ]; then echo /bin/bash; else echo sh; fi ; fi)
 
 # Include configs
--include version
+-include $(VERSION_CONFIG)
 -include $(ARCH_CONFIG)
 
 ifneq ($(SUBARCH),)

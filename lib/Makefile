@@ -12,6 +12,7 @@ endif
 UCLINUX_BUILD_LIB=1
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
+-include $(VERSION_CONFIG)
 
 top_srcdir=./
 top_builddir=$(if $(O),$(O),.)/

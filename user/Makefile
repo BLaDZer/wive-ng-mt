@@ -17,6 +17,7 @@ UCLINUX_BUILD_USER=1
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
+-include $(VERSION_CONFIG)
 
 # don't create a version string containing the actual timestamp
 export KCONFIG_NOTIMESTAMP=1

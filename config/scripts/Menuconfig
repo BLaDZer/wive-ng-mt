@@ -1394,7 +1394,7 @@ else
 	echo "No $SDK_VER_FILE found"
 fi
 
-backtitle="Ralink Linux SDK ${VERSIONPKG} Configuration"
+backtitle="Linux SDK ${VERSIONPKG} Configuration"
 
 trap "cleanup ; exit 1" 1 2 15
 

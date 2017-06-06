@@ -3,6 +3,7 @@
 -include $(LINUX_CONFIG)
 -include $(CONFIG_CONFIG)
 -include $(ARCH_CONFIG)
+-include $(VERSION_CONFIG)
 
 CHIP7620 :=
 ifdef CONFIG_RALINK_MT7620
@@ -86,8 +87,6 @@ endif
 ifdef CONFIG_RT_SECOND_IF_MT7610E
 ifdef CONFIG_RALINK_MT7621
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7603_MT7610_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
-# replace defaults for 7603+7610 sample
-	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
 else
 ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
@@ -95,9 +94,20 @@ else ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_EXTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4L_external_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
 else ifeq ($(CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4L_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
-# replace defaults for black horiontal 7610 not production sample
+endif
+endif
+# REPLACE DEFAULTS FOR SUBMODELS
+ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
+# replace defaults for 7603+7610 sample
 	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
 endif
+ifeq ($(MODEL_NAME),SNR-CPE-MD1.1-5GHZ-MT)
+# replace defaults for white horizontal 7610 MD1.1
+	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
+endif
+ifeq ($(MODEL_NAME),SNR-CPE-MD1-5GHZ-MULTI-USB-MT)
+# replace defaults for black horizontal 7610 not production sample
+	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
 endif
 endif
 ifdef CONFIG_RT_SECOND_IF_MT7612E
