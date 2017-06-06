@@ -377,6 +377,26 @@ typedef struct GNU_PACKED _EXT_CAP_INFO_ELEMENT{
 	UINT32 operating_mode_notification:1;
 	UINT32 rsv63:1;
 #endif // RT_BIG_ENDIAN //
+
+#ifdef RT_BIG_ENDIAN
+	UINT8 ftm_init:1;	/* bit71: FTM Initiator in 802.11mc D4.0*/
+	UINT8 ftm_resp:1;	/* bit70: FTM responder */
+	UINT8 rsv69:1;
+	UINT8 rsv68:1;
+	UINT8 rsv67:1;
+	UINT8 rsv66:1;
+	UINT8 rsv65:1;
+	UINT8 rsv64:1;
+#else
+	UINT8 rsv64:1;
+	UINT8 rsv65:1;
+	UINT8 rsv66:1;
+	UINT8 rsv67:1;
+	UINT8 rsv68:1;
+	UINT8 rsv69:1;
+	UINT8 ftm_resp:1;	/* bit70: FTM responder */
+	UINT8 ftm_init:1;	/* bit71: FTM Initiator in 802.11mc D4.0*/
+#endif // RT_BIG_ENDIAN //
 }EXT_CAP_INFO_ELEMENT, *PEXT_CAP_INFO_ELEMENT;
 
 #define EXT_CAP_MIN_SAFE_LENGTH         8
