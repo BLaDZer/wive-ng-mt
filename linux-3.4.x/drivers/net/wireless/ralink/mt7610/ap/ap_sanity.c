@@ -399,6 +399,13 @@ BOOLEAN PeerAssocReqCmmSanity(
 				DBGPRINT(RT_DEBUG_TRACE, ("%s():IE_VHT_OP\n", __FUNCTION__));
 			}
 			break;
+		case IE_OPERATING_MODE_NOTIFY:
+			if (eid_ptr->Len == sizeof(OPERATING_MODE)) {
+				ie_lists->operating_mode_len = sizeof(OPERATING_MODE);
+				NdisMoveMemory(&ie_lists->operating_mode, &eid_ptr->Octet[0], sizeof(OPERATING_MODE));
+				DBGPRINT(RT_DEBUG_TRACE, ("%s():IE_OPERATING_MODE_NOTIFY!\n", __FUNCTION__));
+			}
+			break;
 #endif /* DOT11_VHT_AC */
             default:
                 break;

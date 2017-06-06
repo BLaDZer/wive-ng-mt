@@ -46,6 +46,60 @@
 #define IE_AID						197
 #define IE_QUIET_CHANNEL			198
 
+/*
+	IEEE 802.11AC D3.0 sec 8.4.1.50
+	Operating Mode field
+
+	ch_width: Channel width
+		->	0: 20MHz
+			1: 40MHz
+			2: 80MHz
+			3: 160 or 80+80MHz
+			Reserved if Rx Nss subfield is 1
+	rx_nss: Rx Nss
+		If the Rx Nss Type subfield is 0, indicate the max number of SS STA can rx.
+		If the Rx Nss Type subfield is 1, indicate the max number of SS that the STA can receive as a
+			beamformee in a SU PPDU using a beamforming steering matrix derived from a VHT 
+			compressed beamforming report with Feedback Type subfield indicating MU in the VHT
+			Compressed Beamforming frames
+		->	0: Nss=1
+			1: Nss=2
+			...
+			7: Nss=8
+
+	rx_nss_type: 
+		->	0: indicate the rx_nss subfield carries the max number of SS that the STA can receive
+			1: indicate the rx_nss subfield carries the max number of SS that the STA can receive
+				as an SU PPDU using a beamforming steering matrix derived from a VHT compressed
+				Beamforming frame with the Feedback Type subfield indicating MU in the VHT compressed
+				Beamforming frames.
+*/
+typedef struct GNU_PACKED _OPERATING_MODE{
+#ifdef RT_BIG_ENDIAN
+	UCHAR rx_nss_type:1;
+	UCHAR rx_nss:3;
+	UCHAR rsv2:2;
+	UCHAR ch_width:2;
+#else
+	UCHAR ch_width:2;
+	UCHAR rsv2:2;
+	UCHAR rx_nss:3;
+	UCHAR rx_nss_type:1;
+#endif /* RT_BIG_ENDIAN */
+}OPERATING_MODE;
+
+
+/*
+	IEEE 802.11AC D3.0 sec 8.4.2.168
+	Operating Mode Notification element
+
+	Element ID: 199 (IE_OPERATING_MODE_NOTIFY)
+	Length: 1
+*/
+typedef struct GNU_PACKED _OPERATING_MODE_NOTIFICATION{
+	OPERATING_MODE operating_mode;
+}OPERATING_MODE_NOTIFICATION;
+
 
 /*
 	IEEE 802.11AC D2.0, sec 8.4.2.160.2

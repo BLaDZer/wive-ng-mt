@@ -2219,6 +2219,8 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR AMsduSize;
 	UCHAR MmpsMode;		/* MIMO power save mode. */
 
+	EXT_CAP_INFO_ELEMENT ext_cap;
+
 	HT_CAPABILITY_IE HTCapability;
 
 #ifdef DOT11N_DRAFT3
@@ -2228,6 +2230,10 @@ typedef struct _MAC_TABLE_ENTRY {
 
 #ifdef DOT11_VHT_AC
 	VHT_CAP_IE vht_cap_ie;
+
+	/* only take effect if ext_cap.operating_mode_notification = 1 */
+	BOOLEAN force_op_mode;
+	OPERATING_MODE operating_mode;
 #endif /* DOT11_VHT_AC */
 
 #endif /* DOT11_N_SUPPORT */
@@ -4949,6 +4955,12 @@ VOID PeerHTAction(
 	IN MLME_QUEUE_ELEM *Elem);
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef DOT11_VHT_AC
+VOID PeerVHTAction(
+	IN PRTMP_ADAPTER pAd, 
+	IN MLME_QUEUE_ELEM *Elem) ;
+#endif /* DOT11_VHT_AC */
+
 VOID PeerQOSAction(
     IN PRTMP_ADAPTER pAd, 
     IN MLME_QUEUE_ELEM *Elem);
@@ -6171,49 +6183,6 @@ BOOLEAN MlmeScanReqSanity(
 	OUT CHAR ssid[], 
 	OUT UCHAR *SsidLen, 
 	OUT UCHAR *ScanType);
-
-
-BOOLEAN PeerBeaconAndProbeRspSanity_Old(
-	IN  PRTMP_ADAPTER   pAd, 
-	IN  VOID *Msg, 
-	IN  ULONG MsgLen, 
-	IN  UCHAR MsgChannel,
-	OUT PUCHAR pAddr2, 
-	OUT PUCHAR pBssid, 
-	OUT CHAR Ssid[], 
-	OUT UCHAR *pSsidLen, 
-	OUT UCHAR *pBssType, 
-	OUT USHORT *pBeaconPeriod, 
-	OUT UCHAR *pChannel, 
-	OUT UCHAR *pNewChannel, 
-	OUT LARGE_INTEGER *pTimestamp, 
-	OUT CF_PARM *pCfParm, 
-	OUT USHORT *pAtimWin, 
-	OUT USHORT *pCapabilityInfo, 
-	OUT UCHAR *pErp,
-	OUT UCHAR *pDtimCount, 
-	OUT UCHAR *pDtimPeriod, 
-	OUT UCHAR *pBcastFlag, 
-	OUT UCHAR *pMessageToMe, 
-	OUT UCHAR SupRate[],
-	OUT UCHAR *pSupRateLen,
-	OUT UCHAR ExtRate[],
-	OUT UCHAR *pExtRateLen,
-	OUT	UCHAR *pCkipFlag,
-	OUT	UCHAR *pAironetCellPowerLimit,
-	OUT PEDCA_PARM       pEdcaParm,
-	OUT PQBSS_LOAD_PARM  pQbssLoad,
-	OUT PQOS_CAPABILITY_PARM pQosCapability,
-	OUT ULONG *pRalinkIe,
-	OUT UCHAR		 *pHtCapabilityLen,
-	OUT HT_CAPABILITY_IE *pHtCapability,
-	OUT EXT_CAP_INFO_ELEMENT *pExtCapInfo,
-	OUT UCHAR		 *AddHtInfoLen,
-	OUT ADD_HT_INFO_IE *AddHtInfo,
-	OUT UCHAR *NewExtChannel,
-	OUT USHORT *LengthVIE,
-	OUT PNDIS_802_11_VARIABLE_IEs pVIE);
-
 
 BOOLEAN PeerBeaconAndProbeRspSanity(
 	IN PRTMP_ADAPTER pAd,

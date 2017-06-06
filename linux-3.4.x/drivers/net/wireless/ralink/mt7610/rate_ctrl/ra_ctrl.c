@@ -775,6 +775,24 @@ VOID APMlmeSetTxRate(
 		}
 		else
 			tx_bw = pAdaptTbEntry->BW;
+
+		if ((pEntry->force_op_mode == TRUE))
+		{
+			switch (pEntry->operating_mode.ch_width) {
+				case 1:
+					bw_cap = BW_40;
+					break;
+				case 2:
+					bw_cap = BW_80;
+					break;
+				case 0:
+				default:
+					bw_cap = BW_20;
+					break;
+			}
+			if ((tx_bw != BW_10) && (tx_bw >= bw_cap))
+				tx_bw = bw_cap;
+		}
 	}
 #endif /* DOT11_VHT_AC */
 
@@ -873,6 +891,20 @@ VOID APMlmeSetTxRate(
 	else if (IS_VHT_STA(pEntry))
 	{
 		UCHAR bw_max = pEntry->MaxHTPhyMode.field.BW;
+
+		if (pEntry->force_op_mode == TRUE)
+		{
+			switch (pEntry->operating_mode.ch_width) {
+				case 1:
+					bw_max = BW_40;
+					break;
+				case 2: /* not support for BW_80 for other rate table */
+				case 0:
+				default:
+					bw_max = BW_20;
+					break;
+			}
+		}
 
 		if ((bw_max != BW_10) &&
 			(bw_max > pAd->CommonCfg.BBPCurrentBW))

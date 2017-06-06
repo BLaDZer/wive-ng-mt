@@ -501,46 +501,120 @@ typedef struct  _TRIGGER_EVENT_TAB{
 
 /* 7.3.27 20/40 Bss Coexistence Mgmt capability used in extended capabilities information IE( ID = 127 = IE_EXT_CAPABILITY). */
 /*	This is the first octet and was defined in 802.11n D3.03 and 802.11yD9.0 */
+/*
+	Extended capabilities information IE( ID = 127 = IE_EXT_CAPABILITY)
+	
+*/
 typedef struct GNU_PACKED _EXT_CAP_INFO_ELEMENT{
 #ifdef RT_BIG_ENDIAN
-	// TODO: shiang-6590, check the data structure format if this IE
-	UINT32	rsv7:1;
+	UINT32 interworking:1;
 	UINT32	TDLSChSwitchSupport:1; /* bit30: TDLS Channel Switching */
 	UINT32	TDLSPeerPSMSupport:1; /* bit29: TDLS Peer PSM Support */
 	UINT32	UAPSDBufSTASupport:1; /* bit28: Peer U-APSD Buffer STA Support */
-	UINT32	rsv6:1;
+	UINT32 utc_tsf_offset:1;
 	UINT32	DMSSupport:1;
-	UINT32	rsv5:6;
+	UINT32 ssid_list:1;
+	UINT32 channel_usage:1;
+	UINT32 timing_measurement:1;
+	UINT32 mbssid:1;
+	UINT32 ac_sta_cnt:1;
+	UINT32 qos_traffic_cap:1;
 	UINT32	BssTransitionManmt:1;
-	UINT32	rsv4:1;
+	UINT32 tim_bcast:1;
 	UINT32	WNMSleepSupport:1;/*bit 17*/
 	UINT32	TFSSupport:1;/*bit 16*/
-	UINT32	rsv3:4;
+	UINT32 geospatial_location:1;
+	UINT32 civic_location:1;
+	UINT32 collocated_interference_report:1;
+	UINT32 proxy_arp:1;
 	UINT32	FMSSupport:1;/*bit 11*/
-	UINT32	rsv2:8;
+	UINT32 location_tracking:1;
+	UINT32 mcast_diagnostics:1;
+	UINT32 diagnostics:1;
+	UINT32 event:1;
+	UINT32 s_psmp_support:1;
+	UINT32 rsv5:1;
+	UINT32 psmp_cap:1;
+	UINT32 rsv3:1;
 	UINT32	ExtendChannelSwitch:1;
-	UINT32	rsv:1;
+	UINT32 rsv1:1;
 	UINT32	BssCoexistMgmtSupport:1;
 #else
 	UINT32	BssCoexistMgmtSupport:1;
-	UINT32	rsv:1;
+	UINT32 rsv1:1;
 	UINT32	ExtendChannelSwitch:1;
-	UINT32	rsv2:8;
+	UINT32 rsv3:1;
+	UINT32 psmp_cap:1;
+	UINT32 rsv5:1;
+	UINT32 s_psmp_support:1;
+	UINT32 event:1;
+	UINT32 diagnostics:1;
+	UINT32 mcast_diagnostics:1;
+	UINT32 location_tracking:1;	
 	UINT32	FMSSupport:1;/*bit 11*/
-	UINT32	rsv3:4;
+	UINT32 proxy_arp:1;
+	UINT32 collocated_interference_report:1;
+	UINT32 civic_location:1;
+	UINT32 geospatial_location:1;
 	UINT32	TFSSupport:1;/*bit 16*/
 	UINT32	WNMSleepSupport:1;/*bit 17*/
-	UINT32	rsv4:1;
+	UINT32 tim_bcast:1;
 	UINT32	BssTransitionManmt:1;
-	UINT32	rsv5:6;
+	UINT32 qos_traffic_cap:1;
+	UINT32 ac_sta_cnt:1;
+	UINT32 mbssid:1;
+	UINT32 timing_measurement:1;
+	UINT32 channel_usage:1;
+	UINT32 ssid_list:1;
 	UINT32	DMSSupport:1;
-	UINT32	rsv6:1;
+	UINT32 utc_tsf_offset:1;
 	UINT32	UAPSDBufSTASupport:1; /* bit28: Peer U-APSD Buffer STA Support */
 	UINT32	TDLSPeerPSMSupport:1; /* bit29: TDLS Peer PSM Support */
 	UINT32	TDLSChSwitchSupport:1; /* bit30: TDLS Channel Switching */
-	UINT32	rsv7:1;
+	UINT32 interworking:1;
 #endif /* RT_BIG_ENDIAN */
 
+#ifdef RT_BIG_ENDIAN
+	UINT32 rsv63:1;
+	UINT32 operating_mode_notification:1;
+	UINT32 tdls_wider_bw:1;
+	UINT32 rsv49:12;
+	UINT32 utf8_ssid:1;
+	UINT32 rsv47:1;
+	UINT32 wnm_notification:1;
+	UINT32 uapsd_coex:1;
+	UINT32 id_location:1;
+	UINT32 service_interval_granularity:3;
+	UINT32 reject_unadmitted_frame:1;
+	UINT32 TDLSChSwitchProhibited:1; /* bit39: TDLS Channel Switching Prohibited */
+	UINT32 TDLSProhibited:1; /* bit38: TDLS Prohibited */
+	UINT32 TDLSSupport:1; /* bit37: TDLS Support */
+	UINT32 msgcf_cap:1;
+	UINT32 rsv35:1;
+	UINT32 sspn_inf:1;
+	UINT32 ebr:1;
+	UINT32 qosmap:1;
+#else
+	UINT32 qosmap:1;
+	UINT32 ebr:1;
+	UINT32 sspn_inf:1;
+	UINT32 rsv35:1;
+	UINT32 msgcf_cap:1;
+	UINT32 TDLSSupport:1; /* bit37: TDLS Support */
+	UINT32 TDLSProhibited:1; /* bit38: TDLS Prohibited */
+	UINT32 TDLSChSwitchProhibited:1; /* bit39: TDLS Channel Switching Prohibited */
+	UINT32 reject_unadmitted_frame:1;
+	UINT32 service_interval_granularity:3;
+	UINT32 id_location:1;
+	UINT32 uapsd_coex:1;
+	UINT32 wnm_notification:1;
+	UINT32 rsv47:1;
+	UINT32 utf8_ssid:1;
+	UINT32 rsv49:12;
+	UINT32 tdls_wider_bw:1;
+	UINT32 operating_mode_notification:1;
+	UINT32 rsv63:1;
+#endif // RT_BIG_ENDIAN //
 }EXT_CAP_INFO_ELEMENT, *PEXT_CAP_INFO_ELEMENT;
 
 #define EXT_CAP_MIN_SAFE_LENGTH         8
@@ -1490,6 +1564,8 @@ typedef struct _IE_lists {
 	VHT_OP_IE vht_op;
 	UCHAR vht_cap_len;
 	UCHAR vht_op_len;
+	UCHAR operating_mode_len;
+	OPERATING_MODE operating_mode;
 #endif /* DOT11_VHT_AC */
 }IE_LISTS;
 
@@ -1536,6 +1612,8 @@ typedef struct _bcn_ie_list {
 	VHT_OP_IE vht_op_ie;
 	UCHAR vht_cap_len;
 	UCHAR vht_op_len;
+	OPERATING_MODE operating_mode;
+	UCHAR vht_op_mode_len;
 #endif /* DOT11_VHT_AC */
 }BCN_IE_LIST;
 

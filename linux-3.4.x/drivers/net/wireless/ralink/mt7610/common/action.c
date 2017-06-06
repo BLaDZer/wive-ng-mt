@@ -71,6 +71,9 @@ VOID ActionStateMachineInit(
 #ifdef DOT11_N_SUPPORT
 	StateMachineSetAction(S, ACT_IDLE, MT2_PEER_BA_CATE, (STATE_MACHINE_FUNC)PeerBAAction);
 	StateMachineSetAction(S, ACT_IDLE, MT2_PEER_HT_CATE, (STATE_MACHINE_FUNC)PeerHTAction);
+#ifdef DOT11_VHT_AC
+	StateMachineSetAction(S, ACT_IDLE, MT2_PEER_VHT_CATE, (STATE_MACHINE_FUNC)PeerVHTAction);
+#endif /* DOT11_VHT_AC */
 	StateMachineSetAction(S, ACT_IDLE, MT2_MLME_ADD_BA_CATE, (STATE_MACHINE_FUNC)MlmeADDBAAction);
 	StateMachineSetAction(S, ACT_IDLE, MT2_MLME_ORI_DELBA_CATE, (STATE_MACHINE_FUNC)MlmeDELBAAction);
 	StateMachineSetAction(S, ACT_IDLE, MT2_MLME_REC_DELBA_CATE, (STATE_MACHINE_FUNC)MlmeDELBAAction);
@@ -1039,6 +1042,37 @@ VOID PeerHTAction(
 	}
 }
 
+#ifdef DOT11_VHT_AC
+VOID PeerVHTAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
+{
+	UCHAR Action = Elem->Msg[LENGTH_802_11+1];
+	
+	if (Elem->Wcid >= MAX_LEN_OF_MAC_TABLE)
+		return;
+
+	switch(Action)
+	{
+		case ACT_VHT_OPMODE_NOTIFY:
+			{
+				OPERATING_MODE *op_mode = (OPERATING_MODE *)&Elem->Msg[LENGTH_802_11+2];
+				MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[Elem->Wcid];
+
+				DBGPRINT(RT_DEBUG_TRACE,("ACTION - Operating Mode Notification action---->\n"));
+				hex_dump("OperatingModeNotify", &Elem->Msg[0], Elem->MsgLen);
+				DBGPRINT(RT_DEBUG_TRACE, ("\t RxNssType=%d, RxNss=%d, ChBW=%d\n",
+							op_mode->rx_nss_type, op_mode->rx_nss, op_mode->ch_width));
+
+				if (op_mode->rx_nss_type == 0) {
+					pEntry->force_op_mode = TRUE;
+					NdisMoveMemory(&pEntry->operating_mode, op_mode, 1);
+				}
+			}
+			break;
+		default:
+			break;
+	}
+}
+#endif /* DOT11_VHT_AC */
 
 /*
 	==========================================================================

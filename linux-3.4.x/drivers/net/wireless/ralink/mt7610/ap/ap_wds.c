@@ -314,6 +314,7 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 				{
 					NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 				}
+				pEntry->force_op_mode = FALSE;
 #endif /* DOT11_VHT_AC */
 			}
 			else
@@ -322,6 +323,7 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 #ifdef DOT11_VHT_AC
 				NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 #endif /* DOT11_VHT_AC */
+				pEntry->force_op_mode = FALSE;
 			}
 #endif /* DOT11_N_SUPPORT */
 
@@ -824,6 +826,7 @@ VOID WdsPeerBeaconProc(
 			{
 				NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 			}
+			pEntry->force_op_mode = FALSE;
 #endif /* DOT11_VHT_AC */
 		}
 		else
@@ -833,6 +836,7 @@ VOID WdsPeerBeaconProc(
 #ifdef DOT11_VHT_AC
 			NdisZeroMemory(&pEntry->vht_cap_ie, sizeof(VHT_CAP_IE));
 #endif /* DOT11_VHT_AC */
+			pEntry->force_op_mode = FALSE;
 		}
 #endif /* DOT11_N_SUPPORT */
 

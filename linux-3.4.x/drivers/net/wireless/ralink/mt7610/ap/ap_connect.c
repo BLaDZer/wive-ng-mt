@@ -691,6 +691,12 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef DOT11_VHT_AC
+		if (WMODE_CAP_AC(PhyMode) &&
+			(pAd->CommonCfg.Channel > 14))
+			extCapInfo.operating_mode_notification = 1;
+#endif /* DOT11_VHT_AC */
+
 		pInfo = (PUCHAR)(&extCapInfo);
 		for (infoPos = 0; infoPos < extInfoLen; infoPos++)
 		{

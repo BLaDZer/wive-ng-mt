@@ -56,6 +56,14 @@ static void ap_assoc_info_debugshow(
 		DBGPRINT(RT_DEBUG_TRACE, ("\t\tBss2040CoexistMgmt=%d\n", pEntry->BSS2040CoexistenceMgmtSupport));
 #endif /* DOT11N_DRAFT3 */
 #ifdef DOT11_VHT_AC
+		DBGPRINT(RT_DEBUG_TRACE, ("\t\tOperatinModeNotification(%d)\n", pEntry->ext_cap.operating_mode_notification));
+		if (pEntry->ext_cap.operating_mode_notification) {
+			DBGPRINT(RT_DEBUG_TRACE, ("\t\t\tChannelWidth(%d), RxNss(%d), RxNssType(%d), ForceOpMode(%d)\n",
+					pEntry->operating_mode.ch_width,
+					pEntry->operating_mode.rx_nss,
+					pEntry->operating_mode.rx_nss_type,
+					pEntry->force_op_mode));
+		}
 		if ((ie_list->vht_cap_len) &&
 			WMODE_CAP_N(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14))
@@ -325,8 +333,20 @@ static USHORT update_associated_mac_entry(
 			}
 			NdisMoveMemory(&pEntry->vht_cap_ie, &ie_list->vht_cap, sizeof(VHT_CAP_IE));
 		}
-#endif /* DOT11_VHT_AC */
 
+		if (ie_list->operating_mode_len == sizeof(OPERATING_MODE) &&
+			ie_list->operating_mode.rx_nss_type == 0)
+		{
+			pEntry->operating_mode = ie_list->operating_mode;
+			pEntry->force_op_mode = TRUE;
+			DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's OperatingMode=>RxNssType: %d, RxNss: %d, ChBW: %d\n",
+				__FUNCTION__, pEntry->operating_mode.rx_nss_type,
+				pEntry->operating_mode.rx_nss,
+				pEntry->operating_mode.ch_width));
+		}
+		else
+			pEntry->force_op_mode = FALSE;
+#endif /* DOT11_VHT_AC */
 	}
 	else
 	{
@@ -1359,6 +1379,11 @@ VOID ap_cmm_peer_assoc_req_action(
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
+#ifdef DOT11_VHT_AC
+		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
+			(pAd->CommonCfg.Channel > 14))
+			extCapInfo.operating_mode_notification = 1;
+#endif /* DOT11_VHT_AC */
 
 		pInfo = (PUCHAR)(&extCapInfo);
 		for (infoPos = 0; infoPos < extInfoLen; infoPos++)

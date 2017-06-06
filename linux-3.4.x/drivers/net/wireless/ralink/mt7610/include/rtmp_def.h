@@ -729,6 +729,7 @@ enum WIFI_MODE{
 #define IE_OVERLAPBSS_SCAN_PARM           74	/* 802.11n D3.03 */
 #define IE_CHANNEL_USAGE					97	/* Cisco advertises suggested channel using this IE. */
 #define IE_EXT_CAPABILITY                127	/* 802.11n D3.03 */
+#define IE_OPERATING_MODE_NOTIFY        199
 
 #define IE_WPA                          221	/* WPA */
 #define IE_VENDOR_SPECIFIC              221	/* Wifi WMM (WME) */
@@ -888,7 +889,11 @@ enum WIFI_MODE{
 	(see Table 7 Management Action Frame Fields)
 */
 #define MT2_PEER_WMM				17
-#define MAX_IEEE_STD_CATE			17	/* Indicate the maximum category code defined in IEEE-802.11-Std */
+#define WNM_CATEGORY_BSS_TRANSITION		18
+#define MT2_PEER_RESV_19			19
+#define MT2_PEER_RESV_20			20
+#define MT2_PEER_VHT_CATE			21
+#define MAX_IEEE_STD_CATE			21	/* Indicate the maximum category code defined in IEEE-802.11-Std */
 #define MAX_PEER_CATE_MSG			MAX_IEEE_STD_CATE
 
 #define MT2_MLME_ADD_BA_CATE		(MAX_IEEE_STD_CATE + 1)
@@ -900,10 +905,13 @@ enum WIFI_MODE{
 
 #define MAX_ACT_MSG				(MAX_IEEE_STD_CATE + 7)
 
-#ifdef DOT11R_FT_SUPPORT
-#define FT_OTA_AUTH_STATE_MACHINE      	27
-#define FT_OTD_ACT_STATE_MACHINE      	28
-#endif /* DOT11R_FT_SUPPORT */
+#ifdef DOT11V_WNM_SUPPORT
+#define WNM_CATEGORY_BSS_TRANSITION  			18
+#undef MAX_ACT_MSG
+#define MAX_ACT_MSG						(MAX_IEEE_STD_CATE + 8)
+#undef MAX_PEER_CATE_MSG
+#define MAX_PEER_CATE_MSG                   (MAX_IEEE_STD_CATE + 8)
+#endif /* DOT11V_WNM_SUPPORT */
 
 #define MT2_ACT_VENDOR				0x7F
 
@@ -917,6 +925,14 @@ enum WIFI_MODE{
 #define CATEGORY_FT				6
 #define CATEGORY_HT			7
 
+
+#ifdef DOT11_VHT_AC
+#define CATEGORY_VHT		21
+
+#define ACT_VHT_COMPRESS_BF		0	/* VHT Compressed Beamforming */
+#define ACT_VHT_GRP_ID_MGMT		1	/* Group ID Management */
+#define ACT_VHT_OPMODE_NOTIFY		2	/* Operating Mode Notification */
+#endif /* DOT11_VHT_AC */
 
 /* DLS Action frame definition */
 #define ACTION_DLS_REQUEST		0
