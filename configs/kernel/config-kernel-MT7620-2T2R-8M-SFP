@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.113.128 Kernel Configuration
+# Linux/mips 3.4.113.142 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -532,6 +532,7 @@ CONFIG_NF_NAT_SIP=m
 CONFIG_IP_NF_MANGLE=y
 # CONFIG_IP_NF_TARGET_ECN is not set
 CONFIG_IP_NF_TARGET_TTL=m
+# CONFIG_IP_NF_TARGET_NETFLOW is not set
 # CONFIG_IP_NF_RAW is not set
 # CONFIG_IP_NF_ARPTABLES is not set
 

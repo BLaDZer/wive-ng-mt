@@ -350,6 +350,10 @@ config IP_NF_TARGET_TTL
 	(e.g. when running oldconfig). It selects
 	CONFIG_NETFILTER_XT_TARGET_HL.
 
+config IP_NF_TARGET_NETFLOW
+	tristate '"NETFLOW" target support'
+	depends on NETFILTER_ADVANCED
+
 # raw + specific targets
 config IP_NF_RAW
 	tristate  'raw table support (required for NOTRACK/TRACE)'
