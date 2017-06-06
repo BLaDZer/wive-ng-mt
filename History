@@ -3148,6 +3148,7 @@
 <b>6.1.x</b><br>
 1) kernel: net: integrate ipt_NETFLOW.<br>
 2) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+3) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
 <br>
 <br>
 <br>
