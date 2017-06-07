@@ -1260,10 +1260,15 @@ VOID MacTableMaintenance(
 				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
 			    )) {
 				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
-				    pEntry->RssiLowStaKickOutDelayCount = 0;
-				    bDisconnectSta = TRUE;
-				    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+				    if (pEntry->PsMode == PWR_SAVE) {
+					    /* use TIM bit to detect the PS station */
+					    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+				    } else {
+					    pEntry->RssiLowStaKickOutDelayCount = 0;
+					    bDisconnectSta = TRUE;
+					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
+						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+				    }
 				}
 			} else
 				pEntry->RssiLowStaKickOutDelayCount = 0;
@@ -1275,9 +1280,14 @@ VOID MacTableMaintenance(
 		{
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
+			    if (pEntry->PsMode == PWR_SAVE) {
+				    /* use TIM bit to detect the PS station */
+				    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+			    } else {
 				bDisconnectSta = TRUE;
 				printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n",
 					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr));
+			    }
 			}
 		}
 #endif /* BAND_STEERING_CLIENTSTAY */
