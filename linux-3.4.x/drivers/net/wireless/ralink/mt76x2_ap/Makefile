@@ -286,6 +286,9 @@ EXTRA_CFLAGS += -DAP_QLOAD_SUPPORT -DQLOAD_FUNC_BUSY_TIME_STATS
 # optimistic rate trainup at big RSSI (more speed vs decrease interference immunity)
 #EXTRA_CFLAGS += -DOPTIMISTIC_TRAINUP
 
+# Fat channels workaround for apple ihone6 buggy client
+EXTRA_CFLAGS += -DIPHONE6_FIX
+
 ifneq ($(CONFIG_RA_HW_NAT_WIFI),y)
 EXTRA_CFLAGS += -DCONFIG_RA_NAT_NONE
 endif

@@ -324,6 +324,17 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 		}
 	}
 
+#ifdef IPHONE6_FIX
+	/* Iphone6 dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
+	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
+		UCHAR IPHONE6_OUI[]  = {0x74, 0x1B, 0xB2};
+		if (NdisEqualMemory(pEntry->Addr, IPHONE6_OUI, 3)) {
+			    pEntry->MaxHTPhyMode.field.BW = BW_40;
+			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is Iphone6. Disable 80MHz channel (apple-bcm bug)\n", PRINT_MAC(pEntry->Addr));
+		}
+	}
+#endif /* IPHONE6_FIX */
+
 	return TRUE;
 }
 

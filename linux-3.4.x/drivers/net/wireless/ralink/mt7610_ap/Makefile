@@ -276,6 +276,9 @@ EXTRA_CFLAGS += -DFORCE_ANNOUNCE_CRITICAL_AMPDU
 # workaround for some incompatable clients
 #EXTRA_CFLAGS += -DCONFIG_DISABLE_VHT80_256_QAM
 
+# Fat channels workaround for apple ihone6 buggy client
+EXTRA_CFLAGS += -DIPHONE6_FIX
+
 EXTRA_CFLAGS += -DSYSTEM_LOG_SUPPORT
 
 ifeq ($(CONFIG_MT7610_AP_DBG),y)
