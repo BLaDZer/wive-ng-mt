@@ -33,10 +33,10 @@ static DOT11_REGULATORY_INFO RURegulatoryInfo[] =
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,                 {0,                   0,           {0}}}, /* Invalid entry*/
-    {1,                 {4,                  20,            {36, 40, 44, 48}}},
-    {2,                 {4,                  20,            {52, 56, 60, 64}}},
-    {3,                 {4,                  30,            {132, 136, 140, 144}}},
-    {4,                 {5,                  30,            {149, 153, 157, 161, 165}}},
+    {1,                 {4,                  23,            {36, 40, 44, 48}}},
+    {2,                 {4,                  23,            {52, 56, 60, 64}}},
+    {3,                 {4,                  23,            {132, 136, 140, 144}}},
+    {4,                 {5,                  23,            {149, 153, 157, 161, 165}}},
     {5,                 {14,                 20,            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}}}
 };
 #define RU_REGULATORY_INFO_SIZE (sizeof(RURegulatoryInfo) / sizeof(DOT11_REGULATORY_INFO))
@@ -46,7 +46,7 @@ static DOT11_REGULATORY_INFO USARegulatoryInfo[] =
 {
 /*  "regulatory class"  "number of channels"  "Max Tx Pwr"  "channel list" */
     {0,	                {0,                   0,           {0}}}, /* Invlid entry*/
-    {1,                 {4,                   16,           {36, 40, 44, 48}}}, 
+    {1,                 {4,                   23,           {36, 40, 44, 48}}}, 
     {2,                 {4,                   23,           {52, 56, 60, 64}}}, 
     {3,                 {4,                   29,           {149, 153, 157, 161}}}, 
     {4,                 {11,                  23,           {100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144}}}, 

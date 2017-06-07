@@ -3149,12 +3149,13 @@
 1) build_system: add profile for new revision of MD1 (MD1.1).<br>
 2) kernel: ralink_wifi: sync ext_cap_info element with currect RFC.<br>
 3) kernel: ralink_wifi: roam: use TIM bit for touch PSM clients before disconnect.<br>
-4) kernel: ralink_wifi: roam: add Apple Iphone6 fat channel workaround (for oui 74:1B:B2).<br>
-5) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-6) kernel: net: integrate ipt_NETFLOW.<br>
-7) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-8) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-9) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+4) kernel: ralink_wifi: add Apple Iphone6 fat channel workaround (for oui 74:1B:B2).<br>
+5) kernel: ralink_wifi: fix power limits by new gov info.<br>
+6) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+7) kernel: net: integrate ipt_NETFLOW.<br>
+8) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+9) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+10) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>
