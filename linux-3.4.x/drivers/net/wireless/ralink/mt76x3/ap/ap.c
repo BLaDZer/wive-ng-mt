@@ -1505,7 +1505,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
 			    )) {
 				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
-				    pEntry->RssiLowStaKickOutDelayCount = 0;
 				    if (pEntry->PsMode == PWR_SAVE) {
 					    /* use TIM bit to detect the PS station */
 					     WLAN_MR_TIM_BIT_SET(pAd, pEntry->func_tb_idx, pEntry->Aid);
@@ -1513,6 +1512,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 					    bDisconnectSta = TRUE;
 					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
 								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
+					    pEntry->RssiLowStaKickOutDelayCount = 0;
 				    }
 				}
 			} else
