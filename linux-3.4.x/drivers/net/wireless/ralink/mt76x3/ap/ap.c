@@ -1511,8 +1511,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 					     WLAN_MR_TIM_BIT_SET(pAd, pEntry->func_tb_idx, pEntry->Aid);
 				    } else {
 					    bDisconnectSta = TRUE;
-					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+					    printk("Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
+								    PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
 				    }
 				}
 			} else

@@ -1266,8 +1266,8 @@ VOID MacTableMaintenance(
 				    } else {
 					    pEntry->RssiLowStaKickOutDelayCount = 0;
 					    bDisconnectSta = TRUE;
-					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d:%d] seconds\n",
+						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
 				    }
 				}
 			} else

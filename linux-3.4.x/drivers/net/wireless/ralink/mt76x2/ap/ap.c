@@ -1380,8 +1380,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 					    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
 				    } else {
 					    bDisconnectSta = TRUE;
-					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds\n",
-						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutDelay);
+					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
+						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
 				    }
 				}
 			} else
