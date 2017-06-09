@@ -253,8 +253,8 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
 	pAd->MacTab.fAnyStationNonGF = TRUE;
 
+	ht_phyinfo = &wdev->DesiredHtPhyInfo;
 	if (pEntry->MaxHTPhyMode.field.BW == BW_40) {
-		ht_phyinfo = &wdev->DesiredHtPhyInfo;
 		if (ht_phyinfo) {
 			DBGPRINT(RT_DEBUG_TRACE, ("%s: DesiredHtPhyInfo->vht_bw=%d, ch_width=%d\n", __FUNCTION__, ht_phyinfo->vht_bw, cap->vht_cap.ch_width));
 			if((ht_phyinfo->vht_bw == VHT_BW_2040)) {
@@ -279,13 +279,18 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 				pEntry->MaxHTPhyMode.field.STBC = ((pAd->CommonCfg.vht_stbc& cap->vht_cap.rx_stbc) > 1 ? 1 : 0);
 			}
 		}
+	} else if (pEntry->MaxHTPhyMode.field.BW == BW_80 && ht_phyinfo && ht_phyinfo->vht_bw == VHT_BW_2040) {
+		/* limit max phy mode for clients reported only 2040 support */
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: DesiredHtPhyInfo->vht_bw=%d, ch_width=%d\n", __FUNCTION__, ht_phyinfo->vht_bw, cap->vht_cap.ch_width));
+	        pEntry->MaxHTPhyMode.field.BW = BW_40;
 	}
 
 #ifdef IPHONE6_FIX
 	/* Iphone6 dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
 	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
-		UCHAR IPHONE6_OUI[]  = {0x74, 0x1B, 0xB2};
-		if (NdisEqualMemory(pEntry->Addr, IPHONE6_OUI, 3)) {
+		UCHAR BAD_IPHONE6_1_OUI[]  = {0x74, 0x1B, 0xB2};
+		UCHAR BAD_IPHONE6_2_OUI[]  = {0x84, 0x89, 0xAD};
+		if (NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3) || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3)) {
 			    pEntry->MaxHTPhyMode.field.BW = BW_40;
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is Iphone6. Disable 80MHz channel (apple-bcm bug)\n", PRINT_MAC(pEntry->Addr));
 		}
