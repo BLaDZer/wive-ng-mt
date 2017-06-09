@@ -439,16 +439,23 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 
 	switch (vht_op.vht_op_info.ch_width)
 	{
-		case 0:
+		case VHT_BW_2040:
+			vht_op.vht_op_info.ch_width = 0;
 			vht_op.vht_op_info.center_freq_1 = 0;
 			vht_op.vht_op_info.center_freq_2 = 0;
 			break;
-		case 1:
-		case 2:
+		case VHT_BW_80:
+			vht_op.vht_op_info.ch_width = 1;
 			vht_op.vht_op_info.center_freq_1 = cent_ch;
 			vht_op.vht_op_info.center_freq_2 = 0;
 			break;
-		case 3:
+		case VHT_BW_160:
+			vht_op.vht_op_info.ch_width = 2;
+			vht_op.vht_op_info.center_freq_1 = cent_ch;
+			vht_op.vht_op_info.center_freq_2 = 0;
+			break;
+		case VHT_BW_8080:
+			vht_op.vht_op_info.ch_width = 3;
 			vht_op.vht_op_info.center_freq_1 = cent_ch;
 			vht_op.vht_op_info.center_freq_2 = pAd->CommonCfg.vht_cent_ch2;
 			break;

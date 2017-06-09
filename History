@@ -3153,11 +3153,12 @@
 5) kernel: ralink_wifi: add Apple Iphone6 and some MacBooks fat channel workaround (for oui 74:1B:B2, 84:89:AD and AC:BC:32).<br>
 6) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
 7) kernel: ralink_wifi: fix power limits by new gov info.<br>
-8) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-9) kernel: net: integrate ipt_NETFLOW.<br>
-10) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-11) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-12) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+8) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
+9) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+10) kernel: net: integrate ipt_NETFLOW.<br>
+11) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+12) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+13) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>
