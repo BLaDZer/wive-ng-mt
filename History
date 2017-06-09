@@ -3150,7 +3150,7 @@
 2) kernel: ralink_wifi: sync ext_cap_info element with currect RFC.<br>
 3) kernel: ralink_wifi: roam: print real counters in log.<br>
 4) kernel: ralink_wifi: roam: use TIM bit for touch PSM clients before disconnect.<br>
-5) kernel: ralink_wifi: add Apple Iphone6 fat channel workaround (for oui 74:1B:B2 and 84:89:AD).<br>
+5) kernel: ralink_wifi: add Apple Iphone6 and some MacBooks fat channel workaround (for oui 74:1B:B2, 84:89:AD and AC:BC:32).<br>
 6) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
 7) kernel: ralink_wifi: fix power limits by new gov info.<br>
 8) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
