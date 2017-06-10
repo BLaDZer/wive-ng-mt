@@ -65,15 +65,15 @@
 
 /* LFF means "Load From Flash" ...*/
 #define LFF(result, nvram, x, n)								\
-				do{		char tmp[128];					\
-				    if(! ( x  = nvram_get(nvram, #x)) )				\
-					tmp[0] = '\0';						\
-				    else{							\
-					if( getNthValueSafe(n, x, ';', tmp, 128) != -1){	\
-					    strncat(result, tmp, 4096);			\
+				do{	char tmp[128];						\
+					if(! ( x  = nvram_get(nvram, #x)) )			\
+						tmp[0] = '\0';					\
+					else {							\
+						if( getNthValueSafe(n, x, ';', tmp, 128) != -1)	\
+							strncat(result, tmp, 4096);		\
 					}							\
-				    }strncat(result, "\r", 4096);				\
-				}while(0)
+				}								\
+				while(0)
 
 /* Load from Web */
 #define LFW(x, y) do{ if(! ( x = websGetVar(wp, T(#y), T("")))) return;	}while(0)

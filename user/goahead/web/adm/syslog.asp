@@ -42,9 +42,9 @@
 			}
 
 			function initValue() {
-				document.LogdSetup.KLogd.value			= NVRAM_KLogd;
-				document.LogdSetup.SysLogd.value		= NVRAM_SysLogd;
-				document.LogdSetup.RemoteSysLogIP.value	= NVRAM_RemoteSysLogIP;
+				document.getElementById('KLogd').value			= NVRAM_KLogd;
+				document.getElementById('SysLogd').value		= NVRAM_SysLogd;
+				document.getElementById('RemoteSysLogIP').value	= NVRAM_RemoteSysLogIP;
 
 				syslogdSelect();
 				ajaxPerformRequest("/goform/getsyslog", uploadLogField);
@@ -75,7 +75,7 @@
 			}
 
 			function syslogdSelect() {
-				displayElement([ 'rmtSysLogIP', 'klogdRow', 'syslog_view' ], document.LogdSetup.SysLogd.value == '1');
+				displayElement([ 'rmtSysLogIP', 'klogdRow', 'syslog_view' ], document.getElementById('SysLogd').value == '1');
 			}
 			
 			function refreshSysLog() {
@@ -84,8 +84,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValue()">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td>
 					<h1 id="syslogTitle">System Log</h1>
@@ -101,7 +101,7 @@
 						<tr>
 							<td class="head" id="syslogEnabled">System logging daemon:</td>
 							<td>
-								<select name="SysLogd" onChange="syslogdSelect();" class="normal">
+								<select name="SysLogd" id="SysLogd" onChange="syslogdSelect();" class="normal">
 									<option value="0" id="disable">Disable</option>
 									<option value="1" id="enable">Enable</option>
 								</select>
@@ -110,7 +110,7 @@
 						<tr id="klogdRow">
 							<td class="head" id="syslogKernel">Kernel logging daemon:</td>
 							<td>
-								<select name="KLogd" class="normal">
+								<select name="KLogd" id="KLogd" class="normal">
 									<option value="0" id="disable">Disable</option>
 									<option value="1" id="enable">Enable</option>
 								</select>
@@ -118,7 +118,7 @@
 						</tr>
 						<tr id="rmtSysLogIP" style="display: none;">
 							<td class="head" id="syslogRemoteIP">Remote system log IP:</td>
-							<td><input name="RemoteSysLogIP" class="normal"></td>
+							<td><input name="RemoteSysLogIP" id="RemoteSysLogIP" class="normal"></td>
 						</tr>
 					</table>
 					<table class="buttons">

@@ -544,7 +544,7 @@ function showWarning() {
 	var warningHTML			= '';
 
 	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
-		warningHTML += '<tr><td>';
+		warningHTML += '<br>';
 		warningHTML += '<table class="warning">';
 		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
 		if  (warning_access_password) {
@@ -563,7 +563,7 @@ function showWarning() {
 			warningHTML += '</tr>';
 		}
 		warningHTML += '</table>';
-		warningHTML += '</td></tr><br>';
+		warningHTML += '<br>';
 		ajaxModifyElementHTML('warning', warningHTML);
 	}
 }

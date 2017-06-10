@@ -266,7 +266,7 @@
   <message msgid="secure wep key3" msgstr="WEP Key 3 :" />
   <message msgid="secure wep key4" msgstr="WEP Key 4 :" />
   <message msgid="secure wpa" msgstr="WPA" />
-  <message msgid="secure wpa algorithm" msgstr="WPA Algorithms" />
+  <message msgid="secure wpa algorithm" msgstr="WPA Algorithm" />
   <message msgid="secure wpa pass phrase" msgstr="Pass Phrase" />
   <message msgid="secure wpa pass phrase nic" msgstr="Pass Phrase (2.4GHz)" />
   <message msgid="secure wpa pass phrase inic" msgstr="Pass Phrase (5GHz)" />
@@ -285,6 +285,7 @@
   <message msgid="secure access policy" msgstr=" Access Policy " />
   <message msgid="secure access policy capable" msgstr=" Policy " />
   <message msgid="secure access policy new" msgstr="Add a station Mac:" />
+  <message msgid="secure access policy mac list" msgstr="MAC address list" />
   <message msgid="secure access policy del" msgstr="Del" />
   <message msgid="secure no key" msgstr="Please input wpapsk key!" />
   <message msgid="secure choose algo" msgstr="Please choose a WPA Algorithms." />
@@ -308,7 +309,12 @@
   <message msgid="secure invalid key" msgstr="Invalid WEP key format!" />
   <message msgid="secure key seconds" msgstr=" seconds (range: 10 - 86400)" />
   <message msgid="secure key minutes" msgstr=" minutes" />
+  <message msgid="secure mac exist" msgstr="Entered MAC address already exist" />
   <message msgid="secure confirm" msgstr="Are you sure to ignore changed?" />
+  <message msgid="secure empty accesspolicy" msgstr="Access Policy MAC address list is empty. You must add one or more MAC address or disable Access Policy" />
+  <message msgid="secure lowsecure mode" msgstr="Warning!__Mode with a low level of security is selected._Recommended use WPA2-PSK (Personal) or WPA2 (Enterprise).__Set WPA2-PSK (Personal) mode?" />
+  <message msgid="secure lowsecure mode apply" msgstr="You need to set a password and apply the settings." />
+  <message msgid="secure lowsecure algo" msgstr="Warning!__Encryption algorithm with a low lewel of security is selected._Recommended use only AES encryption algorithm.__Set AES encryption?" />
 
   <message msgid="apcli title" msgstr="AP Client Feature" />
   <message msgid="apcli param" msgstr="Here you can configure AP Client parameters." />

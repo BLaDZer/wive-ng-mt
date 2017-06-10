@@ -361,7 +361,7 @@
 
 				var services = [
 					// turned_on, row_id, daemon_id
-					[ NVRAM_dhcpEnabled, 'udhcpd', 'udhcpd' ],
+					[ NVRAM_dhcpEnabled, 'udhcpd', 'udhcpd' ]
 				];
 
 				// Create associative array
@@ -398,8 +398,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td>
 					<h1 id="lTitle"></h1>

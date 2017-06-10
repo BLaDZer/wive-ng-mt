@@ -847,8 +847,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 			<td id="vlanPort_table"><h1 id="vlanTvSipTitle"></h1>
 				<p id="vlanTvSipIntroduction"></p>

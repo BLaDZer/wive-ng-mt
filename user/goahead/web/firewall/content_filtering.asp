@@ -154,8 +154,8 @@
 		</script>
 	</head>
 	<body onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
 					<div id="bridge_warning" style="display:none;">
@@ -171,10 +171,10 @@
 							</tr>
 							<tr>
 								<td id="WebsContentFilterFilter" class="head"> Filter: </td>
-								<td><input id="websFilter_proxy"   name="websFilterProxy"   type="checkbox">Proxy
-									<input id="websFilter_java"    name="websFilterJava"    type="checkbox">Java
-									<input id="websFilter_activex" name="websFilterActivex" type="checkbox">ActiveX
-									<input id="websFilter_cookies" name="websFilterCookies" type="checkbox">Cookies</td>
+								<td><input name="websFilterProxy"   type="checkbox"><span id="websFilter_proxy">Proxy</span>
+									<input name="websFilterJava"    type="checkbox"><span id="websFilter_java">Java</span>
+									<input name="websFilterActivex" type="checkbox"><span id="websFilter_activex">ActiveX</span>
+									<input name="websFilterCookies" type="checkbox"><span id="websFilter_cookies">Cookies</span></td>
 							</tr>
 							<tr>
 								<td id="websBlockingRules" class="title" colspan="2">Web URL / Host blocking rules</td>

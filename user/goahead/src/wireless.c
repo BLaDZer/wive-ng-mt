@@ -1202,8 +1202,8 @@ parameter_fetch_t wds_args[] =
 static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *wds_mode = websGetVar(wp, T("wds_mode"), T("0"));
-	char_t *wds_list = websGetVar(wp, T("wds_list"), T(""));;
-	char_t *reset    = websGetVar(wp, T("reset"), T(""));;
+	char_t *wds_list = websGetVar(wp, T("wds_list"), T(""));
+	char_t *reset    = websGetVar(wp, T("reset"), T(""));
 
 	if (!CHK_IF_DIGIT(reset, 0)) {
 		nvram_fromdef(RT2860_NVRAM, 10, "WdsEnable", "WdsList", "WdsIfName", "WdsPhyMode", 
@@ -1308,73 +1308,135 @@ static int getAPCliStatus(int eid, webs_t wp, int argc, char_t **argv)
 static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
 	int i;
+	char_t	*PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
+		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod,
+		*RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
+
 	int num_ssid = nvram_get_int(nvram, "BssidNum", 1);
-	char_t result[4096];
-	char_t *PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
-		   *Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod, *IEEE8021X;
-	char_t *RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
+	char_t result[16384];
 
 	result[0] = '\0';
 
-	// deal with shown MBSSID
+
 	if(default_shown_mbssid[nvram] > num_ssid)
 		default_shown_mbssid[nvram] = 0;
-	sprintf(result, "%d\n",  default_shown_mbssid[nvram]);
+	sprintf(result, "{ \"default_mbssid\":\"%d\", ",  default_shown_mbssid[nvram]);
 
+	strcat(result, "\"data\": [ ");
 	if (RT2860_NVRAM == nvram) {
-		for(i=0; i<num_ssid; i++) {
-			strncat(result, nvram_get(nvram, racat("SSID", i+1)), 4096);
-			strncat(result, "\r", 4096);
-			LFF(result, nvram, PreAuth, i);
-			LFF(result, nvram, AuthMode, i);
-			LFF(result, nvram, EncrypType, i);
-			LFF(result, nvram, DefaultKeyID, i);
-			LFF(result, nvram, Key1Type, i);
-			strncat(result, nvram_get(nvram, racat("Key1Str", i+1)), 4096);
-			strncat(result, "\r", 4096);
-			LFF(result, nvram, Key2Type, i);
-			strncat(result, nvram_get(nvram, racat("Key2Str", i+1)), 4096);
-			strncat(result, "\r", 4096);
-			LFF(result, nvram, Key3Type, i);
-			strncat(result, nvram_get(nvram, racat("Key3Str", i+1)), 4096);
-			strncat(result, "\r", 4096);
-			LFF(result, nvram, Key4Type, i);
-			strncat(result, nvram_get(nvram, racat("Key4Str", i+1)), 4096);
-			strncat(result, "\r", 4096);
-			strncat(result, nvram_get(nvram, racat("WPAPSK", i+1)), 4096);
-			strncat(result, "\r", 4096);
+		for(i = 0; i < num_ssid; i++) {
+			strcat(result, "{ ");
 
+			strcat(result, "\"SSID\":\"");
+			strcat(result, nvram_get(nvram, racat("SSID", i+1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"PreAuth\":\"");
+			LFF(result, nvram, PreAuth, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"AuthMode\":\"");
+			LFF(result, nvram, AuthMode, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"EncrypType\":\"");
+			LFF(result, nvram, EncrypType, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"DefaultKeyID\":\"");
+			LFF(result, nvram, DefaultKeyID, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key1Type\":\"");
+			LFF(result, nvram, Key1Type, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key1Str\":\"");
+			strcat(result, nvram_get(nvram, racat("Key1Str", i + 1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key2Type\":\"");
+			LFF(result, nvram, Key2Type, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key2Str\":\"");
+			strcat(result, nvram_get(nvram, racat("Key2Str", i + 1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key3Type\":\"");
+			LFF(result, nvram, Key3Type, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key3Str\":\"");
+			strcat(result, nvram_get(nvram, racat("Key3Str", i + 1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key4Type\":\"");
+			LFF(result, nvram, Key4Type, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"Key4Str\":\"");
+			strcat(result, nvram_get(nvram, racat("Key4Str", i + 1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"WPAPSK\":\"");
+			strcat(result, nvram_get(nvram, racat("WPAPSK", i + 1)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"RekeyMethod\":\"");
 			LFF(result, nvram, RekeyMethod, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"RekeyInterval\":\"");
 			LFF(result, nvram, RekeyInterval, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"PMKCachePeriod\":\"");
 			LFF(result, nvram, PMKCachePeriod, i);
-			LFF(result, nvram, IEEE8021X, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"RADIUS_Server\":\"");
 			LFF(result, nvram, RADIUS_Server, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"RADIUS_Port\":\"");
 			LFF(result, nvram, RADIUS_Port, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"RADIUS_Key\":\"");
 			LFF(result, nvram, RADIUS_Key, i);
-			strncat(result, nvram_get(nvram, "session_timeout_interval"), 4096);
-			strncat(result, "\r", 4096);
-			// access control related.
-			strncat(result, nvram_get(nvram, racat("AccessPolicy", i)), 4096);
-			strncat(result, "\r", 4096);
-			strncat(result, nvram_get(nvram, racat("AccessControlList", i)), 4096);
-			strncat(result, "\r", 4096);
-			strncat(result, "\n", 4096);
+			strcat(result, "\", ");
+
+			strcat(result, "\"session_timeout_interval\":\"");
+			strcat(result, nvram_get(nvram, "session_timeout_interval"));
+			strcat(result, "\", ");
+
+			strcat(result, "\"AccessPolicy\":\"");
+			strcat(result, nvram_get(nvram, racat("AccessPolicy", i)));
+			strcat(result, "\", ");
+
+			strcat(result, "\"AccessControlList\":\"");
+			strcat(result, nvram_get(nvram, racat("AccessControlList", i)));
+			strcat(result, "\"");
+
+			strcat(result, " }");
+			if (i < num_ssid - 1)
+				strcat(result, ", ");
 		}
 	}
+	strcat(result, " ] }");
 
 	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\n"));
 	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
 	websWrite(wp, T("\n"));
 	websWrite(wp, T("%s"), result);
 	websDone(wp, 200);
-
 }
 
 static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 {
 	return getSecurity(RT2860_NVRAM, wp, path, query);
 }
-
 
 static int getSSIDsList(int eid, webs_t wp, int argc, char_t **argv)
 {
@@ -1392,47 +1454,6 @@ static int getSSIDsList(int eid, webs_t wp, int argc, char_t **argv)
 		websWrite(wp, T("{ \"ssid\":\"%s\" }%s"), ssid, (i + 1  == num_ssid) ? "" : ", ");
 	}
 	websWrite(wp, T(" ] }"));
-	return 0;
-}
-
-
-
-static int AccessPolicyHandle(int nvram, webs_t wp, int mbssid)
-{
-	char_t *apselect, *newap_list;
-	char str[32];
-	char ap_list[2048];
-
-	if(mbssid > 8 || mbssid < 0)
-		return -1;
-
-	sprintf(str, "apselect_%d", mbssid);	// UI on web page
-	apselect = websGetVar(wp, str, T(""));
-	if(!apselect){
-		syslog(LOG_ERR, "cant find %s, %s", apselect, __FUNCTION__);
-		return -1;
-	}
-
-	sprintf(str, "AccessPolicy%d", mbssid);
-	nvram_set(nvram, str, apselect);
-
-	sprintf(str, "newap_text_%d", mbssid);
-	newap_list = websGetVar(wp, str, T(""));
-
-	if(!newap_list)
-		return -1;
-
-	if(!strlen(newap_list))
-		return 0;
-
-	sprintf(str, "AccessControlList%d", mbssid);
-	sprintf(ap_list, "%s", nvram_get(nvram, str));
-	if(strlen(ap_list))
-		sprintf(ap_list, "%s;%s", ap_list, newap_list);
-	else
-		sprintf(ap_list, "%s", newap_list);
-
-	nvram_set(nvram, str, ap_list);
 	return 0;
 }
 
@@ -1545,181 +1566,146 @@ out:
 	return;
 }
 
-static void Security(int nvram, webs_t wp, char_t *path, char_t *query)
+static void setSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
+	int mbssid, i;
 	char_t *SSID;
-	int mbssid;
 	char_t *security_mode;
-	char_t *submitUrl;
+	char_t *AccessPolicy, *AccessControlList;
+	char_t *reset = websGetVar(wp, T("reset"), T(""));
 
-	LFW(SSID, ssidIndex);
-	if (!CHK_IF_SET(SSID))
-		return;
+	if (!CHK_IF_DIGIT(reset, 0)) {
+		nvram_init(RT2860_NVRAM);
+		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
+			nvram_bufset(nvram, racat("Key1Str", i), "");
+			nvram_bufset(nvram, racat("Key2Str", i), "");
+			nvram_bufset(nvram, racat("Key3Str", i), "");
+			nvram_bufset(nvram, racat("Key4Str", i), "");
+			nvram_bufset(nvram, racat("WPAPSK", i + 1), "");
+			nvram_bufset(nvram, racat("AccessPolicy", i), "0");
+			nvram_bufset(nvram, racat("AccessControlList", i), "");
+		}
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+		nvram_fromdef(RT2860_NVRAM, 14, "PreAuth", "AuthMode", "EncrypType", "DefaultKeyID", "RekeyMethod",
+						"RekeyInterval", "PMKCachePeriod", "session_timeout_interval", "Key1Type", "Key2Type",
+						"Key3Type", "Key4Type", "WPAPSK1", "WPAPSK1INIC");
+		default_shown_mbssid[nvram] = 0;
+#ifdef CONFIG_USER_802_1X
+		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
+			/* clear Radius settings */
+			clearRadiusSetting(nvram, i);
+		}
+#endif
+	}
+	else {
+		LFW(SSID, ssidIndex);
+		if (!CHK_IF_SET(SSID))
+			return;
 
-	mbssid = atoi(SSID);
+		mbssid = atoi(SSID);
 
-	default_shown_mbssid[nvram] = mbssid;
+		default_shown_mbssid[nvram] = mbssid;
 
-	LFW(security_mode, security_mode);
+		LFW(security_mode, security_mode);
 
 #ifdef CONFIG_USER_802_1X
-	/* clear Radius settings */
-	clearRadiusSetting(nvram, mbssid);
+		/* clear Radius settings */
+		clearRadiusSetting(nvram, mbssid);
 #endif
 
-	nvram_init(RT2860_NVRAM);
-	if ( !strcmp(security_mode, "Disable"))				// !------------------       Disable Mode --------------
-	{
-		STFs(nvram, mbssid, "AuthMode", "OPEN");
-		STFs(nvram, mbssid, "EncrypType", "NONE");
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-	}else if( !strcmp(security_mode, "OPEN")){			// !------------------       Open Mode ----------------
-		confWEP(nvram, wp, mbssid);
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "EncrypType", "WEP");
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-	}else if( !strcmp(security_mode, "SHARED")){			// !------------------       Shared Mode ----------------
-		char *security_shared_mode;
-		confWEP(nvram, wp, mbssid);
-
-		LFW(security_shared_mode, security_shared_mode);
-
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		if( !strcmp(security_shared_mode, "None"))
+		nvram_init(RT2860_NVRAM);
+		if (!strcmp(security_mode, "Disable")) {				// !------------------       Disable Mode --------------
+			STFs(nvram, mbssid, "AuthMode", "OPEN");
 			STFs(nvram, mbssid, "EncrypType", "NONE");
-		else
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+		}
+		else if( !strcmp(security_mode, "WEPAUTO")) {				// !------------------       WEP Auto Mode ----------------
+			confWEP(nvram, wp, mbssid);
+			STFs(nvram, mbssid, "AuthMode", security_mode);
 			STFs(nvram, mbssid, "EncrypType", "WEP");
-
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-	}else if( !strcmp(security_mode, "WEPAUTO")){ 				// !------------------       WEP Auto Mode ----------------
-		confWEP(nvram, wp, mbssid);
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "EncrypType", "WEP");
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-	}else if( !strcmp(security_mode, "WPA") ||
-				!strcmp(security_mode, "WPA1WPA2") ){		// !------------------		WPA Enterprise Mode ----------------
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+		}
+		else if(!strcmp(security_mode, "WPA") ||
+			!strcmp(security_mode, "WPA1WPA2")) {				// !------------------       WPA Enterprise Mode ----------------
 #ifdef CONFIG_USER_802_1X
-		conf8021x(nvram, wp, mbssid);					// !------------------		WPA1WPA2 mixed mode
+			conf8021x(nvram, wp, mbssid);					// !------------------       WPA1WPA2 mixed mode
 #endif
-		confWPAGeneral(nvram, wp, mbssid);
+			confWPAGeneral(nvram, wp, mbssid);
 
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-	}else if( !strcmp(security_mode, "WPAPSK")){ 				// !------------------       WPA Personal Mode ----------------
-		char *pass_phrase_str;
-		char *pass_phrase_inic_str;
+			STFs(nvram, mbssid, "AuthMode", security_mode);
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+		}
+		else if(!strcmp(security_mode, "WPAPSK")) {				// !------------------       WPA Personal Mode ----------------
+			char *pass_phrase_str;
+			char *pass_phrase_inic_str;
 
-		confWPAGeneral(nvram, wp, mbssid);
-		LFW(pass_phrase_str, passphrase);
-		LFW(pass_phrase_inic_str, passphraseinic);
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
-		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
-	}else if( !strcmp(security_mode, "WPA2")){				// !------------------  WPA2 Enterprise Mode ----------------
-		char *pass_phrase_str;
-		char *pass_phrase_inic_str;
-		char *PMKCachePeriod;
-		char *PreAuth;
-
+			confWPAGeneral(nvram, wp, mbssid);
+			LFW(pass_phrase_str, passphrase);
+			LFW(pass_phrase_inic_str, passphraseinic);
+			STFs(nvram, mbssid, "AuthMode", security_mode);
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+			nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
+			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
+		}
+		else if(!strcmp(security_mode, "WPA2")) {				// !------------------        WPA2 Enterprise Mode ----------------
+			char *pass_phrase_str;
+			char *pass_phrase_inic_str;
+			char *PMKCachePeriod;
+			char *PreAuth;
 #ifdef CONFIG_USER_802_1X
-		conf8021x(nvram, wp, mbssid);
+			conf8021x(nvram, wp, mbssid);
 #endif
-		confWPAGeneral(nvram, wp, mbssid);
+			confWPAGeneral(nvram, wp, mbssid);
 
-		LFW(pass_phrase_str, passphrase);
-		LFW(pass_phrase_inic_str, passphraseinic);
-		LFW(PMKCachePeriod, PMKCachePeriod);
-		LFW(PreAuth, PreAuthentication);
+			LFW(pass_phrase_str, passphrase);
+			LFW(pass_phrase_inic_str, passphraseinic);
+			LFW(PMKCachePeriod, PMKCachePeriod);
+			LFW(PreAuth, PreAuthentication);
 
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
-		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
-		STF(nvram, mbssid, PMKCachePeriod);
-		STF(nvram, mbssid, PreAuth);
-	}else if( !strcmp(security_mode, "WPA2PSK") ||				// !------------------  WPA2 Personal Mode ----------------
-				!strcmp(security_mode, "WPAPSKWPA2PSK") ){ 	// !-------------   WPA PSK WPA2 PSK mixed
-		char *pass_phrase_str;
-		char *pass_phrase_inic_str;
+			STFs(nvram, mbssid, "AuthMode", security_mode);
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+			nvram_bufset(nvram, racat("WPAPSK", mbssid + 1), pass_phrase_str);
+			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
+			STF(nvram, mbssid, PMKCachePeriod);
+			STF(nvram, mbssid, PreAuth);
+		}
+		else if(!strcmp(security_mode, "WPA2PSK") ||				// !------------------       WPA2 Personal Mode ----------------
+			!strcmp(security_mode, "WPAPSKWPA2PSK") ){ 			// !------------------       WPA PSK WPA2 PSK mixed
+			char *pass_phrase_str;
+			char *pass_phrase_inic_str;
 
-		confWPAGeneral(nvram, wp, mbssid);
-		LFW(pass_phrase_str, passphrase);
-		LFW(pass_phrase_inic_str, passphraseinic);
+			confWPAGeneral(nvram, wp, mbssid);
+			LFW(pass_phrase_str, passphrase);
+			LFW(pass_phrase_inic_str, passphraseinic);
 
-		STFs(nvram, mbssid, "AuthMode", security_mode);
-		STFs(nvram, mbssid, "IEEE8021X", "0");
-		nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
-		nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
-	}else if( !strcmp(security_mode, "IEEE8021X")){				// !------------------ 802.1X WEP Mode ----------------
-		char *ieee8021x_wep;
-
-#ifdef CONFIG_USER_802_1X
-		conf8021x(nvram, wp, mbssid);
-#endif
-		STFs(nvram, mbssid, "IEEE8021X", "1");
-		STFs(nvram, mbssid, "AuthMode", "OPEN");
-
-		LFW(ieee8021x_wep, ieee8021x_wep);
-		if(ieee8021x_wep[0] == '0')
-			STFs(nvram, mbssid, "EncrypType", "NONE");
+			STFs(nvram, mbssid, "AuthMode", security_mode);
+			STFs(nvram, mbssid, "IEEE8021X", "0");
+			nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
+			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
+		}
 		else
-			STFs(nvram, mbssid, "EncrypType", "WEP");
-	} else {
-		goto out;
+			goto out;
+		// Access Policy
+		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
+			AccessPolicy = websGetVar(wp, racat("AccessPolicy", i), T("0"));
+			AccessControlList = websGetVar(wp, racat("AccessControlList", i), T("0"));
+			nvram_bufset(nvram, racat("AccessPolicy", i), AccessPolicy);
+			nvram_bufset(nvram, racat("AccessControlList", i), AccessControlList);
+		}
+out:
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
 	}
 
-	// Access Policy
-	if(AccessPolicyHandle(nvram, wp, mbssid) == -1)
-		syslog(LOG_ERR, "** error in AccessPolicyHandle(), %s", __FUNCTION__);
-out:
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-
-#ifdef PRINT_DEBUG
-	websHeader(wp);
-	websWrite(wp, T("<h2>MBSSID index: %d, Security Mode: %s Done</h2><br>\n"), mbssid, security_mode);
-	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
-#endif
 	/* reconfigure system */
 	doSystem("internet.sh");
-}
-
-static void APSecurity(webs_t wp, char_t *path, char_t *query)
-{
-	Security(RT2860_NVRAM, wp, path, query);
-}
-
-static void DeleteAccessPolicyList(int nvram, webs_t wp, char_t *path, char_t *query)
-{
-	int mbssid, aplist_num;
-	char str[32], apl[64*20], *tmp;
-
-	sscanf(query, "%d,%d", &mbssid, &aplist_num);
-	sprintf(str, "AccessControlList%d", mbssid);
-	if(!(tmp = nvram_get(nvram, str)))
-		return;
-
-	strcpy(apl, tmp);
-	deleteNthValueMulti(&aplist_num, 1, apl, ';');
-	nvram_set(nvram, str, apl);
-
-	default_shown_mbssid[nvram] = mbssid;
-
-	websWrite(wp, T("HTTP/1.1 200 OK\nContent-type: text/plain\nPragma: no-cache\n"));
-	websWrite(wp, WEBS_CACHE_CONTROL_STRING);
-	websWrite(wp, T("\n"));
-	websWrite(wp, T("ok done"));
 	websDone(wp, 200);
 }
 
-static void APDeleteAccessPolicyList(webs_t wp, char_t *path, char_t *query)
+static void wirelessSetSecurity(webs_t wp, char_t *path, char_t *query)
 {
-	DeleteAccessPolicyList(RT2860_NVRAM, wp, path, query);
+	setSecurity(RT2860_NVRAM, wp, path, query);
 }
 
 static int is3t3r(int eid, webs_t wp, int argc, char_t **argv)
@@ -1957,6 +1943,5 @@ void formDefineWireless(void)
 	websAspDefine(T("getAPCliStatus"), getAPCliStatus);
 #endif
 	websFormDefine(T("wirelessGetSecurity"), wirelessGetSecurity);
-	websFormDefine(T("APSecurity"), APSecurity);
-	websFormDefine(T("APDeleteAccessPolicyList"), APDeleteAccessPolicyList);
+	websFormDefine(T("wirelessSetSecurity"), wirelessSetSecurity);
 }

@@ -224,8 +224,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="routingTitle">Static Routing Settings</h1>
 					<p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>

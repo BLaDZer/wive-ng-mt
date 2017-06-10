@@ -138,8 +138,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="ethernetTitle">Ethernet Port Settings</h1>
 					<p id="ethernetIntroduction">You can set up ethernet port</p>

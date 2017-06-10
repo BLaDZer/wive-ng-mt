@@ -317,8 +317,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues()">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td>
 					<h1 id="v6Title">IPv6 Setup</h1>
@@ -343,7 +343,7 @@
 							</tr>
 							<tr id="dhcp6cRowDisplay">
 								<td id="IPv6Dhcpc" class="head" width="45%">IPv6 autoconfigure by dhcp/ra</td>
-								<td width="55%"><input name="dhcp6c_enable" type="checkbox" onChange="SwitchOpMode(this.form);"></td>
+								<td width="55%"><input name="dhcp6c_enable" type="checkbox" onClick="SwitchOpMode(this.form);"></td>
 							</tr>
 							<tr id="IPv6AllowForwardRowDisplay">
 								<td id="IPv6AllowForward" class="head" width="45%">Allow access to LAN from internet</td>

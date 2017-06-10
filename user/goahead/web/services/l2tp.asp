@@ -367,8 +367,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="l2tpServerTitle">L2TP Server Setup</h1>
 					<p id="l2tpServerIntroduction">Here you can configure L2TP server settings.</p>

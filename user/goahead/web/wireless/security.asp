@@ -1,1275 +1,1058 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Wireless Security Settings</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript" src="/js/nvram.js"></script>
-<script type="text/javascript" src="/js/ajax.js"></script>
-<script type="text/javascript" src="/js/controls.js"></script>
-<link rel="stylesheet" href="/style/windows.css" type="text/css">
-<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-<link rel="stylesheet" href="/style/controls.css" type="text/css">
-<script language="JavaScript" type="text/javascript">
-
-Butterlate.setTextDomain("wireless");
-Butterlate.setTextDomain("buttons");
-
-var changed = 0;
-var old_MBSSID;
-
-var defaultShownMBSSID = 0;
-var SSID = new Array();
-var PreAuth = new Array();
-var AuthMode = new Array();
-var EncrypType = new Array();
-var DefaultKeyID = new Array();
-var Key1Type = new Array();
-var Key1Str = new Array();
-var Key2Type = new Array();
-var Key2Str = new Array();
-var Key3Type = new Array();
-var Key3Str = new Array();
-var Key4Type = new Array();
-var Key4Str = new Array();
-var WPAPSK = new Array();
-var RekeyMethod = new Array();
-var RekeyInterval = new Array();
-var PMKCachePeriod = new Array();
-var IEEE8021X = new Array();
-var RADIUS_Server = new Array();
-var RADIUS_Port = new Array();
-var RADIUS_Key = new Array();
-var session_timeout_interval = new Array();
-var AccessPolicy = new Array();
-var AccessControlList = new Array();
-
-var security_modes_list =
-[
-	[ _("wireless disable"),	"Disable",	 0, 0 ],
-	[ "WEP",					"WEPAUTO",	 0, 0 ],
-	[ "WPA (Enterprise)",		"WPA",		 1, 1 ],
-	[ "WPA-PSK (Personal)",		"WPAPSK",	 0, 0 ],
-	[ "WPA2 (Enterprise)",		"WPA2",		 1, 1 ],
-	[ "WPA2-PSK (Personal)",	"WPA2PSK",	 0, 0 ],
-	[ "WPA1/2-PSK (Personal)",	"WPAPSKWPA2PSK", 0, 0 ],
-	[ "WPA1/2 (Enterprise)",	"WPA1WPA2",	 1, 1 ]
-];
-
-function checkMac(str){
-	var len = str.length;
-	if(len!=17)
-		return false;
-
-	for (var i=0; i<str.length; i++) {
-		if((i%3) == 2){
-			if(str.charAt(i) == ':')
-				continue;
-		}else{
-			if (    (str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
-					(str.charAt(i) >= 'a' && str.charAt(i) <= 'f') ||
-					(str.charAt(i) >= 'A' && str.charAt(i) <= 'F') )
-			continue;
-		}
-		return false;
-	}
-	return true;
-}
-
-function checkRange(str, num, min, max)
-{
-    d = atoi(str,num);
-    if(d > max || d < min)
-        return false;
-    return true;
-}
-
-function checkIpAddr(field)
-{
-    if(field.value == "")
-        return false;
-
-    if ( checkAllNum(field.value) == 0)
-        return false;
-
-    if( (!checkRange(field.value,1,0,255)) ||
-        (!checkRange(field.value,2,0,255)) ||
-        (!checkRange(field.value,3,0,255)) ||
-        (!checkRange(field.value,4,1,254)) ){
-        return false;
-    }
-   return true;
-}
-
-function atoi(str, num)
-{
-    i=1;
-    if(num != 1 ){
-        while (i != num && str.length != 0){
-            if(str.charAt(0) == '.'){
-                i++;
-            }
-            str = str.substring(1);
-        }
-        if(i != num )
-            return -1;
-    }
-
-    for(i=0; i<str.length; i++){
-        if(str.charAt(i) == '.'){
-            str = str.substring(0, i);
-            break;
-        }
-    }
-    if(str.length == 0)
-        return -1;
-    return parseInt(str, 10);
-}
-
-function checkHex(str){
-	var len = str.length;
-
-	for (var i=0; i<str.length; i++) {
-		if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
-			(str.charAt(i) >= 'a' && str.charAt(i) <= 'f') ||
-			(str.charAt(i) >= 'A' && str.charAt(i) <= 'F') ){
-				continue;
-		}else
-	        return false;
-	}
-    return true;
-}
-
-function checkInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
-
-function checkStrictInjection(str)
-{
-	var len = str.length;
-	for (var i=0; i<str.length; i++) {
-		if ( str.charAt(i) == ';' || str.charAt(i) == ',' ||
-			 str.charAt(i) == '\r' || str.charAt(i) == '\n'){
-				return false;
-		}else
-	        continue;
-	}
-    return true;
-}
-
-function checkAllNum(str)
-{
-    for (var i=0; i<str.length; i++){
-        if((str.charAt(i) >= '0' && str.charAt(i) <= '9') || (str.charAt(i) == '.' ))
-            continue;
-        return false;
-    }
-    return true;
-}
-
-var http_request = false;
-function makeRequest(url, content, handler) {
-	http_request = false;
-	if (window.XMLHttpRequest) { // Mozilla, Safari,...
-		http_request = new XMLHttpRequest();
-		if (http_request.overrideMimeType) {
-			http_request.overrideMimeType('text/xml');
-		}
-	} else if (window.ActiveXObject) { // IE
-		try {
-			http_request = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (e) {
-			try {
-			http_request = new ActiveXObject("Microsoft.XMLHTTP");
-			} catch (e) {}
-		}
-	}
-	if (!http_request) {
-		alert('Giving up :( Cannot create an XMLHTTP instance');
-		return false;
-	}
-	http_request.onreadystatechange = handler;
-	http_request.open('POST', url, true);
-	http_request.send(content);
-}
-
-function securityHandler()
-{
-	if (http_request.readyState == 4)
-	{
-		if (http_request.status == 200)
-		{
-			parseAllData(http_request.responseText);
-			UpdateMBSSIDList();
-			LoadFields(defaultShownMBSSID);
-
-			// load Access Policy for MBSSID[selected]
-			LoadAP();
-			ShowAP(defaultShownMBSSID);
-		} else {
-			alert('There was a problem with the request.');
-		}
-	}
-}
-
-function deleteAccessPolicyListHandler()
-{
-	window.location.reload(false);
-}
-
-
-function parseAllData(str)
-{
-	var all_str = new Array();
-	all_str = str.split("\n");
-
-	defaultShownMBSSID = parseInt(all_str[0]);
-
-	for (var i=0; i<all_str.length-2; i++) {
-		var fields_str = new Array();
-		fields_str = all_str[i+1].split("\r");
-
-		SSID[i] = fields_str[0];
-		PreAuth[i] = fields_str[1];
-		AuthMode[i] = fields_str[2];
-		EncrypType[i] = fields_str[3];
-		DefaultKeyID[i] = fields_str[4];
-		Key1Type[i] = fields_str[5];
-		Key1Str[i] = fields_str[6];
-		Key2Type[i] = fields_str[7];
-		Key2Str[i] = fields_str[8];
-		Key3Type[i] = fields_str[9];
-		Key3Str[i] = fields_str[10];
-		Key4Type[i] = fields_str[11];
-		Key4Str[i] = fields_str[12];
-		WPAPSK[i] = fields_str[13];
-		RekeyMethod[i] = fields_str[14];
-		RekeyInterval[i] = (fields_str[15] == "") ? 3600 : fields_str[15];
-		PMKCachePeriod[i] = fields_str[16];
-		IEEE8021X[i] = fields_str[17];
-		RADIUS_Server[i] = fields_str[18];
-		RADIUS_Port[i] = fields_str[19];
-		RADIUS_Key[i] = fields_str[20];
-		session_timeout_interval[i] = fields_str[21];
-		AccessPolicy[i] = fields_str[22];
-		AccessControlList[i] = fields_str[23];
-
-		/* !!!! IMPORTANT !!!!*/
-		if(IEEE8021X[i] == "1")
-			AuthMode[i] = "IEEE8021X";
-
-		if(AuthMode[i] == "OPEN" && EncrypType[i] == "NONE" && IEEE8021X[i] == "0")
-			AuthMode[i] = "Disable";
-	}
-}
-
-function checkData(form)
-{
-	var securitymode;
-
-	securitymode = document.security_form.security_mode.value;
-	if (securitymode == "OPEN" || securitymode == "SHARED" ||securitymode == "WEPAUTO")
-	{
-		if(! check_Wep(securitymode) )
-			return false;
-	}else if (securitymode == "WPAPSK" || securitymode == "WPA2PSK" || securitymode == "WPAPSKWPA2PSK"){
-		var keyvalue = document.security_form.passphrase.value;
-
-		if (keyvalue.length == 0){
-			alert(_("secure no key"));
-			return false;
-		}
-
-		if (keyvalue.length < 8){
-			alert(_("apcli short phrase"));
-			return false;
-		}
-
-		if(checkInjection(document.security_form.passphrase.value) == false){
-			alert(_("apcli chars not allowed"));
-			return false;
-		}
-
-		if(check_wpa() == false)
-			return false;
-	}
-	//802.1x
-	else if (securitymode == "IEEE8021X") // 802.1x
-	{
-		if( document.security_form.ieee8021x_wep[0].checked == false &&
-			document.security_form.ieee8021x_wep[1].checked == false){
-			alert(_("secure choose wep"));
-			return false;
-		}
-		if(check_radius() == false)
-			return false;
-	}else if (securitymode == "WPA" || securitymode == "WPA1WPA2") //     WPA or WPA1WP2 mixed mode
-	{
-		if(check_wpa() == false)
-			return false;
-		if(check_radius() == false)
-			return false;
-	}else if (securitymode == "WPA2") //         WPA2
-	{
-		if(check_wpa() == false)
-			return false;
-		if( document.security_form.PreAuthentication[0].checked == false &&
-			document.security_form.PreAuthentication[1].checked == false){
-			alert(_("secure choose preauth"));
-			return false;
-		}
-
-		if(!document.security_form.PMKCachePeriod.value.length){
-			alert(_("secure no pmk"));
-			return false;
-		}
-		if(check_radius() == false)
-			return false;
-	}
-
-	// check Access Policy
-	for(i=0; i<MBSSID_MAX; i++)
-	{
-		if( document.getElementById("newap_text_" + i).value != ""){
-			if(!checkMac(document.getElementById("newap_text_" + i).value)){
-				alert(_("secure invalid mac"));
-				return false;
-			}
-		}
-	}
-
-	if (NVRAM_SSID1 == NVRAM_SSID1INIC)
-		document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
-
-	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
-	return true;
-}
-
-function check_wpa()
-{
-	if(document.security_form.cipher[0].checked != true && 
-		   document.security_form.cipher[1].checked != true &&
-		   document.security_form.cipher[2].checked != true){
-		   alert(_("secure choose algo"));
-		   return false;
-	}
-
-	if(checkAllNum(document.security_form.keyRenewalInterval.value) == false){
-		alert(_("secure renewal"));
-		return false;
-	}
-	if(document.security_form.keyRenewalInterval.value < 10 || document.security_form.keyRenewalInterval.value > 86400){
-		alert(_("secure renewal wrong"));
-		document.security_form.keyRenewalInterval.select();
-		document.security_form.keyRenewalInterval.focus();
-		return false;
-	}
-	return true;
-}
-
-function check_radius()
-{
-	if(!document.security_form.RadiusServerIP.value.length){
-		alert(_("secure no radius ip"));
-		return false;
-	}
-	if(!document.security_form.RadiusServerPort.value.length){
-		alert(_("secure no radius port"));
-		return false;
-	}
-	if(!document.security_form.RadiusServerSecret.value.length){
-		alert(_("secure no radius secret"));
-		return false;
-	}
-
-	if(checkIpAddr(document.security_form.RadiusServerIP) == false){
-		alert(_("secure invalid radius ip"));
-		return false;
-	}
-	if( (checkRange(document.security_form.RadiusServerPort.value, 1, 1, 65535)==false) ||
-		(checkAllNum(document.security_form.RadiusServerPort.value)==false)){
-		alert(_("secure invalid radius port"));
-		return false;
-	}
-	if(checkStrictInjection(document.security_form.RadiusServerSecret.value)==false){
-		alert(_("secure invalid radius secret"));
-		return false;
-	}
-
-	if(document.security_form.RadiusServerSessionTimeout.value.length){
-		if(checkAllNum(document.security_form.RadiusServerSessionTimeout.value)==false){
-			alert(_("secure invalid timeout"));
-			return false;
-		}
-	}
-
-	return true;
-}
-
-function securityMode(c_f)
-{
-	var security_mode;
-
-	changed = c_f;
-
-	hideWep();
-
-	displayElement( [
-		'div_security_shared_mode', 'div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_passphrase5',
-		'wpa_key_renewal_interval', 'wpa_PMK_Cache_Period', 'wpa_preAuthentication',
-		'div_radius_server', 'div_8021x_wep' // 802.1x
-		], false);
-
-	document.security_form.cipher[0].disabled = true;
-	document.security_form.cipher[1].disabled = true;
-	document.security_form.cipher[2].disabled = true;
-	document.security_form.passphrase.disabled = true;
-	document.security_form.keyRenewalInterval.disabled = true;
-	document.security_form.PMKCachePeriod.disabled = true;
-	document.security_form.PreAuthentication.disabled = true;
-
-	// 802.1x
-	document.security_form.ieee8021x_wep.disable = true;
-	document.security_form.RadiusServerIP.disable = true;
-	document.security_form.RadiusServerPort.disable = true;
-	document.security_form.RadiusServerSecret.disable = true;
-	document.security_form.RadiusServerSessionTimeout.disable = true;
-
-	security_mode = document.security_form.security_mode.value;
-
-	if (security_mode == "OPEN" || security_mode == "SHARED" ||security_mode == "WEPAUTO"){
-		showWep(security_mode);
-	}else if (security_mode == "WPAPSK" || security_mode == "WPA2PSK" || security_mode == "WPAPSKWPA2PSK"){
-		// WPA
-		document.getElementById("div_wpa").style.visibility = "visible";
-		if (window.ActiveXObject) { // IE
-			document.getElementById("div_wpa").style.display = "block";
-		}
-		else if (window.XMLHttpRequest) { // Mozilla, Safari,...
-			document.getElementById("div_wpa").style.display = "table";
-		}
-
-		document.getElementById("div_wpa_algorithms").style.visibility = "visible";
-		document.getElementById("div_wpa_algorithms").style.display = '';
-		document.security_form.cipher[0].disabled = false;
-		document.security_form.cipher[1].disabled = false;
-
-		// deal with TKIP-AES mixed mode
-		document.security_form.cipher[2].disabled = false;
-
-		document.getElementById("wpa_passphrase").style.visibility = "visible";
-		document.getElementById("wpa_passphrase").style.display = '';
-		document.security_form.passphrase.disabled = false;
-
-		if (BUILD_5GHZ_SUPPORT == 1 && (NVRAM_SSID1 != NVRAM_SSID1INIC)) {
-			document.getElementById("wpa_passphrase5").style.visibility = "visible";
-			document.getElementById("wpa_passphrase5").style.display = '';
-			document.security_form.passphraseinic.disabled = false;
-		}
-		
-		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
-		document.getElementById("wpa_key_renewal_interval").style.display = '';
-		document.security_form.keyRenewalInterval.disabled = false;
-/*		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
-			document.security_form.cipher[1].checked = true;
-		} */
-	}else if (security_mode == "WPA" || security_mode == "WPA2" || security_mode == "WPA1WPA2") //wpa enterprise
-	{
-		document.getElementById("div_wpa").style.visibility = "visible";
-		if (window.ActiveXObject) { // IE
-			document.getElementById("div_wpa").style.display = "block";
-		}else if (window.XMLHttpRequest) { // Mozilla, Safari,...
-			document.getElementById("div_wpa").style.display = "table";
-		}
-
-		document.getElementById("div_wpa_algorithms").style.visibility = "visible";
-		document.getElementById("div_wpa_algorithms").style.display = '';
-		document.security_form.cipher[0].disabled = false;
-		document.security_form.cipher[1].disabled = false;
-		document.getElementById("wpa_key_renewal_interval").style.visibility = "visible";
-		document.getElementById("wpa_key_renewal_interval").style.display = '';
-		document.security_form.keyRenewalInterval.disabled = false;
-
-		// 802.1x
-		document.getElementById("div_radius_server").style.visibility = "visible";
-		document.getElementById("div_radius_server").style.display = '';
-		document.security_form.RadiusServerIP.disable = false;
-		document.security_form.RadiusServerPort.disable = false;
-		document.security_form.RadiusServerSecret.disable = false;
-		document.security_form.RadiusServerSessionTimeout.disable = false;
-
-		if(security_mode == "WPA")
-			document.security_form.cipher[2].disabled = false;
-
-		if(security_mode == "WPA2"){
-			document.security_form.cipher[2].disabled = false;
-			document.getElementById("wpa_preAuthentication").style.visibility = "visible";
-			document.getElementById("wpa_preAuthentication").style.display = '';
-			document.security_form.PreAuthentication.disabled = false;
-			document.getElementById("wpa_PMK_Cache_Period").style.visibility = "visible";
-			document.getElementById("wpa_PMK_Cache_Period").style.display = '';
-			document.security_form.PMKCachePeriod.disabled = false;
-		}
-
-		if(security_mode == "WPA1WPA2"){
-			document.security_form.cipher[2].disabled = false;
-		}
-/*		if (document.security_form.cipher[0].checked == document.security_form.cipher[1].checked == document.security_form.cipher[2].checked) {
-			document.security_form.cipher[1].checked = true;
-		} */
-	}else if (security_mode == "IEEE8021X"){ // 802.1X-WEP
-		document.getElementById("div_8021x_wep").style.visibility = "visible";
-		document.getElementById("div_8021x_wep").style.display = '';
-
-		document.getElementById("div_radius_server").style.visibility = "visible";
-		document.getElementById("div_radius_server").style.display = '';
-		document.security_form.ieee8021x_wep.disable = false;
-		document.security_form.RadiusServerIP.disable = false;
-		document.security_form.RadiusServerPort.disable = false;
-		document.security_form.RadiusServerSecret.disable = false;
-		document.security_form.RadiusServerSessionTimeout.disable = false;
-	}
-}
-
-
-function hideWep()
-{
-	document.getElementById("div_wep").style.visibility = "hidden";
-	document.getElementById("div_wep").style.display = "none";
-}
-function showWep(mode)
-{
-	<!-- WEP -->
-	document.getElementById("div_wep").style.visibility = "visible";
-
-	if (window.ActiveXObject) { // IE
-		document.getElementById("div_wep").style.display = "block";
-	}
-	else if (window.XMLHttpRequest) { // Mozilla, Safari...
-		document.getElementById("div_wep").style.display = "table";
-	}
-
-	if(mode == "SHARED"){
-		document.getElementById("div_security_shared_mode").style.visibility = "visible";
-		document.getElementById("div_security_shared_mode").style.display = '';
-	}
-}
-
-function check_Wep(securitymode)
-{
-	var defaultid = document.security_form.wep_default_key.value;
-	var key_input;
-
-	if ( defaultid == 1 )
-		var keyvalue = document.security_form.wep_key_1.value;
-	else if (defaultid == 2)
-		var keyvalue = document.security_form.wep_key_2.value;
-	else if (defaultid == 3)
-		var keyvalue = document.security_form.wep_key_3.value;
-	else if (defaultid == 4)
-		var keyvalue = document.security_form.wep_key_4.value;
-
-	if (keyvalue.length == 0 &&  (securitymode == "SHARED" || securitymode == "OPEN" || securitymode == "WEPAUTO")){ // shared wep  || md5
-		alert(_("secure no wep key")+defaultid+' !');
-		return false;
-	}
-
-	var keylength = document.security_form.wep_key_1.value.length;
-	if (keylength != 0){
-		if (document.security_form.WEP1Select.options.selectedIndex == 0){
-			if(keylength != 5 && keylength != 13) {
-				alert(_("secure short wep key"));
-				document.security_form.wep_key_1.focus();
-				return false;
-			}
-			if(checkInjection(document.security_form.wep_key_1.value)== false){
-				alert(_("secure invalid wep key"));
-				document.security_form.wep_key_1.focus();
-				return false;
-			}
-		}
-		if (document.security_form.WEP1Select.options.selectedIndex == 1){
-			if(keylength != 10 && keylength != 26) {
-				alert(_("secure long wep key"));
-				document.security_form.wep_key_1.focus();
-				return false;
-			}
-			if(checkHex(document.security_form.wep_key_1.value) == false){
-				alert(_("secure invalid key"));
-				document.security_form.wep_key_1.focus();
-				return false;
-			}
-		}
-	}
-
-	keylength = document.security_form.wep_key_2.value.length;
-	if (keylength != 0){
-		if (document.security_form.WEP2Select.options.selectedIndex == 0){
-			if(keylength != 5 && keylength != 13) {
-				alert(_("secure short wep key"));
-				document.security_form.wep_key_2.focus();
-				return false;
-			}
-			if(checkInjection(document.security_form.wep_key_2.value)== false){
-				alert(_("secure invalid wep key"));
-				document.security_form.wep_key_2.focus();
-				return false;
-			}
-		}
-		if (document.security_form.WEP2Select.options.selectedIndex == 1){
-			if(keylength != 10 && keylength != 26) {
-				alert(_("secure long wep key"));
-				document.security_form.wep_key_2.focus();
-				return false;
-			}
-			if(checkHex(document.security_form.wep_key_2.value) == false){
-				alert(_("secure invalid key"));
-				document.security_form.wep_key_2.focus();
-				return false;
-			}
-		}
-	}
-
-	keylength = document.security_form.wep_key_3.value.length;
-	if (keylength != 0){
-		if (document.security_form.WEP3Select.options.selectedIndex == 0){
-			if(keylength != 5 && keylength != 13) {
-				alert(_("secure short wep key"));
-				document.security_form.wep_key_3.focus();
-				return false;
-			}
-			if(checkInjection(document.security_form.wep_key_3.value)== false){
-				alert(_("secure invalid wep key"));
-				document.security_form.wep_key_3.focus();
-				return false;
-			}
-		}
-		if (document.security_form.WEP3Select.options.selectedIndex == 1){
-			if(keylength != 10 && keylength != 26) {
-				alert(_("secure long wep key"));
-				document.security_form.wep_key_3.focus();
-				return false;
-			}
-			if(checkHex(document.security_form.wep_key_3.value) == false){
-				alert(_("secure invalid key"));
-				document.security_form.wep_key_3.focus();
-				return false;
-			}
-		}
-	}
-
-	keylength = document.security_form.wep_key_4.value.length;
-	if (keylength != 0){
-		if (document.security_form.WEP4Select.options.selectedIndex == 0){
-			if(keylength != 5 && keylength != 13) {
-				alert(_("secure short wep key"));
-				document.security_form.wep_key_4.focus();
-				return false;
-			}
-			if(checkInjection(document.security_form.wep_key_4.value)== false){
-				alert(_("secure invalid wep key"));
-				document.security_form.wep_key_4.focus();
-				return false;
-			}
-		}
-		if (document.security_form.WEP4Select.options.selectedIndex == 1){
-			if(keylength != 10 && keylength != 26) {
-				alert(_("secure long wep key"));
-				document.security_form.wep_key_4.focus();
-				return false;
+	<head>
+		<title>Wireless Security Settings</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+		<link rel="stylesheet" href="/style/controls.css" type="text/css">
+		<script src="/lang/b28n.js"></script>
+		<script src="/js/nvram.js"></script>
+		<script src="/js/ajax.js"></script>
+		<script src="/js/controls.js"></script>
+		<script src="/js/validation.js"></script>
+		<script>
+			Butterlate.setTextDomain("wireless");
+			Butterlate.setTextDomain("network");
+			Butterlate.setTextDomain("buttons");
+
+			var old_MBSSID;
+			var WPAAlgorithms;
+			var PreAuthentication;
+			var network				=	{};
+			var securityChanged		=	false;
+			var http_request		=	false;
+			var security_modes_list	=	[
+											[ _("wireless disable"),	"Disable",			0, 0 ],
+											[ "WEP",					"WEPAUTO",			0, 0 ],
+											[ "WPA (Enterprise)",		"WPA",				1, 1 ],
+											[ "WPA-PSK (Personal)",		"WPAPSK",			0, 0 ],
+											[ "WPA2 (Enterprise)",		"WPA2",				1, 1 ],
+											[ "WPA2-PSK (Personal)",	"WPA2PSK",			0, 0 ],
+											[ "WPA1/2-PSK (Personal)",	"WPAPSKWPA2PSK",	0, 0 ],
+											[ "WPA1/2 (Enterprise)",	"WPA1WPA2",			1, 1 ]
+										];
+
+			// Language translation
+			function initTranslation() {
+				_TR("secureSelectSSID",				"secure select ssid");
+				_TR("secureSSIDChoice",				"secure ssid choice");
+				_TR("securityTitle",				"secure ssid title");
+				_TR("securityIntroduction",			"secure ssid introduction");
+				_TR("sp_title",						"secure security policy");
+				_TR("secureSecureMode",				"secure security mode");
+
+				_TR("secureWEP",					"secure wep");
+				_TR("secureWEPDefaultKey",			"secure wep default key");
+				_TR("secureWEPDefaultKey1",			"secure wep default key1");
+				_TR("secureWEPDefaultKey2",			"secure wep default key2");
+				_TR("secureWEPDefaultKey3",			"secure wep default key3");
+				_TR("secureWEPDefaultKey4",			"secure wep default key4");
+				_TR("secureWEPKey",					"secure wep key");
+				_TR("secureWEPKey1",				"secure wep key1");
+				_TR("secureWEPKey2",				"secure wep key2");
+				_TR("secureWEPKey3",				"secure wep key3");
+				_TR("secureWEPKey4",				"secure wep key4");
+
+				_TR("secureWPA",					"secure wpa");
+				_TR("secureWPAAlgorithm",			"secure wpa algorithm");
+				
+				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+					_TR("secureWPAPassPhrase",		"secure wpa pass phrase nic");
+				else
+					_TR("secureWPAPassPhrase",		"secure wpa pass phrase");
+
+
+				_TR("secureWPAPassPhraseInic",		"secure wpa pass phrase inic");
+				_TR("secureWPAKeyRenewInterval",	"secure wpa key renew interval");
+				_TR("secureWPAPMKCachePeriod",		"secure wpa pmk cache period");
+				_TR("secureWPAPreAuth",				"secure wpa preauth");
+				_TR("secureWPAPreAuthDisable",		"wireless disable");
+				_TR("secureWPAPreAuthEnable",		"wireless enable");
+
+				_TR("secureRadius",					"secure radius");
+				_TR("secureRadiusIPAddr",			"secure radius ipaddr");
+				_TR("secureRadiusPort",				"secure radius port");
+				_TR("secureRadiusSharedSecret",		"secure radius shared secret");
+				_TR("secureRadiusSessionTimeout",	"secure radius session timeout");
+				_TR("secureShowPass",				"secure wpa show pass phrase");
+				_TR("secureShowPass1",				"secure wpa show pass phrase");
+				_TR("secureShowPass2",				"secure wpa show pass phrase");
+				_TR("secureShowPass3",				"secure wpa show pass phrase");
+				_TR("secureShowPass4",				"secure wpa show pass phrase");
+				_TR("secureShowPass5",				"secure wpa show pass phrase");
+				_TR("secureShowPass6",				"secure wpa show pass phrase");
+				
+				_TR("PreAuthenticationDisable",		"button disable");
+				_TR("PreAuthenticationEnable",		"button enable");
+				_TR("secureKeySeconds",				"secure key seconds");
+				_TR("secureKeyMinutes",				"secure key minutes");
+				
+				_TRV("secureApply",					"button apply");
+				_TRV("secureCancel",				"button cancel");
+				_TRV("secureReset",					"button reset");
 			}
 
-			if(checkHex(document.security_form.wep_key_4.value) == false){
-				alert(_("secure invalid key"));
-				document.security_form.wep_key_4.focus();
-				return false;
-			}
-		}
-	}
-	return true;
-}
+			// Init values on page load
+			function initValues() {
+				showWarning();
+				initTranslation();
 
-function submit_apply(form)
-{
-	if (checkData(form) == true)
-	{
-		changed = 0;
-		return true;
-	}
-	return false;
-}
+				var html = '';
+				for (var i = 0; i < MBSSID_MAX; i++)
+					html += '<input type="hidden" name="AccessControlList' + i + '" id="AccessControlList' + i + '" value="">';
+				document.getElementById('accessPolicyInput').innerHTML = html;	
 
-function LoadFields(MBSSID)
-{
-	var result;
-
-	// Security Policy
-	var sp_select = document.getElementById("security_mode");
-	sp_select.options.length = 0;
-
-	for (var i=0; i<security_modes_list.length; i++)
-	{
-		var mode = security_modes_list[i];
-		var setup = true;
-		if ((mode[3] > 0) && (MBSSID > 0)) // 802.1x support only for MBSSID 0
-			setup = false;
-		if ((mode[2] > 0) && (BUILD_8021X == '0'))
-			setup = false;
-
-		if (setup)
-			sp_select.options.add(new Option(mode[0], mode[1]));
-	}
-
-	for (var i=0; i<sp_select.options.length; i++)
-		if (sp_select.options[i].value == AuthMode[MBSSID])
-		{
-			sp_select.options[i].selected = true;
-			break;
-		}
-
-	// WEP
-	document.getElementById("WEP1").value = Key1Str[MBSSID];
-	document.getElementById("WEP2").value = Key2Str[MBSSID];
-	document.getElementById("WEP3").value = Key3Str[MBSSID];
-	document.getElementById("WEP4").value = Key4Str[MBSSID];
-
-	document.getElementById("WEP1Select").selectedIndex = (Key1Type[MBSSID] == "0" ? 1 : 0);
-	document.getElementById("WEP2Select").selectedIndex = (Key2Type[MBSSID] == "0" ? 1 : 0);
-	document.getElementById("WEP3Select").selectedIndex = (Key3Type[MBSSID] == "0" ? 1 : 0);
-	document.getElementById("WEP4Select").selectedIndex = (Key4Type[MBSSID] == "0" ? 1 : 0);
-
-	document.getElementById("wep_default_key").selectedIndex = parseInt(DefaultKeyID[MBSSID]) - 1 ;
-
-	// SHARED && NONE
-	if(AuthMode[MBSSID] == "SHARED" && EncrypType[MBSSID] == "NONE")
-		document.getElementById("security_shared_mode").selectedIndex = 1;
-	else
-		document.getElementById("security_shared_mode").selectedIndex = 0;
-
-	// WPA
-	if(EncrypType[MBSSID] == "TKIP") {
-		document.security_form.cipher[0].checked = true;
-		document.security_form.cipher[1].checked = false;
-		document.security_form.cipher[2].checked = false;
-	} else if(EncrypType[MBSSID] == "TKIPAES") {
-		document.security_form.cipher[0].checked = false;
-		document.security_form.cipher[1].checked = false;
-		document.security_form.cipher[2].checked = true;
-	} else {
-		document.security_form.cipher[0].checked = false;
-		document.security_form.cipher[1].checked = true;
-		document.security_form.cipher[2].checked = false;
-	}
-
-	document.getElementById("passphrase").value = WPAPSK[MBSSID];
-	document.getElementById("passphraseinic").value = NVRAM_WPAPSK1INIC;
-	document.getElementById("keyRenewalInterval").value = RekeyInterval[MBSSID];
-	document.getElementById("PMKCachePeriod").value = PMKCachePeriod[MBSSID];
-	if(PreAuth[MBSSID] == "0")
-		document.security_form.PreAuthentication[0].checked = true;
-	else
-		document.security_form.PreAuthentication[1].checked = true;
-
-	//802.1x wep
-	if(IEEE8021X[MBSSID] == "1"){
-		if(EncrypType[MBSSID] == "WEP")
-			document.security_form.ieee8021x_wep[1].checked = true;
-		else
-			document.security_form.ieee8021x_wep[0].checked = true;
-	}
-
-	document.getElementById("RadiusServerIP").value = RADIUS_Server[MBSSID];
-	document.getElementById("RadiusServerPort").value = RADIUS_Port[MBSSID];
-	document.getElementById("RadiusServerSecret").value = RADIUS_Key[MBSSID];
-	document.getElementById("RadiusServerSessionTimeout").value = session_timeout_interval[MBSSID];
-
-	securityMode(0);
-}
-
-function ShowAP(MBSSID)
-{
-	var i;
-	for(i=0; i<MBSSID_MAX; i++){
-		document.getElementById("apselect_"+i).selectedIndex	= AccessPolicy[i];
-		document.getElementById("AccessPolicy_"+i).style.visibility = "hidden";
-		document.getElementById("AccessPolicy_"+i).style.display = "none";
-	}
-
-	document.getElementById("AccessPolicy_"+MBSSID).style.visibility = "visible";
-	if (window.ActiveXObject) {			// IE
-		document.getElementById("AccessPolicy_"+MBSSID).style.display = "block";
-	}else if (window.XMLHttpRequest) {	// Mozilla, Safari,...
-		document.getElementById("AccessPolicy_"+MBSSID).style.display = "table";
-	}
-}
-
-function LoadAP()
-{
-	for(var i=0; i<SSID.length; i++){
-		var j=0;
-		var aplist = new Array;
-
-		if(AccessControlList[i].length != 0){
-			aplist = AccessControlList[i].split(";");
-			for(j=0; j<aplist.length; j++){
-				document.getElementById("newap_"+i+"_"+j).value = aplist[j];
+				createAccessPolicyTable();
+				makeRequest("/goform/wirelessGetSecurity", "n/a", securityHandler);
+				var br = getBrowser();
+				if (br.browser == 'ie' && br.versionShort <= 8)
+					displayElement([document.getElementById('passphrase_type'),
+							document.getElementById('passphrase_inic_type')], false);
 			}
 
-			// hide the lastest <td>
-			if(j%2){
-				document.getElementById("newap_td_"+i+"_"+j).style.visibility = "hidden";
-				document.getElementById("newap_td_"+i+"_"+j).style.display = "none";
-				j++;
+			// Check values on form submit
+			function checkValues(form) {
+				switch (document.security_form.security_mode.value) {
+					case 'WEPAUTO':		
+											if (!checkWEP())
+												return false;
+											break;
+					case 'WPAPSK':
+					case 'WPA2PSK':
+					case 'WPAPSKWPA2PSK':
+											if (document.security_form.passphrase.value.length == 0) {
+												document.security_form.passphrase.focus();
+												alert(_("secure no key"));
+												return false;
+											}
+
+											if ( document.security_form.passphrase.value.length < 8) {
+												document.security_form.passphrase.focus();
+												document.security_form.passphrase.select();
+												alert(_("apcli short phrase"));
+												return false;
+											}
+
+											if(!checkInjection(document.security_form.passphrase.value)) {
+												document.security_form.passphrase.focus();
+												document.security_form.passphrase.select();
+												alert(_("apcli chars not allowed"));
+												return false;
+											}
+
+											if(!checkWPA())
+												return false;
+											break;
+					case 'WPA':
+					case 'WPA1WPA2':
+											if(!checkWPA())
+												return false;
+											if(!checkRadius())
+												return false;
+											break;
+					case 'WPA2':
+											if(!checkWPA())
+												return false;
+
+											if(!document.security_form.PMKCachePeriod.value.length){
+												alert(_("secure no pmk"));
+												return false;
+											}
+											if(checkRadius() == false)
+												return false;
+				}
+
+				// check Access Policy
+				for(i = 0; i < MBSSID_MAX; i++) {
+					if (document.getElementById("newap_text_" + i).value != '')
+						if (!validateMAC(document.getElementById("newap_text_" + i).value)) {
+							alert(_("secure invalid mac"));
+							return false;
+						}
+					if (i < network.data.length)
+						document.getElementById('AccessControlList' + i).value = network.data[i].AccessControlList;
+					else 
+						document.getElementById('AccessControlList' + i).value = '';
+				}
+
+				if (document.getElementById('AccessPolicy' + old_MBSSID).selectedIndex > 0 && document.getElementById('AccessControlList' + old_MBSSID).value.length == 0) {
+					document.getElementById('newap_text_' + old_MBSSID).focus();
+					alert(_("secure empty accesspolicy"));
+					return false;
+				}
+
+				if (NVRAM_SSID1 == NVRAM_SSID1INIC)
+					document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
+
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 25);
+				securityChanged = false;
+				return true;
 			}
-		}
 
-		// hide <tr> left
-		for(; j<ACCESSPOLICYLIST_MAX; j+=2){
-			document.getElementById("id_"+i+"_"+j).style.visibility = "hidden";
-			document.getElementById("id_"+i+"_"+j).style.display = "none";
-		}
-	}
-}
+			// Check WEP keys
+			function checkWEP() {
+				// validate HEX string
+				function validateHex(str) {
+					var re = /^[0-9a-fA-F]+$/;
+					if (!re.test(str))
+						return false;
+					else
+						return true;
+				}
 
-function selectMBSSIDChanged()
-{
-	// check if any security settings changed
-	if(changed){
-		ret = confirm(_("secure confirm"));
-		if(!ret){
-			document.security_form.ssidIndex.options.selectedIndex = old_MBSSID;
-			return false;
-		}
-		else
-			changed = 0;
-	}
+				var keyValue;
+				var keyLength;
 
-	var selected = document.security_form.ssidIndex.options.selectedIndex;
+				switch (document.security_form.wep_default_key.value) {
+					case '1':	keyValue = document.security_form.wep_key_1.value;		break;
+					case '2':	keyValue = document.security_form.wep_key_2.value;		break;
+					case '3':	keyValue = document.security_form.wep_key_3.value;		break;
+					case '4':	keyValue = document.security_form.wep_key_4.value;		break;
+				}
+				
+				if (keyValue.length == 0) {
+					eval("document.security_form.wep_key_" + document.security_form.wep_default_key.value).focus();
+					eval("document.security_form.wep_key_" + document.security_form.wep_default_key.value).select();
+					alert(_("secure no wep key") + document.security_form.wep_default_key.value + ' !');
+					return false;
+				}
 
-	// backup for user cancel action
-	old_MBSSID = selected;
+				// validate WEP Key 1
+				keyLength = document.security_form.wep_key_1.value.length;
+				if (keyLength > 0) {
+					// validate ASCII value
+					if (document.security_form.WEP1Select.options.selectedIndex == 0) {
+						if (keyLength != 5 && keyLength != 13) {
+							document.security_form.wep_key_1.focus();
+							document.security_form.wep_key_1.select();
+							alert(_("secure short wep key"));
+							return false;
+						}
+						if(!checkInjection(document.security_form.wep_key_1.value)) {
+							document.security_form.wep_key_1.focus();
+							document.security_form.wep_key_1.select();
+							alert(_("secure invalid wep key"));
+							return false;
+						}
+					}
+					// validate HEX value
+					if (document.security_form.WEP1Select.options.selectedIndex == 1) {
+						if (keyLength != 10 && keyLength != 26) {
+							document.security_form.wep_key_1.focus();
+							document.security_form.wep_key_1.select();
+							alert(_("secure long wep key"));
+							return false;
+						}
+						if (!validateHex(document.security_form.wep_key_1.value)){
+							document.security_form.wep_key_1.focus();
+							document.security_form.wep_key_1.select();
+							alert(_("secure invalid key"));
+							return false;
+						}
+					}
+				}
 
-	MBSSIDChange(selected);
-}
+				// validate WEP Key 2
+				keyLength = document.security_form.wep_key_2.value.length;
+				if (keyLength > 0) {
+					// validate ASCII value
+					if (document.security_form.WEP2Select.options.selectedIndex == 0) {
+						if (keyLength != 5 && keyLength != 13) {
+							document.security_form.wep_key_2.focus();
+							document.security_form.wep_key_2.select();
+							alert(_("secure short wep key"));
+							return false;
+						}
+						if(!checkInjection(document.security_form.wep_key_2.value)) {
+							document.security_form.wep_key_2.focus();
+							document.security_form.wep_key_2.select();
+							alert(_("secure invalid wep key"));
+							return false;
+						}
+					}
+					// validate HEX value
+					if (document.security_form.WEP2Select.options.selectedIndex == 1) {
+						if (keyLength != 10 && keyLength != 26) {
+							document.security_form.wep_key_2.focus();
+							document.security_form.wep_key_2.select();
+							alert(_("secure long wep key"));
+							return false;
+						}
+						if (!validateHex(document.security_form.wep_key_2.value)){
+							document.security_form.wep_key_2.focus();
+							document.security_form.wep_key_2.select();
+							alert(_("secure invalid key"));
+							return false;
+						}
+					}
+				}
 
-/*
- * When user select the different SSID, this function would be called.
- */
-function MBSSIDChange(selected)
-{
-	// load wep/wpa/802.1x table for MBSSID[selected]
-	LoadFields(selected);
+				// validate WEP Key 3
+				keyLength = document.security_form.wep_key_3.value.length;
+				if (keyLength > 0) {
+					// validate ASCII value
+					if (document.security_form.WEP3Select.options.selectedIndex == 0) {
+						if (keyLength != 5 && keyLength != 13) {
+							document.security_form.wep_key_3.focus();
+							document.security_form.wep_key_3.select();
+							alert(_("secure short wep key"));
+							return false;
+						}
+						if(!checkInjection(document.security_form.wep_key_3.value)) {
+							document.security_form.wep_key_3.focus();
+							document.security_form.wep_key_3.select();
+							alert(_("secure invalid wep key"));
+							return false;
+						}
+					}
+					// validate HEX value
+					if (document.security_form.WEP3Select.options.selectedIndex == 1) {
+						if (keyLength != 10 && keyLength != 26) {
+							document.security_form.wep_key_3.focus();
+							document.security_form.wep_key_3.select();
+							alert(_("secure long wep key"));
+							return false;
+						}
+						if (!validateHex(document.security_form.wep_key_3.value)){
+							document.security_form.wep_key_3.focus();
+							document.security_form.wep_key_3.select();
+							alert(_("secure invalid key"));
+							return false;
+						}
+					}
+				}
 
-	// update Access Policy for MBSSID[selected]
-	ShowAP(selected);
+				// validate WEP Key 4
+				keyLength = document.security_form.wep_key_4.value.length;
+				if (keyLength > 0) {
+					// validate ASCII value
+					if (document.security_form.WEP4Select.options.selectedIndex == 0) {
+						if (keyLength != 5 && keyLength != 13) {
+							document.security_form.wep_key_4.focus();
+							document.security_form.wep_key_4.select();
+							alert(_("secure short wep key"));
+							return false;
+						}
+						if(!checkInjection(document.security_form.wep_key_4.value)) {
+							document.security_form.wep_key_4.focus();
+							document.security_form.wep_key_4.select();
+							alert(_("secure invalid wep key"));
+							return false;
+						}
+					}
+					// validate HEX value
+					if (document.security_form.WEP4Select.options.selectedIndex == 1) {
+						if (keyLength != 10 && keyLength != 26) {
+							document.security_form.wep_key_4.focus();
+							document.security_form.wep_key_4.select();
+							alert(_("secure long wep key"));
+							return false;
+						}
+						if (!validateHex(document.security_form.wep_key_4.value)){
+							document.security_form.wep_key_4.focus();
+							document.security_form.wep_key_4.select();
+							alert(_("secure invalid key"));
+							return false;
+						}
+					}
+				}
 
-	// radio button special case
-	WPAAlgorithms = EncrypType[selected];
-	IEEE8021XWEP = IEEE8021X[selected];
-	PreAuthentication = PreAuth[selected];
+				return true;
+			}
 
-	changeSecurityPolicyTableTitle(SSID[selected]);
+			// Check WPA variables
+			function checkWPA() {
+				// validate Key renewal interval
+				if (!validateNum(document.security_form.keyRenewalInterval.value)) {
+					document.security_form.keyRenewalInterval.focus();
+					document.security_form.keyRenewalInterval.select();
+					alert(_("secure renewal"));
+					return false;
+				}
+				else if (document.security_form.keyRenewalInterval.value < 10 ||
+						document.security_form.keyRenewalInterval.value > 86400) {
+					document.security_form.keyRenewalInterval.focus();
+					document.security_form.keyRenewalInterval.select();
+					alert(_("secure renewal wrong"));
+					return false;
+				}
 
-	// clear all new access policy list field
-	for(i=0; i<MBSSID_MAX; i++)
-		document.getElementById("newap_text_"+i).value = "";
+				return true;
+			}
 
-	return true;
-}
+			// Check Radius variables
+			function checkRadius() {
+				// validate RADIUS IP address
+				if(!validateIP(document.security_form.RadiusServerIP)) {
+					document.security_form.RadiusServerIP.focus();
+					document.security_form.RadiusServerIP.select();
+					alert(_("secure invalid radius ip"));
+					return false;
+				}
+				// validate RADIUS port
+				if(!validatePort(document.security_form.RadiusServerPort)) {
+					document.security_form.RadiusServerPort.focus();
+					document.security_form.RadiusServerPort.select();
+					alert(_("secure invalid radius port"));
+					return false;
+				}
+				// validate RADIUS secret
+				if( !checkStrictInjection(document.security_form.RadiusServerSecret.value) || 
+					!document.security_form.RadiusServerSecret.value.length) {
+					document.security_form.RadiusServerSecret.focus();
+					document.security_form.RadiusServerSecret.select();
+					alert(_("secure invalid radius secret"));
+					return false;
+				}
+				// validate RADIUS timeout
+				if (document.security_form.RadiusServerSessionTimeout.value.length > 0)
+					if(!validateNum(document.security_form.RadiusServerSessionTimeout.value)){
+						document.security_form.RadiusServerSessionTimeout.focus();
+						document.security_form.RadiusServerSessionTimeout.select();
+						alert(_("secure invalid timeout"));
+						return false;
+					}
 
-function changeSecurityPolicyTableTitle(t)
-{
-	var title = document.getElementById("sp_title");
-	title.innerHTML = "\"" + t + "\"";
-}
+				return true;
+			}
 
-function delap(mbssid, num)
-{
-	makeRequest("/goform/APDeleteAccessPolicyList", mbssid+ "," +num, deleteAccessPolicyListHandler);
-}
+			// Check ASCII 10 & 13 on string
+			function checkInjection(str) {
+				var re = /^[\r\n]+$/;
+				if (re.test(str))
+					return false;
+				else
+					return true;
+			}
 
-function initTranslation()
-{
-	_TR("secureSelectSSID", "secure select ssid");
-	_TR("secureSSIDChoice", "secure ssid choice");
+			// Check ASCII 10, 13 and ; , on string
+			function checkStrictInjection(str) {
+				var re = /^[\r\n;,]+$/;
+				if (re.test(str))
+					return false;
+				else
+					return true;
+			}
 
-	_TR("securityTitle", "secure ssid title");
-	_TR("securityIntroduction", "secure ssid introduction");
-	_TR("sp_title", "secure security policy");
-	_TR("secureSecureMode", "secure security mode");
-	_TR("secureEncrypType", "secure encryp type");
-	_TR("secureEncrypTypeNone", "wireless none");
+			// mage AJAX request 
+			function makeRequest(url, content, handler) {
+				http_request = false;
+				if (window.XMLHttpRequest) {							// Mozilla, Safari,...
+					http_request = new XMLHttpRequest();
+					if (http_request.overrideMimeType)
+						http_request.overrideMimeType('text/xml');
+				}
+				else if (window.ActiveXObject) {						// IE
+					try {
+						http_request = new ActiveXObject("Msxml2.XMLHTTP");
+					}
+					catch (e) {
+						try {
+							http_request = new ActiveXObject("Microsoft.XMLHTTP");
+						}
+						catch (e) {}
+					}
+				}
+				if (!http_request) {
+					alert('Giving up :( Cannot create an XMLHTTP instance');
+					return false;
+				}
+				http_request.onreadystatechange = handler;
+				http_request.open('POST', url, true);
+				http_request.send(content);
+			}
 
-	_TR("secureWEP", "secure wep");
-	_TR("secureWEPDefaultKey", "secure wep default key");
-	_TR("secureWEPDefaultKey1", "secure wep default key1");
-	_TR("secureWEPDefaultKey2", "secure wep default key2");
-	_TR("secureWEPDefaultKey3", "secure wep default key3");
-	_TR("secureWEPDefaultKey4", "secure wep default key4");
-	_TR("secureWEPKey", "secure wep key");
-	_TR("secureWEPKey1", "secure wep key1");
-	_TR("secureWEPKey2", "secure wep key2");
-	_TR("secureWEPKey3", "secure wep key3");
-	_TR("secureWEPKey4", "secure wep key4");
+			// processing request data
+			function securityHandler() {
+				if (http_request.readyState == 4) 
+					if (http_request.status == 200) {
+						var i, j, aplist;
 
-	_TR("secreWPA", "secure wpa");
-	_TR("secureWPAAlgorithm", "secure wpa algorithm");
-	
-	if (BUILD_5GHZ_SUPPORT == 1 && (NVRAM_SSID1 != NVRAM_SSID1INIC))
-		_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
-	else
-		_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+						network = JSON.parse(http_request.responseText);
 
+						if (BUILD_5GHZ_SUPPORT == '1' && NVRAM_RadioOnINIC == '1' && NVRAM_SSID1INIC.length > 0 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+							network.data[0].SSID = network.data[0].SSID + ' / ' + NVRAM_SSID1INIC;
 
-	_TR("secureWPAPassPhraseInic", "secure wpa pass phrase inic");
-	_TR("secureWPAKeyRenewInterval", "secure wpa key renew interval");
-	_TR("secureWPAPMKCachePeriod", "secure wpa pmk cache period");
-	_TR("secureWPAPreAuth", "secure wpa preauth");
-	_TR("secureWPAPreAuthDisable", "wireless disable");
-	_TR("secureWPAPreAuthEnable", "wireless enable");
+						for (i = 0; i < network.data.length; i++) {
+							if ((network.data[i].AuthMode == "OPEN" && network.data[i].EncrypType == "NONE") || network.data[i].AuthMode.length == 0)
+								network.data[i].AuthMode = "Disable";
+							network.data[i].AccessPolicyOrig		= network.data[i].AccessPolicy;
+							network.data[i].AccessControlListOrig	= network.data[i].AccessControlList;
+							network.data[i].DefaultKeyID			= (network.data[i].DefaultKeyID.length == 0) 	? '1' 		: network.data[i].DefaultKeyID;
+							network.data[i].EncrypType				= (network.data[i].EncrypType.length == 0) 		? 'NONE' 	: network.data[i].EncrypType;
+							network.data[i].Key1Type				= (network.data[i].Key1Type.length == 0) 		? '0' 		: network.data[i].Key1Type;
+							network.data[i].Key2Type				= (network.data[i].Key2Type.length == 0) 		? '0' 		: network.data[i].Key2Type;
+							network.data[i].Key3Type				= (network.data[i].Key3Type.length == 0) 		? '0' 		: network.data[i].Key3Type;
+							network.data[i].Key4Type				= (network.data[i].Key4Type.length == 0) 		? '0' 		: network.data[i].Key4Type;
+							network.data[i].PreAuth					= (network.data[i].PreAuth.length == 0) 		? '0' 		: network.data[i].PreAuth;
+							network.data[i].RekeyMethod				= (network.data[i].RekeyMethod.length == 0) 	? 'TIME'	: network.data[i].RekeyMethod;
+						}
 
-	_TR("secure8021XWEP", "secure 8021x wep");
-	_TR("secure1XWEP", "secure 1x wep");
-	_TR("secure1XWEPDisable", "wireless disable");
-	_TR("secure1XWEPEnable", "wireless enable");
+						document.security_form.ssidIndex.length = 0;
 
-	_TR("secureRadius", "secure radius");
-	_TR("secureRadiusIPAddr", "secure radius ipaddr");
-	_TR("secureRadiusPort", "secure radius port");
-	_TR("secureRadiusSharedSecret", "secure radius shared secret");
-	_TR("secureRadiusSessionTimeout", "secure radius session timeout");
-	_TR("secureShowPass", "secure wpa show pass phrase");
-	_TR("secureShowPass1", "secure wpa show pass phrase");
-	_TR("secureShowPass2", "secure wpa show pass phrase");
-	_TR("secureShowPass3", "secure wpa show pass phrase");
-	_TR("secureShowPass4", "secure wpa show pass phrase");
-	_TR("secureShowPass5", "secure wpa show pass phrase");
-	_TR("secureKeySeconds", "secure key seconds");
-	_TR("secureKeyMinutes", "secure key minutes");
-	
-	_TRV("secureApply", "wireless apply");
-	_TRV("secureCancel", "wireless cancel");
-}
+						for(i = 0; i < network.data.length; i++) 
+							document.security_form.ssidIndex.options[document.security_form.ssidIndex.options.length] = new Option(network.data[i].SSID, i, false, false);
 
-function initAll()
-{
-	initTranslation();
-	showWarning();
-	makeRequest("/goform/wirelessGetSecurity", "n/a", securityHandler);
-}
+						document.security_form.ssidIndex.options.selectedIndex = network.default_mbssid;
+						old_MBSSID = network.default_mbssid;
+						document.getElementById('sp_title').innerHTML = _("secure security policy") + ' "' + network.data[network.default_mbssid].SSID + '"';
 
-function UpdateMBSSIDList()
-{
-	document.security_form.ssidIndex.length = 0;
+						LoadFields(network.default_mbssid);
+						prepareAccessPolicy();
+					}
+					else
+						alert('There was a problem with the request.');
+			}
 
-	for(var i=0; i<SSID.length; i++){
-		var j = document.security_form.ssidIndex.options.length;
-		document.security_form.ssidIndex.options[j] = new Option(SSID[i], i, false, false);
-	}
+			// Show only needed fields
+			function securityMode(check) {
+				displayElement(['div_wep', 'div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_passphrase5', 
+								'wpa_key_renewal_interval', 'wpa_PMK_Cache_Period', 'wpa_preAuthentication', 'div_radius_server'], false);
 
-	document.security_form.ssidIndex.options.selectedIndex = defaultShownMBSSID;
-	old_MBSSID = defaultShownMBSSID;
-	changeSecurityPolicyTableTitle(SSID[defaultShownMBSSID]);
-}
+				switch (document.security_form.security_mode.value) {
+					case 'WEPAUTO':			displayElement('div_wep', true);
+											break;
+					case 'WPAPSK':
+					case 'WPA2PSK':
+					case 'WPAPSKWPA2PSK':	displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_key_renewal_interval'], true);
+											displayElement('wpa_passphrase5', BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC && old_MBSSID == 0);
+											break;
+					case 'WPA2':			displayElement(['wpa_preAuthentication', 'wpa_PMK_Cache_Period'], true);
+					case 'WPA':
+					case 'WPA1WPA2':		displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_key_renewal_interval', 'div_radius_server', ], true);
+											break;
+				}
 
-function setChange(c){
-	changed = c;
-}
+				if (check && (document.security_form.security_mode.value != 'WPA2PSK' && document.security_form.security_mode.value != 'WPA2'))
+					setTimeout(function () { showWarningEncriptionMode() }, 100);
+			}
 
-var WPAAlgorithms;
-function onWPAAlgorithmsClick(type)
-{
-	if(type == 0 && WPAAlgorithms == "TKIP") return;
-	if(type == 1 && WPAAlgorithms == "AES") return;
-	if(type == 2 && WPAAlgorithms == "TKIPAES") return;
-	setChange(1);
-}
+			// Load fields data
+			function LoadFields(MBSSID) {
+				var i;
 
-var IEEE8021XWEP;
-function onIEEE8021XWEPClick(type)
-{
-	if(type == 0 && IEEE8021XWEP == false) return;
-	if(type == 1 && IEEE8021XWEP == true) return;
-	setChange(1);
-}
+				// Security Mode
+				document.getElementById('security_mode').options.length = 0;
 
-var PreAuthentication;
-function onPreAuthenticationClick(type)
-{
-	if(type == 0 && PreAuthentication == false) return;
-	if(type == 1 && PreAuthentication == true) return;
-	setChange(1);
-}
+				for (i = 0; i < security_modes_list.length; i++)
+					document.getElementById('security_mode').options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
 
-function showWarning() {
-	var warning_access_password		= NVRAM_Password == "Admin";
-	var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
-	var warning_wireless_key		= NVRAM_WPAPSK1  == "1234567890";
+				for (i = 0; i < document.getElementById('security_mode').options.length; i++)
+					if (document.getElementById('security_mode').options[i].value == network.data[MBSSID].AuthMode) {
+						document.getElementById('security_mode').options[i].selected = true;
+						break;
+					}
 
-	var warningHTML = "";
-	
-	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
-		warningHTML += '<tr><td>';
-		warningHTML += '<table class="warning">';
-		warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
-		if  (warning_wireless_security || warning_wireless_key) {
-			warningHTML += '<tr>';
-			warningHTML += '<td class="warning" colspan="2">' + _("warning wireless security") + '</td>';
-			warningHTML += '</tr>';
-		}
-		if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
-			warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
-		}
-		if  (warning_access_password) {
-			warningHTML += '<tr>';
-			warningHTML += '<td class="warning">' + _("warning access password") + '</td>';
-			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/adm/management.asp");\'></td>';
-			warningHTML += '</tr>';
-		}
-		warningHTML += '</table>';
-		warningHTML += '</td></tr><br>';
-		ajaxModifyElementHTML('warning', warningHTML);
-	}
-}
-function showPassPhrase(id) {
-	var element = document.getElementById(id);
-	if (element.type == 'password')
-		element.type = 'text'
-	else
-		element.type = 'password';
-}
-</script>
-</head>
+				// WEP
+				document.getElementById('WEP1').value = network.data[MBSSID].Key1Str;
+				document.getElementById('WEP2').value = network.data[MBSSID].Key2Str;
+				document.getElementById('WEP3').value = network.data[MBSSID].Key3Str;
+				document.getElementById('WEP4').value = network.data[MBSSID].Key4Str;
 
-<body bgcolor="#FFFFFF" onLoad="initAll();">
-<table class="body">
-  <tbody>
-    <tr id="warning"></tr>
-    <tr>
-      <td><h1 id="securityTitle">Wireless Security/Encryption Settings </h1>
-        <p id="securityIntroduction">Here you can configure wireless security and encryption to prevent unauthorized access to the router.</p>
-        <hr />
-        <form method="post" name="security_form" action="/goform/APSecurity" onSubmit="return submit_apply(this);">
-          <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
-          <!-- ---------------------  MBSSID Selection  --------------------- -->
-          <table class="form">
-            <tr>
-              <td class="title" colspan="2" id="secureSelectSSID">Select SSID</td>
-            </tr>
-            <tr>
-              <td class="head" id="secureSSIDChoice">SSID choice</td>
-              <td><select name="ssidIndex" class="mid" onChange="selectMBSSIDChanged();">
-                  <!-- ....Javascript will update options.... -->
-                </select></td>
-            </tr>
-          </table>
-          <table class="form">
-            <tr>
-              <td class="title" colspan="2"><span id="sp_title">Security Policy </span></td>
-            </tr>
-            <tr id="div_security_infra_mode" name="div_security_infra_mode">
-              <td class="head" id="secureSecureMode">Security Mode</td>
-              <td><select name="security_mode" id="security_mode" class="mid" onChange="securityMode(1)">
-                  <!-- ....Javascript will update options.... -->
-                </select></td>
-            </tr>
-            <tr id="div_security_shared_mode" name="div_security_shared_mode" style="visibility: hidden;">
-              <td class="head" id="secureEncrypType">Encrypt Type</td>
-              <td><select name="security_shared_mode" id="security_shared_mode" class="mid" onChange="securityMode(1)">
-                  <option value=WEP>WEP</option>
-                  <option value=None id="secureEncrypTypeNone">None</option>
-                </select></td>
-            </tr>
-          </table>
-          <!-- WEP -->
-          <table id="div_wep" name="div_wep" class="form" style="visibility: hidden;">
-            <tr>
-              <td class="title" colspan="4" id="secureWEP">Wired Equivalent Privacy (WEP)</td>
-            </tr>
-            <tr>
-              <td class="head" colspan="2" id="secureWEPDefaultKey">Default Key</td>
-              <td colspan="2"><select name="wep_default_key" id="wep_default_key" class="half" onChange="setChange(1)">
-                  <option value="1" id="secureWEPDefaultKey1">Key 1</option>
-                  <option value="2" id="secureWEPDefaultKey2">Key 2</option>
-                  <option value="3" id="secureWEPDefaultKey3">Key 3</option>
-                  <option value="4" id="secureWEPDefaultKey4">Key 4</option>
-                </select></td>
-            </tr>
-            <tr>
-              <td class="head1" rowspan="4" id="secureWEPKey">WEP Keys</td>
-              <td class="head2" id="secureWEPKey1">WEP Key 1 :</td>
-              <td><input type="password" name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP1')"><font id="secureShowPass">(show)</font></td>
-              <td><select id="WEP1Select" class="half" name="WEP1Select" onChange="setChange(1)">
-                  <option value="1">ASCII</option>
-                  <option value="0">Hex</option>
-                </select></td>
-            </tr>
-            <tr>
-              <td class="head2" id="secureWEPKey2">WEP Key 2 : </td>
-              <td><input type="password" name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP2')"><font id="secureShowPass1">(show)</font></td>
-              <td><select id="WEP2Select" name="WEP2Select" class="half" onChange="setChange(1)">
-                  <option value="1">ASCII</option>
-                  <option value="0">Hex</option>
-                </select></td>
-            </tr>
-            <tr>
-              <td class="head2" id="secureWEPKey3">WEP Key 3 : </td>
-              <td><input type="password" name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP3')"><font id="secureShowPass2">(show)</font></td>
-              <td><select id="WEP3Select" name="WEP3Select" class="half" onChange="setChange(1)">
-                  <option value="1">ASCII</option>
-                  <option value="0">Hex</option>
-                </select></td>
-            </tr>
-            <tr>
-              <td class="head2" id="secureWEPKey4">WEP Key 4 : </td>
-              <td><input type="password" name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('WEP4')"><font id="secureShowPass3">(show)</font></td>
-              <td><select id="WEP4Select" name="WEP4Select" class="half" onChange="setChange(1)">
-                  <option value="1">ASCII</option>
-                  <option value="0">Hex</option>
-                </select></td>
-            </tr>
-          </table>
-          <!-- <br> -->
+				document.getElementById('WEP1Select').selectedIndex = (network.data[MBSSID].Key1Type == '0' ? 1 : 0);
+				document.getElementById('WEP2Select').selectedIndex = (network.data[MBSSID].Key2Type == '0' ? 1 : 0);
+				document.getElementById('WEP3Select').selectedIndex = (network.data[MBSSID].Key3Type == '0' ? 1 : 0);
+				document.getElementById('WEP4Select').selectedIndex = (network.data[MBSSID].Key4Type == '0' ? 1 : 0);
 
-          <!-- WPA -->
-          <table id="div_wpa" name="div_wpa" class="form" style="visibility: hidden; display: none;">
-            <tr>
-              <td class="title" colspan="2" id="secreWPA">WPA</td>
-            </tr>
-            <tr id="div_wpa_algorithms" name="div_wpa_algorithms" style="visibility: hidden;">
-              <td class="head" id="secureWPAAlgorithm">WPA Algorithms</td>
-              <td><input name="cipher" id="cipher" value="0" type="radio" onClick="onWPAAlgorithmsClick(0)">
-                TKIP &nbsp;
-                <input name="cipher" id="cipher" value="1" type="radio" onClick="onWPAAlgorithmsClick(1)">
-                AES &nbsp;
-                <input name="cipher" id="cipher" value="2" type="radio" onClick="onWPAAlgorithmsClick(2)">
-                TKIP/AES &nbsp; </td>
-            </tr>
-            <tr id="wpa_passphrase" name="wpa_passphrase" style="visibility: hidden;">
-              <td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
-              <td><input type="password" name="passphrase" id="passphrase" size="28" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('passphrase')"><font id="secureShowPass4">(show)</font></td>
-            </tr>
-            <tr id="wpa_passphrase5" name="wpa_passphrase5" style="display: none; ">
-              <td class="head" id="secureWPAPassPhraseInic">Pass Phrase 5GHz</td>
-              <td><input type="password" name="passphraseinic" id="passphraseinic" size="28" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('passphraseinic')"><font id="secureShowPass5">(show)</font></td>
-            </tr>
-            <tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
-              <td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
-              <td><input name="keyRenewalInterval" id="keyRenewalInterval" size="4" maxlength="5" value="3600" onKeyUp="setChange(1)"><span id="secureKeySeconds">seconds</span></td>
-            </tr>
-            <tr id="wpa_PMK_Cache_Period" name="wpa_PMK_Cache_Period" style="visibility: hidden;">
-              <td class="head" id="secureWPAPMKCachePeriod">PMK Cache Period</td>
-              <td><input name="PMKCachePeriod" id="PMKCachePeriod" size="4" maxlength="4" value="" onKeyUp="setChange(1)"><span id="secureKeyMinutes">minute</span></td>
-            </tr>
-            <tr id="wpa_preAuthentication" name="wpa_preAuthentication" style="visibility: hidden;">
-              <td class="head" id="secureWPAPreAuth">Pre-Authentication</td>
-              <td><input name="PreAuthentication" id="PreAuthentication" value="0" type="radio" onClick="onPreAuthenticationClick(0)">
-                <font id="secureWPAPreAuthDisable">Disable &nbsp;</font>
-                <input name="PreAuthentication" id="PreAuthentication" value="1" type="radio" onClick="onPreAuthenticationClick(1)">
-                <font id="secureWPAPreAuthEnable">Enable &nbsp;</font></td>
-            </tr>
-          </table>
-          <!-- 802.1x -->
-          <!-- WEP  -->
-          <table id="div_8021x_wep" name="div_8021x_wep" class="form" style="visibility: hidden; display: none;">
-            <tr>
-              <td class="title" colspan="2" id="secure8021XWEP">802.1x WEP</td>
-            </tr>
-            <tr>
-              <td class="head" id="secure1XWEP">WEP</td>
-              <td><input name="ieee8021x_wep" id="ieee8021x_wep" value="0" type="radio" onClick="onIEEE8021XWEPClick(0)">
-                <span id="secure1XWEPDisable">Disable &nbsp;</span>
-                <input name="ieee8021x_wep" id="ieee8021x_wep" value="1" type="radio" onClick="onIEEE8021XWEPClick(1)">
-                <span id="secure1XWEPEnable">Enable</span></td>
-            </tr>
-          </table>
-          <table id="div_radius_server" name="div_radius_server" class="form" style="visibility: hidden; display: none;">
-            <tr>
-              <td class="title" colspan="2" id="secureRadius">Radius Server</td>
-            </tr>
-            <tr>
-              <td class="head" id="secureRadiusIPAddr"> IP Address </td>
-              <td><input name="RadiusServerIP" id="RadiusServerIP" size="16" maxlength="32" value="" onKeyUp="setChange(1)"></td>
-            </tr>
-            <tr>
-              <td class="head" id="secureRadiusPort"> Port </td>
-              <td><input name="RadiusServerPort" id="RadiusServerPort" size="5" maxlength="5" value="" onKeyUp="setChange(1)"></td>
-            </tr>
-            <tr>
-              <td class="head" id="secureRadiusSharedSecret"> Shared Secret </td>
-              <td><input type="password" name="RadiusServerSecret" id="RadiusServerSecret" size="16" maxlength="64" value="" onKeyUp="setChange(1)"><input type="checkbox" onChange="showPassPhrase('RadiusServerSecret')"><font id="secureShowPass5">(show)</font></td>
-            </tr>
-            <tr>
-              <td class="head" id="secureRadiusSessionTimeout"> Session Timeout </td>
-              <td><input name="RadiusServerSessionTimeout" id="RadiusServerSessionTimeout" size="3" maxlength="4" value="0" onKeyUp="setChange(1)"></td>
-            </tr>
-          </table>
-          <!--				-->
-          <!--	AccessPolicy for mbssid -->
-          <!--				-->
-          <script language="JavaScript" type="text/javascript">
-var aptable;
+				document.getElementById('wep_default_key').selectedIndex = parseInt(network.data[MBSSID].DefaultKeyID) - 1 ;
 
-for (aptable = 0; aptable < MBSSID_MAX; aptable++)
-{
-	document.write(" <table id=\"AccessPolicy_"+ aptable +"\" border=\"1\" class=\"form\">");
-	document.write(" <tbody> <tr> <td class=title colspan=2 >"+_("secure access policy")+"</td></tr>");
-	document.write(" <tr> <td bgcolor=#E8F8FF class=head >"+_("secure access policy capable")+"</td>");
-	document.write(" <td> <select name=apselect_"+ aptable + " id=apselect_"+aptable+" class=\"mid\" onchange=\"setChange(1)\">");
-	document.write(" 			<option value=0 >"+_("wireless disable")+"</option> <option value=1 >"+_("wireless allow")+"</option><option value=2 >"+_("wireless reject")+"</option></select> </td></tr>");
+				// WPA
+				if(network.data[MBSSID].EncrypType == 'TKIP')
+					document.security_form.cipher[0].selected = true;
+				else if(network.data[MBSSID].EncrypType == 'TKIPAES')
+					document.security_form.cipher[2].selected = true;
+				else
+					document.security_form.cipher[1].selected = true;
 
-	for(i=0; i< ACCESSPOLICYLIST_MAX/2; i++){
-		input_name = "newap_"+ aptable +"_" + (2*i);
-		td_name = "newap_td_"+ aptable +"_" + (2*i);
+				document.getElementById('passphrase').value			= network.data[MBSSID].WPAPSK;
+				document.getElementById('passphraseinic').value		= NVRAM_WPAPSK1INIC;
+				document.getElementById('keyRenewalInterval').value	= network.data[MBSSID].RekeyInterval;
+				document.getElementById('PMKCachePeriod').value		= network.data[MBSSID].PMKCachePeriod;
+				if (network.data[MBSSID].PreAuth == '0')
+					document.security_form.PreAuthentication[0].selected = true;
+				else
+					document.security_form.PreAuthentication[1].selected = true;
 
-		document.write(" <tr id=id_"+aptable+"_");
-		document.write(i*2);
-		document.write("> <td id=");
-		document.write(td_name);
-		document.write("> <input style=\"width: 30px;\" value=Del onclick=\"delap("+aptable+", ");
-		document.write(2*i);
-		document.write(")\" type=button > <input id=");
-		document.write(input_name);
-		document.write(" size=16 maxlength=20 readonly></td>");
+				document.getElementById("RadiusServerIP").value				= network.data[MBSSID].RADIUS_Server;
+				document.getElementById("RadiusServerPort").value			= (network.data[MBSSID].RADIUS_Port.length == 0) ? 1812 : network.data[MBSSID].RADIUS_Port;
+				document.getElementById("RadiusServerSecret").value			= (network.data[MBSSID].RADIUS_Key.length == 0) ? 'wive-ng-mt' : network.data[MBSSID].RADIUS_Key;
+				document.getElementById("RadiusServerSessionTimeout").value	= (network.data[MBSSID].session_timeout_interval.length == 0) ? 0 : network.data[MBSSID].session_timeout_interval;
 
-		input_name = "newap_" + aptable + "_" + (2*i+1);
-		td_name = "newap_td_" + aptable + "_" + (2*i+1);
-		document.write("      <td id=");
-		document.write(td_name);
-		document.write("> <input style=\"width: 30px;\" value=Del onclick=\"delap("+aptable+", ");
-		document.write(2*i+1);
-		document.write(")\" type=button> <input id=");
-		document.write(input_name);
-		document.write(" size=16 maxlength=20 readonly></td> </tr>");
-	}
+				securityChanged = false;
+				securityMode(true);
+				if (document.security_form.cipher.value != 1)
+					setTimeout(function () { showWarningEncriptionAlgo() }, 100);
+			}
 
-	document.write("<tr><td class=\"head\">"+_("secure access policy new")+"</td>");
-	document.write("	<td><input class=\"mid\" name=\"newap_text_"+aptable+"\" id=\"newap_text_"+aptable+"\" size=\"16\" maxlength=\"20\"></td></tr></tbody></table>");
-}
-</script>
-          <!-- <br> -->
-          <table class="button">
-            <tr>
-              <td><input class="normal" value="Apply" id="secureApply" type="submit">&nbsp;&nbsp;
-                <input class="normal" value="Cancel" id="secureCancel" type="reset" onClick="window.location.reload();" >
-                <input type="hidden" name="submit-url" value="/wireless/security.asp" ></td>
-            </tr>
-          </table>
-        </form>
-        <div class="whitespace">&nbsp;</div></td>
-    </tr>
-  </tbody>
-</table>
+			// change MBSSID
+			function MBSSIDChange() {
+				if (securityChanged) 
+					if (!confirm(_("secure confirm"))) {
+						document.security_form.ssidIndex.options.selectedIndex = old_MBSSID;
+						return false;
+					}
+					else {
+						network.data[old_MBSSID].AccessPolicy = network.data[old_MBSSID].AccessPolicyOrig;
+						network.data[old_MBSSID].AccessControlList = network.data[old_MBSSID].AccessControlListOrig;
+						securityChanged = false;
+					}
+
+				old_MBSSID	= document.security_form.ssidIndex.options.selectedIndex;
+				LoadFields(document.security_form.ssidIndex.options.selectedIndex);
+				showAccessPolicy(document.security_form.ssidIndex.options.selectedIndex);		// update Access Policy
+
+				WPAAlgorithms		= network.data[old_MBSSID].EncrypType;
+				PreAuthentication	= (network.data[old_MBSSID].PreAuth == '1') ? true : false;
+
+				document.getElementById('sp_title').innerHTML = _("secure security policy") + ' "' + network.data[old_MBSSID].SSID + '"';
+
+				createAccessPolicyTable();
+				prepareAccessPolicy();
+				
+				displayElement(['newap_text_' + old_MBSSID + '_tr', 'newap_macs_' + old_MBSSID + '_tr'], document.getElementById('AccessPolicy' + old_MBSSID).value != 0);
+				
+				displayElement('wpa_passphrase5', old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC);
+				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+					_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
+				else
+					_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+			}
+
+			// WPA algorithm change
+			function onWPAAlgorithmsClick() {
+				if (document.security_form.cipher.value != 1)
+					setTimeout(function () { showWarningEncriptionAlgo(); }, 100);
+
+				if (document.security_form.cipher.value == 0 && WPAAlgorithms == "TKIP")	return;
+				if (document.security_form.cipher.value == 1 && WPAAlgorithms == "AES")		return;
+				if (document.security_form.cipher.value == 2 && WPAAlgorithms == "TKIPAES")	return;
+				securityChanged = true;
+			}
+
+			// Pre-Authentication change
+			function onPreAuthenticationClick() {
+				if(document.security_form.PreAuthentication.value == 0 && PreAuthentication == false) return;
+				if(document.security_form.PreAuthentication.value == 1 && PreAuthentication == true)  return;
+				securityChanged = true;
+			}
+
+			// AccessPolicy change
+			function accessPolicyClick(table) {
+				network.data[table].AccessPolicy = document.getElementById('AccessPolicy' + table).value;
+				displayElement(['newap_text_' + table + '_tr', 'newap_macs_' + table + '_tr'], document.getElementById('AccessPolicy' + table).value != 0);
+			}
+
+			// Show/Hide passphrase
+			function showPassPhrase(id) {
+				document.getElementById(id).type = (document.getElementById(id).type == 'password') ? 'text' : 'password';
+			}
+
+			// Create access policy table
+			function createAccessPolicyTable() {
+				var html = '';
+				for (var aptable = 0; aptable < MBSSID_MAX; aptable++) {
+					html += '<table id="AccessPolicy_' + aptable + '_table" border="1" class="form">' +
+							'	<tbody>' + 
+							'		<tr>' +
+							'			<td class="title" colspan="2">' + _('secure access policy') + '</td>' +
+							'		</tr>' +
+							'		<tr>' +
+							'			<td bgcolor="#E8F8FF" class="head" >' + _('secure access policy capable') + '</td>' +
+							'			<td>' +
+							'				<select name="AccessPolicy' + aptable + '" id="AccessPolicy' + aptable + '" class="mid" onChange="securityChanged = true; accessPolicyClick(' + aptable + ');">' +
+							'					<option value="0">' + _('wireless disable') + '</option>' +
+							'					<option value="1">' + _('wireless allow') + '</option>' +
+							'					<option value="2">' + _('wireless reject') + '</option>' +
+							'				</select>' +
+							'			</td>' +
+							'		</tr>' +
+							'		<tr  id="newap_text_' + aptable + '_tr">' +
+							'			<td class="head">' + _('secure access policy new') + '</td>' +
+							'			<td>' +
+							'				<input class="mid" id="newap_text_' + aptable + '" maxlength="17">' +
+							'				<input class="half" id="newap_text_' + aptable + '_add" type="button" value="' + _('station add') + '" onClick="addMAC(' + aptable +')">' +
+							'			</td>' +
+							'		</tr>' +
+							'		<tr id="ap_' + aptable + '_title"><td class="title" colspan="2">' + _('secure access policy mac list') + '</td></tr>' +
+
+							'		<tr id="newap_macs_' + aptable + '_tr">' +
+							'			<td colspan="2" id="ap_' + aptable + '_td">' +
+							'				<table>';
+
+					for (var i = 0; i < ACCESSPOLICYLIST_MAX / 4; i++) {
+						input_name	=   'newap_' + aptable + '_' + (4 * i);
+						td_name		=   'newap_td_' + aptable + '_' + (4 * i);
+						html 		+=	'				<tr id="id_' + aptable + '_' + (4 * i) + '">' +
+										'					<td id="' + td_name + '" style="width: 173px;">' +
+										'						<div style="width: 25%; float: left; margin-top: 3px;"><img src="/graphics/cross.png" alt="[-]" title="' + _('station del') + '" onClick="delMAC(' + aptable + ', ' + (4 * i) + ')"></div>' +
+										'						<div id="' + input_name + '" style="width: 75%; float: left; margin-top: 4px;"></div>' +
+										'					</td>';
+
+						input_name	=	'newap_' + aptable + '_' + (4 * i + 1);
+						td_name		=	'newap_td_' + aptable + '_' + (4 * i + 1);
+						html 		+=	'					<td id="' + td_name + '" style="width: 173px;">' +
+										'						<div style="width: 25%; float: left; margin-top: 3px;"><img src="/graphics/cross.png" alt="[-]" title="' + _('station del') + '" onClick="delMAC(' + aptable + ', ' + (4 * i + 1) + ')"></div>' +
+										'						<div id="' + input_name + '" style="width: 75%; float: left; margin-top: 4px;"></div>' +
+										'					</td>';
+
+						input_name	=	'newap_' + aptable + '_' + (4 * i + 2);
+						td_name		=	'newap_td_' + aptable + '_' + (4 * i + 2);
+						html		+=	'					<td id="' + td_name + '" style="width: 173px;">' +
+										'						<div style="width: 25%; float: left; margin-top: 3px;"><img src="/graphics/cross.png" alt="[-]" title="' + _('station del') + '" onClick="delMAC(' + aptable + ', ' + (4 * i + 2) + ')"></div>' +
+										'						<div id="' + input_name + '" style="width: 75%; float: left; margin-top: 4px;"></div>' +
+										'					</td>';
+
+						input_name	=	'newap_' + aptable + '_' + (4 * i + 3);
+						td_name		=	'newap_td_' + aptable + '_' + (4 * i + 3);
+						html 		+=	'					<td id="' + td_name + '" style="width: 173px;">' +
+										'						<div style="width: 25%; float: left; margin-top: 3px;"><img src="/graphics/cross.png" alt="[-]" title="' + _('station del') + '" onClick="delMAC(' + aptable + ', ' + (4 * i + 3) + ')"></div>' +
+										'						<div id="' + input_name + '" style="width: 75%; float: left; margin-top: 4px;"></div>' +
+										'					</td>' +
+										'				</tr>';
+					}
+
+					html +=	'				</table>' +
+							'			</td>' +
+							'		</tr>' +
+							'	</tbody>' +
+							'</table>';
+				}
+				document.getElementById('accessPolicyDiv').innerHTML = html;
+			}
+
+			// Show access policy
+			function showAccessPolicy(MBSSID) {
+				for (var i = 0; i < MBSSID_MAX; i++) {
+					if (i < network.data.length)
+						document.getElementById('AccessPolicy' + i).selectedIndex = network.data[i].AccessPolicy;
+					else
+						document.getElementById('AccessPolicy' + i).selectedIndex = 0;
+					displayElement('AccessPolicy_' + i + '_table', false);
+				}
+				displayElement('AccessPolicy_' + MBSSID + '_table', true);
+			}
+
+			// prepare access policy list
+			function prepareAccessPolicy() {
+				// load Access Policy for MBSSID[selected]
+				for (i = 0; i < network.data.length; i++) {
+					j		= 0;
+					aplist	= [];
+					if (network.data[i].AccessControlList.length != 0) {
+						aplist = network.data[i].AccessControlList.split(";");
+						for (j = 0; j < aplist.length; j++) 
+							document.getElementById("newap_" + i + "_" + j).innerHTML = aplist[j];
+					}
+					else
+						displayElement(['ap_' + i + '_td', 'ap_' + i + '_title', 'newap_text_' + i + '_tr'], false);
+
+					for(; j < ACCESSPOLICYLIST_MAX; j++) {
+						displayElement('newap_td_' + i + '_' + j, false);
+						if (!(j % 4))
+							displayElement('id_' + i + '_' + j, false);
+					}
+					displayElement(['newap_text_' + i + '_tr', 'newap_macs_' + i + '_tr'], network.data[i].AccessPolicy != 0);
+				}
+				showAccessPolicy(document.getElementById('ssidIndex').value);
+			}
+
+			// Add access policy MAC
+			function addMAC(table) {
+				var mac = document.getElementById('newap_text_' + table).value.toUpperCase();
+				if (!validateMAC(mac)) {
+					alert(_("inet invalid mac"));
+					document.getElementById('newap_text_' + table).focus();
+					document.getElementById('newap_text_' + table).select();
+					return false;
+				}
+				if (network.data[table].AccessControlList.toUpperCase().indexOf(mac.toUpperCase()) >= 0) {
+					alert(_("secure mac exist"));
+					document.getElementById('newap_text_' + table).focus();
+					document.getElementById('newap_text_' + table).select();
+					return false;
+				}
+
+				createAccessPolicyTable();
+				
+				if (network.data[table].AccessControlList.length > 0)
+					network.data[table].AccessControlList += ';';
+				network.data[table].AccessControlList += mac;
+
+				prepareAccessPolicy();
+			}
+
+			// Delete access policy MAC
+			function delMAC(mbssid, num) {
+				var new_aplist = '';
+				var aplist = network.data[mbssid].AccessControlList.split(";");
+				aplist.splice(num, 1);
+				for (var i = 0; i < aplist.length; i++) {
+					new_aplist += aplist[i];
+					if (i + 1 < aplist.length)
+						new_aplist += ';';
+				}
+				network.data[mbssid].AccessControlList = new_aplist;
+				createAccessPolicyTable();
+				prepareAccessPolicy();
+			}
+
+			// Show warning message
+			function showWarning() {
+				var warning_access_password		= NVRAM_Password == "Admin";
+				var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
+				var warning_wireless_key		= NVRAM_WPAPSK1  == "1234567890";
+
+				var warningHTML = "";
+
+				if (warning_access_password || warning_wireless_security || warning_wireless_key) {
+					warningHTML += '<br>';
+					warningHTML += '<table class="warning">';
+					warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
+					if  (warning_wireless_security || warning_wireless_key) {
+						warningHTML += '<tr>';
+						warningHTML += '<td class="warning" colspan="2">' + _("warning wireless security") + '</td>';
+						warningHTML += '</tr>';
+					}
+					if (warning_access_password && (warning_wireless_security || warning_wireless_key)) {
+						warningHTML += '<tr><td colspan="2"><hr class="warning"></td></tr>';
+					}
+					if  (warning_access_password) {
+						warningHTML += '<tr>';
+						warningHTML += '<td class="warning">' + _("warning access password") + '</td>';
+						warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/adm/management.asp");\'></td>';
+						warningHTML += '</tr>';
+					}
+					warningHTML += '</table>';
+					warningHTML += '<br>';
+					ajaxModifyElementHTML('warning', warningHTML);
+				}
+			}
+
+			function showWarningEncriptionMode() {
+				var setPass = false;
+				var br = getBrowser();
+				var message = (br.browser == 'firefox') ? _('secure lowsecure mode').replace(/_/g, '\r\n') : _('secure lowsecure mode').replace(/_/g, '\r');
+				if (confirm(message)) {
+					if (network.data[old_MBSSID].AuthMode != 'WPAPSK' && network.data[old_MBSSID].AuthMode != 'WPAPSKWPA2PSK') {
+						setPass = true;
+						setTimeout(function () { alert(_('secure lowsecure mode apply')) }, 100);
+					}
+					network.data[old_MBSSID].AuthMode	= 'WPA2PSK';
+					network.data[old_MBSSID].EncrypType = 'AES';
+					LoadFields(old_MBSSID);
+					if (setPass) {
+						document.getElementById('passphrase').focus();
+						document.getElementById('passphrase').select();
+					}
+					else
+						checkValues(document.security_form);
+				}
+			}
+
+			function showWarningEncriptionAlgo() {
+				var br = getBrowser();
+				var message = (br.browser == 'firefox') ? _('secure lowsecure algo').replace(/_/g, '\r\n') : _('secure lowsecure algo').replace(/_/g, '\r');
+				if (confirm(message)) {
+					document.getElementById('cipher').value = 1;
+					checkValues(document.security_form);
+				}
+			}
+		</script>
+	</head>
+	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
+		<table class="body">
+			<tbody>
+				<tr>
+					<td><h1 id="securityTitle">Wireless Security/Encryption Settings </h1>
+					<p id="securityIntroduction">Here you can configure wireless security and encryption to prevent unauthorized access to the router.</p>
+					<hr />
+					<form method="post" name="security_form" action="/goform/wirelessSetSecurity" onSubmit="return checkValues(this);">
+					<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+					<!-- ---------------------  MBSSID Selection  --------------------- -->
+					<table class="form">
+						<tr>
+							<td class="title" colspan="2" id="secureSelectSSID">Select SSID</td>
+						</tr>
+						<tr>
+							<td class="head" id="secureSSIDChoice">SSID choice</td>
+							<td><select name="ssidIndex" id="ssidIndex" class="mid" onChange="MBSSIDChange();"></select></td>
+						</tr>
+					</table>
+					<table class="form">
+						<tr>
+							<td class="title" colspan="2" id="sp_title">Security Policy</td>
+						</tr>
+						<tr id="div_security_infra_mode" name="div_security_infra_mode">
+							<td class="head" id="secureSecureMode">Security Mode</td>
+							<td>
+								<select name="security_mode" id="security_mode" class="mid" onChange="securityChanged = true; securityMode(true);">
+								</select>
+							</td>
+						</tr>
+					</table>
+					<!-- WEP -->
+					<table id="div_wep" name="div_wep" class="form" style="visibility: hidden;">
+						<tr>
+							<td class="title" colspan="4" id="secureWEP">Wired Equivalent Privacy (WEP)</td>
+						</tr>
+						<tr>
+							<td class="head" colspan="2" id="secureWEPDefaultKey">Default Key</td>
+							<td colspan="2">
+								<select name="wep_default_key" id="wep_default_key" class="half" onChange="securityChanged = true;">
+									<option value="1" id="secureWEPDefaultKey1">Key 1</option>
+									<option value="2" id="secureWEPDefaultKey2">Key 2</option>
+									<option value="3" id="secureWEPDefaultKey3">Key 3</option>
+									<option value="4" id="secureWEPDefaultKey4">Key 4</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="head1" rowspan="4" id="secureWEPKey">WEP Keys</td>
+							<td class="head2" id="secureWEPKey1">WEP Key 1 :</td>
+							<td style="width: 300px">
+								<input type="password" name="wep_key_1" id="WEP1" maxlength="26" value="" onKeyUp="securityChanged = true;">
+								<span style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('WEP1')"><span id="secureShowPass" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+							<td>
+								<select id="WEP1Select" class="half" name="WEP1Select" onChange="securityChanged = true;">
+									<option value="1">ASCII</option>
+									<option value="0">Hex</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="head2" id="secureWEPKey2">WEP Key 2 : </td>
+							<td>
+								<input type="password" name="wep_key_2" id="WEP2" maxlength="26" value="" onKeyUp="securityChanged = true;">
+								<span style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('WEP2')"><span id="secureShowPass1" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+							<td>
+								<select id="WEP2Select" name="WEP2Select" class="half" onChange="securityChanged = true;">
+									<option value="1">ASCII</option>
+									<option value="0">Hex</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="head2" id="secureWEPKey3">WEP Key 3 : </td>
+							<td>
+								<input type="password" name="wep_key_3" id="WEP3" maxlength="26" value="" onKeyUp="securityChanged = true;">
+								<span style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('WEP3')"><span id="secureShowPass2" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+							<td>
+								<select id="WEP3Select" name="WEP3Select" class="half" onChange="securityChanged = true;">
+									<option value="1">ASCII</option>
+									<option value="0">Hex</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="head2" id="secureWEPKey4">WEP Key 4 : </td>
+							<td>
+								<input type="password" name="wep_key_4" id="WEP4" maxlength="26" value="" onKeyUp="securityChanged = true;">
+								<span style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('WEP4')"><span id="secureShowPass3" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+							<td>
+								<select id="WEP4Select" name="WEP4Select" class="half" onChange="securityChanged = true;">
+									<option value="1">ASCII</option>
+									<option value="0">Hex</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<!-- WPA -->
+					<table id="div_wpa" name="div_wpa" class="form" style="visibility: hidden; display: none;">
+						<tr>
+							<td class="title" colspan="2" id="secureWPA">WPA</td>
+						</tr>
+						<tr id="div_wpa_algorithms" name="div_wpa_algorithms" style="visibility: hidden;">
+							<td class="head" id="secureWPAAlgorithm">WPA Algorithms</td>
+							<td>
+								<select name="cipher" id="cipher" class="mid" onChange="onWPAAlgorithmsClick()">
+									<option value="0">TKIP</option>
+									<option value="1">AES</option>
+									<option value="2">TKIP/AES</option>
+								</select>
+							</td>
+						</tr>
+						<tr id="wpa_passphrase" name="wpa_passphrase" style="visibility: hidden;">
+							<td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
+							<td>
+								<input type="password" name="passphrase" id="passphrase" class="mid" maxlength="64" value="" onKeyUp="securityChanged = true;">
+								<span id="passphrase_type" style="position: absolute; margin-top: 1px;"><input type="checkbox" onClick="showPassPhrase('passphrase')"><span id="secureShowPass4" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+						</tr>
+						<tr id="wpa_passphrase5" name="wpa_passphrase5" style="display: none;">
+							<td class="head" id="secureWPAPassPhraseInic">Pass Phrase 5GHz</td>
+							<td>
+								<input type="password" name="passphraseinic" id="passphraseinic" class="mid" maxlength="64" value="" onKeyUp="securityChanged = true;">
+								<span id="passphrase_inic_type" style="position: absolute; margin-top: 1px;"><input type="checkbox" onClick="showPassPhrase('passphraseinic')"><span id="secureShowPass5" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+						</tr>
+						<tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
+							<td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
+							<td><input name="keyRenewalInterval" id="keyRenewalInterval" class="mid" maxlength="6" value="3600" onKeyUp="securityChanged = true;"><span id="secureKeySeconds">seconds</span></td>
+						</tr>
+						<tr id="wpa_PMK_Cache_Period" name="wpa_PMK_Cache_Period" style="visibility: hidden;">
+							<td class="head" id="secureWPAPMKCachePeriod">PMK Cache Period</td>
+							<td><input name="PMKCachePeriod" id="PMKCachePeriod" class="mid" maxlength="4" value="" onKeyUp="securityChanged = true;"><span id="secureKeyMinutes">minute</span></td>
+						</tr>
+						<tr id="wpa_preAuthentication" name="wpa_preAuthentication" style="visibility: hidden;">
+							<td class="head" id="secureWPAPreAuth">Pre-Authentication</td>
+							<td>
+								<select name="PreAuthentication" id="PreAuthentication" class="mid" onChange="onPreAuthenticationClick()">
+									<option value="0" id="PreAuthenticationDisable">Disable</option>
+									<option value="1" id="PreAuthenticationEnable">Enable</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<table id="div_radius_server" name="div_radius_server" class="form" style="visibility: hidden; display: none;">
+						<tr>
+							<td class="title" colspan="2" id="secureRadius">Radius Server</td>
+						</tr>
+						<tr>
+							<td class="head" id="secureRadiusIPAddr">IP Address</td>
+							<td><input name="RadiusServerIP" id="RadiusServerIP" class="mid" maxlength="32" value="" onKeyUp="securityChanged = true;"></td>
+						</tr>
+						<tr>
+							<td class="head" id="secureRadiusPort">Port</td>
+							<td><input name="RadiusServerPort" id="RadiusServerPort" class="mid" maxlength="5" value="" onKeyUp="securityChanged = true;"></td>
+						</tr>
+						<tr>
+							<td class="head" id="secureRadiusSharedSecret">Shared Secret</td>
+							<td>
+								<input type="password" name="RadiusServerSecret" id="RadiusServerSecret" class="mid" maxlength="64" value="" onKeyUp="securityChanged = true;">
+								<span style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('RadiusServerSecret')"><span id="secureShowPass6" style="position: absolute; margin-top: 2px;">(show)</span></span>
+							</td>
+						</tr>
+						<tr>
+							<td class="head" id="secureRadiusSessionTimeout">Session Timeout</td>
+							<td><input name="RadiusServerSessionTimeout" id="RadiusServerSessionTimeout" class="mid" maxlength="4" value="0" onKeyUp="securityChanged = true;"></td>
+						</tr>
+					</table>
+					<!--	AccessPolicy for mbssid -->
+					<div id="accessPolicyDiv"></div>
+					<div id="accessPolicyInput"></div>
+					<table class="button">
+						<tr>
+							<td>
+								<input class="normal" value="Apply" id="secureApply" type="submit">&nbsp;&nbsp;
+								<input class="normal" value="Cancel" id="secureCancel" type="button" onClick="window.location.reload();">&nbsp;&nbsp;
+								<input class="normal" value="Reset" id="secureReset" type="button" onClick="resetValues(this.form, 25);">&nbsp;&nbsp;
+								<input type="hidden" name="reset" value="0">
+							</td>
+						</tr>
+					</table>
+				</form>
+				<div class="whitespace">&nbsp;</div></td>
+			</tr>
+		</tbody>
+	</table>
 </body>
 </html>

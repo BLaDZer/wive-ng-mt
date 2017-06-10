@@ -267,7 +267,7 @@
   <message msgid="secure wep key3" msgstr="WEP ключ 3 :" />
   <message msgid="secure wep key4" msgstr="WEP ключ 4 :" />
   <message msgid="secure wpa" msgstr="WPA" />
-  <message msgid="secure wpa algorithm" msgstr="WPA алгоритмы" />
+  <message msgid="secure wpa algorithm" msgstr="WPA алгоритм" />
   <message msgid="secure wpa pass phrase" msgstr="Ключевая фраза" />
   <message msgid="secure wpa pass phrase nic" msgstr="Ключевая фраза (2.4ГГц)" />
   <message msgid="secure wpa pass phrase inic" msgstr="Ключевая фраза (5ГГц)" />
@@ -287,6 +287,7 @@
   <message msgid="secure access policy capable" msgstr=" Политика " />
   <message msgid="secure access policy new" msgstr="Добавить MAC-адрес клиента:" />
   <message msgid="secure access policy del" msgstr="Удалить" />
+  <message msgid="secure access policy mac list" msgstr="Список MAC адресов" />
   <message msgid="secure no key" msgstr="Пожалуйста, введите ключ WPA-PSK!" />
   <message msgid="secure choose algo" msgstr="Пожалуйста, выберите алгоритм WPA." />
   <message msgid="secure renewal" msgstr="Пожалуйста, введите правильный интервал обновления ключа" />
@@ -309,7 +310,12 @@
   <message msgid="secure invalid key" msgstr="Неверный формат WEP ключа!" />
   <message msgid="secure key seconds" msgstr=" секунд  (диапазон: 10 - 86400)" />
   <message msgid="secure key minutes" msgstr=" минут" />
+  <message msgid="secure mac exist" msgstr="Указанный MAC адрес уже существует" />
   <message msgid="secure confirm" msgstr="Вы действительно хотите потерять текущие изменения?" />
+  <message msgid="secure empty accesspolicy" msgstr="Список МАС адресов политики доступа пуст. Необходимо добавить минимум один MAC адрес или выключить Политику доступа" />
+  <message msgid="secure lowsecure mode" msgstr="Внимание!__Выбран режим с низким уровнем безопасности._Рекомендуется использовать режим безопасности WPA2-PSK (Personal) или WPA2 (Enterprise).__Установить режим WPA2-PSK (Personal)?" />
+  <message msgid="secure lowsecure mode apply" msgstr="Необходимо установить пароль и сохранить настройки." />
+  <message msgid="secure lowsecure algo" msgstr="Внимание!__Выбран алгоритм шифрования с низким уровнем безопасности._Рекомендуется использовать алгоритм AES.__Установить AES?" />
 
   <message msgid="apcli title" msgstr="Клиент AP" />
   <message msgid="apcli param" msgstr="Здесь вы можете сменить параметры клиента AP." />

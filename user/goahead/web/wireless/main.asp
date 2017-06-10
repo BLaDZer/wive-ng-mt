@@ -239,7 +239,7 @@
 					showElement('div_hssid' + i);
 
 				// Allow only 4 BSSID's
-				showElement(form.addBSSIDbtn, no_mbssid);
+				displayElement(form.addBSSIDbtn, !no_mbssid);
 				form.addBSSIDbtn.disabled = ((count >= bssid_num) || (no_mbssid));
 			}
 
@@ -1466,7 +1466,7 @@
 
 				form.mbssid_mode.disabled = false;
 
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 25);
 				return true;
 			}
 
@@ -1549,8 +1549,8 @@
 	</head>
 
 <body bgcolor="#FFFFFF" onLoad="initValue();">
+<div id="warning"></div>
 <table class="body">
-	<tr id="warning"><tr>
 	<tr>
 		<td><h1 id="basicTitle">SSID Settings </h1> 
 			<p id="basicIntroduction"> Here you can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel.

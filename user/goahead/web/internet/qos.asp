@@ -171,8 +171,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="QoSTitleStr">Quality of Service Settings </h1>
 					<p id="QoSIntroStr"> Here you can setup rules to provide desired Quality of Service for specific applications.</p>

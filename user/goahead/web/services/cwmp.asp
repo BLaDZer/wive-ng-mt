@@ -292,8 +292,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="cwmpTitle">CWMP (TR-069) Setup</h1>
 					<p id="cwmpIntroduction">Here you can configure CWMP (TR-069) settings.</p>

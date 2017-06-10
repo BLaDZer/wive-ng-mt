@@ -1456,8 +1456,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="stalistTitle">Station List</h1>
 					<p id="stalistIntroduction"> Here you can monitor stations associated with this AP. </p>

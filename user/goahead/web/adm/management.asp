@@ -167,7 +167,7 @@
 				var warningHTML					= "";
 
 				if (warning_access_password || warning_wireless_security || warning_wireless_key) {
-					warningHTML += '<tr><td>';
+					warningHTML += '<br>';
 					warningHTML += '<table class="warning">';
 					warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
 					if  (warning_access_password) {
@@ -185,15 +185,15 @@
 						warningHTML += '</tr>';
 					}
 					warningHTML += '</table>';
-					warningHTML += '</td></tr><br>';
+					warningHTML += '<br>';
 					ajaxModifyElementHTML('warning', warningHTML);
 				}
 			}
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValue();">
+		<div id="warning"></div>
 		<table class="body" style="width:600px;">
-			<tr id="warning"></tr>
 			<tr>
 				<td>
 					<h1 id="manTitle">System Management</h1>

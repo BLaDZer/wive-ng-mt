@@ -45,8 +45,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="algTitle">ALG Settings</h1>
 					<p id="algIntroduction">On this page you can enable/disable ALG services.</p>

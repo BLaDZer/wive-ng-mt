@@ -193,6 +193,7 @@
 				}
 				else {
 					form.wStaticDnsEnable.disabled = false;
+					form.wStaticDnsEnable.checked = false;
 				}
 
 				dnsSwitchClick(form);
@@ -270,11 +271,11 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<form name="rebootForm" style="display: none;" method="GET" action="/goform/restoremac" >
 			<iframe id="rebootReloader" name="rebootReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 		</form>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="wTitle"></h1>
 					<p id="wIntroduction"></p>

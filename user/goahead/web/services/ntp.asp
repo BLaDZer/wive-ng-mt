@@ -80,7 +80,7 @@
 				var form = document.l2tpConfig;
 				var services = [
 					// turned_on, row_id, daemon_id
-					[ NVRAM_NTPEnabled, 'ntp_enabled_row', 'ntpd' ],
+					[ NVRAM_NTPEnabled, 'ntp_enabled_row', 'ntpd' ]
 				];
 
 				// Create associative array
@@ -214,8 +214,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td>
 					<h1 id="ntpTitle">NTP Management</h1>

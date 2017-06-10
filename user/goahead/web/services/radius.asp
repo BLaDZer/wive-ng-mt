@@ -179,8 +179,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="radiusServerTitle">RADIUS Server Setup</h1>
 					<p id="radiusServerIntroduction">Here you can configure RADIUS server settings.</p>

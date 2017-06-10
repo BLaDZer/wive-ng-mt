@@ -83,8 +83,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="InitValue();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="statusTitle">Access Point Status</h1>
 					<p id="statusIntroduction">Let's take a look at the status.</p>

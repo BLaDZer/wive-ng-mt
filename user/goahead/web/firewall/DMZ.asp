@@ -69,8 +69,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();"> 
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="dmzTitle"> DMZ Settings </h1>
 					<div style="display:none;" id="bridge_warning">

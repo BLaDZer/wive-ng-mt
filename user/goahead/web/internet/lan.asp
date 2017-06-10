@@ -198,8 +198,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 			<td><h1 id="lTitle"></h1>
 				<p id="lIntroduction"></p>

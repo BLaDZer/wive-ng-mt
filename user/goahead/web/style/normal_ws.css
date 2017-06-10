@@ -78,8 +78,8 @@ td.title {
 }
 
 table.warning {
-	min-width: 745px;
-	width: 745px;
+	min-width: 750px;
+	width: 750px;
 	border-bottom: 2px solid #FFBF00;
 	background-color: #ffffe0;
 }

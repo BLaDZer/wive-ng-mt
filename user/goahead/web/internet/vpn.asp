@@ -110,7 +110,7 @@
 				initTranslation();
 
 				ajaxLoadScript('/internet/vpn-stat.js');
-				setInterval(ajaxLoadScript('/internet/vpn-stat.js'), 5000); 
+				setInterval(function () { ajaxLoadScript('/internet/vpn-stat.js') }, 5000); 
 			}
 
 			function checkValues(form) {
@@ -285,8 +285,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"></tr>
 			<tr>
 				<td><h1 id="vTitle">Virtual Private Network setup</h1>
 					<p id="vIntroduction"> This page is used to configure the <acronym title="Virtual Private Network">VPN</acronym> tunnel on your Router. </p>

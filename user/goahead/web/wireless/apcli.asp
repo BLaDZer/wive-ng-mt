@@ -47,29 +47,29 @@
 			function initValues()
 			{
 				var form					= document.wireless_apcli;
-				form.apcli_enable.checked	= NVRAM_ApCliEnable == '1';
-				form.apcli_ssid.value		= NVRAM_ApCliSsid;
-				form.apcli_bssid.value		= NVRAM_ApCliBssid;
-				form.apcli_mode.value		= NVRAM_ApCliAuthMode;
-				form.apcli_autoscan.checked	= NVRAM_ApCliAutoConnect == '1';
-				form.apcli_apiface.checked	= NVRAM_ApCliClientOnly == '1';
-				form.apcli_bridge.checked	= NVRAM_ApCliBridgeOnly == '1';
-				form.apcli_wpapsk.value		= NVRAM_ApCliWPAPSK;
+				document.getElementById('apcli_enable').checked		= NVRAM_ApCliEnable == '1';
+				document.getElementById('apcli_ssid').value			= NVRAM_ApCliSsid;
+				document.getElementById('apcli_bssid').value		= NVRAM_ApCliBssid;
+				document.getElementById('apcli_mode').value			= NVRAM_ApCliAuthMode;
+				document.getElementById('apcli_autoscan').checked	= NVRAM_ApCliAutoConnect == '1';
+				document.getElementById('apcli_apiface').checked	= NVRAM_ApCliClientOnly == '1';
+				document.getElementById('apcli_bridge').checked		= NVRAM_ApCliBridgeOnly == '1';
+				document.getElementById('apcli_wpapsk').value		= NVRAM_ApCliWPAPSK;
 
 				var apcli_mode				= NVRAM_ApCliIfName;
 
 				if ((BUILD_5GHZ_SUPPORT == 0) || ((NVRAM_RadioOn == 0) && (NVRAM_RadioOnINIC == 0))) {
-					form.apcli_interface.value = "apcli0";
+					document.getElementById('apcli_interface').value = "apcli0";
 					displayElement('apcliWiFiMode_tr', false);
 				}
 				else {
-					form.apcli_interface.disabled = (NVRAM_RadioOn == 0) || (NVRAM_RadioOnINIC == 0);
+					document.getElementById('apcli_interface').disabled = (NVRAM_RadioOn == 0) || (NVRAM_RadioOnINIC == 0);
 					if (NVRAM_RadioOn == 0) 
-						form.apcli_interface.value = "apclii0"
+						document.getElementById('apcli_interface').value = "apclii0"
 					else if (NVRAM_RadioOnINIC == 0)
-						form.apcli_interface.value = "apcli0"
+						document.getElementById('apcli_interface').value = "apcli0"
 					else
-						form.apcli_interface.value = apcli_mode;
+						document.getElementById('apcli_interface').value = apcli_mode;
 				}
 
 				ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);
@@ -142,16 +142,16 @@
 			function securityModeSwitch(form)
 			{
 				var enc_type = '<% getCfgGeneral(1, "ApCliEncrypType"); %>';
-				form.apcli_enc.value = (enc_type != "") ? "AES" : enc_type;
-				displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], ((form.apcli_mode.value == 'WPAPSK') || (form.apcli_mode.value == 'WPA2PSK')) && (form.apcli_enable.checked == 1));
+				document.getElementById('apcli_enc').value = (enc_type != "") ? "AES" : enc_type;
+				displayElement( [ 'div_apcli_enc', 'div_apcli_wpapsk' ], (document.getElementById('apcli_mode').value == 'WPAPSK' || document.getElementById('apcli_mode').value == 'WPA2PSK') && document.getElementById('apcli_enable').checked == 1);
 			}
 
 			function apcliEnableSwitch(form)
 			{
 				displayElement( [ 'apcliWiFiMode_tr', 'apcliSSID_tr', 'apcliMAC_tr',
 								  'apcliSecurityMode_tr', 'div_apcli_enc', 'div_apcli_wpapsk',
-								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], form.apcli_enable.checked == 1);
-				displayElement('apcliWiFiMode_tr', BUILD_5GHZ_SUPPORT == 1 && NVRAM_RadioOn == 1 && NVRAM_RadioOnINIC == 1 && form.apcli_enable.checked == 1);
+								  'apcliAutoscan_tr', 'apcliDisableIface_tr', 'apcliEnableBridge_tr' ], document.getElementById('apcli_enable').checked == 1);
+				displayElement('apcliWiFiMode_tr', BUILD_5GHZ_SUPPORT == 1 && NVRAM_RadioOn == 1 && NVRAM_RadioOnINIC == 1 && document.getElementById('apcli_enable').checked == 1);
 				securityModeSwitch(form);
 			}
 
@@ -165,8 +165,8 @@
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
+		<div id="warning"></div>
 		<table class="body">
-			<tr id="warning"><tr>
 			<tr>
 				<td><h1 id="apcliTitle">AP Client Feature</h1>
 					<p id="apcliParameters">Here you can configure AP Client parameters.</p>
@@ -180,7 +180,7 @@
 							<td id="apcliEnableTitle" class="title" colspan="2">AP Client Parameters</td>
 						</tr>
 						<tr> 
-							<td class="head" style="width: 40%"><input type="checkbox" name="apcli_enable" onClick="apcliEnableSwitch(this.form);">
+							<td class="head" style="width: 40%"><input type="checkbox" name="apcli_enable" id="apcli_enable" onClick="apcliEnableSwitch(this.form);">
 								<b id="apcliEnable">Enable AP Client</b></td>
 							<td id="apcli_status" style="width: 60%"></td>
 						</tr>
@@ -254,15 +254,15 @@
 						</tr> 
 						<tr id="apcliAutoscan_tr">
 							<td id="apcliAutoscan" class="head">Auto channel select</td>
-							<td><input type="checkbox" name="apcli_autoscan"></td>
+							<td><input type="checkbox" name="apcli_autoscan" id="apcli_autoscan"></td>
 						</tr>
 						<tr id="apcliDisableIface_tr">
 							<td id="apcliDisableIface" class="head">Disable AP Interface</td>
-							<td><input type="checkbox" name="apcli_apiface"></td>
+							<td><input type="checkbox" name="apcli_apiface" id="apcli_apiface"></td>
 						</tr>
 						<tr id="apcliEnableBridge_tr">
 							<td class="head" id="apcliEnableBridge">Enable Bridge Mode</td>
-							<td><input type="checkbox" name="apcli_bridge"></td>
+							<td><input type="checkbox" name="apcli_bridge" id="apcli_bridge"></td>
 						</tr>
 					</table>
 					<table class="buttons">
