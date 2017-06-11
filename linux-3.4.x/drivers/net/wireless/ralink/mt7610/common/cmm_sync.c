@@ -199,7 +199,7 @@ VOID BuildChannelList(
 						(pAd->CommonCfg.RDDurRegion == FCC) &&
 						(pAd->Dot11_H.bDFSIndoor == 1))
 				{
-					if((GetChannel_5GHZ(pChDesc, i) < 116) || (GetChannel_5GHZ(pChDesc, i) > 128))
+					if((GetChannel_5GHZ(pChDesc, i) < 120) || (GetChannel_5GHZ(pChDesc, i) > 128))
 					{
 						pChannelList[q] = GetChannel_5GHZ(pChDesc, i);
 						pChannelListFlag[q] = GetChannelFlag(pChDesc, i);
