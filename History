@@ -3155,7 +3155,7 @@
 7) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
 8) kernel: ralink_wifi: fix power limits by new gov info.<br>
 9) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
-10) kernel: ralink_wifi: ft: fix potentional null pointer dereference.<br>
+10) kernel: ralink_wifi: ft/rrm: fix potentional null pointer dereference.<br>
 11) kernel: ralink_wifi: ft: fix parse RDIE.<br>
 12) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
 13) kernel: net: integrate ipt_NETFLOW.<br>
