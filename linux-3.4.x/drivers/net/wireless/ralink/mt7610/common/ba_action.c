@@ -11,7 +11,7 @@
 #define REC_BA_SESSION_IDLE_TIMEOUT	(1000)	/* ms*/
 
 #define REORDERING_PACKET_TIMEOUT		((100 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
-#define MAX_REORDERING_PACKET_TIMEOUT	((3000 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
+#define MAX_REORDERING_PACKET_TIMEOUT	((1500 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
 
 #define RESET_RCV_SEQ		(0xFFFF)
 
@@ -439,7 +439,7 @@ void ba_flush_reordering_timeout_mpdus(
 /*		(RTMP_TIME_AFTER((unsigned long)Now32, (unsigned long)(pBAEntry->LastIndSeqAtTimer+(10*REORDERING_PACKET_TIMEOUT))) &&*/
 /*		 (pBAEntry->list.qlen > (pBAEntry->BAWinSize/8)))*/
 	if (RTMP_TIME_AFTER((unsigned long)Now32, (unsigned long)(pBAEntry->LastIndSeqAtTimer+(MAX_REORDERING_PACKET_TIMEOUT/6))) 
-		 &&(pBAEntry->list.qlen > 1)
+		 &&(pBAEntry->list.qlen > 0)
 		)
 	{
 		DBGPRINT(RT_DEBUG_TRACE,("timeout[%d] (%08lx-%08lx = %d > %d): %x, flush all!\n ", pBAEntry->list.qlen, Now32, (pBAEntry->LastIndSeqAtTimer), 
