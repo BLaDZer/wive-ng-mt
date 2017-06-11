@@ -168,7 +168,7 @@ VOID FT_EnqueueAuthReply(
 	}
 
 	/* Calculate MIC in authentication-ACK frame */	
-	if (pFtIeInfo->MICCtr.field.IECnt)
+	if (pFtIeInfo && pFtIeInfo->MICCtr.field.IECnt)
 	{
 		PMAC_TABLE_ENTRY pEntry;
 		
@@ -248,6 +248,8 @@ static VOID FT_ReqActionParse(
 					pFtInfo->RicInfo.Len = ((UCHAR*)Ptr + Len)
 											- (UCHAR*)eid_ptr + 1;
 				}
+				break;
+
 			case IE_FT_RIC_DESCRIPTOR:
 				if ((pFtInfo->RicInfo.RicIEsLen + eid_ptr->Len + 2) < MAX_RICIES_LEN)
 				{
