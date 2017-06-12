@@ -2013,6 +2013,11 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	pData += hdr_len;
 	pRxBlk->DataSize -= hdr_len;
 
+	if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
+		pRxInfo->BA = 1;
+	else
+		pRxInfo->BA = 0;
+
 	/* 2. QOS */
 	if (pFmeCtrl->SubType & 0x08)
 	{
@@ -2053,11 +2058,6 @@ VOID dev_rx_data_frm(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 			/* incremented by the number of MPDUs */
 			/* received in the A-MPDU when an A-MPDU is received. */
 			pCounter->MPDUInReceivedAMPDUCount.u.LowPart ++;
-		}
-		else
-		{
-			if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
-				RX_BLK_SET_FLAG(pRxBlk, fRX_AMPDU);
 		}
 #endif /* DOT11_N_SUPPORT */
 

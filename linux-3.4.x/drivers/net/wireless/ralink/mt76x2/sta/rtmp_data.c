@@ -723,6 +723,11 @@ VOID STAHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 		pRxBlk->DataSize -= LENGTH_802_11;
 	}
 
+	if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
+		pRxInfo->BA = 1;
+	else
+		pRxInfo->BA = 0;
+
 	/* 2. QOS */
 	if (pHeader->FC.SubType & 0x08) {
 		RX_BLK_SET_FLAG(pRxBlk, fRX_QOS);
@@ -1228,6 +1233,11 @@ VOID STAHandleRxDataFrame_Hdr_Trns(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	{
 		pData += LENGTH_802_11;
 	}
+
+	if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
+		pRxInfo->BA = 1;
+	else
+		pRxInfo->BA = 0;
 
 	/* 2. QOS */
 	if (pHeader->FC.SubType & 0x08) {
