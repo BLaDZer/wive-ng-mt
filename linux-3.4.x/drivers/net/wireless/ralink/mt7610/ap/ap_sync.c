@@ -407,7 +407,9 @@ VOID APPeerProbeReqAction(
 
 		/* Extended Capabilities IE */
 		{
-			ULONG TmpLen;
+			ULONG TmpLen, infoPos;
+			PUCHAR pInfo;
+			BOOLEAN bNeedAppendExtIE = FALSE;
 			EXT_CAP_INFO_ELEMENT	extCapInfo;
 			UCHAR extInfoLen = sizeof(EXT_CAP_INFO_ELEMENT);
 
@@ -425,13 +427,33 @@ VOID APPeerProbeReqAction(
 #endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
-			MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
+			pInfo = (PUCHAR)(&extCapInfo);
+			for (infoPos = 0; infoPos < extInfoLen; infoPos++)
+			{
+				if (pInfo[infoPos] != 0)
+				{
+					bNeedAppendExtIE = TRUE;
+					break;
+				}
+			}
+
+			if (bNeedAppendExtIE == TRUE)
+			{
+				for (infoPos = (extInfoLen - 1); infoPos >= EXT_CAP_MIN_SAFE_LENGTH; infoPos--)
+				{
+					if (pInfo[infoPos] == 0)
+						extInfoLen --;
+					else
+						break;
+				}
+				MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
 								1, 			&ExtCapIe,
 								1, 			&extInfoLen,
 								extInfoLen, 	&extCapInfo,
 								END_OF_ARGS);
 
-			FrameLen += TmpLen;
+				FrameLen += TmpLen;
+			}
 		}
 
 #ifdef AP_QLOAD_SUPPORT
@@ -1046,8 +1068,7 @@ VOID APPeerBeaconAction(
 		}
 
 #ifdef DOT11_N_SUPPORT
-		if ((pAd->CommonCfg.bHTProtect)
-			&& (ie_list->HtCapabilityLen == 0) && (RealRssi > OBSS_BEACON_RSSI_THRESHOLD))
+		if ((ie_list->HtCapabilityLen == 0) && (RealRssi > OBSS_BEACON_RSSI_THRESHOLD))
 		{
 			
 			pAd->ApCfg.LastNoneHTOLBCDetectTime = pAd->Mlme.Now32;

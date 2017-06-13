@@ -1789,7 +1789,7 @@ SendAssocResponse:
 #endif /* DYNAMIC_RX_RATE_ADJ */
 
 		HtCapabilityRsp.HtCapInfo.ChannelWidth = pAd->CommonCfg.RegTransmitSetting.field.BW;
-		if (pAd->CommonCfg.RegTransmitSetting.field.ShortGI = GI_400 && HtCapabilityRsp.HtCapInfo.ChannelWidth == HT_BW_40) {
+		if (pAd->CommonCfg.RegTransmitSetting.field.ShortGI == GI_400 && HtCapabilityRsp.HtCapInfo.ChannelWidth == HT_BW_40) {
 			HtCapabilityRsp.HtCapInfo.ShortGIfor40 = 1;
 		}
 
