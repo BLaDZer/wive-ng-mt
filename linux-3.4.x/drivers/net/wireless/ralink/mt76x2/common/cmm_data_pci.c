@@ -29,7 +29,7 @@
 
  
 #include	"rt_config.h"
-
+#include        <linux/prefetch.h>
 
 #ifdef RT_SECURE_DMA
 # ifdef NO_CONSISTENT_MEM_SUPPORT

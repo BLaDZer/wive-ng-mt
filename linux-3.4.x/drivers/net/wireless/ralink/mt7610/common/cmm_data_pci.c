@@ -29,7 +29,7 @@
 
  
 #include	"rt_config.h"
-
+#include	<linux/prefetch.h>
 
 #ifdef DBG
 VOID dump_txd(RTMP_ADAPTER *pAd, TXD_STRUC *pTxD)
