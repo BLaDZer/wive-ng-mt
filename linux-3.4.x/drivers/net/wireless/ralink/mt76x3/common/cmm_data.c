@@ -2640,8 +2640,7 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 	{
 	enq_idx = fifo_swq->enqIdx;
 #ifdef DATA_QUEUE_RESERVE
-		if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
-						|| RTMP_GET_PACKET_ICMP(pkt))
+		if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt) /* || RTMP_GET_PACKET_ICMP(pkt) */)
 		{
 			tr_entry->high_pkt_cnt ++;
 		}
@@ -2652,7 +2651,7 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 		{
 			capCount = (fifo_swq->enqIdx >=fifo_swq->deqIdx) ? (TX_SWQ_FIFO_LEN-fifo_swq->enqIdx+fifo_swq->deqIdx) : (fifo_swq->deqIdx-fifo_swq->enqIdx);
 			if (!(RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
-					|| RTMP_GET_PACKET_ICMP(pkt)))
+					/* || RTMP_GET_PACKET_ICMP(pkt)*/) )
 			{
 				if (capCount < FIFO_RSV_FOR_HIGH_PRIORITY)
 				{
@@ -2681,7 +2680,7 @@ INT rtmp_enq_req(RTMP_ADAPTER *pAd, PNDIS_PACKET pkt, UCHAR qidx, STA_TR_ENTRY *
 #endif /* DBG */
 #ifdef DATA_QUEUE_RESERVE
 			if (RTMP_GET_PACKET_DHCP(pkt) || RTMP_GET_PACKET_EAPOL(pkt)
-							|| RTMP_GET_PACKET_ICMP(pkt))
+							/* || RTMP_GET_PACKET_ICMP(pkt) */)
 			{
 				tr_entry->high_pkt_drop_cnt ++;
 			}
@@ -3126,7 +3125,7 @@ dequeue:
 				{
 					//reserved Tx Ring
 					if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket)
-						|| RTMP_GET_PACKET_ICMP(pPacket)))
+						/* || RTMP_GET_PACKET_ICMP(pPacket)*/) )
 					{
 						hwd_cnt  = (hwd_cnt < TX_RING_SIZE_RSV) ? 0 : (hwd_cnt-TX_RING_SIZE_RSV);
 					}
@@ -3804,7 +3803,7 @@ BOOLEAN RTMPCheckEtherType(
 
 				ASSERT((GET_OS_PKT_LEN(pPacket) > (ETH_HDR_LEN + IP_HDR_LEN)));	/* 14 for ethernet header, 20 for IP header*/
 				RTMP_SET_PACKET_IPV4(pPacket, 1);
-
+#if 0
 #ifdef DATA_QUEUE_RESERVE
 				if (ipv4_proto == 0x01)
 				{
@@ -3813,6 +3812,7 @@ BOOLEAN RTMPCheckEtherType(
 				}
 				else
 #endif /* DATA_QUEUE_RESERVE */
+#endif
 				if (ipv4_proto == IP_PROTO_UDP)
 				{
 					UINT16 srcPort, dstPort;
@@ -4058,6 +4058,7 @@ VOID RTMP_RxPacketClassify(
 		DBGPRINT(RT_DEBUG_WARN, ("rx path ARP #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 			pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU))); 
 	}
+#if 0
 	else if (protoType == ETH_P_IP)
 	{
 		UINT8 protocol = *(pData + 11);
@@ -4070,7 +4071,6 @@ VOID RTMP_RxPacketClassify(
 			DBGPRINT(RT_DEBUG_WARN, ("rx path ICMP #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 				pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 		}
-#if 0
 		else if (protocol == IP_PROTO_UDP)
 		{
 			PUCHAR pUdpHdr = pData + 22;
@@ -4086,8 +4086,8 @@ VOID RTMP_RxPacketClassify(
 					pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 			}
 		}
-#endif
 	}
+#endif
 }
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 

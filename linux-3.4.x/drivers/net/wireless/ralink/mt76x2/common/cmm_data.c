@@ -3164,7 +3164,7 @@ BOOLEAN RTMPCheckEtherType(
 
 				ASSERT((GET_OS_PKT_LEN(pPacket) > (ETH_HDR_LEN + IP_HDR_LEN)));	/* 14 for ethernet header, 20 for IP header*/
 				RTMP_SET_PACKET_IPV4(pPacket, 1);
-
+#if 0
 #ifdef DATA_QUEUE_RESERVE
 				if (ipv4_proto == 0x01)
 				{
@@ -3172,6 +3172,7 @@ BOOLEAN RTMPCheckEtherType(
 				}
 				else
 #endif /* DATA_QUEUE_RESERVE */
+#endif
 				if (ipv4_proto == IP_PROTO_UDP)
 				{
 					UINT16 srcPort, dstPort;
@@ -3400,6 +3401,7 @@ VOID RTMP_RxPacketClassify(
 			pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU))); 
 
 	}	
+#if 0
 	else if (protoType == ETH_P_IP)
 	{
 	
@@ -3413,7 +3415,6 @@ VOID RTMP_RxPacketClassify(
 			DBGPRINT(RT_DEBUG_TRACE, ("rx path PING #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 				pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 		}
-#if 0
 		else if (protocol == IP_PROTO_UDP)
 		{
 			PUCHAR pUdpHdr = pData + 22;
@@ -3429,8 +3430,8 @@ VOID RTMP_RxPacketClassify(
 					pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 			}
 		}
-#endif
 	}
+#endif
 }
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 

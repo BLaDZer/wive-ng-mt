@@ -1259,7 +1259,7 @@ NDIS_STATUS IgmpPktClone(
 				{
 					/* insert the pkt to TxSwQueue. */
 #ifdef DATA_QUEUE_RESERVE 
-					if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket) || RTMP_GET_PACKET_ICMP(pPacket))
+					if (!(RTMP_GET_PACKET_DHCP(pPacket) || RTMP_GET_PACKET_EAPOL(pPacket) /*|| RTMP_GET_PACKET_ICMP(pPacket)*/)
 						&& (pAd->TxSwQueue[QueIdx].Number >= (pAd->TxSwQMaxLen - pAd->TxRsvLen)))
 #else /* DATA_QUEUE_RESERVE */
 					if (pAd->TxSwQueue[QueIdx].Number >= pAd->TxSwQMaxLen)
