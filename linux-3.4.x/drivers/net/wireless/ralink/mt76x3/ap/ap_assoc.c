@@ -756,7 +756,7 @@ BOOLEAN PeerAssocReqCmmSanity(
 		return FALSE;
 
 	COPY_MAC_ADDR(&ie_lists->Addr2[0], &Fr->Hdr.Addr2[0]);
-	
+
 	//Ptr = (PCHAR)Fr->Octet;
 
 	NdisMoveMemory(&ie_lists->CapabilityInfo, &Fr->Octet[0], 2);
@@ -1787,6 +1787,11 @@ SendAssocResponse:
 #ifdef DYNAMIC_RX_RATE_ADJ
 		NdisMoveMemory(HtCapabilityRsp.MCSSet, pAd->ApCfg.MBSSID[pEntry->func_tb_idx].ExpectedSuppHTMCSSet, 4);
 #endif /* DYNAMIC_RX_RATE_ADJ */
+
+		HtCapabilityRsp.HtCapInfo.ChannelWidth = pAd->CommonCfg.RegTransmitSetting.field.BW;
+		if (pAd->CommonCfg.RegTransmitSetting.field.ShortGI = GI_400 && HtCapabilityRsp.HtCapInfo.ChannelWidth == HT_BW_40) {
+			HtCapabilityRsp.HtCapInfo.ShortGIfor40 = 1;
+		}
 
 		/* add HT Capability IE */
 #ifndef RT_BIG_ENDIAN

@@ -1405,6 +1405,11 @@ SendAssocResponse:
 
 		NdisMoveMemory(&HtCapabilityRsp, &pAd->CommonCfg.HtCapability, ie_list->ht_cap_len);
 
+		HtCapabilityRsp.HtCapInfo.ChannelWidth = pAd->CommonCfg.RegTransmitSetting.field.BW;
+		if (pAd->CommonCfg.RegTransmitSetting.field.ShortGI = GI_400 && HtCapabilityRsp.HtCapInfo.ChannelWidth == HT_BW_40) {
+			HtCapabilityRsp.HtCapInfo.ShortGIfor40 = 1;
+		}
+
 		/* add HT Capability IE */
 #ifndef RT_BIG_ENDIAN
 		MakeOutgoingFrame(pOutBuffer+FrameLen,			&TmpLen,

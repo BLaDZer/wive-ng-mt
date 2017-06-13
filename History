@@ -3162,12 +3162,13 @@
 14) kernel: ralink_wifi: fix Rx AMPDU data frame handle in some cases.<br>
 15) kernel: ralink_wifi: prefetch RXDATA to enhance throughput.<br>
 16) kernel: ralink_wifi: move back to short rate_adat interval.<br>
-17) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-18) kernel: net: integrate ipt_NETFLOW.<br>
-19) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-20) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-21) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-22) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+17) kernel: ralink_wifi: ajust channel width and sgi40 at assoc req.<br>
+18) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+19) kernel: net: integrate ipt_NETFLOW.<br>
+20) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+21) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+22) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+23) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>

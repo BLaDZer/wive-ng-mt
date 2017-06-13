@@ -81,7 +81,7 @@ BOOLEAN PeerAssocReqCmmSanity(
 		return FALSE;
 
 	COPY_MAC_ADDR(&ie_lists->Addr2[0], &Fr->Hdr.Addr2[0]);
-	
+
 	NdisMoveMemory(&ie_lists->CapabilityInfo, &Fr->Octet[0], 2);
 	NdisMoveMemory(&ie_lists->ListenInterval, &Fr->Octet[2], 2);
 
