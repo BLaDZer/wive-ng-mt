@@ -1356,6 +1356,14 @@ PNDIS_PACKET RxRingDeQueue(
 #ifdef RTMP_MAC
 	RTMP_IO_WRITE32(pAd, RX_CRX_IDX, pRxRing->RxCpuIdx);
 #endif /* RTMP_MAC */
+
+#ifdef  CONFIG_WIFI_PREFETCH_RXDATA
+	/* prefetch to enhance throughput */
+	if ((RxRingNo == 0) && *pRxPending > 0) {
+		prefetch(pRxRing->Cell[pRxRing->RxSwReadIdx].pNdisPacket);
+	}
+#endif /* CONFIG_WIFI_PREFETCH_RXDATA */
+
 #else /* CACHE_LINE_32B */
 
 	/*

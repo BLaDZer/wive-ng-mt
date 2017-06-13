@@ -1623,8 +1623,15 @@ PNDIS_PACKET GetPacketFromRxRing(
 	INC_RING_INDEX(pRxRing->RxSwReadIdx, RxRingSize);
 
 	pRxRing->RxCpuIdx = (pRxRing->RxSwReadIdx == 0) ? (RxRingSize-1) : (pRxRing->RxSwReadIdx-1);
-	
+
 	RTMP_IO_WRITE32(pAd, pRxRing->hw_cidx_addr, pRxRing->RxCpuIdx);
+
+#ifdef  CONFIG_WIFI_PREFETCH_RXDATA
+	/* prefetch to enhance throughput */
+	if ((RxRingNo == 0) && *pRxPending > 0) {
+		prefetch(pRxRing->Cell[pRxRing->RxSwReadIdx].pNdisPacket);
+	}
+#endif /* CONFIG_WIFI_PREFETCH_RXDATA */
 
 #else /* CACHE_LINE_32B */
 
