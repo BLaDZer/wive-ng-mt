@@ -5529,6 +5529,12 @@ BOOLEAN MlmeEnqueueForRecv(
 		return FALSE;
 	}
 
+	if (Msg == NULL)
+	{
+		DBGPRINT_ERR("MlmeEnqueueForRecv: : frame is Null \n");
+		return FALSE;
+	}
+
 #ifdef EAPOL_QUEUE_SUPPORT
     bEAPQueueFull = (EAPMlmeQueueFull(EAP_Queue))? TRUE : FALSE;
 #endif /* EAPOL_QUEUE_SUPPORT */

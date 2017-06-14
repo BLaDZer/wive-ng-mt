@@ -3250,6 +3250,12 @@ BOOLEAN MlmeEnqueueForRecv(
 		return FALSE;
 	}
 
+	if (Msg == NULL)
+	{
+		DBGPRINT_ERR("MlmeEnqueueForRecv: : frame is Null \n");
+		return FALSE;
+	}
+
 	if (MlmeQueueFull(Queue, 0)) 
 	{
 		return FALSE;

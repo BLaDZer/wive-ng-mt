@@ -3166,12 +3166,13 @@
 18) kernel: ralink_wifi: ajust channel width and sgi40 info at assoc req.<br>
 19) kernel: ralink_wifi: fix add extcap htinfo at probe req.<br>
 20) kernel: ralink_wifi: only arp need force announce by ampdu and use data reserved queue.<br>
-21) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-22) kernel: net: integrate ipt_NETFLOW.<br>
-23) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-24) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-25) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-26) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+21) kernel: ralink_wifi: fix potentional null pointer dereference in MlmeEnqueueForRecv.<br>
+22) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+23) kernel: net: integrate ipt_NETFLOW.<br>
+24) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+25) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+26) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+27) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>
