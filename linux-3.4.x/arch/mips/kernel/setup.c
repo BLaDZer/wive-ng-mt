@@ -523,6 +523,10 @@ static void __init bootmem_init(void)
 	 */
 	reserve_bootmem(PFN_PHYS(mapstart), bootmap_size, BOOTMEM_DEFAULT);
 
+#if defined (CONFIG_RALINK_MT7621)
+	/* Free memory up to start of kernel image */
+	free_bootmem(0x1000, ((unsigned long)&_text - 0x80001000));
+#endif
 	/*
 	 * Reserve initrd memory if needed.
 	 */

@@ -35,10 +35,14 @@ export ROMFS_DIR IMAGEDIR MKIMAGE_DIR KERNELZ RAMDISK IMAGE RAMDISK_SIZE CUR_DIR
 #########################################################################################################################
 # Dir per system options
 #
+ifneq ($(CONFIG_KERNEL_START_ADDR),)
+ENTRYPOINT	:= $(CONFIG_KERNEL_START_ADDR)
+else
 ifdef CONFIG_RALINK_MT7621
 ENTRYPOINT	:= 80001000
 else
 ENTRYPOINT	:= 80000000
+endif
 endif
 export ENTRYPOINT
 #########################################################################################################################

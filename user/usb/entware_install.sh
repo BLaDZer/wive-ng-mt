@@ -11,7 +11,7 @@ optmount=`mount | grep opt -c`
 if [ "$optmount" != "0" ]; then
     cd /opt
     mkdir -p /opt/home
-    wget -O - http://entware.wl500g.info/binaries/entware/installer/entware_install.sh | sh
+    wget -O - http://pkg.entware.net/binaries/mipsel/installer/installer.sh | sh
     # reload params and profile
     . /etc/scripts/global.sh
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

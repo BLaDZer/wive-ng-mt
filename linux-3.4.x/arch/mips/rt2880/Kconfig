@@ -96,7 +96,15 @@ choice
 
 config  MT7621_ASIC
 	bool "MT7621-ASIC"
+	select ZONE_DMA
+
 endchoice
+
+config KERNEL_START_ADDR
+	hex
+	depends on  RALINK_MT7621
+	default 0x81001000 if !HIGHMEM
+	default 0x82001000 if HIGHMEM
 
 config PCIE_PORT0
 	bool "PCIe Port0 support"
