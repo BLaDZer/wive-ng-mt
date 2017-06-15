@@ -3152,35 +3152,36 @@
 4) xupnpd: up to 1.034 version commit fc53f57f.<br>
 5) goahead: refactor security page and add warning for unsafe modes.<br>
 6) busybox: disable ssl support for wget, not correct work now.<br>
-7) kernel: ralink_arch: mt7621 fix and use zone dma (SDK5030).<br>
-8) kernel: ralink_mtd: add S25FL064L flash chip support (SDK5030).<br>
-9) kernel: ralink_wifi: sync ext_cap_info element with currect RFC.<br>
-10) kernel: ralink_wifi: roam: print real counters in log.<br>
-11) kernel: ralink_wifi: roam: use TIM bit for touch PSM clients before disconnect.<br>
-12) kernel: ralink_wifi: add Apple Iphone6, some MacBooks and Huawei P9 fat channel workaround (for oui 74:1B:B2, 84:89:AD, AC:BC:32, 3C:FA:43).<br>
-13) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
-14) kernel: ralink_wifi: fix power limits by new gov info.<br>
-15) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
-16) kernel: ralink_wifi: ft/rrm: fix potentional null pointer dereference.<br>
-17) kernel: ralink_wifi: ft: fix parse RDIE.<br>
-18) kernel: ralink_wifi: ft: prevent rekey for unsupported clients.<br>
-19) kernel: ralink_wifi: fix flush BA reordering.<br>
-20) kernel: ralink_wifi: fix DFS channel desc.<br>
-21) kernel: ralink_wifi: fix Rx AMPDU data frame handle in some cases.<br>
-22) kernel: ralink_wifi: prefetch RXDATA to enhance throughput.<br>
-23) kernel: ralink_wifi: move back to short rate_adat interval.<br>
-24) kernel: ralink_wifi: ajust channel width and sgi40 info at assoc req.<br>
-25) kernel: ralink_wifi: fix add extcap htinfo at probe req.<br>
-26) kernel: ralink_wifi: only arp need force announce by ampdu and use data reserved queue.<br>
-27) kernel: ralink_wifi: fix potentional null pointer dereference in MlmeEnqueueForRecv.<br>
-28) kernel: ralink_wifi: use dma_zalloc_coherent instead of pci_alloc_consistent.<br>
-29) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-30) kernel: net: integrate ipt_NETFLOW.<br>
-31) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-32) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-33) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-34) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-35) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+7) busybox: wget: fix for brain-damaged HTTP servers. Closes 9471.<br>
+8) kernel: ralink_arch: mt7621 fix and use zone dma (SDK5030).<br>
+9) kernel: ralink_mtd: add S25FL064L flash chip support (SDK5030).<br>
+10) kernel: ralink_wifi: sync ext_cap_info element with currect RFC.<br>
+11) kernel: ralink_wifi: roam: print real counters in log.<br>
+12) kernel: ralink_wifi: roam: use TIM bit for touch PSM clients before disconnect.<br>
+13) kernel: ralink_wifi: add Apple Iphone6, some MacBooks and Huawei P9 fat channel workaround (for oui 74:1B:B2, 84:89:AD, AC:BC:32, 3C:FA:43).<br>
+14) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
+15) kernel: ralink_wifi: fix power limits by new gov info.<br>
+16) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
+17) kernel: ralink_wifi: ft/rrm: fix potentional null pointer dereference.<br>
+18) kernel: ralink_wifi: ft: fix parse RDIE.<br>
+19) kernel: ralink_wifi: ft: prevent rekey for unsupported clients.<br>
+20) kernel: ralink_wifi: fix flush BA reordering.<br>
+21) kernel: ralink_wifi: fix DFS channel desc.<br>
+22) kernel: ralink_wifi: fix Rx AMPDU data frame handle in some cases.<br>
+23) kernel: ralink_wifi: prefetch RXDATA to enhance throughput.<br>
+24) kernel: ralink_wifi: move back to short rate_adat interval.<br>
+25) kernel: ralink_wifi: ajust channel width and sgi40 info at assoc req.<br>
+26) kernel: ralink_wifi: fix add extcap htinfo at probe req.<br>
+27) kernel: ralink_wifi: only arp need force announce by ampdu and use data reserved queue.<br>
+28) kernel: ralink_wifi: fix potentional null pointer dereference in MlmeEnqueueForRecv.<br>
+29) kernel: ralink_wifi: use dma_zalloc_coherent instead of pci_alloc_consistent.<br>
+30) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+31) kernel: net: integrate ipt_NETFLOW.<br>
+32) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+33) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+34) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+35) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+36) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>
