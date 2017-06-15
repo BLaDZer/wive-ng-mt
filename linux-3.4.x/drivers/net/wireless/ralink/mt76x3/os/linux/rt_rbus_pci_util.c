@@ -34,7 +34,7 @@ void RtmpAllocDescBuf(
 {
 	dma_addr_t DmaAddr = (dma_addr_t)(*phy_addr);
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,4,0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
 	*VirtualAddress = (PVOID)dma_zalloc_coherent(&pPciDev->dev,sizeof(char)*Length, &DmaAddr, GFP_KERNEL);
 #else
 	*VirtualAddress = (PVOID)pci_alloc_consistent(pPciDev,sizeof(char)*Length, &DmaAddr);
@@ -67,7 +67,7 @@ void RTMP_AllocateFirstTxBuffer(
 {
 	dma_addr_t DmaAddr = (dma_addr_t)(*phy_addr);
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,4,0))
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
 	*VirtualAddress = (PVOID)dma_zalloc_coherent(&pPciDev->dev,sizeof(char)*Length, &DmaAddr, GFP_KERNEL);
 #else
 	*VirtualAddress = (PVOID)pci_alloc_consistent(pPciDev,sizeof(char)*Length, &DmaAddr);
