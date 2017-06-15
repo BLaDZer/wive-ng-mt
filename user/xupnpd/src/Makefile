@@ -1,6 +1,7 @@
 LUA     = lua-5.1.x
 STATIC  = false
 CFLAGS  += -Os -fno-exceptions -fno-rtti -Wno-sign-compare -I$(LUA) -L$(LUA) -DLUA_COMPAT_APIINTCASTS
+CFLAGS	+= -I$(LIBCDIRSHARED)/include/openssl -L$(LIBCDIRSHARED)/lib
 SRC     = main.cpp soap.cpp mem.cpp mcast.cpp luaxlib.cpp luaxcore.cpp luajson.cpp luajson_parser.cpp
 LUAMYCFLAGS = -DLUA_USE_LINUX
 
@@ -21,14 +22,14 @@ endif
 x86:
 	make -C $(LUA) CC=gcc a
 	gcc -Os -c -o md5.o md5c.c
-	gcc $(CFLAGS) -DWITH_LIBUUID -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -o xupnpd $(SRC) md5.o -llua -ldl -lm -luuid
+	gcc $(CFLAGS) -DWITH_LIBUUID -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -o xupnpd $(SRC) md5.o -llua -ldl -lm -luuid -lssl -lcrypto
 	strip xupnpd
 
 # Cygwin
 x86win:
 	make -C $(LUA) CC=gcc a
 	gcc -O2 -c -o md5.o md5c.c
-	gcc $(CFLAGS) -DWITH_LIBUUID -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_UNDER_WIN -o xupnpd $(SRC) md5.o -llua -ldl -lm -luuid
+	gcc $(CFLAGS) -DWITH_LIBUUID -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_UNDER_WIN -o xupnpd $(SRC) md5.o -llua -ldl -lm -luuid -lssl -lcrypto
 	strip xupnpd
 
 x86_bsd:
@@ -47,7 +48,7 @@ bcm947x_backfire:
 	$(MAKE) embedded TARGET=bcm947x-bf SDK=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/mipsel-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mipsel_gcc-3.4.6-bcm947xx/libexec/gcc/mipsel-openwrt-linux-uclibc/3.4.6 STAGING_DIR=$(SDK_BACKFIRE)
 
 ar71xx_backfire:
-	$(MAKE) embedded TARGET=ar71xx-bf SDK=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_r2_gcc-4.3.3+cs-ar71xx/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
+	$(MAKE) embedded TARGET=ar71xx-bf SDK=$(SDK_BACKFIRE)/usr/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/usr/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
 
 ar231x_backfire:
 	$(MAKE) embedded TARGET=ar231x-bf SDK=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/mips-openwrt-linux/bin UTILS=$(SDK_BACKFIRE)/toolchain-mips_gcc-4.3.3+cs-ar231x/libexec/gcc/mips-openwrt-linux-uclibc/4.3.3 STAGING_DIR=$(SDK_BACKFIRE)
@@ -92,7 +93,7 @@ embedded:
 	export STAGING_DIR
 	make -C $(LUA) CC=$(CROSS_COMPILE)gcc a MYCFLAGS='$(LUAMYCFLAGS)'
 	$(CROSS_COMPILE)gcc -Os -c -o md5.o md5c.c
-	$(CROSS_COMPILE)gcc $(CFLAGS) -DWITH_URANDOM -o xupnpd $(SRC) md5.o -llua -lm -ldl
+	$(CROSS_COMPILE)gcc $(CFLAGS) -DWITH_URANDOM -o xupnpd $(SRC) md5.o -llua -lm -ldl -lssl -lcrypto
 
 clean:
 	make -C $(LUA) clean
