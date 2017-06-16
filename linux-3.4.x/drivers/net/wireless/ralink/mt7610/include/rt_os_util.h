@@ -756,9 +756,9 @@ PNDIS_PACKET RTMP_AllocateRxPacketBuffer(
 
 
 
-ra_dma_addr_t linux_pci_map_single(void *pPciDev, void *ptr, size_t size, int sd_idx, int direction);
+ra_dma_addr_t linux_pci_map_single(struct pci_dev *pPciDev, void *ptr, size_t size, int sd_idx, int direction);
 
-void linux_pci_unmap_single(void *pPciDev, ra_dma_addr_t dma_addr, size_t size, int direction);
+void linux_pci_unmap_single(struct pci_dev *pPciDev, ra_dma_addr_t dma_addr, size_t size, int direction);
 
 /* ============================ rt_usb_util.c =============================== */
 

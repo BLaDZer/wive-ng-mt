@@ -1681,8 +1681,7 @@ NDIS_STATUS AdapterBlockAllocateMemory(VOID *handle, VOID **ppAd, UINT32 SizeOfp
 	}
 #endif /* OS_ABL_FUNC_SUPPORT */
 
-/*	*ppAd = (PVOID)vmalloc(sizeof(RTMP_ADAPTER)); //pci_alloc_consistent(pci_dev, sizeof(RTMP_ADAPTER), phy_addr); */
-	*ppAd = (PVOID) vmalloc(SizeOfpAd);	/*pci_alloc_consistent(pci_dev, sizeof(RTMP_ADAPTER), phy_addr); */
+	*ppAd = (PVOID) vmalloc(SizeOfpAd);
 	if (*ppAd) {
 		NdisZeroMemory(*ppAd, SizeOfpAd);
 		return NDIS_STATUS_SUCCESS;

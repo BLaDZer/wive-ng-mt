@@ -780,23 +780,23 @@ void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen);
 /***********************************************************************************
  * Device DMA Access related definitions and data structures.
  **********************************************************************************/
-ra_dma_addr_t linux_pci_map_single(void *handle, void *ptr, size_t size, int sd_idx, int direction);
-void linux_pci_unmap_single(void *handle, ra_dma_addr_t dma_addr, size_t size, int direction);
+ra_dma_addr_t linux_pci_map_single(struct pci_dev *pPciDev, void *ptr, size_t size, int sd_idx, int direction);
+void linux_pci_unmap_single(struct pci_dev *pPciDev, ra_dma_addr_t radma_addr, size_t size, int direction);
 
-#define PCI_MAP_SINGLE_DEV(_handle, _ptr, _size, _sd_idx, _dir)				\
-	linux_pci_map_single(_handle, _ptr, _size, _sd_idx, _dir)
+#define PCI_MAP_SINGLE_DEV(_pci_dev, _ptr, _size, _sd_idx, _dir)				\
+	linux_pci_map_single((struct pci_dev *)_pci_dev, _ptr, _size, _sd_idx, _dir)
 
-#define DMA_MAPPING_ERROR(_handle, _ptr)	\
-	dma_mapping_error(&((struct pci_dev *)(_handle))->dev, _ptr)
-
+#define DMA_MAPPING_ERROR(_pci_dev, _ptr)	\
+	dma_mapping_error(&((struct pci_dev *)(_pci_dev))->dev, _ptr)
+	
 #define PCI_UNMAP_SINGLE(_pAd, _ptr, _size, _dir)						\
 	linux_pci_unmap_single(((POS_COOKIE)(_pAd->OS_Cookie))->pci_dev, _ptr, _size, _dir)
 
-#define PCI_ALLOC_CONSISTENT(_pci_dev, _size, _ptr) \
-	pci_alloc_consistent(_pci_dev, _size, _ptr)
+#define PCI_ALLOC_CONSISTENT(_pci_dev, _size, _ptr)							\
+	dma_zalloc_coherent(_pci_dev == NULL ? NULL : &_pci_dev->dev, _size, _ptr, GFP_ATOMIC)
 
-#define PCI_FREE_CONSISTENT(_pci_dev, _size, _virtual_addr, _physical_addr) \
-	pci_free_consistent(_pci_dev, _size, _virtual_addr, _physical_addr)
+#define PCI_FREE_CONSISTENT(_pci_dev, _size, _virtual_addr, _physical_addr)	\
+	dma_free_coherent(_pci_dev == NULL ? NULL : &_pci_dev->dev, _size, _virtual_addr, _physical_addr)
 
 #ifdef VENDOR_FEATURE2_SUPPORT
 #define DEV_ALLOC_SKB(_pAd, _Pkt, _length)	\

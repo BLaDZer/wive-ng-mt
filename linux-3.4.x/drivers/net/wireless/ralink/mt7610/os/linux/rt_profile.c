@@ -604,7 +604,7 @@ VOID	RTMPFreeAdapter(
 	RTMP_OS_FREE_SEM(pAd);
 	RTMP_OS_FREE_ATOMIC(pAd);
 
-	RtmpOsVfree(pAd); /* pci_free_consistent(os_cookie->pci_dev,sizeof(RTMP_ADAPTER),pAd,os_cookie->pAd_pa); */
+	RtmpOsVfree(pAd);
 	if (os_cookie)
 		os_free_mem(NULL, os_cookie);
 }
