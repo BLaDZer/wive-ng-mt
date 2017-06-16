@@ -1919,8 +1919,51 @@ void vlan_clear(int argc, char *argv[])
 }
 
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+int mii_mgr_cl45_read(int port_num, int dev, int reg){
+	int sk, method, ret;
+	struct ifreq ifr;
+	ra_mii_ioctl_data mii;
+
+	sk = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sk < 0) {
+		printf("Open socket failed\n");
+	}
+
+	strncpy(ifr.ifr_name, "eth2", 5);
+	ifr.ifr_data = &mii;
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 13;
+	mii.val_in =  dev;
+	ret = ioctl(sk, method, &ifr);
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 14;
+	mii.val_in =  reg;
+	ret = ioctl(sk, method, &ifr);
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 13;
+	mii.val_in =  (0x6000 | dev);
+	ret = ioctl(sk, method, &ifr);
+
+	usleep(1000);
+
+	method = RAETH_MII_READ;
+	mii.phy_id = port_num;
+	mii.reg_num = 14;
+	ret = ioctl(sk, method, &ifr);
+
+	close(sk);
+
+	return mii.val_out;
+}
+
 int mii_mgr_cl45_write(int port_num, int dev, int reg, int value){
-	int sk, method, ret, i;
+	int sk, method, ret;
 	struct ifreq ifr;
 	ra_mii_ioctl_data mii;
 
@@ -2564,14 +2607,6 @@ int main(int argc, char *argv[])
 		printf("Set port %d pvid %d\n", port, pvid);
 #endif
 	}
-#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
-	else if (!strncmp(argv[1], "crossover", 10)) {
-		if (argc < 4)
-			usage(argv[0]);
-		else
-			phy_crossover(argc, argv);
-	}
-#endif
 	else if (!strncmp(argv[1], "igmpsnoop", 10)) {
 		if (argc < 3)
 			usage(argv[0]);
@@ -2586,6 +2621,14 @@ int main(int argc, char *argv[])
 		else
 			usage(argv[0]);
 	}
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+	else if (!strncmp(argv[1], "crossover", 10)) {
+		if (argc < 4)
+			usage(argv[0]);
+		else
+			phy_crossover(argc, argv);
+	}
+#endif
 	else
 		usage(argv[0]);
 
