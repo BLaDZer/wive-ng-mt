@@ -1,13 +1,12 @@
-var status 		= '<% vpnShowVPNStatus(); %>';
-var text		= "<b><font color=\"";
+var status = '<% vpnShowVPNStatus(); %>';
+var message;
 switch(status) {
-	case 'disabled':			text += "#808080";	break;
-	case 'not started':			text += "#808080";	break;
-	case 'offline':				text += "#FF0000";	break;
-	case 'connecting':			text += "#FF8000";	break;
-	case 'online':				text += "#00FF00";	break;
-	case 'kabinet networks':	text += "#33BB33";	break;
-	case 'full access':			text += "#00FF00";	break;
+	case 'disabled':			message = '<b><font color="#808080">' + ((NVRAM_Language == 'ru') ? 'выключен' : 'disabled') + '</font></b>';					break;
+	case 'not started':			message = '<b><font color="#808080">' + ((NVRAM_Language == 'ru') ? 'не запущен' : 'not started') + '</font></b>';				break;
+	case 'offline':				message = '<b><font color="#FF0000">' + ((NVRAM_Language == 'ru') ? 'не в сети' : 'offline') + '</font></b>';					break;
+	case 'connecting':			message = '<b><font color="#FF8000">' + ((NVRAM_Language == 'ru') ? 'соединение' : 'connecting') + '</font></b>';				break;
+	case 'online':				message = '<b><font color="#00FF00">' + ((NVRAM_Language == 'ru') ? 'в сети' : 'online') + '</font></b>';						break;
+	case 'kabinet networks':	message = '<b><font color="#33BB33">' + ((NVRAM_Language == 'ru') ? 'сеть Кабинет' : 'kabinet networks') + '</font></b>';		break;
+	case 'full access':			message = '<b><font color="#00FF00">' + ((NVRAM_Language == 'ru') ? 'полный доступ' : 'full acces') + '</font></b>';			break;
 }
-text += "\">" + status + "</font></b>";
-ajaxModifyElementHTML('vpn_status_col', text);	
+ajaxModifyElementHTML('vpn_status_col', message);

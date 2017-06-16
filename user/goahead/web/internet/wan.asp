@@ -290,7 +290,7 @@
 								<td class="title" colspan="2" id="wConnection">WAN connection type</td>
 							</tr>
 							<tr>
-								<td class="head"><b id="wConnectionType">Connection type</b></td>
+								<td class="head" id="wConnectionType">Connection type</td>
 								<td><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
 									<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
 									<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>

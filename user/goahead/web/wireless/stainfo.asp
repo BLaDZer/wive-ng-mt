@@ -43,8 +43,7 @@
 			var updateLegendTimeout	= null;
 			var latestPosition		= null;
 
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("stalistTitle",					"stalist title");
 				_TR("stalistIntroduction",			"stalist introduction");
 				_TR("stalistWirelessSummary",		"stalist wireless summary");
@@ -106,9 +105,8 @@
 			}
 
 			function initValues() {
-				var time		= new Date(new Date().getTime() - 24 * 3600 * 1000).getTime();
-				
-				var browser = getBrowser();
+				var time	= new Date(new Date().getTime() - 24 * 3600 * 1000).getTime();
+				var browser	= getBrowser();
 				if (browser.browser == 'ie' && browser.versionShort < 10)
 					displayElement('savePlot', false);
 
@@ -117,44 +115,28 @@
 				}
 
 				if (NVRAM_RadioOn == 0) {
-					hideElement('stalistWirelessNameSum24');
-					hideElement('stalistWirelessSumAIDData24');
-					hideElement('stalistWirelessSumTXRateData24');
-					hideElement('stalistWirelessSumTxRxData24');
-					hideElement('stalistWirelessSumRSSIData24');
-					hideElement('stalistWirelessSumQualityData24');
+					hideElement([ 'stalistWirelessNameSum24', 'stalistWirelessSumAIDData24', 'stalistWirelessSumTXRateData24', 
+								  'stalistWirelessSumTxRxData24', 'stalistWirelessSumRSSIData24', 'stalistWirelessSumQualityData24' ]);
 					document.getElementById('stalistWirelessNameSum').style.width = "30%";
 					document.getElementById('stalistWirelessNameSum5').style.width = "30%";
 				}
 
 				if (NVRAM_RadioOnINIC == 0) {
-					hideElement('stalistWirelessNameSum5');
-					hideElement('stalistWirelessSumAIDData5');
-					hideElement('stalistWirelessSumTXRateData5');
-					hideElement('stalistWirelessSumTxRxData5');
-					hideElement('stalistWirelessSumRSSIData5');
-					hideElement('stalistWirelessSumQualityData5');
+					hideElement([ 'stalistWirelessNameSum5', 'stalistWirelessSumAIDData5', 'stalistWirelessSumTXRateData5',
+								  'stalistWirelessSumTxRxData5', 'stalistWirelessSumRSSIData5', 'stalistWirelessSumQualityData5' ]);
 					document.getElementById('stalistWirelessNameSum').style.width = "30%";
 					document.getElementById('stalistWirelessNameSum24').style.width = "30%";
 				}
 
 				if (BUILD_5GHZ_SUPPORT == 0) {
-					hideElement('stalistWirelessNameSum5');
-					hideElement('stalistWirelessSumAIDData5');
-					hideElement('stalistWirelessSumTXRateData5');
-					hideElement('stalistWirelessSumTxRxData5');
-					hideElement('stalistWirelessSumRSSIData5');
-					hideElement('stalistWirelessSumQualityData5');
-					hideElement('stalistWirelessNameSum24');
-					hideElement('stalistWirelessSumAIDData24');
-					hideElement('stalistWirelessSumTXRateData24');
-					hideElement('stalistWirelessSumTxRxData24');
-					hideElement('stalistWirelessSumRSSIData24');
-					hideElement('stalistWirelessSumQualityData24');
+					hideElement([ 'stalistWirelessNameSum5', 'stalistWirelessSumAIDData5', 'stalistWirelessSumTXRateData5',
+								  'stalistWirelessSumTxRxData5', 'stalistWirelessSumRSSIData5', 'stalistWirelessSumQualityData5',
+								  'stalistWirelessNameSum24', 'stalistWirelessSumAIDData24', 'stalistWirelessSumTXRateData24',
+								  'stalistWirelessSumTxRxData24', 'stalistWirelessSumRSSIData24', 'stalistWirelessSumQualityData24' ]);
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
 
-				if ((NVRAM_RadioOn == 0) && ((BUILD_5GHZ_SUPPORT == 0) || (NVRAM_RadioOnINIC == 0))) {
+				if (NVRAM_RadioOn == 0 && (BUILD_5GHZ_SUPPORT == 0 || NVRAM_RadioOnINIC == 0)) {
 					deleteCookie('wirelessMode');
 					deleteCookie('plotMACs');
 					deleteCookie('plotMACsAll');
@@ -225,8 +207,7 @@
 				);
 			}
 
-			function wirelessModeChange()
-			{
+			function wirelessModeChange() {
 				if (document.sta.stalistWirelessModeSelect.selectedIndex == 0) {
 					wirelessMode			= "Basic";
 					wirelessTabeWidth		= "750px";
@@ -245,19 +226,18 @@
 				showStationList();
 			}
 
-			function plotModeChange()
-			{
+			function plotModeChange() {
 				setCookie('wirelessPlotType', document.getElementById('wirelessPlotType').selectedIndex);
 				setCookie('wirelessPlotTime', document.getElementById('wirelessPlotTime').selectedIndex);
 				setCookie('wirelessPlotUnit', document.getElementById('wirelessPlotUnit').selectedIndex);
 				showPlot();
 			}
 
-			function clearPlotData()
-			{
+			function clearPlotData() {
 				plotData = [];
 				plotMACs = [];
 				sessionStorage.removeItem('plotData');
+				deleteCookie('plotMACs');
 				showStationList();
 				showPlot();
 			}
@@ -286,14 +266,14 @@
 				});				
 			}
 
-			function disconnectStation(form, mac)
-			{
+			function disconnectStation(form, mac) {
 				form.disconnectSta.value = mac;
 				if (mac == "*") {
-					lastRxTxCount = [];
-					plotData = [];
-					plotMACs = [];
-				} else if (lastRxTxCount.indexOf(mac.replace(/:/g, '')) != "-1") {
+					lastRxTxCount	= [];
+					plotData		= [];
+					plotMACs		= [];
+				}
+				else if (lastRxTxCount.indexOf(mac.replace(/:/g, '')) != "-1") {
 					lastRxTxCount.splice(lastRxTxCount.indexOf(mac.replace(/:/g, '')), 3);
 					if (plotMACs.indexOf(mac.replace(/:/g, '')) != "-1")
 						plotMACs.splice(plotMACs.indexOf(mac.replace(/:/g, '')), 1);
@@ -315,8 +295,7 @@
 				ajaxLoadElement("stationListData", "/wireless/stainfo_clients.asp", showStationList);
 			}
 
-			function addremoveplotMACs(mac_id, action)
-			{
+			function addremoveplotMACs(mac_id, action) {
 				if (mac_id == "*") {
 					if (plotMACsAll == 0)
 						plotMACsAll = 1;
@@ -348,8 +327,7 @@
 				showStationList();
 			}
 
-			function showStationList()
-			{
+			function showStationList() {
 				var i, mac_id, checked, rx, tx, bytes;
 				try {
 					var data		= JSON.parse(document.getElementById('stationListData').innerHTML);
@@ -652,7 +630,7 @@
 				}
 				else {
 					wirelessAvgRSSI24		= "-";
-					wirelessAvgQuality24		= "-";
+					wirelessAvgQuality24	= "-";
 					wirelessAvgRx24			= "-";
 					wirelessAvgTx24			= "-";
 					wirelessAvgTxRate24		= "-";
@@ -753,7 +731,7 @@
 				document.getElementById('stalistWirelessSumRSSIData5').innerHTML		= wirelessAvgRSSI5;
 
 				document.getElementById('stalistWirelessSumQualityData').innerHTML		= wirelessAvgQuality;
-				document.getElementById('stalistWirelessSumQualityData24').innerHTML		= wirelessAvgQuality24;
+				document.getElementById('stalistWirelessSumQualityData24').innerHTML	= wirelessAvgQuality24;
 				document.getElementById('stalistWirelessSumQualityData5').innerHTML		= wirelessAvgQuality5;
 
 				document.getElementById('stalistWirelessSumTxRxData').innerHTML			= wirelessAvgRx + " / " + wirelessAvgTx;
@@ -764,8 +742,7 @@
 				showPlot();
 			}
 
-			function getStationsCounters()
-			{
+			function getStationsCounters() {
 				var i, mac_id;
 				try {
 					var data	= JSON.parse(document.getElementById('stationListData').innerHTML);
@@ -776,9 +753,9 @@
 				var time 		= new Date().getTime();
 				var MACs		= plotMACs.slice(0);
 				var rate;												// Tx Rate for ploting
-				var quality;												// Quality for ploting
+				var quality;											// Quality for ploting
 				var rssi;												// RSSI for ploting;
-				var rxbytes, txbytes;											// Rx/Tx Bytes for ploting;
+				var rxbytes, txbytes;									// Rx/Tx Bytes for ploting;
 
 				if (data.stationlist24 !== undefined) {
 					for (i = 0; i < data.stationlist24.length; i++) {
@@ -856,8 +833,7 @@
 				savePlotData();
 			}
 
-			function showPlot()
-			{
+			function showPlot() {
 				var time		= new Date().getTime();
 				var plotType		= document.getElementById('wirelessPlotType').selectedIndex;
 				var plotTime		= document.getElementById('wirelessPlotTime').selectedIndex;
@@ -898,7 +874,7 @@
 					case 9:		graphTime = new Date(time - 1 * 3600 * 1000).getTime();		break;	// 1H
 					case 10:	graphTime = new Date(time - 3 * 3600 * 1000).getTime();		break;	// 3H
 					case 11:	graphTime = new Date(time - 6 * 3600 * 1000).getTime();		break;	// 6H
-					case 12:	graphTime = "All";						break;	// All
+					case 12:	graphTime = "All";											break;	// All
 				}
 
 				if (plotTime == 12)

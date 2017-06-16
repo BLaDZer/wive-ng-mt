@@ -229,17 +229,17 @@ function ajaxPopupWindow(popupID, message, onLoadAction) {
 
 function ajaxCloseWindow(popupID)
 {
-	var doc = document; //(parent != null) ? parent.document : document;
-
-	var popup = doc.getElementById(popupID + "Border");
+	var popup = document.getElementById(popupID + "Border");
 	if (popup!=null)
-		doc.body.removeChild(popup);
+		document.body.removeChild(popup);
 
-	popup = doc.getElementById(popupID + "Background");
+	popup = document.getElementById(popupID + "Background");
 	if (popup!=null)
-		doc.body.removeChild(popup);
+		document.body.removeChild(popup);
 
-	doc.body.onscroll = doc.body.oldOnScroll;
+	var browser = getBrowser();
+	if (!(browser.browser == 'ie' && browser.versionShort <= 8))
+		document.body.onscroll = document.body.oldOnScroll;
 }
 
 function ajaxPostForm(question, form, reloader, message, handler)
@@ -538,10 +538,10 @@ function getBrowser() {
 }
 
 function showWarning() {
-	var warning_access_password	= NVRAM_Password == "Admin";
+	var warning_access_password		= NVRAM_Password == "Admin";
 	var warning_wireless_security	= NVRAM_AuthMode == "OPEN";
-	var warning_wireless_key	= NVRAM_WPAPSK1 == "1234567890";
-	var warningHTML			= '';
+	var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
+	var warningHTML					= '';
 
 	if (warning_access_password || warning_wireless_security || warning_wireless_key) {
 		warningHTML += '<br>';

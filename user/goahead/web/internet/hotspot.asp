@@ -561,8 +561,8 @@
 					<form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
 						<table class="form">
 							<col style="width: 40%" />
-							<col style="width: 50%" />
-							<col style="width: 10%" />
+							<col style="width: 45%" />
+							<col style="width: 15%" />
 							<tbody>
 								<tr onMouseOver="showHint('spot_enable');" onMouseOut="hideHint();">
 									<td colspan="3" class="title" id="spotSetup">Hotspot Setup</td>

@@ -24,7 +24,7 @@
 				_TR("DdnsProvider",		"services ddns provider");
 				_TR("manDdnsNone",		"services ddns none");
 				_TR("manDdnsAccount",	"services l2tp login");
-				if(document.DDNS.DDNSProvider.value != "freedns.afraid.org")
+				if (document.getElementById('DDNSProvider').value != "freedns.afraid.org")
 					_TR("manDdnsPasswd", "services l2tp password");
 				else
 					_TR("manDdnsPasswd", "services ddns key");
@@ -35,48 +35,46 @@
 			
 			function initValues() {
 				switch (NVRAM_DDNSProvider) {
-					case 'none':				document.DDNS.DDNSProvider.options.selectedIndex = 0;	break;
-					case 'dyndns.org':			document.DDNS.DDNSProvider.options.selectedIndex = 1;	break;
-					case 'freedns.afraid.org':	document.DDNS.DDNSProvider.options.selectedIndex = 2;	break;
-					case 'zoneedit.com':		document.DDNS.DDNSProvider.options.selectedIndex = 3;	break;
-					case 'no-ip.com':			document.DDNS.DDNSProvider.options.selectedIndex = 4;	break;
-					default:					document.DDNS.DDNSProvider.options.selectedIndex = 0;
+					case 'none':				document.getElementById('DDNSProvider').options.selectedIndex = 0;	break;
+					case 'dyndns.org':			document.getElementById('DDNSProvider').options.selectedIndex = 1;	break;
+					case 'freedns.afraid.org':	document.getElementById('DDNSProvider').options.selectedIndex = 2;	break;
+					case 'zoneedit.com':		document.getElementById('DDNSProvider').options.selectedIndex = 3;	break;
+					case 'no-ip.com':			document.getElementById('DDNSProvider').options.selectedIndex = 4;	break;
+					default:					document.getElementById('DDNSProvider').options.selectedIndex = 0;
 				}
-				document.DDNS.Account.value		= NVRAM_DDNSAccount;
-				document.DDNS.Password.value	= NVRAM_DDNSPassword;
-				document.DDNS.DDNS.value		= NVRAM_DDNS;
+				document.getElementById('Account').value	= NVRAM_DDNSAccount;
+				document.getElementById('Password').value	= NVRAM_DDNSPassword;
+				document.getElementById('DDNS').value		= NVRAM_DDNS;
 				
 				DDNSupdateState();
 				showWarning();
 			}
 
-			function DDNSFormCheck(form) {
-				if (document.DDNS.DDNSProvider.value != "none" && document.DDNS.DDNSProvider.value != "freedns.afraid.org" &&
-					(document.DDNS.Account.value == "" || document.DDNS.Password.value == "" || document.DDNS.DDNS.value == "")) {
-					alert(_("services ddns specify"));
-					return false;
-				} else if (document.DDNS.DDNSProvider.value == "freedns.afraid.org" && 
-						  (document.DDNS.Password.value == "" || document.DDNS.DDNS.value == "")) {
+			function DDNSFormCheck() {
+				if (document.getElementById('DDNSProvider').value != 'none' && document.getElementById('DDNSProvider').value != 'freedns.afraid.org' &&
+					(document.getElementById('Account').value == '' || document.getElementById('Password').value == '' || document.getElementById('DDNS').value == '')) {
 					alert(_("services ddns specify"));
 					return false;
 				}
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				else if (document.getElementById('DDNSProvider').value == 'freedns.afraid.org' && 
+						(document.getElementById('Password').value == '' || document.getElementById('DDNS').value == '')) {
+					alert(_("services ddns specify"));
+					return false;
+				}
+				ajaxShowTimer(document.DDNS, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
 			function DDNSupdateState() {
-				var form = document.DDNS;
-				enableElements( [ form.Password, form.DDNS ], form.DDNSProvider.options.selectedIndex != 0 );
-				displayElement( [ "div_password", "div_dynname" ], form.DDNSProvider.options.selectedIndex != 0 );
-				enableElements( form.Account, form.DDNSProvider.options.selectedIndex != 0 && form.DDNSProvider.value != "freedns.afraid.org");
-				displayElement( "div_login", form.DDNSProvider.options.selectedIndex != 0 && form.DDNSProvider.value != "freedns.afraid.org");
+				enableElements([ document.getElementById('Password'), document.getElementById('DDNS') ], document.getElementById('DDNSProvider').options.selectedIndex != 0);
+				displayElement([ 'div_password', 'div_dynname' ], document.getElementById('DDNSProvider').options.selectedIndex != 0 );
+				enableElements(document.getElementById('Account'), document.getElementById('DDNSProvider').options.selectedIndex != 0 && document.getElementById('DDNSProvider').value != 'freedns.afraid.org');
+				displayElement('div_login', document.getElementById('DDNSProvider').options.selectedIndex != 0 && document.getElementById('DDNSProvider').value != 'freedns.afraid.org');
 				displayServiceStatus();
 				initTranslation();
 			}
 
 			function displayServiceHandler(response) {
-				var form = document.DDNS;
-
 				var services = [
 					// turned_on, row_id, daemon_id
 					[ NVRAM_DDNSProvider != 0, 'inadyn', 'inadyn' ]
@@ -89,8 +87,7 @@
 					daemons[tmp[i]] = 1;
 
 				// Now display all services
-				for (var i=0; i<services.length; i++)
-				{
+				for (var i=0; i<services.length; i++) {
 					var service = services[i];
 					var row = document.getElementById(service[1]);
 					var tds = [];
@@ -108,7 +105,6 @@
 								'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
 					}
 				}
-
 				serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
 			}
 
@@ -135,7 +131,7 @@
 						<tr id="inadyn">
 							<td class="head" style="width: 40%" id="DdnsProvider">Dynamic DNS Provider</td>
 							<td>
-								<select onChange="DDNSupdateState()" name="DDNSProvider" class="mid">
+								<select onChange="DDNSupdateState()" name="DDNSProvider" id="DDNSProvider" class="mid">
 									<option value="none" id="manDdnsNone"> None </option>
 									<option value="dyndns.org"> dyndns.org </option>
 									<option value="freedns.afraid.org"> freedns.afraid.org </option>
@@ -147,15 +143,15 @@
 						</tr>
 						<tr id="div_login">
 							<td class="head" id="manDdnsAccount">Login</td>
-							<td colspan="2"><input class="mid" name="Account" type="text"></td>
+							<td colspan="2"><input class="mid" name="Account" id="Account" type="text"></td>
 						</tr>
 						<tr id="div_password">
 							<td class="head" id="manDdnsPasswd">Password</td>
-							<td colspan="2"><input class="mid" name="Password" type="password"></td>
+							<td colspan="2"><input class="mid" name="Password" id="Password" type="password"></td>
 						</tr>
 						<tr id="div_dynname">
 							<td class="head" id="manDdns">Dynamic Name</td>
-							<td colspan="2"><input class="mid" name="DDNS" type="text"></td>
+							<td colspan="2"><input class="mid" name="DDNS" id="DDNS" type="text"></td>
 						</tr>
 					</table>
 					<table id="div_ddns_submit" class="buttons">

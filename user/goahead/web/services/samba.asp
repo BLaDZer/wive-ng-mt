@@ -36,55 +36,54 @@
 			}
 
 			function initValues() {
-				document.formSamba.SmbEnabled.value		= NVRAM_SmbEnabled;
-				document.formSamba.SmbTimeserver.value	= NVRAM_SmbTimeserver;
-				document.formSamba.WorkGroup.value		= NVRAM_WorkGroup;
-				document.formSamba.SmbNetBIOS.value		= NVRAM_SmbNetBIOS;
-				document.formSamba.SmbString.value		= NVRAM_SmbString;
-				document.formSamba.SmbOsLevel.value		= NVRAM_SmbOsLevel;
+				document.getElementById('SmbEnabled').value		= NVRAM_SmbEnabled;
+				document.getElementById('SmbTimeserver').value	= NVRAM_SmbTimeserver;
+				document.getElementById('WorkGroup').value		= NVRAM_WorkGroup;
+				document.getElementById('SmbNetBIOS').value		= NVRAM_SmbNetBIOS;
+				document.getElementById('SmbString').value		= NVRAM_SmbString;
+				document.getElementById('SmbOsLevel').value		= NVRAM_SmbOsLevel;
 
 				smbEnabledSwitch(document.formSamba);
 				initTranslation();
 				showWarning();
 			}
 
-			function smbEnabledSwitch(form) {
-				enableElements( [ form.WorkGroup, form.SmbNetBIOS, form.SmbString, form.SmbOsLevel, form.SmbTimeserver  ] , form.SmbEnabled.value == '1');
-				displayElement( [ 'div_workgroup', 'div_netbios', 'div_desc', 'div_os_level', 'div_time_server' ], form.SmbEnabled.value == '1');
+			function smbEnabledSwitch() {
+				enableElements([document.getElementById('WorkGroup'), document.getElementById('SmbNetBIOS'), document.getElementById('SmbString'), document.getElementById('SmbOsLevel'), document.getElementById('SmbTimeserver')], document.getElementById('SmbEnabled').value == '1');
+				displayElement(['div_workgroup', 'div_netbios', 'div_desc', 'div_os_level', 'div_time_server'], document.getElementById('SmbEnabled').value == '1');
 				displayServiceStatus();
 			}
 
-			function checkForm(form) {
-				if (form.SmbEnabled.value == '1') {
-					if (form.WorkGroup.value == '')	{
+			function checkForm() {
+				if (document.getElementById('SmbEnabled').value == '1') {
+					if (document.getElementById('WorkGroup').value == '')	{
 						alert(_("services samba no workgroup"));
-						form.WorkGroup.focus();
+						document.getElementById('WorkGroup').focus();
 						return false;
 					}
 					
-					if (form.SmbNetBIOS.value == '') {
+					if (document.getElementById('SmbNetBIOS').value == '') {
 						alert(_("services samba no netbios"));
-						form.SmbNetBIOS.focus();
+						document.getElementById('SmbNetBIOS').focus();
 						return false;
 					}
 					
 					// Check OS level
 					var os_level = -1;
-					if (validateNum(form.SmbOsLevel.value, false))
-						os_level = 1*form.SmbOsLevel.value;
+					if (validateNum(document.getElementById('SmbOsLevel').value, false))
+						os_level = +document.getElementById('SmbOsLevel').value;
 					
-					if ((os_level < 0) || (os_level > 255)) {
+					if (os_level < 0 || os_level > 255) {
 						alert(_("services samba invalid os level"));
-						form.SmbOsLevel.focus();
+						document.getElementById('SmbOsLevel').focus();
 						return false;
 					}
 				}
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.formSamba, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
 			function displayServiceHandler(response) {
-				var form = document.l2tpConfig;
 				var services = [
 					// turned_on, row_id, daemon_id
 					[ NVRAM_SmbEnabled, 'samba', 'nmbd' ]
@@ -140,7 +139,7 @@
 						<tr id="samba">
 							<td class="head" style="width: 40%" id="sambaEnabled">Enable Samba</td>
 							<td>
-								<select name="SmbEnabled" class="mid" onChange="smbEnabledSwitch(this.form);">
+								<select name="SmbEnabled" id="SmbEnabled" class="mid" onChange="smbEnabledSwitch(this.form);">
 									<option value="0" id="sambaDisable">Disable</option>
 									<option value="1" id="sambaEnable">Enable</option>
 								</select>
@@ -149,24 +148,24 @@
 						</tr>
 						<tr id="div_workgroup">
 							<td class="head" id="sambaWorkgroup">Workgroup</td>
-							<td colspan="2"><input name="WorkGroup" class="mid"></td>
+							<td colspan="2"><input name="WorkGroup" id="WorkGroup" class="mid"></td>
 						</tr>
 						<tr id="div_netbios">
 							<td class="head" id="sambaNetbios">Netbios name</td>
-							<td colspan="2"><input name="SmbNetBIOS" class="mid"></td>
+							<td colspan="2"><input name="SmbNetBIOS" id="SmbNetBIOS" class="mid"></td>
 						</tr>
 						<tr id="div_desc">
 							<td class="head" id="sambaString">Server string</td>
-							<td colspan="2"><input name="SmbString" class="mid"></td>
+							<td colspan="2"><input name="SmbString" id="SmbString" class="mid"></td>
 						</tr>
 						<tr id="div_os_level">
 							<td class="head" id="sambaOSLevel">OS level</td>
-							<td colspan="2"><input name="SmbOsLevel" class="mid"></td>
+							<td colspan="2"><input name="SmbOsLevel" id="SmbOsLevel" class="mid"></td>
 						</tr>
 						<tr id="div_time_server">
 							<td class="head" id="sambaTimeServer">Enable time server</td>
 							<td colspan="2">
-								<select name="SmbTimeserver" class="mid">
+								<select name="SmbTimeserver" id="SmbTimeserver" class="mid">
 									<option value="0" id="sambaDisable2">Disable</option>
 									<option value="1" id="sambaEnable2">Enable</option>
 								</select>

@@ -19,8 +19,8 @@
 			Butterlate.setTextDomain("buttons");
 
 			var statusOffloadEngineMenu		= 1;
-			var statusSoftwareFastpathMenu	= 1;
-			var statusRemoteManagementMenu	= 0;
+			var statusSoftwareFastpathMenu		= 1;
+			var statusRemoteManagementMenu		= 0;
 			var statusServicesMenu			= 0;
 			var statusServicesIPTVMenu		= 0;
 			var statusServicesInfoMenu		= 1;
@@ -29,70 +29,88 @@
 			var statusOthersMenu			= 1;
 
 			function initTranslation() {
-				_TR("miscTitle",					"services misc title");
-				_TR("miscIntroduction",				"services misc introduction");
-				_TR("miscOffloadEngine",			"services misc offload note");
-				_TR("miscSoftwareFastpath",			"services misc software note");
-				_TR("miscImportant",				"services misc important");
-				_TR("miscNATOffload",				"services misc nat offload");
-				_TR("miscSoftware",					"services misc software");
-				_TR("miscHardware",					"services misc hardware");
-				_TR("miscComplex",					"services misc complex");
-				_TR("miscWiFiOffload",				"services misc wifi offload");
-				_TR("miscUDPOffload",				"services misc udp offload");
-				_TR("miscIPV6offload",				"services misc ipv6 offload");
-				_TR("miscHW_NAT",					"services misc hw_nat");
-				_TR("miscNATimpl",					"services misc nat implementation");
-				_TR("miscNATFastpath",				"services misc nat fastpath");
-				_TR("miscRouteFastpath",			"services misc route fastpath");
-				_TR("miscNFFastpath",				"services misc netfilter fastpath");
-				_TR("miscSmbFastpath",				"services misc samba fastpath");
-				_TR("miscWebRemote",				"services misc web remote");
-				_TR("miscWebPort",					"services misc web port");
-				_TR("miscSSHRemote",				"services misc ssh remote");
-				_TR("miscSSHPort",					"services misc ssh port");
-				_TR("miscTelnetRemote",				"services misc telnet remote");
-				_TR("miscDnsp",						"services misc dnsproxy");
-				_TR("miscUpnp",						"services misc upnp");
-				_TR("miscSnmp",						"services misc snmp");
-				_TR("miscSnmpCommunity",			"services misc snmp community");
-				_TR("miscArppt",					"services misc arppt");
-				_TR("miscCron",						"services misc cron");
-				_TR("miscLltd",						"services misc lltd");
-				_TR("miscLldpd",					"services misc lldpd");
-				_TR("miscCdp",						"services misc cdp");
-				_TR("miscArpwatch",					"services misc arpwatch");
-				_TR("miscIgmpp",					"services misc igmp");
-				_TR("miscIgmppMC",					"services misc igmp multicast");
-				_TR("miscIgmppFL",					"services misc igmp fastleave");
-				_TR("miscIgmppMC2UC",				"services misc igmp unicast");
-				_TR("miscIgmppMC2UCall",			"services misc igmp unicast all");
-				_TR("miscUdpxy",					"services misc udpxy");
-				_TR("miscUDPXYPort",				"services misc udpxy port");
-				_TR("miscXupnpd",					"services misc xupnpd");
-				_TR("miscPTPPPoE",					"services misc pass through pppoe");
-				_TR("miscPTIPv6",					"services misc pass through ipv6");
-				_TR("miscWatchdog",					"services misc watchdog");
-				_TR("miscPinger",					"services misc pinger");
-				_TR("miscPingTime",					"services misc ping time");
-				_TR("miscPingInterval",				"services misc ping interval");
-				_TR("miscVLANDoubleTag",			"services misc vlan double tag");
-				_TR("miscReinitWAN",				"services misc reinit wan");
-				_TR("miscDHCPRenew",				"services misc dhcp renew");
-				_TR("miscSysfwPingFrmWANFilterHead","services misc ping from wan");
-				_TR("miscStp",						"services misc stp");
-				_TR("miscDontModifyTTL",			"services misc dont modify ttl");
-				_TR("miscDontModifyMCTTL",			"services misc multicast ttl");
-				_TR("miscUsePMTU",					"services misc use pmtu");
-				_TR("miscIRQBalance",				"services misc irqbalance");
-				_TR("miscIGMPAuto",					"services misc auto");
-				_TR("miscIGMPHW",					"services misc hw");
-				_TR("miscAuto",						"services misc auto");
-				_TR("miscRouter",					"services misc router");
-				_TR("miscStorage",					"services misc storage");
-				_TRV("miscApply",					"button apply");
-				_TRV("miscCancel",					"button cancel");
-				_TRV("miscReset",					"button reset");
+				_TR("miscTitle",			"services misc title");
+				_TR("miscIntroduction",			"services misc introduction");
+				_TR("miscOffloadEngine",		"services misc offload note");
+				_TR("miscSoftwareFastpath",		"services misc software note");
+				_TR("miscImportant",			"services misc important");
+				_TR("miscNATOffload",			"services misc nat offload");
+				_TR("miscSoftware",			"services misc software");
+				_TR("miscHardware",			"services misc hardware");
+				_TR("miscComplex",			"services misc complex");
+				_TR("miscWiFiOffload",			"services misc wifi offload");
+				_TR("miscUDPOffload",			"services misc udp offload");
+				_TR("miscIPV6offload",			"services misc ipv6 offload");
+				_TR("miscHW_NAT",			"services misc hw_nat");
+				_TR("miscNATimpl",			"services misc nat implementation");
+				_TR("miscNATFastpath",			"services misc nat fastpath");
+				_TR("miscRouteFastpath",		"services misc route fastpath");
+				_TR("miscNFFastpath",			"services misc netfilter fastpath");
+				_TR("miscSmbFastpath",			"services misc samba fastpath");
+				_TR("miscWebRemote",			"services misc web remote");
+				_TR("miscWebPort",			"services misc web port");
+				_TR("miscSSHRemote",			"services misc ssh remote");
+				_TR("miscSSHPort",			"services misc ssh port");
+				_TR("miscTelnetRemote",			"services misc telnet remote");
+				_TR("miscDnsp",				"services misc dnsproxy");
+				_TR("miscUpnp",				"services misc upnp");
+				_TR("miscSnmp",				"services misc snmp");
+				_TR("miscSnmpCommunity",		"services misc snmp community");
+				_TR("miscArppt",			"services misc arppt");
+				_TR("miscCron",				"services misc cron");
+				_TR("miscLltd",				"services misc lltd");
+				_TR("miscLldpd",			"services misc lldpd");
+				_TR("miscCdp",				"services misc cdp");
+				_TR("miscArpwatch",			"services misc arpwatch");
+				_TR("miscIgmpp",			"services misc igmp");
+				_TR("miscIgmppMC",			"services misc igmp multicast");
+				_TR("miscIgmppFL",			"services misc igmp fastleave");
+				_TR("miscIgmppMC2UC",			"services misc igmp unicast");
+				_TR("miscIgmppMC2UCall",		"services misc igmp unicast all");
+				_TR("miscUdpxy",			"services misc udpxy");
+				_TR("miscUDPXYPort",			"services misc udpxy port");
+				_TR("miscXupnpd",			"services misc xupnpd");
+				_TR("miscPTPPPoE",			"services misc pass through pppoe");
+				_TR("miscPTIPv6",			"services misc pass through ipv6");
+				_TR("miscWatchdog",			"services misc watchdog");
+				_TR("miscPinger",			"services misc pinger");
+				_TR("miscPingTime",			"services misc ping time");
+				_TR("miscPingInterval",			"services misc ping interval");
+				_TR("miscVLANDoubleTag",		"services misc vlan double tag");
+				_TR("miscReinitWAN",			"services misc reinit wan");
+				_TR("miscDHCPRenew",			"services misc dhcp renew");
+				_TR("miscSysfwPingFrmWANFilterHead",	"services misc ping from wan");
+				_TR("miscStp",				"services misc stp");
+				_TR("miscDontModifyTTL",		"services misc dont modify ttl");
+				_TR("miscDontModifyMCTTL",		"services misc multicast ttl");
+				_TR("miscUsePMTU",			"services misc use pmtu");
+				_TR("miscIRQBalance",			"services misc irqbalance");
+				_TR("miscIGMPAuto",			"services misc auto");
+				_TR("miscIGMPHW",			"services misc hw");
+				_TR("miscAuto",				"services misc auto");
+				_TR("miscRouter",			"services misc router");
+				_TR("miscStorage",			"services misc storage");
+				_TR("servicesMiscServicesShow",		"services misc services");
+				_TR("servicesMiscServicesHide",		"services misc services");
+				_TR("servicesMiscValues",		"services misc value");
+				_TR("servicesMiscDetails",		"services status details");
+				_TR("servicesMiscStatus",		"services misc status");
+				_TR("servicesMiscConfigure",		"services status configure");
+				_TR("servicesMiscIPTVshow",		"services misc iptv");
+				_TR("servicesMiscIPTVhide",		"services misc iptv");
+				_TR("servicesMiscIPTVvalue",		"services misc value");
+				_TR("servicesMiscIPTVdetails",		"services status details");
+				_TR("servicesMiscIPTVstatus",		"services misc status");
+				_TR("servicesMiscIPTVconfigure",	"services status configure");
+				_TR("servicesMiscDINFshow",		"services misc dinf");
+				_TR("servicesMiscDINFhide",		"services misc dinf");
+				_TR("servicesMiscDINFvalue",		"services misc value");
+				_TR("servicesMiscDINFdetails",		"services status details");
+				_TR("servicesMiscDINFstatus",		"services misc status");
+				_TR("servicesMiscDINFconfigure",	"services status configure");
+				_TRV("miscApply",			"button apply");
+				_TRV("miscCancel",			"button cancel");
+				_TRV("miscReset",			"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -106,53 +124,53 @@
 
 				var form = document.miscServiceCfg;
 
-				form.RemoteManagementPort.value				= NVRAM_RemoteManagementPort;
-				form.RemoteSSHPort.value					= NVRAM_RemoteSSHPort;
-				form.hwnatThreshold.value					= NVRAM_hw_nat_bind;
-				form.stpEnbl.options.selectedIndex			= NVRAM_stpEnabled;
-				form.igmpEnbl.options.selectedIndex			= (BUILD_IGMPPROXY == '1') ? NVRAM_igmpEnabled : 0;
-				form.igmpSnoop.value						= NVRAM_igmpSnoopMode;
-				form.igmpFastL.value						= NVRAM_igmpFastLeave;
-				form.igmpM2UConv.value						= NVRAM_igmpM2UConvMode;
-				form.upnpEnbl.options.selectedIndex			= NVRAM_upnpEnabled;
+				form.RemoteManagementPort.value			= NVRAM_RemoteManagementPort;
+				form.RemoteSSHPort.value			= NVRAM_RemoteSSHPort;
+				form.hwnatThreshold.value			= NVRAM_hw_nat_bind;
+				form.stpEnbl.options.selectedIndex		= NVRAM_stpEnabled;
+				form.igmpEnbl.options.selectedIndex		= (BUILD_IGMPPROXY == '1') ? NVRAM_igmpEnabled : 0;
+				form.igmpSnoop.value				= NVRAM_igmpSnoopMode;
+				form.igmpFastL.value				= NVRAM_igmpFastLeave;
+				form.igmpM2UConv.value				= NVRAM_igmpM2UConvMode;
+				form.upnpEnbl.options.selectedIndex		= NVRAM_upnpEnabled;
 				form.xupnpdEnbl.options.selectedIndex		= NVRAM_xupnpd;
-				form.dnspEnbl.options.selectedIndex			= NVRAM_dnsPEnabled;
-				form.cdpEnbl.options.selectedIndex			= NVRAM_cdpEnabled;
+				form.dnspEnbl.options.selectedIndex		= NVRAM_dnsPEnabled;
+				form.cdpEnbl.options.selectedIndex		= NVRAM_cdpEnabled;
 				form.arpwatchEnbl.options.selectedIndex		= NVRAM_arpwatch;
-				form.lltdEnbl.options.selectedIndex			= NVRAM_lltdEnabled;
+				form.lltdEnbl.options.selectedIndex		= NVRAM_lltdEnabled;
 				form.lldpdEnbl.options.selectedIndex		= NVRAM_lldpdEnabled;
 				form.krnlPppoePass.options.selectedIndex	= NVRAM_pppoe_pass;
 				form.krnlIpv6Pass.options.selectedIndex		= NVRAM_ipv6_pass;
 				form.pingWANEnbl.options.selectedIndex		= NVRAM_WANPingFilter;
-				form.arpPT.options.selectedIndex			= NVRAM_parproutedEnabled;
+				form.arpPT.options.selectedIndex		= NVRAM_parproutedEnabled;
 				form.hw_nat_wifiPT.options.selectedIndex	= NVRAM_hw_nat_wifi;
 				form.hw_nat_udpPT.options.selectedIndex		= NVRAM_hw_nat_udp;
 				form.hw_nat_sixPT.options.selectedIndex		= NVRAM_hw_nat_six;
-				form.pingerEnable.value						= NVRAM_pinger_check_on;
-				form.mssPmtu.value							= NVRAM_mss_use_pmtu;
-				form.natMode.value							= NVRAM_nat_mode;
-				form.rmtHTTP.value							= NVRAM_RemoteManagement;
-				form.rmtSSH.value							= NVRAM_RemoteSSH;
-				form.rmtTelnet.value						= NVRAM_RemoteTelnet;
-				form.udpxyMode.value						= NVRAM_UDPXYMode;
-				form.udpxyPort.value						= NVRAM_UDPXYPort;
-				form.watchdogEnable.value					= NVRAM_WatchdogEnabled;
-				form.dhcpSwReset.value						= NVRAM_vlanDoubleTag;
-				form.vlanDoubleTag.value					= NVRAM_dhcpSwReset;
-				form.natFastpath.value						= NVRAM_natFastpath;
-				form.routeFastpath.value					= NVRAM_routeFastpath;
-				form.filterFastpath.value					= NVRAM_filterFastpath;
-				form.CrondEnable.value						= NVRAM_CrondEnable;
-				form.ForceRenewDHCP.value					= NVRAM_ForceRenewDHCP;
-				form.SnmpdEnabled.value						= NVRAM_snmpd;
-				form.ttlStore.value							= NVRAM_store_ttl;
-				form.ttlMcastStore.value					= NVRAM_store_ttl_mcast;
-				form.offloadMode.value						= NVRAM_offloadMode;
-				form.IRQBalance.value						= NVRAM_IRQBalance;
-				form.ping_check_time.value					= NVRAM_ping_check_time;
-				form.ping_check_interval.value				= NVRAM_ping_check_interval;
+				form.pingerEnable.value				= NVRAM_pinger_check_on;
+				form.mssPmtu.value				= NVRAM_mss_use_pmtu;
+				form.natMode.value				= NVRAM_nat_mode;
+				form.rmtHTTP.value				= NVRAM_RemoteManagement;
+				form.rmtSSH.value				= NVRAM_RemoteSSH;
+				form.rmtTelnet.value				= NVRAM_RemoteTelnet;
+				form.udpxyMode.value				= NVRAM_UDPXYMode;
+				form.udpxyPort.value				= NVRAM_UDPXYPort;
+				form.watchdogEnable.value			= NVRAM_WatchdogEnabled;
+				form.dhcpSwReset.value				= NVRAM_vlanDoubleTag;
+				form.vlanDoubleTag.value			= NVRAM_dhcpSwReset;
+				form.natFastpath.value				= NVRAM_natFastpath;
+				form.routeFastpath.value			= NVRAM_routeFastpath;
+				form.filterFastpath.value			= NVRAM_filterFastpath;
+				form.CrondEnable.value				= NVRAM_CrondEnable;
+				form.ForceRenewDHCP.value			= NVRAM_ForceRenewDHCP;
+				form.SnmpdEnabled.value				= NVRAM_snmpd;
+				form.ttlStore.value				= NVRAM_store_ttl;
+				form.ttlMcastStore.value			= NVRAM_store_ttl_mcast;
+				form.offloadMode.value				= NVRAM_offloadMode;
+				form.IRQBalance.value				= NVRAM_IRQBalance;
+				form.ping_check_time.value			= NVRAM_ping_check_time;
+				form.ping_check_interval.value			= NVRAM_ping_check_interval;
 				form.smbFastpath.options.selectedIndex		= NVRAM_smbFastpath;
-				form.snmpdcommunity.value					= NVRAM_snmpdcommunity;
+				form.snmpdcommunity.value			= NVRAM_snmpdcommunity;
 
 				offloadModeSelect(form);
 				httpRmtSelect(form);
@@ -227,21 +245,21 @@
 				// Mode
 				displayElement('hwnat_threshold_row',		thresh == '2' || thresh == '3');
 				// HW extensions
-				displayElement('wifihw_row',				thresh == '2' || thresh == '3');
-				displayElement('udphw_row',					thresh == '2' || thresh == '3');
-				displayElement('sixhw_row',					thresh == '2' || thresh == '3');
+				displayElement('wifihw_row',			thresh == '2' || thresh == '3');
+				displayElement('udphw_row',			thresh == '2' || thresh == '3');
+				displayElement('sixhw_row',			thresh == '2' || thresh == '3');
 				// SW extensions
-				displayElement('fastpath_row',				thresh == '1' || thresh == '3');
+				displayElement('fastpath_row',			thresh == '1' || thresh == '3');
 				displayElement('miscSoftwareFastpath',		thresh == '1' || thresh == '3')
 				displayElement('filter_fastpath_row',		thresh == '1' || thresh == '3');
 				if (fastpathb == "1") {
-					displayElement('nat_fastpath_row',		thresh == '1' || thresh == '3');
+					displayElement('nat_fastpath_row',	thresh == '1' || thresh == '3');
 					displayElement('route_fastpath_row',	thresh == '1' || thresh == '3');
 				}
 			}
 
 			function pingerSelect(form) {
-				displayElement([ 'pinger_row1', 'pinger_row2' ] , form.pingerEnable.value == '1');
+				displayElement([ 'pinger_row1', 'pinger_row2' ], form.pingerEnable.value == '1');
 			}
 
 			function igmpSelect(form) {
@@ -271,19 +289,19 @@
 			function displayServiceHandler(response) {
 				var form = document.miscServiceCfg;
 				var services = [
-					// turned_on,										row_id,			daemon_id,		url-finish,	about
-					[ NVRAM_UDPXYMode,			'udpxy',		'udpxy', 		NVRAM_UDPXYPort + '/status/', 'udpxy.sourceforge.net' ],
-					[ NVRAM_xupnpd,				'xupnpd',		'xupnpd',		'4044/',	'xupnpd.org/' ],
-					[ NVRAM_CrondEnable,		'crond',		'crond', 		null,		'crontab.org/' ],
-					[ NVRAM_snmpd,				'snmpd',		'snmpd', 		null,		'www.net-snmp.org/docs/man/snmpd.html' ],
-					[ NVRAM_igmpEnabled,		'igmpProxy',	'igmpproxy', 	null,		'sourceforge.net/projects/igmpproxy' ],
-					[ NVRAM_lltdEnabled,		'lltd',			'lld2d', 		null,		'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
-					[ NVRAM_lldpdEnabled,		'lldpd',		'lldpd', 		null,		'vincentbernat.github.io/lldpd' ],
-					[ NVRAM_upnpEnabled,		'upnp',			'miniupnpd',	null,		'miniupnp.free.fr/' ],
-					[ NVRAM_cdpEnabled,			'cdp',			'cdp-send',		null,		'freecode.com/projects/cdp-tools' ],
-					[ NVRAM_dnsPEnabled,		'dnsproxy',		'dnsmasq',		null,		'thekelleys.org.uk/dnsmasq/doc.html' ],
-					[ NVRAM_parproutedEnabled,	'parprouted',	'parprouted',	null,		'freecode.com/projects/parprouted' ],
-					[ NVRAM_arpwatch,			'arpwatch',		'arpwatch',		null,		'wikipedia.org/wiki/Arpwatch' ]
+					// turned_on,			row_id,			daemon_id,		url-finish,	about
+					[ NVRAM_UDPXYMode,		'udpxy',		'udpxy',		NVRAM_UDPXYPort + '/status/',	'udpxy.sourceforge.net' ],
+					[ NVRAM_xupnpd,			'xupnpd',		'xupnpd',		'4044/',			'xupnpd.org/' ],
+					[ NVRAM_CrondEnable,		'crond',		'crond',		null,				'crontab.org/' ],
+					[ NVRAM_snmpd,			'snmpd',		'snmpd',		null,				'www.net-snmp.org/docs/man/snmpd.html' ],
+					[ NVRAM_igmpEnabled,		'igmpProxy',		'igmpproxy',		null,				'sourceforge.net/projects/igmpproxy' ],
+					[ NVRAM_lltdEnabled,		'lltd',			'lld2d',		null,				'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
+					[ NVRAM_lldpdEnabled,		'lldpd',		'lldpd',		null,				'vincentbernat.github.io/lldpd' ],
+					[ NVRAM_upnpEnabled,		'upnp',			'miniupnpd',		null,				'miniupnp.free.fr/' ],
+					[ NVRAM_cdpEnabled,		'cdp',			'cdp-send',		null,				'freecode.com/projects/cdp-tools' ],
+					[ NVRAM_dnsPEnabled,		'dnsproxy',		'dnsmasq',		null,				'thekelleys.org.uk/dnsmasq/doc.html' ],
+					[ NVRAM_parproutedEnabled,	'parprouted',		'parprouted',		null,				'freecode.com/projects/parprouted' ],
+					[ NVRAM_arpwatch,		'arpwatch',		'arpwatch',		null,				'wikipedia.org/wiki/Arpwatch' ]
 				];
 
 				// Create associative array
@@ -293,8 +311,7 @@
 					daemons[tmp[i]] = 1;
 
 				// Now display all services
-				for (var i = 0; i < services.length; i++)
-				{
+				for (var i = 0; i < services.length; i++) {
 					var service = services[i];
 					var row		= document.getElementById(service[1]);
 					var tds		= [];
@@ -320,26 +337,25 @@
 							'<a href="http://' + LAN_IP +':' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
 					}
 				}
-
 				setTimeout('displayServiceStatus();', 5000);
 			}
 
 			function showOffloadEngineMenu() {
 				var elements = [ 'miscNATOffload_row', 'wifihw_row', 'udphw_row', 'sixhw_row', 'hwnat_threshold_row', 'miscNATimpl_row' ];
 				if (statusOffloadEngineMenu == 0) {
-					ajaxModifyElementHTML('miscOffloadSetup', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc offload setup"));
+					ajaxModifyElementHTML('miscOffloadSetup', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc offload setup"));
 					statusOffloadEngineMenu = 1;
 					displayElement(elements, true);
 
-					var thresh		= document.miscServiceCfg.offloadMode.value;
+					var thresh = document.miscServiceCfg.offloadMode.value;
 					displayElement( [ 'hwnat_threshold_row',
-									  'wifihw_row',
-									  'udphw_row',
-									  'sixhw_row' ],			thresh == '2' || thresh == '3');
+							  'wifihw_row',
+							  'udphw_row',
+							  'sixhw_row' ],			thresh == '2' || thresh == '3');
 					displayElement( [ 'fastpath_row', 
-									  'miscSoftwareFastpath' ],	thresh == '1' || thresh == '3');
+							  'miscSoftwareFastpath' ],		thresh == '1' || thresh == '3');
 				} else {
-					ajaxModifyElementHTML('miscOffloadSetup', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc offload setup"));
+					ajaxModifyElementHTML('miscOffloadSetup', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc offload setup"));
 					statusOffloadEngineMenu = 0;
 					displayElement(elements, false);
 				}
@@ -348,12 +364,12 @@
 			function showSoftwareFastpathMenu() {
 				var elements = [ 'nat_fastpath_row', 'route_fastpath_row', 'filter_fastpath_row', 'smb_fastpath_row' ];
 				if (statusSoftwareFastpathMenu == 0) {
-					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc software title"));
+					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc software title"));
 					statusSoftwareFastpathMenu = 1;
 					displayElement(elements, true);
 					displayElement('smb_fastpath_row',	BUILD_SMBFP == '1');
 				} else {
-					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc software title"));
+					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc software title"));
 					statusSoftwareFastpathMenu = 0;
 					displayElement(elements, false);
 				}
@@ -362,14 +378,15 @@
 			function showRemoteManagementMenu() {
 				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd' ];
 				if (statusRemoteManagementMenu == 0) {
-					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc remote setup"));
+					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 1;
 					displayElement(elements, true);
 					displayElement('rmt_telnetd', BUILD_TELNETD == '1');
 					httpRmtSelect(document.miscServiceCfg);
 					sshRmtSelect(document.miscServiceCfg);
-				} else {
-					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc remote setup"));
+				}
+				else {
+					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 0;
 					displayElement(elements, false);
 				}
@@ -377,72 +394,62 @@
 
 			function showServicesMenu() {
 				var elements = [ 'dnsproxy', 'upnp', 'parprouted', 'crond' ];
-				var html;
 				if (statusServicesMenu == 0) {
-					html =  '<td class="title" onClick="showServicesMenu();"><img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc services") + '</td>';
-					html += '<td class="title" onClick="showServicesMenu();">' + _("services misc value") + '</td>';
-					html +=	'<td class="title" onClick="showServicesMenu();" style="width: 88px;">' + _("services status details") + '</td>';
-					html +=	'<td class="title" onClick="showServicesMenu();" style="width: 56px;">' + _("services misc status") + '</td>';
-					html +=	'<td class="title" onClick="showServicesMenu();" style="width: 80px;">' + _("services status configure") + '</td>';
-					ajaxModifyElementHTML('miscServices_row', html);
 					statusServicesMenu = 1;
+					displayElement('miscServices_show', true);
+					displayElement('miscServices_hide', false);
 					displayElement(elements, true);
 					displayElement('dnsproxy',		BUILD_DNSMASQ == '1');
-					displayElement('upnp', 			BUILD_UPNP == '1');
-					displayElement('parprouted', 	BUILD_ARPPT == '1');
-				} else {
-					ajaxModifyElementHTML('miscServices_row', '<td class="title" colspan="5" onClick="showServicesMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc services") + '</td>');
+					displayElement('upnp',			BUILD_UPNP == '1');
+					displayElement('parprouted',		BUILD_ARPPT == '1');
+				}
+				else {
 					statusServicesMenu = 0;
+					displayElement('miscServices_show', false);
+					displayElement('miscServices_hide', true);
 					displayElement(elements, false);
 				}
 			}
 
 			function showServicesIPTVMenu() {
 				var elements = [ 'igmpProxy', 'igmpSnoop', 'igmpFastL', 'igmpM2UConv', 'udpxy', 'udpxy_port_row', 'xupnpd' ];
-				var html;
 				if (statusServicesIPTVMenu == 0) {
-					html =  '<td class="title" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc iptv") + '</td>';
-					html += '<td class="title" onClick="showServicesIPTVMenu();">' + _("services misc value") + '</td>';
-					html +=	'<td class="title" onClick="showServicesIPTVMenu();" style="width: 88px;">' + _("services status details") + '</td>';
-					html +=	'<td class="title" onClick="showServicesIPTVMenu();" style="width: 56px;">' + _("services misc status") + '</td>';
-					html +=	'<td class="title" onClick="showServicesIPTVMenu();" style="width: 80px;">' + _("services status configure") + '</td>';
-					ajaxModifyElementHTML('miscIPTV_row', html);
 					statusServicesIPTVMenu = 1;
-
+					displayElement('miscIPTV_show', true);
+					displayElement('miscIPTV_hide', false);
 					displayElement(elements, true);
 					displayElement('igmpProxy', BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1');
 					displayElement('igmpFastL', (BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') || NVRAM_OperationMode != '2');
 					displayElement('igmpM2UConv', NVRAM_OperationMode != '2');
-					displayElement('udpxy_port_row', document.miscServiceCfg.udpxyMode.selectedIndex != '0');
+					displayElement('udpxy_port_row', document.getElementById('udpxyMode').selectedIndex != '0');
 					displayElement('xupnpd', BUILD_XUPNPD == '1');
-				} else {
-					ajaxModifyElementHTML('miscIPTV_row', '<td class="title" colspan="5" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc iptv") + '</td>');
+				}
+				else {
 					statusServicesIPTVMenu = 0;
+					displayElement('miscIPTV_show', false);
+					displayElement('miscIPTV_hide', true);
 					displayElement(elements, false);
 				}
 			}
 
 			function showServicesInfoMenu() {
 				var elements = [ 'snmpd', 'snmpCommunityRow', 'lltd', 'lldpd', 'cdp', 'arpwatch' ];
-				var html;
 				if (statusServicesInfoMenu == 0) {
-					html =  '<td class="title" onClick="showServicesInfoMenu();"><img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc dinf") + '</td>';
-					html += '<td class="title" onClick="showServicesInfoMenu();">' + _("services misc value") + '</td>';
-					html +=	'<td class="title" onClick="showServicesInfoMenu();" style="width: 88px;">' + _("services status details") + '</td>';
-					html +=	'<td class="title" onClick="showServicesInfoMenu();" style="width: 56px;">' + _("services misc status") + '</td>';
-					html +=	'<td class="title" onClick="showServicesInfoMenu();" style="width: 80px;">' + _("services status configure") + '</td>';
-					ajaxModifyElementHTML('miscDINF_row', html);
 					statusServicesInfoMenu = 1;
+					displayElement('miscDINF_show', true);
+					displayElement('miscDINF_hide', false);
 					displayElement(elements, true);
 					displayElement('cdp', BUILD_CDP == '1');
 					displayElement('lltd', BUILD_LLTD == '1');
 					displayElement('lldpd', BUILD_LLDPD == '1');
 					displayElement('snmpd', BUILD_SNMPD == '1');
 					displayElement('arpwatch', BUILD_ARPWATCH == '1');
-					displayElement('snmpCommunityRow', document.miscServiceCfg.SnmpdEnabled.value != '0');
-				} else {
-					ajaxModifyElementHTML('miscDINF_row', '<td class="title" colspan="5" onClick="showServicesInfoMenu();"><img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc dinf") + '</td>');
+					displayElement('snmpCommunityRow', document.getElementById('SnmpdEnabled').value != '0');
+				}
+				else {
 					statusServicesInfoMenu = 0;
+					displayElement('miscDINF_show', false);
+					displayElement('miscDINF_hide', true);
 					displayElement(elements, false);
 				}
 			}
@@ -450,11 +457,11 @@
 			function showPassThroughMenu() {
 				var elements = [ 'miscPTPPPoE_row', 'miscPTIPv6_row' ];
 				if (statusPassThroughMenu == 0) {
-					ajaxModifyElementHTML('miscPassThrough', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc pass through"));
+					ajaxModifyElementHTML('miscPassThrough', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc pass through"));
 					statusPassThroughMenu = 1;
 					displayElement(elements, true);
 				} else {
-					ajaxModifyElementHTML('miscPassThrough', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc pass through"));
+					ajaxModifyElementHTML('miscPassThrough', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc pass through"));
 					statusPassThroughMenu = 0;
 					displayElement(elements, false);
 				}
@@ -463,12 +470,12 @@
 			function showWatchersMenu() {
 				var elements = [ 'miscWatchdog_row', 'miscPinger_row', 'pinger_row1', 'pinger_row2' ];
 				if (statusWatchersMenu == 0) {
-					ajaxModifyElementHTML('miscWatchers', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc watchers"));
+					ajaxModifyElementHTML('miscWatchers', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc watchers"));
 					statusWatchersMenu = 1;
 					displayElement(elements, true);
 					pingerSelect(document.miscServiceCfg);
 				} else {
-					ajaxModifyElementHTML('miscWatchers', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc watchers"));
+					ajaxModifyElementHTML('miscWatchers', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc watchers"));
 					statusWatchersMenu = 0;
 					displayElement(elements, false);
 				}
@@ -477,13 +484,13 @@
 			function showOthersMenu() {
 				var elements = [ 'miscVLANDoubleTag_row', 'irqbalance', 'miscReinitWAN_row', 'miscDHCPRenew_row', 'miscSysfwPingFrmWANFilterHead_row', 'miscStp_row', 'miscDontModifyTTL_row', 'mcast_store_ttl_row', 'miscUsePMTU_row' ];
 				if (statusOthersMenu == 0) {
-					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width=25 height=11>' + _("services misc others"));
+					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc others"));
 					statusOthersMenu = 1;
 					displayElement(elements, true);
 					displayElement('irqbalance', BUILD_SMP == '1');
 					displayElement('mcast_store_ttl_row', document.miscServiceCfg.igmpEnbl.value == '1');
 				} else {
-					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_plus.gif" width=25 height=11>' + _("services misc others"));
+					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc others"));
 					statusOthersMenu = 0;
 					displayElement(elements, false);
 				}
@@ -645,7 +652,15 @@
 						</td>
 					</tr>
 					<!-- Services -->
-					<tr id="miscServices_row">
+					<tr id="miscServices_show">
+						<td class="title" onClick="showServicesMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscServicesShow"></span></td>
+						<td class="title" onClick="showServicesMenu();"><span id="servicesMiscValues"></span></td>
+						<td class="title" onClick="showServicesMenu();" style="width: 88px;"><span id="servicesMiscDetails"></span></td>
+						<td class="title" onClick="showServicesMenu();" style="width: 56px;"><span id="servicesMiscStatus"></span></td>
+						<td class="title" onClick="showServicesMenu();" style="width: 80px;"><span id="servicesMiscConfigure"></span></td>
+					</tr>
+					<tr id="miscServices_hide">
+						<td class="title" colspan="5" onClick="showServicesMenu();"><img src="/graphics/menu_plus.gif" width="25" height="11"><span id="servicesMiscServicesHide"></span></td>
 					</tr>
 					<tr id="dnsproxy">
 						<td class="head" id="miscDnsp" style="width: 45%">DNS cached proxy</td>
@@ -696,7 +711,15 @@
 						<td>&nbsp;</td>
 					  </tr>
 					<!-- IPTV -->
-					<tr id="miscIPTV_row">
+					<tr id="miscIPTV_show">
+						<td class="title" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscIPTVshow"></span></td>
+						<td class="title" onClick="showServicesIPTVMenu();"><span id="servicesMiscIPTVvalue"></span></td>
+						<td class="title" onClick="showServicesIPTVMenu();" style="width: 88px;"><span id="servicesMiscIPTVdetails"></span></td>
+						<td class="title" onClick="showServicesIPTVMenu();" style="width: 56px;"><span id="servicesMiscIPTVstatus"></span></td>
+						<td class="title" onClick="showServicesIPTVMenu();" style="width: 80px;"><span id="servicesMiscIPTVconfigure"></span></td>
+					</tr>
+					<tr id="miscIPTV_hide">
+						<td class="title" colspan="5" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_plus.gif" width="25" height="11"><span id="servicesMiscIPTVhide"></span></td>
 					</tr>
 					<tr id="igmpProxy">
 						<td class="head" id="miscIgmpp" style="width: 45%">IGMP proxy</td>
@@ -743,7 +766,7 @@
 					<tr id="udpxy">
 						<td class="head" id="miscUdpxy" style="width: 45%">Multicast to http proxy (udpxy)</td>
 						<td>
-							<select name="udpxyMode" class="normal" onChange="udpxySelect(this.form);">
+							<select name="udpxyMode" id="udpxyMode" class="normal" onChange="udpxySelect(this.form);">
 								<option value="0" id="disable">Disable</option>
 								<option value="1">LAN</option>
 								<option value="2">LAN &amp; WAN</option>
@@ -772,12 +795,20 @@
 						<td>&nbsp;</td>
 					</tr>
 					<!-- INFO -->
-					<tr id="miscDINF_row">
+					<tr id="miscDINF_show">
+						<td class="title" onClick="showServicesInfoMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscDINFshow"></span></td>
+						<td class="title" onClick="showServicesInfoMenu();"><span id="servicesMiscDINFvalue"></span></td>
+						<td class="title" onClick="showServicesInfoMenu();" style="width: 88px;"><span id="servicesMiscDINFdetails"></span></td>
+						<td class="title" onClick="showServicesInfoMenu();" style="width: 56px;"><span id="servicesMiscDINFstatus"></span></td>
+						<td class="title" onClick="showServicesInfoMenu();" style="width: 80px;"><span id="servicesMiscDINFconfigure"></span></td>
+					</tr>
+					<tr id="miscDINF_hide">
+						<td class="title" colspan="5" onClick="showServicesInfoMenu();"><img src="/graphics/menu_plus.gif" width="25" height="11"><span id="servicesMiscDINFhide"></span></td>
 					</tr>
 					<tr id="snmpd">
 						<td class="head" id="miscSnmp" style="width: 45%">SNMP daemon</td>
 						<td>
-							<select name="SnmpdEnabled" class="normal" onchange="snmpdRmtSelect(this.form);">
+							<select name="SnmpdEnabled" id="SnmpdEnabled" class="normal" onchange="snmpdRmtSelect(this.form);">
 								<option value="0" id="disable">Disable</option>
 								<option value="1">LAN</option>
 								<option value="2">LAN &amp; WAN</option>

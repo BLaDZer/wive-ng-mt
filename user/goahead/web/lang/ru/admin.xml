@@ -27,54 +27,54 @@
     <message msgid="management export settings" msgstr="Вы хотите загрузить настройки в файл?" />
     <message msgid="management ask reset factory" msgstr="Все настройки буду сброшены на заводские. Хотите продолжить?" />
 
-	<message msgid="status title" 					msgstr="Состояние маршрутизатора" />
+	<message msgid="status title"				msgstr="Состояние маршрутизатора" />
 	<message msgid="status introduction"			msgstr="Сводная информация о состоянии оборудования" />
 	<message msgid="status system information"		msgstr="Информация о системе" />
-	<message msgid="status sdk version"				msgstr="Версия ПО" />
+	<message msgid="status sdk version"			msgstr="Версия ПО" />
 	<message msgid="status system date time"		msgstr="Системное время" />
 	<message msgid="status system up time"			msgstr="Продолжительность работы" />
 	<message msgid="status system platform"			msgstr="Платформа" />
 	<message msgid="status system op mode"			msgstr="Режим работы" />
 	<message msgid="status internet config"			msgstr="Настройки интернета" />
 	<message msgid="status connect type"			msgstr="Тип WAN соединения" />
-	<message msgid="status int ipaddr"				msgstr="IP адрес в VPN сети или интернете" />
-	<message msgid="status wan ipaddr"				msgstr="IP адрес физического WAN интерфейса" />
-	<message msgid="status subnet mask"				msgstr="Маска подсети WAN" />
+	<message msgid="status int ipaddr"			msgstr="IP адрес в VPN сети или интернете" />
+	<message msgid="status wan ipaddr"			msgstr="IP адрес физического WAN интерфейса" />
+	<message msgid="status subnet mask"			msgstr="Маска подсети WAN" />
 	<message msgid="status default gateway"			msgstr="Шлюз" />
-	<message msgid="status primary dns"				msgstr="Основной DNS" />
+	<message msgid="status primary dns"			msgstr="Основной DNS" />
 	<message msgid="status secondary dns"			msgstr="Вторичный DNS" />
-	<message msgid="status mac"						msgstr="MAC адрес" />
+	<message msgid="status mac"				msgstr="MAC адрес" />
 	<message msgid="status local network"			msgstr="Настройки локальной сети" />
 	<message msgid="status local ipaddr"			msgstr="LAN IP адрес" />
 	<message msgid="status local netmask"			msgstr="LAN маска подсети" />
-	<message msgid="status internal ipv6 address"	msgstr="Внутренний IPv6 адрес" />
-	<message msgid="status external ipv6 address"	msgstr="Внешний IPv6 адрес" />
+	<message msgid="status internal ipv6 address"		msgstr="Внутренний IPv6 адрес" />
+	<message msgid="status external ipv6 address"		msgstr="Внешний IPv6 адрес" />
 	<message msgid="status system up time day1"		msgstr="день" />
-	<message msgid="status system up time day2_4"	msgstr="дня" />
-	<message msgid="status system up time day5_0"	msgstr="дней" />
-	<message msgid="status system up time hour1"	msgstr="час" />
-	<message msgid="status system up time hour2_4"	msgstr="часа" />
-	<message msgid="status system up time hour5_0"	msgstr="часов" />
+	<message msgid="status system up time day2_4"		msgstr="дня" />
+	<message msgid="status system up time day5_0"		msgstr="дней" />
+	<message msgid="status system up time hour1"		msgstr="час" />
+	<message msgid="status system up time hour2_4"		msgstr="часа" />
+	<message msgid="status system up time hour5_0"		msgstr="часов" />
 	<message msgid="status system up time min1"		msgstr="минута" />
-	<message msgid="status system up time min2_4"	msgstr="минуты" />
-	<message msgid="status system up time min5_0"	msgstr="минут" />
+	<message msgid="status system up time min2_4"		msgstr="минуты" />
+	<message msgid="status system up time min5_0"		msgstr="минут" />
 	<message msgid="status system up time sec1"		msgstr="секунда" />
-	<message msgid="status system up time sec2_4"	msgstr="секунды" />
-	<message msgid="status system up time sec5_0"	msgstr="секунд" />
-    <message msgid="status internal ipv6 address"	msgstr="Внутренний IPv6 адрес" />
-    <message msgid="status external ipv6 address"	msgstr="Внешний IPv6 адрес" />
-    <message msgid="statistic warning"				msgstr="Для корректнектного сбора статистики нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
-    <message msgid="statistic memory and cpu"		msgstr="Состояние Памяти и Процессора" />
-    <message msgid="statistic memory total"			msgstr="Всего памяти" />
-    <message msgid="statistic memory left"			msgstr="Свободно памяти" />
-    <message msgid="statistic memory kib"			msgstr=" КиБ" />
-    <message msgid="statistic cpu usage"			msgstr="Использование процессора" />
-    <message msgid="statistic all interface"		msgstr="Статистика сетевых интерфейсов" />
-    <message msgid="statistic interface name"		msgstr="Имя интерфейса" />
-    <message msgid="statistic rx pkt"				msgstr="Принято пакетов" />
-    <message msgid="statistic rx bytes"				msgstr="Принято байт" />
-    <message msgid="statistic tx pkt"				msgstr="Отправленно пакетов" />
-    <message msgid="statistic tx bytes"				msgstr="Отправленно байт" />
+	<message msgid="status system up time sec2_4"		msgstr="секунды" />
+	<message msgid="status system up time sec5_0"		msgstr="секунд" />
+	<message msgid="status internal ipv6 address"		msgstr="Внутренний IPv6 адрес" />
+	<message msgid="status external ipv6 address"		msgstr="Внешний IPv6 адрес" />
+	<message msgid="statistic warning"			msgstr="Для корректнектного сбора статистики нужно выключить режим NAT offload. Пожалуйста, обратите внимание, что отключение NAT offload приведёт к увеличению нагрузки на процессор." />
+	<message msgid="statistic memory and cpu"		msgstr="Состояние Памяти и Процессора" />
+	<message msgid="statistic memory total"			msgstr="Всего памяти" />
+	<message msgid="statistic memory left"			msgstr="Свободно памяти" />
+	<message msgid="statistic memory kib"			msgstr=" КиБ" />
+	<message msgid="statistic cpu usage"			msgstr="Использование процессора" />
+	<message msgid="statistic all interface"		msgstr="Статистика сетевых интерфейсов" />
+	<message msgid="statistic interface name"		msgstr="Имя интерфейса" />
+	<message msgid="statistic rx pkt"			msgstr="Принято пакетов" />
+	<message msgid="statistic rx bytes"			msgstr="Принято байт" />
+	<message msgid="statistic tx pkt"			msgstr="Отправленно пакетов" />
+	<message msgid="statistic tx bytes"			msgstr="Отправленно байт" />
 
     <message msgid="syslog title" msgstr="Система логирования" />
     <message msgid="syslog introduction" msgstr="Здесь вы можете настроить систему логирования" />

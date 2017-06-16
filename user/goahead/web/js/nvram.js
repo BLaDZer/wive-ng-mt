@@ -257,7 +257,7 @@ var NVRAM_ipt_account					= '<% getCfgGeneral(1, "ipt_account"); %>'; 					NVRAM
 var NVRAM_DDNSProvider					= '<% getCfgGeneral(1, "DDNSProvider"); %>'; 					NVRAM_DDNSProvider 					= (NVRAM_DDNSProvider !='')						? NVRAM_DDNSProvider					: '0';
 var NVRAM_DDNSAccount					= '<% getCfgGeneral(1, "DDNSAccount"); %>'; 					NVRAM_DDNSAccount 					= (NVRAM_DDNSAccount !='')						? NVRAM_DDNSAccount						: '';
 var NVRAM_DDNSPassword					= '<% getCfgGeneral(1, "DDNSPassword"); %>'; 					NVRAM_DDNSPassword 					= (NVRAM_DDNSPassword !='')						? NVRAM_DDNSPassword					: '';
-var NVRAM_DDNS							= '<% getCfgGeneral(1, "DDNS"); %>'; 							NVRAM_DDNS 							= (NVRAM_DDNS !='')								? NVRAM_DDNS							: '0';
+var NVRAM_DDNS							= '<% getCfgGeneral(1, "DDNS"); %>'; 							NVRAM_DDNS 							= (NVRAM_DDNS !='')								? NVRAM_DDNS							: '';
 var NVRAM_cwmpdEnabled					= '<% getCfgGeneral(1, "cwmpdEnabled"); %>'; 					NVRAM_cwmpdEnabled 					= (NVRAM_cwmpdEnabled !='')						? NVRAM_cwmpdEnabled					: '0';
 var NVRAM_cwmp_acs_type					= '<% getCfgGeneral(1, "cwmp_acs_type"); %>'; 					NVRAM_cwmp_acs_type 				= (NVRAM_cwmp_acs_type !='')					? NVRAM_cwmp_acs_type					: 'tr-098-1-8-0';
 var NVRAM_cwmp_acs_url					= '<% getCfgGeneral(1, "cwmp_acs_url"); %>'; 					NVRAM_cwmp_acs_url 					= (NVRAM_cwmp_acs_url !='')						? NVRAM_cwmp_acs_url					: 'http://acs.lo:30006/otomc/acs/webservice.action';

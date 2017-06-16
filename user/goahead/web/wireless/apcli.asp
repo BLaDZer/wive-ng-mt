@@ -75,6 +75,11 @@
 				ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);
 				setInterval('ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);', 5000);
 
+				// Hide 'SCAN' buttons if IE8 (no SVG support)
+				var browser = getBrowser();
+				if (browser.browser == 'ie' && browser.versionShort <= 8)
+					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC' ], false);
+
 				securityModeSwitch(form);
 				apcliEnableSwitch(form);
 				showWarning();

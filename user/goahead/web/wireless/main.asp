@@ -1026,6 +1026,11 @@
 				form.ED_MODE.options.selectedIndex = (ED_MODE == '1') ? 1 : 0;
 				displayElement('advEDMODE_tr', EDCCABuilt == "1");
 
+				// Hide 'SCAN' buttons if IE8 (no SVG support)
+				var browser = getBrowser();
+				if (browser.browser == 'ie' && browser.versionShort <= 8)
+					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC'], false);
+
 				initTranslation();
 				showHTPhysModeMenu();
 				showVHTPhysModeMenu();

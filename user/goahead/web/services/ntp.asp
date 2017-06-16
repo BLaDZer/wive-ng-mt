@@ -34,25 +34,23 @@
 			}
 
 			function initValues() {
-				var form = document.NTP;
 				var cTime = new Date();
 
-
-				form.time_zone.value = NVRAM_TZ;
-				form.ntp_enabled.options.selectedIndex	= +NVRAM_NTPEnabled;
-				form.NTPServerIP.value					= NVRAM_NTPServerIP; 
+				document.getElementById('time_zone').value 						= NVRAM_TZ;
+				document.getElementById('ntp_enabled').options.selectedIndex	= +NVRAM_NTPEnabled;
+				document.getElementById('NTPServerIP').value					= NVRAM_NTPServerIP; 
 			  
 				if (BUILD_DATE == '1') {
 					showElement('div_date');
-					form.ntpcurrenttime.disabled	= false;
-					form.ntpcurrenttime.value		= sprintf('%02d:%02d:%02d %02d.%02d.%04d', cTime.getHours(), cTime.getMinutes(), cTime.getSeconds(), cTime.getDate(), cTime.getMonth()+1, cTime.getFullYear());
+					document.getElementById('ntpcurrenttime').disabled	= false;
+					document.getElementById('ntpcurrenttime').value		= sprintf('%02d:%02d:%02d %02d.%02d.%04d', cTime.getHours(), cTime.getMinutes(), cTime.getSeconds(), cTime.getDate(), cTime.getMonth()+1, cTime.getFullYear());
  				}
 				else {
 					hideElement('div_date');
-					form.ntpcurrenttime.disabled = true;
+					document.getElementById('ntpcurrenttime').disabled = true;
 				}
 
-				ntpChange(form);
+				ntpChange();
 				showWarning();
 				initTranslation();
 			}
@@ -66,18 +64,13 @@
 				ajaxPostRequest("/goform/NTPSyncWithHost", time, true);
 			}
 
-			function ntpChange(form) {
-			  enableElements(
-				[ form.manNTPSyncWithHost, form.time_zone, form.NTPServerIP ],
-				(form.ntp_enabled.options.selectedIndex != 0));
-			  displayElement(
-				[ "div_date", "div_tz", "div_server" ],
-				(form.ntp_enabled.options.selectedIndex != 0));
-			  displayServiceStatus();
+			function ntpChange() {
+				enableElements([document.getElementById('manNTPSyncWithHost'), document.getElementById('time_zone'), document.getElementById('NTPServerIP')], document.getElementById('ntp_enabled').options.selectedIndex != 0);
+				displayElement(["div_date", "div_tz", "div_server"], document.getElementById('ntp_enabled').options.selectedIndex != 0);
+				displayServiceStatus();
 			}
 
 			function displayServiceHandler(response) {
-				var form = document.l2tpConfig;
 				var services = [
 					// turned_on, row_id, daemon_id
 					[ NVRAM_NTPEnabled, 'ntp_enabled_row', 'ntpd' ]
@@ -232,7 +225,7 @@
 							<tr id="ntp_enabled_row">
 								<td class="head" id="ntpEnabled" style="width: 40%">NTP synchronization</td>
 								<td>
-									<select name="ntp_enabled" class="mid" onChange="ntpChange(this.form);">
+									<select name="ntp_enabled" id="ntp_enabled" class="mid" onChange="ntpChange(this.form);">
 										<option value="0" id="ntpDisable">Disable</option>
 										<option value="1" id="ntpEnable">Enable</option>
 									</select>
@@ -242,14 +235,14 @@
 							<tr id="div_date">
 								<td class="head" id="ntpCurrentTime">Current Host Time</td>
 								<td colspan="2">
-									<input class="wide" name="ntpcurrenttime" type="text" readonly="1">&nbsp;&nbsp;
+									<input class="wide" name="ntpcurrenttime" id="ntpcurrenttime" type="text" readonly="1">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Sync with host" id="ntpSyncWithHost" name="manNTPSyncWithHost" onClick="syncWithHost()">
 								</td>
 							</tr>
 							<tr id="div_tz">
 								<td class="head" id="ntpTimeZone">Time Zone:</td>
 								<td colspan="2">
-									<select name="time_zone" class="wide">
+									<select name="time_zone" id="time_zone" class="wide">
 										<option value="UCT_-11" id="ntpMidIsland"					>(UTC-11:00) Midway Island, Samoa</option>
 										<option value="UCT_-10" id="ntpHawaii"						>(UTC-10:00) Hawaii</option>
 										<option value="NAS_-09" id="ntpAlaska"						>(UTC-09:00) Alaska</option>
@@ -317,7 +310,7 @@
 							<tr id="div_server">
 								<td class="head" id="ntpServer">NTP Server</td>
 								<td colspan="2">
-									<input class="wide" name="NTPServerIP" type="text">
+									<input class="wide" name="NTPServerIP" id="NTPServerIP" type="text">
 									<br>
 									&nbsp;&nbsp;<font color="#808080">ex:&nbsp;time.nist.gov</font><br>
 									&nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;ru.pool.ntp.org</font><br>
