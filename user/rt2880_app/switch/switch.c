@@ -109,11 +109,10 @@ void usage(char *cmd)
 	printf(" %s pvid [port] [pvid]                - set pvid on port 0~6\n", cmd);
 	printf(" %s vlan clear                           - clear vlan part table\n", cmd);
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+	printf(" %s crossover [port] [auto/mdi/mdix]	 - switch auto or force mdi/mdix mode for crossover cable\n", cmd);
 	printf(" %s vlan set [idx (NULL)] [vid] [portmap] <stag> <eg_con> <eg_tag> - set vlan id and associated member\n", cmd);
 #else
 	printf(" %s vlan set [idx] [vid] [portmap] <stag> <eg_con> <eg_tag> - set vlan id and associated member\n", cmd);
-#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
-	printf(" %s crossover [port] [auto/mdi/mdix]	 - switch auto or force mdi/mdix mode for crossover cable\n", cmd);
 #endif
 	printf(" %s igmpsnoop on [Query Interval] [default router portmap] - turn on IGMP snoop and  router port learning (Query Interval 1~255)\n", cmd);
 	printf(" %s igmpsnoop off                                  - turn off IGMP snoop and router port learning\n", cmd);
