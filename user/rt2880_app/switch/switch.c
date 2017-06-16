@@ -71,6 +71,7 @@ void usage(char *cmd)
 	printf(" %s clear                                - clear switch table\n", cmd);
 	printf(" %s del [mac]                            - delete an entry from switch table\n", cmd);
 	printf(" %s del [mac] [fid]                      - delete an entry from switch table\n", cmd);
+	printf(" %s search [mac] [vlan id]		 - search an entry with specific mac and vlan id\n", cmd);
 	printf(" %s dip add [dip] [portmap]              - add a dip entry to switch table\n", cmd);
 	printf(" %s dip del [dip]                        - del a dip entry to switch table\n", cmd);
 	printf(" %s dip dump                             - dump switch dip table\n", cmd);
@@ -87,8 +88,8 @@ void usage(char *cmd)
 	printf(" %s mymac [mac] [portmap]                - add a mymac entry to switch table\n", cmd);
 	printf(" %s mirror monitor [portnumber]          - enable port mirror and indicate monitor port number\n", cmd);
 	printf(" %s mirror target [portnumber] [0:off, 1:rx, 2:tx, 3:all] - set port mirror target\n", cmd);
+	printf(" %s phy					 - dump all phy registers\n", cmd);
 	printf(" %s phy [phy_addr]                       - dump phy register of specific port\n", cmd);
-	printf(" %s phy                                  - dump all phy registers\n", cmd);
 	printf(" %s reg r [offset]                       - register read from offset\n", cmd);
 	printf(" %s reg w [offset] [value]               - register write value to offset\n", cmd);
 	printf(" %s reg d [offset]                       - register dump\n", cmd);
@@ -111,6 +112,8 @@ void usage(char *cmd)
 	printf(" %s vlan set [idx (NULL)] [vid] [portmap] <stag> <eg_con> <eg_tag> - set vlan id and associated member\n", cmd);
 #else
 	printf(" %s vlan set [idx] [vid] [portmap] <stag> <eg_con> <eg_tag> - set vlan id and associated member\n", cmd);
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+	printf(" %s crossover [port] [auto/mdi/mdix]	 - switch auto or force mdi/mdix mode for crossover cable\n", cmd);
 #endif
 	printf(" %s igmpsnoop on [Query Interval] [default router portmap] - turn on IGMP snoop and  router port learning (Query Interval 1~255)\n", cmd);
 	printf(" %s igmpsnoop off                                  - turn off IGMP snoop and router port learning\n", cmd);
@@ -1150,7 +1153,7 @@ void dip_dump(void)
 		while(1) {
 			reg_read(REG_ESW_WT_MAC_ATC, &value);
 
-			if (value & (0x1 << 13)) { //search_rdy
+			if ((value & (0x1 << 13)) && (((value >> 15) &0x1) == 0)) { //search_rdy and Address Table is not busy
 				reg_read(REG_ESW_TABLE_ATRD, &value2);
 				//printf("REG_ESW_TABLE_ATRD=0x%x\n\r",value2);
 				printf("%03x:   ", (value >> 16) & 0xfff); //hash_addr_lu
@@ -1175,20 +1178,21 @@ void dip_dump(void)
 				printf("  0x%08x\n", value2);//ATRD
 				//printf("%04x", ((mac2 >> 16) & 0xffff));
 				//printf("     %c\n", (((value2 >> 20) & 0x03)== 0x03)? 'y':'-');
-				if (value & 0x4000) {
+				if ((value & 0x4000) && (((value >> 16) & 0xfff) == 0x7FF)){
 					printf("end of table %d\n", i);
 					return;
 				}
 				break;
 			}
-			else if (value & 0x4000) { //at_table_end
+			else if ((value & 0x4000) && (((value >> 15) &0x1) == 0) && (((value >> 16) & 0xfff) == 0x7FF)){ //at_table_end
 				printf("found the last entry %d (not ready)\n", i);
 				return;
 			}
-			usleep(5000);
+			else
+			    usleep(5);
 		}
 		reg_write(REG_ESW_WT_MAC_ATC, 0x8105); //search for next dip address
-		usleep(5000);
+		usleep(5);
 	}
 }
 
@@ -1558,6 +1562,100 @@ void table_add(int argc, char *argv[])
 	wait_mac_atc();
 }
 
+void table_search_mac(int argc, char *argv[])
+{
+	unsigned int i, j, value, mac, mac2, value2;
+	char tmpstr[9];
+
+	if (!argv[2] || strlen(argv[2]) != 12) {
+		printf("MAC address format error, should be of length 12\n");
+		return;
+	}
+	strncpy(tmpstr, argv[2], 8);
+	tmpstr[8] = '\0';
+	value = strtoul(tmpstr, NULL, 16);
+	reg_write(REG_ESW_WT_MAC_ATA1, value);
+	//printf("REG_ESW_WT_MAC_ATA1 is 0x%x\n\r",value);
+
+	strncpy(tmpstr, argv[2]+8, 4);
+	tmpstr[4] = '\0';
+
+	value = strtoul(tmpstr, NULL, 16);
+	value = (value << 16);
+	value |= (1 << 15);//IVL=1
+
+	j = 1; //Default search VLAN ID = 1
+	if (argc > 3) {
+		j = strtoul(argv[3], NULL, 0);
+		if ( 4095 < j) {
+			printf("wrong vid range, should be within 0~4095\n");
+			return;
+		}
+	}
+	value |= j; //vid
+
+	reg_write(REG_ESW_WT_MAC_ATA2, value);
+	//printf("REG_ESW_WT_MAC_ATA2 is 0x%x\n\r",value);
+
+	value = 0x8000;  //w_mac_cmd
+	reg_write(REG_ESW_WT_MAC_ATC, value);
+
+	usleep(1000);
+
+	for (i = 0; i < 20; i++) {
+		reg_read(REG_ESW_WT_MAC_ATC, &value);
+		if ((value & 0x8000) == 0 ){ //mac address busy
+			break;
+		}
+		usleep(1000);
+	}
+	if (i == 20) {
+		printf("search timeout.\n");
+		return;
+	}
+
+	if (value & 0x1000) {
+		printf("search no entry.\n");
+		return;
+	}
+
+	printf("search done.\n");
+
+#if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621) || defined (CONFIG_ARCH_MT7623)
+	printf("hash  port(0:6)   fid   vid  age   mac-address     filter my_mac\n");
+#else
+	printf("hash  port(0:6)   fid   vid  age   mac-address     filter\n");
+#endif
+
+	printf("%03x:   ", (value >> 16) & 0xfff); //hash_addr_lu
+	reg_read(REG_ESW_TABLE_ATRD, &value2);
+	j = (value2 >> 4) & 0xff; //r_port_map
+	printf("%c", (j & 0x01)? '1':'-');
+	printf("%c", (j & 0x02)? '1':'-');
+	printf("%c", (j & 0x04)? '1':'-');
+	printf("%c ", (j & 0x08)? '1':'-');
+	printf("%c", (j & 0x10)? '1':'-');
+	printf("%c", (j & 0x20)? '1':'-');
+	printf("%c", (j & 0x40)? '1':'-');
+	printf("%c", (j & 0x80)? '1':'-');
+
+	reg_read(REG_ESW_TABLE_TSRA2, &mac2);
+
+	printf("   %2d", (mac2 >> 12) & 0x7); //FID
+	printf("  %4d", (mac2 & 0xfff));
+	printf(" %4d", (value2 >> 24) & 0xff); //r_age_field
+	reg_read(REG_ESW_TABLE_TSRA1, &mac);
+	printf("  %08x", mac);
+	printf("%04x", ((mac2 >> 16) & 0xffff));
+#if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621) || defined (CONFIG_ARCH_MT7623) 
+	printf("     %c", (((value2 >> 20) & 0x03)== 0x03)? 'y':'-');
+	printf("     %c\n", (((value2 >> 23) & 0x01)== 0x01)? 'y':'-');
+#else
+	printf("     %c\n", (((value2 >> 20) & 0x03)== 0x03)? 'y':'-');
+#endif
+}
+
+
 void table_del(int argc, char *argv[])
 {
 	int j, value;
@@ -1822,6 +1920,81 @@ void vlan_clear(int argc, char *argv[])
 }
 
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+int mii_mgr_cl45_write(int port_num, int dev, int reg, int value){
+	int sk, method, ret, i;
+	struct ifreq ifr;
+	ra_mii_ioctl_data mii;
+
+	sk = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sk < 0) {
+		printf("Open socket failed\n");
+	}
+
+	strncpy(ifr.ifr_name, "eth2", 5);
+	ifr.ifr_data = &mii;
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 13;
+	mii.val_in =  dev;
+	ret = ioctl(sk, method, &ifr);
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 14;
+	mii.val_in =  reg;
+	ret = ioctl(sk, method, &ifr);
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 13;
+	mii.val_in =  (0x6000 | dev);
+	ret = ioctl(sk, method, &ifr);
+
+	usleep(1000);
+
+	method = RAETH_MII_WRITE;
+	mii.phy_id = port_num;
+	mii.reg_num = 14;
+	mii.val_in =  value;
+	ret = ioctl(sk, method, &ifr);
+
+	close(sk);
+
+	return ret;
+}
+
+#define MT7530_T10_TEST_CONTROL 0x145 
+
+void phy_crossover(int argc, char *argv[]){
+	int port_num = strtoul(argv[2], NULL, 10);
+	int value;
+
+	if ((port_num < 0) || (port_num > 4)){
+		usage(argv[0]);
+		return;
+	}
+	value = mii_mgr_cl45_read(port_num, 0x1E, MT7530_T10_TEST_CONTROL);
+
+	printf("mii_mgr_cl45:");
+	printf("Read:  port#=%d, device=0x%x, reg=0x%x, value=0x%x\n", port_num, 0x1E, MT7530_T10_TEST_CONTROL, value);
+
+	if (!strncmp(argv[3], "auto", 5)){
+		value &= (~(0x3 << 3)); 
+	} else if (!strncmp(argv[3], "mdi", 4)){
+		value &= (~(0x3 << 3)); 
+		value |= (0x2 << 3);
+	} else if (!strncmp(argv[3], "mdix", 5)){
+		value |= (0x3 << 3);
+	} else {
+		usage(argv[0]);
+		return;
+	}
+
+	printf("Write: port#=%d, device=0x%x, reg=0x%x. value=0x%x\n", port_num, 0x1E, MT7530_T10_TEST_CONTROL, value);
+	mii_mgr_cl45_write(port_num, 0x1E, MT7530_T10_TEST_CONTROL, value);
+}
+
 void vlan_set(int argc, char *argv[])
 {
 	int i;
@@ -2026,7 +2199,9 @@ void vlan_set(int argc, char *argv[])
 
 	wait_vtcr();
 }
+
 #endif
+
 
 void igmp_on(int argc, char *argv[])
 {
@@ -2150,6 +2325,8 @@ int main(int argc, char *argv[])
 		table_add(argc, argv);
 	else if (!strncmp(argv[1], "del", 4))
 		table_del(argc, argv);
+	else if (!strncmp(argv[1], "search", 7))
+		table_search_mac(argc, argv);
 	else if (!strncmp(argv[1], "phy", 4)) {
 		if (argc == 3) {
 			int phy_addr = strtoul(argv[2], NULL, 10);
@@ -2388,6 +2565,14 @@ int main(int argc, char *argv[])
 		printf("Set port %d pvid %d\n", port, pvid);
 #endif
 	}
+#if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_MT7530_GSW)
+	else if (!strncmp(argv[1], "crossover", 10)) {
+		if (argc < 4)
+			usage(argv[0]);
+		else
+			phy_crossover(argc, argv);
+	}
+#endif
 	else if (!strncmp(argv[1], "igmpsnoop", 10)) {
 		if (argc < 3)
 			usage(argv[0]);
