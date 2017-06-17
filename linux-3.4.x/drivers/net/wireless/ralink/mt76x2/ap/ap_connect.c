@@ -27,9 +27,6 @@
 
 #include "rt_config.h"
 
-UCHAR PowerConstraintIE[3] = {IE_POWER_CONSTRAINT, 1, 3};
-
-
 /*
 	==========================================================================
 	Description:

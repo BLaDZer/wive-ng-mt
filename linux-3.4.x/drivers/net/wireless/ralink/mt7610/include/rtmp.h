@@ -198,7 +198,6 @@ extern UCHAR WME_INFO_ELEM[];
 extern UCHAR WME_PARM_ELEM[];
 extern UCHAR RALINK_OUI[];
 extern UCHAR MTK_OUI[];
-extern UCHAR PowerConstraintIE[];
 
 typedef union _CAPTURE_MODE_PACKET_BUFFER {
 	struct 

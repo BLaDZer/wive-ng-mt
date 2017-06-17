@@ -236,7 +236,6 @@ extern UCHAR WAPI_OUI[];
 extern UCHAR WME_INFO_ELEM[];
 extern UCHAR WME_PARM_ELEM[];
 extern UCHAR RALINK_OUI[];
-extern UCHAR PowerConstraintIE[];
 
 struct _RX_BLK;
 struct raw_rssi_info;

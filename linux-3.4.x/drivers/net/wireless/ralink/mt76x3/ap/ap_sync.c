@@ -619,15 +619,23 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #endif /* DOT11K_RRM_SUPPORT */
 			    )
 			{
+				UINT8 PwrConstraintIE = IE_POWER_CONSTRAINT;
+				UINT8 PwrConstraintLen = 1;
+				UINT8 PwrConstraint = pAd->CommonCfg.PwrConstraint;
+
+				/* prepare power constraint IE */
+				MakeOutgoingFrame(pOutBuffer+FrameLen,    &TmpLen,
+						1,                          &PwrConstraintIE,
+						1,                          &PwrConstraintLen,
+						1,                          &PwrConstraint,
+						END_OF_ARGS);
+
+		    		FrameLen += TmpLen;
+
 				/* prepare TPC Report IE */
 				InsertTpcReportIE(pAd, pOutBuffer+FrameLen, &FrameLen,
 				RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
 
-				/* prepare power constraint IE */
-				MakeOutgoingFrame(pOutBuffer+FrameLen,    &TmpLen,
-						3,                 	PowerConstraintIE,
-						END_OF_ARGS);
-						FrameLen += TmpLen;
 #ifdef DOT11_VHT_AC
 				if (WMODE_CAP_AC(PhyMode)) {
 					ULONG TmpLen;
