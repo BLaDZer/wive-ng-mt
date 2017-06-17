@@ -238,7 +238,7 @@ CHAR RTMP_GetTxPwr(RTMP_ADAPTER *pAd, HTTRANSMIT_SETTING HTTxMode)
 #ifdef SINGLE_SKU
 	CurTxPwr = pAd->CommonCfg.DefineMaxTxPwr;
 #else
-	CurTxPwr = 19;
+	CurTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 #endif /* SINGLE_SKU */
 
 	/* check Tx Power setting from UI. */
