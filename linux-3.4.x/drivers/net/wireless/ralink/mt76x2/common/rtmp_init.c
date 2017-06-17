@@ -1796,10 +1796,6 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 #ifdef RT65xx
 	if (IS_RT65XX(pAd)) {
         	if (pAd->MacTab.Size <= 8) {
-#ifdef UAPSD_SUPPORT
-		    /* check the EOSP packet by RateCtrl's way */
-		    UAPSD_SP_AUE_Handle(pAd, pEntry, TRUE);
-#endif /* UAPSD_SUPPORT */
 		    if ((TxSuccess == 0) && (TxRetransmit > 0))
 		    {
 			    /* prevent fast drop long range clients */
@@ -2024,7 +2020,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 		{
 			DBGPRINT(RT_DEBUG_TRACE, ("#"));
 #ifdef DOT11_N_SUPPORT
-			pEntry->NoBADataCountDown = 64;
+			pEntry->NoBADataCountDown = 10;
 #endif /* DOT11_N_SUPPORT */
 
 			/* Update the continuous transmission counter.*/

@@ -1727,7 +1727,7 @@ enum WIFI_MODE{
 #define RA_INTERVAL		(RA_RATE*100)	/* RA Interval in msec */
 
 /* Rate Adaptation simpling interval setting */
-#define DEF_QUICK_RA_TIME_INTERVAL		60 /* Quick RA 60 msec after rate change */
+#define DEF_QUICK_RA_TIME_INTERVAL		100 /* Quick RA 100 msec after rate change */
 #define DEF_RA_TIME_INTRVAL			250
 #define FASTRATEUPERRTH				20 /* < 20% errors to allow fast up rate */
 
