@@ -3180,13 +3180,14 @@
 32) kernel: ralink_wifi: move to new dma_api from deprecated pci_api (remove api jam).<br>
 33) kernel: ralink_wifi: fix TPC current transmit power limit report.<br>
 34) kernel: ralink_wifi: fix Power Constraint Limit power report.<br>
-35) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-36) kernel: net: integrate ipt_NETFLOW.<br>
-37) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-38) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-39) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-40) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-41) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+35) kernel: ralink_wifi: fix sanity checks and correct calibs.<br>
+36) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+37) kernel: net: integrate ipt_NETFLOW.<br>
+38) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+39) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+40) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+41) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+42) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 <br>
 <br>
 <br>

@@ -2488,9 +2488,12 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 #endif /* DOT11_VHT_AC */
 
 
-		/* 4. Print and Debug*/
+		/* 4. Sanity Check, Print and Debug*/
 		for (i = 0; i < choffset; i++)
 		{
+			/* sanity check and correction */
+			if (pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
+			    pAd->TxPower[i].Power = DEFAULT_RF_TX_POWER;
 			DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
 						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power));
 		}
@@ -2743,17 +2746,14 @@ VOID DyncVgaLockTimeout(
 
 void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 {
-	INT32 rx0_rssi = 0, rx1_rssi = 0;
+	INT32 rx0_rssi = 0;
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-	{
 		rx0_rssi = (CHAR)(pAd->ApCfg.RssiSample.LastRssi0);
-		rx1_rssi = (CHAR)(pAd->ApCfg.RssiSample.LastRssi1);
-	}
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
-		__FUNCTION__, rx0_rssi, rx1_rssi));	
+	DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d)\n", 
+		__FUNCTION__, rx0_rssi));	
 
 	/*
 		RSSI_DUT(n) = RSSI_DUT(n-1)*15/16 + RSSI_R2320_100ms_sample*1/16
