@@ -2870,7 +2870,7 @@ BOOLEAN dynamic_channel_model_adjust(RTMP_ADAPTER *pAd)
 
 	if ((mode & 0xFF) != pAd->chipCap.dynamic_chE_mode) {
 		default_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66;
-		eLNA_lower_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 10;
+		eLNA_lower_init_vga = pAd->CommonCfg.MO_Cfg.Stored_BBP_R66 - 8;
 
 		/* VGA settings : MT7610E_DynamicVGA_plus_micro_wave_20150120.pptx */
 		switch (mode & 0xFF)
