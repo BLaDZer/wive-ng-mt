@@ -3191,6 +3191,7 @@
 43) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
 45) kernel: net: ipv6: handle IPv4-mapped src to in6addr_any dst.<br>
 46) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+47) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
