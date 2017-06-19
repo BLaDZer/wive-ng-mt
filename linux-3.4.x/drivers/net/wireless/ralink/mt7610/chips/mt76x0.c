@@ -2274,7 +2274,10 @@ static VOID MT76x0_ChipSwitchChannel(
 		
 		if ( (pAd->DefaultTargetPwr == 0x00) || (pAd->DefaultTargetPwr == 0xFF) )
 		{
-			pAd->DefaultTargetPwr = 0x20;
+			if (channel > 14)
+			    pAd->DefaultTargetPwr = 0x23;
+			else
+			    pAd->DefaultTargetPwr = 0x20;
 			DBGPRINT(RT_DEBUG_ERROR, ("%s: EEPROM target power Error! Use Default Target Power = 0x%x\n", 
 					__FUNCTION__, pAd->DefaultTargetPwr));
 		}
@@ -2465,7 +2468,7 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 		/* 4. Sanity Check and corrections */
 		for (i = 0; i < choffset; i++)
 		{
-			if (pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
+			if (pAd->TxPower[i].Power > 0 && pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
 			    pAd->TxPower[i].Power = DEFAULT_RF_TX_POWER;
 		}
 

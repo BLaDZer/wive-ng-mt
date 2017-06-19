@@ -3015,7 +3015,7 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	/* 4. Sanity Check and corrections */
 	for (i = 0; i < choffset; i++)
 	{
-	    if (ad->TxPower[i].Power < DEFAULT_RF_TX_POWER)
+	    if (ad->TxPower[i].Power > 0 && ad->TxPower[i].Power < DEFAULT_RF_TX_POWER)
 		    ad->TxPower[i].Power = DEFAULT_RF_TX_POWER;
 	}
 
@@ -3872,7 +3872,10 @@ void mt76x2_single_sku(RTMP_ADAPTER *ad, u8 channel)
 	}
 	
 	if ((ad->DefaultTargetPwr == 0x00) || (ad->DefaultTargetPwr == 0xFF)) {
-		ad->DefaultTargetPwr = 0x20;
+		if (channel > 14)
+		    ad->DefaultTargetPwr = 0x23;
+		else
+		    ad->DefaultTargetPwr = 0x20;
 		DBGPRINT(RT_DEBUG_ERROR, ("%s::failed to get the target power, and turn to use default = %d\n", 
 				__FUNCTION__, ad->DefaultTargetPwr));
 	} else {
