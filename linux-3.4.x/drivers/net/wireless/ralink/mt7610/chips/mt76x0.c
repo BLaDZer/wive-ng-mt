@@ -2464,36 +2464,37 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 
 		choffset = 14 + 12 + 17 + 11;
 
+		/* 4. Sanity Check and corrections */
+		for (i = 0; i < choffset; i++)
+		{
+			if (pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
+			    pAd->TxPower[i].Power = DEFAULT_RF_TX_POWER;
+		}
+
 #ifdef DOT11_VHT_AC
 		ASSERT((pAd->TxPower[choffset].Channel == 42));
 
 		/* For VHT80MHz, we need assign tx power for central channel 42, 58, 106, 122, and 155 */
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: Update Tx power control of the central channel (42, 58, 106, 122 and 155) for VHT BW80\n", __FUNCTION__));
-		
-		NdisMoveMemory(&pAd->TxPower[53], &pAd->TxPower[16], sizeof(CHANNEL_TX_POWER)); // channel 42 = channel 40
-		NdisMoveMemory(&pAd->TxPower[54], &pAd->TxPower[22], sizeof(CHANNEL_TX_POWER)); // channel 58 = channel 56
-		NdisMoveMemory(&pAd->TxPower[55], &pAd->TxPower[28], sizeof(CHANNEL_TX_POWER)); // channel 106 = channel 104
-		NdisMoveMemory(&pAd->TxPower[56], &pAd->TxPower[34], sizeof(CHANNEL_TX_POWER)); // channel 122 = channel 120
-		NdisMoveMemory(&pAd->TxPower[57], &pAd->TxPower[44], sizeof(CHANNEL_TX_POWER)); // channel 155 = channel 153
+
+		NdisMoveMemory(&pAd->TxPower[choffset], &pAd->TxPower[16], sizeof(CHANNEL_TX_POWER)); // channel 42 = channel 40
+		NdisMoveMemory(&pAd->TxPower[choffset+1], &pAd->TxPower[22], sizeof(CHANNEL_TX_POWER)); // channel 58 = channel 56
+		NdisMoveMemory(&pAd->TxPower[choffset+2], &pAd->TxPower[28], sizeof(CHANNEL_TX_POWER)); // channel 106 = channel 104
+		NdisMoveMemory(&pAd->TxPower[choffset+3], &pAd->TxPower[34], sizeof(CHANNEL_TX_POWER)); // channel 122 = channel 120
+		NdisMoveMemory(&pAd->TxPower[choffset+4], &pAd->TxPower[45], sizeof(CHANNEL_TX_POWER)); // channel 155 = channel 153
 
 		pAd->TxPower[choffset].Channel = 42;
 		pAd->TxPower[choffset+1].Channel = 58;
 		pAd->TxPower[choffset+2].Channel = 106;
 		pAd->TxPower[choffset+3].Channel = 122;
 		pAd->TxPower[choffset+4].Channel = 155;
-		
-		choffset += 5;		/* the central channel of VHT80 */
-		
-		choffset = (MAX_NUM_OF_CHANNELS - 1);
+
+		choffset = MAX_NUM_OF_CHANNELS;
 #endif /* DOT11_VHT_AC */
 
-
-		/* 4. Sanity Check, Print and Debug*/
+		/* 5. Print and Debug*/
 		for (i = 0; i < choffset; i++)
 		{
-			/* sanity check and correction */
-			if (pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
-			    pAd->TxPower[i].Power = DEFAULT_RF_TX_POWER;
 			DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
 						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power));
 		}

@@ -3012,13 +3012,20 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 
 	choffset = 14 + 12 + 17 + 11;
 
+	/* 4. Sanity Check and corrections */
+	for (i = 0; i < choffset; i++)
+	{
+	    if (ad->TxPower[i].Power < DEFAULT_RF_TX_POWER)
+		    ad->TxPower[i].Power = DEFAULT_RF_TX_POWER;
+	}
+
 #ifdef DOT11_VHT_AC
 	ASSERT((ad->TxPower[choffset].Channel == 42));
 
 	// TODO: shiang-6590, fix me for the TxPower setting code here!
 	/* For VHT80MHz, we need assign tx power for central channel 42, 58, 106, 122, and 155 */
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: Update Tx power control of the central channel (42, 58, 106, 122 and 155) for VHT BW80\n", __FUNCTION__));
-		
+
 	NdisMoveMemory(&ad->TxPower[choffset], &ad->TxPower[16], sizeof(CHANNEL_TX_POWER)); // channel 42 = channel 40
 	NdisMoveMemory(&ad->TxPower[choffset+1], &ad->TxPower[22], sizeof(CHANNEL_TX_POWER)); // channel 58 = channel 56
 	NdisMoveMemory(&ad->TxPower[choffset+2], &ad->TxPower[28], sizeof(CHANNEL_TX_POWER)); // channel 106 = channel 104
@@ -3034,7 +3041,7 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	choffset = MAX_NUM_OF_CHANNELS;
 #endif /* DOT11_VHT_AC */
 
-	/* 4. Print and Debug*/
+	/* 5. Print and Debug*/
 	for (i = 0; i < choffset; i++)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: TxPower[%03d], Channel=%d, Power[Tx0:%d, Tx1:%d]\n",
