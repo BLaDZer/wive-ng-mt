@@ -3871,7 +3871,7 @@ void mt76x2_single_sku(RTMP_ADAPTER *ad, u8 channel)
 		delta_power = ad->chipCap.delta_tx_pwr_bw40_g_band;
 	}
 	
-	if ((ad->DefaultTargetPwr == 0x00) || (ad->DefaultTargetPwr == 0xFF)) {
+	if ((ad->DefaultTargetPwr == 0x00) || (ad->DefaultTargetPwr == 0xFF) || (ad->DefaultTargetPwr < DEFAULT_RF_TX_POWER)) {
 		if (channel > 14)
 		    ad->DefaultTargetPwr = 0x23;
 		else

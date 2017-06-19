@@ -1681,7 +1681,7 @@ static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
 		E2: B0.R21<0>: xo_cxo<0>, B0.R22<7:0>: xo_cxo<8:1> 
 	*/
 	RFValue = (UCHAR)(pAd->RfFreqOffset & 0xFF);
-	if (!RFValue || 0xBFRFValue == 0xFF); /* Max of 9-bit built-in crystal oscillator C1 code */
+	if (!RFValue || RFValue == 0xFF); /* Max of 9-bit built-in crystal oscillator C1 code */
 	    RFValue = 0xBF;
 	rlt_rf_write(pAd, RF_BANK0, RF_R22, RFValue);
 
@@ -2272,7 +2272,7 @@ static VOID MT76x0_ChipSwitchChannel(
 			delta_power = pAd->chipCap.delta_tw_pwr_bw40_2G;
 		}
 		
-		if ( (pAd->DefaultTargetPwr == 0x00) || (pAd->DefaultTargetPwr == 0xFF) )
+		if ( (pAd->DefaultTargetPwr == 0x00) || (pAd->DefaultTargetPwr == 0xFF) || (pAd->DefaultTargetPwr < DEFAULT_RF_TX_POWER))
 		{
 			if (channel > 14)
 			    pAd->DefaultTargetPwr = 0x23;
