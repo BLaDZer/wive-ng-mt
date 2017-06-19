@@ -1681,12 +1681,10 @@ static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
 		E2: B0.R21<0>: xo_cxo<0>, B0.R22<7:0>: xo_cxo<8:1> 
 	*/
 	RFValue = (UCHAR)(pAd->RfFreqOffset & 0xFF);
-#if 0
-	if (RFValue > 0xBF); /* Max of 9-bit built-in crystal oscillator C1 code */
+	if (!RFValue || 0xBFRFValue == 0xFF); /* Max of 9-bit built-in crystal oscillator C1 code */
 	    RFValue = 0xBF;
-#endif
 	rlt_rf_write(pAd, RF_BANK0, RF_R22, RFValue);
-	
+
 	rlt_rf_read(pAd, RF_BANK0, RF_R22, &RFValue);
 	DBGPRINT(RT_DEBUG_TRACE, ("%s: B0.R22 = 0x%02x\n", __FUNCTION__, RFValue));
 
@@ -1805,7 +1803,6 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 		MacReg &= (~0x40000);
 	RTMP_IO_WRITE32(pAd, TX_FBK_LIMIT, MacReg);
 #endif /* MCS_LUT_SUPPORT */
-#if 0
 	/* A workaround solution for EU bandwidth adaptation test */
 	if ((pAd->CommonCfg.Channel > 14) &&
 		(pAd->CommonCfg.bIEEE80211H == TRUE) &&
@@ -1816,7 +1813,6 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, MacReg);
 		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, 0x3);
 	}
-#endif
 	return;
 }
 
