@@ -3181,19 +3181,20 @@
 33) kernel: ralink_wifi: fix TPC current transmit power limit report.<br>
 34) kernel: ralink_wifi: fix Power Constraint Limit power report.<br>
 35) kernel: ralink_wifi: fix sanity checks and correct calibs.<br>
-36) kernel: ralink_wifi: if default target pwr not set in nvram set 23dBm for 5GHz and 20dBm to 2.4GHz modes.<br>
-37) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-38) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
-39) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
-40) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
-41) kernel: net: integrate ipt_NETFLOW.<br>
-42) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-43) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-44) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-45) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-46) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-47) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-48) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+36) kernel: ralink_wifi: fix TPC report for iPA scheme (MD1/1.1).<br>
+37) kernel: ralink_wifi: if default target pwr not set in nvram set 23dBm for 5GHz and 20dBm to 2.4GHz modes.<br>
+38) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+39) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
+40) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
+41) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
+42) kernel: net: integrate ipt_NETFLOW.<br>
+43) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+44) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+45) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+46) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+47) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+48) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+49) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>

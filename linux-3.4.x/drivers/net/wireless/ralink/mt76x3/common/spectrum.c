@@ -238,7 +238,15 @@ CHAR RTMP_GetTxPwr(RTMP_ADAPTER *pAd, HTTRANSMIT_SETTING HTTxMode)
 #ifdef SINGLE_SKU
 	CurTxPwr = pAd->CommonCfg.DefineMaxTxPwr;
 #else
-	CurTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
+	if (pAd->CommonCfg.CentralChannel > 14) {
+#if defined (CONFIG_RT_SECOND_IF_INTERNAL_PA_INTERNAL_LNA) || defined(CONFIG_RT_SECOND_IF_INTERNAL_PA_EXTERNAL_LNA) || defined(CONFIG_RALINK_MT7620)
+	    /* TPC report calculate from real maximum PWR+AntGain after calibration, for internal PA + 3-5dB antenna gain summart must be 20dBm */
+	    CurTxPwr = 20;
+#else
+	    CurTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
+#endif
+	} else
+	    CurTxPwr = 20;
 #endif /* SINGLE_SKU */
 
 	/* check Tx Power setting from UI. */
