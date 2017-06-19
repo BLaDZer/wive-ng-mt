@@ -2018,8 +2018,10 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ETxBfNoncompress);
 	FPRINT_DAT(ETxBfIncapable);
 #endif
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#if defined(CONFIG_RT_SECOND_IF_RANGE_5GHZ) /* IEEE80211H variable enable spectrum managment and/or DFS (depended by DFS builtin) need for all dualband builds */
 	FPRINT_DAT(IEEE80211H);
+#endif
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
 	FPRINT_DAT(CSPeriod);
 	FPRINT_DAT(DfsIndoor);
 	FPRINT_DAT(SymRoundFromCfg);

@@ -545,7 +545,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
 	int     is_vht = 0, mode_ac;
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 	char_t	*dot11h;
 	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
@@ -646,7 +646,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("1"));
 	ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
 	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 	dot11h = websGetVar(wp, T("dot11h"), T(""));
 #endif
 #endif
@@ -771,7 +771,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
 #ifndef CONFIG_RT_SECOND_IF_NONE
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
 #endif
@@ -790,7 +790,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// Fist SSID for iNIC
 	nvram_bufset(RT2860_NVRAM, "SSID1INIC", ssid1ac);
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 	nvram_bufset(RT2860_NVRAM, "IEEE80211H", ieee80211h);
 #endif
 #endif
@@ -1816,7 +1816,8 @@ static int getBandSteeringBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+/* IEEE80211H variable enable spectrum managment and/or DFS (depended by DFS builtin) need for all dualband builds */
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	return websWrite(wp, T("1"));
 #else
