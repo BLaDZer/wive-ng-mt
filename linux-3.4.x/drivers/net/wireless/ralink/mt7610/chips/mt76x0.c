@@ -1805,7 +1805,9 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 #endif /* MCS_LUT_SUPPORT */
 	/* A workaround solution for EU bandwidth adaptation test */
 	if ((pAd->CommonCfg.Channel > 14) &&
+#ifdef DFS_SUPPORT
 		(pAd->CommonCfg.bIEEE80211H == TRUE) &&
+#endif
 		(pAd->CommonCfg.BBPCurrentBW == BW_80)) {
 		/* Improve BW Adaptation */
 		RTMP_IO_READ32(pAd, TXOP_CTRL_CFG, &MacReg);
