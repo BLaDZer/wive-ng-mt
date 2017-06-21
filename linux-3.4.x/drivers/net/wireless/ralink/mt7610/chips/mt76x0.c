@@ -2504,8 +2504,6 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 		{
 			DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
 						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power));
-			printk("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
-						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power);
 		}
 	}
 
