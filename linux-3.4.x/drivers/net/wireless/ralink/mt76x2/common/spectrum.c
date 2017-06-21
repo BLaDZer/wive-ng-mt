@@ -233,13 +233,13 @@ CHAR RTMP_GetTxPwr(
 	INT Idx;
 	UINT8 PhyMode;
 	CHAR CurTxPwr;
+	CHAR MaxTxPwr;
 	UINT8 TxPwrRef = 0;
 	CHAR DaltaPwr;
 	ULONG TxPwr[5];
 
-
 #ifdef SINGLE_SKU
-	CurTxPwr = pAd->CommonCfg.DefineMaxTxPwr;
+	CurTxPwr = MaxTxPwr = pAd->CommonCfg.DefineMaxTxPwr;
 #else
 	if (pAd->CommonCfg.CentralChannel > 14) {
 #if defined (CONFIG_RT_SECOND_IF_INTERNAL_PA_INTERNAL_LNA) || defined(CONFIG_RT_SECOND_IF_INTERNAL_PA_EXTERNAL_LNA) || defined(CONFIG_RALINK_MT7620)
@@ -250,6 +250,8 @@ CHAR RTMP_GetTxPwr(
 #endif
 	} else
 	    CurTxPwr = 20;
+
+	MaxTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 #endif /* SINGLE_SKU */
 
 	/* check Tx Power setting from UI. */
@@ -350,6 +352,13 @@ CHAR RTMP_GetTxPwr(
 			CurTxPwr -= DaltaPwr;
 			break;
 		}
+	}
+
+	if (MaxTxPwr > CurTxPwr) {
+	    /* calculate real power constraint limit for clients - reduce client side interference */
+	    pAd->CommonCfg.PwrConstraint = (MaxTxPwr - CurTxPwr);
+	} else {
+	    pAd->CommonCfg.PwrConstraint = 0;
 	}
 
 	return CurTxPwr;
