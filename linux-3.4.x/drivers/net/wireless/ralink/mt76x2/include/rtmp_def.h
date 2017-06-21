@@ -1751,7 +1751,7 @@ enum WIFI_MODE{
 #define I_ORIGINATOR                   FALSE
 
 #define DEFAULT_BBP_TX_POWER        0
-#define DEFAULT_RF_TX_POWER         12
+#define DEFAULT_RF_TX_POWER         8
 #define DEFAULT_BBP_TX_FINE_POWER_CTRL 0
 
 #define MAX_INI_BUFFER_SIZE		10000 	/* 4096 */

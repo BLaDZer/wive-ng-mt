@@ -1681,8 +1681,8 @@ static VOID NICInitMT76x0RFRegisters(RTMP_ADAPTER *pAd)
 		E2: B0.R21<0>: xo_cxo<0>, B0.R22<7:0>: xo_cxo<8:1> 
 	*/
 	RFValue = (UCHAR)(pAd->RfFreqOffset & 0xFF);
-	if (!RFValue || RFValue == 0xFF); /* Max of 9-bit built-in crystal oscillator C1 code */
-	    RFValue = 0xBF;
+//	if (!RFValue || RFValue == 0xFF); /* Max of 9-bit built-in crystal oscillator C1 code */
+//	    RFValue = 0xBF;
 	rlt_rf_write(pAd, RF_BANK0, RF_R22, RFValue);
 
 	rlt_rf_read(pAd, RF_BANK0, RF_R22, &RFValue);
@@ -1803,6 +1803,7 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 		MacReg &= (~0x40000);
 	RTMP_IO_WRITE32(pAd, TX_FBK_LIMIT, MacReg);
 #endif /* MCS_LUT_SUPPORT */
+#if 0
 	/* A workaround solution for EU bandwidth adaptation test */
 	if ((pAd->CommonCfg.Channel > 14) &&
 #ifdef DFS_SUPPORT
@@ -1815,7 +1816,7 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 		RTMP_IO_WRITE32(pAd, TXOP_CTRL_CFG, MacReg);
 		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, 0x3);
 	}
-	return;
+#endif
 }
 
 
@@ -2470,6 +2471,11 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 		{
 			if (pAd->TxPower[i].Power > 0 && pAd->TxPower[i].Power < DEFAULT_RF_TX_POWER)
 			    pAd->TxPower[i].Power = DEFAULT_RF_TX_POWER;
+			/* channel 144 not calibrated by fabric machine (QA software issue), need map to 140, and 165-173 map to 161 */
+			if (i == 42)
+			    pAd->TxPower[i].Power = pAd->TxPower[i-1].Power;
+			if (i >= 49 && i <= 53)
+			    pAd->TxPower[i].Power = pAd->TxPower[48].Power;
 		}
 
 #ifdef DOT11_VHT_AC
@@ -2498,6 +2504,8 @@ INT MT76x0_ReadChannelPwr(RTMP_ADAPTER *pAd)
 		{
 			DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
 						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power));
+			printk("E2PROM: TxPower[%03d], Channel=%d, Power[Tx:%d]\n",
+						i, pAd->TxPower[i].Channel, pAd->TxPower[i].Power);
 		}
 	}
 

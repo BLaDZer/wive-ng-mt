@@ -3017,6 +3017,11 @@ int mt76x2_read_chl_pwr(RTMP_ADAPTER *ad)
 	{
 	    if (ad->TxPower[i].Power > 0 && ad->TxPower[i].Power < DEFAULT_RF_TX_POWER)
 		    ad->TxPower[i].Power = DEFAULT_RF_TX_POWER;
+	    /* channel 144 not calibrated by fabric machine (QA software issue), need map to 140, and 165-173 map to 161 */
+	    if (i == 42)
+		ad->TxPower[i].Power = ad->TxPower[i-1].Power;
+	    if (i >= 49 && i <= 53)
+		ad->TxPower[i].Power = ad->TxPower[48].Power;
 	}
 
 #ifdef DOT11_VHT_AC
