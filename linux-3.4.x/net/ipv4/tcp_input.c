@@ -5728,8 +5728,6 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	int queued = 0;
 
-	tp->rx_opt.saw_tstamp = 0;
-
 	switch (sk->sk_state) {
 	case TCP_CLOSE:
 		goto discard;
@@ -5779,6 +5777,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 		goto discard;
 
 	case TCP_SYN_SENT:
+		tp->rx_opt.saw_tstamp = 0;
 		queued = tcp_rcv_synsent_state_process(sk, skb, th, len);
 		if (queued >= 0)
 			return queued;
@@ -5789,6 +5788,8 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 		tcp_data_snd_check(sk);
 		return 0;
 	}
+
+	tp->rx_opt.saw_tstamp = 0;
 
 	if (!tcp_validate_incoming(sk, skb, th, 0))
 		return 0;
