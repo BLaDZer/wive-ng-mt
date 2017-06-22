@@ -974,9 +974,10 @@ EXPORT_SYMBOL(ip6_route_output);
 struct dst_entry *ip6_blackhole_route(struct net *net, struct dst_entry *dst_orig)
 {
 	struct rt6_info *rt, *ort = (struct rt6_info *) dst_orig;
+	struct net_device *loopback_dev = net->loopback_dev;
 	struct dst_entry *new = NULL;
 
-	rt = dst_alloc(&ip6_dst_blackhole_ops, ort->dst.dev, 1, 0, 0);
+	rt = dst_alloc(&ip6_dst_blackhole_ops, loopback_dev, 1, 0, 0);
 	if (rt) {
 		memset(&rt->rt6i_table, 0, sizeof(*rt) - sizeof(struct dst_entry));
 
@@ -990,10 +991,8 @@ struct dst_entry *ip6_blackhole_route(struct net *net, struct dst_entry *dst_ori
 			new->_metrics = ort->dst._metrics;
 		else
 			dst_copy_metrics(new, &ort->dst);
-		rt->rt6i_idev = ort->rt6i_idev;
-		if (rt->rt6i_idev)
-			in6_dev_hold(rt->rt6i_idev);
 
+		rt->rt6i_idev = in6_dev_get(loopback_dev);
 		rt->rt6i_gateway = ort->rt6i_gateway;
 		rt->rt6i_flags = ort->rt6i_flags;
 		rt6_clean_expires(rt);

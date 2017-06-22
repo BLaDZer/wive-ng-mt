@@ -2880,7 +2880,7 @@ struct dst_entry *ipv4_blackhole_route(struct net *net, struct dst_entry *dst_or
 		new->output = dst_discard;
 		dst_copy_metrics(new, &ort->dst);
 
-		new->dev = ort->dst.dev;
+		new->dev = net->loopback_dev;
 		if (new->dev)
 			dev_hold(new->dev);
 
