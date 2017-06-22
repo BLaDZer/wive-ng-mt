@@ -3193,12 +3193,13 @@
 45) kernel: net: integrate ipt_NETFLOW.<br>
 46) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
 47) kernel: net: use loopback dev when generating blackhole route.<br>
-48) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-49) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-50) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-51) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-52) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-53) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+48) kernel: net: udp: prefetch rmem_alloc in udp_queue_rcv_skb().<br>
+49) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+50) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+51) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+52) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+53) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+54) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
