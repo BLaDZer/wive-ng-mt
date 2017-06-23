@@ -3199,11 +3199,12 @@
 51) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
 52) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
 53) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
-54) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-55) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-56) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-57) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-58) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+54) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
+55) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+56) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+57) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+58) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+59) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
