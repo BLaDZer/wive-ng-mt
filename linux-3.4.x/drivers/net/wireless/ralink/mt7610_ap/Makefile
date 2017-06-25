@@ -277,8 +277,8 @@ EXTRA_CFLAGS += -DCONFIG_WIFI_PREFETCH_RXDATA
 # workaround for some incompatable clients
 #EXTRA_CFLAGS += -DCONFIG_DISABLE_VHT80_256_QAM
 
-# Fat channels workaround for apple ihone6 buggy client
-EXTRA_CFLAGS += -DIPHONE6_FIX
+# Fat channels workaround for some BCM buggy client
+EXTRA_CFLAGS += -DBADBCM_FIX
 
 EXTRA_CFLAGS += -DSYSTEM_LOG_SUPPORT
 

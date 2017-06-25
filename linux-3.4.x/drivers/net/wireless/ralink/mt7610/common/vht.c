@@ -295,7 +295,7 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
 	}
 
-#ifdef IPHONE6_FIX
+#ifdef BADBCM_FIX
 	/* Iphone6 and some mackbooks dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
 	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
 		UCHAR BAD_IPHONE6_1_OUI[]  = {0x74, 0x1B, 0xB2};
@@ -310,7 +310,7 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Disable 80MHz channel (bcm bug).\n", PRINT_MAC(pEntry->Addr));
 		}
 	}
-#endif /* IPHONE6_FIX */
+#endif /* BADBCM_FIX */
 
 	return TRUE;
 }
