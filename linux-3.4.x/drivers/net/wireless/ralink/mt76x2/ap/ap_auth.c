@@ -505,6 +505,7 @@ SendAuth:
 										Elem->Rssi2,
 										bAllowStaConnectInHt,
 										&bBndStrgCheck);
+#ifdef BAND_STEERING_AUTH_REJ
 	if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14) {
 		APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, Alg, Seq + 1, MLME_UNSPECIFY_FAIL, apidx);
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - BndStrg check failed.\n"));
@@ -516,6 +517,7 @@ SendAuth:
                 RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, Addr2, apidx, 0);
 		return;
 	}
+#endif /* BAND_STEERING_AUTH_REJ */
 #endif /* BAND_STEERING */
 
 	 /* YF@20130102: Refuse the weak signal of AuthReq */

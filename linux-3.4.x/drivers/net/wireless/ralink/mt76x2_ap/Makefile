@@ -502,6 +502,8 @@ ifeq ($(CONFIG_BAND_STEERING),y)
 EXTRA_CFLAGS += -DBAND_STEERING
 # allow kick clients from and steering
 #EXTRA_CFLAGS += -DBAND_STEERING_CLIENTSTAY
+# allow reject send from auth if band steering check failed
+#EXTRA_CFLAGS += -DBAND_STEERING_AUTH_REJ
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT),y)
