@@ -3605,7 +3605,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			wdev->WpaMixPairCipher = MIX_CIPHER_NOTUSE;
 			mbss->RekeyCountDown = 0;	/* it's used for WPA rekey */
 
-			mbss->ProbeRspTimes = 3;
+			mbss->ProbeRspTimes = 2;
 
 			/* init the default 60 seconds*/
 			mbss->StationKeepAliveTime = 60;
