@@ -328,6 +328,12 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 	        pEntry->MaxHTPhyMode.field.BW = BW_40;
 	}
 
+	/* recheck STBC/SGI for 80MHz */
+	if (pEntry->MaxHTPhyMode.field.BW == BW_80) {
+		pEntry->MaxHTPhyMode.field.STBC = (pAd->CommonCfg.vht_stbc && cap->vht_cap.rx_stbc > 1) ? 1 : 0;
+		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
+	}
+
 #ifdef IPHONE6_FIX
 	/* Iphone6 and some mackbooks dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
 	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {

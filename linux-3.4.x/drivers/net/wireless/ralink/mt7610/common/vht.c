@@ -227,11 +227,15 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
 	pAd->MacTab.fAnyStationNonGF = TRUE;
 
-	if (op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
+	if (op != NULL && op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
 	{
 		pEntry->MaxHTPhyMode.field.BW = BW_80;
-		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
-		pEntry->MaxHTPhyMode.field.STBC = (cap->vht_cap.rx_stbc > 1 ? 1 : 0);
+    	}
+
+	/* recheck STBC/SGI for 80MHz */
+	if (pEntry->MaxHTPhyMode.field.BW == BW_80) {
+		pEntry->MaxHTPhyMode.field.STBC = (pAd->CommonCfg.vht_stbc && cap->vht_cap.rx_stbc > 1) ? 1 : 0;
+		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
 	}
 
 	return TRUE;
@@ -283,6 +287,12 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 		/* limit max phy mode for clients reported only 2040 support */
 		DBGPRINT(RT_DEBUG_TRACE, ("%s: DesiredHtPhyInfo->vht_bw=%d, ch_width=%d\n", __FUNCTION__, ht_phyinfo->vht_bw, cap->vht_cap.ch_width));
 	        pEntry->MaxHTPhyMode.field.BW = BW_40;
+	}
+
+	/* recheck STBC/SGI for 80MHz */
+	if (pEntry->MaxHTPhyMode.field.BW == BW_80) {
+		pEntry->MaxHTPhyMode.field.STBC = (pAd->CommonCfg.vht_stbc && cap->vht_cap.rx_stbc > 1) ? 1 : 0;
+		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
 	}
 
 #ifdef IPHONE6_FIX
