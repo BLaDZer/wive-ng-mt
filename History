@@ -3188,7 +3188,7 @@
 40) kernel: ralink_wifi: calculate real power constraint limit for clients, reduce client side interference.<br>
 41) kernel: ralink_wifi: recheck VHT SGI/STBC operation mode in vht_adust for 80MHz clients.<br>
 42) kernel: ralink_wifi: band steering: do not send REJECT from auth if check false. Only update table entry.<br>
-43) kernel: ralink_wifi: add MTK specific IE only if needed.<br>
+43) kernel: ralink_wifi: add MTK/Ralink specific IE only if needed.<br>
 44) kernel: ralink_wifi: set by default only 2 probe response send to clients after check probe req.<br>
 45) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
 46) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>

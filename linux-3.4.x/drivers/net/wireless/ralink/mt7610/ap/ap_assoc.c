@@ -1420,24 +1420,22 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 
 	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
-{
-	ULONG TmpLen;
-	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
+	if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg)
+	{
+		ULONG TmpLen;
+		UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
 
-	if (pAd->CommonCfg.bAggregationCapable)
-		RalinkSpecificIe[5] |= 0x1;
-	if (pAd->CommonCfg.bPiggyBackCapable)
-		RalinkSpecificIe[5] |= 0x2;
+		if (pAd->CommonCfg.bAggregationCapable)
+			RalinkSpecificIe[5] |= 0x1;
+		if (pAd->CommonCfg.bPiggyBackCapable)
+			RalinkSpecificIe[5] |= 0x2;
 #ifdef DOT11_N_SUPPORT
-	if (pAd->CommonCfg.bRdg)
-		RalinkSpecificIe[5] |= 0x4;
+		if (pAd->CommonCfg.bRdg)
+			RalinkSpecificIe[5] |= 0x4;
 #endif /* DOT11_N_SUPPORT */
-	MakeOutgoingFrame(pOutBuffer+FrameLen,		 &TmpLen,
-						9,						 RalinkSpecificIe,
-						END_OF_ARGS);
-	FrameLen += TmpLen;
-
-}
+		MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen, 9, RalinkSpecificIe, END_OF_ARGS);
+		FrameLen += TmpLen;
+	}
 
 #ifdef WSC_AP_SUPPORT
 	if (pEntry->bWscCapable)

@@ -959,6 +959,8 @@ VOID APPeerProbeReqAction(
 		add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back
 		                                 Byte0.b3=1 for rssi-feedback 
 	*/
+	if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg ||
+		(pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)) || ProbeReqParam.bRequestRssi == TRUE)
 	{
 		ULONG TmpLen;
 		UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
@@ -973,8 +975,8 @@ VOID APPeerProbeReqAction(
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef DOT11_VHT_AC
-	if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode))
-		RalinkSpecificIe[5] |= 0x8;
+		if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode))
+			RalinkSpecificIe[5] |= 0x8;
 #endif /* DOT11_VHT_AC */
 
 #ifdef RSSI_FEEDBACK
