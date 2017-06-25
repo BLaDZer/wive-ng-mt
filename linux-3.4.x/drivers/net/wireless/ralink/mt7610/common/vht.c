@@ -272,8 +272,17 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 						pEntry->MaxHTPhyMode.field.BW = BW_80;
 					}
 				} else {
+#ifdef BADBCM_FIX
+					/* if client support MCS8/9 - client may be support and 80MHz BW.
+					    If not - most likely 20/40 only and set BW_40 for safe operations */
+					if (pAd->CommonCfg.TxStream == 1 && (pEntry->SupportVHTMCS[8] == TRUE || pEntry->SupportVHTMCS[9] == TRUE))
+						pEntry->MaxHTPhyMode.field.BW = BW_80;
+					else
+						pEntry->MaxHTPhyMode.field.BW = BW_40;
+#else
 					/* can not know peer capability, use it's maximum capability */
 					pEntry->MaxHTPhyMode.field.BW = BW_80;
+#endif /* BADBCM_FIX */
 				}
 				pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 & (cap->vht_cap.sgi_80M));
 				pEntry->MaxHTPhyMode.field.STBC = ((pAd->CommonCfg.vht_stbc & cap->vht_cap.rx_stbc) > 1 ? 1 : 0);
