@@ -880,7 +880,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 		add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back
 		                                 Byte0.b3=1 for rssi-feedback 
 	*/
-	if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg || ProbeReqParam.bRequestRssi == TRUE)
+	if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pAd->CommonCfg.bRdg || ProbeReqParam.bRequestRssi == TRUE)
 	{
 		ULONG TmpLen;
 		UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};

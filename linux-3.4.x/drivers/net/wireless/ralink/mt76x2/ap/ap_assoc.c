@@ -1657,7 +1657,11 @@ SendAssocResponse:
 	}
 	
 	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
-if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg || (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)))
+if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pAd->CommonCfg.bRdg
+#ifdef DOT11_VHT_AC
+	|| (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode))
+#endif /* DOT11_VHT_AC */
+	)
 {
 	ULONG TmpLen;
 	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
