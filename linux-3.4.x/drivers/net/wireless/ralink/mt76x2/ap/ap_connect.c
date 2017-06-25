@@ -1184,23 +1184,21 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 	}
 #endif /* AIRPLAY_SUPPORT*/
-	
+
+#ifdef DOT11_VHT_AC
 	/* add Mediatek-specific IE here */
-	{
+	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)) {
 		ULONG TmpLen = 0;
 		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
 
-#ifdef DOT11_VHT_AC
-		if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
-		MediatekSpecificIe[5] |= 0x8;
-#endif /* DOT11_VHT_AC */
+		    MediatekSpecificIe[5] |= 0x8;
 
-		MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
-		9, MediatekSpecificIe,
-		END_OF_ARGS);
-		FrameLen += TmpLen;
-	}	
-	
+		    MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
+		    9, MediatekSpecificIe,
+		    END_OF_ARGS);
+		    FrameLen += TmpLen;
+	}
+#endif /* DOT11_VHT_AC */
 
 	/* step 6. Since FrameLen may change, update TXWI. */
 #ifdef A_BAND_SUPPORT

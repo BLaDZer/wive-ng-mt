@@ -966,17 +966,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 	}
 
-	/* add Mediatek-specific IE here */
-	{
-		ULONG TmpLen = 0;
-		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
-
-		MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
-		9, MediatekSpecificIe,
-		END_OF_ARGS);
-		FrameLen += TmpLen;
-	}
-
 	/* step 6. Since FrameLen may change, update TXWI. */
 #ifdef A_BAND_SUPPORT
 	if (pAd->CommonCfg.Channel > 14) {

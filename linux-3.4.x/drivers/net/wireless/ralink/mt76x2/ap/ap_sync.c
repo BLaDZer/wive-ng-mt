@@ -1009,21 +1009,21 @@ VOID APPeerProbeReqAction(
 							SM_IE_PROBE_RSP);
 #endif /* SMART_MESH */
 
+#ifdef DOT11_VHT_AC
 	/* add Mediatek-specific IE here */
-	{
+	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)) {
 		ULONG TmpLen = 0;
 		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
 
-#ifdef DOT11_VHT_AC
 		if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode))
 		MediatekSpecificIe[5] |= 0x8;
-#endif /* DOT11_VHT_AC */
 
 		MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
 		9, MediatekSpecificIe,
 		END_OF_ARGS);
 		FrameLen += TmpLen;
-	}	
+	}
+#endif /* DOT11_VHT_AC */
 
 	/* 802.11n 11.1.3.2.2 active scanning. sending probe response with MCS rate is */
 	for (idx = 0; idx < mbss->ProbeRspTimes; idx++)
