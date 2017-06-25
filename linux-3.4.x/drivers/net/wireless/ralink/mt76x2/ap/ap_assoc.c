@@ -171,7 +171,7 @@ static USHORT update_associated_mac_entry(
 	}
 #endif /* PIGGYBACK_SUPPORT */
 #ifdef DOT11_VHT_AC
-	if ((pAd->CommonCfg.b256QAM_2G) 
+	if (pAd->CommonCfg.b256QAM_2G)
 		&& ((ie_list->RalinkIe & 0x00000008) || (ie_list->MediatekIe & 0x00000008)))
 	{
 		CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_2G_256QAM_CAPABLE);
@@ -1695,7 +1695,7 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 
 #ifdef DOT11_VHT_AC
 	/* add Mediatek-specific IE here */
-	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)) {
+	if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode)) {
 		ULONG TmpLen = 0;
 		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
 
