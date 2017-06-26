@@ -1006,7 +1006,7 @@ static int tcp_packet(struct nf_conn *ct,
 			ct->proto.tcp.last_flags &= ~IP_CT_EXP_CHALLENGE_ACK;
 			spin_unlock_bh(&ct->lock);
 			if (LOG_INVALID(net, IPPROTO_TCP))
-				nf_log_packet(net, pf, 0, skb, NULL, NULL, NULL,
+				nf_log_packet(pf, 0, skb, NULL, NULL, NULL,
 				      "nf_ct_tcp: challenge-ACK ignored ");
 			return NF_ACCEPT; /* Don't change state */
 		}
