@@ -68,8 +68,8 @@ fulldump
 #
 # exclude enerated files from libs
 #
-libext/libssl/openssl-1.0.1/Makefile
-libext/libssl/openssl-1.0.1/Makefile.bak
+libext/libssl/openssl-1.0.2/Makefile
+libext/libssl/openssl-1.0.2/Makefile.bak
 /libext/libiconv/libcharset/libext/Makefile
 /libext/libiconv/lib/aliases_aix_sysaix.h
 /libext/libiconv/libcharset/config.h
