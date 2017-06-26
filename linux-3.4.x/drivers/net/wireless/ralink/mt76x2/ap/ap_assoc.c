@@ -171,8 +171,7 @@ static USHORT update_associated_mac_entry(
 	}
 #endif /* PIGGYBACK_SUPPORT */
 #ifdef DOT11_VHT_AC
-	if (pAd->CommonCfg.b256QAM_2G)
-		&& ((ie_list->RalinkIe & 0x00000008) || (ie_list->MediatekIe & 0x00000008)))
+	if ((pAd->CommonCfg.b256QAM_2G) && ((ie_list->RalinkIe & 0x00000008) || (ie_list->MediatekIe & 0x00000008)))
 	{
 		CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_2G_256QAM_CAPABLE);
 		DBGPRINT(RT_DEBUG_TRACE, ("ASSOC -2.4G_256QAM= 1\n"));

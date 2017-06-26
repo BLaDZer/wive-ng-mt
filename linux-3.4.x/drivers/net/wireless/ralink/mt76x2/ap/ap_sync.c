@@ -1016,11 +1016,10 @@ VOID APPeerProbeReqAction(
 
 #ifdef DOT11_VHT_AC
 	/* add Mediatek-specific IE here */
-	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode)) {
+	if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode)) {
 		ULONG TmpLen = 0;
 		UCHAR MediatekSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0xe7, 0x00, 0x00, 0x00, 0x00};
 
-		if (pAd->CommonCfg.b256QAM_2G && WMODE_2G_ONLY(pAd->CommonCfg.PhyMode))
 		MediatekSpecificIe[5] |= 0x8;
 
 		MakeOutgoingFrame(pOutBuffer+FrameLen, &TmpLen,
