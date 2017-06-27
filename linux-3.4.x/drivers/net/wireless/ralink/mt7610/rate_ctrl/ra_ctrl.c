@@ -744,6 +744,12 @@ VOID APMlmeSetTxRate(
 	UCHAR tx_mode = pTxRate->Mode;
 	UCHAR tx_bw = pTxRate->BW;
 
+	/* fix drop to CCK or legacy OFDM modes in 5GHz if not supported by config. 5GHz support only OFDM mode */
+	if (tx_mode == MODE_CCK && (pAd->LatchRfRegs.Channel > 14 || !WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_B)))
+		tx_mode = MODE_OFDM;
+	else if (tx_mode == MODE_OFDM && (pAd->LatchRfRegs.Channel > 14 && WMODE_HT_ONLY(pAd->CommonCfg.PhyMode)))
+		tx_mode = MODE_HTMIX;
+
 #ifdef DOT11_VHT_AC
 	if (tx_mode == MODE_VHT)
 	{
@@ -832,12 +838,6 @@ VOID APMlmeSetTxRate(
 	}
 #endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
-
-	/* fix drop to CCK in 5GHz or pure OFDM modes */
-	if (tx_mode == MODE_CCK && (pAd->LatchRfRegs.Channel > 14 || !WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_B)))
-	{
-		tx_mode = MODE_OFDM;
-	}
 
 	if (pTxRate->CurrMCS < MCS_AUTO)
 		pEntry->HTPhyMode.field.MCS = pTxRate->CurrMCS;

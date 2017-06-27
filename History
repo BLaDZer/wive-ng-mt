@@ -3196,29 +3196,30 @@
 48) kernel: ralink_wifi: set by default only 2 probe response send to clients after check probe req.<br>
 49) kernel: ralink_wifi: if not know peer BW capability, set safe BW from supported MCS.<br>
 50) kernel: ralink_wifi: fix update basic rate bitmap.<br>
-51) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-52) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
-53) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
-54) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
-55) kernel: tty: prevent unnecessary work queue lock checking on flip buffer copy.<br>
-56) kernel: tty: fix race condition if flushing tty flip buffers.<br>
-57) kernel: tty: fix recursive deadlock in tty_perform_flush().<br>
-58) kernel: tty: prevent ldisc drivers from re-using stale tty fields.<br>
-59) kernel: net: integrate ipt_NETFLOW.<br>
-60) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-61) kernel: net: use loopback dev when generating blackhole route.<br>
-62) kernel: net: 8021q: fix one possible panic caused by BUG_ON in free_netdev.<br>
-63) kernel: net: conntrack: RFC5961 challenge ACK confuse conntrack LAST-ACK transition.<br>
-64) kernel: net: udp: prefetch rmem_alloc in udp_queue_rcv_skb().<br>
-65) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-66) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
-67) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
-68) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
-69) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-70) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-71) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-72) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-73) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+51) kernel: ralink_wifi: fix drop to in legacy OFDM modes in 5GHz if not supported by config.<br>
+52) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+53) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
+54) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
+55) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
+56) kernel: tty: prevent unnecessary work queue lock checking on flip buffer copy.<br>
+57) kernel: tty: fix race condition if flushing tty flip buffers.<br>
+58) kernel: tty: fix recursive deadlock in tty_perform_flush().<br>
+59) kernel: tty: prevent ldisc drivers from re-using stale tty fields.<br>
+60) kernel: net: integrate ipt_NETFLOW.<br>
+61) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+62) kernel: net: use loopback dev when generating blackhole route.<br>
+63) kernel: net: 8021q: fix one possible panic caused by BUG_ON in free_netdev.<br>
+64) kernel: net: conntrack: RFC5961 challenge ACK confuse conntrack LAST-ACK transition.<br>
+65) kernel: net: udp: prefetch rmem_alloc in udp_queue_rcv_skb().<br>
+66) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+67) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
+68) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
+69) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
+70) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+71) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+72) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+73) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+74) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
