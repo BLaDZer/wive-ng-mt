@@ -3147,7 +3147,7 @@
 <br>
 <b>6.1.x</b><br>
 1) build_system: add profile for new revision of MD1 (MD1.1).<br>
-2) build_system: update backup calibrations for MD1/MD1.1/AP2.<br>
+2) build_system: update backup calibrations for MD1/MD1.1/ME1/AP2.<br>
 3) build_system: split backup calibrations for MD1/MD1.1<br>
 4) coovachilli: up to 1.4 from git (commit 698996d2).<br>
 5) nodogsplash: up to git version 2.0.0-1 (commit: 958944bc).<br>
