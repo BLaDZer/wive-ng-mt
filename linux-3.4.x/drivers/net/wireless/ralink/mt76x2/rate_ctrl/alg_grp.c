@@ -242,6 +242,7 @@ UCHAR MlmeSelectUpRate(
 			DBGPRINT_RAW(RT_DEBUG_TRACE, ("wrong mcsGroup cnt %d\n", grp_cnt));
 		}
 
+#ifdef RANGE_EXTEND
 		/*  If going up from CCK to MCS32 make sure it's allowed */
 		if (PTX_RA_GRP_ENTRY(pEntry->pTable, UpRateIdx)->CurrMCS == 32)
 		{
@@ -255,12 +256,10 @@ UCHAR MlmeSelectUpRate(
 #endif /* DBG_CTRL_SUPPORT */
 			)
 				mcs32Supported = 1;
-#ifdef RANGE_EXTEND
 #ifdef DBG_CTRL_SUPPORT
 			if ((pAd->CommonCfg.DebugFlags & DBF_DISABLE_20MHZ_MCS0)==0)
 				mcs0Fallback = 1;
 #endif /* DBG_CTRL_SUPPORT */
-#endif
 			if (pEntry->MaxHTPhyMode.field.BW != BW_40 ||
 				pAd->CommonCfg.BBPCurrentBW != BW_40 ||
 				(!mcs32Supported && !mcs0Fallback))
@@ -270,6 +269,7 @@ UCHAR MlmeSelectUpRate(
 				break;
 			}
 		}
+#endif /* RANGE_EXTEND */
 
 		/*  If ShortGI and not allowed then mark it as bad. We'll try another group below */
 		if (PTX_RA_GRP_ENTRY(pEntry->pTable, UpRateIdx)->ShortGI &&
@@ -336,6 +336,7 @@ UCHAR MlmeSelectDownRate(
 			)
 				break;
 		}
+#ifdef RANGE_EXTEND
 		else if (pDownRate->CurrMCS == MCS_32)
 		{
 			BOOLEAN valid_mcs32 = FALSE;
@@ -346,7 +347,6 @@ UCHAR MlmeSelectDownRate(
 #endif /* DOT11_VHT_AC */
 			)
 				valid_mcs32 = TRUE;
-#ifdef RANGE_EXTEND
 			/*  If 20MHz MCS0 fallback enabled and in 40MHz then MCS32 is valid and will be mapped to 20MHz MCS0 */
 			if (valid_mcs32
 #ifdef DBG_CTRL_SUPPORT
@@ -354,7 +354,7 @@ UCHAR MlmeSelectDownRate(
 #endif /* DBG_CTRL_SUPPORT */
 			)
 				break;
-#endif
+
 			/*  MCS32 is valid if enabled and client supports it */
 			if (valid_mcs32 && (pEntry->HTCapability.MCSSet[4] & 0x1)
 #ifdef DBG_CTRL_SUPPORT
@@ -363,6 +363,7 @@ UCHAR MlmeSelectDownRate(
 			)
 				break;
 		}
+#endif /* RANGE_EXTEND */
 		else
 			break;	/*  All other rates are valid */
 
