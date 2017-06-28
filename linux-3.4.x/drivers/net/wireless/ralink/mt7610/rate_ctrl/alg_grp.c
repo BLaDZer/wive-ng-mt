@@ -1473,9 +1473,6 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, ULONG i)
 	pEntry->LastTxPER = (UCHAR)TxErrorRatio;
 	pEntry->LastTimeTxRateChangeAction = pEntry->LastSecTxRateChangeAction;
 
-	if (pEntry->CurrTxRateIndex >= RATE_TABLE_SIZE(pTable))
-		pEntry->CurrTxRateIndex = RATE_TABLE_SIZE(pTable) - 1;
-
 	/* different calculation in APQuickResponeForRateUpExec() */
 	Rssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 
