@@ -1005,7 +1005,6 @@ VOID APMlmeSetTxRate(
 	if (TxTotalCnt > 15 && pEntry->HTPhyMode.field.BW == BW_80 && (pEntry->OneSecBWLimitHoldCount > 0 || TxErrorRatio == 100)) {
 		pEntry->HTPhyMode.field.BW = BW_40;
 		pEntry->OneSecBWLimitHoldCount--;
-		printk("PER HIGH DROP BW to 40MHZ %lx !!!!!\n", TxErrorRatio);
 	}
 
 	/* Reexam each bandwidth's SGI support. */
