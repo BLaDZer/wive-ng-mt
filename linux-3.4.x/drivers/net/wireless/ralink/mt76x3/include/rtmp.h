@@ -2658,7 +2658,8 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT32 OneSecTxRetryOkCount;
 	UINT32 OneSecTxFailCount;
 	UINT32 OneSecRxLGICount;		/* unicast-to-me Long GI count */
-	UINT32 OneSecRxSGICount;      	/* unicast-to-me Short GI count */
+	UINT32 OneSecRxSGICount;		/* unicast-to-me Short GI count */
+	UINT32 OneSecBWLimitHoldCount;		/* limit BW hold time */
 
 #ifdef FIFO_EXT_SUPPORT
 	UINT32 fifoTxSucCnt;

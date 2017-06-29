@@ -1152,6 +1152,7 @@ VOID APMlmeSetTxRate(
 #ifdef DOT11_VHT_AC
 	UCHAR tx_bw = pTxRate->BW;
 #endif /* DOT11_VHT_AC */
+	ULONG TxErrorRatio = 0, TxTotalCnt = 0, TxSuccess = 0, TxRetransmit = 0, TxFailCount = 0;
 
 	/* fix drop to CCK or legacy OFDM modes in 5GHz if not supported by config. 5GHz support only OFDM mode */
 	if (tx_mode == MODE_CCK && (pAd->LatchRfRegs.Channel > 14 || !WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_B)))
@@ -1426,9 +1427,39 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 #endif /* DBG_CTRL_SUPPORT */
 #endif /* RANGE_EXTEND */
 
+	/* if PER very high - fallback to 40MHz BW and some time hold it */
+	TxRetransmit = pEntry->OneSecTxRetryOkCount;
+	TxSuccess = pEntry->OneSecTxNoRetryOkCount;
+	TxFailCount = pEntry->OneSecTxFailCount;
+	TxTotalCnt = TxRetransmit + TxSuccess + TxFailCount;
+
+	if(TxTotalCnt)
+		TxErrorRatio = ((TxRetransmit + TxFailCount) * 100) / TxTotalCnt;
+
+	/* only high traffic case */
+	if (TxTotalCnt > 15 && pEntry->HTPhyMode.field.BW == BW_80 && pEntry->LastSecTxRateChangeAction == RATE_DOWN) {
+		if (TxErrorRatio > 60) {
+			/* select hold limit BW time */
+			if (pEntry->OneSecBWLimitHoldCount == 0)
+				pEntry->OneSecBWLimitHoldCount = 10;
+			else
+				if (pEntry->OneSecBWLimitHoldCount < 10)
+					pEntry->OneSecBWLimitHoldCount++;
+		}
+	} else {
+		pEntry->OneSecBWLimitHoldCount = 0;
+	}
+
+	/* if hold time not 0 or all transmits is fail - switch to 40MHz  */
+	if (TxTotalCnt > 15 && pEntry->HTPhyMode.field.BW == BW_80 && (pEntry->OneSecBWLimitHoldCount > 0 || TxErrorRatio == 100)) {
+		pEntry->HTPhyMode.field.BW = BW_40;
+		pEntry->OneSecBWLimitHoldCount--;
+		printk("PER HIGH DROP BW to 40MHZ %lx !!!!!\n", TxErrorRatio);
+	}
+
 	/* Reexam each bandwidth's SGI support. */
 	if ((pEntry->HTPhyMode.field.BW==BW_20 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI20_CAPABLE)) ||
-		(pEntry->HTPhyMode.field.BW==BW_40 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI40_CAPABLE)) )
+		(pEntry->HTPhyMode.field.BW==BW_40 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI40_CAPABLE)) || (TxErrorRatio > 50))
 		pEntry->HTPhyMode.field.ShortGI = GI_800;
 
 #ifdef DBG_CTRL_SUPPORT
@@ -1443,6 +1474,12 @@ DBGPRINT(RT_DEBUG_INFO, ("%s(): txbw=%d, txmode=%d\n", __FUNCTION__, tx_bw, tx_m
 #ifdef FIFO_EXT_SUPPORT
 	AsicFifoExtEntryClean(pAd, pEntry);
 #endif /* FIFO_EXT_SUPPORT */
+
+	/* clean QA counters - new mode=>new count cycle, prevent pessimistic trend */
+	if (pEntry->LastSecTxRateChangeAction == RATE_DOWN) {
+		RESET_ONE_SEC_TX_CNT(pEntry);
+		MlmeClearTxQuality(pEntry);
+	}
 
 #ifdef MCS_LUT_SUPPORT
 	asic_mcs_lut_update(pAd, pEntry);
