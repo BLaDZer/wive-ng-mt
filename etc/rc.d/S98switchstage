@@ -44,7 +44,7 @@ start() {
 	fi
     fi
 
-    if [ $CONFIG_RALINK_GPIO_PWR_USB != "0" ]; then
+    if [ $CONFIG_RALINK_GPIO_PWR_USB != "0" ] && [ $CONFIG_RALINK_GPIO_PWR_USB != "" ]; then
 	$LOG "USB Port power ON."
 	# usb gpio inverted, 4000 infinity
 	gpio l "$CONFIG_RALINK_GPIO_PWR_USB" 0 4000 0 0 0
