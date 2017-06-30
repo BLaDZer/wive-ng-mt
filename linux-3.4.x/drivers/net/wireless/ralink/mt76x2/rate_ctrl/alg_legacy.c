@@ -667,7 +667,7 @@ VOID APQuickResponeForRateUpExec(
 			// TODO: should we reset all OneSecTx counters?
 			/* RESET_ONE_SEC_TX_CNT(pEntry); */
 
-			return;
+			continue;
 		}
 
 		pEntry->PER[CurrRateIdx] = (UCHAR)TxErrorRatio;
@@ -705,12 +705,7 @@ VOID APQuickResponeForRateUpExec(
 				/*if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount) */
 				if (TxErrorRatio >= TrainDown)
 				{
-					/* If PER>40% or TP<lastTP/2 then double the TxQuality delay */
-					if ((TxErrorRatio > 40) || (OneSecTxNoRetryOKRationCount < pEntry->LastTxOkCount/2))
-						MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND*2);
-					else
-						MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
-
+					MlmeSetTxQuality(pEntry, CurrRateIdx, DRS_TX_QUALITY_WORST_BOUND);
 					MlmeRestoreLastRate(pEntry);
 				}
 				else
@@ -725,11 +720,7 @@ VOID APQuickResponeForRateUpExec(
 				}
 				else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 				{
-					if(TxErrorRatio >= TrainUp)
-					{
 					MlmeRestoreLastRate(pEntry);
-				}
-							
 				}
 				else
 				{

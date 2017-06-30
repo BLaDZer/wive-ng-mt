@@ -1009,7 +1009,7 @@ VOID APMlmeSetTxRate(
 
 	/* Reexam each bandwidth's SGI support. */
 	if ((pEntry->HTPhyMode.field.BW==BW_20 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI20_CAPABLE)) ||
-		(pEntry->HTPhyMode.field.BW==BW_40 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI40_CAPABLE)) || (TxErrorRatio > 50))
+		(pEntry->HTPhyMode.field.BW==BW_40 && !CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_SGI40_CAPABLE)) || (TxErrorRatio > 70))
 		pEntry->HTPhyMode.field.ShortGI = GI_800;
 
 #ifdef DBG_CTRL_SUPPORT
@@ -1025,10 +1025,12 @@ VOID APMlmeSetTxRate(
 	AsicFifoExtEntryClean(pAd, pEntry);
 #endif /* FIFO_EXT_SUPPORT */
 
-	/* clean QA counters - new mode=>new count cycle, prevent pessimistic trend */
+	/* if PER>1% and rate target down, or Low/Zero traffic - clean QA counters (new mode=>new count cycle, prevent pessimistic trend) */
 	if (pEntry->LastSecTxRateChangeAction == RATE_DOWN) {
 		RESET_ONE_SEC_TX_CNT(pEntry);
-		MlmeClearTxQuality(pEntry);
+
+		if ((TxErrorRatio > 1 || TxTotalCnt < 15))
+			MlmeClearTxQuality(pEntry);
 	}
 
 #ifdef MCS_LUT_SUPPORT

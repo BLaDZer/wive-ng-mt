@@ -986,9 +986,6 @@ VOID MlmeNewRateAdapt(
 				pEntry->LastSecTxRateChangeAction==RATE_UP? "++": "--", CurrRateIdx, pEntry->CurrTxRateIndex));
 		}
 
-		/*  Save last rate information */
-		pEntry->lastRateIdx = CurrRateIdx;
-
 		/*  Update TxQuality */
 		if (pEntry->LastSecTxRateChangeAction == RATE_DOWN)
 		{
@@ -996,7 +993,10 @@ VOID MlmeNewRateAdapt(
 			pEntry->PER[pEntry->CurrTxRateIndex] = 0;
 		}
 
-		/*  Set timer for check in 100 msec */
+		/*  Save last rate information */
+		pEntry->lastRateIdx = CurrRateIdx;
+
+		/* Set timer for check in 100 msec */
 #ifdef CONFIG_AP_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 		{
@@ -1351,25 +1351,17 @@ VOID QuickResponeForRateUpExecAdaptMT(/* actually for both up and down */
 		if ((TxErrorRatio >= 50) || (TxErrorRatio >= TrainDown)) /* there will be train down again */
 		{
 			MlmeSetMcsGroup(pAd, pEntry);
-			MlmeSetTxQuality(pEntry, pEntry->CurrTxRateIndex, DRS_TX_QUALITY_WORST_BOUND);
-			pEntry->CurrTxRateIndex = pCurrTxRate->downMcs;
 			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainDown)\n"));
 		}
 		else if ((pEntry->LastTxOkCount + 2) >= OneSecTxNoRetryOKRationCount)
 		{
-			if(TxErrorRatio >= TrainUp) {
-				MlmeRestoreLastRate(pEntry);
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) bad tx ok count (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
-			}
-			else
-			{
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) direct train down (TxErrorRatio >= TrainUp)\n"));
-			}
+			MlmeRestoreLastRate(pEntry);
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) bad tx ok count (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
 		}
 		else
 		{
-				MlmeSetMcsGroup(pAd, pEntry);
-				DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) keep rate-down (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
+			MlmeSetMcsGroup(pAd, pEntry);
+			DBGPRINT(RT_DEBUG_INFO | DBG_FUNC_RA,("   QuickDRS: (Down) keep rate-down (L:%ld, C:%ld)\n", pEntry->LastTxOkCount, OneSecTxNoRetryOKRationCount));
 		}
 	}
 

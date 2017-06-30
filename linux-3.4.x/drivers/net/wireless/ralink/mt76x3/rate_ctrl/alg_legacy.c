@@ -671,7 +671,7 @@ VOID APQuickResponeForRateUpExec(
 			// TODO: should we reset all OneSecTx counters?
 			/* RESET_ONE_SEC_TX_CNT(pEntry); */
 
-			return;
+			continue;
     		}
 
 		pEntry->PER[CurrRateIdx] = (UCHAR)TxErrorRatio;
