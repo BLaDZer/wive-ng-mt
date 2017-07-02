@@ -1727,6 +1727,7 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 {
 	UINT32 IdReg;
 	UINT32 MacReg = 0;
+	USHORT trsw_mode = 0;
 
 	/*
 		Enable PBF and MAC clock
@@ -1736,6 +1737,12 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 	{
 		RTMP_IO_WRITE32(pAd, MT76x0_MACRegTable[IdReg].Register,
 								MT76x0_MACRegTable[IdReg].Value);
+	}
+
+	RT28xx_EEPROM_READ16(pAd, 0x24, trsw_mode);
+	if (((trsw_mode & ~(0xFFCF)) >> 4) == 0x3) {
+		RTMP_IO_WRITE32(pAd, TX_SW_CFG1, 0x00040200); /* Adjust TR_SW off delay for TRSW mode */
+		DBGPRINT(RT_DEBUG_TRACE, ("%s: TRSW = 0x3\n", __FUNCTION__));
 	}
 
 #ifdef HDR_TRANS_TX_SUPPORT
@@ -1927,7 +1934,7 @@ static VOID MT76x0_ChipBBPAdjust(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 }
 
-#if 0
+#ifdef SINGLE_SKU_V2
 static void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char delta_pwr)
 {
 	u32 value = 0;
@@ -1969,7 +1976,7 @@ static void MT76x0_adjust_per_rate_pwr_delta(RTMP_ADAPTER *ad, u8 channel, char 
 	value |= TX_PWR_HT_VHT_STBC_MCS_7(ad->chipCap.rate_pwr_table.STBC[7].MCS_Power + delta_pwr);
 	RTMP_IO_WRITE32(ad, TX_PWR_CFG_9, value);
 }
-#endif
+#endif /* SINGLE_SKU_V2 */
 
 #define MIN_TSSI_WORKABLE_PWR 20 //10 dB
 
@@ -2069,8 +2076,9 @@ void percentage_delta_pwr(RTMP_ADAPTER *ad)
 	RTMP_BBP_IO_WRITE32(ad, TXBE_R4, bbp_val);
 	DBGPRINT(RT_DEBUG_ERROR, ("%s::<After> total drop power = %d + %d dBm, TXBE_R4 = 0x%0x , PowerPercentageWithBBP = %d\n", 
 		__FUNCTION__, mac_drop_pwr , bbp_drop_pwr, bbp_val , ad->CommonCfg.TxPowerPercentageWithBBP));
-
-	//MT76x0_adjust_per_rate_pwr_delta(ad, ad->hw_cfg.cent_ch, mac_drop_pwr*2);
+#ifdef SINGLE_SKU_V2
+	MT76x0_adjust_per_rate_pwr_delta(ad, ad->hw_cfg.cent_ch, mac_drop_pwr*2);
+#endif /* SINGLE_SKU_V2 */
 }
 
 static VOID MT76x0_ChipSwitchChannel(
@@ -2102,6 +2110,7 @@ static VOID MT76x0_ChipSwitchChannel(
 	
 	RTMP_IO_READ32(pAd, EXT_CCA_CFG, &RegValue);
 	RegValue &= ~(0xFFF);
+#ifdef DOT11_VHT_AC
 	if (pAd->CommonCfg.BBPCurrentBW == BW_80)
 	{
 		rf_bw = RF_BW_80;
@@ -2122,7 +2131,9 @@ static VOID MT76x0_ChipSwitchChannel(
 			RegValue |= 0x81b;
 		}
 	}
-	else if (pAd->CommonCfg.BBPCurrentBW == BW_40)
+	else
+#endif /* DOT11_VHT_AC */
+	if (pAd->CommonCfg.BBPCurrentBW == BW_40)
 	{
 		rf_bw = RF_BW_40;
 		if (pAd->CommonCfg.CentralChannel > pAd->CommonCfg.Channel)
@@ -2137,12 +2148,6 @@ static VOID MT76x0_ChipSwitchChannel(
 		
 	}
 	RTMP_IO_WRITE32(pAd, EXT_CCA_CFG, RegValue);
-
-	if (pAd->CommonCfg.BBPCurrentBW == BW_20){
-		RTMP_IO_WRITE32(pAd, TX_SW_CFG0, 0x601);
-	} else {
-		RTMP_IO_WRITE32(pAd, TX_SW_CFG0, 0x201);
-	}
 
 #ifdef CONFIG_AP_SUPPORT
 #ifdef AP_QLOAD_SUPPORT
