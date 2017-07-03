@@ -67,13 +67,7 @@
 
 #define FT_KDP_DEFAULT_IF_ETH		"br0"
 #define FT_KDP_DEFAULT_IF_WLAN		"br0" /* used to receive command from WLAN */
-#ifndef CONFIG_RT_SECOND_IF_NONE
-
-/* Allways 5GHz drivers support FT */
-#define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"rai0" /* ioctl command to WLAN */
-#else
 #define FT_KDP_DEFAULT_IF_WLAN_IOCTL	"ra0" /* ioctl command to WLAN */
-#endif
 
 /*
 	Inter-AP communications present opportunities to an attacker.
@@ -435,7 +429,7 @@ typedef struct _RTMP_IAPP {
 	CHAR			IfNameEth[IFNAMSIZ]; /* ethernet interface name */
 	CHAR			IfNameWlan[IFNAMSIZ]; /* wireless interface name */
 	CHAR			IfNameWlanIoctl[MAX_WIFI_COUNT][IFNAMSIZ]; /* wireless interface name */
-	UCHAR			IfNameWlanMAC[MAX_WIFI_COUNT][ETH_ALEN]; /* wireless interface name */
+	UCHAR			IfNameWlanMAC[MAX_WIFI_COUNT][ETH_ALEN]; /* wireless interface mac */
 	INT32			IfNameWlanCount;
 
 	BOOLEAN			FlgIsTerminated; /* if terminate IAPP daemon */

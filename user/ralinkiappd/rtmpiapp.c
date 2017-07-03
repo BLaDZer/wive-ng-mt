@@ -2106,21 +2106,13 @@ static VOID IAPP_RcvHandlerTcp(
 
 	if (SizeRcvMsg > 0)
 	{
-#ifdef FT_KDP_FUNC_PKT_ENCRYPT
-		INT32 decrypt_idx=0;
-#endif
 		DBGPRINT(RT_DEBUG_TRACE,
 				"iapp> Recv TCP successfully from %d.%d.%d.%d\n",
 				IAPP_SHOW_IP(AddrPeer.sin_addr.s_addr));
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
-		/* use last wireless interface for decrypt data, workaround for work with old 2.4GHZ drivers without FT support */
-		decrypt_idx = (pCtrlBK->IfNameWlanCount - 1);
-		if (decrypt_idx < 0)
-		    decrypt_idx = 0;
-
 		/* ioctl to decrypt */
-		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, decrypt_idx, RT_FT_DATA_DECRYPT) == FALSE) {
+		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> TCP Decrypt frame failed!\n");
 			return;
 		}
@@ -2847,9 +2839,6 @@ static VOID IAPP_RcvHandlerUdp(
 	/* handle the packet */
 	if (SizeRcvMsg > 0)
 	{
-#ifdef FT_KDP_FUNC_PKT_ENCRYPT
-		INT32 decrypt_idx = 0;
-#endif
 		DBGPRINT(RT_DEBUG_TRACE,
 				"iapp> Recvfrom UDP (len%d) successfully from %d.%d.%d.%d\n",
 				SizeRcvMsg,
@@ -2864,13 +2853,8 @@ static VOID IAPP_RcvHandlerUdp(
 #endif // IAPP_TEST //
 
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
-		/* use last wireless interface for decrypt data, workaround for work with old 2.4GHZ drivers without FT support */
-		decrypt_idx = (pCtrlBK->IfNameWlanCount - 1);
-		if (decrypt_idx < 0)
-		    decrypt_idx = 0;
-
 		/* ioctl to decrypt */
-		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, decrypt_idx, RT_FT_DATA_DECRYPT) == FALSE) {
+		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
 			DBGPRINT(RT_DEBUG_TRACE, "iapp> UDP Decrypt frame failed!\n");
 			return;
 		}
