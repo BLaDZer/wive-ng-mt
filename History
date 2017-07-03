@@ -3220,11 +3220,12 @@
 71) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
 72) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
 73) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
-74) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-75) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-76) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-77) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-78) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+74) kernel: tcp: avoid fragmenting peculiar skbs in SACK.<br>
+75) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+76) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+77) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+78) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+79) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
