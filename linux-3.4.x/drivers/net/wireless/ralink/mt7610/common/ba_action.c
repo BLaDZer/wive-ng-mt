@@ -551,7 +551,7 @@ VOID BAOriSessionSetUp(
 	/* Initialize BA session */
 	pBAEntry->ORI_BA_Status = Originator_WaitRes;
 	pBAEntry->Wcid = pEntry->Aid;
-	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
+	pBAEntry->BAWinSize = pAd->CommonCfg.BACapability.field.TxBAWinLimit;
 	pBAEntry->Sequence = BA_ORI_INIT_SEQ;
 	pBAEntry->Token = 1;	/* (2008-01-21) Jan Lee recommends it - this token can't be 0*/
 	pBAEntry->TID = TID;

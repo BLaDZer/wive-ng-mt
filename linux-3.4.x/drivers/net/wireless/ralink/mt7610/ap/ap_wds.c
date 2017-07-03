@@ -238,7 +238,8 @@ MAC_TABLE_ENTRY *MacTableInsertWDSEntry(
 #ifdef DOT11_N_SUPPORT
 			/* default */
 			pEntry->MpduDensity = 5;
-			pEntry->MaxRAmpduFactor = 3;
+			pEntry->MaxRAmpduFactor = pHtCapability->HtCapParm.MaxRAmpduFactor;
+
 			if (pAd->WdsTab.WdsEntry[WdsTabIdx].PhyMode >= MODE_HTMIX)
 			{
 				if (pAd->WdsTab.WdsEntry[WdsTabIdx].DesiredTransmitSetting.field.MCS != MCS_AUTO)

@@ -81,25 +81,7 @@ VOID RTMPWriteTxWI(
 	pTxWI->TxWINSEQ = NSeq;
 	/* John tune the performace with Intel Client in 20 MHz performance*/
 #ifdef DOT11_N_SUPPORT
-	BASize = pAd->CommonCfg.TxBASize;
-#ifdef RT65xx
-	if (IS_RT65XX(pAd))
-	{
-		if (BASize > 31)
-			BASize =31;
-	}
-	else
-#endif /* RT65xx */
-	if (pAd->MACVersion == 0x28720200)
-	{
-		if (BASize > 13)
-			BASize =13;
-	}
-	else
-	{
-		if( BASize >7 )
-			BASize =7;
-	}
+	BASize = 0;
 
 	pTxWI->TxWIBAWinSize = BASize;
 	pTxWI->TxWIShortGI = pTransmit->field.ShortGI;
@@ -230,11 +212,24 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 
 	pTxWI->TxWIAMPDU = ((pTxBlk->TxFrameType == TX_AMPDU_FRAME) ? TRUE : FALSE);
 	BASize = pAd->CommonCfg.TxBASize;
-	if((pTxBlk->TxFrameType == TX_AMPDU_FRAME) && (pMacEntry))
-	{
-		UCHAR RABAOriIdx = pTxBlk->pMacEntry->BAOriWcidArray[pTxBlk->UserPriority];
 
-		BASize = pAd->BATable.BAOriEntry[RABAOriIdx].BAWinSize;
+	if(pTxWI->TxWIAMPDU && pMacEntry)
+	{
+		/*
+ 		 * Under HT20, 2x2 chipset, OPEN, and with some atero chipsets
+ 		 * reduce BASize to 7 to add one bulk A-MPDU during one TXOP
+ 		 * to improve throughput
+ 		 */
+		if ((pAd->CommonCfg.BBPCurrentBW == BW_20) && (pAd->Antenna.field.TxPath == 2)
+			&& (pMacEntry->bIAmBadAtheros) && (pMacEntry->WepStatus == Ndis802_11EncryptionDisabled))
+		{
+			BASize = 7;
+		}
+		else
+		{
+			UCHAR RABAOriIdx = pTxBlk->pMacEntry->BAOriWcidArray[pTxBlk->UserPriority];
+			BASize = pAd->BATable.BAOriEntry[RABAOriIdx].BAWinSize;
+		}
 	}
 
 	pTxWI->TxWIBAWinSize = BASize;
@@ -314,7 +309,10 @@ VOID RTMPWriteTxWI_Data(RTMP_ADAPTER *pAd, TXWI_STRUC *pTxWI, TX_BLK *pTxBlk)
 			}
 		}
 
-		pTxWI->TxWIMpduDensity = pMacEntry->MpduDensity;
+		if ((pAd->CommonCfg.BBPCurrentBW == BW_20) && (pMacEntry->bIAmBadAtheros))
+			pTxWI->TxWIMpduDensity = 7;
+		else
+			pTxWI->TxWIMpduDensity = pMacEntry->MpduDensity;
 	}
 #endif /* DOT11_N_SUPPORT */
 	
