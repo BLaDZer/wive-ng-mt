@@ -1409,6 +1409,15 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 
 		if (bDisconnectSta)
 		{
+			/* temporary block probe req from last kickouted client
+			    help correct roam to new AP, copy mac and set start count to 0 */
+			if (pMbss->TmpBlockAfterKickTimes != 0) {
+				pMbss->TmpBlockAfterKickCount = 0;
+				COPY_MAC_ADDR(pMbss->TmpBlockAfterKickMac, pEntry->Addr);
+				printk("%s Temp block %d times probe/assod req from %02x:%02x:%02x:%02x:%02x:%02x.\n",
+					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", pMbss->TmpBlockAfterKickTimes,
+					PRINT_MAC(pMbss->TmpBlockAfterKickMac));
+			}
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 			/* Clear TXWI ack in Tx Ring*/

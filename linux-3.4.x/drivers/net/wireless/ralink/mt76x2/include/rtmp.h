@@ -1898,6 +1898,10 @@ typedef struct _MULTISSID_STRUCT {
 	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
 
+	UCHAR TmpBlockAfterKickTimes;
+	UCHAR TmpBlockAfterKickCount;
+	UCHAR TmpBlockAfterKickMac[MAC_ADDR_LEN];
+
 	CHAR FilterUnusedPacket;
 #ifdef CONFIG_DOT11U_INTERWORKING
 	GAS_CTRL GASCtrl;

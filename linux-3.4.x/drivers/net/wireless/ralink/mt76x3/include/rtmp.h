@@ -1756,6 +1756,11 @@ typedef struct _BSS_STRUCT {
 	CHAR RssiLowForStaKickOutPSM;
 	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
+
+	UCHAR TmpBlockAfterKickTimes;
+	UCHAR TmpBlockAfterKickCount;
+	UCHAR TmpBlockAfterKickMac[MAC_ADDR_LEN];
+
 	CHAR ProbeRspTimes;
 
 #ifdef DOT11R_FT_SUPPORT

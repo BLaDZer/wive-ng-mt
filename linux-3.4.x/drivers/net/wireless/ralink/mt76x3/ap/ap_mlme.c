@@ -120,6 +120,7 @@ VOID APDetectOverlappingExec(
 VOID APMlmePeriodicExec(
     PRTMP_ADAPTER pAd)
 {
+	INT i;
     /* 
 		Reqeust by David 2005/05/12
 		It make sense to disable Adjust Tx Power on AP mode, since we can't 
@@ -403,6 +404,11 @@ VOID APMlmePeriodicExec(
 #endif /* DOT11_N_SUPPORT */
 #endif /* APCLI_SUPPORT */
 
+	/* increase block count every secons for time limit probe temp limit function */
+	for (i = 0; i < pAd->ApCfg.BssidNum; i++) {
+	    if (pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes != 0 && pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount < pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes)
+		    pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount++;
+	}
 }
 
 

@@ -205,6 +205,7 @@ INT Set_AP_KickStaRssiLow_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_KickStaRssiLowPSM_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_KickStaRssiLowDelay_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_PROBE_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
+INT Set_AP_AFTER_KICK_BLOCK(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_AUTH_FAIL_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_AUTH_NO_RSP_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT Set_AP_ASSOC_REQ_FAIL_RSSI_THRESHOLD(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
@@ -642,6 +643,7 @@ static struct {
 	{"KickStaRssiLowPSM",				Set_AP_KickStaRssiLowPSM_Proc},
 	{"KickStaRssiLowDelay",				Set_AP_KickStaRssiLowDelay_Proc},
 	{"ProbeRspRssi",                Set_AP_PROBE_RSSI_THRESHOLD},
+	{"TmpBlockAfterKick",				Set_AP_AFTER_KICK_BLOCK},
 #ifdef AP_SCAN_SUPPORT
 	{"SiteSurvey",					Set_SiteSurvey_Proc},
 	{"AutoChannelSel",				Set_AutoChannelSel_Proc},
@@ -5507,6 +5509,32 @@ INT     Set_AP_PROBE_RSSI_THRESHOLD(
         for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
         {
                 DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold ));
+        }
+
+        return TRUE;
+}
+
+INT     Set_AP_AFTER_KICK_BLOCK(
+        IN  PRTMP_ADAPTER    pAd,
+        IN  PSTRING          arg)
+{
+        POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie;
+        UCHAR           apidx = pObj->ioctl_if;
+        UINT j;
+        CHAR times;
+        times = simple_strtol(arg, 0, 10);
+
+        if (times <= 0 || times > 200)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("Disable AP_AFTER_KICK_BLOCK\n"));
+        }
+
+        pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes = times;
+        DBGPRINT(RT_DEBUG_TRACE, ("I/F(ra%d) Set_AP_AFTER_KICK_BLOCK=%d\n", apidx, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes));
+
+        for(j = BSS0; j < pAd->ApCfg.BssidNum; j++)
+        {
+                DBGPRINT(RT_DEBUG_TRACE, ("%d. ==> %d\n", j, pAd->ApCfg.MBSSID[j].TmpBlockAfterKickTimes ));
         }
 
         return TRUE;

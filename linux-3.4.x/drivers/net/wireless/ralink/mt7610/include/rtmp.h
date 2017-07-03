@@ -1508,7 +1508,12 @@ typedef struct _MULTISSID_STRUCT {
 	CHAR RssiLowForStaKickOut;
 	CHAR RssiLowForStaKickOutPSM;
 	UCHAR RssiLowForStaKickOutDelay;
+
 	CHAR ProbeRspRssiThreshold;
+
+	UCHAR TmpBlockAfterKickTimes;
+	UCHAR TmpBlockAfterKickCount;
+	UCHAR TmpBlockAfterKickMac[MAC_ADDR_LEN];
 
 	/* used in if beacon send or stop */
 	BOOLEAN bBcnSntReq;
