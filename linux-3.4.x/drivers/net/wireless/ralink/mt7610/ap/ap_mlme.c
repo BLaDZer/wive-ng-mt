@@ -173,6 +173,17 @@ VOID APMlmePeriodicExec(
 		/* one second timer */
 	    MacTableMaintenance(pAd);
 
+	    /* increase block count every secons for time limit probe temp limit function */
+	    for (i = 0; i < pAd->ApCfg.BssidNum; i++) {
+		if (pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes != 0 && pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount < pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes) {
+		    if (!MAC_ADDR_EQUAL(pAd->ApCfg.MBSSID[i].TmpBlockAfterKickMac, ZERO_MAC_ADDR))
+			pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount++;
+		} else {
+		    /* cleanup blocked mac address */
+		    NdisZeroMemory(pAd->ApCfg.MBSSID[i].TmpBlockAfterKickMac, MAC_ADDR_LEN);
+		}
+	    }
+
 #ifdef FPGA_MODE
 		if (pAd->fpga_tr_stop)
 		{
@@ -318,13 +329,6 @@ VOID APMlmePeriodicExec(
 		RTMP_MLME_HANDLER(pAd);
 
 		DBGPRINT(RT_DEBUG_TRACE, ("bImprovedScan ............. Resume for bImprovedScan, SCAN_PENDING .............. \n"));
-	}
-
-	/* increase block count every secons for time limit probe temp limit function */
-	for (i = 0; i < pAd->ApCfg.BssidNum; i++) {
-	    if (pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes != 0 && pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount < pAd->ApCfg.MBSSID[i].TmpBlockAfterKickTimes)
-		    pAd->ApCfg.MBSSID[i].TmpBlockAfterKickCount++;
-
 	}
 }
 

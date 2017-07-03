@@ -180,7 +180,7 @@ VOID APPeerProbeReqAction(
 		if (pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes != 0
 		    && pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickCount < pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes) {
 		    /* ignore probe req if address eqal */
-		    if (MAC_ADDR_EQUAL(ProbeReqParam.Addr2, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickMac)) {
+		    if (!MAC_ADDR_EQUAL(ZERO_MAC_ADDR, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickMac) && MAC_ADDR_EQUAL(ProbeReqParam.Addr2, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickMac)) {
 			    pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickCount++;
 			    DBGPRINT(RT_DEBUG_INFO, ("PROBE_RSP Temp Block MAC %02x:%02x:%02x:%02x:%02x:%02x , PROBE COUNT = %d of %d\n",
 				    PRINT_MAC(ProbeReqParam.Addr2), pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickCount, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes));

@@ -13,7 +13,7 @@ LOG="logger -t roaming"
 $LOG "Tune wifi roaming parametrs for $1."
 
 ###############################################PARAMETRS TABLE###################################################################################
-# ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 3
+# ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 2
 # AuthRspFail		- range 0 - -100 dBm, reject auth req due to weak signal, default 0 (off)
 # AuthRspRssi		- range 0 - -100 dBm, ignore auth req due to weak signal, default 0 (off)
 # AssocReqRssiThres	- range 0 - -100 dBm, reject assoc req due to weak signal, default 0 (off)
@@ -22,9 +22,10 @@ $LOG "Tune wifi roaming parametrs for $1."
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low (active clients), default 0 (off)
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low (PSM clients), default 0 (off)
 # KickStaRssiLowDelay	- range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
+# TmpBlockAfterKick	- range 0 -  200 times, after kick block probe/assoc req from kicked STA, default 14
 #################################################################################################################################################
 eval `nvram_buf_get 2860 BandDeltaRssi ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor \
-			    KickStaRssiLow KickStaRssiLowPSM ProbeRspRssi KickStaRssiLowDelay`
+			    KickStaRssiLow KickStaRssiLowPSM ProbeRspRssi KickStaRssiLowDelay TmpBlockAfterKick`
 #################################################################################################################################################
 
 if [ "$2" = "5GHZ" ]; then
@@ -108,4 +109,7 @@ fi
 if [ "$KickStaRssiLowDelay" != "" ]; then
     iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
 fi
-$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowDelay;$ProbeRspRssi"
+if [ "$TmpBlockAfterKick" != "" ]; then
+    iwpriv "$1" set TmpBlockAfterKick="$TmpBlockAfterKick"
+fi
+$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowDelay;$ProbeRspRssi;$TmpBlockAfterKick"
