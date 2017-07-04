@@ -233,6 +233,10 @@ static int nobody_responds_to_arp(uint32_t nip, const uint8_t *safe_mac, unsigne
 	struct in_addr temp;
 	int r;
 
+	/* if checktime = 0 - not need try ping clients, allways return no respond (adrress free) */
+	if (arpping_ms == 0)
+	    return 1;
+
 	r = arpping(nip, safe_mac,
 			server_config.server_nip,
 			server_config.server_mac,
