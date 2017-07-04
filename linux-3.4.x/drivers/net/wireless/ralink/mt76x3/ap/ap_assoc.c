@@ -43,6 +43,7 @@ static void ap_assoc_info_debugshow(
 	IN IE_LISTS *ie_list)
 {
 	PUCHAR	sAssoc = isReassoc ? (PUCHAR)"ReASSOC" : (PUCHAR)"ASSOC";
+	PUCHAR	sFTSupport = IS_FT_RSN_STA(pEntry) ? (PUCHAR)", FT mode" : (PUCHAR)"";
 	CHAR *pRange = (pAd->CommonCfg.Channel <= 14) ? "2.4" : "5";
 	struct wifi_dev *wdev;
 	wdev = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev;
@@ -54,12 +55,12 @@ static void ap_assoc_info_debugshow(
 	{
 		assoc_ht_info_debugshow(pAd, pEntry, ie_list->ht_cap_len, &ie_list->HTCapability);
 
-		printk("\n%s - Update AP OperaionMode=%d, fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n\n",
+		printk("\n%s - Update AP OperaionMode=%d, fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d%s\n\n",
 					sAssoc,
 					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode,
 					pAd->MacTab.fAnyStationIsLegacy,
 					pAd->MacTab.fAnyStation20Only,
-					pAd->MacTab.fAnyStationNonGF);
+					pAd->MacTab.fAnyStationNonGF, sFTSupport);
 
 #ifdef DOT11_VHT_AC
 		if ((ie_list->vht_cap_len) &&
