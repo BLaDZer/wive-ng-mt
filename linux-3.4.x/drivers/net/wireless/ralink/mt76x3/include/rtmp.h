@@ -1754,6 +1754,7 @@ typedef struct _BSS_STRUCT {
 	CHAR AuthNoRspRssiThreshold;
 	CHAR RssiLowForStaKickOut;
 	CHAR RssiLowForStaKickOutPSM;
+	CHAR RssiLowForStaKickOutFT;
 	UCHAR RssiLowForStaKickOutDelay;
 	CHAR ProbeRspRssiThreshold;
 

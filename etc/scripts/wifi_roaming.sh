@@ -20,12 +20,13 @@ $LOG "Tune wifi roaming parametrs for $1."
 # AssocRspIgnor		- range 0 - -100 dBm, ignore assoc req due to weak signal, default 0 (off)
 # ProbeRspRssi		- range 0 - -100 dBm, auto disonnect sta if rssi low at probe requests, default 0 (off)
 # KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low (active clients), default 0 (off)
-# KickStaRssiLow	- range 0 - -100 dBm, auto disonnect sta if rssi low (PSM clients), default 0 (off)
+# KickStaRssiLowPSM	- range 0 - -100 dBm, auto disonnect sta if rssi low (PSM clients), default 0 (off)
+# KickStaRssiLowFT	- range 0 - -100 dBm, auto disonnect sta if rssi low (FT clients), default 0 (off)
 # KickStaRssiLowDelay	- range 0 -  200 seconds, if in this interval all data frames have low rssi - kick STA, default 5
 # TmpBlockAfterKick	- range 0 -  200 times, after kick block probe/assoc req from kicked STA, default 14
 #################################################################################################################################################
 eval `nvram_buf_get 2860 BandDeltaRssi ApProbeRspTimes AuthRspFail AuthRspRssi AssocReqRssiThres AssocRspIgnor \
-			    KickStaRssiLow KickStaRssiLowPSM ProbeRspRssi KickStaRssiLowDelay TmpBlockAfterKick`
+			    KickStaRssiLow KickStaRssiLowPSM KickStaRssiLowFT ProbeRspRssi KickStaRssiLowDelay TmpBlockAfterKick`
 #################################################################################################################################################
 
 if [ "$2" = "5GHZ" ]; then
@@ -73,6 +74,12 @@ if [ "$2" = "5GHZ" ]; then
 	    KickStaRssiLowPSM=$minrssi
 	fi
     fi
+    if [ "$KickStaRssiLowFT" != "" ] && [ "$KickStaRssiLowFT" != "0" ]; then
+	let KickStaRssiLowFT=KickStaRssiLowFT+BandDeltaRssi
+	if [ $KickStaRssiLowFT -lt $minrssi ]; then
+	    KickStaRssiLowFT=$minrssi
+	fi
+    fi
     if [ "$ProbeRspRssi" != "" ] && [ "$ProbeRspRssi" != "0" ]; then
 	let ProbeRspRssi=ProbeRspRssi+BandDeltaRssi
 	if [ $ProbeRspRssi -lt $minrssi ]; then
@@ -106,10 +113,13 @@ fi
 if [ "$KickStaRssiLowPSM" != "" ]; then
     iwpriv "$1" set KickStaRssiLowPSM="$KickStaRssiLowPSM"
 fi
+if [ "$KickStaRssiLowFT" != "" ]; then
+    iwpriv "$1" set KickStaRssiLowFT="$KickStaRssiLowFT"
+fi
 if [ "$KickStaRssiLowDelay" != "" ]; then
     iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
 fi
 if [ "$TmpBlockAfterKick" != "" ]; then
     iwpriv "$1" set TmpBlockAfterKick="$TmpBlockAfterKick"
 fi
-$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowDelay;$ProbeRspRssi;$TmpBlockAfterKick"
+$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowFT;$KickStaRssiLowDelay;$ProbeRspRssi;$TmpBlockAfterKick"

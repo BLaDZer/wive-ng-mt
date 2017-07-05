@@ -1251,25 +1251,46 @@ VOID MacTableMaintenance(
 				pEntry->ContinueTxFailCnt, pAd->ApCfg.EntryLifeCheck);
 		}
 		/* kickout low RSSI clients */
-		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0) && (IS_ENTRY_CLIENT(pEntry) && (pEntry->Sst == SST_ASSOC)))
+		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0 || pMbss->RssiLowForStaKickOutFT != 0) &&
+			    IS_ENTRY_CLIENT(pEntry) && pEntry->Sst == SST_ASSOC)
 		{
-			CHAR avgRssi=RTMPAvgRssi(pAd, &pEntry->RssiSample);
+			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
 			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
-			if (avgRssi != 0 && (
-				    (pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
-				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)
-			    )) {
-				if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
-				    if (pEntry->PsMode == PWR_SAVE) {
-					    /* use TIM bit to detect the PS station */
-					    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
-				    } else {
-					    bDisconnectSta = TRUE;
-					    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
-						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut, pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
-					    pEntry->RssiLowStaKickOutDelayCount = 0;
+			if (avgRssi != 0) {
+#ifdef DOT11R_FT_SUPPORT
+			    if (IS_FT_RSN_STA(pEntry) && pMbss->RssiLowForStaKickOutFT != 0) {
+				if (avgRssi < pMbss->RssiLowForStaKickOutFT) {
+				    if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+					    if (pEntry->PsMode == PWR_SAVE) {
+						/* use TIM bit to detect the PS station */
+						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+					    } else {
+						bDisconnectSta = TRUE;
+						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds, FT mode\n",
+						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOutFT,
+						    pEntry->RssiLowStaKickOutDelayCount);
+						pEntry->RssiLowStaKickOutDelayCount = 0;
+					    }
 				    }
 				}
+			    } else
+#endif /* DOT11R_FT_SUPPORT */
+			    if ((pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
+				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)) {
+				    if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+					    if (pEntry->PsMode == PWR_SAVE) {
+						/* use TIM bit to detect the PS station */
+						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+					    } else {
+						bDisconnectSta = TRUE;
+						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
+						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut,
+						    pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
+						pEntry->RssiLowStaKickOutDelayCount = 0;
+					    }
+				    }
+			    } else
+				pEntry->RssiLowStaKickOutDelayCount = 0;
 			} else
 				pEntry->RssiLowStaKickOutDelayCount = 0;
 		}

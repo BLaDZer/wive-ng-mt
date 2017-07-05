@@ -3171,69 +3171,70 @@
 23) kernel: ralink_wifi: roam: print real counters in log.<br>
 24) kernel: ralink_wifi: roam: use TIM bit for touch PSM clients before disconnect.<br>
 25) kernel: ralink_wifi: roam: implement temporary block probe/assoc req from kicked client.<br>
-26) kernel: ralink_wifi: add Apple Iphone6, some MacBooks and Huawei P8/P9 fat channel workaround (for oui 74:1B:B2, 84:89:AD, AC:BC:32, 3C:FA:43, 7C:11:CB).<br>
-27) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
-28) kernel: ralink_wifi: fix power limits by new gov info.<br>
-29) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
-30) kernel: ralink_wifi: ft/rrm: fix potentional null pointer dereference.<br>
-31) kernel: ralink_wifi: ft: fix parse RDIE.<br>
-32) kernel: ralink_wifi: ft: prevent rekey for unsupported clients.<br>
-33) kernel: ralink_wifi: fix flush BA reordering.<br>
-34) kernel: ralink_wifi: fix DFS channel desc.<br>
-35) kernel: ralink_wifi: fix Rx AMPDU data frame handle in some cases.<br>
-36) kernel: ralink_wifi: prefetch RXDATA to enhance throughput.<br>
-37) kernel: ralink_wifi: move back to short rate_adat interval.<br>
-38) kernel: ralink_wifi: ajust channel width and sgi40 info at assoc req.<br>
-39) kernel: ralink_wifi: fix add extcap htinfo at probe req.<br>
-40) kernel: ralink_wifi: only arp need force announce by ampdu and use data reserved queue.<br>
-41) kernel: ralink_wifi: fix potentional null pointer dereference in MlmeEnqueueForRecv.<br>
-42) kernel: ralink_wifi: move to new dma_api from deprecated pci_api (remove api jam).<br>
-43) kernel: ralink_wifi: fix TPC current transmit power limit report.<br>
-44) kernel: ralink_wifi: fix Power Constraint Limit power report.<br>
-45) kernel: ralink_wifi: fix sanity checks and correct calibs.<br>
-46) kernel: ralink_wifi: fix TPC report for iPA scheme (MD1/1.1).<br>
-47) kernel: ralink_wifi: if default target pwr not set in nvram set 23dBm for 5GHz and 20dBm to 2.4GHz modes.<br>
-48) kernel: ralink_wifi: calculate real power constraint limit for clients, reduce client side interference.<br>
-49) kernel: ralink_wifi: recheck VHT SGI/STBC operation mode in vht_adust for 80MHz clients.<br>
-50) kernel: ralink_wifi: band steering: do not send REJECT from auth if check false. Only update table entry.<br>
-51) kernel: ralink_wifi: add MTK/Ralink specific IE only if needed.<br>
-52) kernel: ralink_wifi: set by default only 2 probe response send to clients after check probe req.<br>
-53) kernel: ralink_wifi: if not know peer BW capability, set safe BW from supported MCS.<br>
-54) kernel: ralink_wifi: fix update basic rate bitmap.<br>
-55) kernel: ralink_wifi: fix drop to in legacy OFDM modes in 5GHz if not supported by config.<br>
-56) kernel: ralink_wifi: do not map mcs32 to mcs0 (loop dropdown fix).<br>
-57) kernel: ralink_wifi: implement dynamic 80to40MHz fallback.<br>
-58) kernel: ralink_wifi: fix very pessimistic rate select trend in some cases.<br>
-59) kernel: ralink_wifi: tune QA to RATE alg for more reallistic.<br>
-60) kernel: ralink_wifi: fix sanity chek in rssi calc.<br>
-61) kernel: ralink_wifi: indicate auth in FT (fast transition mode) in log.<br>
-62) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
-63) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
-64) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
-65) kernel: ralink_wifi: mt7610: fix TRSW delay adjust.<br>
-66) kernel: ralink_wifi: mt7610: fix Tx BA Winsize limit.<br>
-67) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
-68) kernel: tty: prevent unnecessary work queue lock checking on flip buffer copy.<br>
-69) kernel: tty: fix race condition if flushing tty flip buffers.<br>
-70) kernel: tty: fix recursive deadlock in tty_perform_flush().<br>
-71) kernel: tty: prevent ldisc drivers from re-using stale tty fields.<br>
-72) kernel: net: integrate ipt_NETFLOW.<br>
-73) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
-74) kernel: net: use loopback dev when generating blackhole route.<br>
-75) kernel: net: 8021q: fix one possible panic caused by BUG_ON in free_netdev.<br>
-76) kernel: net: conntrack: RFC5961 challenge ACK confuse conntrack LAST-ACK transition.<br>
-77) kernel: net: udp: prefetch rmem_alloc in udp_queue_rcv_skb().<br>
-78) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
-79) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
-80) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
-81) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
-82) kernel: net: tcp: avoid fragmenting peculiar skbs in SACK.<br>
-83) kernel: net: tcp: eliminate negative reordering in tcp_clean_rtx_queue.<br>
-84) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
-85) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
-86) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
-87) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
-88) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
+26) kernel: ralink_wifi: roam: add KickStaRssiLowFT options for independed set disonnect rssi for FT supported clients.<br>
+27) kernel: ralink_wifi: add Apple Iphone6, some MacBooks and Huawei P8/P9 fat channel workaround (for oui 74:1B:B2, 84:89:AD, AC:BC:32, 3C:FA:43, 7C:11:CB).<br>
+28) kernel: ralink_wifi: limit max phy BW for STA if STA report support only 20/40 VHT channel bw.<br>
+29) kernel: ralink_wifi: fix power limits by new gov info.<br>
+30) kernel: ralink_wifi: fix adjust ch_width in build_vht_op_ie.<br>
+31) kernel: ralink_wifi: ft/rrm: fix potentional null pointer dereference.<br>
+32) kernel: ralink_wifi: ft: fix parse RDIE.<br>
+33) kernel: ralink_wifi: ft: prevent rekey for unsupported clients.<br>
+34) kernel: ralink_wifi: fix flush BA reordering.<br>
+35) kernel: ralink_wifi: fix DFS channel desc.<br>
+36) kernel: ralink_wifi: fix Rx AMPDU data frame handle in some cases.<br>
+37) kernel: ralink_wifi: prefetch RXDATA to enhance throughput.<br>
+38) kernel: ralink_wifi: move back to short rate_adat interval.<br>
+39) kernel: ralink_wifi: ajust channel width and sgi40 info at assoc req.<br>
+40) kernel: ralink_wifi: fix add extcap htinfo at probe req.<br>
+41) kernel: ralink_wifi: only arp need force announce by ampdu and use data reserved queue.<br>
+42) kernel: ralink_wifi: fix potentional null pointer dereference in MlmeEnqueueForRecv.<br>
+43) kernel: ralink_wifi: move to new dma_api from deprecated pci_api (remove api jam).<br>
+44) kernel: ralink_wifi: fix TPC current transmit power limit report.<br>
+45) kernel: ralink_wifi: fix Power Constraint Limit power report.<br>
+46) kernel: ralink_wifi: fix sanity checks and correct calibs.<br>
+47) kernel: ralink_wifi: fix TPC report for iPA scheme (MD1/1.1).<br>
+48) kernel: ralink_wifi: if default target pwr not set in nvram set 23dBm for 5GHz and 20dBm to 2.4GHz modes.<br>
+49) kernel: ralink_wifi: calculate real power constraint limit for clients, reduce client side interference.<br>
+50) kernel: ralink_wifi: recheck VHT SGI/STBC operation mode in vht_adust for 80MHz clients.<br>
+51) kernel: ralink_wifi: band steering: do not send REJECT from auth if check false. Only update table entry.<br>
+52) kernel: ralink_wifi: add MTK/Ralink specific IE only if needed.<br>
+53) kernel: ralink_wifi: set by default only 2 probe response send to clients after check probe req.<br>
+54) kernel: ralink_wifi: if not know peer BW capability, set safe BW from supported MCS.<br>
+55) kernel: ralink_wifi: fix update basic rate bitmap.<br>
+56) kernel: ralink_wifi: fix drop to in legacy OFDM modes in 5GHz if not supported by config.<br>
+57) kernel: ralink_wifi: do not map mcs32 to mcs0 (loop dropdown fix).<br>
+58) kernel: ralink_wifi: implement dynamic 80to40MHz fallback.<br>
+59) kernel: ralink_wifi: fix very pessimistic rate select trend in some cases.<br>
+60) kernel: ralink_wifi: tune QA to RATE alg for more reallistic.<br>
+61) kernel: ralink_wifi: fix sanity chek in rssi calc.<br>
+62) kernel: ralink_wifi: indicate auth in FT (fast transition mode) in log.<br>
+63) kernel: ralink_wifi: mt7610: implemet vht operation mode notify support.<br>
+64) kernel: ralink_wifi: mt7610: fix freq plan for 5180MHz (36) Channel. (freq beat issue).<br>
+65) kernel: ralink_wifi: mt7610: fix central channel mapping for set PWR in VHT80 mode.<br>
+66) kernel: ralink_wifi: mt7610: fix TRSW delay adjust.<br>
+67) kernel: ralink_wifi: mt7610: fix Tx BA Winsize limit.<br>
+68) kernel: log2: make order_base_2() behave correctly on const input value zero.<br>
+69) kernel: tty: prevent unnecessary work queue lock checking on flip buffer copy.<br>
+70) kernel: tty: fix race condition if flushing tty flip buffers.<br>
+71) kernel: tty: fix recursive deadlock in tty_perform_flush().<br>
+72) kernel: tty: prevent ldisc drivers from re-using stale tty fields.<br>
+73) kernel: net: integrate ipt_NETFLOW.<br>
+74) kernel: net: don't call strlen on non-terminated string in dev_set_alias().<br>
+75) kernel: net: use loopback dev when generating blackhole route.<br>
+76) kernel: net: 8021q: fix one possible panic caused by BUG_ON in free_netdev.<br>
+77) kernel: net: conntrack: RFC5961 challenge ACK confuse conntrack LAST-ACK transition.<br>
+78) kernel: net: udp: prefetch rmem_alloc in udp_queue_rcv_skb().<br>
+79) kernel: net: tcp: disallow cwnd undo when switching congestion control.<br>
+80) kernel: net: tcp: remove false sharing in tcp_rcv_state_process().<br>
+81) kernel: net: tcp: remove unnecessary skb_reset_tail_pointer().<br>
+82) kernel: net: tcp: remove poll() flakes when receiving RST.<br>
+83) kernel: net: tcp: avoid fragmenting peculiar skbs in SACK.<br>
+84) kernel: net: tcp: eliminate negative reordering in tcp_clean_rtx_queue.<br>
+85) kernel: net: ipv6: fix out of bound writes in __ip6_append_data().<br>
+86) kernel: net: ipv6: prevent overrun when parsing v6 header options.<br>
+87) kernel: net: ipv6: check ip6_find_1stfragopt() return value properly.<br>
+88) kernel: net: ipv6: inhibit IPv4-mapped src address on the wire.<br>
+89) kernel: net: ipv6: fix IPv6 packet loss in scenarios involving roaming + snooping switches.<br>
 <br>
 <br>
 <br>
