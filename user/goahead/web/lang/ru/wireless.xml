@@ -122,17 +122,17 @@
   <message msgid="basic roaming assoc ignor" msgstr="Игнорировать запрос соединения при уровне ниже" />
   <message msgid="basic roaming rssi low" msgstr="Отключить активного клиента при уровне ниже" />
   <message msgid="basic roaming rssi low psm" msgstr="Отключить клиента в режиме энергосбережения ниже уровня" />
-  <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного отключения" />
+  <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного откл." />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
-  <message msgid="basic roaming probe times range" msgstr="  0 - 10 запросов, по умолчанию 3" />
-  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию -8" />
+  <message msgid="basic roaming probe times range" msgstr="  0 - 10 запросов, по умолчанию 2" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию -11" />
   <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, по умолчанию 0" />
-  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, по умолчанию -76" />
-  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, по умолчанию -80" />
+  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, по умолчанию -75" />
+  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, по умолчанию -77" />
   <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 секунд, по умолчанию 6" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -80" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -72" />
   <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -68" />  
   <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
   <message msgid="basic roaming ft" msgstr="Быстрое подключение 802.11R" />
@@ -146,7 +146,7 @@
   <message msgid="basic bandsteering check" msgstr="Время на определение поддерживаемого диапазона" />
   <message msgid="basic bandsteering ssid" msgstr="SSID и ключевая фраза для сетей 2.4GHz и 5GHz должны быть одинаковыми" />
   <message msgid="basic bandsteering rssidiff default" msgstr="0 - 40 db, по умолчанию 15" />
-  <message msgid="basic bandsteering rssilow default" msgstr="0 - -100 db, по умолчанию -88" />
+  <message msgid="basic bandsteering rssilow default" msgstr="0 - -100 db, по умолчанию -85" />
   <message msgid="basic bandsteering age default" msgstr="мс, по умолчанию 600000" />
   <message msgid="basic bandsteering hold default" msgstr="мс, по умолчанию 3000" />
   <message msgid="basic bandsteering check default" msgstr="мс, по умолчанию 6000" />
@@ -199,6 +199,14 @@
   <message msgid="adv pkt aggregate" msgstr="Пакетная агрегация" />
   <message msgid="adv 80211h" msgstr="Поддержка IEEE 802.11H" />
   <message msgid="adv 80211h disable describe" msgstr="(только в диапазоне A)" />
+
+  <message msgid="adv tmpblockafterkick" msgstr="Временное блокирование запросов от сброшенного клиента" />
+  <message msgid="adv tmpblockafterkick range" msgstr="0 - 200 запросов, по умолчанию 14" />
+  <message msgid="adv tmpblockafterkick title" msgstr="" />
+  <message msgid="adv invalid tmpblockafterkick" msgstr="Неверное временное блокирование запросов от сброшенного клиента" />
+  
+  <message msgid="adv kickstarssilowft" msgstr="Отключить клиента в режиме быстрого подключения ниже" />
+  <message msgid="adv kickstarssilowft range" msgstr="0 - -100 dBm, по умолчанию -79" />
 
   <message msgid="adv country code" msgstr="Код страны" />
   <message msgid="adv country code us" msgstr="US (United States)" />

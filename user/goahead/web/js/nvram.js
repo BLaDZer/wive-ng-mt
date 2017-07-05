@@ -482,3 +482,5 @@ var NVRAM_ApCliClientOnly				= '<% getCfgGeneral(1, "ApCliClientOnly"); %>';				
 var NVRAM_ApCliBridgeOnly				= '<% getCfgGeneral(1, "ApCliBridgeOnly"); %>';					NVRAM_ApCliBridgeOnly				= (NVRAM_ApCliBridgeOnly != '')					? NVRAM_ApCliBridgeOnly					: '0';
 var NVRAM_ApCliWPAPSK					= '<% getCfgGeneral(1, "ApCliWPAPSK"); %>';						NVRAM_ApCliWPAPSK					= (NVRAM_ApCliWPAPSK != '')						? NVRAM_ApCliWPAPSK						: '';
 var NVRAM_ApCliIfName					= '<% getCfgGeneral(1, "ApCliIfName"); %>';						NVRAM_ApCliIfName					= (NVRAM_ApCliIfName != '')						? NVRAM_ApCliIfName						: 'apcli0';
+var NVRAM_TmpBlockAfterKick				= '<% getCfgGeneral(1, "TmpBlockAfterKick"); %>';				NVRAM_TmpBlockAfterKick				= (NVRAM_TmpBlockAfterKick != '')				? NVRAM_TmpBlockAfterKick				: '14';
+var NVRAM_KickStaRssiLowFT				= '<% getCfgGeneral(1, "KickStaRssiLowFT"); %>';				NVRAM_KickStaRssiLowFT				= (NVRAM_KickStaRssiLowFT != '')				? NVRAM_KickStaRssiLowFT				: '0';

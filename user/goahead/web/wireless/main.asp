@@ -140,13 +140,14 @@
 			}
 
 			function fastRoamingChange(form) {
-				displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr"], form.FastRoaming.value == "1");
+				displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowFT_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr"], form.FastRoaming.value == "1");
 				displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1" && is5gh_support == '1');
+				displayElement("basicKickStaRssiLowFT_tr", form.FastRoaming.value == "1" && ft_built);
 			}
 
 			function idsChange(form) {
 				displayElement('div_ids', ids_built);
-				displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], (form.IdsEnable.value == "1") && ids_built);
+				displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], form.IdsEnable.value == "1" && ids_built);
 			}
 
 			function insertExtChannelOption(form)
@@ -473,6 +474,12 @@
 				_TR("advDynVGAClamp", "adv dynvga clamp");
 				_TR("bandauto", "adv preamble type auto");
 				
+				_TR("tmpBlockAfterKick_td_1", "adv tmpblockafterkick");
+				_TR("tmpBlockAfterKickRange", "adv tmpblockafterkick range");
+
+				_TR("basicKickStaRssiLowFT_td_1", "adv kickstarssilowft");
+				_TR("basicKickStaRssiLowFTRange", "adv kickstarssilowft range");
+
 				_TRV("scanapLegendButtonScan", "scanap legend button scan");
 				_TRV("scanapLegendButtonScanINIC", "scanap legend button scan");
 				
@@ -604,6 +611,8 @@
 				form.DisassocFloodThreshold.value	= NVRAM_DisassocFloodThreshold;
 				form.DeauthFloodThreshold.value		= NVRAM_DeauthFloodThreshold;
 				form.EapReqFloodThreshold.value		= NVRAM_EapReqFloodThreshold;
+				form.TmpBlockAfterKick.value		= NVRAM_TmpBlockAfterKick;
+				form.KickStaRssiLowFT.value			= NVRAM_KickStaRssiLowFT;
 
 				// Hide & disable elements
 				hideElement("div_11a_basic");
@@ -1031,6 +1040,8 @@
 				if (browser.browser == 'ie' && browser.versionShort <= 8)
 					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC'], false);
 
+				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
+					
 				initTranslation();
 				showHTPhysModeMenu();
 				showVHTPhysModeMenu();
@@ -1342,6 +1353,32 @@
 					return false;
 				}
 
+				if (isNaN(form.KickStaRssiLowFT.value) || form.KickStaRssiLowFT.value < -100 || form.KickStaRssiLowFT.value > 0)
+				{
+					if (statusRoamingMenu == 0) showRoamingMenu();
+					if (form.FastRoaming.options.selectedIndex == 0) {
+						form.FastRoaming.options.selectedIndex = 1;
+						fastRoamingChange(document.wireless_basic);
+					}
+					alert(_("raoming invalid number"));
+					form.KickStaRssiLowFT.focus();
+					form.KickStaRssiLowFT.select();
+					return false;
+				}
+
+				if (isNaN(form.TmpBlockAfterKick.value) || form.TmpBlockAfterKick.value < 0 || form.TmpBlockAfterKick.value > 200)
+				{
+					if (statusRoamingMenu == 0) showRoamingMenu();
+					if (form.FastRoaming.options.selectedIndex == 0) {
+						form.FastRoaming.options.selectedIndex = 1;
+						fastRoamingChange(document.wireless_basic);
+					}
+					alert(_("adv invalid tmpblockafterkick"));
+					form.TmpBlockAfterKick.focus();
+					form.TmpBlockAfterKick.select();
+					return false;
+				}
+
 				if (isNaN(form.keepalive.value) || form.keepalive.value < 10 || form.keepalive.value > 300)
 				{
 					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
@@ -1519,8 +1556,8 @@
 			}
 
 			function showAdvWirelessMenu(){
-				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 'advIdleTimeout_tr', 
-							   'advEntryLifeCheck_tr', 'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
+				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
+							   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
 							   'advEDMODE_tr', 'advStaRegion_tr' ];
 				if (statusAdvWirelessMenu == 0) {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("adv wireless"));
@@ -1536,18 +1573,18 @@
 			}
 
 			function showRoamingMenu(){
-				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicFtSupport_tr' ];
+				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr' ];
 				if (statusRoamingMenu == 0) {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic roaming"));
 					statusRoamingMenu = 1;
 					displayElement(RoamingElement, 1);
-					displayElement(basicFtSupport_tr, ft_built);
+					displayElement([ basicFtSupport_tr, "basicKickStaRssiLowFT_tr"], ft_built);
 					fastRoamingChange(document.wireless_basic);
 				} else {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic roaming"));
 					statusRoamingMenu = 0;
 					displayElement(RoamingElement, 0);
-					displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr"], false);
+					displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr", "basicKickStaRssiLowFT_tr"], false);
 				}
 			}
 		</script>
@@ -2000,16 +2037,6 @@
 			<td id="advStationKeepAlive_td_2" width="50%"><input type="text" name="keepalive" class="normal" maxlength="3" value="">
 				<font color="#808080" id="advKeepAliveSec"> (10 - 300)</font></td>
 		</tr>
-		<tr id="advIdleTimeout_tr">
-			<td id="advIdleTimeout_td_1" class="head" width="50%">IdleTimeout</td>
-			<td id="advIdleTimeout_td_2" width="50%"><input type="text" name="idletimeout" class="normal" maxlength="3" value="">
-				<font color="#808080" id="advIdleTimeoutSec"> (60 - 300)</font></td>
-		</tr>
-		<tr id="advEntryLifeCheck_tr">
-			<td id="advEntryLifeCheck_td_1" class="head" width="50%">EntryLifeCheck</td>
-			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4">
-				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
-		</tr>
 		<tr id="advPreambleType_tr">
 			<td id="advPreambleType_td_1" class="head" width="50%">Preamble Type</td>
 			<td id="advPreambleType_td_2" width="50%"><select name="preamble_type" size="1" class="normal">
@@ -2090,7 +2117,7 @@
 		</tr>
 		<tr id="fastRoaming_tr">
 			<td id="fastRoaming_td_1" class="head" width="50%">Handover settings</td>
-			<td id="fastRoaming_td_1 width="50%"><select name="FastRoaming" class="normal" onChange="fastRoamingChange(this.form);">
+			<td id="fastRoaming_td_1" width="50%"><select name="FastRoaming" class="normal" onChange="fastRoamingChange(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select>
@@ -2132,9 +2159,23 @@
 			<td id="basicKickStaRssiLowPSM_td_1" class="head" width="50%">Auto disonnect sta if rssi low (powersave clients)</td>
 			<td id="basicKickStaRssiLowPSM_td_2" width="50%"><input type="text" name="KickStaRssiLowPSM" class="normal" maxlength="4"><font id="basicKickStaRssiLowPSM_range" color="#808080"> 0 - -100 dBm, default 0 (off)</font></td>
 		</tr>
+		<tr id="basicKickStaRssiLowFT_tr">
+			<td id="basicKickStaRssiLowFT_td_1" class="head" width="50%">Auto disonnect STA if rssi low (FT clients)</td>
+			<td id="basicKickStaRssiLowFT_td_2" width="50%">
+				<input type="text" name="KickStaRssiLowFT" class="normal" maxlength="4" value="">
+				<font color="#808080" id="basicKickStaRssiLowFTRange">0 - -100 dBm, default: 0 (off)</font>
+			</td>
+		</tr>
 		<tr id="basicKickStaRssiLowDelay_tr">
 			<td id="basicKickStaRssiLowDelay_td_1" class="head" width="50%">How time rssi check before kick</td>
 			<td id="basicKickStaRssiLowDelay_td_2" width="50%"><input type="text" name="KickStaRssiLowDelay" class="normal" maxlength="4"><font id="basicKickStaRssiLowDelay_range" color="#808080"> 0 - 200 seconds, default 5 </font></td>
+		</tr>
+		<tr id="tmpBlockAfterKick_tr">
+			<td id="tmpBlockAfterKick_td_1" class="head" width="50%">Temporary block probe/assoc req from kicked client</td>
+			<td id="tmpBlockAfterKick_td_2" width="50%">
+				<input type="text" name="TmpBlockAfterKick" class="normal" maxlength="4" value="">
+				<font color="#808080" id="tmpBlockAfterKickRange"> 0 - 200 times, default: 14</font>
+			</td>
 		</tr>
 		<tr id="basicRRMEnable_tr">
 			<td id="basicRRMEnable_td_1" class="head" width="50%">RRMEnable</td>
@@ -2154,6 +2195,16 @@
 			<td id="advMaxStaNum_td_1" class="head" width="50%">Maximum clients per SSID</td>
 			<td id="advMaxStaNum_td_2" width="50%"><input type="text" name="maxstanum" class="normal" maxlength="3" value="">
 				<font color="#808080" id="advMaxStaNumRange">num</font><font color="#808080"> (1 - <% getMaxStaNum(); %>)</font></td>
+		</tr>
+		<tr id="advIdleTimeout_tr">
+			<td id="advIdleTimeout_td_1" class="head" width="50%">IdleTimeout</td>
+			<td id="advIdleTimeout_td_2" width="50%"><input type="text" name="idletimeout" class="normal" maxlength="3" value="">
+				<font color="#808080" id="advIdleTimeoutSec"> (60 - 300)</font></td>
+		</tr>
+		<tr id="advEntryLifeCheck_tr">
+			<td id="advEntryLifeCheck_td_1" class="head" width="50%">EntryLifeCheck</td>
+			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4">
+				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
 		</tr>
 	</table>
 	<table id="div_txbf" name="div_txbf" class="form" style="display:none;">

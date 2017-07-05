@@ -571,7 +571,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
 
-	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *keepalive, *idletimeout;
+	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
@@ -697,6 +697,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 #endif
 	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
+	tmpblockafterkick = websGetVar(wp, T("TmpBlockAfterKick"), T("14"));
+	kickstarssilowft = websGetVar(wp, T("KickStaRssiLowFT"), T("0"));
 	keepalive = websGetVar(wp, T("keepalive"), T("0"));
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
 	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
@@ -979,6 +981,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(stanum_array, "%s;%d", stanum_array, tmp);
 		nvram_bufset(RT2860_NVRAM, "MaxStaNum", stanum_array);
 	}
+
+	nvram_bufset(RT2860_NVRAM, "TmpBlockAfterKick", tmpblockafterkick);
+	nvram_bufset(RT2860_NVRAM, "KickStaRssiLowFT", kickstarssilowft);
 
 	if (NULL != keepalive) {
 		tmp = atoi(keepalive);
