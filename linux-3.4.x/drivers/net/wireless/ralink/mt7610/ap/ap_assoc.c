@@ -35,7 +35,11 @@ static void ap_assoc_info_debugshow(
 	IN IE_LISTS *ie_list)
 {
 	PUCHAR	sAssoc = isReassoc ? (PUCHAR)"ReASSOC" : (PUCHAR)"ASSOC";
+#ifdef DOT11R_FT_SUPPORT
 	PUCHAR	sFTSupport = IS_FT_RSN_STA(pEntry) ? (PUCHAR)", FT mode" : (PUCHAR)"";
+#else
+	PUCHAR	sFTSupport = (PUCHAR)"";
+#endif /* DOT11R_FT_SUPPORT */
 	CHAR *pRange = (pAd->CommonCfg.Channel <= 14) ? "2.4" : "5";
 	MULTISSID_STRUCT *wdev;
 
