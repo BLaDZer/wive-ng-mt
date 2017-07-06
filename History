@@ -3245,7 +3245,8 @@
 4) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
 5) kernel: net: af_key: Fix slab-out-of-bounds in pfkey_compile_policy.<br>
 6) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-7) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+7) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+8) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>
