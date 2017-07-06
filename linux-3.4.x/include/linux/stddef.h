@@ -1,6 +1,7 @@
 #ifndef _LINUX_STDDEF_H
 #define _LINUX_STDDEF_H
 
+#ifdef __KERNEL__
 #include <linux/compiler.h>
 
 #undef NULL
@@ -27,4 +28,5 @@ enum {
 #define offsetofend(TYPE, MEMBER) \
 	(offsetof(TYPE, MEMBER)	+ sizeof(((TYPE *)0)->MEMBER))
 
+#endif
 #endif
