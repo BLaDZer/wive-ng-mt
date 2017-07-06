@@ -926,6 +926,8 @@ VOID ap_cmm_peer_assoc_req_action(
 //+++Add by shiang for debug
 		if (WMODE_CAP_AC(pAd->CommonCfg.PhyMode)) {
 			DBGPRINT(RT_DEBUG_TRACE, ("%s():Peer is VHT capable device!\n", __FUNCTION__));
+			NdisMoveMemory(&pEntry->ext_cap, &ie_list->ExtCapInfo, sizeof(ie_list->ExtCapInfo));
+			DBGPRINT(RT_DEBUG_TRACE, ("\tOperatingModeNotification=%d\n", pEntry->ext_cap.operating_mode_notification));
 			//dump_vht_cap(pAd, &ie_list->vht_cap);
 		}
 //---Add by shiang for debug
