@@ -44,6 +44,7 @@
 #define BAND_WIDTH_80		2
 #define BAND_WIDTH_BOTH		3
 #define BAND_WIDTH_10		4	/* 802.11j has 10MHz. This definition is for internal usage. doesn't fill in the IE or other field. */
+#define BAND_WIDTH_160		3
 
 
 /* SHORTGI */

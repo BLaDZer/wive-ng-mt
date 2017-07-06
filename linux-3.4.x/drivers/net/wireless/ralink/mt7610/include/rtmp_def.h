@@ -1374,6 +1374,8 @@ enum WIFI_MODE{
 #define BW_20		BAND_WIDTH_20
 #define BW_40		BAND_WIDTH_40
 #define BW_80		BAND_WIDTH_80
+#define BW_160		BAND_WIDTH_160
+
 #define BW_10		BAND_WIDTH_10	/* 802.11j has 10MHz. This definition is for internal usage. doesn't fill in the IE or other field. */
 
 
