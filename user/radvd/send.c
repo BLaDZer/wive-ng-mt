@@ -39,10 +39,15 @@ static void add_ra_option_lowpanco(struct safe_buffer * sb, struct AdvLowpanCo c
 static void add_ra_option_abro(struct safe_buffer * sb, struct AdvAbro const *abroo);
 
 // Options that generate 0 or more blocks
-static struct safe_buffer_list* add_ra_options_prefix(struct safe_buffer_list * sbl, struct Interface const * iface, char const * ifname, struct AdvPrefix const * prefix, int cease_adv, struct in6_addr const *dest);
-static struct safe_buffer_list* add_ra_options_route(struct safe_buffer_list * sbl, struct Interface const * iface, struct AdvRoute const *route, int cease_adv, struct in6_addr const *dest);
-static struct safe_buffer_list* add_ra_options_rdnss(struct safe_buffer_list * sbl, struct Interface const * iface, struct AdvRDNSS const *rdnss, int cease_adv, struct in6_addr const *dest);
-static struct safe_buffer_list* add_ra_options_dnssl(struct safe_buffer_list * sbl, struct Interface const * iface, struct AdvDNSSL const *dnssl, int cease_adv, struct in6_addr const *dest);
+static struct safe_buffer_list *add_ra_options_prefix(struct safe_buffer_list *sbl, struct Interface const *iface,
+						      char const *ifname, struct AdvPrefix const *prefix, int cease_adv,
+						      struct in6_addr const *dest);
+static struct safe_buffer_list *add_ra_options_route(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvRoute const *route, int cease_adv, struct in6_addr const *dest);
+static struct safe_buffer_list *add_ra_options_rdnss(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvRDNSS const *rdnss, int cease_adv, struct in6_addr const *dest);
+static struct safe_buffer_list *add_ra_options_dnssl(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvDNSSL const *dnssl, int cease_adv, struct in6_addr const *dest);
 
 // Scheduling of options per RFC7772
 static int schedule_helper(struct in6_addr const *dest, struct Interface const *iface, int option_lifetime);
@@ -167,7 +172,8 @@ static void update_iface_times(struct Interface * iface)
 					if (prefix->curr_preferredlft == 0) {
 						char pfx_str[INET6_ADDRSTRLEN];
 						addrtostr(&prefix->Prefix, pfx_str, sizeof(pfx_str));
-						dlog(LOG_DEBUG, 3, "Will cease advertising %s/%u%%%s, preferred lifetime is 0", pfx_str, prefix->PrefixLen, iface->props.name);
+						dlog(LOG_DEBUG, 3, "Will cease advertising %s/%u%%%s, preferred lifetime is 0",
+						     pfx_str, prefix->PrefixLen, iface->props.name);
 					}
 				}
 			}
@@ -243,7 +249,9 @@ static void add_ra_option_prefix(struct safe_buffer * sb, struct AdvPrefix const
 			safe_buffer_append(sb, &pinfo, sizeof(pinfo));
 }
 
-static struct safe_buffer_list * add_auto_prefixes_6to4(struct safe_buffer_list * sbl, struct Interface const * iface, char const * ifname, struct AdvPrefix const *prefix, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_auto_prefixes_6to4(struct safe_buffer_list *sbl, struct Interface const *iface,
+						       char const *ifname, struct AdvPrefix const *prefix, int cease_adv,
+						       struct in6_addr const *dest)
 {
 #ifdef HAVE_IFADDRS_H
 	struct AdvPrefix xprefix = *prefix;
@@ -257,8 +265,7 @@ static struct safe_buffer_list * add_auto_prefixes_6to4(struct safe_buffer_list 
 
 		char pfx_str[INET6_ADDRSTRLEN];
 		addrtostr(&xprefix.Prefix, pfx_str, sizeof(pfx_str));
-		dlog(LOG_DEBUG, 3, "auto-selected prefix %s/%d on interface %s",
-			pfx_str, xprefix.PrefixLen, ifname);
+		dlog(LOG_DEBUG, 3, "auto-selected prefix %s/%d on interface %s", pfx_str, xprefix.PrefixLen, ifname);
 
 		/* TODO: Something must be done with these. */
 		(void)xprefix.curr_validlft;
@@ -273,8 +280,8 @@ static struct safe_buffer_list * add_auto_prefixes_6to4(struct safe_buffer_list 
 	return sbl;
 }
 
-
-static struct safe_buffer_list * add_auto_prefixes(struct safe_buffer_list * sbl, struct Interface const * iface, char const * ifname, struct AdvPrefix const *prefix, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_auto_prefixes(struct safe_buffer_list *sbl, struct Interface const *iface, char const *ifname,
+						  struct AdvPrefix const *prefix, int cease_adv, struct in6_addr const *dest)
 {
 #ifdef HAVE_IFADDRS_H
 	struct AdvPrefix xprefix;
@@ -303,8 +310,7 @@ static struct safe_buffer_list * add_auto_prefixes(struct safe_buffer_list * sbl
 
 		char pfx_str[INET6_ADDRSTRLEN];
 		addrtostr(&xprefix.Prefix, pfx_str, sizeof(pfx_str));
-		dlog(LOG_DEBUG, 3, "auto-selected prefix %s/%d on interface %s",
-			pfx_str, xprefix.PrefixLen, ifname);
+		dlog(LOG_DEBUG, 3, "auto-selected prefix %s/%d on interface %s", pfx_str, xprefix.PrefixLen, ifname);
 
 		/* TODO: Something must be done with these. */
 		(void)xprefix.curr_validlft;
@@ -322,7 +328,9 @@ static struct safe_buffer_list * add_auto_prefixes(struct safe_buffer_list * sbl
 	return sbl;
 }
 
-static struct safe_buffer_list* add_ra_options_prefix(struct safe_buffer_list * sbl, struct Interface const * iface, char const * ifname, struct AdvPrefix const *prefix, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_ra_options_prefix(struct safe_buffer_list *sbl, struct Interface const *iface,
+						      char const *ifname, struct AdvPrefix const *prefix, int cease_adv,
+						      struct in6_addr const *dest)
 {
 	while (prefix) {
 		if ((!prefix->DecrementLifetimesFlag || prefix->curr_preferredlft > 0)) {
@@ -353,9 +361,7 @@ static struct safe_buffer_list* add_ra_options_prefix(struct safe_buffer_list * 
 	return sbl;
 }
 
-
-
-/* *INDENT-OFF* */
+/* clang-format off */
 /*
  * Domain Names of DNS Search List
  *   One or more domain names of DNS Search List that MUST
@@ -374,7 +380,7 @@ static struct safe_buffer_list* add_ra_options_prefix(struct safe_buffer_list * 
  *   encoding parts of the domain name representations
  *   MUST be padded with zeros.
  */
-/* *INDENT-ON* */
+/* clang-format on */
 static size_t serialize_domain_names(struct safe_buffer * safe_buffer, struct AdvDNSSL const *dnssl)
 {
 	size_t len = 0;
@@ -410,7 +416,8 @@ static size_t serialize_domain_names(struct safe_buffer * safe_buffer, struct Ad
 	return len;
 }
 
-static struct safe_buffer_list* add_ra_options_route(struct safe_buffer_list *sbl, struct Interface const * iface, struct AdvRoute const *route, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_ra_options_route(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvRoute const *route, int cease_adv, struct in6_addr const *dest)
 {
 	while (route) {
 		struct nd_opt_route_info_local rinfo;
@@ -444,7 +451,8 @@ static struct safe_buffer_list* add_ra_options_route(struct safe_buffer_list *sb
 	return sbl;
 }
 
-static struct safe_buffer_list * add_ra_options_rdnss(struct safe_buffer_list * sbl, struct Interface const * iface, struct AdvRDNSS const *rdnss, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_ra_options_rdnss(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvRDNSS const *rdnss, int cease_adv, struct in6_addr const *dest)
 {
 	while (rdnss) {
 		struct nd_opt_rdnss_info_local rdnssinfo;
@@ -471,7 +479,8 @@ static struct safe_buffer_list * add_ra_options_rdnss(struct safe_buffer_list * 
 		memcpy(&rdnssinfo.nd_opt_rdnssi_addr3, &rdnss->AdvRDNSSAddr3, sizeof(struct in6_addr));
 
 		sbl = safe_buffer_list_append(sbl);
-		safe_buffer_append(sbl->sb, &rdnssinfo, sizeof(rdnssinfo) - (3 - rdnss->AdvRDNSSNumber) * sizeof(struct in6_addr));
+		safe_buffer_append(sbl->sb, &rdnssinfo,
+				   sizeof(rdnssinfo) - (3 - rdnss->AdvRDNSSNumber) * sizeof(struct in6_addr));
 
 		rdnss = rdnss->next;
 	}
@@ -479,67 +488,12 @@ static struct safe_buffer_list * add_ra_options_rdnss(struct safe_buffer_list * 
 	return sbl;
 }
 
-static struct safe_buffer_list * add_ra_options_dnssl(struct safe_buffer_list * sbl, struct Interface const * iface, struct AdvDNSSL const *dnssl, int cease_adv, struct in6_addr const *dest)
+static struct safe_buffer_list *add_ra_options_dnssl(struct safe_buffer_list *sbl, struct Interface const *iface,
+						     struct AdvDNSSL const *dnssl, int cease_adv, struct in6_addr const *dest)
 {
 	struct safe_buffer *serialized_domains = new_safe_buffer();
 	while (dnssl) {
 
-		/* *INDENT-OFF* */
-		/*
-		 * Snippet from RFC 6106...
-		 *
-		 *    5.2. DNS Search List Option
-		 * 
-		 * 
-		 *    The DNSSL option contains one or more domain names of DNS suffixes.
-		 *    All of the domain names share the same Lifetime value.  If it is
-		 *    desirable to have different Lifetime values, multiple DNSSL options
-		 *    can be used.  Figure 2 shows the format of the DNSSL option.
-		 * 
-		 *       0                   1                   2                   3
-		 *       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-		 *      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		 *      |     Type      |     Length    |           Reserved            |
-		 *      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		 *      |                           Lifetime                            |
-		 *      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		 *      |                                                               |
-		 *      :                Domain Names of DNS Search List                :
-		 *      |                                                               |
-		 *      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		 * 
-		 *               Figure 2: DNS Search List (DNSSL) Option Format
-		 * 
-		 *   Fields:
-		 *     Type          8-bit identifier of the DNSSL option type as assigned
-		 *                   by the IANA: 31
-		 * 
-		 *     Length        8-bit unsigned integer.  The length of the option
-		 *                   (including the Type and Length fields) is in units of
-		 *                   8 octets.  The minimum value is 2 if at least one
-		 *                   domain name is contained in the option.  The Length
-		 *                   field is set to a multiple of 8 octets to accommodate
-		 *                   all the domain names in the field of Domain Names of
-		 *                   DNS Search List.
-		 * 
-		 *     Lifetime      32-bit unsigned integer.  The maximum time, in
-		 *                   seconds (relative to the time the packet is sent),
-		 *                   over which this DNSSL domain name MAY be used for
-		 *                   name resolution.  The Lifetime value has the same
-		 *                   semantics as with the RDNSS option.  That is, Lifetime
-		 *                   SHOULD be bounded as follows:
-		 *                   MaxRtrAdvInterval <= Lifetime <= 2*MaxRtrAdvInterval.
-		 *                   A value of all one bits (0xffffffff) represents
-		 *                   infinity.  A value of zero means that the DNSSL
-		 *                   domain name MUST no longer be used.
-		 * 
-		 *     Domain Names of DNS Search List
-		 *                   One or more domain names of DNS Search List that MUST
-		 *                   be encoded using the technique described in Section
-		 *                   3.1 of [RFC1035].
-		 * 
-		 */
-		/* *INDENT-ON* */
 		struct nd_opt_dnssl_info_local dnsslinfo;
 
 		if(!cease_adv && !schedule_option_dnssl(dest, iface, dnssl)) {
@@ -588,39 +542,6 @@ static struct safe_buffer_list * add_ra_options_dnssl(struct safe_buffer_list * 
  */
 static void add_ra_option_sllao(struct safe_buffer * sb, struct sllao const *sllao)
 {
-	/* *INDENT-OFF* */
-	/*
-	4.6.1.  Source/Target Link-layer Address
-
-	      0                   1                   2                   3
-	      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	     |     Type      |    Length     |    Link-Layer Address ...
-	     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-	   Fields:
-
-	      Type
-			     1 for Source Link-layer Address
-			     2 for Target Link-layer Address
-
-	      Length         The length of the option (including the type and
-			     length fields) in units of 8 octets.  For example,
-			     the length for IEEE 802 addresses is 1 [IPv6-
-			     ETHER].
-
-	      Link-Layer Address
-			     The variable length link-layer address.
-
-			     The content and format of this field (including
-			     byte and bit ordering) is expected to be specified
-			     in specific documents that describe how IPv6
-			     operates over different link layers.  For instance,
-			     [IPv6-ETHER].
-
-	 */
-	/* *INDENT-ON* */
-
 	/* +2 for the ND_OPT_SOURCE_LINKADDR and the length (each occupy one byte) */
 	size_t const sllao_bytes = (sllao->if_hwaddr_len / 8) + 2;
 	size_t const sllao_len = (sllao_bytes + 7) / 8;
@@ -735,7 +656,8 @@ static struct safe_buffer_list * build_ra_options(struct Interface const * iface
 	struct safe_buffer_list *cur = sbl;
 
 	if (iface->AdvPrefixList) {
-		cur = add_ra_options_prefix(cur, iface, iface->props.name, iface->AdvPrefixList, iface->state_info.cease_adv, dest);
+		cur =
+		    add_ra_options_prefix(cur, iface, iface->props.name, iface->AdvPrefixList, iface->state_info.cease_adv, dest);
 	}
 
 	if (iface->AdvRouteList) {
@@ -768,9 +690,9 @@ static struct safe_buffer_list * build_ra_options(struct Interface const * iface
 		add_ra_option_mipv6_rtr_adv_interval(cur->sb, iface->MaxRtrAdvInterval);
 	}
 
-	if (iface->mipv6.AdvHomeAgentInfo && schedule_option_mipv6_home_agent_info(dest, iface)
-	    && (iface->mipv6.AdvMobRtrSupportFlag || iface->mipv6.HomeAgentPreference != 0
-		|| iface->mipv6.HomeAgentLifetime != iface->ra_header_info.AdvDefaultLifetime)) {
+	if (iface->mipv6.AdvHomeAgentInfo && schedule_option_mipv6_home_agent_info(dest, iface) &&
+	    (iface->mipv6.AdvMobRtrSupportFlag || iface->mipv6.HomeAgentPreference != 0 ||
+	     iface->mipv6.HomeAgentLifetime != iface->ra_header_info.AdvDefaultLifetime)) {
 		cur->next = new_safe_buffer_list();
 		cur = cur->next;
 		add_ra_option_mipv6_home_agent_info(cur->sb, &iface->mipv6);
@@ -817,32 +739,6 @@ static int send_ra(int sock, struct Interface *iface, struct in6_addr const *des
 	add_ra_header(ra_hdr, &iface->ra_header_info, iface->state_info.cease_adv);
 	// Build RA option list
 	struct safe_buffer_list *ra_opts = build_ra_options(iface, dest);
-
-	/* *INDENT-OFF* */
-	/*
-	 *	RFC4861: 6.2.3.  Router Advertisement Message Content
-	 *	   If including all options causes the size of an advertisement to
-	 *	   exceed the link MTU, multiple advertisements can be sent, each
-	 *	   containing a subset of the options.
-	 *
-	 *	RFC6980: 5.  Specification
-	 *		Nodes MUST NOT employ IPv6 fragmentation for sending any of the
-	 *		following Neighbor Discovery and SEcure Neighbor Discovery messages:
-	 *
-	 *		o  Neighbor Solicitation
-	 *		o  Neighbor Advertisement
-	 *		o  Router Solicitation
-	 *		o  Router Advertisement
-	 *		o  Redirect
-	 *		o  Certification Path Solicitation
-	 *
-	 *		Nodes SHOULD NOT employ IPv6 fragmentation for sending the following
-	 *		messages (see Section 6.4.2 of [RFC3971]):
-	 *
-	 *		o  Certification Path Advertisement
-	 *
-	*/
-	/* *INDENT-ON* */
 
 	// Send out one or more RAs, all in the form of (hdr+options),
 	// such that none of the RAs exceed the link MTU
@@ -902,12 +798,14 @@ static int send_ra(int sock, struct Interface *iface, struct in6_addr const *des
 			// send ONE RA out, so that clients get the RA header fields.
 		} else if(option_count == 0 && total_seen_options > 0) {
 			// None of the RA options are scheduled for this window.
-			dlog(LOG_DEBUG, 5, "No RA options scheduled in this pass, staying quiet; already sent at least one RA packet");
+			dlog(LOG_DEBUG, 5,
+			     "No RA options scheduled in this pass, staying quiet; already sent at least one RA packet");
 			break;
 		}
 
 		// RA built, now send it.
-		dlog(LOG_DEBUG, 5, "sending RA to %s on %s (%s), %lu options (using %lu/%u bytes)", dest_text, iface->props.name, src_text, option_count, sb->used, iface->props.max_ra_option_size);
+		dlog(LOG_DEBUG, 5, "sending RA to %s on %s (%s), %lu options (using %lu/%u bytes)", dest_text, iface->props.name,
+		     src_text, option_count, sb->used, iface->props.max_ra_option_size);
 		int err = really_send(sock, dest, &iface->props, sb);
 	if (err < 0) {
 		if (!iface->IgnoreIfMissing || !(errno == EINVAL || errno == ENODEV))

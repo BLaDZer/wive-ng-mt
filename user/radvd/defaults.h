@@ -39,12 +39,15 @@
 #define DFLT_AdvLinkMTU			0
 #define DFLT_AdvReachableTime		0
 #define DFLT_AdvRetransTimer		0
-#define DFLT_AdvCurHopLimit		64	/* as per RFC 1700 or the
+#define DFLT_AdvCurHopLimit                                                                                                      \
+	64 /* as per RFC 1700 or the                                                                                             \
 						   next incarnation of it :) */
 #define DFLT_AdvDefaultLifetime(iface)	MAX2(1, (int)(3.0 * (iface)->MaxRtrAdvInterval))
 #define DFLT_MinDelayBetweenRAs		MIN_DELAY_BETWEEN_RAS
 #define DFLT_AdvDefaultPreference	0
 #define DFLT_AdvRAMTU			RFC2460_MIN_MTU
+#define DFLT_UnicastOnly 0
+#define DFLT_AdvRASolicitedUnicast 1
 
 /* Options sent with RA */
 

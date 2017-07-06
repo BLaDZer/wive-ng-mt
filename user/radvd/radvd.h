@@ -16,8 +16,8 @@
 #pragma once
 
 #include "config.h"
-#include "includes.h"
 #include "defaults.h"
+#include "includes.h"
 #include "log.h"
 
 #define CONTACT_EMAIL	"Reuben Hawkins <reubenhwk@gmail.com>"
@@ -41,7 +41,8 @@ struct safe_buffer {
 	unsigned char * buffer;
 };
 
-#define SAFE_BUFFER_INIT (struct safe_buffer){.should_free = 0, .allocated = 0, .used = 0, .buffer = 0}
+#define SAFE_BUFFER_INIT                                                                                                         \
+	(struct safe_buffer) { .should_free = 0, .allocated = 0, .used = 0, .buffer = 0 }
 
 struct safe_buffer_list {
 	struct safe_buffer *sb;
@@ -58,6 +59,7 @@ struct Interface {
 	double MinDelayBetweenRAs;
 	int AdvSourceLLAddress;
 	int UnicastOnly;
+	int AdvRASolicitedUnicast;
 	struct Clients *ClientList;
 
 	struct state_info {
@@ -288,9 +290,7 @@ int setup_allrouters_membership(int sock, struct Interface *);
 int setup_iface_addrs(struct Interface *);
 int update_device_index(struct Interface *iface);
 int update_device_info(int sock, struct Interface *);
-int get_iface_addrs(
-	char const *name,
-	struct in6_addr *if_addr, /* the first link local addr */
+int get_iface_addrs(char const *name, struct in6_addr *if_addr, /* the first link local addr */
 	struct in6_addr **if_addrs /* all the addrs */
 	);
 

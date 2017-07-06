@@ -18,8 +18,8 @@
 
 #ifdef USE_PRIVSEP
 #include "includes.h"
-#include "radvd.h"
 #include "pathnames.h"
+#include "radvd.h"
 
 static int set_interface_var(const char *iface, const char *var, const char *name, uint32_t val);
 static void privsep_read_loop(void);
@@ -27,10 +27,7 @@ static void privsep_read_loop(void);
 /* For reading or writing, depending on process */
 static int pfd = -1;
 
-void privsep_set_write_fd(int fd)
-{
-	pfd = fd;
-}
+void privsep_set_write_fd(int fd) { pfd = fd; }
 
 /* Command types */
 enum privsep_type {
@@ -72,8 +69,8 @@ static void privsep_read_loop(void)
 
 		case SET_INTERFACE_LINKMTU:
 			if (cmd.val < MIN_AdvLinkMTU || cmd.val > MAX_AdvLinkMTU) {
-				flog(LOG_ERR, "(privsep) %s: LinkMTU (%u) is not within the defined bounds, ignoring",
-				     cmd.iface, cmd.val);
+				flog(LOG_ERR, "(privsep) %s: LinkMTU (%u) is not within the defined bounds, ignoring", cmd.iface,
+				     cmd.val);
 				break;
 			}
 			ret = set_interface_var(cmd.iface, PROC_SYS_IP6_LINKMTU, "LinkMTU", cmd.val);
@@ -90,13 +87,11 @@ static void privsep_read_loop(void)
 
 		case SET_INTERFACE_REACHTIME:
 			if (cmd.val < MIN_AdvReachableTime || cmd.val > MAX_AdvReachableTime) {
-				flog(LOG_ERR,
-				     "(privsep) %s: BaseReachableTimer (%u) is not within the defined bounds, ignoring",
+				flog(LOG_ERR, "(privsep) %s: BaseReachableTimer (%u) is not within the defined bounds, ignoring",
 				     cmd.iface, cmd.val);
 				break;
 			}
-			ret =
-			    set_interface_var(cmd.iface, PROC_SYS_IP6_BASEREACHTIME_MS, "BaseReachableTimer (ms)", cmd.val);
+			ret = set_interface_var(cmd.iface, PROC_SYS_IP6_BASEREACHTIME_MS, "BaseReachableTimer (ms)", cmd.val);
 			if (ret == 0)
 				break;
 			set_interface_var(cmd.iface, PROC_SYS_IP6_BASEREACHTIME, "BaseReachableTimer", cmd.val / 1000);
@@ -111,7 +106,8 @@ static void privsep_read_loop(void)
 			ret = set_interface_var(cmd.iface, PROC_SYS_IP6_RETRANSTIMER_MS, "RetransTimer (ms)", cmd.val);
 			if (ret == 0)
 				break;
-			set_interface_var(cmd.iface, PROC_SYS_IP6_RETRANSTIMER, "RetransTimer", cmd.val / 1000 * USER_HZ);	/* XXX user_hz */
+			set_interface_var(cmd.iface, PROC_SYS_IP6_RETRANSTIMER, "RetransTimer",
+					  cmd.val / 1000 * USER_HZ); /* XXX user_hz */
 			break;
 
 		default:

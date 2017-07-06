@@ -13,22 +13,22 @@
  *
  */
 
+#include "radvd.h"
 #include "config.h"
 #include "includes.h"
-#include "radvd.h"
 #include "pathnames.h"
 
 #ifdef HAVE_NETLINK
 #include "netlink.h"
 #endif
 
+#include <libgen.h>
 #include <poll.h>
 #include <sys/file.h>
-#include <libgen.h>
 
 #ifdef HAVE_GETOPT_LONG
 
-/* *INDENT-OFF* */
+/* clang-format off */
 static char usage_str[] = {
 "\n"
 "  -C, --config=PATH       Set the config file.  Default is /etc/radvd.d.\n"
@@ -69,7 +69,7 @@ static char usage_str[] = {
 "\t[-f facility] [-p pid_file] [-u username] [-t chrootdir]"
 
 };
-/* *INDENT-ON* */
+/* clang-format on */
 
 #endif
 
@@ -85,7 +85,7 @@ static int drop_root_privileges(const char *);
 #endif
 static int open_and_lock_pid_file(char const * daemon_pid_file_ident);
 static int write_pid_file(char const * daemon_pid_file_ident, pid_t pid);
-static pid_t daemonp(int nochdir, int noclose, char const * daemon_pid_file_ident);
+static pid_t daemonp(char const *daemon_pid_file_ident);
 static pid_t do_daemonize(int log_method, char const * daemon_pid_file_ident);
 static struct Interface * main_loop(int sock, struct Interface *ifaces, char const *conf_path);
 static struct Interface *reload_config(int sock, struct Interface *ifaces, char const *conf_path);
@@ -109,7 +109,7 @@ static void version(void);
 /* daemonize and write pid file.  The pid of the daemon child process
  * will be written to the pid file from the *parent* process.  This
  * insures there is no race condition as described in redhat bug 664783. */
-static pid_t daemonp(int nochdir, int noclose, char const * daemon_pid_file_ident)
+static pid_t daemonp(char const *daemon_pid_file_ident)
 {
 	int pipe_ends[2];
 
@@ -141,13 +141,10 @@ static pid_t daemonp(int nochdir, int noclose, char const * daemon_pid_file_iden
 			exit(-1);
 		}
 
-		if (nochdir == 0) {
 			if (chdir("/") == -1) {
 				perror("chdir");
 				exit(1);
 			}
-		}
-		if (noclose == 0) {
 			close(STDIN_FILENO);
 			close(STDOUT_FILENO);
 			close(STDERR_FILENO);
@@ -163,7 +160,6 @@ static pid_t daemonp(int nochdir, int noclose, char const * daemon_pid_file_iden
 				flog(LOG_ERR, "unable to redirect stderr to /dev/null");
 				exit(-1);
 			}
-		}
 	} else {
 		/* Parent.  Make sure the pid file is written before exiting. */
 		close(pipe_ends[1]);
@@ -594,11 +590,7 @@ static pid_t do_daemonize(int log_method, char const * daemon_pid_file_ident)
 {
 	pid_t pid = -1;
 
-	if (L_STDERR_SYSLOG == log_method || L_STDERR == log_method) {
-		pid = daemonp(1, 1, daemon_pid_file_ident);
-	} else {
-		pid = daemonp(0, 0, daemon_pid_file_ident);
-	}
+	pid = daemonp(daemon_pid_file_ident);
 
 	if (-1 == pid) {
 		flog(LOG_ERR, "unable to daemonize: %s", strerror(errno));
@@ -789,10 +781,7 @@ static void setup_iface_foo(struct Interface *iface, void *data)
 	kickoff_adverts(sock, iface);
 }
 
-static void setup_ifaces(int sock, struct Interface *ifaces)
-{
-	for_each_iface(ifaces, setup_iface_foo, &sock);
-}
+static void setup_ifaces(int sock, struct Interface *ifaces) { for_each_iface(ifaces, setup_iface_foo, &sock); }
 
 static struct Interface *reload_config(int sock, struct Interface *ifaces, char const *conf_path)
 {
@@ -813,10 +802,7 @@ static struct Interface *reload_config(int sock, struct Interface *ifaces, char 
 	return ifaces;
 }
 
-static void sighup_handler(int sig)
-{
-	sighup_received = 1;
-}
+static void sighup_handler(int sig) { sighup_received = 1; }
 
 static void sigterm_handler(int sig)
 {
@@ -836,10 +822,7 @@ static void sigint_handler(int sig)
 	}
 }
 
-static void sigusr1_handler(int sig)
-{
-	sigusr1_received = 1;
-}
+static void sigusr1_handler(int sig) { sigusr1_received = 1; }
 
 static void reset_prefix_lifetimes_foo(struct Interface *iface, void *data)
 {
@@ -859,10 +842,7 @@ static void reset_prefix_lifetimes_foo(struct Interface *iface, void *data)
 	}
 }
 
-static void reset_prefix_lifetimes(struct Interface *ifaces)
-{
-	for_each_iface(ifaces, reset_prefix_lifetimes_foo, 0);
-}
+static void reset_prefix_lifetimes(struct Interface *ifaces) { for_each_iface(ifaces, reset_prefix_lifetimes_foo, 0); }
 
 #ifdef USE_PRIVSEP
 static int drop_root_privileges(const char *username)
@@ -910,8 +890,8 @@ static int check_conffile_perm(const char *username, const char *conf_file)
 	}
 
 	/* for non-root: must not be writable by self/own group */
-	if (strncmp(username, "root", 5) != 0 && ((stbuf.st_mode & S_IWGRP && pw->pw_gid == stbuf.st_gid)
-						  || (stbuf.st_mode & S_IWUSR && pw->pw_uid == stbuf.st_uid))) {
+	if (strncmp(username, "root", 5) != 0 && ((stbuf.st_mode & S_IWGRP && pw->pw_gid == stbuf.st_gid) ||
+						  (stbuf.st_mode & S_IWUSR && pw->pw_uid == stbuf.st_uid))) {
 		flog(LOG_ERR, "Insecure file permissions (writable by self/group): %s", conf_file);
 		return -1;
 	}

@@ -17,7 +17,8 @@
 #include "includes.h"
 #include "radvd.h"
 
-int recv_rs_ra(int sock, unsigned char *msg, struct sockaddr_in6 *addr, struct in6_pktinfo **pkt_info, int *hoplimit, unsigned char * chdr)
+int recv_rs_ra(int sock, unsigned char *msg, struct sockaddr_in6 *addr, struct in6_pktinfo **pkt_info, int *hoplimit,
+	       unsigned char *chdr)
 {
 	struct iovec iov;
 	iov.iov_len = MSG_SIZE_RECV;
@@ -50,8 +51,8 @@ int recv_rs_ra(int sock, unsigned char *msg, struct sockaddr_in6 *addr, struct i
 		switch (cmsg->cmsg_type) {
 #ifdef IPV6_HOPLIMIT
 		case IPV6_HOPLIMIT:
-			if ((cmsg->cmsg_len == CMSG_LEN(sizeof(int))) && (*(int *)CMSG_DATA(cmsg) >= 0)
-			    && (*(int *)CMSG_DATA(cmsg) < 256)) {
+			if ((cmsg->cmsg_len == CMSG_LEN(sizeof(int))) && (*(int *)CMSG_DATA(cmsg) >= 0) &&
+			    (*(int *)CMSG_DATA(cmsg) < 256)) {
 				*hoplimit = *(int *)CMSG_DATA(cmsg);
 			} else {
 				flog(LOG_ERR, "received a bogus IPV6_HOPLIMIT from the kernel! len=%d, data=%d",
@@ -61,8 +62,8 @@ int recv_rs_ra(int sock, unsigned char *msg, struct sockaddr_in6 *addr, struct i
 			break;
 #endif				/* IPV6_HOPLIMIT */
 		case IPV6_PKTINFO:
-			if ((cmsg->cmsg_len == CMSG_LEN(sizeof(struct in6_pktinfo)))
-			    && ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex) {
+			if ((cmsg->cmsg_len == CMSG_LEN(sizeof(struct in6_pktinfo))) &&
+			    ((struct in6_pktinfo *)CMSG_DATA(cmsg))->ipi6_ifindex) {
 				*pkt_info = (struct in6_pktinfo *)CMSG_DATA(cmsg);
 			} else {
 				flog(LOG_ERR, "received a bogus IPV6_PKTINFO from the kernel! len=%d, index=%d",

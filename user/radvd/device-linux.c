@@ -13,11 +13,11 @@
  */
 
 #include "config.h"
-#include "includes.h"
-#include "radvd.h"
 #include "defaults.h"
-#include "pathnames.h"
+#include "includes.h"
 #include "netlink.h"
+#include "pathnames.h"
+#include "radvd.h"
 
 #ifndef IPV6_ADDR_LINKLOCAL
 #define IPV6_ADDR_LINKLOCAL   0x0020U
@@ -62,7 +62,8 @@ int update_device_info(int sock, struct Interface *iface)
 	 */
 	iface->props.max_ra_option_size = iface->AdvRAMTU;
 	iface->props.max_ra_option_size = MIN(iface->props.max_ra_option_size, MAX(iface->sllao.if_maxmtu, RFC2460_MIN_MTU));
-	iface->props.max_ra_option_size = MIN(iface->props.max_ra_option_size, MAX(get_interface_linkmtu(iface->props.name), RFC2460_MIN_MTU));
+	iface->props.max_ra_option_size =
+	    MIN(iface->props.max_ra_option_size, MAX(get_interface_linkmtu(iface->props.name), RFC2460_MIN_MTU));
 
 	if (ioctl(sock, SIOCGIFHWADDR, &ifr) < 0) {
 		flog(LOG_ERR, "ioctl(SIOCGIFHWADDR) failed on %s: %s", iface->props.name, strerror(errno));
@@ -75,16 +76,11 @@ int update_device_info(int sock, struct Interface *iface)
 	case ARPHRD_ETHER:
 		iface->sllao.if_hwaddr_len = 48;
 		iface->sllao.if_prefix_len = 64;
-		/* *INDENT-OFF* */
 		char hwaddr[3 * 6];
-		sprintf(hwaddr, "%02x:%02x:%02x:%02x:%02x:%02x",
-			(unsigned char)ifr.ifr_hwaddr.sa_data[0],
-			(unsigned char)ifr.ifr_hwaddr.sa_data[1],
-			(unsigned char)ifr.ifr_hwaddr.sa_data[2],
-			(unsigned char)ifr.ifr_hwaddr.sa_data[3],
-			(unsigned char)ifr.ifr_hwaddr.sa_data[4],
+		sprintf(hwaddr, "%02x:%02x:%02x:%02x:%02x:%02x", (unsigned char)ifr.ifr_hwaddr.sa_data[0],
+			(unsigned char)ifr.ifr_hwaddr.sa_data[1], (unsigned char)ifr.ifr_hwaddr.sa_data[2],
+			(unsigned char)ifr.ifr_hwaddr.sa_data[3], (unsigned char)ifr.ifr_hwaddr.sa_data[4],
 			(unsigned char)ifr.ifr_hwaddr.sa_data[5]);
-		/* *INDENT-ON* */
 		dlog(LOG_DEBUG, 3, "%s hardware address: %s", iface->props.name, hwaddr);
 		iface->props.max_ra_option_size -= 14; /* RFC 2464 */
 		break;
@@ -206,8 +202,8 @@ uint32_t get_interface_linkmtu(const char *iface)
 		}
 		fclose(fp);
 	} else {
-		flog(LOG_DEBUG,
-		     "Correct IPv6 MTU entry not found, " "perhaps the procfs is disabled, "
+		flog(LOG_DEBUG, "Correct IPv6 MTU entry not found, "
+				"perhaps the procfs is disabled, "
 		     "or the kernel interface has changed?");
 		value = 1280; /* RFC2460: section 5 */
 	}
@@ -215,25 +211,13 @@ uint32_t get_interface_linkmtu(const char *iface)
 	return value;
 }
 
-int set_interface_linkmtu(const char *iface, uint32_t mtu)
-{
-	return privsep_interface_linkmtu(iface, mtu);
-}
+int set_interface_linkmtu(const char *iface, uint32_t mtu) { return privsep_interface_linkmtu(iface, mtu); }
 
-int set_interface_curhlim(const char *iface, uint8_t hlim)
-{
-	return privsep_interface_curhlim(iface, hlim);
-}
+int set_interface_curhlim(const char *iface, uint8_t hlim) { return privsep_interface_curhlim(iface, hlim); }
 
-int set_interface_reachtime(const char *iface, uint32_t rtime)
-{
-	return privsep_interface_reachtime(iface, rtime);
-}
+int set_interface_reachtime(const char *iface, uint32_t rtime) { return privsep_interface_reachtime(iface, rtime); }
 
-int set_interface_retranstimer(const char *iface, uint32_t rettimer)
-{
-	return privsep_interface_retranstimer(iface, rettimer);
-}
+int set_interface_retranstimer(const char *iface, uint32_t rettimer) { return privsep_interface_retranstimer(iface, rettimer); }
 
 int check_ip6_forwarding(void)
 {
@@ -249,8 +233,8 @@ int check_ip6_forwarding(void)
 		}
 		fclose(fp);
 	} else {
-		flog(LOG_DEBUG,
-		     "Correct IPv6 forwarding procfs entry not found, " "perhaps the procfs is disabled, "
+		flog(LOG_DEBUG, "Correct IPv6 forwarding procfs entry not found, "
+				"perhaps the procfs is disabled, "
 		     "or the kernel interface has changed?");
 		value = -1;
 	}
@@ -259,8 +243,8 @@ int check_ip6_forwarding(void)
 	int forw_sysctl[] = { SYSCTL_IP6_FORWARDING };
 	size_t size = sizeof(value);
 	if (!fp && sysctl(forw_sysctl, sizeof(forw_sysctl) / sizeof(forw_sysctl[0]), &value, &size, NULL, 0) < 0) {
-		flog(LOG_DEBUG,
-		     "Correct IPv6 forwarding sysctl branch not found, " "perhaps the kernel interface has changed?");
+		flog(LOG_DEBUG, "Correct IPv6 forwarding sysctl branch not found, "
+				"perhaps the kernel interface has changed?");
 		return 0;	/* this is of advisory value only */
 	}
 #endif

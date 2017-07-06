@@ -2,10 +2,10 @@
 #include "config.h"
 
 #include <check.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
@@ -19,7 +19,7 @@ Suite * send_suite();
 
 #ifdef HAVE_GETOPT_LONG
 
-/* *INDENT-OFF* */
+/* clang-format off */
 static char usage_str[] = {
 "\n"
 "  -h, --help                Print the help and quit.\n"
@@ -43,7 +43,7 @@ static struct option prog_opt[] = {
 static char usage_str[] = {
 "[-hv] [-m mode] [-s suite] [-t test]"
 };
-/* *INDENT-ON* */
+/* clang-format on */
 
 #endif
 
@@ -74,20 +74,15 @@ static void process_command_line_args(int argc, char * argv[], struct options * 
 		case 'm':
 			if (0 == strcmp(optarg, "SILENT")){
 				mode = CK_SILENT;
-			}
-			else if (0 == strcmp(optarg, "MINIMAL")){
+			} else if (0 == strcmp(optarg, "MINIMAL")) {
 				mode = CK_MINIMAL;
-			}
-			else if (0 == strcmp(optarg, "NORMAL")){
+			} else if (0 == strcmp(optarg, "NORMAL")) {
 				mode = CK_NORMAL;
-			}
-			else if (0 == strcmp(optarg, "VERBOSE")){
+			} else if (0 == strcmp(optarg, "VERBOSE")) {
 				mode = CK_VERBOSE;
-			}
-			else if (0 == strcmp(optarg, "ENV")){
+			} else if (0 == strcmp(optarg, "ENV")) {
 				mode = CK_ENV;
-			}
-			else {
+			} else {
 				fprintf(stderr, "%s: mode, \"%s\", unknown.\n", pname, optarg);
 				exit(1);
 			}

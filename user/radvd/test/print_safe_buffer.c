@@ -1,7 +1,7 @@
 
+#include "print_safe_buffer.h"
 #include "../config.h"
 #include "../radvd.h"
-#include "print_safe_buffer.h"
 
 #include <stdio.h>
 

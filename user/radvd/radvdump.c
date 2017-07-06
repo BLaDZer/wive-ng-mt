@@ -13,21 +13,15 @@
  *
  */
 
+#include "radvd.h"
 #include "config.h"
 #include "includes.h"
-#include "radvd.h"
 
 static char usage_str[] = "[-vhfe] [-d level]";
 
 #ifdef HAVE_GETOPT_LONG
-struct option prog_opt[] = {
-	{"debug", 1, 0, 'd'},
-	{"file-format", 0, 0, 'f'},
-	{"exclude-defaults", 0, 0, 'e'},
-	{"version", 0, 0, 'v'},
-	{"help", 0, 0, 'h'},
-	{NULL, 0, 0, 0}
-};
+struct option prog_opt[] = {{"debug", 1, 0, 'd'},   {"file-format", 0, 0, 'f'}, {"exclude-defaults", 0, 0, 'e'},
+			    {"version", 0, 0, 'v'}, {"help", 0, 0, 'h'},	{NULL, 0, 0, 0}};
 #endif
 
 int sock = -1;
@@ -174,8 +168,7 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 		printf("\tAdvDefaultLifetime %hu;\n", ntohs(radvert->nd_ra_router_lifetime));
 
 	/* Mobile IPv6 ext */
-	if (!edefs
-	    || DFLT_AdvHomeAgentFlag != (ND_RA_FLAG_HOME_AGENT == (radvert->nd_ra_flags_reserved & ND_RA_FLAG_HOME_AGENT)))
+	if (!edefs || DFLT_AdvHomeAgentFlag != (ND_RA_FLAG_HOME_AGENT == (radvert->nd_ra_flags_reserved & ND_RA_FLAG_HOME_AGENT)))
 		printf("\tAdvHomeAgentFlag %s;\n", (radvert->nd_ra_flags_reserved & ND_RA_FLAG_HOME_AGENT) ? "on" : "off");
 
 	/* Route Preferences and more specific routes */
@@ -206,7 +199,8 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 			flog(LOG_ERR, "zero length option in RA");
 			break;
 		} else if (optlen > len) {
-			flog(LOG_ERR, "option length greater than total" " length in RA (type %d, optlen %d, len %d)",
+			flog(LOG_ERR, "option length greater than total"
+				      " length in RA (type %d, optlen %d, len %d)",
 			     (int)*opt_str, optlen, len);
 			break;
 		}
@@ -239,8 +233,7 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 				printf("\tAdvHomeAgentInfo on;\n");
 
 				/* NEMO ext */
-				if (!edefs
-				    || DFLT_AdvMobRtrSupportFlag != (ha_info->flags_reserved & ND_OPT_HAI_FLAG_SUPPORT_MR))
+			if (!edefs || DFLT_AdvMobRtrSupportFlag != (ha_info->flags_reserved & ND_OPT_HAI_FLAG_SUPPORT_MR))
 					printf("\tAdvMobRtrSupportFlag %s;\n",
 					       (ha_info->flags_reserved & ND_OPT_HAI_FLAG_SUPPORT_MR) ? "on" : "off");
 
@@ -293,7 +286,8 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 			flog(LOG_ERR, "zero length option in RA");
 			break;
 		} else if (optlen > orig_len) {
-			flog(LOG_ERR, "option length greater than total" " length in RA (type %d, optlen %d, len %d)",
+			flog(LOG_ERR, "option length greater than total"
+				      " length in RA (type %d, optlen %d, len %d)",
 			     (int)*opt_str, optlen, orig_len);
 			break;
 		}
@@ -318,26 +312,25 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 						printf("\t\tAdvPreferredLifetime infinity; # (0xffffffff)\n");
 				} else {
 					if (!edefs || DFLT_AdvPreferredLifetime != ntohl(pinfo->nd_opt_pi_preferred_time))
-						printf("\t\tAdvPreferredLifetime %u;\n",
-						       ntohl(pinfo->nd_opt_pi_preferred_time));
+					printf("\t\tAdvPreferredLifetime %u;\n", ntohl(pinfo->nd_opt_pi_preferred_time));
 				}
 
-				if (!edefs
-				    || DFLT_AdvOnLinkFlag != (ND_OPT_PI_FLAG_ONLINK ==
-							      (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_ONLINK)))
+			if (!edefs ||
+			    DFLT_AdvOnLinkFlag !=
+				(ND_OPT_PI_FLAG_ONLINK == (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_ONLINK)))
 					printf("\t\tAdvOnLink %s;\n",
 					       (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_ONLINK) ? "on" : "off");
 
-				if (!edefs
-				    || DFLT_AdvAutonomousFlag != (ND_OPT_PI_FLAG_AUTO ==
-								  (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_AUTO)))
+			if (!edefs ||
+			    DFLT_AdvAutonomousFlag !=
+				(ND_OPT_PI_FLAG_AUTO == (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_AUTO)))
 					printf("\t\tAdvAutonomous %s;\n",
 					       (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_AUTO) ? "on" : "off");
 
 				/* Mobile IPv6 ext */
-				if (!edefs
-				    || DFLT_AdvRouterAddr != (ND_OPT_PI_FLAG_RADDR ==
-							      (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_RADDR)))
+			if (!edefs ||
+			    DFLT_AdvRouterAddr !=
+				(ND_OPT_PI_FLAG_RADDR == (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_RADDR)))
 					printf("\t\tAdvRouterAddr %s;\n",
 					       (pinfo->nd_opt_pi_flags_reserved & ND_OPT_PI_FLAG_RADDR) ? "on" : "off");
 
@@ -358,8 +351,7 @@ static void print_ff(unsigned char *msg, int len, struct sockaddr_in6 *addr, int
 					printf("\n\troute %s/%d\n\t{\n", prefix_str, rinfo->nd_opt_ri_prefix_len);
 				}
 
-				if (!edefs
-				    || (((radvert->nd_ra_flags_reserved & 0x18) >> 3) & 0xff) != DFLT_AdvRoutePreference) {
+			if (!edefs || (((radvert->nd_ra_flags_reserved & 0x18) >> 3) & 0xff) != DFLT_AdvRoutePreference) {
 					printf("\t\tAdvRoutePreference ");
 					print_preferences(((rinfo->nd_opt_ri_flags_reserved & 0x18) >> 3) & 0xff);
 					printf(";\n");

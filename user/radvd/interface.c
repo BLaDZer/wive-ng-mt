@@ -13,9 +13,9 @@
  */
 
 #include "config.h"
+#include "defaults.h"
 #include "includes.h"
 #include "radvd.h"
-#include "defaults.h"
 
 #define IFACE_SETUP_DELAY	1
 
@@ -31,6 +31,8 @@ void iface_init_defaults(struct Interface *iface)
 	iface->AdvSourceLLAddress = DFLT_AdvSourceLLAddress;
 	iface->MinDelayBetweenRAs = DFLT_MinDelayBetweenRAs;
 	iface->MinRtrAdvInterval = -1;
+	iface->UnicastOnly = DFLT_UnicastOnly;
+	iface->AdvRASolicitedUnicast = DFLT_AdvRASolicitedUnicast;
 
 	iface->ra_header_info.AdvDefaultPreference = DFLT_AdvDefaultPreference;
 	iface->ra_header_info.AdvDefaultLifetime = -1;
@@ -175,34 +177,31 @@ int check_iface(struct Interface *iface)
 	if (iface->MinRtrAdvInterval < 0)
 		iface->MinRtrAdvInterval = DFLT_MinRtrAdvInterval(iface);
 
-	if ((iface->MinRtrAdvInterval < (MIPv6 ? MIN_MinRtrAdvInterval_MIPv6 : MIN_MinRtrAdvInterval))
-	    || (iface->MinRtrAdvInterval > MAX_MinRtrAdvInterval(iface))) {
+	if ((iface->MinRtrAdvInterval < (MIPv6 ? MIN_MinRtrAdvInterval_MIPv6 : MIN_MinRtrAdvInterval)) ||
+	    (iface->MinRtrAdvInterval > MAX_MinRtrAdvInterval(iface))) {
 		flog(LOG_ERR,
 		     "MinRtrAdvInterval for %s (%.2f) must be at least %.2f but no more than 3/4 of MaxRtrAdvInterval (%.2f)",
-		     iface->props.name, iface->MinRtrAdvInterval, MIPv6 ? MIN_MinRtrAdvInterval_MIPv6 : (int)MIN_MinRtrAdvInterval,
-		     MAX_MinRtrAdvInterval(iface));
+		     iface->props.name, iface->MinRtrAdvInterval,
+		     MIPv6 ? MIN_MinRtrAdvInterval_MIPv6 : (int)MIN_MinRtrAdvInterval, MAX_MinRtrAdvInterval(iface));
 		res = -1;
 	}
 
-	if ((iface->MaxRtrAdvInterval < (MIPv6 ? MIN_MaxRtrAdvInterval_MIPv6 : MIN_MaxRtrAdvInterval))
-	    || (iface->MaxRtrAdvInterval > MAX_MaxRtrAdvInterval)) {
-		flog(LOG_ERR,
-		     "MaxRtrAdvInterval for %s (%.2f) must be between %.2f and %d",
-		     iface->props.name, iface->MaxRtrAdvInterval, MIPv6 ? MIN_MaxRtrAdvInterval_MIPv6 : (int)MIN_MaxRtrAdvInterval,
+	if ((iface->MaxRtrAdvInterval < (MIPv6 ? MIN_MaxRtrAdvInterval_MIPv6 : MIN_MaxRtrAdvInterval)) ||
+	    (iface->MaxRtrAdvInterval > MAX_MaxRtrAdvInterval)) {
+		flog(LOG_ERR, "MaxRtrAdvInterval for %s (%.2f) must be between %.2f and %d", iface->props.name,
+		     iface->MaxRtrAdvInterval, MIPv6 ? MIN_MaxRtrAdvInterval_MIPv6 : (int)MIN_MaxRtrAdvInterval,
 		     MAX_MaxRtrAdvInterval);
 		res = -1;
 	}
 
 	if (iface->MinDelayBetweenRAs < (MIPv6 ? MIN_DELAY_BETWEEN_RAS_MIPv6 : MIN_DELAY_BETWEEN_RAS)) {
-		flog(LOG_ERR,
-		     "MinDelayBetweenRAs for %s (%.2f) must be at least %.2f", iface->props.name, iface->MinDelayBetweenRAs,
-		     MIPv6 ? MIN_DELAY_BETWEEN_RAS_MIPv6 : MIN_DELAY_BETWEEN_RAS);
+		flog(LOG_ERR, "MinDelayBetweenRAs for %s (%.2f) must be at least %.2f", iface->props.name,
+		     iface->MinDelayBetweenRAs, MIPv6 ? MIN_DELAY_BETWEEN_RAS_MIPv6 : MIN_DELAY_BETWEEN_RAS);
 		res = -1;
 	}
 
-	if ((iface->AdvLinkMTU != 0)
-	    && ((iface->AdvLinkMTU < MIN_AdvLinkMTU)
-		|| (iface->sllao.if_maxmtu != -1 && (iface->AdvLinkMTU > iface->sllao.if_maxmtu)))) {
+	if ((iface->AdvLinkMTU != 0) && ((iface->AdvLinkMTU < MIN_AdvLinkMTU) ||
+					 (iface->sllao.if_maxmtu != -1 && (iface->AdvLinkMTU > iface->sllao.if_maxmtu)))) {
 		flog(LOG_ERR, "AdvLinkMTU for %s (%u) must be zero or between %u and %u", iface->props.name, iface->AdvLinkMTU,
 		     MIN_AdvLinkMTU, iface->sllao.if_maxmtu);
 		res = -1;
@@ -217,9 +216,9 @@ int check_iface(struct Interface *iface)
 	if (iface->ra_header_info.AdvDefaultLifetime < 0)
 		iface->ra_header_info.AdvDefaultLifetime = DFLT_AdvDefaultLifetime(iface);
 
-	if ((iface->ra_header_info.AdvDefaultLifetime != 0)
-	    && ((iface->ra_header_info.AdvDefaultLifetime > MAX_AdvDefaultLifetime)
-		|| (iface->ra_header_info.AdvDefaultLifetime < MIN_AdvDefaultLifetime(iface)))) {
+	if ((iface->ra_header_info.AdvDefaultLifetime != 0) &&
+	    ((iface->ra_header_info.AdvDefaultLifetime > MAX_AdvDefaultLifetime) ||
+	     (iface->ra_header_info.AdvDefaultLifetime < MIN_AdvDefaultLifetime(iface)))) {
 		flog(LOG_ERR, "AdvDefaultLifetime for %s (%u) must be zero or between %u and %u", iface->props.name,
 		     iface->ra_header_info.AdvDefaultLifetime, (int)MIN_AdvDefaultLifetime(iface), MAX_AdvDefaultLifetime);
 		res = -1;
@@ -231,9 +230,9 @@ int check_iface(struct Interface *iface)
 
 	/* Mobile IPv6 ext */
 	if (iface->mipv6.AdvHomeAgentInfo) {
-		if ((iface->mipv6.HomeAgentLifetime > MAX_HomeAgentLifetime) || (iface->mipv6.HomeAgentLifetime < MIN_HomeAgentLifetime)) {
-			flog(LOG_ERR,
-			     "HomeAgentLifetime for %s (%u) must be between %u and %u", iface->props.name,
+		if ((iface->mipv6.HomeAgentLifetime > MAX_HomeAgentLifetime) ||
+		    (iface->mipv6.HomeAgentLifetime < MIN_HomeAgentLifetime)) {
+			flog(LOG_ERR, "HomeAgentLifetime for %s (%u) must be between %u and %u", iface->props.name,
 			     iface->mipv6.HomeAgentLifetime, MIN_HomeAgentLifetime, MAX_HomeAgentLifetime);
 			res = -1;
 		}
@@ -258,7 +257,8 @@ int check_iface(struct Interface *iface)
 		}
 
 		if (prefix->AdvPreferredLifetime > prefix->AdvValidLifetime) {
-			flog(LOG_ERR, "AdvValidLifetime for %s (%u) must be " "greater than AdvPreferredLifetime for",
+			flog(LOG_ERR, "AdvValidLifetime for %s (%u) must be "
+				      "greater than AdvPreferredLifetime for",
 			     iface->props.name, prefix->AdvValidLifetime);
 			res = -1;
 		}
@@ -288,7 +288,9 @@ int check_iface(struct Interface *iface)
 			int route_zerolife = (route->AdvRouteLifetime == 0);
 			int defaultroute_zerolife = (iface->ra_header_info.AdvDefaultLifetime == 0);
 			if( route_zerolife ^ defaultroute_zerolife ) {
-				flog(LOG_ERR, "route 0::/0 lifetime (%u) conflicts with AdvDefaultLifetime (%u), default routes will flap!",
+				flog(
+				    LOG_ERR,
+				    "route 0::/0 lifetime (%u) conflicts with AdvDefaultLifetime (%u), default routes will flap!",
 						route->AdvRouteLifetime, iface->ra_header_info.AdvDefaultLifetime);
 				// res = -1; // In some future version, abort on this configuration error.
 			}

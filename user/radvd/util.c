@@ -152,8 +152,7 @@ void safe_buffer_list_free(struct safe_buffer_list * sbl)
 	}
 }
 
-__attribute__ ((format(printf, 1, 2)))
-char * strdupf(char const * format, ...)
+__attribute__((format(printf, 1, 2))) char *strdupf(char const *format, ...)
 {
 	va_list va;
 	va_start(va, format);
@@ -168,10 +167,7 @@ char * strdupf(char const * format, ...)
 	return strp;
 }
 
-double rand_between(double lower, double upper)
-{
-	return ((upper - lower) / (RAND_MAX + 1.0) * rand() + lower);
-}
+double rand_between(double lower, double upper) { return ((upper - lower) / (RAND_MAX + 1.0) * rand() + lower); }
 
 /* This assumes that str is not null and str_size > 0 */
 void addrtostr(struct in6_addr const *addr, char *str, size_t str_size)
@@ -191,9 +187,9 @@ void addrtostr(struct in6_addr const *addr, char *str, size_t str_size)
 int check_rdnss_presence(struct AdvRDNSS *rdnss, struct in6_addr *addr)
 {
 	while (rdnss) {
-		if (!memcmp(&rdnss->AdvRDNSSAddr1, addr, sizeof(struct in6_addr))
-		    || !memcmp(&rdnss->AdvRDNSSAddr2, addr, sizeof(struct in6_addr))
-		    || !memcmp(&rdnss->AdvRDNSSAddr3, addr, sizeof(struct in6_addr)))
+		if (!memcmp(&rdnss->AdvRDNSSAddr1, addr, sizeof(struct in6_addr)) ||
+		    !memcmp(&rdnss->AdvRDNSSAddr2, addr, sizeof(struct in6_addr)) ||
+		    !memcmp(&rdnss->AdvRDNSSAddr3, addr, sizeof(struct in6_addr)))
 			return 1;	/* rdnss address found in the list */
 		rdnss = rdnss->next;
 	}

@@ -13,10 +13,10 @@
  */
 
 #include "config.h"
-#include "includes.h"
-#include "radvd.h"
 #include "defaults.h"
+#include "includes.h"
 #include "pathnames.h"
+#include "radvd.h"
 
 int check_device(int sock, struct Interface *iface)
 {
@@ -87,11 +87,7 @@ int get_v4addr(const char *ifn, unsigned int *dst)
 	return 0;
 }
 
-
-static int cmp_iface_addrs(void const *a, void const *b)
-{
-	return memcmp(a, b, sizeof(struct in6_addr));
-}
+static int cmp_iface_addrs(void const *a, void const *b) { return memcmp(a, b, sizeof(struct in6_addr)); }
 
 /*
  * Return first IPv6 link local addr in if_addr.
