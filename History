@@ -3239,7 +3239,8 @@
 <br>
 <br>
 <b>6.2.x</b><br>
-1) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+1) busybox: update to 1.27.0 version.<br>
+2) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
 <br>
 <br>
 <br>

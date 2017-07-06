@@ -877,7 +877,7 @@ static void load_firmware(const char *firmware, const char *sysfs_path)
 
 	/* check for /lib/firmware/$FIRMWARE */
 	xchdir("/lib/firmware");
-	firmware_fd = open(firmware, O_RDONLY); /* can fail */
+		firmware_fd = open(firmware, O_RDONLY); /* can fail */
 
 	/* check for /sys/$DEVPATH/loading ... give 30 seconds to appear */
 	xchdir(sysfs_path);
@@ -1086,8 +1086,8 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
 				fileAction, dirAction, temp, 0);
 		}
 		recursive_action("/sys/class",
-			ACTION_RECURSE | ACTION_FOLLOWLINKS,
-			fileAction, dirAction, temp, 0);
+				 ACTION_RECURSE | ACTION_FOLLOWLINKS,
+				 fileAction, dirAction, temp, 0);
 	} else {
 		char *fw;
 		char *seq;
