@@ -3242,6 +3242,7 @@
 1) busybox: update to 1.27.0 version.<br>
 2) radvd: update to 2.17 version.<br>
 3) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+4) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>
