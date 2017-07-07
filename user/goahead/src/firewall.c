@@ -53,7 +53,7 @@ static int getPortForwardRules(int eid, webs_t wp, int argc, char_t **argv)
 static int getPortFilteringRules(int eid, webs_t wp, int argc, char_t **argv)
 {
 	int i = 0, first = 1;
-	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");	
+	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterRules");
 	struct PortFilteringRule rule;
 
 	if (rules == NULL)
@@ -80,6 +80,39 @@ static int getPortFilteringRules(int eid, webs_t wp, int argc, char_t **argv)
 
 	return 0;
 }
+
+/*
+ * ASP function
+ */
+static int getPortFilteringInputRules(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int i = 0, first = 1;
+	char_t *rules = nvram_get(RT2860_NVRAM, "IPPortFilterInputRules");
+	struct PortFilteringRule rule;
+
+	if (rules == NULL)
+		return 0;
+
+	while (parse_portfiltering_rule(rules, &rule, i++) == 0)
+	{
+		// Output data
+		websWrite(wp, T("%s[ '%s', %d, '%s', '%s', '%s', '%s', '%s', , , '%s', '%s', '%s', '%s' ]"),
+				(first) ? "" : ",\n\t",
+				rule.interface,
+				rule.protocol,
+				rule.mac_address,
+				rule.sip, rule.sim,
+				rule.sprf, rule.sprt,
+				rule.dprf, rule.dprt,
+				rule.action,
+				rule.comment
+			);
+		first = 0;
+	}
+
+	return 0;
+}
+
 
 void firewall_rebuild(void)
 {
@@ -121,6 +154,24 @@ static void portFiltering(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "DefaultFirewallPolicy", default_policy);
 		nvram_bufset(RT2860_NVRAM, "IPPortFilterRules", firewall_rules);
 	}
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
+
+	firewall_rebuild();
+	websHeader(wp);
+	websDone(wp, 200);
+}
+
+/* goform/portFilteringInput */
+static void portFilteringInput(webs_t wp, char_t *path, char_t *query)
+{
+	char_t *firewall_enable = websGetVar(wp, T("portFilterInputEnabled"), T("0"));
+	char_t *firewall_rules = websGetVar(wp, T("portFilteringInputRules"), T(""));
+
+	nvram_init(RT2860_NVRAM);
+	nvram_bufset(RT2860_NVRAM, "IPPortFilterInputEnable", firewall_enable);
+	if (CHK_IF_DIGIT(firewall_enable, 1))
+		nvram_bufset(RT2860_NVRAM, "IPPortFilterInputRules", firewall_rules);
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -231,8 +282,10 @@ static int getWebstrBuilt(int eid, webs_t wp, int argc, char_t **argv)
 void formDefineFirewall(void)
 {
 	websAspDefine(T("getPortFilteringRules"), getPortFilteringRules);
+	websAspDefine(T("getPortFilteringInputRules"), getPortFilteringInputRules);
 	websAspDefine(T("getPortForwardRules"), getPortForwardRules);
 	websFormDefine(T("portFiltering"), portFiltering);
+	websFormDefine(T("portFilteringInput"), portFilteringInput);
 	websFormDefine(T("portForward"), portForward);
 	websFormDefine(T("setFirewall"), setFirewall);
 	websFormDefine(T("setFirewallDMZ"), setFirewallDMZ);

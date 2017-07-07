@@ -13,6 +13,7 @@
 #define _PATH_PFW_FILE_VPN		_PATH_PFW "/portforward_vpn"
 #define _PATH_PFW_FILE_ACCESS		_PATH_PFW "/portforward_access"
 #define _PATH_MACIP_FILE		_PATH_PFW "/macipfilter"
+#define _PATH_MACIPINPUT_FILE		_PATH_PFW "/macipinputfilter"
 #define _PATH_WEBS_FILE			_PATH_PFW "/websfilter"
 
 #define WEB_FILTER_CHAIN		"web_filter"

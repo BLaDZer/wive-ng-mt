@@ -3243,18 +3243,19 @@
 2) radvd: update to 2.17 version.<br>
 3) freeradius: up to 3.0.14 version.<br>
 4) coovachilli: up to 1.4 from git (commit c6f6ada8).<br>
-5) kernel: ralink_wifi: use real transmit power for TPE.<br>
-6) kernel: ralink_wifi: enchange regulatory class table.<br>
-7) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
-8) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
-9) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
-10) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-11) kernel: introduse offsetofend macros.<br>
-12) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-13) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-14) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-15) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-16) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+5) goahead/libnvram/init.d: implement user defined INPUT rules add for local services.<br>
+6) kernel: ralink_wifi: use real transmit power for TPE.<br>
+7) kernel: ralink_wifi: enchange regulatory class table.<br>
+8) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
+9) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+10) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
+11) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+12) kernel: introduse offsetofend macros.<br>
+13) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+14) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+15) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+16) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+17) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>

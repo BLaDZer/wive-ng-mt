@@ -1129,6 +1129,149 @@ static void iptablesIPPortFilterBuildScript(void)
 	}
 }
 
+static void iptablesIPPortFilterInputBuildScript(void)
+{
+	int i = 0, mode, sprf_int, sprt_int, proto, action, dprf_int, dprt_int;
+	char rec[256];
+	char cmd[1024];
+	char sprf[8], sprt[8], protocol[8], iface[8];
+	char dprf[8], dprt[8], wan_name[16];
+	char mac_address[32], action_str[4];
+	char sip[32], dip[32], sim[32], dim[32];
+	char *c_if, *firewall_enable, *rule;
+
+	// Check that IP/port filter is enabled
+	firewall_enable = nvram_get(RT2860_NVRAM, "IPPortFilterInputEnable");
+	if (firewall_enable == NULL)
+	{
+		syslog(LOG_WARNING, "can't find \"IPPortFilterInputEnable\" in nvram, %s", __FUNCTION__);
+		return;
+	}
+	mode = atoi(firewall_enable);
+	if (mode == 0)
+		return;
+
+	rule = nvram_get(RT2860_NVRAM, "IPPortFilterInputRules");
+	if (rule == NULL)
+	{
+		syslog(LOG_WARNING, "can't find \"IPPortFilterInputRules\" in nvram, %s", __FUNCTION__);
+		return;
+	}
+
+	// get wan name
+	strncpy(wan_name, getWanIfName(), sizeof(wan_name)-1);
+
+	//Generate input script file
+	FILE *fd = fopen(_PATH_MACIPINPUT_FILE, "w");
+	if (fd != NULL)
+	{
+		fputs("#!/bin/sh\n\n", fd);
+
+		while ((getNthValueSafe(i++, rule, ';', rec, sizeof(rec)) != -1))
+		{
+			// Get interface
+			if ((getNthValueSafe(0, rec, ',', iface, sizeof(iface)) == -1))
+				continue;
+
+			if (strcmp(iface, "LAN")==0)
+				c_if = "br0";
+			else if (strcmp(iface, "VPN")==0)
+				c_if = "ppp+";
+			else
+				c_if = wan_name;
+
+			// get protocol
+			if ((getNthValueSafe(1, rec, ',', protocol, sizeof(protocol)) == -1))
+				continue;
+			proto = atoi(protocol);
+			switch(proto)
+			{
+				case PROTO_TCP:
+				case PROTO_UDP:
+				case PROTO_NONE:
+				case PROTO_ICMP:
+					break;
+				default:
+					continue;
+			}
+
+			// get mac address
+			if ((getNthValueSafe(2, rec, ',', mac_address, sizeof(mac_address)) == -1))
+				continue;
+
+			if (strlen(mac_address) > 0)
+			{
+				if (!isMacValid(mac_address))
+					continue;
+			}
+
+			// get source ip
+			if ((getNthValueSafe(3, rec, ',', sip, sizeof(sip)) == -1))
+				continue;
+			if (!isIpNetmaskValid(sip))
+				sip[0] = '\0';
+
+			// get source ip mask
+			if ((getNthValueSafe(4, rec, ',', sim, sizeof(sim)) == -1))
+				continue;
+			if (!isIpNetmaskValid(sim))
+				sim[0] = '\0';
+
+			// get source port range "from"
+			if ((getNthValueSafe(5, rec, ',', sprf, sizeof(sprf)) == -1))
+				continue;
+			if ((sprf_int = atoi(sprf)) > 65535)
+				continue;
+
+			// get source port range "to"
+			if ((getNthValueSafe(6, rec, ',', sprt, sizeof(sprt)) == -1))
+				continue;
+			if ((sprt_int = atoi(sprt)) > 65535)
+				continue;
+
+			// get destination ip
+			if ((getNthValueSafe(7, rec, ',', dip, sizeof(dip)) == -1))
+				continue;
+			if (!isIpNetmaskValid(dip))
+				dip[0] = '\0';
+
+			// get destination ip mask
+			if ((getNthValueSafe(8, rec, ',', dim, sizeof(dim)) == -1))
+				continue;
+			if (!isIpNetmaskValid(dim))
+				dim[0] = '\0';
+
+			// get destination port range "from"
+			if ((getNthValueSafe(9, rec, ',', dprf, sizeof(dprf)) == -1))
+				continue;
+			if ((dprf_int = atoi(dprf)) > 65535)
+				continue;
+
+			// get destination port range "to"
+			if ((getNthValueSafe(10, rec, ',', dprt, sizeof(dprt)) == -1))
+				continue;
+			if ((dprt_int = atoi(dprt)) > 65535)
+				continue;
+
+			// get action / policy
+			if ((getNthValueSafe(11, rec, ',', action_str, sizeof(action_str)) == -1))
+				continue;
+
+			action = atoi(action_str);
+
+			// build rules
+			makeIPPortFilterRule(
+				cmd, sizeof(cmd), c_if, mac_address, sip, sim, sprf_int,
+				sprt_int, dip, dim, dprf_int, dprt_int, proto, action, "servicelimit");
+			// write to file
+			fputs(cmd, fd);
+		}
+		// close file
+		fclose(fd);
+		chmod(_PATH_MACIPINPUT_FILE, S_IXGRP | S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP);
+	}
+}
+
 static void iptablesPortForwardBuildScript(void)
 {
 	char rec[256];
@@ -1472,13 +1615,21 @@ void firewall_rebuild_etc(void)
 
 	// IP/Port/MAC filtering
 	char *ipf_enable = nvram_get(RT2860_NVRAM, "IPPortFilterEnable");
+	char *ipfinput_enable = nvram_get(RT2860_NVRAM, "IPPortFilterInputEnable");
 	if (ipf_enable == NULL)
 		ipf_enable = "0";
+	if (ipfinput_enable == NULL)
+		ipfinput_enable = "0";
 
 	// Remove mac filter script
 	remove(_PATH_MACIP_FILE);
 	if (strcmp(ipf_enable, "1") == 0) // Turned on?
 		iptablesIPPortFilterBuildScript();
+
+	// Remove mac filter script
+	remove(_PATH_MACIPINPUT_FILE);
+	if (strcmp(ipfinput_enable, "1") == 0) // Turned on?
+		iptablesIPPortFilterInputBuildScript();
 
 	// Web filtering
 	remove(_PATH_WEBS_FILE);

@@ -121,6 +121,7 @@ var NVRAM_DMZNATLoopback				= '<% getCfgGeneral(1, "DMZNATLoopback"); %>';					N
 var NVRAM_DMZIPAddress					= '<% getCfgGeneral(1, "DMZIPAddress"); %>';					NVRAM_DMZIPAddress 					= (NVRAM_DMZIPAddress !='')						? NVRAM_DMZIPAddress					: '';
 var NVRAM_PortForwardEnable				= '<% getCfgGeneral(1, "PortForwardEnable"); %>'; 				NVRAM_PortForwardEnable 			= (NVRAM_PortForwardEnable !='')				? NVRAM_PortForwardEnable				: '0';
 var NVRAM_IPPortFilterEnable			= '<% getCfgGeneral(1, "IPPortFilterEnable"); %>'; 				NVRAM_IPPortFilterEnable 			= (NVRAM_IPPortFilterEnable !='')				? NVRAM_IPPortFilterEnable				: '0';
+var NVRAM_IPPortFilterInputEnable		= '<% getCfgGeneral(1, "IPPortFilterInputEnable"); %>'; 		NVRAM_IPPortFilterInputEnable 		= (NVRAM_IPPortFilterInputEnable !='')			? NVRAM_IPPortFilterInputEnable			: '0';
 var NVRAM_ForwardSesLimit				= '<% getCfgGeneral(1, "ForwardSesLimit"); %>'; 				NVRAM_ForwardSesLimit 				= (NVRAM_ForwardSesLimit !='')					? NVRAM_ForwardSesLimit					: '0';
 var NVRAM_dnsToLocalRedir				= '<% getCfgGeneral(1, "dnsToLocalRedir"); %>';				 	NVRAM_dnsToLocalRedir 				= (NVRAM_dnsToLocalRedir !='')					? NVRAM_dnsToLocalRedir					: '0';
 var NVRAM_dnsPEnabled					= '<% getCfgGeneral(1, "dnsPEnabled"); %>'; 					NVRAM_dnsPEnabled 					= (NVRAM_dnsPEnabled !='')						? NVRAM_dnsPEnabled						: '1';

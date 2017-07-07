@@ -16,6 +16,8 @@
   <message msgid="port introduction" msgstr="Вы можете настроить правила сетевого экрана для блокировки вирусов, червей и прочего нежелательного траффика из сети Интернет." />
   <message msgid="port basic setting" msgstr="Настройки фильтрации транзитного трафика" />
   <message msgid="port basic filter" msgstr="Фильтрация MAC/IP/портов" />
+  <message msgid="port basic setting input" msgstr="Подключение к локальным сервисам" />
+  <message msgid="port basic filter input" msgstr="Разрешить подключение" />
   <message msgid="port basic default policy" msgstr="Правило по умолчанию -- пакеты, которые не подходят ни под одно правило, будут:" />
   <message msgid="port basic default policy accepted" msgstr="Пропущены" />
   <message msgid="port basic default policy dropped" msgstr="Блокированы" />
@@ -33,9 +35,9 @@
   <message msgid="forward virtual server setting" msgstr="Настройки проброса портов" />
   <message msgid="forward interface" msgstr="Интерфейс" />
   <message msgid="forward protocol" msgstr="Протокол" />
-  <message msgid="forward src ports" msgstr="Исх. порты" />
+  <message msgid="forward src ports" msgstr="Порт ист." />
   <message msgid="forward dst ip" msgstr="IP назначения" />
-  <message msgid="forward dst ports" msgstr="Порты назн." />
+  <message msgid="forward dst ports" msgstr="Порт назн." />
   <message msgid="forward nat" msgstr="Nat loopback" />
   <message msgid="forward comment" msgstr="Комментарий" />
   <message msgid="forward comment filter" msgstr="Коммент." />
@@ -44,7 +46,7 @@
   <message msgid="forward no rules" msgstr="Правила проброса портов отсутствуют" />
   <message msgid="forward add record" msgstr="Добавить запись" />
   <message msgid="forward mac" msgstr="MAC" />
-  <message msgid="forward src ip" msgstr="Исходящий IP" />
+  <message msgid="forward src ip" msgstr="IP источника" />
   <message msgid="forward policy" msgstr="Политика" />
   <message msgid="forward mask" msgstr="Маска" />
   <message msgid="forward no filter rules" msgstr="Правила фильтрации отсутствуют" />
@@ -55,6 +57,7 @@
   <message msgid="forward ip not mask" msgstr="IP адрес не соответствует маске: " />
   <message msgid="forward port not match src" msgstr="Диапазоны портов не совпадают: портов источника " />
   <message msgid="forward port not match dst" msgstr=", а портов приёмника " />
+  <message msgid="forward accept rules" msgstr=" Список разрешенных правил: " />
 
   <message msgid="content filter title" msgstr="Настройки фильтрации контента" />
   <message msgid="content filter introduction" msgstr="Вы можете включить фильтр контента для ограничения доступа к нежелательному контенту." />

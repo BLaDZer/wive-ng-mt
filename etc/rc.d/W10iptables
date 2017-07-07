@@ -30,6 +30,13 @@ servicelimit() {
 	iptables -N servicelimit > /dev/null 2>&1
         iptables -F servicelimit > /dev/null 2>&1
         iptables -A INPUT -j servicelimit > /dev/null 2>&1
+
+	# user defined input polices for local services
+	if [ "$IPPortFilterInputEnable" = "1" ] && [ -e /etc/macipinputfilter ]; then
+		$LOG "Set macipport input filter rules"
+		/etc/macipinputfilter
+	fi
+
 	# INPUT needed by unpxy and igmpproxy
 	if [ "$igmpEnabled" != "0" ] || [ "$UDPXYMode" != "0" ] || [ "$xupnpd" = "1" ]; then
 	    $LOG "Set igmp input rules"
@@ -628,7 +635,7 @@ iptmodulesload() {
 
 get_param() {
     # get network, vpn, netfiletrs and others config variables
-    eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable WANPingFilter \
+    eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable IPPortFilterInputEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
