@@ -505,6 +505,7 @@ tls_session_t *tls_new_client_session(TALLOC_CTX *ctx, fr_tls_server_conf_t *con
 	talloc_set_destructor(ssn, _tls_session_free);
 
 	ssn->ctx = conf->ctx;
+	ssn->mtu = conf->fragment_size;
 
 	SSL_CTX_set_mode(ssn->ctx, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER | SSL_MODE_AUTO_RETRY);
 
@@ -537,6 +538,21 @@ tls_session_t *tls_new_client_session(TALLOC_CTX *ctx, fr_tls_server_conf_t *con
 	SSL_set_ex_data(ssn->ssl, FR_TLS_EX_INDEX_SSN, (void *)ssn);
 	SSL_set_fd(ssn->ssl, fd);
 	ret = SSL_connect(ssn->ssl);
+
+	if (ret < 0) {
+		switch (SSL_get_error(ssn->ssl, ret)) {
+			default:
+				break;
+
+
+
+		case SSL_ERROR_WANT_READ:
+		case SSL_ERROR_WANT_WRITE:
+			ssn->connected = false;
+			return ssn;
+		}
+	}
+
 	if (ret <= 0) {
 		tls_error_io_log(NULL, ssn, ret, "Failed in " STRINGIFY(__FUNCTION__) " (SSL_connect)");
 		talloc_free(ssn);
@@ -544,8 +560,7 @@ tls_session_t *tls_new_client_session(TALLOC_CTX *ctx, fr_tls_server_conf_t *con
 		return NULL;
 	}
 
-	ssn->mtu = conf->fragment_size;
-
+	ssn->connected = true;
 	return ssn;
 }
 
@@ -823,10 +838,10 @@ static void session_init(tls_session_t *ssn)
 
 static void session_close(tls_session_t *ssn)
 {
+	if (ssn->ssl) {
 	SSL_set_quiet_shutdown(ssn->ssl, 1);
 	SSL_shutdown(ssn->ssl);
 
-	if (ssn->ssl) {
 		SSL_free(ssn->ssl);
 		ssn->ssl = NULL;
 	}
@@ -1360,7 +1375,7 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 		blob_len = i2d_SSL_SESSION(sess, NULL);
 		if (blob_len < 1) {
 			/* something went wrong */
-			RWDEBUG("Session serialisation failed, couldn't determine required buffer length");
+			if (request) RWDEBUG("Session serialisation failed, couldn't determine required buffer length");
 			return 0;
 		}
 
@@ -1376,16 +1391,16 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 		p = sess_blob;
 		rv = i2d_SSL_SESSION(sess, &p);
 		if (rv != blob_len) {
-			RWDEBUG("Session serialisation failed");
+			if (request) RWDEBUG("Session serialisation failed");
 			goto error;
 		}
 
 		/* open output file */
 		snprintf(filename, sizeof(filename), "%s%c%s.asn1",
 			 conf->session_cache_path, FR_DIR_SEP, buffer);
-		fd = open(filename, O_RDWR|O_CREAT|O_EXCL, 0600);
+		fd = open(filename, O_RDWR|O_CREAT|O_EXCL, S_IWUSR);
 		if (fd < 0) {
-			RERROR("Session serialisation failed, failed opening session file %s: %s",
+			if (request) RERROR("Session serialisation failed, failed opening session file %s: %s",
 			      filename, fr_syserror(errno));
 			goto error;
 		}
@@ -1401,8 +1416,6 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 				fr_pair_value_strcpy(vp, filename);
 				fr_pair_add(&request->state, vp);
 			}
-
-			(void) fchmod(fd, S_IWUSR);
 		}
 
 		todo = blob_len;
@@ -1410,7 +1423,7 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 		while (todo > 0) {
 			rv = write(fd, p, todo);
 			if (rv < 1) {
-				RWDEBUG("Failed writing session: %s", fr_syserror(errno));
+				if (request) RWDEBUG("Failed writing session: %s", fr_syserror(errno));
 				close(fd);
 				goto error;
 			}
@@ -1418,12 +1431,67 @@ static int cbtls_new_session(SSL *ssl, SSL_SESSION *sess)
 			todo -= rv;
 		}
 		close(fd);
-		RWDEBUG("Wrote session %s to %s (%d bytes)", buffer, filename, blob_len);
+		if (request) RWDEBUG("Wrote session %s to %s (%d bytes)", buffer, filename, blob_len);
 	}
 
 error:
 	free(sess_blob);
 
+	return 0;
+}
+
+/** Convert OpenSSL's ASN1_TIME to an epoch time
+ *
+ * @param[out] out	Where to write the time_t.
+ * @param[in] asn1	The ASN1_TIME to convert.
+ * @return
+ *	- 0 success.
+ *	- -1 on failure.
+ */
+static int ocsp_asn1time_to_epoch(time_t *out, char const *asn1)
+{
+	struct		tm t;
+	char const	*p = asn1, *end = p + strlen(p);
+
+	memset(&t, 0, sizeof(t));
+
+	if ((end - p) <= 12) {
+		if ((end - p) < 2) {
+			fr_strerror_printf("ASN1 date string too short, expected 2 additional bytes, got %zu bytes",
+					   end - p);
+			return -1;
+		}
+
+		t.tm_year = (*(p++) - '0') * 10;
+		t.tm_year += (*(p++) - '0');
+		if (t.tm_year < 70) t.tm_year += 100;
+	} else {
+		t.tm_year = (*(p++) - '0') * 1000;
+		t.tm_year += (*(p++) - '0') * 100;
+		t.tm_year += (*(p++) - '0') * 10;
+		t.tm_year += (*(p++) - '0');
+		t.tm_year -= 1900;
+	}
+
+	if ((end - p) < 10) {
+		fr_strerror_printf("ASN1 string too short, expected 10 additional bytes, got %zu bytes",
+				   end - p);
+		return -1;
+	}
+
+	t.tm_mon = (*(p++) - '0') * 10;
+	t.tm_mon += (*(p++) - '0') - 1; // -1 since January is 0 not 1.
+	t.tm_mday = (*(p++) - '0') * 10;
+	t.tm_mday += (*(p++) - '0');
+	t.tm_hour = (*(p++) - '0') * 10;
+	t.tm_hour += (*(p++) - '0');
+	t.tm_min = (*(p++) - '0') * 10;
+	t.tm_min += (*(p++) - '0');
+	t.tm_sec = (*(p++) - '0') * 10;
+	t.tm_sec += (*(p++) - '0');
+
+	/* Apparently OpenSSL converts all timestamps to UTC? Maybe? */
+	*out = timegm(&t);
 	return 0;
 }
 
@@ -1473,27 +1541,28 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int l
 
 		struct stat	st;
 		VALUE_PAIR	*vps = NULL;
+		VALUE_PAIR	*vp;
 
 		/* load the actual SSL session */
 		snprintf(filename, sizeof(filename), "%s%c%s.asn1", conf->session_cache_path, FR_DIR_SEP, buffer);
 		fd = open(filename, O_RDONLY);
 		if (fd < 0) {
 			RWDEBUG("No persisted session file %s: %s", filename, fr_syserror(errno));
-			goto err;
+			goto error;
 		}
 
 		rv = fstat(fd, &st);
 		if (rv < 0) {
 			RWDEBUG("Failed stating persisted session file %s: %s", filename, fr_syserror(errno));
 			close(fd);
-			goto err;
+			goto error;
 		}
 
 		sess_data = talloc_array(NULL, unsigned char, st.st_size);
 		if (!sess_data) {
 			RWDEBUG("Failed allocating buffer for persisted session (%d bytes)", (int) st.st_size);
 			close(fd);
-			goto err;
+			goto error;
 		}
 
 		q = sess_data;
@@ -1503,7 +1572,7 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int l
 			if (rv < 1) {
 				RWDEBUG("Failed reading persisted session: %s", fr_syserror(errno));
 				close(fd);
-				goto err;
+				goto error;
 			}
 			todo -= rv;
 			q += rv;
@@ -1526,7 +1595,7 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int l
 		sess = d2i_SSL_SESSION(NULL, o, st.st_size);
 		if (!sess) {
 			RWDEBUG("Failed loading persisted session: %s", ERR_error_string(ERR_get_error(), NULL));
-			goto err;
+			goto error;
 		}
 
 		/* read in the cached VPs from the .vps file */
@@ -1536,7 +1605,40 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int l
 		if (rv < 0) {
 			/* not safe to un-persist a session w/o VPs */
 			RWDEBUG("Failed loading persisted VPs for session %s", buffer);
-			goto err;
+			SSL_SESSION_free(sess);
+			goto error;
+		}
+
+		/*
+		 *	Enforce client certificate expiration.
+		 */
+		vp = fr_pair_find_by_num(pairlist->reply, PW_TLS_CLIENT_CERT_EXPIRATION, 0, TAG_ANY);
+		if (vp) {
+			time_t expires;
+
+			if (ocsp_asn1time_to_epoch(&expires, vp->vp_strvalue) < 0) {
+				RDEBUG2("Failed getting certificate expiration, removing cache entry for session %s", buffer);
+				SSL_SESSION_free(sess);
+				goto error;
+			}
+
+			if (expires <= request->timestamp) {
+				RDEBUG2("Certificate has expired, removing cache entry for session %s", buffer);
+				SSL_SESSION_free(sess);
+				goto error;
+			}
+
+			/*
+			 *	Account for Session-Timeout, if it's available.
+			 */
+			vp = fr_pair_find_by_num(request->reply->vps, PW_SESSION_TIMEOUT, 0, TAG_ANY);
+			if (vp) {
+				if ((request->timestamp + vp->vp_integer) > expires) {
+					vp->vp_integer = expires - request->timestamp;
+					RWDEBUG2("Updating Session-Timeout to %u, due to impending certificate expiration",
+						 vp->vp_integer);
+				}
+			}
 		}
 
 		/* move the cached VPs into the session */
@@ -1546,7 +1648,7 @@ static SSL_SESSION *cbtls_get_session(SSL *ssl, const unsigned char *data, int l
 		RWDEBUG("Successfully restored session %s", buffer);
 		rdebug_pair_list(L_DBG_LVL_2, request, vps, "reply:");
 	}
-err:
+error:
 	if (sess_data) talloc_free(sess_data);
 	if (pairlist) pairlist_free(&pairlist);
 
@@ -2061,7 +2163,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 	/*
 	 *	Get the RFC822 Subject Alternative Name
 	 */
-	loc = X509_get_ext_by_NID(client_cert, NID_subject_alt_name, 0);
+	loc = X509_get_ext_by_NID(client_cert, NID_subject_alt_name, -1);
 	if (certs && (lookup <= 1) && (loc >= 0)) {
 		X509_EXTENSION *ext = NULL;
 		GENERAL_NAMES *names = NULL;
@@ -2132,7 +2234,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 	}
 
 	if (lookup == 0) {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
 		ext_list = X509_get0_extensions(client_cert);
 #else
 		X509_CINF	*client_inf;
@@ -2341,7 +2443,8 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 						true, true, EXEC_TIMEOUT) != 0) {
 				AUTH(LOG_PREFIX ": Certificate CN (%s) fails external verification!", common_name);
 				my_ok = 0;
-			} else {
+
+			} else  if (request) {
 				RDEBUG("Client certificate CN %s passed external validation", common_name);
 			}
 
@@ -2437,6 +2540,38 @@ static int set_ecdh_curve(SSL_CTX *ctx, char const *ecdh_curve, bool disable_sin
 #endif
 #endif
 
+/*
+ * DIE OPENSSL DIE DIE DIE
+ *
+ * What a palaver, just to free some data attached the
+ * session. We need to do this because the "remove" callback
+ * is called when refcount > 0 sometimes, if another thread
+ * is using the session
+ */
+static void sess_free_vps(UNUSED void *parent, void *data_ptr,
+                                UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
+                                UNUSED long argl, UNUSED void *argp)
+{
+        VALUE_PAIR *vp = data_ptr;
+        if (!vp) return;
+
+        DEBUG2(LOG_PREFIX ": Freeing cached session VPs");
+
+        fr_pair_list_free(&vp);
+}
+
+static void sess_free_certs(UNUSED void *parent, void *data_ptr,
+                                UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
+                                UNUSED long argl, UNUSED void *argp)
+{
+        VALUE_PAIR **certs = data_ptr;
+        if (!certs) return;
+
+        DEBUG2(LOG_PREFIX ": Freeing cached session Certificates");
+
+        fr_pair_list_free(certs);
+}
+
 /** Add all the default ciphers and message digests reate our context.
  *
  * This should be called exactly once from main, before reading the main config
@@ -2452,7 +2587,7 @@ void tls_global_init(void)
 	/*
 	 *	Initialize the index for the certificates.
 	 */
-	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
+	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_certs);
 }
 
 #ifdef ENABLE_OPENSSL_VERSION_CHECK
@@ -2869,7 +3004,7 @@ post_ca:
 
 		SSL_CTX_set_quiet_shutdown(ctx, 1);
 		if (fr_tls_ex_index_vps < 0)
-			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
+			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_vps);
 	}
 
 	/*
@@ -2938,9 +3073,9 @@ post_ca:
 		}
 
 		/*
-		 *	Cache it, and DON'T auto-clear it.
+		 *	Cache it, DON'T auto-clear it, and disable the internal OpenSSL session cache.
 		 */
-		SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_SERVER | SSL_SESS_CACHE_NO_AUTO_CLEAR);
+		SSL_CTX_set_session_cache_mode(ctx, SSL_SESS_CACHE_SERVER | SSL_SESS_CACHE_NO_AUTO_CLEAR | SSL_SESS_CACHE_NO_INTERNAL);
 
 		SSL_CTX_set_session_id_context(ctx,
 					       (unsigned char *) conf->session_context_id,
@@ -2986,7 +3121,7 @@ static int _tls_server_conf_free(fr_tls_server_conf_t *conf)
 	return 0;
 }
 
-static fr_tls_server_conf_t *tls_server_conf_alloc(TALLOC_CTX *ctx)
+fr_tls_server_conf_t *tls_server_conf_alloc(TALLOC_CTX *ctx)
 {
 	fr_tls_server_conf_t *conf;
 
@@ -3028,6 +3163,20 @@ fr_tls_server_conf_t *tls_server_conf_parse(CONF_SECTION *cs)
 	 */
 	if (conf->fragment_size < 100) conf->fragment_size = 100;
 
+	/*
+	 *	Only check for certificate things if we don't have a
+	 *	PSK query.
+	 */
+	if (conf->psk_identity) {
+		if (conf->private_key_file) {
+			WARN(LOG_PREFIX ": Ignoring private key file due to psk_identity being used");
+		}
+
+		if (conf->certificate_file) {
+			WARN(LOG_PREFIX ": Ignoring certificate file due to psk_identity being used");
+		}
+
+	} else {
 	if (!conf->private_key_file) {
 		ERROR(LOG_PREFIX ": TLS Server requires a private key file");
 		goto error;
@@ -3036,6 +3185,7 @@ fr_tls_server_conf_t *tls_server_conf_parse(CONF_SECTION *cs)
 	if (!conf->certificate_file) {
 		ERROR(LOG_PREFIX ": TLS Server requires a certificate file");
 		goto error;
+	}
 	}
 
 	/*
@@ -3217,6 +3367,35 @@ int tls_success(tls_session_t *ssn, REQUEST *request)
 			 *	Save the certs in the packet, so that we can see them.
 			 */
 			fr_pair_add(&request->packet->vps, fr_pair_list_copy(request->packet, *certs));
+
+			vp = fr_pair_find_by_num(request->packet->vps, PW_TLS_CLIENT_CERT_EXPIRATION, 0, TAG_ANY);
+			if (vp) {
+				time_t expires;
+
+				if (ocsp_asn1time_to_epoch(&expires, vp->vp_strvalue) < 0) {
+					RDEBUG2("Failed getting certificate expiration, removing cache entry for session %s", buffer);
+					SSL_CTX_remove_session(ssn->ctx, ssn->ssl_session);
+					return -1;
+				}
+
+				if (expires <= request->timestamp) {
+					RDEBUG2("Certificate has expired, removing cache entry for session %s", buffer);
+					SSL_CTX_remove_session(ssn->ctx, ssn->ssl_session);
+					return -1;
+				}
+
+				/*
+				 *	Account for Session-Timeout, if it's available.
+				 */
+				vp = fr_pair_find_by_num(request->reply->vps, PW_SESSION_TIMEOUT, 0, TAG_ANY);
+				if (vp) {
+					if ((request->timestamp + vp->vp_integer) > expires) {
+						vp->vp_integer = expires - request->timestamp;
+						RWDEBUG2("Updating Session-Timeout to %u, due to impending certificate expiration",
+							 vp->vp_integer);
+					}
+				}
+			}
 		}
 
 		if (vps) {

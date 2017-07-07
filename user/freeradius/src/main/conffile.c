@@ -1393,9 +1393,11 @@ int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *d
 	CONF_PAIR *cp = NULL;
 	fr_ipaddr_t *ipaddr;
 	char buffer[8192];
-	CONF_ITEM *c_item = &cs->item;
+	CONF_ITEM *c_item;
 
 	if (!cs) return -1;
+
+	c_item = &cs->item;
 
 	deprecated = (type & PW_TYPE_DEPRECATED);
 	required = (type & PW_TYPE_REQUIRED);
@@ -1474,7 +1476,6 @@ int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *d
 
 	if (!value) {
 		if (required) {
-		is_required:
 			cf_log_err(c_item, "Configuration item \"%s\" must have a value", name);
 
 			return -1;
@@ -1620,7 +1621,6 @@ int cf_item_parse(CONF_SECTION *cs, char const *name, unsigned int type, void *d
 			}
 		}
 
-		if (required && !value) goto is_required;
 		if (cant_be_empty && (value[0] == '\0')) goto cant_be_empty;
 
 		if (attribute) {

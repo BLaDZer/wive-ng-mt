@@ -1787,7 +1787,10 @@ static ssize_t xlat_tokenize_request(REQUEST *request, char const *fmt, xlat_exp
 	 *	much faster.
 	 */
 	tokens = talloc_typed_strdup(request, fmt);
-	if (!tokens) return -1;
+	if (!tokens) {
+		error = "Out of memory";
+		return -1;
+	}
 
 	slen = xlat_tokenize_literal(request, tokens, head, false, &error);
 
@@ -1806,7 +1809,8 @@ static ssize_t xlat_tokenize_request(REQUEST *request, char const *fmt, xlat_exp
 	 */
 	if (slen < 0) {
 		talloc_free(tokens);
-		rad_assert(error != NULL);
+
+		if (!error) error = "Unknown error";
 
 		REMARKER(fmt, -slen, error);
 		return slen;
@@ -2197,15 +2201,14 @@ static char *xlat_aprint(TALLOC_CTX *ctx, REQUEST *request, xlat_exp_t const * c
 
 		case 'S': /* request timestamp in SQL format*/
 			if (!localtime_r(&when, &ts)) goto error;
-			nl = str + strftime(str, freespace, "%Y-%m-%d %H:%M:%S", &ts);
-			rad_assert(((str + freespace) - nl) >= 8);
-			snprintf(nl, (str + freespace) - nl, ".%06d",  usec);
+			strftime(str, freespace, "%Y-%m-%d %H:%M:%S", &ts);
 			break;
 
 		case 'T': /* request timestamp */
 			if (!localtime_r(&when, &ts)) goto error;
-			strftime(str, freespace, "%Y-%m-%d-%H.%M.%S", &ts);
-			
+			nl = str + strftime(str, freespace, "%Y-%m-%d-%H.%M.%S", &ts);
+			rad_assert(((str + freespace) - nl) >= 8);
+			snprintf(nl, (str + freespace) - nl, ".%06d",  usec);
 			break;
 
 		case 'Y': /* request year */

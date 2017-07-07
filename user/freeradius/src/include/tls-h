@@ -137,6 +137,7 @@ typedef struct _tls_session_t {
 	unsigned int 	(*record_minus)(record_t *buf, void *ptr, unsigned int size);
 
 	bool		invalid_hb_used;		//!< Whether heartbleed attack was detected.
+	bool		connected;			//!< whether the outgoing socket is connected
 
 	/*
 	 *	Framed-MTU attribute in RADIUS, if present, can also be used to set this
@@ -308,6 +309,7 @@ tls_session_t	*tls_new_session(TALLOC_CTX *ctx, fr_tls_server_conf_t *conf, REQU
 tls_session_t	*tls_new_client_session(TALLOC_CTX *ctx, fr_tls_server_conf_t *conf, int fd);
 fr_tls_server_conf_t *tls_server_conf_parse(CONF_SECTION *cs);
 fr_tls_server_conf_t *tls_client_conf_parse(CONF_SECTION *cs);
+fr_tls_server_conf_t *tls_server_conf_alloc(TALLOC_CTX *ctx);
 SSL_CTX		*tls_init_ctx(fr_tls_server_conf_t *conf, int client);
 int 		tls_handshake_recv(REQUEST *, tls_session_t *ssn);
 int 		tls_handshake_send(REQUEST *, tls_session_t *ssn);
