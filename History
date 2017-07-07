@@ -3244,14 +3244,15 @@
 3) coovachilli: up to 1.4 from git (commit c6f6ada8).<br>
 4) kernel: ralink_wifi: use real transmit power for TPE.<br>
 5) kernel: ralink_wifi: enchange regulatory class table.<br>
-6) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
-7) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-8) kernel: introduse offsetofend macros.<br>
-9) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-10) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-11) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-12) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-13) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+6) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
+7) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+8) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+9) kernel: introduse offsetofend macros.<br>
+10) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+11) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+12) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+13) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+14) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>

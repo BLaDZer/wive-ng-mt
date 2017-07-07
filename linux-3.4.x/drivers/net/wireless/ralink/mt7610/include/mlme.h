@@ -1216,8 +1216,6 @@ typedef struct {
     UCHAR       EdcaUpdateCount;
 } QOS_CAPABILITY_PARM, *PQOS_CAPABILITY_PARM;
 
-
-
 typedef struct {
     UCHAR   Bssid[MAC_ADDR_LEN];
     UCHAR   Channel;
@@ -1230,6 +1228,7 @@ typedef struct {
     UCHAR   SupRateLen;
     UCHAR   ExtRate[MAX_LEN_OF_SUPPORTED_RATES];
     UCHAR   ExtRateLen;
+	UCHAR Erp;
 	HT_CAPABILITY_IE HtCapability;
 	UCHAR			HtCapabilityLen;
 	ADD_HT_INFO_IE AddHtInfo;	/* AP might use this additional ht info IE */

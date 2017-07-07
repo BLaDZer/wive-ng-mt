@@ -2248,6 +2248,7 @@ VOID BssEntrySet(
 	NdisMoveMemory(pBss->ExtRate, ie_list->ExtRate, ie_list->ExtRateLen);
 	pBss->NewExtChanOffset = ie_list->NewExtChannelOffset;
 	pBss->ExtRateLen = ie_list->ExtRateLen;
+	pBss->Erp = ie_list->Erp;
 	pBss->Channel = ie_list->Channel;
 	pBss->CentralChannel = ie_list->Channel;
 	pBss->Rssi = Rssi;

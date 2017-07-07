@@ -57,6 +57,10 @@ typedef struct _RRM_CONFIG
 	BOOLEAN bDot11kRRMEnable;
 	BOOLEAN bDot11kRRMNeighborRepTSFEnable;
 	RRM_QUIET_CB QuietCB;
+	/* FOR AP Measurement Report */
+	UINT8	PeerMeasurementToken;
+	BOOLEAN bPeerReqLCI;
+	BOOLEAN bPeerReqCIVIC;
 } RRM_CONFIG, *PRRM_CONFIG;
 
 typedef union _RRM_BCN_REQ_CAP

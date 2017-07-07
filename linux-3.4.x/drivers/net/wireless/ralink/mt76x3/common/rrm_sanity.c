@@ -48,6 +48,8 @@ BOOLEAN RRM_PeerNeighborReqSanity(
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
 	PMAC_TABLE_ENTRY pEntry;
+	PRRM_CONFIG pRrmCfg;
+	UINT8 PeerMeasurementType;
 
 	if ((Fr == NULL) || (pDialogToken == NULL))
 		return result;
@@ -65,6 +67,7 @@ BOOLEAN RRM_PeerNeighborReqSanity(
 		return result;
 	}
 
+	pRrmCfg = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].RrmCfg;
 	*pSsid = pAd->ApCfg.MBSSID[pEntry->func_tb_idx].Ssid;
 	*pSsidLen = pAd->ApCfg.MBSSID[pEntry->func_tb_idx].SsidLen;
 
@@ -82,6 +85,25 @@ BOOLEAN RRM_PeerNeighborReqSanity(
 				*pSsid = (PCHAR)eid_ptr->Octet;
 				*pSsidLen = eid_ptr->Len;
                 break;
+        		case RRM_NEIGHBOR_REQ_MEASUREMENT_REQUEST_SUB_ID:
+	        		DBGPRINT(RT_DEBUG_TRACE, ("%s - Got STA Measurement Request\n",__FUNCTION__));
+				pRrmCfg->PeerMeasurementToken = eid_ptr->Octet[0];
+				PeerMeasurementType = eid_ptr->Octet[2];
+				switch(PeerMeasurementType)
+				{
+					case RRM_MEASURE_SUBTYPE_LCI:
+						pRrmCfg->bPeerReqLCI = TRUE;
+						DBGPRINT(RT_DEBUG_TRACE, ("%s - STA Request LCI Measurement Report\n",__FUNCTION__));
+					break;
+					case RRM_MEASURE_SUBTYPE_LOCATION_CIVIC:
+						pRrmCfg->bPeerReqCIVIC = TRUE;
+						DBGPRINT(RT_DEBUG_TRACE, ("%s - STA Request CIVIC Measurement Report\n",__FUNCTION__));
+					break;
+					default:
+						DBGPRINT(RT_DEBUG_TRACE, ("unknown PeerMeasurementType: %d\n",PeerMeasurementType));
+				}
+                break;
+
 
 			case RRM_NEIGHBOR_REQ_VENDOR_SUB_ID:
                 break;

@@ -677,6 +677,8 @@ VOID RRM_EnqueueNeighborRep(
 
 				if (pBssEntry->HtCapabilityLen != 0) //HT case
 					pBssEntry->CondensedPhyType = 7;
+				else if (ERP_IS_NON_ERP_PRESENT(pBssEntry->Erp)) //ERP case
+					pBssEntry->CondensedPhyType = 6;
 				else if (pBssEntry->SupRateLen > 4)// OFDM case (1,2,5.5,11 for CCK 4 Rates)
 					pBssEntry->CondensedPhyType = 4;
 
