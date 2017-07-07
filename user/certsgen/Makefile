@@ -31,7 +31,7 @@ ifdef NEEDGEN
 	$(ROMFSINST) -S ca.pem /etc/certs/ca.pem
 ifdef CONFIG_USER_RADIUS
 	openssl req -new -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.pem -subj "/C=RU/ST=Russia/L=EKB/O=Wive-NG/OU=CA/CN=ROUTER"
-	openssl dhparam 512 > dh
+	openssl dhparam 1024 > dh
 	$(ROMFSINST) -S server.key /etc/certs/server.key
 	$(ROMFSINST) -S server.pem /etc/certs/server.pem
 	$(ROMFSINST) -S dh /etc/certs/dh
