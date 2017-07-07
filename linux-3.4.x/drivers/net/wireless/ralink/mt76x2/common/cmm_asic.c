@@ -414,7 +414,7 @@ VOID AsicUpdateProtect(
 	ProtCfg.field.TxopAllowCck = 1;
 	ProtCfg.field.RTSThEn = 1;
 	ProtCfg.field.ProtectNav = ASIC_SHORTNAV;
-
+#if 0
 #ifdef DOT11_VHT_AC
 #ifdef RT65xx
 	// TODO: shiang, is that a correct way to set 0x2000 here??
@@ -422,7 +422,7 @@ VOID AsicUpdateProtect(
 		PhyMode = 0x2000; /* Bit 15:13, 0:Legacy CCK, 1: Legacy OFDM, 2: HT mix mode, 3: HT green field, 4: VHT mode, 5-7: Reserved */
 #endif /* RT65xx */
 #endif /* DOT11_VHT_AC */
-
+#endif
 	/* update PHY mode and rate*/
 	if (pAd->OpMode == OPMODE_AP)
 	{
