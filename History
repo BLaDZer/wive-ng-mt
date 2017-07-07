@@ -3250,7 +3250,7 @@
 9) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
 10) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
 11) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-12) kernel: introduse offsetofend macros.<br>
+12) kernel: introduce offsetofend macros.<br>
 13) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
 14) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
 15) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
