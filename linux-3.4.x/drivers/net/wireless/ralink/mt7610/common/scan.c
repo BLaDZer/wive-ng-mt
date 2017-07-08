@@ -454,7 +454,11 @@ VOID ScanNextChannel(
 					stay_time = MIN_CHANNEL_TIME;
 			}
 			else
-				stay_time = MAX_CHANNEL_TIME;
+				/* for long beacon interval need more time for scan */
+				if (pAd->CommonCfg.BeaconPeriod > 80)
+				    stay_time = MAX_CHANNEL_TIME + pAd->CommonCfg.BeaconPeriod;
+				else
+				    stay_time = MAX_CHANNEL_TIME;
 		}
 				
 		RTMPSetTimer(sc_timer, stay_time);

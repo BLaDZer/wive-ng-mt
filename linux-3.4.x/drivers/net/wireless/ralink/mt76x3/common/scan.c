@@ -472,7 +472,11 @@ VOID ScanNextChannel(RTMP_ADAPTER *pAd, UCHAR OpMode)
 					stay_time = MIN_CHANNEL_TIME;
 			}
 			else
-				stay_time = MAX_CHANNEL_TIME;
+				/* for long beacon interval need more time for scan */
+				if (pAd->CommonCfg.BeaconPeriod > 80)
+				    stay_time = MAX_CHANNEL_TIME + pAd->CommonCfg.BeaconPeriod;
+				else
+				    stay_time = MAX_CHANNEL_TIME;
 #ifdef CONFIG_AP_SUPPORT					
 #endif			
 		}

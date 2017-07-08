@@ -796,7 +796,11 @@ VOID ScanNextChannel(RTMP_ADAPTER *pAd, UCHAR OpMode, INT IfType)
 					}
 					else
 #endif
-				stay_time = MAX_CHANNEL_TIME;
+				/* for long beacon interval need more time for scan */
+				if (pAd->CommonCfg.BeaconPeriod > 80)
+				    stay_time = MAX_CHANNEL_TIME + pAd->CommonCfg.BeaconPeriod;
+				else
+				    stay_time = MAX_CHANNEL_TIME;
 		}
 				
 #ifdef SMART_MESH
