@@ -1298,6 +1298,8 @@ VOID APScanTimeoutAction(
 	}
 #endif /* CONFIG_AP_SUPPORT */
 	ScanNextChannel(pAd, OPMODE_AP);
+	/* sort entry by rssi every scan */
+	BssTableSortByRssi(&pAd->ScanTab, FALSE);
 }
 #ifdef CON_WPS
 VOID APMlmeScanCompleteAction(

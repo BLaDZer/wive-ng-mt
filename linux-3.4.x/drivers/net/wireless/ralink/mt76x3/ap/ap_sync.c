@@ -1449,6 +1449,8 @@ VOID APScanTimeoutAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	}
 #endif /* CONFIG_AP_SUPPORT */
 	ScanNextChannel(pAd, OPMODE_AP);
+	/* sort entry by rssi every scan */
+	BssTableSortByRssi(&pAd->ScanTab, FALSE);
 }
 
 /*
