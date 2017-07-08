@@ -620,6 +620,11 @@ VOID RRM_BeaconReportHandler(
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
 	UCHAR VarIE[MAX_VIE_LEN];
 	ULONG Idx = BSS_NOT_FOUND;
+	/*
+	 	if peer response mesurement pilot frame, pVIE->Length should be init.
+	 	Sofar we don't know the mesurement pilot frame format, so we use below flag to avoid call BssTableSetEntry() instead of init. pVIE->Length
+	*/
+	BOOLEAN bFrameBody = FALSE;
 	LONG RemainLen = Length;
 	PRRM_BEACON_REP_INFO pBcnRep;
 	PUINT8 ptr;
@@ -661,13 +666,13 @@ VOID RRM_BeaconReportHandler(
 		switch(pRrmSubFrame->SubId)
 		{
 			case 1:
-				if (BcnReqInfoField.field.ReportFrameType == 0)
+				if (BcnReqInfoField.field.ReportFrameType == 0) // 0 ==> beacon or probe response frame , 1 ==> Measurement Pilot frame
 				{
 					/* Init Variable IE structure */
 					pVIE = (PNDIS_802_11_VARIABLE_IEs) VarIE;
 					pVIE->Length = 0;
 
-					PeerBeaconAndProbeRspSanity(pAd,
+					bFrameBody = PeerBeaconAndProbeRspSanity(pAd,
 								pRrmSubFrame->Oct,
 								pRrmSubFrame->Length,
 								pBcnRep->ChNumber,
@@ -675,6 +680,7 @@ VOID RRM_BeaconReportHandler(
 								&LenVIE,
 								pVIE,
 								FALSE);
+					DBGPRINT(RT_DEBUG_TRACE, ("%s:: bFrameBody=%d\n", __FUNCTION__, bFrameBody));
 				}
 				break;
 
@@ -707,14 +713,21 @@ VOID RRM_BeaconReportHandler(
 		ie_list->Channel = pBcnRep->ChNumber;
 
 #ifdef AP_SCAN_SUPPORT
-	Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE);
-	if (Idx != BSS_NOT_FOUND)
+	if (bFrameBody)
 	{
-		BSS_ENTRY *pBssEntry = &pAd->ScanTab.BssEntry[Idx];
-		NdisMoveMemory(pBssEntry->PTSF, (PUCHAR)&Ptsf, 4);
-		pBssEntry->RegulatoryClass = pBcnRep->RegulatoryClass;
-		pBssEntry->CondensedPhyType = BcnReqInfoField.field.CondensePhyType;
-		pBssEntry->RSNI = pBcnRep->RSNI;
+
+		ie_list->FromBcnReport = TRUE;
+
+		Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE);
+
+		if (Idx != BSS_NOT_FOUND)
+		{
+			BSS_ENTRY *pBssEntry = &pAd->ScanTab.BssEntry[Idx];
+			NdisMoveMemory(pBssEntry->PTSF, (PUCHAR)&Ptsf, 4);
+			pBssEntry->RegulatoryClass = pBcnRep->RegulatoryClass;
+			pBssEntry->CondensedPhyType = BcnReqInfoField.field.CondensePhyType;
+			pBssEntry->RSNI = pBcnRep->RSNI;
+		}
 	}
 #endif /* AP_SCAN_SUPPORT */
 	return;

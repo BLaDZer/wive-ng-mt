@@ -955,6 +955,7 @@ typedef struct _BSS_ENTRY{
 	UCHAR Privacy;			/* Indicate security function ON/OFF. Don't mess up with auth mode. */
 	UCHAR Hidden;
 
+	BOOLEAN FromBcnReport; //source from beacon report
 	USHORT DtimPeriod;
 	USHORT CapabilityInfo;
 
@@ -1390,6 +1391,7 @@ typedef struct _bcn_ie_list {
 	UCHAR vht_cap_len;
 	UCHAR vht_op_len;
 #endif /* DOT11_VHT_AC */
+	BOOLEAN  FromBcnReport;
 }BCN_IE_LIST;
 
 VOID MlmeHandler(struct _RTMP_ADAPTER *pAd);

@@ -1249,6 +1249,7 @@ typedef struct {
     UCHAR   Privacy;			/* Indicate security function ON/OFF. Don't mess up with auth mode. */
 	UCHAR	Hidden;
 
+    BOOLEAN FromBcnReport; //source from beacon report
     USHORT  DtimPeriod;
     USHORT  CapabilityInfo;
 
@@ -1634,6 +1635,7 @@ typedef struct _bcn_ie_list {
 	OPERATING_MODE operating_mode;
 	UCHAR vht_op_mode_len;
 #endif /* DOT11_VHT_AC */
+	BOOLEAN  FromBcnReport;
 }BCN_IE_LIST;
 
 #endif	/* MLME_H__ */

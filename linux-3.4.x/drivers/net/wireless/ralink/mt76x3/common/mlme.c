@@ -2787,6 +2787,7 @@ VOID BssEntrySet(
 	COPY_MAC_ADDR(pBss->Bssid, ie_list->Bssid);
 	/* Default Hidden SSID to be TRUE, it will be turned to FALSE after coping SSID*/
 	pBss->Hidden = 1;	
+	pBss->FromBcnReport = ie_list->FromBcnReport;
 	if (ie_list->SsidLen > 0)
 	{
 		/* For hidden SSID AP, it might send beacon with SSID len equal to 0*/

@@ -3248,15 +3248,16 @@
 7) kernel: ralink_wifi: use real transmit power for TPE.<br>
 8) kernel: ralink_wifi: enchange regulatory class table.<br>
 9) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
-10) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
-11) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
-12) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-13) kernel: introduce offsetofend macros.<br>
-14) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-15) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-16) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-17) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-18) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+10) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
+11) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+12) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
+13) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+14) kernel: introduce offsetofend macros.<br>
+15) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+16) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+17) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+18) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+19) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>

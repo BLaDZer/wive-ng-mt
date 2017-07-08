@@ -964,6 +964,7 @@ typedef struct _BSS_ENTRY{
 	UCHAR Privacy;			/* Indicate security function ON/OFF. Don't mess up with auth mode. */
 	UCHAR Hidden;
 
+	BOOLEAN FromBcnReport; //source from beacon report
 	USHORT DtimPeriod;
 	USHORT CapabilityInfo;
 
@@ -1460,6 +1461,7 @@ typedef struct _bcn_ie_list {
 	OPERATING_MODE operating_mode;
 	UCHAR vht_op_mode_len;
 #endif /* DOT11_VHT_AC */
+	BOOLEAN  FromBcnReport;
 #ifdef SMART_MESH
 	UCHAR VIEFlag;       		/* Store the flag byte inside VIE*/	
 	BOOLEAN	bSupportSmartMesh; 	/* Determine If own smart mesh capability */
