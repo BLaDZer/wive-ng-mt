@@ -728,6 +728,9 @@ VOID RRM_BeaconReportHandler(
 			pBssEntry->CondensedPhyType = BcnReqInfoField.field.CondensePhyType;
 			pBssEntry->RSNI = pBcnRep->RSNI;
 		}
+		/* sort entry by rssi every insert */
+		if (!ApScanRunning(pAd))
+		    BssTableSortByRssi(&pAd->ScanTab, FALSE);
 	}
 #endif /* AP_SCAN_SUPPORT */
 	return;
