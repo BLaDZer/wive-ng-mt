@@ -543,7 +543,6 @@ VOID RRM_EnqueueNeighborRep(
 	IN PCHAR pSsid,
 	IN UINT8 SsidLen)
 {
-#define MIN(_x, _y) ((_x) > (_y) ? (_x) : (_y))
 	INT loop;
 	HEADER_802_11 ActHdr;
 	PUCHAR pOutBuffer = NULL;
@@ -593,7 +592,7 @@ VOID RRM_EnqueueNeighborRep(
 
 		if (SsidLen != 0)
 			BssMatch = RTMPEqualMemory(pBssEntry->Ssid, pSsid,
-								MIN(SsidLen, pBssEntry->SsidLen));
+								min(SsidLen, pBssEntry->SsidLen));
 		else
 			BssMatch = TRUE;
 

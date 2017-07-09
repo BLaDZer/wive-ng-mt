@@ -1013,7 +1013,6 @@ VOID APPeerBeaconAction(
 								&LenVIE,
 								pVIE))
 	{
-
 		/* ignore BEACON not in this channel */
 		if (ie_list->Channel != Channel
 #ifdef DOT11_N_SUPPORT
@@ -1025,7 +1024,6 @@ VOID APPeerBeaconAction(
 		{
 			goto __End_Of_APPeerBeaconAction;
 		}
-
 #ifdef IDS_SUPPORT
 		/* Conflict SSID detection */
 		RTMPConflictSsidDetection(pAd, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, (CHAR)Elem->Rssi0, (CHAR)Elem->Rssi1, (CHAR)Elem->Rssi2);
@@ -1215,11 +1213,42 @@ __End_Of_APPeerBeaconAction:
 #ifdef CONFIG_AP_SUPPORT
 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 {
-	if (pAd->pChannelInfo != NULL && ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+#ifdef DOT11K_RRM_SUPPORT
+	UCHAR apidx;
+
+	/* update my network scanlist from neighbour beacons with SSID filter for RRM, only on work channel (rssi info valid only for this) */
+	for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++) {
+	    if (ie_list->Channel == pAd->CommonCfg.Channel && ie_list->SsidLen > 0 && pAd->ApCfg.MBSSID[apidx].SsidLen > 0 &&
+		ie_list->SsidLen == pAd->ApCfg.MBSSID[apidx].SsidLen && IS_RRM_ENABLE(pAd, apidx) &&
+		RTMPEqualMemory((PUCHAR)ie_list->Ssid, (PUCHAR)pAd->ApCfg.MBSSID[apidx].Ssid, min(ie_list->SsidLen, pAd->ApCfg.MBSSID[apidx].SsidLen))
+	    ) {
+		ULONG Idx = BssTableSearch(&pAd->ScanTab, ie_list->Bssid, ie_list->Channel);
+		if (Idx == BSS_NOT_FOUND) {
+			Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, RealRssi, LenVIE, pVIE);
+			if (Idx != BSS_NOT_FOUND)
+			{
+			    NdisMoveMemory(pAd->ScanTab.BssEntry[Idx].PTSF, &Elem->Msg[24], 4);
+			    NdisMoveMemory(&pAd->ScanTab.BssEntry[Idx].TTSF[0], &Elem->TimeStamp.u.LowPart, 4);
+			    NdisMoveMemory(&pAd->ScanTab.BssEntry[Idx].TTSF[4], &Elem->TimeStamp.u.LowPart, 4);
+			}
+			/* sort entry by rssi every insert */
+			if (!ApScanRunning(pAd))
+			    BssTableSortByRssi(&pAd->ScanTab, FALSE);
+			DBGPRINT(RT_DEBUG_TRACE, ("ADD new SSID %s to ScanTab table\n", ie_list->Ssid));
+		}
+	    } else {
+			//DBGPRINT(RT_DEBUG_TRACE, ("SSID %s %s %d %d %d %d NOT EQAL\n", ie_list->Ssid, pAd->ApCfg.MBSSID[apidx].Ssid, ie_list->SsidLen, pAd->ApCfg.MBSSID[apidx].SsidLen, ie_list->Channel, pAd->CommonCfg.Channel));
+	    }
+	}
+#endif /* DOT11K_RRM_SUPPORT */
+	if (pAd->pChannelInfo != NULL)
 	{
-		if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
+		if (ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+		{
+		    if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
 			pAd->pChannelInfo->ApCnt[pAd->ApCfg.current_channel_index]++;
-		AutoChBssInsertEntry(pAd, ie_list->Bssid, ie_list->Ssid, ie_list->SsidLen, ie_list->Channel, ie_list->NewExtChannelOffset, RealRssi);
+		    AutoChBssInsertEntry(pAd, ie_list->Bssid, ie_list->Ssid, ie_list->SsidLen, ie_list->Channel, ie_list->NewExtChannelOffset, RealRssi);
+		}
 	}
 }
 #endif /* CONFIG_AP_SUPPORT */

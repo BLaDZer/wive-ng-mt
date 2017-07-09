@@ -330,6 +330,23 @@ VOID APMlmePeriodicExec(
 
 		DBGPRINT(RT_DEBUG_TRACE, ("bImprovedScan ............. Resume for bImprovedScan, SCAN_PENDING .............. \n"));
 	}
+
+#ifdef DOT11K_RRM_SUPPORT
+	if (pAd->Mlme.OneSecPeriodicRound % 120 == 0) {
+		if (pAd->MacTab.Size == 0) {
+		    INT needscan = 0;
+		    for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
+			    if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i) && !ApScanRunning(pAd))
+				    needscan = 1;
+		    }
+		    if (needscan == 1) {
+			    DBGPRINT(RT_DEBUG_TRACE, ("RRM: rescan every 120sec for update neighbour info\n"));
+			    pAd->ApCfg.bImprovedScan = FALSE;
+			    ApSiteSurvey(pAd, NULL, SCAN_PASSIVE, FALSE);
+		    }
+		}
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 }
 
 
