@@ -2352,6 +2352,9 @@ typedef struct _COMMON_CONFIG {
 	ULONG ManualTxopThreshold;
 	UCHAR ManualTxopUpBound;
 	UCHAR ManualTxopLowBound;
+#ifdef DOT11K_RRM_SUPPORT
+	BOOLEAN RRMFistScan;
+#endif /* DOT11K_RRM_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
 #ifdef DBG_CTRL_SUPPORT
