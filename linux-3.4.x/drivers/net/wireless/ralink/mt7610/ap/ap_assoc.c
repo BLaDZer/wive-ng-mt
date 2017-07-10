@@ -1793,14 +1793,9 @@ VOID APPeerDisassocReqAction(
 	MULTISSID_STRUCT *wdev;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - 1 receive DIS-ASSOC request \n"));
-
-	DBGPRINT(RT_DEBUG_TRACE, ("ASSOC - 1 receive DIS-ASSOC request \n"));
 	if (! PeerDisassocReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr1, Addr2, &SeqNum, &Reason))
     		return;
 
-	printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
-								pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
-								SeqNum, Addr2[0],Addr2[1],Addr2[2],Addr2[3],Addr2[4],Addr2[5],Reason);
 	pEntry = MacTableLookup(pAd, Addr2);
 
 	if (pEntry == NULL)
@@ -1836,6 +1831,10 @@ VOID APPeerDisassocReqAction(
 							   WAI_MLME_DISCONNECT);		
 #endif /* WAPI_SUPPORT */
 	
+		printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
+								pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
+								SeqNum, Addr2[0],Addr2[1],Addr2[2],Addr2[3],Addr2[4],Addr2[5],Reason);
+
 		/* send wireless event - for disassociation */
 		RTMPSendWirelessEvent(pAd, IW_DISASSOC_EVENT_FLAG, Addr2, 0, 0);
 		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
