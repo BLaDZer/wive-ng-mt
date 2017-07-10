@@ -1319,11 +1319,14 @@ VOID MacTableMaintenance(
 			/* temporary block probe req from last kickouted client
 			    help correct roam to new AP, copy mac and set start count to 0 */
 			if (pMbss->TmpBlockAfterKickTimes != 0) {
-				pMbss->TmpBlockAfterKickCount = 0;
-				COPY_MAC_ADDR(pMbss->TmpBlockAfterKickMac, pEntry->Addr);
-				printk("%s Temp block %d times probe/assod req from %02x:%02x:%02x:%02x:%02x:%02x.\n",
-					pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", pMbss->TmpBlockAfterKickTimes,
-					PRINT_MAC(pMbss->TmpBlockAfterKickMac));
+				/* do not block age out clients for avoid racely reconnection */
+				if (pEntry->NoDataIdleCount < pEntry->StaIdleTimeout) {
+					pMbss->TmpBlockAfterKickCount = 0;
+					COPY_MAC_ADDR(pMbss->TmpBlockAfterKickMac, pEntry->Addr);
+					printk("%s Temp block %d times probe/assod req from %02x:%02x:%02x:%02x:%02x:%02x.\n",
+						pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", pMbss->TmpBlockAfterKickTimes,
+						PRINT_MAC(pMbss->TmpBlockAfterKickMac));
+				}
 			}
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
