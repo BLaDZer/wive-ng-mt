@@ -8094,55 +8094,6 @@ BOOLEAN MlmeScanReqSanity(
 #endif    
 	);
 
-
-BOOLEAN PeerBeaconAndProbeRspSanity_Old(
-	IN  RTMP_ADAPTER *pAd, 
-	IN  VOID *Msg, 
-	IN  ULONG MsgLen, 
-	IN  UCHAR MsgChannel,
-	OUT PUCHAR pAddr2, 
-	OUT PUCHAR pBssid, 
-	OUT CHAR Ssid[], 
-	OUT UCHAR *pSsidLen, 
-	OUT UCHAR *pBssType, 
-	OUT USHORT *pBeaconPeriod, 
-	OUT UCHAR *pChannel, 
-	OUT UCHAR *pNewChannel, 
-	OUT LARGE_INTEGER *pTimestamp, 
-	OUT CF_PARM *pCfParm, 
-	OUT USHORT *pAtimWin, 
-	OUT USHORT *pCapabilityInfo, 
-	OUT UCHAR *pErp,
-	OUT UCHAR *pDtimCount, 
-	OUT UCHAR *pDtimPeriod, 
-	OUT UCHAR *pBcastFlag, 
-	OUT UCHAR *pMessageToMe, 
-	OUT UCHAR SupRate[],
-	OUT UCHAR *pSupRateLen,
-	OUT UCHAR ExtRate[],
-	OUT UCHAR *pExtRateLen,
-	OUT	UCHAR *pCkipFlag,
-	OUT	UCHAR *pAironetCellPowerLimit,
-	OUT PEDCA_PARM       pEdcaParm,
-	OUT PQBSS_LOAD_PARM  pQbssLoad,
-	OUT PQOS_CAPABILITY_PARM pQosCapability,
-	OUT ULONG *pRalinkIe,
-	OUT UCHAR		 *pHtCapabilityLen,
-#ifdef CONFIG_STA_SUPPORT
-	OUT UCHAR		 *pPreNHtCapabilityLen,
-#ifdef NATIVE_WPA_SUPPLICANT_SUPPORT
-    OUT UCHAR 	*pSelReg,
-#endif /* NATIVE_WPA_SUPPLICANT_SUPPORT */
-#endif /* CONFIG_STA_SUPPORT */
-	OUT HT_CAPABILITY_IE *pHtCapability,
-	OUT EXT_CAP_INFO_ELEMENT *pExtCapInfo,
-	OUT UCHAR		 *AddHtInfoLen,
-	OUT ADD_HT_INFO_IE *AddHtInfo,
-	OUT UCHAR *NewExtChannel,
-	OUT USHORT *LengthVIE,
-	OUT PNDIS_802_11_VARIABLE_IEs pVIE);
-
-
 BOOLEAN PeerBeaconAndProbeRspSanity(
 	IN RTMP_ADAPTER *pAd,
 	IN VOID *Msg, 
