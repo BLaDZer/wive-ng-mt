@@ -136,7 +136,13 @@
   <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -72" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
   <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
-  
+  <message msgid="basic roaming rc inic" msgstr="Regulatory Class (5GHz)" />
+  <message msgid="basic roaming rc inic channel 1" msgstr="36, 40, 44, 48 channels" />
+  <message msgid="basic roaming rc inic channel 2" msgstr="52, 56, 60, 64 channels" />
+  <message msgid="basic roaming rc inic channel 3" msgstr="132, 136, 140, 144 channels" />
+  <message msgid="basic roaming rc inic channel 4" msgstr="149, 153, 157, 161, 165 channels" />
+  <message msgid="basic 11a channel warning" msgstr="To avoid problems with some wireless clients, it is recommended to use the channel up to 64" />
+
   <message msgid="basic dot11h" msgstr="IEEE 802.11h support" />
   <message msgid="basic ids" msgstr="Intrusion Detection settings" />
   <message msgid="basic ids auth" msgstr="Authentication flood threshold" />

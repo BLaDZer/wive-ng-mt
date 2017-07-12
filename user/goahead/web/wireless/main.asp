@@ -207,12 +207,24 @@
 			}
 
 			function GExtChannelDisplay(form) {
-				var mode = form.wirelessmode.value * 1;
-				var channel = form.sz11gChannel.value * 1;
-				var bandwidth = form.n_bandwidth.value * 1;
+				var mode	= +form.wirelessmode.value;
+				var channel	= +form.sz11gChannel.value;
+				var bandwidth	= +form.n_bandwidth.value;
 
-				displayElement('extension_channel', (channel != 0) && (bandwidth != 0) && (mode >= 5) && (statusHTPysModeMenu == 1));
-				enableElements(form.n_extcha, (channel != 0) && (bandwidth != 0) && (mode >= 5));
+				displayElement('extension_channel', channel != 0 && bandwidth != 0 && mode >= 5 && statusHTPysModeMenu == 1);
+				enableElements(form.n_extcha, channel != 0 && bandwidth != 0 && mode >= 5);
+
+				// Hide 165 channel if BW > 20MHz
+				var channelList = document.getElementById('sz11aChannel');
+				for (var i = 0; i < channelList.options.length; i++) {
+					if (channelList.options[i].value == '165' && form.n_bandwidthinic.value == '1') {
+						displayElement(channelList.options[i], false)
+						if (channelList.options.selectedIndex == i)
+							channelList.options.selectedIndex = 0;
+					}
+					else
+						displayElement(channelList.options[i], true);
+				}
 			}
 
 			function initChecktime(form) {
@@ -229,6 +241,8 @@
 				insertExtChannelOption(form);
 				GExtChannelDisplay(form);
 				AutoChannelSelect(form);
+				if (is5gh_support && document.getElementById('sz11aChannel').value > 64)
+					alert(_("basic 11a channel warning"));
 			}
 
 			function ssidDisplay(form)
@@ -377,8 +391,14 @@
 				_TR("basicKickStaRssiLowDelay_range", "basic roaming rssi low delay range");
 				_TR("basicProbeRspRssi_range", "basic roaming probe rssi range");
 				_TR("basic80211h", "basic dot11h");
-				_TR("basicRRMEnable_td_1", "basic roaming rrm");
-				_TR("basicFtSupport_td_1", "basic roaming ft");
+				_TR("basicRRMEnable_td_1",			"basic roaming rrm");
+				_TR("basicFtSupport_td_1",			"basic roaming ft");
+				_TR("basicRRMclassINIC_td_1",		"basic roaming rc inic");
+
+				_TR("RCINIC_1_channel",			"basic roaming rc inic channel 1");
+				_TR("RCINIC_2_channel",			"basic roaming rc inic channel 2");
+				_TR("RCINIC_3_channel",			"basic roaming rc inic channel 3");
+				_TR("RCINIC_4_channel",			"basic roaming rc inic channel 4");
 
 				_TR("band_steering",			"basic bandsteering");
 				_TR("basicBndStrgRssiDiff",		"basic bandsteering rssidiff");
@@ -572,7 +592,7 @@
 
 				form.radioWirelessEnabled.options.selectedIndex = radio_on;
 				form.radioWirelessEnabledAc.options.selectedIndex = (is5gh_support == '1') ? radio_on_ac : 0;
-					
+
 				form.bssid_num.value				= NVRAM_BssidNum;
 				form.mssid_1.value					= NVRAM_SSID1;
 				form.mssid_2.value					= NVRAM_SSID2;
@@ -796,7 +816,7 @@
 							channel_indexacnew = channel_indexac;
 							channel_indexacnew = channel_indexacnew / 4;
 							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 8;							
+								channel_indexacnew = channel_indexacnew - 8;
 						} else if ((channel_indexac >= 132) && (channel_indexac <= 144))
 						{
 							channel_indexacnew = channel_indexac;
@@ -981,13 +1001,23 @@
 				form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
 				form.FtSupport.options.selectedIndex = 1*ftArray[0];
 
+				var rcINIC = (NVRAM_RegulatoryClassINIC == '0') ? '1;2;3;4;0'.split(';') : NVRAM_RegulatoryClassINIC.split(';');
+				for (var i = 1; i <= 5; i++)
+					if (rcINIC[i - 1] != null)
+						switch (rcINIC[i - 1]) {
+							case '1':	document.getElementById('RCINIC_1').checked = true;		break;
+							case '2':	document.getElementById('RCINIC_2').checked = true;		break;
+							case '3':	document.getElementById('RCINIC_3').checked = true;		break;
+							case '4':	document.getElementById('RCINIC_4').checked = true;		break;
+						}
+
 				var LanWifiIsolate = NVRAM_LanWifiIsolate;
 				var opmode = NVRAM_OperationMode;
 				form.LanWifiIsolate.options.selectedIndex = 1*LanWifiIsolate;
 				displayElement( 'div_LanWifiIsolate', (opmode != '0') || (opmode != '2') || (opmode != '3'));
 
 				wirelessOnChange(form);
-				
+
 				var datarateArray;
 				var AckPolicyArray = ackpolicy.split(";");
 
@@ -1041,7 +1071,7 @@
 					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC'], false);
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
-					
+
 				initTranslation();
 				showHTPhysModeMenu();
 				showVHTPhysModeMenu();
@@ -1225,12 +1255,12 @@
 			{
 				var enableWirelessAc	= form.radioWirelessEnabledAc.value;
 				var enableWireless		= form.radioWirelessEnabled.value;
-				
+
 				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
 				displayElement( [ 'basicVHT', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
 				displayElement( [ 'div_11n', 'advWirelessT', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], enableWireless == "1");
 				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (is5gh_support == '1' && enableWirelessAc == "1"));
-				
+
 				displayElement('basicMbssidModeT', ((enableWireless == 1) || (enableWirelessAc == 1)) && (is5gh_support == '1'));
 				if (enableWireless == 0 && enableWirelessAc == 0) {
 					hideElement('div_all');
@@ -1298,7 +1328,7 @@
 					form.mssidac_1.select();
 					return false;
 				}
-				
+
 				if (isNaN(form.beacon.value) || form.beacon.value < 20 || form.beacon.value > 999)
 				{
 					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
@@ -1414,7 +1444,7 @@
 						form.BndStrgRssiDiff.select();
 						return false;
 					}
-					
+
 					if (isNaN(form.BndStrgRssiLow.value) || form.BndStrgRssiLow.value < -100 || form.BndStrgRssiLow.value > 0)
 					{
 						alert(_("raoming invalid BndStrgRssiLow"));
@@ -1508,7 +1538,22 @@
 
 				form.mbssid_mode.disabled = false;
 
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 25);
+				if (form.country_code.value == 'RU') {
+					var rcINIC = [];
+					form.RegulatoryClassINIC.value = '';
+					for (var i = 1; i <= 4; i++) 
+						if (document.getElementById('RCINIC_' + i).checked == true)
+							rcINIC.push(i)
+
+					for (var i = 0; i <= 4; i++) {
+						form.RegulatoryClassINIC.value += (rcINIC[i] != null) ? rcINIC[i] : '0';
+						form.RegulatoryClassINIC.value += (i < 4) ? ';' : '';
+					}
+				}
+				else
+					form.RegulatoryClassINIC.value = "0";
+
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), (document.getElementById('sz11gChannel').value == 0 || document.getElementById('sz11aChannel').value == 0) ? 35 : 25);
 				return true;
 			}
 
@@ -1522,6 +1567,20 @@
 					if(i <= mcastMcs)
 					form.McastMcs.options.selectedIndex = i;
 				}
+			}
+			
+			function rrmEnableChange() {
+				displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' );
+			}
+
+			function countryCodeChange() {
+				if (document.wireless_basic.country_code.value == 'RU' && NVRAM_RegulatoryClassINIC == '0') {
+					document.getElementById('RCINIC_1').checked = true;
+					document.getElementById('RCINIC_2').checked = true;
+					document.getElementById('RCINIC_3').checked = true;
+					document.getElementById('RCINIC_4').checked = true;
+				}
+				displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU' && statusRoamingMenu == 1);
 			}
 
 			function showHTPhysModeMenu(){
@@ -1556,14 +1615,13 @@
 			}
 
 			function showAdvWirelessMenu(){
-				var AdvWirelessElement = [ 'advBGProtect_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
+				var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
 							   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
 							   'advEDMODE_tr', 'advStaRegion_tr' ];
 				if (statusAdvWirelessMenu == 0) {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("adv wireless"));
 					statusAdvWirelessMenu = 1;
 					displayElement(AdvWirelessElement, 1);
-					displayElement('advBeaconIntervalINIC_tr', is5gh_support == '1')
 					displayElement('advEDMODE_tr', EDCCABuilt == "1");
 				} else {
 					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("adv wireless"));
@@ -1573,12 +1631,15 @@
 			}
 
 			function showRoamingMenu(){
-				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr' ];
+				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'];
 				if (statusRoamingMenu == 0) {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic roaming"));
 					statusRoamingMenu = 1;
 					displayElement(RoamingElement, 1);
+					displayElement([ 'basicRRMEnable_tr' ], rrm_built);
+					displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
 					displayElement([ basicFtSupport_tr, "basicKickStaRssiLowFT_tr"], ft_built);
+					displayElement('advBeaconIntervalINIC_tr', is5gh_support == '1')
 					fastRoamingChange(document.wireless_basic);
 				} else {
 					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic roaming"));
@@ -2007,16 +2068,6 @@
 				<option value="2" id="advBGProOff">Off</option>
 			</select></td>
 		</tr>
-		<tr id="advBeaconInterval_tr">
-			<td id="advBeaconInterval_td_1" class="head" width="50%">Beacon Interval</td>
-			<td id="advBeaconInterval_td_2" width="50%"><input type="text" name="beacon" class="normal" maxlength="3">
-				<font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
-		</tr>
-		<tr id="advBeaconIntervalINIC_tr">
-			<td id="advBeaconIntervalINIC_td_1" class="head" width="50%">Beacon Interval (5GHz)</td>
-			<td id="advBeaconIntervalINIC_td_2" width="50%"><input type="text" name="beaconINIC" class="normal" maxlength="3">
-				<font color="#808080" id="advBeaconIntervalINICRange">(range 20 - 999)</font></td>
-		</tr>
 		<tr id="advDTIM_tr">
 			<td id="advDTIM_td_1" class="head" width="50%">Data Beacon Rate</td>
 			<td id="advDTIM_td_2" width="50%"><input type="text" name="dtim" class="normal" maxlength="3">
@@ -2107,7 +2158,7 @@
 				<option value=6 <% if (cr_bg == "6") write("selected"); %> >6: CH3-9 (MKK1)</option>
 				<option value=7 <% if (cr_bg == "7") write("selected"); %> >7: CH5-13 (Israel)</option>
 				</select>&nbsp;&nbsp;&nbsp;
-				<select name="country_code" class="normal"><% listCountryCodes(); %>
+				<select name="country_code" class="normal" onChange="countryCodeChange();"><% listCountryCodes(); %>
 			</select></td>
 		</tr>
 	</table>
@@ -2179,10 +2230,22 @@
 		</tr>
 		<tr id="basicRRMEnable_tr">
 			<td id="basicRRMEnable_td_1" class="head" width="50%">RRMEnable</td>
-			<td id="basicRRMEnable_td_2" width="50%"><select name="RRMEnable" class="normal">
-				<option value="0" id="disable">Disable</option>
-				<option value="1" id="enable">Enable</option>
-		</select></td>
+			<td id="basicRRMEnable_td_2" width="50%">
+				<select name="RRMEnable" class="normal" onChange="rrmEnableChange();">
+					<option value="0" id="disable">Disable</option>
+					<option value="1" id="enable">Enable</option>
+				</select>
+			</td>
+		</tr>
+		<tr id="basicRRMclassINIC_tr">
+			<td id="basicRRMclassINIC_td_1" class="head" width="50%">Regulatory Class INIC</td>
+			<td id="basicRRMclassINIC_td_2">
+				<input type="checkbox" id="RCINIC_1" value="0">&nbsp;<span id="RCINIC_1_channel" style="position: absolute; margin-top: 3px;">36, 40, 44, 48 channels</span><br>
+				<input type="checkbox" id="RCINIC_2" value="0">&nbsp;<span id="RCINIC_2_channel" style="position: absolute; margin-top: 3px;">52, 56, 60, 64 channels</span><br>
+				<input type="checkbox" id="RCINIC_3" value="0">&nbsp;<span id="RCINIC_3_channel" style="position: absolute; margin-top: 3px;">132, 136, 140, 144 channels</span><br>
+				<input type="checkbox" id="RCINIC_4" value="0">&nbsp;<span id="RCINIC_4_channel" style="position: absolute; margin-top: 3px;">149, 153, 157, 161, 165 channels</span>
+				<input name="RegulatoryClassINIC" type="hidden" value="1;2;3;4;0">
+			</td>
 		</tr>
 		<tr id="basicFtSupport_tr">
 			<td id="basicFtSupport_td_1" class="head" width="50%">FtSupport</td>
@@ -2205,6 +2268,16 @@
 			<td id="advEntryLifeCheck_td_1" class="head" width="50%">EntryLifeCheck</td>
 			<td id="advEntryLifeCheck_td_2" width="50%"><input type="text" name="EntryLifeCheck" class="normal" maxlength="4">
 				<font color="#808080" id="advEntryLifeCheckTimes"> (256 - 4096)</font></td>
+		</tr>
+		<tr id="advBeaconInterval_tr">
+			<td id="advBeaconInterval_td_1" class="head" width="50%">Beacon Interval</td>
+			<td id="advBeaconInterval_td_2" width="50%"><input type="text" name="beacon" class="normal" maxlength="3">
+				<font color="#808080" id="advBeaconIntervalRange">(range 20 - 999)</font></td>
+		</tr>
+		<tr id="advBeaconIntervalINIC_tr">
+			<td id="advBeaconIntervalINIC_td_1" class="head" width="50%">Beacon Interval (5GHz)</td>
+			<td id="advBeaconIntervalINIC_td_2" width="50%"><input type="text" name="beaconINIC" class="normal" maxlength="3">
+				<font color="#808080" id="advBeaconIntervalINICRange">(range 20 - 999)</font></td>
 		</tr>
 	</table>
 	<table id="div_txbf" name="div_txbf" class="form" style="display:none;">

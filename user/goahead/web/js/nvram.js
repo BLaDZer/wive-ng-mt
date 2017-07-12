@@ -485,3 +485,5 @@ var NVRAM_ApCliWPAPSK					= '<% getCfgGeneral(1, "ApCliWPAPSK"); %>';						NVRAM
 var NVRAM_ApCliIfName					= '<% getCfgGeneral(1, "ApCliIfName"); %>';						NVRAM_ApCliIfName					= (NVRAM_ApCliIfName != '')						? NVRAM_ApCliIfName						: 'apcli0';
 var NVRAM_TmpBlockAfterKick				= '<% getCfgGeneral(1, "TmpBlockAfterKick"); %>';				NVRAM_TmpBlockAfterKick				= (NVRAM_TmpBlockAfterKick != '')				? NVRAM_TmpBlockAfterKick				: '14';
 var NVRAM_KickStaRssiLowFT				= '<% getCfgGeneral(1, "KickStaRssiLowFT"); %>';				NVRAM_KickStaRssiLowFT				= (NVRAM_KickStaRssiLowFT != '')				? NVRAM_KickStaRssiLowFT				: '0';
+var NVRAM_RegulatoryClass				= '<% getCfgGeneral(1, "RegulatoryClass"); %>';					NVRAM_RegulatoryClass				= (NVRAM_RegulatoryClass != '')					? NVRAM_RegulatoryClass					: '5;0;0;0;0';
+var NVRAM_RegulatoryClassINIC				= '<% getCfgGeneral(1, "RegulatoryClassINIC"); %>';				NVRAM_RegulatoryClassINIC			= (NVRAM_RegulatoryClassINIC != '')				? NVRAM_RegulatoryClassINIC				: '1;2;3;4;0';

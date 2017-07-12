@@ -136,7 +136,13 @@
   <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -68" />  
   <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
   <message msgid="basic roaming ft" msgstr="Быстрое подключение 802.11R" />
+  <message msgid="basic roaming rc inic" msgstr="Нормативный список (5ГГц)" />
+  <message msgid="basic roaming rc inic channel 1" msgstr="36, 40, 44, 48 каналы" />
+  <message msgid="basic roaming rc inic channel 2" msgstr="52, 56, 60, 64 каналы" />
+  <message msgid="basic roaming rc inic channel 3" msgstr="132, 136, 140, 144 каналы" />
+  <message msgid="basic roaming rc inic channel 4" msgstr="149, 153, 157, 161, 165 каналы" />
   <message msgid="basic dot11h" msgstr="Поддержка IEEE 802.11h" />
+  <message msgid="basic 11a channel warning" msgstr="Во избежание проблем с некоторыми беспроводными клиентами, рекомендуется использовать канал до 64 (включительно)" />
 
   <message msgid="basic bandsteering" msgstr="Управление выбором диапазона" />
   <message msgid="basic bandsteering rssidiff" msgstr="Разрешать соединение в 2.4ГГц если разница уровней превышает" />

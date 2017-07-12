@@ -571,7 +571,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 #endif
 
-	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout;
+	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout, *regulatoryclassinic;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
 	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
@@ -679,6 +679,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	country_region = websGetVar(wp, T("country_region"), T("0"));
 	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
+	regulatoryclassinic = websGetVar(wp, T("RegulatoryClassINIC"), T("1;2;3;4;0"));
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 	dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
@@ -704,7 +705,6 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
 	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
 	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
-
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -1053,16 +1053,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	else if (!strncmp(countrycode, "RU", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "7");
 		/* set regulatory class for current county see spectrum.c for Russia, subbands divided ; */
-		if (strncmp(sz11gChannel, "0", 2))
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5;0;0;0;0");
-		else
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "0");
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5;0;0;0;0");
 #ifndef CONFIG_RT_SECOND_IF_NONE
-		if (strncmp(sz11aChannel, "0", 2))
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1;2;3;4;0");
-		else
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", regulatoryclassinic);
 #endif
-		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
 	}
 	else if (!strncmp(countrycode, "FR", 3)) {
 		nvram_bufset(RT2860_NVRAM, "CountryRegionABand", "2");
