@@ -426,7 +426,6 @@ static USHORT update_associated_mac_entry(
 	if (pEntry->AuthMode < Ndis802_11AuthModeWPA) {
 		ApLogEvent(pAd, pEntry->Addr, EVENT_ASSOCIATED);
 	}
-
 	APUpdateCapabilityAndErpIe(pAd);
 #ifdef DOT11_N_SUPPORT
 	APUpdateOperationMode(pAd);
