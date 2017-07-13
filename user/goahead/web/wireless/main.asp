@@ -225,6 +225,46 @@
 					else
 						displayElement(channelList.options[i], true);
 				}
+
+				regulatoryClassSet();
+			}
+
+			function regulatoryClassSet() {
+				var rcINIC = (NVRAM_RegulatoryClassINIC == '0') ? '1;2;3;4;0'.split(';') : NVRAM_RegulatoryClassINIC.split(';');
+				for (var i = 1; i <= 4; i++)
+					document.getElementById('RCINIC_' + i).checked = false;
+
+				for (var i = 1; i <= 5; i++)
+					if (rcINIC[i - 1] != null)
+						switch (rcINIC[i - 1]) {
+							case '1':	document.getElementById('RCINIC_1').checked = true;		break;
+							case '2':	document.getElementById('RCINIC_2').checked = true;		break;
+							case '3':	document.getElementById('RCINIC_3').checked = true;		break;
+							case '4':	document.getElementById('RCINIC_4').checked = true;		break;
+						}
+
+				for (var i = 1; i <= 4; i++)
+					document.getElementById('RCINIC_' + i).disabled = false;
+
+				var ch = document.getElementById('sz11aChannel').value;
+				if (ch == 0) {
+					for (var i = 1; i <= 4; i++) {
+						document.getElementById('RCINIC_' + i).checked = true;
+						document.getElementById('RCINIC_' + i).disabled = true;
+					}
+				} else if (ch >= 36 && ch <= 48) {
+					document.getElementById('RCINIC_1').checked = true;
+					document.getElementById('RCINIC_1').disabled = true;
+				} else if (ch >= 52 && ch <= 64) {
+					document.getElementById('RCINIC_2').checked = true;
+					document.getElementById('RCINIC_2').disabled = true;
+				} else if (ch >= 132 && ch <= 144) {
+					document.getElementById('RCINIC_3').checked = true;
+					document.getElementById('RCINIC_3').disabled = true;
+				} else if (ch >= 149 && ch <= 165) {
+					document.getElementById('RCINIC_4').checked = true;
+					document.getElementById('RCINIC_4').disabled = true;
+				}
 			}
 
 			function initChecktime(form) {
@@ -1001,15 +1041,7 @@
 				form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
 				form.FtSupport.options.selectedIndex = 1*ftArray[0];
 
-				var rcINIC = (NVRAM_RegulatoryClassINIC == '0') ? '1;2;3;4;0'.split(';') : NVRAM_RegulatoryClassINIC.split(';');
-				for (var i = 1; i <= 5; i++)
-					if (rcINIC[i - 1] != null)
-						switch (rcINIC[i - 1]) {
-							case '1':	document.getElementById('RCINIC_1').checked = true;		break;
-							case '2':	document.getElementById('RCINIC_2').checked = true;		break;
-							case '3':	document.getElementById('RCINIC_3').checked = true;		break;
-							case '4':	document.getElementById('RCINIC_4').checked = true;		break;
-						}
+				regulatoryClassSet();
 
 				var LanWifiIsolate = NVRAM_LanWifiIsolate;
 				var opmode = NVRAM_OperationMode;

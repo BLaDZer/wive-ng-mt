@@ -1055,7 +1055,12 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		/* set regulatory class for current county see spectrum.c for Russia, subbands divided ; */
 		nvram_bufset(RT2860_NVRAM, "RegulatoryClass", "5;0;0;0;0");
 #ifndef CONFIG_RT_SECOND_IF_NONE
-		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", regulatoryclassinic);
+		if (CHK_IF_DIGIT(sz11aChannel, 0))
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "1;2;3;4;0");
+		else
+		    nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", regulatoryclassinic);
+#else
+		nvram_bufset(RT2860_NVRAM, "RegulatoryClassINIC", "0");
 #endif
 	}
 	else if (!strncmp(countrycode, "FR", 3)) {
