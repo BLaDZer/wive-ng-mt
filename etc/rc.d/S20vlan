@@ -108,11 +108,8 @@ start() {
 	# ONLY ONE TIME AT START!!!
 	##############################################
 	if [ "$tv_port" = "1" -a "$tv_portVLAN" != "" ] || [ "$sip_port" = "1" -a "$sip_portVLAN" != "" ]; then
-	    if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
-		rootif="eth3"
-	    else
-		rootif="eth2"
-	    fi
+	    # isolated LAN<=>VLAN ports allways configure at eth2
+	    rootif="eth2"
 	    if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ]; then
 		$LOG "Add bridge for TV/STB"
 		brctl addbr "$vlantvif"
@@ -262,7 +259,7 @@ stop() {
     ##############################################
     # REMOVE LAN VLANS FOR ZONE ISOLATED NETWORKS
     ##############################################
-    if [ "$switchpart" = "LLLLL" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
+    if [ "$switchpart" = "LLLLL" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" -a "$tv_portVLAN" = "" -a "$sip_portVLAN" = "" ]; then
 	oldlanvlans=`ip -o -4 link show up | grep 'eth2\.' | awk {' print $2 '} | cut -f -1 -d @`
     else
 	oldlanvlans=`ip -o -4 link show up | grep 'eth2.1\.' | awk {' print $2 '} | cut -f -1 -d @`
