@@ -4979,19 +4979,16 @@ VOID APHandleRxDataFrame(
 		if (pEntry && IS_ENTRY_APCLI(pEntry))
 		{
 			PAPCLI_STRUCT pApCliEntry;
-			
+
 			if (!(pEntry && APCLI_IF_UP_CHECK(pAd, pEntry->MatchAPCLITabIdx)))
-			{
 				goto err;
-			}
 
 			pApCliEntry = &pAd->ApCfg.ApCliTab[pEntry->MatchAPCLITabIdx];
-			if (pApCliEntry)
-			{
-				NdisGetSystemUpTime(&pApCliEntry->ApCliRcvBeaconTime);
-				if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->CurrentAddress))
-					goto err;
-			}
+
+			/* ApCli reconnect workaround - update ApCliRcvBeaconTime on RX activity too */
+			pApCliEntry->ApCliRcvBeaconTime = pAd->Mlme.Now32;
+			if(MAC_ADDR_EQUAL(pHeader->Addr3, pApCliEntry->CurrentAddress))
+				goto err;
 
 #ifdef STATS_COUNT_SUPPORT
 			pApCliEntry->ApCliCounter.ReceivedByteCount.QuadPart += pRxWI->RxWIMPDUByteCnt;
@@ -5009,8 +5006,7 @@ VOID APHandleRxDataFrame(
 #endif /* STATS_COUNT_SUPPORT */
 
 				/* Process the received broadcast frame for AP-Client. */
-				if (!ApCliHandleRxBroadcastFrame(pAd, pRxBlk, pEntry, FromWhichBSSID))
-				{
+				if (!ApCliHandleRxBroadcastFrame(pAd, pRxBlk, pEntry, FromWhichBSSID)) {
 					/* release packet */
 					RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
 				}
