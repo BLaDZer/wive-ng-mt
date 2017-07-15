@@ -1866,9 +1866,10 @@ static int getClampBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 
 static void getScanAp(webs_t wp, char_t *path, char_t *query)
 {
-	int i;
+	int i, j;
 	int ent_count = 0;
 	char str[18];
+	char ssid[64];
 	int inic;
 	struct WLAN_AP_ENTRY *entries;
 
@@ -1887,10 +1888,15 @@ static void getScanAp(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("{ \"wireless\": [ "));
 	for (i = 0; i < ent_count; i++)
 	{
+		ssid[0] = '\0';
+		for (j = 0; j < strlen(entries[i].ssid); j++) {
+			if (entries[i].ssid[j] == '"')
+				sprintf(ssid, "%s%c", ssid, '\\');
+			sprintf(ssid, "%s%c", ssid, entries[i].ssid[j]);
+		}
 		websWrite(wp, T("{ "));
-
 		websWrite(wp, T("\"channel\":\"%d\", "), (unsigned char) entries[i].chan);
-		websWrite(wp, T("\"ssid\":\"%s\", "), entries[i].ssid);
+		websWrite(wp, T("\"ssid\":\"%s\", "), ssid);
 		sprintf(str, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", entries[i].bssid[0], entries[i].bssid[1], entries[i].bssid[2], entries[i].bssid[3], entries[i].bssid[4], entries[i].bssid[5]);
 		websWrite(wp, T("\"bssid\":\"%s\", "), str);
 		websWrite(wp, T("\"security\":\"%s\", "), entries[i].security);
