@@ -1451,17 +1451,6 @@ VOID APPeerBeaconAction(
 				{
 					MlmeEnqueue(pAd, APCLI_SYNC_STATE_MACHINE, APCLI_MT2_PEER_BEACON, Elem->MsgLen, Elem->Msg, ifIndex);
 				}
-				if ( (pAd->CommonCfg.bIEEE80211H == 1) &&
-					ie_list->NewChannel != 0 &&
-					pAd->CommonCfg.Channel != ie_list->NewChannel &&
-					pAd->Dot11_H.RDMode != RD_SWITCHING_MODE)
-				{
-					pAd->CommonCfg.Channel = ie_list->NewChannel;
-					pAd->Dot11_H.RDMode = RD_SWITCHING_MODE;
-					DBGPRINT(RT_DEBUG_TRACE,
-						("[APCLI]  Following root AP to switch channel to ch%u\n",
-						pAd->CommonCfg.Channel));
-				}
 			}
 		}
 #endif /* APCLI_SUPPORT */

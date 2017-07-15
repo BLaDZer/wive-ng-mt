@@ -1705,6 +1705,7 @@ static VOID StartDFSProcedure(
 	IN UCHAR Channel,
 	IN UINT8 ChSwMode)
 {
+#ifdef DFS_SUPPORT
 	/* start DFS procedure*/
 	pAd->CommonCfg.Channel = Channel;
 #ifdef DOT11_N_SUPPORT
@@ -1712,6 +1713,7 @@ static VOID StartDFSProcedure(
 #endif /* DOT11_N_SUPPORT */
 	pAd->Dot11_H.RDMode = RD_SWITCHING_MODE;
 	pAd->Dot11_H.CSCount = 0;
+#endif /* DFS_SUPPORT */
 }
 
 /*

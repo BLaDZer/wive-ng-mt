@@ -459,11 +459,13 @@ INT build_vht_op_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 	vht_op.vht_op_info.ch_width = (pAd->CommonCfg.vht_bw == VHT_BW_80 ? 1: 0);
 
 #ifdef CONFIG_AP_SUPPORT
+#ifdef DFS_SUPPORT
 	if (pAd->CommonCfg.Channel > 14 && 
 		(pAd->CommonCfg.bIEEE80211H == 1) && 
 		(pAd->Dot11_H.RDMode == RD_SWITCHING_MODE))
 		cent_ch = vht_cent_ch_freq(pAd, pAd->Dot11_H.org_ch);
 	else
+#endif /* DFS_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 		cent_ch = vht_cent_ch_freq(pAd, pAd->CommonCfg.Channel);
 

@@ -392,7 +392,7 @@ INT	Set_Channel_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 			DBGPRINT(RT_DEBUG_TRACE, ("%s(): CtrlChannel(%d), CentralChannel(%d) \n", 
 							__FUNCTION__, pAd->CommonCfg.Channel,
 							pAd->CommonCfg.CentralChannel));
-
+#ifdef DFS_SUPPORT
 			if ((pAd->CommonCfg.Channel > 14 )
 				&& (pAd->CommonCfg.bIEEE80211H == TRUE))
 			{
@@ -411,6 +411,7 @@ INT	Set_Channel_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 				}
 			}
 			else
+#endif /* DFS_SUPPORT */
 			{
 				AsicSwitchChannel(pAd, RFChannel, FALSE);
 				APStop(pAd);

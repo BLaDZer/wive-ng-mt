@@ -457,7 +457,7 @@ INT	Set_Channel_Proc(
 #ifdef DOT11_N_SUPPORT
 			N_ChannelCheck(pAd);
 #endif /* DOT11_N_SUPPORT */
-
+#ifdef DFS_SUPPORT
 			if ((pAd->CommonCfg.Channel > 14 )
 				&& (pAd->CommonCfg.bIEEE80211H == TRUE))
 			{
@@ -475,6 +475,7 @@ INT	Set_Channel_Proc(
 				}
 			}
 			else
+#endif /* DFS_SUPPORT */
 			{
 				APStop(pAd);
 				APStartUp(pAd);
