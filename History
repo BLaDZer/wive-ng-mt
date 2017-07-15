@@ -3243,30 +3243,31 @@
 2) radvd: update to 2.17 version.<br>
 3) freeradius: up to 3.0.14 version.<br>
 4) coovachilli: up to 1.4 from git (commit c6f6ada8).<br>
-5) goahead/libnvram/init.d: implement user defined INPUT rules add for local services.<br>
-6) goahead: add RRM regulatory class select.<br>
-7) goahead: reorganize some roaming depended options to one block.<br>
-8) freeradius/cerst: build 1024bit DH keys (fix new android/ios compat wpa enterprise AP).<br>
-9) kernel: ralink_wifi: use real transmit power for TPE.<br>
-10) kernel: ralink_wifi: enchange regulatory class table.<br>
-11) kernel: ralink_wifi: increase max scan channel time for bit BeaconInterval config (fix lost AP scan result in roam configs).<br>
-12) kernel: ralink_wifi: do not block age out clients for avoid racely reconnection.<br>
-13) kernel: ralink_wifi: remove not more needed limit bw by mcs.<br>
-14) kernel: ralink_wifi: rrm: sort scan table by RSSI at scan or rrm add BSS.<br>
-15) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
-16) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
-17) kernel: ralink_wifi: rrm: implement passive monitor and update neighbour.<br>
-18) kernel: ralink_wifi: rrm: implement periodic scan for update neighbour.<br>
-19) kernel: ralink_wifi: rrm: implement 10sec delayed first boot scan.<br>
-20) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
-21) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
-22) kernel: introduce offsetofend macros.<br>
-23) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-24) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-25) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-26) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-27) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-28) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+5) init.d: implement TV/SIP ports with vlan tag support for MT7621 at dual rgmii mode.<br>
+6) goahead/libnvram/init.d: implement user defined INPUT rules add for local services.<br>
+7) goahead: add RRM regulatory class select.<br>
+8) goahead: reorganize some roaming depended options to one block.<br>
+9) freeradius/cerst: build 1024bit DH keys (fix new android/ios compat wpa enterprise AP).<br>
+10) kernel: ralink_wifi: use real transmit power for TPE.<br>
+11) kernel: ralink_wifi: enchange regulatory class table.<br>
+12) kernel: ralink_wifi: increase max scan channel time for bit BeaconInterval config (fix lost AP scan result in roam configs).<br>
+13) kernel: ralink_wifi: do not block age out clients for avoid racely reconnection.<br>
+14) kernel: ralink_wifi: remove not more needed limit bw by mcs.<br>
+15) kernel: ralink_wifi: rrm: sort scan table by RSSI at scan or rrm add BSS.<br>
+16) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
+17) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
+18) kernel: ralink_wifi: rrm: implement passive monitor and update neighbour.<br>
+19) kernel: ralink_wifi: rrm: implement periodic scan for update neighbour.<br>
+20) kernel: ralink_wifi: rrm: implement 10sec delayed first boot scan.<br>
+21) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+22) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
+23) kernel: introduce offsetofend macros.<br>
+24) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+25) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+26) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+27) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+28) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+29) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
 <br>
 <br>
 <br>

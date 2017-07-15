@@ -226,7 +226,7 @@ restore_onergmii()
         $LOG "Restore internal switch mode to dumb mode"
 	for port in `seq 0 7`; do
 	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
-	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent port, admit all frames and disable special tag
 	done
 
 	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
@@ -266,22 +266,20 @@ config_onergmii()
 	restore_onergmii
 
 	# prepare switch
-	for port in `seq 6 7`; do
-	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
-	    switch reg w 2${port}10 81000000	#ports 6-7 special tag disable, is user port, admit all frames
-	done
-
 	for port in `seq 0 4`; do
+	    switch reg w 2${port}10 810000c0 	#ports 0-4 as transparent port, admit all frames and disable special tag
 	    switch reg w 2${port}04 ff0003	#ports 0-4 as security mode
-	    switch reg w 2${port}10 810000c0	#ports 0-4 as transparent port
 	done
 
 	# skip port 5 if not enabled in config - not used and link down early
 	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
 	    switch reg w 2504 ff0003		#port 5 as security mode
-	    switch reg w 2510 810000c0		#port 5 as transparent port
 	fi
 
+	for port in `seq 6 7`; do
+	    switch reg w 2${port}10 81000000	#ports 6-7 special tag disable, is user port, admit all frames
+	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
+	done
 
 	if [ "$1" != "VLANS" ]; then
 	    PMODEMASK="$1"
@@ -346,7 +344,6 @@ config_onergmii()
 		    switch pvid 4 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
-		# without bridget ports
 		    # VLAN member port
 		    switch vlan set 0 1 01011011
 		    switch vlan set 1 2 10000011
@@ -409,9 +406,9 @@ config_onergmii()
 restore_dualrgmii()
 {
         $LOG "Restore internal MT7621 switch mode to dumb mode"
-	for port in `seq 0 6`; do
-	    switch reg w 2${port}04 ff0000	#ports 0-6 matrix mode
-	    switch reg w 2${port}10 810000c0 	#ports 0-6 as transparent mode
+	for port in `seq 0 7`; do
+	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent port, admit all frames and disable special tag
 	done
 
 	# clear configured vlan parts
@@ -431,6 +428,21 @@ config_dualrgmii()
 {
 	# cleanup swicth
 	restore_dualrgmii
+
+	# prepare switch
+	for port in `seq 0 4`; do
+	    switch reg w 2${port}10 810000c0 	#ports 0-4 as transparent port, admit all frames and disable special tag
+	    switch reg w 2${port}04 ff0003	#ports 0-4 as security mode
+	done
+
+	for port in `seq 5 7`; do
+	    switch reg w 2${port}10 81000000	#ports 5-7 special tag disable, is user port, admit all frames
+	    switch reg w 2${port}04 20df0003	#ports 5-7 egress VLAN Tag Attribution=tagged
+	done
+
+	# set cpu ports pvids
+	switch pvid 5 2
+	switch pvid 6 1
 
 	if [ "$1" != "VLANS" ]; then
 	    $LOG "Config internal MT7621 switch mode $1"
@@ -454,37 +466,111 @@ config_dualrgmii()
 		let index=index+1
 	    done
 
+	    # detag internal tagged packets before send to cpu
+	    for port in `seq 5 7`; do
+		switch tag off $port
+	    done
+
 	    # config hawdware snooping
 	    config_igmpsnoop "$1"
          else
-	    ######################################################################
-	    #		SECTION TO TAGGED PORTS NEED WRITE FUTURE		 #
-	    # ToDo: config switch with black holes for vlan bridgets porst by	 #
-	    # 		config 7530 W0LLL command and add needed calls for bridge#
-	    ######################################################################
-	    $LOG "External vlan portmap not supported NOW!!!"
-	    config_dualrgmii LLLLW
+	    $LOG "TV/STB/SIP with VLANs mode enabled."
+	    # internal VLAN for TV = 3, for SIP = 4
+	    if [ "$wan_port" = "4" ]; then
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    #VLAN member port
+		    switch vlan set 0 1 00011010 0 0 -----uuu
+		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 2 3 01000010
+		    switch vlan set 3 4 00100010
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 00111010 0 0 -----uuu
+		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 2 3 01000010
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 3
+		    switch pvid 2 1
+		    switch pvid 3 1
+		    switch pvid 4 1
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 01011010 0 0 -----uuu
+		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 2 4 00100010
+		    # set PVID
+		    switch pvid 0 2
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 1
+		    switch pvid 4 1
+		fi
+	    else
+		# tv and sip
+		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11000010 0 0 -----uuu
+		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 2 3 00010010
+		    switch vlan set 3 4 00100010
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 4
+		    switch pvid 3 3
+		    switch pvid 4 2
+		# only tv
+		elif [ "$tv_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11100010 0 0 -----uuu
+		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 2 3 00010010
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 3
+		    switch pvid 4 2
+		# only sip
+		elif [ "$sip_port" = "1" ]; then
+		    # VLAN member port
+		    switch vlan set 0 1 11010010 0 0 -----uuu
+		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 2 4 00100010
+		    # set PVID
+		    switch pvid 0 1
+		    switch pvid 1 1
+		    switch pvid 2 1
+		    switch pvid 3 4
+		    switch pvid 4 2
+		else
+		    $LOG "Error vlan config!"
+		fi
+	    fi
+	    # forward external vlan ports to wan cpu as tagged
+	    if [ "$sip_portVLAN" != "" ]; then
+		switch vlan set 4 $sip_portVLAN 11111100 0 0 tttttttt
+	    fi
+	    if [ "$tv_portVLAN" != "" ]; then
+		switch vlan set 5 $tv_portVLAN  11111100 0 0 tttttttt
+	    fi
 	fi
-
-	# post config
-	for port in `seq 0 6`; do
-	    switch reg w 2${port}04 ff0003	#ports 0-6 as security mode
-	    switch reg w 2${port}10 810000c0	#ports 0-6 as transparent port, admit all frames and disable special tag
-	done
-
-	# set cpu ports pvids
-	switch pvid 5 2
-	switch pvid 6 1
-
-	# detag packets before send to cpu
-	switch tag off 6
-	switch tag off 5
 
 	# clear mac table if vlan configuration changed
 	switch clear
 }
 
-eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port`
+eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port tv_portVLAN sip_portVLAN`
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
