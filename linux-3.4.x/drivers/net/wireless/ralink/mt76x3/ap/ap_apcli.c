@@ -1296,7 +1296,7 @@ VOID ApCliIfMonitor(RTMP_ADAPTER *pAd)
 				&& (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliLinkUpTime + (30 * OS_HZ)))))
 				bForceBrocken = TRUE;
 
-			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (8 * OS_HZ))))
+			if (RTMP_TIME_AFTER(pAd->Mlme.Now32 , (pApCliEntry->ApCliRcvBeaconTime + (30 * OS_HZ))))
 			{
 #ifdef ED_MONITOR
 				if (pAd->ed_tx_stoped == FALSE)
