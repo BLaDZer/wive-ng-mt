@@ -551,6 +551,7 @@ config_dualrgmii()
 		    switch pvid 2 1
 		    switch pvid 3 4
 		    switch pvid 4 2
+		fi
 	    fi
 	    # forward external vlan ports to wan cpu as tagged
 	    if [ "$sip_portVLAN" != "" ]; then
