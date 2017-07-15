@@ -393,8 +393,6 @@ config_onergmii()
 		    switch pvid 2 1
 		    switch pvid 3 4
 		    switch pvid 4 2
-		else
-		    $LOG "Error vlan config!"
 		fi
 	    fi
 	fi
@@ -553,9 +551,6 @@ config_dualrgmii()
 		    switch pvid 2 1
 		    switch pvid 3 4
 		    switch pvid 4 2
-		else
-		    $LOG "Error vlan config!"
-		fi
 	    fi
 	    # forward external vlan ports to wan cpu as tagged
 	    if [ "$sip_portVLAN" != "" ]; then
