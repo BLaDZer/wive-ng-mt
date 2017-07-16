@@ -125,7 +125,7 @@
 static const char rcsid[] = RCSID;
 
 /* interface vars */
-char ifname[32];		/* Interface name */
+char ifname[32];	/* Interface name */
 int ifunit;			/* Interface unit number */
 
 struct channel *the_channel;
@@ -263,7 +263,6 @@ static void cleanup_db __P((void));
 
 void print_link_stats __P((void));
 
-extern	char	*ttyname __P((int));
 extern	char	*getlogin __P((void));
 int main __P((int, char *[]));
 
@@ -305,13 +304,6 @@ struct protent *protocols[] = {
     &eap_protent,
     NULL
 };
-
-/*
- * If PPP_DRV_NAME is not defined, use the default "ppp" as the device name.
- */
-#if !defined(PPP_DRV_NAME)
-#define PPP_DRV_NAME	"ppp"
-#endif /* !defined(PPP_DRV_NAME) */
 
 int
 main(argc, argv)

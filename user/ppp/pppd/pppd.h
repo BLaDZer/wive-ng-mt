@@ -87,6 +87,14 @@
 #define MAXUNIT		255	/* max ppp interface */
 
 /*
+ * If PPP_DRV_NAME is not defined, use the default "ppp" as the device name.
+ * Where should PPP_DRV_NAME come from? Do we include it here?
+ */
+#if !defined(PPP_DRV_NAME)
+#define PPP_DRV_NAME	"ppp"
+#endif /* !defined(PPP_DRV_NAME) */
+
+/*
  * Option descriptor structure.
  */
 
