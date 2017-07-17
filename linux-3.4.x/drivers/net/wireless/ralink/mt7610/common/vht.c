@@ -300,11 +300,15 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
 		UCHAR BAD_IPHONE6_1_OUI[]  = {0x74, 0x1B, 0xB2};
 		UCHAR BAD_IPHONE6_2_OUI[]  = {0x84, 0x89, 0xAD};
+		UCHAR BAD_IPHONE6_3_OUI[]  = {0xD8, 0x1D, 0x72};
 		UCHAR BAD_MACBOOK_1_OUI[]  = {0xAC, 0xBC, 0x32};
 		UCHAR BAD_HUAWEI_1_OUI[]  = {0x3C, 0xFA, 0x43};
 		UCHAR BAD_HUAWEI_2_OUI[]  = {0x7C, 0x11, 0xCB};
-		if (NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3) || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3) 
-			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_1_OUI, 3) || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_1_OUI, 3)
+		if (NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_1_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_3_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_2_OUI, 3)) {
 			    pEntry->MaxHTPhyMode.field.BW = BW_40;
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Disable 80MHz channel (bcm bug).\n", PRINT_MAC(pEntry->Addr));
