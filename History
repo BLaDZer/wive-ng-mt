@@ -3241,7 +3241,7 @@
 <b>6.2.x</b><br>
 1) busybox: update to 1.27.1 stable version.<br>
 2) radvd: update to 2.17 version.<br>
-3) freeradius: up to 3.0.14 version.<br>
+3) freeradius: up to 3.0.15 version (high critical security fixup release).<br>
 4) coovachilli: up to 1.4 from git (commit c6f6ada8).<br>
 5) pppd: sync some patches from new git of project.<br>
 6) init.d: implement TV/SIP ports with vlan tag support for MT7621 at dual rgmii mode.<br>

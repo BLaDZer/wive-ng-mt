@@ -1,7 +1,7 @@
 # -*- makefile -*-
 # Make.inc.in
 #
-# Version:     $Id$
+# Version:	$Id$
 #
 
 # Location of files.
@@ -110,6 +110,8 @@ LIBREADLINE	= @LIBREADLINE@
 
 CFLAGS		+= -ffunction-sections -fdata-sections
 LDFLAGS		+= -Wl,--gc-sections
+
+WITH_DHCP	= @WITH_DHCP@
 
 #
 #  Version to use for packaging and other Make related things
