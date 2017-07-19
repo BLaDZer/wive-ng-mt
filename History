@@ -3275,9 +3275,10 @@
 34) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
 35) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
 36) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-37) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-38) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-39) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+37) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
+38) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+39) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+40) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>
