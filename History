@@ -3268,15 +3268,16 @@
 27) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
 28) kernel: introduce offsetofend macros.<br>
 29) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-30) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
-31) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
-32) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-33) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-34) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-35) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-36) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-37) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-38) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+30) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
+31) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
+32) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
+33) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+34) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+35) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+36) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+37) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+38) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+39) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>
