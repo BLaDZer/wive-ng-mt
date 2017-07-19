@@ -3278,9 +3278,10 @@
 37) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
 38) kernel: net: l2tp: ensure session can't get removed during pppol2tp_session_ioctl().<br>
 39) kernel: net: l2tp: fix duplicate session creation.<br>
-40) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-41) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-42) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+40) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
+41) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+42) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+43) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>
