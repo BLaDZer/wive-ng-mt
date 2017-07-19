@@ -340,7 +340,9 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 				      struct l2tp_session *session)
 {
 	struct l2tp_session *session_walk;
+#ifdef CONFIG_L2TP_V3
 	struct hlist_head *g_head;
+#endif
 	struct hlist_head *head;
 	struct l2tp_net *pn;
 	struct hlist_node *walk;
@@ -352,6 +354,7 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 		if (session_walk->session_id == session->session_id)
 			goto exist;
 
+#ifdef CONFIG_L2TP_V3
 	if (tunnel->version == L2TP_HDR_VER_3) {
 		pn = l2tp_pernet(tunnel->l2tp_net);
 		g_head = l2tp_session_id_hash_2(l2tp_pernet(tunnel->l2tp_net),
@@ -365,13 +368,15 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 		hlist_add_head_rcu(&session->global_hlist, g_head);
 		spin_unlock_bh(&pn->l2tp_session_hlist_lock);
 	}
-
+#endif
 	hlist_add_head(&session->hlist, head);
 	write_unlock_bh(&tunnel->hlist_lock);
 
 	return 0;
 
+#ifdef CONFIG_L2TP_V3
 exist_glob:
+#endif
 	spin_unlock_bh(&pn->l2tp_session_hlist_lock);
 exist:
 	write_unlock_bh(&tunnel->hlist_lock);
