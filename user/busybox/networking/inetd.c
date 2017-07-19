@@ -227,7 +227,8 @@
 
 #if ENABLE_FEATURE_INETD_RPC
 # if defined(__UCLIBC__) && ! defined(__UCLIBC_HAS_RPC__)
-#  error "You need to build uClibc with UCLIBC_HAS_RPC for NFS support"
+#  warning "You probably need to build uClibc with UCLIBC_HAS_RPC for NFS support"
+   /* not #error, since user may be using e.g. libtirpc instead */
 # endif
 # include <rpc/rpc.h>
 # include <rpc/pmap_clnt.h>
@@ -1513,8 +1514,11 @@ int inetd_main(int argc UNUSED_PARAM, char **argv)
 	} /* for (;;) */
 }
 
+#if ENABLE_FEATURE_INETD_SUPPORT_BUILTIN_ECHO \
+ || ENABLE_FEATURE_INETD_SUPPORT_BUILTIN_DISCARD
 #if !BB_MMU
 static const char *const cat_args[] = { "cat", NULL };
+#endif
 #endif
 
 /*

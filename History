@@ -3239,7 +3239,7 @@
 <br>
 <br>
 <b>6.2.x</b><br>
-1) busybox: update to 1.27.0 version.<br>
+1) busybox: update to 1.27.1 stable version.<br>
 2) radvd: update to 2.17 version.<br>
 3) freeradius: up to 3.0.14 version.<br>
 4) coovachilli: up to 1.4 from git (commit c6f6ada8).<br>
