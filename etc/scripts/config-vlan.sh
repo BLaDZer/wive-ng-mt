@@ -562,6 +562,31 @@ config_dualrgmii()
 	    fi
 	fi
 
+	# pass selected tagged traffic to cpu port as tagged
+	VlanLan=`nvram_get 2860 VlanLan | awk '{ gsub(","," "); print }'`
+	VlanWifiWan=`nvram_get 2860 VlanWifiWan | awk '{ gsub(","," "); print }'`
+	VlanWifiWanINIC=`nvram_get 2860 VlanWifiWanINIC | awk '{ gsub(","," "); print }'`
+	VlanWifiLan=`nvram_get 2860 VlanWifiLan | awk '{ gsub(","," "); print }'`
+	VlanWifiLanINIC=`nvram_get 2860 VlanWifiLanINIC | awk '{ gsub(","," "); print }'`
+
+	count=6
+	# from WAN
+	for vid in $VlanWifiWan $VlanWifiWanINIC
+	do
+	    if [ "$vid" != "0" ]; then
+		switch vlan set $count $vid 11111100 0 0 tttttttt
+		count="$(($count+1))"
+	    fi
+	done
+	# from LAN
+	for vid in $VlanWifiLan $VlanWifiLanINIC $VlanLan
+	do
+	    if [ "$vid" != "0" ]; then
+		switch vlan set $count $vid 11111010 0 0 tttttttt
+		count="$(($count+1))"
+	    fi
+	done
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
