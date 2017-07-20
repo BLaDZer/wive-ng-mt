@@ -102,6 +102,12 @@ fi
 ##########################################################
 if [ "$MODE" = "misc" ] || [ "$MODE" = "all" ]; then
     service kext restart
+    if [ -e /bin/ralinkiappd ]; then
+	service iappd restart
+    fi
+    if [ -e /bin/bndstrg ]; then
+	service bndstr restart
+    fi
     if [ -e /etc/init.d/arpwatch ]; then
 	service arpwatch restart
     fi
@@ -177,12 +183,6 @@ fi
 ###########################################################
 service vpnserver restart
 
-##########################################################
-# restart bandsteering wireless daemon			 #
-##########################################################
-if [ -e /bin/bndstrg ]; then
-    service bndstr restart
-fi
 
 ##########################################################
 # reload radius auth daemon				 #
@@ -196,13 +196,6 @@ fi
 ##########################################################
 if [ -e /bin/rt2860apd ]; then
     service apd restart
-fi
-
-##########################################################
-# restart 802.1f wireless daemon			 #
-##########################################################
-if [ -e /bin/ralinkiappd ]; then
-    service iappd restart
 fi
 
 ###########################################################
