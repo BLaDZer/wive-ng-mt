@@ -136,7 +136,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
  #define SINGLE_SKU_TABLE_FILE_NAME	"/etc/Wireless/iNIC/SingleSKU.dat"
  #define CARD_INFO_PATH			"/etc/Wireless/iNIC/RT2860APCard.dat"
 #endif
-#define AP_DRIVER_VERSION		"3.0.5.0.P30"
+#define AP_DRIVER_VERSION		"3.0.5.0.P31"
 #endif /* RTMP_MAC_PCI */
 
 #ifdef RTMP_RBUS_SUPPORT
@@ -151,7 +151,7 @@ typedef struct usb_ctrlrequest devctrlrequest;
  #define RTMP_FIRMWARE_FILE_NAME	"/etc/Wireless/RT2860STA.bin"
  #define STA_PROFILE_PATH		"/etc/Wireless/RT2860/RT2860.dat"
  #define CARD_INFO_PATH			"/etc/Wireless/RT2860/RT2860STACard.dat"
-#define STA_DRIVER_VERSION		"3.0.1.0.P30"
+#define STA_DRIVER_VERSION		"3.0.1.0.P31"
 #endif /* RTMP_MAC_PCI */
 
 #ifdef RTMP_RBUS_SUPPORT
