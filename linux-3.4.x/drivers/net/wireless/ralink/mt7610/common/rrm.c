@@ -643,7 +643,7 @@ VOID RRM_BeaconReportHandler(
 	os_alloc_mem(NULL, (UCHAR **)&ie_list, sizeof(BCN_IE_LIST));
 	if (ie_list == NULL) {
 		if (VarIE != NULL) {
-			os_free_mem(VarIE);
+			os_free_mem(NULL, VarIE);
 		}
 		DBGPRINT(RT_DEBUG_ERROR, ("%s(): Alloc ie_list failed!\n", __FUNCTION__));
 		return;
@@ -745,11 +745,11 @@ VOID RRM_BeaconReportHandler(
 
 	if (ie_list != NULL)
 	{
-		os_free_mem(ie_list);
+		os_free_mem(NULL, ie_list);
 	}
 
 	if (VarIE != NULL) {
-		os_free_mem(VarIE);
+		os_free_mem(NULL, VarIE);
 	}
 
 	return;
