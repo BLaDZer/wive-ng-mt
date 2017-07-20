@@ -621,7 +621,7 @@ VOID RRM_BeaconReportHandler(
 	CHAR Rssi;
 	USHORT LenVIE = 0;
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
-	UCHAR VarIE[MAX_VIE_LEN];
+	UCHAR *VarIE = NULL;            /*Wframe-larger-than=1024 warning  removal*/
 	ULONG Idx = BSS_NOT_FOUND;
 	/*
 	 	if peer response mesurement pilot frame, pVIE->Length should be init.
@@ -635,9 +635,18 @@ VOID RRM_BeaconReportHandler(
 	UINT32 Ptsf;
 	BCN_IE_LIST *ie_list = NULL;
 
+	os_alloc_mem(NULL, (UCHAR **)&VarIE, 1024);
+	if (VarIE == NULL) {
+		DBGPRINT(RT_DEBUG_ERROR, ("%s(): Alloc VarIE failed!\n", __FUNCTION__));
+		return;
+	}
+	NdisZeroMemory(VarIE, 1024);
 
 	os_alloc_mem(NULL, (UCHAR **)&ie_list, sizeof(BCN_IE_LIST));
 	if (ie_list == NULL) {
+		if (VarIE != NULL) {
+			os_free_mem(VarIE);
+		}
 		DBGPRINT(RT_DEBUG_ERROR, ("%s(): Alloc ie_list failed!\n", __FUNCTION__));
 		return;
 	}
@@ -736,6 +745,16 @@ VOID RRM_BeaconReportHandler(
 		    BssTableSortByRssi(&pAd->ScanTab, FALSE);
 	}
 #endif /* AP_SCAN_SUPPORT */
+
+	if (ie_list != NULL)
+	{
+		os_free_mem(ie_list);
+	}
+
+	if (VarIE != NULL) {
+		os_free_mem(VarIE);
+	}
+
 	return;
 }
 
