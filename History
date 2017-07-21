@@ -3259,7 +3259,7 @@
 18) kernel: ralink_wifi: remove not more needed limit bw by mcs.<br>
 19) kernel: ralink_wifi: fix 80211H without DFS procedure support.<br>
 20) kernel: ralink_wifi: apcli: remove dead code conflicting with new auto channel select mode.<br>
-21) kernel: ralink_wifi: add new Apple Iphone6 OUI oui D8:1D:72.<br>
+21) kernel: ralink_wifi: add new Apple Iphone6 OUI D8:1D:72 and honor P9 oui F0:43:47 to BCM bug workaround.<br>
 22) kernel: ralink_wifi: rrm: sort scan table by RSSI at scan or rrm add BSS.<br>
 23) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
 24) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
