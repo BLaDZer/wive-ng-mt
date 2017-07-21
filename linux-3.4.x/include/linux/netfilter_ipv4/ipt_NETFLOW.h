@@ -19,6 +19,10 @@
 #ifndef _IPT_NETFLOW_H
 #define _IPT_NETFLOW_H
 
+/* allow mac adress / vlan parse */
+#define ENABLE_MAC
+#define ENABLE_VLAN
+
 /*
  * Some tech info:
  * http://www.cisco.com/en/US/products/ps6601/prod_white_papers_list.html
