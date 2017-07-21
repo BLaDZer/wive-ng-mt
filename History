@@ -3271,7 +3271,7 @@
 30) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
 31) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
 32) kernel: introduce offsetofend macros.<br>
-33) kernel: ipt_NETFLOW: enable parse MAC/VLAN.<br>
+33) kernel: ipt_NETFLOW: enable parse MAC/VLAN/NAT.<br>
 34) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
 35) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
 36) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>

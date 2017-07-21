@@ -19,9 +19,16 @@
 #ifndef _IPT_NETFLOW_H
 #define _IPT_NETFLOW_H
 
-/* allow mac adress / vlan parse */
+/* allow mac adress / vlan / src preroute parse */
+#ifndef ENABLE_MAC
 #define ENABLE_MAC
+#endif
+#ifndef ENABLE_NAT
+#define ENABLE_NAT
+#endif
+#ifndef ENABLE_VLAN
 #define ENABLE_VLAN
+#endif
 
 /*
  * Some tech info:

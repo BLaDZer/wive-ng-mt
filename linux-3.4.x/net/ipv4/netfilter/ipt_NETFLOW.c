@@ -18,6 +18,17 @@
  *
  */
 
+/* allow mac adress / vlan / src preroute parse */
+#ifndef ENABLE_MAC
+#define ENABLE_MAC
+#endif
+#ifndef ENABLE_NAT
+#define ENABLE_NAT
+#endif
+#ifndef ENABLE_VLAN
+#define ENABLE_VLAN
+#endif
+
 #include <linux/module.h>
 #include <linux/ctype.h>
 #include <linux/skbuff.h>
