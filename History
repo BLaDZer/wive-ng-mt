@@ -3284,8 +3284,9 @@
 43) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
 44) kernel: net: l2tp: don't mask errors in pppol2tp_getsockopt().<br>
 45) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-46) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-47) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+46) kernel: net: ipv6: avoid unregistering inet6_dev for loopback.<br>
+47) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+48) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>
