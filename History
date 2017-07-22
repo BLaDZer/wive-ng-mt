@@ -3270,26 +3270,27 @@
 29) kernel: ralink_wifi: rrm: small memory leak and warning fix.<br>
 30) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
 31) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
-32) kernel: introduce offsetofend macros.<br>
-33) kernel: ipt_NETFLOW: enable parse MAC/VLAN/NAT.<br>
-34) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-35) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
-36) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
-37) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
-38) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-39) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-40) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-41) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-42) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
-43) kernel: net: l2tp: ensure session can't get removed during pppol2tp_session_ioctl().<br>
-44) kernel: net: l2tp: fix duplicate session creation.<br>
-45) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
-46) kernel: net: l2tp: don't mask errors in pppol2tp_getsockopt().<br>
-47) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-48) kernel: net: ipv6: avoid unregistering inet6_dev for loopback.<br>
-49) kernel: net: ipv6: dad: don't remove dynamic addresses if link is down.<br>
-50) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-51) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+32) kernel: ralink_wifi: mt7610: ate: fix rssi clalc, channel switch delay, tssi compensate procedure, ate stop and VHT protect tune.<br>
+33) kernel: introduce offsetofend macros.<br>
+34) kernel: ipt_NETFLOW: enable parse MAC/VLAN/NAT.<br>
+35) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+36) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
+37) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
+38) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
+39) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+40) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+41) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+42) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+43) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
+44) kernel: net: l2tp: ensure session can't get removed during pppol2tp_session_ioctl().<br>
+45) kernel: net: l2tp: fix duplicate session creation.<br>
+46) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
+47) kernel: net: l2tp: don't mask errors in pppol2tp_getsockopt().<br>
+48) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+49) kernel: net: ipv6: avoid unregistering inet6_dev for loopback.<br>
+50) kernel: net: ipv6: dad: don't remove dynamic addresses if link is down.<br>
+51) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+52) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>

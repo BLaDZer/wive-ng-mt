@@ -420,7 +420,7 @@ CHAR ConvertToRssi(RTMP_ADAPTER *pAd, CHAR Rssi, UCHAR rssi_idx)
 		2.4G : RSSI_report = RSSI_bpp + EEPROM_0x46[15:8 or 7:0] - EEPROM_0x44[7:0]
 		5G : RSSI_report = RSSI_bbp + EEPROM_0x4A[15:8 or 7:0] - EEPROM_0x44 or 0x48 or 0x4c[15:8]
 	*/
-	if (IS_MT76x0(pAd))
+	if (IS_MT76x0(pAd) || IS_RT65XX(pAd))
 		return (Rssi + (CHAR)RssiOffset - (CHAR)LNAGain);
 	else
 #endif /* MT76x0 */
