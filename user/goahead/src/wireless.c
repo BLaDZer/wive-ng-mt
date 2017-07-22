@@ -1311,16 +1311,16 @@ static int getAPCliStatus(int eid, webs_t wp, int argc, char_t **argv)
 
 static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 {
-	int i;
+	int i, j;;
 	char_t	*PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
 		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod,
-		*RADIUS_Server, *RADIUS_Port, *RADIUS_Key;
+		*RADIUS_Server, *RADIUS_Port, *RADIUS_Key, *STR;
+	char	str[64];
 
 	int num_ssid = nvram_get_int(nvram, "BssidNum", 1);
 	char_t result[16384];
 
 	result[0] = '\0';
-
 
 	if(default_shown_mbssid[nvram] > num_ssid)
 		default_shown_mbssid[nvram] = 0;
@@ -1332,7 +1332,14 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			strcat(result, "{ ");
 
 			strcat(result, "\"SSID\":\"");
-			strcat(result, nvram_get(nvram, racat("SSID", i+1)));
+			str[0] = '\0';
+			STR = nvram_get(nvram, racat("SSID", i+1));
+			for (j = 0; j < strlen(STR); j++) {
+				if (STR[j] == '"')
+					sprintf(str, "%s%c", str, '\\');
+				sprintf(str, "%s%c", str, STR[j]);
+			}
+			strcat(result, str);
 			strcat(result, "\", ");
 
 			strcat(result, "\"PreAuth\":\"");
@@ -1384,7 +1391,14 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			strcat(result, "\", ");
 
 			strcat(result, "\"WPAPSK\":\"");
-			strcat(result, nvram_get(nvram, racat("WPAPSK", i + 1)));
+			str[0] = '\0';
+			STR = nvram_get(nvram, racat("WPAPSK", i + 1));
+			for (j = 0; j < strlen(STR); j++) {
+				if (STR[j] == '"')
+					sprintf(str, "%s%c", str, '\\');
+				sprintf(str, "%s%c", str, STR[j]);
+			}
+			strcat(result, str);
 			strcat(result, "\", ");
 
 			strcat(result, "\"RekeyMethod\":\"");

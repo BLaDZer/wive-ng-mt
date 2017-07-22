@@ -138,12 +138,20 @@
 												return false;
 											}
 
-											if(!checkInjection(document.getElementById('passphrase').value)) {
+											if (!checkInjection(document.getElementById('passphrase').value)) {
 												document.getElementById('passphrase').focus();
 												document.getElementById('passphrase').select();
 												alert(_("apcli chars not allowed"));
 												return false;
 											}
+
+											if (BUILD_5GHZ_SUPPORT == '1' && NVRAM_RadioOnINIC == '1')
+												if (!checkInjection(document.getElementById('passphraseinic').value)) {
+													document.getElementById('passphraseinic').focus();
+													document.getElementById('passphraseinic').select();
+													alert(_("apcli chars not allowed"));
+													return false;
+												}
 
 											if(!checkWPA())
 												return false;
@@ -317,7 +325,7 @@
 
 			// Check ASCII 10 & 13 on string
 			function checkInjection(str) {
-				var re = /^[\r\n]+$/;
+				var re = /[\'\"\r\n]/;
 				if (re.test(str))
 					return false;
 				else
