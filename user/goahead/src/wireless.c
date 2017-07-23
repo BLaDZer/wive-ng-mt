@@ -1394,7 +1394,7 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			str[0] = '\0';
 			STR = nvram_get(nvram, racat("WPAPSK", i + 1));
 			for (j = 0; j < strlen(STR); j++) {
-				if (STR[j] == '"')
+				if (STR[j] == '"' || STR[j] == '\\')
 					sprintf(str, "%s%c", str, '\\');
 				sprintf(str, "%s%c", str, STR[j]);
 			}
