@@ -483,6 +483,10 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
         newdoc = cwmp_session_create_setparameterattributes_response_message(session, doc, doctmppool);
     }
 
+    else if (TRstrcmp(method, CWMP_RPC_GETPARAMETERATTRIBUTES) == 0)
+    {
+        newdoc = cwmp_session_create_getparameterattributes_response_message(session, doc, doctmppool);
+    }
 
     else if (TRstrcmp(method, CWMP_RPC_DOWNLOAD) == 0)
     {

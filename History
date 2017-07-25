@@ -3252,45 +3252,47 @@
 11) goahead: add RRM regulatory class select.<br>
 12) goahead: reorganize some roaming depended options to one block.<br>
 13) goahead: fix wifi scanresult show in some cases.<br>
-14) freeradius/cerst: build 1024bit DH keys (fix new android/ios compat wpa enterprise AP).<br>
-15) kernel: ralink_wifi: use real transmit power for TPE.<br>
-16) kernel: ralink_wifi: enchange regulatory class table.<br>
-17) kernel: ralink_wifi: increase max scan channel time for bit BeaconInterval config (fix lost AP scan result in roam configs).<br>
-18) kernel: ralink_wifi: do not block age out clients for avoid racely reconnection.<br>
-19) kernel: ralink_wifi: remove not more needed limit bw by mcs.<br>
-20) kernel: ralink_wifi: fix 80211H without DFS procedure support.<br>
-21) kernel: ralink_wifi: apcli: remove dead code conflicting with new auto channel select mode.<br>
-22) kernel: ralink_wifi: add new Apple Iphone6 OUI D8:1D:72 and honor P9 oui F0:43:47 to BCM bug workaround.<br>
-23) kernel: ralink_wifi: rrm: sort scan table by RSSI at scan or rrm add BSS.<br>
-24) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
-25) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
-26) kernel: ralink_wifi: rrm: implement passive monitor and update neighbour.<br>
-27) kernel: ralink_wifi: rrm: implement periodic scan for update neighbour.<br>
-28) kernel: ralink_wifi: rrm: implement 10sec delayed first boot scan.<br>
-29) kernel: ralink_wifi: rrm: small memory leak and warning fix.<br>
-30) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
-31) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
-32) kernel: ralink_wifi: mt7610: ate: fix rssi clalc, channel switch delay, tssi compensate procedure, ate stop and VHT protect tune.<br>
-33) kernel: introduce offsetofend macros.<br>
-34) kernel: ipt_NETFLOW: enable parse MAC/VLAN/NAT.<br>
-35) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
-36) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
-37) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
-38) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
-39) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
-40) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
-41) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
-42) kernel: net: xfrm: NULL dereference on allocation failure.<br>
-43) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
-44) kernel: net: l2tp: ensure session can't get removed during pppol2tp_session_ioctl().<br>
-45) kernel: net: l2tp: fix duplicate session creation.<br>
-46) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
-47) kernel: net: l2tp: don't mask errors in pppol2tp_getsockopt().<br>
-48) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
-49) kernel: net: ipv6: avoid unregistering inet6_dev for loopback.<br>
-50) kernel: net: ipv6: dad: don't remove dynamic addresses if link is down.<br>
-51) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
-52) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
+14) netcwmpd: add parametr attributes support.<br>
+15) netcwmpd: fix parametrs get fix with some ACS.<br>
+16) freeradius/cerst: build 1024bit DH keys (fix new android/ios compat wpa enterprise AP).<br>
+17) kernel: ralink_wifi: use real transmit power for TPE.<br>
+18) kernel: ralink_wifi: enchange regulatory class table.<br>
+19) kernel: ralink_wifi: increase max scan channel time for bit BeaconInterval config (fix lost AP scan result in roam configs).<br>
+20) kernel: ralink_wifi: do not block age out clients for avoid racely reconnection.<br>
+21) kernel: ralink_wifi: remove not more needed limit bw by mcs.<br>
+22) kernel: ralink_wifi: fix 80211H without DFS procedure support.<br>
+23) kernel: ralink_wifi: apcli: remove dead code conflicting with new auto channel select mode.<br>
+24) kernel: ralink_wifi: add new Apple Iphone6 OUI D8:1D:72 and honor P9 oui F0:43:47 to BCM bug workaround.<br>
+25) kernel: ralink_wifi: rrm: sort scan table by RSSI at scan or rrm add BSS.<br>
+26) kernel: ralink_wifi: rrm: initial parse measurement subtypes info.<br>
+27) kernel: ralink_wifi: rrm: fix sanity check for avoid call BssTableSetEntry() if not needed.<br>
+28) kernel: ralink_wifi: rrm: implement passive monitor and update neighbour.<br>
+29) kernel: ralink_wifi: rrm: implement periodic scan for update neighbour.<br>
+30) kernel: ralink_wifi: rrm: implement 10sec delayed first boot scan.<br>
+31) kernel: ralink_wifi: rrm: small memory leak and warning fix.<br>
+32) kernel: ralink_wifi: mt7610: copy ext cap from assoc req for operating mode use.<br>
+33) kernel: ralink_wifi: mt7610: fix update HT/VHT protect modes.<br>
+34) kernel: ralink_wifi: mt7610: ate: fix rssi clalc, channel switch delay, tssi compensate procedure, ate stop and VHT protect tune.<br>
+35) kernel: introduce offsetofend macros.<br>
+36) kernel: ipt_NETFLOW: enable parse MAC/VLAN/NAT.<br>
+37) kernel: mips: fix IRQ tracing & lockdep when rescheduling.<br>
+38) kernel: sched/loadavg: avoid loadavg spikes caused by delayed NO_HZ accounting.<br>
+39) kernel: futex: fix potential use-after-free in FUTEX_REQUEUE_PI.<br>
+40) kernel: futex: add missing error handling to FUTEX_REQUEUE_PI.<br>
+41) kernel: net: af_key: fix slab-out-of-bounds in pfkey_compile_policy.<br>
+42) kernel: net: af_unix: add sockaddr length checks before accessing sa_family in bind and connect handlers.<br>
+43) kernel: net: xfrm: oops on error in pfkey_msg2xfrm_state().<br>
+44) kernel: net: xfrm: NULL dereference on allocation failure.<br>
+45) kernel: net: l2tp: fix race in l2tp_recv_common().<br>
+46) kernel: net: l2tp: ensure session can't get removed during pppol2tp_session_ioctl().<br>
+47) kernel: net: l2tp: fix duplicate session creation.<br>
+48) kernel: net: l2tp: take a reference on sessions used in genetlink handlers.<br>
+49) kernel: net: l2tp: don't mask errors in pppol2tp_getsockopt().<br>
+50) kernel: net: ipv6: release dst on error in ip6_dst_lookup_tail.<br>
+51) kernel: net: ipv6: avoid unregistering inet6_dev for loopback.<br>
+52) kernel: net: ipv6: dad: don't remove dynamic addresses if link is down.<br>
+53) kernel: net: udp: avoid ufo handling on IP payload compression packets.<br>
+54) kernel: net: tcp: fix tcp_mark_head_lost to check skb len before fragmenting.<br>
 <br>
 <br>
 <br>

@@ -133,6 +133,7 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
     parameter_node_t *pn = NULL;
     struct nic_counts *ncs = NULL;
     struct nic_counts *nc = NULL;
+    struct nic_counts *tnc = NULL;
     int elc = 0;
     int status = 0;
     char buf[42] = {};
@@ -144,14 +145,24 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
     ncs = nicscounts(&elc);
 
     for (; elc-- > 0;) {
-        nc = &ncs[elc];
-        if (!strncmp(nc->ifname, "ppp", 3)) {
+        tnc = &ncs[elc];
+        if (!strncmp(tnc->ifname, "ppp", 3)) {
+            nc = tnc;
             break;
         }
     }
 
      if (!strcmp(pn->name, "ConnectionStatus")) {
-        status = getVPNStatusCode();
+
+        if (nc != NULL)
+        {
+            status = getVPNStatusCode();
+        }
+        else
+        {
+            status = 0;
+        }
+
         switch (status) {
             case 0:
                 *value = "Unconfigured";

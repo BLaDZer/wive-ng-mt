@@ -1465,7 +1465,7 @@ int http_read_response(http_socket_t * sock, http_response_t * response, pool_t 
     rc = http_read_header(sock, header, pool);
     if (rc <= 0)
     {
-        cwmp_log_error("http_read_response ERROR 1");
+        cwmp_log_error("http_read_response ERROR 1 (rc = %i)",rc);
         if (rc == CWMP_TIMEOUT)
             return rc;
         return CWMP_ERROR;

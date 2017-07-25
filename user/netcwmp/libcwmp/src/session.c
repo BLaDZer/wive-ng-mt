@@ -856,7 +856,29 @@ xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_ses
 }
 
 
+xmldoc_t *  cwmp_session_create_getparameterattributes_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
+{
+    header_t * header;
+    int rv;
+    parameter_list_t * pl = NULL;
+    fault_code_t fault;
 
+    cwmp_log_trace("%s(session=%p, doc=%p, pool=%p)",
+            __func__, (void*)session, (void*)doc, (void*)pool);
+
+    rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
+    if (rv != CWMP_OK) {
+        cwmp_log_debug("no header node");
+    }
+
+    rv = cwmp_parse_getparameterattributes_message(session->env, doc, session->root, &pl, &fault);
+    /* STUB */
+
+
+    xmldoc_t * resdoc = cwmp_create_getparameterattributes_response_message(session->env, header, 0, pl);
+
+    return resdoc;
+}
 
 xmldoc_t *  cwmp_session_create_download_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
 {

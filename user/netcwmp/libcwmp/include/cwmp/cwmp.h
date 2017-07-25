@@ -87,6 +87,8 @@
 #define CWMP_RPC_SETPARAMETERATTRIBUTES  				"cwmp:SetParameterAttributes"
 #define CWMP_RPC_SETPARAMETERATTRIBUTESRESPONSE         "cwmp:SetParameterAttributesResponse"
 
+#define CWMP_RPC_GETPARAMETERATTRIBUTES  				"cwmp:GetParameterAttributes"
+#define CWMP_RPC_GETPARAMETERATTRIBUTESRESPONSE         "cwmp:GetParameterAttributesResponse"
 
 
 #define CWMP_RPC_GETRPCMETHODS  					"cwmp:GetRPCMethods"
@@ -524,6 +526,7 @@ xmldoc_t *  cwmp_create_reboot_response_message(env_t * env ,
     header_t * header);
 
 xmldoc_t * cwmp_create_setparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl);
+xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl);
 
 xmldoc_t * cwmp_create_download_response_message(env_t * env , header_t * header, int status);
 xmldoc_t * cwmp_create_upload_response_message(env_t * env , header_t * header, int status);
@@ -545,6 +548,7 @@ int cwmp_parse_upload_message(env_t * env , xmldoc_t *doc, upload_arg_t ** pular
 
 int     cwmp_parse_getparameternames_message(env_t * env, xmldoc_t * doc, char ** path_name, unsigned int * next_level, fault_code_t *fault);
 int     cwmp_parse_getparametervalues_message(env_t * env ,   xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
+int     cwmp_parse_getparameterattributes_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
 int     cwmp_parse_setparametervalues_message(env_t * env ,   xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
 int     cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, parameter_node_t * root, parameter_list_t ** ppl, fault_code_t *fault);
 
