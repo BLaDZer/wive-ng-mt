@@ -4006,7 +4006,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+#ifdef DFS_SUPPORT
 		pAd->Dot11_H.RDMode = RD_SILENCE_MODE;
+#else
+		pAd->Dot11_H.RDMode = RD_NORMAL_MODE;
+#endif /* DFS_SUPPORT */
 #endif
 
 	pAd->Dot11_H.ChMovingTime = 65;

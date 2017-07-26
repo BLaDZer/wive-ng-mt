@@ -3420,7 +3420,11 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	/* 802.11H and DFS related params*/
 	pAd->Dot11_H.CSCount = 0;
 	pAd->Dot11_H.CSPeriod = 10;
+#ifdef DFS_SUPPORT
 	pAd->Dot11_H.RDMode = RD_SILENCE_MODE;
+#else
+	pAd->Dot11_H.RDMode = RD_NORMAL_MODE;
+#endif /* DFS_SUPPORT */
 	pAd->Dot11_H.bDFSIndoor = 1;
 
 
