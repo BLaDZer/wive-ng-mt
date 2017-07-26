@@ -1255,7 +1255,7 @@ __init raeth_init(void)
 
 	dev->irq = SURFBOARDINT_FE;
 	dev->base_addr = RALINK_FRAME_ENGINE_BASE;
-	dev->watchdog_timeo = 5*HZ;
+	dev->watchdog_timeo = 10*HZ;
 	dev->netdev_ops = &ei_netdev_ops;
 #if defined (CONFIG_ETHTOOL)
 	/* init mii structure */
