@@ -385,7 +385,7 @@ einval:	li	v0, -ENOSYS
 	sys	sys_writev		3
 	sys	sys_cacheflush		3
 	sys	sys_cachectl		3
-	sys	sys_sysmips		4
+	sys	__sys_sysmips		4
 	sys	sys_ni_syscall		0	/* 4150 */
 	sys	sys_getsid		1
 	sys	sys_fdatasync		1

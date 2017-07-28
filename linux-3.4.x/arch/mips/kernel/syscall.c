@@ -255,6 +255,10 @@ static inline int mips_atomic_set(struct pt_regs *regs,
 	while (1);
 }
 
+/*
+ * mips_atomic_set() normally returns directly via syscall_exit potentially
+ * clobbering static registers, so be sure to preserve them.
+ */
 save_static_function(sys_sysmips);
 static int __used noinline
 _sys_sysmips(nabi_no_regargs struct pt_regs regs)

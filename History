@@ -3300,6 +3300,7 @@
 <b>6.3.x</b><br>
 1) goahead: refactor dhcp and ip_accouning pages.<br>
 2) kernel: mips: fix mips_atomic_set() retry condition.<br>
+3) kernel: mips: save static registers before sysmips.<br>
 <br>
 <br>
 <br>
