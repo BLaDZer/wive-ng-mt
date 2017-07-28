@@ -199,7 +199,7 @@ ifeq ($(CONFIG_MT7610_AP_ATE),y)
 EXTRA_CFLAGS += -Idrivers/net/wireless/$(RT_DRV_DIR)/ate/include -Wno-unused-variable
 endif
 
-EXTRA_CFLAGS += -Wall -Wno-unused-parameter -Wno-sign-compare -Wno-type-limits
+EXTRA_CFLAGS += -Wall -Wno-unused-parameter
 
 EXTRA_CFLAGS += -DAGGREGATION_SUPPORT -DPIGGYBACK_SUPPORT -DWMM_SUPPORT -DLINUX
 EXTRA_CFLAGS += -DCONFIG_AP_SUPPORT -DUAPSD_SUPPORT -DDOT11_N_SUPPORT -DDOT1X_SUPPORT
