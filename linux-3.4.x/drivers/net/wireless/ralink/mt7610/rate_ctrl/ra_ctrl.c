@@ -1035,6 +1035,7 @@ VOID APMlmeSetTxRate(
 
 #ifdef MCS_LUT_SUPPORT
 	asic_mcs_lut_update(pAd, pEntry);
+	pAd->LastTxRate = (USHORT)(pEntry->HTPhyMode.word);
 #endif /* MCS_LUT_SUPPORT */
 
 

@@ -3304,6 +3304,7 @@
 4) kernel: mips: fix mips_atomic_set() retry condition.<br>
 5) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
 6) kernel: ralink_wifi: allow secondary channel offset in Channel Switch Announcement IE.<br>
+7) kernel: ralink_wifi: always update LastTxRate after asic_mcs_lut_update.<br>
 <br>
 <br>
 <br>

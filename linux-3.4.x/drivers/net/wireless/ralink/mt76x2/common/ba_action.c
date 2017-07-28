@@ -2348,6 +2348,7 @@ VOID Peer_DelBA_Tx_Adapt_Disable(
 		pEntry->bPeerDelBaTxAdaptEn = 0;
 		RTMPCancelTimer(&pEntry->DelBA_tx_AdaptTimer, &Cancelled);
 		asic_mcs_lut_update(pAd, pEntry);
+		pAd->LastTxRate = (USHORT)(pEntry->HTPhyMode.word);
 
 		DBGPRINT(RT_DEBUG_TRACE,
 				("%s():bPeerDelBaTxAdaptEn = 0x%x\n",
