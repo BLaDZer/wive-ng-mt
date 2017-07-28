@@ -3301,6 +3301,7 @@
 1) goahead: refactor dhcp and ip_accouning pages.<br>
 2) kernel: mips: fix mips_atomic_set() retry condition.<br>
 3) kernel: mips: save static registers before sysmips.<br>
+4) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
 <br>
 <br>
 <br>
