@@ -2172,8 +2172,6 @@ VOID PeerSpectrumAction(
 			break;
 
 		case SPEC_CHANNEL_SWITCH:
-
-#ifdef DOT11N_DRAFT3
 			{
 				SEC_CHA_OFFSET_IE	Secondary;
 				CHA_SWITCH_ANNOUNCE_IE	ChannelSwitch;
@@ -2190,13 +2188,13 @@ VOID PeerSpectrumAction(
 				{
 					Secondary.SecondaryChannelOffset = 0;
 				}
-
+#ifdef DFS_SUPPORT
 				if ((Elem->Msg[LENGTH_802_11+2] == IE_CHANNEL_SWITCH_ANNOUNCEMENT) && (Elem->Msg[LENGTH_802_11+3] == 3))
 				{
 					ChannelSwitchAction(pAd, Elem->Wcid, ChannelSwitch.NewChannel, Secondary.SecondaryChannelOffset);
 				}
+#endif /* DFS_SUPPORT */
 			}
-#endif /* DOT11N_DRAFT3 */
 
 			PeerChSwAnnAction(pAd, Elem);
 			break;

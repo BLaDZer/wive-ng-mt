@@ -2387,15 +2387,13 @@ VOID PeerSpectrumAction(
 			break;
 
 		case SPEC_CHANNEL_SWITCH:
-
-#ifdef DOT11N_DRAFT3
 			{
 				SEC_CHA_OFFSET_IE	Secondary;
 				CHA_SWITCH_ANNOUNCE_IE	ChannelSwitch;
 
 				/* 802.11h only has Channel Switch Announcement IE. */
 				RTMPMoveMemory(&ChannelSwitch, &Elem->Msg[LENGTH_802_11+4], sizeof (CHA_SWITCH_ANNOUNCE_IE));
-					
+
 				/* 802.11n D3.03 adds secondary channel offset element in the end.*/
 				if (Elem->MsgLen ==  (LENGTH_802_11 + 2 + sizeof (CHA_SWITCH_ANNOUNCE_IE) + sizeof (SEC_CHA_OFFSET_IE)))
 				{
@@ -2405,13 +2403,13 @@ VOID PeerSpectrumAction(
 				{
 					Secondary.SecondaryChannelOffset = 0;
 				}
-
+#ifdef DFS_SUPPORT
 				if ((Elem->Msg[LENGTH_802_11+2] == IE_CHANNEL_SWITCH_ANNOUNCEMENT) && (Elem->Msg[LENGTH_802_11+3] == 3))
 				{
 					ChannelSwitchAction(pAd, Elem->Wcid, ChannelSwitch.NewChannel, Secondary.SecondaryChannelOffset);
 				}
+#endif /* DFS_SUPPORT */
 			}
-#endif /* DOT11N_DRAFT3 */
 
 			PeerChSwAnnAction(pAd, Elem);
 			break;

@@ -3302,6 +3302,7 @@
 2) goahead: refactor dhcp and ip_accouning pages.<br>
 3) kernel: mips: fix mips_atomic_set() retry condition.<br>
 4) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+5) kernel: ralink_wifi: allow secondary channel offset in Channel Switch Announcement IE.<br>
 <br>
 <br>
 <br>
