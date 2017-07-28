@@ -3298,9 +3298,10 @@
 <br>
 <br>
 <b>6.3.x</b><br>
-1) goahead: refactor dhcp and ip_accouning pages.<br>
-2) kernel: mips: fix mips_atomic_set() retry condition.<br>
-3) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+1) xl2tpd: update to 1.3.10rc1.<br>
+2) goahead: refactor dhcp and ip_accouning pages.<br>
+3) kernel: mips: fix mips_atomic_set() retry condition.<br>
+4) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
 <br>
 <br>
 <br>
