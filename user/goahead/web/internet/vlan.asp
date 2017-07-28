@@ -652,12 +652,12 @@
 					data	= JSON.parse(SSID_LIST);
 				} catch(e) { return; }
 
-				if (NVRAM_BssidIfName == "ra" && BUILD_5GHZ_SUPPORT == 1) {
+				if (NVRAM_BssidIfName == "ra" && BUILD_5GHZ_SUPPORT) {
 					wifiNIC.push("rai");
 					wifiSSID.push(ssid5);
 					NVRAM_BssidNum++;
 				}
-				else if (NVRAM_BssidIfName == "rai" && BUILD_5GHZ_SUPPORT == 1) {
+				else if (NVRAM_BssidIfName == "rai" && BUILD_5GHZ_SUPPORT) {
 					wifiNIC.push("ra");
 					wifiSSID.push(ssid24);
 					NVRAM_BssidNum++;

@@ -19,11 +19,11 @@
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
 
-			var dhcpList		= [];
+			var dhcpList = [];
 
 			function initTranslation() {
 				_TR("lTitle",			"services dhcp title");
-				_TR("lIntroduction",	"services dhcp introduction");
+				_TR("lIntroduction",		"services dhcp introduction");
 				_TR("lSetup",			"services dhcp setup");
 				_TR("lDhcpType",		"services dhcp title");
 				_TR("lDhcpTypeD",		"button disable");
@@ -36,17 +36,20 @@
 				_TR("lDhcpSecDns",		"inet sec dns");
 				_TR("lDhcpGateway",		"inet gateway");
 				_TR("lDhcpLease",		"services dhcp lease");
+				_TR("lDhcpLeaseNote",		"services dhcp lease note");
 				_TR("dClients",			"services dhcp clients");
 				_TR("dHostname",		"inet hostname");
-				_TR("dMAC",				"inet mac");
-				_TR("dIP",				"inet ip");
+				_TR("dMAC",			"inet mac");
+				_TR("dIP",			"inet ip");
 				_TR("dExpires",			"services dhcp expires");
 				_TR("dStatic",			"services dhcp static");
-				_TR("ldhcpARPPTimeout",	"services dhcp arpping timeout");
+				_TR("lDhcpARPPTimeout",		"services dhcp arpping timeout");
+				_TR("lDhcpARPPTimeoutNote",	"services dhcp arpping timeout note");
 				_TRV("lApply",			"button apply");
 				_TRV("lCancel",			"button cancel");
+				_TRV("lReset",			"button reset");
 			}
-			
+
 			function initValues() {
 				if (NVRAM_dhcpStatic.length > 1) {
 					NVRAM_dhcpStatic = NVRAM_dhcpStatic.split(";");
@@ -59,148 +62,153 @@
 				}
 
 				document.dhcpCfg.dhcpEnabled.options.selectedIndex	= +NVRAM_dhcpEnabled;
-				document.dhcpCfg.dhcpDomain.value					= NVRAM_dhcpDomain;
-				document.dhcpCfg.dhcpStart.value					= NVRAM_dhcpStart;
-				document.dhcpCfg.dhcpEnd.value						= NVRAM_dhcpEnd;
-				document.dhcpCfg.dhcpMask.value						= NVRAM_dhcpMask;
-				document.dhcpCfg.dhcpPriDns.value					= NVRAM_dhcpPriDns;
-				document.dhcpCfg.dhcpSecDns.value					= NVRAM_dhcpSecDns;
-				document.dhcpCfg.dhcpGateway.value					= NVRAM_dhcpGateway;
-				document.dhcpCfg.dhcpLease.value					= NVRAM_dhcpLease;
-				document.dhcpCfg.dhcpARPPTimeout.value				= NVRAM_dhcpARPPTimeout;
-				
+				document.dhcpCfg.dhcpDomain.value			= NVRAM_dhcpDomain;
+				document.dhcpCfg.dhcpStart.value			= NVRAM_dhcpStart;
+				document.dhcpCfg.dhcpEnd.value				= NVRAM_dhcpEnd;
+				document.dhcpCfg.dhcpMask.value				= NVRAM_dhcpMask;
+				document.dhcpCfg.dhcpPriDns.value			= NVRAM_dhcpPriDns;
+				document.dhcpCfg.dhcpSecDns.value			= NVRAM_dhcpSecDns;
+				document.dhcpCfg.dhcpGateway.value			= NVRAM_dhcpGateway;
+				document.dhcpCfg.dhcpLease.value			= NVRAM_dhcpLease;
+				document.dhcpCfg.dhcpARPPTimeout.value			= NVRAM_dhcpARPPTimeout;
+
 				dhcpTypeSwitch();
-				
-				loadDhcpClientsList();
 				showWarning();
 				initTranslation();
+				loadDhcpClientsList();
+				displayServiceStatus([[ NVRAM_dhcpEnabled, 'udhcpd', 'udhcpd' ]]);
 			}
-			
-			function CheckValue(form) {
-				if (form.dhcpEnabled.options.selectedIndex == 1) {
-					if (!validateIP(form.dhcpStart, true)) {
+
+			function CheckValue() {
+				if (document.dhcpCfg.dhcpEnabled.options.selectedIndex == 1) {
+					if (!validateIP(document.dhcpCfg.dhcpStart)) {
 						alert(_("services dhcp invalid ip"));
-						form.dhcpStart.focus();
+						document.dhcpCfg.dhcpStart.focus();
+						document.dhcpCfg.dhcpStart.select();
 						return false;
 					}
-					if (!validateIP(form.dhcpEnd, true)) {
+					if (!validateIP(document.dhcpCfg.dhcpEnd)) {
 						alert(_("services dhcp invalid ip"));
-						form.dhcpEnd.focus();
+						document.dhcpCfg.dhcpEnd.focus();
+						document.dhcpCfg.dhcpEnd.select();
 						return false;
 					}
-					if (!validateIP(form.dhcpMask, true)) {
-						form.dhcpMask.focus();
+					if (!validateIP(document.dhcpCfg.dhcpMask)) {
+						document.dhcpCfg.dhcpMask.focus();
+						document.dhcpCfg.dhcpMask.select();
 						return false;
 					}
-					if (form.dhcpPriDns.value != "") {
-						if (!validateIP(form.dhcpPriDns, true))
-						{
+					if (document.dhcpCfg.dhcpPriDns.value != "") {
+						if (!validateIP(document.dhcpCfg.dhcpPriDns)) {
 							alert(_("services dhcp invalid ip"));
-							form.dhcpPriDns.focus();
+							document.dhcpCfg.dhcpPriDns.focus();
+							document.dhcpCfg.dhcpPriDns.select();
 							return false;
 						}
 					}
-					if (form.dhcpSecDns.value != "") {
-						if (!validateIP(form.dhcpSecDns, true))
-						{
+					if (document.dhcpCfg.dhcpSecDns.value != "") {
+						if (!validateIP(document.dhcpCfg.dhcpSecDns)) {
 							alert(_("services dhcp invalid ip"));
-							form.dhcpSecDns.focus();
+							document.dhcpCfg.dhcpSecDns.focus();
+							document.dhcpCfg.dhcpSecDns.select();
 							return false;
 						}
 					}
-					if (!validateIP(form.dhcpGateway, true)) {
+					if (!validateIP(document.dhcpCfg.dhcpGateway)) {
 						alert(_("services dhcp invalid ip"));
-						form.dhcpGateway.focus();
+						document.dhcpCfg.dhcpGateway.focus();
+						document.dhcpCfg.dhcpGateway.select();
 						return false;
 					}
-					if (!validateNum(form.dhcpLease.value, false) || +form.dhcpLease.value < 0) {
-						console.log(form.dhcpLease.value);
+					if (!validateNum(document.dhcpCfg.dhcpLease.value) || +document.dhcpCfg.dhcpLease.value < 0) {
 						alert(_("services dhcp invalid lease"));
-						form.dhcpLease.focus();
+						document.dhcpCfg.dhcpLease.focus();
+						document.dhcpCfg.dhcpLease.select();
 						return false;
 					}
-					if (!validateNum(form.dhcpARPPTimeout.value, false) || +form.dhcpARPPTimeout.value < 0) {
+					if (!validateNum(document.dhcpCfg.dhcpARPPTimeout.value) || +document.dhcpCfg.dhcpARPPTimeout.value < 0) {
 						alert(_("services dhcp invalid arptimeout"));
-						form.dhcpARPPTimeout.focus();
+						document.dhcpCfg.dhcpARPPTimeout.focus();
+						document.dhcpCfg.dhcpARPPTimeout.select();
 						return false;
 					}
-					genIPTableData(form);
+					genIPTableData();
 				}
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.dhcpCfg, 'timerReloader', _('message apply'), 15);
 				return true;
+			}
+
+			function loadDhcpClientsList() {
+				ajaxLoadScript('/services/dhcp_clist.js');
+				setTimeout('loadDhcpClientsList();', 5000);
 			}
 
 			function genTable(disabled) {
 				disabled = (disabled) ? ' disabled="disabled"' : '';
 
-				var table = '<table class="form" style="width: 100%">';
-				table += '<tr><td class="title" colspan="4">' + _("services dhcp static title") + '</td></tr>';
-				table += '<tr><th style="text-align: left;">' + _("inet mac") + '</th>';
-				table += '<th style="text-align: left;">' + _("inet ip") + '</th>';
-				table += '<th style="text-align: left;">' + _("services dhcp table desc") + '</th>';
-				table += '<th>' + _("routing action") + '</th></tr>';
-				for (var i=0; i<dhcpList.length; i++)
-				{
-					var row = dhcpList[i];
-					table += '<tr><td>' + row[0] + '</td>';
-					table += '<td>' + row[1] + '</td>';
-					table += '<td>' + row[2] + '</td>';
-					table += '<td style="text-align: center;">';
-					table += '<a style="color: #ff0000;" title="';
-					table += _("services dhcp edit record");
-					table += '" href="javascript:editIPItem(' + i + ');"' + disabled + '>';
-					table += '<img src="/graphics/edit.png" alt="[+]"></a>';
-					table += '<a style="color: #ff0000;" title="';
-					table += _("services dhcp delete record");
-					table += '" href="javascript:deleteIPItem(' + i + ');"' + disabled + '>';
-					table += '<img src="/graphics/cross.png" alt="[x]"></a></td></tr>';
-				}
-				table += '<tr><td><input style="width: 98%" value="" name="dhcpStaticMAC"' + disabled + '></td>';
-				table += '<td><input style="width: 98%" value="" name="dhcpStaticIP"' + disabled + '></td>';
-				table += '<td><input style="width: 98%" value="" name="dhcpStaticDesc"' + disabled + '></td>';
-				table += '<td style="text-align: center;"><input type="button" class="normal" title="';
-				table += _("services dhcp add record");
-				table += '" value="';
-				table += _("button add");
-				table += '" onclick="addIPItem(this.form);"' + disabled + '></td></tr>';
-				table += '</table>';
-				
-				var elem = document.getElementById("dhcpStaticIPList");
-				if (elem!=null)
-					elem.innerHTML = table;
+				var table =	'<br>' +
+						'<table class="form" style="width: 100%">' +
+						'	<tr>' +
+						'		<td class="title" colspan="4">' + _("services dhcp static title") + '</td>' +
+						'	</tr>' +
+						'	<tr>' +
+						'		<th style="text-align: left;">' + _("inet mac") + '</th>' +
+						'		<th style="text-align: left;">' + _("inet ip") + '</th>' +
+						'		<th style="text-align: left;">' + _("services dhcp table desc") + '</th>' +
+						'		<th>' + _("routing action") + '</th>' +
+						'	</tr>';
+				for (var i = 0; i < dhcpList.length; i++)
+					table +=	'	<tr>' +
+							'		<td>' + dhcpList[i][0] + '</td>' +
+							'		<td>' + dhcpList[i][1] + '</td>' +
+							'		<td>' + dhcpList[i][2] + '</td>' +
+							'		<td style="text-align: center;">' +
+							'			<a style="color: #ff0000;" title="' +	_("services dhcp edit record") + '" href="javascript:editIPItem(' + i + ');"' + disabled + '><img src="/graphics/edit.png" alt="[+]"></a>&nbsp;&nbsp;' +
+							'			<a style="color: #ff0000;" title="' + _("services dhcp delete record") + '" href="javascript:deleteIPItem(' + i + ');"' + disabled + '><img src="/graphics/cross.png" alt="[x]"></a>' +
+							'		</td>' +
+							'	</tr>';
+				table +=	'	<tr>' +
+						'		<td><input style="width: 98%" value="" maxlength="17" name="dhcpStaticMAC"' + disabled + '></td>' +
+						'		<td><input style="width: 98%" value="" maxlength="15" name="dhcpStaticIP"' + disabled + '></td>' +
+						'		<td><input style="width: 98%" value="" maxlength="32" name="dhcpStaticDesc"' + disabled + '></td>' +
+						'		<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add") + '" onclick="addIPItem();"' + disabled + '></td>' +
+						'	</tr>' +
+						'</table>';
+				document.getElementById("dhcpStaticIPList").innerHTML = table;
 			}
 
-			function genIPTableData(form) {
-				var values = "";
+			function genIPTableData() {
+				var values = '';
 				for (var i = 0; i < dhcpList.length; i++) {
 					values += dhcpList[i][0] + ' ' + dhcpList[i][1] + ' ' + dhcpList[i][2];
-					if (dhcpList.length > (i+1)) {
-						values += ";";
-					}
+					if (dhcpList.length > (i + 1))
+						values += ';';
 				}
-				form.dhcpAssignIP.value = values;
+				document.dhcpCfg.dhcpAssignIP.value = values;
 			}
 
-			function addIPItem(form) {
-				if (!validateMAC(form.dhcpStaticMAC.value, true)) {
-					alert(_("services dhcp invalid mac"));
-					form.dhcpStaticMAC.focus();
+			function addIPItem() {
+				if (!validateMAC(document.dhcpCfg.dhcpStaticMAC.value)) {
+					alert(_('services dhcp invalid mac'));
+					document.dhcpCfg.dhcpStaticMAC.focus();
+					document.dhcpCfg.dhcpStaticMAC.select();
 					return;
 				}
-				if (!validateIP(form.dhcpStaticIP, true)) {
-					alert(_("services dhcp invalid ip"));
-					form.dhcpStaticIP.focus();
+				if (!validateIP(document.dhcpCfg.dhcpStaticIP)) {
+					alert(_('services dhcp invalid ip'));
+					document.dhcpCfg.dhcpStaticIP.focus();
+					document.dhcpCfg.dhcpStaticIP.select();
 					return;
 				}
 
 				var re_desc = /^[a-zA-Z0-9_]+$/;
-				if (!re_desc.test(form.dhcpStaticDesc.value)) {
-					alert(_("services dhcp invalid desc"));
-					form.dhcpStaticDesc.focus();
+				if (!re_desc.test(document.dhcpCfg.dhcpStaticDesc.value)) {
+					alert(_('services dhcp invalid desc'));
+					document.dhcpCfg.dhcpStaticDesc.focus();
+					document.dhcpCfg.dhcpStaticDesc.select();
 					return;
 				}
-				
-				addEntry(form.dhcpStaticMAC.value, form.dhcpStaticIP.value, form.dhcpStaticDesc.value);
+				addEntry(document.dhcpCfg.dhcpStaticMAC.value, document.dhcpCfg.dhcpStaticIP.value, document.dhcpCfg.dhcpStaticDesc.value);
 			}
 
 			function addEntry(mac, ip, desc) {
@@ -211,14 +219,14 @@
 				}
 				else {
 					if (dhcpList[index][0] == mac){
-						if (confirm(_("services dhcp ask overwrite mac") + mac + '?')) {
+						if (confirm(_('services dhcp ask overwrite mac') + mac + '?')) {
 							dhcpList[index][1] = ip;
 							dhcpList[index][2] = desc;
 							genTable();
 						}
 					}
 					else if (dhcpList[index][1] == ip) {
-						if (confirm(_("services dhcp ask overwrite ip") + ip + '?')) {
+						if (confirm(_('services dhcp ask overwrite ip') + ip + '?')) {
 							dhcpList[index][0] = mac;
 							dhcpList[index][2] = desc;
 							genTable();
@@ -228,172 +236,113 @@
 			}
 
 			function deleteIPItem(index) {
-				if ((index>=0) && (index < dhcpList.length)) {
+				if (index >= 0 && index < dhcpList.length) {
 					var row = dhcpList[index];
 					dhcpList.splice(index, 1);
-					
+
 					// Update DHCP table
 					var tbl = document.getElementById('dhcpClientsTable');
 					if (tbl != null)
 						updateDhcpClientsList(tbl);
-					
 					genTable();
 				}
 			}
 
 			function editIPItem(index) {
-				var form = document.dhcpCfg;
 				if (index >= 0 && index < dhcpList.length) {
 					var row = dhcpList[index];
-					form.dhcpStaticMAC.value	= row[0];
-					form.dhcpStaticIP.value		= row[1];
-					form.dhcpStaticDesc.value	= row[2];
-					form.dhcpStaticDesc.focus();
+					document.dhcpCfg.dhcpStaticMAC.value		= row[0];
+					document.dhcpCfg.dhcpStaticIP.value		= row[1];
+					document.dhcpCfg.dhcpStaticDesc.value		= row[2];
+					document.dhcpCfg.dhcpStaticDesc.focus();
 				}
 			}
 
 			function dhcpTypeSwitch() {
-				var form		= document.dhcpCfg;
-				var dhcp_on		= form.dhcpEnabled.options.selectedIndex == 1;
+				var dhcp_on = document.dhcpCfg.dhcpEnabled.options.selectedIndex == 1;
 				
-				enableElements( [ form.dhcpDomain, form.dhcpStart, form.dhcpEnd, form.dhcpMask, form.dhcpGateway, form.dhcpLease, form.dhcpARPPTimeout ], dhcp_on);
-				displayElement( [ 'domain', 'start', 'end', 'mask', 'gateway', 'lease', 'dhcpClientsTable', 'dhcpStaticIPList', 'arpping' ], dhcp_on );
-				enableElements( [ form.dhcpPriDns, form.dhcpSecDns ], dhcp_on && NVRAM_dnsPEnabled != '1');
-				displayElement( [ 'pridns', 'secdns' ], dhcp_on && NVRAM_dnsPEnabled != '1');
-				
+				enableElements( [	document.dhcpCfg.dhcpDomain,
+							document.dhcpCfg.dhcpStart,
+							document.dhcpCfg.dhcpEnd,
+							document.dhcpCfg.dhcpMask,
+							document.dhcpCfg.dhcpGateway,
+							document.dhcpCfg.dhcpLease,
+							document.dhcpCfg.dhcpARPPTimeout ], dhcp_on);
+				displayElement( [	'domain',
+							'start',
+							'end',
+							'mask',
+							'gateway',
+							'lease',
+							'dhcpClientsTable',
+							'dhcpStaticIPList',
+							'arpping' ], dhcp_on );
+				enableElements( [	document.dhcpCfg.dhcpPriDns,
+							document.dhcpCfg.dhcpSecDns ], dhcp_on && NVRAM_dnsPEnabled != '1');
+				displayElement( [	'pridns',
+							'secdns' ], dhcp_on && NVRAM_dnsPEnabled != '1');
+
 				genTable(!dhcp_on);
-				displayServiceStatus();
 			}
 
+			// Update all checkboxes
 			function updateDhcpClientsList(element) {
-				// Update all checkboxes
 				var rows = element.getElementsByTagName('INPUT');
 				for (var i = 0; i < rows.length; i++) {
-					// Get check ID
-					var id = rows[i].id;
-					if (id == null)
-						next;
-					// Get values
-					var ip = document.getElementById(id + '_ip');
-					if (ip == null)
-						next;
-					ip = ip.innerHTML;
-					var mac = document.getElementById(id + '_mac');
-					if (mac == null)
-						next;
-					mac = mac.innerHTML;
-					
+					// Check elements
+					if (rows[i].id == null || document.getElementById(rows[i].id + '_ip') == null || document.getElementById(rows[i].id + '_mac') == null)
+						continue;
 					// Set-up checked value
-					var index = findEntry(mac, null);
-					rows[i].checked = (index >= 0);
-					
-					var status = document.getElementById(id + '_status');
+					var index = findEntry(document.getElementById(rows[i].id + '_mac').innerHTML, null);
+					rows[i].checked = index >= 0;
+
+					var status = document.getElementById(rows[i].id + '_status');
 					if (status != null) {
 						if (index >= 0)
-							status.style.backgroundColor = (ip == dhcpList[index][1]) ? '#3da42c' : '#dd3b3b';
+							status.style.backgroundColor = (document.getElementById(rows[i].id + '_ip').innerHTML == dhcpList[index][1]) ? '#3da42c' : '#dd3b3b';
 						else
 							status.style.backgroundColor = 'inherit';
 					}
 				}
 			}
 
-			function loadDhcpClientsList() {
-				var reloader = function(element) {
-					initTranslation();
-					updateDhcpClientsList(element);
-					self.setTimeout('loadDhcpClientsList();', 5000);
-				}
-
-				ajaxLoadElement("dhcpClientsTable", "/services/dhcp_clist.asp", reloader);
-			}
-
+			// Check if item not exists
 			function findEntry(mac, ip) {
-				// Check if item not exists
-				for (var i = 0; i < dhcpList.length; i++) {
-					var row = dhcpList[i];
-					if (row[0] == mac)
+				for (var i = 0; i < dhcpList.length; i++)
+					if (dhcpList[i][0] == mac || dhcpList[i][1] == ip)
 						return i;
-					if (row[1] == ip)
-						return i;
-				}
-				
 				return -1;
 			}
 
 			function toggleDhcpTable(check) {
-				// Get check ID
-				var id = check.id;
-				if (id == null)
+				// Check values
+				if (check.id == null || document.getElementById(check.id + '_ip') == null || document.getElementById(check.id + '_mac') == null)
 					return;
-				// Get values
-				var ip = document.getElementById(id + '_ip');
-				if (ip == null)
-					return;
-				ip = ip.innerHTML;
-				var mac = document.getElementById(id + '_mac');
-				if (mac == null)
-					return;
-				mac = mac.innerHTML;
+				var ip		= document.getElementById(check.id + '_ip').innerHTML;
+				var mac		= document.getElementById(check.id + '_mac').innerHTML;
+				var host	= document.getElementById(check.id + '_host').innerHTML;
 				
 				// Check action
-				if (check.checked) { // Add item to list
-					if (!validateMAC(mac, true))
+				if (check.checked) {								// Add item to list
+					if (!validateMAC(mac)) {
+						alert(_("services dhcp invalid mac"));
 						return;
-					if (!validateIP(ip, true))
+					}
+					if (!validateIP(ip)) {
+						alert(_("services dhcp invalid ip"));
 						return;
-
-					addEntry(mac, ip, "");
+					}
+					addEntry(mac, ip, host + '_Static');
+					updateDhcpClientsList(document.getElementById('dhcpClientsTable'));
 				}
-				else { // Remove item from list
-					for (var i = 0; i < dhcpList.length; i++) {
-						var row = dhcpList[i];
-						if ((row[0] == mac) && (row[1] == ip)) {
+				else										// Remove item from list
+					for (var i = 0; i < dhcpList.length; i++)
+						if (dhcpList[i][0] == mac && dhcpList[i][1] == ip) {
 							dhcpList.splice(i, 1);
+							updateDhcpClientsList(document.getElementById('dhcpClientsTable'));
 							genTable();
 							return;
 						}
-					}
-				}
-			}
-
-			function displayServiceHandler(response) {
-				var form = document.l2tpConfig;
-
-				var services = [
-					// turned_on, row_id, daemon_id
-					[ NVRAM_dhcpEnabled, 'udhcpd', 'udhcpd' ]
-				];
-
-				// Create associative array
-				var tmp = response.split(',');
-				var daemons = [];
-				for (var i = 0; i < tmp.length; i++)
-					daemons[tmp[i]] = 1;
-
-				// Now display all services
-				for (var i = 0; i < services.length; i++) {
-					var service = services[i];
-					var row = document.getElementById(service[1]);
-					var tds = [];
-					for (var j = 0; j < row.childNodes.length; j++)
-						if (row.childNodes[j].nodeName == 'TD')
-							tds.push(row.childNodes[j]);
-
-					if (row != null) {
-						// Fill-up status
-						if (service[0]*1 == 0)
-							tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-						else
-							tds[2].innerHTML = (daemons[service[2]] == 1) ?
-								'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-								'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-					}
-				}
-				setTimeout('displayServiceStatus();', 5000);
-			}
-
-			function displayServiceStatus() {
-				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 			}
 		</script>
 	</head>
@@ -408,55 +357,60 @@
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="dhcpCfg" action="/goform/setDhcp" onSubmit="return CheckValue(this);">
 					<table class="form">
-						<tr>
-							<td class="title" colspan="3" id="lSetup">DHCP Server Setup</td>
-						</tr>
-						<tr id="udhcpd">
-							<td class="head" id="lDhcpType">DHCP Server</td>
-							<td>
-								<select name="dhcpEnabled" class="mid" onChange="dhcpTypeSwitch();">
-									<option value="0" id="lDhcpTypeD">Disabled</option>
-									<option value="1" id="lDhcpTypeS">Enabled</option>
-								</select>
-							</td>
-							<td style="width: 56px;">&nbsp;</td>
-						</tr>
-						<tr id="domain">
-							<td class="head" id="dhcpDomain">DHCP Domain</td>
-							<td colspan="2"><input name="dhcpDomain" class="mid"></td>
-						</tr>
-						<tr id="start">
-							<td class="head" id="lDhcpStart">DHCP Pool Start IP</td>
-							<td colspan="2"><input name="dhcpStart" class="mid"></td>
-						</tr>
-						<tr id="end">
-							<td class="head" id="lDhcpEnd">DHCP Pool End IP</td>
-							<td colspan="2"><input name="dhcpEnd" class="mid"></td>
-						</tr>
-						<tr id="mask">
-							<td class="head" id="lDhcpNetmask">DHCP Subnet Mask</td>
-							<td colspan="2"><input name="dhcpMask" class="mid"></td>
-						</tr>
-						<tr id="pridns">
-							<td class="head" id="lDhcpPriDns">DHCP Primary DNS</td>
-							<td colspan="2"><input name="dhcpPriDns" class="mid"></td>
-						</tr>
-						<tr id="secdns">
-							<td class="head" id="lDhcpSecDns">DHCP Secondary DNS</td>
-							<td colspan="2"><input name="dhcpSecDns" class="mid"></td>
-						</tr>
-						<tr id="gateway">
-							<td class="head" id="lDhcpGateway">DHCP Default Gateway</td>
-							<td colspan="2"><input name="dhcpGateway" class="mid"></td>
-						</tr>
-						<tr id="lease">
-							<td class="head" id="lDhcpLease">DHCP Lease Time (in seconds)</td>
-							<td colspan="2"><input name="dhcpLease" class="mid"></td>
-						</tr>
-						<tr id="arpping">
-							<td class="head" id="ldhcpARPPTimeout">DHCP ARP ping timeout (in ms)</td>
-							<td colspan="2"><input name="dhcpARPPTimeout" class="mid"></td>
-						</tr>
+						<col style="width: 40%"/>
+						<col style="width: 50%"/>
+						<col style="width: 10%"/>
+						<tbody>
+							<tr>
+								<td class="title" colspan="3" id="lSetup">DHCP Server Setup</td>
+							</tr>
+							<tr id="udhcpd">
+								<td class="head" id="lDhcpType">DHCP Server</td>
+								<td>
+									<select name="dhcpEnabled" class="mid" onChange="dhcpTypeSwitch();">
+										<option value="0" id="lDhcpTypeD">Disabled</option>
+										<option value="1" id="lDhcpTypeS">Enabled</option>
+									</select>
+								</td>
+								<td style="text-align: center">&nbsp;</td>
+							</tr>
+							<tr id="domain">
+								<td class="head" id="dhcpDomain">DHCP Domain</td>
+								<td colspan="2"><input name="dhcpDomain" class="mid"></td>
+							</tr>
+							<tr id="start">
+								<td class="head" id="lDhcpStart">DHCP Pool Start IP</td>
+								<td colspan="2"><input name="dhcpStart" class="mid"></td>
+							</tr>
+							<tr id="end">
+								<td class="head" id="lDhcpEnd">DHCP Pool End IP</td>
+								<td colspan="2"><input name="dhcpEnd" class="mid"></td>
+							</tr>
+							<tr id="mask">
+								<td class="head" id="lDhcpNetmask">DHCP Subnet Mask</td>
+								<td colspan="2"><input name="dhcpMask" class="mid"></td>
+							</tr>
+							<tr id="pridns">
+								<td class="head" id="lDhcpPriDns">DHCP Primary DNS</td>
+								<td colspan="2"><input name="dhcpPriDns" class="mid"></td>
+							</tr>
+							<tr id="secdns">
+								<td class="head" id="lDhcpSecDns">DHCP Secondary DNS</td>
+								<td colspan="2"><input name="dhcpSecDns" class="mid"></td>
+							</tr>
+							<tr id="gateway">
+								<td class="head" id="lDhcpGateway">DHCP Default Gateway</td>
+								<td colspan="2"><input name="dhcpGateway" class="mid"></td>
+							</tr>
+							<tr id="lease">
+								<td class="head" id="lDhcpLease">DHCP Lease Time (in seconds)</td>
+								<td colspan="2"><input name="dhcpLease" class="mid"><font color="#808080" id="lDhcpLeaseNote">(seconds, default: 86400)</font></td>
+							</tr>
+							<tr id="arpping">
+								<td class="head" id="lDhcpARPPTimeout">DHCP ARP ping timeout (in ms)</td>
+								<td colspan="2"><input name="dhcpARPPTimeout" class="mid"><font color="#808080" id="lDhcpARPPTimeoutNote">(seconds, default: 86400)</font></td>
+							</tr>
+						</tbody>
 					</table>
 					<div id="dhcpClientsTable"> </div>
 					<div id="dhcpStaticIPList"> </div>
@@ -464,9 +418,10 @@
 						<tr>
 							<td>
 								<input type="hidden" name="dhcpAssignIP" value="">
+								<input type="hidden" name="reset" value="0">
 								<input type="submit" class="normal" value="Apply" id="lApply">&nbsp;&nbsp;
-								<input type="reset"  class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">
-								<input type="hidden" value="/services/dhcp.asp" name="submit-url">
+								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
+								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form);">
 							</td>
 						</tr>
 					</table>

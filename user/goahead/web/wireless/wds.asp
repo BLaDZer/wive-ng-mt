@@ -89,7 +89,7 @@
 					document.getElementById('wds_encryp_key' + i).value = eval('NVRAM_Wds' + i + 'Key');
 				}
 
-				if ((BUILD_5GHZ_SUPPORT == 0) || (NVRAM_RadioOn == 0 && NVRAM_RadioOnINIC == 0)) {
+				if (!BUILD_5GHZ_SUPPORT || (NVRAM_RadioOn == 0 && NVRAM_RadioOnINIC == 0)) {
 					document.getElementById('wds_interface').value = "wds";
 					displayElement('basicWdsInterfaceT', false);
 				}
@@ -177,7 +177,7 @@
 					enableElements( document.getElementById('wds_' + (i + 1)), document.getElementById('wds_mode').options.selectedIndex > 1);
 					WdsSecurityOnChange(i);
 				}
-				displayElement('basicWdsInterfaceT', document.getElementById('wds_mode').options.selectedIndex >= 1 && (BUILD_5GHZ_SUPPORT != 0 && (NVRAM_RadioOn != 0 || NVRAM_RadioOnINIC != 0)));
+				displayElement('basicWdsInterfaceT', document.getElementById('wds_mode').options.selectedIndex >= 1 && (BUILD_5GHZ_SUPPORT && (NVRAM_RadioOn != 0 || NVRAM_RadioOnINIC != 0)));
 				enableElements(document.getElementById('basicWDSAdd'), count < WDS_NUM_MAX);
 				document.getElementById('wds_num').value = count;
 			}

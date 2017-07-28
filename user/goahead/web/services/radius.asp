@@ -23,27 +23,27 @@
 			// Set translation
 			function initTranslation() {
 				_TR("radiusServerTitle",		"services radius title");
-				_TR("radiusServerIntroduction",	"services radius introduction");
+				_TR("radiusServerIntroduction",		"services radius introduction");
 				_TR("radiusServerSettings",		"services radius settings");
 				_TR("radiusEnabled",			"services radius enable");
 				_TR("radiusSharedSecret",		"services radius sharedsecret");
-				_TR("radiusEnable",				"button enable");
+				_TR("radiusEnable",			"button enable");
 				_TR("radiusDisable",			"button disable");
 				
-				_TRV("radiusApply",				"button apply");
+				_TRV("radiusApply",			"button apply");
 				_TRV("radiusCancel",			"button cancel");
-				_TRV("radiusReset",				"button reset");
+				_TRV("radiusReset",			"button reset");
 			}
 
 			// Set inintal values
 			function initValues() {
-				document.getElementById('radius_srv_enabled').value = NVRAM_radius_srv_enabled;
-				document.getElementById('radius_srv_secret').value	= NVRAM_radius_srv_secret;
+				document.getElementById('radius_srv_enabled').value =	NVRAM_radius_srv_enabled;
+				document.getElementById('radius_srv_secret').value =	NVRAM_radius_srv_secret;
 				radiusEnableSwitch();
 				genRadiusTable();
-				displayServiceStatus();
 				showWarning();
 				initTranslation();
+				displayServiceStatus([[ NVRAM_radius_srv_enabled, 'radiusd', 'radiusd' ]]);
 			}
 
 			// Check values
@@ -147,34 +147,15 @@
 
 			// Edit user/password
 			function editUser(index) {
-				document.getElementById('radiusLogin').value		= users[index][0];
+				document.getElementById('radiusLogin').value	= users[index][0];
 				document.getElementById('radiusPass').value	= users[index][1];
-				document.getElementById('radiusEdit').value		= index;
+				document.getElementById('radiusEdit').value	= index;
 			}
 
 			// Show/hide radius settings
 			function radiusEnableSwitch() {
 				displayElement([ 'radiusSharedSecret_tr', 'radiusUserList' ], document.getElementById('radius_srv_enabled').value == 1);
 				genRadiusTable();
-			}
-
-			// Display server status
-			function displayServiceHandler(response) {
-				var daemons = response.split(',');
-
-				if (NVRAM_radius_srv_enabled == '0')
-					document.getElementById('radius_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-				else
-					document.getElementById('radius_status').innerHTML = (daemons.indexOf('radiusd') >= 0) ?
-						'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-						'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-
-				setTimeout('displayServiceStatus();', 5000);
-			}
-
-			// Get server status
-			function displayServiceStatus() {
-				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 			}
 		</script>
 	</head>
@@ -195,7 +176,7 @@
 								<tr>
 									<td class="title" colspan="3" id="radiusServerSettings">RADIUS Server Settings</td>
 								</tr>
-								<tr>
+								<tr id="radiusd">
 									<td class="head" id="radiusEnabled">RADIUS server</td>
 									<td>
 										<select id="radius_srv_enabled" name="radius_srv_enabled" class="mid" onChange="radiusEnableSwitch();">
@@ -203,7 +184,7 @@
 											<option value="1" id="radiusEnable">Enable</option>
 										</select>
 									</td>
-									<td id="radius_status" style="text-align: center;">&nbsp;</td>
+									<td style="text-align: center;"></td>
 								</tr>
 								<tr id="radiusSharedSecret_tr">
 									<td class="head" id="radiusSharedSecret">Shared Secret</td>

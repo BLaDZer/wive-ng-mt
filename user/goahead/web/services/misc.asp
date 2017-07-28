@@ -128,7 +128,7 @@
 				form.RemoteSSHPort.value			= NVRAM_RemoteSSHPort;
 				form.hwnatThreshold.value			= NVRAM_hw_nat_bind;
 				form.stpEnbl.options.selectedIndex		= NVRAM_stpEnabled;
-				form.igmpEnbl.options.selectedIndex		= (BUILD_IGMPPROXY == '1') ? NVRAM_igmpEnabled : 0;
+				form.igmpEnbl.options.selectedIndex		= (BUILD_IGMPPROXY) ? NVRAM_igmpEnabled : 0;
 				form.igmpSnoop.value				= NVRAM_igmpSnoopMode;
 				form.igmpFastL.value				= NVRAM_igmpFastLeave;
 				form.igmpM2UConv.value				= NVRAM_igmpM2UConvMode;
@@ -180,7 +180,22 @@
 				snmpdRmtSelect(form);
 				pingerSelect(form);
 
-				displayServiceStatus();
+				displayServiceStatus(
+					[
+						[ NVRAM_UDPXYMode,		'udpxy',		'udpxy',		NVRAM_UDPXYPort + '/status/',		'udpxy.sourceforge.net' ],
+						[ NVRAM_xupnpd,			'xupnpd',		'xupnpd',		'4044/',				'xupnpd.org/' ],
+						[ NVRAM_CrondEnable,		'crond',		'crond',		null,					'crontab.org/' ],
+						[ NVRAM_snmpd,			'snmpd',		'snmpd',		null,					'www.net-snmp.org/docs/man/snmpd.html' ],
+						[ NVRAM_igmpEnabled,		'igmpProxy',		'igmpproxy',		null,					'sourceforge.net/projects/igmpproxy' ],
+						[ NVRAM_lltdEnabled,		'lltd',			'lld2d',		null,					'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
+						[ NVRAM_lldpdEnabled,		'lldpd',		'lldpd',		null,					'vincentbernat.github.io/lldpd' ],
+						[ NVRAM_upnpEnabled,		'upnp',			'miniupnpd',		null,					'miniupnp.free.fr/' ],
+						[ NVRAM_cdpEnabled,		'cdp',			'cdp-send',		null,					'freecode.com/projects/cdp-tools' ],
+						[ NVRAM_dnsPEnabled,		'dnsproxy',		'dnsmasq',		null,					'thekelleys.org.uk/dnsmasq/doc.html' ],
+						[ NVRAM_parproutedEnabled,	'parprouted',		'parprouted',		null,					'freecode.com/projects/parprouted' ],
+						[ NVRAM_arpwatch,		'arpwatch',		'arpwatch',		null,					'wikipedia.org/wiki/Arpwatch' ]
+					]
+				);
 
 				showWarning();
 
@@ -239,7 +254,7 @@
 			}
 
 			function offloadModeSelect(form) {
-				var thresh		= document.miscServiceCfg.offloadMode.value;
+				var thresh	= document.miscServiceCfg.offloadMode.value;
 				var fastpathb	= BUILD_FASTPATH;
 
 				// Mode
@@ -282,64 +297,6 @@
 				displayElement('snmpCommunityRow', form.SnmpdEnabled.value != '0');
 			}
 
-			function displayServiceStatus() {
-				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
-			}
-
-			function displayServiceHandler(response) {
-				var form = document.miscServiceCfg;
-				var services = [
-					// turned_on,			row_id,			daemon_id,		url-finish,	about
-					[ NVRAM_UDPXYMode,		'udpxy',		'udpxy',		NVRAM_UDPXYPort + '/status/',	'udpxy.sourceforge.net' ],
-					[ NVRAM_xupnpd,			'xupnpd',		'xupnpd',		'4044/',			'xupnpd.org/' ],
-					[ NVRAM_CrondEnable,		'crond',		'crond',		null,				'crontab.org/' ],
-					[ NVRAM_snmpd,			'snmpd',		'snmpd',		null,				'www.net-snmp.org/docs/man/snmpd.html' ],
-					[ NVRAM_igmpEnabled,		'igmpProxy',		'igmpproxy',		null,				'sourceforge.net/projects/igmpproxy' ],
-					[ NVRAM_lltdEnabled,		'lltd',			'lld2d',		null,				'msdn.microsoft.com/en-us/windows/hardware/gg463061.aspx' ],
-					[ NVRAM_lldpdEnabled,		'lldpd',		'lldpd',		null,				'vincentbernat.github.io/lldpd' ],
-					[ NVRAM_upnpEnabled,		'upnp',			'miniupnpd',		null,				'miniupnp.free.fr/' ],
-					[ NVRAM_cdpEnabled,		'cdp',			'cdp-send',		null,				'freecode.com/projects/cdp-tools' ],
-					[ NVRAM_dnsPEnabled,		'dnsproxy',		'dnsmasq',		null,				'thekelleys.org.uk/dnsmasq/doc.html' ],
-					[ NVRAM_parproutedEnabled,	'parprouted',		'parprouted',		null,				'freecode.com/projects/parprouted' ],
-					[ NVRAM_arpwatch,		'arpwatch',		'arpwatch',		null,				'wikipedia.org/wiki/Arpwatch' ]
-				];
-
-				// Create associative array
-				var tmp = response.split(',');
-				var daemons = [];
-				for (var i = 0; i < tmp.length; i++)
-					daemons[tmp[i]] = 1;
-
-				// Now display all services
-				for (var i = 0; i < services.length; i++) {
-					var service = services[i];
-					var row		= document.getElementById(service[1]);
-					var tds		= [];
-					for (var j = 0; j < row.childNodes.length; j++)
-						if (row.childNodes[j].nodeName == 'TD')
-							tds.push(row.childNodes[j]);
-
-					if (row != null)
-					{
-						// Fill-up about
-						tds[2].innerHTML = (service[4] != null) ? '<a href="http://' + service[4] + '" target="_blank">' + _("services status about") + '</a>' : "&nbsp;";
-
-						// Fill-up status
-						if (service[0] == '0')
-							tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-						else
-							tds[3].innerHTML = (daemons[service[2]] == 1) ?
-								'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-								'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-
-						// Fill-up configure
-						tds[4].innerHTML = ((service[0] > '0') && (daemons[service[2]] == 1) && (service[3] != null)) ?
-							'<a href="http://' + LAN_IP +':' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
-					}
-				}
-				setTimeout('displayServiceStatus();', 5000);
-			}
-
 			function showOffloadEngineMenu() {
 				var elements = [ 'miscNATOffload_row', 'wifihw_row', 'udphw_row', 'sixhw_row', 'hwnat_threshold_row', 'miscNATimpl_row' ];
 				if (statusOffloadEngineMenu == 0) {
@@ -348,12 +305,12 @@
 					displayElement(elements, true);
 
 					var thresh = document.miscServiceCfg.offloadMode.value;
-					displayElement( [ 'hwnat_threshold_row',
-							  'wifihw_row',
-							  'udphw_row',
-							  'sixhw_row' ],			thresh == '2' || thresh == '3');
-					displayElement( [ 'fastpath_row', 
-							  'miscSoftwareFastpath' ],		thresh == '1' || thresh == '3');
+					displayElement([	'hwnat_threshold_row',
+								'wifihw_row',
+								'udphw_row',
+								'sixhw_row' ],			thresh == '2' || thresh == '3');
+					displayElement([	'fastpath_row',
+								'miscSoftwareFastpath' ],	thresh == '1' || thresh == '3');
 				} else {
 					ajaxModifyElementHTML('miscOffloadSetup', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc offload setup"));
 					statusOffloadEngineMenu = 0;
@@ -367,7 +324,7 @@
 					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc software title"));
 					statusSoftwareFastpathMenu = 1;
 					displayElement(elements, true);
-					displayElement('smb_fastpath_row',	BUILD_SMBFP == '1');
+					displayElement('smb_fastpath_row',	BUILD_SMBFP);
 				} else {
 					ajaxModifyElementHTML('miscSoftwareTitle', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc software title"));
 					statusSoftwareFastpathMenu = 0;
@@ -381,7 +338,7 @@
 					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 1;
 					displayElement(elements, true);
-					displayElement('rmt_telnetd', BUILD_TELNETD == '1');
+					displayElement('rmt_telnetd', BUILD_TELNETD);
 					httpRmtSelect(document.miscServiceCfg);
 					sshRmtSelect(document.miscServiceCfg);
 				}
@@ -399,9 +356,9 @@
 					displayElement('miscServices_show', true);
 					displayElement('miscServices_hide', false);
 					displayElement(elements, true);
-					displayElement('dnsproxy',		BUILD_DNSMASQ == '1');
-					displayElement('upnp',			BUILD_UPNP == '1');
-					displayElement('parprouted',		BUILD_ARPPT == '1');
+					displayElement('dnsproxy',	BUILD_DNSMASQ);
+					displayElement('upnp',		BUILD_UPNP);
+					displayElement('parprouted',	BUILD_ARPPT);
 				}
 				else {
 					statusServicesMenu = 0;
@@ -418,11 +375,11 @@
 					displayElement('miscIPTV_show', true);
 					displayElement('miscIPTV_hide', false);
 					displayElement(elements, true);
-					displayElement('igmpProxy', BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1');
-					displayElement('igmpFastL', (BUILD_IGMPPROXY == '1' && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') || NVRAM_OperationMode != '2');
+					displayElement('igmpProxy', BUILD_IGMPPROXY && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1');
+					displayElement('igmpFastL', (BUILD_IGMPPROXY && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') || NVRAM_OperationMode != '2');
 					displayElement('igmpM2UConv', NVRAM_OperationMode != '2');
 					displayElement('udpxy_port_row', document.getElementById('udpxyMode').selectedIndex != '0');
-					displayElement('xupnpd', BUILD_XUPNPD == '1');
+					displayElement('xupnpd', BUILD_XUPNPD);
 				}
 				else {
 					statusServicesIPTVMenu = 0;
@@ -439,11 +396,11 @@
 					displayElement('miscDINF_show', true);
 					displayElement('miscDINF_hide', false);
 					displayElement(elements, true);
-					displayElement('cdp', BUILD_CDP == '1');
-					displayElement('lltd', BUILD_LLTD == '1');
-					displayElement('lldpd', BUILD_LLDPD == '1');
-					displayElement('snmpd', BUILD_SNMPD == '1');
-					displayElement('arpwatch', BUILD_ARPWATCH == '1');
+					displayElement('cdp', BUILD_CDP);
+					displayElement('lltd', BUILD_LLTD);
+					displayElement('lldpd', BUILD_LLDPD);
+					displayElement('snmpd', BUILD_SNMPD);
+					displayElement('arpwatch', BUILD_ARPWATCH);
 					displayElement('snmpCommunityRow', document.getElementById('SnmpdEnabled').value != '0');
 				}
 				else {
@@ -487,7 +444,7 @@
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc others"));
 					statusOthersMenu = 1;
 					displayElement(elements, true);
-					displayElement('irqbalance', BUILD_SMP == '1');
+					displayElement('irqbalance', BUILD_SMP);
 					displayElement('mcast_store_ttl_row', document.miscServiceCfg.igmpEnbl.value == '1');
 				} else {
 					ajaxModifyElementHTML('miscOthers', '<img src="/graphics/menu_plus.gif" width="25" height="11">' + _("services misc others"));
@@ -501,7 +458,8 @@
 		<div id="warning"></div>
 		<table class="body">
 			<tr>
-				<td><h1 id="miscTitle">Miscellaneous Services Setup</h1>
+				<td>
+					<h1 id="miscTitle">Miscellaneous Services Setup</h1>
 					<p  id="miscIntroduction"></p>
 					<p  id="miscOffloadEngine">In section "Offload engine" you will select the offload mode (for IPOE/PPPOE recommended HARDWARE mode, for L2TP/PPTP - COMPLEX).</p>
 					<p  id="miscSoftwareFastpath">In the section "Software fastpaths" (work only if offload mode complex or software) it is possible to disable selectively one of mechanisms of program offload (not recommended disable for PPTP/L2TP).</p>

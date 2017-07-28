@@ -22,40 +22,40 @@
 
 			// Set translation
 			function initTranslation() {
-				_TR("cwmpTitle",			"services cwmp title");
+				_TR("cwmpTitle",		"services cwmp title");
 				_TR("cwmpIntroduction",		"services cwmp introduction");
-				_TR("cwmpSettings",			"services cwmp settings");
-				_TR("cwmpdEnabled",			"services cwmp enabled");
-				_TR("cwmpACStype",			"services cwmp acs type");
-				_TR("cwmpACSurl",			"services cwmp acs url");
-				_TR("cwmpACSauth",			"services cwmp acs auth");
+				_TR("cwmpSettings",		"services cwmp settings");
+				_TR("cwmpdEnabled",		"services cwmp enabled");
+				_TR("cwmpACStype",		"services cwmp acs type");
+				_TR("cwmpACSurl",		"services cwmp acs url");
+				_TR("cwmpACSauth",		"services cwmp acs auth");
 				_TR("cwmpACSusername",		"services cwmp acs user");
 				_TR("cwmpACSpassword",		"services cwmp acs pass");
-				_TR("cwmpCPEauth",			"services cwmp cpe auth");
+				_TR("cwmpCPEauth",		"services cwmp cpe auth");
 				_TR("cwmpCPEusername",		"services cwmp cpe user");
 				_TR("cwmpCPEpassword",		"services cwmp cpe pass");
-				_TR("cwmpCAfile",			"services cwmp ca file");
+				_TR("cwmpCAfile",		"services cwmp ca file");
 				_TR("cwmpCApassword",		"services cwmp ca pass");
-				_TR("cwmpLogLevel",			"services cwmp adv log level");
-				_TR("cwmpHTTPport",			"services cwmp adv http port");
+				_TR("cwmpLogLevel",		"services cwmp adv log level");
+				_TR("cwmpHTTPport",		"services cwmp adv http port");
 				_TR("cwmpHTTPtimeout",		"services cwmp adv http timeout");
 				_TR("cwmpSesConnTimeout",	"services cwmp adv sesconn timeout");
 				_TR("cwmpSesRespTimeout",	"services cwmp adv sesresp timeout");
 				_TR("cwmpCPEmanifactire",	"services cwmp adv cpe manufacture");
-				_TR("cwmpCPEoui",			"services cwmp adv cpe oui");
-				_TR("cwmpCPEpc",			"services cwmp adv cpe pc");
-				_TR("cwmpLogCrit",			"services cwmp log crit");
-				_TR("cwmpLogError",			"services cwmp log error");
-				_TR("cwmpLogWarn",			"services cwmp log warn");
-				_TR("cwmpLogInfo",			"services cwmp log info");
-				_TR("cwmpLogDebug",			"services cwmp log debug");
-				_TR("cwmpLogTrace",			"services cwmp log trace");
+				_TR("cwmpCPEoui",		"services cwmp adv cpe oui");
+				_TR("cwmpCPEpc",		"services cwmp adv cpe pc");
+				_TR("cwmpLogCrit",		"services cwmp log crit");
+				_TR("cwmpLogError",		"services cwmp log error");
+				_TR("cwmpLogWarn",		"services cwmp log warn");
+				_TR("cwmpLogInfo",		"services cwmp log info");
+				_TR("cwmpLogDebug",		"services cwmp log debug");
+				_TR("cwmpLogTrace",		"services cwmp log trace");
 				_TR("cwmpInformPeriodic",	"services cwmp inform periodic");
 				_TR("cwmpInformInterval",	"services cwmp inform interval");
 
-				_TRV("cwmpApply",			"button apply");
-				_TRV("cwmpCancel",			"button cancel");
-				_TRV("cwmpReset",			"button reset");
+				_TRV("cwmpApply",		"button apply");
+				_TRV("cwmpCancel",		"button cancel");
+				_TRV("cwmpReset",		"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -76,37 +76,37 @@
 					if (opt[i].value == NVRAM_cwmp_acs_type)
 						opt[i].selected = true;
 
-				document.getElementById('cwmp_acs_url').value									= NVRAM_cwmp_acs_url;
-				document.getElementById('cwmp_cpe_auth').options.selectedIndex					= NVRAM_cwmp_cpe_auth;
-				document.getElementById('cwmp_cpe_username').value								= NVRAM_cwmp_cpe_username;
-				document.getElementById('cwmp_cpe_password').value								= NVRAM_cwmp_cpe_password;
-				document.getElementById('cwmp_acs_auth').options.selectedIndex					= NVRAM_cwmp_acs_auth;
-				document.getElementById('cwmp_acs_username').value								= NVRAM_cwmp_acs_username;
-				document.getElementById('cwmp_acs_password').value								= NVRAM_cwmp_acs_password;
-				document.getElementById('cwmpd_inform_periodic_enable').options.selectedIndex	= NVRAM_cwmpd_inform_periodic_enable;
-				document.getElementById('cwmpd_inform_periodic_interval').value					= NVRAM_cwmpd_inform_periodic_interval;
+				document.getElementById('cwmp_acs_url').value						= NVRAM_cwmp_acs_url;
+				document.getElementById('cwmp_cpe_auth').options.selectedIndex				= NVRAM_cwmp_cpe_auth;
+				document.getElementById('cwmp_cpe_username').value					= NVRAM_cwmp_cpe_username;
+				document.getElementById('cwmp_cpe_password').value					= NVRAM_cwmp_cpe_password;
+				document.getElementById('cwmp_acs_auth').options.selectedIndex				= NVRAM_cwmp_acs_auth;
+				document.getElementById('cwmp_acs_username').value					= NVRAM_cwmp_acs_username;
+				document.getElementById('cwmp_acs_password').value					= NVRAM_cwmp_acs_password;
+				document.getElementById('cwmpd_inform_periodic_enable').options.selectedIndex		= NVRAM_cwmpd_inform_periodic_enable;
+				document.getElementById('cwmpd_inform_periodic_interval').value				= NVRAM_cwmpd_inform_periodic_interval;
 
 				opt = document.getElementById('cwmpd_log_level').options;
 				for (var i = 0; i < opt.length; i++)
 					if (opt[i].value == NVRAM_cwmpd_log_level) 
 						opt[i].selected = true;
 
-				document.getElementById('cwmpd_httpd_port').value								= NVRAM_cwmpd_httpd_port;
-				document.getElementById('cwmpd_httpd_timeout').value							= NVRAM_cwmpd_httpd_timeout;
-				document.getElementById('cwmpd_session_connect_timeout').value					= NVRAM_cwmpd_session_connect_timeout;
-				document.getElementById('cwmpd_session_response_timeout').value					= NVRAM_cwmpd_session_response_timeout;
-				document.getElementById('cwmp_cpe_manufacture').value							= NVRAM_cwmp_cpe_manufacture;
-				document.getElementById('cwmp_cpe_oui').value									= NVRAM_cwmp_cpe_oui;
-				document.getElementById('cwmp_cpe_pc').value									= NVRAM_cwmp_cpe_pc;
+				document.getElementById('cwmpd_httpd_port').value					= NVRAM_cwmpd_httpd_port;
+				document.getElementById('cwmpd_httpd_timeout').value					= NVRAM_cwmpd_httpd_timeout;
+				document.getElementById('cwmpd_session_connect_timeout').value				= NVRAM_cwmpd_session_connect_timeout;
+				document.getElementById('cwmpd_session_response_timeout').value				= NVRAM_cwmpd_session_response_timeout;
+				document.getElementById('cwmp_cpe_manufacture').value					= NVRAM_cwmp_cpe_manufacture;
+				document.getElementById('cwmp_cpe_oui').value						= NVRAM_cwmp_cpe_oui;
+				document.getElementById('cwmp_cpe_pc').value						= NVRAM_cwmp_cpe_pc;
 
-				document.getElementById('cwmp_ca_file').value									= NVRAM_cwmp_ca_file;
-				document.getElementById('cwmp_ca_password').value								= NVRAM_cwmp_ca_password;
+				document.getElementById('cwmp_ca_file').value						= NVRAM_cwmp_ca_file;
+				document.getElementById('cwmp_ca_password').value					= NVRAM_cwmp_ca_password;
 				displayElement([ 'cwmpCAfile_tr', 'cwmpCApassword_tr' ], BUILD_OPENSSL == '1');
 
 				cwmpEnableSwitch();
 				showAdvancedMenu();
 
-				displayServiceStatus();
+				displayServiceStatus([[ NVRAM_cwmpdEnabled, 'cwmpd', 'cwmpd' ]]);
 				showWarning();
 				initTranslation();
 			}
@@ -114,11 +114,11 @@
 			// Check values
 			function CheckValues() {
 				if (document.getElementById('cwmp_enabled').value == 1) {
-					var re_url		= /^[а-яА-Яa-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
-					var re_name		= /^[a-zA-Z0-9_-]+$/;
+					var re_url	= /^[а-яА-Яa-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+					var re_name	= /^[a-zA-Z0-9_-]+$/;
 					var re_pass	= /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
-					var re_num		= /^[0-9]+$/;
-					var re_file		= /^[a-zA-Z0-9\_\.\-\/]+$/;
+					var re_num	= /^[0-9]+$/;
+					var re_file	= /^[a-zA-Z0-9\_\.\-\/]+$/;
 
 					// Check ACS URL
 					if (!re_url.test(document.getElementById('cwmp_acs_url').value) || document.getElementById('cwmp_acs_url').value.length == 0) {
@@ -177,8 +177,8 @@
 					}
 
 					// Check HTTP port
-					if (!re_num.test(document.getElementById('cwmpd_httpd_port').value) || document.getElementById('cwmpd_httpd_port').value.length == 0 ||
-					   (+document.getElementById('cwmpd_httpd_port').value < 1 || +document.getElementById('cwmpd_httpd_port').value > 65535)) {
+					if  (!re_num.test(document.getElementById('cwmpd_httpd_port').value) || document.getElementById('cwmpd_httpd_port').value.length == 0 ||
+					    (+document.getElementById('cwmpd_httpd_port').value < 1 || +document.getElementById('cwmpd_httpd_port').value > 65535)) {
 						if (statusAdvancedMenu == 0)
 							showAdvancedMenu();
 						alert(_("services cwmp uncorrect port"));
@@ -269,26 +269,6 @@
 				}
 				cwmpPeriodicSwitch();
 			}
-
-			// Display server status
-			function displayServiceHandler(response) {
-				var daemons = response.split(',');
-
-				if (NVRAM_cwmpdEnabled == '0')
-					document.getElementById('cwmp_status').innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-				else
-					document.getElementById('cwmp_status').innerHTML = (daemons.indexOf('cwmpd') >= 0) ?
-						'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-						'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-
-				setTimeout('displayServiceStatus();', 5000);
-			}
-
-			// Get server status
-			function displayServiceStatus()
-			{
-				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
-			}
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -308,7 +288,7 @@
 								<tr>
 									<td class="title" colspan="3" id="cwmpSettings">CWMP (TR-069) Settings</td>
 								</tr>
-								<tr>
+								<tr id="cwmpd">
 									<td class="head" id="cwmpdEnabled">CWMP (TR-069)</td>
 									<td>
 										<select id="cwmp_enabled" name="cwmp_enabled" class="mid" onChange="cwmpEnableSwitch();">
@@ -316,7 +296,7 @@
 											<option value="1" id="Enable">Enable</option>
 										</select>
 									</td>
-									<td id="cwmp_status" style="text-align: center;">&nbsp;</td>
+									<td style="text-align: center;"></td>
 								</tr>
 								<tr id="cwmpACStype_tr">
 									<td class="head" id="cwmpACStype">ACS Type</td>

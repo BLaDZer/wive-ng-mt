@@ -24,36 +24,34 @@
 			var users = [ <% getL2TPUserList(); %> ];		// Login/password list
 
 			// Set translation
-			function initTranslation()
-			{
+			function initTranslation() {
 				_TR("l2tpServerTitle",			"services l2tp title");
-				_TR("l2tpServerIntroduction",	"services l2tp introduction");
+				_TR("l2tpServerIntroduction",		"services l2tp introduction");
 				_TR("l2tpServerSetup",			"services l2tp config");
-				_TR("l2tpEnabled",				"services l2tp enable");
-				_TR("l2tpDisable",				"button disable");
-				_TR("l2tpEnable",				"button enable");
-				_TR("l2tpLocalIP",				"services l2tp ip");
-				_TR("l2tpListIP",				"services l2tp range ip");
-				_TR("l2tpMTU",					"services l2tp mtu");
-				_TR("l2tpMTUauto",				"services l2tp mtu auto");
+				_TR("l2tpEnabled",			"services l2tp enable");
+				_TR("l2tpDisable",			"button disable");
+				_TR("l2tpEnable",			"button enable");
+				_TR("l2tpLocalIP",			"services l2tp ip");
+				_TR("l2tpListIP",			"services l2tp range ip");
+				_TR("l2tpMTU",				"services l2tp mtu");
+				_TR("l2tpMTUauto",			"services l2tp mtu auto");
 				_TR("l2tpMTUcustom",			"services l2tp mtu custom");
-				_TR("l2tpMRU",					"services l2tp mru");
-				_TR("l2tpMRUauto",				"services l2tp mru auto");
+				_TR("l2tpMRU",				"services l2tp mru");
+				_TR("l2tpMRUauto",			"services l2tp mru auto");
 				_TR("l2tpMRUcustom",			"services l2tp mru custom");
 				_TR("l2tpAdditional",			"wan additional options");
-				_TR("l2tpLCP",					"vpn adaptive lcp");
-				_TR("l2tpDebug",				"vpn allow debug");
-				_TR("l2tpNAT",					"vpn enable nat");
-				_TR("l2tpProxyARP",				"services l2tp proxy arp");
-				_TR("l2tpMPPE",					"vpn allow mppe");
-				_TRV("l2tpApply",				"button apply");
-				_TRV("l2tpCancel",				"button cancel");
-				_TRV("l2tpReset",				"button reset");
+				_TR("l2tpLCP",				"vpn adaptive lcp");
+				_TR("l2tpDebug",			"vpn allow debug");
+				_TR("l2tpNAT",				"vpn enable nat");
+				_TR("l2tpProxyARP",			"services l2tp proxy arp");
+				_TR("l2tpMPPE",				"vpn allow mppe");
+				_TRV("l2tpApply",			"button apply");
+				_TRV("l2tpCancel",			"button cancel");
+				_TRV("l2tpReset",			"button reset");
 			}
 
 			// Set inintal values
-			function initValues()
-			{
+			function initValues() {
 				var i;
 
 				if (users.length > 0)
@@ -65,15 +63,15 @@
 
 				// Set variables
 				document.getElementById('l2tp_srv_enabled').options.selectedIndex	= +NVRAM_l2tp_srv_enabled;
-				document.getElementById('l2tp_srv_ip_local').value					= NVRAM_l2tp_srv_ip_local;
-				document.getElementById('l2tp_srv_ip_range').value					= NVRAM_l2tp_srv_ip_range;
-				document.getElementById('l2tp_srv_mtu_size').value					= NVRAM_l2tp_srv_mtu_size;
-				document.getElementById('l2tp_srv_mru_size').value					= NVRAM_l2tp_srv_mru_size;
-				document.getElementById('l2tp_srv_lcp_adapt').checked				= NVRAM_l2tp_srv_lcp_adapt 		== '1';
-				document.getElementById('l2tp_srv_debug').checked					= NVRAM_l2tp_srv_debug			== '1';
-				document.getElementById('l2tp_srv_nat_enabled').checked				= NVRAM_l2tp_srv_nat_enabled	== '1';
-				document.getElementById('l2tp_srv_mppe_enabled').checked			= NVRAM_l2tp_srv_mppe_enabled	== '1';
-				document.getElementById('l2tp_srv_proxyarp').checked				= NVRAM_l2tp_srv_proxyarp		== '1';
+				document.getElementById('l2tp_srv_ip_local').value			= NVRAM_l2tp_srv_ip_local;
+				document.getElementById('l2tp_srv_ip_range').value			= NVRAM_l2tp_srv_ip_range;
+				document.getElementById('l2tp_srv_mtu_size').value			= NVRAM_l2tp_srv_mtu_size;
+				document.getElementById('l2tp_srv_mru_size').value			= NVRAM_l2tp_srv_mru_size;
+				document.getElementById('l2tp_srv_lcp_adapt').checked			= NVRAM_l2tp_srv_lcp_adapt	== '1';
+				document.getElementById('l2tp_srv_debug').checked			= NVRAM_l2tp_srv_debug		== '1';
+				document.getElementById('l2tp_srv_nat_enabled').checked			= NVRAM_l2tp_srv_nat_enabled	== '1';
+				document.getElementById('l2tp_srv_mppe_enabled').checked		= NVRAM_l2tp_srv_mppe_enabled	== '1';
+				document.getElementById('l2tp_srv_proxyarp').checked			= NVRAM_l2tp_srv_proxyarp	== '1';
 
 				// Set-up MTU & MRU
 				for (i = 0; i < document.getElementById('l2tp_srv_mtu_sel').options.length; i++)
@@ -81,7 +79,7 @@
 						document.getElementById('l2tp_srv_mtu_sel').value = document.getElementById('l2tp_srv_mtu_sel').options[i].value;
 						break;
 					}
-				
+
 				for (i = 0; i < document.getElementById('l2tp_srv_mru_sel').options.length; i++)
 					if (document.getElementById('l2tp_srv_mru_sel').options[i].value == document.getElementById('l2tp_srv_mru_size').value) {
 						document.getElementById('l2tp_srv_mru_sel').value = document.getElementById('l2tp_srv_mru_sel').options[i].value;
@@ -92,14 +90,13 @@
 				l2tpEnableSwitch();
 				mtuChange();
 				mruChange();
-				displayServiceStatus();
 				showWarning();
 				initTranslation();
+				displayServiceStatus([[ NVRAM_l2tp_srv_enabled, 'xl2tpd', 'xl2tpd-srv' ]]);
 			}
 
 			// Check values
-			function CheckValues()
-			{
+			function CheckValues() {
 				if (document.getElementById('l2tp_srv_enabled').options.selectedIndex != 0) {
 					// Check Server IP
 					if (!validateIP(document.getElementById('l2tp_srv_ip_local'))) {
@@ -108,15 +105,15 @@
 						document.getElementById('l2tp_srv_ip_local').focus();
 						return false;
 					}
-					
+
 					// Check Client IP range
 					var range	= document.getElementById('l2tp_srv_ip_range').value.replace(/ /g, '').split('-');
 					var startIp	= range[0].split('.');
 					var stopIp	= range[1].split('.');
 					if (!validateIP(range[0]) || !validateIP(range[1]) ||
-						!(+startIp[0] <= +stopIp[0] && +startIp[1] <= +stopIp[1] && 
-						  +startIp[2] <= +stopIp[2] && +startIp[3] <= +stopIp[3] &&
-						  range[0] != range[1])) {
+						!(+startIp[0] <= +stopIp[0] && +startIp[1] <= +stopIp[1] &&
+						+startIp[2] <= +stopIp[2] && +startIp[3] <= +stopIp[3] &&
+						range[0] != range[1])) {
 						alert(_("services l2tp invalid ip range"));
 						document.getElementById('l2tp_srv_ip_range').select();
 						document.getElementById('l2tp_srv_ip_range').focus();
@@ -157,39 +154,36 @@
 			}
 
 			// Hide Hiht block
-			function hideHint()
-			{
+			function hideHint() {
 				document.getElementById('l2tp_hint_row').innerHTML = '';
 			}
 
 			// Show Hint block
-			function showHint(key)
-			{
+			function showHint(key) {
 				var text = '<div class="hint"><font color="#0000ff"><b>HINT:</b></font>&nbsp;';
 				var show = true;
-				
+
 				switch (key) {
-					case 'l2tp_enable': 	text += _("hint l2tp server");		break;
-					case 'l2tp_ip':			text += _("hint vpn l2tp server");	break;
+					case 'l2tp_enable':	text += _("hint l2tp server");		break;
+					case 'l2tp_ip':		text += _("hint vpn l2tp server");	break;
 					case 'l2tp_ip_list':	text += _("hint vpn range");		break;
-					case 'l2tp_mtu':		text += _("hint vpn mtu");			break;
-					case 'l2tp_mru':		text += _("hint vpn mtu");			break;
-					case 'l2tp_nat':		text += _("hint vpn nat");			break;
-					case 'l2tp_mppe':		text += _("hint vpn mppe");			break;
-					case 'l2tp_debug':		text += _("hint vpn debug");		break;
-					case 'l2tp_lcp':		text += _("hint vpn lcp");			break;
+					case 'l2tp_mtu':	text += _("hint vpn mtu");		break;
+					case 'l2tp_mru':	text += _("hint vpn mtu");		break;
+					case 'l2tp_nat':	text += _("hint vpn nat");		break;
+					case 'l2tp_mppe':	text += _("hint vpn mppe");		break;
+					case 'l2tp_debug':	text += _("hint vpn debug");		break;
+					case 'l2tp_lcp':	text += _("hint vpn lcp");		break;
 					case 'l2tp_proxyarp':	text += _("hint l2tp proxyarp");	break;
-					default:				return;
+					default:		return;
 				}
 
 				text += '</div>';
 				document.getElementById('l2tp_hint_row').innerHTML = text;
 			}
 
-			function genTable()
-			{
+			function genTable() {
 				var table, i;
-				
+
 				table  = '<table class="form">';
 				table += '<tr><td class="title" colspan="3">' + _("services l2tp users") + '</td></tr>';
 				table += '<tr><th style="width: 40%;">' + _("services l2tp login") + '</th><th style="width: 40%;">' + _("services l2tp password") + '</th><th>' + _("routing action") + '</th></tr>';
@@ -211,13 +205,12 @@
 				table += '<input type="hidden" name="l2tp_srv_user_num" value="' + users.length + '">';
 				table += '</td></tr>';
 				table += '</table>';
-				
+
 				document.getElementById("l2tpUserList").innerHTML = table;
 			}
 
 			// Add user/password
-			function addUser()
-			{
+			function addUser() {
 				var index	= document.getElementById('l2tpEdit').value;
 				var login	= document.getElementById('l2tpLogin').value;
 				var pass	= document.getElementById('l2tpPassword').value;
@@ -248,8 +241,8 @@
 					document.getElementById('l2tpPassword').select();
 					document.getElementById('l2tpPassword').focus();
 					return false;
-				}	
-				
+				}
+
 				if (index == -1)
 					users.push([ login, pass ]);
 				else {
@@ -261,35 +254,31 @@
 			}
 
 			// Delete user/password
-			function deleteUser(index)
-			{
+			function deleteUser(index) {
 				users.splice(index, 1);
 				genTable();
 			}
 
 			// Edit user/password
-			function editUser(index)
-			{
-				document.getElementById('l2tpLogin').value		= users[index][0];
+			function editUser(index) {
+				document.getElementById('l2tpLogin').value	= users[index][0];
 				document.getElementById('l2tpPassword').value	= users[index][1];
-				document.getElementById('l2tpEdit').value		= index;
+				document.getElementById('l2tpEdit').value	= index;
 			}
 
 			// Show/hide L2TP settings
-			function l2tpEnableSwitch()
-			{
-				displayElement([ 'l2tp_ip',
-								 'l2tp_ip_list',
-								 'l2tp_mtu',
-								 'l2tp_mru',
-								 'l2tp_additional',
-								 'l2tpUserList' ],		document.getElementById('l2tp_srv_enabled').options.selectedIndex != 0);
+			function l2tpEnableSwitch() {
+				displayElement([	'l2tp_ip',
+							'l2tp_ip_list',
+							'l2tp_mtu',
+							'l2tp_mru',
+							'l2tp_additional',
+							'l2tpUserList' ], document.getElementById('l2tp_srv_enabled').options.selectedIndex != 0);
 				genTable();
 			}
 
 			// Change MTU
-			function mtuChange()
-			{
+			function mtuChange() {
 				if (document.getElementById('l2tp_srv_mtu_sel').value == '1') {
 					document.getElementById('l2tp_srv_mtu_size').style.display = '';
 					document.getElementById('l2tp_srv_mtu_sel').setAttribute("class", "half");
@@ -305,8 +294,7 @@
 			}
 
 			// Change MRU
-			function mruChange()
-			{
+			function mruChange() {
 				if (document.getElementById('l2tp_srv_mru_sel').value == '1') {
 					document.getElementById('l2tp_srv_mru_size').style.display = '';
 					document.getElementById('l2tp_srv_mru_sel').setAttribute("class", "half");
@@ -319,50 +307,6 @@
 					document.getElementById('l2tp_srv_mru_sel').setAttribute("class", "mid");
 					document.getElementById('l2tp_srv_mru_size').value = document.getElementById('l2tp_srv_mru_sel').value;
 				}
-			}
-
-			// Display server status
-			function displayServiceHandler(response)
-			{
-				var i, j;
-				var services = [
-					// turned_on, row_id, daemon_id
-					[ '<% getCfgGeneral(1, "l2tp_srv_enabled"); %>', 'xl2tpd', 'xl2tpd-srv' ]
-				];
-
-				// Create associative array
-				var tmp = response.split(',');
-				var daemons = [];
-				for (i = 0; i < tmp.length; i++)
-					daemons[tmp[i]] = 1;
-
-				// Now display all services
-				for (i = 0; i < services.length; i++) {
-					var service = services[i];
-					var row = document.getElementById(service[1]);
-					var tds = [];
-					for (j = 0; j < row.childNodes.length; j++)
-						if (row.childNodes[j].nodeName == 'TD')
-							tds.push(row.childNodes[j]);
-
-					if (row != null) {
-						// Fill-up status
-						if (service[0] == '0')
-							tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-						else
-							tds[2].innerHTML = (daemons[service[2]] == 1) ?
-								'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-								'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-					}
-				}
-
-				serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
-			}
-
-			// Get server status
-			function displayServiceStatus()
-			{
-				ajaxPerformRequest('/services/misc-stat.asp', displayServiceHandler);
 			}
 		</script>
 	</head>

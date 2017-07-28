@@ -17,11 +17,13 @@
   <message msgid="services dhcp start" msgstr="Начальный IP адрес" />
   <message msgid="services dhcp end" msgstr="Конечный IP адрес" />
   <message msgid="services dhcp lease" msgstr="Срок аренды" />
+  <message msgid="services dhcp lease note" msgstr=" секунд, по умолчанию: 86400" />
   <message msgid="services dhcp clients" msgstr="DHCP клиенты" />
   <message msgid="services dhcp expires" msgstr="Истекает через" />
   <message msgid="services dhcp static" msgstr="Выделеный" />
   <message msgid="services dhcp domain" msgstr="Домен DHCP" />
   <message msgid="services dhcp arpping timeout" msgstr="Таймаут проверки конфликта адресов" />
+  <message msgid="services dhcp arpping timeout note" msgstr=" миллисекунд, по умолчанию: 2000" />
 
   <message msgid="services ntp title" msgstr="Управление NTP" />
   <message msgid="services ntp introduction" msgstr="Здесь вы можете настроить синхронизацию времени" />
@@ -220,4 +222,14 @@
 	<message msgid="services misc hw"				msgstr="Только аппаратный" />
 	<message msgid="services misc router"				msgstr="Маршрутизация" />
 	<message msgid="services misc storage"				msgstr="Локальные сервисы" />
+
+	<message msgid="services account table"				msgstr="Таблица учета трафика" />
+	<message msgid="services account no statistic"		msgstr="Статистика сейчас недоступна" />
+	<message msgid="services account ip addr"			msgstr="IP адрес" />
+	<message msgid="services account proto"				msgstr="Протокол" />
+	<message msgid="services account txbytes"			msgstr="Передано байт " />
+	<message msgid="services account rxbytes"			msgstr="Принято байт" />
+	<message msgid="services account txpackets"			msgstr="Передано пакетов" />
+	<message msgid="services account rxpackets"			msgstr="Принято пакетов" />
+	<message msgid="services account time"				msgstr="Время" />
 </po>

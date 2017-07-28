@@ -17,11 +17,13 @@
   <message msgid="services dhcp start" msgstr="Start IP Address" />
   <message msgid="services dhcp end" msgstr="End IP Address" />
   <message msgid="services dhcp lease" msgstr="Lease Time" />
+  <message msgid="services dhcp lease note" msgstr=" seconds, default: 86400" />
   <message msgid="services dhcp clients" msgstr="DHCP Clients" />
   <message msgid="services dhcp expires" msgstr="Expires in" />
   <message msgid="services dhcp static" msgstr="Static" />
   <message msgid="services dhcp domain" msgstr="DHCP Domain" />
-  <message msgid="services dhcp arpping timeout" msgstr="Adress conflict check timeout (ms)" />
+  <message msgid="services dhcp arpping timeout" msgstr="Address conflict check timeout" />
+  <message msgid="services dhcp arpping timeout note" msgstr=" miliseconds, default: 2000" />
 
   <message msgid="services ntp title" msgstr="NTP Management" />
   <message msgid="services ntp introduction" msgstr="Here you can configure time synchronization." />
@@ -219,4 +221,14 @@
 	<message msgid="services misc hw"				msgstr="HW Only" />
 	<message msgid="services misc router"				msgstr="Router" />
 	<message msgid="services misc storage"				msgstr="Local services" />
+
+	<message msgid="services account table"				msgstr="IP Accounting table" />
+	<message msgid="services account no statistic"		msgstr="No statistics available now" />
+	<message msgid="services account ip addr"			msgstr="IP Addr." />
+	<message msgid="services account proto"				msgstr="Protocol" />
+	<message msgid="services account txbytes"			msgstr="TX Bytes" />
+	<message msgid="services account rxbytes"			msgstr="RX Bytes" />
+	<message msgid="services account txpackets"			msgstr="TX Packets" />
+	<message msgid="services account rxpackets"			msgstr="RX Packets" />
+	<message msgid="services account time"				msgstr="Time" />
 </po>

@@ -60,7 +60,7 @@
 				_TR("secureWPA",					"secure wpa");
 				_TR("secureWPAAlgorithm",			"secure wpa algorithm");
 				
-				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC)
 					_TR("secureWPAPassPhrase",		"secure wpa pass phrase nic");
 				else
 					_TR("secureWPAPassPhrase",		"secure wpa pass phrase");
@@ -377,7 +377,7 @@
 
 						network = JSON.parse(http_request.responseText);
 
-						if (BUILD_5GHZ_SUPPORT == '1' && NVRAM_RadioOnINIC == '1' && NVRAM_SSID1INIC.length > 0 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+						if (BUILD_5GHZ_SUPPORT && NVRAM_RadioOnINIC == '1' && NVRAM_SSID1INIC.length > 0 && NVRAM_SSID1 != NVRAM_SSID1INIC)
 							network.data[0].SSID = network.data[0].SSID + ' / ' + NVRAM_SSID1INIC;
 
 						for (i = 0; i < network.data.length; i++) {
@@ -422,7 +422,7 @@
 					case 'WPAPSK':
 					case 'WPA2PSK':
 					case 'WPAPSKWPA2PSK':	displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_key_renewal_interval'], true);
-											displayElement('wpa_passphrase5', BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC && old_MBSSID == 0);
+											displayElement('wpa_passphrase5', BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC && old_MBSSID == 0);
 											break;
 					case 'WPA2':			displayElement(['wpa_preAuthentication', 'wpa_PMK_Cache_Period'], true);
 					case 'WPA':
@@ -518,8 +518,8 @@
 				
 				displayElement(['newap_text_' + old_MBSSID + '_tr', 'newap_macs_' + old_MBSSID + '_tr'], document.getElementById('AccessPolicy' + old_MBSSID).value != 0);
 				
-				displayElement('wpa_passphrase5', old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC);
-				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT == 1 && NVRAM_SSID1 != NVRAM_SSID1INIC)
+				displayElement('wpa_passphrase5', old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC);
+				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC)
 					_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
 				else
 					_TR("secureWPAPassPhrase", "secure wpa pass phrase");

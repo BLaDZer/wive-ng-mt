@@ -464,8 +464,7 @@
 						(dstDistance >= 0) ? form.redirectFromPort.value : '',
 						(dstDistance > 0) ? form.redirectToPort.value : '',
 						(form.natLoopback.checked) ? 1 : 0,
-						comment,
-						form.table.value
+						comment
 					];
 
 				// Add a rule

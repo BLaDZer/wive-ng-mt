@@ -128,7 +128,7 @@
 					document.getElementById('stalistWirelessNameSum24').style.width = "30%";
 				}
 
-				if (BUILD_5GHZ_SUPPORT == 0) {
+				if (!BUILD_5GHZ_SUPPORT) {
 					hideElement([ 'stalistWirelessNameSum5', 'stalistWirelessSumAIDData5', 'stalistWirelessSumTXRateData5',
 								  'stalistWirelessSumTxRxData5', 'stalistWirelessSumRSSIData5', 'stalistWirelessSumQualityData5',
 								  'stalistWirelessNameSum24', 'stalistWirelessSumAIDData24', 'stalistWirelessSumTXRateData24',
@@ -136,7 +136,7 @@
 					document.getElementById('stalistWirelessNameSum').style.width = "60%";
 				}
 
-				if (NVRAM_RadioOn == 0 && (BUILD_5GHZ_SUPPORT == 0 || NVRAM_RadioOnINIC == 0)) {
+				if (NVRAM_RadioOn == 0 && (!BUILD_5GHZ_SUPPORT || NVRAM_RadioOnINIC == 0)) {
 					deleteCookie('wirelessMode');
 					deleteCookie('plotMACs');
 					deleteCookie('plotMACsAll');

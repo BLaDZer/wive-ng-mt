@@ -595,3 +595,60 @@ if (!Array.prototype.indexOf) {
 		return -1;
 	};
 }
+
+// Display service status
+function displayServiceStatus(services) {
+	var xmlHttp = createXMLHttp();
+	if (xmlHttp) {
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4) {
+				// Create associative array
+				var tmp = xmlHttp.responseText.split(',');
+				var daemons = [];
+				for (var i = 0; i < tmp.length; i++)
+					daemons[tmp[i]] = 1;
+				// Now display all services
+				for (var i = 0; i < services.length; i++) {
+					var service = services[i];
+					var row = document.getElementById(service[1]);
+					var tds = [];
+					for (var j = 0; j < row.childNodes.length; j++)
+						if (row.childNodes[j].nodeName == 'TD')
+							tds.push(row.childNodes[j]);
+					if (row != null) {
+						// Fill-up status
+						if (+service[0] == 0) {
+							if (service[4] != null)
+								tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+							else
+								tds[2].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
+						}
+						else {
+							if (service[4] != null)
+								tds[3].innerHTML = (daemons[service[2]] == 1) ?
+									'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+									'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+							else
+								tds[2].innerHTML = (daemons[service[2]] == 1) ?
+									'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
+									'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
+						}
+
+						if (service[4] != null) {
+							tds[2].innerHTML = '<a href="http://' + service[4] + '" target="_blank">' + _("services status about") + '</a>';
+							if (tds[4] != null)
+								tds[4].innerHTML = ((service[0] > '0') && (daemons[service[2]] == 1) && (service[3] != null)) ?
+									'<a href="http://' + LAN_IP +':' + service[3] + '">' + _("services status configure") + '</a>' : '&nbsp;';
+						}
+					}
+				}
+				setTimeout(function () { displayServiceStatus(services); }, 5000);
+				// Free resources
+				xmlHttp.onreadystatechange = null;
+				xmlHttp = null;
+			}
+		}
+		xmlHttp.open("GET", genRandomParam('/services/misc-stat.asp'), true);
+		xmlHttp.send(null);
+	}
+}

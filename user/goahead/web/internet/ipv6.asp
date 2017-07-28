@@ -102,9 +102,14 @@
 				displayElement( 'dhcpv6', BUILD_DHCPV6 == '1');
 
 				initTranslation();
-
-				displayServiceStatus();
 				showWarning();
+
+				displayServiceStatus(
+					[
+						[ NVRAM_radvdEnabled,	'radvd',	'radvd',	null,	'www.litech.org/radvd'			 ],
+						[ NVRAM_dhcpv6Enabled,	'dhcpv6',	'dhcp6s',	null,	'wide-dhcpv6.sourceforge.net'	 ]
+					]
+				);
 			}
 
 			function checkValues(form) {
@@ -225,8 +230,7 @@
 				return true;
 			}
 
-			function SwitchOpMode(form)
-			{
+			function SwitchOpMode(form) {
 				var opmode = form.ipv6_opmode.value;
 
 				enableElements( [ form.ipv6_allow_forward ], opmode != '0');
@@ -269,50 +273,6 @@
 					hideElement('ipv6_manual_mtu');
 					document.getElementById('ipv6_manual_mtu').value = document.getElementById('ipv6_manual_mtu_type').value;
 				}
-			}
-
-			function displayServiceHandler(response) {
-				var form = document.miscServiceCfg;
-
-				var services = [
-					// turned_on, row_id, daemon_id
-					[ NVRAM_radvdEnabled, 'radvd', 'radvd', 'www.litech.org/radvd' ],
-					[ NVRAM_dhcpv6Enabled, 'dhcpv6', 'dhcp6s', 'wide-dhcpv6.sourceforge.net' ]
-				];
-
-				// Create associative array
-				var tmp = response.split(',');
-				var daemons = [];
-				for (var i=0; i<tmp.length; i++)
-					daemons[tmp[i]] = 1;
-
-				// Now display all services
-				for (var i=0; i<services.length; i++) {
-					var service = services[i];
-					var row = document.getElementById(service[1]);
-					var tds = [];
-					for (var j=0; j<row.childNodes.length; j++)
-						if (row.childNodes[j].nodeName == 'TD')
-							tds.push(row.childNodes[j]);
-
-					if (row != null) {
-						// Fill-up about
-						tds[2].innerHTML = (service[3] != null) ? '<a href="http://' + service[3] + '" target="_blank">' + _("services status about") + '</a>' : "&nbsp;";
-						// Fill-up status
-						if (service[0]*1 == '0')
-							tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
-						else
-							tds[3].innerHTML = (daemons[service[2]] == 1) ?
-								'<span style="color: #3da42c"><b>' + _("services status work") + '</b></span>' :
-								'<span style="color: #808000"><b>' + _("services status starting") + '</b></span>';
-					}
-				}
-
-				serviceStatusTimer = setTimeout('displayServiceStatus();', 5000);
-			}
-
-			function displayServiceStatus() {
-				ajaxPerformRequest('/internet/services-stat.asp', displayServiceHandler);
 			}
 		</script>
 	</head>
@@ -409,33 +369,43 @@
 						</table>
 						<!-- Settings daemons for lan -->
 						<table class="form" id="daemons" style="visibility: hidden;">
-							<tr>
-								<td class="title" colspan="4" id="v6services">Services IPv6</td>
-							</tr>
-							<tr>
-								<td class="title" id="v6servicename" width="45%">Service name</td>
-								<td class="title" id="v6value" width="19%">Value</td>
-								<td class="title" id="v6details" width="19%">Details</td>
-								<td class="title" id="v6status" width="17%">Status</td>
-							</tr>
-							<tr id="radvd">
-								<td class="head" id="v6Radvd" width="45%">Router Advertisement</td>
-								<td><select name="radvdEnbl" style="width: 130px">
-									<option value="0" id="v6RadvdD">Disable</option>
-									<option value="1" id="v6RadvdE">Enable</option>
-								</select></td>
-								<td width="19%">&nbsp;</td>
-								<td width="17%">&nbsp;</td>
-							</tr>
-							<tr id="dhcpv6">
-								<td class="head" id="v6Dhcpv6" width="45%">Dynamic IPv6 configuration</td>
-								<td><select name="dhcpv6Enbl" style="width: 130px">
-									<option value="0" id="v6Dhcpv6D">Disable</option>
-									<option value="1" id="v6Dhcpv6E">Enable</option>
-								</select></td>
-								<td width="19%">&nbsp;</td>
-								<td width="17%">&nbsp;</td>
-							</tr>
+							<col style="width: 45%"/>
+							<col style="width: 19%"/>
+							<col style="width: 19%"/>
+							<col style="width: 17%"/>
+							<tbody>
+								<tr>
+									<td class="title" colspan="4" id="v6services">Services IPv6</td>
+								</tr>
+								<tr>
+									<td class="title" id="v6servicename">Service name</td>
+									<td class="title" id="v6value">Value</td>
+									<td class="title" id="v6details">Details</td>
+									<td class="title" id="v6status">Status</td>
+								</tr>
+								<tr id="radvd">
+									<td class="head" id="v6Radvd" width="45%">Router Advertisement</td>
+									<td>
+										<select name="radvdEnbl" style="width: 130px">
+											<option value="0" id="v6RadvdD">Disable</option>
+											<option value="1" id="v6RadvdE">Enable</option>
+										</select>
+									</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr id="dhcpv6">
+									<td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
+									<td>
+										<select name="dhcpv6Enbl" style="width: 130px">
+											<option value="0" id="v6Dhcpv6D">Disable</option>
+											<option value="1" id="v6Dhcpv6E">Enable</option>
+										</select>
+									</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+							</tbody>
 						</table>
 						<table class="buttons">
 							<tr align="center">

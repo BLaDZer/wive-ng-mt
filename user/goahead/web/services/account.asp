@@ -19,30 +19,45 @@
 			Butterlate.setTextDomain("buttons");
 
 			function initTranslation() {
-			  _TR("accountTitle", "services account title");
-			  _TR("accountIntroduction", "services account introduction");
-			  _TR("fastpath_warning", "services account warning");
-			  _TR("accountSettings", "services account settings");
-			  _TR("accountIPT", "services account ipt");
-			  _TR("accountDisable", "button disable");
-			  _TR("accountEnable", "button enable");
+				_TR("accountTitle",			"services account title");
+				_TR("accountIntroduction",		"services account introduction");
+				_TR("fastpath_warning",			"services account warning");
+				_TR("accountSettings",			"services account settings");
+				_TR("accountIPT",			"services account ipt");
+				_TR("accountDisable",			"button disable");
+				_TR("accountEnable",			"button enable");
+				_TR("accountTableTitle",		"services account table");
+				_TR("accountTableNoStatistic",		"services account no statistic");
 
-			  _TRV("accountApply", "button apply");
-			  _TRV("accountRefresh", "button refresh");
-			  _TRV("accountReset", "button reset statistics");
+				_TRV("accountApply",			"button apply");
+				_TRV("accountCancel",			"button cancel");
+				_TRV("accountReset",			"button reset");
+				_TRV("accountResetCounters",		"button reset statistics");
 			}
 
 			function initValues() {
 				document.formIptAccounting.iptEnable.value = +NVRAM_ipt_account;
-				displayElement('fastpath_warning', NVRAM_offloadMode == '1' || NVRAM_offloadMode == '2' || NVRAM_offloadMode == '3');
-				displayElement('fastpath_form', NVRAM_offloadMode == '0');
+				displayElement('fastpath_warning', +NVRAM_offloadMode > 0);
+				displayElement('fastpath_form', +NVRAM_offloadMode == 0);
+				displayElement([ 'accountStatButton', 'accountStatTable' ], NVRAM_ipt_account == '1');
 				initTranslation();
 				showWarning();
+				if (document.formIptAccounting.iptEnable.value == 1)
+					showStatTable();
 			}
 
-			function resetClick(form) {
-				form.reset.value = 1;
-				form.submit();
+			function showStatTable() {
+				ajaxLoadScript('/services/account_stat.js');
+				setTimeout('showStatTable();', 5000);
+			}
+
+			function accountChange() {
+				displayElement([ 'accountStatButton', 'accountStatTable' ], document.formIptAccounting.iptEnable.value == 1);
+			}
+
+			function resetAccountCounters() {
+				document.formIptAccounting.resetCounters.value = '1';
+				document.formIptAccounting.submit();
 			}
 		</script>
 	</head>
@@ -65,35 +80,52 @@
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
 					<table class="form">
+						<col style="width: 40%"/>
+						<col style="width: 60%"/>
+						<tbody>
+							<tr>
+								<td class="title" colspan="2" id="accountSettings">IP Accounting Settings</td>
+							</tr>
+							<tr>
+								<td class="head" id="accountIPT" style="width:40%">IPT accounting</td>
+								<td>
+									<select name="iptEnable" class="mid" onChange="accountChange();">
+										<option value="0" id="accountDisable">Disable</option>
+										<option value="1" id="accountEnable">Enable</option>
+									</select>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="buttons">
 						<tr>
-							<td class="title" colspan="2" id="accountSettings">IP Accounting Settings</td>
-						</tr>
-						<tr>
-							<td class="head" id="accountIPT" style="width:40%">IPT accounting</td>
 							<td>
-								<select name="iptEnable" class="mid">
-									<option value="0" id="accountDisable">Disable</option>
-									<option value="1" id="accountEnable">Enable</option>
-								</select>
+								<input type="submit" class="normal" id="accountApply" value="Apply">&nbsp;&nbsp;
+								<input type="button" class="normal" id="accountCancel" value="Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
+								<input type="button" class="normal" id="accountReset"  value="Reset"  onClick="resetValues(this.form);">
+								<input type="hidden" value="0" name="reset">
+								<input type="hidden" value="0" name="resetCounters">
 							</td>
 						</tr>
 					</table>
-					<table class="buttons">
-						<tr>
-							<td colspan="2"><input type="submit" class="normal" id="accountApply" value="Apply"></td>
-						</tr>
-					</table>
 					<br>
-					<table class="form">
-						<% iptStatList(); %>
+					<div id="accountStatTable">
+						<br>
+						<table class="form">
+						<tbody>
+							<tr>
+								<td class="title" id="accountTableTitle"></td>
+							</tr>
+							<tr>
+								<td style="text-align: left;" id="accountTableNoStatistic"></td>
+							</tr>
+						</tbody>
 					</table>
-					<table class="buttons">
+					</div>
+					<table class="buttons" id="accountStatButton">
 						<tr>
 							<td>
-								<input type="hidden" value="0" name="reset">
-								<input type="hidden" value="/services/account.asp" name="submit-url">
-								<input type="button" class="normal" value="Refresh" onClick="window.location.reload();" id="accountRefresh">&nbsp;&nbsp;
-								<input type="button" class="normal" onClick="resetClick(this.form);" value="Reset Statistics" id="accountReset">
+								<input type="button" class="normal" id="accountResetCounters" onClick="resetAccountCounters();">
 							</td>
 						</tr>
 					</table>
