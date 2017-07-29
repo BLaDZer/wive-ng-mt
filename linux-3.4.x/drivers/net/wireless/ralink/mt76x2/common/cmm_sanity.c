@@ -995,9 +995,12 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				|| (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80)
 #endif /* DOT11_VHT_AC */
 			) {
+#ifdef CONFIG_STA_SUPPORT
+				// TODO: shiang-usw, fix me for this check!!
 				if (pAd->MlmeAux.Channel)
 					ie_list->Channel = pAd->MlmeAux.Channel;
 				else
+#endif /* CONFIG_STA_SUPPORT */
 					ie_list->Channel = pAd->CommonCfg.Channel;
 			}
 			else

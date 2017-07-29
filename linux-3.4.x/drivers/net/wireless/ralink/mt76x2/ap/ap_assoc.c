@@ -1871,6 +1871,7 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 				SendBeaconRequest(pAd, pEntry->wcid);
 			}
 			/*BAOriSessionSetUp(pAd, pEntry, 0, 0, 3000, FALSE); */
+			RTMP_BASetup(pAd, pEntry, 5);
 		}
 #endif /* DOT11_N_SUPPORT */
 

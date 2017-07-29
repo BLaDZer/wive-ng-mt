@@ -230,45 +230,23 @@ done:
 */
 UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 {
-	INT idx = 0, ch_idx = 0;
-	BOOLEAN ch_support_bw_80 = FALSE;
+	INT idx = 0;
 
 	if (pAd->CommonCfg.vht_bw < VHT_BW_80 || prim_ch < 36)
 	{
-		pAd->CommonCfg.vht_cent_ch = 0;
-		pAd->CommonCfg.vht_cent_ch2 = 0;
+		//pAd->CommonCfg.vht_cent_ch = 0;
+		//pAd->CommonCfg.vht_cent_ch2 = 0;
 		return prim_ch;
 	}
 
-#ifdef RT_CFG80211_SUPPORT
-#else
-	/* 
-	sanity check , if this channel has no BW80 capability, use first channel in channel list 
-	ex: when CH144 is not availble , group CH 132~140 won't have BW80 cap , shouldn't be used.
-	*/
-	for ( ch_idx = 0; ch_idx <  pAd->ChannelListNum; ch_idx++)
-	{
-		if ((pAd->ChannelList[ch_idx].Channel == prim_ch) && (pAd->ChannelList[ch_idx].Flags & CHANNEL_80M_CAP))
-			ch_support_bw_80 = TRUE;
-	}
-			
-	if(ch_support_bw_80 == FALSE)
-	{
-		pAd->CommonCfg.Channel = FirstChannel(pAd);
-		DBGPRINT(RT_DEBUG_OFF, ("vht_cent_ch_freq: channel(%d) don't have BW80 capability, use first channel in channel list=%d \n"
-		, prim_ch, pAd->CommonCfg.Channel));
-		prim_ch = FirstChannel(pAd);
-	}
-#endif /* RT_CFG80211_SUPPORT */
-
 	/* choose cent_freq by prim_ch */
-	
+
 	while (vht_ch_80M[idx].ch_up_bnd != 0)
 	{
 		if (prim_ch >= vht_ch_80M[idx].ch_low_bnd &&
 			prim_ch <= vht_ch_80M[idx].ch_up_bnd)
 		{
-			pAd->CommonCfg.vht_cent_ch = vht_ch_80M[idx].cent_freq_idx;
+			//pAd->CommonCfg.vht_cent_ch = vht_ch_80M[idx].cent_freq_idx;
 			return vht_ch_80M[idx].cent_freq_idx;
 		}
 		idx++;
@@ -328,12 +306,6 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 	        pEntry->MaxHTPhyMode.field.BW = BW_40;
 	}
 
-	/* recheck STBC/SGI for 80MHz */
-	if (pEntry->MaxHTPhyMode.field.BW == BW_80) {
-		pEntry->MaxHTPhyMode.field.STBC = (pAd->CommonCfg.vht_stbc && cap->vht_cap.rx_stbc > 1) ? 1 : 0;
-		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
-	}
-
 #ifdef BADBCM_FIX
 	/* Iphone6, some mackbooks and some huawai honor phones dos not work correctly with 80MHz channel width (BUG?) drop BW to 40MHz */
 	if (pAd->CommonCfg.Channel > 14 && pEntry->MaxHTPhyMode.field.BW > BW_40) {
@@ -355,7 +327,22 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Disable 80MHz channel (bcm bug).\n", PRINT_MAC(pEntry->Addr));
 		}
 	}
+
+	/* Galaxy S5 with 6.0.1 android not correct work in VHT modes at high channels, must be fixed in Android7 update from samsung */
+	if (pAd->CommonCfg.Channel > 64 && pEntry->MaxHTPhyMode.field.BW > BW_40 && pEntry->MaxHTPhyMode.field.MODE == MODE_VHT) {
+		UCHAR BAD_SAMSUNG_1_OUI[]  = {0x84, 0x38, 0x38};
+		if (NdisEqualMemory(pEntry->Addr, BAD_SAMSUNG_1_OUI, 3)) {
+			    pEntry->MaxHTPhyMode.field.BW = BW_20;
+			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Fallback to 20MHz for VHT (samsung bug).\n", PRINT_MAC(pEntry->Addr));
+		}
+	}
 #endif /* BADBCM_FIX */
+
+	/* recheck STBC/SGI for 80MHz */
+	if (pEntry->MaxHTPhyMode.field.BW == BW_80) {
+		pEntry->MaxHTPhyMode.field.STBC = (pAd->CommonCfg.vht_stbc && cap->vht_cap.rx_stbc > 1) ? 1 : 0;
+		pEntry->MaxHTPhyMode.field.ShortGI = (pAd->CommonCfg.vht_sgi_80 && cap->vht_cap.sgi_80M) ? 1 : 0;
+	}
 
 	return TRUE;
 }

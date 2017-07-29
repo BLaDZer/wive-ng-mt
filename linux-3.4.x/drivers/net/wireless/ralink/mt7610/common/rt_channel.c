@@ -1691,6 +1691,7 @@ static UCHAR FillChList(
         }
 /*New FCC spec restrict the used channel under DFS */
 #ifdef CONFIG_AP_SUPPORT	
+#ifdef DFS_SUPPORT
 		if ((pAd->CommonCfg.bIEEE80211H == 1) &&
 			(pAd->CommonCfg.RDDurRegion == FCC) &&
 			(pAd->Dot11_H.bDFSIndoor == 1))
@@ -1706,6 +1707,7 @@ static UCHAR FillChList(
 				continue;
 		}
 
+#endif /* DFS_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 		for (l=0; l<MAX_NUM_OF_CHANNELS; l++)
 		{

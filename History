@@ -3305,6 +3305,12 @@
 5) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
 6) kernel: ralink_wifi: allow secondary channel offset in Channel Switch Announcement IE.<br>
 7) kernel: ralink_wifi: always update LastTxRate after asic_mcs_lut_update.<br>
+8) kernel: ralink_wifi: avoid replace parametrs from sanity checks.<br>
+9) kernel: ralink_wifi: remove incorerect sanity chek channel range.<br>
+10) kernel: ralink_wifi: fix get channel from probe/beacon in AP mode.<br>
+11) kernel: ralink_wifi: add workaround for samsung galaxy S5 work at high channels of high mcs (samsung bug).<br>
+12) kernel: ralink_wifi: remove unneded channel band 1 restriction check in not DFS builds.<br>
+13) kernel: ralink_wifi: speedup and more safe assoc procedure in some cases.<br>
 <br>
 <br>
 <br>

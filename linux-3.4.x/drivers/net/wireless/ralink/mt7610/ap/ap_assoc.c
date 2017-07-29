@@ -1544,6 +1544,7 @@ VOID ap_cmm_peer_assoc_req_action(
 				SendBeaconRequest(pAd, pEntry->Aid);
 			}
 			/*BAOriSessionSetUp(pAd, pEntry, 0, 0, 3000, FALSE); */
+			RTMP_BASetup(pAd, pEntry, 5);
 		}
 #endif /* DOT11_N_SUPPORT */
 #ifdef DOT11R_FT_SUPPORT

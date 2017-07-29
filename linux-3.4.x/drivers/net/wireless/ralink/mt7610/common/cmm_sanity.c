@@ -789,9 +789,6 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				|| (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80)
 #endif /* DOT11_VHT_AC */
 			) {
-				if (pAd->MlmeAux.Channel)
-					ie_list->Channel = pAd->MlmeAux.Channel;
-				else
 					ie_list->Channel = pAd->CommonCfg.Channel;
 			}
 			else
