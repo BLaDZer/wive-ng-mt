@@ -2180,16 +2180,6 @@ do{									\
 	}												\
 }while(0)
 
-
-#ifndef min
-#define min(_a, _b)     (((_a) < (_b)) ? (_a) : (_b))
-#endif
-
-#ifndef max
-#define max(_a, _b)     (((_a) > (_b)) ? (_a) : (_b))
-#endif
-
-
 /* ========================================================================== */
 /*
 	The full range (1-4,095) of VLAN IDs must be supported by the 802.1Q

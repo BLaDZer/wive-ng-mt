@@ -343,39 +343,6 @@ void DisplayTxAgg (RTMP_ADAPTER *pAd);
 }
 #endif /* USB_BULK_BUF_ALIGMENT */
 
-#ifdef DOT11_N_SUPPORT
-/* StaActive.SupportedHtPhy.MCSSet is copied from AP beacon.  Don't need to update here. */
-#define COPY_HTSETTINGS_FROM_MLME_AUX_TO_ACTIVE_CFG(_pAd)                                 \
-{                                                                                       \
-	_pAd->StaActive.SupportedHtPhy.ChannelWidth = _pAd->MlmeAux.HtCapability.HtCapInfo.ChannelWidth;      \
-	_pAd->StaActive.SupportedHtPhy.MimoPs = _pAd->MlmeAux.HtCapability.HtCapInfo.MimoPs;      \
-	_pAd->StaActive.SupportedHtPhy.GF = _pAd->MlmeAux.HtCapability.HtCapInfo.GF;      \
-	_pAd->StaActive.SupportedHtPhy.ShortGIfor20 = _pAd->MlmeAux.HtCapability.HtCapInfo.ShortGIfor20;      \
-	_pAd->StaActive.SupportedHtPhy.ShortGIfor40 = _pAd->MlmeAux.HtCapability.HtCapInfo.ShortGIfor40;      \
-	_pAd->StaActive.SupportedHtPhy.TxSTBC = _pAd->MlmeAux.HtCapability.HtCapInfo.TxSTBC;      \
-	_pAd->StaActive.SupportedHtPhy.RxSTBC = _pAd->MlmeAux.HtCapability.HtCapInfo.RxSTBC;      \
-	_pAd->StaActive.SupportedHtPhy.ExtChanOffset = _pAd->MlmeAux.AddHtInfo.AddHtInfo.ExtChanOffset;      \
-	_pAd->StaActive.SupportedHtPhy.RecomWidth = _pAd->MlmeAux.AddHtInfo.AddHtInfo.RecomWidth;      \
-	_pAd->StaActive.SupportedHtPhy.OperaionMode = _pAd->MlmeAux.AddHtInfo.AddHtInfo2.OperaionMode;      \
-	_pAd->StaActive.SupportedHtPhy.NonGfPresent = _pAd->MlmeAux.AddHtInfo.AddHtInfo2.NonGfPresent;      \
-	NdisMoveMemory((_pAd)->MacTab.Content[BSSID_WCID].HTCapability.MCSSet, (_pAd)->StaActive.SupportedPhyInfo.MCSSet, sizeof(UCHAR) * 16);\
-}
-
-#define COPY_AP_HTSETTINGS_FROM_BEACON(_pAd, _pHtCapability)                                 \
-{                                                                                       \
-	_pAd->MacTab.Content[BSSID_WCID].AMsduSize = (UCHAR)(_pHtCapability->HtCapInfo.AMsduSize);	\
-	_pAd->MacTab.Content[BSSID_WCID].MmpsMode= (UCHAR)(_pHtCapability->HtCapInfo.MimoPs);	\
-	_pAd->MacTab.Content[BSSID_WCID].MaxRAmpduFactor = (UCHAR)(_pHtCapability->HtCapParm.MaxRAmpduFactor);	\
-}
-#endif /* DOT11_N_SUPPORT */
-
-#ifdef DOT11_VHT_AC
-#define COPY_VHT_FROM_MLME_AUX_TO_ACTIVE_CFG(_pAd)                                 \
-{                                                                                       \
-}
-#endif /* DOT11_VHT_AC */
-
-
 /*
 	Common fragment list structure -  Identical to the scatter gather frag list structure
 */
@@ -397,14 +364,6 @@ typedef struct _RTMP_SCATTER_GATHER_LIST {
 /*
 	Some utility macros
 */
-#ifndef min
-#define min(_a, _b)     (((_a) < (_b)) ? (_a) : (_b))
-#endif
-
-#ifndef max
-#define max(_a, _b)     (((_a) > (_b)) ? (_a) : (_b))
-#endif
-
 #define GET_LNA_GAIN(_pAd)	((_pAd->LatchRfRegs.Channel <= 14) ? (_pAd->BLNAGain) : ((_pAd->LatchRfRegs.Channel <= 64) ? (_pAd->ALNAGain0) : ((_pAd->LatchRfRegs.Channel <= 128) ? (_pAd->ALNAGain1) : (_pAd->ALNAGain2))))
 
 #define INC_COUNTER64(Val)          (Val.QuadPart++)
@@ -6444,21 +6403,6 @@ VOID    RTMPCheckRates(
 	IN      PRTMP_ADAPTER   pAd,
 	IN OUT  UCHAR           SupRate[],
 	IN OUT  UCHAR           *SupRateLen);
-
-
-BOOLEAN RTMPCheckHt(
-	IN RTMP_ADAPTER *pAd,
-	IN UCHAR Wcid,
-	INOUT HT_CAPABILITY_IE *pHtCapability,
-	INOUT ADD_HT_INFO_IE *pAddHtInfo);
-
-#ifdef DOT11_VHT_AC
-BOOLEAN RTMPCheckVht(
-	IN RTMP_ADAPTER *pAd,
-	IN UCHAR Wcid,
-	IN VHT_CAP_IE *vht_cap,
-	IN VHT_OP_IE *vht_op);
-#endif /* DOT11_VHT_AC */
 
 CHAR RTMPMaxRssi(
 	IN PRTMP_ADAPTER	pAd,
