@@ -1,5 +1,5 @@
 /* vim: set et: */
-#define MAX_LOG_SIZE 32768
+#define MAX_LOG_SIZE 16383
 ///////////////////// HELPERS /////////////////////
 
 // escape all XML chars and copy into new text buffer
@@ -133,19 +133,23 @@ int cpe_set_igd_di_provisioningcode(cwmp_t * cwmp, const char * name, const char
 //InternetGatewayDevice.DeviceInfo.DeviceLog
 int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
-    long length, length2;
-    char *buffer = pool_palloc(pool,MAX_LOG_SIZE);
-    char *resbuffer;
+    long length, length_esc;
+    char *buffer = pool_palloc(pool,MAX_LOG_SIZE+1);
+    char *resbuffer = NULL;
 
     DM_TRACE_GET();
+    *value = NULL;
 
     if (!buffer) {
         cwmp_log_error("cpe_get_igd_di_devicelog: unable to allocate devicelog buffer of size %u",MAX_LOG_SIZE);
         return FAULT_CODE_9002; // 9002 Internal error
     }
 
+    memset(buffer, '\0', MAX_LOG_SIZE+1);
+    *value = buffer;
+
     char *filename = cwmp_conf_pool_get(pool, "cwmp:devicelog_filename");
-    cwmp_log_error("cw %s", filename);
+    cwmp_log_info("reading log file %s", filename);
     FILE *f = fopen(filename, "rt");
 
     if (!f) {
@@ -162,30 +166,33 @@ int cpe_get_igd_di_devicelog(cwmp_t * cwmp, const char * name, char ** value, ch
         length = MAX_LOG_SIZE;
     }
 
-    length2 = fread(buffer, 1, length, f);
-    cwmp_log_debug("cpe_get_igd_di_devicelog: devicelog file (%s) length is %lu, write length is %lu", filename, length, length2);
+    length = fread(buffer, 1, length, f);
+
     if (ferror(f)) {
         cwmp_log_error("cpe_get_igd_di_devicelog: devicelog file (%s) read error %i", ferror(f));
     }
 
     fclose(f);
 
-    resbuffer = pool_xml_escape_text(buffer, length2, MAX_LOG_SIZE, pool);
+    resbuffer = pool_xml_escape_text(buffer, length, MAX_LOG_SIZE+1, pool);
+
     if (!resbuffer) {
         cwmp_log_error("cpe_get_igd_di_devicelog: unable to escape buffer in pool");
-        *value = NULL;
         return FAULT_CODE_9002; // 9002 Internal error
     }
 
-    length2 = strlen(resbuffer);
-    if (length2 > MAX_LOG_SIZE) {
-        // skip a couple of first characters to fit value buffer
-        resbuffer += length2-MAX_LOG_SIZE;
+    length_esc = strlen(resbuffer);
+    cwmp_log_debug("cpe_get_igd_di_devicelog: devicelog file (%s) read %lu bytes, wrote %lu", filename, length, length_esc);
+
+    if (length_esc > MAX_LOG_SIZE) {
+        memcpy(buffer, resbuffer+length_esc-MAX_LOG_SIZE, MAX_LOG_SIZE);
+    } else {
+        memcpy(buffer, resbuffer, MAX_LOG_SIZE);
     }
 
-    *value = resbuffer;
+    buffer[MAX_LOG_SIZE] = '\0'; // just in case
 
-//    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog OK");
+    cwmp_log_debug("DEBUG: cpe_get_igd_di_devicelog OK");
     return FAULT_CODE_OK;
 }
 

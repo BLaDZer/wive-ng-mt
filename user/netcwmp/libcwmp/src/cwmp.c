@@ -2627,6 +2627,7 @@ xmldoc_t* cwmp_create_getparametervalues_response_message(env_t * env ,  header_
     xmlnode_t * valueStructNode;
     int	 count;
     parameter_t ** pv;
+    parameter_t * pvc;
 
     xmldoc_t * doc = XmlDocCreateDocument(env->pool );
     envelopeNode    = cwmp_create_envelope_node(env ,  & doc->node);
@@ -2643,11 +2644,10 @@ xmldoc_t* cwmp_create_getparametervalues_response_message(env_t * env ,  header_
     count = 0;
     while (count < pl->count)
     {
+        pvc = *(pv+count);
         ESA(parameterValueStructNode, cwmp_xml_create_child_node(env ,  parameterListNode, NULL, "ParameterValueStruct", NULL));
-        ESA(nameStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Name", (*(pv+count))->name));
-        ESA(valueStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Value", (*(pv+count))->value));
-        //D-Link doesn't support name types
-        //ESN(XML_OK, cwmp_xml_set_node_attribute(env ,  nameStructNode, SOAP_XSI_TYPE, SOAP_XSD_STRING ));
+        ESA(nameStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Name", pvc->name));
+        ESA(valueStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Value", pvc->value));
         ESN(XML_OK, cwmp_xml_set_node_attribute(env ,  valueStructNode, SOAP_XSI_TYPE, CWMP_TYPE( (*(pv+count))->type ) ));
         count++;
     }
@@ -2664,14 +2664,6 @@ xmldoc_t * cwmp_create_setparametervalues_response_message(env_t * env ,  header
     xmlnode_t * responseNode;
     xmlnode_t * headerNode;
     xmlnode_t * statusNode;
-
-//    xmlnode_t * parameterListNode;
-//    xmlnode_t * parameterValueStructNode;
-//    xmlnode_t * nameStructNode;
-//    xmlnode_t * valueStructNode;
-//    int  count;
-//    parameter_t ** pv;
-
 
     xmldoc_t * doc = XmlDocCreateDocument(env->pool );
     envelopeNode    = cwmp_create_envelope_node(env ,  &doc->node);
