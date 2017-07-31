@@ -4316,6 +4316,7 @@ static int dev_ifname(struct net *net, struct ifreq __user *arg)
 
 	if (copy_from_user(&ifr, arg, sizeof(struct ifreq)))
 		return -EFAULT;
+	ifr.ifr_name[IFNAMSIZ-1] = 0;
 
 	rcu_read_lock();
 	dev = dev_get_by_index_rcu(net, ifr.ifr_ifindex);

@@ -3302,16 +3302,17 @@
 2) xl2tpd: update to 1.3.10rc1.<br>
 3) netcwmpd: deviceinfo issue fix.<br>
 4) goahead: refactor dhcp and ip_accouning pages.<br>
-5) kernel: mips: fix mips_atomic_set() retry condition.<br>
-6) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
-7) kernel: ralink_wifi: allow secondary channel offset in Channel Switch Announcement IE.<br>
-8) kernel: ralink_wifi: always update LastTxRate after asic_mcs_lut_update.<br>
-9) kernel: ralink_wifi: avoid replace parametrs from sanity checks.<br>
-10) kernel: ralink_wifi: remove incorerect sanity chek channel range.<br>
-11) kernel: ralink_wifi: fix get channel from probe/beacon in AP mode.<br>
-12) kernel: ralink_wifi: add workaround for samsung galaxy S5 work at high channels of high mcs (samsung bug).<br>
-13) kernel: ralink_wifi: remove unneded channel band 1 restriction check in not DFS builds.<br>
-14) kernel: ralink_wifi: speedup and more safe assoc procedure in some cases.<br>
+5) kernel: ralink_wifi: allow secondary channel offset in Channel Switch Announcement IE.<br>
+6) kernel: ralink_wifi: always update LastTxRate after asic_mcs_lut_update.<br>
+7) kernel: ralink_wifi: avoid replace parametrs from sanity checks.<br>
+8) kernel: ralink_wifi: remove incorerect sanity chek channel range.<br>
+9) kernel: ralink_wifi: fix get channel from probe/beacon in AP mode.<br>
+10) kernel: ralink_wifi: add workaround for samsung galaxy S5 work at high channels of high mcs (samsung bug).<br>
+11) kernel: ralink_wifi: remove unneded channel band 1 restriction check in not DFS builds.<br>
+12) kernel: ralink_wifi: speedup and more safe assoc procedure in some cases.<br>
+13) kernel: mips: fix mips_atomic_set() retry condition.<br>
+14) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+15) kernel: net: zero terminate ifr_name in dev_ifname().<br>
 <br>
 <br>
 <br>
