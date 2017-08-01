@@ -1563,7 +1563,7 @@ IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 			    NdisMoveMemory(&pAd->ScanTab.BssEntry[Idx].TTSF[4], &Elem->TimeStamp.u.LowPart, 4);
 			}
 			/* sort entry by rssi every insert */
-			if (!ApScanRunning(pAd))
+			if (!ApScanRunning(pAd) && pAd->ScanTab.BssNr > 1)
 			    BssTableSortByRssi(&pAd->ScanTab, FALSE);
 			DBGPRINT(RT_DEBUG_TRACE, ("ADD new SSID %s to ScanTab table\n", ie_list->Ssid));
 		}
@@ -1681,7 +1681,8 @@ VOID APScanTimeoutAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 #endif /* CONFIG_AP_SUPPORT */
 	ScanNextChannel(pAd, OPMODE_AP, pAd->MlmeAux.ScanInfType);
 	/* sort entry by rssi every scan */
-	BssTableSortByRssi(&pAd->ScanTab, FALSE);
+	if (pAd->ScanTab.BssNr > 1)
+	    BssTableSortByRssi(&pAd->ScanTab, FALSE);
 }
 
 #ifdef CON_WPS

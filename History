@@ -3310,10 +3310,11 @@
 10) kernel: ralink_wifi: add workaround for samsung galaxy S5 work at high channels of high mcs (samsung bug).<br>
 11) kernel: ralink_wifi: remove unneded channel band 1 restriction check in not DFS builds.<br>
 12) kernel: ralink_wifi: speedup and more safe assoc procedure in some cases.<br>
-13) kernel: ralink_wifi: rrm: filter very low AP before add in scantab (passive beacon lesten).<br>
-14) kernel: mips: fix mips_atomic_set() retry condition.<br>
-15) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
-16) kernel: net: zero terminate ifr_name in dev_ifname().<br>
+13) kernel: ralink_wifi: do not sort scantab if not results or only one result exist.<br>
+14) kernel: ralink_wifi: rrm: filter very low AP before add in scantab (passive beacon lesten).<br>
+15) kernel: mips: fix mips_atomic_set() retry condition.<br>
+16) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+17) kernel: net: zero terminate ifr_name in dev_ifname().<br>
 <br>
 <br>
 <br>

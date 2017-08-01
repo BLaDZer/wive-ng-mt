@@ -739,7 +739,7 @@ VOID RRM_BeaconReportHandler(
 			pBssEntry->RSNI = pBcnRep->RSNI;
 		}
 		/* sort entry by rssi every insert */
-		if (!ApScanRunning(pAd))
+		if (!ApScanRunning(pAd) && pAd->ScanTab.BssNr > 1)
 		    BssTableSortByRssi(&pAd->ScanTab, FALSE);
 	}
 #endif /* AP_SCAN_SUPPORT */
