@@ -158,7 +158,8 @@ BOOLEAN PeerAssocReqCmmSanity(
             case IE_EXT_SUPP_RATES:
                 if (eid_ptr->Len + ie_lists->SupportedRatesLen <= MAX_LEN_OF_SUPPORTED_RATES)
                 {
-                    NdisMoveMemory(&ie_lists->SupportedRates[ie_lists->SupportedRatesLen], eid_ptr->Octet,
+		    UINT32 _RateIdx = ie_lists->SupportedRatesLen %	MAX_LEN_OF_SUPPORTED_RATES;
+                    NdisMoveMemory(&ie_lists->SupportedRates[_RateIdx], eid_ptr->Octet,
 									eid_ptr->Len);
                     ie_lists->SupportedRatesLen += eid_ptr->Len;
                 }
