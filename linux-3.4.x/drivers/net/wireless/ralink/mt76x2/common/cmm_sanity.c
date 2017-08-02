@@ -1004,7 +1004,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 					ie_list->Channel = pAd->MlmeAux.Channel;
 				else
 #endif /* CONFIG_STA_SUPPORT */
-					ie_list->Channel = pAd->CommonCfg.Channel;
+					ie_list->Channel = LatchRfChannel;
 			}
 			else
 				ie_list->Channel = LatchRfChannel;

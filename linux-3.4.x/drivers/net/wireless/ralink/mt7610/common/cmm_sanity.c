@@ -792,7 +792,7 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
 				|| (pAd->CommonCfg.RegTransmitSetting.field.BW == BW_80)
 #endif /* DOT11_VHT_AC */
 			) {
-					ie_list->Channel = pAd->CommonCfg.Channel;
+					ie_list->Channel = LatchRfChannel;
 			}
 			else
 				ie_list->Channel = LatchRfChannel;
