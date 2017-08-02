@@ -141,6 +141,10 @@ VOID APPeerProbeReqAction(
 			continue;
 		}
 
+		if (Elem->Channel != pAd->CommonCfg.Channel) {
+			continue;
+		}
+
 		PhyMode = pAd->ApCfg.MBSSID[apidx].PhyMode;
 
 		if (((SsidLen == 0) && (! pAd->ApCfg.MBSSID[apidx].bHideSsid)) ||

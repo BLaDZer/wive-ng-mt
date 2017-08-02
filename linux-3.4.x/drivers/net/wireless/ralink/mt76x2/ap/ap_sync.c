@@ -93,6 +93,10 @@ VOID APPeerProbeReqAction(
 			continue;
 		}
 
+		if (Elem->Channel != wdev->channel) {
+			continue;
+		}
+
 #ifdef AIRPLAY_SUPPORT
 		if (mbss->bBcnSntReq == FALSE)
 			continue;
