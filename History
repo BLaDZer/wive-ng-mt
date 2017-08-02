@@ -3312,10 +3312,11 @@
 12) kernel: ralink_wifi: speedup and more safe assoc procedure in some cases.<br>
 13) kernel: ralink_wifi: do not sort scantab if not results or only one result exist.<br>
 14) kernel: ralink_wifi: skip probe req from not work channel.<br>
-15) kernel: ralink_wifi: rrm: filter very AP with very low RSSI before add in scantab (passive beacon listen).<br>
-16) kernel: mips: fix mips_atomic_set() retry condition.<br>
-17) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
-18) kernel: net: zero terminate ifr_name in dev_ifname().<br>
+15) kernel: ralink_wifi: add sanity check for max wcid in MlmeDelBAReqSanity.<br>
+16) kernel: ralink_wifi: rrm: filter very AP with very low RSSI before add in scantab (passive beacon listen).<br>
+17) kernel: mips: fix mips_atomic_set() retry condition.<br>
+18) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+19) kernel: net: zero terminate ifr_name in dev_ifname().<br>
 <br>
 <br>
 <br>

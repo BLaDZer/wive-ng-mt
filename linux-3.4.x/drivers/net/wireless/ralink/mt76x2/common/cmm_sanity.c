@@ -122,6 +122,9 @@ BOOLEAN MlmeDelBAReqSanity(
 	MLME_DELBA_REQ_STRUCT *pInfo;
 	pInfo = (MLME_DELBA_REQ_STRUCT *)Msg;
 
+    if (pInfo->Wcid >= MAX_LEN_OF_MAC_TABLE)
+        return FALSE;
+
     if ((MsgLen != sizeof(MLME_DELBA_REQ_STRUCT)))
     {
         DBGPRINT(RT_DEBUG_ERROR, ("MlmeDelBAReqSanity fail - message lenght not correct.\n"));

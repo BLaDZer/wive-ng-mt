@@ -132,6 +132,9 @@ BOOLEAN MlmeDelBAReqSanity(
 		MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
 #endif /* MAC_REPEATER_SUPPORT */
 
+    if (pInfo->Wcid >= MAX_LEN_OF_MAC_TABLE)
+        return FALSE;
+
     if ((MsgLen != sizeof(MLME_DELBA_REQ_STRUCT)))
     {
         DBGPRINT(RT_DEBUG_ERROR, ("MlmeDelBAReqSanity fail - message lenght not correct.\n"));
