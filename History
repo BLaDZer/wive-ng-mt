@@ -3317,9 +3317,10 @@
 17) kernel: ralink_wifi: ids: do not disable rx_filter in BBP (save cpu and more safe RX).<br>
 18) kernel: ralink_wifi: ids: small optimize replay attacks detect.<br>
 19) kernel: ralink_wifi: rrm: filter very AP with very low RSSI before add in scantab (passive beacon listen).<br>
-20) kernel: mips: fix mips_atomic_set() retry condition.<br>
-21) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
-22) kernel: net: zero terminate ifr_name in dev_ifname().<br>
+20) kernel: ralink_wifi: rrm: fix channel sanity check in passive listen neighbour for update scantab.<br>
+21) kernel: mips: fix mips_atomic_set() retry condition.<br>
+22) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+23) kernel: net: zero terminate ifr_name in dev_ifname().<br>
 <br>
 <br>
 <br>
