@@ -3917,7 +3917,7 @@ static BOOLEAN APChkCls2Cls3Err(RTMP_ADAPTER *pAd, UCHAR wcid, HEADER_802_11 *hd
 		if (pEntry && IS_ENTRY_CLIENT(pEntry))
 			return FALSE;
 
-		DBGPRINT(RT_DEBUG_TRACE, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%u) > %d\n",
+		DBGPRINT(RT_DEBUG_INFO, ("%s():Rx a frame from %02x:%02x:%02x:%02x:%02x:%02x with WCID(%u) > %d\n",
 					__FUNCTION__, PRINT_MAC(hdr->Addr2),
 					wcid, MAX_LEN_OF_MAC_TABLE));
 

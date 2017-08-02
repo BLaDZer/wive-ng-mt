@@ -5704,14 +5704,6 @@ struct fpga_ctrl fpga_ctl;
 	struct delayed_work	cnxFlushWork;
     NDIS_SPIN_LOCK ReduceAckLock;
 #endif /* REDUCE_TCP_ACK_SUPPORT */
-
-#ifdef APCLI_SUPPORT
-#ifdef TRAFFIC_BASED_TXOP
-	UCHAR StaTxopAbledCnt;
-	UCHAR ApClientTxopAbledCnt;
-#endif /* TRAFFIC_BASED_TXOP */
-#endif /* APCLI_SUPPORT */
-
 };
 
 

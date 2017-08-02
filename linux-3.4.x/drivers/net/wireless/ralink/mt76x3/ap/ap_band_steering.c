@@ -360,7 +360,7 @@ INT BndStrg_DeleteEntry(PBND_STRG_CLI_TABLE table, PUCHAR pAddr, UINT32 Index)
 
 		if (entry == NULL)
 		{
-			BND_STRG_DBGPRINT(RT_DEBUG_WARN,
+			BND_STRG_DBGPRINT(RT_DEBUG_LOUD,
 				("%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
 				"Entry not found.\n",
 				__FUNCTION__, Index, PRINT_MAC(pAddr)));

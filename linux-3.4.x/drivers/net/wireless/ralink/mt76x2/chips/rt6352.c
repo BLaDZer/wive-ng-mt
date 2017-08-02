@@ -4191,7 +4191,7 @@ CHAR RT6352_AdjustChannelPwr(
 			target_power = 0;
 		if(pAd->bSingleSkuDebug)
 		{
-			DBGPRINT(RT_DEBUG_TRACE, ("%s::channel_power =%d, TotalDeltaPower=%d, sku_min_pwr=%d\n", 
+			DBGPRINT(RT_DEBUG_INFO, ("%s::channel_power =%d, TotalDeltaPower=%d, sku_min_pwr=%d\n", 
 				__FUNCTION__, target_power, TotalDeltaPower, sku_min_pwr));	
 		}
 		
@@ -4890,7 +4890,7 @@ VOID RT6352_AsicAdjustTxPower(
 			MacValue |= (Diff & 0x3F);
 			RTMP_IO_WRITE32(pAd, TX_ALG_CFG_1, MacValue); 
 
-			DBGPRINT(RT_DEBUG_TRACE, ("TotalDeltaPower=%d, Mac 0x13B4 is 0x%08x\n", TotalDeltaPower, MacValue));
+			DBGPRINT(RT_DEBUG_INFO, ("TotalDeltaPower=%d, Mac 0x13B4 is 0x%08x\n", TotalDeltaPower, MacValue));
 		}
 
 		/* Extra set MAC registers to compensate Tx power if any */
@@ -5610,7 +5610,7 @@ static VOID RT6352_AsicDynamicVgaGainControl(
 
 		RTMP_BBP_IO_READ8_BY_REG_ID(pAd, BBP_R66, &BbpReg);
 		
-		DBGPRINT(RT_DEBUG_TRACE,
+		DBGPRINT(RT_DEBUG_LOUD,
 			("RT6352 one second False CCA=%d, fixed R66 at 0x%x\n", pAd->RalinkCounters.OneSecFalseCCACnt, BbpReg));
 
 		if (pAd->RalinkCounters.OneSecFalseCCACnt > pAd->CommonCfg.lna_vga_ctl.nFalseCCATh)

@@ -862,7 +862,7 @@ VOID APCls2errAction(
 		apidx = get_apidx_by_addr(pAd, pHeader->Addr1);		
 		if (apidx >= pAd->ApCfg.BssidNum)
 		{
-			DBGPRINT(RT_DEBUG_TRACE,("AUTH - Class 2 error but not my bssid %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(pHeader->Addr1))); 
+			DBGPRINT(RT_DEBUG_INFO,("AUTH - Class 2 error but not my bssid %02x:%02x:%02x:%02x:%02x:%02x\n", PRINT_MAC(pHeader->Addr1))); 
 			return;
 		}	
 	}

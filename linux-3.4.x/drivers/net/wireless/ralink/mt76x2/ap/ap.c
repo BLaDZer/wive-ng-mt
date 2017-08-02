@@ -950,66 +950,6 @@ VOID APCleanupPsQueue(
 	}
 }
 
-
-#ifdef APCLI_SUPPORT
-#ifdef TRAFFIC_BASED_TXOP
-static VOID CheckApEntryInTraffic(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
-{
-	UINT32 TxTotalByteCnt = 0;
-	UINT32 RxTotalByteCnt = 0;
-
-	if ((IS_ENTRY_APCLI(pEntry) || IS_ENTRY_CLIENT(pEntry))
-		&& (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)) {
-		TxTotalByteCnt = pEntry->OneSecTxBytes;
-		RxTotalByteCnt = pEntry->OneSecRxBytes;
-
-		DBGPRINT(RT_DEBUG_TRACE,("WCID%d, %dM, TxBytes:%d, RxBytes:%d\n",
-				pEntry->wcid,
-				(((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20), 
-				TxTotalByteCnt, 
-				RxTotalByteCnt));
-
-		if ((TxTotalByteCnt == 0) || (RxTotalByteCnt == 0)) 
-		{
-		} 
-		else if ((((TxTotalByteCnt + RxTotalByteCnt) << 3) >> 20) > pAd->CommonCfg.ManualTxopThreshold) 
-		{
-			if (TxTotalByteCnt > RxTotalByteCnt) 
-			{
-				if ((TxTotalByteCnt/RxTotalByteCnt) >= pAd->CommonCfg.ManualTxopUpBound)
-				{
-					if (IS_ENTRY_CLIENT(pEntry))
-						pAd->StaTxopAbledCnt++;
-					else
-						pAd->ApClientTxopAbledCnt++;
-
-					DBGPRINT(RT_DEBUG_TRACE,("WCID%d, StaTxopAbledCnt:%d, ApClientTxopAbledCnt:%d\n",
-						pEntry->wcid,
-						pAd->StaTxopAbledCnt, 
-						pAd->ApClientTxopAbledCnt));
-				}
-			}
-			else
-			{
-				if ((RxTotalByteCnt/TxTotalByteCnt) <= pAd->CommonCfg.ManualTxopLowBound)
-				{
-				 	if (IS_ENTRY_CLIENT(pEntry))
-               			pAd->StaTxopAbledCnt++;
-                	else
-                    	pAd->ApClientTxopAbledCnt++;					
-				}
-			}
-		}
-	}
-
-	pEntry->OneSecTxBytes = 0;
-	pEntry->OneSecRxBytes = 0;
-
-}
-#endif /* TRAFFIC_BASED_TXOP */
-#endif /* APCLI_SUPPORT */
-
-
 /*
 	==========================================================================
 	Description:
@@ -1082,22 +1022,11 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 	startWcid = 2;
 #endif /* RT_CFG80211_P2P_CONCURRENT_DEVICE */
 
-#ifdef APCLI_SUPPORT
-#ifdef TRAFFIC_BASED_TXOP
-	pAd->StaTxopAbledCnt = 0;
-	pAd->ApClientTxopAbledCnt = 0;
-#endif /* TRAFFIC_BASED_TXOP */
-#endif /* APCLI_SUPPORT */
-
 	for (i = startWcid; i < MAX_LEN_OF_MAC_TABLE; i++) 
 	{
 		MAC_TABLE_ENTRY *pEntry = &pMacTable->Content[i];
 		BOOLEAN bDisconnectSta = FALSE;
 #ifdef APCLI_SUPPORT
-#ifdef TRAFFIC_BASED_TXOP	
-		CheckApEntryInTraffic(pAd, pEntry);
-#endif /* TRAFFIC_BASED_TXOP */
-
 		if(IS_ENTRY_APCLI(pEntry) && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
 #ifdef MAC_REPEATER_SUPPORT
