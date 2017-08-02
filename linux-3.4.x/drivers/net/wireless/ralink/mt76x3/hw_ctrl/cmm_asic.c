@@ -812,7 +812,7 @@ INT AsicSetRxFilter(RTMP_ADAPTER *pAd)
 	)
 	{
 		rx_filter_flag = APNORMAL;
-
+#if 0  /* BBP allways must filter not me packets, this more safe and speed */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef IDS_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
@@ -822,6 +822,7 @@ INT AsicSetRxFilter(RTMP_ADAPTER *pAd)
 		}
 #endif /* IDS_SUPPORT */			
 #endif /* CONFIG_AP_SUPPORT */
+#endif
 	}
 
 	RTMP_IO_WRITE32(pAd, RX_FILTR_CFG, rx_filter_flag);

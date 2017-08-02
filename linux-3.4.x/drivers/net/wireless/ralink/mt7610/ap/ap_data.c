@@ -4222,9 +4222,7 @@ VOID APHandleRxMgmtFrame(
 			/* This is a spoofed frame, so give up it. */
 			break;
 		}
-#endif /* IDS_SUPPORT */
 
-#ifdef IDS_SUPPORT
 		/* update sta statistics for traffic flooding detection later */
 		RTMPUpdateStaMgmtCounter(pAd, pHeader->FC.SubType);
 #endif /* IDS_SUPPORT */
@@ -4859,18 +4857,6 @@ VOID APHandleRxDataFrame(
 		goto err;		
 	}
 	
-#ifdef IDS_SUPPORT
-	/*
-		Replay attack detection
-		Detect a spoofed data frame from a rogue AP, ignore it.
-	*/
-	if (pFmeCtrl->FrDs == 1 && 
-		(RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
-	{
-		goto err;
-	}
-#endif /* IDS_SUPPORT */
-
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{
@@ -5023,6 +5009,18 @@ VOID APHandleRxDataFrame(
 	}
 	else
 	{
+		if (!((pFmeCtrl->FrDs == 0) && (pFmeCtrl->ToDs == 1))) {
+#ifdef IDS_SUPPORT
+		    /*
+				Replay attack detection
+				drop it if detect a spoofed data frame from a rogue AP
+		    */
+			if (pFmeCtrl->FrDs == 1)
+			    RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2);
+#endif /* IDS_SUPPORT */
+			goto err;
+		}
+
 		pEntry = PACInquiry(pAd, pRxWI->RxWIWirelessCliID);
 
 		/*	can't find associated STA entry then filter invlid data frame */
@@ -5412,18 +5410,6 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 		goto err;		
 	}
 
-#ifdef IDS_SUPPORT
-	/*
-		Replay attack detection
-		Detect a spoofed data frame from a rogue AP, ignore it.
-	*/
-	if (pFmeCtrl->FrDs == 1 && 
-		(RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2) == TRUE))
-	{
-		goto err;
-	}
-#endif /* IDS_SUPPORT */
-
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{
@@ -5543,6 +5529,18 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	}
 	else
 	{
+		if (!((pFmeCtrl->FrDs == 0) && (pFmeCtrl->ToDs == 1))) {
+#ifdef IDS_SUPPORT
+		    /*
+				Replay attack detection
+				drop it if detect a spoofed data frame from a rogue AP
+		    */
+			if (pFmeCtrl->FrDs == 1)
+			    RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxWI->RxWIRSSI0, pRxWI->RxWIRSSI1, pRxWI->RxWIRSSI2);
+#endif /* IDS_SUPPORT */
+			goto err;
+		}
+
 		pEntry = PACInquiry(pAd, pRxWI->RxWIWirelessCliID);
 
 		/*	can't find associated STA entry then filter invlid data frame */

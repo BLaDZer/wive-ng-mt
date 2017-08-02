@@ -5126,18 +5126,21 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	}
 	else
 	{
+		if (!((pFmeCtrl->FrDs == 0) && (pFmeCtrl->ToDs == 1))) {
+#ifdef IDS_SUPPORT
+		    /*
+				Replay attack detection
+				drop it if detect a spoofed data frame from a rogue AP
+		    */
+			if (pFmeCtrl->FrDs == 1)
+			    RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk);
+#endif /* IDS_SUPPORT */
+			goto err;
+		}
+
 		/* check if Class2 or 3 error */
 		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
 			goto err;
-
-#ifdef IDS_SUPPORT
-		/*
-			Replay attack detection
-			drop it if detect a spoofed data frame from a rogue AP
-		*/
-		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk) == TRUE))
-			goto err;
-#endif /* IDS_SUPPORT */
 
 		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			goto err;
@@ -5740,19 +5743,21 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	}
 	else
 	{
+		if (!((pFmeCtrl->FrDs == 0) && (pFmeCtrl->ToDs == 1))) {
+#ifdef IDS_SUPPORT
+		    /*
+				Replay attack detection
+				drop it if detect a spoofed data frame from a rogue AP
+		    */
+			if (pFmeCtrl->FrDs == 1)
+			    RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk);
+#endif /* IDS_SUPPORT */
+			goto err;
+		}
 
 		/* check if Class2 or 3 error */
 		if (pHeader->FC.FrDs == 0 && (APChkCls2Cls3Err(pAd, pRxBlk->wcid, pHeader)))
 			goto err;
-
-#ifdef IDS_SUPPORT
-		/*
-			Replay attack detection
-			drop it if detect a spoofed data frame from a rogue AP
-		*/
-		if (pFmeCtrl->FrDs == 1 && (RTMPReplayAttackDetection(pAd, pHeader->Addr2, pRxBlk) == TRUE))
-			goto err;
-#endif /* IDS_SUPPORT */
 
 		if (pAd && (pAd->ApCfg.BANClass3Data == TRUE))
 			goto err;
