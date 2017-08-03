@@ -1328,7 +1328,9 @@ BOOLEAN PeerBeaconAndProbeRspSanity(
     }
 
 	LatchRfChannel = MsgChannel;
-	if ((pAd->LatchRfRegs.Channel > 14) && ((Sanity & 0x4) == 0))
+
+	/* wide channels supported in all 2.4/5GHz bands */
+	if ( /* (pAd->LatchRfRegs.Channel > 14) && */ ((Sanity & 0x4) == 0))
 	{
 		if (CtrlChannel != 0)
 			ie_list->Channel = CtrlChannel;

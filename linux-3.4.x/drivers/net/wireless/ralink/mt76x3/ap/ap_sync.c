@@ -93,11 +93,11 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			/* the interface is down, so we can not send probe response */
 			continue;
 		}
-
+#if 0 /* this correcnt only for BW_20 clients, full check moved to probe sanity functions */
 		if (Elem->Channel != pAd->CommonCfg.Channel) {
 			continue;
 		}
-
+#endif
 #ifdef AIRPLAY_SUPPORT
 		if (pAd->ApCfg.MBSSID[apidx].bcn_buf.bBcnSntReq == FALSE)
 			continue;

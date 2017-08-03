@@ -140,11 +140,11 @@ VOID APPeerProbeReqAction(
 			/* the interface is down, so we can not send probe response */
 			continue;
 		}
-
+#if 0 /* this correcnt only for BW_20 clients, full check moved to probe sanity functions */
 		if (Elem->Channel != pAd->CommonCfg.Channel) {
 			continue;
 		}
-
+#endif
 		PhyMode = pAd->ApCfg.MBSSID[apidx].PhyMode;
 
 		if (((SsidLen == 0) && (! pAd->ApCfg.MBSSID[apidx].bHideSsid)) ||

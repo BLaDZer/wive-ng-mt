@@ -92,11 +92,11 @@ VOID APPeerProbeReqAction(
 			/* the interface is down, so we can not send probe response */
 			continue;
 		}
-
+#if 0  /* this correcnt only for BW_20 clients, full check moved to probe sanity functions */
 		if (Elem->Channel != wdev->channel) {
 			continue;
 		}
-
+#endif
 #ifdef AIRPLAY_SUPPORT
 		if (mbss->bBcnSntReq == FALSE)
 			continue;
