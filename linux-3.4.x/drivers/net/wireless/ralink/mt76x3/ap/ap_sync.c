@@ -158,7 +158,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 											bAllowStaConnectInHt,
 											&bBndStrgCheck);
 		    if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
-			    return;
+			    continue;
 #endif /* BAND_STEERING */
 		}
 
@@ -170,7 +170,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 			    pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickCount++;
 			    DBGPRINT(RT_DEBUG_INFO, ("PROBE_RSP Temp Block MAC %02x:%02x:%02x:%02x:%02x:%02x , PROBE COUNT = %d of %d\n",
 				    PRINT_MAC(ProbeReqParam.Addr2), pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickCount, pAd->ApCfg.MBSSID[apidx].TmpBlockAfterKickTimes));
-			    return;
+			    continue;
 		    }
 		} else {
 		    /* cleanup blocked mac address */
