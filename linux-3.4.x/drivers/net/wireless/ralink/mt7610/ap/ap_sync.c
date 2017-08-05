@@ -175,12 +175,12 @@ VOID APPeerProbeReqAction(
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
-			if (rssi != 0 && rssi > BND_STRG_RSSI_LOW) {
+			if (rssi != 0 && (rssi > BND_STRG_RSSI_LOW || rssi > pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold)) {
 				if (WMODE_CAP_N(PhyMode))
 					    bAllowStaConnectInHt = TRUE;
 				BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, bAllowStaConnectInHt, &bBndStrgCheck);
 				if (bBndStrgCheck == FALSE && pAd->CommonCfg.Channel <= 14)
-					return;
+					continue;
 			}
 #endif /* BAND_STEERING */
 			if (rssi != 0 && rssi < pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold) {
