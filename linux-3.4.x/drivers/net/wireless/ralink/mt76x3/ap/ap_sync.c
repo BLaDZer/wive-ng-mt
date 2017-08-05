@@ -131,7 +131,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
 #ifdef BAND_STEERING
 			/* collect probe req from long range cliens for band steering */
-			if (rssi != 0 && (rssi > (mbss->ProbeRspRssiThreshold - 8))) {
+			if (rssi != 0 && rssi > BND_STRG_RSSI_LOW) {
 				    if (WMODE_CAP_N(wdev->PhyMode))
 						bAllowStaConnectInHt = TRUE;
 				    BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, ProbeReqParam.Addr2, Elem->MsgType, Elem->rssi_info, bAllowStaConnectInHt, &bBndStrgCheck);
