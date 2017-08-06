@@ -296,7 +296,7 @@ VOID APPeerProbeReqAction(
 				END_OF_ARGS);
 			FrameLen += TmpLen;
 #ifdef DOT11_N_SUPPORT
-   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement && (pAd->CommonCfg.Channel > 14))
+   			if (pAd->CommonCfg.bExtChannelSwitchAnnouncement)
 			{
 				HT_EXT_CHANNEL_SWITCH_ANNOUNCEMENT_IE	HtExtChannelSwitchIe;
 

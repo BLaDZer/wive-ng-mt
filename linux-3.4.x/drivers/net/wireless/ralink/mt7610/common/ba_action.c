@@ -53,50 +53,50 @@ VOID BA_MaxWinSizeReasign(
 	UCHAR MaxSize;
 	UCHAR MaxPeerRxSize;
 
-
 	if (CLIENT_STATUS_TEST_FLAG(pEntryPeer, fCLIENT_STATUS_RALINK_CHIPSET))
 		MaxPeerRxSize = (1 << (pEntryPeer->MaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
 	else
 		MaxPeerRxSize = (((1 << (pEntryPeer->MaxRAmpduFactor + 3)) * 10) / 16) -1;
 
-	if(pEntryPeer->MaxHTPhyMode.field.MODE == MODE_VHT)
-	{
-		if (CLIENT_STATUS_TEST_FLAG(pEntryPeer, fCLIENT_STATUS_RALINK_CHIPSET))
-			MaxPeerRxSize = (1 << (pEntryPeer->VhtMaxRAmpduFactor + 3));  /* (2^(13 + exp)) / 2048 bytes */
-		else
-			MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
-	}
+	if(WMODE_CAP_AC(pAd->CommonCfg.PhyMode) && (pAd->CommonCfg.Channel > 14) 
+	&& pEntryPeer->VhtMaxRAmpduFactor != 0)
+	{		
+		MaxPeerRxSize = (((1 << (pEntryPeer->VhtMaxRAmpduFactor + 3)) * 10) / 16) -1;
+	}	
 
 #ifdef RT65xx
-	if (IS_RT65XX(pAd))
-		MaxSize = 31;
-	else
-#endif /* RT65xx */
-	if (pAd->MACVersion >= RALINK_2883_VERSION)
-	{
-		if (pAd->MACVersion >= RALINK_3070_VERSION)
-		{
-			if (pEntryPeer->WepStatus != Ndis802_11EncryptionDisabled)
-				MaxSize = 7; /* for non-open mode */
-			else
-				MaxSize = 13;
-		}
+	if (IS_RT65XX(pAd)) {
+
+		if (IS_MT76x2(pAd))
+			MaxSize = 47;
 		else
 			MaxSize = 31;
-	}
-	else if (pAd->MACVersion >= RALINK_2880E_VERSION) /* 2880e */
-	{
-		if (pEntryPeer->WepStatus != Ndis802_11EncryptionDisabled)
-			MaxSize = 7; /* for non-open mode */
-		else
-			MaxSize = 13;
+
+		if (((pEntryPeer->MaxHTPhyMode.field.MODE == MODE_HTMIX) || 
+			(pEntryPeer->MaxHTPhyMode.field.MODE == MODE_HTGREENFIELD)) &&
+			(pEntryPeer->HTCapability.MCSSet[2] != 0xff)) {
+			MaxSize = 31;
+		}
 	}
 	else
-		MaxSize = 7;
+#endif /* RT65xx */
+#ifdef RT6352
+	if (IS_RT6352(pAd))
+	{
+		MaxSize = 21;
+	}
+	else
+#endif /* RT6352 */
+	if (pAd->Antenna.field.TxPath == 3 &&
+		(pEntryPeer->HTCapability.MCSSet[2] != 0))
+		MaxSize = 31; 		/* for 3x3, MaxSize use ((48KB/1.5KB) -1) = 31 */
+	else
+		MaxSize = 20;			/* for not 3x3, MaxSize use ((32KB/1.5KB) -1) ~= 20 */
 
-
-	DBGPRINT(RT_DEBUG_TRACE, ("ba>WinSize=%d, MaxSize=%d, MaxPeerRxSize=%d\n", 
-			*pWinSize, MaxSize, MaxPeerRxSize));
+	DBGPRINT(RT_DEBUG_TRACE, ("ba>WinSize=%d, MaxSize=%d, MaxPeerRxSize=%d, \
+	pEntryPeer->MaxRAmpduFactor=%d, pEntryPeer->VhtMaxRAmpduFactor=%d\n", 
+			*pWinSize, MaxSize, MaxPeerRxSize
+			, pEntryPeer->MaxRAmpduFactor, pEntryPeer->VhtMaxRAmpduFactor));
 
 	MaxSize = min(MaxPeerRxSize, MaxSize);
 	if ((*pWinSize) > MaxSize)
