@@ -3318,13 +3318,14 @@
 18) kernel: ralink_wifi: rrm: filter very AP with very low RSSI before add in scantab (passive beacon listen).<br>
 19) kernel: ralink_wifi: rrm: fix channel sanity check in passive listen neighbour for update scantab.<br>
 20) kernel: ralink_wifi: bndstr: collect all probe req with rssi > BND_STRG_RSSI_LOW.<br>
-21) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-22) kernel: mips: fix mips_atomic_set() retry condition.<br>
-23) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
-24) kernel: net: zero terminate ifr_name in dev_ifname().<br>
+21) kernel: mips: fix mips_atomic_set() retry condition.<br>
+22) kernel: mips: send SIGILL for BPOSGE32 in __compute_return_epc_for_insn.<br>
+23) kernel: net: zero terminate ifr_name in dev_ifname().<br>
 <br>
 <br>
 <b>6.4.x</b><br>
+1) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+2) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
 <br>
 <br>
 <br>
