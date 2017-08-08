@@ -3324,10 +3324,11 @@
 <br>
 <br>
 <b>6.4.x</b><br>
-1) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
-2) kernel: net: vlan: propagate MAC address to VLANs.<br>
-3) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-4) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+1) goahead: next step refactoring and fixup webUI.<br>
+2) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+3) kernel: net: vlan: propagate MAC address to VLANs.<br>
+4) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+5) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
 <br>
 <br>
 <br>

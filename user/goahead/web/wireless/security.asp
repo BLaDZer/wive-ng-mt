@@ -325,7 +325,7 @@
 
 			// Check ASCII 10 & 13 on string
 			function checkInjection(str) {
-				var re = /[\'\"\r\n]/;
+				var re = /[\r\n]/;
 				if (re.test(str))
 					return false;
 				else

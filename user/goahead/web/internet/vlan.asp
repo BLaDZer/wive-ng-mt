@@ -460,12 +460,12 @@
 				
 				var vlan_tv		= document.getElementById('tv_stbVLANid').value;
 				var vlan_sip	= document.getElementById('sip_stbVLANid').value;
-				if (validateNum(vlan_tv) && vlan_tv > 0 && vlan_tv < 4096)
+				if ((validateNum(vlan_tv) && vlan_tv > 0 && vlan_tv < 4096) || vlanTv.length > 0)
 					document.getElementById('tv_stbMcast').disabled = false;
 				else
 					document.getElementById('tv_stbMcast').disabled = true;
 
-				if (validateNum(vlan_sip) && vlan_sip > 0 && vlan_sip < 4096)
+				if ((validateNum(vlan_sip) && vlan_sip > 0 && vlan_sip < 4096) || vlanSip.length > 0)
 					document.getElementById('sip_stbMcast').disabled = false;
 				else
 					document.getElementById('sip_stbMcast').disabled = true;
@@ -638,8 +638,8 @@
 						wifiWanINIC[i] = 0;
 				}
 
-				var ssid24	= '<% getCfgZero(1, "SSID1"); %>';
-				var ssid5	= '<% getCfgZero(1, "SSID1INIC"); %>';
+				var ssid24	= '<% getCfgGeneral(1, "SSID1"); %>';
+				var ssid5	= '<% getCfgGeneral(1, "SSID1INIC"); %>';
 				var data, i;
 
 				if (ssid24 == ssid5) 
@@ -649,7 +649,7 @@
 						ssid24 += " [2.4GHz]";
 
 				try {
-					data	= JSON.parse(SSID_LIST);
+					data	= JSON.parse(JSON.stringify(<% getSSIDsList(); %>));
 				} catch(e) { return; }
 
 				if (NVRAM_BssidIfName == "ra" && BUILD_5GHZ_SUPPORT) {

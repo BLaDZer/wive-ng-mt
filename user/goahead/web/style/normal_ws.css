@@ -89,7 +89,7 @@ th.warning {
 	color: #333333;
 	font-size: 10pt; 
 	font-family: Arial, Helvetica, sans-serif;
-	font-style: bold;
+	font-weight: bold;
 	text-align: center;
 	border: 3px solid #FFBF00;
 	white-space: nowrap;
@@ -315,8 +315,6 @@ div.tab, div.tab_sel
 
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
-	-moz-border-radius-topleft: 4px;
-	-moz-border-radius-topright: 4px;
 	-webkit-border-radius-topleft: 4px;
 	-webkit-border-radius-topright: 4px;
 }

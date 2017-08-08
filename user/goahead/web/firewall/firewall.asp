@@ -19,7 +19,7 @@
 			Butterlate.setTextDomain("buttons");
 
 			var MAX_RULES					= 32;
-			var portForwardingRules			= [	<% getPortForwardRules(); %> ];
+			var portForwardingRules			= [ <% getPortForwardRules(); %> ];
 			var portFilteringRules			= [ <% getPortFilteringRules(); %> ];
 			var portFilteringInputRules		= [ <% getPortFilteringInputRules(); %> ];
 			var defaultFilterPolicy			= '<% getCfgZero(1, "DefaultFirewallPolicy"); %>';
@@ -134,7 +134,7 @@
 
 			function checkComment(element) {
 				var comment = element.value;
-				return comment.replace(/[,;]/g, ' ');
+				return comment.replace(/[,;'"]/g, ' ');
 			}
 
 

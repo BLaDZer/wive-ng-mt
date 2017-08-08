@@ -18,9 +18,10 @@
  */
 static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int type;
+	int type, j;
 	char_t *field;
 	char *value;
+	char str[16384];
 
 	if (ejArgs(argc, argv, T("%d %s"), &type, &field) < 2)
 		return websWrite(wp, T("Insufficient args\n"));
@@ -35,13 +36,26 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
         if (type == 1) {
                 if (!value)
                         return websWrite(wp, T(""));
-                return websWrite(wp, T("%s"), value);
+		str[0] = '\0';
+		for (j = 0; j < strlen(value); j++) {
+		    if (value[j] == '"' || value[j] == '\\' || value[j] == '\'')
+			sprintf(str, "%s%c", str, '\\');
+		    sprintf(str, "%s%c", str, value[j]);
+		}
+                return websWrite(wp, T("%s"), str);
         }
 
 	if (!value)
 	    ejSetResult(eid, "");
-	else
-	    ejSetResult(eid, value);
+	else {
+	    str[0] = '\0';
+	    for (j = 0; j < strlen(value); j++) {
+		if (value[j] == '"' || value[j] == '\\' || value[j] == '\'')
+		    sprintf(str, "%s%c", str, '\\');
+		sprintf(str, "%s%c", str, value[j]);
+	    }
+	    ejSetResult(eid, str);
+	}
 
     return 0;
 }

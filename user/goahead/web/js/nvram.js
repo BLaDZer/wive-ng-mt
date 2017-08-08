@@ -12,8 +12,6 @@ var SECONDARY_DNS					= '<% getDns(2); %>';
 var LAN_IP						= '<% getLanIp(); %>';
 var LAN_NETMASK						= '<% getLanNetmask(); %>';
 
-var SSID_LIST						= '<% getSSIDsList(); %>';
-
 var ROUTING_TABLE					= [ <% getRoutingTable(); %> ];
 
 var ETHER_PORTS						= <% getEthernetPortCount(); %>;
@@ -320,7 +318,7 @@ var NVRAM_stpEnabled					= '<% getCfgGeneral(1, "stpEnabled"); %>';						NVRAM_s
 var NVRAM_igmpEnabled					= '<% getCfgGeneral(1, "igmpEnabled"); %>';						NVRAM_igmpEnabled 					= (NVRAM_igmpEnabled !='')						? NVRAM_igmpEnabled						: '0';
 var NVRAM_igmpSnoopMode					= '<% getCfgGeneral(1, "igmpSnoopMode"); %>';					NVRAM_igmpSnoopMode 				= (NVRAM_igmpSnoopMode !='')					? NVRAM_igmpSnoopMode					: '';
 var NVRAM_igmpFastLeave					= '<% getCfgGeneral(1, "igmpFastLeave"); %>';					NVRAM_igmpFastLeave 				= (NVRAM_igmpFastLeave !='')					? NVRAM_igmpFastLeave					: '0';
-var NVRAM_igmpM2UConvMode				= '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';					NVRAM_igmpM2UConvMode 				= (NVRAM_igmpM2UConvMode !='')					? NVRAM_igmpM2UConvMode					: 'wlan';
+var NVRAM_igmpM2UConvMode				= '<% getCfgGeneral(1, "igmpM2UConvMode"); %>';					NVRAM_igmpM2UConvMode 				= (NVRAM_igmpM2UConvMode !='')					? NVRAM_igmpM2UConvMode					: '';
 var NVRAM_upnpEnabled					= '<% getCfgGeneral(1, "upnpEnabled"); %>';						NVRAM_upnpEnabled 					= (NVRAM_upnpEnabled !='')						? NVRAM_upnpEnabled						: '0';
 var NVRAM_xupnpd						= '<% getCfgGeneral(1, "xupnpd"); %>';							NVRAM_xupnpd 						= (NVRAM_xupnpd !='')							? NVRAM_xupnpd							: '0';
 var NVRAM_dnsPEnabled					= '<% getCfgGeneral(1, "dnsPEnabled"); %>';						NVRAM_dnsPEnabled 					= (NVRAM_dnsPEnabled !='')						? NVRAM_dnsPEnabled						: '1';

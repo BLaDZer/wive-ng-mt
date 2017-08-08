@@ -99,9 +99,9 @@ function Butterlation() {
     try { request = new XMLHttpRequest(); } catch(e1) {
       try { request = new ActiveXObject("Msxml2.XMLHTTP"); } catch(e2) {
         try { request = new ActiveXObject("Microsoft.XMLHTTP"); } catch(e3) { return; }}};
-    request.open("GET",this.po,false); 
+    request.open("GET", this.po, false);
     request.send(null);
-    if(request.status==200) { 
+    if(request.status==200) {
       var pos = request.responseXML.documentElement.getElementsByTagName("message");
       for(var i=0; i<pos.length; i++) this.dict.set(pos[i].getAttribute("msgid"),pos[i].getAttribute("msgstr"));
     }

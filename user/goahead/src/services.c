@@ -674,8 +674,9 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char user_var[16];
 	char pass_var[16];
+	char str[32];
 	int count = nvram_get_int(RT2860_NVRAM, "l2tp_srv_user_num", 0);
-	int i;
+	int i, j;
 
 	if (count > 0) {
 		for (i = 0; i < count; i++) {
@@ -683,7 +684,15 @@ static int getL2TPUserList(int eid, webs_t wp, int argc, char_t **argv)
 			sprintf(pass_var, "l2tp_srv_pass%d", i);
 			char *user = nvram_get(RT2860_NVRAM, user_var);
 			char *pass = nvram_get(RT2860_NVRAM, pass_var);
-			websWrite(wp, T("[ '%s', '%s' ]%s"), user, pass, (i + 1 < count) ? ", " : " ");
+
+			str[0] = '\0';
+			for (j = 0; j < strlen(pass); j++) {
+				if (pass[j] == '\\' || pass[j] == '\'')
+					sprintf(str, "%s%c", str, '\\');
+				sprintf(str, "%s%c", str, pass[j]);
+			}
+
+			websWrite(wp, T("[ '%s', '%s' ]%s"), user, str, (i + 1 < count) ? ", " : " ");
 		}
 	}
 	return 0;
@@ -777,8 +786,9 @@ static int getRadiusUserList(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char user_var[20];
 	char pass_var[20];
+	char str[40];
 	int count = nvram_get_int(RT2860_NVRAM, "radius_srv_user_num", 0);
-	int i;
+	int i, j;
 
 	if (count > 0) {
 		for (i = 0; i < count; i++) {
@@ -786,7 +796,15 @@ static int getRadiusUserList(int eid, webs_t wp, int argc, char_t **argv)
 			sprintf(pass_var, "radius_srv_pass%d", i);
 			char *user = nvram_get(RT2860_NVRAM, user_var);
 			char *pass = nvram_get(RT2860_NVRAM, pass_var);
-			websWrite(wp, T("[ '%s', '%s' ]%s"), user, pass, (i + 1 < count) ? ", " : " ");
+
+			str[0] = '\0';
+			for (j = 0; j < strlen(pass); j++) {
+				if (pass[j] == '\\' || pass[j] == '\'')
+					sprintf(str, "%s%c", str, '\\');
+				sprintf(str, "%s%c", str, pass[j]);
+			}
+
+			websWrite(wp, T("[ '%s', '%s' ]%s"), user, str, (i + 1 < count) ? ", " : " ");
 		}
 	}
 	return 0;

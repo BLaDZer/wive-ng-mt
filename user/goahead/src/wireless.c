@@ -1335,7 +1335,7 @@ static void getSecurity(int nvram, webs_t wp, char_t *path, char_t *query)
 			str[0] = '\0';
 			STR = nvram_get(nvram, racat("SSID", i+1));
 			for (j = 0; j < strlen(STR); j++) {
-				if (STR[j] == '"')
+				if (STR[j] == '"' || STR[j] == '\\')
 					sprintf(str, "%s%c", str, '\\');
 				sprintf(str, "%s%c", str, STR[j]);
 			}
@@ -1458,8 +1458,9 @@ static void wirelessGetSecurity(webs_t wp, char_t *path, char_t *query)
 
 static int getSSIDsList(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int i;
+	int i, j;
 	char *ssid;
+	char SSID[64];
 	int num_ssid = nvram_get_int(RT2860_NVRAM, "BssidNum", 1);
 	char *mbssid = nvram_get(RT2860_NVRAM, "BssidIfName");
 
@@ -1469,7 +1470,13 @@ static int getSSIDsList(int eid, webs_t wp, int argc, char_t **argv)
 		if ((i == 0) && (strcmp(mbssid, "rai") == 0)) {
 			ssid = nvram_get(RT2860_NVRAM, "SSID1INIC");
 		}
-		websWrite(wp, T("{ \"ssid\":\"%s\" }%s"), ssid, (i + 1  == num_ssid) ? "" : ", ");
+		SSID[0] = '\0';
+		for (j = 0; j < strlen(ssid); j++) {
+			if (ssid[j] == '"' || ssid[j] == '\\')
+				sprintf(SSID, "%s%c", SSID, '\\');
+			sprintf(SSID, "%s%c", SSID, ssid[j]);
+		}
+		websWrite(wp, T("{ \"ssid\":\"%s\" }%s"), SSID, (i + 1  == num_ssid) ? "" : ", ");
 	}
 	websWrite(wp, T(" ] }"));
 	return 0;
