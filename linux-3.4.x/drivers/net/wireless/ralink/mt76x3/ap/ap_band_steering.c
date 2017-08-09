@@ -439,19 +439,25 @@ BOOLEAN BndStrg_CheckConnectionReq(
 		PCHAR Rssi,
 		BOOLEAN bAllowStaConnectInHt)
 {
+	BOOLEAN ret = TRUE;
+
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops && (table->bEnabled == TRUE))
+	if (table->Ops && table->bEnabled == TRUE)
 	{
-		return table->Ops->CheckConnectionReq(
+		ret = table->Ops->CheckConnectionReq(
 										pAd,
 										pSrcAddr,
 										FrameType,
 										Rssi,
 										bAllowStaConnectInHt);
+		if (table->Size >= BND_STRG_MAX_TABLE_SIZE) {
+		    printk("Band steering clients table full, allow to connect for new req without steering.\n");
+		    ret = TRUE;
+		}
 	}
-	
-	return TRUE;
+
+	return ret;
 }
 
 

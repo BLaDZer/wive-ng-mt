@@ -3330,6 +3330,7 @@
 4) kernel: net: vlan: propagate MAC address to VLANs.<br>
 5) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
 6) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+7) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
 <br>
 <br>
 <br>
