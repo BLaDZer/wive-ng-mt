@@ -28,8 +28,10 @@
 
 
 // Check for libmicrohttp version >= 0.9.51
+#if 0
 #if MHD_VERSION < 0x00095100
 #error libmicrohttp version >= 0.9.51 required
+#endif
 #endif
 
 #include <stdio.h>
