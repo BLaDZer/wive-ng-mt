@@ -3331,11 +3331,12 @@
 5) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
 6) kernel: net: account for current skb length when deciding about UFO.<br>
 7) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-8) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-9) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-10) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-11) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-12) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+8) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+9) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+10) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+11) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+12) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+13) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
 <br>
 <br>
 <br>
