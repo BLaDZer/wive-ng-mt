@@ -1363,7 +1363,8 @@ static int do_setlink(struct net_device *dev, struct ifinfomsg *ifm,
 			goto errout;
 		}
 
-		len = sizeof(sa_family_t) + dev->addr_len;
+		len = sizeof(sa_family_t) + max_t(size_t, dev->addr_len,
+						  sizeof(*sa));
 		sa = kmalloc(len, GFP_KERNEL);
 		if (!sa) {
 			err = -ENOMEM;
