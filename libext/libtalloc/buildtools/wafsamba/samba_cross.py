@@ -128,8 +128,8 @@ class cross_Popen(Utils.pproc.Popen):
 
         if use_answers:
             if ans == ANSWER_UNKNOWN:
-            #    global cross_answers_incomplete
-            #    cross_answers_incomplete = True
+                #global cross_answers_incomplete
+                #cross_answers_incomplete = True
                 add_answer(ca_file, msg, ans)
             (retcode, retstring) = ans
             args = ['/bin/sh', '-c', "echo -n '%s'; exit %d" % (retstring, retcode)]

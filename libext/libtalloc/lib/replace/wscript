@@ -81,6 +81,9 @@ def configure(conf):
     conf.CHECK_HEADERS('sys/atomic.h')
     conf.CHECK_HEADERS('libgen.h')
 
+    if conf.CHECK_CFLAGS('-Wno-format-truncation'):
+        conf.define('HAVE_WNO_FORMAT_TRUNCATION', '1')
+
     # Check for process set name support
     conf.CHECK_CODE('''
                     #include <sys/prctl.h>
@@ -466,6 +469,7 @@ removeea setea
             conf.DEFINE('HAVE_ROBUST_MUTEXES', 1)
 
     conf.CHECK_FUNCS_IN('crypt', 'crypt', checklibc=True)
+    conf.CHECK_FUNCS_IN('crypt_r', 'crypt', checklibc=True)
 
     conf.CHECK_VARIABLE('rl_event_hook', define='HAVE_DECL_RL_EVENT_HOOK', always=True,
                         headers='readline.h readline/readline.h readline/history.h')
@@ -626,6 +630,13 @@ removeea setea
 
     conf.RECURSE('system')
     conf.SAMBA_CONFIG_H()
+    if conf.CHECK_FUNCS('strerror_r'):
+        # Check if strerror_r is XSI-Compatable, the default GNU implementation
+        # is not
+        conf.CHECK_CODE('int strerror_r(int errnum, char *buf, size_t buflen);',
+                        'STRERROR_R_XSI_NOT_GNU',
+                        headers='string.h', addmain=False, link=False,
+                        msg="Checking for XSI (rather than GNU) prototype for strerror_r")
 
 
 REPLACEMENT_FUNCTIONS = {
@@ -703,11 +714,14 @@ def build(bld):
                       private_library=True,
                       deps='crypt dl nsl socket rt attr' + extra_libs)
 
+    replace_test_cflags="-Wno-format-zero-length"
+    if bld.CONFIG_SET('HAVE_WNO_FORMAT_TRUNCATION'):
+        replace_test_cflags += " -Wno-format-truncation"
     bld.SAMBA_SUBSYSTEM('replace-test',
                         source='''test/testsuite.c test/strptime.c
                         test/os2_delete.c test/getifaddrs.c''',
                         deps='replace',
-                        cflags="-Wno-format-length")
+                        cflags=replace_test_cflags)
 
     if bld.env.standalone_replace:
         bld.SAMBA_BINARY('replace_testsuite',
