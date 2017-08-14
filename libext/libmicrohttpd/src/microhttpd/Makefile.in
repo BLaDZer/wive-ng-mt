@@ -83,33 +83,32 @@ host_triplet = @host@
 @W32_SHARED_LIB_EXP_TRUE@am__append_2 = $(lt_cv_objdir)/libmicrohttpd.lib $(lt_cv_objdir)/libmicrohttpd.def $(lt_cv_objdir)/libmicrohttpd.exp
 @W32_STATIC_LIB_TRUE@am__append_3 = $(lt_cv_objdir)/libmicrohttpd-static.lib
 @W32_STATIC_LIB_TRUE@am__append_4 = $(lt_cv_objdir)/libmicrohttpd-static.lib
-@HAVE_W32_TRUE@am__append_5 = \
-@HAVE_W32_TRUE@  mhd_compat.c
+@HAVE_W32_TRUE@am__append_5 = $(MHD_DLL_RES_LO)
+@USE_COVERAGE_TRUE@am__append_6 = --coverage
+@MHD_HAVE_TSEARCH_FALSE@am__append_7 = \
+@MHD_HAVE_TSEARCH_FALSE@  tsearch.c tsearch.h
 
-@HAVE_W32_TRUE@am__append_6 = $(MHD_DLL_RES_LO)
-@USE_COVERAGE_TRUE@am__append_7 = --coverage
-@HAVE_TSEARCH_FALSE@am__append_8 = \
-@HAVE_TSEARCH_FALSE@  tsearch.c tsearch.h
-
-@HAVE_POSTPROCESSOR_TRUE@am__append_9 = \
+@HAVE_POSTPROCESSOR_TRUE@am__append_8 = \
 @HAVE_POSTPROCESSOR_TRUE@  postprocessor.c
 
-@ENABLE_DAUTH_TRUE@am__append_10 = \
+@ENABLE_DAUTH_TRUE@am__append_9 = \
 @ENABLE_DAUTH_TRUE@  digestauth.c \
 @ENABLE_DAUTH_TRUE@  md5.c md5.h
 
-@ENABLE_BAUTH_TRUE@am__append_11 = \
+@ENABLE_BAUTH_TRUE@am__append_10 = \
 @ENABLE_BAUTH_TRUE@  basicauth.c \
 @ENABLE_BAUTH_TRUE@  base64.c base64.h
 
-@ENABLE_HTTPS_TRUE@am__append_12 = \
+@ENABLE_HTTPS_TRUE@am__append_11 = \
 @ENABLE_HTTPS_TRUE@  connection_https.c connection_https.h
 
 check_PROGRAMS = test_str_compare$(EXEEXT) test_str_to_value$(EXEEXT) \
+	test_str_token$(EXEEXT) test_http_reasons$(EXEEXT) \
 	test_shutdown_select$(EXEEXT) test_shutdown_poll$(EXEEXT) \
-	test_daemon$(EXEEXT) test_upgrade$(EXEEXT) $(am__EXEEXT_1) \
-	$(am__EXEEXT_2)
-@ENABLE_HTTPS_TRUE@am__append_13 = test_upgrade_ssl
+	test_daemon$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2) \
+	$(am__EXEEXT_3)
+@ENABLE_UPGRADE_TRUE@@HAVE_POSIX_THREADS_TRUE@am__append_12 = test_upgrade
+@ENABLE_HTTPS_TRUE@@ENABLE_UPGRADE_TRUE@@HAVE_POSIX_THREADS_TRUE@am__append_13 = test_upgrade_tls
 @HAVE_POSTPROCESSOR_TRUE@am__append_14 = \
 @HAVE_POSTPROCESSOR_TRUE@  test_postprocessor \
 @HAVE_POSTPROCESSOR_TRUE@  test_postprocessor_large \
@@ -131,17 +130,14 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_have_epoll.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
-	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libcurl.m4 $(top_srcdir)/m4/libgcrypt.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/mhd_sys_extentions.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/mhd_shutdown_socket_trigger.m4 \
+	$(top_srcdir)/m4/mhd_sys_extentions.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/m4/search_h.m4 $(top_srcdir)/m4/tsearch.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -178,26 +174,25 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-libmicrohttpd_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__append_6)
+libmicrohttpd_la_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__append_5)
 am__libmicrohttpd_la_SOURCES_DIST = connection.c connection.h \
 	reason_phrase.c daemon.c internal.c internal.h memorypool.c \
 	memorypool.h mhd_mono_clock.c mhd_mono_clock.h mhd_limits.h \
 	mhd_byteorder.h sysfdsetsize.c sysfdsetsize.h mhd_str.c \
 	mhd_str.h mhd_threads.c mhd_threads.h mhd_locks.h \
 	mhd_sockets.c mhd_sockets.h mhd_itc.c mhd_itc.h \
-	mhd_itc_types.h mhd_compat.h response.c response.h \
-	mhd_compat.c tsearch.c tsearch.h postprocessor.c digestauth.c \
+	mhd_itc_types.h mhd_compat.c mhd_compat.h response.c \
+	response.h tsearch.c tsearch.h postprocessor.c digestauth.c \
 	md5.c md5.h basicauth.c base64.c base64.h connection_https.c \
 	connection_https.h
-@HAVE_W32_TRUE@am__objects_1 = libmicrohttpd_la-mhd_compat.lo
-@HAVE_TSEARCH_FALSE@am__objects_2 = libmicrohttpd_la-tsearch.lo
-@HAVE_POSTPROCESSOR_TRUE@am__objects_3 =  \
+@MHD_HAVE_TSEARCH_FALSE@am__objects_1 = libmicrohttpd_la-tsearch.lo
+@HAVE_POSTPROCESSOR_TRUE@am__objects_2 =  \
 @HAVE_POSTPROCESSOR_TRUE@	libmicrohttpd_la-postprocessor.lo
-@ENABLE_DAUTH_TRUE@am__objects_4 = libmicrohttpd_la-digestauth.lo \
+@ENABLE_DAUTH_TRUE@am__objects_3 = libmicrohttpd_la-digestauth.lo \
 @ENABLE_DAUTH_TRUE@	libmicrohttpd_la-md5.lo
-@ENABLE_BAUTH_TRUE@am__objects_5 = libmicrohttpd_la-basicauth.lo \
+@ENABLE_BAUTH_TRUE@am__objects_4 = libmicrohttpd_la-basicauth.lo \
 @ENABLE_BAUTH_TRUE@	libmicrohttpd_la-base64.lo
-@ENABLE_HTTPS_TRUE@am__objects_6 =  \
+@ENABLE_HTTPS_TRUE@am__objects_5 =  \
 @ENABLE_HTTPS_TRUE@	libmicrohttpd_la-connection_https.lo
 am_libmicrohttpd_la_OBJECTS = libmicrohttpd_la-connection.lo \
 	libmicrohttpd_la-reason_phrase.lo libmicrohttpd_la-daemon.lo \
@@ -206,9 +201,9 @@ am_libmicrohttpd_la_OBJECTS = libmicrohttpd_la-connection.lo \
 	libmicrohttpd_la-sysfdsetsize.lo libmicrohttpd_la-mhd_str.lo \
 	libmicrohttpd_la-mhd_threads.lo \
 	libmicrohttpd_la-mhd_sockets.lo libmicrohttpd_la-mhd_itc.lo \
-	libmicrohttpd_la-response.lo $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6)
+	libmicrohttpd_la-mhd_compat.lo libmicrohttpd_la-response.lo \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5)
 libmicrohttpd_la_OBJECTS = $(am_libmicrohttpd_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -218,30 +213,47 @@ libmicrohttpd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmicrohttpd_la_CFLAGS) $(CFLAGS) \
 	$(libmicrohttpd_la_LDFLAGS) $(LDFLAGS) -o $@
-@ENABLE_HTTPS_TRUE@am__EXEEXT_1 = test_upgrade_ssl$(EXEEXT)
-@HAVE_POSTPROCESSOR_TRUE@am__EXEEXT_2 = test_postprocessor$(EXEEXT) \
+@ENABLE_UPGRADE_TRUE@@HAVE_POSIX_THREADS_TRUE@am__EXEEXT_1 = test_upgrade$(EXEEXT)
+@ENABLE_HTTPS_TRUE@@ENABLE_UPGRADE_TRUE@@HAVE_POSIX_THREADS_TRUE@am__EXEEXT_2 = test_upgrade_tls$(EXEEXT)
+@HAVE_POSTPROCESSOR_TRUE@am__EXEEXT_3 = test_postprocessor$(EXEEXT) \
 @HAVE_POSTPROCESSOR_TRUE@	test_postprocessor_large$(EXEEXT) \
 @HAVE_POSTPROCESSOR_TRUE@	test_postprocessor_amp$(EXEEXT)
 am_test_daemon_OBJECTS = test_daemon.$(OBJEXT)
 test_daemon_OBJECTS = $(am_test_daemon_OBJECTS)
 test_daemon_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+am_test_http_reasons_OBJECTS = test_http_reasons.$(OBJEXT) \
+	reason_phrase.$(OBJEXT) mhd_str.$(OBJEXT)
+test_http_reasons_OBJECTS = $(am_test_http_reasons_OBJECTS)
+test_http_reasons_LDADD = $(LDADD)
 am_test_postprocessor_OBJECTS =  \
 	test_postprocessor-test_postprocessor.$(OBJEXT)
 test_postprocessor_OBJECTS = $(am_test_postprocessor_OBJECTS)
 test_postprocessor_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+test_postprocessor_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_postprocessor_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_postprocessor_amp_OBJECTS =  \
 	test_postprocessor_amp-test_postprocessor_amp.$(OBJEXT)
 test_postprocessor_amp_OBJECTS = $(am_test_postprocessor_amp_OBJECTS)
 test_postprocessor_amp_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+test_postprocessor_amp_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_postprocessor_amp_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_postprocessor_large_OBJECTS =  \
 	test_postprocessor_large-test_postprocessor_large.$(OBJEXT)
 test_postprocessor_large_OBJECTS =  \
 	$(am_test_postprocessor_large_OBJECTS)
 test_postprocessor_large_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+test_postprocessor_large_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_postprocessor_large_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_shutdown_poll_OBJECTS =  \
 	test_shutdown_poll-test_shutdown_select.$(OBJEXT)
 test_shutdown_poll_OBJECTS = $(am_test_shutdown_poll_OBJECTS)
@@ -266,14 +278,26 @@ test_str_compare_LDADD = $(LDADD)
 am_test_str_to_value_OBJECTS = test_str.$(OBJEXT) mhd_str.$(OBJEXT)
 test_str_to_value_OBJECTS = $(am_test_str_to_value_OBJECTS)
 test_str_to_value_LDADD = $(LDADD)
-am_test_upgrade_OBJECTS = test_upgrade.$(OBJEXT)
+am_test_str_token_OBJECTS = test_str_token.$(OBJEXT) mhd_str.$(OBJEXT)
+test_str_token_OBJECTS = $(am_test_str_token_OBJECTS)
+test_str_token_LDADD = $(LDADD)
+am_test_upgrade_OBJECTS = test_upgrade-test_upgrade.$(OBJEXT)
 test_upgrade_OBJECTS = $(am_test_upgrade_OBJECTS)
 test_upgrade_DEPENDENCIES =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la
-am_test_upgrade_ssl_OBJECTS = test_upgrade_ssl.$(OBJEXT)
-test_upgrade_ssl_OBJECTS = $(am_test_upgrade_ssl_OBJECTS)
-test_upgrade_ssl_DEPENDENCIES =  \
-	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la \
+	$(am__DEPENDENCIES_1)
+test_upgrade_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_upgrade_CFLAGS) \
+	$(CFLAGS) $(test_upgrade_LDFLAGS) $(LDFLAGS) -o $@
+am_test_upgrade_tls_OBJECTS = test_upgrade_tls-test_upgrade.$(OBJEXT)
+test_upgrade_tls_OBJECTS = $(am_test_upgrade_tls_OBJECTS)
+test_upgrade_tls_DEPENDENCIES =  \
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la \
+	$(am__DEPENDENCIES_1)
+test_upgrade_tls_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_upgrade_tls_CFLAGS) $(CFLAGS) \
+	$(test_upgrade_tls_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -309,19 +333,22 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmicrohttpd_la_SOURCES) $(test_daemon_SOURCES) \
+	$(test_http_reasons_SOURCES) $(test_postprocessor_SOURCES) \
+	$(test_postprocessor_amp_SOURCES) \
+	$(test_postprocessor_large_SOURCES) \
+	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES) \
+	$(test_str_compare_SOURCES) $(test_str_to_value_SOURCES) \
+	$(test_str_token_SOURCES) $(test_upgrade_SOURCES) \
+	$(test_upgrade_tls_SOURCES)
+DIST_SOURCES = $(am__libmicrohttpd_la_SOURCES_DIST) \
+	$(test_daemon_SOURCES) $(test_http_reasons_SOURCES) \
 	$(test_postprocessor_SOURCES) \
 	$(test_postprocessor_amp_SOURCES) \
 	$(test_postprocessor_large_SOURCES) \
 	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES) \
 	$(test_str_compare_SOURCES) $(test_str_to_value_SOURCES) \
-	$(test_upgrade_SOURCES) $(test_upgrade_ssl_SOURCES)
-DIST_SOURCES = $(am__libmicrohttpd_la_SOURCES_DIST) \
-	$(test_daemon_SOURCES) $(test_postprocessor_SOURCES) \
-	$(test_postprocessor_amp_SOURCES) \
-	$(test_postprocessor_large_SOURCES) \
-	$(test_shutdown_poll_SOURCES) $(test_shutdown_select_SOURCES) \
-	$(test_str_compare_SOURCES) $(test_str_to_value_SOURCES) \
-	$(test_upgrade_SOURCES) $(test_upgrade_ssl_SOURCES)
+	$(test_str_token_SOURCES) $(test_upgrade_SOURCES) \
+	$(test_upgrade_tls_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -550,11 +577,10 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+EMPTY_VAR = @EMPTY_VAR@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GMSGFMT = @GMSGFMT@
-GMSGFMT_015 = @GMSGFMT_015@
+GNULIB_TSEARCH = @GNULIB_TSEARCH@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_CPPFLAGS = @GNUTLS_CPPFLAGS@
 GNUTLS_LDFLAGS = @GNUTLS_LDFLAGS@
@@ -562,14 +588,13 @@ GNUTLS_LIBS = @GNUTLS_LIBS@
 GREP = @GREP@
 HAVE_CURL_BINARY = @HAVE_CURL_BINARY@
 HAVE_MAKEINFO_BINARY = @HAVE_MAKEINFO_BINARY@
+HAVE_TSEARCH = @HAVE_TSEARCH@
 HIDDEN_VISIBILITY_CFLAGS = @HIDDEN_VISIBILITY_CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INTLLIBS = @INTLLIBS@
-INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCURL = @LIBCURL@
@@ -577,8 +602,6 @@ LIBCURL_CPPFLAGS = @LIBCURL_CPPFLAGS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
-LIBICONV = @LIBICONV@
-LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -587,8 +610,6 @@ LIB_VERSION_CURRENT = @LIB_VERSION_CURRENT@
 LIB_VERSION_REVISION = @LIB_VERSION_REVISION@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LTLIBICONV = @LTLIBICONV@
-LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -599,9 +620,6 @@ MHD_LIB_CPPFLAGS = @MHD_LIB_CPPFLAGS@
 MHD_LIB_LDFLAGS = @MHD_LIB_LDFLAGS@
 MHD_REQ_PRIVATE = @MHD_REQ_PRIVATE@
 MKDIR_P = @MKDIR_P@
-MSGFMT = @MSGFMT@
-MSGFMT_015 = @MSGFMT_015@
-MSGMERGE = @MSGMERGE@
 MS_LIB_TOOL = @MS_LIB_TOOL@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -623,26 +641,23 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
-POSUB = @POSUB@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
+REPLACE_TSEARCH = @REPLACE_TSEARCH@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-XGETTEXT = @XGETTEXT@
-XGETTEXT_015 = @XGETTEXT_015@
-XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 _libcurl_config = @_libcurl_config@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_configure_args = @ac_configure_args@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -701,11 +716,10 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/src/include \
   -I$(top_srcdir)/src/microhttpd
 
-AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS) $(am__append_7)
+AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS) $(am__append_6)
 lib_LTLIBRARIES = \
   libmicrohttpd.la
 
-EXTRA_DIST = test_upgrade_common.c
 noinst_DATA = $(am__append_1) $(am__append_3)
 MOSTLYCLEANFILES = $(am__append_2) $(am__append_4)
 @W32_SHARED_LIB_EXP_FALSE@W32_MHD_LIB_LDFLAGS = 
@@ -715,10 +729,10 @@ libmicrohttpd_la_SOURCES = connection.c connection.h reason_phrase.c \
 	mhd_mono_clock.c mhd_mono_clock.h mhd_limits.h mhd_byteorder.h \
 	sysfdsetsize.c sysfdsetsize.h mhd_str.c mhd_str.h \
 	mhd_threads.c mhd_threads.h mhd_locks.h mhd_sockets.c \
-	mhd_sockets.h mhd_itc.c mhd_itc.h mhd_itc_types.h mhd_compat.h \
-	response.c response.h $(am__append_5) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12)
+	mhd_sockets.h mhd_itc.c mhd_itc.h mhd_itc_types.h mhd_compat.c \
+	mhd_compat.h response.c response.h $(am__append_7) \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11)
 libmicrohttpd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) $(MHD_LIB_CPPFLAGS) \
   -DBUILDING_MHD_LIB=1
@@ -731,7 +745,7 @@ libmicrohttpd_la_LDFLAGS = \
   $(W32_MHD_LIB_LDFLAGS) \
   -version-info @LIB_VERSION_CURRENT@:@LIB_VERSION_REVISION@:@LIB_VERSION_AGE@
 
-libmicrohttpd_la_LIBADD = $(MHD_LIBDEPS) $(am__append_6)
+libmicrohttpd_la_LIBADD = $(MHD_LIBDEPS) $(am__append_5)
 @HAVE_W32_TRUE@MHD_DLL_RES_SRC = microhttpd_dll_res.rc
 @HAVE_W32_TRUE@MHD_DLL_RES_LO = libmicrohttpd_la-$(MHD_DLL_RES_SRC:.rc=.lo)
 @HAVE_W32_TRUE@EXTRA_libmicrohttpd_la_DEPENDENCIES = $(MHD_DLL_RES_LO)
@@ -743,22 +757,45 @@ test_daemon_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_upgrade_SOURCES = \
-  test_upgrade.c
+  test_upgrade.c test_helpers.h mhd_sockets.h
+
+test_upgrade_CPPFLAGS = \
+  $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+
+test_upgrade_CFLAGS = \
+  $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(GNUTLS_CFLAGS)
+
+test_upgrade_LDFLAGS = \
+  $(GNUTLS_LDFLAGS)
 
 test_upgrade_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS)
 
-test_upgrade_ssl_SOURCES = \
-  test_upgrade_ssl.c
+test_upgrade_tls_SOURCES = \
+  test_upgrade.c test_helpers.h mhd_sockets.h
 
-test_upgrade_ssl_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+test_upgrade_tls_CPPFLAGS = \
+  $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+
+test_upgrade_tls_CFLAGS = \
+  $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(GNUTLS_CFLAGS)
+
+test_upgrade_tls_LDFLAGS = \
+  $(GNUTLS_LDFLAGS)
+
+test_upgrade_tls_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS)
 
 test_postprocessor_SOURCES = \
   test_postprocessor.c
 
 test_postprocessor_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+
+test_postprocessor_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 
 test_postprocessor_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
@@ -769,6 +806,9 @@ test_postprocessor_amp_SOURCES = \
 test_postprocessor_amp_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
 
+test_postprocessor_amp_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
+
 test_postprocessor_amp_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
@@ -777,6 +817,9 @@ test_postprocessor_large_SOURCES = \
 
 test_postprocessor_large_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+
+test_postprocessor_large_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 
 test_postprocessor_large_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
@@ -804,6 +847,13 @@ test_str_compare_SOURCES = \
 
 test_str_to_value_SOURCES = \
   test_str.c test_helpers.h mhd_str.c
+
+test_str_token_SOURCES = \
+  test_str_token.c mhd_str.c
+
+test_http_reasons_SOURCES = \
+  test_http_reasons.c \
+  reason_phrase.c mhd_str.c mhd_str.h
 
 all: all-am
 
@@ -893,17 +943,21 @@ test_daemon$(EXEEXT): $(test_daemon_OBJECTS) $(test_daemon_DEPENDENCIES) $(EXTRA
 	@rm -f test_daemon$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_daemon_OBJECTS) $(test_daemon_LDADD) $(LIBS)
 
+test_http_reasons$(EXEEXT): $(test_http_reasons_OBJECTS) $(test_http_reasons_DEPENDENCIES) $(EXTRA_test_http_reasons_DEPENDENCIES) 
+	@rm -f test_http_reasons$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_http_reasons_OBJECTS) $(test_http_reasons_LDADD) $(LIBS)
+
 test_postprocessor$(EXEEXT): $(test_postprocessor_OBJECTS) $(test_postprocessor_DEPENDENCIES) $(EXTRA_test_postprocessor_DEPENDENCIES) 
 	@rm -f test_postprocessor$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_postprocessor_OBJECTS) $(test_postprocessor_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_postprocessor_LINK) $(test_postprocessor_OBJECTS) $(test_postprocessor_LDADD) $(LIBS)
 
 test_postprocessor_amp$(EXEEXT): $(test_postprocessor_amp_OBJECTS) $(test_postprocessor_amp_DEPENDENCIES) $(EXTRA_test_postprocessor_amp_DEPENDENCIES) 
 	@rm -f test_postprocessor_amp$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_postprocessor_amp_OBJECTS) $(test_postprocessor_amp_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_postprocessor_amp_LINK) $(test_postprocessor_amp_OBJECTS) $(test_postprocessor_amp_LDADD) $(LIBS)
 
 test_postprocessor_large$(EXEEXT): $(test_postprocessor_large_OBJECTS) $(test_postprocessor_large_DEPENDENCIES) $(EXTRA_test_postprocessor_large_DEPENDENCIES) 
 	@rm -f test_postprocessor_large$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_postprocessor_large_OBJECTS) $(test_postprocessor_large_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_postprocessor_large_LINK) $(test_postprocessor_large_OBJECTS) $(test_postprocessor_large_LDADD) $(LIBS)
 
 test_shutdown_poll$(EXEEXT): $(test_shutdown_poll_OBJECTS) $(test_shutdown_poll_DEPENDENCIES) $(EXTRA_test_shutdown_poll_DEPENDENCIES) 
 	@rm -f test_shutdown_poll$(EXEEXT)
@@ -921,13 +975,17 @@ test_str_to_value$(EXEEXT): $(test_str_to_value_OBJECTS) $(test_str_to_value_DEP
 	@rm -f test_str_to_value$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_str_to_value_OBJECTS) $(test_str_to_value_LDADD) $(LIBS)
 
+test_str_token$(EXEEXT): $(test_str_token_OBJECTS) $(test_str_token_DEPENDENCIES) $(EXTRA_test_str_token_DEPENDENCIES) 
+	@rm -f test_str_token$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_str_token_OBJECTS) $(test_str_token_LDADD) $(LIBS)
+
 test_upgrade$(EXEEXT): $(test_upgrade_OBJECTS) $(test_upgrade_DEPENDENCIES) $(EXTRA_test_upgrade_DEPENDENCIES) 
 	@rm -f test_upgrade$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_upgrade_OBJECTS) $(test_upgrade_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(test_upgrade_LINK) $(test_upgrade_OBJECTS) $(test_upgrade_LDADD) $(LIBS)
 
-test_upgrade_ssl$(EXEEXT): $(test_upgrade_ssl_OBJECTS) $(test_upgrade_ssl_DEPENDENCIES) $(EXTRA_test_upgrade_ssl_DEPENDENCIES) 
-	@rm -f test_upgrade_ssl$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(test_upgrade_ssl_OBJECTS) $(test_upgrade_ssl_LDADD) $(LIBS)
+test_upgrade_tls$(EXEEXT): $(test_upgrade_tls_OBJECTS) $(test_upgrade_tls_DEPENDENCIES) $(EXTRA_test_upgrade_tls_DEPENDENCIES) 
+	@rm -f test_upgrade_tls$(EXEEXT)
+	$(AM_V_CCLD)$(test_upgrade_tls_LINK) $(test_upgrade_tls_OBJECTS) $(test_upgrade_tls_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -956,15 +1014,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-sysfdsetsize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmicrohttpd_la-tsearch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mhd_str.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reason_phrase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_daemon.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_http_reasons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor-test_postprocessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_shutdown_poll-test_shutdown_select.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_shutdown_select-test_shutdown_select.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_upgrade.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_upgrade_ssl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_str_token.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_upgrade-test_upgrade.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_upgrade_tls-test_upgrade.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1067,19 +1128,19 @@ libmicrohttpd_la-mhd_itc.lo: mhd_itc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_itc.lo `test -f 'mhd_itc.c' || echo '$(srcdir)/'`mhd_itc.c
 
-libmicrohttpd_la-response.lo: response.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-response.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-response.Tpo -c -o libmicrohttpd_la-response.lo `test -f 'response.c' || echo '$(srcdir)/'`response.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-response.Tpo $(DEPDIR)/libmicrohttpd_la-response.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='response.c' object='libmicrohttpd_la-response.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-response.lo `test -f 'response.c' || echo '$(srcdir)/'`response.c
-
 libmicrohttpd_la-mhd_compat.lo: mhd_compat.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-mhd_compat.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-mhd_compat.Tpo -c -o libmicrohttpd_la-mhd_compat.lo `test -f 'mhd_compat.c' || echo '$(srcdir)/'`mhd_compat.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-mhd_compat.Tpo $(DEPDIR)/libmicrohttpd_la-mhd_compat.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mhd_compat.c' object='libmicrohttpd_la-mhd_compat.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-mhd_compat.lo `test -f 'mhd_compat.c' || echo '$(srcdir)/'`mhd_compat.c
+
+libmicrohttpd_la-response.lo: response.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-response.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-response.Tpo -c -o libmicrohttpd_la-response.lo `test -f 'response.c' || echo '$(srcdir)/'`response.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmicrohttpd_la-response.Tpo $(DEPDIR)/libmicrohttpd_la-response.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='response.c' object='libmicrohttpd_la-response.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-response.lo `test -f 'response.c' || echo '$(srcdir)/'`response.c
 
 libmicrohttpd_la-tsearch.lo: tsearch.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -MT libmicrohttpd_la-tsearch.lo -MD -MP -MF $(DEPDIR)/libmicrohttpd_la-tsearch.Tpo -c -o libmicrohttpd_la-tsearch.lo `test -f 'tsearch.c' || echo '$(srcdir)/'`tsearch.c
@@ -1131,46 +1192,46 @@ libmicrohttpd_la-connection_https.lo: connection_https.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmicrohttpd_la_CPPFLAGS) $(CPPFLAGS) $(libmicrohttpd_la_CFLAGS) $(CFLAGS) -c -o libmicrohttpd_la-connection_https.lo `test -f 'connection_https.c' || echo '$(srcdir)/'`connection_https.c
 
 test_postprocessor-test_postprocessor.o: test_postprocessor.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor-test_postprocessor.o -MD -MP -MF $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo -c -o test_postprocessor-test_postprocessor.o `test -f 'test_postprocessor.c' || echo '$(srcdir)/'`test_postprocessor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_CFLAGS) $(CFLAGS) -MT test_postprocessor-test_postprocessor.o -MD -MP -MF $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo -c -o test_postprocessor-test_postprocessor.o `test -f 'test_postprocessor.c' || echo '$(srcdir)/'`test_postprocessor.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo $(DEPDIR)/test_postprocessor-test_postprocessor.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor.c' object='test_postprocessor-test_postprocessor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor-test_postprocessor.o `test -f 'test_postprocessor.c' || echo '$(srcdir)/'`test_postprocessor.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_CFLAGS) $(CFLAGS) -c -o test_postprocessor-test_postprocessor.o `test -f 'test_postprocessor.c' || echo '$(srcdir)/'`test_postprocessor.c
 
 test_postprocessor-test_postprocessor.obj: test_postprocessor.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor-test_postprocessor.obj -MD -MP -MF $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo -c -o test_postprocessor-test_postprocessor.obj `if test -f 'test_postprocessor.c'; then $(CYGPATH_W) 'test_postprocessor.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_CFLAGS) $(CFLAGS) -MT test_postprocessor-test_postprocessor.obj -MD -MP -MF $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo -c -o test_postprocessor-test_postprocessor.obj `if test -f 'test_postprocessor.c'; then $(CYGPATH_W) 'test_postprocessor.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor-test_postprocessor.Tpo $(DEPDIR)/test_postprocessor-test_postprocessor.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor.c' object='test_postprocessor-test_postprocessor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor-test_postprocessor.obj `if test -f 'test_postprocessor.c'; then $(CYGPATH_W) 'test_postprocessor.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_CFLAGS) $(CFLAGS) -c -o test_postprocessor-test_postprocessor.obj `if test -f 'test_postprocessor.c'; then $(CYGPATH_W) 'test_postprocessor.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor.c'; fi`
 
 test_postprocessor_amp-test_postprocessor_amp.o: test_postprocessor_amp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor_amp-test_postprocessor_amp.o -MD -MP -MF $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo -c -o test_postprocessor_amp-test_postprocessor_amp.o `test -f 'test_postprocessor_amp.c' || echo '$(srcdir)/'`test_postprocessor_amp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_amp_CFLAGS) $(CFLAGS) -MT test_postprocessor_amp-test_postprocessor_amp.o -MD -MP -MF $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo -c -o test_postprocessor_amp-test_postprocessor_amp.o `test -f 'test_postprocessor_amp.c' || echo '$(srcdir)/'`test_postprocessor_amp.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor_amp.c' object='test_postprocessor_amp-test_postprocessor_amp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor_amp-test_postprocessor_amp.o `test -f 'test_postprocessor_amp.c' || echo '$(srcdir)/'`test_postprocessor_amp.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_amp_CFLAGS) $(CFLAGS) -c -o test_postprocessor_amp-test_postprocessor_amp.o `test -f 'test_postprocessor_amp.c' || echo '$(srcdir)/'`test_postprocessor_amp.c
 
 test_postprocessor_amp-test_postprocessor_amp.obj: test_postprocessor_amp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor_amp-test_postprocessor_amp.obj -MD -MP -MF $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo -c -o test_postprocessor_amp-test_postprocessor_amp.obj `if test -f 'test_postprocessor_amp.c'; then $(CYGPATH_W) 'test_postprocessor_amp.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_amp.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_amp_CFLAGS) $(CFLAGS) -MT test_postprocessor_amp-test_postprocessor_amp.obj -MD -MP -MF $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo -c -o test_postprocessor_amp-test_postprocessor_amp.obj `if test -f 'test_postprocessor_amp.c'; then $(CYGPATH_W) 'test_postprocessor_amp.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_amp.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Tpo $(DEPDIR)/test_postprocessor_amp-test_postprocessor_amp.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor_amp.c' object='test_postprocessor_amp-test_postprocessor_amp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor_amp-test_postprocessor_amp.obj `if test -f 'test_postprocessor_amp.c'; then $(CYGPATH_W) 'test_postprocessor_amp.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_amp.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_amp_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_amp_CFLAGS) $(CFLAGS) -c -o test_postprocessor_amp-test_postprocessor_amp.obj `if test -f 'test_postprocessor_amp.c'; then $(CYGPATH_W) 'test_postprocessor_amp.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_amp.c'; fi`
 
 test_postprocessor_large-test_postprocessor_large.o: test_postprocessor_large.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor_large-test_postprocessor_large.o -MD -MP -MF $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo -c -o test_postprocessor_large-test_postprocessor_large.o `test -f 'test_postprocessor_large.c' || echo '$(srcdir)/'`test_postprocessor_large.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_large_CFLAGS) $(CFLAGS) -MT test_postprocessor_large-test_postprocessor_large.o -MD -MP -MF $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo -c -o test_postprocessor_large-test_postprocessor_large.o `test -f 'test_postprocessor_large.c' || echo '$(srcdir)/'`test_postprocessor_large.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor_large.c' object='test_postprocessor_large-test_postprocessor_large.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor_large-test_postprocessor_large.o `test -f 'test_postprocessor_large.c' || echo '$(srcdir)/'`test_postprocessor_large.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_large_CFLAGS) $(CFLAGS) -c -o test_postprocessor_large-test_postprocessor_large.o `test -f 'test_postprocessor_large.c' || echo '$(srcdir)/'`test_postprocessor_large.c
 
 test_postprocessor_large-test_postprocessor_large.obj: test_postprocessor_large.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test_postprocessor_large-test_postprocessor_large.obj -MD -MP -MF $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo -c -o test_postprocessor_large-test_postprocessor_large.obj `if test -f 'test_postprocessor_large.c'; then $(CYGPATH_W) 'test_postprocessor_large.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_large.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_large_CFLAGS) $(CFLAGS) -MT test_postprocessor_large-test_postprocessor_large.obj -MD -MP -MF $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo -c -o test_postprocessor_large-test_postprocessor_large.obj `if test -f 'test_postprocessor_large.c'; then $(CYGPATH_W) 'test_postprocessor_large.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_large.c'; fi`
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Tpo $(DEPDIR)/test_postprocessor_large-test_postprocessor_large.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_postprocessor_large.c' object='test_postprocessor_large-test_postprocessor_large.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test_postprocessor_large-test_postprocessor_large.obj `if test -f 'test_postprocessor_large.c'; then $(CYGPATH_W) 'test_postprocessor_large.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_large.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_postprocessor_large_CPPFLAGS) $(CPPFLAGS) $(test_postprocessor_large_CFLAGS) $(CFLAGS) -c -o test_postprocessor_large-test_postprocessor_large.obj `if test -f 'test_postprocessor_large.c'; then $(CYGPATH_W) 'test_postprocessor_large.c'; else $(CYGPATH_W) '$(srcdir)/test_postprocessor_large.c'; fi`
 
 test_shutdown_poll-test_shutdown_select.o: test_shutdown_select.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_shutdown_poll_CFLAGS) $(CFLAGS) -MT test_shutdown_poll-test_shutdown_select.o -MD -MP -MF $(DEPDIR)/test_shutdown_poll-test_shutdown_select.Tpo -c -o test_shutdown_poll-test_shutdown_select.o `test -f 'test_shutdown_select.c' || echo '$(srcdir)/'`test_shutdown_select.c
@@ -1199,6 +1260,34 @@ test_shutdown_select-test_shutdown_select.obj: test_shutdown_select.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_shutdown_select.c' object='test_shutdown_select-test_shutdown_select.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_shutdown_select_CFLAGS) $(CFLAGS) -c -o test_shutdown_select-test_shutdown_select.obj `if test -f 'test_shutdown_select.c'; then $(CYGPATH_W) 'test_shutdown_select.c'; else $(CYGPATH_W) '$(srcdir)/test_shutdown_select.c'; fi`
+
+test_upgrade-test_upgrade.o: test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_CFLAGS) $(CFLAGS) -MT test_upgrade-test_upgrade.o -MD -MP -MF $(DEPDIR)/test_upgrade-test_upgrade.Tpo -c -o test_upgrade-test_upgrade.o `test -f 'test_upgrade.c' || echo '$(srcdir)/'`test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_upgrade-test_upgrade.Tpo $(DEPDIR)/test_upgrade-test_upgrade.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_upgrade.c' object='test_upgrade-test_upgrade.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_CFLAGS) $(CFLAGS) -c -o test_upgrade-test_upgrade.o `test -f 'test_upgrade.c' || echo '$(srcdir)/'`test_upgrade.c
+
+test_upgrade-test_upgrade.obj: test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_CFLAGS) $(CFLAGS) -MT test_upgrade-test_upgrade.obj -MD -MP -MF $(DEPDIR)/test_upgrade-test_upgrade.Tpo -c -o test_upgrade-test_upgrade.obj `if test -f 'test_upgrade.c'; then $(CYGPATH_W) 'test_upgrade.c'; else $(CYGPATH_W) '$(srcdir)/test_upgrade.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_upgrade-test_upgrade.Tpo $(DEPDIR)/test_upgrade-test_upgrade.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_upgrade.c' object='test_upgrade-test_upgrade.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_CFLAGS) $(CFLAGS) -c -o test_upgrade-test_upgrade.obj `if test -f 'test_upgrade.c'; then $(CYGPATH_W) 'test_upgrade.c'; else $(CYGPATH_W) '$(srcdir)/test_upgrade.c'; fi`
+
+test_upgrade_tls-test_upgrade.o: test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_tls_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_tls_CFLAGS) $(CFLAGS) -MT test_upgrade_tls-test_upgrade.o -MD -MP -MF $(DEPDIR)/test_upgrade_tls-test_upgrade.Tpo -c -o test_upgrade_tls-test_upgrade.o `test -f 'test_upgrade.c' || echo '$(srcdir)/'`test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_upgrade_tls-test_upgrade.Tpo $(DEPDIR)/test_upgrade_tls-test_upgrade.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_upgrade.c' object='test_upgrade_tls-test_upgrade.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_tls_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_tls_CFLAGS) $(CFLAGS) -c -o test_upgrade_tls-test_upgrade.o `test -f 'test_upgrade.c' || echo '$(srcdir)/'`test_upgrade.c
+
+test_upgrade_tls-test_upgrade.obj: test_upgrade.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_tls_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_tls_CFLAGS) $(CFLAGS) -MT test_upgrade_tls-test_upgrade.obj -MD -MP -MF $(DEPDIR)/test_upgrade_tls-test_upgrade.Tpo -c -o test_upgrade_tls-test_upgrade.obj `if test -f 'test_upgrade.c'; then $(CYGPATH_W) 'test_upgrade.c'; else $(CYGPATH_W) '$(srcdir)/test_upgrade.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_upgrade_tls-test_upgrade.Tpo $(DEPDIR)/test_upgrade_tls-test_upgrade.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_upgrade.c' object='test_upgrade_tls-test_upgrade.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_upgrade_tls_CPPFLAGS) $(CPPFLAGS) $(test_upgrade_tls_CFLAGS) $(CFLAGS) -c -o test_upgrade_tls-test_upgrade.obj `if test -f 'test_upgrade.c'; then $(CYGPATH_W) 'test_upgrade.c'; else $(CYGPATH_W) '$(srcdir)/test_upgrade.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1413,6 +1502,20 @@ test_str_to_value.log: test_str_to_value$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_str_token.log: test_str_token$(EXEEXT)
+	@p='test_str_token$(EXEEXT)'; \
+	b='test_str_token'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_http_reasons.log: test_http_reasons$(EXEEXT)
+	@p='test_http_reasons$(EXEEXT)'; \
+	b='test_http_reasons'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test_shutdown_select.log: test_shutdown_select$(EXEEXT)
 	@p='test_shutdown_select$(EXEEXT)'; \
 	b='test_shutdown_select'; \
@@ -1441,9 +1544,9 @@ test_upgrade.log: test_upgrade$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-test_upgrade_ssl.log: test_upgrade_ssl$(EXEEXT)
-	@p='test_upgrade_ssl$(EXEEXT)'; \
-	b='test_upgrade_ssl'; \
+test_upgrade_tls.log: test_upgrade_tls$(EXEEXT)
+	@p='test_upgrade_tls$(EXEEXT)'; \
+	b='test_upgrade_tls'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

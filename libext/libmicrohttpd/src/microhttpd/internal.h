@@ -1,6 +1,6 @@
 /*
   This file is part of libmicrohttpd
-  Copyright (C) 2007-2015 Daniel Pittman and Christian Grothoff
+  Copyright (C) 2007-2017 Daniel Pittman and Christian Grothoff
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -27,15 +27,19 @@
 #ifndef INTERNAL_H
 #define INTERNAL_H
 
+#include "mhd_options.h"
 #include "platform.h"
 #include "microhttpd.h"
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
 #include <gnutls/gnutls.h>
 #if GNUTLS_VERSION_MAJOR >= 3
 #include <gnutls/abstract.h>
 #endif
+#endif /* HTTPS_SUPPORT */
+
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
 #endif
-#include "mhd_options.h"
 
 
 #ifdef MHD_PANIC
@@ -113,6 +117,13 @@ extern void *mhd_panic_cls;
 #define BUILTIN_NOT_REACHED
 #endif
 
+#ifndef MHD_STATICSTR_LEN_
+/**
+ * Determine length of static string / macro strings at compile time.
+ */
+#define MHD_STATICSTR_LEN_(macro) (sizeof(macro)/sizeof(char) - 1)
+#endif /* ! MHD_STATICSTR_LEN_ */
+
 
 /**
  * State of the socket with respect to epoll (bitmask).
@@ -151,7 +162,12 @@ enum MHD_EpollState
   /**
    * Is this connection currently suspended?
    */
-  MHD_EPOLL_STATE_SUSPENDED = 16
+  MHD_EPOLL_STATE_SUSPENDED = 16,
+
+  /**
+   * Is this connection in some error state?
+   */
+  MHD_EPOLL_STATE_ERROR = 128
 };
 
 
@@ -181,6 +197,12 @@ enum MHD_ConnectionEventLoopInfo
   MHD_EVENT_LOOP_INFO_CLEANUP = 3
 };
 
+
+/**
+ * Additional test value for enum MHD_FLAG to check only for MHD_ALLOW_SUSPEND_RESUME and
+ * NOT for MHD_USE_ITC.
+ */
+#define MHD_TEST_ALLOW_SUSPEND_RESUME 8192
 
 /**
  * Maximum length of a nonce in digest authentication.  32(MD5 Hex) +
@@ -295,6 +317,7 @@ struct MHD_Response
    */
   MHD_ContentReaderFreeCallback crfc;
 
+#ifdef UPGRADE_SUPPORT
   /**
    * Application function to call once we are done sending the headers
    * of the response; NULL unless this is a response created with
@@ -306,6 +329,7 @@ struct MHD_Response
    * Closure for @e uh.
    */
   void *upgrade_handler_cls;
+#endif /* UPGRADE_SUPPORT */
 
   /**
    * Mutex to synchronize access to @e data, @e size and
@@ -497,18 +521,13 @@ enum MHD_CONNECTION_STATE
    */
   MHD_TLS_CONNECTION_INIT = MHD_CONNECTION_IN_CLEANUP + 1,
 
+#ifdef UPGRADE_SUPPORT
   /**
    * Connection was "upgraded" and socket is now under the
    * control of the application.
    */
   MHD_CONNECTION_UPGRADE = MHD_TLS_CONNECTION_INIT + 1,
-
-  /**
-   * Connection was "upgraded" and subsequently closed
-   * by the application.  We now need to do our own
-   * internal cleanup.
-   */
-  MHD_CONNECTION_UPGRADE_CLOSED = MHD_TLS_CONNECTION_INIT + 1
+#endif /* UPGRADE_SUPPORT */
 
 };
 
@@ -549,9 +568,30 @@ typedef ssize_t
  */
 typedef ssize_t
 (*TransmitCallback) (struct MHD_Connection *conn,
-                     const void *write_to,
+                     const void *read_from,
                      size_t max_bytes);
 
+
+/**
+ * Ability to use same connection for next request
+ */
+enum MHD_ConnKeepAlive
+{
+  /**
+   * Connection must be closed after sending response.
+   */
+  MHD_CONN_MUST_CLOSE = -1,
+
+  /**
+   * KeelAlive state is not yet determined
+   */
+  MHD_CONN_KEEPALIVE_UNKOWN = 0,
+
+  /**
+   * Connection can be used for serving next request
+   */
+  MHD_CONN_USE_KEEPALIVE = 1
+};
 
 /**
  * State kept for each HTTP request.
@@ -660,6 +700,13 @@ struct MHD_Connection
   char *version;
 
   /**
+   * Close connection after sending response?
+   * Functions may change value from "Unknown" or "KeepAlive" to "Must close",
+   * but no functions reset value "Must Close" to any other value.
+   */
+  enum MHD_ConnKeepAlive keepalive;
+
+  /**
    * Buffer for reading requests.  Allocated in pool.  Actually one
    * byte larger than @e read_buffer_size (if non-NULL) to allow for
    * 0-termination.
@@ -732,6 +779,12 @@ struct MHD_Connection
   size_t write_buffer_append_offset;
 
   /**
+   * Number of bytes we had in the HTTP header, set once we
+   * pass #MHD_CONNECTION_HEADERS_RECEIVED.
+   */
+  size_t header_size;
+
+  /**
    * How many more bytes of the body do we expect
    * to read? #MHD_SIZE_UNKNOWN for unknown.
    */
@@ -743,6 +796,14 @@ struct MHD_Connection
    * while sending headers).
    */
   uint64_t response_write_position;
+
+#if LINUX
+  enum MHD_resp_sender_
+  {
+    MHD_resp_sender_std = 0,
+    MHD_resp_sender_sendfile
+  } resp_sender;
+#endif /* LINUX */
 
   /**
    * Position in the 100 CONTINUE message that
@@ -765,14 +826,19 @@ struct MHD_Connection
    * After how many seconds of inactivity should
    * this connection time out?  Zero for no timeout.
    */
-  unsigned int connection_timeout;
+  time_t connection_timeout;
+
+  /**
+   * Special member to be returned by #MHD_get_connection_info()
+   */
+  unsigned int connection_timeout_dummy;
 
   /**
    * Did we ever call the "default_handler" on this connection?  (this
    * flag will determine if we call the #MHD_OPTION_NOTIFY_COMPLETED
    * handler when the connection closes down).
    */
-  int client_aware;
+  bool client_aware;
 
   /**
    * Socket for this connection.  Set to #MHD_INVALID_SOCKET if
@@ -782,23 +848,34 @@ struct MHD_Connection
   MHD_socket socket_fd;
 
   /**
+   * true if #socket_fd is non-blocking, false otherwise.
+   */
+  bool sk_nonblck;
+
+  /**
    * Has this socket been closed for reading (i.e.  other side closed
    * the connection)?  If so, we must completely close the connection
    * once we are done sending our response (and stop trying to read
    * from this socket).
    */
-  int read_closed;
+  bool read_closed;
 
   /**
-   * Set to #MHD_YES if the thread has been joined.
+   * Set to `true` if the thread has been joined.
    */
-  int thread_joined;
+  bool thread_joined;
 
   /**
    * Are we currently inside the "idle" handler (to avoid recursively
    * invoking it).
    */
-  int in_idle;
+  bool in_idle;
+
+  /**
+   * Are we currently inside the "idle" handler (to avoid recursively
+   * invoking it).
+   */
+  bool in_cleanup;
 
 #ifdef EPOLL_SUPPORT
   /**
@@ -824,22 +901,13 @@ struct MHD_Connection
   unsigned int responseCode;
 
   /**
-   * Set to #MHD_YES if the response's content reader
-   * callback failed to provide data the last time
-   * we tried to read from it.  In that case, the
-   * write socket should be marked as unready until
-   * the CRC call succeeds.
-   */
-  int response_unready;
-
-  /**
    * Are we receiving with chunked encoding?  This will be set to
    * #MHD_YES after we parse the headers and are processing the body
    * with chunks.  After we are done with the body and we are
    * processing the footers; once the footers are also done, this will
    * be set to #MHD_NO again (before the final call to the handler).
    */
-  int have_chunked_upload;
+  bool have_chunked_upload;
 
   /**
    * If we are receiving with chunked encoding, where are we right
@@ -847,26 +915,29 @@ struct MHD_Connection
    * otherwise, this is the size of the current chunk.  A value of
    * zero is also used when we're at the end of the chunks.
    */
-  size_t current_chunk_size;
+  uint64_t current_chunk_size;
 
   /**
    * If we are receiving with chunked encoding, where are we currently
    * with respect to the current chunk (at what offset / position)?
    */
-  size_t current_chunk_offset;
+  uint64_t current_chunk_offset;
 
   /**
    * Handler used for processing read connection operations
+   * @sa #MHD_connection_handle_read, #MHD_tls_connection_handle_read
    */
   int (*read_handler) (struct MHD_Connection *connection);
 
   /**
    * Handler used for processing write connection operations
+   * @sa #MHD_connection_handle_write, #MHD_tls_connection_handle_write
    */
   int (*write_handler) (struct MHD_Connection *connection);
 
   /**
    * Handler used for processing idle connection operations
+   * @sa #MHD_connection_handle_idle, #MHD_tls_connection_handle_idle
    */
   int (*idle_handler) (struct MHD_Connection *connection);
 
@@ -880,16 +951,17 @@ struct MHD_Connection
    */
   TransmitCallback send_cls;
 
+#ifdef UPGRADE_SUPPORT
   /**
-   * If this connection was upgraded and if we are using
-   * #MHD_USE_THREAD_PER_CONNECTION or #MHD_USE_TLS, this points to
+   * If this connection was upgraded, this points to
    * the upgrade response details such that the
    * #thread_main_connection_upgrade()-logic can perform the
    * bi-directional forwarding.
    */
   struct MHD_UpgradeResponseHandle *urh;
+#endif /* UPGRADE_SUPPORT */
 
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
 
   /**
    * State required for HTTPS/SSL/TLS support.
@@ -910,21 +982,32 @@ struct MHD_Connection
    * Could it be that we are ready to read due to TLS buffers
    * even though the socket is not?
    */
-  int tls_read_ready;
-#endif
+  bool tls_read_ready;
+
+  /**
+   * TLS layer was shut down?
+   */
+  bool tls_closed;
+#endif /* HTTPS_SUPPORT */
 
   /**
    * Is the connection suspended?
    */
-  int suspended;
+  bool suspended;
+
+  /**
+   * Special member to be returned by #MHD_get_connection_info()
+   */
+  int suspended_dummy;
 
   /**
    * Is the connection wanting to resume?
    */
-  int resuming;
+  bool resuming;
 };
 
 
+#ifdef UPGRADE_SUPPORT
 /**
  * Buffer we use for upgrade response handling in the unlikely
  * case where the memory pool was so small it had no buffer
@@ -989,7 +1072,7 @@ struct MHD_UpgradeResponseHandle
    */
   struct MHD_Connection *connection;
 
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
   /**
    * Kept in a DLL per daemon.
    */
@@ -1000,39 +1083,68 @@ struct MHD_UpgradeResponseHandle
    */
   struct MHD_UpgradeResponseHandle *prev;
 
+#ifdef EPOLL_SUPPORT
+  /**
+   * Next pointer for the EDLL listing urhs that are epoll-ready.
+   */
+  struct MHD_UpgradeResponseHandle *nextE;
+
+  /**
+   * Previous pointer for the EDLL listing urhs that are epoll-ready.
+   */
+  struct MHD_UpgradeResponseHandle *prevE;
+
+  /**
+   * Specifies whether urh already in EDLL list of ready connections.
+   */
+  bool in_eready_list;
+#endif
+
   /**
    * The buffer for receiving data from TLS to
    * be passed to the application.  Contains @e in_buffer_size
-   * bytes. Do not free!
+   * bytes (unless @e in_buffer_size is zero). Do not free!
    */
   char *in_buffer;
 
   /**
    * The buffer for receiving data from the application to
    * be passed to TLS.  Contains @e out_buffer_size
-   * bytes. Do not free!
+   * bytes (unless @e out_buffer_size is zero). Do not free!
    */
   char *out_buffer;
 
   /**
-   * Size of the @e in_buffer
+   * Size of the @e in_buffer.
+   * Set to 0 if the TLS connection went down for reading or socketpair
+   * went down for writing.
    */
   size_t in_buffer_size;
 
   /**
-   * Size of the @e out_buffer
+   * Size of the @e out_buffer.
+   * Set to 0 if the TLS connection went down for writing or socketpair
+   * went down for reading.
    */
   size_t out_buffer_size;
 
   /**
-   * Number of bytes actually in use in the @e in_buffer
+   * Number of bytes actually in use in the @e in_buffer.  Can be larger
+   * than @e in_buffer_size if and only if @a in_buffer_size is zero and
+   * we still have bytes that can be forwarded.
+   * Reset to zero if all data was forwarded to socketpair or
+   * if socketpair went down for writing.
    */
-  size_t in_buffer_off;
+  size_t in_buffer_used;
 
   /**
-   * Number of bytes actually in use in the @e out_buffer
+   * Number of bytes actually in use in the @e out_buffer. Can be larger
+   * than @e out_buffer_size if and only if @a out_buffer_size is zero and
+   * we still have bytes that can be forwarded.
+   * Reset to zero if all data was forwarded to TLS connection or
+   * if TLS connection went down for writing.
    */
-  size_t out_buffer_off;
+  size_t out_buffer_used;
 
   /**
    * The socket we gave to the application (r/w).
@@ -1054,11 +1166,41 @@ struct MHD_UpgradeResponseHandle
 #endif /* HTTPS_SUPPORT */
 
   /**
-   * Set to #MHD_YES after the application finished with the socket
+   * Set to true after the application finished with the socket
    * by #MHD_UPGRADE_ACTION_CLOSE.
+   *
+   * When BOTH @e was_closed (changed by command from application)
+   * AND @e clean_ready (changed internally by MHD) are set to
+   * #MHD_YES, function #MHD_resume_connection() will move this
+   * connection to cleanup list.
+   * @remark This flag could be changed from any thread.
    */
-  int was_closed;
+  volatile bool was_closed;
+
+  /**
+   * Set to true if connection is ready for cleanup.
+   *
+   * In TLS mode functions #MHD_connection_finish_forward_() must
+   * be called before setting this flag to true.
+   *
+   * In thread-per-connection mode, true in this flag means
+   * that connection's thread exited or about to exit and will
+   * not use MHD_Connection::urh data anymore.
+   *
+   * In any mode true in this flag also means that
+   * MHD_Connection::urh data will not be used for socketpair
+   * forwarding and forwarding itself is finished.
+   *
+   * When BOTH @e was_closed (changed by command from application)
+   * AND @e clean_ready (changed internally by MHD) are set to
+   * true, function #MHD_resume_connection() will move this
+   * connection to cleanup list.
+   * @remark This flag could be changed from thread that process
+   * connection's recv(), send() and response.
+   */
+  bool clean_ready;
 };
+#endif /* UPGRADE_SUPPORT */
 
 
 /**
@@ -1149,7 +1291,19 @@ struct MHD_Daemon
    * Tail of EDLL of connections ready for processing (in epoll mode)
    */
   struct MHD_Connection *eready_tail;
-#endif
+
+#ifdef UPGRADE_SUPPORT
+  /**
+   * Head of EDLL of upgraded connections ready for processing (in epoll mode).
+   */
+  struct MHD_UpgradeResponseHandle *eready_urh_head;
+
+  /**
+   * Tail of EDLL of upgraded connections ready for processing (in epoll mode)
+   */
+  struct MHD_UpgradeResponseHandle *eready_urh_tail;
+#endif /* UPGRADE_SUPPORT */
+#endif /* EPOLL_SUPPORT */
 
   /**
    * Head of the XDLL of ALL connections with a default ('normal')
@@ -1305,21 +1459,24 @@ struct MHD_Daemon
   MHD_mutex_ per_ip_connection_mutex;
 
   /**
-   * Mutex for (modifying) access to the "cleanup" connection DLL.
+   * Mutex for (modifying) access to the "cleanup", "normal_timeout" and
+   * "manual_timeout" DLLs.
    */
   MHD_mutex_ cleanup_connection_mutex;
 
   /**
    * Listen socket.
    */
-  MHD_socket socket_fd;
+  MHD_socket listen_fd;
 
   /**
    * Whether to allow/disallow/ignore reuse of listening address.
    * The semantics is the following:
-   * 0: ignore (user did not ask for neither allow/disallow, use SO_REUSEADDR)
+   * 0: ignore (user did not ask for neither allow/disallow, use SO_REUSEADDR
+   *    except W32)
    * >0: allow (use SO_REUSEPORT on most platforms, SO_REUSEADDR on Windows)
-   * <0: disallow (mostly no action, SO_EXCLUSIVEADDRUSE on Windows)
+   * <0: disallow (mostly no action, SO_EXCLUSIVEADDRUSE on Windows or SO_EXCLBIND
+   *     on Solaris)
    */
   int listening_address_reuse;
 
@@ -1330,12 +1487,12 @@ struct MHD_Daemon
   int epoll_fd;
 
   /**
-   * #MHD_YES if the listen socket is in the 'epoll' set,
-   * #MHD_NO if not.
+   * true if the listen socket is in the 'epoll' set,
+   * false if not.
    */
-  int listen_socket_in_epoll;
+  bool listen_socket_in_epoll;
 
-#if HTTPS_SUPPORT
+#if defined(HTTPS_SUPPORT) && defined(UPGRADE_SUPPORT)
   /**
    * File descriptor associated with the #run_epoll_for_upgrade() loop.
    * Only available if #MHD_USE_HTTPS_EPOLL_UPGRADE is set.
@@ -1343,11 +1500,11 @@ struct MHD_Daemon
   int epoll_upgrade_fd;
 
   /**
-   * #MHD_YES if @e epoll_upgrade_fd is in the 'epoll' set,
-   * #MHD_NO if not.
+   * true if @e epoll_upgrade_fd is in the 'epoll' set,
+   * false if not.
    */
-  int upgrade_fd_in_epoll;
-#endif
+  bool upgrade_fd_in_epoll;
+#endif /* HTTPS_SUPPORT && UPGRADE_SUPPORT */
 
 #endif
 
@@ -1359,7 +1516,14 @@ struct MHD_Daemon
   /**
    * Are we shutting down?
    */
-  int shutdown;
+  volatile bool shutdown;
+
+  /**
+   * Has this deamon been quiesced via #MHD_quiesce_daemon()?
+   * If so, we should no longer use the @e listen_fd (including
+   * removing it from the @e epoll_fd when possible).
+   */
+  volatile bool was_quiesced;
 
   /**
    * Did we hit some system or process-wide resource limit while
@@ -1368,12 +1532,23 @@ struct MHD_Daemon
    * temporarily lowers the "connection_limit" to the current
    * number of connections.
    */
-  int at_limit;
+  bool at_limit;
 
   /*
    * Do we need to process resuming connections?
    */
-  int resuming;
+  bool resuming;
+
+  /**
+   * 'True' if some data is already waiting to be processed.
+   * If set to 'true' - zero timeout for select()/poll*()
+   * is used.
+   * Should be reset each time before processing connections
+   * and raised by any connection which require additional
+   * immediately processing (application does not provide
+   * data for response, data waiting in TLS buffers etc.)
+   */
+  bool data_already_pending;
 
   /**
    * Number of active parallel connections.
@@ -1389,7 +1564,7 @@ struct MHD_Daemon
    * After how many seconds of inactivity should
    * connections time out?  Zero for no timeout.
    */
-  unsigned int connection_timeout;
+  time_t connection_timeout;
 
   /**
    * Maximum number of connections per IP, or 0 for
@@ -1407,16 +1582,27 @@ struct MHD_Daemon
    */
   uint16_t port;
 
-#if HTTPS_SUPPORT
+  /**
+   * Be neutral (zero), strict (1) or permissive (-1) to client.
+   */
+  int strict_for_client;
+
+#ifdef HTTPS_SUPPORT
+#ifdef UPGRADE_SUPPORT
   /**
    * Head of DLL of upgrade response handles we are processing.
+   * Used for upgraded TLS connections when thread-per-connection
+   * is not used.
    */
   struct MHD_UpgradeResponseHandle *urh_head;
 
   /**
    * Tail of DLL of upgrade response handles we are processing.
+   * Used for upgraded TLS connections when thread-per-connection
+   * is not used.
    */
   struct MHD_UpgradeResponseHandle *urh_tail;
+#endif /* UPGRADE_SUPPORT */
 
   /**
    * Desired cipher algorithms.
@@ -1473,19 +1659,11 @@ struct MHD_Daemon
   gnutls_dh_params_t https_mem_dhparams;
 
   /**
-   * #MHD_YES if we have initialized @e https_mem_dhparams.
+   * true if we have initialized @e https_mem_dhparams.
    */
-  int have_dhparams;
+  bool have_dhparams;
 
-  /**
-   * For how many connections do we have 'tls_read_ready' set to MHD_YES?
-   * Used to avoid O(n) traversal over all connections when determining
-   * event-loop timeout (as it needs to be zero if there is any connection
-   * which might have ready data within TLS).
-   */
-  unsigned int num_tls_read_ready;
-
-#endif
+#endif /* HTTPS_SUPPORT */
 
 #ifdef DAUTH_SUPPORT
 
@@ -1699,7 +1877,7 @@ typedef int
  *
  * @param kind header kind to pass to @a cb
  * @param connection connection to add headers to
- * @param[in|out] args argument URI string (after "?" in URI),
+ * @param[in,out] args argument URI string (after "?" in URI),
  *        clobbered in the process!
  * @param cb function to call on each key-value pair found
  * @param[out] num_headers set to the number of headers found
@@ -1716,13 +1894,48 @@ MHD_parse_arguments_ (struct MHD_Connection *connection,
 
 
 /**
- * Finally cleanup upgrade-related resources. It should
- * be called when TLS buffers have been drained and
- * application signaled MHD by #MHD_UPGRADE_ACTION_CLOSE.
+ * Check whether response header contains particular @a token.
  *
- * @param connection handle to the upgraded connection to clean
+ * Token could be surrounded by spaces and tabs and delimited by comma.
+ * Case-insensitive match used for header names and tokens.
+ * @param response  the response to query
+ * @param key       header name
+ * @param token     the token to find
+ * @param token_len the length of token, not including optional
+ *                  terminating null-character.
+ * @return true if token is found in specified header,
+ *         false otherwise
+ */
+bool
+MHD_check_response_header_token_ci (const struct MHD_Response *response,
+                                    const char *key,
+                                    const char *token,
+                                    size_t token_len);
+
+/**
+ * Check whether response header contains particular static @a tkn.
+ *
+ * Token could be surrounded by spaces and tabs and delimited by comma.
+ * Case-insensitive match used for header names and tokens.
+ * @param r   the response to query
+ * @param k   header name
+ * @param tkn the static string of token to find
+ * @return true if token is found in specified header,
+ *         false otherwise
+ */
+#define MHD_check_response_header_s_token_ci(r,k,tkn) \
+    MHD_check_response_header_token_ci((r),(k),(tkn),MHD_STATICSTR_LEN_(tkn))
+
+/**
+ * Internal version of ::MHD_suspend_connection().
+ *
+ * @remark In thread-per-connection mode: can be called from any thread,
+ * in any other mode: to be called only from thread that process
+ * daemon's select()/poll()/etc.
+ *
+ * @param connection the connection to suspend
  */
 void
-MHD_cleanup_upgraded_connection_ (struct MHD_Connection *connection);
+internal_suspend_connection_ (struct MHD_Connection *connection);
 
 #endif

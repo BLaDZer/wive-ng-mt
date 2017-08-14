@@ -23,6 +23,7 @@ Matthew Moore
 Colin Caughie <c.caughie@indigovision.com>
 David Carvalho <andaris@gmail.com>
 David Reiss <dreiss@facebook.com>
+Markus Doppelbauer <doppelbauer@gmx.net>
 Matt Holiday
 Michael Cronenworth <mike@cchtml.com>
 Milan Straka <straka@ufal.mff.cuni.cz>
@@ -55,7 +56,14 @@ Robert Groenenberg <robert.groenenberg@broadforward.com>
 Denis Dowling <denis.dowling@hsd.com.au>
 Louis Benoit <louisbenoit@videotron.ca>
 Flavio Coelin <flavio.ceolin@intel.com>
+Silvio Clecio <silvioprog@gmail.com>
 
 Documentation contributions also came from:
 Marco Maggi <marco.maggi-ipsu@poste.it>
 Sebastian Gerhardt <sebgerhardt@gmx.net>
+
+Special thanks to:
+Florian Weimer <fweimer@redhat.com>
+Ramakrishnan Muthukrishnan <ram@leastauthority.com>
+Gervasa Markham <grev@mozilla.com>
+Liz Steininger <liz@leastauthority.com>

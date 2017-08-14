@@ -8,8 +8,6 @@ AM_CFLAGS = $(HIDDEN_VISIBILITY_CFLAGS)
 lib_LTLIBRARIES = \
   libmicrohttpd.la
 
-EXTRA_DIST = test_upgrade_common.c
-
 noinst_DATA =
 MOSTLYCLEANFILES =
 
@@ -68,12 +66,8 @@ libmicrohttpd_la_SOURCES = \
   mhd_locks.h \
   mhd_sockets.c mhd_sockets.h \
   mhd_itc.c mhd_itc.h mhd_itc_types.h \
-  mhd_compat.h \
+  mhd_compat.c mhd_compat.h \
   response.c response.h
-if HAVE_W32
-libmicrohttpd_la_SOURCES += \
-  mhd_compat.c
-endif
 
 libmicrohttpd_la_CPPFLAGS = \
   $(AM_CPPFLAGS) $(MHD_LIB_CPPFLAGS) \
@@ -116,7 +110,7 @@ if USE_COVERAGE
   AM_CFLAGS += --coverage
 endif
 
-if !HAVE_TSEARCH
+if !MHD_HAVE_TSEARCH
 libmicrohttpd_la_SOURCES += \
   tsearch.c tsearch.h
 endif
@@ -148,13 +142,19 @@ endif
 check_PROGRAMS = \
   test_str_compare \
   test_str_to_value \
+  test_str_token \
+  test_http_reasons \
   test_shutdown_select \
   test_shutdown_poll \
-  test_daemon \
-  test_upgrade
+  test_daemon
 
+if HAVE_POSIX_THREADS
+if ENABLE_UPGRADE
+  check_PROGRAMS += test_upgrade
 if ENABLE_HTTPS
-  check_PROGRAMS += test_upgrade_ssl
+  check_PROGRAMS += test_upgrade_tls
+endif
+endif
 endif
 
 if HAVE_POSTPROCESSOR
@@ -178,19 +178,35 @@ test_daemon_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 test_upgrade_SOURCES = \
-  test_upgrade.c
+  test_upgrade.c test_helpers.h mhd_sockets.h
+test_upgrade_CPPFLAGS = \
+  $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+test_upgrade_CFLAGS = \
+  $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(GNUTLS_CFLAGS)
+test_upgrade_LDFLAGS = \
+  $(GNUTLS_LDFLAGS)
 test_upgrade_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS)
 
-test_upgrade_ssl_SOURCES = \
-  test_upgrade_ssl.c
-test_upgrade_ssl_LDADD = \
-  $(top_builddir)/src/microhttpd/libmicrohttpd.la
+test_upgrade_tls_SOURCES = \
+  test_upgrade.c test_helpers.h mhd_sockets.h
+test_upgrade_tls_CPPFLAGS = \
+  $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+test_upgrade_tls_CFLAGS = \
+  $(AM_CFLAGS) $(PTHREAD_CFLAGS) $(GNUTLS_CFLAGS)
+test_upgrade_tls_LDFLAGS = \
+  $(GNUTLS_LDFLAGS)
+test_upgrade_tls_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS)
 
 test_postprocessor_SOURCES = \
   test_postprocessor.c
 test_postprocessor_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+test_postprocessor_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 test_postprocessor_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
@@ -198,6 +214,8 @@ test_postprocessor_amp_SOURCES = \
   test_postprocessor_amp.c
 test_postprocessor_amp_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+test_postprocessor_amp_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 test_postprocessor_amp_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
@@ -205,6 +223,8 @@ test_postprocessor_large_SOURCES = \
   test_postprocessor_large.c
 test_postprocessor_large_CPPFLAGS = \
   $(AM_CPPFLAGS) $(GNUTLS_CPPFLAGS)
+test_postprocessor_large_CFLAGS = \
+  $(AM_CFLAGS) $(GNUTLS_CFLAGS)
 test_postprocessor_large_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
@@ -231,3 +251,10 @@ test_str_compare_SOURCES = \
 
 test_str_to_value_SOURCES = \
   test_str.c test_helpers.h mhd_str.c
+
+test_str_token_SOURCES = \
+  test_str_token.c mhd_str.c
+
+test_http_reasons_SOURCES = \
+  test_http_reasons.c \
+  reason_phrase.c mhd_str.c mhd_str.h

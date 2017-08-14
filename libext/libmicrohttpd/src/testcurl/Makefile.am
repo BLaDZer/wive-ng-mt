@@ -16,12 +16,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/include \
 $(LIBCURL_CPPFLAGS)
 
-if !HAVE_W32
-if HAVE_CURL_BINARY
-CURL_FORK_TEST = test_get_response_cleanup
-endif
-endif
-
 if HAVE_CURL
 check_PROGRAMS = \
   test_start_stop \
@@ -38,6 +32,7 @@ check_PROGRAMS = \
   test_get_sendfile11 \
   test_put11 \
   test_large_put11 \
+  test_large_put_inc11 \
   test_long_header \
   test_long_header11 \
   test_get_chunked \
@@ -46,14 +41,23 @@ check_PROGRAMS = \
   test_termination \
   test_timeout \
   test_callback \
-  $(CURL_FORK_TEST) \
   perf_get
+
+if HAVE_FORK_WAITPID
+if HAVE_CURL_BINARY
+check_PROGRAMS += test_get_response_cleanup
+endif
+endif
 
 if HAVE_POSIX_THREADS
 check_PROGRAMS += \
   test_quiesce \
   test_concurrent_stop \
   perf_get_concurrent
+
+if HAVE_CURL_BINARY
+check_PROGRAMS += test_quiesce_stream
+endif
 endif
 
 if HAVE_POSTPROCESSOR
@@ -111,6 +115,14 @@ test_quiesce_SOURCES = \
 test_quiesce_CFLAGS = \
   $(PTHREAD_CFLAGS) $(AM_CFLAGS)
 test_quiesce_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS) @LIBCURL@
+
+test_quiesce_stream_SOURCES = \
+  test_quiesce_stream.c
+test_quiesce_stream_CFLAGS = \
+  $(PTHREAD_CFLAGS) $(AM_CFLAGS)
+test_quiesce_stream_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la \
   $(PTHREAD_LIBS) @LIBCURL@
 
@@ -270,6 +282,12 @@ test_large_put_LDADD = \
 test_large_put11_SOURCES = \
   test_large_put.c
 test_large_put11_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  @LIBCURL@
+
+test_large_put_inc11_SOURCES = \
+  test_large_put.c
+test_large_put_inc11_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la \
   @LIBCURL@
 

@@ -281,10 +281,10 @@
  *         boolean false otherwise.
  */
 #if defined(MHD_POSIX_SOCKETS)
-#  define MHD_SCKT_FD_FITS_FDSET_SETSIZE_(fd,pset,setsize) ((fd) < (setsize))
+#  define MHD_SCKT_FD_FITS_FDSET_SETSIZE_(fd,pset,setsize) ((fd) < ((MHD_socket)setsize))
 #elif defined(MHD_WINSOCK_SOCKETS)
 #  define MHD_SCKT_FD_FITS_FDSET_SETSIZE_(fd,pset,setsize) ( ((void*)(pset)==(void*)0) || \
-                                                             (((fd_set*)(pset))->fd_count < (setsize)) || \
+                                                             (((fd_set*)(pset))->fd_count < ((unsigned)setsize)) || \
                                                              (FD_ISSET((fd),(pset))) )
 #endif
 
@@ -339,6 +339,40 @@
 #  else  /* MHD_WINSOCK_SOCKETS */
 #    define MHD_sys_poll_ WSAPoll
 #  endif /* MHD_WINSOCK_SOCKETS */
+
+#  ifdef POLLPRI
+#    define MHD_POLLPRI_OR_ZERO POLLPRI
+#  else  /* ! POLLPRI */
+#    define MHD_POLLPRI_OR_ZERO 0
+#  endif /* ! POLLPRI */
+#  ifdef POLLRDBAND
+#    define MHD_POLLRDBAND_OR_ZERO POLLRDBAND
+#  else  /* ! POLLRDBAND */
+#    define MHD_POLLRDBAND_OR_ZERO 0
+#  endif /* ! POLLRDBAND */
+#  ifdef POLLNVAL
+#    define MHD_POLLNVAL_OR_ZERO POLLNVAL
+#  else  /* ! POLLNVAL */
+#    define MHD_POLLNVAL_OR_ZERO 0
+#  endif /* ! POLLNVAL */
+
+/* MHD_POLL_EVENTS_ERR_DISC is 'events' mask for errors and disconnect.
+ * Note: Out-of-band data is treated as error. */
+#  if defined(_WIN32)
+#    define MHD_POLL_EVENTS_ERR_DISC POLLRDBAND
+#  elif defined(__linux__)
+#    define MHD_POLL_EVENTS_ERR_DISC POLLPRI
+#  else /* ! __linux__ */
+#    define MHD_POLL_EVENTS_ERR_DISC (MHD_POLLPRI_OR_ZERO | MHD_POLLRDBAND_OR_ZERO)
+#  endif /* ! __linux__ */
+/* MHD_POLL_REVENTS_ERR_DISC is 'revents' mask for errors and disconnect.
+ * Note: Out-of-band data is treated as error. */
+#  define MHD_POLL_REVENTS_ERR_DISC \
+     (MHD_POLLPRI_OR_ZERO | MHD_POLLRDBAND_OR_ZERO | MHD_POLLNVAL_OR_ZERO | POLLERR | POLLHUP)
+/* MHD_POLL_REVENTS_ERRROR is 'revents' mask for errors.
+ * Note: Out-of-band data is treated as error. */
+#  define MHD_POLL_REVENTS_ERRROR \
+     (MHD_POLLPRI_OR_ZERO | MHD_POLLRDBAND_OR_ZERO | MHD_POLLNVAL_OR_ZERO | POLLERR)
 #endif /* HAVE_POLL */
 
 #define MHD_SCKT_MISSING_ERR_CODE_ 31450
@@ -639,15 +673,16 @@
 
 /* Socket functions */
 
-#if defined(MHD_POSIX_SOCKETS) && defined(AF_LOCAL)
-#  define MHD_socket_pair_(fdarr) (!socketpair(AF_LOCAL, SOCK_STREAM, 0, (fdarr)))
+#if defined(AF_LOCAL)
+#  define MHD_SCKT_LOCAL AF_LOCAL
+#elif defined(AF_UNIX)
+#  define MHD_SCKT_LOCAL AF_UNIX
+#endif /* AF_UNIX */
+
+#if defined(MHD_POSIX_SOCKETS) && defined(MHD_SCKT_LOCAL)
+#  define MHD_socket_pair_(fdarr) (!socketpair(MHD_SCKT_LOCAL, SOCK_STREAM, 0, (fdarr)))
 #  if defined(HAVE_SOCK_NONBLOCK)
-#    define MHD_socket_pair_nblk_(fdarr) (!socketpair(AF_LOCAL, SOCK_STREAM | SOCK_NONBLOCK, 0, (fdarr)))
-#  endif /* HAVE_SOCK_NONBLOCK*/
-#elif defined(MHD_POSIX_SOCKETS) && defined(AF_UNIX)
-#  define MHD_socket_pair_(fdarr) (!socketpair(AF_UNIX, SOCK_STREAM, 0, (fdarr)))
-#  if defined(HAVE_SOCK_NONBLOCK)
-#    define MHD_socket_pair_nblk_(fdarr) (!socketpair(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0, (fdarr)))
+#    define MHD_socket_pair_nblk_(fdarr) (!socketpair(MHD_SCKT_LOCAL, SOCK_STREAM | SOCK_NONBLOCK, 0, (fdarr)))
 #  endif /* HAVE_SOCK_NONBLOCK*/
 #elif defined(MHD_WINSOCK_SOCKETS)
    /**
@@ -700,6 +735,18 @@ MHD_socket_nonblocking_ (MHD_socket sock);
 int
 MHD_socket_noninheritable_ (MHD_socket sock);
 
+
+#if defined(SOL_SOCKET) && defined(SO_NOSIGPIPE)
+   static const int _MHD_socket_int_one = 1;
+/**
+ * Change socket options to no signal on remote disconnect.
+ *
+ * @param sock socket to manipulate
+ * @return non-zero if succeeded, zero otherwise
+ */
+#  define MHD_socket_nosignal_(sock) \
+    (!setsockopt((sock),SOL_SOCKET,SO_NOSIGPIPE,&_MHD_socket_int_one,sizeof(_MHD_socket_int_one)))
+#endif /* SOL_SOCKET && SO_NOSIGPIPE */
 
 /**
  * Create a listen socket, with noninheritable flag if possible.

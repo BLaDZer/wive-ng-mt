@@ -101,7 +101,7 @@ testLongUrlGet ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY /* | MHD_USE_DEBUG */ ,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD /* | MHD_USE_ERROR_LOG */ ,
                         1080,
                         &apc_all,
                         NULL,
@@ -152,7 +152,7 @@ testLongUrlGet ()
   curl_easy_cleanup (c);
   MHD_stop_daemon (d);
   free (url);
-  if (code != MHD_HTTP_REQUEST_URI_TOO_LONG)
+  if (code != MHD_HTTP_URI_TOO_LONG)
     return 8;
   return 0;
 }
@@ -172,7 +172,7 @@ testLongHeaderGet ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY /* | MHD_USE_DEBUG */ ,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD /* | MHD_USE_ERROR_LOG */ ,
                         1080,
                         &apc_all,
                         NULL,
@@ -230,7 +230,7 @@ testLongHeaderGet ()
   curl_easy_cleanup (c);
   MHD_stop_daemon (d);
   free (url);
-  if (code != MHD_HTTP_REQUEST_ENTITY_TOO_LARGE)
+  if (code != MHD_HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE)
     return 128;
   return 0;
 }

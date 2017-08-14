@@ -49,8 +49,8 @@ test_secure_get (void * cls, char *cipher_suite, int proto_version)
   int ret;
   struct MHD_Daemon *d;
 
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_TLS |
-                        MHD_USE_DEBUG, DEAMON_TEST_PORT,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS |
+                        MHD_USE_ERROR_LOG, DEAMON_TEST_PORT,
                         NULL, NULL, &http_ahc, NULL,
                         MHD_OPTION_HTTPS_MEM_KEY, srv_signed_key_pem,
                         MHD_OPTION_HTTPS_MEM_CERT, srv_signed_cert_pem,
@@ -73,24 +73,31 @@ int
 main (int argc, char *const *argv)
 {
   unsigned int errorCount = 0;
+  char *aes256_sha = "AES256-SHA";
 
   gcry_control (GCRYCTL_ENABLE_QUICK_RANDOM, 0);
 #ifdef GCRYCTL_INITIALIZATION_FINISHED
   gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 #endif
-  if (setup_ca_cert () == NULL)
-    {
-      fprintf (stderr, MHD_E_TEST_FILE_CREAT);
-      return -1;
-    }
-
   if (0 != curl_global_init (CURL_GLOBAL_ALL))
     {
       fprintf (stderr, "Error (code: %u)\n", errorCount);
-      return -1;
+      return 99;
+    }
+  if (NULL == curl_version_info (CURLVERSION_NOW)->ssl_version)
+    {
+      fprintf (stderr, "Curl does not support SSL.  Cannot run the test.\n");
+      curl_global_cleanup ();
+      return 77;
     }
 
-  char *aes256_sha = "AES256-SHA";
+  if (setup_ca_cert () == NULL)
+    {
+      fprintf (stderr, MHD_E_TEST_FILE_CREAT);
+      curl_global_cleanup ();
+      return 99;
+    }
+
   if (curl_uses_nss_ssl() == 0)
     {
       aes256_sha = "rsa_aes_256_sha";
@@ -106,5 +113,5 @@ main (int argc, char *const *argv)
     fprintf (stderr,
 	     "Failed to remove `%s'\n",
 	     ca_cert_file_name);
-  return errorCount != 0;
+  return errorCount != 0 ? 1 : 0;
 }

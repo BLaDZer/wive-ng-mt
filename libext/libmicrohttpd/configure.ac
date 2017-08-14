@@ -1,5 +1,5 @@
 # This file is part of libmicrohttpd.
-# (C) 2006-2015 Christian Grothoff (and other contributing authors)
+# (C) 2006-2017 Christian Grothoff (and other contributing authors)
 #
 # libmicrohttpd is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
@@ -22,21 +22,17 @@
 #
 AC_PREREQ([2.64])
 LT_PREREQ([2.4.0])
-AC_INIT([GNU Libmicrohttpd],[0.9.52],[libmicrohttpd@gnu.org])
+AC_INIT([GNU Libmicrohttpd],[0.9.55],[libmicrohttpd@gnu.org])
 AM_INIT_AUTOMAKE([silent-rules] [subdir-objects])
 AC_CONFIG_HEADERS([MHD_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-LIB_VERSION_CURRENT=52
+LIB_VERSION_CURRENT=55
 LIB_VERSION_REVISION=0
-LIB_VERSION_AGE=40
+LIB_VERSION_AGE=43
 AC_SUBST(LIB_VERSION_CURRENT)
 AC_SUBST(LIB_VERSION_REVISION)
 AC_SUBST(LIB_VERSION_AGE)
-
-# check for gettext
-AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.4])
 
 AC_MSG_CHECKING([[whether z/OS special settings are required]])
 if test `uname -s` = "OS/390"
@@ -89,22 +85,118 @@ MHD_LIBDEPS=""
 MHD_REQ_PRIVATE=''
 MHD_LIBDEPS_PKGCFG=''
 
-AC_CHECK_TYPE([_Bool],
-  [ AC_DEFINE([_MHD_bool],[_Bool],[Define to type which will be used as boolean type.]) ],
+AH_TEMPLATE([[HAVE_STDBOOL_H]], [Define to 1 if you have the <stdbool.h> header file and <stdbool.h> defines 'bool' type.])
+AH_TEMPLATE([[HAVE_REAL_BOOL]], [Define to 1 if you have the real boolean type.])
+AH_TEMPLATE([[bool]], [Define to type name which will be used as boolean type.])
+AC_CHECK_HEADER([stdbool.h],
   [
-    AC_CHECK_HEADER([stdbool.h], [ AC_DEFINE([HAVE_STDBOOL_H],[1],[Define to 1 if you have the <stdbool.h> header file and it's required for _MHD_bool.]) ], [], [AC_INCLUDES_DEFAULT])
-    AC_CHECK_TYPE([bool],
-      [ AC_DEFINE([_MHD_bool],[bool]) ],
-      [ AC_DEFINE([_MHD_bool],[int]) ],
-      [[
+   AC_CHECK_TYPE([bool],
+     [
+      AC_DEFINE([[HAVE_STDBOOL_H]], [[1]])
+      AC_DEFINE([[HAVE_REAL_BOOL]], [[1]])
+     ],
+     [
+      AC_MSG_WARN([[Header <stdbool.h> is present, but "bool" type cannot be detected. Check compiler flags.]])
+      AC_DEFINE([[bool]], [[int]])
+     ], [
+#include <stdbool.h>
+        ]
+   )
+  ],
+  [
+   AC_CHECK_TYPE([bool],
+     [AC_DEFINE([[HAVE_REAL_BOOL]], [[1]])],
+     [
+      AC_CHECK_TYPE([_Bool],
+        [
+         AC_DEFINE([[HAVE_REAL_BOOL]], [[1]])
+         AC_DEFINE([[bool]], [[_Bool]])
+        ],
+        [
+         AC_DEFINE([[bool]], [[int]])
+        ], []
+      )
+     ], []
+   )
+  ],
+  [AC_INCLUDES_DEFAULT]
+)
+
+AC_CACHE_CHECK([[whether "true" is defined or builtin]], [[mhd_cv_macro_true_defined]],
+  [AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM(
+        [[
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #endif
-      ]])
+        ]], [[
+#if defined(true)
+    /* dummy */
+#else
+    (void)true;
+#endif
+        ]])
+     ], [[mhd_cv_macro_true_defined='yes']], [[mhd_cv_macro_true_defined='no']])
   ])
+AS_VAR_IF([[mhd_cv_macro_true_defined]], [["yes"]], [[:]],
+  [AC_DEFINE([[true]],[[(!0)]], [Define to value interpreted by compiler as boolean "true", if "true" is not defined by system headers.])])
+
+AC_CACHE_CHECK([[whether "false" is defined or builtin]], [[mhd_cv_macro_false_defined]],
+  [AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM(
+        [[
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
+#endif
+        ]], [[
+#if !defined(false)
+    (void)false;
+#else
+    /* dummy */
+#endif
+        ]])
+     ], [[mhd_cv_macro_false_defined='yes']], [[mhd_cv_macro_false_defined='no']])
+  ])
+AS_VAR_IF([[mhd_cv_macro_false_defined]], [["yes"]], [[:]],
+  [AC_DEFINE([[false]],[[0]], [Define to value interpreted by compiler as boolean "false", if "false" is not defined by system headers.])])
+
+AC_CACHE_CHECK([[whether "true" and "false" could be used]], [[mhd_cv_macro_true_false_valid]],
+  [AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM(
+        [[
+#ifdef HAVE_STDBOOL_H
+#include <stdbool.h>
+#endif
+        ]], [[
+          int var1[true ? 1 : -1] = { 1 };
+          int var2[false ? -1 : 1] = { 2 };
+          int var3[!true ? -1 : 1] = { 3 };
+          int var4[!false ? 1 : -1] = { 4 };
+          if (var1[0] == var2[0] || var3[0] == var4[0])
+            return 1;
+        ]])
+     ], [[mhd_cv_macro_true_false_valid='yes']], [[mhd_cv_macro_true_false_valid='no']])
+  ])
+AS_VAR_IF([[mhd_cv_macro_true_false_valid]], [["yes"]], [[:]],
+  [AC_MSG_ERROR([[Value of "true" or value of "false" is not valid. Check config.log for details.]])])
+
 
 AX_CHECK_COMPILE_FLAG([[-Werror=attributes]],
-                      [[errattr_CFLAGS="-Werror=attributes"]],
+  [
+   save_CFLAGS="$CFLAGS"
+   CFLAGS="$CFLAGS -Werror=attributes"
+   AC_MSG_CHECKING([[whether -Werror=attributes actually works]])
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+       [[__attribute__((non_existing_attrb_dummy)) int SimpleFunc(void) {return 3;}]], [[int r = SimpleFunc(); if (r) return r;]])],
+     [
+       AC_MSG_RESULT([[no]])
+       errattr_CFLAGS=""
+     ], [
+       AC_MSG_RESULT([[yes]])
+       errattr_CFLAGS="-Werror=attributes"
+     ])
+   CFLAGS="$save_CFLAGS"
+  ],
                       [[errattr_CFLAGS=""]], [], [])
 AC_MSG_CHECKING([[for function inline keywords suppoted by $CC]])
 save_CFLAGS="$CFLAGS"
@@ -131,7 +223,7 @@ choke me
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #endif
-         static $inln_prfx_chk _MHD_bool cmpfn(int x, int y)
+         static $inln_prfx_chk bool cmpfn(int x, int y)
          { return x > y; }
          static $inln_prfx_chk int sumfn(int x, int y)
          { return x + y; }
@@ -168,7 +260,6 @@ freebsd*)
      AC_DEFINE_UNQUOTED(SOMEBSD,1,[This is a BSD system])
      AC_DEFINE_UNQUOTED(FREEBSD,1,[This is a FreeBSD system])
      mhd_host_os='FreeBSD'
-     shutdown_trig_select='yes'
      AC_MSG_RESULT([[$mhd_host_os]])
      ;;
 openbsd*)
@@ -181,7 +272,6 @@ netbsd*)
      AC_DEFINE_UNQUOTED(SOMEBSD,1,[This is a BSD system])
      AC_DEFINE_UNQUOTED(NETBSD,1,[This is a NetBSD system])
      mhd_host_os='NetBSD'
-     shutdown_trig_select='yes'
      AC_MSG_RESULT([[$mhd_host_os]])
      ;;
 *solaris*)
@@ -194,14 +284,12 @@ netbsd*)
      ;;
 *arm-linux*)
      AC_DEFINE_UNQUOTED(LINUX,1,[This is a Linux kernel])
-     shutdown_trig_select='yes'
      mhd_host_os='ARM Linux'
      AC_MSG_RESULT([[$mhd_host_os]])
      CFLAGS="-fPIC -pipe $CFLAGS"
      ;;
 *linux*)
      AC_DEFINE_UNQUOTED(LINUX,1,[This is a Linux kernel])
-     shutdown_trig_select='yes'
      mhd_host_os='Linux'
      AC_MSG_RESULT([[$mhd_host_os]])
      ;;
@@ -250,39 +338,46 @@ netbsd*)
 ;;
 esac
 
-AM_CONDITIONAL([HAVE_LISTEN_SHUTDOWN], [test "x$shutdown_trig_select" = "xyes"])
-AS_IF([test "x$shutdown_trig_select" = "xyes"], [AC_DEFINE([HAVE_LISTEN_SHUTDOWN],[1],[can use shutdown on listen sockets])])
-
 AC_ARG_WITH([threads],
    [AS_HELP_STRING([--with-threads=LIB],[choose threading library (posix, w32, auto) [auto]])],
    [], [with_threads='auto'])
-test "x$with_threads" = "xwin32" && with_threads='w32'
-test "x$with_threads" = "xpthreads" && with_threads='posix'
+AS_CASE([[$with_threads]],
+  [[win32]], [[with_threads='w32']],
+  [[pthreads]], [[with_threads='posix']],
+  [[posix]], [[:]],
+  [[w32]], [[:]],
+  [[auto]], [[:]],
+    [AC_MSG_ERROR([[incorrect parameter "$with_threads" specified for --with-threads]])]
+)
 
 # Check for posix threads support, regardless of configure parameters as
-# posix threads are used in some tests even on W32.
+# testsuite use only posix threads.
 AX_PTHREAD(
   [
-    HAVE_POSIX_THREADS='yes'
+    mhd_have_posix_threads='yes'
     AC_DEFINE([[HAVE_PTHREAD_H]],[[1]],[Define to 1 if you have the <pthread.h> header file.])
-  ],[[HAVE_POSIX_THREADS='no']])
-AM_CONDITIONAL([HAVE_POSIX_THREADS],[test "x$HAVE_POSIX_THREADS" = "xyes"])
+  ],[[mhd_have_posix_threads='no']])
+AM_CONDITIONAL([HAVE_POSIX_THREADS],[test "x$mhd_have_posix_threads" = "xyes"])
 
-HAVE_W32_THREADS='no'
-AS_IF([[test "x$os_is_windows" = "xyes"]],
+mhd_have_w32_threads='no'
+AS_IF([[test "x$with_threads" = "xauto"]],
+ [
+ AS_IF([[test "x$os_is_windows" = "xyes"]],
    [
     AC_MSG_CHECKING([[for W32 threads]])
     AC_LINK_IFELSE(
       [AC_LANG_PROGRAM([#include <windows.h>], [ HANDLE h = CreateThread(NULL, 0, NULL, NULL, 0, NULL);])]
-      , [[HAVE_W32_THREADS='yes']], [[HAVE_W32_THREADS='no']]
+      , [[mhd_have_w32_threads='yes']], [[mhd_have_w32_threads='no']]
       )
-    AC_MSG_RESULT([[$HAVE_W32_THREADS]])
+    AC_MSG_RESULT([[$mhd_have_w32_threads]])
    ])
+ ]
+)
 
 AC_MSG_CHECKING([[for threading lib to use with libmicrohttpd]])
 AS_IF([[test "x$with_threads" = "xposix"]],
   [ # forced posix threads
-    AS_IF([[test "x$HAVE_POSIX_THREADS" = "xyes"]], [[ USE_THREADS='posix' ]],
+    AS_IF([[test "x$mhd_have_posix_threads" = "xyes"]], [[ USE_THREADS='posix' ]],
       [ AS_IF([[test "x$os_is_windows" = "xyes"]] ,
           [ AC_MSG_ERROR([[Posix threads are not available. Try to configure --with-threads=auto]])],
           [ AC_MSG_ERROR([[No threading lib is available. Consider installing pthreads]])] )
@@ -290,15 +385,15 @@ AS_IF([[test "x$with_threads" = "xposix"]],
     ] ,
   [[ test "x$with_threads" = "xw32" ]] ,
   [ # forced w32 threads
-    AS_IF([[test "x$HAVE_W32_THREADS" = "xyes"]],
+    AS_IF([[test "x$mhd_have_w32_threads" = "xyes"]],
       [[ USE_THREADS='w32' ]],
       [ AC_MSG_ERROR([[W32 threads are not available. Try to configure --with-threads=auto]])])
     ] ,
     [ # automatic threads lib selection
-      AS_IF([[test "x$os_is_native_w32" = "xyes" && test "x$HAVE_W32_THREADS" = "xyes"]] ,
+      AS_IF([[test "x$os_is_native_w32" = "xyes" && test "x$mhd_have_w32_threads" = "xyes"]] ,
         [[ USE_THREADS='w32' ]] ,
-        [[ test "x$HAVE_POSIX_THREADS" = "xyes" ]], [[ USE_THREADS='posix' ]],
-        [[ test "x$HAVE_W32_THREADS" = "xyes" ]], [[ USE_THREADS='w32' ]],
+        [[ test "x$mhd_have_posix_threads" = "xyes" ]], [[ USE_THREADS='posix' ]],
+        [[ test "x$mhd_have_w32_threads" = "xyes" ]], [[ USE_THREADS='w32' ]],
         [ AC_MSG_ERROR([[No threading lib is available. Consider installing pthreads]]) ]
         )
     ]
@@ -327,18 +422,80 @@ if test "x$enable_thread_names" != "xno" && test "x$USE_THREADS" = "xposix"; the
   SAVE_CFLAGS="$CFLAGS"
   LIBS="$PTHREAD_LIBS $LIBS"
   CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-  AC_CHECK_HEADERS([pthread_np.h],[],[],[AC_INCLUDES_DEFAULT])
+  AC_CHECK_HEADERS([pthread_np.h],[],[],
+    [
+AC_INCLUDES_DEFAULT
+      [
+#include <pthread.h>
+      ]
+    ])
 
-  # If pthread_setname_np(3) is not declared, it's not possible to detect
-  # form of pthread_setname_np(3) due to C "feature" "implicit declaration".
-  AC_CHECK_DECL([[pthread_setname_np]],[],[],[[
+  # Try to find how to set thread name by thread attributes.
+  # If pthread_attr_setname_np(3) is not declared, it's not possible to detect
+  # form of pthread_attr_setname_np(3) due to C "feature" "implicit declaration".
+  AC_CHECK_DECL([[pthread_attr_setname_np]],[],[],[[
 #include <pthread.h>
 #ifdef HAVE_PTHREAD_NP_H
 #include <pthread_np.h>
 #endif
 ]])
 
-  AS_IF([[test "x$ac_cv_have_decl_pthread_setname_np" = "xyes"]],
+  AS_IF([[test "x$ac_cv_have_decl_pthread_attr_setname_np" = "xyes"]],
+    [AC_MSG_CHECKING([[for pthread_attr_setname_np(3) in NetBSD or OSF1 form]])
+     AC_LINK_IFELSE(
+      [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[
+      pthread_attr_t thr_attr;
+      pthread_attr_init(&thr_attr);
+      pthread_attr_setname_np(&thr_attr, "name", 0);
+      pthread_attr_destroy(&thr_attr);
+        ]])],
+        [AC_DEFINE([[HAVE_PTHREAD_ATTR_SETNAME_NP_NETBSD]], [[1]], [Define if you have NetBSD form (or OSF1 form) of pthread_attr_setname_np(3) function.])
+         HAVE_THREAD_NAME_FUNC="yes"
+         AC_MSG_RESULT([[yes]])],
+        [AC_MSG_RESULT([[no]])]
+        )
+    ])
+
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes" && test "x$ac_cv_have_decl_pthread_attr_setname_np" = "xyes"]],
+    [AC_MSG_CHECKING([[for pthread_attr_setname_np(3) in IBM i form]])
+     AC_LINK_IFELSE(
+      [AC_LANG_PROGRAM([[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+]], [[
+      pthread_attr_t thr_attr;
+      pthread_attr_init(&thr_attr);
+      pthread_attr_setname_np(&thr_attr, "name");
+      pthread_attr_destroy(&thr_attr);
+        ]])],
+        [AC_DEFINE([[HAVE_PTHREAD_ATTR_SETNAME_NP_IBMI]], [[1]], [Define if you have IBM i form of pthread_attr_setname_np(3) function.])
+         HAVE_THREAD_NAME_FUNC="yes"
+         AC_MSG_RESULT([[yes]])],
+        [AC_MSG_RESULT([[no]])]
+        )
+    ])
+
+  # Try to find how to set thread name for started thread - less convinent
+  # than setting name by attributes.
+  # If pthread_setname_np(3) is not declared, it's not possible to detect
+  # form of pthread_setname_np(3) due to C "feature" "implicit declaration".
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes"]],
+    [AC_CHECK_DECL([[pthread_setname_np]],[],[],[[
+#include <pthread.h>
+#ifdef HAVE_PTHREAD_NP_H
+#include <pthread_np.h>
+#endif
+       ]])
+    ])
+
+  AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes" && test "x$ac_cv_have_decl_pthread_setname_np" = "xyes"]],
     [AC_MSG_CHECKING([[for pthread_setname_np(3) in NetBSD or OSF1 form]])
      AC_LINK_IFELSE(
       [AC_LANG_PROGRAM([[
@@ -388,7 +545,7 @@ if test "x$enable_thread_names" != "xno" && test "x$USE_THREADS" = "xposix"; the
 
   AS_IF([[test "x$HAVE_THREAD_NAME_FUNC" != "xyes"]],
     [
-     AC_CHECK_DECL([[pthread_setname_np]],
+     AC_CHECK_DECL([[pthread_set_name_np]],
        [
         AC_MSG_CHECKING([[for pthread_set_name_np(3) in FreeBSD form]])
         AC_LINK_IFELSE(
@@ -428,7 +585,9 @@ choke me
 #endif
 
 /* Keep in sync with mhd_threads.h */
-#if defined(MHD_USE_POSIX_THREADS) && (defined(HAVE_PTHREAD_SETNAME_NP_GNU) || defined(HAVE_PTHREAD_SET_NAME_NP_FREEBSD) || defined(HAVE_PTHREAD_SETNAME_NP_DARWIN) || defined(HAVE_PTHREAD_SETNAME_NP_NETBSD) )
+#if defined(MHD_USE_POSIX_THREADS) && (defined(HAVE_PTHREAD_ATTR_SETNAME_NP_NETBSD) || defined(HAVE_PTHREAD_ATTR_SETNAME_NP_IBMI) || \
+    defined(HAVE_PTHREAD_SETNAME_NP_GNU) || defined(HAVE_PTHREAD_SET_NAME_NP_FREEBSD) || defined(HAVE_PTHREAD_SETNAME_NP_DARWIN) || \
+    defined(HAVE_PTHREAD_SETNAME_NP_NETBSD) )
 int a = 1;
 #elif defined(MHD_USE_W32_THREADS) && defined(_MSC_FULL_VER)
 int b = 2;
@@ -465,6 +624,9 @@ if test "x$enable_shared" = "xyes" && test "x$os_is_native_w32" = "xyes"; then
 fi
 AM_CONDITIONAL(W32_SHARED_LIB_EXP, [test "x$w32_shared_lib_exp" = "xyes"])
 AM_CONDITIONAL(USE_MS_LIB_TOOL, [test "x$ac_cv_use_ms_lib_tool" = "xyes"])
+
+MHD_CHECK_SOCKET_SHUTDOWN_TRIGGER([AC_DEFINE([HAVE_LISTEN_SHUTDOWN],[1],[can use shutdown on listen sockets])])
+AM_CONDITIONAL([HAVE_LISTEN_SHUTDOWN], [test "x$mhd_cv_host_shtdwn_trgr_select" = "xyes"])
 
 # set GCC options
 # use '-fno-strict-aliasing', but only if the compiler
@@ -558,12 +720,22 @@ fi
 AC_CHECK_HEADERS([fcntl.h math.h errno.h limits.h stdio.h locale.h sys/stat.h sys/types.h], [], [AC_MSG_ERROR([Compiling libmicrohttpd requires standard UNIX headers files])], [AC_INCLUDES_DEFAULT])
 
 # Check for optional headers
-AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h time.h sys/mman.h search.h sys/ioctl.h \
+AC_CHECK_HEADERS([sys/types.h sys/time.h sys/msg.h time.h sys/mman.h sys/ioctl.h \
   sys/socket.h sys/select.h netdb.h netinet/in.h netinet/ip.h netinet/tcp.h arpa/inet.h \
   endian.h machine/endian.h sys/endian.h sys/param.h sys/machine.h sys/byteorder.h machine/param.h sys/isa_defs.h \
   inttypes.h stddef.h unistd.h \
   sockLib.h inetLib.h net/if.h], [], [], [AC_INCLUDES_DEFAULT])
-AM_CONDITIONAL([HAVE_TSEARCH], [test "x$ac_cv_header_search_h" = "xyes"])
+
+AC_CHECK_HEADER([[search.h]],
+  [
+   gl_FUNC_TSEARCH
+   AS_IF([[test "x$HAVE_TSEARCH" = "x1" && test "x$REPLACE_TSEARCH" != "x1"]],
+     [AC_DEFINE([[HAVE_SEARCH_H]], [[1]],
+       [Define to 1 if you have the <search.h> header file and your system have properly functioning tsearch(), tfind() and tdelete() functions])])
+  ],
+  [], [AC_INCLUDES_DEFAULT])
+
+AM_CONDITIONAL([MHD_HAVE_TSEARCH], [[test "x$ac_cv_header_search_h" = xyes && test "x$HAVE_TSEARCH" = "x1" && test "x$REPLACE_TSEARCH" != "x1"]])
 
 # Check for generic functions
 AC_CHECK_FUNCS([rand random])
@@ -776,9 +948,20 @@ AC_CHECK_DECLS([SOCK_NONBLOCK], [AC_DEFINE([HAVE_SOCK_NONBLOCK], [1], [SOCK_NONB
                    ])
 
 
-AC_SEARCH_LIBS([clock_gettime], [rt], [
-				AC_DEFINE(HAVE_CLOCK_GETTIME, 1, [Have clock_gettime])
-])
+AC_CHECK_DECL([[clock_gettime]],
+  [
+   SAVE_LIBS="$LIBS"
+   AC_SEARCH_LIBS([clock_gettime], [rt],
+     [
+      AC_DEFINE([HAVE_CLOCK_GETTIME], [1], [Have clock_gettime])
+      AS_VAR_IF([[ac_cv_search_clock_gettime]],[["none required"]], [],
+        [
+         MHD_LIBDEPS="$ac_cv_search_clock_gettime $MHD_LIBDEPS"
+         MHD_LIBDEPS_PKGCFG="$ac_cv_search_clock_gettime $MHD_LIBDEPS_PKGCFG"
+        ])
+     ], [], [$MHD_LIBDEPS])
+   LIBS="$SAVE_LIBS"
+  ], [], [[#include <time.h>]])
 
 AC_MSG_CHECKING([[for clock_get_time]])
 AC_LINK_IFELSE(
@@ -896,18 +1079,17 @@ then
 fi
 AM_CONDITIONAL([HAVE_CURL], [test "x$enable_curl" = "xyes"])
 
-AC_CHECK_LIB([[magic]], [[magic_open]],
-  [AC_CHECK_HEADERS([magic.h], [
-     AM_CONDITIONAL(HAVE_MAGIC, true),
-     AM_CONDITIONAL(HAVE_MAGIC, false)]
-     ,[] ,[AC_INCLUDES_DEFAULT])
-  ], [AM_CONDITIONAL(HAVE_MAGIC, false)])
+mhd_have_magic_open='no'
+AC_CHECK_HEADERS([[magic.h]],
+  [ AC_CHECK_LIB([[magic]], [[magic_open]], [[mhd_have_magic_open='yes']]) ],[],
+  [AC_INCLUDES_DEFAULT])
 
+AM_CONDITIONAL([HAVE_MAGIC], [[test "x$mhd_have_magic_open" = "xyes"]])
 
 # large file support (> 4 GB)
 AC_SYS_LARGEFILE
 AC_FUNC_FSEEKO
-AC_CHECK_FUNCS([_lseeki64 lseek64 sendfile64])
+AC_CHECK_FUNCS([lseek64 sendfile64 pread64 pread])
 
 # optional: have error messages ?
 AC_MSG_CHECKING([[whether to generate error messages]])
@@ -942,6 +1124,22 @@ AC_CHECK_PROG([have_socat],[socat], [yes], [no])
 AM_CONDITIONAL([HAVE_ZZUF], [test "x$have_zzuf" = "xyes"])
 AM_CONDITIONAL([HAVE_SOCAT], [test "x$have_socat" = "xyes"])
 
+GNUTLS_CPPFLAGS=""
+GNUTLS_LDFLAGS=""
+have_gnutls=no
+have_gnutls_sni=no
+have_gcrypt=no
+
+# optional: HTTPS support.  Enabled by default
+AC_ARG_ENABLE([https],
+   [AS_HELP_STRING([--enable-https],
+               [enable HTTPS support (yes, no, auto)[auto]])],
+   [enable_https=${enableval}])
+if test "x$enable_https" != "xno"
+then
+#
+# Next block is large unindented block
+#
 
 # libgcrypt linkage: required for HTTPS support
 AM_PATH_LIBGCRYPT([1.2.2], [have_gcrypt=yes], [have_gcrypt=no])
@@ -958,10 +1156,6 @@ then
 fi
 
 # gnutls
-GNUTLS_CPPFLAGS=""
-GNUTLS_LDFLAGS=""
-have_gnutls=no
-have_gnutls_sni=no
 have_gnutls_pkgcfg=no
 AC_MSG_CHECKING([[how to find GnuTLS library]])
 AC_ARG_WITH([[gnutls]],
@@ -1025,7 +1219,7 @@ AS_IF([test "x$with_gnutls" != "xno" && test "x$have_gnutls" != "xyes"],
           [
            AC_MSG_RESULT([[yes]])
            have_gnutls=yes
-           GNUTLS_CPPLAGS="$GNUTLS_CFLAGS"
+           GNUTLS_CPPFLAGS="$GNUTLS_CFLAGS"
            GNUTLS_LDFLAGS="$GNUTLS_LIBS"
            AC_MSG_CHECKING([[for gnutls_privkey_import_x509_raw()]])
            AC_LINK_IFELSE([
@@ -1051,36 +1245,45 @@ AS_IF([test "x$with_gnutls" != "xno" && test "x$have_gnutls" != "xyes"],
       ],
       [
        have_gnutls_pkgcfg='no'
+       SAVE_CPPFLAGS="$CPPFLAGS"
+       SAVE_CFLAGS="$CFLAGS"
+       SAVE_LDFLAGS="$LDFLAGS"
+       SAVE_LIBS="$LIBS"
+       # Try to use libgcrypt search path
+       # as libgcrypt flags will be used
+       # anyway for HTTPs builds
+       CFLAGS="$CFLAGS $LIBGCRYPT_CFLAGS"
+       CPPFLAGS="$CPPFLAGS $LIBGCRYPT_CFLAGS"
+       LDFLAGS="$LDFLAGS $LIBGCRYPT_LIBS"
        AC_CHECK_HEADERS([gnutls/gnutls.h],
         [AC_CHECK_LIB([gnutls], [gnutls_priority_set],
           [
+            GNUTLS_CPPFLAGS="$LIBGCRYPT_CFLAGS"
+            GNUTLS_CFLAGS="$LIBGCRYPT_CFLAGS"
+            GNUTLS_LDFLAGS="$LIBGCRYPT_LIBS"
             GNUTLS_LIBS="-lgnutls"
             AC_CHECK_LIB([gnutls], [gnutls_load_file], [AC_CHECK_LIB([gnutls], [gnutls_privkey_import_x509_raw], [have_gnutls_sni=yes])])
             have_gnutls=yes
           ])], [], [AC_INCLUDES_DEFAULT])
+       CPPFLAGS="$SAVE_CPPFLAGS"
+       CFLAGS="$SAVE_CFLAGS"
+       LDFLAGS="$SAVE_LDFLAGS"
+       LIBS="$SAVE_LIBS"
       ])
   ])
 
 AS_IF([test "x$have_gnutls" != "xyes" && test "x$with_gnutls" = "xyes"], [AC_MSG_ERROR([[can't find usable libgnutls]])])
-
-AM_CONDITIONAL(HAVE_GNUTLS, test "x$have_gnutls" = "xyes")
-AM_CONDITIONAL([HAVE_GNUTLS_SNI], [test "x$have_gnutls_sni" = "xyes"])
 
 AC_SUBST([GNUTLS_CPPFLAGS])
 AC_SUBST([GNUTLS_CFLAGS])
 AC_SUBST([GNUTLS_LDFLAGS])
 AC_SUBST([GNUTLS_LIBS])
 
-# optional: HTTPS support.  Enabled by default
-AC_MSG_CHECKING(whether to support HTTPS)
-AC_ARG_ENABLE([https],
-   [AS_HELP_STRING([--enable-https],
-               [enable HTTPS support (yes, no, auto)[auto]])],
-   [enable_https=${enableval}])
-if test "x$enable_https" != "xno"
-then
+#
+# End of large unindented block
+#
   AS_IF([test "x$have_gnutls" = "xyes" && test "x$have_gcrypt" = "xyes"], [
-          AC_DEFINE([HTTPS_SUPPORT],[1],[include HTTPS support])
+          AC_DEFINE([[HTTPS_SUPPORT]],[[1]],[Define to 1 if libmicrohttpd is compiled with HTTPS support.])
           enable_https=yes
           MSG_HTTPS="yes (using libgnutls and libgcrypt)"
           MHD_LIB_CPPFLAGS="$MHD_LIB_CPPFLAGS $LIBGCRYPT_CFLAGS $GNUTLS_CPPFLAGS"
@@ -1097,20 +1300,21 @@ then
               MHD_LIBDEPS_PKGCFG="$GNUTLS_LIBS $LIBGCRYPT_LIBS $MHD_LIBDEPS_PKGCFG"
           ])
         ], [
-          AS_IF([test "x$have_gnutls" = "xyes"], [crypt_missing="libgrypt"],
+          AS_IF([test "x$have_gnutls" = "xyes"], [crypt_missing="libgcrypt"],
                 [test "x$have_gcrypt" = "xyes"], [crypt_missing="libgnutls"],
-                                                 [crypt_missing="libgrypt and libgnutls"])
+                                                 [crypt_missing="libgcrypt and libgnutls"])
           AS_IF([[test "x$enable_https" = "xyes" ]], [AC_MSG_ERROR([[HTTPS support cannot be enabled without $crypt_missing.]])])
-          AC_DEFINE([HTTPS_SUPPORT],[0],[no libgcrypt or libgnutls])
           enable_https=no
           MSG_HTTPS="no (lacking $crypt_missing)"
         ])
 else
-  AC_DEFINE([HTTPS_SUPPORT],[0],[disable HTTPS support])
   MSG_HTTPS="no (disabled)"
 fi
+AC_MSG_CHECKING(whether to support HTTPS)
 AC_MSG_RESULT([$MSG_HTTPS])
 
+AM_CONDITIONAL([HAVE_GNUTLS], [[test "x$have_gnutls" = "xyes"]])
+AM_CONDITIONAL([HAVE_GNUTLS_SNI], [[test "x$have_gnutls_sni" = "xyes"]])
 AM_CONDITIONAL([ENABLE_HTTPS], [test "x$enable_https" = "xyes"])
 
 # optional: HTTP Basic Auth support. Enabled by default
@@ -1139,7 +1343,79 @@ AS_IF([[test "x$enable_dauth" != "xno"]],
 AM_CONDITIONAL([ENABLE_DAUTH], [test "x$enable_dauth" != "xno"])
 AC_MSG_RESULT([[$enable_dauth]])
 
+# optional: HTTP "Upgrade" support. Enabled by default
+AC_MSG_CHECKING([[whether to support HTTP "Upgrade"]])
+AC_ARG_ENABLE([[httpupgrade]],
+    AS_HELP_STRING([[--disable-httpupgrade]],
+      [disable HTTP "Upgrade" support]),
+    [AS_VAR_IF([[enable_httpupgrade]],[["no"]],[],[[enable_httpupgrade='yes']])],
+    [[enable_httpupgrade='yes']])
+AS_VAR_IF([[enable_httpupgrade]],[["yes"]],
+  [
+   AC_DEFINE([[UPGRADE_SUPPORT]],[[1]],[Define to 1 if libmicrohttpd is compiled with HTTP Upgrade support.]) ])
+AM_CONDITIONAL([ENABLE_UPGRADE], [[test "x$enable_httpupgrade" = "xyes"]])
+AC_MSG_RESULT([[$enable_httpupgrade]])
 
+AC_CACHE_CHECK([[for calloc()]], [[mhd_cv_have_func_calloc]],
+  [
+   AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <stdlib.h>
+       ]],[[void * ptr = calloc(1, 2)]])
+     ],
+     [[mhd_cv_have_func_calloc='yes']],
+     [[mhd_cv_have_func_calloc='no']]
+   )
+  ]
+)
+AS_VAR_IF([[mhd_cv_have_func_calloc]], [["yes"]],
+  [AC_DEFINE([[HAVE_CALLOC]], [[1]], [Define to 1 if you have the usable `calloc' function.])])
+
+# Check for fork() and waitpid(). They are used for tests.
+AC_MSG_CHECKING([[for fork()]])
+mhd_have_fork_waitpid='no'
+AC_LINK_IFELSE(
+  [
+   AC_LANG_PROGRAM(
+     [[
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+     ]], [[
+  pid_t p = fork ();
+  if (0 == p)
+    return 1;
+     ]])
+  ], [
+   AC_DEFINE([[HAVE_FORK]], [[1]], [Define to 1 if you have the usable `fork' function.])
+   AC_MSG_RESULT([[yes]])
+
+   AC_MSG_CHECKING([[for waitpid()]])
+   AC_LINK_IFELSE(
+     [
+      AC_LANG_PROGRAM(
+        [[
+#include <sys/wait.h>
+        ]], [[
+     pid_t p = fork ();
+     if (0 == p)
+       return 1;
+     waitpid (p, (void*)0, 0)
+        ]])
+     ], [
+      AC_DEFINE([[HAVE_WAITPID]], [[1]], [Define to 1 if you have the usable `waitpid' function.])
+      AC_MSG_RESULT([[yes]])
+      mhd_have_fork_waitpid='yes'
+    ],[
+       AC_MSG_RESULT([[no]])
+    ])
+],[
+   AC_MSG_RESULT([[no]])
+])
+
+AM_CONDITIONAL([HAVE_FORK_WAITPID], [test "x$mhd_have_fork_waitpid" = "xyes"])
 
 MHD_LIB_LDFLAGS="$MHD_LIB_LDFLAGS -export-dynamic -no-undefined"
 
@@ -1169,16 +1445,20 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LIBS)
 AC_SUBST(LDFLAGS)
 
+# Used for 'po' directory staff
+AC_SUBST([ac_configure_args])
+AC_SUBST([EMPTY_VAR], [[]])
+
 AC_CONFIG_FILES([
 libmicrohttpd.pc
 w32/common/microhttpd_dll_res_vc.rc
+po/configure.acT:po/configure.ac.in
 Makefile
 contrib/Makefile
 doc/Makefile
 doc/doxygen/Makefile
 doc/examples/Makefile
 m4/Makefile
-po/Makefile.in
 src/Makefile
 src/include/Makefile
 src/microhttpd/Makefile
@@ -1203,9 +1483,12 @@ AC_MSG_NOTICE([libmicrohttpd ${PACKAGE_VERSION} Configuration Summary:
   Inter-thread comm: ${use_itc}
   libcurl (testing): ${MSG_CURL}
   Target directory:  ${prefix}
+  Shutdown of listening socket
+  trigger select:    ${mhd_cv_host_shtdwn_trgr_select}
   Messages:          ${enable_messages}
   Basic auth.:       ${enable_bauth}
   Digest auth.:      ${enable_dauth}
+  HTTP "Upgrade":    ${enable_httpupgrade}
   Postproc:          ${enable_postprocessor}
   HTTPS support:     ${MSG_HTTPS}
   poll support:      ${enable_poll=no}
@@ -1227,6 +1510,7 @@ fi
 
 if test "x$enable_bauth" != "xyes" || \
    test "x$enable_dauth" != "xyes" || \
+   test "x$enable_httpupgrade" != "xyes" || \
    test "x$enable_postprocessor" != "xyes"
 then
  AC_MSG_NOTICE([WARNING: This will be a custom build with missing symbols. Do NOT use this build in a distribution. Building with these kinds of configure options is only for custom builds for embedded systems.])

@@ -100,8 +100,8 @@ testExternalGet (int flags)
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_DEBUG | MHD_USE_TLS | flags,
-                        1082, NULL, NULL, &ahc_echo, "GET", 
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG | MHD_USE_TLS | flags,
+                        1082, NULL, NULL, &ahc_echo, "GET",
                         MHD_OPTION_HTTPS_MEM_KEY, srv_key_pem,
                         MHD_OPTION_HTTPS_MEM_CERT, srv_self_signed_cert_pem,
 			MHD_OPTION_END);
@@ -109,7 +109,7 @@ testExternalGet (int flags)
     return 256;
 
   if (curl_uses_nss_ssl() == 0)
-    aes256_sha = "rsa_aes_256_sha";   
+    aes256_sha = "rsa_aes_256_sha";
 
   c = curl_easy_init ();
   curl_easy_setopt (c, CURLOPT_URL, "https://127.0.0.1:1082/hello_world");
@@ -175,7 +175,16 @@ testExternalGet (int flags)
         }
       tv.tv_sec = 0;
       tv.tv_usec = 1000;
-      select (maxposixs + 1, &rs, &ws, &es, &tv);
+      if (-1 != maxposixs)
+        {
+          if (-1 == select (maxposixs + 1, &rs, &ws, &es, &tv))
+            {
+#ifdef MHD_POSIX_SOCKETS
+              if (EINTR != errno)
+#endif /* MHD_POSIX_SOCKETS */
+                abort ();
+            }
+        }
       curl_multi_perform (multi, &running);
       if (running == 0)
         {
@@ -221,14 +230,21 @@ main (int argc, char *const *argv)
   if (0 != curl_global_init (CURL_GLOBAL_ALL))
     {
       fprintf (stderr, "Error: %s\n", strerror (errno));
-      return -1;
+      return 99;
     }
+  if (NULL == curl_version_info (CURLVERSION_NOW)->ssl_version)
+    {
+      fprintf (stderr, "Curl does not support SSL.  Cannot run the test.\n");
+      curl_global_cleanup ();
+      return 77;
+    }
+
 #ifdef EPOLL_SUPPORT
-  if (0 != (errorCount = testExternalGet (MHD_USE_EPOLL)))
-    fprintf (stderr, "Fail: %d\n", errorCount);
+  errorCount += testExternalGet (MHD_USE_EPOLL);
 #endif
-  if (0 != (errorCount = testExternalGet (0)))
-    fprintf (stderr, "Fail: %d\n", errorCount);
+  errorCount += testExternalGet (0);
   curl_global_cleanup ();
-  return errorCount != 0;
+  if (errorCount != 0)
+    fprintf (stderr, "Failed test: %s, error: %u.\n", argv[0], errorCount);
+  return errorCount != 0 ? 1 : 0;
 }

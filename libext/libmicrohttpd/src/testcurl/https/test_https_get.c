@@ -43,11 +43,11 @@ test_cipher_option (FILE * test_fd,
 		    const char *cipher_suite,
 		    int proto_version)
 {
-
   int ret;
   struct MHD_Daemon *d;
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_TLS |
-                        MHD_USE_DEBUG, 4233,
+
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS |
+                        MHD_USE_ERROR_LOG, 4233,
                         NULL, NULL, &http_ahc, NULL,
                         MHD_OPTION_HTTPS_MEM_KEY, srv_key_pem,
                         MHD_OPTION_HTTPS_MEM_CERT, srv_self_signed_cert_pem,
@@ -75,8 +75,8 @@ test_secure_get (FILE * test_fd,
   int ret;
   struct MHD_Daemon *d;
 
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_TLS |
-                        MHD_USE_DEBUG, 4233,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS |
+                        MHD_USE_ERROR_LOG, 4233,
                         NULL, NULL, &http_ahc, NULL,
                         MHD_OPTION_HTTPS_MEM_KEY, srv_signed_key_pem,
                         MHD_OPTION_HTTPS_MEM_CERT, srv_signed_cert_pem,
@@ -109,7 +109,13 @@ main (int argc, char *const *argv)
   if (0 != curl_global_init (CURL_GLOBAL_ALL))
     {
       fprintf (stderr, "Error: %s\n", strerror (errno));
-      return -1;
+      return 99;
+    }
+  if (NULL == curl_version_info (CURLVERSION_NOW)->ssl_version)
+    {
+      fprintf (stderr, "Curl does not support SSL.  Cannot run the test.\n");
+      curl_global_cleanup ();
+      return 77;
     }
 
   if (curl_uses_nss_ssl() == 0)
@@ -126,5 +132,5 @@ main (int argc, char *const *argv)
 
   curl_global_cleanup ();
 
-  return errorCount != 0;
+  return errorCount != 0 ? 1 : 0;
 }

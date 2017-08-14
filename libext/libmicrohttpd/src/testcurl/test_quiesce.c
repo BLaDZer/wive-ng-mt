@@ -125,7 +125,7 @@ ServeOneRequest(void *param)
 
   fd = (MHD_socket) (intptr_t) param;
 
-  d = MHD_start_daemon (MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG,
                         1082, NULL, NULL, &ahc_echo, "GET",
                         MHD_OPTION_LISTEN_SOCKET, fd,
                         MHD_OPTION_NOTIFY_COMPLETED, &request_completed, &done,
@@ -204,12 +204,12 @@ testGet (int type, int pool_count, int poll_flag)
   cbc.size = 2048;
   cbc.pos = 0;
   if (pool_count > 0) {
-    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_ITC | poll_flag,
+    d = MHD_start_daemon (type | MHD_USE_ERROR_LOG | MHD_USE_ITC | poll_flag,
                           11080, NULL, NULL, &ahc_echo, "GET",
                           MHD_OPTION_THREAD_POOL_SIZE, pool_count, MHD_OPTION_END);
 
   } else {
-    d = MHD_start_daemon (type | MHD_USE_DEBUG | MHD_USE_ITC | poll_flag,
+    d = MHD_start_daemon (type | MHD_USE_ERROR_LOG | MHD_USE_ITC | poll_flag,
                           11080, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
   }
   if (d == NULL)
@@ -346,7 +346,7 @@ testExternalGet ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG,
                         11080,
                         NULL, NULL,
                         &ahc_echo, "GET",
@@ -487,20 +487,20 @@ main (int argc, char *const *argv)
 
   if (0 != curl_global_init (CURL_GLOBAL_WIN32))
     return 2;
-  errorCount += testGet (MHD_USE_SELECT_INTERNALLY, 0, 0);
-  errorCount += testGet (MHD_USE_THREAD_PER_CONNECTION, 0, 0);
-  errorCount += testGet (MHD_USE_SELECT_INTERNALLY, CPU_COUNT, 0);
+  errorCount += testGet (MHD_USE_INTERNAL_POLLING_THREAD, 0, 0);
+  errorCount += testGet (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD, 0, 0);
+  errorCount += testGet (MHD_USE_INTERNAL_POLLING_THREAD, CPU_COUNT, 0);
   errorCount += testExternalGet ();
   if (MHD_YES == MHD_is_feature_supported(MHD_FEATURE_POLL))
     {
-      errorCount += testGet(MHD_USE_SELECT_INTERNALLY, 0, MHD_USE_POLL);
-      errorCount += testGet (MHD_USE_THREAD_PER_CONNECTION, 0, MHD_USE_POLL);
-      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, CPU_COUNT, MHD_USE_POLL);
+      errorCount += testGet(MHD_USE_INTERNAL_POLLING_THREAD, 0, MHD_USE_POLL);
+      errorCount += testGet (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD, 0, MHD_USE_POLL);
+      errorCount += testGet (MHD_USE_INTERNAL_POLLING_THREAD, CPU_COUNT, MHD_USE_POLL);
     }
   if (MHD_YES == MHD_is_feature_supported(MHD_FEATURE_EPOLL))
     {
-      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, 0, MHD_USE_EPOLL);
-      errorCount += testGet (MHD_USE_SELECT_INTERNALLY, CPU_COUNT, MHD_USE_EPOLL);
+      errorCount += testGet (MHD_USE_INTERNAL_POLLING_THREAD, 0, MHD_USE_EPOLL);
+      errorCount += testGet (MHD_USE_INTERNAL_POLLING_THREAD, CPU_COUNT, MHD_USE_EPOLL);
     }
   if (errorCount != 0)
     fprintf (stderr, "Error (code: %u)\n", errorCount);

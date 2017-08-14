@@ -134,7 +134,7 @@ testInternalPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG,
                         11080,
                         NULL, NULL, &ahc_echo, &done_flag, MHD_OPTION_END);
   if (d == NULL)
@@ -144,7 +144,7 @@ testInternalPut ()
     {
       fprintf (stderr, ".");
       c = curl_easy_init ();
-      curl_easy_setopt (c, CURLOPT_URL, "http://localhost:11080/hello_world");
+      curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:11080/hello_world");
       curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
       curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
       curl_easy_setopt (c, CURLOPT_READFUNCTION, &putBuffer);
@@ -185,13 +185,13 @@ testMultithreadedPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG,
                         11081,
                         NULL, NULL, &ahc_echo, &done_flag, MHD_OPTION_END);
   if (d == NULL)
     return 16;
   c = curl_easy_init ();
-  curl_easy_setopt (c, CURLOPT_URL, "http://localhost:11081/hello_world");
+  curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:11081/hello_world");
   curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
   curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
   curl_easy_setopt (c, CURLOPT_READFUNCTION, &putBuffer);
@@ -253,7 +253,7 @@ testExternalPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG,
                         11082,
                         NULL, NULL, &ahc_echo, &done_flag, MHD_OPTION_END);
   if (d == NULL)
@@ -270,7 +270,7 @@ testExternalPut ()
     {
       fprintf (stderr, ".");
       c = curl_easy_init ();
-      curl_easy_setopt (c, CURLOPT_URL, "http://localhost:11082/hello_world");
+      curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:11082/hello_world");
       curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
       curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
       curl_easy_setopt (c, CURLOPT_READFUNCTION, &putBuffer);

@@ -29,6 +29,8 @@ noinst_PROGRAMS = \
  fileserver_example_external_select \
  refuse_post_example
 
+EXTRA_DIST = msgs_i18n.c
+noinst_EXTRA_DIST = msgs_i18n.c
 
 if ENABLE_HTTPS
 noinst_PROGRAMS += https_fileserver_example
@@ -53,6 +55,11 @@ noinst_PROGRAMS += \
  authorization_example
 endif
 
+if ENABLE_UPGRADE
+noinst_PROGRAMS += \
+ upgrade_example
+endif
+
 if HAVE_W32
 AM_CFLAGS += -DWINDOWS
 endif
@@ -60,6 +67,11 @@ endif
 minimal_example_SOURCES = \
  minimal_example.c
 minimal_example_LDADD = \
+ $(top_builddir)/src/microhttpd/libmicrohttpd.la
+
+upgrade_example_SOURCES = \
+ upgrade_example.c
+upgrade_example_LDADD = \
  $(top_builddir)/src/microhttpd/libmicrohttpd.la
 
 timeout_SOURCES = \

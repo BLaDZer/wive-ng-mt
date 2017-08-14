@@ -36,6 +36,8 @@
 #include <unistd.h>
 #endif
 
+#include "test_helpers.h"
+
 #if defined(CPU_COUNT) && (CPU_COUNT+0) < 2
 #undef CPU_COUNT
 #endif
@@ -44,16 +46,9 @@
 #endif
 
 static int oneone;
+static int incr_read; /* Use incremental read */
+static int verbose; /* Be verbose */
 
-/**
- * Do not make this much larger since we will hit the
- * MHD default buffer limit and the test code is not
- * written for incremental upload processing...
- * (larger values will likely cause MHD to generate
- * an internal server error -- which would be avoided
- * by writing the putBuffer method in a more general
- * fashion).
- */
 #define PUT_SIZE (256 * 1024)
 
 static char *put_buffer;
@@ -65,13 +60,41 @@ struct CBC
   size_t size;
 };
 
+char*
+alloc_init(size_t buf_size)
+{
+  static const char template[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz";
+  static const size_t templ_size = sizeof(template) / sizeof(char) - 1;
+  char *buf;
+  char *fill_ptr;
+  size_t to_fill;
+
+  buf = malloc(buf_size);
+  if (NULL == buf)
+    return NULL;
+
+  fill_ptr = buf;
+  to_fill = buf_size;
+  while (to_fill > 0)
+    {
+      const size_t to_copy = to_fill > templ_size ? templ_size : to_fill;
+      memcpy (fill_ptr, template, to_copy);
+      fill_ptr += to_copy;
+      to_fill -= to_copy;
+    }
+  return buf;
+}
+
 static size_t
 putBuffer (void *stream, size_t size, size_t nmemb, void *ptr)
 {
-  unsigned int *pos = ptr;
-  unsigned int wrt;
+  size_t *pos = (size_t *)ptr;
+  size_t wrt;
 
   wrt = size * nmemb;
+  /* Check for overflow. */
+  if (wrt / size != nmemb)
+    return 0;
   if (wrt > PUT_SIZE - (*pos))
     wrt = PUT_SIZE - (*pos);
   memcpy (stream, &put_buffer[*pos], wrt);
@@ -98,35 +121,46 @@ ahc_echo (void *cls,
           const char *method,
           const char *version,
           const char *upload_data, size_t *upload_data_size,
-          void **unused)
+          void **pparam)
 {
   int *done = cls;
   struct MHD_Response *response;
   int ret;
+  static size_t processed;
 
   if (0 != strcmp ("PUT", method))
     return MHD_NO;              /* unexpected method */
   if ((*done) == 0)
     {
-      if (*upload_data_size != PUT_SIZE)
+      size_t *pproc;
+      if (NULL == *pparam)
         {
-#if 0
-          fprintf (stderr,
-                   "Waiting for more data (%u/%u)...\n",
-                   *upload_data_size, PUT_SIZE);
-#endif
-          return MHD_YES;       /* not yet ready */
+          processed = 0;
+          *pparam = &processed; /* Safe as long as only one parallel request served. */
         }
-      if (0 == memcmp (upload_data, put_buffer, PUT_SIZE))
+      pproc = (size_t*) *pparam;
+
+      if (0 == *upload_data_size)
+        return MHD_YES; /* No data to process. */
+
+      if (*pproc + *upload_data_size > PUT_SIZE)
         {
-          *upload_data_size = 0;
-        }
-      else
-        {
-          printf ("Invalid upload data!\n");
+          fprintf (stderr, "Incoming data larger than expected.\n");
           return MHD_NO;
         }
-      *done = 1;
+      if ( (!incr_read) && (*upload_data_size != PUT_SIZE) )
+        return MHD_YES; /* Wait until whole request is received. */
+
+      if (0 != memcmp(upload_data, put_buffer + (*pproc), *upload_data_size))
+        {
+          fprintf (stderr, "Incoming data does not match sent data.\n");
+          return MHD_NO;
+        }
+      *pproc += *upload_data_size;
+      *upload_data_size = 0; /* Current block of data is fully processed. */
+
+      if (PUT_SIZE == *pproc)
+        *done = 1; /* Whole request is processed. */
       return MHD_YES;
     }
   response = MHD_create_response_from_buffer (strlen (url),
@@ -139,12 +173,12 @@ ahc_echo (void *cls,
 
 
 static int
-testInternalPut ()
+testPutInternalThread (unsigned int add_flag)
 {
   struct MHD_Daemon *d;
   CURL *c;
   struct CBC cbc;
-  unsigned int pos = 0;
+  size_t pos = 0;
   int done_flag = 0;
   CURLcode errornum;
   char buf[2048];
@@ -152,10 +186,10 @@ testInternalPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG | add_flag,
                         1080,
                         NULL, NULL, &ahc_echo, &done_flag,
-			MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t) (1024*1024),
+			MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t)(incr_read ? 1024 : (PUT_SIZE * 4)),
 			MHD_OPTION_END);
   if (d == NULL)
     return 1;
@@ -197,12 +231,12 @@ testInternalPut ()
 }
 
 static int
-testMultithreadedPut ()
+testPutThreadPerConn (unsigned int add_flag)
 {
   struct MHD_Daemon *d;
   CURL *c;
   struct CBC cbc;
-  unsigned int pos = 0;
+  size_t pos = 0;
   int done_flag = 0;
   CURLcode errornum;
   char buf[2048];
@@ -210,10 +244,11 @@ testMultithreadedPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD |
+                          MHD_USE_ERROR_LOG | add_flag,
                         1081,
                         NULL, NULL, &ahc_echo, &done_flag,
-			MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t) (1024*1024),
+                        MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t)(incr_read ? 1024 : (PUT_SIZE * 4)),
 			MHD_OPTION_END);
   if (d == NULL)
     return 16;
@@ -258,12 +293,12 @@ testMultithreadedPut ()
 }
 
 static int
-testMultithreadedPoolPut ()
+testPutThreadPool (unsigned int add_flag)
 {
   struct MHD_Daemon *d;
   CURL *c;
   struct CBC cbc;
-  unsigned int pos = 0;
+  size_t pos = 0;
   int done_flag = 0;
   CURLcode errornum;
   char buf[2048];
@@ -271,11 +306,11 @@ testMultithreadedPoolPut ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG | add_flag,
                         1081,
                         NULL, NULL, &ahc_echo, &done_flag,
                         MHD_OPTION_THREAD_POOL_SIZE, CPU_COUNT,
-			MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t) (1024*1024),
+                        MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t)(incr_read ? 1024 : (PUT_SIZE * 4)),
 			MHD_OPTION_END);
   if (d == NULL)
     return 16;
@@ -320,7 +355,7 @@ testMultithreadedPoolPut ()
 }
 
 static int
-testExternalPut ()
+testPutExternal (void)
 {
   struct MHD_Daemon *d;
   CURL *c;
@@ -340,7 +375,7 @@ testExternalPut ()
   struct CURLMsg *msg;
   time_t start;
   struct timeval tv;
-  unsigned int pos = 0;
+  size_t pos = 0;
   int done_flag = 0;
   char buf[2048];
 
@@ -348,11 +383,11 @@ testExternalPut ()
   cbc.size = 2048;
   cbc.pos = 0;
   multi = NULL;
-  d = MHD_start_daemon (MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG,
                         1082,
                         NULL, NULL, &ahc_echo, &done_flag,
-                        MHD_OPTION_CONNECTION_MEMORY_LIMIT,
-                        (size_t) (PUT_SIZE * 4), MHD_OPTION_END);
+                        MHD_OPTION_CONNECTION_MEMORY_LIMIT, (size_t)(incr_read ? 1024 : (PUT_SIZE * 4)),
+                        MHD_OPTION_END);
   if (d == NULL)
     return 256;
   c = curl_easy_init ();
@@ -469,21 +504,63 @@ int
 main (int argc, char *const *argv)
 {
   unsigned int errorCount = 0;
+  unsigned int lastErr;
 
-  oneone = (NULL != strrchr (argv[0], (int) '/')) ?
-    (NULL != strstr (strrchr (argv[0], (int) '/'), "11")) : 0;
+  oneone = has_in_name(argv[0], "11");
+  incr_read = has_in_name(argv[0], "_inc");
+  verbose = has_param(argc, argv, "-v");
   if (0 != curl_global_init (CURL_GLOBAL_WIN32))
-    return 2;
-  put_buffer = malloc (PUT_SIZE);
-  if (NULL == put_buffer) return 1;
-  memset (put_buffer, 1, PUT_SIZE);
-  errorCount += testInternalPut ();
-  errorCount += testMultithreadedPut ();
-  errorCount += testMultithreadedPoolPut ();
-  errorCount += testExternalPut ();
+    return 99;
+  put_buffer = alloc_init (PUT_SIZE);
+  if (NULL == put_buffer)
+    return 99;
+  lastErr = testPutInternalThread (0);
+  if (verbose && 0 != lastErr)
+    fprintf (stderr, "Error during testing with internal thread with select().\n");
+  errorCount += lastErr;
+  lastErr = testPutThreadPerConn (0);
+  if (verbose && 0 != lastErr)
+    fprintf (stderr, "Error during testing with internal thread per connection with select().\n");
+  errorCount += lastErr;
+  lastErr = testPutThreadPool (0);
+  if (verbose && 0 != lastErr)
+    fprintf (stderr, "Error during testing with thread pool per connection with select().\n");
+  errorCount += lastErr;
+  lastErr = testPutExternal ();
+  if (verbose && 0 != lastErr)
+    fprintf (stderr, "Error during testing with external select().\n");
+  errorCount += lastErr;
+  if (MHD_is_feature_supported(MHD_FEATURE_POLL))
+    {
+      lastErr = testPutInternalThread (MHD_USE_POLL);
+      if (verbose && 0 != lastErr)
+        fprintf (stderr, "Error during testing with internal thread with poll().\n");
+      errorCount += lastErr;
+      lastErr = testPutThreadPerConn (MHD_USE_POLL);
+      if (verbose && 0 != lastErr)
+        fprintf (stderr, "Error during testing with internal thread per connection with poll().\n");
+      errorCount += lastErr;
+      lastErr = testPutThreadPool (MHD_USE_POLL);
+      if (verbose && 0 != lastErr)
+        fprintf (stderr, "Error during testing with thread pool per connection with poll().\n");
+      errorCount += lastErr;
+    }
+  if (MHD_is_feature_supported(MHD_FEATURE_EPOLL))
+    {
+      lastErr = testPutInternalThread (MHD_USE_EPOLL);
+      if (verbose && 0 != lastErr)
+        fprintf (stderr, "Error during testing with internal thread with epoll.\n");
+      errorCount += lastErr;
+      lastErr = testPutThreadPool (MHD_USE_EPOLL);
+      if (verbose && 0 != lastErr)
+        fprintf (stderr, "Error during testing with thread pool per connection with epoll.\n");
+      errorCount += lastErr;
+    }
   free (put_buffer);
   if (errorCount != 0)
     fprintf (stderr, "Error (code: %u)\n", errorCount);
+  else if (verbose)
+    printf ("All checks passed successfully.\n");
   curl_global_cleanup ();
-  return errorCount != 0;       /* 0 == pass */
+  return (errorCount == 0) ? 0 : 1;
 }

@@ -23,7 +23,7 @@
  * @author Matthieu Speder
  */
 #include "platform.h"
-#include <limits.h>
+#include "mhd_limits.h"
 #include "internal.h"
 #include "md5.h"
 #include "mhd_mono_clock.h"
@@ -413,7 +413,7 @@ check_nonce_nc (struct MHD_Connection *connection,
     {
       /* Fresh nonce, reinitialize array */
       strcpy (nn->nonce,
-              nonce);
+	      nonce);
       nn->nc = 0;
       nn->nmask = 0;
       MHD_mutex_unlock_chk_ (&daemon->nnc_lock);
@@ -477,9 +477,9 @@ MHD_digest_auth_get_username(struct MHD_Connection *connection)
     return NULL;
   if (0 != strncmp (header,
                     _BASE,
-                    strlen (_BASE)))
+                    MHD_STATICSTR_LEN_ (_BASE)))
     return NULL;
-  header += strlen (_BASE);
+  header += MHD_STATICSTR_LEN_ (_BASE);
   if (0 == (len = lookup_sub_value (user,
 				    sizeof (user),
 				    header,
@@ -699,9 +699,9 @@ MHD_digest_auth_check (struct MHD_Connection *connection,
     return MHD_NO;
   if (0 != strncmp (header,
                     _BASE,
-                    strlen(_BASE)))
+                    MHD_STATICSTR_LEN_(_BASE)))
     return MHD_NO;
-  header += strlen (_BASE);
+  header += MHD_STATICSTR_LEN_ (_BASE);
   left = strlen (header);
 
   {
@@ -950,7 +950,7 @@ MHD_queue_auth_fail_response (struct MHD_Connection *connection,
 			      int signal_stale)
 {
   int ret;
-  size_t hlen;
+  int hlen;
   char nonce[NONCE_STD_LEN + 1];
 
   /* Generating the server nonce */
@@ -986,7 +986,7 @@ MHD_queue_auth_fail_response (struct MHD_Connection *connection,
     {
       char *header;
 
-      header = malloc (hlen + 1);
+      header = MHD_calloc_ (1, hlen + 1);
       if (NULL == header)
         {
 #ifdef HAVE_MESSAGES

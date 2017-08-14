@@ -116,8 +116,8 @@ main (int argc, char *const *argv)
   gnutls_global_init ();
   gnutls_global_set_log_level (11);
 
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_TLS |
-                        MHD_USE_DEBUG, DEAMON_TEST_PORT,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS |
+                        MHD_USE_ERROR_LOG, DEAMON_TEST_PORT,
                         NULL, NULL, &http_dummy_ahc, NULL,
                         MHD_OPTION_CONNECTION_TIMEOUT, TIME_OUT,
                         MHD_OPTION_HTTPS_MEM_KEY, srv_key_pem,
@@ -143,5 +143,5 @@ main (int argc, char *const *argv)
   MHD_stop_daemon (d);
   gnutls_global_deinit ();
 
-  return errorCount != 0;
+  return errorCount != 0 ? 1 : 0;
 }

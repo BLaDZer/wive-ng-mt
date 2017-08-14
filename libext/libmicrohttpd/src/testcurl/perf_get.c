@@ -192,7 +192,7 @@ testInternalGet (int port, int poll_flag)
 
   cbc.buf = buf;
   cbc.size = 2048;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG  | poll_flag,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG  | poll_flag,
                         port, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
   if (d == NULL)
     return 1;
@@ -226,8 +226,9 @@ testInternalGet (int port, int poll_flag)
 	}
       curl_easy_cleanup (c);
     }
-  stop (poll_flag == MHD_USE_POLL ? "internal poll" :
-	poll_flag == MHD_USE_EPOLL ? "internal epoll" : "internal select");
+  stop (poll_flag == MHD_USE_AUTO ? "internal thread with 'auto'" :
+        poll_flag == MHD_USE_POLL ? "internal thread with poll()" :
+	poll_flag == MHD_USE_EPOLL ? "internal thread with epoll" : "internal thread with select()");
   MHD_stop_daemon (d);
   if (cbc.pos != strlen ("/hello_world"))
     return 4;
@@ -252,7 +253,7 @@ testMultithreadedGet (int port, int poll_flag)
 
   cbc.buf = buf;
   cbc.size = 2048;
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_DEBUG  | poll_flag,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG  | poll_flag,
                         port, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
   if (d == NULL)
     return 16;
@@ -286,8 +287,10 @@ testMultithreadedGet (int port, int poll_flag)
 	}
       curl_easy_cleanup (c);
     }
-  stop ((poll_flag & MHD_USE_POLL) ? "thread with poll" :
-	(poll_flag & MHD_USE_EPOLL) ? "thread with epoll" : "thread with select");
+  stop ((poll_flag & MHD_USE_AUTO) ? "internal thread with 'auto' and thread per connection" :
+        (poll_flag & MHD_USE_POLL) ? "internal thread with poll() and thread per connection" :
+	(poll_flag & MHD_USE_EPOLL) ? "internal thread with epoll and thread per connection" :
+	    "internal thread with select() and thread per connection");
   MHD_stop_daemon (d);
   if (cbc.pos != strlen ("/hello_world"))
     return 64;
@@ -311,7 +314,7 @@ testMultithreadedPoolGet (int port, int poll_flag)
 
   cbc.buf = buf;
   cbc.size = 2048;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY | MHD_USE_DEBUG | poll_flag,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG | poll_flag,
                         port, NULL, NULL, &ahc_echo, "GET",
                         MHD_OPTION_THREAD_POOL_SIZE, CPU_COUNT, MHD_OPTION_END);
   if (d == NULL)
@@ -346,8 +349,9 @@ testMultithreadedPoolGet (int port, int poll_flag)
 	}
       curl_easy_cleanup (c);
     }
-  stop (0 != (poll_flag & MHD_USE_POLL) ? "thread pool with poll" :
-	0 != (poll_flag & MHD_USE_EPOLL) ? "thread pool with epoll" : "thread pool with select");
+  stop (0 != (poll_flag & MHD_USE_AUTO) ? "internal thread pool with 'auto'" :
+        0 != (poll_flag & MHD_USE_POLL) ? "internal thread pool with poll()" :
+	0 != (poll_flag & MHD_USE_EPOLL) ? "internal thread pool with epoll" : "internal thread pool with select()");
   MHD_stop_daemon (d);
   if (cbc.pos != strlen ("/hello_world"))
     return 64;
@@ -386,7 +390,7 @@ testExternalGet (int port)
   multi = NULL;
   cbc.buf = buf;
   cbc.size = 2048;
-  d = MHD_start_daemon (MHD_USE_DEBUG,
+  d = MHD_start_daemon (MHD_USE_ERROR_LOG,
                         port, NULL, NULL, &ahc_echo, "GET", MHD_OPTION_END);
   if (d == NULL)
     return 256;
@@ -520,6 +524,9 @@ main (int argc, char *const *argv)
 					      "/hello_world",
 					      MHD_RESPMEM_MUST_COPY);
   errorCount += testExternalGet (port++);
+  errorCount += testInternalGet (port++, MHD_USE_AUTO);
+  errorCount += testMultithreadedGet (port++, MHD_USE_AUTO);
+  errorCount += testMultithreadedPoolGet (port++, MHD_USE_AUTO);
   errorCount += testInternalGet (port++, 0);
   errorCount += testMultithreadedGet (port++, 0);
   errorCount += testMultithreadedPoolGet (port++, 0);

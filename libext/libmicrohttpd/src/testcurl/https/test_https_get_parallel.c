@@ -142,16 +142,21 @@ main (int argc, char *const *argv)
   if (0 != curl_global_init (CURL_GLOBAL_ALL))
     {
       fprintf (stderr, "Error: %s\n", strerror (errno));
-      return -1;
+      return 99;
     }
 
+  if (NULL == curl_version_info (CURLVERSION_NOW)->ssl_version)
+    {
+      fprintf (stderr, "Curl does not support SSL.  Cannot run the test.\n");
+      return 77;
+    }
   if (curl_uses_nss_ssl() == 0)
-    aes256_sha = "rsa_aes_256_sha";    
+    aes256_sha = "rsa_aes_256_sha";
 #ifdef EPOLL_SUPPORT
   errorCount +=
     test_wrap ("single threaded daemon, single client, epoll", &test_single_client,
                NULL,
-               MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS | MHD_USE_DEBUG | MHD_USE_EPOLL,
+               MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS | MHD_USE_ERROR_LOG | MHD_USE_EPOLL,
                aes256_sha, CURL_SSLVERSION_TLSv1, MHD_OPTION_HTTPS_MEM_KEY,
                srv_key_pem, MHD_OPTION_HTTPS_MEM_CERT,
                srv_self_signed_cert_pem, MHD_OPTION_END);
@@ -159,7 +164,7 @@ main (int argc, char *const *argv)
   errorCount +=
     test_wrap ("single threaded daemon, single client", &test_single_client,
                NULL,
-               MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS | MHD_USE_DEBUG,
+               MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS | MHD_USE_ERROR_LOG,
                aes256_sha, CURL_SSLVERSION_TLSv1, MHD_OPTION_HTTPS_MEM_KEY,
                srv_key_pem, MHD_OPTION_HTTPS_MEM_CERT,
                srv_self_signed_cert_pem, MHD_OPTION_END);
@@ -167,7 +172,7 @@ main (int argc, char *const *argv)
   errorCount +=
     test_wrap ("single threaded daemon, parallel clients, epoll",
                &test_parallel_clients, NULL,
-               MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS | MHD_USE_DEBUG | MHD_USE_EPOLL,
+               MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS | MHD_USE_ERROR_LOG | MHD_USE_EPOLL,
                aes256_sha, CURL_SSLVERSION_TLSv1, MHD_OPTION_HTTPS_MEM_KEY,
                srv_key_pem, MHD_OPTION_HTTPS_MEM_CERT,
                srv_self_signed_cert_pem, MHD_OPTION_END);
@@ -175,11 +180,13 @@ main (int argc, char *const *argv)
   errorCount +=
     test_wrap ("single threaded daemon, parallel clients",
                &test_parallel_clients, NULL,
-               MHD_USE_SELECT_INTERNALLY | MHD_USE_TLS | MHD_USE_DEBUG,
+               MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_TLS | MHD_USE_ERROR_LOG,
                aes256_sha, CURL_SSLVERSION_TLSv1, MHD_OPTION_HTTPS_MEM_KEY,
                srv_key_pem, MHD_OPTION_HTTPS_MEM_CERT,
                srv_self_signed_cert_pem, MHD_OPTION_END);
 
   curl_global_cleanup ();
-  return errorCount != 0;
+  if (errorCount != 0)
+    fprintf (stderr, "Failed test: %s, error: %u.\n", argv[0], errorCount);
+  return errorCount != 0 ? 1 : 0;
 }

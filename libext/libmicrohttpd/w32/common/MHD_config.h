@@ -9,13 +9,6 @@
 /* Define if MS VC compiler is used */
 #define MSVC 1
 
-/* Define to type which will be used as boolean type. */
-#if _MSC_VER+0 >= 1800
-#define _MHD_bool _Bool
-#else  /* before VS 2013 */
-#define _MHD_bool int
-#endif /* before VS 2013 */
-
 /* Define to 1 if your C compiler supports inline functions. */
 #define INLINE_FUNC 1
 
@@ -38,6 +31,8 @@
 /* Enable error messages */
 #define HAVE_MESSAGES 1
 
+/* Enable HTTP Upgrade support. */
+#define UPGRADE_SUPPORT 1
 
 /* *** OS features *** */
 
@@ -71,6 +66,9 @@
 
 /* Define to 1 if you have the `gmtime_s' function in W32 form. */
 #define HAVE_W32_GMTIME_S 1
+
+/* Define to 1 if you have the usable `calloc' function. */
+#define HAVE_CALLOC 1
 
 #if _MSC_VER >= 1900 /* snprintf() supported natively since VS2015 */
 /* Define to 1 if you have the `snprintf' function. */
@@ -133,6 +131,24 @@
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #define HAVE_STDDEF_H 1
+
+#if _MSC_VER+0 >= 1800 /* VS 2013 and later */
+/* Define to 1 if you have the <stdbool.h> header file and <stdbool.h> defines
+   'bool' type. */
+#define HAVE_STDBOOL_H 1
+#else  /* before VS 2013 */
+
+/* Define to type name which will be used as boolean type. */
+#define bool int
+
+/* Define to value interpreted by compiler as boolean "false", if "false" is
+   not defined by system headers. */
+#define false 0
+
+/* Define to value interpreted by compiler as boolean "true", if "true" is not
+   defined by system headers. */
+#define true (!0)
+#endif /* before VS 2013 */
 
 
 /* *** Other useful staff *** */

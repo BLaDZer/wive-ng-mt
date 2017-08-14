@@ -48,7 +48,6 @@ run_tls_handshake (struct MHD_Connection *connection)
 {
   int ret;
 
-  connection->last_activity = MHD_monotonic_sec_counter ();
   if (MHD_TLS_CONNECTION_INIT == connection->state)
     {
       ret = gnutls_handshake (connection->tls_session);
@@ -56,7 +55,8 @@ run_tls_handshake (struct MHD_Connection *connection)
 	{
 	  /* set connection state to enable HTTP processing */
 	  connection->state = MHD_CONNECTION_INIT;
-	  return MHD_YES;
+	  MHD_update_last_activity_ (connection);
+	  return MHD_NO;
 	}
       if ( (GNUTLS_E_AGAIN == ret) ||
 	   (GNUTLS_E_INTERRUPTED == ret) )
@@ -132,7 +132,7 @@ MHD_tls_connection_handle_write (struct MHD_Connection *connection)
 static int
 MHD_tls_connection_handle_idle (struct MHD_Connection *connection)
 {
-  unsigned int timeout;
+  time_t timeout;
 
 #if DEBUG_STATES
   MHD_DLOG (connection->daemon,
@@ -140,11 +140,8 @@ MHD_tls_connection_handle_idle (struct MHD_Connection *connection)
             __FUNCTION__,
             MHD_state_to_string (connection->state));
 #endif
-  timeout = connection->connection_timeout;
-  if ( (timeout != 0) &&
-       (timeout <= (MHD_monotonic_sec_counter() - connection->last_activity)))
-    MHD_connection_close_ (connection,
-                           MHD_REQUEST_TERMINATED_TIMEOUT_REACHED);
+  if (connection->suspended)
+    return MHD_connection_handle_idle (connection);
   switch (connection->state)
     {
       /* on newly created connections we might reach here before any reply has been received */
@@ -152,15 +149,15 @@ MHD_tls_connection_handle_idle (struct MHD_Connection *connection)
       break;
       /* close connection if necessary */
     case MHD_CONNECTION_CLOSED:
-      gnutls_bye (connection->tls_session,
-                  GNUTLS_SHUT_RDWR);
       return MHD_connection_handle_idle (connection);
     default:
-      if ( (0 != gnutls_record_check_pending (connection->tls_session)) &&
-	   (MHD_YES != MHD_tls_connection_handle_read (connection)) )
-	return MHD_YES;
       return MHD_connection_handle_idle (connection);
     }
+  timeout = connection->connection_timeout;
+  if ( (timeout != 0) &&
+       (timeout < (MHD_monotonic_sec_counter() - connection->last_activity)))
+    MHD_connection_close_ (connection,
+                           MHD_REQUEST_TERMINATED_TIMEOUT_REACHED);
 #ifdef EPOLL_SUPPORT
   return MHD_connection_epoll_update_ (connection);
 #else
@@ -181,6 +178,24 @@ MHD_set_https_callbacks (struct MHD_Connection *connection)
   connection->read_handler = &MHD_tls_connection_handle_read;
   connection->write_handler = &MHD_tls_connection_handle_write;
   connection->idle_handler = &MHD_tls_connection_handle_idle;
+}
+
+
+/**
+ * Initiate shutdown of TLS layer of connection.
+ *
+ * @param connection to use
+ * @return #MHD_YES if succeed, #MHD_NO otherwise.
+ */
+int
+MHD_tls_connection_shutdown (struct MHD_Connection *connection)
+{
+  if (connection->tls_closed)
+    return MHD_NO;
+
+  connection->tls_closed = true;
+  return (GNUTLS_E_SUCCESS == gnutls_bye(connection->tls_session, GNUTLS_SHUT_WR)) ?
+      MHD_YES : MHD_NO;
 }
 
 /* end of connection_https.c */

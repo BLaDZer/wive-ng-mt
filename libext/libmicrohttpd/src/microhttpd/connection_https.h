@@ -28,7 +28,7 @@
 
 #include "internal.h"
 
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
 /**
  * Set connection callback function to be used through out
  * the processing of this secure connection.
@@ -37,6 +37,16 @@
  */
 void 
 MHD_set_https_callbacks (struct MHD_Connection *connection);
-#endif
+
+
+/**
+ * Initiate shutdown of TLS layer of connection.
+ *
+ * @param connection to use
+ * @return #MHD_YES if succeed, #MHD_NO otherwise.
+ */
+int
+MHD_tls_connection_shutdown (struct MHD_Connection *connection);
+#endif /* HTTPS_SUPPORT */
 
 #endif

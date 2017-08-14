@@ -1,6 +1,6 @@
 /*
      This file is part of libmicrohttpd
-     Copyright (C) 2007, 2011 Christian Grothoff
+     Copyright (C) 2007, 2011, 2017 Christian Grothoff, Karlson2k (Evgeny Grin)
 
      This library is free software; you can redistribute it and/or
      modify it under the terms of the GNU Lesser General Public
@@ -22,15 +22,16 @@
  * @brief  Tables of the string response phrases
  * @author Elliot Glaysher
  * @author Christian Grothoff (minor code clean up)
+ * @author Karlson2k (Evgeny Grin)
  */
 #include "platform.h"
 #include "microhttpd.h"
 
 #ifndef NULL
-#define NULL (void*)0
+#define NULL ((void*)0)
 #endif
 
-static const char *invalid_hundred[] = {
+static const char *const invalid_hundred[] = {
   NULL
 };
 
@@ -48,13 +49,32 @@ static const char *const two_hundred[] = {
   "No Content",
   "Reset Content",
   "Partial Content",
-  "Multi Status"
+  "Multi-Status",
+  "Already Reported",
+  "Unknown",
+  "Unknown", /* 210 */
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown", /* 215 */
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown", /* 220 */
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown",
+  "Unknown", /* 225 */
+  "IM Used"
 };
 
 static const char *const three_hundred[] = {
   "Multiple Choices",
   "Moved Permanently",
-  "Moved Temporarily",
+  "Found",
   "See Other",
   "Not Modified",
   "Use Proxy",
@@ -72,30 +92,30 @@ static const char *const four_hundred[] = {
   "Method Not Allowed",
   "Not Acceptable",
   "Proxy Authentication Required",
-  "Request Time-out",
+  "Request Timeout",
   "Conflict",
   "Gone",
   "Length Required",
   "Precondition Failed",
-  "Request Entity Too Large",
-  "Request-URI Too Large",
+  "Payload Too Large",
+  "URI Too Long",
   "Unsupported Media Type",
-  "Requested Range Not Satisfiable",
+  "Range Not Satisfiable",
   "Expectation Failed",
   "Unknown",
   "Unknown",
   "Unknown", /* 420 */
-  "Unknown",
+  "Misdirected Request",
   "Unprocessable Entity",
   "Locked",
   "Failed Dependency",
   "Unordered Collection",
   "Upgrade Required",
   "Unknown",
-  "Unknown",
-  "Unknown",
+  "Precondition Required",
+  "Too Many Requests",
   "Unknown", /* 430 */
-  "Unknown",
+  "Request Header Fields Too Large",
   "Unknown",
   "Unknown",
   "Unknown",
@@ -123,19 +143,20 @@ static const char *const five_hundred[] = {
   "Not Implemented",
   "Bad Gateway",
   "Service Unavailable",
-  "Gateway Time-out",
-  "HTTP Version not supported",
+  "Gateway Timeout",
+  "HTTP Version Not Supported",
   "Variant Also Negotiates",
   "Insufficient Storage",
-  "Unknown",
+  "Loop Detected",
   "Bandwidth Limit Exceeded",
-  "Not Extended"
+  "Not Extended",
+  "Network Authentication Required"
 };
 
 
 struct MHD_Reason_Block
 {
-  unsigned int max;
+  size_t max;
   const char *const*data;
 };
 

@@ -1,6 +1,6 @@
 /*
      This file is part of libmicrohttpd
-     Copyright (C) 2007, 2009, 2010, 2016 Daniel Pittman and Christian Grothoff
+     Copyright (C) 2007, 2009, 2010, 2016, 2017 Daniel Pittman and Christian Grothoff
 
      This library is free software; you can redistribute it and/or
      modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@
  * @brief  Methods for managing response objects
  * @author Daniel Pittman
  * @author Christian Grothoff
+ * @author Karlson2k (Evgeny Grin)
  */
 
 #define MHD_NO_DEPRECATION 1
@@ -29,14 +30,19 @@
 #ifdef HAVE_SYS_IOCTL_H
 #include <sys/ioctl.h>
 #endif /* HAVE_SYS_IOCTL_H */
+#ifdef _WIN32
+#include <windows.h>
+#endif /* _WIN32 */
 
 #include "internal.h"
 #include "response.h"
 #include "mhd_limits.h"
 #include "mhd_sockets.h"
 #include "mhd_itc.h"
+#include "mhd_str.h"
 #include "connection.h"
 #include "memorypool.h"
+#include "mhd_compat.h"
 
 
 #if defined(_WIN32) && defined(MHD_W32_MUTEX_)
@@ -70,8 +76,8 @@ add_response_entry (struct MHD_Response *response,
   if ( (NULL == response) ||
        (NULL == header) ||
        (NULL == content) ||
-       (0 == strlen (header)) ||
-       (0 == strlen (content)) ||
+       (0 == header[0]) ||
+       (0 == content[0]) ||
        (NULL != strchr (header, '\t')) ||
        (NULL != strchr (header, '\r')) ||
        (NULL != strchr (header, '\n')) ||
@@ -235,10 +241,45 @@ MHD_get_response_header (struct MHD_Response *response,
   if (NULL == key)
     return NULL;
   for (pos = response->first_header; NULL != pos; pos = pos->next)
-    if (0 == strcmp (key,
-                     pos->header))
-      return pos->value;
+    {
+      if ( MHD_str_equal_caseless_ (pos->header, key) )
+        return pos->value;
+    }
   return NULL;
+}
+
+/**
+ * Check whether response header contains particular token.
+ *
+ * Token could be surrounded by spaces and tabs and delimited by comma.
+ * Case-insensitive match used for header names and tokens.
+ * @param response  the response to query
+ * @param key       header name
+ * @param token     the token to find
+ * @param token_len the length of token, not including optional
+ *                  terminating null-character.
+ * @return true if token is found in specified header,
+ *         false otherwise
+ */
+bool
+MHD_check_response_header_token_ci (const struct MHD_Response *response,
+                                    const char *key,
+                                    const char *token,
+                                    size_t token_len)
+{
+  struct MHD_HTTP_Header *pos;
+
+  if (NULL == key || 0 == key[0] || NULL == token || 0 == token[0])
+    return false;
+
+  for (pos = response->first_header; NULL != pos; pos = pos->next)
+    {
+      if ( (pos->kind == MHD_HEADER_KIND) &&
+           MHD_str_equal_caseless_ (pos->header, key) &&
+           MHD_str_has_token_caseless_ (pos->value, token, token_len) )
+        return true;
+    }
+  return false;
 }
 
 
@@ -269,11 +310,8 @@ MHD_create_response_from_callback (uint64_t size,
 
   if ((NULL == crc) || (0 == block_size))
     return NULL;
-  if (NULL == (response = malloc (sizeof (struct MHD_Response) + block_size)))
+  if (NULL == (response = MHD_calloc_ (1, sizeof (struct MHD_Response) + block_size)))
     return NULL;
-  memset (response,
-          0,
-          sizeof (struct MHD_Response));
   response->fd = -1;
   response->data = (void *) &response[1];
   response->data_buffer_size = block_size;
@@ -342,23 +380,35 @@ file_reader (void *cls,
              size_t max)
 {
   struct MHD_Response *response = cls;
+#ifndef _WIN32
   ssize_t n;
+#else  /* _WIN32 */
+  const HANDLE fh = (HANDLE) _get_osfhandle (response->fd);
+#endif /* _WIN32 */
   const int64_t offset64 = (int64_t)(pos + response->fd_off);
 
   if (offset64 < 0)
     return MHD_CONTENT_READER_END_WITH_ERROR; /* seek to required position is not possible */
 
+#ifndef _WIN32
+  if (max > SSIZE_MAX)
+    max = SSIZE_MAX; /* Clamp to maximum return value. */
+
+#if defined(HAVE_PREAD64)
+  n = pread64(response->fd, buf, max, offset64);
+#elif defined(HAVE_PREAD)
+  if ( (sizeof(off_t) < sizeof (uint64_t)) &&
+       (offset64 > (uint64_t)INT32_MAX) )
+    return MHD_CONTENT_READER_END_WITH_ERROR; /* Read at required position is not possible. */
+
+  n = pread(response->fd, buf, max, (off_t) offset64);
+#else  /* ! HAVE_PREAD */
 #if defined(HAVE_LSEEK64)
   if (lseek64 (response->fd,
                offset64,
                SEEK_SET) != offset64)
     return MHD_CONTENT_READER_END_WITH_ERROR; /* can't seek to required position */
-#elif defined(HAVE___LSEEKI64)
-  if (_lseeki64 (response->fd,
-                 offset64,
-                 SEEK_SET) != offset64)
-    return MHD_CONTENT_READER_END_WITH_ERROR; /* can't seek to required position */
-#else /* !HAVE___LSEEKI64 */
+#else  /* ! HAVE_LSEEK64 */
   if ( (sizeof(off_t) < sizeof (uint64_t)) &&
        (offset64 > (uint64_t)INT32_MAX) )
     return MHD_CONTENT_READER_END_WITH_ERROR; /* seek to required position is not possible */
@@ -367,29 +417,37 @@ file_reader (void *cls,
              (off_t) offset64,
              SEEK_SET) != (off_t) offset64)
     return MHD_CONTENT_READER_END_WITH_ERROR; /* can't seek to required position */
-#endif
-
-#ifndef _WIN32
-  if (max > SSIZE_MAX)
-    max = SSIZE_MAX;
-
+#endif /* ! HAVE_LSEEK64 */
   n = read (response->fd,
             buf,
             max);
-#else  /* _WIN32 */
-  if (max > INT32_MAX)
-    max = INT32_MAX;
 
-  n = read (response->fd,
-            buf,
-            (unsigned int) max);
-#endif /* _WIN32 */
-
+#endif /* ! HAVE_PREAD */
   if (0 == n)
     return MHD_CONTENT_READER_END_OF_STREAM;
   if (n < 0)
     return MHD_CONTENT_READER_END_WITH_ERROR;
   return n;
+#else /* _WIN32 */
+  if (INVALID_HANDLE_VALUE == fh)
+    return MHD_CONTENT_READER_END_WITH_ERROR; /* Value of 'response->fd' is not valid. */
+  else
+    {
+      OVERLAPPED f_ol = {0, 0, {{0, 0}}, 0}; /* Initialize to zero. */
+      ULARGE_INTEGER pos_uli;
+      DWORD toRead = (max > INT32_MAX) ? INT32_MAX : (DWORD) max;
+      DWORD resRead;
+
+      pos_uli.QuadPart = (uint64_t) offset64; /* Simple transformation 64bit -> 2x32bit. */
+      f_ol.Offset = pos_uli.LowPart;
+      f_ol.OffsetHigh = pos_uli.HighPart;
+      if (! ReadFile(fh, (void*)buf, toRead, &resRead, &f_ol))
+        return MHD_CONTENT_READER_END_WITH_ERROR; /* Read error. */
+      if (0 == resRead)
+        return MHD_CONTENT_READER_END_OF_STREAM;
+      return (ssize_t) resRead;
+    }
+#endif /* _WIN32 */
 }
 
 
@@ -553,11 +611,8 @@ MHD_create_response_from_data (size_t size,
 
   if ((NULL == data) && (size > 0))
     return NULL;
-  if (NULL == (response = malloc (sizeof (struct MHD_Response))))
+  if (NULL == (response = MHD_calloc_ (1, sizeof (struct MHD_Response))))
     return NULL;
-  memset (response,
-          0,
-          sizeof (struct MHD_Response));
   response->fd = -1;
   if (! MHD_mutex_init_ (&response->mutex))
     {
@@ -576,9 +631,11 @@ MHD_create_response_from_data (size_t size,
       must_free = MHD_YES;
       data = tmp;
     }
-  response->crc = NULL;
-  response->crfc = must_free ? &free : NULL;
-  response->crc_cls = must_free ? data : NULL;
+  if (must_free)
+    {
+      response->crfc = &free;
+      response->crc_cls = data;
+    }
   response->reference_count = 1;
   response->total_size = size;
   response->data = data;
@@ -609,6 +666,7 @@ MHD_create_response_from_buffer (size_t size,
 }
 
 
+#ifdef UPGRADE_SUPPORT
 /**
  * This connection-specific callback is provided by MHD to
  * applications (unusual) during the #MHD_UpgradeHandler.
@@ -626,66 +684,42 @@ MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
                     enum MHD_UpgradeAction action,
                     ...)
 {
-  struct MHD_Connection *connection = urh->connection;
-  struct MHD_Daemon *daemon = connection->daemon;
+  struct MHD_Connection *connection;
+  struct MHD_Daemon *daemon;
+
+  if (NULL == urh)
+    return MHD_NO;
+  connection = urh->connection;
+
+  /* Precaution checks on external data. */
+  if (NULL == connection)
+    return MHD_NO;
+  daemon = connection->daemon;
+  if (NULL == daemon)
+    return MHD_NO;
 
   switch (action)
   {
   case MHD_UPGRADE_ACTION_CLOSE:
+    if (urh->was_closed)
+      return MHD_NO; /* Already closed. */
+
     /* transition to special 'closed' state for start of cleanup */
-    connection->state = MHD_CONNECTION_UPGRADE_CLOSED;
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
     if (0 != (daemon->options & MHD_USE_TLS) )
       {
         /* signal that app is done by shutdown() of 'app' socket */
+        /* Application will not use anyway this socket after this command. */
         shutdown (urh->app.socket,
                   SHUT_RDWR);
       }
-#endif
-#if HTTPS_SUPPORT
-    if (0 != (daemon->options & MHD_USE_TLS) )
-      {
-        urh->was_closed = MHD_YES;
-        /* connection and urh cleanup will be done as soon as outgoing
-         * data will be sent and 'was_closed' is detected */
-        return MHD_YES;
-      }
-#endif
-    /* Application is done with this connection, tear it down! */
-    if (0 != (daemon->options & MHD_USE_THREAD_PER_CONNECTION) )
-      {
-        /* need to finish connection clean up */
-        MHD_cleanup_upgraded_connection_ (connection);
-        if (MHD_CONNECTION_IN_CLEANUP != connection->state)
-          {
-#if DEBUG_CLOSE
-#ifdef HAVE_MESSAGES
-            MHD_DLOG (connection->daemon,
-                      _("Processing thread terminating. Closing connection\n"));
-#endif
-#endif
-            if (MHD_CONNECTION_CLOSED != connection->state)
-              MHD_connection_close_ (connection,
-                                     MHD_REQUEST_TERMINATED_DAEMON_SHUTDOWN);
-            connection->idle_handler (connection);
-          }
-        if (NULL != connection->response)
-          {
-            MHD_destroy_response (connection->response);
-            connection->response = NULL;
-          }
-
-        if (MHD_INVALID_SOCKET != connection->socket_fd)
-          {
-            shutdown (connection->socket_fd,
-                      SHUT_WR);
-            MHD_socket_close_chk_ (connection->socket_fd);
-            connection->socket_fd = MHD_INVALID_SOCKET;
-          }
-        return MHD_YES;
-      }
-    /* 'upgraded' resources are not needed anymore - cleanup now */
-    MHD_cleanup_upgraded_connection_ (connection);
+#endif /* HTTPS_SUPPORT */
+    EXTRA_CHECK (MHD_CONNECTION_UPGRADE == connection->state);
+    urh->was_closed = true;
+    /* As soon as connection will be marked with BOTH
+     * 'urh->was_closed' AND 'urh->clean_ready', it will
+     * be moved to cleanup list by MHD_resume_connection(). */
+    MHD_resume_connection (connection);
     return MHD_YES;
   default:
     /* we don't understand this one */
@@ -698,6 +732,9 @@ MHD_upgrade_action (struct MHD_UpgradeResponseHandle *urh,
  * We are done sending the header of a given response to the client.
  * Now it is time to perform the upgrade and hand over the connection
  * to the application.
+ * @remark To be called only from thread that process connection's
+ * recv(), send() and response. Must be called right after sending
+ * response headers.
  *
  * @param response the response that was created for an upgrade
  * @param connection the specific connection we are upgrading
@@ -712,6 +749,9 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
   struct MHD_UpgradeResponseHandle *urh;
   size_t rbo;
 
+  if (0 == (daemon->options & MHD_ALLOW_UPGRADE))
+    return MHD_NO;
+
   if (NULL ==
       MHD_get_response_header (response,
                                MHD_HTTP_HEADER_UPGRADE))
@@ -723,22 +763,23 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
       return MHD_NO;
     }
 
-  urh = malloc (sizeof (struct MHD_UpgradeResponseHandle));
+  urh = MHD_calloc_ (1, sizeof (struct MHD_UpgradeResponseHandle));
   if (NULL == urh)
     return MHD_NO;
-  memset (urh,
-          0,
-          sizeof (struct MHD_UpgradeResponseHandle));
   urh->connection = connection;
   rbo = connection->read_buffer_offset;
   connection->read_buffer_offset = 0;
-#if HTTPS_SUPPORT
+#ifdef HTTPS_SUPPORT
   if (0 != (daemon->options & MHD_USE_TLS) )
   {
     struct MemoryPool *pool;
     size_t avail;
     char *buf;
     MHD_socket sv[2];
+#if defined(MHD_socket_nosignal_) || !defined(MHD_socket_pair_nblk_)
+    int res1;
+    int res2;
+#endif /* MHD_socket_nosignal_ || !MHD_socket_pair_nblk_ */
 
 #ifdef MHD_socket_pair_nblk_
     if (! MHD_socket_pair_nblk_ (sv))
@@ -752,16 +793,45 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
         free (urh);
         return MHD_NO;
       }
-    if ( (! MHD_socket_nonblocking_(sv[0])) ||
-         (! MHD_socket_nonblocking_(sv[1])) )
+    res1 = MHD_socket_nonblocking_(sv[0]);
+    res2 = MHD_socket_nonblocking_(sv[1]);
+    if ( (! res1) || (! res2) )
       {
 #ifdef HAVE_MESSAGES
         MHD_DLOG (daemon,
-		  _("Failed to make loopback sockets non-blocking: %s\n"),
-		  MHD_socket_last_strerr_ ());
+		  _("Failed to make loopback sockets non-blocking.\n"));
 #endif
+        if (! res2)
+          {
+            /* Socketpair cannot be used. */
+            MHD_socket_close_chk_ (sv[0]);
+            MHD_socket_close_chk_ (sv[1]);
+            free (urh);
+            return MHD_NO;
+          }
       }
 #endif /* !MHD_socket_pair_nblk_ */
+#ifdef MHD_socket_nosignal_
+    res1 = MHD_socket_nosignal_(sv[0]);
+    res2 = MHD_socket_nosignal_(sv[1]);
+    if ( (! res1) || (! res2) )
+      {
+#ifdef HAVE_MESSAGES
+        MHD_DLOG (daemon,
+                  _("Failed to set SO_NOSIGPIPE on loopback sockets.\n"));
+#endif
+#ifndef MSG_NOSIGNAL
+        if (!res2)
+          {
+            /* Socketpair cannot be used. */
+            MHD_socket_close_chk_ (sv[0]);
+            MHD_socket_close_chk_ (sv[1]);
+            free (urh);
+            return MHD_NO;
+          }
+#endif /* ! MSG_NOSIGNAL */
+      }
+#endif /* MHD_socket_nosignal_ */
     if ( (! MHD_SCKT_FD_FITS_FDSET_ (sv[1],
                                      NULL)) &&
          (0 == (daemon->options & (MHD_USE_POLL | MHD_USE_EPOLL))) )
@@ -785,7 +855,7 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
     urh->mhd.celi = MHD_EPOLL_STATE_UNREADY;
     pool = connection->pool;
     avail = MHD_pool_get_free (pool);
-    if (avail < 8)
+    if (avail < RESERVE_EBUF_SIZE)
       {
         /* connection's pool is totally at the limit,
            use our 'emergency' buffer of #RESERVE_EBUF_SIZE bytes. */
@@ -803,19 +873,10 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
                                  MHD_NO);
       }
     /* use half the buffer for inbound, half for outbound */
-    avail /= 2;
-    urh->in_buffer_size = avail;
-    urh->out_buffer_size = avail;
+    urh->in_buffer_size = avail / 2;
+    urh->out_buffer_size = avail - urh->in_buffer_size;
     urh->in_buffer = buf;
-    urh->out_buffer = &buf[avail];
-    /* hand over internal socket to application */
-    response->upgrade_handler (response->upgrade_handler_cls,
-                               connection,
-                               connection->client_context,
-                               connection->read_buffer,
-                               rbo,
-                               urh->app.socket,
-                               urh);
+    urh->out_buffer = &buf[urh->in_buffer_size];
 #ifdef EPOLL_SUPPORT
     /* Launch IO processing by the event loop */
     if (0 != (daemon->options & MHD_USE_EPOLL))
@@ -826,7 +887,7 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
 
         EXTRA_CHECK (-1 != daemon->epoll_upgrade_fd);
         /* First, add network socket */
-        event.events = EPOLLIN | EPOLLOUT;
+        event.events = EPOLLIN | EPOLLOUT | EPOLLPRI | EPOLLET;
         event.data.ptr = &urh->app;
         if (0 != epoll_ctl (daemon->epoll_upgrade_fd,
                             EPOLL_CTL_ADD,
@@ -845,14 +906,14 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
 	}
 
         /* Second, add our end of the UNIX socketpair() */
-        event.events = EPOLLIN | EPOLLOUT;
+        event.events = EPOLLIN | EPOLLOUT | EPOLLPRI | EPOLLET;
         event.data.ptr = &urh->mhd;
         if (0 != epoll_ctl (daemon->epoll_upgrade_fd,
                             EPOLL_CTL_ADD,
                             urh->mhd.socket,
                             &event))
 	{
-          event.events = EPOLLIN | EPOLLOUT;
+          event.events = EPOLLIN | EPOLLOUT | EPOLLPRI;
           event.data.ptr = &urh->app;
           if (0 != epoll_ctl (daemon->epoll_upgrade_fd,
                               EPOLL_CTL_DEL,
@@ -869,51 +930,52 @@ MHD_response_execute_upgrade_ (struct MHD_Response *response,
           free (urh);
           return MHD_NO;
 	}
+	EDLL_insert (daemon->eready_urh_head,
+		     daemon->eready_urh_tail,
+		     urh);
+	urh->in_eready_list = true;
       }
 #endif /* EPOLL_SUPPORT */
     if (0 == (daemon->options & MHD_USE_THREAD_PER_CONNECTION) )
       {
-        /* As far as MHD's event loops are concerned, this connection
-           is suspended; it will be resumed once we are done in the
-           #MHD_upgrade_action() function */
-        MHD_suspend_connection (connection);
         /* This takes care of further processing for most event loops:
            simply add to DLL for bi-direcitonal processing */
         DLL_insert (daemon->urh_head,
                     daemon->urh_tail,
                     urh);
-        /* Keep reference for later removal from the DLL */
-        connection->urh = urh;
       }
-    else
-      {
-        /* Our caller will set 'connection->state' to
-           MHD_CONNECTION_UPGRADE, thereby triggering the main method
-           of the thread to switch to bi-directional forwarding. */
-        connection->urh = urh;
-      }
-    return MHD_YES;
+    /* In thread-per-connection mode, thread will switch to forwarding once
+     * connection.urh is not NULL and connection.state == MHD_CONNECTION_UPGRADE.
+     */
   }
-  urh->app.socket = MHD_INVALID_SOCKET;
-  urh->mhd.socket = MHD_INVALID_SOCKET;
-#endif
-  if (0 != (daemon->options & MHD_USE_THREAD_PER_CONNECTION) )
-    {
-      connection->urh = urh;
-    }
   else
     {
-      /* As far as MHD's event loops are concerned, this connection is
-         suspended; it will be resumed once we are done in the
-         #MHD_upgrade_action() function */
-      MHD_suspend_connection (connection);
+      urh->app.socket = MHD_INVALID_SOCKET;
+      urh->mhd.socket = MHD_INVALID_SOCKET;
+      /* Non-TLS connection do not hold any additional resources. */
+      urh->clean_ready = true;
     }
+#else  /* ! HTTPS_SUPPORT */
+  urh->clean_ready = true;
+#endif /* ! HTTPS_SUPPORT */
+  connection->urh = urh;
+  /* As far as MHD's event loops are concerned, this connection is
+     suspended; it will be resumed once application is done by the
+     #MHD_upgrade_action() function */
+  internal_suspend_connection_ (connection);
+
+  /* hand over socket to application */
   response->upgrade_handler (response->upgrade_handler_cls,
                              connection,
                              connection->client_context,
                              connection->read_buffer,
                              rbo,
+#ifdef HTTPS_SUPPORT
+                             (0 == (daemon->options & MHD_USE_TLS) ) ?
+                             connection->socket_fd : urh->app.socket,
+#else  /* ! HTTPS_SUPPORT */
                              connection->socket_fd,
+#endif /* ! HTTPS_SUPPORT */
                              urh);
   return MHD_YES;
 }
@@ -956,10 +1018,9 @@ MHD_create_response_for_upgrade (MHD_UpgradeHandler upgrade_handler,
 
   if (NULL == upgrade_handler)
     return NULL; /* invalid request */
-  response = malloc (sizeof (struct MHD_Response));
+  response = MHD_calloc_ (1, sizeof (struct MHD_Response));
   if (NULL == response)
     return NULL;
-  memset (response, 0, sizeof (struct MHD_Response));
   if (! MHD_mutex_init_ (&response->mutex))
     {
       free (response);
@@ -979,6 +1040,7 @@ MHD_create_response_for_upgrade (MHD_UpgradeHandler upgrade_handler,
     }
   return response;
 }
+#endif /* UPGRADE_SUPPORT */
 
 
 /**

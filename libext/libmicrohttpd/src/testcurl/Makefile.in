@@ -90,6 +90,7 @@ host_triplet = @host@
 @HAVE_CURL_TRUE@	test_large_put$(EXEEXT) test_get11$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_get_sendfile11$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_put11$(EXEEXT) test_large_put11$(EXEEXT) \
+@HAVE_CURL_TRUE@	test_large_put_inc11$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_long_header$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_long_header11$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_get_chunked$(EXEEXT) \
@@ -97,15 +98,17 @@ host_triplet = @host@
 @HAVE_CURL_TRUE@	test_iplimit11$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_termination$(EXEEXT) \
 @HAVE_CURL_TRUE@	test_timeout$(EXEEXT) test_callback$(EXEEXT) \
-@HAVE_CURL_TRUE@	$(am__EXEEXT_1) perf_get$(EXEEXT) \
+@HAVE_CURL_TRUE@	perf_get$(EXEEXT) $(am__EXEEXT_1) \
 @HAVE_CURL_TRUE@	$(am__EXEEXT_2) $(am__EXEEXT_3) \
-@HAVE_CURL_TRUE@	$(am__EXEEXT_4)
-@HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@am__append_2 = \
+@HAVE_CURL_TRUE@	$(am__EXEEXT_4) $(am__EXEEXT_5)
+@HAVE_CURL_BINARY_TRUE@@HAVE_CURL_TRUE@@HAVE_FORK_WAITPID_TRUE@am__append_2 = test_get_response_cleanup
+@HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@am__append_3 = \
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@  test_quiesce \
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@  test_concurrent_stop \
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@  perf_get_concurrent
 
-@HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@am__append_3 = \
+@HAVE_CURL_BINARY_TRUE@@HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@am__append_4 = test_quiesce_stream
+@HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@am__append_5 = \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@  test_post \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@  test_postform \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@  test_post_loop \
@@ -114,7 +117,7 @@ host_triplet = @host@
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@  test_post_loop11
 
 @HAVE_CURL_TRUE@noinst_PROGRAMS = test_options$(EXEEXT)
-@ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@am__append_4 = \
+@ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@am__append_6 = \
 @ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@	test_digestauth test_digestauth_with_arguments
 
 subdir = src/testcurl
@@ -129,17 +132,14 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
 	$(top_srcdir)/m4/ax_have_epoll.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/ax_require_defined.m4 \
-	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
-	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libcurl.m4 $(top_srcdir)/m4/libgcrypt.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/mhd_sys_extentions.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/mhd_shutdown_socket_trigger.m4 \
+	$(top_srcdir)/m4/mhd_sys_extentions.m4 $(top_srcdir)/m4/pkg.m4 \
+	$(top_srcdir)/m4/search_h.m4 $(top_srcdir)/m4/tsearch.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -157,18 +157,19 @@ libcurl_version_check_a_LIBADD =
 am_libcurl_version_check_a_OBJECTS = curl_version_check.$(OBJEXT)
 libcurl_version_check_a_OBJECTS =  \
 	$(am_libcurl_version_check_a_OBJECTS)
-@HAVE_CURL_BINARY_TRUE@@HAVE_W32_FALSE@am__EXEEXT_1 = test_get_response_cleanup$(EXEEXT)
+@HAVE_CURL_BINARY_TRUE@@HAVE_CURL_TRUE@@HAVE_FORK_WAITPID_TRUE@am__EXEEXT_1 = test_get_response_cleanup$(EXEEXT)
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@am__EXEEXT_2 = test_quiesce$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@	test_concurrent_stop$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@	perf_get_concurrent$(EXEEXT)
-@HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@am__EXEEXT_3 =  \
+@HAVE_CURL_BINARY_TRUE@@HAVE_CURL_TRUE@@HAVE_POSIX_THREADS_TRUE@am__EXEEXT_3 = test_quiesce_stream$(EXEEXT)
+@HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@am__EXEEXT_4 =  \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_post$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_postform$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_post_loop$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_post11$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_postform11$(EXEEXT) \
 @HAVE_CURL_TRUE@@HAVE_POSTPROCESSOR_TRUE@	test_post_loop11$(EXEEXT)
-@ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@am__EXEEXT_4 =  \
+@ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@am__EXEEXT_5 =  \
 @ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@	test_digestauth$(EXEEXT) \
 @ENABLE_DAUTH_TRUE@@HAVE_CURL_TRUE@	test_digestauth_with_arguments$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
@@ -257,6 +258,10 @@ am_test_large_put11_OBJECTS = test_large_put.$(OBJEXT)
 test_large_put11_OBJECTS = $(am_test_large_put11_OBJECTS)
 test_large_put11_DEPENDENCIES =  \
 	$(top_builddir)/src/microhttpd/libmicrohttpd.la
+am_test_large_put_inc11_OBJECTS = test_large_put.$(OBJEXT)
+test_large_put_inc11_OBJECTS = $(am_test_large_put_inc11_OBJECTS)
+test_large_put_inc11_DEPENDENCIES =  \
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la
 am_test_long_header_OBJECTS = test_long_header.$(OBJEXT)
 test_long_header_OBJECTS = $(am_test_long_header_OBJECTS)
 test_long_header_DEPENDENCIES =  \
@@ -325,6 +330,16 @@ test_quiesce_DEPENDENCIES =  \
 test_quiesce_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_quiesce_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_test_quiesce_stream_OBJECTS =  \
+	test_quiesce_stream-test_quiesce_stream.$(OBJEXT)
+test_quiesce_stream_OBJECTS = $(am_test_quiesce_stream_OBJECTS)
+test_quiesce_stream_DEPENDENCIES =  \
+	$(top_builddir)/src/microhttpd/libmicrohttpd.la \
+	$(am__DEPENDENCIES_1)
+test_quiesce_stream_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_quiesce_stream_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_test_start_stop_OBJECTS = test_start_stop.$(OBJEXT)
 test_start_stop_OBJECTS = $(am_test_start_stop_OBJECTS)
 test_start_stop_DEPENDENCIES =  \
@@ -384,17 +399,18 @@ SOURCES = $(libcurl_version_check_a_SOURCES) $(perf_get_SOURCES) \
 	$(test_get_response_cleanup_SOURCES) \
 	$(test_get_sendfile_SOURCES) $(test_get_sendfile11_SOURCES) \
 	$(test_iplimit11_SOURCES) $(test_large_put_SOURCES) \
-	$(test_large_put11_SOURCES) $(test_long_header_SOURCES) \
-	$(test_long_header11_SOURCES) $(test_options_SOURCES) \
-	$(test_parse_cookies_SOURCES) $(test_post_SOURCES) \
-	$(test_post11_SOURCES) $(test_post_loop_SOURCES) \
-	$(test_post_loop11_SOURCES) $(test_postform_SOURCES) \
-	$(test_postform11_SOURCES) $(test_process_arguments_SOURCES) \
+	$(test_large_put11_SOURCES) $(test_large_put_inc11_SOURCES) \
+	$(test_long_header_SOURCES) $(test_long_header11_SOURCES) \
+	$(test_options_SOURCES) $(test_parse_cookies_SOURCES) \
+	$(test_post_SOURCES) $(test_post11_SOURCES) \
+	$(test_post_loop_SOURCES) $(test_post_loop11_SOURCES) \
+	$(test_postform_SOURCES) $(test_postform11_SOURCES) \
+	$(test_process_arguments_SOURCES) \
 	$(test_process_headers_SOURCES) $(test_put_SOURCES) \
 	$(test_put11_SOURCES) $(test_put_chunked_SOURCES) \
-	$(test_quiesce_SOURCES) $(test_start_stop_SOURCES) \
-	$(test_termination_SOURCES) $(test_timeout_SOURCES) \
-	$(test_urlparse_SOURCES)
+	$(test_quiesce_SOURCES) $(test_quiesce_stream_SOURCES) \
+	$(test_start_stop_SOURCES) $(test_termination_SOURCES) \
+	$(test_timeout_SOURCES) $(test_urlparse_SOURCES)
 DIST_SOURCES = $(libcurl_version_check_a_SOURCES) $(perf_get_SOURCES) \
 	$(perf_get_concurrent_SOURCES) $(test_callback_SOURCES) \
 	$(test_concurrent_stop_SOURCES) $(test_delete_SOURCES) \
@@ -404,17 +420,18 @@ DIST_SOURCES = $(libcurl_version_check_a_SOURCES) $(perf_get_SOURCES) \
 	$(test_get_response_cleanup_SOURCES) \
 	$(test_get_sendfile_SOURCES) $(test_get_sendfile11_SOURCES) \
 	$(test_iplimit11_SOURCES) $(test_large_put_SOURCES) \
-	$(test_large_put11_SOURCES) $(test_long_header_SOURCES) \
-	$(test_long_header11_SOURCES) $(test_options_SOURCES) \
-	$(test_parse_cookies_SOURCES) $(test_post_SOURCES) \
-	$(test_post11_SOURCES) $(test_post_loop_SOURCES) \
-	$(test_post_loop11_SOURCES) $(test_postform_SOURCES) \
-	$(test_postform11_SOURCES) $(test_process_arguments_SOURCES) \
+	$(test_large_put11_SOURCES) $(test_large_put_inc11_SOURCES) \
+	$(test_long_header_SOURCES) $(test_long_header11_SOURCES) \
+	$(test_options_SOURCES) $(test_parse_cookies_SOURCES) \
+	$(test_post_SOURCES) $(test_post11_SOURCES) \
+	$(test_post_loop_SOURCES) $(test_post_loop11_SOURCES) \
+	$(test_postform_SOURCES) $(test_postform11_SOURCES) \
+	$(test_process_arguments_SOURCES) \
 	$(test_process_headers_SOURCES) $(test_put_SOURCES) \
 	$(test_put11_SOURCES) $(test_put_chunked_SOURCES) \
-	$(test_quiesce_SOURCES) $(test_start_stop_SOURCES) \
-	$(test_termination_SOURCES) $(test_timeout_SOURCES) \
-	$(test_urlparse_SOURCES)
+	$(test_quiesce_SOURCES) $(test_quiesce_stream_SOURCES) \
+	$(test_start_stop_SOURCES) $(test_termination_SOURCES) \
+	$(test_timeout_SOURCES) $(test_urlparse_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -710,11 +727,10 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+EMPTY_VAR = @EMPTY_VAR@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
-GMSGFMT = @GMSGFMT@
-GMSGFMT_015 = @GMSGFMT_015@
+GNULIB_TSEARCH = @GNULIB_TSEARCH@
 GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_CPPFLAGS = @GNUTLS_CPPFLAGS@
 GNUTLS_LDFLAGS = @GNUTLS_LDFLAGS@
@@ -722,14 +738,13 @@ GNUTLS_LIBS = @GNUTLS_LIBS@
 GREP = @GREP@
 HAVE_CURL_BINARY = @HAVE_CURL_BINARY@
 HAVE_MAKEINFO_BINARY = @HAVE_MAKEINFO_BINARY@
+HAVE_TSEARCH = @HAVE_TSEARCH@
 HIDDEN_VISIBILITY_CFLAGS = @HIDDEN_VISIBILITY_CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INTLLIBS = @INTLLIBS@
-INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCURL = @LIBCURL@
@@ -737,8 +752,6 @@ LIBCURL_CPPFLAGS = @LIBCURL_CPPFLAGS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
-LIBICONV = @LIBICONV@
-LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -747,8 +760,6 @@ LIB_VERSION_CURRENT = @LIB_VERSION_CURRENT@
 LIB_VERSION_REVISION = @LIB_VERSION_REVISION@
 LIPO = @LIPO@
 LN_S = @LN_S@
-LTLIBICONV = @LTLIBICONV@
-LTLIBINTL = @LTLIBINTL@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -759,9 +770,6 @@ MHD_LIB_CPPFLAGS = @MHD_LIB_CPPFLAGS@
 MHD_LIB_LDFLAGS = @MHD_LIB_LDFLAGS@
 MHD_REQ_PRIVATE = @MHD_REQ_PRIVATE@
 MKDIR_P = @MKDIR_P@
-MSGFMT = @MSGFMT@
-MSGFMT_015 = @MSGFMT_015@
-MSGMERGE = @MSGMERGE@
 MS_LIB_TOOL = @MS_LIB_TOOL@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -783,26 +791,23 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
-POSUB = @POSUB@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
 RANLIB = @RANLIB@
 RC = @RC@
+REPLACE_TSEARCH = @REPLACE_TSEARCH@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-XGETTEXT = @XGETTEXT@
-XGETTEXT_015 = @XGETTEXT_015@
-XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 _libcurl_config = @_libcurl_config@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_configure_args = @ac_configure_args@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -866,7 +871,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/include \
 $(LIBCURL_CPPFLAGS)
 
-@HAVE_CURL_BINARY_TRUE@@HAVE_W32_FALSE@CURL_FORK_TEST = test_get_response_cleanup
 @HAVE_CURL_TRUE@TESTS = $(check_PROGRAMS)
 @HAVE_CURL_TRUE@noinst_LIBRARIES = libcurl_version_check.a
 libcurl_version_check_a_SOURCES = \
@@ -908,6 +912,16 @@ test_quiesce_CFLAGS = \
   $(PTHREAD_CFLAGS) $(AM_CFLAGS)
 
 test_quiesce_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  $(PTHREAD_LIBS) @LIBCURL@
+
+test_quiesce_stream_SOURCES = \
+  test_quiesce_stream.c
+
+test_quiesce_stream_CFLAGS = \
+  $(PTHREAD_CFLAGS) $(AM_CFLAGS)
+
+test_quiesce_stream_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la \
   $(PTHREAD_LIBS) @LIBCURL@
 
@@ -1097,6 +1111,13 @@ test_large_put11_LDADD = \
   $(top_builddir)/src/microhttpd/libmicrohttpd.la \
   @LIBCURL@
 
+test_large_put_inc11_SOURCES = \
+  test_large_put.c
+
+test_large_put_inc11_LDADD = \
+  $(top_builddir)/src/microhttpd/libmicrohttpd.la \
+  @LIBCURL@
+
 test_long_header_SOURCES = \
   test_long_header.c
 
@@ -1257,6 +1278,10 @@ test_large_put11$(EXEEXT): $(test_large_put11_OBJECTS) $(test_large_put11_DEPEND
 	@rm -f test_large_put11$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_large_put11_OBJECTS) $(test_large_put11_LDADD) $(LIBS)
 
+test_large_put_inc11$(EXEEXT): $(test_large_put_inc11_OBJECTS) $(test_large_put_inc11_DEPENDENCIES) $(EXTRA_test_large_put_inc11_DEPENDENCIES) 
+	@rm -f test_large_put_inc11$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_large_put_inc11_OBJECTS) $(test_large_put_inc11_LDADD) $(LIBS)
+
 test_long_header$(EXEEXT): $(test_long_header_OBJECTS) $(test_long_header_DEPENDENCIES) $(EXTRA_test_long_header_DEPENDENCIES) 
 	@rm -f test_long_header$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_long_header_OBJECTS) $(test_long_header_LDADD) $(LIBS)
@@ -1321,6 +1346,10 @@ test_quiesce$(EXEEXT): $(test_quiesce_OBJECTS) $(test_quiesce_DEPENDENCIES) $(EX
 	@rm -f test_quiesce$(EXEEXT)
 	$(AM_V_CCLD)$(test_quiesce_LINK) $(test_quiesce_OBJECTS) $(test_quiesce_LDADD) $(LIBS)
 
+test_quiesce_stream$(EXEEXT): $(test_quiesce_stream_OBJECTS) $(test_quiesce_stream_DEPENDENCIES) $(EXTRA_test_quiesce_stream_DEPENDENCIES) 
+	@rm -f test_quiesce_stream$(EXEEXT)
+	$(AM_V_CCLD)$(test_quiesce_stream_LINK) $(test_quiesce_stream_OBJECTS) $(test_quiesce_stream_LDADD) $(LIBS)
+
 test_start_stop$(EXEEXT): $(test_start_stop_OBJECTS) $(test_start_stop_DEPENDENCIES) $(EXTRA_test_start_stop_DEPENDENCIES) 
 	@rm -f test_start_stop$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_start_stop_OBJECTS) $(test_start_stop_LDADD) $(LIBS)
@@ -1368,6 +1397,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_put.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_put_chunked.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_quiesce-test_quiesce.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_start_stop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_termination.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_timeout.Po@am__quote@
@@ -1438,6 +1468,20 @@ test_quiesce-test_quiesce.obj: test_quiesce.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_quiesce.c' object='test_quiesce-test_quiesce.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_quiesce_CFLAGS) $(CFLAGS) -c -o test_quiesce-test_quiesce.obj `if test -f 'test_quiesce.c'; then $(CYGPATH_W) 'test_quiesce.c'; else $(CYGPATH_W) '$(srcdir)/test_quiesce.c'; fi`
+
+test_quiesce_stream-test_quiesce_stream.o: test_quiesce_stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_quiesce_stream_CFLAGS) $(CFLAGS) -MT test_quiesce_stream-test_quiesce_stream.o -MD -MP -MF $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Tpo -c -o test_quiesce_stream-test_quiesce_stream.o `test -f 'test_quiesce_stream.c' || echo '$(srcdir)/'`test_quiesce_stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Tpo $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_quiesce_stream.c' object='test_quiesce_stream-test_quiesce_stream.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_quiesce_stream_CFLAGS) $(CFLAGS) -c -o test_quiesce_stream-test_quiesce_stream.o `test -f 'test_quiesce_stream.c' || echo '$(srcdir)/'`test_quiesce_stream.c
+
+test_quiesce_stream-test_quiesce_stream.obj: test_quiesce_stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_quiesce_stream_CFLAGS) $(CFLAGS) -MT test_quiesce_stream-test_quiesce_stream.obj -MD -MP -MF $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Tpo -c -o test_quiesce_stream-test_quiesce_stream.obj `if test -f 'test_quiesce_stream.c'; then $(CYGPATH_W) 'test_quiesce_stream.c'; else $(CYGPATH_W) '$(srcdir)/test_quiesce_stream.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Tpo $(DEPDIR)/test_quiesce_stream-test_quiesce_stream.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test_quiesce_stream.c' object='test_quiesce_stream-test_quiesce_stream.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_quiesce_stream_CFLAGS) $(CFLAGS) -c -o test_quiesce_stream-test_quiesce_stream.obj `if test -f 'test_quiesce_stream.c'; then $(CYGPATH_W) 'test_quiesce_stream.c'; else $(CYGPATH_W) '$(srcdir)/test_quiesce_stream.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1783,6 +1827,13 @@ test_large_put11.log: test_large_put11$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_large_put_inc11.log: test_large_put_inc11$(EXEEXT)
+	@p='test_large_put_inc11$(EXEEXT)'; \
+	b='test_large_put_inc11'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test_long_header.log: test_long_header$(EXEEXT)
 	@p='test_long_header$(EXEEXT)'; \
 	b='test_long_header'; \
@@ -1839,16 +1890,16 @@ test_callback.log: test_callback$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-test_get_response_cleanup.log: test_get_response_cleanup$(EXEEXT)
-	@p='test_get_response_cleanup$(EXEEXT)'; \
-	b='test_get_response_cleanup'; \
+perf_get.log: perf_get$(EXEEXT)
+	@p='perf_get$(EXEEXT)'; \
+	b='perf_get'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-perf_get.log: perf_get$(EXEEXT)
-	@p='perf_get$(EXEEXT)'; \
-	b='perf_get'; \
+test_get_response_cleanup.log: test_get_response_cleanup$(EXEEXT)
+	@p='test_get_response_cleanup$(EXEEXT)'; \
+	b='test_get_response_cleanup'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1870,6 +1921,13 @@ test_concurrent_stop.log: test_concurrent_stop$(EXEEXT)
 perf_get_concurrent.log: perf_get_concurrent$(EXEEXT)
 	@p='perf_get_concurrent$(EXEEXT)'; \
 	b='perf_get_concurrent'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_quiesce_stream.log: test_quiesce_stream$(EXEEXT)
+	@p='test_quiesce_stream$(EXEEXT)'; \
+	b='test_quiesce_stream'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

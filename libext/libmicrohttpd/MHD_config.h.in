@@ -12,10 +12,6 @@
 /* Define to 1 if libmicrohttpd is compiled with digest Auth support. */
 #undef DAUTH_SUPPORT
 
-/* Define to 1 if translation of program messages to the user's native
-   language is requested. */
-#undef ENABLE_NLS
-
 /* Define to 1 to enable epoll support */
 #undef EPOLL_SUPPORT
 
@@ -31,13 +27,8 @@
 /* Define to 1 if you have the `gmtime_s' function in C11 form. */
 #undef HAVE_C11_GMTIME_S
 
-/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+/* Define to 1 if you have the usable `calloc' function. */
+#undef HAVE_CALLOC
 
 /* Have clock_gettime */
 #undef HAVE_CLOCK_GETTIME
@@ -45,10 +36,6 @@
 /* Define to 1 if you have `clock_get_time', `host_get_clock_service' and
    `mach_port_deallocate' functions. */
 #undef HAVE_CLOCK_GET_TIME
-
-/* Define if the GNU dcgettext() function is already present or preinstalled.
-   */
-#undef HAVE_DCGETTEXT
 
 /* Define to 1 if you have the declaration of `SOCK_NONBLOCK', and to 0 if you
    don't. */
@@ -69,6 +56,9 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
+/* Define to 1 if you have the usable `fork' function. */
+#undef HAVE_FORK
+
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 
@@ -78,17 +68,14 @@
 /* Define to 1 if you have `gethrtime' function. */
 #undef HAVE_GETHRTIME
 
-/* Define if the GNU gettext() function is already present or preinstalled. */
-#undef HAVE_GETTEXT
+/* Define to 1 if you have the `[gettimeofday]' function. */
+#undef HAVE_GETTIMEOFDAY
 
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
 
 /* Define to 1 if you have the <gnutls/gnutls.h> header file. */
 #undef HAVE_GNUTLS_GNUTLS_H
-
-/* Define if you have the iconv() function and it works. */
-#undef HAVE_ICONV
 
 /* Provides IPv6 headers */
 #undef HAVE_INET6
@@ -120,7 +107,7 @@
 /* Define to 1 if you have the <machine/param.h> header file. */
 #undef HAVE_MACHINE_PARAM_H
 
-/* Define to 1 if you have the <magic.h> header file. */
+/* Define to 1 if you have the <[magic.h]> header file. */
 #undef HAVE_MAGIC_H
 
 /* Define to 1 if you have the <math.h> header file. */
@@ -134,6 +121,9 @@
 
 /* Define to 1 to enable support for error messages. */
 #undef HAVE_MESSAGES
+
+/* Define to 1 if you have the `[nanosleep]' function. */
+#undef HAVE_NANOSLEEP
 
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
@@ -161,6 +151,19 @@
 
 /* Define to 1 if libmicrohttpd is compiled with postprocessor support. */
 #undef HAVE_POSTPROCESSOR
+
+/* Define to 1 if you have the `pread' function. */
+#undef HAVE_PREAD
+
+/* Define to 1 if you have the `pread64' function. */
+#undef HAVE_PREAD64
+
+/* Define if you have IBM i form of pthread_attr_setname_np(3) function. */
+#undef HAVE_PTHREAD_ATTR_SETNAME_NP_IBMI
+
+/* Define if you have NetBSD form (or OSF1 form) of pthread_attr_setname_np(3)
+   function. */
+#undef HAVE_PTHREAD_ATTR_SETNAME_NP_NETBSD
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
@@ -190,7 +193,11 @@
 /* Define to 1 if you have the `random' function. */
 #undef HAVE_RANDOM
 
-/* Define to 1 if you have the <search.h> header file. */
+/* Define to 1 if you have the real boolean type. */
+#undef HAVE_REAL_BOOL
+
+/* Define to 1 if you have the <search.h> header file and your system have
+   properly functioning tsearch(), tfind() and tdelete() functions */
 #undef HAVE_SEARCH_H
 
 /* Define to 1 if you have the `sendfile64' function. */
@@ -208,8 +215,8 @@
 /* SOCK_NONBLOCK is defined in a socket header */
 #undef HAVE_SOCK_NONBLOCK
 
-/* Define to 1 if you have the <stdbool.h> header file and it's required for
-   _MHD_bool. */
+/* Define to 1 if you have the <stdbool.h> header file and <stdbool.h> defines
+   'bool' type. */
 #undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stddef.h> header file. */
@@ -275,11 +282,20 @@
 /* Define to 1 if you have the <time.h> header file. */
 #undef HAVE_TIME_H
 
+/* Define to 1 if you have the `tsearch' function. */
+#undef HAVE_TSEARCH
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the `[usleep]' function. */
+#undef HAVE_USLEEP
+
 /* Define to 1 if you have the `gmtime_s' function in W32 form. */
 #undef HAVE_W32_GMTIME_S
+
+/* Define to 1 if you have the usable `waitpid' function. */
+#undef HAVE_WAITPID
 
 /* Define to 1 if you have the <winsock2.h> header file. */
 #undef HAVE_WINSOCK2_H
@@ -287,10 +303,7 @@
 /* Define to 1 if you have the <ws2tcpip.h> header file. */
 #undef HAVE_WS2TCPIP_H
 
-/* Define to 1 if you have the `_lseeki64' function. */
-#undef HAVE__LSEEKI64
-
-/* disable HTTPS support */
+/* Define to 1 if libmicrohttpd is compiled with HTTPS support. */
 #undef HTTPS_SUPPORT
 
 /* Define to 1 if your C compiler supports inline functions. */
@@ -439,6 +452,9 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define to 1 if libmicrohttpd is compiled with HTTP Upgrade support. */
+#undef UPGRADE_SUPPORT
+
 /* Version number of package */
 #undef VERSION
 
@@ -495,9 +511,6 @@
 /* Define to use socketpair for inter-thread communication */
 #undef _MHD_ITC_SOCKETPAIR
 
-/* Define to type which will be used as boolean type. */
-#undef _MHD_bool
-
 /* Define to prefix which will be used with MHD inline functions. */
 #undef _MHD_inline
 
@@ -528,5 +541,16 @@
 /* Define to 1 if it is required by headers to expose additional symbols */
 #undef __EXTENSIONS__
 
+/* Define to type name which will be used as boolean type. */
+#undef bool
+
 /* Define curl_free() as free() if our version of curl lacks curl_free. */
 #undef curl_free
+
+/* Define to value interpreted by compiler as boolean "false", if "false" is
+   not defined by system headers. */
+#undef false
+
+/* Define to value interpreted by compiler as boolean "true", if "true" is not
+   defined by system headers. */
+#undef true

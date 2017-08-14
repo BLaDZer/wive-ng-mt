@@ -157,7 +157,7 @@ testInternalPost ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY /* | MHD_USE_DEBUG */ ,
+  d = MHD_start_daemon (MHD_USE_INTERNAL_POLLING_THREAD /* | MHD_USE_ERROR_LOG */ ,
                         11080, NULL, NULL, &ahc_echo, NULL, 
 			MHD_OPTION_NOTIFY_COMPLETED, &completed_cb, NULL,			
 			MHD_OPTION_END);
@@ -169,7 +169,7 @@ testInternalPost ()
       fprintf (stderr, ".");
 
       c = curl_easy_init ();
-      curl_easy_setopt (c, CURLOPT_URL, "http://localhost:11081/hello_world");
+      curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:11081/hello_world");
       curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
       curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
       curl_easy_setopt (c, CURLOPT_POSTFIELDS, POST_DATA);
@@ -208,7 +208,7 @@ testMultithreadedPost ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION /* | MHD_USE_DEBUG */ ,
+  d = MHD_start_daemon (MHD_USE_THREAD_PER_CONNECTION | MHD_USE_INTERNAL_POLLING_THREAD /* | MHD_USE_ERROR_LOG */ ,
                         11080, NULL, NULL, &ahc_echo, NULL, 
 			MHD_OPTION_NOTIFY_COMPLETED, &completed_cb, NULL,
 			MHD_OPTION_END);
@@ -221,7 +221,7 @@ testMultithreadedPost ()
       fprintf (stderr, ".");
 
       c = curl_easy_init ();
-      curl_easy_setopt (c, CURLOPT_URL, "http://localhost:11081/hello_world");
+      curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:11081/hello_world");
       curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
       curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
       curl_easy_setopt (c, CURLOPT_POSTFIELDS, POST_DATA);
@@ -271,7 +271,7 @@ testExternalPost ()
   cbc.buf = buf;
   cbc.size = 2048;
   cbc.pos = 0;
-  d = MHD_start_daemon (MHD_NO_FLAG /* | MHD_USE_DEBUG */ ,
+  d = MHD_start_daemon (MHD_NO_FLAG /* | MHD_USE_ERROR_LOG */ ,
                         1082, NULL, NULL, &ahc_echo, NULL, 
 			MHD_OPTION_NOTIFY_COMPLETED, &completed_cb, NULL,
 			MHD_OPTION_END);
@@ -291,7 +291,7 @@ testExternalPost ()
 
 
       c = curl_easy_init ();
-      curl_easy_setopt (c, CURLOPT_URL, "http://localhost:1082/hello_world");
+      curl_easy_setopt (c, CURLOPT_URL, "http://127.0.0.1:1082/hello_world");
       curl_easy_setopt (c, CURLOPT_WRITEFUNCTION, &copyBuffer);
       curl_easy_setopt (c, CURLOPT_WRITEDATA, &cbc);
       curl_easy_setopt (c, CURLOPT_POSTFIELDS, POST_DATA);
