@@ -255,12 +255,12 @@ main_loop(void)
 
 	/* Initializes the web server */
 	if ((webserver = MHD_start_daemon(
-						 MHD_USE_EPOLL_INTERNALLY,
+						 MHD_USE_AUTO | MHD_USE_INTERNAL_POLLING_THREAD /* | MHD_USE_DEBUG */,
 						 config->gw_port,
 						 NULL, NULL,
 						 libmicrohttpd_cb, NULL,
 						 MHD_OPTION_CONNECTION_TIMEOUT, (unsigned int) 120,
-						 MHD_OPTION_LISTENING_ADDRESS_REUSE, 1,
+						 MHD_OPTION_LISTENING_ADDRESS_REUSE, 0 /* 1 3.4 kernel not support reuse port */,
 						 MHD_OPTION_END)) == NULL) {
 		debug(LOG_ERR, "Could not create web server: %s", strerror(errno));
 		exit(1);
