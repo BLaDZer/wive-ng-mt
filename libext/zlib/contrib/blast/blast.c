@@ -394,7 +394,7 @@ int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow,
         s.in = *in;
     }
     else
-    s.left = 0;
+        s.left = 0;
     s.bitbuf = 0;
     s.bitcnt = 0;
 

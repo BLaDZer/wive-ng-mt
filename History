@@ -3330,20 +3330,21 @@
 4) libmicrohttpd: update to 0.9.55 version.<br>
 5) libcurl: update to 7.55.1 version.<br>
 6) libtalloc: update to 2.1.10 version.<br>
-7) kernel: mm: don't dereference struct page fields of invalid pages.<br>
-8) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
-9) kernel: net: vlan: propagate MAC address to VLANs.<br>
-10) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
-11) kernel: net: account for current skb length when deciding about UFO.<br>
-12) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
-13) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
-14) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-15) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
-16) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-17) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-18) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-19) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-20) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+7) zlib: update to 1.2.11 vesion.<br>
+8) kernel: mm: don't dereference struct page fields of invalid pages.<br>
+9) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+10) kernel: net: vlan: propagate MAC address to VLANs.<br>
+11) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
+12) kernel: net: account for current skb length when deciding about UFO.<br>
+13) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
+14) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
+15) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
+16) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+17) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+18) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+19) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+20) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+21) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
 <br>
 <br>
 <br>

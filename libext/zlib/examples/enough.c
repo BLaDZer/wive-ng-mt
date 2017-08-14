@@ -470,19 +470,19 @@ int main(int argc, char **argv)
 
     /* get arguments -- default to the deflate literal/length code */
     syms = 286;
-        root = 9;
+    root = 9;
     max = 15;
     if (argc > 1) {
         syms = atoi(argv[1]);
         if (argc > 2) {
             root = atoi(argv[2]);
-                        if (argc > 3)
-                                max = atoi(argv[3]);
-                }
+            if (argc > 3)
+                max = atoi(argv[3]);
+        }
     }
     if (argc > 4 || syms < 2 || root < 1 || max < 1) {
         fputs("invalid arguments, need: [sym >= 2 [root >= 1 [max >= 1]]]\n",
-                          stderr);
+              stderr);
         return 1;
     }
 
@@ -559,8 +559,8 @@ int main(int argc, char **argv)
     }
 
     /* find and show maximum inflate table usage */
-        if (root > max)                 /* reduce root to max length */
-                root = max;
+    if (root > max)                 /* reduce root to max length */
+        root = max;
     if ((code_t)syms < ((code_t)1 << (root + 1)))
         enough(syms);
     else
