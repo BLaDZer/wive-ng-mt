@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -86,7 +86,7 @@ typedef struct _GlobalInfo
   struct ev_timer timer_event;
   CURLM *multi;
   int still_running;
-  FILE* input;
+  FILE *input;
 } GlobalInfo;
 
 
@@ -124,7 +124,7 @@ static int multi_timer_cb(CURLM *multi, long timeout_ms, GlobalInfo *g)
     ev_timer_init(&g->timer_event, timer_cb, t, 0.);
     ev_timer_start(g->loop, &g->timer_event);
   }
-  else
+  else if(timeout_ms == 0)
     timer_cb(g->loop, &g->timer_event, 0);
   return 0;
 }
@@ -134,7 +134,7 @@ static void mcode_or_die(const char *where, CURLMcode code)
 {
   if(CURLM_OK != code) {
     const char *s;
-    switch (code) {
+    switch(code) {
     case CURLM_BAD_HANDLE:
       s="CURLM_BAD_HANDLE";
       break;
@@ -317,8 +317,8 @@ static size_t write_cb(void *ptr, size_t size, size_t nmemb, void *data)
 
 
 /* CURLOPT_PROGRESSFUNCTION */
-static int prog_cb (void *p, double dltotal, double dlnow, double ult,
-                    double uln)
+static int prog_cb(void *p, double dltotal, double dlnow, double ult,
+                   double uln)
 {
   ConnInfo *conn = (ConnInfo *)p;
   (void)ult;
@@ -388,7 +388,7 @@ static void fifo_cb(EV_P_ struct ev_io *w, int revents)
 }
 
 /* Create a named pipe and tell libevent to monitor it */
-static int init_fifo (GlobalInfo *g)
+static int init_fifo(GlobalInfo *g)
 {
   struct stat st;
   static const char *fifo = "hiper.fifo";
@@ -399,18 +399,18 @@ static int init_fifo (GlobalInfo *g)
     if((st.st_mode & S_IFMT) == S_IFREG) {
       errno = EEXIST;
       perror("lstat");
-      exit (1);
+      exit(1);
     }
   }
   unlink(fifo);
   if(mkfifo (fifo, 0600) == -1) {
     perror("mkfifo");
-    exit (1);
+    exit(1);
   }
   sockfd = open(fifo, O_RDWR | O_NONBLOCK, 0);
   if(sockfd == -1) {
     perror("open");
-    exit (1);
+    exit(1);
   }
   g->input = fdopen(sockfd, "r");
 

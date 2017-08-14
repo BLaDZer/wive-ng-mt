@@ -110,9 +110,10 @@ int libtest_debug_cb(CURL *handle, curl_infotype type,
              now->tm_hour, now->tm_min, now->tm_sec, (long)tv.tv_usec);
   }
 
-  switch (type) {
+  switch(type) {
   case CURLINFO_TEXT:
     fprintf(stderr, "%s== Info: %s", timestr, (char *)data);
+    /* FALLTHROUGH */
   default: /* in case a new one is introduced to shock us */
     return 0;
 

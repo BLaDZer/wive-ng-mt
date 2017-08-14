@@ -57,15 +57,15 @@ static int      inet_pton6(const char *src, unsigned char *dst);
  * notice:
  *      On Windows we store the error in the thread errno, not
  *      in the winsock error code. This is to avoid losing the
- *      actual last winsock error. So use macro ERRNO to fetch the
- *      errno this function sets when returning (-1), not SOCKERRNO.
+ *      actual last winsock error. So when this function returns
+ *      -1, check errno not SOCKERRNO.
  * author:
  *      Paul Vixie, 1996.
  */
 int
 Curl_inet_pton(int af, const char *src, void *dst)
 {
-  switch (af) {
+  switch(af) {
   case AF_INET:
     return (inet_pton4(src, (unsigned char *)dst));
 #ifdef ENABLE_IPV6
@@ -73,7 +73,7 @@ Curl_inet_pton(int af, const char *src, void *dst)
     return (inet_pton6(src, (unsigned char *)dst));
 #endif
   default:
-    SET_ERRNO(EAFNOSUPPORT);
+    errno = EAFNOSUPPORT;
     return (-1);
   }
   /* NOTREACHED */

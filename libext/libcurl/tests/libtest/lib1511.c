@@ -26,7 +26,7 @@
 int test(char *URL)
 {
   long unmet;
-  CURL* curl = NULL;
+  CURL *curl = NULL;
   int res = 0;
 
   global_init(CURL_GLOBAL_ALL);

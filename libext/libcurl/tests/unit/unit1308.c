@@ -42,8 +42,8 @@ static size_t print_httppost_callback(void *arg, const char *buf, size_t len)
 
 UNITTEST_START
   int rc;
-  struct curl_httppost* post = NULL;
-  struct curl_httppost* last = NULL;
+  struct curl_httppost *post = NULL;
+  struct curl_httppost *last = NULL;
   size_t total_size = 0;
   char buffer[] = "test buffer";
 

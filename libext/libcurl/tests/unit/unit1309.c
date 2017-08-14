@@ -52,7 +52,7 @@ static void splayprint(struct Curl_tree * t, int d, char output)
            (long)t->key.tv_usec, i);
   }
 
-  for(count=0, node = t->same; node; node = node->same, count++)
+  for(count=0, node = t->samen; node != t; node = node->samen, count++)
     ;
 
   if(output) {
@@ -70,19 +70,23 @@ UNITTEST_START
 /* number of nodes to add to the splay tree */
 #define NUM_NODES 50
 
-  struct Curl_tree *root;
-  struct Curl_tree nodes[NUM_NODES];
+  struct Curl_tree *root, *removed;
+  struct Curl_tree nodes[NUM_NODES*3];
   int rc;
-  int i;
+  int i, j;
+  struct curltime tv_now = {0, 0};
   root = NULL;              /* the empty tree */
 
+  /* add nodes */
   for(i = 0; i < NUM_NODES; i++) {
-    struct timeval key;
+    struct curltime key;
+    size_t payload;
 
     key.tv_sec = 0;
     key.tv_usec = (541*i)%1023;
+    payload = (size_t) key.tv_usec;
 
-    nodes[i].payload = (void *)key.tv_usec; /* for simplicity */
+    nodes[i].payload = (void *)payload; /* for simplicity */
     root = Curl_splayinsert(key, root, &nodes[i]);
   }
 
@@ -102,6 +106,37 @@ UNITTEST_START
       fail("remove");
     }
   }
+
+  fail_unless(root == NULL, "tree not empty after removing all nodes");
+
+  /* rebuild tree */
+  for(i = 0; i < NUM_NODES; i++) {
+    struct curltime key;
+
+    key.tv_sec = 0;
+    key.tv_usec = (541*i)%1023;
+
+    /* add some nodes with the same key */
+    for(j = 0; j <= i % 3; j++) {
+      size_t payload = key.tv_usec*10 + j;
+      nodes[i*3+j].payload = (void *)payload; /* for simplicity */
+      root = Curl_splayinsert(key, root, &nodes[i*3+j]);
+    }
+  }
+
+  removed = NULL;
+  for(i = 0; i <= 1100; i+= 100) {
+    printf("Removing nodes not larger than %d\n", i);
+    tv_now.tv_usec = i;
+    root = Curl_splaygetbest(tv_now, root, &removed);
+    while(removed != NULL) {
+      printf("removed payload %ld[%ld]\n", (long)(removed->payload) / 10,
+             (long)(removed->payload) % 10);
+      root = Curl_splaygetbest(tv_now, root, &removed);
+    }
+  }
+
+  fail_unless(root == NULL, "tree not empty when it should be");
 
 UNITTEST_STOP
 

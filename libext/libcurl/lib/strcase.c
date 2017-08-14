@@ -34,7 +34,7 @@ char Curl_raw_toupper(char in)
   if(in >= 'a' && in <= 'z')
     return (char)('A' + in - 'a');
 #else
-  switch (in) {
+  switch(in) {
   case 'a':
     return 'A';
   case 'b':
@@ -125,9 +125,9 @@ int Curl_safe_strcasecompare(const char *first, const char *second)
   if(first && second)
     /* both pointers point to something then compare them */
     return Curl_strcasecompare(first, second);
-  else
-    /* if both pointers are NULL then treat them as equal */
-    return (NULL == first && NULL == second);
+
+  /* if both pointers are NULL then treat them as equal */
+  return (NULL == first && NULL == second);
 }
 
 /*

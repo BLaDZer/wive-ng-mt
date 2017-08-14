@@ -143,9 +143,9 @@ CURLcode Curl_output_digest(struct connectdata *conn,
   if(authp->iestyle) {
     tmp = strchr((char *)uripath, '?');
     if(tmp) {
-    size_t urilen = tmp - (char *)uripath;
-    path = (unsigned char *) aprintf("%.*s", urilen, uripath);
-  }
+      size_t urilen = tmp - (char *)uripath;
+      path = (unsigned char *) aprintf("%.*s", urilen, uripath);
+    }
   }
   if(!tmp)
     path = (unsigned char *) strdup((char *) uripath);

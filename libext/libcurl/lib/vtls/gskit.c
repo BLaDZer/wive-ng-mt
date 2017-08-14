@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -155,7 +155,7 @@ static const gskit_cipher  ciphertable[] = {
 static bool is_separator(char c)
 {
   /* Return whether character is a cipher list separator. */
-  switch (c) {
+  switch(c) {
   case ' ':
   case '\t':
   case ':':
@@ -171,7 +171,7 @@ static CURLcode gskit_status(struct Curl_easy *data, int rc,
                              const char *procname, CURLcode defcode)
 {
   /* Process GSKit status and map it to a CURLcode. */
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
   case GSK_OS400_ASYNCHRONOUS_SOC_INIT:
     return CURLE_OK;
@@ -194,7 +194,7 @@ static CURLcode gskit_status(struct Curl_easy *data, int rc,
   case GSK_OS400_ERROR_NOT_REGISTERED:
     break;
   case GSK_ERROR_IO:
-    switch (errno) {
+    switch(errno) {
     case ENOMEM:
       return CURLE_OUT_OF_MEMORY;
     default:
@@ -215,7 +215,7 @@ static CURLcode set_enum(struct Curl_easy *data, gsk_handle h,
 {
   int rc = gsk_attribute_set_enum(h, id, value);
 
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
     return CURLE_OK;
   case GSK_ERROR_IO:
@@ -237,7 +237,7 @@ static CURLcode set_buffer(struct Curl_easy *data, gsk_handle h,
 {
   int rc = gsk_attribute_set_buffer(h, id, buffer, 0);
 
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
     return CURLE_OK;
   case GSK_ERROR_IO:
@@ -259,7 +259,7 @@ static CURLcode set_numeric(struct Curl_easy *data,
 {
   int rc = gsk_attribute_set_numeric_value(h, id, value);
 
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
     return CURLE_OK;
   case GSK_ERROR_IO:
@@ -279,7 +279,7 @@ static CURLcode set_callback(struct Curl_easy *data,
 {
   int rc = gsk_attribute_set_callback(h, id, info);
 
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
     return CURLE_OK;
   case GSK_ERROR_IO:
@@ -320,7 +320,7 @@ static CURLcode set_ciphers(struct connectdata *conn,
 
   /* We allocate GSKit buffers of the same size as the input string: since
      GSKit tokens are always shorter than their cipher names, allocated buffers
-     will always be large enough to accomodate the result. */
+     will always be large enough to accommodate the result. */
   l = strlen(cipherlist) + 1;
   memset((char *) ciphers, 0, sizeof ciphers);
   for(i = 0; i < CURL_GSKPROTO_LAST; i++) {
@@ -453,7 +453,7 @@ static CURLcode init_environment(struct Curl_easy *data,
   /* Creates the GSKit environment. */
 
   rc = gsk_environment_open(&h);
-  switch (rc) {
+  switch(rc) {
   case GSK_OK:
     break;
   case GSK_INSUFFICIENT_STORAGE:
@@ -686,7 +686,7 @@ static void close_one(struct ssl_connect_data *connssl,
     if(connssl->localfd >= 0) {
       close(connssl->localfd);
       connssl->localfd = -1;
-  }
+    }
     if(connssl->remotefd >= 0) {
       close(connssl->remotefd);
       connssl->remotefd = -1;
@@ -705,10 +705,10 @@ static ssize_t gskit_send(struct connectdata *conn, int sockindex,
   int written;
 
   if(pipe_ssloverssl(conn, sockindex, SOS_WRITE) >= 0) {
-  cc = gskit_status(data,
-                    gsk_secure_soc_write(conn->ssl[sockindex].handle,
-                                         (char *) mem, (int) len, &written),
-                    "gsk_secure_soc_write()", CURLE_SEND_ERROR);
+    cc = gskit_status(data,
+                      gsk_secure_soc_write(conn->ssl[sockindex].handle,
+                                           (char *) mem, (int) len, &written),
+                      "gsk_secure_soc_write()", CURLE_SEND_ERROR);
     if(cc == CURLE_OK)
       if(pipe_ssloverssl(conn, sockindex, SOS_WRITE) < 0)
         cc = CURLE_SEND_ERROR;
@@ -730,10 +730,10 @@ static ssize_t gskit_recv(struct connectdata *conn, int num, char *buf,
   CURLcode cc = CURLE_RECV_ERROR;
 
   if(pipe_ssloverssl(conn, num, SOS_READ) >= 0) {
-  buffsize = buffersize > (size_t) INT_MAX? INT_MAX: (int) buffersize;
-  cc = gskit_status(data, gsk_secure_soc_read(conn->ssl[num].handle,
-                                              buf, buffsize, &nread),
-                    "gsk_secure_soc_read()", CURLE_RECV_ERROR);
+    buffsize = buffersize > (size_t) INT_MAX? INT_MAX: (int) buffersize;
+    cc = gskit_status(data, gsk_secure_soc_read(conn->ssl[num].handle,
+                                                buf, buffsize, &nread),
+                      "gsk_secure_soc_read()", CURLE_RECV_ERROR);
   }
   switch(cc) {
   case CURLE_OK:
@@ -748,6 +748,40 @@ static ssize_t gskit_recv(struct connectdata *conn, int num, char *buf,
   return (ssize_t) nread;
 }
 
+static CURLcode
+set_ssl_version_min_max(unsigned int *protoflags, struct connectdata *conn)
+{
+  struct Curl_easy *data = conn->data;
+  long ssl_version = SSL_CONN_CONFIG(version);
+  long ssl_version_max = SSL_CONN_CONFIG(version_max);
+  long i = ssl_version;
+  switch(ssl_version_max) {
+    case CURL_SSLVERSION_MAX_NONE:
+      ssl_version_max = ssl_version;
+      break;
+    case CURL_SSLVERSION_MAX_DEFAULT:
+      ssl_version_max = CURL_SSLVERSION_TLSv1_2;
+      break;
+  }
+  for(; i <= (ssl_version_max >> 16); ++i) {
+    switch(i) {
+      case CURL_SSLVERSION_TLSv1_0:
+        *protoflags |= CURL_GSKPROTO_TLSV10_MASK;
+        break;
+      case CURL_SSLVERSION_TLSv1_1:
+        *protoflags |= CURL_GSKPROTO_TLSV11_MASK;
+        break;
+      case CURL_SSLVERSION_TLSv1_2:
+        *protoflags |= CURL_GSKPROTO_TLSV11_MASK;
+        break;
+      case CURL_SSLVERSION_TLSv1_3:
+        failf(data, "GSKit: TLS 1.3 is not yet supported");
+        return CURLE_SSL_CONNECT_ERROR;
+    }
+  }
+
+  return CURLE_OK;
+}
 
 static CURLcode gskit_connect_step1(struct connectdata *conn, int sockindex)
 {
@@ -764,7 +798,7 @@ static CURLcode gskit_connect_step1(struct connectdata *conn, int sockindex)
   const char * const hostname = SSL_IS_PROXY()? conn->http_proxy.host.name:
     conn->host.name;
   const char *sni;
-  unsigned int protoflags;
+  unsigned int protoflags = 0;
   long timeout;
   Qso_OverlappedIO_t commarea;
   int sockpair[2];
@@ -849,17 +883,13 @@ static CURLcode gskit_connect_step1(struct connectdata *conn, int sockindex)
                  CURL_GSKPROTO_TLSV11_MASK | CURL_GSKPROTO_TLSV12_MASK;
     break;
   case CURL_SSLVERSION_TLSv1_0:
-    protoflags = CURL_GSKPROTO_TLSV10_MASK;
-    break;
   case CURL_SSLVERSION_TLSv1_1:
-    protoflags = CURL_GSKPROTO_TLSV11_MASK;
-    break;
   case CURL_SSLVERSION_TLSv1_2:
-    protoflags = CURL_GSKPROTO_TLSV12_MASK;
-    break;
   case CURL_SSLVERSION_TLSv1_3:
-    failf(data, "GSKit: TLS 1.3 is not yet supported");
-    return CURLE_SSL_CONNECT_ERROR;
+    result = set_ssl_version_min_max(&protoflags, conn);
+    if(result != CURLE_OK)
+      return result;
+    break;
   default:
     failf(data, "Unrecognized parameter passed via CURLOPT_SSLVERSION");
     return CURLE_SSL_CONNECT_ERROR;
@@ -996,7 +1026,7 @@ static CURLcode gskit_connect_step2(struct connectdata *conn, int sockindex,
       timeout_ms = 0;
     stmv.tv_sec = timeout_ms / 1000;
     stmv.tv_usec = (timeout_ms - stmv.tv_sec * 1000) * 1000;
-    switch (QsoWaitForIOCompletion(connssl->iocport, &cstat, &stmv)) {
+    switch(QsoWaitForIOCompletion(connssl->iocport, &cstat, &stmv)) {
     case 1:             /* Operation complete. */
       break;
     case -1:            /* An error occurred: handshake still in progress. */
@@ -1053,7 +1083,7 @@ static CURLcode gskit_connect_step3(struct connectdata *conn, int sockindex)
     infof(data, "Server certificate:\n");
     p = cdev;
     for(i = 0; i++ < cdec; p++)
-      switch (p->cert_data_id) {
+      switch(p->cert_data_id) {
       case CERT_BODY_DER:
         cert = p->cert_data_p;
         certend = cert + cdev->cert_data_l;

@@ -59,7 +59,7 @@ int Curl_gethostname(char *name, GETHOSTNAME_TYPE_ARG2 namelen)
 
 #else
   int err;
-  char* dot;
+  char *dot;
 
 #ifdef DEBUGBUILD
 

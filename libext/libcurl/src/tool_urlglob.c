@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -44,7 +44,7 @@ static CURLcode glob_fixed(URLGlob *glob, char *fixed, size_t len)
   pat->content.Set.ptr_s = 0;
   pat->globindex = -1;
 
-  pat->content.Set.elements = malloc(sizeof(char*));
+  pat->content.Set.elements = malloc(sizeof(char *));
 
   if(!pat->content.Set.elements)
     return GLOBERROR("out of memory", 0, CURLE_OUT_OF_MEMORY);
@@ -66,6 +66,10 @@ static CURLcode glob_fixed(URLGlob *glob, char *fixed, size_t len)
 static int multiply(unsigned long *amount, long with)
 {
   unsigned long sum = *amount * with;
+  if(!with) {
+    *amount = 0;
+    return 0;
+  }
   if(sum/with != *amount)
     return 1; /* didn't fit, bail out */
   *amount = sum;
@@ -118,14 +122,14 @@ static CURLcode glob_set(URLGlob *glob, char **patternp,
       *buf = '\0';
       if(pat->content.Set.elements) {
         char **new_arr = realloc(pat->content.Set.elements,
-                                 (pat->content.Set.size + 1) * sizeof(char*));
+                                 (pat->content.Set.size + 1) * sizeof(char *));
         if(!new_arr)
           return GLOBERROR("out of memory", 0, CURLE_OUT_OF_MEMORY);
 
         pat->content.Set.elements = new_arr;
       }
       else
-        pat->content.Set.elements = malloc(sizeof(char*));
+        pat->content.Set.elements = malloc(sizeof(char *));
 
       if(!pat->content.Set.elements)
         return GLOBERROR("out of memory", 0, CURLE_OUT_OF_MEMORY);
@@ -189,7 +193,7 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
     char min_c;
     char max_c;
     char end_c;
-    int step=1;
+    unsigned long step = 1;
 
     pat->type = UPTCharRange;
 
@@ -198,17 +202,12 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
     if(rc == 3) {
       if(end_c == ':') {
         char *endp;
-        unsigned long lstep;
         errno = 0;
-        lstep = strtoul(&pattern[4], &endp, 10);
+        step = strtoul(&pattern[4], &endp, 10);
         if(errno || &pattern[4] == endp || *endp != ']')
-          step = -1;
-        else {
+          step = 0;
+        else
           pattern = endp+1;
-          step = (int)lstep;
-          if(step > (max_c - min_c))
-            step = -1;
-        }
       }
       else if(end_c != ']')
         /* then this is wrong */
@@ -220,19 +219,21 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
 
     *posp += (pattern - *patternp);
 
-    if((rc != 3) || (min_c >= max_c) || ((max_c - min_c) > ('z' - 'a')) ||
-       (step <= 0) )
+    if(rc != 3 || !step || step > (unsigned)INT_MAX ||
+       (min_c == max_c && step != 1) ||
+       (min_c != max_c && (min_c > max_c || step > (unsigned)(max_c - min_c) ||
+                           (max_c - min_c) > ('z' - 'a'))))
       /* the pattern is not well-formed */
       return GLOBERROR("bad range", *posp, CURLE_URL_MALFORMAT);
 
     /* if there was a ":[num]" thing, use that as step or else use 1 */
-    pat->content.CharRange.step = step;
+    pat->content.CharRange.step = (int)step;
     pat->content.CharRange.ptr_c = pat->content.CharRange.min_c = min_c;
     pat->content.CharRange.max_c = max_c;
 
-    if(multiply(amount, (pat->content.CharRange.max_c -
+    if(multiply(amount, ((pat->content.CharRange.max_c -
                           pat->content.CharRange.min_c) /
-                         pat->content.CharRange.step + 1) )
+                         pat->content.CharRange.step + 1)))
       return GLOBERROR("range overflow", *posp, CURLE_URL_MALFORMAT);
   }
   else if(ISDIGIT(*pattern)) {
@@ -272,7 +273,10 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
         }
         errno = 0;
         max_n = strtoul(pattern, &endp, 10);
-        if(errno || (*endp == ':')) {
+        if(errno)
+          /* overflow */
+          endp = NULL;
+        else if(*endp == ':') {
           pattern = endp+1;
           errno = 0;
           step_n = strtoul(pattern, &endp, 10);
@@ -293,7 +297,9 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
     fail:
     *posp += (pattern - *patternp);
 
-    if(!endp || (min_n > max_n) || (step_n > (max_n - min_n)) || !step_n)
+    if(!endp || !step_n ||
+       (min_n == max_n && step_n != 1) ||
+       (min_n != max_n && (min_n > max_n || step_n > (max_n - min_n))))
       /* the pattern is not well-formed */
       return GLOBERROR("bad range", *posp, CURLE_URL_MALFORMAT);
 
@@ -303,9 +309,9 @@ static CURLcode glob_range(URLGlob *glob, char **patternp,
     pat->content.NumRange.max_n = max_n;
     pat->content.NumRange.step = step_n;
 
-    if(multiply(amount, (pat->content.NumRange.max_n -
-                         pat->content.NumRange.min_n) /
-                        pat->content.NumRange.step + 1) )
+    if(multiply(amount, ((pat->content.NumRange.max_n -
+                          pat->content.NumRange.min_n) /
+                         pat->content.NumRange.step + 1)))
       return GLOBERROR("range overflow", *posp, CURLE_URL_MALFORMAT);
   }
   else
@@ -421,7 +427,7 @@ static CURLcode glob_parse(URLGlob *glob, char *pattern,
   return res;
 }
 
-CURLcode glob_url(URLGlob** glob, char* url, unsigned long *urlnum,
+CURLcode glob_url(URLGlob **glob, char *url, unsigned long *urlnum,
                   FILE *error)
 {
   /*
@@ -516,7 +522,7 @@ CURLcode glob_next_url(char **globbed, URLGlob *glob)
     for(i = 0; carry && (i < glob->size); i++) {
       carry = FALSE;
       pat = &glob->pattern[glob->size - 1 - i];
-      switch (pat->type) {
+      switch(pat->type) {
       case UPTSet:
         if((pat->content.Set.elements) &&
            (++pat->content.Set.ptr_s == pat->content.Set.size)) {
@@ -631,7 +637,7 @@ CURLcode glob_match_url(char **result, char *filename, URLGlob *glob)
       }
 
       if(pat) {
-        switch (pat->type) {
+        switch(pat->type) {
         case UPTSet:
           if(pat->content.Set.elements) {
             appendthis = pat->content.Set.elements[pat->content.Set.ptr_s];
@@ -646,7 +652,7 @@ CURLcode glob_match_url(char **result, char *filename, URLGlob *glob)
           appendlen = 1;
           break;
         case UPTNumRange:
-          snprintf(numbuf, sizeof(numbuf), "%0*d",
+          snprintf(numbuf, sizeof(numbuf), "%0*lu",
                    pat->content.NumRange.padlength,
                    pat->content.NumRange.ptr_n);
           appendthis = numbuf;

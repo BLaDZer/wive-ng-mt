@@ -29,8 +29,8 @@
 
 int test(char *URL)
 {
-  CURL* curls = NULL;
-  CURLM* multi = NULL;
+  CURL *curls = NULL;
+  CURLM *multi = NULL;
   int still_running;
   int i = -1;
   int res = 0;

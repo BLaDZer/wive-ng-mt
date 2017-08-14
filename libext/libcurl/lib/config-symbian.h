@@ -676,7 +676,7 @@
 /*#define RANDOM_FILE "/dev/urandom"*/
 
 #define RECV_TYPE_ARG1 int
-#define RECV_TYPE_ARG2 void*
+#define RECV_TYPE_ARG2 void *
 #define RECV_TYPE_ARG3 size_t
 #define RECV_TYPE_ARG4 int
 #define RECV_TYPE_RETV ssize_t
@@ -692,7 +692,7 @@
 
 #define SEND_TYPE_ARG1 int
 #define SEND_QUAL_ARG2 const
-#define SEND_TYPE_ARG2 void*
+#define SEND_TYPE_ARG2 void *
 #define SEND_TYPE_ARG3 size_t
 #define SEND_TYPE_ARG4 int
 #define SEND_TYPE_RETV ssize_t

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -130,7 +130,7 @@ static curl_socket_t all_sockets[MAX_SOCKETS];
 static size_t num_sockets = 0;
 
 static int ProcessRequest(struct httprequest *req);
-static void storerequest(char *reqbuf, size_t totalsize);
+static void storerequest(const char *reqbuf, size_t totalsize);
 
 #define DEFAULT_PORT 8999
 
@@ -602,6 +602,14 @@ static int ProcessRequest(struct httprequest *req)
     }
 
     if(req->testno == DOCNUMBER_NOTHING) {
+      /* check for a Testno: header with the test case number */
+      char *testno = strstr(line, "\nTestno: ");
+      if(testno) {
+        req->testno = strtol(&testno[9], NULL, 10);
+        logmsg("Found test number %d in Testno: header!", req->testno);
+      }
+    }
+    if(req->testno == DOCNUMBER_NOTHING) {
       /* Still no test case number. Try to get the the number off the last dot
          instead, IE we consider the TLD to be the test number. Test 123 can
          then be written as "example.com.123". */
@@ -843,7 +851,7 @@ static int ProcessRequest(struct httprequest *req)
 }
 
 /* store the entire request in a file */
-static void storerequest(char *reqbuf, size_t totalsize)
+static void storerequest(const char *reqbuf, size_t totalsize)
 {
   int res;
   int error = 0;
@@ -1194,20 +1202,24 @@ static int send_doc(curl_socket_t sock, struct httprequest *req)
 
   responsesize = count;
   do {
-    /* Ok, we send no more than 200 bytes at a time, just to make sure that
+    /* Ok, we send no more than N bytes at a time, just to make sure that
        larger chunks are split up so that the client will need to do multiple
        recv() calls to get it and thus we exercise that code better */
     size_t num = count;
-    if(num > 200)
-      num = 200;
+    if(num > 20)
+      num = 20;
+
+    retry:
     written = swrite(sock, buffer, num);
     if(written < 0) {
+      if((EWOULDBLOCK == SOCKERRNO) || (EAGAIN == SOCKERRNO)) {
+        wait_ms(10);
+        goto retry;
+      }
       sendfailure = TRUE;
       break;
     }
-    else {
-      logmsg("Sent off %zd bytes", written);
-    }
+
     /* write to file as well */
     fwrite(buffer, 1, (size_t)written, dump);
 
@@ -1482,7 +1494,7 @@ static void http_connect(curl_socket_t *infdp,
             maxfd = clientfd[i];
         }
         if(poll_client_wr[i] && toc[i]) {
-          /* unless told not to do so, monitor writeability
+          /* unless told not to do so, monitor writability
              if there is data ready to be sent to client */
           FD_SET(clientfd[i], &output);
           if(clientfd[i] > maxfd)
@@ -1498,7 +1510,7 @@ static void http_connect(curl_socket_t *infdp,
             maxfd = serverfd[i];
         }
         if(poll_server_wr[i] && tos[i]) {
-          /* unless told not to do so, monitor writeability
+          /* unless told not to do so, monitor writability
              if there is data ready to be sent to server */
           FD_SET(serverfd[i], &output);
           if(serverfd[i] > maxfd)
@@ -1591,7 +1603,7 @@ static void http_connect(curl_socket_t *infdp,
 
       /* ---------------------------------------------------------- */
 
-      /* react to tunnel endpoint readable/writeable notifications */
+      /* react to tunnel endpoint readable/writable notifications */
       for(i = 0; i <= max_tunnel_idx; i++) {
         size_t len;
         if(clientfd[i] != CURL_SOCKET_BAD) {
@@ -1887,7 +1899,7 @@ static int service_connection(curl_socket_t msgsock, struct httprequest *req,
   while(!req->done_processing) {
     int rc = get_request(msgsock, req);
     if(rc <= 0) {
-      /* Nothing further to read now (possibly because the socket was closed */
+      /* Nothing further to read now, possibly because the socket was closed */
       return rc;
     }
   }
@@ -1958,7 +1970,7 @@ int main(int argc, char *argv[])
   const char *unix_socket = NULL;
   bool unlink_socket = false;
 #endif
-  char *pidname= (char *)".http.pid";
+  const char *pidname = ".http.pid";
   struct httprequest req;
   int rc = 0;
   int error;
@@ -2237,9 +2249,9 @@ int main(int argc, char *argv[])
     /* Clear out closed sockets */
     for(socket_idx = num_sockets - 1; socket_idx >= 1; --socket_idx) {
       if(CURL_SOCKET_BAD == all_sockets[socket_idx]) {
-        char* dst = (char *) (all_sockets + socket_idx);
-        char* src = (char *) (all_sockets + socket_idx + 1);
-        char* end = (char *) (all_sockets + num_sockets);
+        char *dst = (char *) (all_sockets + socket_idx);
+        char *src = (char *) (all_sockets + socket_idx + 1);
+        char *end = (char *) (all_sockets + num_sockets);
         memmove(dst, src, end - src);
         num_sockets -= 1;
       }
@@ -2248,7 +2260,7 @@ int main(int argc, char *argv[])
     if(got_exit_signal)
       goto sws_cleanup;
 
-    /* Set up for select*/
+    /* Set up for select */
     FD_ZERO(&input);
     FD_ZERO(&output);
 
@@ -2274,7 +2286,7 @@ int main(int argc, char *argv[])
       goto sws_cleanup;
 
     if(rc == 0) {
-      /* Timed out - try again*/
+      /* Timed out - try again */
       continue;
     }
 
@@ -2308,7 +2320,7 @@ int main(int argc, char *argv[])
 
             if(req.connmon) {
               const char *keepopen="[DISCONNECT]\n";
-              storerequest((char *)keepopen, strlen(keepopen));
+              storerequest(keepopen, strlen(keepopen));
             }
 
             if(!req.open)

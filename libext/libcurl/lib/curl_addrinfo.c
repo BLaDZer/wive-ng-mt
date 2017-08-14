@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -46,6 +46,8 @@
 #  undef  in_addr_t
 #  define in_addr_t unsigned long
 #endif
+
+#include <stddef.h>
 
 #include "curl_addrinfo.h"
 #include "inet_pton.h"
@@ -289,10 +291,10 @@ Curl_he2ai(const struct hostent *he, int port)
     size_t ss_size;
 #ifdef ENABLE_IPV6
     if(he->h_addrtype == AF_INET6)
-      ss_size = sizeof (struct sockaddr_in6);
+      ss_size = sizeof(struct sockaddr_in6);
     else
 #endif
-      ss_size = sizeof (struct sockaddr_in);
+      ss_size = sizeof(struct sockaddr_in);
 
     ai = calloc(1, sizeof(Curl_addrinfo));
     if(!ai) {
@@ -331,7 +333,7 @@ Curl_he2ai(const struct hostent *he, int port)
 
     /* leave the rest of the struct filled with zero */
 
-    switch (ai->ai_family) {
+    switch(ai->ai_family) {
     case AF_INET:
       addr = (void *)ai->ai_addr; /* storage area for this info */
 
@@ -467,7 +469,7 @@ Curl_addrinfo *Curl_str2addr(char *address, int port)
     /* This is a dotted IP address 123.123.123.123-style */
     return Curl_ip2addr(AF_INET, &in, address, port);
 #ifdef ENABLE_IPV6
-  else {
+  {
     struct in6_addr in6;
     if(Curl_inet_pton(AF_INET6, address, &in6) > 0)
       /* This is a dotted IPv6 address ::1-style */
@@ -483,11 +485,13 @@ Curl_addrinfo *Curl_str2addr(char *address, int port)
  * struct initialized with this path.
  * Set '*longpath' to TRUE if the error is a too long path.
  */
-Curl_addrinfo *Curl_unix2addr(const char *path, int *longpath)
+Curl_addrinfo *Curl_unix2addr(const char *path, bool *longpath, bool abstract)
 {
   Curl_addrinfo *ai;
   struct sockaddr_un *sa_un;
   size_t path_len;
+
+  *longpath = FALSE;
 
   ai = calloc(1, sizeof(Curl_addrinfo));
   if(!ai)
@@ -495,12 +499,15 @@ Curl_addrinfo *Curl_unix2addr(const char *path, int *longpath)
   ai->ai_addr = calloc(1, sizeof(struct sockaddr_un));
   if(!ai->ai_addr) {
     free(ai);
-    *longpath = FALSE;
     return NULL;
   }
+
+  sa_un = (void *) ai->ai_addr;
+  sa_un->sun_family = AF_UNIX;
+
   /* sun_path must be able to store the NUL-terminated path */
-  path_len = strlen(path);
-  if(path_len >= sizeof(sa_un->sun_path)) {
+  path_len = strlen(path) + 1;
+  if(path_len > sizeof(sa_un->sun_path)) {
     free(ai->ai_addr);
     free(ai);
     *longpath = TRUE;
@@ -509,10 +516,15 @@ Curl_addrinfo *Curl_unix2addr(const char *path, int *longpath)
 
   ai->ai_family = AF_UNIX;
   ai->ai_socktype = SOCK_STREAM; /* assume reliable transport for HTTP */
-  ai->ai_addrlen = (curl_socklen_t) sizeof(struct sockaddr_un);
-  sa_un = (void *) ai->ai_addr;
-  sa_un->sun_family = AF_UNIX;
-  memcpy(sa_un->sun_path, path, path_len + 1); /* copy NUL byte */
+  ai->ai_addrlen = (curl_socklen_t)
+    ((offsetof(struct sockaddr_un, sun_path) + path_len) & 0x7FFFFFFF);
+
+  /* Abstract Unix domain socket have NULL prefix instead of suffix */
+  if(abstract)
+    memcpy(sa_un->sun_path + 1, path, path_len - 1);
+  else
+    memcpy(sa_un->sun_path, path, path_len); /* copy NUL byte */
+
   return ai;
 }
 #endif
@@ -586,7 +598,7 @@ void Curl_addrinfo_set_port(Curl_addrinfo *addrinfo, int port)
   struct sockaddr_in6 *addr6;
 #endif
   for(ca = addrinfo; ca != NULL; ca = ca->ai_next) {
-    switch (ca->ai_family) {
+    switch(ca->ai_family) {
     case AF_INET:
       addr = (void *)ca->ai_addr; /* storage area for this info */
       addr->sin_port = htons((unsigned short)port);

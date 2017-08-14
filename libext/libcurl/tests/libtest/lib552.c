@@ -89,9 +89,10 @@ int my_trace(CURL *handle, curl_infotype type,
   const char *text;
   (void)handle; /* prevent compiler warning */
 
-  switch (type) {
+  switch(type) {
   case CURLINFO_TEXT:
     fprintf(stderr, "== Info: %s", (char *)data);
+    /* FALLTHROUGH */
   default: /* in case a new one is introduced to shock us */
     return 0;
 
@@ -147,11 +148,11 @@ static size_t write_callback(void *ptr, size_t size, size_t nmemb,
 }
 
 
-static curlioerr ioctl_callback(CURL * handle, int cmd, void *clientp)
+static curlioerr ioctl_callback(CURL *handle, int cmd, void *clientp)
 {
   (void)clientp;
   if(cmd == CURLIOCMD_RESTARTREAD) {
-    printf("APPLICATION: recieved a CURLIOCMD_RESTARTREAD request\n");
+    printf("APPLICATION: received a CURLIOCMD_RESTARTREAD request\n");
     printf("APPLICATION: ** REWINDING! **\n");
     current_offset = 0;
     return CURLIOE_OK;

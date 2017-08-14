@@ -58,7 +58,7 @@ CURL_EXTERN CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ...);
  * curl_easy_duphandle() for each new thread to avoid a series of identical
  * curl_easy_setopt() invokes in every thread.
  */
-CURL_EXTERN CURL* curl_easy_duphandle(CURL *curl);
+CURL_EXTERN CURL *curl_easy_duphandle(CURL *curl);
 
 /*
  * NAME curl_easy_reset()

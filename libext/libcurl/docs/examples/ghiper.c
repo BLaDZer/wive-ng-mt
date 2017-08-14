@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -98,7 +98,7 @@ static void mcode_or_die(const char *where, CURLMcode code)
 {
   if(CURLM_OK != code) {
     const char *s;
-    switch (code) {
+    switch(code) {
     case     CURLM_BAD_HANDLE:         s="CURLM_BAD_HANDLE";         break;
     case     CURLM_BAD_EASY_HANDLE:    s="CURLM_BAD_EASY_HANDLE";    break;
     case     CURLM_OUT_OF_MEMORY:      s="CURLM_OUT_OF_MEMORY";      break;
@@ -163,6 +163,15 @@ static int update_timeout_cb(CURLM *multi, long timeout_ms, void *userp)
   MSG_OUT("*** update_timeout_cb %ld => %ld:%ld ***\n",
           timeout_ms, timeout.tv_sec, timeout.tv_usec);
 
+  /* TODO
+   *
+   * if timeout_ms is 0, call curl_multi_socket_action() at once!
+   *
+   * if timeout_ms is -1, just delete the timer
+   *
+   * for all other values of timeout_ms, this should set or *update*
+   * the timer to the new value
+   */
   g->timer_event = g_timeout_add(timeout_ms, timer_cb, g);
   return 0;
 }
@@ -272,8 +281,8 @@ static size_t write_cb(void *ptr, size_t size, size_t nmemb, void *data)
 }
 
 /* CURLOPT_PROGRESSFUNCTION */
-static int prog_cb (void *p, double dltotal, double dlnow, double ult,
-                    double uln)
+static int prog_cb(void *p, double dltotal, double dlnow, double ult,
+                   double uln)
 {
   ConnInfo *conn = (ConnInfo *)p;
   MSG_OUT("Progress: %s (%g/%g)\n", conn->url, dlnow, dltotal);
@@ -318,7 +327,7 @@ static void new_conn(char *url, GlobalInfo *g)
 }
 
 /* This gets called by glib whenever data is received from the fifo */
-static gboolean fifo_cb (GIOChannel *ch, GIOCondition condition, gpointer data)
+static gboolean fifo_cb(GIOChannel *ch, GIOCondition condition, gpointer data)
 {
 #define BUF_SIZE 1024
   gsize len, tp;
@@ -380,21 +389,21 @@ int init_fifo(void)
     if((st.st_mode & S_IFMT) == S_IFREG) {
       errno = EEXIST;
       perror("lstat");
-      exit (1);
+      exit(1);
     }
   }
 
-  unlink (fifo);
+  unlink(fifo);
   if(mkfifo (fifo, 0600) == -1) {
     perror("mkfifo");
-    exit (1);
+    exit(1);
   }
 
-  socket = open (fifo, O_RDWR | O_NONBLOCK, 0);
+  socket = open(fifo, O_RDWR | O_NONBLOCK, 0);
 
   if(socket == -1) {
     perror("open");
-    exit (1);
+    exit(1);
   }
   MSG_OUT("Now, pipe some URL's into > %s\n", fifo);
 

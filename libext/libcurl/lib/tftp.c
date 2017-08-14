@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -181,6 +181,7 @@ const struct Curl_handler Curl_handler_tftp = {
   ZERO_NULL,                            /* perform_getsock */
   tftp_disconnect,                      /* disconnect */
   ZERO_NULL,                            /* readwrite */
+  ZERO_NULL,                            /* connection_check */
   PORT_TFTP,                            /* defport */
   CURLPROTO_TFTP,                       /* protocol */
   PROTOPT_NONE | PROTOPT_NOURLQUERY     /* flags */
@@ -304,7 +305,7 @@ static unsigned short getrpacketblock(const tftp_packet_t *packet)
 
 static size_t Curl_strnlen(const char *string, size_t maxlen)
 {
-  const char *end = memchr (string, '\0', maxlen);
+  const char *end = memchr(string, '\0', maxlen);
   return end ? (size_t) (end - string) : maxlen;
 }
 
@@ -359,7 +360,7 @@ static CURLcode tftp_parse_option_ack(tftp_state_data_t *state,
         failf(data, "invalid blocksize value in OACK packet");
         return CURLE_TFTP_ILLEGAL;
       }
-      else if(blksize > TFTP_BLKSIZE_MAX) {
+      if(blksize > TFTP_BLKSIZE_MAX) {
         failf(data, "%s (%d)", "blksize is larger than max supported",
               TFTP_BLKSIZE_MAX);
         return CURLE_TFTP_ILLEGAL;
@@ -489,6 +490,11 @@ static CURLcode tftp_send_first(tftp_state_data_t *state, tftp_event_t event)
                             &filename, NULL, FALSE);
     if(result)
       return result;
+
+    if(strlen(filename) > (state->blksize - strlen(mode) - 4)) {
+      failf(data, "TFTP file name too long\n");
+      return CURLE_TFTP_ILLEGAL; /* too long file name field */
+    }
 
     snprintf((char *)state->spacket.data+2,
              state->blksize,
@@ -1119,7 +1125,8 @@ static CURLcode tftp_receive_packet(struct connectdata *conn)
   }
   else {
     /* The event is given by the TFTP packet time */
-    state->event = (tftp_event_t)getrpacketevent(&state->rpacket);
+    unsigned short event = getrpacketevent(&state->rpacket);
+    state->event = (tftp_event_t)event;
 
     switch(state->event) {
     case TFTP_EVENT_DATA:
@@ -1138,9 +1145,12 @@ static CURLcode tftp_receive_packet(struct connectdata *conn)
       }
       break;
     case TFTP_EVENT_ERROR:
-      state->error = (tftp_error_t)getrpacketblock(&state->rpacket);
+    {
+      unsigned short error = getrpacketblock(&state->rpacket);
+      state->error = (tftp_error_t)error;
       infof(data, "%s\n", (const char *)state->rpacket.data+4);
       break;
+    }
     case TFTP_EVENT_ACK:
       break;
     case TFTP_EVENT_OACK:
@@ -1189,7 +1199,7 @@ static long tftp_state_timeout(struct connectdata *conn, tftp_event_t *event)
     state->state = TFTP_STATE_FIN;
     return 0;
   }
-  else if(current > state->rx_time+state->retry_time) {
+  if(current > state->rx_time+state->retry_time) {
     if(event)
       *event = TFTP_EVENT_TIMEOUT;
     time(&state->rx_time); /* update even though we received nothing */
@@ -1223,7 +1233,7 @@ static CURLcode tftp_multi_statemach(struct connectdata *conn, bool *done)
     failf(data, "TFTP response timeout");
     return CURLE_OPERATION_TIMEDOUT;
   }
-  else if(event != TFTP_EVENT_NONE) {
+  if(event != TFTP_EVENT_NONE) {
     result = tftp_state_machine(state, event);
     if(result)
       return result;
@@ -1340,7 +1350,7 @@ static CURLcode tftp_do(struct connectdata *conn, bool *done)
 
   state = (tftp_state_data_t *)conn->proto.tftpc;
   if(!state)
-    return CURLE_BAD_CALLING_ORDER;
+    return CURLE_TFTP_ILLEGAL;
 
   result = tftp_perform(conn, done);
 
@@ -1356,7 +1366,7 @@ static CURLcode tftp_do(struct connectdata *conn, bool *done)
 static CURLcode tftp_setup_connection(struct connectdata * conn)
 {
   struct Curl_easy *data = conn->data;
-  char * type;
+  char *type;
   char command;
 
   conn->socktype = SOCK_DGRAM;   /* UDP datagram based */
@@ -1372,7 +1382,7 @@ static CURLcode tftp_setup_connection(struct connectdata * conn)
     *type = 0;                   /* it was in the middle of the hostname */
     command = Curl_raw_toupper(type[6]);
 
-    switch (command) {
+    switch(command) {
     case 'A': /* ASCII mode */
     case 'N': /* NETASCII mode */
       data->set.prefer_ascii = TRUE;

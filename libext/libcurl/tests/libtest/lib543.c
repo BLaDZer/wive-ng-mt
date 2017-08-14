@@ -44,7 +44,7 @@ int test(char *URL)
 
   asize = (int)sizeof(a);
 
-  s = curl_easy_escape(easy, (char*)a, asize);
+  s = curl_easy_escape(easy, (char *)a, asize);
 
   if(s)
     printf("%s\n", s);

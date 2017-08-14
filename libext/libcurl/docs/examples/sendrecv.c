@@ -52,7 +52,7 @@ static int wait_on_socket(curl_socket_t sockfd, int for_recv, long timeout_ms)
   }
 
   /* select() returns the number of signalled sockets or -1 */
-  res = select(sockfd + 1, &infd, &outfd, &errfd, &tv);
+  res = select((int)sockfd + 1, &infd, &outfd, &errfd, &tv);
   return res;
 }
 
@@ -108,15 +108,15 @@ int main(void)
         nsent_total += nsent;
 
         if(res == CURLE_AGAIN && !wait_on_socket(sockfd, 0, 60000L)) {
-      printf("Error: timeout.\n");
-      return 1;
-    }
+          printf("Error: timeout.\n");
+          return 1;
+        }
       } while(res == CURLE_AGAIN);
 
       if(res != CURLE_OK) {
-      printf("Error: %s\n", curl_easy_strerror(res));
-      return 1;
-    }
+        printf("Error: %s\n", curl_easy_strerror(res));
+        return 1;
+      }
 
       printf("Sent %" CURL_FORMAT_CURL_OFF_T " bytes.\n",
         (curl_off_t)nsent);

@@ -101,7 +101,7 @@
 static const char *curlx_usage[]={
   "usage: curlx args\n",
   " -p12 arg         - tia  file ",
-  " -envpass arg     - environement variable which content the tia private"
+  " -envpass arg     - environment variable which content the tia private"
   " key password",
   " -out arg         - output file (response)- default stdout",
   " -in arg          - input file (request)- default stdin",
@@ -133,14 +133,14 @@ static const char *curlx_usage[]={
 /* This is a context that we pass to all callbacks */
 
 typedef struct sslctxparm_st {
-  unsigned char * p12file;
-  const char * pst;
-  PKCS12 * p12;
-  EVP_PKEY * pkey;
-  X509 * usercert;
+  unsigned char *p12file;
+  const char *pst;
+  PKCS12 *p12;
+  EVP_PKEY *pkey;
+  X509 *usercert;
   STACK_OF(X509) * ca;
-  CURL * curl;
-  BIO * errorbio;
+  CURL *curl;
+  BIO *errorbio;
   int accesstype;
   int verbose;
 
@@ -196,7 +196,7 @@ static int ssl_app_verify_callback(X509_STORE_CTX *ctx, void *arg)
     BIO_printf(p->errorbio, "entering ssl_app_verify_callback\n");
 
   if((ok= X509_verify_cert(ctx)) && ctx->cert) {
-    unsigned char * accessinfo;
+    unsigned char *accessinfo;
     if(p->verbose > 1)
       X509_print_ex(p->errorbio, ctx->cert, 0, 0);
 
@@ -229,10 +229,10 @@ static int ssl_app_verify_callback(X509_STORE_CTX *ctx, void *arg)
    - an application verification callback (the function above)
 */
 
-static CURLcode sslctxfun(CURL * curl, void * sslctx, void * parm)
+static CURLcode sslctxfun(CURL *curl, void *sslctx, void *parm)
 {
-  sslctxparm * p = (sslctxparm *) parm;
-  SSL_CTX * ctx = (SSL_CTX *) sslctx;
+  sslctxparm *p = (sslctxparm *) parm;
+  SSL_CTX *ctx = (SSL_CTX *) sslctx;
 
   if(!SSL_CTX_use_certificate(ctx, p->usercert)) {
     BIO_printf(p->errorbio, "SSL_CTX_use_certificate problem\n");
@@ -271,30 +271,30 @@ int main(int argc, char **argv)
   BIO* in=NULL;
   BIO* out=NULL;
 
-  char * outfile = NULL;
-  char * infile = NULL;
+  char *outfile = NULL;
+  char *infile = NULL;
 
   int tabLength=100;
   char *binaryptr;
-  char* mimetype;
-  char* mimetypeaccept=NULL;
-  char* contenttype;
-  const char** pp;
-  unsigned char* hostporturl = NULL;
-  BIO * p12bio;
+  char *mimetype;
+  char *mimetypeaccept=NULL;
+  char *contenttype;
+  const char **pp;
+  unsigned char *hostporturl = NULL;
+  BIO *p12bio;
   char **args = argv + 1;
-  unsigned char * serverurl;
+  unsigned char *serverurl;
   sslctxparm p;
   char *response;
 
   CURLcode res;
-  struct curl_slist * headers=NULL;
+  struct curl_slist *headers=NULL;
   int badarg=0;
 
   binaryptr = malloc(tabLength);
 
   p.verbose = 0;
-  p.errorbio = BIO_new_fp (stderr, BIO_NOCLOSE);
+  p.errorbio = BIO_new_fp(stderr, BIO_NOCLOSE);
 
   curl_global_init(CURL_GLOBAL_DEFAULT);
 
@@ -410,7 +410,7 @@ int main(int argc, char **argv)
   }
 
 
-  p.errorbio = BIO_new_fp (stderr, BIO_NOCLOSE);
+  p.errorbio = BIO_new_fp(stderr, BIO_NOCLOSE);
 
   p.curl = curl_easy_init();
   if(!p.curl) {
@@ -513,7 +513,7 @@ int main(int argc, char **argv)
 
   {
     int lu; int i=0;
-    while((lu = BIO_read (in, &binaryptr[i], tabLength-i)) >0) {
+    while((lu = BIO_read(in, &binaryptr[i], tabLength-i)) >0) {
       i+=lu;
       if(i== tabLength) {
         tabLength+=100;

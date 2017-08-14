@@ -65,6 +65,7 @@ const struct Curl_handler Curl_handler_gopher = {
   ZERO_NULL,                            /* perform_getsock */
   ZERO_NULL,                            /* disconnect */
   ZERO_NULL,                            /* readwrite */
+  ZERO_NULL,                            /* connection_check */
   PORT_GOPHER,                          /* defport */
   CURLPROTO_GOPHER,                     /* protocol */
   PROTOPT_NONE                          /* flags */
@@ -78,7 +79,7 @@ static CURLcode gopher_do(struct connectdata *conn, bool *done)
 
   curl_off_t *bytecount = &data->req.bytecount;
   char *path = data->state.path;
-  char *sel;
+  char *sel = NULL;
   char *sel_org = NULL;
   ssize_t amount, k;
   size_t len;
@@ -106,8 +107,8 @@ static CURLcode gopher_do(struct connectdata *conn, bool *done)
 
     /* ... and finally unescape */
     result = Curl_urldecode(data, newp, 0, &sel, &len, FALSE);
-    if(!sel)
-      return CURLE_OUT_OF_MEMORY;
+    if(result)
+      return result;
     sel_org = sel;
   }
 

@@ -46,7 +46,7 @@ static gss_ctx_id_t gss_context = GSS_C_NO_CONTEXT;
 static int check_gss_err(struct Curl_easy *data,
                          OM_uint32 major_status,
                          OM_uint32 minor_status,
-                         const char* function)
+                         const char *function)
 {
   if(GSS_ERROR(major_status)) {
     OM_uint32 maj_stat, min_stat;
@@ -65,7 +65,7 @@ static int check_gss_err(struct Curl_easy *data,
                                     &msg_ctx, &status_string);
       if(maj_stat == GSS_S_COMPLETE) {
         if(sizeof(buf) > len + status_string.length + 1) {
-          strcpy(buf+len, (char*) status_string.value);
+          strcpy(buf+len, (char *) status_string.value);
           len += status_string.length;
         }
         gss_release_buffer(&min_stat, &status_string);
@@ -86,7 +86,7 @@ static int check_gss_err(struct Curl_easy *data,
                                     &msg_ctx, &status_string);
       if(maj_stat == GSS_S_COMPLETE) {
         if(sizeof(buf) > len + status_string.length)
-          strcpy(buf+len, (char*) status_string.value);
+          strcpy(buf+len, (char *) status_string.value);
         gss_release_buffer(&min_stat, &status_string);
         break;
       }
@@ -292,9 +292,9 @@ CURLcode Curl_SOCKS5_gssapi_negotiate(int sockindex,
   gss_release_name(&gss_status, &server);
 
   /* Everything is good so far, user was authenticated! */
-  gss_major_status = gss_inquire_context (&gss_minor_status, gss_context,
-                                          &gss_client_name, NULL, NULL, NULL,
-                                          NULL, NULL, NULL);
+  gss_major_status = gss_inquire_context(&gss_minor_status, gss_context,
+                                         &gss_client_name, NULL, NULL, NULL,
+                                         NULL, NULL, NULL);
   if(check_gss_err(data, gss_major_status,
                    gss_minor_status, "gss_inquire_context")) {
     gss_delete_sec_context(&gss_status, &gss_context, NULL);
