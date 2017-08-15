@@ -46,9 +46,16 @@
 #endif
 
 #define UNLINK_SAMPLE \
-	if (unlink(sample)) perror_msg_and_fail("unlink")
+	do {						\
+		if (unlink(sample))			\
+			perror_msg_and_fail("unlink");	\
+	} while (0)
+
 #define CLOSE_SAMPLE \
-	if (close(fd)) perror_msg_and_fail("close")
+	do {						\
+		if (close(fd))				\
+			perror_msg_and_fail("close");	\
+	} while (0)
 
 #ifdef ACCESS_BY_DESCRIPTOR
 # define SYSCALL_ARG1 fd

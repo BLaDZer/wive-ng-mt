@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,8 +76,10 @@ decode_bpf_code(uint16_t code)
 			break;
 		case BPF_ST:
 		case BPF_STX:
-			if (i)
-				tprintf("|%#x /* %s */", i, "BPF_???");
+			if (i) {
+				tprintf("|%#x", i);
+				tprints_comment("BPF_???");
+			}
 			break;
 		case BPF_ALU:
 			tprints("|");
@@ -94,15 +97,19 @@ decode_bpf_code(uint16_t code)
 			tprints("|");
 			printxval(bpf_rval, BPF_RVAL(code), "BPF_???");
 			i &= ~BPF_RVAL(code);
-			if (i)
-				tprintf("|%#x /* %s */", i, "BPF_???");
+			if (i) {
+				tprintf("|%#x", i);
+				tprints_comment("BPF_???");
+			}
 			break;
 		case BPF_MISC:
 			tprints("|");
 			printxval(bpf_miscop, BPF_MISCOP(code), "BPF_???");
 			i &= ~BPF_MISCOP(code);
-			if (i)
-				tprintf("|%#x /* %s */", i, "BPF_???");
+			if (i) {
+				tprintf("|%#x", i);
+				tprints_comment("BPF_???");
+			}
 			break;
 	}
 
@@ -172,7 +179,8 @@ print_bpf_filter(struct tcb *tcp, void *elem_buf, size_t elem_size, void *data)
 }
 
 void
-print_seccomp_fprog(struct tcb *tcp, unsigned long addr, unsigned short len)
+print_seccomp_fprog(struct tcb *const tcp, const kernel_ulong_t addr,
+		    const unsigned short len)
 {
 	if (abbrev(tcp)) {
 		printaddr(addr);
@@ -188,7 +196,7 @@ print_seccomp_fprog(struct tcb *tcp, unsigned long addr, unsigned short len)
 #include "seccomp_fprog.h"
 
 void
-print_seccomp_filter(struct tcb *tcp, unsigned long addr)
+print_seccomp_filter(struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	struct seccomp_fprog fprog;
 
@@ -200,7 +208,8 @@ print_seccomp_filter(struct tcb *tcp, unsigned long addr)
 }
 
 static void
-decode_seccomp_set_mode_strict(unsigned int flags, unsigned long addr)
+decode_seccomp_set_mode_strict(const unsigned int flags,
+			       const kernel_ulong_t addr)
 {
 	tprintf("%u, ", flags);
 	printaddr(addr);

@@ -28,15 +28,13 @@
  */
 
 #include "tests.h"
-
 #include <asm/unistd.h>
+#include "scno.h"
 
-#if defined __NR_pkey_free
+#ifdef __NR_pkey_free
 
 # include <stdio.h>
 # include <unistd.h>
-
-# include "kernel_types.h"
 
 int
 main(void)

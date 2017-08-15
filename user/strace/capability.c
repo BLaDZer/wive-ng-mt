@@ -2,6 +2,7 @@
  * Copyright (c) 2000 Wichert Akkerman <wakkerma@debian.org>
  * Copyright (c) 2011 Denys Vlasenko <dvlasenk@redhat.com>
  * Copyright (c) 2005-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,19 +53,19 @@ enum {
 
 #include "xlat/cap_version.h"
 
-typedef struct user_cap_header_struct {
+struct user_cap_header_struct {
 	uint32_t version;
 	int pid;
-} *cap_user_header_t;
+};
 
-typedef struct user_cap_data_struct {
+struct user_cap_data_struct {
 	uint32_t effective;
 	uint32_t permitted;
 	uint32_t inheritable;
-} *cap_user_data_t;
+};
 
-static cap_user_header_t
-get_cap_header(struct tcb *tcp, unsigned long addr)
+static const struct user_cap_header_struct *
+get_cap_header(struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	static struct user_cap_header_struct header;
 
@@ -78,7 +79,8 @@ get_cap_header(struct tcb *tcp, unsigned long addr)
 }
 
 static void
-print_cap_header(struct tcb *tcp, unsigned long addr, cap_user_header_t h)
+print_cap_header(struct tcb *const tcp, const kernel_ulong_t addr,
+		 const struct user_cap_header_struct *const h)
 {
 	if (!addr || !h) {
 		printaddr(addr);
@@ -105,7 +107,8 @@ print_cap_bits(const uint32_t lo, const uint32_t hi)
 }
 
 static void
-print_cap_data(struct tcb *tcp, unsigned long addr, const cap_user_header_t h)
+print_cap_data(struct tcb *const tcp, const kernel_ulong_t addr,
+	       const struct user_cap_header_struct *const h)
 {
 	struct user_cap_data_struct data[2];
 	unsigned int len;
@@ -135,7 +138,7 @@ print_cap_data(struct tcb *tcp, unsigned long addr, const cap_user_header_t h)
 
 SYS_FUNC(capget)
 {
-	cap_user_header_t h;
+	const struct user_cap_header_struct *h;
 
 	if (entering(tcp)) {
 		h = get_cap_header(tcp, tcp->u_arg[0]);
@@ -150,7 +153,8 @@ SYS_FUNC(capget)
 
 SYS_FUNC(capset)
 {
-	cap_user_header_t h = get_cap_header(tcp, tcp->u_arg[0]);
+	const struct user_cap_header_struct *const h =
+		get_cap_header(tcp, tcp->u_arg[0]);
 	print_cap_header(tcp, tcp->u_arg[0], h);
 	tprints(", ");
 	print_cap_data(tcp, tcp->u_arg[1], h);

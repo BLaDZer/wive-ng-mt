@@ -2,6 +2,7 @@
  * This file is part of ioctl_rtc strace test.
  *
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,18 +37,7 @@
 #include <linux/rtc.h>
 #include "xlat.h"
 
-static const unsigned int magic = 0xdeadbeef;
 static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0dedULL;
-
-static void
-init_magic(void *addr, const unsigned int size)
-{
-	unsigned int *p = addr;
-	const unsigned int *end = addr + size - sizeof(int);
-
-	for (; p <= end; ++p)
-		*(unsigned int *) p = magic;
-}
 
 static void
 print_rtc_time(const struct rtc_time *rt)
@@ -82,16 +72,16 @@ main(void)
 	const unsigned int size = get_page_size();
 
 	void *const page = tail_alloc(size);
-	init_magic(page, size);
+	fill_memory(page, size);
 
-	struct rtc_time *rt = tail_alloc(sizeof(*rt));
-	init_magic(rt, sizeof(*rt));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct rtc_time, rt);
+	fill_memory(rt, sizeof(*rt));
 
-	struct rtc_wkalrm *wk = tail_alloc(sizeof(*wk));
-	init_magic(wk, sizeof(*wk));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct rtc_wkalrm, wk);
+	fill_memory(wk, sizeof(*wk));
 
-	struct rtc_pll_info *pll = tail_alloc(sizeof(*pll));
-	init_magic(pll, sizeof(*pll));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct rtc_pll_info, pll);
+	fill_memory(pll, sizeof(*pll));
 
 	/* RTC_ALM_READ */
 	ioctl(-1, RTC_ALM_READ, 0);

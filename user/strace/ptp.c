@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2014 Stefan Sørensen <stefan.sorensen@spectralink.com>
  * Copyright (c) 2014-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +34,8 @@
 #include "xlat/ptp_flags_options.h"
 
 int
-ptp_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
+ptp_ioctl(struct tcb *const tcp, const unsigned int code,
+	  const kernel_ulong_t arg)
 {
 	if (!verbose(tcp))
 		return RVAL_DECODED;
@@ -71,7 +73,7 @@ ptp_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
 	}
 
 	case PTP_ENABLE_PPS:
-		tprintf(", %ld", arg);
+		tprintf(", %" PRI_kld, arg);
 		break;
 
 	case PTP_SYS_OFFSET: {

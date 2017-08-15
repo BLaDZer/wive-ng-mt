@@ -2,6 +2,7 @@
  * Check decoding of kexec_load syscall.
  *
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,8 +37,6 @@
 # include <stdio.h>
 # include <unistd.h>
 
-# include "kernel_types.h"
-
 struct strval {
 	kernel_ulong_t val;
 	const char *str64;
@@ -64,8 +63,7 @@ main(void)
 	};
 
 	static const kernel_ulong_t bogus_zero =
-		sizeof(long) < sizeof(kernel_long_t) ?
-			(kernel_ulong_t) 0xffffffff00000000ULL : 0;
+		sizeof(long) < sizeof(kernel_long_t) ? F8ILL_KULONG_MASK : 0;
 	static const kernel_ulong_t bogus_entry =
 		(kernel_ulong_t) 0xdeadca57badda7a1ULL;
 	static const kernel_ulong_t bogus_nsegs =
@@ -87,7 +85,7 @@ main(void)
 	struct segm *segms = tail_alloc(SEGMS_ARRAY_SIZE);
 	unsigned int i;
 
-	fill_memory((char *) segms, SEGMS_ARRAY_SIZE);
+	fill_memory(segms, SEGMS_ARRAY_SIZE);
 	segms[0].buf = segms[0].mem = NULL;
 
 	rc = syscall(__NR_kexec_load, bogus_zero, bogus_zero, bogus_zero,

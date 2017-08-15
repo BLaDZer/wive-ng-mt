@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2013 Christian Svensson <blue@cmd.nu>
  * Copyright (c) 2014-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +45,7 @@
 
 SYS_FUNC(or1k_atomic)
 {
-	printxval_long(atomic_ops, tcp->u_arg[0], "???");
+	printxval64(atomic_ops, tcp->u_arg[0], "???");
 	switch(tcp->u_arg[0]) {
 	case OR1K_ATOMIC_SWAP:
 		tprintf(", 0x%lx, 0x%lx", tcp->u_arg[1], tcp->u_arg[2]);

@@ -3,6 +3,7 @@
  * Copyright (c) 1996-2000 Wichert Akkerman <wichert@cistron.nl>
  * Copyright (c) 2005-2007 Roland McGrath <roland@redhat.com>
  * Copyright (c) 2008-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +35,7 @@
 
 #include "xlat/prctl_options.h"
 #include "xlat/pr_cap_ambient.h"
+#include "xlat/pr_dumpable.h"
 #include "xlat/pr_fp_mode.h"
 #include "xlat/pr_mce_kill.h"
 #include "xlat/pr_mce_kill_policy.h"
@@ -69,21 +71,21 @@ print_prctl_args(struct tcb *tcp, const unsigned int first)
 	unsigned int i;
 
 	for (i = first; i < tcp->s_ent->nargs; ++i)
-		tprintf(", %#llx", getarg_ull(tcp, i));
+		tprintf(", %#" PRI_klx, tcp->u_arg[i]);
 }
 
 SYS_FUNC(prctl)
 {
 	const unsigned int option = tcp->u_arg[0];
-	const unsigned long long arg2 = getarg_ull(tcp, 1);
-	const unsigned long long arg3 = getarg_ull(tcp, 2);
+	const kernel_ulong_t arg2 = tcp->u_arg[1];
+	const kernel_ulong_t arg3 = tcp->u_arg[2];
 	/*
 	 * PR_SET_VMA is the only command which actually uses these arguments
 	 * currently, and it is available only on Android for now.
 	 */
 #ifdef __ANDROID__
-	const unsigned long long arg4 = getarg_ull(tcp, 3);
-	const unsigned long long arg5 = getarg_ull(tcp, 4);
+	const kernel_ulong_t arg4 = tcp->u_arg[3];
+	const kernel_ulong_t arg5 = tcp->u_arg[4];
 #endif
 	unsigned int i;
 
@@ -91,7 +93,6 @@ SYS_FUNC(prctl)
 		printxval(prctl_options, option, "PR_???");
 
 	switch (option) {
-	case PR_GET_DUMPABLE:
 	case PR_GET_KEEPCAPS:
 	case PR_GET_SECCOMP:
 	case PR_GET_TIMERSLACK:
@@ -107,6 +108,14 @@ SYS_FUNC(prctl)
 		else
 			printnum_int(tcp, arg2, "%u");
 		break;
+
+	case PR_GET_DUMPABLE:
+		if (entering(tcp))
+			break;
+		if (syserror(tcp))
+			return 0;
+		tcp->auxstr = xlookup(pr_dumpable, (kernel_ulong_t) tcp->u_rval);
+		return RVAL_STR;
 
 	case PR_GET_NAME:
 		if (entering(tcp)) {
@@ -136,14 +145,14 @@ SYS_FUNC(prctl)
 		if (syserror(tcp) || tcp->u_rval == 0)
 			return 0;
 		tcp->auxstr = sprintflags("", secbits,
-					  (unsigned long) tcp->u_rval);
+					  (kernel_ulong_t) tcp->u_rval);
 		return RVAL_STR;
 
 	case PR_GET_TID_ADDRESS:
 		if (entering(tcp))
 			tprints(", ");
 		else
-			printnum_ptr(tcp, arg2);
+			printnum_kptr(tcp, arg2);
 		break;
 
 	case PR_GET_TSC:
@@ -172,7 +181,7 @@ SYS_FUNC(prctl)
 		if (syserror(tcp) || tcp->u_rval == 0)
 			return 0;
 		tcp->auxstr = sprintflags("", pr_fp_mode,
-					  (unsigned long) tcp->u_rval);
+					  (kernel_ulong_t) tcp->u_rval);
 		return RVAL_STR;
 
 	/* PR_TASK_PERF_EVENTS_* take no arguments. */
@@ -181,13 +190,17 @@ SYS_FUNC(prctl)
 		return RVAL_DECODED;
 
 	case PR_SET_CHILD_SUBREAPER:
-	case PR_SET_DUMPABLE:
 	case PR_SET_ENDIAN:
 	case PR_SET_FPEMU:
 	case PR_SET_FPEXC:
 	case PR_SET_KEEPCAPS:
 	case PR_SET_TIMING:
-		tprintf(", %llu", arg2);
+		tprintf(", %" PRI_klu, arg2);
+		return RVAL_DECODED;
+
+	case PR_SET_DUMPABLE:
+		tprints(", ");
+		printxval64(pr_dumpable, arg2, "SUID_DUMP_???");
 		return RVAL_DECODED;
 
 	case PR_CAPBSET_DROP:
@@ -222,7 +235,7 @@ SYS_FUNC(prctl)
 			printxval64(pr_mce_kill_policy, arg3,
 				    "PR_MCE_KILL_???");
 		else
-			tprintf("%#llx", arg3);
+			tprintf("%#" PRI_klx, arg3);
 		print_prctl_args(tcp, 3);
 		return RVAL_DECODED;
 
@@ -238,9 +251,9 @@ SYS_FUNC(prctl)
 # endif
 	case PR_SET_VMA:
 		if (arg2 == PR_SET_VMA_ANON_NAME) {
-			tprintf(", PR_SET_VMA_ANON_NAME, %#llx", arg3);
-			tprintf(", %llu, ", arg4);
-			printstr(tcp, arg5, -1);
+			tprintf(", PR_SET_VMA_ANON_NAME, %#" PRI_klx, arg3);
+			tprintf(", %" PRI_klu ", ", arg4);
+			printstr(tcp, arg5);
 		} else {
 			/* There are no other sub-options now, but there
 			 * might be in future... */
@@ -258,7 +271,7 @@ SYS_FUNC(prctl)
 	case PR_SET_PDEATHSIG:
 		tprints(", ");
 		if (arg2 > 128)
-			tprintf("%llu", arg2);
+			tprintf("%" PRI_klu, arg2);
 		else
 			tprints(signame(arg2));
 		return RVAL_DECODED;
@@ -268,7 +281,7 @@ SYS_FUNC(prctl)
 		if ((int) arg2 == -1)
 			tprints("PR_SET_PTRACER_ANY");
 		else
-			tprintf("%llu", arg2);
+			tprintf("%" PRI_klu, arg2);
 		return RVAL_DECODED;
 
 	case PR_SET_SECCOMP:
@@ -291,7 +304,7 @@ SYS_FUNC(prctl)
 		return RVAL_DECODED;
 
 	case PR_SET_TIMERSLACK:
-		tprintf(", %lld", arg2);
+		tprintf(", %" PRI_kld, arg2);
 		return RVAL_DECODED;
 
 	case PR_SET_TSC:
@@ -306,7 +319,7 @@ SYS_FUNC(prctl)
 
 	case PR_SET_NO_NEW_PRIVS:
 	case PR_SET_THP_DISABLE:
-		tprintf(", %llu", arg2);
+		tprintf(", %" PRI_klu, arg2);
 		print_prctl_args(tcp, 2);
 		return RVAL_DECODED;
 
@@ -318,7 +331,7 @@ SYS_FUNC(prctl)
 		if (syserror(tcp))
 			return 0;
 		tcp->auxstr = xlookup(pr_mce_kill_policy,
-				      (unsigned long) tcp->u_rval);
+				      (kernel_ulong_t) tcp->u_rval);
 		return tcp->auxstr ? RVAL_STR : RVAL_UDECIMAL;
 
 	case PR_SET_FP_MODE:
@@ -344,7 +357,7 @@ SYS_FUNC(prctl)
 SYS_FUNC(arch_prctl)
 {
 	const unsigned int option = tcp->u_arg[0];
-	const unsigned long long addr = getarg_ull(tcp, 1);
+	const kernel_ulong_t addr = tcp->u_arg[1];
 
 	if (entering(tcp))
 		printxval(archvals, option, "ARCH_???");
@@ -359,7 +372,7 @@ SYS_FUNC(arch_prctl)
 		return 0;
 	}
 
-	tprintf(", %#llx", addr);
+	tprintf(", %#" PRI_klx, addr);
 	return RVAL_DECODED;
 }
 #endif /* X86_64 || X32 */

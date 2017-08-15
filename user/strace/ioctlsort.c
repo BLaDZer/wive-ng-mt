@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2001 Wichert Akkerman <wichert@cistron.nl>
  * Copyright (c) 2004-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 1999-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +34,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux/ioctl.h>
+
+#include "ioctl_iocdef.h"
 
 struct ioctlent {
 	const char *info;

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2013 Luca Clementi <luca.clementi@gmail.com>
+ * Copyright (c) 2013-2017 The strace developers.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,10 +39,14 @@
 # define fopen_for_input fopen
 #endif
 
-#define DPRINTF(F, A, ...) if (debug_flag) error_msg("[unwind(" A ")] " F, __VA_ARGS__)
+#define DPRINTF(F, A, ...)						\
+	do {								\
+		if (debug_flag)						\
+			error_msg("[unwind(" A ")] " F, __VA_ARGS__);	\
+	} while (0)
 
 /*
- * Кeep a sorted array of cache entries,
+ * Keep a sorted array of cache entries,
  * so that we can binary search through it.
  */
 struct mmap_cache_t {
@@ -108,7 +113,7 @@ unwind_tcb_init(struct tcb *tcp)
 
 	tcp->libunwind_ui = _UPT_create(tcp->pid);
 	if (!tcp->libunwind_ui)
-		die_out_of_memory();
+		perror_msg_and_die("_UPT_create");
 
 	tcp->queue = xmalloc(sizeof(*tcp->queue));
 	tcp->queue->head = NULL;
@@ -122,7 +127,7 @@ unwind_tcb_fin(struct tcb *tcp)
 	free(tcp->queue);
 	tcp->queue = NULL;
 
-	delete_mmap_cache(tcp, __FUNCTION__);
+	delete_mmap_cache(tcp, __func__);
 
 	_UPT_destroy(tcp->libunwind_ui);
 	tcp->libunwind_ui = NULL;
@@ -159,7 +164,7 @@ build_mmap_cache(struct tcb* tcp)
 		struct mmap_cache_t *entry;
 		unsigned long start_addr, end_addr, mmap_offset;
 		char exec_bit;
-		char binary_path[PATH_MAX];
+		char binary_path[sizeof(buffer)];
 
 		if (sscanf(buffer, "%lx-%lx %*c%*c%c%*c %lx %*x:%*x %*d %[^\n]",
 			   &start_addr, &end_addr, &exec_bit,
@@ -329,8 +334,7 @@ print_stack_frame(struct tcb *tcp,
 				    function_offset,
 				    true_offset);
 			return 0;
-		}
-		else if (ip < cur_mmap_cache->start_addr)
+		} else if (ip < cur_mmap_cache->start_addr)
 			upper = mid - 1;
 		else
 			lower = mid + 1;
@@ -423,7 +427,7 @@ print_call_cb(void *dummy,
 	else if (binary_filename)
 		tprintf(STACK_ENTRY_NOSYMBOL_FMT);
 	else
-		tprintf(STACK_ENTRY_BUG_FMT, __FUNCTION__);
+		tprintf(STACK_ENTRY_BUG_FMT, __func__);
 
 	line_ended();
 }
@@ -460,7 +464,7 @@ sprint_call_or_error(const char *binary_filename,
                        ? asprintf(&output_line, STACK_ENTRY_ERROR_WITH_OFFSET_FMT)
                        : asprintf(&output_line, STACK_ENTRY_ERROR_FMT);
        else
-               n = asprintf(&output_line, STACK_ENTRY_BUG_FMT, __FUNCTION__);
+		n = asprintf(&output_line, STACK_ENTRY_BUG_FMT, __func__);
 
        if (n < 0)
                error_msg_and_die("error in asprintf");
@@ -558,8 +562,7 @@ unwind_print_stacktrace(struct tcb* tcp)
        if (tcp->queue->head) {
 	       DPRINTF("tcp=%p, queue=%p", "queueprint", tcp, tcp->queue->head);
 	       queue_print(tcp->queue);
-       }
-       else if (rebuild_cache_if_invalid(tcp, __FUNCTION__)) {
+	} else if (rebuild_cache_if_invalid(tcp, __func__)) {
                DPRINTF("tcp=%p, queue=%p", "stackprint", tcp, tcp->queue->head);
                stacktrace_walk(tcp, print_call_cb, print_error_cb, NULL);
        }
@@ -580,7 +583,7 @@ unwind_capture_stacktrace(struct tcb *tcp)
 	if (tcp->queue->head)
 		error_msg_and_die("bug: unprinted entries in queue");
 
-	if (rebuild_cache_if_invalid(tcp, __FUNCTION__)) {
+	if (rebuild_cache_if_invalid(tcp, __func__)) {
 		stacktrace_walk(tcp, queue_put_call, queue_put_error,
 				tcp->queue);
 		DPRINTF("tcp=%p, queue=%p", "captured", tcp, tcp->queue->head);

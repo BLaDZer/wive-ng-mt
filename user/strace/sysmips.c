@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2001 Wichert Akkerman <wichert@deephackmode.org>
  * Copyright (c) 2014-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +46,7 @@
 
 SYS_FUNC(sysmips)
 {
-	printxval_long(sysmips_operations, tcp->u_arg[0], "???");
+	printxval64(sysmips_operations, tcp->u_arg[0], "???");
 	tprints(", ");
 
 	switch (tcp->u_arg[0]) {
@@ -65,14 +66,15 @@ SYS_FUNC(sysmips)
 	}
 	case MIPS_ATOMIC_SET:
 		printaddr(tcp->u_arg[1]);
-		tprintf(", %#lx", tcp->u_arg[2]);
+		tprintf(", %#" PRI_klx, tcp->u_arg[2]);
 		return RVAL_DECODED;
 	case MIPS_FIXADE:
-		tprintf("%#lx", tcp->u_arg[1]);
+		tprintf("%#" PRI_klx, tcp->u_arg[1]);
 		return RVAL_DECODED;
 	}
 
-	tprintf("%ld, %ld, %ld", tcp->u_arg[1], tcp->u_arg[2], tcp->u_arg[3]);
+	tprintf("%" PRI_kld ", %" PRI_kld ", %" PRI_kld,
+		tcp->u_arg[1], tcp->u_arg[2], tcp->u_arg[3]);
 	return RVAL_DECODED;
 }
 

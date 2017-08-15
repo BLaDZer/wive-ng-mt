@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +42,7 @@ typedef struct {
 SYS_FUNC(name_to_handle_at)
 {
 	file_handle_header h;
-	const long addr = tcp->u_arg[2];
+	const kernel_ulong_t addr = tcp->u_arg[2];
 
 	if (entering(tcp)) {
 		/* dirfd */
@@ -106,7 +107,7 @@ SYS_FUNC(name_to_handle_at)
 SYS_FUNC(open_by_handle_at)
 {
 	file_handle_header h;
-	const long addr = tcp->u_arg[1];
+	const kernel_ulong_t addr = tcp->u_arg[1];
 
 	/* mount_fd */
 	printfd(tcp, tcp->u_arg[0]);

@@ -3,6 +3,7 @@
  * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
  * Copyright (c) 1993, 1994, 1995, 1996 Rick Sladkey <jrs@world.std.com>
  * Copyright (c) 1996-2001 Wichert Akkerman <wichert@cistron.nl>
+ * Copyright (c) 1999-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +43,7 @@
 static int
 compare(const void *a, const void *b)
 {
-	const unsigned int code1 = (const unsigned long) a;
+	const unsigned int code1 = (const uintptr_t) a;
 	const unsigned int code2 = ((struct_ioctlent *) b)->code;
 	return (code1 > code2) ? 1 : (code1 < code2) ? -1 : 0;
 }
@@ -52,7 +53,7 @@ ioctl_lookup(const unsigned int code)
 {
 	struct_ioctlent *iop;
 
-	iop = bsearch((const void *) (const unsigned long) code, ioctlent,
+	iop = bsearch((const void *) (const uintptr_t) code, ioctlent,
 			nioctlents, sizeof(ioctlent[0]), compare);
 	while (iop > ioctlent) {
 		iop--;
@@ -79,7 +80,7 @@ ioctl_print_code(const unsigned int code)
 {
 	tprints("_IOC(");
 	printflags(ioctl_dirs, _IOC_DIR(code), "_IOC_???");
-	tprintf(", 0x%02x, 0x%02x, 0x%02x)",
+	tprintf(", %#x, %#x, %#x)",
 		_IOC_TYPE(code), _IOC_NR(code), _IOC_SIZE(code));
 }
 
@@ -227,7 +228,7 @@ static int
 ioctl_decode(struct tcb *tcp)
 {
 	const unsigned int code = tcp->u_arg[1];
-	const long arg = tcp->u_arg[2];
+	const kernel_ulong_t arg = tcp->u_arg[2];
 
 	switch (_IOC_TYPE(code)) {
 #if defined(ALPHA) || defined(POWERPC)
@@ -255,10 +256,8 @@ ioctl_decode(struct tcb *tcp)
 		return block_ioctl(tcp, code, arg);
 	case 'X':
 		return fs_x_ioctl(tcp, code, arg);
-#ifdef HAVE_SCSI_SG_H
 	case 0x22:
 		return scsi_ioctl(tcp, code, arg);
-#endif
 	case 'L':
 		return loop_ioctl(tcp, code, arg);
 	case 'M':
@@ -282,6 +281,8 @@ ioctl_decode(struct tcb *tcp)
 	case 0x94:
 		return btrfs_ioctl(tcp, code, arg);
 #endif
+	case 0xb7:
+		return nsfs_ioctl(tcp, code, arg);
 #ifdef HAVE_LINUX_DM_IOCTL_H
 	case 0xfd:
 		return dm_ioctl(tcp, code, arg);
@@ -323,7 +324,7 @@ SYS_FUNC(ioctl)
 		if (ret)
 			--ret;
 		else
-			tprintf(", %#lx", tcp->u_arg[2]);
+			tprintf(", %#" PRI_klx, tcp->u_arg[2]);
 		ret |= RVAL_DECODED;
 	} else {
 		if (ret)

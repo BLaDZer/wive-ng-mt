@@ -3,6 +3,7 @@
  * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
  * Copyright (c) 1993, 1994, 1995, 1996 Rick Sladkey <jrs@world.std.com>
  * Copyright (c) 2006-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +41,8 @@ typedef struct timex struct_timex;
 #include "xlat/adjtimex_modes.h"
 #include "xlat/adjtimex_status.h"
 
-MPERS_PRINTER_DECL(int, print_timex, struct tcb *tcp, const long addr)
+MPERS_PRINTER_DECL(int, print_timex,
+		   struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	struct_timex tx;
 

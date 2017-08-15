@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +40,7 @@
 # define STRUCT_STAT struct __old_kernel_stat
 # define STRUCT_STAT_STR "struct __old_kernel_stat"
 # define STRUCT_STAT_IS_STAT64 0
-# define SAMPLE_SIZE ((kernel_ulong_t) 131478418U)
+# define SAMPLE_SIZE ((libc_off_t) (kernel_ulong_t) 131478418U)
 # include "lstatx.c"
 
 #else

@@ -30,10 +30,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <unistd.h>
-
 #include <sys/uio.h>
-
-#include "kernel_types.h"
 
 #if OP_WR
 # define in_iovec  rmt_iovec
@@ -250,14 +247,15 @@ main(void)
 		2, {SEGM1_BASE, SEGM2_BASE}, {SIZE_1, SIZE_2} };
 	struct print_iov_arg rmt_arg     = { ARRAY_SIZE(rmt_iovec), 1 };
 
-	struct print_iov_arg bogus_arg_cut =
-		{ ARRAY_SIZE(bogus_iovec) - 2, 1, 0, 1 };
-	struct print_iov_arg lcl_arg_cut =
-		{ ARRAY_SIZE(lcl_iovec) - 2, 1, 1, 1, 0, 2,
+	struct print_iov_arg bogus_arg_cut = {
+		ARRAY_SIZE(bogus_iovec) - 2, 1, 0, 1
+	};
+	struct print_iov_arg lcl_arg_cut = {
+		ARRAY_SIZE(lcl_iovec) - 2, 1, 1, 1, 0, 2,
 			{SEGM1_BASE + SIZE_11 + SIZE_12, SEGM2_BASE},
-			{SIZE_13, SIZE_2} };
-	struct print_iov_arg rmt_arg_cut =
-		{ ARRAY_SIZE(rmt_iovec) - 2, 1 };
+		{SIZE_13, SIZE_2}
+	};
+	struct print_iov_arg rmt_arg_cut = { ARRAY_SIZE(rmt_iovec) - 2, 1 };
 
 
 	fill_memory_ex(data1_out, SIZE_1, SEGM1_BASE, SIZE_1);

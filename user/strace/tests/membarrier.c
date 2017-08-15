@@ -27,6 +27,7 @@
 
 #include "tests.h"
 #include <asm/unistd.h>
+#include "scno.h"
 
 #ifdef __NR_membarrier
 
@@ -39,9 +40,10 @@ int
 main(void)
 {
 	assert(syscall(__NR_membarrier, 3, 255) == -1);
-	printf("membarrier(0x3 /* MEMBARRIER_CMD_??? */, 255) = -1 %s (%m)\n",
-	       errno2name());
-	if (errno != ENOSYS) {
+	int saved_errno = errno;
+	printf("membarrier(0x3 /* MEMBARRIER_CMD_??? */, 255) = %s\n",
+	       sprintrc(-1));
+	if (saved_errno != ENOSYS) {
 		/* the test needs to be updated? */
 		assert(syscall(__NR_membarrier, 0, 0) == 1);
 		puts("membarrier(MEMBARRIER_CMD_QUERY, 0)"

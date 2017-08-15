@@ -13,10 +13,13 @@ you'd prefer a different address be used, please send a note to the
 strace-devel@lists.sourceforge.net mailing list.
 
 	Aaron Ucko <ucko@vax1.rockhurst.edu>
+	Abhishek Tiwari <erabhishektiwarics@gmail.com>
 	Adrien Kunysz <adrien@kunysz.be>
+	Alexey Neyman <stilor@att.net>
 	Ali Polatel <alip@exherbo.org>
 	Anchit Jain <anchitjain1234@gmail.com>
 	Andi Kleen <ak@linux.intel.com>
+	Andre McCurdy <armccurdy@gmail.com>
 	Andreas Schwab <schwab@linux-m68k.org>
 	Anton Blanchard <anton@samba.org>
 	Arkadiusz Miskiewicz <misiek@pld.org.pl>
@@ -34,6 +37,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Chris Zankel <chris@zankel.net>
 	Christian Svensson <blue@cmd.nu>
 	D.J. Barrow <djbarrow@de.ibm.com>
+	Damien Profeta <damien.profeta@amadeus.com>
 	Damir Shayhutdinov <damir@altlinux.ru>
 	Daniel P. Berrange <berrange@redhat.com>
 	David Daney <ddaney@caviumnetworks.com>
@@ -46,11 +50,13 @@ strace-devel@lists.sourceforge.net mailing list.
 	Douglas Mencken <dougmencken@gmail.com>
 	Dr. David Alan Gilbert <dgilbert@redhat.com>
 	Edgar E. Iglesias <edgar.iglesias@gmail.com>
+	Edgar Kaziahmedov <edos@linux.com>
 	Elliott Hughes <enh@google.com>
 	Elvira Khabirova <lineprinter0@gmail.com>
 	Erik Johansson <erik@ejohansson.se>
 	Etienne Gemsa <etienne.gemsa@lse.epita.fr>
 	Eugene Syromyatnikov <evgsyr@gmail.com>
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
 	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 	Fabien Siron <fabien.siron@epita.fr>
 	Fei Jie <feij.fnst@cn.fujitsu.com>
@@ -71,6 +77,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Helge Deller <deller@gmx.de>
 	Henrik Storner <storner@osiris.ping.dk>
 	Holger Hans Peter Freyther <holger@freyther.de>
+	Jacob Goense <dugo@xs4all.nl>
 	Jakub Bogusz <qboosh@pld-linux.org>
 	Jakub Jelinek <jj@ultra.linux.cz>
 	James Clarke <jrtc27@jrtc27.com>
@@ -81,7 +88,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	JayRJoshi <jay.r.joshi100@gmail.com>
 	Jeff Mahoney <jeffm@suse.com>
 	Jian Zhen <zhenjl@gmail.com>
-	JingPiao Chen <chenjingpiao@foxmail.com>
+	JingPiao Chen <chenjingpiao@gmail.com>
 	Joe Ilacqua <spike@world.std.com>
 	Johannes Stezenbach <js@sig21.net>
 	John Hughes <john@Calva.COM>
@@ -91,6 +98,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Katerina Koukiou <k.koukiou@googlemail.com>
 	Keith Owens <kaos.ocs@gmail.com>
 	Keith Thompson <kst@alsys.com>
+	Khem Raj <raj.khem@gmail.com>
 	Kirill A. Shutemov <kirill@shutemov.name>
 	Kyle McMartin <kyle@mcmartin.ca>
 	Lai JiangShan <laijs@cn.fujitsu.com>
@@ -117,12 +125,14 @@ strace-devel@lists.sourceforge.net mailing list.
 	Mike Frysinger <vapier@gentoo.org>
 	Mike Stroyan <mike.stroyan@hp.com>
 	Mikulas Patocka <mpatocka@redhat.com>
+	Miroslav Lichvar <mlichvar@redhat.com>
 	Muttley Meen <muttley.meen@gmail.com>
 	Nahim El Atmani <naam@lse.epita.fr>
 	Namhyung Kim <namhyung.kim@lge.com>
 	Nate Eldredge <nate@cartsys.com>
 	Nate Sammons <nate@users.sourceforge.net>
 	Neil Campbell <lists@thebatcave.org.uk>
+	Nikolay Marchuk <marchuk.nikolay.a@gmail.com>
 	Paolo Bonzini <pbonzini@redhat.com>
 	Patrik Jakobsson <patrik.jakobsson@linux.intel.com>
 	Paul Mundt <lethal@linux-sh.org>
@@ -131,6 +141,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Philippe De Muyter <phdm@macqel.be>
 	Philippe Ombredanne <pombredanne@nexb.com>
 	Pádraig Brady <P@draigBrady.com>
+	Quentin Monnet <quentin.monnet@6wind.com>
 	Rajeev V. Pillai <rajeevvp@gmail.com>
 	Ralf Baechle <ralf@linux-mips.org>
 	Randolph Chung <tausq@debian.org>
@@ -139,12 +150,16 @@ strace-devel@lists.sourceforge.net mailing list.
 	Richard Henderson <richard@twiddle.tamu.edu>
 	Richard Hirst <rhirst@linuxcare.com>
 	Richard W.M. Jones <rjones@redhat.com>
+	Rishi Bhatt <bhatt.rishi062@gmail.com>
 	Roland Borde <bo@uebemc.siemens.de>
 	Roland McGrath <roland@redhat.com>
+	Romain Naour <romain.naour@smile.fr>
 	Sami Farin <safari@u.safari.iki.fi>
+	Sandhya Bankar <bankarsandhya512@gmail.com>
 	Scott Tsai <scottt958@yahoo.com.tw>
 	Sean Stangl <sstangl@mozilla.com>
 	Sebastian Pipping <sebastian@pipping.org>
+	Seraphime Kirkovski <kirkseraph@gmail.com>
 	Sergei Trofimovich <slyfox@gentoo.org>
 	Simon Murray <simon@transitive.com>
 	Solar Designer <solar@openwall.com>
@@ -165,6 +180,7 @@ strace-devel@lists.sourceforge.net mailing list.
 	Topi Miettinen <Topi.Miettinen@nic.fi>
 	Ulrich Drepper <drepper@redhat.com>
 	Vicente Olivert Riera <vincent@gentoo.org>
+	Victor Krapivensky <krapivenskiy.va@phystech.edu>
 	Vineet Gupta <Vineet.Gupta1@synopsys.com>
 	Wang Chao <wang.chao@cn.fujitsu.com>
 	Wichert Akkerman <wichert@deephackmode.org>

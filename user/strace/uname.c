@@ -42,9 +42,11 @@ SYS_FUNC(uname)
 
 	if (!umove_or_printaddr(tcp, tcp->u_arg[0], &uname)) {
 #define PRINT_UTS_MEMBER(prefix, member) \
+	do {								\
 		tprints(prefix #member "="); \
 		print_quoted_string(uname.member, sizeof(uname.member), \
-				    QUOTE_0_TERMINATED)
+				    QUOTE_0_TERMINATED);		\
+	} while (0)
 
 		PRINT_UTS_MEMBER("{", sysname);
 		PRINT_UTS_MEMBER(", ", nodename);

@@ -3,6 +3,7 @@
  * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
  * Copyright (c) 1993, 1994, 1995, 1996 Rick Sladkey <jrs@world.std.com>
  * Copyright (c) 1996-1999 Wichert Akkerman <wichert@cistron.nl>
+ * Copyright (c) 1999-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +38,8 @@ typedef struct rusage rusage_t;
 
 #include MPERS_DEFS
 
-MPERS_PRINTER_DECL(void, printrusage, struct tcb *tcp, long addr)
+MPERS_PRINTER_DECL(void, printrusage,
+		   struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	rusage_t ru;
 
@@ -74,7 +76,7 @@ MPERS_PRINTER_DECL(void, printrusage, struct tcb *tcp, long addr)
 
 #ifdef ALPHA
 void
-printrusage32(struct tcb *tcp, long addr)
+printrusage32(struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	struct rusage32 {
 		timeval32_t ru_utime;		/* user time used */

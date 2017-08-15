@@ -5,6 +5,7 @@
 # Copyright (c) 2006-2016 Dmitry V. Levin <ldv@altlinux.org>
 # Copyright (c) 2008-2015 Mike Frysinger <vapier@gentoo.org>
 # Copyright (c) 2015 Elvira Khabirova <lineprinter0@gmail.com>
+# Copyright (c) 2002-2017 The strace developers.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,13 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 AC_PREREQ(2.57)
-AC_INIT([strace], [4.11])
+AC_INIT([strace],
+	[4.18],
+	[strace-devel@lists.sourceforge.net],
+	[strace],
+	[https://strace.io])
+m4_define([copyright_year], [2017])
+AC_COPYRIGHT([Copyright (c) 1999-]copyright_year[ The strace developers.])
 AC_CONFIG_SRCDIR([strace.c])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_HEADERS([config.h])
@@ -52,6 +59,9 @@ AC_PROG_RANLIB
 
 AC_USE_SYSTEM_EXTENSIONS
 AX_CODE_COVERAGE
+
+AC_DEFINE([COPYRIGHT_YEAR], "[copyright_year]", [Current copyright year.])
+AC_SUBST([COPYRIGHT_YEAR], [copyright_year])
 
 AC_MSG_CHECKING([for supported architecture])
 arch_m32=
@@ -209,29 +219,26 @@ AC_SUBST(arch_mx32)
 MIPS_ABI=
 if test "$arch" = mips; then
 	AC_CACHE_CHECK([for _MIPS_SIM], [st_cv__MIPS_SIM],
-		       [AC_COMPUTE_INT([st_cv__MIPS_SIM], [_MIPS_SIM],
-				       [#include <sgidefs.h>],
+		       [AC_COMPUTE_INT([st_cv__MIPS_SIM], [_MIPS_SIM], ,
 				       [AC_MSG_ERROR([_MIPS_SIM cannot be determined])])])
 
+	# requires GCC >= 3.4
 	AC_CACHE_CHECK([for MIPS ABI], [st_cv_mips_abi],
 		[AC_COMPILE_IFELSE(
-			[AC_LANG_PROGRAM([[#include <sgidefs.h>]],
-					 [[int i[_MIPS_SIM == _MIPS_SIM_ABI32 ? 1 : - 1];]])],
+			[AC_LANG_PROGRAM(, [[int i[_MIPS_SIM == _ABIO32 ? 1 : - 1];]])],
 			[st_cv_mips_abi=o32],
 		[AC_COMPILE_IFELSE(
-			[AC_LANG_PROGRAM([[#include <sgidefs.h>]],
-					 [[int i[_MIPS_SIM == _MIPS_SIM_NABI32 ? 1 : - 1];]])],
+			[AC_LANG_PROGRAM(, [[int i[_MIPS_SIM == _ABIN32 ? 1 : - 1];]])],
 			[st_cv_mips_abi=n32],
 		[AC_COMPILE_IFELSE(
-			[AC_LANG_PROGRAM([[#include <sgidefs.h>]],
-					 [[int i[_MIPS_SIM == _MIPS_SIM_ABI64 ? 1 : - 1];]])],
+			[AC_LANG_PROGRAM(, [[int i[_MIPS_SIM == _ABI64 ? 1 : - 1];]])],
 			[st_cv_mips_abi=n64],
 			[st_cv_mips_abi=unknown])])])])
 
 	case "$st_cv_mips_abi" in
-		o32) AC_DEFINE([LINUX_MIPSO32], [1], [Define for _MIPS_SIM_ABI32.]);;
-		n32) AC_DEFINE([LINUX_MIPSN32], [1], [Define for _MIPS_SIM_NABI32.]);;
-		n64) AC_DEFINE([LINUX_MIPSN64], [1], [Define for _MIPS_SIM_ABI64.]);;
+		o32) AC_DEFINE([LINUX_MIPSO32], [1], [Define for _ABIO32.]);;
+		n32) AC_DEFINE([LINUX_MIPSN32], [1], [Define for _ABIN32.]);;
+		n64) AC_DEFINE([LINUX_MIPSN64], [1], [Define for _ABI64.]);;
 		*) AC_MSG_ERROR([Unsupported _MIPS_SIM]);;
 	esac
 	MIPS_ABI="$st_cv_mips_abi"
@@ -267,7 +274,6 @@ AC_CHECK_FUNCS(m4_normalize([
 	futimens
 	if_indextoname
 	open64
-	pipe2
 	prctl
 	preadv
 	process_vm_readv
@@ -276,6 +282,7 @@ AC_CHECK_FUNCS(m4_normalize([
 	signalfd
 	stpcpy
 	strerror
+	strndup
 	strsignal
 	sync_file_range
 	utimensat
@@ -292,11 +299,11 @@ AC_CHECK_TYPES([struct stat64, struct __old_kernel_stat],,,
 [#include <sys/types.h>
 #include <asm/stat.h>])
 
+AC_CHECK_TYPES([struct user_desc],,, [#include <asm/ldt.h>])
+
 AC_CHECK_MEMBERS([struct stat.st_mtime_nsec, struct stat64.st_mtime_nsec],,,
 [#include <sys/types.h>
 #include <asm/stat.h>])
-
-AC_CHECK_MEMBERS([struct stat.st_mtim.tv_nsec])
 
 AC_CHECK_TYPES(m4_normalize([
 	struct pt_all_user_regs,
@@ -359,11 +366,14 @@ AC_CHECK_HEADERS(m4_normalize([
 	linux/falloc.h
 	linux/fiemap.h
 	linux/filter.h
+	linux/genetlink.h
 	linux/hiddev.h
 	linux/ip_vs.h
 	linux/ipc.h
 	linux/mmtimer.h
 	linux/msg.h
+	linux/netfilter/nfnetlink.h
+	linux/nsfs.h
 	linux/perf_event.h
 	linux/quota.h
 	linux/seccomp.h
@@ -388,6 +398,7 @@ AC_CHECK_HEADERS(m4_normalize([
 	sys/shm.h
 	sys/signalfd.h
 	sys/xattr.h
+	ustat.h
 ]))
 
 AC_CHECK_HEADERS([asm/sigcontext.h],,, [#include <signal.h>])
@@ -419,6 +430,28 @@ AC_CHECK_HEADERS([linux/bpf.h], [
 	if test $st_cv_have_union_bpf_attr_log_buf = yes; then
 		AC_DEFINE(HAVE_UNION_BPF_ATTR_LOG_BUF, [1],
 			  [Define to 1 if union bpf_attr.log_buf initialization works])
+	fi
+	AC_CACHE_CHECK([whether union bpf_attr.bpf_fd initialization works],
+		       [st_cv_have_union_bpf_attr_bpf_fd],
+		[AC_COMPILE_IFELSE(
+			[AC_LANG_PROGRAM([[#include <linux/bpf.h>]],
+					 [[union bpf_attr a = { .bpf_fd = 0 };]])],
+			[st_cv_have_union_bpf_attr_bpf_fd=yes],
+			[st_cv_have_union_bpf_attr_bpf_fd=no])])
+	if test $st_cv_have_union_bpf_attr_bpf_fd = yes; then
+		AC_DEFINE(HAVE_UNION_BPF_ATTR_BPF_FD, [1],
+			  [Define to 1 if union bpf_attr.bpf_fd initialization works])
+	fi
+	AC_CACHE_CHECK([whether union bpf_attr.attach_flags initialization works],
+		       [st_cv_have_union_bpf_attr_attach_flags],
+		[AC_COMPILE_IFELSE(
+			[AC_LANG_PROGRAM([[#include <linux/bpf.h>]],
+					 [[union bpf_attr a = { .attach_flags = 0 };]])],
+			[st_cv_have_union_bpf_attr_attach_flags=yes],
+			[st_cv_have_union_bpf_attr_attach_flags=no])])
+	if test $st_cv_have_union_bpf_attr_attach_flags = yes; then
+		AC_DEFINE(HAVE_UNION_BPF_ATTR_ATTACH_FLAGS, [1],
+			  [Define to 1 if union bpf_attr.attach_flags initialization works])
 	fi
 ])
 
@@ -480,8 +513,10 @@ AC_CHECK_DECLS(m4_normalize([
 
 AC_CHECK_DECLS(m4_normalize([
 	LO_FLAGS_READ_ONLY,
+	LO_FLAGS_USE_AOPS,
 	LO_FLAGS_AUTOCLEAR,
-	LO_FLAGS_PARTSCAN
+	LO_FLAGS_PARTSCAN,
+	LO_FLAGS_DIRECT_IO
 ]),,, [#include <linux/loop.h>])
 
 AC_CHECK_DECLS(m4_normalize([
@@ -581,6 +616,8 @@ AC_CHECK_DECLS(m4_normalize([
 	V4L2_BUF_TYPE_SLICED_VBI_CAPTURE,
 	V4L2_BUF_TYPE_SLICED_VBI_OUTPUT,
 	V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY,
+	V4L2_BUF_TYPE_SDR_CAPTURE,
+	V4L2_BUF_TYPE_SDR_OUTPUT,
 	V4L2_TUNER_RADIO,
 	V4L2_TUNER_ANALOG_TV,
 	V4L2_TUNER_DIGITAL_TV,
@@ -620,6 +657,14 @@ AC_CHECK_DECLS(m4_normalize([
 #include <linux/types.h>
 #include <linux/videodev2.h>])
 
+AC_CHECK_MEMBERS(m4_normalize([
+	struct v4l2_window.global_alpha,
+	struct v4l2_sdr_format.buffersize
+]),,, [#include <sys/time.h>
+#include <linux/ioctl.h>
+#include <linux/types.h>
+#include <linux/videodev2.h>])
+
 AC_CACHE_CHECK([for BLKGETSIZE64], [ac_cv_have_blkgetsize64],
 	[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #include <stdlib.h>
@@ -632,6 +677,7 @@ AC_CACHE_CHECK([for BLKGETSIZE64], [ac_cv_have_blkgetsize64],
 AC_CHECK_SIZEOF([long])
 AC_CHECK_SIZEOF([long long])
 AC_CHECK_SIZEOF([off_t],,[#include <sys/types.h>])
+AC_CHECK_SIZEOF([kernel_long_t],,[#include "$srcdir/kernel_types.h"])
 AC_CHECK_SIZEOF([struct i64_i32],,[struct i64_i32 {long long i64; int i32;};])
 
 AC_CACHE_CHECK([for SIGRTMIN], [st_cv_SIGRTMIN],
@@ -660,6 +706,16 @@ AC_CACHE_CHECK([for __builtin_popcount], [st_cv_have___builtin_popcount],
 if test "x$st_cv_have___builtin_popcount" = xyes; then
 	AC_DEFINE([HAVE___BUILTIN_POPCOUNT], [1],
 		  [Define to 1 if the system provides __builtin_popcount function])
+fi
+
+AC_CACHE_CHECK([for program_invocation_name], [st_cv_have_program_invocation_name],
+	       [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <errno.h>]],
+						[[return !*program_invocation_name]])],
+			       [st_cv_have_program_invocation_name=yes],
+			       [st_cv_have_program_invocation_name=no])])
+if test "x$st_cv_have_program_invocation_name" = xyes; then
+	AC_DEFINE([HAVE_PROGRAM_INVOCATION_NAME], [1],
+		  [Define to 1 if the system provides program_invocation_name variable])
 fi
 
 AC_CHECK_LIB([dl], [dladdr], [dl_LIBS='-ldl'], [dl_LIBS=])

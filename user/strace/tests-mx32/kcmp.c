@@ -30,13 +30,12 @@
 #include "tests.h"
 
 #include <asm/unistd.h>
+#include "scno.h"
 
 #ifdef __NR_kcmp
 
 # include <stdio.h>
 # include <unistd.h>
-
-# include "kernel_types.h"
 
 # define KCMP_FILE     0
 # define KCMP_SYSVSEM  6

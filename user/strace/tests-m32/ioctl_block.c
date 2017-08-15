@@ -2,6 +2,7 @@
  * This file is part of ioctl_block strace test.
  *
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,18 +44,6 @@
 static const unsigned int magic = 0xdeadbeef;
 static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0dedULL;
 
-#if defined BLKTRACESETUP && defined HAVE_STRUCT_BLK_USER_TRACE_SETUP
-static void
-init_magic(void *addr, const unsigned int size)
-{
-	unsigned int *p = addr;
-	const unsigned int *end = addr + size - sizeof(int);
-
-	for (; p <= end; ++p)
-		*(unsigned int *) p = magic + (p - (unsigned int *) addr);
-}
-#endif
-
 static struct xlat block_argless[] = {
 	XLAT(BLKRRPART),
 	XLAT(BLKFLSBUF),
@@ -70,8 +59,10 @@ static struct xlat block_argless[] = {
 };
 
 #define TEST_NULL_ARG(cmd) \
+	do {								\
 	ioctl(-1, cmd, 0); \
-	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd)
+		printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd);	\
+	} while (0)
 
 int
 main(void)
@@ -125,7 +116,7 @@ main(void)
 	ioctl(-1, BLKFRASET, lmagic);
 	printf("ioctl(-1, BLKFRASET, %lu) = -1 EBADF (%m)\n", lmagic);
 
-	int *const val_int = tail_alloc(sizeof(*val_int));
+	TAIL_ALLOC_OBJECT_CONST_PTR(int, val_int);
 	*val_int = magic;
 
 	ioctl(-1, BLKROSET, val_int);
@@ -156,7 +147,7 @@ main(void)
 	       " = -1 EBADF (%m)\n", pair_int64[0], pair_int64[1]);
 #endif
 
-	struct blkpg_ioctl_arg *const blkpg = tail_alloc(sizeof(*blkpg));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct blkpg_ioctl_arg, blkpg);
 	blkpg->op = 3;
 	blkpg->flags = 0xdeadbeef;
 	blkpg->datalen = 0xbadc0ded;
@@ -168,7 +159,7 @@ main(void)
 	       "BLKPG_RESIZE_PARTITION", blkpg->flags, blkpg->datalen,
 	       (unsigned long) blkpg->data);
 
-	struct blkpg_partition *const bp = tail_alloc(sizeof(*bp));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct blkpg_partition, bp);
 	bp->start = 0xfac1fed2dad3bef4ULL;
 	bp->length = 0xfac5fed6dad7bef8ULL;
 	bp->pno = magic;
@@ -189,8 +180,8 @@ main(void)
 	       (int) sizeof(bp->volname) - 1, bp->volname);
 
 #if defined BLKTRACESETUP && defined HAVE_STRUCT_BLK_USER_TRACE_SETUP
-	struct blk_user_trace_setup *const buts = tail_alloc(sizeof(*buts));
-	init_magic(buts, sizeof(*buts));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct blk_user_trace_setup, buts);
+	fill_memory(buts, sizeof(*buts));
 
 	ioctl(-1, BLKTRACESETUP, buts);
 	printf("ioctl(-1, BLKTRACESETUP, {act_mask=%hu, buf_size=%u, buf_nr=%u"

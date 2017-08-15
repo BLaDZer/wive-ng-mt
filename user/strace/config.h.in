@@ -27,6 +27,9 @@
 /* Define for the Blackfin architecture. */
 #undef BFIN
 
+/* Current copyright year. */
+#undef COPYRIGHT_YEAR
+
 /* Define for the CRISv10 architecture. */
 #undef CRISV10
 
@@ -162,6 +165,10 @@
    if you don't. */
 #undef HAVE_DECL_LO_FLAGS_AUTOCLEAR
 
+/* Define to 1 if you have the declaration of `LO_FLAGS_DIRECT_IO', and to 0
+   if you don't. */
+#undef HAVE_DECL_LO_FLAGS_DIRECT_IO
+
 /* Define to 1 if you have the declaration of `LO_FLAGS_PARTSCAN', and to 0 if
    you don't. */
 #undef HAVE_DECL_LO_FLAGS_PARTSCAN
@@ -169,6 +176,10 @@
 /* Define to 1 if you have the declaration of `LO_FLAGS_READ_ONLY', and to 0
    if you don't. */
 #undef HAVE_DECL_LO_FLAGS_READ_ONLY
+
+/* Define to 1 if you have the declaration of `LO_FLAGS_USE_AOPS', and to 0 if
+   you don't. */
+#undef HAVE_DECL_LO_FLAGS_USE_AOPS
 
 /* Define to 1 if you have the declaration of `NET_CIPSOV4_CACHE_BUCKET_SIZE',
    and to 0 if you don't. */
@@ -381,6 +392,14 @@
 /* Define to 1 if you have the declaration of `sys_errlist', and to 0 if you
    don't. */
 #undef HAVE_DECL_SYS_ERRLIST
+
+/* Define to 1 if you have the declaration of `V4L2_BUF_TYPE_SDR_CAPTURE', and
+   to 0 if you don't. */
+#undef HAVE_DECL_V4L2_BUF_TYPE_SDR_CAPTURE
+
+/* Define to 1 if you have the declaration of `V4L2_BUF_TYPE_SDR_OUTPUT', and
+   to 0 if you don't. */
+#undef HAVE_DECL_V4L2_BUF_TYPE_SDR_OUTPUT
 
 /* Define to 1 if you have the declaration of
    `V4L2_BUF_TYPE_SLICED_VBI_CAPTURE', and to 0 if you don't. */
@@ -698,6 +717,9 @@
 /* Define to 1 if you have the <linux/filter.h> header file. */
 #undef HAVE_LINUX_FILTER_H
 
+/* Define to 1 if you have the <linux/genetlink.h> header file. */
+#undef HAVE_LINUX_GENETLINK_H
+
 /* Define to 1 if you have the <linux/hiddev.h> header file. */
 #undef HAVE_LINUX_HIDDEV_H
 
@@ -734,6 +756,12 @@
 /* Define to 1 if you have the <linux/netfilter_ipv6/ip6_tables.h> header
    file. */
 #undef HAVE_LINUX_NETFILTER_IPV6_IP6_TABLES_H
+
+/* Define to 1 if you have the <linux/netfilter/nfnetlink.h> header file. */
+#undef HAVE_LINUX_NETFILTER_NFNETLINK_H
+
+/* Define to 1 if you have the <linux/nsfs.h> header file. */
+#undef HAVE_LINUX_NSFS_H
 
 /* Define to 1 if you have the <linux/perf_event.h> header file. */
 #undef HAVE_LINUX_PERF_EVENT_H
@@ -812,9 +840,6 @@
 /* Define to 1 if you have the `open64' function. */
 #undef HAVE_OPEN64
 
-/* Define to 1 if you have the `pipe2' function. */
-#undef HAVE_PIPE2
-
 /* Define to 1 if you have the `prctl' function. */
 #undef HAVE_PRCTL
 
@@ -823,6 +848,9 @@
 
 /* Define to 1 if you have the `process_vm_readv' function. */
 #undef HAVE_PROCESS_VM_READV
+
+/* Define to 1 if the system provides program_invocation_name variable */
+#undef HAVE_PROGRAM_INVOCATION_NAME
 
 /* Define to 1 if you have the `pwritev' function. */
 #undef HAVE_PWRITEV
@@ -865,6 +893,9 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strndup' function. */
+#undef HAVE_STRNDUP
 
 /* Define to 1 if you have the <stropts.h> header file. */
 #undef HAVE_STROPTS_H
@@ -1024,14 +1055,20 @@
 /* Define to 1 if `st_mtime_nsec' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
 
-/* Define to 1 if `st_mtim.tv_nsec' is a member of `struct stat'. */
-#undef HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC
-
 /* Define to 1 if `tai' is a member of `struct timex'. */
 #undef HAVE_STRUCT_TIMEX_TAI
 
+/* Define to 1 if the system has the type `struct user_desc'. */
+#undef HAVE_STRUCT_USER_DESC
+
 /* Define to 1 if `domainname' is a member of `struct utsname'. */
 #undef HAVE_STRUCT_UTSNAME_DOMAINNAME
+
+/* Define to 1 if `buffersize' is a member of `struct v4l2_sdr_format'. */
+#undef HAVE_STRUCT_V4L2_SDR_FORMAT_BUFFERSIZE
+
+/* Define to 1 if `global_alpha' is a member of `struct v4l2_window'. */
+#undef HAVE_STRUCT_V4L2_WINDOW_GLOBAL_ALPHA
 
 /* Define to 1 if the system has the type `struct __kernel_flock'. */
 #undef HAVE_STRUCT___KERNEL_FLOCK
@@ -1087,11 +1124,20 @@
 /* Define to 1 if typeof works with your compiler. */
 #undef HAVE_TYPEOF
 
+/* Define to 1 if union bpf_attr.attach_flags initialization works */
+#undef HAVE_UNION_BPF_ATTR_ATTACH_FLAGS
+
+/* Define to 1 if union bpf_attr.bpf_fd initialization works */
+#undef HAVE_UNION_BPF_ATTR_BPF_FD
+
 /* Define to 1 if union bpf_attr.log_buf initialization works */
 #undef HAVE_UNION_BPF_ATTR_LOG_BUF
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <ustat.h> header file. */
+#undef HAVE_USTAT_H
 
 /* Define to 1 if you have the `utimensat' function. */
 #undef HAVE_UTIMENSAT
@@ -1114,13 +1160,13 @@
 /* Define for the IA64 architecture. */
 #undef IA64
 
-/* Define for _MIPS_SIM_NABI32. */
+/* Define for _ABIN32. */
 #undef LINUX_MIPSN32
 
-/* Define for _MIPS_SIM_ABI64. */
+/* Define for _ABI64. */
 #undef LINUX_MIPSN64
 
-/* Define for _MIPS_SIM_ABI32. */
+/* Define for _ABIO32. */
 #undef LINUX_MIPSO32
 
 /* Define for the m68k architecture. */
@@ -1182,6 +1228,9 @@
 
 /* Define for the SH64 architecture. */
 #undef SH64
+
+/* The size of `kernel_long_t', as computed by sizeof. */
+#undef SIZEOF_KERNEL_LONG_T
 
 /* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG

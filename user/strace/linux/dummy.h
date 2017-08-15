@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
  * Copyright (c) 1993, 1994, 1995 Rick Sladkey <jrs@world.std.com>
+ * Copyright (c) 1995-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,15 +40,18 @@
 #define	sys_vm86old		printargs
 
 /* machine-specific */
-#if !(defined I386 || defined X86_64 || defined X32)
+#ifndef HAVE_STRUCT_USER_DESC
 # define	sys_modify_ldt		printargs
-# ifndef M68K
-#  define	sys_get_thread_area	printargs
-#  ifndef MIPS
-#   define	sys_set_thread_area	printargs
 #  endif
+
+#if !(defined HAVE_STRUCT_USER_DESC || defined M68K || defined MIPS)
+# define	sys_set_thread_area	printargs
 # endif
+
+#if !(defined HAVE_STRUCT_USER_DESC || defined M68K)
+# define	sys_get_thread_area	printargs
 #endif
+
 #ifdef ALPHA
 # define	sys_getdtablesize	printargs
 #endif
@@ -110,7 +114,6 @@
 #define	sys_munlockall		printargs
 #define	sys_pause		printargs
 #define	sys_printargs		printargs
-#define	sys_rt_sigreturn	printargs
 #define	sys_sched_yield		printargs
 #define	sys_setsid		printargs
 #define	sys_set_tid_address	printargs
@@ -153,7 +156,6 @@
 #define	sys_timerfd		printargs
 #define	sys_tuxcall		printargs
 #define	sys_ulimit		printargs
-#define	sys_ustat		printargs
 #define	sys_vserver		printargs
 
 /* deprecated */

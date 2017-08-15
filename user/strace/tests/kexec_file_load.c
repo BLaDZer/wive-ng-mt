@@ -2,6 +2,7 @@
  * Check decoding of kexec_file_load syscall.
  *
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,16 +29,14 @@
  */
 
 #include "tests.h"
-
 #include <asm/unistd.h>
+#include "scno.h"
 
 #ifdef __NR_kexec_file_load
 
 # include <inttypes.h>
 # include <stdio.h>
 # include <unistd.h>
-
-# include "kernel_types.h"
 
 struct strval {
 	kernel_ulong_t val;
@@ -46,7 +45,7 @@ struct strval {
 	const char *str;
 };
 
-#define CMDLINE_STR "deadcodebaddatadefaced";
+#define CMDLINE_STR "deadcodebaddatadefaced"
 
 int
 main(void)
@@ -70,7 +69,7 @@ main(void)
 	static const struct strval flags[] = {
 		{ (kernel_ulong_t) 0xbadc0dedda7a1058ULL,
 			"0xbadc0ded", "0x",
-			"da7a1058 /* KEXEC_FILE_??? */", },
+			"da7a1058 /* KEXEC_FILE_??? */" },
 		{ 0, "", "", "0" },
 		{ 0xdeadbeef, "", "", "KEXEC_FILE_UNLOAD|KEXEC_FILE_ON_CRASH|"
 			"KEXEC_FILE_NO_INITRAMFS|0xdeadbee8" },

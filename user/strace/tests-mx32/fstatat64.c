@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,9 +33,9 @@
 
 # define TEST_SYSCALL_NR __NR_fstatat64
 # define TEST_SYSCALL_STR "fstatat64"
-# if defined __GLIBC__ && defined __sparc__ && defined __arch64__
-#  define TEST_BOGUS_STRUCT_STAT 0
-# endif
+# define STRUCT_STAT struct stat64
+# define STRUCT_STAT_STR "struct stat64"
+# define STRUCT_STAT_IS_STAT64 1
 # include "fstatat.c"
 
 #else

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,15 +34,33 @@
 # endif
 
 # include <sys/types.h>
+# include "kernel_types.h"
 # include "gcc_compat.h"
+# include "macros.h"
+
+/*
+ * The printf-like function to use in header files
+ * shared between strace and its tests.
+ */
+#ifndef STRACE_PRINTF
+# define STRACE_PRINTF printf
+#endif
 
 /* Tests of "strace -v" are expected to define VERBOSE to 1. */
 #ifndef VERBOSE
 # define VERBOSE 0
 #endif
 
+#ifndef DEFAULT_STRLEN
+/* Default maximum # of bytes printed in printstr et al. */
+# define DEFAULT_STRLEN 32
+#endif
+
 /* Cached sysconf(_SC_PAGESIZE). */
 size_t get_page_size(void);
+
+/* The size of kernel's sigset_t. */
+unsigned int get_sigset_size(void);
 
 /* Print message and strerror(errno) to stderr, then exit(1). */
 void perror_msg_and_fail(const char *, ...)
@@ -56,9 +75,12 @@ void error_msg_and_skip(const char *, ...)
 void perror_msg_and_skip(const char *, ...)
 	ATTRIBUTE_FORMAT((printf, 1, 2)) ATTRIBUTE_NORETURN;
 
+/* Stat the specified file and skip the test if the stat call failed. */
+void skip_if_unavailable(const char *);
+
 /*
  * Allocate memory that ends on the page boundary.
- * Pages allocated by this call are preceeded by an unmapped page
+ * Pages allocated by this call are preceded by an unmapped page
  * and followed also by an unmapped page.
  */
 void *tail_alloc(const size_t)
@@ -68,14 +90,30 @@ void *tail_memdup(const void *, const size_t)
 	ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE((2));
 
 /*
+ * Allocate an object of the specified type at the end
+ * of a mapped memory region.
+ * Assign its address to the specified constant pointer.
+ */
+#define TAIL_ALLOC_OBJECT_CONST_PTR(type_name, type_ptr)	\
+	type_name *const type_ptr = tail_alloc(sizeof(*type_ptr))
+
+/*
+ * Allocate an object of the specified type at the end
+ * of a mapped memory region.
+ * Assign its address to the specified variable pointer.
+ */
+#define TAIL_ALLOC_OBJECT_VAR_PTR(type_name, type_ptr)		\
+	type_name *type_ptr = tail_alloc(sizeof(*type_ptr))
+
+/*
  * Fill memory (pointed by ptr, having size bytes) with different bytes (with
  * values starting with start and resetting every period) in order to catch
  * sign, byte order and/or alignment errors.
  */
-void fill_memory_ex(char *ptr, size_t size, unsigned char start,
+void fill_memory_ex(void *ptr, size_t size, unsigned char start,
 		    unsigned char period);
 /* Shortcut for fill_memory_ex(ptr, size, 0x80, 0x80) */
-void fill_memory(char *ptr, size_t size);
+void fill_memory(void *ptr, size_t size);
 
 /* Close stdin, move stdout to a non-standard descriptor, and print. */
 void tprintf(const char *, ...)
@@ -98,6 +136,12 @@ void print_quoted_string(const char *);
 
 /* Print memory in a quoted form. */
 void print_quoted_memory(const char *, size_t);
+
+/* Print time_t and nanoseconds in symbolic format. */
+void print_time_t_nsec(time_t, unsigned long long, int);
+
+/* Print time_t and microseconds in symbolic format. */
+void print_time_t_usec(time_t, unsigned long long, int);
 
 /* Read an int from the file. */
 int read_int_from_file(const char *, int *);
@@ -137,10 +181,29 @@ struct timespec;
 int recv_mmsg(int, struct mmsghdr *, unsigned int, unsigned int, struct timespec *);
 int send_mmsg(int, struct mmsghdr *, unsigned int, unsigned int);
 
+/* Create a netlink socket. */
+int create_nl_socket_ext(int proto, const char *name);
+#define create_nl_socket(proto)	create_nl_socket_ext((proto), #proto)
+
 /* Create a pipe with maximized descriptor numbers. */
 void pipe_maxfd(int pipefd[2]);
 
-# define ARRAY_SIZE(arg) ((unsigned int) (sizeof(arg) / sizeof((arg)[0])))
+#define F8ILL_KULONG_SUPPORTED	(sizeof(void *) < sizeof(kernel_ulong_t))
+#define F8ILL_KULONG_MASK	((kernel_ulong_t) 0xffffffff00000000ULL)
+
+/*
+ * For 64-bit kernel_ulong_t and 32-bit pointer,
+ * return a kernel_ulong_t value by filling higher bits.
+ * For other architertures, return the original pointer.
+ */
+static inline kernel_ulong_t
+f8ill_ptr_to_kulong(const void *const ptr)
+{
+	const unsigned long uptr = (unsigned long) ptr;
+	return F8ILL_KULONG_SUPPORTED
+	       ? F8ILL_KULONG_MASK | uptr : (kernel_ulong_t) uptr;
+}
+
 # define LENGTH_OF(arg) ((unsigned int) sizeof(arg) - 1)
 
 /* Zero-extend a signed integer type to unsigned long long. */
@@ -192,5 +255,17 @@ void pipe_maxfd(int pipefd[2]);
 # define _STR(_arg) #_arg
 # define ARG_STR(_arg) (_arg), #_arg
 # define ARG_ULL_STR(_arg) _arg##ULL, #_arg
+
+/*
+ * Assign an object of type DEST_TYPE at address DEST_ADDR
+ * using memcpy to avoid potential unaligned access.
+ */
+#define SET_STRUCT(DEST_TYPE, DEST_ADDR, ...)						\
+	do {										\
+		DEST_TYPE dest_type_tmp_var = { __VA_ARGS__ };				\
+		memcpy(DEST_ADDR, &dest_type_tmp_var, sizeof(dest_type_tmp_var));	\
+	} while (0)
+
+#define NLMSG_ATTR(nlh, hdrlen) ((void *)(nlh) + NLMSG_SPACE(hdrlen))
 
 #endif /* !STRACE_TESTS_H */

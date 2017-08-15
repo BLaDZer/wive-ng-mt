@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2016 JingPiao Chen <chenjingpiao@foxmail.com>
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,15 +38,13 @@
 # include <stdio.h>
 # include <unistd.h>
 
-# include "kernel_types.h"
-
 int
 main(void)
 {
 	static const kernel_ulong_t bogus_tsc =
 		(kernel_ulong_t) 0xdeadc0defacebeefULL;
 
-	int *tsc = tail_alloc(sizeof(*tsc));
+	TAIL_ALLOC_OBJECT_CONST_PTR(int, tsc);
 	long rc;
 
 	rc = syscall(__NR_prctl, PR_SET_TSC, 0);

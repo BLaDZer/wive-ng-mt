@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +29,7 @@
 #ifdef HAVE_FSTATAT
 
 # define TEST_SYSCALL_INVOKE(sample, pst) \
-	fstatat(AT_FDCWD, sample, pst, AT_SYMLINK_NOFOLLOW)
+	syscall(TEST_SYSCALL_NR, AT_FDCWD, sample, pst, AT_SYMLINK_NOFOLLOW)
 # define PRINT_SYSCALL_HEADER(sample) \
 	do { \
 		int saved_errno = errno; \

@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2015 Andreas Schwab <schwab@suse.de>
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2015-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +50,8 @@ static void
 cleanup(void)
 {
 	semctl(id, 0, IPC_RMID, 0);
-	printf("semctl\\(%d, 0, (IPC_64\\|)?IPC_RMID, \\[?0\\]?\\) += 0\n", id);
+	printf("semctl\\(%d, 0, (IPC_64\\|)?IPC_RMID, \\[?NULL\\]?\\) += 0\n",
+	       id);
 	id = -1;
 }
 
@@ -88,11 +90,7 @@ main(void)
 	atexit(cleanup);
 
 	rc = semctl(bogus_semid, bogus_semnum, bogus_cmd, bogus_arg);
-#ifdef __GLIBC__
-# define SEMCTL_BOGUS_ARG_FMT "(%#lx|\\[(%#lx|0)\\])"
-#else
-# define SEMCTL_BOGUS_ARG_FMT "(%#lx|\\[(%#lx|0)\\]|0)"
-#endif
+#define SEMCTL_BOGUS_ARG_FMT "(%#lx|\\[(%#lx|NULL)\\]|NULL)"
 	printf("semctl\\(%d, %d, (IPC_64\\|)?%#x /\\* SEM_\\?\\?\\? \\*/"
 	       ", " SEMCTL_BOGUS_ARG_FMT "\\) += %s\n",
 	       bogus_semid, bogus_semnum, bogus_cmd,

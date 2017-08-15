@@ -110,9 +110,13 @@ main(void)
 	if (rc < 0)
 		printf("%p", big);
 	else {
+		const int ellipsis = rc > DEFAULT_STRLEN;
+
 		putchar('"');
-		print_quoted_memory(big, rc);
+		print_quoted_memory(big, ellipsis ? DEFAULT_STRLEN : rc);
 		putchar('"');
+		if (ellipsis)
+			fputs("...", stdout);
 	}
 	printf(", %u) = %s\n", XATTR_SIZE_MAX + 1, errstr);
 

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2011, Comtrol Corp.
+ * Copyright (c) 2011 Comtrol Corp.
+ * Copyright (c) 2011-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,8 +33,8 @@
 
 #include "syscall.h"
 
-const char **paths_selected = NULL;
-static unsigned num_selected = 0;
+const char **paths_selected;
+static unsigned int num_selected;
 
 /*
  * Return true if specified path matches one that we're tracing.
@@ -54,11 +55,11 @@ pathmatch(const char *path)
  * Return true if specified path (in user-space) matches.
  */
 static int
-upathmatch(struct tcb *tcp, unsigned long upath)
+upathmatch(struct tcb *const tcp, const kernel_ulong_t upath)
 {
 	char path[PATH_MAX + 1];
 
-	return umovestr(tcp, upath, sizeof path, path) > 0 &&
+	return umovestr(tcp, upath, sizeof(path), path) > 0 &&
 		pathmatch(path);
 }
 
@@ -183,6 +184,7 @@ pathtrace_match(struct tcb *tcp)
 	case SEN_newfstatat:
 	case SEN_openat:
 	case SEN_readlinkat:
+	case SEN_statx:
 	case SEN_unlinkat:
 	case SEN_utimensat:
 		/* fd, path */
@@ -248,19 +250,31 @@ pathtrace_match(struct tcb *tcp)
 	{
 		int     i, j;
 		int     nfds;
-		long   *args, oldargs[5];
-		unsigned fdsize;
+		kernel_ulong_t *args;
+		kernel_ulong_t select_args[5];
+		unsigned int oldselect_args[5];
+		unsigned int fdsize;
 		fd_set *fds;
 
-		args = tcp->u_arg;
 		if (SEN_oldselect == s->sen) {
-			if (umoven(tcp, tcp->u_arg[0], sizeof oldargs,
-				   oldargs) < 0)
-			{
-				error_msg("umoven() failed");
+			if (sizeof(*select_args) == sizeof(*oldselect_args)) {
+				if (umove(tcp, tcp->u_arg[0], &select_args)) {
+					return 0;
+				}
+			} else {
+				unsigned int n;
+
+				if (umove(tcp, tcp->u_arg[0], &oldselect_args)) {
 				return 0;
 			}
-			args = oldargs;
+
+				for (n = 0; n < 5; ++n) {
+					select_args[n] = oldselect_args[n];
+				}
+			}
+			args = select_args;
+		} else {
+			args = tcp->u_arg;
 		}
 
 		/* Kernel truncates arg[0] to int, we do the same. */
@@ -278,7 +292,6 @@ pathtrace_match(struct tcb *tcp)
 			if (args[i] == 0)
 				continue;
 			if (umoven(tcp, args[i], fdsize, fds) < 0) {
-				error_msg("umoven() failed");
 				continue;
 			}
 			for (j = 0;; j++) {
@@ -300,7 +313,7 @@ pathtrace_match(struct tcb *tcp)
 	{
 		struct pollfd fds;
 		unsigned nfds;
-		unsigned long start, cur, end;
+		kernel_ulong_t start, cur, end;
 
 		start = tcp->u_arg[0];
 		nfds = tcp->u_arg[1];
@@ -311,7 +324,7 @@ pathtrace_match(struct tcb *tcp)
 			return 0;
 
 		for (cur = start; cur < end; cur += sizeof(fds))
-			if ((umoven(tcp, cur, sizeof fds, &fds) == 0)
+			if ((umove(tcp, cur, &fds) == 0)
 			    && fdmatch(tcp, fds.fd))
 				return 1;
 

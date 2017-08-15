@@ -29,9 +29,9 @@
 #include "ptrace.h"
 
 int
-upoke(int pid, long off, long val)
+upoke(int pid, unsigned long off, kernel_ulong_t val)
 {
-	if (ptrace(PTRACE_POKEUSER, (pid_t) pid, (void *) off, (void *) val)) {
+	if (ptrace(PTRACE_POKEUSER, pid, off, val)) {
 		if (errno != ESRCH)
 			perror_msg("upoke: PTRACE_POKEUSER pid:%d @%#lx)", pid, off);
 		return -1;

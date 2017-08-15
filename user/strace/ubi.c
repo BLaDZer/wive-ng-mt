@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012 Mike Frysinger <vapier@gentoo.org>
+ * Copyright (c) 2012-2017 The strace developers.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +41,8 @@
 #include "xlat/ubi_volume_props.h"
 
 int
-ubi_ioctl(struct tcb *tcp, const unsigned int code, const long arg)
+ubi_ioctl(struct tcb *const tcp, const unsigned int code,
+	  const kernel_ulong_t arg)
 {
 	if (!verbose(tcp))
 		return RVAL_DECODED;

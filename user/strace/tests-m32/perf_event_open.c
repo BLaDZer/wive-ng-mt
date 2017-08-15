@@ -2,6 +2,7 @@
  * Check verbose decoding of perf_event_open syscall.
  *
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +73,7 @@ struct u64_val_str {
 	const char *str;
 };
 
-/* In order to avoid endianess-specific hackery */
+/* In order to avoid endianness-specific hackery. */
 struct pea_flags {
 	uint64_t disabled                 :1,
 	         inherit                  :1,
@@ -681,7 +682,7 @@ main(void)
 		ATTR_REC(attr_big_size),
 	};
 
-	struct perf_event_attr *small_attr = tail_alloc(sizeof(*small_attr));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct perf_event_attr, small_attr);
 
 	struct {
 		struct perf_event_attr *attr;
@@ -712,7 +713,7 @@ main(void)
 	size_t i;
 	int rc;
 
-	fill_memory((char *) small_attr, sizeof(*small_attr));
+	fill_memory(small_attr, sizeof(*small_attr));
 	small_attr->size = attr_small_size;
 
 	for (i = 0; i < ARRAY_SIZE(args); i++) {
@@ -740,8 +741,7 @@ main(void)
 		size_t args_idx = i % ARRAY_SIZE(args);
 		const char *ip_desc_str;
 
-		fill_memory_ex((char *) attr, size,
-			fill_start, 0xff);
+		fill_memory_ex(attr, size, fill_start, 0xff);
 
 		attr->type = attr_types[type_idx].val;
 		attr->size = size;

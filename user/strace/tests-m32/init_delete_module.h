@@ -3,6 +3,7 @@
  * and delete_module tests.
  *
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +35,6 @@
 # include <stdbool.h>
 # include <stdio.h>
 
-# include "kernel_types.h"
-
-
 enum {
 	PARAM1_LEN = 33,
 	PARAM2_LEN = 8,
@@ -44,9 +42,6 @@ enum {
 	PARAM2_BASE = 0x80,
 	MAX_STRLEN = 32,
 };
-
-static const kernel_ulong_t bogus_zero =
-	(kernel_ulong_t) 0xffffffff00000000ULL;
 
 static void
 print_str(unsigned int base, unsigned int len, bool escape)

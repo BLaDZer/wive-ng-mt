@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Jan Kratochvil <jan.kratochvil@redhat.com>
  * Copyright (c) 2009-2013 Denys Vlasenko <dvlasenk@redhat.com>
  * Copyright (c) 2006-2015 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2014-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +31,8 @@
  */
 
 #include "defs.h"
-
 #include <sched.h>
+#include <asm/unistd.h>
 
 #ifndef CSIGNAL
 # define CSIGNAL 0x000000ff
@@ -75,25 +76,40 @@
 # define ARG_CTID	4
 #endif
 
-#if defined I386 || defined X86_64 || defined X32
-extern void print_user_desc(struct tcb *, long);
-#endif /* I386 || X86_64 || X32 */
+static void
+print_tls_arg(struct tcb *const tcp, const kernel_ulong_t addr)
+{
+#ifdef HAVE_STRUCT_USER_DESC
+# if SUPPORTED_PERSONALITIES > 1
+	if (current_personality == 1)
+# endif
+	{
+		print_user_desc(tcp, tcp->u_arg[ARG_TLS]);
+	}
+# if SUPPORTED_PERSONALITIES > 1
+	else
+# endif
+#endif /* HAVE_STRUCT_USER_DESC */
+	{
+		printaddr(tcp->u_arg[ARG_TLS]);
+	}
+}
 
 SYS_FUNC(clone)
 {
 	if (exiting(tcp)) {
 		const char *sep = "|";
-		unsigned long flags = tcp->u_arg[ARG_FLAGS];
+		kernel_ulong_t flags = tcp->u_arg[ARG_FLAGS];
 		tprints("child_stack=");
 		printaddr(tcp->u_arg[ARG_STACK]);
 		tprints(", ");
 #ifdef ARG_STACKSIZE
 		if (ARG_STACKSIZE != -1)
-			tprintf("stack_size=%#lx, ",
+			tprintf("stack_size=%#" PRI_klx ", ",
 				tcp->u_arg[ARG_STACKSIZE]);
 #endif
 		tprints("flags=");
-		if (!printflags(clone_flags, flags &~ CSIGNAL, NULL))
+		if (!printflags64(clone_flags, flags & ~CSIGNAL, NULL))
 			sep = "";
 		if ((flags & CSIGNAL) != 0)
 			tprintf("%s%s", sep, signame(flags & CSIGNAL));
@@ -105,22 +121,8 @@ SYS_FUNC(clone)
 			printaddr(tcp->u_arg[ARG_PTID]);
 		}
 		if (flags & CLONE_SETTLS) {
-#if defined I386 || defined X86_64 || defined X32
-# ifndef I386
-			if (current_personality == 1)
-# endif
-			{
 				tprints(", tls=");
-				print_user_desc(tcp, tcp->u_arg[ARG_TLS]);
-			}
-# ifndef I386
-			else
-# endif
-#endif /* I386 || X86_64 || X32 */
-			{
-				tprints(", tls=");
-				printaddr(tcp->u_arg[ARG_TLS]);
-			}
+			print_tls_arg(tcp, tcp->u_arg[ARG_TLS]);
 		}
 		if (flags & (CLONE_CHILD_SETTID|CLONE_CHILD_CLEARTID)) {
 			tprints(", child_tidptr=");
@@ -153,7 +155,7 @@ SYS_FUNC(setns)
 
 SYS_FUNC(unshare)
 {
-	printflags64(unshare_flags, getarg_ull(tcp, 0), "CLONE_???");
+	printflags64(unshare_flags, tcp->u_arg[0], "CLONE_???");
 	return RVAL_DECODED;
 }
 

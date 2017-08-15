@@ -28,17 +28,14 @@
  */
 
 #include "tests.h"
-
 #include <asm/unistd.h>
+#include "scno.h"
 
-#if defined __NR_pkey_mprotect
+#ifdef __NR_pkey_mprotect
 
 # include <stdio.h>
 # include <unistd.h>
-
 #include <sys/mman.h>
-
-# include "kernel_types.h"
 
 const char *
 sprintptr(kernel_ulong_t ptr)

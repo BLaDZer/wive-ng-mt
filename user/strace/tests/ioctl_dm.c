@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2016 Mikulas Patocka <mpatocka@redhat.com>
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +40,7 @@
 # include <stddef.h>
 # include <string.h>
 # include <sys/ioctl.h>
+# include <linux/ioctl.h>
 # include <linux/dm-ioctl.h>
 
 # ifndef VERBOSE
@@ -160,6 +162,12 @@ print_dm_target_spec(struct dm_target_spec *ptr, uint32_t id)
 int
 main(void)
 {
+	static kernel_ulong_t dummy_dm_ioctl1 =
+		_IOC(_IOC_READ, DM_IOCTL, 0, 0x1fff);
+	static kernel_ulong_t dummy_dm_ioctl2 =
+		_IOC(_IOC_READ|_IOC_WRITE, DM_IOCTL, 0xed, 0);
+	static kernel_ulong_t dummy_dm_arg =
+		(kernel_ulong_t) 0xbadc0dedda7a1057ULL;
 	/* We can't check these properly for now */
 	static struct args dummy_check_cmds_nodev[] = {
 		{ ARG_STR(DM_REMOVE_ALL),    false },
@@ -196,9 +204,19 @@ main(void)
 
 	/* Incorrect operation */
 	ioctl(-1, _IOW(DM_IOCTL, 0xde, int), dm_arg);
-	printf("ioctl(-1, _IOC(_IOC_WRITE, %#04x, 0xde, %#04zx), %p) = "
+	printf("ioctl(-1, _IOC(_IOC_WRITE, %#x, 0xde, %#zx), %p) = "
 	       "-1 EBADF (%m)\n",
 	       DM_IOCTL, sizeof(int), dm_arg);
+
+	ioctl(-1, dummy_dm_ioctl1, 0);
+	printf("ioctl(-1, _IOC(_IOC_READ, %#x, 0, %#x), 0) = -1 EBADF (%m)\n",
+	       DM_IOCTL, (unsigned int) _IOC_SIZE(dummy_dm_ioctl1));
+
+	ioctl(-1, dummy_dm_ioctl2, dummy_dm_arg);
+	printf("ioctl(-1, _IOC(_IOC_READ|_IOC_WRITE, %#x, %#x, 0), %#lx) = "
+	       "-1 EBADF (%m)\n",
+	       DM_IOCTL, (unsigned int) _IOC_NR(dummy_dm_ioctl2),
+	       (unsigned long) dummy_dm_arg);
 
 
 	/* DM_VERSION */
@@ -217,15 +235,15 @@ main(void)
 	dm_arg->version[1] = 0xbadc0dee;
 	dm_arg->version[2] = 0xbadc0def;
 	ioctl(-1, DM_VERSION, dm_arg);
-	printf("ioctl(-1, DM_VERSION, {version=%u.%u.%u, "
-	       "/* Unsupported device mapper ABI version */ ...}) = "
+	printf("ioctl(-1, DM_VERSION, {version=%u.%u.%u"
+	       " /* unsupported device mapper ABI version */}) = "
 	       "-1 EBADF (%m)\n", 0xbadc0ded, 0xbadc0dee, 0xbadc0def);
 
 	/* Incorrect data_size */
 	init_s(dm_arg, 14, 64);
 	ioctl(-1, DM_VERSION, dm_arg);
-	printf("ioctl(-1, DM_VERSION, {version=4.1.2, data_size=14, "
-	       "/* Incorrect data_size */ ...}) = -1 EBADF (%m)\n");
+	printf("ioctl(-1, DM_VERSION, {version=4.1.2, data_size=14"
+	       " /* data_size too small */}) = -1 EBADF (%m)\n");
 
 	/* Unterminated name/uuid */
 	init_s(dm_arg, min_sizeof_dm_ioctl, 0);
@@ -378,8 +396,8 @@ main(void)
 	       "dev=makedev(18, 52), name=\"nnn\", uuid=\"uuu\", "
 	       "target_count=1234, flags=0, "
 # if VERBOSE
-	       "/* misplaced struct dm_target_spec */ ..."
-# else /* !VERBOSE */
+	       "??? /* misplaced struct dm_target_spec */"
+# else
 	       "..."
 # endif /* VERBOSE */
 	       "}) = -1 EBADF (%m)\n", sizeof(*dm_arg), 0xfffffff8);
@@ -474,7 +492,7 @@ main(void)
 	print_dm_target_spec(&dm_arg_open3->target1, 15);
 	printf("\"\\377\"}, ");
 	print_dm_target_spec(&dm_arg_open3->target1, 42);
-	printf("\"\\1\\2\"}, /* misplaced struct dm_target_spec */ ...");
+	printf("\"\\1\\2\"}, ??? /* misplaced struct dm_target_spec */");
 # else /* !VERBOSE */
 	printf("...");
 # endif /* VERBOSE */
@@ -558,7 +576,7 @@ main(void)
 	       "{version=4.1.2, data_size=%zu, data_start=%zu, "
 	       "dev=makedev(18, 52), name=\"nnn\", uuid=\"uuu\", flags=0, "
 # if VERBOSE
-	       "/* misplaced struct dm_target_msg */"
+	       "??? /* misplaced struct dm_target_msg */"
 # else /* !VERBOSE */
 	       "..."
 # endif /* VERBOSE */
@@ -573,7 +591,7 @@ main(void)
 	       "{version=4.1.2, data_size=%zu, data_start=%u, "
 	       "dev=makedev(18, 52), name=\"nnn\", uuid=\"uuu\", flags=0, "
 # if VERBOSE
-	       "/* misplaced struct dm_target_msg */"
+	       "??? /* misplaced struct dm_target_msg */"
 # else /* !VERBOSE */
 	       "..."
 # endif /* VERBOSE */
@@ -689,7 +707,7 @@ main(void)
 	       "dev=makedev(18, 52), name=\"nnn\", uuid=\"uuu\", event_nr=0, "
 	       "flags=0, "
 # if VERBOSE
-	       "/* misplaced string */"
+	       "??? /* misplaced string */"
 # else /* !VERBOSE */
 	       "..."
 # endif /* VERBOSE */
@@ -740,10 +758,12 @@ main(void)
 	       "dev=makedev(18, 52), name=\"nnn\", uuid=\"uuu\", "
 	       "target_count=4294967295, flags=0, "
 # if VERBOSE
-	       "{sector_start=0, length=0, target_type=\"\", string=\"\"}, "
-	       "/* misplaced struct dm_target_spec */ "
+	       "{sector_start=0, length=0, target_type=\"\", string=\"\"}"
+	       ", ??? /* misplaced struct dm_target_spec */"
+# else
+	       "..."
 # endif /* VERBOSE */
-	       "...}) = -1 EBADF (%m)\n",
+	       "}) = -1 EBADF (%m)\n",
 	       s.ioc.data_size, s.ioc.data_start);
 
 	puts("+++ exited with 0 +++");

@@ -2,6 +2,7 @@
  * Check decoding of out-of-range syscalls.
  *
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +28,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "defs.h"
-#include "kernel_types.h"
-#include "syscall.h"
+#include "tests.h"
+#include "sysent.h"
+#include <errno.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <asm/unistd.h>
 
 #define TD 0
 #define TF 0
@@ -38,17 +42,23 @@
 #define TP 0
 #define TS 0
 #define TM 0
+#define TST 0
+#define TLST 0
+#define TFST 0
+#define TSTA 0
+#define TSF 0
+#define TFSF 0
+#define TSFA 0
 #define NF 0
 #define MA 0
 #define SI 0
 #define SE 0
+#define CST 0
 #define SEN(arg) 0,0
 
 static const struct_sysent syscallent[] = {
 #include "syscallent.h"
 };
-
-#include <asm/unistd.h>
 
 #if defined __X32_SYSCALL_BIT && defined __NR_read \
  && (__X32_SYSCALL_BIT & __NR_read) != 0

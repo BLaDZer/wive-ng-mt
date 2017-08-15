@@ -2,6 +2,7 @@
  * This file is part of ioctl_evdev strace test.
  *
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,16 +42,6 @@
 static const unsigned int magic = 0xdeadbeef;
 static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0dedULL;
 
-static void
-init_magic(void *addr, const unsigned int size)
-{
-	unsigned int *p = addr;
-	const unsigned int *end = addr + size - sizeof(int);
-
-	for (; p <= end; ++p)
-		*(unsigned int *) p = magic;
-}
-
 # if VERBOSE
 static void
 print_envelope(const struct ff_envelope *const e)
@@ -77,8 +68,10 @@ print_ffe_common(const struct ff_effect *const ffe, const char *const type_str)
 }
 
 # define TEST_NULL_ARG(cmd) \
+	do {								\
 	ioctl(-1, cmd, 0); \
-	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd)
+		printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd);	\
+	} while (0)
 
 int
 main(void)
@@ -156,9 +149,9 @@ main(void)
 
 	const unsigned int size = get_page_size();
 	void *const page = tail_alloc(size);
-	init_magic(page, size);
+	fill_memory(page, size);
 
-	int *const val_int = tail_alloc(sizeof(*val_int));
+	TAIL_ALLOC_OBJECT_CONST_PTR(int, val_int);
 	*val_int = magic;
 
 # ifdef EVIOCSCLOCKID
@@ -182,8 +175,8 @@ main(void)
 	       pair_int[0], "KEY_ESC");
 
 # ifdef EVIOCSKEYCODE_V2
-	struct input_keymap_entry *const ike = tail_alloc(sizeof(*ike));
-	init_magic(ike, sizeof(*ike));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct input_keymap_entry, ike);
+	fill_memory(ike, sizeof(*ike));
 	ike->keycode = 2;
 
 	ioctl(-1, EVIOCSKEYCODE_V2, ike);
@@ -206,8 +199,8 @@ main(void)
 	printf("}) = -1 EBADF (%m)\n");
 # endif
 
-	struct ff_effect *const ffe = tail_alloc(sizeof(*ffe));
-	init_magic(ffe, sizeof(*ffe));
+	TAIL_ALLOC_OBJECT_CONST_PTR(struct ff_effect, ffe);
+	fill_memory(ffe, sizeof(*ffe));
 
 	ffe->type = FF_CONSTANT;
 	ioctl(-1, EVIOCSFF, ffe);
@@ -262,17 +255,21 @@ main(void)
 	printf("}) = -1 EBADF (%m)\n");
 #  endif
 
-	ioctl(-1, _IOC(_IOC_READ, 0x45, 0x01, 0xff), lmagic);
+	ioctl(-1, _IOC(_IOC_READ, 0x45, 0x1, 0xff), lmagic);
 	printf("ioctl(-1, %s, %#lx) = -1 EBADF (%m)\n",
-	       "_IOC(_IOC_READ, 0x45, 0x01, 0xff)", lmagic);
+	       "_IOC(_IOC_READ, 0x45, 0x1, 0xff)", lmagic);
 
-	ioctl(-1, _IOC(_IOC_WRITE, 0x45, 0x01, 0xff), lmagic);
+	ioctl(-1, _IOC(_IOC_WRITE, 0x45, 0x1, 0xff), lmagic);
 	printf("ioctl(-1, %s, %#lx) = -1 EBADF (%m)\n",
-	       "_IOC(_IOC_WRITE, 0x45, 0x01, 0xff)", lmagic);
+	       "_IOC(_IOC_WRITE, 0x45, 0x1, 0xff)", lmagic);
 
 	ioctl(-1, _IOC(_IOC_READ|_IOC_WRITE, 0x45, 0xfe, 0xff), lmagic);
 	printf("ioctl(-1, %s, %#lx) = -1 EBADF (%m)\n",
 	       "_IOC(_IOC_READ|_IOC_WRITE, 0x45, 0xfe, 0xff)", lmagic);
+
+	ioctl(-1, _IOC(_IOC_READ|_IOC_WRITE, 0x45, 0, 0), lmagic);
+	printf("ioctl(-1, %s, %#lx) = -1 EBADF (%m)\n",
+	       "_IOC(_IOC_READ|_IOC_WRITE, 0x45, 0, 0)", lmagic);
 
 	puts("+++ exited with 0 +++");
 	return 0;
