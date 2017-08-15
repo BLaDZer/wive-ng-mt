@@ -64,6 +64,7 @@ static struct atom_map port_status_map = {
 
 ATOM_MAP_REGISTER(port_status_map, 3);
 
+#ifdef ENABLE_DOT3
 static lldpctl_map_t operational_mau_type_values[] = {
 	{ 1,	"AUI - no internal MAU, view from AUI" },
 	{ 2,	"10Base5 - thick coax MAU" },
@@ -118,8 +119,34 @@ static lldpctl_map_t operational_mau_type_values[] = {
 	{ 51,	"1000BasePX10U - One single-mode fiber EPON ONU, 10km" },
 	{ 52,	"1000BasePX20D - One single-mode fiber EPON OLT, 20km" },
 	{ 53,	"1000BasePX20U - One single-mode fiber EPON ONU, 20km" },
+	{ 54,	"10GbaseT - Four-pair Category 6A or better, full duplex mode only" },
+	{ 55,	"10GbaseLRM - R multimode fiber over 1310 nm optics" },
+	{ 56,	"1000baseKX - X backplane, full duplex mode only" },
+	{ 57,	"10GbaseKX4 - 4 lane X backplane, full duplex mode only" },
+	{ 58,	"10GbaseKR - R backplane, full duplex mode only" },
+	{ 59,	"10G1GbasePRXD1 - One single-mode fiber asymmetric-rate EPON OLT, low power budget (PRX10)" },
+	{ 60,   "10G1GbasePRXD2 - One single-mode fiber asymmetric-rate EPON OLT, medium power budget (PRX20)" },
+	{ 61,   "10G1GbasePRXD3 - One single-mode fiber asymmetric-rate EPON OLT, high power budget (PRX30)" },
+	{ 62,   "10G1GbasePRXU1 - One single-mode fiber asymmetric-rate EPON ONU, low power budget (PRX10)" },
+	{ 63,   "10G1GbasePRXU2 - One single-mode fiber asymmetric-rate EPON ONU, medium power budget (PRX20)" },
+	{ 64,   "10G1GbasePRXU3 - One single-mode fiber asymmetric-rate EPON ONU, high power budget (PRX30)" },
+	{ 65,   "10GbasePRD1 - One single-mode fiber symmetric-rate EPON OLT, low power budget (PR10)" },
+	{ 66,   "10GbasePRD2 - One single-mode fiber symmetric-rate EPON OLT, medium power budget (PR20)" },
+	{ 67,   "10GbasePRD3 - One single-mode fiber symmetric-rate EPON OLT, high power budget (PR30)" },
+	{ 68,   "10GbasePRU1 - One single-mode fiber symmetric-rate EPON ONU, low and medium power budget" },
+	{ 69,   "10GbasePRU3 - One single-mode fiber symmetric-rate EPON ONU, high power budget (PR30)" },
+	{ 70,   "40GbaseKR4 - 40GBASE-R PCS/PMA over an electrical backplane" },
+	{ 71,   "40GbaseCR4 - 40GBASE-R PCS/PMA over 4 lane shielded copper balanced cable" },
+	{ 72,   "40GbaseSR4 - 40GBASE-R PCS/PMA over 4 lane multimode fiber" },
+	{ 73,   "40GbaseFR - 40GBASE-R PCS/PMA over single mode fiber" },
+	{ 74,   "40GbaseLR4 - 40GBASE-R PCS/PMA over 4 WDM lane single mode fiber" },
+	{ 75,   "100GbaseCR10 - 100GBASE-R PCS/PMA over 10 lane shielded copper balanced cable" },
+	{ 76,   "100GbaseSR10 - 100GBASE-R PCS/PMA over 10 lane multimode fiber" },
+	{ 77,   "100GbaseLR4 - 100GBASE-R PCS/PMA over 4 WDM lane single mode fiber, long reach" },
+	{ 78,   "100GbaseER4 - 100GBASE-R PCS/PMA over 4 WDM lane single mode fiber PMD, extended reach" },
 	{ 0, NULL }
 };
+#endif
 
 static lldpctl_atom_iter_t*
 _lldpctl_atom_iter_ports_list(lldpctl_atom_t *atom)
@@ -589,6 +616,8 @@ _lldpctl_atom_get_int_port(lldpctl_atom_t *atom, lldpctl_key_t key)
 		return port->p_protocol;
 	case lldpctl_k_port_age:
 		return port->p_lastchange;
+	case lldpctl_k_port_ttl:
+		return port->p_ttl;
 	case lldpctl_k_port_id_subtype:
 		return port->p_id_subtype;
 	case lldpctl_k_port_hidden:

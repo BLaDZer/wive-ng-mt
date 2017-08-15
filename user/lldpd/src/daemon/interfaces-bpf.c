@@ -17,6 +17,7 @@
 
 #include "lldpd.h"
 #include <unistd.h>
+#include <errno.h>
 #include <net/bpf.h>
 
 struct bpf_buffer {
@@ -88,9 +89,14 @@ ifbpf_eth_recv(struct lldpd *cfg,
 	/* We assume we have only receive one packet (unbuffered mode). Dunno if
 	 * this is correct. */
 	if (read(fd, bpfbuf->data, bpfbuf->len) == -1) {
+		if (errno == ENETDOWN) {
+			log_debug("interfaces", "error while receiving frame on %s (network down)",
+			    hardware->h_ifname);
+		} else {
 		log_warn("interfaces", "error while receiving frame on %s",
 		    hardware->h_ifname);
 		hardware->h_rx_discarded_cnt++;
+		}
 		return -1;
 	}
 	bh = (struct bpf_hdr*)bpfbuf->data;

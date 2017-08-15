@@ -90,7 +90,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
 	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
-	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
@@ -275,10 +274,6 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-JANSSON_CFLAGS = @JANSSON_CFLAGS@
-JANSSON_LIBS = @JANSSON_LIBS@
-JSONC_CFLAGS = @JSONC_CFLAGS@
-JSONC_LIBS = @JSONC_LIBS@
 LAUNCHDDAEMONSDIR = @LAUNCHDDAEMONSDIR@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
@@ -298,6 +293,9 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NETLINK_MAX_RECEIVE_BUFSIZE = @NETLINK_MAX_RECEIVE_BUFSIZE@
+NETLINK_RECEIVE_BUFSIZE = @NETLINK_RECEIVE_BUFSIZE@
+NETLINK_SEND_BUFSIZE = @NETLINK_SEND_BUFSIZE@
 NETSNMP_CFLAGS = @NETSNMP_CFLAGS@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NETSNMP_LIBS = @NETSNMP_LIBS@

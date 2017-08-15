@@ -87,7 +87,7 @@ cdp_send(struct lldpd *global,
 	if (!(
 	      POKE_SAVE(pos_cdp) &&
 	      POKE_UINT8((version == 0)?1:version) &&
-	      POKE_UINT8(chassis->c_ttl) &&
+	      POKE_UINT8(global?global->g_config.c_ttl:180) &&
 	      POKE_SAVE(pos_checksum) && /* Save checksum position */
 	      POKE_UINT16(0)))
 		goto toobig;
@@ -357,7 +357,7 @@ cdp_decode(struct lldpd *cfg, char *frame, int s,
 		    version, hardware->h_ifname);
 		goto malformed;
 	}
-	chassis->c_ttl = PEEK_UINT8; /* TTL */
+	port->p_ttl = PEEK_UINT8; /* TTL */
 	PEEK_DISCARD_UINT16;	     /* Checksum, already checked */
 
 	while (length) {
@@ -562,7 +562,7 @@ cdp_decode(struct lldpd *cfg, char *frame, int s,
 	    (chassis->c_name == NULL) ||
 	    (chassis->c_descr == NULL) ||
 	    (port->p_descr == NULL) ||
-	    (chassis->c_ttl == 0) ||
+	    (port->p_ttl == 0) ||
 	    (chassis->c_cap_enabled == 0)) {
 		log_warnx("cdp", "some mandatory CDP/FDP tlv are missing for frame received on %s",
 		    hardware->h_ifname);

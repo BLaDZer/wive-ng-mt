@@ -87,7 +87,7 @@ struct event_base;
 #define LLDPD_TX_HOLD          4
 #define LLDPD_TTL              LLDPD_TX_INTERVAL * LLDPD_TX_HOLD
 #define LLDPD_TX_MSGDELAY	1
-#define LLDPD_MAX_NEIGHBORS	4
+#define LLDPD_MAX_NEIGHBORS	32
 #define LLDPD_FAST_TX_INTERVAL	1
 #define LLDPD_FAST_INIT	4
 
@@ -214,13 +214,23 @@ void	 priv_wait(void);
 void	 priv_ctl_cleanup(const char *ctlname);
 char   	*priv_gethostname(void);
 #ifdef HOST_OS_LINUX
+#define ETHTOOL_LINK_MODE_MASK_MAX_KERNEL_NU32 (SCHAR_MAX)
+#define ETHTOOL_DECLARE_LINK_MODE_MASK(name)			\
+	uint32_t name[ETHTOOL_LINK_MODE_MASK_MAX_KERNEL_NU32]
+
+struct ethtool_link_usettings {
+	struct ethtool_link_settings base;
+	struct {
+		ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
+		ETHTOOL_DECLARE_LINK_MODE_MASK(advertising);
+		ETHTOOL_DECLARE_LINK_MODE_MASK(lp_advertising);
+	} link_modes;
+};
 int    	 priv_open(char*);
 void	 asroot_open(void);
-int    	 priv_ethtool(char*, struct ethtool_cmd*);
-# ifdef ENABLE_OLDIES
+int    	 priv_ethtool(char*, struct ethtool_link_usettings*);
 void	 asroot_ethtool(void);
 # endif
-#endif
 int    	 priv_iface_init(int, char *);
 int	 asroot_iface_init_os(int, char *, int *);
 int	 priv_iface_multicast(const char *, const u_int8_t *, int);

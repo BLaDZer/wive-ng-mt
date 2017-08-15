@@ -27,6 +27,9 @@
 /* Foundry Discovery Protocol */
 #undef ENABLE_FDP
 
+/* use of pre-0.9.2 JSON/json-c format */
+#undef ENABLE_JSON0
+
 /* LLDP-MED extension */
 #undef ENABLE_LLDPMED
 
@@ -238,6 +241,15 @@
 /* Minimal kernel version required */
 #undef MIN_LINUX_KERNEL_VERSION
 
+/* Netlink maximum receive buffer size */
+#undef NETLINK_MAX_RECEIVE_BUFSIZE
+
+/* Netlink initial receive buffer size */
+#undef NETLINK_RECEIVE_BUFSIZE
+
+/* Netlink send buffer size */
+#undef NETLINK_SEND_BUFSIZE
+
 /* Name of package */
 #undef PACKAGE
 
@@ -276,15 +288,6 @@
 
 /* Directory for sysusers files */
 #undef SYSUSERSDIR
-
-/* Define to indicate to enable JSON support through jansson */
-#undef USE_JANSSON
-
-/* Define to indicate to enable JSON support */
-#undef USE_JSON
-
-/* Define to indicate to enable JSON via json-c support */
-#undef USE_JSONC
 
 /* Define to indicate to enable seccomp support */
 #undef USE_SECCOMP

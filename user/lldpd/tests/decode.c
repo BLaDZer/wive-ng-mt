@@ -139,7 +139,6 @@ main(int argc, char **argv)
 	printf(" Description: %s\n", nchassis->c_descr?nchassis->c_descr:"(null)");
 	printf(" Cap available: %" PRIu16 "\n", nchassis->c_cap_available);
 	printf(" Cap enabled: %" PRIu16 "\n", nchassis->c_cap_enabled);
-	printf(" TTL: %" PRIu16 "\n", nchassis->c_ttl);
 	struct lldpd_mgmt *mgmt;
 	TAILQ_FOREACH(mgmt, &nchassis->c_mgmt, m_entries) {
 		char ipaddress[INET6_ADDRSTRLEN + 1];
@@ -178,6 +177,7 @@ main(int argc, char **argv)
 	printf(" ID: %s\n", tohex(nport->p_id, nport->p_id_len));
 	printf(" Description: %s\n", nport->p_descr?nport->p_descr:"(null)");
 	printf(" MFS: %" PRIu16 "\n", nport->p_mfs);
+	printf(" TTL: %" PRIu16 "\n", nport->p_ttl);
 #ifdef ENABLE_DOT3
 	printf(" Dot3 aggrID: %" PRIu32 "\n", nport->p_aggregid);
 	printf(" Dot3 MAC/phy autoneg supported: %" PRIu8 "\n", nport->p_macphy.autoneg_support);

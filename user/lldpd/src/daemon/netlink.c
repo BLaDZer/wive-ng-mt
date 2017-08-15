@@ -35,10 +35,48 @@ struct netlink_req {
 
 struct lldpd_netlink {
 	int nl_socket;
+	int nl_socket_recv_size;
 	/* Cache */
 	struct interfaces_device_list *devices;
 	struct interfaces_address_list *addresses;
 };
+
+
+/**
+ * Set netlink socket buffer size.
+ *
+ * This returns the effective size on success. If the provided value is 0, this
+ * returns the current size instead. It returns -1 on system errors and -2 if
+ * the size was not changed appropriately (when reaching the max).
+ */
+static int
+netlink_socket_set_buffer_size(int s, int optname, const char *optname_str, int bufsize)
+{
+	socklen_t size = sizeof(int);
+	int got = 0;
+
+	if (bufsize > 0 && setsockopt(s, SOL_SOCKET, optname, &bufsize, sizeof(bufsize)) < 0) {
+		log_warn("netlink", "unable to set %s to '%d'", optname_str, bufsize);
+		return -1;
+	}
+
+	/* Now read them back from kernel.
+	 * SO_SNDBUF & SO_RCVBUF are cap-ed at sysctl `net.core.rmem_max` &
+	 * `net.core.wmem_max`. This it the easiest [probably sanest too]
+	 * to validate that our socket buffers were set properly.
+	 */
+	if (getsockopt(s, SOL_SOCKET, optname, &got, &size) < 0) {
+		log_warn("netlink", "unable to get %s", optname_str);
+		return -1;
+	}
+	if (bufsize > 0 && got < bufsize) {
+		log_warnx("netlink", "tried to set %s to '%d' "
+		    "but got '%d'", optname_str, bufsize, got);
+		return -2;
+	}
+
+	return got;
+}
 
 /**
  * Connect to netlink.
@@ -47,10 +85,10 @@ struct lldpd_netlink {
  *
  * @param protocol Which protocol to use (eg NETLINK_ROUTE).
  * @param groups   Which groups we want to subscribe to
- * @return The opened socket or -1 on error.
+ * @return 0 on success, -1 otherwise
  */
 static int
-netlink_connect(int protocol, unsigned groups)
+netlink_connect(struct lldpd *cfg, int protocol, unsigned groups)
 {
 	int s;
 	struct sockaddr_nl local = {
@@ -66,12 +104,25 @@ netlink_connect(int protocol, unsigned groups)
 		log_warn("netlink", "unable to open netlink socket");
 		return -1;
 	}
+	if (NETLINK_SEND_BUFSIZE &&
+	    netlink_socket_set_buffer_size(s,
+	    SO_SNDBUF, "SO_SNDBUF", NETLINK_SEND_BUFSIZE) == -1)
+		return -1;
+
+	int rc = netlink_socket_set_buffer_size(s,
+	    SO_RCVBUF, "SO_RCVBUF", NETLINK_RECEIVE_BUFSIZE);
+	switch (rc) {
+	case -1: return -1;
+	case -2: cfg->g_netlink->nl_socket_recv_size = 0; break;
+	default: cfg->g_netlink->nl_socket_recv_size = rc; break;
+	}
 	if (groups && bind(s, (struct sockaddr *)&local, sizeof(struct sockaddr_nl)) < 0) {
 		log_warn("netlink", "unable to bind netlink socket");
 		close(s);
 		return -1;
 	}
-	return s;
+	cfg->g_netlink->nl_socket = s;
+	return 0;
 }
 
 /**
@@ -260,6 +311,12 @@ netlink_parse_link(struct nlmsghdr *msg,
 		    iff->index);
 		return -1;
 	}
+	if (iff->upper_idx == -1) {
+		/* No upper interface, we cannot be enslaved. We need to clear
+		 * the flag because the appropriate information may come later
+		 * and we don't want to miss it. */
+		iff->flags &= ~IFF_SLAVE;
+	}
 
 	log_debug("netlink", "parsed link %d (%s, flags: %d)",
 	    iff->index, iff->name, iff->flags);
@@ -361,13 +418,12 @@ netlink_merge(struct interfaces_device *old, struct interfaces_device *new)
 /**
  * Receive netlink answer from the kernel.
  *
- * @param s    the netlink socket
  * @param ifs  list to store interface list or NULL if we don't
  * @param ifas list to store address list or NULL if we don't
  * @return     0 on success, -1 on error
  */
 static int
-netlink_recv(int s,
+netlink_recv(struct lldpd *cfg,
     struct interfaces_device_list *ifs,
     struct interfaces_address_list *ifas)
 {
@@ -375,6 +431,7 @@ netlink_recv(int s,
 	int flags = MSG_PEEK | MSG_TRUNC;
 	struct iovec iov;
 	int link_update = 0;
+	int s = cfg->g_netlink->nl_socket;
 
 	struct interfaces_device *ifdold;
 	struct interfaces_device *ifdnew;
@@ -407,6 +464,29 @@ retry:
 				log_debug("netlink", "should have received something, but didn't");
 				ret = 0;
 				goto out;
+			}
+			int rsize = cfg->g_netlink->nl_socket_recv_size;
+			if (errno == ENOBUFS &&
+			    rsize > 0 && rsize < NETLINK_MAX_RECEIVE_BUFSIZE) {
+				/* Try to increase buffer size */
+				rsize *= 2;
+				if (rsize > NETLINK_MAX_RECEIVE_BUFSIZE) {
+					rsize = NETLINK_MAX_RECEIVE_BUFSIZE;
+				}
+				int rc = netlink_socket_set_buffer_size(s,
+				    SO_RCVBUF, "SO_RCVBUF",
+				    rsize);
+				if (rc < 0)
+					cfg->g_netlink->nl_socket_recv_size = 0;
+				else
+					cfg->g_netlink->nl_socket_recv_size = rsize;
+				if (rc > 0 || rc == -2) {
+					log_info("netlink",
+					    "netlink receive buffer too small, retry with larger one (%d)",
+					    rsize);
+					flags = 0;
+					goto retry;
+				}
 			}
 			log_warn("netlink", "unable to receive netlink answer");
 			ret = -1;
@@ -623,10 +703,10 @@ netlink_group_mask(int group)
 /**
  * Subscribe to link changes.
  *
- * @return The socket we should listen to for changes.
+ * @return 0 on success, -1 otherwise
  */
-int
-netlink_subscribe_changes()
+static int
+netlink_subscribe_changes(struct lldpd *cfg)
 {
 	unsigned int groups;
 
@@ -636,7 +716,7 @@ netlink_subscribe_changes()
 	    netlink_group_mask(RTNLGRP_IPV4_IFADDR) |
 	    netlink_group_mask(RTNLGRP_IPV6_IFADDR);
 
-	return netlink_connect(NETLINK_ROUTE, groups);
+	return netlink_connect(cfg, NETLINK_ROUTE, groups);
 }
 
 /**
@@ -646,7 +726,7 @@ netlink_change_cb(struct lldpd *cfg)
 {
 	if (cfg->g_netlink == NULL)
 		return;
-	netlink_recv(cfg->g_netlink->nl_socket,
+	netlink_recv(cfg,
 	    cfg->g_netlink->devices,
 	    cfg->g_netlink->addresses);
 }
@@ -671,7 +751,8 @@ netlink_initialize(struct lldpd *cfg)
 
 	/* Connect to netlink (by requesting to get notified on updates) and
 	 * request updated information right now */
-	int s = cfg->g_netlink->nl_socket = netlink_subscribe_changes();
+	if (netlink_subscribe_changes(cfg) == -1)
+		goto end;
 
 	struct interfaces_address_list *ifaddrs = cfg->g_netlink->addresses =
 	    malloc(sizeof(struct interfaces_address_list));
@@ -689,16 +770,16 @@ netlink_initialize(struct lldpd *cfg)
 	}
 	TAILQ_INIT(ifs);
 
-	if (netlink_send(s, RTM_GETADDR, AF_UNSPEC, 1) == -1)
+	if (netlink_send(cfg->g_netlink->nl_socket, RTM_GETADDR, AF_UNSPEC, 1) == -1)
 		goto end;
-	netlink_recv(s, NULL, ifaddrs);
-	if (netlink_send(s, RTM_GETLINK, AF_PACKET, 2) == -1)
+	netlink_recv(cfg, NULL, ifaddrs);
+	if (netlink_send(cfg->g_netlink->nl_socket, RTM_GETLINK, AF_PACKET, 2) == -1)
 		goto end;
-	netlink_recv(s, ifs, NULL);
+	netlink_recv(cfg, ifs, NULL);
 
 	/* Listen to any future change */
 	cfg->g_iface_cb = netlink_change_cb;
-	if (levent_iface_subscribe(cfg, s) == -1) {
+	if (levent_iface_subscribe(cfg, cfg->g_netlink->nl_socket) == -1) {
 		goto end;
 	}
 

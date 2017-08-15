@@ -68,12 +68,9 @@ usage()
 
 	fprintf(stderr, "-d          Enable more debugging information.\n");
 	fprintf(stderr, "-u socket   Specify the Unix-domain socket used for communication with lldpd(8).\n");
-	fprintf(stderr, "-f format   Choose output format (plain, keyvalue"
+	fprintf(stderr, "-f format   Choose output format (plain, keyvalue, json"
 #if defined USE_XML
 	    ", xml"
-#endif
-#if defined USE_JANSSON || defined USE_JSONC
-	    ", json"
 #endif
 	    ").\n");
 	if (!is_lldpctl(NULL))
@@ -275,14 +272,9 @@ cmd_exec(lldpctl_conn_t *conn, const char *fmt, int argc, const char **argv)
 
 	if      (strcmp(fmt, "plain")    == 0) w = txt_init(stdout);
 	else if (strcmp(fmt, "keyvalue") == 0) w = kv_init(stdout);
+	else if (strcmp(fmt, "json")     == 0) w = json_init(stdout);
 #ifdef USE_XML
 	else if (strcmp(fmt, "xml")      == 0) w = xml_init(stdout);
-#endif
-#ifdef USE_JANSSON
-	else if (strcmp(fmt, "json")     == 0) w = jansson_init(stdout);
-#endif
-#ifdef USE_JSONC
-	else if (strcmp(fmt, "json")     == 0) w = jsonc_init(stdout);
 #endif
 	else {
 		log_warnx("lldpctl", "unknown output format \"%s\"", fmt);
@@ -381,12 +373,17 @@ filter(const struct dirent *dir)
  * @param acceptdir 1 if we accept a directory, 0 otherwise
  */
 static void
-input_append(const char *arg, struct inputs *inputs, int acceptdir)
+input_append(const char *arg, struct inputs *inputs, int acceptdir, int warn)
 {
 	struct stat statbuf;
 	if (stat(arg, &statbuf) == -1) {
+		if (warn) {
 		log_warn("lldpctl", "cannot find configuration file/directory %s",
 		    arg);
+		} else {
+			log_debug("lldpctl", "cannot find configuration file/directory %s",
+			    arg);
+		}
 		return;
 	}
 
@@ -418,7 +415,7 @@ input_append(const char *arg, struct inputs *inputs, int acceptdir)
 	for (int i=0; i < n; i++) {
 		char *fullname;
 		if (asprintf(&fullname, "%s/%s", arg, namelist[i]->d_name) != -1) {
-			input_append(fullname, inputs, 0);
+			input_append(fullname, inputs, 0, 1);
 			free(fullname);
 		}
 		free(namelist[i]);
@@ -432,7 +429,7 @@ main(int argc, char *argv[])
 	int ch, debug = 0, use_syslog = 0, rc = EXIT_FAILURE;
 	const char *fmt = "plain";
 	lldpctl_conn_t *conn = NULL;
-	const char *options = is_lldpctl(argv[0])?"hdvf:u:":"hdsvf:c:u:";
+	const char *options = is_lldpctl(argv[0])?"hdvf:u:":"hdsvf:c:C:u:";
 
 	int gotinputs = 0, version = 0;
 	struct inputs inputs;
@@ -470,13 +467,14 @@ main(int argc, char *argv[])
 		case 'f':
 			fmt = optarg;
 			break;
+		case 'C':
 		case 'c':
 			if (!gotinputs) {
 				log_init(use_syslog, debug, __progname);
 				lldpctl_log_level(debug + 1);
 				gotinputs = 1;
 			}
-			input_append(optarg, &inputs, 1);
+			input_append(optarg, &inputs, 1, ch == 'c');
 			break;
 		default:
 			usage();

@@ -83,12 +83,6 @@ sbin_PROGRAMS = lldpcli$(EXEEXT)
 @USE_XML_TRUE@am__append_1 = xml_writer.c
 @USE_XML_TRUE@am__append_2 = @XML2_CFLAGS@
 @USE_XML_TRUE@am__append_3 = @XML2_LIBS@
-@USE_JANSSON_TRUE@am__append_4 = jansson_writer.c
-@USE_JANSSON_TRUE@am__append_5 = @JANSSON_CFLAGS@
-@USE_JANSSON_TRUE@am__append_6 = @JANSSON_LIBS@
-@USE_JSONC_TRUE@am__append_7 = jsonc_writer.c
-@USE_JSONC_TRUE@am__append_8 = @JSONC_CFLAGS@
-@USE_JSONC_TRUE@am__append_9 = @JSONC_LIBS@
 DIST_COMMON = $(top_srcdir)/edit.am $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/depcomp $(dist_man_MANS) \
 	$(dist_bashcompletion_DATA) $(dist_lldpdconf_DATA) \
@@ -102,7 +96,6 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
 	$(top_srcdir)/m4/ax_ld_check_flag.m4 \
 	$(top_srcdir)/m4/ax_lib_readline.m4 \
 	$(top_srcdir)/m4/ax_prog_doxygen.m4 \
-	$(top_srcdir)/m4/jansson.m4 $(top_srcdir)/m4/json-c.m4 \
 	$(top_srcdir)/m4/ld-version-script.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
@@ -123,25 +116,22 @@ am__installdirs = "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(man8dir)" \
 PROGRAMS = $(sbin_PROGRAMS)
 am__lldpcli_SOURCES_DIST = client.h lldpcli.c display.c conf.c \
 	conf-med.c conf-dot3.c conf-power.c conf-lldp.c conf-system.c \
-	commands.c show.c misc.c tokenizer.c writer.h text_writer.c \
-	kv_writer.c xml_writer.c jansson_writer.c jsonc_writer.c
+	commands.c show.c misc.c tokenizer.c utf8.c writer.h \
+	text_writer.c kv_writer.c json_writer.c xml_writer.c
 @USE_XML_TRUE@am__objects_1 = lldpcli-xml_writer.$(OBJEXT)
-@USE_JANSSON_TRUE@am__objects_2 = lldpcli-jansson_writer.$(OBJEXT)
-@USE_JSONC_TRUE@am__objects_3 = lldpcli-jsonc_writer.$(OBJEXT)
 am_lldpcli_OBJECTS = lldpcli-lldpcli.$(OBJEXT) \
 	lldpcli-display.$(OBJEXT) lldpcli-conf.$(OBJEXT) \
 	lldpcli-conf-med.$(OBJEXT) lldpcli-conf-dot3.$(OBJEXT) \
 	lldpcli-conf-power.$(OBJEXT) lldpcli-conf-lldp.$(OBJEXT) \
 	lldpcli-conf-system.$(OBJEXT) lldpcli-commands.$(OBJEXT) \
 	lldpcli-show.$(OBJEXT) lldpcli-misc.$(OBJEXT) \
-	lldpcli-tokenizer.$(OBJEXT) lldpcli-text_writer.$(OBJEXT) \
-	lldpcli-kv_writer.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	lldpcli-tokenizer.$(OBJEXT) lldpcli-utf8.$(OBJEXT) \
+	lldpcli-text_writer.$(OBJEXT) lldpcli-kv_writer.$(OBJEXT) \
+	lldpcli-json_writer.$(OBJEXT) $(am__objects_1)
 lldpcli_OBJECTS = $(am_lldpcli_OBJECTS)
 am__DEPENDENCIES_1 =
 lldpcli_DEPENDENCIES = $(top_builddir)/src/libcommon-daemon-client.la \
-	$(top_builddir)/src/lib/liblldpctl.la $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(top_builddir)/src/lib/liblldpctl.la $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -306,10 +296,6 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-JANSSON_CFLAGS = @JANSSON_CFLAGS@
-JANSSON_LIBS = @JANSSON_LIBS@
-JSONC_CFLAGS = @JSONC_CFLAGS@
-JSONC_LIBS = @JSONC_LIBS@
 LAUNCHDDAEMONSDIR = @LAUNCHDDAEMONSDIR@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
@@ -329,6 +315,9 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+NETLINK_MAX_RECEIVE_BUFSIZE = @NETLINK_MAX_RECEIVE_BUFSIZE@
+NETLINK_RECEIVE_BUFSIZE = @NETLINK_RECEIVE_BUFSIZE@
+NETLINK_SEND_BUFSIZE = @NETLINK_SEND_BUFSIZE@
 NETSNMP_CFLAGS = @NETSNMP_CFLAGS@
 NETSNMP_CONFIG = @NETSNMP_CONFIG@
 NETSNMP_LIBS = @NETSNMP_LIBS@
@@ -434,13 +423,12 @@ man_MANS = lldpcli.8
 dist_man_MANS = lldpctl.8
 lldpcli_SOURCES = client.h lldpcli.c display.c conf.c conf-med.c \
 	conf-dot3.c conf-power.c conf-lldp.c conf-system.c commands.c \
-	show.c misc.c tokenizer.c writer.h text_writer.c kv_writer.c \
-	$(am__append_1) $(am__append_4) $(am__append_7)
+	show.c misc.c tokenizer.c utf8.c writer.h text_writer.c \
+	kv_writer.c json_writer.c $(am__append_1)
 lldpcli_LDADD = $(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/lib/liblldpctl.la @READLINE_LIBS@ \
-	$(am__append_3) $(am__append_6) $(am__append_9)
-lldpcli_CFLAGS = $(AM_CFLAGS) $(am__append_2) $(am__append_5) \
-	$(am__append_8)
+	$(am__append_3)
+lldpcli_CFLAGS = $(AM_CFLAGS) $(am__append_2)
 lldpcli_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 
 # Completions
@@ -466,6 +454,7 @@ edit = $(SED) \
         -e 's|@includedir[@]|$(includedir)|g' \
         -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
         -e 's|@prefix[@]|$(prefix)|g' \
+        -e 's|@mkdir_p[@]|$(mkdir_p)|g' \
         -e 's|@VERSION[@]|$(VERSION)|g' \
         -e 's|@PACKAGE[@]|$(PACKAGE)|g' \
         -e 's|@PACKAGE_NAME[@]|$(PACKAGE_NAME)|g' \
@@ -580,14 +569,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-conf-system.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-conf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-display.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-jansson_writer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-jsonc_writer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-json_writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-kv_writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-lldpcli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-show.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-text_writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-tokenizer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-utf8.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lldpcli-xml_writer.Po@am__quote@
 
 .c.o:
@@ -782,6 +771,20 @@ lldpcli-tokenizer.obj: tokenizer.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-tokenizer.obj `if test -f 'tokenizer.c'; then $(CYGPATH_W) 'tokenizer.c'; else $(CYGPATH_W) '$(srcdir)/tokenizer.c'; fi`
 
+lldpcli-utf8.o: utf8.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-utf8.o -MD -MP -MF $(DEPDIR)/lldpcli-utf8.Tpo -c -o lldpcli-utf8.o `test -f 'utf8.c' || echo '$(srcdir)/'`utf8.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-utf8.Tpo $(DEPDIR)/lldpcli-utf8.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='utf8.c' object='lldpcli-utf8.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-utf8.o `test -f 'utf8.c' || echo '$(srcdir)/'`utf8.c
+
+lldpcli-utf8.obj: utf8.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-utf8.obj -MD -MP -MF $(DEPDIR)/lldpcli-utf8.Tpo -c -o lldpcli-utf8.obj `if test -f 'utf8.c'; then $(CYGPATH_W) 'utf8.c'; else $(CYGPATH_W) '$(srcdir)/utf8.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-utf8.Tpo $(DEPDIR)/lldpcli-utf8.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='utf8.c' object='lldpcli-utf8.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-utf8.obj `if test -f 'utf8.c'; then $(CYGPATH_W) 'utf8.c'; else $(CYGPATH_W) '$(srcdir)/utf8.c'; fi`
+
 lldpcli-text_writer.o: text_writer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-text_writer.o -MD -MP -MF $(DEPDIR)/lldpcli-text_writer.Tpo -c -o lldpcli-text_writer.o `test -f 'text_writer.c' || echo '$(srcdir)/'`text_writer.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-text_writer.Tpo $(DEPDIR)/lldpcli-text_writer.Po
@@ -810,6 +813,20 @@ lldpcli-kv_writer.obj: kv_writer.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-kv_writer.obj `if test -f 'kv_writer.c'; then $(CYGPATH_W) 'kv_writer.c'; else $(CYGPATH_W) '$(srcdir)/kv_writer.c'; fi`
 
+lldpcli-json_writer.o: json_writer.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-json_writer.o -MD -MP -MF $(DEPDIR)/lldpcli-json_writer.Tpo -c -o lldpcli-json_writer.o `test -f 'json_writer.c' || echo '$(srcdir)/'`json_writer.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-json_writer.Tpo $(DEPDIR)/lldpcli-json_writer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='json_writer.c' object='lldpcli-json_writer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-json_writer.o `test -f 'json_writer.c' || echo '$(srcdir)/'`json_writer.c
+
+lldpcli-json_writer.obj: json_writer.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-json_writer.obj -MD -MP -MF $(DEPDIR)/lldpcli-json_writer.Tpo -c -o lldpcli-json_writer.obj `if test -f 'json_writer.c'; then $(CYGPATH_W) 'json_writer.c'; else $(CYGPATH_W) '$(srcdir)/json_writer.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-json_writer.Tpo $(DEPDIR)/lldpcli-json_writer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='json_writer.c' object='lldpcli-json_writer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-json_writer.obj `if test -f 'json_writer.c'; then $(CYGPATH_W) 'json_writer.c'; else $(CYGPATH_W) '$(srcdir)/json_writer.c'; fi`
+
 lldpcli-xml_writer.o: xml_writer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-xml_writer.o -MD -MP -MF $(DEPDIR)/lldpcli-xml_writer.Tpo -c -o lldpcli-xml_writer.o `test -f 'xml_writer.c' || echo '$(srcdir)/'`xml_writer.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-xml_writer.Tpo $(DEPDIR)/lldpcli-xml_writer.Po
@@ -823,34 +840,6 @@ lldpcli-xml_writer.obj: xml_writer.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xml_writer.c' object='lldpcli-xml_writer.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-xml_writer.obj `if test -f 'xml_writer.c'; then $(CYGPATH_W) 'xml_writer.c'; else $(CYGPATH_W) '$(srcdir)/xml_writer.c'; fi`
-
-lldpcli-jansson_writer.o: jansson_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-jansson_writer.o -MD -MP -MF $(DEPDIR)/lldpcli-jansson_writer.Tpo -c -o lldpcli-jansson_writer.o `test -f 'jansson_writer.c' || echo '$(srcdir)/'`jansson_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-jansson_writer.Tpo $(DEPDIR)/lldpcli-jansson_writer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='jansson_writer.c' object='lldpcli-jansson_writer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-jansson_writer.o `test -f 'jansson_writer.c' || echo '$(srcdir)/'`jansson_writer.c
-
-lldpcli-jansson_writer.obj: jansson_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-jansson_writer.obj -MD -MP -MF $(DEPDIR)/lldpcli-jansson_writer.Tpo -c -o lldpcli-jansson_writer.obj `if test -f 'jansson_writer.c'; then $(CYGPATH_W) 'jansson_writer.c'; else $(CYGPATH_W) '$(srcdir)/jansson_writer.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-jansson_writer.Tpo $(DEPDIR)/lldpcli-jansson_writer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='jansson_writer.c' object='lldpcli-jansson_writer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-jansson_writer.obj `if test -f 'jansson_writer.c'; then $(CYGPATH_W) 'jansson_writer.c'; else $(CYGPATH_W) '$(srcdir)/jansson_writer.c'; fi`
-
-lldpcli-jsonc_writer.o: jsonc_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-jsonc_writer.o -MD -MP -MF $(DEPDIR)/lldpcli-jsonc_writer.Tpo -c -o lldpcli-jsonc_writer.o `test -f 'jsonc_writer.c' || echo '$(srcdir)/'`jsonc_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-jsonc_writer.Tpo $(DEPDIR)/lldpcli-jsonc_writer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='jsonc_writer.c' object='lldpcli-jsonc_writer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-jsonc_writer.o `test -f 'jsonc_writer.c' || echo '$(srcdir)/'`jsonc_writer.c
-
-lldpcli-jsonc_writer.obj: jsonc_writer.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -MT lldpcli-jsonc_writer.obj -MD -MP -MF $(DEPDIR)/lldpcli-jsonc_writer.Tpo -c -o lldpcli-jsonc_writer.obj `if test -f 'jsonc_writer.c'; then $(CYGPATH_W) 'jsonc_writer.c'; else $(CYGPATH_W) '$(srcdir)/jsonc_writer.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/lldpcli-jsonc_writer.Tpo $(DEPDIR)/lldpcli-jsonc_writer.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='jsonc_writer.c' object='lldpcli-jsonc_writer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lldpcli_CFLAGS) $(CFLAGS) -c -o lldpcli-jsonc_writer.obj `if test -f 'jsonc_writer.c'; then $(CYGPATH_W) 'jsonc_writer.c'; else $(CYGPATH_W) '$(srcdir)/jsonc_writer.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1191,7 +1180,7 @@ uninstall-local:
 lldpcli.8: lldpcli.8.in
 
 $(TEMPLATES): Makefile
-	$(AM_V_GEN)mkdir -p $(@D) && $(edit) $(srcdir)/$@.in > $@.tmp && mv $@.tmp $@
+	$(AM_V_GEN)$(MKDIR_P) $(@D) && $(edit) $(srcdir)/$@.in > $@.tmp && mv $@.tmp $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

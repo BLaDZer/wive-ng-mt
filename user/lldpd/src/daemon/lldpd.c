@@ -517,9 +517,11 @@ lldpd_decode(struct lldpd *cfg, char *frame, int s,
 	log_debug("decode", "decode a received frame on %s",
 	    hardware->h_ifname);
 
-	if (s < sizeof(struct ether_header) + 4)
+	if (s < sizeof(struct ether_header) + 4) {
 		/* Too short, just discard it */
+		hardware->h_rx_discarded_cnt++;
 		return;
+	}
 
 	/* Decapsulate VLAN frames */
 	struct ether_header eheader;
@@ -553,6 +555,7 @@ lldpd_decode(struct lldpd *cfg, char *frame, int s,
 				s, hardware, &chassis, &port) == -1) {
 				log_debug("decode", "function for %s protocol did not decode this frame",
 				    cfg->g_protocols[i].name);
+				hardware->h_rx_discarded_cnt++;
 				return;
 			}
 			chassis->c_protocol = port->p_protocol =
@@ -1272,8 +1275,8 @@ lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname
 
 			execl(path, "lldpcli", sdebug,
 			    "-u", ctlname,
-			    "-c", "/etc/lldpd.conf",
-			    "-c", "/etc/lldpd.d",
+			    "-C", "/etc/lldpd.conf",
+			    "-C", "/etc/lldpd.d",
 			    "resume",
 			    (char *)NULL);
 			log_warn("main", "unable to execute %s", path);
@@ -1640,7 +1643,17 @@ lldpd_main(int argc, char *argv[], char *envp[])
 
     	log_init(use_syslog, debug, __progname);
 	tzset();		/* Get timezone info before chroot */
-
+	if (use_syslog && daemonize) {
+		/* So, we use syslog and we daemonize (or we are started by
+		 * upstart/systemd). No need to continue writing to stdout. */
+		int fd;
+		if ((fd = open("/dev/null", O_RDWR, 0)) != -1) {
+			dup2(fd, STDIN_FILENO);
+			dup2(fd, STDOUT_FILENO);
+			dup2(fd, STDERR_FILENO);
+			if (fd > 2) close(fd);
+		}
+	}
 	log_debug("main", "lldpd " PACKAGE_VERSION " starting...");
 	version_check();
 
@@ -1700,8 +1713,8 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	    !lldpd_started_by_upstart() && !lldpd_started_by_systemd()) {
 		int pid;
 		char *spid;
-		log_info("main", "going into background");
-		if (daemon(0, 0) != 0)
+		log_debug("main", "going into background");
+		if (daemon(0, 1) != 0)
 			fatal("main", "failed to detach daemon");
 		if ((pid = open(pidfile,
 			    O_TRUNC | O_CREAT | O_WRONLY, 0666)) == -1)
@@ -1757,6 +1770,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	cfg->g_config.c_receiveonly = receiveonly;
 	cfg->g_config.c_tx_interval = LLDPD_TX_INTERVAL;
 	cfg->g_config.c_tx_hold = LLDPD_TX_HOLD;
+	cfg->g_config.c_ttl = cfg->g_config.c_tx_interval * cfg->g_config.c_tx_hold;
 	cfg->g_config.c_max_neighbors = LLDPD_MAX_NEIGHBORS;
 #ifdef ENABLE_LLDPMED
 	cfg->g_config.c_enable_fast_start = enable_fast_start;
@@ -1808,9 +1822,6 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	} else
 		cfg->g_config.c_noinventory = 1;
 #endif
-
-	/* Set TTL */
-	lchassis->c_ttl = cfg->g_config.c_tx_interval * cfg->g_config.c_tx_hold;
 
 	log_debug("main", "initialize protocols");
 	cfg->g_protocols = protos;

@@ -135,7 +135,7 @@ static int _lldp_send(struct lldpd *global,
 	/* Time to live */
 	if (!(
 	      POKE_START_LLDP_TLV(LLDP_TLV_TTL) &&
-	      POKE_UINT16(shutdown?0:chassis->c_ttl) &&
+	      POKE_UINT16(shutdown?0:(global?global->g_config.c_ttl:180)) &&
 	      POKE_END_LLDP_TLV))
 		goto toobig;
 
@@ -711,7 +711,7 @@ lldp_decode(struct lldpd *cfg, char *frame, int s,
 			break;
 		case LLDP_TLV_TTL:
 			CHECK_TLV_SIZE(2, "TTL");
-			chassis->c_ttl = PEEK_UINT16;
+			port->p_ttl = PEEK_UINT16;
 			ttl_received = 1;
 			break;
 		case LLDP_TLV_PORT_DESCR:
