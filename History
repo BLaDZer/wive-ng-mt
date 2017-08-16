@@ -3339,24 +3339,25 @@
 13) usb-modeswitch: update to 2.5.1 version (data up to 20170806).<br>
 14) quagga: update to 1.2.1 version.<br>
 15) kernel: mm: don't dereference struct page fields of invalid pages.<br>
-16) kernel: vfs: fix pipe counter breakage.<br>
-17) kernel: pipe: return -ENOIOCTLCMD instead of -EINVAL on unknown ioctl command.<br>
-18) kernel: pipe: consolidate pipe file creation.<br>
-19) kernel: pipe: pipe(2) - race-free error recovery.<br>
-20) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
-21) kernel: net: vlan: propagate MAC address to VLANs.<br>
-22) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
-23) kernel: net: account for current skb length when deciding about UFO.<br>
-24) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
-25) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
-26) kernel: net: af_key: do not use GFP_KERNEL in atomic contexts.<br>
-27) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-28) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
-29) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-30) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-31) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-32) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-33) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+16) kernel: fs: preserve error code in get_empty_filp(), part 2.<br>
+17) kernel: vfs: fix pipe counter breakage.<br>
+18) kernel: pipe: return -ENOIOCTLCMD instead of -EINVAL on unknown ioctl command.<br>
+19) kernel: pipe: consolidate pipe file creation.<br>
+20) kernel: pipe: pipe(2) - race-free error recovery.<br>
+21) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+22) kernel: net: vlan: propagate MAC address to VLANs.<br>
+23) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
+24) kernel: net: account for current skb length when deciding about UFO.<br>
+25) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
+26) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
+27) kernel: net: af_key: do not use GFP_KERNEL in atomic contexts.<br>
+28) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
+29) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+30) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+31) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+32) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+33) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+34) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
 <br>
 <br>
 <br>
