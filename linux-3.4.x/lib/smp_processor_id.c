@@ -28,7 +28,7 @@ notrace unsigned int debug_smp_processor_id(void)
 	/*
 	 * It is valid to assume CPU-locality during early bootup:
 	 */
-	if (system_state != SYSTEM_RUNNING)
+	if (system_state < SYSTEM_SCHEDULING)
 		goto out;
 
 	/*
