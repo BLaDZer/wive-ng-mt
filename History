@@ -3336,21 +3336,22 @@
 10) strace: update to 4.18 version.<br>
 11) lldpd: update to 0.9.7 version.<br>
 12) ethtool: update to 4.11 version.<br>
-13) usb-modeswitch: up to 2.5.1 version (data up to 20170806).<br>
-14) kernel: mm: don't dereference struct page fields of invalid pages.<br>
-15) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
-16) kernel: net: vlan: propagate MAC address to VLANs.<br>
-17) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
-18) kernel: net: account for current skb length when deciding about UFO.<br>
-19) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
-20) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
-21) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-22) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
-23) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-24) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-25) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-26) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-27) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+13) usb-modeswitch: update to 2.5.1 version (data up to 20170806).<br>
+14) quagga: update to 1.2.1 version.<br>
+15) kernel: mm: don't dereference struct page fields of invalid pages.<br>
+16) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+17) kernel: net: vlan: propagate MAC address to VLANs.<br>
+18) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
+19) kernel: net: account for current skb length when deciding about UFO.<br>
+20) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
+21) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
+22) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
+23) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+24) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+25) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+26) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+27) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+28) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
 <br>
 <br>
 <br>

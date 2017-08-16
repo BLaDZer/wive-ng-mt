@@ -7,7 +7,7 @@
 ##
 AC_PREREQ(2.60)
 
-AC_INIT(Quagga, 1.2.0, [https://bugzilla.quagga.net])
+AC_INIT(Quagga, 1.2.1, [https://bugzilla.quagga.net])
 CONFIG_ARGS="$*"
 AC_SUBST(CONFIG_ARGS)
 AC_CONFIG_SRCDIR(lib/zebra.h)
@@ -79,6 +79,18 @@ AC_PROG_EGREP
 PKG_PROG_PKG_CONFIG
 AC_PROG_CC_C99
 
+dnl libtool prereq.
+AC_USE_SYSTEM_EXTENSIONS
+
+dnl -------
+dnl libtool
+dnl -------
+LT_INIT
+
+dnl create libtool now, so we can test version below for
+dnl fstack-protector-strong
+LT_OUTPUT
+
 dnl autoconf 2.59 appears not to support AC_PROG_SED
 dnl AC_PROG_SED
 AC_CHECK_PROG([SED],[sed],[sed],[/bin/false])
@@ -122,7 +134,6 @@ dnl Sun Studio 10 / SunPro 5.7 is also supported,
 dnl so lets set some sane CFLAGS for it.
 dnl ---------------------------------------------
 
-AC_USE_SYSTEM_EXTENSIONS()
 AC_DEFUN([AC_C_FLAG], [{
 	AC_LANG_PUSH(C)
 	ac_c_flag_save="$CFLAGS"
@@ -144,12 +155,20 @@ AC_DEFUN([AC_C_FLAG], [{
 	AC_LANG_POP(C)
 	}])
 
-AC_MSG_CHECKING([whether to set a default CFLAGS])
+AC_MSG_CHECKING([which default CFLAGS to set])
 if test "x${cflags_specified}" = "x" ; then
   case ${COMPILER} in
     "SUNPRO")
-        CFLAGS="-xO4 -v -g -xspace -xcode=pic32 -xstrconst -xc99"
-        AC_MSG_RESULT([SunPro default])
+        AC_MSG_RESULT([Sun Studio])
+        AC_C_FLAG([-g])
+        AC_C_FLAG([-xO4])
+        AC_C_FLAG([-xspace])
+        AC_C_FLAG([-xstrconst])
+        AC_C_FLAG([-xc99])
+        AC_C_FLAG([-errfmt])
+        AC_C_FLAG([-xipo])
+	dnl AC_C_FLAG([-xlinkopt=2]) SPARC only dnl
+	dnl AC_C_FLAG([-xcode=pic32])dnl	
         ;;
     *)
         AC_MSG_RESULT([autodetecting])
@@ -159,7 +178,29 @@ if test "x${cflags_specified}" = "x" ; then
         AC_C_FLAG([-Os], [
           AC_C_FLAG([-O2])
         ])
+        dnl fstack-protector-strong gives __stack_chk_fail_local
+        dnl being an 'Undefined symbol' on OpenIndiana hipster, with gcc 6.
+        dnl gcc -shared is being used to do the link, however the error is
+        dnl from ld. Disable. An issue with libtool < 2.4.6 dropping the
+        dnl -fstack-protector-strong argument from the shared link.
+        AC_MSG_CHECKING([whether libtool can support fstack-protector])
+        if test x"$(./libtool --version \
+         	    | awk -F '[[ \t.]]' \
+        		'NR == 1 { \
+   				if ($(NF-2) <= 2 && $(NF-1) <= 4 && $NF < 6) \
+        				print 0; \
+        			else print 1 \
+        		}')" = "x1" ; then
+        	AC_MSG_RESULT([yes])
         AC_C_FLAG([-fstack-protector-strong])
+        	AC_C_FLAG([--param=ssp-buffer-size=4])
+        else
+        	AC_MSG_RESULT([no])
+        	AC_MSG_WARN([upgrade to libtool >= 2.4.6!])
+        fi
+        AC_C_FLAG([-D_FORTIFY_SOURCE=2])
+        AC_C_FLAG([-Wformat])
+        AC_C_FLAG([-Wformat-security])
         AC_C_FLAG([-fpie])
         AC_C_FLAG([-fno-omit-frame-pointer])
         AC_C_FLAG([-Wall])
@@ -226,10 +267,6 @@ dnl System extensions
 dnl -----------------
 AC_GNU_SOURCE
 
-dnl -------
-dnl libtool
-dnl -------
-LT_INIT
 
 dnl ----------------------
 dnl Packages configuration
@@ -1635,7 +1672,6 @@ AC_CONFIG_FILES([Makefile lib/Makefile qpb/Makefile zebra/Makefile ripd/Makefile
 	  fpm/Makefile
 	  redhat/quagga.spec 
 	  lib/version.h
-	  doc/defines.texi
 	  isisd/topology/Makefile
 	  pkgsrc/bgpd.sh pkgsrc/ospf6d.sh pkgsrc/ospfd.sh
 	  pkgsrc/ripd.sh pkgsrc/ripngd.sh pkgsrc/zebra.sh])

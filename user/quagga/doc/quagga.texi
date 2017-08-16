@@ -5,6 +5,9 @@
 @c Set variables - sourced from defines.texi
 @include defines.texi
 @settitle @uref{http://www.quagga.net,,@value{PACKAGE_NAME}}
+@iftex
+@afourpaper
+@end iftex
 @c %**end of header
 
 @c automake will automatically generate version.texi
@@ -70,7 +73,7 @@ Version @value{VERSION}.
 		     
 @uref{http://www.quagga.net,,Quagga} is an advanced routing software package
 that provides a suite of TCP/IP based routing protocols.  This is the Manual
-for @value{PACKAGE_STRING}. @uref{http://www.quagga.net,,Quagga} is a fork of 
+for Quagga @value{VERSION}. @uref{http://www.quagga.net,,Quagga} is a fork of 
 @uref{http://www.zebra.org,,GNU Zebra}.
 
 @insertcopying
