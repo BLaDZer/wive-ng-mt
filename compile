@@ -42,6 +42,10 @@ case "$MODE" in
 	    # N1 sample
 	    DEVNAME="SNR-CPE-ME1-5GHZ-MT"
 	    ;;
+	"MT7621-MT7603-MT7610-1T1R-16M-USB-CG1")
+	    # N1 sample
+	    DEVNAME="SNR-CPE-CG1-5GHZ-MT"
+	    ;;
 	####################################
 	# dual band 7620A + 7612NE
 	####################################
@@ -156,6 +160,11 @@ echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
 if [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB			$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB-CG1" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB-CG1			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
