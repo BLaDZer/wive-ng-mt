@@ -3325,7 +3325,7 @@
 <br>
 <b>6.4.x</b><br>
 1) build_system: toolchain: headers up and rebuild.<br>
-2) build_system: update MD1.1 calibs backup after FEM change.<br>
+2) build_system: update MD1.1/ME1 calibs backup after FEM change.<br>
 3) goahead: next step refactoring and fixup webUI.<br>
 4) libmicrohttpd: update to 0.9.55 version.<br>
 5) nodogsplash: up to git version 2.0.0-1 (commit: a11ce3b6).<br>
