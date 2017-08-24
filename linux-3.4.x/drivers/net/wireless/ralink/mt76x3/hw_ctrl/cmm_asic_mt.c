@@ -2327,7 +2327,7 @@ VOID Wtbl2RcpiGet(RTMP_ADAPTER *pAd, UCHAR ucWcid, union WTBL_2_DW13 *wtbl_2_d13
 VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *pTxInfo)
 {
 	TX_CNT_INFO tx_cnt_info;
-	UINT32 TxSuccess, TxRetransmit;
+	UINT32 TxSuccess;
 
 	if (IS_VALID_ENTRY(pEntry)) {
 		Wtbl2TxRateCounterGet(pAd, pEntry->wcid, &tx_cnt_info);
@@ -2344,18 +2344,8 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 		pTxInfo->Rate5TxCnt = tx_cnt_info.wtbl_2_d6.field.rate_5_tx_cnt;
 
 		pTxInfo->RateIndex = tx_cnt_info.wtbl_2_d9.field.rate_idx;
-/*
-		if ( pTxInfo->TxFailCount == 0 )
-			pEntry->OneSecTxNoRetryOkCount += pTxInfo->TxSuccessCount;
-		else
-		{
-			pEntry->OneSecTxRetryOkCount += pTxInfo->TxSuccessCount;
-			pEntry->OneSecTxFailCount += pTxInfo->TxFailCount;
-		}
-*/
 
 		TxSuccess = pTxInfo->TxCount -pTxInfo->TxFailCount;
-		TxRetransmit = pTxInfo->TxFailCount;
 
 		if ( pTxInfo->TxFailCount == 0 )
 		{
@@ -2378,6 +2368,8 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 
 		if ((TxSuccess == 0) && (pTxInfo->TxFailCount > 0))
 		{
+			UINT32 TxRetransmit = pTxInfo->TxFailCount;
+
 			/* prevent fast drop long range clients */
 			/* No TxPkt ok in this period as continue tx fail */
 			/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
@@ -2625,10 +2617,8 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 		UCHAR	ucIndex;
 		UCHAR	DownRateIdx, CurrRateIdx;
 		UCHAR mode, mcs;
-		BOOLEAN fgLowestRate = FALSE;
 
 		CurrRateIdx = pEntry->CurrTxRateIndex;
-		DownRateIdx = CurrRateIdx;
 
 #ifdef NEW_RATE_ADAPT_SUPPORT
 #ifdef WAPI_SUPPORT
@@ -2654,23 +2644,9 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 				RTMP_RA_GRP_TB *pCurrTxRate;
 
 				if ( ucIndex == 7 )
-				{
-					if (fgLowestRate == FALSE)
-					{
-						do {
-							CurrRateIdx = DownRateIdx;
-							DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
-						} while ( CurrRateIdx != DownRateIdx );
-					}
-				}
+					DownRateIdx = pEntry->LowestTxRateIndex;
 				else
-				{
 					DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
-					if (fgLowestRate == FALSE)
-					{
-						DownRateIdx = MlmeSelectDownRate(pAd, pEntry, CurrRateIdx);
-					}
-				}
 
 				if (pEntry->HTPhyMode.field.ShortGI)
 				{
@@ -2687,10 +2663,20 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 				mode = pCurrTxRate->Mode;
 				mcs = pCurrTxRate->CurrMCS;
 			} else {
-				mode = MODE_CCK;
-				mcs = 0;
-				DownRateIdx = 0;
-				DBGPRINT(RT_DEBUG_ERROR, ("%s: Not support legacy table.\n", __FUNCTION__));
+				RTMP_RA_LEGACY_TB *pCurrTxRate;
+
+				if ( ucIndex == 7 )
+					DownRateIdx = pEntry->LowestTxRateIndex;
+				else {
+					if ( CurrRateIdx > 0 )
+						CurrRateIdx -= 1;
+					DownRateIdx = CurrRateIdx;
+				}
+
+				pCurrTxRate = PTX_RA_LEGACY_ENTRY(pEntry->pTable, DownRateIdx);
+
+				mode = pCurrTxRate->Mode;
+				mcs = pCurrTxRate->CurrMCS;
 			}
 
 
@@ -2703,14 +2689,7 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 
 			rate[ucIndex] &= 0xfff;
 
-			if (CurrRateIdx == DownRateIdx)
-			{
-				fgLowestRate = TRUE;
-			}
-			else
-			{
-				CurrRateIdx = DownRateIdx;
-			}
+			CurrRateIdx = DownRateIdx;
 		}
 	}
 	else

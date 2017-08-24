@@ -2600,6 +2600,9 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR CurrTxRateIndex;
 	UCHAR lastRateIdx;
 	UCHAR *pTable;	/* Pointer to this entry's Tx Rate Table */
+#ifdef MCS_LUT_SUPPORT
+	UCHAR LowestTxRateIndex;
+#endif /* MCS_LUT_SUPPORT */
 
 	UCHAR ucMaxTxRetryCnt;
 

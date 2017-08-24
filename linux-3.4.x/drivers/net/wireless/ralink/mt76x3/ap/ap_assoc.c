@@ -425,6 +425,12 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 		pEntry->bAutoTxRateSwitch = TRUE;
 
 		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
+#ifdef MCS_LUT_SUPPORT
+		if ( pAd->chipCap.hif_type == HIF_MT) 
+		{
+			pEntry->LowestTxRateIndex = ra_get_lowest_rate(pAd, pEntry->pTable);
+		}
+#endif /* MCS_LUT_SUPPORT */
 
 		MlmeNewTxRate(pAd, pEntry);
 
