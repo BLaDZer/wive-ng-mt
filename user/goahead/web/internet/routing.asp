@@ -91,7 +91,7 @@
 				}
 				form.routingTableDiff.value = trans.join(';');
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
-				return true;
+				return false;
 			}
 
 			function hostnetChange(form) {

@@ -25,10 +25,10 @@
 				_TR("ContentFilterIntrodution", "content filter introduction");
 				_TR("WebsContentFilter",		"content filter webs content filter");
 				_TR("WebsContentFilterFilter",	"content filter webs content filter filter");
-				_TR("websFilter_proxy",			"content filter webs content filter proxy");
-				_TR("websFilter_java",			"content filter webs content filter java");
-				_TR("websFilter_activex",		"content filter webs content filter activex");
-				_TR("websFilter_cookies",		"content filter webs content filter cookies");
+				_TR("websFilterProxy",			"content filter webs content filter proxy");
+				_TR("websFilterJava",			"content filter webs content filter java");
+				_TR("websFilterActivex",		"content filter webs content filter activex");
+				_TR("websFilterCookies",		"content filter webs content filter cookies");
 				_TR("websBlockingRules",		"content filter webs blocking rules");
 				_TR("bridge_warning",			"firewall bridge warning");
 				_TRV("ContentFilterApply",		"button apply");
@@ -49,7 +49,7 @@
 				addAllRules(NVRAM_websHostFilters, 'host');
 
 				for (var field in st)
-					setElementChecked('websFilter_' + field, st[field] == '1');
+					document.getElementById('websFilter_' + field).checked = st[field] == '1';
 
 				genFilteringTable();
 				showWarning();
@@ -171,10 +171,10 @@
 							</tr>
 							<tr>
 								<td id="WebsContentFilterFilter" class="head"> Filter: </td>
-								<td><input name="websFilterProxy"   type="checkbox"><span id="websFilter_proxy">Proxy</span>
-									<input name="websFilterJava"    type="checkbox"><span id="websFilter_java">Java</span>
-									<input name="websFilterActivex" type="checkbox"><span id="websFilter_activex">ActiveX</span>
-									<input name="websFilterCookies" type="checkbox"><span id="websFilter_cookies">Cookies</span></td>
+								<td><input name="websFilterProxy"   id="websFilter_proxy"   type="checkbox"><span id="websFilterProxy">Proxy</span>
+									<input name="websFilterJava"    id="websFilter_java"    type="checkbox"><span id="websFilterJava">Java</span>
+									<input name="websFilterActivex" id="websFilter_activex" type="checkbox"><span id="websFilterActivex">ActiveX</span>
+									<input name="websFilterCookies" id="websFilter_cookies" type="checkbox"><span id="websFilterCookies">Cookies</span></td>
 							</tr>
 							<tr>
 								<td id="websBlockingRules" class="title" colspan="2">Web URL / Host blocking rules</td>

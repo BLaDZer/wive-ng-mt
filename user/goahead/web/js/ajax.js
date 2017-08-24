@@ -617,7 +617,7 @@ function displayServiceStatus(services) {
 							tds.push(row.childNodes[j]);
 					if (row != null) {
 						// Fill-up status
-						if (+service[0] == 0) {
+						if (+service[0] == 0 || service[0] == 'none') {
 							if (service[4] != null)
 								tds[3].innerHTML = '<span style="color: #808080"><b>' + _("services status off") + '</b></span>';
 							else

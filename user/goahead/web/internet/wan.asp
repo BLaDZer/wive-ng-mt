@@ -80,9 +80,7 @@
 
 				displayElement(document.getElementById("natRowDisplay"), NVRAM_OperationMode != "0");
 				form.natEnabled.checked 			= (NVRAM_natEnabled == '1');
-
 				form.connectionType.value 			= NVRAM_wanConnectionMode;
-				form.wStaticDnsEnable.checked 		= NVRAM_wan_static_dns == 'on';
 
 				form.wan_mtu.value = NVRAM_wan_manual_mtu;
 				for (var i = 0; i < form.wan_mtu_type.options.length; i++)
@@ -193,7 +191,7 @@
 				}
 				else {
 					form.wStaticDnsEnable.disabled = false;
-					form.wStaticDnsEnable.checked = false;
+					form.wStaticDnsEnable.checked = NVRAM_wan_static_dns == 'on';
 				}
 
 				dnsSwitchClick(form);
