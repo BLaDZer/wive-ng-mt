@@ -92,7 +92,12 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 			nvram_close(RT2860_NVRAM);
 
 			doSystem("service iptables restart");
+#if (CONFIG_RALINK_GPIO_PWR_USB > 0)
+			doSystem("service modemhelper stop");
+			doSystem("service modemhelper poweroffon");
+#else
 			doSystem("service modemhelper restart");
+#endif
 		}
 	else if (0 == strcmp(submit, "connect"))
 		{

@@ -21,8 +21,21 @@ start() {
         $LOG "Start Modemhelper"
 	if [ "$MODEMTYPE" = "2" ]; then
 	    # NCM MODE
+	    # wait modem bootup
+	    count=0
+    	    while [ ! -e /proc/sys/net/ipv4/conf/$NCMIF ]; do
+		$LOG "Wait NCM mode modem bootup and ready"
+	        sleep 5
+		if [ "$count" = "5" ]; then
+		    $LOG "Modem not ready at 25 seconds - exit modemhelper"
+		    rm -f /tmp/modem_helper
+		    exit 1
+		fi
+		count="$(($count+1))"
+	    done
+	    # switch to NCM mode
 	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
-		# switch to NCM mode
+		touch /tmp/modem_ready
 		echo -ne '\r\nAT^NDISDUP=1,1,"internet"\r\n' > $MNGMTPORT
 		sleep 1
 		ip link set $NCMIF up
@@ -44,23 +57,26 @@ start() {
 		rm -f /tmp/modem_helper
 		exit 1
 	    fi
-
-	    # if first start need wait
-	    if [ ! -e /tmp/modem_ready ] && [ "$MODEMTYPE" != "2" ]; then
+    	    # if first start or power off/on need wait
+    	    if [ ! -e /tmp/modem_ready ]; then
 		$LOG "Wait device ready before connect"
 		# set not first time flag
 		touch /tmp/modem_ready
 		# wait goahead start and ready
     		while [ ! -e /tmp/bootgood ]; do
-		    # Sleep until file does exists/is created
-		    sleep 3
+	    	    # Sleep until file does exists/is created
+	    	    sleep 3
 		done
-		# wait others services start
+		# wait others services start or modem bootup
 		sleep 15
 	    fi
+	    if [ ! -e "$MODEMPORT" ]; then
+		$LOG "Device $MODEMPORT not exist!!! Please read log and check config."
+		rm -f /tmp/modem_helper
+		exit 1
+	    fi
+	    # generate new chat scripts and config files
 	    mkdir -p $PPPDIR/peers
-
-	    # generate new chat scripts
 	    if [ "$MODEMTYPE" = "0" ]; then
 		$LOG "Prepare chat-file for WCDMA/UMTS/GPRS modems"
 		echo "	ABORT '~'
@@ -190,6 +206,21 @@ stop() {
     ip link set $NCMIF down > /dev/null 2>&1
 }
 
+poweroffon() {
+    if [ $CONFIG_RALINK_GPIO_PWR_USB != "0" ] && [ $CONFIG_RALINK_GPIO_PWR_USB != "" ]; then
+	$LOG "USB Port power OFF."
+	# usb gpio inverted, 4000 infinity
+	gpio l "$CONFIG_RALINK_GPIO_PWR_USB" 4000 0 0 0 0
+	rm -f /tmp/modem_ready
+    fi
+    sleep 3
+    if [ "$CONFIG_RALINK_GPIO_PWR_USB" != "0" ] && [ "$CONFIG_RALINK_GPIO_PWR_USB" != "" ]; then
+	$LOG "USB Port power ON and wait for modem bootup."
+	# usb gpio inverted, 4000 infinity
+	gpio l "$CONFIG_RALINK_GPIO_PWR_USB" 0 4000 0 0 0
+    fi
+}
+
 get_param() {
     # get local param always
     eval `nvram_buf_get 2860 WMODEMPORT MODEMSPEED MODEMUSERNAME \
@@ -219,11 +250,6 @@ get_param() {
 	MODEMPORT="/dev/modem"
     else
 	MODEMPORT="/dev/$WMODEMPORT"
-    fi
-    if [ ! -e "$MODEMPORT" ]; then
-	$LOG "Device $MODEMPORT not exist!!! Please read log and check config."
-	rm -f /tmp/modem_helper
-	exit 1
     fi
     # correct others params
     if [ "$MODEMUSERNAME" = "" ] || [ "$MODEMPASSWORD" = "" ]; then
@@ -266,8 +292,11 @@ case "$1" in
 	    stop
 	    start
 	    ;;
+	poweroffon)
+	    poweroffon
+	    ;;
 	*)
-	    echo $"Usage: $0 {start|stop|restart}"
+	    echo $"Usage: $0 {start|stop|restart|poweroffon}"
 esac
 
 rm -f /tmp/modem_helper
