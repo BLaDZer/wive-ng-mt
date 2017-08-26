@@ -3359,18 +3359,19 @@
 33) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
 34) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
 35) kernel: net: af_key: do not use GFP_KERNEL in atomic contexts.<br>
-36) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-37) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
-38) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-39) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-40) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-41) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
-42) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-42) kernel: ralink_wifi: mt7603: fix select lower mcs index for mcs lut.<br>
-43) kernel: ralink_wifi: mt7603: fix avoid reduant rate down by quick DRS.<br>
-44) kernel: ralink_wifi: mt7603: fix mcs mapping table.<br>
-45) kernel: ralink_wifi: mt7603: fast rate up at hibryd rule at low PER.<br>
-46) kernel: ralink_wifi: mt7603: restore short range interference compensation for quic rate adapt.<br>
+36) kernel: net: netfilter: nf_ct_ext: fix possible panic after nf_ct_extend_unregister.<br>
+37) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
+38) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+39) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+40) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+41) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+42) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+43) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+44) kernel: ralink_wifi: mt7603: fix select lower mcs index for mcs lut.<br>
+45) kernel: ralink_wifi: mt7603: fix avoid reduant rate down by quick DRS.<br>
+46) kernel: ralink_wifi: mt7603: fix mcs mapping table.<br>
+47) kernel: ralink_wifi: mt7603: fast rate up at hibryd rule at low PER.<br>
+48) kernel: ralink_wifi: mt7603: restore short range interference compensation for quic rate adapt.<br>
 <br>
 <br>
 <br>
