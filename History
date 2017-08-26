@@ -3326,55 +3326,57 @@
 <b>6.4.x</b><br>
 1) build_system: toolchain: headers up and rebuild.<br>
 2) build_system: update MD1.1/ME1 calibs backup after FEM change.<br>
-3) goahead: next step refactoring and fixup webUI.<br>
-4) goahead: reset modem by power blink at apply changes (if supported).<br>
-5) libmicrohttpd: update to 0.9.55 version.<br>
-6) nodogsplash: up to git version 2.0.0-1 (commit: a11ce3b6).<br>
-7) nodogsplash: fix compat with 0.9.55 version libmicrohttpd.<br>
-8) tcpdump: update to 4.9.1 version.<br>
-9) libcurl: update to 7.55.1 version.<br>
-10) libtalloc: update to 2.1.10 version.<br>
-11) zlib: update to 1.2.11 vesion.<br>
-12) strace: update to 4.18 version.<br>
-13) lldpd: update to 0.9.7 version.<br>
-14) ethtool: update to 4.11 version.<br>
-15) usb-modeswitch: update to 2.5.1 version (data up to 20170806).<br>
-16) quagga: update to 1.2.1 version.<br>
-17) init.d: rework modemhelper for more correct modem ready wait in NCM mode.<br>
-18) init.d: add poweroffon command for modem reset.<br>
-19) kernel: mm: don't dereference struct page fields of invalid pages.<br>
-20) kernel: vfs: fix pipe counter breakage.<br>
-21) kernel: init: introduce SYSTEM_SCHEDULING state.<br>
-22) kernel: sched/core: enable might_sleep() and smp_processor_id() checks early.<br>
-23) kernel: crypto: arc4 - improve performance by adding ecb(arc4).<br>
-24) kernel: crypto: arc4 - now arc needs blockcipher support.<br>
-25) kernel: mips: pci: introduce cpu_tcache_line_size.<br>
-26) kernel: mips: pci: fix smp_processor_id() in preemptible.<br>
-27) kernel: mips: pci: cleanup control flow.<br>
-28) kernel: mips: pci: fix pcibios_scan_bus() NULL check code path.<br>
-29) kernel: pipe: return -ENOIOCTLCMD instead of -EINVAL on unknown ioctl command.<br>
-30) kernel: pipe: consolidate pipe file creation.<br>
-31) kernel: pipe: pipe(2) - race-free error recovery.<br>
-32) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
-33) kernel: net: vlan: propagate MAC address to VLANs.<br>
-34) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
-35) kernel: net: account for current skb length when deciding about UFO.<br>
-36) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
-37) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
-38) kernel: net: af_key: do not use GFP_KERNEL in atomic contexts.<br>
-39) kernel: net: netfilter: nf_ct_ext: fix possible panic after nf_ct_extend_unregister.<br>
-40) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
-41) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
-42) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
-43) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
-44) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
-45) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
-46) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
-47) kernel: ralink_wifi: mt7603: fix select lower mcs index for mcs lut.<br>
-48) kernel: ralink_wifi: mt7603: fix avoid reduant rate down by quick DRS.<br>
-49) kernel: ralink_wifi: mt7603: fix mcs mapping table.<br>
-50) kernel: ralink_wifi: mt7603: fast rate up at hibryd rule at low PER.<br>
-51) kernel: ralink_wifi: mt7603: restore short range interference compensation for quick rate adapt.<br>
+3) uboot: ME1: do not touch usb power gpio.<br>
+4) goahead: next step refactoring and fixup webUI.<br>
+5) goahead: reset modem by power blink at apply changes (if supported).<br>
+6) libmicrohttpd: update to 0.9.55 version.<br>
+7) nodogsplash: up to git version 2.0.0-1 (commit: a11ce3b6).<br>
+8) nodogsplash: fix compat with 0.9.55 version libmicrohttpd.<br>
+9) tcpdump: update to 4.9.1 version.<br>
+10) libcurl: update to 7.55.1 version.<br>
+11) libtalloc: update to 2.1.10 version.<br>
+12) zlib: update to 1.2.11 vesion.<br>
+13) strace: update to 4.18 version.<br>
+14) lldpd: update to 0.9.7 version.<br>
+15) ethtool: update to 4.11 version.<br>
+16) usb-modeswitch: update to 2.5.1 version (data up to 20170806).<br>
+17) quagga: update to 1.2.1 version.<br>
+18) init.d: rework modemhelper for more correct modem ready wait in NCM mode.<br>
+19) init.d: add poweroffon command for modem reset.<br>
+20) kernel: mm: don't dereference struct page fields of invalid pages.<br>
+21) kernel: vfs: fix pipe counter breakage.<br>
+22) kernel: init: introduce SYSTEM_SCHEDULING state.<br>
+23) kernel: sched/core: enable might_sleep() and smp_processor_id() checks early.<br>
+24) kernel: crypto: arc4 - improve performance by adding ecb(arc4).<br>
+25) kernel: crypto: arc4 - now arc needs blockcipher support.<br>
+26) kernel: mips: pci: introduce cpu_tcache_line_size.<br>
+27) kernel: mips: pci: fix smp_processor_id() in preemptible.<br>
+28) kernel: mips: pci: cleanup control flow.<br>
+29) kernel: mips: pci: fix pcibios_scan_bus() NULL check code path.<br>
+30) kernel: pipe: return -ENOIOCTLCMD instead of -EINVAL on unknown ioctl command.<br>
+31) kernel: pipe: consolidate pipe file creation.<br>
+32) kernel: pipe: pipe(2) - race-free error recovery.<br>
+33) kernel: net: 8021q: convert compare_ether_addr to ether_addr_equal.<br>
+34) kernel: net: vlan: propagate MAC address to VLANs.<br>
+35) kernel: net: packet: fix tp_reserve race in packet_set_ring (CVE-2017-1000111).<br>
+36) kernel: net: account for current skb length when deciding about UFO.<br>
+37) kernel: net: rtnetlink: allocate more memory for dev_set_mac_address().<br>
+38) kernel: net: packet: fix use-after-free in prb_retire_rx_blk_timer_expired().<br>
+39) kernel: net: af_key: do not use GFP_KERNEL in atomic contexts.<br>
+40) kernel: net: netfilter: nf_ct_ext: fix possible panic after nf_ct_extend_unregister.<br>
+41) kernel: net: ipv4: should use consistent conditional judgement for ip fragment in __ip_append_data and ip_finish_output.<br>
+42) kernel: net: ipv4: initialize fib_trie prior to register_netdev_notifier call.<br>
+43) kernel: net: ipv6: should use consistent conditional judgement for ip6 fragment between __ip6_append_data and ip6_finish_output.<br>
+44) kernel: net: ipv6: lower ndisc notifier priority below addrconf.<br>
+45) kernel: net: ipv6: avoid overflow of offset in ip6_find_1stfragopt.<br>
+46) kernel: ralink_gpio: power OFF usb port at bootup, must enabled only from userspace.<br>
+47) kernel: ralink_wifi: bndstr: allow connect all new clients if steering clients table full.<br>
+48) kernel: ralink_wifi: mt7610: fix calculate ba_max_winsize in some cases.<br>
+49) kernel: ralink_wifi: mt7603: fix select lower mcs index for mcs lut.<br>
+50) kernel: ralink_wifi: mt7603: fix avoid reduant rate down by quick DRS.<br>
+51) kernel: ralink_wifi: mt7603: fix mcs mapping table.<br>
+52) kernel: ralink_wifi: mt7603: fast rate up at hibryd rule at low PER.<br>
+53) kernel: ralink_wifi: mt7603: restore short range interference compensation for quick rate adapt.<br>
 <br>
 <br>
 <br>

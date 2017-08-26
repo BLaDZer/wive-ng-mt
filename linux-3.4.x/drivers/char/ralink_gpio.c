@@ -2446,6 +2446,9 @@ int __init ralink_gpio_init(void)
 {
 	unsigned int i;
 	u32 gpiomode;
+#if (CONFIG_RALINK_GPIO_PWR_USB > 0)
+	ralink_gpio_led_info usb_pwr;
+#endif
 
 #ifdef  CONFIG_DEVFS_FS
 	if (devfs_register_chrdev(ralink_gpio_major, RALINK_GPIO_DEVNAME,
@@ -2491,6 +2494,16 @@ int __init ralink_gpio_init(void)
 
 #ifdef CONFIG_RALINK_GPIO_LED
 	ralink_gpio_led_init_timer();
+#endif
+#if (CONFIG_RALINK_GPIO_PWR_USB > 0)
+	printk(KERN_INFO "USB power down at bootup use inverted gpio %d\n", CONFIG_RALINK_GPIO_PWR_USB);
+	usb_pwr.gpio = CONFIG_RALINK_GPIO_PWR_USB;
+	usb_pwr.on = RALINK_GPIO_LED_INFINITY;
+	usb_pwr.off = 0;
+	usb_pwr.blinks = 0;
+	usb_pwr.rests = 0;
+	usb_pwr.times = 0;
+	ralink_gpio_led_set(usb_pwr);
 #endif
 	printk("Ralink gpio driver initialized\n");
 	return 0;
