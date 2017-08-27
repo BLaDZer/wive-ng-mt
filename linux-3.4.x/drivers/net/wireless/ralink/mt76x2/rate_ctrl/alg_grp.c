@@ -1710,6 +1710,11 @@ VOID APQuickResponeForRateUpExecAdapt(/* actually for both up and down */
 		else if (pAd->CommonCfg.TrainUpRule==2 && Rssi<=pAd->CommonCfg.TrainUpRuleRSSI)
 		{
 			useOldRate = MlmeRAHybridRule(pAd, pEntry, pCurrTxRate, OneSecTxNoRetryOKRationCount, TxErrorRatio);
+			if ((useOldRate== TRUE) && ((TxErrorRatio < 21) && (TxTotalCnt <= 50)))
+			{
+			    // make low rate raise up easily 
+			    useOldRate = FALSE;
+			}
 		}
 		else if (pAd->CommonCfg.TrainUpRule==3 && Rssi<=pAd->CommonCfg.TrainUpRuleRSSI)
 		{

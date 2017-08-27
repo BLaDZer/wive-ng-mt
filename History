@@ -3382,6 +3382,7 @@
 <b>6.5.x</b><br>
 1) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
 2) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+3) kernel: ralink_wifi: mt76xx: fast rate up at hibryd rule at low PER to.<br>
 <br>
 <br>
 <br>
