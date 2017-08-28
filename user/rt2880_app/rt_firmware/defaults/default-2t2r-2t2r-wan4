@@ -387,7 +387,7 @@ KickStaRssiLow=-75
 KickStaRssiLowPSM=-77
 KickStaRssiLowFT-79
 KickStaRssiLowDelay=10
-ProbeRspRssi=-72
+ProbeRspRssi=-76
 TmpBlockAfterKick=14
 BandSteering=0
 BndStrgRssiDiff=15

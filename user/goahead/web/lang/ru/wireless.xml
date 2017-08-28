@@ -132,8 +132,8 @@
   <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, по умолчанию -75" />
   <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, по умолчанию -77" />
   <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 секунд, по умолчанию 10" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -72" />
-  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -68" />  
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -76" />
+  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -68" />
   <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
   <message msgid="basic roaming ft" msgstr="Быстрое подключение 802.11R" />
   <message msgid="basic roaming rc inic" msgstr="Нормативный список (5ГГц)" />

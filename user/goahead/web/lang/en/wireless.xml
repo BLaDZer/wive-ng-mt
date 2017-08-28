@@ -133,7 +133,7 @@
   <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default -75" />
   <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default -77" />
   <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 10" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -72" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -76" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
   <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
   <message msgid="basic roaming rc inic" msgstr="Regulatory Class (5GHz)" />

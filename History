@@ -3381,7 +3381,7 @@
 <br>
 <b>6.5.x</b><br>
 1) busybox: update to 1.27.2 stable version.<br>
-2) handoff change defaults for more smooth client migration.<br>
+2) handoff: change defaults for more smooth client migration.<br>
 3) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
 4) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
 5) kernel: ralink_wifi: mt76xx: fast rate up at hibryd rule at low PER to.<br>
