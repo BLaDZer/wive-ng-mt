@@ -1255,12 +1255,23 @@ VOID MacTableMaintenance(
 			    IS_ENTRY_CLIENT(pEntry) && pEntry->Sst == SST_ASSOC)
 		{
 			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-			/* if in RssiLowForStaKickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
+			UCHAR KickOutDelay = pMbss->RssiLowForStaKickOutDelay;
+
+			/* if client active and traffic high > ~ 256kbit/s need increase kick out delay for roam smooth */
+			if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < pAd->ApCfg.EntryLifeCheck)
+				    && ((pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount) > 15)) {
+				    KickOutDelay = pMbss->RssiLowForStaKickOutDelay+3;
+				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
+					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
+					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount)));
+			}
+
+			/* if in KickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
 			if (avgRssi != 0) {
 #ifdef DOT11R_FT_SUPPORT
 			    if (IS_FT_RSN_STA(pEntry) && pMbss->RssiLowForStaKickOutFT != 0) {
 				if (avgRssi < pMbss->RssiLowForStaKickOutFT) {
-				    if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
 						/* use TIM bit to detect the PS station */
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
@@ -1277,7 +1288,7 @@ VOID MacTableMaintenance(
 #endif /* DOT11R_FT_SUPPORT */
 			    if ((pMbss->RssiLowForStaKickOut != 0 && avgRssi < pMbss->RssiLowForStaKickOut && pEntry->PsMode != PWR_SAVE) ||
 				    (pMbss->RssiLowForStaKickOutPSM != 0 && avgRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)) {
-				    if (pEntry->RssiLowStaKickOutDelayCount++ > pMbss->RssiLowForStaKickOutDelay) {
+				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
 						/* use TIM bit to detect the PS station */
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);

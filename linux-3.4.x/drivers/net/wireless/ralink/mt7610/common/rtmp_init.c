@@ -3098,7 +3098,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOut = 0;
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutPSM = 0;
 			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutFT = 0;
-			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutDelay = 5;
+			pAd->ApCfg.MBSSID[j].RssiLowForStaKickOutDelay = 10;
 			pAd->ApCfg.MBSSID[j].ProbeRspRssiThreshold = 0;
 
 			pAd->ApCfg.MBSSID[j].AuthMode = Ndis802_11AuthModeOpen;
