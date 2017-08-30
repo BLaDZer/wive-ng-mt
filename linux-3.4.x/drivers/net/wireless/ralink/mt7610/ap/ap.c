@@ -1255,19 +1255,24 @@ VOID MacTableMaintenance(
 			    IS_ENTRY_CLIENT(pEntry) && pEntry->Sst == SST_ASSOC)
 		{
 			CHAR avgRssi = RTMPAvgRssi(pAd, &pEntry->RssiSample);
-			UCHAR KickOutDelay = pMbss->RssiLowForStaKickOutDelay;
+			/* if in KickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again
+			   rssi == -127 or == 0 incorrect, may be not get from bbp at current time, skip it
+			*/
+			if (avgRssi != 0 && avgRssi > -127) {
+			    UCHAR KickOutDelay = pMbss->RssiLowForStaKickOutDelay;
 
-			/* if client active and traffic high > ~ 256kbit/s need increase kick out delay for roam smooth */
-			if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < pAd->ApCfg.EntryLifeCheck)
+			    /* if client active and traffic high > ~ 32kbit/s need increase kick out delay for roam smooth */
+			    if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < (pAd->ApCfg.EntryLifeCheck/2))
 				    && ((pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount) > 15)) {
 				    KickOutDelay = pMbss->RssiLowForStaKickOutDelay+3;
 				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
 					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
 					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount)));
-			}
+				    printk("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
+					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
+					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount));
+			    }
 
-			/* if in KickOutDelay sec interval all data frames have low rssi - kick STA, else drop count and again */
-			if (avgRssi != 0) {
 #ifdef DOT11R_FT_SUPPORT
 			    if (IS_FT_RSN_STA(pEntry) && pMbss->RssiLowForStaKickOutFT != 0) {
 				if (avgRssi < pMbss->RssiLowForStaKickOutFT) {

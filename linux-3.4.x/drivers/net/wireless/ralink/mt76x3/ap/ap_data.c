@@ -693,7 +693,7 @@ static inline VOID APBuildCache802_11Header(
 {
 	STA_TR_ENTRY *tr_entry;
 	HEADER_802_11 *pHeader80211;
-#if defined(MESH_SUPPORT) || defined(APCLI_SUPPORT)
+#if defined(APCLI_SUPPORT)
 	MAC_TABLE_ENTRY *pMacEntry = pTxBlk->pMacEntry;
 #endif
 	pHeader80211 = (PHEADER_802_11)pHeader;
