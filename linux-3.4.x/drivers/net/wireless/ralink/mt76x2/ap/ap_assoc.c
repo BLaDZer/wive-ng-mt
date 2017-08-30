@@ -1171,13 +1171,13 @@ SendAssocResponse:
 
 	/* temporary block assoc req from last kickouted client */
 	if (pMbss->TmpBlockAfterKickTimes != 0 && pMbss->TmpBlockAfterKickCount < pMbss->TmpBlockAfterKickTimes) {
-	    /* ignore probe req if address eqal */
+	    /* reject assoc req if address eqal */
 	    if (!MAC_ADDR_EQUAL(ZERO_MAC_ADDR, pMbss->TmpBlockAfterKickMac) && MAC_ADDR_EQUAL(ie_list->Addr2, pMbss->TmpBlockAfterKickMac)) {
 		    pMbss->TmpBlockAfterKickCount++;
 		    DBGPRINT(RT_DEBUG_INFO, ("Reject this ASSOC_FAIL_REQ due to Temp Block MAC %02x:%02x:%02x:%02x:%02x:%02x , ASSOC COUNT = %d of %d\n",
 			    PRINT_MAC(ie_list->Addr2), pMbss->TmpBlockAfterKickCount, pMbss->TmpBlockAfterKickTimes));
+		    StatusCode = MLME_ASSOC_REJ_UNABLE_HANDLE_STA;
 		    bAssocSkip = TRUE;
-		    return;
 	    }
 	} else {
 	    /* cleanup blocked mac address */
