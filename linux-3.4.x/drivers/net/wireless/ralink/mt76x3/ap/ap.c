@@ -1513,9 +1513,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
 					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
 					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount)));
-				    printk("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
-					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
-					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount));
 			    }
 
 #ifdef DOT11R_FT_SUPPORT
