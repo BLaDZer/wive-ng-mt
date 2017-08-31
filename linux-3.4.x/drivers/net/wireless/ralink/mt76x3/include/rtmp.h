@@ -6342,7 +6342,7 @@ VOID asic_mcs_lut_update(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry);
 VOID AsicRssiUpdate(RTMP_ADAPTER *pAd);
 VOID AsicRcpiReset(RTMP_ADAPTER *pAd, UCHAR ucWcid);
 
-VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *pTxInfo);
+VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *pTxInfo, BOOLEAN softonesecup);
 #endif /* MT_MAC */
 
 #ifdef CONFIG_AP_SUPPORT

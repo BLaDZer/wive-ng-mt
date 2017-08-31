@@ -1489,7 +1489,7 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 #ifdef MT_MAC
 		if (pAd->chipCap.hif_type == HIF_MT) {
 			//AsicRssiUpdate(pAd);
-			//AsicTxCntUpdate(pAd, 0);
+			//AsicTxCntUpdate(pAd, FALSE);
 		}
 #endif /* MT_MAC */
 

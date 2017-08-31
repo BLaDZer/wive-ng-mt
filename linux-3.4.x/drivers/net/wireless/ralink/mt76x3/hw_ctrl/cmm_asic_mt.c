@@ -2324,7 +2324,7 @@ VOID Wtbl2RcpiGet(RTMP_ADAPTER *pAd, UCHAR ucWcid, union WTBL_2_DW13 *wtbl_2_d13
 }
 
 
-VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *pTxInfo)
+VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *pTxInfo, BOOLEAN softonesecup)
 {
 	TX_CNT_INFO tx_cnt_info;
 	UINT32 TxSuccess;
@@ -2366,26 +2366,38 @@ VOID AsicTxCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, MT_TX_COUNTER *
 		pAd->WlanCounters.FailedCount.u.LowPart += pTxInfo->TxFailCount;
 #endif /* STATS_COUNT_SUPPORT */
 
-		if ((TxSuccess == 0) && (pTxInfo->TxFailCount > 0))
-		{
-			UINT32 TxRetransmit = pTxInfo->TxFailCount;
+		if (softonesecup) {
+			if ((TxSuccess == 0) && (pTxInfo->TxFailCount > 0))
+			{
+				UINT32 TxRetransmit = pTxInfo->TxFailCount;
 
-			/* prevent fast drop long range clients */
-			/* No TxPkt ok in this period as continue tx fail */
-			/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
-			if (TxRetransmit > 512)
-			    pEntry->ContinueTxFailCnt += 170;
+				/* prevent fast drop long range clients */
+				/* No TxPkt ok in this period as continue tx fail */
+				/* error counter in ext_fifo ~3 times (with unreal big peaks) more then soft, need correction */
+				if (TxRetransmit > 512)
+					pEntry->ContinueTxFailCnt += 170;
+				else
+					pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
+			}
 			else
-			    pEntry->ContinueTxFailCnt += (TxRetransmit / 3);
-		}
-		else
-		{
-			pEntry->ContinueTxFailCnt = 0;
+			{
+				pEntry->ContinueTxFailCnt = 0;
+			}
+
+			if (pTxInfo->TxFailCount == 0)
+			{
+			    pEntry->OneSecTxNoRetryOkCount += pTxInfo->TxCount;
+			}
+			else
+			{
+			    pEntry->OneSecTxRetryOkCount += pTxInfo->TxCount;
+			}
+
+			pEntry->OneSecTxFailCount += pTxInfo->TxFailCount;
 		}
 
 		DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%d, FAIL:%d, ConFail:%d) \n",__FUNCTION__, TxSuccess, pTxInfo->TxFailCount, pEntry->ContinueTxFailCnt));
 	}
-
 }
 
 

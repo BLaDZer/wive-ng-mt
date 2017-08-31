@@ -47,7 +47,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 	RTMP_RA_LEGACY_TB *pCurrTxRate, *pTmpTxRate = NULL;
 	CHAR Rssi, TmpIdx = 0;
 	ULONG TxTotalCnt, TxErrorRatio = 0, TxSuccess, TxRetransmit, TxFailCount;
-    UINT32 ret;
+	UINT32 ret;
 
 #ifdef CONFIG_ATE
    	if (ATE_ON(pAd))
@@ -56,7 +56,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
    	}
 #endif /* CONFIG_ATE */
 
-    RTMP_SEM_EVENT_WAIT(&pAd->AutoRateLock, ret);
+	RTMP_SEM_EVENT_WAIT(&pAd->AutoRateLock, ret);
 
 	if(ret != 0)
 		DBGPRINT(RT_DEBUG_ERROR, ("%s:(%d) RTMP_SEM_EVENT_WAIT failed!\n",__FUNCTION__,ret));
@@ -91,7 +91,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 			if (pAd->chipCap.hif_type == HIF_MT) {
 				MT_TX_COUNTER TxInfo;
 
-				AsicTxCntUpdate(pAd, pEntry, &TxInfo);
+				AsicTxCntUpdate(pAd, pEntry, &TxInfo, TRUE);
 			}
 #endif /* MT_MAC */
 			continue;
@@ -109,7 +109,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 		if (ADAPT_RATE_TABLE(pTable))
 		{
 #ifdef MT_MAC
-			if (pAd->chipCap.hif_type == HIF_MT) 
+			if (pAd->chipCap.hif_type == HIF_MT)
 			{
 				DynamicTxRateSwitchingAdaptMT(pAd, i);
 			}
@@ -148,6 +148,14 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 #endif /* AGS_SUPPORT */
 
 		/* NICUpdateFifoStaCounters(pAd); */
+#ifdef MT_MAC
+		/* update onesec counters if reset in adapt logic for correct trainUP/DOWN set (high level interference compensation) */
+		if (pAd->chipCap.hif_type == HIF_MT && pEntry->OneSecTxNoRetryOkCount == 0 && pEntry->OneSecTxRetryOkCount == 0 && pEntry->OneSecTxFailCount == 0) {
+			MT_TX_COUNTER TxInfo;
+
+			AsicTxCntUpdate(pAd, pEntry, &TxInfo, TRUE);
+		}
+#endif /* MT_MAC */
 #ifndef MULTI_CLIENT_SUPPORT
 		if (pAd->MacTab.Size == 1)
 		{
@@ -371,8 +379,8 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 
 
 		/* Check for low traffic case */
-        if (TxTotalCnt <= 15)
-        {
+    		if (TxTotalCnt <= 15)
+    		{
 			UCHAR	TxRateIdx;
 			CHAR	mcs[24];
 
@@ -400,7 +408,7 @@ VOID APMlmeDynamicTxRateSwitching(RTMP_ADAPTER *pAd)
 
 
 			continue;
-        }
+    		}
 
 		if (pEntry->fLastSecAccordingRSSI == TRUE)
 		{
