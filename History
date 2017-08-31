@@ -3388,6 +3388,7 @@
 6) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
 7) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
 8) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+9) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
 <br>
 <br>
 <br>
