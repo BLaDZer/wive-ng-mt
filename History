@@ -3383,15 +3383,16 @@
 1) busybox: update to 1.27.2 stable version.<br>
 2) handoff: change defaults for more smooth client migration.<br>
 3) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
-4) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
-5) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-6) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-7) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-8) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-9) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-10) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-11) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-12) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+4) kernel: list: use READ_ONCE() when testing for empty lists.<br>
+5) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
+6) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+7) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+8) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+9) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+10) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+11) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+12) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+13) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
 <br>
 <br>
 <br>
