@@ -1891,7 +1891,7 @@ static unsigned int ipv4_mtu(const struct dst_entry *dst)
 	if (mtu)
 		return mtu;
 
-	mtu = dst->dev->mtu;
+	mtu = READ_ONCE(dst->dev->mtu);
 
 	if (unlikely(dst_metric_locked(dst, RTAX_MTU))) {
 

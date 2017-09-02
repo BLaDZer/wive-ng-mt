@@ -3384,12 +3384,13 @@
 2) handoff: change defaults for more smooth client migration.<br>
 3) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
 4) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-5) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-6) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-7) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-8) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-9) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-10) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+5) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+6) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+7) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+8) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+9) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+10) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+11) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
 <br>
 <br>
 <br>
