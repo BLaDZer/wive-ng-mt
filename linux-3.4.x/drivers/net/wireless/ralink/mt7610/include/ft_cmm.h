@@ -52,7 +52,7 @@
 #define FT_KDP_RALINK_PASSPHRASE		"Ralink"
 #define FT_KDP_KEY_DEFAULT				"1234567812345678"
 #define FT_KDP_KEY_ENCRYPTION_EXTEND	8 /* 8B for AES encryption extend size */
-#define FT_DEFAULT_MDID					"RT"
+#define FT_DEFAULT_MDID					"A1"
 
 #define FT_REASSOC_DEADLINE				20
 
