@@ -32,6 +32,11 @@ config  RAETH_JUMBOFRAME
 	bool "Jumbo Frames up to 2K bytes"
 	depends on RAETH && (RALINK_RT3352 || RALINK_RT3883 || RALINK_MT7620)
 
+config  RAETH_DISABLE_FC
+	bool "Force disable flow control by defult"
+	depends on RAETH && RALINK_MT7621
+	default n
+
 config  RAETH_HW_VLAN_RX
 	bool "Receive VLAN HW (DoubleVLAN is not supported)"
 	depends on RAETH && (RALINK_MT7621 && !RAETH_QDMATX_QDMARX)

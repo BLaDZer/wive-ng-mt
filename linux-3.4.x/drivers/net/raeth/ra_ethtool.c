@@ -106,13 +106,13 @@ static void et_get_pauseparam(struct net_device *dev, struct ethtool_pauseparam 
 
 #if defined (CONFIG_RALINK_MT7621)
 #if defined (CONFIG_MT7530_GSW)
-	if (ei_local->mii_info.phy_id < 5)
-		mdio_cfg_reg = esw_reg_get(REG_ESW_MAC_PMSR_P0 + 0x100 * ei_local->mii_info.phy_id);
+	epause->tx_pause = (mii_an_reg & BIT(10)) ? 1 : 0;
+	epause->rx_pause = (mii_an_reg & BIT(11)) ? 1 : 0;
 #else
 	mdio_cfg_reg = sysRegRead(REG_ETH_GE1_MAC_STATUS);
-#endif
 	epause->tx_pause = (mdio_cfg_reg & BIT(4)) ? 1 : 0;
 	epause->rx_pause = (mdio_cfg_reg & BIT(5)) ? 1 : 0;
+#endif
 #elif defined (CONFIG_RALINK_MT7620)
 #if defined (CONFIG_RAETH_ESW) || defined (CONFIG_MT7530_GSW)
 	if (ei_local->mii_info.phy_id < 5)
@@ -140,24 +140,44 @@ static int et_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam *
 
 	// auto-neg pause
 	mii_mgr_read(ei_local->mii_info.phy_id, PHY_AUTO_NEGO_REG, &mii_an_reg);
-	if (epause->autoneg)
+
+	/* disable pause autonegotinate if rx/tx pause support off */
+	if (epause->autoneg && (epause->tx_pause || epause->rx_pause))
 		mii_an_reg |= PHY_Cap_Pause;
 	else
 		mii_an_reg &= ~PHY_Cap_Pause;
+
+#if defined (CONFIG_RALINK_MT7621)
+#if defined (CONFIG_MT7530_GSW)
+	if (ei_local->mii_info.phy_id < 5) {
+		if (epause->tx_pause)
+			mii_an_reg |= BIT(11);
+		else
+			mii_an_reg &= ~BIT(11);
+
+		if (epause->rx_pause)
+			mii_an_reg|= BIT(10);
+		else
+			mii_an_reg &= ~BIT(10);
+	}
+#endif
+#endif
 	mii_mgr_write(ei_local->mii_info.phy_id, PHY_AUTO_NEGO_REG, mii_an_reg);
 
-	// tx/rx pause
 #if defined (CONFIG_RALINK_MT7621)
 #if !defined (CONFIG_MT7530_GSW)
+	// tx/rx pause
 	mdio_cfg_reg = sysRegRead(REG_ETH_GE1_MAC_CONTROL);
 	if (epause->tx_pause)
 		mdio_cfg_reg |= BIT(4);
 	else
 		mdio_cfg_reg &= ~BIT(4);
+
 	if (epause->rx_pause)
 		mdio_cfg_reg |= BIT(5);
 	else
 		mdio_cfg_reg &= ~BIT(5);
+
 	sysRegWrite(REG_ETH_GE1_MAC_CONTROL, mdio_cfg_reg);
 #endif
 #elif defined (CONFIG_RALINK_MT7620)
@@ -171,10 +191,12 @@ static int et_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam *
 		mdio_cfg_reg |= BIT(11);
 	else
 		mdio_cfg_reg &= ~BIT(11);
+
 	if (epause->rx_pause)
 		mdio_cfg_reg |= BIT(10);
 	else
 		mdio_cfg_reg &= ~BIT(10);
+
 	sysRegWrite(MDIO_CFG, mdio_cfg_reg);
 #endif
 
@@ -354,10 +376,12 @@ static int et_virt_set_pauseparam(struct net_device *dev, struct ethtool_pausepa
 		mdio_cfg_reg |= BIT(4);
 	else
 		mdio_cfg_reg &= ~BIT(4);
+
 	if (epause->rx_pause)
 		mdio_cfg_reg |= BIT(5);
 	else
 		mdio_cfg_reg &= ~BIT(5);
+
 	sysRegWrite(REG_ETH_GE2_MAC_CONTROL, mdio_cfg_reg);
 #endif
 #elif defined (CONFIG_RALINK_RT3883)
@@ -366,10 +390,12 @@ static int et_virt_set_pauseparam(struct net_device *dev, struct ethtool_pausepa
 		mdio_cfg_reg |= BIT(11);
 	else
 		mdio_cfg_reg &= ~BIT(11);
+
 	if (epause->rx_pause)
 		mdio_cfg_reg |= BIT(10);
 	else
 		mdio_cfg_reg &= ~BIT(10);
+
 	sysRegWrite(MDIO_CFG2, mdio_cfg_reg);
 #endif
 

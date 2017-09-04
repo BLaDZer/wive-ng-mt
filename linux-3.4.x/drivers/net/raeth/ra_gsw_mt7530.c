@@ -362,8 +362,10 @@ void mt7530_gsw_init(void)
 	if (!(ralink_asic_rev_id & (1UL<<16)))
 		mt7530_standalone = 1;
 
+#ifndef CONFIG_RAETH_DISABLE_FC
 	/* MT7621 E2 has FC bug, disable FC */
 	if ((ralink_asic_rev_id & 0xFFFF) == 0x0101)
+#endif
 		regLink &= ~(0x3 << 4);
 #endif
 

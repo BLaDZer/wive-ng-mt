@@ -153,6 +153,27 @@ set_physmode() {
 	    procdir=
 	fi
 	if [ -e /bin/ethtool ] && [ "$procdir" != "" ]; then
+	    # PAUSE CONTROL (must be first for correct negotinagion after link mode changes)
+	    phys_portN=4
+	    for num in `seq 1 5`; do
+		# select switch port for tune
+		echo "$phys_portN" > $procdir
+		# get mode for current port
+		port_fcmode=`nvram_get 2860 port"$num"_fcmode`
+		if [ "$port_fcmode" = "auto" ]; then
+		    ethtool -A eth2 autoneg on tx on rx on			> /dev/null 2>&1
+		elif [ "$port_fcmode" = "tx" ]; then
+		    ethtool -A eth2 autoneg off tx on rx off			> /dev/null 2>&1
+		elif [ "$port_fcmode" = "rx" ]; then
+		    ethtool -A eth2 autoneg off tx off rx on			> /dev/null 2>&1
+		elif [ "$port_fcmode" = "txrx" ]; then
+		    ethtool -A eth2 autoneg off tx on rx on			> /dev/null 2>&1
+		else
+		    ethtool -A eth2 autoneg off tx off rx off			> /dev/null 2>&1
+		fi
+		let "phys_portN=$phys_portN-1"
+	    done
+	    # AUTONEG (set link mode and restart negotination, this must be allways end)
 	    phys_portN=4
 	    for num in `seq 1 5`; do
 		# select switch port for tune

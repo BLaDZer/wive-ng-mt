@@ -239,8 +239,10 @@ void mt7621_eth_init(void)
 	/* GE1/GE2 force mode, Link Up, 1000Mbps, Full-Duplex, FC ON */
 	reg_val = 0x2105e33b;
 
+#ifndef CONFIG_RAETH_DISABLE_FC
 	/* MT7621 E2 has FC bug, disable FC */
 	if ((ralink_asic_rev_id & 0xFFFF) == 0x0101)
+#endif
 		reg_val &= ~(0x3 << 4);
 	sysRegWrite(REG_ETH_GE1_MAC_CONTROL, reg_val);
 

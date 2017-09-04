@@ -3384,17 +3384,19 @@
 2) handoff: change defaults for more smooth client migration.<br>
 3) defaults: disable FT over DS and resource request support by default (compat with some clients issue).<br>
 4) defaults: increase FT key life time to one hour.<br>
-5) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
-6) kernel: list: use READ_ONCE() when testing for empty lists.<br>
-7) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
-8) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-9) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-10) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-11) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-12) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-13) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-14) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-15) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+5) init.d: add change flow control logic (pause frame support disabled by default).<br>
+6) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
+7) kernel: list: use READ_ONCE() when testing for empty lists.<br>
+8) kernel: net: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
+9) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+10) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+11) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
+12) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+13) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+14) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+15) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+16) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+17) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
 <br>
 <br>
 <br>
