@@ -97,6 +97,10 @@ else ifeq ($(CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 endif
 endif
 # REPLACE DEFAULTS AND CALIBS FOR SUBMODELS
+ifeq ($(MODEL_NAME),SNR-CPE-CG1-5GHZ-MT)
+# replace defaults for 7603+7610 sample
+	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
+endif
 ifeq ($(MODEL_NAME),SNR-CPE-ME1-5GHZ-MT)
 # replace defaults for 7603+7610 sample
 	$(ROMFSINST) -S	defaults/default-2t2r-1t1r-wan0							/etc/default/nvram_default
