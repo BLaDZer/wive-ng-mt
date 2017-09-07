@@ -1397,6 +1397,15 @@ static int getNoDogBuilt(int eid, webs_t wp, int argc, char_t **argv)
 #endif
 }
 
+static int get7621Built(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_RALINK_MT7621
+	return websWrite(wp, T("1"));
+#else
+	return websWrite(wp, T("0"));
+#endif
+}
+
 void formDefineInternet(void) {
 	websAspDefine(T("getDns"), getDns);
 	websAspDefine(T("getIgmpProxyBuilt"), getIgmpProxyBuilt);
@@ -1473,4 +1482,5 @@ void formDefineInternet(void) {
 #endif
 	websAspDefine(T("getChilliBuilt"), getChilliBuilt);
 	websAspDefine(T("getNoDogBuilt"), getNoDogBuilt);
+	websAspDefine(T("get7621Built"), get7621Built);
 }

@@ -254,7 +254,18 @@
 	<message msgid="ethernet port status"			msgstr="Ports Status" />
 	<message msgid="ethernet port rx bytes"			msgstr="RX Bytes" />
 	<message msgid="ethernet port tx bytes"			msgstr="TX Bytes" />
-	<message msgid="ethernet gibits"			msgstr=" GiB" />
-	<message msgid="ethernet mibits"			msgstr=" MiB" />
-	<message msgid="ethernet kibits"			msgstr=" KiB" />
+	<message msgid="ethernet gibits"				msgstr=" GiB" />
+	<message msgid="ethernet mibits"				msgstr=" MiB" />
+	<message msgid="ethernet kibits"				msgstr=" KiB" />
+	<message msgid="ethernet port fcmode name"			msgstr="Flow Control: " />
+	<message msgid="ethernet port fcmode auto"			msgstr="Auto" />
+	<message msgid="ethernet port fcmode tx"			msgstr="TX" />
+	<message msgid="ethernet port fcmode rx"			msgstr="RX" />
+	<message msgid="ethernet port fcmode txrx"			msgstr="TX+RX" />
+	<message msgid="ethernet port fcmode off"			msgstr="Off" />
+	<message msgid="ethernet port fcmode label auto"	msgstr="Full Flow Control (RX, TX and Auto-Negotiation)" />
+	<message msgid="ethernet port fcmode label tx"		msgstr="TX only Flow Control" />
+	<message msgid="ethernet port fcmode label rx"		msgstr="RX only Flow Control" />
+	<message msgid="ethernet port fcmode label txrx"	msgstr="TX and RX Flow Control" />
+	<message msgid="ethernet port fcmode label off"		msgstr="All Flow Control Off" />
 </po>

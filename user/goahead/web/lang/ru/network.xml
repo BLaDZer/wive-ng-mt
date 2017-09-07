@@ -255,4 +255,15 @@
     <message msgid="ethernet gibits"			msgstr=" ГиБ" />
     <message msgid="ethernet mibits"			msgstr=" МиБ" />
     <message msgid="ethernet kibits"			msgstr=" КиБ" />
+	<message msgid="ethernet port fcmode name"			msgstr="Контроль потока: " />
+	<message msgid="ethernet port fcmode auto"			msgstr="Авто" />
+	<message msgid="ethernet port fcmode tx"			msgstr="Перадача" />
+	<message msgid="ethernet port fcmode rx"			msgstr="Прием" />
+	<message msgid="ethernet port fcmode txrx"			msgstr="Прием+Передача" />
+	<message msgid="ethernet port fcmode off"			msgstr="Выкл." />
+	<message msgid="ethernet port fcmode label auto"	msgstr="Полный контроль потока (Прием, Передача и Автосогласование)" />
+	<message msgid="ethernet port fcmode label tx"		msgstr="Контроль передачи только на Передачу" />
+	<message msgid="ethernet port fcmode label rx"		msgstr="Контроль передачи только на Прием" />
+	<message msgid="ethernet port fcmode label txrx"	msgstr="Контроль передачи на Прием и Передачу" />
+	<message msgid="ethernet port fcmode label off"		msgstr="Контроль передачи выключен" />
 </po>

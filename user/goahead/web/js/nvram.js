@@ -6,6 +6,7 @@ var MAX_STA_NUM						= <% getMaxStaNum(); %>;
 
 var SDK_VERSION						= '<% getSdkVersion(); %>';
 var PLATFORM						= '<% getPlatform(); %>';
+var PLATFORM_7621					= '<% get7621Built(); %>'		== '1';
 
 var PRIMARY_DNS						= '<% getDns(1); %>';
 var SECONDARY_DNS					= '<% getDns(2); %>';
@@ -128,6 +129,11 @@ var NVRAM_port2_swmode					= '<% getCfgGeneral(1, "port2_swmode"); %>'; 					NVR
 var NVRAM_port3_swmode					= '<% getCfgGeneral(1, "port3_swmode"); %>'; 					NVRAM_port3_swmode 					= (NVRAM_port3_swmode !='')						? NVRAM_port3_swmode					: 'auto';
 var NVRAM_port4_swmode					= '<% getCfgGeneral(1, "port4_swmode"); %>'; 					NVRAM_port4_swmode 					= (NVRAM_port4_swmode !='')						? NVRAM_port4_swmode					: 'auto';
 var NVRAM_port5_swmode					= '<% getCfgGeneral(1, "port5_swmode"); %>'; 					NVRAM_port5_swmode 					= (NVRAM_port5_swmode !='')						? NVRAM_port5_swmode					: 'auto';
+var NVRAM_port1_fcmode					= '<% getCfgGeneral(1, "port1_fcmode"); %>'; 					NVRAM_port1_fcmode 					= (NVRAM_port1_fcmode !='')						? NVRAM_port1_fcmode					: 'off';
+var NVRAM_port2_fcmode					= '<% getCfgGeneral(1, "port2_fcmode"); %>'; 					NVRAM_port2_fcmode					= (NVRAM_port2_fcmode !='')						? NVRAM_port2_fcmode					: 'off';
+var NVRAM_port3_fcmode					= '<% getCfgGeneral(1, "port3_fcmode"); %>'; 					NVRAM_port3_fcmode 					= (NVRAM_port3_fcmode !='')						? NVRAM_port3_fcmode					: 'off';
+var NVRAM_port4_fcmode					= '<% getCfgGeneral(1, "port4_fcmode"); %>'; 					NVRAM_port4_fcmode 					= (NVRAM_port4_fcmode !='')						? NVRAM_port4_fcmode					: 'off';
+var NVRAM_port5_fcmode					= '<% getCfgGeneral(1, "port5_fcmode"); %>'; 					NVRAM_port5_fcmode 					= (NVRAM_port5_fcmode !='')						? NVRAM_port5_fcmode					: 'off';
 var NVRAM_wanConnectionMode				= '<% getCfgGeneral(1, "wanConnectionMode"); %>'; 				NVRAM_wanConnectionMode 			= (NVRAM_wanConnectionMode !='')				? NVRAM_wanConnectionMode				: 'DHCP';
 var NVRAM_natEnabled					= '<% getCfgGeneral(1, "natEnabled"); %>'; 						NVRAM_natEnabled 					= (NVRAM_natEnabled !='')						? NVRAM_natEnabled						: '1';
 var NVRAM_wan_static_dns				= '<% getCfgGeneral(1, "wan_static_dns"); %>'; 					NVRAM_wan_static_dns 				= (NVRAM_wan_static_dns !='')					? NVRAM_wan_static_dns					: 'off';

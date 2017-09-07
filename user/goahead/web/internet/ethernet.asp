@@ -21,7 +21,8 @@
 			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
 
 			var port_swmode	= [ NVRAM_port1_swmode, NVRAM_port2_swmode, NVRAM_port3_swmode, NVRAM_port4_swmode, NVRAM_port5_swmode ];
-			
+			var port_fcmode = [ NVRAM_port1_fcmode, NVRAM_port2_fcmode, NVRAM_port3_fcmode, NVRAM_port4_fcmode, NVRAM_port5_fcmode ];
+
 			function initTranslation() {
 				_TR("ethernetTitle",			"ethernet title");
 				_TR("ethernetIntroduction",		"ethernet introduction");
@@ -114,6 +115,20 @@
 					if (BUILD_GIGAPHY == '1')
 						addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 1000f"), '1000f');
 					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
+
+					if (PLATFORM_7621) {
+						document.getElementById('port' + i + '_fc').innerHTML = 
+							'<select id="port' + i + '_fcmode" name="port' + i + '_fcmode" class="mid">' +
+							'	<option value="auto" title="' + _("ethernet port fcmode label auto") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode auto") + '</option>' +
+							'	<option value="rx" title="' + _("ethernet port fcmode label rx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode rx") + '</option>' +
+							'	<option value="tx" title="' + _("ethernet port fcmode label tx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode tx") + '</option>' +
+							'	<option value="txrx" title="' + _("ethernet port fcmode label txrx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode txrx") + '</option>' +
+							'	<option value="off" title="' + _("ethernet port fcmode label off") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode off") + '</option>' +
+							'</select>';
+						document.getElementById('port' + i + '_fcmode').value = port_fcmode[i - 1];
+					}
+					else
+						hideElement([ 'port' + i + '_fc_name', 'port' + i + '_fc_name' ]);
 				}
 
 				function reloadStat() {
@@ -128,13 +143,11 @@
 			
 			function checkValues(form) {
 				if (!ajaxPostForm(_('ethernet reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
+					form.reboot.value = "0";
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
-					form.submit();
 				}
-				else 
-					form.reboot.value = "1";
 			}
-			
+
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -176,30 +189,35 @@
 									<td class="head" id="ethernetPort1Mode">Port 1 mode</td>
 									<td colspan="2">
 										<select id="port1_swmode" name="port1_swmode" class="mid"></select>
+										<span id="port1_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort2Mode_tr">
 									<td class="head" id="ethernetPort2Mode">Port 2 mode</td>
 									<td colspan="2">
 										<select id="port2_swmode" name="port2_swmode" class="mid"></select>
+										<span id="port2_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort3Mode_tr">
 									<td class="head" id="ethernetPort3Mode">Port 3 mode</td>
 									<td colspan="2">
 										<select id="port3_swmode" name="port3_swmode" class="mid"></select>
+										<span id="port3_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort4Mode_tr">
 									<td class="head" id="ethernetPort4Mode">Port 4 mode</td>
 									<td colspan="2">
 										<select id="port4_swmode" name="port4_swmode" class="mid"></select>
+										<span id="port4_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort5Mode_tr">
 									<td class="head" id="ethernetPort5Mode">Port 5 mode</td>
 									<td colspan="2">
 										<select id="port5_swmode" name="port5_swmode" class="mid"></select>
+										<span id="port5_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 							</tbody>
@@ -208,9 +226,9 @@
 							<tr>
 								<td><input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);">&nbsp;&nbsp;
 									<input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
+									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="this.form.reboot.value='0'; resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
-									<input type="hidden" name="reboot" value="0">
+									<input type="hidden" name="reboot" value="1">
 								</td>
 							</tr>
 						</table>
