@@ -22,6 +22,7 @@
 			var vpnServerIP 	= (NVRAM_vpnType != '0') ? NVRAM_vpnServer : '';
 			var vpnACName		= (NVRAM_vpnType == '0') ? NVRAM_vpnServer : '';
 			var table_vpn_params	= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
+			var stat_interval;
 
 			function initTranslation() {
 				_TR("vTitle",		"vpn title");
@@ -111,7 +112,7 @@
 				initTranslation();
 
 				ajaxLoadScript('/internet/vpn-stat.js');
-				setInterval(function () { ajaxLoadScript('/internet/vpn-stat.js') }, 5000); 
+				stat_interval = setInterval(function () { ajaxLoadScript('/internet/vpn-stat.js') }, 5000);
 			}
 
 			function checkValues(form) {
@@ -137,6 +138,8 @@
 
 				if ((form.vpn_type.value != '0') || (!form.vpn_enabled.value == 'on'))
 					form.vpn_pure_pppoe.checked = false;
+
+				clearInterval(stat_interval);
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 
 				return true;

@@ -460,6 +460,7 @@ function ajaxShowTimer(form, reloader, message, delay)
 	}
 	pw.currentProgressHandler = reloader;
 	reloader();
+	clearInterval(displayServiceStatus_interval);
 }
 
 function getBrowser() {
@@ -512,12 +513,12 @@ function getBrowser() {
             version = ua.split("Maxthon/")[1];
             break;
     }
- 
+
     var platform = 'desktop';
     if (/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase())) platform = 'mobile';
- 
+
     var browsrObj;
- 
+
     try {
         browsrObj = {
             platform: platform,
@@ -597,6 +598,9 @@ if (!Array.prototype.indexOf) {
 }
 
 // Display service status
+
+var displayServiceStatus_interval;
+
 function displayServiceStatus(services) {
 	var xmlHttp = createXMLHttp();
 	if (xmlHttp) {
@@ -642,7 +646,7 @@ function displayServiceStatus(services) {
 						}
 					}
 				}
-				setTimeout(function () { displayServiceStatus(services); }, 5000);
+				displayServiceStatus_interval = setTimeout(function () { displayServiceStatus(services); }, 5000);
 				// Free resources
 				xmlHttp.onreadystatechange = null;
 				xmlHttp = null;

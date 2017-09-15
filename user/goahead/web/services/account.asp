@@ -18,6 +18,8 @@
 			Butterlate.setTextDomain("services");
 			Butterlate.setTextDomain("buttons");
 
+			var account_interval;
+
 			function initTranslation() {
 				_TR("accountTitle",			"services account title");
 				_TR("accountIntroduction",		"services account introduction");
@@ -48,7 +50,7 @@
 
 			function showStatTable() {
 				ajaxLoadScript('/services/account_stat.js');
-				setTimeout('showStatTable();', 5000);
+				account_interval = setTimeout('showStatTable();', 5000);
 			}
 
 			function accountChange() {
@@ -78,7 +80,7 @@
 						<p>Please note that turning off <b>NAT offload mode</b> will increase CPU usage up to 50%.</p>
 					</div>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+					<form action="/goform/formIptAccounting" method="POST" name="formIptAccounting" id="fastpath_form" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15); clearInterval(account_interval);">
 					<table class="form">
 						<col style="width: 40%"/>
 						<col style="width: 60%"/>

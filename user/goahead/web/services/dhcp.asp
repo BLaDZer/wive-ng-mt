@@ -20,6 +20,7 @@
 			Butterlate.setTextDomain("buttons");
 
 			var dhcpList = [];
+			var dhcp_interval;
 
 			function initTranslation() {
 				_TR("lTitle",			"services dhcp title");
@@ -135,12 +136,13 @@
 					genIPTableData();
 				}
 				ajaxShowTimer(document.dhcpCfg, 'timerReloader', _('message apply'), 15);
+				clearInterval(dhcp_interval);
 				return true;
 			}
 
 			function loadDhcpClientsList() {
 				ajaxLoadScript('/services/dhcp_clist.js');
-				setTimeout('loadDhcpClientsList();', 5000);
+				dhcp_interval = setTimeout('loadDhcpClientsList();', 5000);
 			}
 
 			function genTable(disabled) {

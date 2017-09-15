@@ -22,6 +22,7 @@
 
 			var port_swmode	= [ NVRAM_port1_swmode, NVRAM_port2_swmode, NVRAM_port3_swmode, NVRAM_port4_swmode, NVRAM_port5_swmode ];
 			var port_fcmode = [ NVRAM_port1_fcmode, NVRAM_port2_fcmode, NVRAM_port3_fcmode, NVRAM_port4_fcmode, NVRAM_port5_fcmode ];
+			var stat_interval;
 
 			function initTranslation() {
 				_TR("ethernetTitle",			"ethernet title");
@@ -91,7 +92,7 @@
 				// Set WAN port number
 				if (ETHER_PORTS == 5 && ((NVRAM_wan_port > 0 && NVRAM_wan_port < (ETHER_PORTS - 1)) || NVRAM_wan_port > (ETHER_PORTS - 1)))
 					NVRAM_wan_port = ETHER_PORTS - 1;
-					
+
 				// Set LAN port number
 				if (NVRAM_lan_port != 'near' && NVRAM_lan_port != 'distant')
 					NVRAM_lan_port = 'near';
@@ -100,7 +101,7 @@
 					hideElement(ethernetWANport_tr);
 					hideElement(ethernetFirstLANport_tr);
 				}
-					
+
 				document.getElementById('wan_port').value = NVRAM_wan_port;
 				document.getElementById('lan_port').value = NVRAM_lan_port;
 
@@ -127,27 +128,25 @@
 							'</select>';
 						document.getElementById('port' + i + '_fcmode').value = port_fcmode[i - 1];
 					}
-					else
-						hideElement([ 'port' + i + '_fc_name', 'port' + i + '_fc_name' ]);
 				}
 
 				function reloadStat() {
 					ajaxLoadScript('/internet/ethernet-stat.js');
-					setTimeout(reloadStat, 10000);
+					stat_interval = setTimeout(reloadStat, 10000);
 				}
 
 				showWarning();
 				initTranslation();
 				reloadStat();
 			}
-			
+
 			function checkValues(form) {
 				if (!ajaxPostForm(_('ethernet reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
 					form.reboot.value = "0";
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
 				}
+				clearInterval(stat_interval);
 			}
-
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">

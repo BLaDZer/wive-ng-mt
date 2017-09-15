@@ -38,7 +38,16 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
                         return websWrite(wp, T(""));
 		str[0] = '\0';
 		for (j = 0; j < strlen(value); j++) {
-		    if (value[j] == '"' || value[j] == '\\' || value[j] == '\'')
+		    if (value[j] == '"' ||
+			value[j] == '\\' ||
+			value[j] == '\'' ||
+			value[j] == '\t' ||
+			value[j] == '\r' ||
+			value[j] == '\n' ||
+			value[j] == '\v' ||
+			value[j] == '\f' ||
+			value[j] == '\b'
+			)
 			sprintf(str, "%s%c", str, '\\');
 		    sprintf(str, "%s%c", str, value[j]);
 		}

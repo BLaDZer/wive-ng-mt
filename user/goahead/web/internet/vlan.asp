@@ -445,10 +445,10 @@
 				}
 				showTvSipVLAN();
 			}
-			
+
 			function interceptVLANinput() {
 				setTimeout('interceptVLANinput();', 500);
-				
+
 				if (vlanTv.length > 0 && document.getElementById('tv_stbMcast').disabled == true) {
 					document.getElementById('tv_stbMcast').disabled = false;
 					return;
@@ -457,7 +457,7 @@
 					document.getElementById('sip_stbMcast').disabled = false;
 					return;
 				}
-				
+
 				var vlan_tv		= document.getElementById('tv_stbVLANid').value;
 				var vlan_sip	= document.getElementById('sip_stbVLANid').value;
 				if ((validateNum(vlan_tv) && vlan_tv > 0 && vlan_tv < 4096) || vlanTv.length > 0)
