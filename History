@@ -3389,7 +3389,8 @@
 7) init.d: fix pppoe work with *_vlan ports mode.<br>
 8) goahead: add flow control webui and fix reboot logic at apply switch changes.<br>
 9) goahead: fix regression crash at apply settings in some cases.<br>
-10) kernel: arch: Introduce smp_load_acquire(), smp_store_release().<br>
+10) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
+11) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
 11) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
 12) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
 13) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
