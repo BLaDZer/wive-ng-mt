@@ -3391,28 +3391,29 @@
 9) goahead: fix regression crash at apply settings in some cases.<br>
 10) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
 11) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
-11) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
-12) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
-13) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
-14) kernel: list: use READ_ONCE() when testing for empty lists.<br>
-15) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
-16) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
-17) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
-18) kernel: driver core: bus: fix a potential double free.<br>
-19) kernel: net: add kfree_skb_list().<br>
-20) kernel: net: ping: do not abuse udp_poll().<br>
-21) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
-22) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-23) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
-24) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-25) kernel: net: xfrm: policy: check policy direction value.<br>
-26) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
-27) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-28) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-29) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-30) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-31) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-32) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+12) kernel: signal: only reschedule timers on signals timers have sent.<br>
+13) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
+14) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
+15) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
+16) kernel: list: use READ_ONCE() when testing for empty lists.<br>
+17) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
+18) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
+19) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
+20) kernel: driver core: bus: fix a potential double free.<br>
+21) kernel: net: add kfree_skb_list().<br>
+22) kernel: net: ping: do not abuse udp_poll().<br>
+23) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
+24) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+25) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
+26) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+27) kernel: net: xfrm: policy: check policy direction value.<br>
+28) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
+29) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+30) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+31) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+32) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+33) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+34) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
 <br>
 <br>
 <br>
