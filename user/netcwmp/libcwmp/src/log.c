@@ -30,8 +30,8 @@ struct cwmp_log_t
     char * name;
 };
 
-static cwmp_log_t 	g_cwmp_log_file;
-static cwmp_log_t*	g_ot_log_file_ptr = NULL;
+static cwmp_log_t  g_cwmp_log_file;
+static cwmp_log_t* g_ot_log_file_ptr = NULL;
 
 const char *
 cwmp_loglevel_to_string(int level)

@@ -136,7 +136,7 @@ cpe_refresh_dhcpstatic(cwmp_t *cwmp, parameter_node_t *param_node, callback_regi
 
     p = cwmp_nvram_get("dhcpStatic");
     if (!p || !*p) {
-	cwmp_log_info("%s: empty nvram value dhcpStatic", __func__);
+        cwmp_log_info("%s: empty nvram value dhcpStatic", __func__);
         return FAULT_CODE_OK;
     }
 

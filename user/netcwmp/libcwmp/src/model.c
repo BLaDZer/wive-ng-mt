@@ -5,7 +5,7 @@
 
 int cwmp_model_copy_parameter_object(parameter_node_t * object_param, parameter_node_t * new_node, int instance_number)
 {
-	char tmp[42] = {};
+    char tmp[42] = {};
     parameter_node_t * tmp_node, *curr_node, *next_newnode;
     if(!object_param || !new_node)
     {
@@ -14,10 +14,10 @@ int cwmp_model_copy_parameter_object(parameter_node_t * object_param, parameter_
     if(instance_number > 0)
     {
         memcpy(new_node, object_param, sizeof(parameter_node_t));
-		/* TODO: load alias */
-		TRsnprintf(tmp, sizeof(tmp), "cpe-%d", instance_number);
+        /* TODO: load alias */
+        TRsnprintf(tmp, sizeof(tmp), "cpe-%d", instance_number);
         new_node->name = TRstrdup(TRitoa(instance_number));
-		new_node->alias = TRstrdup(tmp);
+        new_node->alias = TRstrdup(tmp);
 
         new_node->child = NULL;
         new_node->next_sibling = NULL;
@@ -38,7 +38,7 @@ int cwmp_model_copy_parameter_object(parameter_node_t * object_param, parameter_
         next_newnode = MALLOC(sizeof(parameter_node_t));
         memcpy(next_newnode, tmp_node, sizeof(parameter_node_t));
         next_newnode->name = TRstrdup(tmp_node->name);
-		next_newnode->alias = TRstrdup(tmp_node->alias);
+        next_newnode->alias = TRstrdup(tmp_node->alias);
         next_newnode->parent = new_node;
         next_newnode->child = NULL;
         next_newnode->next_sibling = NULL;
@@ -66,9 +66,9 @@ int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_
 
     int rv;
 
-	cwmp_log_trace("%s(param=%p [name=%s], new_param=%p, instance_number=%d",
-			__func__, (void*)param, (param ? param->name : NULL),
-			(void*)new_param, instance_number);
+    cwmp_log_trace("%s(param=%p [name=%s], new_param=%p, instance_number=%d",
+            __func__, (void*)param, (param ? param->name : NULL),
+            (void*)new_param, instance_number);
 
     if(!param)
         return CWMP_OK;
@@ -85,7 +85,7 @@ int cwmp_model_copy_parameter(parameter_node_t * param, parameter_node_t ** new_
     }
 
     new_node->name = NULL;
-	new_node->alias = NULL;
+    new_node->alias = NULL;
     new_node->rw = 0;
     new_node->inform = 0;
     new_node->inform_sort = 0;
@@ -121,7 +121,7 @@ int cwmp_model_free_parameter(parameter_node_t * param)
         cwmp_model_delete_parameter(tmp_param);
     }
 
-	free(param->alias);
+    free(param->alias);
     free(param->name);
     free(param);
 
@@ -133,8 +133,8 @@ int cwmp_model_delete_parameter(parameter_node_t * param)
     parameter_node_t     *tmp_param = NULL;
     parameter_node_t     *parent = NULL;
 
-	cwmp_log_trace("%s(param=%p [name=%s])",
-			__func__, (void*)param, (param ? param->name : NULL));
+    cwmp_log_trace("%s(param=%p [name=%s])",
+            __func__, (void*)param, (param ? param->name : NULL));
 
     if(!param)
     {
@@ -176,7 +176,6 @@ int cwmp_model_create_parameter(parameter_node_t * param, xmlnode_t * node, mode
 
 int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_func_t * func_list, int func_count, pool_t * pool)
 {
-    //	FUNCTION_TRACE();
     param->get = NULL;
     param->set = NULL;
     param->notify = NULL;
@@ -185,7 +184,7 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
     param->refresh = NULL;
     param->reload = NULL;
     param->args = NULL;
-	char tmp[42] = {};
+    char tmp[42] = {};
 
     if(!node)
     {
@@ -217,9 +216,9 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
     }
 
     param->name = TRstrdup(name);
-	/* TODO: load alias */
-	snprintf(tmp, sizeof(tmp), "cpe-%s", param->name);
-	param->alias = TRstrdup(tmp);
+    /* TODO: load alias */
+    snprintf(tmp, sizeof(tmp), "cpe-%s", param->name);
+    param->alias = TRstrdup(tmp);
 
     value = cwmp_xml_get_node_attribute(node, "rw");
     if(value)
@@ -239,11 +238,11 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
         param->inform_sort = TRatoi(value);
     }
 
-	value = cwmp_xml_get_node_attribute(node, "reload_func");
-	if (value)
-	{
-		param->reload = (parameter_reload_handler_pt) cwmp_model_find_func(func_list, func_count, value);
-	}
+    value = cwmp_xml_get_node_attribute(node, "reload_func");
+    if (value)
+    {
+        param->reload = (parameter_reload_handler_pt) cwmp_model_find_func(func_list, func_count, value);
+    }
 
     if(param->type == TYPE_OBJECT)
     {
@@ -251,8 +250,6 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
         if(value)
         {
             param->add = (parameter_add_handler_pt)cwmp_model_find_func(func_list, func_count, value);//dlsym(cwmp->dev_lib, value);;
-
-
         }
 
         value = cwmp_xml_get_node_attribute(node, "del_func");
@@ -290,7 +287,6 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
         value = cwmp_xml_get_node_attribute(node, "args");
         if(value)
         {
-	    //FIXME
             param->args = pool_pstrdup(pool,value);
         }
     }
@@ -302,10 +298,10 @@ int cwmp_model_init_parameter(parameter_node_t * param, xmlnode_t * node, model_
 int cwmp_model_create_child_parameter(parameter_node_t * child_param, xmlnode_t * child_node, model_func_t * func_list, int func_count, pool_t * pool)
 {
     cwmp_log_trace("%s(child_param=%p [name=%s], child_node=%p, func_list=%p, func_count=%d, pool=%p)",
-			__func__, (void*)child_param, (child_param ? child_param->name : NULL),
-			(void*)child_node, (void*)func_list, func_count, (void*)pool);
+            __func__, (void*)child_param, (child_param ? child_param->name : NULL),
+            (void*)child_node, (void*)func_list, func_count, (void*)pool);
 
-	cwmp_model_create_parameter(child_param, child_node, func_list, func_count, pool);
+    cwmp_model_create_parameter(child_param, child_node, func_list, func_count, pool);
 
     xmlnode_t * next_node =  XmlNodeGetNextSibling(child_node);
     parameter_node_t * last_sibling = child_param;
@@ -330,32 +326,30 @@ int cwmp_model_create_parameter(parameter_node_t * param, xmlnode_t * node, mode
 
     xmlnode_t * child_node = XmlNodeGetFirstChild(node);
     if(!child_node) {
-		cwmp_log_debug("param name %s: %p, %p",
-				param->name, param->get, param->set);
+        cwmp_log_debug("param name %s: %p, %p",
+                param->name, param->get, param->set);
         return CWMP_OK;
     }
 
     parameter_node_t * child_param = (parameter_node_t *)pool_pcalloc(pool, sizeof(parameter_node_t));
     child_param->parent = param;
-	param->child = child_param;
+    param->child = child_param;
 
     cwmp_model_create_child_parameter(child_param, child_node, func_list, func_count,  pool);
 
-	cwmp_log_debug("param name %s (child: %s): %p, %p",
-			param->name, child_param->name, param->get, param->set);
-
+    cwmp_log_debug("param name %s (child: %s): %p, %p",
+            param->name, child_param->name, param->get, param->set);
 
     return CWMP_OK;
-
 }
 
 static int cwmp_model_init_object(cwmp_t * cwmp, parameter_node_t *param)
 {
     parameter_node_t     *node = NULL;
 
-	cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s])",
-			__func__, (void*)cwmp, (void*)param,
-			(param ? param->name : NULL));
+    cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s])",
+            __func__, (void*)cwmp, (void*)param,
+            (param ? param->name : NULL));
 
     if(!param)
     {
@@ -383,10 +377,10 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
 {
     parameter_node_t     *node = NULL;
 
-	cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s], flag=%d, callback_reg=%p)",
-			__func__, (void*)cwmp,
-			(void*)param, (param ? param->name : NULL),
-			flag, (void*)callback_reg);
+    cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s], flag=%d, callback_reg=%p)",
+            __func__, (void*)cwmp,
+            (void*)param, (param ? param->name : NULL),
+            flag, (void*)callback_reg);
 
     if(!param)
     {
@@ -414,26 +408,31 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
 
 int cwmp_model_delete_object_child(cwmp_t *cwmp, parameter_node_t *param)
 {
+    parameter_node_t *pn = NULL;
+    cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s])",
+            __func__, (void*)cwmp, (void*)param, param ? param->name : "");
 
-	parameter_node_t *pn = NULL;
-	cwmp_log_trace("%s(cwmp=%p, param=%p [name=%s])",
-			__func__, (void*)cwmp, (void*)param, param ? param->name : "");
+    if (!param)
+    {
+        return CWMP_ERROR;
+    }
 
-	if (!param)
-		return CWMP_ERROR;
+    param = param->child;
+    while (param) 
+    {
+        pn = param;
+        param = param->next_sibling;
 
-	param = param->child;
-	while (param) {
-		pn = param;
-		param = param->next_sibling;
+        if (!strcmp(pn->name, "{i}"))
+        {
+            continue;
+        }
 
-		if (!strcmp(pn->name, "{i}"))
-			continue;
+        cwmp_model_delete_parameter(pn);
+        pn = NULL;
+    }
 
-		cwmp_model_delete_parameter(pn);
-		pn = NULL;
-	}
-	return CWMP_OK;
+    return CWMP_OK;
 }
 
 int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func_list, int func_count)
@@ -442,8 +441,8 @@ int cwmp_model_load_parameter(cwmp_t * cwmp, xmldoc_t * doc, model_func_t * func
     xmlnode_t *  root_node;
     xmlnode_t *  model_node;
 
-	cwmp_log_trace("%s(cwmp=%p, doc=%p, func_list=%p, func_count=%d)",
-			__func__, (void*)cwmp, (void*)doc, (void*)func_list, func_count);
+    cwmp_log_trace("%s(cwmp=%p, doc=%p, func_list=%p, func_count=%d)",
+            __func__, (void*)cwmp, (void*)doc, (void*)func_list, func_count);
 
     ASSERT(doc != NULL);
 
@@ -479,8 +478,8 @@ int cwmp_model_load_xml(cwmp_t * cwmp, const char * xmlfile, model_func_t * func
     size_t xmllen, nread ;
     FILE * fp = fopen(xmlfile, "rb");
 
-	cwmp_log_trace("%s(cwmp=%p, xmlfile=\"%s\", func_list=%p, func_count=%d)",
-			__func__, (void*)cwmp, xmlfile, (void*)func_list, func_count);
+    cwmp_log_trace("%s(cwmp=%p, xmlfile=\"%s\", func_list=%p, func_count=%d)",
+            __func__, (void*)cwmp, xmlfile, (void*)func_list, func_count);
 
     if(!fp)
     {
@@ -490,7 +489,6 @@ int cwmp_model_load_xml(cwmp_t * cwmp, const char * xmlfile, model_func_t * func
 
     fseek(fp, 0, SEEK_END);
     xmllen = ftell(fp);
-
 
     char * buf = (char*)MALLOC(sizeof(char)*(xmllen+1));
     if(!buf)

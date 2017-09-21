@@ -29,16 +29,16 @@
 #include <linux/reboot.h>
 #include <sys/reboot.h>
 
-#include <linux/autoconf.h>  				/* kernel config		*/
-#include "../../../tools/mkimage/include/image.h"	/* For Uboot image header format */
+#include <linux/autoconf.h>                             /* kernel config */
+#include "../../../tools/mkimage/include/image.h"       /* For Uboot image header format */
 
 /* for calculate max image size */
 #include "../../../linux/drivers/mtd/ralink/ralink-flash.h"
 
-#define RFC_ERROR 		"RFC1867 ...."
-#define MEM_SIZE        	1024
-#define MEM_HALF        	512
-#define MIN_FIRMWARE_SIZE       2097152 		/* minium firmware size(2MB) */
+#define RFC_ERROR               "RFC1867 ...."
+#define MEM_SIZE                1024
+#define MEM_HALF                512
+#define MIN_FIRMWARE_SIZE       2097152                 /* minium firmware size(2MB) */
 
 int firmware_upgrade(char* filename);
 

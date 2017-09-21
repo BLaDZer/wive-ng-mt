@@ -31,7 +31,7 @@ struct cwmp_session_t
     int	last_method;
     int last_code;
 
-    env_t	* env;
+    env_t  * env;
     pool_t * pool;
     pool_t * connpool;
     pool_t * envpool;
@@ -41,7 +41,7 @@ struct cwmp_session_t
     http_socket_t * sock;
     http_dest_t   * dest;
 
-	unsigned resend_counter;
+    unsigned resend_counter;
 
     char 	id[128];
     char error_buffer[256];

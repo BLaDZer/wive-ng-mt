@@ -576,5 +576,3 @@ cpe_get_trd_hop(cwmp_t *cwmp, const char *name, char **value, char *args, pool_t
     return FAULT_CODE_OK;
 }
 
-
-

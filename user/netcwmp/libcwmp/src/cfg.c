@@ -30,7 +30,7 @@ struct conf_t {
 };
 
 
-static conf_t	* cwmp_conf_handle = NULL;
+static conf_t * cwmp_conf_handle = NULL;
 
 int cwmp_conf_open(const char * filename)
 {

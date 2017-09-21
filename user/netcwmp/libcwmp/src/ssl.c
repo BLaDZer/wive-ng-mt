@@ -22,7 +22,7 @@ int err_exit(string)
   {
     cwmp_log_error("%s",string);
     //exit(0);
-	return 0;
+    return 0;
   }
 
 /* Print SSL errors and exit*/
@@ -32,7 +32,7 @@ int berr_exit(string)
     cwmp_log_error("%s",string);
     ERR_print_errors(bio_err);
     //exit(0);
-	return 0;
+    return 0;
   }
 
 /*The password code is not thread safe*/
@@ -121,13 +121,12 @@ SSL * openssl_connect(SSL_CTX * ctx, int fd)
 }
 
 
-
 /*
 
 static int openssl_password_cb(char *buf, int num, int rwflag, void *userdata)
 {
     if (num < strlen(openssl_password)+1)
-	    return 0;
+        return 0;
 
     strcpy(buf,openssl_password);
     return(strlen(buf));

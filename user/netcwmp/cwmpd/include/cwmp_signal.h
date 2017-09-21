@@ -35,10 +35,10 @@
 #else
 #define CWMP_SIG_SHUTDOWN               QUIT
 #endif
+
 #define CWMP_SIG_TERMINATE              TERM
 #define CWMP_SIG_NOACCEPT               WINCH
 #define CWMP_SIG_RECONFIGURE            HUP
-
 
 #if (CWMP_LINUXTHREADS)
 #define CWMP_SIG_REOPEN                 INFO

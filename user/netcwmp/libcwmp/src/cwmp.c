@@ -57,7 +57,6 @@ static char SOAP_ENV_ENVELOPE[CWMP_NAME_MAX] = {0};
 static char SOAP_ENV_FAULT[CWMP_NAME_MAX]={0};
 static char SOAP_ENC_ARRAYTYPE[CWMP_NAME_MAX] = {0};
 
-
 //static parameter_node_t* gs_root_parameter_node = NULL;
 
 
@@ -80,6 +79,7 @@ static char * cwmp_get_format_string(const char * fmt, ...)
 }
 
 
+// type => string conversion
 char * cwmp_get_type_string(int type)
 {
     switch (type)
@@ -114,22 +114,9 @@ char * cwmp_get_type_string(int type)
 
 }
 
+// string => type conversion
 int cwmp_get_type_value(char * type)
 {
-//    	TYPE_OBJECT=0,	//obj
-//	TYPE_INT,	//int
-//	TYPE_UNSIGNEDINT, //uint
-//	TYPE_STRING,  	//s
-//	TYPE_STRING16,	//s16
-//	TYPE_STRING32,	//s32
-//	TYPE_STRING64,	//s64
-//	TYPE_STRING128,	//s128
-//	TYPE_STRING256,	//s256
-//	TYPE_STRING1024, //s1024
-//	TYPE_DATETIME,	//dt
-//	TYPE_BOOLEAN,	//bool
-//	TYPE_BASE64,	//base
-
     if(type == NULL)
     {
         return TYPE_UNKNOWN;
@@ -196,9 +183,7 @@ int cwmp_get_type_value(char * type)
 
 }
 
-
-
-
+// fault code => string
 char * cwmp_get_fault_string(int code)
 {
     switch(code)
@@ -268,7 +253,6 @@ char * cwmp_get_fault_string(int code)
 }
 
 
-
 xmldoc_t * cwmp_xml_parse_buffer(pool_t * pool, char * buffer)
 {
     return XmlParseBuffer(pool, buffer);
@@ -281,7 +265,6 @@ const char * cwmp_xml_get_node_name(xmlnode_t * node)
     return XmlNodeGetNodeName(child);
 }
 
-
 char * cwmp_xml_get_node_value(xmlnode_t * node)
 {
     return XmlNodeGetNodeValue(XmlNodeGetFirstChild(node));
@@ -291,7 +274,6 @@ char * cwmp_xml_get_node_attribute(xmlnode_t * node, const char * name)
 {
     return XmlElementGetAttribute((XmlElement*)node, name);
 }
-
 
 xmlnode_t * cwmp_xml_get_child_with_name(void * nodeptr, const char * nodeName)
 {
@@ -445,7 +427,7 @@ int cwmp_xml_dom_tree_print_to_chunk(xmlnode_t * node, cwmp_chunk_t * cb, pool_t
             break;
 
         case XML_ATTRIBUTE_NODE:
-            cwmp_log_debug	("dom tree attribute: %s,%s", nodeName, nodeValue);
+            cwmp_log_debug ("dom tree attribute: %s,%s", nodeName, nodeValue);
             cwmp_chunk_write_string(cb, nodeName, TRstrlen(nodeName), pool);
             cwmp_chunk_write_string(cb, "=\"", 2, pool);
             cwmp_chunk_write_string(cb, nodeValue, TRstrlen(nodeValue), pool);
@@ -545,7 +527,7 @@ int cwmp_xml_print_doc_to_chunk(xmldoc_t *   doc, cwmp_chunk_t * cb, pool_t * po
         break;
 
     case XML_ATTRIBUTE_NODE:
-        cwmp_log_debug	("attribute: %s,%s", nodeName, nodeValue);
+        cwmp_log_debug ("attribute: %s,%s", nodeName, nodeValue);
         cwmp_chunk_write_string(cb, nodeName, TRstrlen(nodeName), pool);
         cwmp_chunk_write_string(cb, "=\"", 2, pool);
         cwmp_chunk_write_string(cb, nodeValue, TRstrlen(nodeValue), pool);
@@ -662,8 +644,8 @@ void cwmp_initialize_header(header_t * header)
 
 parameter_node_t * cwmp_initialize_parameter_node(env_t * env ,
         parameter_node_t * root, const char * name,
-        int	rw,
-        int	type,
+        int rw,
+        int type,
         //const char * type,
         const char * value,
         parameter_get_handler_pt get,
@@ -1088,9 +1070,6 @@ int cwmp_parse_header_node(xmlnode_t * node, header_t ** header, pool_t * pool)
     return CWMP_ERROR;
 }
 
-
-
-
 int cwmp_parse_inform_response_message(xmlnode_t * node, unsigned int *max_envelopes)
 {
     xmlnode_t * cwmpMaxEnvelopes;
@@ -1356,60 +1335,61 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
         }
     }
 /*
-        name = cwmp_xml_get_node_value(pnode);
-	parameter = cwmp_parameter_list_add_parameter(env, ppl, root, name, NULL, 1, 0);//Add with getter exec
+    name = cwmp_xml_get_node_value(pnode);
+    parameter = cwmp_parameter_list_add_parameter(env, ppl, root, name, NULL, 1, 0);//Add with getter exec
 
-	if (parameter->type == TYPE_OBJECT) {
-		cwmp_log_error("WARN cwmp_parameter_list_add_parameter: object sent instead of param %s.", name);
-	       xmlnode_t * childNode = XmlNodeGetFirstChild(parameterNode);
+    if (parameter->type == TYPE_OBJECT) {
+        cwmp_log_error("WARN cwmp_parameter_list_add_parameter: object sent instead of param %s.", name);
+            xmlnode_t * childNode = XmlNodeGetFirstChild(parameterNode);
 */
-/*		char nodepath[1024];
-		char* name2 = pool_pstrdup(env->pool, name);
+/*              char nodepath[1024];
+                char* name2 = pool_pstrdup(env->pool, name);
 
-		int namelen = strlen(name2);
-		if (namelen>0 && name2[namelen-1] == '.')
-		{
-		    name2[namelen-1] = '\0';
-		}
+                int namelen = strlen(name2);
+                if (namelen>0 && name2[namelen-1] == '.')
+                {
+                    name2[namelen-1] = '\0';
+                }
 */
-/*		while (childNode)
-		{
-			cwmp_log_error("INFO cwmp_parameter_list_add_parameter: add child param !!!");
+/*              while (childNode)
+                {
+                    cwmp_log_error("INFO cwmp_parameter_list_add_parameter: add child param !!!");
 
-			xmlnode_t * pnode  = parameterNode;
-			childNode = XmlNodeGetNextSibling(childNode);
+                    xmlnode_t * pnode  = parameterNode;
+                    childNode = XmlNodeGetNextSibling(childNode);
 
-//			snprintf(nodepath,1023,"%s.%s",name2,cwmp_xml_get_node_value(childNode));
-			char* nodepath = cwmp_xml_get_node_value(childNode);
-			if (nodepath != NULL)
-			{
-				cwmp_log_error("INFO cwmp_parameter_list_add_parameter: add child param %s.", nodepath);
-				parameter_t * param = cwmp_parameter_list_add_parameter(env,ppl,root,nodepath,NULL, 1, 0); // FIXME: exec_set is not allowed
+//                    snprintf(nodepath,1023,"%s.%s",name2,cwmp_xml_get_node_value(childNode));
+                    char* nodepath = cwmp_xml_get_node_value(childNode);
+                    if (nodepath != NULL)
+                    {
+                        cwmp_log_error("INFO cwmp_parameter_list_add_parameter: add child param %s.", nodepath);
+                        parameter_t * param = cwmp_parameter_list_add_parameter(env,ppl,root,nodepath,NULL, 1, 0); // FIXME: exec_set is not allowed
 
-			}
-//			nodepath[1023] = '\0';
+                    }
+
+//                    nodepath[1023] = '\0';
 */
 
-//			if (param && param->type != TYPE_OBJECT) {
-//    			    *nextpv = param;
-//				nextpv++;
-//	        	}
+//                      if (param && param->type != TYPE_OBJECT) {
+//                          *nextpv = param;
+//                          nextpv++;
+//                      }
 
-//		}
+//              }
 
-//	}
+//      }
 /*
         if(!parameter || parameter->fault_code != FAULT_CODE_OK)
         {
-	    cwmp_set_faultcode(fault, FAULT_CODE_9003);
-	    cwmp_log_error("cwmp_parse_getparametervalues_message: parameter (%s) getter returned fault code %i", name, parameter->fault_code);
-	    rc = CWMP_ERROR;
-	}
+            cwmp_set_faultcode(fault, FAULT_CODE_9003);
+            cwmp_log_error("cwmp_parse_getparametervalues_message: parameter (%s) getter returned fault code %i", name, parameter->fault_code);
+            rc = CWMP_ERROR;
+        }
 */
-//	if (parameter) {
-//    		*nextpv = parameter;
-//		nextpv++;
-//    	}
+//      if (parameter) {
+//              *nextpv = parameter;
+//              nextpv++;
+//      }
 
 //    }
 
@@ -1418,8 +1398,8 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
 //    parameter = cwmp_parameter_list_add_parameter(env, ppl, root, name, value, 1, 0);
 
 //    if (parameter) {
-//	*nextpv = parameter;
-//	nextpv++;
+//      *nextpv = parameter;
+//      nextpv++;
 //    }
 
 //    name     = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name";//CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, ManagementServerModule, URLModule);
@@ -1427,10 +1407,9 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
 //    parameter = cwmp_parameter_list_add_parameter(env, ppl, root, name, value, 1, 0);
 
 //    if (parameter) {
-//	*nextpv = parameter;
-//	nextpv++;
+//      *nextpv = parameter;
+//      nextpv++;
 //    }
-
 
     cwmp_log_debug("DEBUG: cwmp_parse_getparametervalues_message OK");
 
@@ -1504,14 +1483,14 @@ parameter_t*  cwmp_parameter_list_add_parameter(env_t * env, pool_t * pool , par
             if (parameter->fault_code != FAULT_CODE_OK) {
                 cwmp_log_error("%s: parameter %s got error (value: %s) [setter: %s]",
                         __func__, name, value, cwmp_model_ptr_to_func((void*)pn->set));
-#if 0
-                /* disable reload task */
+/*
+                // disable reload task
                 if (pn->reload) {
                     queue_uniq_mark_invalid(env->cwmp->queue, pn->reload, TASK_RELOAD_TAG);
                 }
-#endif
+*/
             } else if (pn->reload) {
-                /* reload task */
+                // reload task
                 queue_uniq_push(env->cwmp->queue, pn->reload, TASK_RELOAD_TAG);
             }
         } else {
@@ -2537,7 +2516,7 @@ xmldoc_t* cwmp_create_getparameternames_response_message(env_t * env ,
     xmlnode_t * parameterWritableNode;
     xmlnode_t * parameterNameNode;
 
-    int	count;
+    int count;
 
     parameter_node_t * child;
 
@@ -2625,7 +2604,7 @@ xmldoc_t* cwmp_create_getparametervalues_response_message(env_t * env ,  header_
     xmlnode_t * parameterValueStructNode;
     xmlnode_t * nameStructNode;
     xmlnode_t * valueStructNode;
-    int	 count;
+    int count;
     parameter_t ** pv;
     parameter_t * pvc;
 
@@ -2703,7 +2682,7 @@ xmldoc_t * cwmp_create_setparameterattributes_response_message(env_t * env ,  he
     return doc;
 }
 
-xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl)
+xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env , parameter_node_t * root,  header_t * header, unsigned int status, parameter_list_t * pl)
 {
     xmlnode_t * envelopeNode;
     xmlnode_t * bodyNode;
@@ -2715,10 +2694,10 @@ xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env ,  he
     xmlnode_t * nameStructNode;
     xmlnode_t * notifyStructNode;
     xmlnode_t * aclStructNode;
-    
 
-    int	 count;
+    int count;
     parameter_t ** pv;
+    char * parameterName  = NULL;
 
     xmldoc_t * doc = XmlDocCreateDocument(env->pool );
     envelopeNode    = cwmp_create_envelope_node(env ,  & doc->node);
@@ -2735,9 +2714,18 @@ xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env ,  he
     count = 0;
     while (count < pl->count)
     {
+        parameterName = (*(pv+count))->name;
+        parameter_node_t * pn = cwmp_get_parameter_node(root, parameterName);
+        char* notificationStr = "0";
+        if (pn != NULL && pn->notify != 0)
+        {
+            notificationStr = "1";
+        }
+
         ESA(parameterValueStructNode, cwmp_xml_create_child_node(env ,  parameterListNode, NULL, "ParameterAttributeStruct", NULL));
-        ESA(nameStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Name", (*(pv+count))->name));
-        ESA(notifyStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Notification", "0")); // FIXME
+        ESA(nameStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Name", parameterName));
+        ESA(notifyStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Notification", notificationStr));
+//        ESA(notifyStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "Notification", "0"));
         ESA(aclStructNode, cwmp_xml_create_child_node(env ,  parameterValueStructNode, NULL, "AccessList", "")); // FIXME
 
 //        ESN(XML_OK, cwmp_xml_set_node_attribute(env ,  notifyStructNode, SOAP_XSI_TYPE, CWMP_TYPE("xsd:string") ));
@@ -3088,7 +3076,7 @@ xmldoc_t * cwmp_create_transfercomplete_message(env_t * env ,  header_t * header
 
 int cwmp_write_doc_to_chunk(xmldoc_t *  doc, cwmp_chunk_t * chunk, pool_t * pool)
 {
-    //	return cwmp_xml_print_doc_to_chunk(doc, chunk, pool);
+    // return cwmp_xml_print_doc_to_chunk(doc, chunk, pool);
     char * xml;
     xml = XmlPrintDocument(pool, doc);
     cwmp_chunk_write_string(chunk, xml, TRstrlen(xml), pool);

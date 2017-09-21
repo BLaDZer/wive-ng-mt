@@ -460,6 +460,7 @@
 					</object>
 				</object>
 			</object>
+
 			<object name="IPPingDiagnostics">
 				<param name="DiagnosticsState" get_func="cpe_get_igd_ping_state" set_func="cpe_set_igd_ping_state"/>
 				<param name="Interface" get_func="cpe_get_igd_ping_iface" set_func="cpe_set_igd_ping_iface"/>

@@ -27,11 +27,9 @@
 #ifndef __CWMPD_H__
 #define __CWMPD_H__
 
-
 #include "cwmp_module.h"
 #include "cwmp_process.h"
 #include "cwmp_thread.h"
 #include "sdk_version.h"
-
 
 #endif

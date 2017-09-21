@@ -27,7 +27,6 @@
 #ifndef __CWMP_TYPE_H__
 #define __CWMP_TYPE_H__
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -66,7 +65,6 @@
 #include <ctype.h>
 //#include <mcheck.h> //mtrace including header file
 
-
 #endif
 
 #include <cwmp/types.h>
@@ -77,51 +75,23 @@
 * @brief
 */
 
-
 #ifdef WIN32
 typedef  int cwmp_sig_atomic_t ;
 #else
 typedef sig_atomic_t cwmp_sig_atomic_t ;
 #endif
 
-typedef unsigned int               cwmp_tls_key_t;
+typedef unsigned int                    cwmp_tls_key_t;
 
-typedef struct cwmp_process_t 		cwmp_process_t;
+typedef struct cwmp_process_t           cwmp_process_t;
 
-typedef struct cwmp_signal_t 			cwmp_signal_t;
-typedef struct cwmp_channel_t  		cwmp_channel_t;
-
-
-/*
-typedef struct cwmp_command_t 	cwmp_command_t;
-typedef struct cwmp_module_t 		cwmp_module_t;
-typedef struct cwmp_conf_t 			cwmp_conf_t;
-typedef struct cwmp_request_t 		cwmp_request_t;
-typedef struct cwmp_response_t 	cwmp_response_t;
-typedef struct cwmp_string_t 			cwmp_string_t;
-typedef struct cwmp_cwmp_buffer_t 			cwmp_cwmp_buffer_t;
-typedef struct cwmp_cwmp_chunk_t 			cwmp_cwmp_chunk_t;
-
-
-typedef struct cwmp_core_conf_t 	cwmp_core_conf_t;
-typedef struct  cwmp_sysfile_t 		cwmp_sysfile_t;
-typedef struct  cwmp_conf_file_t 		cwmp_conf_file_t;
-typedef struct cwmp_context_t cwmp_context_t;
-
-
-#define CWMP_CHUNK_DEFAULT_SIZE  256
-
-#define CWMP_MODULE_V		0, 0, 0, 0, 0, 0, 0, 0
-#define CWMP_MODULE_V_PANDING  0, 0, 0, 0, 0
-
-*/
-
+typedef struct cwmp_signal_t            cwmp_signal_t;
+typedef struct cwmp_channel_t           cwmp_channel_t;
 
 #ifdef WIN32
 #define sleep(x)   Sleep(1000 * (x))
 #include <signal.h>
 #endif
-
 
 #define cwmp_bzero(b, len)              (void)memset(b, 0, len)
 #ifdef WIN32

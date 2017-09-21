@@ -6,17 +6,21 @@ int cpe_get_localip(const char * eth_name, char *hostip)
     struct ifconf ifc;
     char domain_host[100] = {0};
     char local_ip_addr[20] = {0};
-//    char local_mac[20] = {0};
-    //Get Domain Name --------------------------------------------------
+
+    //Get Domain Name
     strcpy(local_ip_addr, "127.0.0.1");
+
     if (!hostip)
+    {
         return -1;
+    }
+
     if (getdomainname(&domain_host[0], 100) != 0)
     {
         return -1;
     }
-    //------------------------------------------------------------------
-    //Get IP Address & Mac Address ----------------------------------------
+
+    //Get IP Address & Mac Address
     if ((fd=socket(AF_INET,SOCK_DGRAM,0))>=0)
     {
         ifc.ifc_len=sizeof buf;
@@ -33,6 +37,7 @@ int cpe_get_localip(const char * eth_name, char *hostip)
                         retn++;
                     }
                 }
+
                 //Get IP Address
                 if (!(ioctl(fd,SIOCGIFADDR,(char*)&buf[intrface])))
                 {
@@ -47,6 +52,7 @@ int cpe_get_localip(const char * eth_name, char *hostip)
             }//While
         }
     }
+
     if ( fd > 0 )
     {
         close(fd);

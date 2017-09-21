@@ -19,11 +19,6 @@
 #include <cwmp/http.h>
 
 
-
-
-
-
-
 struct  device_id_st
 {
     char *manufactorer;
@@ -33,11 +28,6 @@ struct  device_id_st
     char *product_class;
     char *serial_number;
 } ;
-
-
-
-
-
 
 
 struct parameter_value_node_st
@@ -55,12 +45,10 @@ struct parameter_st
     const char * value;
     unsigned int value_length;
 
-    int	type;
-    int	fault_code;
+    int type;
+    int fault_code;
 
 };
-
-
 
 struct parameter_list_st
 {
@@ -79,8 +67,6 @@ struct header_st
 };
 
 
-
-
 struct key_value_t
 {
     char *name;
@@ -96,45 +82,6 @@ struct http_parser_t
 
 };
 
-/*
-
-struct http_digest_auth_t
-{
-	int		active; //digest auth
-	char 	realm[MIN_DEFAULT_LEN+1];
-	char 	nonce[MIN_DEFAULT_LEN+1];
-	char 	cnonce[MIN_DEFAULT_LEN+1];
-	char    response[MIN_DEFAULT_LEN+1];
-	char    qop[MIN_DEFAULT_LEN+1];
-	char    nc[MIN_DEFAULT_LEN+1];
-    char    uri[MIN_DEFAULT_LEN*4+1];
-};
-
-struct http_dest_t
-{
-    char	scheme[URL_SCHEME_LEN+1];
-    char	host[MAX_HOST_NAME_LEN+1];
-    char    uri[MAX_URI_LEN + 1];
-
-    int     port;
-    char*   url;
-
-
-    char    user[URL_USER_LEN+1];
-    char    password[URL_PWD_LEN+1];
-
-    const char *    proxy_name;
-    const char *    proxy_auth;
-    const char *	user_agent;
-    int             proxy_port;
-
-    int             auth_type;
-    char    cookie[MIN_BUFFER_LEN+1];
-    http_digest_auth_t auth;
-
-
-};
-*/
 
 struct http_socket_t
 {
@@ -143,7 +90,7 @@ struct http_socket_t
     int protocol;
     http_sockaddr_t * addr;
     ssize_t send_timeout;
-	ssize_t recv_timeout;
+    ssize_t recv_timeout;
 
     int option;
     http_write_callback_pt write_callback;
@@ -160,11 +107,9 @@ struct http_socket_t
 
     pool_t * pool;
 
-	struct http_statistics stat;
+    struct http_statistics stat;
 
 };
-
-
 
 
 

@@ -28,13 +28,10 @@
 #define __CWMP_THREAD_H__
 
 #define cwmp_thread_key_create(key)   pthread_key_create(key, NULL)
-
 #define cwmp_thread_key_create_s  "the tls key creation"
 
 void cwmp_worker_thread_start(cwmp_t * cwmp);
-
 void * cwmp_worker_thread_run(cwmp_t * cwmp);
-
 int cwmp_worker_thread_init(cwmp_t * cwmp, int num, size_t size);
 
 #endif

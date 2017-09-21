@@ -26,8 +26,6 @@
 #include <malloc.h>
 #include <ctype.h>
 
-
-
 #ifdef WIN32
 
 #include <winsock2.h>
@@ -122,44 +120,42 @@ typedef enum  TRBOOLEAN
 #endif
 
 
-typedef int							cwmp_pid_t;
+typedef int cwmp_pid_t;
 
-typedef unsigned int 		cwmp_uint_t;
-typedef int	cwmp_flag_t;
+typedef unsigned int cwmp_uint_t;
+typedef int cwmp_flag_t;
 
-typedef	int							cwmp_fd_t;
+typedef int cwmp_fd_t;
 
 ///* Typedefs that OT needs. */
 
 typedef  unsigned char        cwmp_byte_t;
-typedef  short                		cwmp_int16_t;
-typedef  unsigned short      cwmp_uint16_t;
-typedef  int                  		cwmp_int32_t;
-typedef  unsigned int         	cwmp_uint32_t;
+typedef  short                cwmp_int16_t;
+typedef  unsigned short       cwmp_uint16_t;
+typedef  int                  cwmp_int32_t;
+typedef  unsigned int         cwmp_uint32_t;
 
-typedef  long long            	cwmp_int64_t;
+typedef  long long            cwmp_int64_t;
 typedef  unsigned long long   cwmp_uint64_t;
-typedef  size_t               		cwmp_size_t;
-//typedef  ssize_t              		cwmp_ssize_t;
-//typedef  off64_t              		cwmp_off_t;
-typedef  int            			cwmp_socklen_t;
-typedef  unsigned long        	cwmp_ino_t;
+typedef  size_t               cwmp_size_t;
+//typedef  ssize_t              cwmp_ssize_t;
+//typedef  off64_t              cwmp_off_t;
+typedef  int                  cwmp_socklen_t;
+typedef  unsigned long        cwmp_ino_t;
 
 #define CWMP_SIZEOF_VOIDP 4
 
 #if CWMP_SIZEOF_VOIDP == 8
-typedef  cwmp_uint64_t          	cwmp_uintptr_t;
+typedef  cwmp_uint64_t        cwmp_uintptr_t;
 #else
-typedef  cwmp_uint32_t          	cwmp_uintptr_t;
+typedef  cwmp_uint32_t        cwmp_uintptr_t;
 #endif
 
 
 #define TR_INET4   AF_INET
 #define TR_INET6   AF_INET6
-#define TR_TCP	    SOCK_STREAM
-#define TR_UDP	    SOCK_DGRAM
-
-
+#define TR_TCP     SOCK_STREAM
+#define TR_UDP     SOCK_DGRAM
 
 # define ISSPACE(x) isspace (x)
 # define ISDIGIT(x) isdigit (x)
@@ -188,8 +184,8 @@ typedef  cwmp_uint32_t          	cwmp_uintptr_t;
 #define TR_UINT64_C(val) (val##ULL)
 
 
-#define TR_TIME_C(val)		TR_INT64_C(val)
-#define TR_USEC_PER_SEC	TR_TIME_C(1000000)
+#define TR_TIME_C(val)    TR_INT64_C(val)
+#define TR_USEC_PER_SEC   TR_TIME_C(1000000)
 
 /** @return TRTime as a second */
 #define TringleTimeSec(time) ((time) / TR_USEC_PER_SEC)
@@ -211,12 +207,6 @@ typedef  cwmp_uint32_t          	cwmp_uintptr_t;
 #else
 #define close_fd    close
 #endif
-
-
-
-
-
-
 
 
 typedef struct cwmp_st cwmp_t;
@@ -242,7 +232,7 @@ typedef struct model_func_st model_func_t;
 typedef int (*callback_func_t)(void *arg1, void *arg2);
 typedef int (*callback_register_func_t)(cwmp_t * cwmp, callback_func_t, void * arg1, void *arg2);
 
-typedef int   	(*parameter_get_handler_pt)(cwmp_t * cwmp, const char * param_name, char ** value, char * args, pool_t * pool);
+typedef int     (*parameter_get_handler_pt)(cwmp_t * cwmp, const char * param_name, char ** value, char * args, pool_t * pool);
 
 typedef int     (*parameter_set_handler_pt)(cwmp_t * cwmp, const char * param_name, const char * value, int length, char * args, callback_register_func_t callback_reg);
 

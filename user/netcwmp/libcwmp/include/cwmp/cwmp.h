@@ -25,11 +25,8 @@
 #include <libnvram.h>
 
 
-
 #define ASSERT assert
 #define XMLCAST(x)  ((XmlChar *)(x))
-
-
 
 #define CWMP_HEAD_MAX   64
 #define CWMP_NAME_MAX   32
@@ -42,25 +39,21 @@
 #define SOAP_CWMP_NS "urn:dslforum-org:cwmp-1-0"
 
 
-
-#define SOAP_ENV_DEFAULT		"soap-env"
-#define SOAP_ENC_DEFAULT		"soap-enc"
-#define SOAP_XML_HEADER			"Header"
-#define SOAP_XML_BODY	  		"Body"
-#define SOAP_XML_ENVELOPE  		"Envelope"
-#define SOAP_XML_FAULT			"Fault"
-
+#define SOAP_ENV_DEFAULT                "soap-env"
+#define SOAP_ENC_DEFAULT                "soap-enc"
+#define SOAP_XML_HEADER                 "Header"
+#define SOAP_XML_BODY                   "Body"
+#define SOAP_XML_ENVELOPE               "Envelope"
+#define SOAP_XML_FAULT                  "Fault"
 
 
-#define CWMP_XML_HEADER_ID	         		"cwmp:ID"
-#define CWMP_XML_HEADER_HOLDREQUESTS	 	    "cwmp:HoldRequests"
-#define CWMP_XML_HEADER_NOMOREREQUESTS	 	    "cwmp:NoMoreRequests"
-#define CWMP_XML_INFORM_MAXENVELOPES	    "MaxEnvelopes"
-#define CWMP_XML_GETPARAMETERNAMES_PARAMETERPATH	 	    "ParameterPath"
-#define CWMP_XML_GETPARAMETERNAMES_NEXTLEVEL	 			"NextLevel"
-#define CWMP_XML_COMMANDKEY	"CommandKey"
-
-
+#define CWMP_XML_HEADER_ID                              "cwmp:ID"
+#define CWMP_XML_HEADER_HOLDREQUESTS                    "cwmp:HoldRequests"
+#define CWMP_XML_HEADER_NOMOREREQUESTS                  "cwmp:NoMoreRequests"
+#define CWMP_XML_INFORM_MAXENVELOPES                    "MaxEnvelopes"
+#define CWMP_XML_GETPARAMETERNAMES_PARAMETERPATH        "ParameterPath"
+#define CWMP_XML_GETPARAMETERNAMES_NEXTLEVEL            "NextLevel"
+#define CWMP_XML_COMMANDKEY                             "CommandKey"
 
 #define SOAP_XSI_TYPE            "xsi:type"
 #define SOAP_XSI_NAME            "xsi:name"
@@ -69,58 +62,57 @@
 #define SOAP_XSD_UNSIGNEDINT     "xsd:unsignedInt"
 #define SOAP_XSD_ANY             "xsd:any"
 #define SOAP_XSD_DATETIME        "xsd:dateTime"
-#define SOAP_TYPE_ARRAYTYPE        "arrayType"
 
-
+#define SOAP_TYPE_ARRAYTYPE      "arrayType"
 
 #define CWMP_XML_MUSTUNDERSTAND "mustUnderstand"
 
-#define CWMP_RPC_INFORM		 						"cwmp:Inform"
-#define CWMP_RPC_INFORMRESPONSE		 				"cwmp:InformResponse"
-#define CWMP_RPC_GETPARAMETERNAMES  				"cwmp:GetParameterNames"
-#define CWMP_RPC_GETPARAMETERNAMESRESPONSE          "cwmp:GetParameterNamesResponse"
-#define CWMP_RPC_GETPARAMETERVALUES  				"cwmp:GetParameterValues"
-#define CWMP_RPC_GETPARAMETERVALUESRESPONSE         "cwmp:GetParameterValuesResponse"
-#define CWMP_RPC_SETPARAMETERVALUES  				"cwmp:SetParameterValues"
-#define CWMP_RPC_SETPARAMETERVALUESRESPONSE         "cwmp:SetParameterValuesResponse"
+#define CWMP_RPC_INFORM                                 "cwmp:Inform"
+#define CWMP_RPC_INFORMRESPONSE                         "cwmp:InformResponse"
+#define CWMP_RPC_GETPARAMETERNAMES                      "cwmp:GetParameterNames"
+#define CWMP_RPC_GETPARAMETERNAMESRESPONSE              "cwmp:GetParameterNamesResponse"
+#define CWMP_RPC_GETPARAMETERVALUES                     "cwmp:GetParameterValues"
+#define CWMP_RPC_GETPARAMETERVALUESRESPONSE             "cwmp:GetParameterValuesResponse"
+#define CWMP_RPC_SETPARAMETERVALUES                     "cwmp:SetParameterValues"
+#define CWMP_RPC_SETPARAMETERVALUESRESPONSE             "cwmp:SetParameterValuesResponse"
 
-#define CWMP_RPC_SETPARAMETERATTRIBUTES  				"cwmp:SetParameterAttributes"
+#define CWMP_RPC_SETPARAMETERATTRIBUTES                 "cwmp:SetParameterAttributes"
 #define CWMP_RPC_SETPARAMETERATTRIBUTESRESPONSE         "cwmp:SetParameterAttributesResponse"
 
-#define CWMP_RPC_GETPARAMETERATTRIBUTES  				"cwmp:GetParameterAttributes"
+#define CWMP_RPC_GETPARAMETERATTRIBUTES                 "cwmp:GetParameterAttributes"
 #define CWMP_RPC_GETPARAMETERATTRIBUTESRESPONSE         "cwmp:GetParameterAttributesResponse"
 
 
-#define CWMP_RPC_GETRPCMETHODS  					"cwmp:GetRPCMethods"
-#define CWMP_RPC_GETRPCMETHODSRESPONSE  		    "cwmp:GetRPCMethodsResponse"
-#define CWMP_RPC_DOWNLOAD	 						"cwmp:Download"
-#define CWMP_RPC_DOWNLOADRESPONSE	 				"cwmp:DownloadResponse"
-#define CWMP_RPC_UPLOAD	 							"cwmp:Upload"
-#define CWMP_RPC_UPLOADRESPONSE	 					"cwmp:UploadResponse"
-#define CWMP_RPC_REBOOT	 							"cwmp:Reboot"
-#define CWMP_RPC_REBOOTRESPONSE	 					"cwmp:RebootResponse"
-#define CWMP_RPC_ADDOBJECT	 						"cwmp:AddObject"
-#define CWMP_RPC_ADDOBJECTRESPONSE	 				"cwmp:AddObjectResponse"
-#define CWMP_RPC_DELETEOBJECT	 					"cwmp:DeleteObject"
-#define CWMP_RPC_DELETEOBJECTRESPONSE	 			"cwmp:DeleteObjectResponse"
-#define CWMP_RPC_TRANSFERCOMPLETE	 			"cwmp:TransferComplete"
-#define CWMP_RPC_TRANSFERCOMPLETERESPONSE 			"cwmp:TransferCompleteResponse"
-#define CWMP_RPC_FACTORYRESET               "cwmp:FactoryReset"
-#define CWMP_RPC_FACTORYRESETRESPONSE       "cwmp:FactoryResetResponse"
+#define CWMP_RPC_GETRPCMETHODS                          "cwmp:GetRPCMethods"
+#define CWMP_RPC_GETRPCMETHODSRESPONSE                  "cwmp:GetRPCMethodsResponse"
+#define CWMP_RPC_DOWNLOAD                               "cwmp:Download"
+#define CWMP_RPC_DOWNLOADRESPONSE                       "cwmp:DownloadResponse"
+#define CWMP_RPC_UPLOAD                                 "cwmp:Upload"
+#define CWMP_RPC_UPLOADRESPONSE                         "cwmp:UploadResponse"
+#define CWMP_RPC_REBOOT                                 "cwmp:Reboot"
+#define CWMP_RPC_REBOOTRESPONSE                         "cwmp:RebootResponse"
+#define CWMP_RPC_ADDOBJECT                              "cwmp:AddObject"
+#define CWMP_RPC_ADDOBJECTRESPONSE                      "cwmp:AddObjectResponse"
+#define CWMP_RPC_DELETEOBJECT                           "cwmp:DeleteObject"
+#define CWMP_RPC_DELETEOBJECTRESPONSE                   "cwmp:DeleteObjectResponse"
+#define CWMP_RPC_TRANSFERCOMPLETE                       "cwmp:TransferComplete"
+#define CWMP_RPC_TRANSFERCOMPLETERESPONSE               "cwmp:TransferCompleteResponse"
+#define CWMP_RPC_FACTORYRESET                           "cwmp:FactoryReset"
+#define CWMP_RPC_FACTORYRESETRESPONSE                   "cwmp:FactoryResetResponse"
 
-#define CWMP_RPC_PARAMETERNAMES "cwmp:ParameterNames"
-#define CWMP_RPC_PARAMETERNAMES_SHORT "ParameterNames"
+#define CWMP_RPC_PARAMETERNAMES                         "cwmp:ParameterNames"
+#define CWMP_RPC_PARAMETERNAMES_SHORT                   "ParameterNames"
 
-#define CWMP_INFORM_EVENT_CODE_0  "0 BOOTSTRAP"
-#define CWMP_INFORM_EVENT_CODE_1  "1 BOOT"
-#define CWMP_INFORM_EVENT_CODE_2  "2 PERIODIC"
-#define CWMP_INFORM_EVENT_CODE_3  "3 SCHEDULED"
-#define CWMP_INFORM_EVENT_CODE_4  "4 VALUE CHANGE"
-#define CWMP_INFORM_EVENT_CODE_5  "5 KICKED"
-#define CWMP_INFORM_EVENT_CODE_6  "6 CONNECTION REQUEST"
-#define CWMP_INFORM_EVENT_CODE_7  "7 TRANSFER COMPLETE"
-#define CWMP_INFORM_EVENT_CODE_8  "8 DIAGNOSTICS COMPLETE"
-#define CWMP_INFORM_EVENT_CODE_9  "9 REQUEST DOWNLOAD"
+#define CWMP_INFORM_EVENT_CODE_0   "0 BOOTSTRAP"
+#define CWMP_INFORM_EVENT_CODE_1   "1 BOOT"
+#define CWMP_INFORM_EVENT_CODE_2   "2 PERIODIC"
+#define CWMP_INFORM_EVENT_CODE_3   "3 SCHEDULED"
+#define CWMP_INFORM_EVENT_CODE_4   "4 VALUE CHANGE"
+#define CWMP_INFORM_EVENT_CODE_5   "5 KICKED"
+#define CWMP_INFORM_EVENT_CODE_6   "6 CONNECTION REQUEST"
+#define CWMP_INFORM_EVENT_CODE_7   "7 TRANSFER COMPLETE"
+#define CWMP_INFORM_EVENT_CODE_8   "8 DIAGNOSTICS COMPLETE"
+#define CWMP_INFORM_EVENT_CODE_9   "9 REQUEST DOWNLOAD"
 #define CWMP_INFORM_EVENT_CODE_10  "10 AUTONOMOUS TRANSFER COMPLETE"
 #define CWMP_INFORM_EVENT_CODE_11  "M Reboot"
 #define CWMP_INFORM_EVENT_CODE_12  "M ScheduleInform"
@@ -130,7 +122,7 @@
 #define CWMP_INFORM_EVENT_CODE_16  "M 16"
 #define CWMP_INFORM_EVENT_CODE_17  "M 17"
 
-#define FAULT_CODE_OK			0
+#define FAULT_CODE_OK                   0
 #define FAULT_CODE_9000              9000
 #define FAULT_CODE_9001              9001
 #define FAULT_CODE_9002              9002
@@ -151,8 +143,6 @@
 #define FAULT_CODE_9017              9017
 #define FAULT_CODE_9018              9018
 #define FAULT_CODE_9019              9019
-
-
 
 #define FAULT_STR_9000  "Method not supported"
 #define FAULT_STR_9001  "Request denied"
@@ -175,8 +165,7 @@
 #define FAULT_STR_9018  "Download failure: file corrupted"
 #define FAULT_STR_9019  "Download failure: file authentication failure"
 
-#define FAULT_STRING(x)	cwmp_get_fault_string(x)
-
+#define FAULT_STRING(x) cwmp_get_fault_string(x)
 
 #define InternetGatewayDeviceModule         "InternetGatewayDevice"
 #define DeviceSummaryModule                 "DeviceSummary"
@@ -241,130 +230,121 @@
 #define ExternalIPAddressModule             "ExternalIPAddress"
 
 
-
-
-
-
-
-
 typedef enum
 {
-	CWMP_EMPTY_METHOD,
-	CWMP_INFORM_METHOD,
-	CWMP_INFORMRESPONSE_METHOD,
-	CWMP_GETPARAMETERNAMES_METHOD,
-	CWMP_GETPARAMETERNAMESRESPONSE_METHOD,
-	CWMP_GETPARAMETERVALUES_METHOD,
-	CWMP_GETPARAMETERVALUESRESPONSE_METHOD,
-	CWMP_SETPARAMETERVALUES_METHOD,
-	CWMP_SETPARAMETERVALUESRESPONSE_METHOD,
-	CWMP_GETRPCMETHODS_METHOD,
-	CWMP_GETRPCMETHODSRESPONSE_METHOD,
-	CWMP_DOWNLOAD_METHOD,
-	CWMP_DOWNLOADRESPONSE_METHOD,
-	CWMP_UPLOAD_METHOD,
-	CWMP_UPLOADRESPONSE_METHOD,
-	CWMP_REBOOT_METHOD,
-	CWMP_REBOOTRESPONSE_METHOD,
-	CWMP_ADDOBJECT_METHOD,
-	CWMP_ADDOBJECTRESPONSE_METHOD,
-	CWMP_DELETEOBJECT_METHOD,
-	CWMP_DELETEOBJECTRESPONSE_METHOD
+    CWMP_EMPTY_METHOD,
+    CWMP_INFORM_METHOD,
+    CWMP_INFORMRESPONSE_METHOD,
+    CWMP_GETPARAMETERNAMES_METHOD,
+    CWMP_GETPARAMETERNAMESRESPONSE_METHOD,
+    CWMP_GETPARAMETERVALUES_METHOD,
+    CWMP_GETPARAMETERVALUESRESPONSE_METHOD,
+    CWMP_SETPARAMETERVALUES_METHOD,
+    CWMP_SETPARAMETERVALUESRESPONSE_METHOD,
+    CWMP_GETRPCMETHODS_METHOD,
+    CWMP_GETRPCMETHODSRESPONSE_METHOD,
+    CWMP_DOWNLOAD_METHOD,
+    CWMP_DOWNLOADRESPONSE_METHOD,
+    CWMP_UPLOAD_METHOD,
+    CWMP_UPLOADRESPONSE_METHOD,
+    CWMP_REBOOT_METHOD,
+    CWMP_REBOOTRESPONSE_METHOD,
+    CWMP_ADDOBJECT_METHOD,
+    CWMP_ADDOBJECTRESPONSE_METHOD,
+    CWMP_DELETEOBJECT_METHOD,
+    CWMP_DELETEOBJECTRESPONSE_METHOD
 
 
 }cwmp_method_t;
 
 
-
-
 enum cwmp_type_t
 {
-	TYPE_OBJECT=0,	//obj
-	TYPE_INT,	//int
-	TYPE_UNSIGNEDINT, //uint
-	TYPE_STRING,  	//s
-	TYPE_STRING16,	//s16
-	TYPE_STRING32,	//s32
-	TYPE_STRING64,	//s64
-	TYPE_STRING128,	//s128
-	TYPE_STRING256,	//s256
-	TYPE_STRING1024, //s1024
-	TYPE_STRING32768,//s32768
-	TYPE_DATETIME,	//dt
-	TYPE_BOOLEAN,	//bool
-	TYPE_BASE64,	//base
-	TYPE_ANY,
-	TYPE_UNKNOWN
+    TYPE_OBJECT=0,      //obj
+    TYPE_INT,           //int
+    TYPE_UNSIGNEDINT,   //uint
+    TYPE_STRING,        //s
+    TYPE_STRING16,      //s16
+    TYPE_STRING32,      //s32
+    TYPE_STRING64,      //s64
+    TYPE_STRING128,     //s128
+    TYPE_STRING256,     //s256
+    TYPE_STRING1024,    //s1024
+    TYPE_STRING32768,   //s32768
+    TYPE_DATETIME,      //dt
+    TYPE_BOOLEAN,       //bool
+    TYPE_BASE64,        //base
+    TYPE_ANY,
+    TYPE_UNKNOWN
 };
 
 enum InformEventType
 {
-	INFORM_BOOTSTRAP = 0,
-	INFORM_BOOT,
-	INFORM_PERIODIC,
-	INFORM_SCHEDULED,
-	INFORM_VALUECHANGE,
-	INFORM_KICKED,
-	INFORM_CONNECTIONREQUEST,
-	INFORM_TRANSFERCOMPLETE,
-	INFORM_DIAGNOSTICSCOMPLETE,
-	INFORM_REQUESTDOWNLOAD,
-	INFORM_AUTONOMOUSTRANSFERCOMPLETE,
-	INFORM_MREBOOT,
-	INFORM_MSCHEDULEINFORM,
-	INFORM_MDOWNLOAD,
-	INFORM_MUPLOAD,
-	INFORM_ACCOUNTCHANGE,
-	INFORM_MVENDORSPECRPC,
-	INFORM_XOUIEVENT,
-	INFORM_MAX
+    INFORM_BOOTSTRAP = 0,
+    INFORM_BOOT,
+    INFORM_PERIODIC,
+    INFORM_SCHEDULED,
+    INFORM_VALUECHANGE,
+    INFORM_KICKED,
+    INFORM_CONNECTIONREQUEST,
+    INFORM_TRANSFERCOMPLETE,
+    INFORM_DIAGNOSTICSCOMPLETE,
+    INFORM_REQUESTDOWNLOAD,
+    INFORM_AUTONOMOUSTRANSFERCOMPLETE,
+    INFORM_MREBOOT,
+    INFORM_MSCHEDULEINFORM,
+    INFORM_MDOWNLOAD,
+    INFORM_MUPLOAD,
+    INFORM_ACCOUNTCHANGE,
+    INFORM_MVENDORSPECRPC,
+    INFORM_XOUIEVENT,
+    INFORM_MAX
 };
 
 struct cwmp_st
 {
-	cwmp_t			* old_cwmp;
-	int new_request;
-	int new_event;
-	int httpd_port;
+    cwmp_t * old_cwmp;
+    int new_request;
+    int new_event;
+    int httpd_port;
 
-	int    cpe_auth;
-        int    acs_auth;
+    int cpe_auth;
+    int acs_auth;
 
-	char * acs_url;
-	char * cpe_mf;
-	char * cpe_oui;
-	char * cpe_sn;
-	char * cpe_pc;
-	char * cpe_name;
+    char * acs_url;
+    char * cpe_mf;
+    char * cpe_oui;
+    char * cpe_sn;
+    char * cpe_pc;
+    char * cpe_name;
 
-	char * acs_user;
-	char * acs_pwd;
-	char * cpe_user;
-	char * cpe_pwd;
+    char * acs_user;
+    char * acs_pwd;
+    char * cpe_user;
+    char * cpe_pwd;
 
-	char * event_filename;
+    char * event_filename;
 
-	pthread_mutex_t     event_mutex;
+    pthread_mutex_t event_mutex;
 
-	event_list_t * el;
+    event_list_t * el;
 
-	int	event_count;
+    int event_count;
 
-	event_global_t    event_global;
+    event_global_t event_global;
 
-	transfer_t    transfer_info;      //用于Download和Upload
+    transfer_t transfer_info;      //用于Download和Upload
 
-	queue_t  *	queue;
+    queue_t  * queue;
 
-	pool_t * pool;
-	parameter_node_t * root;
+    pool_t * pool;
+    parameter_node_t * root;
 
-
-	struct {
-		bool periodic_enable;
-		unsigned long periodic_interval;
-		time_t periodic_time;
-	} conf;
+    struct {
+        bool periodic_enable;
+        unsigned long periodic_interval;
+        time_t periodic_time;
+    } conf;
 
 #ifdef USE_CWMP_OPENSSL
     SSL_CTX * ssl_ctx;
@@ -377,52 +357,51 @@ struct cwmp_st
 
 struct parameter_node_attr_st
 {
-	cwmp_byte_t   type;     /* 0:single 1:multi */
-	cwmp_byte_t   nc;             /* Notification,0:off,1:passive,2:active */
-	cwmp_uint64_t   acl;            /* access list */
-	cwmp_uint64_t	ext;
+    cwmp_byte_t    type;           /* 0:single 1:multi */
+    cwmp_byte_t    nc;             /* Notification,0:off,1:passive,2:active */
+    cwmp_uint64_t  acl;            /* access list */
+    cwmp_uint64_t  ext;
 };
 
-#define PARAMETER_NODE_V_PADDING	0,0,0,0,0
+#define PARAMETER_NODE_V_PADDING 0,0,0,0,0
 
 struct parameter_node_st
 {
-	char *    name;
-	char *    alias;
-	cwmp_byte_t	rw;	//read / writable
-	cwmp_byte_t     type;
-	cwmp_byte_t	inform;	//informable parameter
-	cwmp_byte_t	inform_sort;	//informable parameter sorting
+    char *    name;
+    char *    alias;
+    cwmp_byte_t    rw;             //read / writable
+    cwmp_byte_t    type;
+    cwmp_byte_t    inform;         //informable parameter
+    cwmp_byte_t    inform_sort;    //informable parameter sorting
 
-	/* failback value field
-	 * use if setter not defined and getter returns fault code
-	 */
-	size_t		value_length;
-	char *          value;
+    /* failback value field
+     * use if setter not defined and getter returns fault code
+     */
+    size_t        value_length;
+    char *        value;
 
-	parameter_node_attr_t attr;
+    parameter_node_attr_t attr;
 
-	parameter_node_t * parent;
-	parameter_node_t * child;
-	parameter_node_t * prev_sibling;
-	parameter_node_t * next_sibling;
+    parameter_node_t * parent;
+    parameter_node_t * child;
+    parameter_node_t * prev_sibling;
+    parameter_node_t * next_sibling;
 
-	parameter_get_handler_pt    	get;
-	parameter_set_handler_pt    	set;
-	parameter_notify_handler_pt 	notify;
-	parameter_add_handler_pt  	add;
-	parameter_del_handler_pt	del;
-	parameter_refresh_handler_pt	refresh;
-	parameter_reload_handler_pt		reload;
+    parameter_get_handler_pt        get;
+    parameter_set_handler_pt        set;
+    parameter_notify_handler_pt     notify;
+    parameter_add_handler_pt        add;
+    parameter_del_handler_pt        del;
+    parameter_refresh_handler_pt    refresh;
+    parameter_reload_handler_pt     reload;
 
-	char * args;
+    char * args;
 
-
-	cwmp_uint32_t	max;
-	cwmp_uint32_t	ext1;
-	cwmp_uint32_t	ext2;
-	cwmp_uint32_t	ext3;
-	cwmp_uint32_t	ext4;
+    cwmp_uint32_t    max;
+    cwmp_uint32_t    ext1;
+    cwmp_uint32_t    ext2;
+    cwmp_uint32_t    ext3;
+    cwmp_uint32_t    ext4;
 
 };
 
@@ -436,8 +415,6 @@ struct datatime_st
     unsigned int min;
     unsigned int sec;
 };
-
-
 
 struct download_arg_st
 {
@@ -467,19 +444,15 @@ struct upload_arg_st
 
 struct fault_code_st
 {
-	int fault_code;
-	char * fault_string;
+    int fault_code;
+    char * fault_string;
 };
 
 
-
 typedef struct  envelope_t envelope_t;
-
 void cwmp_set_envelope_ns(const char * envstr, const char * encstr);
 
-
 char * cwmp_xml_get_node_attribute(xmlnode_t * node, const char * name);
-
 
 parameter_list_t* cwmp_create_parameter_list(env_t * env );
 parameter_t*  cwmp_parameter_list_add_parameter(env_t * env, pool_t * pool , parameter_list_t ** ppl, parameter_node_t * root, const char * name, const char * value, BOOL exec_get, BOOL exec_set);
@@ -492,20 +465,20 @@ download_arg_t * cwmp_clone_download_arg(download_arg_t * dlarg);
 upload_arg_t * cwmp_clone_upload_arg(upload_arg_t * ularg);
 
 xmldoc_t* cwmp_create_inform_message(env_t * env ,  header_t * header,
-		device_id_t * deviceid,
-		event_list_t *events,
-		datatime_t * currentt,
-		unsigned int max_envelope,
-		unsigned int retry_count,
-		parameter_list_t * pl,
-		parameter_node_t * root);
+        device_id_t * deviceid,
+        event_list_t *events,
+        datatime_t * currentt,
+        unsigned int max_envelope,
+        unsigned int retry_count,
+        parameter_list_t * pl,
+        parameter_node_t * root);
 
 xmldoc_t* cwmp_create_getparameternames_response_message(env_t * env ,
-		header_t * header,
-		const char * path_name,
-		parameter_node_t * node,
-		unsigned int next_subset,
-		unsigned int next_level);
+        header_t * header,
+        const char * path_name,
+        parameter_node_t * node,
+        unsigned int next_subset,
+        unsigned int next_level);
 
 xmldoc_t *  cwmp_create_getparametervalues_response_message(env_t * env ,
     header_t * header,
@@ -516,7 +489,6 @@ xmldoc_t *  cwmp_create_setparametervalues_response_message(env_t * env ,
     unsigned int status,
     parameter_list_t * pl);
 
-
 xmldoc_t *  cwmp_create_getrpcmethods_response_message(env_t * env ,
     header_t * header,
     char ** methods,
@@ -526,7 +498,7 @@ xmldoc_t *  cwmp_create_reboot_response_message(env_t * env ,
     header_t * header);
 
 xmldoc_t * cwmp_create_setparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl);
-xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env ,  header_t * header, unsigned int status, parameter_list_t * pl);
+xmldoc_t * cwmp_create_getparameterattributes_response_message(env_t * env , parameter_node_t * root ,  header_t * header, unsigned int status, parameter_list_t * pl);
 
 xmldoc_t * cwmp_create_download_response_message(env_t * env , header_t * header, int status);
 xmldoc_t * cwmp_create_upload_response_message(env_t * env , header_t * header, int status);
@@ -562,7 +534,7 @@ xmlnode_t * cwmp_get_header_node(xmldoc_t *  doc);
 int     cwmp_parse_header_node(xmlnode_t * node, header_t ** header, pool_t * pool);
 char *  cwmp_get_rpc_method_name(xmldoc_t *  doc);
 char *  cwmp_get_type_string(int type);
-int	cwmp_get_type_value(char * type);
+int     cwmp_get_type_value(char * type);
 char *  cwmp_get_fault_string(int code);
 
 int cwmp_get_parameter_fullpath(parameter_node_t *param, char *out, size_t out_size);
@@ -572,7 +544,7 @@ parameter_node_t * cwmp_get_parameter_path_node(parameter_node_t * parent, const
 
 int cwmp_get_parameter_node_value(cwmp_t * cwmp, parameter_node_t * node, const char * name, char ** value, pool_t * pool);
 int cwmp_set_parameter_node_value(cwmp_t * cwmp, parameter_node_t * node, const char * name, const char * value, int value_length);
-int     cwmp_write_doc_to_chunk(xmldoc_t *  doc, cwmp_chunk_t * chunk, pool_t * pool);
+int       cwmp_write_doc_to_chunk(xmldoc_t *  doc, cwmp_chunk_t * chunk, pool_t * pool);
 
 xmldoc_t * cwmp_xml_parse_buffer(pool_t * pool, char * buffer);
 xmlnode_t * cwmp_xml_get_child_with_name(void * nodeptr, const char * nodeName);

@@ -39,23 +39,6 @@ char           **cwmp_argv;
 
 static pool_t * cwmp_global_pool;
 
-void cwmp_daemon()
-{
-    //daemon(0, 1);
-}
-
-void cwmp_getopt(int argc, char **argv)
-{
-}
-/*
-static int cwmp_save_argv( int argc, char *const *argv)
-{
-    cwmp_argv = (char **) argv;
-    cwmp_argc = argc;
-
-    return 0;
-}*/
-
 int cwmp_set_var(cwmp_t * cwmp)
 {
     cwmp_log_trace("%s(cwmp=%p)", __func__, (void*)cwmp);
@@ -63,7 +46,6 @@ int cwmp_set_var(cwmp_t * cwmp)
     cwmp_bzero(cwmp, sizeof(cwmp_t));
     pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
     cwmp->pool = pool;
-
 
     cwmp_event_init(cwmp);
     cwmp_event_time_init(cwmp, NULL);
@@ -128,9 +110,7 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    cwmp_getopt(argc, argv);
     cwmp_set_var(cwmp);
-    cwmp_daemon();
     cwmp_conf_init(cwmp);
 
     cwmp_conf_set("env:DEVNAME", DEVNAME);

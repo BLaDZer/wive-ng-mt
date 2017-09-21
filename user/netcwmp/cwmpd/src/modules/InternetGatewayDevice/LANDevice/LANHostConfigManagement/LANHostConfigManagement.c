@@ -8,8 +8,8 @@ int cpe_get_igd_lan_hcm_dhcpenable(cwmp_t * cwmp, const char * name, char ** val
 
     dhcpEnabled = cwmp_nvram_pool_get(pool, "dhcpEnabled");
     if (dhcpEnabled == NULL) {
-    cwmp_log_error("cpe_get_igd_lan_hcm_dhcpenabled: undefined dhcpEnabled param!");
-	return FAULT_CODE_9002;
+        cwmp_log_error("cpe_get_igd_lan_hcm_dhcpenabled: undefined dhcpEnabled param!");
+        return FAULT_CODE_9002;
     }
 
     int val = (dhcpEnabled[0] == '1');
@@ -28,7 +28,6 @@ int cpe_set_igd_lan_hcm_dhcpenable(cwmp_t * cwmp, const char * name, const char 
     cwmp_nvram_set("dhcpEnabled",value);
     return FAULT_CODE_OK;
 }
-
 
 /*
 //InternetGatewayDevice.LANDevice.{i}.LANHostConfigManagement.DHCPLeaseTime

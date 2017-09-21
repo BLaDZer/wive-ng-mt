@@ -126,7 +126,7 @@ int cwmp_data_sprintf_parameter_name(char * buffer, int count, ...)
     return rc;
 }
 
-#if 0
+/*
 
 char * cwmp_data_append_parameter_name(pool_t * pool, const char * format, ...)
 {
@@ -157,10 +157,7 @@ int cwmp_data_sprintf_parameter_name(char * buffer, const char * format, ...)
 }
 
 
-
-#endif
-
-
+*/
 
 char * cwmp_data_get_parameter_value(cwmp_t * cwmp, parameter_node_t * root, const char * name, pool_t * pool)
 {
@@ -207,25 +204,25 @@ int cwmp_session_get_localip(char *hostip)
 {
 #ifdef WIN32
     /*    struct sockaddr addr;
-    	SOCKET fd;
-    	char local_ip_addr[20] = {0};
-    	int len = sizeof(addr);
+        SOCKET fd;
+        char local_ip_addr[20] = {0};
+        int len = sizeof(addr);
         ZeroMemory( &addr, sizeof(addr) );
 
 
-    	if(!hostip)
+        if(!hostip)
                 return -1;
 
-    	if((fd=socket(AF_INET,SOCK_DGRAM,0))>=0)
+        if((fd=socket(AF_INET,SOCK_DGRAM,0))>=0)
         {
-    		if( getsockname( fd, &addr, &len ) )
-    		{
-    			len = WSAGetLastError();
-    		}
+            if( getsockname( fd, &addr, &len ) )
+            {
+                len = WSAGetLastError();
+            }
 
-    		TRsnprintf(local_ip_addr, 20, "%s", inet_ntoa( ((struct sockaddr_in*)&addr)->sin_addr ));
-    		TRstrcpy(hostip, local_ip_addr);
-    	}
+            TRsnprintf(local_ip_addr, 20, "%s", inet_ntoa( ((struct sockaddr_in*)&addr)->sin_addr ));
+            TRstrcpy(hostip, local_ip_addr);
+        }
     */
 
     char hostname[256];
@@ -318,12 +315,12 @@ int cwmp_session_get_localip(char *hostip)
                     sprintf(local_ip_addr, "%s", inet_ntoa(((struct sockaddr_in*)(&buf[intrface].ifr_addr))->sin_addr));
                 }
                 //Get Hardware Address
-#if 0
+/*
                 if (!(ioctl(fd,SIOCGIFHWADDR,(char*)&buf[intrface])))
                 {
 
 
-		    sprintf(local_mac,"%02x:%02x:%02x:%02x:%02x:%02x",
+                    sprintf(local_mac,"%02x:%02x:%02x:%02x:%02x:%02x",
                             (unsigned char)buf[intrface].ifr_hwaddr.sa_data[0],
                             (unsigned char)buf[intrface].ifr_hwaddr.sa_data[1],
                             (unsigned char)buf[intrface].ifr_hwaddr.sa_data[2],
@@ -333,7 +330,7 @@ int cwmp_session_get_localip(char *hostip)
 
                     break;
                 }
-#endif
+*/
             }//While
         }
     }
@@ -461,24 +458,20 @@ int cwmp_session_set_auth(cwmp_session_t * session, const char * user, const cha
     return CWMP_OK;
 }
 
-
 int cwmp_session_set_headers(cwmp_session_t * session, int postempty)
 {
-
     return 0;
 }
 
-
 int cwmp_session_create_connection(cwmp_session_t * session)
 {
-
 //    cwmp_t * cwmp = session->cwmp;
     http_socket_t * sock;
     int use_ssl = 0;
     http_dest_t *  dest = session->dest;
     int timeout = -1;
 
-	cwmp_log_trace("%s(session=%p)", __func__, (void*)session);
+    cwmp_log_trace("%s(session=%p)", __func__, (void*)session);
 
     if(dest)
     {
@@ -562,19 +555,10 @@ device_id_t * cwmp_session_create_inform_device(cwmp_session_t * session, pool_t
 {
     device_id_t * device;
     char * name;
-//    char * value;
 
     FUNCTION_TRACE();
 
-
     device = pool_palloc(pool, sizeof(device_id_t));
-/*
-    device->manufactorer = session->cwmp->cpe_mf;  //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule,ManufacturerModule);
-    device->oui          = session->cwmp->cpe_oui; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerOUIModule);
-    device->product_class = session->cwmp->cpe_pc; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, ProductClassModule);
-    device->serial_number = session->cwmp->cpe_sn; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, SerialNumberModule);
-    device->device_log = session->cwmp->cpe_mf; //cwmp_get_parameter_value(InternetGatewayDeviceModule, DeviceInfoModule, SerialNumberModule);
-*/
 
     name    = CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, DeviceInfoModule,ManufacturerModule);
     device->manufactorer = cwmp_data_get_parameter_value(session->cwmp, session->root, name, pool);
@@ -596,10 +580,8 @@ device_id_t * cwmp_session_create_inform_device(cwmp_session_t * session, pool_t
 parameter_list_t * cwmp_session_create_inform_parameters(cwmp_session_t * session, pool_t * pool)
 {
     parameter_list_t * pl;
-
     parameter_t * parameter;
 
-    //parameter_node_t * parameterNode;
     char * name;
     char * value;
 
@@ -629,7 +611,6 @@ event_list_t * cwmp_session_create_inform_events(cwmp_session_t * session, pool_
 {
     event_list_t * el;
     event_code_t * ev;
-//    int i=0;
 
     FUNCTION_TRACE();
 
@@ -645,8 +626,6 @@ event_list_t * cwmp_session_create_inform_events(cwmp_session_t * session, pool_
 
     return el;
 }
-
-
 
 datatime_t *cwmp_session_create_inform_datetimes(cwmp_session_t * session, pool_t * pool)
 {
@@ -677,16 +656,14 @@ datatime_t *cwmp_session_create_inform_datetimes(cwmp_session_t * session, pool_
 
 xmldoc_t *  cwmp_session_create_inform_message(cwmp_session_t * session, event_list_t * evtlist,  pool_t * pool)
 {
-
     header_t * header;
     device_id_t * device;
-//    event_list_t * el;
     datatime_t *now;
     parameter_list_t * pl;
 
     FUNCTION_TRACE();
 
-    header = cwmp_session_create_header(session, pool);
+    header  = cwmp_session_create_header(session, pool);
     device  = cwmp_session_create_inform_device(session, pool);
     pl      = cwmp_session_create_inform_parameters(session, pool);
 
@@ -697,19 +674,13 @@ xmldoc_t *  cwmp_session_create_inform_message(cwmp_session_t * session, event_l
 
 xmldoc_t *  cwmp_session_create_transfercomplete_message(cwmp_session_t * session, event_code_t * evcode,  pool_t * pool)
 {
-
     header_t * header;
-//    device_id_t * device;
-//    event_list_t * el;
-//    datatime_t *now;
-//    parameter_list_t * pl;
 
     FUNCTION_TRACE();
 
     header = cwmp_session_create_header(session, pool);
 
     return  cwmp_create_transfercomplete_message(session->env, header, evcode);
-
 }
 
 xmldoc_t *  cwmp_session_create_getrpcmethods_response_message(cwmp_session_t * session, xmldoc_t * doc, pool_t * pool)
@@ -717,10 +688,14 @@ xmldoc_t *  cwmp_session_create_getrpcmethods_response_message(cwmp_session_t * 
     header_t * header;
     int rv;
     FUNCTION_TRACE();
+
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
-    if (rv != CWMP_OK) {
+
+    if (rv != CWMP_OK) 
+    {
         cwmp_log_debug("no header node");
     }
+
     return cwmp_create_getrpcmethods_response_message(session->env, header, rpc_methods, sizeof(rpc_methods)/sizeof(rpc_methods[0]));
 }
 
@@ -789,12 +764,6 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
     parameter_list_t * pl;
     fault_code_t fault;
 
-
-//    parameter_t * parameter;
-//    char * name;
-//    char * value;
-
-
     cwmp_log_trace("%s(session=%p, doc=%p, pool=%p)",
             __func__, (void*)session, (void*)doc, (void*)pool);
     rv = cwmp_parse_header_node(cwmp_get_header_node(doc), &header, pool);
@@ -811,8 +780,6 @@ xmldoc_t *  cwmp_session_create_setparametervalues_response_message(cwmp_session
     }
 
     xmldoc_t * resdoc = cwmp_create_setparametervalues_response_message(session->env, header, 0, pl);
-    //FIXME: D-Link refresh
-    //session->cwmp->new_request = CWMP_YES;
 
     return resdoc;
 }
@@ -824,12 +791,6 @@ xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_ses
     parameter_list_t * pl = NULL;
     fault_code_t fault;
 
-//    parameter_t * parameter;
-//    char * name;
-//    char * value;
-
-    // FIXME: STUB!!!
-
     cwmp_log_trace("%s(session=%p, doc=%p, pool=%p)",
             __func__, (void*)session, (void*)doc, (void*)pool);
 
@@ -840,17 +801,12 @@ xmldoc_t *  cwmp_session_create_setparameterattributes_response_message(cwmp_ses
 
     rv = cwmp_parse_setparameterattributes_message(session->env, doc, session->root, &pl, &fault);
 
-
-/*    if(rv != CWMP_OK)
+    if(rv != CWMP_OK)
     {
-	//FIXME STUB!
-//        return cwmp_create_faultcode_setparametervalues_response_message(session->env, header, pl, &fault);
-	return resdoc;
+        //FIXME
     }
-*/
+
     xmldoc_t * resdoc = cwmp_create_setparameterattributes_response_message(session->env, header, 0, pl);
-    //FIXME: D-Link refresh
-    //session->cwmp->new_request = CWMP_YES;
 
     return resdoc;
 }
@@ -872,10 +828,7 @@ xmldoc_t *  cwmp_session_create_getparameterattributes_response_message(cwmp_ses
     }
 
     rv = cwmp_parse_getparameterattributes_message(session->env, doc, session->root, &pl, &fault);
-    /* STUB */
-
-
-    xmldoc_t * resdoc = cwmp_create_getparameterattributes_response_message(session->env, header, 0, pl);
+    xmldoc_t * resdoc = cwmp_create_getparameterattributes_response_message(session->env, session->root, header, 0, pl);
 
     return resdoc;
 }
@@ -899,17 +852,15 @@ xmldoc_t *  cwmp_session_create_download_response_message(cwmp_session_t * sessi
     //add download arg to taskqueue
     //begin download process
 
-   if(rv == CWMP_OK)
+    if(rv == CWMP_OK)
     {
-	download_arg_t * newdlarg = cwmp_clone_download_arg(dlarg);
-	if(newdlarg != NULL)
-	{
-		cwmp_t * cwmp = session->cwmp;
-
-		queue_push(cwmp->queue, newdlarg, TASK_DOWNLOAD_TAG);
-
-		cwmp_log_debug("push new download task to queue! url: %s ", newdlarg->url);
-	}
+        download_arg_t * newdlarg = cwmp_clone_download_arg(dlarg);
+        if(newdlarg != NULL)
+        {
+            cwmp_t * cwmp = session->cwmp;
+            queue_push(cwmp->queue, newdlarg, TASK_DOWNLOAD_TAG);
+            cwmp_log_debug("push new download task to queue! url: %s ", newdlarg->url);
+        }
     }
 
    int status = 1;
@@ -935,13 +886,13 @@ xmldoc_t *  cwmp_session_create_upload_response_message(cwmp_session_t * session
 
    if(rv == CWMP_OK)
     {
-	upload_arg_t * newularg = cwmp_clone_upload_arg(uparg);
-	if(newularg)
-	{
-		cwmp_t * cwmp = session->cwmp;
-		queue_push(cwmp->queue, newularg, TASK_UPLOAD_TAG);
-		cwmp_log_debug("push new upload task to queue! url: %s ", newularg->url);
-	}
+        upload_arg_t * newularg = cwmp_clone_upload_arg(uparg);
+        if(newularg)
+        {
+            cwmp_t * cwmp = session->cwmp;
+            queue_push(cwmp->queue, newularg, TASK_UPLOAD_TAG);
+            cwmp_log_debug("push new upload task to queue! url: %s ", newularg->url);
+        }
     }
 
     int status = 1;
@@ -962,7 +913,7 @@ xmldoc_t *  cwmp_session_create_addobject_response_message(cwmp_session_t * sess
     rv = cwmp_parse_addobject_message(session->env, doc, session->root, &instances, &status,  &fault);
     if(rv != CWMP_OK)
     {
-	return cwmp_create_faultcode_response_message(session->env, header, &fault);
+        return cwmp_create_faultcode_response_message(session->env, header, &fault);
     }
 
     return cwmp_create_addobject_response_message(session->env, header, instances, status);
@@ -983,9 +934,8 @@ xmldoc_t *  cwmp_session_create_deleteobject_response_message(cwmp_session_t * s
 
     if(rv != CWMP_OK)
     {
-	return cwmp_create_faultcode_response_message(session->env, header, &fault);
+        return cwmp_create_faultcode_response_message(session->env, header, &fault);
     }
-
 
     return cwmp_create_deleteobject_response_message(session->env, header, status);
 }

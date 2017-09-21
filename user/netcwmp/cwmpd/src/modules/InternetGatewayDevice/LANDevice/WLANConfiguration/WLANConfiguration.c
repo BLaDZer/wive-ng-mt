@@ -60,6 +60,7 @@ static struct wlanc_node * wlanc_nget(struct wlanc_node *root, const char *name,
                 "can't get wlan with name=%s, id=%u",
                 name ? name : "", id);
     }
+
     return n;
 }
 
@@ -188,7 +189,6 @@ BOOL prefix(const char *str, const char *pre)
 
 #define WLAN_NULL 0
 
-
 enum wlan_security {
     WLAN_BASIC = 1,
     WLAN_WPA = 2,
@@ -262,8 +262,9 @@ static void nvram_wlan_normalize(unsigned index, struct wlan_security_mode *wsm)
                     "set %sEncryptionModes to AESEncryption for index %u", v, index + 1);
             wsm->encrypt = WLAN_AES;
         }
+
     } else {
-        /* unknown? */
+        /* unknown/unsupported mode configuration, using default */
         wsm->mode = WLAN_BASIC;
         wsm->authMode = WLAN_OPEN;
         wsm->encrypt = WLAN_NO_ENCRYPTION;
@@ -414,6 +415,7 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
             }
             break;
     }
+
     /* nvram EncrypType */
     switch(wsm->encrypt) {
         case WLAN_NO_ENCRYPTION:
@@ -594,7 +596,7 @@ int cpe_get_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, char ** va
             *value = "SharedAuthentication";
             break;
         case WLAN_EAP:
-        case WLAN_PSK: // FIXME: check if this is correct
+        case WLAN_PSK:
             *value = "EAPAuthentication";
             break;
         default:
@@ -614,7 +616,6 @@ int cpe_set_igd_wlanc_basicauthmode(cwmp_t * cwmp, const char * name, const char
     DM_TRACE_SET();
 
     if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
-
         return FAULT_CODE_9002;
     }
 
@@ -889,7 +890,6 @@ int cpe_set_igd_wlanc_ieeeauthmode(cwmp_t * cwmp, const char * name, const char 
     return FAULT_CODE_OK;
 }
 
-
 int cpe_get_igd_wlanc_beacontype(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     unsigned index = -1u;
@@ -1061,19 +1061,22 @@ static void igd_lan_wlan_arp(const char *n, struct wlan_assoc *wa)
         return;
     }
 
-	/* skip header */
-	fscanf(f, "IP address HW type Flags HW address Mask Device");
-	/* process */
-	while ((r = fscanf(f, "%s %*x %*x %s %*s %*s",
-				arp_addr, arp_mac)) != EOF) {
-		/* skip invalid matching */
-		if (r != 2)
-			continue;
+    /* skip header */
+    fscanf(f, "IP address HW type Flags HW address Mask Device");
+
+    /* process */
+    while ((r = fscanf(f, "%s %*x %*x %s %*s %*s",
+                arp_addr, arp_mac)) != EOF) {
+        /* skip invalid matching */
+        if (r != 2)
+        continue;
+
         if (!strcmp(wa->mac, arp_mac)) {
             memcpy(wa->addr, arp_addr, sizeof(wa->addr));
             break;
         }
     }
+
     fclose(f);
 }
 
@@ -1083,8 +1086,8 @@ int cpe_refresh_igd_wlanc_associated(cwmp_t * cwmp, parameter_node_t * param_nod
     struct wlanc_node *w = NULL;
     char name[1024] = {};
 
-	RT_802_11_MAC_TABLE table24 = {};
-	RT_802_11_MAC_ENTRY *pe = NULL;
+    RT_802_11_MAC_TABLE table24 = {};
+    RT_802_11_MAC_ENTRY *pe = NULL;
     int row_no = 0;
     parameter_node_t *pn = NULL;
 
@@ -1116,7 +1119,7 @@ int cpe_refresh_igd_wlanc_associated(cwmp_t * cwmp, parameter_node_t * param_nod
     }
 
     /* populate 2.4GHz */
-	getWlanStationTable(&table24, 1);
+    getWlanStationTable(&table24, 1);
 
     w->assoc = calloc(table24.Num, sizeof(*w->assoc));
     if (!w->assoc) {
@@ -1135,7 +1138,7 @@ int cpe_refresh_igd_wlanc_associated(cwmp_t * cwmp, parameter_node_t * param_nod
                 pe->Addr[3], pe->Addr[4], pe->Addr[5]);
         /* FIXME: too simple */
         igd_lan_wlan_arp(__func__, &w->assoc[row_no]);
-		cwmp_model_copy_parameter(param_node, &pn, row_no + 1);
+        cwmp_model_copy_parameter(param_node, &pn, row_no + 1);
     }
     return FAULT_CODE_OK;
 }
@@ -1145,8 +1148,8 @@ static struct wlan_assoc* igd_lan_wlan_no_from_path(cwmp_t *cwmp, const char *na
     unsigned assoc_id = -1u;
     unsigned wlan_id = -1u;
     struct wlanc_node *w = NULL;
-	parameter_node_t *pn = NULL;
-	long no = 0;
+    parameter_node_t *pn = NULL;
+    long no = 0;
 
     /* get assoc id */
     if ((assoc_id = wlanc_get_id(cwmp, name, &pn)) == -1u) {
@@ -1163,12 +1166,12 @@ static struct wlan_assoc* igd_lan_wlan_no_from_path(cwmp_t *cwmp, const char *na
     }
 
     /* check assoc */
-	if (assoc_id >= w->assoc_count) {
-		cwmp_log_error("%s: invalid rule number: %lu", name, no);
-		return NULL;
-	}
+    if (assoc_id >= w->assoc_count) {
+        cwmp_log_error("%s: invalid rule number: %lu", name, no);
+        return NULL;
+    }
 
-	return &w->assoc[assoc_id];
+    return &w->assoc[assoc_id];
 }
 
 

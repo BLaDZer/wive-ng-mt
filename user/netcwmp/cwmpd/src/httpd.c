@@ -73,11 +73,10 @@ void setnonblocking(int fd)
 
 int httpd_response_unauthorization(http_socket_t * sock)
 {
-
     char buffer[256];
 
     char nonce[16];
-	char nonce_hex[33];
+    char nonce_hex[33];
 
     FUNCTION_TRACE();
     AuthNonce ++;
@@ -85,24 +84,23 @@ int httpd_response_unauthorization(http_socket_t * sock)
     TRsnprintf(buffer, sizeof(buffer),  "%d", AuthNonce);
     MD5(nonce, buffer, NULL);
 
-	convert_to_hex(nonce, nonce_hex);
+    convert_to_hex(nonce, nonce_hex);
 
     TRsnprintf(buffer, 256, RESPONSE_401, AuthQop, nonce_hex, AuthOpaque, AuthRealm);
 
-
-    return	http_socket_write(sock, buffer, TRstrlen(buffer));
+    return http_socket_write(sock, buffer, TRstrlen(buffer));
 }
 
 int httpd_response_ok(http_socket_t * sock)
 {
     FUNCTION_TRACE();
-    return	http_socket_write(sock, RESPONSE_200, TRstrlen(RESPONSE_200));
+    return http_socket_write(sock, RESPONSE_200, TRstrlen(RESPONSE_200));
 }
 
 int httpd_response_unkonw_error(http_socket_t * sock)
 {
     FUNCTION_TRACE();
-    return	http_socket_write(sock, RESPONSE_400, TRstrlen(RESPONSE_400));
+    return http_socket_write(sock, RESPONSE_400, TRstrlen(RESPONSE_400));
 }
 
 int httpd_build_server(cwmp_t * cwmp)
@@ -126,8 +124,6 @@ int httpd_build_server(cwmp_t * cwmp)
     char  cpe_user[INI_BUFFERSIZE] = {0};
     char  cpe_pwd[INI_BUFFERSIZE] = {0};
 
-
-
     port = cwmp->httpd_port;
 
     pool = pool_create(POOL_DEFAULT_SIZE);
@@ -137,7 +133,6 @@ int httpd_build_server(cwmp_t * cwmp)
         cwmp_log_error("build httpd server faild. %s", strerror(errno));
         exit(-1);
     }
-
 
     lsnfd = http_socket_get_fd(lsnsock);
 
@@ -153,7 +148,7 @@ int httpd_build_server(cwmp_t * cwmp)
     fcntl(lsnfd, F_SETFD, FD_CLOEXEC);
 
     maxfd = lsnfd;
-    /*maxi = -1;*/
+
     while (1)
     {
         FD_ZERO(&rdset);
@@ -278,13 +273,10 @@ faild:
                 sessionfd[i].sock = NULL;
                 http_socket_destroy(s);
 
+            } // if fd
 
-            }
+        } // for sessions
 
-        }
-
-
-
-    }
+    } // while loop
 
 }

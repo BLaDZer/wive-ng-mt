@@ -79,32 +79,26 @@ cwmp_status_string(int status) {
 
 int cwmp_agent_retry_session(cwmp_session_t * session)
 {
-
     int sec = 0;
 
     srand(time(NULL));
     switch (session->retry_count)
     {
-    case 0:
-    {
-        sec = 5 + rand()%5; //5~10
-        break;
-    }
-    case 1:
-    {
-        sec = 5 + rand()%10; //5~15
-        break;
-    }
-    case 2:
-    {
-        sec = 5 + rand()%20; //5~25
-        break;
-    }
-    default:
-    {
-        sec = 5 + rand()%30; //5~35
-        break;
-    }
+        case 0:
+            sec = 5 + rand()%5; //5~10
+            break;
+
+        case 1:
+            sec = 5 + rand()%10; //5~15
+            break;
+
+        case 2:
+            sec = 5 + rand()%20; //5~25
+            break;
+
+        default:
+            sec = 5 + rand()%30; //5~35
+            break;
     }
 
     while (sec>0)
@@ -131,11 +125,9 @@ int cwmp_agent_create_datetimes(datatime_t *nowtime)
     struct tm t;
     time_t tn;
 
-    //FUNCTION_TRACE();
     tn = time(NULL);
 #ifdef WIN32
     cwmp_log_debug("inform datatime");
-    //localtime_s(&t, &tn);
     memset(&t, 0, sizeof(struct tm));
 #else
     t = *localtime(&tn);
@@ -166,6 +158,7 @@ int cwmp_agent_get_active_event(cwmp_t *cwmp, cwmp_session_t * session,  event_l
     event_code_t ** pec = cwmp->el->events;
 
     int elsize = cwmp->el->count;
+
     for(i=0; i<elsize; i++)
     {
         if(pec[i]  && pec[i]->ref > 0)
@@ -182,6 +175,7 @@ int cwmp_agent_get_active_event(cwmp_t *cwmp, cwmp_session_t * session,  event_l
             ev = NULL;
         }
     }
+
     if (el->count == 0)
     {
         ev = cwmp_create_event_code(session->env);
@@ -189,7 +183,6 @@ int cwmp_agent_get_active_event(cwmp_t *cwmp, cwmp_session_t * session,  event_l
         ev->code = CWMP_INFORM_EVENT_CODE_2;
         el->events[el->count++] = ev;
     }
-
 
     *pevent_list = el;
 
@@ -208,6 +201,7 @@ int cwmp_agent_recv_response(cwmp_session_t * session)
     return cwmp_session_recv_response(session);
 }
 
+// main agent session loop
 void cwmp_agent_start_session(cwmp_t * cwmp)
 {
     int rv;
@@ -477,17 +471,14 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     {
         newdoc = cwmp_session_create_setparametervalues_response_message(session, doc, doctmppool);
     }
-
     else if (TRstrcmp(method, CWMP_RPC_SETPARAMETERATTRIBUTES) == 0)
     {
         newdoc = cwmp_session_create_setparameterattributes_response_message(session, doc, doctmppool);
     }
-
     else if (TRstrcmp(method, CWMP_RPC_GETPARAMETERATTRIBUTES) == 0)
     {
         newdoc = cwmp_session_create_getparameterattributes_response_message(session, doc, doctmppool);
     }
-
     else if (TRstrcmp(method, CWMP_RPC_DOWNLOAD) == 0)
     {
         newdoc = cwmp_session_create_download_response_message(session, doc, doctmppool);
@@ -525,12 +516,15 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
     }
 
     cwmp_t * cwmp = session->cwmp;
+
+    //if error or no need to response
     if(newdoc == NULL)
     {
         cwmp_log_debug("agent analyse newdoc is null. ");
 eventcheck:
     {
         cwmp_log_debug("agent analyse begin check global event, %d", cwmp->event_global.event_flag);
+
         //check global event for transfercomplete
         if(cwmp->event_global.event_flag & EVENT_REBOOT_TRANSFERCOMPLETE_FLAG)
         {
@@ -548,7 +542,9 @@ eventcheck:
             ec.end = cwmp->event_global.end;
             newdoc = cwmp_session_create_transfercomplete_message(session, &ec, doctmppool);
         }
-        if (cwmp->event_global.event_flag & EVENT_REBOOT_ACS_FLAG) {
+
+        if (cwmp->event_global.event_flag & EVENT_REBOOT_ACS_FLAG) 
+        {
             cwmp->event_global.event_flag &= ~EVENT_REBOOT_ACS_FLAG;
             cwmp_event_file_save(cwmp);
         }
@@ -558,6 +554,7 @@ eventcheck:
 
 
     cwmp_log_debug("newdoc %p, msglength: %d", newdoc, msglength );
+
     if((newdoc != NULL) || (newdoc == NULL && msglength != 0)) // || (newdoc == NULL && msglength == 0 && session->retry_count < 2))
     {
         session->newdata = CWMP_YES;
@@ -582,7 +579,7 @@ finished:
 
 static void _print_param(parameter_node_t * param, int level)
 {
-    if(!param) return;
+    if (!param) return;
 
     parameter_node_t * child;
     char func[64] = {};
@@ -705,7 +702,6 @@ void cwmp_agent_session(cwmp_t * cwmp)
 
     CWMP_SPRINTF_PARAMETER_NAME(name, 3, InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerModule);
     cwmp_data_set_parameter_value(cwmp, cwmp->root, name, cwmp->cpe_mf, TRstrlen(cwmp->cpe_mf), cwmp->pool);
-
 
     CWMP_SPRINTF_PARAMETER_NAME(name, 3, InternetGatewayDeviceModule, DeviceInfoModule, ManufacturerOUIModule);
     cwmp_data_set_parameter_value(cwmp, cwmp->root, name, cwmp->cpe_oui, TRstrlen(cwmp->cpe_oui), cwmp->pool);
@@ -859,8 +855,6 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
 
     return faultcode;
 }
-
-/* */
 
 int cwmp_agent_run_tasks(cwmp_t * cwmp)
 {

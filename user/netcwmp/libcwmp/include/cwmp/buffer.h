@@ -86,7 +86,4 @@ void cwmp_chunk_clear(cwmp_chunk_t * cb);
 int cwmp_chunk_free(cwmp_chunk_t * cb);
 
 
-
-
 #endif
-

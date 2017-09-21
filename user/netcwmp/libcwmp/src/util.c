@@ -24,111 +24,111 @@
 
 const char * upgrade_status_to_string(enum upgrade_status s)
 {
-	switch (s) {
-		case UPGRADE_NONE:
-			return NULL;
-		case UPGRADE_DOWNLOAD:
-			return "download";
-		case UPGRADE_CHECK:
-			return "check";
-		case UPGRADE_PREPARE:
-			return "prepare";
-		case UPGRADE_WRITE:
-			return "upgrade";
-	}
-	return NULL;
+    switch (s) {
+        case UPGRADE_NONE:
+            return NULL;
+        case UPGRADE_DOWNLOAD:
+            return "download";
+        case UPGRADE_CHECK:
+            return "check";
+        case UPGRADE_PREPARE:
+            return "prepare";
+        case UPGRADE_WRITE:
+            return "upgrade";
+    }
+    return NULL;
 }
 
 enum upgrade_status upgrade_get_status()
 {
-	char status[32] = {};
-	int pid = -1;
-	FILE *f = NULL;
-	if (access(UPGRADE_FILE, F_OK)) {
-		/* file not exists */
-		return UPGRADE_NONE;
-	}
+    char status[32] = {};
+    int pid = -1;
+    FILE *f = NULL;
+    if (access(UPGRADE_FILE, F_OK)) {
+        /* file not exists */
+        return UPGRADE_NONE;
+    }
 
-	if (access(UPGRADE_FILE, R_OK)) {
-		/* file exists, but not readable */
-		cwmp_log_critical(
-				"firmware upgrade: file '%s' not available for reading: %s",
-				UPGRADE_FILE, strerror(errno));
-		/* unknown behavior */
-		return UPGRADE_DOWNLOAD;
-	}
+    if (access(UPGRADE_FILE, R_OK)) {
+        /* file exists, but not readable */
+        cwmp_log_critical(
+                "firmware upgrade: file '%s' not available for reading: %s",
+                UPGRADE_FILE, strerror(errno));
+        /* unknown behavior */
+        return UPGRADE_DOWNLOAD;
+    }
 
-	f = fopen(UPGRADE_FILE, "r");
-	if (!f) {
-		cwmp_log_critical(
-				"firmware upgrade: file '%s' not available for reading: %s",
-				UPGRADE_FILE, strerror(errno));
-		/* unknown behavior */
-		return UPGRADE_DOWNLOAD;
-	}
-	fscanf(f, "%d:%31s", &pid, status);
-	fclose(f);
+    f = fopen(UPGRADE_FILE, "r");
+    if (!f) {
+        cwmp_log_critical(
+                "firmware upgrade: file '%s' not available for reading: %s",
+                UPGRADE_FILE, strerror(errno));
+        /* unknown behavior */
+        return UPGRADE_DOWNLOAD;
+    }
+    fscanf(f, "%d:%31s", &pid, status);
+    fclose(f);
 
-	/* check program state */
-	if (kill(pid, 0)) {
-		/* program not running */
-		unlink(UPGRADE_FILE);
-		return UPGRADE_NONE;
-	}
+    /* check program state */
+    if (kill(pid, 0)) {
+        /* program not running */
+        unlink(UPGRADE_FILE);
+        return UPGRADE_NONE;
+    }
 
-	if (!strcmp(status, "download")) {
-		return UPGRADE_DOWNLOAD;
-	} else if (!strcmp(status, "check")) {
-		return UPGRADE_CHECK;
-	} else if (!strcmp(status, "prepare")) {
-		return UPGRADE_PREPARE;
-	} else if (!strcmp(status, "upgrade")) {
-		return UPGRADE_WRITE;
-	}
+    if (!strcmp(status, "download")) {
+        return UPGRADE_DOWNLOAD;
+    } else if (!strcmp(status, "check")) {
+        return UPGRADE_CHECK;
+    } else if (!strcmp(status, "prepare")) {
+        return UPGRADE_PREPARE;
+    } else if (!strcmp(status, "upgrade")) {
+        return UPGRADE_WRITE;
+    }
 
-	return UPGRADE_NONE;
+    return UPGRADE_NONE;
 }
 
 bool upgrade_set_status(enum upgrade_status s)
 {
-	enum upgrade_status so = UPGRADE_NONE;
-	const char *status = NULL;
-	FILE *f = NULL;
+    enum upgrade_status so = UPGRADE_NONE;
+    const char *status = NULL;
+    FILE *f = NULL;
 
-	status = upgrade_status_to_string(s);
+    status = upgrade_status_to_string(s);
 
-	if ((so = upgrade_get_status()) != UPGRADE_NONE) {
-/*		cwmp_log_error(
-				"firmware upgrade: set status to '%s' failed: "
-				"already in status: %s",
-				status, upgrade_status_to_string(so));*/
-	}
+    if ((so = upgrade_get_status()) != UPGRADE_NONE) {
+/*        cwmp_log_error(
+                "firmware upgrade: set status to '%s' failed: "
+                "already in status: %s",
+                status, upgrade_status_to_string(so));*/
+    }
 
-	if (s == UPGRADE_NONE) {
-		if (!access(UPGRADE_FILE, F_OK)) {
-			/* file exists */
-			if (!unlink(UPGRADE_FILE)) {
-				/* delete file ok */
-				return true;
-			}
-			/* delete file failed */
-			return false;
-		}
-		/* file not exists */
-		return true;
-	}
+    if (s == UPGRADE_NONE) {
+        if (!access(UPGRADE_FILE, F_OK)) {
+            /* file exists */
+            if (!unlink(UPGRADE_FILE)) {
+                /* delete file ok */
+                return true;
+            }
+            /* delete file failed */
+            return false;
+        }
+        /* file not exists */
+        return true;
+    }
 
-	f = fopen(UPGRADE_FILE, "w");
-	if (!f) {
-		cwmp_log_error(
-				"firmware upgrade: file %s not available for writing: %s",
-				UPGRADE_FILE, strerror(errno));
-		return false;
-	}
+    f = fopen(UPGRADE_FILE, "w");
+    if (!f) {
+        cwmp_log_error(
+                "firmware upgrade: file %s not available for writing: %s",
+                UPGRADE_FILE, strerror(errno));
+        return false;
+    }
 
-	fprintf(f, "%d:%s", getpid(), status);
-	fclose(f);
-	return true;
+    fprintf(f, "%d:%s", getpid(), status);
+    fclose(f);
+    return true;
 }
 
 
@@ -232,15 +232,15 @@ void MD5(char *buf, ...)
     MD5_CTX ctx;
 
     MD5Init(&ctx);
-	/*cwmp_log_debug("MD5(begin, target=%p)", buf);*/
+    /*cwmp_log_debug("MD5(begin, target=%p)", buf);*/
     va_start(ap, buf);
     while ((p = va_arg(ap, unsigned char *)) != NULL)
     {
-		/*cwmp_log_debug("MD5(input): '%s', %d", p, strlen((char*)p));*/
+        /*cwmp_log_debug("MD5(input): '%s', %d", p, strlen((char*)p));*/
         MD5Update(&ctx, p, strlen((char *) p));
     }
     va_end(ap);
-	/*cwmp_log_debug("MD5(end)");*/
+    /*cwmp_log_debug("MD5(end)");*/
 
     MD5Final((unsigned char*)buf, &ctx);
 }
@@ -248,13 +248,13 @@ void MD5(char *buf, ...)
 void
 string_randomize(char *buffer, size_t size)
 {
-	const char base[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		"abcdefghijklmnopqrstuvwxyz0123456789+";
-	size_t i;
+    const char base[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz0123456789+";
+    size_t i;
 
-	for (i = 0u; i < size; i++) {
-		buffer[i] = base[rand() % (sizeof(base) - 1)];
-	}
+    for (i = 0u; i < size; i++) {
+        buffer[i] = base[rand() % (sizeof(base) - 1)];
+    }
 }
 
 void convert_to_hex(const char *Bin, char *Hex)
@@ -281,7 +281,7 @@ void convert_to_hex(const char *Bin, char *Hex)
 char *strip_space(char *str)
 {
     while (isspace(*str))
-	    str++;
+        str++;
     return str;
 }
 
@@ -388,8 +388,8 @@ char* ReadFile(char *name, unsigned long *fileLen)
     file = fopen(name, "rb");
     if (!file)
     {
-	fprintf(stderr, "Unable to open file %s", name);
-	return NULL;
+    fprintf(stderr, "Unable to open file %s", name);
+    return NULL;
     }
 
     //Get file length
@@ -401,9 +401,9 @@ char* ReadFile(char *name, unsigned long *fileLen)
     buffer=(char *)malloc((*fileLen)+1);
     if (!buffer)
     {
-	fprintf(stderr, "Memory error!");
+    fprintf(stderr, "Memory error!");
                                 fclose(file);
-	return NULL;
+    return NULL;
     }
 
     //Read file contents into buffer
@@ -429,22 +429,22 @@ static unsigned long crc32 (unsigned long crc, const unsigned char *buf,  unsign
 
 static unsigned int getMTDPartSize(char *part)
 {
-	char buf[128], name[32], size[32], dev[32], erase[32];
-	unsigned int result=0;
-	FILE *fp = fopen("/proc/mtd", "r");
-	if(!fp){
-		fprintf(stderr, "mtd support not enable?");
-		return 0;
-	}
-	while(fgets(buf, sizeof(buf), fp)){
-		sscanf(buf, "%s %s %s %s", dev, size, erase, name);
-		if(!strcmp(name, part)){
-			result = strtol(size, NULL, 16);
-			break;
-		}
-	}
-	fclose(fp);
-	return result;
+    char buf[128], name[32], size[32], dev[32], erase[32];
+    unsigned int result=0;
+    FILE *fp = fopen("/proc/mtd", "r");
+    if(!fp){
+        fprintf(stderr, "mtd support not enable?");
+        return 0;
+    }
+    while(fgets(buf, sizeof(buf), fp)){
+        sscanf(buf, "%s %s %s %s", dev, size, erase, name);
+        if(!strcmp(name, part)){
+            result = strtol(size, NULL, 16);
+            break;
+        }
+    }
+    fclose(fp);
+    return result;
 }
 
 static int mtd_write_firmware(char *filename, int offset, int len)
@@ -459,23 +459,23 @@ static int mtd_write_firmware(char *filename, int offset, int len)
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-	err++;
+    err++;
 #else
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-	err++;
+    err++;
 
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-	err++;
+    err++;
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
-	err++;
+    err++;
 #else
     fprintf(stderr, "goahead: no CONFIG_RT2880_ROOTFS defined, %s\n", __FUNCTION__);
 #endif
@@ -491,175 +491,175 @@ static int mtd_write_firmware(char *filename, int offset, int len)
  */
 static int checkimage(char *imagefile, int offset, int len)
 {
-	struct stat sbuf;
+    struct stat sbuf;
 
-	int  data_len;
-	char *data;
-	unsigned char *ptr;
-	unsigned long checksum;
+    int  data_len;
+    char *data;
+    unsigned char *ptr;
+    unsigned long checksum;
 
-	image_header_t header;
-	image_header_t *hdr = &header;
+    image_header_t header;
+    image_header_t *hdr = &header;
 
-	int ifd;
+    int ifd;
 
-	if ((unsigned)len < sizeof(image_header_t)) {
-		fprintf(stderr,"Bad size: \"%s\" is no valid image\n", imagefile);
-		return 0;
-	}
+    if ((unsigned)len < sizeof(image_header_t)) {
+        fprintf(stderr,"Bad size: \"%s\" is no valid image\n", imagefile);
+        return 0;
+    }
 
-	ifd = open(imagefile, O_RDONLY);
-	if(!ifd){
-		fprintf(stderr,"Can't open %s: %s\n", imagefile, strerror(errno));
-		return 0;
-	}
+    ifd = open(imagefile, O_RDONLY);
+    if(!ifd){
+        fprintf(stderr,"Can't open %s: %s\n", imagefile, strerror(errno));
+        return 0;
+    }
 
-	if (fstat(ifd, &sbuf) < 0) {
-		close(ifd);
-		fprintf(stderr,"Can't stat %s: %s\n", imagefile, strerror(errno));
-		return 0;
-	}
+    if (fstat(ifd, &sbuf) < 0) {
+        close(ifd);
+        fprintf(stderr,"Can't stat %s: %s\n", imagefile, strerror(errno));
+        return 0;
+    }
 
-	ptr = (unsigned char *) mmap(0, sbuf.st_size, PROT_READ, MAP_SHARED, ifd, 0);
-	if ((caddr_t)ptr == (caddr_t)-1) {
-		close(ifd);
-		fprintf(stderr,"Can't mmap %s: %s\n", imagefile, strerror(errno));
-		return 0;
-	}
-	ptr += offset;
+    ptr = (unsigned char *) mmap(0, sbuf.st_size, PROT_READ, MAP_SHARED, ifd, 0);
+    if ((caddr_t)ptr == (caddr_t)-1) {
+        close(ifd);
+        fprintf(stderr,"Can't mmap %s: %s\n", imagefile, strerror(errno));
+        return 0;
+    }
+    ptr += offset;
 
-	/*
-	 *  handle Header CRC32
-	 */
-	memcpy (hdr, ptr, sizeof(image_header_t));
+    /*
+     *  handle Header CRC32
+     */
+    memcpy (hdr, ptr, sizeof(image_header_t));
 
-	if (ntohl(hdr->ih_magic) != IH_MAGIC)
-	{
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"Bad Magic Number: \"%s\" is no valid image\n", imagefile);
-		return 0;
-	}
+    if (ntohl(hdr->ih_magic) != IH_MAGIC)
+    {
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"Bad Magic Number: \"%s\" is no valid image\n", imagefile);
+        return 0;
+    }
 
-	data = (char *)hdr;
+    data = (char *)hdr;
 
-	checksum = ntohl(hdr->ih_hcrc);
-	hdr->ih_hcrc = htonl(0);	/* clear for re-calculation */
+    checksum = ntohl(hdr->ih_hcrc);
+    hdr->ih_hcrc = htonl(0);    /* clear for re-calculation */
 
-	if (crc32 (0u, (unsigned char*) data, sizeof(image_header_t)) != checksum)
-	{
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: \"%s\" has bad header checksum!\n", imagefile);
-		return 0;
-	}
+    if (crc32 (0u, (unsigned char*) data, sizeof(image_header_t)) != checksum)
+    {
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: \"%s\" has bad header checksum!\n", imagefile);
+        return 0;
+    }
 
-	/*
-	 *  handle Data CRC32
-	 */
-	data = (char *)(ptr + sizeof(image_header_t));
-	data_len  = len - sizeof(image_header_t) ;
+    /*
+     *  handle Data CRC32
+     */
+    data = (char *)(ptr + sizeof(image_header_t));
+    data_len  = len - sizeof(image_header_t) ;
 
-	if (crc32 (0, (unsigned char *)data, data_len) != ntohl(hdr->ih_dcrc))
-	{
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: \"%s\" has corrupted data!\n", imagefile);
-		return 0;
-	}
+    if (crc32 (0, (unsigned char *)data, data_len) != ntohl(hdr->ih_dcrc))
+    {
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: \"%s\" has corrupted data!\n", imagefile);
+        return 0;
+    }
 
-	/*
-	 * compare MTD partition size and image size
-	 */
+    /*
+     * compare MTD partition size and image size
+     */
 #if defined(CONFIG_RT2880_ROOTFS_IN_FLASH)
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
-	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel_RootFS\"")){
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel_RootFS MTD partition.\n", len);
-		return 0;
-	}
+    if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel_RootFS\"")){
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel_RootFS MTD partition.\n", len);
+        return 0;
+    }
 #else
-	if(len > MAX_IMG_SIZE || len < CONFIG_MTD_KERNEL_PART_SIZ){
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: the image file(0x%x) size doesn't make sense.\n", len);
-		return 0;
-	}
+    if(len > MAX_IMG_SIZE || len < CONFIG_MTD_KERNEL_PART_SIZ){
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: the image file(0x%x) size doesn't make sense.\n", len);
+        return 0;
+    }
 
-	if((len - CONFIG_MTD_KERNEL_PART_SIZ) > getMTDPartSize("\"RootFS\"")){
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than RootFS MTD partition.\n", len - CONFIG_MTD_KERNEL_PART_SIZ);
-		return 0;
-	}
+    if((len - CONFIG_MTD_KERNEL_PART_SIZ) > getMTDPartSize("\"RootFS\"")){
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than RootFS MTD partition.\n", len - CONFIG_MTD_KERNEL_PART_SIZ);
+        return 0;
+    }
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
-	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel\"")){
-		munmap(ptr, len);
-		close(ifd);
-		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition, %s\n", len, __FUNCTION__);
-		return 0;
-	}
+    if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel\"")){
+        munmap(ptr, len);
+        close(ifd);
+        fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel MTD partition, %s\n", len, __FUNCTION__);
+        return 0;
+    }
 #else
 #error "goahead: no CONFIG_RT2880_ROOTFS defined!"
 #endif
-	munmap(ptr, len);
-	close(ifd);
+    munmap(ptr, len);
+    close(ifd);
 
-	return 1;
+    return 1;
 }
 
 int firmware_upgrade(char* filename)
 {
-	unsigned long file_size = 0;
+    unsigned long file_size = 0;
 
-	cwmp_log_trace("%s(filename='%s')", __func__, filename);
+    cwmp_log_trace("%s(filename='%s')", __func__, filename);
 
-	if (!upgrade_set_status(UPGRADE_CHECK)) {
-		return 3;
-	}
+    if (!upgrade_set_status(UPGRADE_CHECK)) {
+        return 3;
+    }
 
-	char* buffer = ReadFile(filename, &file_size);
-	if (buffer == NULL)
-	{
-	    cwmp_log_error("Check image error: unable to read image file: %s", filename);
-		upgrade_set_status(UPGRADE_NONE);
-	    return 1;
-	}
+    char* buffer = ReadFile(filename, &file_size);
+    if (buffer == NULL)
+    {
+        cwmp_log_error("Check image error: unable to read image file: %s", filename);
+        upgrade_set_status(UPGRADE_NONE);
+        return 1;
+    }
 
 #if defined(CONFIG_RT2880_ROOTFS_IN_FLASH)
-	if(file_size > MAX_IMG_SIZE || file_size < MIN_FIRMWARE_SIZE){
-		cwmp_log_error("Check image error: size incompatible image. Size: %d", (int)file_size);
-		upgrade_set_status(UPGRADE_NONE);
-		return 2;
-	}
+    if(file_size > MAX_IMG_SIZE || file_size < MIN_FIRMWARE_SIZE){
+        cwmp_log_error("Check image error: size incompatible image. Size: %d", (int)file_size);
+        upgrade_set_status(UPGRADE_NONE);
+        return 2;
+    }
 #endif
 
-	// check image
-	if (!checkimage(filename, 0, (int)file_size))
-	{
-		cwmp_log_error("Check image error: corrupted or uncompatable image. Size: %d", (int)file_size);
-		upgrade_set_status(UPGRADE_NONE);
-		return 3;
-	}
+    // check image
+    if (!checkimage(filename, 0, (int)file_size))
+    {
+        cwmp_log_error("Check image error: corrupted or uncompatable image. Size: %d", (int)file_size);
+        upgrade_set_status(UPGRADE_NONE);
+        return 3;
+    }
 
-	upgrade_set_status(UPGRADE_PREPARE);
-	system("fs restore > /dev/null 2>&1");
+    upgrade_set_status(UPGRADE_PREPARE);
+    system("fs restore > /dev/null 2>&1");
 
-	// flash write
-	upgrade_set_status(UPGRADE_WRITE);
-	if (mtd_write_firmware(filename, 0, (int)file_size) == -1) {
-		cwmp_log_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
-		upgrade_set_status(UPGRADE_NONE);
-		return -1;
-	}
+    // flash write
+    upgrade_set_status(UPGRADE_WRITE);
+    if (mtd_write_firmware(filename, 0, (int)file_size) == -1) {
+        cwmp_log_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
+        upgrade_set_status(UPGRADE_NONE);
+        return -1;
+    }
 
-	upgrade_set_status(UPGRADE_NONE);
+    upgrade_set_status(UPGRADE_NONE);
 
-//	sleep (3);
-//	reboot(RB_AUTOBOOT);
-	return 0;
+//    sleep (3);
+//    reboot(RB_AUTOBOOT);
+    return 0;
 }
 //#else
 //#error "no upload support defined!"

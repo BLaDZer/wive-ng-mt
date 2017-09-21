@@ -46,7 +46,6 @@ void cwmp_log_set(const char * filename, int level);
 void cwmp_log_fini();
 
 
-
 void cwmp_log_debug(const char * fmt, ...);
 void cwmp_log_info(const char * fmt, ...);
 void cwmp_log_warn(const char * fmt, ...);

@@ -26,9 +26,8 @@ enum {TR_MAX_BYTES = 128};
 enum {TR_FREELISTS = 32}; // TR_MAX_BYTES/TR_ALIGN
 
 
-
-#define TR_THROW_ERROR_ALLOC()	do{ cwmp_log_error("TRC throw Alloc error. out of memory."); } while(0)
-#define TR_THROW_ERROR_MALLOC()	do{ cwmp_log_error("TRC throw Malloc error. out of memory."); } while(0)
+#define TR_THROW_ERROR_ALLOC()  do{ cwmp_log_error("TRC throw Alloc error. out of memory."); } while(0)
+#define TR_THROW_ERROR_MALLOC() do{ cwmp_log_error("TRC throw Malloc error. out of memory."); } while(0)
 
 
 typedef union TRObj TRObj;
@@ -39,19 +38,15 @@ union TRObj
     char sessionData[1];    /* The session sees this. */
 };
 
-
 void (* TriMallocAllocSafeHandler)() = 0;
 
 
-static char*		TR_start_free;
-static char*		TR_end_free;
-static size_t		TR_heap_size;
-static TRObj*		TR_free_list[TR_FREELISTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
-
-
+static char*            TR_start_free;
+static char*            TR_end_free;
+static size_t           TR_heap_size;
+static TRObj*           TR_free_list[TR_FREELISTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, };
 
 void * TRSafeRefill(size_t n);
-
 
 static INLINE void * TRMemStrdup(const char * src)
 {
@@ -143,19 +138,17 @@ static void* TRMemReallocate(void * ptr, size_t old_size, size_t new_size)
 }
 
 
-static size_t	TRSafeRoundUp(size_t bytes)
+static size_t TRSafeRoundUp(size_t bytes)
 {
     return (((bytes) + (size_t) TR_ALIGN-1) & ~((size_t) TR_ALIGN - 1));
 }
 
 
 
-static size_t	TRSafeFreeListIndex(size_t  bytes)
+static size_t TRSafeFreeListIndex(size_t  bytes)
 {
     return (((bytes) + (size_t)TR_ALIGN-1)/(size_t)TR_ALIGN - 1);
 }
-
-
 
 char * TRSafecwmp_chunk_tAlloc(size_t size, int * nobjs)
 {
@@ -315,10 +308,6 @@ static void TRDeallocate(void* ptr, size_t n)
     }
 }
 
-/*
- *
- */
-
 static void* TRReallocate(void * ptr, size_t old_size, size_t new_size)
 {
     void * result;
@@ -336,31 +325,24 @@ static void* TRReallocate(void * ptr, size_t old_size, size_t new_size)
     return result;
 }
 
-/*
- *
- */
 
-
-
-void *	MemoryMalloc(size_t size)
+void * MemoryMalloc(size_t size)
 {
     return TRAllocate(size);
 }
-void *	MemoryCalloc(size_t count, size_t size)
+void * MemoryCalloc(size_t count, size_t size)
 {
     return calloc(count , size);
 }
-void *	MemoryRealloc(void * ptr,size_t olds, size_t news)
+void * MemoryRealloc(void * ptr,size_t olds, size_t news)
 {
     return TRReallocate(ptr,olds,news);
 }
 
-void 	MemoryFree(void* ptr, size_t size)
+void MemoryFree(void* ptr, size_t size)
 {
     TRDeallocate(ptr,size);
 }
-
-
 
 
 #endif

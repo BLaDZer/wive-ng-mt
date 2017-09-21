@@ -44,22 +44,17 @@
 #define HTTPP_VAR_PASSWORD      "__password__"
 
 enum http_auth_type {
-	HTTP_NONE_AUTH	= 0x00,
-	HTTP_BASIC_AUTH	= 0x01,
-	HTTP_DIGEST_AUTH = 0x02,
+    HTTP_NONE_AUTH   = 0x00,
+    HTTP_BASIC_AUTH  = 0x01,
+    HTTP_DIGEST_AUTH = 0x02,
 };
 
-#define HTTP_100		100
-#define HTTP_200		200
-#define HTTP_204		204
-#define HTTP_400		400
-#define HTTP_401		401
-#define HTTP_407		407
-
-
-
-
-
+#define HTTP_100        100
+#define HTTP_200        200
+#define HTTP_204        204
+#define HTTP_400        400
+#define HTTP_401        401
+#define HTTP_407        407
 
 
 typedef enum
@@ -90,37 +85,37 @@ typedef size_t (*http_write_callback_pt)(char *data, size_t size, size_t nmemb, 
 
 struct http_digest_auth_t
 {
-	enum http_auth_type type;
-	 /* CDRouter will test largest size ConnectionRequest Username */
-	char	username[URL_USER_LEN+1];
-	char	password[URL_PWD_LEN+1];
+    enum    http_auth_type type;
+     /* CDRouter will test largest size ConnectionRequest Username */
+    char    username[URL_USER_LEN+1];
+    char    password[URL_PWD_LEN+1];
 
-	char 	realm[MIN_DEFAULT_LEN+1];
+    char    realm[MIN_DEFAULT_LEN+1];
     char    uri[MIN_DEFAULT_LEN*4+1];
 
-	char 	nonce[MIN_DEFAULT_LEN+1];
-	/* if qop field received,
-	 * then work on RFC 2069
-	 * (without qop, cnonce and nc fields)
-	 */
-	bool rfc2617;
-	char    qop[MIN_DEFAULT_LEN+1];
-	char 	cnonce[MIN_DEFAULT_LEN+1];
-	size_t  nc;
-	char	nc_hex[9];
-	/* calculated response */
-	char    response[MIN_DEFAULT_LEN+1];
-	/* custom field, must be returned
-	 * to server, if defined
-	 */
-	char	opaque[128];
+    char    nonce[MIN_DEFAULT_LEN+1];
+    /* if qop field received,
+     * then work on RFC 2069
+     * (without qop, cnonce and nc fields)
+     */
+    bool    rfc2617;
+    char    qop[MIN_DEFAULT_LEN+1];
+    char    cnonce[MIN_DEFAULT_LEN+1];
+    size_t  nc;
+    char    nc_hex[9];
+    /* calculated response */
+    char    response[MIN_DEFAULT_LEN+1];
+    /* custom field, must be returned
+     * to server, if defined
+     */
+    char    opaque[128];
 };
 
 
 struct http_dest_t
 {
-    char	scheme[URL_SCHEME_LEN+1];
-    char	host[MAX_HOST_NAME_LEN+1];
+    char    scheme[URL_SCHEME_LEN+1];
+    char    host[MAX_HOST_NAME_LEN+1];
     char    uri[MAX_URI_LEN + 1];
 
     int     port;
@@ -128,11 +123,11 @@ struct http_dest_t
 
     const char *    proxy_name;
     const char *    proxy_auth;
-    const char *	user_agent;
+    const char *    user_agent;
     int             proxy_port;
 
     int             auth_type;
-    char    cookie[MIN_BUFFER_LEN+1];
+    char            cookie[MIN_BUFFER_LEN+1];
     http_digest_auth_t auth;
 
 
@@ -140,22 +135,22 @@ struct http_dest_t
 
 struct http_statistics
 {
-	/* dns query time */
-	struct timeval ns_query;
-	/* tcp connection open */
-	struct timeval tcp_connect;
-	/* tcp connected */
-	struct timeval tcp_response;
-	/* request begin (TR-098 ROMTime) */
-	struct timeval request;
-	/* begin transmission (TR-098 BOMTime) */
-	struct timeval transmission_rx;
-	struct timeval transmission_tx;
-	/* end transmission (TR-098 EOMTime) */
-	struct timeval transmission_rx_end;
-	struct timeval transmission_tx_end;
-	/* overall transmitted bytes */
-	uint64_t bytes_rx;
+    /* dns query time */
+    struct timeval ns_query;
+    /* tcp connection open */
+    struct timeval tcp_connect;
+    /* tcp connected */
+    struct timeval tcp_response;
+    /* request begin (TR-098 ROMTime) */
+    struct timeval request;
+    /* begin transmission (TR-098 BOMTime) */
+    struct timeval transmission_rx;
+    struct timeval transmission_tx;
+    /* end transmission (TR-098 EOMTime) */
+    struct timeval transmission_rx_end;
+    struct timeval transmission_tx_end;
+    /* overall transmitted bytes */
+    uint64_t bytes_rx;
 };
 
 
@@ -174,9 +169,7 @@ struct http_request_t
     void * data;
     cwmp_uint32_t length;
     cwmp_chunk_t  * writers;
-} ;
-
-
+};
 
 struct http_response_t
 {
@@ -187,7 +180,7 @@ struct http_response_t
     http_parser_t * parser;
     cwmp_chunk_t  * readers;
     void * data;
-} ;
+};
 
 void socket_set_recv_timeout(int fd, int timeout);
 
@@ -229,7 +222,6 @@ int http_receive_file(const char *fromurl, const char * tofile, struct http_stat
 int http_send_diagnostics(size_t size, const char *tourl, struct http_statistics *hs);
 
 
-
 int http_post(http_socket_t * sock, http_request_t * request, cwmp_chunk_t * data, pool_t * pool);
 
 void saddr_char(char *str, size_t size, sa_family_t family, struct sockaddr *sa);
@@ -239,7 +231,6 @@ void saddr_char(char *str, size_t size, sa_family_t family, struct sockaddr *sa)
 int openssl_check_cert(SSL *ssl, char *host);
 SSL * openssl_connect(SSL_CTX * ctx, int fd);
 SSL_CTX *openssl_initialize_ctx(char *keyfile,char *password);
-
 
 #endif
 

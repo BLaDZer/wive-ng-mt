@@ -324,6 +324,7 @@ const char *cwmp_model_ptr_to_func(void *p)
         if (ModelFunction[n].func == p)
             return ModelFunction[n].name;
     }
+
     return "?";
 }
 
@@ -426,8 +427,6 @@ int cpe_get_nvram_bool(cwmp_t * cwmp, const char * name, char ** value, char * a
     const char* valStr = val?"1":"0";
 
     *value = pool_pstrdup(pool, valStr);
-//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
-//    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
 }
 
@@ -451,13 +450,9 @@ int cpe_get_nvram_bool_onoff(cwmp_t * cwmp, const char * name, char ** value, ch
     const char* valStr = val?"1":"0";
 
     *value = pool_pstrdup(pool, valStr);
-//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
 //    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
 }
-
-
-
 
 //nvram bool getter
 int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
@@ -477,10 +472,7 @@ int cpe_get_nvram_int(cwmp_t * cwmp, const char * name, char ** value, char * ar
 
 
     *value = pool_pstrdup(pool, &valStr);
-//    cwmp_log_debug("cpe_get_igd_lan_hcm_dhcpenabled: value is %s", *value);
-//    cwmp_log_debug("cpe_get_nvram_string: value is %s",*value);
     return FAULT_CODE_OK;
-
 }
 
 
@@ -519,7 +511,6 @@ int cpe_set_nvram_int(cwmp_t * cwmp, const char * name, const char * value, int 
     return FAULT_CODE_OK;
 }
 
-
 //nvram bool setter
 int cpe_set_nvram_bool(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {
@@ -556,7 +547,6 @@ int cpe_set_nvram_bool_onoff(cwmp_t * cwmp, const char * name, const char * valu
     cwmp_nvram_set(args,valStr);
     return FAULT_CODE_OK;
 }
-
 
 int cpe_set_null(cwmp_t * cwmp, const char * name, const char * value, int length, char * args, callback_register_func_t callback_reg)
 {

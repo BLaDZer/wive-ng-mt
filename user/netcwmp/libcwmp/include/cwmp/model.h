@@ -5,7 +5,6 @@
 #include <cwmp/cwmp.h>
 
 
-
 #define DEVICE_MODEL_NODE   "model"
 #define DEVICE_MODEL_OBJECT_NODE   "object"
 #define DEVICE_MODEL_PARAM_NODE   "param"

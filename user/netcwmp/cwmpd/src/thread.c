@@ -33,7 +33,7 @@ static int cwmp_worker_threaded;
 
 #ifdef WIN32
 #else
-static pthread_attr_t  	cwmp_worker_thread_attr;
+static pthread_attr_t cwmp_worker_thread_attr;
 
 int
 cwmp_worker_thread_init(cwmp_t * cwmp, int num, size_t size)

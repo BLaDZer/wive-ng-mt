@@ -13,32 +13,27 @@ typedef struct  memorystruct {
 
 static inform_event_t inform_event_table[] =
 {
-
-    {INFORM_BOOTSTRAP,                 			0,	CWMP_INFORM_EVENT_CODE_0 , "inform:event_bootstrap",      				    "inform:command_bootstrap"},
-    {INFORM_BOOT,                      			0,	CWMP_INFORM_EVENT_CODE_1 , "inform:event_boot",                    	"inform:command_boot"},
-    {INFORM_PERIODIC,                  			0,	CWMP_INFORM_EVENT_CODE_2 , "inform:event_periodic",                	"inform:command_periodic"},
-    {INFORM_SCHEDULED,                 			0,	CWMP_INFORM_EVENT_CODE_3 , "inform:event_scheduled",               	"inform:command_scheduled"},
-    {INFORM_VALUECHANGE,               			0,	CWMP_INFORM_EVENT_CODE_4 , "inform:event_valuechange",             	"inform:command_valuechange"},
-    {INFORM_KICKED,                    			0,	CWMP_INFORM_EVENT_CODE_5 , "inform:event_kicked",                  	"inform:command_kicked"},
-    {INFORM_CONNECTIONREQUEST,         			0,	CWMP_INFORM_EVENT_CODE_6 , "inform:event_connreq",       				    "inform:command_connreq"},
-    {INFORM_TRANSFERCOMPLETE,          			0,	CWMP_INFORM_EVENT_CODE_7 , "inform:event_transcomplt",        			  "inform:command_transcomplt"},
-    {INFORM_DIAGNOSTICSCOMPLETE,       			0,	CWMP_INFORM_EVENT_CODE_8 , "inform:event_diagcomplt",            		"inform:command_diagcomplt"},
-    {INFORM_REQUESTDOWNLOAD,           			0,	CWMP_INFORM_EVENT_CODE_9 , "inform:event_reqdl",         				    "inform:command_reqdl"},
-    {INFORM_AUTONOMOUSTRANSFERCOMPLETE,			0,	CWMP_INFORM_EVENT_CODE_10, "inform:event_autotranscomplt",         	"inform:command_autotranscomplt"},
-    {INFORM_MREBOOT,                   			0,	CWMP_INFORM_EVENT_CODE_11, "inform:event_mreboot",                 	"inform:command_mreboot"},
-    {INFORM_MSCHEDULEINFORM,           			0,	CWMP_INFORM_EVENT_CODE_12, "inform:event_mscheinform",         		  "inform:command_mscheinform"},
-    {INFORM_MDOWNLOAD,                 			0,	CWMP_INFORM_EVENT_CODE_13, "inform:event_mdownload",               	"inform:command_mdownload"},
-    {INFORM_MUPLOAD,                   			0,	CWMP_INFORM_EVENT_CODE_14, "inform:event_mupload",                 	"inform:command_mupload"},
-    {INFORM_ACCOUNTCHANGE,						0,	CWMP_INFORM_EVENT_CODE_15, "inform:event_accountchange",           	"inform:command_accountchange"},
-    {INFORM_MVENDORSPECRPC,         			0,	CWMP_INFORM_EVENT_CODE_16, "inform:event_mvendorspecrpc",       		  "inform:command_mvendorspecrpc"},
-    {INFORM_XOUIEVENT,                 			0,	CWMP_INFORM_EVENT_CODE_17, "inform:event_xouievent",                	"inform:command_xouievent"},
-    {INFORM_MAX,             					0,	"", "",                	                    ""}
-
-
+    {INFORM_BOOTSTRAP,                             0,    CWMP_INFORM_EVENT_CODE_0 , "inform:event_bootstrap",                   "inform:command_bootstrap"},
+    {INFORM_BOOT,                                  0,    CWMP_INFORM_EVENT_CODE_1 , "inform:event_boot",                        "inform:command_boot"},
+    {INFORM_PERIODIC,                              0,    CWMP_INFORM_EVENT_CODE_2 , "inform:event_periodic",                    "inform:command_periodic"},
+    {INFORM_SCHEDULED,                             0,    CWMP_INFORM_EVENT_CODE_3 , "inform:event_scheduled",                   "inform:command_scheduled"},
+    {INFORM_VALUECHANGE,                           0,    CWMP_INFORM_EVENT_CODE_4 , "inform:event_valuechange",                 "inform:command_valuechange"},
+    {INFORM_KICKED,                                0,    CWMP_INFORM_EVENT_CODE_5 , "inform:event_kicked",                      "inform:command_kicked"},
+    {INFORM_CONNECTIONREQUEST,                     0,    CWMP_INFORM_EVENT_CODE_6 , "inform:event_connreq",                     "inform:command_connreq"},
+    {INFORM_TRANSFERCOMPLETE,                      0,    CWMP_INFORM_EVENT_CODE_7 , "inform:event_transcomplt",                 "inform:command_transcomplt"},
+    {INFORM_DIAGNOSTICSCOMPLETE,                   0,    CWMP_INFORM_EVENT_CODE_8 , "inform:event_diagcomplt",                  "inform:command_diagcomplt"},
+    {INFORM_REQUESTDOWNLOAD,                       0,    CWMP_INFORM_EVENT_CODE_9 , "inform:event_reqdl",                       "inform:command_reqdl"},
+    {INFORM_AUTONOMOUSTRANSFERCOMPLETE,            0,    CWMP_INFORM_EVENT_CODE_10, "inform:event_autotranscomplt",             "inform:command_autotranscomplt"},
+    {INFORM_MREBOOT,                               0,    CWMP_INFORM_EVENT_CODE_11, "inform:event_mreboot",                     "inform:command_mreboot"},
+    {INFORM_MSCHEDULEINFORM,                       0,    CWMP_INFORM_EVENT_CODE_12, "inform:event_mscheinform",                 "inform:command_mscheinform"},
+    {INFORM_MDOWNLOAD,                             0,    CWMP_INFORM_EVENT_CODE_13, "inform:event_mdownload",                   "inform:command_mdownload"},
+    {INFORM_MUPLOAD,                               0,    CWMP_INFORM_EVENT_CODE_14, "inform:event_mupload",                     "inform:command_mupload"},
+    {INFORM_ACCOUNTCHANGE,                         0,    CWMP_INFORM_EVENT_CODE_15, "inform:event_accountchange",               "inform:command_accountchange"},
+    {INFORM_MVENDORSPECRPC,                        0,    CWMP_INFORM_EVENT_CODE_16, "inform:event_mvendorspecrpc",              "inform:command_mvendorspecrpc"},
+    {INFORM_XOUIEVENT,                             0,    CWMP_INFORM_EVENT_CODE_17, "inform:event_xouievent",                   "inform:command_xouievent"},
+    {INFORM_MAX,                                   0,    "",                        "",                                         ""}
 
 };
-
-
 
 event_list_t * cwmp_event_list_create(pool_t * pool, int size)
 {
@@ -49,6 +44,7 @@ event_list_t * cwmp_event_list_create(pool_t * pool, int size)
     {
         return NULL;
     }
+
     el->events = PMALLOC(sizeof(event_code_t *) * size);
     el->count = 0;
     el->size = size;
@@ -74,12 +70,14 @@ int cwmp_event_list_init(pool_t * pool, event_list_t * el)
     //create event list
     int i, size;
     size = el->size;
+
     for(i=0; i<size; i++)
     {
-	event_code_t * ec = cwmp_event_code_create(pool);
-	el->events[i] = ec;
+        event_code_t * ec = cwmp_event_code_create(pool);
+        el->events[i] = ec;
     }
-   el->count = 0;
+
+    el->count = 0;
     return CWMP_OK;
 }
 
@@ -211,7 +209,7 @@ int cwmp_event_init(cwmp_t *cwmp)
         if(cwmp->event_global.event_flag & EVENT_REBOOT_ACS_FLAG)
         {
             cwmp_event_set_value(cwmp, INFORM_MREBOOT, 1, NULL, 0, 0, 0);
-    	}
+        }
     }
 
     //upgrade firmware
@@ -245,41 +243,39 @@ int cwmp_event_set_value(cwmp_t *cwmp,  int event,   int value, const char * cmd
 //    int max = cwmp->el->size;
 
      if(count  >= cwmp->el->size) {
-		return CWMP_ERROR;
+        return CWMP_ERROR;
      }
 
     pthread_mutex_lock(&cwmp->event_mutex);
-
 
     int i;
     int k=count;
 
     for(i=0; i<count; i++) {
-		event_code_t * ec = cwmp->el->events[i];
-		if(ec->event == event) {
-			k = i;
-			break;
-		}
+        event_code_t * ec = cwmp->el->events[i];
+        if(ec->event == event) {
+            k = i;
+            break;
+        }
     }
 
-	event_code_t * ec = cwmp->el->events[k];
-	memset(ec, 0, sizeof(event_code_t));
-	ec->event = event;
-	ec->ref = value;
-	ec->code = inform_event_table[event].code;
-	if(cmd_key != NULL) {
-		TRstrncpy(ec->command_key, cmd_key,COMMAND_KEY_LEN);
-	}
+    event_code_t * ec = cwmp->el->events[k];
+    memset(ec, 0, sizeof(event_code_t));
+    ec->event = event;
+    ec->ref = value;
+    ec->code = inform_event_table[event].code;
+    if(cmd_key != NULL) {
+        TRstrncpy(ec->command_key, cmd_key,COMMAND_KEY_LEN);
+    }
 
-	ec->fault_code = fault_code;
-	ec->start = start;
-	ec->end = end;
-	cwmp->el->count ++;
+    ec->fault_code = fault_code;
+    ec->start = start;
+    ec->end = end;
+    cwmp->el->count ++;
 
-	pthread_mutex_unlock(&cwmp->event_mutex);
+    pthread_mutex_unlock(&cwmp->event_mutex);
 
-	return CWMP_OK;
-
+    return CWMP_OK;
 }
 
 int cwmp_event_get_index(cwmp_t *cwmp,const char *name)
@@ -323,8 +319,6 @@ size_t cwmp_write_callback(void *ptr, size_t size, size_t nmemb, void *data)
     return realsize;
 
 }
-
-
 
 //清除掉相关的信息
 int cwmp_event_clear_active(cwmp_t *cwmp)

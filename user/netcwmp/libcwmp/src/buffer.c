@@ -67,9 +67,7 @@ void  cwmp_buffer_free(cwmp_buffer_t * b, pool_t * pool)
         return;
 
     PFREE(b);
-
 }
-
 
 cwmp_byte_t * cwmp_buffer_current(cwmp_buffer_t * b)
 {
@@ -96,13 +94,10 @@ int cwmp_buffer_remain(cwmp_buffer_t * b)
     return b == NULL ? 0: (b->size - b->writed);
 }
 
-size_t	cwmp_chunk_length(cwmp_chunk_t * c)
+size_t cwmp_chunk_length(cwmp_chunk_t * c)
 {
     return c == NULL? 0 : c->bytes;
 }
-
-
-
 
 void  cwmp_buffer_write_position(cwmp_buffer_t * b, size_t pos, const void * val, cwmp_uint32_t len)
 {
@@ -156,8 +151,6 @@ void  cwmp_buffer_write_format_string(cwmp_buffer_t * b, const char * fmt, ...)
     b->writed += len;
     va_end(ap);
 }
-
-
 
 void  cwmp_buffer_write_string(cwmp_buffer_t * b, const char * str, size_t len)
 {
@@ -328,7 +321,6 @@ int cwmp_chunk_write_string(cwmp_chunk_t * cb, const char * str, size_t length, 
     return writed;
 }
 
-
 int cwmp_chunk_copy(char * dest, const cwmp_chunk_t * cb, size_t max_length)
 {
     size_t bufleft, destwrited, writebytes;
@@ -341,7 +333,7 @@ int cwmp_chunk_copy(char * dest, const cwmp_chunk_t * cb, size_t max_length)
     {
         b = bufleft > cwmp_buffer_length(buffer) ? cwmp_buffer_length(buffer) : bufleft;
         d = max_length - destwrited;
-        writebytes =  d > b	? b : d;
+        writebytes =  d > b ? b : d;
         strncpy(ptr, cwmp_buffer_string(buffer), writebytes);
         ptr += writebytes;
         destwrited += writebytes;

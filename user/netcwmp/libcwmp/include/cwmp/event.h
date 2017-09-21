@@ -37,8 +37,6 @@ typedef enum
 }EventType;
 
 
-
-
 #define COMMAND_KEY_LEN         32
 
 #define POLICY_NEVER_DISCARD    0
@@ -54,25 +52,25 @@ enum event_reboot_flag {
 };
 
 enum event_task_tag {
-	TASK_DOWNLOAD_TAG = 1,
-	TASK_UPLOAD_TAG,
-	TASK_REBOOT_TAG,
-	TASK_FACTORYRESET_TAG,
-	TASK_CALLBACK_TAG,
-	TASK_NOTIFY_TAG,
+    TASK_DOWNLOAD_TAG = 1,
+    TASK_UPLOAD_TAG,
+    TASK_REBOOT_TAG,
+    TASK_FACTORYRESET_TAG,
+    TASK_CALLBACK_TAG,
+    TASK_NOTIFY_TAG,
     TASK_RELOAD_TAG,
 };
 
 
 struct event_code_st
 {
-    int   	event;
-    char *	code;
-    char   	command_key[COMMAND_KEY_LEN+1];
-    int      	ref;        /* events */
-    int      	fault_code;
-    time_t	start;
-    time_t	end;
+    int         event;
+    char *      code;
+    char        command_key[COMMAND_KEY_LEN+1];
+    int         ref;        /* events */
+    int         fault_code;
+    time_t      start;
+    time_t      end;
 };
 
 
@@ -84,15 +82,13 @@ struct event_list_st
 };
 
 
-
-
 typedef struct event_global_st
 {
     enum event_reboot_flag event_flag;
-    char   	event_key[COMMAND_KEY_LEN+1]; /* command key */
-    int      	fault_code;
-    time_t	start;
-    time_t	end;
+    char        event_key[COMMAND_KEY_LEN+1]; /* command key */
+    int         fault_code;
+    time_t      start;
+    time_t      end;
     /* source data, prevent write unchanged value */
     char data[INI_BUFFERSIZE];
 } event_global_t;
@@ -117,14 +113,11 @@ struct inform_event_st
     char * command;
 };
 
-
-
 int cwmp_event_init(cwmp_t *cwmp);
 event_list_t * cwmp_event_list_create(pool_t * pool, int size);
 event_code_t * cwmp_event_code_create(pool_t * pool );
 int cwmp_event_list_init(pool_t * pool, event_list_t * el);
 int cwmp_event_global_init(cwmp_t * cwmp);
-
 
 int cwmp_event_set_value(cwmp_t *cwmp,  int event,   int value, const char * cmd_key, int fault_code, time_t start, time_t end);
 int cwmp_event_clear_active(cwmp_t *cwmp);
@@ -133,7 +126,4 @@ int cwmp_event_file_save(cwmp_t *cwmp);
 int cwmp_event_time_init(cwmp_t * cwmp, const char *stime);
 
 #endif
-
-
-
 

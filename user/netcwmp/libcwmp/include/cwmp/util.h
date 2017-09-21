@@ -20,8 +20,8 @@
 #include <libwive.h>
 #include <stdbool.h>
 
-#define Public		/* Accessible outside this module     */
-#define Private static		/* Accessible only within this module */
+#define Public          /* Accessible outside this module     */
+#define Private static  /* Accessible only within this module */
 
 #ifdef WIN32
 #define INLINE __inline
@@ -29,7 +29,7 @@
 #define INLINE inline
 #endif
 
-#define STRING_MAX_LENGTH		1024*64
+#define STRING_MAX_LENGTH  1024*64
 
 
 #ifdef WIN32
@@ -44,15 +44,15 @@
 
 #include <linux/autoconf.h>
 
-#ifdef CONFIG_RAETH_GMAC2		/* dual phy/rgmii mode */
+#ifdef CONFIG_RAETH_GMAC2  /* dual phy/rgmii mode */
 #define WAN_DEF "eth3"
 #else
-#define WAN_DEF "eth2.2"		/* internal ralink esw with vlan parted mode */
+#define WAN_DEF "eth2.2"   /* internal ralink esw with vlan parted mode */
 #endif
 
-#define BR_SIG	"br"
-#define ETH_SIG	"eth"
-#define VPN_SIG	"ppp"
+#define BR_SIG  "br"
+#define ETH_SIG "eth"
+#define VPN_SIG "ppp"
 #define VPN_DEF "ppp0"
 
 
@@ -62,7 +62,6 @@ int getHWStatistic(unsigned long long* rxtx_count);
 char* getIntIp(pool_t * pool);
 
 int firmware_upgrade(char* filename);
-
 
 //////////////////////////
 
@@ -78,8 +77,6 @@ static INLINE unsigned int TRstrcmp(const char * str, const char * dst)
     return strcmp(str, dst);
 }
 
-
-
 static INLINE unsigned int TRstrncmp(const char * str, const char * dst, unsigned int length)
 {
     if (!str || !dst || length <= 0)
@@ -88,7 +85,6 @@ static INLINE unsigned int TRstrncmp(const char * str, const char * dst, unsigne
     }
     return strncmp(str, dst, length);
 }
-
 
 static INLINE int TRstrncasecmp(const char * s1, const char * s2, size_t n)
 {
@@ -114,7 +110,6 @@ static INLINE int TRstrncasecmp(const char * s1, const char * s2, size_t n)
     return strncasecmp(s1, s2, n);
 #endif
 }
-
 
 static INLINE  int TRstrcasecmp(const char * str, const char * dst)
 {
@@ -302,18 +297,17 @@ static INLINE int is_digit(const char *str)
 
 /* TODO: to libwive */
 enum upgrade_status {
-	/* no upgrade workers */
-	UPGRADE_NONE,
-	/* download image */
-	UPGRADE_DOWNLOAD,
-	/* check image */
-	UPGRADE_CHECK,
-	/* prepare to upgrade */
-	UPGRADE_PREPARE,
-	/* write image to nvram */
-	UPGRADE_WRITE
+    /* no upgrade workers */
+    UPGRADE_NONE,
+    /* download image */
+    UPGRADE_DOWNLOAD,
+    /* check image */
+    UPGRADE_CHECK,
+    /* prepare to upgrade */
+    UPGRADE_PREPARE,
+    /* write image to nvram */
+    UPGRADE_WRITE
 };
-
 
 const char * upgrade_status_to_string(enum upgrade_status s);
 
