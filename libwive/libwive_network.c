@@ -33,7 +33,6 @@ const vpn_status_t lanauth_statuses[] =
 };
 #endif
 
-
 uint64_t hton64(uint64_t v)
 {
         return (((uint64_t)htonl(v)) << 32) | htonl(v >> 32);
@@ -314,7 +313,6 @@ void arplookup(char *ip, char *arp)
 }
 
 #ifdef CONFIG_USER_KABINET
-
 /* getLANAUTHState - Get lanauth state
  *
  * return: actual lanauth state+1 or 0 if lanauth process not found
@@ -322,50 +320,24 @@ void arplookup(char *ip, char *arp)
 static int getLANAUTHState()
 {
 	FILE *fp;
-	char result[96],*r;
-	unsigned int i, state;
+	char result[2];
 
-	fp = popen("ps|grep lanaut[h]", "r");
+	fp = popen("ps | grep lanaut[h] | sed 's|.*-A ||'", "r");
 	if(!fp){
 		syslog(LOG_ERR, "no ps util exist, %s", __FUNCTION__);
 		return -1;
 	}
 	fgets(result, sizeof(result), fp);
 	pclose(fp);
-	for (i=0, state=0, r=result; *r && i<sizeof(result) ;i++,r++)
-	{
-		switch(state)
-		{
-			case 0:
-				if (*r == '-')
-					state++;
-				break;
-			case 1:
-				if (*r == 'A')
-					state++;
-				else
-					state = 0;
-				break;
-			case 2:
-				if (*r == ' ' || *r == '\t')
-					state = 3;
-				else
-					state = 0;
-				break;
-			case 3:
-				if (*r == '0')
-					return 1;
-				else if (*r == '1')
-					return 2;
-				else if (*r == '2')
-					return 3;
-				else
-					state = 0;
-			default:
-				break;
-		}
-	}
-	return 0;
+
+	if (result[0] == '0')
+		return 1;
+	else if (result[0] == '1')
+		return 2;
+	else if (result[0] == '2')
+		return 3;
+	else
+		return 0;
 }
 #endif
 
@@ -384,11 +356,10 @@ int getVPNStatusCode()
 	// Do not perform other checks if VPN is turned off
 	if (strcmp(vpn_enabled, "on")==0) {
 #ifdef CONFIG_USER_KABINET
-		char *vpn_type = nvram_get(RT2860_NVRAM, "vpnType");
-
-		if (CHK_IF_DIGIT(vpn_type, 3)) {
+		int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
+		if (vpn_type == 3)
 			status = (getLANAUTHState() + 1) % 5;
-		} else {
+		else {
 #endif
 			// Status is at least 'offline' now
 			status++;
@@ -445,16 +416,11 @@ const char* getVPNStatusStr()
 {
     const vpn_status_t *st_table = vpn_statuses;
     int status = getVPNStatusCode();
-
 #ifdef CONFIG_USER_KABINET
     int vpn_type = nvram_get_int(RT2860_NVRAM, "vpnType", -1);
-
     if (vpn_type == 3)
-    {
         st_table = lanauth_statuses;
-    }
 #endif
-
     return st_table[status].statusStr;
 }
 

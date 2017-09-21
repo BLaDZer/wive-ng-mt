@@ -42,6 +42,6 @@
 #include "libwive_sysstat.h"
 #include "libwive_system.h"
 #include "libwive_wireless.h"
-
+#include "config/autoconf.h"
 
 #endif
