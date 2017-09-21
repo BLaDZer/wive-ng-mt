@@ -657,7 +657,7 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
             {
                 ent_capacity += 32;
 
-                struct WLAN_AP_ENTRY* new_entries = realloc(entries, ent_capacity);
+                struct WLAN_AP_ENTRY* new_entries = realloc(entries, ent_capacity*sizeof(struct WLAN_AP_ENTRY));
                 if (new_entries != NULL)
                 {
                     entries = new_entries;
