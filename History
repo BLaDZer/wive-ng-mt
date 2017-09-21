@@ -3387,6 +3387,7 @@
 5) defaults: increase FT key life time to one hour.<br>
 6) init.d: add change flow control logic (pause frame support disabled by default).<br>
 7) init.d: fix pppoe work with *_vlan ports mode.<br>
+8) init.d: chillispot allow access local clients by mac without radius check if configured.<br>
 8) goahead: add flow control webui and fix reboot logic at apply switch changes.<br>
 9) goahead: fix regression crash at apply settings in some cases.<br>
 10) goahead: libwive: fix lanauth status get.<br>

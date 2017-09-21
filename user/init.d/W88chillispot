@@ -96,7 +96,7 @@ stop() {
 }
 
 get_params() {
-    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain chilli_clisolate chilli_https`
+    eval `nvram_buf_get 2860 chilli_debug chilli_radiusserver1 chilli_radiusnasid chilli_uamdomain chilli_macallowed chilli_clisolate chilli_https`
 
     # add static defaults
     # limit child process num at one time (prevent overload slow router cpu and mem usage limit)
@@ -114,6 +114,11 @@ get_params() {
     # uamdomain support depended by allow redirdnsreq
     if [ "$chilli_uamdomain" != "" ]; then
 	PARLINE="$PARLINE --redirdnsreq"
+    fi
+
+    # allow access local clients by mac without radius check if configured
+    if [ "$chilli_macallowed" != "" ]; then
+	PARLINE="$PARLINE --macallowlocal"
     fi
 
     # for future support ipv6 (not complite in upstream need fix first)
