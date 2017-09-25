@@ -105,7 +105,11 @@ static int pcie_link_status = 0;
 #if defined (CONFIG_RALINK_I2S) || defined (CONFIG_RALINK_I2S_MODULE) || defined (CONFIG_PCIE_PERST_ONLY)
 #define UARTL3_SHARE_PIN_SW		PCIE_SHARE_PIN_SW
 #define GPIO_PCIE_PORT1			GPIO_PCIE_PORT0
+#ifdef CONFIG_PCIE_PERST_EXTP2
+#define GPIO_PCIE_PORT2			17
+#else
 #define GPIO_PCIE_PORT2			GPIO_PCIE_PORT0
+#endif
 #else
 #define UARTL3_SHARE_PIN_SW		3	// UART3 GPIO Mode
 #define GPIO_PCIE_PORT1			8	// RXD3 (I2S_SDI)
