@@ -2893,7 +2893,8 @@ BOOLEAN RT28xxPciAsicRadioOff(
 	if (pAd->chipCap.hif_type == HIF_MT) {
 		DBGPRINT(RT_DEBUG_TRACE, ("%s(): Not support for HIF_MT yet!\n",
 					__FUNCTION__));
-		return FALSE;
+		/* always return true for this */
+		return TRUE;
 	}
 
 #if defined(RTMP_MAC) || defined(RLT_MAC)

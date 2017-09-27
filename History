@@ -3422,6 +3422,8 @@
 39) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
 40) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
 41) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+42) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
+43) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
 <br>
