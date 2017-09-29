@@ -3393,44 +3393,45 @@
 10) goahead: libwive: fix lanauth status get.<br>
 11) goahead: libwive: fix crash at apscan in some cases.<br>
 12) netcwmpd: code review and some fixups.<br>
-13) uqmi/libubox: update to currecnt versions.<br>
-14) usbctl: fix cdc mode and more human readable debug.<br>
-15) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
-16) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
-17) kernel: signal: only reschedule timers on signals timers have sent.<br>
-18) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
-19) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
-20) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
-21) kernel: list: use READ_ONCE() when testing for empty lists.<br>
-22) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
-23) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
-24) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
-25) kernel: driver core: bus: fix a potential double free.<br>
-26) kernel: net: add kfree_skb_list().<br>
-27) kernel: net: prevent sign extension in dev_get_stats().<br>
-28) kernel: net: use 32-bit arithmetic while allocating net device.<br>
-29) kernel: net: set sk_prot_creator when cloning sockets to the right proto.<br>
-30) kernel: net: af_packet: use setup_timer() helper.<br>
-31) kernel: net: ping: do not abuse udp_poll().<br>
-32) kernel: net: tcp: initialize rcv_mss to TCP_MIN_MSS instead of 0.<br>
-33) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
-34) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-35) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
-36) kernel: net: ipv6: only call ip6_route_dev_notify() once for NETDEV_UNREGISTER.<br>
-37) kernel: net: ipv6: accept 64k - 1 packet length in ip6_find_1stfragopt().<br>
-38) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-39) kernel: net: xfrm: policy: check policy direction value.<br>
-40) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
-41) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
-42) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
-43) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-44) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-45) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-46) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-47) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-48) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
-49) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
-50) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
+13) uqmi: update to currecnt version from git 19.12.2016 (commit 3c5d5a61).
+14) libubox: update to currecnt version from git 15.09.2017 (commit 5c3b920c).<br>
+15) usbctl: fix cdc mode and more human readable debug.<br>
+16) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
+17) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
+18) kernel: signal: only reschedule timers on signals timers have sent.<br>
+19) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
+20) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
+21) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
+22) kernel: list: use READ_ONCE() when testing for empty lists.<br>
+23) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
+24) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
+25) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
+26) kernel: driver core: bus: fix a potential double free.<br>
+27) kernel: net: add kfree_skb_list().<br>
+28) kernel: net: prevent sign extension in dev_get_stats().<br>
+29) kernel: net: use 32-bit arithmetic while allocating net device.<br>
+30) kernel: net: set sk_prot_creator when cloning sockets to the right proto.<br>
+31) kernel: net: af_packet: use setup_timer() helper.<br>
+32) kernel: net: ping: do not abuse udp_poll().<br>
+33) kernel: net: tcp: initialize rcv_mss to TCP_MIN_MSS instead of 0.<br>
+34) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
+35) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+36) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
+37) kernel: net: ipv6: only call ip6_route_dev_notify() once for NETDEV_UNREGISTER.<br>
+38) kernel: net: ipv6: accept 64k - 1 packet length in ip6_find_1stfragopt().<br>
+39) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+40) kernel: net: xfrm: policy: check policy direction value.<br>
+41) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
+42) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
+43) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
+44) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+45) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+46) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+47) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+48) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+49) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+50) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
+51) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
 <br>
