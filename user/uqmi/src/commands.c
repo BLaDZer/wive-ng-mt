@@ -1,3 +1,24 @@
+/*
+ * uqmi -- tiny QMI support implementation
+ *
+ * Copyright (C) 2014-2015 Felix Fietkau <nbd@openwrt.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301 USA.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -5,11 +26,13 @@
 #include <unistd.h>
 
 #include <libubox/blobmsg.h>
+//#include <libubox/blobmsg_json.h>
 
 #include "uqmi.h"
 #include "commands.h"
 
 static struct blob_buf status;
+bool single_line = false;
 
 static void no_cb(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg *msg)
 {
@@ -18,16 +41,20 @@ static void no_cb(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg *
 static void cmd_version_cb(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg *msg)
 {
 	struct qmi_ctl_get_version_info_response res;
+	void *c;
 	char name_buf[16];
 	int i;
 
 	qmi_parse_ctl_get_version_info_response(msg, &res);
+
+	c = blobmsg_open_table(&status, NULL);
 	for (i = 0; i < res.data.service_list_n; i++) {
 		sprintf(name_buf, "service_%d", res.data.service_list[i].service);
 		blobmsg_printf(&status, name_buf, "%d,%d",
 			res.data.service_list[i].major_version,
 			res.data.service_list[i].minor_version);
 	}
+	blobmsg_close_table(&status, c);
 }
 
 static enum qmi_cmd_result
@@ -37,12 +64,18 @@ cmd_version_prepare(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg
 	return QMI_CMD_REQUEST;
 }
 
+#define cmd_sync_cb no_cb
+static enum qmi_cmd_result
+cmd_sync_prepare(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg *msg, char *arg)
+{
+	qmi_set_ctl_sync_request(msg);
+	return QMI_CMD_REQUEST;
+}
+
 #define cmd_get_client_id_cb no_cb
 static enum qmi_cmd_result
 cmd_get_client_id_prepare(struct qmi_dev *qmi, struct qmi_request *req, struct qmi_msg *msg, char *arg)
 {
-	FILE *fp;
-	int qmi_client_id;
 	QmiService svc = qmi_service_get_by_name(arg);
 
 	if (svc < 0) {
@@ -55,16 +88,7 @@ cmd_get_client_id_prepare(struct qmi_dev *qmi, struct qmi_request *req, struct q
 		return QMI_CMD_EXIT;
 	}
 
-	qmi_client_id = qmi_service_get_client_id(qmi, svc);
-
-	fp = fopen("/tmp/qmi-client-id", "w+");
-	if (fp) {
-		fprintf(fp, "%d", qmi_client_id);
-		fclose(fp);
-	}
-
-	printf("%d\n", qmi_client_id);
-
+	printf("%d\n", qmi_service_get_client_id(qmi, svc));
 	return QMI_CMD_DONE;
 }
 
@@ -132,7 +156,7 @@ cmd_ctl_set_data_format_prepare(struct qmi_dev *qmi, struct qmi_request *req, st
 	int mode = qmi_get_array_idx(modes, ARRAY_SIZE(modes), arg);
 
 	if (mode < 0) {
-		blobmsg_add_string(&status, "error", "Invalid mode (modes: 802.3, raw-ip)");
+		uqmi_add_error("Invalid mode (modes: 802.3, raw-ip)");
 		return QMI_CMD_EXIT;
 	}
 
@@ -144,6 +168,8 @@ cmd_ctl_set_data_format_prepare(struct qmi_dev *qmi, struct qmi_request *req, st
 #include "commands-dms.c"
 #include "commands-nas.c"
 #include "commands-wms.c"
+#include "commands-wda.c"
+#include "commands-uim.c"
 
 #define __uqmi_command(_name, _optname, _arg, _type) \
 	[__UQMI_COMMAND_##_name] = { \
@@ -192,8 +218,8 @@ static void uqmi_print_result(struct blob_attr *data)
 
 static bool __uqmi_run_commands(struct qmi_dev *qmi, bool option)
 {
-	static char buf[2048];
 	static struct qmi_request req;
+	char *buf = qmi->buf;
 	int i;
 
 	for (i = 0; i < n_cmds; i++) {
@@ -207,17 +233,17 @@ static bool __uqmi_run_commands(struct qmi_dev *qmi, bool option)
 		blob_buf_init(&status, 0);
 		if (cmds[i].handler->type > QMI_SERVICE_CTL &&
 		    qmi_service_connect(qmi, cmds[i].handler->type, -1)) {
-			blobmsg_printf(&status, "error", "failed to connect to service");
+			uqmi_add_error("Failed to connect to service");
 			res = QMI_CMD_EXIT;
 		} else {
 			res = cmds[i].handler->prepare(qmi, &req, (void *) buf, cmds[i].arg);
 		}
 
 		if (res == QMI_CMD_REQUEST) {
-			qmi_request_start(qmi, &req, (void *) buf, cmds[i].handler->cb);
+			qmi_request_start(qmi, &req, cmds[i].handler->cb);
 			req.no_error_cb = true;
 			if (qmi_request_wait(qmi, &req)) {
-				blobmsg_add_string(&status, "error", qmi_get_error_str(req.ret));
+				uqmi_add_error(qmi_get_error_str(req.ret));
 				do_break = true;
 			}
 		} else if (res == QMI_CMD_EXIT) {
@@ -229,6 +255,12 @@ static bool __uqmi_run_commands(struct qmi_dev *qmi, bool option)
 			return false;
 	}
 	return true;
+}
+
+int uqmi_add_error(const char *msg)
+{
+	blobmsg_add_string(&status, NULL, msg);
+	return QMI_CMD_EXIT;
 }
 
 bool uqmi_run_commands(struct qmi_dev *qmi)

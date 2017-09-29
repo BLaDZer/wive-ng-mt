@@ -1,7 +1,7 @@
 /*
  * uqmi -- tiny QMI support implementation
  *
- * Copyright (C) 2014-2015 Felix Fietkau <nbd@openwrt.org>
+ * Copyright (C) 2016 Felix Fietkau <nbd@nbd.name>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,44 +19,12 @@
  * Boston, MA 02110-1301 USA.
  */
 
-#ifndef __QMI_STRUCT_H
-#define __QMI_STRUCT_H
+#define __uqmi_uim_commands												\
+	__uqmi_command(uim_verify_pin1, uim-verify-pin1, required, QMI_SERVICE_UIM), \
+	__uqmi_command(uim_verify_pin2, uim-verify-pin2, required, QMI_SERVICE_UIM) \
 
-struct qmux {
-	uint16_t len;
-	uint8_t flags;
-	uint8_t service;
-	uint8_t client;
-} __packed;
 
-struct tlv {
-	uint8_t type;
-	uint16_t len;
-	uint8_t data[];
-} __packed;
+#define uim_helptext \
+		"  --uim-verify-pin1 <pin>:          Verify PIN1 (new devices)\n" \
+		"  --uim-verify-pin2 <pin>:          Verify PIN2 (new devices)\n" \
 
-struct qmi_ctl {
-	uint8_t transaction;
-	uint16_t message;
-	uint16_t tlv_len;
-	struct tlv tlv[];
-} __packed;
-
-struct qmi_svc {
-	uint16_t transaction;
-	uint16_t message;
-	uint16_t tlv_len;
-	struct tlv tlv[];
-} __packed;
-
-struct qmi_msg {
-	uint8_t marker;
-	struct qmux qmux;
-	uint8_t flags;
-	union {
-		struct qmi_ctl ctl;
-		struct qmi_svc svc;
-	};
-} __packed;
-
-#endif
