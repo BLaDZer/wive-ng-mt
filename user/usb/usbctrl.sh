@@ -34,9 +34,55 @@ if [ -d /sys${DEVPATH} ]; then
     done
 fi
 
+# Use class code info from Interface Descriptors
 [ 0 -eq "${TYPE%%/*}" ] && TYPE=$INTERFACE
+$LOG "TYPE=${TYPE} INTERFACE=${INTERFACE}"
+
+probe_cdc() {
+    case $INTERFACE in
+	2/2/*)
+	    $LOG "Found Abstract Control Model(USBPSTN). Try load module cdc_acm"
+	    modprobe -q cdc_acm
+	    ;;
+	2/6/*)
+	    $LOG "Found Ethernet Network Control Model(USBECM). Try load module cdc_ether"
+	    modprobe -q cdc_ether
+	    ;;
+	2/9/*)
+	    $LOG "Found Device Management(USBWMC). Try load module cdc_wdm"
+	    modprobe -q cdc_wdm
+	    ;;
+	2/13/*)
+	    $LOG "Found Network Control Model(USBNCM). Try load module cdc_ncm"
+	    modprobe -q cdc_ncm
+	    ;;
+	2/14/*)
+	    $LOG "Found Mobile Broadband Interface Model(USBMBIM). Try load module cdc_mbim"
+	    modprobe -q cdc_mbim
+	    ;;
+	2/*)
+	    $LOG "Found CDC unknow subclass"
+	    ;;
+    esac
+}
 
 case $TYPE in
+    1/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be audio device, but now not support"
+	;;
+    2/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be CDC"
+	probe_cdc
+	;;
+    3/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be HID device class, but now not support"
+	;;
+    5/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be physical device class, but now not support"
+	;;
+    6/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Still Imaging device, but now not support"
+	;;
     7/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be printer"
 	if [ ! -d /sys/module/usblp ]; then
@@ -49,7 +95,7 @@ case $TYPE in
 	    mknod /dev/usb/lp0 c 180 0
 	fi
 	;;
-    8/6/*)
+    8/*)
 	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then
 	    $LOG "${ACTION} ${idVendor}:${idProduct} may be 3G modem in zero CD mode. Call usb_modeswitch"
 	    usb_modeswitch -v ${idVendor} -p ${idProduct} -c /share/usb_modeswitch/${idVendor}:${idProduct}
@@ -83,7 +129,25 @@ case $TYPE in
 	    fi
 	fi
         ;;
-    255/255/255)
+    9/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be hub, but now not support"
+	;;
+    10/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be CDC data device, but now not support"
+	;;
+    11/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Smart Card device, but now not support"
+	;;
+    13/0/0)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Content Security device, but now not support"
+	;;
+    14/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Video device, but now not support"
+	;;
+    15/*)
+	$LOG "${ACTION} ${idVendor}:${idProduct} may be Personal Healthcare device, but now not support"
+	;;
+    255/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be 3G/4G modem, try drivers load"
 	if [ "${idVendor}" = "0af0" ]; then
 	    $LOG "Load HSO for ${idVendor}:${idProduct}"
@@ -96,11 +160,12 @@ case $TYPE in
 		modprobe -q usbserial vendor=0x${idVendor} product=0x${idProduct}
 	    fi
 	else
-	    $LOG "Uncknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
-	    mod="usbserial option cdc_acm cdc-wdm cdc_ether cdc_mbim cdc_ncm huawei_cdc_ncm pl2303 usb_wwan qmi_wwan qcserial hso"
+	    $LOG "Unknown or not serial modem module ${idVendor}:${idProduct}, try load all builded drivers"
+	    mod="usbserial option pl2303 qmi_wwan qcserial hso"
 	    for module in $mod
 	    do
 		if [ ! -d /sys/module/$module ]; then
+			$LOG "Try load ${module}"
 		    modprobe -q $module
 		fi
 	    done
