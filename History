@@ -3420,18 +3420,19 @@
 37) kernel: net: ipv6: only call ip6_route_dev_notify() once for NETDEV_UNREGISTER.<br>
 38) kernel: net: ipv6: accept 64k - 1 packet length in ip6_find_1stfragopt().<br>
 39) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-40) kernel: net: xfrm: policy: check policy direction value.<br>
-41) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
-42) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
-43) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
-44) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-45) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-46) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-47) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-48) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-49) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
-50) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
-51) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
+40) kernel: net: ipv4/ip_output: fix crash on SMB fastpath.<br>
+41) kernel: net: xfrm: policy: check policy direction value.<br>
+42) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
+43) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
+44) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
+45) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+46) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+47) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+48) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+49) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+50) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+51) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
+52) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
 <br>
