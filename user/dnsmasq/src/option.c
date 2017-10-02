@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2016 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2017 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -660,7 +660,7 @@ static int atoi_check8(char *a, int *res)
   return 1;
 }
 #endif
-	
+
 #ifndef NO_ID
 static void add_txt(char *name, char *txt, int stat)
 {
@@ -674,7 +674,7 @@ static void add_txt(char *name, char *txt, int stat)
       *(r->txt) = len;
       memcpy((r->txt)+1, txt, len);
     }
-  
+
   r->stat = stat;
   r->name = opt_string_alloc(name);
   r->next = daemon->txt;
@@ -855,7 +855,7 @@ char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_a
 	      if (interface_opt)
 		return _("interface can only be specified once");
 	      
-	      source_addr->in6.sin6_addr = in6addr_any; 
+	      source_addr->in6.sin6_addr = in6addr_any;
 	      strncpy(interface, source, IF_NAMESIZE - 1);
 #else
 	      return _("interface binding not supported");
@@ -878,11 +878,11 @@ static struct server *add_rev4(struct in_addr addr, int msize)
 
   memset(serv, 0, sizeof(struct server));
   p = serv->domain = opt_malloc(29); /* strlen("xxx.yyy.zzz.ttt.in-addr.arpa")+1 */
-  
+
   switch (msize)
     {
     case 32:
-    p += sprintf(p, "%d.", a & 0xff);
+      p += sprintf(p, "%u.", a & 0xff);
       /* fall through */
     case 24:
       p += sprintf(p, "%d.", (a >> 8) & 0xff);
@@ -1415,7 +1415,7 @@ static int parse_dhcp_opt(char *errstr, char *arg, int flags)
 		    }
 		  
 		  p = newp;
-		  end = do_rfc1035_name(p + len, dom);
+		  end = do_rfc1035_name(p + len, dom, NULL);
 		  *end++ = 0;
 		  len = end - p;
 		  free(dom);
@@ -2013,10 +2013,10 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		  }
 		else
 		  {
-		subnet->next = new->subnet;
-		new->subnet = subnet;
+		    subnet->next = new->subnet;
+		    new->subnet = subnet;
+		  }
 	      }
-	  }
 	  }
 	break;
       }
@@ -2477,7 +2477,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 
 	if (inet_pton(AF_INET, arg, &addr4))
 	  {
-	  serv = add_rev4(addr4, size);
+	    serv = add_rev4(addr4, size);
 	    if (!serv)
 	      ret_err(_("bad prefix"));
 	  }
@@ -3356,7 +3356,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
        {
 	 struct dhcp_opt *new = opt_malloc(sizeof(struct dhcp_opt));
 	 int timeout;
-
+	 
 	 new->netid = NULL;
 	 new->opt = 10; /* PXE_MENU_PROMPT */
 
@@ -3836,19 +3836,19 @@ err:
 	    pen = last;
 	    last = comma;
 	  }
-	
+
 	if (!pen)
 	  ret_err(_("bad CNAME"));
 	
 	if (pen != arg && atoi_check(last, &ttl))
 	  last = pen;
-	    
+	  	
     	target = canonicalise_opt(last);
 
 	while (arg != last)
 	  {
 	    alias = canonicalise_opt(arg);
-	    
+
 	    if (!alias || !target)
 	      ret_err(_("bad CNAME"));
 	    
@@ -4769,13 +4769,13 @@ void read_opts(int argc, char **argv, char *compile_opts)
 
 #define NOLOOP 1
 #define TESTLOOP 2      
-      
+
       /* Fill in TTL for CNAMES noe we have local_ttl.
 	 Also prepare to do loop detection. */
       for (cn = daemon->cnames; cn; cn = cn->next)
 	{
-	if (cn->ttl == -1)
-	  cn->ttl = daemon->local_ttl;
+	  if (cn->ttl == -1)
+	    cn->ttl = daemon->local_ttl;
 	  cn->flag = 0;
 	  cn->targetp = NULL;
 	  for (cn2 = daemon->cnames; cn2; cn2 = cn2->next)

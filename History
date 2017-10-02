@@ -3382,68 +3382,69 @@
 <b>6.5.x</b><br>
 1) build_system: add SNR-CPE-CG1 prototype support.<br>
 2) busybox: update to 1.27.2 stable version.<br>
-3) handoff: change defaults for more smooth client migration.<br>
-4) defaults: disable FT over DS and resource request support by default (compat with some clients issue).<br>
-5) defaults: increase FT key life time to one hour.<br>
-6) init.d: add change flow control logic (pause frame support disabled by default).<br>
-7) init.d: fix pppoe work with *_vlan ports mode.<br>
-8) init.d: chillispot allow access local clients by mac without radius check if configured.<br>
-8) goahead: add flow control webui and fix reboot logic at apply switch changes.<br>
-9) goahead: fix regression crash at apply settings in some cases.<br>
-10) goahead: libwive: fix lanauth status get.<br>
-11) goahead: libwive: fix crash at apscan in some cases.<br>
-12) cli: add easy parseble version scan report.<br>
-13) netcwmpd: code review and some fixups.<br>
-14) uqmi: update to currecnt version from git 19.12.2016 (commit 3c5d5a61).
-15) libubox: update to currecnt version from git 15.09.2017 (commit 5c3b920c).<br>
-16) usbctl: fix cdc mode and more human readable debug.<br>
-17) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
-18) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
-19) kernel: mips: kgdb: use kernel context for sleeping threads.<br>
-20) kernel: signal: only reschedule timers on signals timers have sent.<br>
-21) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
-22) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
-23) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
-24) kernel: list: use READ_ONCE() when testing for empty lists.<br>
-25) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
-26) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
-27) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
-28) kernel: driver core: bus: fix a potential double free.<br>
-29) kernel: keys: fix dereferencing NULL payload with nonzero length.<br>
-30) kernel: module: fix sprintf format specifier in param_get_byte().<br>
-31) kernel: net: add kfree_skb_list().<br>
-32) kernel: net: prevent sign extension in dev_get_stats().<br>
-33) kernel: net: use 32-bit arithmetic while allocating net device.<br>
-34) kernel: net: set sk_prot_creator when cloning sockets to the right proto.<br>
-35) kernel: net: af_packet: use setup_timer() helper.<br>
-36) kernel: net: ping: do not abuse udp_poll().<br>
-37) kernel: net: netfilter: ctnetlink: fix incorrect nf_ct_put during hash resize.<br>
-38) kernel: net: tcp: initialize rcv_mss to TCP_MIN_MSS instead of 0.<br>
-39) kernel: net: tcp: fix wraparound issue in tcp_lp.<br>
-40) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
-41) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
-42) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
-43) kernel: net: ipv6: only call ip6_route_dev_notify() once for NETDEV_UNREGISTER.<br>
-44) kernel: net: ipv6: accept 64k - 1 packet length in ip6_find_1stfragopt().<br>
-45) kernel: net: ipv6/dccp: do not inherit ipv6_mc_list from parent.<br>
-46) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
-47) kernel: net: ipv4: dccp/tcp: do not inherit mc_list from parent.<br>
-48) kernel: net: ipv4/ip_output: fix crash on SMB fastpath.<br>
-49) kernel: net: xfrm: policy: check policy direction value.<br>
-50) kernel: net: xfrm: fix memory leak of aead algorithm name.<br>
-51) kernel: net: xfrm_user: validate XFRM_MSG_NEWAE XFRMA_REPLAY_ESN_VAL replay_window.<br>
-52) kernel: net: xfrm_user: validate XFRM_MSG_NEWAE incoming ESN size harder.<br>
-53) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
-54) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
-55) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
-56) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
-57) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
-58) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
-59) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
-60) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-61) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
-62) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
-63) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
+3) dnsmasq: update to 2.78 stable version.<br>
+4) handoff: change defaults for more smooth client migration.<br>
+5) defaults: disable FT over DS and resource request support by default (compat with some clients issue).<br>
+6) defaults: increase FT key life time to one hour.<br>
+7) init.d: add change flow control logic (pause frame support disabled by default).<br>
+8) init.d: fix pppoe work with *_vlan ports mode.<br>
+9) init.d: chillispot allow access local clients by mac without radius check if configured.<br>
+10) goahead: add flow control webui and fix reboot logic at apply switch changes.<br>
+11) goahead: fix regression crash at apply settings in some cases.<br>
+12) goahead: libwive: fix lanauth status get.<br>
+13) goahead: libwive: fix crash at apscan in some cases.<br>
+14) cli: add easy parseble version scan report.<br>
+15) netcwmpd: code review and some fixups.<br>
+16) uqmi: update to currecnt version from git 19.12.2016 (commit 3c5d5a61).
+17) libubox: update to currecnt version from git 15.09.2017 (commit 5c3b920c).<br>
+18) usbctl: fix cdc mode and more human readable debug.<br>
+19) kernel: arch: introduce smp_load_acquire(), smp_store_release().<br>
+20) kernel: mips: kprobes: flush_insn_slot should flush only if probe initialised.<br>
+21) kernel: mips: kgdb: use kernel context for sleeping threads.<br>
+22) kernel: signal: only reschedule timers on signals timers have sent.<br>
+23) kernel: compiler: allow 1- and 2-byte smp_load_acquire() and smp_store_release().<br>
+24) kernel: locking, arch: use WRITE_ONCE()/READ_ONCE() in smp_store_release()/smp_load_acquire().<br>
+25) kernel: futex: replace barrier() in unqueue_me() with READ_ONCE().<br>
+26) kernel: list: use READ_ONCE() when testing for empty lists.<br>
+27) kernel: cpumask: fix spurious cpumask_of_node() on non-NUMA multi-node configs.<br>
+28) kernel: epoll: fix race between ep_poll_callback(POLLFREE) and ep_free()/ep_remove().<br>
+29) kernel: usb: core: avoid race of async_completed() w/ usbdev_release().<br>
+30) kernel: driver core: bus: fix a potential double free.<br>
+31) kernel: keys: fix dereferencing NULL payload with nonzero length.<br>
+32) kernel: module: fix sprintf format specifier in param_get_byte().<br>
+33) kernel: net: add kfree_skb_list().<br>
+34) kernel: net: prevent sign extension in dev_get_stats().<br>
+35) kernel: net: use 32-bit arithmetic while allocating net device.<br>
+36) kernel: net: set sk_prot_creator when cloning sockets to the right proto.<br>
+37) kernel: net: af_packet: use setup_timer() helper.<br>
+38) kernel: net: ping: do not abuse udp_poll().<br>
+39) kernel: net: netfilter: ctnetlink: fix incorrect nf_ct_put during hash resize.<br>
+40) kernel: net: tcp: initialize rcv_mss to TCP_MIN_MSS instead of 0.<br>
+41) kernel: net: tcp: fix wraparound issue in tcp_lp.<br>
+42) kernel: net: ipv6: ip6_tunnel: fix missing tunnel encapsulation limit option.<br>
+43) kernel: net: ipv6: need to export ipv6_push_frag_opts for tunneling now.<br>
+44) kernel: net: ipv6: fix leak in ipv6_gso_segment().<br>
+45) kernel: net: ipv6: only call ip6_route_dev_notify() once for NETDEV_UNREGISTER.<br>
+46) kernel: net: ipv6: accept 64k - 1 packet length in ip6_find_1stfragopt().<br>
+47) kernel: net: ipv6/dccp: do not inherit ipv6_mc_list from parent.<br>
+48) kernel: net: ipv4: better IP_MAX_MTU enforcement.<br>
+49) kernel: net: ipv4: dccp/tcp: do not inherit mc_list from parent.<br>
+50) kernel: net: ipv4/ip_output: fix crash on SMB fastpath.<br>
+51) kernel: net: xfrm: policy: check policy direction value.<br>
+52) kernel: net: xfrm: fix memory leak of aead algorithm name.<br>
+53) kernel: net: xfrm_user: validate XFRM_MSG_NEWAE XFRMA_REPLAY_ESN_VAL replay_window.<br>
+54) kernel: net: xfrm_user: validate XFRM_MSG_NEWAE incoming ESN size harder.<br>
+55) kernel: ralink_arch: pci: add support use different PERST_N pin (GPIO17) to reset external PCIe slot peripherals.<br>
+56) kernel: ralink_arch: pci: increase init timeouts for more stable pci devices detect.<br>
+57) kernel: ralink_raeth: fix change flow control by ethtool for MT7621.<br>
+58) kernel: ralink_wifi: fast rate up at hibryd rule at low PER to.<br>
+59) kernel: ralink_wifi: 3 seconds increase kick out delay for high traffic clients (more smooth roam).<br>
+60) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
+61) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
+62) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
+63) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+64) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
+65) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
 <br>
