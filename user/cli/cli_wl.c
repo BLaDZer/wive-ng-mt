@@ -165,6 +165,48 @@ int doAPScan(char* iface)
     return 0;
 }
 
+int doAPScan_report(char* iface)
+{
+    int ent_count = 0;
+    char* band_str = "2.4";
+    struct WLAN_AP_ENTRY *entries = wlanAPScan(iface, &ent_count);
+
+    if (entries == NULL)
+    {
+        return 1;
+    }
+
+    if (strcmp(iface,"rai0") == 0)
+    {
+        band_str = "5";
+    }
+
+    printf("APSCAN\n");
+
+    int n;
+    for (n=0;n<ent_count;n++)
+    {
+        printf("APSCANELEM");
+        printf("\t%s", band_str);
+        printf("\t%u", entries[n].chan);
+        printf("\t%s", entries[n].ssid);
+        printf("\t%02X:%02X:%02X:%02X:%02X:%02X", entries[n].bssid[0], entries[n].bssid[1], entries[n].bssid[2], entries[n].bssid[3], entries[n].bssid[4], entries[n].bssid[5]);
+        printf("\t%s", entries[n].security);
+        printf("\t%u", entries[n].signal_percent);
+        printf("\t%s", entries[n].wmode);
+        printf("\t%s", entries[n].extch);
+        printf("\t%s", entries[n].nt);
+        printf("\n");
+    }
+
+    free(entries);
+
+    return 0;
+}
+
+
+
+
 void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 {
         printf("%-3d", pe->Aid);
@@ -193,15 +235,22 @@ void printMacEntry(RT_802_11_MAC_ENTRY* pe)
 
 }
 
-void printMacEntry_report(RT_802_11_MAC_ENTRY* pe, int band_num)
+void printMacEntry_report(RT_802_11_MAC_ENTRY* pe, int band_num, char* line_code)
 {
         char mac[18] = {0};
 
-        printf("STALISTELEM\t");
+        if (band_num > 0)
+        {
+            getWlanCurrentMacAddr(mac, band_num);
+        }
 
-        getWlanCurrentMacAddr(mac, band_num);
+        printf("%s\t", line_code);
 
-        printf("%s\t", mac);
+        if (band_num > 0)
+        {
+            printf("%s\t", mac);
+        }
+
         printf("%02X:%02X:%02X:%02X:%02X:%02X\t", pe->Addr[0], pe->Addr[1], pe->Addr[2], pe->Addr[3], pe->Addr[4], pe->Addr[5]);
         printf("%u\t", pe->ConnectedTime);
         printf("%u\t", pe->Psm);
@@ -241,7 +290,7 @@ int showStationList_report(char* iface)
     for (i = 0; i < table.Num; i++) 
     {
         RT_802_11_MAC_ENTRY *pe = &(table.Entry[i]);
-        printMacEntry_report(pe, band_num);
+        printMacEntry_report(pe, band_num, "STALISTELEM");
     }
 
     return 0;
@@ -327,6 +376,13 @@ int func_wl(int argc, char* argv[])
 
 int func_wl_wds(int argc, char* argv[])
 {
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_wl_wds_report(argc, argv);
+    }
+
     writeHeader("WDS");
 
     int wds_enabled = nvram_get_int(RT2860_NVRAM, "WdsEnable", 0);
@@ -358,6 +414,39 @@ int func_wl_wds(int argc, char* argv[])
     return 0;
 }
 
+int func_wl_wds_report(int argc, char* argv[])
+{
+    int wds_enabled = nvram_get_int(RT2860_NVRAM, "WdsEnable", 0);
+    printf("WDS status\t%s\n",wds_enabled?"1":"0");
+
+    if (wds_enabled)
+    {
+        char wdsifname[IFNAMSIZ] = {0};
+        int n;
+
+        printf("WDSLIST\n");
+
+        for (n=0;n<4;n++)
+        {
+            RT_802_11_MAC_ENTRY entry = {0};
+            snprintf(wdsifname, IFNAMSIZ-1, "wds%i",n);
+
+            if (getWlanMacEntry(wdsifname, &entry) != 0)
+            {
+                continue;
+            }
+
+            printMacEntry_report(&entry, 0, "WDSLISTELEM");
+        }
+    }
+
+    printf("\n");
+    return 0;
+}
+
+
+
+
 int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
@@ -385,8 +474,6 @@ int func_wl_status_report(int argc, char* argv[])
     if (ap_ret <= 0) ap_ret = getWlanAPMac("apclii0", addr);
     getWlanCurrentMacAddr(mac2, 2);
 #endif
-
-    /* FIXME: remove fallback */
 
     chan_num  = getWlanChannelNum_ioctl(1);
 
@@ -913,23 +1000,74 @@ int func_wl_status(int argc, char* argv[])
     return 0;
 }
 
+int func_wl_scan_report(char* iface, int argc, char* argv[])
+{
+    if (!iface)
+    {
+        if (doAPScan_report("ra0"))
+        {
+            return 1;
+        }
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+        if (doAPScan_report("rai0"))
+        {
+            return 2;
+        }
+#endif
+    }
+    else
+    {
+        if (doAPScan_report(iface))
+        {
+            return 3;
+        }
+    }
+
+    return 0;
+}
+
 int func_wl_scan(int argc, char* argv[])
 {
-    char* cmd = (argc>0) ? argv[0] : NULL;
-    argc--;
-    argv++;
+    char* cmd = NULL;
+    char* iface = NULL;
 
-    if (!cmd)
+    if (argc>0 && !is_report(argc, argv))
     {
-	printf("BAND 2.4GHz:\n");
+        cmd = argv[0];
+
+        if (STR_EQ(cmd, "2.4"))
+        {
+            iface = "ra0";
+        }
+#ifndef CONFIG_RT_SECOND_IF_NONE
+        else
+        if (STR_EQ(cmd, "5"))
+        {
+            iface = "rai0";
+        }
+#endif
+
+        argc--;
+        argv++;
+    }
+
+    if (is_report(argc, argv))
+    {
+        return func_wl_scan_report(iface, argc, argv);
+    }
+    else
+    if (iface == NULL)
+    {
+        printf("BAND 2.4GHz:\n");
         if (doAPScan("ra0"))
         {
             return 1;
         }
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	printf("\n");
-	printf("BAND 5GHz:\n");
+        printf("\n");
+        printf("BAND 5GHz:\n");
         if (doAPScan("rai0"))
         {
             return 2;
@@ -947,28 +1085,20 @@ int func_wl_scan(int argc, char* argv[])
     }
     else
     {
-        char* iface = cmd;
-
-        if (STR_EQ(iface, "2.4"))
+        if (STR_EQ(cmd, "5"))
         {
-	    printf("BAND 2.4GHz:\n");
-            iface = "ra0";
+            printf("BAND 5GHz:\n");
         }
-#ifndef CONFIG_RT_SECOND_IF_NONE
         else
-        if (STR_EQ(iface, "5"))
         {
-	    printf("BAND 5GHz:\n");
-            iface = "rai0";
+            printf("BAND 2.4GHz:\n");
         }
-#endif
 
         if (doAPScan(iface))
         {
             return 3;
         }
     }
-
 
     printf("\n");
     return 0;
