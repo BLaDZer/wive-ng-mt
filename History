@@ -3442,9 +3442,10 @@
 60) kernel: ralink_wifi: send reject to client in temp block after kick logic (more fast client switch to new AP).<br>
 61) kernel: ralink_wifi: skip clients with rssi == -127 from kickout logic (may be not get rssi sample from bbp for now).<br>
 62) kernel: ralink_wifi: use max rssi for avoid unneeded kickout by level diviation of chains.<br>
-63) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
-64) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
-65) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
+63) kernel: ralink_wifi: add new honor P8 oui A8:C8:3A to BCM bug workaround.<br>
+64) kernel: ralink_wifi: mt7603: fix soft one sec counters work (need for interference compensation logic).<br>
+65) kernel: ralink_wifi: mt7603: fix drvclose procedure.<br>
+66) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
 <br>
