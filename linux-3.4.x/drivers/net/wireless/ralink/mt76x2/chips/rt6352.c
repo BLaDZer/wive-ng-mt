@@ -5915,12 +5915,12 @@ VOID RT6352_Init(
 	pChipCap->DPDCalPassThres = 5;
 
 	RTMP_DRS_ALG_INIT(pAd, RATE_ALG_LEGACY);
-	
+
 	pChipCap->MaxNumOfRfId = 64;
 	pChipCap->MaxNumOfBbpId = 255;
 	pChipCap->bbpRegTbSize = 0;
 	pChipCap->FlgIsVcoReCalMode = VCO_CAL_MODE_3;
-	pChipCap->SnrFormula = SNR_FORMULA2;
+	pChipCap->SnrFormula = SNR_FORMULA3;
 	pChipCap->RfReg17WtMethod = RF_REG_WT_METHOD_NONE;
 	pChipOps->AsicGetTxPowerOffset = AsicGetTxPowerOffset;
 	pChipOps->AsicExtraPowerOverMAC = RT6352_AsicExtraPowerOverMAC;

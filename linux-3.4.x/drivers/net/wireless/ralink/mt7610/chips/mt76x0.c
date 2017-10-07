@@ -3520,7 +3520,7 @@ VOID MT76x0_Init(RTMP_ADAPTER *pAd)
 	pChipCap->WPDMABurstSIZE = 3;
 #endif
 
-	pChipCap->SnrFormula = SNR_FORMULA2;
+	pChipCap->SnrFormula = SNR_FORMULA3;
 #ifdef WAPI_SUPPORT
 	pChipCap->FlgIsHwWapiSup = TRUE;
 #endif /* WAPI_SUPPORT */
