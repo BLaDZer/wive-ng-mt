@@ -2637,12 +2637,7 @@ VOID APOverlappingBSSScan(RTMP_ADAPTER *pAd)
 	UCHAR Channel = pAd->CommonCfg.Channel;
 	INT chStartIdx, chEndIdx, index,curPriChIdx, curSecChIdx;
 
-
-	/* We just care BSS who operating in 40MHz N Mode. */
-	if ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) ||
-		(pAd->CommonCfg.RegTransmitSetting.field.BW  == BW_20)
-		|| (pAd->CommonCfg.Channel > 14)
-		)
+	if ((!WMODE_CAP_N(pAd->CommonCfg.PhyMode)) || (pAd->CommonCfg.Channel > 14))
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("The pAd->PhyMode=%d, BW=%d, didn't need channel adjustment!\n",
 				pAd->CommonCfg.PhyMode, pAd->CommonCfg.RegTransmitSetting.field.BW));

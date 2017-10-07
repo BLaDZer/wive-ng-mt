@@ -3448,4 +3448,8 @@
 66) kernel: ralink_wifi: mt7603: use PSE reset instead of PDMA reset.<br>
 <br>
 <br>
+<b>6.6.x</b><br>
+1) kernel: ralink_wifi: do not check BW in scip overlap bss scan logic.<br>
+<br>
+<br>
 <br>
