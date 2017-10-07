@@ -200,12 +200,16 @@ UCHAR vht_cent_ch_freq(RTMP_ADAPTER *pAd, UCHAR prim_ch)
 
 INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap, VHT_OP_IE *op)
 {
+	MULTISSID_STRUCT *wdev;
+
+	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
+
 	pEntry->MaxHTPhyMode.field.MODE = MODE_VHT;
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
 	pAd->MacTab.fAnyStationNonGF = TRUE;
 
 	if (op != NULL && op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40 &&
-		pEntry->wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80)
+		wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80)
 	{
 		pEntry->MaxHTPhyMode.field.BW = BW_80;
     	}

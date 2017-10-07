@@ -439,7 +439,7 @@ static VOID ApCliMlmeAssocReqAction(
 				FrameLen += build_vht_ies(pAd, (UCHAR *)(pOutBuffer + FrameLen), SUBTYPE_ASSOC_REQ, pApCliEntry->ApCliMlmeAux.vht_max_mcs_cap);
 
             			/* For VHT40 ApClient, Add the OP Noitfy IE to notify rootAP the STA current BW */
-            			if ((apcli_entry->MlmeAux.HtCapability.HtCapInfo.ChannelWidth == BW_40) &&
+            			if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40) &&
 					(pAd->CommonCfg.vht_bw == VHT_BW_2040))
                 		    FrameLen += build_vht_op_mode_ies(pAd, (UCHAR *)(pOutBuffer + FrameLen));
 			}
