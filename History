@@ -3455,9 +3455,10 @@
 4) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
 5) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
 6) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
-7) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
-8) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
-9) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
+7) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
+8) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+9) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
+10) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
 <br>
 <br>
 <br>

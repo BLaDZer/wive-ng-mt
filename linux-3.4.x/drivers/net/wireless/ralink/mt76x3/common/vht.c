@@ -261,7 +261,8 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 	pAd->CommonCfg.AddHTInfo.AddHtInfo2.NonGfPresent = 1;
 	pAd->MacTab.fAnyStationNonGF = TRUE;
 
-	if (op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40)
+	if (op != NULL && op->vht_op_info.ch_width >= 1 && pEntry->MaxHTPhyMode.field.BW == BW_40 &&
+		pEntry->wdev->DesiredHtPhyInfo.vht_bw == VHT_BW_80)
 	{
 		pEntry->MaxHTPhyMode.field.BW= BW_80;
 		pEntry->MaxHTPhyMode.field.ShortGI = (cap->vht_cap.sgi_80M);
