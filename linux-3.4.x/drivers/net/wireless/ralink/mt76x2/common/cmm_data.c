@@ -3561,8 +3561,23 @@ VOID Indicate_Legacy_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBS
 	CFG80211_Convert802_3Packet(pAd, pRxBlk, Header802_3);
 #else
 #ifdef CONFIG_AP_SUPPORT
-	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd) {
+                 /* Skip IEEE 802.3 header if present. 802.3 header is front of LLC */
+                 {
+                         static const UCHAR LLC_Header[] = { 0xaa, 0xaa, 0x03, 0x00,
+                                 0x00, 0x00 };
+
+                         if( ( memcmp(LLC_Header, pRxBlk->pData, 6) != 0 ) &&
+                                         ( memcmp(LLC_Header, &(pRxBlk->pData[14]), 6) == 0 ) )
+                         {
+                                 /* IEEE 802.3 header - skip it */
+                                 printk("%s: SKIP IEEE802.3!!!\n", __FUNCTION__);
+                                 pRxBlk->pData += 14;
+                                 pRxBlk->DataSize -= 14;
+                         }
+                 }
 		RTMP_AP_802_11_REMOVE_LLC_AND_CONVERT_TO_802_3(pRxBlk, Header802_3);
+	}
 #endif /* CONFIG_AP_SUPPORT */
 #ifdef CONFIG_STA_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
