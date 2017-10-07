@@ -4744,6 +4744,24 @@ UCHAR mt76x2_update_sku_pwr(RTMP_ADAPTER *ad, u8 channel)
 						}
 					}
 					
+					for (i = 0; i < SINGLE_SKU_TABLE_STBC_LENGTH; i++)
+					{
+						CHAR mcs_pwr=0; 
+
+						//MCS8 MCS9 for VHT ,donot share with HT
+						if (i >=8 || ad->chipCap.rate_pwr_table.VHT1SS[i].mcs_pwr < ad->chipCap
+.rate_pwr_table.HT[i].mcs_pwr)				
+							mcs_pwr=ad->chipCap.rate_pwr_table.VHT1SS[i].mcs_pwr;
+						else
+							mcs_pwr=ad->chipCap.rate_pwr_table.HT[i].mcs_pwr;
+								
+						ad->chipCap.rate_pwr_table.STBC[i].mcs_pwr = mcs_pwr;	
+						DBGPRINT(RT_DEBUG_ERROR, ("%s ==> new STBC[%d].MCS_Power = %d\n\n", 
+									__FUNCTION__, i, ad->chipCap.rate_pwr_table.STBC[i].mcs_pwr));
+								
+
+					}					
+
 					bFound = TRUE;
 					break;
 				}
