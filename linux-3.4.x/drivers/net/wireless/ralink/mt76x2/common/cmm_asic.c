@@ -1536,8 +1536,35 @@ VOID AsicEnableApBssSync(
 	IN PRTMP_ADAPTER pAd) 
 {
 	BCN_TIME_CFG_STRUC csr;
+#ifdef APCLI_SUPPORT 
+	UCHAR apidx;
+	BOOLEAN bMaskBcn;     
+#endif /* APCLI_SUPPORT */
+
 
 	DBGPRINT(RT_DEBUG_TRACE, ("--->AsicEnableBssSync(INFRA mode)\n"));
+
+#ifdef APCLI_SUPPORT 
+	// for apcli DFS, if ra0 not up, don,t send bcn
+	bMaskBcn = TRUE;
+                
+	for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)
+	{
+		if(BeaconTransmitRequired(pAd, apidx, &pAd->ApCfg.MBSSID[apidx]))
+		{
+			bMaskBcn = FALSE;
+			break;
+		}
+	}
+
+	if (bMaskBcn &&  APCLI_IF_UP_CHECK(pAd, 0)) {
+		DBGPRINT(RT_DEBUG_OFF, ("Apcli DFS need mask beacon!!!\n"));					
+			AsicCtrlBcnMask(pAd, 0xFF);
+	}
+	else {
+		AsicCtrlBcnMask(pAd, 0x0);
+	}
+#endif /* APCLI_SUPPORT */
 
 	RTMP_IO_READ32(pAd, BCN_TIME_CFG, &csr.word);
 
