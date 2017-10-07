@@ -3451,6 +3451,7 @@
 <b>6.6.x</b><br>
 1) kernel: ralink_wifi: do not check BW in scip overlap bss scan logic.<br>
 2) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
+3) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
 <br>
 <br>
 <br>
