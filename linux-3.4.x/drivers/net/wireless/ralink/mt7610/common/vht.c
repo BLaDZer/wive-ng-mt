@@ -531,7 +531,7 @@ INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR VhtMaxMcsCap)
 	/* always set ldpc to 0 7610 do not support it */
 	vht_cap_ie.vht_cap.rx_ldpc = 0;
 
-	vht_cap_ie.vht_cap.sgi_80M = pAd->CommonCfg.vht_sgi_80;
+	vht_cap_ie.vht_cap.sgi_80M = pAd->CommonCfg.vht_sgi_80 && (pAd->CommonCfg.BBPCurrentBW == BW_80);
 	vht_cap_ie.vht_cap.htc_vht_cap = 1;
 	vht_cap_ie.vht_cap.max_ampdu_exp = 3; // TODO: Ask Jerry about the hardware limitation, currently set as 64K
 
