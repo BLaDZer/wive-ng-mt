@@ -22,6 +22,7 @@ INT vht_mode_adjust(struct _RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_
 INT ap_vht_mode_adjust(struct _RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap, VHT_OP_IE *op);
 INT SetCommonVHT(struct _RTMP_ADAPTER *pAd);
 VOID rtmp_set_vht(struct _RTMP_ADAPTER *pAd, struct _RT_PHY_INFO *phy_info);
+INT build_vht_op_mode_ies(RTMP_ADAPTER *pAd, UCHAR *buf);
 
 void assoc_vht_info_debugshow(
 	IN RTMP_ADAPTER *pAd,

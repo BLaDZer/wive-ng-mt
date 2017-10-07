@@ -680,6 +680,39 @@ INT build_vht_cap_ie(RTMP_ADAPTER *pAd, UCHAR *buf)
 	return sizeof(VHT_CAP_IE);
 }
 
+INT build_vht_op_mode_ies(RTMP_ADAPTER *pAd, UCHAR *buf)
+{
+	INT len = 0;
+	EID_STRUCT eid_hdr;
+	OPERATING_MODE operating_mode_ie;   
+    
+	NdisZeroMemory((UCHAR *)&operating_mode_ie,  sizeof(OPERATING_MODE));
+    
+	eid_hdr.Eid = IE_OPERATING_MODE_NOTIFY;
+	eid_hdr.Len = sizeof(OPERATING_MODE);
+	NdisMoveMemory(buf, (UCHAR *)&eid_hdr, 2);
+	len = 2;
+
+	operating_mode_ie.rx_nss_type = 0;
+	operating_mode_ie.rx_nss = (pAd->CommonCfg.RxStream - 1);
+
+	if (pAd->CommonCfg.vht_bw == VHT_BW_2040)
+		operating_mode_ie.ch_width = 1;
+	else if (pAd->CommonCfg.vht_bw == VHT_BW_80)
+		operating_mode_ie.ch_width = 2;
+	else if ((pAd->CommonCfg.vht_bw == VHT_BW_160) ||
+		(pAd->CommonCfg.vht_bw == VHT_BW_8080))
+		operating_mode_ie.ch_width = 3;
+	else
+		operating_mode_ie.ch_width = 0;
+
+	buf += len;
+	NdisMoveMemory(buf, (UCHAR *)&operating_mode_ie, sizeof(OPERATING_MODE));
+	len += eid_hdr.Len;
+    
+	return len;
+    
+}
 
 INT build_vht_ies(RTMP_ADAPTER *pAd, UCHAR *buf, UCHAR frm)
 {
