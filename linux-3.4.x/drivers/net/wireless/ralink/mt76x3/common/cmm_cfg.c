@@ -1066,6 +1066,9 @@ INT RTMP_COM_IoctlHandle(
 					extern VOID  APUpdateAllBeaconFrame(IN PRTMP_ADAPTER pAd);
 					APMakeAllBssBeacon(pAd);
 					APUpdateAllBeaconFrame(pAd);
+
+					if (pAd->Dot11_H.RDMode == RD_NORMAL_MODE)
+						AsicEnableBssSync(pAd);
 				}
 #endif /* CONFIG_AP_SUPPORT */
 			}
