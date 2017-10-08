@@ -4058,12 +4058,10 @@ VOID RTMP_RxPacketClassify(
 		DBGPRINT(RT_DEBUG_WARN, ("rx path ARP #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 			pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU))); 
 	}
-#if 0
 	else if (protoType == ETH_P_IP)
 	{
 		UINT8 protocol = *(pData + 11);
-		//UINT8 icmp_type = *(pData + 22);
-
+#if 0
 		if (protocol == 0x1)
 		{
 			pRxBlk->CriticalPkt = 1;	// ICMP
@@ -4071,7 +4069,9 @@ VOID RTMP_RxPacketClassify(
 			DBGPRINT(RT_DEBUG_WARN, ("rx path ICMP #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 				pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 		}
-		else if (protocol == IP_PROTO_UDP)
+		else
+#endif
+		if (protocol == IP_PROTO_UDP)
 		{
 			PUCHAR pUdpHdr = pData + 22;
 			UINT16 srcPort, dstPort;
@@ -4087,7 +4087,6 @@ VOID RTMP_RxPacketClassify(
 			}
 		}
 	}
-#endif
 }
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 

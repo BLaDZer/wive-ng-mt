@@ -2051,12 +2051,14 @@ VOID Indicate_AMPDU_Packet(
 		
 		/* drop and release packet*/
 		pBAEntry->nDropPacket++;
+#if 0 /* do not keep dupe packets */
 #ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 		if (pRxBlk->CriticalPkt)
 		{
 				INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, FromWhichBSSID);
 		}else
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
+#endif
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 	}
 	

@@ -3400,14 +3400,11 @@ VOID RTMP_RxPacketClassify(
 		DBGPRINT(RT_DEBUG_TRACE, ("rx path arp #(aid=%d,wcid=%d, pHeader seq=%d  ,ampdu = %d)\n",
 			pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU))); 
 
-	}	
-#if 0
+	}
 	else if (protoType == ETH_P_IP)
 	{
-	
 		UINT8 protocol = *(pData + 11);
-		//UINT8 icmp_type = *(pData + 22);
-
+#if 0
 		if (protocol == 0x1)
 		{
 			pRxBlk->CriticalPkt = 1;	// ICMP
@@ -3415,11 +3412,13 @@ VOID RTMP_RxPacketClassify(
 			DBGPRINT(RT_DEBUG_TRACE, ("rx path PING #(aid=%d,wcid=%d, pHeader seq=%d, ampdu = %d)\n",
 				pEntry->Aid, pRxBlk->wcid, pRxBlk->pHeader->Sequence, RX_BLK_TEST_FLAG(pRxBlk, fRX_AMPDU)));
 		}
-		else if (protocol == IP_PROTO_UDP)
+		else
+#endif
+		if (protocol == IP_PROTO_UDP)
 		{
 			PUCHAR pUdpHdr = pData + 22;
 			UINT16 srcPort, dstPort;
-					
+
 			srcPort = OS_NTOHS(get_unaligned((PUINT16)(pUdpHdr)));
 			dstPort = OS_NTOHS(get_unaligned((PUINT16)(pUdpHdr+2)));
 			if ((srcPort==67 && dstPort==68)||(srcPort==68 && dstPort==67)) /*It's a DHCP packet */

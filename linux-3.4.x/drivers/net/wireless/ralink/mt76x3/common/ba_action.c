@@ -1912,7 +1912,7 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 #ifdef MAC_REPEATER_SUPPORT
 		Rtmp_Chk_Reset_Ba_Sequence(pAd, pRxBlk);
 #endif /* MAC_REPEATER_SUPPORT */
-
+#if 0 /* do not keep dupe packets */
 #ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 		if (pRxBlk->CriticalPkt)
 		{
@@ -1922,6 +1922,7 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 			INDICATE_LEGACY_OR_AMSDU(pAd, pRxBlk, wdev_idx);
 		}else
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
+#endif
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 
 	}
