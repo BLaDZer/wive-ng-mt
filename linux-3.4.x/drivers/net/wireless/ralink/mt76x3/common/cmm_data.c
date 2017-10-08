@@ -645,7 +645,6 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 			ac_idx = WMM_UP2AC_MAP[qos_p[0]];
 #endif /* UAPSD_SUPPORT */
 
-			RX_BLK_SET_FLAG(rx_blk, fRX_RETRIEVE);
 			if ((tr_entry->ps_state == APPS_RETRIEVE_GOING) 
 				|| (tr_entry->ps_state == APPS_RETRIEVE_START_PS))
 			{
@@ -734,6 +733,7 @@ UINT32 parse_rx_packet_type(RTMP_ADAPTER *ad, RX_BLK *rx_blk, VOID *rx_packet)
 						WLAN_MR_TIM_BIT_SET(ad, tr_entry->func_tb_idx, tr_entry->wcid);
 #endif /* CONFIG_AP_SUPPORT */
 					}
+					RX_BLK_SET_FLAG(rx_blk, fRX_RETRIEVE);
 				}
 			}
 			else
