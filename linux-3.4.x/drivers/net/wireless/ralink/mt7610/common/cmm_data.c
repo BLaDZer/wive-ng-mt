@@ -2050,7 +2050,6 @@ BOOLEAN RTMPCheckEtherType(
 	UINT16 TypeLen;
 	UCHAR Byte0, Byte1, *pSrcBuf, up = 0;
 #ifdef CONFIG_AP_SUPPORT
-	BOOLEAN isMcast = FALSE;
 	MULTISSID_STRUCT *pMbss = NULL;
 	BOOLEAN bWmmReq;
 
@@ -2078,11 +2077,6 @@ BOOLEAN RTMPCheckEtherType(
 	ASSERT(pSrcBuf);
 
 	RTMP_SET_PACKET_SPECIFIC(pPacket, 0);
-
-#ifdef CONFIG_AP_SUPPORT
-	if(IS_MULTICAST_MAC_ADDR(pSrcBuf))
-		isMcast = TRUE;
-#endif /* CONFIG_AP_SUPPORT */
 
 	/* get Ethernet protocol field and skip the Ethernet Header */
 	TypeLen = (pSrcBuf[12] << 8) | pSrcBuf[13];
