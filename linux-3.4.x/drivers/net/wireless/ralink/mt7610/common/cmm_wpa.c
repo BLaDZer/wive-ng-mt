@@ -1034,7 +1034,7 @@ VOID PeerPairMsg1Action(
 	GenRandom(pAd, (UCHAR *)pCurrentAddr, pEntry->SNonce);
 	pEntry->AllowInsPTK = TRUE;
         pEntry->LastGroupKeyId = 0;
-        NdisZeroMemory(pEntry->LastGTK, 32);
+        NdisZeroMemory(pEntry->LastGTK, MAX_LEN_GTK);
 
 #ifdef DOT11R_FT_SUPPORT	
 	if (IS_FT_RSN_STA(pEntry))
