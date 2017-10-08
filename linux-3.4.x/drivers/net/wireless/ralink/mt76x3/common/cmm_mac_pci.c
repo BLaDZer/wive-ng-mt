@@ -231,7 +231,7 @@ VOID RTMPResetTxRxRingMemory(RTMP_ADAPTER *pAd)
 			{
 				dma_cb->pNdisPacket = NULL;
 				PCI_UNMAP_SINGLE(pAd, pTxD->SDPtr0, pTxD->SDLen0, RTMP_PCI_DMA_TODEVICE);
-				//RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
+				RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
 			}
 
 			pPacket = dma_cb->pNextNdisPacket;
@@ -239,7 +239,7 @@ VOID RTMPResetTxRxRingMemory(RTMP_ADAPTER *pAd)
 			{
 				dma_cb->pNextNdisPacket = NULL;
 				PCI_UNMAP_SINGLE(pAd, pTxD->SDPtr1, pTxD->SDLen1, RTMP_PCI_DMA_TODEVICE);
-				//RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
+				RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_SUCCESS);
 			}
 
 			INC_RING_INDEX(pBcnRing->TxSwFreeIdx, BCN_RING_SIZE);
