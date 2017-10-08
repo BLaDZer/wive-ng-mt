@@ -1723,12 +1723,7 @@ SendAssocResponse:
 			pFtIe = (PFT_FTIE)(ftie_ptr + 2);
 			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
 
-			/* Install pairwise key */
-			WPAInstallPairwiseKey(pAd, pEntry->func_tb_idx, pEntry, TRUE);
-
-			/* Update status and set Port as Secured */
-			pEntry->WpaState = AS_PTKINITDONE;
-			pEntry->GTKState = REKEY_ESTABLISHED;
+			/* set Port as Secured */
 			pEntry->PrivacyFilter = Ndis802_11PrivFilterAcceptAll;
 			tr_entry->PortSecured = WPA_802_1X_PORT_SECURED;
 		}

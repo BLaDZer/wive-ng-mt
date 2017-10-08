@@ -558,8 +558,8 @@ SendAuth:
 		{
 		    os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
 
-            if (pFtInfoBuf)
-            {
+        	    if (pFtInfoBuf)
+        	    {
     			result = FT_AuthReqHandler(pAd, pEntry, &FtInfo, pFtInfoBuf);
     			if (result == MLME_SUCCESS)
     			{
@@ -573,8 +573,15 @@ SendAuth:
     						&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo, NULL,
     						pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
 
-                os_free_mem(NULL, pFtInfoBuf);
-            }
+            		os_free_mem(NULL, pFtInfoBuf);
+			if (result == MLME_SUCCESS) {
+				/* Install pairwise key */
+				WPAInstallPairwiseKey(pAd, pEntry->apidx, pEntry, TRUE);
+				/* Update status */
+				pEntry->WpaState = AS_PTKINITDONE;
+				pEntry->GTKState = REKEY_ESTABLISHED;
+			}
+		    }
 		}
 		return;
 	}
