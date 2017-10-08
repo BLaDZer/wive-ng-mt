@@ -3430,7 +3430,6 @@ VOID RTMP_RxPacketClassify(
 			}
 		}
 	}
-#endif
 }
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
 
