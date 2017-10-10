@@ -18,6 +18,8 @@
 			Butterlate.setTextDomain("network");
 			Butterlate.setTextDomain("buttons");
 
+			var ROUTING_TABLE = [ <% getRoutingTable(); %> ];
+
 			function initTranslation() {
 				_TR("routingTitle", 					"routing title");
 				_TR("routingIntroduction", 				"routing introduction");

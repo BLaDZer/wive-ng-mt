@@ -13,8 +13,6 @@ var SECONDARY_DNS				= '<% getDns(2); %>';
 var LAN_IP					= '<% getLanIp(); %>';
 var LAN_NETMASK					= '<% getLanNetmask(); %>';
 
-var ROUTING_TABLE				= [ <% getRoutingTable(); %> ];
-
 var ETHER_PORTS					= <% getEthernetPortCount(); %>;
 var ETHER_FIRST_PORT				= (ETHER_PORTS == 3) ? 2 : 0;
 

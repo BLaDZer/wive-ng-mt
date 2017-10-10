@@ -3449,22 +3449,23 @@
 <br>
 <br>
 <b>6.6.x</b><br>
-1) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
-2) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
-3) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
-4) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
-5) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
-6) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
-7) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
-8) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
-9) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
-10) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
-11) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
-12) kernel: ralink_wifi: mt76x2: update firmware.<br>
-13) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
-14) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
-15) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
-16) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
+1) goahead: do not touch route parse every page load.<br>
+2) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
+3) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
+4) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
+5) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
+6) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
+7) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
+8) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
+9) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
+10) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
+11) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
+12) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+13) kernel: ralink_wifi: mt76x2: update firmware.<br>
+14) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
+15) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+16) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
+17) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
 <br>
 <br>
 <br>
