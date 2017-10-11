@@ -18,7 +18,7 @@ int func_wl_status(int argc, char* argv[]);
 int func_wl_status_report(int argc, char* argv[]);
 
 int func_wl_scan(int argc, char* argv[]);
-int func_wl_scan_report(char* iface, int argc, char* argv[]);
+int func_wl_scan_report(char* iface, int do_actual_scan, int argc, char* argv[]);
 
 int func_wl_wds(int argc, char* argv[]);
 int func_wl_wds_report(int argc, char* argv[]);

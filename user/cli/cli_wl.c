@@ -134,10 +134,19 @@ char* wirelessModeIdToName(char* val)
 
 
 
-int doAPScan(char* iface)
+int doAPScan(char* iface, int do_actual_scan)
 {
     int ent_count = 0;
-    struct WLAN_AP_ENTRY *entries = wlanAPScan(iface, &ent_count);
+    struct WLAN_AP_ENTRY *entries = NULL;
+
+    if (do_actual_scan)
+    {
+        entries = wlanAPScan(iface, &ent_count);
+    }
+    else
+    {
+        entries = getWlanAPScanResult(iface, &ent_count);
+    }
 
     if (entries == NULL)
     {
@@ -165,11 +174,21 @@ int doAPScan(char* iface)
     return 0;
 }
 
-int doAPScan_report(char* iface)
+int doAPScan_report(char* iface, int do_actual_scan)
 {
     int ent_count = 0;
     char* band_str = "2.4";
-    struct WLAN_AP_ENTRY *entries = wlanAPScan(iface, &ent_count);
+
+    struct WLAN_AP_ENTRY *entries = NULL;
+
+    if (do_actual_scan)
+    {
+        entries = wlanAPScan(iface, &ent_count);
+    }
+    else
+    {
+        entries = getWlanAPScanResult(iface, &ent_count);
+    }
 
     if (entries == NULL)
     {
@@ -1000,17 +1019,24 @@ int func_wl_status(int argc, char* argv[])
     return 0;
 }
 
-int func_wl_scan_report(char* iface, int argc, char* argv[])
+int func_wl_scan_report(char* iface, int do_actual_scan, int argc, char* argv[])
 {
+    if (argc > 0 && STR_EQ(argv[0],"result"))
+    {
+        do_actual_scan = 0;
+        argc--;
+        argv++;
+    }
+
     if (!iface)
     {
-        if (doAPScan_report("ra0"))
+        if (doAPScan_report("ra0", do_actual_scan))
         {
             return 1;
         }
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
-        if (doAPScan_report("rai0"))
+        if (doAPScan_report("rai0", do_actual_scan))
         {
             return 2;
         }
@@ -1018,7 +1044,7 @@ int func_wl_scan_report(char* iface, int argc, char* argv[])
     }
     else
     {
-        if (doAPScan_report(iface))
+        if (doAPScan_report(iface, do_actual_scan))
         {
             return 3;
         }
@@ -1031,36 +1057,65 @@ int func_wl_scan(int argc, char* argv[])
 {
     char* cmd = NULL;
     char* iface = NULL;
+    int do_actual_scan = 1;
 
-    if (argc>0 && !is_report(argc, argv))
+// band selection
+    if (argc > 0 && !is_report(argc, argv))
     {
         cmd = argv[0];
 
         if (STR_EQ(cmd, "2.4"))
         {
             iface = "ra0";
+            argc--;
+            argv++;
+
         }
 #ifndef CONFIG_RT_SECOND_IF_NONE
         else
         if (STR_EQ(cmd, "5"))
         {
             iface = "rai0";
+            argc--;
+            argv++;
         }
 #endif
+    }
 
+// scan result
+    if (argc > 0 && STR_EQ(argv[0], "result"))
+    {
+        do_actual_scan = 0;
         argc--;
         argv++;
     }
 
+// report mode
     if (is_report(argc, argv))
     {
-        return func_wl_scan_report(iface, argc, argv);
+        argc--;
+        argv++;
+        return func_wl_scan_report(iface, do_actual_scan, argc, argv);
+    }
+    else
+    if (STR_EQ_HELP(cmd))
+    {
+        writeCmdHelp("scan", "scan all available bands");
+        writeCmdHelp("scan <if>", "scan at specified interface");
+        writeCmdHelp("scan 2.4", "scan at 2.4GHz");
+        writeCmdHelp("scan result", "show previous scan result");
+        writeCmdHelp("scan 2.4 result", "show previous scan result as 2.4GHz");
+#ifndef CONFIG_RT_SECOND_IF_NONE
+        writeCmdHelp("scan 5", "scan at 5GHz");
+        writeCmdHelp("scan 5 result", "show previous scan result as 2.4GHz");
+#endif
     }
     else
     if (iface == NULL)
     {
         printf("BAND 2.4GHz:\n");
-        if (doAPScan("ra0"))
+
+        if (doAPScan("ra0", do_actual_scan))
         {
             return 1;
         }
@@ -1068,19 +1123,10 @@ int func_wl_scan(int argc, char* argv[])
 #ifndef CONFIG_RT_SECOND_IF_NONE
         printf("\n");
         printf("BAND 5GHz:\n");
-        if (doAPScan("rai0"))
+        if (doAPScan("rai0", do_actual_scan))
         {
             return 2;
         }
-#endif
-    }
-    else
-    if (STR_EQ_HELP(cmd))
-    {
-        writeCmdHelp("scan <if>", "scan at specified interface");
-        writeCmdHelp("scan 2.4", "scan at 2.4GHz");
-#ifndef CONFIG_RT_SECOND_IF_NONE
-        writeCmdHelp("scan 5", "scan at 5GHz");
 #endif
     }
     else
@@ -1094,7 +1140,7 @@ int func_wl_scan(int argc, char* argv[])
             printf("BAND 2.4GHz:\n");
         }
 
-        if (doAPScan(iface))
+        if (doAPScan(iface, do_actual_scan))
         {
             return 3;
         }

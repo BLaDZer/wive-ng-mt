@@ -3450,18 +3450,19 @@
 <br>
 <b>6.6.x</b><br>
 1) goahead: do not touch route parse every page load.<br>
-2) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
-3) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
-4) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
-5) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
-6) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
-7) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
-8) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
-9) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
-10) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
-11) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
-12) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
-13) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+2) cli: add wl scan_result command for view last scan results without new scan.<br>
+3) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
+4) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
+5) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
+6) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
+7) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
+8) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
+9) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
+10) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
+11) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
+12) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
+13) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
+14) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
 15) kernel: ralink_wifi: mt76x2: update firmware.<br>
 16) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
 17) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>

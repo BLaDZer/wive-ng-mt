@@ -27,7 +27,10 @@ int getWlanAPMac(const char *if_name, char *addr);
 int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry);
 
 int wlanAPScanText(const char *if_name, char* data, unsigned int data_len);
+int getWlanAPScanTextResult(const char *if_name, char* data, unsigned int data_len);
+
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num);
+struct WLAN_AP_ENTRY* getWlanAPScanResult(const char *if_name, int *entry_num);
 
 int wlanDisconnectStation(const char *if_name, char* mac_addr);
 int wlanDisconnectAllStations(const char *if_name);

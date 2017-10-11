@@ -479,23 +479,32 @@ int getWlanMacEntry(const char *if_name, RT_802_11_MAC_ENTRY *entry)
 
 /* wlanAPScanText - Scan for wireless access points (text output)
  * arg: if_name - interface name
- * arg: (out) data - output data buffer
- * arg: data_len - maximum data buffer size
- * return: num bytes read, <= 0 for errors
+ * arg: (out) data - output data buffer or NULL to scan without returning the resulting data
+ * arg: data_len - maximum data buffer size, 0 to scan without returning the resulting data
+ * return: num bytes read, < 0 for errors
 */
 int wlanAPScanText(const char *if_name, char* data, unsigned int data_len)
 {
+    if (RtpSetInformation("SiteSurvey=1", if_name))
+    {
+        syslog(LOG_ERR, "wlan: SiteSurvey ioctl set failed, %s", __FUNCTION__);
+        return -1;
+    }
 
-	if (RtpSetInformation("SiteSurvey=1", if_name))
-	{
-		syslog(LOG_ERR, "wlan: SiteSurvey ioctl set failed, %s", __FUNCTION__);
-		return -1;
-	}
+    if (data != NULL && data_len > 0)
+    {
+        sleep(4);
+        return getWlanAPScanTextResult(if_name, data, data_len);
+    }
 
-	sleep(4);
-
-	return RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
+    return 0;
 }
+
+int getWlanAPScanTextResult(const char *if_name, char* data, unsigned int data_len)
+{
+    return RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
+}
+
 
 /* parseSiteSurveyEntry - internal WLAN_AP_ENTRY parsing function
  *
@@ -623,6 +632,21 @@ static int parseSiteSurveyEntry(struct WLAN_AP_ENTRY* entry, char* line)
  */
 struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
 {
+    int errcode = wlanAPScanText(if_name, NULL, 0);
+
+    if (errcode != 0)
+    {
+        syslog(LOG_ERR, "wlan: SiteSurvey failed, %s, %i", __FUNCTION__, errcode);
+        return NULL;
+    }
+
+    sleep(4);
+
+    return getWlanAPScanResult(if_name, entry_num);
+}
+
+struct WLAN_AP_ENTRY* getWlanAPScanResult(const char *if_name, int *entry_num)
+{
     char data[8192];
     char *ptr;
     int ent_capacity = 32;
@@ -630,7 +654,7 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
     struct WLAN_AP_ENTRY* entries;
     *(entry_num) = 0;
 
-    if (wlanAPScanText(if_name, data, 8192) <= 0)
+    if (getWlanAPScanTextResult(if_name, data, 8192) <= 0)
     {
         syslog(LOG_ERR, "wlan: SiteSurvey failed, %s", __FUNCTION__);
         return NULL;
@@ -675,6 +699,7 @@ struct WLAN_AP_ENTRY* wlanAPScan(const char *if_name, int *entry_num)
     *(entry_num) = ent_cur;
     return entries;
 }
+
 
 /* wlanDisconnectStation - disconnect client station
  *
