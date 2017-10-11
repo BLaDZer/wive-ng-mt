@@ -1864,7 +1864,10 @@ EXPORT_SYMBOL(__netif_schedule);
 
 void dev_kfree_skb_irq(struct sk_buff *skb)
 {
-	if (atomic_dec_and_test(&skb->users)) {
+	if (unlikely(!skb))
+		return;
+
+	if (likely(atomic_dec_and_test(&skb->users))) {
 		struct softnet_data *sd;
 		unsigned long flags;
 
