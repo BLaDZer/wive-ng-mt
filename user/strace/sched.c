@@ -105,8 +105,8 @@ print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
 	if (usize) {
 		/* called from sched_getattr */
 		size = usize <= sizeof(attr) ? usize : (unsigned) sizeof(attr);
-	if (umoven_or_printaddr(tcp, addr, size, &attr))
-		return;
+		if (umoven_or_printaddr(tcp, addr, size, &attr))
+			return;
 		/* the number of bytes written by the kernel */
 		size = attr.size;
 	} else {
@@ -127,9 +127,9 @@ print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
 
 	if (size >= SCHED_ATTR_MIN_SIZE) {
 		tprints(", sched_policy=");
-	printxval(schedulers, attr.sched_policy, "SCHED_???");
-	tprints(", sched_flags=");
-	printflags64(sched_flags, attr.sched_flags, "SCHED_FLAG_???");
+		printxval(schedulers, attr.sched_policy, "SCHED_???");
+		tprints(", sched_flags=");
+		printflags64(sched_flags, attr.sched_flags, "SCHED_FLAG_???");
 
 #define PRINT_SCHED_FIELD(field, fmt)			\
 		tprintf(", " #field "=%" fmt, attr.field)
@@ -150,7 +150,7 @@ print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
 SYS_FUNC(sched_setattr)
 {
 	if (entering(tcp)) {
-	tprintf("%d, ", (int) tcp->u_arg[0]);
+		tprintf("%d, ", (int) tcp->u_arg[0]);
 		print_sched_attr(tcp, tcp->u_arg[1], 0);
 	} else {
 		struct sched_attr attr;
@@ -160,7 +160,7 @@ SYS_FUNC(sched_setattr)
 			tprintf(" => {size=%u}", attr.size);
 		}
 
-	tprintf(", %u", (unsigned int) tcp->u_arg[2]);
+		tprintf(", %u", (unsigned int) tcp->u_arg[2]);
 	}
 
 	return 0;

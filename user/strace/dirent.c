@@ -114,7 +114,7 @@ SYS_FUNC(getdents)
 
 	tprints(",");
 	if (!abbrev(tcp))
-		tprints("[");
+		tprints(" [");
 	for (i = 0; len && i <= len - sizeof(kernel_dirent); ) {
 		kernel_dirent *d = (kernel_dirent *) &buf[i];
 
@@ -132,10 +132,7 @@ SYS_FUNC(getdents)
 				zero_extend_signed_to_ull(d->d_off),
 				d->d_reclen);
 
-			if (print_quoted_string(d->d_name, d_name_len,
-					        QUOTE_0_TERMINATED) > 0) {
-				tprints("...");
-			}
+			print_quoted_cstring(d->d_name, d_name_len);
 
 			tprints(", d_type=");
 			if (oob)

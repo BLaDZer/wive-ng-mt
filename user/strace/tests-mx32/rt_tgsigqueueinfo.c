@@ -50,7 +50,7 @@ k_tgsigqueueinfo(const pid_t pid, const int sig, const void *const info)
 }
 
 int
-main (void)
+main(void)
 {
 	const struct sigaction sa = {
 		.sa_handler = SIG_IGN

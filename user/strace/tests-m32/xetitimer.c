@@ -38,8 +38,8 @@ int
 main(void)
 {
 	static const struct itimerval new = {
-			.it_interval = { 0xc0de1, 0xc0de2 },
-			.it_value = { 0xc0de3, 0xc0de4 }
+		.it_interval = { 0xc0de1, 0xc0de2 },
+		.it_value = { 0xc0de3, 0xc0de4 }
 	};
 	static const kernel_ulong_t long_timer =
 		F8ILL_KULONG_MASK | ITIMER_REAL;
@@ -167,7 +167,7 @@ main(void)
 	p_new->it_interval.tv_sec = 0xdeadbeefU;
 	p_new->it_interval.tv_usec = 0xfacefeedU;
 	p_new->it_value.tv_sec = (time_t) 0xcafef00ddeadbeefLL;
-	p_new->it_value.tv_usec = (long) 0xbadc0dedfacefeedLL;
+	p_new->it_value.tv_usec = (suseconds_t) 0xbadc0dedfacefeedLL;
 
 	rc = setitimer(ITIMER_REAL, p_new, p_old);
 	printf("setitimer(ITIMER_REAL"

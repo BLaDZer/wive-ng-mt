@@ -42,9 +42,7 @@
 #ifdef HAVE_LINUX_SECCOMP_H
 # include <linux/seccomp.h>
 #endif
-#ifdef HAVE_LINUX_FILTER_H
-# include <linux/filter.h>
-#endif
+#include <linux/filter.h>
 
 #if defined __NR_seccomp \
  && defined PR_SET_NO_NEW_PRIVS \
@@ -90,10 +88,6 @@ static const struct sock_filter filter_c[] = {
 	/* kill process */
 	SOCK_FILTER_KILL_PROCESS
 };
-
-#ifndef BPF_MAXINSNS
-# define BPF_MAXINSNS 4096
-#endif
 
 int
 main(void)
@@ -146,7 +140,7 @@ main(void)
 	for (i = 0; i < BPF_MAXINSNS; ++i) {
 		if (i)
 			tprintf(", ");
-		switch(BPF_CLASS(i)) {
+		switch (BPF_CLASS(i)) {
 		case BPF_LD:
 			tprintf("BPF_STMT(BPF_LD|BPF_W|BPF_IMM, %#x)", i << 16);
 			break;

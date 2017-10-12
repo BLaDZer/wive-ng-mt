@@ -96,20 +96,20 @@ struct btrfs_ioctl_quota_rescan_args {
 
 #ifndef HAVE_STRUCT_BTRFS_IOCTL_FEATURE_FLAGS_COMPAT_FLAGS
 struct btrfs_ioctl_feature_flags {
-        uint64_t compat_flags;
-        uint64_t compat_ro_flags;
-        uint64_t incompat_flags;
+	uint64_t compat_flags;
+	uint64_t compat_ro_flags;
+	uint64_t incompat_flags;
 };
 #endif
 
 #ifndef HAVE_STRUCT_BTRFS_IOCTL_DEFRAG_RANGE_ARGS_START
 struct btrfs_ioctl_defrag_range_args {
-        uint64_t start;
-        uint64_t len;
-        uint64_t flags;
-        uint32_t extent_thresh;
-        uint32_t compress_type;
-        uint32_t unused[4];
+	uint64_t start;
+	uint64_t len;
+	uint64_t flags;
+	uint32_t extent_thresh;
+	uint32_t compress_type;
+	uint32_t unused[4];
 };
 #endif
 
@@ -147,7 +147,7 @@ struct btrfs_ioctl_search_args_v2 {
 	uint64_t buf_size;		   /* in - size of buffer
 					    * out - on EOVERFLOW: needed size
 					    *       to store item */
-        uint64_t buf[0];		   /* out - found items */
+	uint64_t buf[0];		   /* out - found items */
 };
 #endif
 
@@ -1550,7 +1550,7 @@ btrfs_test_get_dev_stats_ioctl(void)
 				printf(", ");
 			printf("%" PRI__u64, args.values[i]);
 			if (name)
-				printf("/* %s */ ", name);
+				printf(" /* %s */", name);
 		}
 		printf("]}) = 0\n");
 	}

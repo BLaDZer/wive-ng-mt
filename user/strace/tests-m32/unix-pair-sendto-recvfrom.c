@@ -2,6 +2,7 @@
  * Check decoding and dumping of sendto and recvfrom syscalls.
  *
  * Copyright (c) 2015-2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +72,7 @@ main(int ac, char **av)
 		assert(recvfrom(0, av[1], len, MSG_WAITALL, NULL, NULL) == len);
 		assert(close(0) == 0);
 
-                int status;
+		int status;
 		assert(waitpid(pid, &status, 0) == pid);
 		assert(status == 0);
 	} else {

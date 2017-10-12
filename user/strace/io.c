@@ -70,7 +70,7 @@ print_iovec(struct tcb *tcp, void *elem_buf, size_t elem_size, void *data)
 	kernel_ulong_t iov_buf[2], len;
 	struct print_iovec_config *c = data;
 
-        if (elem_size < sizeof(iov_buf)) {
+	if (elem_size < sizeof(iov_buf)) {
 		iov_buf[0] = ((unsigned int *) elem_buf)[0];
 		iov_buf[1] = ((unsigned int *) elem_buf)[1];
 		iov = iov_buf;

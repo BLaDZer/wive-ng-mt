@@ -121,7 +121,7 @@ SYS_FUNC(clone)
 			printaddr(tcp->u_arg[ARG_PTID]);
 		}
 		if (flags & CLONE_SETTLS) {
-				tprints(", tls=");
+			tprints(", tls=");
 			print_tls_arg(tcp, tcp->u_arg[ARG_TLS]);
 		}
 		if (flags & (CLONE_CHILD_SETTID|CLONE_CHILD_CLEARTID)) {

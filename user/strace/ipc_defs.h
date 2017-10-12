@@ -41,7 +41,7 @@
 # define IPC_64 0x100
 #endif
 
-#define PRINTCTL(flagset, arg, dflt) \
+#define PRINTCTL(flagset, arg, dflt)				\
 	do {							\
 		if ((arg) & IPC_64)				\
 			tprints("IPC_64|");			\

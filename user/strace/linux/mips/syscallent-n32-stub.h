@@ -246,7 +246,7 @@
 [6245] = { 5,	0,		SEN(printargs), "n32:keyctl"		},
 [6246] = { 1,	0,		SEN(printargs), "n32:set_thread_area"	},
 [6247] = { 0,	TD,		SEN(printargs), "n32:inotify_init"		},
-[6248] = { 3,	TD,		SEN(printargs), "n32:inotify_add_watch"	},
+[6248] = { 3,	TD|TF,		SEN(printargs), "n32:inotify_add_watch"	},
 [6249] = { 2,	TD,		SEN(printargs), "n32:inotify_rm_watch"	},
 [6250] = { 4,	TM,		SEN(printargs), "n32:migrate_pages"		},
 [6251] = { 4,	TD|TF,		SEN(printargs), "n32:openat"		},

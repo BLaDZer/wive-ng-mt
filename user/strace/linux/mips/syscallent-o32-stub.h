@@ -283,7 +283,7 @@
 [4282] = { 5,	0,		SEN(printargs), "o32:keyctl"		},
 [4283] = { 1,	0,		SEN(printargs), "o32:set_thread_area"	},
 [4284] = { 0,	TD,		SEN(printargs), "o32:inotify_init"		},
-[4285] = { 3,	TD,		SEN(printargs), "o32:inotify_add_watch"	},
+[4285] = { 3,	TD|TF,		SEN(printargs), "o32:inotify_add_watch"	},
 [4286] = { 2,	TD,		SEN(printargs), "o32:inotify_rm_watch"	},
 [4287] = { 4,	TM,		SEN(printargs), "o32:migrate_pages"		},
 [4288] = { 4,	TD|TF,		SEN(printargs), "o32:openat"		},

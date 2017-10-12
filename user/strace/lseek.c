@@ -56,7 +56,7 @@ SYS_FUNC(lseek)
 # endif /* !current_klongsize */
 	{
 		offset = tcp->u_arg[1];
-}
+	}
 
 	tprintf(", %" PRI_kld ", ", offset);
 

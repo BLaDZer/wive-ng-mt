@@ -200,15 +200,15 @@ SYS_FUNC(oldselect)
 			return 0;
 		}
 	} else {
-	unsigned int i;
+		unsigned int i;
 
 		if (umove_or_printaddr(tcp, tcp->u_arg[0], &oldselect_args)) {
-		return 0;
-	}
+			return 0;
+		}
 
 		for (i = 0; i < 5; ++i) {
 			select_args[i] = oldselect_args[i];
-	}
+		}
 	}
 
 	return decode_select(tcp, select_args, print_timeval, sprint_timeval);

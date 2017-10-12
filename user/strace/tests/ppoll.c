@@ -33,11 +33,11 @@
 #ifdef __NR_ppoll
 
 # include <errno.h>
-#include <poll.h>
-#include <signal.h>
+# include <poll.h>
+# include <signal.h>
 # include <stdio.h>
 # include <string.h>
-#include <unistd.h>
+# include <unistd.h>
 
 static const char *errstr;
 
@@ -180,7 +180,7 @@ main(void)
 		       (unsigned long long) f8ill_ptr_to_kulong(ts),
 		       (unsigned long long) f8ill_ptr_to_kulong(sigmask),
 		       (unsigned) sigset_size, errstr);
-}
+	}
 
 	puts("+++ exited with 0 +++");
 	return 0;

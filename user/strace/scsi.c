@@ -30,7 +30,7 @@
 
 #ifdef HAVE_SCSI_SG_H
 # include <scsi/sg.h>
-# endif
+#endif
 
 #include "xlat/scsi_sg_commands.h"
 #include "xlat/sg_scsi_reset.h"
@@ -46,7 +46,7 @@ decode_sg_io(struct tcb *const tcp, const uint32_t iid,
 			return decode_sg_io_v4(tcp, arg);
 		default:
 			tprintf("[%u]", iid);
-		return RVAL_DECODED | 1;
+			return RVAL_IOCTL_DECODED;
 	}
 
 }
@@ -77,8 +77,8 @@ decode_sg_scsi_id(struct tcb *const tcp, const kernel_ulong_t arg)
 			id.scsi_type,
 			id.h_cmd_per_lun,
 			id.d_queue_depth);
-}
-	return RVAL_DECODED | 1;
+	}
+	return RVAL_IOCTL_DECODED;
 }
 
 #endif /* HAVE_SCSI_SG_H */
@@ -104,7 +104,7 @@ scsi_ioctl(struct tcb *const tcp, const unsigned int code,
 				decode_sg_io(tcp, *piid, arg);
 			tprints("}");
 			break;
-}
+		}
 
 #ifdef HAVE_SCSI_SG_H
 	/* returns struct sg_scsi_id */
@@ -131,9 +131,9 @@ scsi_ioctl(struct tcb *const tcp, const unsigned int code,
 				  "SG_SCSI_RESET_???");
 			tprints("]");
 
-	}
+		}
 		break;
-}
+	}
 
 	/* takes a signed int by pointer */
 	case SG_NEXT_CMD_LEN:
@@ -177,7 +177,7 @@ scsi_ioctl(struct tcb *const tcp, const unsigned int code,
 
 	default:
 		return RVAL_DECODED;
-		}
-
-		return RVAL_DECODED | 1;
 	}
+
+	return RVAL_IOCTL_DECODED;
+}

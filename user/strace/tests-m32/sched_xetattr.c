@@ -124,7 +124,7 @@ main(void)
 		printf("sched_getattr(0, {size=%u, sched_policy=", attr->size);
 		printxval(schedulers, attr->sched_policy, NULL);
 		printf(", sched_flags=%s, sched_nice=%d, sched_priority=%u"
-	       ", sched_runtime=%" PRIu64 ", sched_deadline=%" PRIu64
+		       ", sched_runtime=%" PRIu64 ", sched_deadline=%" PRIu64
 		       ", sched_period=%" PRIu64 "}, %u, 0) = 0\n",
 		       attr->sched_flags ? "SCHED_FLAG_RESET_ON_FORK" : "0",
 		       attr->sched_nice,
@@ -212,7 +212,7 @@ main(void)
 	sys_sched_setattr(bogus_pid, (unsigned long) attr, bogus_flags);
 	printf("sched_setattr(%d, {size=%u, sched_policy=%#x /* SCHED_??? */, "
 	       "sched_flags=%#" PRIx64 " /* SCHED_FLAG_??? */, "
-		"sched_nice=%d, sched_priority=%u, sched_runtime=%" PRIu64 ", "
+	       "sched_nice=%d, sched_priority=%u, sched_runtime=%" PRIu64 ", "
 	       "sched_deadline=%" PRIu64 ", sched_period=%" PRIu64 ", ...}, %u)"
 	       " = %s\n",
 	       (int) bogus_pid,

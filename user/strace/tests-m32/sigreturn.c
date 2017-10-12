@@ -36,16 +36,16 @@
 
 #ifdef __NR_sigreturn
 
-#include <signal.h>
+# include <signal.h>
 # include <stdio.h>
 # include <stdlib.h>
 
-#ifdef ASM_SIGRTMIN
-# define RT_0 ASM_SIGRTMIN
-#else
+# ifdef ASM_SIGRTMIN
+#  define RT_0 ASM_SIGRTMIN
+# else
 /* Linux kernel >= 3.18 defines SIGRTMIN to 32 on all architectures. */
-# define RT_0 32
-#endif
+#  define RT_0 32
+# endif
 
 static void
 handler(int sig)

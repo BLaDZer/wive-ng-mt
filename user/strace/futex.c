@@ -98,12 +98,12 @@ SYS_FUNC(futex)
 			tprints("FUTEX_OP_OPARG_SHIFT<<28|");
 		comment = printxval(futexwakeops, (val3 >> 28) & 0x7, NULL)
 			? NULL : "FUTEX_OP_???";
-			tprints("<<28");
+		tprints("<<28");
 		tprints_comment(comment);
 		tprintf("|%#x<<12|", (val3 >> 12) & 0xfff);
 		comment = printxval(futexwakecmps, (val3 >> 24) & 0xf, NULL)
 			? NULL : "FUTEX_OP_CMP_???";
-			tprints("<<24");
+		tprints("<<24");
 		tprints_comment(comment);
 		tprintf("|%#x", val3 & 0xfff);
 		break;

@@ -248,10 +248,10 @@ SYS_FUNC(ptrace)
 			print_sigset_addr_len(tcp, data, addr);
 			break;
 		case PTRACE_PEEKSIGINFO:
-				print_siginfo_array(tcp, data, tcp->u_rval);
+			print_siginfo_array(tcp, data, tcp->u_rval);
 			break;
 		case PTRACE_SECCOMP_GET_FILTER:
-				print_seccomp_fprog(tcp, data, tcp->u_rval);
+			print_seccomp_fprog(tcp, data, tcp->u_rval);
 			break;
 		}
 	}

@@ -62,44 +62,44 @@
 
 typedef off_t libc_off_t;
 
-#  define stat libc_stat
-#  define stat64 libc_stat64
+# define stat libc_stat
+# define stat64 libc_stat64
 # include <fcntl.h>
 # include <sys/stat.h>
-#  undef stat
-#  undef stat64
+# undef stat
+# undef stat64
 
-#  undef st_atime
-#  undef st_mtime
-#  undef st_ctime
-#  include "asm_stat.h"
+# undef st_atime
+# undef st_mtime
+# undef st_ctime
+# include "asm_stat.h"
 
-#  if STRUCT_STAT_IS_STAT64
-#   undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
-#   if defined MPERS_IS_m32
-#    ifdef HAVE_M32_STRUCT_STAT64_ST_MTIME_NSEC
-#     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#    endif
-#   elif defined MPERS_IS_mx32
-#    ifdef HAVE_MX32_STRUCT_STAT64_ST_MTIME_NSEC
-#     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#    endif
-#   elif defined HAVE_STRUCT_STAT64_ST_MTIME_NSEC
+# if STRUCT_STAT_IS_STAT64
+#  undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+#  if defined MPERS_IS_m32
+#   ifdef HAVE_M32_STRUCT_STAT64_ST_MTIME_NSEC
 #    define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#   endif /* MPERS_IS_m32 || MPERS_IS_mx32 || HAVE_STRUCT_STAT64_ST_MTIME_NSEC */
-#  else /* !STRUCT_STAT_IS_STAT64 */
-#   if defined MPERS_IS_m32
-#    undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
-#    ifdef HAVE_M32_STRUCT_STAT_ST_MTIME_NSEC
-#     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#    endif
-#   elif defined MPERS_IS_mx32
-#    undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
-#    ifdef HAVE_MX32_STRUCT_STAT_ST_MTIME_NSEC
-#     define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
-#    endif
-#   endif /*  MPERS_IS_m32 || MPERS_IS_mx32 */
-#  endif /* STRUCT_STAT_IS_STAT64 */
+#   endif
+#  elif defined MPERS_IS_mx32
+#   ifdef HAVE_MX32_STRUCT_STAT64_ST_MTIME_NSEC
+#    define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
+#   endif
+#  elif defined HAVE_STRUCT_STAT64_ST_MTIME_NSEC
+#   define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
+#  endif /* MPERS_IS_m32 || MPERS_IS_mx32 || HAVE_STRUCT_STAT64_ST_MTIME_NSEC */
+# else /* !STRUCT_STAT_IS_STAT64 */
+#  if defined MPERS_IS_m32
+#   undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+#   ifdef HAVE_M32_STRUCT_STAT_ST_MTIME_NSEC
+#    define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
+#   endif
+#  elif defined MPERS_IS_mx32
+#   undef HAVE_STRUCT_STAT_ST_MTIME_NSEC
+#   ifdef HAVE_MX32_STRUCT_STAT_ST_MTIME_NSEC
+#    define HAVE_STRUCT_STAT_ST_MTIME_NSEC 1
+#   endif
+#  endif /*  MPERS_IS_m32 || MPERS_IS_mx32 */
+# endif /* STRUCT_STAT_IS_STAT64 */
 
 # ifndef TEST_BOGUS_STRUCT_STAT
 #  define TEST_BOGUS_STRUCT_STAT 1
@@ -154,12 +154,12 @@ print_stat(const STRUCT_STAT *st)
 	printf(", st_nlink=%llu", zero_extend_signed_to_ull(st->st_nlink));
 	printf(", st_uid=%llu", zero_extend_signed_to_ull(st->st_uid));
 	printf(", st_gid=%llu", zero_extend_signed_to_ull(st->st_gid));
-# if OLD_STAT
+#  if OLD_STAT
 	printf(", st_blksize=0, st_blocks=0");
-# else /* !OLD_STAT */
+#  else /* !OLD_STAT */
 	printf(", st_blksize=%llu", zero_extend_signed_to_ull(st->st_blksize));
 	printf(", st_blocks=%llu", zero_extend_signed_to_ull(st->st_blocks));
-# endif /* OLD_STAT */
+#  endif /* OLD_STAT */
 
 	switch (st->st_mode & S_IFMT) {
 	case S_IFCHR: case S_IFBLK:
@@ -171,7 +171,7 @@ print_stat(const STRUCT_STAT *st)
 		printf(", st_size=%llu", zero_extend_signed_to_ull(st->st_size));
 	}
 
-# if defined(HAVE_STRUCT_STAT_ST_MTIME_NSEC) && !OLD_STAT
+#  if defined(HAVE_STRUCT_STAT_ST_MTIME_NSEC) && !OLD_STAT
 #   define TIME_NSEC(val)	zero_extend_signed_to_ull(val)
 #   define HAVE_NSEC		1
 #  else
@@ -375,10 +375,10 @@ main(void)
 		LOG_STAT_OFFSETOF_SIZEOF(*st, st_gid);
 		LOG_STAT_OFFSETOF_SIZEOF(*st, st_rdev);
 		LOG_STAT_OFFSETOF_SIZEOF(*st, st_size);
-# if !OLD_STAT
+#  if !OLD_STAT
 		LOG_STAT_OFFSETOF_SIZEOF(*st, st_blksize);
 		LOG_STAT_OFFSETOF_SIZEOF(*st, st_blocks);
-# endif /* !OLD_STAT */
+#  endif /* !OLD_STAT */
 
 # endif /* IS_STATX */
 

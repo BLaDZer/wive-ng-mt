@@ -3451,38 +3451,39 @@
 <b>6.6.x</b><br>
 1) lldpd: up to 0.9.8 version.<br>
 2) quagga: up to 1.2.2 version.<br>
-3) goahead: do not touch route parse every page load.<br>
-4) cli: add wl scan_result command for view last scan results without new scan.<br>
-5) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
-6) kernel: fs/seq_file: fix out-of-bounds read.<br>
-7) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
-8) kernel: net: packet: check length in getsockopt() called with PACKET_HDRLEN.<br>
-9) kernel: net: 8021q: skip packets if the vlan is down.<br>
-10) kernel: net: ipmr, ip6mr: fix scheduling while atomic and a deadlock with ipmr_get_route.<br>
-11) kernel: net: netfilter: nf_nat_snmp: Fix panic when snmp_trap_helper fails to register.<br>
-12) kernel: net: tcp_yeah: don't set ssthresh below 2.<br>
-13) kernel: net: af_unix: fix struct pid memory leak.<br>
-14) kernel: net: bpf: remove duplicate tcp_filter hook in ipv6.<br>
-15) kernel: net: ipv6: send NS for DAD when link operationally up.<br>
-16) kernel: net: ipv6: xfrm: handle errors reported by xfrm6_find_1stfragopt().<br>
-17) kernel: net: unix: properly account for FDs passed over unix sockets.<br>
-18) kernel: net: unix: correctly track in-flight fds in sending process user_struct.<br>
-19) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
-20) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
-21) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
-22) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
-23) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
-24) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
-25) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
-26) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
-27) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
-28) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
-29) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
-30) kernel: ralink_wifi: mt76x2: update firmware.<br>
-31) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
-32) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
-33) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
-34) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
+3) strace: uo to 4.19 version.<br>
+4) goahead: do not touch route parse every page load.<br>
+5) cli: add wl scan_result command for view last scan results without new scan.<br>
+6) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
+7) kernel: fs/seq_file: fix out-of-bounds read.<br>
+8) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
+9) kernel: net: packet: check length in getsockopt() called with PACKET_HDRLEN.<br>
+10) kernel: net: 8021q: skip packets if the vlan is down.<br>
+11) kernel: net: ipmr, ip6mr: fix scheduling while atomic and a deadlock with ipmr_get_route.<br>
+12) kernel: net: netfilter: nf_nat_snmp: Fix panic when snmp_trap_helper fails to register.<br>
+13) kernel: net: tcp_yeah: don't set ssthresh below 2.<br>
+14) kernel: net: af_unix: fix struct pid memory leak.<br>
+15) kernel: net: bpf: remove duplicate tcp_filter hook in ipv6.<br>
+16) kernel: net: ipv6: send NS for DAD when link operationally up.<br>
+17) kernel: net: ipv6: xfrm: handle errors reported by xfrm6_find_1stfragopt().<br>
+18) kernel: net: unix: properly account for FDs passed over unix sockets.<br>
+19) kernel: net: unix: correctly track in-flight fds in sending process user_struct.<br>
+20) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
+21) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
+22) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
+23) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
+24) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
+25) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
+26) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
+27) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
+28) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
+29) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
+30) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+31) kernel: ralink_wifi: mt76x2: update firmware.<br>
+32) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
+33) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+34) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
+35) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
 <br>
 <br>
 <br>

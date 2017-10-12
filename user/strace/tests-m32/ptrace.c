@@ -31,14 +31,14 @@
 #include "tests.h"
 #include <asm/unistd.h>
 
-# include <errno.h>
-# include <signal.h>
-# include <stdio.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <unistd.h>
-# include "ptrace.h"
-# include <linux/audit.h>
+#include <errno.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include "ptrace.h"
+#include <linux/audit.h>
 
 static const char *errstr;
 
@@ -114,7 +114,7 @@ test_peeksiginfo(unsigned long pid, const unsigned long bad_request)
 			if (errno == EINTR)
 				continue;
 			saved = errno;
-			kill (pid, SIGKILL);
+			kill(pid, SIGKILL);
 			errno = saved;
 			perror_msg_and_fail("wait");
 		}
@@ -159,7 +159,7 @@ test_peeksiginfo(unsigned long pid, const unsigned long bad_request)
 
 		if (do_ptrace(PTRACE_CONT, pid, 0, 0)) {
 			saved = errno;
-			kill (pid, SIGKILL);
+			kill(pid, SIGKILL);
 			errno = saved;
 			perror_msg_and_fail("ptrace");
 		}
@@ -187,28 +187,28 @@ main(void)
 	       bad_request, (unsigned) pid, errstr);
 
 	do_ptrace(PTRACE_PEEKDATA, pid, bad_request, bad_data);
-# ifdef IA64
+#ifdef IA64
 	printf("ptrace(PTRACE_PEEKDATA, %u, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, errstr);
-# else
+#else
 	printf("ptrace(PTRACE_PEEKDATA, %u, %#lx, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, bad_data, errstr);
 #endif
 
 	do_ptrace(PTRACE_PEEKTEXT, pid, bad_request, bad_data);
-# ifdef IA64
+#ifdef IA64
 	printf("ptrace(PTRACE_PEEKTEXT, %u, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, errstr);
-# else
+#else
 	printf("ptrace(PTRACE_PEEKTEXT, %u, %#lx, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, bad_data, errstr);
 #endif
 
 	do_ptrace(PTRACE_PEEKUSER, pid, bad_request, bad_data);
-# ifdef IA64
+#ifdef IA64
 	printf("ptrace(PTRACE_PEEKUSER, %u, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, errstr);
-# else
+#else
 	printf("ptrace(PTRACE_PEEKUSER, %u, %#lx, %#lx) = %s\n",
 	       (unsigned) pid, bad_request, bad_data, errstr);
 #endif

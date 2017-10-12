@@ -36,7 +36,7 @@
 #ifndef STRACE_PTRACE_H
 #define STRACE_PTRACE_H
 
-# include <sys/ptrace.h>
+#include <sys/ptrace.h>
 
 #ifdef HAVE_STRUCT_IA64_FPREG
 # define ia64_fpreg XXX_ia64_fpreg

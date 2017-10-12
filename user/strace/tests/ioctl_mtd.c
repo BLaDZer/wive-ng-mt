@@ -58,15 +58,15 @@ static const unsigned long lmagic = (unsigned long) 0xdeadbeefbadc0dedULL;
 			       (unsigned int) _IOC_NR(cmd), #cmd); \
 		else \
 			printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd); \
-		} while (0)
+	} while (0)
 
-#define TEST_erase_info_user(cmd, eiu) \
+#define TEST_erase_info_user(cmd, eiu)						\
 	do {									\
-	ioctl(-1, cmd, eiu); \
-	printf("ioctl(-1, MIXER_%s(%u) or %s, {start=%#x, length=%#x})" \
-	       " = -1 EBADF (%m)\n", \
-	       (_IOC_DIR(cmd) == _IOC_READ) ? "READ" : "WRITE", \
-	       (unsigned int) _IOC_NR(cmd), #cmd, \
+		ioctl(-1, cmd, eiu);						\
+		printf("ioctl(-1, MIXER_%s(%u) or %s, {start=%#x, length=%#x})"	\
+		       " = -1 EBADF (%m)\n",					\
+		       (_IOC_DIR(cmd) == _IOC_READ) ? "READ" : "WRITE",		\
+		       (unsigned int) _IOC_NR(cmd), #cmd,			\
 		       eiu->start, eiu->length);				\
 	} while (0)
 

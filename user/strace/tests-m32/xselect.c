@@ -91,7 +91,7 @@ int main(void)
 	FD_SET(fds[0], set);
 	FD_SET(fds[1], set);
 	tv->tv_sec = (time_t) 0xcafef00ddeadbeefLL;
-	tv->tv_usec = (long) 0xbadc0dedfacefeedLL;
+	tv->tv_usec = (suseconds_t) 0xbadc0dedfacefeedLL;
 	memcpy(&tv_in, tv, sizeof(tv_in));
 	rc = syscall(TEST_SYSCALL_NR, fds[1] + 1, set, set, set, tv);
 	if (rc < 0) {
@@ -136,7 +136,7 @@ int main(void)
 	 * but with a pointer to a large chunk of valid memory.
 	 */
 	FD_ZERO(set);
-	FD_SET(fds[1],set);
+	FD_SET(fds[1], set);
 	assert(syscall(TEST_SYSCALL_NR, -1, NULL, set, NULL, NULL) == -1);
 	printf("%s(-1, NULL, %p, NULL, NULL) = -1 EINVAL (%m)\n",
 	       TEST_SYSCALL_STR, set);
@@ -145,7 +145,7 @@ int main(void)
 	 * Another variant, with nfds exceeding FD_SETSIZE limit.
 	 */
 	FD_ZERO(set);
-	FD_SET(fds[0],set);
+	FD_SET(fds[0], set);
 	tv->tv_sec = 0;
 	tv->tv_usec = 123;
 	assert(syscall(TEST_SYSCALL_NR, FD_SETSIZE + 1, set, set + 1, NULL, tv) == 0);

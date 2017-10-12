@@ -79,7 +79,7 @@ printargv(struct tcb *const tcp, kernel_ulong_t addr)
 static void
 printargc(struct tcb *const tcp, kernel_ulong_t addr)
 {
-		printaddr(addr);
+	printaddr(addr);
 
 	if (!addr || !verbose(tcp))
 		return;
@@ -93,9 +93,9 @@ printargc(struct tcb *const tcp, kernel_ulong_t addr)
 			if (!count)
 				return;
 
-				unterminated = true;
-				break;
-			}
+			unterminated = true;
+			break;
+		}
 		if (!cp)
 			break;
 	}

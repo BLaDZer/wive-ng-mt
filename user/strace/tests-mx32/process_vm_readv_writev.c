@@ -2,6 +2,7 @@
  * Check decoding of process_vm_readv/process_vm_writev syscall.
  *
  * Copyright (c) 2016 Eugene Syromyatnikov <evgsyr@gmail.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +52,7 @@ enum { MAX_SEGM_COUNT = 2, MAX_STR_LEN = 5 };
 struct print_iov_arg {
 	uint32_t count;
 	uint32_t valid    :1,
-	         string   :1,
+		 string   :1,
 		 addr_term:1,
 		 check_rc :1;
 	uint32_t str_segms;
@@ -252,7 +253,7 @@ main(void)
 	};
 	struct print_iov_arg lcl_arg_cut = {
 		ARRAY_SIZE(lcl_iovec) - 2, 1, 1, 1, 0, 2,
-			{SEGM1_BASE + SIZE_11 + SIZE_12, SEGM2_BASE},
+		{ SEGM1_BASE + SIZE_11 + SIZE_12, SEGM2_BASE },
 		{SIZE_13, SIZE_2}
 	};
 	struct print_iov_arg rmt_arg_cut = { ARRAY_SIZE(rmt_iovec) - 2, 1 };

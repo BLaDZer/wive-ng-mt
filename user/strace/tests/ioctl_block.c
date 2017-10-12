@@ -58,9 +58,9 @@ static struct xlat block_argless[] = {
 #endif
 };
 
-#define TEST_NULL_ARG(cmd) \
+#define TEST_NULL_ARG(cmd)						\
 	do {								\
-	ioctl(-1, cmd, 0); \
+		ioctl(-1, cmd, 0);					\
 		printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n", #cmd);	\
 	} while (0)
 
@@ -154,7 +154,7 @@ main(void)
 	blkpg->data = (void *) (unsigned long) 0xcafef00dfffffeedULL;
 
 	ioctl(-1, BLKPG, blkpg);
-	printf("ioctl(-1, BLKPG, {%s, flags=%d, datalen=%d"
+	printf("ioctl(-1, BLKPG, {op=%s, flags=%d, datalen=%d"
 	       ", data=%#lx}) = -1 EBADF (%m)\n",
 	       "BLKPG_RESIZE_PARTITION", blkpg->flags, blkpg->datalen,
 	       (unsigned long) blkpg->data);
@@ -169,9 +169,9 @@ main(void)
 	blkpg->data = bp;
 
 	ioctl(-1, BLKPG, blkpg);
-	printf("ioctl(-1, BLKPG, {%s, flags=%d, datalen=%d"
+	printf("ioctl(-1, BLKPG, {op=%s, flags=%d, datalen=%d"
 	       ", data={start=%lld, length=%lld, pno=%d"
-	       ", devname=\"%.*s\", volname=\"%.*s\"}})"
+	       ", devname=\"%.*s\"..., volname=\"%.*s\"...}})"
 	       " = -1 EBADF (%m)\n",
 	       "BLKPG_ADD_PARTITION",
 	       blkpg->flags, blkpg->datalen,

@@ -39,13 +39,13 @@
 
 #define PRINT_NUM(arg)							\
 	do {								\
-	if (sizeof(b->arg) == sizeof(int))				\
+		if (sizeof(b->arg) == sizeof(int))			\
 			printf(", %s=%u", #arg,				\
 			       (unsigned int) b->arg);			\
-	else if (sizeof(b->arg) == sizeof(long))				\
+		else if (sizeof(b->arg) == sizeof(long))		\
 			printf(", %s=%lu", #arg,			\
 			       (unsigned long) b->arg);			\
-	else								\
+		else							\
 			printf(", %s=%llu", #arg,			\
 			       (unsigned long long) b->arg);		\
 	} while (0)

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2016 Jeff Mahoney <jeffm@suse.com>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,11 +37,11 @@
 #endif
 
 #ifndef FICLONE
-# define FICLONE         _IOW(0x94, 9, int)
+# define FICLONE	_IOW(0x94, 9, int)
 #endif
 
 #ifndef FICLONERANGE
-# define FICLONERANGE    _IOW(0x94, 13, struct file_clone_range)
+# define FICLONERANGE	_IOW(0x94, 13, struct file_clone_range)
 struct file_clone_range {
 	int64_t src_fd;
 	uint64_t src_offset;
@@ -50,7 +51,7 @@ struct file_clone_range {
 #endif
 
 #ifndef FIDEDUPERANGE
-# define FIDEDUPERANGE   _IOWR(0x94, 54, struct file_dedupe_range)
+# define FIDEDUPERANGE	_IOWR(0x94, 54, struct file_dedupe_range)
 struct file_dedupe_range_info {
 	int64_t dest_fd;	/* in - destination file */
 	uint64_t dest_offset;	/* in - start of extent in destination */
@@ -245,5 +246,5 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
 		return RVAL_DECODED;
 	};
 
-	return RVAL_DECODED | 1;
+	return RVAL_IOCTL_DECODED;
 }

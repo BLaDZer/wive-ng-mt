@@ -149,7 +149,7 @@ main(void)
 	       ", {iov_base=\"\", iov_len=%u}], %u, %u) = %u\n",
 	       fd, r1_c, r_len, LENGTH_OF(w),
 	       (unsigned int) ARRAY_SIZE(r1_iov_),
-		r_len, LENGTH_OF(w) - r_len);
+	       r_len, LENGTH_OF(w) - r_len);
 
 	puts("+++ exited with 0 +++");
 	return 0;

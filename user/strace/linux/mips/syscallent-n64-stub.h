@@ -242,7 +242,7 @@
 [5241] = { 5,	0,		SEN(printargs), "n64:keyctl"		},
 [5242] = { 1,	0,		SEN(printargs), "n64:set_thread_area"	},
 [5243] = { 0,	TD,		SEN(printargs), "n64:inotify_init"		},
-[5244] = { 3,	TD,		SEN(printargs), "n64:inotify_add_watch"	},
+[5244] = { 3,	TD|TF,		SEN(printargs), "n64:inotify_add_watch"	},
 [5245] = { 2,	TD,		SEN(printargs), "n64:inotify_rm_watch"	},
 [5246] = { 4,	TM,		SEN(printargs), "n64:migrate_pages"		},
 [5247] = { 4,	TD|TF,		SEN(printargs), "n64:openat"		},

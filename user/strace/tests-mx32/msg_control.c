@@ -534,7 +534,7 @@ test_sol_socket(struct msghdr *const mh, void *const page)
 
 static void
 test_ip_pktinfo(struct msghdr *const mh, void *const page,
-	        const int cmsg_type, const char *const cmsg_type_str)
+		const int cmsg_type, const char *const cmsg_type_str)
 {
 	const unsigned int len = CMSG_SPACE(sizeof(struct in_pktinfo));
 	struct cmsghdr *const cmsg = get_cmsghdr(page, len);
@@ -544,11 +544,7 @@ test_ip_pktinfo(struct msghdr *const mh, void *const page,
 	cmsg->cmsg_type = cmsg_type;
 
 	struct in_pktinfo *const info = (struct in_pktinfo *) CMSG_DATA(cmsg);
-#ifdef HAVE_IF_INDEXTONAME
-	info->ipi_ifindex = if_nametoindex("lo");
-#else
-	info->ipi_ifindex = 1;
-#endif
+	info->ipi_ifindex = ifindex_lo();
 	info->ipi_spec_dst.s_addr = inet_addr("1.2.3.4");
 	info->ipi_addr.s_addr = inet_addr("5.6.7.8");
 
@@ -563,12 +559,7 @@ test_ip_pktinfo(struct msghdr *const mh, void *const page,
 	       ", ipi_addr=inet_addr(\"%s\")}}]"
 	       ", msg_controllen=%u, msg_flags=0}, 0) = %d %s (%m)\n",
 	       (unsigned) cmsg->cmsg_len, cmsg_type_str,
-#ifdef HAVE_IF_INDEXTONAME
-	       "if_nametoindex(\"lo\")",
-#else
-	       "1",
-#endif
-	       "1.2.3.4", "5.6.7.8", len, rc, errno2name());
+	       IFINDEX_LO_STR, "1.2.3.4", "5.6.7.8", len, rc, errno2name());
 }
 
 static void
@@ -599,7 +590,7 @@ test_ip_uint(struct msghdr *const mh, void *const page,
 
 static void
 test_ip_uint8_t(struct msghdr *const mh, void *const page,
-	        const int cmsg_type, const char *const cmsg_type_str)
+		const int cmsg_type, const char *const cmsg_type_str)
 {
 	const unsigned int len = CMSG_SPACE(1);
 	struct cmsghdr *const cmsg = get_cmsghdr(page, len);
@@ -681,7 +672,7 @@ struct sock_ee {
 
 static void
 test_ip_recverr(struct msghdr *const mh, void *const page,
-	        const int cmsg_type, const char *const cmsg_type_str)
+		const int cmsg_type, const char *const cmsg_type_str)
 {
 	const unsigned int len = CMSG_SPACE(sizeof(struct sock_ee));
 	struct cmsghdr *const cmsg = get_cmsghdr(page, len);

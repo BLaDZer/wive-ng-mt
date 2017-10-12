@@ -3,6 +3,7 @@
  * of sendmmsg and recvmmsg syscalls.
  *
  * Copyright (c) 2016 Dmitry V. Levin <ldv@altlinux.org>
+ * Copyright (c) 2016-2017 The strace developers.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +76,7 @@ print_msghdr(const struct msghdr *const msg, const int user_msg_namelen)
 	}
 	printf("%d, msg_iov=[{iov_base=\"%c\", iov_len=1}]"
 	       ", msg_iovlen=1, msg_controllen=0, msg_flags=0}",
-	       (int) msg->msg_namelen, * (char *) msg->msg_iov[0].iov_base);
+	       (int) msg->msg_namelen, *(char *) msg->msg_iov[0].iov_base);
 }
 
 static void

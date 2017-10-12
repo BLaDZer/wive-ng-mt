@@ -283,7 +283,7 @@ void
 print_sigset_addr(struct tcb *const tcp, const kernel_ulong_t addr)
 {
 	print_sigset_addr_len_limit(tcp, addr, NSIG_BYTES, NSIG_BYTES);
-	}
+}
 
 SYS_FUNC(ssetmask)
 {
@@ -398,8 +398,8 @@ SYS_FUNC(sgetmask)
 {
 	if (exiting(tcp) && !syserror(tcp)) {
 		tcp->auxstr = sprint_old_sigmask_val("mask ", tcp->u_rval);
-	return RVAL_HEX | RVAL_STR;
-}
+		return RVAL_HEX | RVAL_STR;
+	}
 	return 0;
 }
 
@@ -415,18 +415,18 @@ SYS_FUNC(sigsuspend)
 	return RVAL_DECODED;
 }
 
-# ifdef ALPHA
-		/*
+#ifdef ALPHA
+/*
  * The OSF/1 sigprocmask is different: it doesn't pass in two pointers,
  * but rather passes in the new bitmask as an argument and then returns
  * the old bitmask.  This "works" because we only have 64 signals to worry
  * about.  If you want more, use of the rt_sigprocmask syscall is required.
  *
-		 * Alpha:
-		 *	old = osf_sigprocmask(how, new);
-		 * Everyone else:
-		 *	ret = sigprocmask(how, &new, &old, ...);
-		 */
+ * Alpha:
+ *	old = osf_sigprocmask(how, new);
+ * Everyone else:
+ *	ret = sigprocmask(how, &new, &old, ...);
+ */
 SYS_FUNC(osf_sigprocmask)
 {
 	if (entering(tcp)) {
@@ -439,7 +439,7 @@ SYS_FUNC(osf_sigprocmask)
 	return 0;
 }
 
-# else /* !ALPHA */
+#else /* !ALPHA */
 
 /* "Old" sigprocmask, which operates with word-sized signal masks */
 SYS_FUNC(sigprocmask)
