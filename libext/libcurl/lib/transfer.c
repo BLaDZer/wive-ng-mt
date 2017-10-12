@@ -73,11 +73,37 @@
 #include "connect.h"
 #include "non-ascii.h"
 #include "http2.h"
+#include "mime.h"
+#include "strcase.h"
 
 /* The last 3 #include files should be in this order */
 #include "curl_printf.h"
 #include "curl_memory.h"
 #include "memdebug.h"
+
+#if !defined(CURL_DISABLE_HTTP) || !defined(CURL_DISABLE_SMTP) || \
+    !defined(CURL_DISABLE_IMAP)
+/*
+ * checkheaders() checks the linked list of custom headers for a
+ * particular header (prefix).
+ *
+ * Returns a pointer to the first matching header or NULL if none matched.
+ */
+char *Curl_checkheaders(const struct connectdata *conn,
+                        const char *thisheader)
+{
+  struct curl_slist *head;
+  size_t thislen = strlen(thisheader);
+  struct Curl_easy *data = conn->data;
+
+  for(head = data->set.headers; head; head = head->next) {
+    if(strncasecompare(head->data, thisheader, thislen))
+      return head->data;
+  }
+
+  return NULL;
+}
+#endif
 
 /*
  * This function will call the read callback to fill our buffer with data
@@ -195,20 +221,21 @@ CURLcode Curl_fillreadbuffer(struct connectdata *conn, int bytes, int *nreadp)
            strlen(endofline_network));
 
 #ifdef CURL_DOES_CONVERSIONS
+    {
     CURLcode result;
     int length;
-    if(data->set.prefer_ascii) {
+      if(data->set.prefer_ascii)
       /* translate the protocol and data */
       length = nread;
-    }
-    else {
+      else
       /* just translate the protocol portion */
-      length = strlen(hexbuffer);
-    }
-    result = Curl_convert_to_network(data, data->req.upload_fromhere, length);
+        length = (int)strlen(hexbuffer);
+      result = Curl_convert_to_network(data, data->req.upload_fromhere,
+                                       length);
     /* Curl_convert_to_network calls failf if unsuccessful */
     if(result)
       return result;
+    }
 #endif /* CURL_DOES_CONVERSIONS */
 
     if((nread - hexlen) == 0)
@@ -241,6 +268,7 @@ CURLcode Curl_fillreadbuffer(struct connectdata *conn, int bytes, int *nreadp)
 CURLcode Curl_readrewind(struct connectdata *conn)
 {
   struct Curl_easy *data = conn->data;
+  curl_mimepart *mimepart = &data->set.mimepost;
 
   conn->bits.rewindaftersend = FALSE; /* we rewind now */
 
@@ -253,9 +281,21 @@ CURLcode Curl_readrewind(struct connectdata *conn)
   /* We have sent away data. If not using CURLOPT_POSTFIELDS or
      CURLOPT_HTTPPOST, call app to rewind
   */
-  if(data->set.postfields ||
-     (data->set.httpreq == HTTPREQ_POST_FORM))
+  if(conn->handler->protocol & PROTO_FAMILY_HTTP) {
+    struct HTTP *http = data->req.protop;
+
+    if(http->sendit)
+      mimepart = http->sendit;
+  }
+  if(data->set.postfields)
     ; /* do nothing */
+  else if(data->set.httpreq == HTTPREQ_POST_MIME ||
+          data->set.httpreq == HTTPREQ_POST_FORM) {
+    if(Curl_mime_rewind(mimepart)) {
+      failf(data, "Cannot rewind mime/post data");
+      return CURLE_SEND_FAIL_REWIND;
+    }
+  }
   else {
     if(data->set.seek_func) {
       int err;
@@ -1345,7 +1385,7 @@ CURLcode Curl_pretransfer(struct Curl_easy *data)
 #endif
 
     Curl_initinfo(data); /* reset session-specific information "variables" */
-    Curl_pgrsResetTimesSizes(data);
+    Curl_pgrsResetTransferSizes(data);
     Curl_pgrsStartNow(data);
 
     if(data->set.timeout)
@@ -1826,7 +1866,8 @@ CURLcode Curl_follow(struct Curl_easy *data,
      * can be overridden with CURLOPT_POSTREDIR.
      */
     if((data->set.httpreq == HTTPREQ_POST
-        || data->set.httpreq == HTTPREQ_POST_FORM)
+        || data->set.httpreq == HTTPREQ_POST_FORM
+        || data->set.httpreq == HTTPREQ_POST_MIME)
        && !(data->set.keep_post & CURL_REDIR_POST_301)) {
       infof(data, "Switch from POST to GET\n");
       data->set.httpreq = HTTPREQ_GET;
@@ -1850,7 +1891,8 @@ CURLcode Curl_follow(struct Curl_easy *data,
      * can be overridden with CURLOPT_POSTREDIR.
      */
     if((data->set.httpreq == HTTPREQ_POST
-        || data->set.httpreq == HTTPREQ_POST_FORM)
+        || data->set.httpreq == HTTPREQ_POST_FORM
+        || data->set.httpreq == HTTPREQ_POST_MIME)
        && !(data->set.keep_post & CURL_REDIR_POST_302)) {
       infof(data, "Switch from POST to GET\n");
       data->set.httpreq = HTTPREQ_GET;
@@ -1883,7 +1925,7 @@ CURLcode Curl_follow(struct Curl_easy *data,
     break;
   }
   Curl_pgrsTime(data, TIMER_REDIRECT);
-  Curl_pgrsResetTimesSizes(data);
+  Curl_pgrsResetTransferSizes(data);
 
   return CURLE_OK;
 #endif /* CURL_DISABLE_HTTP */

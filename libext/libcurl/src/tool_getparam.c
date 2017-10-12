@@ -188,6 +188,7 @@ static const struct LongShort aliases[]= {
   {"$W", "abstract-unix-socket",     ARG_STRING},
   {"$X", "tls-max",                  ARG_STRING},
   {"$Y", "suppress-connect-headers", ARG_BOOL},
+  {"$Z", "compressed-ssh",           ARG_BOOL},
   {"0",   "http1.0",                 ARG_NONE},
   {"01",  "http1.1",                 ARG_NONE},
   {"02",  "http2",                   ARG_NONE},
@@ -590,7 +591,11 @@ ParameterError getparameter(const char *flag, /* f or -long-flag */
       {
         /* We support G, M, K too */
         char *unit;
-        curl_off_t value = curlx_strtoofft(nextarg, &unit, 0);
+        curl_off_t value;
+        if(curlx_strtoofft(nextarg, &unit, 0, &value)) {
+          warnf(global, "unsupported rate\n");
+          return PARAM_BAD_USE;
+        }
 
         if(!*unit)
           unit = (char *)"b";
@@ -1071,6 +1076,9 @@ ParameterError getparameter(const char *flag, /* f or -long-flag */
         break;
       case 'Y': /* --suppress-connect-headers */
         config->suppress_connect_headers = toggle;
+        break;
+      case 'Z': /* --compressed-ssh */
+        config->ssh_compression = toggle;
         break;
       }
       break;
@@ -1598,11 +1606,11 @@ ParameterError getparameter(const char *flag, /* f or -long-flag */
          to sort this out slowly and carefully */
       if(formparse(config,
                    nextarg,
-                   &config->httppost,
-                   &config->last_post,
-                   (subletter=='s')?TRUE:FALSE)) /* 's' means literal string */
+                   &config->mimepost,
+                   &config->mimecurrent,
+                   (subletter == 's')?TRUE:FALSE)) /* 's' is literal string */
         return PARAM_BAD_USE;
-      if(SetHTTPrequest(config, HTTPREQ_FORMPOST, &config->httpreq))
+      if(SetHTTPrequest(config, HTTPREQ_MIMEPOST, &config->httpreq))
         return PARAM_BAD_USE;
       break;
 
@@ -1843,10 +1851,13 @@ ParameterError getparameter(const char *flag, /* f or -long-flag */
       if(ISDIGIT(*nextarg) && !strchr(nextarg, '-')) {
         char buffer[32];
         curl_off_t off;
+        if(curlx_strtoofft(nextarg, NULL, 10, &off)) {
+          warnf(global, "unsupported range point\n");
+          return PARAM_BAD_USE;
+        }
         warnf(global,
               "A specified range MUST include at least one dash (-). "
               "Appending one for you!\n");
-        off = curlx_strtoofft(nextarg, NULL, 10);
         snprintf(buffer, sizeof(buffer), "%" CURL_FORMAT_CURL_OFF_T "-", off);
         Curl_safefree(config->range);
         config->range = strdup(buffer);

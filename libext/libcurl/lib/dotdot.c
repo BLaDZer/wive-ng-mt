@@ -172,7 +172,7 @@ char *Curl_dedotdotify(const char *input)
        from the correct index. */
     size_t oindex = queryp - orgclone;
     qlen = strlen(&input[oindex]);
-    memcpy(outptr, &input[oindex], qlen+1); /* include the ending zero byte */
+    memcpy(outptr, &input[oindex], qlen + 1); /* include the end zero byte */
   }
 
   free(orgclone);

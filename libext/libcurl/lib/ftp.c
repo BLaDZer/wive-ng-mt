@@ -2260,11 +2260,13 @@ static CURLcode ftp_state_size_resp(struct connectdata *conn,
 {
   CURLcode result = CURLE_OK;
   struct Curl_easy *data=conn->data;
-  curl_off_t filesize;
+  curl_off_t filesize = -1;
   char *buf = data->state.buffer;
 
   /* get the size from the ascii string: */
-  filesize = (ftpcode == 213)?curlx_strtoofft(buf+4, NULL, 0):-1;
+  if(ftpcode == 213)
+    /* ignores parsing errors, which will make the size remain unknown */
+    (void)curlx_strtoofft(buf + 4, NULL, 0, &filesize);
 
   if(instate == FTP_SIZE) {
 #ifdef CURL_FTP_HTTPSTYLE_HEAD
@@ -2435,7 +2437,7 @@ static CURLcode ftp_state_get_resp(struct connectdata *conn,
         /* if we have nothing but digits: */
         if(bytes++) {
           /* get the number! */
-          size = curlx_strtoofft(bytes, NULL, 0);
+          (void)curlx_strtoofft(bytes, NULL, 0, &size);
         }
       }
     }
@@ -2777,6 +2779,7 @@ static CURLcode ftp_statemach_act(struct connectdata *conn)
         const size_t buf_size = data->set.buffer_size;
         char *dir;
         char *store;
+        bool entry_extracted = FALSE;
 
         dir = malloc(nread + 1);
         if(!dir)
@@ -2808,7 +2811,7 @@ static CURLcode ftp_statemach_act(struct connectdata *conn)
               }
               else {
                 /* end of path */
-                *store = '\0'; /* zero terminate */
+                entry_extracted = TRUE;
                 break; /* get out of this loop */
               }
             }
@@ -2817,7 +2820,9 @@ static CURLcode ftp_statemach_act(struct connectdata *conn)
             store++;
             ptr++;
           }
-
+          *store = '\0'; /* zero terminate */
+        }
+        if(entry_extracted) {
           /* If the path name does not look like an absolute path (i.e.: it
              does not start with a '/'), we probably need some server-dependent
              adjustments. For example, this is the case when connecting to
@@ -3195,6 +3200,7 @@ static CURLcode ftp_done(struct connectdata *conn, CURLcode status,
     size_t flen = ftpc->file?strlen(ftpc->file):0; /* file is "raw" already */
     size_t dlen = strlen(path)-flen;
     if(!ftpc->cwdfail) {
+      ftpc->prevmethod = data->set.ftp_filemethod;
       if(dlen && (data->set.ftp_filemethod != FTPFILE_NOCWD)) {
         ftpc->prevpath = path;
         if(flen)
@@ -3466,31 +3472,32 @@ static CURLcode ftp_range(struct connectdata *conn)
 {
   curl_off_t from, to;
   char *ptr;
-  char *ptr2;
   struct Curl_easy *data = conn->data;
   struct ftp_conn *ftpc = &conn->proto.ftpc;
 
   if(data->state.use_range && data->state.range) {
-    from=curlx_strtoofft(data->state.range, &ptr, 0);
+    CURLofft from_t;
+    CURLofft to_t;
+    from_t = curlx_strtoofft(data->state.range, &ptr, 0, &from);
+    if(from_t == CURL_OFFT_FLOW)
+      return CURLE_RANGE_ERROR;
     while(*ptr && (ISSPACE(*ptr) || (*ptr=='-')))
       ptr++;
-    to=curlx_strtoofft(ptr, &ptr2, 0);
-    if(ptr == ptr2) {
-      /* we didn't get any digit */
-      to=-1;
-    }
-    if((-1 == to) && (from>=0)) {
+    to_t = curlx_strtoofft(ptr, NULL, 0, &to);
+    if(to_t == CURL_OFFT_FLOW)
+      return CURLE_RANGE_ERROR;
+    if((to_t == CURL_OFFT_INVAL) && !from_t) {
       /* X - */
       data->state.resume_from = from;
       DEBUGF(infof(conn->data, "FTP RANGE %" CURL_FORMAT_CURL_OFF_T
                    " to end of file\n", from));
     }
-    else if(from < 0) {
+    else if(!to_t && (from_t == CURL_OFFT_INVAL)) {
       /* -Y */
-      data->req.maxdownload = -from;
-      data->state.resume_from = from;
+      data->req.maxdownload = to;
+      data->state.resume_from = -to;
       DEBUGF(infof(conn->data, "FTP RANGE the last %" CURL_FORMAT_CURL_OFF_T
-                   " bytes\n", -from));
+                   " bytes\n", to));
     }
     else {
       /* X-Y */
@@ -4302,7 +4309,8 @@ CURLcode ftp_parse_url_path(struct connectdata *conn)
 
     dlen -= ftpc->file?strlen(ftpc->file):0;
     if((dlen == strlen(ftpc->prevpath)) &&
-       !strncmp(path, ftpc->prevpath, dlen)) {
+       !strncmp(path, ftpc->prevpath, dlen) &&
+       (ftpc->prevmethod == data->set.ftp_filemethod)) {
       infof(data, "Request has same path as previous transfer\n");
       ftpc->cwddone = TRUE;
     }

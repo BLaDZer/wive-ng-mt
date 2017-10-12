@@ -71,6 +71,7 @@ bool curl_win32_idn_to_ascii(const char *in, char **out);
 #include "netrc.h"
 
 #include "formdata.h"
+#include "mime.h"
 #include "vtls/vtls.h"
 #include "hostip.h"
 #include "transfer.h"
@@ -479,6 +480,8 @@ CURLcode Curl_close(struct Curl_easy *data)
   Curl_http2_cleanup_dependencies(data);
   Curl_convert_close(data);
 
+  Curl_mime_cleanpart(&data->set.mimepost);
+
   /* No longer a dirty share, if it exists */
   if(data->share) {
     Curl_share_lock(data, CURL_LOCK_DATA_SHARE, CURL_LOCK_ACCESS_SINGLE);
@@ -667,6 +670,8 @@ CURLcode Curl_open(struct Curl_easy **curl)
     DEBUGF(fprintf(stderr, "Error: malloc of buffer failed\n"));
     result = CURLE_OUT_OF_MEMORY;
   }
+
+  Curl_mime_initpart(&data->set.mimepost, data);
 
   data->state.headerbuff = malloc(HEADERSIZE);
   if(!data->state.headerbuff) {
@@ -1147,6 +1152,20 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     data->set.httpreq = HTTPREQ_POST_FORM;
     data->set.opt_no_body = FALSE; /* this is implied */
     break;
+#endif   /* CURL_DISABLE_HTTP */
+
+  case CURLOPT_MIMEPOST:
+    /*
+     * Set to make us do MIME/form POST
+     */
+    result = curl_mime_subparts(&data->set.mimepost,
+                                va_arg(param, curl_mime *));
+    if(!result) {
+      data->set.mimepost.freefunc = NULL; /* Avoid free upon easy cleanup. */
+      data->set.httpreq = HTTPREQ_POST_MIME;
+      data->set.opt_no_body = FALSE; /* this is implied */
+    }
+    break;
 
   case CURLOPT_REFERER:
     /*
@@ -1176,6 +1195,7 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     data->set.headers = va_arg(param, struct curl_slist *);
     break;
 
+#ifndef CURL_DISABLE_HTTP
   case CURLOPT_PROXYHEADER:
     /*
      * Set a list with proxy headers to use (or replace internals with)
@@ -1327,7 +1347,7 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     }
 
     break;
-#endif /* CURL_DISABLE_COOKIES */
+#endif /* !CURL_DISABLE_COOKIES */
 
   case CURLOPT_HTTPGET:
     /*
@@ -1352,6 +1372,16 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
 #endif
     data->set.httpversion = arg;
     break;
+
+  case CURLOPT_EXPECT_100_TIMEOUT_MS:
+    /*
+     * Time to wait for a response to a HTTP request containing an
+     * Expect: 100-continue header before sending the data anyway.
+     */
+    data->set.expect_100_timeout = va_arg(param, long);
+    break;
+
+#endif   /* CURL_DISABLE_HTTP */
 
   case CURLOPT_HTTPAUTH:
     /*
@@ -1403,16 +1433,6 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     data->set.httpauth = auth;
   }
   break;
-
-  case CURLOPT_EXPECT_100_TIMEOUT_MS:
-    /*
-     * Time to wait for a response to a HTTP request containing an
-     * Expect: 100-continue header before sending the data anyway.
-     */
-    data->set.expect_100_timeout = va_arg(param, long);
-    break;
-
-#endif   /* CURL_DISABLE_HTTP */
 
   case CURLOPT_CUSTOMREQUEST:
     /*
@@ -1875,13 +1895,13 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     break;
   case CURLOPT_RESUME_FROM:
     /*
-     * Resume transfer at the give file position
+     * Resume transfer at the given file position
      */
     data->set.set_resume_from = va_arg(param, long);
     break;
   case CURLOPT_RESUME_FROM_LARGE:
     /*
-     * Resume transfer at the give file position
+     * Resume transfer at the given file position
      */
     data->set.set_resume_from = va_arg(param, curl_off_t);
     break;
@@ -2179,24 +2199,26 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
                                          TRUE : FALSE;
     break;
   case CURLOPT_SSL_CTX_FUNCTION:
-#ifdef have_curlssl_ssl_ctx
     /*
      * Set a SSL_CTX callback
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_ssl_ctx)
     data->set.ssl.fsslctx = va_arg(param, curl_ssl_ctx_callback);
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_SSL_CTX_DATA:
-#ifdef have_curlssl_ssl_ctx
     /*
      * Set a SSL_CTX callback parameter pointer
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_ssl_ctx)
     data->set.ssl.fsslctxp = va_arg(param, void *);
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_SSL_FALSESTART:
     /*
@@ -2210,35 +2232,38 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     data->set.ssl.falsestart = (0 != va_arg(param, long)) ? TRUE : FALSE;
     break;
   case CURLOPT_CERTINFO:
-#ifdef have_curlssl_certinfo
+#ifdef USE_SSL
+    if(Curl_ssl->have_certinfo)
     data->set.ssl.certinfo = (0 != va_arg(param, long)) ? TRUE : FALSE;
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_PINNEDPUBLICKEY:
-#ifdef have_curlssl_pinnedpubkey /* only by supported backends */
     /*
      * Set pinned public key for SSL connection.
      * Specify file name of the public key in DER format.
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_pinnedpubkey)
     result = setstropt(&data->set.str[STRING_SSL_PINNEDPUBLICKEY_ORIG],
                        va_arg(param, char *));
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_PROXY_PINNEDPUBLICKEY:
-#ifdef have_curlssl_pinnedpubkey /* only by supported backends */
     /*
      * Set pinned public key for SSL connection.
      * Specify file name of the public key in DER format.
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_pinnedpubkey)
     result = setstropt(&data->set.str[STRING_SSL_PINNEDPUBLICKEY_PROXY],
                        va_arg(param, char *));
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_CAINFO:
     /*
@@ -2256,30 +2281,32 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
                        va_arg(param, char *));
     break;
   case CURLOPT_CAPATH:
-#ifdef have_curlssl_ca_path /* not supported by all backends */
     /*
      * Set CA path info for SSL connection. Specify directory name of the CA
      * certificates which have been prepared using openssl c_rehash utility.
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_ca_path)
     /* This does not work on windows. */
     result = setstropt(&data->set.str[STRING_SSL_CAPATH_ORIG],
                        va_arg(param, char *));
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_PROXY_CAPATH:
-#ifdef have_curlssl_ca_path /* not supported by all backends */
     /*
      * Set CA path info for SSL connection proxy. Specify directory name of the
      * CA certificates which have been prepared using openssl c_rehash utility.
      */
+#ifdef USE_SSL
+    if(Curl_ssl->have_ca_path)
     /* This does not work on windows. */
     result = setstropt(&data->set.str[STRING_SSL_CAPATH_PROXY],
                        va_arg(param, char *));
-#else
-    result = CURLE_NOT_BUILT_IN;
+    else
 #endif
+      result = CURLE_NOT_BUILT_IN;
     break;
   case CURLOPT_CRLFILE:
     /*
@@ -2935,6 +2962,9 @@ CURLcode Curl_setopt(struct Curl_easy *data, CURLoption option,
     break;
   case CURLOPT_SUPPRESS_CONNECT_HEADERS:
     data->set.suppress_connect_headers = (0 != va_arg(param, long))?TRUE:FALSE;
+    break;
+  case CURLOPT_SSH_COMPRESSION:
+    data->set.ssh_compression = (0 != va_arg(param, long))?TRUE:FALSE;
     break;
   default:
     /* unknown tag and its companion, just ignore: */
@@ -4146,7 +4176,7 @@ static void free_fixed_hostname(struct hostname *host)
     host->encalloc = NULL;
   }
 #elif defined(USE_WIN32_IDN)
-  free(host->encalloc); /* must be freed withidn_free() since this was
+  free(host->encalloc); /* must be freed with free() since this was
                            allocated by curl_win32_idn_to_ascii */
   host->encalloc = NULL;
 #else
@@ -4166,7 +4196,12 @@ static void llist_dtor(void *user, void *element)
  */
 static struct connectdata *allocate_conn(struct Curl_easy *data)
 {
-  struct connectdata *conn = calloc(1, sizeof(struct connectdata));
+#ifdef USE_SSL
+#define SSL_EXTRA + 4 * Curl_ssl->sizeof_ssl_backend_data - sizeof(long long)
+#else
+#define SSL_EXTRA 0
+#endif
+  struct connectdata *conn = calloc(1, sizeof(struct connectdata) + SSL_EXTRA);
   if(!conn)
     return NULL;
 
@@ -4248,6 +4283,23 @@ static struct connectdata *allocate_conn(struct Curl_easy *data)
   conn->proxy_ssl_config.verifyhost = data->set.proxy_ssl.primary.verifyhost;
 
   conn->ip_version = data->set.ipver;
+
+#ifdef USE_SSL
+  /*
+   * To save on malloc()s, the SSL backend-specific data has been allocated
+   * at the end of the connectdata struct.
+   */
+  {
+    char *p = (char *)&conn->align_data__do_not_use;
+    conn->ssl[0].backend = (struct ssl_backend_data *)p;
+    conn->ssl[1].backend =
+      (struct ssl_backend_data *)(p + Curl_ssl->sizeof_ssl_backend_data);
+    conn->proxy_ssl[0].backend =
+      (struct ssl_backend_data *)(p + Curl_ssl->sizeof_ssl_backend_data * 2);
+    conn->proxy_ssl[1].backend =
+      (struct ssl_backend_data *)(p + Curl_ssl->sizeof_ssl_backend_data * 3);
+  }
+#endif
 
 #if !defined(CURL_DISABLE_HTTP) && defined(USE_NTLM) && \
     defined(NTLM_WB_ENABLED)
@@ -5072,13 +5124,14 @@ static CURLcode parse_proxy(struct Curl_easy *data,
   else
     proxyptr = proxy; /* No xxx:// head: It's a HTTP proxy */
 
-#ifndef HTTPS_PROXY_SUPPORT
+#ifdef USE_SSL
+  if(!Curl_ssl->support_https_proxy)
+#endif
   if(proxytype == CURLPROXY_HTTPS) {
-    failf(data, "Unsupported proxy \'%s\'"
-                ", libcurl is built without the HTTPS-proxy support.", proxy);
+      failf(data, "Unsupported proxy \'%s\', libcurl is built without the "
+                  "HTTPS-proxy support.", proxy);
     return CURLE_NOT_BUILT_IN;
   }
-#endif
 
   sockstype = proxytype == CURLPROXY_SOCKS5_HOSTNAME ||
               proxytype == CURLPROXY_SOCKS5 ||
@@ -5299,22 +5352,21 @@ static CURLcode create_conn_helper_init_proxy(struct connectdata *conn)
     }
   }
 
+  if(!data->set.str[STRING_NOPROXY]) {
   no_proxy = curl_getenv("no_proxy");
   if(!no_proxy)
     no_proxy = curl_getenv("NO_PROXY");
+  }
 
-  if(check_noproxy(conn->host.name, data->set.str[STRING_NOPROXY]) ||
-     (!data->set.str[STRING_NOPROXY] &&
-      check_noproxy(conn->host.name, no_proxy))) {
+  if(check_noproxy(conn->host.name, data->set.str[STRING_NOPROXY] ?
+      data->set.str[STRING_NOPROXY] : no_proxy)) {
     Curl_safefree(proxy);
     Curl_safefree(socksproxy);
   }
-  else if(!proxy && !socksproxy)
 #ifndef CURL_DISABLE_HTTP
+  else if(!proxy && !socksproxy)
     /* if the host is not in the noproxy list, detect proxy. */
     proxy = detect_proxy(conn);
-#else  /* !CURL_DISABLE_HTTP */
-    proxy = NULL;
 #endif /* CURL_DISABLE_HTTP */
 
   Curl_safefree(no_proxy);
@@ -6282,10 +6334,9 @@ static void reuse_conn(struct connectdata *old_conn,
   Curl_safefree(conn->host.rawalloc);
   Curl_safefree(conn->conn_to_host.rawalloc);
   conn->host=old_conn->host;
-  conn->bits.conn_to_host = old_conn->bits.conn_to_host;
   conn->conn_to_host = old_conn->conn_to_host;
-  conn->bits.conn_to_port = old_conn->bits.conn_to_port;
   conn->conn_to_port = old_conn->conn_to_port;
+  conn->remote_port = old_conn->remote_port;
 
   /* persist connection info in session handle */
   Curl_persistconninfo(conn);

@@ -375,7 +375,6 @@ Curl_cookie_add(struct Curl_easy *data,
                                        unless set */
 {
   struct Cookie *clist;
-  char name[MAX_NAME];
   struct Cookie *co;
   struct Cookie *lastc=NULL;
   time_t now = time(NULL);
@@ -397,12 +396,14 @@ Curl_cookie_add(struct Curl_easy *data,
 
   if(httpheader) {
     /* This line was read off a HTTP-header */
+    char name[MAX_NAME];
+    char what[MAX_NAME];
     const char *ptr;
     const char *semiptr;
-    char *what;
 
-    what = malloc(MAX_COOKIE_LINE);
-    if(!what) {
+    size_t linelength = strlen(lineptr);
+    if(linelength > MAX_COOKIE_LINE) {
+      /* discard overly long lines at once */
       free(co);
       return NULL;
     }
@@ -417,7 +418,7 @@ Curl_cookie_add(struct Curl_easy *data,
       /* we have a <what>=<this> pair or a stand-alone word here */
       name[0]=what[0]=0; /* init the buffers */
       if(1 <= sscanf(ptr, "%" MAX_NAME_TXT "[^;\r\n=] =%"
-                     MAX_COOKIE_LINE_TXT "[^;\r\n]",
+                     MAX_NAME_TXT "[^;\r\n]",
                      name, what)) {
         /* Use strstore() below to properly deal with received cookie
            headers that have the same string property set more than once,
@@ -428,6 +429,20 @@ Curl_cookie_add(struct Curl_easy *data,
         size_t len=strlen(what);
         size_t nlen = strlen(name);
         const char *endofn = &ptr[ nlen ];
+
+        infof(data, "cookie size: name/val %d + %d bytes\n",
+              nlen, len);
+
+        if(nlen >= (MAX_NAME-1) || len >= (MAX_NAME-1) ||
+           ((nlen + len) > MAX_NAME)) {
+          /* too long individual name or contents, or too long combination of
+             name + contents. Chrome and Firefox support 4095 or 4096 bytes
+             combo. */
+          freecookie(co);
+          infof(data, "oversized cookie dropped, name/val %d + %d bytes\n",
+                nlen, len);
+          return NULL;
+        }
 
         /* name ends with a '=' ? */
         sep = (*endofn == '=')?TRUE:FALSE;
@@ -484,6 +499,7 @@ Curl_cookie_add(struct Curl_easy *data,
             badcookie = TRUE; /* out of memory bad */
             break;
           }
+          free(co->spath); /* if this is set again */
           co->spath = sanitize_cookie_path(co->path);
           if(!co->spath) {
             badcookie = TRUE; /* out of memory bad */
@@ -593,14 +609,20 @@ Curl_cookie_add(struct Curl_easy *data,
     } while(semiptr);
 
     if(co->maxage) {
-      co->expires =
-        curlx_strtoofft((*co->maxage=='\"')?
-                        &co->maxage[1]:&co->maxage[0], NULL, 10);
+      CURLofft offt;
+      offt = curlx_strtoofft((*co->maxage == '\"')?
+                             &co->maxage[1]:&co->maxage[0], NULL, 10,
+                             &co->expires);
+      if(offt == CURL_OFFT_FLOW)
+        /* overflow, used max value */
+        co->expires = CURL_OFF_T_MAX;
+      else if(!offt) {
       if(CURL_OFF_T_MAX - now < co->expires)
-        /* avoid overflow */
+          /* would overflow */
         co->expires = CURL_OFF_T_MAX;
       else
         co->expires += now;
+    }
     }
     else if(co->expirestr) {
       /* Note that if the date couldn't get parsed for whatever reason,
@@ -639,7 +661,7 @@ Curl_cookie_add(struct Curl_easy *data,
       else
         endslash = memrchr(path, '/', (size_t)(queryp - path));
       if(endslash) {
-        size_t pathlen = (size_t)(endslash-path+1); /* include ending slash */
+        size_t pathlen = (size_t)(endslash-path + 1); /* include end slash */
         co->path=malloc(pathlen+1); /* one extra for the zero byte */
         if(co->path) {
           memcpy(co->path, path, pathlen);
@@ -652,8 +674,6 @@ Curl_cookie_add(struct Curl_easy *data,
           badcookie = TRUE;
       }
     }
-
-    free(what);
 
     if(badcookie || !co->name) {
       /* we didn't get a cookie name or a bad one,
@@ -753,7 +773,8 @@ Curl_cookie_add(struct Curl_easy *data,
         co->secure = strcasecompare(ptr, "TRUE")?TRUE:FALSE;
         break;
       case 4:
-        co->expires = curlx_strtoofft(ptr, NULL, 10);
+        if(curlx_strtoofft(ptr, NULL, 10, &co->expires))
+          badcookie = TRUE;
         break;
       case 5:
         co->name = strdup(ptr);
@@ -1382,7 +1403,7 @@ static int cookie_output(struct CookieInfo *c, const char *dumphere)
   return 0;
 }
 
-struct curl_slist *Curl_cookie_list(struct Curl_easy *data)
+static struct curl_slist *cookie_list(struct Curl_easy *data)
 {
   struct curl_slist *list = NULL;
   struct curl_slist *beg;
@@ -1410,6 +1431,15 @@ struct curl_slist *Curl_cookie_list(struct Curl_easy *data)
     list = beg;
   }
 
+  return list;
+}
+
+struct curl_slist *Curl_cookie_list(struct Curl_easy *data)
+{
+  struct curl_slist *list;
+  Curl_share_lock(data, CURL_LOCK_DATA_COOKIE, CURL_LOCK_ACCESS_SINGLE);
+  list = cookie_list(data);
+  Curl_share_unlock(data, CURL_LOCK_DATA_COOKIE);
   return list;
 }
 

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -167,20 +167,20 @@ static const struct tzinfo tz[]= {
      RFC 1123) had their signs wrong. Here we use the correct signs to match
      actual military usage.
    */
-  {"A",  +1 * 60},         /* Alpha */
-  {"B",  +2 * 60},         /* Bravo */
-  {"C",  +3 * 60},         /* Charlie */
-  {"D",  +4 * 60},         /* Delta */
-  {"E",  +5 * 60},         /* Echo */
-  {"F",  +6 * 60},         /* Foxtrot */
-  {"G",  +7 * 60},         /* Golf */
-  {"H",  +8 * 60},         /* Hotel */
-  {"I",  +9 * 60},         /* India */
+  {"A",  1 * 60},         /* Alpha */
+  {"B",  2 * 60},         /* Bravo */
+  {"C",  3 * 60},         /* Charlie */
+  {"D",  4 * 60},         /* Delta */
+  {"E",  5 * 60},         /* Echo */
+  {"F",  6 * 60},         /* Foxtrot */
+  {"G",  7 * 60},         /* Golf */
+  {"H",  8 * 60},         /* Hotel */
+  {"I",  9 * 60},         /* India */
   /* "J", Juliet is not used as a timezone, to indicate the observer's local
      time */
-  {"K", +10 * 60},         /* Kilo */
-  {"L", +11 * 60},         /* Lima */
-  {"M", +12 * 60},         /* Mike */
+  {"K", 10 * 60},         /* Kilo */
+  {"L", 11 * 60},         /* Lima */
+  {"M", 12 * 60},         /* Mike */
   {"N",  -1 * 60},         /* November */
   {"O",  -2 * 60},         /* Oscar */
   {"P",  -3 * 60},         /* Papa */

@@ -5,8 +5,8 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 2009, 2011, Markus Moeller, <markus_moeller@compuserve.com>
- * Copyright (C) 2012 - 2016, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2009, Markus Moeller, <markus_moeller@compuserve.com>
+ * Copyright (C) 2012 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -149,7 +149,8 @@ CURLcode Curl_SOCKS5_gssapi_negotiate(int sockindex,
                            strlen(conn->socks_proxy.host.name)+2);
     if(!service.value)
       return CURLE_OUT_OF_MEMORY;
-    service.length = serviceptr_length + strlen(conn->socks_proxy.host.name)+1;
+    service.length = serviceptr_length +
+      strlen(conn->socks_proxy.host.name) + 1;
     snprintf(service.value, service.length+1, "%s@%s",
              serviceptr, conn->socks_proxy.host.name);
 
