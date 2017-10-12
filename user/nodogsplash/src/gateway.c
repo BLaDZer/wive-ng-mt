@@ -27,13 +27,6 @@
  */
 
 
-// Check for libmicrohttp version >= 0.9.51
-#if 0
-#if MHD_VERSION < 0x00095100
-#error libmicrohttp version >= 0.9.51 required
-#endif
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -67,6 +60,13 @@
 #include "util.h"
 
 #include <microhttpd.h>
+
+// Check for libmicrohttp version >= 0.9.51
+#if 0
+#if MHD_VERSION < 0x00095100
+#error libmicrohttp version >= 0.9.51 required
+#endif
+#endif
 
 /** XXX Ugly hack
  * We need to remember the thread IDs of threads that simulate wait with pthread_cond_timedwait
