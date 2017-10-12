@@ -3454,7 +3454,7 @@
 3) strace: up to 4.19 version.<br>
 4) tcpdump: up to 4.9.2 version.<br>
 5) libcurl: up to 7.56.0 version.<br>
-6) nodogplasg: sync with git version (commit 0b9b8f04).<br>
+6) nodogsplash: sync with git version (commit 0b9b8f04).<br>
 7) goahead: do not touch route parse every page load.<br>
 8) cli: add wl scan_result command for view last scan results without new scan.<br>
 9) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
