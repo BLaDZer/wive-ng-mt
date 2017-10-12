@@ -73,7 +73,7 @@ ${AUTORECONF} -vif -I m4 || {
 	echo "autogen.sh: configure `basename $dir`"
 	(cd "$dir" && ${ACLOCAL} -I m4 ${ACLOCAL_FLAGS})
         if [ x"$dir" = x"$PWD" ]; then
-        (cd "$dir" && check_pkg_config)
+            (cd "$dir" && check_pkg_config)
         fi
 	(cd "$dir" && ${LIBTOOLIZE} --automake --copy --force)
 	(cd "$dir" && ${ACLOCAL} -I m4 ${ACLOCAL_FLAGS})

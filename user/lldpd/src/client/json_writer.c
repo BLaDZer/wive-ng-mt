@@ -49,6 +49,7 @@ struct element {
 
 struct json_writer_private {
 	FILE *fh;
+	int variant;
 	struct element *root;
 	struct element *current; /* should always be an object */
 };
@@ -111,11 +112,11 @@ json_string_dump(FILE *fh, const char *s)
 		switch (c) {
 		case '"': fprintf(fh, "\\\""); s++; break;
 		case '\\': fprintf(fh, "\\\\"); s++; break;
-		case '\b': fprintf(fh, "\\\b"); s++; break;
-		case '\f': fprintf(fh, "\\\f"); s++; break;
-		case '\n': fprintf(fh, "\\\n"); s++; break;
-		case '\r': fprintf(fh, "\\\r"); s++; break;
-		case '\t': fprintf(fh, "\\\t"); s++; break;
+		case '\b': fprintf(fh, "\\b"); s++; break;
+		case '\f': fprintf(fh, "\\f"); s++; break;
+		case '\n': fprintf(fh, "\\n"); s++; break;
+		case '\r': fprintf(fh, "\\r"); s++; break;
+		case '\t': fprintf(fh, "\\t"); s++; break;
 		default:
 			len = utf8_validate_cz(s);
 			if (len == 0) {
@@ -310,6 +311,7 @@ json_element_cleanup(struct element *el)
 static void
 json_cleanup(struct json_writer_private *p)
 {
+	if (p->variant != 0)
 	json_element_cleanup(p->root);
 }
 
@@ -346,7 +348,7 @@ json_finish(struct writer *w)
 }
 
 struct writer*
-json_init(FILE *fh)
+json_init(FILE *fh, int variant)
 {
 	struct writer *result;
 	struct json_writer_private *priv;
@@ -356,6 +358,7 @@ json_init(FILE *fh)
 
 	priv->fh = fh;
 	priv->root = priv->current = json_element_new(NULL, NULL, OBJECT);
+	priv->variant = variant;
 
 	result = malloc(sizeof(*result));
 	if (result == NULL) fatal(NULL, NULL);
