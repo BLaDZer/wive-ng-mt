@@ -3483,9 +3483,9 @@
 32) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
 33) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
 34) kernel: ralink_wifi: mt76x2: update firmware.<br>
-35) kernel: ralink_wifi: mt76x2: fix potenlional null pointer dereference in cmm wpa.<br>
-36) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
-37) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+35) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
+36) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+37) kernel: ralink_wifi: mt76x2/mt7603: fix potenlional null pointer dereference in cmm wpa.<br>
 38) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
 39) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
 <br>

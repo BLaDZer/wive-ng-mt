@@ -587,6 +587,10 @@ VOID RTMPToWirelessSta(
 
 	RTMP_SET_PACKET_WCID(pPacket, (UCHAR)pEntry->wcid);
 	// TODO: shiang-usw, fix this!
+	if (!pEntry->wdev) {
+		RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
 	RTMP_SET_PACKET_WDEV(pPacket, pEntry->wdev->wdev_idx);
 	RTMP_SET_PACKET_MOREDATA(pPacket, FALSE);
 
