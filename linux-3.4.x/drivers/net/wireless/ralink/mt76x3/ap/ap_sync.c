@@ -1543,7 +1543,6 @@ VOID APMlmeScanReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	}
 }
 
-
 /*
     ==========================================================================
     Description:
@@ -1559,6 +1558,11 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	CHAR RealRssi = -127;
 
 	BCN_IE_LIST *ie_list = NULL;
+
+#ifdef DOT11K_RRM_SUPPORT
+	UCHAR apidx;
+	BOOLEAN rrm_use = FALSE;
+#endif /* DOT11K_RRM_SUPPORT */
 
 	os_alloc_mem(pAd, (UCHAR **)&ie_list, sizeof(BCN_IE_LIST));
 	if (!ie_list) {
@@ -1649,7 +1653,17 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 								ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
 								ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
         if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
-            Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
+        	Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
+#ifdef DOT11K_RRM_SUPPORT
+		/* check for any MBSSID use RRM */
+		for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)
+		    if (IS_RRM_ENABLE(pAd, apidx))
+			rrm_use = TRUE;
+
+		/* in RRM mode skip very low for normal connect AP at scan */
+		if (rrm_use == TRUE && Rssi < OBSS_BEACON_RSSI_THRESHOLD)
+			goto __End_Of_APPeerBeaconAtScanAction;
+#endif /* DOT11K_RRM_SUPPORT */
 
 		Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE
 							);

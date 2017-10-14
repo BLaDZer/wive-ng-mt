@@ -1249,7 +1249,6 @@ VOID APPeerBeaconAction(
 			else
 				Snr1 = (((Snr1 * (MOV_AVG_CONST - 1)) + SNR1) >> MOV_AVG_CONST_SHIFT);
 
-
 			Idx = BssTableSetEntry(pAd, &pAd->AvailableBSS, ie_list, Rssi, LenVIE, pVIE, Snr0, Snr1);
 
 			if (Idx != BSS_NOT_FOUND)
@@ -1838,6 +1837,10 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	Snr0 = ConvertToSnr(pAd, Snr0);
 	Snr1 = ConvertToSnr(pAd, Snr1);
 #endif
+#ifdef DOT11K_RRM_SUPPORT
+	UCHAR apidx;
+	BOOLEAN rrm_use = FALSE;
+#endif /* DOT11K_RRM_SUPPORT */
 
 	os_alloc_mem(pAd, (UCHAR **)&ie_list, sizeof(BCN_IE_LIST));
 	if (!ie_list) {
@@ -1907,19 +1910,27 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 			This case happens because BEACONs come from adjacent channels, so RSSI become weaker as we
 			switch to more far away channels.
 		*/
-        Idx = BssTableSearch(&pAd->ScanTab, ie_list->Bssid, ie_list->Channel);
+    		Idx = BssTableSearch(&pAd->ScanTab, ie_list->Bssid, ie_list->Channel);
 		if (Idx != BSS_NOT_FOUND)
-            Rssi = pAd->ScanTab.BssEntry[Idx].Rssi;
+        		Rssi = pAd->ScanTab.BssEntry[Idx].Rssi;
 
-		
-
-        /* TODO: 2005-03-04 dirty patch. we should change all RSSI related variables to SIGNED SHORT for easy/efficient reading and calaulation */
+		/* TODO: 2005-03-04 dirty patch. we should change all RSSI related variables to SIGNED SHORT for easy/efficient reading and calaulation */
 		RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, Elem->Rssi0, RSSI_0), 
 								ConvertToRssi(pAd, Elem->Rssi1, RSSI_1),
 								ConvertToRssi(pAd, Elem->Rssi2, RSSI_2));
-        if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
-            Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
+		if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
+        		Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
+#ifdef DOT11K_RRM_SUPPORT
+		/* check for any MBSSID use RRM */
+		for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++)
+		    if (IS_RRM_ENABLE(pAd, apidx))
+			rrm_use = TRUE;
 
+		/* in RRM mode skip very low for normal connect AP at scan */
+		if (rrm_use == TRUE && Rssi < OBSS_BEACON_RSSI_THRESHOLD)
+			goto __End_Of_APPeerBeaconAtScanAction;
+
+#endif /* DOT11K_RRM_SUPPORT */
 		Idx = BssTableSetEntry(pAd, &pAd->ScanTab, ie_list, Rssi, LenVIE, pVIE
 #ifdef CUSTOMER_DCC_FEATURE
 			,
