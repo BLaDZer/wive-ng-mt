@@ -1375,7 +1375,7 @@ IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	/* update my network scanlist from neighbour beacons with SSID filter for RRM, only on work channel (rssi info valid only for this) */
 	for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++) {
 	    if (IS_RRM_ENABLE(pAd, apidx) &&RealRssi > OBSS_BEACON_RSSI_THRESHOLD && pAd->ScanTab.BssNr < MAX_LEN_OF_BSS_TABLE &&
-		ie_list->Channel == Channel && ie_list->SsidLen > 0 && pAd->ApCfg.MBSSID[apidx].SsidLen > 0 &&
+		/* ie_list->Channel == Channel */ && ie_list->SsidLen > 0 && pAd->ApCfg.MBSSID[apidx].SsidLen > 0 &&
 		ie_list->SsidLen == pAd->ApCfg.MBSSID[apidx].SsidLen &&
 		RTMPEqualMemory((PUCHAR)ie_list->Ssid, (PUCHAR)pAd->ApCfg.MBSSID[apidx].Ssid, min(ie_list->SsidLen, pAd->ApCfg.MBSSID[apidx].SsidLen))
 	    ) {
