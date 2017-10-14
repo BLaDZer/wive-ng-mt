@@ -138,18 +138,22 @@ int bndstrg_insert_entry(
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
 	unsigned long HashIdx;
-	struct bndstrg_cli_entry *entry, *pre_entry, *this_entry;
+	struct bndstrg_cli_entry *entry = NULL, *pre_entry, *this_entry;
 	int ret_val = BND_STRG_SUCCESS;
 
-	BND_STRG_DBGPRINT(DEBUG_INFO,
+	if (Index >= BND_STRG_MAX_TABLE_SIZE)
+	{
+		if (pAddr == NULL) {
+			DBGPRINT(DEBUG_ERROR,RED("%s()::debug here\n"), __FUNCTION__);
+			return BND_STRG_INVALID_ARG;
+		}
+
+		BND_STRG_DBGPRINT(DEBUG_INFO,
 			"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
 			"Table Size = %u\n",
 			__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
 
-	//NdisAcquireSpinLock(&table->Lock);
-	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
-	if (Index >= BND_STRG_MAX_TABLE_SIZE)
-	{
+		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 		entry = table->Hash[HashIdx];
 		while (entry) {
 			if (MAC_ADDR_EQUAL(pAddr, entry->Addr)) {
@@ -170,15 +174,20 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 			return BND_STRG_INVALID_ARG;
 		}
 	}
-	else
+	else {
 		entry = &table->Entry[Index];
+		BND_STRG_DBGPRINT(DEBUG_TRACE,
+						  "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
+						  "Table Size = %u\n",
+						  __FUNCTION__, Index, PRINT_MAC(entry->Addr), table->Size);
+		/* update hash index */
+		if (entry && entry->bValid) {
+			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+		}
+	}
 
-	if (entry && entry->bValid) 
+	if (entry && entry->bValid)
 	{
-#if 0
-		/*if (MAC_ADDR_EQUAL(entry->Addr, pAddr))*/
-#endif
-		{
 			pre_entry = NULL;
 			this_entry = table->Hash[HashIdx];
 			//ASSERT(this_entry);
@@ -202,23 +211,14 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 			}
 
 			/* not found !!!*/
-			//ASSERT(this_entry != NULL);
-
 			memset(entry->Addr, 0, MAC_ADDR_LEN);
 			entry->tp.tv_sec = 0;
 			entry->elapsed_time = 0;
 			entry->bValid = FALSE;
+			entry->Control_Flags = 0;
+			memset(entry,0x00,sizeof(struct bndstrg_cli_entry));
 			table->Size--;
-		}
-#if 0
-		else {
-			DBGPRINT(DEBUG_ERROR,
-					("%s(): worng entry!\n", __FUNCTION__));
-			ret_val = BND_STRG_UNEXP;
-		}
-#endif
 	}
-	//NdisReleaseSpinLock(&table->Lock);
 
 	return ret_val;
 }
