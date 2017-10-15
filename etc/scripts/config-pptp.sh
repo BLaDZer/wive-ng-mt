@@ -65,7 +65,7 @@ set_routest_to_server() {
 	    if [ "$srv_net" != "" ]; then
 	        # test vpn server in local net?
 		vpnnotlocal=`ip route get "$srvip" | grep "via" -c` > /dev/null 2>&1
-		if [ "$srvip" != "$firstgw" ] && [ "$vpnnotlocal" = "1" ]; then
+		if [ "$srvip" != "$firstgw" ] && [ "$vpnnotlocal" != "0" ]; then
 		    $LOG "Add static route to VPN server $srvip via $firstgw dev $wan_if"
 		    ip -4 route replace $srvip via $firstgw dev $wan_if > /dev/null 2>&1
 		fi
@@ -75,7 +75,7 @@ set_routest_to_server() {
 	if [ "$srv_net" != "" ]; then
 	    # test vpn server in local net?
 	    vpnnotlocal=`ip route get "$SERVER" | grep "via" -c` > /dev/null 2>&1
-	    if [ "$SERVER" != "$firstgw" ] && [ "$vpnnotlocal" = "1" ]; then
+	    if [ "$SERVER" != "$firstgw" ] && [ "$vpnnotlocal" != "0" ]; then
 		$LOG "Add static route to current selected VPN server $SERVER via $firstgw dev $wan_if"
 		ip -4 route replace $SERVER via $firstgw dev $wan_if > /dev/null 2>&1
 	    fi
