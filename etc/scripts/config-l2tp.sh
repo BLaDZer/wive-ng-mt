@@ -70,8 +70,11 @@ set_routest_to_server() {
 		ip -4 route replace $srvip via $firstgw dev $wan_if
 	    fi
 	done
-	$LOG "Add static route to $SERVER via $firstgw dev $wan_if"
-	ip -4 route replace $SERVER via $firstgw dev $wan_if
+	srv_net=`ipcalc "$SERVER" -sn | cut -f 2- -d =`
+	if [ "$srv_net" != "" ] && [ "$SERVER" != "$firstgw" ]; then
+	    $LOG "Add static route to $SERVER via $firstgw dev $wan_if"
+	    ip -4 route replace $SERVER via $firstgw dev $wan_if
+	fi
     fi
 }
 
