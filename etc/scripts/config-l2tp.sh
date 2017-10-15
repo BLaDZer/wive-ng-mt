@@ -62,24 +62,26 @@ get_vpn_ip() {
 }
 
 set_routest_to_server() {
-    # test vpn server in local net?
-    ping -q -t1 -c 1 $vpnServer
-    if [ "$?" -eq 0 ]; then
-    	vpnislocal=1
-    fi
-
-    if [ "$firstgw" != "" && "$vpnislocal" != "1" ]; then
+    if [ "$firstgw" != "" ]; then
 	ipget "$vpnServer" | while read srvip; do
 	    srv_net=`ipcalc "$srvip" -sn | cut -f 2- -d =`
-	    if [ "$srv_net" != "" ] && [ "$srvip" != "$firstgw" ]; then
-		$LOG "Add static route to VPN server $srvip via $firstgw dev $wan_if"
-		ip -4 route replace $srvip via $firstgw dev $wan_if > /dev/null 2>&1
+	    if [ "$srv_net" != "" ]; then
+	        # test vpn server in local net?
+		vpnnotlocal=`ip route get "$srvip" | grep "via" -c` > /dev/null 2>&1
+		if [ "$srvip" != "$firstgw" ] && [ "$vpnnotlocal" = "1" ]; then
+		    $LOG "Add static route to VPN server $srvip via $firstgw dev $wan_if"
+		    ip -4 route replace $srvip via $firstgw dev $wan_if > /dev/null 2>&1
+		fi
 	    fi
 	done
 	srv_net=`ipcalc "$SERVER" -sn | cut -f 2- -d =`
-	if [ "$srv_net" != "" ] && [ "$SERVER" != "$firstgw" ]; then
-	    $LOG "Add static route to current selected VPN server $SERVER via $firstgw dev $wan_if"
-	    ip -4 route replace $SERVER via $firstgw dev $wan_if > /dev/null 2>&1
+	if [ "$srv_net" != "" ]; then
+	    # test vpn server in local net?
+	    vpnnotlocal=`ip route get "$SERVER" | grep "via" -c` > /dev/null 2>&1
+	    if [ "$SERVER" != "$firstgw" ] && [ "$vpnnotlocal" = "1" ]; then
+		$LOG "Add static route to current selected VPN server $SERVER via $firstgw dev $wan_if"
+		ip -4 route replace $SERVER via $firstgw dev $wan_if > /dev/null 2>&1
+	    fi
 	fi
     fi
 }
