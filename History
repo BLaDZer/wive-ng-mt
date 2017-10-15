@@ -3458,41 +3458,42 @@
 7) goahead: do not touch route parse every page load.<br>
 8) cli: add wl scan_result command for view last scan results without new scan.<br>
 9) bndstr: fix delete entry logic.<br>
-10) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
-11) kernel: fs/seq_file: fix out-of-bounds read.<br>
-12) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
-13) kernel: net: packet: check length in getsockopt() called with PACKET_HDRLEN.<br>
-14) kernel: net: 8021q: skip packets if the vlan is down.<br>
-15) kernel: net: ipmr, ip6mr: fix scheduling while atomic and a deadlock with ipmr_get_route.<br>
-16) kernel: net: netfilter: nf_nat_snmp: Fix panic when snmp_trap_helper fails to register.<br>
-17) kernel: net: tcp_yeah: don't set ssthresh below 2.<br>
-18) kernel: net: af_unix: fix struct pid memory leak.<br>
-19) kernel: net: bpf: remove duplicate tcp_filter hook in ipv6.<br>
-20) kernel: net: ipv4/fib: don't warn when primary address is missing if in_dev is dead.<br>
-21) kernel: net: ipv6: send NS for DAD when link operationally up.<br>
-22) kernel: net: ipv6: xfrm: handle errors reported by xfrm6_find_1stfragopt().<br>
-23) kernel: net: unix: properly account for FDs passed over unix sockets.<br>
-24) kernel: net: unix: correctly track in-flight fds in sending process user_struct.<br>
-25) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
-26) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
-27) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
-28) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
-29) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
-30) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
-31) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
-32) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
-33) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
-34) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
-35) kernel: ralink_wifi: rrm: do not skip beacon from row channels, if beacon decoded must be insert to scantab with low prio (auto sort).<br>
-36) kernel: ralink_wifi: rrm: in RRM mode need skip AP with level < -85dB from scantab.<br>
-37) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
-38) kernel: ralink_wifi: mt76x2: update firmware.<br>
-39) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
-40) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
-41) kernel: ralink_wifi: mt76x2/mt7603: fix potenlional null pointer dereference in cmm wpa.<br>
-42) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
-43) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
-44) kernel: ralink_wifi: mt7620/mt7610: add MDIE to updates beacon to.<br>
+10) init.d: fix read nedgw from file in some cases.<br>
+11) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
+12) kernel: fs/seq_file: fix out-of-bounds read.<br>
+13) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
+14) kernel: net: packet: check length in getsockopt() called with PACKET_HDRLEN.<br>
+15) kernel: net: 8021q: skip packets if the vlan is down.<br>
+16) kernel: net: ipmr, ip6mr: fix scheduling while atomic and a deadlock with ipmr_get_route.<br>
+17) kernel: net: netfilter: nf_nat_snmp: Fix panic when snmp_trap_helper fails to register.<br>
+18) kernel: net: tcp_yeah: don't set ssthresh below 2.<br>
+19) kernel: net: af_unix: fix struct pid memory leak.<br>
+20) kernel: net: bpf: remove duplicate tcp_filter hook in ipv6.<br>
+21) kernel: net: ipv4/fib: don't warn when primary address is missing if in_dev is dead.<br>
+22) kernel: net: ipv6: send NS for DAD when link operationally up.<br>
+23) kernel: net: ipv6: xfrm: handle errors reported by xfrm6_find_1stfragopt().<br>
+24) kernel: net: unix: properly account for FDs passed over unix sockets.<br>
+25) kernel: net: unix: correctly track in-flight fds in sending process user_struct.<br>
+26) kernel: ralink_wifi: do not check BW in skip overlap bss scan logic.<br>
+27) kernel: ralink_wifi: always try asic anable bss sync at VIF up if RD_MODE normal.<br>
+28) kernel: ralink_wifi: skip IEEE 802.3 header if present. 802.3 header is front of LCC.<br>
+29) kernel: ralink_wifi: announce 80MHz in VHT_CAP_IE only if BBP real in 80MHz mode.<br>
+30) kernel: ralink_wifi: fix force announce critical AMPDU for DHCP packets.<br>
+31) kernel: ralink_wifi: do not keep dupe of critical packets.<br>
+32) kernel: ralink_wifi: apcli/ft: key reinstallation attacks: forcing Nonce Reuse in WPA2.<br>
+33) kernel: ralink_wifi: apcli: for VHT40 ApClient, add the OP Noitfy IE to notify rootAP the STA current BW.<br>
+34) kernel: ralink_wifi: apcli: fix check channel in select candidate AP for connect.<br>
+35) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
+36) kernel: ralink_wifi: rrm: do not skip beacon from row channels, if beacon decoded must be insert to scantab with low prio (auto sort).<br>
+37) kernel: ralink_wifi: rrm: in RRM mode need skip AP with level < -85dB from scantab.<br>
+38) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+39) kernel: ralink_wifi: mt76x2: update firmware.<br>
+40) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
+41) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+42) kernel: ralink_wifi: mt76x2/mt7603: fix potenlional null pointer dereference in cmm wpa.<br>
+43) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
+44) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
+45) kernel: ralink_wifi: mt7620/mt7610: add MDIE to updates beacon to.<br>
 <br>
 <br>
 <br>

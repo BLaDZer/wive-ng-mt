@@ -27,7 +27,7 @@ sysctl -wq net.ipv4.conf.$PPP_IFACE.forwarding=1
 iptables -A l2tpsrvfwd -i $PPP_IFACE -j ACCEPT
 
 if [ "$l2tp_srv_nat_enabled" = "1" ]; then
-    $LOG "Only reqested sessions allow forward back to tunnel"
+    $LOG "Only requested sessions allow forward back to tunnel"
     iptables -A l2tpsrvfwd -o $PPP_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
     if [ "$vpnEnabled" = "on" ] && [ "$vpnNAT" != "off" ]; then
 	$LOG "Add masqrade for client $PPP_REMOTE to VPN client net over any ppp interfaces"

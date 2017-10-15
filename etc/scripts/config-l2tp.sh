@@ -65,7 +65,7 @@ set_routest_to_server() {
     $LOG "Set routes to vpn servers."
     if [ "$wanConnectionMode" != "STATIC" ]; then
 	if [ -e /tmp/default.gw ]; then
-	    newdgw=`cat /tmp/default.gw`
+	    newdgw=`tail -qn1 /tmp/default.gw`
 	else
 	    newdgw=""
 	fi
