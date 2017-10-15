@@ -59,19 +59,16 @@ get_vpn_ip() {
 }
 
 set_routest_to_server() {
-    $LOG "Set routes to vpn servers."
-    if [ "$firstgw" != "" ] && [ "$firstgw" != "$SERVER" ]; then
-	dgw_net=`ipcalc "$firstgw" -sn | cut -f 2- -d =`
-	srv_net=`ipcalc "$SERVER" -sn | cut -f 2- -d =`
-	if [ "$dgw_net" != "" ] && [ "$srv_net" != "" ] && [ "$dgw_net" != "$srv_net" ]; then
-	    $LOG "Add static routes for all VPN servers ip adresses by ip"
-	    ipget "$vpnServer" | while read srvip; do
-		$LOG "Add route to $srvip via $firstgw dev $wan_if"
+    if [ "$firstgw" != "" ]; then
+	ipget "$vpnServer" | while read srvip; do
+	    srv_net=`ipcalc "$srvip" -sn | cut -f 2- -d =`
+	    if [ "$srv_net" != "" ] && [ "$srvip" != "$firstgw" ]; then
+		$LOG "Add static route to VPN server $srvip via $firstgw dev $wan_if"
 		ip -4 route replace $srvip via $firstgw dev $wan_if
-	    done
-	    $LOG "Add route to $SERVER via $firstgw dev $wan_if"
-	    ip -4 route replace $SERVER via $firstgw dev $wan_if
-	fi
+	    fi
+	done
+	$LOG "Add static route to $SERVER via $firstgw dev $wan_if"
+	ip -4 route replace $SERVER via $firstgw dev $wan_if
     fi
 }
 
