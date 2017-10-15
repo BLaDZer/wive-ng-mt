@@ -51,13 +51,12 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
 	#Remove auto route in VPN
 	ip -4 route del $PPP_REMOTE  > /dev/null 2>&1
         ip -4 route del dev $PPP_IFACE  > /dev/null 2>&1
-	if [ -e /tmp/default.gw ] && [ -e /tmp/vpnip ]; then
-	    newdgw=`tail -qn1 /tmp/default.gw`
+	if [ "$firstgw" != "" ] && [ -e /tmp/vpnip ]; then
 	    vpnServerIP=`tail -qn1 /tmp/vpnip`
-	    if [ "$vpnServerIP" != "" ] && [ "$newdgw" != "" ] && [ "$vpnServerIP" = "$PPP_REMOTE" ]; then
-		$LOG "Replace route to $vpnServerIP via $newdgw for ppp remote $PPP_REMOTE Corbina ?!"
+	    if [ "$vpnServerIP" != "" ] && [ "$firstgw" != "" ] && [ "$vpnServerIP" = "$PPP_REMOTE" ]; then
+		$LOG "Replace route to $vpnServerIP via $firstgw for ppp remote $PPP_REMOTE Corbina ?!"
 		ip -4 route del $vpnServerIP > /dev/null 2>&1
-		ip -4 route replace $vpnServerIP via $newdgw
+		ip -4 route replace $vpnServerIP via $firstgw
 		$LOG "Drop OUTPUT to $vpnServerIP over $PPP_IFACE"
                 iptables -I OUTPUT -o $PPP_IFACE -d $vpnServerIP -j DROP
 	    fi

@@ -61,24 +61,21 @@ eval `nvram_buf_get 2860 vpnPeerDNS`
 
     $LOG "Restore default gateway"
     #clear all default route
-    if [ -e /tmp/ip-down-route-reload ] || [ -e /tmp/default.gw ]; then
+    if [ -e /tmp/ip-down-route-reload ] || [ "$firstgw" != "" ]; then
 	while ip -4 route del default ; do
     	    :
 	done
     fi
 
     #restore default gateway
-    if [ -e /tmp/default.gw ]; then
-	#resote old dgw
-	olddgw=`tail -qn1 /tmp/default.gw`
-	if [ "$olddgw" != "" ]; then
-	    ip -4 route replace default via $olddgw
-	fi
-    else
-	if [ -e /tmp/ip-down-route-reload ]; then
-	    /tmp/ip-down-route-reload
-	    rm -f /tmp/ip-down-route-reload
-	fi
+    if [ -e /tmp/ip-down-route-reload ]; then
+	$LOG "Restore default gateways from backup"
+	/tmp/ip-down-route-reload
+	rm -f /tmp/ip-down-route-reload
+    fi
+    if [ "$firstgw" != "" ]; then
+	$LOG "Restore default gateway $firstgw"
+	ip -4 route replace default via $firstgw
     fi
 
     if [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]; then

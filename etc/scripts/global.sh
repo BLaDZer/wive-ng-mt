@@ -221,6 +221,17 @@ getWanIpaddr() {
     if [ "$real_wan_ipaddr" = "" ]; then
 	real_wan_ipaddr="$wan_ipaddr"
     fi
+
+    # get first ISP gateway
+    if [ "$wanConnectionMode" != "STATIC" ]; then
+	if [ -e /tmp/default.gw ]; then
+	    firstgw=`tail -qn1 /tmp/default.gw`
+	else
+	    firstgw=""
+	fi
+    else
+	firstgw="$wan_gateway"
+    fi
 }
 
 getWanReady() {
