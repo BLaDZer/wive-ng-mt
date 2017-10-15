@@ -59,7 +59,13 @@ get_vpn_ip() {
 }
 
 set_routest_to_server() {
-    if [ "$firstgw" != "" ]; then
+    # test vpn server in local net?
+    ping -q -t -c 1 $vpnServer
+    if [ "$?" -eq 0 ]; then
+    	vpnislocal=1
+    fi
+
+    if [ "$firstgw" != "" && "$vpnislocal" != "1" ]; then
 	ipget "$vpnServer" | while read srvip; do
 	    srv_net=`ipcalc "$srvip" -sn | cut -f 2- -d =`
 	    if [ "$srv_net" != "" ] && [ "$srvip" != "$firstgw" ]; then
