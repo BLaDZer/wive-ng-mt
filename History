@@ -3459,7 +3459,7 @@
 8) cli: add wl scan_result command for view last scan results without new scan.<br>
 9) bndstr: fix delete entry logic.<br>
 10) init.d: fix read nedgw from file in some cases.<br>
-11) init.d: rework von route modify logic, fix for static ip at wan mode.<br>
+11) init.d: rework vpn route modify logic, fix for static ip at wan mode.<br>
 12) kernel: revert: tcp: Apply device TSO segment limit earlier and reduce the bloat caused by tcp_is_cwnd_limited().<br>
 13) kernel: fs/seq_file: fix out-of-bounds read.<br>
 14) kernel: net: core: prevent from dereferencing null pointer when releasing SKB.<br>
