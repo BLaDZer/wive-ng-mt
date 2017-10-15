@@ -63,7 +63,7 @@ get_vpn_ip() {
 
 set_routest_to_server() {
     # test vpn server in local net?
-    ping -q -t -c 1 $vpnServer
+    ping -q -t1 -c 1 $vpnServer
     if [ "$?" -eq 0 ]; then
     	vpnislocal=1
     fi
