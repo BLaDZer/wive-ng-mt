@@ -49,9 +49,11 @@ static int getProcessList(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int i, rownum;
+	int i, j, rownum;
 	struct in_addr addr;
 	uint64_t written_at, curr, expired_abs;
+	char str[32];
+	int emptylease = 1;
 
 	int row_len = 0;
 	struct dyn_lease* leases = getDhcpClientList(&row_len, &written_at);
@@ -66,16 +68,29 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	curr = time(NULL);
 
 	/* Output leases file */
-	for (rownum=0; rownum<row_len; rownum++)
-	{
+	for (rownum = 0; rownum < row_len; rownum++) {
 		struct dyn_lease lease = leases[rownum];
 
 		expired_abs = ntohl(lease.expires) + written_at;
 		if (expired_abs > curr) {
-			websWrite(wp, "{ ");
+			websWrite(wp, T("%s{ "), (emptylease == 0) ? ", " : "");
 			// Output structure
 			// Host
-			websWrite(wp, T("\"hostname\":\"%s\", "), lease.hostname);
+			str[0] = '\0';
+			for (j = 0; j < strlen(lease.hostname); j++) {
+				if (lease.hostname[j] == '"' ||
+				    lease.hostname[j] == '\\' ||
+				    lease.hostname[j] == '\'' ||
+				    lease.hostname[j] == '\t' ||
+				    lease.hostname[j] == '\r' ||
+				    lease.hostname[j] == '\n' ||
+				    lease.hostname[j] == '\v' ||
+				    lease.hostname[j] == '\f' ||
+				    lease.hostname[j] == '\b')
+					sprintf(str, "%s%c", str, '\\');
+				sprintf(str, "%s%c", str, lease.hostname[j]);
+			}
+			websWrite(wp, T("\"hostname\":\"%s\", "), str);
 			// MAC
 			websWrite(wp, T("\"mac\":\"%02X"), lease.lease_mac[0]);
 			for (i = 1; i < 6; i++)
@@ -100,7 +115,8 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 					websWrite(wp, T("%u days "), d);
 				websWrite(wp, T("%02u:%02u:%02u\""), h, m, (unsigned)expires);
 			}
-			websWrite(wp, T("}%s "), (rownum < row_len - 1) ? "," : "");
+			websWrite(wp, "}");
+			emptylease = 0;
 		}
 	}
 	websWrite(wp, "] }");
