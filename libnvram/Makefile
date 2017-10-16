@@ -11,7 +11,7 @@ CFLAGS += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qu
 LIBNVRAM=libnvram.a
 LIBNVRAM_SHARED=libnvram.so
 
-OBJS	:= libnvram.o libnvram_utils.o
+OBJS	:= libnvram.o
 HEADERS := libnvram.h $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 
 all: shared

@@ -12,8 +12,8 @@ CFLAGS += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qu
 LIBWIVE=libwive.a
 LIBWIVE_SHARED=libwive.so
 
-OBJS	:= libwive_wireless.o libwive_ethernet.o libwive_network.o libwive_gpio.o libwive_procps.o libwive_sysstat.o libwive_helpers.o
-OBJS	+= libwive_system.o libwive_firewall.o
+OBJS	:= libwive_helpers.o libwive_wireless.o libwive_ethernet.o libwive_network.o libwive_gpio.o libwive_procps.o libwive_sysstat.o
+OBJS	+= libwive_system.o
 
 HEADERS := $(ROOTDIR)/lib/shared/include/linux/autoconf.h
 LDLIBS  := -lnvram

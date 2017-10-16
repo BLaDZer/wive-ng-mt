@@ -14,8 +14,6 @@
 #include <sys/ioctl.h>
 #include <linux/autoconf.h>
 
-#include "libnvram_utils.h"
-
 #define NV_DEV				"/dev/nvram"
 #define DEFAULT_NVRAM                   "/etc/default/nvram_default"
 #define DEFAULT_FLASH_ZONE_NAME		"2860"
@@ -95,5 +93,8 @@ int nvram_clear(int index);
 int nvram_renew(int mode, char *fname);
 int nvram_show(int mode);
 int nvram_fromdef(int idx_nvram, int num, ...);
+
+int gen_wifi_config(int mode, int genmode);
+int nvram_load_default(void);
 
 #endif

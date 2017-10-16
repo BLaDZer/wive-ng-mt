@@ -9,7 +9,6 @@
 #include <syslog.h>
 
 #include "libnvram.h"
-#include "libnvram_utils.h"
 
 #include "libwive.h"
 

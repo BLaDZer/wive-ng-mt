@@ -1,4 +1,4 @@
-LDFLAGS	+= -lnvram
+LDFLAGS	+= -lnvram -lwive
 
 all: nvram
 

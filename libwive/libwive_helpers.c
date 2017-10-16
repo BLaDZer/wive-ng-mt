@@ -11,6 +11,99 @@
 
 #include "libwive.h"
 
+/* strToIntDef - Convert whole char* string to integer or use default value
+ *
+ * arg: value - input string
+ * arg: def - default value
+ * return: converted value
+ */
+int strToIntDef(char* value, int def)
+{
+    char* endptr = value;
+
+    if (value == NULL) 
+        return def;
+
+    long val = strtol(value, &endptr, 10);
+
+    if (endptr[0] != '\0')
+        return def;
+
+    if (val > INT_MAX || val < INT_MIN)
+        return def;
+
+    return (int)val;
+}
+
+char *strip_space(char *str)
+{
+	while (isspace(*str))
+		str++;
+	return str;
+}
+
+int isNumOnly(char *str)
+{
+	int i, len = strlen(str);
+	for(i=0; i<len; i++){
+		if((str[i] >= '0' && str[i] <= '9'))
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+int isAllNumAndSlash(char *str)
+{
+	int i, len = strlen(str);
+	for(i=0; i<len; i++){
+		if( (str[i] >= '0' && str[i] <= '9') || str[i] == '.' || str[i] == '/' )
+			continue;
+		return 0;
+	}
+	return 1;
+}
+
+int isOnlyOneSlash(char *str)
+{
+	int i, count=0;
+	int len = strlen(str);
+	for(i=0; i<len; i++)
+		if( str[i] == '/')
+			count++;
+	return count <= 1 ? 1 : 0;
+}
+
+void STFs(int nvram, int index, char *flash_key, char *value)
+{
+	char *result;
+	char *tmp = nvram_get(nvram, flash_key);
+	if(!tmp)
+		tmp = "";
+	result = setNthValue(index, tmp, value);
+	nvram_bufset(nvram, flash_key, result);
+	return ;
+}
+
+int getNums(char *value, char delimit)
+{
+    char *pos = value;
+    int count = 1;
+    if (!pos || !(*pos))
+        return 0;
+
+    while ((pos = strchr(pos, delimit)) != NULL) {
+        ++pos;
+        ++count;
+    }
+    return count;
+}
+
+int getRuleNums(char *rules)
+{
+	return getNums(rules, ';');
+}
+
 #define DIM(x) (sizeof(x)/sizeof(*(x)))
 
 static const char *sizes[]   = { "EiB", "PiB", "TiB", "GiB", "MiB", "KiB", "B" };
@@ -136,3 +229,172 @@ strlcpy(char *dst, const char *src, size_t siz)
     return(s - src - 1);        /* count does not include NUL */
 }
 #endif
+
+/*
+ * arguments: index - index of the Nth value
+ *            values - un-parsed values
+ * description: parse values delimited by semicolon, and return the value
+ *              according to given index (starts from 0)
+ * WARNING: the original values will be destroyed by strtok
+ */
+char *getNthValue(int index, char *values)
+{
+	int i;
+	static char *tok;
+
+	if (NULL == values)
+		return NULL;
+	for (i = 0, tok = strtok(values, ";");
+			(i < index) && tok;
+			i++, tok = strtok(NULL, ";")) {
+		;
+	}
+	if (NULL == tok)
+		return "";
+	return tok;
+}
+
+/*
+ * substitution of getNthValue which dosen't destroy the original value
+ */
+int getNthValueSafe(int index, char *value, char delimit, char *result, int len)
+{
+    int i = 0, result_len = 0;
+    char *begin, *end;
+
+    if(!value || !result || !len)
+        return -1;
+
+    begin = value;
+    end = strchr(begin, delimit);
+    while(i < index && end != NULL){
+        begin = end + 1;
+        end = strchr(begin, delimit);
+        i++;
+    }
+
+    /* no delimit */
+    if(!end){
+	if(i == index){
+	    end = begin + strlen(begin);
+	    result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
+	} else
+		return -1;
+    } else
+	result_len = (len-1) < (end-begin) ? (len-1) : (end-begin);
+
+    memcpy(result, begin, result_len);
+    *(result + result_len ) = '\0';
+
+	return 0;
+}
+
+/*
+ * arguments: index - index of the Nth value (starts from 0)
+ *            old_values - un-parsed values
+ *            new_value - new value to be replaced
+ * description: parse values delimited by semicolon,
+ *              replace the Nth value with new_value,
+ *              and return the result
+ * WARNING: return the internal static string -> use it carefully
+ */
+char *setNthValue(int index, char *old_values, char *new_value)
+{
+	int i;
+	char *p, *q;
+	static char ret[2048];
+	char buf[8][256];
+
+	memset(ret, 0, 2048);
+	for (i = 0; i < 8; i++)
+	    memset(buf[i], 0, 256);
+
+	/* copy original values */
+	for ( i = 0, p = old_values, q = strchr(p, ';')  ;
+		i < 8 && q != NULL                         ;
+		i++, p = q + 1, q = strchr(p, ';')         )
+		strncpy(buf[i], p, q - p);
+
+	if (i > 7) /* limit of buf size = 8 */
+		i=7;
+
+	strcpy(buf[i], p); /* the last one */
+
+	/* replace buf[index] with new_value */
+	strncpy(buf[index], new_value, 256);
+
+	/* calculate maximum index */
+	index = (i > index)? i : index;
+
+	/* strip last unneded divider */
+	for (i = index; i >= 0; i--) {
+		if (strlen(buf[i]) == 0)
+			index--;
+		else
+		    break;
+	}
+
+	/* concatenate into a single string delimited by semicolons */
+	strcat(ret, buf[0]);
+	for (i = 1; i <= index; i++) {
+		strncat(ret, ";", 2);
+		snprintf(ret, sizeof(ret), "%s%s", ret,  buf[i]);
+	}
+
+	p = ret;
+	return p;
+}
+
+/*
+ *  argument:  [IN]     index -- the index array of deleted items(begin from 0)
+ *             [IN]     count -- deleted itmes count.
+ *             [IN/OUT] value -- original string/return string
+ *             [IN]     delimit -- delimitor
+ */
+int deleteNthValueMulti(int index[], int count, char *value, char delimit)
+{
+	char *begin, *end;
+	int i=0, j=0;
+	int need_check_flag=0;
+	char *buf = strdup(value);
+
+	begin = buf;
+
+	end = strchr(begin, delimit);
+	while(end != NULL){
+		if(i == index[j]){
+			memset(begin, 0, end - begin );
+			if(index[j] == 0)
+				need_check_flag = 1;
+			j++;
+			if(j >=count)
+				break;
+		}
+		begin = end;
+		end = strchr(begin+1, delimit);
+		i++;
+	}
+
+	if(!end && index[j] == i)
+		memset(begin, 0, strlen(begin));
+
+	if(need_check_flag){
+		for(i=0; i < (int)strlen(value); i++){
+			if(buf[i] == '\0')
+				continue;
+			if(buf[i] == ';')
+				buf[i] = '\0';
+			break;
+		}
+	}
+
+	for(i=0, j=0; i < (int)strlen(value); i++){
+		if(buf[i] != '\0'){
+			value[j++] = buf[i];
+		}
+	}
+	value[j] = '\0';
+
+	free(buf);
+	return 0;
+}

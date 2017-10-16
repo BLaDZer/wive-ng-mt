@@ -31,13 +31,11 @@
 #include <syslog.h>
 
 #include <libnvram.h>
-#include <libnvram_utils.h>
 
 #include "libwive_ethernet.h"
 #include "libwive_gpio.h"
 #include "libwive_helpers.h"
 #include "libwive_network.h"
-#include "libwive_firewall.h"
 #include "libwive_procps.h"
 #include "libwive_sysstat.h"
 #include "libwive_system.h"

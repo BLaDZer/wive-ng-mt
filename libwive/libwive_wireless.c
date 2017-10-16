@@ -505,7 +505,6 @@ int getWlanAPScanTextResult(const char *if_name, char* data, unsigned int data_l
     return RtpQueryInformation(RTPRIV_IOCTL_GSITESURVEY, if_name, data, data_len);
 }
 
-
 /* parseSiteSurveyEntry - internal WLAN_AP_ENTRY parsing function
  *
  * arg: (out) entry - preallocated WLAN_AP_ENTRY struct pointer

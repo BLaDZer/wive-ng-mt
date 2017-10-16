@@ -6,7 +6,6 @@
 #include <linux/autoconf.h>
 
 #include "libnvram.h"
-#include "libnvram_utils.h"
 
 static int set_usage(char *aout)
 {
