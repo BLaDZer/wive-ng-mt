@@ -623,7 +623,7 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 		    break;
 		case 2:
 			websWrite(wp, T(", -1, ")); // 8
-			websWrite(wp, T("'%s'"), getLanWanNamebyIf(rule.iftype)); // 9
+			websWrite(wp, T("'%s'"), getLanWanNamebyIf(rule.interface)); // 9
     			websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
 		    break;
 
