@@ -438,7 +438,7 @@ VOID MlmeGetSupportedMcsAdapt(
 			continue;
  
 		/*  Rate Table may contain CCK and MCS rates. Give HT/Legacy priority over CCK */
-		if (pCurrTxRate->CurrMCS==MCS_0 && (mcs[0]==-1 || pCurrTxRate->Mode>=MODE_HTMIX))
+		if (pCurrTxRate->CurrMCS==MCS_0 && (mcs[0]==-1 || pCurrTxRate->Mode!=MODE_CCK))
 			mcs[0] = idx;
 		else if (pCurrTxRate->CurrMCS==MCS_1 && (mcs[1]==-1 || pCurrTxRate->Mode!=MODE_CCK))
 			mcs[1] = idx;
@@ -486,12 +486,6 @@ VOID MlmeGetSupportedMcsAdapt(
 			mcs[22] = idx;
 		else if ((pCurrTxRate->CurrMCS == MCS_23) && (pCurrTxRate->ShortGI == mcs23GI))
 			mcs[23] = idx;
-    		else if ((pCurrTxRate->CurrMCS == MCS_RATE_6) && (mcs[1] != -1) && (pCurrTxRate->Mode == MODE_OFDM))  
-        		mcs[24] = idx;
-    		else if ((pCurrTxRate->CurrMCS == MCS_1) && (mcs[1] != -1) && (pCurrTxRate->Mode == MODE_CCK))  
-        		mcs[25] = idx;
-		else if ((pCurrTxRate->CurrMCS == MCS_0) && (mcs[0] != -1) && (pCurrTxRate->Mode == MODE_CCK))
-			mcs[26] = idx;
 	}
 
 #ifdef DBG_CTRL_SUPPORT
@@ -760,16 +754,8 @@ UCHAR MlmeSelectTxRateAdapt(
 				TxRateIdx = mcs[2];
 			else if (mcs[1]>=0 && (Rssi > (-88+RssiOffset)))
 				TxRateIdx = mcs[1];
-			else {
+			else
 				TxRateIdx = mcs[0];
-
-				if (mcs[24]>=0 && (Rssi < (-89+RssiOffset)))
-					TxRateIdx = mcs[24];
-    				else if (mcs[25]>=0 && (Rssi < (-92+RssiOffset)))
-					TxRateIdx = mcs[25];
-				else if (mcs[26]>=0 && (Rssi < (-93+RssiOffset)))
-					TxRateIdx = mcs[26];
-			}
 
 			pEntry->mcsGroup = 2;
 		}
@@ -789,16 +775,8 @@ UCHAR MlmeSelectTxRateAdapt(
 				TxRateIdx = mcs[2];
 			else if (mcs[1]>=0 && (Rssi > (-86+RssiOffset)))
 				TxRateIdx = mcs[1];
-			else {
+			else
 				TxRateIdx = mcs[0];
-
-				if (mcs[24]>=0 && (Rssi < (-89+RssiOffset)))
-					TxRateIdx = mcs[24];
-				else if (mcs[25]>=0 && (Rssi < (-92+RssiOffset)))
-					TxRateIdx = mcs[25];
-				else if (mcs[26]>=0 && (Rssi < (-93+RssiOffset)))
-					TxRateIdx = mcs[26];
-			}
 
 			pEntry->mcsGroup = 1;
 		}
@@ -1604,7 +1582,7 @@ static UCHAR LowTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry,  MT_T
 static UCHAR ZeroTrafficRateAlg(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, CHAR Rssi)
 {
 	UCHAR TxRateIdx;
-	CHAR mcs[27];
+	CHAR mcs[24];
 	CHAR RssiOffset = 0;
  
 	/* Check existence and get index of each MCS */
@@ -2285,7 +2263,7 @@ VOID APMlmeDynamicTxRateSwitchingAdapt(RTMP_ADAPTER *pAd, UINT i)
 		if (pEntry->lowTrafficCount >= pAd->CommonCfg.lowTrafficThrd)
 		{
 			UCHAR TxRateIdx;
-			CHAR mcs[27];
+			CHAR mcs[24];
 			CHAR RssiOffset = 0;
 
 			pEntry->lowTrafficCount = 0;
