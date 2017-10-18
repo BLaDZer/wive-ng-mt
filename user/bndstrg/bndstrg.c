@@ -280,13 +280,21 @@ int bndstrg_check_conn_req(
 #endif /* BND_STRG_QA */
 				/* drop 2.4G only and set 5G support flags */
 				entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
-				/* if rssi in 5G good force allow 5G connect. */
-				if (!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G)) {
-				    entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-				    BND_STRG_PRINTQAMSG(table, entry,
-				    YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				    " RSSI good, force allow 5G connect.\n"), PRINT_MAC(entry->Addr));
-				}
+			}
+			/* if rssi in 5G good force allow 5G connect. */
+			if (!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G) &&
+			    (!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) || (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G))) {
+				struct bndstrg_entry_stat *statistics_2G = &entry->statistics[0];
+
+				entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
+
+				/* drop flag 2.4GHz allowed to connect and auth req statistic for 2.4GHz */
+				entry->Control_Flags &=  (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+				statistics_2G->AuthReqCount=0;
+
+				BND_STRG_PRINTQAMSG(table, entry,
+				YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				    " RSSI good, force allow 5G connect and dissallow 2.4G.\n"), PRINT_MAC(entry->Addr));
 			}
 		}
 		else
@@ -763,9 +771,10 @@ static u8 _bndstrg_allow_sta_conn_2g(
 		statistics_2G = &entry->statistics[0];
 		statistics_5G = &entry->statistics[1];
 
-		/* Condition 1: 2G Rssi >> 5G Rssi */
+		/* Condition 1: 2G Rssi >> 5G Rssi and client really connected to this AP in 5GHz band - allow 2.4GHz connect */
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_RSSI_DIFF) &&
-			(statistics_2G->Rssi & statistics_5G->Rssi))
+			(statistics_2G->Rssi & statistics_5G->Rssi)
+			/* && entry->AgingConfirmed[1] == 1 */ && (statistics_2G->AuthReqCount != 0 || statistics_5G->AuthReqCount != 0))
 		{
 			s8 RssiDiff = statistics_2G->Rssi - statistics_5G->Rssi;
 
@@ -796,9 +805,11 @@ static u8 _bndstrg_allow_sta_conn_2g(
 			return TRUE;
 		}
 
+		/* if 5GHz RSSI very low and client really connected to this AP in 5GHz band - allow 2.4Ghz connect */
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
 		    (entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G) /* &&
-		     !(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) */)
+		     !(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) */
+			/* && entry->AgingConfirmed[1] == 1 */ && (statistics_2G->AuthReqCount != 0 || statistics_5G->AuthReqCount != 0))
 		{
 #ifdef BND_STRG_QA
 			BND_STRG_PRINTQAMSG(table, entry,
@@ -814,16 +825,19 @@ static u8 _bndstrg_allow_sta_conn_2g(
 			}
 		}
 
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) && 
+#if 0 /* not good case, more good for all OFDM clients connected in 5GHz. 2.4Ghz very noised now. */
+		/* allow to 2.4GHz band connect for clients support HT only in 2.4GHz */
+		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) &&
 		      (entry->Control_Flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G))
-	{
+		{
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry,
-		YLW("check HT support: [legacy]. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-		" is allowed to connect 2.4G.\n"), PRINT_MAC(entry->Addr));
+			BND_STRG_PRINTQAMSG(table, entry,
+			YLW("check HT support: [legacy]. client (%02x:%02x:%02x:%02x:%02x:%02x)"
+			" is allowed to connect 2.4G.\n"), PRINT_MAC(entry->Addr));
 #endif /* BND_STRG_QA */
-		return TRUE;
+			return TRUE;
 		}
+#endif
 	}
 
 	if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
@@ -909,6 +923,7 @@ static u8 _bndstrg_allow_sta_conn_5g(
 #endif /* BND_STRG_QA */
 			return TRUE;
 		}
+
 		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
 			(entry->statistics[1].Rssi != 0))
 		{
@@ -1219,7 +1234,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	table->AlgCtrl.ConditionCheck = fBND_STRG_CND_5G_RSSI; /*fBND_STRG_CND_RSSI_DIFF | \
 								fBND_STRG_CND_2G_PERSIST | \
 								fBND_STRG_CND_HT_SUPPORT | \
-								fBND_STRG_CND_5G_RSSI; */
+								*/
 	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
 								fBND_STRG_FRM_CHK_ATH_REQ | \
 								fBND_STRG_FRM_CHK_ASS_REQ;
