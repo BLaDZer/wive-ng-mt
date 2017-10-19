@@ -3496,15 +3496,16 @@
 45) kernel: ralink_wifi: apcli: mt7610: fix BW adjust.<br>
 46) kernel: ralink_wifi: rrm: do not skip beacon from row channels, if beacon decoded must be insert to scantab with low prio (auto sort).<br>
 47) kernel: ralink_wifi: rrm: in RRM mode need skip AP with level < -85dB from scantab.<br>
-48) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
-49) kernel: ralink_wifi: mt76x2: update firmware.<br>
-50) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
-51) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
-52) kernel: ralink_wifi: mt7603: fix rateadapt regression.<br>
-53) kernel: ralink_wifi: mt76x2/mt7603: fix potenlional null pointer dereference in cmm wpa.<br>
-54) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
-55) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
-56) kernel: ralink_wifi: mt7620/mt7610: add MDIE to updates beacon to.<br>
+48) kernel: ralink_wifi: ft: add backward compatable with not patched 802.11R support clients.<br>
+49) kernel: ralink_wifi: mt76x2: fix read STBC params from SKU.<br>
+50) kernel: ralink_wifi: mt76x2: update firmware.<br>
+51) kernel: ralink_wifi: mt7603: fix the memory leak caused by miss setting fRX_RETRIEVE.<br>
+52) kernel: ralink_wifi: mt7603: fix the memory leak by resource prealloc logic.<br>
+53) kernel: ralink_wifi: mt7603: fix rateadapt regression.<br>
+54) kernel: ralink_wifi: mt76x2/mt7603: fix potenlional null pointer dereference in cmm wpa.<br>
+55) kernel: ralink_wifi: mt7620/mt7610: switch to use SNR_FORMULA3 (sta).<br>
+56) kernel: ralink_wifi: mt7620/mt7610: fix apcli beacon mask (sta).<br>
+57) kernel: ralink_wifi: mt7620/mt7610: add MDIE to updates beacon to.<br>
 <br>
 <br>
 <br>
