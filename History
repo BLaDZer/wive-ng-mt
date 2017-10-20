@@ -3512,8 +3512,9 @@
 1) entware: switch to Entware3 version.<br>
 2) init.d: rework automount and start/stop Entware services.<br>
 3) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-4) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-5) kernel: mips: add nudges to writes for bit unlocks.<br>
+4) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+5) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+6) kernel: mips: add nudges to writes for bit unlocks.<br>
 <br>
 <br>
 <br>

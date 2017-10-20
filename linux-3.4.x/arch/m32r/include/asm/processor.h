@@ -127,8 +127,6 @@ extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 extern void copy_segments(struct task_struct *p, struct mm_struct * mm);
 extern void release_segments(struct mm_struct * mm);
 
-extern unsigned long thread_saved_pc(struct task_struct *);
-
 /* Copy and release all segment info associated with a VM */
 #define copy_segments(p, mm)  do { } while (0)
 #define release_segments(mm)  do { } while (0)

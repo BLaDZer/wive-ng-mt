@@ -93,9 +93,7 @@ struct thread_struct {
 
 #include <linux/types.h>
 
-/* Return saved PC of a blocked thread. */
 struct task_struct;
-extern unsigned long thread_saved_pc(struct task_struct *);
 
 /* On Uniprocessor, even in RMO processes see TSO semantics */
 #ifdef CONFIG_SMP

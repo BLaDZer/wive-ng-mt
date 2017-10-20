@@ -86,14 +86,6 @@ hard_reset_now(void)
 		; /* Wait for reset. */
 }
 
-/*
- * Return saved PC of a blocked thread.
- */
-unsigned long thread_saved_pc(struct task_struct *t)
-{
-	return task_pt_regs(t)->erp;
-}
-
 static void
 kernel_thread_helper(void* dummy, int (*fn)(void *), void * arg)
 {

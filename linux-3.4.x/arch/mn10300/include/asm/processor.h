@@ -144,11 +144,6 @@ extern void release_thread(struct task_struct *);
  */
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
-/*
- * Return saved PC of a blocked thread.
- */
-extern unsigned long thread_saved_pc(struct task_struct *tsk);
-
 unsigned long get_wchan(struct task_struct *p);
 
 #define task_pt_regs(task) ((task)->thread.uregs)

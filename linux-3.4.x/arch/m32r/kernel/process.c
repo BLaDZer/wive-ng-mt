@@ -37,14 +37,6 @@
 #include <linux/err.h>
 
 /*
- * Return saved PC of a blocked thread.
- */
-unsigned long thread_saved_pc(struct task_struct *tsk)
-{
-	return tsk->thread.lr;
-}
-
-/*
  * Powermanagement idle function, if any..
  */
 static void (*pm_idle)(void) = NULL;

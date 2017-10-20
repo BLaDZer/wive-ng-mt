@@ -84,11 +84,6 @@ static inline void exit_thread(void)
 {
 }
 
-/*
- * Return saved PC of a blocked thread.
- */
-#define thread_saved_pc(tsk)	(tsk->thread.pc)
-
 unsigned long get_wchan(struct task_struct *p);
 
 #define	KSTK_EIP(tsk)							\

@@ -229,11 +229,6 @@ asmlinkage int sys_execve(const char *name,
 	return error;
 }
 
-unsigned long thread_saved_pc(struct task_struct *tsk)
-{
-	return ((struct pt_regs *)tsk->thread.esp0)->pc;
-}
-
 unsigned long get_wchan(struct task_struct *p)
 {
 	unsigned long fp, pc;

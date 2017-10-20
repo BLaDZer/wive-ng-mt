@@ -327,14 +327,6 @@ void dump_stack(void)
 EXPORT_SYMBOL(dump_stack);
 
 /*
- * Note: sparc64 has a pretty intricated thread_saved_pc, check it out.
- */
-unsigned long thread_saved_pc(struct task_struct *tsk)
-{
-	return task_thread_info(tsk)->kpc;
-}
-
-/*
  * Free current thread data structures etc..
  */
 void exit_thread(void)

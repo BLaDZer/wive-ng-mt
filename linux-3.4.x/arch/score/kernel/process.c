@@ -146,11 +146,6 @@ long kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 			0, &regs, 0, NULL, NULL);
 }
 
-unsigned long thread_saved_pc(struct task_struct *tsk)
-{
-	return task_pt_regs(tsk)->cp0_epc;
-}
-
 unsigned long get_wchan(struct task_struct *task)
 {
 	if (!task || task == current || task->state == TASK_RUNNING)

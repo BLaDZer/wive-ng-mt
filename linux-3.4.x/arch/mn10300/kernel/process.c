@@ -43,14 +43,6 @@ void (*pm_idle)(void);
 EXPORT_SYMBOL(pm_idle);
 
 /*
- * return saved PC of a blocked thread.
- */
-unsigned long thread_saved_pc(struct task_struct *tsk)
-{
-	return ((unsigned long *) tsk->thread.sp)[3];
-}
-
-/*
  * power off function, if any
  */
 void (*pm_power_off)(void);

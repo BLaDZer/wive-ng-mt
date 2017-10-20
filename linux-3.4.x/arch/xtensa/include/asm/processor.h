@@ -176,8 +176,6 @@ extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 #define release_segments(mm)	do { } while(0)
 #define forget_segments()	do { } while (0)
 
-#define thread_saved_pc(tsk)	(task_pt_regs(tsk)->pc)
-
 extern unsigned long get_wchan(struct task_struct *p);
 
 #define KSTK_EIP(tsk)		(task_pt_regs(tsk)->pc)

@@ -830,8 +830,6 @@ static inline void spin_lock_prefetch(const void *x)
 	.io_bitmap		= { [0 ... IO_BITMAP_LONGS] = ~0 },	  \
 }
 
-extern unsigned long thread_saved_pc(struct task_struct *tsk);
-
 #define THREAD_SIZE_LONGS      (THREAD_SIZE/sizeof(unsigned long))
 #define KSTK_TOP(info)                                                 \
 ({                                                                     \

@@ -74,8 +74,6 @@ static inline void exit_thread(void)
 {
 }
 
-extern unsigned long thread_saved_pc(struct task_struct *t);
-
 extern unsigned long get_wchan(struct task_struct *p);
 
 /*
@@ -137,10 +135,6 @@ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 static inline void exit_thread(void)
 {
 }
-
-/* Return saved (kernel) PC of a blocked thread.  */
-#  define thread_saved_pc(tsk)	\
-	((tsk)->thread.regs ? (tsk)->thread.regs->r15 : 0)
 
 unsigned long get_wchan(struct task_struct *p);
 

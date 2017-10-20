@@ -330,11 +330,6 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 	return 0;
 }
 
-unsigned long thread_saved_pc(struct task_struct *t)
-{
-	return t->thread.regs.kpc;
-}
-
 /*
  * sys_execve() executes a new program.
  */

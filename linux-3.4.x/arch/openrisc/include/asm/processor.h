@@ -96,11 +96,6 @@ extern inline void exit_thread(void)
 	/* Nothing needs to be done.  */
 }
 
-/*
- * Return saved PC of a blocked thread. For now, this is the "user" PC
- */
-extern unsigned long thread_saved_pc(struct task_struct *t);
-
 #define init_stack      (init_thread_union.stack)
 
 #define cpu_relax()     do { } while (0)
