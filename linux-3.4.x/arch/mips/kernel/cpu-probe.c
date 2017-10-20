@@ -138,7 +138,7 @@ static int __init fpu_disable(char *s)
 
 __setup("nofpu", fpu_disable);
 
-static int int __cpuinitdata mips_dsp_disabled;
+static int __cpuinitdata mips_dsp_disabled;
 
 static int __init dsp_disable(char *s)
 {
