@@ -312,8 +312,6 @@ struct task_struct;
 
 extern long kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
-extern unsigned long thread_saved_pc(struct task_struct *tsk);
-
 static __always_inline void flush_thread(void)
 {
 }

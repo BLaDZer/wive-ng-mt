@@ -3515,6 +3515,7 @@
 4) kernel: arch: remove unused macro/function thread_saved_pc().<br>
 5) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
 6) kernel: mips: add nudges to writes for bit unlocks.<br>
+7) kernel: mips: make thread_saved_pc static.<br>
 <br>
 <br>
 <br>
