@@ -111,7 +111,7 @@ extern INT32 RTDebugLevel;
 {										\
     if (Level <= RTDebugLevel)			\
     {									\
-	syslog(LOG_ERR, fmt, ## args);			\
+	syslog(LOG_WARNING, fmt, ## args);			\
     }									\
 }
 #else

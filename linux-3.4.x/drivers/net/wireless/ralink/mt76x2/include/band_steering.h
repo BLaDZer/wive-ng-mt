@@ -73,11 +73,17 @@ INT BndStrg_MsgHandle(PRTMP_ADAPTER pAd, RTMP_IOCTL_INPUT_STRUCT *wrq);
 }
 
 #ifdef BND_STRG_DBG
+#if 0
 #define RED(_text)  "\033[1;31m"_text"\033[0m"
 #define GRN(_text)  "\033[1;32m"_text"\033[0m"
 #define YLW(_text)  "\033[1;33m"_text"\033[0m"
 #define BLUE(_text) "\033[1;36m"_text"\033[0m"
-
+#else
+#define RED(_text)	 _text
+#define GRN(_text) _text
+#define YLW(_text) _text
+#define BLUE(_text) _text
+#endif
 #define BND_STRG_DBGPRINT(_Level, _Fmt) DBGPRINT(_Level, _Fmt)
 #else /* BND_STRG_DBG */
 #define RED(_text)	 _text

@@ -27,11 +27,11 @@ extern int DebugLevel;
 
 #ifdef SYSLOG
 #include<syslog.h>
-#define DBGPRINT(Level, fmt, args...) 					\
-{                                   \
+#define DBGPRINT(Level, fmt, args...) 	\
+{                                   	\
     if (Level <= DebugLevel)      \
     {                               \
-	syslog(LOG_ERR, fmt, ## args);			\
+	syslog(LOG_WARNING, fmt, ## args); \
     }                               \
 }
 #else

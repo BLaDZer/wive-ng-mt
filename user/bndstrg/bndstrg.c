@@ -438,7 +438,7 @@ int bndstrg_print_entry(
 	/* Update elapsed time */
 	entry->elapsed_time = bndstrg_get_entry_elapsed_time(entry);
 
-	if (entry->bValid)
+	if (entry->bValid == TRUE)
 	{
 		if (MAC_ADDR_EQUAL(table->MonitorAddr, entry->Addr))
 			BND_STRG_DBGPRINT(DEBUG_OFF, YLW("*"));
