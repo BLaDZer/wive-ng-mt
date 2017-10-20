@@ -12,6 +12,40 @@
 LOG="logger -t automount"
 MDEV_PATH=/dev/$MDEV
 
+touchintservices() {
+    # restart only if not cold boot
+    if [ -f /tmp/bootgood ] && [ "$MDEV_LABEL" != "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
+	$LOG "restart internal HDD depended services"
+	sync
+	service xupnpd restart
+	service samba restart
+	service transmission restart
+	sync
+    fi
+}
+
+touchextservices() {
+    # always at remount
+    if [ "$MDEV_LABEL" = "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
+	sync
+	if [ "$ACTION" = "add" ]; then
+	    #re read profile variables
+	    . /etc/profile
+	    if [ -e /opt/etc/init.d/rc.unslung ]; then
+		$LOG "start Entware services..."
+		/opt/etc/init.d/rc.unslung stop > /dev/null 2>&1
+		/opt/etc/init.d/rc.unslung start
+	    fi
+	else
+	    if [ -e /opt/etc/init.d/rc.unslung ]; then
+		$LOG "stop Entware services..."
+		/opt/etc/init.d/rc.unslung stop
+	    fi
+	fi
+	sync
+    fi
+}
+
 check_media() {
   is_mounted=`mount | grep -c "media"`
   if [ "$is_mounted" != "0" ]; then
@@ -23,7 +57,7 @@ check_media() {
 }
 
 pre_mount() {
-  if [ "$MDEV_LABEL" == "optware" ]; then
+  if [ "$MDEV_LABEL" = "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
     $LOG "detect optware part on $MDEV"
     MOUNT_DST="/opt"
   else
@@ -50,9 +84,29 @@ try_mount() {
     $LOG "can not mount $MDEV_TYPE $MDEV_PATH $MOUNT_DST"
     exit 1
   fi
-  if [ "$MDEV_LABEL" == "optware" ]; then
-    #re read profile variables
-    . /etc/profile
+  touchintservices
+  touchextservices
+}
+
+try_umount() {
+  MOUNT_DST=`mount | grep "$MDEV" | awk '{print $3}'`
+  if [ "$MOUNT_DST" ]; then
+    if [ -d "/media/$MDEV" ]; then
+	touchextservices
+	rmdir "/media/$MDEV"
+    fi
+    $LOG "umount $MOUNT_DST"
+    if ! umount "$MOUNT_DST"; then
+      sleep 3
+      if ! umount -fl "$MOUNT_DST"; then
+	$LOG "can not unmount $MOUNT_DST"
+	exit 1
+      fi
+    fi
+    if [ -d "/media/$MDEV" ]; then
+	touchintservices
+	rmdir "/media/$MDEV"
+    fi
   fi
 }
 
@@ -66,20 +120,6 @@ swap_on() {
   fi
 }
 
-try_umount() {
-  MOUNT_DST=`mount | grep "$MDEV" | awk '{print $3}'`
-  if [ "$MOUNT_DST" ]; then
-    $LOG "umount $MOUNT_DST"
-    if ! umount "$MOUNT_DST"; then
-      sleep 3
-      if ! umount -fl "$MOUNT_DST"; then
-	$LOG "can not unmount $MOUNT_DST"
-	exit 1
-      fi
-    fi
-  fi
-}
-
 swap_off() {
   if [ -f /proc/swaps ] && [ -f /bin/swapoff ]; then
     is_on=`grep -c "$MDEV" < /proc/swaps`
@@ -89,17 +129,6 @@ swap_off() {
         sleep 3
     fi
   fi
-}
-
-touchservices() {
-    # restart only if not cold boot
-    sync
-    if [ -f /tmp/bootgood ] && [ "$MDEV_LABEL" != "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
-	# restart HDD depended services
-	service xupnpd restart
-	service samba restart
-	service transmission restart
-    fi
 }
 
 
@@ -127,6 +156,7 @@ if [ "$ACTION" = "add" ]; then
     $LOG "unknow fs type on $MDEV_PATH"
     exit 1
   fi
+
   $LOG "add $MDEV_PATH with $MDEV_TYPE"
   MOUNT_CMD="mount -t $MDEV_TYPE"
   MOUNT_OPT="noatime"
@@ -150,17 +180,6 @@ if [ "$ACTION" = "add" ]; then
       try_mount
       ;;
   esac
-
-elif [ "$ACTION" = "mount" ]; then
-  $LOG "device $MDEV_PATH mount OK"
-  touchservices
-
-elif [ "$ACTION" = "umount" ]; then
-  if [ -d "/media/$MDEV" ]; then
-    touchservices
-    rmdir "/media/$MDEV"
-  fi
-
 else
   $LOG "remove $MDEV_PATH"
   try_umount

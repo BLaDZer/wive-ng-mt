@@ -1,8 +1,8 @@
 #!/bin/sh
 
-#################################################
-# config-l2tp.sh - configure L2TP client helper #
-#################################################
+#############################################################
+# config-l2tp.sh - configure L2TP client helper for Wive-NG #
+#############################################################
 
 # include global config
 . /etc/scripts/global.sh

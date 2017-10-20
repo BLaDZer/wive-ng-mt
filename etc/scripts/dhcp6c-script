@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Wive-NG dhcp6c script
+
 LOG="logger -t dhcp6c"
 
 if [ -n "$new_domain_name" -o -n "$new_domain_name_servers" ]; then

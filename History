@@ -3509,6 +3509,8 @@
 <br>
 <br>
 <b>6.7.x</b><br>
+1) entware: switch to Entware3 version.<br>
+2) init.d: rework automount and start/stop Entware services.<br>
 <br>
 <br>
 <br>

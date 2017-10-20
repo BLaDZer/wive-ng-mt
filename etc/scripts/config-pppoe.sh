@@ -1,8 +1,8 @@
 #!/bin/sh
 
-###################################################
-# config-pppoe.sh - configure PPPOE client helper #
-###################################################
+###############################################################
+# config-pppoe.sh - configure PPPOE client helper for Wive-NG #
+###############################################################
 
 # include global config
 . /etc/scripts/global.sh

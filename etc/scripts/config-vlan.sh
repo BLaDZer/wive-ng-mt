@@ -1,10 +1,10 @@
 #!/bin/sh
 
-############################################################
-# config-vlan.sh - configure vlan switch particion helper  #
-#                                                          #
-# usage: config-vlan.sh <switch_type> <vlan_type>          #
-############################################################
+########################################################################
+# config-vlan.sh - configure vlan switch particion helper for Wive-NG  #
+#                                                                      #
+# usage: config-vlan.sh <switch_type> <vlan_type>                      #
+########################################################################
 
 # prevent double start configure in one time
 while [ -e /tmp/vlanconfig_runing ]; do

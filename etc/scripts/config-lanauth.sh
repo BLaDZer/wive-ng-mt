@@ -1,5 +1,9 @@
 #!/bin/sh
 
+###################################################################
+# config-lanauth.sh - configure lanauth client helper for Wive-NG #
+###################################################################
+
 LOG="logger -t lanauth"
 
 start() {

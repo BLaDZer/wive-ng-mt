@@ -1,8 +1,8 @@
 #!/bin/sh
 
-#################################################
-# config-pptp.sh - configure PPTP client helper #
-#################################################
+#############################################################
+# config-pptp.sh - configure PPTP client helper for Wive-NG #
+#############################################################
 
 # include global
 . /etc/scripts/global.sh

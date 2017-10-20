@@ -11,7 +11,7 @@ optmount=`mount | grep opt -c`
 if [ "$optmount" != "0" ]; then
     cd /opt
     mkdir -p /opt/home
-    wget -O - http://pkg.entware.net/binaries/mipsel/installer/installer.sh | sh
+    wget -O - http://entware-3x.zyxmon.org/binaries/mipsel/installer/install_std.sh | sh
     # reload params and profile
     . /etc/scripts/global.sh
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
