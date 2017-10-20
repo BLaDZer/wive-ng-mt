@@ -3518,6 +3518,7 @@
 7) kernel: mips: make thread_saved_pc static.<br>
 8) kernel: mips: fix pcibios_map_irq section mismatch.<br>
 9) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+10) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
 <br>
 <br>
 <br>
