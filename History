@@ -3517,6 +3517,7 @@
 6) kernel: mips: add nudges to writes for bit unlocks.<br>
 7) kernel: mips: make thread_saved_pc static.<br>
 8) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+9) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
 <br>
 <br>
 <br>
