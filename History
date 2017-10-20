@@ -3512,6 +3512,7 @@
 1) entware: switch to Entware3 version.<br>
 2) init.d: rework automount and start/stop Entware services.<br>
 3) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+4) kernel: mips: add nudges to writes for bit unlocks.<br>
 <br>
 <br>
 <br>
