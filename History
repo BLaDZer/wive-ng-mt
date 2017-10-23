@@ -3522,6 +3522,7 @@
 11) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
 12) kernel: mips: declare various variables & functions static.<br>
 13) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+14) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
 <br>
 <br>
 <br>
