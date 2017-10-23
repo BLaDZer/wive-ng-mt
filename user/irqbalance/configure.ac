@@ -72,16 +72,19 @@ AS_IF(
 AM_CONDITIONAL([LOCAL_GLIB], [test "x$local_glib2" = "xyes"])
 
 AC_ARG_WITH([libcap-ng],
-  AS_HELP_STRING([libcap-ng], [Add libcap-ng-support @<:@default=auto@:>@]))
+  [AS_HELP_STRING([--with-libcap-ng],
+    [Add libcap-ng-support @<:@default=auto@:>@])],
+  [],
+  [with_libcap_ng=check])
 
 AS_IF(
-  [test "x$libcap_ng" != "xno"],
+  [test "x$with_libcap_ng" != "xno"],
   [
   PKG_CHECK_MODULES([LIBCAP_NG], [libcap-ng],
     [AC_DEFINE(HAVE_LIBCAP_NG,1,[libcap-ng support])],
     [
      AS_IF(
-       [test "x$libcap_ng" = "xyes"],
+       [test "x$with_libcap_ng" = "xyes"],
        [
        AC_MSG_ERROR([libcap-ng not found])
        ]

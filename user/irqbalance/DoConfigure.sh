@@ -16,6 +16,6 @@ if [ ! -f $APROOTDIR/configure ]; then
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-CONFOPTS="$CONFOPTS --without-glib2 --without-systemd --enable-shared --disable-static"
+CONFOPTS="$CONFOPTS --without-glib2 --without-systemd --enable-shared --disable-static --with-libcap-ng=no"
 
 ./configure $CONFOPTS

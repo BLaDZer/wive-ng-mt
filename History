@@ -3511,16 +3511,17 @@
 <b>6.7.x</b><br>
 1) entware: switch to Entware3 version.<br>
 2) init.d: rework automount and start/stop Entware services.<br>
-3) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-4) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-5) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-6) kernel: mips: add nudges to writes for bit unlocks.<br>
-7) kernel: mips: make thread_saved_pc static.<br>
-8) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-9) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-10) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-11) kernel: mips: declare various variables & functions static.<br>
-12) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+3) irqbalabce: fix build without libcap-ng.<br>
+4) kernel: sched/core: remove pointless printout in sched_show_task().<br>
+5) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+6) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+7) kernel: mips: add nudges to writes for bit unlocks.<br>
+8) kernel: mips: make thread_saved_pc static.<br>
+9) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+10) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+11) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+12) kernel: mips: declare various variables & functions static.<br>
+13) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
 <br>
 <br>
 <br>
