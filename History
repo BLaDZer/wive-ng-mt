@@ -3523,6 +3523,7 @@
 12) kernel: mips: declare various variables & functions static.<br>
 13) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
 14) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+15) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
 <br>
 <br>
 <br>
