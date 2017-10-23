@@ -3524,7 +3524,8 @@
 13) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
 14) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
 15) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-16) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): Return zero on success.<br>
+16) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+17) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
