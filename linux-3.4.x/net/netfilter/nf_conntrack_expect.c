@@ -441,7 +441,7 @@ int nf_ct_expect_related_report(struct nf_conntrack_expect *expect,
 
 	spin_unlock_bh(&nf_conntrack_lock);
 	nf_ct_expect_event_report(IPEXP_NEW, expect, pid, report);
-	return ret;
+	return 0;
 out:
 	spin_unlock_bh(&nf_conntrack_lock);
 	return ret;
