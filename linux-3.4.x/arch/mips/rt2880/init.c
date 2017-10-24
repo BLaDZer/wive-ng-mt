@@ -801,7 +801,7 @@ void __init prom_init_serial_port(void)
 	serial_req[0].membase    = ioremap_nocache(serial_req[0].mapbase, 0x0100);
 	early_serial_setup(&serial_req[0]);
 
-#if !defined(CONFIG_RALINK_GPIOMODE_UARTF) && (CONFIG_SERIAL_8250_NR_UARTS > 1)
+#if (CONFIG_SERIAL_8250_NR_UARTS > 1)
 	serial_req[1].line       = 1;
 	serial_req[1].type       = PORT_16550A;
 #if defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)

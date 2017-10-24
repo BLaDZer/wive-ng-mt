@@ -20,15 +20,15 @@ LOG="logger -t ESW"
 
 usage() {
 	echo "Usage:"
-	echo "  $0 3/4 LLLLL - ESW restore config to no VLAN partition"
-	echo "  $0 3/4 EEEEE - ESW enable all ports 100FD"
-	echo "  $0 3/4 DDDDD - ESW disable all ports"
-	echo "  $0 3/4 RRRRR - ESW reset all ports"
-	echo "  $0 3/4 WWWWW - ESW reinit WAN port at switch"
-	echo "  $0 3/4 FFFFF - ESW full reinit switch"
-	echo "  $0 3/4 xxxxx - ESW config free parts (x = W or x = L, W - WAN group, L - LAN group)"
+	echo "  $0 3/4/5 LLLLL - ESW restore config to no VLAN partition"
+	echo "  $0 3/4/5 EEEEE - ESW enable all ports 100FD"
+	echo "  $0 3/4/5 DDDDD - ESW disable all ports"
+	echo "  $0 3/4/5 RRRRR - ESW reset all ports"
+	echo "  $0 3/4/5 WWWWW - ESW reinit WAN port at switch"
+	echo "  $0 3/4/5 FFFFF - ESW full reinit switch"
+	echo "  $0 3/4/5 xxxxx - ESW config free parts (x = W or x = L, W - WAN group, L - LAN group)"
 	echo "_________"
-	echo " 	mode 3 for vlan parted, 4 for dual rgmii mode"
+	echo " 	mode 3 for vlan parted, 4 for dual rgmii mode, 5 dualrgmi + GigaExtPHY"
 	echo "_________"
 }
 
@@ -612,6 +612,21 @@ config_dualrgmii()
 	switch clear
 }
 
+restore_dualrgmii()
+{
+	# temp stub for write logic in future
+        $LOG "Restore internal MT7621 switch mode to dumb mode (ExtPHY)"
+}
+
+config_dualrgmii()
+{
+	# temp stub for write logic in future
+	# cleanup swicth
+	restore_dualrgmii
+
+	enable_all_ports
+}
+
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port tv_portVLAN sip_portVLAN`
 
 if [ "$1" = "3" ]; then
@@ -623,10 +638,10 @@ if [ "$1" = "3" ]; then
 		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
 		reset_all_phys
-	elif [ "$2" = "WWWWW" ]; then
-		reset_wan_phys
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
+	elif [ "$2" = "WWWWW" ]; then
+		reset_wan_phys
 	elif [ "$2" = "VLANS" ]; then
 		config_onergmii VLANS
 	else
@@ -641,14 +656,30 @@ elif [ "$1" = "4" ]; then
 		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
 		reset_all_phys
-	elif [ "$2" = "WWWWW" ]; then
-		reset_wan_phys
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
+	elif [ "$2" = "WWWWW" ]; then
+		reset_wan_phys
 	elif [ "$2" = "VLANS" ]; then
 		config_dualrgmii VLANS
 	else
 		config_dualrgmii $2
+	fi
+elif [ "$1" = "5" ]; then
+	if [ "$2" = "LLLLL" ]; then
+		restore_extdualrgmii
+	elif [ "$2" = "EEEEE" ]; then
+		enable_all_ports
+	elif [ "$2" = "DDDDD" ]; then
+		disable_all_ports
+	elif [ "$2" = "RRRRR" ]; then
+		reset_all_phys
+	elif [ "$2" = "FFFFF" ]; then
+		reinit_all_phys
+	elif [ "$2" = "VLANS" ]; then
+		config_extdualrgmii VLANS
+	else
+		config_extdualrgmii $2
 	fi
 else
 	echo "unknown swith type $1"

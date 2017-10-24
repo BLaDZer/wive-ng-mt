@@ -88,7 +88,7 @@ char getPromChar(void)
 
 void __init prom_init_printf(int tty_no)
 {
-#if !defined(CONFIG_RALINK_GPIOMODE_UARTF) && (CONFIG_SERIAL_8250_NR_UARTS > 1)
+#if (CONFIG_SERIAL_8250_NR_UARTS > 1)
 	if (tty_no == 1)
 		uart_base = RALINK_UART_BASE;
 	else

@@ -289,13 +289,19 @@ readdif_to_br() {
 get_switch_type() {
     # mode 3 - vlan particion
     # mode 4 - dual rgmi mode
+    # mode 5 - dual rgmi mode with external phy
     if [ -e /proc/mt7620/gmac ]; then
 	switchmode=3
     elif [ -e /proc/mt7628/gmac ]; then
 	switchmode=3
     elif [ -e /proc/mt7621/gmac ]; then
 	if [ "$CONFIG_RAETH_BOTH_GMAC" != "" ]; then
-	    switchmode=4
+	    if [ "$CONFIG_GE2_RGMII_AN" != "" ]; then
+		# ext gigaphy on GE2
+		switchmode=5
+	    else
+		switchmode=4
+	    fi
 	else
 	    switchmode=3
 	fi
