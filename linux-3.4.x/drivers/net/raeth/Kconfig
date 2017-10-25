@@ -190,6 +190,11 @@ choice
 		select MT7530_GSW
 endchoice
 
+config RAETH_PHY_STANDBY
+	int "GPIO N for phy wakeup after boot (default -1 - disabled)."
+	depends on GE1_RGMII_AN || GE2_RGMII_AN
+	default -1
+
 config RAETH_HAS_PORT4
 	bool "Port 4 Support"
 	depends on RAETH && RALINK_MT7620

@@ -141,6 +141,17 @@ reset_wan_phys() {
 	fi
 }
 
+softreset_port()
+{
+	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
+	let "value |= 1<<15"
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)
+
+	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
+	let "value |= 1<<9"
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)
+}
+
 set_physmode() {
         if [ -e /proc/mt7620/gmac ]; then
 	    procdir="/proc/mt7620/gmac"
@@ -618,13 +629,20 @@ restore_dualrgmii()
         $LOG "Restore internal MT7621 switch mode to dumb mode (ExtPHY)"
 }
 
-config_dualrgmii()
+config_extdualrgmii()
 {
 	# temp stub for write logic in future
 	# cleanup swicth
 	restore_dualrgmii
 
+	# enable all internal switch ports
 	enable_all_ports
+
+	# reenable autopoll (before this phy not work)
+	softreset_port 5
+
+	# link up external rgmii port
+	link_up 5
 }
 
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port tv_portVLAN sip_portVLAN`

@@ -106,7 +106,7 @@ static int pcie_link_status = 0;
 #define UARTL3_SHARE_PIN_SW		PCIE_SHARE_PIN_SW
 #define GPIO_PCIE_PORT1			GPIO_PCIE_PORT0
 #ifdef CONFIG_PCIE_PERST_EXTP2
-#define GPIO_PCIE_PORT2			17
+#define GPIO_PCIE_PORT2			6 // 6 is temp, for PCB release need replace to real
 #else
 #define GPIO_PCIE_PORT2			GPIO_PCIE_PORT0
 #endif

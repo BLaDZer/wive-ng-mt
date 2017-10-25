@@ -196,12 +196,19 @@ void mt7621_eth_gdma_vlan_untag(int ge2, int untag_en)
 
 void mt7621_eth_init(void)
 {
-	u32 reg_val;
+	u32 reg_val = 0;
 
 #if defined (CONFIG_GE1_MII_AN) || defined (CONFIG_GE2_MII_AN)
 	/* set MDIO clock to 2.500 MHz */
 	sysRegWrite(REG_MDIO_PHY_POLLING, 0x45000504);
 #elif defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_GE2_RGMII_AN)
+#if (CONFIG_RAETH_PHY_STANDBY > -1)
+	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
+	mdelay(100);
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to HIGH (phy wakeup)
+	mdelay(100);
+#endif
 	/* set MDIO clock to 4.167 MHz */
 	sysRegWrite(REG_MDIO_PHY_POLLING, 0x43000504);
 #else
