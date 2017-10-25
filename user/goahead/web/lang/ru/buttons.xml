@@ -4,6 +4,7 @@
     <message msgid="button apply" msgstr="Применить" />
     <message msgid="button cancel" msgstr="Отменить" />
     <message msgid="button add" msgstr="Добавить" />
+    <message msgid="button add rule" msgstr="Добавить правило" />
     <message msgid="button openall" msgstr="Развернуть все" />
     <message msgid="button closeall" msgstr="Свернуть все" />
     <message msgid="button reset" msgstr="Сбросить" />

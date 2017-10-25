@@ -559,16 +559,17 @@ static int getWanGateway(int eid, webs_t wp, int argc, char_t **argv)
  */
 static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 {
-	int    i = 0;
-	char   interface[128];
-	char   dest_str[32], gw_str[32], netmask_str[32];
+	int   i = 0;
+	char  dest_str[32], gw_str[32], netmask_str[32];
 	int   *running_rules = NULL;
-	char *rrs;
-	int  rule_count;
+	char  *rrs;
+	int   rule_count;
 
 	// Determine work mode
-	int op_mode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
-	int isBridgeMode = (op_mode == 0) ? 1 : 0;
+	int isBridgeMode = (nvram_get_int(RT2860_NVRAM, "OperationMode", -1) == 0) ? 1 : 0;
+	int isVPN = (strcmp(getVPNStatusStr(), "online") == 0 || 
+		     strcmp(getVPNStatusStr(), "kabinet networks") == 0 || 
+		     strcmp(getVPNStatusStr(), "full access") == 0) ? 1 : 0;
 
 	rrs = nvram_get(RT2860_NVRAM, "RoutingRules");
 	if (rrs == NULL)
@@ -579,65 +580,58 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 	int parsed_rule_count = 0;
 	struct RoutingRule* table = parseRoutingTable(rrs, &parsed_rule_count);
 
-	if (table == NULL) 
-	{
-	    syslog(LOG_ERR, "Routing table parse error in function %s", __FUNCTION__);
-	    return -1;
+	if (table == NULL) {
+		syslog(LOG_ERR, "Routing table parse error in function %s", __FUNCTION__);
+		return -1;
 	}
 
-	if (rule_count)
-	{
+	if (rule_count) {
 		running_rules = calloc(1, sizeof(int) * rule_count);
 		if (!running_rules)
-		{
 			return -1;
-		}
 	}
 
 	// true_interface[0], destination[1], gateway[2], netmask[3], flags[4], ref[5], use[6],
 	// metric[7], category[8], interface[9], idle[10], comment[11], new[12]
-	for (i = 0 ; i < parsed_rule_count; i++) 
-	{
-	    struct RoutingRule rule = table[i];
+	for (i = 0 ; i < parsed_rule_count; i++) {
+		struct RoutingRule rule = table[i];
 
-	    strncpy(dest_str, inet_ntoa(rule.dest), sizeof(dest_str));
-	    strncpy(gw_str, inet_ntoa(rule.gw), sizeof(gw_str));
-	    strncpy(netmask_str, inet_ntoa(rule.netmask), sizeof(netmask_str));
+		strncpy(dest_str, inet_ntoa(rule.dest), sizeof(dest_str));
+		strncpy(gw_str, inet_ntoa(rule.gw), sizeof(gw_str));
+		strncpy(netmask_str, inet_ntoa(rule.netmask), sizeof(netmask_str));
 
-	    if (i > 0) websWrite(wp, T(",\n"));
+		if (i > 0) websWrite(wp, T(",\n"));
 
-	    websWrite(wp, T("[ '%s', '%s', '%s', '%s', %d, %d, %d, %d"), rule.interface, dest_str, gw_str, netmask_str, rule.flgs, rule.ref, rule.use, rule.metric); // 0-7
+		websWrite(wp, T("[ '%s', '%s', '%s', '%s', %d, %d, %d, %d"), rule.interface, dest_str, gw_str, netmask_str, rule.flgs, rule.ref, rule.use, rule.metric); // 0-7
 
-	    switch (rule.category)
-	    {
-		case 1:
-			websWrite(wp, T(", %d, "), rule.internal_id); // 8
+		switch (rule.category) {
+			case 1:
+				websWrite(wp, T(", %d, "), rule.internal_id); // 8
 
-			if (rule.internal_id < rule_count)
-		    	    running_rules[rule.internal_id] = 1;
-			else
-			    syslog(LOG_ERR, "fatal error in %s", __FUNCTION__);
+				if (rule.internal_id < rule_count)
+					running_rules[rule.internal_id] = 1;
+				else
+					syslog(LOG_ERR, "fatal error in %s", __FUNCTION__);
 
-			websWrite(wp, T("'%s'"), rule.iftype); // 9
-			websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
-		    break;
-		case 2:
-			websWrite(wp, T(", -1, ")); // 8
-			websWrite(wp, T("'%s'"), getLanWanNamebyIf(rule.interface)); // 9
-    			websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
-		    break;
+				websWrite(wp, T("'%s'"), rule.iftype); // 9
+				websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
+				break;
+			case 2:
+				websWrite(wp, T(", -1, ")); // 8
+				websWrite(wp, T("'%s'"), getLanWanNamebyIf(rule.interface)); // 9
+				websWrite(wp, T(", 0, '%s', 0 ]"), rule.comment); // 10-12
+				break;
 
-		case 3:
-			websWrite(wp, T(", %d, "), rule.internal_id); // 8
-			websWrite(wp, T("'%s'"), rule.iftype); // 9
-    			websWrite(wp, T(", %d, "), ((strcmp(interface, "VPN")==0) ? isBridgeMode : 1)); // 10
-    			websWrite(wp, T("'%s', 0 ]"), rule.comment); // 11-12
-		    break;
+			case 3:
+				websWrite(wp, T(", %d, "), rule.internal_id); // 8
+				websWrite(wp, T("'%s'"), rule.iftype); // 9
+				websWrite(wp, T(", %d, "), ((strcmp(rule.iftype, "VPN") == 0) ? (isVPN == 1) ? isBridgeMode : 1 : 1)); // 10
+				websWrite(wp, T("'%s', 0 ]"), rule.comment); // 11-12
+				break;
 
-		default:
-		    syslog(LOG_ERR, "%s: unknown routing rule category number: %i", __FUNCTION__, rule.category);
-	    }
-
+			default:
+				syslog(LOG_ERR, "%s: unknown routing rule category number: %i", __FUNCTION__, rule.category);
+		}
 	}
 
 	if (running_rules)
@@ -651,6 +645,9 @@ static int getRoutingTable(int eid, webs_t wp, int argc, char_t **argv)
 static void editRouting(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *trans = websGetVar(wp, T("routingTableDiff"), T(""));
+#ifdef CONFIG_USER_ZEBRA
+	char_t *rip   = websGetVar(wp, T("RIPSelect"), T(""));
+#endif
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	char rec[256];
@@ -659,6 +656,9 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_set(RT2860_NVRAM, "RoutingRules", "");
+#ifdef CONFIG_USER_ZEBRA
+		nvram_set(RT2860_NVRAM, "RIPEnable", "0");
+#endif
 	}
 	else {
 		while (getNthValueSafe(i++, trans, ';', rec, sizeof(rec)) != -1)
@@ -720,6 +720,9 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 				removeRoutingRuleNvram(iface, destination, netmask, gateway);
 			}
 		}
+#ifdef CONFIG_USER_ZEBRA
+		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
+#endif
 	}
 
 	/* reconfigure system */
@@ -728,25 +731,6 @@ static void editRouting(webs_t wp, char_t *path, char_t *query)
 	websHeader(wp);
 	websDone(wp, 200);
 }
-
-#ifdef CONFIG_USER_ZEBRA
-static void dynamicRouting(webs_t wp, char_t *path, char_t *query)
-{
-	char_t *rip   = websGetVar(wp, T("RIPSelect"), T(""));
-	char_t *reset = websGetVar(wp, T("reset"), T("0"));
-
-	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_set(RT2860_NVRAM, "RIPEnable", "0");
-	}
-	else {
-		nvram_set(RT2860_NVRAM, "RIPEnable", rip);
-		doSystem("service dynroute restart");
-	}
-
-	websHeader(wp);
-	websDone(wp, 200);
-}
-#endif
 
 static void getMyMAC(webs_t wp, char_t *path, char_t *query)
 {
@@ -1453,10 +1437,6 @@ void formDefineInternet(void) {
 	websFormDefine(T("getMyMAC"), getMyMAC);
 	websFormDefine(T("editRouting"), editRouting);
 	websAspDefine(T("getTransmissionBuilt"), getTransmissionBuilt);
-
-#ifdef CONFIG_USER_ZEBRA
-	websFormDefine(T("dynamicRouting"), dynamicRouting);
-#endif
 	websAspDefine(T("getDynamicRoutingBuilt"), getDynamicRoutingBuilt);
 	websAspDefine(T("getSWQoSBuilt"), getSWQoSBuilt);
 	websAspDefine(T("getDATEBuilt"), getDATEBuilt);

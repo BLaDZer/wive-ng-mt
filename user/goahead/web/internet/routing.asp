@@ -50,7 +50,7 @@
 				_TR("routingDelUse",					"routing del use");
 				_TR("routingAction",					"routing action");
 
-				_TRV("buttonAdd",						"button add");
+				_TRV("buttonAdd",					"button add rule");
 				_TRV("routingApply",					"button apply");
 				_TRV("routingApply2",					"button apply");
 				_TRV("routingCancel",					"button cancel");
@@ -61,7 +61,6 @@
 
 			function initValues() {
 				var form	= document.editRouting;
-				var dform	= document.dynamicRouting;
 				var ifc		= form.interface.options;
 
 				ifc.add(new Option("LAN", "LAN"));
@@ -76,8 +75,8 @@
 				hideElement('routingNetmaskRow');
 
 				// Dynamic routing
-				dform.RIPSelect.selectedIndex = NVRAM_RIPEnable;
-				displayElement('dynamicRoutingDiv', BUILD_DYNAMIC_ROUTING == '1');
+				form.RIPSelect.selectedIndex = NVRAM_RIPEnable;
+				displayElement('dynamicRoutingDiv', BUILD_DYNAMIC_ROUTING);
 
 				genRoutingTable();
 				showWarning();
@@ -92,7 +91,7 @@
 						trans.push(ROUTING_TABLE[i]);
 				}
 				form.routingTableDiff.value = trans.join(';');
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 				return false;
 			}
 
@@ -113,15 +112,15 @@
 				
 				html += '<tr><td class="title" colspan="11" id="routingCurrentRoutingTableRules">Current Routing table in the system:</td></tr>'; // Header
 				html += '<tr><th id="routingTableNo">ID</th>' +
-					'<th id="routingTableDest" align="center">Destination</th>' + 
+					'<th id="routingTableDest" align="center">Destination</th>' +
 					'<th id="routingTableNetmask" align="center">Netmask</th>' +
 					'<th id="routingTableGateway" align="center">Gateway</th>' +
 					'<th id="routingDelFlags" align="center">Flags</th>' +
 					'<th id="routingDelMetric" align="center">Metric</th>' +
 					'<th id="routingDelRef" align="center">Ref</th>' +
 					'<th id="routingDelUse" align="center">Use</th>' +
-					'<th id="routingTableInterface" align="center">Interface</th>'+
-					'<th id="routingTableComment" align="center">Comment</th>'+
+					'<th id="routingTableInterface" align="center">Interface</th>' +
+					'<th id="routingTableComment" align="center">Comment</th>' +
 					'<th id="routingAction">Actions</th></tr>';
 				
 				for (var i = 0; i < ROUTING_TABLE.length; i++) {
@@ -149,7 +148,7 @@
 						'<td style="text-align: center;"><a style="color: #ff0000; cursor: pointer;" href="javascript:removeRoutingItem(' + i + ');"><img src="/graphics/cross.png" alt="[x]"></a></td>' : '<td>&nbsp;</td>';
 				}
 
-				html += '</table>';
+				html += '</table><br>';
 
 				setInnerHTML('ajxCtxRoutingTable', html);
 			}
@@ -234,91 +233,88 @@
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" action="/goform/editRouting" name="editRouting" onSubmit="return checkValues(this);">
-						<!-- Rule adding -->
+						<div id="ajxCtxRoutingTable"></div>
+						<div id="dynamicRoutingDiv" style="display:none;">
+							<table class="form">
+								<col style="width: 40%;" />
+								<col style="width: 60%;" />
+								<tbody>
+									<tr>
+										<td class="title" colspan="2" id="dynamicRoutingTitle">Dynamic routing</td>
+									</tr>
+									<tr>
+										<td class="head" id="RIP">RIP</td>
+										<td>
+											<select name="RIPSelect" class="mid">
+												<option value="0" id="RIPDisable">Disable</option>
+												<option value="1" id="RIPEnable">Enable</option>
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br>
+						</div>
 						<table class="form">
-							<tr>
-								<td class="title" colspan="2" id="routingAddRule">Add a routing rule</td>
-							</tr>
-							<tr>
-								<td class="head" style="width: 40%;" id="routingDest">Destination</td>
-								<td style="width: 60%;"><input class="mid" name="dest" type="text" maxlength="15"></td>
-							</tr>
-							<tr>
-								<td class="head" style="width: 40%;" id="routingRange">Host/Net</td>
-								<td style="width: 60%;"><select class="mid" name="hostnet" onChange="hostnetChange(this.form);">
-									<option selected="selected" value="host" id="routingHost">Host</option>
-									<option value="net" id="routingNet">Net</option>
-								</select></td>
-							</tr>
-							<tr id="routingNetmaskRow">
-								<td class="head" style="width: 40%;" id="routingNetmask">Subnet Mask</td>
-								<td style="width: 60%;"><input class="mid" name="netmask" type="text" maxlength="15"></td>
-							</tr>
-							<tr>
-								<td class="head" style="width: 40%;" id="routingGateway">Gateway</td>
-								<td style="width: 60%;"><input class="mid" name="gateway" type="text" maxlength="15"></td>
-							</tr>
-							<tr>
-								<td class="head" style="width: 40%;" id="routingInterface">Interface</td>
-								<td style="width: 60%;"><select class="mid" name="interface" onChange="interfaceChange(this.form);">
-								</select></td>
-							</tr>
-							<tr id="customInterfaceRow" style="display: none;">
-								<td class="head" style="width: 40%;" id="routingIfaceName">Interface Name</td>
-								<td style="width: 60%;"><input alias="right" class="mid" name="custom_interface" type="text" maxlength="8"></td>
-							</tr>
-							<tr>
-								<td class="head" style="width: 40%;" id="routingComment">Comment</td>
-								<td style="width: 60%;"><input name="comment" class="mid" type="text" maxlength="32"></td>
-							</tr>
-							<tr>
-						</table>
-						<table>
-							<tr>
-								<td><input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button"></td>
-							</tr>
+							<col style="width: 40%;" />
+							<col style="width: 60%;" />
+							<tbody>
+								<tr>
+									<td class="title" colspan="2" id="routingAddRule">Add a routing rule</td>
+								</tr>
+								<tr>
+									<td class="head" id="routingDest">Destination</td>
+									<td><input class="mid" name="dest" type="text" maxlength="15"></td>
+								</tr>
+								<tr>
+									<td class="head" id="routingRange">Host/Net</td>
+									<td>
+										<select class="mid" name="hostnet" onChange="hostnetChange(this.form);">
+											<option selected="selected" value="host" id="routingHost">Host</option>
+											<option value="net" id="routingNet">Net</option>
+										</select>
+									</td>
+								</tr>
+								<tr id="routingNetmaskRow">
+									<td class="head" id="routingNetmask">Subnet Mask</td>
+									<td><input class="mid" name="netmask" type="text" maxlength="15"></td>
+								</tr>
+								<tr>
+									<td class="head" id="routingGateway">Gateway</td>
+									<td><input class="mid" name="gateway" type="text" maxlength="15"></td>
+								</tr>
+								<tr>
+									<td class="head" id="routingInterface">Interface</td>
+									<td>
+										<select class="mid" name="interface" onChange="interfaceChange(this.form);"></select>
+									</td>
+								</tr>
+								<tr id="customInterfaceRow" style="display: none;">
+									<td class="head" id="routingIfaceName">Interface Name</td>
+									<td><input alias="right" class="mid" name="custom_interface" type="text" maxlength="8"></td>
+								</tr>
+								<tr>
+									<td class="head" id="routingComment">Comment</td>
+									<td><input name="comment" class="mid" type="text" maxlength="15"></td>
+								</tr>
+								<tr>
+							</tbody>
 						</table>
 						<br>
-						<!--  delete rules -->
-						<div id="ajxCtxRoutingTable"></div>
 						<table class="buttons">
 							<tr>
-								<td><input type="hidden" name="routingTableDiff" >
+								<td>
+									<input type="hidden" name="routingTableDiff" >
+									<input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button">&nbsp;&nbsp;
 									<input value="Apply" id="routingApply" class="normal" type="submit">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Cancel" id="routingCancel" name="routingCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form);">
+									<input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
 						</table>
-						<br>
+						<div class="whitespace">&nbsp;</div>
 					</form>
-					<div id="dynamicRoutingDiv" style="display:none;">
-						<form method="POST" name="dynamicRouting" action="/goform/dynamicRouting">
-							<table class="form">
-								<tr>
-									<td class="title" colspan="2" id="dynamicRoutingTitle">Dynamic routing</td>
-								</tr>
-								<tr>
-									<td class="head" style="width: 40%;" id="RIP">RIP</td>
-									<td style="width: 60%;"><select name="RIPSelect" size="1">
-										<option value="0" id="RIPDisable">Disable</option>
-										<option value="1" id="RIPEnable">Enable</option>
-									</select></td>
-								</tr>
-							</table>
-							<table class="buttons">
-								<tr>
-									<td><input type="submit" class="normal" value="Apply"  id="routingApply2"  name="dynamicRoutingApply" onClick="ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);">&nbsp;&nbsp;
-										<input type="button" class="normal" value="Cancel" id="routingCancel2" name="dynamicRoutingCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-										<input type="reset"  class="normal" value="Reset"  id="routingReset2"  name="dynamicRoutingReset"  onClick="resetValues(this.form);">
-										<input type="hidden" name="reset" value="0">
-									</td>
-								</tr>
-							</table>
-						</form>
-					</div>
-					<div class="whitespace">&nbsp;</div>
 				</td>
 			</tr>
 		</table>

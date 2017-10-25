@@ -64,7 +64,7 @@ static int getDhcpCliList(int eid, webs_t wp, int argc, char_t **argv)
 	    websWrite(wp, "] }");
 	    return 0; //if DHCP is disabled or unable to read - just exit
 	}
-	
+
 	curr = time(NULL);
 
 	/* Output leases file */

@@ -104,34 +104,4 @@
 	<message msgid="vlan mode wlan table"			msgstr="Состояние WLAN VLAN" />
 	<message msgid="vlan mode wlan table ap"		msgstr="Точка доступа" />
 	<message msgid="vlan mode wlan table iface"		msgstr="Интерфейс" />
-
-  <message msgid="routing title" msgstr="Статические маршруты" />
-  <message msgid="routing Introduction" msgstr="Вы можете здесь настроить статические маршруты или включить протокол динамической маршрутизации." />
-  <message msgid="routing add rule" msgstr="Добавить маршрут" />
-  <message msgid="routing routing dest" msgstr="Назначение" />
-  <message msgid="routing range" msgstr="Диапазон" />
-  <message msgid="routing netmask" msgstr="Маска" />
-  <message msgid="routing gateway" msgstr="Шлюз" />
-  <message msgid="routing interface" msgstr="Интерфейс" />
-  <message msgid="routing custom" msgstr="(вручную)" />
-  <message msgid="routing comment" msgstr="Комментарий" />
-  <message msgid="routing submit" msgstr="Применить" />
-  <message msgid="routing reset" msgstr="Сброс" />
-  <message msgid="routing Number" msgstr="№" />
-  <message msgid="routing del title" msgstr="Текущая таблица маршрутизации:" />
-  <message msgid="routing del dest" msgstr="Назначение" />
-  <message msgid="routing del netmask" msgstr="Маска" />
-  <message msgid="routing del gateway" msgstr="Шлюз" />
-  <message msgid="routing del flags" msgstr="Флаги" />
-  <message msgid="routing del metric" msgstr="Метрика" />
-  <message msgid="routing del ref" msgstr="Ref" />
-  <message msgid="routing del use" msgstr="Use" />
-  <message msgid="routing del interface" msgstr="Интерфейс" />
-  <message msgid="routing del comment" msgstr="Комментарий" />
-  <message msgid="routing del" msgstr="Удалить" />
-  <message msgid="routing del reset" msgstr="Сброс" />
-  <message msgid="routing host" msgstr="Хост" />
-  <message msgid="routing net" msgstr="Сеть" />
-  <message msgid="routing LAN" msgstr="LAN" />
-  <message msgid="routing WAN" msgstr="WAN" />
 </po>

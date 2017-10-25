@@ -156,9 +156,9 @@
     <message msgid="qos mode vpn" msgstr="Only VPN" />
     <message msgid="qos invalid bw" msgstr="Entered wrong value." />
 
-    <message msgid="routing title" msgstr="Static Routing Settings" />
+    <message msgid="routing title" msgstr="Routing Settings" />
     <message msgid="routing introduction" msgstr="You can add and remove custom Internet routing rules and/or enable dynamic routing exchange protocol here." />
-    <message msgid="routing add rule" msgstr="Add a routing rule" />
+    <message msgid="routing add rule" msgstr="Add a static routing rule" />
     <message msgid="routing dest" msgstr="Destination" />
     <message msgid="routing range" msgstr="Range" />
     <message msgid="routing host" msgstr="Host" />

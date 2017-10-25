@@ -31,7 +31,7 @@ var BUILD_VHT_STBC_SUPPORT			= '<% getVHTSTBCBuilt(); %>';
 var BUILD_5GHZ_SUPPORT				= '<% is5gh_support(); %>'		== '1';
 var BUILD_5GHZ_1T1R				= '<% is5gh_1t1r(); %>'			== '1';
 var BUILD_GIGAPHY				= '<% gigaphy(); %>';
-var BUILD_DYNAMIC_ROUTING 			= '<% getDynamicRoutingBuilt(); %>';
+var BUILD_DYNAMIC_ROUTING 			= '<% getDynamicRoutingBuilt(); %>'	== '1';
 var BUILD_CHILLI				= '<% getChilliBuilt(); %>';
 var BUILD_NODOG					= '<% getNoDogBuilt(); %>';
 var BUILD_OPENSSL				= '<% getOpenSSLBuilt(); %>';
