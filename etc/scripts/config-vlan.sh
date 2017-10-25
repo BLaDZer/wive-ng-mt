@@ -261,16 +261,7 @@ restore_onergmii()
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent port, admit all frames and disable special tag
 	done
 
-	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
-	    switch reg w 3500 0005e337		#port 5 force up, 100FD
-	else
-	    switch reg w 3500 00008000		#port 5 link down
-	fi
-
-	if [ "$CONFIG_RAETH_HAS_PORT4" = "y" ]; then
-	    switch reg w 7014 10e0000c		#disable internal EPHY 4
-	    switch reg w 3400 0005e337		#port 4 force up, 100FD
-	fi
+	switch reg w 3500 00008000		#port 5 link down not used
 
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
 
@@ -303,11 +294,6 @@ config_onergmii()
 	    switch reg w 2${port}04 ff0003	#ports 0-4 as security mode
 	done
 
-	# skip port 5 if not enabled in config - not used and link down early
-	if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
-	    switch reg w 2504 ff0003		#port 5 as security mode
-	fi
-
 	for port in `seq 6 7`; do
 	    switch reg w 2${port}10 81000000	#ports 6-7 special tag disable, is user port, admit all frames
 	    switch reg w 2${port}04 20df0003	#ports 6-7 egress VLAN Tag Attribution=tagged
@@ -317,14 +303,8 @@ config_onergmii()
 	    PMODEMASK="$1"
 	    # replace W/L to 0/1 for create masks and add static mask suffix
 	    masklan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/0/g;s/L/1/g' | awk {' print $1 "011" '}`
-	    if [ "$CONFIG_RAETH_HAS_PORT5" = "y" ]; then
-		# port 5 link with wan ports group
-		maskwan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "111" '}`
-		# add port 5 to WAN group
-		PMODEMASK="${PMODEMASK}W"
-	    else
-		maskwan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
-	    fi
+	    maskwan=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "011" '}`
+
 	    # replace W/L to 2/1 and add space after symbols for set pvids mask
 	    pvids=`echo "$PMODEMASK" | sed 's/[0-9]/0/g;s/W/2/g;s/L/1/g' | sed -e "s/.\{1\}/&\ /g"`
 
