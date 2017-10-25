@@ -101,7 +101,7 @@ link_up() {
 
 reset_all_phys() {
 	$LOG "Reset all phy port"
-	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ]; then
+	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ] || [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
 	    # All ports down
 	    start=0
 	    end=4
@@ -128,20 +128,7 @@ reset_all_phys() {
 	done
 }
 
-reset_wan_phys() {
-	$LOG "Reset wan phy port"
-	if [ "$OperationMode" = "1" ]; then
-	    if [ "$wan_portN" = "0" ]; then
-		link_down 4
-		link_up 4
-	    else
-		link_down 0
-		link_up 0
-	    fi
-	fi
-}
-
-softreset_port()
+softreset_cpuport()
 {
 	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
 	let "value |= 1<<15"
@@ -150,6 +137,23 @@ softreset_port()
 	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
 	let "value |= 1<<9"
 	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)
+}
+
+reset_wan_phys() {
+	$LOG "Reset wan phy port"
+	if [ "$OperationMode" = "1" ]; then
+	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+		softreset_cpuport 5
+	    else
+		if [ "$wan_portN" = "0" ]; then
+		    link_down 4
+		    link_up 4
+		else
+		    link_down 0
+		    link_up 0
+		fi
+	    fi
+	fi
 }
 
 set_physmode() {
@@ -416,6 +420,7 @@ config_onergmii()
 restore_dualrgmii()
 {
         $LOG "Restore internal MT7621 switch mode to dumb mode"
+
 	for port in `seq 0 7`; do
 	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
 	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent port, admit all frames and disable special tag
@@ -603,26 +608,78 @@ config_dualrgmii()
 	switch clear
 }
 
-restore_dualrgmii()
+restore_extdualrgmii()
 {
-	# temp stub for write logic in future
         $LOG "Restore internal MT7621 switch mode to dumb mode (ExtPHY)"
 
+	for port in `seq 0 7`; do
+	    switch reg w 2${port}04 ff0000	#ports 0-7 matrix mode
+	    switch reg w 2${port}10 810000c0 	#ports 0-7 as transparent port, admit all frames and disable special tag
+	done
+
+	# switch port 5 disable (unused)
+	switch reg w 3500 00008000
+
 	# reenable autopoll (before this phy not work)
-	softreset_port 5
+	softreset_cpuport 5
+
+	# clear configured vlan parts
+	switch vlan clear
+
+	# reinit all ports
+	reinit_all_phys
+
+	# disable snooping
+	restore_igmpsnoop
+
+	#clear mac table if vlan configuration changed
+	switch clear
 }
 
 config_extdualrgmii()
 {
-	# temp stub for write logic in future
+	# incomplete write logic in future
+        # now only static config without VLANS support
+	# use vlan vid 1 for all internal GSW (security mode config)
+	# port5 = external GigaPHY
+
 	# cleanup swicth
-	restore_dualrgmii
+	restore_extdualrgmii
+
+	$LOG "Config internal MT7621 switch + external GigaPHY $1"
+
+	# prepare switch
+	for port in `seq 0 4`; do
+	    switch reg w 2${port}10 810000c0 	#ports 0-4 as transparent port, admit all frames and disable special tag
+	    switch reg w 2${port}04 ff0003	#ports 0-4 as security mode
+	done
+
+	for port in `seq 6 7`; do
+	    switch reg w 2${port}10 81000000	#ports 5-7 special tag disable, is user port, admit all frames
+	    switch reg w 2${port}04 20df0003	#ports 5-7 egress VLAN Tag Attribution=tagged
+	done
+
+	# set cpu port pvid for lan
+	switch pvid 6 1
+
+	# VLAN member ports index 0 vlan 1 for lan
+	switch vlan set 0 1 11111010
+
+	# set all lan ports pvid to 1
+	for index in `seq 0 4` ; do
+	    switch pvid $index 1
+	done
+
+	# detag internal esw and qdma tagged packets before send to cpu
+	for port in `seq 6 7`; do
+	    switch tag off $port
+	done
 
 	# enable all internal switch ports
 	enable_all_ports
 
-	# link up external rgmii port
-	link_up 5
+	# clear mac table if vlan configuration changed
+	switch clear
 }
 
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port tv_portVLAN sip_portVLAN`
@@ -674,6 +731,8 @@ elif [ "$1" = "5" ]; then
 		reset_all_phys
 	elif [ "$2" = "FFFFF" ]; then
 		reinit_all_phys
+	elif [ "$2" = "WWWWW" ]; then
+		reset_wan_phys
 	elif [ "$2" = "VLANS" ]; then
 		config_extdualrgmii VLANS
 	else
