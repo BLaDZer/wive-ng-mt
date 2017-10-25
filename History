@@ -3525,11 +3525,12 @@
 14) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
 15) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
 16) kernel: mips: declare various variables & functions static.<br>
-17) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-18) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-19) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-20) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-21) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+17) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+18) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+19) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+20) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+21) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+22) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
