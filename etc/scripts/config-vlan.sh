@@ -627,6 +627,9 @@ restore_dualrgmii()
 {
 	# temp stub for write logic in future
         $LOG "Restore internal MT7621 switch mode to dumb mode (ExtPHY)"
+
+	# reenable autopoll (before this phy not work)
+	softreset_port 5
 }
 
 config_extdualrgmii()
@@ -637,9 +640,6 @@ config_extdualrgmii()
 
 	# enable all internal switch ports
 	enable_all_ports
-
-	# reenable autopoll (before this phy not work)
-	softreset_port 5
 
 	# link up external rgmii port
 	link_up 5
