@@ -3527,13 +3527,14 @@
 16) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
 17) kernel: mips: declare various variables & functions static.<br>
 18) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-19) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-20) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-21) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-22) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-23) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-24) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-25) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+19) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+20) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+21) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+22) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+23) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+24) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+25) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+26) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
