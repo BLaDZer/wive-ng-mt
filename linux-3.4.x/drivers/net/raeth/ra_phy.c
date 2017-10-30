@@ -55,30 +55,30 @@ void ext_gphy_init(u32 phy_addr)
 		phy_devn = "RTL8211";
 		if (phy_rev == 0x6) {
 			u32 reg31 = 0;
-			
+
 			phy_devn = "RTL8211F";
-			
+
 			/* backup reg 0x1f */
 			mii_mgr_read(phy_addr, 31, &reg31);
 			if (reg31 != 0x0000 && reg31 != 0x0a42) {
 				reg31 = 0x0000;
 				mii_mgr_write(phy_addr, 31, reg31);
 			}
-			
+
 			/* Disable response on MDIO addr 0 (!) */
 			mii_mgr_read(phy_addr, 24, &phy_val);
 			phy_val &= ~(1<<13);		// PHYAD_0 Disable
 			mii_mgr_write(phy_addr, 24, phy_val);
-			
+
 			/* Disable Green Ethernet */
 			mii_mgr_write(phy_addr, 27, 0x8011);
 			mii_mgr_write(phy_addr, 28, 0x573f);
-			
+
 			/* Enable flow control by default */
 			mii_mgr_read(phy_addr, 4, &phy_val);
 			phy_val |=  (1<<10);		// Enable pause ability
 			mii_mgr_write(phy_addr, 4, phy_val);
-			
+
 			/* Setup LED */
 			mii_mgr_write(phy_addr, 31, 0x0d04);
 			mii_mgr_read(phy_addr, 17, &phy_val);
@@ -86,20 +86,59 @@ void ext_gphy_init(u32 phy_addr)
 			phy_val &= ~(1<<2);		// LED1 EEE Disable
 			phy_val &= ~(1<<1);		// LED0 EEE Disable
 			mii_mgr_write(phy_addr, 17, phy_val);
-			
+
 			/* restore reg 0x1f */
 			mii_mgr_write(phy_addr, 31, reg31);
-			
+
 		} else if (phy_rev == 0x5) {
 			phy_devn = "RTL8211E";
-			
+
 			/* Disable Green Ethernet */
 			mii_mgr_write(phy_addr, 31, 0x0003);
 			mii_mgr_write(phy_addr, 25, 0x3246);
 			mii_mgr_write(phy_addr, 16, 0xa87c);
 			mii_mgr_write(phy_addr, 31, 0x0000);
+
+		} else if (phy_rev == 0x4) {
+			u32 reg31 = 0;
+
+			phy_devn = "RTL8211D";
+
+			/* backup reg 0x1f */
+			mii_mgr_read(phy_addr, 31, &reg31);
+			if (reg31 != 0x0000 && reg31 != 0x0a42) {
+				reg31 = 0x0000;
+				mii_mgr_write(phy_addr, 31, reg31);
+			}
+
+			/* Disable response on MDIO addr 0 (!) */
+			mii_mgr_read(phy_addr, 24, &phy_val);
+			phy_val &= ~(1<<13);		// PHYAD_0 Disable
+			mii_mgr_write(phy_addr, 24, phy_val);
+
+			/* Disable Green Ethernet */
+			mii_mgr_write(phy_addr, 27, 0x8011);
+			mii_mgr_write(phy_addr, 28, 0x573f);
+
+			/* Disable flow control by default */
+			mii_mgr_read(phy_addr, 4, &phy_val);
+			phy_val =  ~(1<<10);		// Disable pause ability
+			mii_mgr_write(phy_addr, 4, phy_val);
+
+			/* Setup LED */
+			mii_mgr_write(phy_addr, 31, 0x0d04);
+			mii_mgr_read(phy_addr, 17, &phy_val);
+			phy_val |= (1<<3);		// LED2 EEE Enable
+			phy_val |= (1<<2);		// LED1 EEE Enable
+			phy_val |= (1<<1);		// LED0 EEE Enable
+			mii_mgr_write(phy_addr, 17, phy_val);
+
+			/* restore reg 0x1f */
+			mii_mgr_write(phy_addr, 31, reg31);
 		}
+
 		if (phy_rev >= 0x4) {
+
 			/* disable EEE LPI 1000/100 advert (for D/E/F) */
 			mii_mgr_write(phy_addr, 13, 0x0007);
 			mii_mgr_write(phy_addr, 14, 0x003c);

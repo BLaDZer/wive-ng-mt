@@ -128,22 +128,11 @@ reset_all_phys() {
 	done
 }
 
-softreset_cpuport()
-{
-	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
-	let "value |= 1<<15"
-	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)
-
-	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
-	let "value |= 1<<9"
-	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)
-}
-
 reset_wan_phys() {
 	$LOG "Reset wan phy port"
 	if [ "$OperationMode" = "1" ]; then
 	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-		softreset_cpuport 5
+		$LOG "Temp skip"
 	    else
 		if [ "$wan_portN" = "0" ]; then
 		    link_down 4
@@ -619,9 +608,6 @@ restore_extdualrgmii()
 
 	# switch port 5 disable (unused)
 	switch reg w 3500 00008000
-
-	# reenable autopoll (before this phy not work)
-	softreset_cpuport 5
 
 	# clear configured vlan parts
 	switch vlan clear
