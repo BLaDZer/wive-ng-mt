@@ -102,7 +102,7 @@ void ext_gphy_init(u32 phy_addr)
 		} else if (phy_rev == 0x4) {
 			u32 reg31 = 0;
 
-			phy_devn = "RTL8211D";
+			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
 
 			/* backup reg 0x1f */
 			mii_mgr_read(phy_addr, 31, &reg31);
