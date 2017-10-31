@@ -3513,29 +3513,30 @@
 2) init.d: rework automount and start/stop Entware services.<br>
 3) init.d: syslog: use locally and via network instead of network only if enabled.<br>
 4) init.d: basic support external phy at RGMII 2.<br>
-5) irqbalabce: fix build without libcap-ng.<br>
-6) goahead: refactoring and fixup route page.<br>
-7) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-8) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-9) kernel: fs-cache: fix dereference of NULL user_key_payload.<br>
-10) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
-11) kernel: raeth: add preconfig for RTL8211D.<br>
-12) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-13) kernel: mips: add nudges to writes for bit unlocks.<br>
-14) kernel: mips: make thread_saved_pc static.<br>
-15) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-16) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-17) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-18) kernel: mips: declare various variables & functions static.<br>
-19) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-20) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-21) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-22) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-23) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-24) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-25) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-26) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-27) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+5) init.d: rewrite switch init/link logic.<br>
+6) irqbalabce: fix build without libcap-ng.<br>
+7) goahead: refactoring and fixup route page.<br>
+8) kernel: sched/core: remove pointless printout in sched_show_task().<br>
+9) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+10) kernel: fs-cache: fix dereference of NULL user_key_payload.<br>
+11) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
+12) kernel: raeth: add preconfig for RTL8211D.<br>
+13) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+14) kernel: mips: add nudges to writes for bit unlocks.<br>
+15) kernel: mips: make thread_saved_pc static.<br>
+16) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+17) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+18) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+19) kernel: mips: declare various variables & functions static.<br>
+20) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+21) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+22) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+23) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+24) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+25) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+26) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+27) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+28) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>

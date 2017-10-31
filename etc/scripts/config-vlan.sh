@@ -32,71 +32,50 @@ usage() {
 	echo "_________"
 }
 
+link_up() {
+	# arg1:  phy address.
+	state=$(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi")
+	# Get state: $state
+	let "state &= 0xf7ff"
+	# Modded state: $(printf "0x%x" $state)
+	# power up
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $state)	> /dev/null 2>&1
+	# link up
+	mii_mgr -s -p $1 -r 0 -v 0x9000				> /dev/null 2>&1
+}
+
+link_down() {
+	# arg1:  phy address.
+	state=$(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi")
+	# Get state: $state
+	let "state |= 0x800"
+	# Modded state: $(printf "0x%x" $state)
+	# power down
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $state)	> /dev/null 2>&1
+}
+
+reset_port()
+{
+	# arg1:  phy address.
+	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
+	let "value |= 1<<15"
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)	> /dev/null 2>&1
+
+	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
+	let "value |= 1<<9"
+	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)	> /dev/null 2>&1
+}
+
 disable_all_ports() {
         for port in `seq 0 4`; do
-	    mii_mgr -s -p $port -r 0 -v 0x0800 > /dev/null 2>&1
+	    link_down $port
 	done
 }
 
 enable_all_ports() {
 	for port in `seq 0 4`; do
-	    mii_mgr -s -p $port -r 0 -v 0x9000 > /dev/null 2>&1
+	    link_up $port
 	done
-}
-
-link_down() {
-	# arg1:  phy address.
-	# get original register value
-	get_mii=`mii_mgr -g -p $1 -r 0`
-	orig=`echo $get_mii | sed 's/^.....................//'`
-
-	# stupid hex value calculation.
-	pre=`echo $orig | sed 's/...$//'`
-	post=`echo $orig | sed 's/^..//'`
-	num_hex=`echo $orig | sed 's/^.//' | sed 's/..$//'`
-	case $num_hex in
-		"0")	rep="8"	;;
-		"1")	rep="9"	;;
-		"2")	rep="a"	;;
-		"3")	rep="b"	;;
-		"4")	rep="c"	;;
-		"5")	rep="d"	;;
-		"6")	rep="e"	;;
-		"7")	rep="f"	;;
-		# The power is already down
-		*)		$LOG "Warning in PHY reset script (link down)";return;;
-	esac
-	new=$pre$rep$post
-	# power down
-	mii_mgr -s -p "$1" -r 0 -v $new > /dev/null 2>&1
-}
-
-link_up() {
-	# get original register value
-	get_mii=`mii_mgr -g -p "$1" -r 0`
-	orig=`echo $get_mii | sed 's/^.....................//'`
-
-	# stupid hex value calculation.
-	pre=`echo $orig | sed 's/...$//'`
-	post=`echo $orig | sed 's/^..//'` 
-	num_hex=`echo $orig | sed 's/^.//' | sed 's/..$//'`
-	case $num_hex in
-		"8")	rep="0"	;;
-		"9")	rep="1"	;;
-		"a")	rep="2"	;;
-		"b")	rep="3"	;;
-		"c")	rep="4"	;;
-		"d")	rep="5"	;;
-		"e")	rep="6"	;;
-		"f")	rep="7"	;;
-		# The power is already up
-		*)		$LOG "Warning in PHY reset script (link up)";return;;
-	esac
-	new=$pre$rep$post
-	# power up
-	mii_mgr -s -p "$1" -r 0 -v $new > /dev/null 2>&1
-	# link up
-	mii_mgr -s -p "$1" -r 0 -v 0x9000 > /dev/null 2>&1
 }
 
 reset_all_phys() {
@@ -126,13 +105,24 @@ reset_all_phys() {
 	for port in `seq $start $end`; do
     	    link_up $port
 	done
+
+	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+	    # soft reset external PHY
+	    # reset_port 5
+
+	    # link down/up
+	    link_down 5
+	    usleep 1000
+	    link_up 5
+	fi
 }
 
 reset_wan_phys() {
 	$LOG "Reset wan phy port"
 	if [ "$OperationMode" = "1" ]; then
 	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-		$LOG "Temp skip"
+		link_down 5
+		link_up 5
 	    else
 		if [ "$wan_portN" = "0" ]; then
 		    link_down 4
@@ -217,9 +207,12 @@ set_physmode() {
 }
 
 reinit_all_phys() {
+	# Reinit all ports
 	disable_all_ports
 	enable_all_ports
+	# LAN ports blink for stupid win machine dhcp force renew
 	reset_all_phys
+	# Set ports parametrs
 	set_physmode
 }
 
