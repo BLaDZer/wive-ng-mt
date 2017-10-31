@@ -267,7 +267,7 @@ static inline void prom_init_pcie(void)
 
 static inline void prom_init_phy(void)
 {
-#if (CONFIG_RAETH_PHY_STANDBY > -1) && (defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_GE2_RGMII_AN))
+#if defined(CONFIG_RAETH_PHY_STANDBY) && (CONFIG_RAETH_PHY_STANDBY > -1) && (defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_GE2_RGMII_AN))
 	/* suspend external phy */
 	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
 	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode

@@ -29,12 +29,12 @@ static u32 g_phy_id[32] = { 0 };
 void ext_gphy_init(u32 phy_addr)
 {
 	const char *phy_devn = NULL;
-	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev, reg_gpio;
+	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev, __maybe_unused reg_gpio;
 
 	if (phy_addr > 0x1f)
 		return;
 
-#if (CONFIG_RAETH_PHY_STANDBY > -1)
+#if defined(CONFIG_RAETH_PHY_STANDBY) && (CONFIG_RAETH_PHY_STANDBY > -1)
 	/* wakeup external phy */
 
 	/* switc pin ExtPHY reset to GPIO mode */
@@ -121,6 +121,12 @@ void ext_gphy_init(u32 phy_addr)
 
 		} else if (phy_rev == 0x4) {
 			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
+
+			/* Disable Green Ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
+			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0000);
+
 #if 0
 			/* Set to page 0 */
 			mii_mgr_write(phy_addr, 31, 0x0000);
@@ -135,10 +141,6 @@ void ext_gphy_init(u32 phy_addr)
 			phy_val |=  (1<<10);			/* Enable pause ability */
 			mii_mgr_write(phy_addr, 4, phy_val);
 
-			/* Disable Green Ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
-			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0000);
 
 			/* LED config in future */
 			//mii_mgr_write(phy_addr, 31, 0x0007);	/* set to extension page */
@@ -166,15 +168,6 @@ void ext_gphy_init(u32 phy_addr)
 			mii_mgr_write(phy_addr, 0, phy_val);
 #endif
 		}
-
-		if (phy_rev >= 0x4) {
-
-			/* disable EEE LPI 1000/100 advert (for D/E/F) */
-			mii_mgr_write(phy_addr, 13, 0x0007);
-			mii_mgr_write(phy_addr, 14, 0x003c);
-			mii_mgr_write(phy_addr, 13, 0x4007);
-			mii_mgr_write(phy_addr, 14, 0x0000);
-		}
 	} else
 	if ((phy_id0 == EV_MARVELL_PHY_ID0) && (phy_id1 == EV_MARVELL_PHY_ID1)) {
 		phy_devn = "Marvell";
@@ -194,6 +187,9 @@ void ext_gphy_init(u32 phy_addr)
 		mii_mgr_write(phy_addr, 28, phy_val);
 		mii_mgr_write(phy_addr, 31, 0x0000);	// main registers
 	}
+
+	/* Disable EEE for all phy by default */
+	ext_gphy_eee_enable(phy_addr, 0);
 
 	if (phy_devn)
 		printk("%s GPHY detected on MDIO addr 0x%02X\n", phy_devn, phy_addr);
