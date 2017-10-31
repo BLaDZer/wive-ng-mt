@@ -70,12 +70,26 @@ disable_all_ports() {
         for port in `seq 0 4`; do
 	    link_down $port
 	done
+
+	# external PHY
+	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+	    # soft reset external PHY
+	    # reset_port 5
+
+	    # link down
+	    link_down 5
+	fi
 }
 
 enable_all_ports() {
 	for port in `seq 0 4`; do
 	    link_up $port
 	done
+
+	# external PHY
+	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+	    link_up 5
+	fi
 }
 
 reset_all_phys() {
@@ -100,21 +114,11 @@ reset_all_phys() {
     	    link_down $port
 	done
 	# wait client detect link down for renew dhcp
-	usleep 100000
+	usleep 80000
 	# enable ports
 	for port in `seq $start $end`; do
     	    link_up $port
 	done
-
-	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	    # soft reset external PHY
-	    # reset_port 5
-
-	    # link down/up
-	    link_down 5
-	    usleep 1000
-	    link_up 5
-	fi
 }
 
 reset_wan_phys() {
