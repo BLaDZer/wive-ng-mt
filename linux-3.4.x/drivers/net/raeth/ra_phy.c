@@ -7,6 +7,7 @@
 #include <linux/delay.h>
 
 #include "ra_eth_reg.h"
+#include "ra_phy.h"
 #include "mii_mgr.h"
 
 /* EPHY Vendor ID list */
