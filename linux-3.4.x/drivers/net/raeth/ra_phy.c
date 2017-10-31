@@ -4,6 +4,7 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+#include <linux/delay.h>
 
 #include "ra_eth_reg.h"
 #include "mii_mgr.h"
@@ -28,10 +29,29 @@ static u32 g_phy_id[32] = { 0 };
 void ext_gphy_init(u32 phy_addr)
 {
 	const char *phy_devn = NULL;
-	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev;
+	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev, reg_gpio;
 
 	if (phy_addr > 0x1f)
 		return;
+
+#if (CONFIG_RAETH_PHY_STANDBY > -1)
+	/* wakeup external phy */
+
+	/* switc pin ExtPHY reset to GPIO mode */
+	reg_gpio = sysRegRead(RALINK_REG_GPIOMODE);
+        reg_gpio |= (CONFIG_RAETH_PHY_STANDBY);
+	sysRegWrite(RALINK_REG_GPIOMODE, reg_gpio);
+
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
+	mdelay(50);
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) &= ~(0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to LOW (phy sleep)
+	mdelay(100);
+
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
+	mdelay(50);
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to HIGH (phy wakeup)
+	mdelay(100);
+#endif
 
 	if (!mii_mgr_read(phy_addr, 2, &phy_id0))
 		return;
@@ -101,21 +121,50 @@ void ext_gphy_init(u32 phy_addr)
 
 		} else if (phy_rev == 0x4) {
 			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
-
-			/* Disable Green Ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0003); /* set to page 3 */
-			mii_mgr_write(phy_addr, 25, 0x3246); /* disable green ethernet */
+#if 0
+			/* Set to page 0 */
 			mii_mgr_write(phy_addr, 31, 0x0000);
 
-			/* Led config in future */
-			//mii_mgr_write(phy_addr, 31, 0x0007); /* set to extension page */
-			//mii_mgr_write(phy_addr, 30, 0x002c); /* extension Page44 */
+			/* Reset phy */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val |= (1<<15);			/* PHY Software Reset */
+			mii_mgr_write(phy_addr, 0, phy_val);
+
+			/* Enable flow control by default */
+			mii_mgr_read(phy_addr, 4, &phy_val);
+			phy_val |=  (1<<10);			/* Enable pause ability */
+			mii_mgr_write(phy_addr, 4, phy_val);
+
+			/* Disable Green Ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
+			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0000);
+
+			/* LED config in future */
+			//mii_mgr_write(phy_addr, 31, 0x0007);	/* set to extension page */
+			//mii_mgr_write(phy_addr, 30, 0x002c);	/* extension Page44 */
 			//mii_mgr_write(phy_addr, 31, 0x0000);
 
 			/* Disable flow control by default */
-			mii_mgr_read(phy_addr, 4, &phy_val);
-			phy_val &=  ~(1<<10);		// Disable pause ability
-			mii_mgr_write(phy_addr, 4, phy_val);
+			//mii_mgr_read(phy_addr, 4, &phy_val);
+			//phy_val &=  ~(1<<10);			/* Disable pause ability */
+			//mii_mgr_write(phy_addr, 4, phy_val);
+
+			/* Auto-Negotiation Enable */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val |= (1<<12);			/* Enable Auto-Negotiation */
+			mii_mgr_write(phy_addr, 0, phy_val);
+
+			/* Normal operation */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val &=  ~(1<<11);			/* Back to  Normal operation from powerdown */
+			mii_mgr_write(phy_addr, 0, phy_val);
+
+			/*  Restart Auto-Negotiation */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val |= (1<<9);			/* Restart Auto-Negotiation */
+			mii_mgr_write(phy_addr, 0, phy_val);
+#endif
 		}
 
 		if (phy_rev >= 0x4) {

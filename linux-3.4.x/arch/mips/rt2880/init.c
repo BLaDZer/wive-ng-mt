@@ -50,6 +50,7 @@
 #include <asm/rt2880/rt_mmap.h>
 #include <asm/rt2880/rt_serial.h>
 #include <asm/rt2880/eureka_ep430.h>
+#include <linux/ralink_gpio.h>
 
 #define UART_BAUDRATE	CONFIG_RALINK_UART_BRATE
 
@@ -261,6 +262,17 @@ static inline void prom_init_pcie(void)
 	/* disable PCIe clock for disabled ports */
 	RALINK_CLKCFG1 &= ~val;
 #endif
+#endif
+}
+
+static inline void prom_init_phy(void)
+{
+#if (CONFIG_RAETH_PHY_STANDBY > -1) && (defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_GE2_RGMII_AN))
+	/* suspend external phy */
+	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
+	mdelay(100);
+	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) &= ~(0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to LOW (phy sleep)
 #endif
 }
 
@@ -862,6 +874,7 @@ void __init prom_init(void)
 	prom_init_sdxc();		/* SDXC power saving */
 	prom_init_nand();		/* NAND power saving */
 	prom_init_spdif();		/* SPDIF power saving */
+	prom_init_phy();		/* ExtPHY power saving */
 	prom_meminit();
 	prom_init_irq();
 

@@ -222,24 +222,10 @@ void mt7621_eth_init(void)
 
 	/* Init GPHY first */
 #if defined (CONFIG_GE1_RGMII_AN)
-#if (CONFIG_RAETH_PHY_STANDBY > -1)
-	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
-	mdelay(100);
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to HIGH (phy wakeup)
-	mdelay(100);
-#endif
 	ge1_set_mode(0, 1);
 	ext_gphy_init(CONFIG_MAC_TO_GIGAPHY_MODE_ADDR);
 #endif
 #if defined (CONFIG_GE2_RGMII_AN)
-#if (CONFIG_RAETH_PHY_STANDBY > -1)
-	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
-	mdelay(100);
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to HIGH (phy wakeup)
-	mdelay(100);
-#endif
 	ge2_set_mode(0, 1);
 	ext_gphy_init(CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2);
 #endif

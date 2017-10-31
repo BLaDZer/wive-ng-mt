@@ -418,6 +418,7 @@ void ge1_set_mode(int ge_mode, int need_mdio)
 	u32 reg_cfg1 = sysRegRead(REG_SYSCFG1);
 	u32 reg_gpio = sysRegRead(RALINK_REG_GPIOMODE);
 
+
 	reg_gpio &= ~(RALINK_GPIOMODE_GE1);		// GE1=Normal mode
 	reg_cfg1 &= ~(0x3 << 12);			// GE1_MODE=RGMii Mode
 	switch (ge_mode)
