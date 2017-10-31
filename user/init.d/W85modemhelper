@@ -1,55 +1,83 @@
 #!/bin/sh
 
-if [ -e /tmp/modem_helper ]; then
-    echo "Modemhelper already started!"
-    exit 1
-fi
+# constants
+LOG="logger -t modem helper($$)"
 
-touch /tmp/modem_helper
+count=0
+while [ -e /tmp/modem_helper ]; do
+    $LOG "Wait for pid"
+    if [ "$count" = "5" ]; then
+	$LOG "Wait for pid at 25 seconds - exit modemhelper"
+	exit 1
+    fi
+    count="$(($count+1))"
+    sleep 5
+done
+
+echo $$ > /tmp/modem_helper
 
 # get params
 . /etc/scripts/global.sh
 
-# constants
-LOG="logger -t modem helper"
+dhcpc_wwan() {
+    if [ ! -z $1 ] && [ -e /proc/sys/net/ipv4/conf/$1 ]; then
+	UDHCPCOPTS="-i $1 -S -R -T 5 -a -s /etc/scripts/udhcpc-wwan-script -p /var/run/udhcpc_$1.pid"
+	(udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
+	touch /tmp/modem_ready
+    fi
+}
+
+qmi_connect() {
+    # switch to qmi mode
+    QMI_PORT=$(cat /tmp/qmi_port | sed '!=.*!!')
+    CDC_PORT=$(cat /tmp/qmi_port | sed '!.*=!!')
+    wds=`uqmi -s -d "$device" --get-client-id wds`
+    [ -z $MODEMAPN ] && MODEMAPN="internet"
+    uqmi -s -d "$CDC_PORT" --set-client-id wds,"$wds" --start-network "$MODEMAPN" --autoconnect
+    sleep 1
+    ip link set $QMI_PORT up
+    dhcpc_wwan $QMI_PORT
+}
+
+ncm_connect() {
+    # switch to NCM mode
+    if [ $MNGMTPORT != "" ]; then
+	[ -z $MODEMAPN ] && MODEMAPN="internet"
+	echo -ne "\r\nAT^NDISDUP=1,1,\"$MODEMAPN\"\r\n" > $MNGMTPORT
+	sleep 1
+	ip link set $1 up
+    fi
+    dhcpc_wwan $1
+}
 
 start() {
     # get local params
     get_param
 
-    if [ "$MODEMENABLED" = "1" ]; then
+    if [ "$MODEMENABLED" = "1" ] || [ "$MODEMAUTOCONNECT" = "1" ]; then
         $LOG "Start Modemhelper"
-	if [ "$MODEMTYPE" = "2" ]; then
+        if [ "$MODEMTYPE" = "eth" ] && [ -f /tmp/wwan_port ]; then
+	    WWAN_PORT=$(cat /tmp/wwan_port)
+	    dhcpc_wwan $WWAN_PORT
+	elif [ "$MODEMTYPE" = "qmi" ] && [ -f /tmp/qmi_port ]; then
+	    # QMI MODE
+	    qmi_connect
+	elif [ "$MODEMTYPE" = "2" ] || [ "$MODEMTYPE" = "ncm" ]; then
 	    # NCM MODE
-	    # wait modem bootup
-	    count=0
-    	    while [ ! -e /proc/sys/net/ipv4/conf/$NCMIF ]; do
-		$LOG "Wait NCM mode modem bootup and ready"
-	        sleep 5
-		if [ "$count" = "5" ]; then
-		    $LOG "Modem not ready at 25 seconds - exit modemhelper"
-		    rm -f /tmp/modem_helper
-		    exit 1
-		fi
-		count="$(($count+1))"
-	    done
-	    # switch to NCM mode
-	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
-		touch /tmp/modem_ready
-		echo -ne '\r\nAT^NDISDUP=1,1,"internet"\r\n' > $MNGMTPORT
-		sleep 1
-		ip link set $NCMIF up
+	    if [ -f /tmp/ncm_port ]; then
+		NCMIF=$(cat /tmp/ncm_port)
+		ncm_connect $NCMIF
 	    fi
-	    UDHCPCOPTS="-i $NCMIF -S -R -T 5 -a -s /etc/scripts/udhcpc-wwan-script -p /var/run/udhcpc_wwan.pid"
-	    # start dhcp client
-	    (udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	else
 	    # PPP MODE
-	    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
-		# switch to PPP mode
-		ip link set $NCMIF down
-		echo -ne '\r\nAT^NDISDUP=0,0,"internet"\r\n' > $MNGMTPORT
-		sleep 1
+	    if [ -f /tmp/ncm_port ]; then
+		NCMIF=$(cat /tmp/ncm_port)
+		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
+		    # switch to PPP mode
+		    ip link set $NCMIF down
+		    echo -ne '\r\nAT^NDISDUP=0,0,"internet"\r\n' > $MNGMTPORT
+		    sleep 1
+		fi
 	    fi
 	    if [ -e /var/run/ppp-$mdm_if.pid -o -e /var/run/$mdm_if.pid ]; then
     		rm -f /tmp/modem_helper
@@ -192,8 +220,8 @@ stop() {
     fi
 
     # NCM MODE
-    if [ -e /var/run/udhcpc_wwan.pid ]; then
-	pid=`cat /var/run/udhcpc_wwan.pid`
+    if [ -e /var/run/udhcpc_$NCMIF.pid ]; then
+	pid=`cat /var/run/udhcpc_$NCMIF.pid`
 	if [ "$pid" != "" ]; then
 	    $LOG "Stopping modemhelper dhcp"
 	    while kill $pid > /dev/null 2>&1; do
@@ -204,6 +232,7 @@ stop() {
 	fi
     fi
     ip link set $NCMIF down > /dev/null 2>&1
+    [ -f /tmp/ncm_port ] && grep -v "$NCMIF" /tmp/ncm_port > /tmp/ncm_port
 }
 
 poweroffon() {
@@ -231,8 +260,15 @@ get_param() {
 	MNGMTPORT="/dev/pcui"
     fi
 
-    # default NCM ifname
-    NCMIF="wwan0"
+    if [ "$MODEMTYPE" = "2" ]; then
+	# NCM MODE
+	if [ ! -f /tmp/ncm_port ]; then
+	    $LOG "Not found NCM port"
+	    rm -f /tmp/modem_helper
+	    exit 1
+	fi
+	NCMIF=$(cat /tmp/ncm_port)
+    fi
 
     # check base needed parametrs
     if [ "$MODEMTYPE" = "" ]; then
@@ -240,26 +276,19 @@ get_param() {
 	rm -f /tmp/modem_helper
 	exit 1
     fi
-    if [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ]; then
-	$LOG "For GSM/3G mode need set correct dial number (example *99#), current $MODEMDIALNUMBER. Exit."
-	rm -f /tmp/modem_helper
-	exit 1
-    fi
+    [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ] && MODEMDIALNUMBER="*99#"
+
     # select device and exist check
     if [ "$WMODEMPORT" = "AUTO" ]; then
 	MODEMPORT="/dev/modem"
     else
 	MODEMPORT="/dev/$WMODEMPORT"
     fi
+
     # correct others params
-    if [ "$MODEMUSERNAME" = "" ] || [ "$MODEMPASSWORD" = "" ]; then
-	$LOG "Username or password not set - use default pair internet/internet as stub."
-	MODEMUSERNAME="internet"
-	MODEMPASSWORD="internet"
-    fi
-    if [ "$MODEMSPEED" = "AUTO" ]; then
-	MODEMSPEED=""
-    fi
+    [ "$MODEMUSERNAME" = "" ] && MODEMUSERNAME="internet"
+    [ "$MODEMPASSWORD" = "" ] && MODEMPASSWORD="internet"
+    [ "$MODEMSPEED" = "AUTO" ] && MODEMSPEED=""
     if [ "$MODEMMTU" = "" ] || [ "$MODEMMTU" = "AUTO" ]; then
         MODEMMRU=""
         MODEMMTU=""
