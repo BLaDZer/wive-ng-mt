@@ -1418,6 +1418,11 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
 			break;
 		}
 
+		if (sndbuf <= 0) {
+			ret = -EINVAL;
+			break;
+		}
+
 		tun->socket.sk->sk_sndbuf = sndbuf;
 		break;
 
