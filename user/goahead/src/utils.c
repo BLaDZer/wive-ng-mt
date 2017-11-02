@@ -289,7 +289,7 @@ static int getStationBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int gigaphy(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_RALINK_MT7621)
+#if defined(CONFIG_MT7530_GSW)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

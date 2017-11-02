@@ -19,7 +19,11 @@ function portName(num) {
 				if (num == NVRAM_wan_port && NVRAM_OperationMode == '1') return "WAN";
 				if (num == NVRAM_sip_port) return "SIP";
 				if (num == NVRAM_stb_port) return "TV";
-				return (NVRAM_lan_port == 'near') ? "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - 1 - num) : "LAN " + (num + 1);
+				if (NVRAM_OperationMode != '1' && ETHER_PORTS == 3) return "LAN" + (num - 1);
+				if (NVRAM_wan_port == '0')
+					return (NVRAM_lan_port == 'near') ? "LAN " + num : "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - num);
+				else
+					return (NVRAM_lan_port == 'near') ? "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - num - 1) : "LAN " + (num + 1);
 	}
 }
 

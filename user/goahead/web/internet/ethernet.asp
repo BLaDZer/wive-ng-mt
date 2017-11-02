@@ -113,12 +113,9 @@
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 10f"),  '10f');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100h"), '100h');
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100f"), '100f');
-					if (BUILD_GIGAPHY == '1')
+					if (BUILD_GIGAPHY) {
 						addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 1000f"), '1000f');
-					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
-
-					if (PLATFORM_7621) {
-						document.getElementById('port' + i + '_fc').innerHTML = 
+						document.getElementById('port' + i + '_fc').innerHTML =
 							'<select id="port' + i + '_fcmode" name="port' + i + '_fcmode" class="mid">' +
 							'	<option value="auto" title="' + _("ethernet port fcmode label auto") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode auto") + '</option>' +
 							'	<option value="rx" title="' + _("ethernet port fcmode label rx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode rx") + '</option>' +
@@ -128,6 +125,7 @@
 							'</select>';
 						document.getElementById('port' + i + '_fcmode').value = port_fcmode[i - 1];
 					}
+					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
 				}
 
 				function reloadStat() {

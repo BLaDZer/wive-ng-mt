@@ -6,7 +6,6 @@ var MAX_STA_NUM					= <% getMaxStaNum(); %>;
 
 var SDK_VERSION					= '<% getSdkVersion(); %>';
 var PLATFORM					= '<% getPlatform(); %>';
-var PLATFORM_7621				= '<% get7621Built(); %>'		== '1';
 
 var PRIMARY_DNS					= '<% getDns(1); %>';
 var SECONDARY_DNS				= '<% getDns(2); %>';
@@ -30,7 +29,7 @@ var BUILD_LDPC_SUPPORT				= '<% getLDPCBuilt(); %>';
 var BUILD_VHT_STBC_SUPPORT			= '<% getVHTSTBCBuilt(); %>';
 var BUILD_5GHZ_SUPPORT				= '<% is5gh_support(); %>'		== '1';
 var BUILD_5GHZ_1T1R				= '<% is5gh_1t1r(); %>'			== '1';
-var BUILD_GIGAPHY				= '<% gigaphy(); %>';
+var BUILD_GIGAPHY				= '<% gigaphy(); %>'			== '1';
 var BUILD_DYNAMIC_ROUTING 			= '<% getDynamicRoutingBuilt(); %>'	== '1';
 var BUILD_CHILLI				= '<% getChilliBuilt(); %>';
 var BUILD_NODOG					= '<% getNoDogBuilt(); %>';
