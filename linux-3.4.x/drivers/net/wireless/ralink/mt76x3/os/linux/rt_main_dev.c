@@ -33,6 +33,7 @@
 #include "rtmp_comm.h"
 #include "rt_os_util.h"
 #include "rt_os_net.h"
+#include <net/pkt_sched.h>
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
 #ifndef SA_SHIRQ
@@ -363,12 +364,8 @@ PNET_DEV RtmpPhyNetDevInit(VOID *pAd, RTMP_OS_NETDEV_OP_HOOK *pNetDevHook)
 
 	RTMP_DRIVER_OP_MODE_GET(pAd, &OpMode);
 
-	/* set default txqlen, may be overwriten by ifconfig */
-#ifdef CONFIG_RALINK_MT7621
-        net_dev->tx_queue_len = 160;
-#else
-        net_dev->tx_queue_len = 80;
-#endif
+	/* set default txqlen, may be overwriten by ifconfig (see include/net/pkt_sched.h) */
+        net_dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN;
 
 	/* put private data structure */
 	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);

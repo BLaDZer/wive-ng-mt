@@ -3532,7 +3532,7 @@
 21) kernel: mips: declare various variables & functions static.<br>
 22) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
 23) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-24) kernel: net: small increase txqlen be default.<br>
+24) kernel: net: small increase txqlen at default and use in all drivers.<br>
 25) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
 26) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
 27) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>

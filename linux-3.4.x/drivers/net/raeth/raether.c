@@ -8,6 +8,7 @@
 #include <linux/interrupt.h>
 #include <linux/if_ether.h>
 #include <linux/tcp.h>
+#include <net/pkt_sched.h>
 
 #include "raether.h"
 #include "ra_mac.h"
@@ -198,12 +199,9 @@ fill_dev_features(struct net_device *dev)
 
 #endif /* RAETH_SDMA */
 
-	/* set default txqlen, may be overwriten by ifconfig */
-#ifdef CONFIG_RALINK_MT7621
-        dev->tx_queue_len = 160;
-#else
-        dev->tx_queue_len = 80;
-#endif
+	/* set default txqlen, may be overwriten by ifconfig (see include/net/pkt_sched.h) */
+        dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN;
+
 	dev->features = dev->hw_features;
 	dev->vlan_features = dev->features & ~(NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX);
 }

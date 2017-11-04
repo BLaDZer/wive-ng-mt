@@ -26,14 +26,14 @@ vpn_def_if="ppp0"
 
 # ralink wifi for optimal performance at alg work
 # need more atomic traffic insert
-# allways use small queue for eth2/ra* interfaces
+# allways use small queue for wan if for avoid txq full in eth2/ra* interfaces
 # if need increase queue at bridge and others soft ifs
 if [ -e /proc/mt7621/gmac ]; then
     txqueuelen="80"
-    txqueuelenwan="64"
+    txqueuelenwan="60"
 else
-    txqueuelen="192"
-    txqueuelenwan="160"
+    txqueuelen="160"
+    txqueuelenwan="120"
 fi
 
 mcast_net="224.0.0.0/4"
