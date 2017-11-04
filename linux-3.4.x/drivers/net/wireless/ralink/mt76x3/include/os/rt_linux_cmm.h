@@ -449,8 +449,8 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 //#define TX_RING_SIZE            128
 //#define RX_RING_SIZE            128
 //#endif /* DOT11_VHT_AC */
-#define MGMT_RING_SIZE          128
 
+#define MGMT_RING_SIZE          128
 #ifdef DATA_QUEUE_RESERVE
 // TX_RING_SIZE_RSV must small than TX_RING_SIZE
 #define TX_RING_SIZE_RSV    16

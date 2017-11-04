@@ -405,7 +405,7 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 //#else
 //#define TX_RING_SIZE            128
 //#define RX_RING_SIZE		64
-#endif /* DOT11_VHT_AC */
+//#endif /* DOT11_VHT_AC */
 
 #define MGMT_RING_SIZE          128
 #define MAX_TX_PROCESS          TX_RING_SIZE
