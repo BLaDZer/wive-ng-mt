@@ -78,7 +78,7 @@ set_mac_wan_lan() {
 	# WAN mac config
 	$LOG "$phys_wan_if MACADDR $WAN_MAC_ADDR"
 	ifconfig "$phys_wan_if" down
-	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelen" up
+	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelenwan" up
     fi
 }
 
@@ -100,7 +100,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
 	# need mroe atomic traffic insert
 	# allways use small queue for eth2/ra* interfaces
 	# if need increase queue at bridge and others soft ifs
-	ifconfig eth2 hw ether "$LAN_MAC_ADDR" txqueuelen 50 up
+	ifconfig eth2 hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelenwan" up
 	configs_system_vlans
     fi
     ##########################################################################
