@@ -442,13 +442,13 @@ extern RTMP_USB_CONFIG *pRtmpUsbConfig;
 #define APCLI_IF_UP_CHECK(pAd, ifidx) (RtmpOSNetDevIsUp((pAd)->ApCfg.ApCliTab[(ifidx)].wdev.if_dev) == TRUE)
 
 #ifdef RTMP_MAC_PCI
-#ifdef DOT11_VHT_AC
+//#ifdef DOT11_VHT_AC
 #define TX_RING_SIZE            256
-#define RX_RING_SIZE            256
-#else
-#define TX_RING_SIZE            128
 #define RX_RING_SIZE            128
-#endif /* DOT11_VHT_AC */
+//#else
+//#define TX_RING_SIZE            128
+//#define RX_RING_SIZE            128
+//#endif /* DOT11_VHT_AC */
 #define MGMT_RING_SIZE          128
 
 #ifdef DATA_QUEUE_RESERVE

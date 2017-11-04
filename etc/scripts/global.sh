@@ -24,17 +24,6 @@
 # set some constatns
 vpn_def_if="ppp0"
 
-# ralink wifi for optimal performance at alg work
-# need more atomic traffic insert
-# allways use small queue for wan if for avoid txq full in eth2/ra* interfaces
-# if need increase queue at bridge and others soft ifs
-if [ -e /proc/mt7621/gmac ]; then
-    txqueuelen="160"
-    txqueuelenwan="120"
-else
-    txqueuelen="80"
-    txqueuelenwan="60"
-fi
 
 mcast_net="224.0.0.0/4"
 upnmp_net="239.0.0.0/8"
@@ -53,6 +42,34 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	IPv6OpMode IPv6Dhcpc Ipv6InVPN \
 	chilli_enable chilli_net \
 	MODEMENABLED MODEMTYPE`
+
+# tune for MTK wifi optimal performance at alg work
+# more and more test again and agein
+getTxqlenByMode() {
+    if [ "$OperationMode" = "1" ]; then
+	# in router mode:
+	# need more atomic traffic insert
+	# allways use small queue for wan if for avoid txq full in eth2/ra* interfaces
+	# if need increase queue at bridge and others soft ifs
+	if [ -e /proc/mt7621/gmac ]; then
+	    txqueuelen="160"
+	    txqueuelenwan="120"
+	else
+	    txqueuelen="80"
+	    txqueuelenwan="60"
+	fi
+    else
+	# in bridge mode:
+	# use static txqlen for all interfaces
+	if [ -e /proc/mt7621/gmac ]; then
+	    txqueuelen="200"
+	    txqueuelenwan="200"
+	else
+	    txqueuelen="80"
+	    txqueuelenwan="80"
+	fi
+    fi
+}
 
 # name/mask for first wlanmodule used in system logic
 getFirstWlanIfName() {
@@ -375,6 +392,7 @@ getPPPOEMode() {
 }
 
 # get params
+getTxqlenByMode
 getFirstWlanIfName
 getSecWlanIfName
 getPhysIfName
