@@ -52,6 +52,7 @@ clean:
 	$(MAKE) -C $(SRC_NAME) clean; \
 	rm -f config_done
 	rm -rf ./filesystem
+	rm -rf $(SRC_NAME)/include/*
 
 shared:
 	cp -fap $(SRC_NAME)/libssl.so* $(LIBCDIRSHARED)/lib
