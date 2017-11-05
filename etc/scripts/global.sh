@@ -46,16 +46,23 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 # tune for MTK wifi optimal performance at alg work
 # more and more test again and agein
 getTxqlenByMode() {
+    # allways use small queue for wan if for avoid txq full in ra* interfaces
+    if [ "$chilli_enable" != "on" ]; then
+	txqueuelenwlan="50"
+    else
+	# in chilli mode add bloat in tun
+	# for fix this need more decrease txq to WLAN interfaces
+	txqueuelenwlan="20"
+    fi
+
     if [ "$OperationMode" = "1" ]; then
 	# in router mode:
-	# need more atomic traffic insert
-	# allways use small queue for wan if for avoid txq full in ra* interfaces
+	# need more atomic traffic insert for WLAN
 	if [ -e /proc/mt7621/gmac ]; then
 	    txqueuelen="160"
 	else
 	    txqueuelen="80"
 	fi
-	txqueuelenwlan="50"
     else
 	# in bridge mode:
 	# use static txqlen for all interfaces
@@ -64,7 +71,14 @@ getTxqlenByMode() {
 	else
 	    txqueuelen="80"
 	fi
-	txqueuelenwlan="50"
+    fi
+
+    # always big txq for soft tunneled interface
+    # optimal txqlen for tun interface = summ all wired + wireless + bridge interfaces qlen
+    if [ -e /proc/mt7621/gmac ]; then
+	txqueuelentun="640"
+    else
+	txqueuelentun="360"
     fi
 }
 
