@@ -26,6 +26,8 @@ GENERAL=Makefile makeapps.com install.com
 
 DLIBCRYPTO=../libcrypto.a
 DLIBSSL=../libssl.a
+LIBCRYPTO=-L.. -lcrypto
+LIBSSL=-L.. -lssl
 
 PROGRAM= openssl
 
@@ -157,9 +159,10 @@ $(EXE): progs.h $(E_OBJ) $(PROGRAM).o $(DLIBCRYPTO) $(DLIBSSL)
 	elif [ -n "$(FIPSCANLIB)" ]; then \
 	  FIPSLD_CC="$(CC)"; CC=$(FIPSDIR)/bin/fipsld; export CC FIPSLD_CC; \
 	fi; \
+	LIBRARIES="$(LIBSSL) $(LIBKRB5) $(LIBCRYPTO)" ; \
 	$(MAKE) -f $(TOP)/Makefile.shared -e \
 		APPNAME=$(EXE) OBJECTS="$(PROGRAM).o $(E_OBJ)" \
-		LIBDEPS="$(PEX_LIBS) -L.. -lssl -L.. -lcrypto $(LIBKRB5) $(EX_LIBS)" \
+		LIBDEPS="$(PEX_LIBS) $$LIBRARIES $(EX_LIBS)" \
 		link_app.$${shlib_target}
 	@(cd ..; $(MAKE) rehash)
 

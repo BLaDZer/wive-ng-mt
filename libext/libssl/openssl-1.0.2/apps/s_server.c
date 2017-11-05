@@ -968,14 +968,12 @@ static int cert_status_cb(SSL *s, void *arg)
         if (!OCSP_REQUEST_add_ext(req, ext, -1))
             goto err;
     }
-#ifndef OPENSSL_NO_OCSP
     resp = process_responder(err, req, host, path, port, use_ssl, NULL,
                              srctx->timeout);
     if (!resp) {
         BIO_puts(err, "cert_status: error querying responder\n");
         goto done;
     }
-#endif
     rspderlen = i2d_OCSP_RESPONSE(resp, &rspder);
     if (rspderlen <= 0)
         goto err;
@@ -1089,14 +1087,11 @@ int MAIN(int argc, char *argv[])
     char *chCApath = NULL, *chCAfile = NULL;
     char *vfyCApath = NULL, *vfyCAfile = NULL;
     unsigned char *context = NULL;
-#ifndef OPENSSL_NO_DH
     char *dhfile = NULL;
-    int no_dhe = 0;
-#endif
     int badop = 0;
     int ret = 1;
     int build_chain = 0;
-    int no_tmp_rsa = 0, no_ecdhe = 0, nocert = 0;
+    int no_tmp_rsa = 0, no_dhe = 0, no_ecdhe = 0, nocert = 0;
     int state = 0;
     const SSL_METHOD *meth = NULL;
     int socket_type = SOCK_STREAM;
@@ -1244,15 +1239,11 @@ int MAIN(int argc, char *argv[])
             if (--argc < 1)
                 goto bad;
             s_chain_file = *(++argv);
-        }
-#ifndef OPENSSL_NO_DH
-        else if (strcmp(*argv, "-dhparam") == 0) {
+        } else if (strcmp(*argv, "-dhparam") == 0) {
             if (--argc < 1)
                 goto bad;
             dhfile = *(++argv);
-        }
-#endif
-        else if (strcmp(*argv, "-dcertform") == 0) {
+        } else if (strcmp(*argv, "-dcertform") == 0) {
             if (--argc < 1)
                 goto bad;
             s_dcert_format = str2fmt(*(++argv));
@@ -1399,13 +1390,9 @@ int MAIN(int argc, char *argv[])
             verify_quiet = 1;
         } else if (strcmp(*argv, "-no_tmp_rsa") == 0) {
             no_tmp_rsa = 1;
-        }
-#ifndef OPENSSL_NO_DH
-        else if (strcmp(*argv, "-no_dhe") == 0) {
+        } else if (strcmp(*argv, "-no_dhe") == 0) {
             no_dhe = 1;
-        }
-#endif
-        else if (strcmp(*argv, "-no_ecdhe") == 0) {
+        } else if (strcmp(*argv, "-no_ecdhe") == 0) {
             no_ecdhe = 1;
         } else if (strcmp(*argv, "-no_resume_ephemeral") == 0) {
             no_resume_ephemeral = 1;
@@ -3030,7 +3017,7 @@ static int www_body(char *hostname, int s, int stype, unsigned char *context)
                 PEM_write_bio_X509(io, peer);
             } else
                 BIO_puts(io, "no client certificate available\n");
-            BIO_puts(io, "</BODY></HTML>\r\n\r\n");
+            BIO_puts(io, "</pre></BODY></HTML>\r\n\r\n");
             break;
         } else if ((www == 2 || www == 3)
                    && (strncmp("GET /", buf, 5) == 0)) {

@@ -64,7 +64,7 @@ fulldump
 /lib/lib/*
 /lib/shared
 /lib/shared/*
-/libext/libssl/openssl-1.0.2/include/*
+/libext/libssl/openssl-1.0.2/include/openssl/*
 
 #
 # exclude enerated files from libs

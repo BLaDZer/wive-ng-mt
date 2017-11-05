@@ -161,15 +161,6 @@ static struct {
     {
         CRYPTO_AES_CBC, NID_aes_256_cbc, 16, 32,
     },
-    {
-        CRYPTO_AES_ECB, NID_aes_128_ecb, 16, 16,
-    },
-    {
-        CRYPTO_AES_ECB, NID_aes_192_ecb, 16, 24,
-    },
-    {
-        CRYPTO_AES_ECB, NID_aes_256_ecb, 16, 32,
-    },
 # ifdef CRYPTO_AES_CTR
     {
         CRYPTO_AES_CTR, NID_aes_128_ctr, 14, 16,
@@ -539,45 +530,6 @@ static int cryptodev_cleanup(EVP_CIPHER_CTX *ctx)
     return (ret);
 }
 
-const EVP_CIPHER cryptodev_aes_ecb = {
-    NID_aes_128_ecb,
-    16, 16, 16,
-    EVP_CIPH_ECB_MODE,
-    cryptodev_init_key,
-    cryptodev_cipher,
-    cryptodev_cleanup,
-    sizeof(struct dev_crypto_state),
-    NULL,
-    NULL,
-    NULL
-};
-
-const EVP_CIPHER cryptodev_aes_192_ecb = {
-    NID_aes_192_ecb,
-    16, 24, 16,
-    EVP_CIPH_ECB_MODE,
-    cryptodev_init_key,
-    cryptodev_cipher,
-    cryptodev_cleanup,
-    sizeof(struct dev_crypto_state),
-    NULL,
-    NULL,
-    NULL
-};
-
-const EVP_CIPHER cryptodev_aes_256_ecb = {
-    NID_aes_256_ecb,
-    16, 32, 16,
-    EVP_CIPH_ECB_MODE,
-    cryptodev_init_key,
-    cryptodev_cipher,
-    cryptodev_cleanup,
-    sizeof(struct dev_crypto_state),
-    NULL,
-    NULL,
-    NULL
-};
-
 /*
  * libcrypto EVP stuff - this is how we get wired to EVP so the engine
  * gets called when libcrypto requests a cipher NID.
@@ -766,15 +718,6 @@ cryptodev_engine_ciphers(ENGINE *e, const EVP_CIPHER **cipher,
         break;
     case NID_aes_256_cbc:
         *cipher = &cryptodev_aes_256_cbc;
-        break;
-    case NID_aes_128_ecb:
-        *cipher = &cryptodev_aes_ecb;
-        break;
-    case NID_aes_192_ecb:
-        *cipher = &cryptodev_aes_192_ecb;
-        break;
-    case NID_aes_256_ecb:
-        *cipher = &cryptodev_aes_256_ecb;
         break;
 # ifdef CRYPTO_AES_CTR
     case NID_aes_128_ctr:

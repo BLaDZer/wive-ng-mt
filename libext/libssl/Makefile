@@ -35,6 +35,7 @@ config_test:
 	fi )
 
 configure:
+	# build all symlinks
 	( cd $(SRC_NAME) ; \
 	./Configure \
 		linux-mipsel \
@@ -43,13 +44,26 @@ configure:
 		--install_prefix=./filesystem \
 		--openssldir=/etc/ssl \
 		$(COPTS) \
+		$(LOPTS) ; \
+	)
+	# refresh config for target
+	( cd $(SRC_NAME) ; \
+	./Configure \
+		linux-mipsel \
+		shared \
+		--prefix=/ \
+		--install_prefix=./filesystem \
+		--openssldir=/etc/ssl \
+		no-symlinks \
+		$(COPTS) \
 		$(LOPTS) \
 		$(OPENSSL_APPS) \
 		$(OPENSSL_CIPHERS) ; \
 	)
 
 clean:
-	$(MAKE) -C $(SRC_NAME) clean; \
+	-$(MAKE) -C $(SRC_NAME) clean
+	-$(MAKE) -C $(SRC_NAME) distclean
 	rm -f config_done
 	rm -rf ./filesystem
 	rm -rf $(SRC_NAME)/include/*
