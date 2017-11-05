@@ -3521,29 +3521,30 @@
 10) goahead: fix ports number issue in ME1.<br>
 11) kernel: sched/core: remove pointless printout in sched_show_task().<br>
 12) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-13) kernel: fs-cache: fix dereference of NULL user_key_payload.<br>
-14) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-15) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
-16) kernel: raeth: add preconfig for RTL8211D.<br>
-17) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
-18) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-19) kernel: mips: add nudges to writes for bit unlocks.<br>
-20) kernel: mips: make thread_saved_pc static.<br>
-21) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-22) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-23) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-24) kernel: mips: declare various variables & functions static.<br>
-25) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-26) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-27) kernel: net: small increase txqlen at default and use in all drivers.<br>
-28) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-29) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-30) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-31) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-32) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-33) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-34) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-35) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+13) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
+14) kernel: raeth: add preconfig for RTL8211D.<br>
+15) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
+16) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+17) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+18) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+19) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+20) kernel: mips: add nudges to writes for bit unlocks.<br>
+21) kernel: mips: make thread_saved_pc static.<br>
+22) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+23) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+24) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+25) kernel: mips: declare various variables & functions static.<br>
+26) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+27) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+28) kernel: net: small increase txqlen at default and use in all drivers.<br>
+29) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+30) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+31) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+32) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+33) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+34) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+35) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+36) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
