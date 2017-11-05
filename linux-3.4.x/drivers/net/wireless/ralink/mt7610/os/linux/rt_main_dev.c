@@ -395,7 +395,7 @@ PNET_DEV RtmpPhyNetDevInit(
 	RTMP_DRIVER_OP_MODE_GET(pAd, &OpMode);
 
 	/* set default txqlen, may be overwriten by ifconfig (see include/net/pkt_sched.h) */
-        net_dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN;
+        net_dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN_WLAN;
 
 	/* put private data structure */
 	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);

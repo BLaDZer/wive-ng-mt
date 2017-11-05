@@ -37,25 +37,25 @@ start() {
 
 	# first up 5GHz band (allow connect to 5GHz radio first, band steering after reload issue fix)
 	if [ "$second_wlan_root_if" != "" ]; then
-	    $LOG "WiFi $second_wlan_root_if interface up."
+	    $LOG "WiFi $second_wlan_root_if interface up with txqueuelen $txqueuelenwlan."
 	    # others modes
-	    ifconfig $second_wlan_root_if txqueuelen	"$txqueuelen"
+	    ifconfig $second_wlan_root_if txqueuelen	"$txqueuelenwlan"
 	    ip link set $second_wlan_root_if up
 	fi
 	# second up 2.4GHz radio
-	$LOG "WiFi $first_wlan_root_if interface up."
-	ifconfig $first_wlan_root_if txqueuelen	"$txqueuelen"
+	$LOG "WiFi $first_wlan_root_if interface up with txqueuelen $txqueuelenwlan."
+	ifconfig $first_wlan_root_if txqueuelen	"$txqueuelenwlan"
 	ip link set $first_wlan_root_if up
 
 	# apcli mode sta interface
 	if [ "$OperationMode" = "3" ]; then
 	    if [ "$first_wlan_apcli" != "" ] && [ "$first_wlan_apcli" = "$ApCliIfName" ]; then
-		$LOG "WiFi APCLI $first_wlan_apcli interface up."
-		ifconfig $first_wlan_apcli txqueuelen	"$txqueuelen"
+		$LOG "WiFi APCLI $first_wlan_apcli interface up with txqueuelen $txqueuelenwlan."
+		ifconfig $first_wlan_apcli txqueuelen	"$txqueuelenwlan"
 		ip link set $first_wlan_apcli up
 	    elif [ "$second_wlan_apcli" != "" ] && [ "$second_wlan_apcli" = "$ApCliIfName" ]; then
-		$LOG "WiFi APCLI $second_wlan_apcli interface up."
-		ifconfig $second_wlan_apcli txqueuelen	"$txqueuelen"
+		$LOG "WiFi APCLI $second_wlan_apcli interface up with txqueuelen $txqueuelenwlan."
+		ifconfig $second_wlan_apcli txqueuelen	"$txqueuelenwlan"
 		ip link set $second_wlan_apcli up
 	    fi
 	fi

@@ -76,9 +76,9 @@ set_mac_wan_lan() {
 	ifconfig "$phys_lan_if" down
 	ifconfig "$phys_lan_if" hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelen" up
 	# WAN mac config
-	$LOG "$phys_wan_if MACADDR $WAN_MAC_ADDR txqueuelen $txqueuelenwan"
+	$LOG "$phys_wan_if MACADDR $WAN_MAC_ADDR txqueuelen $txqueuelen"
 	ifconfig "$phys_wan_if" down
-	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelenwan" up
+	ifconfig "$phys_wan_if" hw ether "$WAN_MAC_ADDR" txqueuelen "$txqueuelen" up
     fi
 }
 
@@ -96,11 +96,7 @@ if [ "$CONFIG_RAETH_ESW" != "" -o "$CONFIG_MT7530_GSW" != "" ] && [ "$switchmode
     ##########################################################################
     if [ "$CONFIG_RAETH_BOTH_GMAC" = "" ]; then
 	$LOG "ROOT_MACADDR $LAN_MAC_ADDR"
-	# ralink wifi for optimal performance at alg work
-	# need mroe atomic traffic insert
-	# allways use small queue for eth2/ra* interfaces
-	# if need increase queue at bridge and others soft ifs
-	ifconfig eth2 hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelenwan txqueuelen $txqueuelenwan" up
+	ifconfig eth2 hw ether "$LAN_MAC_ADDR" txqueuelen "$txqueuelen" up
 	configs_system_vlans
     fi
     ##########################################################################

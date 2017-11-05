@@ -49,25 +49,22 @@ getTxqlenByMode() {
     if [ "$OperationMode" = "1" ]; then
 	# in router mode:
 	# need more atomic traffic insert
-	# allways use small queue for wan if for avoid txq full in eth2/ra* interfaces
-	# if need increase queue at bridge and others soft ifs
+	# allways use small queue for wan if for avoid txq full in ra* interfaces
 	if [ -e /proc/mt7621/gmac ]; then
 	    txqueuelen="160"
-	    txqueuelenwan="120"
 	else
 	    txqueuelen="80"
-	    txqueuelenwan="60"
 	fi
+	txqueuelenwlan="50"
     else
 	# in bridge mode:
 	# use static txqlen for all interfaces
 	if [ -e /proc/mt7621/gmac ]; then
 	    txqueuelen="200"
-	    txqueuelenwan="200"
 	else
 	    txqueuelen="80"
-	    txqueuelenwan="80"
 	fi
+	txqueuelenwlan="50"
     fi
 }
 

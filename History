@@ -3539,14 +3539,15 @@
 28) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
 29) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
 30) kernel: net: small increase txqlen at default and use in all drivers.<br>
-31) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-32) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-33) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-34) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-35) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-36) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-37) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-38) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+31) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+32) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+33) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+34) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+35) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+36) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+37) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+38) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+39) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
