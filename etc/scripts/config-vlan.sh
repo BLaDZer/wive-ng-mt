@@ -140,16 +140,6 @@ reset_wan_phys() {
 }
 
 set_physmode() {
-        if [ -e /proc/mt7620/gmac ]; then
-	    procdir="/proc/mt7620/gmac"
-	elif [ -e /proc/mt7628/gmac ]; then
-	    procdir="/proc/mt7628/gmac"
-	elif [ -e /proc/mt7621/gmac ]; then
-	    procdir="/proc/mt7621/gmac"
-	else
-	    $LOG "No switch in system!!!"
-	    procdir=
-	fi
 	if [ -e /bin/ethtool ] && [ "$procdir" != "" ]; then
 	    # PAUSE CONTROL (must be first for correct negotinagion after link mode changes)
 	    phys_portN=4
@@ -210,14 +200,58 @@ set_physmode() {
 	fi
 }
 
+set_physmode_ext_phy() {
+	if [ "$CONFIG_GE2_RGMII_AN" = "y" ] && [ -e /bin/ethtool ] && [ "$procdir" != "" ]; then
+	    eval `nvram_buf_get 2860 phy_fcmode phy_swmode`
+	    echo "5" > $procdir
+	    if [ "$phy_fcmode" = "auto" ]; then
+		ethtool -A eth2 autoneg on tx on rx on			> /dev/null 2>&1
+	    elif [ "$phy_fcmode" = "tx" ]; then
+		ethtool -A eth2 autoneg off tx on rx off		> /dev/null 2>&1
+	    elif [ "$phy_fcmode" = "rx" ]; then
+		ethtool -A eth2 autoneg off tx off rx on		> /dev/null 2>&1
+	    elif [ "$phy_fcmode" = "txrx" ]; then
+		ethtool -A eth2 autoneg off tx on rx on			> /dev/null 2>&1
+	    else
+		ethtool -A eth2 autoneg off tx off rx off		> /dev/null 2>&1
+	    fi
+	    echo "5" > $procdir
+	    if [ "$phy_swmode" = "1000f" ]; then
+		#set 100Mbit full duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 1000 duplex full	> /dev/null 2>&1
+	    elif [ "$phy_swmode" = "1000h" ]; then
+		#set 100Mbit half duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 1000 duplex half	> /dev/null 2>&1
+	    elif [ "$phy_swmode" = "100f" ]; then
+		#set 100Mbit full duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 100 duplex full	> /dev/null 2>&1
+	    elif [ "$phy_swmode" = "100h" ]; then
+		#set 100Mbit half duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 100 duplex half	> /dev/null 2>&1
+	    elif [ "$phy_swmode" = "10f" ]; then
+		#set 10Mbit full duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 10 duplex full	> /dev/null 2>&1
+	    elif [ "$phy_swmode" = "10h" ]; then
+		#set 10Mbit half duplex and start negotinate
+		ethtool -s eth2 autoneg off speed 10 duplex half	> /dev/null 2>&1
+	    else
+		#atonegotinate enable
+		ethtool -s eth2 autoneg on				> /dev/null 2>&1
+	    fi
+	    $LOG ">>> ExtPHY set mode $port_swmode FC $phy_fcmode<<<"
+	fi
+}
+
 reinit_all_phys() {
 	# Reinit all ports
 	disable_all_ports
 	enable_all_ports
 	# LAN ports blink for stupid win machine dhcp force renew
 	reset_all_phys
-	# Set ports parametrs
+	# Set ESW/GSW  ports parametrs
 	set_physmode
+	# Set ExtPHY ports parametrs
+	set_physmode_ext_phy
 }
 
 config_igmpsnoop() {
@@ -661,11 +695,27 @@ config_extdualrgmii()
 	# enable all internal switch ports
 	enable_all_ports
 
+	# reconfigure port mode for ext_phy (temp before HW 0x0 issue fix)
+	reset_port 5
+	link_up 5
+	set_physmode_ext_phy
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
 
 eval `nvram_buf_get 2860 OperationMode igmpSnoopMode wan_port tv_port sip_port tv_portVLAN sip_portVLAN`
+
+if [ -e /proc/mt7620/gmac ]; then
+    procdir="/proc/mt7620/gmac"
+elif [ -e /proc/mt7628/gmac ]; then
+    procdir="/proc/mt7628/gmac"
+elif [ -e /proc/mt7621/gmac ]; then
+    procdir="/proc/mt7621/gmac"
+else
+    $LOG "No switch in system!!!"
+    procdir=
+fi
 
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then

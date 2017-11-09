@@ -265,17 +265,6 @@ static inline void prom_init_pcie(void)
 #endif
 }
 
-static inline void prom_init_phy(void)
-{
-#if defined(CONFIG_RAETH_PHY_STANDBY) && (CONFIG_RAETH_PHY_STANDBY > -1) && (defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_GE2_RGMII_AN))
-	/* suspend external phy */
-	*(volatile u32 *)(RALINK_REG_GPIOMODE)    |= CONFIG_RAETH_PHY_STANDBY;
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
-	mdelay(100);
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) &= ~(0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to LOW (phy sleep)
-#endif
-}
-
 static inline void prom_init_usb(void)
 {
 #if !defined (CONFIG_RALINK_RT3052) && !defined (CONFIG_RALINK_MT7621)
@@ -874,7 +863,6 @@ void __init prom_init(void)
 	prom_init_sdxc();		/* SDXC power saving */
 	prom_init_nand();		/* NAND power saving */
 	prom_init_spdif();		/* SPDIF power saving */
-	prom_init_phy();		/* ExtPHY power saving */
 	prom_meminit();
 	prom_init_irq();
 

@@ -47,7 +47,6 @@
 #ifdef CONFIG_RALINK_GPIO_LED_USB
 #include <linux/ralink_gpio.h>
 extern ralink_gpio_led_info usb_led;
-extern int ralink_gpio_led_set(ralink_gpio_led_info usb_led);
 #endif
 
 /*-------------------------------------------------------------------------*/

@@ -63,7 +63,6 @@
 #ifdef CONFIG_RALINK_GPIO_LED_VPN
 #include <linux/ralink_gpio.h>
 ralink_gpio_led_info ppp_led;
-extern int ralink_gpio_led_set(ralink_gpio_led_info ppp_led);
 static unsigned long led_prev_jiffies;
 #endif
 

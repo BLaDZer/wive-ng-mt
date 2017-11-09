@@ -35,25 +35,6 @@ void ext_gphy_init(u32 phy_addr)
 	if (phy_addr > 0x1f)
 		return;
 
-#if defined(CONFIG_RAETH_PHY_STANDBY) && (CONFIG_RAETH_PHY_STANDBY > -1)
-	/* wakeup external phy */
-
-	/* switc pin ExtPHY reset to GPIO mode */
-	reg_gpio = sysRegRead(RALINK_REG_GPIOMODE);
-        reg_gpio |= (CONFIG_RAETH_PHY_STANDBY);
-	sysRegWrite(RALINK_REG_GPIOMODE, reg_gpio);
-
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
-	mdelay(50);
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) &= ~(0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to LOW (phy sleep)
-	mdelay(100);
-
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x00) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// switch pin to output mode
-	mdelay(50);
-	*(volatile u32 *)(RALINK_PIO_BASE + 0x20) |= (0x1<<CONFIG_RAETH_PHY_STANDBY);	// set pin to HIGH (phy wakeup)
-	mdelay(100);
-#endif
-
 	if (!mii_mgr_read(phy_addr, 2, &phy_id0))
 		return;
 	if (!mii_mgr_read(phy_addr, 3, &phy_id1))
@@ -121,41 +102,13 @@ void ext_gphy_init(u32 phy_addr)
 			mii_mgr_write(phy_addr, 31, 0x0000);
 
 		} else if (phy_rev == 0x4) {
+			u32 reg31 = 0;
+
 			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
-
-			/* Disable Green Ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
-			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0000);
-
-#if 0
-			/* Set to page 0 */
-			mii_mgr_write(phy_addr, 31, 0x0000);
 
 			/* Reset phy */
 			mii_mgr_read(phy_addr, 0, &phy_val);
 			phy_val |= (1<<15);			/* PHY Software Reset */
-			mii_mgr_write(phy_addr, 0, phy_val);
-
-			/* Enable flow control by default */
-			mii_mgr_read(phy_addr, 4, &phy_val);
-			phy_val |=  (1<<10);			/* Enable pause ability */
-			mii_mgr_write(phy_addr, 4, phy_val);
-
-
-			/* LED config in future */
-			//mii_mgr_write(phy_addr, 31, 0x0007);	/* set to extension page */
-			//mii_mgr_write(phy_addr, 30, 0x002c);	/* extension Page44 */
-			//mii_mgr_write(phy_addr, 31, 0x0000);
-
-			/* Disable flow control by default */
-			//mii_mgr_read(phy_addr, 4, &phy_val);
-			//phy_val &=  ~(1<<10);			/* Disable pause ability */
-			//mii_mgr_write(phy_addr, 4, phy_val);
-
-			/* Auto-Negotiation Enable */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val |= (1<<12);			/* Enable Auto-Negotiation */
 			mii_mgr_write(phy_addr, 0, phy_val);
 
 			/* Normal operation */
@@ -163,11 +116,25 @@ void ext_gphy_init(u32 phy_addr)
 			phy_val &=  ~(1<<11);			/* Back to  Normal operation from powerdown */
 			mii_mgr_write(phy_addr, 0, phy_val);
 
-			/*  Restart Auto-Negotiation */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val |= (1<<9);			/* Restart Auto-Negotiation */
-			mii_mgr_write(phy_addr, 0, phy_val);
-#endif
+			/* backup reg 0x1f */
+			mii_mgr_read(phy_addr, 31, &reg31);
+			if (reg31 != 0x0000 && reg31 != 0x0a42) {
+				reg31 = 0x0000;
+				mii_mgr_write(phy_addr, 31, reg31);
+			}
+
+			/* Disable Green Ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
+			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
+			mii_mgr_write(phy_addr, 31, 0x0000);
+
+			/* Disable flow control by default */
+			mii_mgr_read(phy_addr, 4, &phy_val);
+			phy_val &=  ~(1<<10);			/* Disable pause ability */
+			mii_mgr_write(phy_addr, 4, phy_val);
+
+			/* restore reg 0x1f */
+			mii_mgr_write(phy_addr, 31, reg31);
 		}
 	} else
 	if ((phy_id0 == EV_MARVELL_PHY_ID0) && (phy_id1 == EV_MARVELL_PHY_ID1)) {
@@ -195,8 +162,7 @@ void ext_gphy_init(u32 phy_addr)
 	if (phy_devn)
 		printk("%s GPHY detected on MDIO addr 0x%02X\n", phy_devn, phy_addr);
 	else
-		printk("Unknown EPHY (%04X:%04X) detected on MDIO addr 0x%02X\n",
-			phy_id0, phy_id1, phy_addr);
+		printk("Unknown EPHY (%04X:%04X) detected on MDIO addr 0x%02X\n", phy_id0, phy_id1, phy_addr);
 }
 
 void ext_gphy_eee_enable(u32 phy_addr, int is_eee_enabled)
@@ -322,6 +288,59 @@ void enable_autopoll_phy(int ge)
 #endif
 #endif
 
+#if defined (CONFIG_RALINK_GPIO_SFPEN) && (CONFIG_RALINK_GPIO_SFPEN > -1)
+static void ext_gphy_sfpen(void)
+{
+	u32 val = 0;
+
+	printk("Enable SFP slot.\n");
+
+	val = sysRegRead(RALINK_REG_GPIOMODE);
+	val |= (RALINK_GPIOMODE_JTAG); 						// GPIO 14 used for enable/disable SFP shared with JTAG
+	sysRegWrite(RALINK_REG_GPIOMODE, val);
+
+	val = sysRegRead(RALINK_REG_PIODIR);
+	val |= (0x1<<CONFIG_RALINK_GPIO_SFPEN);					// switch pin to output mode
+	sysRegWrite(RALINK_REG_PIODIR, val);
+
+	val = sysRegRead(RALINK_REG_PIODATA);
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPEN);				// set pin to LOW (SFP Enabled)
+	sysRegWrite(RALINK_REG_PIODATA, val);
+
+	/* wait 200ms ready */
+	mdelay(200);
+}
+#endif
+
+#if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
+static void ext_gphy_reset(void)
+{
+	u32 val = 0;
+
+	printk("Hardware reset EPHY.\n");
+
+	val = sysRegRead(RALINK_REG_PIODIR);					// GPIO0 used for PE_RST PHY not shared
+	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// switch pin to output mode
+	sysRegWrite(RALINK_REG_PIODIR, val);
+
+	val = sysRegRead(RALINK_REG_PIODATA);
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// set pin to LOW (phy sleep)
+	sysRegWrite(RALINK_REG_PIODATA, val);
+
+#if defined (CONFIG_RALINK_GPIO_SFPEN) && (CONFIG_RALINK_GPIO_SFPEN > -1)
+	ext_gphy_sfpen();
+#else
+	mdelay(200); /* wait 200ms for pulse */
+#endif
+	val = sysRegRead(RALINK_REG_PIODATA);
+	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// set pin to HIGH (phy wakeup)
+	sysRegWrite(RALINK_REG_PIODATA, val);
+
+	/* wait 200ms ready */
+	mdelay(200);
+}
+#endif
+
 /* called once on driver load */
 void early_phy_init(void)
 {
@@ -371,6 +390,11 @@ void early_phy_init(void)
 	/* early P5/P6 MAC link down */
 	mii_mgr_write(MT7530_MDIO_ADDR, 0x3500, 0x8000);
 	mii_mgr_write(MT7530_MDIO_ADDR, 0x3600, 0x8000);
+#endif
+
+#if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
+	/* hardware reset phy and SFP slot enable */
+	ext_gphy_reset();
 #endif
 }
 

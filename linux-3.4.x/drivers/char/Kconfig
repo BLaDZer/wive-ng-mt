@@ -90,10 +90,15 @@ config RALINK_GPIO_PWR_USB
 	depends on RALINK_GPIO
 	default 0
 
-config RALINK_HSDMA
-	tristate "Ralink SoC HSDMA Support"
-	depends on RALINK_MT7621
-	default n
+config RALINK_GPIO_PHY_PERST
+	int "GPIO N for hardware reset phy after boot (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
+
+config RALINK_GPIO_SFPEN
+	int "GPIO N for hardware reset phy after boot (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
 
 config RALINK_GDMA
 	tristate "Ralink SoC GDMA Support"

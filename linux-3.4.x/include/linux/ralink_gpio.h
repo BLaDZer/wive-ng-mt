@@ -575,4 +575,8 @@ typedef struct {
 	unsigned int times;		//blinking times
 } ralink_gpio_led_info;
 #define RALINK_GPIO(x)			(1 << x)
+
+#ifdef __KERNEL__
+extern int ralink_gpio_led_set(ralink_gpio_led_info led);
+#endif
 #endif
