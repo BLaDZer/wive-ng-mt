@@ -189,6 +189,13 @@ endmenu
 ##############################################################################
 
 mainmenu_option next_comment
+comment 'SFP support'
+bool 'sfppi tool for access to SFP EEPROM over i2c bus'		CONFIG_USER_SFPPI
+endmenu
+
+##############################################################################
+
+mainmenu_option next_comment
 comment 'Optimization options.'
 bool 'Enable crazy minimize code size by gcc for libs (save flash and speeddown ~10% per lib)'		CONFIG_LIB_SMALLSIZE
 bool 'Enable crazy minimize code size by gcc for user apps (save flash and speeddown ~10% per app)'	CONFIG_USER_SMALLSIZE

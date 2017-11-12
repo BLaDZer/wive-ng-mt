@@ -16,18 +16,10 @@ all:
 clean:
 	@set -e;
 	for i in $(UTILSLIST); do rm -rf $$i; done
-	rm -rf filesystem
 
 install:
-	rm -rf filesystem
-	mkdir filesystem
-	mkdir filesystem/bin
-	@set -e;
-	for i in $(UTILSLIST); do cp -fva $$i ./filesystem/bin/$$i; done
+	#ok
 
 romfs:
-	rm -rf filesystem
-	mkdir filesystem
-	mkdir filesystem/bin
 	@set -e;
 	for i in $(UTILSLIST); do $(ROMFSINST) -S $$i /bin/$$i; done

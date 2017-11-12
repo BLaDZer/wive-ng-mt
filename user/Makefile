@@ -99,6 +99,9 @@ dir_$(CONFIG_USER_TRANSMISSION)		    += transmission
 dir_$(CONFIG_USB_MODESWITCH)                += usb_modeswitch
 dir_$(CONFIG_USB_QMI)			    += uqmi
 
+#for SFP modules support
+dir_$(CONFIG_USER_SFPPI)		    += sfppi
+
 #only ralink apps and scripts
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 

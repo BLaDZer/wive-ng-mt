@@ -3510,55 +3510,56 @@
 <br>
 <b>6.7.x</b><br>
 1) configs: add support i2c for CG1 (need for SFP control).<br>
-2) openssl: up to 1.0.2m version.<br>
-3) entware: switch to Entware3 version.<br>
-4) defaults: chillispot: enable https rederect to default (need for new OS`s and work normal for now).<br>
-5) init.d: rework automount and start/stop Entware services.<br>
-6) init.d: syslog: use locally and via network instead of network only if enabled.<br>
-7) init.d: basic support external phy at RGMII 2.<br>
-8) init.d: rewrite switch init/link logic.<br>
-9) init.d: rewrite 3G/4G modems support logic.<br>
-10) init.d: add calc txqlen by mode.<br>
-11) init.d: add create node for i2c controller.<br>
-12) init.d: auto tune txqlen for chillispot tun interface to.<br>
-13) irqbalabce: fix build without libcap-ng.<br>
-14) goahead: refactoring and fixup route page.<br>
-15) goahead: fix ports number issue in ME1.<br>
-16) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
-17) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-18) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-19) kernel: cfg80211/wext: fix message ordering.<br>
-20) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
-21) kernel: wext: uninline stream addition functions.<br>
-22) kernel: wext: use struct iwreq earlier in the call chain.<br>
-23) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
-24) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
-25) kernel: raeth: add preconfig for RTL8211D.<br>
-26) kernel: raeth: add SFP module enable by gpio logic.<br>
-27) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
-28) kernel: ralink_i2c: fic build and warnings.<br>
-29) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-30) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-31) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-32) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-33) kernel: mips: add nudges to writes for bit unlocks.<br>
-34) kernel: mips: make thread_saved_pc static.<br>
-35) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-36) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-37) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-38) kernel: mips: declare various variables & functions static.<br>
-39) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-40) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-41) kernel: net: small increase txqlen at default and use in all drivers.<br>
-42) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-43) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-44) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-45) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-46) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-47) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-48) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-49) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-50) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+2) add sfppi tool for work with SFP module.<br>
+3) openssl: up to 1.0.2m version.<br>
+4) entware: switch to Entware3 version.<br>
+5) defaults: chillispot: enable https rederect to default (need for new OS`s and work normal for now).<br>
+6) init.d: rework automount and start/stop Entware services.<br>
+7) init.d: syslog: use locally and via network instead of network only if enabled.<br>
+8) init.d: basic support external phy at RGMII 2.<br>
+9) init.d: rewrite switch init/link logic.<br>
+10) init.d: rewrite 3G/4G modems support logic.<br>
+11) init.d: add calc txqlen by mode.<br>
+12) init.d: add create node for i2c controller.<br>
+13) init.d: auto tune txqlen for chillispot tun interface to.<br>
+14) irqbalabce: fix build without libcap-ng.<br>
+15) goahead: refactoring and fixup route page.<br>
+16) goahead: fix ports number issue in ME1.<br>
+17) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
+18) kernel: sched/core: remove pointless printout in sched_show_task().<br>
+19) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+20) kernel: cfg80211/wext: fix message ordering.<br>
+21) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
+22) kernel: wext: uninline stream addition functions.<br>
+23) kernel: wext: use struct iwreq earlier in the call chain.<br>
+24) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
+25) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
+26) kernel: raeth: add preconfig for RTL8211D.<br>
+27) kernel: raeth: add SFP module enable by gpio logic.<br>
+28) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
+29) kernel: ralink_i2c: fic build and warnings.<br>
+30) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+31) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+32) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+33) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+34) kernel: mips: add nudges to writes for bit unlocks.<br>
+35) kernel: mips: make thread_saved_pc static.<br>
+36) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+37) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+38) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+39) kernel: mips: declare various variables & functions static.<br>
+40) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+41) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+42) kernel: net: small increase txqlen at default and use in all drivers.<br>
+43) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+44) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+45) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+46) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+47) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+48) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+49) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+50) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+51) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>

@@ -121,6 +121,12 @@ CONFIG_USB_QMI=y
 CONFIG_LIB_USB1=y
 
 #
+# SFP support
+#
+# CONFIG_USER_SFPPI is not set
+#
+
+#
 # Optimization options.
 #
 # CONFIG_LIB_SMALLSIZE is not set
