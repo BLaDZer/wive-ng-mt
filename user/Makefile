@@ -101,6 +101,7 @@ dir_$(CONFIG_USB_QMI)			    += uqmi
 
 #for SFP modules support
 dir_$(CONFIG_USER_SFPPI)		    += sfppi
+dir_$(CONFIG_USER_SFPI2C)		    += sfp-i2c
 
 #only ralink apps and scripts
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app

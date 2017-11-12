@@ -191,6 +191,7 @@ endmenu
 mainmenu_option next_comment
 comment 'SFP support'
 bool 'sfppi tool for access to SFP EEPROM over i2c bus'		CONFIG_USER_SFPPI
+bool 'sfp-i2c tool for access to SFP over i2c bus'		CONFIG_USER_SFPI2C
 endmenu
 
 ##############################################################################

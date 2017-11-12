@@ -115,6 +115,12 @@ CONFIG_RALINKAPP_SWQOS=y
 # CONFIG_USB_QMI is not set
 
 #
+# SFP support
+#
+# CONFIG_USER_SFPPI is not set
+# CONFIG_USER_SFPI2C is not set
+
+#
 # Optimization options.
 #
 # CONFIG_LIB_SMALLSIZE is not set

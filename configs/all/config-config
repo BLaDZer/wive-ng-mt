@@ -118,6 +118,7 @@ CONFIG_RALINKAPP_SWQOS=y
 # SFP support
 #
 # CONFIG_USER_SFPPI is not set
+# CONFIG_USER_SFPI2C is not set
 #
 
 # Optimization options.
