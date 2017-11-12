@@ -65,10 +65,6 @@ if [ -d /dev ]; then
 	mknod /dev/pty/m$i c 2 $i
     done
 
-    #for i in `seq 0 7`; do
-	#mknod /dev/i2c-$i c 89 $i
-    #done
-
     for i in `seq 0 3`; do
 	mknod /dev/aci$i c 254 $i
     done
