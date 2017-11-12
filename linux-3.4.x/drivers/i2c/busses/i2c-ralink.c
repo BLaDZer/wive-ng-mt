@@ -9,7 +9,7 @@
 #include <linux/i2c.h>
 #include <linux/io.h>
 
-#include <ralink/ralink_gpio.h>
+#include <linux/ralink_gpio.h>
 #include "i2c-ralink.h"
 
 #define I2C_MAX_BUSY_US		200000

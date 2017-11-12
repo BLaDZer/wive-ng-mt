@@ -65,15 +65,21 @@ if [ -d /dev ]; then
 	mknod /dev/pty/m$i c 2 $i
     done
 
+    #for i in `seq 0 7`; do
+	#mknod /dev/i2c-$i c 89 $i
+    #done
+
     for i in `seq 0 3`; do
 	mknod /dev/aci$i c 254 $i
     done
+
     for i in `seq 0 1`; do
 	mknod /dev/gpio$i c 252 $i
     done
 
     # ralink depended
     mknod /dev/hwnat0	c	215	0
+    mknod /dev/i2cM0	c	218	0
     mknod /dev/nvram	c	251	0
     mknod /dev/gpio	c	252	0
     mknod /dev/rdm0	c	254	0

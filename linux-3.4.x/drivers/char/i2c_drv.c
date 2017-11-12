@@ -762,7 +762,7 @@ long i2cdrv_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		break;
 	case RT2880_I2C_SET_CLKDIV:
 		clkdiv_value = 40*1000/(unsigned long)arg;
-		printk("i2c clkdiv = %d\n", clkdiv_value);
+		printk("i2c clkdiv = %lu\n", clkdiv_value);
 		break;
 	default :
 		printk("i2c_drv: command format error\n");
