@@ -217,22 +217,22 @@ set_physmode_ext_phy() {
 	    fi
 	    echo "5" > $procdir
 	    if [ "$phy_swmode" = "1000f" ]; then
-		#set 1000Mbit full duplex and start negotinate
+		#set 1000Mbit full duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 1000 duplex full	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "1000h" ]; then
-		#set 1000Mbit half duplex and start negotinate
+		#set 1000Mbit half duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 1000 duplex half	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "100f" ]; then
-		#set 100Mbit full duplex and start negotinate
+		#set 100Mbit full duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 100 duplex full	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "100h" ]; then
-		#set 100Mbit half duplex and start negotinate
+		#set 100Mbit half duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 100 duplex half	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "10f" ]; then
-		#set 10Mbit full duplex and start negotinate
+		#set 10Mbit full duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 10 duplex full	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "10h" ]; then
-		#set 10Mbit half duplex and start negotinate
+		#set 10Mbit half duplex and off negotinate
 		ethtool -s eth2 autoneg off speed 10 duplex half	> /dev/null 2>&1
 	    else
 		#atonegotinate enable
