@@ -173,10 +173,10 @@ set_physmode() {
 		    # first disable autoneg
 		    ethtool -s eth2 autoneg off > /dev/null 2>&1
 		    if [ "$port_swmode" = "1000f" ]; then
-			#set 100Mbit full duplex and start negotinate
+			#set 1000Mbit full duplex and start negotinate
 			ethtool -s eth2 autoneg on speed 1000 duplex full	> /dev/null 2>&1
 		    elif [ "$port_swmode" = "1000h" ]; then
-			#set 100Mbit half duplex and start negotinate
+			#set 1000Mbit half duplex and start negotinate
 			ethtool -s eth2 autoneg on speed 1000 duplex half	> /dev/null 2>&1
 		    elif [ "$port_swmode" = "100f" ]; then
 			#set 100Mbit full duplex and start negotinate
@@ -217,10 +217,10 @@ set_physmode_ext_phy() {
 	    fi
 	    echo "5" > $procdir
 	    if [ "$phy_swmode" = "1000f" ]; then
-		#set 100Mbit full duplex and start negotinate
+		#set 1000Mbit full duplex and start negotinate
 		ethtool -s eth2 autoneg off speed 1000 duplex full	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "1000h" ]; then
-		#set 100Mbit half duplex and start negotinate
+		#set 1000Mbit half duplex and start negotinate
 		ethtool -s eth2 autoneg off speed 1000 duplex half	> /dev/null 2>&1
 	    elif [ "$phy_swmode" = "100f" ]; then
 		#set 100Mbit full duplex and start negotinate
