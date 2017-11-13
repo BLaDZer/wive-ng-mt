@@ -3580,6 +3580,7 @@
 69) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
 70) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
 71) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+72) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
 <br>
 <br>
 <br>
