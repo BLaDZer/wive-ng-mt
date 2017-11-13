@@ -3586,6 +3586,7 @@
 75) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
 76) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
 77) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+78) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
 <br>
 <br>
 <br>
