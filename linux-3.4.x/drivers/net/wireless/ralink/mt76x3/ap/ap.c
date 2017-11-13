@@ -1511,14 +1511,16 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			    /* if client active and traffic high > ~ 32kbit/s need increase kick out delay for roam smooth */
 			    if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < (pAd->ApCfg.EntryLifeCheck/2))
 				    && (pEntry->TrafficLoading == HIGH_TRAFFIC)) {
-				    KickOutDelay = pMbss->RssiLowForStaKickOutDelay+3;
-				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, use +3sec kickout time [%d] traffic [%d]\n",
+				    KickOutDelay = (pMbss->RssiLowForStaKickOutDelay+(pMbss->RssiLowForStaKickOutDelay/3));
+				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, increase kickout time to kickout time [%d] traffic [%d]\n",
 					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,
 					    (pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount)));
 			    }
 
 #ifdef DOT11R_FT_SUPPORT
 			    if (IS_FT_RSN_STA(pEntry) && pMbss->RssiLowForStaKickOutFT != 0) {
+				/* allways add one second delay for FT */
+				KickOutDelay++;
 				if (MaxRssi < pMbss->RssiLowForStaKickOutFT) {
 				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
@@ -1526,9 +1528,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->func_tb_idx, pEntry->Aid);
 					    } else {
 						bDisconnectSta = TRUE;
-						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d] at last [%d] seconds, FT mode\n",
-						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOutFT,
-						    pEntry->RssiLowStaKickOutDelayCount);
+						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d:%d], KickOutDelay [%d] at last [%d] seconds, FT Mode.\n",
+						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut,
+						    pMbss->RssiLowForStaKickOutPSM, pMbss->RssiLowForStaKickOutFT, KickOutDelay, pEntry->RssiLowStaKickOutDelayCount);
 						pEntry->RssiLowStaKickOutDelayCount = 0;
 					    }
 				    }
@@ -1543,9 +1545,9 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->func_tb_idx, pEntry->Aid);
 					    } else {
 						bDisconnectSta = TRUE;
-						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d] at last [%d] seconds\n",
+						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d:%d], KickOutDelay [%d] at last [%d] seconds\n",
 						    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), pMbss->RssiLowForStaKickOut,
-						    pMbss->RssiLowForStaKickOutPSM, pEntry->RssiLowStaKickOutDelayCount);
+						    pMbss->RssiLowForStaKickOutPSM, pMbss->RssiLowForStaKickOutFT, KickOutDelay, pEntry->RssiLowStaKickOutDelayCount);
 						pEntry->RssiLowStaKickOutDelayCount = 0;
 					    }
 				    }
