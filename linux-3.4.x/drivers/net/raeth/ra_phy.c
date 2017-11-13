@@ -305,13 +305,10 @@ static void ext_gphy_sfpen(void)
 	val &= ~(0x1<<15);							// switch pin to input mode  (Receiver Loss of Signal)
 	sysRegWrite(RALINK_REG_PIODIR, val);
 
+	printk("Config and enable SFP slot.\n");
+
 	val = sysRegRead(RALINK_REG_PIODATA);
 	val &= ~(0x1<<17);							// set pin to LOW (1.25Gbit/s)
-	sysRegWrite(RALINK_REG_PIODATA, val);
-
-	printk("Enable SFP slot.\n");
-
-	val = sysRegRead(RALINK_REG_PIODATA);
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPEN);				// set pin to LOW (SFP Enabled)
 	sysRegWrite(RALINK_REG_PIODATA, val);
 
