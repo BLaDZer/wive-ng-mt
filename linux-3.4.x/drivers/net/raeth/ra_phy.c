@@ -293,15 +293,23 @@ static void ext_gphy_sfpen(void)
 {
 	u32 val = 0;
 
-	printk("Enable SFP slot.\n");
-
+	/* switch JTAG to GPIO */
 	val = sysRegRead(RALINK_REG_GPIOMODE);
-	val |= (RALINK_GPIOMODE_JTAG); 						// GPIO 14 used for enable/disable SFP shared with JTAG
+	val |= (RALINK_GPIOMODE_JTAG); 						// GPIO 13-17 used for SFP module shared with JTAG
 	sysRegWrite(RALINK_REG_GPIOMODE, val);
 
 	val = sysRegRead(RALINK_REG_PIODIR);
-	val |= (0x1<<CONFIG_RALINK_GPIO_SFPEN);					// switch pin to output mode
+	val |= (0x1<<CONFIG_RALINK_GPIO_SFPEN);					// switch pin to output mode (SFP TxEnable)
+	val |= (0x1<<17);							// switch pin to output mode (SFP+ mode 10/1.25Gbps)
+	val &= ~(0x1<<13);							// switch pin to input mode  (Transmitter Fault)
+	val &= ~(0x1<<15);							// switch pin to input mode  (Receiver Loss of Signal)
 	sysRegWrite(RALINK_REG_PIODIR, val);
+
+	val = sysRegRead(RALINK_REG_PIODATA);
+	val &= ~(0x1<<17);							// set pin to LOW (1.25Gbit/s)
+	sysRegWrite(RALINK_REG_PIODATA, val);
+
+	printk("Enable SFP slot.\n");
 
 	val = sysRegRead(RALINK_REG_PIODATA);
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPEN);				// set pin to LOW (SFP Enabled)
