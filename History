@@ -3524,45 +3524,46 @@
 13) init.d: add create node for i2c controller.<br>
 14) init.d: auto tune txqlen for chillispot tun interface to.<br>
 15) init.d: add support dual band MBSSID mode.<br>
-16) irqbalabce: fix build without libcap-ng.<br>
-17) goahead: refactoring and fixup route page.<br>
-18) goahead: fix ports number issue in ME1.<br>
-19) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
-20) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-21) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-22) kernel: cfg80211/wext: fix message ordering.<br>
-23) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
-24) kernel: wext: uninline stream addition functions.<br>
-25) kernel: wext: use struct iwreq earlier in the call chain.<br>
-26) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
-27) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
-28) kernel: raeth: add preconfig for RTL8211D.<br>
-29) kernel: raeth: add SFP module enable by gpio logic.<br>
-30) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
-31) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
-32) kernel: ralink_i2c: fic build and warnings.<br>
-33) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-34) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-35) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-36) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-37) kernel: mips: add nudges to writes for bit unlocks.<br>
-38) kernel: mips: make thread_saved_pc static.<br>
-39) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-40) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-41) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-42) kernel: mips: declare various variables & functions static.<br>
-43) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-44) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-45) kernel: net: small increase txqlen at default and use in all drivers.<br>
-46) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-47) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-48) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-49) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-50) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-51) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-52) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-53) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-54) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+16) init.d: apply handoff settings for all real used MBSSID.<br>
+17) irqbalabce: fix build without libcap-ng.<br>
+18) goahead: refactoring and fixup route page.<br>
+19) goahead: fix ports number issue in ME1.<br>
+20) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
+21) kernel: sched/core: remove pointless printout in sched_show_task().<br>
+22) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+23) kernel: cfg80211/wext: fix message ordering.<br>
+24) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
+25) kernel: wext: uninline stream addition functions.<br>
+26) kernel: wext: use struct iwreq earlier in the call chain.<br>
+27) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
+28) kernel: raeth: add support wakeup external phy from standby over gpio.<br>
+29) kernel: raeth: add preconfig for RTL8211D.<br>
+30) kernel: raeth: add SFP module enable by gpio logic.<br>
+31) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
+32) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
+33) kernel: ralink_i2c: fic build and warnings.<br>
+34) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+35) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+36) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+37) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+38) kernel: mips: add nudges to writes for bit unlocks.<br>
+39) kernel: mips: make thread_saved_pc static.<br>
+40) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+41) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+42) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+43) kernel: mips: declare various variables & functions static.<br>
+44) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+45) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+46) kernel: net: small increase txqlen at default and use in all drivers.<br>
+47) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+48) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+49) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+50) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+51) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+52) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+53) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+54) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+55) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>

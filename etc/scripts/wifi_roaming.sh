@@ -3,14 +3,8 @@
 # include kernel config
 . /etc/scripts/config.sh
 
-is_up=`ip -o link show $1 up`
-if [ "$is_up" = "" ]; then
-    echo ">>>>> Wifi interface $1 not up - skip roaming tune <<<<<<<<<<"
-    exit 0
-fi
 
 LOG="logger -t roaming"
-$LOG "Tune wifi roaming parametrs for $1."
 
 ###############################################PARAMETRS TABLE###################################################################################
 # ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 2
@@ -29,97 +23,112 @@ eval `nvram_buf_get 2860 BandDeltaRssi ApProbeRspTimes AuthRspFail AuthRspRssi A
 			    KickStaRssiLow KickStaRssiLowPSM KickStaRssiLowFT ProbeRspRssi KickStaRssiLowDelay TmpBlockAfterKick`
 #################################################################################################################################################
 
-if [ "$2" = "5GHZ" ]; then
-    if [ "$BandDeltaRssi" = "" ]; then
-	BandDeltaRssi=-5
-    fi
-    # calculate roaming parametrs for second band
-    # limit parametrs to minimul value
-    # min RSSI
-    minrssi=-100
+handoffset()
+{
+    if [ "$2" = "5GHz" ]; then
+	if [ "$BandDeltaRssi" = "" ]; then
+	    BandDeltaRssi=-5
+	fi
+	# calculate roaming parametrs for second band
+	# limit parametrs to minimul value
+	# min RSSI
+	minrssi=-100
 
-    if [ "$AuthRspFail" != "" ] && [ "$AuthRspFail" != "0" ]; then
-	let AuthRspFail=AuthRspFail+BandDeltaRssi
-	if [ $AuthRspFail -lt $minrssi ]; then
-	    AuthRspFail=$minrssi
+	if [ "$AuthRspFail" != "" ] && [ "$AuthRspFail" != "0" ]; then
+	    let AuthRspFail=AuthRspFail+BandDeltaRssi
+	    if [ $AuthRspFail -lt $minrssi ]; then
+		AuthRspFail=$minrssi
+	    fi
+	fi
+	if [ "$AuthRspRssi" != "" ] && [ "$AuthRspRssi" != "0" ]; then
+	    let AuthRspRssi=AuthRspRssi+BandDeltaRssi
+	    if [ $AuthRspRssi -lt $minrssi ]; then
+		AuthRspRssi=$minrssi
+	    fi
+	fi
+	if [ "$AssocReqRssiThres" != "" ] && [ "$AssocReqRssiThres" != "0" ]; then
+	    let AssocReqRssiThres=AssocReqRssiThres+BandDeltaRssi
+	    if [ $AssocReqRssiThres -lt $minrssi ]; then
+		AssocReqRssiThres=$minrssi
+	    fi
+	fi
+	if [ "$AssocRspIgnor" != "" ] && [ "$AssocRspIgnor" != "0" ]; then
+	    let AssocRspIgnor=AssocRspIgnor+BandDeltaRssi
+	    if [ $AssocRspIgnor -lt $minrssi ]; then
+		AssocRspIgnor=$minrssi
+	    fi
+	fi
+	if [ "$KickStaRssiLow" != "" ] && [ "$KickStaRssiLow" != "0" ]; then
+	    let KickStaRssiLow=KickStaRssiLow+BandDeltaRssi
+	    if [ $KickStaRssiLow -lt $minrssi ]; then
+		KickStaRssiLow=$minrssi
+	    fi
+	fi
+	if [ "$KickStaRssiLowPSM" != "" ] && [ "$KickStaRssiLowPSM" != "0" ]; then
+	    let KickStaRssiLowPSM=KickStaRssiLowPSM+BandDeltaRssi
+	    if [ $KickStaRssiLowPSM -lt $minrssi ]; then
+		KickStaRssiLowPSM=$minrssi
+	    fi
+	fi
+	if [ "$KickStaRssiLowFT" != "" ] && [ "$KickStaRssiLowFT" != "0" ]; then
+	    let KickStaRssiLowFT=KickStaRssiLowFT+BandDeltaRssi
+	    if [ $KickStaRssiLowFT -lt $minrssi ]; then
+		KickStaRssiLowFT=$minrssi
+	    fi
+	fi
+	if [ "$ProbeRspRssi" != "" ] && [ "$ProbeRspRssi" != "0" ]; then
+	    let ProbeRspRssi=ProbeRspRssi+BandDeltaRssi
+	    if [ $ProbeRspRssi -lt $minrssi ]; then
+		ProbeRspRssi=$minrssi
+	    fi
 	fi
     fi
-    if [ "$AuthRspRssi" != "" ] && [ "$AuthRspRssi" != "0" ]; then
-	let AuthRspRssi=AuthRspRssi+BandDeltaRssi
-	if [ $AuthRspRssi -lt $minrssi ]; then
-	    AuthRspRssi=$minrssi
-	fi
-    fi
-    if [ "$AssocReqRssiThres" != "" ] && [ "$AssocReqRssiThres" != "0" ]; then
-	let AssocReqRssiThres=AssocReqRssiThres+BandDeltaRssi
-	if [ $AssocReqRssiThres -lt $minrssi ]; then
-	    AssocReqRssiThres=$minrssi
-	fi
-    fi
-    if [ "$AssocRspIgnor" != "" ] && [ "$AssocRspIgnor" != "0" ]; then
-	let AssocRspIgnor=AssocRspIgnor+BandDeltaRssi
-	if [ $AssocRspIgnor -lt $minrssi ]; then
-	    AssocRspIgnor=$minrssi
-	fi
-    fi
-    if [ "$KickStaRssiLow" != "" ] && [ "$KickStaRssiLow" != "0" ]; then
-	let KickStaRssiLow=KickStaRssiLow+BandDeltaRssi
-	if [ $KickStaRssiLow -lt $minrssi ]; then
-	    KickStaRssiLow=$minrssi
-	fi
-    fi
-    if [ "$KickStaRssiLowPSM" != "" ] && [ "$KickStaRssiLowPSM" != "0" ]; then
-	let KickStaRssiLowPSM=KickStaRssiLowPSM+BandDeltaRssi
-	if [ $KickStaRssiLowPSM -lt $minrssi ]; then
-	    KickStaRssiLowPSM=$minrssi
-	fi
-    fi
-    if [ "$KickStaRssiLowFT" != "" ] && [ "$KickStaRssiLowFT" != "0" ]; then
-	let KickStaRssiLowFT=KickStaRssiLowFT+BandDeltaRssi
-	if [ $KickStaRssiLowFT -lt $minrssi ]; then
-	    KickStaRssiLowFT=$minrssi
-	fi
-    fi
-    if [ "$ProbeRspRssi" != "" ] && [ "$ProbeRspRssi" != "0" ]; then
-	let ProbeRspRssi=ProbeRspRssi+BandDeltaRssi
-	if [ $ProbeRspRssi -lt $minrssi ]; then
-	    ProbeRspRssi=$minrssi
-	fi
-    fi
-fi
 
-# set handover parametrs in driver
-if [ "$ApProbeRspTimes" != "" ]; then
-    iwpriv "$1" set ApProbeRspTimes="$ApProbeRspTimes"
-fi
-if [ "$AuthRspFail" != "" ]; then
-    iwpriv "$1" set AuthRspFail="$AuthRspFail"
-fi
-if [ "$AuthRspRssi" != "" ]; then
-    iwpriv "$1" set AuthRspRssi="$AuthRspRssi"
-fi
-if [ "$AssocReqRssiThres" != "" ]; then
-    iwpriv "$1" set AssocReqRssiThres="$AssocReqRssiThres"
-fi
-if [ "$AssocRspIgnor" != "" ]; then
-    iwpriv "$1" set AssocRspIgnor="$AssocRspIgnor"
-fi
-if [ "$ProbeRspRssi" != "" ]; then
-    iwpriv "$1" set ProbeRspRssi="$ProbeRspRssi"
-fi
-if [ "$KickStaRssiLow" != "" ]; then
-    iwpriv "$1" set KickStaRssiLow="$KickStaRssiLow"
-fi
-if [ "$KickStaRssiLowPSM" != "" ]; then
-    iwpriv "$1" set KickStaRssiLowPSM="$KickStaRssiLowPSM"
-fi
-if [ "$KickStaRssiLowFT" != "" ]; then
-    iwpriv "$1" set KickStaRssiLowFT="$KickStaRssiLowFT"
-fi
-if [ "$KickStaRssiLowDelay" != "" ]; then
-    iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
-fi
-if [ "$TmpBlockAfterKick" != "" ]; then
-    iwpriv "$1" set TmpBlockAfterKick="$TmpBlockAfterKick"
-fi
-$LOG "Roaming parametrs mask for $1: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowFT;$KickStaRssiLowDelay;$ProbeRspRssi;$TmpBlockAfterKick"
+    # set handover parametrs in driver
+    if [ "$ApProbeRspTimes" != "" ]; then
+	iwpriv "$1" set ApProbeRspTimes="$ApProbeRspTimes"
+    fi
+    if [ "$AuthRspFail" != "" ]; then
+	iwpriv "$1" set AuthRspFail="$AuthRspFail"
+    fi
+    if [ "$AuthRspRssi" != "" ]; then
+        iwpriv "$1" set AuthRspRssi="$AuthRspRssi"
+    fi
+    if [ "$AssocReqRssiThres" != "" ]; then
+	iwpriv "$1" set AssocReqRssiThres="$AssocReqRssiThres"
+    fi
+    if [ "$AssocRspIgnor" != "" ]; then
+	iwpriv "$1" set AssocRspIgnor="$AssocRspIgnor"
+    fi
+    if [ "$ProbeRspRssi" != "" ]; then
+	iwpriv "$1" set ProbeRspRssi="$ProbeRspRssi"
+    fi
+    if [ "$KickStaRssiLow" != "" ]; then
+	iwpriv "$1" set KickStaRssiLow="$KickStaRssiLow"
+    fi
+    if [ "$KickStaRssiLowPSM" != "" ]; then
+        iwpriv "$1" set KickStaRssiLowPSM="$KickStaRssiLowPSM"
+    fi
+    if [ "$KickStaRssiLowFT" != "" ]; then
+	iwpriv "$1" set KickStaRssiLowFT="$KickStaRssiLowFT"
+    fi
+    if [ "$KickStaRssiLowDelay" != "" ]; then
+	iwpriv "$1" set KickStaRssiLowDelay="$KickStaRssiLowDelay"
+    fi
+    if [ "$TmpBlockAfterKick" != "" ]; then
+	iwpriv "$1" set TmpBlockAfterKick="$TmpBlockAfterKick"
+    fi
+    $LOG "Tune wifi handoff parametrs for $1 $2 mask: $ApProbeRspTimes;$AuthRspFail;$AuthRspRssi;$AssocReqRssiThres;$AssocRspIgnor;$KickStaRssiLow;$KickStaRssiLowPSM;$KickStaRssiLowFT;$KickStaRssiLowDelay;$ProbeRspRssi;$TmpBlockAfterKick"
+}
+
+# get MBSSID real used ifnames
+ifslow=`ip -o -4 link show up | awk {' print $2 '} | cut -f -1 -d : | grep "[r][a][[:digit:]]"`
+ifshigh=`ip -o -4 link show up | awk {' print $2 '} | cut -f -1 -d : | grep "[r][a][i][[:digit:]]"`
+
+# apply settings
+for hndifname in $ifslow ; do
+    handoffset $hndifname "2.4GHz"
+done
+for hndifname in $ifshigh ; do
+    handoffset $hndifname "5GHz"
+done

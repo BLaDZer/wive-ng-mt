@@ -169,12 +169,7 @@ retune_wifi() {
 roaming_wifi() {
 	eval `nvram_buf_get 2860 FastRoaming`
 	if [ "$FastRoaming" = "1" ] && [ "$OperationMode" != "2" ]; then
-	    if [ "$first_wlan_root_if" != "" ]; then
-		/etc/scripts/wifi_roaming.sh $first_wlan_root_if
-	    fi
-	    if [ "$second_wlan_root_if" != "" ]; then
-		/etc/scripts/wifi_roaming.sh $second_wlan_root_if "5GHZ"
-	    fi
+	    /etc/scripts/wifi_roaming.sh
 	fi
 }
 
