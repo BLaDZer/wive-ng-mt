@@ -3583,6 +3583,7 @@
 72) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
 73) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
 74) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+75) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
 <br>
 <br>
 <br>
