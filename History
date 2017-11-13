@@ -3534,51 +3534,52 @@
 23) kernel: cfg80211/wext: fix message ordering.<br>
 24) kernel: keys: prevent KEYCTL_READ on negative key.<br>
 25) kernel: modpost: expand pattern matching to support substring matches.<br>
-26) kernel: mm/mempolicy: fix use after free when calling get_mempolicy.<br>
-27) kernel: mm/init: fix zone boundary creation.<br>
-28) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
-29) kernel: wext: uninline stream addition functions.<br>
-30) kernel: wext: use struct iwreq earlier in the call chain.<br>
-31) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
-32) kernel: ralink_raeth: add support wakeup external phy from standby over gpio.<br>
-33) kernel: ralink_raeth: add preconfig for RTL8211D.<br>
-34) kernel: ralink_raeth: add SFP module enable by gpio logic.<br>
-35) kernel: ralink_raeth: add SFP gpio lines init.<br>
-36) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
-37) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
-38) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
-39) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>
-40) kernel: ralink_wifi: collect very low level probe req only for 5GHz.<br>
-41) kernel: ralink_i2c: fic build and warnings.<br>
-42) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-43) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-44) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-45) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-46) kernel: mips: add nudges to writes for bit unlocks.<br>
-47) kernel: mips: make thread_saved_pc static.<br>
-48) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-49) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-50) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-51) kernel: mips: declare various variables & functions static.<br>
-52) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-53) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-54) kernel: net: small increase txqlen at default and use in all drivers.<br>
-55) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-56) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
-57) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
-58) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-59) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
-60) kernel: net: ipv6: add rt6_get_cookie() function.<br>
-61) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
-62) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
-63) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
-64) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-65) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-66) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-67) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-68) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-69) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-70) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+26) kernel: modpost: don't emit section mismatch warnings for compiler optimizations.<br>
+27) kernel: mm/mempolicy: fix use after free when calling get_mempolicy.<br>
+28) kernel: mm/init: fix zone boundary creation.<br>
+29) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
+30) kernel: wext: uninline stream addition functions.<br>
+31) kernel: wext: use struct iwreq earlier in the call chain.<br>
+32) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
+33) kernel: ralink_raeth: add support wakeup external phy from standby over gpio.<br>
+34) kernel: ralink_raeth: add preconfig for RTL8211D.<br>
+35) kernel: ralink_raeth: add SFP module enable by gpio logic.<br>
+36) kernel: ralink_raeth: add SFP gpio lines init.<br>
+37) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
+38) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
+39) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
+40) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>
+41) kernel: ralink_wifi: collect very low level probe req only for 5GHz.<br>
+42) kernel: ralink_i2c: fic build and warnings.<br>
+43) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+44) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+45) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+46) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+47) kernel: mips: add nudges to writes for bit unlocks.<br>
+48) kernel: mips: make thread_saved_pc static.<br>
+49) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+50) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+51) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+52) kernel: mips: declare various variables & functions static.<br>
+53) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+54) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+55) kernel: net: small increase txqlen at default and use in all drivers.<br>
+56) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+57) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
+58) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
+59) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+60) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
+61) kernel: net: ipv6: add rt6_get_cookie() function.<br>
+62) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
+63) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
+64) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
+65) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+66) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+67) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+68) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+69) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+70) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+71) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
