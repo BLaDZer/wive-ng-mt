@@ -3561,13 +3561,14 @@
 50) kernel: net: small increase txqlen at default and use in all drivers.<br>
 51) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
 52) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-53) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-54) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-55) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-56) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-57) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-58) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-59) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+53) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
+54) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+55) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+56) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+57) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+58) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+59) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+60) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>
