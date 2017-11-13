@@ -126,7 +126,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 
 		if (mbss->ProbeRspRssiThreshold != 0)
 		{
-			CHAR rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+			CHAR rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
 #ifdef BAND_STEERING

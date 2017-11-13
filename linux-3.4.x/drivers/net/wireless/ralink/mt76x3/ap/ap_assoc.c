@@ -1520,7 +1520,7 @@ SendAssocResponse:
 #endif /* BAND_STEERING */
 
 	/* YF@20120419: Refuse the weak signal of AssocReq */
-	rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+	rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
 				 ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
 				 ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
 

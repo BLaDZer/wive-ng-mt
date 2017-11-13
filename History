@@ -3541,29 +3541,30 @@
 30) kernel: raeth: add SFP module enable by gpio logic.<br>
 31) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
 32) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
-33) kernel: ralink_i2c: fic build and warnings.<br>
-34) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-35) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-36) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-37) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-38) kernel: mips: add nudges to writes for bit unlocks.<br>
-39) kernel: mips: make thread_saved_pc static.<br>
-40) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-41) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-42) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-43) kernel: mips: declare various variables & functions static.<br>
-44) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-45) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-46) kernel: net: small increase txqlen at default and use in all drivers.<br>
-47) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-48) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-49) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-50) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-51) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-52) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-53) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-54) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-55) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+33) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>
+34) kernel: ralink_i2c: fic build and warnings.<br>
+35) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+36) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+37) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+38) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+39) kernel: mips: add nudges to writes for bit unlocks.<br>
+40) kernel: mips: make thread_saved_pc static.<br>
+41) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+42) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+43) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+44) kernel: mips: declare various variables & functions static.<br>
+45) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+46) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+47) kernel: net: small increase txqlen at default and use in all drivers.<br>
+48) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+49) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+50) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+51) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+52) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+53) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+54) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+55) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+56) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 <br>
 <br>
 <br>

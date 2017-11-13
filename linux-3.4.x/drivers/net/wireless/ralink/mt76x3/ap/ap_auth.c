@@ -592,7 +592,7 @@ SendAuth:
 #endif /* BAND_STEERING */
 
 	 /* YF@20130102: Refuse the weak signal of AuthReq */
-         rssi = RTMPAvgMRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+         rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
                                   ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
 

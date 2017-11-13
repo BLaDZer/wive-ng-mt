@@ -990,7 +990,7 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 #endif /* BAND_STEERING */
 	/* YF@20120419: Refuse the weak signal of AssocReq */
-	rssi = RTMPAvgMRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
+	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 
