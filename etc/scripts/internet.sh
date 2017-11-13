@@ -64,6 +64,9 @@ bridge_config() {
 	    addMBSSID $first_wlan_mbss
 	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $second_wlan_mbss
+	elif [ "$first_wlan_mbss" != "" ] && [ "$second_wlan_mbss" != "" ] && [ "$BssidIfName" = "all" ]; then
+	    addMBSSID $first_wlan_mbss
+	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
 	    addWds $first_wlan_wds
@@ -87,6 +90,9 @@ gate_config() {
 	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
 	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
+	    addMBSSID $second_wlan_mbss
+	elif [ "$first_wlan_mbss" != "" ] && [ "$second_wlan_mbss" != "" ] && [ "$BssidIfName" = "all" ]; then
+	    addMBSSID $first_wlan_mbss
 	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
@@ -120,6 +126,9 @@ apcli_config() {
 	if [ "$first_wlan_mbss" != "" ] && [ "$first_wlan_mbss" = "$BssidIfName" ]; then
 	    addMBSSID $first_wlan_mbss
 	elif [ "$second_wlan_mbss" != "" ] && [ "$second_wlan_mbss" = "$BssidIfName" ]; then
+	    addMBSSID $second_wlan_mbss
+	elif [ "$first_wlan_mbss" != "" ] && [ "$second_wlan_mbss" != "" ] && [ "$BssidIfName" = "all" ]; then
+	    addMBSSID $first_wlan_mbss
 	    addMBSSID $second_wlan_mbss
 	fi
 	if [ "$first_wlan_wds" != "" ] && [ "$first_wlan_wds" = "$WdsIfName" ]; then
