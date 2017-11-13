@@ -3584,6 +3584,7 @@
 73) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
 74) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
 75) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+76) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
 <br>
 <br>
 <br>
