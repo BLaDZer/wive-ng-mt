@@ -197,7 +197,7 @@
 				if (NVRAM_SSID1 == NVRAM_SSID1INIC)
 					document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
 
-				ajaxShowTimer(document.security_form, 'timerReloader', _('message apply'), 25);
+				ajaxShowTimer(document.security_form, 'timerReloader', _('message apply'), (NVRAM_AutoChannelSelect > 0 || NVRAM_AutoChannelSelectINIC > 0) ? 40 : 30);
 				securityChanged = false;
 				return true;
 			}

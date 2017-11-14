@@ -63,7 +63,7 @@
 						return false;
 					}
 				}
-				ajaxShowTimer(document.radiusConfig, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.radiusConfig, 'timerReloader', _('message apply'), 10);
 				return true;
 			}
 

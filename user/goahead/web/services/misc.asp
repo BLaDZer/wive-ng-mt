@@ -376,7 +376,7 @@
 					displayElement('miscIPTV_hide', false);
 					displayElement(elements, true);
 					displayElement('igmpProxy', BUILD_IGMPPROXY && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1');
-					displayElement('igmpFastL', (BUILD_IGMPPROXY && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') || NVRAM_OperationMode != '2');
+					displayElement('igmpFastL', (BUILD_IGMPPROXY && NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1') && NVRAM_OperationMode != '2');
 					displayElement('igmpM2UConv', NVRAM_OperationMode != '2');
 					displayElement('udpxy_port_row', document.getElementById('udpxyMode').selectedIndex != '0');
 					displayElement('xupnpd', BUILD_XUPNPD);

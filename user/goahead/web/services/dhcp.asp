@@ -135,7 +135,7 @@
 					}
 					genIPTableData();
 				}
-				ajaxShowTimer(document.dhcpCfg, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.dhcpCfg, 'timerReloader', _('message apply'), 10);
 				clearInterval(dhcp_interval);
 				return true;
 			}
@@ -173,7 +173,7 @@
 						'		<td><input style="width: 98%" value="" maxlength="17" name="dhcpStaticMAC"' + disabled + '></td>' +
 						'		<td><input style="width: 98%" value="" maxlength="15" name="dhcpStaticIP"' + disabled + '></td>' +
 						'		<td><input style="width: 98%" value="" maxlength="32" name="dhcpStaticDesc"' + disabled + '></td>' +
-						'		<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add") + '" onclick="addIPItem();"' + disabled + '></td>' +
+						'		<td style="text-align: center;"><input type="button" class="normal" title="' + _("services dhcp add record") + '" value="' + _("button add edit") + '" onclick="addIPItem();"' + disabled + '></td>' +
 						'	</tr>' +
 						'</table>';
 				document.getElementById("dhcpStaticIPList").innerHTML = table;
@@ -423,7 +423,7 @@
 								<input type="hidden" name="reset" value="0">
 								<input type="submit" class="normal" value="Apply" id="lApply">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form);">
+								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 10);">
 							</td>
 						</tr>
 					</table>

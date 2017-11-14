@@ -226,7 +226,7 @@
 					form.radvdEnbl.options.selectedIndex = 0;
 					form.dhcpv6Enbl.options.selectedIndex = 0;
 				}
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 20);
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 				return true;
 			}
 
@@ -285,7 +285,7 @@
 					<p id="v6Introduction"></p>
 					<hr />
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form id="ipv6_cfg" name="ipv6_cfg" method="POST" action="/goform/setIPv6" onSubmit="return checkValues(this);">
+					<form id="ipv6_cfg" name="ipv6_cfg" method="POST" action="/goform/setIPv6">
 						<table class="form">
 							<tr id="v6ConnType_tr">
 								<td id="v6ConnType" class="title" colspan="2">IPv6 Connection Type</td>
@@ -410,9 +410,9 @@
 						<table class="buttons">
 							<tr align="center">
 								<td>
-									<input type="submit" class="normal" value="Apply" id="v6Apply">&nbsp;&nbsp;
+									<input type="submit" class="normal" value="Apply" id="v6Apply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Cancel" id="v6Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="v6Reset" onClick="resetValues(this.form);">
+									<input type="button" class="normal" value="Reset" id="v6Reset" onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>

@@ -237,7 +237,7 @@
 					else
 						document.getElementById('cwmpd_inform_periodic_interval').value = +document.getElementById('cwmpd_inform_periodic_interval').value;
 				}
-				ajaxShowTimer(document.cwmpConfig, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.cwmpConfig, 'timerReloader', _('message apply'), 10);
 				return true;
 			}
 

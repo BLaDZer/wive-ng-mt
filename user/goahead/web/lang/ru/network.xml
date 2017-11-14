@@ -231,6 +231,7 @@
     <message msgid="ethernet title"			msgstr="Настройки физических портов" />
     <message msgid="ethernet introduction"		msgstr="Здесь вы можете произвести настройки физических портов маршрутизатора." />
     <message msgid="ethernet reboot confirm"		msgstr="Для применения настроек требуется перезагрузка маршрутизатора. Перезагрузить маршрутизатор?" />
+    <message msgid="ethernet reset confirm"		msgstr="Настройки будут сброшены к заводским и маршрутизатор будет перезагружен. Продолжить?" />
     <message msgid="ethernet port management"		msgstr="Настройки физических портов" />
     <message msgid="ethernet wan port"			msgstr="WAN порт" />
     <message msgid="ethernet lan port"			msgstr="Первый LAN порт" />

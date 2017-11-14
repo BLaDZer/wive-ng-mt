@@ -35,35 +35,35 @@
 			}
 
 			function initValues() {
-				document.DMZ.elements.DMZEnabled.options.selectedIndex = +NVRAM_DMZEnable;
-				document.DMZ.dmzLoopback.value = NVRAM_DMZNATLoopback;
-				document.DMZ.DMZIPAddress.value = NVRAM_DMZIPAddress;
+				document.getElementById('DMZEnabled').options.selectedIndex = +NVRAM_DMZEnable;
+				document.getElementById('dmzLoopback').value = NVRAM_DMZNATLoopback;
+				document.getElementById('DMZIPAddress').value = NVRAM_DMZIPAddress;
 
 				displayElement('bridge_warning', NVRAM_OperationMode == '0');
 
-				dmzEnableSwitch(document.DMZ);
+				dmzEnableSwitch();
 				showWarning();
 				initTranslation();
 			}
 
 			function checkValues(form) {
-				if (form.DMZEnabled.options.selectedIndex && !validateIP(form.DMZIPAddress, true)) {
-					form.DMZIPAddress.focus();
+				if (document.getElementById('DMZEnabled').options.selectedIndex && !validateIP(document.getElementById('DMZIPAddress'), true)) {
+					document.getElementById('DMZIPAddress').focus();
 					return false;
 				}
 				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				return true;
 			}
 
-			function dmzEnableSwitch(form) {
-				enableElements([form.DMZIPAddress, form.dmzLoopback], form.DMZEnabled.value == '1');
-				displayElement([ 'dmzAdress', 'dmzLoopback' ], form.DMZEnabled.value == '1');
+			function dmzEnableSwitch() {
+				enableElements([document.getElementById('DMZIPAddress'), document.getElementById('dmzLoopback')], document.getElementById('DMZEnabled').value == '1');
+				displayElement([ 'dmzAdress', 'dmzLoopback_tr' ], document.getElementById('DMZEnabled').value == '1');
 			}
 
-			function dmzLoopbackWarning(form) {
-				if (form.dmzLoopback.value == '1') {
+			function dmzLoopbackWarning() {
+				if (document.getElementById('dmzLoopback').value == '1') {
 					if (!confirm(_("dmz confirm")))
-						form.dmzLoopback.value='0';
+						document.getElementById('dmzLoopback').value = '0';
 				}
 			}
 		</script>
@@ -79,25 +79,25 @@
 					<p id="dmzIntroduction"> Here you can setup the De-Militarized Zone (DMZ) to separate your external services from the rest of LAN.</p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" name="DMZ" action="/goform/setFirewallDMZ" OnSubmit="return checkValues(this);">
+					<form method="POST" name="DMZ" action="/goform/setFirewallDMZ">
 						<table class="form">
 							<tr>
 								<td class="title" colspan="2" id="dmzSetting">DMZ Settings</td>
 							</tr>
 							<tr>
 								<td class="head" id="dmzSet"> DMZ Settings </td>
-								<td><select onChange="dmzEnableSwitch(this.form);" name="DMZEnabled" class="normal">
+								<td><select onChange="dmzEnableSwitch();" id="DMZEnabled" name="DMZEnabled" class="normal">
 									<option id="dmzDisable" value="0">Disable</option>
 									<option id="dmzEnable"  value="1">Enable</option>
 								</select></td>
 							</tr>
 							<tr id="dmzAdress">
 								<td class="head" id="dmzIPAddr"> DMZ IP Address </td>
-								<td><input type="text" name="DMZIPAddress" class="normal"></td>
+								<td><input type="text" id="DMZIPAddress" name="DMZIPAddress" class="normal"></td>
 							</tr>
-							<tr id="dmzLoopback">
+							<tr id="dmzLoopback_tr">
 								<td class="head" id="ldmzLoopback">DMZ NAT loopback</td>
-								<td><select name="dmzLoopback" class="normal" onChange="dmzLoopbackWarning(this.form);">
+								<td><select id="dmzLoopback" name="dmzLoopback" class="normal" onChange="dmzLoopbackWarning();">
 									<option value="0" id="dmzDisable2">Disable</option>
 									<option value="1" id="dmzEnable2">Enable</option>
 								</select></td>
@@ -106,8 +106,8 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" value="Apply" id="dmzApply" name="addDMZ">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="dmzCancel" name="cancel_button" onClick="window.location.reload();">&nbsp;&nbsp;
+									<input type="submit" class="normal" value="Apply" id="dmzApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
+									<input type="button" class="normal" value="Cancel" id="dmzCancel" onClick="window.location.reload();">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Reset" id="dmzReset" onClick="resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
 								</td>

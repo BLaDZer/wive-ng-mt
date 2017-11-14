@@ -210,6 +210,7 @@
 				var channel	= +form.sz11gChannel.value;
 				var bandwidth	= +form.n_bandwidth.value;
 
+				displayElement('extension_channel', false);
 				displayElement('extension_channel', channel != 0 && bandwidth != 0 && mode >= 5 && statusHTPysModeMenu == 1);
 				enableElements(form.n_extcha, channel != 0 && bandwidth != 0 && mode >= 5);
 
@@ -363,6 +364,7 @@
 				_TR("basicMBSSIDApIsolated", "basic mbssidapisolated");
 				_TR("basicLanWifiIsolate", "basic lan wifi isolate");
 				_TR("basicMBSSIDMode", "basic mbssid mode");
+				_TR("mbssid_mode_all", "basic mbssid mode all");
 
 				_TR("basicFreqA", "basic frequency ac");
 				_TR("basicFreqAAuto", "basic frequency auto");
@@ -736,7 +738,9 @@
 					hideElement(basicMbssidModeT);
 				}
 
-				if (mbssid_mode == 'rai')
+				if (mbssid_mode == 'all')
+					form.mbssid_mode.options.selectedIndex = 2;
+				else if (mbssid_mode == 'rai')
 					form.mbssid_mode.options.selectedIndex = 1;
 				else
 					form.mbssid_mode.options.selectedIndex = 0;
@@ -1584,7 +1588,7 @@
 				else
 					form.RegulatoryClassINIC.value = "0";
 
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), (document.getElementById('sz11gChannel').value == 0 || document.getElementById('sz11aChannel').value == 0) ? 35 : 25);
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), (document.getElementById('sz11gChannel').value == 0 || document.getElementById('sz11aChannel').value == 0) ? 40 : 30);
 				return true;
 			}
 
@@ -1601,7 +1605,7 @@
 			}
 			
 			function rrmEnableChange() {
-				displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' );
+				displayElement('basicRRMclassINIC_tr', BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1');
 			}
 
 			function countryCodeChange() {
@@ -1611,7 +1615,7 @@
 					document.getElementById('RCINIC_3').checked = true;
 					document.getElementById('RCINIC_4').checked = true;
 				}
-				displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU' && statusRoamingMenu == 1);
+				displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU' && statusRoamingMenu == 1);
 			}
 
 			function showHTPhysModeMenu(){
@@ -1621,7 +1625,7 @@
 					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic ht phy mode"));
 					statusHTPysModeMenu = 1;
 					displayElement(HTPhysModeElement, 1);
-					displayElement('extension_channel', document.getElementById('n_bandwidth').value == 1 );
+					displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && document.getElementById('wirelessmode').value >= 5 && document.getElementById('n_bandwidth').value == 1 );
 					displayElement('basicHTChannelBWINIC_tr', BUILD_5GHZ_SUPPORT);
 				} else {
 					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic ht phy mode"));
@@ -1668,7 +1672,7 @@
 					statusRoamingMenu = 1;
 					displayElement(RoamingElement, 1);
 					displayElement([ 'basicRRMEnable_tr' ], rrm_built);
-					displayElement([ 'basicRRMclassINIC_tr' ], rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
+					displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
 					displayElement([ basicFtSupport_tr, "basicKickStaRssiLowFT_tr"], ft_built);
 					displayElement('advBeaconIntervalINIC_tr', BUILD_5GHZ_SUPPORT)
 					fastRoamingChange(document.wireless_basic);
@@ -1903,8 +1907,9 @@
 			<tr id="basicMbssidModeT">
 				<td class="head" id="basicMBSSIDMode" colspan="1">MBSSID Mode</td>
 				<td colspan="5"><select name="mbssid_mode" size="1" class="normal">
-					<option value="ra" selected id="1">2.4GHz</option>
-					<option value="rai" id="2">5GHz</option>
+					<option value="ra" selected>2.4GHz</option>
+					<option value="rai">5GHz</option>
+					<option value="all" id="mbssid_mode_all">All</option>
 				</select></td> 
 			</tr>		
 			<tr id="div_mbssidapisolated">

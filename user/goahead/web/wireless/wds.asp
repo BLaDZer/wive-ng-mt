@@ -166,7 +166,7 @@
 					document.getElementById('wds_encryp_type').value = all_wds_enc_type;
 					document.getElementById('wds_phy_mode').value = all_wds_phy_mode;
 				}
-				ajaxShowTimer(document.wireless_wds, 'timerReloader', _('message apply'), 25);
+				ajaxShowTimer(document.wireless_wds, 'timerReloader', _('message apply'), 30);
 				return true;
 			}
 

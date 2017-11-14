@@ -149,7 +149,7 @@
 						return false;
 					}
 				}
-				ajaxShowTimer(document.l2tpConfig, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.l2tpConfig, 'timerReloader', _('message apply'), 10);
 				return true;
 			}
 

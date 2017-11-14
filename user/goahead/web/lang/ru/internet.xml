@@ -72,6 +72,7 @@
 	<message msgid="vlan invalid vlanid"			msgstr="Введен неверный VLAN ID" />
 	<message msgid="vlan invalid vlan range"		msgstr="Введен недопустимый списко VLAN" />
 	<message msgid="vlan reboot confirm"			msgstr="Для применения настроек требуется перезагрузть маршрутизатор. Перезагрузить?" />
+	<message msgid="vlan reset confirm"			msgstr="Настройки будут сброшены к заводским и маршрутизатор будет перезагружен. Продолжить?" />
 	<message msgid="vlan edit record"			msgstr="Редактировать" />
 	<message msgid="vlan delete record"			msgstr="Удалить" />
 	<message msgid="vlan vlan"				msgstr="VLAN" />

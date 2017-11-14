@@ -390,7 +390,7 @@ function ajaxReloadDelayedPage(delay, url, local)
 	reloader();
 }
 
-function ajaxShowTimer(form, reloader, message, delay)
+function ajaxShowTimer(form, reloader, message, delay, href)
 {
 	// Set shadow on title & menu
 	var frame_title				= top.frames["title"].document
@@ -429,10 +429,6 @@ function ajaxShowTimer(form, reloader, message, delay)
 
 	if (delay == null)
 		delay = 15;
-	
-	var browser = getBrowser();
-	if ((browser.browser == "edge") || (browser.browser == "ie"))
-		delay += 10;
 
 	var elem = ajaxSearchElementById("ajxCounterIndicator");
 	var pw = ajaxGetRootWindow();
@@ -455,7 +451,10 @@ function ajaxShowTimer(form, reloader, message, delay)
 			if (frame_menu.getElementById('reload_background'))
 				frame_menu.body.removeChild(frame_menu.getElementById('reload_background'));
 
-			window.location.href = window.location.href;
+			if (href === undefined)
+				window.location.href = window.location.href;
+			else
+				pw.location.href = href;
 		}
 	}
 	pw.currentProgressHandler = reloader;
@@ -576,8 +575,6 @@ function resetValues(form, time) {
 		if (time === undefined) 
 			time = 15;
 		ajaxShowTimer(form, 'timerReloader', _('message apply'), time);
-		if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
-			form.submit();
 	}
 }
 

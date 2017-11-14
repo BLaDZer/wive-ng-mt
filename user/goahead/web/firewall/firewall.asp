@@ -32,8 +32,8 @@
 			  _TR("forwardTitle",				"forward title");
 			  _TR("forwardIntroduction",		"forward introduction");
 			  _TR("forwardVirtualSrv",			"forward virtual server");
-			  _TR("ForwardSesLimit",			"forward session limit");
-			  _TR("dnsToLocalRedir",			"forward dns redirect");
+			  _TR("ForwardSesLimit_td",			"forward session limit");
+			  _TR("dnsToLocalRedir_td",			"forward dns redirect");
 			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
 			  _TR("forwardVirtualSrvDisable",	"button disable");
 			  _TR("forwardVirtualSrvEnable",	"button enable");
@@ -58,14 +58,14 @@
 			function initValues() {
 				displayElement('bridge_warning', NVRAM_OperationMode == '0'); // bridge mode
 
-				document.portForward.portForwardEnabled.value				= NVRAM_PortForwardEnable;
-				document.portFiltering.portFilterEnabled.value				= NVRAM_IPPortFilterEnable;
-				document.portFilteringInput.portFilterInputEnabled.value	= NVRAM_IPPortFilterInputEnable;
-				document.Firewall.ForwardSesLimit.value						= NVRAM_ForwardSesLimit;
-				document.Firewall.dnsToLocalRedir.value						= NVRAM_dnsToLocalRedir;
+				document.getElementById('portForwardEnabled').value			= NVRAM_PortForwardEnable;
+				document.getElementById('portFilterEnabled').value			= NVRAM_IPPortFilterEnable;
+				document.getElementById('portFilterInputEnabled').value		= NVRAM_IPPortFilterInputEnable;
+				document.getElementById('ForwardSesLimit').value			= NVRAM_ForwardSesLimit;
+				document.getElementById('dnsToLocalRedir').value			= NVRAM_dnsToLocalRedir;
 				
 				if (NVRAM_dnsPEnabled == '0') {
-					document.Firewall.dnsToLocalRedir.value = 0;
+					document.getElementById('dnsToLocalRedir').value = 0;
 					displayElement('dnsToLocalRedirRow', false);
 				}
 
@@ -196,13 +196,13 @@
 					'<td><input type="text" class="pfShort" maxlength="5" name="fromPort" tabindex="3" ></td>' + 
 					'<td rowspan="2"><input class="pfSmall" type="text" class="pfNormal" maxlength="15" name="ip_address" tabindex="5"></td>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="redirectFromPort" tabindex="6"></td>' + 
-					'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="7"></td>' + 
-					'<td rowspan="2"><input class="pfSmall" type="text" style="width: 95%;" maxlength="25" name="comment" tabindex="8"></td>' +
+					'<td rowspan="2"><input type="checkbox" name="natLoopback" tabindex="8"></td>' + 
+					'<td rowspan="2"><input class="pfSmall" type="text" style="width: 95%;" maxlength="25" name="comment" tabindex="9"></td>' +
 					'<td rowspan="2" style="text-align: center;"><input class="pfSmall" type="button" title="' + _("forward add record") + '" value="' + _("button add") + '" tabindex="10" onclick="addRuleItem(this.form);"' + disabled + '></td>' +
 					'</tr>' +
 					'<tr>' +
 					'<td><input type="text" class="pfShort" maxlength="5" name="toPort" tabindex="4"></td>' + 
-					'<td><input type="text" class="pfShort" maxlength="5" name="redirectToPort" tabindex="8"></td>' + 
+					'<td><input type="text" class="pfShort" maxlength="5" name="redirectToPort" tabindex="7"></td>' + 
 					'</tr>';
 
 				// Close manager
@@ -597,21 +597,21 @@
 			}
 
 			function updateForwardingState(form) {
-				var ena = form.portForwardEnabled.value == '1';
+				var ena = document.getElementById('portForwardEnabled').value == '1';
 				displayElement('portForwardingRow', ena);
 				if (ena)
 					genRulesTable();
 			}
 
 			function updateFilteringState(form) {
-				var ena = form.portFilterEnabled.value == '1';
+				var ena = document.getElementById('portFilterEnabled').value == '1';
 				displayElement('portFilteringRow', ena);
 				if (ena)
 					genFilteringTable();
 			}
 
 			function updateFilteringInputState(form) {
-				var ena = form.portFilterInputEnabled.value == '1';
+				var ena = document.getElementById('portFilterInputEnabled').value == '1';
 				displayElement('portFilteringInputRow', ena);
 				if (ena)
 					genFilteringInputTable();
@@ -654,7 +654,7 @@
 								</tr>
 								<tr>
 									<td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
-									<td><select onChange="updateForwardingState(this.form);" name="portForwardEnabled" class="half">
+									<td><select onChange="updateForwardingState(this.form);" id="portForwardEnabled" name="portForwardEnabled" class="half">
 										<option value="0" id="forwardVirtualSrvDisable" selected="selected">Disable</option>
 										<option value="1" id="forwardVirtualSrvEnable">Enable</option>
 									</select></td>
@@ -689,7 +689,7 @@
 								</tr>
 								<tr>
 									<td class="head" id="portBasicFilter"> MAC/IP/Port Filtering </td>
-									<td><select name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
+									<td><select id="portFilterEnabled" name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
 										<option value="0" id="portDisable" selected="selected">Disable</option>
 										<option value="1" id="portEnable">Enable</option>
 									</select></td>
@@ -720,7 +720,7 @@
 								</tr>
 								<tr>
 									<td class="head" id="portBasicFilterInput">MAC/IP/Port Filtering</td>
-									<td><select name="portFilterInputEnabled" class="half" onChange="updateFilteringInputState(this.form);">
+									<td><select id="portFilterInputEnabled" name="portFilterInputEnabled" class="half" onChange="updateFilteringInputState(this.form);">
 										<option value="0" id="portInputDisable" selected="selected">Disable</option>
 										<option value="1" id="portInputEnable">Enable</option>
 									</select></td>
@@ -756,14 +756,14 @@
 									<td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
 								</tr>
 								<tr>
-									<td class="head" id="ForwardSesLimit">Limit TCP session per ip</td>
-									<td><input type="text" name="ForwardSesLimit" class="half" maxlength="5">
+									<td class="head" id="ForwardSesLimit_td">Limit TCP session per ip</td>
+									<td><input type="text" id="ForwardSesLimit" name="ForwardSesLimit" class="half" maxlength="5">
 										<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
 								</tr>
 								<tr id="dnsToLocalRedirRow">
-									<td class="head" id="dnsToLocalRedir">Redirect all DNS to Local server</td>
+									<td class="head" id="dnsToLocalRedir_td">Redirect all DNS to Local server</td>
 									<td>
-										<select name="dnsToLocalRedir" class="half">
+										<select id="dnsToLocalRedir" name="dnsToLocalRedir" class="half">
 											<option value="0" id="dnsDisable" selected="selected">Disable</option>
 											<option value="1" id="dnsEnable">Enable</option>
 										</select>

@@ -87,7 +87,7 @@
 						return false;
 					}
 				}
-				ajaxShowTimer(document.formSamba, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.formSamba, 'timerReloader', _('message apply'), 5);
 				return true;
 			}
 		</script>

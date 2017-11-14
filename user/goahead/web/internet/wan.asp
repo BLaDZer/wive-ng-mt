@@ -163,16 +163,16 @@
 					return false;
 				}
 				form.wan_mtu.value = +form.wan_mtu.value + "";
-				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR) {
-					if (!ajaxPostForm(_('wan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
+				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR)
+					if (!confirm(_('wan reboot confirm')))
 						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
-						form.reboot.value = "0";
+					else {
+						form.reboot.value = "1";
+						ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)
 					}
-				}
-				else {
+				else
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
-					form.reboot.value = "0";
-				}
+
 				return true;
 			}
 
@@ -279,7 +279,7 @@
 					<p id="wIntroduction"></p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" name="wanCfg" action="/goform/setWan" onSubmit="return CheckValues(this);">
+					<form method="POST" name="wanCfg" action="/goform/setWan">
 					<table class="form">
 						<col style="width: 40%" />
 						<col style="width: 60%" />
@@ -414,17 +414,18 @@
 								<td class="head" id="wMacAddr">WAN MAC address</td>
 								<td>
 									<input name="wanMac" id="wanMac" class="mid">
-									<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
+									<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
 								</td>
 							</tr>
 						</tbody>
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply" id="wApply">&nbsp;&nbsp;
+							<td>
+								<input type="submit" class="normal" value="Apply" id="wApply" onClick="return CheckValues(this.form);">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
-								<input type="hidden" value="1" name="reboot">
+								<input type="hidden" value="0" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>

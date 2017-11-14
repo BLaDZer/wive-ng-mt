@@ -393,16 +393,17 @@
 			}
 
 			function ProfileOnChange(form) {
-				if (form.spotProfile.value != "manual" && form.spotProfile.value != NVRAM_chilli_profile && NVRAM_chilli_profile != 'manual' && NVRAM_chilli_profile != '0') {
-					if (confirm(_("hotspot profile change"))) {
-						var br			= getBrowser();
-						resetform		= document.spotCfgReset;
-						resetform.profile.value	= form.spotProfile.value;
-						ajaxShowTimer(resetform, 'timerReloader', _('message apply'), 15);
-						if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
-							resetform.submit();
+				if (form.spotProfile.value != "manual" && form.spotProfile.value != NVRAM_chilli_profile)
+					if (!(NVRAM_chilli_profile == 'manual' || NVRAM_chilli_profile == '0' || NVRAM_chilli_profile == '')) {
+						if (confirm(_("hotspot profile change"))) {
+							var br			= getBrowser();
+							resetform		= document.spotCfgReset;
+							resetform.profile.value	= form.spotProfile.value;
+							ajaxShowTimer(resetform, 'timerReloader', _('message apply'), 15);
+							if ((br.browser != "ie") || (br.browser != "edge") || (br.browser != "ie11") || (br.browser != "firefox"))
+								resetform.submit();
+						}
 					}
-				}
 				for(var i = 0; i < Profiles.length; i++) {
 					var tmp = Profiles[i];
 					if (tmp[0] == form.spotProfile.value) {
@@ -544,7 +545,7 @@
 					<hr />
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="spotCfgReset" action="/goform/resetHotspot"><input type="hidden" id="profile" name="profile"></form>
-					<form method="POST" name="spotCfg" action="/goform/setHotspot" onSubmit="return CheckValue(this);">
+					<form method="POST" name="spotCfg" action="/goform/setHotspot">
 						<table class="form">
 							<col style="width: 40%" />
 							<col style="width: 45%" />
@@ -787,9 +788,9 @@
 						<table class="button">
 							<tr>
 								<td>
-									<input type="submit" class="normal" value="Apply" id="sApply">&nbsp;&nbsp;
+									<input type="submit" class="normal" value="Apply" id="sApply" onClick="return CheckValue(this.form);">&nbsp;&nbsp;
 									<input type="reset" class="normal" value="Cancel" id="sCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="sReset" onClick="resetValues(this.form);">
+									<input type="button" class="normal" value="Reset" id="sReset" onClick="resetValues(this.form, 5);">
 									<input type="hidden" name="reset" value="0">
 									<input type="hidden" name="chilliEnable">
 									<input type="hidden" name="nodogEnable">

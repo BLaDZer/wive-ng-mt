@@ -135,7 +135,10 @@
 					}
 				}
 
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				if (form.lanIp.value != LAN_IP)
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30, 'http://' + form.lanIp.value);
+				else
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 				return false;
 			}
 
@@ -195,6 +198,12 @@
 				}
 			}
 
+			function resetValues(form, time) {
+				if (confirm(_('message reset confirm'))) {
+					form.reset.value = "1";
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), time, 'http://192.168.1.1');
+				}
+			}
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -205,7 +214,7 @@
 				<p id="lIntroduction"></p>
 				<hr>
 				<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-				<form method="POST" name="lanCfg" action="/goform/setLan" onSubmit="return checkValues(this);">
+				<form method="POST" name="lanCfg" action="/goform/setLan">
 					<table class="form">
 						<tr>
 							<td class="title" colspan="2" id="lSetup">LAN Interface Setup</td>
@@ -271,9 +280,9 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply"  id="lApply">&nbsp;&nbsp;
+							<td><input type="submit" class="normal" value="Apply"  id="lApply"  onClick="return checkValues(this.form);">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form);">
+								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 30);">
 								<input type="hidden" name="reset" value="0">
 								<input name="dhcpStart" type="hidden">
 								<input name="dhcpEnd" type="hidden">

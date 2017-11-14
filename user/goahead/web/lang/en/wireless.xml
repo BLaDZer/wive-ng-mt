@@ -87,6 +87,7 @@
   <message msgid="basic ht txstream" msgstr="HT TxStream" />
   <message msgid="basic ht rxstream" msgstr="HT RxStream" />
   <message msgid="basic mbssid mode" msgstr="MBSSID Mode" />
+  <message msgid="basic mbssid mode all" msgstr="2.4GHz &amp; 5GHz" />
   <message msgid="basic wds mode" msgstr="WDS Mode" />
   <message msgid="basic apcli mode" msgstr="APCLI Mode" />
   <message msgid="basic block coding" msgstr="Space-Time Block Coding" />

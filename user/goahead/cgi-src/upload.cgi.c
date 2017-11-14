@@ -108,23 +108,23 @@ static int mtd_write_firmware(char *filename, int offset, int len)
 /* check image size before erase flash and write image */
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset, len, filename);
     status = system(cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 	if (get_content_separator(separator, sizeof(separator), &file_size) < 0)
 	{
 		html_error(RFC_ERROR);
-		return -1;
+		goto err;
 	}
 
 	// Get multipart file name
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
 	if (filename == NULL)
 	{
 		html_error(RFC_ERROR);
-		return -1;
+		goto err;
 	}
 
 	// Wait until file is completely uploaded
@@ -307,7 +307,7 @@ int main(int argc, char *argv[])
 	if (fd == NULL)
 	{
 		html_error(RFC_ERROR);
-		return -1;
+		goto err;
 	}
 
 	// Parse parameters
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 	{
 		fclose(fd);
 		html_error(RFC_ERROR);
-		return -1;
+		goto err;
 	}
 
 	fclose(fd);
@@ -337,14 +337,14 @@ int main(int argc, char *argv[])
 		if (find->content_type == NULL)
 		{
 			html_error(RFC_ERROR);
-			return -1;
+			goto err;
 		}
 
 		if (!check_binary_content_type(find->content_type))
 		{
 			sprintf(err_msg, "Unsupported content-type for binary data: %s", find->content_type);
 			html_error(err_msg);
-			return -1;
+			goto err;
 		}
 
 		file_begin = find->start_pos;
@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
 		file_size  = file_end - file_begin;
 	} else {
 		html_error("No firmware binary file");
-		return -1;
+		goto err;
 	}
 
 	release_parameters(params);
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
 	if(file_size > MAX_IMG_SIZE || file_size < MIN_FIRMWARE_SIZE){
 		sprintf(err_msg, "Check image error: oversized uncompatable image. Size: %d", (int)file_size);
 		html_error(err_msg);
-    		return -1;
+		goto err;
 	}
 #endif
 
@@ -370,7 +370,7 @@ int main(int argc, char *argv[])
 	{
 		sprintf(err_msg, "Check image error: corrupted or uncompatable image. Size: %d", (int)file_size);
 		html_error(err_msg);
-		return -1;
+		goto err;
 	}
 
 	// firmware update timeouts
@@ -379,17 +379,23 @@ int main(int argc, char *argv[])
 	if (reset_rwfs)
 	{
 		system("fs restore > /dev/null 2>&1");
-		html_success(16*(IMAGE1_SIZE/0x100000) + 35);
+		html_success(8*(IMAGE1_SIZE/0x100000) + 20);
 	} else
-		html_success(16*(IMAGE1_SIZE/0x100000) + 25);
+		html_success(8*(IMAGE1_SIZE/0x100000) + 10);
+
+	// flush after every external command call or html_error print
+	fflush(stdout);
 
 	// flash write
 	if (mtd_write_firmware(filename, (int)file_begin, (int)file_size) == -1)
 	    html_error("MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
 
-	sleep (3);
+	// flush after every external command call or html_error print
 	fflush(stdout);
-	// direct call to kernel for reboot
-	syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
+
 	return 0;
+err:
+	// flush after every external command call or html_error print
+	fflush(stdout);
+	return -1;
 }

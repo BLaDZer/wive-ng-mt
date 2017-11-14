@@ -63,8 +63,8 @@
 
 			function checkSetupForm(form){
 				if (form.RemoteSysLogIP.value != '') {
-					if (!validateIP(form.RemoteSysLogIP)) {
-						alert(_("syslog invalid ip"));
+					if (!validateDNS(form.RemoteSysLogIP) && !validateIP(form.RemoteSysLogIP)) {
+						alert(_("syslog invalid ip dns"));
 						form.RemoteSysLogIP.select();
 						form.RemoteSysLogIP.focus();
 						return false;
@@ -93,7 +93,7 @@
 					<hr>
 					<!-- ================= System log setup ================= -->
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="post" name="LogdSetup" action="/goform/setuplog" onSubmit="checkSetupForm(this);">
+					<form method="post" name="LogdSetup" action="/goform/setuplog" onSubmit="return checkSetupForm(this);">
 					<table class="form">
 						<tr>
 							<td class="title" colspan="2" id="syslogSetup">System Log Setup:</td>

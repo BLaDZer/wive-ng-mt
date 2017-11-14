@@ -62,7 +62,7 @@
 					alert(_("services ddns specify"));
 					return false;
 				}
-				ajaxShowTimer(document.DDNS, 'timerReloader', _('message apply'), 15);
+				ajaxShowTimer(document.DDNS, 'timerReloader', _('message apply'), 5);
 				return true;
 			}
 

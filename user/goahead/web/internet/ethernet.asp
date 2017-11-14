@@ -145,6 +145,14 @@
 				}
 				clearInterval(stat_interval);
 			}
+
+			function resetValues(form) {
+				if (confirm(_('ethernet reset confirm'))) {
+					form.reboot.value = "1";
+					form.reset.value = "1";
+					ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress);
+				}
+			}
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -221,9 +229,10 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);">&nbsp;&nbsp;
+								<td>
+									<input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);">&nbsp;&nbsp;
 									<input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="this.form.reboot.value='0'; resetValues(this.form);">
+									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
 									<input type="hidden" name="reboot" value="1">
 								</td>

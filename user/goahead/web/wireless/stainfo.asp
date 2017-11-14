@@ -208,7 +208,7 @@
 			}
 
 			function wirelessModeChange() {
-				if (document.sta.stalistWirelessModeSelect.selectedIndex == 0) {
+				if (document.getElementById('stalistWirelessModeSelect').selectedIndex == 0) {
 					wirelessMode			= "Basic";
 					wirelessTabeWidth		= "750px";
 					wirelessTableColumn		= 9;
@@ -375,7 +375,7 @@
 				html +=	'<tr>';
 				html += '<td class="title" colspan="' + (wirelessTableColumn - 1) + '" id="stalistWirelessStations">Wireless Station List</td>';
 				html += '<td class="title" colspan="1" style="width: 90px; text-align: right;">';
-				html += '<select name="stalistWirelessModeSelect" class="half" onChange="wirelessModeChange();">';
+				html += '<select id="stalistWirelessModeSelect" name="stalistWirelessModeSelect" class="half" onChange="wirelessModeChange();">';
 				html += '<option value="Basic" id="stalistWirelessModeBasic" ' + i + '>Basic</option>';
 				html += '<option value="Advanced" id="stalistWirelessModeAdvanced" ' + j + '>Advanced</option>';
 				html += '</select>';

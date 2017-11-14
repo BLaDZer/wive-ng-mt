@@ -131,10 +131,13 @@ int main (int argc, char *argv[])
 	import(filename, file_begin, file_end - file_begin);
 
 	sleep (3);
+	// flush after every external command call or html_error print
 	fflush(stdout);
 	// direct call to kernel for reboot
 	syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
 err:
+	// flush after every external command call or html_error print
+	fflush(stdout);
 	free(boundary);
 	exit(0);
 }

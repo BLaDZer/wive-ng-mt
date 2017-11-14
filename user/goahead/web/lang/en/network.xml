@@ -233,6 +233,7 @@
 	<message msgid="ethernet title"				msgstr="Ethernet Port Settings" />
 	<message msgid="ethernet introduction"			msgstr="You can set up ethernet port" />
 	<message msgid="ethernet reboot confirm"		msgstr="For apply settings needs to reboot you router. Reboot router?" />
+	<message msgid="ethernet reset confirm"			msgstr="Settings will be reset to factory defaults and router will be rebooted. Continue?" />
 	<message msgid="ethernet port management"		msgstr="Ethernet Port Settings" />
 	<message msgid="ethernet wan port"			msgstr="WAN port" />
 	<message msgid="ethernet lan port"			msgstr="First LAN port" />

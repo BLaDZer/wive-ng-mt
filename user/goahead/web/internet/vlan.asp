@@ -162,10 +162,11 @@
 				document.getElementById('sip_stbVLAN').value = value;
 				document.getElementById('sip_stbVLANprio').value = valuePrio;
 
-				if (!ajaxPostForm(_('vlan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
+				if (!confirm(_('vlan reboot confirm')))
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
-					form.reboot.value = "0";
-					form.submit();
+				else {
+					form.reboot.value = "1";
+					!ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)
 				}
 				return true;
 			}
@@ -231,10 +232,11 @@
 				form.vlan_lan.value			= vlan_lan;
 				form.vlan_lan_isolate.value	= vlan_lan_isolate;
 
-				if (!ajaxPostForm(_('vlan reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
+				if (!confirm(_('vlan reboot confirm')))
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
-					form.reboot.value = "0";
-					form.submit();
+				else {
+					form.reboot.value = "1";
+					!ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)
 				}
 				return true;
 			}
@@ -559,10 +561,10 @@
 
 			function addWLANVLAN()
 			{
-				var edit	= document.getElementById('lan_id').value;
 				var num		= document.getElementById('vlanMode_wlan_ap_select').value;
 				var iface	= (document.getElementById('vlanMode_wlan_iface_select').value == 0) ? "LAN" : "WAN";
 				var vlan	= document.getElementById('vlanMode_wlan_vlan_input').value;
+				var ap		= document.getElementById('vlanMode_wlan_ap_select').value;
 				var id		= 0;
 
 				for (var i = 0; i <= num; i++) 
@@ -579,10 +581,10 @@
 					return false;
 				}
 
-				if (wifiLan.indexOf(vlan) != -1 ||
-					wifiWan.indexOf(vlan) != -1 ||
-					wifiLanINIC.indexOf(vlan) != -1 ||
-					wifiWanINIC.indexOf(vlan) != -1 ) {
+				if ((wifiLan.indexOf(vlan) != ap && wifiLan.indexOf(vlan) != -1) ||
+					(wifiWan.indexOf(vlan) != ap && wifiWan.indexOf(vlan) != -1) ||
+					(wifiLanINIC.indexOf(vlan) != ap && wifiLanINIC.indexOf(vlan) != -1) ||
+					(wifiWanINIC.indexOf(vlan) != ap && wifiWanINIC.indexOf(vlan) != -1)) {
 						alert(_("vlan vlanid exist"));
 						document.getElementById('vlanMode_wlan_vlan_input').select();
 						document.getElementById('vlanMode_wlan_vlan_input').focus();
@@ -844,6 +846,15 @@
 				document.getElementById('vlanModeLANVLAN_table').innerHTML = html;
 				displayElement('vlanModeLANVLAN_table', vlanLan.length > 0);
 			}
+
+			function resetValues(form) {
+				if (confirm(_('vlan reset confirm'))) {
+					form.reboot.value = "1";
+					form.reset.value = "1";
+					ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress);
+				}
+			}
+
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -948,8 +959,8 @@
 					<tr>
 						<td><input type="submit" class="normal" value="Apply"  id="vlanApply"  onClick="return checkValues(this.form);">&nbsp;&nbsp;
 							<input type="button" class="normal" value="Cancel" id="vlanCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-							<input type="button" class="normal" value="Reset"  id="vlanReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
-							<input type="hidden" value="1" name="reboot">
+							<input type="button" class="normal" value="Reset"  id="vlanReset"  onClick="resetValues(this.form, 5);">
+							<input type="hidden" value="0" name="reboot">
 							<input type="hidden" value="0" name="reset">
 						</td>
 					</tr>
@@ -1020,7 +1031,7 @@
 						<tr>
 							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);">&nbsp;&nbsp;
 								<input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="this.form.reboot.value = 0; resetValues(this.form, 5);">
+								<input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="resetValues(this.form, 5);">
 								<input type="hidden" value="new" id="lan_id">
 								<input type="hidden" value="" name="wifi_lan">
 								<input type="hidden" value="" name="wifi_lan_inic">
@@ -1028,7 +1039,7 @@
 								<input type="hidden" value="" name="wifi_wan_inic">
 								<input type="hidden" value="" name="vlan_lan">
 								<input type="hidden" value="" name="vlan_lan_isolate">
-								<input type="hidden" value="1" name="reboot">
+								<input type="hidden" value="0" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>

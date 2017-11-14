@@ -19,11 +19,17 @@ function portName(num) {
 				if (num == NVRAM_wan_port && NVRAM_OperationMode == '1') return "WAN";
 				if (num == NVRAM_sip_port) return "SIP";
 				if (num == NVRAM_stb_port) return "TV";
-				if (NVRAM_OperationMode != '1' && ETHER_PORTS == 3) return "LAN" + (num - 1);
-				if (NVRAM_wan_port == '0')
-					return (NVRAM_lan_port == 'near') ? "LAN " + num : "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - num);
-				else
-					return (NVRAM_lan_port == 'near') ? "LAN " + (ETHER_PORTS + ETHER_FIRST_PORT - num - 1) : "LAN " + (num + 1);
+				if (NVRAM_OperationMode != '1' && ETHER_PORTS == 3) return "LAN " + ((4 - num == 0) ? '(WAN)' : (4 - num));
+				if (NVRAM_wan_port == '0') {
+					var num_near = (num == 0 || num == 5) ? '(WAN)' : num;
+					var num_dist = (ETHER_PORTS + ETHER_FIRST_PORT - num == 0 || ETHER_PORTS + ETHER_FIRST_PORT - num == 5) ? '(WAN)' : (ETHER_PORTS + ETHER_FIRST_PORT - num);
+					return (NVRAM_lan_port == 'near') ? "LAN " + num_near : "LAN " + num_dist;
+				}
+				else {
+					var num_near = (ETHER_PORTS + ETHER_FIRST_PORT - num - 1 == 0 || ETHER_PORTS + ETHER_FIRST_PORT - num - 1 == 5) ? '(WAN)' : (ETHER_PORTS + ETHER_FIRST_PORT - num - 1);
+					var num_dist = (num + 1 == 0 || num + 1== 5) ? '(WAN)' : (num + 1);
+					return (NVRAM_lan_port == 'near') ? "LAN " + num_near : "LAN " + num_dist;
+				}
 	}
 }
 

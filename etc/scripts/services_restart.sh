@@ -117,6 +117,9 @@ if [ "$MODE" = "misc" ] || [ "$MODE" = "all" ]; then
     if [ -e /etc/init.d/snmpd ]; then
         service snmpd restart
     fi
+    if [ -e /etc/init.d/crontab ]; then
+        service crontab restart
+    fi
     if [ -e /etc/init.d/inetd ]; then
         service inetd restart
     fi

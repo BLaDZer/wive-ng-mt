@@ -232,7 +232,7 @@
 					<p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" action="/goform/editRouting" name="editRouting" onSubmit="return checkValues(this);">
+					<form method="POST" action="/goform/editRouting" name="editRouting">
 						<div id="ajxCtxRoutingTable"></div>
 						<div id="dynamicRoutingDiv" style="display:none;">
 							<table class="form">
@@ -306,7 +306,7 @@
 								<td>
 									<input type="hidden" name="routingTableDiff" >
 									<input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button">&nbsp;&nbsp;
-									<input value="Apply" id="routingApply" class="normal" type="submit">&nbsp;&nbsp;
+									<input type="submit" class="normal" value="Apply" id="routingApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Cancel" id="routingCancel" name="routingCancel" onClick="window.location.reload();">&nbsp;&nbsp;
 									<input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">

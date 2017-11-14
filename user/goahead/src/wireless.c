@@ -1210,8 +1210,8 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 	char_t *reset    = websGetVar(wp, T("reset"), T(""));
 
 	if (!CHK_IF_DIGIT(reset, 0)) {
-		nvram_fromdef(RT2860_NVRAM, 10, "WdsEnable", "WdsList", "WdsIfName", "WdsPhyMode", 
-						"WdsEncrypType", "Wds0Key", "Wds1Key", "Wds2Key", "Wds3Key", "WdsNum");
+		nvram_fromdef(RT2860_NVRAM, 10, "WdsEnable", "WdsList", "WdsIfName", "WdsPhyMode", "WdsEncrypType",
+						"Wds0Key", "Wds1Key", "Wds2Key", "Wds3Key", "WdsNum");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);

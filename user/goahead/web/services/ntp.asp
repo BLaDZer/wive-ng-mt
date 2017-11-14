@@ -179,7 +179,7 @@
 					<hr />
 					<!-- ================= NTP Settings ================= -->
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" name="NTP" action="/goform/NTP" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+					<form method="POST" name="NTP" action="/goform/NTP" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 5);">
 					<table class="form">
 						<col style="width: 40%"/>
 						<col style="width: 50%"/>

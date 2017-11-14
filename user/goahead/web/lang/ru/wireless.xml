@@ -87,6 +87,7 @@
   <message msgid="basic ht txstream" msgstr="Количество пространственных потоков передачи" />
   <message msgid="basic ht rxstream" msgstr="Количество пространственных потоков приёма" />
   <message msgid="basic mbssid mode" msgstr="Режим MBSSID" />
+  <message msgid="basic mbssid mode all" msgstr="2.4GHz и 5GHz" />
   <message msgid="basic wds mode" msgstr="Режим WDS" />
   <message msgid="basic apcli mode" msgstr="Режим APCLI" />
   <message msgid="basic block coding" msgstr="Блочное пространственно-временное кодирование" />
@@ -210,7 +211,7 @@
   <message msgid="adv tmpblockafterkick range" msgstr="0 - 200 запросов, по умолчанию 14" />
   <message msgid="adv tmpblockafterkick title" msgstr="" />
   <message msgid="adv invalid tmpblockafterkick" msgstr="Неверное временное блокирование запросов от сброшенного клиента" />
-  
+
   <message msgid="adv kickstarssilowft" msgstr="Отключить клиента в режиме быстрого подключения ниже" />
   <message msgid="adv kickstarssilowft range" msgstr="0 - -100 dBm, по умолчанию -79" />
 

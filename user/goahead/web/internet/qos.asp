@@ -179,7 +179,7 @@
 					<div style="display:none;" id="fastpath_warning">For correct operation of QoS (modes: Simple Priority-Based, Complex, Codel) need turning off <b>NAT offload mode</b>. Please note that turning off <b>NAT offload mode</b> will very increase CPU usage.</div>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="post" name="QoSSetup" action="/goform/QoSSetup" OnSubmit="return checkValues(this);">
+					<form method="post" name="QoSSetup" action="/goform/QoSSetup">
 						<table class="form">
 							<tr>
 								<td class="title" colspan="2" id="QoSSetupStr">QoS Setup</td>
@@ -269,9 +269,9 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="submit" class="normal" value="Apply" id="QoSApply">&nbsp;&nbsp;
+								<td><input type="submit" class="normal" value="Apply" id="QoSApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
 									<input type="button" class="normal" value="Cancel" id="QoSCancell" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="QoSReset" onClick="resetValues(this.form);"></td>
+									<input type="button" class="normal" value="Reset" id="QoSReset" onClick="resetValues(this.form, 15);"></td>
 									<input value="0" name="reset" type="hidden">
 							</tr>
 						</table>

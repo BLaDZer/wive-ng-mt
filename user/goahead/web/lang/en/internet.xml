@@ -71,6 +71,7 @@
 	<message msgid="vlan invalid vlanid"			msgstr="Entered invalid VLAN ID" />
 	<message msgid="vlan invalid vlan range"		msgstr="Invalid VLAN range" />
 	<message msgid="vlan reboot confirm"			msgstr="For apply settings needs to reboot you router. Do you want to proceed?" />
+	<message msgid="vlan reset confirm"			msgstr="Settings will be reset to factory defaults and router will be rebooted. Continue?" />
 	<message msgid="vlan tvsip title"			msgstr="TV/SIP Port Settings" />
 	<message msgid="vlan tvsip introduction"		msgstr="Section to configure VLAN on TV/STB/SIP port" />
 	<message msgid="vlan tvsip tv stb"			msgstr="TV/STB/SIP Port 1" />

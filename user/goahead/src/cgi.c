@@ -327,8 +327,12 @@ void websCgiCleanup()
 				bfree(B_L, cgip->stdOut);
 				bfree(B_L, cgip);
 
-				if(wp->has_firmware_upload_clean)
-					reboot_now();
+				if(wp->has_firmware_upload_clean) {
+					sleep (3);
+					fflush(stdout);
+					// direct call to kernel for reboot
+					syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
+				}
 			}
 		}
 	}

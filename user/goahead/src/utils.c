@@ -367,7 +367,7 @@ static void setOpMode(webs_t wp, char_t *path, char_t *query)
 	nvram_close(RT2860_NVRAM);
 
 	/* Output timer for reloading */
-	outputTimerForReload(wp, "", 80000);
+	outputTimerForReload(wp, "", 60000);
 
 	/* Reboot */
 	reboot_now();
@@ -435,7 +435,7 @@ static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
 		/* Output timer for reloading */
-		outputTimerForReload(wp, "" /* submitUrl */, 80000);
+		outputTimerForReload(wp, "" /* submitUrl */, 60000);
 
 		/* Reboot */
 		reboot_now();
@@ -450,7 +450,7 @@ static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 static void reboot_web(webs_t wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
-	outputTimerForReload(wp, "", 80000);
+	outputTimerForReload(wp, "", 60000);
 
 	/* only by save and reboot logic must save rwfs */
 	doSystem("fs save > /dev/null 2>&1");

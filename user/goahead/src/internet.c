@@ -812,7 +812,6 @@ static void setLan(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_USER_SAMBA)
 	doSystem("service samba restart");
 #endif
-
 	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -849,7 +848,7 @@ static void setTvSipVLAN(webs_t wp, char_t *path, char_t *query)
 	}
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
-		outputTimerForReload(wp, "", 80000);
+		outputTimerForReload(wp, "", 60000);
 		reboot_now();
 	} else {
 		websHeader(wp);
@@ -886,7 +885,7 @@ static void setWlanLanVLAN(webs_t wp, char_t *path, char_t *query)
 	}
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
-	    outputTimerForReload(wp, "", 80000);
+	    outputTimerForReload(wp, "", 60000);
 	    reboot_now();
 	} else {
 	    websHeader(wp);
@@ -897,7 +896,7 @@ static void setWlanLanVLAN(webs_t wp, char_t *path, char_t *query)
 /* goform/restoremac */
 static void restoremac(webs_t wp, char_t *path, char_t *query)
 {
-	outputTimerForReload(wp, "", 80000);
+	outputTimerForReload(wp, "", 60000);
 	doSystem("fs factory_mac > /dev/console 2>&1");
 	reboot_now();
 }
@@ -1035,7 +1034,7 @@ static void setWan(webs_t wp, char_t *path, char_t *query)
 
 		// Reboot
 		if (CHK_IF_DIGIT(reboot, 1)) {
-			outputTimerForReload(wp, "", 80000);
+			outputTimerForReload(wp, "", 60000);
 			reboot_now();
 			return;
 		}
@@ -1071,10 +1070,9 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 13, "IPv6OpMode", "IPv6IPAddr",
-			"IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
-			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc", "IPv6AllowForward",
-			"Ipv6InVPN", "IPv6ManualMTU", "radvdEnabled", "dhcpv6Enabled");
+		nvram_fromdef(RT2860_NVRAM, 15, "IPv6OpMode", "IPv6IPAddr", "IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
+			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc",
+			"IPv6AllowForward", "Ipv6InVPN", "IPv6ManualMTU", "radvdEnabled", "dhcpv6Enabled");
 			int ipv6_mtu = nvram_get_int(RT2860_NVRAM, "IPv6ManualMTU", -1);
 			if (ipv6_mtu > 0)
 				nvram_set(RT2860_NVRAM, "IPv6ManualMTU", "0");

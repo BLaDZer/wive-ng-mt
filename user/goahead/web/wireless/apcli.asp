@@ -19,6 +19,8 @@
 			Butterlate.setTextDomain("wireless");
 			Butterlate.setTextDomain("buttons");
 
+			var interval;
+
 			function initTranslation() {
 				_TR("apcliTitle",				"apcli title");
 				_TR("apcliParameters",				"apcli param");
@@ -73,7 +75,7 @@
 				}
 
 				ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);
-				setInterval('ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);', 5000);
+				interval = setInterval('ajaxLoadElement("apcliStatusData", "/wireless/apcli-status.asp", showAPCliStatus);', 5000);
 
 				// Hide 'SCAN' buttons if IE8 (no SVG support)
 				var browser = getBrowser();
@@ -121,8 +123,8 @@
 				}
 
 				form.apcli_interface.disabled = false;
-				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
-				form.submit();
+				clearInterval(interval);
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 				return true;
 			}
 
@@ -274,7 +276,7 @@
 						<tr>
 							<td><input type="submit" class="normal" value="Apply"  id="apcliApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
 								<input type="button" class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">&nbsp; &nbsp;
-								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 5);">
+								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 15);">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>
