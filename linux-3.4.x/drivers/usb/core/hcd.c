@@ -2599,6 +2599,8 @@ void usb_remove_hcd(struct usb_hcd *hcd)
 	usb_put_dev(hcd->self.root_hub);
 	usb_deregister_bus(&hcd->self);
 	hcd_buffer_destroy(hcd);
+
+	hcd->flags = 0;
 }
 EXPORT_SYMBOL_GPL(usb_remove_hcd);
 
