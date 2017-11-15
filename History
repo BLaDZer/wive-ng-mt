@@ -3576,40 +3576,41 @@
 65) kernel: usb: usbhid: fix out-of-bounds bug.<br>
 66) kernel: usb: hcd: initialize hcd->flags to 0 when rm hcd.<br>
 67) kernel: net: small increase txqlen at default and use in all drivers.<br>
-68) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
-69) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
-70) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
-71) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
-72) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-73) kernel: net: sched: fix error recovery at qdisc creation.<br>
-74) kernel: net: sched: sch_htb: fix crash on init failure.<br>
-75) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
-76) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
-77) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
-78) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
-79) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
-80) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
-81) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
-82) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-83) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
-84) kernel: net: ipv6: add rt6_get_cookie() function.<br>
-85) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
-86) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
-87) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
-88) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-89) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-90) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-91) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-92) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-93) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-94) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
-95) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-96) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
-97) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
-98) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
-99) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
-100) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
-101) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+68) kernel: net: ipsec: do not ignore crypto err in ah4 input.<br>
+69) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
+70) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
+71) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
+72) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
+73) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+74) kernel: net: sched: fix error recovery at qdisc creation.<br>
+75) kernel: net: sched: sch_htb: fix crash on init failure.<br>
+76) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
+77) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
+78) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
+79) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
+80) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
+81) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
+82) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
+83) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+84) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
+85) kernel: net: ipv6: add rt6_get_cookie() function.<br>
+86) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
+87) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
+88) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
+89) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+90) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+91) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+92) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+93) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+94) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+95) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+96) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
+97) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+98) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+99) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+100) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
+101) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+102) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
 <br>
 <br>
 <br>
