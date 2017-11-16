@@ -1308,8 +1308,8 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			    UCHAR KickOutDelay = pMbss->RssiLowForStaKickOutDelay;
 
 			    /* if client active and traffic high > ~ 32kbit/s need increase kick out delay for roam smooth */
-			    if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < (pAd->ApCfg.EntryLifeCheck/2))
-				    && ((pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount) > 15)) {
+			    if ((pEntry->PsMode != PWR_SAVE) && (pEntry->ContinueTxFailCnt < (pAd->ApCfg.EntryLifeCheck/3))
+				    && ((pEntry->OneSecTxNoRetryOkCount + pEntry->OneSecTxRetryOkCount) > 15) && (pEntry->NoDataIdleCount < 5)) {
 				    KickOutDelay = (pMbss->RssiLowForStaKickOutDelay+(pMbss->RssiLowForStaKickOutDelay/3));
 				    DBGPRINT(RT_DEBUG_TRACE, ("%s STA %02x:%02x:%02x:%02x:%02x:%02x high traffic, increase kickout time to [%d] traffic [%d]\n",
 					    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), KickOutDelay,

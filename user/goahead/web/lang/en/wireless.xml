@@ -126,15 +126,15 @@
   <message msgid="basic roaming rssi low delay" msgstr="How time rssi check before kick" />
   <message msgid="basic roaming probe rssi" msgstr="Ignore probe req due to weak signal" />
   <message msgid="basic roaming probe times range" msgstr="  0 - 10 times, default 2" />
-  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, default -14" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, default -11" />
   <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, default 0 (off)" />
   <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, default 0 (off)" />
   <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, default -68" />
   <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, default 0 (off)" />
-  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default -75" />
-  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default -77" />
-  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 10" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -76" />
+  <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, default -78" />
+  <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, default -80" />
+  <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 seconds, default 15" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, default -70" />
   <message msgid="basic roaming rrm" msgstr="Radio Resource Managment 802.11K" />
   <message msgid="basic roaming ft" msgstr="Fast Transition 802.11R" />
   <message msgid="basic roaming rc inic" msgstr="Regulatory Class (5GHz)" />
@@ -236,7 +236,7 @@
   <message msgid="adv invalid tmpblockafterkick" msgstr="Invalid temporary block probe/assoc req from kicked client" />
 
   <message msgid="adv kickstarssilowft" msgstr="Auto disonnect sta if rssi low (FT clients)" />
-  <message msgid="adv kickstarssilowft range" msgstr="0 - -100 dBm, default: -79" />
+  <message msgid="adv kickstarssilowft range" msgstr="0 - -100 dBm, default: -82" />
 
   <message msgid="adv no mssid_1" msgstr="Please specify Network Name (SSID)" />
   <message msgid="adv no beacon" msgstr="Please specify Beacon Interval" />
