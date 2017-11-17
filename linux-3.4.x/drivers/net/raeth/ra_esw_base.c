@@ -16,6 +16,7 @@
 #include "ra_esw_base.h"
 #include "ra_esw_mt7620.h"
 #include "ra_gsw_mt7530.h"
+#include "ra_phy.h"
 
 #if !defined (CONFIG_MT7530_GSW)
 #if defined (CONFIG_RALINK_MT7620)
@@ -439,6 +440,9 @@ static void esw_isr_wq_handler(struct work_struct *work)
 {
 	u32 val_isr;
 #if defined (CONFIG_MT7530_GSW)
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(0);
+#endif
 	val_isr = esw_reg_get(REG_ESW_ISR);
 	if (val_isr)
 		esw_reg_set(REG_ESW_ISR, val_isr);
@@ -466,6 +470,9 @@ static void esw_isr_wq_handler(struct work_struct *work)
 #elif defined (ESW_RT3X5X)
 	if (val_isr & INT_PORT_ST_CHG)
 		esw_event_link();
+#endif
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
 #endif
 }
 

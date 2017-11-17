@@ -249,7 +249,7 @@ void mt7530_gsw_eee_enable(int is_eee_enabled)
 void mt7530_gsw_eee_on_link(u32 port_id, int port_link, int is_eee_enabled)
 {
 	if (port_id > 4)
-		return;
+	    return;
 
 	/* MT7621/MT7623 ESW need update PHY params on link changed */
 

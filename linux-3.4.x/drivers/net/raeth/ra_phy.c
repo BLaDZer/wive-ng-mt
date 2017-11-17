@@ -7,8 +7,8 @@
 #include <linux/delay.h>
 
 #include "ra_eth_reg.h"
-#include "ra_phy.h"
 #include "mii_mgr.h"
+#include "ra_phy.h"
 
 /* EPHY Vendor ID list */
 #define EV_ICPLUS_PHY_ID0		0x0243
@@ -26,6 +26,9 @@
 #if defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_P5_MAC_TO_PHY_MODE) || \
     defined (CONFIG_GE2_RGMII_AN) || defined (CONFIG_P4_MAC_TO_PHY_MODE)
 static u32 g_phy_id[32] = { 0 };
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+static int ext_phy_mdio_enabled = 1;
+#endif
 
 void ext_gphy_init(u32 phy_addr)
 {
@@ -300,15 +303,15 @@ static void ext_gphy_sfpen(void)
 
 	val = sysRegRead(RALINK_REG_PIODIR);
 	val |= (0x1<<CONFIG_RALINK_GPIO_SFPEN);					// switch pin to output mode (SFP TxEnable)
-	val |= (0x1<<17);							// switch pin to output mode (SFP+ mode 10/1.25Gbps)
-	val &= ~(0x1<<13);							// switch pin to input mode  (Transmitter Fault)
-	val &= ~(0x1<<15);							// switch pin to input mode  (Receiver Loss of Signal)
+	val |= (0x1<<CONFIG_RALINK_GPIO_SFPPL);					// switch pin to output mode (SFP+ mode 10/1.25Gbps)
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPTF);				// switch pin to input mode  (Transmitter Fault)
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPLS);				// switch pin to input mode  (Receiver Loss of Signal)
 	sysRegWrite(RALINK_REG_PIODIR, val);
 
 	printk("Config and enable SFP slot.\n");
 
 	val = sysRegRead(RALINK_REG_PIODATA);
-	val &= ~(0x1<<17);							// set pin to LOW (1.25Gbit/s)
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPPL);				// set pin to LOW (1.25Gbit/s)
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPEN);				// set pin to LOW (SFP Enabled)
 	sysRegWrite(RALINK_REG_PIODATA, val);
 
@@ -317,8 +320,8 @@ static void ext_gphy_sfpen(void)
 }
 #endif
 
-#if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
-static void ext_gphy_mdioswitch(int on)
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+void ext_gphy_mdioswitch(int on)
 {
 	u32 val = 0;
 
@@ -328,33 +331,35 @@ static void ext_gphy_mdioswitch(int on)
 	sysRegWrite(RALINK_REG_GPIOMODE, val);
 
 	val = sysRegRead(RALINK_REG_PIODIR);
-	val |= (0x1<<11);							// switch pin to output mode ext mdio switch)
+	val |= (0x1<<CONFIG_RALINK_GPIO_MDIOSW);				// switch pin to output mode ext mdio switch)
 	sysRegWrite(RALINK_REG_PIODIR, val);
 
-	if (on) {
-		printk("Enable external MDIO.\n");
+	if (on && !ext_phy_mdio_enabled) {
 		val = sysRegRead(RALINK_REG_PIODATA);
 		val |= (0x1<<11);						// set pin to HIGH (external mdio enable)
 		sysRegWrite(RALINK_REG_PIODATA, val);
-	} else {
-		printk("Disable external MDIO.\n");
+		ext_phy_mdio_enabled = 1;
+
+	} else if (!on && ext_phy_mdio_enabled) {
 		val = sysRegRead(RALINK_REG_PIODATA);
 		val &= ~(0x1<<11);						// set pin to LOW (only internal mdio)
 		sysRegWrite(RALINK_REG_PIODATA, val);
+		ext_phy_mdio_enabled = 0;
 	}
-
-	/* wait 200ms ready */
-	mdelay(200);
 }
+#endif
 
+#if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
 static void ext_gphy_reset(void)
 {
 	u32 val = 0;
 
+	printk("Hardware reset EPHY.\n");
+
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
 	/* enable external MDIO use */
 	ext_gphy_mdioswitch(1);
-
-	printk("Hardware reset EPHY.\n");
+#endif
 
 	val = sysRegRead(RALINK_REG_PIODIR);					// GPIO0 used for PE_RST PHY not shared
 	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// switch pin to output mode

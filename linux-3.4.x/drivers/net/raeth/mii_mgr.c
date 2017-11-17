@@ -8,6 +8,7 @@
 #include "ra_compat.h"
 #include "ra_eth_reg.h"
 #include "mii_mgr.h"
+#include "ra_phy.h"
 
 #define MDIO_TIMEOUT		(100 * 1000)
 
@@ -264,13 +265,29 @@ u32 mii_mgr_read(u32 phy_addr, u32 phy_register, u32 *read_data)
 
 	spin_lock(&mii_mgr_lock);
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	if (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+		ext_gphy_mdioswitch(0);
+	else
+		ext_gphy_mdioswitch(1);
+#endif
 #if defined (CONFIG_MT7530_GSW)
-	if (phy_addr == MT7530_MDIO_ADDR)
+	if ((phy_addr == MT7530_MDIO_ADDR)
+#if defined (CONFIG_MAC_TO_GIGAPHY_MODE_ADDR1)
+		&& (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR1)
+#endif
+#if defined (CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+		&& (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+#endif
+	    )
 		result = __mt7530_read(phy_register, read_data);
 	else
 #endif
 		result = __mii_mgr_read(phy_addr, phy_register, read_data);
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
 	spin_unlock(&mii_mgr_lock);
 
 	return result;
@@ -282,13 +299,29 @@ u32 mii_mgr_write(u32 phy_addr, u32 phy_register, u32 write_data)
 
 	spin_lock(&mii_mgr_lock);
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	if (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+		ext_gphy_mdioswitch(0);
+	else
+		ext_gphy_mdioswitch(1);
+#endif
 #if defined (CONFIG_MT7530_GSW)
-	if (phy_addr == MT7530_MDIO_ADDR)
+	if ((phy_addr == MT7530_MDIO_ADDR)
+#if defined (CONFIG_MAC_TO_GIGAPHY_MODE_ADDR1)
+	     && (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR1)
+#endif
+#if defined (CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+	     && (phy_addr != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+#endif
+	    )
 		result = __mt7530_write(phy_register, write_data);
 	else
 #endif
 		result = __mii_mgr_write(phy_addr, phy_register, write_data);
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
 	spin_unlock(&mii_mgr_lock);
 
 	return result;
@@ -304,6 +337,13 @@ u32 mii_mgr_read_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 *read_data)
 	u32 an_state;
 
 	spin_lock(&mii_mgr_lock);
+
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	if (port_num != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+		ext_gphy_mdioswitch(0);
+	else
+		ext_gphy_mdioswitch(1);
+#endif
 
 	/* check AN polling On */
 	an_state = sysRegRead(REG_MDIO_PHY_POLLING);
@@ -347,9 +387,14 @@ u32 mii_mgr_read_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 *read_data)
 
 cl45r_exit:
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
+
 	/* restore AN polling */
 	if (an_state & BIT(31))
 		sysRegWrite(REG_MDIO_PHY_POLLING, an_state | BIT(31));
+
 
 	spin_unlock(&mii_mgr_lock);
 
@@ -363,6 +408,13 @@ u32 mii_mgr_write_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 write_data)
 	u32 an_state;
 
 	spin_lock(&mii_mgr_lock);
+
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	if (port_num != CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2)
+		ext_gphy_mdioswitch(0);
+	else
+		ext_gphy_mdioswitch(1);
+#endif
 
 	/* check AN polling On */
 	an_state = sysRegRead(REG_MDIO_PHY_POLLING);
@@ -405,6 +457,10 @@ u32 mii_mgr_write_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 write_data)
 	result = 1;
 
 cl45w_exit:
+
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
 
 	/* restore AN polling */
 	if (an_state & BIT(31))

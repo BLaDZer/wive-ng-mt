@@ -3554,8 +3554,8 @@
 43) kernel: ralink_raeth: add preconfig for RTL8211D.<br>
 44) kernel: ralink_raeth: add SFP module enable by gpio logic.<br>
 45) kernel: ralink_raeth: add SFP gpio lines init.<br>
-46) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
-47) kernel: ralink_raeth: initial mdio switch support.<br>
+46) kernel: ralink_raeth: add mdio line switch support for mdio access isolate.<br>
+47) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
 48) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
 49) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
 50) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>

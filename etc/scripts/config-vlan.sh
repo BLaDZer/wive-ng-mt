@@ -54,18 +54,6 @@ link_down() {
 	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $state)	> /dev/null 2>&1
 }
 
-reset_port()
-{
-	# arg1:  phy address.
-	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
-	let "value |= 1<<15"
-	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)	> /dev/null 2>&1
-
-	value=$(( $(mii_mgr -g -p $1 -r 0  | sed -e "s/.* = /0x/gi") ))
-	let "value |= 1<<9"
-	mii_mgr -s -p $1 -r 0 -v $(printf "0x%x" $value)	> /dev/null 2>&1
-}
-
 disable_all_ports() {
         for port in `seq 0 4`; do
 	    link_down $port
@@ -73,9 +61,6 @@ disable_all_ports() {
 
 	# external PHY
 	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	    # soft reset external PHY
-	    # reset_port 5
-
 	    # link down
 	    link_down 5
 	fi
@@ -260,14 +245,10 @@ config_igmpsnoop() {
 	    # and enable if forces by user
 	    if [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
 		# make cpu porst static listeners allways others is off (avoid flood)
-		if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
-		    # 5 - 6 ports is cpu ports
-		    snoopmask="0000011"
-		else
-		    # only 6 port used for one rgmii
-		    snoopmask="0000001"
-		fi
-		switch igmpsnoop on 125 "$snoopmask"
+		# only cpu2lan (6 port) used for learning
+		# for future, add support snooping in AP mode, need add in mask real GSW uplink port to
+		snoopmask="0000001"
+		switch igmpsnoop on 100 "$snoopmask"
 
 		# enable snooping and learn
 		for port in `seq 0 6`; do
@@ -353,10 +334,6 @@ config_onergmii()
 		switch pvid $index $pvid
 		let index=index+1
 	    done
-
-	    # config hawdware snooping
-	    config_igmpsnoop "$PMODEMASK"
-
 	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -441,6 +418,9 @@ config_onergmii()
 	    fi
 	fi
 
+	# config hawdware snooping
+	config_igmpsnoop
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -513,9 +493,6 @@ config_dualrgmii()
 	    for port in `seq 5 7`; do
 		switch tag off $port
 	    done
-
-	    # config hawdware snooping
-	    config_igmpsnoop "$1"
          else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -632,6 +609,9 @@ config_dualrgmii()
 	    fi
 	done
 
+	# config hawdware snooping
+	config_igmpsnoop
+
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -700,13 +680,8 @@ config_extdualrgmii()
 	    switch tag off $port
 	done
 
-	# enable all internal switch ports
-	enable_all_ports
-
-	# reconfigure port mode for ext_phy (temp before HW 0x0 issue fix)
-	reset_port 5
-	link_up 5
-	set_physmode_ext_phy
+	# config hawdware snooping
+	config_igmpsnoop
 
 	# clear mac table if vlan configuration changed
 	switch clear

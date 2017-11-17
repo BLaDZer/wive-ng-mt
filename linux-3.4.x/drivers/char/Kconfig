@@ -100,6 +100,26 @@ config RALINK_GPIO_SFPEN
 	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
 	default -1
 
+config RALINK_GPIO_SFPPL
+	int "GPIO N for SFP+ mode control (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
+
+config RALINK_GPIO_SFPTF
+	int "GPIO N for SFP transmitter fault (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
+
+config RALINK_GPIO_SFPLS
+	int "GPIO N for SFP reciver loss signal (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
+
+config RALINK_GPIO_MDIOSW
+	int "GPIO N for hardware switch MDIO line from ExtPHY (default -1 - disabled)."
+	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
+	default -1
+
 config RALINK_GDMA
 	tristate "Ralink SoC GDMA Support"
 	default n

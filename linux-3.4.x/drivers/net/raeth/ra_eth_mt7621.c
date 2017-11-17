@@ -8,9 +8,9 @@
 
 #include "ra_eth_reg.h"
 #include "ra_eth.h"
-#include "ra_phy.h"
 #include "ra_esw_base.h"
 #include "ra_gsw_mt7530.h"
+#include "ra_phy.h"
 
 extern u32 ralink_asic_rev_id;
 
@@ -33,7 +33,6 @@ static void ge2_int2_wq_handler(struct work_struct *work)
 		mt7530_gsw_set_csr_delay((link_speed == 1) ? 1 : 0);
 	}
 #endif
-
 	if (esw_link_status_hook)
 		esw_link_status_hook(port_id, link_state & 0x1);
 }

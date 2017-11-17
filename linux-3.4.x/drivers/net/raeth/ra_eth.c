@@ -9,11 +9,11 @@
 
 #include "ra_compat.h"
 #include "ra_eth_reg.h"
-#include "ra_phy.h"
 #include "ra_esw_rt305x.h"
 #include "ra_esw_mt7620.h"
 #include "ra_eth_mt7621.h"
 #include "ra_gsw_mt7530.h"
+#include "ra_phy.h"
 
 void fe_eth_reset(void)
 {
