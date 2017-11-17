@@ -3527,94 +3527,95 @@
 16) init.d: auto tune txqlen for chillispot tun interface to.<br>
 17) init.d: add support dual band MBSSID mode.<br>
 18) init.d: apply handoff settings for all real used MBSSID.<br>
-19) irqbalabce: fix build without libcap-ng.<br>
-20) goahead: refactoring and fixup route page.<br>
-21) goahead: fix ports number issue in ME1.<br>
-22) goahead: fix reboot counter at firmware update.<br>
-23) goahead: add MBSSID all bands support.<br>
-24) goahead: others fixes.<br>
-25) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
-26) kernel: sched/core: remove pointless printout in sched_show_task().<br>
-27) kernel: arch: remove unused macro/function thread_saved_pc().<br>
-28) kernel: cfg80211/wext: fix message ordering.<br>
-29) kernel: modpost: expand pattern matching to support substring matches.<br>
-30) kernel: modpost: don't emit section mismatch warnings for compiler optimizations.<br>
-31) kernel: mm/mempolicy: fix use after free when calling get_mempolicy.<br>
-32) kernel: mm/init: fix zone boundary creation.<br>
-33) kernel: keys: prevent KEYCTL_READ on negative key.<br>
-34) kernel: keys: don't let add_key() update an uninstantiated key.<br>
-35) kernel: keys: trusted: sanitize all key material.<br>
-36) kernel: keys: trusted: fix writing past end of buffer in trusted_read().<br>
-37) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
-38) kernel: wext: uninline stream addition functions.<br>
-39) kernel: wext: use struct iwreq earlier in the call chain.<br>
-40) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
-41) kernel: ralink_raeth: add support wakeup external phy from standby over gpio.<br>
-42) kernel: ralink_raeth: add preconfig for RTL8211D.<br>
-43) kernel: ralink_raeth: add SFP module enable by gpio logic.<br>
-44) kernel: ralink_raeth: add SFP gpio lines init.<br>
-45) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
-46) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
-47) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
-48) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>
-49) kernel: ralink_wifi: collect very low level probe req only for 5GHz.<br>
-50) kernel: ralink_wifi: more info handoff kickout log.<br>
-50) kernel: ralink_wifi: increase kickout delay only if have transmit data to clients at last 5 seconds.<br>
-51) kernel: ralink_i2c: fic build and warnings.<br>
-52) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-53) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-54) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-55) kernel: fs: fix unbalanced page refcounting in bio_map_user_iov.<br>
-56) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-57) kernel: mips: add nudges to writes for bit unlocks.<br>
-58) kernel: mips: make thread_saved_pc static.<br>
-59) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-60) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-61) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-62) kernel: mips: declare various variables & functions static.<br>
-63) kernel: mips: add iomem resource for kernel bss section.<br>
-64) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-65) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-66) kernel: usb: fix out-of-bounds in usb_set_configuration.<br>
-67) kernel: usb: usbtest: fix NULL pointer dereference.<br>
-68) kernel: usb: usbhid: fix out-of-bounds bug.<br>
-69) kernel: usb: hcd: initialize hcd->flags to 0 when rm hcd.<br>
-70) kernel: net: small increase txqlen at default and use in all drivers.<br>
-71) kernel: net: ipsec: do not ignore crypto err in ah4 input.<br>
-72) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
-73) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
-74) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
-75) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
-76) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-77) kernel: net: sched: fix error recovery at qdisc creation.<br>
-78) kernel: net: sched: sch_htb: fix crash on init failure.<br>
-79) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
-80) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
-81) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
-82) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
-83) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
-84) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
-85) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
-86) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-87) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
-88) kernel: net: ipv6: add rt6_get_cookie() function.<br>
-89) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
-90) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
-92) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
-93) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-94) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-95) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-96) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-97) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-98) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-99) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
-100) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-101) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
-102) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
-103) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
-104) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
-105) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
-106) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+19) init.d: rework mask for hwsnooping.<br>
+20) irqbalabce: fix build without libcap-ng.<br>
+21) goahead: refactoring and fixup route page.<br>
+22) goahead: fix ports number issue in ME1.<br>
+23) goahead: fix reboot counter at firmware update.<br>
+24) goahead: add MBSSID all bands support.<br>
+25) goahead: others fixes.<br>
+26) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
+27) kernel: sched/core: remove pointless printout in sched_show_task().<br>
+28) kernel: arch: remove unused macro/function thread_saved_pc().<br>
+29) kernel: cfg80211/wext: fix message ordering.<br>
+30) kernel: modpost: expand pattern matching to support substring matches.<br>
+31) kernel: modpost: don't emit section mismatch warnings for compiler optimizations.<br>
+32) kernel: mm/mempolicy: fix use after free when calling get_mempolicy.<br>
+33) kernel: mm/init: fix zone boundary creation.<br>
+34) kernel: keys: prevent KEYCTL_READ on negative key.<br>
+35) kernel: keys: don't let add_key() update an uninstantiated key.<br>
+36) kernel: keys: trusted: sanitize all key material.<br>
+37) kernel: keys: trusted: fix writing past end of buffer in trusted_read().<br>
+38) kernel: wext: unregister_pernet_subsys() on notifier registration failure.<br>
+39) kernel: wext: uninline stream addition functions.<br>
+40) kernel: wext: use struct iwreq earlier in the call chain.<br>
+41) kernel: wext: dev_ioctl: copy only the smaller struct iwreq for wext.<br>
+42) kernel: ralink_raeth: add support wakeup external phy from standby over gpio.<br>
+43) kernel: ralink_raeth: add preconfig for RTL8211D.<br>
+44) kernel: ralink_raeth: add SFP module enable by gpio logic.<br>
+45) kernel: ralink_raeth: add SFP gpio lines init.<br>
+46) kernel: ralink_raeth: increase MDIO driving to 4mA for ExtMDIO control by GPIO.<br>
+47) kernel: ralink_wifi: allways use 256/128 tx/rx ring sizes schem.<br>
+48) kernel: ralink_wifi: dynamic calculate kickout delay for high traffic clients.<br>
+49) kernel: ralink_wifi: always use max rssi for streams in band steering and handoff logic (avoid stream diviation).<br>
+50) kernel: ralink_wifi: collect very low level probe req only for 5GHz.<br>
+51) kernel: ralink_wifi: more info handoff kickout log.<br>
+52) kernel: ralink_wifi: increase kickout delay only if have transmit data to clients at last 5 seconds.<br>
+53) kernel: ralink_i2c: fic build and warnings.<br>
+54) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+55) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+56) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+57) kernel: fs: fix unbalanced page refcounting in bio_map_user_iov.<br>
+58) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+59) kernel: mips: add nudges to writes for bit unlocks.<br>
+60) kernel: mips: make thread_saved_pc static.<br>
+61) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+62) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+63) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+64) kernel: mips: declare various variables & functions static.<br>
+65) kernel: mips: add iomem resource for kernel bss section.<br>
+66) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+67) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+68) kernel: usb: fix out-of-bounds in usb_set_configuration.<br>
+69) kernel: usb: usbtest: fix NULL pointer dereference.<br>
+70) kernel: usb: usbhid: fix out-of-bounds bug.<br>
+71) kernel: usb: hcd: initialize hcd->flags to 0 when rm hcd.<br>
+72) kernel: net: small increase txqlen at default and use in all drivers.<br>
+73) kernel: net: ipsec: do not ignore crypto err in ah4 input.<br>
+74) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
+75) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
+76) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
+77) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
+78) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+79) kernel: net: sched: fix error recovery at qdisc creation.<br>
+80) kernel: net: sched: sch_htb: fix crash on init failure.<br>
+81) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
+82) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
+83) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
+84) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
+85) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
+86) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
+87) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
+88) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+89) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
+90) kernel: net: ipv6: add rt6_get_cookie() function.<br>
+91) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
+92) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
+93) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
+94) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+95) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+96) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+97) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+98) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+99) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+100) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+101) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
+102) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+103) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+104) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+105) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
+106) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+107) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
 <br>
 <br>
 <br>

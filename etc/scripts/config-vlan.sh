@@ -259,13 +259,21 @@ config_igmpsnoop() {
 	    # hybrid snooping now not support in pormapped modes, use HW only snooping for this
 	    # and enable if forces by user
 	    if [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
-		# mask for snooping is wan and cpu pors in one part, lan in second
-		snoopmask=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "01" '}`
-		$LOG "Force pure hardware mode igmp snooping enable, mask $snoopmask"
+		# make cpu porst static listeners allways others is off (avoid flood)
+		if [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
+		    # 5 - 6 ports is cpu ports
+		    snoopmask="0000011"
+		else
+		    # only 6 port used for one rgmii
+		    snoopmask="0000001"
+		fi
 		switch igmpsnoop on 125 "$snoopmask"
+
+		# enable snooping and learn
 		for port in `seq 0 6`; do
 		    switch igmpsnoop enable $port
 		done
+		$LOG "Force pure hardware mode igmp snooping enable, mask $snoopmask."
 	    fi
 	fi
 }
