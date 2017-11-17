@@ -318,9 +318,41 @@ static void ext_gphy_sfpen(void)
 #endif
 
 #if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
+static void ext_gphy_mdioswitch(int on)
+{
+	u32 val = 0;
+
+	/* switch UART2 to GPIO */
+	val = sysRegRead(RALINK_REG_GPIOMODE);
+	val |= (RALINK_GPIOMODE_UART2);						// GPIO 11 used for EXT mdio switch shared with UART2
+	sysRegWrite(RALINK_REG_GPIOMODE, val);
+
+	val = sysRegRead(RALINK_REG_PIODIR);
+	val |= (0x1<<11);							// switch pin to output mode ext mdio switch)
+	sysRegWrite(RALINK_REG_PIODIR, val);
+
+	if (on) {
+		printk("Enable external MDIO.\n");
+		val = sysRegRead(RALINK_REG_PIODATA);
+		val |= (0x1<<11);						// set pin to HIGH (external mdio enable)
+		sysRegWrite(RALINK_REG_PIODATA, val);
+	} else {
+		printk("Disable external MDIO.\n");
+		val = sysRegRead(RALINK_REG_PIODATA);
+		val &= ~(0x1<<11);						// set pin to LOW (only internal mdio)
+		sysRegWrite(RALINK_REG_PIODATA, val);
+	}
+
+	/* wait 200ms ready */
+	mdelay(200);
+}
+
 static void ext_gphy_reset(void)
 {
 	u32 val = 0;
+
+	/* enable external MDIO use */
+	ext_gphy_mdioswitch(1);
 
 	printk("Hardware reset EPHY.\n");
 
