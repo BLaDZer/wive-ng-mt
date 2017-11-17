@@ -262,7 +262,7 @@ config_igmpsnoop() {
 		# mask for snooping is wan and cpu pors in one part, lan in second
 		snoopmask=`echo "$1" | sed 's/[0-9]/0/g;s/W/1/g;s/L/0/g' | awk {' print $1 "01" '}`
 		$LOG "Force pure hardware mode igmp snooping enable, mask $snoopmask"
-		switch igmpsnoop on 100 "$snoopmask"
+		switch igmpsnoop on 125 "$snoopmask"
 		for port in `seq 0 6`; do
 		    switch igmpsnoop enable $port
 		done
