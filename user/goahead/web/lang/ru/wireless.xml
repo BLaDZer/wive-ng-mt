@@ -126,15 +126,15 @@
   <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного откл." />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
   <message msgid="basic roaming probe times range" msgstr="  0 - 10 запросов, по умолчанию 2" />
-  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию -11" />
+  <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию -12" />
   <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming assoc ignor range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming rssi low range" msgstr="  0 - -100 dBm, по умолчанию -78" />
   <message msgid="basic roaming rssi low psm range" msgstr="  0 - -100 dBm, по умолчанию -80" />
   <message msgid="basic roaming rssi low delay range" msgstr="  0 - 200 секунд, по умолчанию 15" />
-  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -70" />
-  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -68" />
+  <message msgid="basic roaming probe rssi range" msgstr="  0 - -100 dBm, по умолчанию -75" />
+  <message msgid="basic roaming rssi thres range" msgstr="  0 - -100 dBm, по умолчанию -70" />
   <message msgid="basic roaming rrm" msgstr="Управление радиоресурсами 802.11K" />
   <message msgid="basic roaming ft" msgstr="Поддержка быстрой миграции 802.11R" />
   <message msgid="basic roaming rc inic" msgstr="Нормативный список (5ГГц)" />
