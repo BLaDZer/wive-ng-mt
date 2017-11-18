@@ -27,7 +27,7 @@
     defined (CONFIG_GE2_RGMII_AN) || defined (CONFIG_P4_MAC_TO_PHY_MODE)
 static u32 g_phy_id[32] = { 0 };
 #if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-static int ext_phy_mdio_enabled = 1;
+static int ext_phy_mdio_enabled = 0;
 #endif
 
 void ext_gphy_init(u32 phy_addr)
@@ -131,9 +131,9 @@ void ext_gphy_init(u32 phy_addr)
 			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
 			mii_mgr_write(phy_addr, 31, 0x0000);
 
-			/* Disable flow control by default */
+			/* Enable flow control by default */
 			mii_mgr_read(phy_addr, 4, &phy_val);
-			phy_val &=  ~(1<<10);			/* Disable pause ability */
+			phy_val |=  (1<<10);			/* Enable pause ability */
 			mii_mgr_write(phy_addr, 4, phy_val);
 
 			/* restore reg 0x1f */
