@@ -211,7 +211,7 @@ multicast() {
 
     # auto replace hybrid snooping to M2U from WLAN only to LAN/WLAN (for correct work in TV/IP port mode)
     if [ "$igmpSnoopMode" != "h" ] && [ "$igmpM2UConvMode" = "wlan" ] && [ "$tv_port" = "1" -o "$sip_port" = "1" ]; then
-	$LOG "Force M2U for LAN and WIFI enable (TV/SIP ports with VLANS configured)."
+	$LOG "Force M2U for LAN and WIFI enable (TV/SIP ports configured)."
 	igmpM2UConvMode = "all"
     fi
 
