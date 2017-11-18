@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh    a
 
 # get params
 . /etc/scripts/global.sh
@@ -212,7 +212,8 @@ multicast() {
     fi
     eval `nvram_buf_get 2860 igmpM2UConvMode igmpFastLeave`
     wlifs=`ip -o -4 link show up | grep -E "ra|wds" | awk {' print $2 '} | cut -f -1 -d :`
-    if [ "$igmpM2UConvMode" = "all" ]; then
+    # force M2U for LAN and WIFI enable if TV/SIP ports with VLANS configured."
+    if [ "$igmpM2UConvMode" = "wlan" -a "$switchpart" = "VLANS" ] || [ "$igmpM2UConvMode" = "all" ]; then
         INTERFACES="$phys_lan_if $wlifs"
     elif [ "$igmpM2UConvMode" = "lan" ]; then
         INTERFACES="$phys_lan_if"

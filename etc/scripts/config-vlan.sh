@@ -334,6 +334,10 @@ config_onergmii()
 		switch pvid $index $pvid
 		let index=index+1
 	    done
+
+	    # config hawdware snooping
+	    config_igmpsnoop
+
 	else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -418,9 +422,6 @@ config_onergmii()
 	    fi
 	fi
 
-	# config hawdware snooping
-	config_igmpsnoop
-
 	# clear mac table if vlan configuration changed
 	switch clear
 }
@@ -493,6 +494,10 @@ config_dualrgmii()
 	    for port in `seq 5 7`; do
 		switch tag off $port
 	    done
+
+	    # config hawdware snooping
+	    config_igmpsnoop
+
          else
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
@@ -608,9 +613,6 @@ config_dualrgmii()
 		count="$(($count+1))"
 	    fi
 	done
-
-	# config hawdware snooping
-	config_igmpsnoop
 
 	# clear mac table if vlan configuration changed
 	switch clear
