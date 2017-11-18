@@ -3528,7 +3528,7 @@
 17) init.d: add support dual band MBSSID mode.<br>
 18) init.d: apply handoff settings for all real used MBSSID.<br>
 19) init.d: rework mask for hwsnooping.<br>
-20) init.d: force M2U for LAN and WIFI enable if TV/SIP ports with VLANS configured.<br>
+20) init.d: force M2U for LAN and WIFI enable if TV/SIP ports configured.<br>
 21) irqbalabce: fix build without libcap-ng.<br>
 22) goahead: refactoring and fixup route page.<br>
 23) goahead: fix ports number issue in ME1.<br>

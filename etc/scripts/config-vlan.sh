@@ -240,10 +240,8 @@ reinit_all_phys() {
 }
 
 config_igmpsnoop() {
-	if [ "$OperationMode" = "1" ] && [ "$igmpSnoopMode" != "n" ]; then
-	    # hybrid snooping now not support in pormapped modes, use HW only snooping for this
-	    # and enable if forces by user
-	    if [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
+	if [ "$OperationMode" = "1" ] && [ "$igmpSnoopMode" = "h" ]; then
+		# use HW only snooping only if forced by user
 		# make cpu porst static listeners allways others is off (avoid flood)
 		# only cpu2lan (6 port) used for learning
 		# for future, add support snooping in AP mode, need add in mask real GSW uplink port to
@@ -255,7 +253,6 @@ config_igmpsnoop() {
 		    switch igmpsnoop enable $port
 		done
 		$LOG "Force pure hardware mode igmp snooping enable, mask $snoopmask."
-	    fi
 	fi
 }
 

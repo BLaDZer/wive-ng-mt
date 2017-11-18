@@ -206,14 +206,25 @@ pthrough() {
 }
 
 multicast() {
+
+    eval `nvram_buf_get 2860 igmpM2UConvMode igmpFastLeave`
+
+    # auto replace hybrid snooping to M2U from WLAN only to LAN/WLAN (for correct work in TV/IP port mode)
+    if [ "$igmpSnoopMode" != "h" ] && [ "$igmpM2UConvMode" = "wlan" ] && [ "$tv_port" = "1" -o "$sip_port" = "1" ]; then
+	$LOG "Force M2U for LAN and WIFI enable (TV/SIP ports with VLANS configured)."
+	igmpM2UConvMode = "all"
+    fi
+
+    # for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
     if [ "$switchpart" = "LLLLL" ]; then
-	# for apcli gw/bridge set m2u to eth2 (not used vlan particion in this mode)
     	phys_lan_if="eth2"
     fi
-    eval `nvram_buf_get 2860 igmpM2UConvMode igmpFastLeave`
+
+    # get wireless interfaces up
     wlifs=`ip -o -4 link show up | grep -E "ra|wds" | awk {' print $2 '} | cut -f -1 -d :`
-    # force M2U for LAN and WIFI enable if TV/SIP ports with VLANS configured."
-    if [ "$igmpM2UConvMode" = "wlan" -a "$switchpart" = "VLANS" ] || [ "$igmpM2UConvMode" = "all" ]; then
+
+    # select interfaces by mode
+    if [ "$igmpM2UConvMode" = "all" ]; then
         INTERFACES="$phys_lan_if $wlifs"
     elif [ "$igmpM2UConvMode" = "lan" ]; then
         INTERFACES="$phys_lan_if"
