@@ -5,7 +5,6 @@ LOG="logger -t modem helper($$)"
 
 count=0
 while [ -e /tmp/modem_helper ]; do
-    $LOG "Wait for pid"
     if [ "$count" = "5" ]; then
 	$LOG "Wait for pid at 25 seconds - exit modemhelper"
 	exit 1
