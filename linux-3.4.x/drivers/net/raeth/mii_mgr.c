@@ -387,14 +387,14 @@ u32 mii_mgr_read_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 *read_data)
 
 cl45r_exit:
 
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-	ext_gphy_mdioswitch(1);
-#endif
 
 	/* restore AN polling */
 	if (an_state & BIT(31))
 		sysRegWrite(REG_MDIO_PHY_POLLING, an_state | BIT(31));
 
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
 
 	spin_unlock(&mii_mgr_lock);
 
@@ -458,13 +458,13 @@ u32 mii_mgr_write_cl45(u32 port_num, u32 dev_addr, u32 reg_addr, u32 write_data)
 
 cl45w_exit:
 
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-	ext_gphy_mdioswitch(1);
-#endif
-
 	/* restore AN polling */
 	if (an_state & BIT(31))
 		sysRegWrite(REG_MDIO_PHY_POLLING, an_state | BIT(31));
+
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
+	ext_gphy_mdioswitch(1);
+#endif
 
 	spin_unlock(&mii_mgr_lock);
 
