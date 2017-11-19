@@ -125,7 +125,7 @@
   <message msgid="basic roaming rssi low psm" msgstr="Отключить клиента в режиме энергосбережения ниже уровня" />
   <message msgid="basic roaming rssi low delay" msgstr="Интервал измерения уровней до принудительного откл." />
   <message msgid="basic roaming probe rssi" msgstr="Не отвечать на probe запросы от клиентов с уровнем ниже" />
-  <message msgid="basic roaming probe times range" msgstr="  0 - 10 запросов, по умолчанию 2" />
+  <message msgid="basic roaming probe times range" msgstr="  0 - 10 ответов, по умолчанию 3" />
   <message msgid="basic roaming delta rssi range" msgstr="  0 - -100 dBm, по умолчанию -12" />
   <message msgid="basic roaming auth fail range" msgstr="  0 - -100 dBm, по умолчанию 0" />
   <message msgid="basic roaming auth rssi range" msgstr="  0 - -100 dBm, по умолчанию 0" />
