@@ -31,6 +31,11 @@ int cpe_set_igd_wan_ip(cwmp_t *cwmp, const char *name, const char *value, int le
 {
     DM_TRACE_SET();
 
+    if(value == NULL)
+    {
+        return FAULT_CODE_9002;
+    }
+
     cwmp_nvram_set("wan_ipaddr",value);
 
     return FAULT_CODE_OK;

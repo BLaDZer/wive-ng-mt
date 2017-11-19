@@ -559,6 +559,9 @@ int cpe_set_igd_wlanc_standard(cwmp_t * cwmp, const char * name, const char * va
     if (strcmp(value, "n") == 0) valStr="6";else
     if (strcmp(value, "g") == 0) valStr="0";else
     if (strcmp(value, "g-only") == 0) valStr="4";else
+    if (strcmp(value, "b/g") == 0) valStr="0";else
+    if (strcmp(value, "g/n") == 0) valStr="7";else
+    if (strcmp(value, "b/g/n") == 0) valStr="9";else
     if (strcmp(value, "b") == 0) valStr="1";
 
     cwmp_nvram_set("WirelessMode", valStr);

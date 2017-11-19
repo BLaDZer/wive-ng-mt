@@ -120,7 +120,7 @@
 				<param name="NTPServer5" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" set_func="cpe_set_null"/>
 				-->
 				<param name="CurrentLocalTime" get_func="cpe_get_time_localtime"/>
-				<param name="LocalTimeZoneName" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_time_zonename" set_func="cpe_set_nvram_string" args="TZ"/>
+				<param name="LocalTimeZoneName" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string_or_empty" set_func="cpe_set_nvram_string" args="TZ"/>
 				<!-- params: LocalTimeZone, DaylightSavingsUsed, DaylightSavingsStart, DaylightSavingsEnd are OBSOLETED -->
 			</object>
 			<object name="DeviceInfo">
@@ -323,7 +323,7 @@
 						<param name="IEEE11iEncryptionModes" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_wpaencryption" set_func="cpe_set_igd_wlanc_wpaencryption"/>
 						<!-- WiFiWMM:1 -->
 						<param name="WMMSupported" get_func="cpe_get_const_string" args="1"/>
-						<param name="WMMEnable" rw="1" get_func="cpe_get_nvram_bool_onoff" set_func="cpe_set_nvram_bool_onoff" args="WmmCapable" reload_func="cpe_reload_all"/>
+						<param name="WMMEnable" rw="1" get_func="cpe_get_nvram_bool" set_func="cpe_set_nvram_bool" args="WmmCapable" reload_func="cpe_reload_all"/>
 					</object>
 				</object>
 			</object>
@@ -360,7 +360,7 @@
 									<param name="MaxMTUSize" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_int" args="wan_manual_mtu" set_func="cpe_set_nvram_int"/>
 									<param name="NATEnabled" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" args="natEnabled" set_func="cpe_set_nvram_bool"/>
 									<param name="AddressingType" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip_addrtype" args="Static" set_func="cpe_set_igd_wan_ip_addrtype"/>
-									<param name="ExternalIPAddress" inform="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip" set_func="cpe_set_igd_wan_ip" />
+									<param name="ExternalIPAddress" rw="1" inform="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip" set_func="cpe_set_igd_wan_ip" />
 									<param name="SubnetMask" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_netmask" set_func="cpe_set_nvram_string"/>
 									<param name="DefaultGateway" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
 									<param name="DNSServers" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip_dnsservers" args="wan_primary_dns" set_func="cpe_set_igd_wan_ip_dnsservers"/>

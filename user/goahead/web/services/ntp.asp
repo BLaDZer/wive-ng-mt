@@ -240,7 +240,7 @@
 										<option value="MSK-3" id="ntpMoscowWinter"			>(UTC+03:00) Russia (Moscow, St.-Petersburg)</option>
 										<option value="SAMT-4"						>(UTC+04:00) Russia (Samara)</option>
 										<option value="AMT-4AMST,M3.5.0,M10.5.0/3" id="ntpArmenia"	>(UTC+04:00) Armenia (Yerevan)</option>
-										<option value="AZT-4AZST,M3.5.0/4,M10.5.0/5"			>(UTC+04:00) Azebaydzhan (Baku)</option>
+										<option value="AZT-4AZST,M3.5.0/4,M10.5.0/5"			>(UTC+04:00) Azerbaydzhan (Baku)</option>
 										<option value="GET-4"						>(UTC+04:00) Georgia (Tbilisi)</option>
 										<option value="TMT-5"						>(UTC+05:00) Ashgabad</option>
 										<option value="UZT-5"						>(UTC+05:00) Samarkand, Tashkent</option>

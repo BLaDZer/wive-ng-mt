@@ -330,6 +330,16 @@ int nvram_bufset(int index, char *name, char *value)
 	int fd;
 	nvram_ioctl_t nvr;
 
+	if (name == NULL) {
+		RANV_ERROR("nvram parameter name is NULL!\n");
+		return -1;
+	}
+
+	if (value == NULL) {
+		RANV_ERROR("nvram parameter value is NULL!\n");
+		return -1;
+	}
+
 	RANV_CHECK_INDEX(-1);
 	RANV_CHECK_VALID(-1);
 

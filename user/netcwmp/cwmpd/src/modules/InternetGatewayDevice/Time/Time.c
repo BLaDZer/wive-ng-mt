@@ -63,11 +63,17 @@ cpe_get_time_zonename(cwmp_t *cwmp, const char *name, char **value, char *args, 
     tm = localtime(&t);
 
     *value = pool_palloc(pool, len);
+
     if (!*value) {
         return FAULT_CODE_9002;
     }
 
     strftime(*value, len, "%Z", tm);
+
+    if (strcmp(*value, "GMT") == 0)
+    {
+        strncpy(*value, cwmp_nvram_get("TZ"), len);
+    }
 
     return FAULT_CODE_OK;
 }

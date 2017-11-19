@@ -141,6 +141,11 @@ int cwmp_conf_set(const char * key, const char * value)
     if(key == NULL) {
         return CWMP_ERROR;
     }
+
+    if(value == NULL) {
+        return CWMP_ERROR;
+    }
+
     if (cwmp_conf_handle == NULL) {
         cwmp_log_error("%s: config file handle is not initialized!", __func__);
         return CWMP_ERROR;
@@ -186,7 +191,12 @@ int cwmp_conf_get_int_def(const char * key, int def)
 int cwmp_nvram_set(const char * key, const char * value)
 {
     cwmp_log_debug("%s(\"%s\", \"%s\")", __func__, key, value);
-    //FIXME: libnvram check const!
+
+    if (value == NULL)
+    {
+        return nvram_set(RT2860_NVRAM, (char*) key, "");
+    }
+
     return nvram_set(RT2860_NVRAM, (char*) key, (char*) value);
 }
 

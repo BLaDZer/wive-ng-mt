@@ -109,7 +109,7 @@ int httpd_build_server(cwmp_t * cwmp)
     pool_t * pool;
     int rc;
     int lsnfd, maxfd, nready;
-    int i;
+    int i,j;
 
     int fd, newfd;
     http_socket_t * s;
@@ -130,7 +130,7 @@ int httpd_build_server(cwmp_t * cwmp)
     rc = http_socket_server(&lsnsock, port, 5, -1, pool);
     if (rc != CWMP_OK)
     {
-        cwmp_log_error("build httpd server faild. %s", strerror(errno));
+        cwmp_log_error("build httpd server failed on port %i. %s", port, strerror(errno));
         exit(-1);
     }
 
@@ -138,7 +138,6 @@ int httpd_build_server(cwmp_t * cwmp)
 
     for (i=0; i < MAX_CLIENT_NUMS; i++)
     {
-
         sessionfd[i].time = 0;
         sessionfd[i].sock = NULL;
     }
@@ -155,6 +154,7 @@ int httpd_build_server(cwmp_t * cwmp)
         rdset = readset;
         timeout.tv_sec = 10;
         timeout.tv_usec = 0;
+
         if ((nready = select(maxfd + 1, &rdset, NULL, NULL, &timeout)) <= 0)
         {
             sleep(1);
@@ -178,6 +178,7 @@ int httpd_build_server(cwmp_t * cwmp)
             continue;
         }
 
+        // client session start
         if (FD_ISSET(lsnfd, &rdset))
         {
             http_socket_t * newsock;
@@ -185,6 +186,7 @@ int httpd_build_server(cwmp_t * cwmp)
             http_socket_accept(lsnsock, &newsock);
             newfd = http_socket_get_fd(newsock);
 
+            // add new sock into session list
             for (i=0; i<MAX_CLIENT_NUMS; i++)
             {
                 if (sessionfd[i].sock == NULL)
@@ -194,6 +196,8 @@ int httpd_build_server(cwmp_t * cwmp)
                     break;
                 }
             }
+
+            // too many sessions at once
             if (i == MAX_CLIENT_NUMS)
             {
                 //http_socket_close(newsock);
@@ -202,6 +206,7 @@ int httpd_build_server(cwmp_t * cwmp)
                 cwmp_log_error("too many ACS request connection");
                 continue;
             }
+
             FD_SET(newfd, &readset);
             if (newfd > maxfd)
             {
@@ -219,61 +224,74 @@ int httpd_build_server(cwmp_t * cwmp)
         //readpool = pool_create(POOL_DEFAULT_SIZE);
         cwmp_log_debug("nready is %d.", nready);
         for (i=0; (i<MAX_CLIENT_NUMS) && (nready > 0) ; i++)
+        for (j=0; j<3; j++) // up to three requests per connection
         {
             s = sessionfd[i].sock;
             fd = http_socket_get_fd(s);
 
-            if ((fd != -1) && FD_ISSET(fd, &rdset))
+            if (!s) break;
+
+            if (fd == -1 || !FD_ISSET(fd, &rdset))
             {
-                nready--;
-                sessionfd[i].time = time(NULL);
-                http_request_create(&request, http_socket_get_pool(s));
-                rc = http_read_request(s, request, http_socket_get_pool(s));
-                if (rc <= 0)
-                {
-                    if (rc<0) httpd_response_unkonw_error(s);
-                    goto faild;
-                }
-
-                if (request->method != HTTP_GET)
-                {
-                    httpd_response_unkonw_error(s);
-                    goto faild;
-                }
-
-                if (cwmp->cpe_auth)
-                {
-                    auth = http_get_variable(request->parser, "Authorization");
-
-                    if (!auth)
-                    {
-                        httpd_response_unauthorization(s);
-                        goto faild;
-                    }
-
-                    cwmp_conf_get("cwmp:cpe_username", cpe_user);
-                    cwmp_conf_get("cwmp:cpe_password", cpe_pwd);
-                    cwmp_log_debug("cpe username: %s, cpe password: %s", cpe_user, cpe_pwd);
-
-                    if (http_check_digest_auth(AuthRealm, auth, cpe_user, cpe_pwd) != 0)
-                    {
-                        httpd_response_unauthorization(s);
-                        goto faild;
-                    }
-                }
-
-                httpd_response_ok(s);
-
-                //get a new request from acs
-                cwmp_event_set_value(cwmp, INFORM_CONNECTIONREQUEST, 1, NULL, 0, 0, 0);
-faild:
-
-                FD_CLR(fd, &readset);
                 sessionfd[i].time = 0;
                 sessionfd[i].sock = NULL;
                 http_socket_destroy(s);
+                break;
+            }
 
-            } // if fd
+            nready--;
+            sessionfd[i].time = time(NULL);
+
+            http_request_create(&request, http_socket_get_pool(s));
+            rc = http_read_request(s, request, http_socket_get_pool(s));
+            FD_CLR(fd, &readset);
+
+            if (rc <= 0)
+            {
+                httpd_response_unkonw_error(s);
+                goto failed;
+            }
+
+            if (request->method != HTTP_GET)
+            {
+                httpd_response_unkonw_error(s);
+                goto failed;
+            }
+
+            if (cwmp->cpe_auth)
+            {
+                auth = http_get_variable(request->parser, "Authorization");
+
+                if (!auth)
+                {
+                    httpd_response_unauthorization(s);
+                    FD_SET(fd, &rdset);
+                    continue;
+                }
+
+                cwmp_conf_get("cwmp:cpe_username", cpe_user);
+                cwmp_conf_get("cwmp:cpe_password", cpe_pwd);
+                cwmp_log_debug("cpe username: %s, cpe password: %s", cpe_user, cpe_pwd);
+
+                if (http_check_digest_auth(AuthRealm, auth, cpe_user, cpe_pwd) != 0)
+                {
+                    httpd_response_unauthorization(s);
+                    FD_SET(fd, &rdset);
+                    continue;
+                }
+            }
+
+            httpd_response_ok(s);
+
+            //get a new request from acs
+            cwmp_event_set_value(cwmp, INFORM_CONNECTIONREQUEST, 1, NULL, 0, 0, 0);
+
+failed:
+            sessionfd[i].time = 0;
+            sessionfd[i].sock = NULL;
+            http_socket_destroy(s);
+            break;
+
 
         } // for sessions
 

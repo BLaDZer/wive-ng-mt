@@ -950,9 +950,8 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
             case TASK_RELOAD_TAG:
             {
                 cwmp_log_debug("execute reload callback: %s", cwmp_model_ptr_to_func(data));
-                if ((*(parameter_reload_handler_pt)data)(cwmp, callback_register_task) == FAULT_CODE_OK) {
-                    cwmp_log_error("reload function %s got error",
-                    cwmp_model_ptr_to_func(data));
+                if ((*(parameter_reload_handler_pt)data)(cwmp, callback_register_task) != FAULT_CODE_OK) {
+                    cwmp_log_error("reload function %s got error", cwmp_model_ptr_to_func(data));
                 }
             }
             break;

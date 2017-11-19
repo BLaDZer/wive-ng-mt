@@ -2,7 +2,34 @@ int cpe_get_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, char ** valu
 {
     DM_TRACE_GET();
 
-    *value = cwmp_nvram_pool_get(pool, "wan_primary_dns");
+
+    char* pr_dns = cwmp_nvram_pool_get(pool, "wan_primary_dns");
+    char* sc_dns = cwmp_nvram_pool_get(pool, "wan_secondary_dns");
+
+    if (pr_dns == NULL)
+    {
+        pr_dns = "";
+    }
+
+    if (sc_dns == NULL)
+    {
+        sc_dns = "";
+    }
+
+    *value = pool_palloc(pool, strlen(pr_dns)+strlen(sc_dns)+1);
+
+    if (!*value) {
+        return FAULT_CODE_9002;
+    }
+
+    if (sc_dns[0] != '\0')
+    {
+        sprintf(*value,"%s,%s", pr_dns, sc_dns);
+    }
+    else
+    {
+        sprintf(*value,"%s", pr_dns);
+    }
 
     return FAULT_CODE_OK;
 }
@@ -11,7 +38,24 @@ int cpe_set_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, const char *
 {
     DM_TRACE_SET();
 
-    cwmp_nvram_set("wan_primary_dns", value);
+    char *saveptr;
+    char* pr_dns = pool_pstrdup(cwmp->pool,value);
+    char* sc_dns;
+
+    if (pr_dns == NULL)
+    {
+        return FAULT_CODE_9002;
+    }
+
+    pr_dns = strtok_r(pr_dns, ",", &saveptr);
+    sc_dns = strtok_r(NULL,   ",", &saveptr);
+
+    if (pr_dns != NULL)
+    {
+        cwmp_nvram_set("wan_primary_dns", pr_dns);
+        cwmp_nvram_set("wan_secondary_dns", sc_dns ? sc_dns : "");
+    }
+
     cwmp_nvram_set("wan_static_dns", "on");
 
     return FAULT_CODE_OK;

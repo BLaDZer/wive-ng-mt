@@ -47,8 +47,13 @@ model_func_t ModelFunction[] =
     {"cpe_get_ms_periodic_inform_interval", cpe_get_ms_periodic_inform_interval},
     {"cpe_set_ms_periodic_inform_interval", cpe_set_ms_periodic_inform_interval},
     {"cpe_get_ms_parameter_key", cpe_get_ms_parameter_key},
+
     {"cpe_get_igd_ms_username", cpe_get_igd_ms_username},
     {"cpe_get_igd_ms_password", cpe_get_igd_ms_password},
+
+    {"cpe_set_igd_ms_username", cpe_set_igd_ms_username},
+    {"cpe_set_igd_ms_password", cpe_set_igd_ms_password},
+
     {"cpe_get_igd_ms_connectionrequesturl", cpe_get_igd_ms_connectionrequesturl},
     {"cpe_get_igd_ms_url", cpe_get_igd_ms_url},
     {"cpe_set_igd_ms_url", cpe_set_igd_ms_url},
