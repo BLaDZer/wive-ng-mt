@@ -1249,7 +1249,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			mbss->RssiLowForStaKickOutFT = 0;
 			mbss->RssiLowForStaKickOutDelay = 10;
 			mbss->ProbeRspRssiThreshold = 0;
-			mbss->ProbeRspTimes = 2;
+			mbss->ProbeRspTimes = 3;
 
 			wdev->AuthMode = Ndis802_11AuthModeOpen;
 			wdev->WepStatus = Ndis802_11EncryptionDisabled;

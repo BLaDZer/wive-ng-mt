@@ -7,7 +7,7 @@
 LOG="logger -t roaming"
 
 ###############################################PARAMETRS TABLE###################################################################################
-# ApProbeRspTimes	- range 0 - 10 times, limit probe reqest per client, default 2
+# ApProbeRspTimes	- range 0 - 10 times, limit probe response per client, default 3
 # AuthRspFail		- range 0 - -100 dBm, reject auth req due to weak signal, default 0 (off)
 # AuthRspRssi		- range 0 - -100 dBm, ignore auth req due to weak signal, default 0 (off)
 # AssocReqRssiThres	- range 0 - -100 dBm, reject assoc req due to weak signal, default 0 (off)

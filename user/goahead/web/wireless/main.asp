@@ -2211,7 +2211,7 @@
 			</td>
 		</tr>
 		<tr id="basicApProbeRspTimes_tr">
-			<td id="basicApProbeRspTimes_td_1" class="head" width="50%">Limit probe reqest per client</td>
+			<td id="basicApProbeRspTimes_td_1" class="head" width="50%">Limit probe response to client</td>
 			<td id="basicApProbeRspTimes_td_2" width="50%"><input type="text" name="ApProbeRspTimes" class="normal" maxlength="4"><font id="basicApProbeRspTimes_range" color="#808080"> 0 - 10 times, default 3</font></td>
 		</tr>
 		<tr id="basicBandDeltaRssi_tr">
