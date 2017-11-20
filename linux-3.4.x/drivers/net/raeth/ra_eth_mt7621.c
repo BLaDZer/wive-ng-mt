@@ -217,7 +217,7 @@ void mt7621_eth_init(void)
 	reg_val |=  (0x2 << 20);	// RGMII2 driving = 12mA
 #endif
 	reg_val &= ~(0x3 <<  4);	// MDIO driving = 2mA
-#if defined (CONFIG_GE1_MII_AN) || defined (CONFIG_GE2_MII_AN)
+#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
 	reg_val |=  (0x1 <<  4);	// MDIO driving = 4mA for ExtMDIO control by GPIO
 #endif
 	sysRegWrite(REG_PAD_RGMII2_MDIO_CFG, reg_val);
