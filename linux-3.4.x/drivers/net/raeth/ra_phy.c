@@ -108,7 +108,7 @@ void ext_gphy_init(u32 phy_addr)
 			u32 reg31 = 0;
 
 			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
-
+#if 0
 			/* Reset phy */
 			mii_mgr_read(phy_addr, 0, &phy_val);
 			phy_val |= (1<<15);			/* PHY Software Reset */
@@ -118,7 +118,6 @@ void ext_gphy_init(u32 phy_addr)
 			mii_mgr_read(phy_addr, 0, &phy_val);
 			phy_val &=  ~(1<<11);			/* Back to  Normal operation from powerdown */
 			mii_mgr_write(phy_addr, 0, phy_val);
-
 			/* backup reg 0x1f */
 			mii_mgr_read(phy_addr, 31, &reg31);
 			if (reg31 != 0x0000 && reg31 != 0x0a42) {
@@ -126,18 +125,46 @@ void ext_gphy_init(u32 phy_addr)
 				mii_mgr_write(phy_addr, 31, reg31);
 			}
 
+			/* restore reg 0x1f */
+			mii_mgr_write(phy_addr, 31, reg31);
+#endif
+
 			/* Disable Green Ethernet */
 			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
 			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
 			mii_mgr_write(phy_addr, 31, 0x0000);
 
-			/* Enable flow control by default */
+			/* Enable AN */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val |=  (1<<12);			/* Enable AN */
+			mii_mgr_write(phy_addr, 0, phy_val);
+
+			/* Config AN  pause ability add 10-100F/H duplex support*/
 			mii_mgr_read(phy_addr, 4, &phy_val);
-			phy_val |=  (1<<10);			/* Enable pause ability */
+			phy_val |=  (1<<10);                    /* Advertise support of pause frames */
+			phy_val |=  (1<<8);			/* Advertise support of 100Base-TX full-duplex mode */
+			phy_val |=  (1<<7);			/* Advertise support of 100Base-TX half-duplex mode */
+			phy_val |=  (1<<6);			/* Advertise support of 10Base-TX full-duplex mode */
+			phy_val |=  (1<<5);			/* Advertise support of 10Base-TX half-duplex mode */
 			mii_mgr_write(phy_addr, 4, phy_val);
 
-			/* restore reg 0x1f */
-			mii_mgr_write(phy_addr, 31, reg31);
+			/* Advertise 1000BASE-T full duplex capable */
+			mii_mgr_read(phy_addr, 9, &phy_val);
+			phy_val |=  (1<<9);			/* Advertise 1000BASE-T full duplex capable */
+			mii_mgr_write(phy_addr, 9, phy_val);
+
+			/* Restart AN */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val |=  (1<<9);			/* Restart AN */
+			mii_mgr_write(phy_addr, 0, phy_val);
+
+			/* TEMP static config */
+			mii_mgr_read(phy_addr, 0, &phy_val);
+			phy_val &=  ~(1<<13);			/* disable 10/100 */
+			phy_val &=  ~(1<<12);			/* disable AN */
+			phy_val |=  (1<<8);			/* enable FDX */
+			phy_val |=  (1<<6);			/* enable 1000 */
+			mii_mgr_write(phy_addr, 0, phy_val);
 		}
 	} else
 	if ((phy_id0 == EV_MARVELL_PHY_ID0) && (phy_id1 == EV_MARVELL_PHY_ID1)) {

@@ -60,10 +60,10 @@ disable_all_ports() {
 	done
 
 	# external PHY
-	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+	#if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
 	    # link down
-	    link_down 5
-	fi
+	#    link_down 5
+	#fi
 }
 
 enable_all_ports() {
@@ -72,9 +72,9 @@ enable_all_ports() {
 	done
 
 	# external PHY
-	if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	    link_up 5
-	fi
+	#if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+	#    link_up 5
+	#fi
 }
 
 reset_all_phys() {
@@ -110,8 +110,9 @@ reset_wan_phys() {
 	$LOG "Reset wan phy port"
 	if [ "$OperationMode" = "1" ]; then
 	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-		link_down 5
-		link_up 5
+		#link_down 5
+		#link_up 5
+		;
 	    else
 		if [ "$wan_portN" = "0" ]; then
 		    link_down 4
@@ -236,7 +237,7 @@ reinit_all_phys() {
 	# Set ESW/GSW  ports parametrs
 	set_physmode
 	# Set ExtPHY ports parametrs
-	set_physmode_ext_phy
+	# set_physmode_ext_phy
 }
 
 config_igmpsnoop() {
