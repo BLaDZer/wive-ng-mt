@@ -3536,7 +3536,7 @@
 25) goahead: fix ports number issue in ME1.<br>
 26) goahead: fix reboot counter at firmware update.<br>
 27) goahead: add MBSSID all bands support.<br>
-28) goahead: others fixes.<br>
+28) goahead: timezone fixes.<br>
 29) kernel: kernel/extable.c: mark core_kernel_text notrace.<br>
 30) kernel: sched/core: remove pointless printout in sched_show_task().<br>
 31) kernel: arch: remove unused macro/function thread_saved_pc().<br>

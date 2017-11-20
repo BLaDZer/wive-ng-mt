@@ -211,12 +211,12 @@
 									<select name="time_zone" id="time_zone" class="wide">
 										<option value="UCT_-11" id="ntpMidIsland"			>(UTC-11:00) Midway Island, Samoa</option>
 										<option value="UCT_-10" id="ntpHawaii"				>(UTC-10:00) Hawaii</option>
-										<option value="NAS_-09" id="ntpAlaska"				>(UTC-09:00) Alaska</option>
-										<option value="PST_-08" id="ntpPacific"				>(UTC-08:00) Pacific Time</option>
-										<option value="MST_-07" id="ntpMountain"			>(UTC-07:00) Mountain Time</option>
+										<option value="UCT_-09" id="ntpAlaska"				>(UTC-09:00) Alaska</option>
+										<option value="UCT_-08" id="ntpPacific"				>(UTC-08:00) Pacific Time</option>
+										<option value="UCT_-07" id="ntpMountain"			>(UTC-07:00) Mountain Time</option>
 										<option value="MST_-07" id="ntpArizona"				>(UTC-07:00) Arizona</option>
-										<option value="CST_-06" id="ntpCentral"				>(UTC-06:00) Central Time</option>
-										<option value="UCT_-06" id="ntpMidUS"				>(UTC-06:00) Middle America</option>
+										<option value="UCT_-06" id="ntpCentral"				>(UTC-06:00) Central Time</option>
+										<option value="EST_-06" id="ntpMidUS"				>(UTC-06:00) Middle America</option>
 										<option value="UCT_-05" id="ntpIndianaEast"			>(UTC-05:00) Indiana East, Colombia</option>
 										<option value="EST_-05" id="ntpEastern"				>(UTC-05:00) Eastern Time</option>
 										<option value="AST_-04" id="ntpAtlantic"			>(UTC-04:00) Atlantic Time, Brazil West</option>
@@ -234,8 +234,8 @@
 										<option value="EET-2EEST,M3.5.0/3,M10.5.0/4" id="ntpKiev"	>(UTC+02:00) Ukraine (Kiev), Latvia (Riga)</option>
 										<option value="EET-2EEST,M3.5.0,M10.5.0/3" id=""		>(UTC+02:00) Belorussia (Minsk)</option>
 										<option value="SAS_002" id="ntpSouthAfrica"			>(UTC+02:00) South Africa</option>
-										<option value="IDDT"						>(UTC+02:00) Israel (Tel Aviv)</option>
-										<option value="EET-2" id=""					>(UTC+02:00) Russia (Kaliningrad)</option>
+										<option value="IDDT_002"						>(UTC+02:00) Israel (Tel Aviv)</option>
+										<option value="EET-2"						>(UTC+02:00) Russia (Kaliningrad)</option>
 										<option value="IST_003" id="ntpIraq"				>(UTC+03:00) Iraq, Jordan, Kuwait</option>
 										<option value="MSK-3" id="ntpMoscowWinter"			>(UTC+03:00) Russia (Moscow, St.-Petersburg)</option>
 										<option value="SAMT-4"						>(UTC+04:00) Russia (Samara)</option>
@@ -247,7 +247,7 @@
 										<option value="UCT_005" id="ntpPakistan"			>(UTC+05:00) Pakistan</option>
 										<option value="YEKT-5"						>(UTC+05:00) Russia (Yekaterinburg)</option>
 										<option value="UCT_006" id="ntpBangladesh"			>(UTC+06:00) Bangladesh</option>
-										<option value="KGT-6" id="ntpBangladesh"			>(UTC+06:00) Kyrgyzstan (Bishkek)</option>
+										<option value="KGT-6"						>(UTC+06:00) Kyrgyzstan (Bishkek)</option>
 										<option value="OMST-6"						>(UTC+06:00) Russia (Omsk)</option>
 										<option value="NOVT-7"						>(UTC+07:00) Russia (Novosibirsk)</option>
 										<option value="KRAT-7"						>(UTC+07:00) Russia (Krasnoyarsk)</option>
