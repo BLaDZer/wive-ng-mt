@@ -3609,19 +3609,20 @@
 98) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
 99) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
 100) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-101) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-102) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-103) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-104) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-105) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
-106) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-107) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
-108) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
-109) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
-110) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
-111) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
-112) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
-113) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
+101) kernel: net: tun: call dev_get_valid_name() before register_netdevice().<br>
+102) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+103) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+104) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+105) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+106) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+107) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
+108) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+109) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+110) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+111) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
+112) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+113) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+114) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
 <br>
 <br>
 <br>
