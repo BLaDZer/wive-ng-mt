@@ -3621,6 +3621,7 @@
 110) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
 111) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
 112) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+113) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
 <br>
 <br>
 <br>
