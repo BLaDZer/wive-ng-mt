@@ -1123,7 +1123,17 @@ ppp_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats64)
 static struct lock_class_key ppp_tx_busylock;
 static int ppp_dev_init(struct net_device *dev)
 {
+	struct ppp *ppp;
+
 	dev->qdisc_tx_busylock = &ppp_tx_busylock;
+
+	ppp = netdev_priv(dev);
+	/* Let the netdevice take a reference on the ppp file. This ensures
+	 * that ppp_destroy_interface() won't run before the device gets
+	 * unregistered.
+	 */
+	atomic_inc(&ppp->file.refcnt);
+
 	return 0;
 }
 
@@ -1144,6 +1154,15 @@ static void ppp_dev_uninit(struct net_device *dev)
 
 	ppp->file.dead = 1;
 	wake_up_interruptible(&ppp->file.rwait);
+}
+
+static void ppp_dev_priv_destructor(struct net_device *dev)
+{
+	struct ppp *ppp;
+
+	ppp = netdev_priv(dev);
+	if (atomic_dec_and_test(&ppp->file.refcnt))
+		ppp_destroy_interface(ppp);
 }
 
 static const struct net_device_ops ppp_netdev_ops = {
@@ -1169,6 +1188,7 @@ static void ppp_setup(struct net_device *dev)
 	dev->tx_queue_len = 3;
 	dev->type = ARPHRD_PPP;
 	dev->flags = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
+	dev->destructor = ppp_dev_priv_destructor;
 	dev->features |= NETIF_F_NETNS_LOCAL;
 	dev->priv_flags &= ~IFF_XMIT_DST_RELEASE;
 }
