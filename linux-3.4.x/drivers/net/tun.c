@@ -1131,7 +1131,7 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
 				   tun_setup);
 		if (!dev)
 			return -ENOMEM;
-		err = dev_get_valid_name(net, dev, name);
+		err = dev_get_valid_name(dev, name);
 		if (err < 0)
 			goto err_free_dev;
 
