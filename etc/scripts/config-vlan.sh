@@ -112,7 +112,7 @@ reset_wan_phys() {
 	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
 		#link_down 5
 		#link_up 5
-		;
+		:
 	    else
 		if [ "$wan_portN" = "0" ]; then
 		    link_down 4
