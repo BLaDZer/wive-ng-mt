@@ -33,6 +33,10 @@ static void ge2_int2_wq_handler(struct work_struct *work)
 		mt7530_gsw_set_csr_delay((link_speed == 1) ? 1 : 0);
 	}
 #endif
+#ifdef CONFIG_GE2_RGMII_AN
+	/* Disable EEE on external EPHY */
+	ext_gphy_eee_enable(CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2, 0);
+#endif
 	if (esw_link_status_hook)
 		esw_link_status_hook(port_id, link_state & 0x1);
 }

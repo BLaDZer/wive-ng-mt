@@ -29,9 +29,15 @@
 #ifdef CONFIG_RAETH_DHCP_TOUCH
 /* send sigusr to dhcpc at media state change */
 int send_sigusr_dhcpc __read_mostly = 9;
-/* export for module support */
 EXPORT_SYMBOL(send_sigusr_dhcpc);
 #endif
+#if defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_P5_MAC_TO_PHY_MODE) || \
+    defined (CONFIG_GE2_RGMII_AN) || defined (CONFIG_P4_MAC_TO_PHY_MODE)
+/* switch ext_phy modes */
+int ext_phy_mode = 1000;
+EXPORT_SYMBOL(ext_phy_mode);
+#endif
+
 
 static int one = 1;
 static int tcp_retr1_max = 255;
@@ -721,6 +727,16 @@ static struct ctl_table ipv4_table[] = {
 	{
 		.procname	= "send_sigusr_dhcpc",
 		.data		= &send_sigusr_dhcpc,
+		.maxlen		= sizeof(int),
+		.mode		= 0644,
+		.proc_handler   = &proc_dointvec
+	},
+#endif
+#if defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_P5_MAC_TO_PHY_MODE) || \
+    defined (CONFIG_GE2_RGMII_AN) || defined (CONFIG_P4_MAC_TO_PHY_MODE)
+	{
+		.procname	= "ext_phy_mode",
+		.data		= &ext_phy_mode,
 		.maxlen		= sizeof(int),
 		.mode		= 0644,
 		.proc_handler   = &proc_dointvec

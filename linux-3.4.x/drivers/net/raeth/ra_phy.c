@@ -29,11 +29,74 @@ static u32 g_phy_id[32] = { 0 };
 #if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
 static int ext_phy_mdio_enabled = 0;
 #endif
+extern int ext_phy_mode;
+
+void ext_gphy_modeset(u32 phy_addr)
+{
+	u32 phy_val = 0;
+
+	/* 0 - AN or 10/100/1000 */
+	if (ext_phy_mode) {
+	    mii_mgr_read(phy_addr, 0, &phy_val);
+	    phy_val &=  ~(1<<12);			/* Disable AN */
+	    phy_val |=  (1<<8);				/* Enable FDX */
+	    if (ext_phy_mode == 10) {
+		phy_val &=  ~(1<<13);			/* Force 10   (speed[0] = 0) */
+		phy_val &=  ~(1<<6);			/* Force 10   (speed[1] = 0) */
+	    } else if (ext_phy_mode == 100) {
+		phy_val |=  (1<<13);			/* Force 100  (speed[0] = 1) */
+		phy_val &=  ~(1<<6);			/* Force 100  (speed[1] = 0) */
+	    } else {
+		phy_val &=  ~(1<<13);			/* Force 1000 (speed[0] = 0) */
+		phy_val |=  (1<<6);			/* Force 1000 (speed[1] = 1) */
+	    }
+	    mii_mgr_write(phy_addr, 0, phy_val);
+
+	    /* Config AN Advertise */
+	    mii_mgr_read(phy_addr, 4, &phy_val);
+	    phy_val |=  (1<<15);                    	/* Additional next pages exchange desired (need for 1000BASE-T) */
+	    phy_val |=  (1<<10);                    	/* Advertise support of pause frames */
+	    phy_val &=  ~(1<<8);			/* Advertise disable support of 100Base-TX full-duplex mode */
+	    phy_val &=  ~(1<<7);			/* Advertise disable support of 100Base-TX half-duplex mode */
+	    phy_val &=  ~(1<<6);			/* Advertise disable support of 10Base-TX full-duplex mode */
+	    phy_val &=  ~(1<<5);			/* Advertise disable support of 10Base-TX half-duplex mode */
+	    mii_mgr_write(phy_addr, 4, phy_val);
+	} else {
+	    /* Enable AN: bit speed[0:1],fdx must be 0, AN bit = 1*/
+	    mii_mgr_read(phy_addr, 0, &phy_val);
+	    phy_val &=  ~(1<<13);			/* speed[0] = 0 */
+	    phy_val |=   (1<<12);			/* Enable AN */
+	    phy_val &=  ~(1<<8);			/* FDX	= 0 */
+	    phy_val &=  ~(1<<6);			/* speed[1] = 0 */
+	    mii_mgr_write(phy_addr, 0, phy_val);
+
+	    /* Config AN Advertise */
+	    mii_mgr_read(phy_addr, 4, &phy_val);
+	    phy_val |=  (1<<15);                    	/* Additional next pages exchange desired (need for 1000BASE-T) */
+	    phy_val |=  (1<<10);                    	/* Advertise support of pause frames */
+	    phy_val |=  (1<<8);				/* Advertise support of 100Base-TX full-duplex mode */
+	    phy_val |=  (1<<7);				/* Advertise support of 100Base-TX half-duplex mode */
+	    phy_val |=  (1<<6);				/* Advertise support of 10Base-TX full-duplex mode */
+	    phy_val |=  (1<<5);				/* Advertise support of 10Base-TX half-duplex mode */
+	    mii_mgr_write(phy_addr, 4, phy_val);
+
+	    /*  Config AN Advertise (next pages) */
+	    mii_mgr_read(phy_addr, 9, &phy_val);
+	    phy_val |=  (1<<9);				/* Advertise 1000BASE-T full duplex capable */
+	    mii_mgr_write(phy_addr, 9, phy_val);
+	}
+
+	/* AN restart */
+	mii_mgr_read(phy_addr, 0, &phy_val);
+	phy_val |=  (1<<9);
+	mii_mgr_write(phy_addr, 0, phy_val);
+
+}
 
 void ext_gphy_init(u32 phy_addr)
 {
-	const char *phy_devn = NULL;
-	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev, __maybe_unused reg_gpio;
+	const char *phy_devn = NULL, *phy_mode = "AUTO";
+	u32 phy_id0 = 0, phy_id1 = 0, phy_val = 0, phy_rev;
 
 	if (phy_addr > 0x1f)
 		return;
@@ -105,66 +168,13 @@ void ext_gphy_init(u32 phy_addr)
 			mii_mgr_write(phy_addr, 31, 0x0000);
 
 		} else if (phy_rev == 0x4) {
-			u32 reg31 = 0;
-
 			phy_devn = "RTL8211D";  /* Fiber/UTP to RGMII */
-#if 0
-			/* Reset phy */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val |= (1<<15);			/* PHY Software Reset */
-			mii_mgr_write(phy_addr, 0, phy_val);
-
-			/* Normal operation */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val &=  ~(1<<11);			/* Back to  Normal operation from powerdown */
-			mii_mgr_write(phy_addr, 0, phy_val);
-			/* backup reg 0x1f */
-			mii_mgr_read(phy_addr, 31, &reg31);
-			if (reg31 != 0x0000 && reg31 != 0x0a42) {
-				reg31 = 0x0000;
-				mii_mgr_write(phy_addr, 31, reg31);
-			}
-
-			/* restore reg 0x1f */
-			mii_mgr_write(phy_addr, 31, reg31);
-#endif
 
 			/* Disable Green Ethernet */
 			mii_mgr_write(phy_addr, 31, 0x0003);	/* set to page 3 */
-			mii_mgr_write(phy_addr, 25, 0x3246);	/* Disable green ethernet */
-			mii_mgr_write(phy_addr, 31, 0x0000);
-
-			/* Enable AN */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val |=  (1<<12);			/* Enable AN */
-			mii_mgr_write(phy_addr, 0, phy_val);
-
-			/* Config AN  pause ability add 10-100F/H duplex support*/
-			mii_mgr_read(phy_addr, 4, &phy_val);
-			phy_val |=  (1<<10);                    /* Advertise support of pause frames */
-			phy_val |=  (1<<8);			/* Advertise support of 100Base-TX full-duplex mode */
-			phy_val |=  (1<<7);			/* Advertise support of 100Base-TX half-duplex mode */
-			phy_val |=  (1<<6);			/* Advertise support of 10Base-TX full-duplex mode */
-			phy_val |=  (1<<5);			/* Advertise support of 10Base-TX half-duplex mode */
-			mii_mgr_write(phy_addr, 4, phy_val);
-
-			/* Advertise 1000BASE-T full duplex capable */
-			mii_mgr_read(phy_addr, 9, &phy_val);
-			phy_val |=  (1<<9);			/* Advertise 1000BASE-T full duplex capable */
-			mii_mgr_write(phy_addr, 9, phy_val);
-
-			/* Restart AN */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val |=  (1<<9);			/* Restart AN */
-			mii_mgr_write(phy_addr, 0, phy_val);
-
-			/* TEMP static config */
-			mii_mgr_read(phy_addr, 0, &phy_val);
-			phy_val &=  ~(1<<13);			/* disable 10/100 */
-			phy_val &=  ~(1<<12);			/* disable AN */
-			phy_val |=  (1<<8);			/* enable FDX */
-			phy_val |=  (1<<6);			/* enable 1000 */
-			mii_mgr_write(phy_addr, 0, phy_val);
+			mii_mgr_write(phy_addr, 25, 0x3246);
+			mii_mgr_write(phy_addr, 16, 0xa87c);
+			mii_mgr_write(phy_addr, 31, 0x0000);	/* back to page 0 */
 		}
 	} else
 	if ((phy_id0 == EV_MARVELL_PHY_ID0) && (phy_id1 == EV_MARVELL_PHY_ID1)) {
@@ -186,13 +196,29 @@ void ext_gphy_init(u32 phy_addr)
 		mii_mgr_write(phy_addr, 31, 0x0000);	// main registers
 	}
 
-	/* Disable EEE for all phy by default */
+	/* preconfigure PHY mode */
+	ext_gphy_modeset(phy_addr);
+
+	/* Disable EEE LPI for all phy by default (if supported) */
 	ext_gphy_eee_enable(phy_addr, 0);
 
+#ifdef CONFIG_GE2_RGMII_AN
+	/* Disable EEE on external EPHY */
+	ext_gphy_eee_enable(CONFIG_MAC_TO_GIGAPHY_MODE_ADDR2, 0);
+#endif
+
+	if (ext_phy_mode == 10) {
+	    phy_mode = "FORCE 10FDX";
+	} else if (ext_phy_mode == 100) {
+	    phy_mode = "FORCE 100FDX";
+	} else if (ext_phy_mode == 1000) {
+	    phy_mode = "FORCE 1000FDX";
+	}
+
 	if (phy_devn)
-		printk("%s GPHY detected on MDIO addr 0x%02X\n", phy_devn, phy_addr);
+		printk("%s GPHY detected on MDIO addr: 0x%02X, mode: %s\n", phy_devn, phy_addr, phy_mode);
 	else
-		printk("Unknown EPHY (%04X:%04X) detected on MDIO addr 0x%02X\n", phy_id0, phy_id1, phy_addr);
+		printk("Unknown EPHY (%04X:%04X) detected on MDIO addr: 0x%02X, mode: %s\n", phy_id0, phy_id1, phy_addr, phy_mode);
 }
 
 void ext_gphy_eee_enable(u32 phy_addr, int is_eee_enabled)
@@ -253,7 +279,6 @@ u32 ext_gphy_fill_pmsr(u32 phy_addr)
 void enable_autopoll_phy(int unused)
 {
 	u32 regValue, addr_s, addr_e;
-
 #if defined (CONFIG_RALINK_MT7621)
 	// PHY_ST_ADDR  = always GE1->EPHY address
 	// PHY_END_ADDR = always GE2->EPHY address
@@ -290,6 +315,7 @@ void enable_autopoll_phy(int unused)
 	regValue |= ((addr_e & 0x1f) << 8);	// setup PHY address for auto polling (End Addr).
 	sysRegWrite(REG_MDIO_PHY_POLLING, regValue);
 }
+
 #elif defined (CONFIG_RALINK_RT3052) || defined (CONFIG_RALINK_RT3352) || \
       defined (CONFIG_RALINK_RT3883)
 void enable_autopoll_phy(int ge)
@@ -335,15 +361,12 @@ static void ext_gphy_sfpen(void)
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPLS);				// switch pin to input mode  (Receiver Loss of Signal)
 	sysRegWrite(RALINK_REG_PIODIR, val);
 
-	printk("Config and enable SFP slot.\n");
+	printk("Configure and enable SFP slot.\n");
 
 	val = sysRegRead(RALINK_REG_PIODATA);
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPPL);				// set pin to LOW (1.25Gbit/s)
 	val &= ~(0x1<<CONFIG_RALINK_GPIO_SFPEN);				// set pin to LOW (SFP Enabled)
 	sysRegWrite(RALINK_REG_PIODATA, val);
-
-	/* wait 200ms ready */
-	mdelay(200);
 }
 #endif
 
@@ -366,7 +389,6 @@ void ext_gphy_mdioswitch(int on)
 		val |= (0x1<<11);						// set pin to HIGH (external mdio enable)
 		sysRegWrite(RALINK_REG_PIODATA, val);
 		ext_phy_mdio_enabled = 1;
-
 	} else if (!on && ext_phy_mdio_enabled) {
 		val = sysRegRead(RALINK_REG_PIODATA);
 		val &= ~(0x1<<11);						// set pin to LOW (only internal mdio)
@@ -387,26 +409,27 @@ static void ext_gphy_reset(void)
 	/* enable external MDIO use */
 	ext_gphy_mdioswitch(1);
 #endif
+	mdelay(10); /* wait 10ms for pulse */
 
-	val = sysRegRead(RALINK_REG_PIODIR);					// GPIO0 used for PE_RST PHY not shared
-	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// switch pin to output mode
+	val = sysRegRead(RALINK_REG_PIODIR);					/* GPIO0 used for PE_RST PHY not shared */
+	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				/* switch pin to output mode */
 	sysRegWrite(RALINK_REG_PIODIR, val);
 
 	val = sysRegRead(RALINK_REG_PIODATA);
-	val &= ~(0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// set pin to LOW (phy sleep)
+	val &= ~(0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				/* set pin to LOW (phy sleep) */
 	sysRegWrite(RALINK_REG_PIODATA, val);
 
 #if defined (CONFIG_RALINK_GPIO_SFPEN) && (CONFIG_RALINK_GPIO_SFPEN > -1)
 	ext_gphy_sfpen();
-#else
-	mdelay(200); /* wait 200ms for pulse */
 #endif
+	mdelay(10); /* wait 10ms for pulse ( For  a  complete  PHY reset, this pin must be asserted low for at least 10ms ) */
+
 	val = sysRegRead(RALINK_REG_PIODATA);
-	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				// set pin to HIGH (phy wakeup)
+	val |= (0x1<<CONFIG_RALINK_GPIO_PHY_PERST);				/* set pin to HIGH (phy wakeup) */
 	sysRegWrite(RALINK_REG_PIODATA, val);
 
-	/* wait 200ms ready */
-	mdelay(200);
+	/* wait 30ms for ready (The RTL8211 requires 30ms for power on reset, after which it can access the PHY register from MDC/MDIO). */
+	mdelay(30);
 }
 #endif
 
