@@ -65,7 +65,10 @@ typedef u32 netdev_features_t;
 #define RAETH_QDMA		/* QoS DMA Engine */
 #define RAETH_HW_VLAN4K		/* FE support VLAN 0..4095 */
 #define RAETH_HW_PADPKT		/* FE support padding TX path to 60/64 bytes */
-#define RAETH_HW_CL45		/* FE support native MDIO 'clause 45' access */
+#endif
+
+#if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
+#define RAETH_HW_CL45		/* export FE support native MDIO 'clause 45' access to userspace */
 #endif
 
 #if defined (CONFIG_RALINK_MT7621)

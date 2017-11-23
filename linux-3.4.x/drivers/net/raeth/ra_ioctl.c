@@ -10,6 +10,7 @@
 #include "ra_esw_reg.h"
 #include "mii_mgr.h"
 #include "ra_ioctl.h"
+#include "ra_compat.h"
 
 #if defined (CONFIG_RAETH_QDMA)
 extern u8  M2Q_table[64];
@@ -270,7 +271,7 @@ int raeth_ioctl(struct ifreq *ifr, int cmd)
 			copy_from_user(&mii, ifr->ifr_data, sizeof(mii));
 			mii_mgr_write(mii.phy_id, mii.reg_num, mii.val_in);
 			break;
-#if defined (CONFIG_RALINK_MT7620) || defined (CONFIG_RALINK_MT7621) || defined (CONFIG_RALINK_MT7628)
+#ifdef RAETH_HW_CL45
 		case RAETH_MII_READ_CL45:
 			copy_from_user(&mii, ifr->ifr_data, sizeof(mii));
 			mii_mgr_read_cl45(mii.port_num, mii.dev_addr, mii.reg_addr, &mii.val_out);
