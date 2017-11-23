@@ -5,10 +5,12 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <linux/if.h>
+#include <linux/version.h>
 #include <linux/autoconf.h>
 
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
+#include "ra_compat.h"
 
 //#define DEBUG			1
 #define RT_SWITCH_HELP		1
@@ -2006,7 +2008,7 @@ int mii_mgr_cl45_write(int port_num, int dev, int reg, int value){
 	return ret;
 }
 
-#define MT7530_T10_TEST_CONTROL 0x145 
+#define MT7530_T10_TEST_CONTROL 0x145
 
 void phy_crossover(int argc, char *argv[]){
 	int port_num = strtoul(argv[2], NULL, 10);

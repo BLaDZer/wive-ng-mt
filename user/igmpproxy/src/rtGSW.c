@@ -12,11 +12,13 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <linux/version.h>
 
 #include "linux/autoconf.h"
 #include "igmpproxy.h"
 #include "ra_esw_reg.h"
 #include "ra_ioctl.h"
+#include "ra_compat.h"
 
 #define END_OF_MAC_TABLE		0xFFFFFFFF
 #define ITERATIONTIMEOUT		5000

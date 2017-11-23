@@ -25,9 +25,11 @@
 #include <linux/if.h>
 #include <linux/mii.h>
 #include <linux/types.h>
+#include <linux/version.h>
 #include <linux/autoconf.h>
 
 #include "ra_ioctl.h"
+#include "ra_compat.h"
 
 void show_usage(void)
 {
