@@ -122,7 +122,12 @@ set_dhcptouch_portnum() {
 	else
 	    if [ "$ForceRenewDHCP" != "0" ] && [ "$wan_port" != "" ]; then
 		# configure event wait port
-		sysctl -wq net.ipv4.send_sigusr_dhcpc="$wan_port"
+		if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+		    # extPHY use static WAN at phy N=5
+		    sysctl -wq net.ipv4.send_sigusr_dhcpc="5"
+		else
+		    sysctl -wq net.ipv4.send_sigusr_dhcpc="$wan_port"
+		fi
 	    else
 		# disable dhcp renew from driver
 		sysctl -wq net.ipv4.send_sigusr_dhcpc=9
