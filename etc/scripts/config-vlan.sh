@@ -58,70 +58,39 @@ disable_all_ports() {
         for port in `seq 0 4`; do
 	    link_down $port
 	done
-
-	# external PHY
-	#if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	    # link down
-	#    link_down 5
-	#fi
 }
 
 enable_all_ports() {
 	for port in `seq 0 4`; do
 	    link_up $port
 	done
-
-	# external PHY
-	#if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	#    link_up 5
-	#fi
 }
 
-reset_all_phys() {
-	$LOG "Reset all phy port"
-	if [ "$OperationMode" = "0" ] || [ "$OperationMode" = "2" ] || [ "$OperationMode" = "3" ] || [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-	    # All ports down
-	    start=0
-	    end=4
-	else
-	    # Ports down skip WAN port
-	    if [ "$wan_portN" = "0" ]; then
-		start=0
-		end=3
-	    else
-		start=1
-		end=4
+reset_lan() {
+	$LOG "Reset LAN ports phys"
+	# disable lan ports
+        for port in `seq 0 4`; do
+	    if [ "$wan_phy" != "$port" ]; then
+    		link_down $port
 	    fi
-	fi
-
-	# disable ports
-	for port in `seq $start $end`; do
-    	    link_down $port
 	done
-	# wait client detect link down for renew dhcp
-	usleep 80000
-	# enable ports
-	for port in `seq $start $end`; do
-    	    link_up $port
+	# wait client detect link down for renew ip by dhcp
+	usleep 200000
+	# enable lan ports
+        for port in `seq 0 4`; do
+	    if [ "$wan_phy" != "$port" ]; then
+    		link_up $port
+	    fi
 	done
 }
 
-reset_wan_phys() {
-	$LOG "Reset wan phy port"
-	if [ "$OperationMode" = "1" ]; then
-	    if [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
-		#link_down 5
-		#link_up 5
-		:
-	    else
-		if [ "$wan_portN" = "0" ]; then
-		    link_down 4
-		    link_up 4
-		else
-		    link_down 0
-		    link_up 0
-		fi
-	    fi
+reset_wan() {
+	if [ "$wan_phy" != "" ]; then
+		$LOG "Reset WAN port phy"
+		link_down $wan_phy
+		# small wait for uplink stable detect link beat
+		usleep 100000
+		link_up $wan_phy
 	fi
 }
 
@@ -228,12 +197,11 @@ set_physmode_ext_phy() {
 	fi
 }
 
-reinit_all_phys() {
-	# Reinit all ports
-	disable_all_ports
-	enable_all_ports
+reinit_all() {
+	# WAN port blink for renew uplink parametrs
+	reset_wan
 	# LAN ports blink for stupid win machine dhcp force renew
-	reset_all_phys
+	reset_lan
 	# Set ESW/GSW  ports parametrs
 	set_physmode
 	# Set ExtPHY ports parametrs
@@ -273,19 +241,13 @@ restore_onergmii()
 	done
 
 	switch reg w 3500 00008000		#port 5 link down not used
-
 	switch reg w 0010 7f7f7fe0		#port 6 as CPU Port
-
-	# do not restore cpu port mode if trgmii enabled
-	if [ "$CONFIG_GE1_TRGMII_FORCE_1200" != "y" ]; then
-	    switch reg w 3600 0005e33b		#port 6 force up, 1000FD
-	fi
 
 	# clear configured vlan parts
 	switch vlan clear
 
 	# reinit all ports
-	reinit_all_phys
+	reinit_all
 
 	# disable snooping
 	restore_igmpsnoop
@@ -437,7 +399,7 @@ restore_dualrgmii()
 	switch vlan clear
 
 	# reinit all ports
-	reinit_all_phys
+	reinit_all
 
 	# disable snooping
 	restore_igmpsnoop
@@ -632,7 +594,7 @@ restore_extdualrgmii()
 	switch vlan clear
 
 	# reinit all ports
-	reinit_all_phys
+	reinit_all
 
 	# disable snooping
 	restore_igmpsnoop
@@ -700,6 +662,18 @@ else
     procdir=
 fi
 
+# only router mode have WAN port at internal switch
+# if ExtPHY installed switch not have WAN ports in config to
+if [ "$OperationMode" != "1" ] || [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
+    wan_phy=""
+else
+    if [ "$wan_portN" = "0" ]; then
+	wan_phy="4"
+    else
+	wan_phy="0"
+    fi
+fi
+
 if [ "$1" = "3" ]; then
 	if [ "$2" = "LLLLL" ]; then
 		restore_onergmii
@@ -708,11 +682,11 @@ if [ "$1" = "3" ]; then
 	elif [ "$2" = "DDDDD" ]; then
 		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
-		reset_all_phys
+		reset_lan
 	elif [ "$2" = "FFFFF" ]; then
-		reinit_all_phys
+		reinit_all
 	elif [ "$2" = "WWWWW" ]; then
-		reset_wan_phys
+		reset_wan
 	elif [ "$2" = "VLANS" ]; then
 		config_onergmii VLANS
 	else
@@ -726,11 +700,11 @@ elif [ "$1" = "4" ]; then
 	elif [ "$2" = "DDDDD" ]; then
 		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
-		reset_all_phys
+		reset_lan
 	elif [ "$2" = "FFFFF" ]; then
-		reinit_all_phys
+		reinit_all
 	elif [ "$2" = "WWWWW" ]; then
-		reset_wan_phys
+		reset_wan
 	elif [ "$2" = "VLANS" ]; then
 		config_dualrgmii VLANS
 	else
@@ -744,11 +718,11 @@ elif [ "$1" = "5" ]; then
 	elif [ "$2" = "DDDDD" ]; then
 		disable_all_ports
 	elif [ "$2" = "RRRRR" ]; then
-		reset_all_phys
+		reset_lan
 	elif [ "$2" = "FFFFF" ]; then
-		reinit_all_phys
+		reinit_all
 	elif [ "$2" = "WWWWW" ]; then
-		reset_wan_phys
+		reset_wan
 	elif [ "$2" = "VLANS" ]; then
 		config_extdualrgmii VLANS
 	else
