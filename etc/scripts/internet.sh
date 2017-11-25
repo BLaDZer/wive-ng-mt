@@ -184,6 +184,7 @@ if [ "$MODE" != "connect_sta" ]; then
 	service six stop
     fi
     service vpnhelper stop
+    service vlan stop
     $LOG "Reload modules."
     service modules restart
     $LOG "Reconfigure lan."
