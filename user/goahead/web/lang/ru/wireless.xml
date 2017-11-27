@@ -155,8 +155,8 @@
   <message msgid="basic bandsteering rssidiff default" msgstr="0 - 40 db, по умолчанию 15" />
   <message msgid="basic bandsteering rssilow default" msgstr="0 - -100 db, по умолчанию -85" />
   <message msgid="basic bandsteering age default" msgstr="мс, по умолчанию 600000" />
-  <message msgid="basic bandsteering hold default" msgstr="мс, по умолчанию 3000" />
-  <message msgid="basic bandsteering check default" msgstr="мс, по умолчанию 6000" />
+  <message msgid="basic bandsteering hold default" msgstr="мс, по умолчанию 5000" />
+  <message msgid="basic bandsteering check default" msgstr="мс, по умолчанию 7000" />
 
   <message msgid="basic ids" msgstr="Предотвращение вторжений" />
   <message msgid="basic ids auth" msgstr="Ограничение числа попыток аутентификации" />

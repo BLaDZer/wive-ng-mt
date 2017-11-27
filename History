@@ -3511,7 +3511,7 @@
 <b>6.7.x</b><br>
 1) build_system: toolchain: headers up and rebuild.<br>
 2) configs: add support i2c for CG1 (need for SFP control).<br>
-3) defaults: more smooth handoff parametrs by default.<br>
+3) defaults: more smooth handoff and agressive band steering parametrs by default.<br>
 4) add sfppi tool for work with SFP module EEPROM.<br>
 5) add sfp-i2c tool for get params from SFP module.<br>
 6) openssl: up to 1.0.2m version.<br>
