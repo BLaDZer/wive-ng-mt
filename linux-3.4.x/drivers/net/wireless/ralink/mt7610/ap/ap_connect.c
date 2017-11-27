@@ -946,6 +946,22 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	}
 #endif /* DOT11_N_SUPPORT */
 
+
+#ifdef DOT11R_FT_SUPPORT
+	/* The Mobility Domain information element (MDIE) is present in Beacon
+	** frame when dot11FastBssTransitionEnable is set to true. */
+	if (pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable)
+	{
+		PFT_CFG pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
+		FT_CAP_AND_POLICY FtCap;
+		NdisZeroMemory(&FtCap, sizeof(FT_CAP_AND_POLICY));
+		FtCap.field.FtOverDs = pFtCfg->FtCapFlag.FtOverDs;
+		FtCap.field.RsrReqCap = pFtCfg->FtCapFlag.RsrReqCap;
+		FT_InsertMdIE(pAd, pBeaconFrame + FrameLen, &FrameLen,
+						pFtCfg->FtMdId, FtCap);
+	}
+#endif /* DOT11R_FT_SUPPORT */
+
    	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
 	if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg)
 	{
@@ -966,21 +982,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	    FrameLen += TmpLen;
 
 	}
-
-#ifdef DOT11R_FT_SUPPORT
-	/* The Mobility Domain information element (MDIE) is present in Beacon
-	** frame when dot11FastBssTransitionEnable is set to true. */
-	if (pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable)
-	{
-		PFT_CFG pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
-		FT_CAP_AND_POLICY FtCap;
-		NdisZeroMemory(&FtCap, sizeof(FT_CAP_AND_POLICY));
-		FtCap.field.FtOverDs = pFtCfg->FtCapFlag.FtOverDs;
-		FtCap.field.RsrReqCap = pFtCfg->FtCapFlag.RsrReqCap;
-		FT_InsertMdIE(pAd, pBeaconFrame + FrameLen, &FrameLen,
-						pFtCfg->FtMdId, FtCap);
-	}
-#endif /* DOT11R_FT_SUPPORT */
 
 	/* step 6. Since FrameLen may change, update TXWI. */
 #ifdef A_BAND_SUPPORT

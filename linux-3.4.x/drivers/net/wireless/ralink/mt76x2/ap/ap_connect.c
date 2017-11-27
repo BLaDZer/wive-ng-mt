@@ -1140,37 +1140,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	}
 #endif /* DOT11_N_SUPPORT */
 
-   	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
-if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg
-#ifdef DOT11_VHT_AC
-	|| (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
-#endif /* DOT11_VHT_AC */
-	)
-{
-	ULONG TmpLen;
-	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
-
-	if (pComCfg->bAggregationCapable)
-		RalinkSpecificIe[5] |= 0x1;
-	if (pComCfg->bPiggyBackCapable)
-		RalinkSpecificIe[5] |= 0x2;
-#ifdef DOT11_N_SUPPORT
-	if (pComCfg->bRdg)
-		RalinkSpecificIe[5] |= 0x4;
-#endif /* DOT11_N_SUPPORT */
-
-#ifdef DOT11_VHT_AC
-	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
-		RalinkSpecificIe[5] |= 0x8;
-#endif /* DOT11_VHT_AC */
-
-	MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
-						9,                   RalinkSpecificIe,
-						END_OF_ARGS);
-	FrameLen += TmpLen;
-
-}
-	
 #ifdef AIRPLAY_SUPPORT
 	if (AIRPLAY_ON(pAd))
 	{ 
@@ -1219,6 +1188,37 @@ if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg
 						pFtCfg->FtMdId, FtCap);
 	}
 #endif /* DOT11R_FT_SUPPORT */
+
+   	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
+if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg
+#ifdef DOT11_VHT_AC
+	|| (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
+#endif /* DOT11_VHT_AC */
+	)
+{
+	ULONG TmpLen;
+	UCHAR RalinkSpecificIe[9] = {IE_VENDOR_SPECIFIC, 7, 0x00, 0x0c, 0x43, 0x00, 0x00, 0x00, 0x00};
+
+	if (pComCfg->bAggregationCapable)
+		RalinkSpecificIe[5] |= 0x1;
+	if (pComCfg->bPiggyBackCapable)
+		RalinkSpecificIe[5] |= 0x2;
+#ifdef DOT11_N_SUPPORT
+	if (pComCfg->bRdg)
+		RalinkSpecificIe[5] |= 0x4;
+#endif /* DOT11_N_SUPPORT */
+
+#ifdef DOT11_VHT_AC
+	if (pComCfg->b256QAM_2G && WMODE_2G_ONLY(pComCfg->PhyMode))
+		RalinkSpecificIe[5] |= 0x8;
+#endif /* DOT11_VHT_AC */
+
+	MakeOutgoingFrame(pBeaconFrame+FrameLen, &TmpLen,
+						9,                   RalinkSpecificIe,
+						END_OF_ARGS);
+	FrameLen += TmpLen;
+
+}
 
 	/* step 6. Since FrameLen may change, update TXWI. */
 #ifdef A_BAND_SUPPORT

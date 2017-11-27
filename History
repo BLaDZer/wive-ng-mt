@@ -3577,79 +3577,80 @@
 66) kernel: ralink_wifi: collect very low level probe req only for 5GHz.<br>
 67) kernel: ralink_wifi: more info handoff kickout log.<br>
 68) kernel: ralink_wifi: increase kickout delay only if have transmit data to clients at last 5 seconds.<br>
-69) kernel: ralink_i2c: fic build and warnings.<br>
-70) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
-71) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
-72) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
-73) kernel: fs: fix unbalanced page refcounting in bio_map_user_iov.<br>
-74) kernel: fs: ext4: validate s_first_meta_bg at mount time.<br>
-75) kernel: fs: ext4: fix fencepost in s_first_meta_bg validation.<br>
-76) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
-77) kernel: mips: add nudges to writes for bit unlocks.<br>
-78) kernel: mips: make thread_saved_pc static.<br>
-79) kernel: mips: fix pcibios_map_irq section mismatch.<br>
-80) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
-81) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
-82) kernel: mips: declare various variables & functions static.<br>
-83) kernel: mips: add iomem resource for kernel bss section.<br>
-84) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
-85) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
-86) kernel: usb: fix out-of-bounds in usb_set_configuration.<br>
-87) kernel: usb: usbtest: fix NULL pointer dereference.<br>
-88) kernel: usb: usbhid: fix out-of-bounds bug.<br>
-89) kernel: usb: hcd: initialize hcd->flags to 0 when rm hcd.<br>
-90) kernel: usb: usbfs: compute urb->actual_length for isochronous.<br>
-91) kernel: usb: serial: qcserial: add pid/vid for Sierra Wireless EM7355 fw update.<br>
-92) kernel: usb: qmi_wwan: fix divide by 0 on bad descriptors.<br>
-93) kernel: usb: qmi_wwan: add missing skb_reset_mac_header-call.<br>
-94) kernel: usb: cdc_ether: fix divide by 0 on bad descriptors.<br>
-95) kernel: net: small increase txqlen at default and use in all drivers.<br>
-96) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
-97) kernel: net: vlan: fix a use-after-free in vlan_device_event().<br>
-98) kernel: net: ipsec: do not ignore crypto err in ah4 input.<br>
-99) kernel: net: ppp: fix race in ppp device destruction.<br>
-100) kernel: net: tcp: fix tcp_mtu_probe() vs highest_sack.<br>
-101) kernel: net: tcp: fix tcp_fastretrans_alert warning.<br>
-102) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
-103) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
-104) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
-105) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
-106) kernel: net: sched: fix error recovery at qdisc creation.<br>
-107) kernel: net: sched: sch_htb: fix crash on init failure.<br>
-108) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
-109) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
-110) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
-111) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
-112) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
-113) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
-114) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
-115) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
-116) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
-117) kernel: net: ipv6: add rt6_get_cookie() function.<br>
-118) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
-119) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
-120) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
-121) kernel: net: ipv6: flowlabel: do not leave opt->tot_len with garbage.<br>
-122) kernel: net: ipv6: fix memory leak with multiple tables during netns destruction.<br>
-123) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-124) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-125) kernel: net: tun: call dev_get_valid_name() before register_netdevice().<br>
-126) kernel: net: tun: allow positive return values on dev_get_valid_name() call.<br>
-127) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-128) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-129) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-130) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-131) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
-132) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-133) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
-134) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
-135) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
-136) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
-137) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
-138) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
-139) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
-140) kernel: net: l2tp: prevent creation of sessions on terminated tunnels.<br>
-141) kernel: net: l2tp: pass tunnel pointer to ->session_create().<br>
+69) kernel: ralink_wifi: move ralink specific IE to true place.<br>
+70) kernel: ralink_i2c: fic build and warnings.<br>
+71) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
+72) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
+73) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
+74) kernel: fs: fix unbalanced page refcounting in bio_map_user_iov.<br>
+75) kernel: fs: ext4: validate s_first_meta_bg at mount time.<br>
+76) kernel: fs: ext4: fix fencepost in s_first_meta_bg validation.<br>
+77) kernel: mips: replace smp_mb with release barrier function in unlocks.<br>
+78) kernel: mips: add nudges to writes for bit unlocks.<br>
+79) kernel: mips: make thread_saved_pc static.<br>
+80) kernel: mips: fix pcibios_map_irq section mismatch.<br>
+81) kernel: mips: fix input modify in __write_64bit_c0_split().<br>
+82) kernel: mips: remove pt_regs adjustments in indirect syscall handler.<br>
+83) kernel: mips: declare various variables & functions static.<br>
+84) kernel: mips: add iomem resource for kernel bss section.<br>
+85) kernel: usb: core: fix out-of-bounds access bug in usb_get_bos_descriptor().<br>
+86) kernel: usb: hub: allow reset retry for USB2 devices on connect bounce.<br>
+87) kernel: usb: fix out-of-bounds in usb_set_configuration.<br>
+88) kernel: usb: usbtest: fix NULL pointer dereference.<br>
+89) kernel: usb: usbhid: fix out-of-bounds bug.<br>
+90) kernel: usb: hcd: initialize hcd->flags to 0 when rm hcd.<br>
+91) kernel: usb: usbfs: compute urb->actual_length for isochronous.<br>
+92) kernel: usb: serial: qcserial: add pid/vid for Sierra Wireless EM7355 fw update.<br>
+93) kernel: usb: qmi_wwan: fix divide by 0 on bad descriptors.<br>
+94) kernel: usb: qmi_wwan: add missing skb_reset_mac_header-call.<br>
+95) kernel: usb: cdc_ether: fix divide by 0 on bad descriptors.<br>
+96) kernel: net: small increase txqlen at default and use in all drivers.<br>
+97) kernel: net: use different txqlen for wireless and wired links (buffer debloat).<br>
+98) kernel: net: vlan: fix a use-after-free in vlan_device_event().<br>
+99) kernel: net: ipsec: do not ignore crypto err in ah4 input.<br>
+100) kernel: net: ppp: fix race in ppp device destruction.<br>
+101) kernel: net: tcp: fix tcp_mtu_probe() vs highest_sack.<br>
+102) kernel: net: tcp: fix tcp_fastretrans_alert warning.<br>
+103) kernel: net: core: improve sanity checking in __dev_alloc_name.<br>
+104) kernel: net: core: drop pointless check in __dev_alloc_name.<br>
+105) kernel: net: core: check dev_valid_name in __dev_alloc_name.<br>
+106) kernel: net: core: maybe return -EEXIST in __dev_alloc_name.<br>
+107) kernel: net: sched: fix error recovery at qdisc creation.<br>
+108) kernel: net: sched: sch_htb: fix crash on init failure.<br>
+109) kernel: net: sched: sch_multiq: fix double free on init failure.<br>
+110) kernel: net: sched: sch_hfsc: fix null pointer deref and double free on init failure.<br>
+111) kernel: net: sched: sch_cbq: fix null pointer dereferences on init failure.<br>
+112) kernel: net: sched: sch_netem: avoid null pointer deref on init failure.<br>
+113) kernel: net: sched: sch_tbf: fix two null pointer dereferences on init failure.<br>
+114) kernel: net: xfrm_user: fix info leak in xfrm_notify_sa().<br>
+115) kernel: net: xfrm_user: fix info leak in build_aevent().<br>
+116) kernel: net: ipv6: udp: fix the checksum computation when HW checksum does not apply.<br>
+117) kernel: net: ipv6: set rt6i_protocol properly in the route when it is installed.<br>
+118) kernel: net: ipv6: add rt6_get_cookie() function.<br>
+119) kernel: net: ipv6: add rcu grace period before freeing fib6_node.<br>
+120) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
+121) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
+122) kernel: net: ipv6: flowlabel: do not leave opt->tot_len with garbage.<br>
+123) kernel: net: ipv6: fix memory leak with multiple tables during netns destruction.<br>
+124) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+125) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+126) kernel: net: tun: call dev_get_valid_name() before register_netdevice().<br>
+127) kernel: net: tun: allow positive return values on dev_get_valid_name() call.<br>
+128) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+129) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+130) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+131) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+132) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+133) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
+134) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+135) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+136) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+137) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
+138) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+139) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+140) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
+141) kernel: net: l2tp: prevent creation of sessions on terminated tunnels.<br>
+142) kernel: net: l2tp: pass tunnel pointer to ->session_create().<br>
 <br>
 <br>
 <br>
