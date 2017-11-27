@@ -7,6 +7,7 @@ count=0
 while [ -e /tmp/modem_helper ]; do
     if [ "$count" = "5" ]; then
 	$LOG "Wait for pid at 25 seconds - exit modemhelper"
+	rm -f /tmp/modem_helper
 	exit 1
     fi
     count="$(($count+1))"
@@ -79,7 +80,6 @@ start() {
 		fi
 	    fi
 	    if [ -e /var/run/ppp-$mdm_if.pid -o -e /var/run/$mdm_if.pid ]; then
-    		rm -f /tmp/modem_helper
 		echo "pppd: already started!"
 		rm -f /tmp/modem_helper
 		exit 1
