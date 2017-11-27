@@ -389,7 +389,7 @@ static int l2tp_session_add_to_tunnel(struct l2tp_tunnel *tunnel,
 err_tlock_pnlock:
 #endif
 	spin_unlock_bh(&pn->l2tp_session_hlist_lock);
-exist:
+err_tlock:
 	write_unlock_bh(&tunnel->hlist_lock);
 
 	return err;
