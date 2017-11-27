@@ -232,7 +232,6 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 			DBGPRINT(RT_DEBUG_ERROR, ("%s: Allocate memory fail!!!\n", __FUNCTION__));
 	}
 
-
 #ifdef DOT11K_RRM_SUPPORT
 	if (IS_RRM_ENABLE(pAd, apidx))
 	{
@@ -266,7 +265,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 				class 33, channel set 5-11
 		*/
 		UCHAR rclass32[]={32, 1, 2, 3, 4, 5, 6, 7};
-        UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
+    		UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
 		UCHAR rclasslen = 8; /*sizeof(rclass32); */
 		if (PhyMode == (WMODE_B | WMODE_G | WMODE_GN))
 		{
@@ -278,12 +277,11 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 							  1,                    &rclasslen,
 							  rclasslen,            rclass33,
 							  END_OF_ARGS);
-			FrameLen += TmpLen;		
+			FrameLen += TmpLen;
 		}
 	}
 #endif /* DOT11K_RRM_SUPPORT */
 #endif /* DOT11_N_SUPPORT */
-
 
 #ifdef DOT11R_FT_SUPPORT
 	/* The Mobility Domain information element (MDIE) is present in Beacon
@@ -847,6 +845,14 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* DOT11_VHT_AC */
 	}
 
+#ifdef DOT11K_RRM_SUPPORT
+	if (IS_RRM_ENABLE(pAd, apidx))
+	{
+		InsertTpcReportIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
+			RTMP_GetTxPwr(pAd, pAd->CommonCfg.MlmeTransmit), 0);
+		RRM_InsertRRMEnCapIE(pAd, pBeaconFrame+FrameLen, &FrameLen, apidx);
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 
 #ifdef DOT11K_RRM_SUPPORT
 	if (IS_RRM_ENABLE(pAd, apidx))
@@ -866,6 +872,63 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 	}
 #endif /* DOT11K_RRM_SUPPORT */
+
+#ifdef DOT11_N_SUPPORT
+	/* AP Channel Report */
+#ifdef DOT11K_RRM_SUPPORT
+	for (i=0; i<MAX_NUM_OF_REGULATORY_CLASS; i++)
+	{
+		if (pAd->CommonCfg.RegulatoryClass[i] == 0)
+			break;
+
+		InsertChannelRepIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
+							(PSTRING)pAd->CommonCfg.CountryCode,
+							pAd->CommonCfg.RegulatoryClass[i], NULL);
+
+	}
+#else
+	{
+		UCHAR APChannelReportIe = IE_AP_CHANNEL_REPORT;
+		ULONG	TmpLen;
+
+		/*
+			802.11n D2.0 Annex J, USA regulatory 
+				class 32, channel set 1~7
+				class 33, channel set 5-11
+		*/
+		UCHAR rclass32[]={32, 1, 2, 3, 4, 5, 6, 7};
+    		UCHAR rclass33[]={33, 5, 6, 7, 8, 9, 10, 11};
+		UCHAR rclasslen = 8; /*sizeof(rclass32); */
+		if (PhyMode == (WMODE_B | WMODE_G | WMODE_GN))
+		{
+			MakeOutgoingFrame(pBeaconFrame+FrameLen,&TmpLen,
+							  1,                    &APChannelReportIe,
+							  1,                    &rclasslen,
+							  rclasslen,            rclass32,
+   							  1,                    &APChannelReportIe,
+							  1,                    &rclasslen,
+							  rclasslen,            rclass33,
+							  END_OF_ARGS);
+			FrameLen += TmpLen;
+		}
+	}
+#endif /* DOT11K_RRM_SUPPORT */
+#endif /* DOT11_N_SUPPORT */
+
+#ifdef DOT11R_FT_SUPPORT
+	/* The Mobility Domain information element (MDIE) is present in Beacon
+	** frame when dot11FastBssTransitionEnable is set to true. */
+	if (pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable)
+	{
+		PFT_CFG pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
+		FT_CAP_AND_POLICY FtCap;
+		NdisZeroMemory(&FtCap, sizeof(FT_CAP_AND_POLICY));
+		FtCap.field.FtOverDs = pFtCfg->FtCapFlag.FtOverDs;
+		FtCap.field.RsrReqCap = pFtCfg->FtCapFlag.RsrReqCap;
+		FT_InsertMdIE(pAd, pBeaconFrame + FrameLen, &FrameLen,
+						pFtCfg->FtMdId, FtCap);
+	}
+#endif /* DOT11R_FT_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 	if (WMODE_CAP_N(PhyMode) && 
@@ -947,22 +1010,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		}
 	}
 #endif /* DOT11_N_SUPPORT */
-
-
-#ifdef DOT11R_FT_SUPPORT
-	/* The Mobility Domain information element (MDIE) is present in Beacon
-	** frame when dot11FastBssTransitionEnable is set to true. */
-	if (pAd->ApCfg.MBSSID[apidx].FtCfg.FtCapFlag.Dot11rFtEnable)
-	{
-		PFT_CFG pFtCfg = &pAd->ApCfg.MBSSID[apidx].FtCfg;
-		FT_CAP_AND_POLICY FtCap;
-		NdisZeroMemory(&FtCap, sizeof(FT_CAP_AND_POLICY));
-		FtCap.field.FtOverDs = pFtCfg->FtCapFlag.FtOverDs;
-		FtCap.field.RsrReqCap = pFtCfg->FtCapFlag.RsrReqCap;
-		FT_InsertMdIE(pAd, pBeaconFrame + FrameLen, &FrameLen,
-						pFtCfg->FtMdId, FtCap);
-	}
-#endif /* DOT11R_FT_SUPPORT */
 
    	/* add Ralink-specific IE here - Byte0.b0=1 for aggregation, Byte0.b1=1 for piggy-back */
 	if (pComCfg->bAggregationCapable || pComCfg->bPiggyBackCapable || pComCfg->bRdg)
