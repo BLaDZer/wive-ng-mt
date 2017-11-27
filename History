@@ -3626,25 +3626,26 @@
 115) kernel: net: ipv6: fix may be used uninitialized warning in rt6_check.<br>
 116) kernel: net: ipv6: fix sparse warning on rt6i_node.<br>
 117) kernel: net: ipv6: flowlabel: do not leave opt->tot_len with garbage.<br>
-118) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
-119) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
-120) kernel: net: tun: call dev_get_valid_name() before register_netdevice().<br>
-121) kernel: net: tun: allow positive return values on dev_get_valid_name() call.<br>
-122) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
-123) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
-124) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
-125) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
-126) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
-127) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-128) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
-129) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
-130) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
-131) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
-132) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
-133) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
-134) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
-135) kernel: net: l2tp: prevent creation of sessions on terminated tunnels.<br>
-136) kernel: net: l2tp: pass tunnel pointer to ->session_create().<br>
+118) kernel: net: ipv6: fix memory leak with multiple tables during netns destruction.<br>
+119) kernel: net: tun: bail out from tun_get_user() if the skb is empty.<br>
+120) kernel: net: tun: sanitize TUNSETSNDBUF input.<br>
+121) kernel: net: tun: call dev_get_valid_name() before register_netdevice().<br>
+122) kernel: net: tun: allow positive return values on dev_get_valid_name() call.<br>
+123) kernel: net: packet: in packet_do_bind, test fanout with bind_lock held.<br>
+124) kernel: net: packet: hold bind lock when rebinding to fanout hook.<br>
+125) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_insert() returns void.<br>
+126) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
+127) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
+128) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
+129) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+130) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
+131) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
+132) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
+133) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
+134) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
+135) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
+136) kernel: net: l2tp: prevent creation of sessions on terminated tunnels.<br>
+137) kernel: net: l2tp: pass tunnel pointer to ->session_create().<br>
 <br>
 <br>
 <br>
