@@ -232,6 +232,9 @@ stop() {
     fi
     ip link set $NCMIF down > /dev/null 2>&1
     [ -f /tmp/ncm_port ] && grep -v "$NCMIF" /tmp/ncm_port > /tmp/ncm_port
+
+    # allways remove run lock flag
+    rm -f /tmp/modem_helper
 }
 
 poweroffon() {
