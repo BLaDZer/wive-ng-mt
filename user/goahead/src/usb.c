@@ -69,6 +69,17 @@ parameter_fetch_t usb_modem_args[] =
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
+static void usbmodemrestart(void)
+{
+	doSystem("service iptables restart");
+#if (CONFIG_RALINK_GPIO_PWR_USB > 0)
+	doSystem("service modemhelper stop");
+	doSystem("service modemhelper poweroffon");
+#else
+	doSystem("service modemhelper restart");
+#endif
+}
+
 static void usbmodem(webs_t wp, char_t *path, char_t *query)
 {
 	char_t *submitUrl;
@@ -90,18 +101,11 @@ static void usbmodem(webs_t wp, char_t *path, char_t *query)
 
 			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
-
-			doSystem("service iptables restart");
-#if (CONFIG_RALINK_GPIO_PWR_USB > 0)
-			doSystem("service modemhelper stop");
-			doSystem("service modemhelper poweroffon");
-#else
-			doSystem("service modemhelper restart");
-#endif
+			usbmodemrestart();
 		}
 	else if (0 == strcmp(submit, "connect"))
 		{
-			doSystem("service modemhelper start");
+			usbmodemrestart();
 		}
 	else if (0 == strcmp(submit, "disconnect"))
 		{
