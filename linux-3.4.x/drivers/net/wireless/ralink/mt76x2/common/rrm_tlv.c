@@ -637,8 +637,7 @@ VOID RRM_EnqueueNeighborRep(
 		{
 			RRM_BSSID_INFO BssidInfo;
 			BssidInfo.word = 0;
-			BssidInfo.field.APReachAble = 3;
-			BssidInfo.field.Security = 0; /* rrm to do. */
+			BssidInfo.field.APReachAble = 3; /* not reachable for preauth, unknown, reachable for preauth */
 
 /* 
 	reference 2012 spec.
@@ -648,9 +647,6 @@ VOID RRM_EnqueueNeighborRep(
 	as used by the STA in its current association. If the bit is 0, it indicates either that the AP does not support
 	the same security provisioning or that the security information is not available at this time.
 */
-
-			
-			BssidInfo.field.KeyScope = 0; /* "report AP has same authenticator as the AP. */
 /*
 	reference 2012 spec.
 	802.11-2012.pdf
@@ -659,15 +655,31 @@ VOID RRM_EnqueueNeighborRep(
 	sending the report. If this bit is 0, it indicates a distinct authenticator or the information is not available.
 */
 
+			if (pBssEntry->AuthMode >= Ndis802_11AuthModeWPA2) {
+				BssidInfo.field.Security = 1;				/* RSN Capability identical in others APs with current the AP. */
+				BssidInfo.field.KeyScope = 1; 				/* AP has same authenticator as the AP. */
+			} else {
+				BssidInfo.field.Security = 0;
+				BssidInfo.field.KeyScope = 0;
+			}
+
+/* temp allways set use MDIE if configured 802.11R */
+			if (pBssEntry->bHasMDIE || pAd->ApCfg.MBSSID[pEntry->apidx].FtCfg.FtCapFlag.Dot11rFtEnable) {
+				BssidInfo.field.MobilityDomain = 1;
+			} else {
+				BssidInfo.field.MobilityDomain = 0;
+			}
+
+/* temp allways send used RRM in reports (AP_SCAN not get correct RRM capability */
+			BssidInfo.field.RRM = 1;
+
 			BssidInfo.field.SepctrumMng = (pBssEntry->CapabilityInfo & (1 << 8))?1:0;
 			BssidInfo.field.Qos = (pBssEntry->CapabilityInfo & (1 << 9))?1:0;
 			BssidInfo.field.APSD = (pBssEntry->CapabilityInfo & (1 << 11))?1:0;
-			BssidInfo.field.RRM = (pBssEntry->CapabilityInfo & RRM_CAP_BIT)?1:0;
 			BssidInfo.field.DelayBlockAck = (pBssEntry->CapabilityInfo & (1 << 14))?1:0;
 			BssidInfo.field.ImmediateBA = (pBssEntry->CapabilityInfo & (1 << 15))?1:0;
 
 
-			BssidInfo.field.MobilityDomain = (pBssEntry->bHasMDIE )?1:0;
 			BssidInfo.field.HT = (pBssEntry->HtCapabilityLen != 0)?1:0;
 #ifdef DOT11_VHT_AC			
 			BssidInfo.field.VHT = (pBssEntry->vht_cap_len != 0)?1:0;
