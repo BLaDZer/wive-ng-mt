@@ -64,15 +64,20 @@ static struct wlanc_node * wlanc_nget(struct wlanc_node *root, const char *name,
     return n;
 }
 
-static struct wlanc_node * wlanc_nnew(struct wlanc_node *root, char *prefix_filter, char *name)
+static struct wlanc_node * wlanc_nnew(struct wlanc_node *root, char *prefix_filter, char *name, unsigned int id_offset)
 {
     struct wlanc_node *n = NULL;
     struct wlanc_node *l = NULL;
     unsigned id = 0u;
     size_t prefix_len = 0u;
 
+    cwmp_log_trace("%s(root=%p, prefix_filter=%s, name=%s, id_offset=%u)", __func__, root, prefix_filter, name, id_offset);
+
     if (!name || !*name)
+    {
         return NULL;
+    }
+
 
     if (prefix_filter) {
         prefix_len = strlen(prefix_filter);
@@ -85,13 +90,20 @@ static struct wlanc_node * wlanc_nnew(struct wlanc_node *root, char *prefix_filt
         size_t name_max = strlen(name) - 1;
         size_t name_len = name_max;
         for (; name_len > 0; --name_len) {
-            if (name[name_len] >= '0' || name[name_len] <= '9') {
+            if (name[name_len] >= '0' && name[name_len] <= '9') {
                 id += (name[name_len] - '0') * ((name_max - name_len) * 10);
             } else {
                 break;
             }
         }
     }
+
+    if (id > 9) {
+        cwmp_log_error("InternetGatewayDevice...WLANConfiguration: wlan interface id is out of range (%u)", id);
+        return NULL;
+    }
+
+    id += id_offset;
 
     for (n = root; n; n = n->next) {
         if (!strcmp(n->name, name)) {
@@ -278,6 +290,12 @@ static bool nvram_wlan_load(unsigned index, struct wlan_security_mode *wsm)
 {
     char auth[128] = {};
     char encr[128] = {};
+
+    if (index >= 10)
+    {
+        index -= 10; // the same auth modes for 5GHz
+    }
+
     if (!nvram_get_tuple(RT2860_NVRAM, "AuthMode", index, auth, sizeof(auth))) {
         cwmp_log_error("WLANConfiguration: undefined nvram's AuthMode value for index %u", index + 1);
     }
@@ -348,6 +366,12 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
     const char *auth = NULL;
     const char *encr = NULL;
     struct wlan_security_mode wsm_orig = {};
+
+    if (index >= 10)
+    {
+        index -= 10; // the same auth modes for 5GHz
+    }
+
     nvram_wlan_load(index, &wsm_orig);
 
     /* merge */
@@ -442,12 +466,63 @@ static bool nvram_wlan_save(unsigned index, struct wlan_security_mode *wsm)
     return true;
 }
 
-int cpe_get_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+int cpe_get_igd_wlanc_txpower(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
+    unsigned int index = 0u;
+
     DM_TRACE_GET();
 
-    int chan =  cwmp_nvram_get_int("Channel", 0);
-    int autoselect = cwmp_nvram_get_int("AutoChannelSelect",1);
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    char* txpower = cwmp_nvram_pool_get(pool, (index>=10)?"TxPowerINIC":"TxPower");
+
+    if (txpower && txpower[0])
+    {
+        *value = txpower;
+    }
+    else
+    {
+        *value = pool_pstrdup(pool, "0");
+    }
+
+    return FAULT_CODE_OK;
+}
+
+int cpe_set_igd_wlanc_txpower(cwmp_t * cwmp, const char * name, const char * value, int length, char *args, callback_register_func_t callback_reg)
+{
+    unsigned int index = 0u;
+
+    DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    if (index >= 10) {
+        cwmp_nvram_set("TxPowerINIC", value);
+    } else {
+        cwmp_nvram_set("TxPower", value);
+    }
+
+    return FAULT_CODE_OK;
+}
+
+
+
+int cpe_get_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
+{
+    unsigned int index = 0u;
+
+    DM_TRACE_GET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int chan = cwmp_nvram_get_int((index>=10)?"ChannelINIC":"Channel", 0);
+    int autoselect = cwmp_nvram_get_int((index>=10)?"AutoChannelSelectINIC":"AutoChannelSelect",1);
 
     *value = pool_pstrdup(pool, ((chan==0) || autoselect)?"1":"0");
 
@@ -456,7 +531,21 @@ int cpe_get_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, char ** valu
 
 int cpe_set_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, const char * value, int length, char *args, callback_register_func_t callback_reg)
 {
+    unsigned int index = 0u;
+
     DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    char* channelParam = "Channel";
+    char* autoChannelSelectParam = "AutoChannelSelect";
+
+    if (index >= 10) {
+        channelParam = "ChannelINIC";
+        autoChannelSelectParam = "AutoChannelSelectINIC";
+    }
 
     if (value == NULL) {
         cwmp_log_error("%s: undefined value!", __func__);
@@ -464,14 +553,14 @@ int cpe_set_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, const char *
     }
 
     if (value[0] == '1') {
-        cwmp_nvram_set("Channel","0");
-        cwmp_nvram_set("AutoChannelSelect","1");
+        cwmp_nvram_set(channelParam,"0");
+        cwmp_nvram_set(autoChannelSelectParam,"1");
     }
     else
     {
-        int chan =  cwmp_nvram_get_int("Channel", 0);
-        cwmp_nvram_set("AutoChannelSelect","0");
-        if (chan == 0) cwmp_nvram_set("Channel", "9");
+        int chan =  cwmp_nvram_get_int(channelParam, 0);
+        cwmp_nvram_set(autoChannelSelectParam, "0");
+        if (chan == 0) cwmp_nvram_set(channelParam, "9");
     }
 
     return FAULT_CODE_OK;
@@ -479,17 +568,24 @@ int cpe_set_igd_wlanc_autochannel(cwmp_t * cwmp, const char * name, const char *
 
 int cpe_get_igd_wlanc_channel(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
+    unsigned int index = 0u;
     char* chan = NULL;
 
     DM_TRACE_GET();
 
-    chan = cwmp_nvram_pool_get(pool, "Channel");
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
+
+    chan = cwmp_nvram_pool_get(pool, inic?"ChannelINIC":"Channel");
     if (chan == NULL)
     {
         chan = "0";
     }
 
-    int autoselect = cwmp_nvram_get_int("AutoChannelSelect",1);
+    int autoselect = cwmp_nvram_get_int(inic?"AutoChannelSelectINIC":"AutoChannelSelect",1);
 
     if (autoselect)
     {
@@ -505,21 +601,29 @@ int cpe_get_igd_wlanc_channel(cwmp_t * cwmp, const char * name, char ** value, c
 
 int cpe_set_igd_wlanc_channel(cwmp_t * cwmp, const char * name, const char * value, int length, char *args, callback_register_func_t callback_reg)
 {
+    unsigned int index = 0u;
+
     DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
 
     if (value == NULL) {
         cwmp_log_error("%s: undefined value!", __func__);
         return FAULT_CODE_9002;
     }
 
-    cwmp_nvram_set("Channel",value);
+    cwmp_nvram_set(inic?"ChannelINIC":"Channel",value);
 
     if (value[0] == '0' && value[1] == '\0') {
-        cwmp_nvram_set("AutoChannelSelect", "1");
+        cwmp_nvram_set(inic?"AutoChannelSelectINIC":"AutoChannelSelect", "1");
     }
     else
     {
-        cwmp_nvram_set("AutoChannelSelect", "0");
+        cwmp_nvram_set(inic?"AutoChannelSelectINIC":"AutoChannelSelect", "0");
     }
 
     return FAULT_CODE_OK;
@@ -529,19 +633,33 @@ int cpe_set_igd_wlanc_channel(cwmp_t * cwmp, const char * name, const char * val
 int cpe_get_igd_wlanc_standard(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
     char* stdstr;
+    unsigned int index = 0u;
 
     DM_TRACE_GET();
 
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
     int standard = cwmp_nvram_get_int("WirelessMode", 9);
+
+    if (index >= 10) {
+        standard = cwmp_nvram_get_int("WirelessModeINIC", 15);
+    }
 
     switch (standard) {
 
         case 0: stdstr = "g";break;
         case 1: stdstr = "b";break;
+        case 2: stdstr = "a";break;
         case 4: stdstr = "g-only";break;
         case 6: stdstr = "n";break;
         case 7: stdstr = "b/g/n";break;
+        case 8: stdstr = "a/an";break;
         case 9: stdstr = "b/g/n";break;
+        case 11: stdstr = "an";break;
+        case 14: stdstr = "a/an/ac";break;
+        case 15: stdstr = "an/ac";break;
         default: stdstr = "b/g/n";break;
     }
 
@@ -552,7 +670,13 @@ int cpe_get_igd_wlanc_standard(cwmp_t * cwmp, const char * name, char ** value, 
 
 int cpe_set_igd_wlanc_standard(cwmp_t * cwmp, const char * name, const char * value, int length, char *args, callback_register_func_t callback_reg)
 {
+    unsigned int index = 0u;
+
     DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
 
     char* valStr = "9";
 
@@ -562,9 +686,21 @@ int cpe_set_igd_wlanc_standard(cwmp_t * cwmp, const char * name, const char * va
     if (strcmp(value, "b/g") == 0) valStr="0";else
     if (strcmp(value, "g/n") == 0) valStr="7";else
     if (strcmp(value, "b/g/n") == 0) valStr="9";else
-    if (strcmp(value, "b") == 0) valStr="1";
+    if (strcmp(value, "b") == 0) valStr="1";else
+    if (strcmp(value, "a") == 0) valStr="2";else
+    if (strcmp(value, "a/an") == 0) valStr="8";else
+    if (strcmp(value, "an") == 0) valStr="11";else
+    if (strcmp(value, "a/an/ac") == 0) valStr="14";else
+    if (strcmp(value, "an/ac") == 0) valStr="15";
 
-    cwmp_nvram_set("WirelessMode", valStr);
+    if (index >= 10)
+    {
+        cwmp_nvram_set("WirelessModeINIC", valStr);
+    }
+    else
+    {
+        cwmp_nvram_set("WirelessMode", valStr);
+    }
 
     return FAULT_CODE_OK;
 }
@@ -966,10 +1102,18 @@ int cpe_set_igd_wlanc_beacontype(cwmp_t * cwmp, const char * name, const char * 
 
 int cpe_get_igd_wlanc_possiblechannels(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
+    unsigned index = -1u;
     int v = 0;
 
     DM_TRACE_GET();
-    v = cwmp_nvram_get_int("CountryRegion", -1);
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
+
+    v = cwmp_nvram_get_int(inic?"CountryRegionABand":"CountryRegion", -1);
 
     switch (v) {
         case 0:
@@ -1006,9 +1150,17 @@ int cpe_get_igd_wlanc_possiblechannels(cwmp_t * cwmp, const char * name, char **
 
 int cpe_get_igd_wlanc_status(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
+    unsigned index = -1u;
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
+
     char *v = NULL;
     DM_TRACE_GET();
-    v = cwmp_nvram_get("RadioOn");
+    v = cwmp_nvram_get(inic?"RadioOnINIC":"RadioOn");
     if (*v == '0') {
         *value = "Disabled";
     } else if (*v == '1') {
@@ -1020,13 +1172,24 @@ int cpe_get_igd_wlanc_status(cwmp_t * cwmp, const char * name, char ** value, ch
     return FAULT_CODE_OK;
 }
 
+
+
 int cpe_set_igd_wlanc_enabled(cwmp_t * cwmp, const char * name, const char * value, int length, char *args, callback_register_func_t callback_reg)
 {
+    unsigned index = -1u;
+
     DM_TRACE_SET();
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
+
     if (*value == '0') {
-        cwmp_nvram_set("RadioOn", "0");
+        cwmp_nvram_set(inic?"RadioOnINIC":"RadioOn", "0");
     } else if (*value == '1') {
-        cwmp_nvram_set("RadioOn", "1");
+        cwmp_nvram_set(inic?"RadioOnINIC":"RadioOn", "1");
     } else {
         cwmp_log_error("%s: invalid value: '%s'", __func__, value);
         return FAULT_CODE_9007;
@@ -1036,9 +1199,17 @@ int cpe_set_igd_wlanc_enabled(cwmp_t * cwmp, const char * name, const char * val
 
 int cpe_get_igd_wlanc_enabled(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool)
 {
+    unsigned index = -1u;
     char *v = NULL;
     DM_TRACE_GET();
-    v = cwmp_nvram_get("RadioOn");
+
+    if ((index = wlanc_get_id(cwmp, name, NULL)) == -1u) {
+        return FAULT_CODE_9002;
+    }
+
+    int inic = index >= 10;
+
+    v = cwmp_nvram_get(inic?"RadioOnINIC":"RadioOn");
     if (*v == '0') {
         *value = "0";
     } else if (*v == '1') {
@@ -1231,6 +1402,8 @@ int cpe_set_igd_wlanc_key(cwmp_t *cwmp, const char *name, const char *value, int
 {
     unsigned id = -1u;
     char k[42] = {};
+    char ssid_id1[12] = {};
+    char ssid_id2[12] = {};
 
     DM_TRACE_SET();
 
@@ -1238,8 +1411,26 @@ int cpe_set_igd_wlanc_key(cwmp_t *cwmp, const char *name, const char *value, int
         return FAULT_CODE_9002;
     }
 
-    snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
-    cwmp_nvram_set(k, value);
+    if (id >= 10) { // the same auth for 5GHz
+        id -= 10;
+        snprintf(k, sizeof(k), "WPAPSK%uINIC", id + 1);
+        snprintf(ssid_id1, sizeof(ssid_id1), "SSID%u", id + 1);
+        snprintf(ssid_id2, sizeof(ssid_id2), "SSID%uINIC", id + 1);
+
+        cwmp_nvram_set(k, value);
+
+        char* ssid1 = cwmp_nvram_pool_get(cwmp->pool, ssid_id1);
+        char* ssid2 = cwmp_nvram_pool_get(cwmp->pool, ssid_id2);
+
+        if (strcmp(ssid1,ssid2) == 0) {
+            snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
+            cwmp_nvram_set(k, value);
+        }
+
+    } else {
+        snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
+        cwmp_nvram_set(k, value);
+    }
 
     return FAULT_CODE_OK;
 }
@@ -1255,7 +1446,12 @@ int cpe_get_igd_wlanc_key(cwmp_t * cwmp, const char * name, char ** value, char 
         return FAULT_CODE_9002;
     }
 
-    snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
+    if (id >= 10) {
+        snprintf(k, sizeof(k), "WPAPSK%uINIC", id + 1 - 10);
+    } else {
+        snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
+    }
+
     *value = cwmp_nvram_pool_get(pool, k);
 
     return FAULT_CODE_OK;
@@ -1269,6 +1465,10 @@ int cpe_set_igd_wlanc_wepkey_index(cwmp_t *cwmp, const char *name, const char *v
 
     if ((id = wlanc_get_id(cwmp, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (id >= 10) { // the same auth for 5GHz
+        id -= 10;
     }
 
     nvram_set_tuple(RT2860_NVRAM, "DefaultKeyID", id, value);
@@ -1285,6 +1485,10 @@ int cpe_get_igd_wlanc_wepkey_index(cwmp_t * cwmp, const char * name, char ** val
 
     if ((id = wlanc_get_id(cwmp, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (id >= 10) { // the same auth for 5GHz
+        id -= 10;
     }
 
     nvram_get_tuple(RT2860_NVRAM, "DefaultKeyID", id, v, sizeof(v));
@@ -1310,6 +1514,10 @@ int cpe_set_igd_wlanc_wepkey(cwmp_t *cwmp, const char *name, const char *value, 
 
     if ((wlan_id = wlanc_get_id_node(pn, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (key_id >= 10) { // the same keys for 5GHz
+        key_id -= 10;
     }
 
     snprintf(tkey, sizeof(tkey), "Key%uType", key_id + 1);
@@ -1351,6 +1559,10 @@ int cpe_get_igd_wlanc_wepkey(cwmp_t * cwmp, const char * name, char ** value, ch
 
     if ((wlan_id = wlanc_get_id_node(pn, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (key_id >= 10) { // the same keys for 5GHz
+        key_id -= 10;
     }
 
     snprintf(tkey, sizeof(tkey), "Key%uType", key_id + 1);
@@ -1530,6 +1742,10 @@ int cpe_set_igd_wlanc_ssidadv(cwmp_t * cwmp, const char * name, const char * val
         return FAULT_CODE_9002;
     }
 
+    if (id >= 10) { // do not hide SSIDs for 5GHz
+        return FAULT_CODE_OK;
+    }
+
     if (*value == '1') {
         nvram_set_tuple(RT2860_NVRAM, "HideSSID", id, "0");
     } else {
@@ -1547,6 +1763,11 @@ int cpe_get_igd_wlanc_ssidadv(cwmp_t * cwmp, const char * name, char ** value, c
 
     if ((id = wlanc_get_id(cwmp, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (id >= 10) { // do not hide SSIDs for 5GHz
+        *value = "1";
+        return FAULT_CODE_OK;
     }
 
     nvram_get_tuple(RT2860_NVRAM, "HideSSID", id, v, sizeof(v));
@@ -1580,8 +1801,13 @@ int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_reg
     /* generate */
     nc = nicscounts(&count);
     for (i = 0; i < count; i++) {
-        /* FIXME: hardcoded name */
-        w = wlanc_nnew(wlanc.root, "ra", nc[i].ifname);
+        /* FIXME: hardcoded names */
+        w = wlanc_nnew(wlanc.root, "rai", nc[i].ifname, 10);
+
+        if (!w) {
+            w = wlanc_nnew(wlanc.root, "ra", nc[i].ifname, 0);
+        }
+
         if (!w) {
             continue;
         }
@@ -1592,7 +1818,6 @@ int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_reg
             wlanc.root = w;
         }
     }
-
     cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg);
 
     return FAULT_CODE_OK;
@@ -1634,7 +1859,12 @@ int cpe_get_igd_wlanc_ssid(cwmp_t * cwmp, const char * name, char ** value, char
         return FAULT_CODE_9002;
     }
 
-    snprintf(ssid_id, sizeof(ssid_id), "SSID%u", id + 1);
+    if (id >= 10) {
+        snprintf(ssid_id, sizeof(ssid_id), "SSID%uINIC", id + 1 - 10);
+    } else {
+        snprintf(ssid_id, sizeof(ssid_id), "SSID%u", id + 1);
+    }
+
     *value = cwmp_nvram_pool_get(pool, ssid_id);
 
     return FAULT_CODE_OK;
@@ -1651,7 +1881,11 @@ int cpe_set_igd_wlanc_ssid(cwmp_t * cwmp, const char * name, const char * value,
         return FAULT_CODE_9002;
     }
 
-    snprintf(ssid_id, sizeof(ssid_id), "SSID%u", id + 1);
+    if (id >= 10) {
+        snprintf(ssid_id, sizeof(ssid_id), "SSID%uINIC", id + 1 - 10);
+    } else {
+        snprintf(ssid_id, sizeof(ssid_id), "SSID%u", id + 1);
+    }
     cwmp_nvram_set(ssid_id, value);
 
     return FAULT_CODE_OK;
@@ -1665,6 +1899,10 @@ int cpe_set_igd_wlanc_pskfailures(cwmp_t * cwmp, const char * name, const char *
 
     if ((id = wlanc_get_id(cwmp, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (id >= 10) { // the same for 5GHz
+        id -= 10;
     }
 
     nvram_set_tuple(RT2860_NVRAM, "RekeyInterval", id, value);
@@ -1681,6 +1919,10 @@ int cpe_get_igd_wlanc_pskfailures(cwmp_t * cwmp, const char * name, char ** valu
 
     if ((id = wlanc_get_id(cwmp, name, NULL)) == -1u) {
         return FAULT_CODE_9002;
+    }
+
+    if (id >= 10) { // the same for 5GHz
+        id -= 10;
     }
 
     nvram_get_tuple(RT2860_NVRAM, "RekeyInterval", id, v, sizeof(v));

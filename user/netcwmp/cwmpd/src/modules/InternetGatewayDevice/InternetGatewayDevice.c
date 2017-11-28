@@ -1,3 +1,11 @@
+int cpe_reload_reboot(cwmp_t *cwmp, callback_register_func_t callback_reg)
+{
+    //begin reboot system
+    cwmp_log_info("INFO: Rebooting the system ...");
+    cwmp_event_set_value(cwmp, INFORM_MREBOOT, 1, NULL, 0, 0, 0);
+    cwmp_event_clear_active(cwmp);
+    reboot_now();
+}
 
 int cpe_reload_all(cwmp_t *cwmp, callback_register_func_t callback_reg)
 {

@@ -240,7 +240,7 @@
 					<object name="{i}">
 						<param name="Alias" rw="1" get_func="cpe_get_alias" set_func="cpe_set_alias"/>
 						<!-- WiFiLAN:1 -->
-						<param name="Enable" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_nvram_bool" args="RadioOn" set_func="cpe_set_nvram_bool"/>
+						<param name="Enable" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_enabled" set_func="cpe_set_igd_wlanc_enabled"/>
 						<param name="Status" get_func="cpe_get_igd_wlanc_status"/>
 						<param name="BSSID" rw="1" reload_func="cpe_reload_all" get_func="cpe_get_igd_wlanc_bssid" set_func="cpe_set_igd_wlanc_bssid"/>
 						<param name="MaxBitRate" rw="1" get_func="cpe_get_const_string" set_func="cpe_set_null" args="Auto"/>
@@ -302,7 +302,7 @@
 						<param name="AutoChannelEnable" reload_func="cpe_reload_all" rw="1" get_func="cpe_get_igd_wlanc_autochannel" set_func="cpe_set_igd_wlanc_autochannel"/>
 						<param name="SSIDAdvertisementEnabled" rw="1" get_func="cpe_get_igd_wlanc_ssidadv" set_func="cpe_set_igd_wlanc_ssidadv"/>
 						<param name="TransmitPowerSupported" get_func="cpe_get_const_string" args="5,10,20,40,70,100"/>
-						<param name="TransmitPower" rw="1" get_func="cpe_get_nvram_int" set_func="cpe_set_nvram_int" args="TxPower"/>
+						<param name="TransmitPower" rw="1" get_func="cpe_get_igd_wlanc_txpower" set_func="cpe_set_igd_wlanc_txpower"/>
 						<object name="Stats">
 							<param name="ErrorsSent" get_func="cpe_get_igd_wlanc_stats"/>
 							<param name="ErrorsReceived" get_func="cpe_get_igd_wlanc_stats"/>
@@ -364,7 +364,7 @@
 									<param name="SubnetMask" rw="1" type="s" get_func="cpe_get_nvram_string" args="wan_netmask" set_func="cpe_set_nvram_string"/>
 									<param name="DefaultGateway" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="wan_gateway" set_func="cpe_set_nvram_string"/>
 									<param name="DNSServers" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_igd_wan_ip_dnsservers" args="wan_primary_dns" set_func="cpe_set_igd_wan_ip_dnsservers"/>
-									<param name="MACAddress" rw="1" type="s" reload_func="cpe_reload_all" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string"/>
+									<param name="MACAddress" rw="1" type="s" reload_func="cpe_reload_reboot" get_func="cpe_get_igd_wan_ip_mac" args="WAN_MAC_ADDR" set_func="cpe_set_igd_wan_ip_mac"/>
 									<param name="DefaultConn" rw="1" type="1" reload_func="cpe_reload_all" get_func="cpe_get_const_string" args="0" set_func="cpe_set_null"/>
 									<object name="Stats">
 										<param name="EthernetBytesSent" get_func="cpe_get_igd_wan_ip_rxtxbytes" args="tx"/>

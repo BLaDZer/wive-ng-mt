@@ -22,6 +22,7 @@ model_func_t ModelFunction[] =
 // ---
 
     {"cpe_reload_all", cpe_reload_all},
+    {"cpe_reload_reboot", cpe_reload_reboot},
     {"cpe_get_alias", cpe_get_alias},
     {"cpe_set_alias", cpe_set_alias},
     {"cpe_get_igd_di_uptime", cpe_get_igd_di_uptime},
@@ -80,6 +81,8 @@ model_func_t ModelFunction[] =
     {"cpe_get_igd_wlanc_standard", cpe_get_igd_wlanc_standard},
     {"cpe_set_igd_wlanc_standard", cpe_set_igd_wlanc_standard},
 
+    {"cpe_get_igd_wlanc_txpower", cpe_get_igd_wlanc_txpower},
+    {"cpe_set_igd_wlanc_txpower", cpe_set_igd_wlanc_txpower},
 
     {"cpe_get_igd_wlanc_channel", cpe_get_igd_wlanc_channel},
     {"cpe_set_igd_wlanc_channel", cpe_set_igd_wlanc_channel},
@@ -135,6 +138,9 @@ model_func_t ModelFunction[] =
     {"cpe_get_igd_wlanc_beacontype", cpe_get_igd_wlanc_beacontype},
     {"cpe_set_igd_wlanc_beacontype", cpe_set_igd_wlanc_beacontype},
     {"cpe_get_igd_wlanc_possiblechannels", cpe_get_igd_wlanc_possiblechannels},
+
+    {"cpe_get_igd_wan_ip_mac", cpe_get_igd_wan_ip_mac},
+    {"cpe_set_igd_wan_ip_mac", cpe_set_igd_wan_ip_mac},
 
     {"cpe_get_igd_wan_ppp_count", cpe_get_igd_wan_ppp_count},
 
