@@ -639,13 +639,6 @@ VOID RRM_EnqueueNeighborRep(
 			BssidInfo.word = 0;
 			BssidInfo.field.APReachAble = 3;
 			BssidInfo.field.Security = 0; /* rrm to do. */
-			BssidInfo.field.KeyScope = 0; /* "report AP has same authenticator as the AP. */
-			BssidInfo.field.SepctrumMng = (pBssEntry->CapabilityInfo & (1 << 8))?1:0;
-			BssidInfo.field.Qos = (pBssEntry->CapabilityInfo & (1 << 9))?1:0;
-			BssidInfo.field.APSD = (pBssEntry->CapabilityInfo & (1 << 11))?1:0;
-			BssidInfo.field.RRM = (pBssEntry->CapabilityInfo & RRM_CAP_BIT)?1:0;
-			BssidInfo.field.DelayBlockAck = (pBssEntry->CapabilityInfo & (1 << 14))?1:0;
-			BssidInfo.field.ImmediateBA = (pBssEntry->CapabilityInfo & (1 << 15))?1:0;
 
 /* 
 	reference 2012 spec.
