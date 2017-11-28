@@ -677,6 +677,73 @@ VOID RRM_EnqueueNeighborRep(
 				/* no CCK's definition in spec. */
 			}
 
+			/* calculate new op_class if not get from scan */
+			if (!pBssEntry->RegulatoryClass) {
+			    if (pBssEntry->Channel > 14) {
+				if (pBssEntry->CondensedPhyType == 9) {					/* VHT 36 - 161 80MHz */
+				    pBssEntry->RegulatoryClass = 128;
+				} else if (pBssEntry->Channel >= 36 && pBssEntry->Channel <= 48) {	/* HT 36 - 48 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 116;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 117;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 115;
+						break;
+				    }
+				} else if (pBssEntry->Channel >= 52 && pBssEntry->Channel <= 64) {	/* HT 52 - 64 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 119;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 120;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 118;
+						break;
+				    }
+				} else if (pBssEntry->Channel >= 149) {					/* HT >= 149 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 126;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 127;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 124;
+						break;
+				    }
+				} else {
+						pBssEntry->RegulatoryClass = 128;
+				}
+			    } else { /* 2.4GHz mode */
+				if (pBssEntry->CondensedPhyType == 7) {
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 83;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 84;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 81;
+						break;
+				    }
+				} else {
+					pBssEntry->RegulatoryClass = 81;
+				}
+			    }
+			}
+
 			RRM_InsertNeighborRepIE(pAd, (pOutBuffer + FrameLen), &FrameLen,
 				sizeof(RRM_NEIGHBOR_REP_INFO), pBssEntry->Bssid,
 				BssidInfo, pBssEntry->RegulatoryClass,
