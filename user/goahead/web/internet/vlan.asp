@@ -581,14 +581,39 @@
 					return false;
 				}
 
-				if ((wifiLan.indexOf(vlan) != ap && wifiLan.indexOf(vlan) != -1) ||
-					(wifiWan.indexOf(vlan) != ap && wifiWan.indexOf(vlan) != -1) ||
-					(wifiLanINIC.indexOf(vlan) != ap && wifiLanINIC.indexOf(vlan) != -1) ||
-					(wifiWanINIC.indexOf(vlan) != ap && wifiWanINIC.indexOf(vlan) != -1)) {
-						alert(_("vlan vlanid exist"));
-						document.getElementById('vlanMode_wlan_vlan_input').select();
-						document.getElementById('vlanMode_wlan_vlan_input').focus();
-						return false
+				for (var i = 0; i < 4; i++) {
+					if (iface == 'LAN') {
+						if (wifiLan[i] == vlan)
+							if (!((wifiNIC[num] == 'ra' || wifiNIC[num] == 'rai') && id == i)) {
+								alert(_("vlan vlanid exist"));
+								document.getElementById('vlanMode_wlan_vlan_input').select();
+								document.getElementById('vlanMode_wlan_vlan_input').focus();
+								return false
+							}
+						if (wifiLanINIC[i] == vlan)
+							if (!((wifiNIC[num] == 'rai' || wifiNIC[num] == 'ra') && id == i)) {
+								alert(_("vlan vlanid exist"));
+								document.getElementById('vlanMode_wlan_vlan_input').select();
+								document.getElementById('vlanMode_wlan_vlan_input').focus();
+								return false
+							}
+					}
+					else {
+						if (wifiWan[i] == vlan)
+							if (!((wifiNIC[num] == 'ra' || wifiNIC[num] == 'rai') && id == i)) {
+								alert(_("vlan vlanid exist"));
+								document.getElementById('vlanMode_wlan_vlan_input').select();
+								document.getElementById('vlanMode_wlan_vlan_input').focus();
+								return false
+							}
+						if (wifiWanINIC[i] == vlan)
+							if (!((wifiNIC[num] == 'rai' || wifiNIC[num] == 'rai') && id == i)) {
+								alert(_("vlan vlanid exist"));
+								document.getElementById('vlanMode_wlan_vlan_input').select();
+								document.getElementById('vlanMode_wlan_vlan_input').focus();
+								return false
+							}
+					}
 				}
 
 				if (wifiNIC[num] == "ra")
@@ -664,13 +689,32 @@
 					wifiSSID.push(ssid24);
 					NVRAM_BssidNum++;
 				}
+				else if (NVRAM_BssidIfName == "all" && BUILD_5GHZ_SUPPORT) {
+					wifiNIC.push("rai");
+					wifiSSID.push(ssid5);
+					NVRAM_BssidNum = NVRAM_BssidNum * 2;
+				}
 
 				for (i = 0; i < data.wireless.length; i ++) {
 					if (NVRAM_BssidIfName == "ra")
 						wifiNIC.push("ra");
-					else
+					else if (NVRAM_BssidIfName == "rai")
 						wifiNIC.push("rai");
-					wifiSSID.push(data.wireless[i].ssid);
+					else if (NVRAM_BssidIfName == "all") {
+						if (i == 0)
+							wifiNIC.push("ra");
+						else {
+							wifiNIC.push("ra");
+							wifiNIC.push("rai");
+						}
+					}
+
+					if (NVRAM_BssidIfName == "all" && i != 0) {
+						wifiSSID.push(data.wireless[i].ssid + ' [2.4GHz]');
+						wifiSSID.push(data.wireless[i].ssid + ' [5GHz]');
+					}
+					else
+						wifiSSID.push(data.wireless[i].ssid);
 				}
 				for (i = 0; i < wifiSSID.length; i++)
 					addOption(document.getElementById('vlanMode_wlan_ap_select'), wifiSSID[i], i);
