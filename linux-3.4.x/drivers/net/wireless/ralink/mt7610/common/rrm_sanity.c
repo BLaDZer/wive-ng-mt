@@ -35,6 +35,118 @@
 	Return	: None.
 	==========================================================================
  */
+VOID RRM_ScanResultFix(BSS_ENTRY *pBssEntry)
+{
+			if (pBssEntry->Channel > 14) // 5G case
+			{
+				if (pBssEntry->HtCapabilityLen != 0) // HT or Higher case
+				{
+#ifdef DOT11_VHT_AC				
+					if (pBssEntry->vht_cap_len != 0)
+						pBssEntry->CondensedPhyType = 9;
+					else
+#endif /* DOT11_VHT_AC */
+						pBssEntry->CondensedPhyType = 7;
+				}
+				else // OFDM case
+				{
+					pBssEntry->CondensedPhyType = 4;
+				}
+			}
+			else // 2.4G case
+			{
+
+				if (pBssEntry->HtCapabilityLen != 0) //HT case
+					pBssEntry->CondensedPhyType = 7;
+				else if (ERP_IS_NON_ERP_PRESENT(pBssEntry->Erp)) //ERP case
+					pBssEntry->CondensedPhyType = 6;
+				else if (pBssEntry->SupRateLen > 4)// OFDM case (1,2,5.5,11 for CCK 4 Rates)
+					pBssEntry->CondensedPhyType = 4;
+
+				/* no CCK's definition in spec. */
+			}
+
+			/* calculate new op_class if not get from scan */
+			if (!pBssEntry->RegulatoryClass) {
+			    if (pBssEntry->Channel > 14) {
+				if (pBssEntry->CondensedPhyType == 9) {					/* VHT 36 - 161 80MHz */
+				    pBssEntry->RegulatoryClass = 128;
+				} else if (pBssEntry->Channel >= 36 && pBssEntry->Channel <= 48) {	/* HT 36 - 48 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 116;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 117;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 115;
+						break;
+				    }
+				} else if (pBssEntry->Channel >= 52 && pBssEntry->Channel <= 64) {	/* HT 52 - 64 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 119;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 120;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 118;
+						break;
+				    }
+				} else if (pBssEntry->Channel >= 149) {					/* HT >= 149 20/40MHz */
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 126;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 127;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 124;
+						break;
+				    }
+				} else {
+						pBssEntry->RegulatoryClass = 128;
+				}
+			    } else { /* 2.4GHz mode */
+				if (pBssEntry->CondensedPhyType == 7) {
+				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
+				    {
+					case EXTCHA_ABOVE:
+						pBssEntry->RegulatoryClass = 83;
+						break;
+					case EXTCHA_BELOW:
+						pBssEntry->RegulatoryClass = 84;
+						break;
+					default:
+						pBssEntry->RegulatoryClass = 81;
+						break;
+				    }
+				} else {
+					pBssEntry->RegulatoryClass = 81;
+				}
+			    }
+			}
+
+			/* if not get beacon period from scan - use default 100ms */
+			if (!pBssEntry->BeaconPeriod)
+				pBssEntry->BeaconPeriod = 100;
+}
+
+/*
+	==========================================================================
+	Description:
+		
+	Parametrs:
+	
+	Return	: None.
+	==========================================================================
+ */
 BOOLEAN RRM_PeerNeighborReqSanity(
 	IN PRTMP_ADAPTER pAd,
 	IN VOID *pMsg,

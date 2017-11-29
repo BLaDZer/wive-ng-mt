@@ -511,12 +511,15 @@ VOID RRM_CfgInit(
 
 		pRrmCfg->QuietCB.QuietState = RRM_QUIET_IDLE;
 		pRrmCfg->QuietCB.CurAid = 1;
-		if (pRrmCfg->bDot11kRRMEnableSet == FALSE)
+		if (pRrmCfg->bDot11kRRMEnableSet == FALSE) {
 			pRrmCfg->bDot11kRRMEnable = FALSE; //set to default off
-		pRrmCfg->bDot11kRRMNeighborRepTSFEnable = FALSE;
+			pRrmCfg->bDot11kRRMNeighborRepTSFEnable = FALSE;
+		}
 		/* need fist scan at enable */
-		if (pRrmCfg->bDot11kRRMEnable == TRUE)
+		if (pRrmCfg->bDot11kRRMEnable == TRUE) {
 			pAd->CommonCfg.RRMFistScan = TRUE;
+			pRrmCfg->bDot11kRRMNeighborRepTSFEnable = TRUE;
+		}
 	}
 
 	return;
@@ -739,6 +742,8 @@ VOID RRM_BeaconReportHandler(
 			pBssEntry->RegulatoryClass = pBcnRep->RegulatoryClass;
 			pBssEntry->CondensedPhyType = BcnReqInfoField.field.CondensePhyType;
 			pBssEntry->RSNI = pBcnRep->RSNI;
+			/* sanity check and recalc some params if need */
+			RRM_ScanResultFix(pBssEntry);
 		}
 		/* sort entry by rssi every insert */
 		if (!ApScanRunning(pAd) && pAd->ScanTab.BssNr > 1)
