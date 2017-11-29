@@ -607,7 +607,7 @@
 								return false
 							}
 						if (wifiWanINIC[i] == vlan)
-							if (!((wifiNIC[num] == 'rai' || wifiNIC[num] == 'rai') && id == i)) {
+							if (!((wifiNIC[num] == 'rai' || wifiNIC[num] == 'ra') && id == i)) {
 								alert(_("vlan vlanid exist"));
 								document.getElementById('vlanMode_wlan_vlan_input').select();
 								document.getElementById('vlanMode_wlan_vlan_input').focus();
