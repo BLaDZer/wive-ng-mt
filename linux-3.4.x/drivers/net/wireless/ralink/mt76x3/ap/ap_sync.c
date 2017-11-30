@@ -1075,8 +1075,8 @@ VOID APPeerBeaconAction(
 #endif /* IDS_SUPPORT */
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		/* Collect BEACON for SCS reference. */
-		 if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
-		Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
+		if (!Rssi || (RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
+			Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
 		Idx = BssTableSetEntry(pAd, &pAd->SCSCtrl.SCSBssTab, ie_list, Rssi, LenVIE, pVIE);
 		if (Idx != BSS_NOT_FOUND)
 		{
@@ -1375,7 +1375,7 @@ IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 
 	/* update my network scanlist from neighbour beacons with SSID filter for RRM, only on work channel (rssi info valid only for this) */
 	for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++) {
-	    if (IS_RRM_ENABLE(pAd, apidx) &&RealRssi > OBSS_BEACON_RSSI_THRESHOLD && pAd->ScanTab.BssNr < MAX_LEN_OF_BSS_TABLE &&
+	    if (IS_RRM_ENABLE(pAd, apidx) && RealRssi > OBSS_BEACON_RSSI_THRESHOLD && pAd->ScanTab.BssNr < MAX_LEN_OF_BSS_TABLE &&
 		/* ie_list->Channel == Channel && */ ie_list->SsidLen > 0 && pAd->ApCfg.MBSSID[apidx].SsidLen > 0 &&
 		ie_list->SsidLen == pAd->ApCfg.MBSSID[apidx].SsidLen &&
 		RTMPEqualMemory((PUCHAR)ie_list->Ssid, (PUCHAR)pAd->ApCfg.MBSSID[apidx].Ssid, min(ie_list->SsidLen, pAd->ApCfg.MBSSID[apidx].SsidLen))
@@ -1556,6 +1556,7 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	UCHAR *VarIE = NULL;
 	USHORT LenVIE;
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
+	CHAR  Rssi = -127;
 	CHAR RealRssi = -127;
 
 	BCN_IE_LIST *ie_list = NULL;
@@ -1591,7 +1592,6 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 					ie_list, &LenVIE, pVIE, FALSE))
     {
 		ULONG Idx;
-		CHAR  Rssi = -127;
 
 		RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
 								ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
@@ -1653,7 +1653,7 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0), 
 								ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
 								ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
-        if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
+	if (!Rssi || (RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
         	Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
 #ifdef DOT11K_RRM_SUPPORT
 		/* check for any MBSSID use RRM */

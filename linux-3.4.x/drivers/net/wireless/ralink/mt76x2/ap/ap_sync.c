@@ -1828,6 +1828,7 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	UCHAR *VarIE = NULL;
 	USHORT LenVIE;
 	NDIS_802_11_VARIABLE_IEs *pVIE = NULL;
+	CHAR  Rssi = -127;
 	CHAR RealRssi = -127;
 
 	BCN_IE_LIST *ie_list = NULL;
@@ -1869,7 +1870,6 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 					ie_list, &LenVIE, pVIE))
     {
 		ULONG Idx;
-		CHAR  Rssi = -127;
 
 		RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, Elem->Rssi0, RSSI_0),
 								ConvertToRssi(pAd, Elem->Rssi1, RSSI_1),
@@ -1919,7 +1919,7 @@ VOID APPeerBeaconAtScanAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, Elem->Rssi0, RSSI_0), 
 								ConvertToRssi(pAd, Elem->Rssi1, RSSI_1),
 								ConvertToRssi(pAd, Elem->Rssi2, RSSI_2));
-		if ((RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
+		if (!Rssi || (RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
         		Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
 #ifdef DOT11K_RRM_SUPPORT
 		/* check for any MBSSID use RRM */
