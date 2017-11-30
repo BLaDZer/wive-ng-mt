@@ -29,6 +29,7 @@
 #include "rt_config.h"
 
 #define OBSS_BEACON_RSSI_THRESHOLD		(-85)
+#define AUTO_CHANNEL_SCAN_MINRSSI		(-90)
 
 #ifdef DOT11_N_SUPPORT
 void build_ext_channel_switch_ie(
@@ -1235,7 +1236,7 @@ IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 #endif /* DOT11K_RRM_SUPPORT */
 	if (pAd->pChannelInfo != NULL)
 	{
-		if (ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+		if (ie_list->Channel == pAd->ApCfg.AutoChannel_Channel && RealRssi > AUTO_CHANNEL_SCAN_MINRSSI)
 		{
 		    if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
 			pAd->pChannelInfo->ApCnt[pAd->ApCfg.current_channel_index]++;
@@ -1550,7 +1551,7 @@ __End_Of_APPeerBeaconAtScanAction:
 #ifdef CONFIG_AP_SUPPORT
 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 {
-	if (pAd->pChannelInfo != NULL && ie_list->Channel == pAd->ApCfg.AutoChannel_Channel)
+	if (pAd->pChannelInfo != NULL && ie_list->Channel == pAd->ApCfg.AutoChannel_Channel && Rssi > AUTO_CHANNEL_SCAN_MINRSSI)
 	{
 		if (AutoChBssSearchWithSSID(pAd, ie_list->Bssid, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, ie_list->Channel) == BSS_NOT_FOUND)
 			pAd->pChannelInfo->ApCnt[pAd->ApCfg.current_channel_index]++;
