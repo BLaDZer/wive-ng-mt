@@ -3652,7 +3652,7 @@
 141) kernel: net: netfilter: nf_ct_expect: nf_ct_expect_related_report(): return zero on success.<br>
 142) kernel: net: netfilter: nf_ct_expect: change __nf_ct_expect_check() return value.<br>
 143) kernel: net: l2tp: initialise session's refcount before making it reachable.<br>
-144) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>.
+144) kernel: net: l2tp: define parameters of l2tp_session_get*() as const.<br>
 145) kernel: net: l2tp: hold tunnel while looking up sessions in l2tp_netlink.<br>
 146) kernel: net: l2tp: hold tunnel while handling genl tunnel updates.<br>
 147) kernel: net: l2tp: hold tunnel while handling genl TUNNEL_GET commands.<br>
