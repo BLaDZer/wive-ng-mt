@@ -27,11 +27,26 @@ add_ncm() {
 
 del_qmi() {
     $LOG "Del modem with ethernet port $MDEV"
-    grep -v "$MDEV" /tmp/qmi_port > /tmp/qmi_port
+    if [ -e /tmp/qmi_port ]; then
+	$LOG "Delete $MDEV from qmi list"
+	grep -v "$MDEV" /tmp/qmi_port > /tmp/qmi_port
+	if [ -z "$(tail -qn1 /tmp/qmi_port)" ]; then
+	    $LOG "qmi list is null, delete file"
+	    rm -f /tmp/qmi_port
+	fi
+    fi
 }
 
 del_ncm() {
     $LOG "Del modem with ethernet port $MDEV"
+    if [ -e /tmp/ncm_port ]; then
+	$LOG "Delete $MDEV from ncm list"
+	grep -v "$MDEV" /tmp/ncm_port > /tmp/ncm_port
+	if [ -z "$(tail -qn1 /tmp/ncm_port)" ]; then
+	    $LOG "ncm list is null, delete file"
+	    rm -f /tmp/ncm_port
+	fi
+    fi
 }
 
 case "$ACTION" in

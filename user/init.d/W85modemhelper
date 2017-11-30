@@ -21,6 +21,7 @@ echo $$ > /tmp/modem_helper
 
 dhcpc_wwan() {
     if [ ! -z $1 ] && [ -e /proc/sys/net/ipv4/conf/$1 ]; then
+	$LOG "Start udhcpc for $1"
 	UDHCPCOPTS="-i $1 -S -R -T 5 -a -s /etc/scripts/udhcpc-wwan-script -p /var/run/udhcpc_$1.pid"
 	(udhcpc $UDHCPCOPTS > /dev/null 2>&1) &
 	touch /tmp/modem_ready
@@ -29,8 +30,8 @@ dhcpc_wwan() {
 
 qmi_connect() {
     # switch to qmi mode
-    QMI_PORT=$(cat /tmp/qmi_port | sed '!=.*!!')
-    CDC_PORT=$(cat /tmp/qmi_port | sed '!.*=!!')
+    QMI_PORT=`tail -qn1 /tmp/qmi_port | sed '!=.*!!'`
+    CDC_PORT=`tail -qn1 /tmp/qmi_port | sed '!.*=!!'`
     wds=`uqmi -s -d "$device" --get-client-id wds`
     [ -z $MODEMAPN ] && MODEMAPN="internet"
     uqmi -s -d "$CDC_PORT" --set-client-id wds,"$wds" --start-network "$MODEMAPN" --autoconnect
@@ -41,11 +42,15 @@ qmi_connect() {
 
 ncm_connect() {
     # switch to NCM mode
-    if [ $MNGMTPORT != "" ]; then
+    if [ ! -z $MNGMTPORT ]; then
 	[ -z $MODEMAPN ] && MODEMAPN="internet"
+	$LOG "Start NCM connect with managment port $MNGMTPORT with APN $MODEMAPN"
 	echo -ne "\r\nAT^NDISDUP=1,1,\"$MODEMAPN\"\r\n" > $MNGMTPORT
 	sleep 1
+	$LOG "Link $1 up"
 	ip link set $1 up
+    else
+	$LOG "Managment port does not exist"
     fi
     dhcpc_wwan $1
 }
@@ -56,23 +61,27 @@ start() {
 
     if [ "$MODEMENABLED" = "1" ] || [ "$MODEMAUTOCONNECT" = "1" ]; then
         $LOG "Start Modemhelper"
-        if [ "$MODEMTYPE" = "eth" ] && [ -f /tmp/wwan_port ]; then
-	    WWAN_PORT=$(cat /tmp/wwan_port)
+        if [ "$MODEMTYPE" = "eth" ] && [ -e /tmp/wwan_port ]; then
+	    WWAN_PORT=`tail -qn1 /tmp/wwan_port`
 	    dhcpc_wwan $WWAN_PORT
-	elif [ "$MODEMTYPE" = "qmi" ] && [ -f /tmp/qmi_port ]; then
+	elif [ "$MODEMTYPE" = "qmi" ] && [ -e /tmp/qmi_port ]; then
 	    # QMI MODE
 	    qmi_connect
 	elif [ "$MODEMTYPE" = "2" ] || [ "$MODEMTYPE" = "ncm" ]; then
 	    # NCM MODE
-	    if [ -f /tmp/ncm_port ]; then
-		NCMIF=$(cat /tmp/ncm_port)
-		ncm_connect $NCMIF
+	    if [ -e /tmp/ncm_port ]; then
+		NCMIF=`tail -qn1 /tmp/ncm_port`
+		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ]; then
+		    ncm_connect $NCMIF
+		else
+		    $LOG "iface $NCMIF mot exist"
+		fi
 	    fi
 	else
 	    # PPP MODE
-	    if [ -f /tmp/ncm_port ]; then
-		NCMIF=$(cat /tmp/ncm_port)
-		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ $MNGMTPORT != "" ]; then
+	    if [ -e /tmp/ncm_port ]; then
+		NCMIF=`tail -qn1 /tmp/ncm_port`
+		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ ! -z $MNGMTPORT ]; then
 		    # switch to PPP mode
 		    ip link set $NCMIF down
 		    echo -ne '\r\nAT^NDISDUP=0,0,"internet"\r\n' > $MNGMTPORT
@@ -231,7 +240,6 @@ stop() {
 	fi
     fi
     ip link set $NCMIF down > /dev/null 2>&1
-    [ -f /tmp/ncm_port ] && grep -v "$NCMIF" /tmp/ncm_port > /tmp/ncm_port
 }
 
 poweroffon() {
@@ -259,7 +267,7 @@ get_param() {
 	MNGMTPORT="/dev/pcui"
     fi
 
-    if [ "$MODEMTYPE" = "2" ]; then
+    if [ "$MODEMTYPE" = "2" ] || [ "$MODEMTYPE" = "ncm" ]; then
 	# NCM MODE
 	if [ ! -f /tmp/ncm_port ]; then
 	    $LOG "Not found NCM port"
