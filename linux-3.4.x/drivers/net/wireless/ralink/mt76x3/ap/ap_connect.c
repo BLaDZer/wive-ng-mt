@@ -520,7 +520,9 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	UCHAR ID_1B, TimFirst, TimLast, *pTim;
 	BSS_STRUCT *pMbss;
 	COMMON_CONFIG *pComCfg;
+#ifdef WSC_AP_SUPPORT
 	BOOLEAN bHasWpsIE = FALSE;
+#endif
 	UINT  i;
 	HTTRANSMIT_SETTING	BeaconTransmit = {.word = 0};   /* MGMT frame PHY rate setting when operatin at Ht rate. */
 	struct wifi_dev *wdev;
@@ -950,16 +952,15 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		}
 	}
 
+#ifdef WSC_AP_SUPPORT
 #ifdef HOSTAPD_SUPPORT
 	if (pMbss->HostapdWPS && (pMbss->WscIEBeacon.ValueLen))
 		bHasWpsIE = TRUE;
 #endif
 
-#ifdef WSC_AP_SUPPORT
     /* add Simple Config Information Element */
     if (((pMbss->WscControl.WscConfMode >= 1) && (pMbss->WscIEBeacon.ValueLen)))
 		bHasWpsIE = TRUE;
-#endif /* WSC_AP_SUPPORT */
 
 	if (bHasWpsIE)
 	{
@@ -971,7 +972,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		FrameLen += WscTmpLen;
 	}
 
-#ifdef WSC_AP_SUPPORT
     if ((pMbss->WscControl.WscConfMode != WSC_DISABLE) &&
 #ifdef DOT1X_SUPPORT
         (pMbss->wdev.IEEE8021X == FALSE) &&

@@ -395,7 +395,9 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	MULTISSID_STRUCT *pMbss;
 	COMMON_CONFIG *pComCfg;
 	UCHAR PhyMode;
+#ifdef WSC_AP_SUPPORT
 	BOOLEAN bHasWpsIE = FALSE;
+#endif
 	UINT  i;
 	HTTRANSMIT_SETTING	BeaconTransmit = {.word = 0};   /* MGMT frame PHY rate setting when operatin at Ht rate. */
 	struct wifi_dev *wdev;
@@ -528,18 +530,16 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 	}
 	}
 
+#ifdef WSC_AP_SUPPORT
 #ifdef HOSTAPD_SUPPORT
 	if (pMbss->HostapdWPS && (pMbss->WscIEBeacon.ValueLen))
 		bHasWpsIE = TRUE;
 #endif
 
-#ifdef WSC_AP_SUPPORT
     /* add Simple Config Information Element */
     if (((pMbss->WscControl.WscConfMode >= 1) && (pMbss->WscIEBeacon.ValueLen)))
 		bHasWpsIE = TRUE;
-#endif /* WSC_AP_SUPPORT */
 
-#ifdef WSC_AP_SUPPORT
 #ifdef SMART_MESH_HIDDEN_WPS
     if(pMbss->SmartMeshCfg.bSupportHiddenWPS)
     {
@@ -550,7 +550,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
             Set_HiddenWps_State(&pMbss->SmartMeshCfg, HIDDEN_WPS_STATE_STOP);
     }  
 #endif /* SMART_MESH_HIDDEN_WPS */
-#endif /* WSC_AP_SUPPORT */
 
 	if (bHasWpsIE)
 	{
@@ -562,7 +561,6 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 		FrameLen += WscTmpLen;		  
 	}
 
-#ifdef WSC_AP_SUPPORT
     if ((pMbss->WscControl.WscConfMode != WSC_DISABLE)
 #ifdef DOT1X_SUPPORT
         && (pMbss->wdev.IEEE8021X == FALSE) 
