@@ -1096,11 +1096,12 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #ifdef DOT11K_RRM_SUPPORT
 	if (IS_RRM_ENABLE(pAd, apidx))
 	{
+#ifdef QUIET_SUPPORT
 		PRRM_QUIET_CB pQuietCB = &pMbss->RrmCfg.QuietCB;
 		RRM_InsertQuietIE(pAd, pBeaconFrame+FrameLen, &FrameLen,
 				pQuietCB->QuietCnt ,pQuietCB->QuietPeriod,
 				pQuietCB->QuietDuration, pQuietCB->QuietOffset);
-
+#endif /* QUIET_SUPPORT */
 #ifndef APPLE_11K_IOT
 		/* Insert BSS AC Access Delay IE. */
 		RRM_InsertBssACDelayIE(pAd, pBeaconFrame+FrameLen, &FrameLen);
