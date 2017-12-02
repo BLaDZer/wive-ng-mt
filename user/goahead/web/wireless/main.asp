@@ -192,8 +192,8 @@
 				var checktime_g			= +NVRAM_ACSCheckTime - 1;
 				var checktime_a			= +NVRAM_ACSCheckTimeINIC - 1;
 
-				form.autoselect_g.options.selectedIndex = (autoselectmode_g <= 1) ? 0 : 1;
-				form.autoselect_a.options.selectedIndex = (autoselectmode_a <= 1) ? 0 : 1;
+				form.autoselect_g.options.selectedIndex = (autoselectmode_g == 1) ? 0 : 1;
+				form.autoselect_a.options.selectedIndex = (autoselectmode_a == 1) ? 0 : 1;
 				form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
 				form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
 
@@ -1107,6 +1107,11 @@
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
 
+				if (radio_on == 1)
+					document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
+				if (radio_on_ac == 1 && BUILD_5GHZ_SUPPORT)
+					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
+
 				initTranslation();
 				showHTPhysModeMenu();
 				showVHTPhysModeMenu();
@@ -1344,6 +1349,14 @@
 				if (enableWirelessAc == 0) {
 					form.mbssid_mode.value = "ra";
 				}
+				if (enableWireless == 1)
+					document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
+				else
+					document.getElementById('wlan_channel_span').innerHTML = '';
+				if (enableWirelessAc == 1 && BUILD_5GHZ_SUPPORT)
+					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
+				else
+					document.getElementById('wlan_ac_channel_span').innerHTML = '';
 			}
 
 			function CheckValue(form)
@@ -1709,7 +1722,7 @@
 					<option value="0" id="disable">Disabled</option>
 					<option value="1" id="enable">Enabled</option>
 				</select>
-				&nbsp;&nbsp;&nbsp;BSSID: <% getWlanCurrentMac(); %></td>
+				<span style="display: inline-block; margin-left: 20px; width: 180px"><b>BSSID:</b> <% getWlanCurrentMac(); %></span><span id="wlan_channel_span"></span></td>
 			</tr>
 			<tr id="div_11g_basic" name="div_11g_basic">
 				<td class="head" id="basicNetMode" colspan="1">Network Mode</td>
@@ -1769,7 +1782,7 @@
 					<option value="0" id="disable">Disabled</option>
 					<option value="1" id="enable">Enabled</option>
 				</select>
-				&nbsp;&nbsp;BSSID: <% getWlanCurrentMacAC(); %></td>
+				<span style="display: inline-block; margin-left: 20px; width: 180px"><b>BSSID:</b> <% getWlanCurrentMacAC(); %></span><span id="wlan_ac_channel_span"></span></td>
 			</tr>
 			<tr id="div_11a_basic" name="div_11a_basic">
 				<td id="basicAcNetMode" class="head">Network Mode (5GHz)</td>

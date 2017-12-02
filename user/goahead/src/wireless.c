@@ -345,6 +345,25 @@ static int getWlanChannelAC(int eid, webs_t wp, int argc, char_t **argv)
 }
 
 /*
+ * description: write ioctl channel number
+ */
+static int getWlanChannel_ioctl(int eid, webs_t wp, int argc, char_t **argv)
+{
+	int value =  getWlanChannelNum_ioctl(1);
+	return websWrite(wp, T("%d"), value);
+}
+
+static int getWlanChannelAC_ioctl(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	int value =  getWlanChannelNum_ioctl(2);
+	return websWrite(wp, T("%d"), value);
+#else
+	return websWrite(wp, "0");
+#endif
+}
+
+/*
  * description: write MAC address from interface 'ra0'
  */
 static int getWlanCurrentMac(int eid, webs_t wp, int argc, char_t **argv)
@@ -1943,6 +1962,8 @@ void formDefineWireless(void)
 	websAspDefine(T("getWlanWdsBuilt"), getWlanWdsBuilt);
 	websAspDefine(T("getWlanChannel"), getWlanChannel);
 	websAspDefine(T("getWlanChannelAC"), getWlanChannelAC);
+	websAspDefine(T("getWlanChannel_ioctl"), getWlanChannel_ioctl);
+	websAspDefine(T("getWlanChannelAC_ioctl"), getWlanChannelAC_ioctl);
 	websAspDefine(T("getWlanCurrentMac"), getWlanCurrentMac);
 	websAspDefine(T("getWlanCurrentMacAC"), getWlanCurrentMacAC);
 	websAspDefine(T("getWlanStaInfo"), getWlanStaInfo);
