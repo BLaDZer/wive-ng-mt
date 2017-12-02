@@ -7,7 +7,7 @@
 			<object name="DeviceInfo">
 				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
 				<param name="OUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
-				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_nvram_string" reload_func="cpe_reload_all" />
+				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="LAN_MAC_ADDR" set_func="cpe_set_nvram_string" reload_func="cpe_reload_all" />
 				<param name="HardwareVersion" inform="1" get_func="cpe_get_conf_string" args="env:DEVNAME" set_func="cpe_set_conf_string" reload_func="cpe_reload_all" />
 				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string" reload_func="cpe_reload_all"/>
 				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
