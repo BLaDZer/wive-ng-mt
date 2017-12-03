@@ -1029,10 +1029,6 @@ VOID APPeerBeaconAction(
 		{
 			goto __End_Of_APPeerBeaconAction;
 		}
-#ifdef IDS_SUPPORT
-		/* Conflict SSID detection */
-		RTMPConflictSsidDetection(pAd, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, (CHAR)Elem->Rssi0, (CHAR)Elem->Rssi1, (CHAR)Elem->Rssi2);
-#endif /* IDS_SUPPORT */
 			
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
@@ -1070,6 +1066,12 @@ VOID APPeerBeaconAction(
 			}
 		}
 #endif /* DOT11_N_SUPPORT */
+
+#ifdef IDS_SUPPORT
+		/* Conflict SSID detection */
+		if (ie_list->Channel == pAd->CommonCfg.Channel)
+		    RTMPConflictSsidDetection(pAd, (PUCHAR)ie_list->Ssid, ie_list->SsidLen, (CHAR)Elem->Rssi0, (CHAR)Elem->Rssi1, (CHAR)Elem->Rssi2);
+#endif /* IDS_SUPPORT */
 
                 SupportRate(ie_list->SupRate, ie_list->SupRateLen, ie_list->ExtRate, ie_list->ExtRateLen, &pRates, &RatesLen, &MaxSupportedRate);
 		

@@ -1066,13 +1066,7 @@ VOID APPeerBeaconAction(
 		{
 			goto __End_Of_APPeerBeaconAction;
 		}
-#ifdef IDS_SUPPORT
-		/* Conflict SSID detection */
-		RTMPConflictSsidDetection(pAd, (PUCHAR)ie_list->Ssid, ie_list->SsidLen,
-								(CHAR)Elem->rssi_info.raw_rssi[0],
-								(CHAR)Elem->rssi_info.raw_rssi[1],
-								(CHAR)Elem->rssi_info.raw_rssi[2]);
-#endif /* IDS_SUPPORT */
+
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		/* Collect BEACON for SCS reference. */
 		if (!Rssi || (RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
@@ -1086,7 +1080,6 @@ VOID APPeerBeaconAction(
 		}
 
 #endif /* SMART_CARRIER_SENSE_SUPPORT */
-
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
@@ -1126,6 +1119,15 @@ VOID APPeerBeaconAction(
 			}
 		}
 #endif /* DOT11_N_SUPPORT */
+
+#ifdef IDS_SUPPORT
+		/* Conflict SSID detection */
+		if (ie_list->Channel == pAd->CommonCfg.Channel)
+			RTMPConflictSsidDetection(pAd, (PUCHAR)ie_list->Ssid, ie_list->SsidLen,
+								(CHAR)Elem->rssi_info.raw_rssi[0],
+								(CHAR)Elem->rssi_info.raw_rssi[1],
+								(CHAR)Elem->rssi_info.raw_rssi[2]);
+#endif /* IDS_SUPPORT */
 
                 SupportRate(ie_list->SupRate, ie_list->SupRateLen, ie_list->ExtRate, ie_list->ExtRateLen, &pRates, &RatesLen, &MaxSupportedRate);
 		
