@@ -2023,7 +2023,9 @@ VOID APUpdateCapabilityAndErpIe(
 	}
 
 	AsicSetSlotTime(pAd, ShortSlotCapable);
-
+	/*update slot time only when value is difference*/
+	if(pAd->CommonCfg.bUseShortSlotTime != ShortSlotCapable)
+		pAd->CommonCfg.bUseShortSlotTime = ShortSlotCapable;
 }
 
 /*

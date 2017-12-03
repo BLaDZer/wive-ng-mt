@@ -2306,7 +2306,9 @@ VOID APUpdateCapabilityAndErpIe(RTMP_ADAPTER *pAd)
 	}
 
 	AsicSetSlotTime(pAd, ShortSlotCapable, pAd->CommonCfg.Channel);
-
+	/*update slot time only when value is difference*/
+	if(pAd->CommonCfg.bUseShortSlotTime != ShortSlotCapable)
+		pAd->CommonCfg.bUseShortSlotTime = ShortSlotCapable;
 }
 
 

@@ -3590,7 +3590,7 @@
 78) kernel: ralink_wifi: 802.11k: add sanity check and correction data from BCN.<br>
 79) kernel: ralink_wifi: 802.11k: fix TSF reports.<br>
 80) kernel: ralink_wifi: 802.11k: do not announce quiet support if not enabled by complile.<br>
-81) kernel: ralink_i2c: fic build and warnings.<br>
+81) kernel: ralink_i2c: fix build and warnings.<br>
 82) kernel: fs: cache: fix dereference of NULL user_key_payload.<br>
 83) kernel: fs: leak in O_DIRECT readv past the EOF.<br>
 84) kernel: fs: fuse: initialize the flock flag in fuse_file on allocation.<br>
@@ -3666,6 +3666,7 @@
 <br>
 <br>
 <b>6.8.x</b><br>
+1) kernel: ralink_wifi: update CommonCfg.bUseShortSlotTime if changed in APUpdateCapabilityAndErpIe (need for correct cap generate).<br>
 <br>
 <br>
 <br>
