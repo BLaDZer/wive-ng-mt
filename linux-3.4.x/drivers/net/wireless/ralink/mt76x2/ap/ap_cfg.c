@@ -2813,19 +2813,18 @@ INT RTMPAPSetInformation(
 						Apple STA will re-do auth/assoc and security handshaking with AP again.
 						@20150313
 					*/
-					if (IS_FT_RSN_STA(pEntry))
+					if (IS_FT_RSN_STA(pEntry)) {
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 						/* Clear TXWI ack in Tx Ring*/
 						ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
-					{
 						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
 					}
 					else
 #endif /* DOT11R_FT_SUPPORT */
-				MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
+						MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
 			}
     		    }
 		    break;
