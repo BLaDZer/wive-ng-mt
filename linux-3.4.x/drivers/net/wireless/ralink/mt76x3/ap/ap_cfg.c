@@ -1736,10 +1736,14 @@ INT RTMPAPSetInformation(
 					if (IS_FT_RSN_STA(pEntry))
 					{
 						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
+						printk("STA(%02x:%02x:%02x:%02x:%02x:%02x) roam from this AP (FT mode), delete entry\n", Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]);
 					}
 					else
 #endif /* DOT11R_FT_SUPPORT */
-					MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
+					{
+						MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
+						printk("STA(%02x:%02x:%02x:%02x:%02x:%02x) roam from this AP, delete entry\n", Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]);
+					}
 				}
     		    }
 		    break;

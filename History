@@ -3671,6 +3671,7 @@
 3) kernel: ralink_wifi: clear ACK in rings for clients sended disassoc/deauth or FT migration procedure (decrease potentional rings stubs).<br>
 4) kernel: ralink_wifi: ignore not correct disassoc/deauth req.<br>
 5) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
+6) kernel: ralink_wifi: add move notify report to log.<br>
 <br>
 <br>
 <br>
