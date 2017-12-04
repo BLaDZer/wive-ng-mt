@@ -2814,6 +2814,12 @@ INT RTMPAPSetInformation(
 						@20150313
 					*/
 					if (IS_FT_RSN_STA(pEntry))
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+						/* Clear TXWI ack in Tx Ring*/
+						ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 					{
 						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
 					}

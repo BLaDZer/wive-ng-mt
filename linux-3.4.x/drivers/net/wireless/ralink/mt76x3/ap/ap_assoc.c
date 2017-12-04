@@ -2492,10 +2492,6 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 							   WAI_MLME_DISCONNECT);		
 #endif /* WAPI_SUPPORT */
 	
-		printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
-				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
-				SeqNum, PRINT_MAC(Addr2), Reason);
-
 		/* send wireless event - for disassociation */
 		RTMPSendWirelessEvent(pAd, IW_DISASSOC_EVENT_FLAG, Addr2, 0, 0);
 
@@ -2510,7 +2506,14 @@ VOID APPeerDisassocReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 
-		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+		if (!IS_ENTRY_CLIENT(pEntry))	{
+		    DBGPRINT(RT_DEBUG_TRACE, ("%s: receive not client dis-assoc ###\n", __FUNCTION__));
+		} else {
+			MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+			printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
+				pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",
+				SeqNum, PRINT_MAC(Addr2), Reason);
+		}
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)

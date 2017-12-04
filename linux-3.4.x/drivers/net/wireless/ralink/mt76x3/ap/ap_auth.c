@@ -75,6 +75,8 @@ static VOID APMlmeDeauthReqAction(
     MAC_TABLE_ENTRY			*pEntry;
 	UCHAR					apidx;
 
+    if (!pAd)
+	return;
 
     pInfo = (MLME_DEAUTH_REQ_STRUCT *)Elem->Msg;
 
@@ -131,7 +133,6 @@ static VOID APMlmeDeauthReqAction(
     }
 }
 
-
 static VOID APPeerDeauthReqAction(
     IN PRTMP_ADAPTER pAd, 
     IN PMLME_QUEUE_ELEM Elem) 
@@ -140,7 +141,8 @@ static VOID APPeerDeauthReqAction(
 	UINT16 Reason, SeqNum;
 	MAC_TABLE_ENTRY *pEntry;
 
-
+        if (!pAd)
+	    return;
 
 	if (! PeerDeauthReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr2, &SeqNum, &Reason)) 
 		return;
@@ -151,6 +153,8 @@ static VOID APPeerDeauthReqAction(
 	if (Elem->Wcid < MAX_LEN_OF_MAC_TABLE)
 	{
 		pEntry = &pAd->MacTab.Content[Elem->Wcid];
+		if (!pEntry)
+			return;
 
 		{ 
 			/*
@@ -215,19 +219,12 @@ static VOID APPeerDeauthReqAction(
 			pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
 		}
 
-#ifdef APCLI_SUPPORT
-                                if (pEntry && !(IS_ENTRY_APCLI(pEntry)))
-#endif /* APCLI_SUPPORT */
-                                {
-		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
-					}
-#ifdef APCLI_SUPPORT
-                                else
-                                {
-						DBGPRINT(RT_DEBUG_TRACE,("%s: receive not client de-auth ###\n", __FUNCTION__));
-					}
-#endif /* APCLI_SUPPORT */
-		printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum, PRINT_MAC(Addr2), Reason);
+		if (!IS_ENTRY_CLIENT(pEntry)) {
+                    DBGPRINT(RT_DEBUG_OFF, ("%s: receive not client de-auth ###\n", __FUNCTION__));
+                } else {
+		    MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+		    printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum, PRINT_MAC(Addr2), Reason);
+                }
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)

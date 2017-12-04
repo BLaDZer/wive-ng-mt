@@ -3668,6 +3668,9 @@
 <b>6.8.x</b><br>
 1) kernel: ralink_wifi: update CommonCfg.bUseShortSlotTime if changed in APUpdateCapabilityAndErpIe (need for correct cap generate).<br>
 2) kernel: ralink_wifi: move conflict SSID detection to true place.<br>
+3) kernel: ralink_wifi: clear ACK in rings for clients sended disassoc/deauth or FT migration procedure (decrease potentional rings stubs).<br>
+4) kernel: ralink_wifi: ignore not correct disassoc/deauth req.<br>
+5) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
 <br>
 <br>
 <br>

@@ -106,29 +106,38 @@ static VOID APMlmeDeauthReqAction(
 	UCHAR					apidx;
 
 
+    if (!pAd)
+	return;
+
     pInfo = (MLME_DEAUTH_REQ_STRUCT *)Elem->Msg;
 
     if (Elem->Wcid < MAX_LEN_OF_MAC_TABLE)
     {
-		pEntry = &pAd->MacTab.Content[Elem->Wcid];
-		if (!pEntry)
-			return;
+	pEntry = &pAd->MacTab.Content[Elem->Wcid];
+	if (!pEntry)
+		return;
 		
 #ifdef WAPI_SUPPORT
-		WAPI_InternalCmdAction(pAd, 
-							   pEntry->AuthMode, 
-							   pEntry->apidx, 
-							   pEntry->Addr, 
-							   WAI_MLME_DISCONNECT);		
+	WAPI_InternalCmdAction(pAd, 
+				   pEntry->AuthMode, 
+				   pEntry->apidx, 
+				   pEntry->Addr, 
+				   WAI_MLME_DISCONNECT);		
 #endif /* WAPI_SUPPORT */
 		
-		/* send wireless event - for deauthentication */
-		RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, pInfo->Addr, 0, 0);  
-		//ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
+	/* send wireless event - for deauthentication */
+	RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, pInfo->Addr, 0, 0);  
+	//ApLogEvent(pAd, pInfo->Addr, EVENT_DISASSOCIATED);
 
-		apidx = pEntry->apidx;
+	apidx = pEntry->apidx;
 
         /* 1. remove this STA from MAC table */
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+	/* Clear TXWI ack in Tx Ring*/
+	ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
         MacTableDeleteEntry(pAd, Elem->Wcid, pInfo->Addr);
 
         /* 2. send out DE-AUTH request frame */
@@ -163,6 +172,8 @@ static VOID APPeerDeauthReqAction(
 	UINT16			SeqNum;
     MAC_TABLE_ENTRY	*pEntry;
 
+    if (!pAd)
+	return;
 
 
     if (! PeerDeauthReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr2, &SeqNum, &Reason)) 
@@ -172,8 +183,10 @@ static VOID APPeerDeauthReqAction(
 
 	/*pEntry = MacTableLookup(pAd, Addr2); */
 	if (Elem->Wcid < MAX_LEN_OF_MAC_TABLE)
-    {
+	{
 		pEntry = &pAd->MacTab.Content[Elem->Wcid];
+		if (!pEntry)
+			return;
 
 		{
 			MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
@@ -212,19 +225,28 @@ static VOID APPeerDeauthReqAction(
 		RTMPSendWirelessEvent(pAd, IW_DEAUTH_EVENT_FLAG, Addr2, 0, 0);  
 		//ApLogEvent(pAd, Addr2, EVENT_DISASSOCIATED);
 		
-        if (pEntry->CMTimerRunning == TRUE)
-        {
-            /*
+    		if (pEntry->CMTimerRunning == TRUE)
+    		{
+        		/*
 				If one who initilized Counter Measure deauth itself,
 				AP doesn't log the MICFailTime
 			*/
-            pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
-        }
+        		pAd->ApCfg.aMICFailTime = pAd->ApCfg.PrevaMICFailTime;
+    		}
 
-		MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
-
-        printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum,
-		Addr2[0], Addr2[1], Addr2[2], Addr2[3], Addr2[4], Addr2[5], Reason);
+		if (!IS_ENTRY_CLIENT(pEntry)) {
+		    DBGPRINT(RT_DEBUG_TRACE, ("%s: receive not client de-auth ###\n", __FUNCTION__));
+		} else {
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+		    /* Clear TXWI ack in Tx Ring*/
+		    ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
+		    MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
+		    printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum,
+		    Addr2[0], Addr2[1], Addr2[2], Addr2[3], Addr2[4], Addr2[5], Reason);
+		}
 
 #ifdef MAC_REPEATER_SUPPORT
 		if (pAd->ApCfg.bMACRepeaterEn == TRUE)
