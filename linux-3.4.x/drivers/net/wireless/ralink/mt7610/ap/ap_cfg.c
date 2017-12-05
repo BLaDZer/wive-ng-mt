@@ -2294,14 +2294,18 @@ INT RTMPAPSetInformation(
 			pEntry = MacTableLookup(pAd, Addr);
 			if (pEntry)
 			{
+					if (IS_ENTRY_CLIENT(pEntry)) {
+						/*
+						    If AP send de-auth to Apple STA, 
+						    Apple STA will re-do auth/assoc and security handshaking with AP again.
+						    @20150313
+						    This client allready migrate to new STA, not need anything send.
+						*/
 #ifdef DOT11R_FT_SUPPORT
-					/*
-						If AP send de-auth to Apple STA, 
-						Apple STA will re-do auth/assoc and security handshaking with AP again.
-						@20150313
-					*/
-					if (IS_FT_RSN_STA(pEntry))
-					{
+						PUCHAR	sFTSupport = IS_FT_RSN_STA(pEntry) ? (PUCHAR)", FT mode" : (PUCHAR)"";
+#else
+						PUCHAR	sFTSupport = (PUCHAR)"";
+#endif /* DOT11R_FT_SUPPORT */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 						/* Clear TXWI ack in Tx Ring*/
@@ -2309,12 +2313,10 @@ INT RTMPAPSetInformation(
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
 						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
-						printk("STA(%02x:%02x:%02x:%02x:%02x:%02x) roam from this AP (FT mode), delete entry\n", Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]);
-					} else
-#endif /* DOT11R_FT_SUPPORT */
-					{
+						printk("STA %02x:%02x:%02x:%02x:%02x:%02x roam from this AP%s, delete entry\n", PRINT_MAC(pEntry->Addr), sFTSupport);
+					} else {
+						/* WDS/APCLI must be send deauth after migrate */
 						MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
-						printk("STA(%02x:%02x:%02x:%02x:%02x:%02x) roam from this AP, delete entry\n", Addr[0],Addr[1],Addr[2],Addr[3],Addr[4],Addr[5]);
 					}
 			}
     		    }

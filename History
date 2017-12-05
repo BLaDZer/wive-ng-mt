@@ -3672,6 +3672,7 @@
 4) kernel: ralink_wifi: ignore not correct disassoc/deauth req.<br>
 5) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
 6) kernel: ralink_wifi: add move notify report to log.<br>
+7) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
 <br>
 <br>
 <br>
