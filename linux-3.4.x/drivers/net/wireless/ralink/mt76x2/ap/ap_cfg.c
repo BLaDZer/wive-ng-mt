@@ -2825,8 +2825,8 @@ INT RTMPAPSetInformation(
 						ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
-						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
 						printk("STA %02x:%02x:%02x:%02x:%02x:%02x roam from this AP%s, delete entry\n", PRINT_MAC(pEntry->Addr), sFTSupport);
+						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
 					} else {
 						/* WDS/APCLI must be send deauth after migrate */
 						MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);
