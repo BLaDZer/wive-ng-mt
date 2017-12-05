@@ -219,7 +219,7 @@ var NVRAM_chilli_dhcpend			= '<% getCfgGeneral(1, "chilli_dhcpend"); %>';			NVRA
 var NVRAM_chilli_dns1				= '<% getCfgGeneral(1, "chilli_dns1"); %>';			NVRAM_chilli_dns1			= (NVRAM_chilli_dns1 !='')			? NVRAM_chilli_dns1			: '192.168.182.1';
 var NVRAM_chilli_dns2				= '<% getCfgGeneral(1, "chilli_dns2"); %>';			NVRAM_chilli_dns2			= (NVRAM_chilli_dns2 !='')			? NVRAM_chilli_dns2			: '192.168.182.1';
 var NVRAM_chilli_domain				= '<% getCfgGeneral(1, "chilli_domain"); %>';			NVRAM_chilli_domain			= (NVRAM_chilli_domain !='')			? NVRAM_chilli_domain			: 'Wive-NG-MT.lo';
-var NVRAM_chilli_lease				= '<% getCfgGeneral(1, "chilli_lease"); %>';			NVRAM_chilli_lease			= (NVRAM_chilli_lease !='')			? NVRAM_chilli_lease			: '240';
+var NVRAM_chilli_lease				= '<% getCfgGeneral(1, "chilli_lease"); %>';			NVRAM_chilli_lease			= (NVRAM_chilli_lease !='')			? NVRAM_chilli_lease			: '300';
 var NVRAM_chilli_radiusserver1			= '<% getCfgGeneral(1, "chilli_radiusserver1"); %>';		NVRAM_chilli_radiusserver1		= (NVRAM_chilli_radiusserver1 !='')		? NVRAM_chilli_radiusserver1		: '192.168.254.254';
 var NVRAM_chilli_radiusserver2			= '<% getCfgGeneral(1, "chilli_radiusserver2"); %>';		NVRAM_chilli_radiusserver2		= (NVRAM_chilli_radiusserver2 !='')		? NVRAM_chilli_radiusserver2		: '192.168.254.254';
 var NVRAM_chilli_radiussecret			= '<% getCfgGeneral(1, "chilli_radiussecret"); %>';		NVRAM_chilli_radiussecret		= (NVRAM_chilli_radiussecret !='')		? NVRAM_chilli_radiussecret		: 'ratest';
@@ -424,7 +424,7 @@ var NVRAM_SkipLongRangeVga			= '<% getCfgGeneral(1, "SkipLongRangeVga"); %>';		N
 var NVRAM_VgaClamp				= '<% getCfgGeneral(1, "VgaClamp"); %>';			NVRAM_VgaClamp				= (NVRAM_VgaClamp !='')				? NVRAM_VgaClamp			: '0';
 var NVRAM_MaxStaNum				= '<% getCfgGeneral(1, "MaxStaNum"); %>';			NVRAM_MaxStaNum				= (NVRAM_MaxStaNum !='')			? NVRAM_MaxStaNum			: '56;56;56;56';
 var NVRAM_StationKeepAlive			= '<% getCfgGeneral(1, "StationKeepAlive"); %>';		NVRAM_StationKeepAlive			= (NVRAM_StationKeepAlive !='')			? NVRAM_StationKeepAlive		: '60;60;60;60';
-var NVRAM_IdleTimeout				= '<% getCfgGeneral(1, "IdleTimeout"); %>';			NVRAM_IdleTimeout			= (NVRAM_IdleTimeout !='')			? NVRAM_IdleTimeout			: '240';
+var NVRAM_IdleTimeout				= '<% getCfgGeneral(1, "IdleTimeout"); %>';			NVRAM_IdleTimeout			= (NVRAM_IdleTimeout !='')			? NVRAM_IdleTimeout			: '300';
 var NVRAM_AckPolicy				= '<% getCfgGeneral(1, "AckPolicy"); %>';			NVRAM_AckPolicy				= (NVRAM_AckPolicy !='')			? NVRAM_AckPolicy			: '0;0;0;0';
 var NVRAM_WmmCapable				= '<% getCfgGeneral(1, "WmmCapable"); %>';			NVRAM_WmmCapable			= (NVRAM_WmmCapable !='')			? NVRAM_WmmCapable			: '1';
 var NVRAM_ED_MODE				= '<% getCfgGeneral(1, "ED_MODE"); %>';				NVRAM_ED_MODE				= (NVRAM_ED_MODE !='')				? NVRAM_ED_MODE				: '0';
