@@ -8,6 +8,8 @@
 <meta http-equiv="Expires" content="-1">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_usb.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/validation.js"></script>
@@ -312,14 +314,12 @@ function showModemStatus()
         <table class="buttons">
           <tr>
             <td><input value="/usb/USBmodem.asp" name="submit-url" type="hidden">
-              <input class="normal" value="Apply" name="Apply" type="button" onClick="submit_apply('apply')" >
-              &nbsp;&nbsp;
-              <input class="normal" value="Cancel" name="Cancel" onClick="window.location.reload()" type="button">
-              &nbsp;&nbsp; </td>
+              <input class="normal" value="Apply" name="Apply" type="button" onClick="submit_apply('apply')" ><input class="normal" value="Cancel" name="Cancel" onClick="window.location.reload()" type="button">
+            </td>
           </tr>
         </table>
-        <div id="modem_hint_row">&nbsp;</div>
-        <div class="whitespace">&nbsp;</div>
+        <div id="modem_hint_row"></div>
+        <div class="whitespace"></div>
       </form></td>
   </tr>
 </table>

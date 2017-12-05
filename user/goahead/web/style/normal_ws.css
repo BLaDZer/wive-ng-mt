@@ -186,6 +186,10 @@ table.buttons tr, table.buttons td {
 	text-align: left;
 }
 
+table.buttons input {
+	margin-right: 10px
+}
+
 table.form {
 	min-width: 750px;
 	width: 750px;

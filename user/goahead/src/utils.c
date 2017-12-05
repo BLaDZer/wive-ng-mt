@@ -249,6 +249,18 @@ static int getLangBuilt(int eid, webs_t wp, int argc, char_t **argv)
 	else	return websWrite(wp, T("0"));
 }
 
+static int getLangDictionary(int eid, webs_t wp, int argc, char_t **argv)
+{
+#ifdef CONFIG_USER_GOAHEAD_LANG_RU
+	char* lang = nvram_get(RT2860_NVRAM, "Language");
+
+	if (!strncmp(lang, "ru", 3))
+		return websWrite(wp, T("RU"));
+	else
+#endif
+		return websWrite(wp, T("EN"));
+}
+
 /*
  * description: write the current system platform accordingly
  */
@@ -470,6 +482,7 @@ void formDefineUtilities(void)
 	websAspDefine(T("getCfgZero"), getCfgZero);
 	websAspDefine(T("getCfgNthZero"), getCfgNthZero);
 	websAspDefine(T("getLangBuilt"), getLangBuilt);
+	websAspDefine(T("getLangDictionary"), getLangDictionary);
 	websAspDefine(T("getPlatform"), getPlatform);
 	websAspDefine(T("getStationBuilt"), getStationBuilt);
 	websAspDefine(T("getSdkVersion"), getSdkVersion);

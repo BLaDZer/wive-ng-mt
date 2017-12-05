@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("ntpTitle",			"services ntp title");
 				_TR("ntpIntroduction",		"services ntp introduction");
@@ -28,9 +26,9 @@
 				_TR("ntpCurrentTime",		"services ntp current time");
 				_TR("ntpTimeZone",		"services ntp timezone");
 				_TR("ntpServer",		"services ntp server");
-				_TRV("ntpApply",		"button apply");
-				_TRV("ntpCancel",		"button cancel");
-				_TRV("ntpSyncWithHost",		"services ntp sync");
+				_TR("ntpApply",		"button apply");
+				_TR("ntpCancel",		"button cancel");
+				_TR("ntpSyncWithHost",		"services ntp sync");
 			}
 
 			function initValues() {
@@ -279,8 +277,8 @@
 									<input class="wide" name="NTPServerIP" id="NTPServerIP" type="text">
 									<br>
 									&nbsp;&nbsp;<font color="#808080">ex:&nbsp;time.nist.gov</font><br>
-									&nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;ru.pool.ntp.org</font><br>
-									&nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;time.stdtime.gov.tw</font>
+									&nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ru.pool.ntp.org</font><br>
+									&nbsp;&nbsp;<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.stdtime.gov.tw</font>
 								</td>
 							</tr>
 						</tbody>
@@ -288,14 +286,12 @@
 					<table class="buttons">
 						<tr>
 							<td>
-								<input type="hidden" value="/services/ntp.asp" name="submit-url">
-								<input type="submit" class="normal" value="Apply"  id="ntpApply">&nbsp;&nbsp;
-								<input type="reset"  class="normal" value="Cancel" id="ntpCancel" onClick="window.location.reload();">
+								<input type="hidden" value="/services/ntp.asp" name="submit-url"><input type="submit" class="normal" value="Apply"  id="ntpApply"><input type="reset"  class="normal" value="Cancel" id="ntpCancel" onClick="window.location.reload();">
 							</td>
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

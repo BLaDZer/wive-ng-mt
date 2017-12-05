@@ -7,10 +7,10 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <link rel="stylesheet" href="/dtree/dtree.css" type="text/css" >
-<link rel="StyleSheet" href="dtree.css" type="text/css" >
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/dtree/dtree.js"></script>
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_tree.js"></script>
 <script type="text/javascript" src="/js/nvram.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 </head>
@@ -18,8 +18,6 @@
 <script language="JavaScript" type="text/javascript">
 
 var isFimwareUpload = 0;
-Butterlate.setTextDomain("menu");
-Butterlate.setTextDomain("buttons");
 
 function initValue()
 {
@@ -36,8 +34,7 @@ function setUnderFirmwareUpload(flag){
 }
 
 function go(zz) {
-	if(!isFimwareUpload)
-		top.view.location=zz;
+	top.view.location=zz;
 }
 
 function refresh(){

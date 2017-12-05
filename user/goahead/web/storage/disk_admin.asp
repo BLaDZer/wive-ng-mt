@@ -6,10 +6,11 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_usb.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("usb");
 var dir_count = 0;
 var part_count = 0;
 
@@ -191,11 +192,9 @@ function open_diskrepart_window()
 dir_count = parseInt('<% getCount(1, "AllDir"); %>');
 </script>
         </table>
-        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1">
+        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1" class="buttons" >
           <tr align="center">
-            <td><input type="button" style="{width:80px;}" value="Add" id="storageDiskAdmAdd" onClick="open_diskadd_window()">
-              &nbsp;&nbsp;
-              <input type="button" style="{width:80px;}" value="Delete" id="storageDiskAdmDel" onClick="submit_apply('delete')"></td>
+            <td><input type="button" style="{width:80px;}" value="Add" id="storageDiskAdmAdd" onClick="open_diskadd_window()"><input type="button" style="{width:80px;}" value="Delete" id="storageDiskAdmDel" onClick="submit_apply('delete')"></td>
           </tr>
         </table>
         <hr />
@@ -214,19 +213,16 @@ dir_count = parseInt('<% getCount(1, "AllDir"); %>');
 part_count = parseInt('<% getCount(1, "AllPart"); %>');
 </script>
         </table>
-        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1">
+        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1" class="buttons">
           <tr align="center">
-            <td><input type="button" style="{width:80px;}" value="Format" id="storageDiskFormat" onClick="submit_apply('format')">
-              &nbsp;&nbsp;
-              <input type="button" style="{width:80px;}" value="Re-allocate" name="realloc_parted" id="storageDiskPart" onClick="open_diskrepart_window()"></td>
+            <td><input type="button" style="{width:80px;}" value="Format" id="storageDiskFormat" onClick="submit_apply('format')"><input type="button" style="{width:80px;}" value="Re-allocate" name="realloc_parted" id="storageDiskPart" onClick="open_diskrepart_window()"></td>
           </tr>
         </table>
         <hr />
         <br />
-        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1">
+        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1" class="buttons">
           <tr align="right">
-            <td><input type="button" style="{width:120px;}" value="Remove Disk" id="storageDiskRemove" onClick="submit_apply('remove')">
-              &nbsp;&nbsp; </td>
+            <td><input type="button" style="{width:120px;}" value="Remove Disk" id="storageDiskRemove" onClick="submit_apply('remove')"></td>
           </tr>
         </table>
       </form></td>

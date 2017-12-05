@@ -6,40 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("wireless");
-Butterlate.setTextDomain("buttons");
-
-function initTranslation()
-{
-	var e = document.getElementById("11nTitle");
-	e.innerHTML = _("11n title");
-	e = document.getElementById("11nIntroduction");
-	e.innerHTML = _("11n introduction");
-
-	e = document.getElementById("11nConfig");
-	e.innerHTML = _("11n config");
-	e = document.getElementById("11nAMPDU");
-	e.innerHTML = _("11n ampdu");
-	e = document.getElementById("11nAMPDUEnable");
-	e.innerHTML = _("station enable");
-	e = document.getElementById("11nAMPDUManual");
-	e.innerHTML = _("11n ampdu manual");
-	e = document.getElementById("11nAMPDUAuto");
-	e.innerHTML = _("wireless auto");
-	e = document.getElementById("11nMPDUDensity");
-	e.innerHTML = _("11n mpdu density");
-	e = document.getElementById("11nAMSDU");
-	e.innerHTML = _("basic ht amsdu");
-	e = document.getElementById("11nAMSDUEnable");
-	e.innerHTML = _("station enable");
-	e = document.getElementById("11nApply");
-	e.value = _("wireless apply");
-}
 
 function initValue()
 {
@@ -48,7 +18,6 @@ function initValue()
 	var density = <% getCfgZero(1, "HT_MpduDensity"); %>;
 	var amsdu = <% getCfgZero(1, "HT_AMSDU"); %>;
 
-	initTranslation();
 	if (baenable)
 		document.sta_11n_configuration.a_mpdu_enable.checked = true;
 	else
@@ -133,7 +102,7 @@ function selectedBSSID(tmp)
     <td><h1 id="11nTitle">Station 11n Configurations</h1>
       <p id="11nIntroduction">The Status page shows the settings and current operation status of the Station.</p>
       <hr />
-      <form method=post name="sta_11n_configuration" action="/goform/setSta11nCfg" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+      <form method=post name="sta_11n_configuration" action="/goform/setSta11nCfg">
         <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table width="90%" border="1" cellpadding="2" cellspacing="1">
           <tr>

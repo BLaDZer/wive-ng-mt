@@ -9,17 +9,14 @@
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/js/jquery.min.js"></script>
 		<script src="/js/scanap.js"></script>
 		<script> 
-			Butterlate.setTextDomain("wireless");
-			Butterlate.setTextDomain("buttons");
-
 			var radio_on			= NVRAM_RadioOn;
 			var radio_on_ac			= NVRAM_RadioOnINIC;
 			var wmode				= NVRAM_WirelessMode;
@@ -474,9 +471,9 @@
 				_TR("basicETxBfeeEn", "basic etxbfeeen");
 				_TR("basicETxBfEnCond", "basic etxbfencond");
 
-				_TRV("basicApply", "button apply");
-				_TRV("basicCancel", "button cancel");
-				_TRV("basicAddBSSID", "button add");
+				_TR("basicApply", "button apply");
+				_TR("basicCancel", "button cancel");
+				_TR("basicAddBSSID", "button add");
 				
 				_TR("advTitle", "adv title");
 				_TR("advIntroduction", "adv introduction");
@@ -541,11 +538,11 @@
 				_TR("basicKickStaRssiLowFT_td_1", "adv kickstarssilowft");
 				_TR("basicKickStaRssiLowFTRange", "adv kickstarssilowft range");
 
-				_TRV("scanapLegendButtonScan", "scanap legend button scan");
-				_TRV("scanapLegendButtonScanINIC", "scanap legend button scan");
+				_TR("scanapLegendButtonScan", "scanap legend button scan");
+				_TR("scanapLegendButtonScanINIC", "scanap legend button scan");
 				
-				_TRV("advApply", "button apply");
-				_TRV("advCancel", "button cancel");
+				_TR("advApply", "button apply");
+				_TR("advCancel", "button cancel");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -1759,7 +1756,7 @@
 						<div id="scanApPlot" style="width: 100%; height: 300px; margin: 0 auto;">
 						</div>
 						<div id="scanApPreloader" style="display: none; width:100%; height: 100%">
-							<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+							<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
 						</div>
 					</div>
 				</td>
@@ -1819,7 +1816,7 @@
 						<div id="scanApPlotINIC" style="width: 100%; height: 300px; margin: 0 auto;">
 						</div>
 						<div id="scanApPreloaderINIC" style="display: none; width:100%; height: 100%">
-							<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+							<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
 						</div>
 					</div>			
 				</td>
@@ -2474,13 +2471,14 @@
 	</table>
 	<table class="buttons">
 		<tr align="center">
-			<td><input type="submit" class="normal" value="Apply" id="basicApply">&nbsp;&nbsp;
-				<input type="button" class="normal" value="Cancel" id="basicCancel" onClick="window.location.reload();">
-				<input type="hidden" name="submit-url" value="/wireless/main.asp"></td>
+			<td>
+				<input type="submit" class="normal" value="Apply" id="basicApply"><input type="button" class="normal" value="Cancel" id="basicCancel" onClick="window.location.reload();">
+				<input type="hidden" name="submit-url" value="/wireless/main.asp">
+			</td>
 		</tr>
 	</table>
 	</form>
-	<div class="whitespace">&nbsp;</div></td>
+	<div class="whitespace"></div></td>
 	</tr>
 </table>
 </body>

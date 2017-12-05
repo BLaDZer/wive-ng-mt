@@ -9,14 +9,12 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_admin.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("admin");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 			  _TR("manTitle",					"management title");
 			  _TR("manIntroduction",			"management introduction");
@@ -39,44 +37,25 @@
 			  _TR("setmanImpSetFileLocation",	"management upload file");
 			  _TR("manResetToFactory", 			"management reset factory");
 
-			  _TRV("manLangApply", 				"button apply");
-			  _TRV("manAdmApply", 				"button apply");
-			  _TRV("uploadFWApply", 			"button update");
-			  _TRV("uploadRWFSApply", 			"button load");
-			  _TRV("setmanExpSetExport", 		"button backup");
-			  _TRV("setmanImpSetImport", 		"button load");
-			  _TRV("setmanLoadDefault", 		"button reset");
+			  _TR("manLangApply", 				"button apply");
+			  _TR("manAdmApply", 				"button apply");
+			  _TR("uploadFWApply", 			"button update");
+			  _TR("uploadRWFSApply", 			"button load");
+			  _TR("setmanExpSetExport", 		"button backup");
+			  _TR("setmanImpSetImport", 		"button load");
+			  _TR("setmanLoadDefault", 		"button reset");
 			}
 
 			function initValue() {
 				var lang_element = document.getElementById("langSelection");
 
 				lang_element.options.length = 0;
-				if (BUILD_LangEN == '1')
+				if (BUILD_LangEN)
 					lang_element.options[lang_element.length] = new Option('English', 'en');
-				if (BUILD_LangRU == '1')
+				if (BUILD_LangRU)
 					lang_element.options[lang_element.length] = new Option('Russian', 'ru');
+				lang_element.value = NVRAM_Language;
 
-				if (document.cookie.length > 0) {
-					var s = document.cookie.indexOf("language=");
-					var e = document.cookie.indexOf(";", s);
-					var lang = "en";
-					var i;
-
-					if (s != -1) {
-						if (e == -1)
-							lang = document.cookie.substring(s+9);
-						else
-							lang = document.cookie.substring(s+9, e);
-					}
-
-					for (i=0; i<lang_element.options.length; i++) {
-						if (lang == lang_element.options[i].value) {
-							lang_element.options.selectedIndex = i;
-							break;
-						}
-					}
-				}
 				
 				document.getElementById('admuser').value			= NVRAM_Login;
 				document.getElementById('admpass').value			= NVRAM_Password;
@@ -116,7 +95,6 @@
 
 
 			function setLanguage() {
-				document.cookie = "language="+document.Lang.langSelection.value+"; path=/";
 				parent.menu.location.reload();
 				return true;
 			}
@@ -220,7 +198,7 @@
 									<form method="POST" name="Lang" action="/goform/setSysLang">
 										<select name="langSelection" id="langSelection" class="half"></select>
 										<input type="hidden" name="submit-url" value="/adm/management.asp">&nbsp;
-										<input type="submit" class="half" value="Apply" id="manLangApply" onClick="return setLanguage();">&nbsp;&nbsp;
+										<input type="submit" class="half" value="Apply" id="manLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500);">&nbsp;&nbsp;
 									</form>
 								</td>
 							</tr>
@@ -323,7 +301,7 @@
 							</tr>
 						</table>
 					</div>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

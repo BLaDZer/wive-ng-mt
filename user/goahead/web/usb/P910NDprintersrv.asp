@@ -6,7 +6,8 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_usb.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -66,9 +67,7 @@ function initValue()
         </table>
         <table class="buttons">
           <tr>
-            <td><input type=submit class="normal" value="Apply" id="printerApply">
-              &nbsp; &nbsp;
-              <input type=button class="normal" value="Cancel" id="printerCancel" onClick="window.location.reload()">
+            <td><input type=submit class="normal" value="Apply" id="printerApply"><input type=button class="normal" value="Cancel" id="printerCancel" onClick="window.location.reload()">
               <input type="hidden" name="submit-url" value="/usb/P910NDprintersrv.asp"></td>
           </tr>
         </table>

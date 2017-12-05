@@ -9,16 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("wTitle",					"wan title");
 				_TR("wIntroduction",			"wan introduction");
@@ -54,14 +51,14 @@
 				_TR("wDHCPVendorClass",			"wan dhcp vendor class");
 				_TR("wMTU",						"wan mtu");
 				_TR("wAuto",					"inet auto");
-				_TR("wCustom",					"routing custom");
+				_TR("wCustom",					"inet custom");
 				_TR("wNatEnabled",				"wan nat enabled");
 				_TR("wMacAddress",				"inet mac");
 				_TR("wMacAddr",					"wan mac");
-				_TRV("wApply",					"button apply");
-				_TRV("wCancel",					"button cancel");
-				_TRV("wReset",					"button reset");
-				_TRV("WanMacRestore",			"button restore factory");
+				_TR("wApply",					"button apply");
+				_TR("wCancel",					"button cancel");
+				_TR("wReset",					"button reset");
+				_TR("WanMacRestore",			"button restore factory");
 			}
 
 			function initValues() {
@@ -422,15 +419,13 @@
 					<table class="buttons">
 						<tr>
 							<td>
-								<input type="submit" class="normal" value="Apply" id="wApply" onClick="return CheckValues(this.form);">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
+								<input type="submit" class="normal" value="Apply" id="wApply" onClick="return CheckValues(this.form);"><input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
 								<input type="hidden" value="0" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>
 					</table>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</form>
 			</tr>
 		</table>

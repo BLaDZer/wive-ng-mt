@@ -9,16 +9,13 @@
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("wireless");
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("buttons");
-
 			var old_MBSSID;
 			var WPAAlgorithms;
 			var PreAuthentication;
@@ -91,9 +88,9 @@
 				_TR("secureKeySeconds",				"secure key seconds");
 				_TR("secureKeyMinutes",				"secure key minutes");
 				
-				_TRV("secureApply",					"button apply");
-				_TRV("secureCancel",				"button cancel");
-				_TRV("secureReset",					"button reset");
+				_TR("secureApply",					"button apply");
+				_TR("secureCancel",				"button cancel");
+				_TR("secureReset",					"button reset");
 			}
 
 			// Init values on page load
@@ -942,18 +939,16 @@
 					<!--	AccessPolicy for mbssid -->
 					<div id="accessPolicyDiv"></div>
 					<div id="accessPolicyInput"></div>
-					<table class="button">
+					<table class="buttons">
 						<tr>
 							<td>
-								<input class="normal" value="Apply" id="secureApply" type="submit">&nbsp;&nbsp;
-								<input class="normal" value="Cancel" id="secureCancel" type="button" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input class="normal" value="Reset" id="secureReset" type="button" onClick="resetValues(this.form, 25);">&nbsp;&nbsp;
+								<input class="normal" value="Apply" id="secureApply" type="submit"><input class="normal" value="Cancel" id="secureCancel" type="button" onClick="window.location.reload();"><input class="normal" value="Reset" id="secureReset" type="button" onClick="resetValues(this.form, 25);">
 								<input type="hidden" name="reset" value="0">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<div class="whitespace">&nbsp;</div></td>
+				<div class="whitespace"></div></td>
 			</tr>
 		</tbody>
 	</table>

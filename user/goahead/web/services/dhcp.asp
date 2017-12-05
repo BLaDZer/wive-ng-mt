@@ -9,16 +9,14 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var dhcpList = [];
 			var dhcp_interval;
 
@@ -46,9 +44,9 @@
 				_TR("dStatic",			"services dhcp static");
 				_TR("lDhcpARPPTimeout",		"services dhcp arpping timeout");
 				_TR("lDhcpARPPTimeoutNote",	"services dhcp arpping timeout note");
-				_TRV("lApply",			"button apply");
-				_TRV("lCancel",			"button cancel");
-				_TRV("lReset",			"button reset");
+				_TR("lApply",			"button apply");
+				_TR("lCancel",			"button cancel");
+				_TR("lReset",			"button reset");
 			}
 
 			function initValues() {
@@ -421,14 +419,12 @@
 							<td>
 								<input type="hidden" name="dhcpAssignIP" value="">
 								<input type="hidden" name="reset" value="0">
-								<input type="submit" class="normal" value="Apply" id="lApply">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 10);">
+								<input type="submit" class="normal" value="Apply" id="lApply"><input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 10);">
 							</td>
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

@@ -9,14 +9,12 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("manTitle",			"services ddns title");
 				_TR("manIntroduction",		"services ddns introduction");
@@ -29,8 +27,8 @@
 				else
 					_TR("manDdnsPasswd", "services ddns key");
 				_TR("manDdns",			"services ddns");
-				_TRV("manDdnsApply",		"button apply");
-				_TRV("manDdnsCancel",		"button cancel");
+				_TR("manDdnsApply",		"button apply");
+				_TR("manDdnsCancel",		"button cancel");
 			}
 			
 			function initValues() {
@@ -125,13 +123,12 @@
 						<tr>
 							<td>
 								<input type="hidden" name="submit-url" value="/services/ddns.asp" >
-								<input type="submit" class="normal" value="Apply" id="manDdnsApply">&nbsp;&nbsp;
-								<input type="reset" class="normal" value="Cancel" id="manDdnsCancel" onClick="window.location.reload()">
+								<input type="submit" class="normal" value="Apply" id="manDdnsApply"><input type="reset" class="normal" value="Cancel" id="manDdnsCancel" onClick="window.location.reload()">
 							</td>
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

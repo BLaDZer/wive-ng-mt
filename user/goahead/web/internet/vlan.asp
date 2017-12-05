@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("internet");
-			Butterlate.setTextDomain("buttons");
-
 			var wifiNIC					= [];
 			var wifiSSID				= [];
 			var wifiLan					= [];
@@ -45,8 +43,8 @@
 				_TR("sip_stb_mcast",		"vlan tvsip sip stb mcast");
 				_TR("sip_stb_vlanid",		"vlan vlanid");
 				_TR("sip_stb_prio",		"vlan tvsip vlanid prio");
-				_TRV("tv_stbVLANbutton",	"vlan add button");
-				_TRV("sip_stbVLANbutton",	"vlan add button");
+				_TR("tv_stbVLANbutton",	"vlan add button");
+				_TR("sip_stbVLANbutton",	"vlan add button");
 				_TR("vlanWlanLanTitle",		"vlan mode title");
 				_TR("vlanWlanLanIntro",		"vlan mode introduction");
 				_TR("vlanModeSettings",		"vlan mode settings");
@@ -57,17 +55,17 @@
 				_TR("vlanMode_wlan_ap",		"vlan mode wlan ap");
 				_TR("vlanMode_wlan_iface",	"vlan mode wlan iface");
 				_TR("vlanMode_wlan_vlan",	"vlan vlanid");
-				_TRV("vlanMode_wlan_add",	"vlan add button");
+				_TR("vlanMode_wlan_add",	"vlan add button");
 				_TR("vlanMode_lan_num",		"vlan mode lan num");
 				_TR("vlanMode_lan_vlanid",	"vlan vlanid");
 				_TR("vlanMode_lan_isolated",	"vlan mode lan isolated");
-				_TRV("vlanMode_lan_add",	"vlan add button");
-				_TRV("vlanApply",		"button apply");
-				_TRV("vlanCancel",		"button cancel");
-				_TRV("vlanReset",		"button reset");
-				_TRV("vlanModeApply",		"button apply");
-				_TRV("vlanModeCancel",		"button cancel");
-				_TRV("vlanModeReset",		"button reset");
+				_TR("vlanMode_lan_add",	"vlan add button");
+				_TR("vlanApply",		"button apply");
+				_TR("vlanCancel",		"button cancel");
+				_TR("vlanReset",		"button reset");
+				_TR("vlanModeApply",		"button apply");
+				_TR("vlanModeCancel",		"button cancel");
+				_TR("vlanModeReset",		"button reset");
 				
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -1073,9 +1071,7 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="resetValues(this.form, 5);">
+							<td><input type="submit" class="normal" value="Apply"  id="vlanModeApply"  onClick="return checkVlanLanValues(this.form);"><input type="button" class="normal" value="Cancel" id="vlanModeCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="vlanModeReset"  onClick="resetValues(this.form, 5);">
 								<input type="hidden" value="new" id="lan_id">
 								<input type="hidden" value="" name="wifi_lan">
 								<input type="hidden" value="" name="wifi_lan_inic">
@@ -1088,7 +1084,7 @@
 							</td>
 						</tr>
 					</table>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

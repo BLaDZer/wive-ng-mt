@@ -6,36 +6,11 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("wireless");
-Butterlate.setTextDomain("buttons");
-
-function initTranslation()
-{
-	_TR("linkTitle", "link title");
-	_TR("linkIntroduction", "link introduction");
-
-	_TR("linkLinkStatus", "link link status");
-	_TR("linkStatus", "link status");
-	_TR("linkExtraInfo", "link extra info");
-	_TR("linkChannel", "station channel");
-	_TR("linkSpeed", "link speed");
-	_TR("linkThroughput", "link throughput");
-	_TR("linkQuality", "link quality");
-	_TR("linkSigStrength1", "link signal strength");
-	_TR("linkSigStrength2", "link signal strength");
-	_TR("linkSigStrength3", "link signal strength");
-	_TR("linkNoiseLevel", "link noise level");
-
-	_TR("linkHT", "link ht");
-	_TR("linkSNR", "link snr");
-}
-
 function initValues()
 {
 	var modes = '<% getStaTrModes(); %>' * 1;
@@ -47,7 +22,6 @@ function initValues()
 
 function PageInit()
 {
-	initTranslation();
 	initValues();
 }
 </script>

@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_firewall.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("firewall");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("dmzTitle", 		"dmz title");
 				_TR("dmzIntroduction",	"dmz introduction");
@@ -29,9 +27,9 @@
 				_TR("dmzEnable2",		"button enable");
 				_TR("dmzIPAddr",		"dmz ipaddr");
 				_TR("bridge_warning",	"firewall bridge warning");
-				_TRV("dmzApply",		"button apply");
-				_TRV("dmzCancel",		"button cancel");
-				_TRV("dmzReset",		"button reset");
+				_TR("dmzApply",		"button apply");
+				_TR("dmzCancel",		"button cancel");
+				_TR("dmzReset",		"button reset");
 			}
 
 			function initValues() {
@@ -106,15 +104,13 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" value="Apply" id="dmzApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="dmzCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="dmzReset" onClick="resetValues(this.form);">
+									<input type="submit" class="normal" value="Apply" id="dmzApply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="dmzCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="dmzReset" onClick="resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

@@ -9,16 +9,14 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_hint.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
-		<script src="/lang/b28n.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("hint");
-			Butterlate.setTextDomain("buttons");
-
 			var vpnServerIP 	= (NVRAM_vpnType != '0') ? NVRAM_vpnServer : '';
 			var vpnACName		= (NVRAM_vpnType == '0') ? NVRAM_vpnServer : '';
 			var table_vpn_params	= [ 'table_vpn_params01', 'table_vpn_params02', 'table_vpn_params03', 'table_vpn_params04' ];
@@ -45,7 +43,7 @@
 				_TR("vMTUMRU",		"vpn mtu mru");
 				_TR("vAuthTypeAuto",	"inet auto");
 				_TR("vMTUAuto",		"inet auto");
-				_TR("vCustom",		"routing custom");
+				_TR("vCustom",		"inet custom");
 				_TR("vGateway",		"inet gateway");
 				_TR("vGWdisable",	"button disable");
 				_TR("vGWenable",	"button enable");
@@ -61,9 +59,9 @@
 				_TR("vTestServer",	"vpn test server");
 				_TR("vEnable",		"button enable");
 				_TR("vDisable",		"button disable");
-				_TRV("vApplyConn",	"button apply connect");
-				_TRV("vCancel",		"button cancel");
-				_TRV("vReset",		"button reset");
+				_TR("vApplyConn",	"button apply connect");
+				_TR("vCancel",		"button cancel");
+				_TR("vReset",		"button reset");
 			}
 
 			function initValues() {
@@ -171,9 +169,9 @@
 				displayElement( [ 'vpn_type' ], form.vpn_enabled.value == 'on' );
 
 				if (form.vpn_enabled.value == 'on')
-					_TRV("vApplyConn", "button apply connect")
+					_TR("vApplyConn", "button apply connect")
 				else
-					_TRV("vApplyConn", "button apply");
+					_TR("vApplyConn", "button apply");
 
 					selectType(form);
 			}
@@ -224,7 +222,7 @@
 			function showHint(key) {
 				var row = document.getElementById('vpn_hint_row');
 				var form = document.formVPNSetup;
-				var text = '<div class="hint"><font color="#0000ff"><b>HINT:</b></font>&nbsp;';
+				var text = '<div class="hint"><font color="#0000ff"><b>' + _('hint title') + ':</b></font>&nbsp;';
 				var show = true;
 				switch(key) {
 					case 'vpn':			text += _("hint vpn");					break;
@@ -501,16 +499,14 @@
 							<td>
 								<input name="lanauth_pass_changed" type="hidden">
 								<input value="0" name="reset" type="hidden">
-								<input class="mid"    id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return checkValues(this.form);" >&nbsp;&nbsp;
-								<input class="normal" id="vCancel" value="Cancel" name="save" type="button" onClick="window.location.reload();" >&nbsp;&nbsp;
-								<input class="normal" id="vReset" value="Reset" name="reset_button" onClick="resetValues(this.form);" type="button">
+								<input class="mid"    id="vApplyConn" value="Apply and connect" name="save" type="submit" onClick="return checkValues(this.form);" ><input class="normal" id="vCancel" value="Cancel" name="save" type="button" onClick="window.location.reload();" ><input class="normal" id="vReset" value="Reset" name="reset_button" onClick="resetValues(this.form);" type="button">
 							</td>
 						</tr>
 					</table>
 				</form>
 				<br>
-				<div id="vpn_hint_row">&nbsp;</div>
-				<div class="whitespace">&nbsp;</div>
+				<div id="vpn_hint_row"></div>
+				<div class="whitespace"></div>
 			</tr>
 		</table>
 	</body>

@@ -9,18 +9,15 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_hint.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
-
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("hint");
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var users = [ <% getL2TPUserList(); %> ];		// Login/password list
 
 			// Set translation
@@ -45,9 +42,9 @@
 				_TR("l2tpNAT",				"vpn enable nat");
 				_TR("l2tpProxyARP",			"services l2tp proxy arp");
 				_TR("l2tpMPPE",				"vpn allow mppe");
-				_TRV("l2tpApply",			"button apply");
-				_TRV("l2tpCancel",			"button cancel");
-				_TRV("l2tpReset",			"button reset");
+				_TR("l2tpApply",			"button apply");
+				_TR("l2tpCancel",			"button cancel");
+				_TR("l2tpReset",			"button reset");
 			}
 
 			// Set inintal values
@@ -160,7 +157,7 @@
 
 			// Show Hint block
 			function showHint(key) {
-				var text = '<div class="hint"><font color="#0000ff"><b>HINT:</b></font>&nbsp;';
+				var text = '<div class="hint"><font color="#0000ff"><b>' + _('hint title') + ':</b></font>&nbsp;';
 				var show = true;
 
 				switch (key) {
@@ -421,16 +418,14 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" id="l2tpApply"  value="Apply"  onClick="return CheckValues();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="l2tpCancel" value="Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="l2tpReset"  value="Reset"  onClick="resetValues(this.form);">
+									<input type="submit" class="normal" id="l2tpApply"  value="Apply"  onClick="return CheckValues();"><input type="button" class="normal" id="l2tpCancel" value="Cancel" onClick="window.location.reload();"><input type="button" class="normal" id="l2tpReset"  value="Reset"  onClick="resetValues(this.form);">
 									<input value="0" name="reset" type="hidden">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div id="l2tp_hint_row">&nbsp;</div>
-					<div class="whitespace">&nbsp;</div>
+					<div id="l2tp_hint_row"></div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

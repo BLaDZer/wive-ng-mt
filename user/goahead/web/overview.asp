@@ -8,59 +8,31 @@
 		<meta http-equiv="Expires" content="-1">
 		<link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_overview.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script>
-			Butterlate.setTextDomain("view");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
-				_TR("ovSelectLang", "overview select language");
-				_TRV("ovLangApply", "button apply");
-
-				_TR("ovStatus", "overview status");
-				_TR("ovStatistic", "overview statistics");
-				_TR("ovManagement", "overview management");
+				_TR("ovSelectLang",		"overview select language");
+				_TR("ovLangApply",		"button apply");
+				_TR("ovStatus",			"overview status");
+				_TR("ovStatistic",		"overview statistics");
+				_TR("ovManagement",		"overview management");
 			}
 
 			function initValues() {
-				var lang_element = document.getElementById("langSelection");
-				var lang_en = BUILD_LangEN;
-				var lang_ru = BUILD_LangRU;
+				var lang = document.getElementById("langSelection");
 
 				initTranslation();
-				if (lang_en == "1")
-					lang_element.options[lang_element.length] = new Option('English', 'en');
-				if (lang_ru == "1")
-					lang_element.options[lang_element.length] = new Option('Russian', 'ru');
+				if (BUILD_LangEN)
+					lang.options[lang.length] = new Option('English', 'en');
+				if (BUILD_LangRU)
+					lang.options[lang.length] = new Option('Russian', 'ru');
 
-				if (document.cookie.length > 0) {
-					var s = document.cookie.indexOf("language=");
-					var e = document.cookie.indexOf(";", s);
-					var lang = "en";
-					var i;
+				lang.value = NVRAM_Language;
 
-					if (s != -1) {
-						if (e == -1)
-							lang = document.cookie.substring(s+9);
-						else
-							lang = document.cookie.substring(s+9, e);
-					}
-					for (i=0; i<lang_element.options.length; i++) {
-						if (lang == lang_element.options[i].value) {
-							lang_element.options.selectedIndex = i;
-							break;
-						}
-					}
-				}
 				showWarning();
-			}
-
-			function setLanguage() {
-				document.cookie="language="+document.Lang.langSelection.value+"; path=/";
-				parent.menu.location.reload();
-				return true;
 			}
 		</script>
 	</head>
@@ -81,7 +53,7 @@
 								</select>
 								&nbsp;&nbsp;
 								<input type="hidden" name="submit-url" value="/overview.asp" >
-								<input type="submit" class="half" value="Apply" id="ovLangApply" onClick="return setLanguage()">
+								<input type="submit" class="half" value="Apply" id="ovLangApply" onClick="setTimeout(function () { parent.menu.location.reload(); }, 500)">
 							</fieldset>
 						</blockquote>
 					</form>

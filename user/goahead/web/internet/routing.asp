@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("buttons");
-
 			var ROUTING_TABLE = [ <% getRoutingTable(); %> ];
 
 			function initTranslation() {
@@ -50,13 +48,13 @@
 				_TR("routingDelUse",					"routing del use");
 				_TR("routingAction",					"routing action");
 
-				_TRV("buttonAdd",					"button add rule");
-				_TRV("routingApply",					"button apply");
-				_TRV("routingApply2",					"button apply");
-				_TRV("routingCancel",					"button cancel");
-				_TRV("routingCancel2",					"button cancel");
-				_TRV("routingReset",					"button reset");
-				_TRV("routingReset2",					"button reset");
+				_TR("buttonAdd",					"button add rule");
+				_TR("routingApply",					"button apply");
+				_TR("routingApply2",					"button apply");
+				_TR("routingCancel",					"button cancel");
+				_TR("routingCancel2",					"button cancel");
+				_TR("routingReset",					"button reset");
+				_TR("routingReset2",					"button reset");
 			}
 
 			function initValues() {
@@ -151,6 +149,7 @@
 				html += '</table><br>';
 
 				setInnerHTML('ajxCtxRoutingTable', html);
+				initTranslation();
 			}
 
 			function removeRoutingItem(index) {
@@ -305,15 +304,12 @@
 							<tr>
 								<td>
 									<input type="hidden" name="routingTableDiff" >
-									<input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button">&nbsp;&nbsp;
-									<input type="submit" class="normal" value="Apply" id="routingApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="routingCancel" name="routingCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form, 30);">
+									<input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button"><input type="submit" class="normal" value="Apply" id="routingApply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="routingCancel" name="routingCancel" onClick="window.location.reload();"><input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
 						</table>
-						<div class="whitespace">&nbsp;</div>
+						<div class="whitespace"></div>
 					</form>
 				</td>
 			</tr>

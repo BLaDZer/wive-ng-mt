@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_firewall.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("firewall");
-			Butterlate.setTextDomain("buttons");
-
 			var MAX_RULES					= 32;
 			var portForwardingRules			= [ <% getPortForwardRules(); %> ];
 			var portFilteringRules			= [ <% getPortFilteringRules(); %> ];
@@ -779,7 +777,7 @@
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

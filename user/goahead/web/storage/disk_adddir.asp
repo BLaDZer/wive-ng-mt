@@ -6,13 +6,12 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
-<script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_usb.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("usb");
-Butterlate.setTextDomain("buttons");
 var part_count = 0;
 
 function initTranslation()
@@ -124,11 +123,9 @@ part_count = parseInt('<% getCount(1, "AllPart"); %>');
         </table>
         <hr />
         <br />
-        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1">
+        <table width = "90%" border = "0" cellpadding = "2" cellspacing = "1" class="buttons">
           <tr align="center">
-            <td><input type=button style="{width:120px;}" value="Apply" id="adddirApply" onClick="submit_apply(this.form)">
-              &nbsp; &nbsp;
-              <input type=reset  style="{width:120px;}" value="Cancel" id="adddirCancel" onClick="window.close()"></td>
+            <td><input type=button style="{width:120px;}" value="Apply" id="adddirApply" onClick="submit_apply(this.form)"><input type=reset  style="{width:120px;}" value="Cancel" id="adddirCancel" onClick="window.close()"></td>
           </tr>
         </table>
       </form></td>

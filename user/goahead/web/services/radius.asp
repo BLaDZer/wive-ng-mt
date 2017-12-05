@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var users = [ <% getRadiusUserList(); %> ];		// Login/pass list
 
 			// Set translation
@@ -30,9 +28,9 @@
 				_TR("radiusEnable",			"button enable");
 				_TR("radiusDisable",			"button disable");
 				
-				_TRV("radiusApply",			"button apply");
-				_TRV("radiusCancel",			"button cancel");
-				_TRV("radiusReset",			"button reset");
+				_TR("radiusApply",			"button apply");
+				_TR("radiusCancel",			"button cancel");
+				_TR("radiusReset",			"button reset");
 			}
 
 			// Set inintal values
@@ -198,15 +196,13 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" id="radiusApply"  value="Apply"  onClick="return CheckValues();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="radiusCancel" value="Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="radiusReset"  value="Reset"  onClick="resetValues(this.form);">
+									<input type="submit" class="normal" id="radiusApply"  value="Apply"  onClick="return CheckValues();"><input type="button" class="normal" id="radiusCancel" value="Cancel" onClick="window.location.reload();"><input type="button" class="normal" id="radiusReset"  value="Reset"  onClick="resetValues(this.form);">
 									<input value="0" name="reset" type="hidden">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

@@ -9,16 +9,14 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_admin.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_overview.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("admin");
-			Butterlate.setTextDomain("mode");
-			Butterlate.setTextDomain("buttons");
-
 			NVRAM_stb_port	= (NVRAM_stb_port == '1') ? (NVRAM_wan_port == '0') ? 1 : +NVRAM_wan_port - 1 : -1;
 			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
 
@@ -206,7 +204,7 @@
 					<!-- =================  SOFT NETORK  ================= -->
 					<div id="ethernetStatus"></div>
 					<div id="statisticSWStats"></div>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var statusOffloadEngineMenu		= 1;
 			var statusSoftwareFastpathMenu		= 1;
 			var statusRemoteManagementMenu		= 0;
@@ -108,9 +106,9 @@
 				_TR("servicesMiscDINFdetails",		"services status details");
 				_TR("servicesMiscDINFstatus",		"services misc status");
 				_TR("servicesMiscDINFconfigure",	"services status configure");
-				_TRV("miscApply",			"button apply");
-				_TRV("miscCancel",			"button cancel");
-				_TRV("miscReset",			"button reset");
+				_TR("miscApply",			"button apply");
+				_TR("miscCancel",			"button cancel");
+				_TR("miscReset",			"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -976,16 +974,14 @@
 				<table class="buttons">
 					<tr>
 						<td>
-							<input type="submit" class="normal" value="Apply"  id="miscApply">&nbsp;&nbsp;
-							<input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-							<input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form);">
+							<input type="submit" class="normal" value="Apply"  id="miscApply"><input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form);">
 							<input type="hidden" value="1" name="goaheadrestart">
 							<input type="hidden" value="0" name="reset">
 						</td>
 					</tr>
 				</table>
 				</form>
-				<div class="whitespace">&nbsp;</div>
+				<div class="whitespace"></div>
 			</tr>
 		</table>
 	</body>

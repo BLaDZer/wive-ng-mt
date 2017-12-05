@@ -6,30 +6,12 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("wireless");
 
-function initTranslation()
-{
-	var e = document.getElementById("aboutTitle");
-	e.innerHTML = _("about title");
-	e = document.getElementById("aboutIntroduction");
-	e.innerHTML = _("about introduction");
-	e = document.getElementById("aboutAbout");
-	e.innerHTML = _("about about");
-	e = document.getElementById("aboutDriverVersion");
-	e.innerHTML = _("about driver version");
-}
-
-function PageInit()
-{
-	initTranslation();
-}
 </script>
 </head>
-<body bgcolor="#FFFFFF" onLoad="PageInit()">
+<body bgcolor="#FFFFFF">
 <table class="body">
   <tr>
     <td><h1 id="aboutTitle">Station About</h1>

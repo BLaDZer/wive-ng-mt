@@ -9,19 +9,15 @@
 		<link rel="stylesheet" href="style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="style/windows.css" type="text/css">
 		<link rel="stylesheet" href="style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_overview.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("mode");
-			Butterlate.setTextDomain("buttons");
-
 			var opmode;
-			var old_mode;
 
-			function changeMode()
-			{
+			function changeMode() {
 				var form = document.opmode;
 
 				if (document.opmode.opMode[0].checked)
@@ -44,24 +40,23 @@
 				_TR("stadd",			"opmode mode e intro");
 				_TR("oModeA",			"opmode mode a");
 				_TR("apclidd",			"opmode mode a intro");
-				_TRV("oApply",			"button apply");
-				_TRV("oCancel",			"button cancel");
+				_TR("oApply",			"button apply");
+				_TR("oCancel",			"button cancel");
 			}
 
 			function initValues() {
 				opmode		= NVRAM_OperationMode;
-				old_mode	= opmode;
 				var form	= document.opmode;
 
-				if (BUILD_GW == "0") {
+				if (!BUILD_GW) {
 					hideElement("gwdt");
 					hideElement("oModeGIntro");
 				}
-				if (BUILD_WLANAPCLI == "0") {
+				if (!BUILD_WLANAPCLI) {
 					hideElement("apclidt");
 					hideElement("apclidd");
 				}
-				if (BUILD_STATION == "0") {
+				if (!BUILD_STATION) {
 					hideElement("stadt");
 					hideElement("stadd");
 				}
@@ -116,18 +111,17 @@
 					</dl>
 					<p></p>
 					<center>
-					<table class="button">
+					<table class="buttons">
 						<tr>
 							<td>
-								<input type="button" class="normal" value="Apply" id="oApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', _('message chmode'), ajaxShowProgress);">&nbsp;&nbsp;
-								<input type="reset" class="normal" value="Reset" id="oCancel" onClick="window.location.reload();">
+								<input type="button" class="normal" value="Apply" id="oApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', _('message chmode'), ajaxShowProgress);"><input type="reset" class="normal" value="Cancel" id="oCancel" onClick="window.location.reload();">
 							</td>
 						</tr>
 					</table>
 					  <iframe id="setmodeReloader" name="setmodeReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					</center>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

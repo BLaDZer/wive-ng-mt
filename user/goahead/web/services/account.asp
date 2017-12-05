@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var account_interval;
 
 			function initTranslation() {
@@ -30,11 +28,10 @@
 				_TR("accountEnable",			"button enable");
 				_TR("accountTableTitle",		"services account table");
 				_TR("accountTableNoStatistic",		"services account no statistic");
-
-				_TRV("accountApply",			"button apply");
-				_TRV("accountCancel",			"button cancel");
-				_TRV("accountReset",			"button reset");
-				_TRV("accountResetCounters",		"button reset statistics");
+				_TR("accountApply",			"button apply");
+				_TR("accountCancel",			"button cancel");
+				_TR("accountReset",			"button reset");
+				_TR("accountResetCounters",		"button reset statistics");
 			}
 
 			function initValues() {
@@ -132,7 +129,7 @@
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

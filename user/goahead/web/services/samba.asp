@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script type="text/javascript" src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script type="text/javascript" src="/js/nvram.js"></script>
 		<script type="text/javascript" src="/js/ajax.js"></script>
 		<script type="text/javascript" src="/js/controls.js"></script>
 		<script type="text/javascript" src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("sambaTitle",		"services samba title");
 				_TR("sambaIntroduction",	"services samba introduction");
@@ -32,7 +30,7 @@
 				_TR("sambaTimeServer",		"services samba time server");
 				_TR("sambaDisable2",		"button disable");
 				_TR("sambaEnable2",		"button enable");
-				_TRV("sambaApply",		"button apply");
+				_TR("sambaApply",		"button apply");
 			}
 
 			function initValues() {
@@ -156,7 +154,7 @@
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

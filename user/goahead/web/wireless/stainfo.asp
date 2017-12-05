@@ -9,9 +9,9 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<!--[if IE]><script src="/js/excanvas.min.js"></script><![endif]-->
-		<script src="/lang/b28n.js"></script>
 		<script src="/js/jquery.min.js"></script>
 		<script src="/js/jquery.flot.min.js"></script>
 		<script src="/js/jquery.flot.time.min.js"></script>
@@ -21,9 +21,6 @@
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("wireless");
-			Butterlate.setTextDomain("buttons");
-
 			var updateTime			= 5000;
 			var wirelessMode		= "Basic";
 			var wirelessTabeWidth	= "750px";
@@ -95,9 +92,9 @@
 				_TR("wirelessPlotUnitName",			"stalist wireless plot unit");
 				_TR("unitKB",						"stalist wireless plot unit kbits");
 				_TR("unitMB",						"stalist wireless plot unit mbits");
-				_TRV("clearPlot",					"stalist wireless plot clear button");
-				_TRV("savePlot",					"stalist wireless plot image button");
-				_TRV("disconnectAll",				"button disconnect all");
+				_TR("clearPlot",					"stalist wireless plot clear button");
+				_TR("savePlot",						"stalist wireless plot image button");
+				_TR("disconnectAll",				"button disconnect all");
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
 					if(elements[i].id == "disconnect")
@@ -1550,16 +1547,15 @@
 								</td>
 							</tr>
 						</table>
-						<table id="tableWirelessPlotButton" class="button" style="display: none;">
+						<table id="tableWirelessPlotButton" class="buttons" style="display: none;">
 							<tr>
 								<td>
-									<input type="button" id="clearPlot" value="Clear Plot" class="normal" onClick="clearPlotData();">&nbsp;&nbsp;
-									<input type="button" id="savePlot" value="Save Plot" style="min-width: 160px" onClick="savePlotImage();">
+									<input type="button" id="clearPlot" value="Clear Plot" class="normal" onClick="clearPlotData();"><input type="button" id="savePlot" value="Save Plot" style="min-width: 160px" onClick="savePlotImage();">
 								</td>
 							</tr>
 						</table
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

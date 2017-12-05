@@ -9,16 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("buttons");
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("services");
-
 			function initTranslation() {
 				_TR("v6Title",				"ipv6 title");
 				_TR("v6Introduction",		"ipv6 introduction");
@@ -54,9 +51,9 @@
 				_TR("v6Dhcpv6D",			"button disable");
 				_TR("v6Dhcpv6E",			"button enable");
 
-				_TRV("v6Apply",				"button apply");
-				_TRV("v6Cancel",			"button cancel");
-				_TRV("v6Reset",				"button reset");
+				_TR("v6Apply",				"button apply");
+				_TR("v6Cancel",			"button cancel");
+				_TR("v6Reset",				"button reset");
 			}
 
 			function initValues() {
@@ -410,15 +407,13 @@
 						<table class="buttons">
 							<tr align="center">
 								<td>
-									<input type="submit" class="normal" value="Apply" id="v6Apply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="v6Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="v6Reset" onClick="resetValues(this.form, 30);">
+									<input type="submit" class="normal" value="Apply" id="v6Apply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="v6Cancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="v6Reset" onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

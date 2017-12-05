@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("services");
-			Butterlate.setTextDomain("buttons");
-
 			var statusAdvancedMenu	= 1;
 
 			// Set translation
@@ -53,9 +51,9 @@
 				_TR("cwmpInformPeriodic",	"services cwmp inform periodic");
 				_TR("cwmpInformInterval",	"services cwmp inform interval");
 
-				_TRV("cwmpApply",		"button apply");
-				_TRV("cwmpCancel",		"button cancel");
-				_TRV("cwmpReset",		"button reset");
+				_TR("cwmpApply",		"button apply");
+				_TR("cwmpCancel",		"button cancel");
+				_TR("cwmpReset",		"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -446,15 +444,13 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" id="cwmpApply"  value="Apply"  onClick="return CheckValues();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="cwmpCancel" value="Cancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" id="cwmpReset"  value="Reset"  onClick="resetValues(this.form);">
+									<input type="submit" class="normal" id="cwmpApply"  value="Apply"  onClick="return CheckValues();"><input type="button" class="normal" id="cwmpCancel" value="Cancel" onClick="window.location.reload();"><input type="button" class="normal" id="cwmpReset"  value="Reset"  onClick="resetValues(this.form);">
 									<input value="0" name="reset" type="hidden">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

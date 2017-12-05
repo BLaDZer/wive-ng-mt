@@ -10,76 +10,8 @@
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="-1">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-		<script src="/js/nvram.js"></script>
-		<script src="/js/ajax.js"></script>
-		<script>
-			function getCookie(name) {
-				var cookie = " " + document.cookie;
-				var search = " " + name + "=";
-				var setStr = null;
-				var offset = 0;
-				var end = 0;
-
-				if (cookie.length > 0) {
-					offset = cookie.indexOf(search);
-					if (offset != -1) {
-						offset += search.length;
-						end = cookie.indexOf(";", offset)
-						if (end == -1)
-						end = cookie.length;
-						setStr = unescape(cookie.substring(offset, end));
-					}
-				}
-				return(setStr);
-			}
-
-			function initValues() {
-				var lang_en = BUILD_LangEN;
-				var lang_ru = BUILD_LangRU;
-				var lang	= NVRAM_Language;
-				var cook	= NVRAM_Language;
-
-				if (lang == "")
-					lang = "en";
-
-				if (cook == "")
-					cook = "en";
-
-				if (document.cookie.length > 0)
-					cook = getCookie("language");
-
-				if (lang == "en") {
-					document.cookie="language=en; path=/";
-					if (cook != lang)
-						window.location.reload();
-					if (lang_en != "1") {
-						if (lang_ru == "1") {
-							document.cookie="language=ru; path=/";
-							window.location.reload();
-						}
-					}
-				} else if (lang == "ru") {
-					document.cookie="language=ru; path=/";
-					if (cook != lang)
-						window.location.reload();
-					if (lang_ru != "1") {
-						if (lang_en == "1") {
-							document.cookie="language=en; path=/";
-							window.location.reload();
-						}
-					}
-				} else {
-					document.cookie="language=en; path=/";
-					cook = "en";
-					lang = "en"
-					lang_en = "1";
-					lang_ru = "0";
-					window.location.reload();
-				}
-			}
-		</script>
 	</head>
-	<frameset id="homeFrameset" rows="70,1*" cols="*" border="0" framespacing="0" frameborder="NO" onLoad="initValues();">
+	<frameset id="homeFrameset" rows="70,1*" cols="*" border="0" framespacing="0" frameborder="NO">
 		<frame src="title.htm" name="title" frameborder="NO" scrolling="NO" marginwidth="0" marginheight="0">
 		<frameset id="homeMenuFrameset" cols="225,1*">
 			<frame src="treeapp.asp" name="menu" marginwidth="0" marginheight="0" scrolling="AUTO" frameborder="NO" >

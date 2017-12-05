@@ -9,14 +9,12 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_firewall.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("firewall");
-			Butterlate.setTextDomain("buttons");
-
 			var filteringRules = [];
 
 			function initTranslation()
@@ -31,7 +29,7 @@
 				_TR("websFilterCookies",		"content filter webs content filter cookies");
 				_TR("websBlockingRules",		"content filter webs blocking rules");
 				_TR("bridge_warning",			"firewall bridge warning");
-				_TRV("ContentFilterApply",		"button apply");
+				_TR("ContentFilterApply",		"button apply");
 			}
 
 			function initValues()
@@ -191,7 +189,7 @@
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

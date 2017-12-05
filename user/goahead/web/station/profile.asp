@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
 <script type="text/javascript" src="/js/controls.js"></script>
 <script language="JavaScript" type="text/javascript">
@@ -603,7 +602,6 @@ function submitForm(form)
 		if (form.elements[key] != null)
 			form.elements[key].value = config[key].join(';');
 	}
-	ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 	return true;
 }
 

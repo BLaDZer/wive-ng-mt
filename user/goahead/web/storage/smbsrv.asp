@@ -6,47 +6,15 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
-Butterlate.setTextDomain("storage");
 var smbenabled = '<% getCfgZero(1, "SmbEnabled"); %>';
 var smbwg = '<% getCfgGeneral(1, "HostName"); %>';
 var smbnetbios = '<% getCfgGeneral(1, "SmbNetBIOS"); %>';
 var smbstring = '<% getCfgGeneral(1, "SmbString"); %>';
 
-function initTranslation()
-{
-	var e = document.getElementById("smbTitle");
-	e.innerHTML = _("smb title");
-	e = document.getElementById("smbIntroduction");
-	e.innerHTML = _("smb introduction");
-
-	e = document.getElementById("smbSrvSet");
-	e.innerHTML = _("smb server setup");
-	e = document.getElementById("smbSrv");
-	e.innerHTML = _("smb server enable");
-	e = document.getElementById("smbSrvEnable");
-	e.innerHTML = _("storage enable");
-	e = document.getElementById("smbSrvDisable");
-	e.innerHTML = _("storage disable");
-	e = document.getElementById("smbSrvWG");
-	e.innerHTML = _("smb server workgroup");
-	e = document.getElementById("smbSrvNetBIOS");
-	e.innerHTML = _("smb server netbios");
-	e = document.getElementById("smbSrvString");
-	e.innerHTML = _("smb server string");
-
-	e = document.getElementById("smbApply");
-	e.value = _("storage apply");
-	e = document.getElementById("smbReset");
-	e.value = _("storage reset");
-}
-
 function initValue()
 {
-	initTranslation();
-
 	/*
 	alert(smbenabled);
 	alert(anonymous);

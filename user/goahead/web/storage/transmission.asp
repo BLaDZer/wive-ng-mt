@@ -6,7 +6,9 @@
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
-<script type="text/javascript" src="/lang/b28n.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+<script src="/lang/<% getLangDictionary(); %>/dict_usb.js"></script>
+<script type="text/javascript" src="/js/ajax.js"></script>
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/controls.css" type="text/css">
 <script type="text/javascript" src="/js/controls.js"></script>
@@ -118,10 +120,8 @@ function submit_apply(parm)
                 <option value="1">Enable</option>
               </select>
               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              <input type="button" style="{width:80px;}" value="Start" name="transstart" onClick="submit_apply('start')">
-              &nbsp;
-              <input type="button" style="{width:80px;}" value="Stop" name="transstop" onClick="submit_apply('stop')">
-              &nbsp;
+              <input type="button" style="width: 80px; margin-right: 10px" value="Start" name="transstart" onClick="submit_apply('start')">
+			  <input type="button" style="width:80px; margin-right: 10px" value="Stop" name="transstop" onClick="submit_apply('stop')">
               <input type="button" style="{width:80px;}" value="Reload" name="transreload" onClick="submit_apply('reload')"></td>
           </tr>
           <tr>

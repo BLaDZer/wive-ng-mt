@@ -9,14 +9,12 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("buttons");
-
 			NVRAM_stb_port	= (NVRAM_stb_port == '1') ? (NVRAM_wan_port == '0') ? 1 : +NVRAM_wan_port - 1 : -1;
 			NVRAM_sip_port	= (NVRAM_sip_port == '1') ? (NVRAM_wan_port == '0') ? 2 : +NVRAM_wan_port - 2 : -1;
 
@@ -57,9 +55,9 @@
 					_TR("ethernetPort5Mode",		"ethernet port 5 mode");
 				}
 
-				_TRV("ethernetApply",			"button apply");
-				_TRV("ethernetCancel",			"button cancel");
-				_TRV("ethernetReset",			"button reset");
+				_TR("ethernetApply",			"button apply");
+				_TR("ethernetCancel",			"button cancel");
+				_TR("ethernetReset",			"button reset");
 			}
 
 			function initValues() {
@@ -230,16 +228,14 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);">&nbsp;&nbsp;
-									<input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
+									<input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);"><input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();"><input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
 									<input type="hidden" name="reboot" value="1">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

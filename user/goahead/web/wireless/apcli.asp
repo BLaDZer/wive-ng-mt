@@ -9,16 +9,14 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/scanap.js"></script>
 		<script>
-			Butterlate.setTextDomain("wireless");
-			Butterlate.setTextDomain("buttons");
-
 			var interval;
 
 			function initTranslation() {
@@ -40,10 +38,10 @@
 				_TR("apcliDisableIface",			"apcli disable iface");
 				_TR("apcliEnableBridge",			"apcli enable bridge");
 				_TR("basicAPCLIMode",				"basic apcli mode");
-				_TRV("scanapLegendButtonScan",			"scanap legend button scan");
-				_TRV("apcliApply",				"button apply");
-				_TRV("apcliCancel",				"button cancel");
-				_TRV("apcliReset",				"button reset");
+				_TR("scanapLegendButtonScan",			"scanap legend button scan");
+				_TR("apcliApply",				"button apply");
+				_TR("apcliCancel",				"button cancel");
+				_TR("apcliReset",				"button reset");
 			}
 
 			function initValues()
@@ -135,13 +133,13 @@
 					var apcliEnable = '<% getCfgGeneral(1, "ApCliEnable"); %>';
 
 					if (apcliEnable == "0")
-						text = "<b><font color=\"#808080\">Disabled</font></b>";
+						text = "<b><font color=\"#808080\">" + _('apcli status disabled') + "</font></b>";
 					else if (parseInt(apcliStatus) < 0)
-						text = "<b><font color=\"#FF0000\">Error (" + apcliStatus + ")</font></b>";
+						text = "<b><font color=\"#FF0000\">" + _('apcli status error') + " (" + apcliStatus + ")</font></b>";
 					else if (parseInt(apcliStatus) == 0)
-						text = "<b><font color=\"#808080\">Disconnected</font></b>";
+						text = "<b><font color=\"#808080\">" + _('apcli status disconnected') + "</font></b>";
 					else
-						text = "<b><font color=\"#008000\">Connected (" + apcliStatus.toUpperCase() + ")</font></b> ";
+						text = "<b><font color=\"#008000\">" + _('apcli status connected') + " ( " + apcliStatus.toUpperCase() + ")</font></b> ";
 
 					ajaxModifyElementHTML('apcli_status', text);	
 			}
@@ -211,7 +209,7 @@
 									<div id="scanApPlot" style="width: 100%; height: 300px; margin: 0 auto;">
 									</div>
 									<div id="scanApPreloader" style="display: none; width:100%; height: 100%">
-										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
 									</div>
 								</div>
 							</td>
@@ -225,7 +223,7 @@
 									<div id="scanApPlotINIC" style="width: 100%; height: 300px; margin: 0 auto;">
 									</div>
 									<div id="scanApPreloaderINIC" style="display: none; width:100%; height: 100%">
-										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
 									</div>
 								</div>
 							</td>
@@ -255,8 +253,8 @@
 						<tr id="div_apcli_wpapsk">
 							<td id="apcliPass" class="head">Pass Phrase</td>
 							<td class="value"><div style="float: left"><input type="password" id="apcli_wpapsk" name="apcli_wpapsk" class="normal"></div>
-											  <div style="float: left; display: flex; height: 1.75em; align-items: center;"><input type="checkbox" onChange="showPassPhrase();"></div>
-											  <div id="apcliShowPass" style="display: flex; height: 1.75em; align-items: center;">(show)</div>
+									  <div style="float: left; display: flex; height: 1.75em; align-items: center;"><input type="checkbox" onChange="showPassPhrase();"></div>
+									  <div id="apcliShowPass" style="display: flex; height: 1.75em; align-items: center;">(show)</div>
 							</td>
 						</tr> 
 						<tr id="apcliAutoscan_tr">
@@ -274,15 +272,13 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply"  id="apcliApply"  onClick="return checkValues(this.form);">&nbsp; &nbsp;
-								<input type="button" class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();">&nbsp; &nbsp;
-								<input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 15);">
+							<td><input type="submit" class="normal" value="Apply"  id="apcliApply"  onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="apcliCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="apcliReset"  onClick="resetValues(this.form, 15);">
 								<input type="hidden" value="0" name="reset">
 							</td>
 						</tr>
 					</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

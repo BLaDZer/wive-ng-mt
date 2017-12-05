@@ -9,10 +9,7 @@
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <script type="text/javascript" src="/js/ajax.js"></script>
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <script language="JavaScript" type="text/javascript">
-
-Butterlate.setTextDomain("buttons");
 
 function initValue()
 {
@@ -70,7 +67,7 @@ function selectedBSSID()
   <tr>
     <td><h1>Delete AMPDU Originator</h1>
       <hr />
-      <form method=post name=sta_org_del action="/goform/setStaOrgDel" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+      <form method=post name=sta_org_del action="/goform/setStaOrgDel">
         <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <input type=hidden name=selectedbssid>
         <table width="90%" border="1" cellspacing="1" cellpadding="3" vspace="2" hspace="2" bordercolor="#9BABBD">

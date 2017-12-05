@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("buttons");
-			Butterlate.setTextDomain("network");
-
 			function initTranslation() {
 			  _TR("QoSTitleStr",		"qos title");
 			  _TR("QoSIntroStr",		"qos introduction");
@@ -50,9 +48,9 @@
 			  _TR("QoSCODEL",			"qos codel");
 			  _TR("fastpath_warning",	"qos warning");
 
-			  _TRV("QoSApply",			"button apply");
-			  _TRV("QoSCancell",		"button cancel")
-			  _TRV("QoSReset",			"button reset");
+			  _TR("QoSApply",			"button apply");
+			  _TR("QoSCancell",		"button cancel")
+			  _TR("QoSReset",			"button reset");
 			}
 
 			function initValues() {
@@ -269,14 +267,12 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="submit" class="normal" value="Apply" id="QoSApply" onClick="return checkValues(this.form);">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="QoSCancell" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="QoSReset" onClick="resetValues(this.form, 15);"></td>
-									<input value="0" name="reset" type="hidden">
+								<td><input type="submit" class="normal" value="Apply" id="QoSApply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="QoSCancell" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="QoSReset" onClick="resetValues(this.form, 15);"></td>
+								<input value="0" name="reset" type="hidden">
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

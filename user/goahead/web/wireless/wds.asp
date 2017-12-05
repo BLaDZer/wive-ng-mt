@@ -9,14 +9,12 @@
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("wireless");
-			Butterlate.setTextDomain("buttons");
-
 			var wdsPhyMode		= NVRAM_WdsPhyMode.split(';');
 			var wdsEncrypType	= NVRAM_WdsEncrypType.split(';');
 
@@ -34,10 +32,10 @@
 				_TR("basicWDSEncrypKey",	"basic wds encryp key");
 				_TR("basicWDSAPMacAddr",	"basic wds ap macaddr");
 				_TR("basicWDSAction",		"basic action");
-				_TRV("basicWDSApply",		"button apply");
-				_TRV("basicWDSCancel",		"button cancel");
-				_TRV("basicWDSReset",		"button reset");
-				_TRV("basicWDSAdd",		"button add");
+				_TR("basicWDSApply",		"button apply");
+				_TR("basicWDSCancel",		"button cancel");
+				_TR("basicWDSReset",		"button reset");
+				_TR("basicWDSAdd",		"button add");
 
 				var elements = document.getElementsByTagName('input');
 				for (var i = 0; i < elements.length; i++)
@@ -433,19 +431,18 @@
 						</table>
 						<table class="buttons">
 							<tr>
-								<td><input type="hidden" name="wds_list" id="wds_list">
+								<td>
+									<input type="hidden" name="wds_list" id="wds_list">
 									<input type="hidden" name="wds_phy_mode" id="wds_phy_mode">
 									<input type="hidden" name="wds_encryp_type" id="wds_encryp_type">
 									<input type="hidden" name="wds_num" id="wds_num">
 									<input type="hidden" name="reset" value="0">
-									<input type="submit" class="normal" value="Apply" id="basicWDSApply" onClick="return checkValues();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="basicWDSReset" onClick="return resetValues(document.wireless_wds, 30);">
+									<input type="submit" class="normal" value="Apply" id="basicWDSApply" onClick="return checkValues();"><input type="button" class="normal" value="Cancel" id="basicWDSCancel" onClick="window.location.reload()"><input type="button" class="normal" value="Reset" id="basicWDSReset" onClick="return resetValues(document.wireless_wds, 30);">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

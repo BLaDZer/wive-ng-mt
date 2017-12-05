@@ -9,15 +9,13 @@
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_admin.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
-			Butterlate.setTextDomain("admin");
-			Butterlate.setTextDomain("buttons");
-
 			function initTranslation() {
 				_TR("syslogTitle",			"syslog title");
 				_TR("syslogIntroduction",	"syslog introduction");
@@ -27,11 +25,11 @@
 				_TR("syslogRemoteIP",		"syslog remote ip");
 				_TR("syslogSysLog",			"syslog system log");
 
-				_TRV("syslogApply",			"button apply");
-				_TRV("syslogClear",			"button clear");
-				_TRV("syslogRefresh",		"button refresh");
-				_TRV("syslogClear2",		"button clear");
-				_TRV("syslogRefresh2",		"button refresh");
+				_TR("syslogApply",			"button apply");
+				_TR("syslogClear",			"button clear");
+				_TR("syslogRefresh",		"button refresh");
+				_TR("syslogClear2",		"button clear");
+				_TR("syslogRefresh2",		"button refresh");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -49,6 +47,7 @@
 				syslogdSelect();
 				ajaxPerformRequest("/goform/getsyslog", uploadLogField);
 				showWarning();
+				initTranslation();
 			}
 
 			function uploadLogField(str) {
@@ -139,8 +138,7 @@
 						<tr>
 							<td colspan="2">
 								<form method="post" name="SubmitClearLog1" action="/goform/clearlog">
-									<input class="normal" type="button" value="Refresh" id="syslogRefresh" name="refreshlog" onClick="ajaxPerformRequest('/goform/getsyslog', uploadLogField);">&nbsp;&nbsp;
-									<input class="normal" type="button" value="Clear" id="syslogClear" name="clearlog" onClick="ajaxPostRequest('/goform/clearlog', 'stub=value', false, refreshSysLog);">
+									<input class="normal" style="margin-right: 10px" type="button" value="Refresh" id="syslogRefresh" name="refreshlog" onClick="ajaxPerformRequest('/goform/getsyslog', uploadLogField);"><input class="normal" type="button" value="Clear" id="syslogClear" name="clearlog" onClick="ajaxPostRequest('/goform/clearlog', 'stub=value', false, refreshSysLog);">
 								</form>
 							</td>
 						</tr>
@@ -150,13 +148,12 @@
 						<tr>
 							<td colspan="2">
 								<form method="post" name="SubmitClearLog2" action="/goform/clearlog">
-									<input class="normal" type="button" value="Refresh" id="syslogRefresh2" name="refreshlog" onClick="ajaxPerformRequest('/goform/getsyslog', uploadLogField);">&nbsp;&nbsp;
-									<input class="normal" type="button" value="Clear" id="syslogClear2" name="clearlog" onClick="ajaxPostRequest('/goform/clearlog', 'stub=value', false, refreshSysLog);">
+									<input class="normal" style="margin-right: 10px" type="button" value="Refresh" id="syslogRefresh2" name="refreshlog" onClick="ajaxPerformRequest('/goform/getsyslog', uploadLogField);"><input class="normal" type="button" value="Clear" id="syslogClear2" name="clearlog" onClick="ajaxPostRequest('/goform/clearlog', 'stub=value', false, refreshSysLog);">
 								</form>
 							</td>
 						</tr>
 					</table>
-					<div class="whitespace">&nbsp;</div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

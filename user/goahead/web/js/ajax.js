@@ -653,3 +653,26 @@ function displayServiceStatus(services) {
 		xmlHttp.send(null);
 	}
 }
+
+// Translation
+window._ = function(key) { return lang_gettext(key); };
+window._TR = function(elementID, key) {
+    var e = document.getElementById(elementID);
+	if (e != null)
+		if (e.nodeName == 'INPUT')
+			e.value = lang_gettext(key);
+		else
+			e.innerHTML = lang_gettext(key);
+}
+
+function lang_gettext(key) {
+	try {
+		if (key in lang_dictionary)
+			return lang_dictionary[key];
+		else
+			console.log('Warning! Translation key not found: \'' + key + '\'');
+	}
+	catch (e) {
+		console.log('Warning! Translation dictionary not loaded!');
+	}
+}

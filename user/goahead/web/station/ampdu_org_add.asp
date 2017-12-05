@@ -7,7 +7,6 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <script type="text/javascript" src="/js/ajax.js"></script>
-<script type="text/javascript" src="/lang/b28n.js"></script>
 <link rel="stylesheet" href="/style/windows.css" type="text/css">
 <link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 <script language="JavaScript" type="text/javascript">
@@ -47,7 +46,7 @@ function selectedBSSID(tmp)
   <tr>
     <td><h1>Add AMPDU Originator</h1>
       <hr />
-      <form method=post name="sta_org_add" action="/goform/setStaOrgAdd" OnSubmit="ajaxShowTimer(this, 'timerReloader', _('message apply'), 15);">
+      <form method=post name="sta_org_add" action="/goform/setStaOrgAdd">
         <iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
         <table width="90%" border="1" cellpadding="2" cellspacing="1">
           <tr>

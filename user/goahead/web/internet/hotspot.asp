@@ -9,19 +9,15 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_hint.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="hotspot_profiles.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("internet");
-			Butterlate.setTextDomain("hint");
-			Butterlate.setTextDomain("buttons");
-			Butterlate.setTextDomain("services");
-
 			var SPOT_IP		= '<% getSpotIp(); %>';
 			var SPOT_NETMASK	= '<% getSpotNetmask(); %>';
 
@@ -75,9 +71,9 @@
 				_TR("UsernameAuthentication",			"hotspot nodog user");
 				_TR("Username",					"vpn username");
 				_TR("PasswordAttempts",				"hotspot nodog pass attempts");
-				_TRV("sApply",					"button apply");
-				_TRV("sCancel",					"button cancel");
-				_TRV("sReset",					"button reset");
+				_TR("sApply",					"button apply");
+				_TR("sCancel",					"button cancel");
+				_TR("sReset",					"button reset");
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -785,12 +781,10 @@
 								</tr>
 							</tbody>
 						</table>
-						<table class="button">
+						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" value="Apply" id="sApply" onClick="return CheckValue(this.form);">&nbsp;&nbsp;
-									<input type="reset" class="normal" value="Cancel" id="sCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-									<input type="button" class="normal" value="Reset" id="sReset" onClick="resetValues(this.form, 5);">
+									<input type="submit" class="normal" value="Apply" id="sApply" onClick="return CheckValue(this.form);"><input type="reset" class="normal" value="Cancel" id="sCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="sReset" onClick="resetValues(this.form, 5);">
 									<input type="hidden" name="reset" value="0">
 									<input type="hidden" name="chilliEnable">
 									<input type="hidden" name="nodogEnable">
@@ -798,8 +792,8 @@
 							</tr>
 						</table>
 					</form>
-					<div id="hint_row">&nbsp;</div>
-					<div class="whitespace">&nbsp;</div>
+					<div id="hint_row"></div>
+					<div class="whitespace"></div>
 				</td>
 			</tr>
 		</table>

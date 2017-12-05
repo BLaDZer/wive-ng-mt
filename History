@@ -3675,6 +3675,7 @@
 7) kernel: ralink_wifi: add move notify report to log.<br>
 8) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
 9) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
+10) goahead: full rework localisation logic for remove deprecated methods.<br>
 <br>
 <br>
 <br>

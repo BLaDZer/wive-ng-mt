@@ -9,16 +9,13 @@
 		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
-		<script src="/lang/b28n.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			Butterlate.setTextDomain("network");
-			Butterlate.setTextDomain("buttons");
-			Butterlate.setTextDomain("services");
-
 			function initTranslation() {
 				_TR("lTitle",			"lan title");
 				_TR("lIntroduction",	"lan introduction");
@@ -45,9 +42,9 @@
 				_TR("wStaticDnsAdguardProfile",	"inet dns profile adguard title");
 				_TR("dnsProfileAdguardDefault",	"inet dns profile adguard default");
 				_TR("dnsProfileAdguardFamily",	"inet dns profile adguard family");
-				_TRV("lApply",			"button apply");
-				_TRV("lCancel",			"button cancel");
-				_TRV("lReset",			"button reset");
+				_TR("lApply",			"button apply");
+				_TR("lCancel",			"button cancel");
+				_TR("lReset",			"button reset");
 			}
 
 			function initValues() {
@@ -280,9 +277,7 @@
 					</table>
 					<table class="buttons">
 						<tr>
-							<td><input type="submit" class="normal" value="Apply"  id="lApply"  onClick="return checkValues(this.form);">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();">&nbsp;&nbsp;
-								<input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 30);">
+							<td><input type="submit" class="normal" value="Apply"  id="lApply"  onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 30);">
 								<input type="hidden" name="reset" value="0">
 								<input name="dhcpStart" type="hidden">
 								<input name="dhcpEnd" type="hidden">
@@ -291,7 +286,7 @@
 						</tr>
 					</table>
 				</form>
-				<div class="whitespace">&nbsp;</div>
+				<div class="whitespace"></div>
 			</tr>
 		</table>
 	</body>
