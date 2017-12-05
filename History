@@ -3674,6 +3674,7 @@
 6) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
 7) kernel: ralink_wifi: add move notify report to log.<br>
 8) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
+9) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
 <br>
 <br>
 <br>

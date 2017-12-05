@@ -970,6 +970,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #endif /* DOT11_N_SUPPORT */
 #ifdef RTMP_MAC_PCI
 	ULONG IrqFlags = 0;
+	BOOLEAN RingACKClear = FALSE;
 #endif /* RTMP_MAC_PCI */
 	UINT fAnyStationPortSecured[HW_BEACON_MAX_NUM];
  	UINT bss_index;
@@ -1256,6 +1257,16 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		}
 
 		/* 2. delete those MAC entry that has been idle for a long time */
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+
+		if ((!RingACKClear) && (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout/2)) {
+			RingACKClear = TRUE;
+			/* Clear TXWI ack in Tx Ring*/
+			ClearTxRingClientAck(pAd, pEntry);
+		} else
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 		if ((pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout)
 #ifdef PS_ENTRY_MAITENANCE
 			|| (pEntry->continuous_ps_count > pAd->ps_timeout)
