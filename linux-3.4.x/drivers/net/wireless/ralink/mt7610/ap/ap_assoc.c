@@ -507,6 +507,7 @@ static USHORT APBuildAssociation(
 		/*pEntry->Aid = *pAid; */
 		*pAid = pEntry->Aid;
 		pEntry->NoDataIdleCount = 0;
+		pEntry->RingACKClear = FALSE;
 		pEntry->StaConnectTime = 0;
         
 #ifdef WSC_AP_SUPPORT

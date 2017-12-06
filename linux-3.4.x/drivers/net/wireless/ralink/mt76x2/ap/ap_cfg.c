@@ -9969,6 +9969,7 @@ VOID RTMPIoctlSetIdleTimeout(
 	else
 	{
 		pEntry->NoDataIdleCount = 0;
+		pEntry->RingACKClear = FALSE;
 		pEntry->StaIdleTimeout = pIdleTime->idle_timeout;
 		DBGPRINT(RT_DEBUG_TRACE, ("%s : Update Idle-Timeout(%d) from dot1x daemon\n",
 									__FUNCTION__, pEntry->StaIdleTimeout));

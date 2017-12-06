@@ -614,6 +614,7 @@ static USHORT APBuildAssociation(
 		*/
 		*pAid = pEntry->Aid;
 		pEntry->NoDataIdleCount = 0;
+		pEntry->RingACKClear = FALSE;
 		pEntry->StaConnectTime = 0;
 #ifdef CONFIG_HOTSPOT_R2
 		if (!CLIENT_STATUS_TEST_FLAG(pEntry, fCLIENT_STATUS_OSEN_CAPABLE))

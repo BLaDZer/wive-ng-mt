@@ -1809,8 +1809,10 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 			    pEntry->ContinueTxFailCnt = 0;
 		    }
 
-		    if (TxSuccess > 0)
+		    if (TxSuccess > 0) {
 			pEntry->NoDataIdleCount = 0;
+			pEntry->RingACKClear = FALSE;
+		    }
 
 		    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
 		}
@@ -1932,6 +1934,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 		else
 		{
 			pEntry->NoDataIdleCount = 0;
+			pEntry->RingACKClear = FALSE;
 			pEntry->TdlsTxFailCount=0;
 		}
 #endif /* defined(DOT11Z_TDLS_SUPPORT) || defined(CFG_TDLS_SUPPORT) */

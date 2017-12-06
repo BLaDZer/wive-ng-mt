@@ -323,6 +323,7 @@ BOOLEAN RtmpPsIndicate(RTMP_ADAPTER *pAd, UCHAR *pAddr, UCHAR wcid, UCHAR Psm)
 			RTMPDeQueuePacket().
 		*/
 		pEntry->NoDataIdleCount = 0;
+		pEntry->RingACKClear = FALSE;
 		pEntry->PsMode = Psm;
 
 		if (old_psmode != Psm) {

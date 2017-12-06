@@ -741,6 +741,7 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			pEntry->PsMode = PWR_ACTIVE;
 			pEntry->PsQIdleCount = 0;
 			pEntry->NoDataIdleCount = 0;
+			pEntry->RingACKClear = FALSE;
 			pEntry->AssocDeadLine = MAC_TABLE_ASSOC_TIMEOUT;
 			pEntry->ContinueTxFailCnt = 0;
 			pEntry->StatTxRetryOkCount = 0;
