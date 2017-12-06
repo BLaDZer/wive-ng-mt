@@ -3035,6 +3035,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR bssid[MAC_ADDR_LEN];
 	BOOLEAN IsReassocSta;	/* Indicate whether this is a reassociation procedure */
 	ULONG NoDataIdleCount;
+	BOOLEAN RingACKClear;
 	ULONG AssocDeadLine;
 	UINT16 StationKeepAliveCount;	/* unit: second */
 	USHORT CapabilityInfo;
