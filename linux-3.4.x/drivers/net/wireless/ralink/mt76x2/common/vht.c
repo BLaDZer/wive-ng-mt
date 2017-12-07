@@ -312,6 +312,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 		UCHAR BAD_IPHONE6_1_OUI[]  = {0x74, 0x1B, 0xB2};
 		UCHAR BAD_IPHONE6_2_OUI[]  = {0x84, 0x89, 0xAD};
 		UCHAR BAD_IPHONE6_3_OUI[]  = {0xD8, 0x1D, 0x72};
+		UCHAR BAD_IPHONE6_4_OUI[]  = {0x60, 0xF8, 0x1D};
 		UCHAR BAD_MACBOOK_1_OUI[]  = {0xAC, 0xBC, 0x32};
 		UCHAR BAD_HUAWEI_1_OUI[]  = {0x3C, 0xFA, 0x43};
 		UCHAR BAD_HUAWEI_2_OUI[]  = {0x7C, 0x11, 0xCB};
@@ -321,6 +322,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_3_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_4_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_3_OUI, 3)
