@@ -3677,6 +3677,7 @@
 9) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
 10) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D to BCM bug workaround.<br>
 11) goahead: full rework localization logic for remove deprecated methods.<br>
+12) goahead: small fix preloader.gif show.<br>
 <br>
 <br>
 <br>

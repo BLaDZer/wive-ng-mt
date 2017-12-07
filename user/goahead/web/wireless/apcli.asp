@@ -209,7 +209,7 @@
 									<div id="scanApPlot" style="width: 100%; height: 300px; margin: 0 auto;">
 									</div>
 									<div id="scanApPreloader" style="display: none; width:100%; height: 100%">
-										<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
 									</div>
 								</div>
 							</td>
@@ -223,7 +223,7 @@
 									<div id="scanApPlotINIC" style="width: 100%; height: 300px; margin: 0 auto;">
 									</div>
 									<div id="scanApPreloaderINIC" style="display: none; width:100%; height: 100%">
-										<img style="position:relative; left: 50%; top: 50%; margin-top: -100px; margin-left: -100px;" src="/graphics/preloader.gif">
+										<img style="position:relative; left: 50%; top: 50%; margin-top: -32px; margin-left: -32px;" src="/graphics/preloader.gif">
 									</div>
 								</div>
 							</td>
