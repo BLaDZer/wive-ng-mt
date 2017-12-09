@@ -671,15 +671,7 @@ enum WIFI_MODE{
 #define MAX_LEN_OF_BSS_TABLE             1
 #define MAX_REORDERING_MPDU_NUM			 256
 #else
-#ifdef BB_SOC
-#define MAX_LEN_OF_BSS_TABLE             20
-#else /* BB_SOC */
-#ifdef ECONET_ALPHA_RELEASE
-#define MAX_LEN_OF_BSS_TABLE             96 /* 64 */
-#else
 #define MAX_LEN_OF_BSS_TABLE             128 /* 64 */
-#endif /* ECONET_ALPHA_RELEASE */
-#endif /* !BB_SOC */
 #define MAX_REORDERING_MPDU_NUM			 512
 #endif
 
