@@ -831,7 +831,6 @@ VOID PeerRMAction(
 }
 
 #ifdef DOT11N_DRAFT3
-#ifdef DOT11_N_SUPPORT
 static VOID respond_ht_information_exchange_action(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem) 
@@ -950,6 +949,7 @@ VOID SendNotifyBWActionFrame(
 #endif /* DOT11N_DRAFT3 */
 
 
+#ifdef DOT11_N_SUPPORT
 VOID PeerHTAction(
 	IN PRTMP_ADAPTER pAd, 
 	IN MLME_QUEUE_ELEM *Elem) 
