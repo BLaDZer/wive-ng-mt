@@ -3683,6 +3683,7 @@
 15) kernel: mm: avoid returning VM_FAULT_RETRY from ->page_mkwrite handlers.<br>
 16) kernel: usb: usb: host: fix incorrect updating of offset.<br>
 17) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
+18) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
 <br>
 <br>
 <br>
