@@ -3681,6 +3681,7 @@
 13) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
 14) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
 15) kernel: mm: avoid returning VM_FAULT_RETRY from ->page_mkwrite handlers.<br>
+16) kernel: usb: usb: host: fix incorrect updating of offset.<br>
 <br>
 <br>
 <br>
