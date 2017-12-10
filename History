@@ -3667,18 +3667,19 @@
 <br>
 <b>6.8.x</b><br>
 1) default: increase wifi idle and arp cache stale timeouts to 300 second (more fast clients ready after deep-sleep).<br>
-2) kernel: ralink_wifi: update CommonCfg.bUseShortSlotTime if changed in APUpdateCapabilityAndErpIe (need for correct cap generate).<br>
-3) kernel: ralink_wifi: move conflict SSID detection to true place.<br>
-4) kernel: ralink_wifi: clear ACK in rings for clients sended disassoc/deauth or FT migration procedure (decrease potentional rings stubs).<br>
-5) kernel: ralink_wifi: ignore not correct disassoc/deauth req.<br>
-6) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
-7) kernel: ralink_wifi: add move notify report to log.<br>
-8) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
-9) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
-10) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D and 60:A3:7D to BCM bug workaround.<br>
-11) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
-12) goahead: full rework localization logic for remove deprecated methods.<br>
-13) goahead: small fix preloader.gif show.<br>
+2) goahead: full rework localization logic for remove deprecated methods.<br>
+3) goahead: small fix preloader.gif show.<br>
+4) kernel: ralink_wifi: update CommonCfg.bUseShortSlotTime if changed in APUpdateCapabilityAndErpIe (need for correct cap generate).<br>
+5) kernel: ralink_wifi: move conflict SSID detection to true place.<br>
+6) kernel: ralink_wifi: clear ACK in rings for clients sended disassoc/deauth or FT migration procedure (decrease potentional rings stubs).<br>
+7) kernel: ralink_wifi: ignore not correct disassoc/deauth req.<br>
+8) kernel: ralink_wifi: potentioal null pointer dereference fixes in some places.<br>
+9) kernel: ralink_wifi: add move notify report to log.<br>
+10) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
+11) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
+12) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D and 60:A3:7D to BCM bug workaround.<br>
+13) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
+14) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
 <br>
 <br>
 <br>
