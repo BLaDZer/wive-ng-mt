@@ -446,7 +446,7 @@ unsigned int tcp_poll(struct file *file, struct socket *sock, poll_table *wait)
 				 * IO signal will be lost. Memory barrier
 				 * pairs with the input side.
 				 */
-				smp_mb__after_atomic();
+				smp_mb__after_atomic_inc();
 				if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk))
 					mask |= POLLOUT | POLLWRNORM;
 			}
