@@ -3684,6 +3684,7 @@
 16) kernel: usb: usb: host: fix incorrect updating of offset.<br>
 17) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
 18) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
+19) kernel: net: tcp: add memory barriers to write space paths.<br>
 <br>
 <br>
 <br>
