@@ -830,6 +830,7 @@ VOID PeerRMAction(
 	return;
 }
 
+#ifdef DOT11N_DRAFT3
 #ifdef DOT11_N_SUPPORT
 static VOID respond_ht_information_exchange_action(
 	IN PRTMP_ADAPTER pAd,
@@ -903,7 +904,6 @@ static VOID respond_ht_information_exchange_action(
 
 
 #ifdef CONFIG_AP_SUPPORT
-#ifdef DOT11N_DRAFT3
 VOID SendNotifyBWActionFrame(
 	IN PRTMP_ADAPTER pAd,
 	IN UCHAR  Wcid,
@@ -946,8 +946,8 @@ VOID SendNotifyBWActionFrame(
 	DBGPRINT(RT_DEBUG_TRACE,("ACT - SendNotifyBWAction(NotifyBW= %d)!\n", pAd->CommonCfg.AddHTInfo.AddHtInfo.RecomWidth));
 
 }
-#endif /* DOT11N_DRAFT3 */
 #endif /* CONFIG_AP_SUPPORT */
+#endif /* DOT11N_DRAFT3 */
 
 
 VOID PeerHTAction(
@@ -1015,6 +1015,7 @@ VOID PeerHTAction(
 		case MIMO_CHA_MEASURE_ACTION:
 			break;
 			
+#ifdef DOT11N_DRAFT3
 		case HT_INFO_EXCHANGE:
 			{			
 				HT_INFORMATION_OCTET *pHT_info;
@@ -1027,7 +1028,6 @@ VOID PeerHTAction(
     					respond_ht_information_exchange_action(pAd, Elem);
     				}
 #ifdef CONFIG_AP_SUPPORT
-#ifdef DOT11N_DRAFT3
 				IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 				{
 	    				if (pHT_info->Forty_MHz_Intolerant)
@@ -1035,10 +1035,12 @@ VOID PeerHTAction(
 	    					Handle_BSS_Width_Trigger_Events(pAd);
 	    				}
 				}
-#endif /* DOT11N_DRAFT3 */
 #endif /* CONFIG_AP_SUPPORT */
 			}
-    		break;
+    			break;
+#endif /* DOT11N_DRAFT3 */
+		default:
+			break;
 	}
 }
 
