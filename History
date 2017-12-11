@@ -3694,6 +3694,7 @@
 26) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
 27) kernel: net: l2tp: don't close sessions in l2tp_tunnel_destruct().<br>
 28) kernel: net: ppp: declare PPP devices as LLTX.<br>
+29) kernel: net: ppp: avoid dealock on recursive xmit.<br>
 <br>
 <br>
 <br>

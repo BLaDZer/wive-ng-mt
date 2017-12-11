@@ -1199,12 +1199,8 @@ static void ppp_setup(struct net_device *dev)
  * Transmit-side routines.
  */
 
-/*
- * Called to do any work queued up on the transmit side
- * that can now be done.
- */
-static void
-ppp_xmit_process(struct ppp *ppp)
+/* Called to do any work queued up on the transmit side that can now be done */
+static void __ppp_xmit_process(struct ppp *ppp)
 {
 	struct sk_buff *skb;
 
@@ -1222,6 +1218,30 @@ ppp_xmit_process(struct ppp *ppp)
 			netif_stop_queue(ppp->dev);
 	}
 	ppp_xmit_unlock(ppp);
+}
+
+static DEFINE_PER_CPU(int, ppp_xmit_recursion);
+
+static void ppp_xmit_process(struct ppp *ppp)
+{
+	local_bh_disable();
+
+	if (unlikely(__this_cpu_read(ppp_xmit_recursion)))
+		goto err;
+
+	__this_cpu_inc(ppp_xmit_recursion);
+	__ppp_xmit_process(ppp);
+	__this_cpu_dec(ppp_xmit_recursion);
+
+	local_bh_enable();
+
+	return;
+
+err:
+	local_bh_enable();
+
+	if (net_ratelimit())
+		netdev_err(ppp->dev, "recursion detected\n");
 }
 
 static inline struct sk_buff *
@@ -1694,11 +1714,8 @@ static int ppp_mp_explode(struct ppp *ppp, struct sk_buff *skb)
 }
 #endif /* CONFIG_PPP_MULTILINK */
 
-/*
- * Try to send data out on a channel.
- */
-static void
-ppp_channel_push(struct channel *pch)
+/* Try to send data out on a channel */
+static void __ppp_channel_push(struct channel *pch)
 {
 	struct sk_buff *skb;
 	struct ppp *ppp;
@@ -1723,9 +1740,20 @@ ppp_channel_push(struct channel *pch)
 		read_lock_bh(&pch->upl);
 		ppp = pch->ppp;
 		if (ppp)
-			ppp_xmit_process(ppp);
+			__ppp_xmit_process(ppp);
 		read_unlock_bh(&pch->upl);
 	}
+}
+
+static void ppp_channel_push(struct channel *pch)
+{
+	local_bh_disable();
+
+	__this_cpu_inc(ppp_xmit_recursion);
+	__ppp_channel_push(pch);
+	__this_cpu_dec(ppp_xmit_recursion);
+
+	local_bh_enable();
 }
 
 /*
