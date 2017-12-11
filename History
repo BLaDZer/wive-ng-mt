@@ -3690,6 +3690,7 @@
 22) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
 23) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
 24) kernel: net: l2tp: remove l2tp_session_find().<br>
+25) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
 <br>
 <br>
 <br>
