@@ -1195,9 +1195,6 @@ static void l2tp_tunnel_destruct(struct sock *sk)
 	PRINTK(tunnel->debug, L2TP_MSG_CONTROL, KERN_INFO,
 	       "%s: closing...\n", tunnel->name);
 
-	/* Close all sessions */
-	l2tp_tunnel_closeall(tunnel);
-
 	switch (tunnel->encap) {
 	case L2TP_ENCAPTYPE_UDP:
 		/* No longer an encapsulation socket. See net/ipv4/udp.c */

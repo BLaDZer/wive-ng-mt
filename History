@@ -3692,6 +3692,7 @@
 24) kernel: net: l2tp: remove l2tp_session_find().<br>
 25) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
 26) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
+27) kernel: net: l2tp: don't close sessions in l2tp_tunnel_destruct().<br>
 <br>
 <br>
 <br>
