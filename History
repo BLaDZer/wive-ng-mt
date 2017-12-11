@@ -3661,7 +3661,6 @@
 149) kernel: net: l2tp: remove useless duplicate session detection in l2tp_netlink.<br>
 150) kernel: net: l2tp: hold tunnel used while creating sessions with netlink.<br>
 151) kernel: net: l2tp: check ps->sock before running pppol2tp_session_ioctl().<br>
-152) kernel: net: l2tp: prevent creation of sessions on terminated tunnels.<br>
 <br>
 <br>
 <b>6.8.x</b><br>
