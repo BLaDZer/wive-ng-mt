@@ -3692,15 +3692,14 @@
 24) kernel: net: l2tp: remove l2tp_session_find().<br>
 25) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
 26) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
-27) kernel: net: l2tp: don't close sessions in l2tp_tunnel_destruct().<br>
-28) kernel: net: ppp: declare PPP devices as LLTX.<br>
-29) kernel: net: ppp: avoid dealock on recursive xmit.<br>
-30) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
-31) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
-32) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
-33) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
-34) kernel: net: ppp: fix __percpu annotation.<br>
-35) kernel: net: ppp: destroy the mutex when cleanup.<br>
+27) kernel: net: ppp: declare PPP devices as LLTX.<br>
+28) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+29) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
+30) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+31) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
+32) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
+33) kernel: net: ppp: fix __percpu annotation.<br>
+34) kernel: net: ppp: destroy the mutex when cleanup.<br>
 <br>
 <br>
 <br>
