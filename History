@@ -3700,6 +3700,7 @@
 32) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
 33) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
 34) kernel: net: ppp: fix __percpu annotation.<br>
+35) kernel: net: ppp: destroy the mutex when cleanup.<br>
 <br>
 <br>
 <br>
