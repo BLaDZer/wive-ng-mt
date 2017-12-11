@@ -3695,6 +3695,7 @@
 27) kernel: net: l2tp: don't close sessions in l2tp_tunnel_destruct().<br>
 28) kernel: net: ppp: declare PPP devices as LLTX.<br>
 29) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+30) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
 <br>
 <br>
 <br>
