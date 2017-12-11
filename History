@@ -3688,6 +3688,7 @@
 20) kernel: net: tcp: add memory barriers to write space paths.<br>
 21) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
 22) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
+23) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
 <br>
 <br>
 <br>
