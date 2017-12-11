@@ -3687,6 +3687,7 @@
 19) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
 20) kernel: net: tcp: add memory barriers to write space paths.<br>
 21) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
+22) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
 <br>
 <br>
 <br>
