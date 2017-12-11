@@ -3697,6 +3697,7 @@
 29) kernel: net: ppp: avoid dealock on recursive xmit.<br>
 30) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
 31) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+32) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
 <br>
 <br>
 <br>
