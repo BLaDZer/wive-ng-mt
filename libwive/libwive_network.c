@@ -223,6 +223,19 @@ char *getLanWanNamebyIf(const char *ifname)
 		return "WAN";
 	if (vpn_mode_enabled() == 1 && strstr(ifname, getPPPIfName()) != NULL)
 		return "VPN";
+	if (nvram_get_int(RT2860_NVRAM, "l2tp_srv_enabled", 0) == 1) {
+		if (strstr(ifname, "ppp") != NULL) {
+			int i, j = 0;
+			char iface_num[3];
+			for (i = 0; i < strlen(ifname); i++)
+				if (ifname[i] != 'p') {
+					iface_num[j] = ifname[i];
+					j++;
+				}
+			if (atoi(iface_num) >= 10)
+				return "VPN SERVER";
+		}
+	}
 
 	return "LAN";
 }
