@@ -583,6 +583,7 @@ SendAuth:
     						&pFtInfoBuf->MdIeInfo, &pFtInfoBuf->FtIeInfo, NULL,
     						pFtInfoBuf->RSN_IE, pFtInfoBuf->RSNIE_Len);
 
+			NdisZeroMemory(pEntry->LastTK, LEN_TK);
             		os_free_mem(NULL, pFtInfoBuf);
 			if (result == MLME_SUCCESS) {
 				/* Install pairwise key */

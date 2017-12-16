@@ -1960,6 +1960,7 @@ typedef struct _MAC_TABLE_ENTRY {
 	BOOLEAN AllowInsPTK;
 	UCHAR LastGroupKeyId;
 	UCHAR LastGTK[MAX_LEN_GTK];
+	UCHAR LastTK[LEN_TK];
 	NDIS_802_11_PRIVACY_FILTER PrivacyFilter;	/* PrivacyFilter enum for 802.1X */
 	CIPHER_KEY PairwiseKey;
 	PVOID pAd;

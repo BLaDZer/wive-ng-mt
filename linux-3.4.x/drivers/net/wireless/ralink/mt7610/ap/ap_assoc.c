@@ -709,6 +709,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	BOOLEAN bBndStrgCheck = TRUE;
 	BOOLEAN bAllowStaConnectInHt = FALSE;
 #endif /* BAND_STEERING */
+#ifdef DOT11R_FT_SUPPORT
+	UCHAR zeroFT[LEN_TK];
+#endif
 	CHAR rssi;
 
 	if (pAd == NULL)
@@ -769,10 +772,15 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
     
     
-	/* clear the previous Pairwise key table */
+    /* clear the previous Pairwise key table */
+
+#ifdef DOT11R_FT_SUPPORT
+    NdisZeroMemory(zeroFT, LEN_TK);
+#endif
+
     if(pEntry->Aid != 0 &&
 #ifdef DOT11R_FT_SUPPORT
-	(!IS_FT_STA(pEntry)) &&
+	(pEntry->AllowInsPTK == TRUE || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK)))) &&
 #endif
 	(pEntry->WepStatus >= Ndis802_11Encryption2Enabled 
 #ifdef DOT1X_SUPPORT
@@ -1183,8 +1191,13 @@ VOID ap_cmm_peer_assoc_req_action(
 			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
 
 			/* Only first allow install from assoc, later or rekey or install from auth (backward compatability with not patched clients) */
-			if (pEntry->AllowInsPTK == TRUE) {
+			if(pEntry->AllowInsPTK == TRUE
+#ifdef DOT11R_FT_SUPPORT
+			    || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK)))
+#endif
+			) {
 			    WPAInstallPairwiseKey(pAd, pEntry->apidx, pEntry, TRUE);
+			    NdisMoveMemory(pEntry->LastTK, &pEntry->PTK[OFFSET_OF_PTK_TK], LEN_TK);
 			    pEntry->AllowInsPTK = FALSE;
 			}
 
