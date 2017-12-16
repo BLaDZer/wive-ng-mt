@@ -352,7 +352,7 @@ static inline INT32 mt_rx_info_2_blk(
     INT32 RMACInfoLen;
     struct rxd_base_struc *rx_base;
 	//RXD_GRP4_STRUCT *RxdGrp4 = NULL;
-	//RXD_GRP1_STRUCT *RxdGrp1 = NULL;
+	RXD_GRP1_STRUCT *RxdGrp1 = NULL;
 	RXD_GRP2_STRUCT *RxdGrp2 = NULL;
 	RXD_GRP3_STRUCT *RxdGrp3 = NULL;
 
@@ -372,7 +372,7 @@ static inline INT32 mt_rx_info_2_blk(
 
 	if (rx_base->rxd_0.grp_vld & RXS_GROUP1)
 	{
-		//RxdGrp1 = (RXD_GRP1_STRUCT *)Pos;
+		RxdGrp1 = (RXD_GRP1_STRUCT *)Pos;
 		Pos += RMAC_INFO_GRP_1_SIZE;
 	}
 
@@ -405,6 +405,14 @@ static inline INT32 mt_rx_info_2_blk(
         pRxBlk->MPDUtotalByteCnt -= 2;
         RMACInfoLen += 2;
     }
+
+	if (RxdGrp1 != NULL)
+	{
+		UINT64 pn_low = RxdGrp1->sec_pn_32;
+		UINT64 pn_high = RxdGrp1->sec_pn_48;
+
+		pRxBlk->CCMP_PN = pn_low + (pn_high << 32);
+	}
 
     pRxBlk->DataSize = pRxBlk->MPDUtotalByteCnt;
     pRxBlk->wcid = rx_base->rxd_2.wlan_idx;

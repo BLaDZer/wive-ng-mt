@@ -121,6 +121,9 @@ static USHORT update_associated_mac_entry(
 {
 	struct wifi_dev *wdev;
 	STA_TR_ENTRY *tr_entry;
+#ifdef DOT11R_FT_SUPPORT
+	UCHAR zeroFT[LEN_TK];
+#endif
 
 	ASSERT((pEntry->func_tb_idx < pAd->ApCfg.BssidNum));
 	wdev = &pAd->ApCfg.MBSSID[pEntry->func_tb_idx].wdev;
@@ -413,6 +416,9 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 
 	pEntry->freqOffsetValid = FALSE;
 
+#ifdef DOT11R_FT_SUPPORT
+	NdisZeroMemory(zeroFT, LEN_TK);
+#endif
 
 	// Initialize Rate Adaptation
 	MlmeRAInit(pAd, pEntry);
@@ -469,7 +475,11 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 	}
 
 #ifdef MT_MAC
-	if (pAd->chipCap.hif_type == HIF_MT)
+	if (pAd->chipCap.hif_type == HIF_MT
+#ifdef DOT11R_FT_SUPPORT
+	    && (pEntry->AllowInsPTK == TRUE || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK))))
+#endif
+	)
 	{
         AsicUpdateRxWCIDTable(pAd, pEntry->wcid, pEntry->Addr);
 		AsicRcpiReset(pAd, pEntry->wcid);
@@ -1160,6 +1170,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	BOOLEAN bAssocSkip = FALSE;
 	BOOLEAN bAssocNoRsp = FALSE;
 	CHAR rssi;
+#ifdef DOT11R_FT_SUPPORT
+	UCHAR zeroFT[LEN_TK];
+#endif
 	IE_LISTS *ie_list = NULL;
 	HEADER_802_11 AssocRspHdr;
 	USHORT CapabilityInfoForAssocResp;
@@ -1274,11 +1287,16 @@ VOID ap_cmm_peer_assoc_req_action(
         }
 #endif /* DOT11W_PMF_SUPPORT */
     
-	/* clear the previous Pairwise key table */
+    /* clear the previous Pairwise key table */
+
+#ifdef DOT11R_FT_SUPPORT
+    NdisZeroMemory(zeroFT, LEN_TK);
+#endif
+
     if(pEntry->Aid != 0 &&
 #ifdef DOT11R_FT_SUPPORT
-	(!IS_FT_STA(pEntry)) &&
-#endif
+	(pEntry->AllowInsPTK == TRUE || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK)))) &&
+#endif	
 	(pEntry->WepStatus >= Ndis802_11TKIPEnable 
 #ifdef DOT1X_SUPPORT
 	|| wdev->IEEE8021X
@@ -1727,8 +1745,10 @@ SendAssocResponse:
 			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
 
 			/* Only first allow install from assoc, later or rekey or instal from auth (backward compatability with not patched clients) */
-			if (pEntry->AllowInsPTK == TRUE) {
+			if(pEntry->AllowInsPTK == TRUE || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK))))
+			{
 			    WPAInstallPairwiseKey(pAd, pEntry->func_tb_idx, pEntry, TRUE);
+			    NdisMoveMemory(pEntry->LastTK, &pEntry->PTK[OFFSET_OF_PTK_TK], LEN_TK);
 			    pEntry->AllowInsPTK = FALSE;
 			}
 

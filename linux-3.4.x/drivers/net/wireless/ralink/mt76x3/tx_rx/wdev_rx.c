@@ -126,6 +126,64 @@ VOID Update_Rssi_Sample(
 	}
 }
 
+/* this function ONLY if not allow pn replay attack and drop packet */
+static BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
+{
+	MAC_TABLE_ENTRY *pEntry = NULL;
+	BOOLEAN isAllow = TRUE;
+	HEADER_802_11 *pHeader = rx_blk->pHeader;
+	FRAME_CONTROL *pFmeCtrl = &pHeader->FC;
+
+	if (pFmeCtrl->Wep == 0)
+		return TRUE;
+
+	if (rx_blk->wcid >= MAX_LEN_OF_MAC_TABLE)
+		return TRUE;
+
+	pEntry = &pAd->MacTab.Content[rx_blk->wcid];
+
+	if ((!pEntry) || (!pEntry->wdev) || (!IS_ENTRY_APCLI(pEntry)))
+		return TRUE;
+
+	if (rx_blk->pRxInfo->Mcast || rx_blk->pRxInfo->Bcast) {
+		NDIS_802_11_ENCRYPTION_STATUS GroupCipher;
+		UCHAR kid = rx_blk->key_idx;
+
+		WPA_GET_GROUP_CIPHER(pAd, pEntry, GroupCipher);
+
+		if (GroupCipher == Ndis802_11AESEnable) {
+			if (unlikely(kid >= ARRAY_SIZE(pEntry->CCMP_BC_PN))) {
+				DBGPRINT(RT_DEBUG_TRACE, ("BC, %s invalid key id %u\n", __func__, kid));
+				return TRUE;
+			}
+
+			if (unlikely(pEntry->Init_CCMP_BC_PN_Passed[kid] == FALSE)) {
+				if (rx_blk->CCMP_PN >= pEntry->CCMP_BC_PN[kid]) {
+					DBGPRINT(RT_DEBUG_TRACE, ("BC, %s (%d)-%d OK: come-in the %llu and now is %llu\n",
+						__FUNCTION__, pEntry->wcid, kid, rx_blk->CCMP_PN, pEntry->CCMP_BC_PN[kid]));
+					pEntry->CCMP_BC_PN[kid] = rx_blk->CCMP_PN;
+					pEntry->Init_CCMP_BC_PN_Passed[kid] = TRUE;
+				} else {
+					DBGPRINT(RT_DEBUG_ERROR, ("BC, %s (%d)-%d Reject: come-in the %llu and now is %llu\n",
+						__FUNCTION__, pEntry->wcid, kid, rx_blk->CCMP_PN, pEntry->CCMP_BC_PN[kid]));
+					isAllow = FALSE;
+				}
+			} else {
+				if (rx_blk->CCMP_PN > pEntry->CCMP_BC_PN[kid]) {
+					DBGPRINT(RT_DEBUG_TRACE, ("BC, %s (%d)-%d OK: come-in the %llu and now is %llu\n",
+						__FUNCTION__, pEntry->wcid, kid, rx_blk->CCMP_PN, pEntry->CCMP_BC_PN[kid]));
+					pEntry->CCMP_BC_PN[kid] = rx_blk->CCMP_PN;
+				} else {
+					DBGPRINT(RT_DEBUG_ERROR, ("BC, %s (%d)-%d Reject: come-in the %llu and now is %llu\n",
+						__FUNCTION__, pEntry->wcid, kid, rx_blk->CCMP_PN, pEntry->CCMP_BC_PN[kid]));
+					isAllow = FALSE;
+				}
+			}
+		}
+	}
+
+	return isAllow;
+}
 
 #ifdef DOT11_N_SUPPORT
 UINT deaggregate_AMSDU_announce(
@@ -246,6 +304,12 @@ VOID Indicate_AMSDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 {
 	//UINT nMSDU;
 
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	RTMP_UPDATE_OS_PACKET_INFO(pAd, pRxBlk, wdev_idx);
 	RTMP_SET_PACKET_WDEV(pRxBlk->pRxPacket, wdev_idx);
 #ifdef MT_MAC
@@ -311,6 +375,12 @@ VOID Indicate_Legacy_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 		return;
 	}
 	wdev = pAd->wdev_list[wdev_idx];
+
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
+		RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
 
 //+++Add by shiang for debug
 #ifdef HDR_TRANS_SUPPORT
@@ -894,6 +964,12 @@ VOID Indicate_EAPOL_Packet(
 	if (pRxBlk->wcid >= MAX_LEN_OF_MAC_TABLE)
 	{
 		DBGPRINT(RT_DEBUG_WARN, ("Indicate_EAPOL_Packet: invalid wcid.\n"));
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 		return;
 	}

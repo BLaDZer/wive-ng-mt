@@ -1114,6 +1114,7 @@ VOID PeerPairMsg1Action(
 	/* Generate random SNonce*/
 	GenRandom(pAd, (UCHAR *)pCurrentAddr, pEntry->SNonce);
 	pEntry->AllowInsPTK = TRUE;
+	pEntry->AllowUpdateRSC = FALSE;
         pEntry->LastGroupKeyId = 0;
         NdisZeroMemory(pEntry->LastGTK, MAX_LEN_GTK);
 
@@ -1651,6 +1652,13 @@ VOID PeerPairMsg3Action(
 	UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 	STA_TR_ENTRY *tr_entry;
+	UCHAR idx = 0;
+	BOOLEAN bWPA2 = FALSE;
+
+	/* Choose WPA2 or not*/
+	if ((pEntry->AuthMode == Ndis802_11AuthModeWPA2) ||
+		(pEntry->AuthMode == Ndis802_11AuthModeWPA2PSK))
+		bWPA2 = TRUE;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("===> PeerPairMsg3Action \n"));
 
@@ -1702,6 +1710,23 @@ VOID PeerPairMsg3Action(
 	if (PeerWpaMessageSanity(pAd, pMsg3, MsgLen, EAPOL_PAIR_MSG_3, pEntry) == FALSE)
 		return;
 
+	if ((pEntry->AllowInsPTK == TRUE) && bWPA2) {
+		UCHAR kid = pEntry->LastGroupKeyId;
+
+		if (unlikely(kid >= ARRAY_SIZE(pEntry->CCMP_BC_PN))) {
+			DBGPRINT(RT_DEBUG_TRACE, ("%s invalid key id %u\n", __func__, kid));
+			return;
+		}
+
+		pEntry->CCMP_BC_PN[kid] = 0;
+		for (idx = 0; idx < (LEN_KEY_DESC_RSC - 2); idx++)
+			pEntry->CCMP_BC_PN[kid] += ((UINT64)pMsg3->KeyDesc.KeyRsc[idx] << (idx*8));
+		pEntry->AllowUpdateRSC = FALSE;
+		pEntry->Init_CCMP_BC_PN_Passed[kid] = FALSE;
+		DBGPRINT(RT_DEBUG_OFF, ("%s(%d)-%d: update CCMP_BC_PN to %llu\n",
+			__FUNCTION__, pEntry->wcid, kid, pEntry->CCMP_BC_PN[kid]));
+	}
+
 	/* Save Replay counter, it will use construct message 4*/
 	NdisMoveMemory(pEntry->R_Counter, pMsg3->KeyDesc.ReplayCounter, LEN_KEY_DESC_REPLAY);
 
@@ -1745,6 +1770,7 @@ VOID PeerPairMsg3Action(
 		if(pEntry->AllowInsPTK == TRUE) {
 		 	APCliInstallPairwiseKey(pAd, pEntry);
 			pEntry->AllowInsPTK = FALSE;
+			pEntry->AllowUpdateRSC = TRUE;
 			} else {
 			DBGPRINT(RT_DEBUG_ERROR, ("!!!%s : the M3 reinstall attack, skip install key\n",
 											__func__));
@@ -2198,6 +2224,7 @@ VOID	PeerGroupMsg1Action(
 	UCHAR CliIdx = 0xFF;
 #endif /* MAC_REPEATER_SUPPORT */
 	STA_TR_ENTRY *tr_entry;
+	UCHAR idx = 0;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("===> PeerGroupMsg1Action \n"));
 
@@ -2245,6 +2272,23 @@ VOID	PeerGroupMsg1Action(
 	/* Sanity Check peer group message 1 - Replay Counter, MIC, RSNIE*/
 	if (PeerWpaMessageSanity(pAd, pGroup, MsgLen, EAPOL_GROUP_MSG_1, pEntry) == FALSE)
 		return;
+
+	if (pEntry->AllowUpdateRSC == TRUE) {
+		UCHAR kid = pEntry->LastGroupKeyId;
+
+		if (unlikely(kid >= ARRAY_SIZE(pEntry->CCMP_BC_PN))) {
+			DBGPRINT(RT_DEBUG_TRACE, ("%s invalid key id %u\n", __func__, kid));
+			return;
+		}
+
+		pEntry->CCMP_BC_PN[kid] = 0;
+		for (idx = 0; idx < (LEN_KEY_DESC_RSC - 2); idx++)
+			pEntry->CCMP_BC_PN[kid] += ((UINT64)pGroup->KeyDesc.KeyRsc[idx] << (idx*8));
+		pEntry->AllowUpdateRSC = FALSE;
+		pEntry->Init_CCMP_BC_PN_Passed[kid] = FALSE;
+		DBGPRINT(RT_DEBUG_OFF, ("%s(%d)-%d: update CCMP_BC_PN to %llu\n",
+			__FUNCTION__, pEntry->wcid, kid, pEntry->CCMP_BC_PN[kid]));
+	}
 
 	/* delete retry timer*/
 #ifdef CONFIG_AP_SUPPORT
@@ -4206,6 +4250,7 @@ BOOLEAN RTMPParseEapolKeyData(
 			}
 				pEntry->LastGroupKeyId = DefaultIdx;
 				NdisMoveMemory(pEntry->LastGTK, GTK, MAX_LEN_GTK);
+				pEntry->AllowUpdateRSC = TRUE;
 			} else {
 				DBGPRINT(RT_DEBUG_ERROR, ("!!!%s : the Group reinstall attack, skip install key\n",
 					__func__));

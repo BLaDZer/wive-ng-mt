@@ -3680,7 +3680,7 @@
 14) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D, 60:A3:7D and 10:B1:F8 honor P8 to BCM bug workaround.<br>
 15) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
 16) kernel: ralink_wifi: do not clear the previous Pairwise key table at new assoc with FT mode (reinstall later).<br>
-17) kernel: ralink_wifi: mt76x2/mt7610: add BMC packet PN replay attack detection and prevent.<br>
+17) kernel: ralink_wifi: add BMC packet PN replay attack detection and prevent.<br>
 18) kernel: ralink_wifi: mt7610: HT_EXTINFO removed from current 802.11 specs (disable).<br>
 19) kernel: ralink_raeth: fix reverse port calculate.<br>
 20) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
