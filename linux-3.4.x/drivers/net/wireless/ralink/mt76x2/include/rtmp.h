@@ -3012,9 +3012,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR R_Counter[LEN_KEY_DESC_REPLAY];
 	UCHAR PTK[64];
 	UCHAR ReTryCounter;
-	BOOLEAN AllowInsPTK;
-	UCHAR LastGroupKeyId;
-	UCHAR LastGTK[MAX_LEN_GTK];
 	RALINK_TIMER_STRUCT RetryTimer;
 	NDIS_802_11_AUTHENTICATION_MODE AuthMode;	/* This should match to whatever microsoft defined */
 	NDIS_802_11_WEP_STATUS WepStatus;
@@ -3022,6 +3019,9 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT8 WpaState;
 	UINT8 GTKState;
 	USHORT PortSecured;
+	BOOLEAN AllowInsPTK;
+	UCHAR LastGroupKeyId;
+	UCHAR LastGTK[MAX_LEN_GTK];
 	NDIS_802_11_PRIVACY_FILTER PrivacyFilter;	/* PrivacyFilter enum for 802.1X */
 	CIPHER_KEY PairwiseKey;
 	INT PMKID_CacheIdx;
@@ -3410,6 +3410,12 @@ typedef struct _MAC_TABLE_ENTRY {
 	struct _sta_hs_info hs_info;
 	UCHAR				IsKeep;
 #endif /* CONFIG_HOTSPOT_R2 */
+#ifdef PN_UC_REPLAY_DETECTION_SUPPORT
+	UINT64 CCMP_UC_PN[NUM_OF_TID];	
+#endif /* PN_UC_REPLAY_DETECTION_SUPPORT */
+	UINT64 CCMP_BC_PN;
+	BOOLEAN AllowUpdateRSC;
+	BOOLEAN init_ccmp_bc_pn_passed;
 } MAC_TABLE_ENTRY, *PMAC_TABLE_ENTRY;
 
 #ifdef DELAYED_TCP_ACK
@@ -5964,7 +5970,7 @@ typedef struct _RX_BLK
 #ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 	UCHAR CriticalPkt;
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
-
+	UINT64 CCMP_PN;
 } RX_BLK;
 
 
@@ -11114,4 +11120,6 @@ BOOLEAN Monitor_Open(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 BOOLEAN Monitor_Close(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 #endif /* CONFIG_SNIFFER_SUPPORT */
 int gen_radiotap_header(RTMP_ADAPTER *pAd,RX_BLK *pRxBlk);
+BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk); 
+void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo);
 #endif  /* __RTMP_H__ */

@@ -1826,7 +1826,9 @@ static void mt76x2_init_mac_cr(RTMP_ADAPTER *ad)
 	RTMP_IO_READ32(ad, TX_ALC_CFG_4, &value);
 	value &= ~WL_LOWGAIN_CH_EN;
 	RTMP_IO_WRITE32(ad, TX_ALC_CFG_4, value);
-	
+	RTMP_IO_READ32(ad, PN_PAD_MODE, &value);
+	value |= PN_PAD_MODE_OFFSET;
+	RTMP_IO_WRITE32(ad, PN_PAD_MODE, value);
 	/*
  	 * Check crystal trim2 first 
  	 */ 

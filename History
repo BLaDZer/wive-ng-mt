@@ -3680,28 +3680,29 @@
 14) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D, 60:A3:7D and 10:B1:F8 honor P8 to BCM bug workaround.<br>
 15) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
 16) kernel: ralink_wifi: do not clear the previous Pairwise key table at new assoc with FT mode (reinstall later).<br>
-17) kernel: ralink_wifi: mt7610: HT_EXTINFO removed from current 802.11 specs (disable).<br>
-18) kernel: ralink_raeth: fix reverse port calculate.<br>
-19) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
-20) kernel: mm: avoid returning VM_FAULT_RETRY from ->page_mkwrite handlers.<br>
-21) kernel: usb: usb: host: fix incorrect updating of offset.<br>
-22) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
-23) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
-24) kernel: net: tcp: add memory barriers to write space paths.<br>
-25) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
-26) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
-27) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
-28) kernel: net: l2tp: remove l2tp_session_find().<br>
-29) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
-30) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
-31) kernel: net: ppp: declare PPP devices as LLTX.<br>
-32) kernel: net: ppp: avoid dealock on recursive xmit.<br>
-33) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
-34) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
-35) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
-36) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
-37) kernel: net: ppp: fix __percpu annotation.<br>
-38) kernel: net: ppp: destroy the mutex when cleanup.<br>
+17) kernel: ralink_wifi: mt76x2: add BMC packet PN Replay attack detection and prevent.<br>
+18) kernel: ralink_wifi: mt7610: HT_EXTINFO removed from current 802.11 specs (disable).<br>
+19) kernel: ralink_raeth: fix reverse port calculate.<br>
+20) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
+21) kernel: mm: avoid returning VM_FAULT_RETRY from ->page_mkwrite handlers.<br>
+22) kernel: usb: usb: host: fix incorrect updating of offset.<br>
+23) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
+24) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
+25) kernel: net: tcp: add memory barriers to write space paths.<br>
+26) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
+27) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
+28) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
+29) kernel: net: l2tp: remove l2tp_session_find().<br>
+30) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
+31) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
+32) kernel: net: ppp: declare PPP devices as LLTX.<br>
+33) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+34) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
+35) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+36) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
+37) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
+38) kernel: net: ppp: fix __percpu annotation.<br>
+39) kernel: net: ppp: destroy the mutex when cleanup.<br>
 <br>
 <br>
 <br>
