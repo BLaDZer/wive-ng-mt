@@ -4582,7 +4582,7 @@ VOID Announce_or_Forward_802_3_Packet(
 	}
 }
 
-
+#ifdef APCLI_SUPPORT
 void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo)
 {
 
@@ -4673,6 +4673,7 @@ BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
 
 	return isAllow;
 }
+#endif /* APCLI_SUPPORT */
 
 VOID APRxDataFrameAnnounce(
 	IN RTMP_ADAPTER *pAd,
@@ -5409,8 +5410,10 @@ VOID APHandleRxDataFrame(
 	}
 #endif /* SOFT_ENCRYPT */
 
-		/*unicast frame for apcli get pn.*/
+#ifdef APCLI_SUPPORT
+	/*unicast frame for apcli get pn.*/
 	rx_get_pn(pRxBlk,pRxInfo);
+#endif /* APCLI_SUPPORT */
 
 	if (!((pHeader->Frag == 0) && (pFmeCtrl->MoreFrag == 0)))
 	{

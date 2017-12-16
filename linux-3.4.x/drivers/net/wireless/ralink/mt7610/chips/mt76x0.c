@@ -1728,8 +1728,9 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 	UINT32 IdReg;
 	UINT32 MacReg = 0;
 	USHORT trsw_mode = 0;
+#ifdef APCLI_SUPPORT
 	UINT32 pn_mode_value = 0;
-
+#endif /* APCLI_SUPPORT */
 	/*
 		Enable PBF and MAC clock
 		SYS_CTRL[11:10] = 0x3
@@ -1825,6 +1826,7 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 		RTMP_IO_WRITE32(pAd, TXOP_HLDR_ET, 0x3);
 	}
 #endif
+#ifdef APCLI_SUPPORT
 	/*
 	*bit 0 :  R/W PN_PAD_MODE Padding IV/EIV in RX MPDU when packet is decrypted
 	*0 : Disable                             1: Enable
@@ -1832,6 +1834,7 @@ static VOID NICInitMT76x0MacRegisters(RTMP_ADAPTER *pAd)
 	RTMP_IO_READ32(pAd, PN_PAD_MODE, &pn_mode_value);
 	pn_mode_value |= PN_PAD_MODE_OFFSET;
 	RTMP_IO_WRITE32(pAd, PN_PAD_MODE, pn_mode_value);
+#endif /* APCLI_SUPPORT */
 }
 
 

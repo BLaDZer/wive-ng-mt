@@ -126,6 +126,7 @@ VOID Update_Rssi_Sample(
 	}
 }
 
+#ifdef APCLI_SUPPORT
 /* this function ONLY if not allow pn replay attack and drop packet */
 static BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
 {
@@ -184,6 +185,7 @@ static BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
 
 	return isAllow;
 }
+#endif /* APCLI_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
 UINT deaggregate_AMSDU_announce(
@@ -302,13 +304,14 @@ UINT deaggregate_AMSDU_announce(
 
 VOID Indicate_AMSDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 {
-	//UINT nMSDU;
 
+#ifdef APCLI_SUPPORT
 	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
 		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 		return;
 	}
+#endif /* APCLI_SUPPORT */
 
 	RTMP_UPDATE_OS_PACKET_INFO(pAd, pRxBlk, wdev_idx);
 	RTMP_SET_PACKET_WDEV(pRxBlk->pRxPacket, wdev_idx);
@@ -376,11 +379,13 @@ VOID Indicate_Legacy_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR wdev_idx)
 	}
 	wdev = pAd->wdev_list[wdev_idx];
 
+#ifdef APCLI_SUPPORT
 	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
 		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
 		RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
 		return;
 	}
+#endif /* APCLI_SUPPORT */
 
 //+++Add by shiang for debug
 #ifdef HDR_TRANS_SUPPORT
@@ -968,11 +973,13 @@ VOID Indicate_EAPOL_Packet(
 		return;
 	}
 
+#ifdef APCLI_SUPPORT
 	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
 		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __FUNCTION__));
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 		return;
 	}
+#endif /* APCLI_SUPPORT */
 
 	pEntry = &pAd->MacTab.Content[pRxBlk->wcid];
 	if (pEntry == NULL)

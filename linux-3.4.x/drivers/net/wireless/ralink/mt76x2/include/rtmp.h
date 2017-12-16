@@ -11120,6 +11120,8 @@ BOOLEAN Monitor_Open(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 BOOLEAN Monitor_Close(RTMP_ADAPTER *pAd, PNET_DEV dev_p);
 #endif /* CONFIG_SNIFFER_SUPPORT */
 int gen_radiotap_header(RTMP_ADAPTER *pAd,RX_BLK *pRxBlk);
+#ifdef APCLI_SUPPORT
 BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk); 
 void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo);
+#endif /* APCLI_SUPPORT */
 #endif  /* __RTMP_H__ */

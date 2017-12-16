@@ -1182,7 +1182,7 @@ VOID ap_cmm_peer_assoc_req_action(
 			pFtIe = (PFT_FTIE)(ftie_ptr + 2);
 			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
 
-			/* Only first allow install from assoc, later or rekey or instal from auth (backward compatability with not patched clients) */
+			/* Only first allow install from assoc, later or rekey or install from auth (backward compatability with not patched clients) */
 			if (pEntry->AllowInsPTK == TRUE) {
 			    WPAInstallPairwiseKey(pAd, pEntry->apidx, pEntry, TRUE);
 			    pEntry->AllowInsPTK = FALSE;

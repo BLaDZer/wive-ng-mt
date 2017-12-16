@@ -1744,9 +1744,12 @@ SendAssocResponse:
 			pFtIe = (PFT_FTIE)(ftie_ptr + 2);
 			NdisMoveMemory(pFtIe->MIC, ft_mic, FT_MIC_LEN);
 
-			/* Only first allow install from assoc, later or rekey or instal from auth (backward compatability with not patched clients) */
-			if(pEntry->AllowInsPTK == TRUE || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK))))
-			{
+			/* Only first allow install from assoc, later or rekey or install from auth (backward compatability with not patched clients) */
+			if(pEntry->AllowInsPTK == TRUE
+#ifdef DOT11R_FT_SUPPORT
+			    || !IS_FT_STA(pEntry) || (IS_FT_STA(pEntry) && (NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], zeroFT, LEN_TK) || !NdisEqualMemory(&pEntry->PTK[OFFSET_OF_PTK_TK], pEntry->LastTK, LEN_TK)))
+#endif
+			) {
 			    WPAInstallPairwiseKey(pAd, pEntry->func_tb_idx, pEntry, TRUE);
 			    NdisMoveMemory(pEntry->LastTK, &pEntry->PTK[OFFSET_OF_PTK_TK], LEN_TK);
 			    pEntry->AllowInsPTK = FALSE;

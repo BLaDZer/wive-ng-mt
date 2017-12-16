@@ -8978,6 +8978,8 @@ INT Set_DoTemperatureSensor_Proc(
 	IN RTMP_ADAPTER		*pAd,
 	IN PSTRING			arg);
 #endif /* MT76x0 */
+#ifdef APCLI_SUPPORT
 BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk); 
 void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo);
+#endif /* APCLI_SUPPORT */
 #endif  /* __RTMP_H__ */
