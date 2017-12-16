@@ -4243,11 +4243,11 @@ BOOLEAN RTMPParseEapolKeyData(
 			/* Prevent the GTK reinstall key attack */
 			if (pEntry->LastGroupKeyId != DefaultIdx ||
 				!NdisEqualMemory(pEntry->LastGTK, GTK, MAX_LEN_GTK)) {
-			/* Set Group key material, TxMic and RxMic for AP-Client*/
-			if (!APCliInstallSharedKey(pAd, GTK, GTKLEN, DefaultIdx, pEntry))
-			{
-				return FALSE;
-			}
+				/* Set Group key material, TxMic and RxMic for AP-Client*/
+				if (!APCliInstallSharedKey(pAd, GTK, GTKLEN, DefaultIdx, pEntry))
+				{
+					return FALSE;
+				}
 				pEntry->LastGroupKeyId = DefaultIdx;
 				NdisMoveMemory(pEntry->LastGTK, GTK, MAX_LEN_GTK);
 				pEntry->AllowUpdateRSC = TRUE;
@@ -4267,23 +4267,34 @@ BOOLEAN RTMPParseEapolKeyData(
 
             pApcli_entry = &pAd->ApCfg.ApCliTab[IfIdx];
 
-            WPAInstallSharedKey(pAd,
-                pApcli_entry->GroupCipher,
-#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
-		pEntry->func_tb_idx,
+			/* Prevent the GTK reinstall key attack */
+			if (pEntry->LastGroupKeyId != DefaultIdx ||
+				!NdisEqualMemory(pEntry->LastGTK, GTK, MAX_LEN_GTK)) {
+				/* Set Group key material, TxMic and RxMic for AP-Client*/
+				WPAInstallSharedKey(pAd,
+					pApcli_entry->GroupCipher,
+#ifdef MULTI_APCLI_SUPPORT
+					pEntry->func_tb_idx,
 #else /* MULTI_APCLI_SUPPORT */
-                BSS0,
+					BSS0,
 #endif /* !MULTI_APCLI_SUPPORT */
-                DefaultIdx,
-#if defined(MULTI_APCLI_SUPPORT) || defined(APCLI_CONNECTION_TRIAL)
-                APCLI_MCAST_WCID(IfIdx),
+					DefaultIdx,
+#ifdef MULTI_APCLI_SUPPORT
+					APCLI_MCAST_WCID(IfIdx),
 #else /* MULTI_APCLI_SUPPORT */
-                APCLI_MCAST_WCID,
+					APCLI_MCAST_WCID,
 #endif /* !MULTI_APCLI_SUPPORT */
-                FALSE,
-                GTK,
-                GTKLEN);
-        }
+					FALSE,
+					GTK,
+					GTKLEN);
+				pEntry->LastGroupKeyId = DefaultIdx;
+				NdisMoveMemory(pEntry->LastGTK, GTK, MAX_LEN_GTK);
+				pEntry->AllowUpdateRSC = TRUE;
+			} else {
+				DBGPRINT(RT_DEBUG_ERROR, ("!!!%s : the Group reinstall attack, skip install key\n",
+					__func__));
+			}
+	}
 #endif /* MT_MAC */
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
