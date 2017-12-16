@@ -1947,9 +1947,6 @@ typedef struct _MAC_TABLE_ENTRY {
 	UCHAR R_Counter[LEN_KEY_DESC_REPLAY];
 	UCHAR PTK[64];
 	UCHAR ReTryCounter;
-	BOOLEAN AllowInsPTK;
-	UCHAR LastGroupKeyId;
-	UCHAR LastGTK[MAX_LEN_GTK];
 	RALINK_TIMER_STRUCT RetryTimer;
 #ifdef TXBF_SUPPORT
 	RALINK_TIMER_STRUCT eTxBfProbeTimer;
@@ -1960,6 +1957,9 @@ typedef struct _MAC_TABLE_ENTRY {
 	UINT8 WpaState;
 	UINT8 GTKState;
 	USHORT PortSecured;
+	BOOLEAN AllowInsPTK;
+	UCHAR LastGroupKeyId;
+	UCHAR LastGTK[MAX_LEN_GTK];
 	NDIS_802_11_PRIVACY_FILTER PrivacyFilter;	/* PrivacyFilter enum for 802.1X */
 	CIPHER_KEY PairwiseKey;
 	PVOID pAd;
@@ -2326,6 +2326,12 @@ BOOLEAN SupportHTMCS[MAX_LEN_OF_HT_RATES];
 	UCHAR ClientType; /* 0x00: apcli, 0x01: wireless station, 0x02: ethernet entry */
 	BOOLEAN bConnToRootAP;
 #endif /* MAC_REPEATER_SUPPORT */
+#ifdef PN_UC_REPLAY_DETECTION_SUPPORT
+	UINT64 CCMP_UC_PN[NUM_OF_TID];	
+#endif /* PN_UC_REPLAY_DETECTION_SUPPORT */
+	UINT64 CCMP_BC_PN;
+	BOOLEAN AllowUpdateRSC;
+	BOOLEAN init_ccmp_bc_pn_passed;
 } MAC_TABLE_ENTRY, *PMAC_TABLE_ENTRY;
 
 
@@ -4197,6 +4203,7 @@ typedef struct _RX_BLK_
 #ifdef FORCE_ANNOUNCE_CRITICAL_AMPDU
 	UCHAR CriticalPkt;
 #endif /* FORCE_ANNOUNCE_CRITICAL_AMPDU */
+	UINT64 CCMP_PN;
 } RX_BLK;
 
 
@@ -8971,4 +8978,6 @@ INT Set_DoTemperatureSensor_Proc(
 	IN RTMP_ADAPTER		*pAd,
 	IN PSTRING			arg);
 #endif /* MT76x0 */
+BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk); 
+void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo);
 #endif  /* __RTMP_H__ */

@@ -4583,6 +4583,97 @@ VOID Announce_or_Forward_802_3_Packet(
 }
 
 
+void rx_get_pn(RX_BLK *pRxBlk,RXINFO_STRUC *pRxInfo)
+{
+
+	UINT32 pn_len_byte;
+	UINT64 pnv = 0,pnvh = 0,pnvl = 0;
+	UINT8 *pnb;
+	
+	if (!pRxInfo->pn_len) {
+		DBGPRINT(RT_DEBUG_WARN, ("pn_len is 0.\n"));
+		return; 
+	}
+	pn_len_byte = pRxInfo->pn_len << 2;
+	if (pRxBlk->DataSize <= pn_len_byte) {
+		DBGPRINT(RT_DEBUG_ERROR, ("DataSize %u <= pn_len %u\n", pRxBlk->DataSize, pn_len_byte));
+		return;
+	}
+	pnb = pRxBlk->pData;
+	pRxBlk->pData += pn_len_byte;
+	pRxBlk->DataSize -= pn_len_byte;
+	if (unlikely(pn_len_byte != 8)) {
+		DBGPRINT(RT_DEBUG_OFF, ("abnormal pn_len %u\n", pRxInfo->pn_len));
+		return;
+	}
+	pnvh = ((pnb[7] << 24) | (pnb[6] << 16) | (pnb[5] << 8)| pnb[4]); 	
+	pnvl = ((pnb[1] << 8) | pnb[0]); 
+	pnv = ((pnvh << 16) | pnvl);
+	pRxBlk->CCMP_PN = pnv;
+}
+
+/*this funcation ONLY if not allow pn replay attack and drop packet*/
+BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
+{
+	MAC_TABLE_ENTRY *pEntry = NULL;
+	BOOLEAN isAllow = TRUE;
+	FRAME_CONTROL *pFmeCtrl = (FRAME_CONTROL *)(&rx_blk->pHeader->FC);
+	NDIS_802_11_WEP_STATUS	GroupCipher = Ndis802_11WEPDisabled;
+
+	if (pFmeCtrl->Wep == 0) {
+		DBGPRINT(RT_DEBUG_TRACE, ("check_rx_pkt_pn_allowed wep =0\n"));
+		return TRUE;
+	}
+
+	if (!VALID_WCID(rx_blk->wcid))
+		return TRUE;
+
+	pEntry = &pAd->MacTab.Content[rx_blk->wcid];
+	if (!pEntry || !IS_ENTRY_APCLI(pEntry)) {
+		DBGPRINT(RT_DEBUG_WARN, ("check_rx_pkt_pn_allowed pEntry is NULL or not APCLI.\n"));
+		return TRUE;
+	}
+
+
+	if (rx_blk->pRxInfo->Mcast || rx_blk->pRxInfo->Bcast) {
+		WPA_GET_GROUP_CIPHER(pAd,pEntry,GroupCipher);
+		if (GroupCipher == Ndis802_11Encryption3Enabled) {			
+			if (pEntry->init_ccmp_bc_pn_passed == FALSE) {
+				if (rx_blk->CCMP_PN < pEntry->CCMP_BC_PN)
+					isAllow = FALSE;
+				else {
+					pEntry->CCMP_BC_PN = rx_blk->CCMP_PN;
+					pEntry->init_ccmp_bc_pn_passed = TRUE;
+				}
+			} else {
+				if (rx_blk->CCMP_PN <= pEntry->CCMP_BC_PN)
+					isAllow = FALSE;
+				else
+					pEntry->CCMP_BC_PN = rx_blk->CCMP_PN;
+			}
+			DBGPRINT(RT_DEBUG_WARN, ("%s:wcid(%d)Seq(%d) %s: come-in the %llu and now is %llu\n",
+			__func__, pEntry->wcid, rx_blk->pHeader->Sequence, ((isAllow == TRUE) ? "OK" : "Reject"),
+			rx_blk->CCMP_PN, pEntry->CCMP_BC_PN));
+		}	
+	} 
+#ifdef PN_UC_REPLAY_DETECTION_SUPPORT	
+	if ((rx_blk->pRxInfo->U2M) &&
+		(pEntry->WepStatus == Ndis802_11Encryption3Enabled)) {		
+		UCHAR TID = rx_blk->TID;
+		/*if (pAd->)*/
+		if (rx_blk->CCMP_PN < pEntry->CCMP_UC_PN[TID]) {
+			DBGPRINT(RT_DEBUG_WARN, ("UC, %s (%d) Reject: come-in the %llu and now is %llu\n",
+				__func__, pEntry->wcid, rx_blk->CCMP_PN, pEntry->CCMP_UC_PN[TID]));
+			isAllow = FALSE;
+		} else {
+			pEntry->CCMP_UC_PN[TID] = rx_blk->CCMP_PN;
+		}
+	}
+#endif /* PN_UC_REPLAY_DETECTION_SUPPORT */
+
+	return isAllow;
+}
+
 VOID APRxDataFrameAnnounce(
 	IN RTMP_ADAPTER *pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
@@ -5317,6 +5408,9 @@ VOID APHandleRxDataFrame(
 		pRxInfo->Decrypted = 1;
 	}
 #endif /* SOFT_ENCRYPT */
+
+		/*unicast frame for apcli get pn.*/
+	rx_get_pn(pRxBlk,pRxInfo);
 
 	if (!((pHeader->Frag == 0) && (pFmeCtrl->MoreFrag == 0)))
 	{

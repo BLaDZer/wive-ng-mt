@@ -443,7 +443,6 @@ void AP_QueuePsActionPacket(
 	IN	BOOLEAN			FlgIsLocked,
 	IN	UCHAR			MgmtQid)
 {
-
 #ifdef UAPSD_SUPPORT
 #ifdef UAPSD_CC_FUNC_PS_MGMT_TO_LEGACY
 	PNDIS_PACKET DuplicatePkt = NULL;
@@ -1976,6 +1975,12 @@ VOID Indicate_AMSDU_Packet(
 	IN	RX_BLK			*pRxBlk,
 	IN	UCHAR			FromWhichBSSID)
 {
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __func__));
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	RTMP_UPDATE_OS_PACKET_INFO(pAd, pRxBlk, FromWhichBSSID);
 	RTMP_SET_PACKET_IF(pRxBlk->pRxPacket, FromWhichBSSID);
 	deaggregate_AMSDU_announce(pAd, pRxBlk->pRxPacket, pRxBlk->pData, pRxBlk->DataSize, pRxBlk->OpMode);
@@ -2439,6 +2444,12 @@ VOID Indicate_Legacy_Packet(
 	PNDIS_PACKET pRxPacket = pRxBlk->pRxPacket;
 	UCHAR Header802_3[LENGTH_802_3];
 	USHORT VLAN_VID = 0, VLAN_Priority = 0;
+
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __func__));
+		RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
 
 	/*
 		1. get 802.3 Header
@@ -2991,7 +3002,11 @@ VOID Indicate_EAPOL_Packet(
 		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
 		return;
 	}
-	
+	if (check_rx_pkt_pn_allowed(pAd, pRxBlk) == FALSE) {
+		DBGPRINT(RT_DEBUG_WARN, ("%s:drop packet by PN mismatch!\n", __func__));
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}	
 #ifdef CONFIG_AP_SUPPORT
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 	{		

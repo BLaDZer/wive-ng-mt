@@ -2232,6 +2232,8 @@ BOOLEAN  ApCliHandleRxBroadcastFrame(
 #endif /* MAC_APCLI_SUPPORT */
 	pRxInfo->MyBss = 1;				
 
+	rx_get_pn(pRxBlk,pRxInfo);
+
 #ifdef HDR_TRANS_SUPPORT
 	if (pRxBlk->bHdrRxTrans)
 		Indicate_Legacy_Packet_Hdr_Trns(pAd, pRxBlk, FromWhichBSSID);
