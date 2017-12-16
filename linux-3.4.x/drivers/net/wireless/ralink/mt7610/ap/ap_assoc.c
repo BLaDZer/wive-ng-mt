@@ -771,6 +771,9 @@ VOID ap_cmm_peer_assoc_req_action(
     
 	/* clear the previous Pairwise key table */
     if(pEntry->Aid != 0 &&
+#ifdef DOT11R_FT_SUPPORT
+	(!IS_FT_STA(pEntry)) &&
+#endif
 	(pEntry->WepStatus >= Ndis802_11Encryption2Enabled 
 #ifdef DOT1X_SUPPORT
 	|| wdev->IEEE8021X
