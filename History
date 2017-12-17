@@ -3705,6 +3705,7 @@
 39) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
 40) kernel: net: ppp: fix __percpu annotation.<br>
 41) kernel: net: ppp: destroy the mutex when cleanup.<br>
+42) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
 <br>
 <br>
 <br>
