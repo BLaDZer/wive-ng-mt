@@ -3690,22 +3690,23 @@
 24) kernel: usb: usb: host: fix incorrect updating of offset.<br>
 25) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
 26) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
-27) kernel: net: tcp: add memory barriers to write space paths.<br>
-28) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
-29) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
-30) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
-31) kernel: net: l2tp: remove l2tp_session_find().<br>
-32) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
-33) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
-34) kernel: net: ppp: declare PPP devices as LLTX.<br>
-35) kernel: net: ppp: avoid dealock on recursive xmit.<br>
-36) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
-37) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
-38) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
-39) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
-40) kernel: net: ppp: fix __percpu annotation.<br>
-41) kernel: net: ppp: destroy the mutex when cleanup.<br>
-42) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
+27) kernel: lib/genalloc.c: make the avail variable an atomic_long_t.<br>
+28) kernel: net: tcp: add memory barriers to write space paths.<br>
+29) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
+30) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
+31) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
+32) kernel: net: l2tp: remove l2tp_session_find().<br>
+33) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
+34) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
+35) kernel: net: ppp: declare PPP devices as LLTX.<br>
+36) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+37) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
+38) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+39) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
+40) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
+41) kernel: net: ppp: fix __percpu annotation.<br>
+42) kernel: net: ppp: destroy the mutex when cleanup.<br>
+43) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
 <br>
 <br>
 <br>

@@ -29,6 +29,10 @@
 
 #ifndef __GENALLOC_H__
 #define __GENALLOC_H__
+
+#include <linux/spinlock_types.h>
+#include <linux/atomic.h>
+
 /*
  *  General purpose special memory pool descriptor.
  */
@@ -43,7 +47,7 @@ struct gen_pool {
  */
 struct gen_pool_chunk {
 	struct list_head next_chunk;	/* next chunk in pool */
-	atomic_t avail;
+	atomic_long_t avail;
 	phys_addr_t phys_addr;		/* physical starting address of memory chunk */
 	unsigned long start_addr;	/* starting address of memory chunk */
 	unsigned long end_addr;		/* ending address of memory chunk */
