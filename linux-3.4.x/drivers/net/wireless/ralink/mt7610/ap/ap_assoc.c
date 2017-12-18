@@ -770,8 +770,14 @@ VOID ap_cmm_peer_assoc_req_action(
 			break;
 		}
 	}
-    
-    
+
+	/* drop this assoc req by silencely discard this frame */
+	if (FlgIs11bSta == 1 && (pAd->LatchRfRegs.Channel > 14 || !WMODE_EQUAL(PhyMode, WMODE_B))) {
+		DBGPRINT(RT_DEBUG_ERROR, ("%s():pEntry is 11b only STA and AP do not support 11B rates\n",
+					__FUNCTION__));
+		goto LabelOK;
+	}
+
     /* clear the previous Pairwise key table */
 
 #ifdef DOT11R_FT_SUPPORT
@@ -908,6 +914,12 @@ VOID ap_cmm_peer_assoc_req_action(
 	/* 2. qualify this STA's auth_asoc status in the MAC table, decide StatusCode */
 	StatusCode = APBuildAssociation(pAd, pEntry, ie_list, MaxSupportedRate, &Aid);
 
+	/* drop this assoc req and send reject */
+	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE || StatusCode == MLME_UNSPECIFY_FAIL) {
+		//RTMPSendWirelessEvent(pAd, IW_STA_MODE_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0);
+		goto SendAssocResponse;
+	}
+
 #ifdef DOT11R_FT_SUPPORT
 	if (pEntry->apidx < pAd->ApCfg.BssidNum)
 	{
@@ -945,9 +957,7 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 #endif /* DOT11_VHT_AC */
 
-	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE) {
-			RTMPSendWirelessEvent(pAd, IW_STA_MODE_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0);
-	}
+SendAssocResponse:
 
 	/* 3. send Association Response */
 	NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);

@@ -3714,6 +3714,8 @@
 <br>
 <br>
 <b>6.9.x</b><br>
+1) kernel: ralink_wifi: full ignore assoc req from B only stations if AP dose not support CCK(B).<br>
+2) kernel: ralink_wifi: fix error handle in make new station assoc.<br>
 <br>
 <br>
 <br>
