@@ -3462,7 +3462,7 @@ INT ap_rx_pkt_allow(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				pEntry = FindWdsEntry(pAd, pRxBlk->wcid, pHeader->Addr2, pRxBlk->rx_rate.field.MODE);
 
 			/* have no valid wds entry exist, then discard the incoming packet.*/
-			if (!(pEntry && WDS_IF_UP_CHECK(pAd, pEntry->func_tb_idx)))
+			if (!pEntry || !WDS_IF_UP_CHECK(pAd, pEntry->func_tb_idx))
 				return FALSE;
 
 			/*receive corresponding WDS packet, disable TX lock state (fix WDS jam issue) */

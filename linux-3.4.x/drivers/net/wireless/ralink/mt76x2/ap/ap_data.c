@@ -5120,14 +5120,20 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #endif /* MWDS */
 #ifdef WDS_SUPPORT
 			/* handle WDS */
+			if (!pEntry)
 			{
+				/*
+					The WDS frame only can go here when in auto learning mode and
+					this is the first trigger frame from peer
+
+					So we check if this is un-registered WDS entry by call function
+						"FindWdsEntry()"
+				*/
 				if (MAC_ADDR_EQUAL(pHeader->Addr1, pAd->CurrentAddress))
 					pEntry = FindWdsEntry(pAd, pRxBlk->wcid, pHeader->Addr2, pRxBlk->rx_rate.field.MODE);
-				else
-					pEntry = NULL;
 
 				/* have no valid wds entry exist, then discard the incoming packet.*/
-				if (!(pEntry && WDS_IF_UP_CHECK(pAd, pEntry->wdev_idx)))
+				if (!pEntry || !WDS_IF_UP_CHECK(pAd, pEntry->wdev_idx))
 					goto err;
 
 				/*receive corresponding WDS packet, disable TX lock state (fix WDS jam issue) */
@@ -5744,20 +5750,23 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 #endif /* MWDS */
 #ifdef WDS_SUPPORT
 			/* handle WDS */
+			if (!pEntry)
 			{
+				/*
+					The WDS frame only can go here when in auto learning mode and
+					this is the first trigger frame from peer
+
+					So we check if this is un-registered WDS entry by call function
+						"FindWdsEntry()"
+				*/
 				bWdsPacket = TRUE;
 				if (MAC_ADDR_EQUAL(pHeader->Addr1, pAd->CurrentAddress))
 					pEntry = FindWdsEntry(pAd, pRxBlk->wcid, pHeader->Addr2, pRxBlk->rx_rate.field.MODE);
-				else
-					pEntry = NULL;
 
 
 				/* have no valid wds entry exist, then discard the incoming packet.*/
-				if (!(pEntry && WDS_IF_UP_CHECK(pAd, pEntry->wdev_idx)))
-				{
-					/* drop the packet */
+				if (!pEntry  || !WDS_IF_UP_CHECK(pAd, pEntry->wdev_idx))
 					goto err;
-				}
 
 				/*receive corresponding WDS packet, disable TX lock state (fix WDS jam issue) */
 				if(pEntry && (pEntry->LockEntryTx == TRUE)) 
@@ -5766,7 +5775,7 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 					pEntry->ContinueTxFailCnt = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
-		
+
 				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
 				FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_WDS;
 				break;
