@@ -5143,6 +5143,11 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 					pEntry->ContinueTxFailCnt = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
+
+			}
+
+			if (pEntry)
+			{
 #ifdef STATS_COUNT_SUPPORT
 				pAd->WdsTab.WdsEntry[pEntry->wdev_idx].WdsCounter.ReceivedByteCount.QuadPart += pRxBlk->MPDUtotalByteCnt;
 				pAd->WdsTab.WdsEntry[pEntry->wdev_idx].WdsCounter.ReceivedFragmentCount++;
@@ -5776,6 +5781,10 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 					pEntry->LockEntryTx = FALSE;
 				}
 
+			}
+
+			if (pEntry)
+			{
 				RX_BLK_SET_FLAG(pRxBlk, fRX_WDS);
 				FromWhichBSSID = pEntry->wdev_idx + MIN_NET_DEVICE_FOR_WDS;
 				break;
