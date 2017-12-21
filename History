@@ -3715,10 +3715,11 @@
 <br>
 <b>6.9.x</b><br>
 1) kernel: ext4: fix crash when a directory's i_size is too small.<br>
-2) kernel: ralink_wifi: full ignore assoc req from B only stations if AP dose not support CCK(B).<br>
-3) kernel: ralink_wifi: fix error handle in make new station assoc.<br>
-4) kernel: ralink_wifi: dynamic alloc FtInfoBuf in assoc req action.<br>
-5) kernel: ralink_wifi: fix potentional null pointer dereference at wds handle path.<br>
+2) kernel: don't leak a key reference if request_key() tries to use a revoked keyring.<br>
+3) kernel: ralink_wifi: full ignore assoc req from B only stations if AP dose not support CCK(B).<br>
+4) kernel: ralink_wifi: fix error handle in make new station assoc.<br>
+5) kernel: ralink_wifi: dynamic alloc FtInfoBuf in assoc req action.<br>
+6) kernel: ralink_wifi: fix potentional null pointer dereference at wds handle path.<br>
 <br>
 <br>
 <br>
