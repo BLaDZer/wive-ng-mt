@@ -5428,11 +5428,6 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	pRxBlk->pData += hdr_len;
 	pRxBlk->DataSize -= hdr_len;
 
-	if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
-		pRxInfo->BA = 1;
-	else
-		pRxInfo->BA = 0;
-
 	/* 2. QOS */
 	if (pFmeCtrl->SubType & 0x08)
 	{
@@ -6061,11 +6056,6 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 	{
 		pData += LENGTH_802_11;
 	}
-
-	if (pAd->MacTab.Content[pRxBlk->wcid].BARecWcidArray[pRxBlk->TID] != 0)
-		pRxInfo->BA = 1;
-	else
-		pRxInfo->BA = 0;
 
 	/* 2. QOS */
 	if (pFmeCtrl->SubType & 0x08)

@@ -3684,43 +3684,40 @@
 18) kernel: ralink_wifi: enhance checking RSC value base on key index for replay counter attack.<br>
 19) kernel: ralink_wifi: avoid zero PTK in FT support case.<br>
 20) kernel: ralink_wifi: mt7610: HT_EXTINFO removed from current 802.11 specs (disable).<br>
+21) kernel: ralink_wifi: full ignore assoc req from B only stations if AP dose not support CCK(B).<br>
+22) kernel: ralink_wifi: fix error handle in make new station assoc.<br>
+23) kernel: ralink_wifi: dynamic alloc FtInfoBuf in assoc req action.<br>
+24) kernel: ralink_wifi: fix null pointer dereference at wds handle path.<br>
 21) kernel: ralink_raeth: fix reverse port calculate.<br>
 22) kernel: NFSv4: Fix client recovery when server reboots multiple times.<br>
 23) kernel: mm: avoid returning VM_FAULT_RETRY from ->page_mkwrite handlers.<br>
-24) kernel: usb: usb: host: fix incorrect updating of offset.<br>
-25) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
-26) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
-27) kernel: lib/genalloc.c: make the avail variable an atomic_long_t.<br>
-28) kernel: usbnet: fix alignment for frames with no ethernet header.<br>
-29) kernel: net: tcp: add memory barriers to write space paths.<br>
-30) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
-31) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
-32) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
-33) kernel: net: l2tp: remove l2tp_session_find().<br>
-34) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
-35) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
-36) kernel: net: ppp: declare PPP devices as LLTX.<br>
-37) kernel: net: ppp: avoid dealock on recursive xmit.<br>
-38) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
-39) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
-40) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
-41) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
-42) kernel: net: ppp: fix __percpu annotation.<br>
-43) kernel: net: ppp: destroy the mutex when cleanup.<br>
-44) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
-45) kernel: net: xfrm: copy policy family in clone_policy.<br>
-46) kernel: net: set tw_refcnt in __inet_twsk_hashdance(), we need to call inet_twsk_schedule() first.<br>
-47) kernel: net: tcp/dccp: block bh before arming time_wait timer.<br>
-<br>
-<br>
-<b>6.9.x</b><br>
-1) kernel: mm: Handle 0 flags in _calc_vm_trans() macro.<br>
-2) kernel: ext4: fix crash when a directory's i_size is too small.<br>
-3) kernel: don't leak a key reference if request_key() tries to use a revoked keyring.<br>
-4) kernel: ralink_wifi: full ignore assoc req from B only stations if AP dose not support CCK(B).<br>
-5) kernel: ralink_wifi: fix error handle in make new station assoc.<br>
-6) kernel: ralink_wifi: dynamic alloc FtInfoBuf in assoc req action.<br>
-7) kernel: ralink_wifi: fix potentional null pointer dereference at wds handle path.<br>
+24) kernel: mm: Handle 0 flags in _calc_vm_trans() macro.<br>
+25) kernel: ext4: fix crash when a directory's i_size is too small.<br>
+26) kernel: don't leak a key reference if request_key() tries to use a revoked keyring.<br>
+27) kernel: usb: usb: host: fix incorrect updating of offset.<br>
+28) kernel: keys: encrypted: fix dereference of NULL user_key_payload.<br>
+29) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
+30) kernel: lib/genalloc.c: make the avail variable an atomic_long_t.<br>
+31) kernel: usbnet: fix alignment for frames with no ethernet header.<br>
+32) kernel: net: tcp: add memory barriers to write space paths.<br>
+33) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
+34) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
+35) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
+36) kernel: net: l2tp: remove l2tp_session_find().<br>
+37) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
+38) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
+39) kernel: net: ppp: declare PPP devices as LLTX.<br>
+40) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+41) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
+42) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+43) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
+44) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
+45) kernel: net: ppp: fix __percpu annotation.<br>
+46) kernel: net: ppp: destroy the mutex when cleanup.<br>
+47) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
+48) kernel: net: xfrm: copy policy family in clone_policy.<br>
+49) kernel: net: set tw_refcnt in __inet_twsk_hashdance(), we need to call inet_twsk_schedule() first.<br>
+50) kernel: net: tcp/dccp: block bh before arming time_wait timer.<br>
 <br>
 <br>
 <br>
