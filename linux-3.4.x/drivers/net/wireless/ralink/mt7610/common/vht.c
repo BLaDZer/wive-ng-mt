@@ -280,12 +280,14 @@ INT ap_vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *c
 		UCHAR BAD_IPHONE6_4_OUI[]  = {0x60, 0xF8, 0x1D};
 		UCHAR BAD_IPHONE6_5_OUI[]  = {0x60, 0xA3, 0x7D};
 		UCHAR BAD_MACBOOK_1_OUI[]  = {0xAC, 0xBC, 0x32};
+		UCHAR BAD_MACBOOK_2_OUI[]  = {0xB8, 0xE8, 0x56};
 		UCHAR BAD_HUAWEI_1_OUI[]  = {0x3C, 0xFA, 0x43};
 		UCHAR BAD_HUAWEI_2_OUI[]  = {0x7C, 0x11, 0xCB};
 		UCHAR BAD_HUAWEI_3_OUI[]  = {0xF0, 0x43, 0x47};
 		UCHAR BAD_HUAWEI_4_OUI[]  = {0xA8, 0xC8, 0x3A};
 		UCHAR BAD_HUAWEI_5_OUI[]  = {0x10, 0xB1, 0xF8};
 		if (NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_1_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_IPHONE6_3_OUI, 3)

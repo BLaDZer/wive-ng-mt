@@ -3677,7 +3677,7 @@
 11) kernel: ralink_wifi: add move notify report to log.<br>
 12) kernel: ralink_wifi: do not send deauth to allready migrated clients (move notify).<br>
 13) kernel: ralink_wifi: clear ACK in TxRing for clienst long time idle (1/2 of time for disconnect of dead).<br>
-14) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D, 60:A3:7D and 10:B1:F8 honor P8 to BCM bug workaround.<br>
+14) kernel: ralink_wifi: add new iphone v6 oui 60:F8:1D, 60:A3:7D, B8:E8:56 macbook air and 10:B1:F8 honor P8 to BCM bug workaround.<br>
 15) kernel: ralink_wifi: fix bss index calc before AutoChBssEntrySet.<br>
 16) kernel: ralink_wifi: do not clear the previous Pairwise key table at new assoc with FT mode (reinstall later).<br>
 17) kernel: ralink_wifi: add BMC packet PN replay attack detection and prevent.<br>
