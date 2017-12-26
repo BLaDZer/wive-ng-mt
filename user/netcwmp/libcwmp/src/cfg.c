@@ -29,7 +29,6 @@ struct conf_t {
     bool read_from_nvram;
 };
 
-
 static conf_t * cwmp_conf_handle = NULL;
 
 int cwmp_conf_open(const char * filename)
@@ -187,7 +186,6 @@ int cwmp_conf_get_int_def(const char * key, int def)
     return strToIntDef(val, def);
 }
 
-
 int cwmp_nvram_set(const char * key, const char * value)
 {
     cwmp_log_debug("%s(\"%s\", \"%s\")", __func__, key, value);
@@ -203,7 +201,6 @@ int cwmp_nvram_set(const char * key, const char * value)
 char *cwmp_nvram_get(const char * key)
 {
     char *nvval = NULL;
-    //FIXME: libnvram check const!
     nvval = nvram_get(RT2860_NVRAM, (char*) key);
     cwmp_log_debug("%s(\"%s\") = \"%s\"", __func__, key, nvval);
     return nvval;
@@ -211,13 +208,10 @@ char *cwmp_nvram_get(const char * key)
 
 char * cwmp_nvram_pool_get(pool_t * pool, const char * key)
 {
-    //FIXME: libnvram check const!
     char* val = nvram_get(RT2860_NVRAM, (char*)key);
     cwmp_log_debug("%s(\"%s\") = \"%s\"", __func__, key, val);
     return pool_pstrdup(pool,val);
 }
-
-
 
 int cwmp_nvram_get_int(const char * key, int def)
 {
@@ -229,7 +223,6 @@ int cwmp_nvram_get_int(const char * key, int def)
     }
 
     return strtol(val, NULL, 10);
-
 }
 
 int cwmp_nvram_get_bool_onoff(const char * key, int def)
@@ -248,6 +241,5 @@ int cwmp_nvram_get_bool_onoff(const char * key, int def)
     }
 
     return def;
-
 }
 

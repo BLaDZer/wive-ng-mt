@@ -42,7 +42,7 @@ static bool
 leic_get_if_mac(char ifname[IFNAMSIZ], char mac[18])
 {
     struct ifreq ifr = {};
-    int s = -1;
+    int s;
 
     *mac = '\0';
 

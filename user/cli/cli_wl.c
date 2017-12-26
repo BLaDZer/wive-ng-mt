@@ -388,8 +388,6 @@ int func_wl(int argc, char* argv[])
         return func_wl_disconnect(argc, argv);
     }
 
-
-
     return 0;
 }
 
@@ -542,7 +540,7 @@ int func_wl_status_report(int argc, char* argv[])
     int bcisolated_ssid_len = strlen(bcisolated_ssid);
 
     int ssid_num;
-    char ssid_nvram_id[6] = {0};
+    char ssid_nvram_id[12] = {0};
 
     int bssid_num = nvram_get_int(RT2860_NVRAM, "BssidNum", 0);
     int band_num = 1;
@@ -879,7 +877,7 @@ help:
 int func_wl_status(int argc, char* argv[])
 {
     int ssid_num;
-    char ssid_nvram_id[6] = {0};
+    char ssid_nvram_id[12] = {0};
 
     if (is_report(argc, argv))
     {

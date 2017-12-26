@@ -30,7 +30,7 @@ int getOpmodeInt(char* opmode)
     int i;
     char mode_lower[20] = {0};
 
-    for (i = 0; (opmode[i])&&(i<sizeof(mode_lower)); i++) 
+    for (i = 0; (i < sizeof(mode_lower)) && opmode[i] != '\0'; i++) 
     {
         mode_lower[i] = tolower(opmode[i]);
     }

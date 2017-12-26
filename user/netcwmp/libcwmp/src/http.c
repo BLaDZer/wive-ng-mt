@@ -2024,10 +2024,17 @@ int http_send_diagnostics(size_t size, const char *tourl, struct http_statistics
     }
 end:
     pool_destroy(pool);
+
     if (rc != HTTP_200)
+    {
         if (rc == CWMP_TIMEOUT)
+        {
             return CWMP_TIMEOUT;
+        }
+
         return CWMP_ERROR;
+    }
+
     return CWMP_OK;
 }
 
@@ -2035,7 +2042,8 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 {
     char buffer[HTTP_DEFAULT_LEN+1];
 //    char * data;
-    size_t len1, len2, totallen;
+    size_t len1, totallen;
+    long int len2;
 
     FUNCTION_TRACE();
 
@@ -2068,7 +2076,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
 */
     FILE *tf = fopen(fromfile, "rb");
 
-    if(!tf) {
+    if (!tf) {
         cwmp_log_error("http_send_file_request(): unable to open filename %s", fromfile);
         return CWMP_ERROR;
     }
@@ -2076,7 +2084,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     fseek(tf,0L,SEEK_END);
     len2 = ftell(tf);
     fseek(tf,0L,SEEK_SET);
-    cwmp_log_info("http_send_file_request FILE LEN %lu",len2);
+    cwmp_log_info("http_send_file_request FILE LEN %ld",len2);
 
 
     len1 = TRsnprintf(buffer, HTTP_DEFAULT_LEN, header_fmt,
@@ -2100,11 +2108,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     if(rc != HTTP_100)
     {
         cwmp_log_error("ERROR: http_send_file_request response code: %i",rc);
-
-        if(tf != NULL)
-        {
-            fclose(tf);
-        }
+        fclose(tf);
 
         if (rc == CWMP_TIMEOUT) {
             return CWMP_TIMEOUT;
@@ -2118,7 +2122,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
     while(1)
     {
         len2 = fread(buffer, 1, HTTP_DEFAULT_LEN, tf);
-        cwmp_log_debug("http_send_file_request TO SEND %lu",len2);
+        cwmp_log_debug("http_send_file_request TO SEND %ld",len2);
 
         if (len2 <= 0)
         {
@@ -2138,10 +2142,7 @@ int http_send_file_request(http_socket_t * sock , http_request_t * request, cons
         totallen += len2;
     }
 
-    if(tf != NULL)
-    {
-        fclose(tf);
-    }
+    fclose(tf);
 
     cwmp_log_debug("INFO: http_send_file_request OK (len: %i)",totallen);
     return totallen;

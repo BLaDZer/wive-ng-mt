@@ -102,7 +102,7 @@ static unsigned int cwmp_worker_thread_tasks(cwmp_t * cwmp)
 void cwmp_worker_thread_start(cwmp_t * cwmp)
 {
 #ifdef WIN32
-    unsigned tid1, tid2;
+    unsigned tid1;
     FUNCTION_TRACE();
     CreateThread(NULL, 0, cwmp_worker_thread_httpd, cwmp, 0, &tid1);
 #else

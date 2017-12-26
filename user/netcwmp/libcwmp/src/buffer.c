@@ -263,7 +263,7 @@ int cwmp_chunk_write_string(cwmp_chunk_t * cb, const char * str, size_t length, 
     {
         len = cwmp_buffer_remain(cb->current);
 
-        if (len <= 0)
+        if (len == 0)
         {
             if (cb->current && cb->current->next)
             {
