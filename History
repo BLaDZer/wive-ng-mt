@@ -3725,6 +3725,7 @@
 <br>
 <br>
 <b>7.0.x</b><br>
+1) kernel: inet: frag: release spinlock before calling icmp_send().<br>
 <br>
 <br>
 <br>
