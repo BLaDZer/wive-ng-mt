@@ -3725,7 +3725,8 @@
 <br>
 <br>
 <b>7.0.x</b><br>
-1) kernel: inet: frag: release spinlock before calling icmp_send().<br>
+1) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+2) kernel: net: ipv6: icmp6: Allow icmp messages to be looped back.<br>
 <br>
 <br>
 <br>
