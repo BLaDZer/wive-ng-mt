@@ -3726,10 +3726,11 @@
 <br>
 <b>7.0.x</b><br>
 1) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-2) kernel: net: ipv6: icmp6: Allow icmp messages to be looped back.<br>
-3) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-4) kernel: net: igmp: Use correct source address on IGMPv3 reports (RFC 3376).<br>
-5) kernel: net: igmp: guard against silly MTU values.<br>
+2) kernel: net: tcp md5sig: Use skb's saddr when replying to an incoming segment.<br>
+3) kernel: net: ipv6: icmp6: Allow icmp messages to be looped back.<br>
+4) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+5) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+6) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 <br>
 <br>
 <br>
