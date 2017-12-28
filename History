@@ -3727,6 +3727,7 @@
 <b>7.0.x</b><br>
 1) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
 2) kernel: net: ipv6: icmp6: Allow icmp messages to be looped back.<br>
+3) kernel: net: igmp: Use correct source address on IGMPv3 reports (RFC 3376).<br>
 <br>
 <br>
 <br>
