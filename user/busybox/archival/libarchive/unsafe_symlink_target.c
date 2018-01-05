@@ -7,6 +7,8 @@
 
 int FAST_FUNC unsafe_symlink_target(const char *target)
 {
+// disable check unsafe symlinks (need for compat with RWFS target)
+#if 0
 	const char *dot;
 
 	if (target[0] == '/') {
@@ -45,4 +47,6 @@ int FAST_FUNC unsafe_symlink_target(const char *target)
 		/* NB: it can even be trailing ".", should only add 1 */
 		dot += 1;
 	}
+#endif
+    return 0;
 }
