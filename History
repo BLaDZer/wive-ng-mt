@@ -3731,20 +3731,21 @@
 4) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
 5) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
 6) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-7) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-8) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-9) kernel: net: enable interface alias removal via rtnl.<br>
-10) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-11) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-12) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-13) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-14) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-15) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-16) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-17) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-18) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-19) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-20) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+7) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
+8) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+9) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+10) kernel: net: enable interface alias removal via rtnl.<br>
+11) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+12) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+13) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+14) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+15) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+16) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+17) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+18) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+19) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+20) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+21) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 <br>
 <br>
 <br>
