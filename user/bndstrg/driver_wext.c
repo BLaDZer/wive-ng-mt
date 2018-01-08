@@ -251,13 +251,12 @@ static void *driver_wext_init(struct bndstrg *bndstrg,
 							  const int drv_mode)
 {
 	struct driver_wext_data *drv_wext_data;
-#if 1
 	struct netlink_config *cfg;
-#endif
+
 	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
-	
+
 	drv_wext_data = calloc(1, sizeof(*drv_wext_data));
-	
+
 	if (!drv_wext_data) {
 		DBGPRINT(DEBUG_ERROR, "No avaliable memory for driver_wext_data\n");
 		goto err1;
@@ -267,18 +266,18 @@ static void *driver_wext_init(struct bndstrg *bndstrg,
 	DBGPRINT(DEBUG_OFF, "Initialize ralink wext interface\n");
 
 	drv_wext_data->ioctl_sock = socket(PF_INET, SOCK_DGRAM, 0);
-	
+
 	if (drv_wext_data->ioctl_sock < 0) {
 		DBGPRINT(DEBUG_ERROR, "socket(PF_INET,SOCK_DGRAM)");
 		goto err2;
 	}
-#if 1
+
 	cfg = os_zalloc(sizeof(*cfg));
 
-    if (!cfg) {
+	if (!cfg) {
 		DBGPRINT(DEBUG_ERROR, "No avaliable memory for netlink cfg\n");
-        goto err3;
-    }
+    	    goto err3;
+	}
 
 	cfg->ctx = drv_wext_data;
 	cfg->newlink_cb = driver_wext_event_rtm_newlink;
@@ -289,7 +288,6 @@ static void *driver_wext_init(struct bndstrg *bndstrg,
 		DBGPRINT(DEBUG_ERROR, "wext netlink init fail\n");
 		goto err3;
 	}
-#endif
 
 	drv_wext_data->priv = (void *)bndstrg;
 

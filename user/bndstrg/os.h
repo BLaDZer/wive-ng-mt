@@ -27,13 +27,6 @@
 
 typedef long os_time_t;
 
-/**
- * os_sleep - Sleep (sec, usec)
- * @sec: Number of seconds to sleep
- * @usec: Number of microseconds to sleep
- */
-void os_sleep(os_time_t sec, os_time_t usec);
-
 struct os_time {
 	os_time_t sec;
 	os_time_t usec;
@@ -45,6 +38,7 @@ struct os_time {
  * Returns: 0 on success, -1 on failure
  */
 int os_get_time(struct os_time *t);
+
 
 
 /* Helper macros for handling struct os_time */
@@ -63,121 +57,6 @@ int os_get_time(struct os_time *t);
 } while (0)
 
 /**
- * os_mktime - Convert broken-down time into seconds since 1970-01-01
- * @year: Four digit year
- * @month: Month (1 .. 12)
- * @day: Day of month (1 .. 31)
- * @hour: Hour (0 .. 23)
- * @min: Minute (0 .. 59)
- * @sec: Second (0 .. 60)
- * @t: Buffer for returning calendar time representation (seconds since
- * 1970-01-01 00:00:00)
- * Returns: 0 on success, -1 on failure
- *
- * Note: The result is in seconds from Epoch, i.e., in UTC, not in local time
- * which is used by POSIX mktime().
- */
-int os_mktime(int year, int month, int day, int hour, int min, int sec,
-	      os_time_t *t);
-
-
-/**
- * os_daemonize - Run in the background (detach from the controlling terminal)
- * @pid_file: File name to write the process ID to or %NULL to skip this
- * Returns: 0 on success, -1 on failure
- */
-int os_daemonize(const char *pid_file);
-
-/**
- * os_daemonize_terminate - Stop running in the background (remove pid file)
- * @pid_file: File name to write the process ID to or %NULL to skip this
- */
-void os_daemonize_terminate(const char *pid_file);
-
-/**
- * os_get_random - Get cryptographically strong pseudo random data
- * @buf: Buffer for pseudo random data
- * @len: Length of the buffer
- * Returns: 0 on success, -1 on failure
- */
-int os_get_random(unsigned char *buf, size_t len);
-
-/**
- * os_random - Get pseudo random value (not necessarily very strong)
- * Returns: Pseudo random value
- */
-unsigned long os_random(void);
-
-/**
- * os_rel2abs_path - Get an absolute path for a file
- * @rel_path: Relative path to a file
- * Returns: Absolute path for the file or %NULL on failure
- *
- * This function tries to convert a relative path of a file to an absolute path
- * in order for the file to be found even if current working directory has
- * changed. The returned value is allocated and caller is responsible for
- * freeing it. It is acceptable to just return the same path in an allocated
- * buffer, e.g., return strdup(rel_path). This function is only used to find
- * configuration files when os_daemonize() may have changed the current working
- * directory and relative path would be pointing to a different location.
- */
-char * os_rel2abs_path(const char *rel_path);
-
-/**
- * os_program_init - Program initialization (called at start)
- * Returns: 0 on success, -1 on failure
- *
- * This function is called when a programs starts. If there are any OS specific
- * processing that is needed, it can be placed here. It is also acceptable to
- * just return 0 if not special processing is needed.
- */
-int os_program_init(void);
-
-/**
- * os_program_deinit - Program deinitialization (called just before exit)
- *
- * This function is called just before a program exists. If there are any OS
- * specific processing, e.g., freeing resourced allocated in os_program_init(),
- * it should be done here. It is also acceptable for this function to do
- * nothing.
- */
-void os_program_deinit(void);
-
-/**
- * os_setenv - Set environment variable
- * @name: Name of the variable
- * @value: Value to set to the variable
- * @overwrite: Whether existing variable should be overwritten
- * Returns: 0 on success, -1 on error
- *
- * This function is only used for wpa_cli action scripts. OS wrapper does not
- * need to implement this if such functionality is not needed.
- */
-int os_setenv(const char *name, const char *value, int overwrite);
-
-/**
- * os_unsetenv - Delete environent variable
- * @name: Name of the variable
- * Returns: 0 on success, -1 on error
- *
- * This function is only used for wpa_cli action scripts. OS wrapper does not
- * need to implement this if such functionality is not needed.
- */
-int os_unsetenv(const char *name);
-
-/**
- * os_readfile - Read a file to an allocated memory buffer
- * @name: Name of the file to read
- * @len: For returning the length of the allocated buffer
- * Returns: Pointer to the allocated buffer or %NULL on failure
- *
- * This function allocates memory and reads the given file to this buffer. Both
- * binary and text files can be read with this function. The caller is
- * responsible for freeing the returned buffer with os_free().
- */
-char * os_readfile(const char *name, size_t *len);
-
-/**
  * os_zalloc - Allocate and zero memory
  * @size: Number of bytes to allocate
  * Returns: Pointer to allocated and zeroed memory or %NULL on failure
@@ -185,7 +64,6 @@ char * os_readfile(const char *name, size_t *len);
  * Caller is responsible for freeing the returned buffer with os_free().
  */
 void * os_zalloc(size_t size);
-
 
 /*
  * The following functions are wrapper for standard ANSI C or POSIX functions.
@@ -213,6 +91,7 @@ void * os_zalloc(size_t size);
 #ifndef os_free
 #define os_free(p) free((p))
 #endif
+
 #ifndef os_strdup
 #ifdef _MSC_VER
 #define os_strdup(s) _strdup(s)
@@ -280,18 +159,5 @@ void * os_zalloc(size_t size);
 #define os_snprintf snprintf
 #endif
 #endif
-
-
-/**
- * os_strlcpy - Copy a string with size bound and NUL-termination
- * @dest: Destination
- * @src: Source
- * @siz: Size of the target buffer
- * Returns: Total length of the target string (length of src) (not including
- * NUL-termination)
- *
- * This function matches in behavior with the strlcpy(3) function in OpenBSD.
- */
-size_t os_strlcpy(char *dest, const char *src, size_t siz);
 
 #endif /* OS_H */

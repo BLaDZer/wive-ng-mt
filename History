@@ -3726,29 +3726,30 @@
 <br>
 <b>7.0.x</b><br>
 1) busybox: update to 1.28.0 version.<br>
-2) kernel: mm/mmu_context, sched/core: Fix mmu_context.h assumption.<br>
-3) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
-4) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
-5) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
-6) kernel: usb: increase quirk delay for USB devices.<br>
-7) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
-8) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
-9) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-10) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
-11) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-12) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-13) kernel: net: enable interface alias removal via rtnl.<br>
-14) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-15) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-16) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-17) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-18) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-19) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-20) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-21) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-22) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-23) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-24) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+2) bndstrg: fix uninit variable and cleanup.<br>
+3) kernel: mm/mmu_context, sched/core: Fix mmu_context.h assumption.<br>
+4) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
+5) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
+6) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
+7) kernel: usb: increase quirk delay for USB devices.<br>
+8) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
+9) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
+10) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
+11) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
+12) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+13) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+14) kernel: net: enable interface alias removal via rtnl.<br>
+15) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+16) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+17) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+18) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+19) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+20) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+21) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+22) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+23) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+24) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+25) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 <br>
 <br>
 <br>

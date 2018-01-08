@@ -137,7 +137,7 @@ int bndstrg_insert_entry(
 
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
-	unsigned long HashIdx;
+	unsigned long HashIdx = 0;
 	struct bndstrg_cli_entry *entry = NULL, *pre_entry, *this_entry;
 	int ret_val = BND_STRG_SUCCESS;
 

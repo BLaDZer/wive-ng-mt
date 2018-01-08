@@ -24,15 +24,6 @@
 
 #include "os.h"
 
-void os_sleep(os_time_t sec, os_time_t usec)
-{
-	if (sec)
-		sleep(sec);
-	if (usec)
-		usleep(usec);
-}
-
-
 int os_get_time(struct os_time *t)
 {
 	int res;
@@ -43,139 +34,6 @@ int os_get_time(struct os_time *t)
 	return res;
 }
 
-
-int os_mktime(int year, int month, int day, int hour, int min, int sec,
-	      os_time_t *t)
-{
-	struct tm tm;
-
-	if (year < 1970 || month < 1 || month > 12 || day < 1 || day > 31 ||
-	    hour < 0 || hour > 23 || min < 0 || min > 59 || sec < 0 ||
-	    sec > 60)
-		return -1;
-
-	os_memset(&tm, 0, sizeof(tm));
-	tm.tm_year = year - 1900;
-	tm.tm_mon = month - 1;
-	tm.tm_mday = day;
-	tm.tm_hour = hour;
-	tm.tm_min = min;
-	tm.tm_sec = sec;
-
-	*t = (os_time_t) mktime(&tm);
-	return 0;
-}
-
-
-int os_daemonize(const char *pid_file)
-{
-	if (daemon(0, 0)) {
-		perror("daemon");
-		return -1;
-	}
-
-	if (pid_file) {
-		FILE *f = fopen(pid_file, "w");
-		if (f) {
-			fprintf(f, "%u\n", getpid());
-			fclose(f);
-		}
-	}
-
-	return -0;
-}
-
-
-void os_daemonize_terminate(const char *pid_file)
-{
-	if (pid_file)
-		unlink(pid_file);
-}
-
-
-int os_get_random(unsigned char *buf, size_t len)
-{
-	FILE *f;
-	size_t rc;
-
-	f = fopen("/dev/urandom", "rb");
-	if (f == NULL) {
-		printf("Could not open /dev/urandom.\n");
-		return -1;
-	}
-
-	rc = fread(buf, 1, len, f);
-	fclose(f);
-
-	return rc != len ? -1 : 0;
-}
-
-
-unsigned long os_random(void)
-{
-	return random();
-}
-
-
-int os_program_init(void)
-{
-	return 0;
-}
-
-
-void os_program_deinit(void)
-{
-}
-
-
-int os_setenv(const char *name, const char *value, int overwrite)
-{
-	return setenv(name, value, overwrite);
-}
-
-
-int os_unsetenv(const char *name)
-{
-#if defined(__FreeBSD__) || defined(__NetBSD__)
-	unsetenv(name);
-	return 0;
-#else
-	return unsetenv(name);
-#endif
-}
-
-
-char * os_readfile(const char *name, size_t *len)
-{
-	FILE *f;
-	char *buf;
-
-	f = fopen(name, "rb");
-	if (f == NULL)
-		return NULL;
-
-	fseek(f, 0, SEEK_END);
-	*len = ftell(f);
-	fseek(f, 0, SEEK_SET);
-
-	buf = os_malloc(*len);
-	if (buf == NULL) {
-		fclose(f);
-		return NULL;
-	}
-
-	if (fread(buf, 1, *len, f) != *len) {
-		fclose(f);
-		os_free(buf);
-		return NULL;
-	}
-
-	fclose(f);
-
-	return buf;
-}
-
-
 void * os_zalloc(size_t size)
 {
 	void *n = os_malloc(size);
@@ -183,4 +41,3 @@ void * os_zalloc(size_t size)
 		os_memset(n, 0, size);
 	return n;
 }
-
