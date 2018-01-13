@@ -3729,7 +3729,7 @@
 2) configs: disable wpa supplicant build in 16Mb flash devices (not used).<br>
 3) busybox: update to 1.28.0 version.<br>
 4) bndstrg: fix uninit variable and cleanup.<br>
-5) init.d: if rrm/ft enables tune arp/bridge for more fast cache rearrange.<br>
+5) init.d: if rrm/ft enables tune arp/bridge for more fast cache rearrange and arp/rp filters disables on APs in bridge mode.<br>
 6) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
 7) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
 8) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
