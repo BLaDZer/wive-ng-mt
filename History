@@ -3760,6 +3760,7 @@
 33) kernel: ext4: reject inodes with negative size.<br>
 34) kernel: ext4: add sanity checking to count_overhead().<br>
 35) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
+36) kernel: ext4: fix in-superblock mount options processing.<br>
 <br>
 <br>
 <br>
