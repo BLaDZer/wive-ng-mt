@@ -3750,48 +3750,48 @@
 23) kernel: ext4: keep existing extra fields when inode expands.<br>
 24) kernel: ext4: fix data corruption for mmap writes.<br>
 25) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
-26) kernel: usb: increase quirk delay for USB devices.<br>
-27) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
-28) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
-29) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-30) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
-31) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-32) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-33) kernel: net: enable interface alias removal via rtnl.<br>
-34) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-35) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-36) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-37) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-38) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-39) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-40) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-41) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-42) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-43) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-44) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-45) kernel: net: usbnet: remove unused driver_name variable.<br>
-46) kernel: net: usbnet: make sure no NULL pointer is passed through.<br>
-47) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
-48) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
-49) kernel: usb: net: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
-50) kernel: usb: net: cdc_ncm: reduce memory use when kernel memory low.<br>
-51) kernel: usb: net: cdc_ncm: constify attribute_group structures.<br>
-52) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
-53) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
-54) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
-55) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
-56) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
-57) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
-58) kernel: usb: serial: option: add two Longcheer device ids.<br>
-59) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
-60) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
-61) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
-62) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
-63) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
-64) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
-65) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
-66) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-67) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+26) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
+27) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
+28) kernel: usb: usbnet: remove unused driver_name variable.<br>
+29) kernel: usb: usbnet: make sure no NULL pointer is passed through.<br>
+30) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
+31) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
+32) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
+33) kernel: usb: cdc_ncm: constify attribute_group structures.<br>
+34) kernel: usb: cdc_ncm: reduce memory use when kernel memory low.<br>
+35) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
+36) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
+37) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
+38) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
+39) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
+40) kernel: usb: serial: option: add two Longcheer device ids.<br>
+41) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
+42) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
+43) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
+44) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
+45) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
+46) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+47) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
+48) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+49) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+50) kernel: usb: increase quirk delay for USB devices.<br>
+51) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
+52) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
+53) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
+54) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+55) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+56) kernel: net: enable interface alias removal via rtnl.<br>
+57) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+58) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+59) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+60) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+61) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+62) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+63) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+64) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+65) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+66) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+67) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 <br>
 <br>
 <br>
