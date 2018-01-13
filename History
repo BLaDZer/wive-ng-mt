@@ -3766,6 +3766,7 @@
 39) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
 40) kernel: ext4: fix data corruption in data=journal mode.<br>
 41) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
+42) kernel: ext4: keep existing extra fields when inode expands.<br>
 <br>
 <br>
 <br>
