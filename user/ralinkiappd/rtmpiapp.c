@@ -978,96 +978,24 @@ static BOOLEAN IAPP_SIG_Process(
 	switch(pSig->Sig)
 	{
 		case FT_KDP_SIG_NOTHING:
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> NO event to handle.\n");
-			break;
-		case FT_KDP_SIG_IAPP_ASSOCIATION:
 		{
-#if 1
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SIG_IAPP_ASSOCIATION.\n");
-#else
-
-			/*
-				This service primitive is used when a STA associates with the
-				AP using an 802.11 association request frame.
-
-				One purpose of this primitive is to cause the forwarding
-				tables of layer 2 internetworking devices, e.g. bridges
-				and switches, to be updated.
-
-				The second purpose of this primitive is to notify other APs
-				within the multicast domain, i.e., that portion of a network
-				in which a layer two frame addressed to a multicast address
-				can be received, of the STA’s new association, to allow those
-				APs to clean up context information left behind by STAs that
-				do not properly reassociate when moving from one AP to another,
-				but rather only use the 802.11 Association Request.
-			*/
-			RT_IAPP_ADD_NOTIFY IappAddNotify, *pFrameNotify;
-			UINT32 DataLen;
-
-
-			/* pSig->MacAddr[] is the associated STATION MAC address */
-
-			/* init */
-			IAPP_MEM_ZERO(&IappAddNotify, sizeof(IappAddNotify));
-
-			/* make up the frame content */
-			pFrameNotify = &IappAddNotify;
-			pFrameNotify->IappHeader.Version = 0;
-			pFrameNotify->IappHeader.Command = IAPP_CMD_ADD_NOTIFY;
-			pFrameNotify->IappHeader.Identifier = 0;
-
-			DataLen = sizeof(RT_IAPP_ADD_NOTIFY);
-
-			pFrameNotify->IappHeader.Length = SWAP_16(DataLen);
-			pFrameNotify->Sequence = SWAP_16(pSig->Sequence);
-
-			pFrameNotify->AddressLen = ETH_ALEN;
-			IAPP_MEM_MOVE(pFrameNotify->MacAddr, pSig->MacAddr, ETH_ALEN);
-
-			mt_iapp_ft_client_insert(&pCtrlBK->SelfFtStaTable, pSig->MacAddr, WifiMAC, if_idx);
-						/*
-				Send the ADD-notify with multicast address &
-				send the L2 update frame with broadcast address.
-			*/
-			/*
-				An ESS is a set of Basic Service Sets (BSSs) that form a
-				single LAN, allowing an STA to move transparently from one
-				BSS to another throughout the ESS.
-
-				Because this packet is addressed to the IAPP multicast
-				address, this packet may not reach all APs in an ESS.
-				In particular, if the ESS spans multiple subnets, neither
-				the ADD-notify packet nor the Layer 2 Update frame is likely
-				to reach the APs on subnets other than the one on which
-				the transmissions originate.
-
-				Note that purpose of the IAPP ADD-notify packet is to remove
-				stale associations, not to modify the learning table.
-				The learning table update is done by the Layer 2 Update frame.
-
-				This should allow for more efficient management of AP resources.
-
-				There is no security provided for the Layer 2 Update frame.
-
-				The Layer 2 Update frame does not open new potentials for
-				attacks against the WLAN or the STAs. However, the ADD-notify
-				is a UDP IP frame that COULD be sent from anywhere in the DS
-				and attack the AP’s state for the STA.
-			*/
-			IAPP_UDP_PACKET_SEND(pCtrlBK, pFrameNotify, DataLen, pRspBuf);
-			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
-
-			DBGPRINT(RT_DEBUG_TRACE,
-					"iapp> (IAPP_SIG_ASSOCIATION), Rcv assoc signal, and send out "
-					"IAPP add-notify\n");
-#endif
-		} /* case IAPP_SIG_ASSOCIATION */
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> NO event to handle.\n");
+		}
 		break;
 
-		case IAPP_SIG_REASSOCIATION:
-		    /* not support currently */
-		    break;
+		case FT_KDP_SIG_IAPP_ASSOCIATION:
+		{
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SIG_IAPP_ASSOCIATION.\n");
+			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
+		}
+		break;
+
+		case FT_KDP_SIG_IAPP_REASSOCIATION:
+		{
+			DBGPRINT(RT_DEBUG_TRACE, "iapp> FT_KDP_SIG_IAPP_REASSOCIATION.\n");
+			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
+		}
+		break;
 
 		case FT_KDP_SIG_FT_ASSOCIATION:
 		{
@@ -1166,19 +1094,10 @@ static BOOLEAN IAPP_SIG_Process(
 			IAPP_L2UpdateFrameSend(pCtrlBK, pSig->MacAddr);
 
 			DBGPRINT(RT_DEBUG_TRACE,
-					"iapp> (IAPP_SIG_REASSOCIATION) Rcv a reassoc signal and "
+					"iapp> (FT_KDP_SIG_FT_REASSOCIATION) Rcv a reassoc signal and "
 					"send out IAPP move-notify!\n");
 		}
 		break;
-
-
-		case IAPP_SIG_TERMINATE:
-		{
-			/* terminate the daemon */
-			IAPP_TerminateHandle(0);
-		}
-		break;
-
 
 		case FT_KDP_SIG_KEY_TIMEOUT:
 		{

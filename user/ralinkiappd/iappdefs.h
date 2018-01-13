@@ -73,14 +73,6 @@
 #define IAPP_QUERY_OID_REQ				5
 #define IAPP_QUERY_OID_RSP				6
 
-
-/* Definition of signal */
-#define IAPP_SIG_NONE					0
-#define IAPP_SIG_ASSOCIATION			1
-#define IAPP_SIG_REASSOCIATION			2
-#define IAPP_SIG_TERMINATE				3
-
-
 /* Definition of IAPP command */ /* reference to IEEE802.11f page 50 */
 #define IAPP_CMD_ADD_NOTIFY				0	/* ADD-notify */
 #define IAPP_CMD_MOVE_NOTIFY			1	/* MOVE-notify */
