@@ -3770,6 +3770,7 @@
 43) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
 44) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 45) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
+46) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
 <br>
 <br>
 <br>
