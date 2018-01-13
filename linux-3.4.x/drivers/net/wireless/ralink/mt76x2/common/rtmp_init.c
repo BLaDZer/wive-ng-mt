@@ -3223,6 +3223,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 #endif  /* DOT11N_DRAFT3 */
 
 	pAd->CommonCfg.bRcvBSSWidthTriggerEvents = FALSE;
+	pAd->CommonCfg.DisableOLBCDetect = 1;
 
 	NdisZeroMemory(&pAd->CommonCfg.AddHTInfo, sizeof(pAd->CommonCfg.AddHTInfo));
 	pAd->CommonCfg.BACapability.field.MMPSmode = MMPS_DISABLE;
