@@ -3753,6 +3753,7 @@
 26) kernel: nfsd: update mtime on truncate.<br>
 27) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
 28) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
+29) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
 <br>
 <br>
 <br>
