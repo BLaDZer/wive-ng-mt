@@ -3761,6 +3761,7 @@
 34) kernel: ext4: add sanity checking to count_overhead().<br>
 35) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
 36) kernel: ext4: fix in-superblock mount options processing.<br>
+37) kernel: ext4: fix reference counting bug on block allocation error.<br>
 <br>
 <br>
 <br>
