@@ -3774,6 +3774,7 @@
 47) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
 48) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
 49) kernel: usb: net: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
+50) kernel: usb: net: cdc_ncm: reduce memory use when kernel memory low.<br>
 <br>
 <br>
 <br>
