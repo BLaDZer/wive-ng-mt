@@ -2499,6 +2499,11 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
 			ret = fixup_pi_state_owner(uaddr2, &q, current);
 			if (ret && rt_mutex_owner(&q.pi_state->pi_mutex) == current)
 				rt_mutex_unlock(&q.pi_state->pi_mutex);
+			/*
+			 * Drop the reference to the pi state which
+			 * the requeue_pi() code acquired for us.
+			 */
+			free_pi_state(q.pi_state);
 			spin_unlock(q.lock_ptr);
 		}
 	} else {

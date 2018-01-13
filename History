@@ -3752,6 +3752,7 @@
 25) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 26) kernel: nfsd: update mtime on truncate.<br>
 27) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
+28) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
 <br>
 <br>
 <br>
