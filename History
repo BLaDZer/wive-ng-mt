@@ -3773,6 +3773,7 @@
 46) kernel: net: usbnet: make sure no NULL pointer is passed through.<br>
 47) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
 48) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
+49) kernel: usb: net: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
 <br>
 <br>
 <br>
