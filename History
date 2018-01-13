@@ -3775,6 +3775,7 @@
 48) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
 49) kernel: usb: net: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
 50) kernel: usb: net: cdc_ncm: reduce memory use when kernel memory low.<br>
+51) kernel: usb: net: cdc_ncm: constify attribute_group structures.<br>
 <br>
 <br>
 <br>
