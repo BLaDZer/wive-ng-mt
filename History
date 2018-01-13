@@ -3778,6 +3778,7 @@
 51) kernel: usb: net: cdc_ncm: constify attribute_group structures.<br>
 52) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
 53) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
+54) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
 <br>
 <br>
 <br>
