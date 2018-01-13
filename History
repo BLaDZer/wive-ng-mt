@@ -3786,6 +3786,7 @@
 59) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
 60) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
 61) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
+62) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
 <br>
 <br>
 <br>
