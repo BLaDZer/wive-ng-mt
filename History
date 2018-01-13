@@ -3770,8 +3770,9 @@
 43) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
 44) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 45) kernel: net: usbnet: remove unused driver_name variable.<br>
-46) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
-47) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
+46) kernel: net: usbnet: make sure no NULL pointer is passed through.<br>
+47) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
+48) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
 <br>
 <br>
 <br>
