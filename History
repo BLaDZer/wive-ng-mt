@@ -3785,6 +3785,7 @@
 58) kernel: usb: serial: option: add two Longcheer device ids.<br>
 59) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
 60) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
+61) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
 <br>
 <br>
 <br>
