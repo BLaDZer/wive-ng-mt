@@ -3777,6 +3777,7 @@
 50) kernel: usb: net: cdc_ncm: reduce memory use when kernel memory low.<br>
 51) kernel: usb: net: cdc_ncm: constify attribute_group structures.<br>
 52) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
+53) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
 <br>
 <br>
 <br>
