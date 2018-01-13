@@ -3789,6 +3789,7 @@
 62) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
 63) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
 64) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+65) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
 <br>
 <br>
 <br>
