@@ -3769,6 +3769,7 @@
 42) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
 43) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
 44) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+45) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
 <br>
 <br>
 <br>
