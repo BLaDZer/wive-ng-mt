@@ -3788,6 +3788,7 @@
 61) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
 62) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
 63) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+64) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
 <br>
 <br>
 <br>
