@@ -3765,6 +3765,7 @@
 38) kernel: ext4: trim allocation requests to group size.<br>
 39) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
 40) kernel: ext4: fix data corruption in data=journal mode.<br>
+41) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
 <br>
 <br>
 <br>
