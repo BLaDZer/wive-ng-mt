@@ -3758,6 +3758,7 @@
 31) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
 32) kernel: ext4: sanity check the block and cluster size at mount time.<br>
 33) kernel: ext4: reject inodes with negative size.<br>
+34) kernel: ext4: add sanity checking to count_overhead().<br>
 <br>
 <br>
 <br>
