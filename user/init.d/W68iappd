@@ -16,6 +16,7 @@ start() {
     if [ "$RadioOn" = "1" -o "$RadioOnINIC" = "1" ]; then
 	if [ "$iaappneed" = "1" ]; then
 	    $LOG "Starting iappd 802.11f daemon"
+	    kernel_tune
 	    # ethernet if - lan_if
 	    # wlan if for recive data - standalone if or bridge interface
 	    # wlan if for ioctl - standalone if
@@ -48,6 +49,25 @@ get_param() {
     fi
     if [ "$IAPPDebug" != "" ] && [ "$IAPPDebug" != "0" ]; then
 	IAPPDebug="-d $IAPPDebug"
+    fi
+}
+
+kernel_tune() {
+    # more fast rearrange arp cache and bridge fdb records
+    sysctl -wq net.ipv4.neigh.$phys_lan_if.base_reachable_time_ms=10000
+    sysctl -wq net.ipv4.neigh.$phys_lan_if.delay_first_probe_time=1
+    sysctl -wq net.ipv4.neigh.$lan_if.base_reachable_time_ms=10000
+    sysctl -wq net.ipv4.neigh.$lan_if.delay_first_probe_time=1
+    if [ "$first_wlan_root_if" != "" ]; then
+	sysctl -wq net.ipv4.neigh.$first_wlan_root_if.base_reachable_time_ms=10000
+	sysctl -wq net.ipv4.neigh.$first_wlan_root_if.delay_first_probe_time=1
+    fi
+    if [ "$second_wlan_root_if" != "" ]; then
+	sysctl -wq net.ipv4.neigh.$second_wlan_root_if.base_reachable_time_ms=10000
+	sysctl -wq net.ipv4.neigh.$second_wlan_root_if.base_delay_first_probe_time=1
+    fi
+    if [ "$lan_if" = "br0" ]; then
+	brctl setageing "$lan_if" 5
     fi
 }
 
