@@ -3784,6 +3784,7 @@
 57) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
 58) kernel: usb: serial: option: add two Longcheer device ids.<br>
 59) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
+60) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
 <br>
 <br>
 <br>
