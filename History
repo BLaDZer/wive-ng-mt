@@ -3794,6 +3794,7 @@
 67) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
 68) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
 69) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+70) kernel: ralink_wifi: fix disable OLBC detection.<br>
 <br>
 <br>
 <br>
