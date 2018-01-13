@@ -3725,73 +3725,75 @@
 <br>
 <br>
 <b>7.0.x</b><br>
-1) busybox: update to 1.28.0 version.<br>
-2) bndstrg: fix uninit variable and cleanup.<br>
-3) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
-4) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
-5) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
-6) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
-7) kernel: nfsd: update mtime on truncate.<br>
-8) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
-9) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
-10) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
-11) kernel: scsi: sr: sanity check returned mode data.<br>
-12) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
-13) kernel: ext4: sanity check the block and cluster size at mount time.<br>
-14) kernel: ext4: reject inodes with negative size.<br>
-15) kernel: ext4: add sanity checking to count_overhead().<br>
-16) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
-17) kernel: ext4: fix in-superblock mount options processing.<br>
-18) kernel: ext4: fix reference counting bug on block allocation error.<br>
-19) kernel: ext4: trim allocation requests to group size.<br>
-20) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
-21) kernel: ext4: fix data corruption in data=journal mode.<br>
-22) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
-23) kernel: ext4: keep existing extra fields when inode expands.<br>
-24) kernel: ext4: fix data corruption for mmap writes.<br>
-25) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
-26) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
-27) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
-28) kernel: usb: usbnet: remove unused driver_name variable.<br>
-29) kernel: usb: usbnet: make sure no NULL pointer is passed through.<br>
-30) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
-31) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
-32) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
-33) kernel: usb: cdc_ncm: constify attribute_group structures.<br>
-34) kernel: usb: cdc_ncm: reduce memory use when kernel memory low.<br>
-35) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
-36) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
-37) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
-38) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
-39) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
-40) kernel: usb: serial: option: add two Longcheer device ids.<br>
-41) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
-42) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
-43) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
-44) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
-45) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-46) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
-47) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
-48) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
-49) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
-50) kernel: usb: increase quirk delay for USB devices.<br>
-51) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
-52) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-53) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
-54) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-55) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-56) kernel: net: enable interface alias removal via rtnl.<br>
-57) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-58) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-59) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-60) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-61) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-62) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-63) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-64) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-65) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-66) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-67) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+1) configs: disable transmission build (need update in future).<br>
+2) configs: disable wpa supplicant build in 16Mb flash devices (not used).<br>
+3) busybox: update to 1.28.0 version.<br>
+4) bndstrg: fix uninit variable and cleanup.<br>
+5) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
+6) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
+7) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
+8) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
+9) kernel: nfsd: update mtime on truncate.<br>
+10) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
+11) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
+12) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
+13) kernel: scsi: sr: sanity check returned mode data.<br>
+14) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
+15) kernel: ext4: sanity check the block and cluster size at mount time.<br>
+16) kernel: ext4: reject inodes with negative size.<br>
+17) kernel: ext4: add sanity checking to count_overhead().<br>
+18) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
+19) kernel: ext4: fix in-superblock mount options processing.<br>
+20) kernel: ext4: fix reference counting bug on block allocation error.<br>
+21) kernel: ext4: trim allocation requests to group size.<br>
+22) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
+23) kernel: ext4: fix data corruption in data=journal mode.<br>
+24) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
+25) kernel: ext4: keep existing extra fields when inode expands.<br>
+26) kernel: ext4: fix data corruption for mmap writes.<br>
+27) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
+28) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
+29) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
+30) kernel: usb: usbnet: remove unused driver_name variable.<br>
+31) kernel: usb: usbnet: make sure no NULL pointer is passed through.<br>
+32) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
+33) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
+34) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
+35) kernel: usb: cdc_ncm: constify attribute_group structures.<br>
+36) kernel: usb: cdc_ncm: reduce memory use when kernel memory low.<br>
+37) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
+38) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
+39) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
+40) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
+41) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
+42) kernel: usb: serial: option: add two Longcheer device ids.<br>
+43) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
+44) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
+45) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
+46) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
+47) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
+48) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+49) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
+50) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+51) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+52) kernel: usb: increase quirk delay for USB devices.<br>
+53) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
+54) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
+55) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
+56) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+57) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+58) kernel: net: enable interface alias removal via rtnl.<br>
+59) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+60) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+61) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+62) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+63) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+64) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+65) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+66) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+67) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+68) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+69) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 <br>
 <br>
 <br>
