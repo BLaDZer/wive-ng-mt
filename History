@@ -3782,6 +3782,7 @@
 55) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
 56) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
 57) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
+58) kernel: usb: serial: option: add two Longcheer device ids.<br>
 <br>
 <br>
 <br>
