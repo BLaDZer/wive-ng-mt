@@ -29,7 +29,9 @@
 #include "rt_config.h"
 
 #define OBSS_BEACON_RSSI_THRESHOLD		(-85)
-#define AUTO_CHANNEL_SCAN_MINRSSI		(-90)
+#define RRM_LIST_MINRSSI			(-90)
+#define COLECT_PROBE_MINRSSI			(-92)
+#define AUTO_CHANNEL_SCAN_MINRSSI		(-95)
 
 #ifdef DOT11_N_SUPPORT
 void build_ext_channel_switch_ie(
@@ -175,8 +177,8 @@ VOID APPeerProbeReqAction(
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),
                                   ConvertToRssi(pAd, (CHAR)Elem->Rssi2, RSSI_2));
 #ifdef BAND_STEERING
-			/* collect probe req from long range clients for band steering, for 5GHz collect all frames > -88dBm */
-			if (rssi != 0 && ((rssi > BND_STRG_RSSI_LOW && pAd->CommonCfg.Channel > 14) || rssi > pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold)) {
+			/* collect probe req from long range clients for band steering, for 5GHz collect all frames > -90dBm */
+			if (rssi != 0 && ((rssi > COLECT_PROBE_MINRSSI && pAd->CommonCfg.Channel > 14) || rssi > pAd->ApCfg.MBSSID[apidx].ProbeRspRssiThreshold)) {
 				if (WMODE_CAP_N(PhyMode))
 					    bAllowStaConnectInHt = TRUE;
 				BND_STRG_CHECK_CONNECTION_REQ(pAd, NULL, Addr2, Elem->MsgType, Elem->Rssi0, Elem->Rssi1, Elem->Rssi2, bAllowStaConnectInHt, &bBndStrgCheck);
@@ -1212,7 +1214,7 @@ IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 
 	/* update my network scanlist from neighbour beacons with SSID filter for RRM, only on work channel (rssi info valid only for this) */
 	for(apidx=0; apidx<pAd->ApCfg.BssidNum; apidx++) {
-	    if (IS_RRM_ENABLE(pAd, apidx) && RealRssi > OBSS_BEACON_RSSI_THRESHOLD && pAd->ScanTab.BssNr < MAX_LEN_OF_BSS_TABLE &&
+	    if (IS_RRM_ENABLE(pAd, apidx) && RealRssi > RRM_LIST_MINRSSI && pAd->ScanTab.BssNr < MAX_LEN_OF_BSS_TABLE &&
 		/* ie_list->Channel == Channel && */ ie_list->SsidLen > 0 && pAd->ApCfg.MBSSID[apidx].SsidLen > 0 &&
 		ie_list->SsidLen == pAd->ApCfg.MBSSID[apidx].SsidLen &&
 		RTMPEqualMemory((PUCHAR)ie_list->Ssid, (PUCHAR)pAd->ApCfg.MBSSID[apidx].Ssid, min(ie_list->SsidLen, pAd->ApCfg.MBSSID[apidx].SsidLen))
@@ -1534,7 +1536,7 @@ VOID APPeerBeaconAtScanAction(
 			rrm_use = TRUE;
 
 		/* in RRM mode skip very low for normal connect AP at scan */
-		if (rrm_use == TRUE && Rssi < OBSS_BEACON_RSSI_THRESHOLD)
+		if (rrm_use == TRUE && Rssi < RRM_LIST_MINRSSI)
 			goto __End_Of_APPeerBeaconAtScanAction;
 #endif /* DOT11K_RRM_SUPPORT */
 
