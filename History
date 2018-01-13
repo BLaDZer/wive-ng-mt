@@ -3768,6 +3768,7 @@
 41) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
 42) kernel: ext4: keep existing extra fields when inode expands.<br>
 43) kernel: ext4: fix data corruption for mmap writes.<br>
+44) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
 <br>
 <br>
 <br>
