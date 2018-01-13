@@ -3764,6 +3764,7 @@
 37) kernel: ext4: fix reference counting bug on block allocation error.<br>
 38) kernel: ext4: trim allocation requests to group size.<br>
 39) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
+40) kernel: ext4: fix data corruption in data=journal mode.<br>
 <br>
 <br>
 <br>
