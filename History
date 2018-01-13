@@ -3754,6 +3754,7 @@
 27) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
 28) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
 29) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
+30) kernel: scsi: sr: sanity check returned mode data.<br>
 <br>
 <br>
 <br>
