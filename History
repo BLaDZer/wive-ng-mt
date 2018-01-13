@@ -3785,12 +3785,13 @@
 58) kernel: usb: serial: option: add two Longcheer device ids.<br>
 59) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
 60) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
-61) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
-62) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
-63) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
-64) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
-65) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-66) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+61) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
+62) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
+63) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
+64) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+65) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+66) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
+67) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
 <br>
 <br>
 <br>
