@@ -3738,11 +3738,11 @@
 11) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
 12) kernel: fscache: Fix the default for fscache_maybe_release_page().<br>
 13) kernel: genksyms: Handle string literals with spaces in reference files.<br>
-14) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
-15) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
-16) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
-17) kernel: scsi: sr: sanity check returned mode data.<br>
-18) kernel: module: keep percpu symbols in module's symtab.<br>
+14) kernel: module: keep percpu symbols in module's symtab.<br>
+15) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
+16) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
+17) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
+18) kernel: scsi: sr: sanity check returned mode data.<br>
 19) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
 20) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
 21) kernel: kernel/signal.c: remove the no longer needed SIGNAL_UNKILLABLE check in complete_signal().<br>
