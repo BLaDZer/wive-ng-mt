@@ -3800,6 +3800,7 @@
 73) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
 74) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
 75) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
+76) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
 <br>
 <br>
 <br>
