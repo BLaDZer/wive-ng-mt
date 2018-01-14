@@ -3799,6 +3799,7 @@
 72) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 73) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
 74) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+75) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
 <br>
 <br>
 <br>
