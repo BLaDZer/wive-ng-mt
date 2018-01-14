@@ -99,14 +99,16 @@ static inline unsigned long change_pmd_range(struct vm_area_struct *vma, pud_t *
 				split_huge_page_pmd(vma->vm_mm, pmd);
 			else if (change_huge_pmd(vma, pmd, addr, newprot)) {
 				pages++;
-				continue;
+				goto next;
 			}
 			/* fall through */
 		}
 		if (pmd_none_or_clear_bad(pmd))
-			continue;
+			goto next;
 		pages += change_pte_range(vma->vm_mm, pmd, addr, next, newprot,
 				 dirty_accountable);
+next:
+		cond_resched();
 	} while (pmd++, addr = next, addr != end);
 
 	return pages;
