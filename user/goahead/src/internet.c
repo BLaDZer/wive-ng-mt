@@ -1201,7 +1201,7 @@ parameter_fetch_t nodog_vars[] =
 {
 	{ T("nodogEnable"),			"nodogsplash_enable",			0,       T("") },
 	{ T("GatewayIPRange"),			"nodog_GatewayIPRange",			0,       T("0.0.0.0/0") },
-	{ T("RedirectURL"),			"nodog_RedirectURL",			0,       T("http://wive-ng.sf.net") },
+	{ T("RedirectURL"),			"nodog_RedirectURL",			0,       T("http://wi-cat.ru") },
 	{ T("MaxClients"),			"nodog_MaxClients",			0,       T("32") },
 	{ T("ClientIdleTimeout"),		"nodog_ClientIdleTimeout",		0,       T("10") },
 	{ T("ClientForceTimeout"),		"nodog_ClientForceTimeout",		0,       T("360") },

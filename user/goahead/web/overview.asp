@@ -41,7 +41,7 @@
 		<table class="body">
 			<tr>
 				<td>
-					<h1>Wive-NG-MT - firmware for Mediatek based Wi-Fi CPE productions by NAG</h1>
+					<h1>Wive-NG-MT - opensource firmware to make your life better.</h1>
 					<p id="ovIntroduction" />
 					<!-- ----------------- Langauge Settings ----------------- -->
 					<form method="post" name="Lang" action="/goform/setSysLang">
@@ -68,8 +68,11 @@
 								Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
 								<br /><br />
 								News and changes in Russian:
-								<a href="http://wive-ng.sf.net">wive-ng.sf.net - development opensource routers firmware</a><br />
-								<br />Bug report please send support[at]nag.ru or sfstudio[at]mail.ru<br /></div>
+								<a href="http://wive-ng.sf.net">wive-ng.ru - development opensource routers firmware</a><br />
+								<br />Bug report please send:<br />
+								    1) for SNR-CPE to support[at]nag.ru<br />
+								    2) hw endepended reports sfstudio[at]mail.ru or sfstudio[at]wi-cat.ru
+								<br /></div>
 							</p>
 						</fieldset>
 					</blockquote>

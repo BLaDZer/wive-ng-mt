@@ -245,7 +245,7 @@ var NVRAM_nodog_MACMechanism			= '<% getCfgGeneral(1, "nodog_MACMechanism"); %>'
 var NVRAM_nodog_PasswordAuthentication		= '<% getCfgGeneral(1, "nodog_PasswordAuthentication"); %>';	NVRAM_nodog_PasswordAuthentication	= (NVRAM_nodog_PasswordAuthentication !='')	? NVRAM_nodog_PasswordAuthentication	: '0';
 var NVRAM_nodog_UsernameAuthentication		= '<% getCfgGeneral(1, "nodog_UsernameAuthentication"); %>';	NVRAM_nodog_UsernameAuthentication	= (NVRAM_nodog_UsernameAuthentication !='')	? NVRAM_nodog_UsernameAuthentication	: '0';
 var NVRAM_nodog_GatewayIPRange			= '<% getCfgGeneral(1, "nodog_GatewayIPRange"); %>';		NVRAM_nodog_GatewayIPRange		= (NVRAM_nodog_GatewayIPRange !='')		? NVRAM_nodog_GatewayIPRange		: '0.0.0.0/0';
-var NVRAM_nodog_RedirectURL			= '<% getCfgGeneral(1, "nodog_RedirectURL"); %>';		NVRAM_nodog_RedirectURL			= (NVRAM_nodog_RedirectURL !='')		? NVRAM_nodog_RedirectURL		: 'http://wive-ng.sf.net';
+var NVRAM_nodog_RedirectURL			= '<% getCfgGeneral(1, "nodog_RedirectURL"); %>';		NVRAM_nodog_RedirectURL			= (NVRAM_nodog_RedirectURL !='')		? NVRAM_nodog_RedirectURL		: 'http://wi-cat.ru';
 var NVRAM_nodog_MaxClients			= '<% getCfgGeneral(1, "nodog_MaxClients"); %>';		NVRAM_nodog_MaxClients			= (NVRAM_nodog_MaxClients !='')			? NVRAM_nodog_MaxClients		: '32';
 var NVRAM_nodog_ClientIdleTimeout		= '<% getCfgGeneral(1, "nodog_ClientIdleTimeout"); %>';		NVRAM_nodog_ClientIdleTimeout		= (NVRAM_nodog_ClientIdleTimeout !='')		? NVRAM_nodog_ClientIdleTimeout		: '30';
 var NVRAM_nodog_ClientForceTimeout		= '<% getCfgGeneral(1, "nodog_ClientForceTimeout"); %>';	NVRAM_nodog_ClientForceTimeout		= (NVRAM_nodog_ClientForceTimeout !='')		? NVRAM_nodog_ClientForceTimeout	: '720';
