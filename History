@@ -3802,10 +3802,11 @@
 76) kernel: net: 8021q: fix a memory leak for VLAN 0 device.<br>
 77) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
 78) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-79) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-80) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-81) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-82) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+79) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
+80) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+81) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+82) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+83) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
 <br>
 <br>
 <br>

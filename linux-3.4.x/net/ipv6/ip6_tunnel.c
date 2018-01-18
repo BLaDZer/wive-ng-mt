@@ -902,10 +902,11 @@ static int ip6_tnl_xmit2(struct sk_buff *skb,
 	u8 proto;
 	int err = -1;
 
-	if (!(t->parms.flags &
-		     (IP6_TNL_F_USE_ORIG_TCLASS | IP6_TNL_F_USE_ORIG_FWMARK))) {
-		/* enable the cache only only if the routing decision does
-		 * not depend on the current inner header value
+	if (t->parms.proto != 0 && !(t->parms.flags &
+					    (IP6_TNL_F_USE_ORIG_TCLASS |
+					     IP6_TNL_F_USE_ORIG_FWMARK))) {
+		/* enable the cache only if neither the outer protocol nor the
+		 * routing decision depends on the current inner header value
 		 */
 		use_cache = true;
 	}
