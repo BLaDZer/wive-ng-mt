@@ -3808,6 +3808,7 @@
 82) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
 83) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
 84) kernel: sd: get disk reference in sd_check_events().<br>
+85) kernel: bitops.h: add sign_extend64().<br>
 <br>
 <br>
 <br>
