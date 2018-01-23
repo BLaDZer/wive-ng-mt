@@ -410,7 +410,6 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		if (i > 0)
 			websWrite(wp, T(", "));
 #endif
-		bfree(B_L, tmpstr);
 	}
 	websWrite(wp, T(" ], \"tx_bytes\": [ "));
 #ifdef CONFIG_RTESW_SWITCH_ONEPORT
@@ -425,7 +424,6 @@ static int getHWStatistic(int eid, webs_t wp, int argc, char_t **argv) {
 		if (i > 0)
 			websWrite(wp, T(", "));
 #endif
-		bfree(B_L, tmpstr);
 	}
 	websWrite(wp, T(" ] }"));
 	return 0;

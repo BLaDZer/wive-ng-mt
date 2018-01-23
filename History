@@ -3729,36 +3729,37 @@
 3) busybox: update to 1.28.0 version.<br>
 4) bndstrg: fix uninit variable and cleanup.<br>
 5) init.d: if rrm/ft enables tune arp/bridge for more fast cache rearrange and arp/rp filters disables on APs in bridge mode.<br>
-6) kernel: kernel/acct.c: fix the acct->needcheck check in check_free_space().<br>
-7) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
-8) kernel: nfsd: update mtime on truncate.<br>
-9) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
-10) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
-11) kernel: fscache: Fix the default for fscache_maybe_release_page().<br>
-12) kernel: genksyms: Handle string literals with spaces in reference files.<br>
-13) kernel: module: keep percpu symbols in module's symtab.<br>
-14) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
-15) kernel: mm/mprotect: add a cond_resched() inside change_pmd_range().<br>
-16) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
-17) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
-18) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
-19) kernel: scsi: sr: sanity check returned mode data.<br>
-20) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
-21) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
-22) kernel: kernel/signal.c: remove the no longer needed SIGNAL_UNKILLABLE check in complete_signal().<br>
-23) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
-24) kernel: ext4: sanity check the block and cluster size at mount time.<br>
-25) kernel: ext4: reject inodes with negative size.<br>
-26) kernel: ext4: add sanity checking to count_overhead().<br>
-27) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
-28) kernel: ext4: fix in-superblock mount options processing.<br>
-29) kernel: ext4: fix reference counting bug on block allocation error.<br>
-30) kernel: ext4: trim allocation requests to group size.<br>
-31) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
-32) kernel: ext4: fix data corruption in data=journal mode.<br>
-33) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
-34) kernel: ext4: keep existing extra fields when inode expands.<br>
-35) kernel: ext4: fix data corruption for mmap writes.<br>
+6) goahead: fix stupid bug (free for static allocateion).<br>
+7) kernel: kernel/acct.c: fix the acct->needcheck check in check_free_space().<br>
+8) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
+9) kernel: nfsd: update mtime on truncate.<br>
+10) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
+11) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
+12) kernel: fscache: Fix the default for fscache_maybe_release_page().<br>
+13) kernel: genksyms: Handle string literals with spaces in reference files.<br>
+14) kernel: module: keep percpu symbols in module's symtab.<br>
+15) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
+16) kernel: mm/mprotect: add a cond_resched() inside change_pmd_range().<br>
+17) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
+18) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
+19) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
+20) kernel: scsi: sr: sanity check returned mode data.<br>
+21) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
+22) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
+23) kernel: kernel/signal.c: remove the no longer needed SIGNAL_UNKILLABLE check in complete_signal().<br>
+24) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
+25) kernel: ext4: sanity check the block and cluster size at mount time.<br>
+26) kernel: ext4: reject inodes with negative size.<br>
+27) kernel: ext4: add sanity checking to count_overhead().<br>
+28) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
+29) kernel: ext4: fix in-superblock mount options processing.<br>
+30) kernel: ext4: fix reference counting bug on block allocation error.<br>
+31) kernel: ext4: trim allocation requests to group size.<br>
+32) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
+33) kernel: ext4: fix data corruption in data=journal mode.<br>
+34) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
+35) kernel: ext4: keep existing extra fields when inode expands.<br>
+36) kernel: ext4: fix data corruption for mmap writes.<br>
 37) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
 38) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
 39) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
