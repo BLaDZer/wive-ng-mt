@@ -3729,7 +3729,7 @@
 3) busybox: update to 1.28.0 version.<br>
 4) bndstrg: fix uninit variable and cleanup.<br>
 5) init.d: if rrm/ft enables tune arp/bridge for more fast cache rearrange and arp/rp filters disables on APs in bridge mode.<br>
-6) goahead: fix stupid bug (free for static allocateion).<br>
+6) goahead: fix stupid bug (free for static allocation).<br>
 7) kernel: kernel/acct.c: fix the acct->needcheck check in check_free_space().<br>
 8) kernel: vfs: return -ENXIO for negative SEEK_HOLE / SEEK_DATA offsets.<br>
 9) kernel: nfsd: update mtime on truncate.<br>
