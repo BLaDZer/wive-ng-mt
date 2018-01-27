@@ -3735,80 +3735,81 @@
 9) kernel: nfsd: update mtime on truncate.<br>
 10) kernel: cifs: small underflow in cnvrtDosUnixTm().<br>
 11) kernel: futex: drop refcount if requeue_pi() acquired the rtmutex.<br>
-12) kernel: fscache: Fix the default for fscache_maybe_release_page().<br>
-13) kernel: genksyms: Handle string literals with spaces in reference files.<br>
-14) kernel: module: keep percpu symbols in module's symtab.<br>
-15) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
-16) kernel: mm/mprotect: add a cond_resched() inside change_pmd_range().<br>
-17) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
-18) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
-19) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
-20) kernel: scsi: sr: sanity check returned mode data.<br>
-21) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
-22) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
-23) kernel: kernel/signal.c: remove the no longer needed SIGNAL_UNKILLABLE check in complete_signal().<br>
-24) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
-25) kernel: ext4: sanity check the block and cluster size at mount time.<br>
-26) kernel: ext4: reject inodes with negative size.<br>
-27) kernel: ext4: add sanity checking to count_overhead().<br>
-28) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
-29) kernel: ext4: fix in-superblock mount options processing.<br>
-30) kernel: ext4: fix reference counting bug on block allocation error.<br>
-31) kernel: ext4: trim allocation requests to group size.<br>
-32) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
-33) kernel: ext4: fix data corruption in data=journal mode.<br>
-34) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
-35) kernel: ext4: keep existing extra fields when inode expands.<br>
-36) kernel: ext4: fix data corruption for mmap writes.<br>
-37) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
-38) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
-39) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
-40) kernel: usb: usbnet: remove unused driver_name variable.<br>
-41) kernel: usb: usbnet: make sure no NULL pointer is passed through.<br>
-42) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
-43) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
-44) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
-45) kernel: usb: cdc_ncm: constify attribute_group structures.<br>
-46) kernel: usb: cdc_ncm: reduce memory use when kernel memory low.<br>
-47) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
-48) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
-49) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
-50) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
-51) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
-52) kernel: usb: serial: option: add two Longcheer device ids.<br>
-53) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
-54) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
-55) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
-56) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
-57) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-58) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
-59) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
-60) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
-61) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
-62) kernel: usb: increase quirk delay for USB devices.<br>
-63) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
-64) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-65) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
-66) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-67) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-68) kernel: net: enable interface alias removal via rtnl.<br>
-69) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-70) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-71) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-72) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-73) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-74) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-75) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-76) kernel: net: 8021q: fix a memory leak for VLAN 0 device.<br>
-77) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-78) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-79) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
-80) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-81) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-82) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-83) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-84) kernel: sd: get disk reference in sd_check_events().<br>
-85) kernel: bitops.h: add sign_extend64().<br>
+12) kernel: futex: prevent overflow by strengthen input validation.<br>
+13) kernel: fscache: Fix the default for fscache_maybe_release_page().<br>
+14) kernel: genksyms: Handle string literals with spaces in reference files.<br>
+15) kernel: module: keep percpu symbols in module's symtab.<br>
+16) kernel: mm/mmu_context, sched/core: fix mmu_context.h assumption.<br>
+17) kernel: mm/mprotect: add a cond_resched() inside change_pmd_range().<br>
+18) kernel: sched/core: add switch_mm_irqs_off() and use it in the scheduler.<br>
+19) kernel: sched/core: Idle_task_exit() shouldn't use switch_mm_irqs_off().<br>
+20) kernel: scsi: sd: fix capacity calculation with 32-bit sector_t.<br>
+21) kernel: scsi: sr: sanity check returned mode data.<br>
+22) kernel: kernel/signal.c: protect the traced SIGNAL_UNKILLABLE tasks from SIGKILL.<br>
+23) kernel: kernel/signal.c: protect the SIGNAL_UNKILLABLE tasks from !sig_kernel_only() signals.<br>
+24) kernel: kernel/signal.c: remove the no longer needed SIGNAL_UNKILLABLE check in complete_signal().<br>
+25) kernel: ext4: validate that metadata blocks do not overlap superblock.<br>
+26) kernel: ext4: sanity check the block and cluster size at mount time.<br>
+27) kernel: ext4: reject inodes with negative size.<br>
+28) kernel: ext4: add sanity checking to count_overhead().<br>
+29) kernel: ext4: use more strict checks for inodes_per_block on mount.<br>
+30) kernel: ext4: fix in-superblock mount options processing.<br>
+31) kernel: ext4: fix reference counting bug on block allocation error.<br>
+32) kernel: ext4: trim allocation requests to group size.<br>
+33) kernel: ext4: use private version of page_zero_new_buffers() for data=journal mode.<br>
+34) kernel: ext4: fix data corruption in data=journal mode.<br>
+35) kernel: ext4: preserve the needs_recovery flag when the journal is aborted.<br>
+36) kernel: ext4: keep existing extra fields when inode expands.<br>
+37) kernel: ext4: fix data corruption for mmap writes.<br>
+38) kernel: ext4: fix fdatasync(2) after extent manipulation operations.<br>
+39) kernel: usb: core: prevent malicious bNumInterfaces overflow.<br>
+40) kernel: usb: core: allow zero packet flag for interrupt urbs.<br>
+41) kernel: usb: usbnet: remove unused driver_name variable.<br>
+42) kernel: usb: usbnet: make sure no NULL pointer is passed through.<br>
+43) kernel: usb: xhci: fix finding correct bus_state structure for USB 3.1 hosts.<br>
+44) kernel: usb: xhci: add support for URB_ZERO_PACKET to bulk/sg transfers.<br>
+45) kernel: usb: cdc_ether: flag the Huawei ME906/ME909 as WWAN.<br>
+46) kernel: usb: cdc_ncm: constify attribute_group structures.<br>
+47) kernel: usb: cdc_ncm: reduce memory use when kernel memory low.<br>
+48) kernel: usb: cdc_ncm: flag the u-blox TOBY-L4 as wwan.<br>
+49) kernel: usb: cdc_ncm: set NTB format again after altsetting switch for Huawei devices.<br>
+50) kernel: usb: cdc_ncm: GetNtbFormat endian fix.<br>
+51) kernel: usb: cdc_mbim: add quirk for supporting Telit LE922A.<br>
+52) kernel: usb: cdc_mbim: apply NDP to end quirk to HP lt4132.<br>
+53) kernel: usb: serial: option: add two Longcheer device ids.<br>
+54) kernel: usb: serial: option: add support for D-Link DWM-157 C1.<br>
+55) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
+56) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
+57) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
+58) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
+59) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+60) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
+61) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+62) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+63) kernel: usb: increase quirk delay for USB devices.<br>
+64) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
+65) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
+66) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
+67) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+68) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+69) kernel: net: enable interface alias removal via rtnl.<br>
+70) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+71) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+72) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+73) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+74) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+75) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+76) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+77) kernel: net: 8021q: fix a memory leak for VLAN 0 device.<br>
+78) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+79) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+80) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
+81) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+82) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+83) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+84) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+85) kernel: sd: get disk reference in sd_check_events().<br>
+86) kernel: bitops.h: add sign_extend64().<br>
 <br>
 <br>
 <br>
