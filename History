@@ -3810,6 +3810,7 @@
 84) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
 85) kernel: sd: get disk reference in sd_check_events().<br>
 86) kernel: bitops.h: add sign_extend64().<br>
+87) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
 <br>
 <br>
 <br>
