@@ -335,7 +335,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_2_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_3_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_4_OUI, 3)
-			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_5_OUI, 3))
+			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_5_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_ONEPLUS_1_OUI, 3)) {
 			    pEntry->MaxHTPhyMode.field.BW = BW_40;
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Disable 80MHz channel (bcm bug).\n", PRINT_MAC(pEntry->Addr));
