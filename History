@@ -3806,12 +3806,13 @@
 80) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
 81) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
 82) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-83) kernel: sd: get disk reference in sd_check_events().<br>
-84) kernel: bitops.h: add sign_extend64().<br>
-85) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
-86) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-87) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-88) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
+83) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
+84) kernel: sd: get disk reference in sd_check_events().<br>
+85) kernel: bitops.h: add sign_extend64().<br>
+86) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
+87) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+88) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+89) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
 <br>
 <br>
 <br>
