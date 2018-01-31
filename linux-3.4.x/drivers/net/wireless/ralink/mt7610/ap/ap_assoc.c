@@ -646,7 +646,7 @@ static USHORT APBuildAssociation(
  Note:
  ========================================================================
 */
-static BOOLEAN IAPP_L2_Update_Frame_Send(
+BOOLEAN IAPP_L2_Update_Frame_Send(
 	IN PRTMP_ADAPTER	pAd,
     IN UINT8 *mac_p,
     IN INT  bssid)
@@ -1531,16 +1531,8 @@ SendAssocResponse:
 		pEntry->PsMode = PWR_ACTIVE;
 
 #ifdef IAPP_SUPPORT
-		/*PFRAME_802_11 Fr = (PFRAME_802_11)Elem->Msg; */
-/*		POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie; */
-
-		/* send association ok message to IAPPD */
-
 		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x\n",
-								  PRINT_MAC(pEntry->Addr)));
-
-/*		SendSingalToDaemon(SIGUSR2, pObj->IappPid); */
+		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
 
 #ifdef DOT11R_FT_SUPPORT		
 		/*

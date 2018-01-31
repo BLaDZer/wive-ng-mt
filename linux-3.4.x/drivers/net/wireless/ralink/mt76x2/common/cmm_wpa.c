@@ -2235,8 +2235,14 @@ VOID PeerPairMsg4Action(
 #endif /* SMART_MESH_MONITOR */			
 #endif /* CONFIG_AP_SUPPORT */
 
+#ifdef IAPP_SUPPORT
+			IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
+			DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+#endif /* IAPP_SUPPORT */
+
 			/* send wireless event - for set key done WPA2*/
-				RTMPSendWirelessEvent(pAd, IW_SET_KEY_DONE_WPA2_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0); 
+			RTMPSendWirelessEvent(pAd, IW_SET_KEY_DONE_WPA2_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0); 
+
 #ifdef CONFIG_HOTSPOT_R2
 		if (pEntry->IsWNMReqValid == TRUE)
 		{

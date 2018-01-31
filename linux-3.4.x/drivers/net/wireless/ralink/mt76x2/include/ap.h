@@ -347,5 +347,10 @@ VOID AP_E2PROM_IOCTL_PostCtrl(RTMP_IOCTL_INPUT_STRUCT *wrq, PSTRING msg);
 
 VOID IAPP_L2_UpdatePostCtrl(RTMP_ADAPTER *pAd, UINT8 *mac, INT bssid);
 
+BOOLEAN IAPP_L2_Update_Frame_Send(
+	IN PRTMP_ADAPTER	pAd,
+    IN UINT8 *mac_p,
+    IN INT  bssid);
+
 #endif  /* __AP_H__ */
 

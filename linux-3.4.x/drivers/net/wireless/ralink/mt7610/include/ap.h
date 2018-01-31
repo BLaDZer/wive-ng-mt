@@ -450,7 +450,6 @@ BOOLEAN DOT1X_EapTriggerAction(
     IN  PRTMP_ADAPTER	pAd,
     IN  MAC_TABLE_ENTRY *pEntry);
 #endif /* DOT1X_SUPPORT */
-#endif  /* __AP_H__ */
 
 VOID AP_E2PROM_IOCTL_PostCtrl(
 	IN	RTMP_IOCTL_INPUT_STRUCT	*wrq,
@@ -460,3 +459,10 @@ VOID IAPP_L2_UpdatePostCtrl(
 	IN PRTMP_ADAPTER	pAd,
     IN UINT8 *mac_p,
     IN INT  bssid);
+
+BOOLEAN IAPP_L2_Update_Frame_Send(
+	IN PRTMP_ADAPTER	pAd,
+    IN UINT8 *mac_p,
+    IN INT  bssid);
+
+#endif  /* __AP_H__ */

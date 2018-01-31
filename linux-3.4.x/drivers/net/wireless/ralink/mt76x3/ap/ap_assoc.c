@@ -718,7 +718,7 @@ static USHORT APBuildAssociation(
  Note:
  ========================================================================
 */
-static BOOLEAN IAPP_L2_Update_Frame_Send(RTMP_ADAPTER *pAd, UINT8 *mac, INT wdev_idx)
+BOOLEAN IAPP_L2_Update_Frame_Send(RTMP_ADAPTER *pAd, UINT8 *mac, INT wdev_idx)
 {
 
 	NDIS_PACKET	*pNetBuf;
@@ -2175,15 +2175,8 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		wdev->allow_data_tx = TRUE;
 		
 #ifdef IAPP_SUPPORT
-		/*PFRAME_802_11 Fr = (PFRAME_802_11)Elem->Msg; */
-/*		POS_COOKIE pObj = (POS_COOKIE) pAd->OS_Cookie; */
-
-		/* send association ok message to IAPPD */
 		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->wdev->wdev_idx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x\n",
-								  PRINT_MAC(pEntry->Addr)));
-
-/*		SendSingalToDaemon(SIGUSR2, pObj->IappPid); */
+		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
 
 #ifdef DOT11R_FT_SUPPORT		
 		/*
