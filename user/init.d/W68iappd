@@ -83,9 +83,6 @@ kernel_tune() {
 	sysctl -wq net.ipv4.conf.all.rp_filter=0
 	sysctl -wq net.ipv4.conf.default.rp_filter=0
     fi
-    if [ "$lan_if" = "br0" ]; then
-	brctl setageing "$lan_if" 5
-    fi
 }
 
 stop() {
