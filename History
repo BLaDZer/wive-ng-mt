@@ -3805,24 +3805,25 @@
 79) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
 80) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
 81) kernel: net: ipv6: send unsolicited NA after DAD.<br>
-82) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-83) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-84) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
-85) kernel: net: igmp: fix source address check for IGMPv3 reports.<br>
-86) kernel: net: allow neigh contructor functions ability to modify the primary_key.<br>
-87) kernel: net: af_key: fix buffer overread in parse_exthdrs().<br>
-88) kernel: net: af_key: fix buffer overread in verify_address_len().<br>
-89) kernel: net: netfilter: nf_ct_expect: remove the redundant slash when policy name is empty.<br>
-90) kernel: net: tcp: __tcp_hdrlen() helper.<br>
-91) kernel: net: qdisc_pkt_len_init() should be more robust.<br>
-92) kernel: sd: get disk reference in sd_check_events().<br>
-93) kernel: bitops.h: add sign_extend64().<br>
-94) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
-95) kernel: ipc: msg, make msgrcv work with LONG_MIN.<br>
-96) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-97) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-98) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
-99) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
+82) kernel: net: ipv6: fix udpv6 sendmsg crash caused by too small MTU.<br>
+83) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+84) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+85) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
+86) kernel: net: igmp: fix source address check for IGMPv3 reports.<br>
+87) kernel: net: allow neigh contructor functions ability to modify the primary_key.<br>
+88) kernel: net: af_key: fix buffer overread in parse_exthdrs().<br>
+89) kernel: net: af_key: fix buffer overread in verify_address_len().<br>
+90) kernel: net: netfilter: nf_ct_expect: remove the redundant slash when policy name is empty.<br>
+91) kernel: net: tcp: __tcp_hdrlen() helper.<br>
+92) kernel: net: qdisc_pkt_len_init() should be more robust.<br>
+93) kernel: sd: get disk reference in sd_check_events().<br>
+94) kernel: bitops.h: add sign_extend64().<br>
+95) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
+96) kernel: ipc: msg, make msgrcv work with LONG_MIN.<br>
+97) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+98) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+99) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
+100) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
 <br>
 <br>
 <br>
