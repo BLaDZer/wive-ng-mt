@@ -3809,14 +3809,15 @@
 83) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
 84) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
 85) kernel: net: igmp: fix source address check for IGMPv3 reports.<br>
-86) kernel: net: net: allow neigh contructor functions ability to modify the primary_key.<br>
-87) kernel: sd: get disk reference in sd_check_events().<br>
-88) kernel: bitops.h: add sign_extend64().<br>
-89) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
-90) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-91) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-92) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
-92) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
+86) kernel: net: allow neigh contructor functions ability to modify the primary_key.<br>
+87) kernel: net: af_key: fix buffer overread in parse_exthdrs().<br>
+88) kernel: sd: get disk reference in sd_check_events().<br>
+89) kernel: bitops.h: add sign_extend64().<br>
+90) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
+91) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+92) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+93) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
+94) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
 <br>
 <br>
 <br>
