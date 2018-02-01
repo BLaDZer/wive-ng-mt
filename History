@@ -3815,10 +3815,11 @@
 89) kernel: sd: get disk reference in sd_check_events().<br>
 90) kernel: bitops.h: add sign_extend64().<br>
 91) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
-92) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-93) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-94) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
-95) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
+92) kernel: ipc: msg, make msgrcv work with LONG_MIN.<br>
+93) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+94) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+95) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
+96) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
 <br>
 <br>
 <br>
