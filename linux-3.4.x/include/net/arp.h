@@ -22,6 +22,9 @@ static inline struct neighbour *__ipv4_neigh_lookup(struct net_device *dev, u32 
 	struct neighbour *n;
 	u32 hash_val;
 
+	if (dev->flags & (IFF_LOOPBACK | IFF_POINTOPOINT))
+		key = INADDR_ANY;
+
 	rcu_read_lock_bh();
 	nht = rcu_dereference_bh(arp_tbl.nht);
 	hash_val = arp_hashfn(key, dev, nht->hash_rnd[0]) >> (32 - nht->hash_shift);
