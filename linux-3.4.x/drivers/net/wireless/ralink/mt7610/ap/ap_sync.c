@@ -29,9 +29,9 @@
 #include "rt_config.h"
 
 #define OBSS_BEACON_RSSI_THRESHOLD		(-85)
-#define RRM_LIST_MINRSSI			(-90)
-#define COLECT_PROBE_MINRSSI			(-92)
-#define AUTO_CHANNEL_SCAN_MINRSSI		(-95)
+#define AUTO_CHANNEL_SCAN_MINRSSI		(-90)
+#define COLECT_PROBE_MINRSSI			(-93)
+#define RRM_LIST_MINRSSI			(-95)
 
 #ifdef DOT11_N_SUPPORT
 void build_ext_channel_switch_ie(
