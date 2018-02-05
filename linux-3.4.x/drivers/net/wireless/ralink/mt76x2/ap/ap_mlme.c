@@ -432,20 +432,24 @@ VOID APMlmePeriodicExec(
 #endif /* DOT11_N_SUPPORT */
 #endif /* APCLI_SUPPORT */
 #ifdef DOT11K_RRM_SUPPORT
-	/* after boot need force first scan at 10sec */
-	if ((pAd->Mlme.OneSecPeriodicRound % 120 == 0) || (pAd->Mlme.OneSecPeriodicRound % 10 == 0 && pAd->CommonCfg.RRMFistScan == TRUE)) {
-		if (pAd->MacTab.Size == 0 || pAd->CommonCfg.RRMFistScan == TRUE) {
-		    INT needscan = 0;
-		    for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
-			    if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i) && !ApScanRunning(pAd))
-				    needscan = 1;
+	if (!ApScanRunning(pAd)) {
+	    /* after boot need force first scan at 15sec */
+	    if ((pAd->Mlme.OneSecPeriodicRound % 240 == 0) ||
+		    (pAd->Mlme.OneSecPeriodicRound % 15 == 0 && pAd->CommonCfg.RRMFirstScan == TRUE && pAd->ScanTab.BssNr == 0))
+	    {
+		    if (pAd->MacTab.Size == 0 || pAd->CommonCfg.RRMFirstScan == TRUE) {
+			INT needscan = 0;
+			for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
+				if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i))
+					needscan = 1;
+			}
+			if (needscan == 1) {
+				DBGPRINT(RT_DEBUG_TRACE, ("RRM: rescan every 240sec for update neighbour info\n"));
+				pAd->CommonCfg.RRMFirstScan = FALSE;
+				ApSiteSurvey(pAd, NULL, SCAN_ACTIVE, FALSE);
+			}
 		    }
-		    if (needscan == 1) {
-			    DBGPRINT(RT_DEBUG_TRACE, ("RRM: rescan every 120sec for update neighbour info\n"));
-			    pAd->CommonCfg.RRMFistScan = FALSE;
-			    ApSiteSurvey(pAd, NULL, SCAN_PASSIVE, FALSE);
-		    }
-		}
+	    }
 	}
 #endif /* DOT11K_RRM_SUPPORT */
 }

@@ -527,7 +527,7 @@ VOID RRM_CfgInit(
 		}
 		/* need fist scan at enable */
 		if (pRrmCfg->bDot11kRRMEnable == TRUE) {
-			pAd->CommonCfg.RRMFistScan = TRUE;
+			pAd->CommonCfg.RRMFirstScan = TRUE;
 			pRrmCfg->bDot11kRRMNeighborRepTSFEnable = TRUE;
 		}
 	}

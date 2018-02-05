@@ -1832,7 +1832,7 @@ typedef struct _COMMON_CONFIG {
 	MO_CFG_STRUCT MO_Cfg;	/* data structure for mitigating microwave interference */
 #endif /* DYNAMIC_VGA_SUPPORT */
 #ifdef DOT11K_RRM_SUPPORT
-	BOOLEAN RRMFistScan;
+	BOOLEAN RRMFirstScan;
 #endif /* DOT11K_RRM_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 

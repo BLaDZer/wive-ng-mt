@@ -3827,6 +3827,7 @@
 101) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
 102) kernel: ralink_wifi: small tune rssi thresholds for rrm/auto_channel select.<br>
 103) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
+104) kernel: ralink_wifi: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
 <br>
 <br>
 <br>

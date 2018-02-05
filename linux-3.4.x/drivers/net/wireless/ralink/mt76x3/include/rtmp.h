@@ -2201,7 +2201,7 @@ typedef struct _COMMON_CONFIG {
     PROTECTION_STRUCT RestoreProtection;
 
 #ifdef DOT11K_RRM_SUPPORT
-	BOOLEAN RRMFistScan;
+	BOOLEAN RRMFirstScan;
 #endif /* DOT11K_RRM_SUPPORT */
 } COMMON_CONFIG, *PCOMMON_CONFIG;
 
