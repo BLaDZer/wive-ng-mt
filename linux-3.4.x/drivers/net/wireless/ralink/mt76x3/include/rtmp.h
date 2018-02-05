@@ -5836,11 +5836,6 @@ VOID MlmeDELBAAction(
     IN RTMP_ADAPTER *pAd,
     IN MLME_QUEUE_ELEM *Elem);
 
-VOID SendSMPSAction(
-	IN RTMP_ADAPTER *pAd,
-	IN UCHAR Wcid,
-	IN UCHAR smps);
-
 #ifdef CONFIG_AP_SUPPORT
 VOID SendBeaconRequest(
 	IN RTMP_ADAPTER *pAd,
@@ -8710,7 +8705,6 @@ INT	SetCommonHT(RTMP_ADAPTER *pAd);
 
 INT	Set_ForceShortGI_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 INT	Set_ForceGF_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
-INT	Set_SendSMPSAction_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg);
 
 void convert_reordering_packet_to_preAMSDU_or_802_3_packet(
 	IN RTMP_ADAPTER *pAd,

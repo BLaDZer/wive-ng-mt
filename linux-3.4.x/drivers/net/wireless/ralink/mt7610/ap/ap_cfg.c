@@ -758,7 +758,6 @@ static struct {
 #ifdef DOT11_N_SUPPORT
 	{"BASetup",					Set_BASetup_Proc},
 	{"BADecline",					Set_BADecline_Proc},
-	{"SendMIMOPS",				Set_SendPSMPAction_Proc},
 	{"BAOriTearDown",				Set_BAOriTearDown_Proc},
 	{"BARecTearDown",				Set_BARecTearDown_Proc},
 	{"HtBw",						Set_HtBw_Proc},

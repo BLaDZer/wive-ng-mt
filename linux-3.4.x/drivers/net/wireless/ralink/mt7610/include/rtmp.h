@@ -4899,11 +4899,6 @@ VOID PeerBAAction(
     IN MLME_QUEUE_ELEM *Elem);
 #endif /* DOT11_N_SUPPORT */
 
-VOID SendPSMPAction(
-	IN PRTMP_ADAPTER	pAd,
-	IN UCHAR			Wcid,
-	IN UCHAR			Psmp);
-				   
 #ifdef CONFIG_AP_SUPPORT				   
 VOID SendBeaconRequest(
 	IN PRTMP_ADAPTER		pAd,
@@ -8009,10 +8004,6 @@ INT	Set_ForceGF_Proc(
 	IN	PSTRING			arg);
 
 INT	SetCommonHT(RTMP_ADAPTER *pAd);
-
-INT	Set_SendPSMPAction_Proc(
-	IN	PRTMP_ADAPTER	pAd, 
-	IN	PSTRING			arg);
 
 void convert_reordering_packet_to_preAMSDU_or_802_3_packet(
 	IN	PRTMP_ADAPTER	pAd, 

@@ -3826,6 +3826,7 @@
 100) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
 101) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
 102) kernel: ralink_wifi: small tune rssi thresholds for rrm/auto_channel select.<br>
+103) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
 <br>
 <br>
 <br>

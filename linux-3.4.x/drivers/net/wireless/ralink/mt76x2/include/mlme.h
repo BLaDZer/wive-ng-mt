@@ -1191,7 +1191,7 @@ typedef struct _MLME_AUX {
 	UCHAR vht_op_len;
 	VHT_CAP_IE vht_cap;
 	VHT_OP_IE vht_op;
-	UCHAR vht_cent_ch;
+	//UCHAR vht_cent_ch;
 #endif /* DOT11_VHT_AC */
 
     /* new for QOS */

@@ -19,6 +19,8 @@
 #ifndef __RT_OS_UTIL_H__
 #define __RT_OS_UTIL_H__
 
+#include "dot11_base.h"
+
 #ifdef LINUX
 /* use native linux mcast/bcast adress checks. */
 #include <linux/etherdevice.h>

@@ -32,6 +32,7 @@
 #define __DOT11AC_VHT_H
 
 #include "rtmp_type.h"
+#include "dot11_base.h"
 
 #ifdef CONFIG_DISABLE_VHT80_256_QAM
 #define DISABLE_VHT80_256_QAM		0x1

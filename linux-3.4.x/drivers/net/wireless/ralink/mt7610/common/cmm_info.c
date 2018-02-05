@@ -3156,60 +3156,6 @@ INT	Set_HtProtect_Proc(
 	return TRUE;
 }
 
-INT	Set_SendPSMPAction_Proc(
-	IN	PRTMP_ADAPTER	pAd, 
-	IN	PSTRING			arg)
-{
-    UCHAR mac[6], mode;
-	PSTRING token;
-	STRING sepValue[] = ":", DASH = '-';
-	INT i;
-    MAC_TABLE_ENTRY *pEntry;
-
-    /*DBGPRINT(RT_DEBUG_TRACE,("\n%s\n", arg));*/
-/*
-	The BARecTearDown inupt string format should be xx:xx:xx:xx:xx:xx-d, 
-		=>The six 2 digit hex-decimal number previous are the Mac address, 
-		=>The seventh decimal number is the mode value.
-*/
-    if(strlen(arg) < 19)  /*Mac address acceptable format 01:02:03:04:05:06 length 17 plus the "-" and mode value in decimal format.*/
-		return FALSE;
-
-   	token = strchr(arg, DASH);
-	if ((token != NULL) && (strlen(token)>1))
-	{
-		mode = simple_strtol((token+1), 0, 10);
-		if (mode > MMPS_ENABLE)
-			return FALSE;
-		
-		*token = '\0';
-		for (i = 0, token = rstrtok(arg, &sepValue[0]); token; token = rstrtok(NULL, &sepValue[0]), i++)
-		{
-			if((strlen(token) != 2) || (!isxdigit(*token)) || (!isxdigit(*(token+1))))
-				return FALSE;
-			AtoH(token, (&mac[i]), 1);
-		}
-		if(i != 6)
-			return FALSE;
-
-		DBGPRINT(RT_DEBUG_OFF, ("\n%02x:%02x:%02x:%02x:%02x:%02x-%02x", 
-								mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], mode));
-
-		pEntry = MacTableLookup(pAd, mac);
-
-		if (pEntry) {
-		    DBGPRINT(RT_DEBUG_OFF, ("\nSendPSMPAction MIPS mode = %d\n", mode));
-		    SendPSMPAction(pAd, pEntry->Aid, mode);
-		}
-
-		return TRUE;
-	}
-
-	return FALSE;
-
-
-}
-
 INT	Set_HtMIMOPSmode_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
 	IN	PSTRING			arg)
