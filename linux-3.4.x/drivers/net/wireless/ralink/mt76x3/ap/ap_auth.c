@@ -468,7 +468,6 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 	if (!APPeerAuthSanity(pAd, Elem->Msg, Elem->MsgLen, &auth_info))
 		return;
-    
 
 	/* Find which MBSSID to be authenticate */
 	apidx = get_apidx_by_addr(pAd, auth_info.addr1);
@@ -587,6 +586,20 @@ SendAuth:
 	}
 #endif /* BAND_STEERING_AUTH_REJ */
 #endif /* BAND_STEERING */
+
+#ifdef DOT11K_RRM_SUPPORT
+	for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
+		if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i) && pAd->CommonCfg.RRMFirstScan == TRUE) {
+			DBGPRINT(RT_DEBUG_TRACE, ("RRM Enabled, wait bootup scan. Disallow new Association\n"));
+			APPeerAuthSimpleRspGenAndSend(pAd, pRcvHdr, auth_info.auth_alg, auth_info.auth_seq + 1, MLME_UNSPECIFY_FAIL);
+
+            		/* If this STA exists, delete it. */
+            		if (pEntry)
+                    		MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+				return;
+			}
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 
 	 /* YF@20130102: Refuse the weak signal of AuthReq */
          rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),

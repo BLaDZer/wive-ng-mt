@@ -1162,6 +1162,16 @@ SendAssocResponse:
 	}
 #endif /* BAND_STEERING */
 
+#ifdef DOT11K_RRM_SUPPORT
+	for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
+		/* if rrm enabled for one or more ssid and wait bootup scan */
+		if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i) && pAd->CommonCfg.RRMFirstScan == TRUE) {
+			DBGPRINT(RT_DEBUG_TRACE, ("RRM Enabled, wait bootup scan. Disallow new Association\n"));
+			bAssocSkip = TRUE;
+		}
+	}
+#endif /* DOT11K_RRM_SUPPORT */
+
 	/* YF@20120419: Refuse the weak signal of AssocReq */
 	rssi = RTMPMaxRssi(pAd,  ConvertToRssi(pAd, (CHAR)Elem->Rssi0, RSSI_0),
 				 ConvertToRssi(pAd, (CHAR)Elem->Rssi1, RSSI_1),

@@ -1043,7 +1043,6 @@ BOOLEAN PeerAssocReqCmmSanity(
 					/* Copy whole RSNIE context */
                     NdisMoveMemory(&ie_lists->RSN_IE[0], eid_ptr, eid_ptr->Len + 2);
 					ie_lists->RSNIE_Len =eid_ptr->Len + 2;
-
 #ifdef DOT11R_FT_SUPPORT
 					NdisMoveMemory(pFtInfo->RSN_IE, eid_ptr, eid_ptr->Len + 2);
 					pFtInfo->RSNIE_Len = eid_ptr->Len + 2;
@@ -1226,7 +1225,7 @@ VOID ap_cmm_peer_assoc_req_action(
 		DBGPRINT(RT_DEBUG_TRACE, ("Disallow new Association\n"));
 		return;
 	}
-		
+
 #ifdef DOT11R_FT_SUPPORT
 	os_alloc_mem(NULL, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
 	if (pFtInfoBuf == NULL) {
@@ -1561,6 +1560,16 @@ SendAssocResponse:
 		DBGPRINT(RT_DEBUG_TRACE, ("Reject this ASSOC_FAIL_REQ due to BandSteering.\n"));
 	}
 #endif /* BAND_STEERING */
+
+#ifdef DOT11K_RRM_SUPPORT
+	for (i = 0; i < MAX_MBSSID_NUM(pAd); i++) {
+		/* if rrm enabled for one or more ssid and wait bootup scan */
+		if (pAd->OpMode == OPMODE_AP && IS_RRM_ENABLE(pAd, i) && pAd->CommonCfg.RRMFirstScan == TRUE) {
+			DBGPRINT(RT_DEBUG_TRACE, ("RRM Enabled, wait bootup scan. Disallow new Association\n"));
+			bAssocSkip = TRUE;
+		}
+	}
+#endif /* DOT11K_RRM_SUPPORT */
 
 	/* YF@20120419: Refuse the weak signal of AssocReq */
 	rssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),

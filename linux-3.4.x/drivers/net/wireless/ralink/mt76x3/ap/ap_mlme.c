@@ -418,7 +418,7 @@ VOID APMlmePeriodicExec(
 	if (!ApScanRunning(pAd)) {
 	    /* after boot need force first scan at 15sec */
 	    if ((pAd->Mlme.OneSecPeriodicRound % 240 == 0) ||
-		    (pAd->Mlme.OneSecPeriodicRound % 15 == 0 && pAd->CommonCfg.RRMFirstScan == TRUE && pAd->ScanTab.BssNr == 0))
+		    (pAd->Mlme.OneSecPeriodicRound % 15 == 0 && pAd->CommonCfg.RRMFirstScan == TRUE))
 	    {
 		    if (pAd->MacTab.Size == 0 || pAd->CommonCfg.RRMFirstScan == TRUE) {
 			INT needscan = 0;

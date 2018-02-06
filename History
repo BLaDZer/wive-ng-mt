@@ -3824,10 +3824,11 @@
 98) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
 99) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
 100) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
-101) kernel: ralink_wifi: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
-102) kernel: ralink_wifi: small tune rssi thresholds for rrm/auto_channel select.<br>
-103) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
-104) kernel: ralink_wifi: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
+101) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
+102) kernel: ralink_wifi: roam: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
+102) kernel: ralink_wifi: rrm: small tune rssi thresholds for rrm/auto_channel select.<br>
+104) kernel: ralink_wifi: rrm: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
+105) kernel: ralink_wifi: rrm: do not allow connect before bootup scan complete.<br>
 <br>
 <br>
 <br>
