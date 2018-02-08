@@ -3782,54 +3782,55 @@
 56) kernel: usb: serial: option: simplify 3 D-Link device entries.<br>
 57) kernel: usb: serial: option: add support for Telit ME910 PID 0x1101.<br>
 58) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
-59) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-60) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
-61) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
-62) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
-63) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
-64) kernel: usb: increase quirk delay for USB devices.<br>
-65) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
-66) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
-67) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
-68) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
-69) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
-70) kernel: net: enable interface alias removal via rtnl.<br>
-71) kernel: net: l2tp: fix l2tp_eth module loading.<br>
-72) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
-73) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
-74) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
-75) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
-76) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
-77) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
-78) kernel: net: 8021q: fix a memory leak for VLAN 0 device.<br>
-79) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
-80) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
-81) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
-82) kernel: net: ipv6: send unsolicited NA after DAD.<br>
-83) kernel: net: ipv6: fix udpv6 sendmsg crash caused by too small MTU.<br>
-84) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
-85) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
-86) kernel: net: ipv4: Make neigh lookup keys for loopback/point-to-point devices be INADDR_ANY.<br>
-87) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
-88) kernel: net: igmp: fix source address check for IGMPv3 reports.<br>
-89) kernel: net: allow neigh contructor functions ability to modify the primary_key.<br>
-90) kernel: net: af_key: fix buffer overread in parse_exthdrs().<br>
-91) kernel: net: af_key: fix buffer overread in verify_address_len().<br>
-92) kernel: net: netfilter: nf_ct_expect: remove the redundant slash when policy name is empty.<br>
-93) kernel: net: tcp: __tcp_hdrlen() helper.<br>
-94) kernel: net: qdisc_pkt_len_init() should be more robust.<br>
-95) kernel: sd: get disk reference in sd_check_events().<br>
-96) kernel: bitops.h: add sign_extend64().<br>
-97) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
-98) kernel: ipc: msg, make msgrcv work with LONG_MIN.<br>
-99) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
-100) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
-101) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
-102) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
-103) kernel: ralink_wifi: roam: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
-104) kernel: ralink_wifi: rrm: small tune rssi thresholds for rrm/auto_channel select.<br>
-105) kernel: ralink_wifi: rrm: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
-106) kernel: ralink_wifi: rrm: do not allow connect before bootup scan complete.<br>
+59) kernel: usb: serial: io_edgeport: fix possible sleep-in-atomic.<br>
+60) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
+61) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+62) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
+63) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
+64) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
+65) kernel: usb: increase quirk delay for USB devices.<br>
+66) kernel: usb: pci-quirks.c: Corrected timeout values used in handshake.<br>
+67) kernel: usb: usb-storage: unusual_devs entry to fix write-access regression for Seagate external drives.<br>
+68) kernel: usb: fix typo in the definition of Endpoint[out]Request.<br>
+69) kernel: net: net_sched: always reset qdisc backlog in qdisc_reset().<br>
+70) kernel: net: ipsec: Fix aborted xfrm policy dump crash.<br>
+71) kernel: net: enable interface alias removal via rtnl.<br>
+72) kernel: net: l2tp: fix l2tp_eth module loading.<br>
+73) kernel: net: l2tp: hold socket before dropping lock in l2tp_ip{, 6}_recv().<br>
+74) kernel: net: l2tp: hold tunnel socket when handling control frames in l2tp_ip and l2tp_ip6.<br>
+75) kernel: net: l2tp: don't use l2tp_tunnel_find() in l2tp_ip and l2tp_ip6.<br>
+76) kernel: net: packet: only test po->has_vnet_hdr once in packet_snd.<br>
+77) kernel: net: inet: frag: release spinlock before calling icmp_send().<br>
+78) kernel: net: tcp md5sig: use skb's saddr when replying to an incoming segment.<br>
+79) kernel: net: 8021q: fix a memory leak for VLAN 0 device.<br>
+80) kernel: net: ipv6: icmp6: allow icmp messages to be looped back.<br>
+81) kernel: net: ipv6: mcast: better catch silly mtu values.<br>
+82) kernel: net: ipv6: ip6_tunnel: disable dst caching if tunnel is dual-stack.<br>
+83) kernel: net: ipv6: send unsolicited NA after DAD.<br>
+84) kernel: net: ipv6: fix udpv6 sendmsg crash caused by too small MTU.<br>
+85) kernel: net: ipv4: igmp: use correct source address on IGMPv3 reports (RFC 3376).<br>
+86) kernel: net: ipv4: igmp: guard against silly MTU values.<br>
+87) kernel: net: ipv4: Make neigh lookup keys for loopback/point-to-point devices be INADDR_ANY.<br>
+88) kernel: net: pppoe: take ->needed_headroom of lower device into account on xmit.<br>
+89) kernel: net: igmp: fix source address check for IGMPv3 reports.<br>
+90) kernel: net: allow neigh contructor functions ability to modify the primary_key.<br>
+91) kernel: net: af_key: fix buffer overread in parse_exthdrs().<br>
+92) kernel: net: af_key: fix buffer overread in verify_address_len().<br>
+93) kernel: net: netfilter: nf_ct_expect: remove the redundant slash when policy name is empty.<br>
+94) kernel: net: tcp: __tcp_hdrlen() helper.<br>
+95) kernel: net: qdisc_pkt_len_init() should be more robust.<br>
+96) kernel: sd: get disk reference in sd_check_events().<br>
+97) kernel: bitops.h: add sign_extend64().<br>
+98) kernel: pipe: avoid round_pipe_size() nr_pages overflow on 32-bit.<br>
+99) kernel: ipc: msg, make msgrcv work with LONG_MIN.<br>
+100) kernel: ralink_wifi: fix disable OLBC detection (use this mode by default).<br>
+101) kernel: ralink_wifi: use different rssi threshold for olbc/bndstr/rrm/scan.<br>
+102) kernel: ralink_wifi: add new iphone 6s and one pluse one 5 OUI to 80MHz workaround.<br>
+103) kernel: ralink_wifi: small cleanup and refactor mt7610 headers.<br>
+104) kernel: ralink_wifi: roam: add resend L2 update frame after auth success (prevent DS arp tables unconistent with preauth support clients).<br>
+105) kernel: ralink_wifi: rrm: small tune rssi thresholds for rrm/auto_channel select.<br>
+106) kernel: ralink_wifi: rrm: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
+107) kernel: ralink_wifi: rrm: do not allow connect before bootup scan complete.<br>
 <br>
 <br>
 <br>
