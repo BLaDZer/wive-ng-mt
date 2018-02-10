@@ -3834,10 +3834,9 @@
 108) kernel: ralink_wifi: rrm: do not allow connect before bootup scan complete.<br>
 109) kernel: mips: page.h: define virt_to_pfn().<br>
 110) kernel: mips: remove memory clobber from non-octeon version of nudge_writes().<br>
-111) kernel: mips: mm: remove mips_dma_mapping_error.<br>
-112) kernel: mips: fix an off-by-one in dma_capable.<br>
-113) kernel: mips: setup boot_command_line before plat_mem_setup.<br>
-114) kernel: mips: fix execution hazard during watchpoint register probe.<br>
+111) kernel: mips: fix an off-by-one in dma_capable.<br>
+112) kernel: mips: setup boot_command_line before plat_mem_setup.<br>
+113) kernel: mips: fix execution hazard during watchpoint register probe.<br>
 <br>
 <br>
 <br>
