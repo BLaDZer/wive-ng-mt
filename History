@@ -3835,6 +3835,7 @@
 109) kernel: mips: page.h: define virt_to_pfn().<br>
 110) kernel: mips: remove memory clobber from non-octeon version of nudge_writes().<br>
 111) kernel: mips: mm: remove mips_dma_mapping_error.<br>
+112) kernel: mips: fix an off-by-one in dma_capable.<br>
 <br>
 <br>
 <br>
