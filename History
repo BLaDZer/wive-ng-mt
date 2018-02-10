@@ -3832,6 +3832,7 @@
 106) kernel: ralink_wifi: rrm: small tune rssi thresholds for rrm/auto_channel select.<br>
 107) kernel: ralink_wifi: rrm: improve rrm networks rescan and scan at boot (tune timeouts and switch to active mode).<br>
 108) kernel: ralink_wifi: rrm: do not allow connect before bootup scan complete.<br>
+109) kernel: mips: page.h: define virt_to_pfn().<br>
 <br>
 <br>
 <br>
