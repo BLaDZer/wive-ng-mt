@@ -273,7 +273,7 @@
 					    ".set pop" : : : "memory")
 #else
 #define smp_mb__before_llsc() smp_llsc_mb()
-#define nudge_writes() mb()
+#define nudge_writes() do { } while (0)
 #endif
 
 #define smp_store_release(p, v)						\
