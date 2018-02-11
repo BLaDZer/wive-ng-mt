@@ -58,8 +58,8 @@ stop() {
     killall -q -SIGKILL config-pptp.sh
     killall -q -SIGKILL config-lanauth.sh
 
-    # Kill lanauth only if vpn disable
-    if [ "$vpnEnabled" = "off" ] || [ "$vpnType" != "6" ]; then
+    # Kill lanauth only if vpn disable or not lanauth mode
+    if [ "$vpnEnabled" = "off" ] || [ "$vpnType" != "3" ]; then
 	/etc/scripts/config-lanauth.sh stop
     fi
 

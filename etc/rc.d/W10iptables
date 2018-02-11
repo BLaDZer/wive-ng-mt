@@ -648,8 +648,8 @@ get_param() {
     else
 	ROUTE_MODE="off"
     fi
-    # if ppp enabled and not lanauth mode (type6 is lanauth not real ppp)
-    if [ "$vpnEnabled" = "on" -a "$vpnType" != "6" ]; then
+    # if ppp enabled and not lanauth mode (type3 is lanauth not real ppp)
+    if [ "$vpnEnabled" = "on" -a "$vpnType" != "3" ]; then
 	VPN_CONNECT="on"
     else
 	VPN_CONNECT="off"
