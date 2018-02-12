@@ -3852,6 +3852,7 @@
 7) kernel: netfilter: x_tables: fix 32bit compat layer.<br>
 8) kernel: qdisc: allow setting default queuing discipline.<br>
 9) kernel: qdisc: make args to qdisc_create_default const.<br>
+10) kernel: qdisc: fix build with !CONFIG_NET_SCHED.<br>
 <br>
 <br>
 <br>
