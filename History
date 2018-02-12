@@ -3843,23 +3843,25 @@
 <br>
 <br>
 <b>7.1.x</b><br>
-1) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
-2) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
-3) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
-4) kernel: crypto: talitos - fix sha224.<br>
-5) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
-6) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-7) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
-8) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
-9) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
-10) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
-11) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
-12) kernel: net: sched: use pfifo_fast for non real queues.<br>
-13) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
-14) kernel: net: net_sched: fix error recovery at qdisc creation lost fix.<br>
-15) kernel: net: sch_fq_codel: avoid double free on init failure.<br>
-16) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
-17) kernel: net: pkt_sched: Fix warning false positives.<br>
+1) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
+2) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
+3) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
+4) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
+5) kernel: crypto: talitos - fix sha224.<br>
+6) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
+7) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
+8) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
+9) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
+10) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
+11) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
+12) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
+13) kernel: net: sched: use pfifo_fast for non real queues.<br>
+14) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
+15) kernel: net: net_sched: fix error recovery at qdisc creation lost fix.<br>
+16) kernel: net: sch_fq_codel: avoid double free on init failure.<br>
+17) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+18) kernel: net: pkt_sched: Fix warning false positives.<br>
+
 <br>
 <br>
 <br>
