@@ -3855,9 +3855,10 @@
 10) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
 11) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
 12) kernel: net: sched: use pfifo_fast for non real queues.<br>
-13) kernel: net: sched filters: fix notification of filter delete with proper handle.<br>
+13) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
 14) kernel: net: net_sched: fix error recovery at qdisc creation lost fix.<br>
-15) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+15) kernel: net: sch_fq_codel: avoid double free on init failure.<br>
+16) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
 <br>
 <br>
 <br>
