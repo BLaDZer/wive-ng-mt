@@ -19,6 +19,7 @@ LOG="logger -t QoS"
 start() {
     eval `nvram_buf_get 2860 QoSEnable`
     if [ "$QoSEnable" != "" -a "$QoSEnable" != "0" ]; then
+
 	$LOG "Set default rules."
 	set_def
 
@@ -36,6 +37,12 @@ start() {
 }
 
 set_def() {
+    if [ "$QoSEnable" = "3" ]; then
+	net.core.default_qdisc=fq_codel
+    else
+	net.core.default_qdisc=pfifo_fast
+    fi
+
     INTERFACES=`ls /proc/sys/net/ipv4/conf/ | grep -vE "lo|all|default"`
     for ifname in $INTERFACES; do
 	tc qdisc del dev $ifname root > /dev/null 2>&1

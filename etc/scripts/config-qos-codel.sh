@@ -9,11 +9,6 @@
 
 LOG="logger -t Codel QoS"
 
-qos_lm() {
-    # Load modules
-    modprobe -q sch_fq_codel
-}
-
 qos_tc() {
     $LOG "Add codel for all interfaces."
     tc qdisc add dev $lan_if root fq_codel		> /dev/null 2>&1
@@ -25,7 +20,5 @@ qos_tc() {
     fi
 }
 
-# load modules
-qos_lm
 # add netsched rules
 qos_tc
