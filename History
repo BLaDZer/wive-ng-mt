@@ -3859,6 +3859,7 @@
 14) kernel: net: net_sched: fix error recovery at qdisc creation lost fix.<br>
 15) kernel: net: sch_fq_codel: avoid double free on init failure.<br>
 16) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+17) kernel: net: pkt_sched: Fix warning false positives.<br>
 <br>
 <br>
 <br>
