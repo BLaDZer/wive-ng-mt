@@ -3843,6 +3843,7 @@
 117) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
 118) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
 119) kernel: crypto: talitos - fix sha224.<br>
+120) kernel: netfilter: x_tables: validate e->target_offset early.<br>
 <br>
 <br>
 <br>
