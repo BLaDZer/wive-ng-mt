@@ -3838,6 +3838,7 @@
 112) kernel: mips: fix an off-by-one in dma_capable.<br>
 113) kernel: mips: setup boot_command_line before plat_mem_setup.<br>
 114) kernel: mips: fix execution hazard during watchpoint register probe.<br>
+115) kernel: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
 <br>
 <br>
 <br>
