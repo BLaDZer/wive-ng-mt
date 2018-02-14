@@ -3865,6 +3865,7 @@
 20) kernel: net: sch_fq_codel: avoid double free on init failure.<br>
 21) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
 22) kernel: net: pkt_sched: fix warning false positives.<br>
+23) kernel: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
 <br>
 <br>
 <br>
