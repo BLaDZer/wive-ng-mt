@@ -3785,7 +3785,7 @@
 59) kernel: usb: serial: console: fix use-after-free after failed setup.<br>
 60) kernel: usb: serial: io_edgeport: fix possible sleep-in-atomic.<br>
 61) kernel: usb: qmi_wwan: set FLAG_SEND_ZLP to avoid network initiated disconnect.<br>
-62) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br.
+62) kernel: usb: qmi_wwan: add Telit ME910 PID 0x1101 support.<br>
 63) kernel: usb: qmi_wwan: add USB IDs for MDM6600 modem on Motorola Droid 4.<br>
 64) kernel: usb: usbip: set buffer pointers to NULL after free.<br>
 65) kernel: usb: usbip: fix nonconforming hub descriptor.<br>
