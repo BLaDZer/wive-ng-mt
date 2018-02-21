@@ -3849,33 +3849,34 @@
 4) ethtool: update to 4.15 version.<br>
 5) freeradius: up to 3.0.16 version.<br>
 6) lldpd: up to 0.9.9 version.<br>
-7) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
-8) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
-9) kernel: usbnet: silence an unnecessary warning.<br>
-10) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
-11) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
-12) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
-13) kernel: crypto: talitos - fix sha224.<br>
-14) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
-15) kernel: rtc: set the alarm to the next expiring timer.<br>
-16) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
-17) kernel: net: ip6mr: fix stale iterator.<br>
-18) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
-19) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
-20) kernel: net: don't call update_pmtu unconditionally.<br>
-21) kernel: net: pkt_sched: fix warning false positives.<br>
-22) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
-23) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
-24) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
-25) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
-26) kernel: net: sched: use pfifo_fast for non real queues.<br>
-27) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
-28) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
-29) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
-30) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-31) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
-32) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
-33) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
+7) quagga: up to 1.2.4 version.<br>
+8) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
+9) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
+10) kernel: usbnet: silence an unnecessary warning.<br>
+11) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
+12) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
+13) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
+14) kernel: crypto: talitos - fix sha224.<br>
+15) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
+16) kernel: rtc: set the alarm to the next expiring timer.<br>
+17) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
+18) kernel: net: ip6mr: fix stale iterator.<br>
+19) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
+20) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+21) kernel: net: don't call update_pmtu unconditionally.<br>
+22) kernel: net: pkt_sched: fix warning false positives.<br>
+23) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
+24) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
+25) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
+26) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
+27) kernel: net: sched: use pfifo_fast for non real queues.<br>
+28) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
+29) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
+30) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
+31) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
+32) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
+33) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
+34) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
 <br>
 <br>
 <br>

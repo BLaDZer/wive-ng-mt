@@ -1387,12 +1387,7 @@ main(int argc, char **argv)
     }
   }
 
-  {
-    struct thread thread;
-
-    while (thread_fetch (master, &thread))
-      thread_call (&thread);
-  }
+  thread_main (master);
 
   /* Not reached. */
   return 0;

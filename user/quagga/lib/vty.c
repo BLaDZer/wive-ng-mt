@@ -2364,6 +2364,10 @@ vty_close (struct vty *vty)
   else
     vty_stdio_reset ();
 
+  /* Close output fd (except stdout/stderr) */
+  if (vty->wfd > 2)
+    close (vty->wfd);
+
   if (vty->buf)
     XFREE (MTYPE_VTY, vty->buf);
 
@@ -2431,7 +2435,7 @@ vty_read_file (FILE *confp)
            fprintf (stderr, "*** Error reading config: There is no such command.\n");
            break;
        }
-      fprintf (stderr, "*** Error occured processing line %u, below:\n%s\n",
+      fprintf (stderr, "*** Error occurred processing line %u, below:\n%s\n",
 		       line_num, vty->buf);
       vty_close (vty);
       exit (1);

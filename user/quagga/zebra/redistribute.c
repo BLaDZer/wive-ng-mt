@@ -182,7 +182,7 @@ zebra_redistribute (struct zserv *client, int type, vrf_id_t vrf_id)
 }
 
 void
-redistribute_add (struct prefix *p, struct rib *rib)
+redistribute_add (struct prefix *p, struct rib *rib, struct rib *rib_old)
 {
   struct listnode *node, *nnode;
   struct zserv *client;
@@ -203,6 +203,21 @@ redistribute_add (struct prefix *p, struct rib *rib)
 	      client->redist_v6_add_cnt++;
 	      zsend_route_multipath (ZEBRA_IPV6_ROUTE_ADD, client, p, rib);
 	    }
+        }
+      else if (rib_old && vrf_bitmap_check (client->redist[rib_old->type], 
+                                            rib_old->vrf_id))
+        {
+          /* redistribute_add has implicit withdraw semantics, so there
+           * may be an old route already redistributed that is being updated.
+           *
+           * However, if the new route is of a type that is /not/ redistributed
+           * to the client, then we must ensure the old route is explicitly
+           * withdrawn.
+           */
+          if (p->family == AF_INET)
+            zsend_route_multipath (ZEBRA_IPV4_ROUTE_DELETE, client, p, rib_old);
+          if (p->family == AF_INET6)
+            zsend_route_multipath (ZEBRA_IPV6_ROUTE_DELETE, client, p, rib_old);
         }
     }
 }
