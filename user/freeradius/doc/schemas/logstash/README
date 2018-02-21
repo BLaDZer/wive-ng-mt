@@ -70,7 +70,7 @@ Example usage
 
 Install mapping (only needs to be done once):
 
-$ ./radius-mapping.sh
+    $ ./radius-mapping.sh
 
 Edit logstash-radius.conf to point to the correct file, then feed a detail file
 in:

@@ -11,7 +11,8 @@ DEFAULT_MODULES :=     always attr_filter eap mschap preprocess files radutmp
 LOCAL_MODULES :=	$(addprefix raddb/mods-enabled/,$(DEFAULT_MODULES))
 
 LOCAL_CERT_FILES :=	Makefile README xpextensions \
-			ca.cnf server.cnf client.cnf bootstrap
+			ca.cnf server.cnf inner-server.cnf \
+			client.cnf bootstrap
 
 #
 #  We don't create the installed certs if we're building a package,

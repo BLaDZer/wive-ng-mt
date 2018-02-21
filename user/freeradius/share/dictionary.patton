@@ -15,11 +15,14 @@ VENDOR		Patton				1768
 BEGIN-VENDOR	Patton
 
 ATTRIBUTE	Patton-Protocol			16	string
+ATTRIBUTE	Patton-Group				17	string
+ATTRIBUTE	Patton-Web-Privilege-Level		18	string
 ATTRIBUTE	Patton-Setup-Time			32	string
 ATTRIBUTE	Patton-Connect-Time			33	string
 ATTRIBUTE	Patton-Disconnect-Time			34	string
 ATTRIBUTE	Patton-Disconnect-Cause			35	integer
 ATTRIBUTE	Patton-Disconnect-Source		36	string
+ATTRIBUTE	Patton-Disconnect-Reason		37	string
 ATTRIBUTE	Patton-Called-Unique-Id			48	string
 ATTRIBUTE	Patton-Called-IP-Address		49	ipaddr
 ATTRIBUTE	Patton-Called-Numbering-Plan		50	string
