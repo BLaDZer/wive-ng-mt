@@ -27,21 +27,20 @@
 
 #include "defs.h"
 
+#ifdef HAVE_STRUCT_MTD_WRITE_REQ
+
 #include DEF_MPERS_TYPE(struct_mtd_oob_buf)
 
 #include <linux/ioctl.h>
-
-/* The mtd api changes quickly, so we have to keep a local copy */
-#include <linux/version.h>
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 3, 0)
-# include "mtd-abi.h"
-#else
 # include <mtd/mtd-abi.h>
-#endif
 
 typedef struct mtd_oob_buf struct_mtd_oob_buf;
 
+#endif /* HAVE_STRUCT_MTD_WRITE_REQ */
+
 #include MPERS_DEFS
+
+#ifdef HAVE_STRUCT_MTD_WRITE_REQ
 
 #include "xlat/mtd_mode_options.h"
 #include "xlat/mtd_file_mode_options.h"
@@ -362,3 +361,5 @@ MPERS_PRINTER_DECL(int, mtd_ioctl, struct tcb *const tcp,
 
 	return RVAL_IOCTL_DECODED;
 }
+
+#endif /* HAVE_STRUCT_MTD_WRITE_REQ */

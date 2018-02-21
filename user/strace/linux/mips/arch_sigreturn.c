@@ -8,7 +8,7 @@ arch_sigreturn(struct tcb *tcp)
 	 * sizeof(sf_ass) + sizeof(sf_pad) + sizeof(struct sigcontext)
 	 */
 	const kernel_ulong_t addr = mips_REG_SP + 6 * 4 +
-			  sizeof(struct sigcontext);
+				   sizeof(struct sigcontext);
 
 	tprints("{mask=");
 	print_sigset_addr(tcp, addr);

@@ -37,7 +37,9 @@
 
 #include "error_prints.h"
 
-extern const char *program_invocation_name;
+#ifndef HAVE_PROGRAM_INVOCATION_NAME
+extern char *program_invocation_name;
+#endif
 
 static void
 verror_msg(int err_no, const char *fmt, va_list p)

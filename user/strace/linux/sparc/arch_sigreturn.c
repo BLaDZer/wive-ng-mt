@@ -12,7 +12,7 @@ static void
 arch_sigreturn(struct tcb *tcp)
 {
 	unsigned long addr = sparc_regs.u_regs[U_REG_FP] +
-		  SIZEOF_STRUCT_SPARC_STACKF + SIZEOF_STRUCT_PT_REGS;
+		SIZEOF_STRUCT_SPARC_STACKF + SIZEOF_STRUCT_PT_REGS;
 	struct {
 		unsigned int mask;
 		char fpu_save[PERSONALITY_WORDSIZE];

@@ -44,13 +44,16 @@
 /* Definitions for command which have been added later */
 
 #  ifndef DM_LIST_VERSIONS
-#   define DM_LIST_VERSIONS    _IOWR(DM_IOCTL, 0xd, struct dm_ioctl)
+#   define DM_LIST_VERSIONS    _IOWR(DM_IOCTL, 0x0d, struct dm_ioctl)
 #  endif
 #  ifndef DM_TARGET_MSG
-#   define DM_TARGET_MSG       _IOWR(DM_IOCTL, 0xe, struct dm_ioctl)
+#   define DM_TARGET_MSG       _IOWR(DM_IOCTL, 0x0e, struct dm_ioctl)
 #  endif
 #  ifndef DM_DEV_SET_GEOMETRY
-#   define DM_DEV_SET_GEOMETRY _IOWR(DM_IOCTL, 0xf, struct dm_ioctl)
+#   define DM_DEV_SET_GEOMETRY _IOWR(DM_IOCTL, 0x0f, struct dm_ioctl)
+#  endif
+#  ifndef DM_DEV_ARM_POLL
+#   define DM_DEV_ARM_POLL     _IOWR(DM_IOCTL, 0x10, struct dm_ioctl)
 #  endif
 
 
@@ -255,6 +258,7 @@ dm_decode_dm_name_list(struct tcb *const tcp, const kernel_ulong_t addr,
 	uint32_t offset = ioc->data_start;
 	uint32_t offset_end = 0;
 	uint32_t count;
+	int rc;
 
 	if (ioc->data_start == ioc->data_size)
 		return;
@@ -285,8 +289,36 @@ dm_decode_dm_name_list(struct tcb *const tcp, const kernel_ulong_t addr,
 
 		PRINT_FIELD_DEV("{", s, dev);
 		tprints(", name=");
-		printstr_ex(tcp, addr + offset_end, ioc->data_size - offset_end,
+		rc = printstr_ex(tcp, addr + offset_end,
+				 ioc->data_size - offset_end,
 			    QUOTE_0_TERMINATED);
+
+		/*
+		 * In Linux v4.13-rc1~137^2~13 it has been decided to cram in
+		 * one more undocumented field after the device name, as if the
+		 * format decoding was not twisted enough already. So, we have
+		 * to check "next" now, and if it _looks like_ that there is
+		 * a space for one additional integer, let's print it. As if the
+		 * perversity with "name string going further than pointer to
+		 * the next one" wasn't enough. Moreover, the calculation was
+		 * broken for m32 on 64-bit kernels until v4.14-rc4~20^2~3, and
+		 * we have no ability to detect kernel bit-ness (on x86, at
+		 * least), so refrain from printing it for the DM versions below
+		 * 4.37 (the original version was also aligned differently than
+		 * now even on 64 bit).
+		 */
+
+		if ((rc > 0) && ioc->version[1] >= 37) {
+			kernel_ulong_t event_addr =
+				(addr + offset_end + rc + 7) & ~7;
+			uint32_t event_nr;
+
+			if ((event_addr + sizeof(event_nr)) <=
+			    (addr + offset + s.next) &&
+			    !umove(tcp, event_addr, &event_nr))
+				tprintf(", event_nr=%" PRIu32, event_nr);
+		}
+
 		tprints("}");
 
 		if (!s.next)
@@ -429,6 +461,7 @@ dm_ioctl_has_params(const unsigned int code)
 	case DM_DEV_SUSPEND:
 	case DM_DEV_STATUS:
 	case DM_TABLE_CLEAR:
+	case DM_DEV_ARM_POLL:
 		return false;
 	}
 
@@ -576,6 +609,7 @@ dm_ioctl(struct tcb *const tcp, const unsigned int code, const kernel_ulong_t ar
 	case DM_LIST_VERSIONS:
 	case DM_TARGET_MSG:
 	case DM_DEV_SET_GEOMETRY:
+	case DM_DEV_ARM_POLL:
 		return dm_known_ioctl(tcp, code, arg);
 	default:
 		return RVAL_DECODED;

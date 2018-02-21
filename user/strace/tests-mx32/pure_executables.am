@@ -104,6 +104,7 @@ PURE_EXECUTABLES = \
   ioctl_block \
   ioctl_dm \
   ioctl_evdev \
+  ioctl_kvm_run \
   ioctl_loop \
   ioctl_mtd \
   ioctl_rtc \
@@ -123,6 +124,7 @@ PURE_EXECUTABLES = \
   ipc_sem \
   ipc_shm \
   kcmp \
+  kcmp-y \
   kexec_file_load \
   kexec_load \
   keyctl \
@@ -153,6 +155,7 @@ PURE_EXECUTABLES = \
   mmap64 \
   mmsg \
   mmsg_name \
+  modify_ldt \
   mount \
   move_pages \
   mq \
@@ -180,6 +183,17 @@ PURE_EXECUTABLES = \
   netlink_sock_diag \
   netlink_xfrm \
   newfstatat \
+  nfnetlink_acct \
+  nfnetlink_cthelper \
+  nfnetlink_ctnetlink \
+  nfnetlink_ctnetlink_exp \
+  nfnetlink_cttimeout \
+  nfnetlink_nft_compat \
+  nfnetlink_nftables \
+  nfnetlink_ipset \
+  nfnetlink_osf \
+  nfnetlink_queue \
+  nfnetlink_ulog \
   nlattr \
   nlattr_crypto_user_alg \
   nlattr_br_port_msg \
@@ -194,6 +208,8 @@ PURE_EXECUTABLES = \
   nlattr_inet_diag_msg \
   nlattr_inet_diag_req_compat \
   nlattr_inet_diag_req_v2 \
+  nlattr_mdba_mdb_entry \
+  nlattr_mdba_router_port \
   nlattr_ndmsg \
   nlattr_ndtmsg \
   nlattr_netconfmsg \
@@ -203,13 +219,18 @@ PURE_EXECUTABLES = \
   nlattr_rtgenmsg \
   nlattr_rtmsg \
   nlattr_smc_diag_msg \
+  nlattr_tc_stats \
+  nlattr_tca_stab \
   nlattr_tcamsg \
   nlattr_tcmsg \
   nlattr_unix_diag_msg \
   old_mmap \
+  old_mmap-P \
+  old_mmap-v-none \
   oldfstat \
   oldlstat \
   oldselect \
+  oldselect-efault \
   oldstat \
   open \
   openat \
@@ -223,7 +244,9 @@ PURE_EXECUTABLES = \
   pkey_free \
   pkey_mprotect \
   poll \
+  poll-P \
   ppoll \
+  ppoll-P \
   prctl-arg2-intptr \
   prctl-dumpable \
   prctl-name \
@@ -266,6 +289,7 @@ PURE_EXECUTABLES = \
   renameat \
   renameat2 \
   request_key \
+  riscv_flush_icache \
   rmdir \
   rt_sigaction \
   rt_sigpending \
@@ -275,6 +299,12 @@ PURE_EXECUTABLES = \
   rt_sigsuspend \
   rt_sigtimedwait \
   rt_tgsigqueueinfo \
+  s390_guarded_storage \
+  s390_guarded_storage-v \
+  s390_pci_mmio_read_write \
+  s390_runtime_instr \
+  s390_sthyi \
+  s390_sthyi-v \
   sched_get_priority_mxx \
   sched_rr_get_interval \
   sched_xetaffinity \
@@ -283,6 +313,7 @@ PURE_EXECUTABLES = \
   sched_xetscheduler \
   sched_yield \
   seccomp-filter \
+  seccomp_get_action_avail \
   select \
   semop \
   sendfile \
@@ -325,6 +356,7 @@ PURE_EXECUTABLES = \
   so_peercred \
   sock_filter-v \
   socketcall \
+  sockopt-sol_netlink \
   splice \
   stat \
   stat64 \
@@ -376,6 +408,7 @@ PURE_EXECUTABLES = \
   xattr \
   xattr-strings \
   xet_robust_list \
+  xet_thread_area_x86 \
   xetitimer \
   xetpgid \
   xetpriority \

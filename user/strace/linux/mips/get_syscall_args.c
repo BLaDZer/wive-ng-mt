@@ -16,7 +16,7 @@ get_syscall_args(struct tcb *tcp)
 	tcp->u_arg[3] = mips_REG_A3;
 	if (tcp->s_ent->nargs > 4
 	    && umoven(tcp, mips_REG_SP + 4 * sizeof(tcp->u_arg[0]),
-			   (tcp->s_ent->nargs - 4) * sizeof(tcp->u_arg[0]),
+		      (tcp->s_ent->nargs - 4) * sizeof(tcp->u_arg[0]),
 		      &tcp->u_arg[4]) < 0) {
 		/*
 		 * Let's proceed with the first 4 arguments

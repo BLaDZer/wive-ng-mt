@@ -118,7 +118,7 @@ AC_DEFUN([AX_CODE_COVERAGE],[
 
 		AS_IF([ test -z "$LCOV" ], [
 			AC_MSG_ERROR([To enable code coverage reporting you must have lcov installed])
-			])
+		])
 
 		AS_IF([ test -z "$GENHTML" ], [
 			AC_MSG_ERROR([Could not find genhtml from the lcov package])

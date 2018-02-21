@@ -18,12 +18,12 @@ get_syscall_args(struct tcb *tcp)
 			tcp->u_arg[4] = (uint32_t) x86_64_regs.r8;
 			tcp->u_arg[5] = (uint32_t) x86_64_regs.r9;
 		} else {
-		tcp->u_arg[0] = x86_64_regs.rdi;
-		tcp->u_arg[1] = x86_64_regs.rsi;
-		tcp->u_arg[2] = x86_64_regs.rdx;
-		tcp->u_arg[3] = x86_64_regs.r10;
-		tcp->u_arg[4] = x86_64_regs.r8;
-		tcp->u_arg[5] = x86_64_regs.r9;
+			tcp->u_arg[0] = x86_64_regs.rdi;
+			tcp->u_arg[1] = x86_64_regs.rsi;
+			tcp->u_arg[2] = x86_64_regs.rdx;
+			tcp->u_arg[3] = x86_64_regs.r10;
+			tcp->u_arg[4] = x86_64_regs.r8;
+			tcp->u_arg[5] = x86_64_regs.r9;
 		}
 	} else {
 		/*
