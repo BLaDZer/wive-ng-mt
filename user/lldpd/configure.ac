@@ -108,8 +108,13 @@ if test x"$hardening" != x"no"; then
 #  AX_CFLAGS_GCC_OPTION([-fstack-protector], [LLDP_CFLAGS])
 #  AX_CFLAGS_GCC_OPTION([-fstack-protector-all], [LLDP_CFLAGS])
 #  AX_CFLAGS_GCC_OPTION([-fstack-protector-strong], [LLDP_CFLAGS])
+#  AX_CFLAGS_GCC_OPTION([-fstack-protector-strong], [LLDP_CFLAGS])
   AX_CFLAGS_GCC_OPTION([-D_FORTIFY_SOURCE=2], [LLDP_CPPFLAGS])
   AX_CFLAGS_GCC_OPTION([-fPIE], [LLDP_CFLAGS])
+#  AX_LDFLAGS_OPTION([-fsanitize=safe-stack], [LLDP_BIN_LDFLAGS])
+#  if test x"$ax_cv_ld_check_flag__fsanitize_safe_stack" != x"no"; then
+#    AX_CFLAGS_GCC_OPTION([-fsanitize=safe-stack], [LLDP_CFLAGS])
+#  fi
 fi
 if test x"$pie" = x"yes"; then
   AX_LDFLAGS_OPTION([-fPIE -pie], [LLDP_BIN_LDFLAGS],

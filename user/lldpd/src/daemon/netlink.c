@@ -322,6 +322,17 @@ netlink_parse_link(struct nlmsghdr *msg,
 		iff->flags &= ~IFF_SLAVE;
 	}
 
+	if (ifi->ifi_family == AF_BRIDGE && msg->nlmsg_type == RTM_DELLINK && iff->upper_idx != -1) {
+		log_debug("netlink", "removal of %s from bridge %d",
+		    iff->name, iff->upper_idx);
+		msg->nlmsg_type = RTM_NEWLINK;
+		iff->upper_idx = -1;
+	} else if (ifi->ifi_family != 0) {
+		log_debug("netlink", "skip non-generic message update %d at index %d",
+		    ifi->ifi_type, ifi->ifi_index);
+		return -1;
+	}
+
 	log_debug("netlink", "parsed link %d (%s, flags: %d)",
 	    iff->index, iff->name, iff->flags);
 	return 0;

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -94,6 +95,7 @@ usage(void)
 	fprintf(stderr, "-u file  Specify the Unix-domain socket used for communication with lldpctl(8).\n");
 	fprintf(stderr, "-H mode  Specify the behaviour when detecting multiple neighbors.\n");
 	fprintf(stderr, "-I iface Limit interfaces to use.\n");
+	fprintf(stderr, "-O file  Override default configuration locations processed by lldpcli(8) at start.\n");
 #ifdef ENABLE_LLDPMED
 	fprintf(stderr, "-M class Enable emission of LLDP-MED frame. 'class' should be one of:\n");
 	fprintf(stderr, "             1 Generic Endpoint (Class I)\n");
@@ -429,7 +431,7 @@ lldpd_cleanup(struct lldpd *cfg)
 		} else {
 			lldpd_remote_cleanup(hardware, notify_clients_deletion,
 			    !(hardware->h_flags & IFF_RUNNING));
-	}
+		}
 	}
 
 	levent_schedule_cleanup(cfg);
@@ -942,6 +944,37 @@ lldpd_hide_all(struct lldpd *cfg)
 	}
 }
 
+/* If PD device and PSE allocated power, echo back this change. If we have
+ * several LLDP neighbors, we use the latest updated. */
+static void
+lldpd_dot3_power_pd_pse(struct lldpd_hardware *hardware)
+{
+#ifdef ENABLE_DOT3
+	struct lldpd_port *port, *selected_port = NULL;
+	/* Are we a PD device? */
+	if (hardware->h_lport.p_power.devicetype != LLDP_DOT3_POWER_PD)
+		return;
+	TAILQ_FOREACH(port, &hardware->h_rports, p_entries) {
+		if (port->p_hidden_in)
+			continue;
+		if (port->p_protocol != LLDPD_MODE_LLDP)
+			continue;
+		if (port->p_power.devicetype != LLDP_DOT3_POWER_PSE)
+			continue;
+		if (!selected_port || port->p_lastupdate > selected_port->p_lastupdate)
+			selected_port = port;
+	}
+	if (selected_port->p_power.allocated != hardware->h_lport.p_power.allocated) {
+		log_info("receive", "for %s, PSE told us allocated is now %d instead of %d",
+		    hardware->h_ifname,
+		    selected_port->p_power.allocated,
+		    hardware->h_lport.p_power.allocated);
+		hardware->h_lport.p_power.allocated = selected_port->p_power.allocated;
+		levent_schedule_pdu(hardware);
+	}
+#endif
+}
+
 void
 lldpd_recv(struct lldpd *cfg, struct lldpd_hardware *hardware, int fd)
 {
@@ -979,6 +1012,7 @@ lldpd_recv(struct lldpd *cfg, struct lldpd_hardware *hardware, int fd)
 	TRACE(LLDPD_FRAME_RECEIVED(hardware->h_ifname, buffer, (size_t)n));
 	lldpd_decode(cfg, buffer, n, hardware);
 	lldpd_hide_all(cfg); /* Immediatly hide */
+	lldpd_dot3_power_pd_pse(hardware);
 	lldpd_count_neighbors(cfg);
 	free(buffer);
 }
@@ -1037,6 +1071,7 @@ lldpd_send(struct lldpd_hardware *hardware)
 				    cfg->g_protocols[i].name);
 				cfg->g_protocols[i].send(cfg,
 				    hardware);
+				hardware->h_lport.p_protocol = cfg->g_protocols[i].mode;
 				sent++;
 				break;
 			}
@@ -1246,7 +1281,7 @@ lldpd_exit(struct lldpd *cfg)
  * @return PID of running lldpcli or -1 if error.
  */
 static pid_t
-lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname)
+lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname, const char *config_path)
 {
 	pid_t lldpcli = vfork();
 	int devnull;
@@ -1260,7 +1295,7 @@ lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname
 		/* debug = 2 -> -sddd */
 		memset(sdebug, 'd', sizeof(sdebug));
 		sdebug[debug + 3] = '\0';
-	sdebug[0] = '-'; sdebug[1] = 's';
+		sdebug[0] = '-'; sdebug[1] = 's';
 	}
 	log_debug("main", "invoke %s %s", path, sdebug);
 
@@ -1275,12 +1310,21 @@ lldpd_configure(int use_syslog, int debug, const char *path, const char *ctlname
 			dup2(devnull,   STDOUT_FILENO);
 			if (devnull > 2) close(devnull);
 
-			execl(path, "lldpcli", sdebug,
-			    "-u", ctlname,
-			    "-C", "/etc/lldpd.conf",
-			    "-C", "/etc/lldpd.d",
-			    "resume",
-			    (char *)NULL);
+			if (config_path) {
+				execl(path, "lldpcli", sdebug,
+				    "-u", ctlname,
+				    "-C", config_path,
+				    "resume",
+				    (char *)NULL);
+			} else {
+				execl(path, "lldpcli", sdebug,
+				    "-u", ctlname,
+				    "-C", "/etc/lldpd.conf",
+				    "-C", "/etc/lldpd.d",
+				    "resume",
+				    (char *)NULL);
+			}
+
 			log_warn("main", "unable to execute %s", path);
 			log_warnx("main", "configuration is incomplete, lldpd needs to be unpaused");
 		}
@@ -1331,25 +1375,6 @@ static const struct intint filters[] = {
 };
 
 #ifndef HOST_OS_OSX
-/**
- * Tell if we have been started by upstart.
- */
-static int
-lldpd_started_by_upstart()
-{
-#ifdef HOST_OS_LINUX
-	const char *upstartjob = getenv("UPSTART_JOB");
-	if (!(upstartjob && !strcmp(upstartjob, "lldpd")))
-		return 0;
-	log_debug("main", "running with upstart, don't fork but stop");
-	raise(SIGSTOP);
-	unsetenv("UPSTART_JOB");
-	return 1;
-#else
-	return 0;
-#endif
-}
-
 /**
  * Tell if we have been started by systemd.
  */
@@ -1456,7 +1481,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	 * unless there is a very good reason. Most command-line options will
 	 * get deprecated at some point. */
 	char *popt, opts[] =
-		"H:vhkrdD:p:xX:m:u:4:6:I:C:p:M:P:S:iL:@                    ";
+	    "H:vhkrdD:p:xX:m:u:4:6:I:C:p:M:P:S:iL:O:@                    ";
 	int i, found, advertise_version = 1;
 #ifdef ENABLE_LLDPMED
 	int lldpmed = 0, noinventory = 0;
@@ -1470,6 +1495,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	int smart = 15;
 	int receiveonly = 0, version = 0;
 	int ctl;
+	const char *config_file = NULL;
 
 #ifdef ENABLE_PRIVSEP
 	/* Non privileged user */
@@ -1509,7 +1535,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 			else if (use_syslog)
 				use_syslog = 0;
 			else
-			debug++;
+				debug++;
 			break;
 		case 'D':
 			log_accept(optarg);
@@ -1615,6 +1641,13 @@ lldpd_main(int argc, char *argv[], char *envp[])
 				usage();
 			}
 			break;
+		case 'O':
+			if (config_file) {
+				fprintf(stderr, "-O can only be used once\n");
+				usage();
+			}
+			config_file = optarg;
+			break;
 		default:
 			found = 0;
 			for (i=0; protos[i].mode != 0; i++) {
@@ -1643,11 +1676,11 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	}
 	smart = filters[i].b;
 
-    	log_init(use_syslog, debug, __progname);
+	log_init(use_syslog, debug, __progname);
 	tzset();		/* Get timezone info before chroot */
 	if (use_syslog && daemonize) {
 		/* So, we use syslog and we daemonize (or we are started by
-		 * upstart/systemd). No need to continue writing to stdout. */
+		 * systemd). No need to continue writing to stdout. */
 		int fd;
 		if ((fd = open("/dev/null", O_RDWR, 0)) != -1) {
 			dup2(fd, STDIN_FILENO);
@@ -1668,6 +1701,7 @@ lldpd_main(int argc, char *argv[], char *envp[])
 		fatalx("main", "no " PRIVSEP_GROUP " group for privilege separation, please create it");
 	gid = group->gr_gid;
 #endif
+
 	/* Create and setup socket */
 	int retry = 1;
 	log_debug("main", "creating control socket");
@@ -1709,10 +1743,10 @@ lldpd_main(int argc, char *argv[], char *envp[])
 	/* Disable SIGHUP, until handlers are installed */
 	signal(SIGHUP, SIG_IGN);
 
-	/* Daemonization, unless started by upstart, systemd or launchd or debug */
+	/* Daemonization, unless started by systemd or launchd or debug */
 #ifndef HOST_OS_OSX
 	if (daemonize &&
-	    !lldpd_started_by_upstart() && !lldpd_started_by_systemd()) {
+	    !lldpd_started_by_systemd()) {
 		int pid;
 		char *spid;
 		log_debug("main", "going into background");
@@ -1735,8 +1769,12 @@ lldpd_main(int argc, char *argv[], char *envp[])
 
 	/* Configuration with lldpcli */
 	if (lldpcli) {
-		log_debug("main", "invoking lldpcli for configuration");
-		if (lldpd_configure(use_syslog, debug, lldpcli, ctlname) == -1)
+		if (!config_file) {
+			log_debug("main", "invoking lldpcli for default configuration locations");
+		} else {
+			log_debug("main", "invoking lldpcli for user supplied configuration location");
+		}
+		if (lldpd_configure(use_syslog, debug, lldpcli, ctlname, config_file) == -1)
 			fatal("main", "unable to spawn lldpcli");
 	}
 
