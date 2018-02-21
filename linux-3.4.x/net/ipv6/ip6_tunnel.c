@@ -611,7 +611,7 @@ ip4ip6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		if (rel_info > dst_mtu(skb_dst(skb2)))
 			goto out;
 
-		skb_dst(skb2)->ops->update_pmtu(skb_dst(skb2), rel_info);
+		skb_dst_update_pmtu(skb2, rel_info);
 	}
 
 	icmp_send(skb2, rel_type, rel_code, htonl(rel_info));
@@ -943,7 +943,7 @@ static int ip6_tnl_xmit2(struct sk_buff *skb,
 	if (mtu < IPV6_MIN_MTU)
 		mtu = IPV6_MIN_MTU;
 	if (skb_dst(skb))
-		skb_dst(skb)->ops->update_pmtu(skb_dst(skb), mtu);
+		skb_dst_update_pmtu(skb, mtu);
 	if (skb->len > mtu) {
 		*pmtu = mtu;
 		err = -EMSGSIZE;

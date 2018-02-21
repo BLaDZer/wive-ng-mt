@@ -896,8 +896,8 @@ static netdev_tx_t ipip6_tunnel_xmit(struct sk_buff *skb,
 			df = 0;
 		}
 
-		if (tunnel->parms.iph.daddr && skb_dst(skb))
-			skb_dst(skb)->ops->update_pmtu(skb_dst(skb), mtu);
+		if (tunnel->parms.iph.daddr)
+			skb_dst_update_pmtu(skb, mtu);
 
 		if (skb->len > mtu) {
 			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
