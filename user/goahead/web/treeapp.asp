@@ -121,7 +121,7 @@ if (BUILD_RADIUS == "1") a.add(503, 500, _("treeapp radius"),             "javas
 if (BUILD_CWMP == "1") a.add(504, 500, _("treeapp cwmp"),             "javascript:go('services/cwmp.asp');");
 a.add(505, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
 if (BUILD_DDNS == "1") a.add(506, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
-if (BUILD_SMB == "1") a.add(507, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
+if (BUILD_SMB == "1" && BUILD_STORAGE != "1") a.add(507, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
 if (BUILD_IPTACCOUNT == "1" && NVRAM_OperationMode != '0') a.add(508, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
 a.add(509, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
@@ -137,7 +137,7 @@ if (BUILD_USB == "1")
 	    if (BUILD_FTP == "1")
 		a.add(853, 850, _("treeapp ftpsrv"),		"javascript:go('storage/ftpsrv.asp');");
 	    if (BUILD_SMB == "1")
-		a.add(855, 850, _("treeapp sambasrv"),		"javascript:go('services/samba.asp');");
+		a.add(855, 850, _("treeapp samba"),		"javascript:go('services/samba.asp');");
 	    if (BUILD_TRANSMISSION == "1")
 		a.add(854, 850, _("treeapp transmission"),	"javascript:go('storage/transmission.asp');");
     }
