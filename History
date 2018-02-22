@@ -3844,42 +3844,43 @@
 <br>
 <b>7.1.x</b><br>
 1) goahead: fix hide WINS page (duplicate options full samba page).<br>
-2) busybox: update to 1.28.1 stable version.<br>
-3) dnsmasq: update to 2.79rc1 version.<br>
-4) miniupnpd: up to 2.0.20180203 version.<br>
-5) ethtool: update to 4.15 version.<br>
-6) freeradius: up to 3.0.16 version.<br>
-7) lldpd: up to 0.9.9 version.<br>
-8) quagga: up to 1.2.4 version.<br>
-9) strace: up to 4.21 version.<br>
-10) usb-modeswitch: update to 2.5.2 version.<br>
-11) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
-12) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
-13) kernel: usbnet: silence an unnecessary warning.<br>
-14) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
-15) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
-16) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
-17) kernel: crypto: talitos - fix sha224.<br>
-18) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
-19) kernel: rtc: set the alarm to the next expiring timer.<br>
-20) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
-21) kernel: net: ip6mr: fix stale iterator.<br>
-22) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
-23) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
-24) kernel: net: don't call update_pmtu unconditionally.<br>
-25) kernel: net: pkt_sched: fix warning false positives.<br>
-26) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
-27) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
-28) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
-29) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
-30) kernel: net: sched: use pfifo_fast for non real queues.<br>
-31) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
-32) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
-33) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
-34) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-35) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
-36) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
-37) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
+2) goahead: new style NAG topbar and menu font fix.<br>
+3) busybox: update to 1.28.1 stable version.<br>
+4) dnsmasq: update to 2.79rc1 version.<br>
+5) miniupnpd: up to 2.0.20180203 version.<br>
+6) ethtool: update to 4.15 version.<br>
+7) freeradius: up to 3.0.16 version.<br>
+8) lldpd: up to 0.9.9 version.<br>
+9) quagga: up to 1.2.4 version.<br>
+10) strace: up to 4.21 version.<br>
+11) usb-modeswitch: update to 2.5.2 version.<br>
+12) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
+13) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
+14) kernel: usbnet: silence an unnecessary warning.<br>
+15) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
+16) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
+17) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
+18) kernel: crypto: talitos - fix sha224.<br>
+19) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
+20) kernel: rtc: set the alarm to the next expiring timer.<br>
+21) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
+22) kernel: net: ip6mr: fix stale iterator.<br>
+23) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
+24) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+25) kernel: net: don't call update_pmtu unconditionally.<br>
+26) kernel: net: pkt_sched: fix warning false positives.<br>
+27) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
+28) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
+29) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
+30) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
+31) kernel: net: sched: use pfifo_fast for non real queues.<br>
+32) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
+33) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
+34) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
+35) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
+36) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
+37) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
+38) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
 <br>
 <br>
 <br>
