@@ -3884,6 +3884,7 @@
 40) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
 41) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
 42) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
+43) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
 <br>
 <br>
 <br>
