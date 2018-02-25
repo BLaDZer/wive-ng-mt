@@ -3886,6 +3886,7 @@
 42) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
 43) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
 44) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
+45) kernel: compiler-gcc.h: Introduce __optimize function attribute.<br>
 <br>
 <br>
 <br>
