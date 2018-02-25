@@ -38,9 +38,9 @@ start() {
 
 set_def() {
     if [ "$QoSEnable" = "3" ]; then
-	net.core.default_qdisc=fq_codel
+	sysctl -wq net.core.default_qdisc=fq_codel
     else
-	net.core.default_qdisc=pfifo_fast
+	sysctl -wq net.core.default_qdisc=pfifo_fast
     fi
 
     INTERFACES=`ls /proc/sys/net/ipv4/conf/ | grep -vE "lo|all|default"`
