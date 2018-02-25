@@ -3883,6 +3883,7 @@
 39) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
 40) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
 41) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
+42) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
 <br>
 <br>
 <br>
