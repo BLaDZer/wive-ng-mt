@@ -3871,20 +3871,21 @@
 27) kernel: net: pkt_sched: fix warning false positives.<br>
 28) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
 29) kernel: net: xfrm: check id proto in validate_tmpl().<br>
-30) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
-31) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
-32) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
-33) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
-34) kernel: net: sched: use pfifo_fast for non real queues.<br>
-35) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
-36) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
-37) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
-38) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-39) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
-40) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
-41) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
-42) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
-43) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
+30) kernel: net: xfrm: fix stack-out-of-bounds with misconfigured transport mode policies.<br>
+31) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
+32) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
+33) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
+34) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
+35) kernel: net: sched: use pfifo_fast for non real queues.<br>
+36) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
+37) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
+38) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
+39) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
+40) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
+41) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
+42) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
+43) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
+44) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
 <br>
 <br>
 <br>
