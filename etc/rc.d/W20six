@@ -191,8 +191,8 @@ dhcpradvdreconf() {
                     	AdvOnLink off;
                     	AdvAutonomous on;
                     	AdvRouterAddr on;
-                        AdvPreferredLifetime 20;
-                        AdvValidLifetime 30;
+                        AdvPreferredLifetime 240;
+                        AdvValidLifetime 300;
     		    " >> /etc/radvd.conf
 		    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
     			printf "
@@ -206,7 +206,7 @@ dhcpradvdreconf() {
     		printf "
                 RDNSS $DNSADRESSES
                 {
-                        AdvRDNSSLifetime 10;
+                        AdvRDNSSLifetime 20;
                 };
             };
     	    " >> /etc/radvd.conf
