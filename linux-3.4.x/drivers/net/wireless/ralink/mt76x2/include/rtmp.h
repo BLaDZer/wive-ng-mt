@@ -8347,6 +8347,11 @@ CHAR RTMPAvgRssi(
         IN RTMP_ADAPTER *pAd,
         IN RSSI_SAMPLE		*pRssi);
 
+CHAR RTMPMinRssi(
+		IN RTMP_ADAPTER *pAd,
+		IN CHAR Rssi0,
+		IN CHAR Rssi1,
+		IN CHAR Rssi2);
 
 CHAR RTMPMinSnr(
 	IN RTMP_ADAPTER *pAd,

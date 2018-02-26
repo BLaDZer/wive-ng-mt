@@ -2082,7 +2082,7 @@ static VOID PeerTpcReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	/*				STA may incorporate rate information and channel conditions, including interference, into its computation*/
 	/*				of link margin.*/
 
-	RealRssi = RTMPMaxRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
+	RealRssi = RTMPMinRssi(pAd, ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_0),
 				ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_1),
 				ConvertToRssi(pAd, &Elem->rssi_info, RSSI_IDX_2));
 

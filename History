@@ -3889,6 +3889,7 @@
 44) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
 45) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
 46) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
+47) kernel: ralink_wifi: use minrssi for calculate TPC link margin.<br>
 <br>
 <br>
 <br>
