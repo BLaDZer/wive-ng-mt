@@ -2408,7 +2408,7 @@ UINT8 GetCuntryMaxTxPwr(
 	}
 
 	if (i == pAd->ChannelListNum)
-		return 0xff;
+		return DEFAULT_MAX_TX_POWER;
 #ifdef SINGLE_SKU
 	if (pAd->CommonCfg.bSKUMode == TRUE)
 	{
@@ -2436,11 +2436,16 @@ UINT8 GetCuntryMaxTxPwr(
 			return (pAd->ChannelList[i].MaxTxPwr - pAd->CommonCfg.AntGain - deltaTxStreamPwr);
 		}
 		else
-			return 0xff;
+			return DEFAULT_MAX_TX_POWER;
 	}
 	else
 #endif /* SINGLE_SKU */
-		return pAd->ChannelList[i].MaxTxPwr;
+	{
+		if (pAd->ChannelList[i].MaxTxPwr >= 14)
+			return pAd->ChannelList[i].MaxTxPwr;
+		else
+			return DEFAULT_MAX_TX_POWER;
+	}
 }
 
 

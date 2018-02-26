@@ -151,7 +151,7 @@ UINT8 GetRegulatoryMaxTxPwr(
 	{
 		DBGPRINT(RT_DEBUG_ERROR, ("%s: Unknow Country (%s)\n",
 					__FUNCTION__, pCountry));
-		return 0xff;
+		return DEFAULT_MAX_TX_POWER;
 	}
 
 	for (RegulatoryClassLoop = 0;
@@ -165,19 +165,23 @@ UINT8 GetRegulatoryMaxTxPwr(
 		{
 			DBGPRINT(RT_DEBUG_ERROR, ("%s: %c%c Unknow Requlatory class (%d)\n",
 						__FUNCTION__, pCountry[0], pCountry[1], RegulatoryClass));
-			return 0xff;
+			return DEFAULT_MAX_TX_POWER;
 		}
 		pChannelSet = &pRegulatoryClass[RegulatoryClass].ChannelSet;
 		for (ChIdx=0; ChIdx<pChannelSet->NumberOfChannels; ChIdx++)
 		{
-			if (channel == pChannelSet->ChannelList[ChIdx])
-				return pChannelSet->MaxTxPwr;
+			if (channel == pChannelSet->ChannelList[ChIdx]) {
+				if (pChannelSet->MaxTxPwr >= 14)
+				    return pChannelSet->MaxTxPwr;
+				else
+				    return DEFAULT_MAX_TX_POWER;
+			}
 		}
 		if (ChIdx == pChannelSet->NumberOfChannels)
-			return 0xff;
+			return DEFAULT_MAX_TX_POWER;
 	}
 
-	return 0xff;
+	return DEFAULT_MAX_TX_POWER;
 }
 
 typedef struct __TX_PWR_CFG
@@ -244,12 +248,12 @@ CHAR RTMP_GetTxPwr(
 	if (pAd->CommonCfg.CentralChannel > 14) {
 #if defined (CONFIG_RT_SECOND_IF_INTERNAL_PA_INTERNAL_LNA) || defined(CONFIG_RT_SECOND_IF_INTERNAL_PA_EXTERNAL_LNA) || defined(CONFIG_RALINK_MT7620)
 	    /* TPC report calculate from real maximum PWR+AntGain after calibration, for internal PA + 3-5dB antenna gain summart must be 20dBm */
-	    CurTxPwr = 20;
+	    CurTxPwr = DEFAULT_MAX_TX_POWER;
 #else
 	    CurTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 #endif
 	} else
-	    CurTxPwr = 20;
+	    CurTxPwr = DEFAULT_MAX_TX_POWER;
 
 	MaxTxPwr = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 #endif /* SINGLE_SKU */
@@ -841,7 +845,7 @@ static UINT8 GetCurTxPwr(
 {
 	UCHAR MaxTxPower = GetCuntryMaxTxPwr(pAd, pAd->CommonCfg.Channel);
 	if (!MaxTxPower)
-	    return 20; /* dbm */
+	    return DEFAULT_MAX_TX_POWER; /* dbm */
 	else
 	    return MaxTxPower;
 }

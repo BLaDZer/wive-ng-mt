@@ -527,8 +527,6 @@ enum IQ_CAL_TYPE {
 /* Bit mask for the Tx ALC and the Tx fine power control */
 /* */
 
-#define DEFAULT_BBP_TX_FINE_POWER_CTRL 	0
-
 #endif /* RTMP_INTERNAL_TX_ALC || RTMP_TEMPERATURE_COMPENSATION */
 
 
