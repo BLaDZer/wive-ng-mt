@@ -3891,9 +3891,10 @@
 46) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
 47) kernel: net: netfilter: ipt_CLUSTERIP: fix out-of-bounds accesses in clusterip_tg_check().<br>
 48) kernel: net: netfilter: on sockopt() acquire sock lock only in the required scope.<br>
-49) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
-50) kernel: ralink_wifi: rrm: use minrssi for calculate TPC link margin.<br>
-51) kernel: ralink_wifi: rrm: disable RRMNeighborReport TSF element (break compat with new wpa_supplicant and android 8 implementation, wait final RFC).<br>
+49) kernel: net: netfilter: drop outermost socket lock in getsockopt().<br>
+50) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
+51) kernel: ralink_wifi: rrm: use minrssi for calculate TPC link margin.<br>
+52) kernel: ralink_wifi: rrm: disable RRMNeighborReport TSF element (break compat with new wpa_supplicant and android 8 implementation, wait final RFC).<br>
 <br>
 <br>
 <br>
