@@ -1272,7 +1272,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			mbss->PreAuth = FALSE;
 
 			/* PMK cache setting*/
-			mbss->PMKCachePeriod = (10 * 60 * OS_HZ); /* unit : tick(default: 10 minute)*/
+			mbss->PMKCachePeriod = (480 * 60 * OS_HZ); /* unit : tick(default: 8hour ~ one work day) */
 			NdisZeroMemory(&mbss->PMKIDCache, sizeof(NDIS_AP_802_11_PMKID));
 
 			/* dot1x related per BSS */

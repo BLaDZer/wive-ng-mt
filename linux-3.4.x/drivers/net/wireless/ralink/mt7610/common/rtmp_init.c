@@ -3122,7 +3122,7 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 			pAd->ApCfg.MBSSID[j].PreAuth = FALSE;
 
 			/* PMK cache setting*/
-			pAd->ApCfg.MBSSID[j].PMKCachePeriod = (10 * 60 * OS_HZ); /* unit : tick(default: 10 minute)*/
+			pAd->ApCfg.MBSSID[j].PMKCachePeriod = (480 * 60 * OS_HZ); /* unit : tick(default: 8hour ~ one work day) */
 			NdisZeroMemory(&pAd->ApCfg.MBSSID[j].PMKIDCache, sizeof(NDIS_AP_802_11_PMKID));
 
 			/* dot1x related per BSS */

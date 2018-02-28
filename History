@@ -3895,6 +3895,7 @@
 50) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
 51) kernel: ralink_wifi: rrm: use minrssi for calculate TPC link margin.<br>
 52) kernel: ralink_wifi: rrm: disable RRMNeighborReport TSF element (break compat with new wpa_supplicant and android 8 implementation, wait final RFC).<br>
+53) kernel: ralink_wifi: increase pmk cahce period to 8hour ~ one work day, for more roam smooth in offices.<br>
 <br>
 <br>
 <br>
