@@ -135,7 +135,6 @@ start() {
 
 dhcpradvdreconf() {
     get_param
-    dhcpradvdstop
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	$LOG "Configure and start radvd and dhcpv6 server"
 	# get prefix direct from lan iface if not set
@@ -211,8 +210,13 @@ dhcpradvdreconf() {
             };
     	    " >> /etc/radvd.conf
 
-	    $LOG "Starting radvd"
-	    radvd -C /etc/radvd.conf --debug=0 --logmethod=$logto &
+	    pid=`pidof radvd`
+	    if [ "$pid" != "" ]; then
+		killall -q -SIGHUP radvd
+	    else
+		$LOG "Starting radvd"
+		radvd -C /etc/radvd.conf --debug=0 --logmethod=$logto &
+	    fi
 	fi
 
 	if [ "$dhcpv6Enabled" = "1" ]; then
@@ -224,6 +228,13 @@ dhcpradvdreconf() {
 		allow rapid-commit;
 	    };
 	    " > /etc/dhcp6s.conf
+
+	    pid=`pidof dhcp6s`
+	    if [ "$pid" != "" ]; then
+		$LOG  "Stop dhcp6s."
+		killall -q dhcp6s
+		killall -q -SIGKILL dhcp6s
+	    fi
 
 	    $LOG "Starting dhcp6s"
 	    dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
