@@ -262,7 +262,7 @@ function http_handler(what,from,port,msg)
             http_send_headers(404)
         else
             dofile(http_ui_main)
-            ui_handler(f.args,msg.data or '',from_ip,f.url)
+            ui_handler(f.args,msg.data or '',from_ip,f.url,msg.reqline[1])
         end
         return
     elseif string.find(f.url,'^/app/?') then
@@ -469,11 +469,17 @@ function http_handler(what,from,port,msg)
     -- Subtitle
     elseif url=='sub' then
 
-        local pls=find_playlist_object(object)
+        local srt = string.format("%s.srt", object)
+	local pls=nil
+	object = string.format("%s_", object)
+	while object:len() > 0 and (not pls or not pls.path) do
+           object = object:gsub("_[^_]*$", "")
+           pls=find_playlist_object(object)
+	end
 
         if not pls or not pls.path then http_send_headers(404) return end
 
-        local path=string.gsub(pls.path,'.%w+$','.srt')
+        local path=string.gsub(pls.path,'.%w+$',srt:gsub(object, ""))
 
         local flen=util.getflen(path)
 

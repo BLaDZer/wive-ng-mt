@@ -3854,7 +3854,7 @@
 9) quagga: up to 1.2.4 version.<br>
 10) strace: up to 4.21 version.<br>
 11) usb-modeswitch: update to 2.5.2 version.<br>
-12) xupnpd: add planeta.tc tv feed.<br>
+12) xupnpd: sync core with upsatream (commit 860fd90e 18 Feb 2018).<br>
 13) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
 14) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
 15) init.d: increase AdvPreferredLifetime and AdvValidLifetime.<br>
