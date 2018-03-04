@@ -43,6 +43,7 @@ elif [ "$IPv6OpMode" = "2" -o "$IPv6OpMode" = "3" ]  && [ "$MODE" = "dhcp" -o "$
     service six restart
 elif [ "$MODE" = "misc" ]; then
     service six dhcpradvdreconf
+    service watchdog restart
 fi
 
 ##########################################################

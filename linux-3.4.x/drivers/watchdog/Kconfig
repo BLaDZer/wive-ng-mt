@@ -64,6 +64,17 @@ config SOFT_WATCHDOG
 	  To compile this driver as a module, choose M here: the
 	  module will be called softdog.
 
+config RALINK_WATCHDOG
+        tristate "Ralink APSoC Hardware Watchdog"
+        depends on WATCHDOG
+        help
+          timer expired and no process has written to /dev/watchdog during
+          that time.
+
+config  RALINK_TIMER_WDG_RESET_OUTPUT
+        bool "Ralink WatchDog Reset Output"
+        depends on RALINK_WATCHDOG
+
 config WM831X_WATCHDOG
 	tristate "WM831x watchdog"
 	depends on MFD_WM831X

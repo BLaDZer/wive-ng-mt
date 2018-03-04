@@ -6,7 +6,9 @@ start() {
     get_param
     ###############SYSTEM_DOG################################################
     if [ "$WatchdogEnabled" = "1" ]; then
-	$LOG "Start watchdog"
+	modprobe -q ralink_wdt
+	# wait hw wdt configure
+	usleep 500000
 	nice -n -10 watchdog -T 120 -t 10 -F /dev/watchdog > /dev/null 2>&1 &
     fi
     ###############PINGER_DOG################################################
@@ -26,6 +28,7 @@ stop() {
 	killall -q watchdog
 	killall -q -SIGKILL watchdog
 	rm -f /var/run/watchdog.pid
+	rmmod ralink_wdt > /dev/null 2>&1 &
     fi
     killall -q pinger.sh
     killall -q -SIGKILL pinger.sh
