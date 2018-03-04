@@ -3860,44 +3860,45 @@
 15) make fq_codel as static and use per default now (very long tests at home and office with any troubles).<br>
 16) init.d: increase AdvPreferredLifetime and AdvValidLifetime.<br>
 17) init.d: radvd reload config by HUP signal if need instead of full restart.<br>
-18) kernel: usbnet: silence an unnecessary warning.<br>
-19) kernel: compiler-gcc.h: Introduce __optimize function attribute.<br>
-20) kernel: compiler-gcc.h: __nostackprotector needs gcc-4.4 and up.<br>
-21) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
-22) kernel: rtc: set the alarm to the next expiring timer.<br>
-23) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
-24) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
-25) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
-26) kernel: crypto: talitos - fix sha224.<br>
-27) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
-28) kernel: net: ip6mr: fix stale iterator.<br>
-29) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
-30) kernel: net: don't call update_pmtu unconditionally.<br>
-31) kernel: net: pkt_sched: fix warning false positives.<br>
-32) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
-33) kernel: net: xfrm: check id proto in validate_tmpl().<br>
-34) kernel: net: xfrm: fix stack-out-of-bounds with misconfigured transport mode policies.<br>
-35) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
-36) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
-37) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
-38) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
-39) kernel: net: sched: use pfifo_fast for non real queues.<br>
-40) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
-41) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
-42) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
-43) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
-44) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
-45) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
-46) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
-47) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
-48) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
-49) kernel: net: netfilter: ipt_CLUSTERIP: fix out-of-bounds accesses in clusterip_tg_check().<br>
-50) kernel: net: netfilter: on sockopt() acquire sock lock only in the required scope.<br>
-51) kernel: net: netfilter: drop outermost socket lock in getsockopt().<br>
-52) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
-53) kernel: ralink_wifi: rrm: use minrssi for calculate TPC link margin.<br>
-54) kernel: ralink_wifi: rrm: disable RRMNeighborReport TSF element (break compat with new wpa_supplicant and android 8 implementation, wait final RFC).<br>
-55) kernel: ralink_wifi: increase pmk cahce period to 8hour ~ one work day, for more roam smooth in offices.<br>
+18) kernel: disable webstr support, now all target sites have https version (webstr filter only http).<br>
+19) kernel: usbnet: silence an unnecessary warning.<br>
+20) kernel: compiler-gcc.h: Introduce __optimize function attribute.<br>
+21) kernel: compiler-gcc.h: __nostackprotector needs gcc-4.4 and up.<br>
+22) kernel: rtc: interface: ignore expired timers when enqueuing new timers.<br>
+23) kernel: rtc: set the alarm to the next expiring timer.<br>
+24) kernel: crypto: hmac - require that the underlying hash algorithm is unkeyed.<br>
+25) kernel: crypto: salsa20 - fix blkcipher_walk API usage.<br>
+26) kernel: crypto: shash - fix zero-length shash ahash digest crash.<br>
+27) kernel: crypto: talitos - fix sha224.<br>
+28) kernel: net: l2tp: hold tunnel while processing genl delete command.<br>
+29) kernel: net: ip6mr: fix stale iterator.<br>
+30) kernel: net: dccp: CVE-2017-8824: use-after-free in DCCP code.<br>
+31) kernel: net: don't call update_pmtu unconditionally.<br>
+32) kernel: net: pkt_sched: fix warning false positives.<br>
+33) kernel: net: xfrm: fix stack access out of bounds with CONFIG_XFRM_SUB_POLICY.<br>
+34) kernel: net: xfrm: check id proto in validate_tmpl().<br>
+35) kernel: net: xfrm: fix stack-out-of-bounds with misconfigured transport mode policies.<br>
+36) kernel: net: sched: qdisc: allow setting default queuing discipline.<br>
+37) kernel: net: sched: qdisc: make args to qdisc_create_default const.<br>
+38) kernel: net: sched: qdisc: fix build with !CONFIG_NET_SCHED.<br>
+39) kernel: net: sched: qdisc: fix a module refcount leak in qdisc_create_dflt().<br>
+40) kernel: net: sched: use pfifo_fast for non real queues.<br>
+41) kernel: net: sched: filters: fix notification of filter delete with proper handle.<br>
+42) kernel: net: sched: fix error recovery at qdisc creation lost fix.<br>
+43) kernel: net: sched: sch_fq_codel: avoid double free on init failure.<br>
+44) kernel: net: netfilter: x_tables: validate e->target_offset early.<br>
+45) kernel: net: netfilter: x_tables: fix 32bit compat layer.<br>
+46) kernel: net: netfilter: xt_TCPOPTSTRIP: fix possible mangling beyond packet boundary.<br>
+47) kernel: net: netfilter: xt_TCPOPTSTRIP: don't use tcp_hdr().<br>
+48) kernel: net: netfilter: x_tables: fix int overflow in xt_alloc_table_info().<br>
+49) kernel: net: netfilter: x_tables: avoid out-of-bounds reads in xt_request_find_{match|target}.<br>
+50) kernel: net: netfilter: ipt_CLUSTERIP: fix out-of-bounds accesses in clusterip_tg_check().<br>
+51) kernel: net: netfilter: on sockopt() acquire sock lock only in the required scope.<br>
+52) kernel: net: netfilter: drop outermost socket lock in getsockopt().<br>
+53) kernel: ralink_wifi: prevent txpower calculate and annouce issue in fabric case.<br>
+54) kernel: ralink_wifi: rrm: use minrssi for calculate TPC link margin.<br>
+55) kernel: ralink_wifi: rrm: disable RRMNeighborReport TSF element (break compat with new wpa_supplicant and android 8 implementation, wait final RFC).<br>
+56) kernel: ralink_wifi: increase default pmk cahce period to 8hour ~ one work day, for more roam smooth in offices.<br>
 <br>
 <br>
 <br>

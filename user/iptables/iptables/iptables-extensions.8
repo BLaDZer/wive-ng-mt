@@ -753,6 +753,12 @@ option of the TCP extension for details.
 iptables can use extended target modules: the following are included
 in the standard distribution.
 .\" @TARGET@
+.SS CLASSIFY
+This module allows you to set the skb\->priority value (and thus classify the packet into a specific CBQ class).
+.TP
+\fB\-\-set\-class\fP \fImajor\fP\fB:\fP\fIminor\fP
+Set the major and minor class value. The values are always interpreted as
+hexadecimal even if no 0x prefix is given.
 .SS CONNMARK
 This module sets the netfilter mark value associated with a connection. The
 mark is 32 bits wide.

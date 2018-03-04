@@ -1305,6 +1305,7 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 	}
 #endif
 #if defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT)
+#if IS_ENABLED(CONFIG_NETFILTER_XT_MATCH_WEBSTR)
 	/* this code section may be used for skip some types traffic,
 	    only if hardware nat support enabled or software fastnat support enabled */
 #ifdef CONFIG_BCM_NAT
@@ -1338,7 +1339,8 @@ nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum,
 		}
 	    */
 	}
-#endif
+#endif /* XT_MATCH_WEBSTR */
+#endif /* defined(CONFIG_RA_HW_NAT) || defined(CONFIG_RA_HW_NAT_MODULE) || defined(CONFIG_BCM_NAT) */
 skip_alg_of:
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
 	/* skip several proto only from hw_nat */

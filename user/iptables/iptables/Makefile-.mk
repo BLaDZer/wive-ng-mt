@@ -18,16 +18,9 @@ config_test:
 	fi )
 
 configure:
-ifeq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
-	cp -f $(THISDIR)/$(SRC_NAME)/extensions/disabled/libxt_set.* $(THISDIR)/$(SRC_NAME)/extensions
-	cp -f $(THISDIR)/$(SRC_NAME)/extensions/disabled/libxt_SET.* $(THISDIR)/$(SRC_NAME)/extensions
-else
-	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_set.*
-	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_SET.*
-endif
-ifeq ($(CONFIG_FIRMWARE_INCLUDE_QOS),y)
+ifeq ($(CONFIG_NETFILTER_XT_TARGET_CLASSIFY),m)
 	cp -f $(THISDIR)/$(SRC_NAME)/extensions/disabled/libxt_CLASSIFY.* $(THISDIR)/$(SRC_NAME)/extensions
-ifeq ($(CONFIG_FIRMWARE_INCLUDE_IMQ),y)
+ifeq ($(CONFIG_NETFILTER_XT_TARGET_IMQ),m)
 	cp -f $(THISDIR)/$(SRC_NAME)/extensions/disabled/libxt_IMQ.* $(THISDIR)/$(SRC_NAME)/extensions
 else
 	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_IMQ.*
@@ -35,6 +28,11 @@ endif
 else
 	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_CLASSIFY.*
 	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_IMQ.*
+endif
+ifeq ($(CONFIG_NETFILTER_XT_MATCH_WEBSTR),m)
+	cp -f $(THISDIR)/$(SRC_NAME)/extensions/disabled/libxt_webstr.* $(THISDIR)/$(SRC_NAME)/extensions
+else
+	rm -f $(THISDIR)/$(SRC_NAME)/extensions/libxt_webstr.*
 endif
 	( cd $(SRC_NAME) ; \
 	./configure \
