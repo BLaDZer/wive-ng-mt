@@ -113,16 +113,16 @@
 					addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 100f"), '100f');
 					if (BUILD_GIGAPHY) {
 						addOption(document.getElementById('port' + i + '_swmode'), _("ethernet port mode 1000f"), '1000f');
-						document.getElementById('port' + i + '_fc').innerHTML =
-							'<select id="port' + i + '_fcmode" name="port' + i + '_fcmode" class="mid">' +
-							'	<option value="auto" title="' + _("ethernet port fcmode label auto") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode auto") + '</option>' +
-							'	<option value="rx" title="' + _("ethernet port fcmode label rx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode rx") + '</option>' +
-							'	<option value="tx" title="' + _("ethernet port fcmode label tx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode tx") + '</option>' +
-							'	<option value="txrx" title="' + _("ethernet port fcmode label txrx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode txrx") + '</option>' +
-							'	<option value="off" title="' + _("ethernet port fcmode label off") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode off") + '</option>' +
-							'</select>';
-						document.getElementById('port' + i + '_fcmode').value = port_fcmode[i - 1];
 					}
+					document.getElementById('port' + i + '_fc').innerHTML =
+						'<select id="port' + i + '_fcmode" name="port' + i + '_fcmode" class="mid">' +
+						'	<option value="auto" title="' + _("ethernet port fcmode label auto") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode auto") + '</option>' +
+						'	<option value="rx" title="' + _("ethernet port fcmode label rx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode rx") + '</option>' +
+						'	<option value="tx" title="' + _("ethernet port fcmode label tx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode tx") + '</option>' +
+						'	<option value="txrx" title="' + _("ethernet port fcmode label txrx") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode txrx") + '</option>' +
+						'	<option value="off" title="' + _("ethernet port fcmode label off") + '">' + _("ethernet port fcmode name") + _("ethernet port fcmode off") + '</option>' +
+						'</select>';
+					document.getElementById('port' + i + '_fcmode').value = port_fcmode[i - 1];
 					document.getElementById('port' + i + '_swmode').value = port_swmode[i - 1];
 				}
 

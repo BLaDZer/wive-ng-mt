@@ -34,8 +34,8 @@ config  RAETH_JUMBOFRAME
 
 config  RAETH_DISABLE_FC
 	bool "Force disable flow control by defult"
-	depends on RAETH && RALINK_MT7621
-	default n
+	depends on RAETH && (RALINK_MT7621 || RALINK_MT7620)
+	default y
 
 config  RAETH_HW_VLAN_RX
 	bool "Receive VLAN HW (DoubleVLAN is not supported)"

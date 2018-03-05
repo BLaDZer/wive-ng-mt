@@ -234,6 +234,8 @@ int mt7620_esw_mac_table_clear(int static_only)
 /* MT7620 embedded switch */
 void mt7620_esw_init(void)
 {
+	u32 regLink;
+
 	/* disable internal EPHY 4 */
 #if defined (CONFIG_RAETH_ESW) && defined (CONFIG_RAETH_HAS_PORT4)
 	sysRegWrite(RALINK_ETH_SW_BASE+0x7014, 0x10e0000c);
@@ -312,8 +314,13 @@ void mt7620_esw_init(void)
 #endif
 #endif
 
+	/* force mode, Link Up, 1000Mbps, Full-Duplex, FC ON */
+	regLink = 0x0005e33b;
+#ifdef CONFIG_RAETH_DISABLE_FC
+	regLink &= ~(0x3 << 4);
+#endif
 	/* Port 6 (CPU) */
-	sysRegWrite(RALINK_ETH_SW_BASE+0x3600, 0x0005e33b);	// (P6, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
+	sysRegWrite(RALINK_ETH_SW_BASE+0x3600, regLink);	// (P6, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 	sysRegWrite(RALINK_ETH_SW_BASE+0x000c, 0x0007181d);	// TO_CPU check VLAN members
 	sysRegWrite(RALINK_ETH_SW_BASE+0x0010, 0x7f7f7fe0);	// Set Port6 CPU Port
 
@@ -321,11 +328,11 @@ void mt7620_esw_init(void)
 #if defined (CONFIG_P5_RGMII_TO_MAC_MODE)
 	/* Use P5 for connect to external RGMII MAC */
 	ge1_set_mode(0, 0);
-	sysRegWrite(RALINK_ETH_SW_BASE+0x3500, 0x0005e33b);	// (P5, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
+	sysRegWrite(RALINK_ETH_SW_BASE+0x3500, regLink);	// (P5, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 #elif defined (CONFIG_P5_RGMII_TO_MT7530_MODE)
 	/* Use P5 for connect to external MT7530 (P6) */
 	ge1_set_mode(0, 1);
-	sysRegWrite(RALINK_ETH_SW_BASE+0x3500, 0x0005e33b);	// (P5, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
+	sysRegWrite(RALINK_ETH_SW_BASE+0x3500, regLink);	// (P5, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 	/* Initial config MT7530 via MDIO */
 	mt7530_gsw_init();
 #elif defined (CONFIG_P5_MII_TO_MAC_MODE)
@@ -350,11 +357,11 @@ void mt7620_esw_init(void)
 #if defined (CONFIG_P4_RGMII_TO_MAC_MODE)
 	/* Use P4 for connect to external RGMII MAC */
 	ge2_set_mode(0, 0);
-	sysRegWrite(RALINK_ETH_SW_BASE+0x3400, 0x0005e33b);	// (P4, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
+	sysRegWrite(RALINK_ETH_SW_BASE+0x3400, regLink);	// (P4, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 #elif defined (CONFIG_P4_RGMII_TO_MT7530_GMAC_P5)
 	/* Use P4 for connect to external MT7530 GMAC P5 */
 	ge2_set_mode(0, 1);
-	sysRegWrite(RALINK_ETH_SW_BASE+0x3400, 0x0005e33b);	// (P4, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
+	sysRegWrite(RALINK_ETH_SW_BASE+0x3400, regLink);	// (P4, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 #elif defined (CONFIG_P4_MII_TO_MAC_MODE)
 	/* Use P4 for connect to external MII MAC */
 	ge2_set_mode(1, 0);

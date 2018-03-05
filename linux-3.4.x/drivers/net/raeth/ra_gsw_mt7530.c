@@ -357,6 +357,9 @@ void mt7530_gsw_init(void)
 
 #if defined (CONFIG_RALINK_MT7620)
 	mt7530_standalone = 1;
+#ifdef CONFIG_RAETH_DISABLE_FC
+	regLink &= ~(0x3 << 4);
+#endif
 #elif defined (CONFIG_RALINK_MT7621)
 	/* PKG_ID [16:16], 1: A/S, 0: N (no embedded switch)  */
 	if (!(ralink_asic_rev_id & (1UL<<16)))
