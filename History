@@ -3861,7 +3861,7 @@
 16) init.d: radvd reload config by HUP signal if need instead of full restart.<br>
 17) kernel: ralink_arch: MT7620/MT7621/MT7628: fix create PCIe BAR0 window.<br>
 18) kernel: ralink_wdg: add watchdog by userspace control driver.<br>
-19) kernel: ralink_raeth: disabe FC for cpu porst for 7620 to.<br>
+19) kernel: ralink_raeth: disabe FC for cpu ports for 7620 to.<br>
 20) kernel: disable webstr support, now all target sites have https version (webstr filter only http).<br>
 21) kernel: usbnet: silence an unnecessary warning.<br>
 22) kernel: compiler-gcc.h: Introduce __optimize function attribute.<br>
