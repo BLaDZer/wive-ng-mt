@@ -3905,11 +3905,12 @@
 <br>
 <b>7.2.x</b><br>
 1) libusb: update to 1.21 version.<br>
-2) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
-3) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
-4) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-5) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-6) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+2) libtalloc: update to 2.1.11 version.<br>
+3) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
+4) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
+5) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+6) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+7) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
 <br>
 <br>
 <br>
