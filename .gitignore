@@ -64,11 +64,11 @@ fulldump
 /lib/lib/*
 /lib/shared
 /lib/shared/*
-/libext/libssl/openssl-1.0.2/include/openssl/*
 
 #
 # exclude enerated files from libs
 #
+/libext/libssl/openssl-1.0.2/include/openssl/*
 libext/libssl/openssl-1.0.2/Makefile
 libext/libssl/openssl-1.0.2/Makefile.bak
 /libext/libiconv/libcharset/libext/Makefile
@@ -202,7 +202,9 @@ libext/libssl/openssl-1.0.2/Makefile.bak
 /libext/libnfnetlink/utils/Makefile
 /libext/libnfnetlink/include/Makefile
 /libext/libnfnetlink/include/libnfnetlink/Makefile
+/libext/libusb-1.0/configure
 /libext/libusb-1.0/Makefile
+/libext/libusb-1.0/Makefile.in
 /libext/libusb-1.0/doc/Makefile
 /libext/libusb-1.0/examples/Makefile
 /libext/libusb-1.0/libusb/Makefile
