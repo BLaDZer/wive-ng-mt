@@ -3906,6 +3906,7 @@
 <b>7.2.x</b><br>
 1) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
 2) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
+3) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
 <br>
 <br>
 <br>
