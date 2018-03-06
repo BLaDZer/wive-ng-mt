@@ -130,6 +130,7 @@ static int ip_rt_redirect_silence __read_mostly	= ((HZ / 50) << (9 + 1));
 static int ip_rt_error_cost __read_mostly	= HZ;
 static int ip_rt_error_burst __read_mostly	= 5 * HZ;
 static int ip_rt_gc_elasticity __read_mostly	= 8;
+static int ip_min_valid_pmtu __read_mostly	= IPV4_MIN_MTU;
 static int ip_rt_mtu_expires __read_mostly	= 10 * 60 * HZ;
 static u32 ip_rt_min_pmtu __read_mostly		= 512 + 20 + 20;
 static int ip_rt_min_advmss __read_mostly	= 256;
@@ -137,8 +138,6 @@ static int rt_chain_length_max __read_mostly	= 20;
 
 static struct delayed_work expires_work;
 static unsigned long expires_ljiffies;
-
-static int ip_min_valid_pmtu __read_mostly	= IPV4_MIN_MTU;
 
 /*
  *	Interface to generic destination cache.
