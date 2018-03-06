@@ -3910,11 +3910,12 @@
 4) libmicrohttpd: update to 0.9.59 version.<br>
 5) libcurl: update to 7.58.0 version.<br>
 6) xl2tpd: update to 1.3.10.1 version (commit 767f33e3).<br>
-7) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
-8) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
-9) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-10) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-11) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+7) nodogsplash: update to 2.0.1 version (commit 461fa24f).<br>
+8) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
+9) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
+10) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+11) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+12) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
 <br>
 <br>
 <br>
