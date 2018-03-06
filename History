@@ -3907,6 +3907,7 @@
 1) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
 2) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
 3) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+4) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
 <br>
 <br>
 <br>
