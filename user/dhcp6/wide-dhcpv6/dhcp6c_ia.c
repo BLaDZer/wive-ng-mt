@@ -91,7 +91,7 @@ static char *iastr __P((iatype_t));
 static char *statestr __P((iastate_t));
 
 void
-update_ia(iatype, ialist, ifp, serverid, authparam)
+update_ia_cl(iatype, ialist, ifp, serverid, authparam)
 	iatype_t iatype;
 	struct dhcp6_list *ialist;
 	struct dhcp6_if *ifp;

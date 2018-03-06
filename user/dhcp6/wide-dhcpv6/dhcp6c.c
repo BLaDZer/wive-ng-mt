@@ -1959,9 +1959,9 @@ client6_recvreply(ifp, dh6, len, optinfo)
 
 	/* update stateful configuration information */
 	if (state != DHCP6S_RELEASE) {
-		update_ia(IATYPE_PD, &optinfo->iapd_list, ifp,
+		update_ia_cl(IATYPE_PD, &optinfo->iapd_list, ifp,
 		    &optinfo->serverID, ev->authparam);
-		update_ia(IATYPE_NA, &optinfo->iana_list, ifp,
+		update_ia_cl(IATYPE_NA, &optinfo->iana_list, ifp,
 		    &optinfo->serverID, ev->authparam);
 	}
 

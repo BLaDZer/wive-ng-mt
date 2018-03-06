@@ -35,7 +35,3 @@ typedef enum { PREFIX6S_ACTIVE, PREFIX6S_RENEW,
 extern int update_prefix __P((struct ia *, struct dhcp6_prefix *,
     struct pifc_list *, struct dhcp6_if *, struct iactl **,
     void (*)__P((struct ia *))));
-extern int prefix6_add __P((struct dhcp6_if *, struct dhcp6_prefix *,
-			       struct duid *));
-extern int prefix6_update __P((struct dhcp6_event *, struct dhcp6_list *,
-				  struct duid *));

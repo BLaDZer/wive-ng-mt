@@ -217,6 +217,7 @@ libext/libssl/openssl-1.0.2/Makefile.bak
 /libext/libmicrohttpd/Makefile
 /libext/libmicrohttpd/Makefile.in
 /libext/libmicrohttpd/configure
+/libext/libmicrohttpd/po/configargs.stamp
 /libext/libmicrohttpd/doc/Makefile
 /libext/libmicrohttpd/doc/doxygen/Makefile
 /libext/libmicrohttpd/doc/examples/Makefile

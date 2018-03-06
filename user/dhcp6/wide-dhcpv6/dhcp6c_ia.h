@@ -51,6 +51,6 @@ struct iactl {
 	void (*cleanup) __P((struct iactl *));
 };
 
-extern void update_ia __P((iatype_t, struct dhcp6_list *,
+extern void update_ia_cl __P((iatype_t, struct dhcp6_list *,
     struct dhcp6_if *, struct duid *, struct authparam *));
 extern void release_all_ia __P((struct dhcp6_if *));
