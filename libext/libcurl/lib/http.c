@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -73,7 +73,6 @@
 #include "http_proxy.h"
 #include "warnless.h"
 #include "non-ascii.h"
-#include "conncache.h"
 #include "pipeline.h"
 #include "http2.h"
 #include "connect.h"
@@ -191,7 +190,7 @@ char *Curl_checkProxyheaders(const struct connectdata *conn,
 
   for(head = (conn->bits.proxy && data->set.sep_headers) ?
         data->set.proxyheaders : data->set.headers;
-      head; head=head->next) {
+      head; head = head->next) {
     if(strncasecompare(head->data, thisheader, thislen))
       return head->data;
   }
@@ -593,7 +592,7 @@ output_auth_headers(struct connectdata *conn,
 #endif
 #if defined(USE_NTLM) && defined(NTLM_WB_ENABLED)
   if(authstatus->picked == CURLAUTH_NTLM_WB) {
-    auth="NTLM_WB";
+    auth = "NTLM_WB";
     result = Curl_output_ntlm_wb(conn, proxy);
     if(result)
       return result;
@@ -715,7 +714,7 @@ Curl_http_output_auth(struct connectdata *conn,
   if(!data->state.this_is_a_follow ||
      conn->bits.netrc ||
      !data->state.first_host ||
-     data->set.http_disable_hostname_check_before_authentication ||
+     data->set.allow_auth_to_other_hosts ||
      strcasecompare(data->state.first_host, conn->host.name)) {
     result = output_auth_headers(conn, authhost, request, path, FALSE);
   }
@@ -1005,7 +1004,7 @@ static size_t readmoredata(char *buffer,
 
       http->sending++; /* move one step up */
 
-      http->backup.postsize=0;
+      http->backup.postsize = 0;
     }
     else
       http->postsize = 0;
@@ -1133,7 +1132,7 @@ CURLcode Curl_add_buffer_send(Curl_send_buffer *in,
         /* there was body data sent beyond the initial header part, pass that
            on to the debug callback too */
         Curl_debug(conn->data, CURLINFO_DATA_OUT,
-                   ptr+headlen, bodylen, conn);
+                   ptr + headlen, bodylen, conn);
       }
     }
 
@@ -1245,7 +1244,7 @@ CURLcode Curl_add_buffer(Curl_send_buffer *in, const void *inptr, size_t size)
        (~(size * 2) < (in->size_used * 2)))
       new_size = (size_t)-1;
     else
-      new_size = (in->size_used+size) * 2;
+      new_size = (in->size_used + size) * 2;
 
     if(in->buffer)
       /* we have a buffer, enlarge the existing one */
@@ -1322,7 +1321,7 @@ Curl_compareheader(const char *headerline, /* line to check */
   clen = strlen(content); /* length of the word to find */
 
   /* find the content string in the rest of the line */
-  for(;len>=clen;len--, start++) {
+  for(; len >= clen; len--, start++) {
     if(strncasecompare(start, content, clen))
       return TRUE; /* match! */
   }
@@ -1563,7 +1562,7 @@ CURLcode Curl_add_custom_headers(struct connectdata *conn,
   char *ptr;
   struct curl_slist *h[2];
   struct curl_slist *headers;
-  int numlists=1; /* by default */
+  int numlists = 1; /* by default */
   struct Curl_easy *data = conn->data;
   int i;
 
@@ -1595,7 +1594,7 @@ CURLcode Curl_add_custom_headers(struct connectdata *conn,
   }
 
   /* loop through one or two lists */
-  for(i=0; i < numlists; i++) {
+  for(i = 0; i < numlists; i++) {
     headers = h[i];
 
     while(headers) {
@@ -1636,6 +1635,14 @@ CURLcode Curl_add_custom_headers(struct connectdata *conn,
           else if((conn->httpversion == 20) &&
                   checkprefix("Transfer-Encoding:", headers->data))
             /* HTTP/2 doesn't support chunked requests */
+            ;
+          else if(checkprefix("Authorization:", headers->data) &&
+                  /* be careful of sending this potentially sensitive header to
+                     other hosts */
+                  (data->state.this_is_a_follow &&
+                   data->state.first_host &&
+                   !data->set.allow_auth_to_other_hosts &&
+                   !strcasecompare(data->state.first_host, conn->host.name)))
             ;
           else {
             CURLcode result = Curl_add_bufferf(req_buffer, "%s\r\n",
@@ -1864,7 +1871,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
      here. */
   if(Curl_checkheaders(conn, "User-Agent:")) {
     free(conn->allocptr.uagent);
-    conn->allocptr.uagent=NULL;
+    conn->allocptr.uagent = NULL;
   }
 
   /* setup the authentication headers */
@@ -1982,7 +1989,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       Curl_compareheader(ptr, "Transfer-Encoding:", "chunked");
   }
   else {
-    if((conn->handler->protocol&PROTO_FAMILY_HTTP) &&
+    if((conn->handler->protocol & PROTO_FAMILY_HTTP) &&
        (((httpreq == HTTPREQ_POST_MIME || httpreq == HTTPREQ_POST_FORM) &&
        http->postsize < 0) ||
        (data->set.upload && data->state.infilesize == -1))) {
@@ -2083,7 +2090,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
   }
 
 #ifndef CURL_DISABLE_PROXY
-  if(conn->bits.httpproxy && !conn->bits.tunnel_proxy)  {
+  if(conn->bits.httpproxy && !conn->bits.tunnel_proxy) {
     /* Using a proxy but does not tunnel through it */
 
     /* The path sent to the proxy is in fact the entire URL. But if the remote
@@ -2189,7 +2196,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       }
 
       if(seekerr != CURL_SEEKFUNC_OK) {
-        curl_off_t passed=0;
+        curl_off_t passed = 0;
 
         if(seekerr != CURL_SEEKFUNC_CANTSEEK) {
           failf(data, "Could not seek stream");
@@ -2260,7 +2267,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       }
       else if(data->state.resume_from) {
         /* This is because "resume" was selected */
-        curl_off_t total_expected_size=
+        curl_off_t total_expected_size =
           data->state.resume_from + data->state.infilesize;
         conn->allocptr.rangeline =
           aprintf("Content-Range: bytes %s%" CURL_FORMAT_CURL_OFF_T
@@ -2370,8 +2377,8 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
 
 #if !defined(CURL_DISABLE_COOKIES)
   if(data->cookies || addcookies) {
-    struct Cookie *co=NULL; /* no cookies from start */
-    int count=0;
+    struct Cookie *co = NULL; /* no cookies from start */
+    int count = 0;
 
     if(data->cookies) {
       Curl_share_lock(data, CURL_LOCK_DATA_COOKIE, CURL_LOCK_ACCESS_SINGLE);
@@ -2384,7 +2391,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       Curl_share_unlock(data, CURL_LOCK_DATA_COOKIE);
     }
     if(co) {
-      struct Cookie *store=co;
+      struct Cookie *store = co;
       /* now loop through all cookies that matched */
       while(co) {
         if(co->value) {
@@ -2442,7 +2449,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
 
     if(conn->bits.authneg)
       postsize = 0;
-      else
+    else
       postsize = data->state.infilesize;
 
     if((postsize != -1) && !data->req.upload_chunky &&
@@ -2456,10 +2463,10 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
     }
 
     if(postsize != 0) {
-    result = expect100(data, conn, req_buffer);
-    if(result)
-      return result;
-      }
+      result = expect100(data, conn, req_buffer);
+      if(result)
+        return result;
+    }
 
     result = Curl_add_buffer(req_buffer, "\r\n", 2); /* end of headers */
     if(result)
@@ -2489,7 +2496,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
       /* nothing to post! */
       result = Curl_add_bufferf(req_buffer, "Content-Length: 0\r\n\r\n");
       if(result)
-      return result;
+        return result;
 
       result = Curl_add_buffer_send(req_buffer, conn,
                                     &data->info.request_size, 0, FIRSTSOCKET);
@@ -2499,7 +2506,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
         /* setup variables for the upcoming transfer */
         Curl_setup_transfer(conn, FIRSTSOCKET, -1, TRUE, &http->readbytecount,
                             -1, NULL);
-    break;
+      break;
     }
 
     postsize = http->postsize;
@@ -2571,6 +2578,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
                           postsize?&http->writebytecount:NULL);
     if(result)
       return result;
+
     break;
 
   case HTTPREQ_POST:
@@ -2627,7 +2635,7 @@ CURLcode Curl_http(struct connectdata *conn, bool *done)
          its size. */
       if(conn->httpversion != 20 &&
          !data->state.expect100header &&
-         (postsize < MAX_INITIAL_POST_SIZE))  {
+         (postsize < MAX_INITIAL_POST_SIZE)) {
         /* if we don't use expect: 100  AND
            postsize is less than MAX_INITIAL_POST_SIZE
 
@@ -2792,7 +2800,7 @@ checkhttpprefix(struct Curl_easy *data,
     failf(data, "Failed to allocate memory for conversion!");
     return FALSE; /* can't return CURLE_OUT_OF_MEMORY so return FALSE */
   }
-  if(CURLE_OK != Curl_convert_from_network(data, scratch, strlen(s)+1)) {
+  if(CURLE_OK != Curl_convert_from_network(data, scratch, strlen(s) + 1)) {
     /* Curl_convert_from_network calls failf if unsuccessful */
     free(scratch);
     return FALSE; /* can't return CURLE_foobar so return FALSE */
@@ -2831,7 +2839,7 @@ checkrtspprefix(struct Curl_easy *data,
     failf(data, "Failed to allocate memory for conversion!");
     return FALSE; /* can't return CURLE_OUT_OF_MEMORY so return FALSE */
   }
-  if(CURLE_OK != Curl_convert_from_network(data, scratch, strlen(s)+1)) {
+  if(CURLE_OK != Curl_convert_from_network(data, scratch, strlen(s) + 1)) {
     /* Curl_convert_from_network calls failf if unsuccessful */
     result = FALSE; /* can't return CURLE_foobar so return FALSE */
   }
@@ -2885,14 +2893,14 @@ static CURLcode header_append(struct Curl_easy *data,
       return CURLE_OUT_OF_MEMORY;
     }
 
-    newsize=CURLMAX((k->hbuflen+ length)*3/2, data->state.headersize*2);
+    newsize = CURLMAX((k->hbuflen + length) * 3 / 2, data->state.headersize*2);
     hbufp_index = k->hbufp - data->state.headerbuff;
     newbuff = realloc(data->state.headerbuff, newsize);
     if(!newbuff) {
       failf(data, "Failed to alloc memory for big header!");
       return CURLE_OUT_OF_MEMORY;
     }
-    data->state.headersize=newsize;
+    data->state.headersize = newsize;
     data->state.headerbuff = newbuff;
     k->hbufp = data->state.headerbuff + hbufp_index;
   }
@@ -2985,7 +2993,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
     }
 
     /* decrease the size of the remaining (supposed) header line */
-    rest_length = (k->end_ptr - k->str)+1;
+    rest_length = (k->end_ptr - k->str) + 1;
     *nread -= (ssize_t)rest_length;
 
     k->str = k->end_ptr + 1; /* move past new line */
@@ -3103,7 +3111,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
            !(conn->handler->protocol & CURLPROTO_RTSP) &&
            data->set.httpreq != HTTPREQ_HEAD) {
           /* On HTTP 1.1, when connection is not to get closed, but no
-             Content-Length nor Content-Encoding chunked have been
+             Content-Length nor Transfer-Encoding chunked have been
              received, according to RFC2616 section 4.4 point 5, we
              assume that the server will close the connection to
              signal the end of the document. */
@@ -3312,7 +3320,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
 #define HEADER1 scratch
 #define SCRATCHSIZE 21
       CURLcode res;
-      char scratch[SCRATCHSIZE+1]; /* "HTTP/major.minor 123" */
+      char scratch[SCRATCHSIZE + 1]; /* "HTTP/major.minor 123" */
       /* We can't really convert this yet because we
          don't know if it's the 1st header line or the body.
          So we do a partial conversion into a scratch area,
@@ -3353,7 +3361,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
           separator = ' ';
         }
 
-        if((nc==4) && (' ' == separator)) {
+        if((nc == 4) && (' ' == separator)) {
           conn->httpversion += 10 * httpversion_major;
 
           if(k->upgr101 == UPGR101_RECEIVED) {
@@ -3366,7 +3374,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
           /* this is the real world, not a Nirvana
              NCSA 1.5.x returns this crap when asked for HTTP/1.1
           */
-          nc=sscanf(HEADER1, " HTTP %3d", &k->httpcode);
+          nc = sscanf(HEADER1, " HTTP %3d", &k->httpcode);
           conn->httpversion = 10;
 
           /* If user has set option HTTP200ALIASES,
@@ -3386,12 +3394,14 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
         }
       }
       else if(conn->handler->protocol & CURLPROTO_RTSP) {
+        char separator;
         nc = sscanf(HEADER1,
-                    " RTSP/%d.%d %3d",
+                    " RTSP/%1d.%1d%c%3d",
                     &rtspversion_major,
                     &conn->rtspversion,
+                    &separator,
                     &k->httpcode);
-        if(nc==3) {
+        if((nc == 4) && (' ' == separator)) {
           conn->rtspversion += 10 * rtspversion_major;
           conn->httpversion = 11; /* For us, RTSP acts like HTTP 1.1 */
         }
@@ -3423,7 +3433,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
            ((k->httpcode != 407) || !conn->bits.proxy_user_passwd) ) {
 
           if(data->state.resume_from &&
-             (data->set.httpreq==HTTPREQ_GET) &&
+             (data->set.httpreq == HTTPREQ_GET) &&
              (k->httpcode == 416)) {
             /* "Requested Range Not Satisfiable", just proceed and
                pretend this is no error */
@@ -3479,8 +3489,8 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
            * fields.  */
           if(data->set.timecondition)
             data->info.timecond = TRUE;
-          k->size=0;
-          k->maxdownload=0;
+          k->size = 0;
+          k->maxdownload = 0;
           k->ignorecl = TRUE; /* ignore Content-Length headers */
           break;
         default:
@@ -3503,13 +3513,14 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
     if(!k->ignorecl && !data->set.ignorecl &&
        checkprefix("Content-Length:", k->p)) {
       curl_off_t contentlength;
-      if(!curlx_strtoofft(k->p + 15, NULL, 10, &contentlength)) {
-      if(data->set.max_filesize &&
-         contentlength > data->set.max_filesize) {
-        failf(data, "Maximum file size exceeded");
-        return CURLE_FILESIZE_EXCEEDED;
-      }
-      if(contentlength >= 0) {
+      CURLofft offt = curlx_strtoofft(k->p + 15, NULL, 10, &contentlength);
+
+      if(offt == CURL_OFFT_OK) {
+        if(data->set.max_filesize &&
+           contentlength > data->set.max_filesize) {
+          failf(data, "Maximum file size exceeded");
+          return CURLE_FILESIZE_EXCEEDED;
+        }
         k->size = contentlength;
         k->maxdownload = k->size;
         /* we set the progress download size already at this point
@@ -3517,17 +3528,20 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
            info as soon as possible */
         Curl_pgrsSetDownloadSize(data, k->size);
       }
-      else {
-        /* Negative Content-Length is really odd, and we know it
-           happens for example when older Apache servers send large
-           files */
-        streamclose(conn, "negative content-length");
-        infof(data, "Negative content-length: %" CURL_FORMAT_CURL_OFF_T
-              ", closing after transfer\n", contentlength);
+      else if(offt == CURL_OFFT_FLOW) {
+        /* out of range */
+        if(data->set.max_filesize) {
+          failf(data, "Maximum file size exceeded");
+          return CURLE_FILESIZE_EXCEEDED;
+        }
+        streamclose(conn, "overflow content-length");
+        infof(data, "Overflow Content-Length: value!\n");
       }
-    }
-      else
-        infof(data, "Illegal Content-Length: header\n");
+      else {
+        /* negative or just rubbish - bad HTTP */
+        failf(data, "Invalid Content-Length: value");
+        return CURLE_WEIRD_SERVER_REPLY;
+      }
     }
     /* check for Content-Type: header lines to get the MIME-type */
     else if(checkprefix("Content-Type:", k->p)) {
@@ -3611,51 +3625,9 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
        * of chunks, and a chunk-data set to zero signals the
        * end-of-chunks. */
 
-      char *start;
-
-      /* Find the first non-space letter */
-      start = k->p + 18;
-
-      for(;;) {
-        /* skip whitespaces and commas */
-        while(*start && (ISSPACE(*start) || (*start == ',')))
-          start++;
-
-        if(checkprefix("chunked", start)) {
-          k->chunk = TRUE; /* chunks coming our way */
-
-          /* init our chunky engine */
-          Curl_httpchunk_init(conn);
-
-          start += 7;
-        }
-
-        if(k->auto_decoding)
-          /* TODO: we only support the first mentioned compression for now */
-          break;
-
-        if(checkprefix("identity", start)) {
-          k->auto_decoding = IDENTITY;
-          start += 8;
-        }
-        else if(checkprefix("deflate", start)) {
-          k->auto_decoding = DEFLATE;
-          start += 7;
-        }
-        else if(checkprefix("gzip", start)) {
-          k->auto_decoding = GZIP;
-          start += 4;
-        }
-        else if(checkprefix("x-gzip", start)) {
-          k->auto_decoding = GZIP;
-          start += 6;
-        }
-        else
-          /* unknown! */
-          break;
-
-      }
-
+      result = Curl_build_unencoding_stack(conn, k->p + 18, TRUE);
+      if(result)
+        return result;
     }
     else if(checkprefix("Content-Encoding:", k->p) &&
             data->set.str[STRING_ENCODING]) {
@@ -3666,21 +3638,9 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
        * 2616). zlib cannot handle compress.  However, errors are
        * handled further down when the response body is processed
        */
-      char *start;
-
-      /* Find the first non-space letter */
-      start = k->p + 17;
-      while(*start && ISSPACE(*start))
-        start++;
-
-      /* Record the content-encoding for later use */
-      if(checkprefix("identity", start))
-        k->auto_decoding = IDENTITY;
-      else if(checkprefix("deflate", start))
-        k->auto_decoding = DEFLATE;
-      else if(checkprefix("gzip", start)
-              || checkprefix("x-gzip", start))
-        k->auto_decoding = GZIP;
+      result = Curl_build_unencoding_stack(conn, k->p + 17, FALSE);
+      if(result)
+        return result;
     }
     else if(checkprefix("Content-Range:", k->p)) {
       /* Content-Range: bytes [num]-
@@ -3703,10 +3663,10 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
       /* if it truly stopped on a digit */
       if(ISDIGIT(*ptr)) {
         if(!curlx_strtoofft(ptr, NULL, 10, &k->offset)) {
-        if(data->state.resume_from == k->offset)
-          /* we asked for a resume and we got it */
-          k->content_range = TRUE;
-      }
+          if(data->state.resume_from == k->offset)
+            /* we asked for a resume and we got it */
+            k->content_range = TRUE;
+        }
       }
       else
         data->state.resume_from = 0; /* get everything */
@@ -3717,7 +3677,7 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
       Curl_share_lock(data, CURL_LOCK_DATA_COOKIE,
                       CURL_LOCK_ACCESS_SINGLE);
       Curl_cookie_add(data,
-                      data->cookies, TRUE, k->p+11,
+                      data->cookies, TRUE, k->p + 11,
                       /* If there is a custom-set Host: name, use it
                          here, or else use real peer host name. */
                       conn->allocptr.cookiehost?
@@ -3728,8 +3688,8 @@ CURLcode Curl_http_readwrite_headers(struct Curl_easy *data,
 #endif
     else if(checkprefix("Last-Modified:", k->p) &&
             (data->set.timecondition || data->set.get_filetime) ) {
-      time_t secs=time(NULL);
-      k->timeofdoc = curl_getdate(k->p+strlen("Last-Modified:"),
+      time_t secs = time(NULL);
+      k->timeofdoc = curl_getdate(k->p + strlen("Last-Modified:"),
                                   &secs);
       if(data->set.get_filetime)
         data->info.filetime = (long)k->timeofdoc;

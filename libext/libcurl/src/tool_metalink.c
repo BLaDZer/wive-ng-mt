@@ -539,6 +539,7 @@ digest_context *Curl_digest_init(const digest_params *dparams)
   ctxt->digest_hash = dparams;
 
   if(dparams->digest_init(ctxt->digest_hashctx) != 1) {
+    free(ctxt->digest_hashctx);
     free(ctxt);
     return NULL;
   }
@@ -557,7 +558,8 @@ int Curl_digest_update(digest_context *context,
 
 int Curl_digest_final(digest_context *context, unsigned char *result)
 {
-  (*context->digest_hash->digest_final)(result, context->digest_hashctx);
+  if(result)
+    (*context->digest_hash->digest_final)(result, context->digest_hashctx);
 
   free(context->digest_hashctx);
   free(context);
@@ -622,6 +624,7 @@ static int check_hash(const char *filename,
   result = malloc(digest_def->dparams->digest_resultlen);
   if(!result) {
     close(fd);
+    Curl_digest_final(dctx, NULL);
     return -1;
   }
   while(1) {
@@ -683,13 +686,15 @@ static metalink_checksum *new_metalink_checksum_from_hex_digest
     return 0;
 
   for(i = 0; i < len; i += 2) {
-    digest[i/2] = hex_to_uint(hex_digest+i);
+    digest[i/2] = hex_to_uint(hex_digest + i);
   }
   chksum = malloc(sizeof(metalink_checksum));
   if(chksum) {
     chksum->digest_def = digest_def;
     chksum->digest = digest;
   }
+  else
+    free(digest);
   return chksum;
 }
 
@@ -781,8 +786,24 @@ static metalinkfile *new_metalinkfile(metalink_file_t *fileinfo)
          curl_strequal((*p)->type, "ftp") ||
          curl_strequal((*p)->type, "ftps")) {
         res = new_metalink_resource((*p)->url);
-        tail->next = res;
-        tail = res;
+        if(res) {
+          tail->next = res;
+          tail = res;
+        }
+        else {
+          tail = root.next;
+
+          /* clean up the linked list */
+          while(tail) {
+            res = tail->next;
+            free(tail->url);
+            free(tail);
+            tail = res;
+          }
+          free(f->filename);
+          free(f);
+          return NULL;
+        }
       }
     }
     f->resource = root.next;
@@ -885,7 +906,7 @@ size_t metalink_write_cb(void *buffer, size_t sz, size_t nmemb,
   if(!config)
     return failure;
 
-  rv = metalink_parse_update(outs->metalink_parser, buffer, sz *nmemb);
+  rv = metalink_parse_update(outs->metalink_parser, buffer, sz * nmemb);
   if(rv == 0)
     return sz * nmemb;
   else {
@@ -906,8 +927,8 @@ static int check_content_type(const char *content_type, const char *media_type)
     return 0;
   }
   return curl_strnequal(ptr, media_type, media_type_len) &&
-    (*(ptr+media_type_len) == '\0' || *(ptr+media_type_len) == ' ' ||
-     *(ptr+media_type_len) == '\t' || *(ptr+media_type_len) == ';');
+    (*(ptr + media_type_len) == '\0' || *(ptr + media_type_len) == ' ' ||
+     *(ptr + media_type_len) == '\t' || *(ptr + media_type_len) == ';');
 }
 
 int check_metalink_content_type(const char *content_type)

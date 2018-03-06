@@ -30,7 +30,6 @@
 #include "curl_setup.h"
 
 #ifdef USE_POLARSSL
-
 #include <polarssl/net.h>
 #include <polarssl/ssl.h>
 #include <polarssl/certs.h>
@@ -228,7 +227,7 @@ polarssl_connect_step1(struct connectdata *conn,
   const long int port = SSL_IS_PROXY() ? conn->port : conn->remote_port;
   int ret = -1;
   char errorbuf[128];
-  errorbuf[0]=0;
+  errorbuf[0] = 0;
 
   /* PolarSSL only supports SSLv3 and TLSv1 */
   if(SSL_CONN_CONFIG(version) == CURL_SSLVERSION_SSLv2) {
@@ -778,9 +777,9 @@ polarssl_connect_common(struct connectdata *conn,
     if(connssl->connecting_state == ssl_connect_2_reading ||
        connssl->connecting_state == ssl_connect_2_writing) {
 
-      curl_socket_t writefd = ssl_connect_2_writing==
+      curl_socket_t writefd = ssl_connect_2_writing ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
-      curl_socket_t readfd = ssl_connect_2_reading==
+      curl_socket_t readfd = ssl_connect_2_reading ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
 
       what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
@@ -924,7 +923,7 @@ const struct Curl_ssl Curl_ssl_polarssl = {
   Curl_polarssl_connect,             /* connect */
   Curl_polarssl_connect_nonblocking, /* connect_nonblocking */
   Curl_polarssl_get_internals,       /* get_internals */
-  Curl_polarssl_close,               /* close */
+  Curl_polarssl_close,               /* close_one */
   Curl_none_close_all,               /* close_all */
   Curl_polarssl_session_free,        /* session_free */
   Curl_none_set_engine,              /* set_engine */

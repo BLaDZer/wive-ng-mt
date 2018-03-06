@@ -114,7 +114,7 @@ int Curl_polarsslthreadlock_lock_function(int n)
   }
 #elif defined(HAVE_PROCESS_H)
   if(n < NUMT) {
-    ret = (WaitForSingleObject(mutex_buf[n], INFINITE)==WAIT_FAILED?1:0);
+    ret = (WaitForSingleObject(mutex_buf[n], INFINITE) == WAIT_FAILED?1:0);
     if(ret) {
       DEBUGF(fprintf(stderr,
                      "Error: polarsslthreadlock_lock_function failed\n"));

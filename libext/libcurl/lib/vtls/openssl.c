@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -34,9 +34,7 @@
 
 #ifdef USE_OPENSSL
 
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 
 #include "urldata.h"
 #include "sendf.h"
@@ -68,10 +66,7 @@
 #include <openssl/rsa.h>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
-
-#ifdef HAVE_OPENSSL_PKCS12_H
 #include <openssl/pkcs12.h>
-#endif
 
 #if (OPENSSL_VERSION_NUMBER >= 0x0090808fL) && !defined(OPENSSL_NO_OCSP)
 #include <openssl/ocsp.h>
@@ -151,14 +146,13 @@ static unsigned long OpenSSL_version_num(void)
 /*
  * Whether SSL_CTX_set_keylog_callback is available.
  * OpenSSL: supported since 1.1.1 https://github.com/openssl/openssl/pull/2287
- * BoringSSL: supported since d28f59c27bac (committed 2015-11-19), the
- *            BORINGSSL_201512 macro from 2016-01-21 should be close enough.
+ * BoringSSL: supported since d28f59c27bac (committed 2015-11-19)
  * LibreSSL: unsupported in at least 2.5.1 (explicitly check for it since it
  *           lies and pretends to be OpenSSL 2.0.0).
  */
 #if (OPENSSL_VERSION_NUMBER >= 0x10101000L && \
      !defined(LIBRESSL_VERSION_NUMBER)) || \
-    defined(BORINGSSL_201512)
+    defined(OPENSSL_IS_BORINGSSL)
 #define HAVE_KEYLOG_CALLBACK
 #endif
 
@@ -180,6 +174,8 @@ static unsigned long OpenSSL_version_num(void)
 #define DEFAULT_CIPHER_SELECTION \
   "ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH"
 #endif
+
+#define ENABLE_SSLKEYLOGFILE
 
 #ifdef ENABLE_SSLKEYLOGFILE
 typedef struct ssl_tap_state {
@@ -263,11 +259,11 @@ static void tap_ssl_key(const SSL *ssl, ssl_tap_state_t *state)
   if(!session || !keylog_file_fp)
     return;
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
   /* ssl->s3 is not checked in openssl 1.1.0-pre6, but let's assume that
    * we have a valid SSL context if we have a non-NULL session. */
   SSL_get_client_random(ssl, client_random, SSL3_RANDOM_SIZE);
-  master_key_length =
+  master_key_length = (int)
     SSL_SESSION_get_master_key(session, master_key, SSL_MAX_MASTER_KEY_LENGTH);
 #else
   if(ssl->s3 && session->master_key_length > 0) {
@@ -370,7 +366,7 @@ static int passwd_callback(char *buf, int num, int encrypting,
   if(!encrypting) {
     int klen = curlx_uztosi(strlen((char *)global_passwd));
     if(num > klen) {
-      memcpy(buf, global_passwd, klen+1);
+      memcpy(buf, global_passwd, klen + 1);
       return klen;
     }
   }
@@ -445,14 +441,14 @@ static CURLcode Curl_ossl_seed(struct Curl_easy *data)
     size_t len = sizeof(randb);
     size_t i, i_max;
     for(i = 0, i_max = len / sizeof(struct curltime); i < i_max; ++i) {
-      struct curltime tv = curlx_tvnow();
+      struct curltime tv = Curl_now();
       Curl_wait_ms(1);
       tv.tv_sec *= i + 1;
       tv.tv_usec *= (unsigned int)i + 2;
-      tv.tv_sec ^= ((curlx_tvnow().tv_sec + curlx_tvnow().tv_usec) *
+      tv.tv_sec ^= ((Curl_now().tv_sec + Curl_now().tv_usec) *
                     (i + 3)) << 8;
-      tv.tv_usec ^= (unsigned int) ((curlx_tvnow().tv_sec +
-                                     curlx_tvnow().tv_usec) *
+      tv.tv_usec ^= (unsigned int) ((Curl_now().tv_sec +
+                                     Curl_now().tv_usec) *
                                     (i + 4)) << 16;
       memcpy(&randb[i * sizeof(struct curltime)], &tv,
              sizeof(struct curltime));
@@ -461,7 +457,7 @@ static CURLcode Curl_ossl_seed(struct Curl_easy *data)
   } while(!rand_enough());
 
   /* generates a default path for the random seed file */
-  fname[0]=0; /* blank it first */
+  fname[0] = 0; /* blank it first */
   RAND_file_name(fname, sizeof(fname));
   if(fname[0]) {
     /* we got a file name to try */
@@ -653,7 +649,6 @@ int cert_stuff(struct connectdata *conn,
 
     case SSL_FILETYPE_PKCS12:
     {
-#ifdef HAVE_OPENSSL_PKCS12_H
       FILE *f;
       PKCS12 *p12;
       EVP_PKEY *pri;
@@ -740,10 +735,6 @@ int cert_stuff(struct connectdata *conn,
       if(!cert_done)
         return 0; /* failure! */
       break;
-#else
-      failf(data, "file type P12 for certificate not supported");
-      return 0;
-#endif
     }
     default:
       failf(data, "not supported file type '%s' for certificate", cert_type);
@@ -758,7 +749,7 @@ int cert_stuff(struct connectdata *conn,
         break;
       if(!key_file)
         /* cert & key can only be in PEM case in the same file */
-        key_file=cert_file;
+        key_file = cert_file;
       /* FALLTHROUGH */
     case SSL_FILETYPE_ASN1:
       if(SSL_CTX_use_PrivateKey_file(ctx, key_file, file_type) != 1) {
@@ -821,13 +812,13 @@ int cert_stuff(struct connectdata *conn,
       return 0;
     }
 
-    ssl=SSL_new(ctx);
+    ssl = SSL_new(ctx);
     if(!ssl) {
       failf(data, "unable to create an SSL structure");
       return 0;
     }
 
-    x509=SSL_get_certificate(ssl);
+    x509 = SSL_get_certificate(ssl);
 
     /* This version was provided by Evan Jordan and is supposed to not
        leak memory as the previous version: */
@@ -837,12 +828,18 @@ int cert_stuff(struct connectdata *conn,
       EVP_PKEY_free(pktmp);
     }
 
-#ifndef OPENSSL_NO_RSA
+#if !defined(OPENSSL_NO_RSA) && !defined(OPENSSL_IS_BORINGSSL)
     {
       /* If RSA is used, don't check the private key if its flags indicate
        * it doesn't support it. */
       EVP_PKEY *priv_key = SSL_get_privatekey(ssl);
-      if(EVP_PKEY_id(priv_key) == EVP_PKEY_RSA) {
+      int pktype;
+#ifdef HAVE_OPAQUE_EVP_PKEY
+      pktype = EVP_PKEY_id(priv_key);
+#else
+      pktype = priv_key->type;
+#endif
+      if(pktype == EVP_PKEY_RSA) {
         RSA *rsa = EVP_PKEY_get1_RSA(priv_key);
         if(RSA_flags(rsa) & RSA_METHOD_FLAG_NO_CHECK)
           check_privkey = FALSE;
@@ -857,13 +854,13 @@ int cert_stuff(struct connectdata *conn,
      * the private key */
 
     if(check_privkey == TRUE) {
-    /* Now we know that a key and cert have been set against
-     * the SSL context */
-    if(!SSL_CTX_check_private_key(ctx)) {
-      failf(data, "Private key does not match the certificate public key");
-      return 0;
+      /* Now we know that a key and cert have been set against
+       * the SSL context */
+      if(!SSL_CTX_check_private_key(ctx)) {
+        failf(data, "Private key does not match the certificate public key");
+        return 0;
+      }
     }
-  }
   }
   return 1;
 }
@@ -890,7 +887,7 @@ static int x509_name_oneline(X509_NAME *a, char *buf, size_t size)
     size--; /* don't overwrite the buffer end */
 
   memcpy(buf, biomem->data, size);
-  buf[size]=0;
+  buf[size] = 0;
 
   BIO_free(bio_out);
 
@@ -907,7 +904,7 @@ static int x509_name_oneline(X509_NAME *a, char *buf, size_t size)
 static int Curl_ossl_init(void)
 {
 #ifdef ENABLE_SSLKEYLOGFILE
-  const char *keylog_file_name;
+  char *keylog_file_name;
 #endif
 
   OPENSSL_load_builtin_modules();
@@ -947,14 +944,22 @@ static int Curl_ossl_init(void)
 #endif
 
 #ifdef ENABLE_SSLKEYLOGFILE
-  keylog_file_name = curl_getenv("SSLKEYLOGFILE");
-  if(keylog_file_name && !keylog_file_fp) {
-    keylog_file_fp = fopen(keylog_file_name, FOPEN_APPENDTEXT);
-    if(keylog_file_fp) {
-      if(setvbuf(keylog_file_fp, NULL, _IOLBF, 4096)) {
-        fclose(keylog_file_fp);
-        keylog_file_fp = NULL;
+  if(!keylog_file_fp) {
+    keylog_file_name = curl_getenv("SSLKEYLOGFILE");
+    if(keylog_file_name) {
+      keylog_file_fp = fopen(keylog_file_name, FOPEN_APPENDTEXT);
+      if(keylog_file_fp) {
+#ifdef WIN32
+        if(setvbuf(keylog_file_fp, NULL, _IONBF, 0))
+#else
+        if(setvbuf(keylog_file_fp, NULL, _IOLBF, 4096))
+#endif
+        {
+          fclose(keylog_file_fp);
+          keylog_file_fp = NULL;
+        }
       }
+      Curl_safefree(keylog_file_name);
     }
   }
 #endif
@@ -1375,7 +1380,7 @@ static CURLcode verifyhost(struct connectdata *conn, X509 *server_cert)
     numalts = sk_GENERAL_NAME_num(altnames);
 
     /* loop through all alternatives - until a dnsmatch */
-    for(i=0; (i < numalts) && !dnsmatched; i++) {
+    for(i = 0; (i < numalts) && !dnsmatched; i++) {
       /* get a handle to alternative name number i */
       const GENERAL_NAME *check = sk_GENERAL_NAME_value(altnames, i);
 
@@ -1444,7 +1449,7 @@ static CURLcode verifyhost(struct connectdata *conn, X509 *server_cert)
   else {
     /* we have to look to the last occurrence of a commonName in the
        distinguished one to get the most significant one. */
-    int j, i=-1;
+    int j, i = -1;
 
     /* The following is done because of a bug in 0.9.6b */
 
@@ -1453,14 +1458,14 @@ static CURLcode verifyhost(struct connectdata *conn, X509 *server_cert)
 
     X509_NAME *name = X509_get_subject_name(server_cert);
     if(name)
-      while((j = X509_NAME_get_index_by_NID(name, NID_commonName, i))>=0)
-        i=j;
+      while((j = X509_NAME_get_index_by_NID(name, NID_commonName, i)) >= 0)
+        i = j;
 
     /* we have the name entry and we will now convert this to a string
        that we can use for comparison. Doing this we support BMPstring,
        UTF8 etc. */
 
-    if(i>=0) {
+    if(i >= 0) {
       ASN1_STRING *tmp =
         X509_NAME_ENTRY_get_data(X509_NAME_get_entry(name, i));
 
@@ -1473,7 +1478,7 @@ static CURLcode verifyhost(struct connectdata *conn, X509 *server_cert)
         if(ASN1_STRING_type(tmp) == V_ASN1_UTF8STRING) {
           j = ASN1_STRING_length(tmp);
           if(j >= 0) {
-            peer_CN = OPENSSL_malloc(j+1);
+            peer_CN = OPENSSL_malloc(j + 1);
             if(peer_CN) {
               memcpy(peer_CN, ASN1_STRING_get0_data(tmp), j);
               peer_CN[j] = '\0';
@@ -2301,10 +2306,10 @@ static CURLcode ossl_connect_step1(struct connectdata *conn, int sockindex)
     ciphers = (char *)DEFAULT_CIPHER_SELECTION;
   if(ciphers) {
     if(!SSL_CTX_set_cipher_list(BACKEND->ctx, ciphers)) {
-    failf(data, "failed setting cipher list: %s", ciphers);
-    return CURLE_SSL_CIPHER;
-  }
-  infof(data, "Cipher selection: %s\n", ciphers);
+      failf(data, "failed setting cipher list: %s", ciphers);
+      return CURLE_SSL_CIPHER;
+    }
+    infof(data, "Cipher selection: %s\n", ciphers);
   }
 
 #ifdef USE_TLS_SRP
@@ -2408,8 +2413,8 @@ static CURLcode ossl_connect_step1(struct connectdata *conn, int sockindex)
 
   /* Enable logging of secrets to the file specified in env SSLKEYLOGFILE. */
 #if defined(ENABLE_SSLKEYLOGFILE) && defined(HAVE_KEYLOG_CALLBACK)
-  if(keylog_file) {
-    SSL_CTX_set_keylog_callback(connssl->ctx, ossl_keylog_callback);
+  if(keylog_file_fp) {
+    SSL_CTX_set_keylog_callback(BACKEND->ctx, ossl_keylog_callback);
   }
 #endif
 
@@ -2650,7 +2655,7 @@ static int asn1_object_dump(ASN1_OBJECT *a, char *buf, size_t len)
 do {                              \
   long info_len = BIO_get_mem_data(mem, &ptr); \
   Curl_ssl_push_certinfo_len(data, _num, _label, ptr, info_len); \
-  if(1!=BIO_reset(mem))                                          \
+  if(1 != BIO_reset(mem))                                        \
     break;                                                       \
 } WHILE_FALSE
 
@@ -2698,12 +2703,12 @@ static int X509V3_ext(struct Curl_easy *data,
     /* no extensions, bail out */
     return 1;
 
-  for(i=0; i < (int)sk_X509_EXTENSION_num(exts); i++) {
+  for(i = 0; i < (int)sk_X509_EXTENSION_num(exts); i++) {
     ASN1_OBJECT *obj;
     X509_EXTENSION *ext = sk_X509_EXTENSION_value(exts, i);
     BUF_MEM *biomem;
     char buf[512];
-    char *ptr=buf;
+    char *ptr = buf;
     char namebuf[128];
     BIO *bio_out = BIO_new(BIO_s_mem());
 
@@ -2720,16 +2725,16 @@ static int X509V3_ext(struct Curl_easy *data,
     BIO_get_mem_ptr(bio_out, &biomem);
 
     for(j = 0; j < (size_t)biomem->length; j++) {
-      const char *sep="";
+      const char *sep = "";
       if(biomem->data[j] == '\n') {
-        sep=", ";
+        sep = ", ";
         j++; /* skip the newline */
       };
       while((j<(size_t)biomem->length) && (biomem->data[j] == ' '))
         j++;
       if(j<(size_t)biomem->length)
-        ptr+=snprintf(ptr, sizeof(buf)-(ptr-buf), "%s%c", sep,
-                      biomem->data[j]);
+        ptr += snprintf(ptr, sizeof(buf)-(ptr-buf), "%s%c", sep,
+                        biomem->data[j]);
     }
 
     Curl_ssl_push_certinfo(data, certnum, namebuf, buf);
@@ -2768,7 +2773,7 @@ static CURLcode get_cert_chain(struct connectdata *conn,
   for(i = 0; i < numcerts; i++) {
     ASN1_INTEGER *num;
     X509 *x = sk_X509_value(sk, i);
-    EVP_PKEY *pubkey=NULL;
+    EVP_PKEY *pubkey = NULL;
     int j;
     char *ptr;
     const ASN1_BIT_STRING *psig = NULL;
@@ -3060,12 +3065,12 @@ static CURLcode servercert(struct connectdata *conn,
   ASN1_TIME_print(mem, X509_get0_notBefore(BACKEND->server_cert));
   len = BIO_get_mem_data(mem, (char **) &ptr);
   infof(data, " start date: %.*s\n", len, ptr);
-  rc = BIO_reset(mem);
+  (void)BIO_reset(mem);
 
   ASN1_TIME_print(mem, X509_get0_notAfter(BACKEND->server_cert));
   len = BIO_get_mem_data(mem, (char **) &ptr);
   infof(data, " expire date: %.*s\n", len, ptr);
-  rc = BIO_reset(mem);
+  (void)BIO_reset(mem);
 
   BIO_free(mem);
 
@@ -3300,9 +3305,9 @@ static CURLcode ossl_connect_common(struct connectdata *conn,
     if(connssl->connecting_state == ssl_connect_2_reading ||
        connssl->connecting_state == ssl_connect_2_writing) {
 
-      curl_socket_t writefd = ssl_connect_2_writing==
+      curl_socket_t writefd = ssl_connect_2_writing ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
-      curl_socket_t readfd = ssl_connect_2_reading==
+      curl_socket_t readfd = ssl_connect_2_reading ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
 
       what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
@@ -3361,8 +3366,8 @@ static CURLcode ossl_connect_common(struct connectdata *conn,
 }
 
 static CURLcode Curl_ossl_connect_nonblocking(struct connectdata *conn,
-                                       int sockindex,
-                                       bool *done)
+                                              int sockindex,
+                                              bool *done)
 {
   return ossl_connect_common(conn, sockindex, TRUE, done);
 }
@@ -3386,12 +3391,13 @@ static bool Curl_ossl_data_pending(const struct connectdata *conn,
 {
   const struct ssl_connect_data *connssl = &conn->ssl[connindex];
   const struct ssl_connect_data *proxyssl = &conn->proxy_ssl[connindex];
-  if(BACKEND->handle)
-    /* SSL is in use */
-    return (0 != SSL_pending(BACKEND->handle) ||
-           (proxyssl->backend->handle &&
-            0 != SSL_pending(proxyssl->backend->handle))) ?
-           TRUE : FALSE;
+
+  if(connssl->backend->handle && SSL_pending(connssl->backend->handle))
+    return TRUE;
+
+  if(proxyssl->backend->handle && SSL_pending(proxyssl->backend->handle))
+    return TRUE;
+
   return FALSE;
 }
 
@@ -3521,9 +3527,9 @@ static size_t Curl_ossl_version(char *buffer, size_t size)
   unsigned long ssleay_value;
   sub[2]='\0';
   sub[1]='\0';
-  ssleay_value=OpenSSL_version_num();
+  ssleay_value = OpenSSL_version_num();
   if(ssleay_value < 0x906000) {
-    ssleay_value=SSLEAY_VERSION_NUMBER;
+    ssleay_value = SSLEAY_VERSION_NUMBER;
     sub[0]='\0';
   }
   else {
@@ -3570,9 +3576,9 @@ static CURLcode Curl_ossl_random(struct Curl_easy *data,
 }
 
 static CURLcode Curl_ossl_md5sum(unsigned char *tmp, /* input */
-                      size_t tmplen,
-                      unsigned char *md5sum /* output */,
-                      size_t unused)
+                                 size_t tmplen,
+                                 unsigned char *md5sum /* output */,
+                                 size_t unused)
 {
   MD5_CTX MD5pw;
   (void)unused;
@@ -3584,9 +3590,9 @@ static CURLcode Curl_ossl_md5sum(unsigned char *tmp, /* input */
 
 #if (OPENSSL_VERSION_NUMBER >= 0x0090800fL) && !defined(OPENSSL_NO_SHA256)
 static void Curl_ossl_sha256sum(const unsigned char *tmp, /* input */
-                      size_t tmplen,
-                      unsigned char *sha256sum /* output */,
-                      size_t unused)
+                                size_t tmplen,
+                                unsigned char *sha256sum /* output */,
+                                size_t unused)
 {
   SHA256_CTX SHA256pw;
   (void)unused;
@@ -3636,7 +3642,7 @@ const struct Curl_ssl Curl_ssl_openssl = {
   Curl_ossl_connect,             /* connect */
   Curl_ossl_connect_nonblocking, /* connect_nonblocking */
   Curl_ossl_get_internals,       /* get_internals */
-  Curl_ossl_close,               /* close */
+  Curl_ossl_close,               /* close_one */
   Curl_ossl_close_all,           /* close_all */
   Curl_ossl_session_free,        /* session_free */
   Curl_ossl_set_engine,          /* set_engine */

@@ -51,7 +51,6 @@ CURL_CHECK_OPTION_ARES
 CURL_CHECK_OPTION_RT
 
 XC_CHECK_PATH_SEPARATOR
-AX_CODE_COVERAGE
 
 #
 # save the configure arguments
@@ -124,7 +123,13 @@ AC_SUBST(libext)
 dnl figure out the libcurl version
 CURLVERSION=`$SED -ne 's/^#define LIBCURL_VERSION "\(.*\)".*/\1/p' ${srcdir}/include/curl/curlver.h`
 XC_CHECK_PROG_CC
-AC_PROG_CXX
+
+dnl Check if gcc is being used before adding AX_CODE_COVERAGE
+AS_IF([ test "$GCC" = "yes" ], [AX_CODE_COVERAGE],
+  # not using GCC so pass a test below - CODE_COVERAGE_ENABLED_TRUE is not zero length
+  CODE_COVERAGE_ENABLED_TRUE='#'
+)
+
 XC_AUTOMAKE
 AC_MSG_CHECKING([curl version])
 AC_MSG_RESULT($CURLVERSION)
@@ -149,6 +154,7 @@ dnl initialize all the info variables
     curl_ssl_msg="no      (--with-{ssl,gnutls,nss,polarssl,mbedtls,cyassl,axtls,winssl,darwinssl} )"
     curl_ssh_msg="no      (--with-libssh2)"
    curl_zlib_msg="no      (--with-zlib)"
+ curl_brotli_msg="no      (--with-brotli)"
     curl_gss_msg="no      (--with-gssapi)"
 curl_tls_srp_msg="no      (--enable-tls-srp)"
     curl_res_msg="default (--enable-ares / --enable-threaded-resolver)"
@@ -978,6 +984,94 @@ AM_CONDITIONAL(HAVE_LIBZ, test x"$AMFIXLIB" = x1)
 AC_SUBST(ZLIB_LIBS)
 
 dnl **********************************************************************
+dnl Check for the presence of BROTLI decoder libraries and headers
+dnl **********************************************************************
+
+dnl Brotli project home page: https://github.com/google/brotli
+
+dnl Default to compiler & linker defaults for BROTLI files & libraries.
+OPT_BROTLI=off
+AC_ARG_WITH(brotli,dnl
+AC_HELP_STRING([--with-brotli=PATH],[Where to look for brotli, PATH points to the BROTLI installation; when possible, set the PKG_CONFIG_PATH environment variable instead of using this option])
+AC_HELP_STRING([--without-brotli], [disable BROTLI]),
+  OPT_BROTLI=$withval)
+
+if test X"$OPT_BROTLI" != Xno; then
+  dnl backup the pre-brotli variables
+  CLEANLDFLAGS="$LDFLAGS"
+  CLEANCPPFLAGS="$CPPFLAGS"
+  CLEANLIBS="$LIBS"
+
+  case "$OPT_BROTLI" in
+  yes)
+    dnl --with-brotli (without path) used
+    CURL_CHECK_PKGCONFIG(libbrotlidec)
+
+    if test "$PKGCONFIG" != "no" ; then
+      LIB_BROTLI=`$PKGCONFIG --libs-only-l libbrotlidec`
+      LD_BROTLI=`$PKGCONFIG --libs-only-L libbrotlidec`
+      CPP_BROTLI=`$PKGCONFIG --cflags-only-I libbrotlidec`
+      version=`$PKGCONFIG --modversion libbrotlidec`
+      DIR_BROTLI=`echo $LD_BROTLI | $SED -e 's/-L//'`
+    fi
+
+    ;;
+  off)
+    dnl no --with-brotli option given, just check default places
+    ;;
+  *)
+    dnl use the given --with-brotli spot
+    PREFIX_BROTLI=$OPT_BROTLI
+    ;;
+  esac
+
+  dnl if given with a prefix, we set -L and -I based on that
+  if test -n "$PREFIX_BROTLI"; then
+    LIB_BROTLI="-lbrotlidec"
+    LD_BROTLI=-L${PREFIX_BROTLI}/lib$libsuff
+    CPP_BROTLI=-I${PREFIX_BROTLI}/include
+    DIR_BROTLI=${PREFIX_BROTLI}/lib$libsuff
+  fi
+
+  LDFLAGS="$LDFLAGS $LD_BROTLI"
+  CPPFLAGS="$CPPFLAGS $CPP_BROTLI"
+  LIBS="$LIB_BROTLI $LIBS"
+
+  AC_CHECK_LIB(brotlidec, BrotliDecoderDecompress)
+
+  AC_CHECK_HEADERS(brotli/decode.h,
+    curl_brotli_msg="enabled (libbrotlidec)"
+    HAVE_BROTLI=1
+    AC_DEFINE(HAVE_BROTLI, 1, [if BROTLI is in use])
+    AC_SUBST(HAVE_BROTLI, [1])
+  )
+
+  if test X"$OPT_BROTLI" != Xoff &&
+     test "$HAVE_BROTLI" != "1"; then
+    AC_MSG_ERROR([BROTLI libs and/or directories were not found where specified!])
+  fi
+
+  if test "$HAVE_BROTLI" = "1"; then
+    if test -n "$DIR_BROTLI"; then
+       dnl when the brotli shared libs were found in a path that the run-time
+       dnl linker doesn't search through, we need to add it to LD_LIBRARY_PATH
+       dnl to prevent further configure tests to fail due to this
+
+       if test "x$cross_compiling" != "xyes"; then
+         LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DIR_BROTLI"
+         export LD_LIBRARY_PATH
+         AC_MSG_NOTICE([Added $DIR_BROTLI to LD_LIBRARY_PATH])
+       fi
+    fi
+  else
+    dnl no brotli, revert back to clean variables
+    LDFLAGS=$CLEANLDFLAGS
+    CPPFLAGS=$CLEANCPPFLAGS
+    LIBS=$CLEANLIBS
+  fi
+fi
+
+dnl **********************************************************************
 dnl Check for LDAP
 dnl **********************************************************************
 
@@ -1119,6 +1213,9 @@ if test "$ipv6" = yes; then
 #include <ws2tcpip.h>
 #else
 #include <netinet/in.h>
+#if defined (__TANDEM)
+# include <netinet/in6.h>
+#endif
 #endif] ,
   struct sockaddr_in6 s; s.sin6_scope_id = 0; , have_sin6_scope_id=yes)
   if test "$have_sin6_scope_id" = yes; then
@@ -1561,7 +1658,7 @@ if test -z "$ssl_backends" -o "x$OPT_SSL" != xno &&
 
        dnl still no, but what about with -ldl?
        AC_MSG_CHECKING([OpenSSL linking with -ldl])
-       LIBS="-ldl $LIBS"
+       LIBS="$LIBS -ldl"
        AC_TRY_LINK(
        [
          #include <openssl/err.h>
@@ -1578,7 +1675,7 @@ if test -z "$ssl_backends" -o "x$OPT_SSL" != xno &&
          dnl ok, so what about bouth -ldl and -lpthread?
 
          AC_MSG_CHECKING([OpenSSL linking with -ldl and -lpthread])
-         LIBS="-lpthread $LIBS"
+         LIBS="$LIBS -lpthread"
          AC_TRY_LINK(
          [
            #include <openssl/err.h>
@@ -1649,10 +1746,7 @@ if test -z "$ssl_backends" -o "x$OPT_SSL" != xno &&
       fi
     fi
 
-    if test X"$OPENSSL_ENABLED" = X"1"; then
-       dnl is there a pkcs12.h header present?
-       AC_CHECK_HEADERS(openssl/pkcs12.h)
-    else
+    if test X"$OPENSSL_ENABLED" != X"1"; then
        LIBS="$CLEANLIBS"
     fi
 
@@ -2633,8 +2727,15 @@ dnl Default to compiler & linker defaults for LIBSSH2 files & libraries.
 OPT_LIBSSH2=off
 AC_ARG_WITH(libssh2,dnl
 AC_HELP_STRING([--with-libssh2=PATH],[Where to look for libssh2, PATH points to the LIBSSH2 installation; when possible, set the PKG_CONFIG_PATH environment variable instead of using this option])
-AC_HELP_STRING([--without-libssh2], [disable LIBSSH2]),
-  OPT_LIBSSH2=$withval)
+AC_HELP_STRING([--with-libssh2], [enable LIBSSH2]),
+  OPT_LIBSSH2=$withval, OPT_LIBSSH2=no)
+
+
+OPT_LIBSSH=off
+AC_ARG_WITH(libssh,dnl
+AC_HELP_STRING([--with-libssh=PATH],[Where to look for libssh, PATH points to the LIBSSH installation; when possible, set the PKG_CONFIG_PATH environment variable instead of using this option])
+AC_HELP_STRING([--with-libssh], [enable LIBSSH]),
+  OPT_LIBSSH=$withval, OPT_LIBSSH=no)
 
 if test X"$OPT_LIBSSH2" != Xno; then
   dnl backup the pre-libssh2 variables
@@ -2705,6 +2806,79 @@ if test X"$OPT_LIBSSH2" != Xno; then
     fi
   else
     dnl no libssh2, revert back to clean variables
+    LDFLAGS=$CLEANLDFLAGS
+    CPPFLAGS=$CLEANCPPFLAGS
+    LIBS=$CLEANLIBS
+  fi
+elif test X"$OPT_LIBSSH" != Xno; then
+  dnl backup the pre-libssh variables
+  CLEANLDFLAGS="$LDFLAGS"
+  CLEANCPPFLAGS="$CPPFLAGS"
+  CLEANLIBS="$LIBS"
+
+  case "$OPT_LIBSSH" in
+  yes)
+    dnl --with-libssh (without path) used
+    CURL_CHECK_PKGCONFIG(libssh)
+
+    if test "$PKGCONFIG" != "no" ; then
+      LIB_SSH=`$PKGCONFIG --libs-only-l libssh`
+      LD_SSH=`$PKGCONFIG --libs-only-L libssh`
+      CPP_SSH=`$PKGCONFIG --cflags-only-I libssh`
+      version=`$PKGCONFIG --modversion libssh`
+      DIR_SSH=`echo $LD_SSH | $SED -e 's/-L//'`
+    fi
+
+    ;;
+  off)
+    dnl no --with-libssh option given, just check default places
+    ;;
+  *)
+    dnl use the given --with-libssh spot
+    PREFIX_SSH=$OPT_LIBSSH
+    ;;
+  esac
+
+  dnl if given with a prefix, we set -L and -I based on that
+  if test -n "$PREFIX_SSH"; then
+    LIB_SSH="-lssh"
+    LD_SSH=-L${PREFIX_SSH}/lib$libsuff
+    CPP_SSH=-I${PREFIX_SSH}/include
+    DIR_SSH=${PREFIX_SSH}/lib$libsuff
+  fi
+
+  LDFLAGS="$LDFLAGS $LD_SSH"
+  CPPFLAGS="$CPPFLAGS $CPP_SSH"
+  LIBS="$LIB_SSH $LIBS"
+
+  AC_CHECK_LIB(ssh, ssh_new)
+
+  AC_CHECK_HEADERS(libssh/libssh.h,
+    curl_ssh_msg="enabled (libSSH)"
+    LIBSSH_ENABLED=1
+    AC_DEFINE(USE_LIBSSH, 1, [if libSSH is in use])
+    AC_SUBST(USE_LIBSSH, [1])
+  )
+
+  if test X"$OPT_LIBSSH" != Xoff &&
+     test "$LIBSSH_ENABLED" != "1"; then
+    AC_MSG_ERROR([libSSH libs and/or directories were not found where specified!])
+  fi
+
+  if test "$LIBSSH_ENABLED" = "1"; then
+    if test -n "$DIR_SSH"; then
+       dnl when the libssh shared libs were found in a path that the run-time
+       dnl linker doesn't search through, we need to add it to LD_LIBRARY_PATH
+       dnl to prevent further configure tests to fail due to this
+
+       if test "x$cross_compiling" != "xyes"; then
+         LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DIR_SSH"
+         export LD_LIBRARY_PATH
+         AC_MSG_NOTICE([Added $DIR_SSH to LD_LIBRARY_PATH])
+       fi
+    fi
+  else
+    dnl no libssh, revert back to clean variables
     LDFLAGS=$CLEANLDFLAGS
     CPPFLAGS=$CLEANCPPFLAGS
     LIBS=$CLEANLIBS
@@ -3187,11 +3361,12 @@ AC_CHECK_HEADERS(
         assert.h \
         unistd.h \
         stdlib.h \
-        limits.h \
         arpa/inet.h \
         net/if.h \
         netinet/in.h \
+	netinet/in6.h \
         sys/un.h \
+        linux/tcp.h \
         netinet/tcp.h \
         netdb.h \
         sys/sockio.h \
@@ -3239,6 +3414,9 @@ dnl default includes
 #endif
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_NETINET_IN6_H
+#include <netinet/in6.h>
 #endif
 #ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
@@ -3391,6 +3569,7 @@ AC_CHECK_FUNCS([geteuid \
   getrlimit \
   gettimeofday \
   if_nametoindex \
+  mach_absolute_time \
   pipe \
   setlocale \
   setmode \
@@ -3791,6 +3970,9 @@ fi
 if test "x$HAVE_LIBZ" = "x1"; then
   SUPPORT_FEATURES="$SUPPORT_FEATURES libz"
 fi
+if test "x$HAVE_BROTLI" = "x1"; then
+  SUPPORT_FEATURES="$SUPPORT_FEATURES brotli"
+fi
 if test "x$USE_ARES" = "x1" -o "x$USE_THREADS_POSIX" = "x1" \
                             -o "x$USE_THREADS_WIN32" = "x1"; then
   SUPPORT_FEATURES="$SUPPORT_FEATURES AsynchDNS"
@@ -3921,6 +4103,10 @@ if test "x$USE_LIBSSH2" = "x1"; then
   SUPPORT_PROTOCOLS="$SUPPORT_PROTOCOLS SCP"
   SUPPORT_PROTOCOLS="$SUPPORT_PROTOCOLS SFTP"
 fi
+if test "x$USE_LIBSSH" = "x1"; then
+  SUPPORT_PROTOCOLS="$SUPPORT_PROTOCOLS SCP"
+  SUPPORT_PROTOCOLS="$SUPPORT_PROTOCOLS SFTP"
+fi
 if test "x$CURL_DISABLE_RTSP" != "x1"; then
   SUPPORT_PROTOCOLS="$SUPPORT_PROTOCOLS RTSP"
 fi
@@ -3952,6 +4138,9 @@ squeeze SUPPORT_PROTOCOLS
 
 XC_CHECK_BUILD_FLAGS
 
+SSL_BACKENDS=${ssl_backends}
+AC_SUBST(SSL_BACKENDS)
+
 if test "x$want_curldebug_assumed" = "xyes" &&
   test "x$want_curldebug" = "xyes" && test "x$USE_ARES" = "x1"; then
   ac_configure_args="$ac_configure_args --enable-curldebug"
@@ -3976,7 +4165,6 @@ AC_CONFIG_FILES([Makefile \
            tests/server/Makefile \
            tests/libtest/Makefile \
            tests/unit/Makefile \
-           tests/fuzz/Makefile \
            packages/Makefile \
            packages/Win32/Makefile \
            packages/Win32/cygwin/Makefile \
@@ -4009,6 +4197,7 @@ AC_MSG_NOTICE([Configured to build curl/libcurl:
   SSL support:      ${curl_ssl_msg}
   SSH support:      ${curl_ssh_msg}
   zlib support:     ${curl_zlib_msg}
+  brotli support:   ${curl_brotli_msg}
   GSS-API support:  ${curl_gss_msg}
   TLS-SRP support:  ${curl_tls_srp_msg}
   resolver:         ${curl_res_msg}

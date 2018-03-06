@@ -217,7 +217,7 @@ static char *c_escape(const char *str, size_t len)
   char *escaped, *e;
 
   if(len == CURL_ZERO_TERMINATED)
-  len = strlen(str);
+    len = strlen(str);
 
   /* Check for possible overflow. */
   if(len > (~(size_t) 0) / 4)
@@ -229,24 +229,24 @@ static char *c_escape(const char *str, size_t len)
     return NULL;
 
   e = escaped;
-  for(s=str; (c=*s) != '\0'; s++) {
-    if(c=='\n') {
+  for(s = str; (c = *s) != '\0'; s++) {
+    if(c == '\n') {
       strcpy(e, "\\n");
       e += 2;
     }
-    else if(c=='\r') {
+    else if(c == '\r') {
       strcpy(e, "\\r");
       e += 2;
     }
-    else if(c=='\t') {
+    else if(c == '\t') {
       strcpy(e, "\\t");
       e += 2;
     }
-    else if(c=='\\') {
+    else if(c == '\\') {
       strcpy(e, "\\\\");
       e += 2;
     }
-    else if(c=='"') {
+    else if(c == '"') {
       strcpy(e, "\\\"");
       e += 2;
     }
@@ -276,7 +276,7 @@ CURLcode tool_setopt_enum(CURL *curl, struct GlobalConfig *config,
   if(config->libcurl && !skip && !ret) {
     /* we only use this for real if --libcurl was used */
     const NameValue *nv = NULL;
-    for(nv=nvlist; nv->name; nv++) {
+    for(nv = nvlist; nv->name; nv++) {
       if(nv->value == lval) break; /* found it */
     }
     if(! nv->name) {
@@ -313,7 +313,7 @@ CURLcode tool_setopt_flags(CURL *curl, struct GlobalConfig *config,
     const NameValue *nv = NULL;
     snprintf(preamble, sizeof(preamble),
              "curl_easy_setopt(hnd, %s, ", name);
-    for(nv=nvlist; nv->name; nv++) {
+    for(nv = nvlist; nv->name; nv++) {
       if((nv->value & ~ rest) == 0) {
         /* all value flags contained in rest */
         rest &= ~ nv->value;    /* remove bits handled here */
@@ -356,7 +356,7 @@ CURLcode tool_setopt_bitmask(CURL *curl, struct GlobalConfig *config,
     const NameValueUnsigned *nv = NULL;
     snprintf(preamble, sizeof(preamble),
              "curl_easy_setopt(hnd, %s, ", name);
-    for(nv=nvlist; nv->name; nv++) {
+    for(nv = nvlist; nv->name; nv++) {
       if((nv->value & ~ rest) == 0) {
         /* all value flags contained in rest */
         rest &= ~ nv->value;    /* remove bits handled here */
@@ -410,7 +410,7 @@ static CURLcode libcurl_generate_slist(struct curl_slist *slist, int *slistno)
 static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
 {
   CURLcode ret = CURLE_OK;
-    int i;
+  int i;
   curl_off_t size;
   curl_mimepart *part;
   char *filename;
@@ -464,15 +464,15 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
              code. Convert it back for output. */
           data = malloc(part->datasize + 1);
           if(!data) {
-          ret = CURLE_OUT_OF_MEMORY;
-          goto nomem;
-        }
+            ret = CURLE_OUT_OF_MEMORY;
+            goto nomem;
+          }
           memcpy(data, part->data, part->datasize + 1);
           ret = convert_from_network(data, strlen(data));
           if(ret) {
             Curl_safefree(data);
             goto nomem;
-        }
+          }
 #else
         data = part->data;
 #endif
@@ -481,7 +481,7 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
         for(cp = data; *cp; cp++)
           ;
         size = (cp == data + part->datasize)? (curl_off_t) -1: part->datasize;
-          Curl_safefree(escaped);
+        Curl_safefree(escaped);
         escaped = c_escape(data, (size_t) part->datasize);
 #ifdef CURL_DOES_CONVERSIONS
         Curl_safefree(data);
@@ -498,14 +498,14 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
       case MIMEKIND_MULTIPART:
         ret = libcurl_generate_mime(part->arg, &i);
         if(ret)
-            goto nomem;
+          goto nomem;
         CODE2("curl_mime_subparts(part%d, mime%d);", *mimeno, i);
         CODE1("mime%d = NULL;", i);   /* Avoid freeing in CLEAN sequence. */
         break;
       default:
         /* Other cases not possible in this context. */
         break;
-          }
+      }
 
       if(part->encoder) {
         Curl_safefree(escaped);
@@ -513,10 +513,10 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
         if(!escaped)
           return CURLE_OUT_OF_MEMORY;
         CODE2("curl_mime_encoder(part%d, \"%s\");", *mimeno, escaped);
-        }
+      }
 
       if(filename) {
-          Curl_safefree(escaped);
+        Curl_safefree(escaped);
         escaped = c_escape(filename, CURL_ZERO_TERMINATED);
         if(!escaped)
           return CURLE_OUT_OF_MEMORY;
@@ -529,7 +529,7 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
         if(!escaped)
           return CURLE_OUT_OF_MEMORY;
         CODE2("curl_mime_name(part%d, \"%s\");", *mimeno, escaped);
-          }
+      }
 
       if(part->mimetype) {
         Curl_safefree(escaped);
@@ -537,7 +537,7 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
         if(!escaped)
           return CURLE_OUT_OF_MEMORY;
         CODE2("curl_mime_type(part%d, \"%s\");", *mimeno, escaped);
-        }
+      }
 
       if(part->userheaders) {
         int ownership = part->flags & MIME_USERHEADERS_OWNER? 1: 0;
@@ -553,7 +553,7 @@ static CURLcode libcurl_generate_mime(curl_mime *mime, int *mimeno)
     }
   }
 
- nomem:
+nomem:
   Curl_safefree(escaped);
   return ret;
 }
@@ -594,7 +594,7 @@ CURLcode tool_setopt_slist(CURL *curl, struct GlobalConfig *config,
 
     ret = libcurl_generate_slist(list, &i);
     if(!ret)
-    CODE2("curl_easy_setopt(hnd, %s, slist%d);", name, i);
+      CODE2("curl_easy_setopt(hnd, %s, slist%d);", name, i);
   }
 
  nomem:
@@ -622,7 +622,7 @@ CURLcode tool_setopt(CURL *curl, bool str, struct GlobalConfig *config,
     long lval = va_arg(arg, long);
     long defval = 0L;
     const NameValue *nv = NULL;
-    for(nv=setopt_nv_CURLNONZERODEFAULTS; nv->name; nv++) {
+    for(nv = setopt_nv_CURLNONZERODEFAULTS; nv->name; nv++) {
       if(!strcmp(name, nv->name)) {
         defval = nv->value;
         break; /* found it */

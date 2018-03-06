@@ -802,6 +802,10 @@ SOURCE=..\..\..\..\lib\curl_ntlm_wb.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\lib\curl_path.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\lib\curl_rtmp.c
 # End Source File
 # Begin Source File
@@ -1038,6 +1042,14 @@ SOURCE=..\..\..\..\lib\sendf.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\lib\setopt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\lib\sha256.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\lib\share.c
 # End Source File
 # Begin Source File
@@ -1075,6 +1087,10 @@ SOURCE=..\..\..\..\lib\splay.c
 # Begin Source File
 
 SOURCE=..\..\..\..\lib\ssh.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\lib\ssh-libssh.c
 # End Source File
 # Begin Source File
 
@@ -1334,6 +1350,10 @@ SOURCE=..\..\..\..\lib\curl_ntlm_wb.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\..\lib\curl_path.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\lib\curl_printf.h
 # End Source File
 # Begin Source File
@@ -1355,6 +1375,10 @@ SOURCE=..\..\..\..\lib\curl_setup.h
 # Begin Source File
 
 SOURCE=..\..\..\..\lib\curl_setup_once.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\lib\curl_sha256.h
 # End Source File
 # Begin Source File
 
@@ -1535,6 +1559,10 @@ SOURCE=..\..\..\..\lib\select.h
 # Begin Source File
 
 SOURCE=..\..\..\..\lib\sendf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\lib\setopt.h
 # End Source File
 # Begin Source File
 

@@ -192,7 +192,7 @@ static const char *ContentTypeForFilename(const char *filename,
     contenttype = HTTPPOST_CONTENTTYPE_DEFAULT;
 
   if(filename) { /* in case a NULL was passed in */
-    for(i=0; i<sizeof(ctts)/sizeof(ctts[0]); i++) {
+    for(i = 0; i<sizeof(ctts)/sizeof(ctts[0]); i++) {
       if(strlen(filename) >= strlen(ctts[i].extension)) {
         if(strcasecompare(filename +
                           strlen(filename) - strlen(ctts[i].extension),
@@ -267,7 +267,7 @@ CURLFORMcode FormAdd(struct curl_httppost **httppost,
   struct curl_httppost *post = NULL;
   CURLformoption option;
   struct curl_forms *forms = NULL;
-  char *array_value=NULL; /* value read from an array */
+  char *array_value = NULL; /* value read from an array */
 
   /* This is a state variable, that if TRUE means that we're parsing an
      array that we got passed to us. If FALSE we're parsing the input
@@ -655,7 +655,7 @@ CURLFORMcode FormAdd(struct curl_httppost **httppost,
           /* copy name (without strdup; possibly not nul-terminated) */
           form->name = Curl_memdup(form->name, form->namelength?
                                    form->namelength:
-                                   strlen(form->name)+1);
+                                   strlen(form->name) + 1);
         }
         if(!form->name) {
           return_value = CURL_FORMADD_MEMORY;
@@ -669,7 +669,7 @@ CURLFORMcode FormAdd(struct curl_httppost **httppost,
         /* copy value (without strdup; possibly contains null characters) */
         size_t clen  = (size_t) form->contentslength;
         if(!clen)
-          clen = strlen(form->value)+1;
+          clen = strlen(form->value) + 1;
 
         form->value = Curl_memdup(form->value, clen);
 
@@ -772,7 +772,7 @@ int curl_formget(struct curl_httppost *form, void *arg,
                                        NULL, MIMESTRATEGY_FORM);
 
   while(!result) {
-      char buffer[8192];
+    char buffer[8192];
     size_t nread = Curl_mime_read(buffer, 1, sizeof buffer, &toppart);
 
     if(!nread)
@@ -806,7 +806,7 @@ void curl_formfree(struct curl_httppost *form)
     return;
 
   do {
-    next=form->next;  /* the following form line */
+    next = form->next;  /* the following form line */
 
     /* recurse to sub-contents */
     curl_formfree(form->more);
@@ -835,7 +835,7 @@ static CURLcode setname(curl_mimepart *part, const char *name, size_t len)
     return curl_mime_name(part, name);
   zname = malloc(len + 1);
   if(!zname)
-      return CURLE_OUT_OF_MEMORY;
+    return CURLE_OUT_OF_MEMORY;
   memcpy(zname, name, len);
   zname[len] = '\0';
   res = curl_mime_name(part, zname);
@@ -880,7 +880,7 @@ CURLcode Curl_getformdata(struct Curl_easy *data,
   for(; !result && post; post = post->next) {
     /* If we have more than a file here, create a mime subpart and fill it. */
     multipart = form;
-      if(post->more) {
+    if(post->more) {
       part = curl_mime_addpart(form);
       if(!part)
         result = CURLE_OUT_OF_MEMORY;
@@ -893,7 +893,7 @@ CURLcode Curl_getformdata(struct Curl_easy *data,
       }
       if(!result)
         result = curl_mime_subparts(part, multipart);
-      }
+    }
 
     /* Generate all the part contents. */
     for(file = post; !result && file; file = file->more) {
@@ -907,7 +907,7 @@ CURLcode Curl_getformdata(struct Curl_easy *data,
         result = curl_mime_headers(part, file->contentheader, 0);
 
       /* Set the content type. */
-      if(!result &&file->contenttype)
+      if(!result && file->contenttype)
         result = curl_mime_type(part, file->contenttype);
 
       /* Set field name. */
@@ -938,32 +938,32 @@ CURLcode Curl_getformdata(struct Curl_easy *data,
             result = curl_mime_filedata(part, file->contents);
           if(!result && (post->flags & HTTPPOST_READFILE))
             result = curl_mime_filename(part, NULL);
-      }
-      else if(post->flags & HTTPPOST_BUFFER)
+        }
+        else if(post->flags & HTTPPOST_BUFFER)
           result = curl_mime_data(part, post->buffer,
                                   post->bufferlength? post->bufferlength: -1);
-      else if(post->flags & HTTPPOST_CALLBACK)
-        /* the contents should be read with the callback and the size is set
-           with the contentslength */
+        else if(post->flags & HTTPPOST_CALLBACK)
+          /* the contents should be read with the callback and the size is set
+             with the contentslength */
           result = curl_mime_data_cb(part, clen,
                                      fread_func, NULL, NULL, post->userp);
-  else {
+        else {
           result = curl_mime_data(part, post->contents, (ssize_t) clen);
 #ifdef CURL_DOES_CONVERSIONS
           /* Convert textual contents now. */
           if(!result && data && part->datasize)
             result = Curl_convert_to_network(data, part->data, part->datasize);
 #endif
-  }
-}
+        }
+      }
 
       /* Set fake file name. */
       if(!result && post->showfilename)
         if(post->more || (post->flags & (HTTPPOST_FILENAME | HTTPPOST_BUFFER |
                                         HTTPPOST_CALLBACK)))
           result = curl_mime_filename(part, post->showfilename);
-  }
     }
+  }
 
   if(result)
     Curl_mime_cleanpart(finalform);

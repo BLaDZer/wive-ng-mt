@@ -358,7 +358,7 @@ CURLcode Curl_output_ntlm_wb(struct connectdata *conn,
 
   /* not set means empty */
   if(!userp)
-    userp="";
+    userp = "";
 
   switch(ntlm->state) {
   case NTLMSTATE_TYPE1:
@@ -414,7 +414,7 @@ CURLcode Curl_output_ntlm_wb(struct connectdata *conn,
     /* connection is already authenticated,
      * don't send a header in future requests */
     free(*allocuserpwd);
-    *allocuserpwd=NULL;
+    *allocuserpwd = NULL;
     authp->done = TRUE;
     break;
   }

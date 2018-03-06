@@ -281,7 +281,7 @@ static SECStatus set_ciphers(struct Curl_easy *data, PRFileDesc * model,
 
     found = PR_FALSE;
 
-    for(i=0; i<NUM_OF_CIPHERS; i++) {
+    for(i = 0; i<NUM_OF_CIPHERS; i++) {
       if(strcasecompare(cipher, cipherlist[i].name)) {
         cipher_state[i] = PR_TRUE;
         found = PR_TRUE;
@@ -300,7 +300,7 @@ static SECStatus set_ciphers(struct Curl_easy *data, PRFileDesc * model,
   }
 
   /* Finally actually enable the selected ciphers */
-  for(i=0; i<NUM_OF_CIPHERS; i++) {
+  for(i = 0; i<NUM_OF_CIPHERS; i++) {
     if(!cipher_state[i])
       continue;
 
@@ -321,7 +321,7 @@ static bool any_cipher_enabled(void)
 {
   unsigned int i;
 
-  for(i=0; i<NUM_OF_CIPHERS; i++) {
+  for(i = 0; i<NUM_OF_CIPHERS; i++) {
     PRInt32 policy = 0;
     SSL_CipherPolicyGet(cipherlist[i].num, &policy);
     if(policy)
@@ -1002,7 +1002,7 @@ static SECStatus check_issuer_cert(PRFileDesc *sock,
                                    char *issuer_nickname)
 {
   CERTCertificate *cert, *cert_issuer, *issuer;
-  SECStatus res=SECSuccess;
+  SECStatus res = SECSuccess;
   void *proto_win = NULL;
 
   cert = SSL_PeerCertificate(sock);
@@ -1014,7 +1014,7 @@ static SECStatus check_issuer_cert(PRFileDesc *sock,
   if((!cert_issuer) || (!issuer))
     res = SECFailure;
   else if(SECITEM_CompareItem(&cert_issuer->derCert,
-                              &issuer->derCert)!=SECEqual)
+                              &issuer->derCert) != SECEqual)
     res = SECFailure;
 
   CERT_DestroyCertificate(cert);
@@ -2181,7 +2181,7 @@ static CURLcode Curl_nss_connect(struct connectdata *conn, int sockindex)
 }
 
 static CURLcode Curl_nss_connect_nonblocking(struct connectdata *conn,
-                                      int sockindex, bool *done)
+                                             int sockindex, bool *done)
 {
   return nss_connect_common(conn, sockindex, done);
 }
@@ -2277,8 +2277,8 @@ static int Curl_nss_seed(struct Curl_easy *data)
 
 /* data might be NULL */
 static CURLcode Curl_nss_random(struct Curl_easy *data,
-                         unsigned char *entropy,
-                         size_t length)
+                                unsigned char *entropy,
+                                size_t length)
 {
   Curl_nss_seed(data);  /* Initiate the seed if not already done */
 
@@ -2290,9 +2290,9 @@ static CURLcode Curl_nss_random(struct Curl_easy *data,
 }
 
 static CURLcode Curl_nss_md5sum(unsigned char *tmp, /* input */
-                     size_t tmplen,
-                     unsigned char *md5sum, /* output */
-                     size_t md5len)
+                                size_t tmplen,
+                                unsigned char *md5sum, /* output */
+                                size_t md5len)
 {
   PK11Context *MD5pw = PK11_CreateDigestContext(SEC_OID_MD5);
   unsigned int MD5out;
@@ -2305,9 +2305,9 @@ static CURLcode Curl_nss_md5sum(unsigned char *tmp, /* input */
 }
 
 static void Curl_nss_sha256sum(const unsigned char *tmp, /* input */
-                     size_t tmplen,
-                     unsigned char *sha256sum, /* output */
-                     size_t sha256len)
+                               size_t tmplen,
+                               unsigned char *sha256sum, /* output */
+                               size_t sha256len)
 {
   PK11Context *SHA256pw = PK11_CreateDigestContext(SEC_OID_SHA256);
   unsigned int SHA256out;
@@ -2365,7 +2365,7 @@ const struct Curl_ssl Curl_ssl_nss = {
   Curl_nss_connect,             /* connect */
   Curl_nss_connect_nonblocking, /* connect_nonblocking */
   Curl_nss_get_internals,       /* get_internals */
-  Curl_nss_close,               /* close */
+  Curl_nss_close,               /* close_one */
   Curl_none_close_all,          /* close_all */
   /* NSS has its own session ID cache */
   Curl_none_session_free,       /* session_free */

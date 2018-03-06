@@ -42,9 +42,12 @@ static void voutf(struct GlobalConfig *config,
   if(!config->mute) {
     size_t len;
     char *ptr;
-    char print_buffer[256];
+    char *print_buffer;
 
-    len = vsnprintf(print_buffer, sizeof(print_buffer), fmt, ap);
+    print_buffer = curlx_mvaprintf(fmt, ap);
+    if(!print_buffer)
+      return;
+    len = strlen(print_buffer);
 
     ptr = print_buffer;
     while(len > 0) {
@@ -63,7 +66,7 @@ static void voutf(struct GlobalConfig *config,
 
         (void)fwrite(ptr, cut + 1, 1, config->errors);
         fputs("\n", config->errors);
-        ptr += cut+1; /* skip the space too */
+        ptr += cut + 1; /* skip the space too */
         len -= cut;
       }
       else {
@@ -71,6 +74,7 @@ static void voutf(struct GlobalConfig *config,
         len = 0;
       }
     }
+    curl_free(print_buffer);
   }
 }
 

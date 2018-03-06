@@ -306,9 +306,9 @@ static CURLcode handshake(struct connectdata *conn,
     if(connssl->connecting_state == ssl_connect_2_reading
        || connssl->connecting_state == ssl_connect_2_writing) {
 
-      curl_socket_t writefd = ssl_connect_2_writing==
+      curl_socket_t writefd = ssl_connect_2_writing ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
-      curl_socket_t readfd = ssl_connect_2_reading==
+      curl_socket_t readfd = ssl_connect_2_reading ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
 
       what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
@@ -1208,7 +1208,7 @@ gtls_connect_step3(struct connectdata *conn,
           SSL_SET_OPTION(issuercert)?SSL_SET_OPTION(issuercert):"none");
   }
 
-  size=sizeof(certbuf);
+  size = sizeof(certbuf);
   rc = gnutls_x509_crt_get_dn_by_oid(x509_cert, GNUTLS_OID_X520_COMMON_NAME,
                                      0, /* the first and only one */
                                      FALSE,
@@ -1248,7 +1248,7 @@ gtls_connect_step3(struct connectdata *conn,
 #endif
 
     if(addrlen) {
-      for(i=0; ; i++) {
+      for(i = 0; ; i++) {
         certaddrlen = sizeof(certaddr);
         ret = gnutls_x509_crt_get_subject_alt_name(x509_cert, i, certaddr,
                                                    &certaddrlen, NULL);
@@ -1481,7 +1481,7 @@ gtls_connect_common(struct connectdata *conn,
   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
 
   /* Initiate the connection, if not already done */
-  if(ssl_connect_1==connssl->connecting_state) {
+  if(ssl_connect_1 == connssl->connecting_state) {
     rc = gtls_connect_step1(conn, sockindex);
     if(rc)
       return rc;
@@ -1493,13 +1493,13 @@ gtls_connect_common(struct connectdata *conn,
     return rc;
 
   /* Finish connecting once the handshake is done */
-  if(ssl_connect_1==connssl->connecting_state) {
+  if(ssl_connect_1 == connssl->connecting_state) {
     rc = gtls_connect_step3(conn, sockindex);
     if(rc)
       return rc;
   }
 
-  *done = ssl_connect_1==connssl->connecting_state;
+  *done = ssl_connect_1 == connssl->connecting_state;
 
   return CURLE_OK;
 }
@@ -1690,6 +1690,7 @@ static ssize_t gtls_recv(struct connectdata *conn, /* connection data */
 
   if(ret < 0) {
     failf(conn->data, "GnuTLS recv error (%d): %s",
+
           (int)ret, gnutls_strerror((int)ret));
     *curlcode = CURLE_RECV_ERROR;
     return -1;
@@ -1750,9 +1751,9 @@ static CURLcode Curl_gtls_random(struct Curl_easy *data,
 }
 
 static CURLcode Curl_gtls_md5sum(unsigned char *tmp, /* input */
-                      size_t tmplen,
-                      unsigned char *md5sum, /* output */
-                      size_t md5len)
+                                 size_t tmplen,
+                                 unsigned char *md5sum, /* output */
+                                 size_t md5len)
 {
 #if defined(USE_GNUTLS_NETTLE)
   struct md5_ctx MD5pw;
@@ -1770,9 +1771,9 @@ static CURLcode Curl_gtls_md5sum(unsigned char *tmp, /* input */
 }
 
 static void Curl_gtls_sha256sum(const unsigned char *tmp, /* input */
-                      size_t tmplen,
-                      unsigned char *sha256sum, /* output */
-                      size_t sha256len)
+                                size_t tmplen,
+                                unsigned char *sha256sum, /* output */
+                                size_t sha256len)
 {
 #if defined(USE_GNUTLS_NETTLE)
   struct sha256_ctx SHA256pw;
@@ -1826,7 +1827,7 @@ const struct Curl_ssl Curl_ssl_gnutls = {
   Curl_gtls_connect,             /* connect */
   Curl_gtls_connect_nonblocking, /* connect_nonblocking */
   Curl_gtls_get_internals,       /* get_internals */
-  Curl_gtls_close,               /* close */
+  Curl_gtls_close,               /* close_one */
   Curl_none_close_all,           /* close_all */
   Curl_gtls_session_free,        /* session_free */
   Curl_none_set_engine,          /* set_engine */

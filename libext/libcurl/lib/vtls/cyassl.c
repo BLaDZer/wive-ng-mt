@@ -76,9 +76,7 @@ and that's a problem since options.h hasn't been included yet. */
 #endif
 #endif
 
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 
 #include "urldata.h"
 #include "sendf.h"
@@ -828,7 +826,7 @@ cyassl_connect_common(struct connectdata *conn,
     return CURLE_OK;
   }
 
-  if(ssl_connect_1==connssl->connecting_state) {
+  if(ssl_connect_1 == connssl->connecting_state) {
     /* Find out how much more time we're allowed */
     timeout_ms = Curl_timeleft(data, NULL, TRUE);
 
@@ -860,9 +858,9 @@ cyassl_connect_common(struct connectdata *conn,
     if(connssl->connecting_state == ssl_connect_2_reading
        || connssl->connecting_state == ssl_connect_2_writing) {
 
-      curl_socket_t writefd = ssl_connect_2_writing==
+      curl_socket_t writefd = ssl_connect_2_writing ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
-      curl_socket_t readfd = ssl_connect_2_reading==
+      curl_socket_t readfd = ssl_connect_2_reading ==
         connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
 
       what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
@@ -959,9 +957,9 @@ static CURLcode Curl_cyassl_random(struct Curl_easy *data,
 }
 
 static void Curl_cyassl_sha256sum(const unsigned char *tmp, /* input */
-                      size_t tmplen,
-                      unsigned char *sha256sum /* output */,
-                      size_t unused)
+                                  size_t tmplen,
+                                  unsigned char *sha256sum /* output */,
+                                  size_t unused)
 {
   Sha256 SHA256pw;
   (void)unused;
@@ -1003,7 +1001,7 @@ const struct Curl_ssl Curl_ssl_cyassl = {
   Curl_cyassl_connect,             /* connect */
   Curl_cyassl_connect_nonblocking, /* connect_nonblocking */
   Curl_cyassl_get_internals,       /* get_internals */
-  Curl_cyassl_close,               /* close */
+  Curl_cyassl_close,               /* close_one */
   Curl_none_close_all,             /* close_all */
   Curl_cyassl_session_free,        /* session_free */
   Curl_none_set_engine,            /* set_engine */

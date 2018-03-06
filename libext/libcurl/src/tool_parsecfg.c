@@ -131,7 +131,7 @@ int parseconfig(const char *filename, struct GlobalConfig *global)
     while(NULL != (aline = my_get_line(file))) {
       lineno++;
       line = aline;
-      alloced_param=FALSE;
+      alloced_param = FALSE;
 
       /* line with # in the first non-blank column is a comment! */
       while(*line && ISSPACE(*line))

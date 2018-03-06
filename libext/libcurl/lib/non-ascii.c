@@ -106,7 +106,7 @@ CURLcode Curl_convert_to_network(struct Curl_easy *data,
       cd = &data->outbound_cd;
     if(*cd == (iconv_t)-1) {
       *cd = iconv_open(CURL_ICONV_CODESET_OF_NETWORK,
-                                     CURL_ICONV_CODESET_OF_HOST);
+                       CURL_ICONV_CODESET_OF_HOST);
       if(*cd == (iconv_t)-1) {
         failf(data,
               "The iconv_open(\"%s\", \"%s\") call failed with errno %i: %s",
@@ -169,7 +169,7 @@ CURLcode Curl_convert_from_network(struct Curl_easy *data,
       cd = &data->inbound_cd;
     if(*cd == (iconv_t)-1) {
       *cd = iconv_open(CURL_ICONV_CODESET_OF_HOST,
-                                    CURL_ICONV_CODESET_OF_NETWORK);
+                       CURL_ICONV_CODESET_OF_NETWORK);
       if(*cd == (iconv_t)-1) {
         failf(data,
               "The iconv_open(\"%s\", \"%s\") call failed with errno %i: %s",
@@ -233,7 +233,7 @@ CURLcode Curl_convert_from_utf8(struct Curl_easy *data,
       cd = &data->utf8_cd;
     if(*cd == (iconv_t)-1) {
       *cd = iconv_open(CURL_ICONV_CODESET_OF_HOST,
-                                 CURL_ICONV_CODESET_FOR_UTF8);
+                       CURL_ICONV_CODESET_FOR_UTF8);
       if(*cd == (iconv_t)-1) {
         failf(data,
               "The iconv_open(\"%s\", \"%s\") call failed with errno %i: %s",

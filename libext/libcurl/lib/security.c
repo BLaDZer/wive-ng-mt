@@ -50,9 +50,7 @@
 #include <netdb.h>
 #endif
 
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 
 #include "urldata.h"
 #include "curl_base64.h"
@@ -115,7 +113,7 @@ static char level_to_char(int level)
 static int ftp_send_command(struct connectdata *conn, const char *message, ...)
 {
   int ftp_code;
-  ssize_t nread=0;
+  ssize_t nread = 0;
   va_list args;
   char print_buffer[50];
 
