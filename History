@@ -3917,6 +3917,7 @@
 11) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
 12) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
 13) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+14) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
 <br>
 <br>
 <br>

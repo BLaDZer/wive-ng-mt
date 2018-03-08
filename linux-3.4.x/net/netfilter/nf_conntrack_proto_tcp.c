@@ -395,7 +395,9 @@ static void tcp_options(const struct sk_buff *skb,
 
 	ptr = skb_header_pointer(skb, dataoff + sizeof(struct tcphdr),
 				 length, buff);
-	BUG_ON(ptr == NULL);
+	//BUG_ON(ptr == NULL);
+	if (!ptr)
+		return;
 
 	state->td_scale =
 	state->flags = 0;
