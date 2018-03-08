@@ -480,6 +480,8 @@ restart() {
 	iptables -A INPUT -i lo -j ACCEPT
 	$LOG "Allow established/related in input"
 	iptables -A INPUT $STATE_EST -j ACCEPT
+	$LOG "Drop invalid state connections"
+	iptables -A INPUT -m state --state INVALID -j DROP
 	#########################################DYNAMICRULES###################################
 	servicelimit
 	if [ "$ROUTE_MODE" = "on" ]; then

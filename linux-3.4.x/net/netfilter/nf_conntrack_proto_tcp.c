@@ -46,7 +46,7 @@ static int nf_ct_tcp_be_liberal __read_mostly = 1;
 
 /* If it is set to zero, we disable picking up already established
    connections. */
-static int nf_ct_tcp_loose __read_mostly = 1;
+static int nf_ct_tcp_loose __read_mostly = 0;
 
 /* Max number of the retransmitted packets without receiving an (acceptable)
    ACK from the destination. If this number is reached, a shorter timer
