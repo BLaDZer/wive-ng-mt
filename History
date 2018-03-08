@@ -3916,6 +3916,7 @@
 10) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
 11) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
 12) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+13) kernel: net: netfilter: nf_conntrack_tcp: Fix stack out of bounds when parsing TCP options.<br>
 <br>
 <br>
 <br>
