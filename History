@@ -3920,6 +3920,7 @@
 14) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
 15) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
 16) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+17) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
 <br>
 <br>
 <br>
