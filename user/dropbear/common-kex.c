@@ -308,17 +308,17 @@ static void gen_new_keys() {
 	ses.hash = NULL;
 
 	if (IS_DROPBEAR_CLIENT) {
-	    trans_IV	= C2S_IV;
-	    recv_IV		= S2C_IV;
-	    trans_key	= C2S_key;
-	    recv_key	= S2C_key;
+		trans_IV	= C2S_IV;
+		recv_IV		= S2C_IV;
+		trans_key	= C2S_key;
+		recv_key	= S2C_key;
 		mactransletter = 'E';
 		macrecvletter = 'F';
 	} else {
-	    trans_IV	= S2C_IV;
-	    recv_IV		= C2S_IV;
-	    trans_key	= S2C_key;
-	    recv_key	= C2S_key;
+		trans_IV	= S2C_IV;
+		recv_IV		= C2S_IV;
+		trans_key	= S2C_key;
+		recv_key	= C2S_key;
 		mactransletter = 'F';
 		macrecvletter = 'E';
 	}
@@ -484,18 +484,18 @@ void recv_msg_kexinit() {
 		read_kex_algos();
 
 		/* V_C, the client's version string (CR and NL excluded) */
-	    buf_putstring(ses.kexhashbuf, LOCAL_IDENT, local_ident_len);
+		buf_putstring(ses.kexhashbuf, LOCAL_IDENT, local_ident_len);
 		/* V_S, the server's version string (CR and NL excluded) */
-	    buf_putstring(ses.kexhashbuf, ses.remoteident, remote_ident_len);
+		buf_putstring(ses.kexhashbuf, ses.remoteident, remote_ident_len);
 
 		/* I_C, the payload of the client's SSH_MSG_KEXINIT */
-	    buf_putstring(ses.kexhashbuf,
+		buf_putstring(ses.kexhashbuf,
 			(const char*)ses.transkexinit->data, ses.transkexinit->len);
 		/* I_S, the payload of the server's SSH_MSG_KEXINIT */
-	    buf_setpos(ses.payload, ses.payload_beginning);
-	    buf_putstring(ses.kexhashbuf, 
-	    	(const char*)buf_getptr(ses.payload, ses.payload->len-ses.payload->pos),
-	    	ses.payload->len-ses.payload->pos);
+		buf_setpos(ses.payload, ses.payload_beginning);
+		buf_putstring(ses.kexhashbuf,
+			(const char*)buf_getptr(ses.payload, ses.payload->len-ses.payload->pos),
+			ses.payload->len-ses.payload->pos);
 		ses.requirenext = SSH_MSG_KEXDH_REPLY;
 	} else {
 		/* SERVER */
@@ -503,18 +503,18 @@ void recv_msg_kexinit() {
 		/* read the peer's choice of algos */
 		read_kex_algos();
 		/* V_C, the client's version string (CR and NL excluded) */
-	    buf_putstring(ses.kexhashbuf, ses.remoteident, remote_ident_len);
+		buf_putstring(ses.kexhashbuf, ses.remoteident, remote_ident_len);
 		/* V_S, the server's version string (CR and NL excluded) */
-	    buf_putstring(ses.kexhashbuf, LOCAL_IDENT, local_ident_len);
+		buf_putstring(ses.kexhashbuf, LOCAL_IDENT, local_ident_len);
 
 		/* I_C, the payload of the client's SSH_MSG_KEXINIT */
-	    buf_setpos(ses.payload, ses.payload_beginning);
-	    buf_putstring(ses.kexhashbuf, 
-	    	(const char*)buf_getptr(ses.payload, ses.payload->len-ses.payload->pos),
-	    	ses.payload->len-ses.payload->pos);
+		buf_setpos(ses.payload, ses.payload_beginning);
+		buf_putstring(ses.kexhashbuf, 
+			(const char*)buf_getptr(ses.payload, ses.payload->len-ses.payload->pos),
+			ses.payload->len-ses.payload->pos);
 
 		/* I_S, the payload of the server's SSH_MSG_KEXINIT */
-	    buf_putstring(ses.kexhashbuf,
+		buf_putstring(ses.kexhashbuf,
 			(const char*)ses.transkexinit->data, ses.transkexinit->len);
 
 		ses.requirenext = SSH_MSG_KEXDH_INIT;
@@ -640,7 +640,7 @@ void kexdh_comb_key(struct kex_dh_param *param, mp_int *dh_pub_them,
 	finish_kexhashbuf();
 }
 
-#ifdef DROPBEAR_ECDH
+#if DROPBEAR_ECDH
 struct kex_ecdh_param *gen_kexecdh_param() {
 	struct kex_ecdh_param *param = m_malloc(sizeof(*param));
 	if (ecc_make_key_ex(NULL, dropbear_ltc_prng, 
@@ -692,7 +692,7 @@ void kexecdh_comb_key(struct kex_ecdh_param *param, buffer *pub_them,
 }
 #endif /* DROPBEAR_ECDH */
 
-#ifdef DROPBEAR_CURVE25519
+#if DROPBEAR_CURVE25519
 struct kex_curve25519_param *gen_kexcurve25519_param () {
 	/* Per http://cr.yp.to/ecdh.html */
 	struct kex_curve25519_param *param = m_malloc(sizeof(*param));
@@ -714,7 +714,7 @@ void free_kexcurve25519_param(struct kex_curve25519_param *param)
 	m_free(param);
 }
 
-void kexcurve25519_comb_key(struct kex_curve25519_param *param, buffer *buf_pub_them,
+void kexcurve25519_comb_key(const struct kex_curve25519_param *param, const buffer *buf_pub_them,
 	sign_key *hostkey) {
 	unsigned char out[CURVE25519_LEN];
 	const unsigned char* Q_C = NULL;
@@ -774,7 +774,7 @@ static void finish_kexhashbuf(void) {
 	hash_desc->done(&hs, buf_getwriteptr(ses.hash, hash_desc->hashsize));
 	buf_setlen(ses.hash, hash_desc->hashsize);
 
-#if defined(DEBUG_KEXHASH) && defined(DEBUG_TRACE)
+#if defined(DEBUG_KEXHASH) && DEBUG_TRACE
 	if (!debug_trace) {
 		printhex("kexhashbuf", ses.kexhashbuf->data, ses.kexhashbuf->len);
 		printhex("kexhash", ses.hash->data, ses.hash->len);
@@ -814,7 +814,7 @@ static void read_kex_algos() {
 	int allgood = 1; /* we AND this with each goodguess and see if its still
 						true after */
 
-#ifdef USE_KEXGUESS2
+#if DROPBEAR_KEXGUESS2
 	enum kexguess2_used kexguess2 = KEXGUESS2_LOOK;
 #else
 	enum kexguess2_used kexguess2 = KEXGUESS2_NO;
