@@ -63,6 +63,9 @@ dir_$(CONFIG_USER_DROPBEAR)                 += dropbear
 dir_$(CONFIG_USER_IPROUTE2)                 += iproute2
 dir_$(CONFIG_USER_PPPD)                	    += ppp
 dir_$(CONFIG_USER_XL2TPD)		    += xl2tpd
+ifdef CONFIG_NET_EOIP
+dir_$(CONFIG_USER_EOIP)                     += eoip-ctl
+endif
 dir_$(CONFIG_USER_PARPROUTED)		    += parprouted
 dir_$(CONFIG_USER_IGMP_PROXY)               += igmpproxy
 dir_$(CONFIG_USER_ETHTOOL)                  += ethtool

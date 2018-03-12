@@ -84,6 +84,7 @@ if [ "$CONFIG_USER_PPPD" = "y" ]; then
     bool 'pppd-chat'				CONFIG_USER_PPPD_CHAT
 fi
 bool 'xl2tp'                                  	CONFIG_USER_XL2TPD
+bool 'eoip'                                  	CONFIG_USER_EOIP
 bool 'Proxy ARP daemon'				CONFIG_USER_PARPROUTED
 bool 'ripd-zebra (RIP)' 			CONFIG_USER_ZEBRA
 bool 'snmpd'	                                CONFIG_USER_SNMPD
