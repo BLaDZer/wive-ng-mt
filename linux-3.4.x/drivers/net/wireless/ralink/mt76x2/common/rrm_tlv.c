@@ -621,6 +621,10 @@ VOID RRM_EnqueueNeighborRep(
 		UINT8 BssMatch = FALSE;
 		BSS_ENTRY *pBssEntry = &pAd->ScanTab.BssEntry[loop];
 
+		/* skip entry without SSID */
+		if (pBssEntry->SsidLen == 0)
+			continue;
+
 		/* Discards all remain Bss if the packet length exceed packet buffer size. */
 		PktLen = FrameLen + sizeof(RRM_NEIGHBOR_REP_INFO)
 				+ (pAd->ApCfg.MBSSID[pEntry->apidx].RrmCfg.bDot11kRRMNeighborRepTSFEnable == TRUE ? 6 : 0);

@@ -3916,21 +3916,23 @@
 10) eoip: add control util.<br>
 11) init.s: disable tcp_loose and a drop invalid state connections in input chain (deflect ACK/ACK+SYN flood attacks).<br>
 12) kernel: ralink_wifi: add new iphone6 oui 50:A6:7F and 6C:72:E7 to bcm workaround.<br>
-13) kernel: net: fix race on decreasing number of TX queues.<br>
-14) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-15) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-16) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-17) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-18) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-19) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-20) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-21) kernel: net: tcp: purge write queue upon RST.<br>
-22) kernel: net: bridge: check brport attr show in brport_show.<br>
-23) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-24) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-25) kernel: net: eoip: initial support.<br>
-26) kernel: net: eoip: add fragmentation output support.<br>
-27) kernel: net: enable l2tp_v3 support.<br>
+13) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+14) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+15) kernel: net: fix race on decreasing number of TX queues.<br>
+16) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+17) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+18) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+19) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+20) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+21) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+22) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+23) kernel: net: tcp: purge write queue upon RST.<br>
+24) kernel: net: bridge: check brport attr show in brport_show.<br>
+25) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+26) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+27) kernel: net: eoip: initial support.<br>
+28) kernel: net: eoip: add fragmentation output support.<br>
+29) kernel: net: enable l2tp_v3 support.<br>
 <br>
 <br>
 <br>

@@ -3382,7 +3382,7 @@ NDIS_STATUS APHardTransmit(
 	}
 
 #ifdef DOT11K_RRM_SUPPORT
-#ifdef QUIET_SUPPORT
+#ifdef QUIET_SUPPORT_TXSTOP
 	if ((pTxBlk->apidx < pAd->ApCfg.BssidNum)
 		&& IS_RRM_QUIET(pAd, pTxBlk->apidx))
 	{

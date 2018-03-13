@@ -641,7 +641,7 @@ NDIS_STATUS MlmeHardTransmit(
 	}
 
 #ifdef DOT11K_RRM_SUPPORT
-#ifdef QUIET_SUPPORT
+#ifdef QUIET_SUPPORT_TXSTOP
 	if ((pEntry != NULL)
 		&& (pEntry->apidx < pAd->ApCfg.BssidNum)
 		&& IS_RRM_QUIET(pAd, pEntry->apidx))
