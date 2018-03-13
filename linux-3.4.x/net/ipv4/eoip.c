@@ -48,6 +48,10 @@
 static struct rtnl_link_ops eoip_ops __read_mostly;
 static int eoip_tunnel_bind_dev(struct net_device *dev);
 static void eoip_setup(struct net_device *dev);
+static bool allow_frag  = true;
+
+module_param(allow_frag, bool, true);
+MODULE_PARM_DESC(allow_frag, "Allow fragmentation in output");
 
 /* Fallback tunnel: no source, no destination, no key, no options */
 
@@ -425,6 +429,64 @@ drop:
 	return 0;
 }
 
+/* modifided ip_skb_dst_mtu function from ip_output.c need strong consystent with kernel version */
+static inline int eoip_dst_mtu(struct sk_buff *skb)
+{
+	struct inet_sock *inet = skb->sk ? inet_sk(skb->sk) : NULL;
+	int mtu;
+
+	/* auto dst mtu for fragment by mtu probe or uplink dev mtu */
+	mtu = ((inet && inet->pmtudisc == IP_PMTUDISC_PROBE) ?
+					    skb_dst(skb)->dev->mtu : dst_mtu(skb_dst(skb)));
+
+	/* sanity check */
+	if (mtu < IPV4_MIN_MTU)
+	    mtu = IPV4_MIN_MTU;
+
+	return mtu;
+}
+
+static int eoip_finish_output2(struct sk_buff *skb)
+{
+	ip_local_out(skb);
+
+	return NETDEV_TX_OK;
+}
+
+static inline int eoip_finish_output(struct sk_buff *skb, int mtu)
+{
+	/* fragment if need */
+	if (allow_frag && (skb->len > mtu || skb->len > eoip_dst_mtu(skb)))
+		return ip_fragment(skb, eoip_finish_output2);
+	else
+		return ip_local_out(skb);
+}
+
+/* modifided iptunnel_xmit function from ipip.h need strong consystent with kernel version */
+static inline void eoip_iptunnel_xmit(struct sk_buff *skb, struct net_device *dev, int mtu)
+{
+	int err;
+	int pkt_len = skb->len - skb_transport_offset(skb);
+	struct pcpu_tstats *tstats = this_cpu_ptr(dev->tstats);
+
+	nf_reset(skb);
+	skb->ip_summed = CHECKSUM_NONE;
+	ip_select_ident(skb, NULL);
+
+	err = eoip_finish_output(skb, mtu);
+
+	/* update counters */
+	if (likely(net_xmit_eval(err) == 0)) {
+		u64_stats_update_begin(&tstats->syncp);
+		tstats->tx_bytes += pkt_len;
+		tstats->tx_packets++;
+		u64_stats_update_end(&tstats->syncp);
+	} else {
+		dev->stats.tx_errors++;
+		dev->stats.tx_aborted_errors++;
+	}
+}
+
 static netdev_tx_t eoip_if_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct ip_tunnel *tunnel = netdev_priv(dev);
@@ -432,7 +494,6 @@ static netdev_tx_t eoip_if_xmit(struct sk_buff *skb, struct net_device *dev)
 	const struct iphdr *tiph;
 	struct flowi4 fl4;
 	u8 tos;
-	__be16 df;
 	struct rtable *rt;		/* Route to the other host */
 	struct net_device *tdev;	/* Device to other host */
 	struct iphdr *iph;		/* Our new IP header */
@@ -476,6 +537,7 @@ static netdev_tx_t eoip_if_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	mtu = skb_dst(skb) ? dst_mtu(skb_dst(skb)) : dev->mtu;
+
 	if (mtu < IPV4_MIN_MTU)
 	    mtu = IPV4_MIN_MTU;
 
@@ -544,7 +606,7 @@ static netdev_tx_t eoip_if_xmit(struct sk_buff *skb, struct net_device *dev)
 	((__be16 *)(iph + 1))[2] = htons(frame_size);
 	((__le16 *)(iph + 1))[3] = cpu_to_le16(tunnel->parms.i_key);
 
-	iptunnel_xmit(skb, dev);
+	eoip_iptunnel_xmit(skb, dev, mtu);
 
 	return NETDEV_TX_OK;
 

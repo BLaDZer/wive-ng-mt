@@ -3929,6 +3929,7 @@
 23) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
 24) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
 25) kernel: net: eoip: initial support.<br>
+26) kernel: net: eoip: add fragmentation output support.<br>
 <br>
 <br>
 <br>
