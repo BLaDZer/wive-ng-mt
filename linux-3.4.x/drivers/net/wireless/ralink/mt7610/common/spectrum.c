@@ -1483,6 +1483,7 @@ static BOOLEAN DfsRequirementCheck(
 	IN UINT8 Channel)
 {
 	BOOLEAN Result = FALSE;
+#ifdef DFS_SUPPORT
 	INT i;
 
 	do
@@ -1508,7 +1509,7 @@ static BOOLEAN DfsRequirementCheck(
 			}
 		}
 	} while(FALSE);
-
+#endif /* DFS_SUPPORT */
 	return Result;
 }
 
@@ -1519,6 +1520,7 @@ VOID NotifyChSwAnnToPeerAPs(
 	IN UINT8 ChSwMode,
 	IN UINT8 Channel)
 {
+#ifdef DFS_SUPPORT
 #ifdef WDS_SUPPORT
 	if (!((pRA[0] & 0xff) == 0xff)) /* is pRA a broadcase address.*/
 	{
@@ -1540,6 +1542,7 @@ VOID NotifyChSwAnnToPeerAPs(
 		}
 	}
 #endif /* WDS_SUPPORT */
+#endif /* DFS_SUPPORT */
 }
 
 static VOID StartDFSProcedure(
@@ -1931,6 +1934,7 @@ static BOOLEAN PeerTpcRepSanity(
 	Return	: None.
 	==========================================================================
  */
+#ifdef DFS_SUPPORT
 static VOID PeerChSwAnnAction(
 	IN PRTMP_ADAPTER pAd, 
 	IN MLME_QUEUE_ELEM *Elem) 
@@ -1958,7 +1962,7 @@ static VOID PeerChSwAnnAction(
 
 	return;
 }
-
+#endif /* DFS_SUPPORT */
 
 /*
 	==========================================================================
@@ -2176,13 +2180,14 @@ VOID PeerSpectrumAction(
 			break;
 
 		case SPEC_CHANNEL_SWITCH:
+#ifdef DFS_SUPPORT
 			{
 				SEC_CHA_OFFSET_IE	Secondary;
 				CHA_SWITCH_ANNOUNCE_IE	ChannelSwitch;
 
 				/* 802.11h only has Channel Switch Announcement IE. */
 				RTMPMoveMemory(&ChannelSwitch, &Elem->Msg[LENGTH_802_11+4], sizeof (CHA_SWITCH_ANNOUNCE_IE));
-					
+
 				/* 802.11n D3.03 adds secondary channel offset element in the end.*/
 				if (Elem->MsgLen ==  (LENGTH_802_11 + 2 + sizeof (CHA_SWITCH_ANNOUNCE_IE) + sizeof (SEC_CHA_OFFSET_IE)))
 				{
@@ -2192,15 +2197,14 @@ VOID PeerSpectrumAction(
 				{
 					Secondary.SecondaryChannelOffset = 0;
 				}
-#ifdef DFS_SUPPORT
 				if ((Elem->Msg[LENGTH_802_11+2] == IE_CHANNEL_SWITCH_ANNOUNCEMENT) && (Elem->Msg[LENGTH_802_11+3] == 3))
 				{
 					ChannelSwitchAction(pAd, Elem->Wcid, ChannelSwitch.NewChannel, Secondary.SecondaryChannelOffset);
 				}
-#endif /* DFS_SUPPORT */
 			}
 
 			PeerChSwAnnAction(pAd, Elem);
+#endif /* DFS_SUPPORT */
 			break;
 	}
 

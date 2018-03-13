@@ -1486,6 +1486,7 @@ VOID EnqueueChSwAnn(
 static BOOLEAN DfsRequirementCheck(RTMP_ADAPTER *pAd, UINT8 Channel)
 {
 	BOOLEAN Result = FALSE;
+#ifdef DFS_SUPPORT
 	INT i;
 
 	do
@@ -1511,7 +1512,7 @@ static BOOLEAN DfsRequirementCheck(RTMP_ADAPTER *pAd, UINT8 Channel)
 			}
 		}
 	} while(FALSE);
-
+#endif /* DFS_SUPPORT */
 	return Result;
 }
 
@@ -1523,6 +1524,7 @@ VOID NotifyChSwAnnToPeerAPs(
 	IN UINT8 ChSwMode,
 	IN UINT8 Channel)
 {
+#ifdef DFS_SUPPORT
 #ifdef WDS_SUPPORT
 	if (!((pRA[0] & 0xff) == 0xff)) /* is pRA a broadcase address.*/
 	{
@@ -1544,6 +1546,7 @@ VOID NotifyChSwAnnToPeerAPs(
 		}
 	}
 #endif /* WDS_SUPPORT */
+#endif /* DFS_SUPPORT */
 }
 
 
@@ -1939,6 +1942,7 @@ static BOOLEAN PeerTpcRepSanity(
 	Return	: None.
 	==========================================================================
  */
+#ifdef DFS_SUPPORT
 static VOID PeerChSwAnnAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem) 
 {
 	CH_SW_ANN_INFO ChSwAnnInfo;
@@ -1964,7 +1968,7 @@ static VOID PeerChSwAnnAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 
 	return;
 }
-
+#endif /* DFS_SUPPORT */
 
 /*
 	==========================================================================
@@ -2173,6 +2177,7 @@ VOID PeerSpectrumAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 			break;
 
 		case SPEC_CHANNEL_SWITCH:
+#ifdef DFS_SUPPORT
 			{
 				SEC_CHA_OFFSET_IE	Secondary;
 				CHA_SWITCH_ANNOUNCE_IE	ChannelSwitch;
@@ -2189,15 +2194,14 @@ VOID PeerSpectrumAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 				{
 					Secondary.SecondaryChannelOffset = 0;
 				}
-#ifdef DFS_SUPPORT
 				if ((Elem->Msg[LENGTH_802_11+2] == IE_CHANNEL_SWITCH_ANNOUNCEMENT) && (Elem->Msg[LENGTH_802_11+3] == 3))
 				{
 					ChannelSwitchAction(pAd, Elem->Wcid, ChannelSwitch.NewChannel, Secondary.SecondaryChannelOffset);
 				}
-#endif /* DFS_SUPPORT */
 			}
 
 			PeerChSwAnnAction(pAd, Elem);
+#endif /* DFS_SUPPORT */
 			break;
 	}
 
