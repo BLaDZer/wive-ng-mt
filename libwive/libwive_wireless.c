@@ -219,6 +219,8 @@ char* getBW(int BW)
 	    default:
 		return "N/A";
 	}
+
+        return NULL;
 }
 
 char* getPhyMode(int Mode)
@@ -238,6 +240,8 @@ char* getPhyMode(int Mode)
 	    default:
 		return "N/A";
 	}
+
+        return NULL;
 }
 
 int getMCS(MACHTTRANSMIT_SETTING HTSetting)
@@ -328,15 +332,15 @@ char* getWlanRadioModuleName(int radio_module_ind)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	    case 2: return "rai0";
 #else
-	    case 2: return 0;
+	    case 2: return NULL;
 #endif
 
 	    default:
 		    syslog(LOG_ERR, "libwive wireless : %s - Unknown radio module number!", __FUNCTION__); 
-		    return 0;
+		    return NULL;
 	}
 
-	return 0;
+	return NULL;
 }
 
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
@@ -400,7 +404,7 @@ int getWlanChannelNum_ioctl(int radio_module_ind)
 
     int channel = -1;
 
-    if (!if_name) {
+    if (!ifname) {
 	    syslog(LOG_ERR, "libwive wireless : %s - ioctl get wlan name failed!", __FUNCTION__); 
 	    return -1;
     }
