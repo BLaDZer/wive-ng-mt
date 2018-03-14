@@ -3700,27 +3700,25 @@
 35) kernel: phy: increase size of MII_BUS_ID_SIZE and bus_id.<br>
 36) kernel: lib/genalloc.c: make the avail variable an atomic_long_t.<br>
 37) kernel: usbnet: fix alignment for frames with no ethernet header.<br>
-38) kernel: net: tcp: add memory barriers to write space paths.<br>
-39) kernel: net: tcp: correct memory barrier usage in tcp_check_space().<br>
-40) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
-41) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
-42) kernel: net: l2tp: remove l2tp_session_find().<br>
-43) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
-44) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
-45) kernel: net: ppp: declare PPP devices as LLTX.<br>
-46) kernel: net: ppp: avoid dealock on recursive xmit.<br>
-47) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
-48) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
-49) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
-50) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
-51) kernel: net: ppp: fix __percpu annotation.<br>
-52) kernel: net: ppp: destroy the mutex when cleanup.<br>
-53) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
-54) kernel: net: xfrm: copy policy family in clone_policy.<br>
-55) kernel: net: set tw_refcnt in __inet_twsk_hashdance(), we need to call inet_twsk_schedule() first.<br>
-56) kernel: net: tcp/dccp: block bh before arming time_wait timer.<br>
-57) kernel: net: icmp: don't fail on fragment reassembly time exceeded.<br>
-58) kernel: net: ipv4: ipv4_default_advmss() should use route mtu.<br>
+38) kernel: net: l2tp: purge socket queues in the .destruct() callback.<br>
+39) kernel: net: l2tp: hold tunnel in pppol2tp_connect().<br>
+40) kernel: net: l2tp: remove l2tp_session_find().<br>
+41) kernel: net: l2tp: remove useless device duplication test in l2tp_eth_create().<br>
+42) kernel: net: l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall().<br>
+43) kernel: net: ppp: declare PPP devices as LLTX.<br>
+44) kernel: net: ppp: avoid dealock on recursive xmit.<br>
+45) kernel: net: ppp: remove unnecessary bh disable in xmit path.<br>
+46) kernel: net: ppp: fix false xmit recursion detect with two ppp devices.<br>
+47) kernel: net: ppp: fix a scheduling-while-atomic bug in del_chan.<br>
+48) kernel: net: ppp: fix xmit recursion detection on ppp channels.<br>
+49) kernel: net: ppp: fix __percpu annotation.<br>
+50) kernel: net: ppp: destroy the mutex when cleanup.<br>
+51) kernel: net: packet: fix a race in packet_bind() and packet_notifier().<br>
+52) kernel: net: xfrm: copy policy family in clone_policy.<br>
+53) kernel: net: set tw_refcnt in __inet_twsk_hashdance(), we need to call inet_twsk_schedule() first.<br>
+54) kernel: net: tcp/dccp: block bh before arming time_wait timer.<br>
+55) kernel: net: icmp: don't fail on fragment reassembly time exceeded.<br>
+56) kernel: net: ipv4: ipv4_default_advmss() should use route mtu.<br>
 <br>
 <br>
 <b>7.0.x</b><br>
