@@ -217,7 +217,9 @@ discard_sess:
 	l2tp_session_dec_refcount(session);
 	goto discard;
 
+#ifdef CONFIG_XFRM
 discard_put:
+#endif
 	sock_put(sk);
 
 discard:
