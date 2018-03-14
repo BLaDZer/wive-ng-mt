@@ -335,17 +335,23 @@ char* getWlanRadioModuleName(int radio_module_ind)
 		    syslog(LOG_ERR, "libwive wireless : %s - Unknown radio module number!", __FUNCTION__); 
 		    return 0;
 	}
+
+	return 0;
 }
 
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind)
 {
-	char * if_name = getWlanRadioModuleName(radio_module_ind);
+	char *if_name = getWlanRadioModuleName(radio_module_ind);
+
+	if (!if_name)
+	    return 2;
+
 	return getWlanStationTableIf(table, if_name);
 }
 
 int getWlanStationTableIf(RT_802_11_MAC_TABLE* table, char *if_name)
 {
-	if (if_name == NULL)
+	if (!if_name)
 	    return 2;
 
 	if (RtpQueryInformation(RTPRIV_IOCTL_GET_MAC_TABLE, if_name, table, sizeof(RT_802_11_MAC_TABLE)) < 0) {
@@ -394,6 +400,11 @@ int getWlanChannelNum_ioctl(int radio_module_ind)
 
     int channel = -1;
 
+    if (!if_name) {
+	    syslog(LOG_ERR, "libwive wireless : %s - ioctl get wlan name failed!", __FUNCTION__); 
+	    return -1;
+    }
+
     memset(&wrq, 0, sizeof(wrq));
 
     if (wlan_ioctl(SIOCGIWFREQ, ifname, &wrq) >= 0)
@@ -423,8 +434,8 @@ int getWlanCurrentMacAddr(char *buf, int radio_module_ind)
 {
 	strcpy(buf, "00:00:00:00:00:00");
 
-	char * if_name = getWlanRadioModuleName(radio_module_ind);
-	if (if_name == NULL)
+	char *if_name = getWlanRadioModuleName(radio_module_ind);
+	if (!if_name)
 		return 1;
 
     	if (getIfMac(if_name, buf, ':') == -1)
@@ -750,8 +761,8 @@ int getWlanStationLinkQuality(int radio_module_ind)
 {
 	RT_802_11_LINK_STATUS LinkStatus;
 
-	char * if_name = getWlanRadioModuleName(radio_module_ind);
-	if (if_name == NULL)
+	char *if_name = getWlanRadioModuleName(radio_module_ind);
+	if (!if_name)
 		return 0;
 
 	// Get Link Status Info from driver
@@ -774,8 +785,8 @@ int getWlanStationFrequencyKHz(int radio_module_ind)
 {
 	NDIS_802_11_CONFIGURATION Configuration;
 
-	char * if_name = getWlanRadioModuleName(radio_module_ind);
-	if (if_name == NULL)
+	char *if_name = getWlanRadioModuleName(radio_module_ind);
+	if (!if_name)
 		return -1;
 
 	if (OidQueryInformation(OID_802_11_CONFIGURATION, if_name, &Configuration, sizeof(NDIS_802_11_CONFIGURATION)) != 0)
@@ -794,8 +805,8 @@ int getWlanStationNoiseDbm(int radio_module_ind)
 {
 	unsigned char lNoise; // this value is (ULONG) in Ndis driver (NOTICE!!!)
 
-	char * if_name = getWlanRadioModuleName(radio_module_ind);
-	if (if_name == NULL)
+	char *if_name = getWlanRadioModuleName(radio_module_ind);
+	if (!if_name)
 		return -1;
 
 	// Noise Level
@@ -927,7 +938,7 @@ int getWlanHWRadioStatus(int radio_module_ind)
 	unsigned long RadioStatus=0;
 
 	char * if_name = getWlanRadioModuleName(radio_module_ind);
-	if (if_name == NULL)
+	if (!if_name)
     	    return -1;
 
 	if (OidQueryInformation(RT_OID_802_11_RADIO, "ra0", &RadioStatus, sizeof(RadioStatus)) < 0)
