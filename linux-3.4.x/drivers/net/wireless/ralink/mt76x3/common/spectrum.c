@@ -1586,6 +1586,7 @@ static VOID StartDFSProcedure(RTMP_ADAPTER *pAd, UCHAR Channel, UINT8 ChSwMode)
   +----+-----+-----------+------------+-----------+
     1    1        1           1            1      
 */
+#ifdef DFS_SUPPORT
 static BOOLEAN PeerChSwAnnSanity(
 	IN RTMP_ADAPTER *pAd,
 	IN VOID *pMsg,
@@ -1628,7 +1629,7 @@ static BOOLEAN PeerChSwAnnSanity(
 
 	return result;
 }
-
+#endif /* DFS_SUPPORT */
 
 /*
 	==========================================================================

@@ -1745,6 +1745,7 @@ static VOID StartDFSProcedure(
   +----+-----+-----------+------------+-----------+
     1    1        1           1            1      
 */
+#ifdef DFS_SUPPORT
 static BOOLEAN PeerChSwAnnSanity(
 	IN PRTMP_ADAPTER pAd,
 	IN VOID *pMsg,
@@ -1787,6 +1788,7 @@ static BOOLEAN PeerChSwAnnSanity(
 
 	return result;
 }
+#endif /* DFS_SUPPORT */
 
 /*
 	==========================================================================
