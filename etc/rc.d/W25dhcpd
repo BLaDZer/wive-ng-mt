@@ -142,9 +142,7 @@ stop() {
     if [ -e /var/run/udhcpd.pid ]; then
 	$LOG "Stop dhcpserver "
 	killall -q udhcpd
-	killall -q dhcprelay
 	killall -q -SIGKILL udhcpd
-	killall -q -SIGKILL dhcprelay
     fi
 }
 
