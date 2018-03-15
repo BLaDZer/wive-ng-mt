@@ -1541,10 +1541,10 @@ SendAssocResponse:
 	{
 		pEntry->PsMode = PWR_ACTIVE;
 
-#ifdef IAPP_SUPPORT
-		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+		/* This is a reassociation procedure */
+		pEntry->IsReassocSta = isReassoc;
 
+#ifdef IAPP_SUPPORT
 #ifdef DOT11R_FT_SUPPORT		
 		/*
 			Do not do any check here.
@@ -1564,17 +1564,16 @@ SendAssocResponse:
 								&EvtReAssoc, sizeof(EvtReAssoc), NULL);
 		}
 #endif /* DOT11R_FT_SUPPORT */
-		
-#endif /* IAPP_SUPPORT */
 
-		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
+		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
+		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+
+#endif /* IAPP_SUPPORT */
 
 		/* send wireless event - for association */
 		RTMPSendWirelessEvent(pAd, IW_ASSOC_EVENT_FLAG, pEntry->Addr, 0, 0);
-    	
-		/* This is a reassociation procedure */
-		pEntry->IsReassocSta = isReassoc;
-		
+		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
+
 #ifdef DOT11_N_SUPPORT
 		/* clear txBA bitmap */
 		pEntry->TXBAbitmap = 0;

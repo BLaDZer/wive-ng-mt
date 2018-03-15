@@ -2184,9 +2184,6 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		wdev->allow_data_tx = TRUE;
 		
 #ifdef IAPP_SUPPORT
-		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->wdev->wdev_idx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
-
 #ifdef DOT11R_FT_SUPPORT		
 		/*
 			Do not do any check here.
@@ -2206,13 +2203,13 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 								&EvtReAssoc, sizeof(EvtReAssoc), NULL);
 		}
 #endif /* DOT11R_FT_SUPPORT */
-		
+		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->wdev->wdev_idx);
+		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
 #endif /* IAPP_SUPPORT */
-
-		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
 
 		/* send wireless event - for association */
 		RTMPSendWirelessEvent(pAd, IW_ASSOC_EVENT_FLAG, pEntry->Addr, 0, 0);
+		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
 
 #ifdef ALL_NET_EVENT
 		wext_send_event(pEntry->wdev->if_dev,

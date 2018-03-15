@@ -1822,11 +1822,11 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		pEntry->PsMode = PWR_ACTIVE;
 
 		wdev->allow_data_tx = TRUE;
-		
-#ifdef IAPP_SUPPORT
-		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
 
+		/* This is a reassociation procedure */
+		pEntry->IsReassocSta = isReassoc;
+
+#ifdef IAPP_SUPPORT
 #ifdef DOT11R_FT_SUPPORT		
 		/*
 			Do not do any check here.
@@ -1846,10 +1846,11 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 								&EvtReAssoc, sizeof(EvtReAssoc), NULL);
 		}
 #endif /* DOT11R_FT_SUPPORT */
-		
-#endif /* IAPP_SUPPORT */
 
-		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
+		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
+		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+
+#endif /* IAPP_SUPPORT */
 
 #ifdef MWDS
 		if((pEntry->PortSecured == WPA_802_1X_PORT_SECURED))
@@ -1884,7 +1885,8 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 
 		/* send wireless event - for association */
 		RTMPSendWirelessEvent(pAd, IW_ASSOC_EVENT_FLAG, pEntry->Addr, 0, 0);
-    	
+		ap_assoc_info_debugshow(pAd, isReassoc, pEntry, ie_list);
+
 #ifdef SMART_MESH_MONITOR
 		if (pEntry->PortSecured == WPA_802_1X_PORT_SECURED)
 		{
@@ -1898,9 +1900,6 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		}
 #endif /* SMART_MESH_MONITOR */
 
-		/* This is a reassociation procedure */
-		pEntry->IsReassocSta = isReassoc;
-		
 #ifdef DOT11_N_SUPPORT
 		/* clear txBA bitmap */
 		pEntry->TXBAbitmap = 0;
