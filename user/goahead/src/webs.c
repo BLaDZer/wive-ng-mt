@@ -1101,7 +1101,7 @@ static void websParseRequest(webs_t wp)
  *		for proxied requests.
  */
 		} else if (strcmp(key, T("pragma")) == 0) {
-			char_t	tmp[256];
+			char_t	tmp[WEBS_SOCKET_BUFSIZ];
 			strncpy(tmp, value, TSZ(tmp));
 			strlower(tmp);
 			if (strstr(tmp, T("no-cache"))) {

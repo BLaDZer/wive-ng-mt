@@ -467,7 +467,7 @@ static void memLeaks()
 static void printMemStats(int handle, char_t *fmt, ...)
 {
 	va_list		args;
-	char_t		buf[256];
+	char_t		buf[WEBS_SOCKET_BUFSIZ];
 
 	va_start(args, fmt);
 	vsprintf(buf, fmt, args);

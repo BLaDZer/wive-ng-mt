@@ -363,7 +363,7 @@ int	cronFree(cron_t *cp);
 #define SOCKET_WRITABLE			0x4		/* Make socket writable */
 #define SOCKET_EXCEPTION		0x8		/* Interested in exceptions */
 #define EMF_SOCKET_MESSAGE		(WM_USER+13)
-#define SOCKET_BUFSIZ			1024		/* Underlying buffer size */
+#define SOCKET_BUFSIZ			2048		/* Underlying buffer size */
 
 typedef void 	(*socketHandler_t)(int sid, int mask, void* data);
 typedef int	(*socketAccept_t)(int sid, char *ipaddr, int port, int listenSid);

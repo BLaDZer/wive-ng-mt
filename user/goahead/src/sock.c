@@ -17,6 +17,7 @@
 #include	<string.h>
 #include	<stdlib.h>
 #include	"uemf.h"
+#include	"webs.h"
 /************************************ Locals **********************************/
 
 socket_t	**socketList;			/* List of open sockets */
@@ -37,12 +38,9 @@ int	socketWrite(int sid, char *buf, int bufsize)
 {
 	socket_t	*sp;
 	ringq_t		*rq;
-	int		len, bytesWritten, room;
+	int		len = 0, bytesWritten = 0, room = 0;
 
-	a_assert(buf);
-	a_assert(bufsize >= 0);
-
-	if (buf == 0 || (sp = socketPtr(sid)) == NULL)
+	if (!buf || (bufsize <= 0) || (sp = socketPtr(sid)) == NULL)
 		return -1;
 
 	if (sp->flags & SOCKET_EOF)
@@ -97,12 +95,9 @@ int	socketRead(int sid, char *buf, int bufsize)
 {
 	socket_t	*sp;
 	ringq_t		*rq;
-	int			len, room, errCode, bytesRead;
+	int			len = 0, room = 0, errCode = 0, bytesRead = 0;
 
-	a_assert(buf);
-	a_assert(bufsize > 0);
-
-	if ((sp = socketPtr(sid)) == NULL)
+	if (!buf || bufsize <= 0 || (sp = socketPtr(sid)) == NULL)
 		return -1;
 
 	if (sp->flags & SOCKET_EOF)
@@ -177,10 +172,7 @@ int	socketGets(int sid, char_t **buf)
 	socket_t	*sp;
 	ringq_t		*lq;
 	char		c;
-	int			rc, len;
-
-	a_assert(buf);
-	*buf = NULL;
+	int		rc = 0, len = 0;
 
 	if ((sp = socketPtr(sid)) == NULL)
 		return -1;
@@ -188,6 +180,7 @@ int	socketGets(int sid, char_t **buf)
 	if (sp->flags & SOCKET_EOF)
 		return -1;
 
+	*buf = NULL;
 	lq = &sp->lineBuf;
 
 	while (1) {
@@ -435,20 +428,15 @@ static int socketDoOutput(socket_t *sp, char *buf, int toWrite, int *errCode)
 {
 	int bytes;
 
-	a_assert(sp);
-	a_assert(buf);
-	a_assert(toWrite > 0);
-	a_assert(errCode);
-
 	*errCode = 0;
 
-	if (buf == 0)
+	if (!buf)
 		return -1;
 
 	if (toWrite <= 0)
 		return -1;
 
-	if (sp->flags & SOCKET_EOF)
+	if (!sp || sp->flags & SOCKET_EOF)
     		return -1;
 
 /*
@@ -514,7 +502,7 @@ int socketAlloc(int port, socketAccept_t accept, int flags)
 void socketFree(int sid)
 {
 	socket_t	*sp;
-	char_t		buf[256];
+	char_t		buf[WEBS_SOCKET_BUFSIZ];
 	int			i;
 
 	if ((sp = socketPtr(sid)) == NULL) {
@@ -564,7 +552,6 @@ void socketFree(int sid)
 socket_t *socketPtr(int sid)
 {
 	if (sid < 0 || sid >= socketMax || socketList[sid] == NULL) {
-		a_assert(NULL);
 		errno = EBADF;
 		return NULL;
 	}

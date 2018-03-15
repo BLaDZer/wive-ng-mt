@@ -139,7 +139,7 @@ void websHeader(webs_t wp)
 	websWrite(wp, T("\n"));
 	websWrite(wp, T("<html>\n<head>\r\n"));
 	websWrite(wp, T("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">\r\n"));
-	char_t line[256];
+	char_t line[WEBS_SOCKET_BUFSIZ];
 	FILE *fd;
 	// Copy /style/normal_ws.css
 	if ((fd = fopen("/web/style/normal_ws.css", "r")) != NULL) {
