@@ -1221,14 +1221,12 @@ VOID MacTableMaintenance(
 			}
 		}
 
-		/* clear ring for prevent tx ring stub */
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
-		if ((!pEntry->RingACKClear) && (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout/2)) {
-			pEntry->RingACKClear = TRUE;
+		/* clear ring for prevent tx ring stub */
+		if (pEntry->NoDataIdleCount >= pEntry->StaIdleTimeout/2)
 			/* Clear TXWI ack in Tx Ring*/
 			ClearTxRingClientAck(pAd, pEntry);
-		}
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
 
@@ -1770,7 +1768,6 @@ BOOLEAN APPsIndicate(
 			RTMPDeQueuePacket().
 		*/
 		pEntry->NoDataIdleCount = 0;
-		pEntry->RingACKClear = FALSE;
 		pEntry->PsMode = Psm;
 
 		if ((old_psmode == PWR_SAVE) && (Psm == PWR_ACTIVE))

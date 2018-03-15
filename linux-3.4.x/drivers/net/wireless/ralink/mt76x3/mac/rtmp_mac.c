@@ -317,7 +317,7 @@ INT rtmp_mac_fifo_stat_update(RTMP_ADAPTER *pAd)
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 		/* if Tx fail >= 20, then clear TXWI ack in Tx Ring*/
-		if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
+		if (IS_ENTRY_CLIENT(pEntry) && pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
 			ClearTxRingClientAck(pAd, pEntry);	
 #endif /* RTMP_MAC_PCI */				
 #endif /* CONFIG_AP_SUPPORT */

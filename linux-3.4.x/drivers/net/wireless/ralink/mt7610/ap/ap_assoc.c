@@ -507,7 +507,6 @@ static USHORT APBuildAssociation(
 		/*pEntry->Aid = *pAid; */
 		*pAid = pEntry->Aid;
 		pEntry->NoDataIdleCount = 0;
-		pEntry->RingACKClear = FALSE;
 		pEntry->StaConnectTime = 0;
         
 #ifdef WSC_AP_SUPPORT
@@ -1886,12 +1885,6 @@ VOID APPeerDisassocReqAction(
 		if (!IS_ENTRY_CLIENT(pEntry)) {
 		    DBGPRINT(RT_DEBUG_TRACE, ("%s: receive not client dis-assoc ###\n", __FUNCTION__));
 		} else {
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-		    /* Clear TXWI ack in Tx Ring*/
-		    ClearTxRingClientAck(pAd, pEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
 		    MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
 		    printk("%s ASSOC - receive DIS-ASSOC(seq-%d) request from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n",
 								pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP",

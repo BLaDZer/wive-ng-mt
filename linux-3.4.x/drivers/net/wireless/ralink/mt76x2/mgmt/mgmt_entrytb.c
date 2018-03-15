@@ -741,7 +741,6 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			pEntry->PsMode = PWR_ACTIVE;
 			pEntry->PsQIdleCount = 0;
 			pEntry->NoDataIdleCount = 0;
-			pEntry->RingACKClear = FALSE;
 			pEntry->AssocDeadLine = MAC_TABLE_ASSOC_TIMEOUT;
 			pEntry->ContinueTxFailCnt = 0;
 			pEntry->StatTxRetryOkCount = 0;
@@ -1158,8 +1157,6 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 			pEntry->EnqueueEapolStartTimerRunning = EAPOL_START_DISABLE;
 		}
 		RTMPReleaseTimer(&pEntry->EnqueueStartForPSKTimer, &Cancelled);
-
-
 #ifdef CONFIG_AP_SUPPORT
 #ifdef WSC_AP_SUPPORT
             if (IS_ENTRY_CLIENT(pEntry))
@@ -1185,6 +1182,14 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 				pEntry->bWscCapable = FALSE;
            	}
 #endif /* WSC_AP_SUPPORT */
+#endif /* CONFIG_AP_SUPPORT */
+
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+			/* clear ring for prevent tx ring stub after client delete */
+			/* Clear TXWI ack in Tx Ring*/
+			ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
 
 #ifdef DROP_MASK_SUPPORT
@@ -1288,12 +1293,7 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 	for (i=1; i < MAX_LEN_OF_MAC_TABLE; i++)
 	{
 		pMacEntry = &pAd->MacTab.Content[i];
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-		/* Clear TXWI ack in Tx Ring*/
-		ClearTxRingClientAck(pAd, pMacEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
+
 		if (IS_ENTRY_CLIENT(pMacEntry))
 		{
 			RTMPReleaseTimer(&pMacEntry->EnqueueStartForPSKTimer, &Cancelled);

@@ -132,12 +132,6 @@ static VOID APMlmeDeauthReqAction(
 	apidx = pEntry->apidx;
 
         /* 1. remove this STA from MAC table */
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-	/* Clear TXWI ack in Tx Ring*/
-	ClearTxRingClientAck(pAd, pEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
         MacTableDeleteEntry(pAd, Elem->Wcid, pInfo->Addr);
 
         /* 2. send out DE-AUTH request frame */
@@ -237,12 +231,6 @@ static VOID APPeerDeauthReqAction(
 		if (!IS_ENTRY_CLIENT(pEntry)) {
 		    DBGPRINT(RT_DEBUG_TRACE, ("%s: receive not client de-auth ###\n", __FUNCTION__));
 		} else {
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-		    /* Clear TXWI ack in Tx Ring*/
-		    ClearTxRingClientAck(pAd, pEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
 		    MacTableDeleteEntry(pAd, Elem->Wcid, Addr2);
 		    printk("%s AUTH - receive DE-AUTH(seq-%d) from %02x:%02x:%02x:%02x:%02x:%02x, reason=%d\n", pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", SeqNum,
 		    Addr2[0], Addr2[1], Addr2[2], Addr2[3], Addr2[4], Addr2[5], Reason);

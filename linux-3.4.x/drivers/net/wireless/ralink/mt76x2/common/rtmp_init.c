@@ -1811,7 +1811,6 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 
 		    if (TxSuccess > 0) {
 			pEntry->NoDataIdleCount = 0;
-			pEntry->RingACKClear = FALSE;
 		    }
 
 		    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
@@ -1934,7 +1933,6 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 		else
 		{
 			pEntry->NoDataIdleCount = 0;
-			pEntry->RingACKClear = FALSE;
 			pEntry->TdlsTxFailCount=0;
 		}
 #endif /* defined(DOT11Z_TDLS_SUPPORT) || defined(CFG_TDLS_SUPPORT) */
@@ -2073,7 +2071,7 @@ VOID NICUpdateFifoStaCounters(RTMP_ADAPTER *pAd)
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
 		/* if Tx fail >= 20, then clear TXWI ack in Tx Ring*/
-		if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
+		if (IS_ENTRY_CLIENT(pEntry) && pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
 			ClearTxRingClientAck(pAd, pEntry);
 #endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */

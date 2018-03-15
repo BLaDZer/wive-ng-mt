@@ -2305,12 +2305,6 @@ INT RTMPAPSetInformation(
 #else
 						PUCHAR	sFTSupport = (PUCHAR)"";
 #endif /* DOT11R_FT_SUPPORT */
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-						/* Clear TXWI ack in Tx Ring*/
-						ClearTxRingClientAck(pAd, pEntry);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
 						printk("STA %02x:%02x:%02x:%02x:%02x:%02x roam from this AP%s, delete entry\n", PRINT_MAC(pEntry->Addr), sFTSupport);
 						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
 					} else {
@@ -7903,7 +7897,6 @@ VOID RTMPIoctlSetIdleTimeout(
 	else
 	{
 		pEntry->NoDataIdleCount = 0;
-		pEntry->RingACKClear = FALSE;
 		pEntry->StaIdleTimeout = pIdleTime->idle_timeout;
 		DBGPRINT(RT_DEBUG_TRACE, ("%s : Update Idle-Timeout(%d) from dot1x daemon\n",
 									__FUNCTION__, pEntry->StaIdleTimeout));

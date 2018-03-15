@@ -1802,7 +1802,6 @@ VOID ApTxFailCntUpdate(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, ULONG TxSucce
 
 		    if (TxSuccess > 0) {
 			pEntry->NoDataIdleCount = 0;
-			pEntry->RingACKClear = FALSE;
 		    }
 
 		    DBGPRINT(RT_DEBUG_INFO, ("%s:(OK:%ld, FAIL:%ld, ConFail:%d) \n",__FUNCTION__, TxSuccess, TxRetransmit, pEntry->ContinueTxFailCnt));
@@ -2011,10 +2010,10 @@ VOID NICUpdateFifoStaCounters(
 				}
 #ifdef CONFIG_AP_SUPPORT
 #ifdef RTMP_MAC_PCI
-			/* if Tx fail >= 20, then clear TXWI ack in Tx Ring*/
-			if (pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
-				ClearTxRingClientAck(pAd, pEntry);	
-#endif /* RTMP_MAC_PCI */				
+				/* if Tx fail >= 20, then clear TXWI ack in Tx Ring*/
+				if (IS_ENTRY_CLIENT(pEntry) && pEntry->ContinueTxFailCnt >= pAd->ApCfg.EntryLifeCheck)
+					ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
 #endif /* CONFIG_AP_SUPPORT */
 			}
 			else
@@ -2035,7 +2034,6 @@ VOID NICUpdateFifoStaCounters(
 
 				/* update NoDataIdleCount when sucessful send packet to STA.*/
 				pEntry->NoDataIdleCount = 0;
-				pEntry->RingACKClear = FALSE;
 				pEntry->ContinueTxFailCnt = 0;
 #ifdef WDS_SUPPORT
 				pEntry->LockEntryTx = FALSE;

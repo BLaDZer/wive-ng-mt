@@ -475,7 +475,6 @@ MAC_TABLE_ENTRY *MacTableInsertEntry(
 			pEntry->PsMode = PWR_ACTIVE;
 			pEntry->PsQIdleCount = 0;
 			pEntry->NoDataIdleCount = 0;
-			pEntry->RingACKClear = FALSE;
 			pEntry->AssocDeadLine = MAC_TABLE_ASSOC_TIMEOUT;
 			pEntry->ContinueTxFailCnt = 0;
 			{
@@ -842,6 +841,13 @@ BOOLEAN MacTableDeleteEntry(
 #endif /* WSC_AP_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
+#ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_MAC_PCI
+			/* clear ring for prevent tx ring stub after client delete */
+			/* Clear TXWI ack in Tx Ring*/
+			ClearTxRingClientAck(pAd, pEntry);
+#endif /* RTMP_MAC_PCI */
+#endif /* CONFIG_AP_SUPPORT */
 
 #ifdef DROP_MASK_SUPPORT
 			drop_mask_release_per_client(pAd, pEntry);
@@ -945,14 +951,6 @@ VOID MacTableReset(
 
 	for (i=1; i<MaxWcidNum; i++)
 	{
-
-#ifdef CONFIG_AP_SUPPORT
-#ifdef RTMP_MAC_PCI
-		/* Clear TXWI ack in Tx Ring*/
-		ClearTxRingClientAck(pAd, &pAd->MacTab.Content[i]);
-#endif /* RTMP_MAC_PCI */
-#endif /* CONFIG_AP_SUPPORT */
-
 		if (IS_ENTRY_CLIENT(&pAd->MacTab.Content[i]))
 		{
 	   		/* Delete a entry via WCID */
