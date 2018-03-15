@@ -165,7 +165,7 @@ VOID APSendPackets(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *) dev_hnd;
 	PNDIS_PACKET pPacket;
-	BOOLEAN allowToSend;
+	BOOLEAN allowToSend = FALSE;
 	UCHAR wcid = MCAST_WCID;
 	UINT Index;
 
@@ -200,7 +200,7 @@ VOID APSendPackets(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt)
 #endif /* WDS_SUPPORT */
 			allowToSend = ApAllowToSendPacket(pAd, pPacket, &wcid);
 
-		if (allowToSend)
+		if (likely(allowToSend == TRUE))
 		{
 			/* For packet send from OS, we need to set the wcid here, it will used directly in APSendPacket. */
 			RTMP_SET_PACKET_WCID(pPacket, wcid);

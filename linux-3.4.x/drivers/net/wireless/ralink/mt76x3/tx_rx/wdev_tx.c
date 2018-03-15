@@ -50,7 +50,7 @@ INT wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, stru
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)dev_hnd;
 	PNDIS_PACKET pPacket;
-	BOOLEAN allowToSend;
+	BOOLEAN allowToSend = FALSE;
 	UCHAR wcid = MAX_LEN_OF_MAC_TABLE;
 	UINT Index;
 #ifdef CONFIG_FPGA_MODE
@@ -86,7 +86,7 @@ INT wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, stru
 
 
 
-		if (((wdev->allow_data_tx == TRUE) 
+		if ((likely((wdev->allow_data_tx == TRUE)) 
 #ifdef CONFIG_FPGA_MODE
 			|| (force_tx == TRUE)
 #endif /* CONFIG_FPGA_MODE */
@@ -109,7 +109,7 @@ INT wdev_tx_pkts(NDIS_HANDLE dev_hnd, PPNDIS_PACKET pkt_list, UINT pkt_cnt, stru
 		}
 #endif /* CONFIG_FPGA_MODE */
 
-		if (allowToSend == TRUE)
+		if (likely(allowToSend == TRUE))
 		{
 			RTMP_SET_PACKET_WDEV(pPacket, wdev->wdev_idx);
 			/*

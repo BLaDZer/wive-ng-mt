@@ -170,7 +170,7 @@ INT StaAllowToSendPacket(
 	PNDIS_PACKET pPacket,
 	UCHAR *pWcid)
 {
-	BOOLEAN allowToSend;
+	BOOLEAN allowToSend = FALSE;
 	
 	if (!INFRA_ON(pAd) && !ADHOC_ON(pAd))
 	{

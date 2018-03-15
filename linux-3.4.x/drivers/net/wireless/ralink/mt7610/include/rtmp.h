@@ -1240,6 +1240,7 @@ struct wifi_dev{
 	BOOLEAN bWmmCapable;	/* 0:disable WMM, 1:enable WMM */
 	
 	HTTRANSMIT_SETTING HTPhyMode, MaxHTPhyMode, MinHTPhyMode;
+
 };
 
 
