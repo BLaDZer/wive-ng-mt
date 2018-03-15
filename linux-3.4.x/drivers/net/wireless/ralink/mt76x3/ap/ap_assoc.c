@@ -2182,7 +2182,10 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		pAd->MacTab.tr_entry[pEntry->wcid].PsMode = PWR_ACTIVE;
 
 		wdev->allow_data_tx = TRUE;
-		
+
+		/* This is a reassociation procedure */
+		pEntry->IsReassocSta = isReassoc;
+
 #ifdef IAPP_SUPPORT
 #ifdef DOT11R_FT_SUPPORT		
 		/*
@@ -2220,9 +2223,6 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 			FBT_LINK_ONLINE_NOTIFY);
 #endif /* ALL_NET_EVENT */
 
-		/* This is a reassociation procedure */
-		pEntry->IsReassocSta = isReassoc;
-		
 #ifdef DOT11_N_SUPPORT
 		/* clear txBA bitmap */
 		pEntry->TXBAbitmap = 0;
