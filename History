@@ -3920,24 +3920,25 @@
 16) kernel: ralink_wifi: move L2 update send frame to more true place.<br>
 17) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
 18) kernel: ralink_wifi: fix allowToSend init by default.<br>
-19) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-20) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-21) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-22) kernel: net: fix race on decreasing number of TX queues.<br>
-23) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-24) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-25) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-26) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-27) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-28) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-29) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-30) kernel: net: tcp: purge write queue upon RST.<br>
-31) kernel: net: bridge: check brport attr show in brport_show.<br>
-32) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-33) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-34) kernel: net: eoip: initial support.<br>
-35) kernel: net: eoip: add fragmentation output support.<br>
-36) kernel: net: enable l2tp_v3 support.<br>
+19) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+20) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+21) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+22) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+23) kernel: net: fix race on decreasing number of TX queues.<br>
+24) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+25) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+26) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+27) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+28) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+29) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+30) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+31) kernel: net: tcp: purge write queue upon RST.<br>
+32) kernel: net: bridge: check brport attr show in brport_show.<br>
+33) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+34) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+35) kernel: net: eoip: initial support.<br>
+36) kernel: net: eoip: add fragmentation output support.<br>
+37) kernel: net: enable l2tp_v3 support.<br>
 <br>
 <br>
 <br>

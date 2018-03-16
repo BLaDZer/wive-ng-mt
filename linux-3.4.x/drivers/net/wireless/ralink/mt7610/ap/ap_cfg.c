@@ -2030,7 +2030,15 @@ INT RTMPAPSetInformation(
 				MAC_TABLE_ENTRY 		*pEntry = NULL;
 				MLME_DEAUTH_REQ_STRUCT  *pInfo = NULL;
 				MLME_QUEUE_ELEM 		*Elem; /* = (MLME_QUEUE_ELEM *) kmalloc(sizeof(MLME_QUEUE_ELEM), MEM_ALLOC_FLAG); */
+
 				os_alloc_mem(pAd, (UCHAR **)&Elem, sizeof(MLME_QUEUE_ELEM));
+
+				if(Elem == NULL)
+				{
+					Status = -ENOMEM;
+					DBGPRINT(RT_DEBUG_TRACE, ("Set::OID_802_11_DEAUTHENTICATION, Failed!!\n"));
+					break;
+				}
 
 #ifdef APCLI_SUPPORT
 #ifdef APCLI_WPA_SUPPLICANT_SUPPORT
@@ -2071,7 +2079,7 @@ INT RTMPAPSetInformation(
 					*pCurrState = APCLI_CTRL_DISCONNECTED;
 					if(pInfo)
 						os_free_mem(NULL, pInfo);
-
+					os_free_mem(NULL, Elem);
 				}
 				else 
 #endif /* APCLI_WPA_SUPPLICANT_SUPPORT */
@@ -2089,12 +2097,11 @@ INT RTMPAPSetInformation(
 											sizeof(MLME_DEAUTH_REQ_STRUCT), Elem, 0);
 							DBGPRINT(RT_DEBUG_TRACE, ("Set::OID_802_11_DEAUTHENTICATION (Reason=%d)\n", pInfo->Reason));
 						}
+						os_free_mem(NULL, Elem);
 					}
 					else
 						Status = -EFAULT;
 				}
-				if (Elem)
-					os_free_mem(NULL, Elem);
 			}
 		
 			break;
