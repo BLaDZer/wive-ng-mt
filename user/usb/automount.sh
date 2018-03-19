@@ -77,6 +77,11 @@ pre_mount() {
 
 try_mount() {
   if [ "$MDEV_TYPE" != "ntfs" ]; then
+    if [ "$MDEV_TYPE" = "ext2" ] || [ "$MDEV_TYPE" = "ext3" ] || [ "$MDEV_TYPE" = "ext4" ]; then
+	modprobe -q ext4
+    else
+	modprobe -q "$MDEV_TYPE"
+    fi
     modprobe -q "$MDEV_TYPE"
   fi
   # mount with default nls configured in kernel

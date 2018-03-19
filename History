@@ -3916,33 +3916,34 @@
 12) init.d: fix lan to vlan bridge isolate mode work.<br>
 13) init.d: fix L2TP server work in dual net and apcli modes.<br>
 14) init.d: rewrite samba wait stop logic.<br>
-15) libwive: fix potentional null pointer dereference or out of range issue.<br>
-16) goahead: fix potentioanl null pointer dereferences in some cases.<br>
-17) goahead: fix wds page remove links logic.<br>
-18) kernel: ralink_wifi: increase pmk chache id entries to 128.<br>
-19) kernel: ralink_wifi: add new iphone6 oui 50:A6:7F and 6C:72:E7 to bcm workaround.<br>
-20) kernel: ralink_wifi: move L2 update send frame to more true place.<br>
-21) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
-22) kernel: ralink_wifi: fix allowToSend init by default.<br>
-23) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
-24) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-25) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-26) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-27) kernel: net: fix race on decreasing number of TX queues.<br>
-28) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-29) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-30) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-31) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-32) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-33) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-34) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-35) kernel: net: tcp: purge write queue upon RST.<br>
-36) kernel: net: bridge: check brport attr show in brport_show.<br>
-37) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-38) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-39) kernel: net: eoip: initial support.<br>
-40) kernel: net: eoip: add fragmentation output support.<br>
-41) kernel: net: enable l2tp_v3 support.<br>
+15) init.d: automount: fix ext4 module load for support ext2/3 FS.<br>
+16) libwive: fix potentional null pointer dereference or out of range issue.<br>
+17) goahead: fix potentioanl null pointer dereferences in some cases.<br>
+18) goahead: fix wds page remove links logic.<br>
+19) kernel: ralink_wifi: increase pmk chache id entries to 128.<br>
+20) kernel: ralink_wifi: add new iphone6 oui 50:A6:7F and 6C:72:E7 to bcm workaround.<br>
+21) kernel: ralink_wifi: move L2 update send frame to more true place.<br>
+22) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
+23) kernel: ralink_wifi: fix allowToSend init by default.<br>
+24) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+25) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+26) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+27) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+28) kernel: net: fix race on decreasing number of TX queues.<br>
+29) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+30) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+31) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+32) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+33) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+34) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+35) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+36) kernel: net: tcp: purge write queue upon RST.<br>
+37) kernel: net: bridge: check brport attr show in brport_show.<br>
+38) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+39) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+40) kernel: net: eoip: initial support.<br>
+41) kernel: net: eoip: add fragmentation output support.<br>
+42) kernel: net: enable l2tp_v3 support.<br>
 <br>
 <br>
 <br>
