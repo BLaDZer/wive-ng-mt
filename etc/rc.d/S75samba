@@ -12,6 +12,7 @@ LOG="logger -t samba"
 
 start() {
 if [ "$SmbEnabled" = "1" ]; then
+    stop
     get_param
 
     echo "[global]" > $CONFIG
@@ -69,13 +70,6 @@ if [ "$SmbEnabled" = "1" ]; then
 	echo "" >> $CONFIG
     fi
 
-    if [ -e /var/lock/smbd.pid ] || [ -e /var/lock/nmbd.pid ]; then
-	killall -q smbd
-	killall -q nmbd
-	killall -q -SIGKILL smbd
-	killall -q -SIGKILL nmbd
-    fi
-
     find /var/log -type f -name "*mbd*" | while read samba_log; do
 	echo > "$samba_log"
     done
@@ -111,46 +105,44 @@ get_param() {
 }
 
 stop() {
-    if [ -e /var/lock/smbd.pid ]; then
-	$LOG "Stop SMBD."
-	count=0
-	# try 3 times for correct shutdown
-	while kill "$pid" > /dev/null 2>&1; do
+    count=0
+    pid=`pidof smbd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop SMBD daemon."
+    fi
+    # try 3 times for correct shutdown
+    while kill "$pid" > /dev/null 2>&1; do
 	    pid=`pidof smbd`
 	    count="$(($count+1))"
 	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		if [ "$pid" != "" ]; then
+		    kill -SIGKILL "$pid" > /dev/null 2>&1
+		fi
+		rm -f /var/lock/smbd.pid
 		break
 	    fi
 	    usleep 500000
-	done
-	# if not correct terminate need kill
-	if [ "$pid" != "" ]; then
-	    kill -SIGKILL "$pid" > /dev/null 2>&1
-	    if [ -e /var/lock/smbd.pid ]; then
-		rm -f /var/lock/smbd.pid
-	    fi
-	fi
+    done
+
+    count=0
+    pid=`pidof nmbd`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop NMBD daemon."
     fi
-    if [ -e /var/lock/nmbd.pid ]; then
-	$LOG "Stop NMBD."
-	count=0
-	# try 3 times for correct shutdown
-	while kill "$pid" > /dev/null 2>&1; do
+    # try 3 times for correct shutdown
+    while kill "$pid" > /dev/null 2>&1; do
 	    pid=`pidof nmbd`
 	    count="$(($count+1))"
 	    if [ "$count" = "3" ] || [ "$pid" = "" ]; then
+		if [ "$pid" != "" ]; then
+		    kill -SIGKILL "$pid" > /dev/null 2>&1
+		fi
+		rm -f /var/lock/nmbd.pid
 		break
 	    fi
 	    usleep 500000
-	done
-	# if not correct terminate need kill
-	if [ "$pid" != "" ]; then
-	    kill -SIGKILL "$pid" > /dev/null 2>&1
-	    if [ -e /var/lock/nmbd.pid ]; then
-		rm -f /var/lock/nmbd.pid
-	    fi
-	fi
-    fi
+    done
+
 }
 
 case "$1" in
