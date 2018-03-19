@@ -36,11 +36,9 @@
 				_TR("basicWDSCancel",		"button cancel");
 				_TR("basicWDSReset",		"button reset");
 				_TR("basicWDSAdd",		"button add");
-
-				var elements = document.getElementsByTagName('input');
-				for (var i = 0; i < elements.length; i++)
-					if (elements[i].id == "basicWDSDel")
-						elements[i].value = _("button remove");
+				_TR("basicWDSDel1",		"button remove");
+				_TR("basicWDSDel2",		"button remove");
+				_TR("basicWDSDel3",		"button remove");
 			}
 
 			function initValues() {
@@ -382,7 +380,7 @@
 									</select>
 								</td>
 								<td><input type="password" type="text" id="wds_encryp_key1" name="wds_encryp_key1" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_1" type="checkbox" onChange="showPassPhrase(1);"></span></td>
-								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(1);"></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel1" onClick="wdsRemove(1);"></td>
 							</tr>
 							<tr id="div_wds2" style="display:none;">
 								<td style="text-align: center"><input type="text" name="wds_3" id="wds_3" style="width: 98%"; value="" maxlength="17"></td>
@@ -404,7 +402,7 @@
 									</select>
 								</td>
 								<td><input type="password" type="text" id="wds_encryp_key2" name="wds_encryp_key2" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_2" type="checkbox" onChange="showPassPhrase(2);"></span></td>
-								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(2);"></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel2" onClick="wdsRemove(2);"></td>
 							</tr>
 							<tr id="div_wds3" style="display:none;">
 								<td style="text-align: center"><input type="text" name="wds_4" id="wds_4" style="width: 98%"; value="" maxlength="17"></td>
@@ -426,7 +424,7 @@
 									</select>
 								</td>
 								<td><input type="password" type="text" id="wds_encryp_key3" name="wds_encryp_key3" style="width: 85%;" value=""><span style="position: absolute; margin-top: 1px;"><input id="showPhassPhrase_3" type="checkbox" onChange="showPassPhrase(3);"></span></td>
-								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel" onClick="wdsRemove(3);"></td>
+								<td style="text-align: center"><input type="button" style="width: 120px" value="Delete" id="basicWDSDel3" onClick="wdsRemove(3);"></td>
 							</tr>
 						</table>
 						<table class="buttons">
