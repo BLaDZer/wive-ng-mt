@@ -34,8 +34,12 @@ if [ "$l2tp_srv_nat_enabled" = "1" ]; then
 	iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o ppp+ -j MASQUERADE
     fi
     if [ "$natEnabled" = "1" ]; then
-	$LOG "Add masqrade for client $PPP_REMOTE to WAN net over $phys_wan_if"
-	iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $phys_wan_if -j MASQUERADE
+	$LOG "Add masqrade for client $PPP_REMOTE to WAN net over $wan_if"
+	iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $wan_if -j MASQUERADE
+	if [ "$phys_wan_if" != "$wan_if" ]; then
+	    $LOG "Add masqrade for client $PPP_REMOTE to WAN net over $phys_wan_if"
+	    iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $phys_wan_if -j MASQUERADE
+	fi
     fi
     $LOG "Add masqrade for client $PPP_REMOTE to LAN net over $lan_if"
     iptables -t nat -A POSTROUTING -s $PPP_REMOTE -o $lan_if -j MASQUERADE
