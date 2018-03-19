@@ -3913,7 +3913,7 @@
 9) coovachilli: up to 1.4 from git (commit f3f7b49c).<br>
 10) eoip: add control util.<br>
 11) init.d: disable tcp_loose and a drop invalid state connections in input chain (deflect ACK/ACK+SYN flood attacks).<br>
-12) init.d: fix lan to vlan bridge isolate mode work.<br>
+12) init.d: fix lan to wlan bridge isolate mode work.<br>
 13) init.d: fix L2TP server work in dual net and apcli modes.<br>
 14) init.d: rewrite samba wait stop logic.<br>
 15) init.d: automount: fix ext4 module load for support ext2/3 FS.<br>
