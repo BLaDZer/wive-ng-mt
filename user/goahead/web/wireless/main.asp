@@ -1044,9 +1044,8 @@
 				regulatoryClassSet();
 
 				var LanWifiIsolate = NVRAM_LanWifiIsolate;
-				var opmode = NVRAM_OperationMode;
 				form.LanWifiIsolate.options.selectedIndex = 1*LanWifiIsolate;
-				displayElement( 'div_LanWifiIsolate', (opmode != '0') || (opmode != '2') || (opmode != '3'));
+				displayElement( 'div_LanWifiIsolate', NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1' && form.mbssidapisolated.options.selectedIndex == 1);
 
 				wirelessOnChange(form);
 
@@ -1924,7 +1923,7 @@
 			</tr>		
 			<tr id="div_mbssidapisolated">
 				<td class="head" colspan="1" id="basicMBSSIDApIsolated">SSID to SSID Isolation</td>
-				<td colspan="5"><select name="mbssidapisolated" class="normal">
+				<td colspan="5"><select name="mbssidapisolated" class="normal" onChange="displayElement( 'div_LanWifiIsolate', NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1' && this.form.mbssidapisolated.options.selectedIndex == 1);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select></td>
