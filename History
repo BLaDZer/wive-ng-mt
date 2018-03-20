@@ -3931,21 +3931,22 @@
 27) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
 28) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
 29) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-30) kernel: net: fix race on decreasing number of TX queues.<br>
-31) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-32) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-33) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-34) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-35) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-36) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-37) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-38) kernel: net: tcp: purge write queue upon RST.<br>
-39) kernel: net: bridge: check brport attr show in brport_show.<br>
-40) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-41) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-42) kernel: net: eoip: initial support.<br>
-43) kernel: net: eoip: add fragmentation output support.<br>
-44) kernel: net: enable l2tp_v3 support.<br>
+30) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
+31) kernel: net: fix race on decreasing number of TX queues.<br>
+32) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+33) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+34) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+35) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+36) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+37) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+38) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+39) kernel: net: tcp: purge write queue upon RST.<br>
+40) kernel: net: bridge: check brport attr show in brport_show.<br>
+41) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+42) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+43) kernel: net: eoip: initial support.<br>
+44) kernel: net: eoip: add fragmentation output support.<br>
+45) kernel: net: enable l2tp_v3 support.<br>
 <br>
 <br>
 <br>
