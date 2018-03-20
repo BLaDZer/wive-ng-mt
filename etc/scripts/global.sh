@@ -403,9 +403,9 @@ getPPPOEMode() {
     fi
 }
 
+# last particion mounted to /media set as public for samba and torrent home dir
 getMediaParts()
 {
-    #last particion mounted to /media set as public for samba and torrent home dir
     if [ "$CONFIG_USB_STORAGE" != "" ]; then
 	export public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -q -n1`
     fi
