@@ -74,6 +74,8 @@ case "$1" in
 	rm -f /tmp/routes_applied
 	# remove wins exported adresses
 	rm -f $WINS_CONF
+	# remove dhcpfail flag
+	rm -f /tmp/dhcpfail
     ;;
 
     leasefail)
@@ -101,6 +103,14 @@ case "$1" in
 	rm -f /tmp/routes_applied
 	# remove wins exported adresses
 	rm -f $WINS_CONF
+	# may be pure or dhcp not work ?
+	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" = "0" ] && [ ! -e /var/run/$vpn_if.pid ] && [ ! -e /tmp/dhcpfail ]; then
+	    $LOG "May be uncorrect config access type? May be PURE PPPOE? Or DHCP server not work. Please report YOU ISP."
+	    $LOG "Try start PPPOE session..."
+	    service vpnhelper restart
+	    # set dhpfail flag for only once PPPOE try start
+	    touch /tmp/dhcpfail
+	fi
     ;;
 
     renew|bound)
@@ -109,6 +119,13 @@ case "$1" in
 	# set full renew flag
 	if [ "$NEW_IP" = "$OLD_IP" ]; then
 	    FULL_RENEW=0
+	fi
+
+	if [ -e /tmp/dhcpfail ]; then
+	    # remove dhcpfail flag and full renew
+	    rm -f /tmp/dhcpfail
+	    $LOG "Last DHCP renew failed - now need full renew."
+	    FULL_RENEW=1
 	fi
 
     ########################################################################################################
