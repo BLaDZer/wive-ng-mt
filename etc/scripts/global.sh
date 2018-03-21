@@ -407,10 +407,10 @@ getPPPOEMode() {
 getMediaParts()
 {
     if [ "$CONFIG_USB_STORAGE" != "" ]; then
-	export public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -q -n1`
+	export public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
     fi
     if [ "$CONFIG_MMC" != "" ]; then
-	export publicsd=`df -h | grep -E "/dev/mmc.*media" | awk {' print $6 '} | tail -q -n1`
+	export publicsd=`df -h | grep -E "/dev/mmc.*media" | awk {' print $6 '} | tail -qn1`
     fi
 }
 

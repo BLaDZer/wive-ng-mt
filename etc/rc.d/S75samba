@@ -26,7 +26,7 @@ if [ "$SmbEnabled" = "1" ]; then
 
     # external wins register support
     if [ -e /tmp/wins.dhcp ]; then
-	wins_srvs=`cat /tmp/wins.dhcp | tail -n1`
+	wins_srvs=`cat /tmp/wins.dhcp | tail -qn1`
 	echo "wins server			= $wins_srvs"			>> $CONFIG
 	echo "wins proxy			= yes"				>> $CONFIG
 	echo "name resolve order		= lmhosts host wins bcast"	>> $CONFIG

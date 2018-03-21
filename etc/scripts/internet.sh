@@ -185,6 +185,7 @@ if [ "$MODE" != "connect_sta" ]; then
     fi
     service vpnhelper stop
     service vlan stop
+    service ethtun stop
     $LOG "Reload modules."
     service modules restart
     $LOG "Reconfigure lan."
@@ -218,6 +219,9 @@ config-vlan.sh $switchmode $switchpart
 
 # reconfigure external vlans
 service vlan restart
+
+# reconfigure l2 tunnels
+service ethtun restart
 
 # tune params not automatic readed from *.dat file
 # this need allways after ifup/ifdown or reload modules

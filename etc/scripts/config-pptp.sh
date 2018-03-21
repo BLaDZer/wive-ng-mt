@@ -34,7 +34,7 @@ get_vpn_ip() {
 	count=0
 	resolved=0
 	while [ $resolved -eq 0 ]; do
-	    NS=`ipget $vpnServer | tail -q -n1`
+	    NS=`ipget $vpnServer | tail -qn1`
 	    if [ "$NS" != "" ]; then
 		resolved=1
 		SERVER="$NS"
