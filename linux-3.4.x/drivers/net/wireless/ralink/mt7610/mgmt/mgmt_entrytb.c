@@ -623,6 +623,9 @@ BOOLEAN MacTableDeleteEntry(
 	BOOLEAN Cancelled;
 	UINT32 MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
 
+	if (!pAd)
+		return FALSE;
+
 #ifdef MAC_REPEATER_SUPPORT	
 	if (pAd->ApCfg.bMACRepeaterEn == TRUE)
 		MaxWcidNum = MAX_MAC_TABLE_SIZE_WITH_REPEATER;
@@ -939,6 +942,9 @@ VOID MacTableReset(
 	UCHAR       apidx = MAIN_MBSSID;
 #endif /* CONFIG_AP_SUPPORT */
 	UINT32		MaxWcidNum = MAX_LEN_OF_MAC_TABLE;
+
+	if (!pAd)
+		return;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("MacTableReset\n"));
 	/*NdisAcquireSpinLock(&pAd->MacTabLock);*/

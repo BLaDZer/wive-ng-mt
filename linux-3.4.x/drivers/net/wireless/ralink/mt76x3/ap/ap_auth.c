@@ -635,7 +635,7 @@ SendAuth:
 		if (!pEntry)
 			pEntry = MacTableInsertEntry(pAd, auth_info.addr2, wdev, ENTRY_CLIENT, OPMODE_AP, TRUE);
 		
-		if (pEntry != NULL)
+		if (pEntry)
 		{
 			os_alloc_mem(pAd, (UCHAR **)&pFtInfoBuf, sizeof(FT_INFO));
 

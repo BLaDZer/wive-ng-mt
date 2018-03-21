@@ -2136,10 +2136,10 @@ VOID EnqueueStartForPSKExec(
     IN PVOID SystemSpecific3) 
 {
 	MAC_TABLE_ENTRY     *pEntry = (PMAC_TABLE_ENTRY) FunctionContext;
-	if(pEntry == NULL)
+	if(!pEntry)
 		return;
 
-	if ((pEntry) && IS_ENTRY_CLIENT(pEntry) && (pEntry->WpaState < AS_PTKSTART))
+	if (IS_ENTRY_CLIENT(pEntry) && (pEntry->WpaState < AS_PTKSTART))
 	{
 		PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)pEntry->pAd;
 

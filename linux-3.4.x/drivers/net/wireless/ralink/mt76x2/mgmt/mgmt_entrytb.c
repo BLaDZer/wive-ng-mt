@@ -921,6 +921,9 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 	MAC_TABLE_ENTRY *pEntry, *pPrevEntry, *pProbeEntry;
 	BOOLEAN Cancelled;
 
+	if (!pAd)
+		return FALSE;
+
 	if (wcid >= MAX_LEN_OF_MAC_TABLE)
 		return FALSE;
 
@@ -1285,6 +1288,9 @@ VOID MacTableReset(RTMP_ADAPTER *pAd)
 	UCHAR apidx = MAIN_MBSSID;
 #endif /* CONFIG_AP_SUPPORT */
 	MAC_TABLE_ENTRY *pMacEntry;
+
+	if (!pAd)
+		return;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("MacTableReset\n"));
 	/*NdisAcquireSpinLock(&pAd->MacTabLock);*/

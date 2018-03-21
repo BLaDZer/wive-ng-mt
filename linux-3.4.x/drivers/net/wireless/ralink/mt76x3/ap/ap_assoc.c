@@ -510,7 +510,6 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 	return MLME_SUCCESS;
 }
 
-
 /*
     ==========================================================================
     Description:
@@ -537,6 +536,9 @@ static USHORT APBuildAssociation(
 #endif /* WSC_AP_SUPPORT */
 	STA_TR_ENTRY *tr_entry;
 
+	if (!pEntry)
+		return MLME_UNSPECIFY_FAIL;
+
 	MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
 
     if (pAd && (WMODE_EQUAL(pAd->CommonCfg.PhyMode, WMODE_G) 
@@ -562,10 +564,7 @@ static USHORT APBuildAssociation(
 		return MLME_ASSOC_REJ_DATA_RATE;
 #endif /* DOT11_VHT_AC */
 
-	if (!pEntry)
-		return MLME_UNSPECIFY_FAIL;
-
-	if (pEntry && ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC)))
+	if ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC))
 	{
 		/* TODO:
 			should qualify other parameters, for example - 

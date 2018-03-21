@@ -469,6 +469,8 @@ static USHORT APBuildAssociation(
 	UCHAR MaxSupportedRate = RATE_11;
 	MULTISSID_STRUCT *wdev;
 
+	if (!pEntry)
+		return MLME_UNSPECIFY_FAIL;
 
 	MaxSupportedRate = dot11_2_ra_rate(MaxSupportedRateIn500Kbps);
 
@@ -495,10 +497,7 @@ static USHORT APBuildAssociation(
 		return MLME_ASSOC_REJ_DATA_RATE;
 #endif /* DOT11_VHT_AC */
 
-	if (!pEntry)
-		return MLME_UNSPECIFY_FAIL;
-
-	if (pEntry && ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC)))
+	if ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC))
 	{
 		/* TODO: */
 		/* should qualify other parameters, for example - capablity, supported rates, listen interval, ... etc */

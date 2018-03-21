@@ -527,6 +527,8 @@ static USHORT update_associated_mac_entry(
 					pEntry->HTPhyMode.field.MODE, pEntry->HTPhyMode.field.MCS));
 	}
 
+	if (!pEntry)
+		return MLME_UNSPECIFY_FAIL;
 
 	if (pEntry->AuthMode < Ndis802_11AuthModeWPA) {
 		ApLogEvent(pAd, pEntry->Addr, EVENT_ASSOCIATED);
@@ -602,10 +604,7 @@ static USHORT APBuildAssociation(
 		return MLME_ASSOC_REJ_DATA_RATE;
 #endif /* DOT11_VHT_AC */
 
-	if (!pEntry)
-		return MLME_UNSPECIFY_FAIL;
-
-	if (pEntry && ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC)))
+	if ((pEntry->Sst == SST_AUTH) || (pEntry->Sst == SST_ASSOC))
 	{
 		/* TODO:
 			should qualify other parameters, for example - 
