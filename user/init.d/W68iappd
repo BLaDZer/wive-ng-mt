@@ -59,29 +59,21 @@ kernel_tune() {
     # 2) define behavior for gratuitous ARP frames who's IP is not already present in the ARP table - create new entries in the ARP table
     # 3) in bridge mode disable arp/rp filters
     ######################################################################################################################################
-    sysctl -wq net.ipv4.neigh.$phys_lan_if.base_reachable_time_ms=10000
-    sysctl -wq net.ipv4.neigh.$phys_lan_if.delay_first_probe_time=1
-    sysctl -wq net.ipv4.conf.$phys_lan_if.arp_accept=1
-
     sysctl -wq net.ipv4.neigh.$lan_if.base_reachable_time_ms=10000
     sysctl -wq net.ipv4.neigh.$lan_if.delay_first_probe_time=1
-    sysctl -wq net.ipv4.conf.$lan_if.arp_accept=1
+
+    if [ "$OperationMode" = "1" ] || [ "$CONFIG_RAETH_BOTH_GMAC" = "y" ]; then
+	sysctl -wq net.ipv4.neigh.$phys_lan_if.base_reachable_time_ms=10000
+	sysctl -wq net.ipv4.neigh.$phys_lan_if.delay_first_probe_time=1
+    fi
 
     if [ "$first_wlan_root_if" != "" ]; then
 	sysctl -wq net.ipv4.neigh.$first_wlan_root_if.base_reachable_time_ms=10000
 	sysctl -wq net.ipv4.neigh.$first_wlan_root_if.delay_first_probe_time=1
-	sysctl -wq net.ipv4.conf.$first_wlan_root_if.arp_accept=1
     fi
     if [ "$second_wlan_root_if" != "" ]; then
 	sysctl -wq net.ipv4.neigh.$second_wlan_root_if.base_reachable_time_ms=10000
-	sysctl -wq net.ipv4.neigh.$second_wlan_root_if.base_delay_first_probe_time=1
-	sysctl -wq net.ipv4.conf.$second_wlan_root_if.arp_accept=1
-    fi
-    if [ "$OperationMode" = "0" ]; then
-	sysctl -wq net.ipv4.conf.all.arp_filter=0
-	sysctl -wq net.ipv4.conf.default.arp_filter=0
-	sysctl -wq net.ipv4.conf.all.rp_filter=0
-	sysctl -wq net.ipv4.conf.default.rp_filter=0
+	sysctl -wq net.ipv4.neigh.$second_wlan_root_if.delay_first_probe_time=1
     fi
 }
 
