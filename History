@@ -3956,6 +3956,7 @@
 52) kernel: net: eoip: initial support.<br>
 53) kernel: net: eoip: add fragmentation output support.<br>
 54) kernel: net: enable l2tp_v3 support.<br>
+55) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 <br>
 <br>
 <br>
