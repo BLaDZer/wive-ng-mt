@@ -56,6 +56,53 @@ int is_name_synthetic(int flags, char *name, struct all_addr *addr)
       if (pref && *pref != 0)
 	continue; /* prefix match fail */
       
+      if (c->indexed)
+	{
+	  for (p = tail; *p; p++)
+	    {
+	      char c = *p;
+	      
+	      if (c < '0' || c > '9')
+		break;
+	    }
+	  
+	  if (*p != '.')
+	    continue;
+	  
+	  *p = 0;
+	  
+	  if (hostname_isequal(c->domain, p+1))
+	    {
+	      if (prot == AF_INET)
+		{
+		  unsigned int index = atoi(tail);
+
+		   if (!c->is6 &&
+		      index <= ntohl(c->end.s_addr) - ntohl(c->start.s_addr))
+		    {
+		      addr->addr.addr4.s_addr = htonl(ntohl(c->start.s_addr) + index);
+		      found = 1;
+		    }
+		}
+#ifdef HAVE_IPV6 
+	      else
+		{
+		  u64 index = atoll(tail);
+		  
+		  if (c->is6 &&
+		      index <= addr6part(&c->end6) - addr6part(&c->start6))
+		    {
+		      u64 start = addr6part(&c->start6);
+		      addr->addr.addr6 = c->start6;
+		      setaddr6part(&addr->addr.addr6, start + index);
+		      found = 1;
+		    }
+		}
+#endif
+	    }
+	}
+      else
+	{
       /* NB, must not alter name if we return zero */
       for (p = tail; *p; p++)
 	{
@@ -125,6 +172,8 @@ int is_name_synthetic(int flags, char *name, struct all_addr *addr)
 #endif
 	}
       
+	}
+
       /* restore name */
       for (p = tail; *p; p++)
 	if (*p == '.' || *p == ':')
@@ -149,6 +198,13 @@ int is_rev_synth(int flag, struct all_addr *addr, char *name)
        char *p;
        
        *name = 0;
+       if (c->indexed)
+	 {
+	   unsigned int index = ntohl(addr->addr.addr4.s_addr) - ntohl(c->start.s_addr);
+	   snprintf(name, MAXDNAME, "%s%u", c->prefix ? c->prefix : "", index);
+	 }
+       else
+	 {
        if (c->prefix)
 	 strncpy(name, c->prefix, MAXDNAME - ADDRSTRLEN);
        
@@ -156,6 +212,7 @@ int is_rev_synth(int flag, struct all_addr *addr, char *name)
        for (p = name; *p; p++)
 	 if (*p == '.')
 	   *p = '-';
+	 }
 
        strncat(name, ".", MAXDNAME);
        strncat(name, c->domain, MAXDNAME);
@@ -169,6 +226,13 @@ int is_rev_synth(int flag, struct all_addr *addr, char *name)
        char *p;
        
        *name = 0;
+       if (c->indexed)
+	 {
+	   u64 index = addr6part(&addr->addr.addr6) - addr6part(&c->start6);
+	   snprintf(name, MAXDNAME, "%s%llu", c->prefix ? c->prefix : "", index);
+	 }
+       else
+	 {
        if (c->prefix)
 	 strncpy(name, c->prefix, MAXDNAME - ADDRSTRLEN);
        
@@ -186,6 +250,8 @@ int is_rev_synth(int flag, struct all_addr *addr, char *name)
        for (p = name; *p; p++)
 	 if (*p == ':' || *p == '.')
 	   *p = '-';
+
+	 }
 
        strncat(name, ".", MAXDNAME);
        strncat(name, c->domain, MAXDNAME);

@@ -71,8 +71,6 @@
    new system, you may want to edit these.
    May replace this with Autoconf one day.
 
-NO_NETTLE_ECC
-   Don't include the ECDSA cypher in DNSSEC validation. Needed for older Nettle versions.
 NO_GMP
    Don't use and link against libgmp, Useful if nettle is built with --enable-mini-gmp.
 

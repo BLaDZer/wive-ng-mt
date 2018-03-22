@@ -1163,7 +1163,7 @@ static int parse_dhcp_opt(char *errstr, char *arg, int flags)
 	    case 'd':
 	    case 'D':
 	      fac *= 24;
-	      /* fall though */
+	      /* fall through */
 	    case 'h':
 	    case 'H':
 	      fac *= 60;
@@ -2071,6 +2071,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		  char *netpart;
 		  
 		  new->prefix = NULL;
+		  new->indexed = 0;
 
 		  unhide_metas(comma);
 		  if ((netpart = split_chr(comma, '/')))
@@ -2208,8 +2209,14 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		    }
 		  else
 		    {
+		      char *star;
 		      new->next = daemon->synth_domains;
 		      daemon->synth_domains = new;
+		      if ((star = strrchr(new->prefix, '*')) && *(star+1) == 0)
+			{
+			  *star = 0;
+			  new->indexed = 1;
+			}
 		    }
 		}
 	      else if (option == 's')
@@ -2970,7 +2977,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 		      case 'd':
 		      case 'D':
 			fac *= 24;
-			/* fall though */
+			/* fall through */
 		      case 'h':
 		      case 'H':
 			fac *= 60;
@@ -3856,6 +3863,7 @@ err:
 
 	while (arg != last)
 	  {
+	    int arglen = strlen(arg);
 	    alias = canonicalise_opt(arg);
 
 	    if (!alias || !target)
@@ -3871,7 +3879,7 @@ err:
 	    new->target = target;
 	    new->ttl = ttl;
 
-	    for (arg += strlen(arg)+1; *arg == ' '; arg++);
+	    for (arg += arglen+1; *arg && isspace(*arg); arg++);
 	  }
       
 	break;
@@ -4327,7 +4335,7 @@ static void read_file(char *file, FILE *f, int hard_opt)
   fclose(f);
 }
 
-#ifdef HAVE_DHCP
+#if defined(HAVE_DHCP) && defined(HAVE_INOTIFY)
 int option_read_dynfile(char *file, int flags)
 {
   my_syslog(MS_DHCP | LOG_INFO, _("read %s"), file);
@@ -4528,11 +4536,7 @@ void read_servers_file(void)
  
 
 #ifdef HAVE_DHCP
-void reread_dhcp(void)
-{
-  struct hostsfile *hf;
-
-  if (daemon->dhcp_hosts_file)
+static void clear_dynamic_conf(void)
     {
       struct dhcp_config *configs, *cp, **up;
   
@@ -4571,17 +4575,9 @@ void reread_dhcp(void)
 	  else
 	    up = &configs->next;
 	}
-      
-      daemon->dhcp_hosts_file = expand_filelist(daemon->dhcp_hosts_file);
-      for (hf = daemon->dhcp_hosts_file; hf; hf = hf->next)
-	 if (!(hf->flags & AH_INACTIVE))
-	   {
-	     if (one_file(hf->fname, LOPT_BANK))  
-	       my_syslog(MS_DHCP | LOG_INFO, _("read %s"), hf->fname);
-	   }
     }
 
-  if (daemon->dhcp_opts_file)
+static void clear_dynamic_opt(void)
     {
       struct dhcp_opt *opts, *cp, **up;
       struct dhcp_netid *id, *next;
@@ -4607,7 +4603,32 @@ void reread_dhcp(void)
 	  else
 	    up = &opts->next;
 	}
+}
       
+void reread_dhcp(void)
+{
+   struct hostsfile *hf;
+
+   /* Do these even if there is no daemon->dhcp_hosts_file or
+      daemon->dhcp_opts_file since entries may have been created by the
+      inotify dynamic file reading system. */
+   
+   clear_dynamic_conf();
+   clear_dynamic_opt();
+
+   if (daemon->dhcp_hosts_file)
+    {
+      daemon->dhcp_hosts_file = expand_filelist(daemon->dhcp_hosts_file);
+      for (hf = daemon->dhcp_hosts_file; hf; hf = hf->next)
+	if (!(hf->flags & AH_INACTIVE))
+	  {
+	    if (one_file(hf->fname, LOPT_BANK))  
+	      my_syslog(MS_DHCP | LOG_INFO, _("read %s"), hf->fname);
+	  }
+    }
+
+  if (daemon->dhcp_opts_file)
+    {
       daemon->dhcp_opts_file = expand_filelist(daemon->dhcp_opts_file);
       for (hf = daemon->dhcp_opts_file; hf; hf = hf->next)
 	if (!(hf->flags & AH_INACTIVE))
@@ -4616,6 +4637,11 @@ void reread_dhcp(void)
 	      my_syslog(MS_DHCP | LOG_INFO, _("read %s"), hf->fname);
 	  }
     }
+
+#  ifdef HAVE_INOTIFY
+  /* Setup notify and read pre-existing files. */
+  set_dynamic_inotify(AH_DHCP_HST | AH_DHCP_OPT, 0, NULL, 0);
+#  endif
 }
 #endif
     
