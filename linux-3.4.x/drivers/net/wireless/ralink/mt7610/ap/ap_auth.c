@@ -186,7 +186,7 @@ static VOID APPeerDeauthReqAction(
 			MULTISSID_STRUCT *pMbss = &pAd->ApCfg.MBSSID[pEntry->apidx];
 			PFRAME_802_11 Fr = (PFRAME_802_11)Elem->Msg;
 
-			if (memcmp(&Fr->Hdr.Addr1, pMbss->Bssid, 6) != 0)
+			if (!Fr || (memcmp(&Fr->Hdr.Addr1, pMbss->Bssid, 6) != 0))
 			{
 #ifdef DBG
 				unsigned char *tmp = (unsigned char *)pMbss->Bssid;

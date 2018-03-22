@@ -197,7 +197,7 @@ static VOID APPeerDeauthReqAction(
 			unsigned char *tmp = (unsigned char *)pMbss->wdev.bssid;
 			unsigned char *tmp2 = (unsigned char *)&Fr->Hdr.Addr1;
 #endif
-			if (memcmp(&Fr->Hdr.Addr1, pMbss->wdev.bssid, 6) != 0)
+			if (!Fr || (memcmp(&Fr->Hdr.Addr1, pMbss->wdev.bssid, 6) != 0))
 			{
 				DBGPRINT(RT_DEBUG_TRACE, ("da not match bssid,bssid:0x%02x%02x%02x%02x%02x%02x, addr1:0x%02x%02x%02x%02x%02x%02x\n",
 					*tmp, *(tmp+1), *(tmp+2), *(tmp+3), *(tmp+4), *(tmp+5),

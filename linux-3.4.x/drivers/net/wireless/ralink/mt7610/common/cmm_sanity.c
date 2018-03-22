@@ -1578,6 +1578,9 @@ BOOLEAN PeerProbeReqSanity(
 #endif /* CONFIG_AP_SUPPORT */
     *SsidLen = 0;
 
+    if (Fr == NULL)
+	return FALSE;
+
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
 
     if (Fr->Octet[0] != IE_SSID || Fr->Octet[1] > MAX_LEN_OF_SSID) 

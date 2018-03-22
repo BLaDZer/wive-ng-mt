@@ -3933,26 +3933,27 @@
 29) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
 30) kernel: ralink_wifi: fix allowToSend init by default.<br>
 31) kernel: ralink_wifi: fix potentional null pointer dereference in mactable managment.<br>
-32) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
-33) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-34) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-35) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-36) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
-37) kernel: net: fix race on decreasing number of TX queues.<br>
-38) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-39) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-40) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-41) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-42) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-43) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-44) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-45) kernel: net: tcp: purge write queue upon RST.<br>
-46) kernel: net: bridge: check brport attr show in brport_show.<br>
-47) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-48) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-49) kernel: net: eoip: initial support.<br>
-50) kernel: net: eoip: add fragmentation output support.<br>
-51) kernel: net: enable l2tp_v3 support.<br>
+32) kernel: ralink_wifi: fix potentional null pointer dereference in more places of decode managment frames.<br>
+33) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+34) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+35) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+36) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+37) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
+38) kernel: net: fix race on decreasing number of TX queues.<br>
+39) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+40) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+41) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+42) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+43) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+44) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+45) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+46) kernel: net: tcp: purge write queue upon RST.<br>
+47) kernel: net: bridge: check brport attr show in brport_show.<br>
+48) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+49) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+50) kernel: net: eoip: initial support.<br>
+51) kernel: net: eoip: add fragmentation output support.<br>
+52) kernel: net: enable l2tp_v3 support.<br>
 <br>
 <br>
 <br>

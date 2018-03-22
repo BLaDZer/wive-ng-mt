@@ -448,6 +448,8 @@ BOOLEAN PeerDisassocReqSanity(
     OUT USHORT *Reason) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+    if (!Fr)
+	return FALSE;
 
     COPY_MAC_ADDR(pAddr1, &Fr->Hdr.Addr1);
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
@@ -475,6 +477,8 @@ BOOLEAN PeerDeauthReqSanity(
     OUT USHORT *Reason) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+    if (!Fr)
+	return FALSE;
 
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
 	*SeqNum = Fr->Hdr.Sequence;
@@ -508,8 +512,10 @@ BOOLEAN APPeerAuthSanity(
     ) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+    if (!Fr)
+	return FALSE;
 
-	COPY_MAC_ADDR(pAddr1,  &Fr->Hdr.Addr1);		/* BSSID */
+    COPY_MAC_ADDR(pAddr1,  &Fr->Hdr.Addr1);		/* BSSID */
     COPY_MAC_ADDR(pAddr2,  &Fr->Hdr.Addr2);		/* SA */
     NdisMoveMemory(Alg,    &Fr->Octet[0], 2);
     NdisMoveMemory(Seq,    &Fr->Octet[2], 2);

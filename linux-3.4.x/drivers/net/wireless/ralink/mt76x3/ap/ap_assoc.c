@@ -2479,6 +2479,8 @@ static BOOLEAN PeerDisassocReqSanity(
     OUT USHORT *Reason) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+    if (Fr == NULL)
+	return FALSE;
 
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
 	COPY_MAC_ADDR(pDA, &Fr->Hdr.Addr1);

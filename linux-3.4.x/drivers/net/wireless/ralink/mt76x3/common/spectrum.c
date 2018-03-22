@@ -1594,9 +1594,14 @@ static BOOLEAN PeerChSwAnnSanity(
 	OUT PCH_SW_ANN_INFO pChSwAnnInfo)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
+	PUCHAR pFramePtr;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
+
+	if (Fr == NULL || pChSwAnnInfo == NULL)
+		return result;
+
+	pFramePtr = Fr->Octet;
 
 	/* skip 802.11 header.*/
 	MsgLen -= sizeof(HEADER_802_11);
@@ -1604,9 +1609,6 @@ static BOOLEAN PeerChSwAnnSanity(
 	/* skip category and action code.*/
 	pFramePtr += 2;
 	MsgLen -= 2;
-
-	if (pChSwAnnInfo == NULL)
-		return result;
 
 	eid_ptr = (PEID_STRUCT)pFramePtr;
 	while (((UCHAR*)eid_ptr + eid_ptr->Len + 1) < ((PUCHAR)pFramePtr + MsgLen))
@@ -1653,12 +1655,17 @@ static BOOLEAN PeerMeasureReqSanity(
 	OUT PMEASURE_REQ pMeasureReq)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
+	PUCHAR pFramePtr;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
 	PUCHAR ptr;
 	UINT64 MeasureStartTime;
 	UINT16 MeasureDuration;
+
+	if (Fr == NULL || pMeasureReqInfo == NULL)
+		return result;
+
+	pFramePtr = Fr->Octet;
 
 	/* skip 802.11 header.*/
 	MsgLen -= sizeof(HEADER_802_11);
@@ -1667,8 +1674,6 @@ static BOOLEAN PeerMeasureReqSanity(
 	pFramePtr += 2;
 	MsgLen -= 2;
 
-	if (pMeasureReqInfo == NULL)
-		return result;
 
 	NdisMoveMemory(pDialogToken, pFramePtr, 1);
 	pFramePtr += 1;
@@ -1746,10 +1751,15 @@ static BOOLEAN PeerMeasureReportSanity(
 	OUT PUINT8 pReportBuf)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
+	PUCHAR pFramePtr;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
 	PUCHAR ptr;
+
+	if (Fr == NULL  || pMeasureReportInfo == NULL)
+		return result;
+
+	pFramePtr = Fr->Octet;
 
 	/* skip 802.11 header.*/
 	MsgLen -= sizeof(HEADER_802_11);
@@ -1757,9 +1767,6 @@ static BOOLEAN PeerMeasureReportSanity(
 	/* skip category and action code.*/
 	pFramePtr += 2;
 	MsgLen -= 2;
-
-	if (pMeasureReportInfo == NULL)
-		return result;
 
 	NdisMoveMemory(pDialogToken, pFramePtr, 1);
 	pFramePtr += 1;
@@ -1836,18 +1843,20 @@ static BOOLEAN PeerTpcReqSanity(
 	OUT PUINT8 pDialogToken)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
+	PUCHAR pFramePtr;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
+
+	if (Fr == NULL || pDialogToken == NULL)
+		return result;
+
+	pFramePtr = Fr->Octet;
 
 	MsgLen -= sizeof(HEADER_802_11);
 
 	/* skip category and action code.*/
 	pFramePtr += 2;
 	MsgLen -= 2;
-
-	if (pDialogToken == NULL)
-		return result;
 
 	NdisMoveMemory(pDialogToken, pFramePtr, 1);
 	pFramePtr += 1;
@@ -1894,18 +1903,20 @@ static BOOLEAN PeerTpcRepSanity(
 	OUT PTPC_REPORT_INFO pTpcRepInfo)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
+	PUCHAR pFramePtr;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
+
+	if (Fr == NULL || pDialogToken == NULL)
+		return result;
+
+	pFramePtr = Fr->Octet;
 
 	MsgLen -= sizeof(HEADER_802_11);
 
 	/* skip category and action code.*/
 	pFramePtr += 2;
 	MsgLen -= 2;
-
-	if (pDialogToken == NULL)
-		return result;
 
 	NdisMoveMemory(pDialogToken, pFramePtr, 1);
 	pFramePtr += 1;

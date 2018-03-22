@@ -48,6 +48,8 @@ static BOOLEAN PeerDeauthReqSanity(
     OUT USHORT *Reason) 
 {
     PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+    if (Fr == NULL)
+	return FALSE;
 
     COPY_MAC_ADDR(pAddr2, &Fr->Hdr.Addr2);
 	*SeqNum = Fr->Hdr.Sequence;
@@ -166,7 +168,7 @@ static VOID APPeerDeauthReqAction(
 			unsigned char *tmp = (unsigned char *)pMbss->wdev.bssid;
 			unsigned char *tmp2 = (unsigned char *)&Fr->Hdr.Addr1;
 #endif /* DBG */
-			if (memcmp(&Fr->Hdr.Addr1, pMbss->wdev.bssid, 6) != 0)
+			if (!Fr || (memcmp(&Fr->Hdr.Addr1, pMbss->wdev.bssid, 6) != 0))
 			{
 				DBGPRINT(RT_DEBUG_INFO,
 					("da not match bssid,bssid:0x%02x%02x%02x%02x%02x%02x, addr1:0x%02x%02x%02x%02x%02x%02x\n",
@@ -263,6 +265,8 @@ static BOOLEAN APPeerAuthSanity(
     IN AUTH_FRAME_INFO *auth_info)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)Msg;
+	if (Fr == NULL)
+	    return FALSE;
 
 	COPY_MAC_ADDR(auth_info->addr1,  &Fr->Hdr.Addr1);		/* BSSID */
 	COPY_MAC_ADDR(auth_info->addr2,  &Fr->Hdr.Addr2);		/* SA */

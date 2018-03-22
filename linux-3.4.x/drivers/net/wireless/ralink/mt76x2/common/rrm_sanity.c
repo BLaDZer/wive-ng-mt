@@ -239,9 +239,14 @@ BOOLEAN RRM_PeerMeasureReportSanity(
 	OUT PVOID *pMeasureRep)
 {
 	PFRAME_802_11 Fr = (PFRAME_802_11)pMsg;
-	PUCHAR pFramePtr = Fr->Octet;
 	BOOLEAN result = FALSE;
 	PEID_STRUCT eid_ptr;
+	PUCHAR pFramePtr;
+
+	if (Fr == NULL || pMeasureReportInfo == NULL)
+		return result;
+
+    	pFramePtr = Fr->Octet;
 
 	/* skip 802.11 header. */
 	MsgLen -= sizeof(HEADER_802_11);
@@ -249,9 +254,6 @@ BOOLEAN RRM_PeerMeasureReportSanity(
 	/* skip category and action code. */
 	pFramePtr += 2;
 	MsgLen -= 2;
-
-	if (pMeasureReportInfo == NULL)
-		return result;
 
 	NdisMoveMemory(pDialogToken, pFramePtr, 1);
 	pFramePtr += 1;

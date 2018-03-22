@@ -1854,7 +1854,10 @@ BOOLEAN PeerProbeReqSanity(
 #endif /* CONFIG_AP_SUPPORT */
 	UINT		total_ie_len = 0;
 
-	NdisZeroMemory(ProbeReqParam, sizeof(*ProbeReqParam));
+    if (Fr == NULL)
+	return FALSE;
+
+    NdisZeroMemory(ProbeReqParam, sizeof(*ProbeReqParam));
     COPY_MAC_ADDR(ProbeReqParam->Addr2, &Fr->Hdr.Addr2);
 
     if (Fr->Octet[0] != IE_SSID || Fr->Octet[1] > MAX_LEN_OF_SSID) 
