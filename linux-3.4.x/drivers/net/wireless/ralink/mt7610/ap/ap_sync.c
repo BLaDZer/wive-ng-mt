@@ -120,6 +120,9 @@ VOID APPeerProbeReqAction(
     UCHAR		  Addr3[MAC_ADDR_LEN];
     PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
 
+    if (pFrame == NULL)
+	return;
+
 	COPY_MAC_ADDR(Addr3, pFrame->Hdr.Addr3);
 	COPY_MAC_ADDR(Addr2, pFrame->Hdr.Addr2);
 #endif /* WSC_AP_SUPPORT */

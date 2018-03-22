@@ -67,6 +67,11 @@ VOID APPeerProbeReqAction(
 	PFRAME_802_11 pFrame = (PFRAME_802_11)Elem->Msg;
 #ifdef WSC_AP_SUPPORT
 	UCHAR Addr3[MAC_ADDR_LEN];
+#endif
+	if (pFrame == NULL)
+	    return;
+
+#ifdef WSC_AP_SUPPORT
 	COPY_MAC_ADDR(Addr3, pFrame->Hdr.Addr3);
 #endif /* WSC_AP_SUPPORT */
 	COPY_MAC_ADDR(Addr2, pFrame->Hdr.Addr2);

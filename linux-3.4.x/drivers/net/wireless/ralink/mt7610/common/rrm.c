@@ -589,11 +589,16 @@ VOID RRM_PeerNeighborReqAction(
 	IN MLME_QUEUE_ELEM *Elem) 
 {
 	PFRAME_802_11 pFr = (PFRAME_802_11)Elem->Msg;
-	PUCHAR pFramePtr = pFr->Octet;
+	PUCHAR pFramePtr;
 	PMAC_TABLE_ENTRY pEntry;
 	UINT8 DialogToken;
 	PCHAR pSsid = NULL;
 	UINT8 SsidLen = 0;
+
+	if (pFr == NULL)
+	    return;
+
+	pFramePtr = pFr->Octet;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::\n", __FUNCTION__));
 
@@ -765,11 +770,16 @@ VOID RRM_PeerMeasureRepAction(
 	IN MLME_QUEUE_ELEM *Elem) 
 {
 	PFRAME_802_11 pFr = (PFRAME_802_11)Elem->Msg;
-	PUCHAR pFramePtr = pFr->Octet;
+	PUCHAR pFramePtr;
 	ULONG MsgLen = Elem->MsgLen;
 	PMEASURE_REQ_ENTRY pDialogEntry;
 	PMAC_TABLE_ENTRY pEntry;
 	UINT8 DialogToken;
+
+	if (pFr == NULL)
+	    return;
+
+	pFramePtr = pFr->Octet;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s::\n", __FUNCTION__));
 

@@ -2121,6 +2121,9 @@ static VOID PeerChSwAnnAction(
 	ULONG Bssidx = 0;
 #endif /* CONFIG_STA_SUPPORT */
 
+	if (pFr == NULL)
+	    return;
+
 	NdisZeroMemory(&ChSwAnnInfo, sizeof(CH_SW_ANN_INFO));
 	if (! PeerChSwAnnSanity(pAd, Elem->Msg, Elem->MsgLen, &ChSwAnnInfo))
 	{
@@ -2211,6 +2214,9 @@ static VOID PeerMeasureReqAction(
 	MEASURE_REQ	MeasureReq;
 	MEASURE_REPORT_MODE ReportMode;
 
+	if (pFr == NULL)
+	    return;
+
 	if(PeerMeasureReqSanity(pAd, Elem->Msg, Elem->MsgLen, &DialogToken, &MeasureReqInfo, &MeasureReq))
 	{
 		ReportMode.word = 0;
@@ -2240,6 +2246,9 @@ static VOID PeerMeasureReportAction(
 	PFRAME_802_11 pFr = (PFRAME_802_11)Elem->Msg;
 	UINT8 DialogToken;
 	PUINT8 pMeasureReportInfo;
+
+	if (pFr == NULL)
+	    return;
 
 /*	if (pAd->CommonCfg.bIEEE80211H != TRUE)*/
 /*		return;*/
@@ -2305,11 +2314,16 @@ static VOID PeerTpcReqAction(
 	IN MLME_QUEUE_ELEM *Elem) 
 {
 	PFRAME_802_11 pFr = (PFRAME_802_11)Elem->Msg;
-	PUCHAR pFramePtr = pFr->Octet;
+	PUCHAR pFramePtr;
 	UINT8 DialogToken;
 	UINT8 TxPwr = GetCurTxPwr(pAd, Elem->Wcid);
 	UINT8 LinkMargin = 0;
 	CHAR RealRssi;
+
+	if (pFr == NULL)
+	    return;
+
+	pFramePtr = pFr->Octet;
 
 	/* link margin: Ratio of the received signal power to the minimum desired by the station (STA). The*/
 	/*				STA may incorporate rate information and channel conditions, including interference, into its computation*/
