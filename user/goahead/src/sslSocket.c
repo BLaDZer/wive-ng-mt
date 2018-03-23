@@ -71,7 +71,7 @@ SOCKET socketListen(short port, int *err)
 		*err = getSocketError();
 		return INVALID_SOCKET;
 	}
-	if (listen(fd, SOMAXCONN) < 0) {
+	if (listen(fd, 64) < 0) {
 		fprintf(stderr, "Error listening on socket\n");
 		*err = getSocketError();
 		return INVALID_SOCKET;

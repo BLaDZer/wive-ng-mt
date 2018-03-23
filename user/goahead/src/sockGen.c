@@ -177,7 +177,7 @@ int socketOpenConnection(int port, socketAccept_t accept, int flags)
 		return -1;
 	}
 
-	if (listen(sp->sock, SOMAXCONN) < 0) {
+	if (listen(sp->sock, 64) < 0) {
 		socketFree(sid);
 		return -1;
 	}
