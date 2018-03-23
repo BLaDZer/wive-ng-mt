@@ -311,12 +311,7 @@ If you test it please contact the Dropbear author */
 /* Linux will attempt TCP fast open, falling back if not supported by the kernel.
  * Currently server is enabled but client is disabled by default until there
  * is further compatibility testing */
-#ifdef __linux__
-#define DROPBEAR_SERVER_TCP_FAST_OPEN 1
-#define DROPBEAR_CLIENT_TCP_FAST_OPEN 0
-#else
 #define DROPBEAR_SERVER_TCP_FAST_OPEN 0
 #define DROPBEAR_CLIENT_TCP_FAST_OPEN 0
-#endif
 
 /* no include guard for this file */
