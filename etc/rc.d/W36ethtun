@@ -17,7 +17,7 @@ l2tpstart() {
     # sanity and enable check
     if [ "$l2tp_eth_enabled" == "" ] || [ "$l2tp_eth_enabled" == "0" ] || [ "$l2tp_eth_tid" == "" ] || [ "$l2tp_eth_ptid" == "" ] \
         || [ "$l2tp_eth_sid" == "" ] || [ "$l2tp_eth_psid" == "" ] || [ "$l2tp_eth_sport" == "" ] || [ "$l2tp_eth_dport" == "" ]  \
-        || [ "$l2tp_eth_remote" == "" ] || [ "$l2tp_eth_local" == "" ] && [ "$l2tp_eth_brifs" = "" ]; then
+        || [ "$l2tp_eth_remote" == "" ] || [ "$l2tp_eth_local" == "" ] || [ "$l2tp_eth_brifs" = "" ]; then
         exit 0
     fi
 
@@ -38,16 +38,18 @@ l2tpstart() {
 	brctl addbr brl2tp
 	for iface in $l2tp_eth_brifs
 	do
-	    delif_from_br br0 "$iface"
-	    # check interface free from bridges
-	    allreadyinbr=`brctl show | grep "${iface}$" -c`
-	    if [ "$allreadyinbr" = "0" ]; then
-		brctl addif brl2tp "$iface"
-	    else
-		$LOG "$iface allready in used in other bridge, pls see config."
+	    if [ -d /proc/sys/net/ipv4/conf/$iface ] ; then
+		delif_from_br br0 "$iface"
+		# check interface free from bridges
+		allreadyinbr=`brctl show | grep "${iface}$" -c`
+		if [ "$allreadyinbr" = "0" ]; then
+		    brctl addif brl2tp "$iface"
+		else
+		    $LOG "$iface allready in used in other bridge, pls see config."
+		fi
+		# allways up after call del_if_from_br
+		ip link set "$iface" up
 	    fi
-	    # allways up after call del_if_from_br
-	    ip link set "$iface" up
 	done
 	brctl addif brl2tp l2tpeth0
 	ip link set l2tpeth0 up
@@ -60,6 +62,7 @@ l2tpstop() {
     l2tp_eth_tid=`ip l2tp show session | grep "Session" | awk {' print $5 '} | tail -qn1`
     l2tp_eth_sid=`ip l2tp show session | grep "Session" | awk {' print $2 '} | tail -qn1`
 
+    # first remove all vifs
     if [ "$l2tp_eth_tid" != "" ]; then
 	$LOG "eth l2tp_v3 tunnel stop"
 	if [ "$l2tp_eth_sid" != "" ]; then
@@ -79,21 +82,87 @@ l2tpstop() {
     ip link set brl2tp down			> /dev/null 2>&1
     brctl delbr brl2tp 				> /dev/null 2>&1
 
+    # last remove l2tp module
     rmmod l2tp_eth 				> /dev/null 2>&1
+}
+
+eoipstart() {
+    # sanity and enable check
+    if [ "$eoip_enabled" == "" ] || [ "$eoip_enabled" == "0" ] || [ "$eoip_tid" == "" ] || [ "$eoip_remote" == "" ] || [ "$eoip_brifs" = "" ]; then
+        exit 0
+    fi
+
+    if [ "$eoip_local" != "" ]; then
+	local="local $eoip_local"
+    fi
+
+    $LOG "Configure eoip mode tunnel to $eoip_remote"
+
+    modprobe -q eoip
+
+    eoip add name eoip0 tunnel-id $eoip_tid $local remote $eoip_remote
+
+    if [ "$eoipb_rifs" == "all" ]; then
+	$LOG "Add eoip interface to syslem LAN bridge"
+	brctl addif br0 eoip0
+	ip link set eoip0 up
+    else
+	$LOG "Add BRIDGE eoip to system"
+	brctl addbr breoip
+	for iface in $eoip_brifs
+	do
+	    if [ -d /proc/sys/net/ipv4/conf/$iface ] ; then
+		delif_from_br br0 "$iface"
+		# check interface free from bridges
+		allreadyinbr=`brctl show | grep "${iface}$" -c`
+		if [ "$allreadyinbr" = "0" ]; then
+		    brctl addif breoip "$iface"
+		else
+		    $LOG "$iface allready in used in other bridge, pls see config."
+		fi
+		# allways up after call del_if_from_br
+		ip link set "$iface" up
+	    fi
+	done
+	brctl addif breoip eoip0
+	ip link set eoip0 up
+	ip link set breoip up
+    fi
+}
+
+eoipstop() {
+    # first remove eoip module for deregister vifs
+    rmmod eoip	 				> /dev/null 2>&1
+
+    # remove radio interfaces from eoipbridge
+    for num in `seq 0 4`; do
+	    brctl delif breoip "ra$num"		> /dev/null 2>&1
+	    brctl delif breoip "rai$num"	> /dev/null 2>&1
+    done
+    # remove lan interface from eoipbridge
+    brctl delif breoip "$phys_lan_if"		> /dev/null 2>&1
+
+    ip link set breoip down			> /dev/null 2>&1
+    brctl delbr breoip 				> /dev/null 2>&1
+
 }
 
 get_param() {
     # get local param always
     eval `nvram_buf_get 2860 l2tp_eth_enabled l2tp_eth_tid l2tp_eth_ptid l2tp_eth_sid l2tp_eth_psid l2tp_eth_sport l2tp_eth_dport \
 				l2tp_eth_remote l2tp_eth_local l2tp_eth_brifs`
+
+    eval `nvram_buf_get 2860 eoip_enabled eoip_tid eoip_remote eoip_local eoip_brifs`
 }
 
 start() {
     l2tpstart
+    eoipstart
 }
 
 stop() {
     l2tpstop
+    eoipstop
 }
 
 case "$1" in
