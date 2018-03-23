@@ -1065,7 +1065,8 @@ SendAssocResponse:
 	    NdisZeroMemory(wdev->TmpBlockAfterKickMac, MAC_ADDR_LEN);
 	}
 
-	if (bACLReject == TRUE || bAssocSkip == TRUE || bAssocNoRsp == TRUE)
+	/* do not change response and status code if status allready not success - correct reject reason send to client */
+	if ((bACLReject == TRUE || bAssocSkip == TRUE || bAssocNoRsp == TRUE) && StatusCode == MLME_SUCCESS)
 	{
 		if (bAssocNoRsp == FALSE)
 		{

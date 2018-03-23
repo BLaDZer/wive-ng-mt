@@ -3936,29 +3936,30 @@
 32) kernel: ralink_wifi: fix allowToSend init by default.<br>
 33) kernel: ralink_wifi: fix potentional null pointer dereference in mactable managment.<br>
 34) kernel: ralink_wifi: fix potentional null pointer dereference in more places of decode managment frames.<br>
-35) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
-36) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-37) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-38) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-39) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
-40) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
-41) kernel: net: fix race on decreasing number of TX queues.<br>
-42) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-43) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-44) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-45) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-46) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-47) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-48) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-49) kernel: net: tcp: purge write queue upon RST.<br>
-50) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
-51) kernel: net: bridge: check brport attr show in brport_show.<br>
-52) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-53) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-54) kernel: net: eoip: initial support.<br>
-55) kernel: net: eoip: add fragmentation output support.<br>
-56) kernel: net: enable l2tp_v3 support.<br>
-57) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
+35) kernel: ralink_wifi: do not change response code by handoff or band steering if status allready not success (correct reject reason send to client).<br>
+36) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+37) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+38) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+39) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+40) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
+41) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
+42) kernel: net: fix race on decreasing number of TX queues.<br>
+43) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+44) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+45) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+46) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+47) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+48) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+49) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+50) kernel: net: tcp: purge write queue upon RST.<br>
+51) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
+52) kernel: net: bridge: check brport attr show in brport_show.<br>
+53) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+54) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+55) kernel: net: eoip: initial support.<br>
+56) kernel: net: eoip: add fragmentation output support.<br>
+57) kernel: net: enable l2tp_v3 support.<br>
+58) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 <br>
 <br>
 <br>
