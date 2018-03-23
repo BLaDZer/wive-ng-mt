@@ -1598,7 +1598,7 @@ static BOOLEAN IAPP_SocketOpen(
 		goto label_fail;
 	} /* End of if */
 
-	listen(pCtrlBK->SocketTcpRcv, 10); /* max 10 TCP connections simultaneously */
+	listen(pCtrlBK->SocketTcpRcv, 72); /* max 72 TCP connections simultaneously */
 
 #ifdef FT_KDP_FUNC_SOCK_COMM
 #ifdef IAPP_OS_LINUX
