@@ -1098,8 +1098,9 @@ VOID ap_cmm_peer_assoc_req_action(
 	}
 #endif /* DOT11_VHT_AC */
 
+#ifdef DOT11W_PMF_SUPPORT
 SendAssocResponse:
-
+#endif
 	/* 3. send Association Response */
 	NStatus = MlmeAllocateMemory(pAd, &pOutBuffer);
 	if (NStatus != NDIS_STATUS_SUCCESS)
@@ -2124,6 +2125,17 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 #endif /* DELAYED_TCP_ACK */
 
 LabelOK:
+
+	/* avoid dead record before ageouted in mactable for not connected clients */
+	if (StatusCode != MLME_SUCCESS) {
+	    pEntry = MacTableLookup(pAd, ie_list->Addr2);
+	    if (pEntry) {
+		    printk("%s ASSOC - Client %02x:%02x:%02x:%02x:%02x:%02x connection reject with Status code %d, remove it.\n",
+			    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), StatusCode);
+		    MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+	    }
+	}
+
 #ifdef RT_CFG80211_P2P_SUPPORT 
 	if (StatusCode != MLME_SUCCESS)
 		CFG80211_ApStaDelSendEvent(pAd, pEntry->Addr);
