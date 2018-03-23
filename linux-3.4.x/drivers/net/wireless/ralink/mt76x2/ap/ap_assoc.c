@@ -1059,12 +1059,6 @@ VOID ap_cmm_peer_assoc_req_action(
 	/* 2. qualify this STA's auth_asoc status in the MAC table, decide StatusCode */
 	StatusCode = APBuildAssociation(pAd, pEntry, ie_list, MaxSupportedRate, &Aid);
 
-	/* drop this assoc req and send reject */
-	if (StatusCode == MLME_ASSOC_REJ_DATA_RATE || StatusCode == MLME_UNSPECIFY_FAIL) {
-		//RTMPSendWirelessEvent(pAd, IW_STA_MODE_EVENT_FLAG, pEntry->Addr, pEntry->apidx, 0);
-		goto SendAssocResponse;
-	}
-
 #ifdef DOT11R_FT_SUPPORT
 	if (pEntry->apidx < pAd->ApCfg.BssidNum)
 	{
