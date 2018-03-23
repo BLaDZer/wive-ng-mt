@@ -202,9 +202,12 @@ void session_loop(void(*loophandler)(void)) {
 		/* We'll just empty out the pipe if required. We don't do
 		any thing with the data, since the pipe's purpose is purely to
 		wake up the select() above. */
+		ses.channel_signal_pending = 0;
 		if (FD_ISSET(ses.signal_pipe[0], &readfd)) {
 			char x;
+			TRACE(("signal pipe set"))
 			while (read(ses.signal_pipe[0], &x, 1) > 0) {}
+			ses.channel_signal_pending = 1;
 		}
 
 		/* check for auth timeout, rekeying required etc */

@@ -254,8 +254,6 @@ void channelio(const fd_set *readfds, const fd_set *writefds) {
 		}
 	}
 
-	ses.channel_signal_pending = 0;
-
 #if DROPBEAR_LISTENERS
 	handle_listeners(readfds);
 #endif
