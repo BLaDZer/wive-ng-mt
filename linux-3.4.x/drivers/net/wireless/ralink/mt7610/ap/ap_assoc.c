@@ -1763,7 +1763,8 @@ LabelOK:
 	if (StatusCode != MLME_SUCCESS) {
 	    pEntry = MacTableLookup(pAd, ie_list->Addr2);
 	    if (pEntry) {
-		    printk("%s ASSOC - Client %02x:%02x:%02x:%02x:%02x:%02x connection reject with Status code %d, remove it.\n",
+		    if (StatusCode != MLME_ASSOC_REJ_UNABLE_HANDLE_STA) /* decrease noise debug, remove class 2-3 errors flood */
+			printk("%s ASSOC - Client %02x:%02x:%02x:%02x:%02x:%02x connection reject with Status code %d, remove it.\n",
 			    pAd->CommonCfg.Channel > 14 ? "5GHz AP" : "2.4GHz AP", PRINT_MAC(pEntry->Addr), StatusCode);
 		    MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
 	    }
