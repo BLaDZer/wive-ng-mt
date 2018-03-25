@@ -163,6 +163,7 @@ bool ip_call_ra_chain(struct sk_buff *skb)
 	u8 protocol = ip_hdr(skb)->protocol;
 	struct sock *last = NULL;
 	struct net_device *dev = skb->dev;
+	struct net *net = dev_net(dev);
 
 	for (ra = rcu_dereference(net->ipv4.ra_chain); ra; ra = rcu_dereference(ra->next)) {
 		struct sock *sk = ra->sk;
