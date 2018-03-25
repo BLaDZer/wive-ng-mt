@@ -266,7 +266,7 @@ int ip_ra_control(struct sock *sk, unsigned char on,
 			}
 			/* dont let ip_call_ra_chain() use sk again */
 			ra->sk = NULL;
-			rcu_assign_pointer(*rap, ra->next);
+			RCU_INIT_POINTER(*rap, ra->next);
 			mutex_unlock(&net->ipv4.ra_mutex);
 
 			if (ra->destructor)
@@ -288,7 +288,7 @@ int ip_ra_control(struct sock *sk, unsigned char on,
 	new_ra->sk = sk;
 	new_ra->destructor = destructor;
 
-	new_ra->next = ra;
+	RCU_INIT_POINTER(new_ra->next, ra);
 	rcu_assign_pointer(*rap, new_ra);
 	sock_hold(sk);
 	mutex_unlock(&net->ipv4.ra_mutex);
