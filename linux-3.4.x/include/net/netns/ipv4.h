@@ -6,6 +6,9 @@
 #define __NETNS_IPV4_H__
 
 #include <net/inet_frag.h>
+#include <linux/rcupdate.h>
+#include <linux/mutex.h>
+#include <linux/types.h>
 
 struct ctl_table_header;
 struct ipv4_devconf;
