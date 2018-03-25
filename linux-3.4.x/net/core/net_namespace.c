@@ -157,6 +157,7 @@ static __net_init int setup_net(struct net *net)
 #ifdef NETNS_REFCNT_DEBUG
 	atomic_set(&net->use_count, 0);
 #endif
+	mutex_init(&net->ipv4.ra_mutex);
 
 	list_for_each_entry(ops, &pernet_list, list) {
 		error = ops_init(ops, net);

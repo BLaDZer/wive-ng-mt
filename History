@@ -3950,22 +3950,23 @@
 46) kernel: net: fix race on decreasing number of TX queues.<br>
 47) kernel: net: make ip_ra_chain per struct net.<br>
 48) kernel: net: move IP_ROUTER_ALERT out of lock_sock(sk).<br>
-49) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-50) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-51) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-52) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-53) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-54) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-55) kernel: net: tcp: purge write queue upon RST.<br>
-56) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-57) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
-58) kernel: net: bridge: check brport attr show in brport_show.<br>
-59) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-60) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-61) kernel: net: eoip: initial support.<br>
-62) kernel: net: eoip: add fragmentation output support.<br>
-63) kernel: net: enable l2tp_v3 support.<br>
-64) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
+49) kernel: net: replace ip_ra_lock with per-net mutex.<br>
+50) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+51) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+52) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+53) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+54) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+55) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+56) kernel: net: tcp: purge write queue upon RST.<br>
+57) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+58) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
+59) kernel: net: bridge: check brport attr show in brport_show.<br>
+60) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+61) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+62) kernel: net: eoip: initial support.<br>
+63) kernel: net: eoip: add fragmentation output support.<br>
+64) kernel: net: enable l2tp_v3 support.<br>
+65) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 <br>
 <br>
 <br>
