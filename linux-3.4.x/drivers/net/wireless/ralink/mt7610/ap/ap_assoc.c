@@ -1760,7 +1760,7 @@ VOID ap_cmm_peer_assoc_req_action(
 LabelOK:
 
 	/* avoid dead record before ageouted in mactable for not connected clients */
-	if (StatusCode != MLME_SUCCESS) {
+	if (StatusCode != MLME_SUCCESS && StatusCode != 0xFFFF) {
 	    pEntry = MacTableLookup(pAd, ie_list->Addr2);
 	    if (pEntry) {
 		    if (StatusCode != MLME_ASSOC_REJ_UNABLE_HANDLE_STA) /* decrease noise debug, remove class 2-3 errors flood */
