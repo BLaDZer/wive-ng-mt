@@ -321,6 +321,12 @@ static VOID APPeerAuthReqAtIdleAction(
 		return;
 	}
 
+	if (apidx >= HW_BEACON_MAX_NUM)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Index out of bound\n"));
+		return;
+	}
+
 	pMbss = &pAd->ApCfg.MBSSID[apidx];
 
 	if ((pAd->ApCfg.MBSSID[apidx].MSSIDDev != NULL) &&
@@ -617,6 +623,12 @@ static VOID APPeerAuthConfirmAction(
 	if (apidx >= pAd->ApCfg.BssidNum)
 	{	
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - Bssid not found\n"));
+		return;
+	}
+
+	if (apidx >= HW_BEACON_MAX_NUM)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Index out of bound\n"));
 		return;
 	}
 

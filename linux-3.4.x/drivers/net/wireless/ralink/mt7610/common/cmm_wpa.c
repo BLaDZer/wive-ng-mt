@@ -1703,6 +1703,10 @@ VOID PeerPairMsg4Action(
 		if (PeerWpaMessageSanity(pAd, pMsg4, MsgLen, EAPOL_PAIR_MSG_4, pEntry) == FALSE)
 			break;
 
+	/* Sanity Check pEntry->apidx to avoid out of bound with pAd->ApCfg.MBSSID*/
+	if (pEntry->apidx >= HW_BEACON_MAX_NUM)
+		break;
+
         /* 3. Install pairwise key */
 		WPAInstallPairwiseKey(pAd, pEntry->apidx, pEntry, TRUE);
         

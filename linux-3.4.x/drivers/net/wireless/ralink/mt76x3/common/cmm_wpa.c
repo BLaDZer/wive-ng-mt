@@ -1918,6 +1918,10 @@ VOID PeerPairMsg4Action(
 			break;
 		}
 
+	/* Sanity Check pEntry->func_tb_idx to avoid out of bound with pAd->ApCfg.MBSSID*/
+	if (pEntry->func_tb_idx >= HW_BEACON_MAX_NUM)
+		break;
+
         /* 3. Install pairwise key */
 #ifdef MT_MAC
         if (pAd->chipCap.hif_type != HIF_MT)

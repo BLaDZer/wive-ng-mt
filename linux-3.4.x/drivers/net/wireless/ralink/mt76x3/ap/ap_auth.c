@@ -481,6 +481,12 @@ static VOID APPeerAuthReqAtIdleAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		return;
 	}
 
+	if (apidx >= HW_BEACON_MAX_NUM)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Index out of bound\n"));
+		return;
+	}
+
 	pMbss = &pAd->ApCfg.MBSSID[apidx];
 	wdev = &pMbss->wdev;
 	ASSERT((wdev->func_idx == apidx));
@@ -784,6 +790,12 @@ static VOID APPeerAuthConfirmAction(
 	if ((apidx >= pAd->ApCfg.BssidNum) || (apidx >= u4MaxMBSSIDSize))
 	{	
 		DBGPRINT(RT_DEBUG_TRACE, ("AUTH - Bssid not found\n"));
+		return;
+	}
+
+	if (apidx >= HW_BEACON_MAX_NUM)
+	{
+		DBGPRINT(RT_DEBUG_TRACE, ("Index out of bound\n"));
 		return;
 	}
 
