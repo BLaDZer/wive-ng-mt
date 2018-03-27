@@ -198,6 +198,11 @@ static USHORT update_associated_mac_entry(
 #endif /* DOT11W_PMF_SUPPORT */
 #endif /* SOFT_ENCRYPT */
 
+	if (wdev->bWmmCapable && ie_list->bWmmCapable)
+		CLIENT_STATUS_SET_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
+	else
+		CLIENT_STATUS_CLEAR_FLAG(pEntry, fCLIENT_STATUS_WMM_CAPABLE);
+
 #ifdef DOT11_N_SUPPORT
 	/* 	
 		WFA recommend to restrict the encryption type in 11n-HT mode.
