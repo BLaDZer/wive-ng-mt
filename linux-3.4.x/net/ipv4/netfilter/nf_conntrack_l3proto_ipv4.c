@@ -181,10 +181,8 @@ static unsigned int ipv4_conntrack_local(unsigned int hooknum,
 			/* when skipping ct, clear templates to avoid fooling
 			 * later targets/matches
 			 */
+			skb->nfctinfo = IP_CT_NEW;
 			nf_ct_put(tmpl);
-			/* must be last of nf_ct_put -> nf_conntrack_put */
-			if (skb->nfct != NULL)
-			    skb->nfct = NULL;
 		}
 		return NF_ACCEPT;
 	}
