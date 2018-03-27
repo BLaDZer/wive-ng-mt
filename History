@@ -3945,7 +3945,7 @@
 41) kernel: ralink_wifi: avoid dead record before ageouted in mactable for rejected clients.<br>
 42) kernel: ralink_wifi: decrease noise debug, remove class 2-3 errors flood.<br>
 43) kernel: ralink_wifi: update WMM capable flag in update_associated_mac_entry to.<br>
-44) kernel: ralink_wifi: init GI as 800 per default, replaced after assoc ended.<br>
+44) kernel: ralink_wifi: init GI as 800 per default, replaced by ra_ctl.<br>
 45) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
 46) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
 47) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
