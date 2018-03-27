@@ -172,8 +172,22 @@ static unsigned int ipv4_conntrack_local(unsigned int hooknum,
 	    ip_hdrlen(skb) < sizeof(struct iphdr))
 		return NF_ACCEPT;
 
-	if (ip_is_fragment(ip_hdr(skb))) /* IP_NODEFRAG setsockopt set */
+	if (ip_is_fragment(ip_hdr(skb))) { /* IP_NODEFRAG setsockopt set */
+		enum ip_conntrack_info ctinfo;
+		struct nf_conn *tmpl;
+
+		tmpl = nf_ct_get(skb, &ctinfo);
+		if (tmpl && nf_ct_is_template(tmpl)) {
+			/* when skipping ct, clear templates to avoid fooling
+			 * later targets/matches
+			 */
+			nf_ct_put(tmpl);
+			/* must be last of nf_ct_put -> nf_conntrack_put */
+			if (skb->nfct != NULL)
+			    skb->nfct = NULL;
+		}
 		return NF_ACCEPT;
+	}
 
 	return nf_conntrack_in(dev_net(out), PF_INET, hooknum, skb);
 }
