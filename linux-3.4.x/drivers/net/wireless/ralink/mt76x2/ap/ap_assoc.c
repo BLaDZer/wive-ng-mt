@@ -505,11 +505,7 @@ static USHORT update_associated_mac_entry(
 		
 		MlmeSelectTxRateTable(pAd, pEntry, &pEntry->pTable, &TableSize, &pEntry->CurrTxRateIndex);
 		MlmeNewTxRate(pAd, pEntry);
-
-#ifdef NEW_RATE_ADAPT_SUPPORT
-		if (! ADAPT_RATE_TABLE(pEntry->pTable))
-#endif /* NEW_RATE_ADAPT_SUPPORT */
-			pEntry->HTPhyMode.field.ShortGI = GI_800;
+		pEntry->HTPhyMode.field.ShortGI = GI_800;
 	}
 	else
 	{

@@ -444,11 +444,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s(): Peer's PhyCap=>Mode:%s, BW:%s\n",
 #endif /* MCS_LUT_SUPPORT */
 
 		MlmeNewTxRate(pAd, pEntry);
-
-#ifdef NEW_RATE_ADAPT_SUPPORT
-		if (! ADAPT_RATE_TABLE(pEntry->pTable))
-#endif /* NEW_RATE_ADAPT_SUPPORT */
-			pEntry->HTPhyMode.field.ShortGI = GI_800;
+		pEntry->HTPhyMode.field.ShortGI = GI_800;
 	}
 	else
 	{
