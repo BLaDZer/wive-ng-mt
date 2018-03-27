@@ -52,7 +52,7 @@ static void ap_assoc_info_debugshow(
 	{
 		assoc_ht_info_debugshow(pAd, pEntry, ie_list->ht_cap_len, &ie_list->HTCapability);
 
-		printk("%s - Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n",
+		printk("%s - HT support STA. Update AP OperaionMode=%d , fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n",
 				sAssoc,	pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode, pAd->MacTab.fAnyStationIsLegacy,
 				pAd->MacTab.fAnyStation20Only, pAd->MacTab.fAnyStationNonGF);
 
@@ -73,7 +73,7 @@ static void ap_assoc_info_debugshow(
 			WMODE_CAP_AC(pAd->CommonCfg.PhyMode) &&
 			(pAd->CommonCfg.Channel > 14))
 		{
-			printk("%s - VHT STA\n", sAssoc);
+			printk("%s - VHT support STA\n", sAssoc);
 			assoc_vht_info_debugshow(pAd, pEntry, &ie_list->vht_cap, NULL);
 		}
 #endif /* DOT11_VHT_AC */
