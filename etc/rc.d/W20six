@@ -231,13 +231,11 @@ dhcpradvdreconf() {
 
 	    pid=`pidof dhcp6s`
 	    if [ "$pid" != "" ]; then
-		$LOG  "Stop dhcp6s."
-		killall -q dhcp6s
-		killall -q -SIGKILL dhcp6s
+		killall -q -SIGHUP dhcp6s
+	    else
+		$LOG "Starting dhcp6s"
+		dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
 	    fi
-
-	    $LOG "Starting dhcp6s"
-	    dhcp6s -c /etc/dhcp6s.conf -P /var/run/dhcp6s.pid $lan_if &
     	fi
     fi
 }

@@ -124,6 +124,7 @@ TAILQ_HEAD(relayinfolist, relayinfo);
 static int debug = 0;
 static sig_atomic_t sig_flags = 0;
 #define SIGF_TERM 0x1
+#define SIGF_HUP 0x2
 
 const dhcp6_mode_t dhcp6_mode = DHCP6_MODE_SERVER;
 char *device = NULL;
@@ -584,6 +585,12 @@ server6_init()
 		    strerror(errno));
 		exit(1);
 	}
+
+	if (signal(SIGHUP, server6_signal) == SIG_ERR) {
+		debug_printf(LOG_WARNING, FNAME, "failed to set signal: %s",
+		    strerror(errno));
+		exit(1);
+	}
 	return;
 }
 
@@ -592,7 +599,11 @@ process_signals()
 {
 	if ((sig_flags & SIGF_TERM)) {
 		unlink(pid_file);
-		exit(0);
+		server6_stop();
+	}
+
+	if ((sig_flags & SIGF_HUP)) {
+		server6_reload();
 	}
 }
 
@@ -2689,6 +2700,9 @@ server6_signal(sig)
 	switch (sig) {
 	case SIGTERM:
 		sig_flags |= SIGF_TERM;
+		break;
+	case SIGHUP:
+		sig_flags |= SIGF_HUP;
 		break;
 	}
 }
