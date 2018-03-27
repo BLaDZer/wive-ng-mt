@@ -2236,8 +2236,10 @@ VOID PeerPairMsg4Action(
 #endif /* CONFIG_AP_SUPPORT */
 
 #ifdef IAPP_SUPPORT
-			IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
-			DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+			if (IS_ENTRY_CLIENT(pEntry)) {
+			    IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
+			    DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+			}
 #endif /* IAPP_SUPPORT */
 
 			/* send wireless event - for set key done WPA2*/

@@ -765,6 +765,9 @@ BOOLEAN IAPP_L2_Update_Frame_Send(RTMP_ADAPTER *pAd, UINT8 *mac, INT bssid)
 
 	NDIS_PACKET	*pNetBuf;
 
+	if (!VALID_MBSS(pAd, bssid))
+		return FALSE;
+
 	pNetBuf = RtmpOsPktIappMakeUp(get_netdev_from_bssid(pAd, bssid), mac);
 	if (pNetBuf == NULL)
 		return FALSE;
@@ -1840,10 +1843,10 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 								&EvtReAssoc, sizeof(EvtReAssoc), NULL);
 		}
 #endif /* DOT11R_FT_SUPPORT */
-
-		IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
-		DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
-
+		if (IS_ENTRY_CLIENT(pEntry)) {
+		    IAPP_L2_Update_Frame_Send(pAd, pEntry->Addr, pEntry->apidx);
+		    DBGPRINT(RT_DEBUG_TRACE, ("####### Send L2 Frame Mac=%02x:%02x:%02x:%02x:%02x:%02x for update ARP table at DS\n",PRINT_MAC(pEntry->Addr)));
+		}
 #endif /* IAPP_SUPPORT */
 
 #ifdef MWDS
