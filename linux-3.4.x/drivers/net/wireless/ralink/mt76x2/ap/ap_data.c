@@ -5932,9 +5932,9 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 
 	ASSERT(pEntry->Aid == pRxBlk->wcid);
 
-
-
 #ifdef DOT11_N_SUPPORT
+#ifndef DOT11_VHT_AC
+#ifndef WFA_VHT_PF
 	/* check Atheros Client */
 	// TODO: shiang@PF#2, is this atheros protection still necessary here????
 	if (!pEntry->bIAmBadAtheros && (pFmeCtrl->Retry) &&
@@ -5947,6 +5947,8 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 		pEntry->bIAmBadAtheros = TRUE;
 
 	}
+#endif /* WFA_VHT_PF */
+#endif /* DOT11_VHT_AC */
 #endif /* DOT11_N_SUPPORT */
 
    	/* update rssi sample */

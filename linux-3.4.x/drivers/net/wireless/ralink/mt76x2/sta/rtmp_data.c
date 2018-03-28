@@ -690,7 +690,8 @@ VOID STAHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				}
 			}
 		}
-
+#ifdef DOT11_N_SUPPORT
+#ifndef DOT11_VHT_AC
 #ifndef WFA_VHT_PF
 		// TODO: shiang@PF#2, is this atheros protection still necessary here???
 		/* check Atheros Client */
@@ -702,6 +703,8 @@ VOID STAHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				RTMP_UPDATE_PROTECT(pAd, 8 , ALLN_SETPROTECT, TRUE, FALSE);
 		}
 #endif /* WFA_VHT_PF */
+#endif /* DOT11_VHT_AC */
+#endif /* DOT11_N_SUPPORT */
 	}
 
 
@@ -1173,7 +1176,8 @@ VOID STAHandleRxDataFrame_Hdr_Trns(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 #endif
 				ASSERT(pRxBlk->wcid == BSSID_WCID);
 		}
-
+#ifdef DOT11_N_SUPPORT
+#ifndef DOT11_VHT_AC
 #ifndef WFA_VHT_PF
 		// TODO: shiang@PF#2, is this atheros protection still necessary here???
 		/* check Atheros Client */
@@ -1185,6 +1189,8 @@ VOID STAHandleRxDataFrame_Hdr_Trns(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				RTMP_UPDATE_PROTECT(pAd, 8 , ALLN_SETPROTECT, TRUE, FALSE);
 		}
 #endif /* WFA_VHT_PF */
+#endif /* DOT11_VHT_AC */
+#endif /* DOT11_N_SUPPORT */
 	}
 
 

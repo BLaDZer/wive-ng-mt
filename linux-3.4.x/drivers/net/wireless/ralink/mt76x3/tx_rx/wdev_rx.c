@@ -1694,10 +1694,8 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():  Not my bss! pRxInfo->MyBss=%d\n", __FUNCTION__, 
 #endif /* APCLI_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */
 
-	if (pEntry) {
-	}
-
-
+#ifdef DOT11_N_SUPPORT
+#ifndef DOT11_VHT_AC
 #ifndef WFA_VHT_PF
 	// TODO: shiang@PF#2, is this atheros protection still necessary here???
 	/* check Atheros Client */
@@ -1706,6 +1704,8 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():  Not my bss! pRxInfo->MyBss=%d\n", __FUNCTION__, 
 		pEntry->bIAmBadAtheros = TRUE;
 	}
 #endif /* WFA_VHT_PF */
+#endif /* DOT11_VHT_AC */
+#endif /* DOT11_N_SUPPORT */
 
 ret: 
 	hdr_len = LENGTH_802_11;
