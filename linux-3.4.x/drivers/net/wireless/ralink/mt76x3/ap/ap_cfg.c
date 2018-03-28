@@ -1739,7 +1739,7 @@ INT RTMPAPSetInformation(
 						PUCHAR	sFTSupport = (PUCHAR)"";
 #endif /* DOT11R_FT_SUPPORT */
 						printk("STA %02x:%02x:%02x:%02x:%02x:%02x roam from this AP%s, delete entry\n", PRINT_MAC(pEntry->Addr), sFTSupport);
-						MacTableDeleteEntry(pAd, pEntry->Aid, Addr);
+						MacTableDeleteEntry(pAd, pEntry->wcid, Addr);
 					} else {
 						/* WDS/APCLI must be send deauth after migrate */
 						MlmeDeAuthAction(pAd, pEntry, REASON_DISASSOC_STA_LEAVING, FALSE);

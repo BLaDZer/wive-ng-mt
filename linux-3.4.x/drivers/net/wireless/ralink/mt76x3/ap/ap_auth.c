@@ -589,7 +589,7 @@ SendAuth:
 
                 /* If this STA exists, delete it. */
                 if (pEntry)
-                        MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+                        MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 
                 RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, auth_info.addr2, apidx, 0);
 		return;
@@ -605,7 +605,7 @@ SendAuth:
 
             		/* If this STA exists, delete it. */
             		if (pEntry)
-                    		MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+                    		MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 				return;
 			}
 	}
@@ -629,7 +629,7 @@ SendAuth:
 
                 /* If this STA exists, delete it. */
                 if (pEntry)
-                        MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+                        MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 
                 RTMPSendWirelessEvent(pAd, IW_MAC_FILTER_LIST_EVENT_FLAG, auth_info.addr2, apidx, 0);
                 return;

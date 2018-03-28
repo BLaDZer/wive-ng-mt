@@ -1491,7 +1491,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			MlmeFreeMemory(pAd, pOutBuffer);
 			//JERRY
 			if (!pEntry->IsKeep)
-				MacTableDeleteEntry(pAd, pEntry->Aid, pEntry->Addr);
+				MacTableDeleteEntry(pAd, pEntry->wcid, pEntry->Addr);
 			continue;
 		}
 		if (pEntry->BTMDisassocCount != 0)
