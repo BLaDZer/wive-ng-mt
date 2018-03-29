@@ -12,7 +12,7 @@ umount_all() {
     if [ -n "$mounted" ]; then
 	for disk in $mounted; do
 	    echo "Umount external drive /dev/$disk."
-	    (sync && umount -fl /dev/$disk && sync) &
+	    (sync && umount -fl /dev/$disk && sync && rmdir --ignore-fail-on-non-empty /media/$disk) &
 	done
 	sleep 2
     fi
