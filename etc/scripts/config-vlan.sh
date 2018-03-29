@@ -667,7 +667,7 @@ fi
 if [ "$OperationMode" != "1" ] || [ "$CONFIG_GE2_RGMII_AN" = "y" ]; then
     wan_phy=""
 else
-    if [ "$wan_portN" = "0" ]; then
+    if [ "$wan_port" = "0" ]; then
 	wan_phy="4"
     else
 	wan_phy="0"
