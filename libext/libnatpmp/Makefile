@@ -169,6 +169,8 @@ else
 endif
 
 shared: $(SHAREDLIB)
+	ln -sf libnatpmp.so	libnatpmp.so.0
+	ln -sf libnatpmp.so	libnatpmp.so.1
 	cp -vfa *.so*		$(LIBCDIRSHARED)/lib
 	-cp -vfa *.la*		$(LIBCDIRSHARED)/lib
 	cp -vfa *.h		$(LIBCDIRSHARED)/include
