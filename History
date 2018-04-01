@@ -3972,16 +3972,17 @@
 68) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
 69) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
 70) kernel: net: netfilter: drop template ct when conntrack is skipped.<br>
-71) kernel: net: tcp: purge write queue upon RST.<br>
-72) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-73) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
-74) kernel: net: bridge: check brport attr show in brport_show.<br>
-75) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-76) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-77) kernel: net: eoip: initial support.<br>
-78) kernel: net: eoip: add fragmentation output support.<br>
-79) kernel: net: enable l2tp_v3 support.<br>
-80) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
+71) kernel: net: netfilter: nat: cope with negative port range.<br>
+72) kernel: net: tcp: purge write queue upon RST.<br>
+73) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+74) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
+75) kernel: net: bridge: check brport attr show in brport_show.<br>
+76) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+77) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+78) kernel: net: eoip: initial support.<br>
+79) kernel: net: eoip: add fragmentation output support.<br>
+80) kernel: net: enable l2tp_v3 support.<br>
+81) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 <br>
 <br>
 <br>
