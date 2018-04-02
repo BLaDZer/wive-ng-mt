@@ -3904,88 +3904,89 @@
 <b>7.2.x</b><br>
 1) build_system: toolchain: headers up and rebuild.<br>
 2) build_system: libnatpmp: add symlinks to so.0,so.1 (fix transmission link).<br>
-3) libusb: update to 1.21 version.<br>
-4) libtalloc: update to 2.1.11 version.<br>
-5) openssl: up to 1.0.2n version.<br>
-6) libmicrohttpd: update to 0.9.59 version.<br>
-7) libcurl: update to 7.58.0 version.<br>
-8) dropbear: update to 2018.76 version.<br>
-9) xl2tpd: update to 1.3.10.1 version (commit 767f33e3).<br>
-10) nodogsplash: update to 2.0.1 version (commit 461fa24f).<br>
-11) coovachilli: up to 1.4 from git (commit f3f7b49c).<br>
-12) dnsmasq: update to 2.79 release version.<br>
-13) eoip: add control util.<br>
-14) dhcpv6: add a bit info to logger when get OPTION_RECONF_ACCEPT(20) dhcpv6 option.<br>
-15) init.d: disable tcp_loose and a drop invalid state connections in input chain (deflect ACK/ACK+SYN flood attacks).<br>
-16) init.d: fix lan to wlan bridge isolate mode work.<br>
-17) init.d: fix L2TP server work in dual net and apcli modes.<br>
-18) init.d: rewrite samba wait stop logic.<br>
-19) init.d: automount: fix ext4 module load for support ext2/3 FS.<br>
-20) init.d: dhcp script: fix full renew mode work at routes changed.<br>
-21) init.d: dhcp script: force full renew after dhcp fail.<br>
-22) init.d: dhcp script: force start pppoe in dhcp fail case if not started in normal path.<br>
-23) init.d: samba: fix auto share last media part for all.<br>
-24) init.d: add l2tp v3 eth bridge mode tunnel support.<br>
-25) init.d: add eoip eth bridge mode tunnel support.<br>
-26) init.d: iaap: sysctl: tune only timeouts, not touch arp/rp filters mode (not need for now).<br>
-27) init.d: remove mount point after manual umount.<br>
-28) init.d: config-vlan.sh: fix skip wan_phy logic.<br>
-29) libwive: fix potentional null pointer dereference or out of range issue.<br>
-30) goahead: fix potentioanl null pointer dereferences in some cases.<br>
-31) goahead: fix wds page remove links logic.<br>
-32) goahead: hide wlan2lan isolate in full bridget modes.<br>
-33) goahead: limit tcp backlog.<br>
-34) dhcp6s: add support reload configs by SIGHUP and use it.<br>
-35) ralinkiappd: increase tcp conection backlog to 72 connections.<br>
-36) kernel: ralink_arch: add delay after pci-e phy reconfigure.<br>
-37) kernel: ralink_wifi: increase pmk chache id entries to 128.<br>
-38) kernel: ralink_wifi: add new iphone6 oui 50:A6:7F and 6C:72:E7 to bcm workaround.<br>
-39) kernel: ralink_wifi: move L2 update send frame to more true place.<br>
-40) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
-41) kernel: ralink_wifi: fix allowToSend init by default.<br>
-42) kernel: ralink_wifi: fix potentional null pointer dereference in mactable managment.<br>
-43) kernel: ralink_wifi: fix potentional null pointer dereference in more places of decode managment frames.<br>
-44) kernel: ralink_wifi: do not change response code by handoff or band steering if status allready not success (correct reject reason send to client).<br>
-45) kernel: ralink_wifi: avoid dead record before ageouted in mactable for rejected clients.<br>
-46) kernel: ralink_wifi: decrease noise debug, remove class 2-3 errors flood.<br>
-47) kernel: ralink_wifi: update WMM capable flag in update_associated_mac_entry to.<br>
-48) kernel: ralink_wifi: init GI as 800 per default, replaced by ra_ctl.<br>
-49) kernel: ralink_wifi: add lost out of bounds checks.<br>
-50) kernel: ralink_wifi: always use pEntry->wcid instead of pEntry->Aid in sta delete case (new api compat and more safe).<br>
-51) kernel: ralink_wifi: add new honor9 oui 5С:C3:07 bcm fix.<br>
-52) kernel: ralink_wifi: fix extCapInfo init in probe path.<br>
-53) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
-54) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-55) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-56) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-57) kernel: ralink_wifi: ft: silencely discard frame from FT clients without FT procedure use in assoc.<br>
-58) kernel: ralink_wifi: bndstr: prevent multiple records insert for one client.<br>
-59) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
-60) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
-61) kernel: net: fix race on decreasing number of TX queues.<br>
-62) kernel: net: make ip_ra_chain per struct net.<br>
-63) kernel: net: move IP_ROUTER_ALERT out of lock_sock(sk).<br>
-64) kernel: net: replace ip_ra_lock with per-net mutex.<br>
-65) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-66) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-67) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-68) kernel: net: ipv4: rcu cleanup in ip_ra_control().<br>
-69) kernel: net: ipv4: only compute net once in ip_call_ra_chain.<br>
-70) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-71) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-72) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-73) kernel: net: netfilter: drop template ct when conntrack is skipped.<br>
-74) kernel: net: netfilter: nat: cope with negative port range.<br>
-75) kernel: net: tcp: purge write queue upon RST.<br>
-76) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-77) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
-78) kernel: net: bridge: check brport attr show in brport_show.<br>
-79) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-80) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-81) kernel: net: eoip: initial support.<br>
-82) kernel: net: eoip: add fragmentation output support.<br>
-83) kernel: net: enable l2tp_v3 support.<br>
-84) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
+3) busybox: update to 1.28.2 stable version.<br>
+4) libusb: update to 1.21 version.<br>
+5) libtalloc: update to 2.1.11 version.<br>
+6) openssl: up to 1.0.2n version.<br>
+7) libmicrohttpd: update to 0.9.59 version.<br>
+8) libcurl: update to 7.58.0 version.<br>
+9) dropbear: update to 2018.76 version.<br>
+10) xl2tpd: update to 1.3.10.1 version (commit 767f33e3).<br>
+11) nodogsplash: update to 2.0.1 version (commit 461fa24f).<br>
+12) coovachilli: up to 1.4 from git (commit f3f7b49c).<br>
+13) dnsmasq: update to 2.79 release version.<br>
+14) eoip: add control util.<br>
+15) dhcpv6: add a bit info to logger when get OPTION_RECONF_ACCEPT(20) dhcpv6 option.<br>
+16) init.d: disable tcp_loose and a drop invalid state connections in input chain (deflect ACK/ACK+SYN flood attacks).<br>
+17) init.d: fix lan to wlan bridge isolate mode work.<br>
+18) init.d: fix L2TP server work in dual net and apcli modes.<br>
+19) init.d: rewrite samba wait stop logic.<br>
+20) init.d: automount: fix ext4 module load for support ext2/3 FS.<br>
+21) init.d: dhcp script: fix full renew mode work at routes changed.<br>
+22) init.d: dhcp script: force full renew after dhcp fail.<br>
+23) init.d: dhcp script: force start pppoe in dhcp fail case if not started in normal path.<br>
+24) init.d: samba: fix auto share last media part for all.<br>
+25) init.d: add l2tp v3 eth bridge mode tunnel support.<br>
+26) init.d: add eoip eth bridge mode tunnel support.<br>
+27) init.d: iaap: sysctl: tune only timeouts, not touch arp/rp filters mode (not need for now).<br>
+28) init.d: remove mount point after manual umount.<br>
+29) init.d: config-vlan.sh: fix skip wan_phy logic.<br>
+30) libwive: fix potentional null pointer dereference or out of range issue.<br>
+31) goahead: fix potentioanl null pointer dereferences in some cases.<br>
+32) goahead: fix wds page remove links logic.<br>
+33) goahead: hide wlan2lan isolate in full bridget modes.<br>
+34) goahead: limit tcp backlog.<br>
+35) dhcp6s: add support reload configs by SIGHUP and use it.<br>
+36) ralinkiappd: increase tcp conection backlog to 72 connections.<br>
+37) kernel: ralink_arch: add delay after pci-e phy reconfigure.<br>
+38) kernel: ralink_wifi: increase pmk chache id entries to 128.<br>
+39) kernel: ralink_wifi: add new iphone6 oui 50:A6:7F and 6C:72:E7 to bcm workaround.<br>
+40) kernel: ralink_wifi: move L2 update send frame to more true place.<br>
+41) kernel: ralink_wifi: optimize call clear tx rings ack before delete mactab record.<br>
+42) kernel: ralink_wifi: fix allowToSend init by default.<br>
+43) kernel: ralink_wifi: fix potentional null pointer dereference in mactable managment.<br>
+44) kernel: ralink_wifi: fix potentional null pointer dereference in more places of decode managment frames.<br>
+45) kernel: ralink_wifi: do not change response code by handoff or band steering if status allready not success (correct reject reason send to client).<br>
+46) kernel: ralink_wifi: avoid dead record before ageouted in mactable for rejected clients.<br>
+47) kernel: ralink_wifi: decrease noise debug, remove class 2-3 errors flood.<br>
+48) kernel: ralink_wifi: update WMM capable flag in update_associated_mac_entry to.<br>
+49) kernel: ralink_wifi: init GI as 800 per default, replaced by ra_ctl.<br>
+50) kernel: ralink_wifi: add lost out of bounds checks.<br>
+51) kernel: ralink_wifi: always use pEntry->wcid instead of pEntry->Aid in sta delete case (new api compat and more safe).<br>
+52) kernel: ralink_wifi: add new honor9 oui 5С:C3:07 bcm fix.<br>
+53) kernel: ralink_wifi: fix extCapInfo init in probe path.<br>
+54) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+55) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+56) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+57) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+58) kernel: ralink_wifi: ft: silencely discard frame from FT clients without FT procedure use in assoc.<br>
+59) kernel: ralink_wifi: bndstr: prevent multiple records insert for one client.<br>
+60) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
+61) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
+62) kernel: net: fix race on decreasing number of TX queues.<br>
+63) kernel: net: make ip_ra_chain per struct net.<br>
+64) kernel: net: move IP_ROUTER_ALERT out of lock_sock(sk).<br>
+65) kernel: net: replace ip_ra_lock with per-net mutex.<br>
+66) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+67) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+68) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+69) kernel: net: ipv4: rcu cleanup in ip_ra_control().<br>
+70) kernel: net: ipv4: only compute net once in ip_call_ra_chain.<br>
+71) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+72) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+73) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+74) kernel: net: netfilter: drop template ct when conntrack is skipped.<br>
+75) kernel: net: netfilter: nat: cope with negative port range.<br>
+76) kernel: net: tcp: purge write queue upon RST.<br>
+77) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+78) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
+79) kernel: net: bridge: check brport attr show in brport_show.<br>
+80) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+81) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+82) kernel: net: eoip: initial support.<br>
+83) kernel: net: eoip: add fragmentation output support.<br>
+84) kernel: net: enable l2tp_v3 support.<br>
+85) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 <br>
 <br>
 <br>
