@@ -673,6 +673,7 @@ static VOID D_ShowTableEntries(PBND_STRG_CLI_TABLE table)
 }
 
 UCHAR ANDROID_RANDOM_OUI[]  = {0xda, 0xa1, 0x19};
+UCHAR SNR_AP_OUI[]  = {0xf8, 0xf0, 0x82};
 
 static BOOLEAN D_CheckConnectionReq(
 			PRTMP_ADAPTER pAd,
@@ -694,6 +695,12 @@ static BOOLEAN D_CheckConnectionReq(
 	/* check mac is random probe req need skip bnd_str logic for this req */
 	if (NdisEqualMemory(pSrcAddr, ANDROID_RANDOM_OUI, 3)) {
 	    BND_STRG_DBGPRINT(RT_DEBUG_TRACE, ("This (%02x:%02x:%02x:%02x:%02x:%02x) ANDROID probe req from random generated mac, skip this\n", PRINT_MAC(pSrcAddr)));
+	    return TRUE;
+	}
+
+	/* check mac is probe req from RMM scan of others SNR APs need skip bnd_str logic for this req */
+	if (NdisEqualMemory(pSrcAddr, SNR_AP_OUI, 3)) {
+	    BND_STRG_DBGPRINT(RT_DEBUG_TRACE, ("This (%02x:%02x:%02x:%02x:%02x:%02x) probe req from RMM scans other SNR AP`s mac, skip this\n", PRINT_MAC(pSrcAddr)));
 	    return TRUE;
 	}
 
