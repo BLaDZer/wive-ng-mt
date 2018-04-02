@@ -1433,11 +1433,11 @@ VOID ap_cmm_peer_assoc_req_action(
 		PUCHAR pInfo;
 		UCHAR extInfoLen;
 		BOOLEAN bNeedAppendExtIE = FALSE;
-		EXT_CAP_INFO_ELEMENT extCapInfo;
+		EXT_CAP_INFO_ELEMENT extCapInfo = { 0 };
 
 		
 		extInfoLen = sizeof(EXT_CAP_INFO_ELEMENT);
-		NdisZeroMemory(&extCapInfo, extInfoLen);
+		//NdisZeroMemory(&extCapInfo, extInfoLen);
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3

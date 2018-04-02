@@ -644,12 +644,12 @@ VOID APPeerProbeReqAction(
 		/* 7.3.2.27 Extended Capabilities IE */
 		{
 			ULONG TmpLen;
-			EXT_CAP_INFO_ELEMENT extCapInfo;
+			EXT_CAP_INFO_ELEMENT extCapInfo = { 0 };
 			UCHAR extInfoLen;
 
 
 			extInfoLen = sizeof(EXT_CAP_INFO_ELEMENT);
-			NdisZeroMemory(&extCapInfo, extInfoLen);
+			//NdisZeroMemory(&extCapInfo, extInfoLen);
 
 			/* P802.11n_D1.10, HT Information Exchange Support */
 			if (WMODE_CAP_N(PhyMode) && (pAd->CommonCfg.Channel <= 14) &&
@@ -679,7 +679,7 @@ VOID APPeerProbeReqAction(
 			)
 		{
 			ULONG TmpLen2=0;
-			UCHAR TmpFrame[256];
+			UCHAR TmpFrame[256] = { 0 };
 			UCHAR CountryIe = IE_COUNTRY;
 
 			/*
@@ -730,7 +730,7 @@ VOID APPeerProbeReqAction(
 #endif /* DOT11_VHT_AC */
 			}
 
-			NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+			//NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
 
 			/* prepare channel information */
 #ifdef EXT_BUILD_CHANNEL_LIST
