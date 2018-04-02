@@ -3988,6 +3988,7 @@
 84) kernel: net: enable l2tp_v3 support.<br>
 85) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 86) kernel: net: l2tp: do not accept arbitrary sockets.<br>
+87) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
 <br>
 <br>
 <br>
