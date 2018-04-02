@@ -306,7 +306,7 @@ INT BndStrg_InsertEntry(
 		entry = &table->Entry[i];
 
 		/* pick up the first available vacancy*/
-		if (!entry->bValid)	{
+		if (!entry->bValid) {
 			NdisZeroMemory(entry, sizeof(BND_STRG_CLI_ENTRY));
 			/* Fill Entry */
 			RTMP_GetCurrentSystemTick(&entry->jiffies);
@@ -314,6 +314,7 @@ INT BndStrg_InsertEntry(
 			entry->bValid = TRUE;
 			break;
 		}
+		entry = NULL;
 	}
 
 	if (entry) {
