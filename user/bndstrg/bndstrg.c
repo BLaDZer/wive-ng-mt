@@ -994,11 +994,12 @@ void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 		goto end_of_periodic_exec;
 	}
 
-	if ((table->status_queried_cnt >= 3) || (table->table_enable_cnt >= 3)) {
+	/* polling 30 seconds before stop */
+	if ((table->status_queried_cnt >= 30) || (table->table_enable_cnt >= 30)) {
 		DBGPRINT(DEBUG_OFF,
 				 "%s(): Give up (2G ready=%d,5G ready=%d)(status query cnt=%d,enable cnt=%d), re-exec bndstrg again.\n", __FUNCTION__,table->b2GInfReady,table->b5GInfReady,table->status_queried_cnt,table->table_enable_cnt);
 		eloop_terminate();
-		return;
+		goto end_of_periodic_exec;
 	}
 
 	if (table->status_queried == 0) {//not query yet
@@ -1190,7 +1191,7 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	table->status_queried_cnt = 0;
 	table->table_enable_cnt = 0;
 	table->Band = 0;
-	table->bEnabled = 0;
+	table->bEnabled = FALSE;
 
 	if (BndStrgRssiDiff != 0) {
 	    table->RssiDiff= BndStrgRssiDiff;

@@ -15,8 +15,22 @@ start() {
     get_param
     if [ "$BandSteering" != "" ] && [ "$BandSteering" != "0" ] ; then
 	if [ "$RadioOn" = "1" ] && [ "$RadioOnINIC" = "1" ] && [ "$SSID1" = "$SSID1INIC" ]; then
-	    $LOG "Starting bandsteering daemon"
-	    bndstrg $BandSteeringDebug &
+	    ( # send to background
+
+	        # wait 5 seconds before start, prevent jam with RRM
+		sleep 5
+
+		# if need kill
+		pid=`pidof bndstrg`
+		if [ "$pid" != "" ]; then
+		    $LOG "Stopping bandsteering daemon"
+		    killall -q bndstrg
+		    killall -q -SIGKILL bndstrg
+		fi
+
+		$LOG "Starting bandsteering daemon"
+		bndstrg $BandSteeringDebug
+	    ) & # send to background
 	else
 	    $LOG "For bandsteering work are required enable all bands support and identical SSID for 2.4GHz and 5GHz modules. Please change it and restart."
 	fi
