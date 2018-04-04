@@ -3991,6 +3991,7 @@
 87) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
 88) kernel: net: l2tp: do not accept arbitrary sockets.<br>
 89) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
+90) kernel: net: vlan: more careful checksum features handling.<br>
 <br>
 <br>
 <br>
