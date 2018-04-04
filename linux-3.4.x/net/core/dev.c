@@ -2172,6 +2172,7 @@ static netdev_features_t harmonize_features(struct sk_buff *skb,
 	    !can_checksum_protocol(features, protocol)) {
 		features &= ~NETIF_F_ALL_CSUM;
 		features &= ~NETIF_F_SG;
+		features &= ~NETIF_F_GSO_MASK;
 	} else if (illegal_highdma(skb->dev, skb)) {
 		features &= ~NETIF_F_SG;
 	}

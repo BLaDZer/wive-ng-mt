@@ -3993,6 +3993,7 @@
 89) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
 90) kernel: net: vlan: more careful checksum features handling.<br>
 91) kernel: net: fix checksum features handling in netif_skb_features().<br>
+92) kernel: net: disable segmentation if checksumming is not supported.<br>
 <br>
 <br>
 <br>
