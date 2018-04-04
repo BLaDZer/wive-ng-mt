@@ -397,6 +397,9 @@ PNET_DEV RtmpPhyNetDevInit(
 	/* set default txqlen, may be overwriten by ifconfig (see include/net/pkt_sched.h) */
         net_dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN_WLAN;
 
+	/* full disable GSO by default for radio */
+	net_dev->features &= ~NETIF_F_GSO_MASK;
+
 	/* put private data structure */
 	RTMP_OS_NETDEV_SET_PRIV(net_dev, pAd);
 

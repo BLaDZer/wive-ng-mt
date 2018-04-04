@@ -3956,44 +3956,45 @@
 52) kernel: ralink_wifi: always use pEntry->wcid instead of pEntry->Aid in sta delete case (new api compat and more safe).<br>
 53) kernel: ralink_wifi: add new honor9 oui 5С:C3:07 bcm fix.<br>
 54) kernel: ralink_wifi: fix extCapInfo init in probe path.<br>
-55) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
-56) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
-57) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
-58) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
-59) kernel: ralink_wifi: ft: silencely discard frame from FT clients without FT procedure use in assoc.<br>
-60) kernel: ralink_wifi: bndstr: prevent multiple records insert for one client.<br>
-61) kernel: ralink_wifi: bndstr: skip steering probe req`s from SNR APs neigh scan for RRM.<br>
-62) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
-63) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
-64) kernel: net: fix race on decreasing number of TX queues.<br>
-65) kernel: net: make ip_ra_chain per struct net.<br>
-66) kernel: net: move IP_ROUTER_ALERT out of lock_sock(sk).<br>
-67) kernel: net: replace ip_ra_lock with per-net mutex.<br>
-68) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
-69) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
-70) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
-71) kernel: net: ipv4: rcu cleanup in ip_ra_control().<br>
-72) kernel: net: ipv4: only compute net once in ip_call_ra_chain.<br>
-73) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
-74) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
-75) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
-76) kernel: net: netfilter: drop template ct when conntrack is skipped.<br>
-77) kernel: net: netfilter: nat: cope with negative port range.<br>
-78) kernel: net: tcp: purge write queue upon RST.<br>
-79) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
-80) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
-81) kernel: net: bridge: check brport attr show in brport_show.<br>
-82) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
-83) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
-84) kernel: net: eoip: initial support.<br>
-85) kernel: net: eoip: add fragmentation output support.<br>
-86) kernel: net: enable l2tp_v3 support.<br>
-87) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
-88) kernel: net: l2tp: do not accept arbitrary sockets.<br>
-89) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
-90) kernel: net: vlan: more careful checksum features handling.<br>
-91) kernel: net: fix checksum features handling in netif_skb_features().<br>
-92) kernel: net: disable segmentation if checksumming is not supported.<br>
+55) kernel: ralink_wifi: overwrite GSO feature set for radio interfaces.<br>
+56) kernel: ralink_wifi: mt7610: fix potentional use after free.<br>
+57) kernel: ralink_wifi: rrm: semi enable quiet support (without real tx stops).<br>
+58) kernel: ralink_wifi: rrm: can not insert in report list station without ssid.<br>
+59) kernel: ralink_wifi: rrm: full disable channel switch dfs based works.<br>
+60) kernel: ralink_wifi: ft: silencely discard frame from FT clients without FT procedure use in assoc.<br>
+61) kernel: ralink_wifi: bndstr: prevent multiple records insert for one client.<br>
+62) kernel: ralink_wifi: bndstr: skip steering probe req`s from SNR APs neigh scan for RRM.<br>
+63) kernel: kconfig.h: use __is_defined() to check if MODULE is defined.<br>
+64) kernel: mm: fix false-positive VM_BUG_ON() in page_cache_{get,add}_speculative().<br>
+65) kernel: net: fix race on decreasing number of TX queues.<br>
+66) kernel: net: make ip_ra_chain per struct net.<br>
+67) kernel: net: move IP_ROUTER_ALERT out of lock_sock(sk).<br>
+68) kernel: net: replace ip_ra_lock with per-net mutex.<br>
+69) kernel: net: ip6_tunnel: get the min mtu properly in ip6_tnl_xmit.<br>
+70) kernel: net: ipv6 sit: work around bogus gcc-8 -Wrestrict warning.<br>
+71) kernel: net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68 (RFC1191).<br>
+72) kernel: net: ipv4: rcu cleanup in ip_ra_control().<br>
+73) kernel: net: ipv4: only compute net once in ip_call_ra_chain.<br>
+74) kernel: net: bridge: fix early call to br_stp_change_bridge_id and plug newlink leaks.<br>
+75) kernel: net: conntrack: tcp_options: not need bug on if ptr is null. This case handled in upcode.<br>
+76) kernel: net: netfilter: nf_conntrack_tcp: fix stack out of bounds when parsing TCP options.<br>
+77) kernel: net: netfilter: drop template ct when conntrack is skipped.<br>
+78) kernel: net: netfilter: nat: cope with negative port range.<br>
+79) kernel: net: tcp: purge write queue upon RST.<br>
+80) kernel: net: ppp: prevent unregistered channels from connecting to PPP units.<br>
+81) kernel: net: tcp: sysctl: fix a race to avoid unexpected 0 window from space.<br>
+82) kernel: net: bridge: check brport attr show in brport_show.<br>
+83) kernel: net: fib_semantics: don't match route with mismatching tclassid.<br>
+84) kernel: net: ip_gre: dont increase dev->needed_headroom on a live device.<br>
+85) kernel: net: eoip: initial support.<br>
+86) kernel: net: eoip: add fragmentation output support.<br>
+87) kernel: net: enable l2tp_v3 support.<br>
+88) kernel: net: xfrm: allow clearing socket xfrm policies.<br>
+89) kernel: net: l2tp: do not accept arbitrary sockets.<br>
+90) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
+91) kernel: net: vlan: more careful checksum features handling.<br>
+92) kernel: net: fix checksum features handling in netif_skb_features().<br>
+93) kernel: net: disable segmentation if checksumming is not supported.<br>
 <br>
 <br>
 <br>
