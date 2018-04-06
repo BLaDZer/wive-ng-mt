@@ -500,7 +500,9 @@ struct sk_buff {
 #if IS_ENABLED(CONFIG_NET_VENDOR_INTEL)
 	__u8			no_fcs:1;
 #endif
-	/* 9/11 bit hole (depending on ndisc_nodetype presence) */
+	__u8                    head_frag:1;
+
+	/* 8/11 bit hole (depending on ndisc_nodetype presence) */
 	kmemcheck_bitfield_end(flags2);
 
 #if IS_ENABLED(CONFIG_IMQ)
@@ -632,7 +634,7 @@ extern void consume_skb(struct sk_buff *skb);
 extern void	       __kfree_skb(struct sk_buff *skb);
 extern struct sk_buff *__alloc_skb(unsigned int size,
 				   gfp_t priority, int fclone, int node);
-extern struct sk_buff *build_skb(void *data);
+extern struct sk_buff *build_skb(void *data, unsigned int frag_size);
 static inline struct sk_buff *alloc_skb(unsigned int size,
 					gfp_t priority)
 {

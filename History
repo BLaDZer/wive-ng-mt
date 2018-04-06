@@ -3993,9 +3993,10 @@
 89) kernel: net: l2tp: do not accept arbitrary sockets.<br>
 90) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
 91) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
-92) kernel: net: vlan: more careful checksum features handling.<br>
-93) kernel: net: fix checksum features handling in netif_skb_features().<br>
-94) kernel: net: disable segmentation if checksumming is not supported.<br>
+92) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
+93) kernel: net: vlan: more careful checksum features handling.<br>
+94) kernel: net: fix checksum features handling in netif_skb_features().<br>
+95) kernel: net: disable segmentation if checksumming is not supported.<br>
 <br>
 <br>
 <br>
