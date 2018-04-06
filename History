@@ -4003,6 +4003,7 @@
 7) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
 8) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
 9) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
+10) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
 <br>
 <br>
 <br>
