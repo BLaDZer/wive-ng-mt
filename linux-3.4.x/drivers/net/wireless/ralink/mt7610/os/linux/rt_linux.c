@@ -647,24 +647,23 @@ PNDIS_PACKET ClonePacket(
 	IN PUCHAR pData,
 	IN ULONG DataSize)
 {
-	struct sk_buff *pRxPkt;
-	struct sk_buff *pClonedPkt;
+	struct sk_buff *pRxPkt,*pClonedPkt;
 
 	ASSERT(pPacket);
+	ASSERT(DataSize < 1530);
 	pRxPkt = RTPKT_TO_OSPKT(pPacket);
 
 	/* clone the packet */
 	pClonedPkt = skb_clone(pRxPkt, MEM_ALLOC_FLAG);
-
 	if (pClonedPkt) {
 		/* set the correct dataptr and data len */
 		MEM_DBG_PKT_ALLOC_INC(pClonedPkt);
 		pClonedPkt->dev = pRxPkt->dev;
 		pClonedPkt->data = pData;
 		pClonedPkt->len = DataSize;
-		SET_OS_PKT_DATATAIL(pClonedPkt, pClonedPkt->data, pClonedPkt->len);
-		ASSERT(DataSize < 1530);
+		skb_set_tail_pointer(pClonedPkt, pClonedPkt->len);
 	}
+
 	return pClonedPkt;
 }
 
@@ -707,7 +706,8 @@ void wlan_802_11_to_802_3_packet(
 	pOSPkt->dev = pNetDev;
 	pOSPkt->data = pData;
 	pOSPkt->len = DataSize;
-	SET_OS_PKT_DATATAIL(pOSPkt, pOSPkt->data, pOSPkt->len);
+
+	skb_set_tail_pointer(pOSPkt, pOSPkt->len);
 
 	/* copy 802.3 header */
 #ifdef CONFIG_AP_SUPPORT
