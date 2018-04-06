@@ -4004,6 +4004,7 @@
 8) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
 9) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
 10) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
+11) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
 <br>
 <br>
 <br>
