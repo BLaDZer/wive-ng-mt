@@ -4006,6 +4006,7 @@
 11) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
 12) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
 13) kernel: ralink_wifi: overwrite GSO feature set for radio interfaces.<br>
+14) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
 <br>
 <br>
 <br>
