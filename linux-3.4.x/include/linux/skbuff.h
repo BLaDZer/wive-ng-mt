@@ -632,6 +632,7 @@ extern void kfree_skb(struct sk_buff *skb);
 extern void kfree_skb_list(struct sk_buff *segs);
 extern void consume_skb(struct sk_buff *skb);
 extern void	       __kfree_skb(struct sk_buff *skb);
+extern struct kmem_cache *skbuff_head_cache;
 extern struct sk_buff *__alloc_skb(unsigned int size,
 				   gfp_t priority, int fclone, int node);
 extern struct sk_buff *build_skb(void *data, unsigned int frag_size);
