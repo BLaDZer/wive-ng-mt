@@ -4001,6 +4001,7 @@
 5) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
 6) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
 7) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
+8) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
 <br>
 <br>
 <br>
