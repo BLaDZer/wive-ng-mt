@@ -1867,6 +1867,13 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBSS
 	UINT16 Sequence = pRxBlk->pHeader->Sequence;
 	ULONG Now32;
 
+	if (!pRxBlk->DataSize) {
+		/* release packet*/
+		/* avoid processing with null paiload packets - QCA61X4A bug */
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	if (!RX_BLK_TEST_FLAG(pRxBlk, fRX_AMSDU) &&  (pRxBlk->DataSize > MAX_RX_PKT_LEN))
 	{
 		static int err_size;

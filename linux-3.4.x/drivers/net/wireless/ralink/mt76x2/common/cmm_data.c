@@ -3597,6 +3597,13 @@ VOID Indicate_Legacy_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBS
 #endif /* CONFIG_STA_SUPPORT */
 #endif /* RT_CFG80211_SUPPORT */
 
+	if (!pRxBlk->DataSize) {
+		/* release packet*/
+		/* avoid processing with null paiload packets - QCA61X4A bug */
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	if (pRxBlk->DataSize > MAX_RX_PKT_LEN)
 	{
 		RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_FAILURE);

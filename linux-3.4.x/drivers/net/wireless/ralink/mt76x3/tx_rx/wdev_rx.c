@@ -414,6 +414,14 @@ if (1) {
 	}
 	else
 #endif /* HDR_TRANS_SUPPORT */
+
+	if (!data_len) {
+		/* release packet*/
+		/* avoid processing with null paiload packets - QCA61X4A bug */
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	IF_DEV_CONFIG_OPMODE_ON_AP(pAd) {
                  /* Skip IEEE 802.3 header if present. 802.3 header is front of LLC */
                  {

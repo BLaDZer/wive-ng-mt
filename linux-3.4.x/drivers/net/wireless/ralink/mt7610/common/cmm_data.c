@@ -2480,6 +2480,13 @@ VOID Indicate_Legacy_Packet(
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
+	if (!pRxBlk->DataSize) {
+		/* release packet*/
+		/* avoid processing with null paiload packets - QCA61X4A bug */
+		RELEASE_NDIS_PACKET(pAd, pRxBlk->pRxPacket, NDIS_STATUS_FAILURE);
+		return;
+	}
+
 	if (pRxBlk->DataSize > MAX_RX_PKT_LEN)
 	{
 
