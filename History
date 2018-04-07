@@ -4004,16 +4004,17 @@
 9) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
 10) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
 11) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
-12) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
-13) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
-14) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
-15) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-16) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-17) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-18) kernel: ralink_wifi: overwrite GSO feature set for radio interfaces.<br>
-19) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
-20) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-21) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+12) kernel: net: skbuff: convert to skb_orphan_frags.<br>
+13) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
+14) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
+15) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
+16) kernel: net: tcp: purge write queue upon aborting the connection.<br>
+17) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+18) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+19) kernel: ralink_wifi: overwrite GSO feature set for radio interfaces.<br>
+20) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+21) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+22) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
 <br>
 <br>
 <br>

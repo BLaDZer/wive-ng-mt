@@ -805,10 +805,8 @@ struct sk_buff *skb_clone(struct sk_buff *skb, gfp_t gfp_mask)
 	struct sk_buff *n;
 
 #if IS_ENABLED(CONFIG_MACVTAP)
-	if (skb_shinfo(skb)->tx_flags & SKBTX_DEV_ZEROCOPY) {
-		if (skb_copy_ubufs(skb, gfp_mask))
-			return NULL;
-	}
+	if (skb_orphan_frags(skb, gfp_mask))
+		return NULL;
 #endif
 
 	n = skb + 1;
@@ -930,11 +928,9 @@ struct sk_buff *__pskb_copy(struct sk_buff *skb, int headroom, gfp_t gfp_mask)
 		int i;
 
 #if IS_ENABLED(CONFIG_MACVTAP)
-		if (skb_shinfo(skb)->tx_flags & SKBTX_DEV_ZEROCOPY) {
-			if (skb_copy_ubufs(skb, gfp_mask)) {
-				kfree_skb(n);
-				return NULL;
-			}
+		if (skb_orphan_frags(skb, gfp_mask)) {
+			kfree_skb(n);
+			return NULL;
 		}
 #endif
 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
@@ -1022,11 +1018,9 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
 	if (skb_cloned(skb)) {
 #if IS_ENABLED(CONFIG_MACVTAP)
 		/* copy this zero copy skb frags */
-		if (skb_shinfo(skb)->tx_flags & SKBTX_DEV_ZEROCOPY) {
-			if (skb_copy_ubufs(skb, gfp_mask)) {
-				kfree(data);
-				return -ENOMEM;
-			}
+		if (skb_orphan_frags(skb, gfp_mask)) {
+			kfree(data);
+			return -ENOMEM;
 		}
 #endif
 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++)
