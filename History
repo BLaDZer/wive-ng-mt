@@ -4011,6 +4011,7 @@
 16) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
 17) kernel: ralink_wifi: overwrite GSO feature set for radio interfaces.<br>
 18) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+19) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
 <br>
 <br>
 <br>

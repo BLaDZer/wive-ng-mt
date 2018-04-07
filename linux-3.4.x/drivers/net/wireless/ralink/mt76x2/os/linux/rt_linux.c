@@ -535,25 +535,32 @@ PNDIS_PACKET duplicate_pkt_with_VLAN(
 {
 	struct sk_buff *skb;
 	PNDIS_PACKET pPacket = NULL;
-	UINT16 VLAN_Size;
+	UINT16 VLAN_Size = 0;
+	INT skb_len = HdrLen + DataSize + 2;
 
-	if ((skb = __dev_alloc_skb(HdrLen + DataSize + LENGTH_802_1Q + 2,
-				   MEM_ALLOC_FLAG)) != NULL) {
+#ifdef WIFI_VLAN_SUPPORT
+	if (VLAN_VID != 0)
+		skb_len += LENGTH_802_1Q;
+#endif /* WIFI_VLAN_SUPPORT */
+
+	if ((skb = __dev_alloc_skb(skb_len, MEM_ALLOC_FLAG)) != NULL) {
 		MEM_DBG_PKT_ALLOC_INC(skb);
 
 		skb_reserve(skb, 2);
 
-		/* copy header (maybe +VLAN tag) */
+		/* copy header (maybe with VLAN tag) */
 		VLAN_Size = VLAN_8023_Header_Copy(VLAN_VID, VLAN_Priority,
 						  pHeader802_3, HdrLen,
-						  GET_OS_PKT_DATATAIL(skb), FromWhichBSSID,
+						  GET_OS_PKT_DATATAIL(skb),
+						  FromWhichBSSID,
 						  TPID);
+
 		skb_put(skb, HdrLen + VLAN_Size);
 
 		/* copy data body */
 		NdisMoveMemory(GET_OS_PKT_DATATAIL(skb), pData, DataSize);
 		skb_put(skb, DataSize);
-		skb->dev = pNetDev;	/*get_netdev_from_bssid(pAd, FromWhichBSSID); */
+		skb->dev = pNetDev;
 		pPacket = OSPKT_TO_RTPKT(skb);
 	}
 
@@ -623,14 +630,14 @@ PNDIS_PACKET ExpandPacket(
 	struct sk_buff *skb, *newskb;
 
 	skb = RTPKT_TO_OSPKT(pPacket);
-	if (skb_cloned(skb) || (skb_headroom(skb) < ext_head_len)
-	    || (skb_tailroom(skb) < ext_tail_len)) {
+	if (skb_cloned(skb) ||
+	    (skb_headroom(skb) < ext_head_len) ||
+	    (skb_tailroom(skb) < ext_tail_len))
+	{
 		UINT32 head_len =
-		    (skb_headroom(skb) <
-		     ext_head_len) ? ext_head_len : skb_headroom(skb);
+		    (skb_headroom(skb) < ext_head_len) ? ext_head_len : skb_headroom(skb);
 		UINT32 tail_len =
-		    (skb_tailroom(skb) <
-		     ext_tail_len) ? ext_tail_len : skb_tailroom(skb);
+		    (skb_tailroom(skb) < ext_tail_len) ? ext_tail_len : skb_tailroom(skb);
 
 		/* alloc a new skb and copy the packet */
 		newskb = skb_copy_expand(skb, head_len, tail_len, GFP_ATOMIC);
