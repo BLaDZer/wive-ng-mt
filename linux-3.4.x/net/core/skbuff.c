@@ -975,10 +975,12 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
 	long off;
 
 #if IS_ENABLED(CONFIG_RA_HW_NAT)
-#if defined (HNAT_USE_TAILROOM)
+#if defined(HNAT_USE_HEADROOM)
+	nhead += FOE_INFO_LEN;
+#elif defined (HNAT_USE_TAILROOM)
 	ntail += FOE_INFO_LEN;
-	size  += FOE_INFO_LEN;
 #endif
+	size  += FOE_INFO_LEN;
 #endif
 
 	BUG_ON(nhead < 0);
