@@ -183,11 +183,13 @@ BOOLEAN RTMPL2FrameTxAction(
 	IN	UINT32					data_len,
 	IN	UCHAR			OpMode);
 
+#ifdef SOFT_ENCRYPT
 PNDIS_PACKET ExpandPacket(
 	IN	VOID					*pReserved,
 	IN	PNDIS_PACKET			pPacket,
 	IN	UINT32					ext_head_len,
 	IN	UINT32					ext_tail_len);
+#endif /* SOFT_ENCRYPT */
 
 PNDIS_PACKET ClonePacket(
 	IN	VOID					*pReserved,

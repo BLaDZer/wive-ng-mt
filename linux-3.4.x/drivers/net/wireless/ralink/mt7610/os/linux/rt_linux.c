@@ -610,7 +610,7 @@ BOOLEAN RTMPL2FrameTxAction(
 
 }
 
-
+#ifdef SOFT_ENCRYPT
 PNDIS_PACKET ExpandPacket(
 	IN VOID *pReserved,
 	IN PNDIS_PACKET pPacket,
@@ -647,6 +647,7 @@ PNDIS_PACKET ExpandPacket(
 	return OSPKT_TO_RTPKT(skb);
 
 }
+#endif /* SOFT_ENCRYPT */
 
 PNDIS_PACKET ClonePacket(
 	IN VOID *pReserved,
