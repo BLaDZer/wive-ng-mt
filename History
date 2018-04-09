@@ -3993,31 +3993,32 @@
 <br>
 <br>
 <b>7.3.x</b><br>
-1) kernel: net: vlan: more careful checksum features handling.<br>
-2) kernel: net: fix checksum features handling in netif_skb_features().<br>
-3) kernel: net: disable segmentation if checksumming is not supported.<br>
-4) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
-5) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
-6) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
-7) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
-8) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
-9) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
-10) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
-11) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
-12) kernel: net: skbuff: convert to skb_orphan_frags.<br>
-13) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
-14) kernel: net: skbuff: skb_orphan() changes.<br>
-15) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
-16) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
-17) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
-18) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
-19) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-20) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-21) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
-22) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-23) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
-24) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-25) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+1) configs: enable napi GRO for all devices.<br>
+2) kernel: net: vlan: more careful checksum features handling.<br>
+3) kernel: net: fix checksum features handling in netif_skb_features().<br>
+4) kernel: net: disable segmentation if checksumming is not supported.<br>
+5) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
+6) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
+7) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
+8) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
+9) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
+10) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
+11) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
+12) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
+13) kernel: net: skbuff: convert to skb_orphan_frags.<br>
+14) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
+15) kernel: net: skbuff: skb_orphan() changes.<br>
+16) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
+17) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
+18) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
+19) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
+20) kernel: net: tcp: purge write queue upon aborting the connection.<br>
+21) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+22) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
+23) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+24) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+25) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+26) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
 <br>
 <br>
 <br>
