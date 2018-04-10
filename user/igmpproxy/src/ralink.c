@@ -342,9 +342,11 @@ void sweap_no_report_members(void)
 
 		while(member){
 			struct group_member *next_backup = NULL;
-			member->report_count--;
-			if(!member->has_report && member->report_count)
+			/* accounting reports */
+			if(!member->has_report && member->report_count) {
+			    member->report_count--;
 			    my_log(LOG_DEBUG, 0, "*** rtGSW!: aging [%s] client.", inetFmt(htonl(member->ip_addr), s1));
+			}
 			if(!member->has_report && !member->report_count){
 				unsigned int craft_mip = 0x0;
 
