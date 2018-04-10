@@ -306,6 +306,7 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 				member->port_num = port_num;
 			/* update its report flag */
 			member->has_report = 1;
+			member->report_count = INTERVAL_ESWAGEOUT;
 			return NULL;
 		}
 	}
@@ -316,12 +317,13 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 			my_log(LOG_DEBUG, 0, "*** rtGSW: Out of memory.");
 			return NULL;
 	}
-	tmp.s_addr				= htonl(u_ip_addr);
-	new_member->ip_addr 	= u_ip_addr;
-	new_member->a0		= IP_GET_LOST_MAPPING( m_ip_addr);
-	new_member->port_num 	= portLookUpByIP(inet_ntoa(tmp));
-	new_member->has_report	= 1;
-	new_member->next	= entry->members;
+	tmp.s_addr			= htonl(u_ip_addr);
+	new_member->ip_addr		= u_ip_addr;
+	new_member->a0			= IP_GET_LOST_MAPPING( m_ip_addr);
+	new_member->port_num		= portLookUpByIP(inet_ntoa(tmp));
+	new_member->has_report		= 1;
+	new_member->report_count	= INTERVAL_ESWAGEOUT;
+	new_member->next		= entry->members;
 
 	entry->members = new_member;
 
@@ -340,7 +342,10 @@ void sweap_no_report_members(void)
 
 		while(member){
 			struct group_member *next_backup = NULL;
-			if(!member->has_report){
+			member->report_count--;
+			if(!member->has_report && member->report_count)
+			    my_log(LOG_DEBUG, 0, "*** rtGSW!: aging [%s] client.", inetFmt(htonl(member->ip_addr), s1));
+			if(!member->has_report && !member->report_count){
 				unsigned int craft_mip = 0x0;
 
 				next_backup = member->next;
@@ -351,7 +356,7 @@ void sweap_no_report_members(void)
 				craft_mip |= ((unsigned long)(pos->a2) << 16) ;
 				craft_mip |= ((unsigned long)(pos->a3) << 24) ;
 
-				my_log(LOG_DEBUG, 0, "*** rtGSW!: remove [%s] in the group [%s].", inetFmt(htonl(member->ip_addr), s1) , inetFmt(craft_mip, s2));
+				my_log(LOG_DEBUG, 0, "*** rtGSW!: remove [%s] from the group [%s].", inetFmt(htonl(member->ip_addr), s1) , inetFmt(craft_mip, s2));
 				remove_member( ntohl(craft_mip), member->ip_addr);
 			}
 
@@ -375,6 +380,7 @@ void clear_all_entries_report(void)
 		struct group_member *member = pos->members;
 		while(member){
 			member->has_report = 0;
+			member->report_count = 0;
 			member = member->next;
 		}
 		pos = pos->next;

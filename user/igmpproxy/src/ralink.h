@@ -34,6 +34,7 @@ struct group_member
 	unsigned char		a0;		// class D, the 1st byte.
 	char 				port_num;
 	char				has_report;	// 0 or 1
+	char				report_count;	// wait before force sweap
 	struct group_member *next;
 };
 
