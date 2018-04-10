@@ -194,7 +194,7 @@ config MOBILITY_GROUP_RAMLESS
 # support for page cache reclaim
 config PAGECACHE_RECLAIM
 	bool "Allow pagecache reclaim for buffered I/O"
-	default n
+	default y
 	help
 	  Allows the pagecache pages are reclaimed if the limit is exceeded.
 
