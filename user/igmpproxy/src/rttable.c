@@ -422,12 +422,10 @@ int activateRoute(uint32_t group, uint32_t originAddr) {
 */
 void ageActiveRoutes() {
     struct RouteTable   *croute, *nroute;
-
-    my_log(LOG_DEBUG, 0, "Aging routes in table.");
-
 #ifdef RALINK_ESW_SUPPORT
-    sweap_no_report_members();
+    int needclean = 0;
 #endif
+    my_log(LOG_DEBUG, 0, "Aging routes in table.");
 
     // Scan all routes...
     for( croute = routing_table; croute != NULL; croute = nroute ) {
@@ -436,10 +434,20 @@ void ageActiveRoutes() {
         nroute = croute->nextroute;
 
         // Run the aging round algorithm.
-        if(croute->upstrState != ROUTESTATE_CHECK_LAST_MEMBER)
+        if(croute->upstrState != ROUTESTATE_CHECK_LAST_MEMBER) {
             // Only age routes if Last member probe is not active...
+#ifdef RALINK_ESW_SUPPORT
+	    needclean++;
+#endif
             internAgeRoute(croute);
+	}
     }
+
+#ifdef RALINK_ESW_SUPPORT
+    if (needclean)
+	sweap_no_report_members();
+#endif
+
     logRouteTable("Age active routes");
 }
 
