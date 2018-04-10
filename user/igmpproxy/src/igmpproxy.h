@@ -134,9 +134,9 @@ void my_log( int Serverity, int Errno, const char *FmtSt, ... );
 #define INTERVAL_GENERAL_QUERY_RESPONSE		15
 #define INTERVAL_LASTMEMBER_QUERY		1
 #ifdef CONFIG_RALINK_MT7621
-#define INTERVAL_ESWAGEOUT			(21600/INTERVAL_GENERAL_QUERY_RESPONSE)
+#define INTERVAL_ESWAGEOUT			(21600/INTERVAL_GENERAL_QUERY_RESPONSE) // age out (cleanup not report members) for 7621 make only ~6h, temp workaround
 #else
-#define INTERVAL_ESWAGEOUT			(INTERVAL_QUERY/INTERVAL_GENERAL_QUERY_RESPONSE) // age out (cleanup not report members) for 7621 make only ~6h, temp workaround
+#define INTERVAL_ESWAGEOUT			(INTERVAL_QUERY/INTERVAL_GENERAL_QUERY_RESPONSE)
 #endif
 #define ROUTESTATE_NOTJOINED			0   // The group corresponding to route is not joined
 #define ROUTESTATE_JOINED			1   // The group corresponding to route is joined
