@@ -992,7 +992,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
 
 	/* flags __GFP_NOMEMALLOC __GFP_NOWARN avoid oops`es at ramless system, drop packets instead */
 	data = kmalloc(size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info)),
-		       gfp_mask | __GFP_NOMEMALLOC | __GFP_NOWARN);
+		       gfp_mask | __GFP_NOMEMALLOC | __GFP_NORETRY | __GFP_NOWARN);
 	if (!data)
 		return -ENOMEM;
 	size = SKB_WITH_OVERHEAD(ksize(data));
