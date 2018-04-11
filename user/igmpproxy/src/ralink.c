@@ -342,6 +342,7 @@ void sweap_no_report_members(void)
 
 		while(member){
 			struct group_member *next_backup = NULL;
+
 			/* accounting reports */
 			if(!member->has_report && member->report_count)
 			    member->report_count--;

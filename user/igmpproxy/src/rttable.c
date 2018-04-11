@@ -438,7 +438,9 @@ void ageActiveRoutes() {
     }
 
 #ifdef RALINK_ESW_SUPPORT
+#ifndef CONFIG_RALINK_MT7621
     sweap_no_report_members();
+#endif
 #endif
 
     logRouteTable("Age active routes");

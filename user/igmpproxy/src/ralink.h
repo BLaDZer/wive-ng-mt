@@ -32,9 +32,9 @@ struct group_member
 {
 	unsigned long 		ip_addr;
 	unsigned char		a0;		// class D, the 1st byte.
-	char 				port_num;
-	char				has_report;	// 0 or 1
-	char				report_count;	// wait before force sweap
+	char 			port_num;
+	char			has_report;	// 0 or 1
+	unsigned char		report_count;	// wait before force sweap
 	struct group_member *next;
 };
 

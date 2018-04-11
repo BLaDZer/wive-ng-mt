@@ -3994,8 +3994,8 @@
 <br>
 <b>7.3.x</b><br>
 1) configs: enable napi GRO for all devices.<br>
-2) igmpproxy: increase General query response interval.<br>
-3) igmpproxy: more smart switch table cleanup at ageout.<br>
+2) igmpproxy: increase general query response interval.<br>
+3) igmpproxy: disable force sweap member by esw for 7621, remove only from general aging.<br>
 4) kernel: net: vlan: more careful checksum features handling.<br>
 5) kernel: net: fix checksum features handling in netif_skb_features().<br>
 6) kernel: net: disable segmentation if checksumming is not supported.<br>
