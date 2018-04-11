@@ -3483,7 +3483,7 @@ NDIS_STATUS APCheckRxError(
 	IN RXINFO_STRUC *pRxInfo,
 	IN UCHAR Wcid)
 {
-	if((pRxBlk == NULL) || (pRxBlk->pRxInfo == NULL))
+	if (pRxBlk->pRxInfo == NULL)
 		return NDIS_STATUS_FAILURE;
 
 	if (pRxInfo->Crc || pRxInfo->CipherErr)
