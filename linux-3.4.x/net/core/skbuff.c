@@ -690,6 +690,7 @@ static struct sk_buff *__skb_clone(struct sk_buff *n, struct sk_buff *skb)
 	C(mac_len);
 	n->hdr_len = skb->nohdr ? skb_headroom(skb) : skb->hdr_len;
 	n->cloned = 1;
+	n->peeked = 0;
 	n->nohdr = 0;
 	n->destructor = NULL;
 	C(tail);
