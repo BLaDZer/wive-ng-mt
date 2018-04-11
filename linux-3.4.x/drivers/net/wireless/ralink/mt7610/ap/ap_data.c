@@ -5993,7 +5993,7 @@ err:
 
 
 #undef	MAX_RX_PROCESS_CNT
-#define MAX_RX_PROCESS_CNT	(32)
+#define MAX_RX_PROCESS_CNT	(256)
 
 BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd) 
 {
