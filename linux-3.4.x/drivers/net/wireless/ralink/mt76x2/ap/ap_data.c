@@ -3843,7 +3843,7 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk, UCHAR QueIdx)
 */
 INT APCheckRxError(RTMP_ADAPTER *pAd, RXINFO_STRUC *pRxInfo, RX_BLK *pRxBlk)
 {
-	if(pRxBlk->pRxInfo == NULL)
+	if(pRxInfo == NULL)
 		return NDIS_STATUS_FAILURE;
 
 	if (pRxInfo->Crc || pRxInfo->CipherErr)
