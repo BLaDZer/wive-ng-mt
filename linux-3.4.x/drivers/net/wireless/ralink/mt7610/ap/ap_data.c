@@ -6133,6 +6133,17 @@ BOOLEAN APRxDoneInterruptHandle(RTMP_ADAPTER *pAd)
 		RTMPWIEndianChange(pAd , (PUCHAR)pRxWI, TYPE_RXWI);
 #endif
 
+		if((pRxBlk == NULL) || (pRxBlk->pRxInfo == NULL)) {
+			if (pRxBlk == NULL) {
+				DBGPRINT(RT_DEBUG_ERROR, ("%s(): pRxBlk is NULL!\n", __FUNCTION__));
+				RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_SUCCESS);
+			} else {
+				DBGPRINT(RT_DEBUG_ERROR, ("%s(): pRxBlk->pRxInfo is NULL!\n", __FUNCTION__));
+				RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_SUCCESS);
+			}
+			continue;
+		}
+
 #ifdef DBG_CTRL_SUPPORT
 #ifdef INCLUDE_DEBUG_QUEUE
 		if (pAd->CommonCfg.DebugFlags & DBF_DBQ_RXWI)

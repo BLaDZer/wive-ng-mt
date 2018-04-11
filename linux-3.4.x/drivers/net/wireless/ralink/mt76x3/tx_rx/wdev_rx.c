@@ -2611,20 +2611,16 @@ BOOLEAN rtmp_rx_done_handle(RTMP_ADAPTER *pAd)
 		//RTMPWIEndianChange(pAd , (UCHAR *)pRxWI, TYPE_RXWI);
 #endif /* RT_BIG_ENDIAN */
 
-//+++Add by shiang for debug
-		if (1 || (pHeader->FC.Type == FC_TYPE_DATA)) {
-			if (!pRxBlk->pRxInfo) {
+		if((pRxBlk == NULL) || (pRxBlk->pRxInfo == NULL)) {
+			if (pRxBlk == NULL) {
+				DBGPRINT(RT_DEBUG_ERROR, ("%s(): pRxBlk is NULL!\n", __FUNCTION__));
+				RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_SUCCESS);
+			} else {
 				DBGPRINT(RT_DEBUG_ERROR, ("%s(): pRxBlk->pRxInfo is NULL!\n", __FUNCTION__));
 				RELEASE_NDIS_PACKET(pAd, pRxPacket, NDIS_STATUS_SUCCESS);
-				continue;
 			}
-
-			//DBGPRINT(RT_DEBUG_TRACE, ("%s():Dump the RxBlk info\n", __FUNCTION__));
-			//dump_rxblk(pAd, pRxBlk);
-			//hex_dump("RxPacket", (UCHAR *)pHeader, pRxBlk->MPDUtotalByteCnt);
-			//DBGPRINT(RT_DEBUG_TRACE, ("%s():==>Finish dump!\n", __FUNCTION__));
+			continue;
 		}
-//---Add by shiang for debug
 
 #ifdef DBG_CTRL_SUPPORT
 #ifdef INCLUDE_DEBUG_QUEUE
