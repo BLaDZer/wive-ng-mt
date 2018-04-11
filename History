@@ -4025,6 +4025,7 @@
 30) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
 31) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
 32) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+33) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
 <br>
 <br>
 <br>
