@@ -1221,7 +1221,7 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	if (pMacEntry && IS_VHT_STA(pMacEntry) && Status == 0 && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
 		ADDframe.BaParm.AMSDUSupported = pAddreqFrame->BaParm.AMSDUSupported;
 	else
-#edif
+#endif
 		ADDframe.BaParm.AMSDUSupported = 0;
 
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
