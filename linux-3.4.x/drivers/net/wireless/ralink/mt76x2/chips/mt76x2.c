@@ -5236,8 +5236,8 @@ void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	}
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
-		__FUNCTION__, rx0_rssi, rx1_rssi));	
+	//DBGPRINT(RT_DEBUG_TRACE, ("%s:: rx0_rssi(%d), rx1_rssi(%d)\n", 
+	//	__FUNCTION__, rx0_rssi, rx1_rssi));	
 
 	/*
 		RSSI_DUT(n) = RSSI_DUT(n-1)*15/16 + RSSI_R2320_100ms_sample*1/16
@@ -5250,8 +5250,8 @@ void MT76x2_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	else
 		pAd->chipCap.avg_rssi_all = (pAd->chipCap.avg_rssi_0 + pAd->chipCap.avg_rssi_1)/512;
 
-	DBGPRINT(RT_DEBUG_TRACE, ("%s:: update rssi all(%d)\n", 
-		__FUNCTION__, pAd->chipCap.avg_rssi_all));
+	//DBGPRINT(RT_DEBUG_TRACE, ("%s:: update rssi all(%d)\n", 
+	//	__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 
 void dynamic_cck_mrc(RTMP_ADAPTER * pAd)

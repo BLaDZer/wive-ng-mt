@@ -171,9 +171,10 @@ VOID MlmeADDBAAction(
 		Frame.Action = ADDBA_REQ;
 
 		Frame.BaParm.AMSDUSupported = 0;
+#if DOT11_VHT_AC
 		if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
 		    Frame.BaParm.AMSDUSupported = 1;
-
+#endif
 		Frame.BaParm.BAPolicy = IMMED_BA;
 		Frame.BaParm.TID = pInfo->TID;
 		Frame.BaParm.BufSize = pInfo->BaBufSize;

@@ -4633,7 +4633,7 @@ BOOLEAN check_rx_pkt_pn_allowed(RTMP_ADAPTER *pAd, RX_BLK *rx_blk)
 
 	pEntry = &pAd->MacTab.Content[rx_blk->wcid];
 	if (!pEntry || !IS_ENTRY_APCLI(pEntry)) {
-		DBGPRINT(RT_DEBUG_WARN, ("check_rx_pkt_pn_allowed pEntry is NULL or not APCLI.\n"));
+		//DBGPRINT(RT_DEBUG_WARN, ("check_rx_pkt_pn_allowed pEntry is NULL or not APCLI.\n"));
 		return TRUE;
 	}
 

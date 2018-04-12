@@ -1334,13 +1334,10 @@ VOID PeerAddBAReqAction(
 	ADDframe.StatusCode = Status;
 	ADDframe.BaParm.BAPolicy = IMMED_BA;
 
-	if (pMacEntry && Status == 0)
+	if (pMacEntry && Status == 0 && IS_VHT_STA(pMacEntry) && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
 		ADDframe.BaParm.AMSDUSupported = pAddreqFrame->BaParm.AMSDUSupported;
 	else
 		ADDframe.BaParm.AMSDUSupported = 0;
-
-	if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
-		ADDframe.BaParm.AMSDUSupported = 1;
 
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;
 	ADDframe.BaParm.BufSize = min(((UCHAR)pAddreqFrame->BaParm.BufSize), (UCHAR)pAd->CommonCfg.BACapability.field.RxBAWinLimit);

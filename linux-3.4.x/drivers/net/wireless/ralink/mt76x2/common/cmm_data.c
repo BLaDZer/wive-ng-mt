@@ -3969,6 +3969,7 @@ PNDIS_PACKET RTMPDeFragmentDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 	RXWI_STRUC *pRxWI = pRxBlk->pRxWI;
 	UINT8 RXWISize = pAd->chipCap.RXWISize;
 
+
 	ASSERT(pHeader);
 
 	HeaderRoom = pData - (UCHAR *)pHeader;

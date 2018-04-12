@@ -2776,8 +2776,8 @@ void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 		rx0_rssi = (CHAR)(pAd->ApCfg.RssiSample.LastRssi0);
 #endif /* CONFIG_AP_SUPPORT */
 
-	DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d)\n", 
-		__FUNCTION__, rx0_rssi));	
+	//DBGPRINT(RT_DEBUG_LOUD, ("%s:: rx0_rssi(%d)\n", 
+	//	__FUNCTION__, rx0_rssi));	
 
 	/*
 		RSSI_DUT(n) = RSSI_DUT(n-1)*15/16 + RSSI_R2320_100ms_sample*1/16
@@ -2790,8 +2790,8 @@ void MT76x0_UpdateRssiForChannelModel(RTMP_ADAPTER * pAd)
 	else
 		pAd->chipCap.avg_rssi_all = pAd->chipCap.avg_rssi_0 / 256;
 
-	DBGPRINT(RT_DEBUG_LOUD, ("%s:: update rssi all(%d)\n", 
-		__FUNCTION__, pAd->chipCap.avg_rssi_all));
+	//DBGPRINT(RT_DEBUG_LOUD, ("%s:: update rssi all(%d)\n", 
+	//	__FUNCTION__, pAd->chipCap.avg_rssi_all));
 }
 
 static void mt7610_long_range_dync_vga(RTMP_ADAPTER * pAd)
