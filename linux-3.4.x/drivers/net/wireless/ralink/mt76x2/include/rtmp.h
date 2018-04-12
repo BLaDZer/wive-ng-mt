@@ -6010,7 +6010,6 @@ typedef struct _RX_BLK
 #define TX_AMSDU_FRAME		0x08
 #define TX_RALINK_FRAME		0x10
 #define TX_FRAG_FRAME		0x20
-#define TX_NDPA_FRAME		0x40
 
 
 /* Currently the sizeof(TX_BLK) is 148 bytes. */

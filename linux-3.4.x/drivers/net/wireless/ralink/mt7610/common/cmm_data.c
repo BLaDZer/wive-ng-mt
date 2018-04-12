@@ -939,9 +939,6 @@ static UCHAR TxPktClassification(
 	UCHAR			TxFrameType = TX_UNKOWN_FRAME;
 	UCHAR			Wcid;
 	MAC_TABLE_ENTRY	*pMacEntry = NULL;
-#ifdef DOT11_N_SUPPORT
-	BOOLEAN			bHTRate = FALSE;
-#endif /* DOT11_N_SUPPORT */
 
 	Wcid = RTMP_GET_PACKET_WCID(pPacket);
 	if (Wcid == MCAST_WCID)
@@ -961,7 +958,6 @@ static UCHAR TxPktClassification(
 
 		/* Depends on HTPhyMode to check if the peer support the HTRate transmission.*/
 		/* 	Currently didn't support A-MSDU embedded in A-MPDU*/
-		bHTRate = TRUE;
 		if (RTMP_GET_PACKET_MOREDATA(pPacket) || (pMacEntry->PsMode == PWR_SAVE))
 			TxFrameType = TX_LEGACY_FRAME;
 #ifdef UAPSD_SUPPORT

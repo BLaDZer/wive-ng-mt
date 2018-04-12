@@ -1452,22 +1452,22 @@ static UCHAR TxPktClassification(RTMP_ADAPTER *pAd, PNDIS_PACKET  pPacket, TX_BL
 #endif		
 		
 		if (RTMP_GET_PACKET_MOREDATA(pPacket) || (pMacEntry->PsMode == PWR_SAVE))
-			TxFrameType |= TX_LEGACY_FRAME;
+			TxFrameType = TX_LEGACY_FRAME;
 #ifdef UAPSD_SUPPORT
 		else if (RTMP_GET_PACKET_EOSP(pPacket))
-			TxFrameType |= TX_LEGACY_FRAME;
+			TxFrameType = TX_LEGACY_FRAME;
 #endif /* UAPSD_SUPPORT */
 #ifdef WFA_VHT_PF
 		else if (pAd->force_amsdu == TRUE)
-			return (TxFrameType | TX_AMSDU_FRAME);
+			return TX_AMSDU_FRAME;
 #endif /* WFA_VHT_PF */
 		else if ((pMacEntry->TXBAbitmap & (1<<(RTMP_GET_PACKET_UP(pPacket)))) != 0)
-			return (TxFrameType | TX_AMPDU_FRAME);
+			return TX_AMPDU_FRAME;
 		else if(CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_AMSDU_INUSED)
 		)
-			return (TxFrameType | TX_AMSDU_FRAME);
+			return TX_AMSDU_FRAME;
 		else
-			TxFrameType |= TX_LEGACY_FRAME;
+			TxFrameType = TX_LEGACY_FRAME;
 	
 	}
 #endif /* DOT11_N_SUPPORT */
@@ -1479,11 +1479,11 @@ static UCHAR TxPktClassification(RTMP_ADAPTER *pAd, PNDIS_PACKET  pPacket, TX_BL
 			(!(OPSTATUS_TEST_FLAG(pAd, fOP_STATUS_WMM_INUSED) && CLIENT_STATUS_TEST_FLAG(pMacEntry, fCLIENT_STATUS_WMM_CAPABLE)))
 		)
 		{	/* if peer support Ralink Aggregation, we use it.*/
-			TxFrameType |= TX_RALINK_FRAME;
+			TxFrameType = TX_RALINK_FRAME;
 		}
 		else
 		{
-			TxFrameType |= TX_LEGACY_FRAME;
+			TxFrameType = TX_LEGACY_FRAME;
 			
 		}
 	}
@@ -1492,9 +1492,6 @@ static UCHAR TxPktClassification(RTMP_ADAPTER *pAd, PNDIS_PACKET  pPacket, TX_BL
 
 	if ((RTMP_GET_PACKET_FRAGMENTS(pPacket) > 1)
 		 && (TxFrameType == TX_LEGACY_FRAME
-#ifdef VHT_TXBF_SUPPORT
-		 || TxFrameType == (TX_LEGACY_FRAME | TX_NDPA_FRAME)
-#endif
 		)
 #ifdef DOT11_N_SUPPORT
 		&& ((pMacEntry->TXBAbitmap & (1<<(RTMP_GET_PACKET_UP(pPacket)))) == 0)

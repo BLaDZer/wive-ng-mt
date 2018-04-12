@@ -1324,10 +1324,11 @@ VOID PeerAddBAReqAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 	/* What is the Status code??  need to check.*/
 	ADDframe.StatusCode = Status;
 	ADDframe.BaParm.BAPolicy = IMMED_BA;
-
-	if (pMacEntry && Status == 0 && IS_VHT_STA(pMacEntry) && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+#ifdef DOT11_VHT_AC
+	if (pMacEntry && IS_VHT_STA(pMacEntry) && Status == 0 && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
 		ADDframe.BaParm.AMSDUSupported = pAddreqFrame->BaParm.AMSDUSupported;
 	else
+#endif
 		ADDframe.BaParm.AMSDUSupported = 0;
 
 	ADDframe.BaParm.TID = pAddreqFrame->BaParm.TID;

@@ -4027,7 +4027,8 @@
 32) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
 33) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
 34) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-35) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+35) kernel: ralink_wifi: fix TxType frame parse.<br>
+36) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>

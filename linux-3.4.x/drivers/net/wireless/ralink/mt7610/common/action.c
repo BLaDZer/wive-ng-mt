@@ -110,14 +110,15 @@ VOID MlmeADDBAAction(
 	ULONG		Idx;
 	FRAME_ADDBA_REQ  Frame;
 	ULONG		FrameLen;
-	BA_ORI_ENTRY			*pBAEntry = NULL;
+	//BA_ORI_ENTRY			*pBAEntry = NULL;
 #ifdef CONFIG_AP_SUPPORT
 	UCHAR			apidx;
 #endif /* CONFIG_AP_SUPPORT */
+	MAC_TABLE_ENTRY *pEntry;
 
 	pInfo = (MLME_ADDBA_REQ_STRUCT *)Elem->Msg;
 	NdisZeroMemory(&Frame, sizeof(FRAME_ADDBA_REQ));
-	
+
 	if(MlmeAddBAReqSanity(pAd, Elem->Msg, Elem->MsgLen, Addr) &&
 		VALID_WCID(pInfo->Wcid)) 
 	{
@@ -128,6 +129,7 @@ VOID MlmeADDBAAction(
 			return;
 		}
 		/* 1. find entry */
+		pEntry = &pAd->MacTab.Content[pInfo->Wcid];
 		Idx = pAd->MacTab.Content[pInfo->Wcid].BAOriWcidArray[pInfo->TID];
 		if (Idx == 0)
 		{
@@ -137,7 +139,7 @@ VOID MlmeADDBAAction(
 		} 
 		else
 		{
-			pBAEntry =&pAd->BATable.BAOriEntry[Idx];
+			//pBAEntry =&pAd->BATable.BAOriEntry[Idx];
 		}
 		
 #ifdef CONFIG_AP_SUPPORT
@@ -146,10 +148,6 @@ VOID MlmeADDBAAction(
 #ifdef APCLI_SUPPORT
 			if (IS_ENTRY_APCLI(&pAd->MacTab.Content[pInfo->Wcid]))
 			{
-#ifdef MAC_REPEATER_SUPPORT
-				MAC_TABLE_ENTRY *pEntry = &pAd->MacTab.Content[pInfo->Wcid];
-#endif /* MAC_REPEATER_SUPPORT */
-
 				apidx = pAd->MacTab.Content[pInfo->Wcid].MatchAPCLITabIdx;
 #ifdef MAC_REPEATER_SUPPORT
 				if (pEntry && pEntry->bReptCli)
@@ -171,9 +169,9 @@ VOID MlmeADDBAAction(
 		Frame.Action = ADDBA_REQ;
 
 		Frame.BaParm.AMSDUSupported = 0;
-#if DOT11_VHT_AC
-		if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
-		    Frame.BaParm.AMSDUSupported = 1;
+#ifdef DOT11_VHT_AC
+		if (pEntry && IS_VHT_STA(pEntry) && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+			Frame.BaParm.AMSDUSupported = 1;
 #endif
 		Frame.BaParm.BAPolicy = IMMED_BA;
 		Frame.BaParm.TID = pInfo->TID;

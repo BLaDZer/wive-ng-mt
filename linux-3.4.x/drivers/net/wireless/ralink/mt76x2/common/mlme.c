@@ -6579,7 +6579,7 @@ BOOLEAN RTMPCheckHt(
 
 	sta = &pAd->MacTab.Content[Wcid];
 	/* If use AMSDU, set flag.*/
-	if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+	if (pAd->CommonCfg.DesiredHtPhy.AmsduEnable && (pAd->CommonCfg.REGBACapability.field.AutoBA == FALSE))
 		CLIENT_STATUS_SET_FLAG(sta, fCLIENT_STATUS_AMSDU_INUSED);
 	/* Save Peer Capability*/
 	if (pAd->CommonCfg.ht_ldpc && (pAd->chipCap.phy_caps & fPHY_CAP_LDPC)) {

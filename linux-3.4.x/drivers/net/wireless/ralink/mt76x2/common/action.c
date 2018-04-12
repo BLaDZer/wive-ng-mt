@@ -166,10 +166,10 @@ VOID MlmeADDBAAction(RTMP_ADAPTER *pAd, MLME_QUEUE_ELEM *Elem)
 		Frame.Category = CATEGORY_BA;
 		Frame.Action = ADDBA_REQ;
 		Frame.BaParm.AMSDUSupported = 0;
-
-		if (IS_VHT_STA(pEntry) && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
+#ifdef DOT11_VHT_AC
+		if (pEntry && IS_VHT_STA(pEntry) && pAd->CommonCfg.DesiredHtPhy.AmsduEnable)
 			Frame.BaParm.AMSDUSupported = 1;
-
+#endif
 		Frame.BaParm.BAPolicy = IMMED_BA;
 		Frame.BaParm.TID = pInfo->TID;
 		Frame.BaParm.BufSize = pInfo->BaBufSize;
