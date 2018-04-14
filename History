@@ -4013,25 +4013,26 @@
 18) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
 19) kernel: net: skbuff: pskb_expand_head: avoid oops and stop work if not mem for expand head allocated.<br>
 20) kernel: net: skbuff: initialize skb->peeked when cloning.<br>
-21) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
-22) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
-23) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
-24) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-25) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-26) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
-27) kernel: net: fool proof dev_valid_name().<br>
-28) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
-29) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
-30) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
-31) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-32) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
-33) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-34) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
-35) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
-36) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
-37) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-38) kernel: ralink_wifi: fix TxType frame parse.<br>
-39) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+21) kernel: net: skbuff: return -EMSGSIZE in skb_to_sgvec to prevent overflow.<br>
+22) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
+23) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
+24) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
+25) kernel: net: tcp: purge write queue upon aborting the connection.<br>
+26) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+27) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
+28) kernel: net: fool proof dev_valid_name().<br>
+29) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
+30) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
+31) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
+32) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+33) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+34) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+35) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+36) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+37) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
+38) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
+39) kernel: ralink_wifi: fix TxType frame parse.<br>
+40) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>
