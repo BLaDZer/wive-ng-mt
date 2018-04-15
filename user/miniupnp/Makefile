@@ -169,10 +169,12 @@ endif
 
 TESTUPNPDESCGENOBJS = testupnpdescgen.o upnpdescgen.o
 
-EXECUTABLES = miniupnpd testupnpdescgen testgetifstats \
-              testupnppermissions miniupnpdctl testgetifaddr \
-              testasyncsendto testportinuse \
-              testssdppktgen testminissdp
+EXECUTABLES = miniupnpd 
+
+#testupnpdescgen testgetifstats \
+#              testupnppermissions miniupnpdctl testgetifaddr \
+#              testasyncsendto testportinuse \
+#              testssdppktgen testminissdp
 
 .PHONY:	all clean install depend genuuid
 
