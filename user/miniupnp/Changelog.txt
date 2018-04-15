@@ -1,4 +1,14 @@
-$Id: Changelog.txt,v 1.435 2018/01/16 00:31:31 nanard Exp $
+$Id: Changelog.txt,v 1.438 2018/04/06 09:17:45 nanard Exp $
+
+2018/04/06:
+  Add options for netfilter scripts
+
+2018/03/13:
+  Use monotonic clock for timeouts, etc.
+
+2018/02/22:
+  Add option force_igd_desc_v1 to force devices and services versions
+    to 1 in IGD v2 mode
 
 2017/12/12:
   Fix a few buffer overrun in SSDP and SOAP parsing

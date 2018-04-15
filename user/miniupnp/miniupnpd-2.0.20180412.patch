@@ -1,0 +1,1404 @@
+diff -uNrwB miniupnpd-2.0.20180203/asyncsendto.c miniupnpd-2.0.20180412/asyncsendto.c
+--- miniupnpd-2.0.20180203/asyncsendto.c	2017-05-26 16:02:15.000000000 +0500
++++ miniupnpd-2.0.20180412/asyncsendto.c	2018-04-12 13:12:33.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: asyncsendto.c,v 1.8 2017/05/24 22:51:57 nanard Exp $ */
++/* $Id: asyncsendto.c,v 1.9 2018/04/12 08:12:31 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2017 Thomas Bernard
+@@ -120,7 +120,7 @@
+ 	}
+ 
+ 	/* schedule */
+-	if(gettimeofday(&tv, 0) < 0) {
++	if(upnp_gettimeofday(&tv) < 0) {
+ 		return -1;
+ 	}
+ 	/* allocate enough space for structure + buffers */
+@@ -283,7 +283,7 @@
+ 	struct timeval timeout;
+ 	int max_fd;
+ 
+-	if(gettimeofday(&deadline, NULL) < 0) {
++	if(upnp_gettimeofday(&deadline) < 0) {
+ 		syslog(LOG_ERR, "gettimeofday: %m");
+ 		return;
+ 	}
+@@ -317,7 +317,7 @@
+ 			free(elt);
+ 		}
+ 		/* check deadline */
+-		if(gettimeofday(&now, NULL) < 0) {
++		if(upnp_gettimeofday(&now) < 0) {
+ 			syslog(LOG_ERR, "gettimeofday: %m");
+ 			return;
+ 		}
+diff -uNrwB miniupnpd-2.0.20180203/bsd/getifstats.c miniupnpd-2.0.20180412/bsd/getifstats.c
+--- miniupnpd-2.0.20180203/bsd/getifstats.c	2014-09-15 21:08:10.000000000 +0600
++++ miniupnpd-2.0.20180412/bsd/getifstats.c	2018-04-06 14:10:29.000000000 +0500
+@@ -40,7 +40,7 @@
+ 		return -1;
+ 
+ #ifdef ENABLE_GETIFSTATS_CACHING
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	if (ifap != NULL &&
+ 	    current_time < cache_timestamp + GETIFSTATS_CACHING_DURATION)
+ 		goto copy;
+diff -uNrwB miniupnpd-2.0.20180203/Changelog.txt miniupnpd-2.0.20180412/Changelog.txt
+--- miniupnpd-2.0.20180203/Changelog.txt	2018-01-19 04:47:01.000000000 +0500
++++ miniupnpd-2.0.20180412/Changelog.txt	2018-04-06 15:53:03.000000000 +0500
+@@ -1,4 +1,14 @@
+-$Id: Changelog.txt,v 1.435 2018/01/16 00:31:31 nanard Exp $
++$Id: Changelog.txt,v 1.438 2018/04/06 09:17:45 nanard Exp $
++
++2018/04/06:
++  Add options for netfilter scripts
++
++2018/03/13:
++  Use monotonic clock for timeouts, etc.
++
++2018/02/22:
++  Add option force_igd_desc_v1 to force devices and services versions
++    to 1 in IGD v2 mode
+ 
+ 2017/12/12:
+   Fix a few buffer overrun in SSDP and SOAP parsing
+diff -uNrwB miniupnpd-2.0.20180203/linux/getifstats.c miniupnpd-2.0.20180412/linux/getifstats.c
+--- miniupnpd-2.0.20180203/linux/getifstats.c	2015-06-09 20:35:57.000000000 +0500
++++ miniupnpd-2.0.20180412/linux/getifstats.c	2018-04-06 14:10:28.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: getifstats.c,v 1.13 2015/06/09 15:33:24 nanard Exp $ */
++/* $Id: getifstats.c,v 1.14 2018/03/13 23:05:21 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2013 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -48,7 +48,7 @@
+ 	if(!ifname || ifname[0]=='\0')
+ 		return -1;
+ #ifdef ENABLE_GETIFSTATS_CACHING
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	if(current_time == ((time_t)-1)) {
+ 		syslog(LOG_ERR, "getifstats() : time() error : %m");
+ 	} else {
+diff -uNrwB miniupnpd-2.0.20180203/mac/getifstats.c miniupnpd-2.0.20180412/mac/getifstats.c
+--- miniupnpd-2.0.20180203/mac/getifstats.c	2012-03-06 02:36:50.000000000 +0600
++++ miniupnpd-2.0.20180412/mac/getifstats.c	2018-04-06 14:10:28.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: getifstats.c,v 1.7 2012/03/05 20:36:20 nanard Exp $ */
++/* $Id: getifstats.c,v 1.8 2018/03/13 23:05:21 nanard Exp $ */
+ /*
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+@@ -45,7 +45,7 @@
+ 	data->ibytes = 0;
+ 
+ #ifdef ENABLE_GETIFSTATS_CACHING
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	if (current_time == ((time_t)-1)) {
+ 		syslog(LOG_ERR, "getifstats() : time() error : %m");
+ 	} else {
+diff -uNrwB miniupnpd-2.0.20180203/Makefile.linux miniupnpd-2.0.20180412/Makefile.linux
+--- miniupnpd-2.0.20180203/Makefile.linux	2017-12-12 16:51:29.000000000 +0500
++++ miniupnpd-2.0.20180412/Makefile.linux	2018-04-06 15:53:05.000000000 +0500
+@@ -1,4 +1,4 @@
+-# $Id: Makefile.linux,v 1.95 2017/12/12 11:40:14 nanard Exp $
++# $Id: Makefile.linux,v 1.96 2018/04/06 10:17:08 nanard Exp $
+ # MiniUPnP project
+ # (c) 2006-2017 Thomas Bernard
+ # http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+@@ -186,6 +186,7 @@
+ install:	miniupnpd miniupnpd.8 miniupnpd.conf genuuid \
+ 	netfilter/iptables_init.sh netfilter/iptables_removeall.sh \
+ 	netfilter/ip6tables_init.sh netfilter/ip6tables_removeall.sh \
++	netfilter/miniupnpd_functions.sh \
+ 	linux/miniupnpd.init.d.script
+ 	$(STRIP) miniupnpd
+ 	$(INSTALL) -d $(DESTDIR)$(SBININSTALLDIR)
+@@ -195,6 +196,7 @@
+ 	$(INSTALL) netfilter/iptables_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) netfilter/ip6tables_init.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) netfilter/ip6tables_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
++	$(INSTALL) netfilter/miniupnpd_functions.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) --mode=0644 -b miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/etc/init.d
+ 	$(INSTALL) linux/miniupnpd.init.d.script $(DESTDIR)$(PREFIX)/etc/init.d/miniupnpd
+@@ -270,7 +272,8 @@
+ miniupnpd.o: upnppinhole.h daemonize.h upnpevents.h asyncsendto.h natpmp.h
+ miniupnpd.o: pcpserver.h commonrdr.h upnputils.h ifacewatcher.h
+ upnphttp.o: config.h upnphttp.h upnpdescgen.h miniupnpdpath.h upnpsoap.h
+-upnphttp.o: upnpevents.h upnputils.h
++upnphttp.o: upnpevents.h upnputils.h upnpglobalvars.h upnppermissions.h
++upnphttp.o: miniupnpdtypes.h
+ upnpdescgen.o: config.h getifaddr.h upnpredirect.h upnpdescgen.h
+ upnpdescgen.o: miniupnpdpath.h upnpglobalvars.h upnppermissions.h
+ upnpdescgen.o: miniupnpdtypes.h upnpdescstrings.h upnpurns.h getconnstatus.h
+@@ -295,7 +298,7 @@
+ upnppermissions.o: config.h upnppermissions.h
+ minissdp.o: config.h upnpdescstrings.h miniupnpdpath.h upnphttp.h
+ minissdp.o: upnpglobalvars.h upnppermissions.h miniupnpdtypes.h minissdp.h
+-minissdp.o: upnputils.h getroute.h asyncsendto.h codelength.h
++minissdp.o: upnputils.h getroute.h asyncsendto.h codelength.h macros.h
+ natpmp.o: macros.h config.h natpmp.h upnpglobalvars.h upnppermissions.h
+ natpmp.o: miniupnpdtypes.h getifaddr.h upnpredirect.h commonrdr.h upnputils.h
+ natpmp.o: portinuse.h asyncsendto.h
+@@ -309,11 +312,11 @@
+ upnputils.o: miniupnpdtypes.h getroute.h
+ getconnstatus.o: getconnstatus.h getifaddr.h
+ upnppinhole.o: macros.h config.h upnpredirect.h upnpglobalvars.h
+-upnppinhole.o: upnppermissions.h miniupnpdtypes.h upnpevents.h
++upnppinhole.o: upnppermissions.h miniupnpdtypes.h upnpevents.h upnppinhole.h
+ upnppinhole.o: netfilter/iptpinhole.h
+ pcplearndscp.o: config.h upnpglobalvars.h upnppermissions.h miniupnpdtypes.h
+ pcplearndscp.o: pcplearndscp.h
+-asyncsendto.o: asyncsendto.h
++asyncsendto.o: asyncsendto.h upnputils.h
+ linux/getifstats.o: config.h getifstats.h
+ linux/ifacewatcher.o: config.h ifacewatcher.h config.h minissdp.h
+ linux/ifacewatcher.o: miniupnpdtypes.h getifaddr.h upnpglobalvars.h
+diff -uNrwB miniupnpd-2.0.20180203/Makefile.linux_nft miniupnpd-2.0.20180412/Makefile.linux_nft
+--- miniupnpd-2.0.20180203/Makefile.linux_nft	2015-04-30 14:04:43.000000000 +0500
++++ miniupnpd-2.0.20180412/Makefile.linux_nft	2018-04-06 15:53:05.000000000 +0500
+@@ -96,6 +96,7 @@
+ install:	miniupnpd miniupnpd.8 miniupnpd.conf genuuid \
+ 	netfilter/iptables_init.sh netfilter/iptables_removeall.sh \
+ 	netfilter/ip6tables_init.sh netfilter/ip6tables_removeall.sh \
++	netfilter/miniupnpd_functions.sh \
+ 	linux/miniupnpd.init.d.script
+ 	$(STRIP) miniupnpd
+ 	$(INSTALL) -d $(DESTDIR)$(SBININSTALLDIR)
+@@ -105,6 +106,7 @@
+ 	$(INSTALL) netfilter/iptables_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) netfilter/ip6tables_init.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) netfilter/ip6tables_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
++	$(INSTALL) netfilter/miniupnpd_functions.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) --mode=0644 -b miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/etc/init.d
+ 	$(INSTALL) linux/miniupnpd.init.d.script $(DESTDIR)$(PREFIX)/etc/init.d/miniupnpd
+diff -uNrwB miniupnpd-2.0.20180203/minissdp.c miniupnpd-2.0.20180412/minissdp.c
+--- miniupnpd-2.0.20180203/minissdp.c	2018-02-04 03:19:05.000000000 +0500
++++ miniupnpd-2.0.20180412/minissdp.c	2018-04-06 14:10:27.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: minissdp.c,v 1.91 2018/02/03 22:06:43 nanard Exp $ */
++/* $Id: minissdp.c,v 1.92 2018/03/13 10:52:39 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or https://miniupnp.tuxfamily.org/
+@@ -265,7 +265,7 @@
+ 			{
+ 				syslog(LOG_WARNING,
+ 				       "Failed to add IPv6 multicast membership for interface %s",
+-				       lan_addr->str ? lan_addr->str : "NULL");
++				       strlen(lan_addr->str) ? lan_addr->str : "NULL");
+ 			}
+ 		}
+ 	}
+diff -uNrwB miniupnpd-2.0.20180203/miniupnpd.8 miniupnpd-2.0.20180412/miniupnpd.8
+--- miniupnpd-2.0.20180203/miniupnpd.8	2018-02-04 03:19:06.000000000 +0500
++++ miniupnpd-2.0.20180412/miniupnpd.8	2018-02-22 18:19:11.000000000 +0500
+@@ -8,7 +8,7 @@
+ .RB [ "\-u \fIuuid" "] [" "\-s \fIserial" "] [" "\-m \fImodel_number" ]
+ .RB [ "\-t \fInotify_interval" "] [" "\-P \fIpid_filename" ]
+ .RB [ "\-B \fIdown up" "] [" "\-w \fIurl" "] [" "\-r \fIclean_ruleset_interval" ]
+-.RB [ "\-A \fIpermission rule" "] [" "\-b \fIBOOTID" ]
++.RB [ "\-A \fIpermission rule" "] [" "\-b \fIBOOTID" "] [" \-1 ]
+ .SH DESCRIPTION
+ miniupnpd act as a UPnP Internet Gateway Device. It is designed
+ to run on the gateway between the internet and a NAT'ed LAN. It provides
+@@ -81,6 +81,9 @@
+ .TP
+ .BI \-b " BOOTID"
+ sets the value of BOOTID.UPNP.ORG SSDP header
++.TP
++.B \-1
++force reporting IGDv1 in rootDesc when compiled as IGDv2 *use with care*
+ .SH "SEE ALSO"
+ minissdpd(1) miniupnpc(3)
+ .SH BUGS
+diff -uNrwB miniupnpd-2.0.20180203/miniupnpd.c miniupnpd-2.0.20180412/miniupnpd.c
+--- miniupnpd-2.0.20180203/miniupnpd.c	2017-12-12 16:51:30.000000000 +0500
++++ miniupnpd-2.0.20180412/miniupnpd.c	2018-04-12 13:12:34.000000000 +0500
+@@ -1,8 +1,8 @@
+-/* $Id: miniupnpd.c,v 1.222 2017/12/12 11:43:28 nanard Exp $ */
++/* $Id: miniupnpd.c,v 1.227 2018/04/12 08:12:31 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2017 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -794,43 +794,39 @@
+ 
+ /* record the startup time, for returning uptime */
+ static void
+-set_startup_time(int sysuptime)
++set_startup_time(void)
+ {
+-	startup_time = time(NULL);
++	startup_time = upnp_time();
+ #ifdef USE_TIME_AS_BOOTID
+-	if(startup_time > 60*60*24 && upnp_bootid == 1) {
+-		/* We know we are not January the 1st 1970 */
+-		upnp_bootid = (unsigned int)startup_time;
++	if(upnp_bootid == 1) {
++		upnp_bootid = (unsigned int)time(NULL);
+ 		/* from UDA v1.1 :
+ 		 * A convenient mechanism is to set this field value to the time
+ 		 * that the device sends its initial announcement, expressed as
+ 		 * seconds elapsed since midnight January 1, 1970; */
+ 	}
+ #endif /* USE_TIME_AS_BOOTID */
+-	if(sysuptime)
++	if(GETFLAG(SYSUPTIMEMASK))
+ 	{
+ 		/* use system uptime instead of daemon uptime */
+ #if defined(__linux__)
+-		char buff[64];
+-		int uptime = 0, fd;
+-		fd = open("/proc/uptime", O_RDONLY);
+-		if(fd < 0)
++		unsigned long uptime = 0;
++		FILE * f = fopen("/proc/uptime", "r");
++		if(f == NULL)
+ 		{
+-			syslog(LOG_ERR, "open(\"/proc/uptime\" : %m");
++			syslog(LOG_ERR, "fopen(\"/proc/uptime\") : %m");
+ 		}
+ 		else
+ 		{
+-			memset(buff, 0, sizeof(buff));
+-			if(read(fd, buff, sizeof(buff) - 1) < 0)
++			if(fscanf(f, "%lu", &uptime) != 1)
+ 			{
+-				syslog(LOG_ERR, "read(\"/proc/uptime\" : %m");
++				syslog(LOG_ERR, "fscanf(\"/proc/uptime\") : %m");
+ 			}
+ 			else
+ 			{
+-				uptime = atoi(buff);
+-				syslog(LOG_INFO, "system uptime is %d seconds", uptime);
++				syslog(LOG_INFO, "system uptime is %lu seconds", uptime);
+ 			}
+-			close(fd);
++			fclose(f);
+ 			startup_time -= uptime;
+ 		}
+ #elif defined(SOLARIS_KSTATS)
+@@ -1294,6 +1290,15 @@
+ 			case UPNPMINISSDPDSOCKET:
+ 				minissdpdsocketpath = ary_options[i].value;
+ 				break;
++#ifdef IGD_V2
++			case UPNPFORCEIGDDESCV1:
++				if (strcmp(ary_options[i].value, "yes") == 0)
++					SETFLAG(FORCEIGDDESCV1MASK);
++				else if (strcmp(ary_options[i].value, "no") != 0 ) {
++					fprintf(stderr, "force_igd_desc_v1 can only be yes or no\n");
++				}
++				break;
++#endif
+ 			default:
+ 				fprintf(stderr, "Unknown option in file %s\n",
+ 				        optionsfile);
+@@ -1319,6 +1324,11 @@
+ 		}
+ 		else switch(argv[i][1])
+ 		{
++#ifdef IGD_V2
++		case '1':
++			SETFLAG(FORCEIGDDESCV1MASK);
++			break;
++#endif
+ 		case 'b':
+ 			if(i+1 < argc) {
+ 				upnp_bootid = (unsigned int)strtoul(argv[++i], NULL, 10);
+@@ -1618,7 +1628,7 @@
+ 	syslog(LOG_NOTICE, "version " MINIUPNPD_VERSION " started");
+ #endif /* TOMATO */
+ 
+-	set_startup_time(GETFLAG(SYSUPTIMEMASK));
++	set_startup_time();
+ 
+ 	/* presentation url */
+ 	if(presurl)
+@@ -1733,7 +1743,11 @@
+ #ifdef ENABLE_NFQUEUE
+                         "\t\t[-Q queue] [-n name]\n"
+ #endif
+-			"\t\t[-A \"permission rule\"] [-b BOOTID]\n"
++			"\t\t[-A \"permission rule\"] [-b BOOTID]"
++#ifdef IGD_V2
++			" [-1]"
++#endif
++			"\n"
+ 	        "\nNotes:\n\tThere can be one or several listening_ips.\n"
+ 	        "\tNotify interval is in seconds. Default is 30 seconds.\n"
+ 			"\tDefault pid file is '%s'.\n"
+@@ -1764,6 +1778,9 @@
+ 			"\t  \"allow 1024-65535 192.168.1.0/24 1024-65535\"\n"
+ 			"\t  \"deny 0-65535 0.0.0.0/0 0-65535\"\n"
+ 			"\t-b sets the value of BOOTID.UPNP.ORG SSDP header\n"
++#ifdef IGD_V2
++			"\t-1 force reporting IGDv1 in rootDesc *use with care*\n"
++#endif
+ 			"\t-h prints this help and quits.\n"
+ 	        "", argv[0], pidfilename, DEFAULT_CONFIG);
+ 	return 1;
+@@ -2042,11 +2059,13 @@
+ 	/* main loop */
+ 	while(!quitting)
+ 	{
++#ifdef USE_TIME_AS_BOOTID
+ 		/* Correct startup_time if it was set with a RTC close to 0 */
+-		if((startup_time<60*60*24) && (time(NULL)>60*60*24))
++		if((upnp_bootid<60*60*24) && (time(NULL)>60*60*24))
+ 		{
+-			set_startup_time(GETFLAG(SYSUPTIMEMASK));
++			upnp_bootid = time(NULL);
+ 		}
++#endif
+ 		/* send public address change notifications if needed */
+ 		if(should_send_public_address_change_notif)
+ 		{
+@@ -2075,7 +2094,7 @@
+ 		}
+ 		/* Check if we need to send SSDP NOTIFY messages and do it if
+ 		 * needed */
+-		if(gettimeofday(&timeofday, 0) < 0)
++		if(upnp_gettimeofday(&timeofday) < 0)
+ 		{
+ 			syslog(LOG_ERR, "gettimeofday(): %m");
+ 			timeout.tv_sec = v.notify_interval;
+diff -uNrwB miniupnpd-2.0.20180203/miniupnpd.conf miniupnpd-2.0.20180412/miniupnpd.conf
+--- miniupnpd-2.0.20180203/miniupnpd.conf	2016-02-09 14:38:34.000000000 +0500
++++ miniupnpd-2.0.20180412/miniupnpd.conf	2018-02-22 18:19:11.000000000 +0500
+@@ -129,6 +129,10 @@
+ #serial=12345678
+ #model_number=1
+ 
++# If compiled with IGD_V2 defined, force reporting IGDv1 in rootDesc (default
++# is no)
++#force_igd_desc_v1=no
++
+ # UPnP permission rules
+ # (allow|deny) (external port range) IP/mask (internal port range)
+ # A port range is <min port>-<max port> or <port> if there is only
+diff -uNrwB miniupnpd-2.0.20180203/natpmp.c miniupnpd-2.0.20180412/natpmp.c
+--- miniupnpd-2.0.20180203/natpmp.c	2017-12-12 16:51:30.000000000 +0500
++++ miniupnpd-2.0.20180412/natpmp.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: natpmp.c,v 1.54 2017/12/12 11:43:30 nanard Exp $ */
++/* $Id: natpmp.c,v 1.55 2018/03/12 22:41:54 nanard Exp $ */
+ /* MiniUPnP project
+  * (c) 2007-2017 Thomas Bernard
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+@@ -247,7 +247,7 @@
+ 	if(epoch_origin == 0) {
+ 		epoch_origin = startup_time;
+ 	}
+-	WRITENU32(resp+4, time(NULL) - epoch_origin);
++	WRITENU32(resp+4, upnp_time() - epoch_origin);
+ 	if(req[0] > 0) {
+ 		/* invalid version */
+ 		syslog(LOG_WARNING, "unsupported NAT-PMP version : %u",
+@@ -382,15 +382,9 @@
+ 						}
+ 					}
+ 					/* do the redirection */
+-#if 0
+-					timestamp = (unsigned)(time(NULL) - startup_time)
+-					                      + lifetime;
+-					snprintf(desc, sizeof(desc), "NAT-PMP %u", timestamp);
+-#else
+-					timestamp = time(NULL) + lifetime;
++					timestamp = upnp_time() + lifetime;
+ 					snprintf(desc, sizeof(desc), "NAT-PMP %hu %s",
+ 					         eport, (proto==IPPROTO_TCP)?"tcp":"udp");
+-#endif
+ 					/* TODO : check return code */
+ 					if(upnp_redirect_internal(NULL, eport, senderaddrstr,
+ 					                          iport, proto, desc,
+@@ -439,7 +433,7 @@
+ 	if(epoch_origin == 0) {
+ 		epoch_origin = startup_time;
+ 	}
+-	WRITENU32(notif+4, time(NULL) - epoch_origin);
++	WRITENU32(notif+4, upnp_time() - epoch_origin);
+ #ifndef MULTIPLE_EXTERNAL_IP
+ 	FillPublicAddressResponse(notif, 0);
+ 	if(notif[3])
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/ip6tables_display.sh miniupnpd-2.0.20180412/netfilter/ip6tables_display.sh
+--- miniupnpd-2.0.20180203/netfilter/ip6tables_display.sh	2012-04-25 04:13:17.000000000 +0600
++++ miniupnpd-2.0.20180412/netfilter/ip6tables_display.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,8 +1,9 @@
+ #! /bin/sh
+-# $Id: ip6tables_display.sh,v 1.1 2012/04/24 22:13:41 nanard Exp $
+-IPTABLES=/sbin/ip6tables
++# $Id: ip6tables_display.sh,v 1.2 2018/04/06 09:21:11 nanard Exp $
++
++IPV6=1
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
+ #display all chains relative to miniupnpd
+ $IPTABLES -v -n -t filter -L FORWARD
+-$IPTABLES -v -n -t filter -L MINIUPNPD
+-
++$IPTABLES -v -n -t filter -L $CHAIN
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/ip6tables_flush.sh miniupnpd-2.0.20180412/netfilter/ip6tables_flush.sh
+--- miniupnpd-2.0.20180203/netfilter/ip6tables_flush.sh	2012-04-25 04:13:17.000000000 +0600
++++ miniupnpd-2.0.20180412/netfilter/ip6tables_flush.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,7 +1,8 @@
+ #! /bin/sh
+-# $Id: ip6tables_flush.sh,v 1.1 2012/04/24 22:13:41 nanard Exp $
+-IPTABLES=/sbin/ip6tables
++# $Id: ip6tables_flush.sh,v 1.2 2018/04/06 09:21:11 nanard Exp $
+ 
+-#flush all rules owned by miniupnpd
+-$IPTABLES -t filter -F MINIUPNPD
++IPV6=1
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
++#flush all rules owned by miniupnpd
++$IPTABLES -t filter -F $CHAIN
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/ip6tables_init.sh miniupnpd-2.0.20180412/netfilter/ip6tables_init.sh
+--- miniupnpd-2.0.20180203/netfilter/ip6tables_init.sh	2012-04-25 04:13:17.000000000 +0600
++++ miniupnpd-2.0.20180412/netfilter/ip6tables_init.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,12 +1,22 @@
+ #! /bin/sh
+-# $Id: ip6tables_init.sh,v 1.1 2012/04/24 22:13:41 nanard Exp $
+-IPTABLES=/sbin/ip6tables
++# $Id: ip6tables_init.sh,v 1.2 2018/04/06 09:21:11 nanard Exp $
++# Improved Miniupnpd iptables init script.
++# Checks for state of filter before doing anything..
+ 
+-#change this parameters :
+-EXTIF=eth0
+-
+-#adding the MINIUPNPD chain for filter
+-$IPTABLES -t filter -N MINIUPNPD
+-#adding the rule to MINIUPNPD
+-$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j MINIUPNPD
++IPV6=1
++EXT=1
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
++if [ "$FDIRTY" = "${CHAIN}Chain" ]; then
++	echo "Filter table dirty; Cleaning..."
++elif [ "$FDIRTY" = "Chain" ]; then
++	echo "Dirty filter chain but no reference..? Fixing..."
++	$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++else
++	echo "Filter table clean..initalizing.."
++	$IPTABLES -t filter -N $CHAIN
++	$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++fi
++if [ "$CLEAN" = "yes" ]; then
++	$IPTABLES -t filter -F $CHAIN
++fi
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/ip6tables_removeall.sh miniupnpd-2.0.20180412/netfilter/ip6tables_removeall.sh
+--- miniupnpd-2.0.20180203/netfilter/ip6tables_removeall.sh	2012-04-25 04:13:17.000000000 +0600
++++ miniupnpd-2.0.20180412/netfilter/ip6tables_removeall.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,13 +1,16 @@
+ #! /bin/sh
+-# $Id: ip6tables_removeall.sh,v 1.1 2012/04/24 22:13:41 nanard Exp $
+-IPTABLES=/sbin/ip6tables
++# $Id: ip6tables_removeall.sh,v 1.2 2018/04/06 09:21:11 nanard Exp $
+ 
+-#change this parameters :
+-EXTIF=eth0
++IPV6=1
++EXT=1
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
+ #removing the MINIUPNPD chain for filter
+-$IPTABLES -t filter -F MINIUPNPD
+-#adding the rule to MINIUPNPD
+-$IPTABLES -t filter -D FORWARD -i $EXTIF ! -o $EXTIF -j MINIUPNPD
+-$IPTABLES -t filter -X MINIUPNPD
+-
++if [ "$FDIRTY" = "${CHAIN}Chain" ]; then
++	$IPTABLES -t filter -F $CHAIN
++	$IPTABLES -t filter -D FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++	$IPTABLES -t filter -X $CHAIN
++elif [ "$FDIRTY" = "Chain" ]; then
++	$IPTABLES -t filter -F $CHAIN
++	$IPTABLES -t filter -X $CHAIN
++fi
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptables_display_miniupnpd.sh miniupnpd-2.0.20180412/netfilter/iptables_display_miniupnpd.sh
+--- miniupnpd-2.0.20180203/netfilter/iptables_display_miniupnpd.sh	2016-02-12 20:23:03.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptables_display_miniupnpd.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,10 +1,10 @@
+ #! /bin/sh
+-# $Id: iptables_display_miniupnpd.sh,v 1.1 2016/02/12 15:23:29 nanard Exp $
+-IPTABLES=/sbin/iptables
++# $Id: iptables_display_miniupnpd.sh,v 1.2 2018/04/06 09:21:11 nanard Exp $
+ 
+-#display miniupnpd chains
+-$IPTABLES -v -n -t nat -L MINIUPNPD
+-$IPTABLES -v -n -t nat -L MINIUPNPD-POSTROUTING
+-$IPTABLES -v -n -t mangle -L MINIUPNPD
+-$IPTABLES -v -n -t filter -L MINIUPNPD
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
++#display miniupnpd chains
++$IPTABLES -v -n -t nat -L $CHAIN
++$IPTABLES -v -n -t nat -L $CHAIN-POSTROUTING
++$IPTABLES -v -n -t mangle -L $CHAIN
++$IPTABLES -v -n -t filter -L $CHAIN
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptables_display.sh miniupnpd-2.0.20180412/netfilter/iptables_display.sh
+--- miniupnpd-2.0.20180203/netfilter/iptables_display.sh	2017-04-21 16:23:57.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptables_display.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,14 +1,14 @@
+ #! /bin/sh
+-# $Id: iptables_display.sh,v 1.7 2017/04/21 11:16:09 nanard Exp $
+-IPTABLES=/sbin/iptables
++# $Id: iptables_display.sh,v 1.8 2018/04/06 10:17:09 nanard Exp $
++
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
+ #display all chains relative to miniupnpd
+ $IPTABLES -v -n -t nat -L PREROUTING
+-$IPTABLES -v -n -t nat -L MINIUPNPD
++$IPTABLES -v -n -t nat -L $CHAIN
+ $IPTABLES -v -n -t nat -L POSTROUTING
+-$IPTABLES -v -n -t nat -L MINIUPNPD-POSTROUTING
++$IPTABLES -v -n -t nat -L $CHAIN-POSTROUTING
+ $IPTABLES -v -n -t mangle -L PREROUTING
+-$IPTABLES -v -n -t mangle -L MINIUPNPD
++$IPTABLES -v -n -t mangle -L $CHAIN
+ $IPTABLES -v -n -t filter -L FORWARD
+-$IPTABLES -v -n -t filter -L MINIUPNPD
+-
++$IPTABLES -v -n -t filter -L $CHAIN
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptables_flush.sh miniupnpd-2.0.20180412/netfilter/iptables_flush.sh
+--- miniupnpd-2.0.20180203/netfilter/iptables_flush.sh	2017-04-21 16:23:57.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptables_flush.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,10 +1,10 @@
+ #! /bin/sh
+-# $Id: iptables_flush.sh,v 1.6 2017/04/21 11:16:09 nanard Exp $
+-IPTABLES=/sbin/iptables
++# $Id: iptables_flush.sh,v 1.7 2018/04/06 10:17:09 nanard Exp $
+ 
+-#flush all rules owned by miniupnpd
+-$IPTABLES -t nat -F MINIUPNPD
+-$IPTABLES -t nat -F MINIUPNPD-POSTROUTING
+-$IPTABLES -t filter -F MINIUPNPD
+-$IPTABLES -t mangle -F MINIUPNPD
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
++#flush all rules owned by miniupnpd
++$IPTABLES -t nat -F $CHAIN
++$IPTABLES -t nat -F $CHAIN-POSTROUTING
++$IPTABLES -t filter -F $CHAIN
++$IPTABLES -t mangle -F $CHAIN
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptables_init.sh miniupnpd-2.0.20180412/netfilter/iptables_init.sh
+--- miniupnpd-2.0.20180203/netfilter/iptables_init.sh	2017-04-21 16:23:57.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptables_init.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,31 +1,37 @@
+ #! /bin/sh
+-# $Id: iptables_init.sh,v 1.10 2017/04/21 11:16:09 nanard Exp $
+-IPTABLES="`which iptables`" || exit 1
+-IPTABLES="$IPTABLES -w"
+-IP="`which ip`" || exit 1
+-
+-#change this parameters :
+-#EXTIF=eth0
+-EXTIF="`LC_ALL=C $IP -4 route | grep 'default' | sed -e 's/.*dev[[:space:]]*//' -e 's/[[:space:]].*//'`" || exit 1
+-EXTIP="`LC_ALL=C $IP -4 addr show $EXTIF | awk '/inet/ { print $2 }' | cut -d "/" -f 1`"
+-
+-echo "External IP = $EXTIP"
+-
+-#adding the MINIUPNPD chain for nat
+-$IPTABLES -t nat -N MINIUPNPD
+-#adding the rule to MINIUPNPD
+-#$IPTABLES -t nat -A PREROUTING -d $EXTIP -i $EXTIF -j MINIUPNPD
+-$IPTABLES -t nat -A PREROUTING -i $EXTIF -j MINIUPNPD
+-
+-#adding the MINIUPNPD chain for mangle
+-$IPTABLES -t mangle -N MINIUPNPD
+-$IPTABLES -t mangle -A PREROUTING -i $EXTIF -j MINIUPNPD
+-
+-#adding the MINIUPNPD chain for filter
++# $Id: iptables_init.sh,v 1.11 2018/04/06 10:17:09 nanard Exp $
++# Improved Miniupnpd iptables init script.
++# Checks for state of filter before doing anything..
++
++EXT=1
++. $(dirname "$0")/miniupnpd_functions.sh
++
++if [ "$NDIRTY" = "${CHAIN}Chain" ]; then
++	echo "Nat table dirty; Cleaning..."
++elif [ "$NDIRTY" = "Chain" ]; then
++	echo "Dirty NAT chain but no reference..? Fixing..."
++	#$IPTABLES -t nat -A PREROUTING -d $EXTIP -i $EXTIF -j $CHAIN
++	$IPTABLES -t nat -A PREROUTING -i $EXTIF -j $CHAIN
++else
++	echo "NAT table clean..initalizing.."
++	$IPTABLES -t nat -N $CHAIN
++	#$IPTABLES -t nat -A PREROUTING -d $EXTIP -i $EXTIF -j $CHAIN
++	$IPTABLES -t nat -A PREROUTING -i $EXTIF -j $CHAIN
++fi
++if [ "$CLEAN" = "yes" ]; then
++	$IPTABLES -t nat -F $CHAIN
++fi
++
++if [ "$FDIRTY" = "${CHAIN}Chain" ]; then
++	echo "Filter table dirty; Cleaning..."
++elif [ "$FDIRTY" = "Chain" ]; then
++	echo "Dirty filter chain but no reference..? Fixing..."
++	$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++else
++	echo "Filter table clean..initalizing.."
+ $IPTABLES -t filter -N MINIUPNPD
+-#adding the rule to MINIUPNPD
+-$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j MINIUPNPD
+-
+-#adding the MINIUPNPD chain for nat
+-$IPTABLES -t nat -N MINIUPNPD-POSTROUTING
+-$IPTABLES -t nat -A POSTROUTING -o $EXTIF -j MINIUPNPD-POSTROUTING
++	$IPTABLES -t filter -A FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++fi
++if [ "$CLEAN" = "yes" ]; then
++	$IPTABLES -t filter -F $CHAIN
++fi
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptables_removeall.sh miniupnpd-2.0.20180412/netfilter/iptables_removeall.sh
+--- miniupnpd-2.0.20180203/netfilter/iptables_removeall.sh	2017-04-21 16:23:57.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptables_removeall.sh	2018-04-06 15:53:05.000000000 +0500
+@@ -1,34 +1,46 @@
+ #! /bin/sh
+-# $Id: iptables_removeall.sh,v 1.10 2017/04/21 11:16:09 nanard Exp $
+-IPTABLES="`which iptables`" || exit 1
+-IPTABLES="$IPTABLES -w"
+-IP="`which ip`" || exit 1
++# $Id: iptables_removeall.sh,v 1.11 2018/04/06 10:17:09 nanard Exp $
+ 
+-#change this parameters :
+-#EXTIF=eth0
+-EXTIF="`LC_ALL=C $IP -4 route | grep 'default' | sed -e 's/.*dev[[:space:]]*//' -e 's/[[:space:]].*//'`" || exit 1
+-EXTIP="`LC_ALL=C $IP -4 addr show $EXTIF | awk '/inet/ { print $2 }' | cut -d "/" -f 1`"
++EXT=1
++. $(dirname "$0")/miniupnpd_functions.sh
+ 
+ #removing the MINIUPNPD chain for nat
+-$IPTABLES -t nat -F MINIUPNPD
+-#rmeoving the rule to MINIUPNPD
+-#$IPTABLES -t nat -D PREROUTING -d $EXTIP -i $EXTIF -j MINIUPNPD
+-$IPTABLES -t nat -D PREROUTING -i $EXTIF -j MINIUPNPD
+-$IPTABLES -t nat -X MINIUPNPD
++if [ "$NDIRTY" = "${CHAIN}Chain" ]; then
++	$IPTABLES -t nat -F $CHAIN
++	#$IPTABLES -t nat -D PREROUTING -d $EXTIP -i $EXTIF -j $CHAIN
++	$IPTABLES -t nat -D PREROUTING -i $EXTIF -j $CHAIN
++	$IPTABLES -t nat -X $CHAIN
++elif [ "$NDIRTY" = "Chain" ]; then
++	$IPTABLES -t nat -F $CHAIN
++	$IPTABLES -t nat -X $CHAIN
++fi
+ 
+ #removing the MINIUPNPD chain for mangle
+-$IPTABLES -t mangle -F MINIUPNPD
+-$IPTABLES -t mangle -D PREROUTING -i $EXTIF -j MINIUPNPD
+-$IPTABLES -t mangle -X MINIUPNPD
++if [ "$MDIRTY" = "${CHAIN}Chain" ]; then
++	$IPTABLES -t mangle -F $CHAIN
++	$IPTABLES -t mangle -D FORWARD -i $EXTIF -j $CHAIN
++	$IPTABLES -t mangle -X $CHAIN
++elif [ "$MDIRTY" = "Chain" ]; then
++	$IPTABLES -t mangle -F $CHAIN
++	$IPTABLES -t mangle -X $CHAIN
++fi
+ 
+ #removing the MINIUPNPD chain for filter
+-$IPTABLES -t filter -F MINIUPNPD
+-#adding the rule to MINIUPNPD
+-$IPTABLES -t filter -D FORWARD -i $EXTIF ! -o $EXTIF -j MINIUPNPD
+-$IPTABLES -t filter -X MINIUPNPD
++if [ "$FDIRTY" = "${CHAIN}Chain" ]; then
++	$IPTABLES -t filter -F $CHAIN
++	$IPTABLES -t filter -D FORWARD -i $EXTIF ! -o $EXTIF -j $CHAIN
++	$IPTABLES -t filter -X $CHAIN
++elif [ "$FDIRTY" = "Chain" ]; then
++	$IPTABLES -t filter -F $CHAIN
++	$IPTABLES -t filter -X $CHAIN
++fi
+ 
+ #removing the MINIUPNPD-POSTROUTING chain for nat
+-$IPTABLES -t nat -F MINIUPNPD-POSTROUTING
+-#removing the rule to MINIUPNPD-POSTROUTING
+-$IPTABLES -t nat -D POSTROUTING -o $EXTIF -j MINIUPNPD-POSTROUTING
+-$IPTABLES -t nat -X MINIUPNPD-POSTROUTING
++if [ "$NPDIRTY" = "${CHAIN}-POSTROUTINGChain" ]; then
++	$IPTABLES -t nat -F $CHAIN-POSTROUTING
++	$IPTABLES -t nat -D POSTROUTING -o $EXTIF -j $CHAIN-POSTROUTING
++	$IPTABLES -t nat -X $CHAIN-POSTROUTING
++elif [ "$NPDIRTY" = "Chain" ]; then
++	$IPTABLES -t nat -F $CHAIN-POSTROUTING
++	$IPTABLES -t nat -X $CHAIN-POSTROUTING
++fi
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/iptpinhole.c miniupnpd-2.0.20180412/netfilter/iptpinhole.c
+--- miniupnpd-2.0.20180203/netfilter/iptpinhole.c	2017-11-02 22:37:36.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/iptpinhole.c	2018-04-06 14:10:29.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: iptpinhole.c,v 1.17 2017/11/02 15:41:46 nanard Exp $ */
++/* $Id: iptpinhole.c,v 1.18 2018/03/13 23:05:21 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2012-2017 Thomas Bernard
++ * (c) 2012-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -458,7 +458,7 @@
+ 	time_t current_time;
+ 	int n = 0;
+ 
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	p = pinhole_list.lh_first;
+ 	while(p != NULL) {
+ 		if(p->timestamp <= (unsigned int)current_time) {
+diff -uNrwB miniupnpd-2.0.20180203/netfilter/miniupnpd_functions.sh miniupnpd-2.0.20180412/netfilter/miniupnpd_functions.sh
+--- miniupnpd-2.0.20180203/netfilter/miniupnpd_functions.sh	1970-01-01 05:00:00.000000000 +0500
++++ miniupnpd-2.0.20180412/netfilter/miniupnpd_functions.sh	2018-04-06 14:20:44.000000000 +0500
+@@ -0,0 +1,64 @@
++#! /bin/sh
++# $Id: miniupnpd_functions.sh,v 1.1 2018/04/06 09:21:11 nanard Exp $
++
++IP=$(which ip) || {
++	echo "Can't find ip" >&2
++	exit 1
++}
++if [ -z "$IPV6" ]; then
++	IPTABLES=$(which iptables) || {
++		echo "Can't find iptables" >&2
++		exit 1
++	}
++	IP="$IP -4"
++else
++	IPTABLES=$(which ip6tables) || {
++		echo "Can't find ip6tables" >&2
++		exit 1
++	}
++	IP="$IP -6"
++fi
++
++CHAIN=MINIUPNPD
++CLEAN=
++
++while getopts ":c:i:f" opt; do
++	case $opt in
++		c)
++			CHAIN=$OPTARG
++			;;
++		i)
++			EXTIF=$OPTARG
++			;;
++		f)
++			CLEAN=yes
++			;;
++		\?)
++			echo "Invalid option: -$OPTARG" >&2
++			exit 1
++			;;
++		:)
++			echo "Option -$OPTARG requires an argument." >&2
++			exit 1
++			;;
++	esac
++done
++
++if [ -n "$EXT" ]; then
++	if [ -z "$EXTIF" ]; then
++		EXTIF=$(LC_ALL=C $IP route | grep 'default' | sed -e 's/.*dev[[:space:]]*//' -e 's/[[:space:]].*//') || {
++			echo "Can't find default interface" >&2
++			exit 1
++		}
++	fi
++	#if [ -z "$IPV6" ]; then
++	#	EXTIP=$(LC_ALL=C $IP addr show $EXTIF | awk '/inet/ { print $2 }' | cut -d "/" -f 1)
++	#fi
++fi
++
++FDIRTY=$(LC_ALL=C $IPTABLES -t filter -L -n | awk "/$CHAIN/ {printf \$1}")
++if [ -z "$IPV6" ]; then
++	NDIRTY=$(LC_ALL=C $IPTABLES -t nat -L -n | awk "/$CHAIN/ {printf \$1}")
++	MDIRTY=$(LC_ALL=C $IPTABLES -t mangle -L -n | awk "/$CHAIN/ {printf \$1}")
++	NPDIRTY=$(LC_ALL=C $IPTABLES -t nat -L -n | awk "/$CHAIN-POSTROUTING/ {printf \$1}")
++fi
+diff -uNrwB miniupnpd-2.0.20180203/options.c miniupnpd-2.0.20180412/options.c
+--- miniupnpd-2.0.20180203/options.c	2016-02-09 14:38:34.000000000 +0500
++++ miniupnpd-2.0.20180412/options.c	2018-02-22 18:19:11.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: options.c,v 1.33 2016/02/09 09:37:44 nanard Exp $ */
++/* $Id: options.c,v 1.34 2018/02/22 13:18:58 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * author: Ryan Wagoner
+@@ -83,6 +83,9 @@
+ #ifdef ENABLE_LEASEFILE
+ 	{ UPNPLEASEFILE, "lease_file"},
+ #endif
++#ifdef IGD_V2
++	{ UPNPFORCEIGDDESCV1, "force_igd_desc_v1"},
++#endif
+ 	{ UPNPMINISSDPDSOCKET, "minissdpdsocket"},
+ 	{ UPNPSECUREMODE, "secure_mode"}
+ };
+diff -uNrwB miniupnpd-2.0.20180203/options.h miniupnpd-2.0.20180412/options.h
+--- miniupnpd-2.0.20180203/options.h	2016-02-09 14:38:34.000000000 +0500
++++ miniupnpd-2.0.20180412/options.h	2018-02-22 18:19:11.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: options.h,v 1.27 2016/02/09 09:37:44 nanard Exp $ */
++/* $Id: options.h,v 1.28 2018/02/22 13:18:58 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * author: Ryan Wagoner
+@@ -66,6 +66,9 @@
+ 	UPNPLEASEFILE,			/* lease_file */
+ #endif
+ 	UPNPMINISSDPDSOCKET,	/* minissdpdsocket */
++#ifdef IGD_V2
++	UPNPFORCEIGDDESCV1,
++#endif
+ 	UPNPENABLE				/* enable_upnp */
+ };
+ 
+diff -uNrwB miniupnpd-2.0.20180203/pcpserver.c miniupnpd-2.0.20180412/pcpserver.c
+--- miniupnpd-2.0.20180203/pcpserver.c	2018-01-19 04:47:02.000000000 +0500
++++ miniupnpd-2.0.20180412/pcpserver.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: pcpserver.c,v 1.46 2018/01/16 00:50:48 nanard Exp $ */
++/* $Id: pcpserver.c,v 1.47 2018/03/13 10:21:19 nanard Exp $ */
+ /* MiniUPnP project
+  * Website : http://miniupnp.free.fr/
+  * Author : Peter Tatrai
+@@ -684,7 +684,7 @@
+ 	uint16_t eport = pcp_msg_info->ext_port;  /* public port */
+ 
+ 	char peerip_s[INET6_ADDRSTRLEN], extip_s[INET6_ADDRSTRLEN];
+-	time_t timestamp = time(NULL) + pcp_msg_info->lifetime;
++	time_t timestamp = upnp_time() + pcp_msg_info->lifetime;
+ 	int r;
+ 
+ 	FillSA((struct sockaddr*)&intip, pcp_msg_info->mapped_ip,
+@@ -890,7 +890,7 @@
+ 	char iaddr_old[INET6_ADDRSTRLEN];
+ 	uint16_t iport_old, eport_first = 0;
+ 	int any_eport_allowed = 0;
+-	unsigned int timestamp = time(NULL) + pcp_msg_info->lifetime;
++	unsigned int timestamp = upnp_time() + pcp_msg_info->lifetime;
+ 
+ 	if (pcp_msg_info->ext_port == 0) {
+ 		pcp_msg_info->ext_port = pcp_msg_info->int_port;
+@@ -1450,7 +1450,7 @@
+ 	if(epoch_origin == 0) {
+ 		epoch_origin = startup_time;
+ 	}
+-	WRITENU32(response + 8, time(NULL) - epoch_origin); /* epochtime */
++	WRITENU32(response + 8, upnp_time() - epoch_origin); /* epochtime */
+ 	switch (pcp_msg_info->result_code) {
+ 	/*long lifetime errors*/
+ 	case PCP_ERR_UNSUPP_VERSION:
+@@ -1690,7 +1690,7 @@
+ 	/* according to RFC 6887  8.5 :
+ 	 *   if the external IP address(es) of the NAT (controlled by
+ 	 *   the PCP server) changes, the Epoch time MUST be reset. */
+-	epoch_origin = time(NULL);
++	epoch_origin = upnp_time();
+ #ifdef ENABLE_IPV6
+ 	PCPSendUnsolicitedAnnounce(sockets, n_sockets, socket6);
+ #else /* IPv4 Only */
+diff -uNrwB miniupnpd-2.0.20180203/pf/pfpinhole.c miniupnpd-2.0.20180412/pf/pfpinhole.c
+--- miniupnpd-2.0.20180203/pf/pfpinhole.c	2017-11-02 22:37:37.000000000 +0500
++++ miniupnpd-2.0.20180412/pf/pfpinhole.c	2018-04-06 14:10:29.000000000 +0500
+@@ -1,8 +1,8 @@
+-/* $Id: pfpinhole.c,v 1.26 2017/05/27 08:25:16 nanard Exp $ */
++/* $Id: pfpinhole.c,v 1.27 2018/03/13 23:05:21 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2012-2017 Thomas Bernard
++ * (c) 2012-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -379,7 +379,7 @@
+ 		syslog(LOG_ERR, "pf device is not open");
+ 		return -1;
+ 	}
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	memset(&pr, 0, sizeof(pr));
+ 	strlcpy(pr.anchor, anchor_name, MAXPATHLEN);
+ #ifndef PF_NEWSTYLE
+diff -uNrwB miniupnpd-2.0.20180203/testasyncsendto.c miniupnpd-2.0.20180412/testasyncsendto.c
+--- miniupnpd-2.0.20180203/testasyncsendto.c	2018-01-19 04:47:02.000000000 +0500
++++ miniupnpd-2.0.20180412/testasyncsendto.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: testasyncsendto.c,v 1.4 2018/01/16 00:50:49 nanard Exp $ */
++/* $Id: testasyncsendto.c,v 1.5 2018/03/13 10:25:52 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or https://miniupnp.tuxfamily.org/
+@@ -21,6 +21,8 @@
+ #include "asyncsendto.h"
+ 
+ struct lan_addr_list lan_addrs;
++int runtime_flags = 0;
++time_t startup_time = 0;
+ 
+ #define DEST_IP "239.255.255.250"
+ #define DEST_PORT 1900
+diff -uNrwB miniupnpd-2.0.20180203/testgetroute.c miniupnpd-2.0.20180412/testgetroute.c
+--- miniupnpd-2.0.20180203/testgetroute.c	2015-11-17 02:52:49.000000000 +0500
++++ miniupnpd-2.0.20180412/testgetroute.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: testgetroute.c,v 1.6 2015/11/16 19:20:21 nanard Exp $ */
++/* $Id: testgetroute.c,v 1.7 2018/03/13 10:25:52 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2015 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -23,6 +23,8 @@
+ #endif
+ 
+ struct lan_addr_list lan_addrs;
++int runtime_flags = 0;
++time_t startup_time = 0;
+ 
+ int
+ main(int argc, char ** argv)
+diff -uNrwB miniupnpd-2.0.20180203/testupnpdescgen.c miniupnpd-2.0.20180412/testupnpdescgen.c
+--- miniupnpd-2.0.20180203/testupnpdescgen.c	2017-05-27 12:48:09.000000000 +0500
++++ miniupnpd-2.0.20180412/testupnpdescgen.c	2018-02-22 18:19:11.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: testupnpdescgen.c,v 1.34 2017/05/27 07:47:57 nanard Exp $ */
++/* $Id: testupnpdescgen.c,v 1.35 2018/02/22 13:18:58 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2017 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -15,6 +15,7 @@
+ 
+ #include "macros.h"
+ #include "config.h"
++#include "upnpglobalvars.h"
+ #include "upnpdescgen.h"
+ #include "upnpdescstrings.h"
+ #include "getifaddr.h"
+@@ -39,7 +40,7 @@
+ #endif /* RANDOMIZE_URLS */
+ unsigned int upnp_configid = 666;
+ 
+-char * use_ext_ip_addr = NULL;
++const char * use_ext_ip_addr = NULL;
+ const char * ext_if_name = "eth0";
+ 
+ int runtime_flags = 0;
+@@ -139,8 +140,25 @@
+ 	char * s;
+ 	int l;
+ 	FILE * f;
+-	UNUSED(argc);
+-	UNUSED(argv);
++
++	for(l = 1; l < argc; l++) {
++		if(0 == strcmp(argv[l], "--help") || 0 == strcmp(argv[l], "-h")) {
++			printf("Usage:\t%s [options]\n", argv[0]);
++			printf("options:\n");
++#ifdef IGD_V2
++			printf("\t--forceigdv1    Force versions of devices to be 1\n");
++#else
++			printf("\tNone\n");
++#endif
++			return 0;
++#ifdef IGD_V2
++		} else if(0 == strcmp(argv[l], "--forceigdv1")) {
++			SETFLAG(FORCEIGDDESCV1MASK);
++#endif
++		} else {
++			fprintf(stderr, "unknown option %s\n", argv[l]);
++		}
++	}
+ 
+ 	if(mkdir("testdescs", 0777) < 0) {
+ 		if(errno != EEXIST) {
+diff -uNrwB miniupnpd-2.0.20180203/upnpdescgen.c miniupnpd-2.0.20180412/upnpdescgen.c
+--- miniupnpd-2.0.20180203/upnpdescgen.c	2017-12-12 16:51:30.000000000 +0500
++++ miniupnpd-2.0.20180412/upnpdescgen.c	2018-02-22 18:19:11.000000000 +0500
+@@ -1,8 +1,8 @@
+-/* $Id: upnpdescgen.c,v 1.84 2017/12/12 11:44:27 nanard Exp $ */
++/* $Id: upnpdescgen.c,v 1.85 2018/02/22 13:18:58 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2017 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -921,6 +921,19 @@
+ 				}
+ #endif /* RANDOMIZE_URLS */
+ 				str = strcat_str(str, len, tmplen, p[i].data);
++#ifdef IGD_V2
++				/* checking a single 'u' saves us 4 strcmp() calls most of the time */
++				if (GETFLAG(FORCEIGDDESCV1MASK) && (p[i].data[0] == 'u'))
++				{
++					if ((strcmp(p[i].data, DEVICE_TYPE_IGD) == 0) ||
++						(strcmp(p[i].data, DEVICE_TYPE_WAN) == 0)  ||
++						(strcmp(p[i].data, DEVICE_TYPE_WANC) == 0) ||
++						(strcmp(p[i].data, SERVICE_TYPE_WANIPC) == 0) )
++					{
++						str[*len - 1] = '1';	/* Change the version number to 1 */
++					}
++				}
++#endif
+ 				str = strcat_char(str, len, tmplen, '<');
+ 				str = strcat_str(str, len, tmplen, eltname);
+ 				str = strcat_char(str, len, tmplen, '>');
+diff -uNrwB miniupnpd-2.0.20180203/upnpevents.c miniupnpd-2.0.20180412/upnpevents.c
+--- miniupnpd-2.0.20180203/upnpevents.c	2017-11-02 22:37:35.000000000 +0500
++++ miniupnpd-2.0.20180412/upnpevents.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,8 +1,8 @@
+-/* $Id: upnpevents.c,v 1.38 2017/11/02 15:50:35 nanard Exp $ */
++/* $Id: upnpevents.c,v 1.39 2018/03/12 22:41:54 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2008-2017 Thomas Bernard
++ * (c) 2008-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -182,7 +182,7 @@
+ 	if(!tmp)
+ 		return NULL;
+ 	if(timeout)
+-		tmp->timeout = time(NULL) + timeout;
++		tmp->timeout = upnp_time() + timeout;
+ 	LIST_INSERT_HEAD(&subscriberlist, tmp, entries);
+ 	upnp_event_create_notify(tmp);
+ 	return tmp->uuid;
+@@ -197,10 +197,10 @@
+ 		if((sidlen == 41) && (memcmp(sid, sub->uuid, 41) == 0)) {
+ #ifdef UPNP_STRICT
+ 			/* check if the subscription already timeouted */
+-			if(sub->timeout && time(NULL) > sub->timeout)
++			if(sub->timeout && upnp_time() > sub->timeout)
+ 				continue;
+ #endif
+-			sub->timeout = (timeout ? time(NULL) + timeout : 0);
++			sub->timeout = (timeout ? upnp_time() + timeout : 0);
+ 			return sub->uuid;
+ 		}
+ 	}
+@@ -624,7 +624,7 @@
+ 		obj = next;
+ 	}
+ 	/* remove timeouted subscribers */
+-	curtime = time(NULL);
++	curtime = upnp_time();
+ 	for(sub = subscriberlist.lh_first; sub != NULL; ) {
+ 		subnext = sub->entries.le_next;
+ 		if(sub->timeout && curtime > sub->timeout && sub->notify == NULL) {
+diff -uNrwB miniupnpd-2.0.20180203/upnpglobalvars.h miniupnpd-2.0.20180412/upnpglobalvars.h
+--- miniupnpd-2.0.20180203/upnpglobalvars.h	2018-01-19 04:47:02.000000000 +0500
++++ miniupnpd-2.0.20180412/upnpglobalvars.h	2018-02-22 18:19:11.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: upnpglobalvars.h,v 1.45 2018/01/16 00:50:49 nanard Exp $ */
++/* $Id: upnpglobalvars.h,v 1.46 2018/02/22 13:18:58 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or https://miniupnp.tuxfamily.org/
+@@ -65,6 +65,9 @@
+ #ifdef ENABLE_PCP
+ #define PCP_ALLOWTHIRDPARTYMASK	0x0400
+ #endif
++#ifdef IGD_V2
++#define FORCEIGDDESCV1MASK 0x0800
++#endif
+ 
+ #define SETFLAG(mask)	runtime_flags |= mask
+ #define GETFLAG(mask)	(runtime_flags & mask)
+diff -uNrwB miniupnpd-2.0.20180203/upnppinhole.c miniupnpd-2.0.20180412/upnppinhole.c
+--- miniupnpd-2.0.20180203/upnppinhole.c	2017-04-21 16:23:56.000000000 +0500
++++ miniupnpd-2.0.20180412/upnppinhole.c	2018-04-06 14:10:28.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: upnppinhole.c,v 1.10 2017/04/21 11:21:26 nanard Exp $ */
++/* $Id: upnppinhole.c,v 1.13 2018/03/13 10:49:13 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2017 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -23,6 +23,7 @@
+ #include "upnpredirect.h"
+ #include "upnpglobalvars.h"
+ #include "upnpevents.h"
++#include "upnputils.h"
+ #include "upnppinhole.h"
+ #ifdef __APPLE__
+ /* XXX - Apple version of PF API seems to differ from what
+@@ -130,7 +131,7 @@
+ 		       AF_INET6, iaddr, &address);
+ 		return -4;
+ 	}
+-	current = time(NULL);
++	current = upnp_time();
+ 	timestamp = current + leasetime;
+ 	r = 0;
+ 
+@@ -252,7 +253,7 @@
+ 	if(r >= 0) {
+ 		if(leasetime) {
+ 			time_t current_time;
+-			current_time = time(NULL);
++			current_time = upnp_time();
+ 			if(timestamp > (unsigned int)current_time)
+ 				*leasetime = timestamp - current_time;
+ 			else
+@@ -289,7 +290,7 @@
+ #if defined(USE_PF) || defined(USE_NETFILTER)
+ 	unsigned int timestamp;
+ 
+-	timestamp = time(NULL) + leasetime;
++	timestamp = upnp_time() + leasetime;
+ 	return update_pinhole(uid, timestamp);
+ #else
+ 	UNUSED(uid); UNUSED(leasetime);
+@@ -331,7 +332,7 @@
+ 	/* TODO : to be implemented */
+ #if 0
+ 	FILE * fd;
+-	time_t expire = time(NULL);
++	time_t expire = upnp_time();
+ 	char buf[1024], filename[] = "/var/log/kern.log", expire_time[32]="";
+ 	int res = -4, str_len;
+ 
+diff -uNrwB miniupnpd-2.0.20180203/upnpredirect.c miniupnpd-2.0.20180412/upnpredirect.c
+--- miniupnpd-2.0.20180203/upnpredirect.c	2018-01-19 04:47:02.000000000 +0500
++++ miniupnpd-2.0.20180412/upnpredirect.c	2018-03-13 15:26:34.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: upnpredirect.c,v 1.92 2018/01/16 00:50:49 nanard Exp $ */
++/* $Id: upnpredirect.c,v 1.93 2018/03/12 22:41:53 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or https://miniupnp.tuxfamily.org/
+@@ -25,6 +25,7 @@
+ #include "upnpglobalvars.h"
+ #include "upnpevents.h"
+ #include "portinuse.h"
++#include "upnputils.h"
+ #if defined(USE_NETFILTER)
+ #include "netfilter/iptcrdr.h"
+ #endif
+@@ -202,7 +203,7 @@
+ 		syslog(LOG_WARNING, "could not unlink file %s : %m", lease_file);
+ 	}
+ 
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	while(fgets(line, sizeof(line), fd)) {
+ 		syslog(LOG_DEBUG, "parsing lease file line '%s'", line);
+ 		proto = line;
+@@ -353,7 +354,7 @@
+ 		    (rhost && (strcmp(rhost, rhost_old) == 0)))) {
+ 			syslog(LOG_INFO, "updating existing port mapping %hu %s (rhost '%s') => %s:%hu",
+ 				eport, protocol, rhost_old, iaddr_old, iport_old);
+-			timestamp = (leaseduration > 0) ? time(NULL) + leaseduration : 0;
++			timestamp = (leaseduration > 0) ? upnp_time() + leaseduration : 0;
+ 			if(iport != iport_old) {
+ 				r = update_portmapping(ext_if_name, eport, proto, iport, desc, timestamp);
+ 			} else {
+@@ -378,7 +379,7 @@
+ 		return -4;
+ #endif /* CHECK_PORTINUSE */
+ 	} else {
+-		timestamp = (leaseduration > 0) ? time(NULL) + leaseduration : 0;
++		timestamp = (leaseduration > 0) ? upnp_time() + leaseduration : 0;
+ 		syslog(LOG_INFO, "redirecting port %hu to %s:%hu protocol %s for: %s",
+ 			eport, iaddr, iport, protocol, desc);
+ 		return upnp_redirect_internal(rhost, eport, iaddr, iport, proto,
+@@ -448,7 +449,7 @@
+ 	                      0, 0);
+ 	if(r == 0 &&
+ 	   timestamp > 0 &&
+-	   timestamp > (unsigned int)(current_time = time(NULL))) {
++	   timestamp > (unsigned int)(current_time = upnp_time())) {
+ 		*leaseduration = timestamp - current_time;
+ 	} else {
+ 		*leaseduration = 0;
+@@ -481,7 +482,7 @@
+ 		return -1;
+ 	else
+ 	{
+-		current_time = time(NULL);
++		current_time = upnp_time();
+ 		*leaseduration = (timestamp > (unsigned int)current_time)
+ 		                 ? (timestamp - current_time)
+ 		                 : 0;
+@@ -567,7 +568,7 @@
+ 	tmp = malloc(sizeof(struct rule_state));
+ 	if(!tmp)
+ 		return 0;
+-	current_time = time(NULL);
++	current_time = upnp_time();
+ 	nextruletoclean_timestamp = 0;
+ 	while(get_redirect_rule_by_index(i, /*ifname*/0, &tmp->eport, 0, 0,
+ 	                              &iport, &proto, 0, 0, 0,0, &timestamp,
+diff -uNrwB miniupnpd-2.0.20180203/upnpsoap.c miniupnpd-2.0.20180412/upnpsoap.c
+--- miniupnpd-2.0.20180203/upnpsoap.c	2018-01-19 04:47:03.000000000 +0500
++++ miniupnpd-2.0.20180412/upnpsoap.c	2018-03-13 15:32:26.000000000 +0500
+@@ -1,4 +1,4 @@
+-/* $Id: upnpsoap.c,v 1.149 2018/01/16 00:50:49 nanard Exp $ */
++/* $Id: upnpsoap.c,v 1.151 2018/03/13 10:32:53 nanard Exp $ */
+ /* vim: tabstop=4 shiftwidth=4 noexpandtab
+  * MiniUPnP project
+  * http://miniupnp.free.fr/ or https://miniupnp.tuxfamily.org/
+@@ -32,6 +32,7 @@
+ #include "getifstats.h"
+ #include "getconnstatus.h"
+ #include "upnpurns.h"
++#include "upnputils.h"
+ 
+ /* utility function */
+ static int is_numeric(const char * s)
+@@ -274,7 +275,7 @@
+ 	 * Disconnecting, Disconnected */
+ 
+ 	status = get_wan_connection_status_str(ext_if_name);
+-	uptime = (time(NULL) - startup_time);
++	uptime = upnp_get_uptime();
+ 	bodylen = snprintf(body, sizeof(body), resp,
+ 		action, ns, /*SERVICE_TYPE_WANIPC,*/
+ 		status, (long)uptime, action);
+diff -uNrwB miniupnpd-2.0.20180203/upnputils.c miniupnpd-2.0.20180412/upnputils.c
+--- miniupnpd-2.0.20180203/upnputils.c	2014-11-07 16:55:02.000000000 +0500
++++ miniupnpd-2.0.20180412/upnputils.c	2018-04-12 13:12:35.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: upnputils.c,v 1.10 2014/11/07 11:53:39 nanard Exp $ */
++/* $Id: upnputils.c,v 1.13 2018/04/12 08:12:34 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2006-2014 Thomas Bernard
++ * (c) 2006-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -12,6 +12,7 @@
+ #include <syslog.h>
+ #include <unistd.h>
+ #include <fcntl.h>
++#include <time.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+@@ -184,3 +185,54 @@
+ 	return lan_addr;
+ }
+ 
++time_t upnp_time(void)
++{
++#if defined(CLOCK_MONOTONIC_FAST) || defined(CLOCK_MONOTONIC)
++#if defined(CLOCK_MONOTONIC_FAST)
++#define UPNP_CLOCKID CLOCK_MONOTONIC_FAST
++#else
++#define UPNP_CLOCKID CLOCK_MONOTONIC
++#endif
++	struct timespec ts;
++	if (clock_gettime(UPNP_CLOCKID, &ts) < 0)
++		return time(NULL);
++	else
++		return ts.tv_sec;
++#else
++	return time(NULL);
++#endif
++}
++
++time_t upnp_get_uptime(void)
++{
++#if defined(CLOCK_UPTIME_FAST) || defined(CLOCK_UPTIME)
++#if defined(CLOCK_UPTIME_FAST)
++#define UPNP_CLOCKID_UPTIME CLOCK_UPTIME_FAST
++#else
++#define UPNP_CLOCKID_UPTIME CLOCK_UPTIME
++#endif
++	if(GETFLAG(SYSUPTIMEMASK))
++	{
++		struct timespec ts;
++		if (clock_gettime(UPNP_CLOCKID_UPTIME, &ts) >= 0)
++			return ts.tv_sec;
++	}
++#endif
++	return upnp_time() - startup_time;
++}
++
++int upnp_gettimeofday(struct timeval * tv)
++{
++#if defined(CLOCK_MONOTONIC_FAST) || defined(CLOCK_MONOTONIC)
++	struct timespec ts;
++	int ret_code = clock_gettime(UPNP_CLOCKID, &ts);
++	if (ret_code == 0)
++	{
++		tv->tv_sec = ts.tv_sec;
++		tv->tv_usec = ts.tv_nsec / 1000;
++	}
++	return ret_code;
++#else
++	return gettimeofday(tv, NULL);
++#endif
++}
+diff -uNrwB miniupnpd-2.0.20180203/upnputils.h miniupnpd-2.0.20180412/upnputils.h
+--- miniupnpd-2.0.20180203/upnputils.h	2016-12-16 14:23:18.000000000 +0500
++++ miniupnpd-2.0.20180412/upnputils.h	2018-04-12 13:12:35.000000000 +0500
+@@ -1,7 +1,7 @@
+-/* $Id: upnputils.h,v 1.7 2016/12/16 09:11:18 nanard Exp $ */
++/* $Id: upnputils.h,v 1.10 2018/04/12 08:12:34 nanard Exp $ */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+- * (c) 2011-2013 Thomas Bernard
++ * (c) 2011-2018 Thomas Bernard
+  * This software is subject to the conditions detailed
+  * in the LICENCE file provided within the distribution */
+ 
+@@ -29,6 +29,22 @@
+ struct lan_addr_s *
+ get_lan_for_peer(const struct sockaddr * peer);
+ 
++/**
++ * get the time for upnp (release expiration, etc.)
++ * Similar to a monotonic time(NULL)
++ */
++time_t upnp_time(void);
++
++/**
++ * return either the machine or the daemon uptime
++ */
++time_t upnp_get_uptime(void);
++
++/**
++ * get the time for upnp
++ * Similar to a monotonic gettimeofday(tv, NULL)
++ */
++int upnp_gettimeofday(struct timeval * tv);
+ 
+ /**
+  * define portability macros
