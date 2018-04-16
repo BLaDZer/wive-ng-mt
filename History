@@ -4028,15 +4028,16 @@
 33) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
 34) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
 35) kernel: net: fix rtnh_ok().<br>
-36) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-37) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
-38) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-39) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
-40) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
-41) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
-42) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-43) kernel: ralink_wifi: fix TxType frame parse.<br>
-44) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+36) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
+37) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+38) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+39) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+40) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+41) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+42) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
+43) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
+44) kernel: ralink_wifi: fix TxType frame parse.<br>
+45) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>
