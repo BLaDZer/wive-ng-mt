@@ -100,13 +100,6 @@ lldpd_SOURCES = main.c
 lldpd_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
 lldpd_LDADD   = liblldpd.la -levent
 
-# Add SNMP support if needed
-if USE_SNMP
-liblldpd_la_SOURCES += agent.c agent_priv.c agent.h
-liblldpd_la_CFLAGS  += @NETSNMP_CFLAGS@
-lldpd_LDADD         += @NETSNMP_LIBS@
-endif
-
 # seccomp support
 if USE_SECCOMP
 BUILT_SOURCES += syscall-names.h
@@ -121,6 +114,13 @@ nodist_liblldpd_la_SOURCES += syscall-names.h
 liblldpd_la_SOURCES += priv-seccomp.c
 liblldpd_la_CFLAGS  += @SECCOMP_CFLAGS@
 liblldpd_la_LIBADD  += @SECCOMP_LIBS@
+endif
+
+# Add SNMP support if needed
+if USE_SNMP
+liblldpd_la_SOURCES += agent.c agent_priv.c agent.h
+liblldpd_la_CFLAGS  += @NETSNMP_CFLAGS@
+lldpd_LDADD         += @NETSNMP_LIBS@
 endif
 
 ## Systemtap/DTrace

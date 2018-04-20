@@ -37,13 +37,6 @@
 #include <netinet/in.h>
 #include <sys/un.h>
 
-#if HAVE_VFORK_H
-# include <vfork.h>
-#endif
-#if HAVE_WORKING_FORK
-# define vfork fork
-#endif
-
 #include "lldp-tlv.h"
 #if defined (ENABLE_CDP) || defined (ENABLE_FDP)
 #  include "protocols/cdp.h"
@@ -116,6 +109,7 @@ void	 lldpd_send(struct lldpd_hardware *);
 void	 lldpd_loop(struct lldpd *);
 int	 lldpd_main(int, char **, char **);
 void	 lldpd_update_localports(struct lldpd *);
+void	 lldpd_update_localchassis(struct lldpd *);
 void	 lldpd_cleanup(struct lldpd *);
 
 /* frame.c */

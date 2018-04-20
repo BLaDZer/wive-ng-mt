@@ -658,13 +658,15 @@ typedef enum {
 	lldpctl_k_config_hostname,	/**< `(S,WON)` System name overridden */
 	lldpctl_k_config_advertise_version, /**< `(I)` Advertise version */
 	lldpctl_k_config_lldpmed_noinventory, /**< `(I)` Disable LLDP-MED inventory */
-	lldpctl_k_config_paused,	      /**< `(I)` lldpd is paused */
+	lldpctl_k_config_paused,	      /**< `(I,WO)` lldpd is paused */
 	lldpctl_k_config_fast_start_enabled, /**< `(I,WO)` Is fast start enabled */
 	lldpctl_k_config_fast_start_interval, /**< `(I,WO)` Start fast transmit interval */
 	lldpctl_k_config_ifdescr_update, /**< `(I,WO)` Enable or disable setting interface description */
 	lldpctl_k_config_iface_promisc,  /**< `(I,WO)` Enable or disable promiscuous mode on interfaces */
 	lldpctl_k_config_chassis_cap_advertise, /**< `(I,WO)` Enable or disable chassis capabilities advertisement */
 	lldpctl_k_config_chassis_mgmt_advertise, /**< `(I,WO)` Enable or disable management addresses advertisement */
+	lldpctl_k_config_cid_string,    /**< `(S,WON)` User defined string for the chassis ID */
+	lldpctl_k_config_perm_iface_pattern, /**< `(S,WON)` Pattern of permanent interfaces */
 
 	lldpctl_k_interface_name = 1000, /**< `(S)` The interface name. */
 

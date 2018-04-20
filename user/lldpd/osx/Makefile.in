@@ -170,10 +170,6 @@ CHECK_LIBS = @CHECK_LIBS@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -282,7 +278,6 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -362,7 +357,6 @@ TEMPLATES = distribution.xml    im.bernat.lldpd.plist    scripts/postinstall    
 @HOST_OS_OSX_TRUE@        -e 's|@includedir[@]|$(includedir)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@prefix[@]|$(prefix)|g' \
-@HOST_OS_OSX_TRUE@        -e 's|@mkdir_p[@]|$(mkdir_p)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@VERSION[@]|$(VERSION)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@PACKAGE[@]|$(PACKAGE)|g' \
 @HOST_OS_OSX_TRUE@        -e 's|@PACKAGE_NAME[@]|$(PACKAGE_NAME)|g' \

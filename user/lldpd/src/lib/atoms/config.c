@@ -89,8 +89,12 @@ _lldpctl_atom_get_str_config(lldpctl_atom_t *atom, lldpctl_key_t key)
 		res = c->config->c_mgmt_pattern; break;
 	case lldpctl_k_config_iface_pattern:
 		res = c->config->c_iface_pattern; break;
+	case lldpctl_k_config_perm_iface_pattern:
+		res = c->config->c_perm_ifaces; break;
 	case lldpctl_k_config_cid_pattern:
 		res = c->config->c_cid_pattern; break;
+	case lldpctl_k_config_cid_string:
+		res = c->config->c_cid_string; break;
 	case lldpctl_k_config_description:
 		res = c->config->c_description; break;
 	case lldpctl_k_config_platform:
@@ -144,6 +148,12 @@ _lldpctl_atom_set_str_config(lldpctl_atom_t *atom, lldpctl_key_t key,
 	int rc;
 
 	switch (key) {
+	case lldpctl_k_config_perm_iface_pattern:
+		if (!__lldpctl_atom_set_str_config(c,
+			&config.c_perm_ifaces, &c->config->c_perm_ifaces,
+			value))
+			return NULL;
+		break;
 	case lldpctl_k_config_iface_pattern:
 		if (!__lldpctl_atom_set_str_config(c,
 			&config.c_iface_pattern, &c->config->c_iface_pattern,
@@ -153,6 +163,12 @@ _lldpctl_atom_set_str_config(lldpctl_atom_t *atom, lldpctl_key_t key,
 	case lldpctl_k_config_mgmt_pattern:
 		if (!__lldpctl_atom_set_str_config(c,
 			&config.c_mgmt_pattern, &c->config->c_mgmt_pattern,
+			value))
+			return NULL;
+		break;
+	case lldpctl_k_config_cid_string:
+		if (!__lldpctl_atom_set_str_config(c,
+			&config.c_cid_string, &c->config->c_cid_string,
 			value))
 			return NULL;
 		break;

@@ -131,18 +131,18 @@ sbin_PROGRAMS = lldpd$(EXEEXT)
 @HOST_OS_SOLARIS_TRUE@	priv-bsd.c
 
 
-# Add SNMP support if needed
-@USE_SNMP_TRUE@am__append_8 = agent.c agent_priv.c agent.h
-@USE_SNMP_TRUE@am__append_9 = @NETSNMP_CFLAGS@
-@USE_SNMP_TRUE@am__append_10 = @NETSNMP_LIBS@
-
 # seccomp support
-@USE_SECCOMP_TRUE@am__append_11 = syscall-names.h
-@USE_SECCOMP_TRUE@am__append_12 = syscall-names.h
-@USE_SECCOMP_TRUE@am__append_13 = syscall-names.h
-@USE_SECCOMP_TRUE@am__append_14 = priv-seccomp.c
-@USE_SECCOMP_TRUE@am__append_15 = @SECCOMP_CFLAGS@
-@USE_SECCOMP_TRUE@am__append_16 = @SECCOMP_LIBS@
+@USE_SECCOMP_TRUE@am__append_8 = syscall-names.h
+@USE_SECCOMP_TRUE@am__append_9 = syscall-names.h
+@USE_SECCOMP_TRUE@am__append_10 = syscall-names.h
+@USE_SECCOMP_TRUE@am__append_11 = priv-seccomp.c
+@USE_SECCOMP_TRUE@am__append_12 = @SECCOMP_CFLAGS@
+@USE_SECCOMP_TRUE@am__append_13 = @SECCOMP_LIBS@
+
+# Add SNMP support if needed
+@USE_SNMP_TRUE@am__append_14 = agent.c agent_priv.c agent.h
+@USE_SNMP_TRUE@am__append_15 = @NETSNMP_CFLAGS@
+@USE_SNMP_TRUE@am__append_16 = @NETSNMP_LIBS@
 @ENABLE_SYSTEMTAP_TRUE@am__append_17 = probes.h
 @ENABLE_SYSTEMTAP_TRUE@am__append_18 = probes.h
 @ENABLE_SYSTEMTAP_TRUE@am__append_19 = probes.o
@@ -185,8 +185,8 @@ am__liblldpd_la_SOURCES_DIST = frame.h frame.c lldp-tlv.h client.c \
 	forward-linux.c interfaces-linux.c netlink.c dmi-linux.c \
 	priv-linux.c forward-bsd.c interfaces-bpf.c interfaces-bsd.c \
 	dmi-dummy.c priv-bsd.c dmi-freebsd.c dmi-openbsd.c dmi-osx.c \
-	forward-solaris.c interfaces-solaris.c agent.c agent_priv.c \
-	agent.h priv-seccomp.c
+	forward-solaris.c interfaces-solaris.c priv-seccomp.c agent.c \
+	agent_priv.c agent.h
 am__dirstamp = $(am__leading_dot)dirstamp
 @HOST_OS_LINUX_TRUE@am__objects_1 = liblldpd_la-forward-linux.lo \
 @HOST_OS_LINUX_TRUE@	liblldpd_la-interfaces-linux.lo \
@@ -223,9 +223,9 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @HOST_OS_SOLARIS_TRUE@	liblldpd_la-interfaces-solaris.lo \
 @HOST_OS_SOLARIS_TRUE@	liblldpd_la-dmi-dummy.lo \
 @HOST_OS_SOLARIS_TRUE@	liblldpd_la-priv-bsd.lo
-@USE_SNMP_TRUE@am__objects_8 = liblldpd_la-agent.lo \
+@USE_SECCOMP_TRUE@am__objects_8 = liblldpd_la-priv-seccomp.lo
+@USE_SNMP_TRUE@am__objects_9 = liblldpd_la-agent.lo \
 @USE_SNMP_TRUE@	liblldpd_la-agent_priv.lo
-@USE_SECCOMP_TRUE@am__objects_9 = liblldpd_la-priv-seccomp.lo
 am_liblldpd_la_OBJECTS = liblldpd_la-frame.lo liblldpd_la-client.lo \
 	liblldpd_la-priv.lo liblldpd_la-privsep.lo \
 	liblldpd_la-privsep_io.lo liblldpd_la-privsep_fd.lo \
@@ -369,10 +369,6 @@ CHECK_LIBS = @CHECK_LIBS@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -481,7 +477,6 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -539,11 +534,11 @@ top_srcdir = @top_srcdir@
 AM_CFLAGS = -I $(top_srcdir)/include $(LLDP_CFLAGS) $(LIBEVENT_CFLAGS)
 AM_CPPFLAGS = $(LLDP_CPPFLAGS) $(LIBEVENT_CFLAGS)
 AM_LDFLAGS = $(LLDP_LDFLAGS)
-BUILT_SOURCES = $(am__append_11) $(am__append_17)
-CLEANFILES = $(am__append_12) $(am__append_18) $(TEMPLATES)
+BUILT_SOURCES = $(am__append_8) $(am__append_17)
+CLEANFILES = $(am__append_9) $(am__append_18) $(TEMPLATES)
 man_MANS = lldpd.8
 noinst_LTLIBRARIES = liblldpd.la
-nodist_liblldpd_la_SOURCES = $(am__append_13)
+nodist_liblldpd_la_SOURCES = $(am__append_10)
 liblldpd_la_SOURCES = frame.h frame.c lldp-tlv.h client.c priv.c \
 	privsep.c privsep_io.c privsep_fd.c interfaces.c event.c \
 	lldpd.c pattern.c probes.d trace.h protocols/lldp.c \
@@ -551,19 +546,19 @@ liblldpd_la_SOURCES = frame.h frame.c lldp-tlv.h client.c priv.c \
 	protocols/sonmp.h protocols/edp.c protocols/edp.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_14)
-liblldpd_la_CFLAGS = $(AM_CFLAGS) $(LIBEVENT_CFLAGS) $(am__append_9) \
+	$(am__append_7) $(am__append_11) $(am__append_14)
+liblldpd_la_CFLAGS = $(AM_CFLAGS) $(LIBEVENT_CFLAGS) $(am__append_12) \
 	$(am__append_15)
 liblldpd_la_CPPFLAGS = $(AM_CPPFLAGS) -DSYSCONFDIR='"$(sysconfdir)"' -DLLDPCLI_PATH='"$(sbindir)/lldpcli"' $(LIBEVENT_CFLAGS)
 liblldpd_la_LIBADD = $(top_builddir)/src/libcommon-daemon-client.la \
 	$(top_builddir)/src/libcommon-daemon-lib.la $(LIBEVENT_LIBS) \
-	$(am__append_16)
+	$(am__append_13)
 @HOST_OS_OSX_TRUE@liblldpd_la_LDFLAGS = $(AM_LDFLAGS) -framework \
 @HOST_OS_OSX_TRUE@	Foundation -framework CoreFoundation \
 @HOST_OS_OSX_TRUE@	-framework IOKit -framework IOKit
 lldpd_SOURCES = main.c
 lldpd_LDFLAGS = $(AM_LDFLAGS) $(LLDP_BIN_LDFLAGS)
-lldpd_LDADD = liblldpd.la -levent $(am__append_10) $(am__append_19)
+lldpd_LDADD = liblldpd.la -levent $(am__append_16) $(am__append_19)
 EXTRA_DIST = dtrace2systemtap.awk lldpd.8.in lldpd.service.in \
 	lldpd.sysusers.conf.in usr.sbin.lldpd.in
 @ENABLE_SYSTEMTAP_TRUE@tapsetdir = $(datadir)/systemtap/tapset
@@ -583,7 +578,6 @@ edit = $(SED) \
         -e 's|@includedir[@]|$(includedir)|g' \
         -e 's|@exec_prefix[@]|$(exec_prefix)|g' \
         -e 's|@prefix[@]|$(prefix)|g' \
-        -e 's|@mkdir_p[@]|$(mkdir_p)|g' \
         -e 's|@VERSION[@]|$(VERSION)|g' \
         -e 's|@PACKAGE[@]|$(PACKAGE)|g' \
         -e 's|@PACKAGE_NAME[@]|$(PACKAGE_NAME)|g' \
@@ -982,6 +976,13 @@ liblldpd_la-interfaces-solaris.lo: interfaces-solaris.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-interfaces-solaris.lo `test -f 'interfaces-solaris.c' || echo '$(srcdir)/'`interfaces-solaris.c
 
+liblldpd_la-priv-seccomp.lo: priv-seccomp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-priv-seccomp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-priv-seccomp.Tpo -c -o liblldpd_la-priv-seccomp.lo `test -f 'priv-seccomp.c' || echo '$(srcdir)/'`priv-seccomp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-priv-seccomp.Tpo $(DEPDIR)/liblldpd_la-priv-seccomp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='priv-seccomp.c' object='liblldpd_la-priv-seccomp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-priv-seccomp.lo `test -f 'priv-seccomp.c' || echo '$(srcdir)/'`priv-seccomp.c
+
 liblldpd_la-agent.lo: agent.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-agent.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-agent.Tpo -c -o liblldpd_la-agent.lo `test -f 'agent.c' || echo '$(srcdir)/'`agent.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-agent.Tpo $(DEPDIR)/liblldpd_la-agent.Plo
@@ -995,13 +996,6 @@ liblldpd_la-agent_priv.lo: agent_priv.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='agent_priv.c' object='liblldpd_la-agent_priv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-agent_priv.lo `test -f 'agent_priv.c' || echo '$(srcdir)/'`agent_priv.c
-
-liblldpd_la-priv-seccomp.lo: priv-seccomp.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -MT liblldpd_la-priv-seccomp.lo -MD -MP -MF $(DEPDIR)/liblldpd_la-priv-seccomp.Tpo -c -o liblldpd_la-priv-seccomp.lo `test -f 'priv-seccomp.c' || echo '$(srcdir)/'`priv-seccomp.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/liblldpd_la-priv-seccomp.Tpo $(DEPDIR)/liblldpd_la-priv-seccomp.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='priv-seccomp.c' object='liblldpd_la-priv-seccomp.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(liblldpd_la_CPPFLAGS) $(CPPFLAGS) $(liblldpd_la_CFLAGS) $(CFLAGS) -c -o liblldpd_la-priv-seccomp.lo `test -f 'priv-seccomp.c' || echo '$(srcdir)/'`priv-seccomp.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

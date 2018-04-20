@@ -243,6 +243,8 @@ struct lldpd_port {
 	struct lldpd_chassis	*p_chassis;    /* Attached chassis */
 	time_t			 p_lastchange; /* Time of last change of values */
 	time_t			 p_lastupdate; /* Time of last update received */
+	time_t			 p_lastremove;	/* Time of last removal of a remote port. Used for local ports only
+						 * Used for deciding lldpStatsRemTablesLastChangeTime */
 	struct lldpd_frame	*p_lastframe;  /* Frame received during last update */
 	u_int8_t		 p_protocol;   /* Protocol used to get this port */
 	u_int8_t		 p_hidden_in:1; /* Considered as hidden for reception */
@@ -378,7 +380,9 @@ struct lldpd_config {
 
 	char *c_mgmt_pattern;	/* Pattern to match a management address */
 	char *c_cid_pattern;	/* Pattern to match interfaces to use for chassis ID */
+	char *c_cid_string;     /* User defined string for chassis ID */
 	char *c_iface_pattern;	/* Pattern to match interfaces to use */
+	char *c_perm_ifaces;	/* Pattern to match interfaces to keep */
 
 	char *c_platform;	/* Override platform description (for CDP) */
 	char *c_description;	/* Override chassis description */
@@ -404,7 +408,9 @@ struct lldpd_config {
 MARSHAL_BEGIN(lldpd_config)
 MARSHAL_STR(lldpd_config, c_mgmt_pattern)
 MARSHAL_STR(lldpd_config, c_cid_pattern)
+MARSHAL_STR(lldpd_config, c_cid_string)
 MARSHAL_STR(lldpd_config, c_iface_pattern)
+MARSHAL_STR(lldpd_config, c_perm_ifaces)
 MARSHAL_STR(lldpd_config, c_hostname)
 MARSHAL_STR(lldpd_config, c_platform)
 MARSHAL_STR(lldpd_config, c_description)

@@ -240,6 +240,20 @@ name, kernel name, kernel version, build date and architecture instead.
 .Ed
 
 .Cd configure
+.Cd system chassisid Ar description
+.Bd -ragged -offset XXXXXX
+Override chassis ID with the provided value instead of using MAC address
+from one interface or host name.
+.Ed
+
+.Cd unconfigure
+.Cd system chassisid
+.Bd -ragged -offset XXXXXX
+Do not override chassis ID and use a value computed from one of the interface
+MAC address (or host name if none is found).
+.Ed
+
+.Cd configure
 .Cd system platform Ar description
 .Bd -ragged -offset XXXXXX
 Override platform description with the provided value instead of using
@@ -291,6 +305,31 @@ is specified, it will be accepted even if this is a VLAN interface.
 .Bd -ragged -offset XXXXXX
 Remove any previously configured interface pattern and use all
 physical interfaces. This option undoes the previous one.
+.Ed
+
+.Cd configure
+.Cd system interface permanent Ar pattern
+.Bd -ragged -offset XXXXXX
+Specify interfaces whose configuration is permanently kept by
+.Nm lldpd .
+By default,
+.Nm lldpd
+disregard any data about interfaces when they are removed from the
+system (statistics, custom configuration). This option allows one to
+specify a pattern similar to the interface pattern. If an interface
+disappear but matches the pattern, its data is kept in memory and
+reused if the interface reappear at some point. For example, on Linux,
+one could use the pattern
+.Em eth*,eno*,enp* ,
+which should match fixed interfaces on most systems.
+.Ed
+
+.Cd unconfigure
+.Cd system interface permanent
+.Bd -ragged -offset XXXXXX
+Remove any previously configured permanent interface pattern.  Any
+interface removed from the system will be forgotten. This option
+undoes the previous one.
 .Ed
 
 .Cd configure
@@ -425,7 +464,7 @@ instead.
 .Cd configure
 .Op ports Ar ethX Op ,...
 .Cd lldp portidsubtype
-.Cd local Ar value Op Cd description Ar description
+.Cd local Ar value
 .Bd -ragged -offset XXXXXX
 Force port ID subtype. By default,
 .Nm lldpd
@@ -440,8 +479,14 @@ the MAC address (with
 or a local value (with
 .Cd value ) .
 In the latest case, the local value should be provided.
-Optionally, a port description can also be provided after the local
-value.
+.Ed
+
+.Cd configure
+.Op ports Ar ethX Op ,...
+.Cd lldp portdescription
+.Cd Ar description
+.Bd -ragged -offset XXXXXX
+Force port description to the provided string.
 .Ed
 
 .Cd configure

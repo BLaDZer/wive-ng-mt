@@ -40,6 +40,13 @@
 #include <pwd.h>
 #include <grp.h>
 
+#if HAVE_VFORK_H
+# include <vfork.h>
+#endif
+#if HAVE_WORKING_FORK
+# define vfork fork
+#endif
+
 static void		 usage(void);
 
 static struct protocol protos[] =
@@ -91,10 +98,12 @@ usage(void)
 	fprintf(stderr, "-k       Disable advertising of kernel release, version, machine.\n");
 	fprintf(stderr, "-S descr Override the default system description.\n");
 	fprintf(stderr, "-P name  Override the default hardware platform.\n");
-	fprintf(stderr, "-m IP    Specify the IPv4 management addresses of this system.\n");
+	fprintf(stderr, "-m IP    Specify the IP management addresses of this system.\n");
 	fprintf(stderr, "-u file  Specify the Unix-domain socket used for communication with lldpctl(8).\n");
 	fprintf(stderr, "-H mode  Specify the behaviour when detecting multiple neighbors.\n");
 	fprintf(stderr, "-I iface Limit interfaces to use.\n");
+	fprintf(stderr, "-C iface Limit interfaces to use for computing chassis ID.\n");
+	fprintf(stderr, "-L path  Override path for lldpcli command.\n");
 	fprintf(stderr, "-O file  Override default configuration locations processed by lldpcli(8) at start.\n");
 #ifdef ENABLE_LLDPMED
 	fprintf(stderr, "-M class Enable emission of LLDP-MED frame. 'class' should be one of:\n");
@@ -105,6 +114,7 @@ usage(void)
 #endif
 #ifdef USE_SNMP
 	fprintf(stderr, "-x       Enable SNMP subagent.\n");
+	fprintf(stderr, "-X sock  Specify the SNMP subagent socket.\n");
 #endif
 	fprintf(stderr, "\n");
 
@@ -135,9 +145,14 @@ lldpd_get_hardware(struct lldpd *cfg, char *name, int index)
 {
 	struct lldpd_hardware *hardware;
 	TAILQ_FOREACH(hardware, &cfg->g_hardware, h_entries) {
-		if ((strcmp(hardware->h_ifname, name) == 0) &&
-		    (hardware->h_ifindex == index))
+		if (strcmp(hardware->h_ifname, name) == 0) {
+			if (hardware->h_flags == 0) {
+				hardware->h_ifindex = index;
 			break;
+	}
+			if (hardware->h_ifindex == index)
+				break;
+		}
 	}
 	return hardware;
 }
@@ -424,10 +439,24 @@ lldpd_cleanup(struct lldpd *cfg)
 	     hardware = hardware_next) {
 		hardware_next = TAILQ_NEXT(hardware, h_entries);
 		if (!hardware->h_flags) {
+			int m = cfg->g_config.c_perm_ifaces?
+			    pattern_match(hardware->h_ifname, cfg->g_config.c_perm_ifaces, 0):
+			    0;
+			switch (m) {
+			case 0:
+				log_debug("localchassis", "delete non-permanent interface %s",
+				    hardware->h_ifname);
 			TRACE(LLDPD_INTERFACES_DELETE(hardware->h_ifname));
 			TAILQ_REMOVE(&cfg->g_hardware, hardware, h_entries);
 			lldpd_remote_cleanup(hardware, notify_clients_deletion, 1);
 			lldpd_hardware_cleanup(cfg, hardware);
+				break;
+			case 1:
+			case 2:
+				log_debug("localchassis", "do not delete %s, permanent",
+				    hardware->h_ifname);
+				break;
+			}
 		} else {
 			lldpd_remote_cleanup(hardware, notify_clients_deletion,
 			    !(hardware->h_flags & IFF_RUNNING));
@@ -964,7 +993,7 @@ lldpd_dot3_power_pd_pse(struct lldpd_hardware *hardware)
 		if (!selected_port || port->p_lastupdate > selected_port->p_lastupdate)
 			selected_port = port;
 	}
-	if (selected_port->p_power.allocated != hardware->h_lport.p_power.allocated) {
+	if (selected_port && selected_port->p_power.allocated != hardware->h_lport.p_power.allocated) {
 		log_info("receive", "for %s, PSE told us allocated is now %d instead of %d",
 		    hardware->h_ifname,
 		    selected_port->p_power.allocated,
@@ -1128,7 +1157,7 @@ lldpd_routing_enabled(struct lldpd *cfg)
 	return routing;
 }
 
-static void
+void
 lldpd_update_localchassis(struct lldpd *cfg)
 {
 	struct utsname un;
@@ -1201,6 +1230,14 @@ lldpd_update_localchassis(struct lldpd *cfg)
 	   has not been set previously (with the MAC address of an
 	   interface for example)
 	*/
+	if (cfg->g_config.c_cid_string != NULL) {
+		log_debug("localchassis", "use specified chassis ID string");
+		free(LOCAL_CHASSIS(cfg)->c_id);
+		if (!(LOCAL_CHASSIS(cfg)->c_id = strdup(cfg->g_config.c_cid_string)))
+			fatal("localchassis", NULL);
+		LOCAL_CHASSIS(cfg)->c_id_len = strlen(cfg->g_config.c_cid_string);
+		LOCAL_CHASSIS(cfg)->c_id_subtype = LLDP_CHASSISID_SUBTYPE_LOCAL;
+	}
 	if (LOCAL_CHASSIS(cfg)->c_id == NULL) {
 		log_debug("localchassis", "no chassis ID is currently set, use chassis name");
 		if (!(LOCAL_CHASSIS(cfg)->c_id = strdup(LOCAL_CHASSIS(cfg)->c_name)))

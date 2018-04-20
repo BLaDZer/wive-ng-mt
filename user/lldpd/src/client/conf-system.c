@@ -51,6 +51,34 @@ cmd_iface_pattern(struct lldpctl_conn_t *conn, struct writer *w,
 }
 
 static int
+cmd_perm_iface_pattern(struct lldpctl_conn_t *conn, struct writer *w,
+    struct cmd_env *env, void *arg)
+{
+	log_debug("lldpctl", "set permanent iface pattern");
+
+	lldpctl_atom_t *config = lldpctl_get_configuration(conn);
+	if (config == NULL) {
+		log_warnx("lldpctl", "unable to get configuration from lldpd. %s",
+		    lldpctl_last_strerror(conn));
+		return 0;
+	}
+
+	const char *value = cmdenv_get(env, "iface-pattern");
+	if (lldpctl_atom_set_str(config,
+		lldpctl_k_config_perm_iface_pattern,
+		value) == NULL) {
+		log_warnx("lldpctl", "unable to set permanent iface pattern. %s",
+		    lldpctl_last_strerror(conn));
+		lldpctl_atom_dec_ref(config);
+		return 0;
+	}
+	log_info("lldpctl", "permanent iface pattern set to new value %s",
+	    value?value:"(none)");
+	lldpctl_atom_dec_ref(config);
+	return 1;
+}
+
+static int
 cmd_iface_promisc(struct lldpctl_conn_t *conn, struct writer *w,
     struct cmd_env *env, void *arg)
 {
@@ -104,6 +132,33 @@ cmd_system_description(struct lldpctl_conn_t *conn, struct writer *w,
 		return 0;
 	}
 	log_debug("lldpctl", "description set to new value %s",
+	    value?value:"(none)");
+	lldpctl_atom_dec_ref(config);
+	return 1;
+}
+
+static int
+cmd_system_chassisid(struct lldpctl_conn_t *conn, struct writer *w,
+    struct cmd_env *env, void *arg)
+{
+	const char *value;
+	value = cmdenv_get(env, "description");
+	log_debug("lldpctl", "set chassis ID");
+	lldpctl_atom_t *config = lldpctl_get_configuration(conn);
+	if (config == NULL) {
+		log_warnx("lldpctl", "unable to get configuration from lldpd. %s",
+		    lldpctl_last_strerror(conn));
+		return 0;
+	}
+	if (lldpctl_atom_set_str(config,
+	    lldpctl_k_config_cid_string,
+	    value) == NULL) {
+		log_warnx("lldpctl", "unable to set chassis ID. %s",
+		    lldpctl_last_strerror(conn));
+		lldpctl_atom_dec_ref(config);
+		return 0;
+	}
+	log_info("lldpctl", "chassis ID set to new value %s",
 	    value?value:"(none)");
 	lldpctl_atom_dec_ref(config);
 	return 1;
@@ -340,6 +395,22 @@ register_commands_configure_system(struct cmd_node *configure,
 	commands_new(
 		commands_new(
 			commands_new(configure_system,
+			    "chassisid", "Override chassis ID",
+			    NULL, NULL, NULL),
+			NULL, "Chassis ID",
+			NULL, cmd_store_env_value, "description"),
+		NEWLINE, "Override chassis ID",
+		NULL, cmd_system_chassisid, "system");
+	commands_new(
+		commands_new(unconfigure_system,
+		    "chassisid", "Don't override chassis ID",
+		    NULL, NULL, NULL),
+		NEWLINE, "Don't override chassis ID",
+		NULL, cmd_system_chassisid, "system");
+
+	commands_new(
+		commands_new(
+			commands_new(configure_system,
 			    "platform", "Override platform description",
 			    NULL, NULL, NULL),
 			NULL, "Platform description (CDP)",
@@ -410,8 +481,24 @@ register_commands_configure_system(struct cmd_node *configure,
 		commands_new(unconfigure_interface,
 		    "pattern", "Delete any interface pattern",
 		    NULL, NULL, NULL),
-		NEWLINE, "Delete any interface pattern",
+		NEWLINE, "Clear interface pattern",
 		NULL, cmd_iface_pattern, NULL);
+
+	commands_new(
+		commands_new(
+			commands_new(configure_interface,
+			    "permanent", "Set permanent interface pattern",
+			    NULL, NULL, NULL),
+			NULL, "Permanent interface pattern (comma-separated list of wildcards)",
+			NULL, cmd_store_env_value, "iface-pattern"),
+		NEWLINE, "Set permanent interface pattern",
+		NULL, cmd_perm_iface_pattern, NULL);
+        commands_new(
+		commands_new(unconfigure_interface,
+		    "permanent", "Clear permanent interface pattern",
+		    NULL, NULL, NULL),
+		NEWLINE, "Delete any interface pattern",
+		NULL, cmd_perm_iface_pattern, NULL);
 
 	commands_new(
 		commands_new(configure_interface,

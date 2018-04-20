@@ -79,9 +79,9 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = src/compat
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am strndup.c \
-	malloc.c strlcpy.c getline.c strtonum.c realloc.c asprintf.c \
-	strnlen.c daemon.c setproctitle.c vsyslog.c \
+DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am daemon.c \
+	malloc.c strnlen.c getline.c asprintf.c realloc.c strndup.c \
+	setproctitle.c strlcpy.c vsyslog.c strtonum.c \
 	$(top_srcdir)/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/alignof.m4 \
@@ -191,10 +191,6 @@ CHECK_LIBS = @CHECK_LIBS@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -303,7 +299,6 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
