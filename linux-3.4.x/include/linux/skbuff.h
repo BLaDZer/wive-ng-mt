@@ -2186,6 +2186,8 @@ static inline void skb_postpull_rcsum(struct sk_buff *skb,
 
 unsigned char *skb_pull_rcsum(struct sk_buff *skb, unsigned int len);
 
+int pskb_trim_rcsum_slow(struct sk_buff *skb, unsigned int len);
+
 /**
  *	pskb_trim_rcsum - trim received skb and update checksum
  *	@skb: buffer to trim
@@ -2663,7 +2665,6 @@ static inline void skb_forward_csum(struct sk_buff *skb)
 		skb->ip_summed = CHECKSUM_NONE;
 }
 
-int pskb_trim_rcsum_slow(struct sk_buff *skb, unsigned int len);
 /**
  * skb_checksum_none_assert - make sure skb ip_summed is CHECKSUM_NONE
  * @skb: skb to check
