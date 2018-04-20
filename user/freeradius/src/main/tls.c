@@ -1750,6 +1750,11 @@ static ocsp_status_t ocsp_check(REQUEST *request, X509_STORE *store, X509 *issue
 #endif
 	VALUE_PAIR	*vp;
 
+	if (issuer_cert == NULL) {
+		RWDEBUG("Could not get issuer certificate");
+		goto skipped;
+	}
+
 	/*
 	 * Create OCSP Request
 	 */
@@ -2274,6 +2279,7 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 	 */
 	if (certs && (sk_X509_EXTENSION_num(ext_list) > 0)) {
 		int i, len;
+		EXTENDED_KEY_USAGE *eku;
 		char *p;
 		BIO *out;
 
@@ -2319,6 +2325,24 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 		}
 
 		BIO_free_all(out);
+
+		/* Export raw EKU OIDs to allow matching a single OID regardless of its name */
+		eku = X509_get_ext_d2i(client_cert, NID_ext_key_usage, NULL, NULL);
+		if (eku != NULL) {
+			for (i = 0; i < sk_ASN1_OBJECT_num(eku); i++) {
+				len = OBJ_obj2txt(value, sizeof(value), sk_ASN1_OBJECT_value(eku, i), 1);
+				if ((len > 0) && ((unsigned) len < sizeof(value))) {
+					vp = fr_pair_make(talloc_ctx, certs,
+							  "TLS-Client-Cert-X509v3-Extended-Key-Usage-OID",
+							  value, T_OP_ADD);
+					rdebug_pair(L_DBG_LVL_2, request, vp, NULL);
+				}
+				else {
+					RDEBUG("Failed to get EKU OID at index %d", i);
+				}
+			}
+			EXTENDED_KEY_USAGE_free(eku);
+		}
 	}
 
 	REXDENT();
@@ -2391,15 +2415,15 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 
 			} else {
 				RDEBUG2("Starting OCSP Request");
-				if ((X509_STORE_CTX_get1_issuer(&issuer_cert, ctx, client_cert) != 1) ||
-				    !issuer_cert) {
-					/*
-					 *	Allow for external verify.
-					 */
-					RERROR("Couldn't get issuer_cert for %s", common_name);
-					do_verify = true;
 
-				} else {
+					/*
+				 *	If we don't have an issuer, then we can't send
+				 *	and OCSP request, but pass the NULL issuer in
+				 *	so ocsp_check can decide on the correct
+				 *	return code.
+					 */
+				issuer_cert = X509_STORE_CTX_get0_current_issuer(ctx);
+
 					/*
 					 *	Do the full OCSP checks.
 					 *
@@ -2417,7 +2441,6 @@ int cbtls_verify(int ok, X509_STORE_CTX *ctx)
 					}
 				}
 			}
-		}
 #endif
 
 		if ((my_ok != OCSP_STATUS_FAILED)
@@ -2563,38 +2586,6 @@ static int set_ecdh_curve(SSL_CTX *ctx, char const *ecdh_curve, bool disable_sin
 #endif
 #endif
 
-/*
- * DIE OPENSSL DIE DIE DIE
- *
- * What a palaver, just to free some data attached the
- * session. We need to do this because the "remove" callback
- * is called when refcount > 0 sometimes, if another thread
- * is using the session
- */
-static void sess_free_vps(UNUSED void *parent, void *data_ptr,
-                                UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
-                                UNUSED long argl, UNUSED void *argp)
-{
-        VALUE_PAIR *vp = data_ptr;
-        if (!vp) return;
-
-        DEBUG2(LOG_PREFIX ": Freeing cached session VPs");
-
-        fr_pair_list_free(&vp);
-}
-
-static void sess_free_certs(UNUSED void *parent, void *data_ptr,
-                                UNUSED CRYPTO_EX_DATA *ad, UNUSED int idx,
-                                UNUSED long argl, UNUSED void *argp)
-{
-        VALUE_PAIR **certs = data_ptr;
-        if (!certs) return;
-
-        DEBUG2(LOG_PREFIX ": Freeing cached session Certificates");
-
-        fr_pair_list_free(certs);
-}
-
 /** Add all the default ciphers and message digests reate our context.
  *
  * This should be called exactly once from main, before reading the main config
@@ -2610,7 +2601,7 @@ int tls_global_init(bool spawn_flag, bool check)
 	/*
 	 *	Initialize the index for the certificates.
 	 */
-	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_certs);
+	fr_tls_ex_index_certs = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
 
 	/*
 	 *	If we're linking with OpenSSL too, then we need
@@ -2915,6 +2906,9 @@ SSL_CTX *tls_init_ctx(fr_tls_server_conf_t *conf, int client)
 
 	/* Load the CAs we trust */
 load_ca:
+#if defined(X509_V_FLAG_PARTIAL_CHAIN)
+	X509_STORE_set_flags(SSL_CTX_get_cert_store(ctx), X509_V_FLAG_PARTIAL_CHAIN);
+#endif
 	if (conf->ca_file || conf->ca_path) {
 		if (!SSL_CTX_load_verify_locations(ctx, conf->ca_file, conf->ca_path)) {
 			tls_error_log(NULL, "Failed reading Trusted root CA list \"%s\"",
@@ -3164,7 +3158,7 @@ post_ca:
 
 		SSL_CTX_set_quiet_shutdown(ctx, 1);
 		if (fr_tls_ex_index_vps < 0)
-			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, sess_free_vps);
+			fr_tls_ex_index_vps = SSL_SESSION_get_ex_new_index(0, NULL, NULL, NULL, NULL);
 	}
 
 	/*
@@ -3686,7 +3680,7 @@ fr_tls_status_t tls_application_data(tls_session_t *ssn, REQUEST *request)
 	 *      data buffer.
 	 */
 	err = SSL_read(ssn->ssl, ssn->clean_out.data, sizeof(ssn->clean_out.data));
-	if (err < 0) {
+	if (err <= 0) {
 		int code;
 
 		RDEBUG("SSL_read Error");
@@ -3709,8 +3703,6 @@ fr_tls_status_t tls_application_data(tls_session_t *ssn, REQUEST *request)
 		}
 		return FR_TLS_FAIL;
 	}
-
-	if (err == 0) RWDEBUG("No data inside of the tunnel");
 
 	/*
 	 *	Passed all checks, successfully decrypted data

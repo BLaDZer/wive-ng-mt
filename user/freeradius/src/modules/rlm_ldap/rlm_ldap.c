@@ -188,6 +188,8 @@ static CONF_PARSER option_config[] = {
 
 	{ "rebind", FR_CONF_OFFSET(PW_TYPE_BOOLEAN, rlm_ldap_t, rebind), NULL },
 
+	{ "sasl_secprops", FR_CONF_OFFSET(PW_TYPE_STRING, rlm_ldap_t, sasl_secprops), NULL },
+
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
 	/* timeout on network activity */
 	{ "net_timeout", FR_CONF_OFFSET(PW_TYPE_INTEGER, rlm_ldap_t, net_timeout), "10" },
@@ -697,7 +699,7 @@ static int mod_instantiate(CONF_SECTION *conf, void *instance)
 				for ( i = 0; info.ldapai_extensions[i] != NULL; i++) {
 					ldap_memfree(info.ldapai_extensions[i]);
 				}
-			ldap_memfree(info.ldapai_extensions);
+				ldap_memfree(info.ldapai_extensions);
 			}
 			ldap_memfree(info.ldapai_vendor_name);
 		} else {

@@ -516,7 +516,7 @@ int sql_set_user(rlm_sql_t *inst, REQUEST *request, char const *username)
 
 	fr_pair_value_strsteal(vp, expanded);
 	RDEBUG2("SQL-User-Name set to '%s'", vp->vp_strvalue);
-	vp->op = T_OP_SET;	
+	vp->op = T_OP_SET;
 
 	/*
 	 *	Delete any existing SQL-User-Name, and replace it with ours.
@@ -1439,7 +1439,6 @@ static int acct_redundant(rlm_sql_t *inst, REQUEST *request, sql_acct_section_t 
 		if (!*expanded) {
 			RDEBUG("Ignoring null query");
 			rcode = RLM_MODULE_NOOP;
-			talloc_free(expanded);
 
 			goto finish;
 		}

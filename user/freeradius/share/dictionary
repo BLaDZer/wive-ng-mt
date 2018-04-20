@@ -222,6 +222,7 @@ $INCLUDE dictionary.meru
 $INCLUDE dictionary.microsemi
 $INCLUDE dictionary.microsoft
 $INCLUDE dictionary.mikrotik
+$INCLUDE dictionary.mimosa
 $INCLUDE dictionary.motorola
 $INCLUDE dictionary.motorola.wimax
 $INCLUDE dictionary.navini
@@ -262,6 +263,8 @@ $INCLUDE dictionary.sg
 $INCLUDE dictionary.shiva
 $INCLUDE dictionary.siemens
 $INCLUDE dictionary.slipstream
+$INCLUDE dictionary.sofaware
+$INCLUDE dictionary.softbank
 $INCLUDE dictionary.sonicwall
 $INCLUDE dictionary.springtide
 $INCLUDE dictionary.starent

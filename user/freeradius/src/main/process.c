@@ -1551,6 +1551,8 @@ static void request_running(REQUEST *request, int action)
 			 *	handler.
 			 */
 			if (request_proxy(request) < 0) {
+				if (request->home_server && request->home_server->server) goto req_finished;
+
 				(void) setup_post_proxy_fail(request);
 				process_proxy_reply(request, NULL);
 				goto req_finished;
@@ -4881,14 +4883,14 @@ static int event_new_fd(rad_listen_t *this)
 		/*
 		 *	All sockets: add the FD to the event handler.
 		 */
-		if (!fr_event_fd_insert(el, 0, this->fd,
+		if (fr_event_fd_insert(el, 0, this->fd,
 					event_socket_handler, this)) {
-			ERROR("Failed adding event handler for socket: %s", fr_strerror());
-			fr_exit(1);
-		}
-
 		this->status = RAD_LISTEN_STATUS_KNOWN;
 		return 1;
+		}
+
+		ERROR("Failed adding event handler for socket: %s", fr_strerror());
+		this->status = RAD_LISTEN_STATUS_REMOVE_NOW;
 	} /* end of INIT */
 
 #ifdef WITH_TCP
