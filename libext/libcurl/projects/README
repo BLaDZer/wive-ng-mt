@@ -74,9 +74,6 @@ Building with Visual C++
    If you require support for Internationalized Domain Names via Windows IDN
    then you will need either:
 
-    * Microsoft Internationalized Domain Name (IDN) Mitigation APIs:
-      https://www.microsoft.com/en-us/download/details.aspx?id=734
-
     * Microsoft Windows SDK Update for Windows Vista:
       https://www.microsoft.com/en-us/download/details.aspx?id=23719
 

@@ -29,9 +29,17 @@
 
 #if defined(USE_OPENSSL)
 
+#include <openssl/opensslv.h>
+
+#if (OPENSSL_VERSION_NUMBER >= 0x0090800fL)
+#define USE_OPENSSL_SHA256
+#endif
+
+#endif
+
+#ifdef USE_OPENSSL_SHA256
 /* When OpenSSL is available we use the SHA256-function from OpenSSL */
 #include <openssl/sha.h>
-
 #else
 
 /* When no other crypto library is available we use this code segment */
