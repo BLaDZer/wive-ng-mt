@@ -459,7 +459,7 @@ static int preauthenticated(struct MHD_Connection *connection,
 
 	MHD_get_connection_values(connection, MHD_HEADER_KIND, get_host_value_callback, &host);
 
-	/* check if this is a redirect querty with a foreign host as target */
+	/* check if this is a redirect query with a foreign host as target */
 	if(is_foreign_hosts(connection, host)) {
 		return redirect_to_splashpage(connection, client, host, url);
 	}
@@ -509,15 +509,15 @@ static int encode_and_redirect_to_splashpage(struct MHD_Connection *connection, 
 
 	memset(encoded, 0, sizeof(encoded));
 	if (originurl) {
-	if (uh_urlencode(encoded, 2048, originurl, strlen(originurl)) == -1) {
-		debug(LOG_WARNING, "could not encode url");
+		if (uh_urlencode(encoded, sizeof(encoded), originurl, strlen(originurl)) == -1) {
+			debug(LOG_WARNING, "could not encode url");
 		} else {
 			debug(LOG_DEBUG, "originurl: %s", originurl);
 		}
 	}
 
 	if (encoded[0])
-	safe_asprintf(&splashpageurl, "http://%s:%u%s?redir=%s", config->gw_address , config->gw_port, "/splash.html", encoded);
+		safe_asprintf(&splashpageurl, "http://%s:%u%s?redir=%s", config->gw_address , config->gw_port, "/splash.html", encoded);
 	else
 		safe_asprintf(&splashpageurl, "http://%s:%u%s", config->gw_address , config->gw_port, "/splash.html");
 

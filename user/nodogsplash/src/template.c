@@ -56,7 +56,7 @@ int tmpl_parse(struct templater *templor, char *dst, size_t dst_len, const char 
 	int dst_i = 0;
 	int varlen;
 	int valuelen;
-	char varname[32]; /* contain the varname */
+	char varname[32]; /* contains the varname */
 	const char *varnameptr; /* intermediate pointer */
 	int varidx; /* the position of the variable in variable_names */
 
@@ -79,7 +79,7 @@ int tmpl_parse(struct templater *templor, char *dst, size_t dst_len, const char 
 				; varlen++)
 			;
 
-		/* variable to long, cant be a valid variable */
+		/* variable too long, can't be a valid variable */
 		if(varlen > sizeof(varname)-1) {
 			/* we already parsed the varname and can skip these chars
 			 * but we need to copy these first to the output buffer */

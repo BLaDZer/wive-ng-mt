@@ -323,10 +323,10 @@ int main(int argc, char **argv)
 	config_read(config->configfile);
 	config_validate();
 
-	/* Initializes the linked list of connected clients */
+	// Initializes the linked list of connected clients
 	client_list_init();
 
-	/* Init the signals to catch chld/quit/etc */
+	// Init the signals to catch chld/quit/etc
 	debug(LOG_NOTICE,"Initializing signal handlers");
 	init_signals();
 
@@ -335,12 +335,12 @@ int main(int argc, char **argv)
 		debug(LOG_NOTICE, "Starting as daemon, forking to background");
 
 		switch(safe_fork()) {
-		case 0: /* child */
+		case 0: // child
 			setsid();
 			main_loop();
 			break;
 
-		default: /* parent */
+		default: // parent
 			exit(0);
 			break;
 		}
@@ -348,5 +348,5 @@ int main(int argc, char **argv)
 		main_loop();
 	}
 
-	return(0); /* never reached */
+	return(0); // never reached
 }
