@@ -3780,9 +3780,6 @@ static enum gro_result dev_gro_receive(struct napi_struct *napi, struct sk_buff 
 	if (!(skb->dev->features & NETIF_F_GRO) || netpoll_rx_on(skb))
 		goto normal;
 
-	if (skb_is_gso(skb) || skb_has_frag_list(skb))
-		goto normal;
-
 	gro_list_prepare(napi, skb);
 
 	rcu_read_lock();
@@ -3794,7 +3791,7 @@ static enum gro_result dev_gro_receive(struct napi_struct *napi, struct sk_buff 
 		mac_len = skb->network_header - skb->mac_header;
 		skb->mac_len = mac_len;
 		NAPI_GRO_CB(skb)->same_flow = 0;
-		NAPI_GRO_CB(skb)->flush = 0;
+		NAPI_GRO_CB(skb)->flush = skb_is_gso(skb) || skb_has_frag_list(skb);
 		NAPI_GRO_CB(skb)->free = 0;
 
 		pp = ptype->gro_receive(&napi->gro_list, skb);
