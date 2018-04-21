@@ -39,7 +39,7 @@ case "$MODE" in
 	# dual band 7621A + 7603NE + 7610NE
 	####################################
 	"MT7621-MT7603-MT7610-1T1R-16M-USB")
-	    # N1 sample
+	    # GE dual band release
 	    DEVNAME="SNR-CPE-ME1-5GHZ-MT"
 	    ;;
 	"MT7621-MT7603-MT7610-1T1R-16M-USB-CG1")
@@ -47,7 +47,7 @@ case "$MODE" in
 	    DEVNAME="SNR-CPE-CG1-5GHZ-MT"
 	    ;;
 	"MT7621-MT7603-MT7610-1T1R-16M-USB-SFP-CG1")
-	    # N1 sample
+	    # N2 sample
 	    DEVNAME="SNR-CPE-CG1-5GHZ-MT"
 	    ;;
 	####################################
