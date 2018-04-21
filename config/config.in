@@ -13,24 +13,12 @@ bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
 bool 'Build libcurl'		CONFIG_LIB_CURL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
-bool 'Build libxml2'		CONFIG_LIB_XML2
-bool 'Build libneon'		CONFIG_LIB_NEON
 bool 'Build libtalloc'		CONFIG_LIB_TALLOC
 bool 'Build libmicrohttpd'	CONFIG_LIB_MICROHTTPD
 
 if [ "$CONFIG_LIB_CURL" = "y" ]; then
     define_bool CONFIG_LIB_OPENSSL y
     define_bool CONFIG_LIB_ZLIB y
-fi
-
-if [ "$CONFIG_LIB_XML2" = "y" ]; then
-    define_bool CONFIG_LIB_ICONV y
-fi
-
-if [ "$CONFIG_LIB_NEON" = "y" ]; then
-    define_bool CONFIG_LIB_ZLIB y
-    define_bool CONFIG_LIB_XML2 y
-    define_bool CONFIG_LIB_OPENSSL y
 fi
 
 #############################################################################
@@ -46,19 +34,12 @@ dep_bool '  language pack - Russian'			CONFIG_USER_GOAHEAD_LANG_RU $CONFIG_USER_
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
-bool 'davfs'					CONFIG_USER_DAVFS
 bool 'samba server (storage/wins)'		CONFIG_USER_SAMBA
 bool 'radius server (802.1x managment)'		CONFIG_USER_RADIUS
 bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
 if [ "$CONFIG_USER_RADIUS" = "y" ]; then
     define_bool CONFIG_LIB_TALLOC y
     define_bool CONFIG_LIB_OPENSSL y
-fi
-if [ "$CONFIG_USER_DAVFS" = "y" ]; then
-    define_bool CONFIG_LIB_NEON y
-    define_bool CONFIG_LIB_ZLIB y
-    define_bool CONFIG_LIB_XML2 y
-    define_bool CONFIG_LIB_ICONV y
 fi
 if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_EVENT y
@@ -201,6 +182,4 @@ mainmenu_option next_comment
 comment 'Optimization options.'
 bool 'Enable crazy minimize code size by gcc for libs (save flash and speeddown ~10% per lib)'		CONFIG_LIB_SMALLSIZE
 bool 'Enable crazy minimize code size by gcc for user apps (save flash and speeddown ~10% per app)'	CONFIG_USER_SMALLSIZE
-bool 'Enable crazy minimize used RAM  by gcc for libs (save RAM and speeddown ~5% per lib)'		CONFIG_LIB_SAVERAM
-bool 'Enable crazy minimize used RAM  by gcc for user apps (save RAM and speeddown ~5% per app)'	CONFIG_USER_SAVERAM
 endmenu

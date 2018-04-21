@@ -95,7 +95,6 @@ dir_$(CONFIG_USER_P910ND)		    += p910nd
 #for usb storage support
 dir_$(CONFIG_USER_STORAGE)		    += usb
 dir_$(CONFIG_USER_NTFS3G)                   += ntfs-3g
-dir_$(CONFIG_USER_DAVFS)		    += davfs
 dir_$(CONFIG_USER_TRANSMISSION)		    += transmission
 
 #for usb modem support

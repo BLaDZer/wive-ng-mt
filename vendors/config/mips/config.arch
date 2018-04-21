@@ -118,9 +118,6 @@ ifdef CONFIG_LIB_SMALLSIZE
 	# Defeat .eh_frame bloat (~25% smaller binary)
 	CFLAGS += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 endif
-ifdef CONFIG_LIB_SAVERAM
-	CFLAGS += -membedded-data -muninit-const-in-rodata
-endif
 	# don't want all the CFLAGS for uClibc/Config
 	ARCH_CFLAGS = $(CFLAGS)
 	LDFLAGS = $(CFLAGS) $(CRT0) -Bsymbolic-functions
@@ -142,9 +139,6 @@ endif
 ifdef CONFIG_USER_SMALLSIZE
 	# Defeat .eh_frame bloat (~25% smaller binary)
 	CFLAGS += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
-endif
-ifdef CONFIG_USER_SAVERAM
-	CFLAGS += -membedded-data -muninit-const-in-rodata
 endif
 	# include extlibs headers
 	CFLAGS += -I$(ROOTDIR)
