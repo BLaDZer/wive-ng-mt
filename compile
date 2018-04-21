@@ -57,10 +57,6 @@ case "$MODE" in
 	    # metal horizont sample
 	    DEVNAME="SNR-CPE-MD2-5GHZ-MT"
 	    ;;
-	"MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M")
-	    # outdor dualband ap-router sample
-	    DEVNAME="SNR-CPE-AP3-5GHZ-MT"
-	    ;;
 	####################################
 	# dual band 7620A + 7610NE
 	####################################
@@ -72,10 +68,6 @@ case "$MODE" in
 	    # black multi ANT sample
 	    DEVNAME="SNR-CPE-MD1-5GHZ-MULTI-USB-MT"
 	    ;;
-	"MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB")
-	    # none sample
-	    DEVNAME="SNR-CPE-MD1-5GHZ-USB-MT"
-	    ;;
 	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M")
 	    # black dualband release
 	    DEVNAME="SNR-CPE-MD1-5GHZ-MT"
@@ -85,7 +77,7 @@ case "$MODE" in
 	    DEVNAME="SNR-CPE-MD1.1-5GHZ-MT"
 	    ;;
 	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M-AP")
-	    # celling one port dualband AP sample
+	    # celling one port dualband AP release
 	    DEVNAME="SNR-CPE-AP2-5GHZ-MT"
 	    ;;
 	####################################
@@ -193,20 +185,10 @@ elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-INTPA-EXTLNA-MT7610-1T1R-5GHZ-16M-USB	$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-MT7610-1T1R-5GHZ-16M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-16M-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7620-2T2R-EXTPA-EXTLNA-MT7612-2T2R-5GHZ-8M		$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB			$ROOTDIR/linux/.config
