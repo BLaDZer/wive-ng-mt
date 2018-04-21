@@ -89,6 +89,10 @@ bool 'Chillispot captive portal'		CONFIG_USER_CHILLISPOT
 bool 'Nodogsplash simple captive portal'	CONFIG_USER_NODOGSPLASH
 bool 'Strace debuggibg tool'			CONFIG_USER_STRACE
 
+if [ "$CONFIG_USER_XUPNPD" = "y" ]; then
+    define_bool CONFIG_LIB_OPENSSL y
+fi
+
 if [ "$CONFIG_USER_802_1X" = "y" ]; then
 	define_bool CONFIG_USER_IAPPD y
 fi
