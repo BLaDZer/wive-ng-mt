@@ -102,11 +102,10 @@ dir_$(CONFIG_USB_MODESWITCH)                += usb_modeswitch
 dir_$(CONFIG_USB_QMI)			    += uqmi
 
 #for SFP modules support
+ifdef CONFIG_RALINK_I2C
 dir_$(CONFIG_USER_SFPPI)		    += sfppi
 dir_$(CONFIG_USER_SFPI2C)		    += sfp-i2c
-
-#only ralink apps and scripts
-dir_$(CONFIG_RT2880_APP)		    += rt2880_app
+endif
 
 # multicore tools
 ifdef CONFIG_RALINK_MT7621
@@ -115,6 +114,9 @@ endif
 
 # development tools
 dir_$(CONFIG_USER_STRACE)		    += strace
+
+#only ralink apps and scripts
+dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 
 #need last busybox and goahead
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
