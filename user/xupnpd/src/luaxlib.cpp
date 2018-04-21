@@ -711,7 +711,7 @@ static int lua_m3u_scan(lua_State* L)
                 char track_url[256]="";
 
                 int n=snprintf(track_url,sizeof(track_url),"%s%s%s",path,delimiter,de->d_name);
-                if(n==-1 | n>=sizeof(track_url))
+                if(n==-1 || n>=sizeof(track_url))
                     track_url[sizeof(track_url)-1]=0;
 
                 DIR* dd=opendir(track_url);
