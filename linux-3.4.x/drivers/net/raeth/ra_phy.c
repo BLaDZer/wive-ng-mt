@@ -26,9 +26,6 @@
 #if defined (CONFIG_GE1_RGMII_AN) || defined (CONFIG_P5_MAC_TO_PHY_MODE) || \
     defined (CONFIG_GE2_RGMII_AN) || defined (CONFIG_P4_MAC_TO_PHY_MODE)
 static u32 g_phy_id[32] = { 0 };
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-static int ext_phy_mdio_enabled = 0;
-#endif
 extern int ext_phy_mode;
 
 void ext_gphy_modeset(u32 phy_addr)
@@ -370,34 +367,6 @@ static void ext_gphy_sfpen(void)
 }
 #endif
 
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-void ext_gphy_mdioswitch(int on)
-{
-	u32 val = 0;
-
-	/* switch UART2 to GPIO */
-	val = sysRegRead(RALINK_REG_GPIOMODE);
-	val |= (RALINK_GPIOMODE_UART2);						// GPIO 11 used for EXT mdio switch shared with UART2
-	sysRegWrite(RALINK_REG_GPIOMODE, val);
-
-	val = sysRegRead(RALINK_REG_PIODIR);
-	val |= (0x1<<CONFIG_RALINK_GPIO_MDIOSW);				// switch pin to output mode ext mdio switch)
-	sysRegWrite(RALINK_REG_PIODIR, val);
-
-	if (on && !ext_phy_mdio_enabled) {
-		val = sysRegRead(RALINK_REG_PIODATA);
-		val |= (0x1<<11);						// set pin to HIGH (external mdio enable)
-		sysRegWrite(RALINK_REG_PIODATA, val);
-		ext_phy_mdio_enabled = 1;
-	} else if (!on && ext_phy_mdio_enabled) {
-		val = sysRegRead(RALINK_REG_PIODATA);
-		val &= ~(0x1<<11);						// set pin to LOW (only internal mdio)
-		sysRegWrite(RALINK_REG_PIODATA, val);
-		ext_phy_mdio_enabled = 0;
-	}
-}
-#endif
-
 #if defined(CONFIG_RALINK_GPIO_PHY_PERST) && (CONFIG_RALINK_GPIO_PHY_PERST > -1)
 static void ext_gphy_reset(void)
 {
@@ -405,10 +374,6 @@ static void ext_gphy_reset(void)
 
 	printk("Hardware reset EPHY.\n");
 
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-	/* enable external MDIO use */
-	ext_gphy_mdioswitch(1);
-#endif
 	mdelay(10); /* wait 10ms for pulse */
 
 	val = sysRegRead(RALINK_REG_PIODIR);					/* GPIO0 used for PE_RST PHY not shared */

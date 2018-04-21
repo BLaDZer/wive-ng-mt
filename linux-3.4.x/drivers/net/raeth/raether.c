@@ -1148,10 +1148,6 @@ ei_close(struct net_device *dev)
 {
 	END_DEVICE *ei_local = netdev_priv(dev);
 
-#if defined (CONFIG_RALINK_GPIO_MDIOSW) && (CONFIG_RALINK_GPIO_MDIOSW > -1)
-	ext_gphy_mdioswitch(0);
-#endif
-
 	/* block processing */
 	ei_local->active = 0;
 

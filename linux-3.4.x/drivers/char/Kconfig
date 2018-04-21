@@ -115,11 +115,6 @@ config RALINK_GPIO_SFPLS
 	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
 	default -1
 
-config RALINK_GPIO_MDIOSW
-	int "GPIO N for hardware switch MDIO line from ExtPHY (default -1 - disabled)."
-	depends on RALINK_GPIO && (GE1_RGMII_AN || GE2_RGMII_AN)
-	default -1
-
 config RALINK_GDMA
 	tristate "Ralink SoC GDMA Support"
 	default n
