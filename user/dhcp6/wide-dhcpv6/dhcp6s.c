@@ -2818,7 +2818,7 @@ server6_send(type, ifp, origmsg, optinfo, from, fromlen,
 	dst.sin6_scope_id = ((struct sockaddr_in6 *)from)->sin6_scope_id;
 	if (transmit_sa(outsock, (struct sockaddr *)&dst,
 	    replybuf, len) != 0) {
-		debug_printf(LOG_ERR, FNAME, "transmit %s to %s failed",
+		debug_printf(LOG_DEBUG, FNAME, "transmit %s to %s failed",
 		    dhcp6msgstr(type), addr2str((struct sockaddr *)&dst));
 		return (-1);
 	}
