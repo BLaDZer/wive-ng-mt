@@ -3996,7 +3996,7 @@
 1) build_system: cleanup of unused target and code.<br>
 2) build_system: fix dependensy xupnpd of openssl.<br>
 3) configs: enable napi GRO for all devices.<br>
-4) miniupnpd: update to 2.0.20180412 version.<br>
+4) miniupnpd: update to 2.0.20180422 version.<br>
 5) busybox: update to 1.28.3 stable version.<br>
 6) nodogsplash: update to 2.0.1 version (commit 04f84839).<br>
 7) xl2tpd: update to 1.3.11 version (commit caec6f5c).<br>
