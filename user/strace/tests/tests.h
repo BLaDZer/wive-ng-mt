@@ -33,6 +33,17 @@
 #  include "config.h"
 # endif
 
+#ifdef TESTS_SIZEOF_KERNEL_LONG_T
+# undef SIZEOF_KERNEL_LONG_T
+# define SIZEOF_KERNEL_LONG_T TESTS_SIZEOF_KERNEL_LONG_T
+#endif
+
+#ifdef TESTS_SIZEOF_LONG
+# undef SIZEOF_LONG
+# define SIZEOF_LONG TESTS_SIZEOF_LONG
+#endif
+
+#include <stdbool.h>
 # include <sys/types.h>
 # include "kernel_types.h"
 # include "gcc_compat.h"
@@ -140,6 +151,9 @@ const char *hexquote_strndup(const char *, size_t);
 /* Return inode number of socket descriptor. */
 unsigned long inode_of_sockfd(int);
 
+/* Print string in a quoted form with optional escape characters. */
+void print_quoted_string_ex(const char *, bool quote, const char *escape_str);
+
 /* Print string in a quoted form. */
 void print_quoted_string(const char *);
 
@@ -148,6 +162,10 @@ void print_quoted_string(const char *);
  * in a quoted form.
  */
 void print_quoted_cstring(const char *str, size_t size);
+
+/* Print memory in a quoted form with optional escape characters. */
+void print_quoted_memory_ex(const void *, size_t, bool quote,
+			    const char *escape_chars);
 
 /* Print memory in a quoted form. */
 void print_quoted_memory(const void *, size_t);

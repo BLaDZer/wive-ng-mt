@@ -52,7 +52,7 @@ const struct xlat perf_sw_ids[] = {
  XLAT(PERF_COUNT_SW_EMULATION_FAULTS),
  XLAT(PERF_COUNT_SW_DUMMY),
  XLAT(PERF_COUNT_SW_BPF_OUTPUT),
- /* this array should remain not NULL-terminated */
+ XLAT_END
 };
 
 #endif /* !IN_MPERS */

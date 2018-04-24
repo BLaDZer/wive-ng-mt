@@ -32,7 +32,7 @@ const struct xlat perf_type_id[] = {
  XLAT(PERF_TYPE_HW_CACHE),
  XLAT(PERF_TYPE_RAW),
  XLAT(PERF_TYPE_BREAKPOINT),
- /* this array should remain not NULL-terminated */
+ XLAT_END
 };
 
 #endif /* !IN_MPERS */

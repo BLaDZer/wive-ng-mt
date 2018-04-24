@@ -36,7 +36,7 @@ const struct xlat perf_hw_cache_id[] = {
  XLAT(PERF_COUNT_HW_CACHE_ITLB),
  XLAT(PERF_COUNT_HW_CACHE_BPU),
  XLAT(PERF_COUNT_HW_CACHE_NODE),
- /* this array should remain not NULL-terminated */
+ XLAT_END
 };
 
 #endif /* !IN_MPERS */
