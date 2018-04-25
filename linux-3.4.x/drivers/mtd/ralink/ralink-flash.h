@@ -16,7 +16,7 @@
 #elif defined (CONFIG_RT2880_FLASH_4M)
 #define	MTD_RWFS_PART_SIZE	0x30000
 #else
-#define	MTD_RWFS_PART_SIZE	0xA0000
+#define	MTD_RWFS_PART_SIZE	0x80000
 #endif
 
 #if defined (CONFIG_RT2880_FLASH_4M)

@@ -72,6 +72,10 @@ case "$MODE" in
 	    # white dualband release
 	    DEVNAME="SNR-CPE-MD1.1-5GHZ-MT"
 	    ;;
+	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M-R1.2")
+	    # white dualband release
+	    DEVNAME="SNR-CPE-MD1.2-5GHZ-MT"
+	    ;;
 	"MT7620-2T2R-MT7610-1T1R-5GHZ-8M-AP")
 	    # celling one port dualband AP release
 	    DEVNAME="SNR-CPE-AP2-5GHZ-MT"
@@ -186,7 +190,7 @@ elif [ "$MODE" = "MT7620-2T2R-MT7612-2T2R-5GHZ-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M" -o "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M-R1.1" -o "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M-AP" ]; then
+elif [ "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M" -o "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M-R1.1" -o "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M-R1.2" -o "$MODE" = "MT7620-2T2R-MT7610-1T1R-5GHZ-8M-AP" ]; then
     cp -fv $KCOPATH/config-kernel-MT7620-2T2R-MT7610-1T1R-5GHZ-8M			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config

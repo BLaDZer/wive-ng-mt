@@ -3995,66 +3995,69 @@
 <b>7.3.x</b><br>
 1) build_system: cleanup of unused target and code.<br>
 2) build_system: fix dependensy xupnpd of openssl.<br>
-3) configs: enable napi GRO for all devices.<br>
-4) defaults: enable igmpproxy by default (more 60% users enable this option for iptv, must be safe).<br>
-5) miniupnpd: update to 2.0.20180422 version.<br>
-6) busybox: update to 1.28.3 stable version.<br>
-7) nodogsplash: update to 2.0.1 version (commit 04f84839).<br>
-8) xl2tpd: update to 1.3.11 version (commit caec6f5c).<br>
-9) lldpd: up to 1.0.1 version.<br>
-10) freeradius: up to 3.0.17 version.<br>
-11) ethtool: update to 4.16 version.<br>
-12) libcurl: update to 7.59.0 version.<br>
-13) strace: up to 4.22 version.<br>
-14) igmpproxy: increase general query response interval.<br>
-15) igmpproxy: disable force sweap member by esw for 7621, remove only from general aging.<br>
-16) xupxnpd: fix m3u parse in some cases.<br>
-17) kernel: resource: fix integer overflow at reallocation.<br>
-18) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
-19) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
-20) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
-21) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
-22) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
-23) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
-24) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
-25) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
-26) kernel: net: skbuff: convert to skb_orphan_frags.<br>
-27) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
-28) kernel: net: skbuff: skb_orphan() changes.<br>
-29) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
-30) kernel: net: skbuff: pskb_expand_head: avoid oops and stop work if not mem for expand head allocated.<br>
-31) kernel: net: skbuff: initialize skb->peeked when cloning.<br>
-32) kernel: net: skbuff: return -EMSGSIZE in skb_to_sgvec to prevent overflow.<br>
-33) kernel: net: skbuff: pskb_trim_rcsum() and CHECKSUM_COMPLETE are friends.<br>
-34) kernel: net: vlan: more careful checksum features handling.<br>
-35) kernel: net: fix checksum features handling in netif_skb_features().<br>
-36) kernel: net: disable segmentation if checksumming is not supported.<br>
-37) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
-38) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
-39) kernel: net: pptp: remove a buggy dst release in pptp_connect().<br>
-40) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
-41) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-42) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-43) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
-44) kernel: net: fool proof dev_valid_name().<br>
-45) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
-46) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
-47) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
-48) kernel: net: fix rtnh_ok().<br>
-49) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
-50) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
-51) kernel: net: fix one possible memleak in ip_setup_cork.<br>
-52) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
-53) kernel: net: gro: avoid reorders.<br>
-54) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-55) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
-56) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-57) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
-58) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
-59) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
-60) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-61) kernel: ralink_wifi: fix TxType frame parse.<br>
-62) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+3) build_system: rework and update backups calibs.<br>
+4) build_system: add new MD1.2 model with new FEM.<br>
+5) configs: cleanup build configs and small decrease RWFS size for 8Mb flash devices (640k->512k).<br>
+6) configs: enable napi GRO for all devices.<br>
+7) defaults: enable igmpproxy by default (more 60% users enable this option for iptv, must be safe).<br>
+8) miniupnpd: update to 2.0.20180422 version.<br>
+9) busybox: update to 1.28.3 stable version.<br>
+10) nodogsplash: update to 2.0.1 version (commit 04f84839).<br>
+11) xl2tpd: update to 1.3.11 version (commit caec6f5c).<br>
+12) lldpd: up to 1.0.1 version.<br>
+13) freeradius: up to 3.0.17 version.<br>
+14) ethtool: update to 4.16 version.<br>
+15) libcurl: update to 7.59.0 version.<br>
+16) strace: up to 4.22 version.<br>
+17) igmpproxy: increase general query response interval.<br>
+18) igmpproxy: disable force sweap member by esw for 7621, remove only from general aging.<br>
+19) xupxnpd: fix m3u parse in some cases.<br>
+20) kernel: resource: fix integer overflow at reallocation.<br>
+21) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
+22) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
+23) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
+24) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
+25) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
+26) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
+27) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
+28) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
+29) kernel: net: skbuff: convert to skb_orphan_frags.<br>
+30) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
+31) kernel: net: skbuff: skb_orphan() changes.<br>
+32) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
+33) kernel: net: skbuff: pskb_expand_head: avoid oops and stop work if not mem for expand head allocated.<br>
+34) kernel: net: skbuff: initialize skb->peeked when cloning.<br>
+35) kernel: net: skbuff: return -EMSGSIZE in skb_to_sgvec to prevent overflow.<br>
+36) kernel: net: skbuff: pskb_trim_rcsum() and CHECKSUM_COMPLETE are friends.<br>
+37) kernel: net: vlan: more careful checksum features handling.<br>
+38) kernel: net: fix checksum features handling in netif_skb_features().<br>
+39) kernel: net: disable segmentation if checksumming is not supported.<br>
+40) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
+41) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
+42) kernel: net: pptp: remove a buggy dst release in pptp_connect().<br>
+43) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
+44) kernel: net: tcp: purge write queue upon aborting the connection.<br>
+45) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+46) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
+47) kernel: net: fool proof dev_valid_name().<br>
+48) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
+49) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
+50) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
+51) kernel: net: fix rtnh_ok().<br>
+52) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
+53) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
+54) kernel: net: fix one possible memleak in ip_setup_cork.<br>
+55) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
+56) kernel: net: gro: avoid reorders.<br>
+57) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+58) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+59) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+60) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+61) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+62) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
+63) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
+64) kernel: ralink_wifi: fix TxType frame parse.<br>
+65) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>
