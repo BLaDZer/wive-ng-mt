@@ -84,7 +84,7 @@ eval `nvram_buf_get 2860 vpnPeerDNS`
     fi
 
     $LOG "Flush route cache"
-    ip route flush cache
+    ip -4 route flush cache
 
     $LOG "Restart need service and rebuild shaper and iptables rules"
     services_restart.sh pppd

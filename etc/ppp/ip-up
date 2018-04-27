@@ -25,7 +25,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
     #Get current dgw
     GWSTRING=`ip -4 route | grep ^default`
     if [ "$GWSTRING" != "" ] && [ "$vpnDGW" = "1" ]; then
-        RESTORESTRING="ip route replace $GWSTRING"
+        RESTORESTRING="ip -4 route replace $GWSTRING"
         $LOG "Store old default route to file. $GWSTRING "
         rm -f /tmp/ip-down-route-reload
         (
@@ -120,7 +120,7 @@ eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled 
     #########################CALL SERVICE HELPER##################################################################################
 
     $LOG "Flush route cache"
-    ip route flush cache
+    ip -4 route flush cache
 
     $LOG "Restart dns server, dyndns, ntp sync and rebuild shaper and iptables rules"
     services_restart.sh pppd

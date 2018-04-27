@@ -40,7 +40,7 @@ case "$1" in
 	if [ -e /tmp/default.gw ]; then
 	    olddgw=`tail -qn1 /tmp/default.gw`
 	    $LOG "Restore gw to $olddgw via $wan_if for switch to cable"
-	    ip route replace default via $olddgw dev $wan_if
+	    ip -4 route replace default via $olddgw dev $wan_if
 	fi
 	if [ -e $RESOLV_CONF_BACK ]; then
 	    $LOG "Restore $RESOLV_CONF from $RESOLV_CONF_BACK"
@@ -93,7 +93,7 @@ case "$1" in
 	    done
 
 	    $LOG "Flush route cache"
-	    ip route flush cache
+	    ip -4 route flush cache
 	fi
 
     ########################################################################################################
@@ -108,12 +108,12 @@ case "$1" in
 		if [ "$first_dgw" != "$daddr" ]; then
 		    if [ "$first_dgw" != "" ]; then
 			$LOG "Add static route to DNS $daddr dev $interface"
-			ip route replace "$daddr" via "$first_dgw" dev "$interface"
+			ip -4 route replace "$daddr" via "$first_dgw" dev "$interface"
 		    else
 			ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
 			if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
 			    $LOG "Add static route to DNS $ROUTE_NS dev $interface"
-			    ip route replace $ROUTE_NS dev $interface
+			    ip -4 route replace $ROUTE_NS dev $interface
             		fi
 		    fi
 		fi

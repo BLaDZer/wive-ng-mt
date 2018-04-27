@@ -188,7 +188,7 @@ case "$1" in
 		        :
 		    done
 		    # low cost stub for all default not replaced routes to WAN
-		    ip route replace default dev $interface metric 100
+		    ip -4 route replace default dev $interface metric 100
 		fi
 		# always parse router variable
 		metric=0
@@ -259,7 +259,7 @@ case "$1" in
 		    printf " %s via %s dev %s", a[1], a[2], a[3]; \
 		    if (a[4]!="") printf " metric %s", a[4]}'`
 		ip -4 route replace $IPCMD
-		$LOG "ip route replace $IPCMD"
+		$LOG "ip -4 route replace $IPCMD"
 	    done
 	    # workaround for some buggy ISP
 	    if [ "$REPLACE_DGW" = "1" ] && [ "$FULL_RENEW" = "1" ] && [ "$first_dgw" != "" ]; then
@@ -278,7 +278,7 @@ case "$1" in
 	    fi
 
 	    $LOG "Flush route cache"
-	    ip route flush cache
+	    ip -4 route flush cache
 
 	    # set routes applied flag
 	    touch /tmp/routes_applied
@@ -309,12 +309,12 @@ case "$1" in
 			    if [ "$first_dgw" != "$daddr" ]; then
 				if [ "$first_dgw" != "" ] && [ "$MODEMENABLED" = "1" ]; then
 				    $LOG "Add static route to DNS $daddr via $first_dgw dev $interface"
-				    ip route replace "$daddr" via "$first_dgw" dev "$interface"
+				    ip -4 route replace "$daddr" via "$first_dgw" dev "$interface"
 				else
 				    ROUTE_NS=`ip -o -4 route get "$daddr" | cut -f -3 -d " "`
 				    if [ "$ROUTE_NS" != "" ] && [ "$daddr" != "$first_dgw" ]; then
 					$LOG "Add static route to DNS $ROUTE_NS dev $interface"
-					ip route replace $ROUTE_NS dev $interface
+					ip -4 route replace $ROUTE_NS dev $interface
 				    fi
 				fi
 			    fi
