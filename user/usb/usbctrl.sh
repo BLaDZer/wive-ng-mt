@@ -124,22 +124,18 @@ case $TYPE in
 	    usb_modeswitch -v ${idVendor} -p ${idProduct} -c /share/usb_modeswitch/${idVendor}:${idProduct}
 	else
 	    $LOG "${ACTION} ${idVendor}:${idProduct} may be storage"
-	    if [ ! -d /sys/module/usb-storage ]; then
+	    count=0
+	    while [ ! -d /sys/module/usb_storage ]; do
 		$LOG "Load module usb-storage and wait initialization to complete"
-		modprobe -q usb-storage
+		modload usb-storage
+		if [ "$count" = "5" ]; then
+		    $LOG "modprobe usb-storage failed!!! please fix me"
+		    exit 1
+		fi
+		count="$(($count+1))"
 		sleep 3
-		count=0
-		while [ ! -d /sys/module/usb_storage ]; do
-		    modprobe -q usb-storage
-		    if [ "$count" = "5" ]; then
-			$LOG "modprobe usb-storage failed!!! please fix me"
-			exit 1
-		    fi
-		    count="$(($count+1))"
-		    sleep 5
-		done
-		$LOG "usb_storage init complete"
-	    fi
+	    done
+	    $LOG "usb_storage init complete"
 	fi
         ;;
     9/*)

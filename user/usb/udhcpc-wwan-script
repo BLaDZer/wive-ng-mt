@@ -32,13 +32,13 @@ case "$1" in
 	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# generate random ip from zeroconfig range end set
 	# this is hack for some ISPs checked client alive by arping
-	rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+	rndip="169.254.$((RANDOM%253+1)).$((RANDOM%253+1))"
 	ip -4 addr flush dev $interface
 	ip -4 addr replace $rndip/32 dev $interface
 	# never need down iface
 	ip link set $interface up
 	if [ -e /tmp/default.gw ]; then
-	    olddgw=`cat /tmp/default.gw`
+	    olddgw=`tail -qn1 /tmp/default.gw`
 	    $LOG "Restore gw to $olddgw via $wan_if for switch to cable"
 	    ip route replace default via $olddgw dev $wan_if
 	fi

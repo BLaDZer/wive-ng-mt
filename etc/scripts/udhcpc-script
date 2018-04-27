@@ -65,7 +65,7 @@ case "$1" in
 	# generate random ip from zeroconfig range end set
 	# this is hack for some ISPs checked client alive by arping
 	# and prevent fake unset FULL_RENEW flag at next time bound
-	rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
+	rndip="169.254.$((RANDOM%253+1)).$((RANDOM%253+1))"
 	ip -4 addr flush dev $interface
 	ip -4 addr replace $rndip/32 dev $interface
 	# never need down iface
@@ -87,8 +87,6 @@ case "$1" in
 	if [ "$vpnEnabled" = "on" ] && [ "$vpnType" != "0" ]; then
 	    service vpnhelper stop
 	fi
-	# disable forward for paranoid users
-	sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	# Workaround for infinite OFFER wait
 	if [ "$switchpart" != "LLLLL" ] && [ "$dhcpSwReset" = "1" ]; then
 	    if [ "$CONFIG_RAETH_ESW" != "" ] || [ "$CONFIG_MT7530_GSW" != "" ]; then
@@ -110,6 +108,9 @@ case "$1" in
 	    service vpnhelper restart
 	    # set dhpfail flag for only once PPPOE try start
 	    touch /tmp/dhcpfail
+	else
+	    # disable forward for paranoid users
+	    sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	fi
     ;;
 
@@ -324,7 +325,7 @@ case "$1" in
 		    if [ "$IPv6OpMode" != "0" ]; then
 			if [ -e /etc/resolvipv6.conf ]; then
 			    $LOG "Add ISP ipv6 servers for local resolv"
-			    cat /etc/resolvipv6.conf | grep "nameserver" >> $RESOLV_CONF
+			    grep "nameserver" /etc/resolvipv6.conf >> $RESOLV_CONF
 			else
 			    $LOG "Add google ipv6 servers for local resolv"
 			    echo "nameserver 2001:4860:4860::8888" >> $RESOLV_CONF
