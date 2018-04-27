@@ -108,7 +108,9 @@ case "$1" in
 	    service vpnhelper restart
 	    # set dhpfail flag for only once PPPOE try start
 	    touch /tmp/dhcpfail
-	else
+	fi
+	# if not fake pure pppoe path need disable forward
+	if [ ! -e /tmp/dhcpfail ]; then
 	    # disable forward for paranoid users
 	    sysctl -wq net.ipv4.conf.$interface.forwarding=0
 	fi
