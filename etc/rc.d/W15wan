@@ -92,7 +92,7 @@ udhcpc_conf() {
 	rd_support=""
     fi
     UDHCPCOPTS="-i $wan_if $dhcpRequestIP -S -R -T 5 -a -s /etc/scripts/udhcpc-script -p /var/run/udhcpc.pid \
-		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName -f"
+		-O routes -O staticroutes -O msstaticroutes -O wins $rd_support $dhcpVendorClass $wan_manual_mtu -x hostname:$HostName"
 
     # remove routes updated flags
     rm -f /tmp/routes_applied
