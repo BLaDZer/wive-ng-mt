@@ -4055,7 +4055,7 @@
 60) kernel: net: do not update the pmtu on mtu locked routes (more RFC compliant).<br>
 61) kernel: net: ipv4: do not increase PMTU with Datagram Too Big message (more RFC compliant).<br>
 62) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-63) kernel: ralink_wifi: add new macbook oui 08:6d:41 bcm fix.<br>
+63) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6 to bcm fix.<br>
 64) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
 65) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
 66) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
