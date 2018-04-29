@@ -4041,29 +4041,30 @@
 46) kernel: net: l2tp: check sockaddr length in pppol2tp_connect().<br>
 47) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
 48) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-49) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-50) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
-51) kernel: net: fool proof dev_valid_name().<br>
-52) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
-53) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
-54) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
-55) kernel: net: fix rtnh_ok().<br>
-56) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
-57) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
-58) kernel: net: fix one possible memleak in ip_setup_cork.<br>
-59) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
-60) kernel: net: gro: avoid reorders.<br>
-61) kernel: net: do not update the pmtu on mtu locked routes (more RFC compliant).<br>
-62) kernel: net: ipv4: do not increase PMTU with Datagram Too Big message (more RFC compliant).<br>
-63) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-64) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6 to bcm fix.<br>
-65) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-66) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
-67) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
-68) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
-69) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-70) kernel: ralink_wifi: fix TxType frame parse.<br>
-71) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+49) kernel: net: tcp: don't read out-of-bounds opsize.<br>
+50) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+51) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
+52) kernel: net: fool proof dev_valid_name().<br>
+53) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
+54) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
+55) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
+56) kernel: net: fix rtnh_ok().<br>
+57) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
+58) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
+59) kernel: net: fix one possible memleak in ip_setup_cork.<br>
+60) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
+61) kernel: net: gro: avoid reorders.<br>
+62) kernel: net: do not update the pmtu on mtu locked routes (more RFC compliant).<br>
+63) kernel: net: ipv4: do not increase PMTU with Datagram Too Big message (more RFC compliant).<br>
+64) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+65) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6 to bcm fix.<br>
+66) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+67) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+68) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+69) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
+70) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
+71) kernel: ralink_wifi: fix TxType frame parse.<br>
+72) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>
