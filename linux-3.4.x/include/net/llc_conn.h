@@ -97,6 +97,7 @@ static __inline__ char llc_backlog_type(struct sk_buff *skb)
 
 extern struct sock *llc_sk_alloc(struct net *net, int family, gfp_t priority,
 				 struct proto *prot);
+extern void llc_sk_stop_all_timers(struct sock *sk, bool sync);
 extern void llc_sk_free(struct sock *sk);
 
 extern void llc_sk_reset(struct sock *sk);
