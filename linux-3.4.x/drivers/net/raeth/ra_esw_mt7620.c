@@ -316,9 +316,7 @@ void mt7620_esw_init(void)
 
 	/* force mode, Link Up, 1000Mbps, Full-Duplex, FC ON */
 	regLink = 0x0005e33b;
-#ifdef CONFIG_RAETH_DISABLE_FC
-	regLink &= ~(0x3 << 4);
-#endif
+
 	/* Port 6 (CPU) */
 	sysRegWrite(RALINK_ETH_SW_BASE+0x3600, regLink);	// (P6, Force mode, Link Up, 1000Mbps, Full-Duplex, FC ON)
 	sysRegWrite(RALINK_ETH_SW_BASE+0x000c, 0x0007181d);	// TO_CPU check VLAN members
