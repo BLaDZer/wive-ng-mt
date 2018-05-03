@@ -18,7 +18,7 @@ l2tpstart() {
     if [ "$l2tp_eth_enabled" == "" ] || [ "$l2tp_eth_enabled" == "0" ] || [ "$l2tp_eth_tid" == "" ] || [ "$l2tp_eth_ptid" == "" ] \
         || [ "$l2tp_eth_sid" == "" ] || [ "$l2tp_eth_psid" == "" ] || [ "$l2tp_eth_sport" == "" ] || [ "$l2tp_eth_dport" == "" ]  \
         || [ "$l2tp_eth_remote" == "" ] || [ "$l2tp_eth_local" == "" ] || [ "$l2tp_eth_brifs" = "" ]; then
-        exit 0
+	return
     fi
 
     $LOG "Configure l2tpv3_eth mode tunnel to $l2tp_eth_remote via $l2tp_eth_local"
@@ -89,7 +89,7 @@ l2tpstop() {
 eoipstart() {
     # sanity and enable check
     if [ "$eoip_enabled" == "" ] || [ "$eoip_enabled" == "0" ] || [ "$eoip_tid" == "" ] || [ "$eoip_remote" == "" ] || [ "$eoip_brifs" = "" ]; then
-        exit 0
+	return
     fi
 
     if [ "$eoip_local" != "" ]; then
