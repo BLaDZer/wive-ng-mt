@@ -4067,7 +4067,7 @@
 72) kernel: tty: use __GFP_NOFAIL for tty_ldisc_get().<br>
 73) kernel: ralink_raeth: do not disable FC on 7620 cpuport if use internal switch (speed decrease issue).<br>
 74) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-75) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6 to bcm fix.<br>
+75) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6,90:8D:6C,9C:4F:DA to bcm fix.<br>
 76) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
 77) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
 78) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
