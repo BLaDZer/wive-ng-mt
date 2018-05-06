@@ -4013,68 +4013,69 @@
 18) igmpproxy: increase general query response interval.<br>
 19) igmpproxy: disable force sweap member by esw for 7621, remove only from general aging.<br>
 20) xupxnpd: fix m3u parse in some cases.<br>
-21) init.d: remove old buggy migration from old FW dead workaround.<br>
-22) init.d: optimize usb_storage wait ready.<br>
-23) init.d: dhcpc: fix unneded forward disable on lease fail state for fake pure pppoe path.<br>
-24) init.d: fix eoip start if l2tp_v3 not configured.<br>
-25) kernel: resource: fix integer overflow at reallocation.<br>
-26) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
-27) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
-28) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
-29) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
-30) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
-31) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
-32) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
-33) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
-34) kernel: net: skbuff: convert to skb_orphan_frags.<br>
-35) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
-36) kernel: net: skbuff: skb_orphan() changes.<br>
-37) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
-38) kernel: net: skbuff: pskb_expand_head: avoid oops and stop work if not mem for expand head allocated.<br>
-39) kernel: net: skbuff: initialize skb->peeked when cloning.<br>
-40) kernel: net: skbuff: return -EMSGSIZE in skb_to_sgvec to prevent overflow.<br>
-41) kernel: net: skbuff: pskb_trim_rcsum() and CHECKSUM_COMPLETE are friends.<br>
-42) kernel: net: vlan: more careful checksum features handling.<br>
-43) kernel: net: fix checksum features handling in netif_skb_features().<br>
-44) kernel: net: disable segmentation if checksumming is not supported.<br>
-45) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
-46) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
-47) kernel: net: pptp: remove a buggy dst release in pptp_connect().<br>
-48) kernel: net: l2tp: check sockaddr length in pppol2tp_connect().<br>
-49) kernel: net: pppoe: check sockaddr length in pppoe_connect().<br>
-50) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
-51) kernel: net: tcp: purge write queue upon aborting the connection.<br>
-52) kernel: net: tcp: don't read out-of-bounds opsize.<br>
-53) kernel: net: tcp: md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on established sockets.<br>
-54) kernel: net: ndisc: fix padding error in link-layer address option.<br>
-55) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
-56) kernel: net: fool proof dev_valid_name().<br>
-57) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
-58) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
-59) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
-60) kernel: net: fix rtnh_ok().<br>
-61) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
-62) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
-63) kernel: net: fix one possible memleak in ip_setup_cork.<br>
-64) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
-65) kernel: net: gro: avoid reorders.<br>
-66) kernel: net: do not update the pmtu on mtu locked routes (more RFC compliant).<br>
-67) kernel: net: ipv4: do not increase PMTU with Datagram Too Big message (more RFC compliant).<br>
-68) kernel: net: ipv6: add RTA_TABLE and RTA_PREFSRC to rtm_ipv6_policy.<br>
-69) kernel: net: llc: hold llc_sap before release_sock().<br>
-70) kernel: net: llc: fix NULL pointer deref for SOCK_ZAPPED.<br>
-71) kernel: net: llc: llc: delete timers synchronously in llc_sk_free().<br>
-72) kernel: tty: use __GFP_NOFAIL for tty_ldisc_get().<br>
-73) kernel: ralink_raeth: do not disable FC on 7620 cpuport if use internal switch (speed decrease issue).<br>
-74) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
-75) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6,90:8D:6C,9C:4F:DA to bcm fix.<br>
-76) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
-77) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
-78) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
-79) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
-80) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
-81) kernel: ralink_wifi: fix TxType frame parse.<br>
-82) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
+21) cwmpd: fix ssl support and extend config (include webUI).<br>
+22) init.d: remove old buggy migration from old FW dead workaround.<br>
+23) init.d: optimize usb_storage wait ready.<br>
+24) init.d: dhcpc: fix unneded forward disable on lease fail state for fake pure pppoe path.<br>
+25) init.d: fix eoip start if l2tp_v3 not configured.<br>
+26) kernel: resource: fix integer overflow at reallocation.<br>
+27) kernel: net: skbuff: fix not waking applications when errors are enqueued.<br>
+28) kernel: net: skbuff: allow better page reuse in splice(sock -> pipe).<br>
+29) kernel: net: skbuff: allow skb->head to be a page fragment.<br>
+30) kernel: net: skbuff: net: make GRO aware of skb->head_frag.<br>
+31) kernel: net: skbuff: net: fix truesize accounting in skb_gro_receive().<br>
+32) kernel: net: skbuff: drop bad code from pskb_expand_head.<br>
+33) kernel: net: skbuff: drop fastpath variable for skb_cloned check in pskb_expand_head.<br>
+34) kernel: net: skbuff: optimize the pull_pages code in __pskb_pull_tail().<br>
+35) kernel: net: skbuff: convert to skb_orphan_frags.<br>
+36) kernel: net: skbuff: skb_peek()/skb_peek_tail() cleanups.<br>
+37) kernel: net: skbuff: skb_orphan() changes.<br>
+38) kernel: net: skbuff: pskb_expand_head: increase need head size for hw_nat use head room to.<br>
+39) kernel: net: skbuff: pskb_expand_head: avoid oops and stop work if not mem for expand head allocated.<br>
+40) kernel: net: skbuff: initialize skb->peeked when cloning.<br>
+41) kernel: net: skbuff: return -EMSGSIZE in skb_to_sgvec to prevent overflow.<br>
+42) kernel: net: skbuff: pskb_trim_rcsum() and CHECKSUM_COMPLETE are friends.<br>
+43) kernel: net: vlan: more careful checksum features handling.<br>
+44) kernel: net: fix checksum features handling in netif_skb_features().<br>
+45) kernel: net: disable segmentation if checksumming is not supported.<br>
+46) kernel: net: handle NAPI_GRO_FREE_STOLEN_HEAD case also in napi_frags_finish().<br>
+47) kernel: net: ppp: avoid loop in xmit recursion detection code.<br>
+48) kernel: net: pptp: remove a buggy dst release in pptp_connect().<br>
+49) kernel: net: l2tp: check sockaddr length in pppol2tp_connect().<br>
+50) kernel: net: pppoe: check sockaddr length in pppoe_connect().<br>
+51) kernel: net: tcp: reset sk_send_head in tcp_write_queue_purge.<br>
+52) kernel: net: tcp: purge write queue upon aborting the connection.<br>
+53) kernel: net: tcp: don't read out-of-bounds opsize.<br>
+54) kernel: net: tcp: md5: reject TCP_MD5SIG or TCP_MD5SIG_EXT on established sockets.<br>
+55) kernel: net: ndisc: fix padding error in link-layer address option.<br>
+56) kernel: net: adjust skb_gso_segment() for calling in rx path.<br>
+57) kernel: net: fool proof dev_valid_name().<br>
+58) kernel: net: mac80211: bail out from prep_connection() if a reconfig is ongoing.<br>
+59) kernel: net: ipv6: avoid dad-failures for addresses with NODAD.<br>
+60) kernel: net: neighbour: update neigh timestamps iff update is effective.<br>
+61) kernel: net: fix rtnh_ok().<br>
+62) kernel: net: fix uninit-value in __hw_addr_add_ex().<br>
+63) kernel: net: af_packet: fix race in PACKET_{R|T}X_RING.<br>
+64) kernel: net: fix one possible memleak in ip_setup_cork.<br>
+65) kernel: net: handle null dst in rtnl_put_cacheinfo.<br>
+66) kernel: net: gro: avoid reorders.<br>
+67) kernel: net: do not update the pmtu on mtu locked routes (more RFC compliant).<br>
+68) kernel: net: ipv4: do not increase PMTU with Datagram Too Big message (more RFC compliant).<br>
+69) kernel: net: ipv6: add RTA_TABLE and RTA_PREFSRC to rtm_ipv6_policy.<br>
+70) kernel: net: llc: hold llc_sap before release_sock().<br>
+71) kernel: net: llc: fix NULL pointer deref for SOCK_ZAPPED.<br>
+72) kernel: net: llc: llc: delete timers synchronously in llc_sk_free().<br>
+73) kernel: tty: use __GFP_NOFAIL for tty_ldisc_get().<br>
+74) kernel: ralink_raeth: do not disable FC on 7620 cpuport if use internal switch (speed decrease issue).<br>
+75) kernel: ralink_wifi: use skb_set_tail_pointer instead of internal hard code in some cases.<br>
+76) kernel: ralink_wifi: add new macbook oui 08:6d:41 and iphone oui 2C:61:F6,90:8D:6C,9C:4F:DA to bcm fix.<br>
+77) kernel: ralink_wifi: fix duplicate packets without wi_fi vlan support alloc size calc.<br>
+78) kernel: ralink_wifi: avoid to OS push pakcets with null data pailoads (QCA61X4A bug).<br>
+79) kernel: ralink_wifi: add sanity checks packets to rx done handle functions.<br>
+80) kernel: ralink_wifi: add lost null checks in APCheckRxError.<br>
+81) kernel: ralink_wifi: avoid amsdu ba annouce for non VHT mode (QCA61X4A bug).<br>
+82) kernel: ralink_wifi: fix TxType frame parse.<br>
+83) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
 <br>

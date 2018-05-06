@@ -230,7 +230,7 @@ void saddr_char(char *str, size_t size, sa_family_t family, struct sockaddr *sa)
 
 int openssl_check_cert(SSL *ssl, char *host);
 SSL * openssl_connect(SSL_CTX * ctx, int fd);
-SSL_CTX *openssl_initialize_ctx(char *keyfile,char *password);
+SSL_CTX *openssl_initialize_ctx(char* cwmp_private_key_filename, char* cwmp_cert_filename, char *ca_filename, char *password);
 
 #endif
 

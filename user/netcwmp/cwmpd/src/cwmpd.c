@@ -58,9 +58,12 @@ int cwmp_set_var(cwmp_t * cwmp)
 #ifdef USE_CWMP_OPENSSL
 void cwmp_init_ssl(cwmp_t * cwmp)
 {
-    char * cafile = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ca_file");
-    char * capasswd = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ca_password");
-    cwmp->ssl_ctx = openssl_initialize_ctx(cafile, capasswd);
+    char * private_key = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ssl_private_key_file");
+    char * public_key = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ssl_public_key_file");
+    char * ca_file = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ssl_ca_file");
+    char * ca_passwd = cwmp_conf_pool_get(cwmp_global_pool, "cwmp:ssl_ca_password");
+
+    cwmp->ssl_ctx = openssl_initialize_ctx(private_key, public_key, ca_file, ca_passwd);
 }
 #endif
 

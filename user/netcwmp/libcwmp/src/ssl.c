@@ -10,7 +10,6 @@
 
 #ifdef USE_CWMP_OPENSSL
 
-
 BIO *bio_err=0;
 static char *pass;
 static int password_cb(char *buf,int num,
@@ -46,18 +45,21 @@ static int password_cb(char *buf,int num,
     return(strlen(pass));
   }
 
-SSL_CTX *openssl_initialize_ctx(char *keyfile,char *password)
+SSL_CTX *openssl_initialize_ctx(char* cwmp_private_key_filename, char* cwmp_cert_filename, char *ca_filename, char *password)
 {
     SSL_METHOD *meth;
     SSL_CTX *ctx;
+
+    cwmp_log_info("SSL Initialization...");
 
     if(!bio_err){
       /* Global system initialization*/
       SSL_library_init();
       SSL_load_error_strings();
+      ERR_load_crypto_strings();
 
       /* An error write context */
-      bio_err=BIO_new_fp(stderr,BIO_NOCLOSE);
+      bio_err=BIO_new_fp(stderr, BIO_NOCLOSE);
     }
 
     /* Create our context*/
@@ -65,27 +67,65 @@ SSL_CTX *openssl_initialize_ctx(char *keyfile,char *password)
     ctx=SSL_CTX_new(meth);
 
     /* Load our keys and certificates*/
-    if(!(SSL_CTX_use_certificate_chain_file(ctx,
-      keyfile)))
-      berr_exit("Can't read certificate file");
+    cwmp_log_info("SSL loading public certificate: %s", cwmp_cert_filename);
+    if(!(SSL_CTX_use_certificate_chain_file(ctx, cwmp_cert_filename)))
+    {
+        cwmp_log_error("Can't read certificate file");
+    }
 
     pass=password;
-    SSL_CTX_set_default_passwd_cb(ctx,
-      password_cb);
-    if(!(SSL_CTX_use_PrivateKey_file(ctx,
-      keyfile,SSL_FILETYPE_PEM)))
-      berr_exit("Can't read key file");
+    SSL_CTX_set_default_passwd_cb(ctx, password_cb);
+
+    cwmp_log_info("SSL loading private key: %s", cwmp_private_key_filename);
+    if(!(SSL_CTX_use_PrivateKey_file(ctx, cwmp_private_key_filename, SSL_FILETYPE_PEM)))
+    {
+        cwmp_log_error("Can't read private key file");
+    }
 
     /* Load the CAs we trust*/
-    /*
-    if(!(SSL_CTX_load_verify_locations(ctx,
-      CA_LIST,0)))
-      berr_exit("Can't read CA list");
-    */
+
+    cwmp_log_info("SSL loading trusted CA: %s", ca_filename);
+    if(!(SSL_CTX_load_verify_locations(ctx, ca_filename, 0)))
+    {
+        cwmp_log_error("Can't read trusted CA list");
+    }
 
 #if (OPENSSL_VERSION_NUMBER < 0x00905100L)
     SSL_CTX_set_verify_depth(ctx,1);
 #endif
+
+    DH *dh = NULL;
+    FILE *paramfile;
+    paramfile = fopen("/etc/certs/dh", "r");
+    cwmp_log_info("SSL loading DH parameters: /etc/certs/dh");
+
+    if (paramfile)
+    {
+        dh = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
+        fclose(paramfile);
+
+        if (dh == NULL)
+        {
+            cwmp_log_error("Can't read DH parameters from file!");
+        }
+        else
+        {
+            if (SSL_CTX_set_tmp_dh(ctx, dh) != 1)
+            {
+                cwmp_log_error("Can't set DH parameters!");
+            }
+            else
+            {
+                cwmp_log_info("SSL DH parameters loaded.");
+            }
+        }
+    }
+    else
+    {
+        cwmp_log_error("Can't read DH parameters pem file!");
+    }
+
+    cwmp_log_info("SSL Initialized.");
 
     return ctx;
   }
@@ -101,23 +141,32 @@ SSL * openssl_connect(SSL_CTX * ctx, int fd)
 {
     BIO *sbio;
     SSL * ssl=SSL_new(ctx);
-            sbio=BIO_new_socket(fd,BIO_NOCLOSE);
-            SSL_set_bio(ssl,sbio,sbio);
+    sbio=BIO_new_socket(fd,BIO_NOCLOSE);
+    SSL_set_bio(ssl,sbio,sbio);
+    int ret;
 
-            if(SSL_connect(ssl)<=0)
-            {
-              cwmp_log_alert("SSL connect error");
-              SSL_free(ssl);
-              return NULL;
-            }
-            else
-                {
-                cwmp_log_debug("SSL connect to host ok.");
+    ret = SSL_connect(ssl);
 
-            }
+    if(ret != 1)
+    {
+        int errcode = SSL_get_error(ssl, ret);
+        int err;
 
-      return ssl;
+        cwmp_log_alert("SSL connect error (ret=%i, errcode=%i)", ret, errcode);
+        if((err = ERR_get_error())) {
+            cwmp_log_alert("SSL connect err code:[%lu](%s)", err, ERR_error_string(err, NULL));
+            cwmp_log_alert("Error is %s ",ERR_reason_error_string(err));
+        }
 
+        SSL_free(ssl);
+        return NULL;
+    }
+    else
+    {
+        cwmp_log_debug("SSL connect to host ok.");
+    }
+
+    return ssl;
 }
 
 
@@ -230,7 +279,7 @@ int openssl_check_cert(SSL *ssl, char *host)
     if(SSL_get_verify_result(ssl)!=X509_V_OK)
     {
       cwmp_log_error("Certificate doesn't verify");
-      //return CWMP_ERROR;
+      return CWMP_ERROR;
     }
 
     /*Check the cert chain. The chain length
@@ -243,7 +292,7 @@ int openssl_check_cert(SSL *ssl, char *host)
     if(strcasecmp(peer_CN,host))
     {
        cwmp_log_error("Common name doesn't match host name");
-       //return CWMP_ERROR;
+//       return CWMP_ERROR;
     }
 
     return CWMP_OK;

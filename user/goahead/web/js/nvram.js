@@ -279,8 +279,10 @@ var NVRAM_cwmpd_session_response_timeout	= '<% getCfgGeneral(1, "cwmpd_session_r
 var NVRAM_cwmp_cpe_manufacture			= '<% getCfgGeneral(1, "cwmp_cpe_manufacture"); %>';		NVRAM_cwmp_cpe_manufacture		= (NVRAM_cwmp_cpe_manufacture !='')		? NVRAM_cwmp_cpe_manufacture		: 'NAG';
 var NVRAM_cwmp_cpe_oui				= '<% getCfgGeneral(1, "cwmp_cpe_oui"); %>';			NVRAM_cwmp_cpe_oui			= (NVRAM_cwmp_cpe_oui !='')			? NVRAM_cwmp_cpe_oui			: 'A00001';
 var NVRAM_cwmp_cpe_pc				= '<% getCfgGeneral(1, "cwmp_cpe_pc"); %>';			NVRAM_cwmp_cpe_pc			= (NVRAM_cwmp_cpe_pc !='')			? NVRAM_cwmp_cpe_pc			: 'OT2800';
-var NVRAM_cwmp_ca_file				= '<% getCfgGeneral(1, "cwmp_ca_file"); %>';			NVRAM_cwmp_ca_file			= (NVRAM_cwmp_ca_file !='')			? NVRAM_cwmp_ca_file			: '/etc/raddb/certs/ca.pem';
-var NVRAM_cwmp_ca_password			= '<% getCfgGeneral(1, "cwmp_ca_password"); %>';		NVRAM_cwmp_ca_password			= (NVRAM_cwmp_ca_password !='')			? NVRAM_cwmp_ca_password		: '';
+var NVRAM_cwmp_ssl_private_key_file		= '<% getCfgGeneral(1, "cwmp_ssl_private_key_file"); %>';	NVRAM_cwmp_ssl_private_key_file		= (NVRAM_cwmp_ssl_private_key_file !='')	? NVRAM_cwmp_ssl_private_key_file	: '/etc/certs/server.key';
+var NVRAM_cwmp_ssl_public_key_file		= '<% getCfgGeneral(1, "cwmp_ssl_public_key_file"); %>';	NVRAM_cwmp_ssl_public_key_file		= (NVRAM_cwmp_ssl_public_key_file !='')		? NVRAM_cwmp_ssl_public_key_file	: '/etc/certs/server.pem';
+var NVRAM_cwmp_ssl_ca_file			= '<% getCfgGeneral(1, "cwmp_ssl_ca_file"); %>';		NVRAM_cwmp_ssl_ca_file			= (NVRAM_cwmp_ssl_ca_file !='')			? NVRAM_cwmp_ssl_ca_file		: '/etc/certs/ca.pem';
+var NVRAM_cwmp_ssl_ca_password			= '<% getCfgGeneral(1, "cwmp_ssl_ca_password"); %>';		NVRAM_cwmp_ssl_ca_password		= (NVRAM_cwmp_ssl_ca_password !='')		? NVRAM_cwmp_ssl_ca_password		: '';
 var NVRAM_dhcpEnabled				= '<% getCfgGeneral(1, "dhcpEnabled"); %>';			NVRAM_dhcpEnabled			= (NVRAM_dhcpEnabled !='')			? NVRAM_dhcpEnabled			: '1';
 var NVRAM_dhcpStatic				= '<% getCfgGeneral(1, "dhcpStatic"); %>';			NVRAM_dhcpStatic			= (NVRAM_dhcpStatic !='')			? NVRAM_dhcpStatic			: '';
 var NVRAM_dhcpDomain				= '<% getCfgGeneral(1, "dhcpDomain"); %>';			NVRAM_dhcpDomain			= (NVRAM_dhcpDomain !='')			? NVRAM_dhcpDomain			: 'localnet';

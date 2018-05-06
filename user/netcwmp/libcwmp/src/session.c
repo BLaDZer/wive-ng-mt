@@ -430,7 +430,6 @@ static size_t cwmp_session_write_callback(char *data, size_t size, size_t nmemb,
 
 int cwmp_session_connect(cwmp_session_t * session, const char * url)
 {
-
     http_dest_t *  dest;
     int rv;
 
@@ -470,6 +469,7 @@ int cwmp_session_create_connection(cwmp_session_t * session)
     int use_ssl = 0;
     http_dest_t *  dest = session->dest;
     int timeout = -1;
+    int check_cert;
 
     cwmp_log_trace("%s(session=%p)", __func__, (void*)session);
 
@@ -515,6 +515,13 @@ int cwmp_session_create_connection(cwmp_session_t * session)
         SSL *ssl = openssl_connect(session->cwmp->ssl_ctx, sock->sockdes);
         if(ssl)
         {
+           cwmp_log_debug("check ssl cert for host %s", session->dest->host);
+           check_cert = openssl_check_cert(ssl, session->dest->host);
+           if(check_cert != CWMP_OK)
+           {
+               return check_cert;
+           }
+
            sock->ssl = ssl;
            sock->use_ssl = 1;
         }
