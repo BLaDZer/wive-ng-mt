@@ -4081,6 +4081,7 @@
 <b>7.4.x</b><br>
 1) init.d: avoid start or reconfig radvd/dhcp6d if prefix empty.<br>
 2) init.d: use dhsmasq as relay for ipv6 to.<br>
+3) igmpproxy: avoid reports duplicate at leave.<br>
 <br>
 <br>
 <br>

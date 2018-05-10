@@ -63,34 +63,36 @@ void sendGroupSpecificMemberQuery(void *argument) {
             // FIXME: Should we free gvDesc here?
             return;
         }
-    } else {
-        gvDesc->started = 1;
-    }
 
-    /**
-     * FIXME: This loops through all interfaces the group is active on an sends queries.
-     *        It might be better to send only a query on the interface the leave was accepted on and remove only that interface from the route.
-     */
+	/**
+        * FIXME: This loops through all interfaces the group is active on an sends queries.
+        *        It might be better to send only a query on the interface the leave was accepted on and remove only that interface from the route.
+        */
 
-    // Loop through all downstream interfaces
-    for ( Ix = 0; (Dp = getIfByIx(Ix)); Ix++ ) {
-        if ( Dp->InAdr.s_addr && ! (Dp->Flags & IFF_LOOPBACK) ) {
-            if(Dp->state == IF_STATE_DOWNSTREAM) {
-                // Is that interface used in the group?
-                if (interfaceInRoute(gvDesc->group, Dp->index)) {
-                    // Send a group specific membership query...
-                    sendIgmp(Dp->InAdr.s_addr, gvDesc->group,
+	// Loop through all downstream interfaces
+	for ( Ix = 0; (Dp = getIfByIx(Ix)); Ix++ ) {
+    	    if ( Dp->InAdr.s_addr && ! (Dp->Flags & IFF_LOOPBACK) ) {
+        	if(Dp->state == IF_STATE_DOWNSTREAM) {
+            	    // Is that interface used in the group?
+            	    if (interfaceInRoute(gvDesc->group, Dp->index)) {
+                	// Send a group specific membership query...
+                	sendIgmp(Dp->InAdr.s_addr, gvDesc->group,
                             IGMP_MEMBERSHIP_QUERY,
                             conf->lastMemberQueryInterval * IGMP_TIMER_SCALE,
                             gvDesc->group, 0);
 
-                    my_log(LOG_DEBUG, 0, "Sent membership query from %s to %s. Delay: %d",
+                	my_log(LOG_DEBUG, 0, "Sent membership query from %s to %s. Delay: %d",
                             inetFmt(Dp->InAdr.s_addr,s1), inetFmt(gvDesc->group,s2),
                             conf->lastMemberQueryInterval);
-                }
-            }
-        }
+            	    }
+        	}
+    	    }
+	}
+
+    } else {
+        gvDesc->started = 1;
     }
+
     // Set timeout for next round...
     timer_setTimer(conf->lastMemberQueryInterval, sendGroupSpecificMemberQuery, gvDesc);
 }
@@ -246,6 +248,4 @@ void sendGeneralMembershipQuery() {
         // Use slow timer...
         timer_setTimer(conf->queryInterval, sendGeneralMembershipQuery, NULL);
     }
-
-
 }
