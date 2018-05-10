@@ -102,8 +102,10 @@ set_physmode() {
 		# select switch port for tune
 		echo "$phys_portN" > $procdir
 		# get mode for current port
+		port_swmode=`nvram_get 2860 port"$num"_swmode`
 		port_fcmode=`nvram_get 2860 port"$num"_fcmode`
-		if [ "$port_fcmode" = "auto" ]; then
+		# work without flow control safe only if speed select manual to (mt762x esw not documented case)
+		if [ "$port_fcmode" = "auto" ] || [ "$port_swmode" = "auto" -o "$port_swmode" = "" ]; then
 		    ethtool -A eth2 autoneg on tx on rx on			> /dev/null 2>&1
 		elif [ "$port_fcmode" = "tx" ]; then
 		    ethtool -A eth2 autoneg off tx on rx off			> /dev/null 2>&1
