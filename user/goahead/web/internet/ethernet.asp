@@ -131,6 +131,8 @@
 					stat_interval = setTimeout(reloadStat, 10000);
 				}
 
+				changePortMode();
+
 				showWarning();
 				initTranslation();
 				reloadStat();
@@ -151,6 +153,27 @@
 					ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress);
 				}
 			}
+
+			function changePortMode(form) {
+				var j = (ETHER_PORTS == 2) ? 5 : ETHER_PORTS;
+				for (i = ETHER_FIRST_PORT + 1; i <= ETHER_FIRST_PORT + j; i++) {
+					var swmode_elem = document.getElementById('port'+i+'_swmode')
+					var fcmode_elem = document.getElementById('port'+i+'_fcmode')
+					if (swmode_elem !== null && fcmode_elem !== null)
+					{
+						if (swmode_elem.value == 'auto')
+						{
+							fcmode_elem.setAttribute("disabled", true);
+							fcmode_elem.value = 'auto';
+						}
+						else
+						{
+							fcmode_elem.removeAttribute("disabled");
+						}
+					}
+				}
+			}
+
 		</script>
 	</head>
 	<body bgcolor="#FFFFFF" onLoad="initValues();">
@@ -191,35 +214,35 @@
 								<tr id="ethernetPort1Mode_tr">
 									<td class="head" id="ethernetPort1Mode">Port 1 mode</td>
 									<td colspan="2">
-										<select id="port1_swmode" name="port1_swmode" class="mid"></select>
+										<select id="port1_swmode" name="port1_swmode" class="mid" onchange="changePortMode()"></select>
 										<span id="port1_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort2Mode_tr">
 									<td class="head" id="ethernetPort2Mode">Port 2 mode</td>
 									<td colspan="2">
-										<select id="port2_swmode" name="port2_swmode" class="mid"></select>
+										<select id="port2_swmode" name="port2_swmode" class="mid" onchange="changePortMode()"></select>
 										<span id="port2_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort3Mode_tr">
 									<td class="head" id="ethernetPort3Mode">Port 3 mode</td>
 									<td colspan="2">
-										<select id="port3_swmode" name="port3_swmode" class="mid"></select>
+										<select id="port3_swmode" name="port3_swmode" class="mid" onchange="changePortMode()"></select>
 										<span id="port3_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort4Mode_tr">
 									<td class="head" id="ethernetPort4Mode">Port 4 mode</td>
 									<td colspan="2">
-										<select id="port4_swmode" name="port4_swmode" class="mid"></select>
+										<select id="port4_swmode" name="port4_swmode" class="mid" onchange="changePortMode()"></select>
 										<span id="port4_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>
 								<tr id="ethernetPort5Mode_tr">
 									<td class="head" id="ethernetPort5Mode">Port 5 mode</td>
 									<td colspan="2">
-										<select id="port5_swmode" name="port5_swmode" class="mid"></select>
+										<select id="port5_swmode" name="port5_swmode" class="mid" onchange="changePortMode()"></select>
 										<span id="port5_fc" style="margin-left: 20px;"></span>
 									</td>
 								</tr>

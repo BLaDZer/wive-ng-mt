@@ -409,9 +409,7 @@ static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 7, "wan_port", "lan_port", "port1_swmode", "port2_swmode", "port3_swmode", "port4_swmode", "port5_swmode");
-#ifdef CONFIG_RALINK_MT7621
 		nvram_fromdef(RT2860_NVRAM, 5, "port1_fcmode", "port2_fcmode", "port3_fcmode", "port4_fcmode", "port5_fcmode");
-#endif
 	}
 	else {
 		nvram_init(RT2860_NVRAM);
@@ -432,12 +430,10 @@ static void setEthernetPort(webs_t wp, char_t *path, char_t *query)
 			w_port = websGetVar(wp, w_name, T("auto"));
 			if ((w_port != NULL) && (strlen(w_port)>0))
 				nvram_bufset(RT2860_NVRAM, w_name, w_port);
-#ifdef CONFIG_RALINK_MT7621
 			snprintf(w_name, sizeof(w_name), "port%d_fcmode", i);
-			w_port = websGetVar(wp, w_name, T("off"));
+			w_port = websGetVar(wp, w_name, T("auto"));
 			if ((w_port != NULL) && (strlen(w_port)>0))
 				nvram_bufset(RT2860_NVRAM, w_name, w_port);
-#endif
 		}
 
 		/* Commit & close NVRAM */

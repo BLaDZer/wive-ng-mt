@@ -4083,7 +4083,9 @@
 2) init.d: avoid start or reconfig radvd/dhcp6d if prefix empty.<br>
 3) init.d: use dhsmasq as relay for ipv6 to.<br>
 4) inti.d: work without flow control safe only if speed select manual to (mt762x esw not documented case).<br>
-5) igmpproxy: avoid reports duplicate at leave.<br>
+5) goahead: sync fc logic with init.d.<br>
+6) goahead: fix change fc mode at 7620.<br>
+7) igmpproxy: avoid reports duplicate at leave.<br>
 <br>
 <br>
 <br>
