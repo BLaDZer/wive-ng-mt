@@ -4078,4 +4078,9 @@
 83) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
+<b>7.4.x</b><br>
+1) init.d: avoid start or reconfig radvd/dhcp6d if prefix empty.<br>
+2) init.d: use dhsmasq as relay for ipv6 to.<br>
+<br>
+<br>
 <br>

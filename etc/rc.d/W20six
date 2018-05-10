@@ -137,16 +137,18 @@ dhcpradvdreconf() {
     get_param
     if [ "$IPv6OpMode" != "" ] && [ "$IPv6OpMode" != "0" ]; then
 	$LOG "Configure and start radvd and dhcpv6 server"
+
 	# get prefix direct from lan iface if not set
 	if [ "$PREFIX" = "" ]; then
-	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
 	    $LOG "Try get prefix from local interface $lan_if $PREFIX"
+	    PREFIX=`ip -6 -o addr show scope global dev $lan_if | awk {' print $4 '}`
 	    if [ "$PREFIX" = "" ]; then
-		$LOG "Prefix empty!"
+		$LOG "Prefix empty, stop reconfig!"
+		return
 	    fi
 	fi
 
-	# read dnsservers reciverd from dhcp
+	# dns servers for clients
 	if [ -e /etc/resolvipv6.conf ]; then
 	    DNSADRESSES=`echo $(cat /etc/resolvipv6.conf | grep nameserver | grep : |  sed -e 's/nameserver//g')`
 	    $LOG "Use DNS recieved from ISP $DNSADRESSES"
@@ -161,6 +163,13 @@ dhcpradvdreconf() {
 	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
 	    $LOG "Use public DNS $DNSADRESSES"
 	fi
+
+	# dns relay use with ISP DNS, this temporary for wain DNSMASQ full ready replace ISP servers for ipv6
+	if [ "$dnsPEnabled" = "1" ]; then
+	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSADRESSES"
+	    DNSRELAYADDRESS=`ip -o -6 addr show dev $lan_if scope global | awk {' print $4 '} | cut -f1 -d"/"`
+	fi
+
 	if [ "$dhcpv6Enabled" = "1" ]; then
 	    # use DHCPv6 for get DNS server adresses, need for Windows clients compat
 	    AdvOtherConfigFlag="on"
@@ -182,28 +191,23 @@ dhcpradvdreconf() {
                 AdvDefaultPreference high;
                 AdvManagedFlag off;		# use RADVD for clients adresses set
                 AdvOtherConfigFlag $AdvOtherConfigFlag;
+            	prefix ${PREFIX}
+            	{
+            	    AdvOnLink off;
+                    AdvAutonomous on;
+                    AdvRouterAddr on;
+                    AdvPreferredLifetime 240;
+                    AdvValidLifetime 300;
     		" > /etc/radvd.conf
-		if [ "$PREFIX" != "" ]; then
+		if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
     		    printf "
-            	    prefix ${PREFIX}
-            	    {
-                    	AdvOnLink off;
-                    	AdvAutonomous on;
-                    	AdvRouterAddr on;
-                        AdvPreferredLifetime 240;
-                        AdvValidLifetime 300;
-    		    " >> /etc/radvd.conf
-		    if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
-    			printf "
-                    	    Base6to4Interface $tun_wan_if;
-    			" >> /etc/radvd.conf
-		    fi
-    		    printf "
-            	    };
+                        Base6to4Interface $tun_wan_if;
     		    " >> /etc/radvd.conf
 		fi
     		printf "
-                RDNSS $DNSADRESSES
+            	};
+
+                RDNSS $DNSRELAYADDRESS $DNSADRESSES
                 {
                         AdvRDNSSLifetime 20;
                 };
