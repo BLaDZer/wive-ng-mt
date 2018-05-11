@@ -92,11 +92,7 @@ endif
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E
 ifdef CONFIG_RALINK_MT7621
-ifeq ($(MODEL_NAME),SNR-CPE-CG1-5GHZ-MT)
-	$(ROMFSINST) -S eeproms-backups/MT7621_MT7603_MT7610_external_LNA_external_PA_BACKUP-CG1.BIN	/etc/Wireless/rfbackup.bin
-else
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7603_MT7610_external_LNA_external_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
-endif
 else
 ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7620_7610_AP_2T2R-4L_internal_LNA_internal_PA_BACKUP.BIN	/etc/Wireless/rfbackup.bin
