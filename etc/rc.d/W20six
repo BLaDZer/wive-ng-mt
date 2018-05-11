@@ -156,18 +156,18 @@ dhcpradvdreconf() {
 
 	if [ "$DNSADRESSES" = "" ] && [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
 	    DNSADRESSES="$IPv6DNSPrimary $IPv6DNSSecondary"
-	    $LOG "Use user configured DNS $DNSADRESSES"
+	    $LOG "Use user manual configured DNS $DNSADRESSES"
 	fi
 
 	if [ "$DNSADRESSES" = "" ]; then
 	    DNSADRESSES="2001:4860:4860::8888 2001:4860:4860::8844"
-	    $LOG "Use public DNS $DNSADRESSES"
+	    $LOG "Use public google DNS $DNSADRESSES"
 	fi
 
-	# dns relay use with ISP DNS, this temporary for wain DNSMASQ full ready replace ISP servers for ipv6
+	# dns relay use with ISP DNS, this temporary for wait DNSMASQ full ready replace ISP servers for ipv6
 	if [ "$dnsPEnabled" = "1" ]; then
-	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSADRESSES"
 	    DNSRELAYADDRESS=`ip -o -6 addr show dev $lan_if scope global | awk {' print $4 '} | cut -f1 -d"/"`
+	    $LOG "Use local DNS server as relay and local ipv6 hosts resolve $DNSRELAYADDRESS"
 	fi
 
 	if [ "$dhcpv6Enabled" = "1" ]; then
