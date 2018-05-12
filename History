@@ -4085,3 +4085,7 @@
 90) kernel: ralink_wifi: mt7610: allow 256 rx processes.<br>
 <br>
 <br>
+<b>7.4.x</b><br>
+1) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+<br>
+<br>
