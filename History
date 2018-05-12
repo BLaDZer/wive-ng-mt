@@ -4086,6 +4086,7 @@
 <br>
 <br>
 <b>7.4.x</b><br>
-1) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+1) entware: update install script.<br>
+2) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
 <br>
 <br>
