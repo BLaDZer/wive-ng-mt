@@ -1118,7 +1118,7 @@ int gen_wifi_config(int mode, int genmode)
 
 	FPRINT_DAT(WirelessEvent);  /* send log message through wireless event for debug purpose */
 
-#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	FPRINT_DAT(PSMode);
 	FPRINT_DAT(AutoConnect);
 	FPRINT_DAT(FastConnect);
