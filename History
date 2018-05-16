@@ -4089,7 +4089,7 @@
 1) entware: update install script.<br>
 2) build_system/init/libwive/calibs: prepare to support mt7615.<br>
 3) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-4) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-5) kernel: ralini_wifi: import mt7615 driver.
+4) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+5) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
 <br>
 <br>
