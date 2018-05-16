@@ -1304,10 +1304,11 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(SCSEnable);
 #endif
 	// 7615
+#if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
 	FPRINT_DAT(E2pAccessMode);
 	FPRINT_DAT(PERCENTAGEenable);
 	FPRINT_DAT(BFBACKOFFenable);
-
+#endif
 	fclose(fp);
 	nvram_close(mode);
 	sync();
