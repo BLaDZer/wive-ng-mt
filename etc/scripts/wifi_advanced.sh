@@ -46,8 +46,8 @@ if [ "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT76X2_AP_IGMP_SNOOP" 
     fi
 fi
 
-# MT7603 do not support DYNVGA&Co
-if [ "$CONFIG_RT_FIRST_IF_MT7603E" = "y" ] && [ "$1" = "ra0" ]; then
+# MT7603/MT7615 do not support DYNVGA&Co
+if [ "$CONFIG_RT_FIRST_IF_MT7603E" = "y" -o "$CONFIG_RT_FIRST_IF_MT7615E" = "y" ] && [ "$1" = "ra0" ]; then
     exit 0
 fi
 
