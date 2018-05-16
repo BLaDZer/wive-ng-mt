@@ -77,8 +77,6 @@ endif
 # external apps flags
 ifneq ("$(CONFIG_MT76X2_STA)", "")
 DEPEND_FILES += station.o
-else ifneq ("$(CONFIG_MT76X3_STA)", "")
-DEPEND_FILES += station.o
 endif
 ifeq ("$(CONFIG_RALINKAPP_SWQOS)", "y")
 DEPEND_FILES += qos.o

@@ -292,7 +292,7 @@ static int getPlatform(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getStationBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));

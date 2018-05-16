@@ -13,12 +13,8 @@ all:
 romfs:
 	$(ROMFSINST) $(ROOT_DIRECTORY)
 ifndef CONFIG_MT76X2_STA_MODULE
-ifndef CONFIG_MT76X3_STA_MODULE
 ifndef CONFIG_MT76X2_STA
-ifndef CONFIG_MT76X3_STA
 	rm -rf $(ROMFSDIR)$(ROOT_DIRECTORY)/station
-endif
-endif
 endif
 endif
 ifeq ("$(CONFIG_USER_CHILLISPOT)", "")
