@@ -88,6 +88,21 @@ else ifeq ($(CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
 endif
 endif
 ###################################################################################################################################################
+# external PCI-E 7615 WiFi module
+###################################################################################################################################################
+# 7615 module
+ifdef CONFIG_RT_FIRST_IF_MT7615E
+	$(ROMFSINST) -S fw/WIFI_RAM_CODE_MT7615.bin							/fw/WIFI_RAM_CODE_MT7615.bin
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615N_external_LNA_external_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
+ifdef CONFIG_RT_FIRST_IF_MT7615E
+	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
+endif
+ifdef CONFIG_RT_SECOND_IF_MT7615E
+	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
+endif
+	$(ROMFSINST) -S	defaults/default-4t4r-3t3r-wan0							/etc/default/nvram_default
+endif
+###################################################################################################################################################
 # full backups dualband devices
 ###################################################################################################################################################
 ifdef CONFIG_RT_SECOND_IF_MT7610E

@@ -30,12 +30,8 @@ choice
 	bool "None"
 
 	config RT_FIRST_IF_MT7620
-	bool "MT7620 APSoC (RLT driver 3.0.x.x)"
+	bool "MT7620 APSoC"
 	depends on RALINK_MT7620
-
-	config RT_FIRST_IF_MT7628
-	bool "MT7628 APSoC (MT driver 4.0.x.x)"
-	depends on RALINK_MT7628
 
 	config RT_FIRST_IF_MT7610E
 	bool "MT7610E PCIe"
@@ -51,7 +47,11 @@ choice
 
 	config RT_FIRST_IF_MT7603E
 	bool "MT7603E PCIe"
-	depends on RALINK_MT7621
+	depends on RALINK_MT7621 && !RALINK_MT7620
+
+	config RT_FIRST_IF_MT7615E
+	bool "MT7615E PCIe"
+	depends on RALINK_MT7621 && !RALINK_MT7620
 endchoice
 
 choice
@@ -64,7 +64,7 @@ choice
 
 	config RT_FIRST_IF_RANGE_5GHZ
 	bool "5GHz"
-	depends on !(RT_FIRST_IF_MT7602E || RT_FIRST_IF_MT7603E || RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7628)
+	depends on !(RT_FIRST_IF_MT7602E || RT_FIRST_IF_MT7603E || RT_FIRST_IF_MT7620)
 endchoice
 
 choice
@@ -86,17 +86,18 @@ endchoice
 config  RT_FIRST_IF_RF_OFFSET
 	hex "EEPROM FLASH Offset of 1st Wireless Interface"
 	depends on RT_FIRST_IF_EEPROM_FLASH
-	default 0x40000
+	default 0x40000 if !RT_FIRST_IF_MT7615E
+	default 0x0 if RT_FIRST_IF_MT7615E
 
 config  RT_FIRST_CARD
 	int
 	default 0    if RT_FIRST_IF_NONE
 	default 7620 if RT_FIRST_IF_MT7620
-	default 7628 if RT_FIRST_IF_MT7628
 	default 7610 if RT_FIRST_IF_MT7610E
 	default 7612 if RT_FIRST_IF_MT7612E
 	default 7602 if RT_FIRST_IF_MT7602E
 	default 7603 if RT_FIRST_IF_MT7603E
+	default 7615 if RT_FIRST_IF_MT7615E
 
 config RT_FIRST_CARD_EEPROM
 	string
@@ -123,6 +124,9 @@ choice
 
 	config RT_SECOND_IF_MT7603E
 	bool "MT7603E PCIe"
+
+	config RT_SECOND_IF_MT7615E
+	bool "MT7615E PCIe"
 endchoice
 
 choice
@@ -140,7 +144,7 @@ endchoice
 
 choice
 	prompt "EEPROM Type of 2nd Wireless Interface"
-	depends on !(RT_SECOND_IF_NONE || RT_SECOND_IF_RT3352_INIC)
+	depends on !(RT_SECOND_IF_NONE)
 
 	config RT_SECOND_IF_EEPROM_FLASH
 	bool "FLASH partition"
@@ -155,7 +159,8 @@ endchoice
 config  RT_SECOND_IF_RF_OFFSET
 	hex "EEPROM FLASH Offset of 2nd Wireless Interface"
 	depends on RT_SECOND_IF_EEPROM_FLASH
-	default 0x48000
+	default 0x48000 if !RT_SECOND_IF_MT7615E
+	default 0x8000 if RT_SECOND_IF_MT7615E
 
 config  RT_SECOND_CARD
 	int
@@ -164,6 +169,7 @@ config  RT_SECOND_CARD
 	default 7612 if RT_SECOND_IF_MT7612E
 	default 7602 if RT_SECOND_IF_MT7602E
 	default 7603 if RT_SECOND_IF_MT7603E
+	default 7615 if RT_SECOND_IF_MT7615E
 
 config RT_SECOND_CARD_EEPROM
 	string
@@ -207,26 +213,36 @@ config BAND_STEERING
 config MAX_CLIENTS
 	int "Maximum wifi clients more clients - more mem and cpu usage."
 	depends on !(RT_SECOND_IF_NONE && RT_FIRST_IF_NONE)
-	default 56
+	default 56 if (RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7602E)
+	default 72 if RT_FIRST_IF_MT7603E
+	default 96 if RT_FIRST_IF_MT7615E
 
+# per band chips
 if (RT_FIRST_IF_MT7610E || RT_SECOND_IF_MT7610E)
-menu "AP MODE MediaTek MT7610E PCIe Wireless Driver"
-source "drivers/net/wireless/ralink/mt7610_ap/Kconfig"
-endmenu
+    menu "AP MODE MediaTek MT7610E PCIe Wireless Driver"
+    source "drivers/net/wireless/ralink/mt7610_ap/Kconfig"
+    endmenu
 endif
 
 if (RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7612E || RT_FIRST_IF_MT7602E || RT_SECOND_IF_MT7612E || RT_SECOND_IF_MT7602E)
-menu "AP MODE MediaTek MT7620/MT7602E/MT7612E RBUS/PCIe Wireless Driver"
-source "drivers/net/wireless/ralink/mt76x2_ap/Kconfig"
-source "drivers/net/wireless/ralink/mt76x2_sta/Kconfig"
-endmenu
+    menu "AP MODE MediaTek MT7620/MT7602E/MT7612E RBUS/PCIe Wireless Driver"
+    source "drivers/net/wireless/ralink/mt76x2_ap/Kconfig"
+    source "drivers/net/wireless/ralink/mt76x2_sta/Kconfig"
+    endmenu
 endif
 
 if (RT_FIRST_IF_MT7603E || RT_SECOND_IF_MT7603E)
-menu "AP MODE MediaTek MT7603E PCIe Wireless driver"
-source "drivers/net/wireless/ralink/mt76x3_ap/Kconfig"
-endmenu
+    menu "AP MODE MediaTek MT7603E PCIe Wireless driver"
+    source "drivers/net/wireless/ralink/mt76x3_ap/Kconfig"
+    endmenu
 endif
+
+# 7615 support all bands in one
+#if (RT_FIRST_IF_MT7615E || RT_SECOND_IF_MT7615E)
+#    menu "AP MODE MediaTek MT7615E PCIe Wireless Driver"
+#    source "drivers/net/wireless/ralink/mt7615_ap/Kconfig"
+#    endmenu
+#endif
 
 endmenu
 
@@ -242,7 +258,6 @@ config RA_NAT_NONE
 
 config RA_NAT_HW
 	bool "Hardware NAT acceleration"
-	depends on !(RALINK_RT5350 || RALINK_MT7628)
 endchoice
 
 if RA_NAT_HW
@@ -268,7 +283,7 @@ endmenu
 menu "Ralink Devices"
 config RT3XXX_EHCI_OHCI
 	bool "Ralink USB2 EHCI/OHCI controller support"
-	depends on (RALINK_RT3883 || RALINK_RT3352 || RALINK_RT5350 || RALINK_MT7620 || RALINK_MT7628)
+	depends on (RALINK_MT7620)
 	select USB_ARCH_HAS_OHCI
 	select USB_ARCH_HAS_EHCI
 

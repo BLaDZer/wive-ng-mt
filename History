@@ -4087,6 +4087,8 @@
 <br>
 <b>7.4.x</b><br>
 1) entware: update install script.<br>
-2) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+2) build_system/init/libwive/calibs: prepare to support mt7615.<br>
+3) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+4) kernel: ralini_wifi: import mt7615 driver.
 <br>
 <br>

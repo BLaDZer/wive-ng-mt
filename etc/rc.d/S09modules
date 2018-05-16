@@ -89,6 +89,9 @@ load_wireless_modules() {
 	if [ "$CONFIG_MT76X3_AP" != "" ]; then
     	    modprobe -q mt76x3_ap
 	fi
+	if [ "$CONFIG_MT7615_AP" != "" ]; then
+    	    modprobe -q mt7615_ap
+	fi
     fi
 }
 
@@ -213,7 +216,7 @@ stop() {
 
 wifi_unload() {
     $LOG "Unload wireless modules."
-    mod="mt7610_ap mt76x2_ap mt76x2_sta mt76x3_ap"
+    mod="mt7610_ap mt76x2_ap mt76x2_sta mt76x3_ap mt7615_ap"
     for module in $mod
     do
 	if [ -d /sys/module/$module ]; then

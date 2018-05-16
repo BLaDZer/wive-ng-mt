@@ -982,7 +982,6 @@ int gen_wifi_config(int mode, int genmode)
 
 	FPRINT_DAT(APSDCapable);
 	FPRINT_DAT(AckPolicy);
-	FPRINT_DAT(DLSCapable);
 	FPRINT_DAT(NoForwarding);
 	FPRINT_DAT(NoForwardingMBCast);
 	FPRINT_DAT(StationKeepAlive);
@@ -1125,19 +1124,19 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(FastConnect);
 	FPRINT_DAT(AutoRoaming);
 #endif
-#if defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X3_AP_EXT_CHANNEL_LIST)
+#if defined(CONFIG_MT7610_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X2_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT76X3_AP_EXT_CHANNEL_LIST) || defined(CONFIG_MT7615_AP_EXT_CHANNEL_LIST)
 	FPRINT_DAT(ChannelGeography);
 #endif
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	FPRINT_DAT(VideoTurbine);
 	FPRINT_DAT(VideoClassifierEnable);
 	FPRINT_DAT(VideoHighTxMode);
 	FPRINT_DAT(VideoTxLifeTimeMode);
 #endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	FPRINT_DAT(M2UEnabled);
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
 	FPRINT_DAT(McastPhyMode);
 	FPRINT_DAT(McastMcs);
 #endif
@@ -1188,14 +1187,11 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ED_LEARN_TH);
 	FPRINT_DAT(EDCCA_BLOCK_CHECK_TH);
 #endif
-#if defined(CONFIG_MT76X2_AP_GREENAP) || defined(CONFIG_MT76X3_AP_GREENAP)
-	FPRINT_DAT(GreenAP);
-#endif
 #if defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3) || defined(CONFIG_MT76X3_AP_80211N_DRAFT3)
 	FPRINT_DAT(HT_BSSCoexistence);
 	FPRINT_DAT(HT_BSSCoexApCntThr);
 #endif
-#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS) || defined(CONFIG_MT7615_AP_WDS)
 	FPRINT_DAT(WdsEnable);
 	FPRINT_DAT(WdsPhyMode);
 	FPRINT_DAT(WdsTxMcs);
@@ -1206,7 +1202,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(Wds2Key);
 	FPRINT_DAT(Wds3Key);
 #endif
-#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
+#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI) || defined(CONFIG_MT7615_AP_APCLI)
 	FPRINT_DAT(ApCliEnable);
 	FPRINT_DAT(ApCliSsid);
 	FPRINT_DAT(ApCliBssid);
@@ -1218,7 +1214,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ApCliTxMcs);
 	FPRINT_DAT(ApCliAPSDCapable);
 #endif
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	FPRINT_DAT(IdsEnable);
 	FPRINT_DAT(AuthFloodThreshold);
 	FPRINT_DAT(AssocReqFloodThreshold);
@@ -1276,7 +1272,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(KickStaRssiLowPSM);
 	FPRINT_DAT(KickStaRssiLowDelay);
 	FPRINT_DAT(ProbeRspRssi);
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	/* Fast roaming auth transitions config */
 	FPRINT_DAT(FtSupport);  	/* Enable Fast BSS Transition */
 	FPRINT_DAT(FtRic);		/* Enable FT resource request */
@@ -1292,7 +1288,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(FtR0khId3);
 	FPRINT_DAT(FtR0khId4);
 #endif
-#if  defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if  defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	FPRINT_DAT(RRMEnable);  	/* Enable Resource Radio Managment */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
@@ -1304,9 +1300,14 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(RegulatoryClass);
 #endif
 #endif /* END RRM */
-#ifdef CONFIG_MT76X3_AP_SMART_CARRIER_SENSE
+#if  defined(CONFIG_MT76X3_AP_SMART_CARRIER_SENSE) || defined(CONFIG_MT7615_AP_SMART_CARRIER_SENSE)
 	FPRINT_DAT(SCSEnable);
 #endif
+	// 7615
+	FPRINT_DAT(E2pAccessMode);
+	FPRINT_DAT(PERCENTAGEenable);
+	FPRINT_DAT(BFBACKOFFenable);
+
 	fclose(fp);
 	nvram_close(mode);
 	sync();

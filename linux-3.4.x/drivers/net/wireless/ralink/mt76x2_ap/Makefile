@@ -185,10 +185,6 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_repeater.o
 endif
 endif
 
-ifeq ($(CONFIG_MT76X2_AP_GREENAP),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/hw_ctrl/greenap.o
-endif
-
 ifeq ($(CONFIG_MT76X2_AP_IGMP_SNOOP),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/igmp_snoop.o
 endif
@@ -197,18 +193,8 @@ ifeq ($(CONFIG_MT76X2_AP_NETIF_BLOCK),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/netif_block.o
 endif
 
-ifeq ($(CONFIG_MT76X2_AP_DLS),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_dls.o
-endif
-
 ifeq ($(CONFIG_MT76X2_AP_IDS),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_ids.o
-endif
-
-ifeq ($(CONFIG_MT76X2_AP_WAPI),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_sms4.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_crypt.o
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_DFS),y)
@@ -385,10 +371,6 @@ EXTRA_CFLAGS += -DRALINK_QA
 endif
 endif
 
-ifeq ($(CONFIG_MT76X2_AP_DLS),y)
-EXTRA_CFLAGS += -DQOS_DLS_SUPPORT
-endif
-
 ifeq ($(CONFIG_MT76X2_AP_IDS),y)
 EXTRA_CFLAGS += -DIDS_SUPPORT
 endif
@@ -403,14 +385,6 @@ endif
 
 ifeq ($(CONFIG_MT76X2_AP_ED_MONITOR),y)
 EXTRA_CFLAGS += -DED_MONITOR -DED_SMART
-endif
-
-ifeq ($(CONFIG_MT76X2_AP_WAPI),y)
-EXTRA_CFLAGS += -DWAPI_SUPPORT
-endif
-
-ifeq ($(CONFIG_MT76X2_AP_GREENAP),y)
-EXTRA_CFLAGS += -DGREENAP_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC),y)

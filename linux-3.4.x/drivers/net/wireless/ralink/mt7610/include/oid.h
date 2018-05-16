@@ -945,29 +945,16 @@ typedef struct _NDIS_802_11_CAPABILITY {
 
 /* MIMO Tx parameter, ShortGI, MCS, STBC, etc.  these are fields in TXWI. Don't change this definition!!! */
 typedef union _HTTRANSMIT_SETTING {
-#ifdef RT_BIG_ENDIAN
 	struct {
-		USHORT MODE:3;	/* Use definition MODE_xxx. */
-		USHORT iTxBF:1;
-		USHORT eTxBF:1;
-		USHORT STBC:1;	/* only support in HT/VHT mode with MCS0~7 */
-		USHORT ShortGI:1;
-		USHORT BW:2;	/* channel bandwidth 20MHz/40/80 MHz */
+		USHORT MCS:6;		/* MCS */
 		USHORT ldpc:1;
-		USHORT MCS:6;	/* MCS */
-	} field;
-#else
-	struct {
-		USHORT MCS:6;
-		USHORT ldpc:1;
-		USHORT BW:2;
+		USHORT BW:2;		/* channel bandwidth 20MHz/40/80 MHz */
 		USHORT ShortGI:1;
-		USHORT STBC:1;
+		USHORT STBC:1;		/* only support in HT/VHT mode with MCS0~7 */
 		USHORT eTxBF:1;
 		USHORT iTxBF:1;
-		USHORT MODE:3;
+		USHORT MODE:3;		/* Use definition MODE_xxx. */
 	} field;
-#endif
 	USHORT word;
 } HTTRANSMIT_SETTING, *PHTTRANSMIT_SETTING;
 
@@ -1049,21 +1036,6 @@ typedef struct _RT_802_11_EVENT_TABLE {
 } RT_802_11_EVENT_TABLE, *PRT_802_11_EVENT_TABLE;
 #endif /* SYSTEM_LOG_SUPPORT */
 
-/* MIMO Tx parameter, ShortGI, MCS, STBC, etc.  these are fields in TXWI. Don't change this definition!!! */
-typedef union _MACHTTRANSMIT_SETTING {
-	struct {
-		USHORT MCS:6;
-		USHORT ldpc:1;
-		USHORT BW:2;
-		USHORT ShortGI:1;
-		USHORT STBC:1;
-		USHORT eTxBF:1;
-		USHORT iTxBF:1;
-		USHORT MODE:3;
-	} field;
-	USHORT word;
-} MACHTTRANSMIT_SETTING, *PMACHTTRANSMIT_SETTING;
-
 typedef struct _RT_802_11_MAC_ENTRY {
 	UCHAR ApIdx;
 	UCHAR Addr[MAC_ADDR_LEN];
@@ -1076,7 +1048,7 @@ typedef struct _RT_802_11_MAC_ENTRY {
 	UINT64 TxBytes;
 	UINT64 RxBytes;
 	UINT32 ConnectedTime;
-	MACHTTRANSMIT_SETTING TxRate;
+	HTTRANSMIT_SETTING TxRate;
 	UINT32 LastRxRate;
 } RT_802_11_MAC_ENTRY, *PRT_802_11_MAC_ENTRY;
 
@@ -1114,19 +1086,6 @@ typedef struct _RT_802_11_HARDWARE_REGISTER {
 	ULONG Offset;		/* Q/S register offset addr */
 	ULONG Data;		/* R/W data buffer */
 } RT_802_11_HARDWARE_REGISTER, *PRT_802_11_HARDWARE_REGISTER;
-
-#if 0
-typedef struct _RT_802_11_AP_CONFIG {
-	ULONG EnableTxBurst;	/* 0-disable, 1-enable */
-	ULONG EnableTurboRate;	/* 0-disable, 1-enable 72/100mbps turbo rate */
-	ULONG IsolateInterStaTraffic;	/* 0-disable, 1-enable isolation */
-	ULONG HideSsid;		/* 0-disable, 1-enable hiding */
-	ULONG UseBGProtection;	/* 0-AUTO, 1-always ON, 2-always OFF */
-	ULONG UseShortSlotTime;	/* 0-no use, 1-use 9-us short slot time */
-	ULONG Rsv1;		/* must be 0 */
-	ULONG SystemErrorBitmap;	/* ignore upon SET, return system error upon QUERY */
-} RT_802_11_AP_CONFIG, *PRT_802_11_AP_CONFIG;
-#endif
 
 /* structure to query/set STA_CONFIG */
 typedef struct _RT_802_11_STA_CONFIG {

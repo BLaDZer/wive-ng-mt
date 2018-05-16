@@ -143,10 +143,6 @@ ifeq ($(CONFIG_MT7610_AP_NETIF_BLOCK),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/netif_block.o
 endif
 
-ifeq ($(CONFIG_MT7610_AP_DLS),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_dls.o
-endif
-
 ifeq ($(CONFIG_MT7610_AP_IDS),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_ids.o
 endif
@@ -167,12 +163,6 @@ ifeq ($(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm_tlv.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm_sanity.o
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/rrm.o
-endif
-
-ifeq ($(CONFIG_MT7610_AP_WAPI),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_sms4.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_crypt.o
 endif
 
 ifeq ($(CONFIG_MT7610_AP_DFS),y)
@@ -295,20 +285,12 @@ EXTRA_CFLAGS += -DRALINK_QA
 endif
 endif
 
-ifeq ($(CONFIG_MT7610_AP_DLS),y)
-EXTRA_CFLAGS += -DQOS_DLS_SUPPORT
-endif
-
 ifeq ($(CONFIG_MT7610_AP_IDS),y)
 EXTRA_CFLAGS += -DIDS_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT7610_AP_DFS),y)
 EXTRA_CFLAGS += -DDFS_SUPPORT
-endif
-
-ifeq ($(CONFIG_MT7610_AP_WAPI),y)
-EXTRA_CFLAGS += -DWAPI_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT7610_AP_CARRIER),y)

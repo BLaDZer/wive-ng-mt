@@ -72,20 +72,10 @@ config  MT76X3_AP_SMART_CARRIER_SENSE
 	depends on MT76X3_AP
 	default y
 
-config  MT76X3_AP_GREENAP
-	bool "Green AP mode support"
-	depends on MT76X3_AP
-	default n
-
 config  MT76X3_AP_IDS
 	bool "IDS (Intrusion Detection System) support"
 	depends on MT76X3_AP
 	default y
-
-config  MT76X3_AP_DLS
-	bool "802.11e DLS (Direct-Link Setup) support"
-	depends on MT76X3_AP
-	default n
 
 config MT76X3_AP_SINGLE_SKU
 	bool "Single SKU regspec"
@@ -116,11 +106,6 @@ config MT76X3_AP_80211W_PMF
 	bool "802.11w Protected Management Frames (PMF) support"
 	depends on MT76X3_AP
 	default n
-
-#config MT76X3_AP_WAPI
-#	bool "WAPI support"
-#	depends on MT76X3_AP
-#	default n
 
 config MT76X3_AP_WSC
 	bool "WSC (WiFi Simple Config)"
@@ -221,4 +206,5 @@ config MT76X3_AP_QA
 
 config MT76X3_AP_DEBUG
 	bool "Include Debug messages"
+	depends on MT76X3_AP
 	default n

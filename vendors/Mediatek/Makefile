@@ -29,7 +29,7 @@ IMAGE		:= $(IMAGEDIR)/$(PRODUCTID)_$(VERSIONPKG).bin
 RAMDISK_SIZE	:= $(shell echo $(CONFIG_BLK_DEV_RAM_SIZE))
 CUR_DIR		:= $(shell pwd)
 COMP		:= lzma
-ROMFS_DIRS 	:= dev dev/pts sys proc tmp bin home mnt var etc web usr lib xml lib/modules usr/codepages media share
+ROMFS_DIRS 	:= dev dev/pts sys proc tmp bin home mnt var etc web usr lib xml lib/modules usr/codepages media share fw
 
 export ROMFS_DIR IMAGEDIR MKIMAGE_DIR KERNELZ RAMDISK IMAGE RAMDISK_SIZE CUR_DIR COMP ROMFS_DIRS
 #########################################################################################################################

@@ -133,14 +133,6 @@ $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_repeater.o
 endif
 endif
 
-ifeq ($(CONFIG_MT76X3_AP_GREENAP),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/hw_ctrl/greenap.o
-endif
-
-ifeq ($(CONFIG_MT76X3_AP_DLS),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_dls.o
-endif
-
 ifeq ($(CONFIG_MT76X3_AP_IDS),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/ap/ap_ids.o
 endif
@@ -165,12 +157,6 @@ endif
 ifeq ($(CONFIG_MT76X3_AP_WSC_NFC),y)
 $(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/nfc.o
 endif
-endif
-
-ifeq ($(CONFIG_MT76X3_AP_WAPI),y)
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_sms4.o
-$(RT_DRV_NAME)-objs += $(RT_DRV_PATH)/common/wapi_crypt.o
 endif
 
 ifeq ($(CONFIG_MT76X3_AP_80211W_PMF),y)
@@ -314,10 +300,6 @@ EXTRA_CFLAGS += -DCONFIG_QA
 endif
 endif
 
-ifeq ($(CONFIG_MT76X3_AP_DLS),y)
-EXTRA_CFLAGS += -DQOS_DLS_SUPPORT
-endif
-
 ifeq ($(CONFIG_MT76X3_AP_IDS),y)
 EXTRA_CFLAGS += -DIDS_SUPPORT
 endif
@@ -332,10 +314,6 @@ endif
 
 ifeq ($(CONFIG_MT76X3_AP_SMART_CARRIER_SENSE),y)
 EXTRA_CFLAGS += -DSMART_CARRIER_SENSE_SUPPORT
-endif
-
-ifeq ($(CONFIG_MT76X3_AP_GREENAP),y)
-EXTRA_CFLAGS += -DGREENAP_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT76X3_AP_LED),y)
@@ -390,10 +368,6 @@ endif
 
 ifeq ($(CONFIG_MT76X3_AP_80211N_DRAFT3),y)
 EXTRA_CFLAGS += -DDOT11N_DRAFT3
-endif
-
-ifeq ($(CONFIG_MT76X3_AP_WAPI),y)
-EXTRA_CFLAGS += -DWAPI_SUPPORT
 endif
 
 ifeq ($(CONFIG_MT76X3_AP_80211W_PMF),y)

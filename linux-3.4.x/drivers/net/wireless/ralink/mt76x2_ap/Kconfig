@@ -107,22 +107,6 @@ config  MT76X2_AP_EXT_CHANNEL_LIST
 #	depends on MT76X2_AP
 #	default n
 
-config  MT76X2_AP_GREENAP
-	bool "Green AP mode support"
-	depends on MT76X2_AP
-	depends on RT_FIRST_IF_MT7620 || RT_FIRST_IF_MT7602E
-	default n
-
-config  MT76X2_AP_DLS
-	bool "802.11e DLS (Direct-Link Setup) support"
-	depends on MT76X2_AP
-	default n
-
-config  MT76X2_AP_WAPI
-	bool "WAPI Support"
-	depends on MT76X2_AP
-	default n
-
 config  MT76X2_AP_IDS
 	bool "IDS (Intrusion Detection System) support"
 	depends on MT76X2_AP

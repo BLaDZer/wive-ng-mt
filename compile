@@ -2,7 +2,7 @@
 
 DOS2UNIX=NO
 FULLREBUILD=NO
-VERSIONPKG="7.4.0.RU.`date +%d%m%Y`"
+VERSIONPKG="7.4.1.RU.`date +%d%m%Y`"
 
 #---Set_env_ROOTDIR_to_current_dir---#
 ROOTDIR=`pwd`
@@ -17,6 +17,13 @@ export LC_ALL=POSIX
 #----------MODE------------#
 MODE="$1"
 case "$MODE" in
+	####################################
+	# dual band 7621A + 2x7615N
+	####################################
+	"MT7621-MT7615-4T4R-3T3R-16M-USB")
+	    # metal sample
+	    DEVNAME="SNR-CPE-ME4-5GHZ-MT"
+	    ;;
 	####################################
 	# dual band 7621A + 7603NE + 7612NE
 	####################################
@@ -150,7 +157,12 @@ fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ]; then
+if [ "$MODE" = "MT7621-MT7615-4T4R-3T3R-16M-USB" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB			$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
