@@ -755,7 +755,7 @@ int wlanDisconnectAllStations(const char *if_name)
 	return 0;
 }
 
-#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE) || defined(CONFIG_MT76X3_STA) || defined(CONFIG_MT76X3_STA_MODULE)
+#if defined(CONFIG_MT76X2_STA) || defined(CONFIG_MT76X2_STA_MODULE)
 /* getWlanStationLinkQuality - Get percentage of station link quality
  *
  * arg: radio_module_ind - radio module index (1..N)
