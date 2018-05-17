@@ -124,7 +124,7 @@ const country_code_t country_codes[] =
 
 static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
+#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI) || defined(CONFIG_MT7615_AP_APCLI)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -133,7 +133,7 @@ static int getWlanApcliBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanWdsBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS) || defined(CONFIG_MT7615_AP_WDS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -502,7 +502,7 @@ static int getWlanStaInfo(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWlanM2UBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -536,7 +536,7 @@ parameter_fetch_t fast_roaming_flags[] =
 	{ NULL, NULL, 0, NULL } // Terminator
 };
 
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 // IDS parametrs
 parameter_fetch_t ids_flags[] =
 {
@@ -558,7 +558,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_bandwidthinic, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	char_t *ids_enable;
 #endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -569,14 +569,14 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
 #endif
-#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	char_t	*rrm;
 	char 	ieee80211k[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	char_t	*ft;
 	char 	ieee80211r[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
@@ -604,9 +604,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
 	char_t *mcast_mode, *mcast_mcs;
 #endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	char_t *m2u_enable;
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	char_t *video_turbine;
 #endif
 #endif
@@ -649,7 +649,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
 	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
 	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
 	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
 #endif
@@ -671,15 +671,15 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #endif
 	new_bssid_num = atoi(bssid_num);
 
-#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
 	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
 	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	rrm = websGetVar(wp, T("RRMEnable"), T("1"));
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT)|| defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	ft = websGetVar(wp, T("FtSupport"), T("1"));
 #endif
 
@@ -710,9 +710,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
 #endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
 #endif
@@ -797,11 +797,11 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 			sprintf(ieee80211h, "%s%s", ieee80211h, token);
 #endif
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 			sprintf(ieee80211k, "%s%s", ieee80211k, (CHK_IF_DIGIT(rrm, 1)) ? "1" : "0");
 			sprintf(ieee80211k, "%s%s", ieee80211k, token);
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 			sprintf(ieee80211r, "%s%s", ieee80211r, (CHK_IF_DIGIT(ft, 1)) ? "1" : "0");
 			sprintf(ieee80211r, "%s%s", ieee80211r, token);
 #endif
@@ -822,10 +822,10 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "NoForwarding", noforwarding);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingBTNBSSID", mbssidapisolated);
 	nvram_bufset(RT2860_NVRAM, "NoForwardingMBCast", noforwardingmbcast);
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	nvram_bufset(RT2860_NVRAM, "RRMEnable", ieee80211k);
 #endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	nvram_bufset(RT2860_NVRAM, "FtSupport", ieee80211r);
 #endif
 
@@ -917,7 +917,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 		nvram_bufset(RT2860_NVRAM, "HT_RDG", n_rdg);
 	}
 
-#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	nvram_bufset(RT2860_NVRAM, "ITxBfEn", ITxBfEn);
 	nvram_bufset(RT2860_NVRAM, "ETxBfeeEn", ETxBfeeEn);
 	nvram_bufset(RT2860_NVRAM, "ETxBfEnCond", ETxBfEnCond);
@@ -961,7 +961,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(fastroaming, 1))
 		setupParameters(wp, fast_roaming_flags, 0);
 
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	nvram_bufset(RT2860_NVRAM, "IdsEnable", ids_enable);
 	if (CHK_IF_DIGIT(ids_enable, 1))
 		setupParameters(wp, ids_flags, 0);
@@ -1052,9 +1052,9 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	nvram_bufset(RT2860_NVRAM, "McastPhyMode", mcast_mode);
 	nvram_bufset(RT2860_NVRAM, "McastMcs", mcast_mcs);
 #endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	nvram_bufset(RT2860_NVRAM, "M2UEnabled", m2u_enable);
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	nvram_bufset(RT2860_NVRAM, "VideoTurbine", video_turbine);
 #endif
 #endif
@@ -1172,7 +1172,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 	websWrite(wp, T("McastPhyMode: %s<br>\n"), mcast_mode);
 	websWrite(wp, T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP)
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	websWrite(wp, T("m2u_enable: %s<br>\n"), m2u_enable);
 #endif
 	websWrite(wp, T("ED_MODE: %s<br>\n"), ed_mode);
@@ -1189,7 +1189,7 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE)
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
@@ -1199,7 +1199,7 @@ static int getVideoTurbineBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS)
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
@@ -1207,7 +1207,7 @@ static int getIdsEnableBuilt(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
-#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS) || defined(CONFIG_MT7615_AP_WDS)
 parameter_fetch_t wds_args[] =
 {
 	{ T("wds_interface"),   "WdsIfName",     0, T("")  },
@@ -1253,7 +1253,7 @@ static void wirelessWds(webs_t wp, char_t *path, char_t *query)
 }
 #endif
 
-#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
+#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI) || defined(CONFIG_MT7615_AP_APCLI)
 parameter_fetch_t apcli_args[] =
 {
 	{ T("apcli_interface"),         "ApCliIfName",          0,       T("")         },
@@ -1793,7 +1793,7 @@ static int getLDPCBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getTXBFBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_MT76X2_AP_TXBF_SUPPORT
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	websWrite(wp, T("1"));
 #else
 	websWrite(wp, T("0"));
@@ -1873,7 +1873,7 @@ static int getDFSBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1881,7 +1881,7 @@ static int getRRMBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getFTBuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT)
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1889,7 +1889,7 @@ static int getFTBuilt(int eid, webs_t wp, int argc, char_t **argv) {
 }
 
 static int getEDCCABuilt(int eid, webs_t wp, int argc, char_t **argv) {
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR) || defined(CONFIG_MT7615_AP_ED_MONITOR)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1988,10 +1988,10 @@ void formDefineWireless(void)
 	websAspDefine(T("getSSIDsList"), getSSIDsList);
 	websFormDefine(T("wirelessBasic"), wirelessBasic);
 	websFormDefine(T("disconnectSta"), disconnectSta);
-#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS) || defined(CONFIG_MT7615_AP_WDS)
 	websFormDefine(T("wirelessWds"), wirelessWds);
 #endif
-#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI)
+#if defined(CONFIG_MT7610_AP_APCLI) || defined(CONFIG_MT76X2_AP_APCLI) || defined(CONFIG_MT76X3_AP_APCLI) || defined(CONFIG_MT7615_AP_APCLI)
 	websFormDefine(T("wirelessApcli"), wirelessApcli);
 	websAspDefine(T("getAPCliStatus"), getAPCliStatus);
 #endif

@@ -166,7 +166,7 @@ static int getVPNBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS)
+#if defined(CONFIG_MT7610_AP_WDS) || defined(CONFIG_MT76X2_AP_WDS) || defined(CONFIG_MT76X3_AP_WDS) || defined(CONFIG_MT7615_AP_WDS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -175,7 +175,7 @@ static int getWDSBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getMBSSIDBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined(CONFIG_MT7610_AP_MBSS) || defined(CONFIG_MT76X2_AP_MBSS)
+#if defined(CONFIG_MT7610_AP_MBSS) || defined(CONFIG_MT76X2_AP_MBSS) || defined(CONFIG_MT76X3_AP_MBSS) || defined(CONFIG_MT7615_AP_MBSS)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -211,7 +211,7 @@ static int getIPv66rdBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getIP6to4Built(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
+#if defined (CONFIG_IPV6_SIT) || defined (CONFIG_IPV6_SIT_MODULE)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
@@ -1100,7 +1100,7 @@ static void setIPv6(webs_t wp, char_t *path, char_t *query)
 			nvram_bufset(RT2860_NVRAM, "IPv6DNSPrimary", srv_dns_primary);
 			nvram_bufset(RT2860_NVRAM, "IPv6DNSSecondary", srv_dns_secondary);
 			nvram_bufset(RT2860_NVRAM, "IPv6ManualMTU", ipv6_manual_mtu);
-#if defined (CONFIG_IPV6_SIT) ||  defined (CONFIG_IPV6_SIT_MODULE)
+#if defined (CONFIG_IPV6_SIT) || defined (CONFIG_IPV6_SIT_MODULE)
 #if defined (CONFIG_IPV6_SIT_6RD)
 		} else if (!strcmp(opmode, "2")) {
 			ipaddr = websGetVar(wp, T("ipv6_6rd_prefix"), T(""));

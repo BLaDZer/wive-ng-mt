@@ -847,7 +847,7 @@ static int websParseFirst(webs_t wp, char_t *text)
  *	Parse a full request
  */
 
-#define isgoodchar(s) (isalnum((s)) || ((s) == '/') || ((s) == '_') || ((s) == '.')  || ((s) == '-') )
+#define isgoodchar(s) (isalnum((s)) || ((s) == '/') || ((s) == '_') || ((s) == '.') || ((s) == '-') )
 
 static void websParseRequest(webs_t wp)
 {

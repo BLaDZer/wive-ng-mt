@@ -1140,10 +1140,10 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(McastPhyMode);
 	FPRINT_DAT(McastMcs);
 #endif
-#if defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER) || defined(CONFIG_MT76X3_AP_CARRIER)
+#if defined(CONFIG_MT7610_AP_CARRIER) || defined(CONFIG_MT76X2_AP_CARRIER) || defined(CONFIG_MT76X3_AP_CARRIER) || defined(CONFIG_MT7615_AP_CARRIER)
 	FPRINT_DAT(CarrierDetect);
 #endif
-#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT)
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	FPRINT_DAT(ITxBfEn);
 	FPRINT_DAT(ITxBfTimeout);
 	FPRINT_DAT(ETxBfEnCond);
@@ -1151,11 +1151,12 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ETxBfTimeout);
 	FPRINT_DAT(ETxBfNoncompress);
 	FPRINT_DAT(ETxBfIncapable);
+	FPRINT_DAT(MUTxRxEnable);
 #endif
 #if defined(CONFIG_RT_SECOND_IF_RANGE_5GHZ) /* IEEE80211H variable enable spectrum managment and/or DFS (depended by DFS builtin) need for all dualband builds */
 	FPRINT_DAT(IEEE80211H);
 #endif
-#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS)
+#if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS) || defined(CONFIG_MT7615_AP_DFS)
 	FPRINT_DAT(CSPeriod);
 	FPRINT_DAT(DfsIndoor);
 	FPRINT_DAT(SymRoundFromCfg);
@@ -1180,14 +1181,14 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(JAPW53ParamCh2);
 	FPRINT_DAT(JAPW53ParamCh3);
 #endif
-#if defined(CONFIG_MT7610_AP_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
+#if defined(CONFIG_MT7610_AP_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR) || defined(CONFIG_MT7615_AP_ED_MONITOR)
 	FPRINT_DAT(EDCCA_ED_TH);
 	FPRINT_DAT(ED_MODE);
 	FPRINT_DAT(EDCCA_FALSE_CCA_TH);
 	FPRINT_DAT(ED_LEARN_TH);
 	FPRINT_DAT(EDCCA_BLOCK_CHECK_TH);
 #endif
-#if defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3) || defined(CONFIG_MT76X3_AP_80211N_DRAFT3)
+#if defined(CONFIG_MT7610_AP_80211N_DRAFT3) || defined(CONFIG_MT76X2_AP_80211N_DRAFT3) || defined(CONFIG_MT76X3_AP_80211N_DRAFT3) || defined(CONFIG_MT7615_AP_80211N_DRAFT3)
 	FPRINT_DAT(HT_BSSCoexistence);
 	FPRINT_DAT(HT_BSSCoexApCntThr);
 #endif
