@@ -150,8 +150,13 @@ case "$1" in
 
 	# if dgw iface changed need fullrenew procedure
 	DGW_IF_CHANGED=`ip -o -4 route show default | grep -v "dev $interface " | sed 's,.*dev \([^ ]*\) .*,\1,g'`
-	if [ "$DGW_IF_CHANGED" != "" ] && [ "$vpnEnabled" != "on" ] && [ "$vpnDGW" != "1" ]; then
-	    FULL_RENEW=1
+	if [ "$DGW_IF_CHANGED" != "" ]; then
+	    # full renew only if vpn not enabled or if dgw not in VPN
+	    if [ "$vpnEnabled" != "on" ]; then
+		FULL_RENEW=1
+	    elif [ "$vpnEnabled" = "on" ] && [ "$vpnDGW" != "1" ]; then
+		FULL_RENEW=1
+	    fi
 	fi
 
 	# set ip/netmask/mtu
