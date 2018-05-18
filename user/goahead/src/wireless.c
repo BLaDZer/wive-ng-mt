@@ -933,8 +933,8 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 #else
 		nvram_bufset(RT2860_NVRAM, "VHT_STBC", ac_stbc);
 #endif
-// LDPC support ONLY for 7602/7612
-#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)
+// LDPC support ONLY for 7602/7612/7615
+#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612) || (CONFIG_RT_FIRST_CARD == 7615) || (CONFIG_RT_SECOND_CARD == 7615)
 		nvram_bufset(RT2860_NVRAM, "VHT_LDPC", ac_ldpc);
 		nvram_bufset(RT2860_NVRAM, "HT_LDPC", ac_ldpc);
 #else
@@ -1784,7 +1784,7 @@ static int is5gh_1t1r(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getLDPCBuilt(int eid, webs_t wp, int argc, char_t **argv)
 {
-#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612)
+#if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612) || (CONFIG_RT_FIRST_CARD == 7615) || (CONFIG_RT_SECOND_CARD == 7615)
 	return websWrite(wp, T("1"));
 #else
 	return websWrite(wp, T("0"));
