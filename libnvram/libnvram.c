@@ -1304,11 +1304,19 @@ int gen_wifi_config(int mode, int genmode)
 #if  defined(CONFIG_MT76X3_AP_SMART_CARRIER_SENSE) || defined(CONFIG_MT7615_AP_SMART_CARRIER_SENSE)
 	FPRINT_DAT(SCSEnable);
 #endif
+
+#if  defined(CONFIG_MT76X3_AP_80211W_PMF) || defined(CONFIG_MT7615_AP_80211W_PMF)
+	FPRINT_DAT(PMFMFPC);
+	FPRINT_DAT(PMFMFPR);
+	FPRINT_DAT(PMFSHA256);
+#endif
 	// 7615
 #if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
 	FPRINT_DAT(E2pAccessMode);
+	FPRINT_DAT(LoadCodeMethod);
 	FPRINT_DAT(PERCENTAGEenable);
 	FPRINT_DAT(BFBACKOFFenable);
+	FPRINT_DAT(G_BAND_256QAM);
 #endif
 	fclose(fp);
 	nvram_close(mode);
