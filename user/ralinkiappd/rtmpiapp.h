@@ -119,7 +119,7 @@
 #define FT_KDP_S1KHID_MAX_SIZE			6
 #define FT_KDP_PMKR1_MAX_SIZE			32 /* 256-bit key */
 
-#define FT_R1KH_ENTRY_TABLE_SIZE		256
+#define FT_R1KH_ENTRY_TABLE_SIZE		512
 #define FT_R1KH_ENTRY_HASH_TABLE_SIZE	FT_R1KH_ENTRY_TABLE_SIZE
 
 /* local table of clients, must more of key table for reuse */
