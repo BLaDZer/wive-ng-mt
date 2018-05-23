@@ -1086,8 +1086,8 @@
 				else
 					form.keepalive.value = keepalive;
 
-				if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 300)
-					form.idletimeout.value = 200;
+				if (isNaN(idletimeout) || idletimeout < 60 || idletimeout > 600)
+					form.idletimeout.value = 480;
 				else
 					form.idletimeout.value = idletimeout;
 
