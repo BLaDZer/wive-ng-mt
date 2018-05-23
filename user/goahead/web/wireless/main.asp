@@ -1462,7 +1462,7 @@
 					return false;
 				}
 
-				if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 300)
+				if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 600)
 				{
 					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
 					alert(_("adv invalid idletimeout"));

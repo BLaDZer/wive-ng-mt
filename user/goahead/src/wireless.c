@@ -1016,16 +1016,16 @@ static void wirelessBasic(webs_t wp, char_t *path, char_t *query)
 
 	if (NULL != idletimeout) {
 		tmp = atoi(idletimeout);
-		if ((tmp < 60) || (tmp > 300))
-			tmp = 60;
+		if ((tmp < 60) || (tmp > 600))
+			tmp = 480;
 		sprintf(idletimeout, "%d", tmp);
 		nvram_bufset(RT2860_NVRAM, "IdleTimeout", idletimeout);
 	}
 
 	if (NULL != life_check) {
 		tmp = atoi(life_check);
-		if ((tmp < 128) || (tmp > 2048))
-			tmp = 512;
+		if ((tmp < 128) || (tmp > 4096))
+			tmp = 1024;
 		sprintf(life_check, "%d", tmp);
 		nvram_bufset(RT2860_NVRAM, "EntryLifeCheck", life_check);
 	}
