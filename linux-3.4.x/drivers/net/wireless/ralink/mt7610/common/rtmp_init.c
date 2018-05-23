@@ -3336,6 +3336,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 	
 	/* part IV. others*/
+
+	pAd->CommonCfg.PwrConstraint = 0;
 	
 	/* dynamic BBP R66:sensibity tuning to overcome background noise*/
 	pAd->BbpTuning.bEnable                = TRUE;  

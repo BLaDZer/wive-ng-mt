@@ -4092,6 +4092,8 @@
 4) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
 5) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
 6) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-7) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+7) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+8) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+9) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>

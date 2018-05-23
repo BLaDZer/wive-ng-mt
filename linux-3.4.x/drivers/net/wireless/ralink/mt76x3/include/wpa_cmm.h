@@ -18,7 +18,7 @@
 #define PEER_MSG1_RETRY_EXEC_INTV	1000	/* 1 sec */
 #define PEER_MSG3_RETRY_EXEC_INTV	1000	/* 1 sec */
 #define GROUP_KEY_UPDATE_EXEC_INTV	1000	/* 1 sec */
-#define PEER_GROUP_KEY_UPDATE_INIV	1000	/* 1 sec, for peridic group rekey timer */
+#define PEER_GROUP_KEY_UPDATE_INIV	2000	/* 2 sec, for periodic group rekey timer */
 
 #define	EAPOL_MSG_INVALID	0
 #define	EAPOL_PAIR_MSG_1	1

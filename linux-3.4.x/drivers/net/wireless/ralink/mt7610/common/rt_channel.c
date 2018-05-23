@@ -1497,7 +1497,6 @@ CH_DESP Country_NA_ChDesp[] =
 /*World Wide*/		
 CH_DESP Country_WO_ChDesp[] =
 {
-	{ 1,   13, 20, BOTH, FALSE},	/* 2.4 G, ch 1~13*/
 	{ 1,   13, 20, BOTH, FALSE},	/*2402~2482MHz, Ch 1~13,   Max BW: 40 */
 	{ 149,  5, 30, BOTH, FALSE},	/*5735~5835MHz, Ch 149~165, Max BW: 20 */		
 	{ 0},               	    	/* end*/
