@@ -107,6 +107,8 @@
 						[ NVRAM_dhcpv6Enabled,	'dhcpv6',	'dhcp6s',	null,	'wide-dhcpv6.sourceforge.net'	 ]
 					]
 				);
+
+				disableControlsByAuth();
 			}
 
 			function checkValues(form) {
@@ -259,6 +261,8 @@
 				displayElement( 'v66rdTable', BUILD_IPV6_6RD == '1' && opmode == '2');
 				displayElement( '6to4Table', opmode == '3');
 				displayElement( 'daemons', opmode != '0' && (BUILD_RADVD == '1' || BUILD_DHCPV6 == '1'));
+
+				disableControlsByAuth();
 			}
 
 			function ipv6MtuChange() {
@@ -289,28 +293,28 @@
 							</tr>
 							<tr id="v6OpMode_tr">
 								<td id="v6OpMode" class="head" width="45%">IPv6 Operation Mode</td>
-								<td width="55%"><select id="ipv6_opmode" name="ipv6_opmode" size="1" onChange="SwitchOpMode(this.form);">
+								<td width="55%"><select id="ipv6_opmode" name="ipv6_opmode" class="auth-disable-user" size="1" onChange="SwitchOpMode(this.form);">
 									<option value="0" id="v6Disable">Disable</option>
 									<option value="1" id="v6Static">Native dynamic/static IP Connection</option>
 								</select></td>
 							</tr>
 							<tr id="v6invpn_tr">
 								<td id="Ipv6InVPN" class="head" width="45%">IPv6 over VPN</td>
-								<td width="55%"><input name="ipv6_Ipv6InVPN" type="checkbox"></td>
+								<td width="55%"><input name="ipv6_Ipv6InVPN" type="checkbox auth-disable-user"></td>
 							</tr>
 							<tr id="dhcp6cRowDisplay">
 								<td id="IPv6Dhcpc" class="head" width="45%">IPv6 autoconfigure by dhcp/ra</td>
-								<td width="55%"><input name="dhcp6c_enable" type="checkbox" onClick="SwitchOpMode(this.form);"></td>
+								<td width="55%"><input name="dhcp6c_enable" type="checkbox" onClick="SwitchOpMode(this.form);" class="auth-disable-user"></td>
 							</tr>
 							<tr id="IPv6AllowForwardRowDisplay">
 								<td id="IPv6AllowForward" class="head" width="45%">Allow access to LAN from internet</td>
-								<td width="55%"><input name="ipv6_allow_forward" type="checkbox"></td>
+								<td width="55%"><input name="ipv6_allow_forward" type="checkbox" class="auth-disable-user"></td>
 							</tr>
 							<tr id="v6StaticMTU_tr">
 								<td id="v6StaticMTU" class="head" width="45%">MTU</td>
 								<td width="55%">
-									<input id="ipv6_manual_mtu" name="ipv6_manual_mtu" type="text" style="width: 130px; display: none;">
-									<select style="width: 130px" id="ipv6_manual_mtu_type" name="ipv6_manual_mtu_type" size="1" onChange="ipv6MtuChange();"></select>
+									<input id="ipv6_manual_mtu" name="ipv6_manual_mtu" type="text" style="width: 130px; display: none;" class="auth-disable-user" >
+									<select style="width: 130px" id="ipv6_manual_mtu_type" class="auth-disable-user" name="ipv6_manual_mtu_type" size="1" onChange="ipv6MtuChange();"></select>
 								</td>
 							</tr>
 						</table>
@@ -321,23 +325,23 @@
 							</tr>
 							<tr>
 								<td id="v6StaticIPAddrLan" class="head" width="45%">LAN IPv6 Address / Subnet Prefix Length</td>
-								<td width="55%"><input name="ipv6_lan_ipaddr" maxlength=39 size=39> / <input name="ipv6_lan_prefix_len" maxlength=3 size=2></td>
+								<td width="55%"><input name="ipv6_lan_ipaddr" maxlength=39 size=39> / <input name="ipv6_lan_prefix_len" maxlength=3 size=2 class="auth-disable-user" ></td>
 							</tr>
 							<tr>
 								<td id="v6StaticIPAddrWan" class="head" width="45%">WAN IPv6 Address / Subnet Prefix Length</td>
-								<td width="55%"><input name="ipv6_wan_ipaddr" maxlength=39 size=39> / <input name="ipv6_wan_prefix_len" maxlength=3 size=2></td>
+								<td width="55%"><input name="ipv6_wan_ipaddr" maxlength=39 size=39> / <input name="ipv6_wan_prefix_len" maxlength=3 size=2 class="auth-disable-user" ></td>
 							</tr>
 							<tr>
 								<td id="v6StaticGW" class="head" width="45%">Default Gateway</td>
-								<td width="55%"><input name="ipv6_static_gw" maxlength=39 size=39></td>
+								<td width="55%"><input name="ipv6_static_gw" maxlength=39 size=39 class="auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td id="v6StaticDNSprimary" class="head" width="45%">Primary DNS</td>
-								<td width="55%"><input name="ipv6_static_dns_primary" maxlength=39 size=39></td>
+								<td width="55%"><input name="ipv6_static_dns_primary" maxlength=39 size=39 class="auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td id="v6StaticDNSsecondary" class="head" width="45%">Secondary DNS</td>
-								<td width="55%"><input name="ipv6_static_dns_secondary" maxlength=39 size=39></td>
+								<td width="55%"><input name="ipv6_static_dns_secondary" maxlength=39 size=39 class="auth-disable-user"></td>
 							</tr>
 						</table>
 						<!-- 6RD -->
@@ -347,11 +351,11 @@
 							</tr>
 							<tr>
 								<td id="v66rdPrefix" class="head" width="45%">ISP 6rd Prefix / Prefix Length</td>
-								<td width="55%"><input name="ipv6_6rd_prefix" maxlength=39 size=39> / <input name="ipv6_6rd_prefix_len" maxlength=3 size=2></td>
+								<td width="55%"><input name="ipv6_6rd_prefix" maxlength=39 size=39 class="auth-disable-user"> / <input name="ipv6_6rd_prefix_len" maxlength=3 size=2 class="auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td id="v66rdBorderIPAddr" class="head" width="45%">ISP Border Relay IPv4 Address</td>
-								<td width="55%"><input name="ipv6_6rd_border_ipaddr" maxlength=15 size=15></td>
+								<td width="55%"><input name="ipv6_6rd_border_ipaddr" maxlength=15 size=15 class="auth-disable-user"></td>
 							</tr>
 						</table>
 						<!-- 6to4 -->
@@ -361,7 +365,7 @@
 							</tr>
 							<tr>
 								<td id="v66to4SrvIpaddr" class="head" width="45%"> IPv4 to IPv6 server address </td>
-								<td width="55%"><input name="IPv6SrvAddr" maxlength=15 size=15></td>
+								<td width="55%"><input name="IPv6SrvAddr" maxlength=15 size=15 class="auth-disable-user"></td>
 							</tr>
 						</table>
 						<!-- Settings daemons for lan -->
@@ -383,7 +387,7 @@
 								<tr id="radvd">
 									<td class="head" id="v6Radvd" width="45%">Router Advertisement</td>
 									<td>
-										<select name="radvdEnbl" style="width: 130px">
+										<select name="radvdEnbl" style="width: 130px" class="auth-disable-user">
 											<option value="0" id="v6RadvdD">Disable</option>
 											<option value="1" id="v6RadvdE">Enable</option>
 										</select>
@@ -394,7 +398,7 @@
 								<tr id="dhcpv6">
 									<td class="head" id="v6Dhcpv6">Dynamic IPv6 configuration</td>
 									<td>
-										<select name="dhcpv6Enbl" style="width: 130px">
+										<select name="dhcpv6Enbl" style="width: 130px" class="auth-disable-user">
 											<option value="0" id="v6Dhcpv6D">Disable</option>
 											<option value="1" id="v6Dhcpv6E">Enable</option>
 										</select>
@@ -404,7 +408,8 @@
 								</tr>
 							</tbody>
 						</table>
-						<table class="buttons">
+
+						<table class="buttons auth-hide-user">
 							<tr align="center">
 								<td>
 									<input type="submit" class="normal" value="Apply" id="v6Apply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="v6Cancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="v6Reset" onClick="resetValues(this.form, 30);">

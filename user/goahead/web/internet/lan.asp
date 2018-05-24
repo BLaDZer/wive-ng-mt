@@ -68,6 +68,7 @@
 				dnsSwitchClick(form);
 				showWarning();
 				initTranslation();
+				disableControlsByAuth();
 			}
 
 			function checkValues(form) {
@@ -218,24 +219,24 @@
 						</tr>
 						<tr>
 							<td class="head" id="lHostname" style="width: 40%">Hostname</td>
-							<td style="width: 60%"><input name="hostname" class="mid"></td>
+							<td style="width: 60%"><input name="hostname" class="mid auth-disable-user"></td>
 						</tr>
 						<tr>
 							<td class="head" id="lIp" style="width: 40%">IP Address</td>
-							<td style="width: 60%"><input name="lanIp" class="mid" maxlength="15"></td>
+							<td style="width: 60%"><input name="lanIp" class="mid auth-disable-user" maxlength="15"></td>
 						</tr>
 						<tr>
 							<td class="head" id="lNetmask" style="width: 40%">Subnet Mask</td>
-							<td style="width: 60%"><input name="lanNetmask" class="mid" maxlength="15"></td>
+							<td style="width: 60%"><input name="lanNetmask" class="mid auth-disable-user" maxlength="15"></td>
 						</tr>
 						<tr id="brGateway">
 							<td class="head" id="lGateway" style="width: 40%">Default Gateway</td>
-							<td style="width: 60%"><input name="lanGateway" class="mid" maxlength="15"></td>
+							<td style="width: 60%"><input name="lanGateway" class="mid auth-disable-user" maxlength="15"></td>
 						</tr>
 						<tr id="staticDNSprofile">
 							<td class="head" id="wStaticDnsProfile">DNS Profile</td>
 							<td><div style="float: left">
-								<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+								<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 									<option id="dnsProfileManual" value="manual">Manual</option>
 									<option id="dnsProfileGoogle" value="google">Google DNS</option>
 									<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
@@ -250,7 +251,7 @@
 						<tr id="staticDNSyandexProfile">
 							<td class="head" id="wStaticDnsYandexProfile">Yandex Profile</td>
 							<td>
-								<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+								<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 									<option id="dnsProfileYandexBasic" value="basic">Basic</option>
 									<option id="dnsProfileYandexSafe" value="safe">Safe</option>
 									<option id="dnsProfileYandexFamily" value="family">Family</option>
@@ -260,7 +261,7 @@
 						<tr id="staticDNSadguardProfile">
 							<td class="head" id="wStaticDnsAdguardProfile">AdGuard Profile</td>
 							<td>
-								<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+								<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 									<option id="dnsProfileAdguardDefault" value="default">Default</option>
 									<option id="dnsProfileAdguardFamily" value="family">Family</option>
 								</select>
@@ -268,14 +269,15 @@
 						</tr>
 						<tr id="brPriDns">
 							<td class="head" id="lPriDns" style="width: 40%">Primary DNS Server</td>
-							<td style="width: 60%"><input name="lanPriDns" class="mid" maxlength="15"></td>
+							<td style="width: 60%"><input name="lanPriDns" class="mid auth-disable-user" maxlength="15"></td>
 						</tr>
 						<tr id="brSecDns">
 							<td class="head" id="lSecDns" style="width: 40%">Secondary DNS Server</td>
-							<td style="width: 60%"><input name="lanSecDns" class="mid" maxlength="15"></td>
+							<td style="width: 60%"><input name="lanSecDns" class="mid auth-disable-user" maxlength="15"></td>
 						</tr>
 					</table>
-					<table class="buttons">
+
+					<table class="buttons auth-hide-user">
 						<tr>
 							<td><input type="submit" class="normal" value="Apply"  id="lApply"  onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="lCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="lReset"  onClick="resetValues(this.form, 30);">
 								<input type="hidden" name="reset" value="0">

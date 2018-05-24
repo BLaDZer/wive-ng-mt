@@ -91,6 +91,7 @@
 				wanMtuChange(form);
 				showWarning();
 				initTranslation();
+				disableControlsByAuth();
 			}
 
 			function CheckValues(form) {
@@ -286,7 +287,7 @@
 							</tr>
 							<tr>
 								<td class="head" id="wConnectionType">Connection type</td>
-								<td><select name="connectionType" class="mid" onChange="connectionTypeSwitch(this.form);">
+								<td><select name="connectionType" class="mid auth-disable-user" onChange="connectionTypeSwitch(this.form);" >
 									<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
 									<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>
 									<option id="wConnTypeZero"   value="ZERO">Zeroconf</option>
@@ -304,15 +305,15 @@
 							</tr>
 							<tr>
 								<td class="head" id="wStaticIp">IP Address</td>
-								<td><input name="staticIp" class="mid"></td>
+								<td><input name="staticIp" class="mid auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td class="head" id="wStaticNetmask">Subnet Mask</td>
-								<td><input name="staticNetmask" class="mid"></td>
+								<td><input name="staticNetmask" class="mid auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td class="head" id="wStaticGateway">Default Gateway</td>
-								<td><input name="staticGateway" class="mid"></td>
+								<td><input name="staticGateway" class="mid auth-disable-user"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -323,15 +324,16 @@
 							<tr>
 								<td class="title" colspan="2" id="wAdditionalOptions">Additional Options</td>
 							</tr>
-							<tr id="dhcpReqIPRow">
+
+							<tr id="dhcpReqIPRow" class="auth-hide-user">
 								<td class="head" id="wReqFromDHCP">Request IP from DHCP (optional)</td>
 								<td><input name="dhcpReqIP" class="mid"></td>
 							</tr>
-							<tr id="dhcpVendorRow">
+							<tr id="dhcpVendorRow" class="auth-hide-user">
 								<td class="head" id="wDHCPVendorClass">Vendor class identifier (optional)</td>
 								<td><input name="dhcpVendorClass" class="mid"></td>
 							</tr>
-							<tr>
+							<tr class="auth-hide-user">
 								<td class="head" id="wMTU">WAN MTU</td>
 								<td><input name="wan_mtu" type="text" class="half" style="display:none;">
 									<select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="mid">
@@ -348,14 +350,15 @@
 									</select>
 								</td>
 							</tr>
+
 							<tr id="staticDNSAssignRow">
 								<td class="head" id="wStaticDns">Assign static DNS Server</td>
-								<td><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" ></td>
+								<td><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" class="auth-disable-user"></td>
 							</tr>
 							<tr id="staticDNSprofile">
 								<td class="head" id="wStaticDnsProfile">DNS Profile</td>
 								<td><div style="float: left">
-									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 										<option id="dnsProfileManual" value="manual">Manual</option>
 										<option id="dnsProfileGoogle" value="google">Google DNS</option>
 										<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
@@ -370,7 +373,7 @@
 							<tr id="staticDNSyandexProfile">
 								<td class="head" id="wStaticDnsYandexProfile">Yandex Profile</td>
 								<td>
-									<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 										<option id="dnsProfileYandexBasic" value="basic">Basic</option>
 										<option id="dnsProfileYandexSafe" value="safe">Safe</option>
 										<option id="dnsProfileYandexFamily" value="family">Family</option>
@@ -380,7 +383,7 @@
 							<tr id="staticDNSadguardProfile">
 								<td class="head" id="wStaticDnsAdguardProfile">AdGuard Profile</td>
 								<td>
-									<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid">
+									<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
 										<option id="dnsProfileAdguardDefault" value="default">Default</option>
 										<option id="dnsProfileAdguardFamily" value="family">Family</option>
 									</select>
@@ -388,15 +391,15 @@
 							</tr>
 							<tr id="priDNSrow">
 								<td class="head" id="wStaticPriDns">Primary DNS Server</td>
-								<td><input name="staticPriDns" class="mid"></td>
+								<td><input name="staticPriDns" class="mid auth-disable-user"></td>
 							</tr>
 							<tr id="secDNSrow">
 								<td class="head" id="wStaticSecDns">Secondary DNS Server</td>
-								<td><input name="staticSecDns" class="mid"></td>
+								<td><input name="staticSecDns" class="mid auth-disable-user"></td>
 							</tr>
 							<tr id="natRowDisplay">
 								<td class="head" id="wNatEnabled">Enable NAT</td>
-								<td><input name="natEnabled" type="checkbox"></td>
+								<td><input name="natEnabled" type="checkbox" class="auth-disable-user"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -410,13 +413,13 @@
 							<tr id="MACrow">
 								<td class="head" id="wMacAddr">WAN MAC address</td>
 								<td>
-									<input name="wanMac" id="wanMac" class="mid">
-									<input type="button" value="Restore Factory" id="WanMacRestore" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
+									<input name="wanMac" id="wanMac" class="mid auth-disable-user">
+									<input type="button" value="Restore Factory" class="auth-disable-user" id="WanMacRestore" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					<table class="buttons">
+					<table class="buttons auth-hide-user">
 						<tr>
 							<td>
 								<input type="submit" class="normal" value="Apply" id="wApply" onClick="return CheckValues(this.form);"><input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
@@ -425,6 +428,7 @@
 							</td>
 						</tr>
 					</table>
+
 					<div class="whitespace"></div>
 				</form>
 			</tr>

@@ -208,6 +208,8 @@
 				showPassThroughMenu();
 				showWatchersMenu();
 				showOthersMenu();
+
+				disableControlsByAuth();
 			}
 
 			function CheckValues(form) {
@@ -465,8 +467,9 @@
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="miscServiceCfg" action="/goform/setMiscServices" onSubmit="return CheckValues(this);">
-					<table class="form">
-						<!-- Offload engine -->
+
+					<!-- Offload engine -->
+					<table class="form auth-hide-user">
 						<tr>
 							<td class="title" colspan="5" id="miscOffloadSetup" onClick="showOffloadEngineMenu();">Offload engine</td>
 						</tr>
@@ -524,7 +527,10 @@
 							</select>
 						</td>
 					</tr>
+                                        </table>
+
 					<!-- Software fastpaths -->
+					<table class="form auth-hide-user">
 					<tr id="fastpath_row">
 						<td class="title" colspan="5" id="miscSoftwareTitle" onClick="showSoftwareFastpathMenu();">Software fastpaths</td>
 					</tr>
@@ -564,7 +570,10 @@
 							</select>
 						</td>
 					</tr>
+					</table>
+
 					<!-- Remote management -->
+					<table class="form auth-hide-user">
 					<tr>
 						<td class="title" colspan="5" id="miscRemoteSetup" onClick="showRemoteManagementMenu();">Remote management</td>
 					</tr>
@@ -607,7 +616,10 @@
 							</select>
 						</td>
 					</tr>
+					</table>
+
 					<!-- Services -->
+					<table class="form">
 					<tr id="miscServices_show">
 						<td class="title" onClick="showServicesMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscServicesShow"></span></td>
 						<td class="title" onClick="showServicesMenu();"><span id="servicesMiscValues"></span></td>
@@ -618,7 +630,7 @@
 					<tr id="miscServices_hide">
 						<td class="title" colspan="5" onClick="showServicesMenu();"><img src="/graphics/menu_plus.gif" width="25" height="11"><span id="servicesMiscServicesHide"></span></td>
 					</tr>
-					<tr id="dnsproxy">
+					<tr id="dnsproxy" class="auth-hide-user">
 						<td class="head" id="miscDnsp" style="width: 45%">DNS cached proxy</td>
 						<td>
 							<select name="dnspEnbl" class="normal">
@@ -642,7 +654,7 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
-					<tr id="parprouted">
+					<tr id="parprouted" class="auth-hide-user">
 						<td class="head" id="miscArppt" style="width: 45%">ARP Proxy</td>
 						<td>
 							<select name="arpPT" class="normal">
@@ -654,7 +666,7 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
-					<tr id="crond">
+					<tr id="crond" class="auth-hide-user">
 						<td class="head" id="miscCron" style="width: 45%">Cron daemon</td>
 						<td>
 							<select name="CrondEnable" class="normal">
@@ -666,7 +678,10 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					  </tr>
+					</table>
+
 					<!-- IPTV -->
+					<table class="form">
 					<tr id="miscIPTV_show">
 						<td class="title" onClick="showServicesIPTVMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscIPTVshow"></span></td>
 						<td class="title" onClick="showServicesIPTVMenu();"><span id="servicesMiscIPTVvalue"></span></td>
@@ -750,7 +765,10 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
+					</table>
+
 					<!-- INFO -->
+					<table class="form auth-hide-user">
 					<tr id="miscDINF_show">
 						<td class="title" onClick="showServicesInfoMenu();"><img src="/graphics/menu_minus.gif" width="25" height="11"><span id="servicesMiscDINFshow"></span></td>
 						<td class="title" onClick="showServicesInfoMenu();"><span id="servicesMiscDINFvalue"></span></td>
@@ -828,7 +846,9 @@
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
+					</table>
 					<!-- Pass Through -->
+					<table class="form auth-hide-user">
 					<tr>
 						<td class="title" colspan="5" id="miscPassThrough" onClick="showPassThroughMenu();">Pass Through</td>
 					</tr>
@@ -850,7 +870,9 @@
 							</select>
 						</td>
 					</tr>
+					</table>
 					<!-- Watchers -->
+					<table class="form auth-hide-user">
 					<tr>
 						<td class="title" colspan="5" id="miscWatchers" onClick="showWatchersMenu();">Watchers</td>
 					</tr>
@@ -884,7 +906,10 @@
 							<input name="ping_check_interval" class="normal">
 						</td>
 					</tr>
+					</table>
+
 					<!-- Others -->
+					<table class="form auth-hide-user">
 					<tr>
 						<td class="title" colspan="5" id="miscOthers" onClick="showOthersMenu();">Others</td>
 					</tr>

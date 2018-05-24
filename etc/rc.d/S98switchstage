@@ -21,6 +21,12 @@ start() {
     $LOG "Switch to 2nd boot stage and start webui."
     internet.sh
 
+    if [ -e /bin/nginx ]; then
+        eval `nvram_buf_get 2860 Login`
+	$LOG "Start NGINX."
+	nginx -g "user $Login ;"
+    fi
+
     if [ -e /bin/goahead ]; then
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
@@ -66,6 +72,8 @@ stop() {
 	killall -q -SIGKILL webmon
 	killall -q goahead
 	killall -q -SIGKILL goahead
+	killall -q nginx
+	killall -q -SIGKILL nginx
     fi
 }
 

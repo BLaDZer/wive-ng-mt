@@ -4,8 +4,8 @@
 HISTORY="./History"
 
 # HTTP header
-echo "Content-type: text/html"
-echo ""
+#echo "Content-type: text/html"
+#echo ""
 
 # web header
 echo "<html><head><title>Wive-NG-MT</title>"

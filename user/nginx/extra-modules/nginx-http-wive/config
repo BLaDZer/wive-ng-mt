@@ -1,0 +1,26 @@
+ngx_addon_name=ngx_http_wive_module
+HTTP_FILTER_MODULES="$HTTP_FILTER_MODULES ngx_http_wive_module"
+
+NGX_ADDON_SRCS=" \
+    $NGX_ADDON_SRCS \
+    $ngx_addon_dir/ngx_http_wive_module.c \
+    $ngx_addon_dir/asp_parser.c \
+    $ngx_addon_dir/util.c \
+    $ngx_addon_dir/asp_mod_helpers.c \
+    $ngx_addon_dir/asp_mod_wireless.c \
+    $ngx_addon_dir/asp_mod_internet.c \
+    $ngx_addon_dir/asp_mod_utils.c \
+    $ngx_addon_dir/asp_mod_services.c \
+    $ngx_addon_dir/asp_mod_firewall.c \
+    $ngx_addon_dir/asp_mod_management.c \
+    $ngx_addon_dir/asp_mod_station.c \
+    $ngx_addon_dir/asp_mod_storage.c \
+    $ngx_addon_dir/asp_mod_test.c \
+    $ngx_addon_dir/asp_mod_qos.c \
+    $ngx_addon_dir/asp_mod_usb.c \
+    $ngx_addon_dir/firmware.c \
+    $ngx_addon_dir/sessionid.c \
+"
+
+ngx_module_libs=-lcrypt
+NGX_LD_OPT="$NGX_LD_OPT -lcrypt"

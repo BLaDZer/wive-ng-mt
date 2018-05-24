@@ -10,31 +10,91 @@
  */
 static void setSysAdm(webs_t wp, char_t *path, char_t *query)
 {
-	char_t *admuser, *admpass;
-	char *old_user;
+	char_t *admuser, *admpass, *orduser, *ordpass, *mgmtuser, *mgmtpass;
+	char *old_admin, *old_user, *old_mgmt;
 	char_t *submitUrl;
 
-	old_user = nvram_get(RT2860_NVRAM, "Login");
-	admuser = websGetVar(wp, T("admuser"), T(""));
-	admpass = websGetVar(wp, T("admpass"), T(""));
+	old_admin = nvram_get(RT2860_NVRAM, "Login");
+	admuser = websGetVar(wp, T("admuser"), NULL);
+	admpass = websGetVar(wp, T("admpass"), NULL);
 
-	if (!strlen(admuser)) {
-		syslog(LOG_WARNING, "setSysAdm: account empty, leave it unchanged");
-		return;
-	}
-	if (!strlen(admpass)) {
-		syslog(LOG_WARNING, "setSysAdm: password empty, leave it unchanged");
-		return;
-	}
+	old_user = nvram_get(RT2860_NVRAM, "UserLogin");
+	orduser = websGetVar(wp, T("orduser"), NULL);
+	ordpass = websGetVar(wp, T("ordpass"), NULL);
+
+	old_mgmt = nvram_get(RT2860_NVRAM, "MngmtLogin");
+	mgmtuser = websGetVar(wp, T("mgmtuser"), NULL);
+	mgmtpass = websGetVar(wp, T("mgmtpass"), NULL);
+
+        if (!admuser) {
+            admuser = old_admin;
+            syslog(LOG_WARNING, "setSysAdm: admin account not provided, leave unchanged");
+        }
+
+        if (!admpass) {
+            admpass = nvram_get(RT2860_NVRAM, "Password");
+            syslog(LOG_WARNING, "setSysAdm: admin password not provided, leave unchanged");
+        }
+
+        if (!orduser) {
+            orduser = old_user;
+            syslog(LOG_WARNING, "setSysAdm: user account not provided, leave unchanged");
+        }
+
+        if (!ordpass) {
+            ordpass = nvram_get(RT2860_NVRAM, "UserPassword");
+            syslog(LOG_WARNING, "setSysAdm: user password not provided, leave unchanged");
+        }
+
+        if (!mgmtuser) {
+            mgmtuser = old_mgmt;
+            syslog(LOG_WARNING, "setSysAdm: management account not provided, leave unchanged");
+        }
+
+        if (!mgmtpass) {
+            mgmtpass = nvram_get(RT2860_NVRAM, "MngmtPassword");
+            syslog(LOG_WARNING, "setSysAdm: management password not provided, leave unchanged");
+        }
+
+
+        if (admuser[0] == '\0')
+        {
+            syslog(LOG_WARNING, "setSysAdm: admin login cannot be empty! Abort.");
+            return;
+        }
+
+
+        if (strcmp(admuser, orduser) == 0)
+        {
+            syslog(LOG_WARNING, "setSysAdm: user login equals admin login! Abort.");
+            return;
+        }
+
+        if (strcmp(mgmtuser, orduser) == 0 && mgmtuser[0] != '\0')
+        {
+            syslog(LOG_WARNING, "setSysAdm: user login equals management login! Abort.");
+            return;
+        }
+
+        if (strcmp(mgmtuser, admuser) == 0)
+        {
+            syslog(LOG_WARNING, "setSysAdm: admin login equals management login! Abort.");
+            return;
+        }
 
 	nvram_init(RT2860_NVRAM);
 	nvram_bufset(RT2860_NVRAM, "Login", admuser);
 	nvram_bufset(RT2860_NVRAM, "Password", admpass);
+	nvram_bufset(RT2860_NVRAM, "UserLogin", orduser);
+	nvram_bufset(RT2860_NVRAM, "UserPassword", ordpass);
+	nvram_bufset(RT2860_NVRAM, "MngmtLogin", mgmtuser);
+	nvram_bufset(RT2860_NVRAM, "MngmtPassword", mgmtpass);
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 	/* modify /etc/passwd to new user name and passwd */
-	doSystem("sed -e 's/^%s:/%s:/' /etc/passwd > /etc/newpw", old_user, admuser);
+	doSystem("sed -e 's/^%s:/%s:/;s/^%s:/%s:/;s/^%s:/%s:/' /etc/passwd > /etc/newpw", old_admin, admuser, old_user, orduser, old_mgmt, mgmtuser);
+
 	doSystem("cp /etc/newpw /etc/passwd");
 	doSystem("rm -f /etc/newpw");
 	doSystem("service pass start");

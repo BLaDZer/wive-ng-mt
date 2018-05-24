@@ -5,8 +5,17 @@ var admin_dictionary = {
 	'management dont remove usb'		: 'Пожалуйста, будьте терпеливы. Не извлекайте USB устройство, если оно вставленно...',
 	'management language settings'		: 'Настройки языка',
 	'management language select'		: 'Выберите язык',
-	'management administrator settings'	: 'Настройки администратора',
-	'management administrator login'	: 'Имя пользователя',
+
+	'management user settings'		: 'Настройки учётных записей',
+	'management user login'			: 'Логин',
+	'management user password'		: 'Пароль',
+	'management user confirmation'		: 'Подтверждение',
+	'management user empty password text'	: 'Оставьте пароль пустым, чтобы запретить доступ',
+
+	'management administrator login'	: 'Администратор',
+	'management ordinary user login'	: 'Пользователь',
+	'management management user login'	: 'Менеджмент',
+
 	'management administrator password'	: 'Пароль / Подтверждение',
 	'management firmware'			: 'Обновление прошивки',
 	'management firmware text'		: 'Новые версии прошивки доступны по ссылке: ',
@@ -20,6 +29,7 @@ var admin_dictionary = {
 	'management reset factory'		: 'Сброс на заводские настройки',
 	'management uncorrect login'		: 'Пожалуйста, укажите правльное имя администратора (a-z, A-Z, 0-9, _).',
 	'management uncorrect password'		: 'Пароль не может содержать пробелы или знак доллара!',
+	'management login overlap'		: 'Имя пользователя не может совпадать с именем администратора.',
 	'management password confirmation'	: 'Введенные пароли не совпадают.',
 	'management dont power off'		: 'Не выключайте устройство во время обновления прошивки! Это может привести к необратимому повреждению устройства. Вы действительно хотите продолжить?',
 	'management ask upload settings'	: 'Начать загрузку настроек?',

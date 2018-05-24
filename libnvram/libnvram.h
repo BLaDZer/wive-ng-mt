@@ -94,6 +94,9 @@ int nvram_renew(int mode, char *fname);
 int nvram_show(int mode);
 int nvram_fromdef(int idx_nvram, int num, ...);
 
+int nvram_iter(int mode, void* extra_ptr, void (*callback)(void* extra_ptr, char* name, char* val) );
+void nvram_bufiter( int index, void* extra_ptr, void (*callback)(void* extra_ptr, char* name, char* val) );
+
 int gen_wifi_config(int mode, int genmode);
 int nvram_load_default(void);
 

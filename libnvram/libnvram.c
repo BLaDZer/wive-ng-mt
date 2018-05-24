@@ -690,6 +690,43 @@ void nvram_buflist(int index)
 	}
 }
 
+/*
+    nvram variable list iterator
+    index
+    extra_ptr - extra data pointer that would be transferred into callback
+    callback - variable key-val callback
+*/
+int nvram_iter(int mode, void* extra_ptr, void (*callback)(void* extra_ptr, char* name, char* val) )
+{
+	nvram_init(mode);
+	nvram_bufiter(mode, extra_ptr, callback);
+	nvram_close(mode);
+	return 0;
+}
+
+/*
+    nvram buffered variable list iterator
+    index
+    extra_ptr - extra data pointer that would be transferred into callback
+    callback - variable key-val callback
+*/
+void nvram_bufiter( int index, void* extra_ptr, void (*callback)(void* extra_ptr, char* name, char* val) )
+{
+    int i;
+
+    RANV_CHECK_INDEX();
+    RANV_CHECK_VALID();
+
+    for (i = 0; i < MAX_CACHE_ENTRY; i++) 
+    {
+        if (!fb[index].cache[i].name)
+            break;
+
+        callback(extra_ptr, fb[index].cache[i].name, fb[index].cache[i].value);
+    }
+}
+
+
 int nvram_show(int mode)
 {
 	nvram_init(mode);

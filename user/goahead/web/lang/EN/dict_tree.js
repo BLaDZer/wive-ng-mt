@@ -57,7 +57,9 @@ var tree_dictionary = {
 	'treeapp system log'		: 'System Log',
 	'treeapp sdk history'		: 'Version History',
 	'treeapp reboot'		: 'Save and reboot',
-	'treeapp reboot confirm'	: 'Do you really want to reboot your router?'
+	'treeapp reboot confirm'	: 'Do you really want to reboot your router?',
+
+	'treeapp logout'		: 'Logout'
 }
 
 lang_dictionary = Object.assign(lang_dictionary, tree_dictionary);

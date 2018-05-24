@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Wive-NG-MT</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="-1">
+		<link rel="stylesheet" href="style/normal_ws.css" type="text/css">
+		<link rel="stylesheet" href="/style/windows.css" type="text/css">
+		<link rel="stylesheet" href="/style/controls.css" type="text/css">
+		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_tree.js"></script>
+		<script type="text/javascript" src="/js/ajax.js"></script>
+		<script type="text/javascript" src="/js/controls.js"></script>
+		<script>
+			function initValues() {
+				deleteCookie("sessionid");
+				window.location.replace("/");
+			}
+		</script>
+	</head>
+	<body bgcolor="#FFFFFF" onLoad="initValues()">
+		<table class="body">
+                    <% webLogout(); %>
+		</table>
+	</body>
+</html>

@@ -56,7 +56,9 @@ var tree_dictionary = {
 	'treeapp system log'		: 'Системный журнал',
 	'treeapp sdk history'		: 'История версий',
 	'treeapp reboot'		: 'Сохранить и перезагрузить',
-	'treeapp reboot confirm'	: 'Вы действительно хотите перезагрузить маршрутизатор?'
+	'treeapp reboot confirm'	: 'Вы действительно хотите перезагрузить маршрутизатор?',
+
+	'treeapp logout'		: 'Выход из системы'
 }
 
 lang_dictionary = Object.assign(lang_dictionary, tree_dictionary);

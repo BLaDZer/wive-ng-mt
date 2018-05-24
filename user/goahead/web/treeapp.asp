@@ -37,6 +37,10 @@ function go(zz) {
 	top.view.location=zz;
 }
 
+function redirect(zz) {
+	window.parent.location.replace(zz);
+}
+
 function refresh(){
 	window.location.reload(false);
 }
@@ -71,36 +75,45 @@ if (BUILD_IPV6 == "1" && NVRAM_OperationMode != '0') {
 
 a.add(304, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
-a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+if (AUTH_ROLE == 2)
+{
+	a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+	a.add(306, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
 
-a.add(306, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
+	if (NVRAM_OperationMode != '0')
+		a.add(307, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 
-if (NVRAM_OperationMode != '0')
-	a.add(307, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
+	if (BUILD_SWQOS == '1')
+		a.add(308, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
 
-if (BUILD_SWQOS == '1')
-	a.add(308, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
-
-if (BUILD_SPOT == '1' && NVRAM_OperationMode != '0')
-	a.add(309, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
+	if (BUILD_SPOT == '1' && NVRAM_OperationMode != '0')
+		a.add(309, 300, _("treeapp hotspot"),		"javascript:go('internet/hotspot.asp');");
+}
 
 if (NVRAM_OperationMode == '2')
 {
+    if (AUTH_ROLE == 2)
+    {
 	a.add(400,   0, _("treeapp wireless settings"),		"javascript:a.oo(400);");
 	a.add(401, 400, _("treeapp profile"),			"javascript:go('station/profile.asp');");
 	a.add(402, 400, _("treeapp link status"),		"javascript:go('station/link_status.asp');");
 	a.add(403, 400, _("treeapp statistics"),		"javascript:go('station/statistics.asp');");
 	a.add(404, 400, _("treeapp advance"),			"javascript:go('station/advance.asp');");
+    }
 }
 else
 {
 	a.add(400,   0, _("treeapp wireless settings"),		"javascript:a.oo(400);");
 	a.add(401, 400, _("treeapp main"),			"javascript:go('wireless/main.asp');");
 	a.add(402, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
+
+    if (AUTH_ROLE == 2)
+    {
 	if (BUILD_WDS == "1")
 		a.add(403, 400, _("treeapp wds"),                   "javascript:go('wireless/wds.asp');");
 	if (NVRAM_OperationMode == '3')
 		a.add(404, 400, _("treeapp ap client"),     "javascript:go('wireless/apcli.asp');");
+    }
 	a.add(405, 400, _("treeapp station list"),          "javascript:go('wireless/stainfo.asp');");
 }
 
@@ -115,17 +128,28 @@ if (NVRAM_OperationMode != '0') {
 
 // Services
 a.add(500, 0,   _("treeapp services"),          "javascript:a.oo(500);");
+
 if (NVRAM_OperationMode != '0') a.add(501, 500, _("treeapp dhcp server"),       "javascript:go('services/dhcp.asp');");
-a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.asp');");
-if (BUILD_RADIUS == "1") a.add(503, 500, _("treeapp radius"),             "javascript:go('services/radius.asp');");
-if (BUILD_CWMP == "1") a.add(504, 500, _("treeapp cwmp"),             "javascript:go('services/cwmp.asp');");
-a.add(505, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
+
+if (AUTH_ROLE == 2)
+{
+    a.add(502, 500, _("treeapp l2tp server"),       "javascript:go('services/l2tp.asp');");
+    if (BUILD_RADIUS == "1") a.add(503, 500, _("treeapp radius"),             "javascript:go('services/radius.asp');");
+    if (BUILD_CWMP == "1") a.add(504, 500, _("treeapp cwmp"),             "javascript:go('services/cwmp.asp');");
+    a.add(505, 500, _("treeapp ntp settings"),      "javascript:go('services/ntp.asp');");
+}
+
 if (BUILD_DDNS == "1") a.add(506, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
-if (BUILD_SMB == "1" && BUILD_STORAGE != "1") a.add(507, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
-if (BUILD_IPTACCOUNT == "1" && NVRAM_OperationMode != '0') a.add(508, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
+
+if (AUTH_ROLE == 2)
+{
+    if (BUILD_SMB == "1" && BUILD_STORAGE != "1") a.add(507, 500, _("treeapp samba"),             "javascript:go('services/samba.asp');");
+    if (BUILD_IPTACCOUNT == "1" && NVRAM_OperationMode != '0') a.add(508, 500, _("treeapp accounting"),        "javascript:go('services/account.asp');");
+}
+
 a.add(509, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
-if (BUILD_USB == "1")
+if (BUILD_USB == "1" && AUTH_ROLE == 2)
 {
     a.add(800,   0, _("treeapp usb"),		"javascript:a.oo(800);");
     if (BUILD_PRINTER_SRV == "1")	a.add(802, 800, _("treeapp printersrv"),	"javascript:go('usb/P910NDprintersrv.asp');");
@@ -146,10 +170,22 @@ if (BUILD_USB == "1")
 a.add(900,   0, _("treeapp administration"),        "javascript:a.oo(900);");
 a.add(901, 900, _("treeapp management"),            "javascript:go('adm/management.asp');");
 a.add(902, 900, _("treeapp status"),                "javascript:go('adm/status.asp');");
-if (BUILD_SYSLOG == "1")
-	a.add(903, 900, _("treeapp system log"),            "javascript:go('adm/syslog.asp');");
-a.add(904, 900, _("treeapp sdk history"),           "javascript:go('cgi-bin/history.sh');");
+
+if (AUTH_ROLE == 2)
+{
+
+    if (BUILD_SYSLOG == "1")
+        	a.add(903, 900, _("treeapp system log"),   "javascript:go('adm/syslog.asp');");
+    a.add(904, 900, _("treeapp sdk history"),              "javascript:go('history.html');");
+}
+
 a.add(905, 900, _("treeapp reboot"),                       "javascript:go('reboot.asp');");
+
+if (IS_NGINX)
+{
+    a.add(1000,   0, _("treeapp logout"),                      "javascript:redirect('logout.asp');");
+}
+
 document.write(a);
 
 </script>

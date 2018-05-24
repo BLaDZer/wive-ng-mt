@@ -77,6 +77,7 @@
 				changeMode();
 				showWarning();
 				initTranslation();
+				disableControlsByAuth();
 			}
 		</script>
 	</head>
@@ -93,25 +94,25 @@
 					<form method="POST" name="opmode" action="/goform/setOpMode">
 					<dl>
 					  <dt>
-						<input type="radio" name="opMode" id="opMode" value="0" onClick="changeMode()">
+						<input type="radio" name="opMode" id="opMode" value="0" onClick="changeMode()" class="auth-disable-user" >
 						<b id="oModeB">AP-Bridge</b>: </dt>
 					  <dd id="oModeBIntro"></dd>
 					  <dt id="gwdt">
-						<input type="radio" name="opMode" id="opMode" value="1" onClick="changeMode()">
+						<input type="radio" name="opMode" id="opMode" value="1" onClick="changeMode()" class="auth-disable-user" >
 						<b id="oModeG">AP-Gateway</b>: </dt>
 					  <dd id="oModeGIntro"></dd>
 					  <dt id="stadt">
-						<input type="radio" name="opMode" id="opMode" value="2" onClick="changeMode()">
+						<input type="radio" name="opMode" id="opMode" value="2" onClick="changeMode()" class="auth-disable-user" >
 						<b id="oModeE">Client-Gateway</b>: </dt>
 					  <dd id="stadd"></dd>
 					  <dt id="apclidt">
-						<input type="radio" name="opMode" id="opMode" value="3" onClick="changeMode()">
+						<input type="radio" name="opMode" id="opMode" value="3" onClick="changeMode()" class="auth-disable-user" >
 						<b id="oModeA">Client-AP-Gateway(WISP)/Client-AP-Bridge(Repeater)</b>: </dt>
 					  <dd id="apclidd"></dd>
 					</dl>
 					<p></p>
 					<center>
-					<table class="buttons">
+					<table class="buttons auth-hide-user">
 						<tr>
 							<td>
 								<input type="button" class="normal" value="Apply" id="oApply" onClick="ajaxPostForm(_('opmode confirm'), this.form, 'setmodeReloader', _('message chmode'), ajaxShowProgress);"><input type="reset" class="normal" value="Cancel" id="oCancel" onClick="window.location.reload();">

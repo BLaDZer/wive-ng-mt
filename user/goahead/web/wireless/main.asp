@@ -1114,6 +1114,7 @@
 				showAdvWirelessMenu();
 				showRoamingMenu();
 				showWarning();
+				disableControlsByAuth();
 			}
 
 			function show_abg_rate(form)
@@ -1353,6 +1354,8 @@
 					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
 				else
 					document.getElementById('wlan_ac_channel_span').innerHTML = '';
+
+				disableControlsByAuth();
 			}
 
 			function CheckValue(form)
@@ -1726,8 +1729,8 @@
 				</select></td>
 			</tr>
 			<tr id="div_txpw" name="div_txpw">
-				<td class="head" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
-				<td><select name="tx_power" class="normal">
+				<td class="head auth-readonly-user" id="basicTxPW" colspan="1">TX Power (2.4GHz)</td>
+				<td><select name="tx_power" class="normal auth-disable-user">
 					<option value="5">5%</option>
 					<option value="10">10%</option>
 					<option value="20">20%</option>
@@ -1786,8 +1789,8 @@
 				</select></td>
 			 </tr>
 			<tr id="div_txpw_ac" name="div_txpw_ac">
-				<td class="head" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
-				<td><select name="tx_powerac" class="normal">
+				<td class="head auth-readonly-user" id="basicTxPWAc" colspan="1">TX Power (5GHz)</td>
+				<td><select name="tx_powerac" class="normal auth-disable-user">
 					<option value="5">5%</option>
 					<option value="10">10%</option>
 					<option value="20">20%</option>
@@ -1949,7 +1952,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<table id="div_11n" name="div_11n" class="form">
+	<table id="div_11n" name="div_11n" class="form auth-hide-user">
 		<tr>
 			<td id="basicHTPhyMode" class="title" colspan="2" OnClick="showHTPhysModeMenu();">HT Physical Mode</td>
 		</tr>
@@ -2060,7 +2063,7 @@
 			</select></td>
 		</tr>
 	</table>
-	<table id="basicVHT" name="basicVHT" class="form" style="display:none;">
+	<table id="basicVHT" name="basicVHT" class="form auth-hide-user" style="display:none;">
 		<tr>
 			<td id="basicVHTPhyMode" class="title" colspan="2" OnClick="showVHTPhysModeMenu();">VHT Physical Mode</td>
 		</tr>
@@ -2101,7 +2104,7 @@
 			</select></td>
 		</tr>
 	</table>	
-	<table id="advWirelessT" class="form">
+	<table id="advWirelessT" class="form auth-hide-user">
 		<tr>
 			<td id="advWireless" class="title" colspan="2" OnClick="showAdvWirelessMenu();">Advanced Wireless</td>
 		</tr>
@@ -2194,20 +2197,20 @@
 		<tr id="advStaRegion_tr">
 			<td id="advStaRegion_td_1" class="head" width="50%">Region settings</td>
 			<td id="advStaRegion_td_2" width="50%"><select id="country_region" name="country_region" class="normal">
-				<option value=0 <% var cr_bg = getCfgZero(0, "CountryRegion"); if (cr_bg == "0") write("selected"); %> >0: CH1-11 (FCC)</option>
-				<option value=1 <% if (cr_bg == "1") write("selected"); %> >1: CH1-13 (IC)</option>
-				<option value=2 <% if (cr_bg == "2") write("selected"); %> >2: CH10-11 (ETSI)</option>
-				<option value=3 <% if (cr_bg == "3") write("selected"); %> >3: CH10-13 (SPAIN)</option>
-				<option value=4 <% if (cr_bg == "4") write("selected"); %> >4: CH14 (France)</option>
-				<option value=5 <% if (cr_bg == "5") write("selected"); %> >5: CH1-14 (MKK)</option>
-				<option value=6 <% if (cr_bg == "6") write("selected"); %> >6: CH3-9 (MKK1)</option>
-				<option value=7 <% if (cr_bg == "7") write("selected"); %> >7: CH5-13 (Israel)</option>
+				<option value=0 <% writeIfCfgZeroEq("CountryRegion", "0", "selected", ""); %> >0: CH1-11 (FCC)</option>
+				<option value=1 <% writeIfCfgZeroEq("CountryRegion", "1", "selected", ""); %> >1: CH1-13 (IC)</option>
+				<option value=2 <% writeIfCfgZeroEq("CountryRegion", "2", "selected", ""); %> >2: CH10-11 (ETSI)</option>
+				<option value=3 <% writeIfCfgZeroEq("CountryRegion", "3", "selected", ""); %> >3: CH10-13 (SPAIN)</option>
+				<option value=4 <% writeIfCfgZeroEq("CountryRegion", "4", "selected", ""); %> >4: CH14 (France)</option>
+				<option value=5 <% writeIfCfgZeroEq("CountryRegion", "5", "selected", ""); %> >5: CH1-14 (MKK)</option>
+				<option value=6 <% writeIfCfgZeroEq("CountryRegion", "6", "selected", ""); %> >6: CH3-9 (MKK1)</option>
+				<option value=7 <% writeIfCfgZeroEq("CountryRegion", "7", "selected", ""); %> >7: CH5-13 (Israel)</option>
 				</select>&nbsp;&nbsp;&nbsp;
 				<select name="country_code" class="normal" onChange="countryCodeChange();"><% listCountryCodes(); %>
 			</select></td>
 		</tr>
 	</table>
-	<table id="div_roaming" name="div_roaming" class="form">
+	<table id="div_roaming" name="div_roaming" class="form auth-hide-user">
 		<tr id="fast_roaming_tr">
 			<td id="fast_roaming" class="title" colspan="2" OnClick="showRoamingMenu();">Fast roaming</td>
 		</tr>
@@ -2325,7 +2328,7 @@
 				<font color="#808080" id="advBeaconIntervalINICRange">(range 20 - 999)</font></td>
 		</tr>
 	</table>
-	<table id="div_txbf" name="div_txbf" class="form" style="display:none;">
+	<table id="div_txbf" name="div_txbf" class="form auth-hide-user" style="display:none;">
 		<tr>
 			<td class="title" id="basicTxBf" width="50%" >Beamforming</td>
 			<td class="title" size="1"  width="50%" style="text-align:right">
@@ -2349,7 +2352,7 @@
 			</select></td>
 		</tr>
 	</table>
-	<table id="div_bandsteering" name="div_bandsteering" class="form" style="display:none;">
+	<table id="div_bandsteering" name="div_bandsteering" class="form auth-hide-user" style="display:none;">
 		<tr id="row_BndStrg">
 			<td class="title" id="band_steering" width="50%">Band steering</td>
 			<td class="title" width="50%" style="text-align:right">
@@ -2381,7 +2384,7 @@
 			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgCheckTime_default" style="color: #808080">ms, default 5000</span></td>
 		</tr>
 	</table>
-	<table id="div_ids" name="div_ids" class="form" style="display:none;">
+	<table id="div_ids" name="div_ids" class="form auth-hide-user" style="display:none;">
 		<tr>
 			<td class="title" id="basicIDS" width="50%">Intrusion Detection settings</td>
 			<td class="title" width="50%" style="text-align:right">
@@ -2420,7 +2423,7 @@
 			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicEapReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
 	</table>
-	<table id="div_m2u" name="div_m2u" class="form">
+	<table id="div_m2u" name="div_m2u" class="form auth-hide-user">
 		<tr>
 			<td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter</td>
 		</tr>
@@ -2439,7 +2442,7 @@
 			</select></td>
 		</tr>
 	</table>
-	<table id="advSynVGA_table" class="form">
+	<table id="advSynVGA_table" class="form auth-hide-user">
 		<tr id="advDynVGATitle_tr">
 			<td id="advDynVGATitle_td" class="title" colspan="2">PA/LNA control (WARNING!!! FOR EXPERTS ONLY!)</td>
 		</tr>

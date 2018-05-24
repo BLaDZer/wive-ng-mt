@@ -74,6 +74,7 @@
 				QoSSelectChange(form);
 				showWarning();
 				initTranslation();
+				disableControlsByAuth();
 			}
 
 			function checkValues(form) {
@@ -265,7 +266,8 @@
 								<td width="60%"><input name="QoS_LDSCP" style="width: 98%" size="60" maxlength="1024" type="text"></td>
 							</tr>
 						</table>
-						<table class="buttons">
+
+						<table class="buttons auth-hide-user">
 							<tr>
 								<td><input type="submit" class="normal" value="Apply" id="QoSApply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="QoSCancell" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="QoSReset" onClick="resetValues(this.form, 15);"></td>
 								<input value="0" name="reset" type="hidden">

@@ -12,14 +12,27 @@ start() {
     fi
 
     # generate pass file
-    printf "$Login::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n"		> /etc/passwd
+    printf "$Login::0:0:Adminstrator:/:/bin/sh\n"							> /etc/passwd
+    printf "nobody:*:99:99:nobody:/var:/bin/false\n"							>> /etc/passwd
+
+    if [ "$UserPassword" != "" ]; then
+        printf "$UserLogin::1:1:Ordinary user:/:/bin/false\n"						>> /etc/passwd
+    fi
+
     if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
-	printf "$MngmtLogin::0:0:Adminstrator:/:/bin/sh\nnobody:*:99:99:nobody:/var:/bin/false\n"	>> /etc/passwd
+	printf "$MngmtLogin::0:0:Adminstrator:/:/bin/sh\n"	>> /etc/passwd
     fi
 
     # generate group file
-    printf "$Login:x:0:$Login\nnobody:x:99:\n"								>  /etc/group
-    printf "$Login:x:0:$Login\nnogroup:x:65534:\n"							>> /etc/group
+    printf "$Login:x:0:$Login\n"									>  /etc/group
+    printf "nobody:x:99:\n"										>> /etc/group
+    printf "nogroup:x:65534:\n"										>> /etc/group
+
+    if [ "$UserPassword" != "" ]; then
+        printf "$UserLogin:x:1:$UserLogin\n"								>>  /etc/group
+    fi
+
+
     if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
 	printf "$MngmtLogin:x:0:$MngmtLogin\nnobody:x:99:\n"						>> /etc/group
 	printf "$MngmtLogin:x:0:$MngmtLogin\nnogroup:x:65534:\n"					>> /etc/group
@@ -33,6 +46,13 @@ start() {
 	chpasswd -m < /tmp/tmpchpw
     fi
     rm -f /tmp/tmpchpw
+
+    # set user passwords
+    if [ "$UserPassword" != "" ]; then
+        echo "$UserLogin:$UserPassword" > /tmp/tmpchpw
+        chpasswd -m < /tmp/tmpchpw
+        rm -f /tmp/tmpchpw
+    fi
 
     #####################################################################
     # Please do not remove this warning !!!
@@ -52,12 +72,23 @@ get_param() {
     #####################################################################
     Login=`nvram_get 2860 Login`
     Password=`nvram_get 2860 Password`
+
+    UserLogin=`nvram_get 2860 UserLogin`
+    UserPassword=`nvram_get 2860 UserPassword`
+
     if [ "$Login" = "" ]; then
 	Login="Admin"
     fi
     if [ "$Password" = "" ]; then
 	Password="Admin"
     fi
+
+    if [ "$UserLogin" = "" ]; then
+	UserLogin="User"
+    fi
+#    if [ "$UserPassword" = "" ]; then
+#	UserPassword=""
+#    fi
 
     #####################################################################
     # operator managment login/password

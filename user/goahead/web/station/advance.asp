@@ -271,41 +271,38 @@ function init11NValues()
             <td class="head" id="staadvCountry" <% amode = getStaSuppAMode();
 		if (amode == "1") write("rowspan=2"); %>>Country Region Code</td>
             <td><select id="country_region_bg" name="country_region_bg" class="mid">
-                <option value=0 <% var cr_bg = getCfgZero(0, "CountryRegion");
-			if (cr_bg == "0") write("selected"); %>>0: CH1-11 (FCC)</option>
-                <option value=1 <% if (cr_bg == "1") write("selected"); %>>1: CH1-13 (IC)</option>
-                <option value=2 <% if (cr_bg == "2") write("selected"); %>>2: CH10-11 (ETSI)</option>
-                <option value=3 <% if (cr_bg == "3") write("selected"); %>>3: CH10-13 (SPAIN)</option>
-                <option value=4 <% if (cr_bg == "4") write("selected"); %>>4: CH14 (France)</option>
-                <option value=5 <% if (cr_bg == "5") write("selected"); %>>5: CH1-14 (MKK)</option>
-                <option value=6 <% if (cr_bg == "6") write("selected"); %>>6: CH3-9 (MKK1)</option>
-                <option value=7 <% if (cr_bg == "7") write("selected"); %>>7: CH5-13 (Israel)</option>
+                <option value=0 <% writeIfCfgZeroEq("CountryRegion", "0", "selected", ""); %>>0: CH1-11 (FCC)</option>
+                <option value=1 <% writeIfCfgZeroEq("CountryRegion", "1", "selected", ""); %>>1: CH1-13 (IC)</option>
+                <option value=2 <% writeIfCfgZeroEq("CountryRegion", "2", "selected", ""); %>>2: CH10-11 (ETSI)</option>
+                <option value=3 <% writeIfCfgZeroEq("CountryRegion", "3", "selected", ""); %>>3: CH10-13 (SPAIN)</option>
+                <option value=4 <% writeIfCfgZeroEq("CountryRegion", "4", "selected", ""); %>>4: CH14 (France)</option>
+                <option value=5 <% writeIfCfgZeroEq("CountryRegion", "5", "selected", ""); %>>5: CH1-14 (MKK)</option>
+                <option value=6 <% writeIfCfgZeroEq("CountryRegion", "6", "selected", ""); %>>6: CH3-9 (MKK1)</option>
+                <option value=7 <% writeIfCfgZeroEq("CountryRegion", "7", "selected", ""); %>>7: CH5-13 (Israel)</option>
               </select></td>
           </tr>
           <tr id="CountryRegionRowA" <% if (amode != "1") write("style=\"visibility:hidden;display:none\""); %>>
             <td>11 A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <select id="country_region_a" name="country_region_a" class="mid">
-                <option value="0" <% var cr_a = getCfgZero(0, "CountryRegionABand");
-			if (cr_a == "0") write("selected"); %>>0:CH36,40,44,48,52,56,60,64,149,153,157,161,165</option>
-                <option value="1" <% if (cr_a == "1") write("selected"); %>>1:CH36,40,44,48,52,56,60,64,100,104,108,112,116,120,124,128,132,136,140</option>
-                <option value="2" <% if (cr_a == "2") write("selected"); %>>2:CH36,40,44,48,52,56,60,64</option>
-                <option value="3" <% if (cr_a == "3") write("selected"); %>>3:CH52,56,60,64,149,153,157,161</option>
-                <option value="4" <% if (cr_a == "4") write("selected"); %>>4:CH149,153,157,161,165</option>
-                <option value="5" <% if (cr_a == "5") write("selected"); %>>5:CH149,153,157,161,</option>
-                <option value="6" <% if (cr_a == "6") write("selected"); %>>6:CH36,40,44,48</option>
-                <option value="7" <% if (cr_a == "7") write("selected"); %>>7:CH36,40,44,48,52,56,60,64,149,153,157,161,165</option>
-                <option value="8" <% if (cr_a == "8") write("selected"); %>>8:CH52,56,60,64</option>
-                <option value="9" <% if (cr_a == "9") write("selected"); %>>9:CH34,38,42,46</option>
-                <option value="10" <% if (cr_a == "10") write("selected"); %>>10:CH34,36,38,40,42,44,46,48,52,56,60,64</option>
+                <option value="0" <% writeIfCfgZeroEq("CountryRegionABand", "0", "selected", ""); %>>0:CH36,40,44,48,52,56,60,64,149,153,157,161,165</option>
+                <option value="1" <% writeIfCfgZeroEq("CountryRegionABand", "1", "selected", ""); %>>1:CH36,40,44,48,52,56,60,64,100,104,108,112,116,120,124,128,132,136,140</option>
+                <option value="2" <% writeIfCfgZeroEq("CountryRegionABand", "2", "selected", ""); %>>2:CH36,40,44,48,52,56,60,64</option>
+                <option value="3" <% writeIfCfgZeroEq("CountryRegionABand", "3", "selected", ""); %>>3:CH52,56,60,64,149,153,157,161</option>
+                <option value="4" <% writeIfCfgZeroEq("CountryRegionABand", "4", "selected", ""); %>>4:CH149,153,157,161,165</option>
+                <option value="5" <% writeIfCfgZeroEq("CountryRegionABand", "5", "selected", ""); %>>5:CH149,153,157,161,</option>
+                <option value="6" <% writeIfCfgZeroEq("CountryRegionABand", "6", "selected", ""); %>>6:CH36,40,44,48</option>
+                <option value="7" <% writeIfCfgZeroEq("CountryRegionABand", "7", "selected", ""); %>>7:CH36,40,44,48,52,56,60,64,149,153,157,161,165</option>
+                <option value="8" <% writeIfCfgZeroEq("CountryRegionABand", "8", "selected", ""); %>>8:CH52,56,60,64</option>
+                <option value="9" <% writeIfCfgZeroEq("CountryRegionABand", "9", "selected", ""); %>>9:CH34,38,42,46</option>
+                <option value="10" <% writeIfCfgZeroEq("CountryRegionABand", "10", "selected", ""); %>>10:CH34,36,38,40,42,44,46,48,52,56,60,64</option>
               </select></td>
           </tr>
           <tr id="bgProtectionRow">
             <td class="head" id="staadvBGProtect">B/G Protection</td>
             <td><select name="bg_protection" size="1">
-                <option value=0 id="staadvBGProAuto" <% var bg_prot = getCfgZero(0, "BGProtection");
-			if (bg_prot == "0") write("selected"); %>>Auto</option>
-                <option value="1" id="staadvBGProOn" <% if (bg_prot == "1") write("selected"); %>>On</option>
-                <option value="2" id="staadvBGProOff" <% if (bg_prot == "2") write("selected"); %>>Off</option>
+                <option value=0 id="staadvBGProAuto" <% writeIfCfgZeroEq("BGProtection", "0", "selected", ""); %>>Auto</option>
+                <option value="1" id="staadvBGProOn" <% writeIfCfgZeroEq("BGProtection", "1", "selected", ""); %>>On</option>
+                <option value="2" id="staadvBGProOff" <% writeIfCfgZeroEq("BGProtection", "2", "selected", ""); %>>Off</option>
               </select></td>
           </tr>
           <tr>
@@ -338,7 +335,7 @@ function init11NValues()
           </tr>
           <tr>
             <td class="head" id="staadvTxBurst">Tx BURST</td>
-            <td><input type="checkbox" name="tx_burst" <% var burst = getCfgZero(0, "TxBurst"); if (burst == "1") write("checked"); %>>
+            <td><input type="checkbox" name="tx_burst" <% writeIfCfgZeroEq("TxBurst", "1", "checked", ""); %>>
               enabled</td>
           </tr>
           <tr id="div_ht_tx_stream">
@@ -370,21 +367,17 @@ function init11NValues()
           <tr>
             <td class="head" id="staadvBW">BW</td>
             <td><span class="radio">
-              <input type=radio name="n_bandwidth" value="0" <% var n_bw = getCfgZero(0, "HT_BW");
-				if (n_bw == "0") write("checked"); %>>
+              <input type=radio name="n_bandwidth" value="0" <% writeIfCfgZeroEq("HT_BW", "0", "checked", ""); %>>
               20 </span> <span class="radio">
-              <input type=radio name="n_bandwidth" value="1" <%
-				if (n_bw == "1") write("checked"); %>>
+              <input type=radio name="n_bandwidth" value="1" <% writeIfCfgZeroEq("HT_BW", "1", "checked", ""); %>>
               <font id="staadvBWAuto">Auto</font> </span></td>
           </tr>
           <tr>
             <td class="head" id="staadvGI">GI</td>
             <td><span class="radio">
-              <input type=radio name="n_gi" value="0" <% var ngi = getCfgZero(0, "HT_GI");
-				if (ngi == "0") write("checked"); %>>
+              <input type=radio name="n_gi" value="0" <% writeIfCfgZeroEq("HT_GI", "0", "checked", ""); %>>
               <font id="staadvGILong">Long</font> </span> <span class="radio">
-              <input type=radio name="n_gi" value="1" <%
-				if (ngi != "0") write("checked"); %>>
+              <input type=radio name="n_gi" value="1" <% writeIfCfgZeroEq("HT_GI", "0", "checked", ""); %>>
               <font id="staadvGIAuto">Auto</font> </span></td>
           </tr>
           <tr>

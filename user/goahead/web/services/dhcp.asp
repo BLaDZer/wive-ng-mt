@@ -76,6 +76,7 @@
 				initTranslation();
 				loadDhcpClientsList();
 				displayServiceStatus([[ NVRAM_dhcpEnabled, 'udhcpd', 'udhcpd' ]]);
+				disableControlsByAuth();
 			}
 
 			function CheckValue() {
@@ -356,7 +357,7 @@
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="dhcpCfg" action="/goform/setDhcp" onSubmit="return CheckValue(this);">
-					<table class="form">
+					<table class="form auth-hide-user">
 						<col style="width: 40%"/>
 						<col style="width: 50%"/>
 						<col style="width: 10%"/>

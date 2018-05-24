@@ -9,6 +9,21 @@
 #include	"helpers.h"
 #include	"station.h"
 
+static int getAuthRole(int eid, webs_t wp, int argc, char_t **argv)
+{
+	return websWrite(wp, T("2"));
+}
+
+static int getAuthUsername(int eid, webs_t wp, int argc, char_t **argv)
+{
+	return websWrite(wp, T("Admin"));
+}
+
+static int isNginx(int eid, webs_t wp, int argc, char_t **argv)
+{
+	return websWrite(wp, T("0"));
+}
+
 /*
  * arguments: type - 0 = return the configuration of 'field' (default)
  *                   1 = write the configuration of 'field'
@@ -22,20 +37,24 @@ static int getCfgGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	char_t *field;
 	char *value;
 	char str[16384];
+        char* def = "";
 
-	if (ejArgs(argc, argv, T("%d %s"), &type, &field) < 2)
+	if (ejArgs(argc, argv, T("%d %s %s"), &type, &field, &def) < 2) // def is optional
 		return websWrite(wp, T("Insufficient args\n"));
 
 	value = nvram_get(RT2860_NVRAM, field);
 
-	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s", value, __FUNCTION__);
-	    value = "en";
-	}
+        if ((!value) && (strcmp(field, "Language") == 0)) {
+            syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s", value, __FUNCTION__);
+            value = "en";
+        }
 
         if (type == 1) {
-                if (!value)
-                        return websWrite(wp, T(""));
+                if (!value || value[0] == '\0')
+                {
+                    return websWrite(wp, T(def));
+                }
+
 		str[0] = '\0';
 		for (j = 0; j < strlen(value); j++) {
 		    if (value[j] == '"' ||
@@ -167,6 +186,33 @@ static int getCfgNthGeneral(int eid, webs_t wp, int argc, char_t **argv)
 	return 0;
 }
 
+
+static int writeIfCfgZeroEq(int eid, webs_t wp, int argc, char_t **argv)
+{
+    char_t *field;
+    char *value;
+    char *desValue;
+    char *truePrint;
+    char *falsePrint;
+
+    if (ejArgs(argc, argv, T("%s %s %s %s"), &field, &desValue, &truePrint, &falsePrint) < 4) {
+        return websWrite(wp, T("Insufficient args\n"));
+    }
+
+    value = (char *) nvram_get(RT2860_NVRAM, field);
+    if (strcmp(value, desValue) == 0)
+    {
+        websWrite(wp, truePrint);
+    }
+    else
+    {
+        websWrite(wp, falsePrint);
+    }
+
+    return 0;
+}
+
+
 /*
  * arguments: type - 0 = return the configuration of 'field' (default)
  *                   1 = write the configuration of 'field'
@@ -241,7 +287,7 @@ static int getLangBuilt(int eid, webs_t wp, int argc, char_t **argv)
 	if (!strncmp(lang, "en", 3))
 		return websWrite(wp, T("1"));
 	else if (!strncmp(lang, "ru", 3))
-#ifdef CONFIG_USER_GOAHEAD_LANG_RU
+#ifdef CONFIG_USER_WEB_LANG_RU
 		return websWrite(wp, T("1"));
 #else
 		return websWrite(wp, T("0"));
@@ -251,7 +297,7 @@ static int getLangBuilt(int eid, webs_t wp, int argc, char_t **argv)
 
 static int getLangDictionary(int eid, webs_t wp, int argc, char_t **argv)
 {
-#ifdef CONFIG_USER_GOAHEAD_LANG_RU
+#ifdef CONFIG_USER_WEB_LANG_RU
 	char* lang = nvram_get(RT2860_NVRAM, "Language");
 
 	if (!strncmp(lang, "ru", 3))
@@ -472,6 +518,12 @@ static void reboot_web(webs_t wp, char_t *path, char_t *query)
  */
 void formDefineUtilities(void)
 {
+	websAspDefine(T("getAuthRole"), getAuthRole);
+	websAspDefine(T("getAuthUsername"), getAuthUsername);
+	websAspDefine(T("isNginx"), isNginx);
+
+	websAspDefine(T("writeIfCfgZeroEq"), writeIfCfgZeroEq);
+
 	websAspDefine(T("getCfgGeneral"), getCfgGeneral);
 	websAspDefine(T("getCfgGeneralHTML"), getCfgGeneralHTML);
 	websAspDefine(T("getCfgNthGeneral"), getCfgNthGeneral);

@@ -4088,12 +4088,13 @@
 <b>7.4.x</b><br>
 1) entware: update install script.<br>
 2) build_system/init/libwive/calibs: prepare to support mt7615.<br>
-3) init.d: avoid enneded vpn helper restarts.<br>
-4) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-5) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
-6) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-7) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-8) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-9) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+3) build_system: add and use ngix (goahead deprecated).<br>
+4) init.d: avoid enneded vpn helper restarts.<br>
+5) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
+6) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+7) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+8) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+9) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+10) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>

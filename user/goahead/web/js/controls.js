@@ -9,6 +9,33 @@
 
 *******************************************/
 
+function disableControlsByAuth()
+{
+    if (AUTH_ROLE != 2)
+    {
+        elems = document.getElementsByClassName('auth-disable-user');
+
+        for (i=0;i<elems.length;i++) {
+            elems[i].setAttribute("disabled", true) 
+        }
+
+        elems = document.getElementsByClassName('auth-hide-user');
+
+        for (i=0;i<elems.length;i++) {
+            elems[i].style.display = "none";
+        }
+
+        elems = document.getElementsByClassName('auth-readonly-user');
+
+        for (i=0;i<elems.length;i++) {
+            elems[i].setAttribute("readonly", true) 
+        }
+
+
+
+    }
+}
+
 function style_display_on()
 {
 	if (window.ActiveXObject)

@@ -39,12 +39,15 @@ $(UPLOAD_SETTINGS): upload_settings.cgi.o
 
 
 romfs:
+	cp $(ROOTDIR)/History ./History
+	./history.sh >  ./history.html
 	$(ROMFSINST) $(UPLOAD_CGI) $(ROOT_DIRECTORY)/cgi-bin/$(UPLOAD_CGI)
 	$(ROMFSINST) $(UPLOAD_RWFS) $(ROOT_DIRECTORY)/cgi-bin/$(UPLOAD_RWFS)
 	$(ROMFSINST) $(UPLOAD_SETTINGS)  $(ROOT_DIRECTORY)/cgi-bin/$(UPLOAD_SETTINGS)
 	$(ROMFSINST) -S unpackrwfs.sh /bin/unpackrwfs.sh
 	$(ROMFSINST) ExportSettings.sh $(ROOT_DIRECTORY)/cgi-bin/ExportSettings.sh
 	$(ROMFSINST) history.sh  $(ROOT_DIRECTORY)/cgi-bin/history.sh
+	$(ROMFSINST) history.html  $(ROOT_DIRECTORY)/history.html
 	$(ROMFSINST) $(ROOTDIR)/History  $(ROOT_DIRECTORY)/cgi-bin/History
 
 #They are not cgi but cgi-related.

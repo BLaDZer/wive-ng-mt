@@ -111,6 +111,8 @@
 
 				ajaxLoadScript('/internet/vpn-stat.js');
 				stat_interval = setInterval(function () { ajaxLoadScript('/internet/vpn-stat.js') }, 5000);
+
+				disableControlsByAuth();
 			}
 
 			function checkValues(form) {
@@ -307,7 +309,7 @@
 							<tr>
 								<td class="head" onMouseOver="showHint('vpn')" onMouseOut="hideHint()">VPN</td>
 								<td onMouseOver="showHint('vpn_enabled')" onMouseOut="hideHint()">
-									<select name="vpn_enabled" onChange="vpnSwitchClick(this.form)" class="mid" >
+									<select name="vpn_enabled" onChange="vpnSwitchClick(this.form)" class="mid auth-disable-user" >
 										<option value="off" id="vDisable">Disable</option>
 										<option value="on" id="vEnable">Enable</option>
 									</select>
@@ -316,7 +318,7 @@
 							<tr onMouseOver="showHint('vpn_type')" onMouseOut="hideHint()" id="vpn_type">
 								<td class="head" id="vMode">VPN Mode:</td>
 								<td colspan="2">
-									<select disabled="disabled" name="vpn_type" onChange="selectType(this.form);" class="mid" >
+									<select disabled="disabled" name="vpn_type" onChange="selectType(this.form);" class="mid auth-disable-user" >
 										<option value="0" selected="selected" id="vPPPoE">PPPoE client</option>
 										<option value="1" id="vPPTP">PPTP  client</option>
 										<option value="2" id="vL2TP">L2TP  client</option>
@@ -326,7 +328,7 @@
 							<tr id="vpn_pppoe_row" style="display: none;" onMouseOver="showHint('vpn_pppoe_iface')" onMouseOut="hideHint()">
 								<td class="head" id="vPPPoEiface">PPPoE interface:</td>
 								<td colspan="2">
-									<select disabled="disabled" name="vpn_pppoe_iface" class="mid" >
+									<select disabled="disabled" name="vpn_pppoe_iface" class="mid auth-disable-user" >
 										<option value="LAN" id="vpnIfLAN">LAN</option>
 										<option value="WAN" id="vpnIfWAN">WAN</option>
 									</select>
@@ -334,16 +336,16 @@
 							</tr>
 							<tr id="vpn_server_row" onMouseOver="showHint('vpn_server')" onMouseOut="hideHint()">
 								<td class="head" id="vpn_server_col">Host, IP, AC or APN name:</td>
-								<td colspan="2"><input name="vpn_server" class="mid" value="" disabled="disabled" type="text"></td>
+								<td colspan="2"><input name="vpn_server" class="mid auth-disable-user" value="" disabled="disabled" type="text"></td>
 							</tr>
 							<tr id="vpn_pppoe_service_row" onMouseOver="showHint('vpn_pppoe_service')" onMouseOut="hideHint()">
 								<td class="head" id="vServiceName">Service name:</td>
-								<td colspan="2"><input name="vpn_pppoe_service" class="mid" value="" disabled="disabled" type="text"></td>
+								<td colspan="2"><input name="vpn_pppoe_service" class="mid auth-disable-user" value="" disabled="disabled" type="text"></td>
 							</tr>
 							<tr id="vpn_auth_type_row" onMouseOver="showHint('vpn_auth_type')" onMouseOut="hideHint()" >
 								<td class="head" id="vAuthType">Authentication method:</td>
 								<td colspan="2">
-									<select id="vpn_auth_type_select" disabled="disabled" name="vpn_auth_type" class="mid">
+									<select id="vpn_auth_type_select" disabled="disabled" name="vpn_auth_type" class="mid auth-disable-user">
 										<option value="0" id="vAuthTypeAuto" selected="selected">AUTO</option>
 										<option value="1">PAP</option>
 										<option value="2">CHAP</option>
@@ -354,7 +356,7 @@
 							<tr id="vpn_lanauth_lvl_row" onMouseOver="showHint('vpn_lanauth_access')" onMouseOut="hideHint()">
 								<td class="head" id="vLanAuthLvl">KABINET access level:</td>
 								<td colspan="2">
-									<select name="lanauth_access" class="mid" disabled="disabled">
+									<select name="lanauth_access" class="mid auth-disable-user" disabled="disabled">
 										<option value="0" id="vKabOffline">offline</option>
 										<option value="1" id="vKabinet">kabinet</option>
 										<option value="2" id="vKabFull">full</option>
@@ -363,17 +365,17 @@
 							</tr>
 							<tr id="vpn_user_row" onMouseOver="showHint('vpn_user')" onMouseOut="hideHint()" >
 								<td class="head" id="vUsername">User name:</td>
-								<td colspan="2"><input name="vpn_user" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="text"></td>
+								<td colspan="2"><input name="vpn_user" class="mid auth-disable-user" size="25" maxlength="60" value="" disabled="disabled" type="text"></td>
 							</tr>
 							<tr id="vpn_password_row" onMouseOver="showHint('vpn_password')" onMouseOut="hideHint()" >
 								<td class="head" id="vPassword">Password:</td>
-								<td colspan="2"><input name="vpn_pass" class="mid" size="25" maxlength="60" value="" disabled="disabled" type="password"></td>
+								<td colspan="2"><input name="vpn_pass" class="mid auth-disable-user" size="25" maxlength="60" value="" disabled="disabled" type="password"></td>
 							</tr>
-							<tr id="vpn_mtu_row" onMouseOver="showHint('vpn_mtu')" onMouseOut="hideHint()" >
+							<tr id="vpn_mtu_row" onMouseOver="showHint('vpn_mtu')" onMouseOut="hideHint()" class="auth-hide-user">
 								<td class="head" id="vMTUMRU">MTU/MRU:</td>
 								<td colspan="2">
 									<input id="vpn_mtu_field" name="vpn_mtu" maxlength="4" disabled="disabled" type="text" class="half" style="display:none; " value="">
-									<select id="vpn_mtu_select" disabled="disabled" name="vpn_mtu_type" onChange="mtuChange(this.form);" class="mid" >
+									<select id="vpn_mtu_select" disabled="disabled" name="vpn_mtu_type" onChange="mtuChange(this.form);" class="mid auth-disable-user" >
 										<option value="AUTO" id="vMTUAuto">AUTO</option>
 										<option value="1" selected="selected" id="vCustom">Custom</option>
 										<option value="1492">1492</option>
@@ -386,17 +388,17 @@
 									</select>
 								</td>
 							</tr>
-							<tr id="vpn_dgw_row" onMouseOver="showHint('vpn_dgw')" onMouseOut="hideHint()" >
+							<tr id="vpn_dgw_row" onMouseOver="showHint('vpn_dgw')" onMouseOut="hideHint()" class="auth-hide-user" >
 								<td class="head" id="vGateway">Default gateway:</td>
 								<td colspan="2">
-									<select disabled="disabled" name="vpn_dgw" class="mid" class="mid" >
+									<select disabled="disabled" name="vpn_dgw" class="mid auth-disable-user" >
 										<option value="0" selected="selected" id="vGWdisable">Disabled</option>
 										<option value="1" id="vGWenable">Enabled</option>
 									</select>
 								</td>
 							</tr>
 							<!-- VPN params -->
-							<tr id="table_vpn_params02" onMouseOver="showHint('vpn_lcp_interval')" onMouseOut="hideHint()">
+							<tr id="table_vpn_params02" onMouseOver="showHint('vpn_lcp_interval')" onMouseOut="hideHint()" class="auth-hide-user">
 								<td class="head" id="vLCPinterval">LCP echo interval:</td>
 								<td colspan="2">
 									<select id="vpn_lcp_interval_select" disabled="disabled" name="vpn_lcp_interval" class="mid">
@@ -423,7 +425,7 @@
 									</select>
 								</td>
 							</tr>
-							<tr id="table_vpn_params03" onMouseOver="showHint('vpn_lcp_errors')" onMouseOut="hideHint()">
+							<tr id="table_vpn_params03" onMouseOver="showHint('vpn_lcp_errors')" onMouseOut="hideHint()" class="auth-hide-user">
 								<td class="head" id="vLCPfail">LCP echo failure:</td>
 								<td colspan="2">
 									<select id="vpn_lcp_errors_select" disabled="disabled" name="vpn_lcp_errors" class="mid">
@@ -452,7 +454,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<table class="form" id="table_vpn_params04">
+					<table class="form auth-hide-user" id="table_vpn_params04">
 						<col style="width: 50%" />
 						<col style="width: 50%" />
 						<tbody>	
@@ -494,7 +496,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<table class="buttons">
+					<table class="buttons auth-hide-user">
 						<tr>
 							<td>
 								<input name="lanauth_pass_changed" type="hidden">
