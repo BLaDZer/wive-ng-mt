@@ -28,7 +28,6 @@ CONFOPTS="$CONFOPTS --add-module=$APROOTDIR/extra-modules/nginx-http-wive"
 CONFOPTS="$CONFOPTS --add-module=$APROOTDIR/extra-modules/nginx-upload-module"
 
 CONFOPTS="$CONFOPTS \
-  --with-debug \
   --with-http_stub_status_module \
   --without-http_charset_module \
   --without-http_gzip_module \
