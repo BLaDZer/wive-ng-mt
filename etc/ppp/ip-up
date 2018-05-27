@@ -13,7 +13,7 @@ LOG="logger -t pppd"
 
 eval `nvram_buf_get 2860 vpnNAT vpnDGW vpnPeerDNS PortForwardEnable upnpEnabled parproutedEnabled`
 
-    #export for goahead and vpnhelper
+    #export for webui and vpnhelper
     echo -n "$PPP_IFACE" > /tmp/vpn_if_name
 
     if [ "$parproutedEnabled" != "1" ] && [ "$IPv6OpMode" != "1" ] && [ "$Ipv6InVPN" != "1" ]; then

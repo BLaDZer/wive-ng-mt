@@ -68,7 +68,7 @@ cat <<EOT >> $NGINX_CONFIG_FILE
 
 
         location / {
-            root   /web;
+            root   /tmp/web;
             index  index.html index.htm home.asp;
             wive " ";
             wive_types application/javascript;

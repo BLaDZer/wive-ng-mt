@@ -140,7 +140,7 @@ getLanIfName() {
     else
 	lan_if="br0"
     fi
-    # export for goahead
+    # export for web
     echo -n "$lan_if" > /tmp/lan_if_name
 }
 

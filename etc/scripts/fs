@@ -100,8 +100,8 @@ burnrf() {
 
 fullreset() {
     echo "Stop services and unload modules."
-    killall -q goahead
-    killall -q -SIGKILL goahead
+    killall -q nginx
+    killall -q -SIGKILL nginx
     sys_led_blink
     unload_all.sh
     echo "Erase rwfs,nvram,factory (rebuild after reboot)."

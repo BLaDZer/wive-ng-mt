@@ -7,7 +7,7 @@
 # all -  call from internel.sh - full reconfigure	 #
 # dhcp - call from dhcp script after full renew		 #
 # pppd - call from ip-up/down scripts			 #
-# misc - call from goahead by apply change in misc page	 #
+# misc - call from webui by apply change in misc page	 #
 ##########################################################
 
 

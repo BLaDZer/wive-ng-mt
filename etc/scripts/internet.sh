@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################
-# internet.sh - reconfigure network helper for goahead #
+# internet.sh - reconfigure network helper for webui   #
 ########################################################
 
 # prevent double start configure in one time

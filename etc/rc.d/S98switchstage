@@ -23,12 +23,6 @@ start() {
 
     if [ -e /bin/nginx ]; then
         eval `nvram_buf_get 2860 Login`
-	$LOG "Start NGINX."
-	/etc/scripts/config-nginx.sh > /dev/null 2>&1
-	nginx -g "user $Login ;" > /dev/null 2>&1
-    fi
-
-    if [ -e /bin/goahead ]; then
 	$LOG "Copy web pages to tmpfs."
 	mkdir -p /tmp/web
 	cp -rpf /web/* /tmp/web
@@ -37,18 +31,8 @@ start() {
     	    cp -rpf /etc/web/* /tmp/web
 	fi
 	$LOG "Start WEB Managment Server."
-	echo "#!/bin/sh"							>  /tmp/webmon
-        echo "while true; do"							>> /tmp/webmon
-	echo "goahead -f"							>> /tmp/webmon
-	echo "logger -t webmon web server unexpectedly stopped - restart."	>> /tmp/webmon
-	echo "sleep 1"								>> /tmp/webmon
-	echo "done"								>> /tmp/webmon
-	if [ -e /tmp/webmon ]; then
-	    killall -q webmon
-	    killall -q -SIGKILL webmon
-	    chmod 555 /tmp/webmon
-	    /tmp/webmon &
-	fi
+	/etc/scripts/config-nginx.sh > /dev/null 2>&1
+	nginx -g "user $Login ;" > /dev/null 2>&1
     fi
 
     if [ "$CONFIG_RALINK_GPIO_PWR_USB" != "0" ] && [ "$CONFIG_RALINK_GPIO_PWR_USB" != "" ]; then
