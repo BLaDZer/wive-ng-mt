@@ -16,6 +16,9 @@
 #include "sdk_version.h"
 #include "config/autoconf.h"			//user config
 #include "user/busybox/include/autoconf.h"	//busybox config
+#ifndef EXTERNAL_BUILD
+#include <linux/autoconf.h>			//kernel config
+#endif
 
 #include <crypt.h>
 #include <shadow.h>
