@@ -24,12 +24,6 @@ CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
 endif
 endif
 
-ifdef CONFIG_RALINK_MT7628
-ifdef CONFIG_RAETH_ESW
-CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7628
-endif
-endif
-
 #ralink specific applications
 ra_dir_$(CONFIG_RT2880_REG_RW)      += reg
 ra_dir_$(CONFIG_RT2880_MII_MGR)     += mii_mgr

@@ -39,13 +39,6 @@ CFLAGS += -I$(LINUXDIR)/drivers/net/raeth -DRALINK_ESW_SUPPORT -DCONFIG_RALINK_M
 endif
 endif
 
-ifdef CONFIG_RALINK_MT7628
-ifdef CONFIG_RAETH_ESW
-IGMP_PROXY_OBJ+= ralink.o rtGSW.o
-CFLAGS += -I$(LINUXDIR)/drivers/net/raeth -DRALINK_ESW_SUPPORT -DCONFIG_RALINK_MT7628
-endif
-endif
-
 all: $(EXEC)
 
 igmpproxy: $(IGMP_PROXY_OBJ)

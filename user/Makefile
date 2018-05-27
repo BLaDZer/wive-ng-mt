@@ -34,12 +34,6 @@ CFLAGS += -DCONFIG_MT7530_GSW -DCONFIG_RALINK_MT7621
 endif
 endif
 
-ifdef CONFIG_RALINK_MT7628
-ifdef CONFIG_RAETH_ESW
-CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7628
-endif
-endif
-
 dir_y =
 dir_all = $(shell LC_ALL=C; ls)
 
