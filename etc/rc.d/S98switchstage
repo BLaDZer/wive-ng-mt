@@ -31,7 +31,7 @@ start() {
     	    cp -rpf /etc/web/* /tmp/web
 	fi
 	$LOG "Start WEB Managment Server."
-	/etc/scripts/config-nginx.sh > /dev/null 2>&1
+	/etc/scripts/config-nginx.sh
 	nginx -g "user $Login ;" &
     fi
 
