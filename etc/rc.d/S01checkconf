@@ -96,7 +96,7 @@ checkminimalconfig()
     #	after update to 7.4.0 need new RemoteManagementPortHTTPS parametr
     #
     if [ "$RemoteManagementPortHTTPS" = "" ]; then
-	nvram_set 2860 RemoteManagementPortHTTPS "433"
+	nvram_set 2860 RemoteManagementPortHTTPS "443"
     fi
 }
 
