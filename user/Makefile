@@ -118,7 +118,7 @@ dir_$(CONFIG_USER_STRACE)		    += strace
 #only ralink apps and scripts
 dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 
-#need last busybox and goahead
+#need last busybox and nginx
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
 
 dir_$(CONFIG_USER_NGINX)                    += nginx
