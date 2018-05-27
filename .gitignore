@@ -66,8 +66,9 @@ fulldump
 /lib/shared/*
 
 #
-# exclude enerated files from libs
+# exclude generated files from libs
 #
+/libext/libtalloc/**/*.pyc
 /libext/libssl/openssl-1.0.2/include/openssl/*
 libext/libssl/openssl-1.0.2/Makefile
 libext/libssl/openssl-1.0.2/Makefile.bak

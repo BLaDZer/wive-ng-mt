@@ -2,6 +2,15 @@
 
 static int default_shown_mbssid[3]  = {0,0,0};
 
+static int getWlan4T4RBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_RT_FIRST_IF_MT7615E) || defined(CONFIG_RT_SECOND_IF_MT7615E)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
+
 
 static int getWlanApcliBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -1846,6 +1855,7 @@ int asp_mod_wireless_init()
 	aspDefineFunc("getWlan11aChannels", getWlan11aChannels, EVERYONE);
 	aspDefineFunc("getWlan11gChannels", getWlan11gChannels, EVERYONE);
 	aspDefineFunc("getWlanApcliBuilt", getWlanApcliBuilt, EVERYONE);
+	aspDefineFunc("getWlan4T4RBuilt", getWlan4T4RBuilt, EVERYONE);
 	aspDefineFunc("getWlanWdsBuilt", getWlanWdsBuilt, EVERYONE);
 	aspDefineFunc("getWlanChannel", getWlanChannel, EVERYONE);
 	aspDefineFunc("getWlanChannelAC", getWlanChannelAC, EVERYONE);

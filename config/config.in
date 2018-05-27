@@ -26,12 +26,7 @@ fi
 mainmenu_option next_comment
 comment 'Network Applications'
 
-bool 'nginx webserver'					CONFIG_USER_NGINX
-
-bool 'go-ahead webserver'				CONFIG_USER_GOAHEAD_HTTPD
-dep_bool '  enable IPv6 support'			CONFIG_USER_GOAHEAD_IPV6 $CONFIG_USER_GOAHEAD_HTTPD
-dep_bool '  enable SSL support'				CONFIG_USER_GOAHEAD_SSL $CONFIG_USER_GOAHEAD_HTTPD
-
+bool 'nginx webserver'				CONFIG_USER_NGINX
 bool 'language pack - Russian'			CONFIG_USER_WEB_LANG_RU
 
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
@@ -51,7 +46,7 @@ if [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
     define_bool CONFIG_LIB_OPENSSL y
 fi
 if [ "$CONFIG_USER_SAMBA" = "y" ] || [ "$CONFIG_USER_TRANSMISSION" = "y" ]; then
-    bool 'storage apps, scripts and goahead conf' CONFIG_USER_STORAGE
+    bool 'storage apps, scripts'		CONFIG_USER_STORAGE
 fi
 bool 'igmp proxy (RFC4605)'			CONFIG_USER_IGMP_PROXY
 bool 'udpxy'					CONFIG_USER_UDPXY

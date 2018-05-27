@@ -120,7 +120,6 @@ dir_$(CONFIG_RT2880_APP)		    += rt2880_app
 
 #need last busybox and goahead
 dir_$(CONFIG_USER_BUSYBOX_BUSYBOX)          += busybox
-dir_$(CONFIG_USER_GOAHEAD_HTTPD)	    += goahead
 
 dir_$(CONFIG_USER_NGINX)                    += nginx
 
