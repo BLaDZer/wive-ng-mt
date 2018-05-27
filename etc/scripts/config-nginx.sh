@@ -6,12 +6,12 @@
 eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS`
 
 
-if [ "$RemoteManagementPort" == "" ];then
+if [ "$RemoteManagementPort" = "" ];then
     RemoteManagementPort=80
 fi
 
-if [ "$RemoteManagementPortHTTPS" == "" ];then
-    RemoteManagementPort=443
+if [ "$RemoteManagementPortHTTPS" = "" ];then
+    RemoteManagementPortHTTPS=443
 fi
 
 
