@@ -528,11 +528,6 @@ static void parse_http_args(ngx_http_request_t *r, char* line, ngx_array_t* http
 
 static int check_auth(webs_t* wp)
 {
-    if (wp->request->connection->ssl == 0) {
-        goto unauthorized; // redirect to login
-    }
-
-
     ngx_http_wive_loc_conf_t  *lcf;
     lcf = ngx_http_get_module_loc_conf(wp->request, ngx_http_wive_module);
     if (lcf != NULL && lcf->disable_auth == 1)
@@ -548,7 +543,7 @@ static int check_auth(webs_t* wp)
 
     if (!sessionid)
     {
-        ELOG_ERR(wp->log, 0, "??? No sessionid \n");
+        ELOG_DEBUG(wp->log, 0, "??? No sessionid \n");
 
         goto unauthorized;
     }
@@ -557,36 +552,32 @@ static int check_auth(webs_t* wp)
     unsigned int i;
 
     char* desired_addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
-    ELOG_ERR(wp->log, 0, "??? Desired address: %s \n", desired_addr);
+    ELOG_DEBUG(wp->log, 0, "??? Desired address: %s \n", desired_addr);
 
-    ELOG_ERR(wp->log, 0, "??? Session count: %d \n", auth_sessions->nelts);
-    struct auth_session_t* session = getSessionByAddress(desired_addr);
+    ELOG_DEBUG(wp->log, 0, "??? Session count: %d \n", auth_sessions->nelts);
+    struct auth_session_t* session = getSessionById(sessionid);
 
     if (session == NULL)
     {
-        ELOG_ERR(wp->log, 0, "??? Session is NULL! \n");
+        ELOG_DEBUG(wp->log, 0, "??? Session is NULL! \n");
         goto unauthorized;
     }
 
-    if (strcmp(session->sessionid, sessionid) == 0)
+    if (strcmp(session->sessionid, sessionid) == 0 && session->role != DENY)
     {
-        ELOG_ERR(wp->log, 0, "??? sessionid equals! \n");
-        if ((time(NULL) - session->start_time) < AUTH_SESSION_MAX_LENGTH)
+        ELOG_DEBUG(wp->log, 0, "??? sessionid equals! \n");
+        if (time(NULL) < (session->start_time + AUTH_SESSION_MAX_LENGTH))
         {
             wp->auth_session = session;
-            ELOG_ERR(wp->log, 0, "??? Got Session %d! \n", wp->auth_session->role);
+            ELOG_DEBUG(wp->log, 0, "??? Got Session %d! \n", wp->auth_session->role);
+            return 0;
         }
-
-        return 0;
     }
 
 unauthorized:
-    ELOG_ERR(wp->log, 0, "??? Unauthorized! \n");
     wp->auth_session = NULL;
-
-    websRedirect(wp, "/login.asp");
+    ELOG_DEBUG(wp->log, 0, "??? Unauthorized! \n");
     return 1;
-
 }
 
 
@@ -694,7 +685,7 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
 
     if (check_auth(wp) == 1)
     {
-
+        websError(wp, 403, "Permission denied!");
     }
     else
     {
@@ -735,6 +726,11 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     }
 */
     websAddHeader(wp, "Cache-Control", "no-cache, no-store, must-revalidate");
+
+    if (wp->out->nelts == 0 && r->headers_out.status == NGX_HTTP_OK)
+    {
+        r->headers_out.status = NGX_HTTP_NO_CONTENT;
+    }
 
 //sending header
     rc = ngx_http_send_header(r);
@@ -806,6 +802,8 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
     }
 
     log = r->connection->log;
+
+
 
     lcf = ngx_http_get_module_loc_conf(r, ngx_http_wive_module);
     if (lcf->variable == (ngx_http_complex_value_t *) -1
@@ -1004,7 +1002,8 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
 
     log->action = "sending response to client";
 
-    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.status = (n_read != 0) ? NGX_HTTP_OK : NGX_HTTP_NO_CONTENT;
+
 //    r->headers_out.content_length_n = -1;
     r->headers_out.last_modified_time = of.mtime;
 
@@ -1030,7 +1029,15 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
 
     if (check_auth(wp) == 1)
     {
-
+        if (r->headers_out.content_type.len >= sizeof("text/html") - 1 
+            && ngx_strncasecmp(r->headers_out.content_type.data, (u_char *) "text/html", sizeof("text/html") - 1) == 0)
+        {
+            websRedirect(wp, "/login.asp");
+        }
+        else
+        {
+            websError(wp, 403, "Permission denied!");
+        }
     }
     else
     {

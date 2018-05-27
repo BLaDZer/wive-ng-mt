@@ -270,6 +270,7 @@ FtpRootDir=/media
 FtpPort=21
 RemoteManagement=1
 RemoteManagementPort=80
+RemoteManagementPortHTTPS=443
 RemoteSSH=1
 RemoteSSHPort=22
 RemoteSysLogIP=

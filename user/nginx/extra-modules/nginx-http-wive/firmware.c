@@ -135,23 +135,23 @@ static int mtd_write_firmware(char *filename, int offset, int len)
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
-    status = system(cmd);
+    status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
-    status = system(cmd);
+    status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
-    status = system(cmd);
+    status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
     snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset, len, filename);
-    status = system(cmd);
+    status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
@@ -474,7 +474,7 @@ int firmware_upgrade(webs_t* wp)
 	// start web timer and crash rwfs BEFORE flash destroy
 	if (reset_rwfs)
 	{
-		system("fs restore > /dev/null 2>&1");
+		doSystem("%s", "fs restore > /dev/null 2>&1");
 //		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 20);
 		upload_html_success(wp, 60);
 	} else

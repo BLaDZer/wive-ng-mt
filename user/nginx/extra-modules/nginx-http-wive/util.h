@@ -9,6 +9,7 @@
 #include <ngx_core.h>
 #include <ngx_http.h>
 #include <ngx_hash.h>
+#include <ngx_md5.h>
 
 #include <syslog.h>
 
@@ -104,7 +105,10 @@ typedef struct asp_nvram_acl_t{
 
 //char PASS_HASH_SALT[128];
 
+#ifdef NGX_HTTP_SSL
 void sha256(char *string, char outputBuffer[65]);
+#endif
+void md5(char *string, char outputBuffer[65]);
 
 ngx_array_t* get_passwd_users(ngx_pool_t* pool);
 int check_shadow_pass(webs_t* wp,char* username, char* password);

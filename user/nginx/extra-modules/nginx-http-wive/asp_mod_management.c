@@ -5,6 +5,7 @@
  */
 static void setSysAdm(webs_t* wp, char_t *path, char_t *query)
 {
+        if (wp->auth_session == NULL) return;
 
         char_t *admuser, *admpass, *orduser, *ordpass, *mgmtuser, *mgmtpass;
         char *old_admin, *old_user, *old_mgmt;
@@ -87,6 +88,27 @@ static void setSysAdm(webs_t* wp, char_t *path, char_t *query)
 	ngx_nvram_bufset(wp, "MngmtPassword", mgmtpass);
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
+
+        if (wp->auth_session->role == ADMIN)
+        {
+            if (admuser)
+            {
+                closeSessionsByUser(old_admin);
+                closeSessionsByUser(admuser);
+            }
+
+            if (mgmtuser)
+            {
+                closeSessionsByUser(old_mgmt);
+                closeSessionsByUser(mgmtuser);
+            }
+        }
+
+        if (orduser)
+        {
+            closeSessionsByUser(old_user);
+            closeSessionsByUser(orduser);
+        }
 
 	/* modify /etc/passwd to new user name and passwd */
 	doSystem("sed -e 's/^%s:/%s:/;s/^%s:/%s:/;s/^%s:/%s:/' /etc/passwd > /etc/newpw", old_admin, admuser, old_user, orduser, old_mgmt, mgmtuser);
@@ -399,6 +421,7 @@ static void clearlog(webs_t* wp, char_t *path, char_t *query)
 	doSystem("service syslog start");
 
         websSetContentType(wp, "text/plain");
+        outWrite(" ");
 	websDone(wp, 200);
 }
 

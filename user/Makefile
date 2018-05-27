@@ -148,4 +148,5 @@ clean:
 	-$(MAKE) -C busybox mrproper;
 
 web:
-	$(MAKE) -C nginx all
+	if [ -f "nginx/DoConfigure.sh" ]; then ( cd nginx; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
+	$(MAKE) -C nginx 

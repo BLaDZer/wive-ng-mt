@@ -1,6 +1,6 @@
 USE_MD5=YES
-USE_SHA1=YES
-USE_OPENSSL=YES
+#USE_SHA1=YES
+#USE_OPENSSL=YES
 ngx_addon_name=ngx_http_upload_module
 
 if test -n "$ngx_module_link"; then

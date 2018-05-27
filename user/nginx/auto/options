@@ -173,7 +173,7 @@ do
     opt="$opt `echo $option | sed -e \"s/\(--[^=]*=\)\(.* .*\)/\1'\2'/\"`"
 
     case "$option" in
-        -*=*) value=`echo "$option" | sed -e 's/[-_a-zA-Z0-9]*=//'` ;;
+        --*=*) value=`echo "$option" | sed -e 's/--[-_a-zA-Z0-9]*=//'` ;;
            *) value="" ;;
     esac
 
@@ -336,8 +336,9 @@ use the \"--with-mail_ssl_module\" option instead"
 
         --with-cc=*)                     CC="$value"                ;;
         --with-cpp=*)                    CPP="$value"               ;;
-        --with-cc-opt=*)                 NGX_CC_OPT="-I$value/lib/shared/include -I$value/libnvram -ffunction-sections -fdata-sections -Os"        ;;
-        --with-ld-opt=*)                 NGX_LD_OPT="$value -lssl -lcrypto -ldl -lnvram -lwive"        ;;
+        --with-cc-opt=*)                 NGX_CC_OPT="$value"        ;;
+        --with-ld-opt=*)                 NGX_LD_OPT="$value"        ;;
+
         --with-cpu-opt=*)                CPU="$value"               ;;
         --with-debug)                    NGX_DEBUG=YES              ;;
 

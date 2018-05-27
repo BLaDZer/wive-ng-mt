@@ -847,9 +847,7 @@ static int getStaLinkQuality(webs_t *wp, char** params, int nparams)
  * description: write station link Rx rate
  */
 static int getStaLinkRxRate(webs_t *wp, char** params, int nparams)
-
 {
-	char buf[32];
 
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
@@ -860,8 +858,7 @@ static int getStaLinkRxRate(webs_t *wp, char** params, int nparams)
 	if (getLastRxRateFor11n(&fLastRxRate))
 	    return -1;
 
-	snprintf(buf, sizeof(buf), "%.1f", fLastRxRate);
-	websWrite(wp, "%s", buf);
+	websWrite(wp, "%.1f", fLastRxRate);
 
 	return 0;
 #else

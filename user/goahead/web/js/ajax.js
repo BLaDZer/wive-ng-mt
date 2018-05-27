@@ -568,14 +568,22 @@ function showWarning() {
 	}
 }
 
-function resetValues(form, time) {
+function resetValues(form, time, callback) {
 	if (confirm(_('message reset confirm'))) {
+		if (callback !== undefined)
+			callback();
+
 		var br = getBrowser();
 		form.reset.value = "1";
+
 		if (time === undefined) 
 			time = 15;
+
 		ajaxShowTimer(form, 'timerReloader', _('message apply'), time);
+                return true;
 	}
+
+	return false;
 }
 
 // indexOf for IE8

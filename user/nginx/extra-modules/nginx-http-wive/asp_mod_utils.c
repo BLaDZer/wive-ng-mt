@@ -693,7 +693,7 @@ static void settingsUploadForm(webs_t* wp, char_t *path, char_t *query)
     upload_html_header(wp);
 
     char err_msg[512];
-    long file_size = 0, file_begin = 0, file_end = 0;
+    long file_size = 0;
 
     char *filename = websGetVar(wp, "filename.path", NULL);
     char *filesize = websGetVar(wp, "filename.size", NULL);
@@ -764,7 +764,7 @@ static void rwfsUploadForm(webs_t* wp, char_t *path, char_t *query)
     upload_html_header(wp);
 
     char err_msg[512];
-    long file_size = 0, file_begin = 0, file_end = 0;
+    long file_size = 0;
 
     char *filename = websGetVar(wp, "filename.path", NULL);
     char *filesize = websGetVar(wp, "filename.size", NULL);
@@ -996,11 +996,11 @@ unauthorized:
 
 static int webLogout(webs_t *wp, char** params, int nparams)
 {
-    char* addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
-    if (addr != NULL)
+    if (wp->auth_session != NULL)
     {
-        closeSessionByAddress(addr);
+        wp->auth_session->start_time = 0;
     }
+
 //    websAddHeader(wp, "Set-Cookie", "sessionid=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path=/");
     return NGX_OK;
 }

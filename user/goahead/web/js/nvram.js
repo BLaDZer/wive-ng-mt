@@ -327,6 +327,7 @@ var NVRAM_SmbOsLevel                                                 = '<% getCf
 var NVRAM_radius_srv_enabled                                         = '<% getCfgGeneral(1, "radius_srv_enabled",                  "0"); %>';
 var NVRAM_radius_srv_secret                                          = '<% getCfgGeneral(1, "radius_srv_secret",                   "wive-ng-mt"); %>';
 var NVRAM_RemoteManagementPort                                       = '<% getCfgGeneral(1, "RemoteManagementPort",                "80"); %>';
+var NVRAM_RemoteManagementPortHTTPS                                  = '<% getCfgGeneral(1, "RemoteManagementPortHTTPS",           "443"); %>';
 var NVRAM_RemoteSSHPort                                              = '<% getCfgGeneral(1, "RemoteSSHPort",                       "22"); %>';
 var NVRAM_hw_nat_bind                                                = '<% getCfgGeneral(1, "hw_nat_bind",                         "50"); %>';
 var NVRAM_stpEnabled                                                 = '<% getCfgGeneral(1, "stpEnabled",                          "0"); %>';

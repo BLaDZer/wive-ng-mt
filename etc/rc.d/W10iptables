@@ -126,13 +126,13 @@ servicelimit() {
 	if [ "$RemoteManagement" != "0" ]; then
 	    $LOG "Remote managment web limit"
     	    iptables -A servicelimit -p tcp --dport $RemoteManagementPort $CONNLIMIT 16 -j REJECT
-	    iptables -A servicelimit -p tcp --dport 443 $CONNLIMIT 16 -j REJECT
+	    iptables -A servicelimit -p tcp --dport $RemoteManagementPortHTTPS $CONNLIMIT 16 -j REJECT
 	    if [ "$RemoteManagement" = "1" ]; then
     		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
-		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 443 -j ACCEPT
+		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport $RemoteManagementPortHTTPS -j ACCEPT
 	    elif [ "$RemoteManagement" = "2" ]; then
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
-		iptables -A servicelimit $STATE_NEW -p tcp --dport 443 -j ACCEPT
+		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPortHTTPS -j ACCEPT
 	    fi
 	fi
 	if [ "$RemoteSSH" != "0" ]; then
@@ -641,7 +641,7 @@ iptmodulesload() {
 get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable IPPortFilterInputEnable WANPingFilter \
-	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort cwmpdEnabled RIPEnable \
+	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpdEnabled RIPEnable \
 	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \

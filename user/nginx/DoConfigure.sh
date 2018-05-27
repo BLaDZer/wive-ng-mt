@@ -7,7 +7,10 @@ HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
 CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
-CONFOPTS="$CONFOPTS --with-cc-opt=$ROOTDIR --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
+
+CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-Os"
+CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
+
 CONFOPTS="$CONFOPTS --with-libatomic=NO"
 CONFOPTS="$CONFOPTS --without-http_rewrite_module --without-http_gzip_module --without-http_upstream_zone_module"
 

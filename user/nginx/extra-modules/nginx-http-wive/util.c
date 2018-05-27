@@ -7,6 +7,7 @@ enum UserRole get_user_role(char* username)
 
     char *adm_login = nvram_get(RT2860_NVRAM, "Login");  // nvram_get usage is not an error, we shouldn't use ACLs during authorization
     char *ord_login = nvram_get(RT2860_NVRAM, "UserLogin");
+    char *mng_login = nvram_get(RT2860_NVRAM, "MngmtLogin");
 
     if (adm_login == NULL) adm_login = "Admin";
 
@@ -14,6 +15,7 @@ enum UserRole get_user_role(char* username)
 
 //    ELOG_DEBUG(wp->log, 0, "ROLE: ord_login = %s\n, username = %s\n", ord_login, username);
     if (ord_login != NULL && strcmp(username, ord_login) == 0) return USER;
+    if (mng_login != NULL && strcmp(username, mng_login) == 0) return ADMIN;
 
     return DENY;
 }
@@ -90,7 +92,7 @@ deny:
 
 }
 
-
+#ifdef NGX_HTTP_SSL
 void sha256(char *string, char outputBuffer[65])
 {
     int i;
@@ -107,6 +109,26 @@ void sha256(char *string, char outputBuffer[65])
     }
 
     outputBuffer[64] = 0;
+}
+#endif
+
+void md5(char *string, char outputBuffer[65])
+{
+    int i;
+    unsigned char hash[16];
+    ngx_md5_t ctx;
+
+    ngx_md5_init(&ctx);
+    ngx_md5_update(&ctx, string, strlen(string));
+    ngx_md5_final(hash, &ctx);
+
+
+    for(i = 0; i < 16; i++)
+    {
+        sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+    }
+
+    outputBuffer[32] = 0;
 }
 
 ngx_array_t* get_passwd_users(ngx_pool_t* pool)
@@ -180,9 +202,13 @@ int check_shadow_pass(webs_t* wp, char* username, char* password)
     char enc_pass1[65] = {0};
     char enc_pass2[65] = {0};
 
+#ifdef NGX_HTTP_SSL
     sha256(enc_pass, enc_pass1);
     sha256(pwd->pw_passwd, enc_pass2);
-
+#else
+    md5(enc_pass, enc_pass1);
+    md5(pwd->pw_passwd, enc_pass2);
+#endif
 
     if (strcmp(enc_pass1, enc_pass2) == 0)
     {

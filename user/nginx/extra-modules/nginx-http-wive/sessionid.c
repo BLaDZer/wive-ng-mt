@@ -31,6 +31,42 @@ auth_session_t* getSessionByAddress(char* address)
     return NULL;
 }
 
+auth_session_t* getSessionById(char* sessionid)
+{
+    unsigned int i;
+    struct auth_session_t* sessions = (auth_session_t*) auth_sessions->elts;
+
+    for (i=0;i<auth_sessions->nelts;i++)
+    {
+
+        if (strcmp(sessions[i].sessionid, sessionid) == 0)
+        {
+            return &(sessions[i]);
+        }
+    }
+
+    return NULL;
+}
+
+
+int closeSessionsByUser(char* username)
+{
+    unsigned int i;
+    struct auth_session_t* sessions = (auth_session_t*) auth_sessions->elts;
+    int c;
+
+    for (i=0;i<auth_sessions->nelts;i++)
+    {
+        if (strcmp(sessions[i].username, username) == 0)
+        {
+            sessions[i].start_time = 0;
+            c++;
+        }
+    }
+
+    return c;
+}
+
 
 auth_session_t* getSessionOlderThan(unsigned int seconds)
 {
@@ -71,7 +107,8 @@ auth_session_t* createAuthSession(char* address, char* username)
     enum UserRole role = get_user_role(username);
     struct auth_session_t* auth_session = NULL;
 
-    auth_session = getSessionByAddress(address);
+    // commented out to not replace alive sessions
+    //auth_session = getSessionByAddress(address);
 
     if (auth_session == NULL)
     {
@@ -89,7 +126,14 @@ auth_session_t* createAuthSession(char* address, char* username)
     }
 
     unsigned char bts[65] = {0};
+#ifdef NGX_HTTP_SSL
     RAND_bytes(bts, 64);
+#else
+    for (i=0;i<65;i++)
+    {
+        bts[i] = rand() % 256;
+    }
+#endif
 
     char alpha[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

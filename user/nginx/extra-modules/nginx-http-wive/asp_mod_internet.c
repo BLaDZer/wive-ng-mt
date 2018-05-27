@@ -66,18 +66,18 @@ static int getDns(webs_t *wp, char** params, int nparams)
 {
     FILE *fp;
     char buf[80] = {0}, ns_str[11], dns[16] = {0};
-    int type, idx = 0, req = 0;
+    int idx = 0, req = 0;
 
     if (nparams < 1)
     {
         return NGX_OK; // do not output anything
     }
 
-    char* param = params[0];
+    char* type = params[0];
 
-    if (param[0] == '1') req = 1;
+    if (type[0] == '1') req = 1;
     else
-    if (param[0] == '2') req = 2;
+    if (type[0] == '2') req = 2;
     else
     {
         return NGX_OK; // do not output anything

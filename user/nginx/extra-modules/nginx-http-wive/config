@@ -22,5 +22,10 @@ NGX_ADDON_SRCS=" \
     $ngx_addon_dir/sessionid.c \
 "
 
-ngx_module_libs=-lcrypt
-NGX_LD_OPT="$NGX_LD_OPT -lcrypt"
+ngx_module_libs="--gc-sections -lcrypt -lnvram -lwive -ldl"
+
+if [ $HTTP_SSL = YES ]; then
+    ngx_module_libs="$ngx_module_libs -lssl -lcrypto"
+fi
+
+NGX_LD_OPT="$NGX_LD_OPT -lcrypt -lnvram -lwive -ldl"

@@ -149,7 +149,7 @@ if (AUTH_ROLE == 2)
 
 a.add(509, 500, _("treeapp miscellaneous"),     "javascript:go('services/misc.asp');");
 
-if (BUILD_USB == "1" && AUTH_ROLE == 2)
+if (BUILD_USB == "1")
 {
     a.add(800,   0, _("treeapp usb"),		"javascript:a.oo(800);");
     if (BUILD_PRINTER_SRV == "1")	a.add(802, 800, _("treeapp printersrv"),	"javascript:go('usb/P910NDprintersrv.asp');");

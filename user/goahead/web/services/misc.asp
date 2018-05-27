@@ -47,6 +47,7 @@
 				_TR("miscSmbFastpath",			"services misc samba fastpath");
 				_TR("miscWebRemote",			"services misc web remote");
 				_TR("miscWebPort",			"services misc web port");
+				_TR("miscWebPortHTTPS",			"services misc web port https");
 				_TR("miscSSHRemote",			"services misc ssh remote");
 				_TR("miscSSHPort",			"services misc ssh port");
 				_TR("miscTelnetRemote",			"services misc telnet remote");
@@ -123,6 +124,7 @@
 				var form = document.miscServiceCfg;
 
 				form.RemoteManagementPort.value			= NVRAM_RemoteManagementPort;
+				form.RemoteManagementPortHTTPS.value		= NVRAM_RemoteManagementPortHTTPS;
 				form.RemoteSSHPort.value			= NVRAM_RemoteSSHPort;
 				form.hwnatThreshold.value			= NVRAM_hw_nat_bind;
 				form.stpEnbl.options.selectedIndex		= NVRAM_stpEnabled;
@@ -214,6 +216,7 @@
 
 			function CheckValues(form) {
 				var rmtManagementPort = NVRAM_RemoteManagementPort;
+				var rmtManagementPortHTTPS = NVRAM_RemoteManagementPortHTTPS;
 
 				// NAT Threshold
 				if (form.offloadMode.value >= 2)
@@ -226,6 +229,7 @@
 					}
 				// HTTP Remote management
 				if (form.rmtHTTP.value == 1)
+				{
 					if (!validateNum(form.RemoteManagementPort.value, false) || form.RemoteManagementPort.value < 0 || form.RemoteManagementPort.value > 65535) {
 						window.scrollTo(0, 0);
 						alert(_("services misc http over"));
@@ -233,6 +237,14 @@
 						form.RemoteManagementPort.focus();
 						return false;
 					}
+					if (!validateNum(form.RemoteManagementPortHTTPS.value, false) || form.RemoteManagementPortHTTPS.value < 0 || form.RemoteManagementPortHTTPS.value > 65535) {
+						window.scrollTo(0, 0);
+						alert(_("services misc http over"));
+						form.RemoteManagementPortHTTPS.select();
+						form.RemoteManagementPortHTTPS.focus();
+						return false;
+					}
+				}
 				// SSH Remote management
 				if (form.rmtSSH.value == 1)
 					if (!validateNum(form.RemoteSSHPort.value, false) || form.RemoteSSHPort.value < 0 || form.RemoteSSHPort.value > 65535) {
@@ -243,7 +255,7 @@
 						return false;
 					}
 
-				if (form.RemoteManagementPort.value == rmtManagementPort) {
+				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS) {
 					form.goaheadrestart.value = 0;
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
 				}
@@ -283,6 +295,7 @@
 
 			function httpRmtSelect(form) {
 				displayElement('http_rmt_port', form.rmtHTTP.value != '0');
+				displayElement('https_rmt_port', form.rmtHTTP.value != '0');
 			}
 
 			function sshRmtSelect(form) {
@@ -593,6 +606,14 @@
 							<input class="normal" name="RemoteManagementPort">
 						</td>
 					</tr>
+
+					<tr id="https_rmt_port" style="display: none;">
+						<td class="head" id="miscWebPortHTTPS" style="width: 45%">Remote HTTPS port</td>
+						<td colspan="4">
+							<input class="normal" name="RemoteManagementPortHTTPS">
+						</td>
+					</tr>
+
 					<tr id="miscSSHRemote_row">
 						<td class="head" id="miscSSHRemote" style="width: 45%">SSH Remote Management</td>
 						<td colspan="4">

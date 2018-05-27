@@ -277,6 +277,29 @@ void outputTimerForReload(webs_t* wp, char_t *url, long delay)
 			lan_if_ip = "192.168.1.1";
 	}
 
+
+#ifdef NGX_HTTP_SSL
+        if (wp->request->connection->ssl != 0) {
+            char_t *https_port = nvram_get(RT2860_NVRAM, "RemoteManagementPortHTTPS");
+
+            if (strcmp(https_port, "443") == 0)
+            {
+                outWrite("<script language=\"JavaScript\" type=\"text/javascript\">\n"
+                            "ajaxReloadDelayedPage(%ld, \"https://%s%s\");\n"
+                            "</script>",
+                            delay, lan_if_ip, url);
+            } else {
+                outWrite("<script language=\"JavaScript\" type=\"text/javascript\">\n"
+                            "ajaxReloadDelayedPage(%ld, \"https://%s:%s%s\");\n"
+                            "</script>",
+                            delay, lan_if_ip, https_port, url);
+            }
+
+            websDone(wp, 200);
+            return;
+        }
+#endif
+
 	char_t *http_port = nvram_get(RT2860_NVRAM, "RemoteManagementPort");
 
 //	websHeader(wp);
@@ -414,9 +437,9 @@ int websRedirect(webs_t* wp, char_t *url)
         redirectFmt = T("http://%s/%s");
 
 #ifdef NGX_HTTP_SSL
-//        if (wp->request->connection->ssl != 0) {
-        redirectFmt = T("https://%s/%s");
-//        }
+        if (wp->request->connection->ssl != 0) {
+            redirectFmt = T("https://%s/%s");
+        }
 #endif
 
         urlbuf = ngx_pcalloc(wp->pool, 4096 + 80);

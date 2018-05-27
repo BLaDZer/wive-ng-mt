@@ -156,6 +156,7 @@ static void setDhcp(webs_t* wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 10, "dhcpStart", "dhcpEnd", "dhcpMask", "dhcpGateway", "dhcpLease",
 						"dhcpDomain", "dhcpARPPTimeout", "dhcpEnabled", "dhcpPriDns", "dhcpSecDns");
+		ngx_nvram_set(wp, "dhcpStatic", "");
 	}
 	else {
 		if (dhcpEnabled == NULL)
@@ -271,6 +272,7 @@ parameter_fetch_t service_misc_flags[] =
 	{ ("dnspEnbl"),		"dnsPEnabled",		0, ("0")  },
 	{ ("rmtHTTP"),			"RemoteManagement",	0, ("0")  },
 	{ ("RemoteManagementPort"),	"RemoteManagementPort",	0, ("80") },
+	{ ("RemoteManagementPortHTTPS"),	"RemoteManagementPortHTTPS",	0, ("443") },
 #ifdef CONFIG_USER_DROPBEAR
 	{ ("rmtSSH"),			"RemoteSSH",		0, ("0")  },
 	{ ("RemoteSSHPort"),		"RemoteSSHPort",	0, ("22") },
@@ -329,16 +331,16 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 47, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
+		nvram_fromdef(RT2860_NVRAM, 48, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
 						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
-						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort", "RemoteSSH",
+						"xupnpd", "dnsPEnabled", "RemoteManagement", "RemoteManagementPort",  "RemoteSSH",
 						"RemoteSSHPort", "RemoteTelnet", "UDPXYMode", "UDPXYPort", "WatchdogEnabled",
 						"WANPingFilter", "pppoe_pass", "ipv6_pass", "dhcpSwReset", "vlanDoubleTag",
 						"offloadMode", "hw_nat_wifi", "hw_nat_udp", "hw_nat_six", "nat_mode",
 						"natFastpath", "routeFastpath", "filterFastpath", "CrondEnable", "ForceRenewDHCP",
 						"parproutedEnabled", "pinger_check_on", "ping_check_time", "ping_check_interval", "store_ttl",
 						"store_ttl_mcast", "snmpd", "snmpdcommunity", "mss_use_pmtu", "IRQBalance",
-						"smbFastpath", "hw_nat_bind");
+						"smbFastpath", "hw_nat_bind", "RemoteManagementPortHTTPS");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);

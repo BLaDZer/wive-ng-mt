@@ -19,9 +19,12 @@ typedef struct auth_session_t {
 
 int sessionid_init(ngx_pool_t* pool);
 auth_session_t* getSessionByAddress(char* address);
+auth_session_t* getSessionById(char* sessionid);
+
 auth_session_t* createAuthSession(char* address, char* username);
 auth_session_t* getSessionOlderThan(unsigned int seconds);
 int closeSessionByAddress(char* address);
+int closeSessionsByUser(char* username);
 auth_session_t* getLastSession();
 void saveSessions();
 void loadSessions();

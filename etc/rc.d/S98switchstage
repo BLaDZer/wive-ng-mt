@@ -24,7 +24,8 @@ start() {
     if [ -e /bin/nginx ]; then
         eval `nvram_buf_get 2860 Login`
 	$LOG "Start NGINX."
-	nginx -g "user $Login ;"
+	/etc/scripts/config-nginx.sh > /dev/null 2>&1
+	nginx -g "user $Login ;" > /dev/null 2>&1
     fi
 
     if [ -e /bin/goahead ]; then
