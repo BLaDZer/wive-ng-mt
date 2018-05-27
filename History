@@ -4093,9 +4093,10 @@
 5) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
 6) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
 7) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
-8) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-9) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-10) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-11) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+8) kernel: net: llc: better deal with too small mtu.<br>
+9) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+10) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+11) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+12) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>
