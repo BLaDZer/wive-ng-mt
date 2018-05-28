@@ -17,8 +17,14 @@
 void reboot_now(void)
 {
 	/* always flush stdout buffer before reboot */
+	sync();
 	fflush(stdout);
 	system("(sleep 2 && /etc/scripts/reboot.sh) > /dev/null 2>&1 &");
+
+	/* wait 15sec ad if not rebooted from script call kernel for reboot directly */
+	sleep(15);
+	fflush(stdout);
+	syscall(SYS_reboot,LINUX_REBOOT_MAGIC1,LINUX_REBOOT_MAGIC2,LINUX_REBOOT_CMD_RESTART,NULL);
 }
 
 const char* getSystemPlatform()

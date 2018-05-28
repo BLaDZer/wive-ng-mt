@@ -862,7 +862,7 @@ static void firmwareUploadForm(webs_t* wp, char_t *path, char_t *query)
 
     if (errcode == 0)
     {
-        reboot_now();
+//        reboot_now();
     }
     else
     {

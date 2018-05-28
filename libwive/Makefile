@@ -8,6 +8,8 @@ CFLAGS += $(SSP_ALL_CFLAGS) -fPIC -D_LARGEFILE64_SOURCE=1
 # strong build
 CFLAGS += -Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wlogical-op -Wcast-qual -Wno-unused-parameter -Wno-sign-compare -Werror -Wfatal-errors
 
+# critical system lib must be static linked with libgcc for touch syscall diretry
+LDFLAGS += -static-libgcc
 
 LIBWIVE=libwive.a
 LIBWIVE_SHARED=libwive.so

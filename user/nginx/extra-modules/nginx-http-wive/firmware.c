@@ -134,23 +134,23 @@ static int mtd_write_firmware(char *filename, int offset, int len)
 /* check image size before erase flash and write image */
 #ifdef CONFIG_RT2880_ROOTFS_IN_FLASH
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel_RootFS", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel_RootFS &", offset, len, filename);
     status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #else
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel &", offset,  CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s RootFS", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s RootFS &", offset + CONFIG_MTD_KERNEL_PART_SIZ, len - CONFIG_MTD_KERNEL_PART_SIZ, filename);
     status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
 #endif
 #elif defined(CONFIG_RT2880_ROOTFS_IN_RAM)
-    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -o %d -l %d write %s Kernel", offset, len, filename);
+    snprintf(cmd, sizeof(cmd), "/bin/mtd_write -r -o %d -l %d write %s Kernel &", offset, len, filename);
     status = doSystem("%s", cmd);
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	err++;
@@ -475,20 +475,16 @@ int firmware_upgrade(webs_t* wp)
 	if (reset_rwfs)
 	{
 		doSystem("%s", "fs restore > /dev/null 2>&1");
-//		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 20);
-		upload_html_success(wp, 60);
+		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 20);
 	} else
-		upload_html_success(wp, 60);
-//		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 10);
+		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 10);
 
 	// flash write
-	if (mtd_write_firmware(filename, 0, (int)file_size) == -1)
-        {
-            upload_html_error(wp, "MTD_WRITE ERROR: NEED RESTORE OVER RECOVERY MODE!!!");
-            return -1;
-        }
 
-        ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade OK\n");
+        ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade started\n");
         websDone(wp, 200);
+
+        mtd_write_firmware(filename, 0, (int)file_size);
+
 	return 0;
 }
