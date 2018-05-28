@@ -61,7 +61,7 @@ body {
 }
 
 div.container {
-    padding-top: 50px;
+    padding-top: 100px;
 }
 
 #submit-td {
@@ -115,13 +115,13 @@ input {
 	<body bgcolor="#FFFFFF" onLoad="initValues()">
         <div class="container" align=center>
 					<!-- ----------------- Login Form ----------------- -->
-					<form method="post" name="Lang" action="/goform/auth">
+					<form method="post" name="LoginForm" action="/goform/auth">
 						<table>
 							<tr>
 								<td class="title" id="loTitle" colspan=2>Sign In</td>
 							<tr>
 								<td class="col1"><legend id="loUsername">Username</legend></td>
-								<td class="col2"><input type="text" name="username" id="username"></td>
+								<td class="col2"><input type="text" name="username" id="username" autofocus ></td>
 							</tr>
 							<tr>
 								<td class="col1"><legend id="loPassword">Password</legend></td>

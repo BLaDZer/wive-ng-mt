@@ -299,10 +299,8 @@ static int parse_multipart(ngx_http_request_t *r, char* body, unsigned int body_
 
 //ASP FORM SEP multipart/form-data; boundary=----WebKitFormBoundarygDuHoeTV4B2TUAEV
 
-    ELOG_DEBUG(r->connection->log, 0, "ASP FORM n_strstr \n");
     if (n_strstr(content_type, type_prefix).data == NULL)
     {
-        ELOG_ERR(r->connection->log, 0, "ASP FORM n_strstr IS NULL\n");
         return 1;
     }
 
@@ -548,7 +546,7 @@ static int check_auth(webs_t* wp)
         goto unauthorized;
     }
 
-    ELOG_ERR(wp->log, 0, "??? my id: %s \n", sessionid);
+    ELOG_DEBUG(wp->log, 0, "??? my id: %s \n", sessionid);
     unsigned int i;
 
     char* desired_addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
@@ -682,6 +680,7 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     wp->out = ngx_array_create(r->pool, 128, sizeof(char));
     wp->log = r->connection->log;
     wp->args = http_args;
+    wp->do_reboot = 0;
 
     if (check_auth(wp) == 1)
     {
@@ -742,8 +741,16 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     }
 
 // sending body
-    rc = ngx_http_output_filter(r, &out_chain);
+    if (wp->out->nelts > 0)
+    {
+        rc = ngx_http_output_filter(r, &out_chain);
+    }
     ngx_http_finalize_request(r, rc);
+
+    if (wp->do_reboot == 1)
+    {
+        reboot_now();
+    }
 }
 
 
@@ -1025,6 +1032,7 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
     wp->pool = r->pool;
     wp->out = ngx_array_create(r->pool, 128, sizeof(char));
     wp->log = r->connection->log;
+    wp->do_reboot = 0;
 
 
     if (check_auth(wp) == 1)

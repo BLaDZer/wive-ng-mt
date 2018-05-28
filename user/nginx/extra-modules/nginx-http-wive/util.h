@@ -95,6 +95,8 @@ typedef struct webs_t {
     ngx_log_t* log;     // request connection log
     ngx_array_t* args;  // http GET/POST arguments (check when it populates!), array of keyval_t
 
+    int do_reboot; // do reboot after the request ended
+
 //    char* auth_username; // shadow auth username
 //    enum UserRole auth_role; // default is Deny
 

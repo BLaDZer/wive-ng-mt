@@ -538,7 +538,7 @@ char* ngx_nvram_get(webs_t* wp, char* key)
     if (nvram_acl_check(wp, key, 0))
     {
         ELOG_ERR(wp->log, 0, "ngx_nvram_get: ACCESS DENIED (key=%s)!\n", key);
-        return NULL;
+        return "";
     }
 
     char* val = nvram_get(RT2860_NVRAM, key);

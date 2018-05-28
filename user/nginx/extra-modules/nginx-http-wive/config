@@ -15,12 +15,13 @@ NGX_ADDON_SRCS=" \
     $ngx_addon_dir/asp_mod_management.c \
     $ngx_addon_dir/asp_mod_station.c \
     $ngx_addon_dir/asp_mod_storage.c \
-    $ngx_addon_dir/asp_mod_test.c \
     $ngx_addon_dir/asp_mod_qos.c \
     $ngx_addon_dir/asp_mod_usb.c \
     $ngx_addon_dir/firmware.c \
     $ngx_addon_dir/sessionid.c \
 "
+
+#    $ngx_addon_dir/asp_mod_test.c \
 
 ngx_module_libs="--gc-sections -lcrypt -lnvram -lwive -ldl"
 

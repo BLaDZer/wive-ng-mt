@@ -53,7 +53,7 @@ int closeSessionsByUser(char* username)
 {
     unsigned int i;
     struct auth_session_t* sessions = (auth_session_t*) auth_sessions->elts;
-    int c;
+    int c = 0;
 
     for (i=0;i<auth_sessions->nelts;i++)
     {

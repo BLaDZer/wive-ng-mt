@@ -3,7 +3,7 @@
 #
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: all romfs clean
+.PHONY: all romfs clean web
 
 #
 # Include architecture specific build rules.
@@ -142,4 +142,4 @@ clean:
 
 web:
 	if [ -f "nginx/DoConfigure.sh" ]; then ( cd nginx; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
-	$(MAKE) -C nginx 
+	$(MAKE) -C nginx

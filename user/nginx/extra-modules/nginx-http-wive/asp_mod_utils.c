@@ -595,7 +595,7 @@ static void setOpMode(webs_t* wp, char_t *path, char_t *query)
         websFooter(wp);
 
 	/* Reboot */
-	reboot_now();
+        wp->do_reboot = 1;
 }
 
 static int getEthernetPortCount(webs_t *wp, char** params, int nparams)
@@ -662,7 +662,7 @@ static void setEthernetPort(webs_t* wp, char_t *path, char_t *query)
                 websDone(wp, 200);
 
 		/* Reboot */
-		reboot_now();
+                wp->do_reboot = 1;
 	}
 	else {
 //		websHeader(wp);
@@ -683,7 +683,7 @@ static void reboot_web(webs_t* wp, char_t *path, char_t *query)
     doSystem("fs save > /dev/null 2>&1");
 
     /* Reboot */
-    reboot_now();
+    wp->do_reboot = 1;
 }
 
 static void settingsUploadForm(webs_t* wp, char_t *path, char_t *query)
@@ -750,8 +750,7 @@ static void settingsUploadForm(webs_t* wp, char_t *path, char_t *query)
     ELOG_INFO(wp->request->connection->log, 0, "Settings import OK\n");
 
     upload_html_success(wp, 60);
-    sleep(3);
-    reboot_now();
+    wp->do_reboot = 1;
 
     return;// 0;
 }
@@ -821,8 +820,8 @@ static void rwfsUploadForm(webs_t* wp, char_t *path, char_t *query)
 
     ELOG_INFO(wp->request->connection->log, 0, "RWFS import OK\n");
     upload_html_success(wp, 60);
-    sleep(3);
-    reboot_now();
+    wp->do_reboot = 1;
+
     return;// 0;
 }
 
@@ -839,30 +838,11 @@ static void firmwareUploadForm(webs_t* wp, char_t *path, char_t *query)
         return;
     }
 
-//    unsigned int i;
-
-//    keyval_t* elems = wp->args->elts;
-
-/*
-    for (i=0;i<wp->args->nelts;i++)
-    {
-        keyval_t ptr = elems[i];
-
-        ELOG_DEBUG(wp->request->connection->log, 0, "%s = %s <br>\n", ptr.key, ptr.val);
-        outWrite("%s = %s <br>\n", ptr.key, ptr.val);
-//        if (strcmp(ptr.key, var) == 0)
-//        {
-//            return ptr.val;
-//        }
-    }
-*/
-
-
     int errcode = firmware_upgrade(wp);
 
     if (errcode == 0)
     {
-//        reboot_now();
+//      wp->do_reboot = 1;
     }
     else
     {

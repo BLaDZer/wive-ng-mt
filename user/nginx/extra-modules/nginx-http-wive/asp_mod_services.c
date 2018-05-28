@@ -632,8 +632,8 @@ static void l2tpConfig(webs_t* wp, char_t *path, char_t *query)
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "l2tp_srv_user%d", i);
 			sprintf(pass_var, "l2tp_srv_pass%d", i);
-			ngx_nvram_bufset(wp, user_var, "");
-			ngx_nvram_bufset(wp, pass_var, "");
+			nvram_bufset(RT2860_NVRAM, user_var, "");
+			nvram_bufset(RT2860_NVRAM, pass_var, "");
 		}
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
@@ -666,16 +666,16 @@ static void l2tpConfig(webs_t* wp, char_t *path, char_t *query)
 					pass = "";
 				}
 
-				ngx_nvram_bufset(wp, user_var, user);
-				ngx_nvram_bufset(wp, pass_var, pass);
+				nvram_bufset(RT2860_NVRAM, user_var, user);
+				nvram_bufset(RT2860_NVRAM, pass_var, pass);
 			}
 			// Clear old logins
 			if (oldcount > count)
 				for (i = count; i < oldcount; i++) {
 					sprintf(user_var, "l2tp_srv_user%d", i);
 					sprintf(pass_var, "l2tp_srv_pass%d", i);
-					ngx_nvram_bufset(wp, user_var, "");
-					ngx_nvram_bufset(wp, pass_var, "");
+					nvram_bufset(RT2860_NVRAM, user_var, "");
+					nvram_bufset(RT2860_NVRAM, pass_var, "");
 				}
 		}
 		else
@@ -705,8 +705,8 @@ static int getL2TPUserList(webs_t *wp, char** params, int nparams)
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "l2tp_srv_user%d", i);
 			sprintf(pass_var, "l2tp_srv_pass%d", i);
-			char *user = ngx_nvram_get(wp, user_var);
-			char *pass = ngx_nvram_get(wp, pass_var);
+			char *user = nvram_get(RT2860_NVRAM, user_var);
+			char *pass = nvram_get(RT2860_NVRAM, pass_var);
 
 			str[0] = '\0';
 			for (j = 0; j < strlen(pass); j++) {
@@ -737,8 +737,8 @@ static void radiusConfig(webs_t* wp, char_t *path, char_t *query)
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "radius_srv_user%d", i);
 			sprintf(pass_var, "radius_srv_pass%d", i);
-			ngx_nvram_bufset(wp, user_var, "");
-			ngx_nvram_bufset(wp, pass_var, "");
+			nvram_bufset(RT2860_NVRAM, user_var, "");
+			nvram_bufset(RT2860_NVRAM, pass_var, "");
 		}
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
@@ -775,16 +775,16 @@ static void radiusConfig(webs_t* wp, char_t *path, char_t *query)
 					pass = "";
 				}
 
-				ngx_nvram_bufset(wp, user_var, user);
-				ngx_nvram_bufset(wp, pass_var, pass);
+				nvram_bufset(RT2860_NVRAM, user_var, user);
+				nvram_bufset(RT2860_NVRAM, pass_var, pass);
 			}
 			// Clear old logins
 			if (oldcount > count)
 				for (i = count; i < oldcount; i++) {
 					sprintf(user_var, "radius_srv_user%d", i);
 					sprintf(pass_var, "radius_srv_pass%d", i);
-					ngx_nvram_bufset(wp, user_var, "");
-					ngx_nvram_bufset(wp, pass_var, "");
+					nvram_bufset(RT2860_NVRAM, user_var, "");
+					nvram_bufset(RT2860_NVRAM, pass_var, "");
 				}
 		}
 		else
@@ -818,8 +818,8 @@ static int getRadiusUserList(webs_t *wp, char** params, int nparams)
 		for (i = 0; i < count; i++) {
 			sprintf(user_var, "radius_srv_user%d", i);
 			sprintf(pass_var, "radius_srv_pass%d", i);
-			char *user = ngx_nvram_get(wp, user_var);
-			char *pass = ngx_nvram_get(wp, pass_var);
+			char *user = nvram_get(RT2860_NVRAM, user_var);
+			char *pass = nvram_get(RT2860_NVRAM, pass_var);
 
 			str[0] = '\0';
 			for (j = 0; j < strlen(pass); j++) {

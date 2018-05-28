@@ -826,7 +826,7 @@ static void setTvSipVLAN(webs_t* wp, char_t *path, char_t *query)
 		outputTimerForReload(wp, "", 60000);
                 websFooter(wp);
 		websDone(wp, 200);
-		reboot_now();
+                wp->do_reboot = 1;
 	} else {
 //		websHeader(wp);
 		websDone(wp, 200);
@@ -866,7 +866,7 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 	    outputTimerForReload(wp, "", 60000);
             websFooter(wp);
             websDone(wp, 200);
-	    reboot_now();
+            wp->do_reboot = 1;
 	} else {
 //	    websHeader(wp);
 	    websDone(wp, 200);
@@ -881,7 +881,7 @@ static void restoremac(webs_t* wp, char_t *path, char_t *query)
         websFooter(wp);
         websDone(wp, 200);
 	doSystem("fs factory_mac > /dev/console 2>&1");
-	reboot_now();
+        wp->do_reboot = 1;
 }
 
 /* goform/setWan */
@@ -1021,7 +1021,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 			outputTimerForReload(wp, "", 60000);
                         websFooter(wp);
                         websDone(wp, 200);
-			reboot_now();
+                        wp->do_reboot = 1;
 			return;
 		}
 	}

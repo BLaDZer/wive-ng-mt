@@ -19,7 +19,7 @@ int asp_parser_init(ngx_pool_t *pool)
     asp_mod_qos_init();
     asp_mod_usb_init();
 
-    asp_mod_test_init();
+//    asp_mod_test_init();
 
     return NGX_OK;
 }
