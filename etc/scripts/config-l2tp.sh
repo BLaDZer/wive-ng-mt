@@ -113,6 +113,7 @@ load_modules() {
         	$LOG "Server unreachable wait 15 sec."
         	sleep 15
 		get_vpn_ip
+		set_routest_to_server
         	reachable=0
     	    fi
 	done

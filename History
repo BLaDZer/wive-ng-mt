@@ -4090,16 +4090,17 @@
 2) build_system/init/libwive/calibs: prepare to support mt7615.<br>
 3) build_system: add and use ngix (goahead deprecated).<br>
 4) init.d: avoid enneded vpn helper restarts.<br>
-5) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
-6) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-7) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
-8) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
-9) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
-10) kernel: net: llc: better deal with too small mtu.<br>
-11) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
-12) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-13) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-14) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-15) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+5) init.d: renew routes to server after get new vpn ip to.<br>
+6) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
+7) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
+8) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+9) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
+10) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
+11) kernel: net: llc: better deal with too small mtu.<br>
+12) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
+13) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+14) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+15) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+16) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>
