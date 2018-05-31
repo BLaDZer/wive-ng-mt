@@ -104,7 +104,7 @@ extern void llc_sk_reset(struct sock *sk);
 
 /* Access to a connection */
 extern int llc_conn_state_process(struct sock *sk, struct sk_buff *skb);
-extern void llc_conn_send_pdu(struct sock *sk, struct sk_buff *skb);
+extern int llc_conn_send_pdu(struct sock *sk, struct sk_buff *skb);
 extern void llc_conn_rtn_pdu(struct sock *sk, struct sk_buff *skb);
 extern void llc_conn_resend_i_pdu_as_cmd(struct sock *sk, u8 nr,
 					 u8 first_p_bit);
