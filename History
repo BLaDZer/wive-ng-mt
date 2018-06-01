@@ -4094,16 +4094,17 @@
 6) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
 7) kernel: mm: pin address_space before dereferencing it while isolating an LRU page.<br>
 8) kernel: mm/madvise.c: fix madvise() infinite loop under special circumstances.<br>
-9) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-10) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
-11) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
-12) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
-13) kernel: net: llc: better deal with too small mtu.<br>
-14) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
-15) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
-16) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-17) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-18) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-19) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+9) kernel: mm/mempolicy.c: avoid use uninitialized preferred_node.<br>
+10) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
+11) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+12) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
+13) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
+14) kernel: net: llc: better deal with too small mtu.<br>
+15) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
+16) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
+17) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+18) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+19) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+20) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>
