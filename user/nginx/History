@@ -4097,10 +4097,11 @@
 9) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
 10) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
 11) kernel: net: llc: better deal with too small mtu.<br>
-12) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
-13) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-14) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-15) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-16) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+12) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
+13) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
+14) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+15) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+16) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+17) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>
