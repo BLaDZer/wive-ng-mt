@@ -4106,9 +4106,10 @@
 18) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
 19) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
 20) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
-21) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-22) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-23) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-24) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+21) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
+22) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+23) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+24) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+25) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 <br>
 <br>
