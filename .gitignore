@@ -375,6 +375,8 @@ fulldump
 /user/freeradius/src/freeradius-devel
 /user/ethtool/Makefile.in
 /user/ethtool/configure
+/user/nginx/History
+/user/nginx/history.html
 
 #
 # exclude enerated files from kernel
