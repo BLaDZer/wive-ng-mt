@@ -18,7 +18,7 @@ OBJS	:= libwive_helpers.o libwive_wireless.o libwive_ethernet.o libwive_network.
 OBJS	+= libwive_system.o
 
 HEADERS := $(ROOTDIR)/lib/shared/include/linux/autoconf.h
-LDLIBS  := -lnvram
+LDLIBS  := -lnvram -lcrypt
 
 all: shared
 

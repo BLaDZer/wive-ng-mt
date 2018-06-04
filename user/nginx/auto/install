@@ -216,7 +216,7 @@ romfs:
 	mkdir -p \$(ROMFSDIR)/share/nginx/modules
 	\$(ROMFSINST) -S objs/nginx /bin/nginx
 	\$(ROMFSINST) -S conf/nvram_acl.conf /etc/nginx/nvram_acl.conf
-	\$(ROMFSINST) -S conf/nginx.conf /etc/nginx/nginx.conf
+#	\$(ROMFSINST) -S conf/nginx.conf /etc/nginx/nginx.conf
 	\$(ROMFSINST) -S conf/mime.types /etc/nginx/mime.types
 	\$(ROMFSINST) -S conf/win-utf /etc/nginx/win-utf
 	\$(ROMFSINST) -S conf/koi-win /etc/nginx/koi-win

@@ -1022,11 +1022,6 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (ngx_http_test_content_type(r, &lcf->types) == NULL)
-    {
-        return NGX_DECLINED;
-    }
-
     webs_t* wp = ngx_pcalloc(r->pool, sizeof(webs_t));
     wp->request = r;
     wp->pool = r->pool;
@@ -1049,6 +1044,11 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
     }
     else
     {
+        if (ngx_http_test_content_type(r, &lcf->types) == NULL)
+        {
+            return NGX_DECLINED;
+        }
+
         int final_state = asp_state_machine(wp, &out_chain);
         if (final_state < 0)
         {

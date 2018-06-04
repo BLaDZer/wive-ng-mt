@@ -864,7 +864,7 @@ static void shadowAuth(webs_t* wp, char_t *path, char_t *query)
     char_t *username  = websGetVar(wp, T("username"), NULL);
     char_t *password  = websGetVar(wp, T("password"), NULL);
 
-    if (!username || !password || check_shadow_pass(wp, username, password) != 0 )
+    if (!username || !password || check_shadow_pass(username, password) != 0 )
     {
         websRedirect(wp, "/login.asp");
         websAddHeader(wp, "Set-Cookie", "Wrong-Pass=1; Max-Age=10; Path=/");
@@ -1089,6 +1089,7 @@ static int getAuthRoles(webs_t* wp, char** params, int nparams)
  */
 void asp_mod_utils_init()
 {
+        aspDefineFunc("getCfgGeneral", getCfgGeneral, EVERYONE);
         aspDefineFunc("getAuthUsername", getAuthUsername, EVERYONE);
         aspDefineFunc("getAuthRole", getAuthRole, EVERYONE);
         aspDefineFunc("isNginx", isNginx, EVERYONE);
@@ -1098,7 +1099,6 @@ void asp_mod_utils_init()
 
         aspDefineFunc("writeIfCfgZeroEq", writeIfCfgZeroEq, EVERYONE);
 
-	aspDefineFunc("getCfgGeneral", getCfgGeneral, EVERYONE);
 	aspDefineFunc("getCfgGeneralHTML", getCfgGeneralHTML, EVERYONE);
 	aspDefineFunc("getCfgNthGeneral", getCfgNthGeneral, EVERYONE);
 	aspDefineFunc("getCfgZero", getCfgZero, EVERYONE);

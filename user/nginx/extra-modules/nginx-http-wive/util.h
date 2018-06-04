@@ -20,9 +20,6 @@
 #include <linux/autoconf.h>			//kernel config
 #endif
 
-#include <crypt.h>
-#include <shadow.h>
-
 #define	T(s) 			s
 
 // comment out to build with native libs
@@ -115,8 +112,8 @@ void sha256(char *string, char outputBuffer[65]);
 #endif
 void md5(char *string, char outputBuffer[65]);
 
-ngx_array_t* get_passwd_users(ngx_pool_t* pool);
-int check_shadow_pass(webs_t* wp,char* username, char* password);
+//ngx_array_t* get_passwd_users(ngx_pool_t* pool);
+int check_shadow_pass(char* username, char* password);
 char* crypt_pass(char* username, char* password);
 int doSystem(char *fmt, ...);
 

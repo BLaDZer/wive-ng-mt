@@ -30,6 +30,10 @@
 #include <dirent.h>
 #include <syslog.h>
 
+#include <pwd.h>
+#include <crypt.h>
+#include <shadow.h>
+
 #include <libnvram.h>
 
 #include "libwive_ethernet.h"

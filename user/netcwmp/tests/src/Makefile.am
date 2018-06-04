@@ -11,7 +11,7 @@ testall_SOURCES = abts.c testutil.c test_model.c test_rpc.c test_pool.c
 
 
 
-testall_LDADD =  -L$(top_srcdir)/libpool/src -L$(top_srcdir)/libxmlet/src -L$(top_srcdir)/libcwmp/src -L$(top_srcdir)/../../libnvram  -lpool -lxmlet  -lcwmp  -lpthread -lnvram -lwive
+testall_LDADD =  -L$(top_srcdir)/libpool/src -L$(top_srcdir)/libxmlet/src -L$(top_srcdir)/libcwmp/src -L$(top_srcdir)/../../libnvram  -lpool -lxmlet  -lcwmp  -lpthread -lnvram -lwive -lcrypt
 
 
 testall_CPPFLAGS = $(AM_CPPFLAGS) 

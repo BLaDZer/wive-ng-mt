@@ -73,23 +73,13 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             wive " ";
             wive_types application/javascript;
 
-            location /lang/ {
-                disable_auth;
-            }
-
             location = /login.asp {
                 disable_auth;
             }
 
-            location = /js/controls.js {
+            location = /robots.txt {
                 disable_auth;
             }
-
-            location = /js/ajax.js {
-                disable_auth;
-            }
-
-
         }
 
         location /goform/ {
@@ -100,6 +90,7 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             asp_post_form;
             disable_auth;
         }
+
 
         location = /cgi-bin/upload.cgi {
             upload_pass /goform/firmwareUploadForm;

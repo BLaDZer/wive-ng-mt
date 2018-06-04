@@ -1,4 +1,4 @@
-LDFLAGS	+= -lnvram -lwive
+LDFLAGS	+= -lnvram -lwive -lcrypt
 
 all: nvram
 

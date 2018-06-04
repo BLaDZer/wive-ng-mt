@@ -61,3 +61,43 @@ long getSystemUptime()
     return 0;
 
 }
+
+/* getShadowPassword - get shadow password structure of user
+ *
+ * arg: username
+ * return: passwd* or NULL
+ */
+struct passwd* getShadowPassword(char* username)
+{
+    struct passwd* pwd;
+    struct spwd* spwd;
+
+    pwd = getpwnam(username); // static memory block, please do not free() it
+    spwd = getspnam(username);
+
+    if (pwd == NULL) return NULL; // empty passwd line, abort
+
+    if (spwd != NULL)
+    {
+        if (strlen(spwd->sp_pwdp) > 0) // shadow isn't empty
+        {
+            pwd->pw_passwd = spwd->sp_pwdp; // replace passwd data with shadow
+        }
+    }
+
+    return pwd;
+}
+
+/* cryptShadowPassword - encrypt any password in shadow-compatible salted format
+ *
+ * arg: username - from whom the salt will be obtained
+ * arg: password
+ * return: encrypted password string or NULL
+ */
+char* cryptShadowPassword(char* username, char* password)
+{
+    struct passwd* pwd = getShadowPassword(username);
+    if (pwd == NULL) return NULL; // empty passwd line, abort
+
+    return crypt(password, pwd->pw_passwd); // static memory block, please do not free() it
+}

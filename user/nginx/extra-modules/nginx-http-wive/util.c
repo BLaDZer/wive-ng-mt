@@ -131,6 +131,7 @@ void md5(char *string, char outputBuffer[65])
     outputBuffer[32] = 0;
 }
 
+/*
 ngx_array_t* get_passwd_users(ngx_pool_t* pool)
 {
     FILE * fp;
@@ -164,39 +165,19 @@ ngx_array_t* get_passwd_users(ngx_pool_t* pool)
 
     return out;
 }
+*/
 
 /*
     0 = password is OK
     1 = password is incorrect
     < 0 = error
-
 */
-int check_shadow_pass(webs_t* wp, char* username, char* password)
+int check_shadow_pass(char* username, char* password)
 {
-    struct passwd* pwd;
-    struct spwd* spwd;
+    struct passwd* pwd = getShadowPassword(username);
+    if (pwd == NULL) return -1; // user not found, abort
 
-    pwd = getpwnam(username);
-    spwd = getspnam(username);
-
-    if (pwd == NULL) return -1; // empty passwd line, abort
-
-    if (spwd != NULL) 
-    {
-        if (strlen(spwd->sp_pwdp)>0) // shadow isn't empty
-        {
-            pwd->pw_passwd = spwd->sp_pwdp; // replace passwd data with shadow
-        }
-    }
-
-/*
-    if (strcmp(password, pwd->pw_passwd) == 0)
-    {
-        return 0;
-    }
-*/
-
-    char* enc_pass = crypt_pass(username, password);
+    char* enc_pass = cryptShadowPassword(username, password);
     if (enc_pass == NULL) return -2; // encryption error, abort
 
     char enc_pass1[65] = {0};
@@ -210,47 +191,17 @@ int check_shadow_pass(webs_t* wp, char* username, char* password)
     md5(pwd->pw_passwd, enc_pass2);
 #endif
 
-    if (strcmp(enc_pass1, enc_pass2) == 0)
+    if (strcmp(enc_pass1, enc_pass2) == 0) // plain input
     {
         return 0;
     }
 
-    if (strcmp(password, enc_pass2) == 0)
+    if (strcmp(password, enc_pass2) == 0) // pre-hashed input
     {
         return 0;
     }
 
-/*
-    if (strcmp(enc_pass, pwd->pw_passwd) == 0)
-    {
-        return 0;
-    }
-*/
     return 1;
-}
-
-char* crypt_pass(char* username, char* password)
-{
-    struct passwd* pwd;
-    struct spwd* spwd;
-
-    pwd = getpwnam(username);
-    spwd = getspnam(username);
-
-    if (pwd == NULL) return NULL; // empty passwd line, abort
-
-    if (spwd != NULL)
-    {
-        if (strlen(spwd->sp_pwdp)>0) // shadow isn't empty
-        {
-            pwd->pw_passwd = spwd->sp_pwdp; // replace passwd data with shadow
-        }
-    }
-
-    char* enc_pass = crypt(password, pwd->pw_passwd);
-    if (enc_pass == NULL) return NULL; // encryption error, abort
-
-    return enc_pass;
 }
 
 int doSystem(char *fmt, ...)
@@ -318,10 +269,6 @@ ngx_str_t n_unescape_uri(ngx_pool_t* pool, ngx_str_t str, ngx_uint_t type)
 
     return out;
 }
-
-
-
-
 
 ngx_str_t n_base64_decode(ngx_pool_t* pool, ngx_str_t str)
 {
@@ -426,72 +373,26 @@ ngx_str_t n_strstr(ngx_str_t str1, ngx_str_t str2)
 
 ngx_str_t n_strstr2(ngx_http_request_t *r, ngx_str_t str1, ngx_str_t str2)
 {
-    ELOG_DEBUG(r->connection->log, 0, "n_strstr A");
     if (str2.len == 0)
     {
         return str1;
     }
 
-    ELOG_DEBUG(r->connection->log, 0, "n_strstr B");
     ngx_str_t out;
     out.data = NULL;
     out.len = 0;
 
     unsigned int i;
 
-    ELOG_DEBUG(r->connection->log, 0, "n_strstr C");
     if (str2.len > str1.len)
     {
         ELOG_DEBUG(r->connection->log, 0, "n_strstr str2 len > str1 len");
         return out;
     }
 
-    ELOG_DEBUG(r->connection->log, 0, "n_strstr C2");
-
     for (i = 0; i<(str1.len - str2.len + 1);i++)
     {
-        ELOG_DEBUG(r->connection->log, 0, "n_strstr D: %d/%d \n", i, (str1.len - str2.len + 1));
-        if (str1.data[i] == str2.data[0])
-        {
-            if (memcmp(str1.data+i, str2.data, str2.len) == 0)
-            {
-                out.data = str1.data + i;
-                out.len = str1.len - i;
-                return out;
-            }
-        }
-//              str1.data[i]
-    }
-
-    ELOG_DEBUG(r->connection->log, 0, "n_strstr E");
-    return out;
-}
-
-
-
-
-/*
-    strstr or out.data == NULL, out.len = 0
-*/
-
-/*
-ngx_str_t n_strstr2(webs_t* wp, ngx_str_t str1, ngx_str_t str2)
-{
-
-    if (str2.len == 0)
-    {
-        return str1;
-    }
-
-    ngx_str_t out;
-    out.data = NULL;
-    out.len = 0;
-
-    unsigned int i;
-
-    for (i = 0; i<(str1.len - str2.len + 1);i++)
-    {
-
+//        ELOG_DEBUG(r->connection->log, 0, "n_strstr D: %d/%d \n", i, (str1.len - str2.len + 1));
         if (str1.data[i] == str2.data[0])
         {
             if (memcmp(str1.data+i, str2.data, str2.len) == 0)
@@ -506,14 +407,12 @@ ngx_str_t n_strstr2(webs_t* wp, ngx_str_t str1, ngx_str_t str2)
 
     return out;
 }
-
-*/
 
 int ngx_nvram_set(webs_t* wp, char *key, char *value)
 {
     if (nvram_acl_check(wp, key, 1))
     {
-        ELOG_ERR(wp->log, 0, "ngx_nvram_set: ACCESS DENIED (key=%s)!\n", key);
+        ELOG_DEBUG(wp->log, 0, "ngx_nvram_set: ACCESS DENIED (key=%s)!\n", key);
         return 0;
     }
 
@@ -525,7 +424,7 @@ int ngx_nvram_bufset(webs_t* wp, char *key, char *value)
 {
     if (nvram_acl_check(wp, key, 1))
     {
-        ELOG_ERR(wp->log, 0, "ngx_nvram_bufset: ACCESS DENIED (key=%s)!\n", key);
+        ELOG_DEBUG(wp->log, 0, "ngx_nvram_bufset: ACCESS DENIED (key=%s)!\n", key);
         return 0;
     }
 
@@ -537,7 +436,7 @@ char* ngx_nvram_get(webs_t* wp, char* key)
 {
     if (nvram_acl_check(wp, key, 0))
     {
-        ELOG_ERR(wp->log, 0, "ngx_nvram_get: ACCESS DENIED (key=%s)!\n", key);
+        ELOG_DEBUG(wp->log, 0, "ngx_nvram_get: ACCESS DENIED (key=%s)!\n", key);
         return "";
     }
 
@@ -551,7 +450,7 @@ int ngx_nvram_get_int(webs_t* wp, char* key, int def)
 {
     if (nvram_acl_check(wp, key, 0))
     {
-        ELOG_ERR(wp->log, 0, "ngx_nvram_get_int: ACCESS DENIED (key=%s)!\n", key);
+        ELOG_DEBUG(wp->log, 0, "ngx_nvram_get_int: ACCESS DENIED (key=%s)!\n", key);
         return def;
     }
 

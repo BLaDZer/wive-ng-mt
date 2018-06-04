@@ -1,19 +1,47 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Wive-NG-MT</title>
+		<title>Login</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="-1">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="/style/normal_ws.css" type="text/css">
-		<link rel="stylesheet" href="/style/controls.css" type="text/css">
-		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
-		<script src="/lang/<% getLangDictionary(); %>/dict_login.js"></script>
-		<script src="/js/ajax.js"></script>
-		<script src="/js/controls.js"></script>
+
 		<script>
+
+			function setCookie(name, value, options) {
+				options = options || {};
+				var expires = options.expires;
+				if (typeof expires == "number" && expires) {
+					var d = new Date();
+					d.setTime(d.getTime() + expires * 1000);
+					expires = options.expires = d;
+				}
+				if (expires && expires.toUTCString) {
+					options.expires = expires.toUTCString();
+				}
+				value = encodeURIComponent(value);
+				var updatedCookie = name + "=" + value;
+				for (var propName in options) {
+					updatedCookie += "; " + propName;
+					var propValue = options[propName];
+					if (propValue !== true) {
+						updatedCookie += "=" + propValue;
+					}
+				}
+				document.cookie = updatedCookie;
+			}
+
+
+			function getCookie(name) {
+				var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+				return matches ? decodeURIComponent(matches[1]) : undefined;
+			}
+
+			function deleteCookie(name) {
+				setCookie(name, "", { expires: -1 });
+			}
 
 			function inFrame () {
 			    try {
@@ -23,6 +51,7 @@
 			    }
 			}
 
+/*
 			function initTranslation() {
 				_TR("loTitle",			"login title");
 				_TR("loUsername",		"login username");
@@ -30,14 +59,14 @@
 				_TR("loEnter",			"login enter");
 				_TR("loIncorrect",		"login incorrect");
 			}
-
+*/
 			function initValues() {
 				if (inFrame())
 				{
 					window.parent.location.replace("/login.asp");
 				}
 				
-				initTranslation();
+//				initTranslation();
 				
 				if (getCookie("Wrong-Pass") == "1")
 				{
@@ -75,6 +104,20 @@ table {
 
 table td {
     padding: 10px;
+}
+
+td {
+    font-size: 9pt;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+}
+
+td.title {
+    margin-left: 5px;
+    background-color: #2C5EA4;
+    font-weight: bold;
+    white-space: nowrap;
+    color: #FFFFFF;
 }
 
 td.col1 {
