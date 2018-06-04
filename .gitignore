@@ -443,6 +443,7 @@ fulldump
 
 # temp stop mt7615 drivers commit
 /linux-3.4.x/drivers/net/wireless/ralink/mt7615
+/linux-3.4.x/drivers/net/wireless/ralink/mt7615_ap
 
 #
 # exclude toolchain

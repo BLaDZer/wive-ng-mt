@@ -1354,6 +1354,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(PERCENTAGEenable);
 	FPRINT_DAT(BFBACKOFFenable);
 	FPRINT_DAT(G_BAND_256QAM);
+	FPRINT_DAT(DBDC_MODE);
 #endif
 	fclose(fp);
 	nvram_close(mode);

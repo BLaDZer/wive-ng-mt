@@ -92,12 +92,8 @@ endif
 ###################################################################################################################################################
 # 7615 module
 ifdef CONFIG_RT_FIRST_IF_MT7615E
-	$(ROMFSINST) -S fw/WIFI_RAM_CODE_MT7615.bin							/lib/firmware/WIFI_RAM_CODE_MT7615.bin
-	$(ROMFSINST) -S fw/mt7615_patch_e3_hdr.bin							/lib/firmware/mt7615_patch_e3_hdr.bin
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615N_external_LNA_external_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
-ifdef CONFIG_RT_FIRST_IF_MT7615E
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
-endif
 ifdef CONFIG_RT_SECOND_IF_MT7615E
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
 endif
