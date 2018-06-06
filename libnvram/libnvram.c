@@ -1355,6 +1355,42 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(BFBACKOFFenable);
 	FPRINT_DAT(G_BAND_256QAM);
 	FPRINT_DAT(DBDC_MODE);
+#ifdef CONFIG_MT7615_AP_VOW_SUPPORT
+	FPRINT_DAT(VOW_Airtime_Ctrl_En);
+	FPRINT_DAT(VOW_Airtime_Fairness_En);
+	FPRINT_DAT(VOW_BW_Ctrl);
+	FPRINT_DAT(VOW_Group_Backlog);
+	FPRINT_DAT(VOW_Group_DWRR_Max_Wait_Time);
+	FPRINT_DAT(VOW_Group_DWRR_Quantum);
+	FPRINT_DAT(VOW_Group_Max_Airtime_Bucket_Size);
+	FPRINT_DAT(VOW_Group_Max_Rate);
+	FPRINT_DAT(VOW_Group_Max_Rate_Bucket_Size);
+	FPRINT_DAT(VOW_Group_Max_Ratio);
+	FPRINT_DAT(VOW_Group_Max_Wait_Time);
+	FPRINT_DAT(VOW_Group_Min_Airtime_Bucket_Size);
+	FPRINT_DAT(VOW_Group_Min_Rate);
+	FPRINT_DAT(VOW_Group_Min_Rate_Bucket_Size);
+	FPRINT_DAT(VOW_Group_Min_Ratio);
+	FPRINT_DAT(VOW_Rate_Ctrl_En);
+	FPRINT_DAT(VOW_Refill_Period);
+	FPRINT_DAT(VOW_RX_En);
+	FPRINT_DAT(VOW_Sta_BE_DWRR_Quantum);
+	FPRINT_DAT(VOW_Sta_BK_DWRR_Quantum);
+	FPRINT_DAT(VOW_Sta_DWRR_Max_Wait_Time);
+	FPRINT_DAT(VOW_Sta_VI_DWRR_Quantum);
+	FPRINT_DAT(VOW_Sta_VO_DWRR_Quantum);
+	FPRINT_DAT(VOW_WATF_Enable);
+	FPRINT_DAT(VOW_WATF_MAC_LV0);
+	FPRINT_DAT(VOW_WATF_MAC_LV1);
+	FPRINT_DAT(VOW_WATF_MAC_LV2);
+	FPRINT_DAT(VOW_WATF_MAC_LV3);
+	FPRINT_DAT(VOW_WATF_Q_LV0);
+	FPRINT_DAT(VOW_WATF_Q_LV1);
+	FPRINT_DAT(VOW_WATF_Q_LV2);
+	FPRINT_DAT(VOW_WATF_Q_LV3);
+	FPRINT_DAT(VOW_WMM_Search_Rule_Band0);
+	FPRINT_DAT(VOW_WMM_Search_Rule_Band1);
+#endif
 #endif
 	fclose(fp);
 	nvram_close(mode);
