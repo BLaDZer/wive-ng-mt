@@ -51,13 +51,21 @@ del_ncm() {
 
 case "$ACTION" in
     add)
-	[ -d "/sys$DEVPATH/qmi" ] && add_qmi
-	[ -d "/sys$DEVPATH/cdc_ncm" ] && add_ncm
+	if [ -e "/sys$DEVPATH/qmi" ]; then
+		add_qmi
+	fi
+	if [ -e "/sys$DEVPATH/cdc_ncm" ] || [ -e "/sys$DEVPATH/cdc_ether" ]; then
+		add_ncm
+	fi
 	service modemhelper start
 	;;
     remove)
-	[ -f /tmp/qmi_port ] && del_qmi
-	[ -f /tmp/ncm_port ] && del_ncm
+	if [ -e /tmp/qmi_port ]; then
+	    del_qmi
+	fi
+	if [ -e /tmp/ncm_port ]; then
+	    del_ncm
+	fi
 	;;
     *)
 	$LOG "Opps. Unknow command '$ACTION'"

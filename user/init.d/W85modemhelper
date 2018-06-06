@@ -33,26 +33,34 @@ qmi_connect() {
     QMI_PORT=`tail -qn1 /tmp/qmi_port | sed '!=.*!!'`
     CDC_PORT=`tail -qn1 /tmp/qmi_port | sed '!.*=!!'`
     wds=`uqmi -s -d "$device" --get-client-id wds`
-    [ -z $MODEMAPN ] && MODEMAPN="internet"
     uqmi -s -d "$CDC_PORT" --set-client-id wds,"$wds" --start-network "$MODEMAPN" --autoconnect
     sleep 1
-    ip link set $QMI_PORT up
-    dhcpc_wwan $QMI_PORT
+
+    if [ -e /proc/sys/net/ipv4/conf/$QMI_PORT ]; then
+	ip link set $QMI_PORT up
+	dhcpc_wwan $QMI_PORT
+    else
+	$LOG "iface $QMI_PORT not exist"
+    fi
 }
 
 ncm_connect() {
     # switch to NCM mode
     if [ ! -z $MNGMTPORT ]; then
-	[ -z $MODEMAPN ] && MODEMAPN="internet"
 	$LOG "Start NCM connect with managment port $MNGMTPORT with APN $MODEMAPN"
 	echo -ne "\r\nAT^NDISDUP=1,1,\"$MODEMAPN\"\r\n" > $MNGMTPORT
 	sleep 1
-	$LOG "Link $1 up"
-	ip link set $1 up
     else
-	$LOG "Managment port does not exist"
+	$LOG "Managment port does not exist. Pure cdc_ether mode ?"
     fi
-    dhcpc_wwan $1
+
+    NCMIF=`tail -qn1 /tmp/ncm_port`
+    if [ -e /proc/sys/net/ipv4/conf/$NCMIF ]; then
+	ip link set $NCMIF up
+	dhcpc_wwan $NCMIF
+    else
+	$LOG "iface $NCMIF not exist"
+    fi
 }
 
 start() {
@@ -61,22 +69,12 @@ start() {
 
     if [ "$MODEMENABLED" = "1" ] || [ "$MODEMAUTOCONNECT" = "1" ]; then
         $LOG "Start Modemhelper"
-        if [ "$MODEMTYPE" = "eth" ] && [ -e /tmp/wwan_port ]; then
-	    WWAN_PORT=`tail -qn1 /tmp/wwan_port`
-	    dhcpc_wwan $WWAN_PORT
-	elif [ "$MODEMTYPE" = "qmi" ] && [ -e /tmp/qmi_port ]; then
+	if [ "$MODEMTYPE" = "3" ] && [ -e /tmp/qmi_port ]; then
 	    # QMI MODE
 	    qmi_connect
-	elif [ "$MODEMTYPE" = "2" ] || [ "$MODEMTYPE" = "ncm" ]; then
+	elif [ "$MODEMTYPE" = "2" ] && [ -e /tmp/ncm_port ]; then
 	    # NCM MODE
-	    if [ -e /tmp/ncm_port ]; then
-		NCMIF=`tail -qn1 /tmp/ncm_port`
-		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ]; then
-		    ncm_connect $NCMIF
-		else
-		    $LOG "iface $NCMIF mot exist"
-		fi
-	    fi
+	    ncm_connect
 	else
 	    # PPP MODE
 	    if [ -e /tmp/ncm_port ]; then
@@ -267,7 +265,7 @@ get_param() {
 	MNGMTPORT="/dev/pcui"
     fi
 
-    if [ "$MODEMTYPE" = "2" ] || [ "$MODEMTYPE" = "ncm" ]; then
+    if [ "$MODEMTYPE" = "2" ]; then
 	# NCM MODE
 	if [ ! -f /tmp/ncm_port ]; then
 	    $LOG "Not found NCM port"
@@ -283,7 +281,10 @@ get_param() {
 	rm -f /tmp/modem_helper
 	exit 1
     fi
-    [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ] && MODEMDIALNUMBER="*99#"
+
+    if [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ]; then
+	 MODEMDIALNUMBER="*99#"
+    fi
 
     # select device and exist check
     if [ "$WMODEMPORT" = "AUTO" ]; then
@@ -293,9 +294,22 @@ get_param() {
     fi
 
     # correct others params
-    [ "$MODEMUSERNAME" = "" ] && MODEMUSERNAME="internet"
-    [ "$MODEMPASSWORD" = "" ] && MODEMPASSWORD="internet"
-    [ "$MODEMSPEED" = "AUTO" ] && MODEMSPEED=""
+    if [ "$MODEMAPN" = "" ]; then
+	MODEMAPN="internet"
+    fi
+
+    if [ "$MODEMUSERNAME" = "" ]; then
+	MODEMUSERNAME="internet"
+    fi
+
+    if [ "$MODEMPASSWORD" = "" ]; then
+	MODEMPASSWORD="internet"
+    fi
+
+    if [ "$MODEMSPEED" = "AUTO" ]; 
+	MODEMSPEED=""
+    fi
+
     if [ "$MODEMMTU" = "" ] || [ "$MODEMMTU" = "AUTO" ]; then
         MODEMMRU=""
         MODEMMTU=""
