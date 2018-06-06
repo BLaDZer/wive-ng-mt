@@ -54,7 +54,6 @@ ncm_connect() {
 	$LOG "Managment port does not exist. Pure cdc_ether mode ?"
     fi
 
-    NCMIF=`tail -qn1 /tmp/ncm_port`
     if [ -e /proc/sys/net/ipv4/conf/$NCMIF ]; then
 	ip link set $NCMIF up
 	dhcpc_wwan $NCMIF
@@ -78,7 +77,6 @@ start() {
 	else
 	    # PPP MODE
 	    if [ -e /tmp/ncm_port ]; then
-		NCMIF=`tail -qn1 /tmp/ncm_port`
 		if [ -e /proc/sys/net/ipv4/conf/$NCMIF ] && [ ! -z $MNGMTPORT ]; then
 		    # switch to PPP mode
 		    ip link set $NCMIF down
@@ -267,12 +265,12 @@ get_param() {
 
     if [ "$MODEMTYPE" = "2" ]; then
 	# NCM MODE
-	if [ ! -f /tmp/ncm_port ]; then
+	if [ ! -e /tmp/ncm_port ]; then
 	    $LOG "Not found NCM port"
 	    rm -f /tmp/modem_helper
 	    exit 1
 	fi
-	NCMIF=$(cat /tmp/ncm_port)
+	NCMIF=`tail -qn1 /tmp/ncm_port`
     fi
 
     # check base needed parametrs
