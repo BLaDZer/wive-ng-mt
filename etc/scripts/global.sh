@@ -224,7 +224,12 @@ getSixWanIfName() {
 
 getMdmIfName() {
     if [ "$MODEMTYPE" = "2" ]; then
-	mdm_if="wwan0"
+	if [ -e /tmp/wwanif ]; then
+	    mdm_if=`tail -qn1 /tmp/wwanif`
+	fi
+	if [ "$mdm_if" = "" ]; then
+	    mdm_if="wwan0"
+	fi
     else
 	mdm_if="modem"
     fi

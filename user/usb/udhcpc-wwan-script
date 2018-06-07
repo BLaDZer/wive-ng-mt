@@ -13,6 +13,7 @@ LOG="logger -t udhcpc-wwan"
 RESOLV_CONF="/etc/resolv.conf"
 RESOLV_CONF_WWAN="/tmp/resolv.conf.$interface"
 RESOLV_CONF_BACK="/tmp/resolv.conf.$interface.tmp"
+WWANIFNAME="/tmp/wwanif"
 
 # Get DGW/MTU config
 eval `nvram_buf_get 2860 MODEMMTU MODEMDGW`
@@ -23,6 +24,10 @@ fi
 
 if [ "$subnet" != "" ]; then
     NETMASK="netmask $subnet"
+fi
+
+if [ "$interface" != "" ]; then
+    echo $interface > $WWANIFNAME
 fi
 
 case "$1" in
@@ -47,14 +52,14 @@ case "$1" in
 	    cp -f $RESOLV_CONF_BACK $RESOLV_CONF
 	    service dnsserver reload
 	fi
-	rm -f $RESOLV_CONF_WWAN $RESOLV_CONF_BACK
+	rm -f $RESOLV_CONF_WWAN $RESOLV_CONF_BACK $WWANIFNAME
     ;;
 
     leasefail)
 	$LOG "Lease fail $interface."
 	# disable forward for paranoid users
 	sysctl -wq net.ipv4.conf.$interface.forwarding=0
-	rm -f $RESOLV_CONF_WWAN
+	rm -f $RESOLV_CONF_WWAN $WWANIFNAME
     ;;
 
     renew|bound)
