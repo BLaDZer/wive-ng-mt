@@ -1194,6 +1194,8 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(IEEE80211H);
 #endif
 #if defined(CONFIG_MT7610_AP_DFS) || defined(CONFIG_MT76X2_AP_DFS) || defined(CONFIG_MT7615_AP_DFS)
+	FPRINT_DAT(DfsEnable);
+	FPRINT_DAT(DfsCalibration);
 	FPRINT_DAT(CSPeriod);
 	FPRINT_DAT(DfsIndoor);
 	FPRINT_DAT(SymRoundFromCfg);
