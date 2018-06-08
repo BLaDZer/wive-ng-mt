@@ -20,7 +20,7 @@ case "$MODE" in
 	####################################
 	# dual band 7621A + 2x7615N
 	####################################
-	"MT7621-MT7615-4T4R-3T3R-16M-USB")
+	"MT7621-MT7615-4T4R-16M-USB")
 	    # metal sample
 	    DEVNAME="SNR-CPE-ME4-5GHZ-MT"
 	    ;;
@@ -157,7 +157,7 @@ fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7615-4T4R-3T3R-16M-USB" ]; then
+if [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
