@@ -499,7 +499,6 @@ nodog_RedirectURL=http://wi-cat.ru
 nodog_MaxClients=32
 nodog_ClientIdleTimeout=30
 nodog_ClientForceTimeout=720
-nodog_AuthenticateImmediately=0
 nodog_MACMechanism=block
 nodog_BlockedMACList=
 nodog_AllowedMACList=

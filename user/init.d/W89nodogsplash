@@ -13,9 +13,8 @@ if [ "$OperationMode" = "0" ]; then
 fi
 
 LOG="logger -t nodogsplash"
-PARAMS="GatewayIPRange RedirectURL MaxClients ClientIdleTimeout ClientForceTimeout \
-AuthenticateImmediately MACMechanism BlockedMACList AllowedMACList TrustedMACList \
-PasswordAuthentication Password UsernameAuthentication Username PasswordAttempts"
+PARAMS="GatewayIPRange RedirectURL MaxClients ClientIdleTimeout ClientForceTimeout MACMechanism BlockedMACList AllowedMACList TrustedMACList \
+	PasswordAuthentication Password UsernameAuthentication Username PasswordAttempts"
 
 start() {
     get_param
