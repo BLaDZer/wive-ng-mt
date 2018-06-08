@@ -6,11 +6,10 @@
 #
 ##########################################################################################################
 
-if [ -f /var/run/syslogd.pid ]; then
-    LOG="logger -t netlink($$)"
-else
-    LOG="echo netlink($$)"
-fi
+# get params
+. /etc/scripts/global.sh
+
+LOG="logger -t netlink($$)"
 
 $LOG "ACTION '$ACTION', MDEV '$MDEV', ACTION '$ACTION', DEVPATH '$DEVPATH', SUBSYSTEM '$SUBSYSTEM', SEQNUM '$SEQNUM'"
 
@@ -51,10 +50,10 @@ del_ncm() {
 
 case "$ACTION" in
     add)
-	if [ -e "/sys$DEVPATH/qmi" ]; then
+	if [ "$MODEMTYPE" = "3" ] && [ -e "/sys$DEVPATH" ]; then
 		add_qmi
 	fi
-	if [ -e "/sys$DEVPATH/cdc_ncm" ] || [ -e "/sys$DEVPATH/cdc_ether" ]; then
+	if [ "$MODEMTYPE" = "2" ] && [ -e "/sys$DEVPATH" ]; then
 		add_ncm
 	fi
 	service modemhelper start
