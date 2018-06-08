@@ -1301,8 +1301,11 @@
 				var enableWirelessAc	= form.radioWirelessEnabledAc.value;
 				var enableWireless		= form.radioWirelessEnabled.value;
 
+				var wmode = form.wirelessmode.value;
+				var wmodeac = form.wirelessmodeac.value;
+
 				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
-				displayElement( [ 'basicVHT', 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
+				displayElement( [ 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
 				displayElement( [ 'div_11n', 'advWirelessT', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], enableWireless == "1");
 				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (BUILD_5GHZ_SUPPORT && enableWirelessAc == "1"));
 
@@ -1325,9 +1328,16 @@
 						showElement('div_11n');
 						showElement('advWirelessT');
 					}
-					if (enableWirelessAc == 1) {
-						showElement('basicVHT');
+
+					if (BUILD_5GHZ_SUPPORT && enableWirelessAc == 1) {
+						if ((1*wmodeac) >= 14)
+						{
+							showElement("basicVHT");
+							if (is5gh_1t1r == 1)
+								hideElement("basicVHTLDCP_tr");
+						}
 					}
+
 					showElement('div_roaming');
 					displayElement( 'div_txbf', txbf_built == '1');
 					if ((enableWireless == 0 || enableWirelessAc == 0) || bandsteeringBuilt == '0') {
@@ -1593,6 +1603,35 @@
 
 				form.mbssid_mode.disabled = false;
 
+				form.isolated_ssids.value = "";
+				for (var i = 0; i < form.isolated_ssid.length; i++) {
+				    if (form.isolated_ssid[i].checked) {
+				        if (i > 0) form.isolated_ssids.value += ",";
+				        form.isolated_ssids.value += form.isolated_ssid[i].value;
+				    }
+				}
+
+				form.mbcastisolated_ssids.value = "";
+				for (var i = 0; i < form.mbcastisolated_ssid.length; i++) {
+				    if (form.mbcastisolated_ssid[i].checked) {
+				        if (i > 0) form.mbcastisolated_ssids.value += ",";
+				        form.mbcastisolated_ssids.value += form.mbcastisolated_ssid[i].value;
+				    }
+				}
+
+				form.hidden_ssids.value = "";
+				for (var i = 0; i < form.hssid.length; i++) {
+				    if (form.hssid[i].checked) {
+				        if (i > 0) form.hidden_ssids.value += ",";
+				        form.hidden_ssids.value += form.hssid[i].value;
+				    }
+				}
+
+
+
+
+
+
 				if (form.country_code.value == 'RU') {
 					var rcINIC = [];
 					form.RegulatoryClassINIC.value = '';
@@ -1715,6 +1754,9 @@
 			These settings are sufficient to have a working Access Point. </p>
 			<hr>
 	<form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
+	<input id="isolated_ssids" name="isolated_ssids" type="hidden" value="">
+	<input id="hidden_ssids" name="hidden_ssids" type="hidden" value="">
+	<input id="mbcastisolated_ssids" name="mbcastisolated_ssids" type="hidden" value="">
 	<iframe name="timerReloader" id="timerReloader" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 	<table id="wireless_24" class="form">
 		<col style="width: 225px" />

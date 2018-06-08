@@ -680,7 +680,7 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     wp->out = ngx_array_create(r->pool, 128, sizeof(char));
     wp->log = r->connection->log;
     wp->args = http_args;
-    wp->do_reboot = 0;
+    wp->on_response_ok = DO_NOTHING;
 
     if (check_auth(wp) == 1)
     {
@@ -747,9 +747,20 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     }
     ngx_http_finalize_request(r, rc);
 
-    if (wp->do_reboot == 1)
-    {
-        reboot_now();
+    switch (wp->on_response_ok) {
+        case DO_REBOOT:
+            reboot_now(); break;
+        case DO_RECONFIGURE:
+            doSystem("internet.sh"); break;
+        case DO_RECONFIGURE_AND_SAMBA_RESTART:
+            doSystem("internet.sh");
+#if defined(CONFIG_USER_SAMBA)
+            doSystem("service samba restart");
+#endif
+            break;
+        case DO_RESTART_MISC:
+            doSystem("services_restart.sh misc &"); break;
+
     }
 }
 
@@ -1027,7 +1038,7 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
     wp->pool = r->pool;
     wp->out = ngx_array_create(r->pool, 128, sizeof(char));
     wp->log = r->connection->log;
-    wp->do_reboot = 0;
+    wp->on_response_ok = DO_NOTHING;
 
 
     if (check_auth(wp) == 1)

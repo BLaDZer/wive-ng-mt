@@ -543,8 +543,8 @@
                                         </table>
 
 					<!-- Software fastpaths -->
-					<table class="form auth-hide-user">
-					<tr id="fastpath_row">
+					<table class="form auth-hide-user" id="fastpath_row">
+					<tr>
 						<td class="title" colspan="5" id="miscSoftwareTitle" onClick="showSoftwareFastpathMenu();">Software fastpaths</td>
 					</tr>
 					<tr id="nat_fastpath_row" style="display: none;">
@@ -1020,7 +1020,7 @@
 				<table class="buttons">
 					<tr>
 						<td>
-							<input type="submit" class="normal" value="Apply"  id="miscApply"><input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form);">
+							<input type="submit" class="normal" value="Apply"  id="miscApply"><input type="button" class="normal" value="Cancel" id="miscCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset"  id="miscReset"  onClick="resetValues(this.form, 60);">
 							<input type="hidden" value="1" name="goaheadrestart">
 							<input type="hidden" value="0" name="reset">
 						</td>

@@ -446,7 +446,7 @@ parameter_fetch_t ids_flags[] =
 
 static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssid, *hssid, *isolated_ssid, *mbssidapisolated;
+	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssids, *hidden_ssids, *isolated_ssids, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_bandwidthinic, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
@@ -509,10 +509,10 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
-	hssid = websGetVar(wp, T("hssid"), T("")); 
-	isolated_ssid = websGetVar(wp, T("isolated_ssid"), T(""));
+	hidden_ssids = websGetVar(wp, T("hidden_ssids"), T("")); 
+	isolated_ssids = websGetVar(wp, T("isolated_ssids"), T(""));
 	LanWifiIsolate = websGetVar(wp, T("LanWifiIsolate"), T("0"));
-	mbcastisolated_ssid = websGetVar(wp, T("mbcastisolated_ssid"), T(""));
+	mbcastisolated_ssids = websGetVar(wp, T("mbcastisolated_ssids"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
@@ -677,11 +677,11 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		if (CHK_IF_SET(mssid))
 		{
 			ngx_nvram_bufset(wp, ssid_nvram_var, mssid);
-			sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
-			sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwarding, "%s%s", noforwarding, token);
-			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssid, ssid + '0') != NULL) ? "1" : "0");
+			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
 #ifndef CONFIG_RT_SECOND_IF_NONE
 #ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
@@ -1011,8 +1011,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	websHeader(wp);
 	outWrite(T("<h2>mode: %s</h2><br>\n"), wirelessmode);
 	outWrite(T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
-	outWrite(T("hssid: %s<br>\n"), hssid);
-	outWrite(T("isolated_ssid: %s<br>\n"), isolated_ssid);
+	outWrite(T("hidden_ssids: %s<br>\n"), hssid);
+	outWrite(T("isolated_ssids: %s<br>\n"), isolated_ssids);
 	outWrite(T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
 	outWrite(T("sz11aChannel: %s<br>\n"), sz11aChannel);
 	outWrite(T("sz11gChannel: %s<br>\n"), sz11gChannel);
@@ -1076,7 +1076,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	websRedirect(wp, submitUrl);
 #endif
 	// reconfigure system 
-	doSystem("internet.sh");
+        wp->on_response_ok = DO_RECONFIGURE;
 }
 
 static int getVideoTurbineBuilt(webs_t *wp, char** params, int nparams)
@@ -1139,7 +1139,8 @@ static void wirelessWds(webs_t* wp, char_t *path, char_t *query)
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
-	doSystem("internet.sh");
+
+        wp->on_response_ok = DO_RECONFIGURE;
 //	websHeader(wp);
 	websDone(wp, 204);
 }
@@ -1188,7 +1189,7 @@ static void wirelessApcli(webs_t* wp, char_t *path, char_t *query)
 		doSystem("service wan stop");
 
 		/* reconfigure system */
-		doSystem("internet.sh");
+                wp->on_response_ok = DO_RECONFIGURE;
 
 //		websHeader(wp);
 		websDone(wp, 204);
@@ -1640,7 +1641,8 @@ out:
 	}
 
 	/* reconfigure system */
-	doSystem("internet.sh");
+        wp->on_response_ok = DO_RECONFIGURE;
+
 	websDone(wp, 200);
 }
 

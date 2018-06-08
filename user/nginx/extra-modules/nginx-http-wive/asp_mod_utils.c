@@ -595,7 +595,7 @@ static void setOpMode(webs_t* wp, char_t *path, char_t *query)
         websFooter(wp);
 
 	/* Reboot */
-        wp->do_reboot = 1;
+        wp->on_response_ok = DO_REBOOT;
 }
 
 static int getEthernetPortCount(webs_t *wp, char** params, int nparams)
@@ -662,7 +662,7 @@ static void setEthernetPort(webs_t* wp, char_t *path, char_t *query)
                 websDone(wp, 200);
 
 		/* Reboot */
-                wp->do_reboot = 1;
+                wp->on_response_ok = DO_REBOOT;
 	}
 	else {
 //		websHeader(wp);
@@ -683,7 +683,7 @@ static void reboot_web(webs_t* wp, char_t *path, char_t *query)
     doSystem("fs save > /dev/null 2>&1");
 
     /* Reboot */
-    wp->do_reboot = 1;
+    wp->on_response_ok = DO_REBOOT;
 }
 
 static void settingsUploadForm(webs_t* wp, char_t *path, char_t *query)
@@ -750,7 +750,7 @@ static void settingsUploadForm(webs_t* wp, char_t *path, char_t *query)
     ELOG_INFO(wp->request->connection->log, 0, "Settings import OK\n");
 
     upload_html_success(wp, 60);
-    wp->do_reboot = 1;
+    wp->on_response_ok = DO_REBOOT;
 
     return;// 0;
 }
@@ -820,7 +820,7 @@ static void rwfsUploadForm(webs_t* wp, char_t *path, char_t *query)
 
     ELOG_INFO(wp->request->connection->log, 0, "RWFS import OK\n");
     upload_html_success(wp, 60);
-    wp->do_reboot = 1;
+    wp->on_response_ok = DO_REBOOT;
 
     return;// 0;
 }

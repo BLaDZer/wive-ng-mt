@@ -330,6 +330,8 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	char_t *goaheadrestart	= websGetVar(wp, T("goaheadrestart"), T("1"));
 	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
 
+	websSetContentType(wp, "text/html");
+
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 48, "stpEnabled", "cdpEnabled", "arpwatch", "lltdEnabled", "lldpdEnabled",
 						"igmpEnabled", "igmpSnoopMode", "igmpFastLeave", "igmpM2UConvMode", "upnpEnabled",
@@ -366,19 +368,19 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 	}
 
 	/* restart some services instead full reload */
-	doSystem("services_restart.sh misc &");
+	wp->on_response_ok = DO_RESTART_MISC;
+
+
 	if (CHK_IF_DIGIT(goaheadrestart, 1)) {
-		/* Output timer for reloading goahead, only for true redirect need, time set to really small */
                 websHeader(wp);
-		outputTimerForReload(wp, "", 15000);
+		outputTimerForReload(wp, "", 60000);
                 websFooter(wp);
-		websDone(wp, 200);
-		/* Correct stop goahead and wait restart by webmon */
-		exit(0);
-	} else {
-//		websHeader(wp);
-		websDone(wp, 200);
+
+                //FIXME: restart nginx only
+		wp->on_response_ok = DO_REBOOT;
 	}
+
+	websDone(wp, 200);
 }
 
 

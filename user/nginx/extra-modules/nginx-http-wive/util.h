@@ -78,11 +78,18 @@ enum UserPermission {
   EVERYONE = 1 | 2 | 4 | 8 | 16 | 32
 };
 
+enum ResponseSentAction {
+    DO_NOTHING = 0,
+    DO_REBOOT = 1,
+    DO_RECONFIGURE = 2,
+    DO_RECONFIGURE_AND_SAMBA_RESTART = 3,
+    DO_RESTART_MISC = 4
+};
+
 typedef struct keyval_t {
     char* key;
     char* val;
 } keyval_t;
-
 
 
 typedef struct webs_t {
@@ -92,12 +99,8 @@ typedef struct webs_t {
     ngx_log_t* log;     // request connection log
     ngx_array_t* args;  // http GET/POST arguments (check when it populates!), array of keyval_t
 
-    int do_reboot; // do reboot after the request ended
-
-//    char* auth_username; // shadow auth username
-//    enum UserRole auth_role; // default is Deny
-
     struct auth_session_t* auth_session;
+    enum ResponseSentAction on_response_ok; // do action if response was successful
 } webs_t;
 
 typedef struct asp_nvram_acl_t{

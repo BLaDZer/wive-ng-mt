@@ -692,7 +692,7 @@ static void editRouting(webs_t* wp, char_t *path, char_t *query)
 	}
 
 	/* reconfigure system */
-	doSystem("internet.sh");
+        wp->on_response_ok = DO_RECONFIGURE;
 
 //	websHeader(wp);
 	websDone(wp, 200);
@@ -782,10 +782,8 @@ static void setLan(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	doSystem("internet.sh");
-#if defined(CONFIG_USER_SAMBA)
-	doSystem("service samba restart");
-#endif
+        wp->on_response_ok = DO_RECONFIGURE_AND_SAMBA_RESTART;
+
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -826,7 +824,7 @@ static void setTvSipVLAN(webs_t* wp, char_t *path, char_t *query)
 		outputTimerForReload(wp, "", 60000);
                 websFooter(wp);
 		websDone(wp, 200);
-                wp->do_reboot = 1;
+                wp->on_response_ok = DO_REBOOT;
 	} else {
 //		websHeader(wp);
 		websDone(wp, 200);
@@ -866,7 +864,7 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 	    outputTimerForReload(wp, "", 60000);
             websFooter(wp);
             websDone(wp, 200);
-            wp->do_reboot = 1;
+            wp->on_response_ok = DO_REBOOT;
 	} else {
 //	    websHeader(wp);
 	    websDone(wp, 200);
@@ -881,7 +879,7 @@ static void restoremac(webs_t* wp, char_t *path, char_t *query)
         websFooter(wp);
         websDone(wp, 200);
 	doSystem("fs factory_mac > /dev/console 2>&1");
-        wp->do_reboot = 1;
+        wp->on_response_ok = DO_REBOOT;
 }
 
 /* goform/setWan */
@@ -908,6 +906,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 	dhcpVen = websGetVar(wp, T("dhcpVendorClass"), T(""));
 
 //	websHeader(wp);
+        wp->on_response_ok = DO_RECONFIGURE;
 
 	if (CHK_IF_DIGIT(reset, 1)) {
 		nvram_fromdef(RT2860_NVRAM, 16, "wanConnectionMode", "wan_ipaddr", "wan_netmask", "wan_gateway", "dhcpRequestIP",
@@ -1021,13 +1020,12 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 			outputTimerForReload(wp, "", 60000);
                         websFooter(wp);
                         websDone(wp, 200);
-                        wp->do_reboot = 1;
+                        wp->on_response_ok = DO_REBOOT;
+
 			return;
 		}
 	}
 
-	/* reconfigure system */
-	doSystem("internet.sh");
 	websDone(wp, 200);
 }
 
@@ -1109,7 +1107,7 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	doSystem("internet.sh");
+        wp->on_response_ok = DO_RECONFIGURE;
 
 //	websHeader(wp);
 	websDone(wp, 200);

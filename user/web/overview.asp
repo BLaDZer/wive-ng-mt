@@ -68,12 +68,12 @@
 								Conditions of commercial use non GPL (or other not viral license) components are discussed individually.
 								<br /><br />
 								News and changes in Russian:<br />
-								<a href="https://wi-cat.ru">wi-cat.ru - Wireless Comprehensive Advanced Technology.</a><br />
-								<a href="http://wive-ng.sf.net">wive-ng.ru - development opensource routers firmware.</a><br />
-								<a href="http://shop.nag.ru">shop.nag.ru - SNR-CPE official shop.</a><br />
+								<a href="https://wi-cat.ru" target="_blank">wi-cat.ru - Wireless Comprehensive Advanced Technology.</a><br />
+								<a href="http://wive-ng.sf.net" target="_blank">wive-ng.ru - development opensource routers firmware.</a><br />
+								<a href="http://shop.nag.ru" target="_blank">shop.nag.ru - SNR-CPE official shop.</a><br />
 								<br />Bug report please send:<br />
 								    1) for SNR-CPE to wifi@nag.ru<br />
-								    2) report of Wive-NG software problem please to <a href="https://wi-cat.ru/forums">forum</a><br />
+								    2) report of Wive-NG software problem please to <a href="https://wi-cat.ru/forums" target="_blank">forum</a><br />
 								</div>
 							</p>
 						</fieldset>

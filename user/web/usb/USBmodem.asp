@@ -113,6 +113,8 @@ function selectModemType(form)
 	// Display mode-dependent elements
 	displayElement( 'modem_dialn_row', (gsm_on || ncm_on));
 	displayElement( 'modem_apn_row', (gsm_on || ncm_on));
+
+	form.modem_apn.disabled = !(gsm_on || ncm_on);
 }
 
 function bodyOnLoad(form)
@@ -160,7 +162,7 @@ function submit_apply(parm)
 
 function initializeForm(form)
 {
-var wmenabled     	     = defaultNumber("<% getCfgZero(1, "MODEMENABLED"); %>", '0');
+var wmenabled     	     = defaultNumber('<% getCfgZero(1, "MODEMENABLED"); %>', '0');
 var watmenabled			 = '<% getCfgGeneral(1, "MODEMATENABLED"); %>';
 var wmdebug				 = '<% getCfgGeneral(1, "MODEMDEBUG"); %>';
 form.modem_type.value    = '<% getCfgGeneral(1, "MODEMTYPE"); %>';
@@ -170,7 +172,7 @@ form.modem_mtu.value     = '<% getCfgGeneral(1, "MODEMMTU"); %>';
 form.modem_user.value    = '<% getCfgGeneral(1, "MODEMUSERNAME"); %>';
 form.modem_pass.value    = '<% getCfgGeneral(1, "MODEMPASSWORD"); %>';
 form.modem_dialn.value	 = '<% getCfgGeneral(1, "MODEMDIALNUMBER"); %>';
-form.modem_apn.value     = '<% getCfgGeneral(1, "APN"); %>';
+form.modem_apn.value     = '<% getCfgGeneral(1, "MODEMAPN"); %>';
 form.modem_at1.value     = '<% getCfgGeneral(1, "MODEMAT1"); %>';
 form.modem_at2.value     = '<% getCfgGeneral(1, "MODEMAT2"); %>';
 form.modem_at3.value     = '<% getCfgGeneral(1, "MODEMAT3"); %>';
