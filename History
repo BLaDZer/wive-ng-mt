@@ -4103,20 +4103,21 @@
 15) kernel: mm: pin address_space before dereferencing it while isolating an LRU page.<br>
 16) kernel: mm/madvise.c: fix madvise() infinite loop under special circumstances.<br>
 17) kernel: mm/mempolicy.c: avoid use uninitialized preferred_node.<br>
-18) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
-19) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
-20) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
-21) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
-22) kernel: net: llc: better deal with too small mtu.<br>
-23) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
-24) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-25) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
-26) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
-27) kernel: net: netfilter: ebtables: fix erroneous reject of last rule.<br>
-28) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-29) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-30) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-31) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
-32) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices.<br>
+18) kernel: mm: fix the NULL mapping case in __isolate_lru_page().<br>
+19) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
+20) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+21) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
+22) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
+23) kernel: net: llc: better deal with too small mtu.<br>
+24) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
+25) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
+26) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
+27) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
+28) kernel: net: netfilter: ebtables: fix erroneous reject of last rule.<br>
+29) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+30) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+31) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+32) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+33) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices.<br>
 <br>
 <br>
