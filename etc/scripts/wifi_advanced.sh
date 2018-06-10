@@ -51,6 +51,10 @@ if [ "$CONFIG_RT_FIRST_IF_MT7603E" = "y" -o "$CONFIG_RT_FIRST_IF_MT7615E" = "y" 
     exit 0
 fi
 
+if [ "$CONFIG_RT_SECOND_IF_MT7615E" = "y" ] && [ "$1" = "rai0" ]; then
+    exit 0
+fi
+
 # enable/disable dynamic LNA gain
 if [ "$DyncVgaEnable" = "1" ]; then
     iwpriv "$1" set DyncVgaEnable=1

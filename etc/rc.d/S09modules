@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# prevent double startmodules configure in one time
+while [ -e /tmp/modules_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+touch /tmp/modules_runing
+
 # get params
 . /etc/scripts/global.sh
 
@@ -274,3 +281,6 @@ case "$1" in
 	*)
 	    echo $"Usage: $0 {start|stop|restart|full_reload|wlan_down_all|load_nat_helpers|retune_wifi|roaming_wifi|gen_wifi_config}"
 esac
+
+# remove running flag
+rm -f /tmp/modules_runing
