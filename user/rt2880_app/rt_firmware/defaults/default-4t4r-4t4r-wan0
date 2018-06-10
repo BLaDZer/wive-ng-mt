@@ -557,6 +557,7 @@ PMFMFPC=0
 PMFMFPR=0
 PMFSHA256=0
 G_BAND_256QAM=1
+VHT_Sec80_Channel=0
 DBDC_MODE=0
 VOW_Airtime_Ctrl_En=
 VOW_Airtime_Fairness_En=1
