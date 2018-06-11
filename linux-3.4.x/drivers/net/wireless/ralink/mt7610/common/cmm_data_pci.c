@@ -176,7 +176,7 @@ VOID ral_write_txd(
 	/* Always use Long preamble before verifiation short preamble functionality works well.*/
 	/* Todo: remove the following line if short preamble functionality works*/
 	
-	OPSTATUS_CLEAR_FLAG(pAd, fOP_STATUS_SHORT_PREAMBLE_INUSED);
+	//OPSTATUS_CLEAR_FLAG(pAd, fOP_STATUS_SHORT_PREAMBLE_INUSED);
 
 	ral_write_txinfo(pAd, pTxBlk, pTxInfo, bWIV, QueueSEL);
 	
@@ -1312,7 +1312,7 @@ PNDIS_PACKET RxRingDeQueue(
 #endif /* RT_BIG_ENDIAN */
 		SET_OS_PKT_DATAPTR(pRxPacket, GET_OS_PKT_DATAPTR(pRxPacket) + RXINFO_SIZE);
 		rxwi_n = (struct _RXWI_NMAC *)(GET_OS_PKT_DATAPTR(pRxPacket));
-		pRxBlk->pRxWI = (RXWI_STRUC *) GET_OS_PKT_DATAPTR(pRetPacket);
+		pRxBlk->pRxWI = (RXWI_STRUC *)(GET_OS_PKT_DATAPTR(pRxPacket));
 #endif /* RLT_MAC */
 
 		SET_OS_PKT_LEN(pRxPacket,

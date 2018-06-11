@@ -446,7 +446,6 @@ USHORT FT_AuthReqHandler(
 	UCHAR ApIdx = pEntry->func_tb_idx;
 	PFT_CFG pFtCfg;
 	FT_CAP_AND_POLICY FtCapPlc;
-	ULONG temp_len = 0;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("---> %s \n", __FUNCTION__));
 
@@ -531,6 +530,7 @@ USHORT FT_AuthConfirmHandler(
 	PFT_CFG pFtCfg;
 	FT_CAP_AND_POLICY FtCapPlc;
 	struct wifi_dev *wdev;
+	ULONG temp_len = 0;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s:\n", __FUNCTION__));
 
