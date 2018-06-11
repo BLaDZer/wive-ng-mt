@@ -4124,5 +4124,6 @@
 36) kernel: ralink_wifi: fix reset one sec counters<br>
 37) kernel: ralink_wifi: fix channel repports.<br>
 38) kernel: ralink_wifi: fix pkt_len calc.<br>
+39) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
 <br>
 <br>
