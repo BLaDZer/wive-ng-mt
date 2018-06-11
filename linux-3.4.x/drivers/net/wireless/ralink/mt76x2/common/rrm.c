@@ -174,6 +174,11 @@ INT Set_Dot11kRRM_Enable_Proc(
 	pAd->ApCfg.MBSSID[ifIndex].RrmCfg.bDot11kRRMEnable =
 		(BOOLEAN)(Value) == 0 ? FALSE : TRUE;
 
+	if(pAd->ApCfg.MBSSID[ifIndex].RrmCfg.bDot11kRRMEnable)
+		pAd->ApCfg.MBSSID[ifIndex].CapabilityInfo |= RRM_CAP_BIT;
+	else
+		pAd->ApCfg.MBSSID[ifIndex].CapabilityInfo &= ~RRM_CAP_BIT;
+	APMakeBssBeacon(pAd,ifIndex);
 	return 1;
 }
 
