@@ -279,6 +279,7 @@ make
 
 echo -----------------------------------PACK----------------------------------
 mv -f images/*.bin "images/$DEVNAME-$MODE.$VERSIONPKG.bin"
-zip -r images/$DEVNAME-$MODE.$VERSIONPKG.bin.zip images/*.bin
+links -dump History > "images/CHANGELOG.$VERSIONPKG.txt"
+zip -r images/$DEVNAME-$MODE.$VERSIONPKG.bin.zip images/*.bin images/*.txt
 
 echo ---------------------------------END BUILD-------------------------------
