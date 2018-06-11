@@ -1516,12 +1516,15 @@ PNDIS_PACKET GetPacketFromRxRing(
 #endif /* RT_BIG_ENDIAN */
 
 			SET_OS_PKT_DATAPTR(pRxPacket, GET_OS_PKT_DATAPTR(pRxPacket) + RXINFO_SIZE);
-			SET_OS_PKT_LEN(pRxPacket, GET_OS_PKT_LEN(pRxPacket) - RXINFO_SIZE);
 			rxwi_n = (struct _RXWI_NMAC *)(GET_OS_PKT_DATAPTR(pRxPacket));
 			pRxBlk->pRxWI = (RXWI_STRUC *)(GET_OS_PKT_DATAPTR(pRxPacket));
 #ifdef RT_BIG_ENDIAN		
 			RTMPWIEndianChange(pAd , (PUCHAR)rxwi_n, TYPE_RXWI);
 #endif			
+			SET_OS_PKT_LEN(pRxPacket,
+				rxwi_n->MPDUtotalByteCnt+sizeof(RXWI_STRUC)+(pRxBlk->pRxInfo->L2PAD?2:0));
+			SET_OS_PKT_DATATAIL(pRxPacket, GET_OS_PKT_DATAPTR(pRxPacket), GET_OS_PKT_LEN(pRxPacket));
+
 			pRxBlk->MPDUtotalByteCnt = rxwi_n->MPDUtotalByteCnt;
 			pRxBlk->wcid = rxwi_n->wcid;
 			pRxBlk->key_idx = rxwi_n->key_idx;

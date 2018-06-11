@@ -4123,5 +4123,6 @@
 35) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
 36) kernel: ralink_wifi: fix reset one sec counters<br>
 37) kernel: ralink_wifi: fix channel repports.<br>
+38) kernel: ralink_wifi: fix pkt_len calc.<br>
 <br>
 <br>

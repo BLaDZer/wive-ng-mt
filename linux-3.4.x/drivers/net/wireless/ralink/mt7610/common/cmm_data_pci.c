@@ -1288,6 +1288,8 @@ PNDIS_PACKET RxRingDeQueue(
 
 	if (pNewPacket)
 	{
+		struct _RXWI_NMAC *rxwi_n;
+
 		/* unmap the rx buffer*/
 		PCI_UNMAP_SINGLE(pAd, pRxCell->DmaBuf.AllocPa,
 					 pRxCell->DmaBuf.AllocSize, RTMP_PCI_DMA_FROMDEVICE);
@@ -1309,8 +1311,13 @@ PNDIS_PACKET RxRingDeQueue(
 		NdisMoveMemory(pRxBlk->pRxInfo, pRxInfo, RXINFO_SIZE);
 #endif /* RT_BIG_ENDIAN */
 		SET_OS_PKT_DATAPTR(pRxPacket, GET_OS_PKT_DATAPTR(pRxPacket) + RXINFO_SIZE);
-		SET_OS_PKT_LEN(pRxPacket, GET_OS_PKT_LEN(pRxPacket) - RXINFO_SIZE);
+		rxwi_n = (struct _RXWI_NMAC *)(GET_OS_PKT_DATAPTR(pRxPacket));
+		pRxBlk->pRxWI = (RXWI_STRUC *) GET_OS_PKT_DATAPTR(pRetPacket);
 #endif /* RLT_MAC */
+
+		SET_OS_PKT_LEN(pRxPacket,
+			rxwi_n->MPDUtotalByteCnt+sizeof(RXWI_STRUC)+(pRxBlk->pRxInfo->L2PAD?2:0));
+		SET_OS_PKT_DATATAIL(pRxPacket, GET_OS_PKT_DATAPTR(pRxPacket), GET_OS_PKT_LEN(pRxPacket));
 
 		pRxCell->DmaBuf.AllocSize = RX_BUFFER_AGGRESIZE;
 		pRxCell->pNdisPacket = (PNDIS_PACKET) pNewPacket;
