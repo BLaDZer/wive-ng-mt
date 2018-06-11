@@ -4126,5 +4126,6 @@
 38) kernel: ralink_wifi: fix pkt_len calc.<br>
 39) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
 40) kernel: ralink_wifi: rrm: fix bss beacon prepare for announse RRM cap.<br>
+41) kernel: ralink_wifi: rrm: use 0 random interval.<br>
 <br>
 <br>

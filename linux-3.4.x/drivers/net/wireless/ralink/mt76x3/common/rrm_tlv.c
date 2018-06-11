@@ -444,8 +444,7 @@ VOID RRM_EnqueueBcnReq(
 	*/
 	BcnReq.RegulatoryClass = pMlmeBcnReq->RegulatoryClass;
 	BcnReq.ChNumber = pMlmeBcnReq->MeasureCh;
-	BcnReq.RandomInterval = cpu2le16((UINT16)RandomByte(pAd) << 8
-								| (UINT16)RandomByte(pAd));
+	BcnReq.RandomInterval = 0;
 	BcnReq.MeasureDuration = cpu2le16(pMlmeBcnReq->MeasureDuration);
 	BcnReq.MeasureMode = pMlmeBcnReq->MeasureMode;
 	COPY_MAC_ADDR(BcnReq.Bssid, pMlmeBcnReq->Bssid);
@@ -521,7 +520,7 @@ VOID RRM_EnqueueBcnReq(
 		MeasureReqMode.word = 0;
 		MakeMeasurementReqFrame(pAd, pOutBuffer, &tmpLen,
 			TotalLen, CATEGORY_RM, RRM_MEASURE_REQ, MeasureReqToken,
-			MeasureReqMode.word, MeasureReqType, 1);
+			MeasureReqMode.word, MeasureReqType, 0);
 	}
 
 	MeasureReqInsert(pAd, MeasureReqToken);
