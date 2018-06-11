@@ -1358,6 +1358,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(G_BAND_256QAM);
 	FPRINT_DAT(DBDC_MODE);
 	FPRINT_DAT(VHT_Sec80_Channel);
+	FPRINT_DAT(PcieAspm);
 #ifdef CONFIG_MT7615_AP_VOW_SUPPORT
 	FPRINT_DAT(VOW_Airtime_Ctrl_En);
 	FPRINT_DAT(VOW_Airtime_Fairness_En);

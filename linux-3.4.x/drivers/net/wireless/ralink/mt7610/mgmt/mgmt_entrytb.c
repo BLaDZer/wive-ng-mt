@@ -864,10 +864,10 @@ BOOLEAN MacTableDeleteEntry(
 
 
 //   			NdisZeroMemory(pEntry, sizeof(MAC_TABLE_ENTRY));
-			NdisZeroMemory(pEntry->Addr, MAC_ADDR_LEN);
 			/* invalidate the entry */
 			SET_ENTRY_NONE(pEntry);
 			pEntry->PortSecured = WPA_802_1X_PORT_NOT_SECURED;
+			NdisZeroMemory(pEntry->Addr, MAC_ADDR_LEN);
 			pAd->MacTab.Size --;
 #ifdef TXBF_SUPPORT
 			if (pAd->chipCap.FlgHwTxBfCap)

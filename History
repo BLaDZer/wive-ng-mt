@@ -4120,5 +4120,8 @@
 32) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
 33) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
 34) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices.<br>
+35) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
+36) kernel: ralink_wifi: fix reset one sec counters<br>
+37) kernel: ralink_wifi: fix channel repports.<br>
 <br>
 <br>

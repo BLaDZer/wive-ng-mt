@@ -1671,8 +1671,6 @@ VOID MlmePeriodicExec(
 
 		RTMP_SECOND_CCA_DETECTION(pAd);
 
-		MlmeResetRalinkCounters(pAd);
-
 #ifdef CONFIG_STA_SUPPORT
 		IF_DEV_CONFIG_OPMODE_ON_STA(pAd)
 		{
@@ -1790,6 +1788,8 @@ VOID MlmePeriodicExec(
 #endif /* ED_SMART */
 #endif /* ED_MONITOR */
 
+	if (pAd->Mlme.PeriodicRound % MLME_TASK_EXEC_MULTIPLE == 0)
+		MlmeResetRalinkCounters(pAd);
 
 	pAd->bUpdateBcnCntDone = FALSE;
 }

@@ -595,3 +595,4 @@ VOW_WMM_Search_Rule_Band0=
 VOW_WMM_Search_Rule_Band1=
 DfsCalibration=0
 DfsEnable=0
+PcieAspm=0

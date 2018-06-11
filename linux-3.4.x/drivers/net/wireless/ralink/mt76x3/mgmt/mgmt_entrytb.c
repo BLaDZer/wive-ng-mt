@@ -909,12 +909,11 @@ BOOLEAN MacTableDeleteEntry(RTMP_ADAPTER *pAd, USHORT wcid, UCHAR *pAddr)
 
 
 			//   			NdisZeroMemory(pEntry, sizeof(MAC_TABLE_ENTRY));
-			NdisZeroMemory(pEntry->Addr, MAC_ADDR_LEN);
 			/* invalidate the entry */
 			tr_entry->PortSecured = WPA_802_1X_PORT_NOT_SECURED;			
 			SET_ENTRY_NONE(pEntry);
-			
 
+			NdisZeroMemory(pEntry->Addr, MAC_ADDR_LEN);
 			pAd->MacTab.Size--;
 
 			DBGPRINT(RT_DEBUG_TRACE, ("MacTableDeleteEntry1 - Total= %d\n", pAd->MacTab.Size));

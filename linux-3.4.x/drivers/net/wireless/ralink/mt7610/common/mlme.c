@@ -1088,9 +1088,6 @@ VOID MlmePeriodicExec(
 		}
 #endif /* CONFIG_AP_SUPPORT */
 
-		MlmeResetRalinkCounters(pAd);
-
-
 		RTMP_MLME_HANDLER(pAd);
 	}
 
@@ -1109,6 +1106,8 @@ VOID MlmePeriodicExec(
 #endif /* ED_SMART */
 #endif /* ED_MONITOR */
 
+	if (pAd->Mlme.PeriodicRound % MLME_TASK_EXEC_MULTIPLE == 0)
+		MlmeResetRalinkCounters(pAd);
 
 	pAd->bUpdateBcnCntDone = FALSE;
 }

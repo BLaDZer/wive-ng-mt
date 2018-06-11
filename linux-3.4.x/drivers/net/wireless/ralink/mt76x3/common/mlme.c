@@ -1686,8 +1686,6 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 
 		RTMP_SECOND_CCA_DETECTION(pAd);
 
-		MlmeResetRalinkCounters(pAd);
-
 #if defined(RTMP_MAC) || defined(RLT_MAC)
 #endif /* defined(RTMP_MAC) || defined(RLT_MAC) */
 
@@ -1711,6 +1709,9 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 	if(pAd->ed_chk != FALSE)
 		ed_status_read(pAd);
 #endif
+
+	if (pAd->Mlme.PeriodicRound % MLME_TASK_EXEC_MULTIPLE == 0)
+		MlmeResetRalinkCounters(pAd);
 
 	return NDIS_STATUS_SUCCESS;
 }

@@ -1862,7 +1862,7 @@ VOID BuildBeaconChList(
 				continue;
 		}
 
-		if ((pChDesp[i].Geography == BOTH) ||
+		if ((pChDesp[i].Geography == BOTH) || (pAd->CommonCfg.Geography == BOTH) ||
 			(pChDesp[i].Geography == pAd->CommonCfg.Geography))
 		{
 			MakeOutgoingFrame(pBuf + *pBufLen,		&TmpLen,

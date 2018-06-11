@@ -219,5 +219,4 @@ int PpeSetBindLifetime(uint16_t tcp_fin, uint16_t udp_life, uint16_t fin_life);
 struct FoeEntry *get_foe_entry(uint32_t foe_entry_num);
 
 extern struct FoeEntry *get_foe_table(dma_addr_t *dma_handle, uint32_t *FoeTblSize);
-
 #endif
