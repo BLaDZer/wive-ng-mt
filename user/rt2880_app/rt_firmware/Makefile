@@ -94,8 +94,6 @@ endif
 ifdef CONFIG_RT_FIRST_IF_MT7615E
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615N_external_LNA_external_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
-	$(ROMFSINST) -S sku/7615_SingleSKU.dat								/etc/Wireless/SingleSKU.dat
-	$(ROMFSINST) -S sku/7615_SingleSKU_BF.dat							/etc/Wireless/SingleSKU_BF.dat
 ifdef CONFIG_RT_SECOND_IF_MT7615E
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
 endif
