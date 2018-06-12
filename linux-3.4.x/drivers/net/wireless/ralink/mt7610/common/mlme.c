@@ -280,9 +280,6 @@ NDIS_STATUS MlmeInit(
 		/* Init mlme periodic timer*/
 		RTMPInitTimer(pAd, &pAd->Mlme.PeriodicTimer, GET_TIMER_FUNCTION(MlmePeriodicExec), pAd, TRUE);
 
-		/* Set mlme periodic timer*/
-		RTMPSetTimer(&pAd->Mlme.PeriodicTimer, MLME_TASK_EXEC_INTV);
-
 		/* software-based RX Antenna diversity*/
 		RTMPInitTimer(pAd, &pAd->Mlme.RxAntEvalTimer, GET_TIMER_FUNCTION(AsicRxAntEvalTimeout), pAd, FALSE);
 

@@ -633,6 +633,8 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 	}
 #endif /* RT3290 */
 
+	/* Set mlme periodic timer*/
+	RTMPSetTimer(&pAd->Mlme.PeriodicTimer, MLME_TASK_EXEC_INTV);
 	DBGPRINT_S(Status, ("<==== rt28xx_init, Status=%x\n", Status));
 
 	return TRUE;

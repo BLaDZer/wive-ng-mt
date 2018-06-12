@@ -574,6 +574,8 @@ int rt28xx_init(VOID *pAdSrc, RTMP_STRING *pDefaultMac, RTMP_STRING *pHostName)
 	pAd->bUSBIOTReady = TRUE;
 #endif
 
+	/* Set mlme periodic timer*/
+	RTMPSetTimer(&pAd->Mlme.PeriodicTimer, MLME_TASK_EXEC_INTV);
 	DBGPRINT_S(("<==== rt28xx_init, Status=%x\n", Status));
 
 	return TRUE;
