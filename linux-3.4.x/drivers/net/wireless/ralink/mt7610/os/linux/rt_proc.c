@@ -41,7 +41,7 @@ int wl_proc_exit(void);
 #endif /* CONFIG_MT7610_AP */
 
 #ifndef PROCREG_DIR
-#define PROCREG_DIR             "mt761x"
+#define PROCREG_DIR             "mt7610"
 #endif /* PROCREG_DIR */
 
 #ifdef CONFIG_PROC_FS
