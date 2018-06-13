@@ -59,6 +59,11 @@ l2tpstart() {
 }
 
 l2tpstop() {
+    # not need try stop, allready stopped
+    if [ ! -d /sys/module/l2tp_eth ]; then
+	return
+    fi
+
     l2tp_eth_tid=`ip l2tp show session | grep "Session" | awk {' print $5 '} | tail -qn1`
     l2tp_eth_sid=`ip l2tp show session | grep "Session" | awk {' print $2 '} | tail -qn1`
 
@@ -131,6 +136,11 @@ eoipstart() {
 }
 
 eoipstop() {
+    # not need try stop, allready stopped
+    if [ ! -d /sys/module/eoip ]; then
+	return
+    fi
+
     # first remove eoip module for deregister vifs
     rmmod eoip	 				> /dev/null 2>&1
 
