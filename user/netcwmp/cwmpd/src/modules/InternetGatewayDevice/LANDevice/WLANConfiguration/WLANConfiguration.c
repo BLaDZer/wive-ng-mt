@@ -1254,7 +1254,7 @@ static void igd_lan_wlan_arp(const char *n, struct wlan_assoc *wa)
     fclose(f);
 }
 
-int cpe_refresh_igd_wlanc_associated(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
+int cpe_refresh_igd_wlanc_associated(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     unsigned id = -1u;
     struct wlanc_node *w = NULL;
@@ -1419,8 +1419,8 @@ int cpe_set_igd_wlanc_key(cwmp_t *cwmp, const char *name, const char *value, int
 
         cwmp_nvram_set(k, value);
 
-        char* ssid1 = cwmp_nvram_pool_get(cwmp->pool, ssid_id1);
-        char* ssid2 = cwmp_nvram_pool_get(cwmp->pool, ssid_id2);
+        char* ssid1 = cwmp_nvram_get(ssid_id1);
+        char* ssid2 = cwmp_nvram_get(ssid_id2);
 
         if (strcmp(ssid1,ssid2) == 0) {
             snprintf(k, sizeof(k), "WPAPSK%u", id + 1);
@@ -1782,7 +1782,7 @@ int cpe_get_igd_wlanc_ssidadv(cwmp_t * cwmp, const char * name, char ** value, c
 
 /* *** dynamic config *** */
 
-int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
+int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     int i = 0;
     int count = 0;
@@ -1818,7 +1818,9 @@ int cpe_refresh_wlanc(cwmp_t * cwmp, parameter_node_t * param_node, callback_reg
             wlanc.root = w;
         }
     }
-    cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg);
+    cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg, pool);
+
+    free(nc);
 
     return FAULT_CODE_OK;
 }

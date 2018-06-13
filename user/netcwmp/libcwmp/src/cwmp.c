@@ -1147,7 +1147,7 @@ int cwmp_parse_getparametervalues_message_parameter_iterator(env_t * env, parame
 
         if (pnode->type == TYPE_OBJECT && pnode->refresh)
         {
-            (*pnode->refresh)(env->cwmp, pnode, callback_register_task);
+            (*pnode->refresh)(env->cwmp, pnode, callback_register_task, pool);
         }
 
         char cname[1024];
@@ -1209,7 +1209,7 @@ int cwmp_parse_getparameterattributes_message_parameter_iterator(env_t * env, pa
 
         if (pnode->type == TYPE_OBJECT && pnode->refresh)
         {
-            (*pnode->refresh)(env->cwmp, pnode, callback_register_task);
+            (*pnode->refresh)(env->cwmp, pnode, callback_register_task, pool);
         }
 
         char cname[1024];
@@ -1284,7 +1284,7 @@ int cwmp_parse_getparametervalues_message(env_t * env , xmldoc_t * doc, paramete
     *ppl = cwmp_create_parameter_list(env );
     ESE(CWMP_ERROR, NULL, *ppl);
 
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
 
     const char * name;
 
@@ -1428,7 +1428,6 @@ int  cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, par
     parameter_t ** nextpv;
     int rc = CWMP_OK;
 
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
 
     parameterListNode = cwmp_xml_get_child_with_name(cwmp_get_rpc_method_node(doc), "ParameterList");
 
@@ -1446,6 +1445,7 @@ int  cwmp_parse_setparameterattributes_message(env_t * env , xmldoc_t * doc, par
     parameterNode = XmlNodeGetFirstChild(parameterListNode);
 
 ///////////////////////////////////////////////////////
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
 
     const char * name;
     const char * value;
@@ -1515,7 +1515,7 @@ int  cwmp_parse_getparameterattributes_message(env_t * env , xmldoc_t * doc, par
     *ppl = cwmp_create_parameter_list(env );
     ESE(CWMP_ERROR, NULL, *ppl);
 
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
 
     const char * name;
 
@@ -1530,8 +1530,7 @@ int  cwmp_parse_getparameterattributes_message(env_t * env , xmldoc_t * doc, par
 
         if (pn)
         {
-
-            int rc = CWMP_OK;
+//            int rc = CWMP_OK;
             cwmp_log_info("cwmp_parse_getparameterattributes_message: param: %s", name);
 
             if (pn->type == TYPE_OBJECT)
@@ -1544,7 +1543,7 @@ int  cwmp_parse_getparameterattributes_message(env_t * env , xmldoc_t * doc, par
                     name2[len-1] = '\0';
                 }
 
-                rc = cwmp_parse_getparameterattributes_message_parameter_iterator(env, ppl, root, pn, name2, pool);
+//                rc = cwmp_parse_getparameterattributes_message_parameter_iterator(env, ppl, root, pn, name2, pool);
             }
             else
             {
@@ -1585,7 +1584,6 @@ int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, paramet
             (void*)root, root ? root->name : "",
             (void*)ppl, (void*)fault);
 
-    pool = pool_create(POOL_DEFAULT_SIZE);
     node = cwmp_get_rpc_method_node(doc);
 
     parameterListNode = cwmp_xml_get_child_with_name(node, "ParameterList");
@@ -1603,6 +1601,7 @@ int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, paramet
     parameterNode = XmlNodeGetFirstChild(parameterListNode);
 
 ///////////////////////////////////////////////////////
+    pool = pool_create(__func__, POOL_DEFAULT_SIZE);
 
     const char * name;
     const char * value;
@@ -1622,9 +1621,6 @@ int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, paramet
             cwmp_log_error("%s: parameter (%s) setter returned fault code %i", __func__, name, parameter->fault_code);
             rc = CWMP_ERROR;
         } else {
-            //FIXME: D-Link refresh
-            //parameter_node_t * pn = cwmp_get_parameter_node(root, name);
-            //if (pn && pn->inform == 0) pn->inform = 2;
         }
 
         if (parameter) {
@@ -1633,18 +1629,6 @@ int  cwmp_parse_setparametervalues_message(env_t * env , xmldoc_t * doc, paramet
         }
     }
 
-//    //FIXME: D-Link refresh
-//    session->cwmp->new_request = CWMP_YES;
-
-/*    name     = "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType";//CWMP_APPEND_PARAMETER_NAME(pool, 3, InternetGatewayDeviceModule, ManagementServerModule, URLModule);
-    value    = cwmp_data_get_parameter_value(env->cwmp, root, name, env->pool);
-    parameter = parameter_list_set_param_value(env, ppl, root, name, value);
-s
-    if (parameter) {
-        *nextpv = parameter;
-        nextpv++;
-    }
-*/
     if (rc != CWMP_ERROR && parameter_key_node != NULL) {
         parameter_key = cwmp_xml_get_node_value(parameter_key_node);
         cwmp_conf_set("cwmp:ParameterKey", parameter_key ? parameter_key : "");
@@ -2344,7 +2328,7 @@ void * cwmp_create_getparameternames_response_all_parameter_names(env_t * env , 
 
     if (param_node->type == TYPE_OBJECT && param_node->refresh)
     {
-        (*param_node->refresh)(env->cwmp, param_node, callback_register_task);
+        (*param_node->refresh)(env->cwmp, param_node, callback_register_task, env->pool);
     }
 
     for (param_child = param_node->child; param_child; param_child = param_child->next_sibling)
@@ -2425,7 +2409,7 @@ xmldoc_t* cwmp_create_getparameternames_response_message(env_t * env ,
         {
             if (param_node->type == TYPE_OBJECT && param_node->refresh)
             {
-                (*param_node->refresh)(env->cwmp, param_node, callback_register_task);
+                (*param_node->refresh)(env->cwmp, param_node, callback_register_task, env->pool);
             }
 
             for (child = param_node->child; child; child = child->next_sibling)

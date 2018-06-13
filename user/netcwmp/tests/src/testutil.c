@@ -53,7 +53,7 @@ void initialize(void) {
 	cwmp_log_init(NULL, CWMP_LOG_DEBUG);
 	cwmp_conf_open("/etc/cwmp.conf");
 
-	gpool = (pool_t*)pool_create(POOL_DEFAULT_SIZE);
+	gpool = (pool_t*)pool_create("test_initialize",POOL_DEFAULT_SIZE);
 	gcwmp = (cwmp_t*)pool_palloc(gpool, sizeof(cwmp_t));
 	if(!gcwmp)
 	{

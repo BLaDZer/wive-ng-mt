@@ -3283,9 +3283,10 @@ ErrorHandler:
 
 char * XmlStrduptrim(Pool * pool, const char * data)
 {
-    char buffer[XML_VALUE_SIZE_MAX] ;
-    char * p;
+    char buffer[XML_VALUE_SIZE_MAX] = {0};
+    const char * p = data;
     char * q;
+
     if (!data)
     {
         return NULL;
@@ -3295,21 +3296,19 @@ char * XmlStrduptrim(Pool * pool, const char * data)
         return PSTRDUP("");
     }
 
-    memset(buffer, 0, XML_VALUE_SIZE_MAX);
-    strncpy(buffer, data, XML_VALUE_SIZE_MAX);
-    p =  buffer;
-    while ((*p <= ' ')  && (*p != '\n'))
+    while ((*p <= ' ') && (*p != '\n') && (*p != '\0'))
     {
-        p ++;
+        p++;
     }
 
-    q = buffer + strlen(data);
-    if ((*q == 0) && (q != p))
-        q --;
-    while ((*p <= ' ')  && (q != p) )
+    strncpy(buffer, p, XML_VALUE_SIZE_MAX-1);
+    q = buffer + strlen(buffer);
+
+    while ((*q <= ' ') && (q != buffer))
     {
-        q --;
+        *q = '\0';
+        q--;
     }
-    *(q+1) = 0;
-    return PSTRDUP(p);
+
+    return PSTRDUP(buffer);
 }

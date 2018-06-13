@@ -218,7 +218,7 @@ cpe_get_hosts_count(cwmp_t *cwmp, const char *name, char **value, char *args, po
 }
 
 int
-cpe_refresh_hosts(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg)
+cpe_refresh_hosts(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     unsigned i = 0u;
     struct hosts_addr *ha = NULL;

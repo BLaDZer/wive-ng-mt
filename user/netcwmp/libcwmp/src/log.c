@@ -82,6 +82,7 @@ void cwmp_log_set(const char * filename, int level)
     {
         if (g_cwmp_log_file.name) {
             free(g_cwmp_log_file.name);
+            g_cwmp_log_file.name = NULL;
         }
 
         if (g_cwmp_log_file.file &&
@@ -151,14 +152,18 @@ void cwmp_log_fini()
     memset(&g_cwmp_log_file, 0u, sizeof(g_cwmp_log_file));
 }
 
-void cwmp_log_write(int level, cwmp_log_t * log, const char * fmt, va_list ap)
+void cwmp_log_write(int level, cwmp_log_t * log, const char * fmt, ...)
 {
     time_t t;
     struct tm *tm;
     char tm_str[24] = {};
     pid_t pid = syscall(SYS_gettid);
     if (g_ot_log_file_ptr == NULL) return; /* Uninitialized logger! */
+
+    va_list ap;
+    va_start(ap, fmt);
     vsyslog(cwmp_loglevel_to_syslog_level(level), fmt, ap);
+    va_end(ap);
 
     cwmp_log_t * logger = log;
     if (logger == NULL)
@@ -178,66 +183,16 @@ void cwmp_log_write(int level, cwmp_log_t * log, const char * fmt, va_list ap)
         strftime(tm_str, sizeof(tm_str), "%b %e %T", tm);
         fprintf(logger->file, "%s - -[%"PRIuPTR"]: %s: ",
                 tm_str, (size_t)pid, cwmp_loglevel_to_string(level));
+
+        va_start(ap, fmt);
         vfprintf(logger->file, fmt, ap);
+        va_end(ap);
+
         fprintf(logger->file, "\n");
 
         fflush(logger->file);
     }
-}
 
-void cwmp_log_trace(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_TRACE, NULL, fmt, ap);
-    va_end(ap);
-}
 
-void cwmp_log_debug(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_DEBUG, NULL, fmt, ap);
-    va_end(ap);
-}
-
-void cwmp_log_info(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_INFO, NULL, fmt, ap);
-    va_end(ap);
-}
-
-void cwmp_log_warn(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_WARN, NULL, fmt, ap);
-    va_end(ap);
-}
-
-void cwmp_log_error(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_ERROR, NULL, fmt, ap);
-    va_end(ap);
-}
-
-void cwmp_log_alert(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_ALERT, NULL, fmt, ap);
-    va_end(ap);
-}
-
-void cwmp_log_critical(const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    cwmp_log_write(CWMP_LOG_CRIT, NULL, fmt, ap);
-    va_end(ap);
 }
 

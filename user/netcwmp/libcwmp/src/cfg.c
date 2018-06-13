@@ -41,6 +41,10 @@ int cwmp_conf_open(const char * filename)
         cwmp_log_error("conf malloc faild.");
         return CWMP_ERROR;
     }
+
+    cwmp_conf_handle->write_to_nvram = false;
+    cwmp_conf_handle->read_from_nvram = false;
+
     cwmp_conf_handle->filename = TRstrdup(filename);
     /* basic values */
     ini_gets("cwmp", "cfg_write_to_nvram", NULL, buf, sizeof(buf), filename);
@@ -107,7 +111,7 @@ int cwmp_conf_get(const char * key, char *value)
     /* get nvram value */
     TRsnprintf(nvram_name, sizeof(nvram_name), "%s_%s", s, k);
     nvram_val = cwmp_nvram_get(nvram_name);
-    if (!*nvram_val) {
+    if (nvram_val == NULL || nvram_val[0] == NULL) {
         char _val[512] = {};
         ini_gets(s, k, NULL, _val, sizeof(_val), cwmp_conf_handle->filename);
         if (*_val) {

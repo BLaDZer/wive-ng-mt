@@ -57,7 +57,7 @@ int cpe_set_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, const char *
     DM_TRACE_SET();
 
     char *saveptr;
-    char* pr_dns = pool_pstrdup(cwmp->pool,value);
+    char* pr_dns = strdup(value);
     char* sc_dns;
 
     if (pr_dns == NULL)
@@ -76,6 +76,8 @@ int cpe_set_igd_wan_ip_dnsservers(cwmp_t * cwmp, const char * name, const char *
 
     cwmp_nvram_set("wan_static_dns", "on");
 
+    free(pr_dns);
+
     return FAULT_CODE_OK;
 }
 
@@ -91,7 +93,7 @@ int cpe_set_igd_wan_ip_dnsenabled(cwmp_t * cwmp, const char * name, const char *
 
 
 int cpe_get_igd_wan_ip_rxtxbytes(cwmp_t * cwmp, const char * name, char ** value, char * args, pool_t * pool) {
-    struct port_counts pcs;
+    struct port_counts pcs = {{0}};
     int i;
 
     DM_TRACE_GET();
@@ -162,7 +164,7 @@ int cpe_set_igd_wan_ip_addrtype(cwmp_t * cwmp, const char * name, const char * v
     return FAULT_CODE_OK;
 }
 
-int  cpe_refresh_igd_wanipconnection(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
+int  cpe_refresh_igd_wanipconnection(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     DM_TRACE_REFRESH();
 
@@ -207,7 +209,7 @@ int  cpe_refresh_igd_wanipconnection(cwmp_t * cwmp, parameter_node_t * param_nod
             //don't support
         }
 
-        cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg); 
+        cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg, pool);
     }
 
     return FAULT_CODE_OK;

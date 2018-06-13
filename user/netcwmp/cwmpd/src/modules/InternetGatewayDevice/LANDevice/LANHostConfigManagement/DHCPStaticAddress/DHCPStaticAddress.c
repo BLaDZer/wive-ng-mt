@@ -119,7 +119,7 @@ cpe_get_dhcpstatic_count(cwmp_t *cwmp, const char *name, char **value, char *arg
 }
 
 int
-cpe_refresh_dhcpstatic(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg)
+cpe_refresh_dhcpstatic(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     const char *p = NULL;
     parameter_node_t *pn = NULL;

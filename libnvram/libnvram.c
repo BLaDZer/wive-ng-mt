@@ -89,6 +89,15 @@ int nvram_init(int index)
 	int fd;
 	nvram_ioctl_t nvr;
 
+	if (fb[index].valid)
+	{
+/*
+		Fixes strdup leak, will totally break user-code compatibility.
+		Uncomment in case you have hundreds of hours to debug it out.
+*/
+		free(fb[index].env.data);
+	}
+
 	/*
 	 * read data from flash
 	 */

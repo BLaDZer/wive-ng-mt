@@ -44,7 +44,7 @@ int cwmp_set_var(cwmp_t * cwmp)
     cwmp_log_trace("%s(cwmp=%p)", __func__, (void*)cwmp);
 
     cwmp_bzero(cwmp, sizeof(cwmp_t));
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create("cwmp_set_var", POOL_DEFAULT_SIZE);
     cwmp->pool = pool;
 
     cwmp_event_init(cwmp);
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 #endif
 
-    cwmp_global_pool = pool_create(POOL_DEFAULT_SIZE);
+    cwmp_global_pool = pool_create("main", POOL_DEFAULT_SIZE);
     cwmp = pool_pcalloc(cwmp_global_pool, sizeof(cwmp_t));
 
     cwmp_conf_open("/etc/cwmp.conf");

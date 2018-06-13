@@ -347,14 +347,12 @@ int cwmp_session_get_localip(char *hostip)
 
 cwmp_session_t * cwmp_session_create(cwmp_t * cwmp)
 {
-
-
-    pool_t * pool = pool_create(POOL_MIN_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
     cwmp_session_t * session = pool_pcalloc(pool, sizeof(cwmp_session_t));
     session->env = pool_pcalloc(pool, sizeof(env_t));
     session->env->cwmp = cwmp;
     session->cwmp = cwmp;
-    cwmp_chunk_create( &session->writers, pool);
+    cwmp_chunk_create(&session->writers, pool);
     cwmp_chunk_create(&session->readers, pool);
 
     session->pool = pool;
@@ -391,19 +389,33 @@ void cwmp_session_free(cwmp_session_t * session)
 
 int cwmp_session_close(cwmp_session_t * session)
 {
-    pool_destroy(session->envpool);
-    pool_destroy(session->connpool);
-    session->envpool = NULL;
-    session->connpool = NULL;
+    if (session->envpool)
+    {
+        pool_destroy(session->envpool);
+        session->envpool = NULL;
+    }
+
+    if (session->connpool)
+    {
+        pool_destroy(session->connpool);
+        session->connpool = NULL;
+    }
+
+    if (session->pool)
+    {
+        pool_destroy(session->pool);
+//        session->pool = NULL; // we store the whole session object inside the same pool, do not access it after pool destroy.
+    }
+
     return 0;
 }
 
 int cwmp_session_open(cwmp_session_t * session)
 {
 
-    pool_t *envpool = pool_create(POOL_MIN_SIZE);
+    pool_t *envpool = pool_create("cwmp_session_open(envpool)", POOL_DEFAULT_SIZE);
 
-    session->connpool = pool_create(POOL_MIN_SIZE);
+    session->connpool = pool_create("cwmp_session_open(connpool)", POOL_DEFAULT_SIZE);
     if (!session->connpool)
     {
         cwmp_log_error("session init: create connection pool null.");
@@ -449,7 +461,7 @@ int cwmp_session_set_auth(cwmp_session_t * session, const char * user, const cha
 {
     cwmp_log_trace("%s(session=%p, user=\"%s\", pwd=\"%s\")",
             __func__, (void*)session, user, pwd);
-    if (*user && *pwd) {
+    if (user && pwd && *user && *pwd) {
         TRstrncpy(session->dest->auth.username, user, URL_USER_LEN);
         TRstrncpy(session->dest->auth.password, pwd, URL_PWD_LEN);
     }

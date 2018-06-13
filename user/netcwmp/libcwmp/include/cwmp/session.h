@@ -80,7 +80,6 @@ cwmp_session_t * cwmp_session_create(cwmp_t * cwmp);
 int     cwmp_session_open(cwmp_session_t * session);
 int     cwmp_session_close(cwmp_session_t * session);
 int     cwmp_session_connect(cwmp_session_t * session, const char * url);
-void    cwmp_session_free(cwmp_session_t * session);
 
 int     cwmp_session_send_request(cwmp_session_t * session);
 int     cwmp_session_recv_response(cwmp_session_t * session);

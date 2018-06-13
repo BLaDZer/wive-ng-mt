@@ -52,7 +52,7 @@ typedef void (*pool_cleanup_handler)(void *data);
 
 
 
-pool_t *pool_create(size_t size);
+pool_t *pool_create(const char* name, size_t size);
 void pool_destroy(pool_t *pool);
 void pool_clear(pool_t *pool);
 void *pool_palloc(pool_t *pool, size_t size);

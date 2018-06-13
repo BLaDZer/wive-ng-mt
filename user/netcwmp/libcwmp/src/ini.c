@@ -102,7 +102,7 @@ static int ini_get_keystring(INI_FILETYPE *fp, const tchar_t *section, const tch
 {
     tchar_t *sp, *ep;
     int len, idx;
-    tchar_t local_buffer[INI_BUFFERSIZE];
+    tchar_t local_buffer[INI_BUFFERSIZE] = {0};
 
     assert(fp != NULL);
     /* Move through file 1 line at a time until a section is matched or EOF. If

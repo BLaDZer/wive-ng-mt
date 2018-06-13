@@ -29,7 +29,7 @@ static void test_getset_parameter_node_value (abts_case *tc, void *data)
     char * retval;
     char * value ;
     
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
     FUNCTION_TRACE();
     param = cwmp_get_parameter_path_node(c->root, name);
     ASSERT_NOTNULL(param);
@@ -56,7 +56,7 @@ static void test_getset_parameter_node_value (abts_case *tc, void *data)
 static void test_cwmp_session_create_getparameternames(abts_case *tc, void *data)
 {
     cwmp_t * cwmp = (cwmp_t*)data;
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
     xmldoc_t *  doc, *newdoc;
     char * message = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \
                        xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\" xmlns=\"urn:dslforum-org:cwmp-1-0\"><SOAP-ENV:Header><cwmp:ID>129479899093788892</cwmp:ID><cwmp:NoMoreRequests>0</cwmp:NoMoreRequests></SOAP-ENV:Header><SOAP-ENV:Body><cwmp:GetParameterNames><ParameterPath>InternetGatewayDevice.</ParameterPath><NextLevel>1</NextLevel></cwmp:GetParameterNames></SOAP-ENV:Body></SOAP-ENV:Envelope>"
@@ -93,7 +93,7 @@ static void test_cwmp_session_create_getparameternames(abts_case *tc, void *data
 static void test_cwmp_session_create_addobject(abts_case *tc, void *data)
 {
     cwmp_t * cwmp = (cwmp_t*)data;
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__, POOL_DEFAULT_SIZE);
     xmldoc_t *  doc, *newdoc;
     char * message = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \
                        xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\" xmlns=\"urn:dslforum-org:cwmp-1-0\"><SOAP-ENV:Header><cwmp:ID soap:mustUnderstand=\"1\">1234</cwmp:ID></SOAP-ENV:Header>  \
@@ -103,14 +103,14 @@ static void test_cwmp_session_create_addobject(abts_case *tc, void *data)
 
    printf("create session\n"); 
     cwmp_session_t * session = cwmp_session_create(cwmp);
-    pool_create(POOL_DEFAULT_SIZE);
-   pool_create(POOL_DEFAULT_SIZE);
-  pool_create(POOL_DEFAULT_SIZE);
- pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
+    pool_create(__func__,POOL_DEFAULT_SIZE);
+   pool_create(__func__,POOL_DEFAULT_SIZE);
+  pool_create(__func__,POOL_DEFAULT_SIZE);
+ pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
  printf("open session \n"); 
     cwmp_session_open(session);
   
@@ -149,7 +149,7 @@ pool_create(POOL_DEFAULT_SIZE);
 static void test_cwmp_session_create_deleteobject(abts_case *tc, void *data)
 {
     cwmp_t * cwmp = (cwmp_t*)data;
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create(__func__,POOL_DEFAULT_SIZE);
     xmldoc_t *  doc, *newdoc;
     char * message = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \
                        xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\" xmlns=\"urn:dslforum-org:cwmp-1-0\"><SOAP-ENV:Header><cwmp:ID soap:mustUnderstand=\"1\">1234</cwmp:ID></SOAP-ENV:Header>  \

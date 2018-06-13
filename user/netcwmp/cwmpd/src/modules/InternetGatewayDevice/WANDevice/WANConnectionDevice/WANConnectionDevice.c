@@ -21,7 +21,7 @@ int cpe_get_wan_elc_status(cwmp_t * cwmp, const char * name, char ** value, char
     return FAULT_CODE_OK;
 }
 
-int  cpe_refresh_igd_wanconnectiondevice(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
+int  cpe_refresh_igd_wanconnectiondevice(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     DM_TRACE_REFRESH();
 
@@ -51,7 +51,7 @@ int  cpe_refresh_igd_wanconnectiondevice(cwmp_t * cwmp, parameter_node_t * param
              cwmp_model_copy_parameter(param_node, &wan2conn_param, 2);
         }
 
-        cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg);
+        cwmp_model_refresh_object(cwmp, param_node, 0, callback_reg, pool);
     }
 
     return FAULT_CODE_OK;

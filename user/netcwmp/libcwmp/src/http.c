@@ -463,7 +463,7 @@ int http_socket_accept(http_socket_t *sock, http_socket_t ** news)
     saddr_char(xaddr, sizeof(xaddr), addr.sa_family, &addr);
     cwmp_log_info("accepted connection from: %s", xaddr);
 
-    pool = pool_create(POOL_DEFAULT_SIZE);
+    pool = pool_create("http_socket_accept", POOL_DEFAULT_SIZE);
     rc = http_socket_calloc(news, pool);
     if (rc != CWMP_OK)
     {
@@ -1621,10 +1621,10 @@ int http_check_digest_auth(const char * auth_realm, const char * auth, char * cp
 
 int http_calc_digest_response(const char *method, const char * user, const char * pwd, http_digest_auth_t *digest)
 {
-    char ha1hex[HASHHEXLEN+1] = {};
+    char ha1hex[HASHHEXLEN+1] = {0};
     char ha2[HASHLEN] = {};
-    char ha2hex[HASHHEXLEN+1] = {};
-    char valid_response[HASHLEN] = {};
+    char ha2hex[HASHHEXLEN+1] = {0};
+    char valid_response[HASHLEN] = {0};
 
     cwmp_log_trace("%s(method=\"%s\", user=\"%s\", pwd=\"%s\", digest=%p)",
             __func__, method, user, pwd, (void*)digest);
@@ -1670,14 +1670,14 @@ int http_parse_digest_auth(const char * auth, http_digest_auth_t * digest_auth, 
     char buffer[128];
     char * end;
 
-    char user[sizeof(digest_auth->username)] = {};
-    char uri[256] = {};//uri[32768]
-    char nonce[33] = {};
-    char cnonce[33] = {};
-    char realm[128] = {};
+    char user[sizeof(digest_auth->username)] = {0};
+    char uri[256] = {0};//uri[32768]
+    char nonce[33] = {0};
+    char cnonce[33] = {0};
+    char realm[128] = {0};
 
-    char qop[16] = {};
-    char nc[16] = {};
+    char qop[16] = {0};
+    char nc[16] = {0};
 
     char response[128] = {};
     char opaque[128] = {};
@@ -1971,7 +1971,7 @@ int http_send_diagnostics(size_t size, const char *tourl, struct http_statistics
             __func__, size, tourl, (void*)hs);
 
     /* prepare */
-    pool = pool_create(POOL_DEFAULT_SIZE);
+    pool = pool_create("http_send_diagnostics", POOL_DEFAULT_SIZE);
     http_dest_create(&dest, tourl, pool);
     rc = http_socket_create(&sock, AF_INET, SOCK_STREAM, 0, pool);
     if (rc != CWMP_OK)
@@ -2160,7 +2160,7 @@ int http_send_file(const char * fromfile, const char *tourl )
 
     cwmp_log_info("INFO: http_send_file: from %s to %s",fromfile, tourl);
 
-    pool = pool_create(POOL_DEFAULT_SIZE);
+    pool = pool_create("http_send_file",POOL_DEFAULT_SIZE);
     http_dest_create(&dest, tourl, pool);
 
     int rc = http_socket_create(&sock, AF_INET, SOCK_STREAM, 0, pool);
@@ -2240,7 +2240,7 @@ int http_receive_file(const char *fromurl, const char * tofile, struct http_stat
     cwmp_log_trace("%s(formurl=\"%s\", tofile=\"%s\")",
             __func__, fromurl, tofile);
 
-    pool = pool_create(POOL_DEFAULT_SIZE);
+    pool = pool_create("http_receive_file", POOL_DEFAULT_SIZE);
     http_dest_create(&dest, fromurl, pool);
 
     int rc = http_socket_create(&sock, AF_INET, SOCK_STREAM, 0, pool);

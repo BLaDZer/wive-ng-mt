@@ -120,11 +120,11 @@ int cpe_get_igd_ms_connectionrequesturl(cwmp_t * cwmp, const char * name, char *
     }
 
     if (local_ip == 0) {
-        local_ip = cwmp_nvram_pool_get(cwmp->pool, "wan_ipaddr");
+        local_ip = cwmp_nvram_pool_get(pool, "wan_ipaddr");
     }
 
     if (local_ip == 0) {
-        local_ip = cwmp_nvram_pool_get(cwmp->pool, "lan_ipaddr");
+        local_ip = cwmp_nvram_pool_get(pool, "lan_ipaddr");
     }
 
     if (local_ip == 0) {

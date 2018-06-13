@@ -132,7 +132,7 @@ error:
 }
 
 int
-cpe_refresh_LEIC(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg)
+cpe_refresh_LEIC(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     /* four physical LAN ports  */
     const unsigned count = 4;
@@ -141,6 +141,11 @@ cpe_refresh_LEIC(cwmp_t *cwmp, parameter_node_t *param_node, callback_register_f
     parameter_node_t *pn = NULL;
 
     DM_TRACE_REFRESH();
+
+    if(!param_node)
+    {
+        return FAULT_CODE_9002;
+    }
 
     /* remove old list  */
     cwmp_model_delete_object_child(cwmp, param_node);

@@ -45,18 +45,15 @@ int cwmp_log_init(const char * filename, int level);
 void cwmp_log_set(const char * filename, int level);
 void cwmp_log_fini();
 
+void cwmp_log_write(int level, cwmp_log_t * log, const char * fmt, ...);
 
-void cwmp_log_debug(const char * fmt, ...);
-void cwmp_log_info(const char * fmt, ...);
-void cwmp_log_warn(const char * fmt, ...);
-void cwmp_log_error(const char * fmt, ...);
-void cwmp_log_alert(const char * fmt, ...);
-void cwmp_log_critical(const char * fmt, ...);
-void cwmp_log_trace(const char * fmt, ...);
+#define cwmp_log_trace(...) cwmp_log_write(CWMP_LOG_TRACE, NULL, __VA_ARGS__)
+#define cwmp_log_debug(...) cwmp_log_write(CWMP_LOG_DEBUG, NULL, __VA_ARGS__)
+#define cwmp_log_info(...)  cwmp_log_write(CWMP_LOG_INFO, NULL, __VA_ARGS__)
+#define cwmp_log_warn(...)  cwmp_log_write(CWMP_LOG_WARN, NULL, __VA_ARGS__)
+#define cwmp_log_error(...) cwmp_log_write(CWMP_LOG_ERROR, NULL, __VA_ARGS__)
+#define cwmp_log_alert(...) cwmp_log_write(CWMP_LOG_ALERT, NULL, __VA_ARGS__)
+#define cwmp_log_critical(...) cwmp_log_write(CWMP_LOG_CRIT, NULL, __VA_ARGS__)
 
 #endif
-
-
-
-
 

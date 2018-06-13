@@ -242,7 +242,7 @@ typedef int     (*parameter_add_handler_pt)(cwmp_t * cwmp, parameter_node_t * pa
 
 typedef int     (*parameter_del_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, int instance_number,  callback_register_func_t callback_reg);
 
-typedef int     (*parameter_refresh_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg );
+typedef int     (*parameter_refresh_handler_pt)(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool);
 
 typedef int     (*parameter_reload_handler_pt)(cwmp_t * cwmp, callback_register_func_t callback_reg );
 

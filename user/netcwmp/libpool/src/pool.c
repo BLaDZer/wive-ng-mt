@@ -37,15 +37,16 @@ struct pool_data_t
 {
     unsigned char    *last;
     unsigned char    *end;
-    pool_t           *next;
+    pool_data_t      *next;
 };
 
 struct pool_t
 {
-    pool_data_t         d;
+    const char*         name;
+    pool_data_t*        d;
     size_t              size;
     size_t              max;
-    pool_t              *current;
+    pool_data_t         *current;
     pool_chain_t        *chain;
     pool_large_t        *large;
     pool_cleanup_t      *cleanup;
@@ -61,10 +62,16 @@ struct pool_cleanup_file_t
 static void *pool_palloc_block(pool_t *pool, size_t size);
 static void *pool_palloc_large(pool_t *pool, size_t size);
 
-static void * pool_alloc(size_t size)
+static void * pool_alloc(size_t size, size_t header_size)
 {
     void  *p;
-    //    cwmp_log_debug("------------------pool alloc size: %d------------------", size);
+//    cwmp_log_info("------------------pool alloc size: %d------------------", size);
+    if (size < header_size)
+    {
+        cwmp_log_error("pool_alloc size=%d, but header_size=%d. New pool size: %d", size, header_size, size+header_size);
+        size += header_size;
+    }
+
     p = malloc(size);
 
     if (p == NULL)
@@ -111,29 +118,38 @@ static void * pool_memalign(size_t alignment, size_t size)
 #endif
 */
 
-pool_t * pool_create(size_t size)
+pool_t * pool_create(const char* name, size_t size)
 {
     pool_t  *p;
 
+    cwmp_log_debug("~~~ pool create: %s %d", name?name:"", size);
+
     //FUNCTION_TRACE();
 
-    p = pool_alloc(size);
+    p = (pool_t*)pool_alloc(size, sizeof(pool_t));
     if (p == NULL)
     {
         return NULL;
     }
 
-    p->d.last = (unsigned char *) p + sizeof(pool_t);
-    p->d.end = (unsigned char *) p + size;
-    p->d.next = NULL;
+    p->name = name;
+
+    p->d = (pool_data_t*)pool_alloc(size, sizeof(pool_data_t));
+    if (p->d == NULL)
+    {
+        return NULL;
+    }
+
+    p->d->last = (unsigned char *) p + sizeof(pool_t);
+    p->d->end = (unsigned char *) p + size;
+    p->d->next = NULL;
 
     p->size = size;
 
     size = size - sizeof(pool_t);
     p->max = (size < POOL_MAX_ALLOC_FROM_POOL) ? size : POOL_MAX_ALLOC_FROM_POOL;
 
-
-    p->current = p;
+    p->current = p->d;
     p->chain = NULL;
     p->large = NULL;
     p->cleanup = NULL;
@@ -143,7 +159,7 @@ pool_t * pool_create(size_t size)
 
 void pool_destroy(pool_t *pool)
 {
-    pool_t          *p, *n;
+    pool_data_t     *p, *n;
     pool_large_t    *l;
     pool_cleanup_t  *c;
     //FUNCTION_TRACE();
@@ -152,6 +168,8 @@ void pool_destroy(pool_t *pool)
         return;
     }
 
+    cwmp_log_debug("~~~ pool destroy: %s %d", pool->name?pool->name:"", pool->size);
+
     for (c = pool->cleanup; c; c = c->next)
     {
         if (c->handler)
@@ -162,30 +180,13 @@ void pool_destroy(pool_t *pool)
 
     for (l = pool->large; l; l = l->next)
     {
-//            cwmp_log_debug("destroy large alloc %p", l->alloc);
+//        cwmp_log_debug("destroy large alloc %p", l->alloc);
         free(l->alloc);
+        l->alloc = NULL;
     }
 
-#if (POOL_DEBUG)
 
-    /*
-     * we could allocate the pool->log from this pool
-     * so we can not use this log while the free()ing the pool
-     */
-
-    for (p = pool, n = pool->d.next; /* void */; p = n, n = n->d.next)
-    {
-
-
-        if (n == NULL)
-        {
-            break;
-        }
-    }
-
-#endif
-
-    for (p = pool, n = pool->d.next; /* void */; p = n, n = n->d.next)
+    for (p = pool->d, n = pool->d->next; /* void */; p = n, n = n->next)
     {
         free(p);
 
@@ -194,11 +195,13 @@ void pool_destroy(pool_t *pool)
             break;
         }
     }
+
+    free(pool);
 }
 
 void pool_clear(pool_t *pool)
 {
-    pool_t          *p, *n;
+    pool_data_t          *p, *n;
     pool_large_t    *l;
     pool_cleanup_t  *c;
     //FUNCTION_TRACE();
@@ -214,14 +217,16 @@ void pool_clear(pool_t *pool)
 
     for (l = pool->large; l; l = l->next)
     {
-        //        cwmp_log_debug("clear large alloc %p", l->alloc);
+//        cwmp_log_debug("pool '%s' clear large alloc %p", pool->name?pool->name:"", l->alloc);
+
         free(l->alloc);
+        l->alloc = NULL;
     }
 
-    for (p = pool->d.next; p; p = n, n = n->d.next)
+    for (p = pool->d->next; p; p = n, n = n->next)
     {
-        n = p->d.next;
-        //p->d.last = (unsigned char *)p + sizeof(pool_data_t);
+        n = p->next;
+        //p->d->last = (unsigned char *)p + sizeof(pool_data_t);
         free(p);
         if (n == NULL)
         {
@@ -229,10 +234,10 @@ void pool_clear(pool_t *pool)
         }
     }
 
-    pool->d.last = (unsigned char *) pool + sizeof(pool_t);
-    pool->d.next = NULL;
+    pool->d->last = (unsigned char *) pool + sizeof(pool_t);
+    pool->d->next = NULL;
 
-    pool->current = pool;
+    pool->current = pool->d;
     pool->chain = NULL;
     pool->large = NULL;
     pool->cleanup = NULL;
@@ -243,28 +248,27 @@ void pool_clear(pool_t *pool)
 void * pool_palloc(pool_t *pool, size_t size)
 {
     unsigned char *m;
-    pool_t        *p;
+    pool_data_t    *p;
 
     if (size <= pool->max)
     {
-        //cwmp_log_debug("palloc size(%d)/max(%d)", size, pool->max);
         p = pool->current;
 
-        do
+        while(p)
         {
-            m = pool_align_ptr(p->d.last, POOL_ALIGNMENT);
+//            cwmp_log_info("pool %s palloc size(%d)/max(%d) elem=%d", pool->name, size, pool->max, ((char*)p->last) - (char*)p);
+            m = pool_align_ptr(p->last, POOL_ALIGNMENT);
 
-            if ((size_t) (p->d.end - m) >= size)
+            if (p->end > m && (size_t) (p->end - m) >= size)
             {
-                p->d.last = m + size;
+                p->last = m + size;
 
                 return m;
             }
 
-            p = p->d.next;
+            p = p->next;
 
         }
-        while (p);
 
         return pool_palloc_block(pool, size);
     }
@@ -275,7 +279,7 @@ void * pool_palloc(pool_t *pool, size_t size)
 void * pool_pnalloc(pool_t *pool, size_t size)
 {
     unsigned char      *m;
-    pool_t  *p;
+    pool_data_t  *p;
 
     if (size <= pool->max)
     {
@@ -284,16 +288,16 @@ void * pool_pnalloc(pool_t *pool, size_t size)
 
         do
         {
-            m = p->d.last;
+            m = p->last;
 
-            if ((size_t) (p->d.end - m) >= size)
+            if ((size_t) (p->end - m) >= size)
             {
-                p->d.last = m + size;
+                p->last = m + size;
 
                 return m;
             }
 
-            p = p->d.next;
+            p = p->next;
 
         }
         while (p);
@@ -308,35 +312,37 @@ static void * pool_palloc_block(pool_t *pool, size_t size)
 {
     unsigned char      *m;
     size_t       psize;
-    pool_t  *p, *newp, *current;
+    pool_data_t  *p, *newp, *current;
 
-    psize = (size_t) (pool->d.end - (unsigned char *) pool);
+//    cwmp_log_debug("~~~~ pool '%s' alloc memory block: %d", pool->name?pool->name:"", size);
 
-    m = pool_alloc(psize);
+    psize = (size_t) (pool->d->end - (unsigned char *) pool);
+
+    m = (unsigned char*) pool_alloc(psize, sizeof(pool_data_t));
     if (m == NULL)
     {
         return NULL;
     }
 
-    newp = (pool_t *) m;
+    newp = (pool_data_t *) m;
 
-    newp->d.end = m + psize;
-    newp->d.next = NULL;
+    newp->end = m + psize;
+    newp->next = NULL;
 
     m += sizeof(pool_data_t);
-    newp->d.last = m + size;
+    newp->last = m + size;
 
     current = pool->current;
 
-    for (p = current; p->d.next; p = p->d.next)
+    for (p = current; p && p->next; p = p->next)
     {
-        if ((size_t) (p->d.end - p->d.last) < POOL_ALIGNMENT)
+        if ((size_t) (p->end - p->last) < POOL_ALIGNMENT)
         {
-            current = p->d.next;
+            current = p->next;
         }
     }
 
-    p->d.next = newp;
+    p->next = newp;
     pool->current = current ? current : newp;
 
     return m;
@@ -346,11 +352,13 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
 {
     void              *p;
     pool_large_t  *large;
+
     //FUNCTION_TRACE();
-    //cwmp_log_debug("alloc large memory: %d", size);
-    p = pool_alloc(size);
+
+    p = pool_alloc(size, 1);
     if (p == NULL)
     {
+        cwmp_log_error("unable to alloc large memory block: %d", size);
         return NULL;
     }
 
@@ -360,6 +368,12 @@ static void * pool_palloc_large(pool_t *pool, size_t size)
         //        cwmp_log_debug("large is null, free p %p", p);
         free(p);
         return NULL;
+    }
+
+
+    if (pool->name && strcmp(pool->name,"cwmp_model_load_xml") != 0)
+    {
+        cwmp_log_debug("~~~~ pool '%s' alloc large memory block: %d, %p", pool->name?pool->name:"", size, p);
     }
 
     large->alloc = p;
@@ -404,11 +418,12 @@ int pool_pfree(pool_t *pool, void *p)
 {
     pool_large_t  *l;
 
+//    cwmp_log_debug("~~~~ pool '%s' pfree: %p", pool->name?pool->name:"",p);
+
     for (l = pool->large; l; l = l->next)
     {
         if (p == l->alloc)
         {
-
             free(l->alloc);
             l->alloc = NULL;
 

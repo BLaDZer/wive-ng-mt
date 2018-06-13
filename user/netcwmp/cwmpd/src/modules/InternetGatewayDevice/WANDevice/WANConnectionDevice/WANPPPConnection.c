@@ -189,6 +189,7 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
             if (t) {
                 snprintf(buf, sizeof(buf), "%llu", (unsigned long long)t);
                 *value = pool_pstrdup(pool, buf);
+                free(ncs);
                 return FAULT_CODE_OK;
             }
             /* get system uptime */
@@ -197,11 +198,13 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
             if (stat(buf, &st) == -1) {
                 cwmp_log_error("WANPPPConnection.{i}.Uptime: stat(%s) failed: %s",
                         buf, strerror(errno));
+                free(ncs);
                 return FAULT_CODE_9002;
             } else if (t < st.st_mtim.tv_sec) {
                 cwmp_log_error(
                         "WANPPPConnection.{i}.Uptime: system time less then mtime(%s)",
                         buf);
+                free(ncs);
                 return FAULT_CODE_9002;
             }
             t = t - st.st_mtim.tv_sec;
@@ -218,6 +221,8 @@ int cpe_get_igd_wan_ppp_stats(cwmp_t * cwmp, const char * name, char ** value, c
         }
         *value = pool_pstrdup(pool, buf);
     }
+
+    free(ncs);
     return FAULT_CODE_OK;
 }
 

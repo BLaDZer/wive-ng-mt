@@ -141,7 +141,20 @@ int cwmp_model_delete_parameter(parameter_node_t * param)
         return CWMP_OK;
     }
     parent = param->parent;
-    for(tmp_param=parent->child; tmp_param; tmp_param=tmp_param->next_sibling)
+
+    if(param->parent == NULL)
+    {
+        return CWMP_OK;
+    }
+
+    // disconnect param from parent (#1 elem)
+    if (parent->child == param) 
+    {
+        parent->child = param->next_sibling;
+    }
+
+    // disconnect param from parent (#n elem)
+    for(tmp_param=parent->child; tmp_param; tmp_param=tmp_param->next_sibling) 
     {
         if(tmp_param->next_sibling == param)
         {
@@ -358,10 +371,10 @@ static int cwmp_model_init_object(cwmp_t * cwmp, parameter_node_t *param)
 
     if(param->type == TYPE_OBJECT && param->refresh)
     {
-        //µ÷ÓÃrefreshº¯Êý
+        //refresh
         if(param->refresh)
         {
-            param->refresh(cwmp, param, callback_register_task);
+            param->refresh(cwmp, param, callback_register_task, cwmp->pool); //WARN: global pool usage
         }
     }
 
@@ -373,7 +386,7 @@ static int cwmp_model_init_object(cwmp_t * cwmp, parameter_node_t *param)
     return CWMP_OK;
 }
 
-int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, callback_register_func_t callback_reg)
+int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, callback_register_func_t callback_reg, pool_t * pool)
 {
     parameter_node_t     *node = NULL;
 
@@ -391,7 +404,7 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
     {
         if(param->refresh)
         {
-            param->refresh(cwmp, param, callback_reg);
+            param->refresh(cwmp, param, callback_reg, pool);
         }
     }
 
@@ -399,7 +412,7 @@ int cwmp_model_refresh_object(cwmp_t * cwmp, parameter_node_t *param, int flag, 
     {
         if(TRstrcmp(param->name, "{i}") != 0)
         {
-            cwmp_model_refresh_object(cwmp, node, 1, callback_reg);
+            cwmp_model_refresh_object(cwmp, node, 1, callback_reg, pool);
         }
     }
 
@@ -499,7 +512,13 @@ int cwmp_model_load_xml(cwmp_t * cwmp, const char * xmlfile, model_func_t * func
     fseek(fp, 0, SEEK_SET);
     nread = fread(buf, 1, xmllen, fp);
     buf[nread] = 0;
-    pool_t * pool = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * pool = pool_create("cwmp_model_load_xml", POOL_DEFAULT_SIZE);
+    if (!pool)
+    {
+        cwmp_log_error("model load: unable to create the pool!");
+        goto finish;
+    }
+
     doc = XmlParseBuffer(pool, buf);
     if (!doc)
     {

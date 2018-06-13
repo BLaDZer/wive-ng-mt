@@ -5,6 +5,8 @@ int cpe_reload_reboot(cwmp_t *cwmp, callback_register_func_t callback_reg)
     cwmp_event_set_value(cwmp, INFORM_MREBOOT, 1, NULL, 0, 0, 0);
     cwmp_event_clear_active(cwmp);
     reboot_now();
+
+    return FAULT_CODE_OK;
 }
 
 int cpe_reload_all(cwmp_t *cwmp, callback_register_func_t callback_reg)

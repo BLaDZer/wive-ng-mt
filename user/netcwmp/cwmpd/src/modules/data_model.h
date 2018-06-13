@@ -4,10 +4,10 @@
 #include <cwmp/cwmp.h>
 
 #define DM_TRACE_REFRESH() \
-    cwmp_log_trace("%s(cwmp=%p, param_node=%p [name=%s], callback_reg=%p)",\
+    cwmp_log_trace("%s(cwmp=%p, param_node=%p [name=%s], callback_reg=%p, pool=%p)",\
             __func__, (void*)cwmp, (void*)param_node,\
             (param_node ? param_node->name : ""),\
-            (void*)callback_reg);
+            (void*)callback_reg, (void*)pool);
 
 #define DM_TRACE_SET() \
     cwmp_log_trace("%s(cwmp=%p, name=\"%s\", value=\"%s\", length=%d, args=\"%s\", callback_reg=%p)",\

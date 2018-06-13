@@ -143,7 +143,6 @@ int cwmp_agent_create_datetimes(datatime_t *nowtime)
     return CWMP_OK;
 }
 
-//取得active event以及count
 int cwmp_agent_get_active_event(cwmp_t *cwmp, cwmp_session_t * session,  event_list_t **pevent_list)
 {
     event_list_t * el;
@@ -363,7 +362,6 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
                 break;
 
             case CWMP_ST_EXIT:
-                cwmp_session_close(session);
                 if (session->reconnect == CWMP_YES) {
                     session->reconnect = CWMP_NO;
                     session->status = CWMP_ST_START;
@@ -378,7 +376,7 @@ void cwmp_agent_start_session(cwmp_t * cwmp)
         }//end while(!session_close)
 
         cwmp_log_info("http session: close");
-        cwmp_session_free(session);
+        cwmp_session_close(session);
         session = NULL;
 
         cwmp_agent_run_tasks(cwmp);
@@ -427,7 +425,7 @@ int cwmp_agent_analyse_session(cwmp_session_t * session)
         goto eventcheck;
     }
 
-    doctmppool = pool_create(POOL_DEFAULT_SIZE);
+    doctmppool = pool_create("doctmppool", POOL_DEFAULT_SIZE);
 
     xmlbuf = pool_palloc(doctmppool, msglength+32);
 
@@ -532,7 +530,7 @@ eventcheck:
             cwmp_event_file_save(cwmp);
             if(!doctmppool)
             {
-                doctmppool = pool_create(POOL_DEFAULT_SIZE);
+                doctmppool = pool_create("doctmppool2",POOL_DEFAULT_SIZE);
             }
             event_code_t ec;
             ec.event = INFORM_TRANSFERCOMPLETE;

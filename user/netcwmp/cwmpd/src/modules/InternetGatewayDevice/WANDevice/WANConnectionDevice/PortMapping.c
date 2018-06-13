@@ -446,7 +446,7 @@ cpe_del_pm(cwmp_t *cwmp, parameter_node_t *param_node, int instance_number, call
 }
 
 int
-cpe_refresh_pm(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg)
+cpe_refresh_pm(cwmp_t * cwmp, parameter_node_t * param_node, callback_register_func_t callback_reg, pool_t * pool)
 {
     const char *pm_line = NULL;
     struct pm_rule rule = {};

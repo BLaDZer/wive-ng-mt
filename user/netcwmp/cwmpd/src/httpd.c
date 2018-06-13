@@ -126,7 +126,7 @@ int httpd_build_server(cwmp_t * cwmp)
 
     port = cwmp->httpd_port;
 
-    pool = pool_create(POOL_DEFAULT_SIZE);
+    pool = pool_create("http_build_server", POOL_DEFAULT_SIZE);
     rc = http_socket_server(&lsnsock, port, 5, -1, pool);
     if (rc != CWMP_OK)
     {

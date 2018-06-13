@@ -403,6 +403,7 @@ int cpe_get_nvram_string(cwmp_t * cwmp, const char * name, char ** value, char *
     *value = cwmp_nvram_pool_get(pool, args);
     if (!*value) {
         cwmp_log_warn("%s: empty value (%s)!", __func__, args);
+        *value = "";
     }
 
     return FAULT_CODE_OK;

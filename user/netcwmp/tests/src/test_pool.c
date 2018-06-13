@@ -4,19 +4,19 @@
 
 static void test_pool(abts_case *tc, void*data)
 {
-    pool_t * p = pool_create(POOL_DEFAULT_SIZE);
+    pool_t * p = pool_create("test_pool", POOL_DEFAULT_SIZE);
 
     char * c = pool_palloc(p, 1024);
 
     pool_clear(p);
 
 
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
-pool_create(POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
+pool_create(__func__,POOL_DEFAULT_SIZE);
 
     c = pool_palloc(p,3048);
     c = pool_palloc(p,3048);
