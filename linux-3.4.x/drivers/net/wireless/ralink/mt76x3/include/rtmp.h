@@ -1221,6 +1221,11 @@ typedef struct {
 	ULONG numDoneOriginator;	/* count Done Originator sessions */
 	BA_ORI_ENTRY BAOriEntry[MAX_LEN_OF_BA_ORI_TABLE];
 	BA_REC_ENTRY BARecEntry[MAX_LEN_OF_BA_REC_TABLE];
+#ifdef CONFIG_BA_REORDER_MONITOR
+	BOOLEAN ba_timeout_check;
+	UINT32 ba_timeout_bitmap[16];
+	UINT32 ba_reordering_packet_timeout;
+#endif /* CONFIG_BA_REORDER_MONITOR */
 } BA_TABLE, *PBA_TABLE;
 
 /*For QureyBATableOID use; */
@@ -7888,6 +7893,11 @@ void ba_flush_reordering_timeout_mpdus(
 	IN PBA_REC_ENTRY	pBAEntry,
 	IN ULONG			Now32);
 
+
+#ifdef CONFIG_BA_REORDER_MONITOR
+void ba_timeout_flush(RTMP_ADAPTER *pAd);
+void ba_timeout_monitor(RTMP_ADAPTER *pAd);
+#endif /* CONFIG_BA_REORDER_MONITOR */
 
 VOID BAOriSessionSetUp(
 			IN RTMP_ADAPTER *pAd,

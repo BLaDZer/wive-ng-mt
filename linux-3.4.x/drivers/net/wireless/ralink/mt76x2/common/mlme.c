@@ -1337,6 +1337,9 @@ VOID MlmePeriodicExec(
 /*	RECBATimerTimeout(SystemSpecific1,FunctionContext,SystemSpecific2,SystemSpecific3);*/
 	pAd->Mlme.PeriodicRound ++;
 	pAd->Mlme.GPIORound++;
+#ifdef CONFIG_BA_REORDER_MONITOR
+	ba_timeout_monitor(pAd);
+#endif /* CONFIG_BA_REORDER_MONITOR */
 
 #ifndef WFA_VHT_PF
 #ifdef RT8592
@@ -3523,6 +3526,12 @@ VOID BATableInit(RTMP_ADAPTER *pAd, BA_TABLE *Tab)
 	Tab->numAsRecipient = 0;
 	Tab->numDoneOriginator = 0;
 	NdisAllocateSpinLock(pAd, &pAd->BATabLock);
+#ifdef CONFIG_BA_REORDER_MONITOR
+#define REORDERING_PACKET_TIMEOUT		((100 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
+	pAd->BATable.ba_timeout_check = FALSE;
+	pAd->BATable.ba_reordering_packet_timeout = REORDERING_PACKET_TIMEOUT;
+	NdisZeroMemory((UCHAR *)&pAd->BATable.ba_timeout_bitmap[0], sizeof(UINT32) * 16);
+#endif /* CONFIG_BA_REORDER_MONITOR */
 	for (i = 0; i < MAX_LEN_OF_BA_REC_TABLE; i++) 
 	{
 		Tab->BARecEntry[i].REC_BA_Status = Recipient_NONE;

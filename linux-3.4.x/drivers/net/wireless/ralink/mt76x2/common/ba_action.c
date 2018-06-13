@@ -11,6 +11,7 @@
 #define REC_BA_SESSION_IDLE_TIMEOUT	(1000)	/* ms */
 
 #define REORDERING_PACKET_TIMEOUT		((100 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
+#define MULTI_CLIENT_REORDERING_PACKET_TIMEOUT         ((200 * OS_HZ)/1000)    /* system ticks -- 200 ms*/
 #define MAX_REORDERING_PACKET_TIMEOUT	((1500 * OS_HZ)/1000)	/* system ticks -- 100 ms*/
 
 
@@ -395,6 +396,32 @@ static void ba_indicate_reordering_mpdus_le_seq(
 	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);   
 }
 
+#ifdef CONFIG_BA_REORDER_MONITOR
+void ba_timeout_flush(PRTMP_ADAPTER pAd)
+{
+	ULONG now;
+	UINT32 idx0 = 0; 
+	UINT32 idx1 = 0;
+	PBA_REC_ENTRY pBAEntry = NULL;
+
+	NdisGetSystemUpTime(&now);
+
+	for (idx0 = 0; idx0 < 16; idx0++) {
+		idx1 = 0;
+		while ((pAd->BATable.ba_timeout_bitmap[idx0] != 0) && (idx1 < 32)) {
+
+			if (pAd->BATable.ba_timeout_bitmap[idx0] & 0x1) {
+				pBAEntry = &pAd->BATable.BARecEntry[(idx0 << 5) + idx1];
+				ba_flush_reordering_timeout_mpdus(pAd, pBAEntry, now);
+			}
+
+			pAd->BATable.ba_timeout_bitmap[idx0] >>= 1;
+			idx1++;
+		}
+	}
+
+	pAd->BATable.ba_timeout_check = FALSE;
+}
 
 static void ba_refresh_reordering_mpdus(RTMP_ADAPTER *pAd, BA_REC_ENTRY *pBAEntry)
 {
@@ -417,6 +444,51 @@ static void ba_refresh_reordering_mpdus(RTMP_ADAPTER *pAd, BA_REC_ENTRY *pBAEntr
 	pBAEntry->LastIndSeq = RESET_RCV_SEQ;
 	NdisReleaseSpinLock(&pBAEntry->RxReRingLock);   
 }
+
+void ba_timeout_monitor(PRTMP_ADAPTER pAd)
+{
+	UINT32 idx = 0;
+	PBA_REC_ENTRY pBAEntry = NULL;
+	ULONG now;
+	POS_COOKIE obj = (POS_COOKIE) pAd->OS_Cookie;
+	BOOLEAN need_check = FALSE;
+	static int NeedFallBack=0;
+
+	if ( pAd->MacTab.Size >= 15 )
+	{
+		pAd->BATable.ba_reordering_packet_timeout = MULTI_CLIENT_REORDERING_PACKET_TIMEOUT;
+		NeedFallBack = 0;
+	}
+	else 
+	{
+		NeedFallBack ++;
+		if (NeedFallBack >= 5) 
+			pAd->BATable.ba_reordering_packet_timeout = REORDERING_PACKET_TIMEOUT;
+	}
+
+	if (!pAd->BATable.ba_timeout_check) {
+		NdisGetSystemUpTime(&now);
+		for (idx = 0; idx < MAX_LEN_OF_BA_REC_TABLE; idx++) {
+			pBAEntry = &pAd->BATable.BARecEntry[idx];
+		
+			if ((pBAEntry->REC_BA_Status == Recipient_Accept) 
+					&& (pBAEntry->list.qlen > 0)) {
+
+				if (RTMP_TIME_AFTER((unsigned long)now, 
+					(unsigned long)(pBAEntry->LastIndSeqAtTimer + pAd->BATable.ba_reordering_packet_timeout))) {
+					need_check = TRUE;	
+					pAd->BATable.ba_timeout_bitmap[(idx >> 5)] |= (1 << (idx % 32));
+				}
+			}
+		}
+
+		if (need_check) {
+			pAd->BATable.ba_timeout_check = need_check;
+			RTMP_OS_TASKLET_SCHE(&obj->rx_done_task);
+		}
+	}	
+}
+#endif
 
 
 /* static */
@@ -446,7 +518,7 @@ void ba_flush_reordering_timeout_mpdus(
 		pBAEntry->LastIndSeqAtTimer = Now32;
 	}
 	else
-	if (RTMP_TIME_AFTER((unsigned long)Now32, (unsigned long)(pBAEntry->LastIndSeqAtTimer+(REORDERING_PACKET_TIMEOUT)))
+	if (RTMP_TIME_AFTER((unsigned long)Now32, (unsigned long)(pBAEntry->LastIndSeqAtTimer+(pAd->BATable.ba_reordering_packet_timeout)))
 		&& (pBAEntry->list.qlen > 0)
 	   )
 		{
@@ -673,6 +745,7 @@ BOOLEAN BARecSessionAdd(
 		BAWinSize = pAd->CommonCfg.BACapability.field.RxBAWinLimit;
 	}
 
+	NdisAcquireSpinLock(&pAd->BATabLock);
 	/* get software BA rec array index, Idx*/
 	Idx = pEntry->BARecWcidArray[TID];
 
@@ -731,6 +804,7 @@ BOOLEAN BARecSessionAdd(
 		DBGPRINT(RT_DEBUG_TRACE,("Can't Accept ADDBA for %02x:%02x:%02x:%02x:%02x:%02x TID = %d\n", 
 				PRINT_MAC(pEntry->Addr), TID));
 	}
+	NdisReleaseSpinLock(&pAd->BATabLock);
 	return(Status);
 }
 
@@ -741,7 +815,7 @@ BA_REC_ENTRY *BATableAllocRecEntry(RTMP_ADAPTER *pAd, USHORT *Idx)
 	BA_REC_ENTRY *pBAEntry = NULL;
 
 
-	NdisAcquireSpinLock(&pAd->BATabLock);
+	//NdisAcquireSpinLock(&pAd->BATabLock);
 
 	if (pAd->BATable.numAsRecipient >= (MAX_LEN_OF_BA_REC_TABLE - 1))
 	{
@@ -765,7 +839,7 @@ BA_REC_ENTRY *BATableAllocRecEntry(RTMP_ADAPTER *pAd, USHORT *Idx)
 	}
 
 done:
-	NdisReleaseSpinLock(&pAd->BATabLock);
+	//NdisReleaseSpinLock(&pAd->BATabLock);
 	return pBAEntry;
 }
 
@@ -962,10 +1036,13 @@ VOID BARecSessionTearDown(
 	if (Wcid >= MAX_LEN_OF_MAC_TABLE)
 		return;
 
+	NdisAcquireSpinLock(&pAd->BATabLock);
 	/*  Locate corresponding BA Originator Entry in BA Table with the (pAddr,TID).*/
 	Idx = pAd->MacTab.Content[Wcid].BARecWcidArray[TID];
-	if (Idx == 0)
+	if (Idx == 0) {
+		NdisReleaseSpinLock(&pAd->BATabLock);
 		return;
+	}
 
 	DBGPRINT(RT_DEBUG_TRACE,("%s===>Wcid=%d.TID=%d \n", __FUNCTION__, Wcid, TID));
 	
@@ -1004,6 +1081,7 @@ VOID BARecSessionTearDown(
 			else
 			{
 				DBGPRINT(RT_DEBUG_ERROR, ("%s():alloc memory failed!\n", __FUNCTION__));
+				NdisReleaseSpinLock(&pAd->BATabLock);
 				return;
 			}
 		}
@@ -1014,7 +1092,7 @@ VOID BARecSessionTearDown(
 		/* flush all pending reordering mpdus */
 		ba_refresh_reordering_mpdus(pAd, pBAEntry);
 
-		NdisAcquireSpinLock(&pAd->BATabLock);
+		//NdisAcquireSpinLock(&pAd->BATabLock);
 
 		/* Erase Bitmap flag.*/
 		pBAEntry->LastIndSeq = RESET_RCV_SEQ;
@@ -1025,10 +1103,10 @@ VOID BARecSessionTearDown(
 
 		RTMP_DEL_BA_SESSION_FROM_ASIC(pAd, Wcid, TID);
 
-		NdisReleaseSpinLock(&pAd->BATabLock);
+		//NdisReleaseSpinLock(&pAd->BATabLock);
 
 	}
-
+	NdisReleaseSpinLock(&pAd->BATabLock);
 	BATableFreeRecEntry(pAd, Idx);
 }
 
@@ -1450,7 +1528,7 @@ BOOLEAN CntlEnqueueForRecv(
 	PBA_REC_ENTRY pBAEntry;
 	ULONG Idx;
 	UCHAR TID;
-
+	ULONG Now32;
 	TID = (UCHAR)pFrame->BARControl.TID;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("%s(): BAR-Wcid(%ld), Tid (%d)\n", __FUNCTION__, Wcid, TID));
@@ -1489,12 +1567,21 @@ BOOLEAN CntlEnqueueForRecv(
 	}
 
 	DBGPRINT(RT_DEBUG_TRACE, ("BAR(%ld) : Tid (%d) - %04x:%04x\n", Wcid, TID, pFrame->BAStartingSeq.field.StartSeq, pBAEntry->LastIndSeq ));
-
+	NdisGetSystemUpTime(&Now32);
 	if (SEQ_SMALLER(pBAEntry->LastIndSeq, pFrame->BAStartingSeq.field.StartSeq, MAXSEQ))
 	{
+		LONG TmpSeq, seq;
 		/*DBGPRINT(RT_DEBUG_TRACE, ("BAR Seq = %x, LastIndSeq = %x\n", pFrame->BAStartingSeq.field.StartSeq, pBAEntry->LastIndSeq));*/
-		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, pFrame->BAStartingSeq.field.StartSeq);
-		pBAEntry->LastIndSeq = (pFrame->BAStartingSeq.field.StartSeq == 0) ? MAXSEQ :(pFrame->BAStartingSeq.field.StartSeq -1);
+		seq = (pFrame->BAStartingSeq.field.StartSeq == 0) ? MAXSEQ :(pFrame->BAStartingSeq.field.StartSeq -1); 
+		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, seq);
+		pBAEntry->LastIndSeq = seq;
+		pBAEntry->LastIndSeqAtTimer = Now32;
+    		TmpSeq = ba_indicate_reordering_mpdus_in_order(pAd, pBAEntry, pBAEntry->LastIndSeq);
+    		
+		if (TmpSeq != RESET_RCV_SEQ) {
+    			pBAEntry->LastIndSeq = TmpSeq;
+			//pBAEntry->LastIndSeqAtTimer = Now32;
+		}
 	}
 	/*ba_refresh_reordering_mpdus(pAd, pBAEntry);*/
 	return TRUE;
@@ -1916,7 +2003,7 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBSS
 
 
 	ba_flush_reordering_timeout_mpdus(pAd, pBAEntry, Now32);
-	pBAEntry->LastIndSeqAtTimer = Now32;
+	//pBAEntry->LastIndSeqAtTimer = Now32;
 
 	
 	/* Reset Last Indicate Sequence*/
@@ -1990,13 +2077,13 @@ VOID Indicate_AMPDU_Packet(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk, UCHAR FromWhichBSS
 		LONG WinStartSeq, TmpSeq;
 
 
-		TmpSeq = Sequence - (pBAEntry->BAWinSize) -1;
+		TmpSeq = Sequence - (pBAEntry->BAWinSize) +1;
 		if (TmpSeq < 0)
 			TmpSeq = (MAXSEQ+1) + TmpSeq;
 
-		WinStartSeq = (TmpSeq+1) & MAXSEQ;
-		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, WinStartSeq);
-		pBAEntry->LastIndSeq = WinStartSeq; /*TmpSeq;          */
+		WinStartSeq = TmpSeq;
+		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, (WinStartSeq - 1));
+		pBAEntry->LastIndSeq = (WinStartSeq - 1) & MAXSEQ; /*TmpSeq;          */
 
 		pBAEntry->LastIndSeqAtTimer = Now32;
 
@@ -2131,14 +2218,14 @@ VOID Indicate_AMPDU_Packet_Hdr_Trns(
 		LONG WinStartSeq, TmpSeq;
 
 
-		TmpSeq = Sequence - (pBAEntry->BAWinSize) -1;
+		TmpSeq = Sequence - (pBAEntry->BAWinSize) + 1;
 		if (TmpSeq < 0)
 		{
 			TmpSeq = (MAXSEQ+1) + TmpSeq;
 		}
-		WinStartSeq = (TmpSeq+1) & MAXSEQ;
-		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, WinStartSeq);
-		pBAEntry->LastIndSeq = WinStartSeq; /*TmpSeq;          */
+		WinStartSeq = TmpSeq;
+		ba_indicate_reordering_mpdus_le_seq(pAd, pBAEntry, (WinStartSeq - 1) & MAXSEQ);
+		pBAEntry->LastIndSeq =  (WinStartSeq - 1) & MAXSEQ; /*TmpSeq;          */
 
 		pBAEntry->LastIndSeqAtTimer = Now32;
 

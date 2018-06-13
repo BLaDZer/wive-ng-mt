@@ -390,6 +390,11 @@ DBGPRINT(RT_DEBUG_FPGA, ("-->%s():\n", __FUNCTION__));
 	RTMP_INT_UNLOCK(&pAd->LockInterrupt, flags);
 
 	bReschedule = rtmp_rx_done_handle(pAd);
+#ifdef CONFIG_BA_REORDER_MONITOR
+			if (pAd->BATable.ba_timeout_check) {
+				ba_timeout_flush(pAd);
+			}
+#endif
 
 #ifdef UAPSD_SUPPORT
 	UAPSD_TIMING_RECORD_STOP();

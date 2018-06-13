@@ -4130,5 +4130,6 @@
 42) kernel: ralink_wifi: fix channel repports.<br>
 43) kernel: ralink_wifi: fix pkt_len calc.<br>
 44) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
+45) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
 <br>
 <br>
