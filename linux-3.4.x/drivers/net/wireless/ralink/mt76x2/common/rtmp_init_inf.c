@@ -345,8 +345,6 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #ifdef RT6352
 	if (IS_RT6352(pAd))
 	{
-		RtmpKickOutHwNullFrame(pAd, TRUE, FALSE);
-
 #if defined(RT6352_EP_SUPPORT) || defined(RT6352_EL_SUPPORT)
 		{
 			ULONG SysRegValue;
@@ -360,6 +358,9 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 			}
 		}
 #endif /* defined(RT6352_EP_SUPPORT) || defined(RT6352_EL_SUPPORT) */
+
+		RtmpKickOutHwNullFrame(pAd, TRUE, FALSE);
+		RtmpusecDelay(150);
 
 		/* Do R-Calibration */
 		R_Calibration(pAd);

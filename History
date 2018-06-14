@@ -4135,5 +4135,6 @@
 47) kernel: ralink_wifi: fix pkt_len calc.<br>
 48) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
 49) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
+50) kernel: ralink_wifi: mt7620: avoid BBP hung up.<br>
 <br>
 <br>

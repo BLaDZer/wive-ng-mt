@@ -1062,47 +1062,57 @@ UCHAR DPD_Calibration(
 		/* Disable Tx/Rx */
 		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x00);
 
+		RtmpusecDelay(150);
 		/* Check MAC Tx/Rx idle */
-		for (k_count = 0; k_count < 1000; k_count++)
+		for (k_count = 0; k_count < 20000; k_count++)
 		{
 			RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &macStatus);
 			if (macStatus & 0x3)
-				RtmpusecDelay(50);
+				RtmpusecDelay(150);
 			else
 				break;
 		}
 
-		if (k_count == 1000)
+		if (k_count == 20000)
 		{
-			DBGPRINT(RT_DEBUG_ERROR, ("\nWait MAC Status to MAX  !!!\n"));
+			DBGPRINT(RT_DEBUG_ERROR, ("\nDPD1: Wait MAC Status to MAX  !!!\n"));
 		}
 
-		/* Transmit packet */
-		/* ====================================== */
-		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x04);
-		RtmpKickOutHwNullFrame(pAd, FALSE, TRUE);
+		/* for mt7620 transmit packet early in rt28xx_init */
+		if (!IS_RT6352(pAd)) {
 
-		/* Disable Tx/Rx */
-		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x00);
+		    /* Enable Tx/Rx */
+		    RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x04);
+		    /* Wait Ready */
+		    RtmpusecDelay(150);
+		    /* Transmit packet */
+		    RtmpKickOutHwNullFrame(pAd, FALSE, TRUE);
+		    /* Wait ring flush */
+		    RtmpusecDelay(150);
+		    /* Disable Tx/Rx */
+		    RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x00);
 
-		/* Check MAC Tx/Rx idle */
-		for (k_count = 0; k_count < 500; k_count++)
-		{
-			RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &macStatus);
-			if (macStatus & 0x3)
-			{
-				RtmpusecDelay(100);
-			}
-			else
-			{
-				break;
-			}
+		    /* Check MAC Tx/Rx idle */
+		    RtmpusecDelay(150);
+		    for (k_count = 0; k_count < 20000; k_count++)
+		    {
+			    RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &macStatus);
+			    if (macStatus & 0x3)
+			    {
+				    RtmpusecDelay(150);
+			    }
+			    else
+			    {
+				    break;
+			    }
+		    }
+
+		    if (k_count == 20000)
+		    {
+			DBGPRINT(RT_DEBUG_ERROR, ("\nDPD2: Wait MAC Status to MAX  !!!\n"));
+		    }
 		}
 
-		if (k_count == 500)
-		{
-			DBGPRINT(RT_DEBUG_ERROR, ("\nWait MAC Status to MAX  !!!\n"));
-		}
 		/* Set BBP DPD parameters through MAC registers  */
 		if (AntIdx == 0)
 		{
@@ -1397,7 +1407,7 @@ UCHAR DPD_Calibration(
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R4, byteValue);
 
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x1);
-	RtmpusecDelay(2);
+	RtmpusecDelay(3);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x0);
 
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R27, saveBbpR27);

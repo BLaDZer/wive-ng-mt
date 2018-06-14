@@ -1409,7 +1409,7 @@ static VOID RT6352_ChipSwitchChannel(
 					RT635xWriteRFRegister(pAd, RF_BANK7, RF_R59, 0x08);
 				}
 			}
-
+                        RtmpusecDelay(150);
 			if ((pAd->CommonCfg.Chip_VerID > 1) && (pAd->CommonCfg.Chip_E_Number == 2))
 			{
 				RT635xReadRFRegister(pAd, RF_BANK0, RF_R28, &RFValue);
@@ -1419,7 +1419,7 @@ static VOID RT6352_ChipSwitchChannel(
 					RFValue &= (~0x4);
 				RT635xWriteRFRegister(pAd, RF_BANK0, RF_R28, RFValue);
 			}
-
+			RtmpusecDelay(150);
 			if (bScan == FALSE)
 			{
 				/* BandWidth Filter Calibration */
@@ -1531,6 +1531,7 @@ static VOID RT6352_ChipSwitchChannel(
 			}
 #endif /* RTMP_INTERNAL_TX_ALC */
 
+			RtmpusecDelay(150);
 			if (bScan == FALSE)
 			{
 				/* Save MAC SYS CTRL registers */
@@ -1540,18 +1541,18 @@ static VOID RT6352_ChipSwitchChannel(
 				RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, 0x00);
 
 				/* Check MAC Tx/Rx idle */
-				for (k_count = 0; k_count < 10000; k_count++)
+				for (k_count = 0; k_count < 20000; k_count++)
 				{
 					RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &macStatus);
 					if (macStatus & 0x3)
-						RtmpusecDelay(50);
+						RtmpusecDelay(150);
 					else
 						break;
 				}
 
-				if (k_count == 10000)
+				if (k_count == 20000)
 				{
-					DBGPRINT(RT_DEBUG_ERROR, ("(%s) Wait MAC Status to MAX  !!!\n", __FUNCTION__));
+					DBGPRINT(RT_DEBUG_ERROR, ("(%s)CHSW: Wait MAC Status to MAX  !!!\n", __FUNCTION__));
 				}
 
 				if ((pAd->CommonCfg.Chip_VerID > 1) && (pAd->CommonCfg.Chip_E_Number >= 2))
@@ -1604,6 +1605,7 @@ static VOID RT6352_ChipSwitchChannel(
 				RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, saveMacSysCtrl);
 			}
 
+                        RtmpusecDelay(150);
 			RT635xWriteRFRegister(pAd, RF_BANK0, RF_R05, 0x40);
 			RT635xWriteRFRegister(pAd, RF_BANK0, RF_R04, 0x0C);
 
