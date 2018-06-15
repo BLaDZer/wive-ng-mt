@@ -889,7 +889,7 @@ VOID RTMPDrvClose(
 	WdsDown(pAd);
 #endif /* WDS_SUPPORT */
 
-	RtmpOsMsDelay(30); /* wait for disconnect requests transmitted */
+	RtmpOsMsDelay(150); /* wait for disconnect requests transmitted */
 
 	for (i = 0 ; i < NUM_OF_TX_RING; i++)
 	{
@@ -1057,7 +1057,7 @@ VOID RTMPDrvClose(
 	NdisZeroMemory(&pAd->MacTab, sizeof(MAC_TABLE));
 
 	/* release all timers */
-	RTMPusecDelay(2000);
+	RTMPusecDelay(3000);
 	RTMP_TimerListRelease(pAd);
 
 #ifdef RTMP_TIMER_TASK_SUPPORT

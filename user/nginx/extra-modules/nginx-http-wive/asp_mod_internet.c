@@ -1311,8 +1311,7 @@ static void setHotspot(webs_t* wp, char_t *path, char_t *query)
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
-	doSystem("services_restart.sh all");
-//	websHeader(wp);
+	doSystem("services_restart.sh all &");
 	websDone(wp, 200);
 }
 

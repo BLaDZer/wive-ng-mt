@@ -895,6 +895,8 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	RtmpusecDelay(1); /* wait 1 usec */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x00);
 
+	RtmpusecDelay(1000); /* wait ready */
+
       /* recover RF registers */
 	RFConfigRecover(pAd, RF_Store);
 

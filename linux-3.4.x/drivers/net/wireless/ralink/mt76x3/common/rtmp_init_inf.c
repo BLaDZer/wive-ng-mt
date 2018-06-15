@@ -809,7 +809,7 @@ VOID RTMPDrvClose(VOID *pAdSrc, VOID *net_dev)
 	WdsDown(pAd);
 #endif /* WDS_SUPPORT */
 
-	RtmpOsMsDelay(30); /* wait for disconnect requests transmitted */
+	RtmpOsMsDelay(150); /* wait for disconnect requests transmitted */
 
 	for (i = 0 ; i < NUM_OF_TX_RING; i++)
 	{

@@ -387,7 +387,7 @@ INT WaitForAsicReady(RTMP_ADAPTER *pAd)
 		if ((mac_val != 0x00) && (mac_val != 0xFFFFFFFF))
 			return TRUE;
 
-		RtmpOsMsDelay(5);
+		RtmpOsMsDelay(10);
 	} while (idx++ < 500);
 
 	DBGPRINT(RT_DEBUG_ERROR,
@@ -402,14 +402,12 @@ INT AsicGetMacVersion(RTMP_ADAPTER *pAd)
 {
 	UINT32 reg = MAC_CSR0;
 
-
-#ifdef RT65xx
-	if (IS_RT65XX(pAd))
-		RTMP_IO_READ32(pAd, ASIC_VERSION, &pAd->ChipID);
-#endif /* RT65xx */
-
 	if (WaitForAsicReady(pAd) == TRUE)
 	{
+#ifdef RT65xx
+		if (IS_RT65XX(pAd))
+			RTMP_IO_READ32(pAd, ASIC_VERSION, &pAd->ChipID);
+#endif /* RT65xx */
 		RTMP_IO_READ32(pAd, reg, &pAd->MACVersion);
 		DBGPRINT(RT_DEBUG_OFF, ("MACVersion[Ver:Rev]=0x%08x : 0x%08x\n",
 					pAd->MACVersion, pAd->ChipID));

@@ -132,8 +132,9 @@ fi
 ##########################################################
 # Reconfigure and restart samba:			 #
 # 1) if recive wins server adress from dhcp		 #
+# 2) if full reconfigure
 ##########################################################
-if [ "$MODE" = "dhcp" ] && [ -e /tmp/wins.dhcp ]; then
+if [ "$MODE" = "all" ] || [ "$MODE" = "dhcp" ] && [ -e /tmp/wins.dhcp ]; then
     service samba restart
 fi
 

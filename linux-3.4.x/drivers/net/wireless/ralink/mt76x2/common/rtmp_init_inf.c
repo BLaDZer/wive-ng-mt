@@ -98,7 +98,7 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)pAdSrc;
 	NDIS_STATUS Status;
-	
+
 	if (!pAd)
 		return FALSE;
 
@@ -107,6 +107,17 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 
 	DBGPRINT(RT_DEBUG_TRACE, ("MAC[Ver:Rev=0x%08x : 0x%08x]\n",
 				pAd->MACVersion, pAd->ChipID));
+
+	if (WaitForAsicReady(pAd) != TRUE)
+		goto err1;
+
+#ifdef RTMP_MAC_PCI
+	if (IS_RT6352(pAd)) {
+	    /* To fix driver disable/enable hang issue when radio off*/
+	    RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, 0x2);
+	    RtmpOsMsDelay(100);
+	}
+#endif /* RTMP_MAC_PCI */
 
 	RT28XXDMADisable(pAd);
 
@@ -360,7 +371,6 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 #endif /* defined(RT6352_EP_SUPPORT) || defined(RT6352_EL_SUPPORT) */
 
 		RtmpKickOutHwNullFrame(pAd, TRUE, FALSE);
-		RtmpusecDelay(150);
 
 		/* Do R-Calibration */
 		R_Calibration(pAd);
@@ -1091,7 +1101,7 @@ VOID RTMPDrvClose(VOID *pAdSrc, VOID *net_dev)
 	WdsDown(pAd);
 #endif /* WDS_SUPPORT */
 
-	RtmpOsMsDelay(30); /* wait for disconnect requests transmitted */
+	RtmpOsMsDelay(150); /* wait for disconnect requests transmitted */
 
 	for (i = 0 ; i < NUM_OF_TX_RING; i++)
 	{
@@ -1302,7 +1312,7 @@ VOID RTMPDrvClose(VOID *pAdSrc, VOID *net_dev)
 	NdisZeroMemory(&pAd->MacTab, sizeof(MAC_TABLE));
 
 	/* release all timers */
-	RtmpusecDelay(2000);
+	RtmpusecDelay(3000);
 	RTMP_AllTimerListRelease(pAd);
 
 #ifdef ED_MONITOR
@@ -1443,6 +1453,13 @@ VOID RTMPInfClose(VOID *pAdSrc)
 
 	}
 #endif /* CONFIG_STA_SUPPORT */
+#ifdef RTMP_MAC_PCI
+	if (IS_RT6352(pAd)) {
+	    /* To fix driver disable/enable hang issue when radio off*/
+	    RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, 0x2);
+	    RtmpOsMsDelay(100);
+	}
+#endif /* RTMP_MAC_PCI */
 }
 
 

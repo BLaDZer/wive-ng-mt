@@ -751,13 +751,8 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
         case DO_REBOOT:
             reboot_now(); break;
         case DO_RECONFIGURE:
-            doSystem("internet.sh"); break;
         case DO_RECONFIGURE_AND_SAMBA_RESTART:
-            doSystem("internet.sh");
-#if defined(CONFIG_USER_SAMBA)
-            doSystem("service samba restart");
-#endif
-            break;
+            doSystem("internet.sh &"); break;
         case DO_RESTART_MISC:
             doSystem("services_restart.sh misc &"); break;
 
