@@ -201,7 +201,7 @@
 						form.ipv6_6rd_prefix.select();
 						return false;
 					}
-					if (v6rd_prefix_len == "" || v6rd_prefix_len > 32 || v6rd_prefix_len < 0) {
+					if (v6rd_prefix_len == "" || v6rd_prefix_len > 64 || v6rd_prefix_len < 0) {
 						alert(_("ipv6 invalid prefix"));
 						form.ipv6_6rd_prefix_len.focus();
 						form.ipv6_6rd_prefix_len.select();
