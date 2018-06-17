@@ -178,7 +178,7 @@
 					addr = ipaddr.parse(ipv6_gw); form.ipv6_static_gw.value = addr.toString();
 					addr = ipaddr.parse(ipv6_dns_primary); form.ipv6_static_dns_primary.value = addr.toString();
 					addr = ipaddr.parse(ipv6_dns_secondary); form.ipv6_static_dns_secondary.value = addr.toString();
-					
+
 				} else if (form.ipv6_opmode.value == "1") {
 					if (!validateNum(document.getElementById('ipv6_manual_mtu').value) ||
 					    (document.getElementById('ipv6_manual_mtu_type').value != 0 && (document.getElementById('ipv6_manual_mtu').value > 1500 || document.getElementById('ipv6_manual_mtu').value < 80))) {
@@ -201,7 +201,8 @@
 						form.ipv6_6rd_prefix.select();
 						return false;
 					}
-					if (v6rd_prefix_len == "" || v6rd_prefix_len > 64 || v6rd_prefix_len < 0) {
+
+					if (v6rd_prefix_len == "" || v6rd_prefix_len > 128 || v6rd_prefix_len < 0) {
 						alert(_("ipv6 invalid prefix"));
 						form.ipv6_6rd_prefix_len.focus();
 						form.ipv6_6rd_prefix_len.select();
