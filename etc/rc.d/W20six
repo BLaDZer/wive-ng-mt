@@ -111,10 +111,10 @@ start() {
 	    $LOG "Set mtu $sitmtu to $six_wan_if"
 	    sysctl -wq net.ipv6.conf.$six_wan_if.mtu="$sitmtu"
 	    ip link set mtu $sitmtu dev $six_wan_if
+	    # add direct default gateway for workaround No route to host on new kernel
+            ip -6 route replace default dev $six_wan_if metric 2048
 	    $LOG "Add route to 2000::/3 via ::${relay6to4} dev $six_wan_if"
 	    ip -6 route replace 2000::/3 via ::${relay6to4} dev $six_wan_if metric 1
-	    # add direct default gateway for workaround No route to host on new kernel
-            ip -6 route add default dev $six_wan_if metric 2048
 	    $LOG "Used tunneled ipv6 mode, disable forward from real wan interfaces (security reason), enable foe $six_wan_if."
     	    sysctl -wq net.ipv6.conf.$tun_wan_if.forwarding=0
     	    sysctl -wq net.ipv6.conf.$wan_if.forwarding=0
