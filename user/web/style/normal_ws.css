@@ -337,3 +337,16 @@ div.tab_control
 	float: left;
 	width: 100%;
 }
+
+.showHideMenu thead tr td {
+    padding-left: 25px !important;
+    background-image: url('/graphics/menu_minus.gif');
+    background-repeat: no-repeat;
+    background-position: 4px 4px;
+    cursor: pointer;
+}
+
+.showHideMenu[minimized='1'] thead tr td {
+    background-image: url('/graphics/menu_plus.gif');
+}
+

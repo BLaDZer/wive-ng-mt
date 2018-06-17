@@ -9,6 +9,25 @@
 
 *******************************************/
 
+if (document.getElementsByClassName === undefined)
+{
+    document.getElementsByClassName = function(className) {
+        var found = [];
+        var elements = document.getElementsByTagName("*");
+
+        for (var i = 0; i < elements.length; i++)
+        {
+            var names = elements[i].className.split(' ');
+            for (var j = 0; j < names.length; j++)
+            {
+                if (names[j] == className) found.push(elements[i]);
+            }
+        }
+
+        return found;
+    }
+}
+
 function disableControlsByAuth()
 {
     if (AUTH_ROLE != 2)
@@ -30,9 +49,6 @@ function disableControlsByAuth()
         for (i=0;i<elems.length;i++) {
             elems[i].setAttribute("readonly", true) 
         }
-
-
-
     }
 }
 

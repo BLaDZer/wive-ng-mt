@@ -916,8 +916,12 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	if (NULL != life_check) {
 		tmp = atoi(life_check);
-		if ((tmp < 128) || (tmp > 2048))
-			tmp = 512;
+		if (tmp < 256)
+			tmp = 256;
+
+		if (tmp > 4096)
+			tmp = 4096;
+
 		sprintf(life_check, "%d", tmp);
 		ngx_nvram_bufset(wp,"EntryLifeCheck", life_check);
 	}

@@ -59,7 +59,6 @@
 				_TR("MaxClients",				"hotspot nodog max clients");
 				_TR("ClientIdleTimeout",			"hotspot nodog idle timeout");
 				_TR("ClientForceTimeout",			"hotspot nodog force timeout");
-				_TR("AuthenticateImmediately",			"hotspot nodog auth");
 				_TR("MACMechanism",				"hotspot nodog mechanism");
 				_TR("BlockedMACList",				"hotspot nodog blocked list");
 				_TR("AllowedMACList",				"hotspot nodog allowed list");
@@ -87,7 +86,6 @@
 				var form	= document.spotCfg;
 				var enabled	= form.spotEnable;
 
-				form.AuthenticateImmediately.value		= NVRAM_nodog_AuthenticateImmediately;
 				form.MACMechanism.value 			= NVRAM_nodog_MACMechanism;
 				form.PasswordAuthentication.value		= NVRAM_nodog_PasswordAuthentication;
 				form.UsernameAuthentication.value		= NVRAM_nodog_UsernameAuthentication;
@@ -436,7 +434,7 @@
 
 			function ModeOnChange(form) {
 				displayElement(["row_chilli", "row_sIp", "row_sNetmask", "row_sStartIP", "row_sEndIP", "row_sPriDns", "row_sSecDns", "row_sDomain", "row_sLease", "row_sRadServer1", "row_sRadServer2", "row_sRadSecret", "row_sNasId", "row_sRadLocId", "row_sRadLocName", "row_sRadCoaPort", "row_sRadCoaNoIpCheck", "row_sUamServer", "row_sUamHomepage", "row_sUamSecret", "row_sUamAllowed", "row_sUamDomain", "row_sUamAnyDNS", "row_sMacAllowed", "row_sC2Cisolate", "row_sDropDNS", "row_sMaxClients", "row_sHttpsRedirect"], form.spotEnable.value == '1');
-				displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_AuthenticateImmediately", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], form.spotEnable.value == '2');
+				displayElement(["row_GatewayIPRange", "row_RedirectURL", "row_MaxClients", "row_ClientIdleTimeout", "row_ClientForceTimeout", "row_MACMechanism", "row_TrustedMACList", "row_AllowedMACList", "row_BlockedMACList", "row_PasswordAuthentication", "row_Password", "row_UsernameAuthentication", "row_Username", "row_PasswordAttempts"], form.spotEnable.value == '2');
 
 				form.chilliEnable.value = (form.spotEnable.value == "1") ? "on" : "off";
 				form.nodogEnable.value = (form.spotEnable.value == "2") ? "1" : "0";
@@ -509,7 +507,6 @@
 						case 'MaxClients':			text += _("hint nodog max clients");			break;
 						case 'ClientIdleTimeout':		text += _("hint nodog idle");				break;
 						case 'ClientForceTimeout':		text += _("hint nodog force");				break;
-						case 'AuthenticateImmediately':		text += _("hint nodog auth immediately");		break;
 						case 'MACMechanism':			text += _("hint nodog mac"); 				break;
 						case 'BlockedMACList':			text += _("hint nodog blocked");			break;
 						case 'AllowedMACList':			text += _("hint nodog allowed");			break;
@@ -718,15 +715,6 @@
 								<tr id="row_ClientForceTimeout" onMouseOver="showHint('ClientForceTimeout');" onMouseOut="hideHint();">
 									<td class="head" id="ClientForceTimeout">Minutes before a user is 'deauthenticated'</td>
 									<td colspan="2"><input class="mid" name="ClientForceTimeout" maxlength="128"></td>
-								</tr>
-								<tr id="row_AuthenticateImmediately" onMouseOver="showHint('AuthenticateImmediately');" onMouseOut="hideHint();">
-									<td class="head" id="AuthenticateImmediately">Authenticate Immediately</td>
-									<td colspan="2">
-										<select name="AuthenticateImmediately" class="mid">
-											<option value=0 id="disable">Disable</option>
-											<option value=1 id="enable">Enable</option>
-										</select>
-									</td>
 								</tr>
 								<tr id="row_MACMechanism" onMouseOver="showHint('MACMechanism');" onMouseOut="hideHint();">
 									<td class="head" id="MACMechanism">MAC Mechanism</td>

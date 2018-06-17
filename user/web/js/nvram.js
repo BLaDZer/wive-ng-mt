@@ -251,7 +251,6 @@ var NVRAM_chilli_dnsparanoia                                         = '<% getCf
 var NVRAM_chilli_maxclients                                          = '<% getCfgGeneral(1, "chilli_maxclients",                   "384"); %>';
 var NVRAM_chilli_https                                               = '<% getCfgGeneral(1, "chilli_https",                        "0"); %>';
 var NVRAM_nodogsplash_enable                                         = '<% getCfgGeneral(1, "nodogsplash_enable",                  "0"); %>';
-var NVRAM_nodog_AuthenticateImmediately                              = '<% getCfgGeneral(1, "nodog_AuthenticateImmediately",       "0"); %>';
 var NVRAM_nodog_MACMechanism                                         = '<% getCfgGeneral(1, "nodog_MACMechanism",                  "block"); %>';
 var NVRAM_nodog_PasswordAuthentication                               = '<% getCfgGeneral(1, "nodog_PasswordAuthentication",        "0"); %>';
 var NVRAM_nodog_UsernameAuthentication                               = '<% getCfgGeneral(1, "nodog_UsernameAuthentication",        "0"); %>';

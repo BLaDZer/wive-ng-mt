@@ -16,7 +16,7 @@
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script src="/js/scanap.js"></script>
-		<script> 
+		<script>
 			var radio_on			= NVRAM_RadioOn;
 			var radio_on_ac			= NVRAM_RadioOnINIC;
 			var wmode				= NVRAM_WirelessMode;
@@ -91,11 +91,6 @@
 			var EDCCABuilt			= BUILD_EDCCA;
 			var ED_MODE				= NVRAM_ED_MODE;
 
-			var statusAdvWirelessMenu = 1;
-			var statusHTPysModeMenu = 1;
-			var statusVHTPysModeMenu = 1;
-			var statusRoamingMenu = 1;
-
 			var ChannelList_24G =
 			[
 				"2412MHz (" + _("station channel") + " 1)",
@@ -114,36 +109,241 @@
 				"2484MHz (" + _("station channel") + " 14)"
 			];
 
+
 			var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
 			var channels = [];
 
-			function bandSteeringChange(form, userselect) {
-				if (bandsteeringBuilt == 1) {
-					displayElement('div_bandsteering', true);
-					displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], form.BandSteering.value == "1" || form.BandSteering.value == "2");
-					if ((form.BandSteering.value == "1" || form.BandSteering.value == "2") && (userselect == 1)) {
-						alert(_("basic bandsteering ssid"));
-					}	
-				}
-			}
+			function updateVisibility(form) {
 
-			function beamformingChange(form, userselect) {
-				if (txbf_built == 1)
-				{
-					displayElement('div_txbf', true);
-					displayElement(["div_ETxBfeeEn", "div_ETxBfEnCond" ], form.ITxBfEn.value == "1");
-				}
-			}
+				var enableWirelessAc	= BUILD_5GHZ_SUPPORT && (form.radioWirelessEnabledAc.value == "1");
+				var enableWireless	= form.radioWirelessEnabled.value == "1";
+				var enableWirelessAny	= enableWireless || enableWirelessAc;
 
-			function fastRoamingChange(form) {
+				var wmode = form.wirelessmode.value;
+				var wmodeac = form.wirelessmodeac.value;
+
+				var vhtmode = enableWirelessAc && (1*wmodeac) >= 14;
+				var htmode = vhtmode || (enableWireless && (wmode*1) >= 5);
+
+				// Hide 'SCAN' buttons if IE8 (no SVG support)
+				var browser = getBrowser();
+				displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC'], browser.browser != 'ie' || browser.versionShort > 8);
+
+				// Disable scan buttons if radio modules are disabled
+				form.scanapLegendButtonScan.disabled = radio_on != '1';
+				form.scanapLegendButtonScanINIC.disabled = radio_on_ac != '1';
+
+				displayElement('div_all', enableWirelessAny);
+
+// Wireless Network 2.4 GHz
+				// Network name (2.4GHz)
+				displayElement( 'div_11g_name', enableWirelessAny); // do not hide in 5GHz-only mode, it has some usable nested options like "hidden" or "clients isolated", and an "Add" button
+				// Network mode (2.4GHz)
+				displayElement( 'div_11g_basic', enableWireless);
+				// TX Power (2.4GHz)
+				displayElement( 'div_11g_channel', enableWireless);
+				// Channel (2.4GHz)
+				displayElement( 'div_txpw', enableWireless);
+				form.sz11gChannel.disabled = false;
+
+				if (enableWireless)
+					document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
+				else
+					document.getElementById('wlan_channel_span').innerHTML = '';
+
+				displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
+				displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
+				displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
+
+
+
+// Wireless Network 5 GHz
+				displayElement('wireless_5', BUILD_5GHZ_SUPPORT);
+				// Enabled
+				displayElement('basicWirelessEnabledAc', BUILD_5GHZ_SUPPORT);
+				// Network name (5GHz)
+				displayElement( 'div_11a_name', enableWirelessAc);
+				// Network mode (5GHz)
+				displayElement( 'div_11a_basic', enableWirelessAc);
+				// TX Power (5GHz)
+				displayElement( 'div_txpw_ac', enableWirelessAc);
+				// Channel (5GHz)
+				displayElement( 'div_11a_channel', enableWirelessAc);
+
+				form.sz11aChannel.disabled = !BUILD_5GHZ_SUPPORT;
+
+				if (enableWirelessAc)
+					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
+				else
+					document.getElementById('wlan_ac_channel_span').innerHTML = '';
+
+				displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
+				displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
+				displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
+
+// Basic Settings
+
+				//MBSSID Mode
+				var have_mbssid = mbssid == '1' && ((enableWireless && BUILD_5GHZ_SUPPORT) || enableWirelessAc)
+				displayElement('basicMbssidModeT', have_mbssid);
+
+				form.mbssid_mode.disabled = !have_mbssid;
+				form.mbssidapisolated.disabled = !have_mbssid;
+
+				if (!have_mbssid) {
+					form.mbssid_mode.options.selectedIndex = 0;
+				}
+
+/*
+				// Automatically changes MBSSID mode on radio module disabling
+				if (!enableWireless) {
+					form.mbssid_mode.value = "rai";
+				}
+				if (!enableWirelessAc) {
+					form.mbssid_mode.value = "ra";
+				}
+*/
+
+				var multiple_ssids_to_show = have_mbssid;
+
+				if (form.mbssid_mode.value == "ra" && !enableWireless) multiple_ssids_to_show = false;
+				else
+				if (form.mbssid_mode.value == "rai" && !enableWirelessAc) multiple_ssids_to_show = false;
+				else
+				if (form.mbssid_mode.value == "all" && !enableWirelessAny) multiple_ssids_to_show = false;
+
+				ssidDisplay(form, multiple_ssids_to_show);
+
+				//SSID to SSID Isolation
+				displayElement("div_mbssidapisolated", have_mbssid);
+
+				// LAN to WLAN Isolation
+				displayElement( 'div_LanWifiIsolate', NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1' && form.mbssidapisolated.options.selectedIndex == 1);
+				// Rate
+				displayElement("div_abg_rate", (wmode < 5) && (BUILD_5GHZ_SUPPORT && wmodeac < 5));
+				enableElements(form.abg_rate, (wmode) < 5 && (BUILD_5GHZ_SUPPORT && wmodeac < 5));
+				// IEEE 802.11h support
+				displayElement('div_dot11h', dfs_built && enableWirelessAc);
+
+// HT Physical Mode
+				displayElement('div_11n', htmode);
+
+				displayElement(['basicHTChannelBW_tr', 'extension_channel', 'basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
+				displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && (1*wmode) >= 5 && document.getElementById('n_bandwidth').value == 1 );
+				displayElement('basicHTChannelBWINIC_tr', BUILD_5GHZ_SUPPORT && form.radioWirelessEnabledAc.value == 1);
+
+				displayElement('basicHTOPMode', htmode);
+				displayElement("basicHTTxStream_tr", htmode);
+				displayElement("basicHTRxStream_tr", htmode);
+
+				displayElement("basicHTTx2Stream", NVRAM_TXPath != "1");
+				displayElement("basicHtRx2Stream", NVRAM_RXPath != "1");
+
+				form.n_mode.disabled = !htmode;
+				form.n_bandwidth.disabled = !htmode;
+				form.n_bandwidthinic.disabled = !(BUILD_5GHZ_SUPPORT && htmode);
+				form.n_rdg.disabled = !htmode;
+				form.n_gi.disabled = !htmode;
+				form.n_stbc.disabled = !htmode;
+				form.n_mcs.disabled = !htmode;
+
+// VHT Physical Mode
+
+				displayElement(['basicVHTBW_tr', 'basicVHTBWSIGNAL_tr', 'basicVHTGI_tr'], 1);
+				displayElement('basicVHTLDCP_tr', BUILD_LDPC_SUPPORT == '1');
+				displayElement('basicVHTSTBC_tr', BUILD_VHT_STBC_SUPPORT == '1');
+
+				displayElement("basicVHT", vhtmode)
+
+				if (is5gh_1t1r == 1)
+					hideElement("basicVHTLDCP_tr");
+
+				form.ac_gi.disabled = !vhtmode;
+				form.ac_stbc.disabled = !vhtmode;
+				form.ac_ldpc.disabled = !vhtmode;
+
+// Advanced wireless
+				displayElement( 'advWirelessT', enableWirelessAny);
+
+				var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
+							   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
+							   'advStaRegion_tr' ];
+				displayElement(AdvWirelessElement, enableWirelessAny);
+
+				// Clear-Channel Assessment Monitor
+				displayElement('advEDMODE_tr', EDCCABuilt == "1");
+
+// Basic roaming settings (Fast Roaming)
+				displayElement([ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'], 1);
+				displayElement([ 'basicRRMEnable_tr' ], rrm_built);
+				displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
+				displayElement([ basicFtSupport_tr, "basicKickStaRssiLowFT_tr"], ft_built);
+				displayElement('advBeaconIntervalINIC_tr', BUILD_5GHZ_SUPPORT)
+
+				displayElement('div_roaming', enableWirelessAny);
+				// Regulatory Class INIC
+				displayElement('basicRRMclassINIC_tr', BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
+
 				displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowFT_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr"], form.FastRoaming.value == "1");
 				displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1" && BUILD_5GHZ_SUPPORT);
 				displayElement("basicKickStaRssiLowFT_tr", form.FastRoaming.value == "1" && ft_built);
+
+// Beamforming
+				displayElement('div_txbf', txbf_built == '1' && enableWirelessAny);
+				// BFee feature
+				displayElement('div_ETxBfeeEn', form.ITxBfEn.value == "1");
+				// Sending of sounding and beamforming
+				displayElement('div_ETxBfEnCond', form.ITxBfEn.value == "1");
+
+
+// Band steering settings
+				var have_steering = enableWireless && enableWirelessAc && bandsteeringBuilt == 1;
+				var steering_enabled = have_steering && (form.BandSteering.value == "1" || form.BandSteering.value == "2");
+
+				displayElement('div_bandsteering', have_steering);
+				displayElement(["row_BndStrgRssiDiff", "row_BndStrgRssiLow", "row_BndStrgAge", "row_BndStrgHoldTime", "row_BndStrgCheckTime" ], steering_enabled);
+
+				if (!have_steering) {
+					form.BandSteering.selectedIndex = 0;
+				}
+
+
+// Intrusion detection settings
+				displayElement('div_ids', ids_built && enableWirelessAny);
+				displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], form.IdsEnable.value == "1" && ids_built);
+
+// Multicast-to-Unicast Converter
+				// Multicast-to-Unicast
+				displayElement('div_m2u', m2uBuilt == '1' && enableWirelessAny);
+				// Video turbine
+				displayElement('video_turbine_row', (m2uBuilt == '1') && (video_turbine_built == '1'));
+
+// PA/LNA control
+				displayElement('advSynVGA_table', enableWirelessAny);
+				// Adaptive LNA Gain
+				displayElement('advDynVGA_tr', enableWirelessAny);
+				// Skip auto gain for long distance clients
+				displayElement('advDynVGALong_tr', clamp == '1');
+				// Clamp maximum LNA GAIN in dynvga mode
+				displayElement('advDynVGAClamp_tr', clamp == '1' && is5gh_1t1r == '0');
+
+// Extra
+				// add subchannel
+				insertExtChannelOption(form);
+				GExtChannelDisplay(form);
+				show14channel(!htmode);
+				show_abg_rate(form);
+
+				disableControlsByAuth();
 			}
 
-			function idsChange(form) {
-				displayElement('div_ids', ids_built);
-				displayElement(["row_AuthFloodThreshold", "row_AssocReqFloodThreshold", "row_ReassocReqFloodThreshold", "row_ProbeReqFloodThreshold", "row_DisassocFloodThreshold", "row_DeauthFloodThreshold", "row_EapReqFloodThreshold"], form.IdsEnable.value == "1" && ids_built);
+			function bandSteeringChange(form, userselect) {
+
+				updateVisibility(form);
+
+				if ((form.BandSteering.value == "1" || form.BandSteering.value == "2") && (userselect == 1)) {
+					alert(_("basic bandsteering ssid"));
+				}
 			}
 
 			function insertExtChannelOption(form)
@@ -183,6 +383,7 @@
 				}
 			}
 
+			/* Load autochannel options from nvram */
 			function AutoChannelSelect(form) {
 				var autoselectmode_g	= +NVRAM_AutoChannelSelect;
 				var autoselectmode_a	= +NVRAM_AutoChannelSelectINIC;
@@ -193,13 +394,6 @@
 				form.autoselect_a.options.selectedIndex = (autoselectmode_a == 1) ? 0 : 1;
 				form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
 				form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
-
-				displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
-				displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
-				displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
-				displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
-				displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
-				displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
 			}
 
 			function GExtChannelDisplay(form) {
@@ -207,8 +401,7 @@
 				var channel	= +form.sz11gChannel.value;
 				var bandwidth	= +form.n_bandwidth.value;
 
-				displayElement('extension_channel', false);
-				displayElement('extension_channel', channel != 0 && bandwidth != 0 && mode >= 5 && statusHTPysModeMenu == 1);
+				displayElement('extension_channel', channel != 0 && bandwidth != 0 && mode >= 5);
 				enableElements(form.n_extcha, channel != 0 && bandwidth != 0 && mode >= 5);
 
 				// Hide 165 channel if BW > 20MHz
@@ -273,22 +466,21 @@
 
 			function ChannelOnChange(form)
 			{
-				var w_mode = form.wirelessmode.value;
-				// add subchannel
-				insertExtChannelOption(form);
-				GExtChannelDisplay(form);
 				AutoChannelSelect(form);
+				updateVisibility(form);
+
 				if (BUILD_5GHZ_SUPPORT && document.getElementById('sz11aChannel').value > 64)
 					alert(_("basic 11a channel warning"));
 			}
 
-			function ssidDisplay(form)
+			function ssidDisplay(form, show)
 			{
 				var no_mbssid = mbssid != '1';
 				var count = form.bssid_num.value * 1;
+				if (show === undefined) show = true;
 
-				for (var i=1; i < count; i++)
-					showElement('div_hssid' + i);
+				for (var i=1; i < bssid_num; i++)
+					displayElement('div_hssid' + i, show && i<count);
 
 				// Allow only 4 BSSID's
 				displayElement(form.addBSSIDbtn, !no_mbssid);
@@ -322,6 +514,7 @@
 						form.elements['mssid_' + (i+1)].value = form.elements['mssid_' + (i+2)].value;
 						form.hssid[i].checked = form.hssid[i+1].checked;
 						form.isolated_ssid[i].checked = form.isolated_ssid[i+1].checked;
+						form.mbcastisolated_ssid[i].checked = form.mbcastisolated_ssid[i+1].checked;
 					}
 				}
 
@@ -329,6 +522,7 @@
 				form.elements['mssid_' + (count+1)].value = '';
 				form.hssid[count].checked = false;
 				form.isolated_ssid[count].checked = false;
+				form.mbcastisolated_ssid[count].checked = false;
 
 				hideElement('div_hssid' + count);
 				form.bssid_num.value = count;
@@ -372,6 +566,7 @@
 				_TR("basicTxPW", "basic tx power");
 				_TR("basicTxPWAc", "basic tx power ac");
 
+				_TR("basicHTPhyMode", "basic ht phy mode");
 				_TR("basicHTOPMode_td_1", "basic ht op mode");
 				_TR("basicHTMixedDisable", "basic ht op mixed");
 				_TR("basicHTMixedEnable", "basic ht op green");
@@ -546,26 +741,26 @@
 
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
-					if (elements[i].id == "disable")
-						elements[i].innerHTML = _("button disable");
-					else if (elements[i].id == "enable")
-						elements[i].innerHTML = _("button enable");
-					else if (elements[i].id == "basicAutoBySTA")
-						elements[i].innerHTML = _("basic select by sta");
-					else if (elements[i].id == "basicAutoByRSSI")
-						elements[i].innerHTML = _("basic select by rssi");
+					switch (elements[i].id) {
+						case "disable":             elements[i].innerHTML = _("button disable"); break;
+						case "enable":              elements[i].innerHTML = _("button enable"); break;
+						case "basicAutoBySTA":      elements[i].innerHTML = _("basic select by sta"); break;
+						case "basicAutoByRSSI":     elements[i].innerHTML = _("basic select by rssi"); break;
+					}
+
 				elements = document.getElementsByTagName('input');
 				for (i = 0; i < elements.length; i++)
-					if (elements[i].id == "basicRemove")
-						elements[i].value = _("button remove");
+					switch (elements[i].id) {
+						case "basicRemove":          elements[i].value = _("button remove"); break;
+					}
+
 				elements = document.getElementsByTagName('span');
 				for (i = 0; i < elements.length; i++)
-					if (elements[i].id == "basicMSSID")
-						elements[i].innerHTML = _("basic multiple ssid");
-					else if (elements[i].id == "basicAutoChannelMode")
-						elements[i].innerHTML = _("basic auto channel mode");
-					else if (elements[i].id == "basicChannel")
-						elements[i].innerHTML = _("station channel");
+					switch (elements[i].id) {
+						case "basicMSSID":           elements[i].innerHTML = _("basic multiple ssid"); break;
+						case "basicAutoChannelMode": elements[i].innerHTML = _("basic auto channel mode"); break;
+						case "basicChannel":         elements[i].innerHTML = _("station channel"); break;
+					}
 			}
 
 			function saveRadioChannels()
@@ -613,6 +808,78 @@
 						select.selectedIndex = (index >= select.options.length) ? 0 : index;
 					}
 				}
+			}
+
+			function calculate_ac_channel(countrycode, channel_indexac)
+			{
+				var res = 0;
+
+				switch (countrycode) {
+				case 'NONE':
+				case 'RU':
+				case 'US':
+				case 'HK':
+				case 'FR':
+				case 'IE':
+				case 'NO':
+						if (channel_indexac <= 64)
+						{
+							res = channel_indexac;
+							res = res / 4;
+							if (res != 0)
+								res = res - 8;
+						} else if ((channel_indexac >= 132) && (channel_indexac <= 144))
+						{
+							res = channel_indexac;
+							res = res / 4;
+							if (res != 0)
+								res = res - 24;
+						}
+						else if (channel_indexac >= 149)
+						{
+							res = channel_indexac - 1;
+							res = res / 4;
+							res = res - 24;
+						}
+					break;
+
+				case 'JP':
+						if (channel_indexac <= 48)
+						{
+							res = channel_indexac;
+							res = res / 4;
+							if (res != 0)
+								res = res - 8;
+						}
+					break;
+
+				case 'TW':
+						if (channel_indexac <= 64)
+						{
+							res = channel_indexac;
+							res = res / 4;
+							if (res != 0)
+								res = res - 12;
+						}
+						else if (channel_indexac >= 149)
+						{
+							res = channel_indexac - 1;
+							res = res / 4;
+							res = res - 32;
+						}
+					break;
+
+				case 'CN':
+						if (channel_indexac >= 149)
+						{
+							res = channel_indexac - 1;
+							res = res / 4;
+							res = res - 36;
+						}
+					break;
+				}
+
+				return res;
 			}
 
 			function initValue()
@@ -672,40 +939,6 @@
 				form.TmpBlockAfterKick.value		= NVRAM_TmpBlockAfterKick;
 				form.KickStaRssiLowFT.value			= NVRAM_KickStaRssiLowFT;
 
-				// Hide & disable elements
-				hideElement("div_11a_basic");
-				hideElement("div_11a_name");
-				hideElement("basicAcBSSID");
-				hideElement("div_txpw_ac");
-				hideElement("div_11a_channel");
-				hideElement("div_11g_channel");
-				hideElement("basicHTTxStream_tr");
-				hideElement("basicHTRxStream_tr");
-				hideElement("div_abg_rate");
-				hideElement("div_all");
-				hideElement("div_11n");
-				hideElement("basicVHT");
-				hideElement("basicWirelessEnabledAc");
-
-				form.sz11aChannel.disabled = true;
-				form.sz11gChannel.disabled = true;
-				form.abg_rate.disabled = true;
-				form.n_mode.disabled = true;
-				form.n_bandwidth.disabled = true;
-				form.n_bandwidthinic.disabled = true;
-				form.n_rdg.disabled = true;
-				form.n_gi.disabled = true;
-				form.n_stbc.disabled = true;
-				form.n_mcs.disabled = true;
-
-				form.ac_gi.disabled = true;
-				form.ac_stbc.disabled = true;
-				form.ac_ldpc.disabled = true;
-
-				hideElement("div_mbssidapisolated");
-				form.mbssidapisolated.disabled = true;
-				show14channel(true);
-
 				// Init 2.4GHz
 				index = form.wirelessmode.options.length;
 
@@ -729,12 +962,6 @@
 
 				}
 
-				if (!BUILD_5GHZ_SUPPORT || mbssid != '1') {
-					form.mbssid_mode.options.selectedIndex = 0;
-					document.getElementById("basicMbssidModeT").style.visibility = "hidden";
-					hideElement(basicMbssidModeT);
-				}
-
 				if (mbssid_mode == 'all')
 					form.mbssid_mode.options.selectedIndex = 2;
 				else if (mbssid_mode == 'rai')
@@ -754,11 +981,6 @@
 					form.tx_power.options.selectedIndex = i;
 				}
 
-				// Display basic
-				form.sz11gChannel.disabled = false;
-				showElementEx("div_11g_channel", style_display_on());
-				showElement("div_all");
-
 				// Display AC
 				if (BUILD_5GHZ_SUPPORT)
 				{
@@ -769,53 +991,7 @@
 							break;
 						form.tx_powerac.options.selectedIndex = i;
 					}
-
-					showElementEx("basicWirelessEnabledAc", style_display_on());
-
-					showElementEx("div_11a_basic", style_display_on());
-					showElementEx("div_11a_name", style_display_on());
-					showElementEx("basicAcBSSID", style_display_on());
-					showElementEx("div_txpw_ac", style_display_on());
-
-					form.sz11aChannel.disabled = false;
-					showElementEx("div_11a_channel", style_display_on());
 				}
-
-				// Display HT modes
-				if ((wmode*1) >= 5)
-				{
-					showElement("div_11n");
-					displayElement('basicHTOPMode', true);
-					showElementEx("basicHTTxStream_tr", style_display_on());
-					showElementEx("basicHTRxStream_tr", style_display_on());
-					show14channel(false);
-
-					form.n_mode.disabled = false;
-					form.n_bandwidth.disabled = false;
-					if (BUILD_5GHZ_SUPPORT)
-						form.n_bandwidthinic.disabled = false;
-					form.n_rdg.disabled = false;
-					form.n_gi.disabled = false;
-					form.n_stbc.disabled = false;
-					form.n_mcs.disabled = false;
-				}
-
-				// Display VHT modes
-				if (BUILD_5GHZ_SUPPORT && +wmodeac >= 14)
-				{
-					showElement("basicVHT");
-
-					if (is5gh_1t1r == '1')
-					{
-						hideElement("basicVHTLDCP_tr");
-					}
-
-					form.ac_gi.disabled = false;
-					form.ac_stbc.disabled = false;
-					form.ac_ldpc.disabled = false;
-				}
-
-				ssidDisplay(form);
 
 				// Initialize bssid
 				var HiddenSSID				= NVRAM_HideSSID;
@@ -837,7 +1013,6 @@
 				form.n_bandwidthinic.options.selectedIndex = 1*ht_bwinic;
 				form.dot11h.options.selectedIndex = 1*dot11hArray[0];
 				initChecktime(form);
-				GExtChannelDisplay(form);
 
 				channel_index = 1*channel_index;
 				form.sz11gChannel.options.selectedIndex = channel_index;
@@ -848,103 +1023,17 @@
 				if (BUILD_5GHZ_SUPPORT)
 				{
 					// Calculate current channel
-					var channel_indexacnew;
-					if ((countrycode == 'NONE') || (countrycode == 'RU') || (countrycode == 'US') || (countrycode == 'HK') || (countrycode == 'FR') || (countrycode == 'IE') || (countrycode == 'NO'))
-					{
-						if (channel_indexac <= 64)
-						{
-							channel_indexacnew = channel_indexac;
-							channel_indexacnew = channel_indexacnew / 4;
-							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 8;
-						} else if ((channel_indexac >= 132) && (channel_indexac <= 144))
-						{
-							channel_indexacnew = channel_indexac;
-							channel_indexacnew = channel_indexacnew / 4;
-							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 24;
-						}
-						
-						else if (channel_indexac >= 149)
-						{
-							channel_indexacnew = channel_indexac - 1;
-							channel_indexacnew = channel_indexacnew / 4;
-							channel_indexacnew = channel_indexacnew - 24;
-						}
-						else
-						{
-							channel_indexacnew = 0;
-						}
-					}
-					else if (countrycode == 'JP')
-					{
-						if (channel_indexac <= 48)
-						{
-							channel_indexacnew = channel_indexac;
-							channel_indexacnew = channel_indexacnew / 4;
-							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 8;
-						}
-						else
-						{
-							channel_indexacnew = 0;
-						}
-					}
-					else if (countrycode == 'TW')
-					{
-						if (channel_indexac <= 64)
-						{
-							channel_indexacnew = channel_indexac;
-							channel_indexacnew = channel_indexacnew / 4;
-							if (channel_indexacnew != 0)
-								channel_indexacnew = channel_indexacnew - 12;
-						}
-						else if (channel_indexac >= 149)
-						{
-							channel_indexacnew = channel_indexac - 1;
-							channel_indexacnew = channel_indexacnew / 4;
-							channel_indexacnew = channel_indexacnew - 32;
-						}
-						else
-						{
-							channel_indexacnew = 0;
-						}
-					}
-					else if (countrycode == 'CN')
-					{
-						if (channel_indexac >= 149)
-						{
-							channel_indexacnew = channel_indexac - 1;
-							channel_indexacnew = channel_indexacnew / 4;
-							channel_indexacnew = channel_indexacnew - 36;
-						}
-						else
-						{
-							channel_indexacnew = 0;
-						}
-					}
-					else
-					{
-						channel_indexacnew = 0;
-					}
 
 					if (channel_indexac > 0)
-						form.sz11aChannel.options.selectedIndex = channel_indexacnew;
+						form.sz11aChannel.options.selectedIndex = calculate_ac_channel(countrycode, channel_indexac);
 					else
 						form.sz11aChannel.options.selectedIndex = channel_indexac;
 				}
 
-				// add subchannel
-				insertExtChannelOption(form);
-
 				if (mbssid == "1")
 				{
-					showElementEx("div_mbssidapisolated", style_display_on());
-					form.mbssidapisolated.disabled = false;
 					form.mbssidapisolated.options.selectedIndex = (mbssidapisolated == "1") ? 1 : 0;
 				}
-
-				show_abg_rate(form);
 
 				if (ht_mode == "1")
 					form.n_mode.options.selectedIndex = 1;
@@ -996,51 +1085,36 @@
 					form.tx_stream.options[3] = new Option("4", "4");
 				}
 
-				var txpath = NVRAM_TXPath;
-				var rxpath = NVRAM_RXPath;
-				if (txpath == "1")
+				if (NVRAM_TXPath == "1")
 				{
-					hideElement("basicHTTx2Stream");
 					tx_stream_idx = 1;
-				} else
-					showElementEx("basicHTTx2Stream", style_display_on());
+				}
 
-				if (rxpath == "1")
+				if (NVRAM_RXPath == "1")
 				{
-					hideElement("div_HtRx2Stream");
 					rx_stream_idx = 1;
-				} else {
-					showElementEx("div_HtRx2Stream", style_display_on());
 				}
 
 				form.rx_stream.options.selectedIndex = rx_stream_idx - 1;
 				form.tx_stream.options.selectedIndex = tx_stream_idx - 1;
 
 				form.ac_gi.options.selectedIndex = (vht_gi ==  "0") ? 0 : 1;
-
 				form.ac_stbc.options.selectedIndex = (vht_stbc ==  "0") ? 0 : 1;
-
 				form.ac_ldpc.options.selectedIndex = (vht_ldpc ==  "0") ? 0 : 1;
 
 				form.ac_bw.options.selectedIndex = vht_bw;
 				form.ac_bwsig.options.selectedIndex = vht_bwsig;
 
-				hideElement("div_auto_a");
-				hideElement("div_auto_g");
 				AutoChannelSelect(form);
 				form.BandSteering.options.selectedIndex = NVRAM_BandSteering;
-				bandSteeringChange(form);
 				form.FastRoaming.options.selectedIndex = NVRAM_FastRoaming;
-				fastRoamingChange(form);
 				form.IdsEnable.options.selectedIndex = NVRAM_IdsEnable;
-				idsChange(form);
 
 				if (txbf_built == '1') {
 					form.ITxBfEn.options.selectedIndex = NVRAM_ITxBfEn;
 					form.ETxBfeeEn.options.selectedIndex = NVRAM_ETxBfeeEn;
 					form.ETxBfEnCond.options.selectedIndex = NVRAM_ETxBfEnCond;
 				}
-				displayElement( 'div_txbf', txbf_built == '1');
 
 				var rrm = NVRAM_RRMEnable;
 				var ft = NVRAM_FtSupport;
@@ -1049,13 +1123,8 @@
 				form.RRMEnable.options.selectedIndex = 1*rrmArray[0];
 				form.FtSupport.options.selectedIndex = 1*ftArray[0];
 
-				regulatoryClassSet();
-
 				var LanWifiIsolate = NVRAM_LanWifiIsolate;
 				form.LanWifiIsolate.options.selectedIndex = 1*LanWifiIsolate;
-				displayElement( 'div_LanWifiIsolate', NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1' && form.mbssidapisolated.options.selectedIndex == 1);
-
-				wirelessOnChange(form);
 
 				var datarateArray;
 				var AckPolicyArray = ackpolicy.split(";");
@@ -1070,18 +1139,13 @@
 				McastSwitch(form);
 
 				//multicase to unicast converter
-				displayElement('div_m2u', m2uBuilt == '1');
 				form.m2u_enable.options.selectedIndex = (m2uEnabled == '1') ? 1 : 0;
-				displayElement('video_turbine_row', (m2uBuilt == '1') && (video_turbine_built == '1'));
 				form.video_turbine.options.selectedIndex = (video_turbine == '1') ? 1 : 0;
 				form.WmmCapable.options.selectedIndex = (wmmCapable == '1') ? 1 : 0;
 
-				displayElement('advDynVGA_tr', true);
 				form.dyn_vga.options.selectedIndex = (dyn_vga == '1') ? 1 : 0;
 
-				displayElement('advDynVGALong_tr', clamp == '1');
 				form.advDynVGALong.options.selectedIndex = (advDynVGALong == '1') ? 1 : 0;
-				displayElement('advDynVGAClamp_tr', clamp == '1' && is5gh_1t1r == '0');
 				form.advDynVGAClamp.options.selectedIndex = 1*advDynVGAClamp;
 
 				if (isNaN(maxstanum) || maxstanum < 1 || maxstanum > MAX_STA_NUM)
@@ -1102,12 +1166,6 @@
 				form.AckPolicy.options.selectedIndex = 1*AckPolicyArray[0];
 
 				form.ED_MODE.options.selectedIndex = (ED_MODE == '1') ? 1 : 0;
-				displayElement('advEDMODE_tr', EDCCABuilt == "1");
-
-				// Hide 'SCAN' buttons if IE8 (no SVG support)
-				var browser = getBrowser();
-				if (browser.browser == 'ie' && browser.versionShort <= 8)
-					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanINIC'], false);
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
 
@@ -1117,21 +1175,20 @@
 					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
 
 				initTranslation();
-				showHTPhysModeMenu();
-				showVHTPhysModeMenu();
-				showAdvWirelessMenu();
-				showRoamingMenu();
 				showWarning();
-				disableControlsByAuth();
+
+				// Minimize all menus
+				var menus = document.getElementsByClassName('showHideMenu');
+				for (var i=0;i<menus.length;i++) {
+					showMenu(menus[i],0);
+				}
+
+				updateVisibility(form);
 			}
 
 			function show_abg_rate(form)
 			{
 				var wmode = form.wirelessmode.value;
-				var wmode_ac = form.wirelessmodeac.value;
-
-				displayElement("div_abg_rate", (wmode < 5) && (BUILD_5GHZ_SUPPORT && wmode_ac < 5));
-				enableElements(form.abg_rate, wmode < 5 && (BUILD_5GHZ_SUPPORT && wmode_ac < 5));
 
 				//ABG Rate
 				if ((wmode == "0") || (wmode == "2") || (wmode == "4"))
@@ -1214,168 +1271,6 @@
 				}
 			}
 
-			function wirelessModeChange(form)
-			{
-				hideElement("div_11a_channel");
-				hideElement("div_11g_channel");
-				hideElement("basicHTTxStream_tr");
-				hideElement("basicHTRxStream_tr");
-				hideElement("div_abg_rate");
-				hideElement("div_all");
-				hideElement("div_11n");
-				hideElement("basicVHT");
-				hideElement("basicWirelessEnabledAc");
-				show14channel(true);
-
-				form.sz11aChannel.disabled = true;
-				form.sz11gChannel.disabled = true;
-				form.abg_rate.disabled = true;
-				form.n_mode.disabled = true;
-				form.n_bandwidth.disabled = true;
-				form.n_rdg.disabled = true;
-				form.n_gi.disabled = true;
-				form.n_stbc.disabled = true;
-				form.n_mcs.disabled = true;
-
-				form.ac_gi.disabled = true;
-				form.ac_stbc.disabled = true;
-				form.ac_ldpc.disabled = true;
-
-				// Hide & disable elements
-				var wmode = form.wirelessmode.value;
-				var wmodeac = form.wirelessmodeac.value;
-
-				// Display basic
-				showElement("div_all");
-				form.sz11gChannel.disabled = false;
-				showElementEx("div_11g_channel", style_display_on());
-
-				insertExtChannelOption(form);
-				GExtChannelDisplay(form);
-
-					// Display HT modes
-				if ((wmode*1) >= 5)
-				{
-					showElement("div_11n");
-					displayElement('basicHTOPMode', true);
-
-					form.n_mode.disabled = false;
-					form.n_bandwidth.disabled = false;
-					form.n_rdg.disabled = false;
-					form.n_gi.disabled = false;
-					form.n_stbc.disabled = false;
-					form.n_mcs.disabled = false;
-
-					if (statusHTPysModeMenu == 1) {
-						showElementEx("basicHTTxStream_tr", style_display_on());
-						showElementEx("basicHTRxStream_tr", style_display_on());
-					}
-					show14channel(false);
-				}
-
-				if (BUILD_5GHZ_SUPPORT)
-				{
-					form.sz11aChannel.disabled = false;
-					showElementEx("div_11a_channel", style_display_on());
-					showElementEx("basicWirelessEnabledAc", style_display_on());
-
-					// Display VHT modes
-					if ((1*wmodeac) >= 14)
-					{
-						showElement("basicVHT");
-						if (is5gh_1t1r == 1)
-							hideElement("basicVHTLDCP_tr");
-						form.ac_gi.disabled = false;
-						form.ac_stbc.disabled = false;
-						form.ac_ldpc.disabled = false;
-					}
-				}
-				wirelessOnChange(form);
-				bandSteeringChange(form);
-				fastRoamingChange(form);
-				show_abg_rate(form);
-			}
-
-			function wirelessOnChange(form)
-			{
-				var enableWirelessAc	= form.radioWirelessEnabledAc.value;
-				var enableWireless		= form.radioWirelessEnabled.value;
-
-				var wmode = form.wirelessmode.value;
-				var wmodeac = form.wirelessmodeac.value;
-
-				displayElement( 'div_dot11h', dfs_built && (enableWirelessAc == "1"));
-				displayElement( [ 'div_11a_name', 'div_11a_basic', 'div_11a_channel', 'div_txpw_ac' ], enableWirelessAc == "1");
-				displayElement( [ 'div_11n', 'advWirelessT', 'div_11g_name', 'div_11g_basic', 'div_11g_channel', 'div_txpw' ], enableWireless == "1");
-				displayElement( [ 'div_11g_name', 'div_11n', 'advWirelessT' ], enableWireless == "1" || (BUILD_5GHZ_SUPPORT && enableWirelessAc == "1"));
-
-				displayElement('basicMbssidModeT', (enableWireless == 1 || enableWirelessAc == 1) && BUILD_5GHZ_SUPPORT);
-				if (enableWireless == 0 && enableWirelessAc == 0) {
-					hideElement('div_all');
-					hideElement('div_11n');
-					hideElement('basicVHT');
-					hideElement('advWirelessT');
-					hideElement('div_roaming');
-					hideElement('div_txbf');
-					hideElement('div_bandsteering');
-					hideElement('div_ids');
-					hideElement('div_m2u');
-					hideElement('advSynVGA_table');
-				} 
-				else {
-					showElement('div_all');
-					if (enableWireless == 1) {
-						showElement('div_11n');
-						showElement('advWirelessT');
-					}
-
-					if (BUILD_5GHZ_SUPPORT && enableWirelessAc == 1) {
-						if ((1*wmodeac) >= 14)
-						{
-							showElement("basicVHT");
-							if (is5gh_1t1r == 1)
-								hideElement("basicVHTLDCP_tr");
-						}
-					}
-
-					showElement('div_roaming');
-					displayElement( 'div_txbf', txbf_built == '1');
-					if ((enableWireless == 0 || enableWirelessAc == 0) || bandsteeringBuilt == '0') {
-						hideElement('div_bandsteering');
-						form.BandSteering.selectedIndex = 0;
-					}
-					else
-						bandSteeringChange(form);
-
-					displayElement('div_ids', ids_built);
-					displayElement('div_m2u', m2uBuilt == '1');
-					showElement('advSynVGA_table');	
-				}
-				if (!BUILD_5GHZ_SUPPORT) {
-					hideElement('wireless_5');
-					hideElement('basicVHT');
-				}
-				
-				form.mbssid_mode.disabled = !((enableWireless == 1) && (enableWirelessAc == 1));
-
-				if (enableWireless == 0) {
-					form.mbssid_mode.value = "rai";
-				}
-				if (enableWirelessAc == 0) {
-					form.mbssid_mode.value = "ra";
-				}
-				if (enableWireless == 1)
-					document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
-				else
-					document.getElementById('wlan_channel_span').innerHTML = '';
-				if (enableWirelessAc == 1 && BUILD_5GHZ_SUPPORT)
-					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
-				else
-					document.getElementById('wlan_ac_channel_span').innerHTML = '';
-
-				disableControlsByAuth();
-			}
-
 			function CheckValue(form)
 			{
 				if (form.mssid_1.value == "" &&  form.radioWirelessEnabled.value == 1)
@@ -1394,9 +1289,23 @@
 					return false;
 				}
 
+				// multiple ssids
+				for (var i=2;i<=form.bssid_num.value;i++)
+				{
+					var elem = form.elements["mssid_"+i];
+					// if empty and visible on page
+					if (elem.value == "" && elem.offsetParent != null)
+					{
+						alert(_("adv no mssid_1"));
+						elem.focus();
+						elem.select();
+						return false;
+					}
+				}
+
 				if (isNaN(form.beacon.value) || form.beacon.value < 20 || form.beacon.value > 999)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid beacon"));
 					form.beacon.focus();
 					form.beacon.select();
@@ -1405,7 +1314,7 @@
 
 				if ((isNaN(form.beaconINIC.value) || form.beaconINIC.value < 20 || form.beaconINIC.value > 999) && BUILD_5GHZ_SUPPORT)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid beacon"));
 					form.beaconINIC.focus();
 					form.beaconINIC.select();
@@ -1414,7 +1323,7 @@
 
 				if (isNaN(form.dtim.value) || form.dtim.value < 1 || form.dtim.value > 255)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid dtim"));
 					form.dtim.focus();
 					form.dtim.select();
@@ -1423,7 +1332,7 @@
 
 				if (isNaN(form.fragment.value) || form.fragment.value < 1 || form.fragment.value > 2346)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid frag len"));
 					form.fragment.focus();
 					form.fragment.select();
@@ -1432,7 +1341,7 @@
 
 				if (isNaN(form.rts.value) || form.rts.value < 1 || form.rts.value > 2347)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid rts"));
 					form.rts.focus();
 					form.rts.select();
@@ -1441,7 +1350,7 @@
 
 				if (isNaN(form.maxstanum.value) || form.maxstanum.value < 1 || form.maxstanum.value > MAX_STA_NUM)
 				{
-					if (statusRoamingMenu == 0) showRoamingMenu();
+					showMenu('div_roaming', 1);
 					alert(_("adv invalid max sta num"));
 					form.maxstanum.focus();
 					form.maxstanum.select();
@@ -1450,10 +1359,10 @@
 
 				if (isNaN(form.KickStaRssiLowFT.value) || form.KickStaRssiLowFT.value < -100 || form.KickStaRssiLowFT.value > 0)
 				{
-					if (statusRoamingMenu == 0) showRoamingMenu();
+					showMenu('div_roaming', 1);
 					if (form.FastRoaming.options.selectedIndex == 0) {
 						form.FastRoaming.options.selectedIndex = 1;
-						fastRoamingChange(document.wireless_basic);
+						updateVisibility(document.wireless_basic);
 					}
 					alert(_("raoming invalid number"));
 					form.KickStaRssiLowFT.focus();
@@ -1463,10 +1372,10 @@
 
 				if (isNaN(form.TmpBlockAfterKick.value) || form.TmpBlockAfterKick.value < 0 || form.TmpBlockAfterKick.value > 200)
 				{
-					if (statusRoamingMenu == 0) showRoamingMenu();
+					showMenu('div_roaming', 1);
 					if (form.FastRoaming.options.selectedIndex == 0) {
 						form.FastRoaming.options.selectedIndex = 1;
-						fastRoamingChange(document.wireless_basic);
+						updateVisibility(document.wireless_basic);
 					}
 					alert(_("adv invalid tmpblockafterkick"));
 					form.TmpBlockAfterKick.focus();
@@ -1476,7 +1385,7 @@
 
 				if (isNaN(form.keepalive.value) || form.keepalive.value < 10 || form.keepalive.value > 300)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid keepalive"));
 					form.keepalive.focus();
 					form.keepalive.select();
@@ -1485,7 +1394,7 @@
 
 				if (isNaN(form.idletimeout.value) || form.idletimeout.value < 60 || form.idletimeout.value > 600)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid idletimeout"));
 					form.idletimeout.focus();
 					form.idletimeout.select();
@@ -1494,7 +1403,7 @@
 
 				if (isNaN(form.EntryLifeCheck.value) || form.EntryLifeCheck.value < 256 || form.EntryLifeCheck.value > 4096)
 				{
-					if (statusAdvWirelessMenu == 0) showAdvWirelessMenu();
+					showMenu('advWirelessT', 1);
 					alert(_("adv invalid entrylifecheck"));
 					form.EntryLifeCheck.focus();
 					form.EntryLifeCheck.select();
@@ -1603,6 +1512,7 @@
 
 				form.mbssid_mode.disabled = false;
 
+				// concatenate ssid values before send
 				form.isolated_ssids.value = "";
 				for (var i = 0; i < form.isolated_ssid.length; i++) {
 				    if (form.isolated_ssid[i].checked) {
@@ -1626,11 +1536,6 @@
 				        form.hidden_ssids.value += form.hssid[i].value;
 				    }
 				}
-
-
-
-
-
 
 				if (form.country_code.value == 'RU') {
 					var rcINIC = [];
@@ -1663,9 +1568,6 @@
 				}
 			}
 			
-			function rrmEnableChange() {
-				displayElement('basicRRMclassINIC_tr', BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1');
-			}
 
 			function countryCodeChange() {
 				if (document.wireless_basic.country_code.value == 'RU' && NVRAM_RegulatoryClassINIC == '0') {
@@ -1674,74 +1576,54 @@
 					document.getElementById('RCINIC_3').checked = true;
 					document.getElementById('RCINIC_4').checked = true;
 				}
-				displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU' && statusRoamingMenu == 1);
 			}
 
-			function showHTPhysModeMenu(){
-				var HTPhysModeElement = [ 'basicHTChannelBW_tr', 'basicHTChannelBWINIC_tr', 'extension_channel', 'basicHTTxStream_tr', 'basicHTRxStream_tr', 'basicHTMCS_tr', 'basicHTGI_tr',
-							  'basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ];
-				if (statusHTPysModeMenu == 0) {
-					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic ht phy mode"));
-					statusHTPysModeMenu = 1;
-					displayElement(HTPhysModeElement, 1);
-					displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && document.getElementById('wirelessmode').value >= 5 && document.getElementById('n_bandwidth').value == 1 );
-					displayElement('basicHTChannelBWINIC_tr', BUILD_5GHZ_SUPPORT);
-				} else {
-					ajaxModifyElementHTML('basicHTPhyMode', '<img id="basicHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic ht phy mode"));
-					statusHTPysModeMenu = 0;
-					displayElement(HTPhysModeElement, 0);
+			function showMenu(elem, show){
+				if (typeof elem == "string" && document.getElementById(elem) !== undefined) elem = document.getElementById(elem);
+				if (elem.tagName == "THEAD" || elem.tagName == "TBODY") elem = elem.parentNode;
+				if (elem.tagName != "TABLE") return false;
+
+				var table_head = elem.tHead;
+				var table_body = elem.tBodies[0];
+
+				if (table_head === undefined || table_body === undefined) return false;
+
+				if (show === undefined || show != 0)
+				{
+					table_body.style.removeProperty('display');
+					elem.setAttribute('minimized', '0');
 				}
+				else
+				{
+					table_body.style.display = "none";
+					elem.setAttribute('minimized', '1');
+				}
+
+				return true;
 			}
 
-			function showVHTPhysModeMenu(){
-				var VHTPhysModeElement = [ 'basicVHTBW_tr', 'basicVHTBWSIGNAL_tr', 'basicVHTGI_tr', 'basicVHTSTBC_tr', 'basicVHTLDCP_tr' ];
-				if (statusVHTPysModeMenu == 0) {
-					ajaxModifyElementHTML('basicVHTPhyMode', '<img id="basicVHTPhyModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic vht phy mode"));
-					statusVHTPysModeMenu = 1;
-					displayElement(VHTPhysModeElement, 1);
-					displayElement('basicVHTLDCP_tr', BUILD_LDPC_SUPPORT == '1');
-					displayElement('basicVHTSTBC_tr', BUILD_VHT_STBC_SUPPORT == '1');
-				} else {
-					ajaxModifyElementHTML('basicVHTPhyMode', '<img id="basicVHTPhyModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic vht phy mode"));
-					statusVHTPysModeMenu = 0;
-					displayElement(VHTPhysModeElement, 0);
+			function switchShowMenu(elem){
+				if (typeof elem == "string" && document.getElementById(elem) !== undefined) elem = document.getElementById(elem);
+				if (elem.tagName == "THEAD" || elem.tagName == "TBODY") elem = elem.parentNode;
+				if (elem.tagName != "TABLE") return false;
+
+				var table_head = elem.tHead;
+				var table_body = elem.tBodies[0];
+
+				if (table_head === undefined || table_body === undefined) return false;
+
+				if (table_body.style.display == "none")
+				{
+					showMenu(elem, 1);
 				}
+				else
+				{
+					showMenu(elem, 0);
+				}
+
+				return true;
 			}
 
-			function showAdvWirelessMenu(){
-				var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
-							   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
-							   'advEDMODE_tr', 'advStaRegion_tr' ];
-				if (statusAdvWirelessMenu == 0) {
-					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("adv wireless"));
-					statusAdvWirelessMenu = 1;
-					displayElement(AdvWirelessElement, 1);
-					displayElement('advEDMODE_tr', EDCCABuilt == "1");
-				} else {
-					ajaxModifyElementHTML('advWireless', '<img id="advWirelessModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("adv wireless"));
-					statusAdvWirelessMenu = 0;
-					displayElement(AdvWirelessElement, 0);
-				}
-			}
-
-			function showRoamingMenu(){
-				var RoamingElement = [ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'];
-				if (statusRoamingMenu == 0) {
-					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_minus.gif" width=25 height=11>' + _("basic roaming"));
-					statusRoamingMenu = 1;
-					displayElement(RoamingElement, 1);
-					displayElement([ 'basicRRMEnable_tr' ], rrm_built);
-					displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
-					displayElement([ basicFtSupport_tr, "basicKickStaRssiLowFT_tr"], ft_built);
-					displayElement('advBeaconIntervalINIC_tr', BUILD_5GHZ_SUPPORT)
-					fastRoamingChange(document.wireless_basic);
-				} else {
-					ajaxModifyElementHTML('fast_roaming', '<img id="roamingModeImg" src="/graphics/menu_plus.gif" width=25 height=11>' + _("basic roaming"));
-					statusRoamingMenu = 0;
-					displayElement(RoamingElement, 0);
-					displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr", "basicKickStaRssiLowFT_tr"], false);
-				}
-			}
 		</script>
 	</head>
 
@@ -1761,13 +1643,15 @@
 	<table id="wireless_24" class="form">
 		<col style="width: 225px" />
 		<col style="width: 515px" />
-		<tbody>
+		<thead>
 			<tr>
 				<td class="title" colspan="2" id="basicWirelessNet">Wireless Network</td>
 			</tr>
+		</thead>
+		<tbody>
 			<tr id="basicWirelessEnabled">
 				<td id="basicWireless" class="head" width="25%">Wireless</td>
-				<td width="165px"><select name="radioWirelessEnabled" class="normal" onChange="wirelessOnChange(this.form);">
+				<td><select name="radioWirelessEnabled" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disabled</option>
 					<option value="1" id="enable">Enabled</option>
 				</select>
@@ -1775,7 +1659,7 @@
 			</tr>
 			<tr id="div_11g_basic" name="div_11g_basic">
 				<td class="head" id="basicNetMode" colspan="1">Network Mode</td>
-				<td><select name="wirelessmode" id="wirelessmode" class="normal" onChange="wirelessModeChange(this.form);">
+				<td><select name="wirelessmode" id="wirelessmode" class="normal" onChange="updateVisibility(this.form);">
 				</select></td>
 			</tr>
 			<tr id="div_txpw" name="div_txpw">
@@ -1799,7 +1683,7 @@
 					<option value="2" id="basicAutoByRSSI">by RSSI</option>
 					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g">
 				</select>
-					<input id="scanapLegendButtonScan" type="button" class="short" value="Scan" onClick="scanAp('2.4');">
+					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" onClick="scanAp('2.4');">
 				</td>
 			</tr>
 			<tr id="scanAp" style="display: none;">
@@ -1821,13 +1705,15 @@
 	<table id="wireless_5" class="form">
 		<col style="width: 225px" />
 		<col style="width: 515px" />
-		<tbody>
+		<thead>
 			<tr>
-				<td class="title" colspan="2" id="basicWirelessNetAc">Wireless Network</td>
+				<td class="title" colspan="2" id="basicWirelessNetAc">Wireless Network 5GHz</td>
 			</tr>
+		</thead>
+		<tbody>
 			<tr id="basicWirelessEnabledAc">
 				<td class="head" id="basicWirelessAC">Wireless (5GHz)</td>
-				<td><select name="radioWirelessEnabledAc" class="normal" onChange="wirelessOnChange(this.form);">
+				<td><select name="radioWirelessEnabledAc" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disabled</option>
 					<option value="1" id="enable">Enabled</option>
 				</select>
@@ -1835,7 +1721,7 @@
 			</tr>
 			<tr id="div_11a_basic" name="div_11a_basic">
 				<td id="basicAcNetMode" class="head">Network Mode (5GHz)</td>
-				<td><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="wirelessModeChange(this.form);">
+				<td><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="updateVisibility(this.form);">
 				</select></td>
 			 </tr>
 			<tr id="div_txpw_ac" name="div_txpw_ac">
@@ -1859,7 +1745,7 @@
 					<option value="2" id="basicAutoByRSSI">by RSSI</option>
 					</select>&nbsp;&nbsp;<select name="checktime_a" style="normal" id="checktime_a">
 				</select>
-					<input id="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" onClick="scanAp('5');">
+					<input id="scanapLegendButtonScanINIC" name="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" onClick="scanAp('5');">
 				</td>
 			</tr>
 			<tr id="scanApINIC" style="display: none;">
@@ -1968,7 +1854,7 @@
 			</tr>
 			<tr id="basicMbssidModeT">
 				<td class="head" id="basicMBSSIDMode" colspan="1">MBSSID Mode</td>
-				<td colspan="5"><select name="mbssid_mode" size="1" class="normal">
+				<td colspan="5"><select name="mbssid_mode" size="1" class="normal" onChange="updateVisibility(this.form);">
 					<option value="ra" selected>2.4GHz</option>
 					<option value="rai">5GHz</option>
 					<option value="all" id="mbssid_mode_all">All</option>
@@ -1976,7 +1862,7 @@
 			</tr>		
 			<tr id="div_mbssidapisolated">
 				<td class="head" colspan="1" id="basicMBSSIDApIsolated">SSID to SSID Isolation</td>
-				<td colspan="5"><select name="mbssidapisolated" class="normal" onChange="displayElement( 'div_LanWifiIsolate', NVRAM_OperationMode != '0' && NVRAM_ApCliBridgeOnly != '1' && this.form.mbssidapisolated.options.selectedIndex == 1);">
+				<td colspan="5"><select name="mbssidapisolated" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select></td>
@@ -2002,10 +1888,13 @@
 			</tr>
 		</tbody>
 	</table>
-	<table id="div_11n" name="div_11n" class="form auth-hide-user">
+	<table id="div_11n" name="div_11n" class="form showHideMenu auth-hide-user">
+	<thead onclick="switchShowMenu(this);">
 		<tr>
-			<td id="basicHTPhyMode" class="title" colspan="2" OnClick="showHTPhysModeMenu();">HT Physical Mode</td>
+			<td id="basicHTPhyMode" class="title" colspan="2">HT Physical Mode</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="basicHTChannelBW_tr">
 			<td id="basicHTChannelBW_td_1" class="head" width="50%">Channel BandWidth</td>
 			<td id="basicHTChannelBW_td_1" width="50%"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
@@ -2112,11 +2001,15 @@
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
+	</tbody>
 	</table>
-	<table id="basicVHT" name="basicVHT" class="form auth-hide-user" style="display:none;">
+	<table id="basicVHT" name="basicVHT" class="form showHideMenu auth-hide-user" style="display:none;">
+	<thead onclick="switchShowMenu(this);">
 		<tr>
-			<td id="basicVHTPhyMode" class="title" colspan="2" OnClick="showVHTPhysModeMenu();">VHT Physical Mode</td>
+			<td id="basicVHTPhyMode" class="title" colspan="2">VHT Physical Mode</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="basicVHTBW_tr" >
 			<td id="basicVHTBandWidth_td_1" class="head" width="50%">Channel BandWidth</td>
 			<td id="basicVHTBandWidth_td_1" width="50%"><select name="ac_bw" size="1" class="normal">
@@ -2153,11 +2046,15 @@
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
-	</table>	
-	<table id="advWirelessT" class="form auth-hide-user">
+	</tbody>
+	</table>
+	<table id="advWirelessT" class="form showHideMenu auth-hide-user">
+	<thead onclick="switchShowMenu(this);">
 		<tr>
-			<td id="advWireless" class="title" colspan="2" OnClick="showAdvWirelessMenu();">Advanced Wireless</td>
+			<td id="advWireless" class="title" colspan="2">Advanced Wireless</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="advBGProtect_tr">
 			<td id="advBGProtect_td_1" class="head" width="50%">BG Protection Mode</td>
 			<td id="advBGProtect_td_2" width="50%"><select id="bg_protection" name="bg_protection" size="1" class="normal">
@@ -2259,14 +2156,18 @@
 				<select name="country_code" class="normal" onChange="countryCodeChange();"><% listCountryCodes(); %>
 			</select></td>
 		</tr>
+	</tbody>
 	</table>
-	<table id="div_roaming" name="div_roaming" class="form auth-hide-user">
+	<table id="div_roaming" name="div_roaming" class="form showHideMenu auth-hide-user">
+	<thead onclick="switchShowMenu(this);">
 		<tr id="fast_roaming_tr">
-			<td id="fast_roaming" class="title" colspan="2" OnClick="showRoamingMenu();">Fast roaming</td>
+			<td id="fast_roaming" class="title" colspan="2">Fast roaming</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="fastRoaming_tr">
 			<td id="fastRoaming_td_1" class="head" width="50%">Handover settings</td>
-			<td id="fastRoaming_td_1" width="50%"><select name="FastRoaming" class="normal" onChange="fastRoamingChange(this.form);">
+			<td id="fastRoaming_td_1" width="50%"><select name="FastRoaming" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select>
@@ -2329,7 +2230,7 @@
 		<tr id="basicRRMEnable_tr">
 			<td id="basicRRMEnable_td_1" class="head" width="50%">RRMEnable</td>
 			<td id="basicRRMEnable_td_2" width="50%">
-				<select name="RRMEnable" class="normal" onChange="rrmEnableChange();">
+				<select name="RRMEnable" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select>
@@ -2377,16 +2278,20 @@
 			<td id="advBeaconIntervalINIC_td_2" width="50%"><input type="text" name="beaconINIC" class="normal" maxlength="3">
 				<font color="#808080" id="advBeaconIntervalINICRange">(range 20 - 999)</font></td>
 		</tr>
+	</tbody>
 	</table>
 	<table id="div_txbf" name="div_txbf" class="form auth-hide-user" style="display:none;">
+	<thead>
 		<tr>
 			<td class="title" id="basicTxBf" width="50%" >Beamforming</td>
 			<td class="title" size="1"  width="50%" style="text-align:right">
-				<select name="ITxBfEn" class="half" onChange="beamformingChange(this.form);">
+				<select name="ITxBfEn" class="half" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="div_ETxBfeeEn" style="display:none;">
 			<td class="head" id="basicETxBfeeEn" width="50%">BFee feature</td>
 			<td width="50%"><select name="ETxBfeeEn" class="normal">
@@ -2401,8 +2306,10 @@
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
+	</tbody>
 	</table>
 	<table id="div_bandsteering" name="div_bandsteering" class="form auth-hide-user" style="display:none;">
+	<thead>
 		<tr id="row_BndStrg">
 			<td class="title" id="band_steering" width="50%">Band steering</td>
 			<td class="title" width="50%" style="text-align:right">
@@ -2413,6 +2320,8 @@
 				</select>
 			</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
 			<td class="head" id="basicBndStrgRssiDiff" width="50%">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
 			<td width="50%"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2">&nbsp;<span id="basicBndStrgRssiDiff_default" style="color: #808080">0 - 40 db, default 15</span></td>
@@ -2433,17 +2342,21 @@
 			<td class="head" id="basicBndStrgCheckTime" width="50%">Time for deciding if a client is 2.4G only</td>
 			<td width="50%"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">&nbsp;<span id="basicBndStrgCheckTime_default" style="color: #808080">ms, default 5000</span></td>
 		</tr>
+	</tbody>
 	</table>
 	<table id="div_ids" name="div_ids" class="form auth-hide-user" style="display:none;">
+	<thead>
 		<tr>
 			<td class="title" id="basicIDS" width="50%">Intrusion Detection settings</td>
 			<td class="title" width="50%" style="text-align:right">
-				<select name="IdsEnable" size="1" class="half" onChange="idsChange(this.form);">
+				<select name="IdsEnable" size="1" class="half" onChange="updateVisibility(this.form);">
 					<option value="0" id="disable">Disable</option>
 					<option value="1" id="enable">Enable</option>
 				</select>
 			</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="row_AuthFloodThreshold" style="display:none;">
 			<td class="head" id="basicAuthFloodThreshold" width="50%">Authentication</td>
 			<td width="50%"><input type="text" name="AuthFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicAuthFloodThreshold_default" style="color: #808080">default 64</span></td>
@@ -2472,11 +2385,15 @@
 			<td class="head" id="basicEapReqFloodThreshold" width="50%">EAP request</td>
 			<td width="50%"><input type="text" name="EapReqFloodThreshold" class="normal" maxlength="4">&nbsp;<span id="basicEapReqFloodThreshold_default" style="color: #808080">default 64</span></td>
 		</tr>
+	</tbody>
 	</table>
 	<table id="div_m2u" name="div_m2u" class="form auth-hide-user">
+	<thead>
 		<tr>
 			<td class="title" colspan="2" id="advMul2UniConver">Multicast-to-Unicast Converter</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr>
 			<td class="head"  width="50%" id="advMul2Uni">Multicast-to-Unicast</td>
 			<td width="50%"><select name="m2u_enable" size="1" class="normal">
@@ -2491,11 +2408,15 @@
 				<option value="1" id="enable">Enable</option>
 			</select></td>
 		</tr>
+	</tbody>
 	</table>
 	<table id="advSynVGA_table" class="form auth-hide-user">
+	<thead>
 		<tr id="advDynVGATitle_tr">
 			<td id="advDynVGATitle_td" class="title" colspan="2">PA/LNA control (WARNING!!! FOR EXPERTS ONLY!)</td>
 		</tr>
+	</thead>
+	<tbody>
 		<tr id="advDynVGA_tr">
 			<td id="advDynVGA_td_1" class="head" width="50%">Adaptive LNA Gain</td>
 			<td id="advDynVGA_td_2" width="50%"><select name="dyn_vga" size="1" class="normal">
@@ -2505,7 +2426,7 @@
 		</tr>
 		<tr id="advDynVGALong_tr">
 			<td id="advDynVGALong_td_1" class="head" width="50%">Skip auto gain for long distance clients</td>
-			<td id="advDynVGALong_td_2" width="50%"><select name="advDynVGALong"" size="1" class="normal">
+			<td id="advDynVGALong_td_2" width="50%"><select name="advDynVGALong" size="1" class="normal">
 				<option value="0" selected id="disable">Disable</option>
 				<option value="1" id="enable">Enable</option>
 			</select></td>
@@ -2520,6 +2441,7 @@
 				<option value="4">-16dB</option>
 			</select></td>
 		</tr>
+	</tbody>
 	</table>
 	<table class="buttons">
 		<tr align="center">
