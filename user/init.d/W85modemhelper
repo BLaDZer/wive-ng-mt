@@ -258,6 +258,12 @@ get_param() {
     eval `nvram_buf_get 2860 WMODEMPORT MODEMSPEED MODEMUSERNAME \
 	MODEMPASSWORD MODEMDIALNUMBER MODEMMTU MODEMAPN MODEMATENABLED MODEMAT1 MODEMAT2 MODEMAT3`
 
+    # check base needed parametrs
+    if [ "$MODEMTYPE" = "" ]; then
+	rm -f /tmp/modem_helper
+	exit 1
+    fi
+
     # need add auto detect logic
     if [ -e /dev/pcui ]; then
 	MNGMTPORT="/dev/pcui"
@@ -273,12 +279,6 @@ get_param() {
 	NCMIF=`tail -qn1 /tmp/ncm_port`
     fi
 
-    # check base needed parametrs
-    if [ "$MODEMTYPE" = "" ]; then
-	$LOG "Modemtype is not correct - exit."
-	rm -f /tmp/modem_helper
-	exit 1
-    fi
 
     if [ "$MODEMTYPE" = "0" ] && [ "$MODEMDIALNUMBER" = "" ]; then
 	 MODEMDIALNUMBER="*99#"
