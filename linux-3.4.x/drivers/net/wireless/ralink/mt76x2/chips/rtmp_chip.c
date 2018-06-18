@@ -378,22 +378,22 @@ INT WaitForAsicReady(RTMP_ADAPTER *pAd)
 	UINT32 mac_val = 0, reg = MAC_CSR0;
 	int idx = 0;
 
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))
+		return FALSE;
+
 	do
 	{
-		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))
-			return FALSE;
-		
 		RTMP_IO_READ32(pAd, reg, &mac_val);
 		if ((mac_val != 0x00) && (mac_val != 0xFFFFFFFF))
 			return TRUE;
 
-		RtmpOsMsDelay(10);
-	} while (idx++ < 500);
+		RtmpOsMsDelay(2);
+	} while (idx++ < 2000);
 
 	DBGPRINT(RT_DEBUG_ERROR,
 				("%s(0x%x):AsicNotReady!\n",
 				__FUNCTION__, mac_val));
-	
+
 	return FALSE;
 }
 

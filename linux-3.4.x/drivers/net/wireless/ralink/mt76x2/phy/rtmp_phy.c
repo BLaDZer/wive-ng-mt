@@ -501,7 +501,7 @@ static INT rtmp_bbp_set_bw(struct _RTMP_ADAPTER *pAd, UINT8 bw)
 		RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, Data);
 
 		/* Check MAC Tx/Rx idle */
-		for (MTxCycle = 0; MTxCycle < 20000; MTxCycle++)
+		for (MTxCycle = 0; MTxCycle < 10000; MTxCycle++)
 		{
 			RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &macStatus);
 			if (macStatus & 0x3)

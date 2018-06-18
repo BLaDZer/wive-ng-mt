@@ -4142,6 +4142,5 @@
 54) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
 55) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
 56) kernel: ralink_wifi: mt76x2: avoid BBP hung up.<br>
-57) kernel: ralink_wifi: mt76x2: refresh WDG timer before MAC ready init (sample - reboot microcode in 7620).<br>
 <br>
 <br>

@@ -683,7 +683,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	{
 		RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &MacValue);
 		if (MacValue & 0x1)
-			RtmpusecDelay(100);
+			RtmpusecDelay(50);
 		else
 			break;
 	}
@@ -697,7 +697,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	{
 		RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &MacValue);
 		if (MacValue & 0x2)
-			RtmpusecDelay(100);
+			RtmpusecDelay(50);
 		else
 			break;
 	} 
@@ -895,8 +895,6 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	RtmpusecDelay(1); /* wait 1 usec */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x00);
 
-	RtmpusecDelay(1000); /* wait ready */
-
       /* recover RF registers */
 	RFConfigRecover(pAd, RF_Store);
 
@@ -944,7 +942,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	{
 		RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &MacValue);
 		if (MacValue & 0x1)
-			RtmpusecDelay(100);
+			RtmpusecDelay(50);
 		else
 			break;
 	}
@@ -957,7 +955,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	{
 		RTMP_IO_READ32(pAd, MAC_STATUS_CFG, &MacValue);
 		if (MacValue & 0x2)
-			RtmpusecDelay(100);
+			RtmpusecDelay(50);
 		else
 			break;
 	}
@@ -997,8 +995,6 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	RTMP_IO_WRITE32(pAd, RF_BYPASS3	, 0x0000f1f1);
 #endif /* RT6352_EP_SUPPORT */
 	RTMP_IO_WRITE32(pAd, 0x13b8, 0x00000010);
-
-	RtmpusecDelay(1);
 
 	/* backup before RF registers before config */
 	for (chain_idx = 0; chain_idx < 2; chain_idx++)
@@ -1086,8 +1082,6 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 		count_step = 2;
 #endif /* RT6352_EP_SUPPORT */
 
-		RtmpusecDelay(1);
-
 		for(;VGA_gain[chain_idx] < 19; VGA_gain[chain_idx]=(VGA_gain[chain_idx]+ count_step)){
 			RFValue = RFVGA_gain_table[VGA_gain[chain_idx]];
 			RT635xWriteRFRegister(pAd, RF_BANK5, RF_R03, RFValue);
@@ -1140,8 +1134,6 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R24, 0x0);
 	RTMP_IO_WRITE32(pAd, RF_CONTROL0, 0x04);
 
-	RtmpusecDelay(1);
-
 	/* step 19: write back compensate value */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R158, 0x28);
 	BBPValue = gain_error_result[CHAIN_0] & 0x0f;
@@ -1166,15 +1158,11 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 #endif /* RT6352_EP_SUPPORT */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R244, 0x00);
 
-	RtmpusecDelay(1);
-
 	/* change BBP Tx to normal state */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R158, 0x00);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R159, 0x00);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R158, 0xb0);
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R159, 0x00);
-
-	RtmpusecDelay(1);
 
 	/* restore ADC clcok selection */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R30, BBPR30Value);
@@ -1187,9 +1175,8 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
 
 	/* BBP soft reset */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x01);
-	RtmpusecDelay(10); /* wait 10 usec */
+	RtmpusecDelay(1); /* wait 1 usec */
 	RTMP_BBP_IO_WRITE8_BY_REG_ID(pAd, BBP_R21, 0x00);
-	RtmpusecDelay(10);
 
       /* recover RF registers */
 	RFConfigRecover(pAd, RF_Store);
@@ -1199,7 +1186,7 @@ VOID LOFT_IQ_Calibration(RTMP_ADAPTER *pAd)
   	RTMP_IO_WRITE32(pAd, RF_CONTROL0, 0x0);
 	RTMP_IO_WRITE32(pAd, RTMP_RF_BYPASS0 , 0x0);
 	RTMP_IO_WRITE32(pAd, RF_CONTROL0, MacOrg2);
-	RtmpusecDelay(10);
+	RtmpusecDelay(1);
 	RTMP_IO_WRITE32(pAd, RTMP_RF_BYPASS0, MacOrg3);
 	RTMP_IO_WRITE32(pAd, RF_CONTROL3, MacOrg4);
 	RTMP_IO_WRITE32(pAd, RF_BYPASS3, MacOrg5);

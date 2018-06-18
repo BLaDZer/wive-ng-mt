@@ -3324,15 +3324,12 @@ INT rtmp_asic_top_init(RTMP_ADAPTER *pAd)
 #ifdef RTMP_MAC_PCI
 
 #if defined(RT65xx) || defined(MT7601)
-	if ((IS_RT65XX(pAd) || IS_MT7601(pAd)) && (!IS_RT6352(pAd)))
+	if (IS_RT65XX(pAd) || IS_MT7601(pAd))
 		mac_val = 0x0;
 	else
 #endif /* defined(RT65xx) || defined(MT7601) */
 		mac_val = 0x2;	/* To fix driver disable/enable hang issue when radio off*/
-
 	RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, mac_val);
-
-	RtmpOsMsDelay(100);
 #endif /* RTMP_MAC_PCI */
 
 	return TRUE;

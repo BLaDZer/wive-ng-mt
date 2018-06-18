@@ -102,46 +102,8 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 	if (!pAd)
 		return FALSE;
 
-	if (rtmp_asic_top_init(pAd) != TRUE)
-		goto err1;
-
-	DBGPRINT(RT_DEBUG_TRACE, ("MAC[Ver:Rev=0x%08x : 0x%08x]\n",
-				pAd->MACVersion, pAd->ChipID));
-
-	if (WaitForAsicReady(pAd) != TRUE)
-		goto err1;
-
-#ifdef RTMP_MAC_PCI
-	if (IS_RT6352(pAd)) {
-	    /* To fix driver disable/enable hang issue when radio off*/
-	    RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, 0x2);
-	    RtmpOsMsDelay(100);
-	}
-#endif /* RTMP_MAC_PCI */
-
-	RT28XXDMADisable(pAd);
-
-	if (mcu_sys_init(pAd) != TRUE)
-		goto err1;
-
-#ifdef RTMP_MAC_PCI
-	// TODO: shiang-usw, need to check this for RTMP_MAC
-	/* Disable interrupts here which is as soon as possible*/
-	/* This statement should never be true. We might consider to remove it later*/
-	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_ACTIVE))
-	{
-		RTMP_ASIC_INTERRUPT_DISABLE(pAd);
-	}
-#endif /* RTMP_MAC_PCI */
-
 	/* reset Adapter flags*/
 	RTMP_CLEAR_FLAGS(pAd);
-
-	if (MAX_LEN_OF_MAC_TABLE > MAX_AVAILABLE_CLIENT_WCID(pAd))
-	{
-		DBGPRINT(RT_DEBUG_ERROR, ("MAX_LEN_OF_MAC_TABLE can not be larger than MAX_AVAILABLE_CLIENT_WCID!!!!\n"));
-		goto err1;
-	}
 
 #ifdef CONFIG_AP_SUPPORT
 	/* Init BssTab & ChannelInfo tabbles for auto channel select.*/
@@ -161,6 +123,34 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 	if (ba_reordering_resource_init(pAd, MAX_REORDERING_MPDU_NUM) != TRUE)		
 		goto err1;
 #endif /* DOT11_N_SUPPORT */
+
+	if (rtmp_asic_top_init(pAd) != TRUE)
+		goto err1;
+
+	DBGPRINT(RT_DEBUG_TRACE, ("MAC[Ver:Rev=0x%08x : 0x%08x]\n",
+				pAd->MACVersion, pAd->ChipID));
+
+	RT28XXDMADisable(pAd);
+
+	if (mcu_sys_init(pAd) != TRUE)
+		goto err1;
+
+#ifdef RTMP_MAC_PCI
+	// TODO: shiang-usw, need to check this for RTMP_MAC
+	/* Disable interrupts here which is as soon as possible*/
+	/* This statement should never be true. We might consider to remove it later*/
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_ACTIVE))
+	{
+		RTMP_ASIC_INTERRUPT_DISABLE(pAd);
+	}
+#endif /* RTMP_MAC_PCI */
+
+	if (MAX_LEN_OF_MAC_TABLE > MAX_AVAILABLE_CLIENT_WCID(pAd))
+	{
+		DBGPRINT(RT_DEBUG_ERROR, ("MAX_LEN_OF_MAC_TABLE can not be larger than MAX_AVAILABLE_CLIENT_WCID!!!!\n"));
+		goto err1;
+	}
+
 
 #ifdef RESOURCE_PRE_ALLOC
 	Status = RTMPInitTxRxRingMemory(pAd);
@@ -1453,13 +1443,6 @@ VOID RTMPInfClose(VOID *pAdSrc)
 
 	}
 #endif /* CONFIG_STA_SUPPORT */
-#ifdef RTMP_MAC_PCI
-	if (IS_RT6352(pAd)) {
-	    /* To fix driver disable/enable hang issue when radio off*/
-	    RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, 0x2);
-	    RtmpOsMsDelay(100);
-	}
-#endif /* RTMP_MAC_PCI */
 }
 
 

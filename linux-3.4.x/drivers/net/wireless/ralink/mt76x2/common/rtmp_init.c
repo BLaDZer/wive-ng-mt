@@ -1423,10 +1423,8 @@ NDIS_STATUS	NICInitializeAsic(RTMP_ADAPTER *pAd, BOOLEAN bHardReset)
 	}
 	else
 #endif /* defined(MT76x0) || defined(MT76x2) || defined(MT7601) */
-
-	mac_val = 0x3;	/* To fix driver disable/enable hang issue when radio off*/
+		mac_val = 0x3;	/* To fix driver disable/enable hang issue when radio off*/
 	RTMP_IO_WRITE32(pAd, PWR_PIN_CFG, mac_val);
-	RtmpOsMsDelay(100);
 
 	if (bHardReset == TRUE)
 	{
