@@ -324,29 +324,10 @@ static VOID ApCliTrialConnectRetryTimeout(
 
 static VOID ApCliTrialConnectionBeaconControl(PRTMP_ADAPTER pAd,BOOLEAN	start) 
 {
-#ifdef MT7615//randy
-	struct wifi_dev *wdev;
-	INT IdBss;
-	INT MaxNumBss;
-	
-	MaxNumBss = pAd->ApCfg.BssidNum;
-	for(IdBss=0; IdBss < MaxNumBss; IdBss++)
-	{
-		wdev = &pAd->ApCfg.MBSSID[IdBss].wdev;
-		if (wdev->bss_info_argument.Active == TRUE) {
-			wdev->bcn_buf.bBcnSntReq = start;
-			UpdateBeaconHandler(
-				pAd,
-				wdev,
-				INTERFACE_STATE_CHANGE);
-		}
-	}
-#else
 	if (start)
 		AsicEnableBssSync(pAd, pAd->CommonCfg.BeaconPeriod);
 	else
 		AsicDisableSync(pAd);//disable beacon
-#endif
 	return;
 }
 

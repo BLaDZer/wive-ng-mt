@@ -177,6 +177,8 @@ INT Set_Dot11kRRM_Enable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		pAd->ApCfg.MBSSID[ifIndex].CapabilityInfo |= RRM_CAP_BIT;
 	else
 		pAd->ApCfg.MBSSID[ifIndex].CapabilityInfo &= ~RRM_CAP_BIT;
+
+	APUpdateCapabilityAndErpIe(pAd);
 	APMakeBssBeacon(pAd,ifIndex);
 	return 1;
 }
