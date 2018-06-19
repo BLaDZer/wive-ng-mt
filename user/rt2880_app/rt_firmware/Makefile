@@ -92,12 +92,21 @@ endif
 ###################################################################################################################################################
 # 7615 module
 ifdef CONFIG_RT_FIRST_IF_MT7615E
+ifdef CONFIG_MT7615_AP_DBDC_MODE
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615DN_internal_LNA_internal_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
+ifdef CONFIG_RT_SECOND_IF_MT7615E
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
+endif
+	$(ROMFSINST) -S	defaults/default-2t2r-dbdc-wan0							/etc/default/nvram_default
+else
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615N_external_LNA_external_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
 ifdef CONFIG_RT_SECOND_IF_MT7615E
 	$(ROMFSINST) -S eeproms-defaults/MT7615N_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
 endif
 	$(ROMFSINST) -S	defaults/default-4t4r-4t4r-wan0							/etc/default/nvram_default
+endif
 endif
 ###################################################################################################################################################
 # full backups dualband devices
