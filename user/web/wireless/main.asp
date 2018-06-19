@@ -123,7 +123,7 @@
 				var wmodeac = form.wirelessmodeac.value;
 
 				var vhtmode = enableWirelessAc && (1*wmodeac) >= 14;
-				var htmode = vhtmode || (enableWireless && (wmode*1) >= 5);
+				var htmode = vhtmode || (enableWireless && (wmode*1) >= 5) || (enableWirelessAc && (1*wmodeac) >= 8);
 
 				// Hide 'SCAN' buttons if IE8 (no SVG support)
 				var browser = getBrowser();
