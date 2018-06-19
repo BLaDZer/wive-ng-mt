@@ -280,6 +280,7 @@ make
 echo -----------------------------------PACK----------------------------------
 mv -f images/*.bin "images/$DEVNAME-$MODE.$VERSIONPKG.bin"
 links -dump History > "images/CHANGELOG.$VERSIONPKG.txt"
-zip -r images/$DEVNAME-$MODE.$VERSIONPKG.bin.zip images/*.bin images/*.txt
+cp -fv docs/UserManuals/WiveUserManual.pdf	 images/
+zip -r images/$DEVNAME-$MODE.$VERSIONPKG.bin.zip images/*.bin images/*.txt images/*.pdf
 
 echo ---------------------------------END BUILD-------------------------------
