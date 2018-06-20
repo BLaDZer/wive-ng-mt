@@ -8,9 +8,8 @@ fi
 LOG="logger -t hotplug"
 
 start() {
-    if [ ! -e /etc/mdev.conf ]; then
-	$LOG "Generate config file."
-	printf "
+    $LOG "Generate config file."
+    printf "
 	    # [-]devicename_regex <uid>:<gid> <octal permissions> [=path]|[>path]|[!] [<@|$|*><command>]
 	    # [-]\$ENVVAR=<regex> <uid>:<gid> <octal permissions> [=path]|[>path]|[!] [<@|$|*><command>]
 	    # [-]@maj,min[-min2] <uid>:<gid> <octal permissions> [=path]|[>path]|[!] [<@|$|*><command>]
@@ -22,48 +21,42 @@ start() {
 	    # @: Run after creating the device.
 	    # $: Run before removing the device.
 	    # *: Run both after creating and before removing the device.\n" > /etc/mdev.conf
-	if [ -e /etc/scripts/automount.sh ] && [ -e /bin/blkid ]; then
+    if [ -e /etc/scripts/automount.sh ] && [ -e /bin/blkid ]; then
 	    echo "sd[a-z][0-9]+ 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
-	    if [ -d /sys/bus/platform/drivers/mtk-sd ]; then
-		echo "mmcblk[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
-		echo "mmcblk[0-9]p[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
-	    fi
+	if [ -d /sys/bus/platform/drivers/mtk-sd ]; then
+	    echo "mmcblk[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
+	    echo "mmcblk[0-9]p[0-9] 0:0 0660 */etc/scripts/automount.sh" >> /etc/mdev.conf
 	fi
-	# support netlink
-	echo "-SUBSYSTEM=net;DEVPATH=.*/net/.*;.* 0:0 600 */etc/scripts/netlink.sh" >> /etc/mdev.conf
-	if [ -d /proc/bus/usb ]; then
-		echo "# usb device" >> /etc/mdev.conf
-		echo "usbdev([0-9]+).([0-9])    0:0     0660  =bus/usb/00%1/00%2" >> /etc/mdev.conf
-		echo "usbdev([0-9]+).([0-9]{2}) 0:0     0660  =bus/usb/00%1/0%2" >> /etc/mdev.conf
-		echo "usbdev([0-9]+).([0-9]{3}) 0:0     0660  =bus/usb/00%1/%2" >> /etc/mdev.conf
-	    if [ -e /etc/scripts/usbctrl.sh ] && [ -e /bin/usb_modeswitch ]; then
-		echo "1-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
-		echo "2-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
-	    fi
-	    if [ -e /etc/scripts/prnctrl.sh ] && [ -e /bin/p910nd ]; then
-		echo "lp[0-9]+ 0:0 0660 */etc/scripts/prnctrl.sh" >> /etc/mdev.conf
-	    fi
-	    if [ -e /etc/scripts/modem.sh ]; then
-		echo "ttyUSB[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
-		echo "ttyACM[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
-		echo "ttyHS[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
-	    fi
-	fi
-	# support module loading on hotplug
-	echo "\$MODALIAS=.* 0:0 660 @modprobe -b \"\$MODALIAS\"" >> /etc/mdev.conf
-	# Right now useful only for debuging.
-	#echo ".* 0:0 660 @/etc/scripts/hotplug.sh" >> /etc/mdev.conf
     fi
+    if [ -d /proc/bus/usb ]; then
+	    echo "# usb device" >> /etc/mdev.conf
+	    echo "usbdev([0-9]+).([0-9])    0:0     0660  =bus/usb/00%1/00%2" >> /etc/mdev.conf
+	    echo "usbdev([0-9]+).([0-9]{2}) 0:0     0660  =bus/usb/00%1/0%2" >> /etc/mdev.conf
+	    echo "usbdev([0-9]+).([0-9]{3}) 0:0     0660  =bus/usb/00%1/%2" >> /etc/mdev.conf
+	if [ -e /etc/scripts/netlink.sh ]; then
+	    echo "-SUBSYSTEM=net;DEVPATH=.*/net/.*;.* 0:0 600 */etc/scripts/netlink.sh" >> /etc/mdev.conf
+	fi
+	if [ -e /etc/scripts/usbctrl.sh ]; then
+	    echo "1-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
+	    echo "2-.*:1.* 0:0 0000 @/etc/scripts/usbctrl.sh" >> /etc/mdev.conf
+	fi
+	if [ -e /etc/scripts/prnctrl.sh ] && [ -e /bin/p910nd ]; then
+	    echo "usb/lp[0-9]+ 0:0 0660 */etc/scripts/prnctrl.sh" >> /etc/mdev.conf
+	fi
+	if [ -e /etc/scripts/modem.sh ]; then
+	    echo "ttyUSB[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
+	    echo "ttyACM[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
+	    echo "ttyHS[0-9]+ 0:0 0660 */etc/scripts/modem.sh" >> /etc/mdev.conf
+	fi
+    fi
+
+    # support module loading on hotplug
+    echo "\$MODALIAS=.* 0:0 660 @modprobe -b \"\$MODALIAS\"" >> /etc/mdev.conf
 
     $LOG "Set mdev as kernel hotplug helper and enable device autoprobe."
     echo "/bin/mdev" > /proc/sys/kernel/hotplug
     $LOG "Refresh dev nodes."
     mdev -s
-    # coldplug modules
-    #for modalias in `find /sys -name 'modalias' -type f -exec cat '{}' + | sort -u`; do
-    #	$LOG "Try load module for $modalias"
-    #	modprobe -abq $modalias
-    #done
 }
 
 rescan() {

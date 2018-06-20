@@ -112,11 +112,6 @@ case $TYPE in
     7/*)
 	$LOG "${ACTION} ${idVendor}:${idProduct} may be printer"
 	modload usblp
-	# Create dev node. Only one printer support. Fix me later.
-	if [ ! -f /dev/usb/lp0 ]; then
-	    $LOG "Create devs node... for ${idVendor}:${idProduct}"
-	    mknod /dev/usb/lp0 c 180 0
-	fi
 	;;
     8/*)
 	if [ -f "/usr/share/usb_modeswitch/${idVendor}:${idProduct}" ]; then

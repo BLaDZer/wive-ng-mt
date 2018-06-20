@@ -11,8 +11,6 @@
 . /etc/scripts/global.sh
 
 LOG="logger -t prnctrl"
-port=${MDEV##*lp}
-devs="/dev/usb/$MDEV"
 
 upload_firmware() {
     # For GDI printers put printers firmware
@@ -33,27 +31,23 @@ upload_firmware() {
     fi
 }
 
+eval `nvram_buf_get 2860 PrinterSrvEnabled PrinterSrvBidir`
+killall -q p910nd
+killall -q -SIGKILL p910nd
+
 if [ "$ACTION" = "add" ]; then
-    eval `nvram_buf_get 2860 PrinterSrvEnabled PrinterSrvBidir`
-    if [ "$PrinterSrvEnabled" = "1" ] && [ -z "`pidof p910nd`" ]; then
-	upload_firmware
-	$LOG "Start p910nd daemon on port 910${port}"
-	if [ "$PrinterSrvBidir" = "1" ]; then
-	    /bin/p910nd -b -f "$devs" "$port"
-	else
-	    /bin/p910nd -f "$devs" "$port"
+    if [ "$PrinterSrvEnabled" = "1" ]; then
+	# Create dev node. Only one printer support.
+	if [ ! -f /dev/usb/lp0 ]; then
+	    $LOG "Create devs node... for printer"
+	    mknod /dev/usb/lp0 c 180 0
 	fi
-    fi
-else
-    if [ ! -z "`pidof p910nd`" ]; then
-	$LOG "Stop p910nd daemon on port 910${port}"
-	killall -q p910nd
-	killall -q -SIGKILL p910nd
-	# svae mem in 16Mb devices
-	if [ -f /tmp/is_16ram_dev ]; then
-	    rmmod usblp > /dev/null 2>&1
+	upload_firmware
+	$LOG "Start p910nd daemon on port 9100"
+	if [ "$PrinterSrvBidir" = "1" ]; then
+	    /bin/p910nd -b -f /dev/usb/lp0 0
+	else
+	    /bin/p910nd -f /dev/usb/lp0 0
 	fi
     fi
 fi
-
-exit 0

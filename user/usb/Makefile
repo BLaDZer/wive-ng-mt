@@ -13,7 +13,6 @@ romfs:
 	$(ROMFSINST) -S prnctrl.sh /etc/scripts/prnctrl.sh
 	$(ROMFSINST) -S entware_install.sh /etc/scripts/entware_install.sh
 	$(ROMFSINST) -S netlink.sh /etc/scripts/netlink.sh
-	$(ROMFSINST) -S hotplug.sh /etc/scripts/hotplug.sh
 #create symlinks
 	$(ROMFSINST) -s /etc/scripts/automount.sh /bin/automount.sh
 	$(ROMFSINST) -s /etc/scripts/umount_all.sh /bin/umount_all.sh
@@ -22,7 +21,6 @@ romfs:
 	$(ROMFSINST) -s /etc/scripts/prnctrl.sh /bin/prnctrl.sh
 	$(ROMFSINST) -s /etc/scripts/entware_install.sh /bin/entware_install.sh
 	$(ROMFSINST) -s /etc/scripts/netlink.sh /bin/netlink.sh
-	$(ROMFSINST) -s /etc/scripts/hotplug.sh /bin/hotplug.sh
 ifdef CONFIG_USB_MODESWITCH
 	$(ROMFSINST) -S modems.conf /etc/modems.conf
 	$(ROMFSINST) -S ../init.d/W85modemhelper /etc/rc.d/W85modemhelper
