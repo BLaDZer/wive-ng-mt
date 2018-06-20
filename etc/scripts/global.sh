@@ -419,6 +419,22 @@ getMediaParts()
     fi
 }
 
+# check ifstatus and wait 20sec if not ready
+waitifready()
+{
+    ifisdown=`ip link show dev $1 | grep -c DOWN`
+    count=0
+    while [ "$ifisdown" != "0" ]; do
+	if [ "$count" = "10" ]; then
+	    $LOG "Wait for interface $1 up error!"
+	    break
+	fi
+	sleep 1
+	count="$(($count+1))"
+	ifisdown=`ip link show dev $1 | grep -c DOWN`
+    done
+}
+
 # get params
 getTxqlenByMode
 getFirstWlanIfName
