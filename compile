@@ -161,7 +161,7 @@ fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7615-2T2R-8M-USB" ]; then
+if [ "$MODE" = "MT7621-MT7615-2T2R-8M" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-8M					$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
