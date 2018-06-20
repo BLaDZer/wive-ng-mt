@@ -301,7 +301,7 @@
 							</tr>
 							<tr id="v6invpn_tr">
 								<td id="Ipv6InVPN" class="head" width="45%">IPv6 over VPN</td>
-								<td width="55%"><input name="ipv6_Ipv6InVPN" type="checkbox auth-disable-user"></td>
+								<td width="55%"><input name="ipv6_Ipv6InVPN" type="checkbox" class="auth-disable-user"></td>
 							</tr>
 							<tr id="dhcp6cRowDisplay">
 								<td id="IPv6Dhcpc" class="head" width="45%">IPv6 autoconfigure by dhcp/ra</td>
