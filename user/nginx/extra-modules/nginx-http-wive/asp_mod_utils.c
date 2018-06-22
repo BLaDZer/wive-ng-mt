@@ -864,14 +864,20 @@ static void shadowAuth(webs_t* wp, char_t *path, char_t *query)
     char_t *username  = websGetVar(wp, T("username"), NULL);
     char_t *password  = websGetVar(wp, T("password"), NULL);
 
+    char* client_addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
+
+
     if (!username || !password || check_shadow_pass(username, password) != 0 )
     {
+        if (username == NULL) username = "";
+        ELOG_WARN(wp->request->connection->log, 0, "Authentication failed: user='%s'\n", username);
         websRedirect(wp, "/login.asp");
         websAddHeader(wp, "Set-Cookie", "Wrong-Pass=1; Max-Age=10; Path=/");
         return;
     }
 
-    char* client_addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
+    ELOG_INFO(wp->request->connection->log, 0, "Authentication successful: user=%s\n", username);
+
     auth_session_t* auth_session = NULL;
 
     auth_session = createAuthSession(client_addr, username);

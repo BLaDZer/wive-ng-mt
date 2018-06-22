@@ -1225,6 +1225,9 @@ static ngx_int_t ngx_http_wive_init(ngx_conf_t *cf)
     srand(time(NULL));
     sessionid_init(cf->pool);
 
+    ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON); //Turn on power LED
+
+
 // DEPRECATED FILTERS
 //    ngx_http_next_body_filter = ngx_http_top_body_filter;
 //    ngx_http_top_body_filter = ngx_http_wive_body_filter;

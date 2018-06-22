@@ -91,6 +91,7 @@ var admin_dictionary = {
 	'syslog enabled'					: 'System logging daemon:',
 	'syslog kernel'						: 'Kernel logging daemon:',
 	'syslog remote ip'					: 'Remote system log IP:',
+	'syslog level'						: 'System log level:',
 	'syslog system log'					: 'System Log:',
 	'syslog not support'					: 'Not support.\n(Busybox->\n  System Logging Utilitie ->\n    syslogd\n    Circular Buffer\n    logread',
 	'syslog invalid ip dns'					: 'Invalid Remote system log IP/Domain address'

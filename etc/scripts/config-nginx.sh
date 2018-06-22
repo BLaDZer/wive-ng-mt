@@ -6,6 +6,7 @@
 eval `nvram_buf_get 2860 RemoteManagementPort RemoteManagementPortHTTPS`
 
 
+
 if [ "$RemoteManagementPort" = "" ];then
     RemoteManagementPort=80
 fi
@@ -32,12 +33,17 @@ http {
     client_max_body_size 32m;
     client_body_buffer_size 1m;
 
-    error_log /var/log/nginx-debug.log;
 
     sendfile        off;
 
     keepalive_timeout  65;
 
+    error_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname debug;
+#    error_log /var/log/nginx-debug.log;
+#    access_log syslog:server=unix:/dev/log,facility=local7,tag=nginx,severity=info,nohostname;
+EOT
+
+cat <<EOT >> $NGINX_CONFIG_FILE
     server {
 EOT
 
@@ -45,6 +51,7 @@ if [ -e "/lib/libssl.so" ]; then
 if [ "$RemoteManagementPortHTTPS" != "0" ];then
     cat <<EOT >> $NGINX_CONFIG_FILE
         listen       $RemoteManagementPortHTTPS ssl;
+
         ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
         ssl_ciphers         AES128-SHA:AES256-SHA:RC4-SHA:DES-CBC3-SHA:RC4-MD5;
         ssl_certificate     /etc/certs/server.pem;

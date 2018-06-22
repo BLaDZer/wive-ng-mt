@@ -228,7 +228,7 @@
 						return false;
 					}
 				// HTTP Remote management
-				if (form.rmtHTTP.value == 1)
+				if (form.rmtHTTP.value > 0)
 				{
 					if (!validateNum(form.RemoteManagementPort.value, false) || form.RemoteManagementPort.value < 0 || form.RemoteManagementPort.value > 65535) {
 						window.scrollTo(0, 0);
@@ -246,7 +246,7 @@
 					}
 				}
 				// SSH Remote management
-				if (form.rmtSSH.value == 1)
+				if (form.rmtSSH.value > 0)
 					if (!validateNum(form.RemoteSSHPort.value, false) || form.RemoteSSHPort.value < 0 || form.RemoteSSHPort.value > 65535) {
 						window.scrollTo(0, 0);
 						alert(_("services misc ssh over"));

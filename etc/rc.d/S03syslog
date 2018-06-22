@@ -9,19 +9,24 @@ start() {
 	klogd &
     fi
 
+    if [ -z "$SysLogLevel" ]; then
+        SysLogLevel=7
+    fi
+
+
     if [ "$SysLogd" = "1" ]; then
 	if [ "$RemoteSysLogIP" != "0.0.0.0" ] && [ "$RemoteSysLogIP" != "" ]; then
 	    $LOG "Start syslogd remote mode. Host $RemoteSysLogIP"
-	    syslogd -b0 -s100 -l7 -R $RemoteSysLogIP -D -L &
+	    syslogd -b0 -s100 -l$SysLogLevel -R $RemoteSysLogIP -D -L &
 	else
 	    $LOG "Start syslogd local"
-	    syslogd -b0 -s100 -l7 -S -D &
+	    syslogd -b0 -s100 -l$SysLogLevel -S -D &
 	fi
     fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 SysLogd KLogd RemoteSysLogIP`
+    eval `nvram_buf_get 2860 SysLogd KLogd RemoteSysLogIP SysLogLevel`
 }
 
 stop() {

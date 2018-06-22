@@ -108,6 +108,7 @@ var NVRAM_stb_port                                                   = '<% getCf
 var NVRAM_sip_port                                                   = '<% getCfgGeneral(1, "sip_port",                            "0"); %>';
 var NVRAM_KLogd                                                      = '<% getCfgGeneral(1, "KLogd",                               "1"); %>';
 var NVRAM_SysLogd                                                    = '<% getCfgGeneral(1, "SysLogd",                             "1"); %>';
+var NVRAM_SysLogLevel                                                = '<% getCfgGeneral(1, "SysLogLevel",                         "7"); %>';
 var NVRAM_RemoteSysLogIP                                             = '<% getCfgGeneral(1, "RemoteSysLogIP",                      ""); %>';
 var NVRAM_fwAlgFTP                                                   = '<% getCfgGeneral(1, "fwAlgFTP",                            "1"); %>';
 var NVRAM_fwAlgGRE                                                   = '<% getCfgGeneral(1, "fwAlgGRE",                            "0"); %>';

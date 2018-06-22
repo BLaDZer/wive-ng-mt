@@ -411,6 +411,7 @@ parameter_fetch_t service_syslog_flags[] =
 {
 	{ T("KLogd"), "KLogd", 0, T("0") },
 	{ T("SysLogd"), "SysLogd", 0, T("0") },
+	{ T("SysLogLevel"), "SysLogLevel", 0, T("7") },
 	{ T("RemoteSysLogIP"), "RemoteSysLogIP", 0, T("") },
 	{ NULL, NULL, 0, NULL } // Terminator
 };

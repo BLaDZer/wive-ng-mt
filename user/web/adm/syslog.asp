@@ -24,6 +24,7 @@
 				_TR("syslogKernel",			"syslog kernel");
 				_TR("syslogRemoteIP",		"syslog remote ip");
 				_TR("syslogSysLog",			"syslog system log");
+				_TR("syslogLogLevel",			"syslog level");
 
 				_TR("syslogApply",			"button apply");
 				_TR("syslogClear",			"button clear");
@@ -42,6 +43,7 @@
 			function initValue() {
 				document.getElementById('KLogd').value			= NVRAM_KLogd;
 				document.getElementById('SysLogd').value		= NVRAM_SysLogd;
+				document.getElementById('SysLogLevel').value		= NVRAM_SysLogLevel;
 				document.getElementById('RemoteSysLogIP').value	= NVRAM_RemoteSysLogIP;
 
 				syslogdSelect();
@@ -106,6 +108,23 @@
 								</select>
 							</td>
 						</tr>
+
+						<tr id="logLevelRow">
+							<td class="head" id="syslogLogLevel">System log level:</td>
+							<td>
+								<select name="SysLogLevel" id="SysLogLevel" class="normal">
+									<option value="1" id="sllEmergency">Emergency</option>
+									<option value="2" id="sllAlert">Alert</option>
+									<option value="3" id="sllCritical">Critical</option>
+									<option value="4" id="sllError">Error</option>
+									<option value="5" id="sllWarning">Warning</option>
+									<option value="6" id="sllNotice">Notice</option>
+									<option value="7" id="sllInfo">Info</option>
+									<option value="8" id="sllDebug">Debug</option>
+								</select>
+							</td>
+						</tr>
+
 						<tr id="klogdRow">
 							<td class="head" id="syslogKernel">Kernel logging daemon:</td>
 							<td>
@@ -119,6 +138,7 @@
 							<td class="head" id="syslogRemoteIP">Remote system log IP:</td>
 							<td><input name="RemoteSysLogIP" id="RemoteSysLogIP" class="normal"></td>
 						</tr>
+
 					</table>
 					<table class="buttons">
 						<tr>

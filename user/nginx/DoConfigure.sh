@@ -11,6 +11,10 @@ CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
 CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-Os"
 CONFOPTS="$CONFOPTS --with-ld-opt=-L$ROOTDIR/lib/shared/lib"
 
+if [ -n "$CONFIG_RT2880_FLASH_16M$CONFIG_RT2880_FLASH_32M" ]; then
+    CONFOPTS="$CONFOPTS --with-debug"
+fi
+
 CONFOPTS="$CONFOPTS --with-libatomic=NO"
 CONFOPTS="$CONFOPTS --without-http_rewrite_module --without-http_gzip_module --without-http_upstream_zone_module"
 
@@ -57,7 +61,6 @@ CONFOPTS="$CONFOPTS \
   --without-http_upstream_least_conn_module \
   --without-http_upstream_keepalive_module \
 "
-
 
 # build with support ssl only if project configured and builded with openssl
 if [ -e ../../lib/shared/lib/libssl.so ]; then

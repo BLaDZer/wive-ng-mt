@@ -86,6 +86,7 @@ stop() {
 case "$1" in
 	start)
 	    start
+	    rescan
 	    ;;
 
 	stop)
