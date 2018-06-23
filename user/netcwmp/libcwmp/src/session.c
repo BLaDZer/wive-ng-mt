@@ -369,41 +369,37 @@ cwmp_session_t * cwmp_session_create(cwmp_t * cwmp)
     return session;
 }
 
-void cwmp_session_free(cwmp_session_t * session)
-{
-    pool_t * pool = session->pool;
-
-    if (session->envpool)
-    {
-        pool_destroy(session->envpool);
-        session->envpool = NULL;
-    }
-    if (session->connpool)
-    {
-        pool_destroy(session->connpool);
-        session->connpool = NULL;
-    }
-    pool_destroy(pool);
-
-}
 
 int cwmp_session_close(cwmp_session_t * session)
 {
-    if (session->envpool)
+    pool_t* envpool = session->envpool;
+    pool_t* connpool = session->connpool;
+    pool_t* pool = session->pool;
+
+    session->envpool = NULL;
+    session->connpool = NULL;
+    session->pool = NULL;
+
+#ifdef USE_CWMP_OPENSSL
+    if (session->sock && session->sock->ssl)
     {
-        pool_destroy(session->envpool);
-        session->envpool = NULL;
+        SSL_free(session->sock->ssl);
+    }
+#endif
+
+    if (envpool)
+    {
+        pool_destroy(envpool);
     }
 
-    if (session->connpool)
+    if (connpool)
     {
-        pool_destroy(session->connpool);
-        session->connpool = NULL;
+        pool_destroy(connpool);
     }
 
-    if (session->pool)
+    if (pool)
     {
-        pool_destroy(session->pool);
+        pool_destroy(pool);
 //        session->pool = NULL; // we store the whole session object inside the same pool, do not access it after pool destroy.
     }
 
@@ -477,7 +473,7 @@ int cwmp_session_set_headers(cwmp_session_t * session, int postempty)
 int cwmp_session_create_connection(cwmp_session_t * session)
 {
 //    cwmp_t * cwmp = session->cwmp;
-    http_socket_t * sock;
+    http_socket_t * sock = NULL;
     int use_ssl = 0;
     http_dest_t *  dest = session->dest;
     int timeout = -1;
