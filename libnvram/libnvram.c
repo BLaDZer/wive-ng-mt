@@ -78,6 +78,23 @@ unsigned int getNvramIndex(char *name)
 }
 
 /*
+ * return idx (0 ~ iMAX_CACHE_ENTRY)
+ * return -1 if no such value or empty cache
+ */
+static int cache_idx(cache_t* cache, char *name)
+{
+	int i;
+	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
+		if (!cache[i].name)
+			return -1;
+		if (!strcmp(name, cache[i].name))
+			return i;
+	}
+
+	return -1;
+}
+
+/*
  * 1. read env from flash
  * 2. parse entries
  * 3. save the entries to cache
@@ -88,13 +105,13 @@ int nvram_init(int index)
 	char *p, *q;
 	int fd;
 	nvram_ioctl_t nvr;
+        cache_t* old_cache = NULL;
 
 	if (fb[index].valid)
 	{
-/*
-		Fixes strdup leak, will totally break user-code compatibility.
-		Uncomment in case you have hundreds of hours to debug it out.
-*/
+		old_cache = malloc(sizeof(cache_t) * MAX_CACHE_ENTRY);
+		memcpy(old_cache, fb[index].cache, sizeof(cache_t) * MAX_CACHE_ENTRY);
+
 		free(fb[index].env.data);
 	}
 
@@ -107,6 +124,7 @@ int nvram_init(int index)
 	if ( !fb[index].env.data )
 	{
 		perror("malloc");
+		NVFREE(old_cache);
 		return -1;
 	}
 
@@ -118,6 +136,7 @@ int nvram_init(int index)
 	{
 		perror(NV_DEV);
 		NVFREE(fb[index].env.data);
+		NVFREE(old_cache);
 		return -1;
 	}
 
@@ -127,6 +146,7 @@ int nvram_init(int index)
     		if(fd)
 		    close(fd);
 		NVFREE(fb[index].env.data);
+		NVFREE(old_cache);
 		return -1;
 	}
 
@@ -144,7 +164,24 @@ int nvram_init(int index)
 			break;
 		}
 		*q = '\0'; //strip '='
-		fb[index].cache[i].name = strdup(p);
+
+		// old cache values reusage
+		fb[index].cache[i].name = NULL;
+		fb[index].cache[i].value = NULL;
+		int idx = -1;
+
+		if (old_cache != NULL)
+		{
+			idx = cache_idx(old_cache, p);
+			if (idx >= 0)
+			{
+				fb[index].cache[i].name = old_cache[idx].name;
+			}
+		}
+
+		if (fb[index].cache[i].name == NULL)
+			fb[index].cache[i].name = strdup(p);
+
 		//printf("  %d '%s'->", i, p);
 
 		/* Store var value */
@@ -155,7 +192,18 @@ int nvram_init(int index)
 			NVFREE(fb[index].cache[i].name);
 			break;
 		}
-		fb[index].cache[i].value = strdup(p);
+
+		// old cache values reusage
+		if (idx >= 0)
+		{
+			if (strcmp(p, old_cache[idx].value) == 0)
+			{
+				fb[index].cache[i].value = old_cache[idx].value;
+			}
+		}
+
+		if (fb[index].cache[i].value == NULL)
+			fb[index].cache[i].value = strdup(p);
 		//printf("'%s'\n", p);
 
 		p = q + 1; //next entry
@@ -170,6 +218,8 @@ int nvram_init(int index)
 
 	fb[index].valid = 1;
 	fb[index].dirty = 0;
+
+	NVFREE(old_cache);
 
 	return 0;
 }
@@ -198,23 +248,6 @@ void nvram_close(int index)
 	fb[index].valid = 0;
 }
 
-/*
- * return idx (0 ~ iMAX_CACHE_ENTRY)
- * return -1 if no such value or empty cache
- */
-static int cache_idx(int index, char *name)
-{
-	int i;
-
-	for (i = 0; i < MAX_CACHE_ENTRY; i++) {
-		if (!fb[index].cache[i].name)
-			return -1;
-		if (!strcmp(name, fb[index].cache[i].name))
-			return i;
-	}
-
-	return -1;
-}
 
 /* buffered get variable with/without copy to new memory block */
 static char *__nvram_bufget(int index, char *name, int copy)
@@ -275,7 +308,7 @@ static char *__nvram_bufget(int index, char *name, int copy)
 	}
 	close(fd);
 
-	idx = cache_idx(index, name);
+	idx = cache_idx(fb[index].cache, name);
 
 	if (-1 != idx) {
 		if (fb[index].cache[idx].value) {
@@ -374,7 +407,7 @@ int nvram_bufset(int index, char *name, char *value)
 	}
 	close(fd);
 
-	idx = cache_idx(index, name);
+	idx = cache_idx(fb[index].cache, name);
 
 	if (-1 == idx) {
 		//find the first empty room
