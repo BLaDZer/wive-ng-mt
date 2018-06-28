@@ -66,10 +66,6 @@ servicelimit() {
 	    iptables -A servicelimit -i $lan_if -p udp --dport 53 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp --dport 53 -j ACCEPT
 	fi
-	if [ "$cwmpdEnabled" = "1" ]; then
-	    $LOG "CWMP allow to callback connections (from all interfaces)."
-	    iptables -A servicelimit $STATE_NEW -p tcp --dport 1008 -j ACCEPT
-	fi
 	if [ "$radius_srv_enabled" != "0" ]; then
 	    $LOG "Radius server allow to connect"
 	    if [ "$radius_srv_enabled" = "1" ]; then
@@ -134,6 +130,11 @@ servicelimit() {
     		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPort -j ACCEPT
 		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPortHTTPS -j ACCEPT
 	    fi
+	fi
+	if [ "$cwmpdEnabled" = "1" ] && [ "$cwmpd_httpd_port" != "" ]; then
+	    $LOG "CWMP allow to 4 callback connections from WAN."
+    	    iptables -A servicelimit $STATE_NEW -p tcp --dport $cwmpd_httpd_port $CONNLIMIT 4 -j REJECT
+	    iptables -A servicelimit ! -i $lan_if $STATE_NEW -p tcp --dport $cwmpd_httpd_port -j ACCEPT
 	fi
 	if [ "$RemoteSSH" != "0" ]; then
 	    $LOG "Remote managment ssh limit"
@@ -641,8 +642,8 @@ iptmodulesload() {
 get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable IPPortFilterInputEnable WANPingFilter \
-	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpdEnabled RIPEnable \
-	    dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
+	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpdEnabled cwmpd_httpd_port \
+	    RIPEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit dnsToLocalRedir QoSEnable`
