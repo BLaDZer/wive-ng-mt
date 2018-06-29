@@ -1799,7 +1799,7 @@ INT efuse_probe(RTMP_ADAPTER *pAd)
 
 
 	if (WaitForAsicReady(pAd) == FALSE)
-			return -1;
+		return -1;
 		
 	pAd->bUseEfuse=FALSE;
 #ifdef RT65xx

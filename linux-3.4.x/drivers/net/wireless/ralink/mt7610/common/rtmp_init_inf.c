@@ -99,11 +99,28 @@ RTMP_BUILD_DRV_OPS_FUNCTION_BODY
 int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 {
 	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)pAdSrc;
-	UINT index;
 	NDIS_STATUS Status;
 
 	if (pAd == NULL)
 		return FALSE;
+
+	/* reset Adapter flags*/
+	RTMP_CLEAR_FLAGS(pAd);
+
+	/* Init BssTab & ChannelInfo tabbles for auto channel select.*/
+#ifdef CONFIG_AP_SUPPORT	
+	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+	{
+		AutoChBssTableInit(pAd);
+		ChannelInfoInit(pAd);
+	}
+#endif /* CONFIG_AP_SUPPORT */
+
+#ifdef DOT11_N_SUPPORT
+	/* Allocate BA Reordering memory*/
+	if (ba_reordering_resource_init(pAd, MAX_REORDERING_MPDU_NUM) != TRUE)		
+		goto err1;
+#endif /* DOT11_N_SUPPORT */
 
 #ifdef RT65xx
 	if (pAd->WlanFunCtrl.field.WLAN_EN == 0)
@@ -157,26 +174,7 @@ int rt28xx_init(VOID *pAdSrc, PSTRING pDefaultMac, PSTRING pHostName)
 	}
 #endif /* RT3290 */
 
-	/* reset Adapter flags*/
-	RTMP_CLEAR_FLAGS(pAd);
-
-	/* Init BssTab & ChannelInfo tabbles for auto channel select.*/
-#ifdef CONFIG_AP_SUPPORT	
-	IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-	{
-		AutoChBssTableInit(pAd);
-		ChannelInfoInit(pAd);
-	}
-#endif /* CONFIG_AP_SUPPORT */
-
-#ifdef DOT11_N_SUPPORT
-	/* Allocate BA Reordering memory*/
-	if (ba_reordering_resource_init(pAd, MAX_REORDERING_MPDU_NUM) != TRUE)		
-		goto err1;
-#endif /* DOT11_N_SUPPORT */
-
 	/* Make sure MAC gets ready.*/
-	index = 0;
 	if (WaitForAsicReady(pAd) != TRUE)
 		goto err1;
 

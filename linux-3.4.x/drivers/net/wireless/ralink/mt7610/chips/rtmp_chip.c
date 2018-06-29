@@ -946,27 +946,27 @@ INT WaitForAsicReady(
 	UINT32 mac_val = 0, reg = MAC_CSR0;
 	int idx = 0;
 
-#ifdef RT3290	
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))			
+		return FALSE;
+
+#ifdef RT3290
 	if (IS_RT3290(pAd))
 		reg = ASIC_VERSION;
 #endif /* RT3290 */
 	do
 	{
-		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST))			
-			return FALSE;
-		
 		RTMP_IO_READ32(pAd, reg, &mac_val);
 		if ((mac_val != 0x00) && (mac_val != 0xFFFFFFFF))
 			return TRUE;
 
-		RTMPusecDelay(10);
-	} while (idx++ < 100);
+		RTMPusecDelay(2);
+	} while (idx++ < 2000);
 
 	DBGPRINT(RT_DEBUG_ERROR,
 				("%s(0x%x):AsicNotReady!\n",
 				__FUNCTION__, mac_val));
-	
-	return TRUE;
+
+	return FALSE;
 }
 
 
@@ -1020,8 +1020,6 @@ VOID RtmpChipOpsHook(VOID *pCB)
 	RTMP_CHIP_CAP *pChipCap = &pAd->chipCap;
 	UINT32 MacValue;
 
-
-	/* sanity check */
 	WaitForAsicReady(pAd);
 	RTMP_IO_READ32(pAd, MAC_CSR0, &MacValue);
 	pAd->MACVersion = MacValue;
