@@ -174,6 +174,10 @@ case $TYPE in
 	fi
         ;;
     *)
+        # dm9601 usb1.1 adapters
+        if [ "${idVendor}" = "07aa" ] || [ "${idVendor}" = "0a46" ] || [ "${idVendor}" = "0a47" ] || [ "${idVendor}" = "0fe6" ]; then
+            MODALIAS="dm9601"
+        fi
         $LOG "${ACTION} device ${idVendor}:${idProduct} type ${TYPE} interface ${INTERFACE}"
         modload $MODALIAS
         ;;

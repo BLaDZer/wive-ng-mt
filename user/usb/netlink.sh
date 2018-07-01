@@ -2,7 +2,7 @@
 
 ##########################################################################################################
 #
-# MDEV netlink helper (Wive-NG-Project)
+# MDEV netlink helper for usb network adapters or modems with usb-eth/ncm/qmi modes supports (Wive-NG-Project)
 #
 ##########################################################################################################
 
@@ -10,6 +10,12 @@
 . /etc/scripts/global.sh
 
 LOG="logger -t netlink($$)"
+
+# skip not usb devices
+is_usb=`echo "$DEVPATH" | grep -c usb`
+if [ "$is_usb" = "0" ]; then
+    exit 0
+fi
 
 $LOG "ACTION '$ACTION', MDEV '$MDEV', ACTION '$ACTION', DEVPATH '$DEVPATH', SUBSYSTEM '$SUBSYSTEM', SEQNUM '$SEQNUM'"
 
