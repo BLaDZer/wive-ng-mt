@@ -4091,7 +4091,7 @@
 3) miniupnpd: update to 2.1 version.<br>
 4) entware: update install script.<br>
 5) build_system/init/libwive/calibs: prepare to support mt7615.<br>
-6) build_system: add and use ngix (goahead deprecated).<br>
+6) build_system: add and use ngix (goahead removed).<br>
 7) build_system: auto add changelog to result fw archive.<br>
 8) init.d: avoid enneded vpn helper restarts.<br>
 9) init.d: renew routes to server after get new vpn ip to.<br>
@@ -4110,7 +4110,6 @@
 22) cwmpd: fix memory leaks.<br>
 23) webui: rework wireless settings (fixup and refactoring).<br>
 24) kernel: config: increase WDG intervals for avoid not needed reboots.<br>
-25) kernel: config: enable 6RD support.<br>
 26) kernel: mtd: add new spi flashes support.<br>
 27) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
 28) kernel: tty: make n_tty_read() always abort if hangup is in progress.<br>
@@ -4148,5 +4147,9 @@
 60) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
 61) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
 62) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
+<br>
+<br>
+<b>7.5.x</b><br>
+1) start sync with upstream projects.<br>
 <br>
 <br>
