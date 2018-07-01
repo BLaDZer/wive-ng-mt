@@ -566,8 +566,6 @@ void tcp_rcv_space_adjust(struct sock *sk)
 
 		if (sysctl_tcp_moderate_rcvbuf &&
 		    !(sk->sk_userlocks & SOCK_RCVBUF_LOCK)) {
-			int new_clamp = space;
-
 			/* Receive space grows, normalize in order to
 			 * take into account packet headers and sk_buff
 			 * structure overhead.
