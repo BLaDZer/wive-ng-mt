@@ -77,7 +77,7 @@ var hint_dictionary = {
 	'hint nodog pass'		: 'Whitespace delimited string that is compared to user-supplied password when authenticating.',
 	'hint nodog auth user'		: 'Set to Enable, to require a username matching the Username parameter to be supplied when authenticating. For correct operation you need, previously, to load the authorization page in rwfs.',
 	'hint nodog user'		: 'Whitespace delimited string that is compared to user-supplied username when authenticating.',
-	'hint nodog attempts'		: 'Integer number of failed password/username entries before a user is forced to reauthenticate.',
+	'hint nodog attempts'		: 'Integer number of failed password/username entries before a user is forced to reauthenticate.'
 }
 
 lang_dictionary = Object.assign(lang_dictionary, hint_dictionary);

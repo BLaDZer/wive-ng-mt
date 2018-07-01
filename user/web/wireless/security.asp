@@ -13,6 +13,7 @@
 		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/json2.js"></script>
 		<script src="/js/controls.js"></script>
 		<script src="/js/validation.js"></script>
 		<script>
@@ -65,7 +66,6 @@
 
 				_TR("secureWPAPassPhraseInic",		"secure wpa pass phrase inic");
 				_TR("secureWPAKeyRenewInterval",	"secure wpa key renew interval");
-				_TR("secureWPAPMKCachePeriod",		"secure wpa pmk cache period");
 				_TR("secureWPAPreAuth",				"secure wpa preauth");
 				_TR("secureWPAPreAuthDisable",		"wireless disable");
 				_TR("secureWPAPreAuthEnable",		"wireless enable");
@@ -164,10 +164,6 @@
 											if(!checkWPA())
 												return false;
 
-											if(!document.getElementById('PMKCachePeriod').value.length){
-												alert(_("secure no pmk"));
-												return false;
-											}
 											if(checkRadius() == false)
 												return false;
 				}
@@ -411,7 +407,7 @@
 			// Show only needed fields
 			function securityMode(check) {
 				displayElement(['div_wep', 'div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_passphrase5', 
-								'wpa_key_renewal_interval', 'wpa_PMK_Cache_Period', 'wpa_preAuthentication', 'div_radius_server'], false);
+								'wpa_key_renewal_interval', 'wpa_preAuthentication', 'div_radius_server'], false);
 
 				switch (document.getElementById('security_mode').value) {
 					case 'WEPAUTO':			displayElement('div_wep', true);
@@ -421,7 +417,7 @@
 					case 'WPAPSKWPA2PSK':	displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_key_renewal_interval'], true);
 											displayElement('wpa_passphrase5', BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC && old_MBSSID == 0);
 											break;
-					case 'WPA2':			displayElement(['wpa_preAuthentication', 'wpa_PMK_Cache_Period'], true);
+					case 'WPA2':			displayElement(['wpa_preAuthentication'], true);
 					case 'WPA':
 					case 'WPA1WPA2':		displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_key_renewal_interval', 'div_radius_server', ], true);
 											break;
@@ -471,7 +467,6 @@
 				document.getElementById('passphrase').value			= network.data[MBSSID].WPAPSK;
 				document.getElementById('passphraseinic').value		= NVRAM_WPAPSK1INIC;
 				document.getElementById('keyRenewalInterval').value	= network.data[MBSSID].RekeyInterval;
-				document.getElementById('PMKCachePeriod').value		= network.data[MBSSID].PMKCachePeriod;
 				if (network.data[MBSSID].PreAuth == '0')
 					document.getElementById('PreAuthentication')[0].selected = true;
 				else
@@ -897,10 +892,6 @@
 						<tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="visibility: hidden;">
 							<td class="head" id="secureWPAKeyRenewInterval">Key Renewal Interval</td>
 							<td><input name="keyRenewalInterval" id="keyRenewalInterval" class="mid" maxlength="6" value="3600" onKeyUp="securityChanged = true;">&nbsp;<span id="secureKeySeconds">seconds</span></td>
-						</tr>
-						<tr id="wpa_PMK_Cache_Period" name="wpa_PMK_Cache_Period" style="visibility: hidden;">
-							<td class="head" id="secureWPAPMKCachePeriod">PMK Cache Period</td>
-							<td><input name="PMKCachePeriod" id="PMKCachePeriod" class="mid" maxlength="4" value="" onKeyUp="securityChanged = true;">&nbsp;<span id="secureKeyMinutes">minute</span></td>
 						</tr>
 						<tr id="wpa_preAuthentication" name="wpa_preAuthentication" style="visibility: hidden;">
 							<td class="head" id="secureWPAPreAuth">Pre-Authentication</td>

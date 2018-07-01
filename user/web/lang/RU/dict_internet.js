@@ -203,7 +203,7 @@ var internet_dictionary = {
 	'qos priority dscp'			: 'Настройка приоритета по меткам DSCP',
 	'qos high priority dscps'		: 'Метки пакетов с высоким приоритетом',
 	'qos low priority dscps'		: 'Метки пакетов с низким приоритетом',
-	'qos simple'				: 'Простая приоритезация',
+	'qos simple'				: 'Простая приоритизация',
 	'qos shaper'				: 'Шейпер на основе номеров портов и DSCP',
 	'qos codel'				: 'Взвешенная справедливая очередь (CODEL)',
 	'qos mode'				: 'Обрабатываем:',

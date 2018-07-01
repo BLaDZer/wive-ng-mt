@@ -142,6 +142,9 @@ var wireless_dictionary = {
 	'basic roaming rc inic channel 2'		: '52, 56, 60, 64 каналы',
 	'basic roaming rc inic channel 3'		: '132, 136, 140, 144 каналы',
 	'basic roaming rc inic channel 4'		: '149, 153, 157, 161, 165 каналы',
+	'basic roaming pmk cache period'		: 'Период кеширования PMK',
+	'basic roaming pmk cache period range'		: 'минут (диапазон 1 - 9999)',
+	'basic roaming invalid pmk cache period'	: 'Пожалуйста, введите период кеширования PMK.',
 	'basic dot11h'					: 'Поддержка IEEE 802.11h',
 	'basic 11a channel warning'			: 'Во избежание проблем с некоторыми беспроводными клиентами, рекомендуется использовать канал до 64 (включительно)',
 
@@ -259,9 +262,9 @@ var wireless_dictionary = {
 	'adv dynvga long'				: 'Отключить АРУ для дальних клиентов',
 	'adv dynvga clamp'				: 'Ограничение уровня АРУ',
 
-	'raoming invalid BndStrgRssiDiff'		: 'Не верно указана дельта RSSI',
-	'raoming invalid BndStrgRssiLow'		: 'Не верно указана нижняя граница RSSI',
-	'raoming invalid number'			: 'Некорректно введено значение',
+	'roaming invalid BndStrgRssiDiff'		: 'Неверно указана дельта RSSI',
+	'roaming invalid BndStrgRssiLow'		: 'Неверно указана нижняя граница RSSI',
+	'roaming invalid number'			: 'Некорректно введено значение',
 
 	'secure select ssid'				: 'Выберите SSID',
 	'secure ssid title'				: 'Настройки безопасности/шифрования',
@@ -289,7 +292,6 @@ var wireless_dictionary = {
 	'secure wpa show pass phrase'			: '(отобразить)',
 	'secure wpa show pass phrase wds'		: 'Отобразить ключ шифрования',
 	'secure wpa key renew interval'			: 'Интервал смены ключа',
-	'secure wpa pmk cache period'			: 'Период кеширования PMK',
 	'secure wpa preauth'				: 'Пре-аутентификация',
 	'secure 8021x wep'				: '802.1x WEP',
 	'secure 1x wep'					: ' WEP ',
@@ -309,7 +311,6 @@ var wireless_dictionary = {
 	'secure renewal wrong'				: 'Интервал обновления должен находится в диапазоне от 10 до 86400 секунд.',
 	'secure choose wep'				: 'Пожалуйста, выберите опцию 802.1x WEP.',
 	'secure choose preauth'				: 'Пожалуйста, выберите опции пред-авторизации.',
-	'secure no pmk'					: 'Пожалуйста, введите период кеширования PMK.',
 	'secure invalid mac'				: 'Неверный MAC адрес в политиках доступа.',
 	'secure no radius ip'				: 'Пожалуйста, введите IP адрес RADIUS сервера.',
 	'secure no radius port'				: 'Пожалуйста, введите номер порта RADIUS сервера.',

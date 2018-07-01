@@ -449,7 +449,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssids, *hidden_ssids, *isolated_ssids, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
 	char_t	*n_mode, *n_bandwidth, *n_bandwidthinic, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
-	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate;
+	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate, *PMKCachePeriod;
+	char_t pmktmpbuf[32] = {0};
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	char_t *ids_enable;
 #endif
@@ -512,6 +513,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	hidden_ssids = websGetVar(wp, T("hidden_ssids"), T("")); 
 	isolated_ssids = websGetVar(wp, T("isolated_ssids"), T(""));
 	LanWifiIsolate = websGetVar(wp, T("LanWifiIsolate"), T("0"));
+
 	mbcastisolated_ssids = websGetVar(wp, T("mbcastisolated_ssids"), T(""));
 	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
 
@@ -541,6 +543,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
 	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
 	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
+        PMKCachePeriod = websGetVar(wp, T("PMKCachePeriod"), T("480"));
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
 	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
@@ -852,6 +855,13 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	ngx_nvram_bufset(wp,"FastRoaming", fastroaming);
 	if (CHK_IF_DIGIT(fastroaming, 1))
 		setupParameters(wp, fast_roaming_flags, 0);
+
+        int cachePeriod = strToIntDef(PMKCachePeriod, 480);
+        if (cachePeriod > 0)
+        {
+            snprintf(pmktmpbuf, 31, "%i;%i;%i;%i", cachePeriod, cachePeriod, cachePeriod, cachePeriod);
+            ngx_nvram_bufset(wp,"PMKCachePeriod", pmktmpbuf);
+        }
 
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ngx_nvram_bufset(wp,"IdsEnable", ids_enable);
@@ -1232,7 +1242,7 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
         int nvram = RT2860_NVRAM;
 
 	char_t	*PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
-		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMKCachePeriod,
+		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval,
 		*RADIUS_Server, *RADIUS_Port, *RADIUS_Key, *STR;
 	char	str[64];
 
@@ -1326,10 +1336,6 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
 
 			strcat(result, "\"RekeyInterval\":\"");
 			LFF(result, nvram, RekeyInterval, i);
-			strcat(result, "\", ");
-
-			strcat(result, "\"PMKCachePeriod\":\"");
-			LFF(result, nvram, PMKCachePeriod, i);
 			strcat(result, "\", ");
 
 			strcat(result, "\"RADIUS_Server\":\"");
@@ -1533,9 +1539,9 @@ static void setSecurity(webs_t* wp, int nvram)
 		}
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		nvram_fromdef(RT2860_NVRAM, 14, "PreAuth", "AuthMode", "EncrypType", "DefaultKeyID", "RekeyMethod",
-						"RekeyInterval", "PMKCachePeriod", "session_timeout_interval", "Key1Type", "Key2Type",
-						"Key3Type", "Key4Type", "WPAPSK1", "WPAPSK1INIC");
+		nvram_fromdef(RT2860_NVRAM, 13, "PreAuth", "AuthMode", "EncrypType", "DefaultKeyID", "RekeyMethod",
+						"RekeyInterval", "session_timeout_interval", "Key1Type", "Key2Type", "Key3Type",
+						"Key4Type", "WPAPSK1", "WPAPSK1INIC");
 		default_shown_mbssid[nvram] = 0;
 #ifdef CONFIG_USER_802_1X
 		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
@@ -1597,7 +1603,6 @@ static void setSecurity(webs_t* wp, int nvram)
 		else if(!strcmp(security_mode, "WPA2")) {				// !------------------        WPA2 Enterprise Mode ----------------
 			char *pass_phrase_str;
 			char *pass_phrase_inic_str;
-			char *PMKCachePeriod;
 			char *PreAuth;
 #ifdef CONFIG_USER_802_1X
 			conf8021x(wp, RT2860_NVRAM, mbssid);
@@ -1606,14 +1611,12 @@ static void setSecurity(webs_t* wp, int nvram)
 
 			LFW(pass_phrase_str, passphrase);
 			LFW(pass_phrase_inic_str, passphraseinic);
-			LFW(PMKCachePeriod, PMKCachePeriod);
 			LFW(PreAuth, PreAuthentication);
 
 			STFs(nvram, mbssid, "AuthMode", security_mode);
 			STFs(nvram, mbssid, "IEEE8021X", "0");
 			nvram_bufset(nvram, racat("WPAPSK", mbssid + 1), pass_phrase_str);
 			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
-			STF(nvram, mbssid, PMKCachePeriod);
 			STF(nvram, mbssid, PreAuth);
 		}
 		else if(!strcmp(security_mode, "WPA2PSK") ||				// !------------------       WPA2 Personal Mode ----------------

@@ -19,6 +19,7 @@
 		<script src="/js/html2canvas.min.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/json2.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
 			var updateTime			= 5000;

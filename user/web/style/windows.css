@@ -16,6 +16,11 @@ div.popup_window {
 	opacity: 0.5;
 	text-align: center;
 	vertical-align: middle;
+
+	/* IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	/* IE 5-7 */
+	filter: alpha(opacity=50);
 }
 
 div.popup_window_border {

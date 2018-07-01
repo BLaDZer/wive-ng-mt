@@ -19,7 +19,7 @@
 				_TR("manTitle",			"services ddns title");
 				_TR("manIntroduction",		"services ddns introduction");
 				_TR("manDdnsSet",		"services ddns setup");
-				_TR("DdnsProvider",		"services ddns provider");
+				_TR("DdnsProvider_td",		"services ddns provider");
 				_TR("manDdnsNone",		"services ddns none");
 				_TR("manDdnsAccount",		"services l2tp login");
 				if (document.getElementById('DDNSProvider').value != "freedns.afraid.org")
@@ -60,7 +60,7 @@
 					alert(_("services ddns specify"));
 					return false;
 				}
-				ajaxShowTimer(document.DDNS, 'timerReloader', _('message apply'), 5);
+				ajaxShowTimer(document.DDNSForm, 'timerReloader', _('message apply'), 5);
 				return true;
 			}
 
@@ -83,7 +83,7 @@
 					<hr>
 					<!-- ================= DDNS  ================= -->
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="post" name="DDNS" action="/goform/DDNS" OnSubmit="return DDNSFormCheck(this)">
+					<form method="post" name="DDNSForm" action="/goform/DDNS" OnSubmit="return DDNSFormCheck(this)">
 					<table id="div_ddns" class="form">
 						<col style="width: 40%"/>
 						<col style="width: 50%"/>
@@ -93,7 +93,7 @@
 								<td class="title" colspan="3" id="manDdnsSet">DDNS Settings</td>
 							</tr>
 							<tr id="inadyn">
-								<td class="head" id="DdnsProvider">Dynamic DNS Provider</td>
+								<td class="head" id="DdnsProvider_td">Dynamic DNS Provider</td>
 								<td>
 									<select onChange="DDNSupdateState()" name="DDNSProvider" id="DDNSProvider" class="mid">
 										<option value="none" id="manDdnsNone"> None </option>

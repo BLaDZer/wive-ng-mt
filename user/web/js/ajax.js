@@ -665,7 +665,11 @@ function displayServiceStatus(services) {
 // Translation
 window._ = function(key) { return lang_gettext(key); };
 window._TR = function(elementID, key) {
-    var e = document.getElementById(elementID);
+	var e = elementID;
+
+	if (typeof e === 'string')
+		e = document.getElementById(e);
+
 	if (e != null)
 		if (e.nodeName == 'INPUT')
 			e.value = lang_gettext(key);

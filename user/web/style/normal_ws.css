@@ -350,3 +350,6 @@ div.tab_control
     background-image: url('/graphics/menu_plus.gif');
 }
 
+span.range {
+    color: #808080;
+}

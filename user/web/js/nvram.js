@@ -502,3 +502,5 @@ var NVRAM_TmpBlockAfterKick                                          = '<% getCf
 var NVRAM_KickStaRssiLowFT                                           = '<% getCfgGeneral(1, "KickStaRssiLowFT",                   "0"); %>';
 var NVRAM_RegulatoryClass                                            = '<% getCfgGeneral(1, "RegulatoryClass",                    "5;0;0;0;0"); %>';
 var NVRAM_RegulatoryClassINIC                                        = '<% getCfgGeneral(1, "RegulatoryClassINIC",                "1;2;3;4;0"); %>';
+var NVRAM_PMKCachePeriod                                             = '<% getCfgGeneral(1, "PMKCachePeriod",                     "480;480;480;480"); %>';
+var NVRAM_CountryRegion                                              = '<% getCfgGeneral(1, "CountryRegion",                      "5"); %>';

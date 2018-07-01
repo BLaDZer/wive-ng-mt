@@ -9,6 +9,15 @@
 
 *******************************************/
 
+// checks if value is number in range [minval, maxval]
+function inRange(value, minval, maxval) {
+    if (!isFinite(value)) return false;
+    if (minval != null && value < minval) return false;
+    if (maxval != null && value > maxval) return false;
+
+    return true;
+}
+
 if (document.getElementsByClassName === undefined)
 {
     document.getElementsByClassName = function(className) {
@@ -26,6 +35,24 @@ if (document.getElementsByClassName === undefined)
 
         return found;
     }
+}
+
+document.getElementsByAttribute = function(attribute)
+{
+    if (document.querySelectorAll !== undefined) return document.querySelectorAll('['+attribute+']');
+
+    var elems = [];
+    var allElements = document.getElementsByTagName('*');
+
+    for (var i = 0, n = allElements.length; i < n; i++)
+    {
+        if (allElements[i].getAttribute(attribute) !== null)
+        {
+            elems.push(allElements[i]);
+        }
+    }
+
+    return elems;
 }
 
 function disableControlsByAuth()
