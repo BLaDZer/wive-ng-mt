@@ -48,6 +48,8 @@ start() {
 	rm -f /tmp/needrwfssave
     fi
 
+    # always start rescan usb devices at last
+    service hotplug rescan
 }
 
 stop() {
