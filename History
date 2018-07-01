@@ -4088,70 +4088,69 @@
 <b>7.4.x</b><br>
 1) busybox: update to 1.28.3 stable version.<br>
 2) configs: disable zebra in 8Mb flash builds (not really used in production now, and need save flash free size).<br>
-3) miniupnpd: update to 2.1 version.<br>
-4) entware: update install script.<br>
-5) build_system/init/libwive/calibs: prepare to support mt7615.<br>
-6) build_system: add and use ngix (goahead removed).<br>
-7) build_system: auto add changelog to result fw archive.<br>
-8) init.d: avoid enneded vpn helper restarts.<br>
-9) init.d: renew routes to server after get new vpn ip to.<br>
-10) init.d: add pure usbether modem mode (hilink).<br>
-11) init.d: dynamic ifname for wwan modem mode.<br>
-12) init.d: avoid modules double start (prevent potantioanl races).<br>
-13) init.d: avoid ethtun stop if modules allready removed.<br>
-14) init.d: fix and improve 6to4 support.<br>
-15) init.d: nginx: unify service restart logic.<br>
-16) init.d: fix printer support.<br>
-17) init.d: add wait ready after modules reload.<br>
-18) init.d: move to first ra up scheme (dbdc mode at first start wait ra0 up before allow rai0 up).<br>
-19) init.d: iptables: limit num callback connection for CWMP from WAN to 4, and drop from others.<br>
-20) libwive: add shadow password support.<br>
-21) libnvram: fix small memory leak.<br>
-22) cwmpd: fix memory leaks.<br>
-23) webui: rework wireless settings (fixup and refactoring).<br>
-24) kernel: config: increase WDG intervals for avoid not needed reboots.<br>
-26) kernel: mtd: add new spi flashes support.<br>
-27) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
-28) kernel: tty: make n_tty_read() always abort if hangup is in progress.<br>
-29) kernel: mips: c-r4k: fix data corruption related to cache coherence.<br>
-30) kernel: mips: fix clean of vmlinuz.{32,ecoff,bin,srec}.<br>
-31) kernel: mm: pin address_space before dereferencing it while isolating an LRU page.<br>
-32) kernel: mm/madvise.c: fix madvise() infinite loop under special circumstances.<br>
-33) kernel: mm/mempolicy.c: avoid use uninitialized preferred_node.<br>
-34) kernel: mm: fix the NULL mapping case in __isolate_lru_page().<br>
-35) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
-36) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
-37) kernel: net: ip6mr: only set ip6mr_table from setsockopt when ip6mr_new_table succeeds.<br>
-38) kernel: net: net/packet: refine check for priv area size.<br>
-39) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
-40) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
-41) kernel: net: llc: better deal with too small mtu.<br>
-42) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
-43) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
-44) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
-45) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
-46) kernel: net: netfilter: ebtables: fix erroneous reject of last rule.<br>
-47) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
-48) kernel: ralink_wifi: rrm: fix bss beacon prepare for announse RRM cap.<br>
-49) kernel: ralink_wifi: rrm: need update CAP and IEs if mode switch.<br>
-50) kernel: ralink_wifi: rrm: use 0 random interval.<br>
-51) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-52) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-53) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-54) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
-55) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices).<br>
-56) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
-57) kernel: ralink_wifi: fix reset one sec counters<br>
-58) kernel: ralink_wifi: fix channel repports.<br>
-59) kernel: ralink_wifi: fix pkt_len calc.<br>
-60) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
-61) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
-62) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
-<br>
-<br>
-<b>7.5.x</b><br>
-1) webui: new stage of refatoring.<br>
-2) kernel: mips: io: add barrier after register read in readX().<br>
-3) kernel: tcp: do not overshoot window_clamp in tcp_rcv_space_adjust().<br>
+3) configs: add DM9601 usb->eth adapter support (temp use as eth modem).<br>
+4) miniupnpd: update to 2.1 version.<br>
+5) entware: update install script.<br>
+6) build_system/init/libwive/calibs: prepare to support mt7615.<br>
+7) build_system: add and use ngix (goahead removed).<br>
+8) build_system: auto add changelog to result fw archive.<br>
+9) init.d: avoid enneded vpn helper restarts.<br>
+10) init.d: renew routes to server after get new vpn ip to.<br>
+11) init.d: add pure usbether modem mode (hilink).<br>
+12) init.d: dynamic ifname for wwan modem mode.<br>
+13) init.d: avoid modules double start (prevent potantioanl races).<br>
+14) init.d: avoid ethtun stop if modules allready removed.<br>
+15) init.d: fix and improve 6to4 support.<br>
+16) init.d: nginx: unify service restart logic.<br>
+17) init.d: fix printer support.<br>
+18) init.d: add wait ready after modules reload.<br>
+19) init.d: move to first ra up scheme (dbdc mode at first start wait ra0 up before allow rai0 up).<br>
+20) init.d: iptables: limit num callback connection for CWMP from WAN to 4, and drop from others.<br>
+21) init.d: fix usbnet regression after move hotplug rescan call early.<br>
+22) libwive: add shadow password support.<br>
+23) libnvram: fix small memory leak.<br>
+24) cwmpd: fix memory leaks.<br>
+25) webui: rework wireless settings (fixup and refactoring).<br>
+26) webui: new stage of refatoring.<br>
+27) kernel: config: increase WDG intervals for avoid not needed reboots.<br>
+28) kernel: tcp: do not overshoot window_clamp in tcp_rcv_space_adjust().<br>
+29) kernel: mtd: add new spi flashes support.<br>
+30) kernel: exit.c: avoid undefined behaviour when calling wait4().<br>
+31) kernel: tty: make n_tty_read() always abort if hangup is in progress.<br>
+32) kernel: mips: io: add barrier after register read in readX().<br>
+33) kernel: mips: c-r4k: fix data corruption related to cache coherence.<br>
+34) kernel: mips: fix clean of vmlinuz.{32,ecoff,bin,srec}.<br>
+35) kernel: mm: pin address_space before dereferencing it while isolating an LRU page.<br>
+36) kernel: mm/madvise.c: fix madvise() infinite loop under special circumstances.<br>
+37) kernel: mm/mempolicy.c: avoid use uninitialized preferred_node.<br>
+38) kernel: mm: fix the NULL mapping case in __isolate_lru_page().<br>
+39) kernel: net: tcp: purge write queue in tcp_connect_init().<br>
+40) kernel: net: inetpeer: fix uninit-value in inet_getpeer.<br>
+41) kernel: net: ip6mr: only set ip6mr_table from setsockopt when ip6mr_new_table succeeds.<br>
+42) kernel: net: net/packet: refine check for priv area size.<br>
+43) kernel: net: ipv4: fix memory leaks in udp_sendmsg, ping_v4_sendmsg.<br>
+44) kernel: net: ipv4/ipv6: test tailroom before appending to linear skb.<br>
+45) kernel: net: llc: better deal with too small mtu.<br>
+46) kernel: net: llc: properly handle dev_queue_xmit() return value.<br>
+47) kernel: net: netlink: fix uninit-value in netlink_sendmsg.<br>
+48) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
+49) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
+50) kernel: net: netfilter: ebtables: fix erroneous reject of last rule.<br>
+51) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
+52) kernel: ralink_wifi: rrm: fix bss beacon prepare for announse RRM cap.<br>
+53) kernel: ralink_wifi: rrm: need update CAP and IEs if mode switch.<br>
+54) kernel: ralink_wifi: rrm: use 0 random interval.<br>
+55) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+56) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+57) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+58) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+59) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices).<br>
+60) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
+61) kernel: ralink_wifi: fix reset one sec counters<br>
+62) kernel: ralink_wifi: fix channel repports.<br>
+63) kernel: ralink_wifi: fix pkt_len calc.<br>
+64) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
+65) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
+66) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
 <br>
 <br>
