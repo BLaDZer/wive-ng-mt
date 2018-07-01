@@ -4151,6 +4151,7 @@
 <br>
 <b>7.5.x</b><br>
 1) webui: new stage of refatoring.<br>
-2) kernel: tcp: do not overshoot window_clamp in tcp_rcv_space_adjust().<br>
+2) kernel: mips: io: add barrier after register read in readX().<br>
+3) kernel: tcp: do not overshoot window_clamp in tcp_rcv_space_adjust().<br>
 <br>
 <br>
