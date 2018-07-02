@@ -435,11 +435,19 @@ VOID MCUCtrlInit(PRTMP_ADAPTER pAd)
 
 VOID MCUCtrlExit(PRTMP_ADAPTER pAd)
 {
-	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
+	struct MCU_CTRL *MCtrl;
 	struct CMD_RSP_EVENT *CmdRspEvent, *CmdRspEventTmp;
 	ULONG IrqFlags = 0;
 
 	RtmpOsMsDelay(30);
+
+	if (!pAd)
+		return;
+
+	MCtrl = &pAd->MCUCtrl;
+
+	if (!MCtrl)
+		return;
 
 	RTMP_IRQ_LOCK(&MCtrl->CmdRspEventListLock, IrqFlags);
 	DlListForEachSafe(CmdRspEvent, CmdRspEventTmp, &MCtrl->CmdRspEventList, struct CMD_RSP_EVENT, List)

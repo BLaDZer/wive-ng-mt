@@ -4152,5 +4152,6 @@
 64) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
 65) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
 66) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
+67) kernel: ralink_wifi: mt7610: fix module reload in very noised radio.<br>
 <br>
 <br>

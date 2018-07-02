@@ -224,7 +224,7 @@ stop() {
 
 wifi_unload() {
     $LOG "Unload wireless modules."
-    mod="mt7610_ap mt76x2_ap mt76x2_sta mt76x3_ap mt7615_ap"
+    mod="mt76x2_ap mt76x3_ap mt7615_ap mt7610_ap mt76x2_sta"
     for module in $mod
     do
 	if [ -d /sys/module/$module ]; then

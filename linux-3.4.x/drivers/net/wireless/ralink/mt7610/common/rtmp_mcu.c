@@ -892,7 +892,15 @@ VOID MCUCtrlInit(PRTMP_ADAPTER pAd)
 
 VOID MCUCtrlExit(PRTMP_ADAPTER pAd)
 {
-	struct MCU_CTRL *MCtrl = &pAd->MCUCtrl;
+	RtmpOsMsDelay(30);
+
+	if (!pAd)
+		return;
+
+	MCtrl = &pAd->MCUCtrl;
+
+	if (!MCtrl)
+		return;
 
 	RTMP_SEM_EVENT_DESTORY(&MCtrl->FWUploadSem);
 	RTMP_SEM_EVENT_DESTORY(&MCtrl->CmdRspEventListLock);
