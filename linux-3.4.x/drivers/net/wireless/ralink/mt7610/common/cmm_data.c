@@ -316,7 +316,8 @@ NDIS_STATUS MiniportMMRequest(
 		/* Reset is in progress, stop immediately*/
 		if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RESET_IN_PROGRESS |
 								fRTMP_ADAPTER_HALT_IN_PROGRESS |
-								fRTMP_ADAPTER_NIC_NOT_EXIST)) ||
+								fRTMP_ADAPTER_NIC_NOT_EXIST |
+								fRTMP_ADAPTER_RADIO_OFF)) ||
 			 !RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_START_UP)
 			)
 		{
@@ -1280,6 +1281,11 @@ VOID TxDoneCleanupExec(
 	ULONG FreeNum;
 	UCHAR QueIdx;
 	int NeedCleanupTimer = 0;
+
+	if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RADIO_OFF |
+				 fRTMP_ADAPTER_RESET_IN_PROGRESS |
+				 fRTMP_ADAPTER_HALT_IN_PROGRESS)))
+		return;
 
 	DEQUEUE_LOCK(&pAd->irq_lock, FALSE, IrqFlags);
 	for (QueIdx=0; QueIdx<NUM_OF_TX_RING; QueIdx++) {

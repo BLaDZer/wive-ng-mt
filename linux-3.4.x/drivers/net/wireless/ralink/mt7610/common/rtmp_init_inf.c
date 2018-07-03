@@ -861,6 +861,13 @@ VOID RTMPDrvClose(
 
 	Cancelled = FALSE;
 
+	 /* restore RF state before down */
+	 if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF))
+	 {
+	 	DBGPRINT(RT_DEBUG_TRACE, ("Radio_ON first....\n"));
+    		MlmeRadioOn(pAd);
+	 }
+
 
 #ifdef CONFIG_AP_SUPPORT
 #ifdef BG_FT_SUPPORT

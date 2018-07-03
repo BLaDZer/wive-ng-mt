@@ -248,6 +248,9 @@ INT	Set_Channel_Proc(
  	INT		success = TRUE;
 	UCHAR	Channel;	
 
+	if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF))
+		return FALSE;
+
 	Channel = (UCHAR) simple_strtol(arg, 0, 10);
 
 #ifdef APCLI_AUTO_CONNECT_SUPPORT
