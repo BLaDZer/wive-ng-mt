@@ -4156,3 +4156,7 @@
 68) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
 <br>
 <br>
+<b>8.0.x</b><br>
+1) init.d: fix transmission start/restart race.<br>
+<br>
+<br>
