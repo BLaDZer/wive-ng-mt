@@ -4159,6 +4159,7 @@
 <b>8.0.x</b><br>
 1) init.d: fix transmission start/restart race.<br>
 2) kernel: mips: io: Add barrier after register read in inX().<br>
-3) kernel: net: af_key: always verify length of provided sadb_key.<br>
+3) kernel: time: make sure jiffies_to_msecs() preserves non-zero time periods.<br>
+4) kernel: net: af_key: always verify length of provided sadb_key.<br>
 <br>
 <br>
