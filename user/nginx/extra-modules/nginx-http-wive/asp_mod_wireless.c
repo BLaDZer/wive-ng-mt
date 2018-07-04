@@ -322,7 +322,7 @@ static int getWlanStaInfo(webs_t *wp, char** params, int nparams)
 			// Tx Rate
 			outWrite(T("\"txrate\":\"%d\", "), getWlanRate(pe->TxRate));
 			// RSSI
-#if defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)
+#if defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E) || defined(CONFIG_MT7615_AP_DBDC_MODE)
 			outWrite(T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
 			outWrite(T("\"quality0\":\"%d\", \"quality1\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
@@ -371,7 +371,7 @@ static int getWlanStaInfo(webs_t *wp, char** params, int nparams)
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 			outWrite(T("\"rssi0\":\"%d\", "), (int)(pe->AvgRssi0));
 			outWrite(T("\"quality0\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0));
-#elif defined(CONFIG_RT_SECOND_IF_MT7612E)
+#elif defined(CONFIG_RT_SECOND_IF_MT7612E) || defined(CONFIG_MT7615_AP_DBDC_MODE)
 			outWrite(T("\"rssi0\":\"%d\", \"rssi1\":\"%d\", "), (int)(pe->AvgRssi0), (int)(pe->AvgRssi1));
 			outWrite(T("\"quality0\":\"%d\", \"quality1\":\"%d\", "), ConvertRssiToSignalQuality(pe->AvgRssi0), ConvertRssiToSignalQuality(pe->AvgRssi1));
 #else
