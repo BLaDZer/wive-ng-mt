@@ -18,6 +18,7 @@ rm -f linux
 
 echo "------------REMOVE_FABRICT---------------"
 rm -rf $ROOTDIR/user/rt2880_app/ated/*
+rm -rf $ROOTDIR/user/rt2880_app/ated_ext/*
 rm -rf $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate/*
 rm -rf $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate/*
 rm -rf $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate/*

@@ -437,6 +437,7 @@ fulldump
 # prevent upload ATE in git
 #
 /user/rt2880_app/ated/*
+/user/rt2880_app/ated_ext/*
 /linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
 /linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
 /linux-3.4.x/drivers/net/wireless/ralink/mt76x3/ate

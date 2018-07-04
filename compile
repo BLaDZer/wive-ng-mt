@@ -251,6 +251,8 @@ if [ "$FMODE" = "YES" ]; then
     echo "Copy ATE code to tree"
     mkdir -p $ROOTDIR/user/rt2880_app/ated
     cp -rf /mnt/svalka/linux/ate/ated/* $ROOTDIR/user/rt2880_app/ated
+    mkdir -p $ROOTDIR/user/rt2880_app/ated_ext
+    cp -rf /mnt/svalka/linux/ate/ated_ext/* $ROOTDIR/user/rt2880_app/ated_ext
     mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
     cp -rf /mnt/svalka/linux/ate/ate/rtpci/mt7610/ate/* $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt7610/ate
     mkdir -p $ROOTDIR/linux-3.4.x/drivers/net/wireless/ralink/mt76x2/ate
