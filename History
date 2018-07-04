@@ -4158,5 +4158,6 @@
 <br>
 <b>8.0.x</b><br>
 1) init.d: fix transmission start/restart race.<br>
+2) kernel: net: af_key: always verify length of provided sadb_key.<br>
 <br>
 <br>
