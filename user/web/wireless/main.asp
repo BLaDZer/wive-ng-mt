@@ -129,8 +129,8 @@
 // Basic Settings
 
 				//MBSSID Mode
-				var have_mbssid = BUILD_MBSSID == '1' && ((enableWireless && BUILD_5GHZ_SUPPORT) || enableWirelessAc)
-				displayElement('basicMbssidModeT', have_mbssid);
+				var have_mbssid = BUILD_MBSSID == '1' && enableWirelessAny;
+				displayElement('basicMbssidModeT', have_mbssid && BUILD_5GHZ_SUPPORT);
 
 				form.mbssid_mode.disabled = !have_mbssid;
 				form.mbssidapisolated.disabled = !have_mbssid;
@@ -410,7 +410,6 @@
 
 			function ssidDisplay(form, show)
 			{
-				var have_mbssid = BUILD_MBSSID == '1';
 				var count = form.bssid_num.value * 1;
 				if (show === undefined) show = true;
 
@@ -418,8 +417,8 @@
 					displayElement('div_hssid' + i, show && i<count);
 
 				// Allow only 4 BSSID's
-				displayElement(form.addBSSIDbtn, have_mbssid);
-				form.addBSSIDbtn.disabled = ((count >= bssid_num) || (!have_mbssid));
+				displayElement(form.addBSSIDbtn, true);
+				form.addBSSIDbtn.disabled = (count >= bssid_num) || !show;
 			}
 
 			function ssidAdd(form)
