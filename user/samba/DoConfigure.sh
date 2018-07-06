@@ -16,8 +16,7 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 #some function direct enable
 CONFOPTS="$CONFOPTS --with-syslog --enable-largefile"
 #disable some function
-CONFOPTS="$CONFOPTS --disable-iprint --disable-pie --disable-fam --disable-cups --disable-debug --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --disable-dmalloc --disable-iprint"
+CONFOPTS="$CONFOPTS --disable-iprint --disable-pie --disable-fam --disable-cups --disable-debug --enable-shared --disable-static --disable-dmalloc"
 CONFOPTS="$CONFOPTS --disable-developer --disable-krb5developer"
 CONFOPTS="$CONFOPTS --without-ldap --without-ads --without-cifsmount"
 CONFOPTS="$CONFOPTS --without-cifsupcall --without-sys-quotas --without-quotas"

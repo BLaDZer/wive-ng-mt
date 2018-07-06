@@ -505,5 +505,5 @@ test check: test_compile
 test_compile: $(LOCAL_INSTALL_PATH)
 	$(Q)$(MAKE) -C test compile
 
-romfs: install_headers
-	cp -aprfv lib/*.so* ../romfs/lib
+romfs:
+	echo OK

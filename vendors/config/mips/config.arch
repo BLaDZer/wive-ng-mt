@@ -50,6 +50,7 @@ KERNEL_CROSS_COMPILE		:= $(CROSS_COMPILE)
 CROSS				:= $(CROSS_COMPILE)
 
 CC				:= $(CROSS_COMPILE)gcc
+CPP				:= $(CROSS_COMPILE)cpp
 AS				:= $(CROSS_COMPILE)as
 CXX				:= $(CROSS_COMPILE)g++
 AR				:= $(CROSS_COMPILE)ar
@@ -59,6 +60,7 @@ RANLIB				:= $(CROSS_COMPILE)ranlib
 ELF2FLT				:= elf2flt
 STRIPTOOL			:= $(CROSS_COMPILE)strip
 STRIP				:= $(STRIPTOOL)
+GIT				:= /bin/true
 
 GCC_DIR   			:= $(shell export LC_ALL=C; $(CC) -v 2>&1|grep specs|sed -e 's/.* \(.*\)specs/\1\./')
 MACH_DIR  			:= $(shell export LC_ALL=C; $(CC) -print-multi-directory)
