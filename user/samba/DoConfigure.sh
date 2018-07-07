@@ -41,6 +41,7 @@ samba_cv_have_longlong=yes \
 samba_cv_HAVE_C99_VSNPRINTF=yes \
 samba_cv_HAVE_INO64_T=yes \
 samba_cv_HAVE_OFF64_T=yes \
+samba_cv_HAVE_IPV6=no \
 samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
 samba_cv_HAVE_BROKEN_GETGROUPS=no \
 samba_cv_HAVE_BROKEN_READDIR_NAME=no \
