@@ -11,16 +11,24 @@ start() {
 	$LOG "WARNING!!! You use default Login and Password!!! Please change it."
     fi
 
-    # generate pass file
-    printf "$Login::0:0:Adminstrator:/:/bin/sh\n"							> /etc/passwd
+    # generate pass file (important for samba! first daemons users, second real users)
+
+    # full priv for some daemons
+    printf "daemon::0:0:Adminstrator:/media:/bin/false\n"						> /etc/passwd
+    # restrict privs for others daemons
     printf "nobody:*:99:99:nobody:/var:/bin/false\n"							>> /etc/passwd
 
+    # admin user
+    printf "$Login::0:0:Adminstrator:/:/bin/sh\n"							>> /etc/passwd
+
+    # second webUI restricted user
     if [ "$UserPassword" != "" ]; then
         printf "$UserLogin::1:1:Ordinary user:/:/bin/false\n"						>> /etc/passwd
     fi
 
+    # ssh managment user
     if [ "$MngmtLogin" != "" ] && [ "$MngmtPassword" != "" ]; then
-	printf "$MngmtLogin::0:0:Adminstrator:/:/bin/sh\n"	>> /etc/passwd
+	printf "$MngmtLogin::0:0:Adminstrator:/:/bin/sh\n"						>> /etc/passwd
     fi
 
     # generate group file

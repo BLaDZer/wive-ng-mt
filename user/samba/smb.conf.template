@@ -1,8 +1,8 @@
 ############TEMPLATE SECTION START######################
     announce version		= 5.1
-    bind interfaces only	= Yes
+    bind interfaces only	= yes
     keepalive			= 180
-    smb ports			= 139
+    smb ports			= 445 139
 
     private dir			= /etc
     smb passwd file		= /etc/smbpasswd

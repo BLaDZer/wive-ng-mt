@@ -378,6 +378,8 @@ fulldump
 /user/ethtool/configure
 /user/nginx/History
 /user/nginx/history.html
+/user/samba36/source3/Makefile
+/user/samba36/source3/configure
 
 #
 # exclude enerated files from kernel

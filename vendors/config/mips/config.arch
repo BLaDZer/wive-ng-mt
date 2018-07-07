@@ -60,6 +60,8 @@ RANLIB				:= $(CROSS_COMPILE)ranlib
 ELF2FLT				:= elf2flt
 STRIPTOOL			:= $(CROSS_COMPILE)strip
 STRIP				:= $(STRIPTOOL)
+
+# stub
 GIT				:= /bin/true
 
 GCC_DIR   			:= $(shell export LC_ALL=C; $(CC) -v 2>&1|grep specs|sed -e 's/.* \(.*\)specs/\1\./')

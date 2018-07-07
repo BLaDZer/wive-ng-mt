@@ -21,7 +21,7 @@ if [ "$SmbEnabled" = "1" ]; then
     echo "    netbios name = $SmbNetBIOS" >> $CONFIG
     echo "    server string = $SmbString" >> $CONFIG
     echo "    os level = $SmbOsLevel" >> $CONFIG
-    echo "    force user = $Login" >> $CONFIG
+    echo "    force user = daemon" >> $CONFIG
     echo "    time server = $ntp_support" >> $CONFIG
 
     # external wins register support
@@ -85,6 +85,9 @@ get_param() {
     eval `nvram_buf_get 2860 WorkGroup SmbNetBIOS SmbString SmbOsLevel SmbTimeserver NTPEnabled NTPServerIP Login l2tp_srv_enabled`
     CONFIG="/etc/smb.conf"
     TEMPLATE="/etc/smb.conf.template"
+
+    # create smabass if not exist
+    touch /etc/smbpasswd
 
     if [ "$SmbTimeserver" = "1" ] && [ "$NTPEnabled" = "1" ] && [ "$NTPServerIP" != "" ]; then
 	ntp_support="yes"

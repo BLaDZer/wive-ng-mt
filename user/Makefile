@@ -79,7 +79,12 @@ dir_$(CONFIG_USER_RADIUS)                   += freeradius
 dir_$(CONFIG_USER_TCPDUMP)		    += tcpdump
 dir_$(CONFIG_USER_ARPWATCH)		    += arpwatch
 
+ifdef CONFIG_RT2880_FLASH_8M
 dir_$(CONFIG_USER_SAMBA)		    += samba
+else
+dir_$(CONFIG_USER_SAMBA)		    += samba36
+endif
+
 dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
 dir_$(CONFIG_USER_NODOGSPLASH)              += nodogsplash
 
@@ -119,6 +124,7 @@ dir_$(CONFIG_USER_NGINX)                    += nginx
 
 # generate certs for apps
 dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
+
 
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
