@@ -14,7 +14,7 @@ SMBCFLAGS	+= -Wall $(CFLAGS) -DMAX_DEBUG_LEVEL="0"
 SMBLDFLAGS	+= $(LDFLAGS)
 
 all:
-	cd $(SRC_NAME) && make -j1
+	cd $(SRC_NAME) && make -j$(HOST_NCPU)
 
 install:
 	#DO NOT MAKE INSTALL NEED!!! Run make install may be crashed you system!
