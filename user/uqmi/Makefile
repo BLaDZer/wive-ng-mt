@@ -9,10 +9,9 @@ all:
 	@set -e;
 	for i in $(DIRS) ; do make -j1 -C $$i $@ || exit $?; done
 
+clean:
+	for i in $(DIRS) ; do make -C $$i clean ; done
+
 romfs:
 	@set -e;
-	for i in $(DIRS) ; do make -j1 -C $$i $@ || exit $?; done
-
-clean:
-	@set -e;
-	for i in $(DIRS) ; do make -C $$i clean ; done
+	$(ROMFSINST) -S src/uqmi /bin/uqmi

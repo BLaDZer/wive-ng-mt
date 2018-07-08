@@ -42,6 +42,3 @@ $(TARGET): $(OBJS)
 clean:
 	$(MAKE) -C libubox clean
 	@rm -f $(OBJS) $(TARGET) $(service_sources) $(service_headers) qmi-errors.c
-
-romfs:
-	$(ROMFSINST) /bin/uqmi

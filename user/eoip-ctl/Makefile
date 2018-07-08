@@ -13,7 +13,6 @@ libnetlink.o: libnetlink.c libnetlink.h
 	$(CC) $(CFLAGS) $(LDFLAGS) -Wall -Os -c libnetlink.c
 
 clean:
-	@set -e;
 	rm -f eoip libnetlink.o
 
 romfs:

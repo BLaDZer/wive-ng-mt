@@ -14,7 +14,6 @@ all:
 	for i in $(UTILSLIST); do $(CC) $(CFLAGS) $(LDFLAGS) $$i.c -o $$i; done
 
 clean:
-	@set -e;
 	for i in $(UTILSLIST); do rm -rf $$i; done
 
 install:
