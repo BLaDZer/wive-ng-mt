@@ -46,6 +46,7 @@ libreplace_cv_REPLACE_READDIR=no \
 libreplace_cv_REPLACE_INET_NTOA=no \
 libreplace_cv_HAVE_SOCK_SIN_LEN=no \
 libreplace_cv_READDIR_GETDIRENTRIES=no \
+libreplace_cv_HAVE_IPV6=no \
 LINUX_LFS_SUPPORT=yes \
 samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
 samba_cv_USE_SETEUID=yes \
