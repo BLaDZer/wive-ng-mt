@@ -23,9 +23,8 @@ ifdef CONFIG_CRYPTO_DEV_LINUX
 COPTS+=-DHAVE_CRYPTODEV
 endif
 
-# make only one thread
 all: config_test
-	$(MAKE) -j1 -C $(SRC_NAME)
+	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 config_test:
 	( if [ -f ./config_done ]; then \
