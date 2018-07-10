@@ -284,7 +284,10 @@ dhcpcreconf() {
 	# IPOE dualstack - reqest IA-NA/PD
 	# PPTP/L2TP/PPPOE dualstack - do not reqest IA-NA, only PD
 	if [ "$vpnEnabled" != "on" ] || [ "$Ipv6InVPN" != "1" ]; then
-	    REQIANA="send ia-na $ID;"
+	    # force disable ia-na from user config
+	    if [ "$IPv6DisableIANA" != "1" ]; then
+		REQIANA="send ia-na $ID;"
+	    fi
 	fi
 	SLAID="sla-id 0;"
 	SLALEN="sla-len 8;"
@@ -323,7 +326,8 @@ dhcpcstop() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU`
+    eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen \
+	    IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU IPv6DisableIANA`
 
     if [ "$SysLogd" = "1" ]; then
 	logto="syslog"
