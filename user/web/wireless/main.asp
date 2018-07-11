@@ -718,16 +718,19 @@
 				form.n_gi.options.selectedIndex = (NVRAM_HT_GI == "1") ? 1 : 0;
 				form.n_stbc.options.selectedIndex = (NVRAM_HT_STBC == "1") ? 1 : 0;
 
+				//add for 4t4r devices
 				if (BUILD_WLAN_4T4R == "1")
 				{
-					for (i = 16; i < 24; i++)
+					for (i = 16; i < 31; i++)
 						form.n_mcs.options[i] = new Option(i, i);
 
-					var mcs_length = form.n_mcs.options.length;
-					form.n_mcs.options[mcs_length] = new Option("32", "32");
-					mcs_length++;
-					form.n_mcs.options[mcs_length] = new Option(_("wireless auto"), "33");
 				}
+
+				//add high auto mode
+				var mcs_length = form.n_mcs.options.length;
+				form.n_mcs.options[mcs_length] = new Option("32", "32");
+				mcs_length++;
+				form.n_mcs.options[mcs_length] = new Option(_("wireless auto"), "33");
 
 				if (ht_mcs <= mcs_length-1)
 					form.n_mcs.options.selectedIndex = ht_mcs;
