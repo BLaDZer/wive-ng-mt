@@ -735,9 +735,9 @@
 				if (ht_mcs <= mcs_length-1)
 					form.n_mcs.options.selectedIndex = ht_mcs;
 				else if (ht_mcs == 32)
-					form.n_mcs.options.selectedIndex = mcs_length-2;
-				else if (ht_mcs == 33)
 					form.n_mcs.options.selectedIndex = mcs_length-1;
+				else if (ht_mcs == 33)
+					form.n_mcs.options.selectedIndex = mcs_length;
 
 				form.n_rdg.options.selectedIndex = (NVRAM_HT_RDG == "0") ? 0 : 1;
 
