@@ -748,10 +748,29 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		}
 	}
 
-	// Rate for a, b, g, n, ac
-	// In the future need allow set this per MBSSID
-	if (strncmp(abg_rate, "", 1))
-		switch (rate) {
+	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
+	if (is_ht) {
+		ngx_nvram_bufset(wp,"HT_MCS", n_mcs);
+		ngx_nvram_bufset(wp,"HT_OpMode", n_mode);
+		ngx_nvram_bufset(wp,"HT_BW", n_bandwidth);
+		ngx_nvram_bufset(wp,"HT_BWINIC", n_bandwidthinic);
+		ngx_nvram_bufset(wp,"HT_GI", n_gi);
+		ngx_nvram_bufset(wp,"HT_STBC", n_stbc);
+		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
+		ngx_nvram_bufset(wp,"HT_AMSDU", n_amsdu);
+		ngx_nvram_bufset(wp,"HT_AutoBA", n_autoba);
+		ngx_nvram_bufset(wp,"HT_BADecline", n_badecline);
+		ngx_nvram_bufset(wp,"HT_TxStream", tx_stream);
+		ngx_nvram_bufset(wp,"HT_RxStream", rx_stream);
+		// HT_RGD depend at HT_HTC+ frame support
+		ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
+		ngx_nvram_bufset(wp,"HT_RDG", n_rdg);
+
+	} else {
+		// Rate for a, b, g, n, ac
+		// In the future need allow set this per MBSSID
+		if (strncmp(abg_rate, "", 1)) {
+		    switch (rate) {
 			case 1:
 				ngx_nvram_bufset(wp,"HT_MCS", "0");
 				break;
@@ -791,25 +810,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 			default:
 				ngx_nvram_bufset(wp,"HT_MCS", "33");
 				break;
+		    }
 		}
-
-	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
-	if (is_ht) {
-		ngx_nvram_bufset(wp,"HT_OpMode", n_mode);
-		ngx_nvram_bufset(wp,"HT_BW", n_bandwidth);
-		ngx_nvram_bufset(wp,"HT_BWINIC", n_bandwidthinic);
-		ngx_nvram_bufset(wp,"HT_GI", n_gi);
-		ngx_nvram_bufset(wp,"HT_STBC", n_stbc);
-		ngx_nvram_bufset(wp,"HT_MCS", n_mcs);
-		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
-		ngx_nvram_bufset(wp,"HT_AMSDU", n_amsdu);
-		ngx_nvram_bufset(wp,"HT_AutoBA", n_autoba);
-		ngx_nvram_bufset(wp,"HT_BADecline", n_badecline);
-		ngx_nvram_bufset(wp,"HT_TxStream", tx_stream);
-		ngx_nvram_bufset(wp,"HT_RxStream", rx_stream);
-		// HT_RGD depend at HT_HTC+ frame support
-		ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
-		ngx_nvram_bufset(wp,"HT_RDG", n_rdg);
 	}
 
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
