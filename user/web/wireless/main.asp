@@ -718,7 +718,7 @@
 				form.n_gi.options.selectedIndex = (NVRAM_HT_GI == "1") ? 1 : 0;
 				form.n_stbc.options.selectedIndex = (NVRAM_HT_STBC == "1") ? 1 : 0;
 
-				if (BUILD_WLAN_3T3R == "1")
+				if (BUILD_WLAN_4T4R == "1")
 				{
 					for (i = 16; i < 24; i++)
 						form.n_mcs.options[i] = new Option(i, i);
@@ -741,12 +741,6 @@
 				form.n_amsdu.options.selectedIndex = (NVRAM_HT_AMSDU ==  "0") ? 0 : 1;
 				form.n_autoba.options.selectedIndex = (NVRAM_HT_AutoBA == "0") ? 0 : 1;
 				form.n_badecline.options.selectedIndex = (NVRAM_HT_BADecline == "0") ? 0 : 1;
-
-				if (BUILD_WLAN_3T3R == "1")
-				{
-					form.rx_stream.options[2] = new Option("3", "3");
-					form.tx_stream.options[2] = new Option("3", "3");
-				}
 
 				if (BUILD_WLAN_4T4R == "1")
 				{

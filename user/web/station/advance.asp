@@ -132,7 +132,7 @@ function initTranslation()
 
 function initValue()
 {
-	var is3t3r = '<% is3t3r(); %>';
+	var is4t4r = '<% is4t4r(); %>';
 	var ht_mcs = '<% getCfgZero(1, "HT_MCS"); %>';
 	var clone = '<% getCfgZero(1, "macCloneEnabled"); %>';
 	var staAR = '<% getCfgZero(1, "AutoRoaming"); %>';
@@ -144,9 +144,9 @@ function initValue()
 
 	var form = document.sta_advance;
 
-	if (1*is3t3r == 1)
+	if (1*is4t4r == 1)
 	{
-		for (i = 16; i < 24; i++)
+		for (i = 16; i < 31; i++)
 			form.n_mcs.options[i] = new Option(i, i);
 	}
 	var mcs_length = form.n_mcs.options.length;

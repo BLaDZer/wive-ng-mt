@@ -1660,9 +1660,9 @@ static void wirelessSetSecurity(webs_t* wp, char_t *path, char_t *query)
 	setSecurity(wp, RT2860_NVRAM);
 }
 
-static int is3t3r(webs_t *wp, char** params, int nparams)
+static int is4t4r(webs_t *wp, char** params, int nparams)
 {
-#if defined(CONFIG_RALINK_RT3883_3T3R)
+#if (((CONFIG_RT_FIRST_CARD == 7615) || (CONFIG_RT_SECOND_CARD == 7615)) && !defined(CONFIG_MT7615_AP_DBDC_MODE))
 	outWrite(T("1"));
 #else
 	outWrite(T("0"));
@@ -1879,7 +1879,7 @@ int asp_mod_wireless_init()
 	aspDefineFunc("getWlanM2UBuilt", getWlanM2UBuilt, EVERYONE);
 
 	aspDefineFunc("listCountryCodes", listCountryCodes, EVERYONE);
-	aspDefineFunc("is3t3r", is3t3r, EVERYONE);
+	aspDefineFunc("is4t4r", is4t4r, EVERYONE);
 	aspDefineFunc("is5gh_support", is5gh_support, EVERYONE);
 	aspDefineFunc("is5gh_1t1r", is5gh_1t1r, EVERYONE);
 	aspDefineFunc("getLDPCBuilt", getLDPCBuilt, EVERYONE);
