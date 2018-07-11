@@ -718,26 +718,27 @@
 				form.n_gi.options.selectedIndex = (NVRAM_HT_GI == "1") ? 1 : 0;
 				form.n_stbc.options.selectedIndex = (NVRAM_HT_STBC == "1") ? 1 : 0;
 
+				//get last element position
+				var mcs_lastelem = form.n_mcs.options.length-1;
+
 				//add for 4t4r devices
 				if (BUILD_WLAN_4T4R == "1")
 				{
 					for (i = 16; i < 32; i++)
 						form.n_mcs.options[i] = new Option(i, i);
 
+					mcs_lastelem++;
+					form.n_mcs.options[mcs_lastelem] = new Option("32", "32");
+					mcs_lastelem++;
+					form.n_mcs.options[mcs_lastelem] = new Option(_("wireless auto"), "33");
 				}
 
-				//add high auto mode
-				var mcs_length = form.n_mcs.options.length;
-				form.n_mcs.options[mcs_length] = new Option("32", "32");
-				mcs_length++;
-				form.n_mcs.options[mcs_length] = new Option(_("wireless auto"), "33");
-
-				if (ht_mcs <= mcs_length-1)
+				if (ht_mcs <= mcs_lastelem-1)
 					form.n_mcs.options.selectedIndex = ht_mcs;
 				else if (ht_mcs == 32)
-					form.n_mcs.options.selectedIndex = mcs_length-1;
+					form.n_mcs.options.selectedIndex = mcs_lastelem-1;
 				else if (ht_mcs == 33)
-					form.n_mcs.options.selectedIndex = mcs_length;
+					form.n_mcs.options.selectedIndex = mcs_lastelem;
 
 				form.n_rdg.options.selectedIndex = (NVRAM_HT_RDG == "0") ? 0 : 1;
 
