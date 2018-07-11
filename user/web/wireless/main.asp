@@ -721,7 +721,7 @@
 				//add for 4t4r devices
 				if (BUILD_WLAN_4T4R == "1")
 				{
-					for (i = 16; i < 31; i++)
+					for (i = 16; i < 32; i++)
 						form.n_mcs.options[i] = new Option(i, i);
 
 				}

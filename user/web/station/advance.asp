@@ -146,11 +146,12 @@ function initValue()
 
 	if (1*is4t4r == 1)
 	{
-		for (i = 16; i < 31; i++)
+		for (i = 16; i < 32; i++)
 			form.n_mcs.options[i] = new Option(i, i);
 	}
 	var mcs_length = form.n_mcs.options.length;
-	form.n_mcs.options[mcs_length++] = new Option("32", "32");
+	form.n_mcs.options[mcs_length] = new Option("32", "32");
+	mcs_length++;
 	form.n_mcs.options[mcs_length] = new Option("Auto", "33");
 
 	if (1*ht_mcs <= mcs_length-1)
