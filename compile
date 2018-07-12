@@ -25,7 +25,7 @@ case "$MODE" in
 	    # 4t4r sample
 	    DEVNAME="SNR-CPE-ME4-5GHZ-MT"
 	    ;;
-	"MT7621-MT7615-2T2R-8M")
+	"MT7621-MT7615-2T2R-16M-USB")
 	    # DBDC sample
 	    DEVNAME="SNR-CPE-ME2-5GHZ-MT"
 	    ;;
@@ -147,10 +147,10 @@ fi
 
 echo --------------------------------COPY-CONFIG-----------------------------
 #####################################################PER-DEVICES-CONFIGS################################################################
-if [ "$MODE" = "MT7621-MT7615-2T2R-8M" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-8M					$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox						$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config						$ROOTDIR/config/.config
+if [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-16M					$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
