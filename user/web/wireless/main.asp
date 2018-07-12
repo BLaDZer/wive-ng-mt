@@ -727,6 +727,8 @@
 					for (i = 16; i < 32; i++)
 						form.n_mcs.options[i] = new Option(i, i);
 
+					// recalc lastelem afrer add with replace options
+					mcs_lastelem = form.n_mcs.options.length-1;
 					mcs_lastelem++;
 					form.n_mcs.options[mcs_lastelem] = new Option("32", "32");
 					mcs_lastelem++;
