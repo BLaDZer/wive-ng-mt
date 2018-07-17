@@ -127,7 +127,7 @@
 				<param name="SpecVersion" inform="1" get_func="cpe_get_const_string" args="1.0"/>
 				<param name="Manufacturer" inform="1" get_func="cpe_get_igd_di_manufacturer"/>
 				<param name="OUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
-				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="LAN_MAC_ADDR" set_func="cpe_set_nvram_string" />
+				<param name="SerialNumber" inform="1" get_func="cpe_get_nvram_string" args="WAN_MAC_ADDR" set_func="cpe_set_null" />
 				<param name="HardwareVersion" inform="1" get_func="cpe_get_conf_string" args="env:DEVNAME" set_func="cpe_set_conf_string" />
 				<param name="SoftwareVersion" inform="1" rw="1" get_func="cpe_get_conf_string" args="env:VERSIONPKG" set_func="cpe_set_conf_string"/>
 				<param name="ManufacturerOUI" inform="1" get_func="cpe_get_igd_di_manufactureroui"/>
