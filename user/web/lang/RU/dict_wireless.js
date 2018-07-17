@@ -270,7 +270,7 @@ var wireless_dictionary = {
 	'secure ssid title'				: 'Настройки безопасности/шифрования',
 	'secure ssid introduction'			: 'Установите настройки безопасности и шифрования для предотвращения неавторизированного доступа и перехвата данных (рекомендуется использовать WPA2-PSK+AES).',
 	'secure ssid choice'				: 'Выбор SSID',
-	'secure security policy'			: 'Политики безопасности -- ',
+	'secure security policy'			: 'Политики безопасности',
 	'secure security mode'				: 'Режим безопасности',
 	'secure encryp type'				: 'Тип шифрования',
 	'secure wep'					: 'Wire Equivalence Protection (WEP)',
@@ -332,6 +332,7 @@ var wireless_dictionary = {
 	'secure lowsecure mode'				: 'Внимание!__Выбран режим с низким уровнем безопасности._Рекомендуется использовать режим безопасности WPA2-PSK (Personal) или WPA2 (Enterprise).__Установить режим WPA2-PSK (Personal)?',
 	'secure lowsecure mode apply'			: 'Необходимо установить пароль и сохранить настройки.',
 	'secure lowsecure algo'				: 'Внимание!__Выбран алгоритм шифрования с низким уровнем безопасности._Рекомендуется использовать алгоритм AES.__Установить AES?',
+	'secure invalid mac'				: 'Введён некорректный MAC-адрес',
 
 	'apcli title'					: 'Клиент AP',
 	'apcli param'					: 'Здесь вы можете сменить параметры клиента AP.',

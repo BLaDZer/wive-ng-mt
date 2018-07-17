@@ -269,7 +269,7 @@ var wireless_dictionary = {
 	'secure ssid title'			: 'Wireless Security/Encryption Settings',
 	'secure ssid introduction'		: 'You can configure wireless security and encryption to prevent unauthorized access to the router (WPA2-PSK+AES recomended).',
 	'secure ssid choice'			: 'SSID choice',
-	'secure security policy'		: 'Security Policy -- ',
+	'secure security policy'		: 'Security Policy',
 	'secure security mode'			: 'Security Mode',
 	'secure encryp type'			: 'Encrypt Type',
 	'secure wep'				: 'Wired Equivalent Privacy (WEP)',
@@ -331,6 +331,7 @@ var wireless_dictionary = {
 	'secure lowsecure mode'			: 'Warning!\n\rMode with a low level of security is selected._Recommended use WPA2-PSK (Personal) or WPA2 (Enterprise).\n\rSet WPA2-PSK (Personal) mode?',
 	'secure lowsecure mode apply'		: 'You need to set a password and apply the settings.',
 	'secure lowsecure algo'			: 'Warning!\n\rEncryption algorithm with a low lewel of security is selected._Recommended use only AES encryption algorithm.\n\rSet AES encryption?',
+	'secure invalid mac'			: 'Invalid MAC address',
 
 	'apcli title'				: 'AP Client Feature',
 	'apcli param'				: 'Here you can configure AP Client parameters.',

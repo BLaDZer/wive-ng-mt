@@ -105,7 +105,7 @@ else
 {
 	a.add(400,   0, _("treeapp wireless settings"),		"javascript:a.oo(400);");
 	a.add(401, 400, _("treeapp main"),			"javascript:go('wireless/main.asp');");
-	a.add(402, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
+//	a.add(402, 400, _("treeapp security"),			"javascript:go('wireless/security.asp');");
 
     if (AUTH_ROLE == 2)
     {

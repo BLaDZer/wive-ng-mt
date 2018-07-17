@@ -2,6 +2,9 @@
 
 static int default_shown_mbssid[3]  = {0,0,0};
 
+static void setSecurity(webs_t* wp, int nvram);
+
+
 static int getWlan4T4RBuilt(webs_t *wp, char** params, int nparams)
 {
 #if defined(CONFIG_RT_FIRST_IF_MT7615E) || defined(CONFIG_RT_SECOND_IF_MT7615E)
@@ -1022,6 +1025,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+
 #ifdef PRINT_DEBUG
 	// debug print
 	websHeader(wp);
@@ -1093,6 +1097,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 	// reconfigure system 
         wp->on_response_ok = DO_RECONFIGURE;
+
+	setSecurity(wp, RT2860_NVRAM);
 }
 
 static int getVideoTurbineBuilt(webs_t *wp, char** params, int nparams)
@@ -1134,7 +1140,7 @@ static void wirelessWds(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *wds_mode = websGetVar(wp,  T("wds_mode"), T("0"));
 	char_t *wds_list = websGetVar(wp,  T("wds_list"), T(""));
-	char_t *reset    = websGetVar(wp,  T("reset"), T(""));
+	char_t *reset    = websGetVar(wp,  T("reset"), T("0"));
 
 	if (!CHK_IF_DIGIT(reset, 0)) {
 		nvram_fromdef(RT2860_NVRAM, 10, "WdsEnable", "WdsList", "WdsIfName", "WdsPhyMode", "WdsEncrypType",
@@ -1430,7 +1436,6 @@ static void clearRadiusSetting(int nvram, int mbssid)
 
 static void conf8021x(webs_t* wp, int nvram, int mbssid)
 {
-	char_t *RadiusServerIP, *RadiusServerPort, *RadiusServerSecret, *RadiusServerSessionTimeout;
 	char lan_if_addr[32];
 
 	if (getIfIp(getLanIfName(), lan_if_addr) != -1) {
@@ -1440,10 +1445,11 @@ static void conf8021x(webs_t* wp, int nvram, int mbssid)
 	    nvram_bufset(nvram, "PreAuthifname", "br0");
 	}
 
-	LFW(RadiusServerIP, RadiusServerIP);
-	LFW(RadiusServerPort, RadiusServerPort);
-	LFW(RadiusServerSecret, RadiusServerSecret);
-	LFW(RadiusServerSessionTimeout, RadiusServerSessionTimeout);
+	char_t *RadiusServerIP = websGetVar(wp,  racat("RADIUS_Server", mbssid), T(""));
+	char_t *RadiusServerPort = websGetVar(wp,  racat("RADIUS_Port", mbssid), T("1812"));
+	char_t *RadiusServerSecret = websGetVar(wp,  racat("RADIUS_Key", mbssid), T("wive-ng-mt"));
+	char_t *RadiusServerSessionTimeout = websGetVar(wp,  racat("RADIUS_SessionTimeout", mbssid), T("0"));
+
 	if(!strlen(RadiusServerSessionTimeout))
 		RadiusServerSessionTimeout = "0";
 
@@ -1451,10 +1457,7 @@ static void conf8021x(webs_t* wp, int nvram, int mbssid)
 	    STFs(nvram, mbssid, "RADIUS_Server", RadiusServerIP);
 	    STFs(nvram, mbssid, "RADIUS_Port", RadiusServerPort);
 	    STFs(nvram, mbssid, "RADIUS_Key", RadiusServerSecret);
-	    nvram_init(RT2860_NVRAM);
 	    nvram_bufset(nvram, "session_timeout_interval", RadiusServerSessionTimeout);
-	    nvram_commit(RT2860_NVRAM);
-	    nvram_close(RT2860_NVRAM);
 	}
 
 }
@@ -1462,17 +1465,16 @@ static void conf8021x(webs_t* wp, int nvram, int mbssid)
 
 static void confWEP(webs_t* wp, int nvram, int mbssid)
 {
-	char_t *DefaultKeyID, *Key1Type, *Key1Str, *Key2Type, *Key2Str, *Key3Type, *Key3Str, *Key4Type, *Key4Str;
+	char_t *DefaultKeyID = websGetVar(wp, racat("DefaultKeyID", mbssid), T(""));
+	char_t *Key1Str = websGetVar(wp, racat("Key1Str", mbssid), T(""));
+	char_t *Key2Str = websGetVar(wp, racat("Key2Str", mbssid), T(""));
+	char_t *Key3Str = websGetVar(wp, racat("Key3Str", mbssid), T(""));
+	char_t *Key4Str = websGetVar(wp, racat("Key4Str", mbssid), T(""));
 
-	LFW(DefaultKeyID, wep_default_key);
-	LFW(Key1Str, wep_key_1);
-	LFW(Key2Str, wep_key_2);
-	LFW(Key3Str, wep_key_3);
-	LFW(Key4Str, wep_key_4);
-	LFW(Key1Type, WEP1Select);
-	LFW(Key2Type, WEP2Select);
-	LFW(Key3Type, WEP3Select);
-	LFW(Key4Type, WEP4Select);
+	char_t *Key1Type = websGetVar(wp, racat("Key1Type", mbssid), T(""));
+	char_t *Key2Type = websGetVar(wp, racat("Key2Type", mbssid), T(""));
+	char_t *Key3Type = websGetVar(wp, racat("Key3Type", mbssid), T(""));
+	char_t *Key4Type = websGetVar(wp, racat("Key4Type", mbssid), T(""));
 
 	STF(nvram, mbssid, DefaultKeyID);
 	STF(nvram, mbssid, Key1Type);
@@ -1480,24 +1482,20 @@ static void confWEP(webs_t* wp, int nvram, int mbssid)
 	STF(nvram, mbssid, Key3Type);
 	STF(nvram, mbssid, Key4Type);
 
-	nvram_init(RT2860_NVRAM);
 	nvram_bufset(nvram, racat("Key1Str", mbssid+1), Key1Str);
 	nvram_bufset(nvram, racat("Key2Str", mbssid+1), Key2Str);
 	nvram_bufset(nvram, racat("Key3Str", mbssid+1), Key3Str);
 	nvram_bufset(nvram, racat("Key4Str", mbssid+1), Key4Str);
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
 }
 
 static void confWPAGeneral(webs_t* wp, int nvram, int mbssid)
 {
-	char *cipher_str;
-	char *key_renewal_interval;
+	char_t *encType = websGetVar(wp, racat("EncrypType", mbssid), T("AES"));
+	char_t *key_renewal_interval = websGetVar(wp, racat("RekeyInterval", mbssid), T(""));
 
-	LFW(cipher_str, cipher);
-	LFW(key_renewal_interval, keyRenewalInterval);
+	STFs(nvram, mbssid, "EncrypType", encType);
 
-	nvram_init(RT2860_NVRAM);
+/*
 	switch(cipher_str[0]){
 	case '0':
 		STFs(nvram, mbssid, "EncrypType", "TKIP");
@@ -1510,23 +1508,19 @@ static void confWPAGeneral(webs_t* wp, int nvram, int mbssid)
 		STFs(nvram, mbssid, "EncrypType", "TKIPAES");
 		goto out;
 	}
+*/
 	STFs(nvram, mbssid, "DefaultKeyID", "1");
 	STFs(nvram, mbssid, "RekeyInterval", key_renewal_interval);
 	STFs(nvram, mbssid, "RekeyMethod", "TIME");
 	STFs(nvram, mbssid, "IEEE8021X", "0");
-out:
-	nvram_commit(RT2860_NVRAM);
-	nvram_close(RT2860_NVRAM);
-	return;
 }
 
 static void setSecurity(webs_t* wp, int nvram)
 {
 	int mbssid, i;
 	char_t *SSID;
-	char_t *security_mode;
 	char_t *AccessPolicy, *AccessControlList;
-	char_t *reset = websGetVar(wp,  T("reset"), T(""));
+	char_t *reset = websGetVar(wp,  T("reset"), T("0"));
 
 	if (!CHK_IF_DIGIT(reset, 0)) {
 		nvram_init(RT2860_NVRAM);
@@ -1553,22 +1547,16 @@ static void setSecurity(webs_t* wp, int nvram)
 #endif
 	}
 	else {
-		LFW(SSID, ssidIndex);
-		if (!CHK_IF_SET(SSID))
-			return;
-
-		mbssid = atoi(SSID);
-
-		default_shown_mbssid[nvram] = mbssid;
-
-		LFW(security_mode, security_mode);
+	for (mbssid = 0; mbssid < MAX_NUMBER_OF_BSSID; mbssid++) {
+		char_t *security_mode = websGetVar(wp,  racat("AuthMode", mbssid), T(""));
+		if (!security_mode || security_mode[0] == '\0') break;
 
 #ifdef CONFIG_USER_802_1X
 		/* clear Radius settings */
 		clearRadiusSetting(nvram, mbssid);
 #endif
-
 		nvram_init(RT2860_NVRAM);
+
 		if (!strcmp(security_mode, "Disable")) {				// !------------------       Disable Mode --------------
 			STFs(nvram, mbssid, "AuthMode", "OPEN");
 			STFs(nvram, mbssid, "EncrypType", "NONE");
@@ -1591,44 +1579,37 @@ static void setSecurity(webs_t* wp, int nvram)
 			STFs(nvram, mbssid, "IEEE8021X", "0");
 		}
 		else if(!strcmp(security_mode, "WPAPSK")) {				// !------------------       WPA Personal Mode ----------------
-			char *pass_phrase_str;
-			char *pass_phrase_inic_str;
+			char *pass_phrase_str = websGetVar(wp, racat("passphrase", mbssid), "");
+			char *pass_phrase_inic_str = websGetVar(wp, "passphraseinic", "");
 
 			confWPAGeneral(wp, RT2860_NVRAM, mbssid);
-			LFW(pass_phrase_str, passphrase);
-			LFW(pass_phrase_inic_str, passphraseinic);
 			STFs(nvram, mbssid, "AuthMode", security_mode);
 			STFs(nvram, mbssid, "IEEE8021X", "0");
 			nvram_bufset(nvram, racat("WPAPSK", mbssid+1), pass_phrase_str);
 			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
 		}
 		else if(!strcmp(security_mode, "WPA2")) {				// !------------------        WPA2 Enterprise Mode ----------------
-			char *pass_phrase_str;
-			char *pass_phrase_inic_str;
-			char *PreAuth;
+			char *pass_phrase_str = websGetVar(wp, racat("passphrase", mbssid), "");
+			char *pass_phrase_inic_str = websGetVar(wp, "passphraseinic", "");
+			char *PreAuth = websGetVar(wp, racat("PreAuth", mbssid), "0");
 #ifdef CONFIG_USER_802_1X
 			conf8021x(wp, RT2860_NVRAM, mbssid);
 #endif
 			confWPAGeneral(wp, RT2860_NVRAM, mbssid);
 
-			LFW(pass_phrase_str, passphrase);
-			LFW(pass_phrase_inic_str, passphraseinic);
-			LFW(PreAuth, PreAuthentication);
-
 			STFs(nvram, mbssid, "AuthMode", security_mode);
 			STFs(nvram, mbssid, "IEEE8021X", "0");
+			STFs(nvram, mbssid, "PreAuth", PreAuth);
+
 			nvram_bufset(nvram, racat("WPAPSK", mbssid + 1), pass_phrase_str);
 			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
-			STF(nvram, mbssid, PreAuth);
 		}
 		else if(!strcmp(security_mode, "WPA2PSK") ||				// !------------------       WPA2 Personal Mode ----------------
 			!strcmp(security_mode, "WPAPSKWPA2PSK") ){ 			// !------------------       WPA PSK WPA2 PSK mixed
-			char *pass_phrase_str;
-			char *pass_phrase_inic_str;
+			char *pass_phrase_str = websGetVar(wp, racat("passphrase", mbssid), "");
+			char *pass_phrase_inic_str = websGetVar(wp, "passphraseinic", "");
 
 			confWPAGeneral(wp, RT2860_NVRAM, mbssid);
-			LFW(pass_phrase_str, passphrase);
-			LFW(pass_phrase_inic_str, passphraseinic);
 
 			STFs(nvram, mbssid, "AuthMode", security_mode);
 			STFs(nvram, mbssid, "IEEE8021X", "0");
@@ -1636,7 +1617,7 @@ static void setSecurity(webs_t* wp, int nvram)
 			nvram_bufset(nvram, "WPAPSK1INIC", pass_phrase_inic_str);
 		}
 		else
-			goto out;
+			break;
 		// Access Policy
 		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
 			AccessPolicy = websGetVar(wp,  racat("AccessPolicy", i), T("0"));
@@ -1644,9 +1625,11 @@ static void setSecurity(webs_t* wp, int nvram)
 			nvram_bufset(nvram, racat("AccessPolicy", i), AccessPolicy);
 			nvram_bufset(nvram, racat("AccessControlList", i), AccessControlList);
 		}
-out:
+
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
+	}//for
+
 	}
 
 	/* reconfigure system */
