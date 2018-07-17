@@ -3423,7 +3423,7 @@ BOOLEAN MlmeEnqueueForWsc(
 	IN VOID *Msg) 
 {
     INT Tail;
-    /*ULONG			IrqFlags;*/
+
 	MLME_QUEUE	*Queue = (MLME_QUEUE *)&pAd->Mlme.Queue;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("-----> MlmeEnqueueForWsc\n"));

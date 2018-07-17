@@ -31,7 +31,7 @@
 #define OBSS_BEACON_RSSI_THRESHOLD		(-85)
 #define AUTO_CHANNEL_SCAN_MINRSSI		(-90)
 #define COLECT_PROBE_MINRSSI			(-93)
-#define RRM_LIST_MINRSSI			(-95)
+#define RRM_LIST_MINRSSI			(-97)
 
 
 /*

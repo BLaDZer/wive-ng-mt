@@ -4159,7 +4159,6 @@ VOID CMDHandler(
 	NDIS_STATUS		NdisStatus = NDIS_STATUS_SUCCESS;                                                                                                               
 /*	ULONG			Now = 0;*/
 /*	NTSTATUS		ntStatus;*/
-/*	ULONG IrqFlags;*/
 	
 	while (pAd && pAd->CmdQ.size > 0)	
 	{                                                                                                                                                           
