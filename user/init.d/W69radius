@@ -121,7 +121,7 @@ get_param() {
     CLIENTSC="/etc/raddb/clients.conf"
     PROXYCON="/etc/raddb/proxy.conf"
     # read for all write by root
-    chmod 644 "/etc/raddb/*.conf" > /dev/null 2>&1
+    chmod 644 /etc/raddb/*.conf > /dev/null 2>&1
 }
 
 stop() {
