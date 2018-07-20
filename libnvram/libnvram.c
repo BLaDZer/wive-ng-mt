@@ -246,6 +246,8 @@ void nvram_close(int index)
 	}
 
 	fb[index].valid = 0;
+
+	sync();
 }
 
 
@@ -430,6 +432,8 @@ int nvram_bufset(int index, char *name, char *value)
 
 	RANV_PRINT("bufset %d '%s'->'%s'\n", index, name, value);
 	fb[index].dirty = 1;
+
+	sync();
 	return 0;
 }
 
@@ -440,7 +444,7 @@ int nvram_set(int index, char *name, char *value)
 	if (nvram_bufset(index, name, value) == -1 ) 
 		rc = -1;
 	else
-	rc = nvram_commit(index);
+		rc = nvram_commit(index);
 
 	return rc;
 }
@@ -563,6 +567,9 @@ int nvram_commit(int index)
 	close(fd);
 
 	fb[index].dirty = 0;
+
+	sync();
+
 	return 0;
 }
 
@@ -1442,6 +1449,6 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 	fclose(fp);
 	nvram_close(mode);
-	sync();
+
 	return 0;
 }
