@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
 		<script src="/lang/<% getLangDictionary(); %>/dict_wireless.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
 		<script src="/js/controls.js"></script>
@@ -172,19 +173,27 @@
 				// Rate
 				displayElement("div_abg_rate", (wmode < 5) && (BUILD_5GHZ_SUPPORT && wmodeac < 5));
 				enableElements(form.abg_rate, (wmode) < 5 && (BUILD_5GHZ_SUPPORT && wmodeac < 5));
-				// IEEE 802.11h support
-				displayElement('div_dot11h', (BUILD_DFS == '1') && enableWirelessAc);
 
 // Security
 				securityMode(false);
 				displayElement('div_security', enableWirelessAny);
+				displayElement('wpa_passphrase5', old_MBSSID == 0 && enableWirelessAc && form.mssid_1.value != form.mssidac_1.value);
+
+				//WPA Passphrase label (2.4/5 GHz)
+				if (old_MBSSID == 0 && enableWirelessAc && form.mssid_1.value != form.mssidac_1.value)
+					_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
+				else
+					_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+
+				createAccessPolicyTable();
+				prepareAccessPolicy();
 
 // HT Physical Mode
 				displayElement('div_11n', htmode);
 
 				displayElement(['basicHTChannelBW_tr', 'extension_channel', 'basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
 				displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && (1*wmode) >= 5 && document.getElementById('n_bandwidth').value == 1 );
-				displayElement('basicHTChannelBWINIC_tr', BUILD_5GHZ_SUPPORT && form.radioWirelessEnabledAc.value == 1);
+				displayElement('basicHTChannelBWINIC_tr', enableWirelessAc);
 
 				displayElement('basicHTOPMode', htmode);
 				displayElement("basicHTTxStream_tr", htmode);
@@ -195,7 +204,6 @@
 
 				form.n_mode.disabled = !htmode;
 				form.n_bandwidth.disabled = !htmode;
-				form.n_bandwidthinic.disabled = !(BUILD_5GHZ_SUPPORT && htmode);
 				form.n_rdg.disabled = !htmode;
 				form.n_gi.disabled = !htmode;
 				form.n_stbc.disabled = !htmode;
@@ -203,7 +211,7 @@
 
 // VHT Physical Mode
 
-				displayElement(['basicVHTBW_tr', 'basicVHTBWSIGNAL_tr', 'basicVHTGI_tr'], 1);
+				displayElement(['basicVHTBWSIGNAL_tr', 'basicVHTGI_tr'], 1);
 				displayElement('basicVHTLDCP_tr', BUILD_LDPC_SUPPORT == '1');
 				displayElement('basicVHTSTBC_tr', BUILD_VHT_STBC_SUPPORT == '1');
 
@@ -218,6 +226,8 @@
 
 // Advanced wireless
 				displayElement( 'advWirelessT', enableWirelessAny);
+				displayElement( 'basicVHTBW_tr', enableWirelessAc);
+				displayElement( ['ac_bw_4', 'ac_bw_5'], BUILD_WLAN_4T4R == "1");
 
 				var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
 							   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
@@ -226,6 +236,9 @@
 
 				// Clear-Channel Assessment Monitor
 				displayElement('advEDMODE_tr', BUILD_EDCCA == "1");
+
+				// IEEE 802.11h support
+				displayElement('div_dot11h', (BUILD_DFS == '1') && enableWirelessAc);
 
 // Basic roaming settings (Fast Roaming)
 				displayElement([ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'], 1);
@@ -354,6 +367,7 @@
 				var mode	= +form.wirelessmode.value;
 				var channel	= +form.sz11gChannel.value;
 				var bandwidth	= +form.n_bandwidth.value;
+				var bandwidthinic = +(form.ac_bw.value[0]);
 
 				displayElement('extension_channel', channel != 0 && bandwidth != 0 && mode >= 5);
 				enableElements(form.n_extcha, channel != 0 && bandwidth != 0 && mode >= 5);
@@ -361,7 +375,7 @@
 				// Hide 165 channel if BW > 20MHz
 				var channelList = document.getElementById('sz11aChannel');
 				for (var i = 0; i < channelList.options.length; i++) {
-					if (channelList.options[i].value == '165' && form.n_bandwidthinic.value == '1') {
+					if (channelList.options[i].value == '165' && bandwidthinic != 0) {
 						displayElement(channelList.options[i], false)
 						if (channelList.options.selectedIndex == i)
 							channelList.options.selectedIndex = 0;
@@ -423,7 +437,7 @@
 				AutoChannelSelect(form);
 				updateVisibility(form);
 
-				if (BUILD_5GHZ_SUPPORT && document.getElementById('sz11aChannel').value > 64)
+				if (BUILD_5GHZ_SUPPORT && form.radioWirelessEnabledAc.value == "1" && form.sz11aChannel.value > 64)
 					alert(_("basic 11a channel warning"));
 			}
 
@@ -562,12 +576,6 @@
 
 			function initTranslation()
 			{
-/*				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC)
-					_TR("secureWPAPassPhrase",		"secure wpa pass phrase nic");
-				else
-					_TR("secureWPAPassPhrase",		"secure wpa pass phrase");
-*/
-
 				var trlist = document.getElementsByAttribute("data-tr");
 				for (var i=0; i<trlist.length; i++) {
 					var elem = trlist[i];
@@ -786,16 +794,19 @@
 			// prepare access policy list
 			function prepareAccessPolicy() {
 				// load Access Policy for MBSSID[selected]
+				if (network === undefined || network.data === undefined) return;
+
 				for (i = 0; i < network.data.length; i++) {
-					j		= 0;
+					j = 0;
 					aplist	= [];
-					if (network.data[i].AccessControlList.length != 0) {
+					var have_policy = network.data[i].AccessControlList.length != 0 && network.data[i].AccessPolicy != 0;
+					if (have_policy) {
 						aplist = network.data[i].AccessControlList.split(";");
 						for (j = 0; j < aplist.length; j++) 
 							document.getElementById("newap_" + i + "_" + j).innerHTML = aplist[j];
 					}
-					else
-						displayElement(['ap_' + i + '_td', 'ap_' + i + '_title', 'newap_text_' + i + '_tr'], false);
+
+					displayElement(['ap_' + i + '_td', 'ap_' + i + '_title', 'newap_text_' + i + '_tr'], have_policy);
 
 					for(; j < ACCESSPOLICYLIST_MAX; j++) {
 						displayElement('newap_td_' + i + '_' + j, false);
@@ -913,11 +924,8 @@
 				
 				displayElement(['newap_text_' + old_MBSSID + '_tr', 'newap_macs_' + old_MBSSID + '_tr'], document.getElementById('AccessPolicy' + old_MBSSID).value != 0);
 				
-				displayElement('wpa_passphrase5', old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC);
-				if (old_MBSSID == 0 && BUILD_5GHZ_SUPPORT && NVRAM_SSID1 != NVRAM_SSID1INIC)
-					_TR("secureWPAPassPhrase", "secure wpa pass phrase nic");
-				else
-					_TR("secureWPAPassPhrase", "secure wpa pass phrase");
+
+				updateVisibility(form);
 			}
 
 			// WPA algorithm change
@@ -940,6 +948,7 @@
 			function accessPolicyClick(table) {
 				network.data[table].AccessPolicy = document.getElementById('AccessPolicy' + table).value;
 				displayElement(['newap_text_' + table + '_tr', 'newap_macs_' + table + '_tr'], document.getElementById('AccessPolicy' + table).value != 0);
+				updateVisibility(document.wireless_basic);
 			}
 
 			// Show/Hide passphrase
@@ -956,7 +965,10 @@
 				form.security_mode.options.length = 0;
 
 				for (i = 0; i < security_modes_list.length; i++)
-					form.security_mode.options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
+				{
+					if (form["AuthMode"+MBSSID].value == "WEP" || security_modes_list[i][1] != "WEPAUTO")
+						form.security_mode.options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
+				}
 
 				form.security_mode.value = form["AuthMode"+MBSSID].value;
 
@@ -972,6 +984,8 @@
 				form.WEP4Select.selectedIndex = (form["Key4Type"+MBSSID].value == '0' ? 1 : 0);
 
 				form.wep_default_key.selectedIndex = 1*form["DefaultKeyID"+MBSSID].value - 1;
+				if (form.wep_default_key.selectedIndex < 0)
+					form.wep_default_key.selectedIndex = 0;
 
 				// WPA
 				if(form["EncrypType"+MBSSID].value == 'TKIP')
@@ -994,7 +1008,7 @@
 				form.RadiusServerSessionTimeout.value		= (form["RADIUS_SessionTimeout"+MBSSID].value.length == 0) ? 0 : form["RADIUS_SessionTimeout"+MBSSID].value;
 
 				securityMode(show_warn);
-				if (form.cipher.value != 1)
+				if (show_warn && form.cipher.value != 1)
 					setTimeout(function () { showWarningEncriptionAlgo() }, 100);
 			}
 
@@ -1214,7 +1228,6 @@
 				}
 
 				form.n_bandwidth.options.selectedIndex = 1*NVRAM_HT_BW;
-				form.n_bandwidthinic.options.selectedIndex = 1*NVRAM_HT_BWINIC;
 				form.dot11h.options.selectedIndex = 1*dot11hArray[0];
 				initChecktime(form);
 
@@ -1310,7 +1323,8 @@
 				form.ac_stbc.options.selectedIndex = (NVRAM_VHT_STBC ==  "0") ? 0 : 1;
 				form.ac_ldpc.options.selectedIndex = (NVRAM_VHT_LDPC ==  "0") ? 0 : 1;
 
-				form.ac_bw.options.selectedIndex = NVRAM_VHT_BW;
+				form.ac_bw.value = (NVRAM_HT_BWINIC) +""+ (NVRAM_VHT_BW);
+
 				form.ac_bwsig.options.selectedIndex = NVRAM_VHT_BW_SIGNAL;
 
 				AutoChannelSelect(form);
@@ -1521,7 +1535,7 @@
 					return false;
 				}
 
-				if (NVRAM_SSID1 == NVRAM_SSID1INIC)
+				if (form.mssid_1.value == form.mssidac_1.value)
 					document.getElementById("passphraseinic").value = document.getElementById("passphrase").value;
 
 				return true;
@@ -1667,7 +1681,7 @@
 			}
 
 
-			function CheckValue(form)
+			function checkValues(form)
 			{
 
 				if (form.mssid_1.value == "" &&  form.radioWirelessEnabled.value == 1)
@@ -1953,7 +1967,7 @@
 
 				MBSSIDChange(false);
 
-				for (var i=0;i<form.ssidIndex.options.length;i++)
+				for (var i=0;i<form.bssid_num.value;i++)
 				{
 					form.ssidIndex.selectedIndex = i;
 					MBSSIDChange(false);
@@ -2041,27 +2055,27 @@
 
 			function mbssid_select_update(form) {
 			
-			    for (var i=0;i<form.ssidIndex.options.length;i++)
-			    {
-			        network.data[i].SSID = form["mssid_"+(i+1)].value;
+				for (var i=0;i<form.ssidIndex.options.length;i++)
+				{
+					network.data[i].SSID = form["mssid_"+(i+1)].value;
+					
+					if (i == 0 && BUILD_5GHZ_SUPPORT && form.radioWirelessEnabledAc.options.selectedIndex > 0 && form.mssidac_1.value.length > 0 && network.data[i].SSID != form.mssidac_1.value)
+					{
+						form.ssidIndex.options[i].text = network.data[i].SSID + ' / ' + form.mssidac_1.value;
+					}
+					else
+					{
+						form.ssidIndex.options[i].text = network.data[i].SSID;
+					}
+					
+					form.ssidIndex.options[i].style.display = (i<form.bssid_num.value)?"block":"none";
+				}
 			
-			        if (i == 0 && BUILD_5GHZ_SUPPORT && form.radioWirelessEnabledAc.options.selectedIndex > 0 && form.mssidac_1.value.length > 0 && network.data[i].SSID != form.mssidac_1.value)
-			        {
-			            form.ssidIndex.options[i].text = network.data[i].SSID + ' / ' + form.mssidac_1.value;
-			        }
-			        else
-			        {
-			            form.ssidIndex.options[i].text = network.data[i].SSID;
-			        }
-			
-			        form.ssidIndex.options[i].style.display = (i<form.bssid_num.value)?"block":"none";
-			    }
-			
-			    if (form.ssidIndex.selectedIndex >= form.bssid_num.value)
-			    {
-			        form.ssidIndex.selectedIndex = form.bssid_num.value-1;
-			        MBSSIDChange(false);
-			    }
+				if (form.ssidIndex.selectedIndex >= form.bssid_num.value)
+				{
+					form.ssidIndex.selectedIndex = form.bssid_num.value-1;
+					MBSSIDChange(false);
+				}
 			}
 
 			// Show warning message
@@ -2175,7 +2189,7 @@ table.form tr.ssid-row {
 			<p data-tr="basic introduction"> Here you can configure the most basic settings of Wireless communication, such as Network Name (SSID) and Channel.
 			These settings are sufficient to have a working Access Point. </p>
 			<hr>
-	<form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return CheckValue(this);">
+	<form method="POST" name="wireless_basic" action="/goform/wirelessBasic" onSubmit="return checkValues(this);">
 	<input id="isolated_ssids" name="isolated_ssids" type="hidden" value="">
 	<input id="hidden_ssids" name="hidden_ssids" type="hidden" value="">
 	<input id="mbcastisolated_ssids" name="mbcastisolated_ssids" type="hidden" value="">
@@ -2226,7 +2240,7 @@ table.form tr.ssid-row {
 				<td><select id="sz11gChannel" name="sz11gChannel" class="normal" onChange="ChannelOnChange(this.form);">
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
 					<% getWlan11gChannels(); %>
-					</select>&nbsp;&nbsp;<select name="autoselect_g" class="normal" id="autoselect_g">
+					</select>&nbsp;&nbsp;<select name="autoselect_g" id="autoselect_g">
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
 					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g">
@@ -2340,7 +2354,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_11g_name" class="ssid-row">
 				<td class="head" data-tr="basic ssid">Network Name (2.4GHz)</td>
-				<td><input class="normal" type="text" name="mssid_1" maxlength="32" onchange="mbssid_select_update(this.form, 0);"></td>
+				<td><input class="normal" type="text" name="mssid_1" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="0"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="0"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="0"></td>
@@ -2350,7 +2364,7 @@ table.form tr.ssid-row {
 
 			<tr id="div_hssid1" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>1</td>
-				<td><input class="normal" name="mssid_2" maxlength="32" onchange="mbssid_select_update(this.form, 1);"></td>
+				<td><input class="normal" name="mssid_2" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="1"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="1"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="1"></td>
@@ -2359,7 +2373,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid2" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>2</td>
-				<td><input class="normal" type="text" name="mssid_3" maxlength="32" onchange="mbssid_select_update(this.form, 2);"></td>
+				<td><input class="normal" type="text" name="mssid_3" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="2"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="2"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="2"></td>
@@ -2368,7 +2382,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid3" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>3</td>
-				<td><input class="normal" type="text" name="mssid_4" maxlength="32" onchange="mbssid_select_update(this.form, 3);"></td>
+				<td><input class="normal" type="text" name="mssid_4" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="3"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="3"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="3"></td>
@@ -2377,7 +2391,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid4" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>4</td>
-				<td><input class="normal" type="text" name="mssid_5" maxlength="32" onchange="mbssid_select_update(this.form, 4);"></td>
+				<td><input class="normal" type="text" name="mssid_5" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="4"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="4"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="4"></td>
@@ -2386,7 +2400,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid5" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>5</td>
-				<td><input class="normal" type="text" name="mssid_6" maxlength="32" onchange="mbssid_select_update(this.form, 5);"></input></td>
+				<td><input class="normal" type="text" name="mssid_6" maxlength="32" onchange="updateVisibility(this.form);"></input></td>
 				<td><input type="checkbox" name="hssid" value="5"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="5"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="5"></td>
@@ -2395,7 +2409,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid6" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>6</td>
-				<td><input class="normal" type="text" name="mssid_7" maxlength="32" onchange="mbssid_select_update(this.form, 6);"></td>
+				<td><input class="normal" type="text" name="mssid_7" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="6"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="6"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="6"></td>
@@ -2404,7 +2418,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_hssid7" class="ssid-row">
 				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>7</td>
-				<td><input class="normal" type="text" name="mssid_8" maxlength="32" onchange="mbssid_select_update(this.form, 7);"></td>
+				<td><input class="normal" type="text" name="mssid_8" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="7"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="7"></td>
 				<td><input type="checkbox" name="mbcastisolated_ssid" value="7"></td>
@@ -2413,7 +2427,7 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="div_11a_name">
 				<td class="head" data-tr="basic ac ssid">Network Name (5GHz)</td>
-				<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" onchange="mbssid_select_update(this.form, 0);"></td>
+				<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" onchange="updateVisibility(this.form);"></td>
 			</tr>
 			<tr id="basicMbssidModeT">
 				<td class="head" data-tr="basic mbssid mode">MBSSID Mode</td>
@@ -2440,13 +2454,6 @@ table.form tr.ssid-row {
 			<tr id="div_abg_rate">
 				<td class="head" data-tr="basic rate">Rate</td>
 				<td colspan="5"><select name="abg_rate" class="normal">
-				</select></td>
-			</tr>
-			<tr id="div_dot11h">
-				<td class="head" data-tr="basic dot11h">IEEE802.11H</td>
-				<td colspan="5"><select name="dot11h" class="normal">
-					<option value="0" data-tr="button disable">Disable</option>
-					<option value="1" data-tr="button enable">Enable</option>
 				</select></td>
 			</tr>
 		</tbody>
@@ -2622,20 +2629,6 @@ table.form tr.ssid-row {
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="basicHTChannelBW_tr">
-			<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth</td>
-			<td class="val"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
-				<option value="0">20MHz</option>
-				<option value="1">20/40MHz</option>
-			</select></td>
-		</tr>
-		<tr id="basicHTChannelBWINIC_tr">
-			<td class="head" data-tr="basic ht channel bandwidth inic">Channel BandWidth (5GHz)</td>
-			<td class="val"><select id="n_bandwidthinic" name="n_bandwidthinic" class="normal" onClick="GExtChannelDisplay(this.form);">
-				<option value="0">20MHz</option>
-				<option value="1">20/40MHz</option>
-			</select></td>
-		</tr>
 		<tr id="extension_channel">
 			<td class="head" data-tr="basic ht extension channel">Extension Channel</td>
 			<td class="val"><select id="n_extcha" name="n_extcha" class="normal">
@@ -2738,13 +2731,6 @@ table.form tr.ssid-row {
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="basicVHTBW_tr" >
-			<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth</td>
-			<td class="val"><select name="ac_bw" class="normal">
-				<option value="0" selected>20/40MHz</option>
-				<option value="1">20/40/80MHz</option>
-			</select></td>
-		</tr>
 		<tr id="basicVHTBWSIGNAL_tr">
 			<td class="head" data-tr="basic signal mode">BandWidth Signaling Mode</td>
 			<td class="val"><select name="ac_bwsig" class="normal">
@@ -2784,6 +2770,23 @@ table.form tr.ssid-row {
 		</tr>
 	</thead>
 	<tbody>
+		<tr id="basicHTChannelBW_tr">
+			<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth (2.4GHz)</td>
+			<td class="val"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
+				<option value="0">20MHz</option>
+				<option value="1" selected>20/40MHz</option>
+			</select></td>
+		</tr>
+		<tr id="basicVHTBW_tr" >
+			<td class="head" data-tr="basic ht channel bandwidth ac">Channel BandWidth (5GHz)</td>
+			<td class="val"><select name="ac_bw" class="normal">
+				<option value="00">20MHz</option>
+				<option value="10">20/40MHz</option>
+				<option value="11">20/40/80MHz</option>
+				<option id="ac_bw_4" value="12" selected>20/40/160MHz</option>
+				<option id="ac_bw_5" value="13">20/40/80+80MHz</option>
+			</select></td>
+		</tr>
 		<tr id="advBGProtect_tr">
 			<td class="head" data-tr="adv bgpro">BG Protection Mode</td>
 			<td class="val"><select id="bg_protection" name="bg_protection" class="normal">
@@ -2853,6 +2856,13 @@ table.form tr.ssid-row {
 			<td class="val"><select name="AckPolicy" class="normal">
 				<option value="0" data-tr="basic ack policy normal">Normal ACK</option>
 				<option value="1" data-tr="basic ack policy no">No ACK</option>
+			</select></td>
+		</tr>
+		<tr id="div_dot11h">
+			<td class="head" data-tr="adv dot11h">IEEE802.11H</td>
+			<td colspan="5"><select name="dot11h" class="normal">
+				<option value="0" data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
 		<tr id="advMcastRate_tr">

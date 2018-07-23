@@ -451,7 +451,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssids, *hidden_ssids, *isolated_ssids, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_bandwidthinic, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
 	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate, *PMKCachePeriod;
 	char_t pmktmpbuf[32] = {0};
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
@@ -529,7 +529,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	n_mode = websGetVar(wp, T("n_mode"), T("1"));
 	n_bandwidth = websGetVar(wp, T("n_bandwidth"), T("1"));
-	n_bandwidthinic = websGetVar(wp, T("n_bandwidthinic"), T("1"));
+
 	n_gi = websGetVar(wp, T("n_gi"), T("1"));
 	n_stbc = websGetVar(wp, T("n_stbc"), T("1"));
 	n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
@@ -756,7 +756,17 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"HT_MCS", n_mcs);
 		ngx_nvram_bufset(wp,"HT_OpMode", n_mode);
 		ngx_nvram_bufset(wp,"HT_BW", n_bandwidth);
-		ngx_nvram_bufset(wp,"HT_BWINIC", n_bandwidthinic);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		char bw_str[2] = "0";
+		if (strlen(ac_bw) == 2) {
+			bw_str[0] = ac_bw[0];
+			ngx_nvram_bufset(wp,"HT_BWINIC", bw_str);
+			bw_str[0] = ac_bw[1];
+			ngx_nvram_bufset(wp,"VHT_BW", bw_str );
+		}
+#endif
+
 		ngx_nvram_bufset(wp,"HT_GI", n_gi);
 		ngx_nvram_bufset(wp,"HT_STBC", n_stbc);
 		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
@@ -842,7 +852,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"HT_LDPC", "0");
 #endif
 		ngx_nvram_bufset(wp,"VHT_SGI", ac_gi);
-		ngx_nvram_bufset(wp,"VHT_BW", ac_bw);
 		ngx_nvram_bufset(wp,"VHT_BW_SIGNAL", ac_bwsig);
 	}
 #endif
@@ -1043,7 +1052,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	if (is_ht) {
 		outWrite(T("n_mode: %s<br>\n"), n_mode);
 		outWrite(T("n_bandwidth: %s<br>\n"), n_bandwidth);
-		outWrite(T("n_bandwidthinic: %s<br>\n"), n_bandwidthinic);
 		outWrite(T("n_gi: %s<br>\n"), n_gi);
 		outWrite(T("n_stbc: %s<br>\n"), n_stbc);
 		outWrite(T("n_mcs: %s<br>\n"), n_mcs);

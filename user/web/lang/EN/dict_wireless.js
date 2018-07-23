@@ -73,8 +73,8 @@ var wireless_dictionary = {
 	'basic ht op mode'		: 'Greenfield Mode',
 	'basic ht op mixed'		: 'Disable',
 	'basic ht op green'		: 'Enable',
-	'basic ht channel bandwidth'	: 'Channel BandWidth',
-	'basic ht channel bandwidth inic'	: 'Channel BandWidth (5GHz)',
+	'basic ht channel bandwidth'	: 'Channel BandWidth (2.4GHz)',
+	'basic ht channel bandwidth ac'	: 'Channel BandWidth (5GHz)',
 	'basic ht guard interval'	: 'Guard Interval',
 	'basic stbc'			: 'Space-Time Block Coding',
 	'basic ldpc'			: 'Low Disenty Parity Check',
@@ -147,7 +147,6 @@ var wireless_dictionary = {
 	'basic roaming invalid pmk cache period': 'Please input the PMK Cache Period.',
 	'basic 11a channel warning'		: 'To avoid problems with some wireless clients, it is recommended to use the channel up to 64',
 
-	'basic dot11h'				: 'IEEE 802.11h support',
 	'basic ids'				: 'Intrusion Detection settings',
 	'basic ids auth'			: 'Authentication flood threshold',
 	'basic ids assoc'			: 'Association request flood threshold',
@@ -260,6 +259,8 @@ var wireless_dictionary = {
 	'adv dynvga mode'			: 'Adaptive LNA Gain',
 	'adv dynvga long'			: 'Skip auto gain for long distance clients',
 	'adv dynvga clamp'			: 'Clamp maximum LNA GAIN in dynvga mode',
+
+	'adv dot11h'				: 'IEEE 802.11h support',
 
 	'roaming invalid BndStrgRssiDiff'	: 'Invalid RSSI diff value',
 	'roaming invalid BndStrgRssiLow'	: 'Invalid RSSI value',

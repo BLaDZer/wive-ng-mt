@@ -74,8 +74,8 @@ var wireless_dictionary = {
 	'basic ht op mode'				: 'Разрешить чистый 802.11N',
 	'basic ht op mixed'				: 'Disabled',
 	'basic ht op green'				: 'Enable',
-	'basic ht channel bandwidth'			: 'Ширина канала',
-	'basic ht channel bandwidth inic'		: 'Ширина канала (5ГГц)',
+	'basic ht channel bandwidth'			: 'Ширина канала (2.4GHz)',
+	'basic ht channel bandwidth ac'			: 'Ширина канала (5GHz)',
 	'basic ht guard interval'			: 'Защитный интервал',
 	'basic ldpc'					: 'Контроль чётности',
 	'basic ht rdg'					: 'Обратный порядок передачи',
@@ -145,7 +145,6 @@ var wireless_dictionary = {
 	'basic roaming pmk cache period'		: 'Период кеширования PMK',
 	'basic roaming pmk cache period range'		: 'минут (диапазон 1 - 9999)',
 	'basic roaming invalid pmk cache period'	: 'Пожалуйста, введите период кеширования PMK.',
-	'basic dot11h'					: 'Поддержка IEEE 802.11h',
 	'basic 11a channel warning'			: 'Во избежание проблем с некоторыми беспроводными клиентами, рекомендуется использовать канал до 64 (включительно)',
 
 	'basic bandsteering'				: 'Управление выбором диапазона',
@@ -261,6 +260,8 @@ var wireless_dictionary = {
 	'adv dynvga mode'				: 'Автоматическая подстройка усиления LNA',
 	'adv dynvga long'				: 'Отключить АРУ для дальних клиентов',
 	'adv dynvga clamp'				: 'Ограничение уровня АРУ',
+
+	'adv dot11h'					: 'Поддержка IEEE 802.11h',
 
 	'roaming invalid BndStrgRssiDiff'		: 'Неверно указана дельта RSSI',
 	'roaming invalid BndStrgRssiLow'		: 'Неверно указана нижняя граница RSSI',

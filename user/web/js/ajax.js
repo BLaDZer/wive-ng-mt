@@ -559,7 +559,7 @@ function showWarning() {
 		if  (warning_wireless_security || warning_wireless_key) {
 			warningHTML += '<tr>';
 			warningHTML += '<td class="warning">' + _("warning wireless security") + '</td>';
-			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/security.asp");\'></td>';
+			warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/wireless/main.asp");\'></td>';
 			warningHTML += '</tr>';
 		}
 		warningHTML += '</table>';
