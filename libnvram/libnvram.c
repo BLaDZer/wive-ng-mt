@@ -1379,6 +1379,7 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 #if  defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	FPRINT_DAT(RRMEnable);  	/* Enable Resource Radio Managment */
+	FPRINT_DAT(RegDomain);  	/* Global/Local >= mt7615 */
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 	    FPRINT_DAT(RegulatoryClass);
@@ -1404,6 +1405,9 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(LoadCodeMethod);
 	FPRINT_DAT(PERCENTAGEenable);
 	FPRINT_DAT(BFBACKOFFenable);
+	FPRINT_DAT(G_BAND_256QAM);
+	FPRINT_DAT(CP_SUPPORT);
+	FPRINT_DAT(RED_Enable);
 	FPRINT_DAT(G_BAND_256QAM);
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	FPRINT_DAT(DBDC_MODE);
@@ -1445,6 +1449,12 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(VOW_WATF_Q_LV3);
 	FPRINT_DAT(VOW_WMM_Search_Rule_Band0);
 	FPRINT_DAT(VOW_WMM_Search_Rule_Band1);
+#endif
+#ifdef CONFIG_MT7615_AP_MBO_SUPPORT
+	FPRINT_DAT(MboSupport);
+#endif
+#ifdef CONFIG_MT7615_AP_WNM_SUPPORT
+	FPRINT_DAT(WNMEnable);
 #endif
 #endif
 	fclose(fp);
