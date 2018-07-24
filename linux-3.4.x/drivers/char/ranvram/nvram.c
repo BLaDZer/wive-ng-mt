@@ -472,11 +472,6 @@ static int nvram_commit(int index)
 
 	*p = '\0'; /* ending null */
 
-	/* write data to flash */
-	to = to + len;
-	len = fb[index].flash_max_len - len;
-	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)fb[index].env.data);
-
 	/* calculate crc */
 	fb[index].env.crc = (unsigned long)nv_crc32(0, (unsigned char *)fb[index].env.data, len);
 
@@ -484,6 +479,11 @@ static int nvram_commit(int index)
 	to = fb[index].flash_offset;
 	len = sizeof(fb[index].env.crc);
 	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)&fb[index].env.crc);
+
+	/* write data to flash */
+	to = to + len;
+	len = fb[index].flash_max_len - len;
+	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)fb[index].env.data);
 
 	fb[index].dirty = 0;
 	up(&nvram_sem);
