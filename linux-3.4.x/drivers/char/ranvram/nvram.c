@@ -244,6 +244,7 @@ static int init_nvram_block(int index)
 	unsigned long from;
 	int i, j, len;
 	char *p, *q;
+	unsigned long crc;
 
 	i = index;
 
@@ -267,9 +268,12 @@ static int init_nvram_block(int index)
 
 		ra_mtd_read_nm(RALINK_NVRAM_MTDNAME, from, len, (unsigned char *)fb[i].env.data);
 
+		/* calc crc */
+                crc = (unsigned long)nv_crc32(0, fb[i].env.data, len);
+
 		/* check crc */
-		if (nv_crc32(0, fb[i].env.data, len) != fb[i].env.crc) {
-			printk("NVRAM: Particion %x Bad CRC %x, start cleanup.\n", i, (unsigned int)fb[i].env.crc);
+		if (crc != fb[i].env.crc) {
+			printk("NVRAM: Particion %x Bad CRC %lx, %lx, start cleanup.\n", i, fb[i].env.crc, crc);
 			memset(fb[index].env.data, 0, len);
 			fb[i].valid = 0;
 			fb[i].dirty = 1;
@@ -308,7 +312,7 @@ static int init_nvram_block(int index)
 		if (j == MAX_CACHE_ENTRY)
 			RANV_PRINT("NVRAM: Run out of env cache, please increase MAX_CACHE_ENTRY\n");
 
-		printk("NVRAM: Particion %x CRC %x OK.\n", i, (unsigned int)fb[i].env.crc);
+		printk("NVRAM: Particion %x CRC %lx OK.\n", i, fb[i].env.crc);
 		fb[i].valid = 1;
 		fb[i].dirty = 0;
 
@@ -468,6 +472,11 @@ static int nvram_commit(int index)
 
 	*p = '\0'; /* ending null */
 
+	/* write data to flash */
+	to = to + len;
+	len = fb[index].flash_max_len - len;
+	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)fb[index].env.data);
+
 	/* calculate crc */
 	fb[index].env.crc = (unsigned long)nv_crc32(0, (unsigned char *)fb[index].env.data, len);
 
@@ -475,11 +484,6 @@ static int nvram_commit(int index)
 	to = fb[index].flash_offset;
 	len = sizeof(fb[index].env.crc);
 	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)&fb[index].env.crc);
-
-	/* write data to flash */
-	to = to + len;
-	len = fb[index].flash_max_len - len;
-	ra_mtd_write_nm(RALINK_NVRAM_MTDNAME, to, len, (unsigned char *)fb[index].env.data);
 
 	fb[index].dirty = 0;
 	up(&nvram_sem);
