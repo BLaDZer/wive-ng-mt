@@ -253,6 +253,9 @@ var wireless_dictionary = {
 	'adv invalid keepalive'			: 'Invalid Station Keep-Alive parameter',
 	'adv invalid idletimeout'		: 'Invalid IdleTimeout parameter',
 	'adv invalid entrylifecheck'		: 'Invalid EntryLifeCheck parameter',
+
+	'adv invalid bandwidth ac'		: 'Invalid Channel Bandwidth value (5GHz)',
+
 	'adv ed mode'				: 'Clear-Channel Assessment Monitor',
 
 	'adv dynvga title'			: 'PA/LNA control (WARNING!!! FOR EXPERTS ONLY!)',
