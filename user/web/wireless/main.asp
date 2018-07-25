@@ -194,12 +194,15 @@
 					// Security: WEP
 					displayElement('div_wep', form.security_mode.value == 'WEPAUTO');
 
+					// WPA
+					displayElement(['div_wpa', 'div_wpa_algorithms','wpa_key_renewal_interval'], wpa_ent_mode || wpa_psk_mode);
+
 					// WPA Enterprise
-					displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_key_renewal_interval', 'div_radius_server'], wpa_ent_mode);
+					displayElement('div_radius_server', wpa_ent_mode);
 					displayElement('wpa_preAuthentication', form.security_mode.value == 'WPA2');
 
 					// WPA Pre-shared
-					displayElement(['div_wpa', 'div_wpa_algorithms', 'wpa_passphrase', 'wpa_key_renewal_interval'], wpa_psk_mode);
+					displayElement('wpa_passphrase', wpa_psk_mode);
 					displayElement('wpa_passphrase5', wpa_psk_mode && old_MBSSID == 0 && enableWirelessAc && form.mssid_1.value != form.mssidac_1.value);
 
 
