@@ -80,12 +80,12 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             wive " ";
             wive_types application/javascript;
 
-    	    # no cache (disable chaces and send current time as modifided time)
+    	    # no cache (disable caches and send current time as modifided time)
 	    add_header Cache-Control 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, proxy-revalidate, max-age=0';
 	    if_modified_since off;
 	    etag off;
-	    add_header Last-Modified \$sent_http_Expires;
 	    expires -1;
+	    add_header Last-Modified \$sent_http_Expires;
 
             location = /login.asp {
                 disable_auth;
