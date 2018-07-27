@@ -6,7 +6,7 @@
 	<head>
 		<title>Wive-NG-MT router firmware - http://wive-ng.ru, http://wi-cat.ru</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0, proxy-revalidate, max-age=0">
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="-1">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
