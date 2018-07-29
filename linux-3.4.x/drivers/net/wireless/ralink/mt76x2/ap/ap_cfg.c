@@ -1564,10 +1564,6 @@ static struct {
 	{"airplayEnable",				Set_Airplay_Enable},
 #endif /* AIRPLAY_SUPPORT */
 
-	{"manual_txop_thld", SetManualTxOPThreshold},
-	{"manual_txop_upbound", SetManualTxOPUpBound},
-	{"manual_txop_lowbound", SetManualTxOPLowBound},
-
 #ifdef CONFIG_ANDES_SUPPORT
 	{"fw_debug", set_fw_debug},
 #endif /* CONFIG_ANDES_SUPPORT */

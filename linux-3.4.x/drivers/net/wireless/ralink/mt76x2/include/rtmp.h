@@ -9642,10 +9642,6 @@ PSTRING rtstrstruncasecmp(PSTRING s1, PSTRING s2);
 PSTRING rtstrstr( PSTRING s1, const PSTRING s2);
 PSTRING rstrtok( PSTRING s, const PSTRING ct);
 int rtinet_aton(const PSTRING cp, unsigned int *addr);
-	
-INT SetManualTxOPThreshold(RTMP_ADAPTER *pAd, PSTRING arg);
-INT SetManualTxOPUpBound(RTMP_ADAPTER *pAd, PSTRING arg);
-INT SetManualTxOPLowBound(RTMP_ADAPTER *pAd, PSTRING arg);
 
 /*//////// common ioctl functions ////////*/
 INT Set_DriverVersion_Proc(RTMP_ADAPTER *pAd, PSTRING arg);
