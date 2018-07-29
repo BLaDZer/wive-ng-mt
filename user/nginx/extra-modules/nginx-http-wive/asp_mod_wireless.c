@@ -4,7 +4,6 @@ static int default_shown_mbssid[3]  = {0,0,0};
 
 static void setSecurity(webs_t* wp, int nvram);
 
-
 static int getWlan4T4RBuilt(webs_t *wp, char** params, int nparams)
 {
 #if defined(CONFIG_RT_FIRST_IF_MT7615E) || defined(CONFIG_RT_SECOND_IF_MT7615E)
@@ -489,15 +488,18 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout, *regulatoryclassinic;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
-	char_t *ackpolicy_ssid, *life_check, *ed_mode, *submitUrl, *tokenadv;
+	char_t *ackpolicy_ssid, *life_check, *submitUrl, *tokenadv;
 	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";	
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
+	char_t *ed_mode;
+#endif
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	char_t *dyn_vga_long, *dyn_vga_clamp;
 #endif
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	char_t *dyn_vga_long;
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
 	char_t *mcast_mode, *mcast_mcs;
 #endif
 #if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
@@ -604,7 +606,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
 	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
 	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
 #endif
@@ -621,7 +623,9 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
 	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
 	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
 	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
+#endif
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
 		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
@@ -968,7 +972,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
 	ngx_nvram_bufset(wp,"McastPhyMode", mcast_mode);
 	ngx_nvram_bufset(wp,"McastMcs", mcast_mcs);
 #endif
@@ -1021,7 +1025,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"CountryRegionABand", "0");
 		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
 		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	} else { // default uncknown 
+	} else { // default uncknown
 		ngx_nvram_bufset(wp,"CountryRegionABand", "7");
 		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
 		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
@@ -1029,7 +1033,10 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	// Set-up country region
 	ngx_nvram_bufset(wp,"CountryRegion", country_region);
+
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
 	ngx_nvram_bufset(wp,"ED_MODE", ed_mode);
+#endif
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
@@ -1088,7 +1095,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	outWrite(T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
 	outWrite(T("rd_region: %s<br>\n"), rd_region);
 	outWrite(T("countrycode: %s<br>\n"), countrycode);
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC)
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
 	outWrite(T("McastPhyMode: %s<br>\n"), mcast_mode);
 	outWrite(T("mcast_mcs: %s<br>\n"), mcast_mcs);
 #endif
@@ -1103,7 +1110,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
 	websRedirect(wp, submitUrl);
 #endif
-	// reconfigure system 
+	// reconfigure system
         wp->on_response_ok = DO_RECONFIGURE;
 
 	setSecurity(wp, RT2860_NVRAM);
@@ -1526,7 +1533,6 @@ static void confWPAGeneral(webs_t* wp, int nvram, int mbssid)
 static void setSecurity(webs_t* wp, int nvram)
 {
 	int mbssid, i;
-	char_t *SSID;
 	char_t *AccessPolicy, *AccessControlList;
 	char_t *reset = websGetVar(wp,  T("reset"), T("0"));
 
@@ -1788,7 +1794,7 @@ static int getFTBuilt(webs_t *wp, char** params, int nparams) {
 }
 
 static int getEDCCABuilt(webs_t *wp, char** params, int nparams) {
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR) || defined(CONFIG_MT7615_AP_ED_MONITOR)
+#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
 	return outWrite(T("1"));
 #else
 	return outWrite(T("0"));

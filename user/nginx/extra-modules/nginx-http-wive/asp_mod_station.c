@@ -852,9 +852,9 @@ static int getStaLinkRxRate(webs_t *wp, char** params, int nparams)
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
+#ifdef HAVE_MT76X2_3
 	double fLastRxRate = 1;
 
-#ifdef HAVE_MT76X2_3
 	if (getLastRxRateFor11n(&fLastRxRate))
 	    return -1;
 
@@ -922,18 +922,19 @@ static int getStaLinkStatus(webs_t *wp, char** params, int nparams)
 }
 
 /*
- * description: write station link Rx rate
  */
 static int getStaLinkTxRate(webs_t *wp, char** params, int nparams)
 
 {
+#ifdef HAVE_MT76X2_3
 	char buf[32];
+	double fLastTxRate = 1;
+#endif
 
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
 #ifdef HAVE_MT76X2_3
-	double fLastTxRate = 1;
 	if (getLastTxRateFor11n(&fLastTxRate))
 	    return -1;
 

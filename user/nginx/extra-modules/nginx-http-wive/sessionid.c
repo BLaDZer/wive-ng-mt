@@ -181,14 +181,10 @@ void saveSessions()
 /* load sessions from rwfs in case we need to */
 void loadSessions()
 {
-//    syslog(LOG_WARNING, "loadSessions(): start");
-
     FILE* f = fopen("/etc/nginx/sessions.conf", "rt");
     if (f == NULL) return;
 
     time_t current_time = time(NULL);
-    unsigned int i;
-    struct auth_session_t* sessions = (auth_session_t*) auth_sessions->elts;
 
     auth_session_t session;
 

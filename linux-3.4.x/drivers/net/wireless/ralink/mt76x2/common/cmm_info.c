@@ -29,35 +29,6 @@
 MultiplicationShiftFactor RateMultiplicationShiftFactor[224];
 #endif
 
-
-INT SetManualTxOPThreshold(RTMP_ADAPTER *pAd, PSTRING arg)
-{
-    pAd->CommonCfg.ManualTxopThreshold = (UCHAR) simple_strtol(arg, 0, 10);
-	DBGPRINT(RT_DEBUG_OFF, ("CURRENT: Set ManualTxOP TP Threshold = %lu (Mbps)\n", 
-		pAd->CommonCfg.ManualTxopThreshold));
-
-    return TRUE;
-}
-
-
-INT SetManualTxOPUpBound(RTMP_ADAPTER *pAd, PSTRING arg)
-{
-    pAd->CommonCfg.ManualTxopUpBound = (UCHAR) simple_strtol(arg, 0, 10);
-	DBGPRINT(RT_DEBUG_OFF, ("CURRENT: Set ManualTxOP Traffic Upper Bound = %d (Ratio)\n", 
-		pAd->CommonCfg.ManualTxopUpBound));
-
-    return TRUE;
-}
-
-INT SetManualTxOPLowBound(RTMP_ADAPTER *pAd, PSTRING arg)
-{
-    pAd->CommonCfg.ManualTxopLowBound = (UCHAR) simple_strtol(arg, 0, 10);
-    DBGPRINT(RT_DEBUG_OFF, ("CURRENT: Set ManualTxOP Traffic Low Bound = %d (Ratio)\n",
-		pAd->CommonCfg.ManualTxopLowBound));
-
-    return TRUE;
-}
-
 /*
     ==========================================================================
     Description:

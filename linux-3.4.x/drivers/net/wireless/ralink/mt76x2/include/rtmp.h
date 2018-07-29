@@ -2346,10 +2346,6 @@ typedef struct _COMMON_CONFIG {
 	UINT32 ReduceAckCnxTimeout;
 	UINT32 ReduceAckGainLevel;
 #endif /* REDUCE_TCP_ACK_SUPPORT */
-
-	ULONG ManualTxopThreshold;
-	UCHAR ManualTxopUpBound;
-	UCHAR ManualTxopLowBound;
 #ifdef DOT11K_RRM_SUPPORT
 	BOOLEAN RRMFirstScan;
 #endif /* DOT11K_RRM_SUPPORT */
@@ -5589,13 +5585,9 @@ MONITOR_STRUCT monitor_ctrl;
 	UCHAR           AirplayIeLen;
 
 #endif /* AIRPLAY_SUPPORT */
-	
-	/* 
-		move ed_chk to common part , should always be false
-		except when (ED_MONITOR is defined && in EU region)
-	*/
+#ifdef ED_MONITOR
+	/* EDCCA related param */
 	BOOLEAN ed_chk; 
-#ifdef ED_MONITOR	
 	BOOLEAN ed_debug;
 	BOOLEAN	ed_vga_at_lowest_gain;
 	UINT ed_learning_time_threshold; //50 * 100ms = 5 sec

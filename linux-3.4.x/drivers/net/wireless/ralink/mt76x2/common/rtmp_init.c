@@ -4110,8 +4110,8 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 
 
 
-	pAd->ed_chk = FALSE; //let country region to turn on
 #ifdef ED_MONITOR
+	pAd->ed_chk = FALSE; //let country region to turn on
 	pAd->ed_learning_time_threshold = 50; //5 sec
 	pAd->ed_debug = FALSE;
 
@@ -4147,10 +4147,6 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->RxDMAResetCount = 0;
 #endif /* RTMP_PCI_SUPPORT */
 #endif /* DMA_BUSY_RESET */
-
-    pAd->CommonCfg.ManualTxopThreshold = 10; // Mbps
-    pAd->CommonCfg.ManualTxopUpBound = 15; // Ratio
-    pAd->CommonCfg.ManualTxopLowBound = 5; // Ratio
 
 	DBGPRINT(RT_DEBUG_TRACE, ("<-- UserCfgInit\n"));
 }

@@ -54,10 +54,10 @@ void websError(webs_t* wp, int code, char_t *fmt, ...)
 {
     va_list	args;
     char_t	*msg, *userMsg;/*, *buf;*/
-    char_t*     safeUrl = NULL;
+//    char_t*     safeUrl = NULL;
     char_t*     safeMsg = NULL;
 
-    char* url = ngx_to_cstring(wp->pool, wp->request->uri);
+//    char* url = ngx_to_cstring(wp->pool, wp->request->uri);
 
     if (fmt == NULL)
     {
@@ -81,8 +81,7 @@ void websError(webs_t* wp, int code, char_t *fmt, ...)
     }
 
     va_start(args, fmt);
-
-    int errcode = vsnprintf( userMsg, 1024, fmt, args);
+    vsnprintf(userMsg, 1024, fmt, args);
     userMsg[1023] = '\0';
 
     va_end(args);

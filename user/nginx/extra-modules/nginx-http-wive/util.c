@@ -315,7 +315,7 @@ ngx_str_t n_skipchar(ngx_str_t str, int n)
 */
 int n_strcmp(ngx_str_t str1, ngx_str_t str2)
 {
-    unsigned int i, j;
+    unsigned int i;
 
     unsigned int len = (str1.len<str2.len)?str1.len:str2.len;
 

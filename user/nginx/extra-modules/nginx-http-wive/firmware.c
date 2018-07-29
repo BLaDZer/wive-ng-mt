@@ -367,8 +367,8 @@ int firmware_upgrade(webs_t* wp)
         ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade has been started.\n");
 
         char err_msg[512];
-        long file_size = 0, file_begin = 0, file_end = 0;
-        int tries = 0, reset_rwfs = 0;
+        long file_size = 0;
+        int reset_rwfs = 0;
 
         char *filename = websGetVar(wp, "filename.path", NULL);
         char *filesize = websGetVar(wp, "filename.size", NULL);
@@ -439,9 +439,6 @@ int firmware_upgrade(webs_t* wp)
                         return 6;
 		}
 
-//		file_begin = find->start_pos;
-//		file_end   = find->end_pos;
-//		file_size  = file_end - file_begin;
 	} else {
                 sprintf(err_msg, "No firmware binary file!");
                 ELOG_ERR(wp->request->connection->log, 0, "%s", err_msg);
