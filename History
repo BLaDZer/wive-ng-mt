@@ -4152,23 +4152,24 @@
 65) kernel: net: netlink: make sure nladdr has correct size in netlink_connect().<br>
 66) kernel: net: netfilter: ebtables: CONFIG_COMPAT: don't trust userland offsets.<br>
 67) kernel: net: netfilter: ebtables: fix erroneous reject of last rule.<br>
-68) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
-69) kernel: ralink_wifi: rrm: fix bss beacon prepare for announse RRM cap.<br>
-70) kernel: ralink_wifi: rrm: need update CAP and IEs if mode switch.<br>
-71) kernel: ralink_wifi: rrm: use 0 random interval.<br>
-72) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
-73) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
-74) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
-75) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
-76) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices).<br>
-77) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
-78) kernel: ralink_wifi: fix reset one sec counters<br>
-79) kernel: ralink_wifi: fix channel repports.<br>
-80) kernel: ralink_wifi: fix pkt_len calc.<br>
-81) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
-82) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
-83) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
-84) kernel: ralink_wifi: mt7610: fix module reload in very noised radio.<br>
-85) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
+68) kernel: net: tcp: avoid collapses in tcp_prune_queue() if possible.<br>
+69) kernel: ralink_wifi: ft: fix bad RSNIE in some cases.<br>
+70) kernel: ralink_wifi: rrm: fix bss beacon prepare for announse RRM cap.<br>
+71) kernel: ralink_wifi: rrm: need update CAP and IEs if mode switch.<br>
+72) kernel: ralink_wifi: rrm: use 0 random interval.<br>
+73) kernel: ralink_wifi: more accurate vht txpwr envelope calculate.<br>
+74) kernel: ralink_wifi: ageout time to 480 sec (fix psm issue with some clients).<br>
+75) kernel: ralink_wifi: increase GTK update interval to 2sec (compat fix).<br>
+76) kernel: ralink_wifi: increase ft1 key table size for more clients store in FT cache.<br>
+77) kernel: ralink_wifi: disable rssi feedback (now not support and conflict with 256QAM flag in new devices).<br>
+78) kernel: ralink_wifi: fix invalidate 802.1x entry.<br>
+79) kernel: ralink_wifi: fix reset one sec counters<br>
+80) kernel: ralink_wifi: fix channel repports.<br>
+81) kernel: ralink_wifi: fix pkt_len calc.<br>
+82) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
+83) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
+84) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
+85) kernel: ralink_wifi: mt7610: fix module reload in very noised radio.<br>
+86) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
 <br>
 <br>
