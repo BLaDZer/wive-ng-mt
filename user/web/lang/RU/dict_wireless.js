@@ -50,6 +50,10 @@ var wireless_dictionary = {
 	'basic ac bssid'				: 'BSSID (5.GHz)',
 	'basic frequency'				: 'Канал (2,4ГГц)',
 	'basic frequency ac'				: 'Канал (5ГГц)',
+
+	'basic frequency autoselect'			: 'Автовыбор канала (2,4ГГц)',
+	'basic frequency autoselect ac'			: 'Автовыбор канала (5ГГц)',
+
 	'basic frequency auto'				: 'Автовыбор',
 	'basic rate'					: 'Скорость',
 
@@ -84,8 +88,8 @@ var wireless_dictionary = {
 	'basic ht addba'				: 'Агрегация ACK',
 	'basic ht delba'				: 'Отклонять запрос агрегации ACK',
 	'basic other'					: 'Прочее',
-	'basic ht txstream'				: 'Количество пространственных потоков передачи',
-	'basic ht rxstream'				: 'Количество пространственных потоков приёма',
+	'basic ht txstream'				: 'Число пространственных потоков передачи',
+	'basic ht rxstream'				: 'Число пространственных потоков приёма',
 	'basic mbssid mode'				: 'Режим MBSSID',
 	'basic mbssid mode all'				: '2.4GHz и 5GHz',
 	'basic wds mode'				: 'Режим WDS',
@@ -229,7 +233,7 @@ var wireless_dictionary = {
 	'adv wmm'					: 'Поддержка Wireless Multimedia',
 	'adv multicast2unicast converter'		: 'Конвертер Multicast-to-Unicast',
 	'adv multicast2unicast'				: 'Multicast-to-Unicast',
-	'adv maximum stations number'			: 'Максимальное количество клиентов на каждый SSID',
+	'adv maximum stations number'			: 'Макс. количество клиентов на каждый SSID',
 	'adv station keep alive'			: 'Интервал опроса клиентов',
 	'adv idletimeout'				: 'Время бездействия до отключения клиента',
 	'adv entrylifecheck'				: 'Попыток отправки пакета до отключения клиента',

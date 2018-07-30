@@ -37,6 +37,7 @@
 				_TR("6to4Setup",			"ipv6 6to4 enabled");
 				_TR("v66to4SrvIpaddr",		"ipv6 6to4 server address");
 				_TR("v6invpn",				"ipv6 Ipv6InVPN");
+				_TR("v6iana",				"ipv6 iana disable");
 
 				_TR("v6services",			"ipv6 services");
 				_TR("v6servicename",		"ipv6 service name");
@@ -75,6 +76,7 @@
 
 				form.ipv6_allow_forward.checked			= NVRAM_IPv6AllowForward == '1';
 				form.ipv6_Ipv6InVPN.checked				= NVRAM_Ipv6InVPN == '1';
+				form.ipv6_ianaDisable.checked				= NVRAM_IPv6DisableIANA == '1';
 
 				form.radvdEnbl.options.selectedIndex 	= +NVRAM_radvdEnabled;
 				form.dhcpv6Enbl.options.selectedIndex 	= +NVRAM_dhcpv6Enabled;
@@ -255,7 +257,7 @@
 				} else if (opmode == '3')
 					form.IPv6SrvAddr.value					= NVRAM_IPv6SrvAddr;
 
-				displayElement( 'IPv6AllowForwardRowDisplay', opmode != '0');
+				displayElement( ['IPv6AllowForwardRowDisplay', 'v6iana_tr'], opmode != '0');
 				displayElement( 'v6invpn_tr', opmode != '0' && NVRAM_vpnEnabled == 'on');
 				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], opmode == '1');
 				displayElement( 'v6StaticTable', opmode == '1' && !form.dhcp6c_enable.checked);
@@ -310,6 +312,10 @@
 							<tr id="IPv6AllowForwardRowDisplay">
 								<td id="IPv6AllowForward" class="head" width="45%">Allow access to LAN from internet</td>
 								<td width="55%"><input name="ipv6_allow_forward" type="checkbox" class="auth-disable-user"></td>
+							</tr>
+							<tr id="v6iana_tr">
+								<td id="v6iana" class="head" width="45%">Do not use ia-na for WAN configuration</td>
+								<td width="55%"><input name="ipv6_ianaDisable" type="checkbox" class="auth-disable-user"></td>
 							</tr>
 							<tr id="v6StaticMTU_tr">
 								<td id="v6StaticMTU" class="head" width="45%">MTU</td>

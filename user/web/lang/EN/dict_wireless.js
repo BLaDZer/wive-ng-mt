@@ -51,6 +51,8 @@ var wireless_dictionary = {
 	'basic ac bssid'		: 'BSSID (5GHz)',
 	'basic frequency'		: 'Channel (2.4GHz)',
 	'basic frequency ac'		: 'Channel (5GHz)',
+	'basic frequency autoselect'	: 'Channel Autoselect (2.4GHz)',
+	'basic frequency autoselect ac'	: 'Channel Autoselect (5GHz)',
 	'basic frequency auto'		: 'AutoSelect',
 	'basic rate'			: 'Rate',
 	'basic wds title'		: 'Wireless Distribution System',

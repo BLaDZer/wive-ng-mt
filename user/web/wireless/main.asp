@@ -96,9 +96,11 @@
 					// Network mode (2.4GHz)
 					displayElement( 'div_11g_basic', enableWireless);
 					// TX Power (2.4GHz)
-					displayElement( 'div_11g_channel', enableWireless);
-					// Channel (2.4GHz)
 					displayElement( 'div_txpw', enableWireless);
+					// Channel (2.4GHz)
+					displayElement( 'div_11g_channel', enableWireless);
+					// Channel autoselect (2.4GHz)
+					displayElement( 'div_11g_channel_autoselect', enableWireless && form.sz11gChannel.value == 0);
 					form.sz11gChannel.disabled = false;
 
 					if (enableWireless)
@@ -120,8 +122,6 @@
 				// Wireless Network 5 GHz
 				var updateVisibility_net5 = function() {
 					displayElement('wireless_5', BUILD_5GHZ_SUPPORT);
-					// Enabled
-					displayElement('basicWirelessEnabledAc', BUILD_5GHZ_SUPPORT);
 					// Network name (5GHz)
 					displayElement( 'div_11a_name', enableWirelessAc);
 					// Network mode (5GHz)
@@ -130,6 +130,8 @@
 					displayElement( 'div_txpw_ac', enableWirelessAc);
 					// Channel (5GHz)
 					displayElement( 'div_11a_channel', enableWirelessAc);
+					// Channel autoselect (5GHz)
+					displayElement( 'div_11a_channel_autoselect', enableWirelessAc && form.sz11aChannel.value == 0);
 
 					form.sz11aChannel.disabled = !BUILD_5GHZ_SUPPORT;
 
@@ -780,7 +782,7 @@
 							'		<tr>' +
 							'			<td bgcolor="#E8F8FF" class="head" >' + _('secure access policy capable') + '</td>' +
 							'			<td>' +
-							'				<select name="AccessPolicy' + aptable + '" id="AccessPolicy' + aptable + '" class="mid" onChange="accessPolicyClick(' + aptable + ');">' +
+							'				<select name="AccessPolicy' + aptable + '" id="AccessPolicy' + aptable + '" class="normal" onChange="accessPolicyClick(' + aptable + ');">' +
 							'					<option value="0">' + _('wireless disable') + '</option>' +
 							'					<option value="1">' + _('wireless allow') + '</option>' +
 							'					<option value="2">' + _('wireless reject') + '</option>' +
@@ -790,7 +792,7 @@
 							'		<tr  id="newap_text_' + aptable + '_tr">' +
 							'			<td class="head">' + _('secure access policy new') + '</td>' +
 							'			<td>' +
-							'				<input class="mid" id="newap_text_' + aptable + '" maxlength="17">' +
+							'				<input class="normal" id="newap_text_' + aptable + '" maxlength="17">' +
 							'				<input class="half" id="newap_text_' + aptable + '_add" type="button" value="' + _('station add') + '" onClick="addMAC(' + aptable +')">' +
 							'			</td>' +
 							'		</tr>' +
@@ -882,7 +884,7 @@
 
 			// Add access policy MAC
 			function addMAC(table) {
-				var mac = document.getElementById('newap_text_' + table).value.toUpperCase();
+				var mac = document.getElementById('newap_text_' + table).value.toUpperCase().split('-').join(':');
 				if (!validateMAC(mac)) {
 					alert(_("inet invalid mac"));
 					document.getElementById('newap_text_' + table).focus();
@@ -1029,8 +1031,11 @@
 
 				for (i = 0; i < security_modes_list.length; i++)
 				{
-					if (form["AuthMode"+MBSSID].value == "WEP" || security_modes_list[i][1] != "WEPAUTO")
-						form.security_mode.options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
+					is_wep = security_modes_list[i][1] == "WEPAUTO";
+					if (is_wep && form["AuthMode"+MBSSID].value != "WEP") continue;
+					if (BUILD_8021X == '0' && security_modes_list[i][2] == '1') continue;
+
+					form.security_mode.options.add(new Option(security_modes_list[i][0], security_modes_list[i][1]));
 				}
 
 				form.security_mode.value = form["AuthMode"+MBSSID].value;
@@ -2206,11 +2211,8 @@ table.form td.head {
 }
 
 table.form td.head-narrow {
-    width: 30%;
-}
-
-table.form td.val {
-    width: 50%;
+    width: 32%;
+    white-space: normal;
 }
 
 table.form tr.ssid-row {
@@ -2230,6 +2232,11 @@ table.form tr.ssid-row {
 .mssid-button {
     width: 80px;
 }
+
+.wordwrap {
+    white-space: normal !important;
+}
+
 		</style>
 
 	</head>
@@ -2254,28 +2261,27 @@ table.form tr.ssid-row {
 		<col style="width: 515px" />
 		<thead>
 			<tr>
-				<td class="title" colspan="2" data-tr="basic wireless network">Wireless Network</td>
+				<td class="title head-narrow" data-tr="basic wireless network">Wireless Network</td>
+				<td class="title" style="text-align: right;">
+					<select name="radioWirelessEnabled" class="half" onChange="updateVisibility(this.form);">
+						<option value="0" data-tr="button disable">Disabled</option>
+						<option value="1" data-tr="button enable">Enabled</option>
+					</select>
+				</td>
 			</tr>
 		</thead>
 		<tbody>
-			<tr id="basicWirelessEnabled">
-				<td class="head head-narrow" data-tr="basic wireless">Wireless</td>
-				<td><select name="radioWirelessEnabled" class="normal" onChange="updateVisibility(this.form);">
-					<option value="0" data-tr="button disable">Disabled</option>
-					<option value="1" data-tr="button enable">Enabled</option>
-				</select>
-				<span style="display: inline-block; margin-left: 20px; width: 180px"><b>BSSID:</b> <% getWlanCurrentMac(); %></span><span id="wlan_channel_span"></span></td>
-			</tr>
 			<tr id="div_11g_basic">
 				<td class="head head-narrow" data-tr="basic network mode">Network Mode</td>
-				<td><select name="wirelessmode" id="wirelessmode" class="normal" onChange="updateVisibility(this.form);">
+				<td class="wordwrap"><select name="wirelessmode" id="wirelessmode" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" data-tr="basic bg">BG</option>
 					<option value="1" data-tr="basic b">B</option>
 					<option value="4" data-tr="basic g">G</option>
 					<option value="6" data-tr="basic n">N</option>
 					<option value="7" data-tr="basic gn">GN</option>
 					<option value="9" data-tr="basic bgn">BGN</option>
-				</select></td>
+				</select>
+				<span style="margin-left: 20px; margin-right: 20px"><b>BSSID:</b> <% getWlanCurrentMac(); %></span><span id="wlan_channel_span"></span></td>
 			</tr>
 			<tr id="div_txpw">
 				<td class="head head-narrow auth-readonly-user" data-tr="basic tx power">TX Power (2.4GHz)</td>
@@ -2293,14 +2299,21 @@ table.form tr.ssid-row {
 				<td><select id="sz11gChannel" name="sz11gChannel" class="normal" onChange="ChannelOnChange(this.form, false);">
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
 					<% getWlan11gChannels(); %>
-					</select>&nbsp;&nbsp;<select name="autoselect_g" id="autoselect_g">
+					</select>
+					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('2.4');">
+				</td>
+			</tr>
+
+			<tr id="div_11g_channel_autoselect">
+				<td class="head head-narrow" data-tr="basic frequency autoselect">Channel Autoselect (2.4GHz)</td>
+				<td><select name="autoselect_g" class="normal" id="autoselect_g">
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
 					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g">
 				</select>
-					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('2.4');">
 				</td>
 			</tr>
+
 			<tr id="scanAp" style="display: none;">
 				<td colspan="2">
 					<div style="height: 300px;">
@@ -2323,27 +2336,25 @@ table.form tr.ssid-row {
 		<col style="width: 515px" />
 		<thead>
 			<tr>
-				<td class="title" colspan="2" data-tr="basic wireless network ac">Wireless Network 5GHz</td>
+				<td class="title head-narrow" data-tr="basic wireless network ac">Wireless Network 5GHz</td>
+				<td class="title" style="text-align: right;"><select name="radioWirelessEnabledAc" class="half" onChange="updateVisibility(this.form);">
+					<option value="0" data-tr="button disable">Disabled</option>
+					<option value="1" data-tr="button enable">Enabled</option>
+				</select></td>
+
 			</tr>
 		</thead>
 		<tbody>
-			<tr id="basicWirelessEnabledAc">
-				<td class="head head-narrow" data-tr="basic wireless ac">Wireless (5GHz)</td>
-				<td><select name="radioWirelessEnabledAc" class="normal" onChange="updateVisibility(this.form);">
-					<option value="0" data-tr="button disable">Disabled</option>
-					<option value="1" data-tr="button enable">Enabled</option>
-				</select>
-				<span style="display: inline-block; margin-left: 20px; width: 180px"><b>BSSID:</b> <% getWlanCurrentMacAC(); %></span><span id="wlan_ac_channel_span"></span></td>
-			</tr>
 			<tr id="div_11a_basic">
 				<td class="head head-narrow" data-tr="basic ac network mode">Network Mode (5GHz)</td>
-				<td><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="updateVisibility(this.form);">
+				<td class="wordwrap"><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="updateVisibility(this.form);">
 					<option value="2" data-tr="basic a">A</option>
 					<option value="8" data-tr="basic aan">A/AN</option>
 					<option value="11" data-tr="basic an">AN</option>
 					<option value="14" data-tr="basic anc">A/AN/AC</option>
 					<option value="15" data-tr="basic anac">AN/AC</option>
-				</select></td>
+				</select>
+				<span style="margin-left: 20px; margin-right: 20px;"><b>BSSID:</b> <% getWlanCurrentMacAC(); %></span><span id="wlan_ac_channel_span"></span></td>
 			 </tr>
 			<tr id="div_txpw_ac">
 				<td class="head head-narrow auth-readonly-user" data-tr="basic tx power ac">TX Power (5GHz)</td>
@@ -2361,14 +2372,21 @@ table.form tr.ssid-row {
 				<td><select id="sz11aChannel" name="sz11aChannel" class="normal" onChange="ChannelOnChange(this.form, true);">
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
 					<% getWlan11aChannels(); %>
-					</select>&nbsp;&nbsp;<select name="autoselect_a" id="autoselect_a">
+					</select>
+					<input id="scanapLegendButtonScanINIC" name="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('5');">
+				</td>
+			</tr>
+
+			<tr id="div_11a_channel_autoselect">
+				<td class="head head-narrow" data-tr="basic frequency autoselect ac">Channel Autoselect (5GHz)</td>
+				<td><select name="autoselect_a" class="normal" id="autoselect_a">
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
 					</select>&nbsp;&nbsp;<select name="checktime_a" class="normal" id="checktime_a">
 				</select>
-					<input id="scanapLegendButtonScanINIC" name="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('5');">
 				</td>
 			</tr>
+
 			<tr id="scanApINIC" style="display: none;">
 				<td colspan="2">
 					<div style="height: 300px;">
@@ -2399,14 +2417,14 @@ table.form tr.ssid-row {
 			</tr>
 			<tr>
 				<td class="title"></td>
-				<td class="title" data-tr="basic network name">Network name</td>
+				<td class="title" align="center" data-tr="basic network name">Network name</td>
 				<td class="title" align="center" data-tr="basic hssid">Hidden</td>
 				<td class="title" align="center"><span data-tr="basic clients">Clients</span><br><span data-tr="basic isolated">Isolated</span></td>
 				<td class="title" align="center"><span id="basicBroadcast">Broadcast</span><br><span data-tr="basic isolated">Isolated</span></td>
 				<td class="title" align="center" data-tr="basic action">Action</td>
 			</tr>
 			<tr id="div_11g_name" class="ssid-row">
-				<td class="head" data-tr="basic ssid">Network Name (2.4GHz)</td>
+				<td class="head head-narrow" data-tr="basic ssid">Network Name (2.4GHz)</td>
 				<td><input class="normal" type="text" name="mssid_1" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="0"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="0"></td>
@@ -2416,7 +2434,7 @@ table.form tr.ssid-row {
 			</tr>
 
 			<tr id="div_hssid1" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>1</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>1</td>
 				<td><input class="normal" name="mssid_2" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="1"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="1"></td>
@@ -2425,7 +2443,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid2" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>2</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>2</td>
 				<td><input class="normal" type="text" name="mssid_3" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="2"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="2"></td>
@@ -2434,7 +2452,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid3" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>3</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>3</td>
 				<td><input class="normal" type="text" name="mssid_4" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="3"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="3"></td>
@@ -2443,7 +2461,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid4" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>4</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>4</td>
 				<td><input class="normal" type="text" name="mssid_5" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="4"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="4"></td>
@@ -2452,7 +2470,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid5" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>5</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>5</td>
 				<td><input class="normal" type="text" name="mssid_6" maxlength="32" onchange="updateVisibility(this.form);"></input></td>
 				<td><input type="checkbox" name="hssid" value="5"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="5"></td>
@@ -2461,7 +2479,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid6" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>6</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>6</td>
 				<td><input class="normal" type="text" name="mssid_7" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="6"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="6"></td>
@@ -2470,7 +2488,7 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_hssid7" class="ssid-row">
-				<td class="head"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>7</td>
+				<td class="head head-narrow"><span class="mssid-label" data-tr="basic multiple ssid">Multiple SSID</span>7</td>
 				<td><input class="normal" type="text" name="mssid_8" maxlength="32" onchange="updateVisibility(this.form);"></td>
 				<td><input type="checkbox" name="hssid" value="7"></td>
 				<td><input type="checkbox" name="isolated_ssid" value="7"></td>
@@ -2479,11 +2497,11 @@ table.form tr.ssid-row {
 				</td>
 			</tr>
 			<tr id="div_11a_name">
-				<td class="head" data-tr="basic ac ssid">Network Name (5GHz)</td>
+				<td class="head head-narrow" data-tr="basic ac ssid">Network Name (5GHz)</td>
 				<td colspan="5"><input class="normal" type="text" name="mssidac_1" maxlength="32" onchange="updateVisibility(this.form);"></td>
 			</tr>
 			<tr id="basicMbssidModeT">
-				<td class="head" data-tr="basic mbssid mode">MBSSID Mode</td>
+				<td class="head head-narrow" data-tr="basic mbssid mode">MBSSID Mode</td>
 				<td colspan="5"><select name="mbssid_mode" class="normal" onChange="updateVisibility(this.form);">
 					<option value="ra" selected>2.4GHz</option>
 					<option value="rai">5GHz</option>
@@ -2491,21 +2509,21 @@ table.form tr.ssid-row {
 				</select></td> 
 			</tr>		
 			<tr id="div_mbssidapisolated">
-				<td class="head" data-tr="basic mbssidapisolated">SSID to SSID Isolation</td>
+				<td class="head head-narrow" data-tr="basic mbssidapisolated">SSID to SSID Isolation</td>
 				<td colspan="5"><select name="mbssidapisolated" class="normal" onChange="updateVisibility(this.form);">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
 				</select></td>
 			</tr>
 			<tr id="div_LanWifiIsolate">
-				<td class="head" data-tr="basic lan wifi isolate">LAN to WLAN Isolation</td>
+				<td class="head head-narrow" data-tr="basic lan wifi isolate">LAN to WLAN Isolation</td>
 				<td colspan="5"><select name="LanWifiIsolate" class="normal">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
 				</select></td>
 			</tr>
 			<tr id="div_abg_rate">
-				<td class="head" data-tr="basic rate">Rate</td>
+				<td class="head head-narrow" data-tr="basic rate">Rate</td>
 				<td colspan="5"><select name="abg_rate" class="normal">
 				</select></td>
 			</tr>
@@ -2609,7 +2627,7 @@ table.form tr.ssid-row {
 						<tr id="div_wpa_algorithms" name="div_wpa_algorithms" style="display: none;">
 							<td class="head" id="secureWPAAlgorithm" data-tr="secure wpa algorithm">WPA Algorithms</td>
 							<td>
-								<select name="cipher" id="cipher" class="mid" onChange="onWPAAlgorithmsClick()">
+								<select name="cipher" id="cipher" class="normal" onChange="onWPAAlgorithmsClick()">
 									<option value="0">TKIP</option>
 									<option value="1">AES</option>
 									<option value="2">TKIP/AES</option>
@@ -2619,25 +2637,25 @@ table.form tr.ssid-row {
 						<tr id="wpa_passphrase" name="wpa_passphrase" style="display: none;">
 							<td class="head" id="secureWPAPassPhrase">Pass Phrase</td>
 							<td>
-								<input type="password" name="passphrase" id="passphrase" class="mid" maxlength="64" value="">
+								<input type="password" name="passphrase" id="passphrase" class="normal" maxlength="64" value="">
 								<span id="passphrase_type" style="position: absolute; margin-top: 1px;"><input type="checkbox" onClick="showPassPhrase('passphrase')"><span id="secureShowPass4" data-tr="secure wpa show pass phrase" style="position: absolute; margin-top: 2px;">(show)</span></span>
 							</td>
 						</tr>
 						<tr id="wpa_passphrase5" name="wpa_passphrase5" style="display: none;">
 							<td class="head" id="secureWPAPassPhraseInic" data-tr="secure wpa pass phrase inic">Pass Phrase 5GHz</td>
 							<td>
-								<input type="password" name="passphraseinic" id="passphraseinic" class="mid" maxlength="64" value="">
+								<input type="password" name="passphraseinic" id="passphraseinic" class="normal" maxlength="64" value="">
 								<span id="passphrase_inic_type" style="position: absolute; margin-top: 1px;"><input type="checkbox" onClick="showPassPhrase('passphraseinic')"><span id="secureShowPass5" data-tr="secure wpa show pass phrase" style="position: absolute; margin-top: 2px;">(show)</span></span>
 							</td>
 						</tr>
 						<tr id="wpa_key_renewal_interval" name="wpa_key_renewal_interval" style="display: none;">
 							<td class="head" id="secureWPAKeyRenewInterval" data-tr="secure wpa key renew interval">Key Renewal Interval</td>
-							<td><input name="keyRenewalInterval" id="keyRenewalInterval" class="mid" maxlength="6" value="3600">&nbsp;<span id="secureKeySeconds" data-tr="secure key seconds">seconds</span></td>
+							<td><input name="keyRenewalInterval" id="keyRenewalInterval" class="normal" maxlength="6" value="3600">&nbsp;<span id="secureKeySeconds" data-tr="secure key seconds">seconds</span></td>
 						</tr>
 						<tr id="wpa_preAuthentication" name="wpa_preAuthentication" style="display: none;">
 							<td class="head" id="secureWPAPreAuth" data-tr="secure wpa preauth">Pre-Authentication</td>
 							<td>
-								<select name="PreAuthentication" id="PreAuthentication" class="mid" onChange="onPreAuthenticationClick()">
+								<select name="PreAuthentication" id="PreAuthentication" class="normal" onChange="onPreAuthenticationClick()">
 									<option value="0" id="PreAuthenticationDisable" data-tr="button disable">Disable</option>
 									<option value="1" id="PreAuthenticationEnable" data-tr="button enable">Enable</option>
 								</select>
@@ -2650,22 +2668,22 @@ table.form tr.ssid-row {
 						</tr>
 						<tr>
 							<td class="head" id="secureRadiusIPAddr" data-tr="secure radius ipaddr">IP Address</td>
-							<td><input name="RadiusServerIP" id="RadiusServerIP" class="mid" maxlength="32" value=""></td>
+							<td><input name="RadiusServerIP" id="RadiusServerIP" class="normal" maxlength="32" value=""></td>
 						</tr>
 						<tr>
 							<td class="head" id="secureRadiusPort" data-tr="secure radius port">Port</td>
-							<td><input name="RadiusServerPort" id="RadiusServerPort" class="mid" maxlength="5" value=""></td>
+							<td><input name="RadiusServerPort" id="RadiusServerPort" class="normal" maxlength="5" value=""></td>
 						</tr>
 						<tr>
 							<td class="head" id="secureRadiusSharedSecret" data-tr="secure radius shared secret">Shared Secret</td>
 							<td>
-								<input type="password" name="RadiusServerSecret" id="RadiusServerSecret" class="mid" maxlength="64" value="">
+								<input type="password" name="RadiusServerSecret" id="RadiusServerSecret" class="normal" maxlength="64" value="">
 								<span id="secureRadiusSharedSecret_show" style="position: absolute; margin-top: 1px;"><input type="checkbox" onChange="showPassPhrase('RadiusServerSecret')"><span id="secureShowPass6" data-tr="secure wpa show pass phrase" style="position: absolute; margin-top: 2px;">(show)</span></span>
 							</td>
 						</tr>
 						<tr>
 							<td class="head" id="secureRadiusSessionTimeout" data-tr="secure radius session timeout">Session Timeout</td>
-							<td><input name="RadiusServerSessionTimeout" id="RadiusServerSessionTimeout" class="mid" maxlength="4" value="0"></td>
+							<td><input name="RadiusServerSessionTimeout" id="RadiusServerSessionTimeout" class="normal" maxlength="4" value="0"></td>
 						</tr>
 					</table>
 					<!--	AccessPolicy for mbssid -->
@@ -2733,7 +2751,7 @@ table.form tr.ssid-row {
 			</select></td>
 		</tr>
 		<tr id="basicHSTBC_tr">
-			<td class="head" data-tr="basic block coding">Space-Time Block Coding</td>
+			<td class="head wordwrap" data-tr="basic block coding">Space-Time Block Coding</td>
 			<td class="val"><select name="n_stbc" class="normal">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
@@ -2800,7 +2818,7 @@ table.form tr.ssid-row {
 			</select></td>
 		</tr>
 		<tr id="basicVHTSTBC_tr">
-			<td class="head" data-tr="basic block coding">Space-Time Block Coding</td>
+			<td class="head wordwrap" data-tr="basic block coding">Space-Time Block Coding</td>
 			<td class="val"><select name="ac_stbc" class="normal">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
@@ -3092,8 +3110,8 @@ table.form tr.ssid-row {
 	<table id="div_txbf" class="form auth-hide-user" style="display:none;">
 	<thead>
 		<tr>
-			<td class="title" width="50%" data-tr="basic txbf">Beamforming</td>
-			<td class="title" width="50%" style="text-align:right">
+			<td class="title head" data-tr="basic txbf">Beamforming</td>
+			<td class="title" style="text-align:right">
 				<select name="ITxBfEn" class="half" onChange="updateVisibility(this.form);">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
@@ -3120,8 +3138,8 @@ table.form tr.ssid-row {
 	<table id="div_bandsteering" class="form auth-hide-user" style="display:none;">
 	<thead>
 		<tr id="row_BndStrg">
-			<td class="title" width="50%" data-tr="basic bandsteering">Band steering</td>
-			<td class="title" width="50%" style="text-align:right">
+			<td class="title head" data-tr="basic bandsteering">Band steering</td>
+			<td class="title" style="text-align:right">
 				<select name="BandSteering" class="half" onChange="bandSteeringChange(this.form, 1);">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
@@ -3132,12 +3150,12 @@ table.form tr.ssid-row {
 	</thead>
 	<tbody>
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
-			<td class="head" data-tr="basic bandsteering rssidiff">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
+			<td class="head wordwrap" data-tr="basic bandsteering rssidiff">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
 			<td class="val"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2">
 				<span class="range" data-tr="basic bandsteering rssidiff default">0 - 40 db, default 15</span></td>
 		</tr>
 		<tr id="row_BndStrgRssiLow" style="display:none;">
-			<td class="head" data-tr="basic bandsteering rssilow">Force fallback to 2.4GHz if rssi smaller</td>
+			<td class="head wordwrap" data-tr="basic bandsteering rssilow">Force fallback to 2.4GHz if rssi smaller</td>
 			<td class="val"><input type="text" name="BndStrgRssiLow" class="normal" maxlength="4">
 				<span class="range" data-tr="basic bandsteering rssilow default">0 - -100 db, default -88</span></td>
 		</tr>
@@ -3152,7 +3170,7 @@ table.form tr.ssid-row {
 				<span class="range" data-tr="basic bandsteering hold default">ms, default 3000</span></td>
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
-			<td class="head" data-tr="basic bandsteering check">Time for deciding if a client is 2.4G only</td>
+			<td class="head wordwrap" data-tr="basic bandsteering check">Time for deciding if a client is 2.4G only</td>
 			<td class="val"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">
 				<span class="range" data-tr="basic bandsteering check default">ms, default 5000</span></td>
 		</tr>
@@ -3161,8 +3179,8 @@ table.form tr.ssid-row {
 	<table id="div_ids" class="form auth-hide-user" style="display:none;">
 	<thead>
 		<tr>
-			<td class="title" width="50%" data-tr="basic ids">Intrusion Detection settings</td>
-			<td class="title" width="50%" style="text-align:right">
+			<td class="title head" data-tr="basic ids">Intrusion Detection settings</td>
+			<td class="title" style="text-align:right">
 				<select name="IdsEnable" class="half" onChange="updateVisibility(this.form);">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
@@ -3182,7 +3200,7 @@ table.form tr.ssid-row {
 				<span class="range" data-tr="basic ids assoc default">default 64</span></td>
 		</tr>
 		<tr id="row_ReassocReqFloodThreshold">
-			<td class="head" data-tr="basic ids reassoc">Reassociation request</td>
+			<td class="head wordwrap" data-tr="basic ids reassoc">Reassociation request</td>
 			<td class="val"><input type="text" name="ReassocReqFloodThreshold" class="normal" maxlength="4">
 				<span class="range" data-tr="basic ids reassoc default">default 64</span></td>
 		</tr>

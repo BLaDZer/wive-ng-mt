@@ -223,6 +223,7 @@ var internet_dictionary = {
 	'ipv6 6to4 enabled'		: 'Tunneling Connection (6to4) Setup',
 	'ipv6 6to4 server address'	: 'IPv4 to IPv6 server address',
 	'ipv6 Ipv6InVPN'		: 'IPv6 uplink over VPN',
+	'ipv6 iana disable'		: 'Do not use ia-na for WAN configuration',
 	'ipv6 services'			: 'Services IPv6',
 	'ipv6 service name'		: 'Service name',
 	'ipv6 service value'		: 'Value',

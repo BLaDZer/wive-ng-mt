@@ -125,6 +125,7 @@ var internet_dictionary = {
 	'ipv6 6to4 enabled'			: 'Настройка туннеля 6to4',
 	'ipv6 6to4 server address'		: 'Адрес сервера',
 	'ipv6 Ipv6InVPN'			: 'IPv6 аплинк в VPN',
+	'ipv6 iana disable'			: 'Не использовать ia-na для конфигурации WAN',
 	'ipv6 services'				: 'Сервисы IPv6 для локальной сети',
 	'ipv6 service name'			: 'Название сервиса',
 	'ipv6 service value'			: 'Значение',

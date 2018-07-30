@@ -210,6 +210,7 @@ var NVRAM_dhcpStart                                                  = '<% getCf
 var NVRAM_dhcpEnd                                                    = '<% getCfgGeneral(1, "dhcpEnd",                             "192.168.1.254"); %>';
 var NVRAM_dhcpGateway                                                = '<% getCfgGeneral(1, "dhcpGateway",                         "192.168.1.1"); %>';
 var NVRAM_Ipv6InVPN                                                  = '<% getCfgGeneral(1, "Ipv6InVPN",                           "0"); %>';
+var NVRAM_IPv6DisableIANA                                            = '<% getCfgGeneral(1, "IPv6DisableIANA",                     "0"); %>';
 var NVRAM_IPv6Dhcpc                                                  = '<% getCfgGeneral(1, "IPv6Dhcpc",                           "1"); %>';
 var NVRAM_IPv6AllowForward                                           = '<% getCfgGeneral(1, "IPv6AllowForward",                    "0"); %>';
 var NVRAM_radvdEnabled                                               = '<% getCfgGeneral(1, "radvdEnabled",                        "0"); %>';

@@ -1035,6 +1035,7 @@ parameter_fetch_t service_ipv6_flags[] =
 	{ ("dhcp6c_enable"), "IPv6Dhcpc", 2, ("off") },
 	{ ("ipv6_allow_forward"), "IPv6AllowForward", 2, ("off") },
 	{ ("ipv6_Ipv6InVPN"), "Ipv6InVPN", 2, ("off") },
+	{ ("ipv6_ianaDisable"), "IPv6DisableIANA", 2, ("off") },
 #ifdef CONFIG_USER_RADVD
 	{ ("radvdEnbl"), "radvdEnabled", 0, ("0") },
 #endif
@@ -1054,9 +1055,10 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 15, "IPv6OpMode", "IPv6IPAddr", "IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
+		nvram_fromdef(RT2860_NVRAM, 16, "IPv6OpMode", "IPv6IPAddr", "IPv6PrefixLen", "IPv6WANIPAddr", "IPv6WANPrefixLen",
 			"IPv6GWAddr", "IPv6SrvAddr", "IPv6DNSPrimary", "IPv6DNSSecondary", "IPv6Dhcpc",
-			"IPv6AllowForward", "Ipv6InVPN", "IPv6ManualMTU", "radvdEnabled", "dhcpv6Enabled");
+			"IPv6AllowForward", "Ipv6InVPN", "IPv6DisableIANA", "IPv6ManualMTU", "radvdEnabled",
+			"dhcpv6Enabled");
 			int ipv6_mtu = nvram_get_int(RT2860_NVRAM, "IPv6ManualMTU", -1);
 			if (ipv6_mtu > 0)
 				ngx_nvram_set(wp, "IPv6ManualMTU", "0");
