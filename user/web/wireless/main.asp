@@ -265,7 +265,7 @@
 					displayElement( ['ac_bw_20'], wmodeac >= 2);
 					displayElement( ['ac_bw_20_40'], wmodeac >= 8);
 					displayElement( ['ac_bw_20_40_80'], wmodeac >= 14);
-					displayElement( ['ac_bw_20_40_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
+					displayElement( ['ac_bw_20_40_80_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
 
 					var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
 								   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
@@ -2854,8 +2854,8 @@ table.form tr.ssid-row {
 				<option id="ac_bw_20" value="00">20MHz</option>
 				<option id="ac_bw_20_40" value="10">20/40MHz</option>
 				<option id="ac_bw_20_40_80" value="11">20/40/80MHz</option>
-				<option id="ac_bw_20_40_160" value="12" selected>20/40/160MHz</option>
-				<option id="ac_bw_20_40_80_80" value="13">20/40/80+80MHz</option>
+				<option id="ac_bw_20_40_80_160" value="12" selected>20/40/80/160MHz</option>
+				<option id="ac_bw_20_40_80_80" value="13">20/40/80/80+80MHz</option>
 			</select></td>
 		</tr>
 		<tr id="advBGProtect_tr">
