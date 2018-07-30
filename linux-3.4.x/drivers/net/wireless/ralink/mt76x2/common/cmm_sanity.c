@@ -1883,7 +1883,7 @@ BOOLEAN PeerProbeReqSanity(
 	IE_LISTS *ie_lists = &ProbeReqParam->ie_list;
 #endif /* SMART_MESH_MONITOR */
 
-	NdisZeroMemory(ProbeReqParam, sizeof(*ProbeReqParam));
+	//NdisZeroMemory(ProbeReqParam, sizeof(*ProbeReqParam));
 	
     /* to prevent caller from using garbage output value*/
 #ifdef CONFIG_AP_SUPPORT

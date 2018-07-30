@@ -2516,7 +2516,7 @@ VOID PeerProbeReqAction(
 	IN PRTMP_ADAPTER pAd, 
 	IN MLME_QUEUE_ELEM *Elem) 
 {
-	PEER_PROBE_REQ_PARAM ProbeReqParam;
+	PEER_PROBE_REQ_PARAM ProbeReqParam = { {0} };
 #ifdef DOT11_N_SUPPORT
 	UCHAR		  HtLen, AddHtLen, NewExtLen;
 #endif /* DOT11_N_SUPPORT */

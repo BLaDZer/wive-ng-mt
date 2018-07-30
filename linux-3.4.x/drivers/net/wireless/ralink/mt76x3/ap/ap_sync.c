@@ -46,7 +46,7 @@ VOID APPeerProbeReqAction(
 	IN PRTMP_ADAPTER pAd,
 	IN MLME_QUEUE_ELEM *Elem)
 {
-	PEER_PROBE_REQ_PARAM ProbeReqParam;
+	PEER_PROBE_REQ_PARAM ProbeReqParam = { {0} };
 	HEADER_802_11 ProbeRspHdr;
 	NDIS_STATUS NStatus;
 	PUCHAR pOutBuffer = NULL;

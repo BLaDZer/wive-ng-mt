@@ -4168,10 +4168,12 @@
 81) kernel: ralink_wifi: fix reset one sec counters<br>
 82) kernel: ralink_wifi: fix channel repports.<br>
 83) kernel: ralink_wifi: fix pkt_len calc.<br>
-84) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
-85) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
-86) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
-87) kernel: ralink_wifi: mt7610: fix module reload in very noised radio.<br>
-88) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
+83) kernel: ralink_wifi: fix calc rssi in some cases.<br>
+84) kernel: ralink_wifi: fix ProbeReqParam init.<br>
+85) kernel: ralink_wifi: move start mlme timer to end of init (prevent races).<br>
+86) kernel: ralink_wifi: implement ba reorder monitor (decrease drops and timeouts with multiclients).<br>
+87) kernel: ralink_wifi: mt76x2/mt7610: avoid BBP hang up.<br>
+88) kernel: ralink_wifi: mt7610: fix module reload in very noised radio.<br>
+89) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
 <br>
 <br>
