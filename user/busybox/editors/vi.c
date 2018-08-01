@@ -750,7 +750,10 @@ static int query_screen_dimensions(void)
 	return err;
 }
 #else
-# define query_screen_dimensions() (0)
+static ALWAYS_INLINE int query_screen_dimensions(void)
+{
+	return 0;
+}
 #endif
 
 static void edit_file(char *fn)
@@ -1067,10 +1070,13 @@ static void colon(char *buf)
 	not_implemented(p);
 #else
 
-	char c, *orig_buf, *buf1, *q, *r;
+	char c, *buf1, *q, *r;
 	char *fn, cmd[MAX_INPUT_LEN], args[MAX_INPUT_LEN];
 	int i, l, li, b, e;
 	int useforce;
+# if ENABLE_FEATURE_VI_SEARCH || ENABLE_FEATURE_ALLOW_EXEC
+	char *orig_buf;
+# endif
 
 	// :3154	// if (-e line 3154) goto it  else stay put
 	// :4,33w! foo	// write a portion of buffer to file "foo"
@@ -1102,8 +1108,10 @@ static void colon(char *buf)
 	// look for optional address(es)  :.  :1  :1,9   :'q,'a   :%
 	buf = get_address(buf, &b, &e);
 
+# if ENABLE_FEATURE_VI_SEARCH || ENABLE_FEATURE_ALLOW_EXEC
 	// remember orig command line
 	orig_buf = buf;
+# endif
 
 	// get the COMMAND into cmd[]
 	buf1 = cmd;

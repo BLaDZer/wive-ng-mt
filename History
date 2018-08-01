@@ -4178,7 +4178,8 @@
 <br>
 <br>
 <b>7.5.x</b><br>
-1) igmpproxy: when the link is PPP (flag = 0x10d1) should get the P-t-P address to use.<br>
-2) igmpproxy: fix case where we want to specify 0.0.0.0/0 but config disallows.<br>
+1) busybox: update to 1.29.2 stable version.<br>
+2) igmpproxy: when the link is PPP (flag = 0x10d1) should get the P-t-P address to use.<br>
+3) igmpproxy: fix case where we want to specify 0.0.0.0/0 but config disallows.<br>
 <br>
 <br>
