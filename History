@@ -4177,3 +4177,7 @@
 89) kernel: ralink_wifi: mt7610: fix mcu stub at down/if if radio is off.<br>
 <br>
 <br>
+<b>7.5.x</b><br>
+1) igmpproxy: when the link is PPP (flag = 0x10d1) should get the P-t-P address to use.<br>
+<br>
+<br>
