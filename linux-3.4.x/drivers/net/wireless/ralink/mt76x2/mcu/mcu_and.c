@@ -2421,10 +2421,10 @@ int andes_dynamic_vga(RTMP_ADAPTER *ad, UINT8 channel, BOOLEAN mode, BOOLEAN ext
 
 	if (ext == TRUE)
 		value |= 0x40000000;
-
+#ifdef ED_MONITOR
 	if (ad->ed_chk == TRUE)
 		value |= 0x20000000;
-		
+#endif
 	value |= channel;
 	value = cpu2le32(value);
 	andes_append_cmd_msg(msg, (char *)&value, 4);
