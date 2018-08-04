@@ -143,7 +143,7 @@ static void *mips_dma_alloc_coherent(struct device *dev, size_t size,
 		if (!plat_device_is_coherent(dev)) {
 			dma_cache_wback_inv((unsigned long) ret, size);
 			if (!hw_coherentio)
-				ret = UNCAC_ADDR(ret);
+				ret = (void *)UNCAC_ADDR(ret);
 		}
 	}
 
