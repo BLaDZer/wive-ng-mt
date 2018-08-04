@@ -4185,5 +4185,6 @@
 5) igmpproxy: limit maximum select default timeout.<br>
 6) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
 7) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+8) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
 <br>
 <br>

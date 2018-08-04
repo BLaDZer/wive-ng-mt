@@ -209,8 +209,8 @@ static inline int pfn_valid(unsigned long pfn)
 #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
-#define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + UNCAC_BASE)
-#define CAC_ADDR(addr)		((addr) - UNCAC_BASE + PAGE_OFFSET)
+#define UNCAC_ADDR(addr)	(UNCAC_BASE + __pa(addr))
+#define CAC_ADDR(addr)		((unsigned long)__va((addr) - UNCAC_BASE))
 
 #include <asm-generic/memory_model.h>
 #include <asm-generic/getorder.h>
