@@ -4183,5 +4183,6 @@
 3) igmpproxy: when the link is PPP (flag = 0x10d1) should get the P-t-P address to use.<br>
 4) igmpproxy: fix case where we want to specify 0.0.0.0/0 but config disallows.<br>
 5) igmpproxy: limit maximum select default timeout.<br>
+6) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
 <br>
 <br>
