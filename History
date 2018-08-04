@@ -4186,5 +4186,6 @@
 6) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
 7) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
 8) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+9) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
 <br>
 <br>
