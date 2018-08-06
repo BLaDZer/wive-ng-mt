@@ -908,14 +908,11 @@ VOID APCleanupPsQueue(
 	}
 }
 
-static VOID do_sta_keep_action(struct _RTMP_ADAPTER *ad, struct _MAC_TABLE_ENTRY *entry, BOOLEAN is_no_rx)
+static VOID do_sta_keep_action(struct _RTMP_ADAPTER *ad, struct _MAC_TABLE_ENTRY *entry)
 {
 #ifdef IAPP_SUPPORT
-	if (entry &&
-		is_no_rx &&
-		(ad->Mlme.PeriodicRound % STA_KEEP_ALIVE_NOTIFY_L2) == 0) {
+	if (entry)
 		IAPP_L2_Update_Frame_Send(ad, entry->Addr, entry->apidx);
-	}
 #endif /*IAPP_SUPPORT*/
 }
 
@@ -1275,7 +1272,7 @@ VOID MacTableMaintenance(
 		{
 			/* if station very long sleep try wakeup for handle this STA actual signal level and DS update */
 			if (pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)
-				do_sta_keep_action(pAd, pEntry, TRUE);
+				do_sta_keep_action(pAd, pEntry);
 
 			/* use max rssi for avoid unneeded kickout by level diviation of chains */
 			CHAR MaxRssi = RTMPMaxRssi(pAd, pEntry->RssiSample.AvgRssi0, pEntry->RssiSample.AvgRssi1, pEntry->RssiSample.AvgRssi2);
@@ -1303,7 +1300,7 @@ VOID MacTableMaintenance(
 				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
 						/* try wakeup for handle this STA status */
-						do_sta_keep_action(pAd, pEntry, TRUE);
+						do_sta_keep_action(pAd, pEntry);
 						/* use TIM bit to detect the PS station */
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
 					    } else {
@@ -1322,7 +1319,7 @@ VOID MacTableMaintenance(
 				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
 						/* try wakeup for handle this STA status */
-						do_sta_keep_action(pAd, pEntry, TRUE);
+						do_sta_keep_action(pAd, pEntry);
 						/* use TIM bit to detect the PS station */
 						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
 					    } else {
@@ -1347,7 +1344,7 @@ VOID MacTableMaintenance(
 			{
 			    if (pEntry->PsMode == PWR_SAVE) {
 				    /* try wakeup for handle this STA status */
-				    do_sta_keep_action(pAd, pEntry, TRUE);
+				    do_sta_keep_action(pAd, pEntry);
 				    /* use TIM bit to detect the PS station */
 				    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
 			    } else {
