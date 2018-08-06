@@ -4188,5 +4188,7 @@
 8) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
 9) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
 10) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+11) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+12) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
 <br>
 <br>

@@ -48,6 +48,7 @@
 
 #define MLME_TASK_EXEC_MULTIPLE       10  /*5*/       /* MLME_TASK_EXEC_MULTIPLE * MLME_TASK_EXEC_INTV = 1 sec */
 #define REORDER_EXEC_INTV         	100       /* 0.1 sec */
+#define STA_KEEP_ALIVE_NOTIFY_L2        60
 
 #ifdef CONFIG_STA_SUPPORT
 #define STAY_10_SECONDS_AWAKE        100/* */

@@ -41,7 +41,7 @@ VOID RRM_ScanResultFix(BSS_ENTRY *pBssEntry)
 			{
 				if (pBssEntry->HtCapabilityLen != 0) // HT or Higher case
 				{
-#ifdef DOT11_VHT_AC				
+#ifdef DOT11_VHT_AC
 					if (pBssEntry->vht_cap_len != 0)
 						pBssEntry->CondensedPhyType = 9;
 					else
@@ -70,7 +70,15 @@ VOID RRM_ScanResultFix(BSS_ENTRY *pBssEntry)
 			if (!pBssEntry->RegulatoryClass) {
 			    if (pBssEntry->Channel > 14) {
 				if (pBssEntry->CondensedPhyType == 9) {					/* VHT 36 - 161 80MHz */
+#ifdef DOT11_VHT_AC
+				/* handle 160MHz channel width */
+				if (pBssEntry->vht_cap_len != 0 && pBssEntry->vht_cap_ie.vht_cap.ch_width !=0)
+				    pBssEntry->RegulatoryClass = 129;
+				else
+#endif
 				    pBssEntry->RegulatoryClass = 128;
+
+
 				} else if (pBssEntry->Channel >= 36 && pBssEntry->Channel <= 48) {	/* HT 36 - 48 20/40MHz */
 				    switch(pBssEntry->AddHtInfo.AddHtInfo.ExtChanOffset)
 				    {
@@ -111,7 +119,13 @@ VOID RRM_ScanResultFix(BSS_ENTRY *pBssEntry)
 						break;
 				    }
 				} else {
-						pBssEntry->RegulatoryClass = 128;
+#ifdef DOT11_VHT_AC
+						/* handle 160MHz channel width */
+						if (pBssEntry->vht_cap_len != 0 && pBssEntry->vht_cap_ie.vht_cap.ch_width !=0)
+						    pBssEntry->RegulatoryClass = 129;
+						else
+#endif
+						    pBssEntry->RegulatoryClass = 128;
 				}
 			    } else { /* 2.4GHz mode */
 				if (pBssEntry->CondensedPhyType == 7) {
