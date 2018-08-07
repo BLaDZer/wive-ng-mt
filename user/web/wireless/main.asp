@@ -1510,8 +1510,7 @@
 			}
 
 			// Check values on form submit
-			function checkValues_security() {
-				var form = document.wireless_basic;
+			function checkValues_security(form) {
 				switch (document.getElementById('security_mode').value) {
 					case 'WEPAUTO':		
 											if (!checkWEP())
@@ -2169,6 +2168,10 @@
 			}
 
 			function showWarningEncriptionMode() {
+				var form = document.wireless_basic
+				if ((form.radioWirelessEnabled.value == "0") && (form.radioWirelessEnabledAc.value == "0"))
+					return;
+
 				var setPass = false;
 				var br = getBrowser();
 				var message = (br.browser == 'firefox') ? _('secure lowsecure mode').replace(/_/g, '\r\n') : _('secure lowsecure mode').replace(/_/g, '\r');
@@ -2178,7 +2181,6 @@
 						setTimeout(function () { alert(_('secure lowsecure mode apply')) }, 100);
 					}
 
-					var form = document.wireless_basic
 					form["AuthMode"+old_MBSSID].value = "WPA2PSK";
 					form["EncrypType"+old_MBSSID].value = 'AES';
 
@@ -2187,8 +2189,6 @@
 						document.getElementById('passphrase').focus();
 						document.getElementById('passphrase').select();
 					}
-					else
-						checkValues();
 				}
 			}
 
@@ -2197,7 +2197,6 @@
 				var message = (br.browser == 'firefox') ? _('secure lowsecure algo').replace(/_/g, '\r\n') : _('secure lowsecure algo').replace(/_/g, '\r');
 				if (confirm(message)) {
 					document.getElementById('cipher').value = 1;
-					checkValues();
 				}
 			}
 
