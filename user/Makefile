@@ -125,7 +125,6 @@ dir_$(CONFIG_USER_NGINX)                    += nginx
 # generate certs for apps
 dir_$(CONFIG_LIB_OPENSSL)		    += certsgen
 
-
 all:
 	# ">>>>>>>>>>>>>> CONFIGURE AND BUILD USERAPPS  <<<<<<<<<<<<<<<<<<<"
 	for i in $(dir_y) ; do \

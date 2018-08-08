@@ -27,7 +27,8 @@ CONFOPTS="$CONFOPTS --without-libtdb --disable-external-libtdb"
 CONFOPTS="$CONFOPTS --without-libtalloc --disable-external-libtalloc"
 CONFOPTS="$CONFOPTS --without-libtevent --disable-external-libtevent"
 CONFOPTS="$CONFOPTS --with-included-iniparser --with-included-popt"
-CONFOPTS="$CONFOPTS --with-static-modules=pdb_tdbsam,pdb_wbc_sam,idmap_nss,nss_info_template,auth_winbind,auth_wbc,auth_domain"
+CONFOPTS="$CONFOPTS --with-static-modules=nss_info_template,idmap_nss"
+CONFOPTS="$CONFOPTS --with-shared-modules=pdb_tdbsam,pdb_wbc_sam,auth_winbind,auth_wbc,auth_domain"
 
 #path options
 CONFOPTS="$CONFOPTS --with-logfilebase=/var/log --with-configdir=/etc --with-piddir=/var/lock --with-lockdir=/var/lock --sysconfdir=/etc --prefix=/"
