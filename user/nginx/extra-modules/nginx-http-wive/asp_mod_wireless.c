@@ -874,12 +874,16 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	if (CHK_IF_DIGIT(fastroaming, 1))
 		setupParameters(wp, fast_roaming_flags, 0);
 
-        int cachePeriod = strToIntDef(PMKCachePeriod, 480);
-        if (cachePeriod > 0)
-        {
-            snprintf(pmktmpbuf, 31, "%i;%i;%i;%i", cachePeriod, cachePeriod, cachePeriod, cachePeriod);
-            ngx_nvram_bufset(wp,"PMKCachePeriod", pmktmpbuf);
-        }
+	int cachePeriod = strToIntDef(PMKCachePeriod, -1);
+	if (cachePeriod > 0 && cachePeriod < 10000)
+	for (i=0;i<new_bssid_num;i++)
+	{
+		if (i>0)
+			strcat(pmktmpbuf, ";");
+
+		strcat(pmktmpbuf, PMKCachePeriod);
+	}
+	ngx_nvram_bufset(wp,"PMKCachePeriod", pmktmpbuf);
 
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ngx_nvram_bufset(wp,"IdsEnable", ids_enable);
@@ -1535,6 +1539,8 @@ static void setSecurity(webs_t* wp, int nvram)
 	int mbssid, i;
 	char_t *AccessPolicy, *AccessControlList;
 	char_t *reset = websGetVar(wp,  T("reset"), T("0"));
+	int bssid_num = strToIntDef(websGetVar(wp, T("bssid_num"), T("")), 1);
+	bssid_num = (bssid_num > MAX_NUMBER_OF_BSSID) ? MAX_NUMBER_OF_BSSID : bssid_num;
 
 	if (!CHK_IF_DIGIT(reset, 0)) {
 		nvram_init(RT2860_NVRAM);
@@ -1561,7 +1567,9 @@ static void setSecurity(webs_t* wp, int nvram)
 #endif
 	}
 	else {
-	for (mbssid = 0; mbssid < MAX_NUMBER_OF_BSSID; mbssid++) {
+	nvram_fromdef(RT2860_NVRAM, 5, "AuthMode", "EncrypType", "RekeyInterval", "RADIUS_Port", "RADIUS_Key");
+
+	for (mbssid = 0; mbssid < bssid_num; mbssid++) {
 		char_t *security_mode = websGetVar(wp,  racat("AuthMode", mbssid), T(""));
 		if (!security_mode || security_mode[0] == '\0') break;
 
