@@ -1401,6 +1401,7 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 	// 7615
 #if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
+	FPRINT_DAT(CalCacheApply);
 	FPRINT_DAT(E2pAccessMode);
 	FPRINT_DAT(LoadCodeMethod);
 	FPRINT_DAT(PERCENTAGEenable);
