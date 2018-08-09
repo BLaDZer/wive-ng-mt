@@ -243,8 +243,10 @@ static inline void TCP_ECN_withdraw_cwr(struct tcp_sock *tp)
 	tp->ecn_flags &= ~TCP_ECN_DEMAND_CWR;
 }
 
-static inline void TCP_ECN_check_ce(struct tcp_sock *tp, const struct sk_buff *skb)
+static inline void TCP_ECN_check_ce(struct sock *sk, const struct sk_buff *skb)
 {
+	struct tcp_sock *tp = tcp_sk(sk);
+
 	if (!(tp->ecn_flags & TCP_ECN_OK))
 		return;
 
@@ -255,12 +257,12 @@ static inline void TCP_ECN_check_ce(struct tcp_sock *tp, const struct sk_buff *s
 		 * it is probably a retransmit.
 		 */
 		if (tp->ecn_flags & TCP_ECN_SEEN)
-			tcp_enter_quickack_mode((struct sock *)tp, 1);
+			tcp_enter_quickack_mode(sk, 1);
 		break;
 	case INET_ECN_CE:
 		if (!(tp->ecn_flags & TCP_ECN_DEMAND_CWR)) {
 			/* Better not delay acks, sender can have a very low cwnd */
-			tcp_enter_quickack_mode((struct sock *)tp, 1);
+			tcp_enter_quickack_mode(sk, 1);
 			tp->ecn_flags |= TCP_ECN_DEMAND_CWR;
 		}
 		/* fallinto */
@@ -643,7 +645,7 @@ static void tcp_event_data_recv(struct sock *sk, struct sk_buff *skb)
 	}
 	icsk->icsk_ack.lrcvtime = now;
 
-	TCP_ECN_check_ce(tp, skb);
+	TCP_ECN_check_ce(sk, skb);
 
 	if (skb->len >= 128)
 		tcp_grow_window(sk, skb);
@@ -4435,7 +4437,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
 	struct sk_buff *skb1;
 	u32 seq, end_seq;
 
-	TCP_ECN_check_ce(tp, skb);
+	TCP_ECN_check_ce(sk, skb);
 
 	if (tcp_try_rmem_schedule(sk, skb->truesize)) {
 		/* TODO: should increment a counter */
