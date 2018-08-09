@@ -4190,15 +4190,16 @@
 10) kernel : mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
 11) kernel: random: mix rdrand with entropy sent in from userspace.<br>
 12) kernel: squashfs: be more careful about metadata corruption.<br>
-13) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
-14) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-15) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-16) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-17) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-18) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-19) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-20) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-21) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-22) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+13) kernel: squashfs: more metadata hardenings.<br>
+14) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
+15) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+16) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+17) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+18) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+19) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+20) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+21) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+22) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+23) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
 <br>
 <br>
