@@ -257,12 +257,12 @@ static inline void TCP_ECN_check_ce(struct sock *sk, const struct sk_buff *skb)
 		 * it is probably a retransmit.
 		 */
 		if (tp->ecn_flags & TCP_ECN_SEEN)
-			tcp_enter_quickack_mode(sk, 1);
+			tcp_enter_quickack_mode(sk, 2);
 		break;
 	case INET_ECN_CE:
 		if (!(tp->ecn_flags & TCP_ECN_DEMAND_CWR)) {
 			/* Better not delay acks, sender can have a very low cwnd */
-			tcp_enter_quickack_mode(sk, 1);
+			tcp_enter_quickack_mode(sk, 2);
 			tp->ecn_flags |= TCP_ECN_DEMAND_CWR;
 		}
 		/* fallinto */
@@ -4662,7 +4662,7 @@ drop:
 	if (!before(TCP_SKB_CB(skb)->seq, tp->rcv_nxt + tcp_receive_window(tp)))
 		goto out_of_window;
 
-	tcp_enter_quickack_mode(sk, 1);
+	tcp_enter_quickack_mode(sk, 2);
 
 	if (before(TCP_SKB_CB(skb)->seq, tp->rcv_nxt)) {
 		/* Partial packet, seq < rcv_next < end_seq */
