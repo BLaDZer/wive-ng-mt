@@ -1414,7 +1414,7 @@
 
 				form.maxstanum.value = inRange(maxstanum, 1, MAX_STA_NUM) ? maxstanum : 1*MAX_STA_NUM;
 				form.keepalive.value = inRange(keepalive, 10, 300) ? keepalive : 60;
-				form.idletimeout.value = inRange(NVRAM_IdleTimeout, 60, 600) ? NVRAM_IdleTimeout : 480;
+				form.idletimeout.value = inRange(NVRAM_IdleTimeout, 120, 600) ? NVRAM_IdleTimeout : 480;
 
 				form.AckPolicy.options.selectedIndex = 1*NVRAM_AckPolicy.split(";")[0];
 
@@ -3081,7 +3081,7 @@ table.form tr.ssid-row {
 		<tr id="advIdleTimeout_tr">
 			<td class="head" data-tr="adv idletimeout">IdleTimeout</td>
 			<td class="val"><input type="text" name="idletimeout" class="normal" maxlength="3" value="">
-				<span class="range" data-tr="adv idletimeout range">sec (60 - 600)</span></td>
+				<span class="range" data-tr="adv idletimeout range">sec (120 - 600)</span></td>
 		</tr>
 		<tr id="advEntryLifeCheck_tr">
 			<td class="head" data-tr="adv entrylifecheck">EntryLifeCheck</td>

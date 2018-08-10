@@ -940,8 +940,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	if (NULL != idletimeout) {
 		tmp = atoi(idletimeout);
-		if ((tmp < 60) || (tmp > 300))
-			tmp = 60;
+		if ((tmp < 120) || (tmp > 600))
+			tmp = 480;
 		sprintf(idletimeout, "%d", tmp);
 		ngx_nvram_bufset(wp,"IdleTimeout", idletimeout);
 	}
