@@ -4202,5 +4202,6 @@
 22) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
 23) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
 24) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+25) kernel: ralink_wifi: increase minimal sta idle timeout to 120seconds.<br>
 <br>
 <br>
