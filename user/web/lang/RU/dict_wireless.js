@@ -242,7 +242,7 @@ var wireless_dictionary = {
 	'adv htmix'					: 'HTMIX',
 	'adv maximum stations range'			: 'количество',
 	'adv station keep alive range'			: 'секунд (диапазон 10 - 300)',
-	'adv idletimeout range'				: 'секунд (диапазон 60 - 600)',
+	'adv idletimeout range'				: 'секунд (диапазон 120 - 600)',
 	'adv entrylifecheck range'			: 'количество (диапазон 256 - 4096)',
 
 	'adv no mssid_1'				: 'Пожалуйста, укажите имя беспроводной сети (SSID)',

@@ -231,7 +231,7 @@ var wireless_dictionary = {
 	'adv htmix'				: 'HTMIX',
 	'adv maximum stations range'		: 'num',
 	'adv station keep alive range'		: 'sec (range 10 - 300)',
-	'adv idletimeout range'			: 'sec (range 60 - 600)',
+	'adv idletimeout range'			: 'sec (range 120 - 600)',
 	'adv entrylifecheck range'		: 'times (range 256 - 4096)',
 
 	'adv tmpblockafterkick'			: 'Temporary block probe/assoc req from kicked client',
