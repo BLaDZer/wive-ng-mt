@@ -193,6 +193,15 @@ static void setDhcp(webs_t* wp, char_t *path, char_t *query)
 }
 
 
+static int getEOIPBuilt(webs_t *wp, char** params, int nparams)
+{
+#ifdef CONFIG_USER_EOIP
+	outWrite(T("1"));
+#else
+	outWrite(T("0"));
+#endif
+	return 0;
+}
 
 static int getSNMPDBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -604,6 +613,94 @@ int iptStatList(webs_t *wp, char** params, int nparams)
 	return 0;
 }
 
+parameter_fetch_t service_eoip_flags[] =
+{
+	{ ("eoip_local"),		"eoip_local",			0, ("")     },
+	{ ("eoip_remote"),		"eoip_remote",			0, ("")     },
+	{ ("eoip_brifs"),		"eoip_brifs",			0, ("")     },
+	{ ("eoip_tid"),			"eoip_tid",			0, ("0")    },
+	{ NULL,				NULL,				0, NULL      } // Terminator
+};
+
+static void eoipConfig(webs_t* wp, char_t *path, char_t *query)
+{
+	char user_var[16];
+	char pass_var[16];
+	int i, count;
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 5, "eoip_enabled", "eoip_local", "eoip_remote", "eoip_brifs", "eoip_tid");
+	}
+	else {
+		char_t *eoip_enabled = websGetVar(wp, T("eoip_enabled"), T("0"));
+
+		if (eoip_enabled == NULL)
+			eoip_enabled = "0";
+
+		nvram_init(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(eoip_enabled, 1)) {
+			setupParameters(wp, service_eoip_flags, 0);
+			ngx_nvram_bufset(wp, "eoip_enabled", "1");
+		}
+		else
+			ngx_nvram_bufset(wp, "eoip_enabled", "0");
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+
+	doSystem("service ethtun restart");
+	websDone(wp, 200);
+}
+
+parameter_fetch_t service_l2tp_eth_flags[] =
+{
+	{ ("l2tp_eth_brifs"),		"l2tp_eth_brifs",			0, ("")     },
+	{ ("l2tp_eth_tid"),		"l2tp_eth_tid",			0, ("0")    },
+	{ ("l2tp_eth_ptid"),		"l2tp_eth_ptid",		0, ("0")    },
+	{ ("l2tp_eth_sid"),		"l2tp_eth_sid",			0, ("0")    },
+	{ ("l2tp_eth_psid"),		"l2tp_eth_psid",		0, ("0")    },
+	{ ("l2tp_eth_sport"),		"l2tp_eth_sport",		0, ("0")    },
+	{ ("l2tp_eth_dport"),		"l2tp_eth_dport",		0, ("0")    },
+	{ NULL,				NULL,				0, NULL      } // Terminator
+};
+
+static void l2tpv3Config(webs_t* wp, char_t *path, char_t *query)
+{
+	char user_var[16];
+	char pass_var[16];
+	int i, count;
+	char_t *reset = websGetVar(wp, T("reset"), T("0"));
+
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 8,  "l2tp_eth_enabled", "l2tp_eth_brifs", "l2tp_eth_tid", "l2tp_eth_ptid", "l2tp_eth_sid",
+						"l2tp_eth_psid", "l2tp_eth_sport", "l2tp_eth_dport");
+	}
+	else {
+		char_t *l2tp_eth_enabled = websGetVar(wp, T("l2tp_eth_enabled"), T("0"));
+
+		if (l2tp_eth_enabled == NULL)
+			l2tp_eth_enabled = "0";
+
+		nvram_init(RT2860_NVRAM);
+
+		if (CHK_IF_DIGIT(l2tp_eth_enabled, 1)) {
+			setupParameters(wp, service_l2tp_eth_flags, 0);
+			ngx_nvram_bufset(wp, "l2tp_eth_enabled", "1");
+		}
+		else
+			ngx_nvram_bufset(wp, "l2tp_eth_enabled", "0");
+
+		nvram_commit(RT2860_NVRAM);
+		nvram_close(RT2860_NVRAM);
+	}
+
+	doSystem("service ethtun restart");
+	websDone(wp, 200);
+}
+
 parameter_fetch_t service_l2tp_flags[] =
 {
 	{ ("l2tp_srv_ip_local"),	"l2tp_srv_ip_local",		0, ("")     },
@@ -877,11 +974,14 @@ void asp_mod_services_init()
 	websFormDefine(T("formSamba"), setSamba, EVERYONE);
 	websFormDefine(T("setMiscServices"), setMiscServices, EVERYONE);
 	websFormDefine(T("formIptAccounting"), formIptAccounting, EVERYONE);
+	websFormDefine(T("eoipConfig"), eoipConfig, ADMIN);
+	websFormDefine(T("l2tpv3Config"), l2tpv3Config, ADMIN);
 	websFormDefine(T("l2tpConfig"), l2tpConfig, ADMIN);
 	websFormDefine(T("radiusConfig"), radiusConfig, ADMIN);
 	websFormDefine(T("cwmpConfig"), cwmpConfig, ADMIN);
 
 	// Define functions
+	aspDefineFunc(("getEOIPBuilt"), getEOIPBuilt, EVERYONE);
 	aspDefineFunc(("getL2TPUserList"), getL2TPUserList, EVERYONE);
 	aspDefineFunc(("getRadiusUserList"), getRadiusUserList, EVERYONE);
 	aspDefineFunc(("getDhcpCliList"), getDhcpCliList, EVERYONE);

@@ -45,6 +45,7 @@ var BUILD_SMBFP                                                      = '<% getSm
 var BUILD_TELNETD                                                    = '<% getTelnetdBuilt(); %>'         == '1';
 var BUILD_DNSMASQ                                                    = '<% getDnsmasqBuilt(); %>'         == '1';
 var BUILD_UPNP                                                       = '<% getUpnpBuilt(); %>'            == '1';
+var BUILD_EOIP                                                       = '<% getEOIPBuilt(); %>'            == '1';
 var BUILD_ARPPT                                                      = '<% getARPptBuilt(); %>'           == '1';
 var BUILD_XUPNPD                                                     = '<% getXupnpdBuilt(); %>'          == '1';
 var BUILD_CDP                                                        = '<% getCdpBuilt(); %>'             == '1';
@@ -505,3 +506,16 @@ var NVRAM_RegulatoryClass                                            = '<% getCf
 var NVRAM_RegulatoryClassINIC                                        = '<% getCfgGeneral(1, "RegulatoryClassINIC",                "1;2;3;4;0"); %>';
 var NVRAM_PMKCachePeriod                                             = '<% getCfgGeneral(1, "PMKCachePeriod",                     "480;480;480;480"); %>';
 var NVRAM_CountryRegion                                              = '<% getCfgGeneral(1, "CountryRegion",                      "5"); %>';
+var NVRAM_eoip_enabled                                               = '<% getCfgGeneral(1, "eoip_enabled",                       "0"); %>';
+var NVRAM_eoip_local                                                 = '<% getCfgGeneral(1, "eoip_local",                         ""); %>';
+var NVRAM_eoip_remote                                                = '<% getCfgGeneral(1, "eoip_remote",                        ""); %>';
+var NVRAM_eoip_tid                                                   = '<% getCfgGeneral(1, "eoip_tid",                           "0"); %>';
+var NVRAM_eoip_brifs                                                 = '<% getCfgGeneral(1, "eoip_brifs",                         ""); %>';
+var NVRAM_l2tp_eth_enabled                                           = '<% getCfgGeneral(1, "l2tp_eth_enabled",                   "0"); %>';
+var NVRAM_l2tp_eth_tid                                               = '<% getCfgGeneral(1, "l2tp_eth_tid",                       "0"); %>';
+var NVRAM_l2tp_eth_ptid                                              = '<% getCfgGeneral(1, "l2tp_eth_ptid",                      "0"); %>';
+var NVRAM_l2tp_eth_sid                                               = '<% getCfgGeneral(1, "l2tp_eth_sid",                       "0"); %>';
+var NVRAM_l2tp_eth_psid                                              = '<% getCfgGeneral(1, "l2tp_eth_psid",                      "0"); %>';
+var NVRAM_l2tp_eth_sport                                             = '<% getCfgGeneral(1, "l2tp_eth_sport",                     "0"); %>';
+var NVRAM_l2tp_eth_dport                                             = '<% getCfgGeneral(1, "l2tp_eth_dport",                     "0"); %>';
+var NVRAM_l2tp_eth_brifs                                             = '<% getCfgGeneral(1, "l2tp_eth_brifs",                     ""); %>';

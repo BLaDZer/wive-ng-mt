@@ -45,7 +45,7 @@ l2tpstart() {
 		if [ "$allreadyinbr" = "0" ]; then
 		    brctl addif brl2tp "$iface"
 		else
-		    $LOG "$iface allready in used in other bridge, pls see config."
+		    $LOG "$iface already in use in other bridge, pls see the config."
 		fi
 		# allways up after call del_if_from_br
 		ip link set "$iface" up
@@ -108,7 +108,7 @@ eoipstart() {
     eoip add name eoip0 tunnel-id $eoip_tid $local remote $eoip_remote
 
     if [ "$eoipb_rifs" == "all" ]; then
-	$LOG "Add eoip interface to syslem LAN bridge"
+	$LOG "Add eoip interface to system LAN bridge"
 	brctl addif br0 eoip0
 	ip link set eoip0 up
     else
@@ -123,7 +123,7 @@ eoipstart() {
 		if [ "$allreadyinbr" = "0" ]; then
 		    brctl addif breoip "$iface"
 		else
-		    $LOG "$iface allready in used in other bridge, pls see config."
+		    $LOG "$iface already in use in other bridge, pls see the config."
 		fi
 		# allways up after call del_if_from_br
 		ip link set "$iface" up
