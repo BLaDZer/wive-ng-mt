@@ -628,7 +628,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 
 	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
-		websError(wp, 403, T("'bssid_num' %s is out of range!"), bssid_num);
+		websError(wp, 500, T("'bssid_num' %s is out of range!"), bssid_num);
 		return;
 	}
 
@@ -640,7 +640,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	if (0 == strlen(sz11gChannel))
 #endif
 	{
-		websError(wp, 403, T("'Channel' should not be empty!"));
+		websError(wp, 500, T("'Channel' should not be empty!"));
 		return;
 	}
 
@@ -1653,16 +1653,6 @@ static void setSecurity(webs_t* wp, int nvram)
 	}//for
 
 	}
-
-	/* reconfigure system */
-        wp->on_response_ok = DO_RECONFIGURE;
-
-	websDone(wp, 200);
-}
-
-static void wirelessSetSecurity(webs_t* wp, char_t *path, char_t *query)
-{
-	setSecurity(wp, RT2860_NVRAM);
 }
 
 static int is4t4r(webs_t *wp, char** params, int nparams)
@@ -1910,7 +1900,6 @@ int asp_mod_wireless_init()
 	aspDefineFunc("getAPCliStatus", getAPCliStatus, EVERYONE);
 #endif
 	websFormDefine("wirelessGetSecurity", wirelessGetSecurity, EVERYONE);
-	websFormDefine("wirelessSetSecurity", wirelessSetSecurity, EVERYONE);
 
 
     return 0;

@@ -102,6 +102,9 @@
 					// Channel autoselect (2.4GHz)
 					displayElement( 'div_11g_channel_autoselect', enableWireless && form.sz11gChannel.value == 0);
 					form.sz11gChannel.disabled = false;
+					// Channel bandwidth (2.4GHz)
+					displayElement( 'basicChannelBW_tr', enableWireless);
+					form.n_bandwidth.disabled = !htmode;
 
 					if (enableWireless)
 						document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
@@ -130,10 +133,15 @@
 					displayElement( 'div_txpw_ac', enableWirelessAc);
 					// Channel (5GHz)
 					displayElement( 'div_11a_channel', enableWirelessAc);
+					form.sz11aChannel.disabled = !BUILD_5GHZ_SUPPORT;
 					// Channel autoselect (5GHz)
 					displayElement( 'div_11a_channel_autoselect', enableWirelessAc && form.sz11aChannel.value == 0);
-
-					form.sz11aChannel.disabled = !BUILD_5GHZ_SUPPORT;
+					// Channel bandwidth (5GHz)
+					displayElement( 'basicACBW_tr', enableWirelessAc);
+					displayElement( ['ac_bw_20'], wmodeac >= 2);
+					displayElement( ['ac_bw_20_40'], wmodeac >= 8);
+					displayElement( ['ac_bw_20_40_80'], wmodeac >= 14);
+					displayElement( ['ac_bw_20_40_80_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
 
 					if (enableWirelessAc)
 						document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
@@ -149,6 +157,12 @@
 
 					// Disable scan buttons if radio modules are disabled
 					form.scanapLegendButtonScanINIC.disabled = NVRAM_RadioOnINIC != '1';
+
+					// Lower channel bandwidth to the first available option
+					while (form.ac_bw.selectedIndex > 0 && form.ac_bw.options[form.ac_bw.selectedIndex].style.display == "none")
+					{
+						form.ac_bw.selectedIndex--;
+					}
 				}
 
 				// SSID Settings
@@ -222,9 +236,8 @@
 				var updateVisibility_ht = function() {
 					displayElement('div_11n', htmode);
 
-					displayElement(['basicHTChannelBW_tr', 'extension_channel', 'basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
+					displayElement(['basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
 					displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && (1*wmode) >= 5 && document.getElementById('n_bandwidth').value == 1 );
-					displayElement('basicHTChannelBWINIC_tr', enableWirelessAc);
 
 					displayElement('basicHTOPMode', htmode);
 					displayElement("basicHTTxStream_tr", htmode);
@@ -234,7 +247,6 @@
 					displayElement("basicHtRx2Stream", NVRAM_RXPath != "1");
 
 					form.n_mode.disabled = !htmode;
-					form.n_bandwidth.disabled = !htmode;
 					form.n_rdg.disabled = !htmode;
 					form.n_gi.disabled = !htmode;
 					form.n_stbc.disabled = !htmode;
@@ -260,12 +272,6 @@
 				// Advanced wireless
 				var updateVisibility_advanced = function() {
 					displayElement( 'advWirelessT', enableWirelessAny);
-					displayElement( 'basicVHTBW_tr', enableWirelessAc);
-
-					displayElement( ['ac_bw_20'], wmodeac >= 2);
-					displayElement( ['ac_bw_20_40'], wmodeac >= 8);
-					displayElement( ['ac_bw_20_40_80'], wmodeac >= 14);
-					displayElement( ['ac_bw_20_40_80_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
 
 					var AdvWirelessElement = [ 'advBGProtect_tr', 'advDTIM_tr', 'advFrag_tr', 'advRTS_tr', 'advStationKeepAlive_tr', 
 								   'advPreambleType_tr', 'advShortSlot_tr', 'advTxBurst_tr', 'advPktAggr_tr', 'advWmm_tr', 'advAckPolicy_tr', 'advMcastRate_tr', 
@@ -364,6 +370,7 @@
 				GExtChannelDisplay(form);
 				show14channel(!htmode);
 				show_abg_rate(form);
+
 
 				disableControlsByAuth();
 			}
@@ -1979,14 +1986,6 @@
 					}
 				}
 
-				if ((form.ac_bw.selectedIndex < 0 || form.ac_bw.options[form.ac_bw.selectedIndex].style.display == 'none') && form.radioWirelessEnabledAc.value == 1)
-				{
-					showMenu('advWirelessT', 1);
-					alert(_("adv invalid bandwidth ac"));
-					form.ac_bw.focus();
-					return false;
-				}
-
 				form.mbssid_mode.disabled = false;
 
 				// concatenate ssid values before send
@@ -2055,6 +2054,11 @@
 					document.getElementById('RCINIC_3').checked = true;
 					document.getElementById('RCINIC_4').checked = true;
 				}
+			}
+
+			function wmodeChangeAC(form) {
+				form.ac_bw.selectedIndex = form.ac_bw.options.length-1;
+				updateVisibility(form);
 			}
 
 			function showMenu(elem, show){
@@ -2327,6 +2331,15 @@ table.form tr.ssid-row {
 			<tr id="scanApButtons" style="display: none;">
 				<td colspan="2" id="scanApButtons_td"></td>
 			</tr>
+
+			<tr id="basicChannelBW_tr">
+				<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth (2.4GHz)</td>
+				<td class="val"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
+					<option value="0">20MHz</option>
+					<option value="1" selected>20/40MHz</option>
+				</select></td>
+			</tr>
+
 		</tbody>
 	</table>
 
@@ -2346,7 +2359,7 @@ table.form tr.ssid-row {
 		<tbody>
 			<tr id="div_11a_basic">
 				<td class="head head-narrow" data-tr="basic ac network mode">Network Mode (5GHz)</td>
-				<td class="wordwrap"><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="updateVisibility(this.form);">
+				<td class="wordwrap"><select name="wirelessmodeac" id="wirelessmodeac" class="normal" onChange="wmodeChangeAC(this.form);">
 					<option value="2" data-tr="basic a">A</option>
 					<option value="8" data-tr="basic aan">A/AN</option>
 					<option value="11" data-tr="basic an">AN</option>
@@ -2399,6 +2412,17 @@ table.form tr.ssid-row {
 			</tr>
 			<tr id="scanApButtonsINIC" style="display: none;">
 				<td colspan="2" id="scanApButtonsINIC_td"></td>
+			</tr>
+
+			<tr id="basicACBW_tr" >
+				<td class="head" data-tr="basic ht channel bandwidth ac">Channel BandWidth (5GHz)</td>
+				<td class="val"><select name="ac_bw" class="normal">
+					<option id="ac_bw_20" value="00">20MHz</option>
+					<option id="ac_bw_20_40" value="10">20/40MHz</option>
+					<option id="ac_bw_20_40_80" value="11">20/40/80MHz</option>
+					<option id="ac_bw_20_40_80_160" value="12" selected>20/40/80/160MHz</option>
+					<option id="ac_bw_20_40_80_80" value="13">20/40/80/80+80MHz</option>
+				</select></td>
 			</tr>
 		</tbody>
 	</table>
@@ -2840,23 +2864,6 @@ table.form tr.ssid-row {
 		</tr>
 	</thead>
 	<tbody>
-		<tr id="basicHTChannelBW_tr">
-			<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth (2.4GHz)</td>
-			<td class="val"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
-				<option value="0">20MHz</option>
-				<option value="1" selected>20/40MHz</option>
-			</select></td>
-		</tr>
-		<tr id="basicVHTBW_tr" >
-			<td class="head" data-tr="basic ht channel bandwidth ac">Channel BandWidth (5GHz)</td>
-			<td class="val"><select name="ac_bw" class="normal">
-				<option id="ac_bw_20" value="00">20MHz</option>
-				<option id="ac_bw_20_40" value="10">20/40MHz</option>
-				<option id="ac_bw_20_40_80" value="11">20/40/80MHz</option>
-				<option id="ac_bw_20_40_80_160" value="12" selected>20/40/80/160MHz</option>
-				<option id="ac_bw_20_40_80_80" value="13">20/40/80/80+80MHz</option>
-			</select></td>
-		</tr>
 		<tr id="advBGProtect_tr">
 			<td class="head" data-tr="adv bgpro">BG Protection Mode</td>
 			<td class="val"><select id="bg_protection" name="bg_protection" class="normal">

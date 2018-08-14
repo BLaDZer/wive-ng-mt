@@ -259,8 +259,6 @@ var wireless_dictionary = {
 	'adv invalid idletimeout'			: 'Неверное время ожидания',
 	'adv invalid entrylifecheck'			: 'Неверное количество ошибок отправки пакетов',
 
-	'adv invalid bandwidth ac'			: 'Неверное значение ширины канала (5ГГц)',
-
 	'adv ed mode'					: 'Монитор CCA',
 
 	'adv dynvga title'				: 'Настройки усилителей (ВНИМАНИЕ!!! НЕ ИЗМЕНЯЙТЕ ЕСЛИ НЕ УВЕРЕНЫ В РЕЗУЛЬТАТЕ!)',
