@@ -1033,7 +1033,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 	for (i = startWcid; i < MAX_LEN_OF_MAC_TABLE; i++) 
 	{
 		MAC_TABLE_ENTRY *pEntry = &pMacTable->Content[i];
-		BOOLEAN bDisconnectSta = FALSE;
+		BOOLEAN bDisconnectSta = FALSE, bKeepSta = FALSE;
 #ifdef APCLI_SUPPORT
 		if(IS_ENTRY_APCLI(pEntry) && (pEntry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
@@ -1340,10 +1340,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				if (MaxRssi < pMbss->RssiLowForStaKickOutFT) {
 				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
-						/* try wakeup for handle this STA status */
-						do_sta_keep_action(pAd, pEntry);
-						/* use TIM bit to detect the PS station */
-						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+						bKeepSta = TRUE;
 					    } else {
 						bDisconnectSta = TRUE;
 						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d:%d], Current RSSI [%d], KickOutDelay [%d] at last [%d] seconds, FT Mode.\n",
@@ -1359,10 +1356,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 				    (pMbss->RssiLowForStaKickOutPSM != 0 && MaxRssi < pMbss->RssiLowForStaKickOutPSM && pEntry->PsMode == PWR_SAVE)) {
 				    if (pEntry->RssiLowStaKickOutDelayCount++ > KickOutDelay) {
 					    if (pEntry->PsMode == PWR_SAVE) {
-						/* try wakeup for handle this STA status */
-						do_sta_keep_action(pAd, pEntry);
-						/* use TIM bit to detect the PS station */
-						WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+						bKeepSta = TRUE;
 					    } else {
 						bDisconnectSta = TRUE;
 						printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x , RSSI Kickout Thres[%d:%d:%d], Current RSSI [%d], KickOutDelay [%d] at last [%d] seconds.\n",
@@ -1384,10 +1378,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 			if (BndStrg_IsClientStay(pAd, pEntry) == FALSE)
 			{
 				if (pEntry->PsMode == PWR_SAVE) {
-				    /* try wakeup for handle this STA status */
-				    do_sta_keep_action(pAd, pEntry);
-				    /* use TIM bit to detect the PS station */
-				    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+				    bKeepSta = TRUE;
 				} else {
 				    bDisconnectSta = TRUE;
 				    printk("%s Disonnect STA %02x:%02x:%02x:%02x:%02x:%02x by band steering band change.\n",
@@ -1399,9 +1390,12 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 #endif /* BAND_STEERING */
 
 		/* if station very long sleep try wakeup for handle this STA actual signal level and DS update */
-		if (!bDisconnectSta && pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)
+		if (!bDisconnectSta && (bKeepSta || pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)) {
+			/* use TIM bit to detect the PS station */
+			if (bKeepSta)
+			    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
 			do_sta_keep_action(pAd, pEntry);
-
+		}
 
 		if (bDisconnectSta)
 		{
