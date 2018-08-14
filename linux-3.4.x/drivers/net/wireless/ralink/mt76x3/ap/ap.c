@@ -1620,7 +1620,7 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		if (!bDisconnectSta && (bKeepSta || pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)) {
 			/* use TIM bit to detect the PS station */
 			if (bKeepSta)
-			    WLAN_MR_TIM_BIT_SET(pAd, pEntry->apidx, pEntry->Aid);
+			    WLAN_MR_TIM_BIT_SET(pAd, pEntry->func_tb_idx, pEntry->Aid);
 			do_sta_keep_action(pAd, pEntry);
 		}
 
