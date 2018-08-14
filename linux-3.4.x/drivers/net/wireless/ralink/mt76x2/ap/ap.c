@@ -1315,10 +1315,6 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		else if ((pMbss->RssiLowForStaKickOut != 0 || pMbss->RssiLowForStaKickOutPSM != 0 || pMbss->RssiLowForStaKickOutFT != 0) &&
 			    IS_ENTRY_CLIENT(pEntry) && pEntry->Sst == SST_ASSOC)
 		{
-			/* if station very long sleep try wakeup for handle this STA actual signal level and DS update */
-			if (pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)
-				do_sta_keep_action(pAd, pEntry);
-
 			/* use max rssi for avoid unneeded kickout by level diviation of chains */
 			CHAR MaxRssi = RTMPMaxRssi(pAd, pEntry->RssiSample.AvgRssi0, pEntry->RssiSample.AvgRssi1, pEntry->RssiSample.AvgRssi2);
 
@@ -1401,6 +1397,11 @@ VOID MacTableMaintenance(RTMP_ADAPTER *pAd)
 		}
 #endif /* BAND_STEERING_CLIENTSTAY */
 #endif /* BAND_STEERING */
+
+		/* if station very long sleep try wakeup for handle this STA actual signal level and DS update */
+		if (!bDisconnectSta && pEntry->NoDataIdleCount >= STA_KEEP_ALIVE_NOTIFY_L2)
+			do_sta_keep_action(pAd, pEntry);
+
 
 		if (bDisconnectSta)
 		{
