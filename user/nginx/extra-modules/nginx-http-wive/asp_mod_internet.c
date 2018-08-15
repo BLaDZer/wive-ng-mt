@@ -312,7 +312,7 @@ static int getSysLogBuilt(webs_t *wp, char** params, int nparams)
  */
 static int getLanIp(webs_t *wp, char** params, int nparams)
 {
-	char if_addr[16];
+	char if_addr[16] = {0};
 
 	if (getIfIp(getLanIfName(), if_addr) == -1) {
 		websError(wp, 500, T("getLanIp: calling getIfIp error\n"));
@@ -327,7 +327,7 @@ static int getLanIp(webs_t *wp, char** params, int nparams)
  */
 static int getLanMac(webs_t *wp, char** params, int nparams)
 {
-	char if_mac[18];
+	char if_mac[18] = {0};
 
 	if (getIfMac(getLanIfName(), if_mac, ':') == -1) {
 		websError(wp, 500, T("getLanIp: calling getIfMac error\n"));
@@ -342,12 +342,13 @@ static int getLanMac(webs_t *wp, char** params, int nparams)
  */
 static int getLanNetmask(webs_t *wp, char** params, int nparams)
 {
-	char if_net[16];
+	char if_net[16] = {0};
+	char* ifname = getLanIfName();
 
-	if (getIfNetmask(getLanIfName(), if_net) == -1) {
-		websError(wp, 500, T("getLanNetmask: calling getIfNetmask error\n"));
-//		return outWrite(T(""));
+	if (getIfNetmask(ifname, if_net) == -1) {
+		websError(wp, 500, T("getLanNetmask: calling getIfNetmask(ifname=%s) error\n"), ifname);
                 return 0;
+//		return outWrite(T(""));
 	}
 	return outWrite(T("%s"), if_net);
 }

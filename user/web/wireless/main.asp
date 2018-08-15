@@ -1993,7 +1993,7 @@
 				form.mbcastisolated_ssids.value = "";
 				form.hidden_ssids.value = "";
 
-				for (var i = 0; i < form.isolated_ssid.length; i++) {
+				for (var i = 0; i < form.bssid_num.value && i < form.isolated_ssid.length; i++) {
 					var sep = (i>0)?",":"";
 
 					if (form.isolated_ssid[i].checked)

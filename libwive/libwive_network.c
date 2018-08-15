@@ -123,13 +123,12 @@ int isIpNetmaskValid(char *s)
 char* getLanIfName(void)
 {
 	char *mode = nvram_get(RT2860_NVRAM, "OperationMode");
-	static char *if_name = "br0";
 	FILE *fp;
-	char lan_if[16]; /* max 16 char in lan if name */
+	static char lan_if[16] = {0}; /* max 16 char in lan if name */
 
 	/* set default */
 	if (mode == NULL)
-		return if_name;
+		return "br0";
 
 	/* try read fron file exported from init.d */
 	fp = fopen("/tmp/lan_if_name", "r");
@@ -146,11 +145,9 @@ char* getLanIfName(void)
 
 	/* in ethernet converter mode lan_if = eth2 */
 	if (!strncmp(mode, "2", 2))
-	    if_name = "eth2";
-	else
-	    if_name = "br0";
+		return "eth2";
 
-	return if_name;
+	return "br0";
 }
 
 /*
@@ -283,6 +280,7 @@ int getIfIsReady(const char *ifname)
 
 	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+
 	if (ioctl(skfd, SIOCGIFFLAGS, &ifr) < 0) {
 		close(skfd);
 		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
@@ -307,11 +305,13 @@ int getIfIp(const char *ifname, char *if_addr)
 	int skfd = 0;
 	int retcode = 0;
 
+
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
 
@@ -338,11 +338,13 @@ int getIfMac(const char *ifname, char *if_hw, char separator)
 	char *ptr;
 	int skfd;
 
+
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
 	if(ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0) {
@@ -379,16 +381,19 @@ int getIfNetmask(const char *ifname, char *if_net)
 	struct ifreq ifr;
 	int skfd = 0;
 
+
 	if((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		syslog(LOG_ERR, "open socket failed, %s", __FUNCTION__);
 		return -1;
 	}
 
+	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 	ifr.ifr_addr.sa_family = AF_INET;
+
 	if (ioctl(skfd, SIOCGIFNETMASK, &ifr) < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s", __FUNCTION__);
+		syslog(LOG_ERR, "ioctl call failed, %s (ifname=%s)", __FUNCTION__, ifname);
 		return -1;
 	}
 	strcpy(if_net, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));

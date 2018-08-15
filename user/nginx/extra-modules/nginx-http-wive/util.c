@@ -808,7 +808,12 @@ int import_rwfs(char *filename, int offset, int len)
 	while (len > 0)
 	{
 		if (!fread(&data, 1, 1, src))
+		{
+			fclose(src);
+			fclose(fp);
 			return 3;
+		}
+
 		fwrite(&data, 1, 1, fp);
 		len--;
 	}
@@ -848,7 +853,12 @@ int import_settings(char *filename, int offset, int len)
 	while (len > 0)
 	{
 		if (!fread(&data, 1, 1, src))
+		{
+			fclose(src);
+			fclose(fp);
 			return 3;
+		}
+
 		fwrite(&data, 1, 1, fp);
 		len--;
 	}

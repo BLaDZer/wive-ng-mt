@@ -4186,28 +4186,29 @@
 6) build_system: samba36 modules review for decrease size.<br>
 7) init.d: avoid incorrect configure vifs in dbdc mode.<br>
 8) init.d: fix nginx stop.<br>
-9) webui: fix wireless security warnings show.<br>
-10) webui: fix per bssid options set.<br>
-11) webui: fix idle timeout range.<br>
-12) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
-13) webui: move BW to basic block for easy setup.<br>
-14) kernel: fork: don't copy inconsistent signal handler state to child.<br>
-15) kernel : mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
-16) kernel: random: mix rdrand with entropy sent in from userspace.<br>
-17) kernel: squashfs: be more careful about metadata corruption.<br>
-18) kernel: squashfs: more metadata hardenings.<br>
-19) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
-20) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-21) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-22) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-23) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-24) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-25) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-26) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-27) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-28) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-29) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-30) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-31) kernel: ralink_wifi: force update DS more accuracly.<br>
+9) libwive/libnvram/nginx: multivar fixup.<br>
+10) webui: fix wireless security warnings show.<br>
+11) webui: fix per bssid options set.<br>
+12) webui: fix idle timeout range.<br>
+13) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
+14) webui: move BW to basic block for easy setup.<br>
+15) kernel: fork: don't copy inconsistent signal handler state to child.<br>
+16) kernel : mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
+17) kernel: random: mix rdrand with entropy sent in from userspace.<br>
+18) kernel: squashfs: be more careful about metadata corruption.<br>
+19) kernel: squashfs: more metadata hardenings.<br>
+20) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
+21) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+22) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+23) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+24) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+25) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+26) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+27) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+28) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+29) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+30) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+31) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+32) kernel: ralink_wifi: force update DS more accuracly.<br>
 <br>
 <br>

@@ -1045,6 +1045,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
+	setSecurity(wp, RT2860_NVRAM);
 
 #ifdef PRINT_DEBUG
 	// debug print
@@ -1116,8 +1117,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 	// reconfigure system
         wp->on_response_ok = DO_RECONFIGURE;
-
-	setSecurity(wp, RT2860_NVRAM);
 }
 
 static int getVideoTurbineBuilt(webs_t *wp, char** params, int nparams)
@@ -1567,7 +1566,8 @@ static void setSecurity(webs_t* wp, int nvram)
 #endif
 	}
 	else {
-	nvram_fromdef(RT2860_NVRAM, 5, "AuthMode", "EncrypType", "RekeyInterval", "RADIUS_Port", "RADIUS_Key");
+	nvram_fromdef(RT2860_NVRAM, 10, "AuthMode", "EncrypType", "RekeyInterval", "RADIUS_Port", "RADIUS_Key",
+					"RADIUS_Server", "IEEE8021X", "PreAuth", "RekeyMethod", "DefaultKeyID");
 
 	for (mbssid = 0; mbssid < bssid_num; mbssid++) {
 		char_t *security_mode = websGetVar(wp,  racat("AuthMode", mbssid), T(""));

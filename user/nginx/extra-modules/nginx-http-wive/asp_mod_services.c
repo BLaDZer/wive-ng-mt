@@ -50,7 +50,7 @@ static int getDhcpCliList(webs_t *wp, char** params, int nparams)
         unsigned int j;
 	struct in_addr addr;
 	uint64_t written_at, curr, expired_abs;
-	char str[32];
+	char str[32] = {0};
 	int emptylease = 1;
 
 	int row_len = 0;
@@ -795,7 +795,7 @@ static int getL2TPUserList(webs_t *wp, char** params, int nparams)
 {
 	char user_var[16];
 	char pass_var[16];
-	char str[32];
+	char str[32] = {0};
 	int count = ngx_nvram_get_int(wp, "l2tp_srv_user_num", 0);
 	int i;
         unsigned int j;
@@ -908,7 +908,7 @@ static int getRadiusUserList(webs_t *wp, char** params, int nparams)
 {
 	char user_var[20];
 	char pass_var[20];
-	char str[40];
+	char str[40] = {0};
 	int count = ngx_nvram_get_int(wp, "radius_srv_user_num", 0);
 	int i;
         unsigned int j;
