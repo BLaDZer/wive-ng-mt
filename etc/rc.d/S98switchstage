@@ -53,12 +53,9 @@ start() {
 }
 
 stop() {
-    if [ -e /var/run/goahead.pid ]; then
-	$LOG "Stop goahead"
-	killall -q webmon
-	killall -q -SIGKILL webmon
-	killall -q goahead
-	killall -q -SIGKILL goahead
+    pid=`pidof nginx`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop nginx"
 	killall -q nginx
 	killall -q -SIGKILL nginx
     fi
