@@ -441,7 +441,7 @@ VOID APMlmePeriodicExec(
 		PAPCLI_STRUCT  pApCliEntry = &pAd->ApCfg.ApCliTab[idx];
 
 		if (pApCliEntry && pApCliEntry->Enable == TRUE)
-			    PeriodicScan == FALSE;
+			    PeriodicScan = FALSE;
 	    }
 #endif
 	    /* after boot need force first scan at 15sec */
