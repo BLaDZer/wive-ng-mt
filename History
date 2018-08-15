@@ -4204,8 +4204,9 @@
 24) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
 25) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
 26) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-27) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-28) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-29) kernel: ralink_wifi: force update DS more accuracly.<br>
+27) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+28) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+29) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+30) kernel: ralink_wifi: force update DS more accuracly.<br>
 <br>
 <br>

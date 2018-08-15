@@ -1412,6 +1412,8 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(G_BAND_256QAM);
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	FPRINT_DAT(DBDC_MODE);
+	FPRINT_DAT(ApCliWirelessMode);
+	FPRINT_DAT(ApCliNum);
 #endif
 	FPRINT_DAT(VHT_Sec80_Channel);
 	FPRINT_DAT(PcieAspm);

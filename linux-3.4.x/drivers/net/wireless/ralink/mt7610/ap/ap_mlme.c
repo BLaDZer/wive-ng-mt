@@ -333,8 +333,19 @@ VOID APMlmePeriodicExec(
 
 #ifdef DOT11K_RRM_SUPPORT
 	if (!ApScanRunning(pAd)) {
+	    BOOLEAN PeriodicScan = TRUE;
+#ifdef APCLI_SUPPORT
+	    UCHAR idx;
+
+	    for (idx = 0; idx < MAX_APCLI_NUM; idx++) {
+		PAPCLI_STRUCT  pApCliEntry = &pAd->ApCfg.ApCliTab[idx];
+
+		if (pApCliEntry && pApCliEntry->Enable == TRUE)
+			    PeriodicScan == FALSE;
+	    }
+#endif
 	    /* after boot need force first scan at 15sec */
-	    if ((pAd->Mlme.OneSecPeriodicRound % 240 == 0) ||
+	    if ((PeriodicScan && pAd->Mlme.OneSecPeriodicRound % 240 == 0) ||
 		    (pAd->Mlme.OneSecPeriodicRound % 15 == 0 && pAd->CommonCfg.RRMFirstScan == TRUE))
 	    {
 		    if (pAd->MacTab.Size == 0 || pAd->CommonCfg.RRMFirstScan == TRUE) {
