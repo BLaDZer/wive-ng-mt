@@ -32,6 +32,7 @@ fi
 ################################################APCLI param#####################################################
 if [ "$OperationMode" = "3" ] && [ "$1" != "ra0" ] && [ "$1" != "rai0" ] && [ "$ApCliAutoConnect" = "1" ]; then
     iwpriv "$1" set ApCliAutoConnect=1
+    exit 0
 fi
 ################################################MULTICAST PARAMS################################################
 if [ "$CONFIG_MT7610_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT76X2_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT76X3_AP_IGMP_SNOOP" != "" ] || [ "$CONFIG_MT7615_AP_IGMP_SNOOP" != "" ]; then
