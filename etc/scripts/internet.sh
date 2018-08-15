@@ -188,13 +188,6 @@ if [ "$MODE" != "connect_sta" ]; then
     service ethtun stop
     $LOG "Reload modules."
     service modules restart
-    # in mt7615 ifup may be very long wait need
-    if [ "$first_wlan_root_if" != "" ]; then
-        waitifready "$first_wlan_root_if"
-    fi
-    if [ "$second_wlan_root_if" != "" ]; then
-        waitifready "$second_wlan_root_if"
-    fi
     $LOG "Reconfigure lan."
     service lan restart
 fi

@@ -309,6 +309,23 @@ wait_connect() {
     fi
 }
 
+# check ifstatus and wait 20sec if not ready
+# in mt7615 ifup may be very long wait need
+waitifready()
+{
+    ifisdown=`ip link show dev $1 | grep -c DOWN`
+    count=0
+    while [ "$ifisdown" != "0" ]; do
+	if [ "$count" = "10" ]; then
+	    $LOG "Wait for interface $1 up error!"
+	    break
+	fi
+	sleep 1
+	count="$(($count+1))"
+	ifisdown=`ip link show dev $1 | grep -c DOWN`
+    done
+}
+
 flush_net_caches() {
     ip route flush cache > /dev/null 2>&1
     echo f > /proc/net/nf_conntrack
@@ -322,8 +339,9 @@ delif_from_br() {
 
 readdif_to_br() {
     delif_from_br $1 $2
-    brctl addif $1 $2
     ip link set $2 up
+    waitifready $2
+    brctl addif $1 $2
 }
 
 get_switch_type() {
@@ -417,22 +435,6 @@ getMediaParts()
     if [ "$CONFIG_MMC" != "" ]; then
 	export publicsd=`df -h | grep -E "/dev/mmc.*media" | awk {' print $6 '} | tail -qn1`
     fi
-}
-
-# check ifstatus and wait 20sec if not ready
-waitifready()
-{
-    ifisdown=`ip link show dev $1 | grep -c DOWN`
-    count=0
-    while [ "$ifisdown" != "0" ]; do
-	if [ "$count" = "10" ]; then
-	    $LOG "Wait for interface $1 up error!"
-	    break
-	fi
-	sleep 1
-	count="$(($count+1))"
-	ifisdown=`ip link show dev $1 | grep -c DOWN`
-    done
 }
 
 # get params
