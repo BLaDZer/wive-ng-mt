@@ -25,7 +25,7 @@ var hint_dictionary = {
 	'hint vpn debug'		: 'Allow debug mode for VPN connections.',
 	'hint vpn nat'			: 'Add Network Address Translation to new VPN connection.',
 	'hint vpn lcp'			: 'Enable adaptive LCP echo interval.',
-	'hint vpn pure pppoe'		: 'Enable PURE mode if you ISP use PPPoE without DHCP (Rostelecom/R-Telecom and others ISP).',
+	'hint vpn pure pppoe'		: 'Enable PURE mode if you ISP use PPPoE without DHCP (Rostelecom/ER-Telecom and others ISP).',
 	'hint vpn lcp errors'		: 'If this option is given, pppd will presume the peer to be dead if n LCP echo-requests are sent without receiving a valid LCP echo-reply. If this happens, pppd will terminate the connection. Use of this option requires a non-zero value for the LCP echo interval parameter. This option can be used to enable pppd to terminate after the physical connection has been broken (e.g., the modem has hung up) in situations where no hardware modem control lines are available.',
 	'hint vpn lcp interval'		: 'If this option is given, pppd will send an LCP echo-request frame to the peer every specified value of seconds. Normally the peer should respond to the echo-request by sending an echo-reply. This option can be used with the LCP echo failure option to detect that the peer is no longer connected.',
 	'hint vpn type'			: 'Specify VPN access mode.',
