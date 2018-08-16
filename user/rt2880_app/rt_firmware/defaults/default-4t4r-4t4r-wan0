@@ -156,6 +156,7 @@ Ipv6InVPN=0
 IPv6AllowForward=0
 IPv6SrvAddr=192.88.99.1
 IPv6IPAddr=2a02:2560
+IPv6ISPPrefix=off
 IPv6PrefixLen=32
 IPv6WANIPAddr=
 IPv6WANPrefixLen=

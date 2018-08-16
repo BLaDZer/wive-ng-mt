@@ -35,6 +35,10 @@
 				_TR("v66rdPrefix",			"ipv6 6rd prefix");
 				_TR("v66rdBorderIPAddr",	"ipv6 6rd relay address");
 				_TR("6to4Setup",			"ipv6 6to4 enabled");
+				_TR("v66to4ISPprefix",		"ipv6 6to4 isp prefix");
+				_TR("v66to4Prefix",			"ipv6 6to4 prefix");
+				_TR("v6to4DNSprimary",		"ipv6 static dns primary");
+				_TR("v6to4DNSsecondary", 	"ipv6 static dns secondary");
 				_TR("v66to4SrvIpaddr",		"ipv6 6to4 server address");
 				_TR("v6invpn",				"ipv6 Ipv6InVPN");
 				_TR("v6iana",				"ipv6 iana disable");
@@ -69,8 +73,10 @@
 					form.ipv6_opmode.options.selectedIndex = 1;
 				else if (NVRAM_IPv6OpMode == '2')
 					form.ipv6_opmode.options.selectedIndex = 2;
-				else if (NVRAM_IPv6OpMode == '3')
+				else if (NVRAM_IPv6OpMode == '3') {
 					form.ipv6_opmode.options.selectedIndex = form.ipv6_opmode.options.length - 1;
+					form.ipv6_6to4_isp_prefix.checked = NVRAM_IPv6ISPPrefix == 'on';
+				}
 
 				form.dhcp6c_enable.checked 				= NVRAM_IPv6Dhcpc == '1';
 
@@ -95,6 +101,7 @@
 					}
 
 				SwitchOpMode(form);
+				Switch6to4Prefix(form);
 				ipv6MtuChange();
 
 				displayElement( 'radvd', BUILD_RADVD == '1');
@@ -217,11 +224,42 @@
 						return false;
 					}
 				} else if (form.ipv6_opmode.value == '3') {
+					var v6to4_prefix = form.ipv6_6to4_prefix.value.replace(/\s+/g, '');
+					var v6to4_prefix_len = form.ipv6_6to4_prefix_len.value.replace(/\s+/g, '');
 					var v6SrvAddr = form.IPv6SrvAddr.value.replace(/\s+/g, '');
+					var ipv6_dns_primary = form.ipv6_6to4_dns_primary.value.replace(/\s+/g, '');
+					var ipv6_dns_secondary = form.ipv6_6to4_dns_secondary.value.replace(/\s+/g, '');
+
+					if (v6to4_prefix.match(/[^A-Fa-f0-9:]/gi)) {
+						alert(_("ipv6 invalid addr"));
+						form.ipv6_6to4_prefix.focus();
+						form.ipv6_6to4_prefix.select();
+						return false;
+					}
+
+					if (v6to4_prefix_len == "" || v6to4_prefix_len > 128 || v6to4_prefix_len < 0) {
+						alert(_("ipv6 invalid prefix"));
+						form.ipv6_6to4_prefix_len.focus();
+						form.ipv6_6to4_prefix_len.select();
+						return false;
+					}
+
 					if (!ipaddr.IPv4.isValid(v6SrvAddr)) {
 						alert(_("ipv6 invalid ipv4"));
 						form.IPv6SrvAddr.focus();
 						form.IPv6SrvAddr.select();
+						return false;
+					}
+					if (!ipaddr.IPv6.isValid(ipv6_dns_primary)) {
+						alert(_("ipv6 invalid addr"));
+						form.ipv6_6to4_dns_primary.focus();
+						form.ipv6_6to4_dns_primary.select();
+						return false;
+					}
+					if (!ipaddr.IPv6.isValid(ipv6_dns_secondary)) {
+						alert(_("ipv6 invalid addr"));
+						form.ipv6_6to4_dns_secondary.focus();
+						form.ipv6_6to4_dns_secondary.select();
 						return false;
 					}
 				} else if (form.ipv6_opmode.value == "0") {
@@ -254,18 +292,31 @@
 					form.ipv6_6rd_prefix.value				= NVRAM_IPv6IPAddr;
 					form.ipv6_6rd_prefix_len.value			= NVRAM_IPv6PrefixLen;
 					form.ipv6_6rd_border_ipaddr.value		= NVRAM_IPv6SrvAddr;
-				} else if (opmode == '3')
+				} else if (opmode == '3') {
 					form.IPv6SrvAddr.value					= NVRAM_IPv6SrvAddr;
+					form.ipv6_6to4_prefix.value				= (NVRAM_IPv6ISPPrefix == 'on') ? NVRAM_IPv6IPAddr : '2002';
+					form.ipv6_6to4_prefix_len.value			= (NVRAM_IPv6ISPPrefix == 'on') ? NVRAM_IPv6PrefixLen : '64';
+					form.ipv6_6to4_dns_primary.value		= NVRAM_IPv6DNSPrimary;
+					form.ipv6_6to4_dns_secondary.value		= NVRAM_IPv6DNSSecondary;
+				}
 
 				displayElement( ['IPv6AllowForwardRowDisplay', 'v6iana_tr'], opmode != '0');
 				displayElement( 'v6invpn_tr', opmode != '0' && NVRAM_vpnEnabled == 'on');
 				displayElement( [ 'dhcp6cRowDisplay', 'v6StaticMTU_tr' ], opmode == '1');
 				displayElement( 'v6StaticTable', opmode == '1' && !form.dhcp6c_enable.checked);
 				displayElement( 'v66rdTable', BUILD_IPV6_6RD == '1' && opmode == '2');
-				displayElement( '6to4Table', opmode == '3');
+				displayElement( [ '6to4Table' ], opmode == '3');
 				displayElement( 'daemons', opmode != '0' && (BUILD_RADVD == '1' || BUILD_DHCPV6 == '1'));
 
 				disableControlsByAuth();
+			}
+
+			function Switch6to4Prefix(form) {
+				displayElement( [ 'v66to4Prefix_tr', 'v66to4DNSprimary_tr', 'v66to4DNSsecondary_tr' ], form.ipv6_6to4_isp_prefix.checked);
+				if (!form.ipv6_6to4_isp_prefix.checked) {
+					form.ipv6_6to4_prefix.value = '2002';
+					form.ipv6_6to4_prefix_len.value = '64';
+				}
 			}
 
 			function ipv6MtuChange() {
@@ -369,6 +420,22 @@
 						<table id="6to4Table" class="form" style="visibility: hidden;">
 							<tr>
 								<td id="6to4Setup" class="title" colspan="2">Tunneling Connection (6to4) Setup</td>
+							</tr>
+							<tr>
+								<td id="v66to4ISPprefix" class="head" width="45%">Use ISP IPv6 Prefix</td>
+								<td width="55%"><input name="ipv6_6to4_isp_prefix" type="checkbox" onChange="Switch6to4Prefix(this.form);" class="auth-disable-user"></td>
+							</tr>
+							<tr id="v66to4Prefix_tr">
+								<td id="v66to4Prefix" class="head" width="45%">ISP Prefix / Prefix Length</td>
+								<td width="55%"><input name="ipv6_6to4_prefix" maxlength=39 size=39 class="auth-disable-user"> / <input name="ipv6_6to4_prefix_len" maxlength=3 size=2 class="auth-disable-user"></td>
+							</tr>
+							<tr id="v66to4DNSprimary_tr">
+								<td id="v6to4DNSprimary" class="head" width="45%">Primary DNS</td>
+								<td width="55%"><input name="ipv6_6to4_dns_primary" maxlength=39 size=39 class="auth-disable-user"></td>
+							</tr>
+							<tr id="v66to4DNSsecondary_tr">
+								<td id="v6to4DNSsecondary" class="head" width="45%">Secondary DNS</td>
+								<td width="55%"><input name="ipv6_6to4_dns_secondary" maxlength=39 size=39 class="auth-disable-user"></td>
 							</tr>
 							<tr>
 								<td id="v66to4SrvIpaddr" class="head" width="45%"> IPv4 to IPv6 server address </td>

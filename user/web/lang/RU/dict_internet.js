@@ -122,6 +122,8 @@ var internet_dictionary = {
 	'ipv6 6rd enabled'			: 'Настройка туннеля 6RD',
 	'ipv6 6rd prefix'			: 'ISP 6rd Prefix / Prefix Length',
 	'ipv6 6rd relay address'		: 'ISP Border Relay IPv4 Address',
+	'ipv6 6to4 isp prefix'			: 'Использовать IPv6 префикс провайдера',
+	'ipv6 6to4 prefix'			: 'Префикс сети / Длина префикса',
 	'ipv6 6to4 enabled'			: 'Настройка туннеля 6to4',
 	'ipv6 6to4 server address'		: 'Адрес сервера',
 	'ipv6 Ipv6InVPN'			: 'IPv6 аплинк в VPN',

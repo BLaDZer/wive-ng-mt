@@ -220,6 +220,8 @@ var internet_dictionary = {
 	'ipv6 6rd enabled'		: 'Tunneling Connection (6RD) Setup',
 	'ipv6 6rd prefix'		: 'ISP 6rd Prefix / Prefix Length',
 	'ipv6 6rd relay address'	: 'ISP Border Relay IPv4 Address',
+	'ipv6 6to4 isp prefix'		: 'Use ISP IPv6 Prefix',
+	'ipv6 6to4 prefix'		: 'ISP 6to4 Prefix / Prefix Length',
 	'ipv6 6to4 enabled'		: 'Tunneling Connection (6to4) Setup',
 	'ipv6 6to4 server address'	: 'IPv4 to IPv6 server address',
 	'ipv6 Ipv6InVPN'		: 'IPv6 uplink over VPN',

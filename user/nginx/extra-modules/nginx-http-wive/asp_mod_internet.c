@@ -1050,7 +1050,7 @@ parameter_fetch_t service_ipv6_flags[] =
 static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *opmode;
-	char_t *ipaddr, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
+	char_t *ipaddr, *isp_prefix, *prefix_len, *wan_ipaddr, *wan_prefix_len, *srv_ipaddr, *srv_dns_primary, *srv_dns_secondary, *ipv6_manual_mtu;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	ipaddr = prefix_len = wan_ipaddr = wan_prefix_len = srv_ipaddr = srv_dns_primary = srv_dns_secondary = NULL;
@@ -1098,8 +1098,20 @@ static void setIPv6(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_bufset(wp, "IPv6SrvAddr", srv_ipaddr);
 #endif
 		} else if (!strcmp(opmode, "3")) {
-			ipaddr = websGetVar(wp, T("IPv6SrvAddr"), T("192.88.99.1"));
-			ngx_nvram_bufset(wp, "IPv6SrvAddr", ipaddr);
+			ipaddr = websGetVar(wp, T("ipv6_6to4_prefix"), T(""));
+			isp_prefix = websGetVar(wp, T("ipv6_6to4_isp_prefix"), T("off"));
+			prefix_len = websGetVar(wp, T("ipv6_6to4_prefix_len"), T(""));
+			srv_ipaddr = websGetVar(wp, T("IPv6SrvAddr"), T("192.88.99.1"));
+			srv_dns_primary = websGetVar(wp, T("ipv6_6to4_dns_primary"), T(""));
+			srv_dns_secondary = websGetVar(wp, T("ipv6_6to4_dns_secondary"), T(""));
+			if (!strcmp(isp_prefix, "on")) {
+			    ngx_nvram_bufset(wp, "IPv6IPAddr", ipaddr);
+			    ngx_nvram_bufset(wp, "IPv6PrefixLen", prefix_len);
+			    ngx_nvram_bufset(wp, "IPv6DNSPrimary", srv_dns_primary);
+			    ngx_nvram_bufset(wp, "IPv6DNSSecondary", srv_dns_secondary);
+			}
+			ngx_nvram_bufset(wp, "IPv6ISPPrefix", isp_prefix);
+			ngx_nvram_bufset(wp, "IPv6SrvAddr", srv_ipaddr);
 #endif
 		}
 		ngx_nvram_bufset(wp, "IPv6OpMode", opmode);

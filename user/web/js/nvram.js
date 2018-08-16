@@ -219,6 +219,7 @@ var NVRAM_dhcpv6Enabled                                              = '<% getCf
 var NVRAM_IPv6ManualMTU                                              = '<% getCfgGeneral(1, "IPv6ManualMTU",                       "0"); %>';
 var NVRAM_IPv6OpMode                                                 = '<% getCfgGeneral(1, "IPv6OpMode",                          "0"); %>';
 var NVRAM_IPv6IPAddr                                                 = '<% getCfgGeneral(1, "IPv6IPAddr",                          "2a02:2560"); %>';
+var NVRAM_IPv6ISPPrefix                                              = '<% getCfgGeneral(1, "IPv6ISPPrefix",                       "off"); %>';
 var NVRAM_IPv6PrefixLen                                              = '<% getCfgGeneral(1, "IPv6PrefixLen",                       "32"); %>';
 var NVRAM_IPv6WANIPAddr                                              = '<% getCfgGeneral(1, "IPv6WANIPAddr",                       ""); %>';
 var NVRAM_IPv6WANPrefixLen                                           = '<% getCfgGeneral(1, "IPv6WANPrefixLen",                    ""); %>';
