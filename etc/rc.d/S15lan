@@ -54,6 +54,13 @@ stop() {
   $LOG "Stop LAN network interfaces."
     # flush ip from interfaces
     addr_flush
+
+    # prevent freezzzz bridge links use count
+    if [ -d /proc/net/pthrough ]; then
+        echo "null,null" > /proc/net/pthrough/pppoe
+        echo "null,null" > /proc/net/pthrough/ipv6
+    fi
+
     ip link set "$phys_lan_if" down > /dev/null 2>&1
     # last delete bridge interface
     if [ -d /proc/sys/net/ipv4/conf/br0 ]; then

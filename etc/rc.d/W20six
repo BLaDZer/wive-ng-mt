@@ -100,9 +100,9 @@ start() {
 	    # this section for 6to4 tunnel mode
     	    $LOG "Tunel ipv6 to ipv4 configure and up at $six_wan_if interface"
 	    ip -6 link set $six_wan_if up
-	    $LOG "Add adress ${ipv6prefix}::1/16 to $six_wan_if"
-	    ip -6 addr del ${ipv6prefix}::1/16 dev $six_wan_if						> /dev/null 2>&1
-	    ip -6 addr add ${ipv6prefix}::1/16 dev $six_wan_if
+	    $LOG "Add adress ${IPv6IPAddr}:${ipv6prefix}::1/16 to $six_wan_if"
+	    ip -6 addr del ${IPv6IPAddr}:${ipv6prefix}::1/16 dev $six_wan_if						> /dev/null 2>&1
+	    ip -6 addr add ${IPv6IPAddr}:${ipv6prefix}::1/16 dev $six_wan_if
 	fi
 
 	if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
@@ -200,9 +200,9 @@ dhcpradvdreconf() {
                     AdvValidLifetime 300;
     		" > /etc/radvd.conf
 		if [ "$IPv6OpMode" = "2" ] || [ "$IPv6OpMode" = "3" ]; then
-    		    printf "
-                        Base6to4Interface $tun_wan_if;
-    		    " >> /etc/radvd.conf
+		    if [ "${IPv6ISPPrefix}" = "" ] || [ "${IPv6ISPPrefix}" = "off" ]; then
+                        printf "    Base6to4Interface $tun_wan_if;" >> /etc/radvd.conf
+		    fi
 		fi
     		printf "
             	};
@@ -327,7 +327,7 @@ dhcpcstop() {
 
 get_param() {
     eval `nvram_buf_get 2860 radvdEnabled dhcpv6Enabled IPv6IPAddr IPv6SrvAddr IPv6WANIPAddr IPv6PrefixLen IPv6WANPrefixLen \
-	    IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU IPv6DisableIANA`
+	    IPv6GWAddr IPv6DNSPrimary IPv6DNSSecondary IPv6ManualMTU IPv6DisableIANA IPv6ISPPrefix`
 
     if [ "$SysLogd" = "1" ]; then
 	logto="syslog"
@@ -375,10 +375,15 @@ get_param() {
 
         # 6TO4 mode
         elif [ "$IPv6OpMode" = "3" ]; then
-	    IPv6PrefixLen="64"                                                                                  # Default 6to4 prefix length
-    	    ipv6prefix=`echo $tun_wan_ipaddr | awk -F. '{ printf "2002:%02x%02x:%02x%02x", $1, $2, $3, $4 }'`	# Calculate prefix
-	    relay6to4="$IPv6SrvAddr"										# Manual 6to4 IPv4-gateway
-	    PREFIX="${ipv6prefix}:2000::1/${IPv6PrefixLen}"
+            ipv6prefix=`echo $tun_wan_ipaddr | awk -F. '{ printf "%02x%02x:%02x%02x", $1, $2, $3, $4 }'`        # Calculate prefix
+            relay6to4="$IPv6SrvAddr"                                                                            # Manual 6to4 IPv4-gateway
+	    if [ "${IPv6ISPPrefix}" = "" ] || [ "${IPv6ISPPrefix}" = "off" ]; then
+		IPv6IPAddr="2002"
+		IPv6PrefixLen="64"
+		PREFIX="${IPv6IPAddr}:${ipv6prefix}:2000::1/${IPv6PrefixLen}"
+	    else
+		PREFIX="${IPv6IPAddr}:${ipv6prefix}::2/${IPv6PrefixLen}"
+	    fi
         fi
     fi
 }
