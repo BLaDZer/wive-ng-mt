@@ -4785,6 +4785,9 @@ static void __net_exit dev_proc_net_exit(struct net *net)
 {
 	wext_proc_exit(net);
 
+#ifdef CONFIG_NET_PPPOEIPV6_PTHROUGH
+	pthrough_remove_proc_entry(net);
+#endif /* CONFIG_NET_PPPOEIPV6_PTHROUGH */
 	proc_net_remove(net, "ptype");
 	proc_net_remove(net, "softnet_stat");
 	proc_net_remove(net, "dev");
