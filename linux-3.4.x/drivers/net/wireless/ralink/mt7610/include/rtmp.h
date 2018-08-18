@@ -2704,7 +2704,7 @@ typedef struct _AP_ADMIN_CONFIG {
 	UCHAR AutoChannel_Channel;	/* channel number during Auto Channel Selection */
 	UCHAR current_channel_index;	/* current index of channel list */
 	UCHAR AutoChannelSkipListNum;	/* number of rejected channel list */
-	UCHAR AutoChannelSkipList[10];
+	UCHAR AutoChannelSkipList[20];
 	UCHAR DtimCount;	/* 0.. DtimPeriod-1 */
 	UCHAR DtimPeriod;	/* default = 3 */
 	UCHAR ErpIeContent;

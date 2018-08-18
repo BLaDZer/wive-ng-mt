@@ -928,6 +928,9 @@ int gen_wifi_config(int mode, int genmode)
 	int  i, ssid_num = 0;
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	int inic = 0;
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	int scanalg24 = 0, scanalg5 = 0, resultalg = 0;
+#endif
 #endif
 	char w_mode[64], wmm_enable[64];
 
@@ -974,6 +977,16 @@ int gen_wifi_config(int mode, int genmode)
 	if (ssid_num > MAX_NUMBER_OF_BSSID || ssid_num <= 0)
 		ssid_num = MAX_NUMBER_OF_BSSID;
 
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    /* in dbdc mode only one auto channel select alg may be used for all bands */
+	    scanalg24 = nvram_get_int(RT2860_NVRAM, "AutoChannelSelect", 0);
+	    scanalg5  = nvram_get_int(RT2860_NVRAM, "AutoChannelSelectINIC", 0);
+	    /* in dbdc mode only one auto channel select alg may be used for all bands */
+	    if (scanalg5 > scanalg24)
+		resultalg = scanalg5;
+	    else
+		resultalg = scanalg24;
+#endif
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
@@ -987,11 +1000,15 @@ int gen_wifi_config(int mode, int genmode)
 	    FPRINT_DAT(RadioOn);
 	    FPRINT_DAT(TxPower);
 	    FPRINT_DAT(Channel);
-	    FPRINT_DAT(AutoChannelSelect);
-	    FPRINT_DAT(AutoChannelSkipList);
-	    FPRINT_DAT(ACSCheckTime);
 	    FPRINT_DAT(BasicRate);
 	    FPRINT_DAT(SSID1);
+	    FPRINT_DAT(AutoChannelSkipList);
+	    FPRINT_DAT(ACSCheckTime);
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
+#else
+	    FPRINT_DAT(AutoChannelSelect);
+#endif
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
 	    // WirelessMode -> need move per ssid to goahead
@@ -1004,11 +1021,15 @@ int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "RadioOn=%s\n", nvram_get(mode, "RadioOnINIC"));
 	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
 	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
-	    fprintf(fp, "AutoChannelSelect=%s\n", nvram_get(mode, "AutoChannelSelectINIC"));
-	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
-	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
 	    fprintf(fp, "BasicRate=%s\n", nvram_get(mode, "BasicRateINIC"));
 	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
+	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
+	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
+#else
+	    fprintf(fp, "AutoChannelSelect=%s\n", nvram_get(mode, "AutoChannelSelectINIC"));
+#endif
 	}
 #endif
 	// Stub
