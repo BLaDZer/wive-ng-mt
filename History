@@ -4209,13 +4209,14 @@
 29) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
 30) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
 31) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-32) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-33) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-34) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-35) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-36) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-37) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-38) kernel: ralink_wifi: force update DS more accuracly.<br>
-39) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+32) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+33) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+34) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+35) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+36) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+37) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+38) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+39) kernel: ralink_wifi: force update DS more accuracly.<br>
+40) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
 <br>
 <br>
