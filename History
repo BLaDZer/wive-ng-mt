@@ -4187,40 +4187,41 @@
 7) init.d: avoid incorrect configure vifs in dbdc mode.<br>
 8) init.d: fix nginx stop.<br>
 9) init.d: 6to4 allow use not standart prefix.<br>
-10) init.d: fix bridge reconfigure at kernel pass through enable.<br>
-11) libwive/libnvram/nginx: multivar fixup.<br>
-12) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
-13) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
-14) webui: fix wireless security warnings show.<br>
-15) webui: fix per bssid options set.<br>
-16) webui: fix idle timeout range.<br>
-17) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
-18) webui: move BW to basic block for easy setup.<br>
-19) webui: 6to4 allow use not standart prefix.<br>
-20) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
-21) webui: fix real user name leak to different users.<br>
-22) webui: fix access policy block hide.<br>
-23) webui: move BSSID to block header (save space).<br>
-24) kernel: fork: don't copy inconsistent signal handler state to child.<br>
-25) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
-26) kernel: random: mix rdrand with entropy sent in from userspace.<br>
-27) kernel: squashfs: be more careful about metadata corruption.<br>
-28) kernel: squashfs: more metadata hardenings.<br>
-29) kernel: net: fix pass through unregister.<br>
-30) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
-31) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-32) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-33) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-34) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-35) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-36) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
-37) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-38) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-39) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-40) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-41) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-42) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-43) kernel: ralink_wifi: force update DS more accuracly.<br>
-44) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+10) init.d: fix reconfigure 7615 module if used vif`s.<br>
+11) init.d: fix bridge reconfigure at kernel pass through enable.<br>
+12) libwive/libnvram/nginx: multivar fixup.<br>
+13) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
+14) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
+15) webui: fix wireless security warnings show.<br>
+16) webui: fix per bssid options set.<br>
+17) webui: fix idle timeout range.<br>
+18) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
+19) webui: move BW to basic block for easy setup.<br>
+20) webui: 6to4 allow use not standart prefix.<br>
+21) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
+22) webui: fix real user name leak to different users.<br>
+23) webui: fix access policy block hide.<br>
+24) webui: move BSSID to block header (save space).<br>
+25) kernel: fork: don't copy inconsistent signal handler state to child.<br>
+26) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
+27) kernel: random: mix rdrand with entropy sent in from userspace.<br>
+28) kernel: squashfs: be more careful about metadata corruption.<br>
+29) kernel: squashfs: more metadata hardenings.<br>
+30) kernel: net: fix pass through unregister.<br>
+31) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
+32) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+33) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+34) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+35) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+36) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+37) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+38) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+39) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+40) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+41) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+42) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+43) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+44) kernel: ralink_wifi: force update DS more accuracly.<br>
+45) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
 <br>
 <br>

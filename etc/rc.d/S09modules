@@ -220,6 +220,10 @@ stop() {
 	$LOG "Unload hw_nat module."
 	rmmod hw_nat > /dev/null 2>&1
     fi
+    # 7615 driver register vif on module load, for full reconfigure allways need full reload modules
+    if [ "$CONFIG_MT7615_AP_WDS" != "" ] || [ "$CONFIG_MT7615_AP_MBSS" != "" ]; then
+	wifi_unload
+    fi
 }
 
 wifi_unload() {
