@@ -291,6 +291,36 @@ var internet_dictionary = {
 	'hotspot nodog allow'			: 'Разрешить',
 	'hotspot profile change'		: 'При смене профиля рекомендуется произвести сброс настроек хотспота. Сбросить настройки?',
 
+	// Internet / L2 Tunnels
+	'l2 tunnels introduction'	: 'Здесь вы можете настроить L2-туннелирование.',
+	'l2 tunnels config'		: 'Настройка L2-туннелей',
+
+	'eoip config'			: 'Настройка EOIP',
+	'eoip enable'			: 'EOIP',
+	'eoip local'			: 'Локальный IP',
+	'eoip remote'			: 'Удалённый IP',
+	'eoip tid'			: 'ИД Туннеля',
+	'eoip brifs'			: 'Интерфейсы для туннелирования',
+	'eoip invalid tid'		: 'Неверный идентификатор туннеля!',
+	'eoip invalid brifs'		: 'Некорректный список интерфейсов для туннелирования!',
+	'eoip brifs duplicate'		: 'Список интерфейсов для туннелирования содержит дубликаты!',
+	'eoip brifs in use'		: 'Некоторые из интерфейсов уже используются в другом туннеле!',
+
+	'l2tpv3 config'			: 'Настройки L2TPv3',
+	'l2tpv3 enable'			: 'L2TPv3',
+	'l2tpv3 tid'			: 'ИД Туннеля',
+	'l2tpv3 ptid'			: 'ИД Туннеля удалённого узла',
+	'l2tpv3 sid'			: 'ИД Сессии',
+	'l2tpv3 psid'			: 'ИД Сессии удалённого узла',
+	'l2tpv3 source port'		: 'Локальный порт',
+	'l2tpv3 dest port'		: 'Удалённый порт',
+	'l2tpv3 brifs'			: 'Интерфейсы для туннелирования',
+	'l2tpv3 invalid id'		: 'Неверный идентификатор!',
+	'l2tpv3 invalid port'		: 'Указан неверный порт!',
+	'l2tpv3 invalid brifs'		: 'Некорректный список интерфейсов для туннелирования!',
+	'l2tpv3 brifs duplicate'	: 'Список интерфейсов для туннелирования содержит дубликаты!!',
+	'l2tpv3 brifs in use'		: 'Некоторые из интерфейсов уже используются в другом туннеле!',
+
 	// Internet / VLAN
 	'vlan vlanid exist'			: 'Введенный VLAN ID уже существует',
 	'vlan invalid vlanid'			: 'Введен неверный VLAN ID',

@@ -450,7 +450,7 @@
 							<col style="width: 17%"/>
 							<tbody>
 								<tr>
-									<td class="title" colspan="4" id="v6services">Services IPv6</td>
+									<td class="title" colspan="4" id="v6services">IPv6 Services</td>
 								</tr>
 								<tr>
 									<td class="title" id="v6servicename">Service name</td>

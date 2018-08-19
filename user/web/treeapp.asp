@@ -75,6 +75,10 @@ if (BUILD_IPV6 == "1" && NVRAM_OperationMode != '0') {
 
 a.add(304, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
+if (NVRAM_OperationMode != '2') {
+	a.add(310, 300, _("treeapp l2tunnels"),		"javascript:go('internet/l2tunnels.asp');");
+}
+
 if (AUTH_ROLE == 2)
 {
 	a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
@@ -133,15 +137,10 @@ if (NVRAM_OperationMode != '0') a.add(501, 500, _("treeapp dhcp server"),       
 if (AUTH_ROLE == 2)
 {
     a.add(502, 500,                          _("treeapp l2tp server"),         "javascript:go('services/l2tp.asp');");
-    if (NVRAM_OperationMode != '2')
-    {
-        a.add(503, 500,                          _("treeapp l2tpv3 server"),       "javascript:go('services/l2tpv3.asp');");
-        if (BUILD_EOIP == "1")   a.add(504, 500, _("treeapp eoip server"),         "javascript:go('services/eoip.asp');");
-    }
 
-    if (BUILD_RADIUS == "1") a.add(505, 500, _("treeapp radius"),              "javascript:go('services/radius.asp');");
-    if (BUILD_CWMP == "1")   a.add(506, 500, _("treeapp cwmp"),                "javascript:go('services/cwmp.asp');");
-    a.add(507, 500,                          _("treeapp ntp settings"),        "javascript:go('services/ntp.asp');");
+    if (BUILD_RADIUS == "1") a.add(503, 500, _("treeapp radius"),              "javascript:go('services/radius.asp');");
+    if (BUILD_CWMP == "1")   a.add(504, 500, _("treeapp cwmp"),                "javascript:go('services/cwmp.asp');");
+    a.add(505, 500,                          _("treeapp ntp settings"),        "javascript:go('services/ntp.asp');");
 }
 
 if (BUILD_DDNS == "1") a.add(506, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");

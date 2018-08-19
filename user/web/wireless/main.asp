@@ -91,6 +91,8 @@
 
 				// Wireless Network 2.4 GHz
 				var updateVisibility_net24 = function() {
+					displayElement( 'wlan_header_data', enableWireless && NVRAM_RadioOn != '0');
+
 					// Network name (2.4GHz)
 					displayElement( 'div_11g_name', enableWirelessAny); // do not hide in 5GHz-only mode, it has some usable nested options like "hidden" or "clients isolated", and an "Add" button
 					// Network mode (2.4GHz)
@@ -106,11 +108,6 @@
 					displayElement( 'basicChannelBW_tr', enableWireless);
 					form.n_bandwidth.disabled = !htmode;
 
-					if (enableWireless)
-						document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
-					else
-						document.getElementById('wlan_channel_span').innerHTML = '';
-
 					displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
 					displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
 					displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
@@ -124,6 +121,8 @@
 
 				// Wireless Network 5 GHz
 				var updateVisibility_net5 = function() {
+					displayElement( 'wlan_ac_header_data', enableWirelessAc && NVRAM_RadioOnINIC != '0');
+
 					displayElement('wireless_5', BUILD_5GHZ_SUPPORT);
 					// Network name (5GHz)
 					displayElement( 'div_11a_name', enableWirelessAc);
@@ -142,11 +141,6 @@
 					displayElement( ['ac_bw_20_40'], wmodeac >= 8);
 					displayElement( ['ac_bw_20_40_80'], wmodeac >= 14);
 					displayElement( ['ac_bw_20_40_80_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
-
-					if (enableWirelessAc)
-						document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
-					else
-						document.getElementById('wlan_ac_channel_span').innerHTML = '';
 
 					displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
 					displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
@@ -230,6 +224,7 @@
 
 					createAccessPolicyTable();
 					prepareAccessPolicy();
+
 				}
 
 				// HT Physical Mode
@@ -781,11 +776,13 @@
 			function createAccessPolicyTable() {
 				var html = '';
 				for (var aptable = 0; aptable < MBSSID_MAX; aptable++) {
-					html += '<table id="AccessPolicy_' + aptable + '_table" border="1" class="form">' +
-							'	<tbody>' + 
+					html += '<table id="AccessPolicy_' + aptable + '_table" border="1" class="form showHideMenu">' +
+							'	<thead onclick="switchShowMenu(this);">' +
 							'		<tr>' +
 							'			<td class="title" colspan="2">' + _('secure access policy') + '</td>' +
 							'		</tr>' +
+							'	</thead>' +
+							'	<tbody>' + 
 							'		<tr>' +
 							'			<td bgcolor="#E8F8FF" class="head" >' + _('secure access policy capable') + '</td>' +
 							'			<td>' +
@@ -848,6 +845,7 @@
 							'</table>';
 				}
 				document.getElementById('accessPolicyDiv').innerHTML = html;
+
 			}
 
 			// Show access policy
@@ -983,8 +981,8 @@
 				form["RADIUS_SessionTimeout"+old_MBSSID].value = form.RadiusServerSessionTimeout.value;
 
 				old_MBSSID	= form.ssidIndex.options.selectedIndex;
-				LoadFields(form, form.ssidIndex.options.selectedIndex, show_warn);
-				showAccessPolicy(form.ssidIndex.options.selectedIndex);		// update Access Policy
+				LoadFields(form, old_MBSSID, show_warn);
+				showAccessPolicy(old_MBSSID);		// update Access Policy
 
 				WPAAlgorithms		= form["EncrypType"+old_MBSSID];
 				PreAuthentication	= (form["PreAuth"+old_MBSSID] == '1')? true : false; 
@@ -994,10 +992,11 @@
 				createAccessPolicyTable();
 				prepareAccessPolicy();
 				
-				displayElement(['newap_text_' + old_MBSSID + '_tr', 'newap_macs_' + old_MBSSID + '_tr'], document.getElementById('AccessPolicy' + old_MBSSID).value != 0);
-				
+				var policy_enabled = document.getElementById('AccessPolicy' + old_MBSSID).value;
+				displayElement(['newap_text_' + old_MBSSID + '_tr', 'newap_macs_' + old_MBSSID + '_tr'], policy_enabled != 0);
 
 				updateVisibility(form);
+
 			}
 
 			// WPA algorithm change
@@ -1179,6 +1178,9 @@
 
 				LoadFields(form, network.default_mbssid, true);
 				prepareAccessPolicy();
+
+				if (document.getElementById('AccessPolicy' + old_MBSSID).value == 0)
+					showMenu('AccessPolicy_' + old_MBSSID + '_table', 0);
 			}
 
 			function securityMode(check) {
@@ -1428,11 +1430,6 @@
 				form.ED_MODE.options.selectedIndex = (NVRAM_ED_MODE == '1') ? 1 : 0;
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
-
-				if (NVRAM_RadioOn == 1)
-					document.getElementById('wlan_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannel_ioctl(); %>';
-				if (NVRAM_RadioOnINIC == 1 && BUILD_5GHZ_SUPPORT)
-					document.getElementById('wlan_ac_channel_span').innerHTML = '<b>' + _('station channel') +':</b> ' + '<% getWlanChannelAC_ioctl(); %>';
 
 				initTranslation();
 				showWarning();
@@ -2265,8 +2262,12 @@ table.form tr.ssid-row {
 		<thead>
 			<tr>
 				<td class="title head-narrow" data-tr="basic wireless network">Wireless Network</td>
-				<td class="title" style="text-align: right;">
-					<select name="radioWirelessEnabled" class="half" onChange="updateVisibility(this.form);">
+				<td class="title" >
+					<div id="wlan_header_data" style="margin-left: 2px; float: left; margin-top: 5px;">
+						<span><b>BSSID:</b> <% getWlanCurrentMac(); %></span>
+						<span style="margin-left: 15px;" ><b><span data-tr="station channel">Channel</span>:</b> <% getWlanChannel_ioctl(); %></span>
+					</div>
+					<select name="radioWirelessEnabled" class="half" style="float: right;" onChange="updateVisibility(this.form);">
 						<option value="0" data-tr="button disable">Disabled</option>
 						<option value="1" data-tr="button enable">Enabled</option>
 					</select>
@@ -2284,7 +2285,7 @@ table.form tr.ssid-row {
 					<option value="7" data-tr="basic gn">GN</option>
 					<option value="9" data-tr="basic bgn">BGN</option>
 				</select>
-				<span style="margin-left: 20px; margin-right: 20px"><b>BSSID:</b> <% getWlanCurrentMac(); %></span><span id="wlan_channel_span"></span></td>
+				</td>
 			</tr>
 			<tr id="div_txpw">
 				<td class="head head-narrow auth-readonly-user" data-tr="basic tx power">TX Power (2.4GHz)</td>
@@ -2349,10 +2350,16 @@ table.form tr.ssid-row {
 		<thead>
 			<tr>
 				<td class="title head-narrow" data-tr="basic wireless network ac">Wireless Network 5GHz</td>
-				<td class="title" style="text-align: right;"><select name="radioWirelessEnabledAc" class="half" onChange="updateVisibility(this.form);">
-					<option value="0" data-tr="button disable">Disabled</option>
-					<option value="1" data-tr="button enable">Enabled</option>
-				</select></td>
+				<td class="title">
+					<div id="wlan_ac_header_data" style="margin-left: 2px; float: left; margin-top: 5px;">
+						<span><b>BSSID:</b> <% getWlanCurrentMacAC(); %></span>
+						<span style="margin-left: 15px;" ><b><span data-tr="station channel">Channel</span>:</b> <% getWlanChannelAC_ioctl(); %></span>
+					</div>
+					<select name="radioWirelessEnabledAc" class="half" style="float: right;" onChange="updateVisibility(this.form);">
+						<option value="0" data-tr="button disable">Disabled</option>
+						<option value="1" data-tr="button enable">Enabled</option>
+					</select>
+				</td>
 
 			</tr>
 		</thead>
@@ -2366,7 +2373,7 @@ table.form tr.ssid-row {
 					<option value="14" data-tr="basic anc">A/AN/AC</option>
 					<option value="15" data-tr="basic anac">AN/AC</option>
 				</select>
-				<span style="margin-left: 20px; margin-right: 20px;"><b>BSSID:</b> <% getWlanCurrentMacAC(); %></span><span id="wlan_ac_channel_span"></span></td>
+				</td>
 			 </tr>
 			<tr id="div_txpw_ac">
 				<td class="head head-narrow auth-readonly-user" data-tr="basic tx power ac">TX Power (5GHz)</td>

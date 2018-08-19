@@ -13,6 +13,7 @@ var tree_dictionary = {
 	'treeapp wan'			: 'Настройки WAN',
 	'treeapp ipv6'			: 'Настройки IPv6',
 	'treeapp vpn'			: 'Настройки VPN',
+	'treeapp l2tunnels'		: 'Настройки L2-туннелей',
 	'treeapp vlan'			: 'Настройки VLAN',
 	'treeapp routing'		: 'Маршрутизация',
 	'treeapp hotspot'		: 'Хот-спот',
@@ -35,8 +36,6 @@ var tree_dictionary = {
 
 	'treeapp dhcp server'		: 'Сервер DHCP',
 	'treeapp l2tp server'		: 'Сервер L2TP',
-	'treeapp l2tpv3 server'		: 'Сервер L2TPv3',
-	'treeapp eoip server'		: 'Сервер EOIP',
 	'treeapp ntp settings'		: 'Синхронизация времени',
 	'treeapp ddns settings'		: 'Динамический DNS',
 	'treeapp samba'			: 'Сервер Samba/WINS',
