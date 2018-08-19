@@ -94,7 +94,7 @@ start() {
 		$LOG "Wait device ready before connect"
 		# set not first time flag
 		touch /tmp/modem_ready
-		# wait goahead start and ready
+		# wait switch to stage 2
     		while [ ! -e /tmp/bootgood ]; do
 	    	    # Sleep until file does exists/is created
 	    	    sleep 3
