@@ -4211,19 +4211,20 @@
 31) kernel: net: l2tp: use sk_dst_check() to avoid race on sk->sk_dst_cache.<br>
 32) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
 33) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-34) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-35) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-36) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-37) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-38) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
-39) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-40) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-41) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-42) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-43) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-44) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-45) kernel: ralink_wifi: force update DS more accuracly.<br>
-46) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-47) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+34) kernel: net: llc: use refcount_inc_not_zero() for llc_sap_find().<br>
+35) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+36) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+37) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+38) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+39) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+40) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+41) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+42) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+43) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+44) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+45) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+46) kernel: ralink_wifi: force update DS more accuracly.<br>
+47) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+48) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
