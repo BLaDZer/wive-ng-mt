@@ -1202,13 +1202,12 @@ VOID APPeerBeaconAction(
 								&LenVIE,
 								pVIE))
 	{
-		/* ignore BEACON not in this channel */
-		if (ie_list->Channel != Channel
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
+		/* ignore BEACON not in this channel */
+		if (ie_list->Channel != Channel
 			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
-#endif /* DOT11N_DRAFT3 */
-#endif /* DOT11_N_SUPPORT */
+
 #ifdef RT_CFG80211_P2P_CONCURRENT_DEVICE
 			&& (!RTMP_CFG80211_VIF_P2P_CLI_ON(pAd))
 #endif /* RT_CFG80211_P2P_CONCURRENT_DEVICE */
@@ -1216,6 +1215,14 @@ VOID APPeerBeaconAction(
 		{
 			goto __End_Of_APPeerBeaconAction;
 		}
+
+		/* 40Mhz BSS Width Trigger events Intolerant devices */
+		if ((RealRssi > OBSS_BEACON_RSSI_THRESHOLD) && (ie_list->HtCapability.HtCapInfo.Forty_Mhz_Intolerant)) /* || (HtCapabilityLen == 0))) */
+		{
+			Handle_BSS_Width_Trigger_Events(pAd);
+		}
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
 #ifdef CUSTOMER_DCC_FEATURE
 		if(ie_list->Channel == pAd->CommonCfg.Channel && pAd->ApEnableBeaconTable == TRUE)
 		{
@@ -1262,22 +1269,11 @@ VOID APPeerBeaconAction(
 			}
 		}
 #endif
-			
-#ifdef DOT11_N_SUPPORT
-#ifdef DOT11N_DRAFT3
-		/* 40Mhz BSS Width Trigger events Intolerant devices */
-		if ((RealRssi > OBSS_BEACON_RSSI_THRESHOLD) && (ie_list->HtCapability.HtCapInfo.Forty_Mhz_Intolerant)) /* || (HtCapabilityLen == 0))) */
-		{
-			Handle_BSS_Width_Trigger_Events(pAd);
-		}
-#endif /* DOT11N_DRAFT3 */
-#endif /* DOT11_N_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
-		if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 #ifdef DOT11N_DRAFT3
+		if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
-#endif /* DOT11N_DRAFT3 */
 		   )
 		{
 			if (pAd->CommonCfg.Channel<=14)
@@ -1311,6 +1307,7 @@ VOID APPeerBeaconAction(
 					goto __End_Of_APPeerBeaconAction;
 			}
 		}
+#endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef IDS_SUPPORT

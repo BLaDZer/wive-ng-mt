@@ -1057,22 +1057,7 @@ VOID APPeerBeaconAction(
 #ifdef SMART_CARRIER_SENSE_SUPPORT
 		ULONG Idx;
 		CHAR  Rssi = -127;
-#endif /* SMART_CARRIER_SENSE_SUPPORT */
 
-
-		/* ignore BEACON not in this channel */
-		if (ie_list->Channel != Channel
-#ifdef DOT11_N_SUPPORT
-#ifdef DOT11N_DRAFT3
-			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
-#endif /* DOT11N_DRAFT3 */
-#endif /* DOT11_N_SUPPORT */
-			)
-		{
-			goto __End_Of_APPeerBeaconAction;
-		}
-
-#ifdef SMART_CARRIER_SENSE_SUPPORT
 		/* Collect BEACON for SCS reference. */
 		if (!Rssi || (RealRssi + pAd->BbpRssiToDbmDelta) > Rssi)
 			Rssi = RealRssi + pAd->BbpRssiToDbmDelta;
@@ -1088,6 +1073,15 @@ VOID APPeerBeaconAction(
 
 #ifdef DOT11_N_SUPPORT
 #ifdef DOT11N_DRAFT3
+		/* ignore BEACON not in this channel */
+		if (ie_list->Channel != Channel
+			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
+			)
+		{
+			goto __End_Of_APPeerBeaconAction;
+		}
+
+
 		/* 40Mhz BSS Width Trigger events Intolerant devices */
 		if ((RealRssi > OBSS_BEACON_RSSI_THRESHOLD) && (ie_list->HtCapability.HtCapInfo.Forty_Mhz_Intolerant)) /* || (HtCapabilityLen == 0))) */
 		{
@@ -1097,10 +1091,9 @@ VOID APPeerBeaconAction(
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef DOT11_N_SUPPORT
-		if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 #ifdef DOT11N_DRAFT3
+		if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
-#endif /* DOT11N_DRAFT3 */
 		   )
 		{
 			if (pAd->CommonCfg.Channel<=14)
@@ -1123,6 +1116,7 @@ VOID APPeerBeaconAction(
 				}
 			}
 		}
+#endif /* DOT11N_DRAFT3 */
 #endif /* DOT11_N_SUPPORT */
 
 #ifdef IDS_SUPPORT

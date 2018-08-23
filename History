@@ -4223,5 +4223,6 @@
 43) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
 44) kernel: ralink_wifi: force update DS more accuracly.<br>
 45) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+46) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
