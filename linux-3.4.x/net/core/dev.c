@@ -6623,7 +6623,7 @@ int dev_change_net_namespace(struct net_device *dev, struct net *net, const char
 		/* We get here if we can't use the current device name */
 		if (!pat)
 			goto out;
-		err = dev_get_valid_name(net, dev, pat);
+		err = dev_get_valid_name(dev, pat);
 		if (err < 0)
 			goto out;
 	}
