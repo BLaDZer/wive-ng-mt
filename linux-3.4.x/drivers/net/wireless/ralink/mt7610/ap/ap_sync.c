@@ -1038,11 +1038,7 @@ VOID APPeerBeaconAction(
 		{
 			Handle_BSS_Width_Trigger_Events(pAd);
 		}
-#endif /* DOT11N_DRAFT3 */
-#endif /* DOT11_N_SUPPORT */
 
-#ifdef DOT11_N_SUPPORT
-#ifdef DOT11N_DRAFT3
 		if ((pAd->CommonCfg.HtCapability.HtCapInfo.ChannelWidth == BW_40)
 			&& (pAd->CommonCfg.bOverlapScanning == FALSE)
 		   )
@@ -1204,7 +1200,12 @@ VOID APPeerBeaconAction(
 	}
 	/* sanity check fail, ignore this frame */
 
+#ifdef DOT11_N_SUPPORT
+#ifdef DOT11N_DRAFT3
 __End_Of_APPeerBeaconAction:
+#endif /* DOT11N_DRAFT3 */
+#endif /* DOT11_N_SUPPORT */
+
 #ifdef CONFIG_AP_SUPPORT
 IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 {
