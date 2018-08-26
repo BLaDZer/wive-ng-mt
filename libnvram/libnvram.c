@@ -1430,11 +1430,23 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(G_BAND_256QAM);
 	FPRINT_DAT(CP_SUPPORT);
 	FPRINT_DAT(RED_Enable);
+	FPRINT_DAT(EDCCAEnable);
 	FPRINT_DAT(VHT_Sec80_Channel);
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	FPRINT_DAT(DBDC_MODE);
 	FPRINT_DAT(ApCliWirelessMode);
 	FPRINT_DAT(ApCliNum);
+#endif
+#ifdef CONFIG_MT7615_AP_BACKGROUND_SCAN_SUPPORT
+#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
+	if (!inic) {
+	    FPRINT_DAT(BgndScanSkipCh);
+	} else {
+	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
+	}
+#else
+	FPRINT_DAT(BgndScanSkipCh);
+#endif
 #endif
 #ifdef CONFIG_MT7615_AP_VOW_SUPPORT
 	FPRINT_DAT(VOW_Airtime_Ctrl_En);
