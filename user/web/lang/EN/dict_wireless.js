@@ -102,6 +102,7 @@ var wireless_dictionary = {
 	'basic auto channel mode'	: 'Auto Channel Select Mode',
 	'basic select by sta'		: 'by station count',
 	'basic select by rssi'		: 'by noise level',
+	'basic select by qbss'		: 'by QBSS load',
 	'basic hour'			: 'h',
 	'basic rescan every'		: 'renew every ',
 	'basic bg'			: '11b/g mixed',

@@ -925,15 +925,13 @@ int nvram_load_default(void)
 int gen_wifi_config(int mode, int genmode)
 {
 	FILE *fp = NULL;
-	int  i, ssid_num = 0;
+	int ssid_num = 0;
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	int inic = 0;
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	int scanalg24 = 0, scanalg5 = 0, resultalg = 0;
 #endif
 #endif
-	char w_mode[64], wmm_enable[64];
-
 	if (genmode == RT2860_NVRAM) {
 		system("mkdir -p /etc/Wireless/RT2860");
 		fp = fopen("/etc/Wireless/RT2860/RT2860.dat", "w+");
@@ -990,13 +988,7 @@ int gen_wifi_config(int mode, int genmode)
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	if (!inic) {
 #endif
-	    // WirelessMode -> need move per ssid to goahead
-	    bzero(w_mode, sizeof(w_mode));
-	    sprintf(w_mode, "%s", nvram_get(mode, "WirelessMode"));
-	    for (i = 1; i < ssid_num; i++)
-		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessMode"));
-	    fprintf(fp, "WirelessMode=%s\n", w_mode);
-
+	    FPRINT_DAT(WirelessMode);
 	    FPRINT_DAT(RadioOn);
 	    FPRINT_DAT(TxPower);
 	    FPRINT_DAT(Channel);
@@ -1011,13 +1003,7 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 #ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
 	} else {
-	    // WirelessMode -> need move per ssid to goahead
-	    bzero(w_mode, sizeof(w_mode));
-	    sprintf(w_mode, "%s", nvram_get(mode, "WirelessModeINIC"));
-	    for (i = 1; i < ssid_num; i++)
-		sprintf(w_mode+strlen(w_mode), ";%s", nvram_get(mode, "WirelessModeINIC"));
-	    fprintf(fp, "WirelessMode=%s\n", w_mode);
-
+	    fprintf(fp, "WirelessMode=%s\n", nvram_get(mode, "WirelessModeINIC"));
 	    fprintf(fp, "RadioOn=%s\n", nvram_get(mode, "RadioOnINIC"));
 	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
 	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
@@ -1035,13 +1021,7 @@ int gen_wifi_config(int mode, int genmode)
 	// Stub
 	fprintf(fp, "FixedTxMode=\n");
 
-	// WmmCapable -> need move per ssid to goahead
-	bzero(wmm_enable, sizeof(wmm_enable));
-	sprintf(wmm_enable, "%s", nvram_get(mode, "WmmCapable"));
-	for (i = 1; i < ssid_num; i++)
-		sprintf(wmm_enable+strlen(wmm_enable), ";%s", nvram_get(mode, "WmmCapable"));
-	fprintf(fp, "WmmCapable=%s\n", wmm_enable);
-
+	FPRINT_DAT(WmmCapable);
 	FPRINT_DAT(APAifsn);
 	FPRINT_DAT(APCwmin);
 	FPRINT_DAT(APCwmax);

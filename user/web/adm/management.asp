@@ -67,12 +67,6 @@
 				if (BUILD_LangRU)
 					lang_element.options[lang_element.length] = new Option('Russian', 'ru');
 				lang_element.value = NVRAM_Language;
-
-                                if (IS_NGINX)
-                                {
-                                    document.getElementsByName("ExportSettings")[0].action = document.getElementsByName("ExportSettings")[0].action.replace("/cgi-bin/ExportSettings.sh","/goform/getDeviceConfig");
-                                }
-
 				
 				document.getElementById('admuser').value			= NVRAM_Login;
 				document.getElementById('admpass').value			= NVRAM_Password;
@@ -401,7 +395,7 @@
 							<tr>
 								<td class="head" id="setmanExpSetButton">Backup Settings to file</td>
 								<td>
-									<form method="GET" name="ExportSettings" action="/cgi-bin/ExportSettings.sh" onsubmit="return confirm(_('management export settings'));">
+									<form method="GET" name="ExportSettings" action="/goform/getDeviceConfig" onsubmit="return confirm(_('management export settings'));">
 										<input type="submit" value="Backup" id="setmanExpSetExport" name="Export" class="half">
 									</form>
 								</td>

@@ -1,5 +1,8 @@
 #include "asp_mod_wireless.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 static int default_shown_mbssid[3]  = {0,0,0};
 
 static void setSecurity(webs_t* wp, int nvram);
@@ -676,6 +679,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
+	ngx_nvram_bufset(wp,"WmmCapable", wmm_capable);
+
 	// Fill-in SSID
 	for (ssid=0; ssid < new_bssid_num; ssid++)
 	{
@@ -687,6 +692,12 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		if (CHK_IF_SET(mssid))
 		{
 			ngx_nvram_bufset(wp, ssid_nvram_var, mssid);
+			STFs(RT2860_NVRAM, ssid, "WirelessMode", wirelessmode);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+			STFs(RT2860_NVRAM, ssid, "WirelessModeINIC", wirelessmodeac);
+#endif
+			STFs(RT2860_NVRAM, ssid, "WmmCapable", wmm_capable);
+
 			sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
 			sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
@@ -967,7 +978,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	}
 
 	ngx_nvram_bufset(wp,"AckPolicy", ackpolicy);
-	ngx_nvram_bufset(wp,"WmmCapable", wmm_capable);
 	ngx_nvram_bufset(wp,"DyncVgaEnable", dyn_vga);
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
@@ -1807,6 +1817,22 @@ static int getClampBuilt(webs_t *wp, char** params, int nparams) {
 #endif
 }
 
+static int getWirelessFirst(webs_t *wp, char** params, int nparams) {
+#ifdef CONFIG_RT_FIRST_CARD
+	return outWrite(TOSTRING(CONFIG_RT_FIRST_CARD));
+#else
+	return outWrite(T(""));
+#endif
+}
+
+static int getWirelessSecond(webs_t *wp, char** params, int nparams) {
+#ifdef CONFIG_RT_SECOND_CARD
+	return outWrite(TOSTRING(CONFIG_RT_SECOND_CARD));
+#else
+	return outWrite(T(""));
+#endif
+}
+
 static void getScanAp(webs_t* wp, char_t *path, char_t *query)
 {
 	int i;
@@ -1899,6 +1925,10 @@ int asp_mod_wireless_init()
 	websFormDefine("wirelessApcli", wirelessApcli, EVERYONE);
 	aspDefineFunc("getAPCliStatus", getAPCliStatus, EVERYONE);
 #endif
+
+	aspDefineFunc("getWirelessFirst", getWirelessFirst, EVERYONE);
+	aspDefineFunc("getWirelessSecond", getWirelessSecond, EVERYONE);
+
 	websFormDefine("wirelessGetSecurity", wirelessGetSecurity, EVERYONE);
 
 

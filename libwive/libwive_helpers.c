@@ -37,10 +37,13 @@ int strToIntDef(char* value, int def)
 
 char *strip_space(char *str)
 {
-	while (isspace(*str))
-		str++;
-	return str;
+	int i;
+	for (i=0;i<strlen(str);i++) {
+		if (!isspace(str[i])) return str+i;
+	}
+	return str+strlen(str);
 }
+
 
 int isNumOnly(char *str)
 {

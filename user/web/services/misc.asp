@@ -346,7 +346,7 @@
 			}
 
 			function showRemoteManagementMenu() {
-				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd' ];
+				var elements = [ 'miscWebRemote_row', 'http_rmt_port', 'https_rmt_port', 'miscSSHRemote_row', 'ssh_rmt_port', 'rmt_telnetd' ];
 				if (statusRemoteManagementMenu == 0) {
 					ajaxModifyElementHTML('miscRemoteSetup', '<img src="/graphics/menu_minus.gif" width="25" height="11">' + _("services misc remote setup"));
 					statusRemoteManagementMenu = 1;

@@ -151,7 +151,7 @@
 					form.wan_mtu_type.focus();
 					return false;
 				}
-				if (!validateMAC(form.wanMac.value)) {
+				if (!validateUnicastMAC(form.wanMac.value)) {
 					alert(_("inet invalid mac"));
 					form.wanMac.focus();
 					return false;
@@ -163,7 +163,8 @@
 				form.wan_mtu.value = +form.wan_mtu.value + "";
 				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR)
 					if (!confirm(_('wan reboot confirm')))
-						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
+//						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
+						return false;
 					else {
 						form.reboot.value = "1";
 						ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)

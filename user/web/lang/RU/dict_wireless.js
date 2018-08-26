@@ -104,6 +104,7 @@ var wireless_dictionary = {
 	'basic auto channel mode'			: 'Автоматическая настройка канала',
 	'basic select by sta'				: 'по кол-ву станций',
 	'basic select by rssi'				: 'по уровню шума',
+	'basic select by qbss'				: 'по QBSS load',
 	'basic hour'					: 'ч',
 	'basic rescan every'				: 'обновлять каждые ',
 	'basic bg'					: 'Смешанный 11b/g',

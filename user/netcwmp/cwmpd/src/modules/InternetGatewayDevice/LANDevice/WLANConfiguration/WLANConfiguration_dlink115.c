@@ -21,7 +21,14 @@ int cpe_get_igd_wlanc_standard_dlink115(cwmp_t * cwmp, const char * name, char *
 
     DM_TRACE_GET();
 
-    int standard = cwmp_nvram_get_int("WirelessMode", 9);
+    char* standard_str = cwmp_nvram_get("WirelessMode");
+
+    char* ptr = strchr(standard_str,';');
+    if (ptr != NULL)
+        ptr[0] = '\0';
+
+    int standard = strToIntDef(standard_str, 9);
+
 
     switch (standard) {
 

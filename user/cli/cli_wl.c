@@ -468,11 +468,17 @@ int func_wl_status_report(int argc, char* argv[])
 {
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
     char* wireless_mode = nvram_get(RT2860_NVRAM, "WirelessMode");
+    if (strchr(wireless_mode, ';') != NULL)
+        strchr(wireless_mode, ';')[0] = '\0';
+
     char* wireless_mode_str = wirelessModeIdToName(wireless_mode);
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
     int radio_status_5 = nvram_get_int(RT2860_NVRAM, "RadioOnINIC", 0);
     char* wireless_mode_5 = nvram_get(RT2860_NVRAM, "WirelessModeINIC");
+    if (strchr(wireless_mode_5, ';') != NULL)
+        strchr(wireless_mode_5, ';')[0] = '\0';
+
     char* wireless_mode_5_str = wirelessModeIdToName(wireless_mode_5);
 #endif
 
@@ -890,11 +896,15 @@ int func_wl_status(int argc, char* argv[])
 
     int radio_status = nvram_get_int(RT2860_NVRAM, "RadioOn", 0);
     char* wireless_mode = nvram_get(RT2860_NVRAM, "WirelessMode");
+    if (strchr(wireless_mode, ';') != NULL)
+        strchr(wireless_mode, ';')[0] = '\0';
     char* wireless_mode_str = wirelessModeIdToName(wireless_mode);
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
     int radio_status_5 = nvram_get_int(RT2860_NVRAM, "RadioOnINIC", 0);
     char* wireless_mode_5 = nvram_get(RT2860_NVRAM, "WirelessModeINIC");
+    if (strchr(wireless_mode_5, ';') != NULL)
+        strchr(wireless_mode_5, ';')[0] = '\0';
     char* wireless_mode_5_str = wirelessModeIdToName(wireless_mode_5);
 #endif
 

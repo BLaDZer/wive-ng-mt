@@ -52,6 +52,38 @@ function validateMAC(mac, info)
 			alert("Please fill the MAC Address in correct format! (XX:XX:XX:XX:XX:XX)");
 		return false;
 	}
+
+	return true;
+}
+
+function validateUnicastMAC(mac, info)
+{
+	if (validateMAC(mac, info) == false)
+		return false;
+
+	var octets = mac.toLowerCase().split(":");
+	if (octets.length != 6) return false;
+
+	// IPv4 Multicast
+	if ((octets[0] == "00" || octets[0] == "01" || octets[0] == "02") && octets[1] == "00" && octets[2] == "5e")
+		return false;
+
+	// IEEE (standard protocols)
+	if (octets[0] == "01" && octets[1] == "80" && octets[2] == "c2")
+		return false;
+
+	// IPv6 Multicast
+	if (octets[0] == "33" && octets[1] == "33")
+		return false;
+
+	// Cisco Protocols
+	if (octets[0] == "01" && octets[1] == "00" && octets[2] == "0c" && octets[3] == "cc" && octets[4] == "cc" && (octets[5] == "cc" || octets[5] == "cd"))
+		return false;
+
+	// Broadcast
+	if (octets[0] == "ff" && octets[1] == "ff" && octets[2] == "ff" && octets[3] == "ff" && octets[4] == "ff" && octets[5] == "ff")
+		return false;
+
 	return true;
 }
 

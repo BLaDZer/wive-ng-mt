@@ -81,7 +81,10 @@ if (NVRAM_OperationMode != '2') {
 
 if (AUTH_ROLE == 2)
 {
-	a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+	if (NVRAM_OperationMode != '3')
+	{
+		a.add(305, 300, _("treeapp vlan"),			"javascript:go('internet/vlan.asp');");
+	}
 	a.add(306, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
 
 	if (NVRAM_OperationMode != '0')
@@ -185,10 +188,7 @@ if (AUTH_ROLE == 2)
 
 a.add(905, 900, _("treeapp reboot"),                       "javascript:go('reboot.asp');");
 
-if (IS_NGINX)
-{
-    a.add(1000,   0, _("treeapp logout"),                      "javascript:redirect('logout.asp');");
-}
+a.add(1000,   0, _("treeapp logout"),                      "javascript:redirect('logout.asp');");
 
 document.write(a);
 

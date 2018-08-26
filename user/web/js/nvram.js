@@ -14,13 +14,14 @@ var LAN_NETMASK                                                      = '<% getLa
 
 var AUTH_USERNAME                                                    = '<% getAuthUsername(); %>';
 var AUTH_ROLE                                                        = parseInt('<% getAuthRole(); %>') || 0;
-var IS_NGINX                                                         = parseInt('<% isNginx(); %>') || 0;
 
 var ETHER_PORTS                                                      = parseInt('<% getEthernetPortCount(); %>') || 0;
 var ETHER_FIRST_PORT                                                 = (ETHER_PORTS == 3) ? 2 : 0;
 
 var WLAN_CHANNEL_INDEX                                               = '<% getWlanChannel(); %>';
 var WLAN_CHANNEL_INDEX_AC                                            = '<% getWlanChannelAC(); %>';
+var WLAN_FIRST_CARD                                                  = '<% getWirelessFirst(); %>';
+var WLAN_SECOND_CARD                                                 = '<% getWirelessSecond(); %>';
 
 var BUILD_IPV6_6RD                                                   = '<% getIPv66rdBuilt(); %>';
 var BUILD_IPV6_TO4                                                   = '<% getIP6to4Built(); %>';

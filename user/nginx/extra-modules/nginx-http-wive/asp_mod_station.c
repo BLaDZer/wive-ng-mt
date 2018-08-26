@@ -2126,10 +2126,14 @@ static int getStaSuppAMode(webs_t *wp, char** params, int nparams)
  * description: write station wireless mode
  */
 static int getStaWirelessMode(webs_t *wp, char** params, int nparams)
-
 {
+	char* mode_str = nvram_get(RT2860_NVRAM, "WirelessMode");
+	char* ptr = strchr(mode_str,';');
+	if (ptr != NULL)
+		ptr[0] = '\0';
+	int mode = atoi(mode_str);
+
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode",0);
-	int mode = nvram_get_int(RT2860_NVRAM, "WirelessMode", 0);
 	int bSuppA = myGetSuppAMode();
 	int StaOn = (opmode == 2);
 

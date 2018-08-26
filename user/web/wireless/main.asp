@@ -71,15 +71,12 @@
 				"2484MHz (" + _("station channel") + " 14)"
 			];
 
-
-			var channel_list = [ 'sz11aChannel', 'sz11gChannel' ];
-			var channels = [];
-
 			function updateVisibility(form) {
 
 				var enableWirelessAc	= BUILD_5GHZ_SUPPORT && (form.radioWirelessEnabledAc.value == "1");
 				var enableWireless	= form.radioWirelessEnabled.value == "1";
 				var enableWirelessAny	= enableWireless || enableWirelessAc;
+				var is_7615 = WLAN_FIRST_CARD == "7615" || WLAN_SECOND_CARD == "7615";
 
 				var wmode = form.wirelessmode.value;
 				var wmodeac = form.wirelessmodeac.value;
@@ -101,16 +98,19 @@
 					displayElement( 'div_txpw', enableWireless);
 					// Channel (2.4GHz)
 					displayElement( 'div_11g_channel', enableWireless);
+					updateChannelList(form, !htmode);
 					// Channel autoselect (2.4GHz)
 					displayElement( 'div_11g_channel_autoselect', enableWireless && form.sz11gChannel.value == 0);
+					displayElement( ['autoselect_g_qbss', 'autoselect_a_qbss'], is_7615);
+					enableElements( [document.getElementById('autoselect_g_qbss'), document.getElementById('autoselect_a_qbss')], is_7615);
 					form.sz11gChannel.disabled = false;
 					// Channel bandwidth (2.4GHz)
 					displayElement( 'basicChannelBW_tr', enableWireless);
 					form.n_bandwidth.disabled = !htmode;
 
-					displayElement('autoselect_g', (form.sz11gChannel.options.selectedIndex == 0));
-					displayElement('checktime_g', (form.sz11gChannel.options.selectedIndex == 0));
-					displayElement('basicRescanG', (form.sz11gChannel.options.selectedIndex == 0));
+					displayElement('autoselect_g', form.sz11gChannel.value == 0);
+					displayElement('checktime_g',  form.sz11gChannel.value == 0);
+					displayElement('basicRescanG', form.sz11gChannel.value == 0);
 
 					// Hide 'SCAN' buttons if IE8 (no SVG support)
 					displayElement( 'scanapLegendButtonScan', browser.browser != 'ie' || browser.versionShort > 8);
@@ -142,9 +142,9 @@
 					displayElement( ['ac_bw_20_40_80'], wmodeac >= 14);
 					displayElement( ['ac_bw_20_40_80_160', 'ac_bw_20_40_80_80'], wmodeac >= 14 && BUILD_WLAN_4T4R == "1");
 
-					displayElement('autoselect_a', (form.sz11aChannel.options.selectedIndex == 0));
-					displayElement('checktime_a', (form.sz11aChannel.options.selectedIndex == 0));
-					displayElement('basicRescanA', (form.sz11aChannel.options.selectedIndex == 0));
+					displayElement('autoselect_a', form.sz11aChannel.value == 0);
+					displayElement('checktime_a',  form.sz11aChannel.value == 0);
+					displayElement('basicRescanA', form.sz11aChannel.value == 0);
 
 					// Hide 'SCAN' buttons if IE8 (no SVG support)
 					displayElement( 'scanapLegendButtonScanINIC', browser.browser != 'ie' || browser.versionShort > 8);
@@ -232,7 +232,9 @@
 					displayElement('div_11n', htmode);
 
 					displayElement(['basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
-					displayElement('extension_channel', document.getElementById('sz11gChannel').value != 0 && (1*wmode) >= 5 && document.getElementById('n_bandwidth').value == 1 );
+					updateMCSOptions(form);
+
+					displayElement('extension_channel', form.sz11gChannel.value != 0 && (1*wmode) >= 5 && form.n_bandwidth.value == 1 );
 
 					displayElement('basicHTOPMode', htmode);
 					displayElement("basicHTTxStream_tr", htmode);
@@ -336,7 +338,7 @@
 
 				// PA/LNA control
 				var updateVisibility_palna = function() {
-					displayElement('advSynVGA_table', enableWirelessAny);
+					displayElement('advSynVGA_table', enableWirelessAny && (WLAN_FIRST_CARD == "7602" || WLAN_FIRST_CARD == "7612" || WLAN_SECOND_CARD == "7602" || WLAN_SECOND_CARD == "7612") );
 					// Adaptive LNA Gain
 					displayElement('advDynVGA_tr', enableWirelessAny);
 					// Skip auto gain for long distance clients
@@ -361,11 +363,8 @@
 
 // Extra
 				// add subchannel
-				insertExtChannelOption(form);
 				GExtChannelDisplay(form);
-				show14channel(!htmode);
 				show_abg_rate(form);
-
 
 				disableControlsByAuth();
 			}
@@ -379,52 +378,13 @@
 				}
 			}
 
-			function insertExtChannelOption(form)
-			{
-				var wmode = form.wirelessmode.value * 1;
-				var length = form.sz11gChannel.options.length;
-				var CurrentCh = form.sz11gChannel.value * 1;
-				var x = form.n_extcha;
-
-				if (wmode >= 5)
-				{
-					x.options.length = 0;
-
-					if ((CurrentCh >= 1) && (CurrentCh <= 4)) {
-						addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-					} else if ((CurrentCh >= 5) && (CurrentCh <= 7)) {
-						addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-						addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-					} else if ((CurrentCh >= 8) && (CurrentCh <= 9)) {
-						addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-						if (length >= 14)
-							addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-					} else if (CurrentCh == 10) {
-						addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-						if (length > 14)
-							addOption(x, ChannelList_24G[CurrentCh + 4 - 1], 1);
-					} else if (CurrentCh >= 11) {
-						addOption(x, ChannelList_24G[CurrentCh - 4 - 1], 0);
-					} else {
-						addOption(x, _("basic frequency auto"), 0);
-					}
-
-					if (1*NVRAM_HT_EXTCHA == 1)
-						x.options.selectedIndex = (x.options.length > 1) ? 1 : 0;
-					else
-						x.options.selectedIndex = 0;
-				}
-			}
-
 			/* Load autochannel options from nvram */
 			function AutoChannelSelect(form) {
-				var autoselectmode_g	= +NVRAM_AutoChannelSelect;
-				var autoselectmode_a	= +NVRAM_AutoChannelSelectINIC;
 				var checktime_g			= +NVRAM_ACSCheckTime - 1;
 				var checktime_a			= +NVRAM_ACSCheckTimeINIC - 1;
 
-				form.autoselect_g.options.selectedIndex = (autoselectmode_g == 1) ? 0 : 1;
-				form.autoselect_a.options.selectedIndex = (autoselectmode_a == 1) ? 0 : 1;
+				form.autoselect_g.value = NVRAM_AutoChannelSelect;
+				form.autoselect_a.value = NVRAM_AutoChannelSelectINIC;
 				form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
 				form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
 			}
@@ -646,54 +606,6 @@
 				for (var i=0; i<trlist.length; i++) {
 					var elem = trlist[i];
 					_TR(elem, elem.getAttribute("data-tr"));
-				}
-			}
-
-
-			function saveRadioChannels()
-			{
-				// Store all comboBox options in arrays
-				for (var i=0; i<channel_list.length; i++)
-				{
-					var id = channel_list[i];
-					var select = document.getElementById(id);
-					var options = [];
-
-					if (select != null)
-					{
-						for (var j=0; j<select.options.length; j++)
-							options[j] = select.options[j];
-						channels[id] = options;
-					}
-				}
-			}
-
-			function show14channel(show)
-			{
-				// Display all options except 14 frequency
-				for (var i=0; i<channel_list.length; i++)
-				{
-					var id = channel_list[i];
-					var select = document.getElementById(id);
-					var options = channels[id];
-
-					if ((select != null) && (options != null))
-					{
-						// Store selected option
-						var index = select.selectedIndex;
-
-						// remove all options
-						select.options.length = 0;
-
-						for (var j=0; j<options.length; j++)
-						{
-							if ((options[j].value != '14') || (show))
-								select.options[select.options.length] = options[j];
-						}
-
-						// Restore selected option
-						select.selectedIndex = (index >= select.options.length) ? 0 : index;
-					}
 				}
 			}
 
@@ -1191,10 +1103,83 @@
 					setTimeout(function () { showWarningEncriptionMode() }, 100);
 			}
 
+			function updateChannelList(form, show_14_channel) {
+				var chan = 1*form.sz11gChannel.value;
+				var extchan = 1*form.n_extcha.value;
+
+				var region_limits = {
+					0: [1,2,3,4,5,6,7,8,9,10,11],
+					1: [1,2,3,4,5,6,7,8,9,10,11,12,13],
+					2: [10,11],
+					3: [10,11,12,13],
+					4: [14],
+					5: [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+					6: [3,4,5,6,7,8,9],
+					7: [5,6,7,8,9,10,11,12,13]
+				};
+
+				var region_id = 1*form.country_region.value;
+
+				form.sz11gChannel.options.length = 1; // keep autoselect only
+
+				for (var idx = 1; idx < 14; idx++) {
+					var freq = 2412+5*(idx-1);
+					var chan_name = freq+"MHz (Channel "+idx+")";
+
+					if (region_limits[region_id].indexOf(idx) > -1)
+						form.sz11gChannel.add(new Option(chan_name, idx));
+				}
+
+				if (show_14_channel)
+					form.sz11gChannel.add(new Option("2484MHz (Channel 14)", 14));
+
+				form.sz11gChannel.value = chan;
+				if (form.sz11gChannel.selectedIndex == -1)
+					form.sz11gChannel.value = 0;
+
+				chan = 1*form.sz11gChannel.value;
+
+				// Extension Channel
+				if (form.wirelessmode.value >= 5)
+				{
+					form.n_extcha.options.length = 0;
+
+					if (chan < 1)
+						addOption(form.n_extcha, _("basic frequency auto"), 0);
+					else
+					{
+						if ((chan-4-1) >= 0)
+							addOption(form.n_extcha, ChannelList_24G[chan - 4 - 1], 0);
+						if ((chan+4-1) < ChannelList_24G.length) {
+							if ((chan+4) != 14 || show_14_channel)
+								addOption(form.n_extcha, ChannelList_24G[chan + 4 - 1], 1);
+						}
+					}
+
+					form.n_extcha.value = extchan;
+					if (form.n_extcha.selectedIndex == -1)
+						form.n_extcha.value = 0;
+				}
+			}
+
+			function updateMCSOptions(form) {
+				var val = form.n_mcs.value;
+				form.n_mcs.options.length = 0;
+				form.n_mcs.options.add(new Option(_("wireless auto"), "33"));
+
+				for (var i=0; i < Math.min(8*form.tx_stream.value, 32); i++)
+				form.n_mcs.options.add(new Option(i, i));
+
+				if (1*NVRAM_HT_BW > 0)
+					form.n_mcs.options.add(new Option(32, 32));
+
+				form.n_mcs.value = val;
+				if (form.n_mcs.selectedIndex == -1)
+					form.n_mcs.value = 33;
+			}
+
 			function initValue()
 			{
-				saveRadioChannels();
-
 				var form = document.wireless_basic;
 
 				form.radioWirelessEnabled.options.selectedIndex = NVRAM_RadioOn;
@@ -1251,8 +1236,8 @@
 					form.mbssid_mode.options.selectedIndex = 0;
 
 				// Set wmode after add all options
-				form.wirelessmode.value     = NVRAM_WirelessMode;
-				form.wirelessmodeac.value   = NVRAM_WirelessModeINIC;
+				form.wirelessmode.value     = NVRAM_WirelessMode.split(';')[0];
+				form.wirelessmodeac.value   = NVRAM_WirelessModeINIC.split(';')[0];
 
 				// Set-up TX power combo
 				for (var i=0; i<form.tx_power.options.length; i++)
@@ -1290,11 +1275,15 @@
 				form.dot11h.options.selectedIndex = 1*dot11hArray[0];
 				initChecktime(form);
 
-				var channel_index = 1*WLAN_CHANNEL_INDEX;
-				form.sz11gChannel.options.selectedIndex = channel_index;
-				var current_channel_length = form.sz11gChannel.options.length;
-				if ((channel_index + 1) > current_channel_length)
-					form.sz11gChannel.options.selectedIndex = 0;
+				updateChannelList(form, true); // generate primary full channel list
+				form.sz11gChannel.value = 1*WLAN_CHANNEL_INDEX;
+				if (form.sz11gChannel.selectedIndex == -1)
+					form.sz11gChannel.value = 0;
+
+				updateChannelList(form, true); // regenerate list to correct extension channels
+				form.n_extcha.value = 1*NVRAM_HT_EXTCHA;
+				if (form.n_extcha.selectedIndex == -1)
+					form.n_extcha.value = 0;
 
 				if (BUILD_5GHZ_SUPPORT)
 				{
@@ -1327,30 +1316,6 @@
 				form.n_gi.options.selectedIndex = (NVRAM_HT_GI == "1") ? 1 : 0;
 				form.n_stbc.options.selectedIndex = (NVRAM_HT_STBC == "1") ? 1 : 0;
 
-				//get last element position
-				var mcs_lastelem = form.n_mcs.options.length-1;
-
-				//add for 4t4r devices
-				if (BUILD_WLAN_4T4R == "1")
-				{
-					for (i = 16; i < 32; i++)
-						form.n_mcs.options[i] = new Option(i, i);
-
-					// recalc lastelem afrer add with replace options
-					mcs_lastelem = form.n_mcs.options.length-1;
-					mcs_lastelem++;
-					form.n_mcs.options[mcs_lastelem] = new Option("32", "32");
-					mcs_lastelem++;
-					form.n_mcs.options[mcs_lastelem] = new Option(_("wireless auto"), "33");
-				}
-
-				if (ht_mcs <= mcs_lastelem-1)
-					form.n_mcs.options.selectedIndex = ht_mcs;
-				else if (ht_mcs == 32)
-					form.n_mcs.options.selectedIndex = mcs_lastelem-1;
-				else if (ht_mcs == 33)
-					form.n_mcs.options.selectedIndex = mcs_lastelem;
-
 				form.n_rdg.options.selectedIndex = (NVRAM_HT_RDG == "0") ? 0 : 1;
 
 				form.n_amsdu.options.selectedIndex = (NVRAM_HT_AMSDU ==  "0") ? 0 : 1;
@@ -1377,6 +1342,9 @@
 
 				form.rx_stream.options.selectedIndex = rx_stream_idx - 1;
 				form.tx_stream.options.selectedIndex = tx_stream_idx - 1;
+
+				updateMCSOptions(form);
+				form.n_mcs.value = ht_mcs;
 
 				form.ac_gi.options.selectedIndex = (NVRAM_VHT_SGI ==  "0") ? 0 : 1;
 				form.ac_stbc.options.selectedIndex = (NVRAM_VHT_STBC ==  "0") ? 0 : 1;
@@ -1414,7 +1382,7 @@
 				//multicase to unicast converter
 				form.m2u_enable.options.selectedIndex = (NVRAM_M2UEnabled == '1') ? 1 : 0;
 				form.video_turbine.options.selectedIndex = (NVRAM_VideoTurbine == '1') ? 1 : 0;
-				form.WmmCapable.options.selectedIndex = (NVRAM_WmmCapable == '1') ? 1 : 0;
+				form.WmmCapable.options.selectedIndex = (NVRAM_WmmCapable.split(';')[0] == '1') ? 1 : 0;
 
 				form.dyn_vga.options.selectedIndex = (NVRAM_DyncVgaEnable == '1') ? 1 : 0;
 
@@ -2302,7 +2270,6 @@ table.form tr.ssid-row {
 				<td class="head head-narrow" data-tr="basic frequency">Channel (2.4GHz)</td>
 				<td><select id="sz11gChannel" name="sz11gChannel" class="normal" onChange="ChannelOnChange(this.form, false);">
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
-					<% getWlan11gChannels(); %>
 					</select>
 					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('2.4');">
 				</td>
@@ -2313,6 +2280,7 @@ table.form tr.ssid-row {
 				<td><select name="autoselect_g" class="normal" id="autoselect_g">
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
+					<option value="3" data-tr="basic select by qbss" id="autoselect_g_qbss">by QBSS</option>
 					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g">
 				</select>
 				</td>
@@ -2401,6 +2369,7 @@ table.form tr.ssid-row {
 				<td><select name="autoselect_a" class="normal" id="autoselect_a">
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
+					<option value="3" data-tr="basic select by qbss" id="autoselect_a_qbss">by QBSS</option>
 					</select>&nbsp;&nbsp;<select name="checktime_a" class="normal" id="checktime_a">
 				</select>
 				</td>
@@ -2738,7 +2707,7 @@ table.form tr.ssid-row {
 		</tr>
 		<tr id="basicHTTxStream_tr">
 			<td class="head" data-tr="basic ht txstream">HT TxStream</td>
-			<td class="val"><select name="tx_stream" class="normal">
+			<td class="val"><select name="tx_stream" class="normal" onChange="updateVisibility(this.form);">
 				<option value="1">1</option>
 				<option id="basicHTTx2Stream" value="2">2</option>
 			</select></td>
@@ -2966,7 +2935,7 @@ table.form tr.ssid-row {
 		</tr>
 		<tr id="advStaRegion_tr">
 			<td class="head" data-tr="staadv region">Region settings</td>
-			<td class="val"><select id="country_region" name="country_region" class="normal">
+			<td class="val"><select id="country_region" name="country_region" class="normal" onChange="updateVisibility(this.form);">
 				<option value="0">0: CH1-11 (FCC)</option>
 				<option value="1">1: CH1-13 (IC)</option>
 				<option value="2">2: CH10-11 (ETSI)</option>

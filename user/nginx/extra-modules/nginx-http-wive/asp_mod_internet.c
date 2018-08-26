@@ -466,16 +466,41 @@ static int getIntIp(webs_t *wp, char** params, int nparams)
 	return outWrite(T("%s"), if_addr);
 }
 
+static int getRealWanIfName(char* if_name, int bufsize)
+{
+        FILE* fp;
+        if_name[0] = '\0';
+
+	fp = fopen("/tmp/real_wan_if_name", "r");
+	if (fp != NULL)
+        {
+            fgets(if_name, bufsize, fp);
+            fclose(fp);
+        }
+
+        if (if_name[0] == '\0')
+        {
+            strncat(if_name, getWanIfName(), bufsize-1);
+            return 1;
+        }
+
+        return 0;
+}
+
 /*
  * description: write WAN ip address accordingly
  */
 static int getWanIp(webs_t *wp, char** params, int nparams)
 {
-	char if_addr[16];
+	char if_addr[16] = {0};
+	char if_name[16] = {0};
 
-	if (getIfIp(getWanIfName(), if_addr) == -1) {
+	getRealWanIfName(if_name, sizeof(if_name));
+
+	if (if_name[0] == '\0' || getIfIp(if_name, if_addr) == -1) {
 		return outWrite(T(""));
 	}
+
 	return outWrite(T("%s"), if_addr);
 }
 
@@ -485,8 +510,11 @@ static int getWanIp(webs_t *wp, char** params, int nparams)
 static int getWanMac(webs_t *wp, char** params, int nparams)
 {
 	char if_mac[18];
+	char if_name[16] = {0};
 
-	if (getIfMac(getWanIfName(), if_mac, ':') == -1) {
+	getRealWanIfName(if_name, sizeof(if_name));
+
+	if (if_name[0] == '\0' || getIfMac(if_name, if_mac, ':') == -1) {
 		return outWrite(T(""));
 	}
 	return outWrite(T("%s"), if_mac);
@@ -498,8 +526,11 @@ static int getWanMac(webs_t *wp, char** params, int nparams)
 static int getWanNetmask(webs_t *wp, char** params, int nparams)
 {
 	char if_net[16];
+	char if_name[16] = {0};
 
-	if (getIfNetmask(getWanIfName(), if_net) == -1) {
+	getRealWanIfName(if_name, sizeof(if_name));
+
+	if (if_name[0] == '\0' || getIfNetmask(if_name, if_net) == -1) {
 		return outWrite(T(""));
 	}
 	return outWrite(T("%s"), if_net);

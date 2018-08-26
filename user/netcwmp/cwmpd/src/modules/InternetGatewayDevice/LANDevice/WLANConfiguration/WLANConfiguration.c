@@ -641,11 +641,22 @@ int cpe_get_igd_wlanc_standard(cwmp_t * cwmp, const char * name, char ** value, 
         return FAULT_CODE_9002;
     }
 
-    int standard = cwmp_nvram_get_int("WirelessMode", 9);
+    char* standard_str;
+    int def_chan;
 
     if (index >= 10) {
-        standard = cwmp_nvram_get_int("WirelessModeINIC", 15);
+        standard_str = cwmp_nvram_get("WirelessModeINIC");
+        def_chan = 15;
+    } else {
+        standard_str = cwmp_nvram_get("WirelessMode");
+        def_chan = 9;
     }
+
+    char* ptr = strchr(standard_str,';');
+    if (ptr != NULL)
+        ptr[0] = '\0';
+
+    int standard = strToIntDef(standard_str, def_chan);
 
     switch (standard) {
 

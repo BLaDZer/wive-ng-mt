@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="/style/controls.css" type="text/css">
 		<link rel="stylesheet" href="/style/windows.css" type="text/css">
 		<script src="/lang/<% getLangDictionary(); %>/dict_main.js"></script>
+		<script src="/lang/<% getLangDictionary(); %>/dict_internet.js"></script>
 		<script src="/lang/<% getLangDictionary(); %>/dict_firewall.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
@@ -132,9 +133,8 @@
 
 			function checkComment(element) {
 				var comment = element.value;
-				return comment.replace(/[,;'"]/g, ' ');
+				return comment.replace(/[,;'"]/g, ' '); //'// mc highlighting fix
 			}
-
 
 			function checkIPMask(ip, mask) {
 				if (ip.value != '') {
@@ -475,6 +475,7 @@
 			function addFilteringItem(form) {
 				if (form.mac_address.value != '')
 					if (!validateMAC(form.mac_address.value)) {
+						alert(_("inet invalid mac"));
 						form.mac_address.focus();
 						return;
 					}
@@ -538,6 +539,7 @@
 			function addFilteringInputItem(form) {
 				if (form.mac_address.value != '')
 					if (!validateMAC(form.mac_address.value)) {
+						alert(_("inet invalid mac"));
 						form.mac_address.focus();
 						return;
 					}
