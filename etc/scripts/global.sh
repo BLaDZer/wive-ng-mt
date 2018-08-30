@@ -195,9 +195,6 @@ getWanIfName() {
     if [ "$vpn_if" = "" ]; then
 	vpn_if="$vpn_def_if"
     fi
-
-    # export for nginx
-    echo -n "$real_wan_if" > /tmp/real_wan_if_name
 }
 
 getSixWanIfName() {

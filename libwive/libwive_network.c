@@ -243,7 +243,7 @@ char *getLanWanNamebyIf(const char *ifname)
 char* getPPPIfName(void)
 {
         FILE *fp;
-	char ppp_if[16]; /* max 16 char in vpn if name */
+	static char ppp_if[16]; /* max 16 char in vpn if name */
 
 	fp = fopen("/tmp/vpn_if_name", "r");
 	if (fp) {
@@ -318,7 +318,7 @@ int getIfIp(const char *ifname, char *if_addr)
 	retcode = ioctl(skfd, SIOCGIFADDR, &ifr);
 	if (retcode < 0) {
 		close(skfd);
-		syslog(LOG_ERR, "ioctl call failed, %s, %d", __FUNCTION__, retcode);
+		syslog(LOG_ERR, "ioctl call failed %s, retcode=%d, ifname=%s", __FUNCTION__, retcode, ifname);
 		return -1;
 	}
 	strcpy(if_addr, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
