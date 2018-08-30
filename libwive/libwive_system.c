@@ -41,7 +41,11 @@ const char* getSystemPlatform()
 #ifdef CONFIG_MT76X3_AP
     return "MT7621 1000FDX MT7603 MT7612 2T2R dualband";
 #elif CONFIG_MT7615_AP
+#ifdef CONFIG_MT7615_AP_DBDC_MODE
+    return "MT7621 1000FDX MT7615DN 2T2R dualband";
+#else
     return "MT7621 1000FDX MT7615N 4T4R dualband";
+#endif
 #else
     return "MT7621 1000FDX MT7602 MT7612 2T2R dualband";
 #endif
