@@ -46,7 +46,7 @@ var admin_dictionary = {
 	'status system platform'		: 'Платформа',
 	'status system op mode'			: 'Режим работы',
 	'status internet config'		: 'Настройки интернета',
-	'status connect type'			: 'Тип WAN соединения',
+	'status connect type'			: 'Тип интернет-соединения',
 	'status int ipaddr'			: 'IP адрес в VPN сети или интернете',
 	'status wan ipaddr'			: 'IP адрес физического WAN интерфейса',
 	'status subnet mask'			: 'Маска подсети WAN',

@@ -4,7 +4,7 @@ document.getElementById('statusSysUpTime_value').innerHTML		= getUptime();
 document.getElementById('statusSysPlatform_value').innerHTML	= '<% getPlatform(); %>';
 document.getElementById('statusOpMode_value').innerHTML			= getOpMode();
 
-document.getElementById('statusConnectedType_value').innerHTML	= '<% getCfgGeneral(1, "wanConnectionMode"); %>';
+document.getElementById('statusConnectedType_value').innerHTML	= getConnectionType();
 document.getElementById('statusINTIPAddr_value').innerHTML		= '<% getIntIp(); %>';
 document.getElementById('statusWANIPAddr_value').innerHTML		= '<% getWanIp(); %>';
 document.getElementById('statusSubnetMask_value').innerHTML		= '<% getWanNetmask(); %>';
@@ -42,6 +42,23 @@ displayElement([ 'statusLocalNet_tr', 'statusLANIPAddr_tr', 'statusLANNetmask_tr
 showInterfaces();
 
 ajaxLoadScript('/internet/ethernet-stat.js');
+
+function getConnectionType() {
+    var wanConnMode = '<% getCfgGeneral(1, "wanConnectionMode"); %>';
+    var vpnDGW = '<% getCfgGeneral(1, "vpnDGW"); %>' != '0';
+    var vpnType = 1*'<% getCfgGeneral(1, "vpnType", "0"); %>';
+    var vpnEnabled = '<% getCfgGeneral(1, "vpnEnabled", "off"); %>' == 'on';
+
+    if (vpnEnabled && vpnDGW) {
+        switch(vpnType) {
+            case 0: return "VPN PPPoE";
+            case 1: return "VPN PPTP";
+            case 2: return "VPN L2TP";
+        }
+    }
+
+    return wanConnMode;
+}
 
 function getUptime() {
 	function declOfNum(num, titl)

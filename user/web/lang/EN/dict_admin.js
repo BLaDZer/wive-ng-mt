@@ -45,7 +45,7 @@ var admin_dictionary = {
 	'status system platform'				: 'System Platform',
 	'status system op mode'					: 'Operation Mode',
 	'status internet config'				: 'Internet Configurations',
-	'status connect type'					: 'WAN connection type',
+	'status connect type'					: 'Internet connection type',
 	'status int ipaddr'					: 'VPN/Internet IP Address',
 	'status wan ipaddr'					: 'Physical WAN IP Address',
 	'status subnet mask'					: 'Subnet Mask',
