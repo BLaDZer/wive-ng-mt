@@ -159,7 +159,7 @@ char* getWanIfName(void)
 	char *apc_cli_mode = nvram_get(RT2860_NVRAM, "ApCliBridgeOnly");
 	char *apc_cli_wanif = nvram_get(RT2860_NVRAM, "ApCliIfName");
 	char *if_name = WAN_DEF;
-	char wan_if[16]; /* max 16 char in wan if name */
+	static char wan_if[IFNAMSIZ]; /* max 16 char in wan if name */
 	FILE *fp;
 
 	/* try read fron file exported from init.d */
@@ -243,7 +243,7 @@ char *getLanWanNamebyIf(const char *ifname)
 char* getPPPIfName(void)
 {
         FILE *fp;
-	static char ppp_if[16]; /* max 16 char in vpn if name */
+	static char ppp_if[IFNAMSIZ]; /* max 16 char in vpn if name */
 
 	fp = fopen("/tmp/vpn_if_name", "r");
 	if (fp) {
@@ -411,7 +411,7 @@ int getIfNetmask(const char *ifname, char *if_net)
 int getIfIPv6(const char *ifname, char *if_addr, char *netmask)
 {
 	FILE *fp;
-	unsigned char ipv6[16];
+	unsigned char ipv6[IFNAMSIZ];
 	int scope, prefix;
 	char address[INET6_ADDRSTRLEN] = "";
 	char dname[IFNAMSIZ] = "";
@@ -461,7 +461,7 @@ int getIPv6IntIPAddr(char* address, char* mask) {
 	strcpy(lanif, getLanIfName());
 
 	if (getIfIPv6(lanif, address, mask) != 0)
-		return 2;
+    		return 2;
 
 	return 0;
 }
@@ -472,8 +472,8 @@ int getIPv6IntIPAddr(char* address, char* mask) {
  * description: get external IPv6 address
  */
 int getIPv6ExtIPAddr(char* address, char* mask) {
-	char tmpif[IFNAMSIZ] = "";
-	char wanif[IFNAMSIZ] = "";
+	static char tmpif[IFNAMSIZ] = "";
+	static char wanif[IFNAMSIZ] = "";
 	FILE *fp;
 
 	int opmode = nvram_get_int(RT2860_NVRAM, "IPv6OpMode", -1);
@@ -1161,7 +1161,7 @@ int getDNSAddressStr(int index, char* out_buf)
 int getWANGateway(char* sgw)
 {
 	char   buff[256];
-	char   ifname[16];
+	char   ifname[IFNAMSIZ];
 	int    nl = 0 ;
 	struct in_addr dest;
 	struct in_addr gw;
@@ -2062,7 +2062,7 @@ static void iptablesIPPortFilterBuildScript(void)
 	char rec[256];
 	char cmd[1024];
 	char sprf[8], sprt[8], protocol[8], iface[8];
-	char dprf[8], dprt[8], wan_name[16];
+	char dprf[8], dprt[8], wan_name[IFNAMSIZ];
 	char mac_address[32], action_str[4];
 	char sip[32], dip[32], sim[32], dim[32];
 	char *c_if, *firewall_enable, *default_policy, *rule;
@@ -2227,7 +2227,7 @@ static void iptablesIPPortFilterInputBuildScript(void)
 	char rec[256];
 	char cmd[1024];
 	char sprf[8], sprt[8], protocol[8], iface[8];
-	char dprf[8], dprt[8], wan_name[16];
+	char dprf[8], dprt[8], wan_name[IFNAMSIZ];
 	char mac_address[32], action_str[4];
 	char sip[32], dip[32], sim[32], dim[32];
 	char *c_if, *firewall_enable, *rule;
@@ -2368,7 +2368,7 @@ static void iptablesPortForwardBuildScript(void)
 {
 	char rec[256];
 	char cmd[1024];
-	char wan_name[16];
+	char wan_name[IFNAMSIZ];
 	char ip_address[32], prf[8], prt[8], rprf[9], rprt[8], protocol[8], interface[8], nat_loopback[8];
 	char *c_if, *a_if, *firewall_enable, *rule;
 
