@@ -4229,12 +4229,13 @@
 47) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
 48) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
 49) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
-50) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-51) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-52) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-53) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-54) kernel: ralink_wifi: force update DS more accuracly.<br>
-55) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-56) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+50) kernel: block: fix an error code in add_partition().<br>
+51) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+52) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+53) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+54) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+55) kernel: ralink_wifi: force update DS more accuracly.<br>
+56) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+57) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
