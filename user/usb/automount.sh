@@ -158,8 +158,8 @@ if [ "$ACTION" = "add" ]; then
   # start prepare and mounts procedure
   eval "$(blkid $MDEV_PATH | sed 's/^[^ ]* //;s/\([^ ]*=\)/MDEV_\1/g')"
   if [ -z "$MDEV_TYPE" ]; then
-    $LOG "unknow fs type on $MDEV_PATH"
-    exit 1
+    $LOG "unknow fs type on $MDEV_PATH try mount with default options for NTFS"
+    MDEV_TYPE="ntfs"
   fi
 
   $LOG "add $MDEV_PATH with $MDEV_TYPE"

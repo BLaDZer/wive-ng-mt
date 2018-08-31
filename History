@@ -4189,53 +4189,54 @@
 9) init.d: 6to4 allow use not standart prefix.<br>
 10) init.d: fix reconfigure 7615 module if used vif`s.<br>
 11) init.d: fix bridge reconfigure at kernel pass through enable.<br>
-12) libwive/libnvram/nginx: multivar fixup.<br>
-13) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
-14) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
-15) webui: fix wireless security warnings show.<br>
-16) webui: fix per bssid options set.<br>
-17) webui: fix idle timeout range.<br>
-18) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
-19) webui: move BW to basic block for easy setup.<br>
-20) webui: 6to4 allow use not standart prefix.<br>
-21) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
-22) webui: fix real user name leak to different users.<br>
-23) webui: fix access policy block hide.<br>
-24) webui: move BSSID to block header (save space).<br>
-25) webui: fix mcs limit select.<br>
-25) webui: fix channel by region limit.<br>
-25) webui: apcli fixup.<br>
-26) kernel: fork: don't copy inconsistent signal handler state to child.<br>
-27) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
-28) kernel: random: mix rdrand with entropy sent in from userspace.<br>
-29) kernel: locking/lockdep: Do not record IRQ state within lockdep code.<br>
-30) kernel: pci: hotplug: don't leak pci_slot on registration failure.<br>
-31) kernel: squashfs: be more careful about metadata corruption.<br>
-32) kernel: squashfs: more metadata hardenings.<br>
-33) kernel: net: propagate dev_get_valid_name return code.<br>
-34) kernel: net: fix pass through unregister.<br>
-35) kernel: net: l2tp: use sk_dst_check() to avoid race on sk->sk_dst_cache.<br>
-36) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
-37) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-38) kernel: net: llc: use refcount_inc_not_zero() for llc_sap_find().<br>
-39) kernel: net: ipv6: mcast: fix unsolicited report interval after receiving querys.<br>
-40) kernel: net: netfilter: x_tables: set module owner for icmp(6) matches.<br>
-41) kernel: net: packet: refine ring v3 block size test to hold one frame.<br>
-42) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-43) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-44) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-45) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-46) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
-47) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-48) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-49) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
-50) kernel: block: fix an error code in add_partition().<br>
-51) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-52) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-53) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-54) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-55) kernel: ralink_wifi: force update DS more accuracly.<br>
-56) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-57) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+12) init.d: automount: try mount as ntfs if type is unknown (workaround mount GPT parts, need rework in future).<br>
+13) libwive/libnvram/nginx: multivar fixup.<br>
+14) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
+15) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
+16) webui: fix wireless security warnings show.<br>
+17) webui: fix per bssid options set.<br>
+18) webui: fix idle timeout range.<br>
+19) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
+20) webui: move BW to basic block for easy setup.<br>
+21) webui: 6to4 allow use not standart prefix.<br>
+22) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
+23) webui: fix real user name leak to different users.<br>
+24) webui: fix access policy block hide.<br>
+25) webui: move BSSID to block header (save space).<br>
+26) webui: fix mcs limit select.<br>
+27) webui: fix channel by region limit.<br>
+28) webui: apcli fixup.<br>
+29) kernel: fork: don't copy inconsistent signal handler state to child.<br>
+30) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
+31) kernel: random: mix rdrand with entropy sent in from userspace.<br>
+32) kernel: locking/lockdep: Do not record IRQ state within lockdep code.<br>
+33) kernel: pci: hotplug: don't leak pci_slot on registration failure.<br>
+34) kernel: squashfs: be more careful about metadata corruption.<br>
+35) kernel: squashfs: more metadata hardenings.<br>
+36) kernel: net: propagate dev_get_valid_name return code.<br>
+37) kernel: net: fix pass through unregister.<br>
+38) kernel: net: l2tp: use sk_dst_check() to avoid race on sk->sk_dst_cache.<br>
+39) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
+40) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+41) kernel: net: llc: use refcount_inc_not_zero() for llc_sap_find().<br>
+42) kernel: net: ipv6: mcast: fix unsolicited report interval after receiving querys.<br>
+43) kernel: net: netfilter: x_tables: set module owner for icmp(6) matches.<br>
+44) kernel: net: packet: refine ring v3 block size test to hold one frame.<br>
+45) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+46) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+47) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+48) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+49) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+50) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+51) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+52) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
+53) kernel: block: fix an error code in add_partition().<br>
+54) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+55) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+56) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+57) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+58) kernel: ralink_wifi: force update DS more accuracly.<br>
+59) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+60) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
