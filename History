@@ -4231,13 +4231,14 @@
 51) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
 52) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
 53) kernel: block: fix an error code in add_partition().<br>
-54) kernel: partitions: enable EFI/GPT support by default.<br>
-55) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-56) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-57) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-58) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-59) kernel: ralink_wifi: force update DS more accuracly.<br>
-60) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-61) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+54) kernel: block: store partition_meta_info.uuid as a string.<br>
+55) kernel: partitions: enable EFI/GPT support by default.<br>
+56) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+57) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+58) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+59) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+60) kernel: ralink_wifi: force update DS more accuracly.<br>
+61) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+62) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
