@@ -4241,12 +4241,13 @@
 61) kernel: block/partitions/efi: detect hybrid MBRs.<br>
 62) kernel: block/partitions/efi: account for pmbr size in lba.<br>
 63) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
-64) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-65) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-66) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-67) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-68) kernel: ralink_wifi: force update DS more accuracly.<br>
-69) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-70) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+64) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
+65) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+66) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+67) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+68) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+69) kernel: ralink_wifi: force update DS more accuracly.<br>
+70) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+71) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 <br>
 <br>
