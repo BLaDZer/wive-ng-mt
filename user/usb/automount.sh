@@ -65,7 +65,7 @@ pre_mount() {
     MOUNT_DST="/media/$MDEV"
     if [ -d "$MOUNT_DST" ]; then
       $LOG "dir $MOUNT_DST is exist"
-      exit 1
+      return
     else
       if ! mkdir -p "$MOUNT_DST"; then
 	$LOG "can not create $MOUNT_DST"
