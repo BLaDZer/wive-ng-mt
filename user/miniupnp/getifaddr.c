@@ -290,6 +290,8 @@ static const struct { uint32_t address; uint32_t rmask; } reserved[] = {
 int
 addr_is_reserved(struct in_addr * addr)
 {
+/* do not check reserved adresses, this break MAP global to local range of some ISP`s */
+#if 0
 	uint32_t address = ntohl(addr->s_addr);
 	size_t i;
 
@@ -297,6 +299,6 @@ addr_is_reserved(struct in_addr * addr)
 		if ((address >> reserved[i].rmask) == (reserved[i].address >> reserved[i].rmask))
 			return 1;
 	}
-
+#endif
 	return 0;
 }
