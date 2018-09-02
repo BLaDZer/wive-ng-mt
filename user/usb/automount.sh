@@ -46,22 +46,11 @@ touchextservices() {
     fi
 }
 
-check_media() {
-  is_mounted=`mount | grep -c "media"`
-  if [ "$is_mounted" != "0" ]; then
-    $LOG "/media is binding to rw"
-  else
-    $LOG "prepare /media"
-    mount -t tmpfs -o size=4K tmpfs /media
-  fi
-}
-
 pre_mount() {
   if [ "$MDEV_LABEL" = "optware" ] && [ "$MDEV_TYPE" != "swap" ]; then
     $LOG "detect optware part on $MDEV"
     MOUNT_DST="/opt"
   else
-    check_media
     MOUNT_DST="/media/$MDEV"
     if [ -d "$MOUNT_DST" ]; then
       $LOG "dir $MOUNT_DST is exist"

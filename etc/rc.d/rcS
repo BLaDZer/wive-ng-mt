@@ -16,6 +16,11 @@ mkdir -p /var/tmpfs /var/rwfs
 mount -o bind /var/tmpfs /tmp
 mount -o bind /var/rwfs /etc
 
+# subdir for mountpoints must be RW use small tmpfs part
+if [ -e /proc/bus/usb ] && [ -e /media ]; then
+    mount -t tmpfs -o size=16K tmpfs /media
+fi
+
 ##########################################################
 # prepare devices and rwfs
 # autocreate and refresh dev nodes
