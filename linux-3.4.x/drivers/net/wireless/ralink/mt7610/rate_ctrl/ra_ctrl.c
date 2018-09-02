@@ -1003,7 +1003,12 @@ VOID APMlmeSetTxRate(
 
 	/* if hold time not 0 or all transmits is fail - switch to 40MHz  */
 	if (TxTotalCnt > 15 && pEntry->HTPhyMode.field.BW == BW_80 && (pEntry->OneSecBWLimitHoldCount > 0 || TxErrorRatio == 100)) {
-		pEntry->HTPhyMode.field.BW = BW_40;
+		/* first try SGI disable */
+		if (TxErrorRatio > 60)
+		    pEntry->HTPhyMode.field.ShortGI = GI_800;
+		/* if not help => fallback to 40MHz BW, if errors dropdown to 70% - do not touch BW */
+		if (TxErrorRatio > 70)
+		    pEntry->HTPhyMode.field.BW = BW_40;
 		pEntry->OneSecBWLimitHoldCount--;
 	}
 

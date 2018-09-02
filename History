@@ -4254,6 +4254,7 @@
 74) kernel: ralink_wifi: force update DS more accuracly.<br>
 75) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
 76) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-77) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+77) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+78) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
