@@ -426,18 +426,10 @@ getPPPOEMode() {
     fi
 }
 
-# last particion mounted to /media set as public for samba and torrent home dir
-getMediaParts()
-{
-    if [ "$CONFIG_USB_STORAGE" != "" ]; then
-	export public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
-    fi
-    if [ "$CONFIG_MMC" != "" ]; then
-	export publicsd=`df -h | grep -E "/dev/mmc.*media" | awk {' print $6 '} | tail -qn1`
-    fi
-}
-
 # get params
+get_switch_type
+get_switch_part
+
 getTxqlenByMode
 getFirstWlanIfName
 getSecWlanIfName
@@ -448,11 +440,5 @@ getWanIfName
 getSixWanIfName
 getMdmIfName
 getWanIpaddr
-getWanReady
-
-get_switch_type
-get_switch_part
-
 getPPPOEMode
-
-getMediaParts
+getWanReady

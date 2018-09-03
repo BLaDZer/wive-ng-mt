@@ -39,6 +39,8 @@ start() {
 	# if need kill transmission-daemon
 	wait_for_close
 
+	# get mounted parts for public (last mounted)
+	public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
 	if [ "$public" = "" ]; then
 	    exit 0
 	fi

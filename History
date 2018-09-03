@@ -4192,71 +4192,72 @@
 12) init.d: fix bridge reconfigure at kernel pass through enable.<br>
 13) init.d: automount: try mount as ntfs if type is unknown (workaround mount GPT parts, need rework in future).<br>
 14) init.d: automount: move mount small tmpfs part for /media to rcS (prevent race of multi hdd connect over hub).<br>
-15) libwive/libnvram/nginx: multivar fixup.<br>
-16) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
-17) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
-18) webui: fix wireless security warnings show.<br>
-19) webui: fix per bssid options set.<br>
-20) webui: fix idle timeout range.<br>
-21) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
-22) webui: move BW to basic block for easy setup.<br>
-23) webui: 6to4 allow use not standart prefix.<br>
-24) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
-25) webui: fix real user name leak to different users.<br>
-26) webui: fix access policy block hide.<br>
-27) webui: move BSSID to block header (save space).<br>
-28) webui: fix mcs limit select.<br>
-29) webui: fix channel by region limit.<br>
-30) webui: apcli fixup.<br>
-31) kernel: fork: don't copy inconsistent signal handler state to child.<br>
-32) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
-33) kernel: random: mix rdrand with entropy sent in from userspace.<br>
-34) kernel: locking/lockdep: Do not record IRQ state within lockdep code.<br>
-35) kernel: pci: hotplug: don't leak pci_slot on registration failure.<br>
-36) kernel: squashfs: be more careful about metadata corruption.<br>
-37) kernel: squashfs: more metadata hardenings.<br>
-38) kernel: net: propagate dev_get_valid_name return code.<br>
-39) kernel: net: fix pass through unregister.<br>
-40) kernel: net: l2tp: use sk_dst_check() to avoid race on sk->sk_dst_cache.<br>
-41) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
-42) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
-43) kernel: net: llc: use refcount_inc_not_zero() for llc_sap_find().<br>
-44) kernel: net: ipv6: mcast: fix unsolicited report interval after receiving querys.<br>
-45) kernel: net: netfilter: x_tables: set module owner for icmp(6) matches.<br>
-46) kernel: net: packet: refine ring v3 block size test to hold one frame.<br>
-47) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-48) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-49) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-50) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-51) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
-52) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-53) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-54) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
-55) kernel: block: fix an error code in add_partition().<br>
-56) kernel: block: store partition_meta_info.uuid as a string.<br>
-57) kernel: block/partitions: enable EFI/GPT support by default.<br>
-58) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
-59) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
-60) kernel: block/partitions/efi: use lba-aware partition records.<br>
-61) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
-62) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
-63) kernel: block/partitions/efi: detect hybrid MBRs.<br>
-64) kernel: block/partitions/efi: account for pmbr size in lba.<br>
-65) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
-66) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
-67) kernel: block/partitions/efi: consistently use pr_foo().<br>
-68) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
-69) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
-70) kernel: block/partitions/efi: fix bound check.<br>
-71) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
-72) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-73) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-74) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-75) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-76) kernel: ralink_wifi: force update DS more accuracly.<br>
-77) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-78) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-79) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
-80) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+15) init.d: samba export all /media sd*/mmc devices as shares.<br>
+16) libwive/libnvram/nginx: multivar fixup.<br>
+17) libnvram: add workaround for ACS at bootup in DBDC mode.<br>
+18) sysctl: limit frag thres for prevent SegmentSmack DOS attack for ipv6 to.<br>
+19) webui: fix wireless security warnings show.<br>
+20) webui: fix per bssid options set.<br>
+21) webui: fix idle timeout range.<br>
+22) webui: add l2 tunnels (LT2TPv3/EOIP).<br>
+23) webui: move BW to basic block for easy setup.<br>
+24) webui: 6to4 allow use not standart prefix.<br>
+25) webui: fix and merge to wone eoip/l2tpv3 pages.<br>
+26) webui: fix real user name leak to different users.<br>
+27) webui: fix access policy block hide.<br>
+28) webui: move BSSID to block header (save space).<br>
+29) webui: fix mcs limit select.<br>
+30) webui: fix channel by region limit.<br>
+31) webui: apcli fixup.<br>
+32) kernel: fork: don't copy inconsistent signal handler state to child.<br>
+33) kernel: mm: vmalloc: avoid racy handling of debugobjects in vunmap.<br>
+34) kernel: random: mix rdrand with entropy sent in from userspace.<br>
+35) kernel: locking/lockdep: Do not record IRQ state within lockdep code.<br>
+36) kernel: pci: hotplug: don't leak pci_slot on registration failure.<br>
+37) kernel: squashfs: be more careful about metadata corruption.<br>
+38) kernel: squashfs: more metadata hardenings.<br>
+39) kernel: net: propagate dev_get_valid_name return code.<br>
+40) kernel: net: fix pass through unregister.<br>
+41) kernel: net: l2tp: use sk_dst_check() to avoid race on sk->sk_dst_cache.<br>
+42) kernel: net: multicast: do not restore deleted record source filter mode to new.<br>
+43) kernel: net: ip: in cmsg IP(V6)_ORIGDSTADDR call pskb_may_pull.<br>
+44) kernel: net: llc: use refcount_inc_not_zero() for llc_sap_find().<br>
+45) kernel: net: ipv6: mcast: fix unsolicited report interval after receiving querys.<br>
+46) kernel: net: netfilter: x_tables: set module owner for icmp(6) matches.<br>
+47) kernel: net: packet: refine ring v3 block size test to hold one frame.<br>
+48) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+49) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+50) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+51) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+52) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+53) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+54) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+55) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
+56) kernel: block: fix an error code in add_partition().<br>
+57) kernel: block: store partition_meta_info.uuid as a string.<br>
+58) kernel: block/partitions: enable EFI/GPT support by default.<br>
+59) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
+60) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
+61) kernel: block/partitions/efi: use lba-aware partition records.<br>
+62) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
+63) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
+64) kernel: block/partitions/efi: detect hybrid MBRs.<br>
+65) kernel: block/partitions/efi: account for pmbr size in lba.<br>
+66) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
+67) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
+68) kernel: block/partitions/efi: consistently use pr_foo().<br>
+69) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
+70) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
+71) kernel: block/partitions/efi: fix bound check.<br>
+72) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
+73) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+74) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+75) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+76) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+77) kernel: ralink_wifi: force update DS more accuracly.<br>
+78) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+79) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+80) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+81) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
