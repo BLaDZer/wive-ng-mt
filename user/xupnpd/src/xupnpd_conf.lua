@@ -13,3 +13,11 @@ cfg.name='Wive-NG'
 
 -- syslog facility (syslog,local0-local7)
 cfg.log_facility='syslog'
+
+cfg.playlists_update_interval=0
+
+-- playlist (m3u file path or path with alias
+playlist=
+{
+--    { '/media', 'Local Media Files' }
+}

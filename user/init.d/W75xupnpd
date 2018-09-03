@@ -59,6 +59,28 @@ cfg.log_facility='$logto'
 -- Device name
 cfg.name='$HostName'
 " >> /etc/xupnpd/xupnpd_conf.lua
+
+# share /media/*
+publiclist=`df -h | grep -E "/dev/sd.*media|/dev/mmc.*media" | awk {' print $6 '}`
+if [ "$publiclist" != "" ] && [ -e /media ]; then
+printf "
+cfg.playlists_update_interval=3600
+
+playlist=
+{
+      { '/media', 'Local Media Files' }
+}
+" >> /etc/xupnpd/xupnpd_conf.lua
+else
+printf "
+cfg.playlists_update_interval=0
+
+playlist=
+{
+--    { '/media', 'Local Media Files' }
+}
+" >> /etc/xupnpd/xupnpd_conf.lua
+fi
 }
 
 stop() {

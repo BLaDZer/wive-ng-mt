@@ -58,13 +58,6 @@ cfg.default_mime_type='mpeg'
 
 -- feeds update interval (seconds, 0 - disabled)
 cfg.feeds_update_interval=0
-cfg.playlists_update_interval=0
-
--- playlist (m3u file path or path with alias
-playlist=
-{
---    { '/media', 'Local Media Files' }
-}
 
 -- feeds list (plugin, feed name, feed type)
 feeds=

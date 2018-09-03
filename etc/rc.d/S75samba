@@ -49,9 +49,9 @@ if [ "$SmbEnabled" = "1" ]; then
     # share /media/*
     publiclist=`df -h | grep -E "/dev/sd.*media|/dev/mmc.*media" | awk {' print $6 '}`
     count=1
-    if [ "$publiclist" != "" ]; then
+    if [ "$publiclist" != "" ] && [ -e /media ]; then
 	for share in $publiclist ; do
-	    echo "[public_$count]" >> $CONFIG
+	    echo "[public$count]" >> $CONFIG
 	    echo "    comment = $share" >> $CONFIG
 	    echo "    path = $share" >> $CONFIG
 	    echo "    public = yes" >> $CONFIG
