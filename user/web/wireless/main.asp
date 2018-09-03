@@ -385,6 +385,25 @@
 
 				form.autoselect_g.value = NVRAM_AutoChannelSelect;
 				form.autoselect_a.value = NVRAM_AutoChannelSelectINIC;
+
+				if (form.autoselect_g.selectedIndex == -1 || NVRAM_AutoChannelSelect == 0)
+				{
+					form.autoselect_g.selectedIndex = form.autoselect_g.options.length-1;
+					while (form.autoselect_g.selectedIndex > 0 && form.autoselect_g.options[form.autoselect_g.selectedIndex].style.display == "none")
+					{
+						form.autoselect_g.selectedIndex--;
+					}
+				}
+
+				if (form.autoselect_a.selectedIndex == -1 || NVRAM_AutoChannelSelectINIC == 0)
+				{
+					form.autoselect_a.selectedIndex = form.autoselect_a.options.length-1;
+					while (form.autoselect_a.selectedIndex > 0 && form.autoselect_a.options[form.autoselect_a.selectedIndex].style.display == "none")
+					{
+						form.autoselect_a.selectedIndex--;
+					}
+				}
+
 				form.checktime_g.options.selectedIndex = (checktime_g < 0) ? 23 : checktime_g;
 				form.checktime_a.options.selectedIndex = (checktime_a < 0) ? 23 : checktime_a;
 			}
@@ -1158,7 +1177,7 @@
 
 					form.n_extcha.value = extchan;
 					if (form.n_extcha.selectedIndex == -1)
-						form.n_extcha.value = 0;
+						form.n_extcha.selectedIndex = 0;
 				}
 			}
 
