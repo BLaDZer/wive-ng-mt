@@ -1245,7 +1245,11 @@
 				form.EapReqFloodThreshold.value			= NVRAM_EapReqFloodThreshold;
 				form.TmpBlockAfterKick.value			= NVRAM_TmpBlockAfterKick;
 				form.KickStaRssiLowFT.value			= NVRAM_KickStaRssiLowFT;
+
+				form.country_region.selectedIndex = -1;
 				form.country_region.value			= NVRAM_CountryRegion;
+				if (form.country_region.selectedIndex == -1)
+					form.country_region.selectedIndex = 2;
 
 				if (mbssid_mode == 'all')
 					form.mbssid_mode.options.selectedIndex = 2;
@@ -2955,14 +2959,9 @@ table.form tr.ssid-row {
 		<tr id="advStaRegion_tr">
 			<td class="head" data-tr="staadv region">Region settings</td>
 			<td class="val"><select id="country_region" name="country_region" class="normal" onChange="updateVisibility(this.form);">
-				<option value="0">0: CH1-11 (FCC)</option>
-				<option value="1">1: CH1-13 (IC)</option>
-				<option value="2">2: CH10-11 (ETSI)</option>
-				<option value="3">3: CH10-13 (SPAIN)</option>
-				<option value="4">4: CH14 (France)</option>
-				<option value="5">5: CH1-14 (MKK)</option>
-				<option value="6">6: CH3-9 (MKK1)</option>
-				<option value="7">7: CH5-13 (Israel)</option>
+				<option value="0">CH1-11 (FCC)</option>
+				<option value="1">CH1-13 (IC)</option>
+				<option value="5">CH1-14 (MKK)</option>
 				</select>&nbsp;&nbsp;&nbsp;
 				<select name="country_code" class="normal" onChange="countryCodeChange();"><% listCountryCodes(); %>
 			</select></td>
