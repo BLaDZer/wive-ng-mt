@@ -343,7 +343,7 @@ void igmpProxyRun() {
             timeout = NULL;
         } else {
             timeout->tv_nsec = 0;
-	    timeout->tv_sec = (secs > 3) ? 3 : secs; // limit max select timeout
+	    timeout->tv_sec = (secs > INTERVAL_QUERY) ? INTERVAL_QUERY : secs; // limit max select timeout
         }
 
         // Prepare for select.
