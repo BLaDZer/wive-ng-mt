@@ -141,6 +141,9 @@ static inline struct dst_entry *xfrm_dst_lookup(struct xfrm_state *x, int tos,
 			memcpy(prev_daddr, daddr,  sizeof(*prev_daddr));
 	}
 
+	if (IS_ERR(dst))
+		dst_release(dst_orig);
+
 	return dst;
 }
 
