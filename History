@@ -4255,14 +4255,15 @@
 75) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
 76) kernel: block/partitions/efi: fix bound check.<br>
 77) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
-78) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-79) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-80) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-81) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-82) kernel: ralink_wifi: force update DS more accuracly.<br>
-83) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-84) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-85) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
-86) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+78) kernel: fs: ext4: reset error code in ext4_find_entry in fallback.<br>
+79) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+80) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+81) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+82) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+83) kernel: ralink_wifi: force update DS more accuracly.<br>
+84) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+85) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+86) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+87) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
