@@ -4260,12 +4260,13 @@
 80) kernel: fs: fuse: don't access pipe->buffers without pipe_lock().<br>
 81) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
 82) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-83) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-84) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-85) kernel: ralink_wifi: force update DS more accuracly.<br>
-86) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-87) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-88) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
-89) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+83) kernel: ralink_wifi: rrm: cleanup supported modes anonse (compat last update SGS A5).<br>
+84) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+85) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+86) kernel: ralink_wifi: force update DS more accuracly.<br>
+87) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+88) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+89) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+90) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
