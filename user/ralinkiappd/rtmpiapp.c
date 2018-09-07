@@ -41,7 +41,7 @@ INT32 RTDebugLevel = RT_DEBUG_ERROR;
 	((__IP) >> 16) & 0xFF,			\
 	((__IP) >> 24) & 0xFF
 
-#define IAPP_IDENTIFIER_GET(__CB)	(__CB)->PacketIdentifier++
+#define IAPP_IDENTIFIER_GET(__CB)	(__CB)->PacketIdentifier
 
 #define IAPP_CMD_BUF_ALLOCATE(__pCmdBuf, __pBufMsg, __BufLen)	\
 	{															\
@@ -481,11 +481,9 @@ static BOOLEAN IAPP_ArgumentParse(
 	strcpy(pCtrlBK->IfNameWlan, FT_KDP_DEFAULT_IF_WLAN);
 	strcpy(pCtrlBK->IfNameWlanIoctl[0], FT_KDP_DEFAULT_IF_WLAN_IOCTL);
 
-#ifdef FT_KDP_FUNC_PKT_ENCRYPT
 #ifdef FT_KDP_KEY_FROM_DAEMON
 	strcpy(pCtrlBK->CommonKey, FT_KDP_DEFAULT_PTK);
 #endif // FT_KDP_KEY_FROM_DAEMON //
-#endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	/* sanity check */
 	if (Argc == 0)
@@ -537,7 +535,7 @@ static BOOLEAN IAPP_ArgumentParse(
 				IAPP_AGP_CMD_PARSE_NEXT_ONE;
 			} /* End of if */
 		}
-#ifdef FT_KDP_FUNC_PKT_ENCRYPT
+
 #ifdef FT_KDP_KEY_FROM_DAEMON
 		else if (strncmp(pArgv[0], "-k", 2) == 0)
 		{
@@ -558,7 +556,7 @@ static BOOLEAN IAPP_ArgumentParse(
 			} /* End of if */
 		}
 #endif // FT_KDP_KEY_FROM_DAEMON //
-#endif // FT_KDP_FUNC_PKT_ENCRYPT //
+
 		else if (strncmp(pArgv[0], "-d", 2) == 0)
 		{
 			IAPP_AGP_CMD_PARSE_NEXT_ONE;
@@ -706,7 +704,8 @@ BOOLEAN IAPP_IoctlToWLAN(
 	memset(&Wrq, 0, sizeof(Wrq));
 
 #ifdef IAPP_OS_LINUX
-	if (strlen(pCtrlBK->IfNameWlanIoctl[ApIdx]) >= sizeof(IfName))
+	if ((strlen(pCtrlBK->IfNameWlanIoctl[ApIdx]) >= sizeof(IfName)) ||
+		(ApIdx > MAX_WIFI_COUNT))
 		strcpy(IfName, FT_KDP_DEFAULT_IF_WLAN_IOCTL);
 	else
 		strcpy(IfName, pCtrlBK->IfNameWlanIoctl[ApIdx]);
@@ -1598,7 +1597,7 @@ static BOOLEAN IAPP_SocketOpen(
 		goto label_fail;
 	} /* End of if */
 
-	listen(pCtrlBK->SocketTcpRcv, 72); /* max 72 TCP connections simultaneously */
+	listen(pCtrlBK->SocketTcpRcv, 128); /* max 128 TCP connections simultaneously */
 
 #ifdef FT_KDP_FUNC_SOCK_COMM
 #ifdef IAPP_OS_LINUX
@@ -1782,7 +1781,7 @@ static BOOLEAN IAPP_UDP_PacketSend(
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* ioctl to encrypt */
 	if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pBufEncrypt, &total_len, if_idx, RT_FT_DATA_ENCRYPT) == FALSE) {
-		DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Encrypt frame failed!\n");
+		DBGPRINT(RT_DEBUG_ERROR, "iapp> RRB Encrypt frame failed!\n");
 		return FALSE;
 	}
 
@@ -2032,13 +2031,13 @@ static VOID IAPP_RcvHandlerTcp(
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
 		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> TCP Decrypt frame failed!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> TCP Decrypt frame failed!\n");
 			return;
 		}
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (!pPktBuf) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> pPktBuf is null!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> pPktBuf is null!\n");
 			return;
 		}
 
@@ -2047,7 +2046,7 @@ static VOID IAPP_RcvHandlerTcp(
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
 
 		if (!pIappHdr) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> ip header unpasable!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> ip header unpasable!\n");
 			return;
 		}
 
@@ -2564,8 +2563,10 @@ static VOID IAPP_RcvHandlerRawRRB(
 	if (SizeRcvMsg > 0)
 	{
 		INT32 wifi_if_idx = 0;
+#ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		UCHAR WifiMAC[ETH_ALEN];
-		
+#endif // FT_KDP_FUNC_PKT_ENCRYPT //
+
 		DBGPRINT(RT_DEBUG_TRACE,
 				"iapp> Recvfrom RRB RAW successfully! (len = %d)\n",
 				SizeRcvMsg);
@@ -2602,7 +2603,7 @@ static VOID IAPP_RcvHandlerRawRRB(
 		IAPP_ENCRYPTED_DATA_SIZE_CAL(SizeRcvMsg);
 
 		if(IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf+FT_RRB_HEADER_SIZE, &SizeRcvMsg, wifi_if_idx, RT_FT_DATA_DECRYPT) == FALSE) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> RRB Decrypt frame failed!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> RRB Decrypt frame failed!\n");
 			return;
 		}
 
@@ -2774,13 +2775,13 @@ static VOID IAPP_RcvHandlerUdp(
 #ifdef FT_KDP_FUNC_PKT_ENCRYPT
 		/* ioctl to decrypt */
 		if (IAPP_IOCTL_TO_WLAN(pCtrlBK, RT_IOCTL_IAPP, pPktBuf, &SizeRcvMsg, 0, RT_FT_DATA_DECRYPT) == FALSE) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> UDP Decrypt frame failed!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> UDP Decrypt frame failed!\n");
 			return;
 		}
 #endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 		if (!pPktBuf) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> pPktBuf is null!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> pPktBuf is null!\n");
 			return;
 		}
 
@@ -2788,7 +2789,7 @@ static VOID IAPP_RcvHandlerUdp(
 		pIappHdr = (RT_IAPP_HEADER *)(pPktBuf);
 
 		if (!pIappHdr) {
-			DBGPRINT(RT_DEBUG_TRACE, "iapp> ip header unpasable!\n");
+			DBGPRINT(RT_DEBUG_ERROR, "iapp> ip header unpasable!\n");
 			return;
 		}
 
@@ -3395,9 +3396,9 @@ static VOID FT_KDP_SecurityBlockSend(
 	IAPP_IN		UCHAR				*WifiMAC,
 	IAPP_IN		INT32				if_idx)
 {
-	INT32 SocketPeer;
+	INT32 SocketPeer = 0;
 	struct sockaddr_in AddrSockConn;
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	RT_IAPP_SEND_SECURITY_BLOCK *pIappSendSB;
 	UINT32 PktLen, buf_len = 0;
 
@@ -3451,6 +3452,7 @@ static VOID FT_KDP_SecurityBlockSend(
 	pIappSendSB->IappHeader.Version = 0;
 	pIappSendSB->IappHeader.Command = IAPP_CMD_FT_SEND_SECURITY_BLOCK;
 	pIappSendSB->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
+	pCtrlBK->PacketIdentifier ++;
 	PktLen = sizeof(RT_IAPP_SEND_SECURITY_BLOCK) + pEvtHdr->EventLen;
 	pIappSendSB->IappHeader.Length = SWAP_16(PktLen);
 
@@ -3561,7 +3563,7 @@ static VOID FT_KDP_SecurityBlockAck(
 	pIappSendSB->IappHeader.Version = 0;
 	pIappSendSB->IappHeader.Command = IAPP_CMD_FT_ACK_SECURITY_BLOCK;
 	pIappSendSB->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
-
+	pCtrlBK->PacketIdentifier ++;
 	pIappSendSB->IappHeader.Length = SWAP_16(PktLen);
 
 	pIappSendSB->Length = pEvtHdr->EventLen;
@@ -3613,7 +3615,7 @@ static VOID FT_KDP_InformationRequestSend(
 	IAPP_IN		UCHAR				*pRspBuf,
 	IAPP_IN		INT32				if_idx)
 {
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	RT_IAPP_INFORMATION *pIappInfor;
 	UINT32 PktLen;
 
@@ -3638,7 +3640,7 @@ static VOID FT_KDP_InformationRequestSend(
 	pIappInfor->IappHeader.Version = 0;
 	pIappInfor->IappHeader.Command = IAPP_CMD_INFO_REQUEST;
 	pIappInfor->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
-
+	pCtrlBK->PacketIdentifier ++;
 	pIappInfor->IappHeader.Length = SWAP_16(PktLen);
 
 	pIappInfor->Length = pEvtHdr->EventLen;
@@ -3727,7 +3729,7 @@ static VOID FT_KDP_InformationResponseSend(
 	pIappInfor->IappHeader.Version = 0;
 	pIappInfor->IappHeader.Command = IAPP_CMD_INFO_RESPONSE;
 	pIappInfor->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
-
+	pCtrlBK->PacketIdentifier ++;
 	pIappInfor->IappHeader.Length = SWAP_16(PktLen);
 
 	pIappInfor->Length = pEvtHdr->EventLen;
@@ -3779,7 +3781,7 @@ static VOID FT_KDP_InformationReportSend(
 	IAPP_IN		UCHAR				*pRspBuf,
 	IAPP_IN		INT32				if_idx)
 {
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	RT_IAPP_INFORMATION *pIappInfor;
 	UINT32 PktLen;
 
@@ -3806,7 +3808,7 @@ static VOID FT_KDP_InformationReportSend(
 	pIappInfor->IappHeader.Version = 0;
 	pIappInfor->IappHeader.Command = IAPP_CMD_INFO_BROADCAST;
 	pIappInfor->IappHeader.Identifier = SWAP_16(IAPP_IDENTIFIER_GET(pCtrlBK));
-
+	pCtrlBK->PacketIdentifier ++;
 	pIappInfor->IappHeader.Length = SWAP_16(PktLen);
 
 	pIappInfor->Length = pEvtHdr->EventLen;
@@ -3848,11 +3850,13 @@ static VOID FT_RRB_ActionForward(
 	IAPP_IN		UCHAR				*pRspBuf,
 	IAPP_IN		INT32				if_idx)
 {
-	UCHAR *pBufFrame;
+	UCHAR *pBufFrame = NULL;
 	FT_RRB_FRAME *pFrameRRB;
 	INT32 Status;
 	UINT32 PktLen;
+#ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	UINT32 EvtLen;
+#endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 
 	/* init the update frame body */

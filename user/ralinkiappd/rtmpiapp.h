@@ -480,11 +480,8 @@ typedef struct _RTMP_IAPP {
 	pid_t			PID; /* IAPP task PID */
 	UINT16			PacketIdentifier; /* used in IAPP frame identifier */
 
-
-#ifdef FT_KDP_FUNC_PKT_ENCRYPT
 	/* common key, ASCII, the last byte must be 0x00 */
 	CHAR			CommonKey[IAPP_ENCRYPT_KEY_MAX_SIZE+1];
-#endif // FT_KDP_FUNC_PKT_ENCRYPT //
 
 	FT_CLIENT_TABLE SelfFtStaTable;
 } RTMP_IAPP, *PRTMP_IAPP;
