@@ -1470,6 +1470,15 @@ int gen_wifi_config(int mode, int genmode)
 #ifdef CONFIG_MT7615_AP_WNM_SUPPORT
 	FPRINT_DAT(WNMEnable);
 #endif
+#ifdef CONFIG_MT7615_AP_FTM_SUPPORT
+	FPRINT_DAT(LocNeighBssid);
+	FPRINT_DAT(LocNeighPHYtype);
+	FPRINT_DAT(LocNeighFTMrespCap);
+	FPRINT_DAT(LocNeighOpClass);
+	FPRINT_DAT(LocNeighChannel);
+	FPRINT_DAT(LocReTxAllowed);
+	FPRINT_DAT(LocRadioMsnt);
+#endif
 #endif
 	fclose(fp);
 	nvram_close(mode);
