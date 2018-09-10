@@ -4233,42 +4233,43 @@
 53) kernel: net: packet: refine ring v3 block size test to hold one frame.<br>
 54) kernel: net: ipv6: mcast: fix unsolicited report interval after receiving querys.<br>
 55) kernel: net: ipv6: do not reset nl_net in ip6_route_info_create.<br>
-56) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
-57) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
-58) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
-59) kernel: net: tcp: add one more quick ack after after ECN events.<br>
-60) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
-61) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
-62) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-63) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
-64) kernel: block: fix an error code in add_partition().<br>
-65) kernel: block: store partition_meta_info.uuid as a string.<br>
-66) kernel: block/partitions: enable EFI/GPT support by default.<br>
-67) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
-68) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
-69) kernel: block/partitions/efi: use lba-aware partition records.<br>
-70) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
-71) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
-72) kernel: block/partitions/efi: detect hybrid MBRs.<br>
-73) kernel: block/partitions/efi: account for pmbr size in lba.<br>
-74) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
-75) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
-76) kernel: block/partitions/efi: consistently use pr_foo().<br>
-77) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
-78) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
-79) kernel: block/partitions/efi: fix bound check.<br>
-80) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
-81) kernel: fs: ext4: reset error code in ext4_find_entry in fallback.<br>
-82) kernel: fs: fuse: don't access pipe->buffers without pipe_lock().<br>
-83) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-84) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-85) kernel: ralink_wifi: rrm: cleanup supported modes anonse (compat last update SGS A5).<br>
-86) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-87) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-88) kernel: ralink_wifi: force update DS more accuracly.<br>
-89) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-90) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-91) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
-92) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+56) kernel: net: ipv6: defrag: drop non-last frags smaller than min mtu.<br>
+57) kernel: net: tcp: add max_quickacks param to tcp_incr_quickack and tcp_enter_quickack_mode.<br>
+58) kernel: net: tcp: do not aggressively quick ack after ECN events.<br>
+59) kernel: net: tcp: refactor tcp_ecn_check_ce to remove sk type cast.<br>
+60) kernel: net: tcp: add one more quick ack after after ECN events.<br>
+61) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
+62) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
+63) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
+64) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
+65) kernel: block: fix an error code in add_partition().<br>
+66) kernel: block: store partition_meta_info.uuid as a string.<br>
+67) kernel: block/partitions: enable EFI/GPT support by default.<br>
+68) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
+69) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
+70) kernel: block/partitions/efi: use lba-aware partition records.<br>
+71) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
+72) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
+73) kernel: block/partitions/efi: detect hybrid MBRs.<br>
+74) kernel: block/partitions/efi: account for pmbr size in lba.<br>
+75) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
+76) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
+77) kernel: block/partitions/efi: consistently use pr_foo().<br>
+78) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
+79) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
+80) kernel: block/partitions/efi: fix bound check.<br>
+81) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
+82) kernel: fs: ext4: reset error code in ext4_find_entry in fallback.<br>
+83) kernel: fs: fuse: don't access pipe->buffers without pipe_lock().<br>
+84) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+85) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+86) kernel: ralink_wifi: rrm: cleanup supported modes anonse (compat last update SGS A5).<br>
+87) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+88) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+89) kernel: ralink_wifi: force update DS more accuracly.<br>
+90) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+91) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+92) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+93) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
