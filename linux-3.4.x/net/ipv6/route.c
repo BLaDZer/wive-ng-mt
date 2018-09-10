@@ -1550,8 +1550,6 @@ install_route:
 	rt->rt6i_idev = idev;
 	rt->rt6i_table = table;
 
-	cfg->fc_nlinfo.nl_net = dev_net(dev);
-
 	return __ip6_ins_rt(rt, &cfg->fc_nlinfo);
 
 out:
