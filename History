@@ -4178,7 +4178,7 @@
 <br>
 <br>
 <b>7.5.x</b><br>
-1) busybox: update to 1.29.2 stable version.<br>
+1) busybox: update to 1.29.3 stable version.<br>
 2) configs: ntp enable by default and set TZ=YEKT-5.<br>
 3) miniupnpd: up to 2.1.20180706 version.<br>
 4) miniupnpd: do not check reserved adresses, this break MAP global to local range of some ISP.<br>
