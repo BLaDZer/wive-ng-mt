@@ -1118,15 +1118,10 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	outWrite(T("m2u_enable: %s<br>\n"), m2u_enable);
 #endif
 	outWrite(T("ED_MODE: %s<br>\n"), ed_mode);
-
-//	websFooter(wp);
-	websDone(wp, 200);
-#else
-	submitUrl = websGetVar(wp, T("submit-url"), T(""));   // hidden page
-	websRedirect(wp, submitUrl);
 #endif
 	// reconfigure system
-        wp->on_response_ok = DO_RECONFIGURE;
+	websDone(wp, 200);
+	wp->on_response_ok = DO_RECONFIGURE;
 }
 
 static int getVideoTurbineBuilt(webs_t *wp, char** params, int nparams)

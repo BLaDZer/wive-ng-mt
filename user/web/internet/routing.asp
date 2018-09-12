@@ -62,10 +62,11 @@
 				var ifc		= form.interface.options;
 
 				ifc.add(new Option("LAN", "LAN"));
-				if (NVRAM_OperationMode != '0') {
+				if (NVRAM_OperationMode != '0' && NVRAM_OperationMode != '3') {
 					ifc.add(new Option("WAN", "WAN"));
-					ifc.add(new Option("VPN", "VPN"));
 				}
+				ifc.add(new Option("VPN", "VPN"));
+
 				ifc.add(new Option(_("routing custom"), "Custom"));
 
 				form.hostnet.value		= 'host';

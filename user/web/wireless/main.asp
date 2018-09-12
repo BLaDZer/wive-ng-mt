@@ -1794,7 +1794,7 @@
 					return false;
 				}
 
-				if (!inRange(form.fragment.value, 1, 2346))
+				if (!inRange(form.fragment.value, 256, 2346))
 				{
 					showMenu('advWirelessT', 1);
 					alert(_("adv invalid frag len"));
@@ -1856,7 +1856,7 @@
 					return false;
 				}
 
-				if (!inRange(form.idletimeout.value, 60, 600))
+				if (!inRange(form.idletimeout.value, 120, 600))
 				{
 					showMenu('advWirelessT', 1);
 					alert(_("adv invalid idletimeout"));

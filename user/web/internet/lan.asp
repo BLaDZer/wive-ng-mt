@@ -133,10 +133,11 @@
 					}
 				}
 
-				if (form.lanIp.value != LAN_IP)
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30, 'http://' + form.lanIp.value);
+				if (form.lanIp.value != LAN_IP && document.location.host == LAN_IP)
+					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30, document.location.protocol+"//"+form.lanIp.value);
 				else
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
+
 				return false;
 			}
 

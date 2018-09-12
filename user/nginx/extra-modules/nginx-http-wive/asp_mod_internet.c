@@ -596,7 +596,16 @@ static int getRoutingTable(webs_t *wp, char** params, int nparams)
 			case 3:
 				outWrite(T(", %d, "), rule.internal_id); // 8
 				outWrite(T("'%s'"), rule.iftype); // 9
-				outWrite(T(", %d, "), ((strcmp(rule.iftype, "VPN") == 0) ? (isVPN == 1) ? isBridgeMode : 1 : 1)); // 10
+
+				if (strcmp(rule.iftype, "VPN") == 0)
+				{
+					outWrite(T(", %d, "), (isVPN == 1) ? 0 : 1); // 10
+				}
+				else
+				{
+					outWrite(T(", %d, "), 0); // 10
+				}
+
 				outWrite(T("'%s', 0 ]"), rule.comment); // 11-12
 				break;
 

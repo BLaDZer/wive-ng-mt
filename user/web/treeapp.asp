@@ -87,8 +87,7 @@ if (AUTH_ROLE == 2)
 	}
 	a.add(306, 300, _("treeapp ethernet"),			"javascript:go('internet/ethernet.asp');");
 
-	if (NVRAM_OperationMode != '0')
-		a.add(307, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
+	a.add(307, 300, _("treeapp routing"),		"javascript:go('internet/routing.asp');");
 
 	if (BUILD_SWQOS == '1')
 		a.add(308, 300, _("treeapp qos"),		"javascript:go('internet/qos.asp');");
