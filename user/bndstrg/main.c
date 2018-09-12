@@ -21,74 +21,117 @@
 
 #include "bndstrg.h"
 
-int DebugLevel = DEBUG_ERROR;
-
 extern struct bndstrg_event_ops bndstrg_event_ops;
 
-static void usage()
+int usage()
 {
 
-	printf("-d <bndstrg debug level> 0..4\n");
+	DBGPRINT(DEBUG_OFF, "bndstrg  [-d <debug level>]\n");
+	DBGPRINT(DEBUG_OFF, "-d <bndstrg debug level>\n");
+	DBGPRINT(DEBUG_OFF, "-h help\n");
+	return 0;
 }
 
-static void process_options(int argc, char *argv[])
+int process_options(int argc, char *argv[], char *filename,
+					int *opmode, int *drv_mode, int *debug_level, int *version)
 {
 	int c;
-	int debug = DEBUG_ERROR;
+	char *cvalue = NULL;
+	
+	opterr = 0;
 
-	while ((c = getopt(argc, argv, "hd:")) != -1) {
+	while ((c = getopt(argc, argv, "d:v:")) != -1) {
 		switch (c) {
-		    case 'd':
-			debug = atoi(optarg);
-			if (debug >= 0 && debug <= DEBUG_INFO) {
-				DebugLevel = debug;
-			} else {
-				printf("-d option does not have this debug_level %d, must be 0..4 range.\n", debug);
-				usage();
-				exit(0);
+		case 'd':
+			cvalue = optarg;
+			if (os_strcmp(cvalue, "0") == 0)
+				*debug_level = DEBUG_OFF;
+			else if (os_strcmp(cvalue, "1") == 0)
+				*debug_level = DEBUG_ERROR;
+			else if (os_strcmp(cvalue, "2") == 0)
+				*debug_level = DEBUG_WARN;
+			else if (os_strcmp(cvalue, "3") == 0)
+				*debug_level = DEBUG_TRACE;
+			else if (os_strcmp(cvalue, "4") == 0)
+				*debug_level = DEBUG_INFO;
+			else {
+				DBGPRINT(DEBUG_ERROR, "-d option does not have this debug_level %s\n", cvalue);
+				return - 1;
 			}
 			break;
-		    case 'h':
+		case 'f':
+			cvalue = optarg;
+			os_strcpy(filename, cvalue);
+			break;
+		case 'v':
+			cvalue = optarg;
+			*version = atoi(cvalue);
+ 			break;
+		case 'h':
+			cvalue = optarg;
 			usage();
-			exit(0);
-		    default:
-			usage();
-			exit(0);
+			break;
+		case '?':
+			if (optopt == 'f') {
+				DBGPRINT(DEBUG_OFF, "Option -%c requires an argument\n", optopt);
+			} else if (optopt == 'd') {
+				DBGPRINT(DEBUG_OFF, "Option -%c requires an argument\n", optopt);
+			} else if (isprint(optopt)) {
+				DBGPRINT(DEBUG_OFF, "Unknow options -%c\n", optopt);
+			} else {
+
+			}
+			return -1;
+			break;
 		}
 	}
+	return 0;
+
 }
 
 int main(int argc, char *argv[])
 {
 
+	int ret;
+	int opmode;
+	int drv_mode;
+	int debug_level = DEBUG_WARN;
+	int version = 2;
+	char filename[256] = {0}; 
 	struct bndstrg bndstrg;
 	pid_t child_pid;
 
-#ifdef SYSLOG
-	openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_DAEMON);
-#endif
+	/* default setting */
 
 	/* options processing */
-	process_options(argc, argv);
+	ret = process_options(argc, argv, filename, &opmode, &drv_mode, &debug_level, &version);
 
+	if (ret) {
+		usage();
+		return -1;
+	}
+
+	DebugLevel = debug_level;
+	DBGPRINT(DEBUG_OFF, "DebugLevel %d\n",DebugLevel);
 	child_pid = fork();
 
-	if (child_pid == 0) {
-		int ret = 0;
+	if (child_pid == 0) {	
 		DBGPRINT(DEBUG_OFF, "Initialize bndstrg\n");
-		ret = bndstrg_init(&bndstrg, &bndstrg_event_ops, 0, 0, 2);
-
+		ret = bndstrg_init(&bndstrg, &bndstrg_event_ops, drv_mode, opmode, version);
+	
 		if (ret)
 			goto error;
 
 		bndstrg_run(&bndstrg);
 
 	} else
-		goto error;
+		return 0;
 #if 0
 error0:
 	bndstrg_deinit(&hs);
 #endif
 error:
-	return -1;
+	
+	return ret;
+
 }

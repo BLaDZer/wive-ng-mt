@@ -17,10 +17,11 @@
 #ifndef __DRIVER_H__
 #define __DRIVER_H__
 
-#include "bndstrg.h"
-
 struct bndstrg;
 struct bndstrg_cli_entry;
+#ifndef LEGACYMODE
+struct bndstrg_nvram_client;
+#endif
 
 struct bndstrg_drv_ops {
 	int (*drv_test)(void *drv_data, const char *ifname);
@@ -29,6 +30,9 @@ struct bndstrg_drv_ops {
 	int (*drv_accessible_cli)(void *drv_data, const char *ifname, struct bndstrg_cli_entry *entry, u8 action);
 	int (*drv_inf_status_query)(void *drv_data, const char *ifname);
 	int (*drv_bndstrg_onoff)(void *drv_data, const char *ifname, u8 onoff);
+#ifndef LEGACYMODE
+	int (*drv_nvram_update)(void *drv_data, const char *ifname, struct bndstrg_nvram_client *entry, u8 action);
+#endif
 };
 
 #endif /* __DRIVER_H__ */

@@ -1,9 +1,19 @@
+-include $(LINUX_CONFIG)
+
 BNDSTRG_EXEC = bndstrg
 
-CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA
+ifndef CONFIG_MT7615_AP
+LEGACYMODE := -DLEGACYMODE
+endif
+
+CFLAGS += -I./ -Wall -g -lrt -ffunction-sections -fdata-sections -DSYSLOG -DBND_STRG_DBG -DBND_STRG_QA $(LEGACYMODE)
 LDFLAGS += -lpthread -lnvram -Wl,--gc-sections
 
+ifdef LEGACYMODE
+BNDSTRG_OBJS = bndstrg_legacy.o driver_wext.o eloop.o main_legacy.o netlink.o os_internal.o
+else
 BNDSTRG_OBJS = bndstrg.o driver_wext.o eloop.o main.o netlink.o os_internal.o
+endif
 
 all: $(BNDSTRG_EXEC)
 

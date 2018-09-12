@@ -14,7 +14,12 @@
     	driver_wext.c
 */
 
+#ifdef LEGACYMODE
+#include "bndstrg_legacy.h"
+#else
 #include "bndstrg.h"
+#endif
+
 #include "driver_wext.h"
 #include "priv_netlink.h"
 #include "netlink.h"
@@ -156,7 +161,7 @@ static int driver_wext_accessible_cli(
 	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
 #endif
 	memcpy(msg.Addr, entry->Addr, MAC_ADDR_LEN);
-	msg.TalbeIndex = entry->TableIndex;
+	msg.TableIndex = entry->TableIndex;
 	msg.Action = action;
 
 	if (action == CLI_UPDATE) {

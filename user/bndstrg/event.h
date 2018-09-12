@@ -17,8 +17,6 @@
 #ifndef __EVENT_H__
 #define __EVENT_H__
 
-#include "bndstrg.h"
-
 struct bndstrg;
 
 struct bndstrg_event_ops {
