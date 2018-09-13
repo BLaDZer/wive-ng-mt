@@ -25,8 +25,12 @@ case "$MODE" in
 	    DEVNAME="SNR-CPE-ME4-5GHZ-MT"
 	    ;;
 	"MT7621-MT7615-2T2R-16M-USB")
-	    # DBDC sample
+	    # DBDC release
 	    DEVNAME="SNR-CPE-ME2-5GHZ-MT"
+	    ;;
+	"MT7621-MT7615-2T2R-16M-USB-IPA")
+	    # DBDC sample
+	    DEVNAME="SNR-CPE-ME2-5GHZ-MT-IPA"
 	    ;;
 	####################################
 	# dual band 7621A + 7603NE + 7612NE
@@ -48,14 +52,6 @@ case "$MODE" in
 	"MT7621-MT7603-MT7610-1T1R-16M-USB")
 	    # GE dual band release
 	    DEVNAME="SNR-CPE-ME1-5GHZ-MT"
-	    ;;
-	"MT7621-MT7603-MT7610-1T1R-16M-USB-CG1")
-	    # N1 sample
-	    DEVNAME="SNR-CPE-CG1-5GHZ-MT"
-	    ;;
-	"MT7621-MT7603-MT7610-1T1R-16M-USB-SFP-CG1")
-	    # N2 sample
-	    DEVNAME="SNR-CPE-CG1-5GHZ-MT"
 	    ;;
 	####################################
 	# dual band 7620A + 7610NE
@@ -151,6 +147,11 @@ if [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
+elif [ "$MODE" = "MT7621-MT7615-2T2R-16M-USB-IPA" ]; then
+    cp -fv $KCOPATH/config-kernel-MT7621-MT7615DN-16M-USB-IPA				$ROOTDIR/linux/.config
+    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
+    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
+    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7615N-16M-USB				$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
@@ -158,16 +159,6 @@ elif [ "$MODE" = "MT7621-MT7615-4T4R-16M-USB" ]; then
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
 elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB" ]; then
     cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB			$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB-CG1" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB-CG1			$ROOTDIR/linux/.config
-    cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
-    cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
-    cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config
-elif [ "$MODE" = "MT7621-MT7603-MT7610-1T1R-16M-USB-SFP-CG1" ]; then
-    cp -fv $KCOPATH/config-kernel-MT7621-MT7603-MT7610-1T1R-16M-USB-SFP-CG1		$ROOTDIR/linux/.config
     cp -fv $ROOTDIR/configs/all/config-busybox-USB					$ROOTDIR/user/busybox/.config
     cp -fv $ROOTDIR/configs/all/config-config-USB					$ROOTDIR/config/.config
     cp -fv $ROOTDIR/configs/all/config-lib						$ROOTDIR/lib/.config

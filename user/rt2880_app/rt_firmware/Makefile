@@ -93,10 +93,18 @@ endif
 # 7615 module
 ifdef CONFIG_RT_FIRST_IF_MT7615E
 ifdef CONFIG_MT7615_AP_DBDC_MODE
+ifeq ($(CONFIG_RT_FIRST_IF_INTERNAL_PA_INTERNAL_LNA),y)
 	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615DN_internal_LNA_internal_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
-	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EEPROM1.bin						/etc/Wireless/MT7615E_EEPROM1.bin
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_INTERNALPALNA_EEPROM1.bin				/etc/Wireless/MT7615E_EEPROM1.bin
 ifdef CONFIG_RT_SECOND_IF_MT7615E
-	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EEPROM2.bin						/etc/Wireless/MT7615E_EEPROM2.bin
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_INTERNALPALNA_EEPROM2.bin				/etc/Wireless/MT7615E_EEPROM2.bin
+endif
+else ifeq ($(CONFIG_RT_FIRST_IF_EXTERNAL_PA_EXTERNAL_LNA),y)
+	$(ROMFSINST) -S eeproms-backups/MT7621_MT7615DN_external_LNA_external_PA_BACKUP.BIN		/etc/Wireless/rfbackup.bin
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EXTERNALPALNA_EEPROM1.bin				/etc/Wireless/MT7615E_EEPROM1.bin
+ifdef CONFIG_RT_SECOND_IF_MT7615E
+	$(ROMFSINST) -S eeproms-defaults/MT7615DN_EXTERNALPALNA_EEPROM2.bin				/etc/Wireless/MT7615E_EEPROM2.bin
+endif
 endif
 	$(ROMFSINST) -S	defaults/default-2t2r-dbdc-wan0							/etc/default/nvram_default
 else
