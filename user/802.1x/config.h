@@ -36,6 +36,7 @@ struct rtapd_config {
 	int daemonize; /* fork into background */
 
 	struct in_addr own_ip_addr;
+	int own_radius_port;
 	
 	/* RADIUS Authentication and Accounting servers in priority order */
 #ifdef MULTIPLE_RADIUS

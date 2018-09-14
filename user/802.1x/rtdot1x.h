@@ -6,7 +6,6 @@
 
 
 #define MAC_ADDR_LEN				6
-#define MAX_MBSSID_NUM              8
 #define WEP8021X_KEY_LEN            13
 
 #ifndef ETH_ALEN
@@ -137,6 +136,7 @@ struct ieee8023_hdr {
 typedef struct apd_data {
 	struct rtapd_config *conf;
 	char *prefix_wlan_name;		/* the prefix name of wireless interface */
+	char *main_wlan_name;		/* the main name of wireless interface */
 
 	int wlan_sock[MAX_MBSSID_NUM];		/* raw packet socket for wireless interface access */		
 	int eth_sock[MAX_MBSSID_NUM]; 		/* raw packet socket for ethernet interface access */
@@ -184,7 +184,7 @@ typedef struct _DOT1X_QUERY_STA_AID {
 void ieee802_1x_receive(rtapd *apd, u8 *sa, u8 *apidx, u8 *buf, size_t len, u16 ethertype, int	SockNum);
 u16	RTMPCompareMemory(void *pSrc1,void *pSrc2, u16 Length);
 void Handle_term(int sig, void *eloop_ctx, void *signal_ctx);
-int RT_ioctl(int sid, int param, char  *data, int data_len, char *prefix_name, unsigned char apidx, int flags);
+int RT_ioctl(int sid, int param, char  *data, int data_len, char *name, unsigned char apidx, int flags);
 
 void dot1x_set_IdleTimeoutAction(
 		rtapd *rtapd,

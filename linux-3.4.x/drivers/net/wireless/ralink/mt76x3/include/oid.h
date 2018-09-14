@@ -561,6 +561,7 @@ typedef struct GNU_PACKED _DOT1X_CMM_CONF {
 	UINT32 Length;		/* Length of this structure */
 	UCHAR mbss_num;		/* indicate multiple BSS number */
 	UINT32 own_ip_addr;
+	UINT32 own_radius_port; /* for compat stubs */
 	UINT32 retry_interval;
 	UINT32 session_timeout_interval;
 	UINT32 quiet_interval;
@@ -569,6 +570,8 @@ typedef struct GNU_PACKED _DOT1X_CMM_CONF {
 	UCHAR PreAuthifname[8][IFNAMSIZ];
 	UCHAR PreAuthifname_len[8];
 	DOT1X_BSS_INFO Dot1xBssInfo[8];
+	UCHAR RadiusAclEnable[8]; /* for compat stubs */
+	UINT32 AclCacheTimeout[8];/* for compat stubs */
 } DOT1X_CMM_CONF, *PDOT1X_CMM_CONF;
 
 typedef struct GNU_PACKED _DOT1X_IDLE_TIMEOUT {

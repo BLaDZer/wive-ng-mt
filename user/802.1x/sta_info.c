@@ -49,7 +49,14 @@ struct sta_info* Ap_get_sta(rtapd *apd, u8 *sa, u8 *apidx, u16 ethertype, int so
 		else
 			s->ApIdx = 0;
 
-		DBGPRINT(RT_DEBUG_TRACE,"Create a new STA(in %s%d)\n", apd->prefix_wlan_name, s->ApIdx);
+		if (s->ApIdx == 0)
+		{
+			DBGPRINT(RT_DEBUG_TRACE,"Create a new STA(in %s%d)\n", apd->main_wlan_name);
+		}
+		else
+		{
+			DBGPRINT(RT_DEBUG_TRACE,"Create a new STA(in %s%d)\n", apd->prefix_wlan_name, s->ApIdx);
+		}
 
 		DOT1X_QUERY_STA_AID qStaAid;
         	memset(&qStaAid, 0, sizeof(DOT1X_QUERY_STA_AID));
@@ -74,9 +81,16 @@ struct sta_info* Ap_get_sta(rtapd *apd, u8 *sa, u8 *apidx, u16 ethertype, int so
 	}
 	else
 	{
-		DBGPRINT(RT_DEBUG_TRACE,"A STA has existed(in %s%d)\n", apd->prefix_wlan_name, s->ApIdx);
-	}	
-	
+		if (s->ApIdx == 0)
+		{
+			DBGPRINT(RT_DEBUG_TRACE,"A STA has existed(in %s)\n", apd->prefix_wlan_name);
+		}
+		else
+		{
+			DBGPRINT(RT_DEBUG_TRACE,"A STA has existed(in %s%d)\n", apd->prefix_wlan_name, s->ApIdx);
+		}
+	}
+
 	return s;
 }
 

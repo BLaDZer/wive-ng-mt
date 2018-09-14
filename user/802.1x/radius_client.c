@@ -166,8 +166,16 @@ static void Radius_client_timer(void *eloop_ctx, void *timeout_ctx)
 				next = rtapd->conf->mbss_auth_servers[i];
 			rtapd->conf->mbss_auth_server[i] = next;
 			Radius_change_server(rtapd, next, old, rtapd->radius->mbss_auth_serv_sock[i], 1);
-			DBGPRINT(RT_DEBUG_WARN, "Radius_client_timer : ready to change RADIUS server for %s%d\n", rtapd->prefix_wlan_name, i);
-		}	
+
+			if (i == 0)
+			{
+				DBGPRINT(RT_DEBUG_WARN, "Radius_client_timer : ready to change RADIUS server for %s\n", rtapd->main_wlan_name);
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_WARN, "Radius_client_timer : ready to change RADIUS server for %s%d\n", rtapd->prefix_wlan_name, i);
+		}
+	}
 	}
 #else
 	if (auth_failover && rtapd->conf->num_auth_servers > 1)
@@ -491,6 +499,23 @@ Radius_change_server(rtapd *rtapd, struct hostapd_radius_server *nserv,
 		perror("bind");
 		return -1;
 	}*/
+/*
+code disabled to prevent possible socket connection error when
+port number is configured from driver's .dat file
+*/
+/*
+	memset(&serv, 0, sizeof(serv));
+	serv.sin_family = AF_INET;
+	serv.sin_addr.s_addr = rtapd->conf->own_ip_addr.s_addr;
+	serv.sin_port = htons(rtapd->conf->own_radius_port);
+
+	if (bind(sock, (struct sockaddr *) &serv, sizeof(serv)) < 0)
+	{
+		perror("bind");
+		return -1;
+	}
+	DBGPRINT(RT_DEBUG_TRACE,"%s: bind sock:%d to port: %d\n", __FUNCTION__, sock,  ntohs(serv.sin_port));
+*/
 
 #if 0 //change to sendto
 	memset(&serv, 0, sizeof(serv));
@@ -543,10 +568,18 @@ static void Radius_retry_primary_timer(void *eloop_ctx, void *timeout_ctx)
 
 #ifdef MULTIPLE_RADIUS
 static int Radius_client_init_auth(rtapd *rtapd, int apidx)
-{		
+{
 	if (rtapd->conf->mbss_auth_server[apidx]->addr.s_addr == 0)
 	{
-		DBGPRINT(RT_DEBUG_WARN, "Radius_client_init_auth: can't create auth RADIUS socket for %s%d (it's invalid IP)\n", rtapd->prefix_wlan_name, apidx);
+		if (apidx == 0)
+		{
+			DBGPRINT(RT_DEBUG_WARN, "Radius_client_init_auth: can't create auth RADIUS socket for %s (it's invalid IP)\n", rtapd->main_wlan_name);
+		}
+		else
+		{
+			DBGPRINT(RT_DEBUG_WARN, "Radius_client_init_auth: can't create auth RADIUS socket for %s%d (it's invalid IP)\n", rtapd->prefix_wlan_name, apidx);
+		}
+
 		return -1;
 	}
 

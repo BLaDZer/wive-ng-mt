@@ -108,6 +108,17 @@ typedef struct PACKED _RADIUS_SRV_INFO {
 	unsigned char		radius_key_len;
 } RADIUS_SRV_INFO, *PRADIUS_SRV_INFO;
 
+#ifdef RADIUS_ACCOUNTING_SUPPORT
+typedef struct PACKED _ACCT_BSS_INFO {
+	unsigned char		radius_srv_num;
+	RADIUS_SRV_INFO		radius_srv_info[MAX_RADIUS_SRV_NUM];
+	/* int				radius_request_cui; */
+	int				radius_acct_authentic;
+	int					acct_interim_interval;
+	int					acct_enable;
+} ACCT_BSS_INFO, *PACCT_BSS_INFO;
+#endif /*RADIUS_ACCOUNTING_SUPPORT*/
+
 typedef struct PACKED _DOT1X_BSS_INFO
 {
 	unsigned char		radius_srv_num;			
@@ -123,9 +134,10 @@ typedef struct PACKED _DOT1X_BSS_INFO
 // It's used by 802.1x daemon to require relative configuration
 typedef struct PACKED _DOT1X_CMM_CONF
 {
-    unsigned int       	Length;             // Length of this structure    
-    unsigned char		mbss_num;			// indicate multiple BSS number 
+	unsigned int       	Length;             // Length of this structure    
+	unsigned char		mbss_num;			// indicate multiple BSS number 
 	unsigned int		own_ip_addr;	
+	unsigned int		own_radius_port;
 	unsigned int		retry_interval;
 	unsigned int		session_timeout_interval;
 	unsigned int		quiet_interval;
@@ -134,6 +146,9 @@ typedef struct PACKED _DOT1X_CMM_CONF
 	unsigned char 		PreAuthifname[MAX_MBSSID_NUM][IFNAMSIZ];
 	unsigned char		PreAuthifname_len[MAX_MBSSID_NUM];
 	DOT1X_BSS_INFO		Dot1xBssInfo[MAX_MBSSID_NUM];
+#ifdef RADIUS_ACCOUNTING_SUPPORT
+	ACCT_BSS_INFO AcctBssInfo[MAX_MBSSID_NUM];
+#endif /*RADIUS_ACCOUNTING_SUPPORT*/
 #ifdef RADIUS_MAC_ACL_SUPPORT
 	unsigned char RadiusAclEnable[MAX_MBSSID_NUM];
 	unsigned int AclCacheTimeout[MAX_MBSSID_NUM];

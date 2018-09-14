@@ -38,7 +38,16 @@ static void ieee802_1x_send(rtapd *rtapd, struct sta_info *sta, u8 type, u8 *dat
 		DBGPRINT(RT_DEBUG_ERROR,"malloc() failed for ieee802_1x_send(len=%d)\n", len);
 		return;
 	}
-	DBGPRINT(RT_DEBUG_TRACE,"Send to Sta(%s%d) with Identifier %d\n", rtapd->prefix_wlan_name, sta->ApIdx,*(data+1));
+
+	if (sta->ApIdx == 0)
+	{
+		DBGPRINT(RT_DEBUG_TRACE,"Send to Sta(%s) with Identifier %d\n", rtapd->main_wlan_name, *(data+1));
+	}
+	else
+	{
+		DBGPRINT(RT_DEBUG_TRACE,"Send to Sta(%s%d) with Identifier %d\n", rtapd->prefix_wlan_name, sta->ApIdx,*(data+1));
+	}
+
 	memset(buf, 0, len);
 	hdr3 = (struct ieee8023_hdr *) buf;
 	memcpy(hdr3->dAddr, sta->addr, ETH_ALEN);
@@ -284,7 +293,7 @@ void ieee802_1x_tx_key(rtapd *rtapd, struct sta_info *sta, u8 id)
 					 RT_PRIV_IOCTL, 
 					 (char *)&WepKey, 
 					 sizeof(NDIS_802_11_KEY), 
-					 rtapd->prefix_wlan_name, sta->ApIdx, 
+					 rtapd->prefix_wlan_name, 0, 
 					 RT_OID_802_DOT1X_PMKID_CACHE))
 		{
 			DBGPRINT(RT_DEBUG_ERROR, "ieee802_1x_tx_key:RT_OID_802_DOT1X_PMKID_CACHE\n");
@@ -323,7 +332,7 @@ void ieee802_1x_tx_key(rtapd *rtapd, struct sta_info *sta, u8 id)
 					 RT_PRIV_IOCTL, 
 					 (char *)&WepKey, 
 					 sizeof(NDIS_802_11_KEY), 
-					 rtapd->prefix_wlan_name, sta->ApIdx, 
+					 rtapd->prefix_wlan_name, 0, 
 					 RT_OID_802_DOT1X_PMKID_CACHE))
 		{
 			DBGPRINT(RT_DEBUG_ERROR,"ieee802_1x_tx_key:RT_OID_802_DOT1X_PMKID_CACHE\n");
@@ -681,21 +690,36 @@ void ieee802_1x_receive(
 	switch (hdr->type)
 	{
 		case IEEE802_1X_TYPE_EAP_PACKET:
-			DBGPRINT(RT_DEBUG_TRACE,"Handle EAP_PACKET from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+
+			if (sta->ApIdx == 0)
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAP_PACKET from %s\n", rtapd->main_wlan_name);
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAP_PACKET from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+			}
+
 			handle_eap(sta, (buf + LENGTH_8021X_HDR), datalen);
 			break;
 
 		case IEEE802_1X_TYPE_EAPOL_START:
-			DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_START from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+			if (sta->ApIdx == 0)
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_START from %s\n", rtapd->main_wlan_name);
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_START from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+			}
 #if HOTSPOT_R2
 			if ((len - sizeof(*hdr) > (datalen+3)) && (buf[len-8]==0x50) && (buf[len-7]==0x6f) && (buf[len-6]==0x9a) && (buf[len-5] == 0x12))
 			{
 				printf("HS2 PPSMO :len:%d\n", len - sizeof(*hdr));
 				printf("%02x:%02x:%02x:%02x\n", buf[len-4], buf[len-3], buf[len-2], buf[len-1]); 
 				sta->hs_version = buf[len-4];
-	            sta->hs_ie_exist = buf[len-3];
-    	        sta->ppsmo_id = (buf[len-1] << 8) | buf[len-2];
-
+	        		sta->hs_ie_exist = buf[len-3];
+    	    			sta->ppsmo_id = (buf[len-1] << 8) | buf[len-2];
 			}
 #endif
 			sta->eapol_sm->auth_pae.eapStart = TRUE;
@@ -709,11 +733,25 @@ void ieee802_1x_receive(
 
 		case IEEE802_1X_TYPE_EAPOL_ENCAPSULATED_ASF_ALERT:
 			/* TODO: */
-			DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_ALERT from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+			if (sta->ApIdx == 0)
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_ALERT from %s\n", rtapd->main_wlan_name);
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle EAPOL_ALERT from %s%d\n", rtapd->prefix_wlan_name, sta->ApIdx);
+			}
 			break;
 
 		default:
-			DBGPRINT(RT_DEBUG_TRACE,"Handle Unknown EAP message(Type:%d) from %s%d\n",hdr->type, rtapd->prefix_wlan_name, sta->ApIdx);
+			if (sta->ApIdx == 0)
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle Unknown EAP message(Type:%d) from %s\n",hdr->type, rtapd->main_wlan_name);
+			}
+			else
+			{
+				DBGPRINT(RT_DEBUG_TRACE,"Handle Unknown EAP message(Type:%d) from %s%d\n",hdr->type, rtapd->prefix_wlan_name, sta->ApIdx);
+			}
 			break;
 	}
 
@@ -855,7 +893,7 @@ static void ieee802_1x_get_keys(rtapd *rtapd, struct sta_info *sta,
 						 RT_PRIV_IOCTL, 
 						 (char *)&WepKey, 
 						 sizeof(NDIS_802_11_KEY), 
-						 rtapd->prefix_wlan_name, sta->ApIdx, 
+						 rtapd->prefix_wlan_name, 0, 
 						 RT_OID_802_DOT1X_PMKID_CACHE))
 			{
 				DBGPRINT(RT_DEBUG_ERROR,"ieee802_1x_get_keys:RT_OID_802_DOT1X_PMKID_CACHE\n");

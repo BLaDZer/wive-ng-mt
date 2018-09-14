@@ -17,6 +17,8 @@
 #include "ieee802_1x.h"
 #include "md5.h"
 
+extern char MainIfName[IFNAMSIZ];
+
 unsigned char BtoH(
     unsigned char ch)
 {
@@ -131,9 +133,16 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 	int		radius_count = 0, radius_port_count = 0, radius_key_count = 0;    
 	int		num_eap_if = 0, num_preauth_if = 0; 
 	PDOT1X_CMM_CONF pDot1xCmmConf;
+	char conf_name[IFNAMSIZ];
 
 	*flag = 0;
 	*errors = 0;	
+
+	if (conf == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR, "conf from driver get failed\n", len);
+		return FALSE;
+	}
 
 	len = sizeof(DOT1X_CMM_CONF);	
 	buf = (char *) malloc(len + 1);
@@ -148,9 +157,9 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 		memset(buf, 0, len);
 	}
 				    
-	if((RT_ioctl(ioctl_sock, RT_PRIV_IOCTL, buf, len, prefix_name, 0, OID_802_DOT1X_CONFIGURATION)) != 0)
+	if((RT_ioctl(ioctl_sock, RT_PRIV_IOCTL, buf, len, MainIfName, 0, OID_802_DOT1X_CONFIGURATION)) != 0)
 	{
-		DBGPRINT(RT_DEBUG_ERROR,"ioctl failed for Query_config_from_driver(len=%d, ifname=%s0)\n", len, prefix_name);
+		DBGPRINT(RT_DEBUG_ERROR,"ioctl failed for Query_config_from_driver(len=%d, ifname=%s)\n", len, MainIfName);
 		free(buf);
 		return FALSE;
 	}
@@ -181,10 +190,27 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 		(*errors)++;
 		DBGPRINT(RT_DEBUG_ERROR, "Invalid own ip address \n");
 	}
-
-		
+#if 0 /* current not used */
+	// own_radius_port
+	conf->own_radius_port = pDot1xCmmConf->own_radius_port;
+	if (conf->own_radius_port != 0)
+	{
+		(*flag) |= 0x01;
+		DBGPRINT(RT_DEBUG_TRACE, "own radius port: '%d'\n", conf->own_radius_port);
+	}
+	else
+	{
+		/* own radius port value not set in driver. Kernel will assign dynamically */
+		DBGPRINT(RT_DEBUG_ERROR, "own radius port not set in driver. Default 0 value set.\n");
+	}
+#endif
 	for (i = 0; i < m_num; i++)
 	{
+		if (i == 0)
+			strcpy(conf_name, MainIfName);
+		else
+			sprintf(conf_name, "%s%d", prefix_name, i);
+
 		for (idx = 0; idx < pDot1xCmmConf->Dot1xBssInfo[i].radius_srv_num; idx++)
 		{			
 #ifdef MULTIPLE_RADIUS  	
@@ -197,9 +223,9 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
             	&conf->mbss_auth_server[i]))
     		{        	
         	    radius_count++;
-				DBGPRINT(RT_DEBUG_TRACE, "(no.%d) Radius ip address: '%s'(%x) for %s%d\n", conf->mbss_num_auth_servers[i],
+				DBGPRINT(RT_DEBUG_TRACE, "(no.%d) Radius ip address: '%s'(%x) for %s\n", conf->mbss_num_auth_servers[i],
 										inet_ntoa(conf->mbss_auth_server[i]->addr), 
-										conf->mbss_auth_server[i]->addr.s_addr, prefix_name, i);
+										conf->mbss_auth_server[i]->addr.s_addr, conf_name);
    			}	
 
 			// RADIUS_Port and RADIUS_Key      
@@ -209,21 +235,21 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 				{
 					radius_port_count++;
 					conf->mbss_auth_server[i]->port = pDot1xCmmConf->Dot1xBssInfo[i].radius_srv_info[idx].radius_port;           					
-					DBGPRINT(RT_DEBUG_TRACE, "(no.%d) Radius port: '%d' for %s%d\n", conf->mbss_num_auth_servers[i], conf->mbss_auth_server[i]->port, prefix_name, i);
+					DBGPRINT(RT_DEBUG_TRACE, "(no.%d) Radius port: '%d' for %s\n", conf->mbss_num_auth_servers[i], conf->mbss_auth_server[i]->port, conf_name);
 				}
 				else
-					DBGPRINT(RT_DEBUG_ERROR, "(no.%d) Radius port is invalid for %s%d\n", conf->mbss_num_auth_servers[i], prefix_name, i);
+					DBGPRINT(RT_DEBUG_ERROR, "(no.%d) Radius port is invalid for %s\n", conf->mbss_num_auth_servers[i], conf_name);
 
 				if (pDot1xCmmConf->Dot1xBssInfo[i].radius_srv_info[idx].radius_key_len > 0)
 				{
 					radius_key_count++;
 					conf->mbss_auth_server[i]->shared_secret = (u8 *)strdup((const char *)pDot1xCmmConf->Dot1xBssInfo[i].radius_srv_info[idx].radius_key);            
 	    	        conf->mbss_auth_server[i]->shared_secret_len = pDot1xCmmConf->Dot1xBssInfo[i].radius_srv_info[idx].radius_key_len;
-					DBGPRINT(RT_DEBUG_TRACE,"(no.%d) Radius key: '%s', key_len: %d for %s%d \n", 
-						conf->mbss_num_auth_servers[i], conf->mbss_auth_server[i]->shared_secret, conf->mbss_auth_server[i]->shared_secret_len, prefix_name, i);	
+					DBGPRINT(RT_DEBUG_TRACE,"(no.%d) Radius key: '%s', key_len: %d for %s \n", 
+						conf->mbss_num_auth_servers[i], conf->mbss_auth_server[i]->shared_secret, conf->mbss_auth_server[i]->shared_secret_len, conf_name);	
 				}
 				else
-					DBGPRINT(RT_DEBUG_ERROR, "(no.%d) Radius key is invalid for %s%d\n", conf->mbss_num_auth_servers[i], prefix_name, i);
+					DBGPRINT(RT_DEBUG_ERROR, "(no.%d) Radius key is invalid for %s\n", conf->mbss_num_auth_servers[i], conf_name);
 			
 			}
 #else
@@ -329,6 +355,11 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 	{
 		int	g_key_len = 0;
 
+		if (i == 0)
+			strcpy(conf_name, MainIfName);
+		else
+			sprintf(conf_name, "%s%d", prefix_name, i);
+
 		// DefaultKeyID	
 		if (pDot1xCmmConf->Dot1xBssInfo[i].ieee8021xWEP)
 		{
@@ -341,8 +372,8 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 			else
 				conf->individual_wep_key_idx[i] = 3;	
 					
-			DBGPRINT(RT_DEBUG_TRACE,"IEEE8021X WEP: group key index(%d) and unicast key index(%d) for %s%d\n", 
-																	conf->DefaultKeyID[i], conf->individual_wep_key_idx[i], prefix_name, i);
+			DBGPRINT(RT_DEBUG_TRACE,"IEEE8021X WEP: group key index(%d) and unicast key index(%d) for %s\n", 
+																	conf->DefaultKeyID[i], conf->individual_wep_key_idx[i], conf_name);
 
 			g_key_len = pDot1xCmmConf->Dot1xBssInfo[i].key_length;
 			if (g_key_len == 5 || g_key_len == 13)
@@ -351,8 +382,8 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 				memset(conf->IEEE8021X_ikey[i], 0, WEP8021X_KEY_LEN);
 	            memcpy(conf->IEEE8021X_ikey[i], pDot1xCmmConf->Dot1xBssInfo[i].key_material, g_key_len);
 
-				DBGPRINT(RT_DEBUG_TRACE,"IEEE8021X WEP: use Key%dStr as shared Key and its key_len is %d for %s%d\n",
-											conf->DefaultKeyID[i]+1, g_key_len, prefix_name, i);			
+				DBGPRINT(RT_DEBUG_TRACE,"IEEE8021X WEP: use Key%dStr as shared Key and its key_len is %d for %s\n",
+											conf->DefaultKeyID[i]+1, g_key_len, conf_name);			
 			}
 		}
 
@@ -362,8 +393,8 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 			memcpy(conf->nasId[i], pDot1xCmmConf->Dot1xBssInfo[i].nasId, pDot1xCmmConf->Dot1xBssInfo[i].nasId_len);
 			conf->nasId_len[i] = pDot1xCmmConf->Dot1xBssInfo[i].nasId_len;		
 		}
-		DBGPRINT(RT_DEBUG_TRACE, "NAS-Identifier: %s and len=%d for %s%d \n", 
-									conf->nasId[i], conf->nasId_len[i], prefix_name, i);
+		DBGPRINT(RT_DEBUG_TRACE, "NAS-Identifier: %s and len=%d for %s \n", 
+									conf->nasId[i], conf->nasId_len[i], conf_name);
 		
 
 		// EAPifname
@@ -388,11 +419,13 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 		
 #ifdef RADIUS_MAC_ACL_SUPPORT
 		// Radius ACL Cache
-		conf->RadiusAclEnable[i] = pDot1xCmmConf->RadiusAclEnable[i];
-	        DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Enable: %d \n", i, conf->RadiusAclEnable[i]);
+		if (conf->RadiusAclEnable != NULL && pDot1xCmmConf->RadiusAclEnable != NULL) {
+		    conf->RadiusAclEnable[i] = pDot1xCmmConf->RadiusAclEnable[i];
+	    	    DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Enable: %d \n", i, conf->RadiusAclEnable[i]);
 		
-		conf->AclCacheTimeout[i] = pDot1xCmmConf->AclCacheTimeout[i];
-		DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Cache_Timeout: %d \n", i, conf->AclCacheTimeout[i]);
+		    conf->AclCacheTimeout[i] = pDot1xCmmConf->AclCacheTimeout[i];
+		    DBGPRINT(RT_DEBUG_TRACE,"(no.%d) ACL_Cache_Timeout: %d \n", i, conf->AclCacheTimeout[i]);
+		}
 #endif /* RADIUS_MAC_ACL_SUPPORT */
 	}
 
@@ -459,7 +492,12 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 	{
 		memset(&iwr, 0, sizeof(iwr));
 		memset(ssidBuf, 0, sizeof(ssidBuf));
-		sprintf(iwr.ifr_name, "%s%d", prefix_name, i);
+
+		if (i == 0)
+			strcpy(iwr.ifr_name, MainIfName);
+		else
+			sprintf(iwr.ifr_name, "%s%d", prefix_name, i);
+
 		iwr.u.essid.pointer = ssidBuf;
 		iwr.u.essid.length = HOSTAPD_MAX_SSID_LEN;
 
@@ -480,6 +518,11 @@ struct rtapd_config * Config_read(int ioctl_sock, char *prefix_name)
 	{
 		struct hostapd_radius_server *servs, *cserv, *nserv;
 		int c;
+
+		if (i == 0)
+			strcpy(iwr.ifr_name, MainIfName);
+		else
+			sprintf(iwr.ifr_name, "%s%d", prefix_name, i);
 
 		conf->mbss_auth_server[i] = conf->mbss_auth_servers[i];
 

@@ -41,6 +41,7 @@ struct hapd_interfaces {
 };
 
 u32    RTDebugLevel = RT_DEBUG_ERROR;
+char	MainIfName[IFNAMSIZ];
 
 /*
 	========================================================================
@@ -98,7 +99,10 @@ int RT_ioctl(
     //name[3] = '\0';
 
     //strcpy(wrq.ifr_name, name);
-	sprintf(wrq.ifr_name, "%s%d", prefix_name, apidx);
+	if (apidx == 0)
+		sprintf(wrq.ifr_name, "%s", MainIfName);
+	else
+		sprintf(wrq.ifr_name, "%s%d", prefix_name, apidx);
 
     wrq.u.data.flags = flags;
 	wrq.u.data.length = data_len;
@@ -134,6 +138,23 @@ void dot1x_set_IdleTimeoutAction(
     	return;
 	}   
 
+}
+
+static void write_pidfile(char *funcName)
+{
+	char pid_file_path[256];
+	char *path_name	= "/var/run/";
+	FILE *fp;
+
+	/* Write the pid file */
+	memset(&pid_file_path[0], 0, sizeof(pid_file_path));
+	sprintf(pid_file_path, "%s%s_%s.pid", path_name, funcName, MainIfName);
+
+	if ((fp = fopen(pid_file_path, "w")) != NULL)
+	{
+		fprintf(fp, "%d", getpid());
+		fclose(fp);
+	}
 }
 
 static void Handle_reload_config(
@@ -265,11 +286,23 @@ static void Handle_read(int sock, void *eloop_ctx, void *sock_ctx)
 	    }
 	    if (ethertype == ETH_P_PRE_AUTH)
 	    {
-		DBGPRINT(RT_DEBUG_TRACE, "Receive WPA2 pre-auth packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+		if (apidx == 0) {
+		    DBGPRINT(RT_DEBUG_TRACE, "Receive WPA2 pre-auth packet for %s\n", rtapd->main_wlan_name);
+		}
+		else
+		{
+		    DBGPRINT(RT_DEBUG_TRACE, "Receive WPA2 pre-auth packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+		}
 	    }
 	    else
 	    {
-		DBGPRINT(RT_DEBUG_TRACE, "Receive EAP packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+		if (apidx == 0) {
+		    DBGPRINT(RT_DEBUG_TRACE, "Receive EAP packet for %s\n", rtapd->main_wlan_name);
+		}
+		else
+		{
+		    DBGPRINT(RT_DEBUG_TRACE, "Receive EAP packet for %s%d\n", rtapd->prefix_wlan_name, apidx);
+		}
 	    }
 	}
 	else
@@ -446,6 +479,10 @@ int Apd_init_sockets(rtapd *rtapd)
         }
     
     	memset(&ifr, 0, sizeof(ifr));
+
+		if (i == 0)
+			strcpy(ifr.ifr_name, rtapd->main_wlan_name);
+		else
 		sprintf(ifr.ifr_name, "%s%d",rtapd->prefix_wlan_name, i);
     	//sprintf(ifr.ifr_name, "ra%d", i);
     
@@ -494,6 +531,7 @@ static void Apd_cleanup(rtapd *rtapd)
 	Config_free(rtapd->conf);
 	rtapd->conf = NULL;
 
+	free(rtapd->main_wlan_name);
 	free(rtapd->prefix_wlan_name);
 }
 
@@ -539,7 +577,8 @@ static void usage(void)
 {
 	printf("USAGE:	rtdot1xd [optional command]\n");
 	printf("[optional command] : \n");
-	printf("	-i <card_number> : indicate which card is used\n");
+	printf("	-i <main_interface_name> : indicate which main interface name is used\n");
+	printf("	-p <prefix name> : indicate which prefix name is used\n");
 	printf("	-d <debug_level> : set debug level\n");
 
 	exit(1);
@@ -565,6 +604,13 @@ static rtapd * Apd_init(const char *prefix_name)
 		goto fail;
 	}
 
+	rtapd->main_wlan_name = strdup(MainIfName);
+	if (rtapd->main_wlan_name == NULL)
+	{
+		DBGPRINT(RT_DEBUG_ERROR,"Could not allocate memory for main_wlan_name\n");
+		goto fail;
+	}
+
         // init ioctl socket
         rtapd->ioctl_sock = socket(PF_INET, SOCK_DGRAM, 0);
         if (rtapd->ioctl_sock < 0)
@@ -575,7 +621,7 @@ static rtapd * Apd_init(const char *prefix_name)
 	rtapd->conf = Config_read(rtapd->ioctl_sock, rtapd->prefix_wlan_name);
 	if (rtapd->conf == NULL)
         {
-		DBGPRINT(RT_DEBUG_ERROR,"Could not allocate memory for rtapd->conf \n");
+		DBGPRINT(RT_DEBUG_ERROR,"Configuration file not correct - exit.\n");
 		goto fail;
 	}
 
@@ -594,6 +640,9 @@ fail:
 
 		if (rtapd->prefix_wlan_name)
 			free(rtapd->prefix_wlan_name);
+
+		if (rtapd->main_wlan_name)
+			free(rtapd->main_wlan_name);
 
 		free(rtapd);
 	}
@@ -755,21 +804,28 @@ void Handle_term(int sig, void *eloop_ctx, void *signal_ctx)
 
 int main(int argc, char *argv[])
 {
-	struct hapd_interfaces interfaces;
-       pid_t child_pid;
-	int ret = 1, i;
-	int c;
-       pid_t auth_pid;
-    char prefix_name[IFNAMSIZ+1];
-    
+    struct hapd_interfaces interfaces;
+    pid_t child_pid;
+    int ret = 1, i;
+    int c;
+    pid_t auth_pid;
+    char prefix_name[IFNAMSIZ];
+    char *infName = NULL;
+    char *preName = NULL;
+
+    memset(&MainIfName[0], 0, IFNAMSIZ);
+
+	/* For old arch, it need to remove */
     if (strcmp(argv[0], "rtinicapd") == 0)
 	    strcpy(prefix_name, "rai");
     else
 	    strcpy(prefix_name, "ra");
-	
+
+    sprintf(MainIfName, "%s%d", prefix_name, 0);
+
 	for (;;)
     {
-		c = getopt(argc, argv, "d:i:h");
+		c = getopt(argc, argv, "d:i:p:h");
 		if (c < 0)
 			break;
 
@@ -787,12 +843,29 @@ int main(int argc, char *argv[])
 				RTDebugLevel = (int)strtol(optarg, 0, 10);
 				break;
 
-			case 'i': 
-				// Assign the wireless interface when support multiple cards
-				sprintf(prefix_name, "%s%02d_", prefix_name, ((int)strtol(optarg, 0, 10) - 1));
+			case 'i':
+				infName = optarg;
+
+				if (strlen(infName))
+				{
+					memset(MainIfName, 0, IFNAMSIZ);
+					strncpy(MainIfName, infName, IFNAMSIZ);
+				}
+
 			    break;
 
-			case 'h':	
+			case 'p':
+				preName = optarg;
+
+				if (strlen(preName))
+				{
+					memset(prefix_name, 0, IFNAMSIZ);
+					strncpy(prefix_name, preName, IFNAMSIZ);
+				}
+
+			    break;
+
+			case 'h':
 		    default:
 				usage();
 			    break;
@@ -800,6 +873,7 @@ int main(int argc, char *argv[])
 	} 
 
 	DBGPRINT(RT_DEBUG_OFF, "Ralink DOT1X daemon, version = '%s' \n", dot1x_version);
+	DBGPRINT(RT_DEBUG_OFF, "Main Interface name = '%s'\n", MainIfName);
 	DBGPRINT(RT_DEBUG_TRACE, "prefix_name = '%s'\n", prefix_name);
 
 
@@ -819,6 +893,8 @@ int main(int argc, char *argv[])
             exit(1);    
         }
 
+	write_pidfile(argv[0]);
+
         eloop_init(&interfaces);
         eloop_register_signal(SIGINT, Handle_term, NULL);
         eloop_register_signal(SIGTERM, Handle_term, NULL);
@@ -832,7 +908,7 @@ int main(int argc, char *argv[])
             goto out;
         
 		// Notify driver about PID
-        RT_ioctl(interfaces.rtapd[0]->ioctl_sock, RT_PRIV_IOCTL, (char *)&auth_pid, sizeof(int), prefix_name, 0, RT_SET_APD_PID | OID_GET_SET_TOGGLE);
+        RT_ioctl(interfaces.rtapd[0]->ioctl_sock, RT_PRIV_IOCTL, (char *)&auth_pid, sizeof(int), MainIfName, 0, RT_SET_APD_PID | OID_GET_SET_TOGGLE);
         
         eloop_run();
 
