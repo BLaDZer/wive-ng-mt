@@ -183,8 +183,8 @@ var wireless_dictionary = {
 	'basic bandsteering rssidiff default'	: '0 - 40 db, default 15',
 	'basic bandsteering rssilow default'	: '0 - -100 db, default -85',
 	'basic bandsteering age default'	: 'ms, default 600000',
-	'basic bandsteering hold default'	: 'ms, default 3000',
-	'basic bandsteering check default'	: 'ms, default 6000',
+	'basic bandsteering hold default'	: 'ms, default 5000',
+	'basic bandsteering check default'	: 'ms, default 7000',
 
 	'adv title'				: 'Advanced Wireless Settings',
 	'adv introduction'			: 'You can change advanced wireless settings, such as Beacon Interval, Control TX Rates and Basic Data Rates.',

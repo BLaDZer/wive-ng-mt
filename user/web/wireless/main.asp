@@ -3167,12 +3167,12 @@ table.form tr.ssid-row {
 		<tr id="row_BndStrgHoldTime" style="display:none;">
 			<td class="head" data-tr="basic bandsteering hold">Time for holding 2.4G connection</td>
 			<td class="val"><input type="text" name="BndStrgHoldTime" class="normal" maxlength="4">
-				<span class="range" data-tr="basic bandsteering hold default">ms, default 3000</span></td>
+				<span class="range" data-tr="basic bandsteering hold default">ms, default 5000</span></td>
 		</tr>
 		<tr id="row_BndStrgCheckTime" style="display:none;">
 			<td class="head wordwrap" data-tr="basic bandsteering check">Time for deciding if a client is 2.4G only</td>
 			<td class="val"><input type="text" name="BndStrgCheckTime" class="normal" maxlength="4">
-				<span class="range" data-tr="basic bandsteering check default">ms, default 5000</span></td>
+				<span class="range" data-tr="basic bandsteering check default">ms, default 7000</span></td>
 		</tr>
 	</tbody>
 	</table>
