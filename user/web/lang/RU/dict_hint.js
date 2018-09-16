@@ -20,7 +20,7 @@ var hint_dictionary = {
     'hint vpn dgw disabled'		: 'Не изменять шлюз по умолчанию указанный в таблице маршрутизации.',
     'hint vpn dgw enabled'		: 'Использовать VPN соединение как шлюз по умолчанию.',
     'hint vpn dgw multiple'		: 'Добавить шлюз по умолчанию к существующим, но с метрикой 10.',
-    'hint vpn peerdns'			: 'Использовать адреса DNS серверов полученных от VPN сервера и записать их в файл /etv/ppp/resolv.conf.',
+    'hint vpn peerdns'			: 'Использовать адреса DNS серверов полученных от VPN сервера и записать их в файл /etc/ppp/resolv.conf.',
     'hint vpn test reachable'		: 'Проверить доступность VPN сервера перед подключением.',
     'hint vpn debug'			: 'Включить режим отладки для VPN подключений.',
     'hint vpn nat'			: 'Включить поддержку NAT для VPN соединений.',

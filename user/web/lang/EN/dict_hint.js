@@ -20,7 +20,7 @@ var hint_dictionary = {
 	'hint vpn dgw disabled'		: 'Disabled means that no default gateway will be written to routing table.',
 	'hint vpn dgw enabled'		: 'Enabled means that default gateway will be replaced by gateway given by network provider.',
 	'hint vpn dgw multiple'		: 'Multiple means that default gateway will be added to existing gateway but with metric 10.',
-	'hint vpn peerdns'		: 'Allow to get DNS address from VPN server and write to /etv/ppp/resolv.conf.',
+	'hint vpn peerdns'		: 'Allow to get DNS address from VPN server and write to /etc/ppp/resolv.conf.',
 	'hint vpn test reachable'	: 'Check that VPN server is reachable before initiation of VPN connection.',
 	'hint vpn debug'		: 'Allow debug mode for VPN connections.',
 	'hint vpn nat'			: 'Add Network Address Translation to new VPN connection.',
