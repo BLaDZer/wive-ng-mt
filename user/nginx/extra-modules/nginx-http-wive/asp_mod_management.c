@@ -396,7 +396,7 @@ static void LoadDefaultSettings(webs_t* wp, char_t *path, char_t *query)
 {
 	/* Output timer for reloading */
         websHeader(wp);
-	outputTimerForReload(wp, "", 60000);
+	outputTimerForReload(wp, 60000);
         websFooter(wp);
 
 	/* restore defaults and rwfs drop */

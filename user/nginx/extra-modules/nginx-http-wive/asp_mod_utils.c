@@ -597,7 +597,7 @@ static void setOpMode(webs_t* wp, char_t *path, char_t *query)
 
 	/* Output timer for reloading */
         websHeader(wp);
-	outputTimerForReload(wp, "", 60000);
+	outputTimerForReload(wp, 60000);
         websFooter(wp);
 
 	/* Reboot */
@@ -660,19 +660,10 @@ static void setEthernetPort(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	if (CHK_IF_DIGIT(reboot, 1)) {
-		/* Output timer for reloading */
-                websHeader(wp);
-		outputTimerForReload(wp, "" /* submitUrl */, 60000);
-                websFooter(wp);
-                websDone(wp, 200);
+	websDone(wp, 200);
 
-		/* Reboot */
+	if (CHK_IF_DIGIT(reboot, 1)) {
                 wp->on_response_ok = DO_REBOOT;
-	}
-	else {
-//		websHeader(wp);
-		websDone(wp, 200);
 	}
 }
 
@@ -681,7 +672,7 @@ static void reboot_web(webs_t* wp, char_t *path, char_t *query)
 {
     /* Output timer for reloading */
     websHeader(wp);
-    outputTimerForReload(wp, "", 60000);
+    outputTimerForReload(wp, 60000);
     websFooter(wp);
     websDone(wp, 200);
 

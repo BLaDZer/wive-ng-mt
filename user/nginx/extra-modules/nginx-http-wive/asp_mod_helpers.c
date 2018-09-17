@@ -262,71 +262,14 @@ int websFormDefine(char* func_name, asp_form_proto form_ptr, enum UserPermission
 }
 
 
-void outputTimerForReload(webs_t* wp, char_t *url, long delay)
+void outputTimerForReload(webs_t* wp, long delay)
 {
-	char lan_if_addr[32];
-	const char *lan_if_ip;
+        outWrite("<script language=\"JavaScript\" type=\"text/javascript\">\n"
+                    "ajaxReloadDelayedPage(%ld);\n"
+                    "</script>",
+                    delay);
 
-	if (getIfIp(getLanIfName(), lan_if_addr) != -1)
-		lan_if_ip = lan_if_addr;
-	else
-	{
-		lan_if_ip = nvram_get(RT2860_NVRAM, "lan_ipaddr");
-		if (lan_if_ip == NULL)
-			lan_if_ip = "192.168.1.1";
-	}
-
-
-#ifdef NGX_HTTP_SSL
-        if (wp->request->connection->ssl != 0) {
-            char_t *https_port = nvram_get(RT2860_NVRAM, "RemoteManagementPortHTTPS");
-
-            if (strcmp(https_port, "443") == 0)
-            {
-                outWrite("<script language=\"JavaScript\" type=\"text/javascript\">\n"
-                            "ajaxReloadDelayedPage(%ld, \"https://%s%s\");\n"
-                            "</script>",
-                            delay, lan_if_ip, url);
-            } else {
-                outWrite("<script language=\"JavaScript\" type=\"text/javascript\">\n"
-                            "ajaxReloadDelayedPage(%ld, \"https://%s:%s%s\");\n"
-                            "</script>",
-                            delay, lan_if_ip, https_port, url);
-            }
-
-            websDone(wp, 200);
-            return;
-        }
-#endif
-
-	char_t *http_port = nvram_get(RT2860_NVRAM, "RemoteManagementPort");
-
-//	websHeader(wp);
-	if (strcmp(http_port, "80") == 0)
-	{
-		websWrite
-		(
-			wp,
-			T(
-				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s%s\");\n"
-				"</script>"),
-			delay, lan_if_ip, url
-		);
-	} else {
-		websWrite
-		(
-			wp,
-			T(
-				"<script language=\"JavaScript\" type=\"text/javascript\">\n"
-				"ajaxReloadDelayedPage(%ld, \"http://%s:%s%s\");\n"
-				"</script>"),
-			delay, lan_if_ip, http_port, url
-		);
-	}
-//	websFooter(wp);
-	websDone(wp, 200);
-	fflush(stdout);
+        websDone(wp, 200);
 }
 
 

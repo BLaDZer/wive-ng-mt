@@ -103,7 +103,7 @@ void setupParameters(webs_t* wp, parameter_fetch_t *fetch, int transaction);
 int aspDefineFunc(char* func_name, asp_func_proto func_ptr, enum UserPermission perm);
 int websFormDefine(char* func_name, asp_form_proto form_ptr, enum UserPermission perm);
 
-void outputTimerForReload(webs_t* wp, char_t *url, long delay);
+void outputTimerForReload(webs_t* wp, long delay);
 
 int websAddHeader(webs_t* wp, char* key, char* value);
 

@@ -835,7 +835,7 @@ static void setTvSipVLAN(webs_t* wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
                 websHeader(wp);
-		outputTimerForReload(wp, "", 60000);
+		outputTimerForReload(wp, 60000);
                 websFooter(wp);
 		websDone(wp, 200);
                 wp->on_response_ok = DO_REBOOT;
@@ -875,7 +875,7 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(reboot, 1)) {
             websHeader(wp);
-	    outputTimerForReload(wp, "", 60000);
+	    outputTimerForReload(wp, 60000);
             websFooter(wp);
             websDone(wp, 200);
             wp->on_response_ok = DO_REBOOT;
@@ -889,7 +889,7 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 static void restoremac(webs_t* wp, char_t *path, char_t *query)
 {
         websHeader(wp);
-	outputTimerForReload(wp, "", 60000);
+	outputTimerForReload(wp, 60000);
         websFooter(wp);
         websDone(wp, 200);
 	doSystem("fs factory_mac > /dev/console 2>&1");
@@ -1031,7 +1031,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 		// Reboot
 		if (CHK_IF_DIGIT(reboot, 1)) {
                         websHeader(wp);
-			outputTimerForReload(wp, "", 60000);
+			outputTimerForReload(wp, 60000);
                         websFooter(wp);
                         websDone(wp, 200);
                         wp->on_response_ok = DO_REBOOT;

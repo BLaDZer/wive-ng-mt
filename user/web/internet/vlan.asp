@@ -162,7 +162,7 @@
 				document.getElementById('sip_stbVLANprio').value = valuePrio;
 
 				if (!confirm(_('vlan reboot confirm')))
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
+					return false;
 				else {
 					form.reboot.value = "1";
 					!ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)
@@ -232,7 +232,7 @@
 				form.vlan_lan_isolate.value	= vlan_lan_isolate;
 
 				if (!confirm(_('vlan reboot confirm')))
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
+					return false;
 				else {
 					form.reboot.value = "1";
 					!ajaxPostForm(null, form, 'timerReloader', _("message config"), ajaxShowProgress)

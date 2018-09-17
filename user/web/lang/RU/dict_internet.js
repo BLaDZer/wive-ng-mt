@@ -292,6 +292,7 @@ var internet_dictionary = {
 	'hotspot profile change'		: 'При смене профиля рекомендуется произвести сброс настроек хотспота. Сбросить настройки?',
 
 	// Internet / L2 Tunnels
+	'l2 tunnels title'		: 'Настройка L2-туннелей',
 	'l2 tunnels introduction'	: 'Здесь вы можете настроить L2-туннелирование.',
 	'l2 tunnels config'		: 'Настройка L2-туннелей',
 

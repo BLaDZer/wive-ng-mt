@@ -140,11 +140,13 @@
 			}
 
 			function checkValues(form) {
-				if (!ajaxPostForm(_('ethernet reboot confirm'), form, 'timerReloader', _("message config"), ajaxShowProgress)) {
-					form.reboot.value = "0";
-					ajaxShowTimer(form, 'timerReloader', _('message apply'), 5);
+				if (!confirm(_('ethernet reboot confirm'))) {
+					return false;
 				}
+
+				form.reboot.value = "1";
 				clearInterval(stat_interval);
+				ajaxShowTimer(form, 'timerReloader', _('message config'), 60);
 			}
 
 			function resetValues(form) {
@@ -252,7 +254,9 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="checkValues(this.form);"><input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();"><input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
+									<input type="submit" class="mid" value="Apply"  id="ethernetApply"  onClick="return checkValues(this.form);">
+									<input type="button" class="mid" value="Cancel" id="ethernetCancel" onClick="window.location.reload();">
+									<input type="button" class="mid" value="Reset"  id="ethernetReset"  onClick="resetValues(this.form);">
 									<input type="hidden" name="reset" value="0">
 									<input type="hidden" name="reboot" value="1">
 								</td>

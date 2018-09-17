@@ -372,7 +372,7 @@ static void setMiscServices(webs_t* wp, char_t *path, char_t *query)
 
 	if (CHK_IF_DIGIT(goaheadrestart, 1)) {
                 websHeader(wp);
-		outputTimerForReload(wp, "", 60000);
+		outputTimerForReload(wp, 60000);
                 websFooter(wp);
 
                 //FIXME: restart nginx only
