@@ -22,25 +22,75 @@
 #include "bndstrg.h"
 
 extern struct bndstrg_event_ops bndstrg_event_ops;
+u8 H5G_channel_thres = H_CHANNEL_BIGGER_THAN;
+u8 fg_only_allow_monitor_addr = 0;
+struct bndstrg bndstrg;
+
 
 int usage()
 {
 
-	DBGPRINT(DEBUG_OFF, "bndstrg  [-d <debug level>]\n");
-	DBGPRINT(DEBUG_OFF, "-d <bndstrg debug level>\n");
-	DBGPRINT(DEBUG_OFF, "-h help\n");
+	printf("bndstrg -i <interface> [-d <debug level>] [-a <0|1>]\n");
+	printf("-i \tinterface name\n");
+	printf("\t\t-i ra0 -i rai0 -i rae0 for triband\n");
+	printf("\t\t-i ra0 -i rai0 for dbdc\n");
+	printf("-c \thigh band channel\n");
+	printf("\t\t5G channel\n");
+	printf("-a \tonly allow monitor address packet(debug purpose,defalut is 0)\n");
+	printf("\t\t<0|1>\n");
+	printf("-d \tdebug level\n");
+	printf("\t\t<0|1|2|3|4>\n");
+	printf("-h \thelp\n");
 	return 0;
 }
+
+int process_inf(char *IfName)
+{
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg.ctrl_iface;
+    struct bndstrg_iface *inf = NULL, *new_inf = NULL;
+    u8 i, bFound = FALSE;
+
+    if((ctrl_iface->Size <= MAX_INF_NUM) && (strlen(IfName) > 0))
+    {
+        for(i=0; i<MAX_INF_NUM; i++)
+        {
+            inf = &ctrl_iface->inf[i];
+            if(inf->bValid)
+            {
+                if(!strcmp(inf->ucIfName, IfName))
+                {
+                    bFound = TRUE;
+                    break;
+                }
+            }
+            else
+            {
+                if(!new_inf)
+                    new_inf = inf;
+            }
+        }
+
+        if(!bFound)
+        {
+            new_inf->bValid = TRUE;
+            strcpy(new_inf->ucIfName, IfName);
+            ctrl_iface->Size++;
+        }
+    }
+
+    return 0;
+}
+
 
 int process_options(int argc, char *argv[], char *filename,
 					int *opmode, int *drv_mode, int *debug_level, int *version)
 {
 	int c;
 	char *cvalue = NULL;
-	
-	opterr = 0;
 
-	while ((c = getopt(argc, argv, "d:v:")) != -1) {
+	opterr = 0;
+	*debug_level = DebugLevel;
+	while ((c = getopt(argc, argv, ":d:v:i:a:c:h")) != -1) {
 		switch (c) {
 		case 'd':
 			cvalue = optarg;
@@ -55,7 +105,7 @@ int process_options(int argc, char *argv[], char *filename,
 			else if (os_strcmp(cvalue, "4") == 0)
 				*debug_level = DEBUG_INFO;
 			else {
-				DBGPRINT(DEBUG_ERROR, "-d option does not have this debug_level %s\n", cvalue);
+				printf("-d option does not have this debug_level %s\n", cvalue);
 				return - 1;
 			}
 			break;
@@ -67,22 +117,37 @@ int process_options(int argc, char *argv[], char *filename,
 			cvalue = optarg;
 			*version = atoi(cvalue);
  			break;
-		case 'h':
-			cvalue = optarg;
-			usage();
-			break;
-		case '?':
-			if (optopt == 'f') {
-				DBGPRINT(DEBUG_OFF, "Option -%c requires an argument\n", optopt);
-			} else if (optopt == 'd') {
-				DBGPRINT(DEBUG_OFF, "Option -%c requires an argument\n", optopt);
-			} else if (isprint(optopt)) {
-				DBGPRINT(DEBUG_OFF, "Unknow options -%c\n", optopt);
+        case 'i':
+            cvalue = optarg;
+            process_inf(cvalue);
+            break;
+		case 'c':// high band channel definition
+            cvalue = optarg;
+			if ((atoi(cvalue) < 36) || (atoi(cvalue) > 165)) {
+				H5G_channel_thres = H_CHANNEL_BIGGER_THAN;
 			} else {
-
+				H5G_channel_thres = atoi(cvalue);
 			}
+            break;
+		case 'a':
+            cvalue = optarg;
+			if ((atoi(cvalue) > 1) ||
+				(atoi(cvalue) < 0))
+				fg_only_allow_monitor_addr = 0;
+			else
+				fg_only_allow_monitor_addr = atoi(cvalue);
+            break;
+		case 'h':
 			return -1;
 			break;
+		case ':':
+			if (isprint(optopt))
+				printf("Option -%c requires an argument\n",optopt);
+			return -1;
+		case '?':
+			if (isprint(optopt))
+				printf("Option -%c is invalid\n",optopt);
+			return -1;
 		}
 	}
 	return 0;
@@ -95,30 +160,42 @@ int main(int argc, char *argv[])
 	int ret;
 	int opmode;
 	int drv_mode;
-	int debug_level = DEBUG_WARN;
+	int debug_level;
 	int version = 2;
-	char filename[256] = {0}; 
-	struct bndstrg bndstrg;
+	char filename[256] = {0};
 	pid_t child_pid;
 
 	/* default setting */
+	memset(&bndstrg.ctrl_iface, 0, sizeof(struct bndstrg_ctrl_iface));
 
 	/* options processing */
 	ret = process_options(argc, argv, filename, &opmode, &drv_mode, &debug_level, &version);
-
 	if (ret) {
 		usage();
 		return -1;
 	}
 
+#ifdef SYSLOG
+	openlog("bndstrg", LOG_PID|LOG_NDELAY, LOG_DAEMON);
+#endif
+
+        /* default interfaces config ra0 - 2G, rai0 - 5G */
+	if(bndstrg.ctrl_iface.Size == 0){
+    	    process_inf(IFNAME_2G);
+    	    process_inf(IFNAME_5G);
+	}
+
+	/* init bndstrg state */
+	bndstrg.state = BNDSTRG_INIT;
+
 	DebugLevel = debug_level;
-	DBGPRINT(DEBUG_OFF, "DebugLevel %d\n",DebugLevel);
+
 	child_pid = fork();
 
-	if (child_pid == 0) {	
+	if (child_pid == 0) {
 		DBGPRINT(DEBUG_OFF, "Initialize bndstrg\n");
 		ret = bndstrg_init(&bndstrg, &bndstrg_event_ops, drv_mode, opmode, version);
-	
+
 		if (ret)
 			goto error;
 
@@ -126,12 +203,7 @@ int main(int argc, char *argv[])
 
 	} else
 		return 0;
-#if 0
-error0:
-	bndstrg_deinit(&hs);
-#endif
 error:
-	
 	return ret;
 
 }

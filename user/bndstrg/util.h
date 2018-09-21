@@ -90,4 +90,9 @@
 #define MAC_ADDR_HASH_INDEX(Addr)		(MAC_ADDR_HASH(Addr) & (BND_HASH_TABLE_SIZE - 1))
 #define MAC_ADDR_EQUAL(pAddr1,pAddr2)           !memcmp((void *)(pAddr1), (void *)(pAddr2), MAC_ADDR_LEN)
 #define PRINT_MAC(addr)				addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]
+#define INC(_x,_l)				(_x)++;(_x)%=(_l)
+
+
+u8 BtoH(char ch);
+void AtoH(char *src, char *dest, int destlen);
 #endif /* __UTIL_H__ */

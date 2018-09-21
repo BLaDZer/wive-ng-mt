@@ -711,7 +711,7 @@ inline int bndstrg_inf_status_query(
 	int ret = 0;
 
 #if 0
-	DBGPRINT(DEBUG_TRACE, "\n");
+	//DBGPRINT(DEBUG_TRACE, "\n");
 	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
 
 	if (ret) {
@@ -1241,9 +1241,21 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 								fBND_STRG_FRM_CHK_ASS_REQ;
 	table->bInitialized = TRUE;
 
-	/* configure OK - enable now */
-	sprintf(cmd, "iwpriv ra0 set BndStrgEnable=%u && iwpriv rai0 set BndStrgEnable=%u", BandSteering, BandSteering);
-	system(cmd);
+	if (BandSteering) {
+	    /* configure OK:
+	     * 1: disconnect all sta from all bands (5->2)
+	     * 2: enable steering (5->2)
+	     * 3: force steer bi kick form (2)
+	     *
+	    */
+	    sprintf(cmd, "iwpriv rai0 set DisConnectAllSta=1 && iwpriv ra0 set DisConnectAllSta=1");
+	    system(cmd);
+	    sprintf(cmd, "iwpriv rai0 set BndStrgEnable=1 && iwpriv ra0 set BndStrgEnable=1");
+	    system(cmd);
+	    sprintf(cmd, "iwpriv ra0 set DisConnectAllSta=1");
+	    system(cmd);
+	    sync();
+	}
 
 	return BND_STRG_SUCCESS;
 }
@@ -1288,7 +1300,7 @@ int bndstrg_deinit(struct bndstrg *bndstrg)
 {
     int ret = 0;
 
-    DBGPRINT(DEBUG_TRACE, "\n");
+    //DBGPRINT(DEBUG_TRACE, "\n");
 
     ret = bndstrg->drv_ops->drv_inf_exit(bndstrg);
 
@@ -1300,7 +1312,7 @@ int bndstrg_deinit(struct bndstrg *bndstrg)
 
 static void bndstrg_terminate(int sig, void *signal_ctx)
 {
-	DBGPRINT(DEBUG_TRACE, "\n");
+	//DBGPRINT(DEBUG_TRACE, "\n");
 
 	eloop_terminate();
 }

@@ -180,7 +180,7 @@ var wireless_dictionary = {
 	'basic bandsteering hold'		: 'Time for holding 2.4G connection',
 	'basic bandsteering check'		: 'Time for deciding if a client is 2.4G only',
 	'basic bandsteering ssid'		: 'SSID and Pass phrase for 2.4GHz and 5GHz networks must be the same',
-	'basic bandsteering rssidiff default'	: '0 - 40 db, default 15',
+	'basic bandsteering rssidiff default'	: '0 - 40 db, default 30',
 	'basic bandsteering rssilow default'	: '0 - -100 db, default -85',
 	'basic bandsteering age default'	: 'ms, default 600000',
 	'basic bandsteering hold default'	: 'ms, default 5000',

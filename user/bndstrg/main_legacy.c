@@ -19,11 +19,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#ifdef LEGACYMODE
 #include "bndstrg_legacy.h"
-#else
-#include "bndstrg.h"
-#endif
 
 int DebugLevel = DEBUG_ERROR;
 
@@ -89,10 +85,6 @@ int main(int argc, char *argv[])
 
 	} else
 		goto error;
-#if 0
-error0:
-	bndstrg_deinit(&hs);
-#endif
 error:
 	return -1;
 }

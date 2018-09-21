@@ -11,30 +11,31 @@
  ***************************************************************************
 
     Module Name:
-    	types.h
+    	debug.c
 */
 
-#ifndef __TYPES_H__
-#define __TYPES_H__
-#include <stdint.h>
+#ifdef LEGACYMODE
+#include "bndstrg_legacy.h"
+#else
+#include "bndstrg.h"
+#endif
 
-typedef uint64_t u64;
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t u8;
-typedef int64_t s64;
-typedef int32_t s32;
-typedef int16_t s16;
-typedef int8_t s8;
+void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen)
+{
+	unsigned char *pt;
+	int x;
 
-typedef u16 be16;
-typedef u16 le16;
-typedef u32 be32;
-typedef u32 le32;
-typedef u64 be64;
-typedef u64 le64;
+	if (DebugLevel < DEBUG_TRACE)
+		return;
 
-#ifndef GNU_PACKED
-#define GNU_PACKED	__attribute__ ((packed))
-#endif // GNU_PACKED //
-#endif /* __TYPES_H__ */
+	pt = pSrcBufVA;
+	printf("%s: %p, len = %d\n",str,  pSrcBufVA, SrcBufLen);
+
+	for (x=0; x<SrcBufLen; x++) {
+		if (x % 16 == 0)
+			printf("0x%04x : ", x);
+		printf("%02x ", ((unsigned char)pt[x]));
+		if (x%16 == 15) printf("\n");
+	}
+	printf("\n");
+}

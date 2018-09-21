@@ -21,5 +21,8 @@ struct bndstrg;
 
 struct bndstrg_event_ops {
 	int (*event_handle)(struct bndstrg *bndstrg, char *data);
+#ifndef LEGACYMODE
+	int (*wnm_event_handle)(struct bndstrg *bndstrg, char *data);
+#endif
 };
 #endif /* __EVENT_H__ */

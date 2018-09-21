@@ -16,53 +16,136 @@
 */
 #include <stdlib.h>
 #include <stdio.h>
+#include "bndstrg.h"
 #include <time.h>
 
-#include "bndstrg.h"
 #include "libnvram.h"
 
+#undef NVRAM_LIB_SUPPORT
 #ifdef NVRAM_LIB_SUPPORT
 #define NVRAM_INDEX RT2860_NVRAM
 #endif
 
-int DebugLevel = DEBUG_TRACE;
+int DebugLevel = DEBUG_ERROR;
+#define BNDSTRG_DAEMON_VER	"3.1.8"
+#define BNDSTRG_DAT_FILE_PATH	"/etc/bndstrg.conf"
 
-//extern struct bndstrg_drv_ops bndstrg_drv_ranl_ops;
-int	PriorityList[] = {fBND_STRG_CND_BAND_PERSIST,fBND_STRG_CND_RSSI_DIFF,fBND_STRG_CND_HT_SUPPORT, fBND_STRG_CND_5G_RSSI, fBND_STRG_CND_DEFAULT_5G};
+int	PriorityList[] = {	fBND_STRG_PRIORITY_RSSI_DIFF,
+						fBND_STRG_PRIORITY_5G_RSSI,
+						fBND_STRG_PRIORITY_HT_SUPPORT,
+						fBND_STRG_PRIORITY_DEFAULT_5G};
+
 u8 	PriorityListSize = sizeof(PriorityList)/sizeof(PriorityList[0]);
-char * bndstrg_matched_rule [] ={
-			"RSSI_DIFF",
-			"BAND_PERSIST",
-			"HT_SUPPORT",
-			"5G_RSSI",
-			"VHT_SUPPORT",
-			"NSS_SUPPORT",
-			"LOAD_BALANCE",
-			"DEFAULT_2G",
-			"DEFAULT_5G",
-			"5G_RSSI_DYNAMIC"
+
+/* make sure that it match the sequence in BND_STRG_PRIORITY_FLAGS enum */
+char *entry_match_steering_str[]={
+		"RSSI_DIFF",
+		"BAND_PERSIST",
+		"HT_SUPPORT",
+		"5G_RSSI",
+		"VHT_SUPPORT",
+		"NSS_SUPPORT",
+		"LB_CHANLOAD_STATIC",
+		"LB_STA_COUNT",
+		"LB_RSSI",
+		"LB_MCS",
+		"DEFAULT_2G",
+		"DEFAULT_5G",
+		"RSSI_DOWNSTEER",
+		"LB_CHANLOAD_IDLE",
+		"LB_CHANLOAD_ACTIVE",
+		"RSSI_UPSTEER",
+#ifdef 	VENDOR_FEATURE7_SUPPORT
+		"DOWNSTEER_CHLOAD_RSSI",
+		"UPSTEER_CHLOAD_RSSI",
+#endif
+		"UNKNOWN"
+};
+
+/* make sure that it match the sequence in BND_STRG_CHANLOAD_MATCH_ID enum */
+char *entry_match_chanload_active_str[] = {
+		"UNKNOWN", "DOWN_STEER", "UP_STEER"
 	};
 
-char * Cli_Status [] ={
-		"CLI_INIT",
-		"CLI_ACTIVE",
-		"CLI_NOTACTIVE",
-	};
+char *bndstrg_stop_str [] = {
+	"BNDSTRG_DAEMON_TBL_FULL",
+	"BNDSTRG_DRIVER_TBL_FULL",
+	"BNDSTRG_LIMIT"};
 
-char * Cli_Band [] = {
-		"NG",
-		"5G",
-		"2G",
-	};
+/* refer enum entry_state */
+char *entry_state [] = {
+	"INIT",
+	"READY_TO_ASSOC",
+	"ASSOC_RCD",
+	"DELETE_RCD",
+	"OPER_STEER_ACTIVE"
+};
 
-static u32 bndstrg_get_entry_elapsed_time(struct bndstrg_cli_entry *entry);
-inline int bndstrg_accessible_cli(
-				struct bndstrg *bndstrg,
-				const char *iface,
-				struct bndstrg_cli_entry *entry,
-				u8 action);
+char *phy_mode [] = {
+	"Legacy",
+	"HT",
+	"VHT"
+};
+
+struct bndstrg_command_id_name bndstrg_commands[] = {
+	{BND_SET_CND_PRIORITY, "CndPriority"},
+	{BND_SET_DWELL_TIME, "DwellTime"},
+	{BND_SET_STEER_TIME_WINDOW, "SteerTimeWindow"},
+	{BND_SET_MAX_STEER_COUNT, "MaxSteerCount"},
+	{BND_SET_AGETIME, "AgeTime"},
+	{BND_SET_CHECKTIME, "CheckTime"},
+	{BND_SET_HOLDTIME, "HoldTime"},
+	{BND_SET_RSSILOW, "RssiLow"},
+	{BND_SET_RSSIDIFF, "RssiDiff"},
+	{BND_SET_STEERING_NUM, "SteeringNum"},
+	{BND_SET_ASSOC_TH, "AssocThres"},
+	{BND_SET_LOAD_TH, "LoadThres"},
+	{BND_SET_MIN_RSSI_TH, "MinRssiThres"},
+	{BND_SET_NSS_TH, "NSSThres"},
+	{BND_SET_STA_POLL_PRD, "StaPollTime"},
+	{BND_SET_DAEMON_STATE, "DaemonState"},
+	{BND_SET_ADD_WHITE_LIST, "AddWhiteList"},
+	{BND_SET_REMOVE_WHITE_LIST, "RemoveWhiteList"},
+#ifdef BTM_DEBUG_SUPPORT /* For BTM manual steering debug only */
+	{BND_SEND_BTM, "SendBTM"},
+#endif
+	{BND_SET_RSSI_DOWNSTEER, "RSSILowDownSteer"},
+	{BND_SET_RSSI_UPSTEER, "RSSIHighUpSteer"},
+	{BND_SET_NVRAM, "NVRAM"},
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	{BND_SET_RSSI_DISCONNECT, "RSSIDisconnect"},
+#endif
+};
 
 extern struct bndstrg_drv_ops bndstrg_drv_wext_ops;
+
+/* static function declaration */
+static int _bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band, u8 channel, char *ifname);
+static int _bndstrg_event_show_entries(struct bndstrg *bndstrg,struct bndstrg_msg *msg);
+static int _bndstrg_event_table_info(struct bndstrg *bndstrg);
+static int _bndstrg_print_ctrlflags(u32 flags);
+static int _bndstrg_print_entry_statistics(struct bndstrg_entry_stat *statistics, u8 dump_cli_status);
+static void _bndstrg_terminate(int sig, void *signal_ctx);
+static int _bndstrg_print_entry( struct bndstrg_cli_table *table, struct bndstrg_cli_entry *entry);
+int bndstrg_backup_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index, u8 steered_ok);
+u32 bndstrg_get_entry_elapsed_time(struct bndstrg_cli_entry *entry);
+u32 bndstrg_get_elapsed_time(struct timespec ref_time); 
+u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry);
+u8 bndstrg_table_en_polling(struct bndstrg *bndstrg, struct bndstrg_cli_table *table, u8 en);
+void get_current_system_tick(struct timespec *now);
+int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index);
+u8 bndstrg_polling_connected_sta(struct bndstrg *bndstrg, u8 inf_num);
+void bndstrg_inf_init(struct bndstrg_iface *inf);
+void bndstrg_read_inf_param(struct bndstrg *bndstrg);
+void bndstrg_check_steering_limit(struct bndstrg_cli_table *table,struct bndstrg_cli_entry *entry);
+struct bndstrg_iface * bndstrg_get_interface(
+    struct bndstrg_ctrl_iface *ctrl_iface, 
+    char *IfName, 
+    u8 Band,
+    u8 byBand);
+struct bndstrg_iface * bndstrg_get_interface_by_channel(
+    struct bndstrg_ctrl_iface *ctrl_iface,  
+    u8 channel);
 
 char* getFormattedTime(void) {
 
@@ -72,51 +155,237 @@ char* getFormattedTime(void) {
     time(&rawtime);
     timeinfo = localtime(&rawtime);
 
-    // Must be static, otherwise won't work
+    /*  Must be static, otherwise won't work  */
     static char _retval[24];
     strftime(_retval, sizeof(_retval), "%H:%M:%S", timeinfo);
 
     return _retval;
 }
 
-void get_current_system_tick(
-	struct timespec *now)
+static char* bndstrg_get_entry_band(u8 band)
 {
-	clock_gettime(CLOCK_REALTIME, now);
+	if(IS_2G_BAND(band))
+		return "2G" ;
+	else if(IS_5G_L_BAND(band))
+		return "5GL";
+	else if(IS_5G_H_BAND(band))
+		return "5GH";
+	else if(IS_5G_BAND(band))
+		return "5G";
+	else
+		return "NG";
 }
 
-int bndstrg_update_entry_statistics(
-		struct bndstrg_entry_stat *statistics,
+inline int bndstrg_accessible_cli(
+				struct bndstrg *bndstrg,
+				struct bndstrg_iface *inf,
+				struct bndstrg_cli_entry *entry,
+				u8 action)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");
+    
+	ret = bndstrg->drv_ops->drv_accessible_cli(bndstrg->drv_data, inf, entry, action);
+
+	return ret;
+}
+
+inline int bndstrg_inf_status_query(
+				struct bndstrg *bndstrg,
+				const char *iface, u8 action)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");
+	ret = bndstrg->drv_ops->drv_inf_status_query(bndstrg->drv_data, iface, action);
+
+	return ret;
+}
+
+inline int bndstrg_chanload_status_query(
+	struct bndstrg *bndstrg,
+	const char *iface)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");
+	ret = bndstrg->drv_ops->drv_chanload_status_query(bndstrg->drv_data, iface);
+
+	return ret;
+}
+
+inline int bndstrg_onoff(
+				struct bndstrg *bndstrg,
+				const char *iface,
+				u8 onoff,
+				u8 mode)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");
+#if 0
+	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
+
+	if (ret) {
+		DBGPRINT(DEBUG_ERROR, "%s: bndstrg drv ops pre check fail\n", __FUNCTION__);
+		return -1;
+	}
+#endif
+	ret = bndstrg->drv_ops->drv_bndstrg_onoff(bndstrg->drv_data, iface, onoff, mode);
+
+	return ret;
+}
+
+inline int bndstrg_send_white_black_list(
+				struct bndstrg *bndstrg,
+				const char *iface, unsigned char *macaddr, u8 list_type, u8 deladd)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");
+	ret = bndstrg->drv_ops->drv_update_white_black_list(bndstrg->drv_data, iface, macaddr, list_type, deladd);
+
+	return ret;
+}
+
+inline int bndstrg_wnm_send_btm_req(struct bndstrg *bndstrg, 
+	struct bndstrg_iface *inf, 
+	struct bndstrg_iface *destination_inf, 
+	struct bndstrg_cli_entry *entry)
+{
+	int ret = 0;
+
+	//DBGPRINT(DEBUG_TRACE, "\n");		
+	ret = bndstrg->drv_ops->drv_send_btm_req(bndstrg, inf, destination_inf, entry);
+	return ret;
+}
+
+int bndstrg_update_entry_statistics_control_flags(
+		struct bndstrg *bndstrg,
+		struct bndstrg_cli_entry *entry,
+		struct bndstrg_iface *inf,
+		u8	band,
 		char Rssi,
 		u8 FrameSubType)
 {
 	int ret_val = BND_STRG_SUCCESS;
+#ifdef BND_STRG_DBG
 	time_t current_time;
 	struct tm * time_info;
-
 	time(&current_time);
 	time_info = localtime(&current_time);
+#endif
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bndstrg_entry_stat *statistics = NULL;
 
-	statistics->Rssi = Rssi;
+	if (IS_2G_BAND(band))
+	{
+		entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
+		statistics = &entry->statistics[IDX_2G];
+		statistics->Rssi = Rssi;
+	}
+	else if (IS_5G_BAND(band))
+	{
+		if (IS_5G_H_BAND(inf->Band)) {
+			statistics = &entry->statistics[IDX_5GH];
+			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_H5G;
+		} else {
+			statistics = &entry->statistics[IDX_5GL];
+			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_L5G;
+		}
+		statistics->Rssi = Rssi;
+	}
+	else
+	{
+		ret_val = BND_STRG_UNEXP;
+	}
+
+	if (statistics->Rssi != 0 && statistics->Rssi > -127)
+	{
+		/* update low RSSI information when received probe/auth*/
+		if (statistics->Rssi < table->RssiLow)
+		{
+			if (IS_5G_BAND(band)) {
+				entry->Control_Flags |= IS_5G_H_BAND(inf->Band) ? \
+				fBND_STRG_CLIENT_LOW_RSSI_H5G : fBND_STRG_CLIENT_LOW_RSSI_L5G;
+			} else {
+				entry->Control_Flags |= fBND_STRG_CLIENT_LOW_RSSI_2G;
+			}
+		} else {
+			if (IS_5G_BAND(band))
+				entry->Control_Flags &= IS_5G_H_BAND(inf->Band) ? \
+				(~fBND_STRG_CLIENT_LOW_RSSI_H5G) : (~fBND_STRG_CLIENT_LOW_RSSI_L5G);
+			else
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_LOW_RSSI_2G);
+		}
+	}
+
+	/* sanity init clients modes */
+	if (IS_5G_BAND(band)) {
+
+		/* correction wrong 2GHz only flag set for some dualband clients */
+		if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY) {
+                           entry->Control_Flags &=  (~fBND_STRG_CLIENT_IS_2G_ONLY);
+                           BND_STRG_PRINTQAMSG(table, entry,
+                           YLW("recived annonce by 5GHz. client (%02x:%02x:%02x:%02x:%02x:%02x) force drop 2.4GHz only flag.\n"), PRINT_MAC(entry->Addr));
+		}
+
+		/* if 5G rssi is good, client support 5G and connect to 5G allowed - remove 2.4G table record for this. */
+		if ((statistics->Rssi != 0 && statistics->Rssi > -127) && (statistics->Rssi > table->RssiLow)) {
+
+			if(IS_5G_L_BAND(band)) {
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_L5G);
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+			}
+
+			if(IS_5G_H_BAND(band)) {
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_SUPPORT_H5G);
+			    entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+			}
+
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+
+			BND_STRG_PRINTQAMSG(table, entry,
+			YLW("STAT: client (%02x:%02x:%02x:%02x:%02x:%02x) 5GHz RSSI good, force allow 5GHz connect and drop 2.4GHz by default.\n"), PRINT_MAC(entry->Addr));
+
+			// update access table for remove low band record
+			//bndstrg_client_band_update(bndstrg,entry,band);
+		}
+	}
+
+	/* For connection time some STA only scan single band although they are dual band client
+	 * Need to change flag once STA is confirmed to be single band 
+	 */
+	if ((IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)) &&
+		(entry->Control_Flags & (fBND_STRG_CLIENT_IS_2G_ONLY | fBND_STRG_CLIENT_IS_5G_ONLY)))
+	{
+		entry->Control_Flags &= ~ (fBND_STRG_CLIENT_IS_2G_ONLY | fBND_STRG_CLIENT_IS_5G_ONLY);
+	}
+
 	switch (FrameSubType)
 	{
 		case APMT2_PEER_PROBE_REQ:
+#ifdef BND_STRG_DBG
 			if(statistics->ProbeReqCount == 0)
 				sprintf(statistics->FirstProbeTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+			sprintf(statistics->LastProbeTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+#endif
 			statistics->ProbeReqCount++;
 			break;
-			
+
 		case APMT2_PEER_ASSOC_REQ: /* assoc/auth this strong indicator for client band */
 		case APMT2_PEER_AUTH_REQ:
+#ifdef BND_STRG_DBG
 			if(statistics->AuthReqCount == 0)
 				sprintf(statistics->FirstAuthTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+			sprintf(statistics->LastAuthTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+#endif
 			statistics->AuthReqCount++;
 			break;
-			
 		default:
-			BND_STRG_DBGPRINT(DEBUG_OFF,
-			"%s(): Unexpect FrameSubType (%u)\n",
-			__FUNCTION__, FrameSubType);
+			BND_STRG_DBGPRINT(DEBUG_OFF, "%s(): Unexpect FrameSubType (%u)\n", __FUNCTION__, FrameSubType);
 			ret_val = BND_STRG_UNEXP;
 			break;
 	}
@@ -128,7 +397,7 @@ struct bndstrg_cli_entry* bndstrg_table_lookup(struct bndstrg_cli_table *table, 
 {
 	unsigned long HashIdx;
 	struct bndstrg_cli_entry *entry = NULL;
-	
+
 	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
 	entry = table->Hash[HashIdx];
 
@@ -143,37 +412,232 @@ struct bndstrg_cli_entry* bndstrg_table_lookup(struct bndstrg_cli_table *table, 
 	return entry;
 }
 
+void bndstrg_ctrl_interface_update(
+    struct bndstrg_ctrl_iface *ctrl_iface,
+    struct bndstrg_cli_table *table,
+    struct bnd_msg_inf_status_rsp *inf_status_rsp)
+{
+    u8 i,cnt;
+    struct bndstrg_iface *inf = NULL, *inf_temp = NULL, *inf_same_src = NULL;
+    struct bndstrg_ref_iface *ref_inf = NULL;
+    
+    for(i=0,cnt=0; i<MAX_INF_NUM; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid)
+        {
+            cnt++;
+            if(!strcmp(inf->ucIfName, inf_status_rsp->ucIfName))
+            {
+                if (!(inf->bInfReady^inf_status_rsp->bInfReady))
+		            return;
+                inf->bInfReady = inf_status_rsp->bInfReady;
+                inf->Band = inf_status_rsp->band;
+                inf->Channel = inf_status_rsp->Channel;
+                inf->bVHTCapable = inf_status_rsp->bVHTCapable;
+				inf->nss = inf_status_rsp->nss;
+				inf->max_driver_table_size = inf_status_rsp->table_size;
+                inf->table_src_addr = inf_status_rsp->table_src_addr;
+                if(IS_5G_BAND(inf_status_rsp->band))
+                {
+                	inf_temp = bndstrg_get_interface(ctrl_iface,NULL,BAND_5G,TRUE);
+					if((ctrl_iface->Active5GCount > 0) && inf_temp){
+						if(inf->nss <= inf_temp->nss){
+							if(inf->Channel > inf_temp->Channel){
+								inf->Band |= BAND_5G_H;
+								inf_temp->Band &= ~BAND_5G_H;
+								inf_temp->Band |= BAND_5G_L;
+							}else{
+								inf->Band |= BAND_5G_L;
+								inf_temp->Band &= ~BAND_5G_L;
+								inf_temp->Band |= BAND_5G_H;
+							}
+				
+						}else{
+							inf->Band |= BAND_5G_H;
+							inf_temp->Band &= ~BAND_5G_H;
+							inf_temp->Band |= BAND_5G_L;
+						}
+
+					}
+					else
+					{
+                        inf->Band |= BAND_5G_L;
+					}
+
+                    if(inf_status_rsp->bInfReady)
+                    {
+                        ctrl_iface->Active5GCount++;
+                        ctrl_iface->ActiveCount++;
+						bndstrg_inf_init(inf);
+						if(inf_temp)
+							bndstrg_inf_init(inf_temp);
+                    }
+                    else
+                    {
+                        ctrl_iface->Active5GCount--;
+                        if(ctrl_iface->Active5GCount < 0)
+                           ctrl_iface->Active5GCount = 0;
+                        ctrl_iface->ActiveCount--;
+                        if(ctrl_iface->ActiveCount < 0)
+                            ctrl_iface->ActiveCount = 0;
+                    }
+                }
+                else
+                {
+                    if(inf->bInfReady)
+                    {
+                        ctrl_iface->Active2GCount++;
+                        ctrl_iface->ActiveCount++;
+						bndstrg_inf_init(inf);
+                    }
+                    else
+                    {
+                        ctrl_iface->Active2GCount--;
+                        if(ctrl_iface->Active2GCount < 0)
+                           ctrl_iface->Active2GCount = 0;
+                        ctrl_iface->ActiveCount--;
+                        if(ctrl_iface->ActiveCount < 0)
+                            ctrl_iface->ActiveCount = 0;
+                    }
+                }
+                                
+                if(ctrl_iface->Active2GCount > 0)
+                    table->b2GInfReady = TRUE;
+                else
+                    table->b2GInfReady = FALSE;
+
+                if(ctrl_iface->Active5GCount > 0)
+                    table->b5GInfReady = TRUE;
+                else
+                    table->b5GInfReady = FALSE;
+                
+				DBGPRINT(DEBUG_OFF,"Rx INF STATUS RSP for inf(%s): %d\n",
+                        (char*)inf_status_rsp->ucIfName, inf_status_rsp->bInfReady);
+				DBGPRINT(DEBUG_TRACE,"Band:%s Channel:%d VHTCap:%s Nss:%d TableSize:%d",
+						bndstrg_get_entry_band(inf->Band), inf->Channel, 
+						inf->bVHTCapable ? "Yes":"No", inf->nss, inf->driver_table_size);
+                return;
+            }
+
+            if(!inf_same_src && inf->bInfReady)
+                inf_same_src = (inf->table_src_addr == inf_status_rsp->table_src_addr)?inf:NULL;
+        }
+        if(cnt >= ctrl_iface->Size)
+            break;
+    }
+
+    /* For Debug Demand */
+    if(inf_same_src && (inf_same_src->Size < MAX_REF_INF_NUM))
+    {
+        for(i=0,cnt=0; i<MAX_REF_INF_NUM; i++)
+        {
+            ref_inf = &inf_same_src->ref_iface[i];
+            if(ref_inf->bValid)
+            {
+                cnt++;
+                if(!strcmp(ref_inf->ucIfName, inf_status_rsp->ucIfName))
+                {
+                    ref_inf->bInfReady = inf_status_rsp->bInfReady;
+                    break;
+                }
+
+            }
+            else
+            {
+                ref_inf->bValid = TRUE;
+                ref_inf->bInfReady = inf_status_rsp->bInfReady;
+                strcpy(ref_inf->ucIfName, inf_status_rsp->ucIfName);
+                inf_same_src->Size++;
+                break;
+            }
+            if(cnt >= inf_same_src->Size)
+                break;
+        }
+    }
+}
+
+struct bndstrg_iface * bndstrg_get_interface(
+    struct bndstrg_ctrl_iface *ctrl_iface, 
+    char *IfName, 
+    u8 Band,
+    u8 byBand)
+{
+    u8 i,cnt;
+    struct bndstrg_iface *inf = NULL;
+
+	if(byBand && (Band == BAND_INVALID))
+		return NULL;
+	
+    for(i=0,cnt=0; i < ctrl_iface->Size; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid)
+        {
+            cnt++;
+            if(byBand)
+            {
+                if(inf->bInfReady && ((inf->Band & Band) == Band))
+                    return inf;
+            }
+            else
+            {
+                if(!strcmp((char*)inf->ucIfName, IfName))
+                    return inf;
+            }
+        }
+    }
+
+    return NULL;
+}
+
+int bndstrg_op_mode_update(struct bndstrg *bndstrg)
+{
+    struct bndstrg_cli_table *table = &bndstrg->table;
+
+	if(table->Band == (BAND_2G | BAND_5G | BAND_5G_L | BAND_5G_H)) {
+		table->op_mode = OP_TRIBAND;
+		table->bEnabled = TRUE;		
+	}
+	else if ((table->Band == (BAND_2G | BAND_5G | BAND_5G_L))
+		|| (table->Band == (BAND_5G | BAND_5G_L | BAND_5G_H))){
+			table->op_mode = OP_DUALBAND;
+			table->bEnabled = TRUE; 	
+		}
+	else{ 
+		table->op_mode = OP_NO_BNDSTR;
+		table->bEnabled = FALSE;
+	}
+    return 0;
+}
+
 inline int bndstrg_nvram_update_to_driver(
-				struct bndstrg *bndstrg,
-				const char *iface,
-				struct bndstrg_nvram_client *entry,
-				u8 action)
+		struct bndstrg *bndstrg,
+		const char *iface,
+		struct bndstrg_nvram_client *entry,
+		u8 action)
 {
 	int ret = 0;
 
-	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
-#if 0
-	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
-
-	if (ret) {
-		DBGPRINT(DEBUG_ERROR, "%s: bndstrg drv ops pre check fail\n", __FUNCTION__);
-		return -1;
-	}
-#endif
-	bndstrg->table.sent_action_code_counter[action - 1]++;
+	//DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
 	ret = bndstrg->drv_ops->drv_nvram_update(bndstrg->drv_data, iface, entry, action);
 	return ret;
 }
 
-void bndstrg_nvram_write(struct bndstrg_cli_table *table, struct bndstrg_nvram_client *nvram_entry)
+void bndstrg_nvram_write(struct bndstrg_cli_table *table, struct bndstrg_nvram_client *nvram_entry, int index)
 {
 #ifdef NVRAM_LIB_SUPPORT
 	int nvram_index = NVRAM_INDEX;
 	char *name = NULL;
 	char *value = NULL;
 	char indexname[20] = { 0 };
-	char indexvalue[25] = { 0 };
-	int index = table->bndstrg_nvram_client_count;
+	char indexvalue[50] = { 0 };
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	static char _timeinfo[24];
+#endif
+
+	if (!table->bndstrg->nvram_support)
+		return;
 	DBGPRINT(DEBUG_OFF, "%s\n", __FUNCTION__);
 	nvram_init(nvram_index);
 	name = indexname;
@@ -182,9 +646,14 @@ void bndstrg_nvram_write(struct bndstrg_cli_table *table, struct bndstrg_nvram_c
 	sprintf(value,"%02x:%02x:%02x:%02x:%02x:%02x",PRINT_MAC(nvram_entry->Addr));
 	sprintf(value+strlen(value), ";%u;%u;%u;%u", nvram_entry->Manipulable,nvram_entry->PhyMode,
 		nvram_entry->Band,nvram_entry->Nss);
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	sprintf(value+strlen(value),";%x",nvram_entry->ControlFlags);
+	strftime(_timeinfo, sizeof(_timeinfo), TIMEFORMAT, &nvram_entry->timeinfo);
+	sprintf(value+strlen(value),";%s",_timeinfo);
+#endif
 	nvram_bufset(nvram_index, name, value);
 	nvram_close(nvram_index);
-#endif	
+#endif
 }
 
 void bndstrg_nvram_update(struct bndstrg_cli_table *table, struct bndstrg_nvram_client *nvram_entry)
@@ -194,7 +663,10 @@ void bndstrg_nvram_update(struct bndstrg_cli_table *table, struct bndstrg_nvram_
 	char *name = NULL;
 	char *value = NULL;
 	char indexname[20] = { 0 };
-	char indexvalue[25] = { 0 };
+	char indexvalue[50] = { 0 };
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	static char _timeinfo[24];
+#endif
 	int i;
 	for(i = 0; i < table->bndstrg_nvram_client_count ; i++)
 	{
@@ -208,9 +680,14 @@ void bndstrg_nvram_update(struct bndstrg_cli_table *table, struct bndstrg_nvram_
 	sprintf(value,"%02x:%02x:%02x:%02x:%02x:%02x",PRINT_MAC(nvram_entry->Addr));
 	sprintf(value+strlen(value), ";%u;%u;%u;%u", nvram_entry->Manipulable,nvram_entry->PhyMode,
 		nvram_entry->Band,nvram_entry->Nss);
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	sprintf(value+strlen(value),";%x",nvram_entry->ControlFlags);
+	strftime(_timeinfo, sizeof(_timeinfo), TIMEFORMAT, &nvram_entry->timeinfo);
+	sprintf(value+strlen(value),";%s",_timeinfo);
+#endif
 	nvram_bufset(nvram_index, name, value);
 	nvram_close(nvram_index);
-#endif	
+#endif
 }
 
 void bndstrg_nvram_read_all(struct bndstrg *bndstrg)
@@ -219,15 +696,22 @@ void bndstrg_nvram_read_all(struct bndstrg *bndstrg)
 	int i = 0, j = 0;
 	int nvram_index = NVRAM_INDEX;
 	char str[25] = { 0 };
-	char bnd_str_entry[40] = { 0 };
+	char bnd_str_entry[50] = { 0 };
 	char *bndstrgentry = NULL;
 	char *temp = NULL;
 	struct bndstrg_nvram_client *nvram_entry = NULL;
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	char *temp01=NULL;
+#else
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+#endif
 	nvram_init(nvram_index);
-	DBGPRINT(DEBUG_TRACE,GRN("\n(%s)\n"),__FUNCTION__);
-	for (i= 1 ; i <= NVRAM_TABLE_SIZE ; i++) {
+	//DBGPRINT(DEBUG_OFF,"\n");
+
+	for (i= 1 ; i <= bndstrg->table.nvram_table_size; i++) {
 		sprintf(str, "BNDSTRTBL%d", i);
-		bndstrgentry = nvram_bufget(nvram_index, str);
+		bndstrgentry = (char *)nvram_bufget(nvram_index, str);
+		DBGPRINT(DEBUG_TRACE,"%s:%s\n", str, bndstrgentry);
 		if (strcmp(bndstrgentry,"") == 0)
 			break;
 		strcpy(bnd_str_entry , bndstrgentry);
@@ -238,8 +722,8 @@ void bndstrg_nvram_read_all(struct bndstrg *bndstrg)
 	    	switch ( j ) {
 				case 0 :
 				{
-					sscanf(temp,"%02x:%02x:%02x:%02x:%02x:%02x",&nvram_entry->Addr[0],&nvram_entry->Addr[1],&nvram_entry->Addr[2], 
-										&nvram_entry->Addr[3],&nvram_entry->Addr[4],&nvram_entry->Addr[5]);
+					sscanf(temp,"%02x:%02x:%02x:%02x:%02x:%02x",(unsigned int*)&nvram_entry->Addr[0],(unsigned int*)&nvram_entry->Addr[1],(unsigned int*)&nvram_entry->Addr[2], 
+									(unsigned int*)&nvram_entry->Addr[3],(unsigned int*)&nvram_entry->Addr[4],(unsigned int*)&nvram_entry->Addr[5]);
 					break;
 				}
 				case 1 :
@@ -262,24 +746,138 @@ void bndstrg_nvram_read_all(struct bndstrg *bndstrg)
 					nvram_entry->Nss = strtol(temp, 0, 10);
 					break;
 				}
+#ifdef	VENDOR_FEATURE7_SUPPORT
+				case 5 :
+				{
+					nvram_entry->ControlFlags = strtol(temp, 0, 16);
+					break;
+				}
+				case 6 :
+				{
+					/* time format string "2017-10-10:12:30:12" lenght should be 19 */
+					if(strlen(temp) == 19 ){
+						nvram_entry->timeinfo.tm_year = strtol(temp, &temp01, 10);
+						nvram_entry->timeinfo.tm_year -= 1900; /*tm_year is the number of years since 1900.*/ 
+						temp01++;
+						nvram_entry->timeinfo.tm_mon = strtol(temp01, &temp01, 10);
+						nvram_entry->timeinfo.tm_mon -= 1;/*tm_mon The number of months since January, in the range 0 to 11 */
+						temp01++;
+						nvram_entry->timeinfo.tm_mday = strtol(temp01, &temp01, 10);
+						temp01++;
+						nvram_entry->timeinfo.tm_hour = strtol(temp01, &temp01, 10);
+						temp01++;
+						nvram_entry->timeinfo.tm_min = strtol(temp01, &temp01, 10);
+						temp01++;
+						nvram_entry->timeinfo.tm_sec = strtol(temp01, 0, 10);
+					}
+					break;	
+				}
+#endif
 				default :
 				{
 					printf("Error\n");
 				}					
 	    	}
-	    }	
-		bndstrg_nvram_update_to_driver(bndstrg, IFNAME_2G, nvram_entry, NVRAM_UPDATE);
+	    }
+#ifndef VENDOR_FEATURE7_SUPPORT
+		bndstrg_nvram_update_to_driver(bndstrg, (char*)ctrl_iface->inf[0].ucIfName, nvram_entry, NVRAM_UPDATE);
+#endif
 	}
 	bndstrg->table.bndstrg_nvram_client_count = i-1;
 	nvram_close(nvram_index);
 #endif	
-	return;	
+	return;
 }
+
 #ifdef BNDSTRG_NVRAM_SUPPORT
+void bndstrg_nvram_print_all_entry(struct bndstrg_cli_table *table)
+{
+	struct bndstrg_nvram_client *nvram_entry = NULL;
+	u8 i;
+#ifdef VENDOR_FEATURE7_SUPPORT
+	static char _timeinfo[24];
+#endif
+	DBGPRINT(DEBUG_OFF,"\tIdx  Addr \t\t Band Nss PhyMode Manuplable"
+#ifdef VENDOR_FEATURE7_SUPPORT
+		" ControlFlags Time"
+#endif
+		"\n");
+	for(i=0; i< table->bndstrg_nvram_client_count; i++){
+		nvram_entry = &table->nvram_entry[i];
+#ifdef VENDOR_FEATURE7_SUPPORT
+		strftime(_timeinfo, sizeof(_timeinfo), TIMEFORMAT, &nvram_entry->timeinfo);
+#endif
+		DBGPRINT(DEBUG_OFF,"\t%-2d   %02x:%02x:%02x:%02x:%02x:%02x   %-4s %-3d %-7s %-10s"
+#ifdef VENDOR_FEATURE7_SUPPORT
+			" %-12x %-4s"
+#endif
+			"\n", i, PRINT_MAC(nvram_entry->Addr), bndstrg_get_entry_band(nvram_entry->Band), 
+			nvram_entry->Nss, (nvram_entry->PhyMode < fPhyMode_Max)? phy_mode[nvram_entry->PhyMode]:"Unknown", (nvram_entry->Manipulable == TRUE ? "TRUE":"FALSE")
+#ifdef	VENDOR_FEATURE7_SUPPORT
+			,nvram_entry->ControlFlags, _timeinfo
+#endif
+			);
+	}
+}
+
+void bndstrg_nvram_clear_all_entry(struct bndstrg_cli_table *table)
+{
+#ifdef NVRAM_LIB_SUPPORT
+		int nvram_index = NVRAM_INDEX;
+		char *name = NULL, *bndstrgentry=NULL;
+		char value[1] = "\0";
+		char indexname[20] = { 0 };
+		u8 index;
+		
+		if (!table->bndstrg->nvram_support)
+			return;
+
+		nvram_init(nvram_index);
+		name = indexname;
+		for(index = 1; index <= table->nvram_table_size; index++){
+			sprintf(name, "BNDSTRTBL%d", index);
+			bndstrgentry = (char *)nvram_bufget(nvram_index, name);
+			if (strcmp(bndstrgentry,"") == 0)
+				continue;
+			else{
+				DBGPRINT(DEBUG_OFF,"%s:%s\n", name, bndstrgentry);
+				nvram_bufset(nvram_index, name, value);
+			}
+		}
+		nvram_close(nvram_index);
+#endif
+	table->bndstrg_nvram_client_count = 0;
+}
+
+#ifdef VENDOR_FEATURE7_SUPPORT
+u8 nvram_get_least_used_entry_idx(struct bndstrg *bndstrg){
+
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	time_t Old_time, New_time;
+	u8 i=0, idx=0;
+	
+	DBGPRINT(DEBUG_TRACE, "%d\n",__LINE__);
+	Old_time = mktime(&table->nvram_entry[0].timeinfo);
+	if(Old_time == -1)
+		return 1;
+	for(i=1; i<table->nvram_table_size; i++){ 
+		New_time = mktime(&table->nvram_entry[i].timeinfo);
+		if(New_time == -1)
+			return i;
+		if(Old_time > New_time){
+			Old_time = New_time;
+			idx = i;
+		}
+	}
+	return (idx + 1);
+}
+#endif
+
 u8 bndstrg_nvram_table_lookup(struct bndstrg_cli_table *table, unsigned char *pAddr)
 {
 	u8 i;
-	
+	if (!table->bndstrg->nvram_support)
+		return TRUE;
 	for(i = 0; i < table->bndstrg_nvram_client_count ; i++)
 	{
 		if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr,pAddr))
@@ -288,235 +886,498 @@ u8 bndstrg_nvram_table_lookup(struct bndstrg_cli_table *table, unsigned char *pA
 	return FALSE;		
 }
 
-u8 bndstrg_nvram_insert_entry(struct bndstrg *bndstrg,  struct bndstrg_msg *msg, u8 Manipulable)
+static u8 _bndstrg_nvram_insert_entry(struct bndstrg *bndstrg,  struct bndstrg_msg *msg, u8 Manipulable)
 {
 	struct bndstrg_nvram_client *nvram_entry = NULL;
+	struct bndstrg_cli_entry *entry = NULL;
+#ifndef VENDOR_FEATURE7_SUPPORT
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+#endif
 	struct bndstrg_cli_table *table = &bndstrg->table;
-	if (table->bndstrg_nvram_client_count < NVRAM_TABLE_SIZE)	
-	{
-		nvram_entry = &table->nvram_entry[table->bndstrg_nvram_client_count];
-		memset(nvram_entry, 0, sizeof(struct bndstrg_nvram_client));
-		memcpy(nvram_entry->Addr, msg->Addr, MAC_ADDR_LEN);
-		nvram_entry->Band = msg->Band;
-		nvram_entry->Nss = msg->Nss;
-		nvram_entry->Manipulable = Manipulable;
-		if(msg->bVHTCapable)
-			nvram_entry->PhyMode = fPhyMode_VHT;
-		else if(msg->bAllowStaConnectInHt)
-			nvram_entry->PhyMode = fPhyMode_HT;
-		else
-			nvram_entry->PhyMode = fPhyMode_Legacy;
-		table->bndstrg_nvram_client_count++;
-		bndstrg_nvram_write(table, nvram_entry);
-		bndstrg_nvram_update_to_driver(bndstrg, IFNAME_2G, nvram_entry, NVRAM_UPDATE);
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
+	struct bnd_msg_cli_assoc *cli_assoc = &cli_event->data.cli_assoc;
+	u8 index;
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	struct tm* timeinfo;
+	time_t rawtime;
+	time(&rawtime);
+    timeinfo = localtime(&rawtime);
+#endif
+	if (!bndstrg->nvram_support)
 		return TRUE;
+	if (table->bndstrg_nvram_client_count < table->nvram_table_size){
+		table->bndstrg_nvram_client_count++;
+		index = table->bndstrg_nvram_client_count;
 	}
-	return FALSE;
+	else{
+#ifdef	VENDOR_FEATURE7_SUPPORT
+		index = nvram_get_least_used_entry_idx(bndstrg);
+		if(index == 0){
+			DBGPRINT(DEBUG_OFF,"Unable to add entry to NVRAM table\n");
+			return FALSE;
+		}
+#else
+		return FALSE;
+#endif
+	}
+
+	entry = bndstrg_table_lookup(table, cli_event->Addr);
+	if(!entry)
+		return FALSE;	
+	nvram_entry = &table->nvram_entry[index-1];
+	memset(nvram_entry, 0, sizeof(struct bndstrg_nvram_client));
+	memcpy(nvram_entry->Addr, cli_event->Addr, MAC_ADDR_LEN);
+	nvram_entry->Band = cli_event->Band;
+	nvram_entry->Nss = cli_assoc->Nss;
+	nvram_entry->Manipulable = Manipulable;
+	if(cli_assoc->bVHTCapable == TRUE)
+		nvram_entry->PhyMode = fPhyMode_VHT;
+	else if(cli_assoc->bAllowStaConnectInHt == TRUE)
+		nvram_entry->PhyMode = fPhyMode_HT;
+	else
+		nvram_entry->PhyMode = fPhyMode_Legacy;
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	nvram_entry->ControlFlags = entry->Control_Flags;
+	memcpy(&nvram_entry->timeinfo, timeinfo, sizeof(struct tm));
+#endif
+	bndstrg_nvram_write(table, nvram_entry, index);
+#ifndef	VENDOR_FEATURE7_SUPPORT
+	bndstrg_nvram_update_to_driver(bndstrg, (char*)ctrl_iface->inf[0].ucIfName, nvram_entry, NVRAM_UPDATE);
+#endif
+	return TRUE;
 }
 
-u8 bndstrg_nvram_update_entry(struct bndstrg *bndstrg,  struct bndstrg_msg *msg, u8 Manipulable)
+u8 bndstrg_nvram_update_entry(struct bndstrg *bndstrg,  struct bndstrg_cli_entry *entry)
 {
 	struct bndstrg_nvram_client *nvram_entry = NULL;
 	struct bndstrg_cli_table *table = &bndstrg->table;
 	int i=0 ;
+
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	struct tm* timeinfo;
+	time_t rawtime;
+	time(&rawtime);
+    timeinfo = localtime(&rawtime);
+#endif
 	
+	if (!bndstrg->nvram_support)
+		return TRUE;
 	for(i = 0; i < table->bndstrg_nvram_client_count ; i++)
 	{
-		if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr, msg->Addr))
+		if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr, entry->Addr))
 			break;
 	}
 	
-	if(i == table->bndstrg_nvram_client_count)
+	if(i >= table->bndstrg_nvram_client_count)
 	{
-		printf("\n entry not found for ::%02x:%02x:%02x:%02x:%02x:%02x",PRINT_MAC(msg->Addr));
+		printf("\n entry not found for ::%02x:%02x:%02x:%02x:%02x:%02x",PRINT_MAC(entry->Addr));
 		return FALSE;
 	}
 	nvram_entry = &table->nvram_entry[i];
-	nvram_entry->Band = msg->Band;
-	nvram_entry->Nss = msg->Nss;
-	nvram_entry->Manipulable = Manipulable;
-	if(msg->bVHTCapable)
-		nvram_entry->PhyMode = fPhyMode_VHT;
-	else if(msg->bAllowStaConnectInHt)
-		nvram_entry->PhyMode = fPhyMode_HT;
-	else
-		nvram_entry->PhyMode = fPhyMode_Legacy;
-	DBGPRINT(DEBUG_TRACE,BLUE("\n[%s]-[Band=%s]::%02x:%02x:%02x:%02x:%02x:%02x [Nss=%u] [Phymode=%u]"),__FUNCTION__, ((nvram_entry->Band == BAND_2G)? "2G":"5G"), PRINT_MAC(nvram_entry->Addr),
-			nvram_entry->Nss, nvram_entry->PhyMode);
+	nvram_entry->Band = entry->connected_band;
+	nvram_entry->Nss = entry->Nss;
+	nvram_entry->Manipulable = entry->Manipulable;
+	DBGPRINT(DEBUG_TRACE,BLUE("\n[%s]-[Band=%s]::%02x:%02x:%02x:%02x:%02x:%02x [Nss=%u] [Phymode=%u]"),
+		__FUNCTION__, (IS_2G_BAND(nvram_entry->Band)? "2G":"5G"), PRINT_MAC(nvram_entry->Addr),nvram_entry->Nss, nvram_entry->PhyMode);
+
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	nvram_entry->ControlFlags = entry->Control_Flags;
+	memcpy(&nvram_entry->timeinfo, timeinfo, sizeof(struct tm));
+#endif
 	bndstrg_nvram_update(table, nvram_entry);
-	bndstrg_nvram_update_to_driver(bndstrg, IFNAME_2G, nvram_entry, NVRAM_UPDATE);
+#ifndef	VENDOR_FEATURE7_SUPPORT
+	{
+		struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+		bndstrg_nvram_update_to_driver(bndstrg, (char*)ctrl_iface->inf[0].ucIfName, nvram_entry, NVRAM_UPDATE);
+	}
+#endif
 	return TRUE;
 }
 #endif
 
-void bndstrg_update_entry(struct bndstrg *bndstrg, struct bndstrg_msg *msg)
+void bndstrg_update_assoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *inf, 
+	struct bndstrg_cli_entry *entry, struct bndstrg_msg *msg)
 {
-	struct bndstrg_cli_entry *entry = NULL;
+	struct bndstrg_iface *prev_inf = NULL;
 	struct bndstrg_cli_table *table = &bndstrg->table;
-	DBGPRINT(DEBUG_TRACE, "\n");
-	if (table->bInitialized == FALSE || table->bEnabled == FALSE) {
-		DBGPRINT(DEBUG_OFF, "%s bInitialized || bEnabled is FALSE\n", __FUNCTION__);
-		return ;
-	}
-	entry = bndstrg_table_lookup(table, msg->Addr);
-	if(!entry) {
-		DBGPRINT(DEBUG_OFF, "%s entry is NULL\n", __FUNCTION__);
-		return;
-	}
-
-	if(entry->band && (entry->band != msg->Band))
-	{
-		DBGPRINT(DEBUG_OFF, "Event Rx from wrong band(%d), Entry(%02x:%02x:%02x:%02x:%02x:%02x)Band(%d)\n", 
-			msg->Band, PRINT_MAC(entry->Addr), entry->band);
-		return;
-	}
-
-#ifdef BND_STRG_QA
-	BND_STRG_PRINTQAMSG(table, entry,
-		("%s Entry bConnStatus %d bActiveStatus %s\n"),
-		Cli_Band[entry->band],msg->bConnStatus,Cli_Status[entry->bActiveStatus]);
-#endif /* BND_STRG_QA */
-
-	if(msg->bConnStatus)
-	{	
-#ifdef BNDSTRG_NVRAM_SUPPORT	
-		if(bndstrg_nvram_table_lookup(table, msg->Addr)){	
-			if(entry->bActiveStatus == CLI_NOTACTIVE)
-			{
-				if(msg->Band == BAND_2G)
-				{	
-					table->active_client_2G ++;
-					DBGPRINT(DEBUG_TRACE,GRN("%s():2G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-				}
-				else if(msg->Band == BAND_5G)
-				{
-					table->active_client_5G ++;
-					DBGPRINT(DEBUG_TRACE,GRN("%s():5G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-				}
-				entry->bActiveStatus = CLI_ACTIVE;
-				entry->band = msg->Band;
-			}
-			if(bndstrg_nvram_update_entry(bndstrg, msg, entry->Manipulable))
-			{
-				DBGPRINT(DEBUG_TRACE,GRN("\nClient Updated To NVRAM Table\n"));
-			}
-		}
-		else	
-#endif			
-		{
-			if(entry->bActiveStatus != CLI_ACTIVE)
-			{
-				if(msg->Band == BAND_2G)
-				{	
-					table->active_client_2G ++;
-					DBGPRINT(DEBUG_TRACE,GRN("%s():2G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-				}
-				else if(msg->Band == BAND_5G)
-				{
-					table->active_client_5G ++;
-					DBGPRINT(DEBUG_TRACE,GRN("%s():5G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-				}
-				entry->bActiveStatus = CLI_ACTIVE;
-				entry->band = msg->Band;
-			}else
-			{
-				if(entry->band == 0){
-					if(msg->Band == BAND_2G)
-					{	
-						table->active_client_2G ++;
-						DBGPRINT(DEBUG_TRACE,GRN("%s():2G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-					}
-					else if(msg->Band == BAND_5G)
-					{
-						table->active_client_5G ++;
-						DBGPRINT(DEBUG_TRACE,GRN("%s():5G Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-					}
-				}
-				entry->band = msg->Band;
-			}
-#ifdef BNDSTRG_NVRAM_SUPPORT			
-			if(bndstrg_nvram_insert_entry(bndstrg, msg, entry->Manipulable))
-			{
-				DBGPRINT(DEBUG_TRACE,GRN("\nClient Added To NVRAM Table\n"));
-			}
-			else
-			{
-				DBGPRINT(DEBUG_WARN,RED("\n NVRAM Table full\n"));
-			}				
-#endif
-		}		
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
+	struct bnd_msg_cli_assoc *cli_assoc = &cli_event->data.cli_assoc;
+	u8 band_idx = 0;
 #ifdef BND_STRG_DBG
-		{	
-			time_t current_time;
-			struct tm * time_info;
-			time(&current_time);
-			time_info = localtime(&current_time);			
-			if(msg->Band == BAND_5G) {
-				if(entry->statistics[1].AssocCount == 0)
-					sprintf(entry->statistics[1].FirstAssocTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
-				entry->statistics[1].AssocCount++;
-			}
-			else if(msg->Band == BAND_2G) {				
-				if(entry->statistics[0].AssocCount == 0)
-					sprintf(entry->statistics[0].FirstAssocTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
-				entry->statistics[0].AssocCount++;
-			}
-		}
-#endif
+	time_t current_time = 0;
+	struct tm * time_info = NULL;
+#endif	
+#ifdef BND_STRG_DBG
+	if(entry->total_steered_cnt == 0){
+		time(&current_time);
+		time_info = localtime(&current_time);				
 	}
-	else
-	{	
-		if((entry->band == msg->Band) && (entry->bActiveStatus == CLI_ACTIVE))
-		{
-			if(msg->Band == BAND_2G)
-			{
-				if(table->active_client_2G)
-					table->active_client_2G -- ;
-			}
-			else if(msg->Band == BAND_5G)
-			{
-				if(table->active_client_5G)
-					table->active_client_5G -- ;
-			}
-			entry->bActiveStatus = CLI_NOTACTIVE;
-			DBGPRINT(DEBUG_TRACE,RED("%s()::Entry DEL for::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(msg->Addr));
-		}
-#ifdef BND_STRG_DBG		
-		{	
-			time_t current_time;
-			struct tm * time_info;
-			time(&current_time);
-			time_info = localtime(&current_time);			
-			if(msg->Band == BAND_5G) {				
-				if(entry->statistics[1].MacDelCount == 0)
-					sprintf(entry->statistics[1].FirstClientDelTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
-				entry->statistics[1].MacDelCount++;
-			}
-			else if(msg->Band == BAND_2G) {
-				if(entry->statistics[0].MacDelCount == 0)
-					sprintf(entry->statistics[0].FirstClientDelTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
-				entry->statistics[0].MacDelCount++;
-			}
-		}
 #endif
-}
-	get_current_system_tick(&entry->tp);
+
+	if(table->BndStrgMode == POST_CONNECTION_STEERING && entry->connected_band != BAND_INVALID){
+		/* In Operational steering only condition control flags need to set according to assoc req*/
+		if (IS_2G_BAND(entry->connected_band)){
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+			table->active_client_2G -- ;
+		}
+		else if(IS_5G_L_BAND(entry->connected_band)){
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+			table->active_client_5G --;
+			table->active_client_L5G --;
+		}
+		else if(IS_5G_H_BAND(entry->connected_band)){
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+			table->active_client_5G --;
+			table->active_client_H5G --;
+		}
+
+		if((entry->Channel != 0) && (entry->Channel != cli_event->Channel)){
+			/*
+			* In POST_STEERING_ONLY STA may disconnect without sending DeAuth and reconnect back to previous band.
+			* This will cause driver entry will be maintained for 480 sec, result into two CLI_STATUS_RSP for one STA.
+			* For RSSI based steering it will cause problem as it will update RSSI based on past data.
+			*/
+			prev_inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface , entry->Channel);
+			if(prev_inf) bndstrg_accessible_cli(bndstrg, prev_inf, entry, CLI_DEL);
+		}
+	}
+
+#ifdef BNDSTRG_NVRAM_SUPPORT
+	if (bndstrg_nvram_table_lookup(table, cli_event->Addr))
+	{	
+		//if (entry->bActiveStatus == CLI_NOTACTIVE)
+		{
+			if(IS_2G_BAND(cli_event->Band))
+			{
+				entry->connected_band = BAND_2G;
+				table->active_client_2G ++;
+				band_idx = IDX_2G;
+			}
+			else if(IS_5G_BAND(cli_event->Band))
+			{
+				table->active_client_5G ++;
+				if (IS_5G_H_BAND(inf->Band))
+				{
+					entry->connected_band = BAND_5G_H;
+					table->active_client_H5G ++;
+					band_idx = IDX_5GH;
+				}
+				else 
+				{
+					entry->connected_band = BAND_5G_L;
+					table->active_client_L5G ++;
+					band_idx = IDX_5GL;
+				}
+			}
+			DBGPRINT(DEBUG_TRACE,("%s()[%d]:Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d \n"),
+				__FUNCTION__, __LINE__,PRINT_MAC(cli_event->Addr),entry->Channel);
+			entry->bActiveStatus = CLI_ACTIVE;
+		}
+		if(bndstrg_nvram_update_entry(bndstrg, entry))
+		{
+			DBGPRINT(DEBUG_TRACE,("Client Updated To NVRAM Table,channel=%d\n"),entry->Channel);
+		}
+	}else
+#endif    		
+	{
+		if(IS_2G_BAND(cli_event->Band))
+		{
+			entry->connected_band = BAND_2G;
+			table->active_client_2G ++;
+			if(table->active_client_2G >= inf->max_driver_table_size)
+			{
+				DBGPRINT(DEBUG_OFF, "2G driver table full\n");
+				bndstrg_stop(bndstrg,BNDSTRG_DRIVER_TBL_FULL);
+			}
+			band_idx = IDX_2G;
+		}
+		else if(IS_5G_BAND(cli_event->Band))
+		{
+			table->active_client_5G ++;
+			if(IS_5G_H_BAND(inf->Band))
+            {
+				entry->connected_band = BAND_5G_H;
+				table->active_client_H5G ++;
+				if(table->active_client_H5G >= inf->max_driver_table_size)
+				{
+					DBGPRINT(DEBUG_OFF, "5GH driver table full\n");
+					bndstrg_stop(bndstrg,BNDSTRG_DRIVER_TBL_FULL);
+				}
+				band_idx = IDX_5GH;
+            }
+			else 
+            {
+				entry->connected_band = BAND_5G_L;
+				table->active_client_L5G ++;
+				if(table->active_client_L5G >= inf->max_driver_table_size)
+				{
+					DBGPRINT(DEBUG_OFF, "5GL driver table full\n");
+					bndstrg_stop(bndstrg,BNDSTRG_DRIVER_TBL_FULL);	
+				}
+				band_idx = IDX_5GL;
+            }
+		}
+
+#ifdef BNDSTRG_NVRAM_SUPPORT				
+		if(_bndstrg_nvram_insert_entry(bndstrg, msg, entry->Manipulable))
+		{
+			DBGPRINT(DEBUG_TRACE,("Client Added To NVRAM Table\n"));
+		}
+		else
+		{
+			DBGPRINT(DEBUG_ERROR,("NVRAM Table full\n"));
+		}			
+#endif				
+	}
+
+	entry->bConnStatus = TRUE;
+#ifdef WPS_SUPPORT
+	//WPS: update band and then update driver entry
+	if((entry->Channel != cli_event->Channel) && (cli_assoc->bWpsAssoc))
+	{
+		if (IS_2G_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		else if(IS_5G_L_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+		else if(IS_5G_H_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+		entry->match_steered_rule_id[0] = fBND_STRG_PRIORITY_MAX;
+		entry->match_steered_rule_id[1] = fBND_STRG_PRIORITY_MAX;
+		entry->match_steered_rule_id[2] = fBND_STRG_PRIORITY_MAX;
+		if(entry->band != entry->connected_band)
+			bndstrg_client_band_update(bndstrg, entry, entry->connected_band);
+	}
+	entry->WpsAssoc = cli_assoc->bWpsAssoc;
+
+	//WPS: trigger wps first connection timer counter
+	if(entry->WpsAssoc == 1)
+		entry->WpsFirstAssocCounter = 1;
+	else
+		entry->WpsFirstAssocCounter = 0;
+#endif /*WPS_SUPPORT*/
+	
+	entry->Channel = cli_event->Channel;
+	if(cli_assoc->BTMSupport == TRUE)
+		entry->btm_info.BTMSupport = cli_assoc->BTMSupport;
+	entry->bActiveStatus = CLI_ACTIVE;
+
+	if(entry->state != ENTRY_OPER_STEER_ACTIVE)
+		get_current_system_tick(&entry->tp);
+	
+	if(table->BndStrgMode == POST_CONNECTION_STEERING){
+		/* In Operational steering only condition control flags need to set according to assoc req*/
+		if (IS_2G_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		else if(IS_5G_L_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+		else if(IS_5G_H_BAND(inf->Band))
+			entry->Control_Flags |= (fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+		entry->band = entry->connected_band;
+		/* add entry to driver tabel to get CLI status rsp */
+		bndstrg_accessible_cli(bndstrg, inf, entry, CLI_ADD);
+		/* Remove client from backlist*/
+		bndstrg_update_white_black_list(bndstrg, NULL, entry->Addr, bndstrg_blacklist, 0);
+	}
+
+	DBGPRINT(DEBUG_OFF,GRN("%s()[%d]:Entry Add for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d \n"),
+			__FUNCTION__, __LINE__,PRINT_MAC(cli_event->Addr),entry->Channel);
+
 #ifdef BND_STRG_QA
-	BND_STRG_PRINTQAMSG(table, entry,
-		("%s Entry bConnStatus %d bActiveStatus %s\n"),
-		Cli_Band[entry->band],msg->bConnStatus,Cli_Status[entry->bActiveStatus]);
+#ifdef WPS_SUPPORT
+	BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d WpsAssocState:%d\n"),
+		inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, 
+		entry->bConnStatus, entry->bActiveStatus, entry->WpsAssoc);
+#else
+	BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d \n"),
+		inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, entry->bConnStatus, entry->bActiveStatus);
+#endif /*WPS_SUPPORT*/
 #endif /* BND_STRG_QA */
-	return ;
+
+#ifdef BND_STRG_DBG
+		if(entry->total_steered_cnt == 0)
+			sprintf(entry->statistics[band_idx].FirstAssocTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+		entry->statistics[band_idx].AssocCount++;
+#endif
+
 }
 
-void bndstrg_set_priority (struct bndstrg_cli_table *table, struct bndstrg_msg *msg)
-{
-	BND_STRG_DBGPRINT(DEBUG_OFF,"[%s]\n",__FUNCTION__);
-	memset(table->PriorityList, 0, sizeof(table->PriorityList));
-	os_memcpy(table->PriorityList, msg->PriorityList, (msg->PriorityListSize)*(sizeof(msg->PriorityList[0])));
-	table->PriorityListSize = msg->PriorityListSize;
-	return;
+void bndstrg_update_disassoc_info(struct bndstrg *bndstrg, struct bndstrg_iface *inf, 
+	struct bndstrg_cli_entry *entry, struct bndstrg_msg *msg)
+{	
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
+	u8 band_idx = 0;
+#ifdef BND_STRG_DBG
+	time_t current_time = 0;
+	struct tm * time_info = NULL;
+#endif
+#ifdef BND_STRG_DBG
+	if(entry->total_steered_cnt == 0){
+		time(&current_time);
+		time_info = localtime(&current_time);				
+	}
+#endif	
+
+	if(entry->bActiveStatus == CLI_ACTIVE)
+	{
+		if(IS_2G_BAND(cli_event->Band))
+		{
+			if(table->active_client_2G)
+				table->active_client_2G -- ;
+			band_idx = IDX_2G;
+			entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		}
+		else if(IS_5G_BAND(cli_event->Band))
+		{
+			if(table->active_client_5G)
+				table->active_client_5G -- ;
+			if (IS_5G_H_BAND(inf->Band)){
+				table->active_client_H5G --;
+			band_idx = IDX_5GH;
+				entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+			}else{
+				table->active_client_L5G --;
+				band_idx = IDX_5GL;
+				entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+			}
+		}
+
+#ifdef BNDSTRG_NVRAM_SUPPORT
+		bndstrg_nvram_update_entry(bndstrg, entry);
+#endif
+		entry->bActiveStatus = CLI_NOTACTIVE;
+		entry->connected_band = BAND_INVALID;
+#ifdef BND_STRG_DBG			
+		if(entry->total_steered_cnt == 0)
+			sprintf(entry->statistics[band_idx].FirstClientDelTime, "%02d:%02d:%02d", time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+		entry->statistics[band_idx].MacDelCount++;
+#endif						
+		DBGPRINT(DEBUG_OFF,RED("%s()::Entry DEL for::%02x:%02x:%02x:%02x:%02x:%02x,channel=%d\n"), 
+			__FUNCTION__, PRINT_MAC(cli_event->Addr),cli_event->Channel);
+	}
+
+#ifdef BND_STRG_QA
+		BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d \n"),
+			inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, entry->bConnStatus, entry->bActiveStatus);
+#endif /* BND_STRG_QA */
+
 }
+
+u8 bndstrg_assoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *inf, 
+	struct bndstrg_cli_entry *entry, struct bndstrg_msg *msg)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
+
+#ifdef BND_STRG_QA
+	BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d \n"),
+		inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, entry->bConnStatus, entry->bActiveStatus);
+#endif /* BND_STRG_QA */
+
+	if(table->BndStrgMode == POST_CONNECTION_STEERING){
+		/* In Operational steering only condition entry-> band is not decided as assoc steering is not executing,
+		 * so there is no need to check association sanity, as client can connect any band.
+		*/
+		return TRUE;
+	}
+	
+#ifdef WPS_SUPPORT	
+	//WPS
+	if(cli_event->data.cli_assoc.bWpsAssoc){
+		/* In WPS, its Station who decides band not deamon, so allow assoc on different band than entry->band
+		*/
+		DBGPRINT(DEBUG_TRACE,BLUE("\n[%s][%d]Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d(%d,%d,%d) (%d,%d,%d,%d)\n"),
+		__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel,entry->bConnStatus,cli_event->FrameType,entry->bActiveStatus,
+	    table->active_client_5G,table->active_client_L5G,table->active_client_H5G,cli_event->Band);
+		return TRUE;
+	}
+#endif /*WPS_SUPPORT*/
+
+	if(IS_2G_BAND(cli_event->Band))
+	{
+		if (entry->band != cli_event->Band) {
+			DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+				__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+			return FALSE;
+		}
+	}
+	else if(IS_5G_BAND(cli_event->Band))
+	{
+		if (IS_5G_H_BAND(inf->Band))
+		{
+			if (entry->band != BAND_5G_H) {
+				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_H Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+				return FALSE;
+			}
+		} else {
+			if (entry->band != BAND_5G_L) {
+				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_L Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+				return FALSE;
+			}
+		}
+	}
+	
+    DBGPRINT(DEBUG_TRACE,BLUE("\n[%s][%d]Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d(%d,%d,%d) (%d,%d,%d,%d)\n"),
+		__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel,entry->bConnStatus,cli_event->FrameType,entry->bActiveStatus,
+	    table->active_client_5G,table->active_client_L5G,table->active_client_H5G,cli_event->Band);
+	return TRUE;
+}
+
+u8 bndstrg_disassoc_sanity_check(struct bndstrg *bndstrg, struct bndstrg_iface *inf, 
+	struct bndstrg_cli_entry *entry, struct bndstrg_msg *msg)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
+
+#ifdef BND_STRG_QA
+		BND_STRG_PRINTQAMSG(table, entry,("[%s] state:%s band:%s connected band:%s Channel:%d bConnStatus:%d bActiveStatus:%d \n"),
+			inf->ucIfName, entry_state[entry->state], bndstrg_get_entry_band(entry->band), bndstrg_get_entry_band(entry->connected_band), entry->Channel, entry->bConnStatus, entry->bActiveStatus);
+#endif /* BND_STRG_QA */
+
+	/* check CLI_UPDATE is from correct band */
+	if(IS_2G_BAND(cli_event->Band))
+	{
+		if (entry->connected_band != cli_event->Band) {
+			DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 2G Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+				__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+			return FALSE;
+		}
+	}
+	else if(IS_5G_BAND(cli_event->Band))
+	{
+		if (IS_5G_H_BAND(inf->Band))
+		{
+			if (entry->connected_band != BAND_5G_H) {
+				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_H Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+				return FALSE;
+			}
+		} else {
+			if (entry->connected_band != BAND_5G_L) {
+				DBGPRINT(DEBUG_ERROR,("\n[%s][%d]Error 5G_L Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d\n"),
+					__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel);
+				return FALSE;
+			}
+		}
+	}
+
+	/* cleanup statistic for prevent band jam */
+	memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
+
+	DBGPRINT(DEBUG_TRACE,BLUE("\n[%s][%d]Addr::%02x:%02x:%02x:%02x:%02x:%02x, channel=%d(%d,%d,%d) (%d,%d,%d,%d)\n"),
+		__FUNCTION__,__LINE__,PRINT_MAC(cli_event->Addr),cli_event->Channel,entry->bConnStatus,cli_event->FrameType,entry->bActiveStatus,
+	    table->active_client_5G,table->active_client_L5G,table->active_client_H5G,cli_event->Band);
+	return TRUE;
+}
+
+void get_current_system_tick(
+	struct timespec *now)
+{
+	clock_gettime(CLOCK_REALTIME, now);
+}
+
 
 int bndstrg_insert_entry(
 	struct bndstrg_cli_table *table,
@@ -526,15 +1387,24 @@ int bndstrg_insert_entry(
 	int i;
 	unsigned char HashIdx;
 	struct bndstrg_cli_entry *entry = NULL, *this_entry = NULL;
-	int ret_val = BND_STRG_SUCCESS;
+	struct bndstrg_cli_entry *entry_del = NULL;
+	struct bndstrg_iface *inf_target = NULL;
+	struct bndstrg *bndstrg = table->bndstrg;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
 
-	if (table->Size >= BND_STRG_MAX_TABLE_SIZE) {
-		DBGPRINT(DEBUG_WARN, "%s(): Table is full! %02x:%02x:%02x:%02x:%02x:%02x ignored\n", __FUNCTION__,PRINT_MAC(pAddr));
-		return BND_STRG_TABLE_FULL;
+	if (table->Size >= table->max_steering_size) {
+		entry_del = bndstrg_get_old_entry(bndstrg, NULL);
+		if(entry_del){			
+			inf_target = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+			if(inf_target) bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
+			bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
+		} else {
+		    DBGPRINT(DEBUG_WARN, "%s(): Table is full!\n", __FUNCTION__);
+		    return BND_STRG_TABLE_FULL;
+		}
 	}
 
-	//NdisAcquireSpinLock(&table->Lock);
-	for (i = 0; i< BND_STRG_MAX_TABLE_SIZE; i++)
+	for (i = 0; i< table->max_steering_size; i++)
 	{
 		entry = &table->Entry[i];
 
@@ -543,10 +1413,17 @@ int bndstrg_insert_entry(
 			memset(entry, 0, sizeof(struct bndstrg_cli_entry));
 			/* Fill Entry */
 			get_current_system_tick(&entry->tp);
+			get_current_system_tick(&entry->activity_tp);
 			memcpy(entry->Addr, pAddr, MAC_ADDR_LEN);
 			entry->TableIndex = i;
 			entry->bValid = TRUE;
-			entry->matched_rule_id = -1;
+			entry->match_steered_rule_id[0] = fBND_STRG_PRIORITY_MAX;
+			entry->match_steered_rule_id[1] = fBND_STRG_PRIORITY_MAX;
+			entry->match_steered_rule_id[2] = fBND_STRG_PRIORITY_MAX;
+#ifdef BND_STRG_QA			
+			BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
+								__func__,__LINE__,PRINT_MAC(entry->Addr));
+#endif
 			break;
 		}
 		entry = NULL;
@@ -564,39 +1441,44 @@ int bndstrg_insert_entry(
 			}
 			this_entry->pNext = entry;
 		}
-		
+		entry->CliSteerInfo.end_idx = -1;
+		entry->band = BAND_INVALID;
+		if(table->BndStrgMode == POST_CONNECTION_STEERING)
+			entry->state = ENTRY_READY_TO_ASSOC;
+		else
+			entry->state = ENTRY_INIT;
 		*entry_out = entry;
 		table->Size++;
+
+		/* init statistic */
+		memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
 	}
-	//NdisReleaseSpinLock(&table->Lock);
 
-	BND_STRG_DBGPRINT(DEBUG_INFO,
-			"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
-			"Table Size = %u\n",
-			__FUNCTION__, i, PRINT_MAC(pAddr), table->Size);
+	BND_STRG_DBGPRINT(DEBUG_INFO,"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+		__FUNCTION__, i, PRINT_MAC(pAddr), table->Size);
 
-	return ret_val;
+	return BND_STRG_SUCCESS;
 }
 
 int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, u32 Index)
 {
-	u16 HashIdx;
-	struct bndstrg_cli_entry *entry, *pre_entry, *this_entry;
+	u16 HashIdx = 0;
+	struct bndstrg_cli_entry *entry = NULL, *pre_entry, *this_entry;
 	int ret_val = BND_STRG_SUCCESS;
 
-	BND_STRG_DBGPRINT(DEBUG_INFO,
-			"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
-			"Table Size = %u\n",
-			__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
-
-	if (MAC_ADDR_EQUAL(table->MonitorAddr, pAddr)) {
-		DBGPRINT(DEBUG_OFF,"%02x:%02x:%02x:%02x:%02x:%02x, Index = %u\n",PRINT_MAC(pAddr), Index);
-	}
-
-	//NdisAcquireSpinLock(&table->Lock);
-	HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
-	if (Index >= BND_STRG_MAX_TABLE_SIZE)
+	if (Index >= table->max_steering_size)
 	{
+		if (pAddr == NULL) {
+			DBGPRINT(DEBUG_ERROR, RED("%s()::debug here\n"), __FUNCTION__);
+			return BND_STRG_INVALID_ARG;
+		}
+		BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+			__FUNCTION__, Index, PRINT_MAC(pAddr), table->Size);
+		HashIdx = MAC_ADDR_HASH_INDEX(pAddr);
+#ifdef BND_STRG_QA		
+		BND_STRG_PRINTQAMSG(table, entry, YLW("%s[%d]Addr=%02x:%02x:%02x:%02x:%02x:%02x\n"),
+			__func__,__LINE__,PRINT_MAC(entry->Addr));
+#endif
 		entry = table->Hash[HashIdx];
 		while (entry) {
 			if (MAC_ADDR_EQUAL(pAddr, entry->Addr)) {
@@ -609,326 +1491,508 @@ int bndstrg_delete_entry(struct bndstrg_cli_table *table, unsigned char *pAddr, 
 
 		if (entry == NULL)
 		{
-			BND_STRG_DBGPRINT(DEBUG_WARN,
-				"%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, "
-				"Entry not found.\n",
+			BND_STRG_DBGPRINT(DEBUG_WARN, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Entry not found.\n",
 				__FUNCTION__, Index, PRINT_MAC(pAddr));
-			//NdisReleaseSpinLock(&table->Lock);
 			return BND_STRG_INVALID_ARG;
 		}
 	}
-	else	
+	else {
 		entry = &table->Entry[Index];
+		/* decrease noise debug, skip null records */
+		if (table->Size > 0 || entry->Addr[0] != entry->Addr[5] || entry->Addr[2] != entry->Addr[4]) {
+		    BND_STRG_DBGPRINT(DEBUG_TRACE, "%s(): Index=%u, %02x:%02x:%02x:%02x:%02x:%02x, Table Size = %u\n",
+			__FUNCTION__, Index, PRINT_MAC(entry->Addr), table->Size);
+		}
+		if (entry && entry->bValid) {
+			HashIdx = MAC_ADDR_HASH_INDEX(entry->Addr);
+		}
+	}
 
 	if (entry && entry->bValid) 
 	{
-#if 0
-		/*if (MAC_ADDR_EQUAL(entry->Addr, pAddr))*/
-#endif
+		pre_entry = NULL;
+		this_entry = table->Hash[HashIdx];
+		if (this_entry != NULL)
 		{
-			pre_entry = NULL;
-			this_entry = table->Hash[HashIdx];
-			//ASSERT(this_entry);
-			if (this_entry != NULL)
+			/* update Hash list*/
+			do
 			{
-				/* update Hash list*/
-				do
+				if (this_entry == entry)
 				{
-					if (this_entry == entry)
-					{
-						if (pre_entry == NULL)
-							table->Hash[HashIdx] = entry->pNext;
-						else
-							pre_entry->pNext = entry->pNext;
-						break;
-					}
+					if (pre_entry == NULL)
+						table->Hash[HashIdx] = entry->pNext;
+					else
+						pre_entry->pNext = entry->pNext;
+					break;
+				}
 
-					pre_entry = this_entry;
-					this_entry = this_entry->pNext;
-				} while (this_entry);
-			}
-
-			/* not found !!!*/
-			//ASSERT(this_entry != NULL);
-
-			memset(entry->Addr, 0, MAC_ADDR_LEN);
-			entry->tp.tv_sec = 0;
-			entry->elapsed_time = 0;
-			entry->bValid = FALSE;
-			table->Size--;
+				pre_entry = this_entry;
+				this_entry = this_entry->pNext;
+			} while (this_entry);
 		}
-#if 0
-		else {
-			DBGPRINT(DEBUG_ERROR,
-					("%s(): worng entry!\n", __FUNCTION__));
-			ret_val = BND_STRG_UNEXP;
-		}
-#endif
+
+		/* not found !!!*/
+		memset(entry->Addr, 0, MAC_ADDR_LEN);
+
+		/* cleanup statistic */
+		memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
+
+		entry->tp.tv_sec = 0;
+		entry->elapsed_time = 0;
+		entry->bValid = FALSE;
+		entry->band = BAND_INVALID;
+		entry->Control_Flags = 0;
+		memset(entry,0x00,sizeof(struct bndstrg_cli_entry));
+		table->Size--;
 	}
-	//NdisReleaseSpinLock(&table->Lock);
 
 	return ret_val;
 }
 
-/* We don't want to do too many things while handling Auth Req,
-     so just let _BndStrg_AllowStaConnect2G() to check periodically.
-     Hence, we only need to get the result in this function */
-u8 bndstrg_allow_sta_conn_2g(struct bndstrg_cli_entry *entry)
-{
-	return ((entry) && (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G));
-}
-
-u8 bndstrg_allow_sta_conn_5g(struct bndstrg_cli_entry *entry)
-{
-	return ((entry) && (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G));
-}
-
-
-/* Check Probe/Auth Req to determine client's capability of 2.4g/5g */
-int bndstrg_check_conn_req(
+int bndstrg_cli_event_req(
 		struct bndstrg *bndstrg,
-		u8 			band,
-		unsigned char *pSrcAddr,
-		u8			FrameType,
-		s8 			*rssi,
-		u8 			bAllowStaConnectInHt,
-		u8 			bVHTCap,
-		u8			Nss)
+		struct bndstrg_msg *msg)
 {
 	int 	ret_val = BND_STRG_SUCCESS;
-
-	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_event *cli_event = &msg->data.cli_event;
 	struct bndstrg_cli_entry *entry = NULL;
-	struct bndstrg_entry_stat *statistics = NULL;
-#ifdef 	BNDSTRG_NVRAM_SUPPORT
-	struct bndstrg_nvram_client *nvram_entry = NULL;
-#endif
+	struct bndstrg_iface *inf = NULL;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	u8 			channel = cli_event->Channel;
+	unsigned char *pSrcAddr = cli_event->Addr;
+	u8			FrameType = cli_event->FrameType;
+	
+	DBGPRINT(DEBUG_TRACE, "%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, Channel = %u frame_type = %u\n",
+		PRINT_MAC(cli_event->Addr), cli_event->Band, cli_event->Channel, cli_event->FrameType);
 
-	DBGPRINT(DEBUG_TRACE, "[%s]\n",__FUNCTION__);
-	if (table->bInitialized == FALSE || table->bEnabled == FALSE) {
+	if (table->bInitialized == FALSE || table->bEnabled == FALSE){
 		DBGPRINT(DEBUG_OFF, "%s BND_STRG_NOT_INITIALIZED\n", __FUNCTION__);
 		return BND_STRG_NOT_INITIALIZED;
 	}
+
+	inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface,channel);
+	if(!inf){
+		DBGPRINT(DEBUG_OFF,"Invalid Channel info for [%02x:%02x:%02x:%02x:%02x:%02x] Channel:%d \n",
+			PRINT_MAC(pSrcAddr),channel);
+		return BND_STRG_UNEXP;
+	}
 	
-#ifdef BND_STRG_QA
-	if (MAC_ADDR_EQUAL(table->MonitorAddr, pSrcAddr)){
-		DBGPRINT(DEBUG_OFF," %02x:%02x:%02x:%02x:%02x:%02x, Band = %s, frame_type = %s, rssi = %d/%d/%d/%d bAllowStaConnectInHt %d, bVHTCap %d, Nss %d\n",
-		PRINT_MAC(pSrcAddr),Cli_Band[band],(FrameType==APMT2_PEER_PROBE_REQ?"Probe":(FrameType==APMT2_PEER_AUTH_REQ? "Auth":"Unknown")),
-		rssi[0], rssi[1], rssi[2], rssi[3], bAllowStaConnectInHt, bVHTCap, Nss);
-	}	
-#endif /* BND_STRG_QA */
-
+#if 0/* debug purpose */
+	if (table->debug_only_allow_monitor_addr == 1)
+	{
+		unsigned char ZeroAddr[MAC_ADDR_LEN] = {0x00,0x00,0x00,0x00,0x00,0x00};
+		if (!MAC_ADDR_EQUAL(table->MonitorAddr, ZeroAddr)) 
+		{/* debug mode */
+			if (!MAC_ADDR_EQUAL(table->MonitorAddr, pSrcAddr)) 
+				return BND_STRG_UNEXP;
+		}
+	}
+#endif
+	
 	entry = bndstrg_table_lookup(table, pSrcAddr);
+	
+	if (entry == NULL) {
+		/* Discard Whitelisted STA's Assoc and Disassoc event*/
+		if((cli_event->FrameType == APMT2_PEER_ASSOC_REQ) || (cli_event->FrameType == APMT2_PEER_DISASSOC_REQ)){
+			int i = 0;
+			for (i = 0; i < BND_STRG_MAX_DISABLE_LIST; i++){
+				if (memcmp(table->WhiteEntryList[i], cli_event->Addr, MAC_ADDR_LEN) == 0){
+					DBGPRINT(DEBUG_TRACE,("Discard whitelisted STA event %02x:%02x:%02x:%02x:%02x:%02x, Band = %u, Channel = %u frame_type = %u \n"),
+							PRINT_MAC(cli_event->Addr), cli_event->Band, cli_event->Channel, cli_event->FrameType);
+					return BND_STRG_SUCCESS;
+				}
+			}
+		}
 
-	if (entry == NULL)
-	{
 		ret_val = bndstrg_insert_entry(table, pSrcAddr, &entry);
+		if (ret_val == BND_STRG_TABLE_FULL) {
+			//bndstrg_stop(bndstrg,BNDSTRG_DAEMON_TBL_FULL);
+			ret_val = BND_STRG_UNEXP;
+			return ret_val;
+		}
+#ifdef BNDSTRG_NVRAM_SUPPORT
+		if (table->bndstrg->nvram_support && entry){
+			struct bndstrg_nvram_client *nvram_entry = NULL;
+			int i;
+
+			for(i = 0; i < table->bndstrg_nvram_client_count ; i++){
+				if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr,entry->Addr))
+					break;
+			}
+
+			if(i < table->bndstrg_nvram_client_count)
+			{
+				nvram_entry = &table->nvram_entry[i];
+				/* 
+				 * for single band STA, it will connect to AP after 2GCheckTime/5GCheckTime
+				 * in first time and store its' Manipulable as 0 in nvram.
+				 * In next time, this STA can connect to the AP immediately since
+				 * daemon will consider it belong to specific band from manipulable setting
+				 */
+#ifdef	VENDOR_FEATURE7_SUPPORT
+				entry->Control_Flags |= (nvram_entry->ControlFlags & ControlFlag_ReadMask);
+#else		
+			if((IS_2G_BAND(cli_event->Band)) && (!nvram_entry->Manipulable)){
+				entry->Control_Flags |= fBND_STRG_CLIENT_IS_2G_ONLY ;	
+			} else if((IS_5G_BAND(cli_event->Band)) && (!nvram_entry->Manipulable)){
+				entry->Control_Flags |= fBND_STRG_CLIENT_IS_5G_ONLY ;	
+			}
+				
+#endif
+			}
+		}
+#endif	
 	}
 
-	if (entry)
-	{
-		s8 MaxRssi = rssi[0], i;
+	if(FrameType == APMT2_PEER_PROBE_REQ)
+		bndstrg_update_probe_info(bndstrg, inf, entry, cli_event);
+		
+	if(FrameType == APMT2_PEER_AUTH_REQ)
+		bndstrg_update_auth_info(bndstrg, inf, entry, cli_event);
 
-		for ( i = 1; i < 4; i++)
-		{
-			if (rssi[i])
-				MaxRssi = max(MaxRssi, rssi[i]);	
+	switch (entry->state) {
+	case ENTRY_INIT:
+		if(FrameType == APMT2_PEER_AUTH_REQ) {
 		}
 
-		if (band == BAND_2G)
-		{
-			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_2G;
-			statistics = &entry->statistics[0];
-#ifdef BNDSTRG_NVRAM_SUPPORT			
-			if(bndstrg_nvram_table_lookup(table, entry->Addr))
+		else if(FrameType == APMT2_PEER_ASSOC_REQ) {
+#ifdef WPS_SUPPORT		
+			//WPS: handle in case probe only on single band
+			struct bnd_msg_cli_assoc *cli_assoc = &cli_event->data.cli_assoc;
+			if(cli_assoc->bWpsAssoc)
 			{
-				for(i = 0; i < table->bndstrg_nvram_client_count ; i++)
-				{
-					if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr,entry->Addr))
-					 break;
-				}
-				if(i < table->bndstrg_nvram_client_count)
-				{
-					nvram_entry = &table->nvram_entry[i];
-					if(!nvram_entry->Manipulable && (nvram_entry->Band == band)
-						&& !(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_5G))
-						entry->Control_Flags |= fBND_STRG_CLIENT_IS_2G_ONLY ;
-					else
-						nvram_entry->Manipulable = TRUE;				
-				}	
-			}
-#endif			
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_5G_ONLY);
-		}
-		else if (band == BAND_5G)
-		{
-			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_5G;
-			statistics = &entry->statistics[1];
-#ifdef BNDSTRG_NVRAM_SUPPORT			
-			if(bndstrg_nvram_table_lookup(table, entry->Addr))
-			{
-				for(i = 0; i < table->bndstrg_nvram_client_count ; i++)
-				{
-					if(MAC_ADDR_EQUAL(table->nvram_entry[i].Addr,entry->Addr))
-					 break;
-				}
-				if(i < table->bndstrg_nvram_client_count)
-				{
-					nvram_entry = &table->nvram_entry[i];
-					if(!nvram_entry->Manipulable && (nvram_entry->Band == band)
-						&& !(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_2G))
-						entry->Control_Flags |= fBND_STRG_CLIENT_IS_5G_ONLY ;
-					else
-						nvram_entry->Manipulable = TRUE;
-				}	
-			}
-#endif			
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
-		}
-		else
-		{
-			DBGPRINT(DEBUG_OFF, "%s BND_STRG_UNEXP \n", __FUNCTION__);
-			ret_val = BND_STRG_UNEXP;
-		}
+				if (bndstrg_assoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+					return BND_STRG_INVALID_ARG;
+				
+				bndstrg_update_assoc_info(bndstrg, inf, entry, msg);
+				entry->state = ENTRY_ASSOC_RCD;	
 
-		if (statistics)
-		{
-			bndstrg_update_entry_statistics(statistics, MaxRssi, FrameType);
-		}
-		else
-		{
-			DBGPRINT(DEBUG_OFF, "%s BND_STRG_UNEXP 2 \n", __FUNCTION__);
-			ret_val = BND_STRG_UNEXP;
-		}
-
-		if (statistics->Rssi != 0)
-		{
-			if (statistics->Rssi < (table->RssiLow))
-			{
-				entry->Control_Flags |= (band == BAND_2G) ? \
-					fBND_STRG_CLIENT_LOW_RSSI_2G : fBND_STRG_CLIENT_LOW_RSSI_5G;
-			} else {
-				entry->Control_Flags &= (band == BAND_2G) ? \
-					(~fBND_STRG_CLIENT_LOW_RSSI_2G) : (~fBND_STRG_CLIENT_LOW_RSSI_5G);
-			}
-		}
-
-		if(FrameType == APMT2_PEER_PROBE_REQ)
-		{
-			if(bAllowStaConnectInHt == FALSE)
-			{
-				if(band == BAND_2G) 
-					entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G;
-				if(band == BAND_5G)
-					entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G;
-			}				
-			if(bVHTCap == TRUE)
-			{
-				entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_VHT;
-			}			
-			entry->Nss = Nss;
-		}
-
-		if((FrameType == APMT2_PEER_AUTH_REQ) && (entry->bActiveStatus == CLI_ACTIVE))
-		{
 #ifdef BND_STRG_QA
-			BND_STRG_PRINTQAMSG(table, entry,
-				(" %02x:%02x:%02x:%02x:%02x:%02x (%s) re-steering needed! \n"),
-				PRINT_MAC(entry->Addr),Cli_Band[entry->band]);
-#endif /* BND_STRG_QA */		
+				BND_STRG_PRINTQAMSG(table, entry, (" %02x:%02x:%02x:%02x:%02x:%02x [band:%s][Channel:%d] direct WPS ASSOC in ENTRY_INIT\n"),
+					PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band), entry->Channel);
+#endif /* BND_STRG_QA */
+			}
+#endif /*WPS_SUPPORT*/	
+		}
+
+		else if(FrameType == APMT2_PEER_DISASSOC_REQ) {
+		}
+
+	break;
+
+	case ENTRY_READY_TO_ASSOC:
+		if(FrameType == APMT2_PEER_ASSOC_REQ) {
+			struct bnd_msg_cli_assoc *cli_assoc = &cli_event->data.cli_assoc;
+			u32 cmp_flag=0;
+			if (bndstrg_assoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+			
+			bndstrg_update_assoc_info(bndstrg, inf, entry, msg);
+			entry->state = ENTRY_ASSOC_RCD;
+
+			if(table->BndStrgMode & PRE_CONNECTION_STEERING){
+				/* 
+				 *  Handle scenario in which STA's Probe and Assoc info missmatch
+				 */
+				if (IS_2G_BAND(inf->Band))
+					cmp_flag = fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G;
+				else if (IS_5G_L_BAND(inf->Band))
+					cmp_flag = fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G;
+				else if (IS_5G_H_BAND(inf->Band))
+					cmp_flag = fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G;
+			
+				if((cli_assoc->Nss != entry->Nss) ||
+					((cli_assoc->bVHTCapable == TRUE) && !(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT)) ||
+					((cli_assoc->bAllowStaConnectInHt == TRUE) && (entry->Control_Flags & cmp_flag))){
+					DBGPRINT(DEBUG_OFF,"Assoc and Probe info missmatch for [%02x:%02x:%02x:%02x:%02x:%02x] "
+						"ProbeInfo-> nss:%d HTCap:%s VHTCap:%s \t AssocInfo-> nss:%d HTCap:%s VHTCap:%s\n",
+						PRINT_MAC(pSrcAddr), entry->Nss, (entry->Control_Flags & cmp_flag)? "FALSE":"TRUE", (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT)? "TRUE":"FALSE",
+						cli_assoc->Nss, (cli_assoc->bAllowStaConnectInHt == TRUE)? "TRUE":"FALSE", (cli_assoc->bVHTCapable == TRUE)? "TRUE":"FALSE");
+					entry->Nss = cli_assoc->Nss;
+					if(cli_assoc->bVHTCapable == TRUE)
+						entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_VHT;
+					if(cli_assoc->bAllowStaConnectInHt == TRUE)
+						entry->Control_Flags &= ~(fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G);
+					entry->AssocProbeInfoMissMatch = TRUE;
+					if(!((entry->match_steered_rule_id[CMP_5GL_2G] == fBND_STRG_PRIORITY_BAND_PERSIST ) ||
+						 (entry->match_steered_rule_id[CMP_5GH_2G] == fBND_STRG_PRIORITY_BAND_PERSIST) || 
+						 (entry->match_steered_rule_id[CMP_5GH_5GL] == fBND_STRG_PRIORITY_BAND_PERSIST))){
+						entry->bConnStatus = FALSE;
+						entry->Channel = 0;
+					}
+				}
+			}
+		}
+
+		if(FrameType == APMT2_PEER_DISASSOC_REQ) 
+		{
+			/* 
+			 *  Handle scenario in which STA's Probe and Assoc info missmatch
+			 */
+			if (entry->AssocProbeInfoMissMatch){
+				if (bndstrg_disassoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+					return BND_STRG_INVALID_ARG;
+	    		bndstrg_update_disassoc_info(bndstrg, inf, entry, msg);
+				get_current_system_tick(&entry->tp);
+			}
+		}
+
+		break;
+
+	case ENTRY_ASSOC_RCD:
+		if(FrameType == APMT2_PEER_AUTH_REQ) 
+		{	
+			if((table->BndStrgMode != POST_CONNECTION_STEERING) &&
+			    (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) | IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags)))
+			{
+				/* client disconnected without sending deauth*/
+#ifdef BND_STRG_QA
+				BND_STRG_PRINTQAMSG(table, entry, (" %02x:%02x:%02x:%02x:%02x:%02x [band:%s][Channel:%d] re-steering needed! \n"),
+					PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band), entry->Channel);
+#endif /* BND_STRG_QA */
+				get_current_system_tick(&entry->tp);
+				if(entry->connected_band == BAND_2G)
+					table->active_client_2G--;
+				else if(entry->connected_band == BAND_5G_H){
+					table->active_client_5G--;
+					table->active_client_H5G--;
+				}
+				else if(entry->connected_band == BAND_5G_L){
+					table->active_client_5G--;
+					table->active_client_L5G--;
+				}
+
+#if 0
+				inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface,entry->Channel);
+				if(inf){
+					if(IS_2G_BAND(entry->band))
+						entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+					else if(IS_5G_L_BAND(entry->band))
+						entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+					else if(IS_5G_H_BAND(entry->band))
+						entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+					/* Remove STA deauth causing IOT issue*/
+					//bndstrg_accessible_cli(bndstrg,inf,entry,CLI_DEL);
+				}
+
+#endif
+				if(IS_5G_BAND(entry->band) || IS_5G_BAND(entry->connected_band)) {
+					struct bndstrg_iface *inf_source = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, BAND_2G, TRUE);
+
+					/* Clear stat as old data may be used for */
+					if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G) {
+						/* drop 2G connect by default for newcon, target always 5G */
+						memset(&entry->statistics, 0, sizeof(struct bndstrg_entry_stat) * MAX_INF_NUM);
+						entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+					}
+
+					if(inf_source) {
+					    BND_STRG_PRINTQAMSG(table,entry,"AUTH: Remove target 5GHz record from 2.4GHz access table. Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s, elpased_time=%u sec\n",
+						PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band), bndstrg_get_elapsed_time(entry->tp));
+					bndstrg_accessible_cli(bndstrg, inf_source, entry, CLI_DEL);
+				    }
+				}
+
+
+				/* clear entry*/
+				entry->Channel = 0;
+				entry->band = BAND_INVALID;
+				entry->Control_Flags &= (fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G);
+				entry->Control_Flags |= fBND_STRG_CLIENT_RE_STEERING;
+				/* connected_band info needed to adjust stat if algo switches band*/
+				/*entry->connected_band = BAND_INVALID; */
+				entry->bActiveStatus = CLI_INIT;
+				entry->bConnStatus = FALSE;
+				entry->state = ENTRY_INIT;
+				bndstrg_update_auth_info(bndstrg, inf, entry, cli_event); /* update Rx Auth data*/
+			}
+		}
+
+		else if(FrameType == APMT2_PEER_ASSOC_REQ) {
+
+			if (bndstrg_assoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+			
+			if(table->BndStrgMode == POST_CONNECTION_STEERING){
+				bndstrg_update_assoc_info(bndstrg, inf, entry, msg);
+			}
+		}
+
+		else if(FrameType == APMT2_PEER_DISASSOC_REQ) {
+
+			if (bndstrg_disassoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+#ifdef WPS_SUPPORT				
+			//WPS: handle first wps disassoc, to allow second connection
+			if(entry->WpsAssoc)
+			{
+				entry->WpsAssoc = WPS_FIRST_DISCONNECTION;
+				entry->state = ENTRY_DELETE_RCD;
+			}
+			else
+#endif /*WPS_SUPPORT*/			
+			{
+	        	entry->bConnStatus = FALSE;
+	    		bndstrg_update_disassoc_info(bndstrg, inf, entry, msg);
+				get_current_system_tick(&entry->tp);
+				entry->state = ENTRY_DELETE_RCD;
+			}
+		}
+
+	break;
+
+	case ENTRY_DELETE_RCD:
+		if(FrameType == APMT2_PEER_AUTH_REQ) {
+		}
+		else if(FrameType == APMT2_PEER_ASSOC_REQ) {
+	
+			if (bndstrg_assoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+
+    			bndstrg_update_assoc_info(bndstrg, inf, entry, msg);
+			entry->state = ENTRY_ASSOC_RCD;
+		}
+
+		else if(FrameType == APMT2_PEER_DISASSOC_REQ) {
+			if (bndstrg_disassoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+		}
+
+	break;
+
+	case ENTRY_OPER_STEER_ACTIVE:
+		if(FrameType == APMT2_PEER_ASSOC_REQ) {
+
+			if (bndstrg_assoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+
+    		if (entry->steered)
+            {
+        		entry->steered = 0;
+        		entry->tx_mcs_bad_cnt = 0;
+        		entry->rx_mcs_bad_cnt = 0;
+				entry->low_rssi_bad_cnt = 0;
+				entry->good_rssi_cnt = 0;
+				if(entry->Operation_steered == TRUE){
+					entry->Operation_steered = FALSE;
+					entry->Operation_steered_tick = 0;
+					INC(entry->CliSteerInfo.end_idx,table->max_steer_count);
+					get_current_system_tick(&entry->CliSteerInfo.steer_tp[entry->CliSteerInfo.end_idx]);
+					entry->CliSteerInfo.band[entry->CliSteerInfo.end_idx] = inf->Band;
+					entry->total_steered_cnt++ ;
+				}
+    		}
+			bndstrg_update_assoc_info(bndstrg, inf, entry, msg);
+			entry->state = ENTRY_ASSOC_RCD;
+		}
+		else if(FrameType == APMT2_PEER_DISASSOC_REQ) {
+			if (bndstrg_disassoc_sanity_check(bndstrg, inf, entry, msg) == FALSE)
+				return BND_STRG_INVALID_ARG;
+		    entry->bConnStatus = FALSE;
+		    bndstrg_update_disassoc_info(bndstrg, inf, entry, msg);
 			get_current_system_tick(&entry->tp);
-			if(entry->band == BAND_2G)
-				table->active_client_2G--;
-			else if(entry->band == BAND_5G)
-				table->active_client_5G--;
-			entry->band = 0;
-			entry->bActiveStatus = CLI_INIT;
-			entry->AgingConfirmed[0] = 0;
-			entry->AgingConfirmed[1] = 0;
-		}	
-	}
+		}
+
+	break;
+
+	}		
 	
 	if (ret_val != BND_STRG_SUCCESS)
 	{
-		DBGPRINT(DEBUG_ERROR,
-					"Error in %s(), error code = %d!\n", __FUNCTION__, ret_val);
+		DBGPRINT(DEBUG_TRACE, "Error in %s(), error code = %d!\n", __FUNCTION__, ret_val);
 	}
 
 	return ret_val;
 }
 
-
-int bndstrg_event_test(struct bndstrg *bndstrg)
-{
-
-	DBGPRINT(DEBUG_OFF, "%s\n", __FUNCTION__);
-	return 0;
-}
-
-int bndstrg_event_conn_req(struct bndstrg *bndstrg, struct bndstrg_msg *msg)
-{
-	DBGPRINT(DEBUG_TRACE,
-			"%02x:%02x:%02x:%02x:%02x:%02x, Band = %u, frame_type = %u, rssi = %d/%d/%d/%d bAllowStaConnectInHt %d, bVHTCapable %d, Nss %d\n",
-			PRINT_MAC(msg->Addr), msg->Band, msg->FrameType,
-			msg->Rssi[0], msg->Rssi[1], msg->Rssi[2], msg->Rssi[3], msg->bAllowStaConnectInHt, msg->bVHTCapable, msg->Nss);
-
-	bndstrg_check_conn_req( bndstrg,
-							msg->Band,
-							msg->Addr,
-							msg->FrameType,
-							msg->Rssi,
-							msg->bAllowStaConnectInHt,
-							msg->bVHTCapable,
-							msg->Nss);
-	
-	return 0;
-}
-
-static int bndstrg_print_entry_statistics(struct bndstrg_entry_stat *statistics)
+static int _bndstrg_print_entry_statistics(struct bndstrg_entry_stat *statistics,
+										 u8 dump_cli_status)
 {
 #ifdef BND_STRG_DBG
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-		"Rssi = %4d, FirstAuthTime %s AuthReqCount = %3u FirstProbeTime %s ProbeReqCount = %u FirstAssocTime %s AssocCount = %u\n",
-		statistics->Rssi, statistics->FirstAuthTime, statistics->AuthReqCount, statistics->FirstProbeTime , statistics->ProbeReqCount,
-		statistics->FirstAssocTime, statistics->AssocCount);
-BND_STRG_DBGPRINT(DEBUG_OFF,"\t\tFirstClientDelTime %s MacDelCount = %u\n",statistics->FirstClientDelTime, statistics->MacDelCount);
-#endif /* BND_STRG_DBG */
+	static char *phy_str[]={"CCK","OFDM","HT-M","HT-G","VHT"};
+	static char *bw_str[]={"20","40","80","160"};
+	if (dump_cli_status) {
+		BND_STRG_DBGPRINT(DEBUG_OFF,
+						  	"Rssi = %4d, FirstAuthTime %s LastAuthTime %s AuthReqCount = %u FirstProbeTime %s LastProbeTime %s\n"
+						  	"\t\t\t ProbeReqCount = %u FirstAssocTime %s AssocCount = %u FirstClientDelTime %s MacDelCount = %u\n",
+							statistics->Rssi, statistics->FirstAuthTime, statistics->LastAuthTime, statistics->AuthReqCount, statistics->FirstProbeTime,
+							statistics->LastProbeTime, statistics->ProbeReqCount, statistics->FirstAssocTime, statistics->AssocCount,
+							statistics->FirstClientDelTime, statistics->MacDelCount);
+		if (statistics->got_cli_status) {
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+							  "\t\tData Rssi = %4d, tx/rx Data Rate = %4u/%4u,tx/rx TP = %4u/%4u\n",
+							  statistics->data_Rssi,
+							  statistics->data_tx_Rate,statistics->data_rx_Rate,
+							  statistics->data_tx_TP,statistics->data_rx_TP);
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+							  "\t\ttx/rx Phy = %4s/%4s, MCS = %u/%u, bw = %4s/%4s, sgi = %u/%u, stbc = %u/%u, ant = %u/%u\n"
+							  "\t\t\ttx/rx avg_util = %3u%%/%3u%%  tx/rx packets = %6lu/%6lu tx/rx byte = %u/%u\n",
+							  phy_str[statistics->data_tx_Phymode], phy_str[statistics->data_tx_Phymode],
+							  statistics->data_tx_mcs, statistics->data_rx_mcs,
+							  bw_str[statistics->data_tx_bw], bw_str[statistics->data_rx_bw],
+							  statistics->data_tx_sgi, statistics->data_rx_sgi,
+							  statistics->data_tx_stbc, statistics->data_rx_stbc,
+							  statistics->data_tx_ant, statistics->data_rx_ant,
+							  statistics->data_tx_util.avg/(BND_STRG_DATA_SAMPLE),
+							  statistics->data_rx_util.avg/(BND_STRG_DATA_SAMPLE),
+							  (long unsigned int)statistics->data_tx_packets, 
+							  (long unsigned int)statistics->data_rx_packets,
+							  statistics->data_tx_byte.avg,
+							  statistics->data_rx_byte.avg);
+		}
+	} else {
+	    BND_STRG_DBGPRINT(DEBUG_OFF,
+						  	"Rssi = %4d, FirstAuthTime %s LastAuthTime %s AuthReqCount = %3u FirstProbeTime %s LastProbeTime %s\n" 
+						  	"\t\t\t ProbeReqCount = %u FirstAssocTime %s AssocCount = %u FirstClientDelTime %s MacDelCount = %u\n",
+							statistics->Rssi, statistics->FirstAuthTime, statistics->LastAuthTime, statistics->AuthReqCount, statistics->FirstProbeTime,
+							statistics->LastProbeTime, statistics->ProbeReqCount, statistics->FirstAssocTime, statistics->AssocCount,
+							statistics->FirstClientDelTime, statistics->MacDelCount);
+	}
+#endif	
 	return BND_STRG_SUCCESS;
 }
 
-static int bndstrg_print_ctrlflags(u32 flags)
+static int _bndstrg_print_ctrlflags(u32 flags)
 {
 #ifdef BND_STRG_DBG
 	BND_STRG_DBGPRINT(DEBUG_OFF,
 						"\t\tSupport_2G = %s\n"
-						"\t\tSupport_5G = %s\n"
+						"\t\tSupport_L5G = %s\n"
+						"\t\tSupport_H5G = %s\n"
 						"\t\tAllow to connect 2G = %s\n"
-						"\t\tAllow to connect 5G = %s\n"
+						"\t\tAllow to connect L5G = %s\n"
+						"\t\tAllow to connect H5G = %s\n"
 #if 0
 						"\t\tHT Support 2G = %s\n"
-						"\t\tHT Support 5G = %s\n"
+						"\t\tHT Support L5G = %s\n"
+						"\t\tHT Support H5G = %s\n"
 #endif
 						"\t\tLow Rssi 2G = %s\n"
-						"\t\tLow Rssi 5G = %s\n"
+						"\t\tLow Rssi L5G = %s\n"
+						"\t\tLow Rssi H5G = %s\n"
 						"\t\t2G Only = %s\n"
 						"\t\t5G Only = %s\n",
 						(flags & fBND_STRG_CLIENT_SUPPORT_2G) ? "yes" : "no",
-						(flags & fBND_STRG_CLIENT_SUPPORT_5G) ? "yes" : "no",						
+						(flags & fBND_STRG_CLIENT_SUPPORT_L5G) ? "yes" : "no",
+						(flags & fBND_STRG_CLIENT_SUPPORT_H5G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G) ? "yes" : "no",
-						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G) ? "yes" : "no",
+						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G) ? "yes" : "no",
+						(flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G) ? "yes" : "no",
 #if 0
 						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G) ? "no" : "yes",
-						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G) ? "no" : "yes",
+						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G) ? "no" : "yes",
+						(flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G) ? "no" : "yes",
 #endif
 						(flags & fBND_STRG_CLIENT_LOW_RSSI_2G) ? "yes" : "no",
-						(flags & fBND_STRG_CLIENT_LOW_RSSI_5G) ? "yes" : "no",
+						(flags & fBND_STRG_CLIENT_LOW_RSSI_L5G) ? "yes" : "no",
+						(flags & fBND_STRG_CLIENT_LOW_RSSI_H5G) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_IS_2G_ONLY) ? "yes" : "no",
 						(flags & fBND_STRG_CLIENT_IS_5G_ONLY) ? "yes" : "no");
 #endif /* BND_STRG_DBG */
 	return BND_STRG_SUCCESS;
 }
 
-static u32 bndstrg_get_entry_elapsed_time(struct bndstrg_cli_entry *entry)
+u32 bndstrg_get_entry_elapsed_time(struct bndstrg_cli_entry *entry)
 {
 	struct timespec now;
 	u32 elapsed_time = 0;
@@ -936,63 +2000,344 @@ static u32 bndstrg_get_entry_elapsed_time(struct bndstrg_cli_entry *entry)
 	if (entry->tp.tv_sec) {
 		get_current_system_tick(&now);
 		elapsed_time = (now.tv_sec - entry->tp.tv_sec);
-						//((now.tv_nsec - entry->tp.tv_nsec)/1000000);
+						/* ((now.tv_nsec - entry->tp.tv_nsec)/1000000); */
 	}
 
 	return elapsed_time;
 }
 
-int bndstrg_print_entry(
+u32 bndstrg_get_elapsed_time(struct timespec ref_time)
+{
+	struct timespec now;
+	u32 elapsed_time = 0;
+
+	if (ref_time.tv_sec) {
+		get_current_system_tick(&now);
+		elapsed_time = (now.tv_sec - ref_time.tv_sec);
+						/* ((now.tv_nsec - ref_time.tv_nsec)/1000000); */
+	}
+
+	return elapsed_time;
+}
+
+u32 bndstrg_get_entry_idle_time(struct bndstrg_cli_entry *entry)
+{
+	struct timespec now;
+	u32 idle_time = 0;
+
+	if (entry->tp.tv_sec) {
+		get_current_system_tick(&now);
+		idle_time = (now.tv_sec - entry->activity_tp.tv_sec);
+					 /* ((now.tv_nsec - entry->activity_tp.tv_nsec)/1000000); */
+	}
+
+	return idle_time;
+}
+
+static int _bndstrg_print_entry(
 			struct bndstrg_cli_table *table,
 			struct bndstrg_cli_entry *entry)
 {
 #ifdef BND_STRG_DBG
-	/* Update elapsed time */
+	char *entry_prefer_bnd[]={"?","2G","L-5G","H-5G"};
+	int entry_prefer_bnd_id=0;
+	u8 dump_cli_status[3];
+	char temp_buf[30];
+	u8	single_band = 0, i=0;
+	
+	if (IS_BND_STRG_H5G_ONLY_BAND_CLIENT(entry->Control_Flags))
+		single_band = 1;
+	if (IS_BND_STRG_L5G_ONLY_BAND_CLIENT(entry->Control_Flags))
+		single_band = 1;
+	if (IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags))
+		single_band = 1;
+	/* Update idle elapsed time */
+	entry->idle_elapsed_time = bndstrg_get_entry_idle_time(entry);
 	entry->elapsed_time = bndstrg_get_entry_elapsed_time(entry);
-
+	memset(dump_cli_status,0x00,sizeof(dump_cli_status));
 	if (entry->bValid)
 	{
 		if (MAC_ADDR_EQUAL(table->MonitorAddr, entry->Addr))
 			BND_STRG_DBGPRINT(DEBUG_OFF, YLW("*"));
+		entry_prefer_bnd_id = 0;
+		if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G)
+			entry_prefer_bnd_id = 3;
+		else if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G)
+			entry_prefer_bnd_id = 2;
+		else if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G)
+			entry_prefer_bnd_id = 1;
+		memset(temp_buf,0x00,sizeof(temp_buf));
+		if (table->op_mode == OP_TRIBAND)  {
+			snprintf(temp_buf,sizeof(temp_buf),"[%d|%d|%d|%d (%d)][%d/%d]",
+					 entry->steered,
+					 IS_2G_BAND(entry->band)? 1:0,
+					 IS_5G_L_BAND(entry->band)? 1:0,
+					 IS_5G_H_BAND(entry->band)? 1:0,
+					 entry->total_steered_cnt,
+					 entry->Isbad,
+					 entry->IsIdle);
+		} 
+		else 
+		{
+			if (IS_2G_BAND(table->Band))
+			{
+				snprintf(temp_buf,sizeof(temp_buf),"[%d|%d|%d (%d)][%d/%d]",
+						 entry->steered,
+						 IS_2G_BAND(entry->band)? 1:0,
+						 IS_5G_L_BAND(entry->band)? 1:0,
+						 entry->total_steered_cnt,
+						 entry->Isbad,
+						 entry->IsIdle);
+			}
+			else 
+			{
+				snprintf(temp_buf,sizeof(temp_buf),"[%d|%d|%d (%d)][%d/%d]",
+						 entry->steered,
+						 IS_5G_L_BAND(entry->band)? 1:0,
+						 IS_5G_H_BAND(entry->band)? 1:0,
+						 entry->total_steered_cnt,
+						 entry->Isbad,
+						 entry->IsIdle);
+			}
+		}
+		if (entry->bConnStatus) {
+			dump_cli_status[(entry_prefer_bnd_id >0)?(entry_prefer_bnd_id-1):0] = 1;
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+							  YLW("\tbValid = %u, Index = %02u, Control_Flags = 0x%08x(%4s)(%d/%d/%d) %s,"
+							  " Addr=%02x:%02x:%02x:%02x:%02x:%02x, idle time = %06u (s), elapsed time = %06u (s), nss=%2u, channel= %3u"
+							  " bad cnt rssi/tx_mcs/rx_mcs %u/%u/%u GoodRSSICnt %u BTMSupport=%d state:%s AssoProbeInfoMissMatch:%s\n"),
+							  entry->bValid, entry->TableIndex, entry->Control_Flags,
+							  entry_prefer_bnd[entry_prefer_bnd_id],entry->bConnStatus,entry->bActiveStatus,entry->Manipulable,
+							  temp_buf,
+							  PRINT_MAC(entry->Addr), entry->idle_elapsed_time, entry->elapsed_time, entry->Nss, entry->Channel,
+							  entry->low_rssi_bad_cnt, entry->tx_mcs_bad_cnt, entry->rx_mcs_bad_cnt, entry->good_rssi_cnt, 
+							  entry->btm_info.BTMSupport, entry_state[entry->state], (entry->AssocProbeInfoMissMatch == TRUE ? "TRUE":"FALSE"));
+		} else {
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+				"\tbValid = %u, Index = %02u, Control_Flags = 0x%08x(%4s)(%d/%d/%d) %s,"
+				  " Addr=%02x:%02x:%02x:%02x:%02x:%02x, idle time = %06u (s), elapsed time = %06u (s), nss=%2u, channel=%3u, BTMSupport=%d state:%s AssoProbeInfoMissMatch:%s\n",
+					entry->bValid, entry->TableIndex, entry->Control_Flags,
+					entry_prefer_bnd[entry_prefer_bnd_id],entry->bConnStatus,entry->bActiveStatus,entry->Manipulable,
+					temp_buf,
+					PRINT_MAC(entry->Addr), entry->idle_elapsed_time, entry->elapsed_time, entry->Nss, entry->Channel, 
+					entry->btm_info.BTMSupport, entry_state[entry->state], (entry->AssocProbeInfoMissMatch == TRUE ? "TRUE":"FALSE"));
+		}
 
-		BND_STRG_DBGPRINT(DEBUG_OFF,
-			"\tbValid = %u, Index = %u, Control_Flags = 0x%08x,"
-			  " Addr=%02x:%02x:%02x:%02x:%02x:%02x, elapsed time = %u (s), aging = %u/%u\n",
-				entry->bValid, entry->TableIndex, entry->Control_Flags,
-				PRINT_MAC(entry->Addr), entry->elapsed_time,
-				entry->AgingConfirmed[0], entry->AgingConfirmed[1]);
-		BND_STRG_DBGPRINT(DEBUG_OFF,
-			"\t\t2G:");
-		bndstrg_print_entry_statistics(&entry->statistics[0]);
-		BND_STRG_DBGPRINT(DEBUG_OFF,
-			"\t\t5G:");
-		bndstrg_print_entry_statistics(&entry->statistics[1]);
-		BND_STRG_DBGPRINT(DEBUG_OFF,
-			"\t\tbActiveStatus = %d, Nss = %d, Manipulable = %d band %d bndstrg_matched_rule: %s \n",
-				entry->bActiveStatus, entry->Nss, entry->Manipulable, entry->band, ((entry->matched_rule_id > -1)? bndstrg_matched_rule[entry->matched_rule_id] : "Unknown"));
-
-		if (MAC_ADDR_EQUAL(table->MonitorAddr, entry->Addr))
-			bndstrg_print_ctrlflags(entry->Control_Flags);
+		if(IS_2G_BAND(table->Band)){
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+				"\t\t2G  :");
+			_bndstrg_print_entry_statistics(&entry->statistics[IDX_2G],dump_cli_status[0]);
+		}
+		if (IS_5G_L_BAND(table->Band))
+		{
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+				"\t\tL-5G:");
+			_bndstrg_print_entry_statistics(&entry->statistics[IDX_5GL],dump_cli_status[1]);
+		}
+		if (IS_5G_H_BAND(table->Band))
+		{
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+				"\t\tH-5G:");
+			_bndstrg_print_entry_statistics(&entry->statistics[IDX_5GH],dump_cli_status[2]);
+		}
+		if (MAC_ADDR_EQUAL(table->MonitorAddr, entry->Addr)) {
+			_bndstrg_print_ctrlflags(entry->Control_Flags);
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+							  "\t\tPrefer    Band = %d\n"
+							  "\t\t\tConnected Band = %d\n",
+							  entry->band,
+							  entry->connected_band);
+		}
+		if(entry->total_steered_cnt > 0){
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+				  "\t\tClient steered info[Elapsed time for steered band in sec]\n");
+			printf("\t\t\t");
+			i = (entry->CliSteerInfo.end_idx + (table->max_steer_count - entry->total_steered_cnt + 1))%table->max_steer_count;
+			for(;i<entry->total_steered_cnt;i++)
+			{
+				printf("Time: %u Band: %u  ",
+					bndstrg_get_elapsed_time(entry->CliSteerInfo.steer_tp[i]),
+					entry->CliSteerInfo.band[i]);
+			}
+			printf("\n");
+		}
+		
+		if (single_band == 1)
+		{
+			BND_STRG_DBGPRINT(DEBUG_OFF, "\t\tSINGLE BAND\n");
+			return BND_STRG_SUCCESS;
+		}
+		
+		if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+		{
+			BND_STRG_DBGPRINT(DEBUG_OFF, "\t\tH-5G vs L-5G = %s ",
+				entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_5GL]]);
+			if(entry->match_steered_rule_id[CMP_5GH_5GL] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE)
+			{
+				printf("[MachedChanloadActiveCnd:%s]\n",entry_match_chanload_active_str[entry->match_lb_chanload_active_cond_id[CMP_5GH_5GL]]);
+			}else
+				printf("\n");
+		}
+		
+		if (IS_5G_H_BAND(table->Band))
+		{
+			if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
+			{
+				BND_STRG_DBGPRINT(DEBUG_OFF, "\t\tH-5G vs 2G = %s",
+					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_2G]]);
+			}
+			if(entry->match_steered_rule_id[CMP_5GH_2G] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE)
+			{
+				printf("[MachedChanloadCnd:%s]\n",entry_match_chanload_active_str[entry->match_lb_chanload_active_cond_id[CMP_5GH_2G]]);
+			}else
+				printf("\n");
+		}
+		
+		if (IS_5G_L_BAND(table->Band))
+		{
+			if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
+			{
+				BND_STRG_DBGPRINT(DEBUG_OFF, "\t\tL-5G vs 2G = %s ",
+					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GL_2G]]);
+			}
+			if(entry->match_steered_rule_id[CMP_5GL_2G] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE)
+			{
+				printf("[MachedChanloadCnd:%s]\n",entry_match_chanload_active_str[entry->match_lb_chanload_active_cond_id[CMP_5GL_2G]]);
+			}else
+				printf("\n");
+		}
+		if (entry->Operation_steered)
+		{
+			BND_STRG_DBGPRINT(DEBUG_OFF, "\t\tOperation Steering tick=%d!\n",entry->Operation_steered_tick );
+		}
 	}
 #endif /* BND_STRG_DBG */
 	return BND_STRG_SUCCESS;
 }
 
-static int bndstrg_event_show_entries(struct bndstrg *bndstrg)
+static int _bndstrg_event_show_entries(struct bndstrg *bndstrg,struct bndstrg_msg *msg)
 {
 	int i;
-
-	for (i = 0; i < BND_STRG_MAX_TABLE_SIZE; i++)
+	int entry_count_2G = 0;
+	int entry_count_L5G = 0;
+	int entry_count_H5G = 0;
+	int entry_count_unkown = 0;
+	int hash_cnt_total = 0;
+	struct bndstrg_iface *inf = NULL;
+	entry_count_2G = entry_count_L5G  =entry_count_H5G = entry_count_unkown = hash_cnt_total = 0;
+	for (i = 0; i < bndstrg->table.max_steering_size; i++)
 	{
-		bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+		struct bndstrg_cli_entry *entry;
+		entry = &bndstrg->table.Entry[i];
+		if (entry->bValid) {
+			if (entry->band == BAND_2G) {
+				entry_count_2G++;
+			} else if (entry->band == BAND_5G_L) {
+				entry_count_L5G++;
+			} else if (entry->band == BAND_5G_H) {
+				entry_count_H5G++;
+			} else {
+				entry_count_unkown++;
+			}
+		}
 	}
+	if (msg->data.display_type.display_type != 3)
+	{
+		BND_STRG_DBGPRINT(DEBUG_OFF,
+						  "2.4G   entry count=%d\n\r"
+						  "L5G    entry count=%d\n\r"
+						  "H5G    entry count=%d\n\r"
+						  "unknow entry count=%d\n\r",
+							entry_count_2G,
+							entry_count_L5G,
+							entry_count_H5G,
+							entry_count_unkown);
+		for (i = 0; i < bndstrg->table.max_steering_size; i++)
+		{
+			if (msg->data.display_type.display_type == 0) {
+				/* dump all valid entry */
+				_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+			} else if (msg->data.display_type.display_type == 1) {
+				/* dump connected entry */
+				if (bndstrg->table.Entry[i].bConnStatus) {
+					_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+				}
+			} else if (msg->data.display_type.display_type == 2) {
+				/* dump entry with the same band */
+				u8 band;
+				if (msg->data.display_type.filer_band == BAND_2G)
+					band = BAND_2G;
+				else {
+					inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface,msg->data.display_type.channel);
+					if (IS_5G_H_BAND(inf->Band)) {
+						band = BAND_5G_H;
+					} else {
+						band = BAND_5G_L;
+					}
+				}
+				if (band == bndstrg->table.Entry[i].band){
+					_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+				}
+			}
+		}
+		for (i = 0; i < BND_HASH_TABLE_SIZE; i++)
+		{
+			struct bndstrg_cli_entry *this_entry;
+			int hash_cnt = 0;
 
+			this_entry = bndstrg->table.Hash[i];
+			if (this_entry != NULL)
+			{
+				/* update Hash list*/
+				do
+				{
+					hash_cnt++;
+					this_entry = this_entry->pNext;
+				} while (this_entry);
+				hash_cnt_total = hash_cnt_total+hash_cnt;
+			} else {
+			}
+		}
+		/* sanity check for hash table entry */
+		if (hash_cnt_total != (entry_count_2G +
+								entry_count_L5G +
+								entry_count_H5G +
+								entry_count_unkown)) {
+			BND_STRG_DBGPRINT(DEBUG_OFF,
+							  "Inconsistent Hash cnt(%d) and entry count\n\r",hash_cnt_total);
+		}
+	}
+	if (msg->data.display_type.display_type == 3)
+	{
+		BND_STRG_DBGPRINT(DEBUG_OFF,
+						  "Non-Active entry\n\r");
+		for (i = 0; i < bndstrg->table.max_steering_size; i++)
+		{
+			if (msg->data.display_type.display_type == 3)
+			{
+				/* dump all valid entry */
+				if(bndstrg->table.Entry[i].bActiveStatus == CLI_NOTACTIVE)
+					_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+			}
+		}
+	}
 	return 0;
 }
 
-static int bndstrg_event_table_info(struct bndstrg *bndstrg)
+static int _bndstrg_event_table_info(struct bndstrg *bndstrg)
 {
 	struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf = NULL;
+    struct bndstrg_ref_iface *ref_inf = NULL;
+    int i, j;
+	int total_assoc_cnt=0, percent_2g_assoc=0, percent_l5g_assoc=0, percent_h5g_assoc=0;
+	char *bndstrg_op_mode[] = {
+		"No BandStrg Support","DualBand BandStrg Support","TriBand BandStrg Support"
+	};
+	char	*bndstrg_fsm_mode[] = {
+		"BNDSTRG_INIT","BNDSTRG_INF_POLL","BNDSTRG_TBL_EN","BNDSTRG_TBL_READY","BNDSTRG_LEAVE"
+	};
 
 	if (!table)
 	{
@@ -1000,608 +2345,1862 @@ static int bndstrg_event_table_info(struct bndstrg *bndstrg)
 					"%s(): Error! table is NULL!\n", __FUNCTION__);
 		return 0;
 	}
-	
+	BND_STRG_DBGPRINT(DEBUG_OFF,"Band Steering Daemon Ver - %s\n",BNDSTRG_DAEMON_VER);
+	total_assoc_cnt = (table->active_client_2G+table->active_client_5G);
+	if(total_assoc_cnt != 0) {
+		percent_2g_assoc = table->active_client_2G *100/total_assoc_cnt;
+		percent_l5g_assoc = table->active_client_L5G *100/total_assoc_cnt;
+		percent_h5g_assoc = table->active_client_H5G *100/total_assoc_cnt;
+	}
 	BND_STRG_DBGPRINT(DEBUG_OFF,
 						"%s():\n"
 							"\tbInitialized = %u\n"
 							"\tbEnabled = %u\n"
-							"\tBand = %u\n"
+							"\tbActiveTotalInf = %d\n"
+							"\tbActive2GInf = %d\n"
+							"\tbActive5GInf = %d\n"
 							"\tb2GInfReady = %u\n"
 							"\tb5GInfReady = %u\n"
-							"\tb2GInfDiable_by_drv = %u\n"
-							"\tb5GInfDiable_by_drv = %u\n"
 							"\tRssiDiff = %d (dB)\n"
 							"\tRssiLow = %d (dB)\n"
-							"\tAgeTime = %u (s)\n"
-							"\tHoldTime = %u (s)\n"
-							"\tCheckTime_5G = %u (s)\n"
-							"\tCheckTime_2G = %u (s)\n"
-							"\tstatus_queried = %u\n"
-							"\tstatus_queried_cnt = %u\n"
-							"\ttable_enable_cnt = %u\n"
-							"\tdbdc_mode = %u\n"
-							"\tFrameCheck = 0x%x\n"
-							"\tConditionCheck = 0x%x\n"
+							"\tRSSILowDownSteer = %d (dB)\n"
+							"\tRSSIHighUpSteer = %d (dB)\n"
+#ifdef VENDOR_FEATURE7_SUPPORT
+							"\tRSSIDisconnect = %d (dB)\n"
+							"\tBlackListTime = %d (sec)\n"
+#endif
+							"\tAgeTime = %d (s)\n"
+							"\tDormantTime = %d (s)\n"
+							"\tHoldTime = %d (s)\n"
+							"\tCheckTime = %d (s)\n"
 #ifdef BND_STRG_DBG
 							"\tMntAddr = %02x:%02x:%02x:%02x:%02x:%02x\n"
 #endif /* BND_STRG_DBG */
 							"\tSize = %u\n"
-							"\tActiveClient2G = %u\n"
-							"\tActiveClient5G = %u\n"
-							"\tn_diff = %u\n"
-							"\tbndstrg_nvram_client_count = %u\n"
-							"\tPriorityListSize=%u\n"
-							"\tPriority=%d %d %d %d %d %d %d %d %d %d\n",
+							"\tActiveClient2G = %03u\n"
+							"\tActiveClient5G = %03u = (L:%03u,H:%03u)\n"
+							"\tMax Steering Size=%u\n"
+							"\tAssoc balance threshold=%d%%  current=(2G:%d%%,L5G:%d%%,H5G:%d%%)\n"
+							"\tTable Band=0x%x\n"
+							"\tOp_mode=%s\n"
+							"\tBndStrg FSM=%s\n"
+							"\tNvram_support=%d"
+							"\tNvram_Table_Size=%d"
+							"\tNvram_Entry_Count=%d\n"
+							"\tNVRAMReset = %d \n"							
+							"\tBtmMode=%d\n"
+							"\tBndStrgMode=%d\n",
 							__FUNCTION__,
 							table->bInitialized,
 							table->bEnabled,
-							table->Band,
+							ctrl_iface->ActiveCount,
+							ctrl_iface->Active2GCount,
+							ctrl_iface->Active5GCount,
 							table->b2GInfReady,
 							table->b5GInfReady,
-							table->b2GInfDiable_by_drv,
-							table->b5GInfDiable_by_drv,
 							table->RssiDiff,
 							table->RssiLow,
+							table->RSSILowDownSteer,
+							table->RSSIHighUpSteer,
+#ifdef VENDOR_FEATURE7_SUPPORT
+							table->RSSIDisconnect,
+							table->BlackListTime,
+#endif
 							table->AgeTime,
+							table->DormantTime,
 							table->HoldTime,
-							table->CheckTime_5G,
-							table->CheckTime_2G,
-							table->status_queried,
-							table->status_queried_cnt,
-							table->table_enable_cnt,
-							table->dbdc_mode,
-							table->AlgCtrl.FrameCheck,
-							table->AlgCtrl.ConditionCheck,
+							table->CheckTime,
 #ifdef BND_STRG_DBG
 							PRINT_MAC(table->MonitorAddr),
 #endif /* BND_STRG_DBG */
 							table->Size,
 							table->active_client_2G,
 							table->active_client_5G,
-							table->n_diff,
+							table->active_client_L5G,
+							table->active_client_H5G,
+							table->max_steering_size,
+							table->assoc_bl_th,percent_2g_assoc,percent_l5g_assoc,percent_h5g_assoc,
+								table->Band,
+							bndstrg_op_mode[(table->op_mode > 2)?0:table->op_mode],
+							bndstrg_fsm_mode[bndstrg->state],
+							bndstrg->nvram_support,
+							table->nvram_table_size,
 							table->bndstrg_nvram_client_count,
-							table->PriorityListSize,
-							table->PriorityList[0],table->PriorityList[1],
-							table->PriorityList[2],table->PriorityList[3],
-							table->PriorityList[4],table->PriorityList[5],
-							table->PriorityList[6],table->PriorityList[7],
-							table->PriorityList[8],table->PriorityList[9]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,"\tsent_action_code_counter \n");
+							table->nvram_reset,							
+							table->BtmMode,
+							table->BndStrgMode);
+		BND_STRG_DBGPRINT(DEBUG_OFF," PriorityListSize=%u\n",table->PriorityListSize);
+		BND_STRG_DBGPRINT(DEBUG_OFF," PriorityList:\n");
+		for (i = 0; i < table->PriorityListSize; i++){
+			if(table->PriorityList[i] < fBND_STRG_PRIORITY_MAX)
+				printf("\t\t %d: %s\n",table->PriorityList[i], entry_match_steering_str[table->PriorityList[i]]);
+			else
+				printf("\t\t\t Invalid PriorityID:%d",table->PriorityList[i]);
+		}
+		printf("\n");
+
+		if(table->WhiteEntryListSize){
+			u8 i=0, count=0;
+			BND_STRG_DBGPRINT(DEBUG_OFF," WhiteList:\n");
+			for(i=0; i < BND_STRG_MAX_DISABLE_LIST; i++){
+				if(IS_VALID_MAC(table->WhiteEntryList[i])){
+					printf("\t\t[%d]:%02x:%02x:%02x:%02x:%02x:%02x \n", i, PRINT_MAC(table->WhiteEntryList[i]));
+					count++;
+				}
+				if(count >= table->WhiteEntryListSize)
+					break;
+			}				
+		}
+		
 	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tCONNECTION_REQ = %d, CLI_ADD %d CLI_UPDATE = %d CLI_DEL %d CLI_AGING_REQ %d CLI_AGING_RSP %d INF_STATUS_QUERY %d INF_STATUS_RSP_2G %d INF_STATUS_RSP_5G %d\n",
-		table->sent_action_code_counter[CONNECTION_REQ - 1], table->sent_action_code_counter[CLI_ADD - 1], table->sent_action_code_counter[CLI_UPDATE - 1], table->sent_action_code_counter[CLI_DEL - 1], table->sent_action_code_counter[CLI_AGING_REQ -1],
-		table->sent_action_code_counter[CLI_AGING_RSP - 1], table->sent_action_code_counter[INF_STATUS_QUERY - 1], table->sent_action_code_counter[INF_STATUS_RSP_2G - 1], table->sent_action_code_counter[INF_STATUS_RSP_5G - 1]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tTABLE_INFO = %d, ENTRY_LIST %d BNDSTRG_ONOFF = %d SET_RSSI_DIFF %d SET_RSSI_LOW %d SET_AGE_TIME %d SET_HOLD_TIME %d SET_CHECK_TIME %d SET_MNT_ADDR %d\n",
-		table->sent_action_code_counter[TABLE_INFO - 1], table->sent_action_code_counter[ENTRY_LIST - 1], table->sent_action_code_counter[BNDSTRG_ONOFF - 1], table->sent_action_code_counter[SET_RSSI_DIFF - 1], table->sent_action_code_counter[SET_RSSI_LOW - 1],
-		table->sent_action_code_counter[SET_AGE_TIME - 1], table->sent_action_code_counter[SET_HOLD_TIME - 1], table->sent_action_code_counter[SET_CHECK_TIME - 1], table->sent_action_code_counter[SET_MNT_ADDR - 1]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tSET_CHEK_CONDITIONS = %d, INF_STATUS_RSP_DBDC %d SET_CND_PRIORITY = %d NVRAM_UPDATE %d\n",
-		table->sent_action_code_counter[SET_CHEK_CONDITIONS - 1], table->sent_action_code_counter[INF_STATUS_RSP_DBDC - 1], table->sent_action_code_counter[SET_CND_PRIORITY - 1], table->sent_action_code_counter[NVRAM_UPDATE - 1]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,"\treceived_action_code_counter \n");
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tCONNECTION_REQ = %d, CLI_ADD %d CLI_UPDATE = %d CLI_DEL %d CLI_AGING_REQ %d CLI_AGING_RSP %d INF_STATUS_QUERY %d INF_STATUS_RSP_2G %d INF_STATUS_RSP_5G %d\n",
-		table->received_action_code_counter[CONNECTION_REQ - 1], table->received_action_code_counter[CLI_ADD - 1], table->received_action_code_counter[CLI_UPDATE - 1], table->received_action_code_counter[CLI_DEL - 1], table->received_action_code_counter[CLI_AGING_REQ -1],
-		table->received_action_code_counter[CLI_AGING_RSP - 1], table->received_action_code_counter[INF_STATUS_QUERY - 1], table->received_action_code_counter[INF_STATUS_RSP_2G - 1], table->received_action_code_counter[INF_STATUS_RSP_5G - 1]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tTABLE_INFO = %d, ENTRY_LIST %d BNDSTRG_ONOFF = %d SET_RSSI_DIFF %d SET_RSSI_LOW %d SET_AGE_TIME %d SET_HOLD_TIME %d SET_CHECK_TIME %d SET_MNT_ADDR %d\n",
-		table->received_action_code_counter[TABLE_INFO - 1], table->received_action_code_counter[ENTRY_LIST - 1], table->received_action_code_counter[BNDSTRG_ONOFF - 1], table->received_action_code_counter[SET_RSSI_DIFF - 1], table->received_action_code_counter[SET_RSSI_LOW - 1],
-		table->received_action_code_counter[SET_AGE_TIME - 1], table->received_action_code_counter[SET_HOLD_TIME - 1], table->received_action_code_counter[SET_CHECK_TIME - 1], table->received_action_code_counter[SET_MNT_ADDR - 1]);
-	BND_STRG_DBGPRINT(DEBUG_OFF,
-	"\tSET_CHEK_CONDITIONS = %d, INF_STATUS_RSP_DBDC %d SET_CND_PRIORITY = %d NVRAM_UPDATE %d\n",
-		table->received_action_code_counter[SET_CHEK_CONDITIONS - 1], table->received_action_code_counter[INF_STATUS_RSP_DBDC - 1], table->received_action_code_counter[SET_CND_PRIORITY - 1], table->received_action_code_counter[NVRAM_UPDATE - 1]);
+						" Assoc_thr = %d\n"
+						"\tdwell_time = %d(sec)\n"
+						"\tmax_steer_time_window = %d(sec)\n"
+						"\tmax_steer_count = %d\n"
+						"\tdynamic_bndstrg_period = %d\n",
+						table->assoc_bl_th,
+						table->dwell_time,
+						table->max_steer_time_window,
+						table->max_steer_count,
+						table->dynamic_bndstrg_period);
+
+    /* For Debug Demand */
+    if(ctrl_iface->Size > 0)
+    {
+        for (i = 0; i < ctrl_iface->Size; i++)
+        {
+            inf = &ctrl_iface->inf[i];
+            if(inf->bValid)
+            {
+                BND_STRG_DBGPRINT(DEBUG_OFF,
+    						"Main inf = %s\n"
+    						"\t\tbInfReady = %u\n"
+    						"\t\tbinfEnable = %u\n"
+    						"\t\tBand = %u\n"
+    						"\t\tChannel = %u\n"
+    						"\t\tVHTCapable = %u\n"
+    						"\t\tnss = %u\n"    						    						
+    						"\t\tnss_thr = %u\n"
+    						"\t\trssi_thr = %d\n"
+    						"\t\tchanload_thr = %u\n"
+    						"\t\tchanload = %u\n"
+    						"\t\tavg_chanload = %u\n"
+    						"\t\tchanload_heavy_cnt = %u\n"
+    						"\t\tchanload_heavy_max_cnt = %u\n"
+    						"\t\tchan_busy_load = %u\n"
+    						"\t\tDriver_Max_table_Size = %u\n"
+    						"\t\tDriver_Table_Size = %u\n"
+							"\t\tinf = %p\n",
+    						(char*)inf->ucIfName,
+    						inf->bInfReady,
+    						inf->binfEnable,
+    						inf->Band,
+    						inf->Channel,
+    						inf->bVHTCapable,
+    						inf->nss,
+    						inf->min_nss_thr,
+    						inf->min_rssi_thr,
+    						inf->chanload_thr,
+    						inf->chanload,
+    						inf->avg_chanload.avg/BND_STRG_DATA_SAMPLE,
+    						inf->chanload_heavy_cnt,
+    						inf->chanload_heavy_max_cnt,
+    						inf->chan_busy_load,
+    						inf->max_driver_table_size,
+    						inf->driver_table_size,
+						   	inf);
+				if(inf->worst_entry){
+					 BND_STRG_DBGPRINT(DEBUG_OFF,
+					 			"Worst Client :: %02x:%02x:%02x:%02x:%02x:%02x\n",
+					 			PRINT_MAC(inf->worst_entry->Addr));
+				}	 
+                for (j = 0; j < MAX_REF_INF_NUM; j++)
+                {
+                    ref_inf = &inf->ref_iface[j];
+                    if(ref_inf->bValid)
+                    {
+                        BND_STRG_DBGPRINT(DEBUG_OFF,
+    						"\t\tReference inf = %s\n"
+    						"\t\t\tbInfReady = %u\n",
+    						(char*)ref_inf->ucIfName,
+    						ref_inf->bInfReady);
+                    }
+                }
+            }
+        }
+    }
 	return 0;
 }
 
-static int bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band)
+static int _bndstrg_event_on_off(struct bndstrg *bndstrg, u8 onoff, u8 band, u8 channel, char *ifname)
 {
-	BND_STRG_DBGPRINT(DEBUG_OFF, "onoff = %u,band = %u\n", onoff, band);
-	DBGPRINT(DEBUG_ERROR,
-			 "%s(): onoff = %u,band = %u\n", __func__, onoff, band);
-	if (!onoff)
-	{
-		bndstrg->table.Band = bndstrg->table.Band & ~band;
-		if ((band & BAND_2G) == BAND_2G) {
-			memset(bndstrg->table.uc2GIfName,0x00,sizeof(bndstrg->table.uc2GIfName));
-		}
-		if ((band & BAND_5G) == BAND_5G) {
-			memset(bndstrg->table.uc5GIfName,0x00,sizeof(bndstrg->table.uc5GIfName));
-		}
-	} else {
-		bndstrg->table.Band = bndstrg->table.Band | band;
-	}
+    struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf = NULL;
+    
+    inf = bndstrg_get_interface(ctrl_iface, ifname, band, FALSE);
+    if(!inf)
+    {
+        DBGPRINT(DEBUG_WARN, "invalid interface : %s\n", ifname);
+        return BND_STRG_UNEXP;
+    }
+	DBGPRINT(DEBUG_TRACE,
+			 "onoff = %u,band = %u,channel = %u,ifname=%s,inf = %p\n",
+			 onoff, band, channel, ifname, inf);
+    if(inf->binfEnable^onoff)
+    {
+        inf->binfEnable = onoff;
+        if (!onoff) 
+        {
+            if(IS_5G_BAND(band))
+            {
+                if(IS_5G_H_BAND(inf->Band)) {
+                    table->Band &= ~BAND_5G_H;
+				} else {
+					table->Band &= ~BAND_5G_L;
+				}
+				if((!IS_5G_L_BAND(table->Band)) &&
+				   (!IS_5G_H_BAND(table->Band)))
+					table->Band &= ~band;
+				
+            }
+            else
+            {
+				table->Band &= ~band;
+            }
+    	} 
+        else 
+    	{
+    		table->Band |= band;
+            if(IS_5G_H_BAND(inf->Band))
+                table->Band |= BAND_5G_H;
+			else if(IS_5G_L_BAND(inf->Band))
+				table->Band |= BAND_5G_L;
+    	}
 
-	if (bndstrg->table.Band == (BAND_2G | BAND_5G)) {
-		bndstrg->table.bEnabled = TRUE;
-	} else {
-		bndstrg->table.bEnabled = FALSE;
-	}
-
+    	bndstrg_op_mode_update(bndstrg);
+		
+		/* aged entry when table on or off */
+		{
+			struct bndstrg_cli_entry *entry = NULL;
+			int i;
+			for (i = 0; i < table->max_steering_size; i++)
+			{
+				entry = &table->Entry[i];
+				if (entry->bValid == TRUE) {
+					bndstrg_check_entry_aged(bndstrg,
+											  entry);
+				}
+			}
+		}
+    }
 	return 0;
 }
+
+void bndstrg_update_white_black_list(struct bndstrg *bndstrg,struct bndstrg_iface *inf, unsigned char *macAddr, u8 list_type, int deladd)
+{
+	u8 i;
+	if(inf)
+		bndstrg_send_white_black_list(bndstrg, (char*)inf->ucIfName, macAddr, list_type, deladd);
+	else{
+		for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
+		{
+	    	inf = &bndstrg->ctrl_iface.inf[i];
+	    	if(inf->bValid && inf->bInfReady) {
+	       		bndstrg_send_white_black_list(bndstrg, (char*)inf->ucIfName, macAddr, list_type, deladd);
+	    	}
+		}
+	}
+}
+
+static void bndstrg_param (struct bndstrg *bndstrg, struct bndstrg_msg *msg)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bnd_msg_param temp_bndstrg_param, *bndstrg_param = &msg->data.bndstrg_param;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf = NULL;
+	char *token = NULL;
+	int i = 0, j = 0;
+	int token_length = 0;
+	int token_value = 0;
+	
+	inf = bndstrg_get_interface_by_channel(ctrl_iface,bndstrg_param->Channel);
+
+	/* sanity check for command*/
+	memcpy(&temp_bndstrg_param, &msg->data.bndstrg_param, sizeof(struct bnd_msg_param));
+	if((strtok(temp_bndstrg_param.arg , ";") == NULL) || (strtok(NULL , ";") == NULL)){
+		DBGPRINT(DEBUG_OFF,"Wrong command format \n");
+		return;
+	}
+
+	token = strtok(bndstrg_param->arg , ";");
+	token_length = strlen(token);
+	for(i = 0; i < BND_SET_MAX_COMMAND ; i++) {
+		if(strncmp(token , bndstrg_commands[i].name , token_length) == 0) {
+			break;
+		}
+	}
+	if(i == BND_SET_MAX_COMMAND)
+		return;
+
+	switch (bndstrg_commands[i].id) {
+	case BND_SET_CND_PRIORITY:
+	{
+		u8 bDefault_set = FALSE;
+		memset(table->PriorityList, 0, sizeof(table->PriorityList));
+		j = 0;
+		while((token = strtok(NULL, ";")) != NULL) {
+			token_value = strtol(token, NULL, 10);
+			if(token_value < fBND_STRG_PRIORITY_MAX){
+				table->PriorityList[j] = token_value ;
+				j++;
+		    }
+		}
+		table->PriorityListSize = j;
+		table->chanload_priority_enabled = FALSE;
+		for(i=0; i < table->PriorityListSize; i++)
+		{
+			if(table->PriorityList[i] < fBND_STRG_PRIORITY_LB_CND_MCS){
+				table->BndStrgMode |= PRE_CONNECTION_STEERING;
+			} else if((table->PriorityList[i] == fBND_STRG_PRIORITY_DEFAULT_5G) ||
+			(table->PriorityList[i] == fBND_STRG_PRIORITY_DEFAULT_2G)){
+				bDefault_set = TRUE;
+			} else
+				table->BndStrgMode |= POST_CONNECTION_STEERING;
+
+			if ((table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_STATIC) ||
+				 (table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_IDLE) ||
+				 (table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE)){
+				table->chanload_priority_enabled = TRUE;
+			}
+		}
+		if((table->BndStrgMode & PRE_CONNECTION_STEERING) && (bDefault_set == FALSE)){
+			table->PriorityList[table->PriorityListSize] = fBND_STRG_PRIORITY_DEFAULT_5G;
+			table->PriorityListSize ++;
+		}
+	}
+	break;
+
+	case BND_SET_DWELL_TIME:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		if (token_value > 0)
+			table->dwell_time = token_value;
+	break;
+	case BND_SET_STEER_TIME_WINDOW:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		if (token_value > 0)
+			table->max_steer_time_window = token_value;
+	break;
+	case BND_SET_MAX_STEER_COUNT:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		if((token_value >= 1) && (token_value < MAX_STEERING_COUNT))
+			table->max_steer_count = token_value;
+		else
+			table->max_steer_count = MAX_STEERING_COUNT;
+	break;
+	case BND_SET_AGETIME:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->AgeTime = token_value;
+	break;
+	case BND_SET_CHECKTIME:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->CheckTime= token_value;
+	break;
+	case BND_SET_HOLDTIME:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->HoldTime= token_value;
+	break;
+	case BND_SET_RSSILOW:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->RssiLow = token_value;
+	break;
+	case BND_SET_RSSI_DOWNSTEER:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->RSSILowDownSteer = token_value;
+	break;
+	case BND_SET_RSSI_UPSTEER:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->RSSIHighUpSteer = token_value;
+	break;
+	case BND_SET_RSSIDIFF:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		table->RssiDiff= token_value;
+	break;
+	case BND_SET_STEERING_NUM:
+	{
+		int i;
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		if (token_value > BND_STRG_MAX_TABLE_SIZE)
+			return;
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::steering num=%d\n"), 
+				 __FUNCTION__, token_value);
+		/*remove all daemon entry and disable dirver band steering*/
+		for (i=0;i<table->max_steering_size;i++) {
+			bndstrg_delete_entry(table, NULL, i);
+		}
+		table->active_client_2G=0;
+		table->active_client_5G=0;
+		table->active_client_L5G=0;
+		table->active_client_H5G=0;
+		bndstrg_table_en_polling(table->bndstrg,table,0);
+		table->max_steering_size = token_value;
+		break;
+	}
+
+	case BND_SET_ASSOC_TH:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::assoc balance threshold=%d\n"), 
+				 __FUNCTION__, token_value);
+		if(token_value <= 100)
+			table->assoc_bl_th = token_value;
+		break;
+	}
+
+	case BND_SET_LOAD_TH:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::CHANLOAD threshold=%d\n"), 
+				 __FUNCTION__, token_value);
+		if(inf)
+			if(token_value > 0 && token_value < 100)
+				inf->chanload_thr = token_value;
+		break;
+	}
+
+	case BND_SET_MIN_RSSI_TH:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::MIN RSSI threshold=%d\n"), 
+				 __FUNCTION__, token_value);
+		if(inf)
+			if(token_value < 0 && token_value > -100)
+				inf->min_rssi_thr = token_value;
+		break;
+	}
+
+	case BND_SET_NSS_TH:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::NSS threshold = %d\n"), 
+				 __FUNCTION__, token_value);
+		if(inf)
+			if(token_value >= 1 && token_value <=4)
+				inf->min_nss_thr = token_value;
+		break;
+	}
+
+	case BND_SET_STA_POLL_PRD:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::STA polling period=%d\n"), 
+				 __FUNCTION__, token_value);
+		table->polling_sta_period = token_value;
+		if (token_value < 3) 
+		{
+			table->polling_sta_period = 3;
+			DBGPRINT(DEBUG_OFF, RED("Debug:Polling Period = %d, min is 3\n"),token_value);
+		}
+		break;
+	}
+
+	case BND_SET_DAEMON_STATE:
+	{
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		DBGPRINT(DEBUG_ERROR,GRN("%s()::Deamon state=%d\n"), 
+		__FUNCTION__, token_value);
+		if(token_value <= 5)
+			table->bndstrg->state = token_value;
+		break;
+	}
+
+	case BND_SET_ADD_WHITE_LIST:
+	{
+		int i = 0, j = 0;
+		char	*value;
+		u8		macAddr[MAC_ADDR_LEN];
+		s8 		emptyindex = -1;
+		u8		macAddrzero[MAC_ADDR_LEN] = { 0 };
+		struct bndstrg_cli_entry *entry = NULL;
+
+		if(table->WhiteEntryListSize >= BND_STRG_MAX_DISABLE_LIST)
+			break;
+		token = strtok(NULL, ";");
+		if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
+			break;
+		for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+			if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
+				break;  /*Invalid */
+			AtoH(value, (char *)&macAddr[i++], 1);
+		}
+		if (i != MAC_ADDR_LEN)
+		{
+			break;
+		}
+		for (j = 0; j < BND_STRG_MAX_DISABLE_LIST; j++)
+		{
+			if (memcmp(table->WhiteEntryList[j], macAddr, MAC_ADDR_LEN) == 0)
+				return;
+
+			if ((emptyindex == -1) && (memcmp(table->WhiteEntryList[j], macAddrzero, MAC_ADDR_LEN) == 0))
+				emptyindex = j;
+		}
+
+		if(emptyindex != -1){
+			memcpy(table->WhiteEntryList[emptyindex], macAddr, MAC_ADDR_LEN);
+			table->WhiteEntryListSize++;
+			DBGPRINT(DEBUG_TRACE, "Add [%02x:%02x:%02x:%02x:%02x:%02x]to WhiteList \n",PRINT_MAC(macAddr));
+			bndstrg_update_white_black_list(bndstrg, NULL, macAddr, bndstrg_whitelist, 1);
+			entry = bndstrg_table_lookup(table, table->WhiteEntryList[emptyindex]);
+			if(entry) {
+				inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+				if(inf){
+					bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+					bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
+				}
+			}else{
+				DBGPRINT(DEBUG_WARN, "Entry [%02x:%02x:%02x:%02x:%02x:%02x] not found \n",PRINT_MAC(macAddr));
+			}
+		}else{
+			DBGPRINT(DEBUG_WARN, "White list table full \n");
+		}
+	}
+	break;
+	case BND_SET_REMOVE_WHITE_LIST:
+	{
+		int i = 0, j = 0;
+		char	*value;
+		u8		macAddr[MAC_ADDR_LEN];
+		u8		macAddrzero[MAC_ADDR_LEN] = { 0 };
+
+		token = strtok(NULL, ";");
+		if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
+			break;
+		for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+			if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
+				break;  /*Invalid */
+			AtoH(value, (char *)&macAddr[i++], 1);
+		}
+		if (i != MAC_ADDR_LEN)
+		{
+			break;
+		}
+		for (j = 0; j < BND_STRG_MAX_DISABLE_LIST; j++)
+		{
+			if (memcmp(table->WhiteEntryList[j], macAddr, MAC_ADDR_LEN) == 0)
+			{
+				memcpy(table->WhiteEntryList[j], macAddrzero, MAC_ADDR_LEN);
+				table->WhiteEntryListSize--;
+				DBGPRINT(DEBUG_TRACE, "Remove [%02x:%02x:%02x:%02x:%02x:%02x] from WhiteList \n",PRINT_MAC(macAddr));
+				bndstrg_update_white_black_list(bndstrg, NULL, macAddr, bndstrg_whitelist, 0);
+			}
+		}
+	}
+	break;
+
+#ifdef BTM_DEBUG_SUPPORT /* For BTM manual steering debug only */
+	case BND_SEND_BTM:
+		{
+			int i = 0;
+			u16 HashIdx=0;
+			char	*value;
+			u8		macAddr[MAC_ADDR_LEN];
+			//u8		macAddrzero[MAC_ADDR_LEN] = { 0 };
+			struct bndstrg_cli_entry *entry =NULL;
+			
+			token = strtok(NULL, ";");
+			if (strlen(token) != 17) /*Mac address acceptable format 01:02:03:04:05:06 length 17 */
+				break;
+			for (i = 0, value = strtok(token, ":"); value; value = strtok(NULL, ":")) {
+				if ((strlen(value) != 2) || (!isxdigit(*value)) || (!isxdigit(*(value+1))))
+					break;  /*Invalid */
+				AtoH(value, (char *)&macAddr[i++], 1);
+			}
+			if (i != MAC_ADDR_LEN)
+			{
+				break;
+			}
+			HashIdx = MAC_ADDR_HASH_INDEX(macAddr);
+			entry = table->Hash[HashIdx];
+			while (entry) {
+				if (MAC_ADDR_EQUAL(macAddr, entry->Addr)) {
+					/* this is the entry we're looking for */
+					break;
+				} else {
+					entry = entry->pNext;
+				}
+			}
+			if(entry){
+				entry->Operation_steered = 1;
+				if(IS_2G_BAND(entry->connected_band))
+					bndstrg_client_band_update(bndstrg,entry,BAND_5G_L);
+				else if(IS_5G_H_BAND(entry->connected_band))
+					bndstrg_client_band_update(bndstrg,entry,BAND_5G_L);
+				else if(IS_5G_L_BAND(entry->connected_band)){
+					if(IS_2G_BAND(table->Band))
+						bndstrg_client_band_update(bndstrg,entry,BAND_2G);
+					else
+						bndstrg_client_band_update(bndstrg,entry,BAND_5G_H);
+				}	
+			}
+		}
+			
+	break;
+#endif
+
+#ifdef BNDSTRG_NVRAM_SUPPORT
+case BND_SET_NVRAM:
+	token = strtok(NULL, ";");
+	token_value = strtol(token, NULL, 10);
+	if(token_value == 1)
+		bndstrg_nvram_print_all_entry(table);
+	else if(token_value == 0)
+		bndstrg_nvram_clear_all_entry(table);
+break;
+#endif
+
+#ifdef	VENDOR_FEATURE7_SUPPORT
+	case BND_SET_RSSI_DISCONNECT:
+		token = strtok(NULL, ";");
+		token_value = strtol(token, NULL, 10);
+		if(token_value < 0)
+			table->RSSIDisconnect = token_value;
+	break;
+#endif
+
+	default:
+		DBGPRINT(DEBUG_ERROR,RED("%s()::invalid command=%s\n"), 
+				 __FUNCTION__, token);
+		break;
+	}
+	return;
+}
+
+int bndstrg_wnm_event_btm_query (struct bndstrg *bndstrg, struct wnm_event *wnm_event_data)
+{
+#if 0
+	struct bndstrg_iface *inf;
+	struct bndstrg_cli_entry *entry;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct btm_query_data *query_data = (struct btm_query_data *)wnm_event_data->event_body;
+
+	
+	entry = bndstrg_table_lookup(table, query_data->peer_mac_addr);
+	if(!entry)
+		return 0;
+	inf = bndstrg_get_interface_by_channel(&bndstrg->ctrl_iface,entry->Channel);
+	bndstrg_wnm_send_btm_req(bndstrg, inf, entry);
+#endif
+	hex_dump("btm_query", wnm_event_data->event_body, wnm_event_data->event_len);
+	return 0;
+}
+
+int bndstrg_wnm_event_btm_rsp (struct bndstrg *bndstrg, struct wnm_event *wnm_event_data)
+{
+	struct bndstrg_cli_entry *entry;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct btm_rsp_data *rsp_data = (struct btm_rsp_data *)wnm_event_data->event_body;
+	struct btm_rsp_frame *rsp_frame = NULL;
+	struct bndstrg_iface *inf = NULL;
+	entry = bndstrg_table_lookup(table, (unsigned char*)rsp_data->peer_mac_addr);
+	if(!entry)
+		return 0;
+
+	rsp_frame = (struct btm_rsp_frame *)rsp_data->btm_rsp;
+	entry->btm_info.BTMState = btm_rsp_rx;
+	entry->btm_info.BTMRsp = rsp_frame->status_code;
+	
+#ifdef BND_STRG_QA
+		BND_STRG_PRINTQAMSG(table, entry,
+			("BTM RSP: Req is %s \n"),(rsp_frame->status_code == 0 ? "Accepted":"Rejected"));
+#endif /* BND_STRG_QA */
+
+	if(entry->btm_info.BTMRsp == 0)
+	{
+		/*BTM accepted clear source band info from entry*/
+		if(entry->connected_band != BAND_INVALID){
+		switch (entry->btm_info.BTMSourceBand){
+			case BAND_2G:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+				table->active_client_2G --;
+			break;
+			case BAND_5G_L:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+				table->active_client_L5G --;
+				table->active_client_5G --;
+			break;
+			case BAND_5G_H:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+				table->active_client_H5G --;
+				table->active_client_5G --;
+			break;
+		}
+		}
+		entry->btm_info.BTMState = btm_init;
+		inf = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, entry->btm_info.BTMSourceBand, TRUE);
+		if(inf) bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+		entry->btm_info.BTMSourceBand = BAND_INVALID;
+		entry->connected_band = BAND_INVALID;
+	} 
+#ifdef VENDOR_FEATURE7_SUPPORT
+	else {
+		bndstrg_update_white_black_list(bndstrg, NULL, entry->Addr, bndstrg_blacklist, 1);
+		entry->BlackListTimer = table->BlackListTime;
+		inf = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, entry->connected_band, TRUE);
+		if(inf) bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+	}
+#endif
+	hex_dump("BTMRsp", wnm_event_data->event_body, wnm_event_data->event_len);
+	return 0;
+
+}
+
+int bndstrg_wnm_event_handle(struct bndstrg *bndstrg, char *data)
+{
+	struct wnm_event *wnm_event_data = (struct wnm_event *)data;
+
+	switch (wnm_event_data->event_id)
+	{
+		case OID_802_11_WNM_EVT_BTM_QUERY:
+			DBGPRINT(DEBUG_TRACE,"EVT_BTM_QUERY\n");
+			bndstrg_wnm_event_btm_query(bndstrg, wnm_event_data);			
+			break;
+			
+		case OID_802_11_WNM_EVT_BTM_RSP:
+			
+			DBGPRINT(DEBUG_TRACE,"EVT_BTM_RSP\n");
+			bndstrg_wnm_event_btm_rsp(bndstrg, wnm_event_data); 		
+			break;
+			
+		default:
+			BND_STRG_DBGPRINT(DEBUG_WARN,
+				"Unkown event. (%u)\n",
+				wnm_event_data->event_id);
+			break;
+	}
+	
+	return 0;
+}
+
 
 int bndstrg_event_handle(struct bndstrg *bndstrg, char *data)
 {
 	struct bndstrg_msg msg;
 	struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf = NULL;
 
 	memcpy(&msg, data, sizeof(struct bndstrg_msg));
-	table->received_action_code_counter[msg.Action - 1]++;
+
 	switch (msg.Action)
 	{
-		case CONNECTION_REQ:
-			bndstrg_event_conn_req(bndstrg, &msg);
+		case CLI_EVENT:
+			if (bndstrg->state == BNDSTRG_TBL_READY)
+			bndstrg_cli_event_req(bndstrg, &msg);
 			break;
 			
-		case INF_STATUS_RSP_2G:
-			table->status_queried = 1;
-			table->dbdc_mode = 0;
-			DBGPRINT(DEBUG_OFF,"[%s][INF_STATUS_RSP_2G:%s]%d,%d\n\r",
-				__func__,(char*)msg.uc2GIfName,table->b2GInfReady,msg.b2GInfReady);
-			if (table->b2GInfReady^msg.b2GInfReady) {
-				if (msg.b2GInfReady == 0)
-					table->b2GInfDiable_by_drv = 1;
-				else
-					table->b2GInfDiable_by_drv = 0;
-			}
-			table->b2GInfReady = msg.b2GInfReady;
-			strcpy((char*)table->uc2GIfName,(char*)msg.uc2GIfName);
-			break;
-			
-		case INF_STATUS_RSP_5G:
-			table->status_queried = 1;
-			table->dbdc_mode = 0;
-			DBGPRINT(DEBUG_OFF,"[%s][INF_STATUS_RSP_5G:%s]%d,%d\n\r",
-				__func__,(char*)msg.uc5GIfName,table->b5GInfReady,msg.b5GInfReady);
-			if (table->b5GInfReady^msg.b5GInfReady) {
-				if (msg.b5GInfReady == 0)
-					table->b5GInfDiable_by_drv = 1;
-				else
-					table->b5GInfDiable_by_drv = 0;
-			}
-			table->b5GInfReady = msg.b5GInfReady;
-			strcpy((char*)table->uc5GIfName,(char*)msg.uc5GIfName);
-			break;
-
-		case INF_STATUS_RSP_DBDC:
-			//TBD
-			table->status_queried = 1;
-			table->dbdc_mode = 1;
-			if (table->b2GInfReady^msg.b2GInfReady) {
-				if (msg.b2GInfReady == 0)
-					table->b2GInfDiable_by_drv = 1;
-				else
-					table->b2GInfDiable_by_drv = 0;
-			}
-			table->b2GInfReady = msg.b2GInfReady;
-			strcpy((char*)table->uc2GIfName,(char*)msg.uc2GIfName);
-			if (table->b5GInfReady^msg.b5GInfReady) {
-				if (msg.b5GInfReady == 0)
-					table->b5GInfDiable_by_drv = 1;
-				else
-					table->b5GInfDiable_by_drv = 0;
-			}
-			table->b5GInfReady = msg.b5GInfReady;
-			strcpy((char*)table->uc5GIfName,(char*)msg.uc5GIfName);
+		case INF_STATUS_RSP:
+			if (bndstrg->state != BNDSTRG_FROZEN)
+            {
+				struct bnd_msg_inf_status_rsp *inf_status_rsp = &msg.data.inf_status_rsp;;
+				bndstrg_ctrl_interface_update(ctrl_iface,table,inf_status_rsp);
+            }
 			break;
 
 		case TABLE_INFO:
-			bndstrg_event_table_info(bndstrg);
+			_bndstrg_event_table_info(bndstrg);
 			break;
 	
 		case ENTRY_LIST:
-			bndstrg_event_show_entries(bndstrg);
+			_bndstrg_event_show_entries(bndstrg,&msg);
 			break;
 
 		case BNDSTRG_ONOFF:
-			bndstrg_event_on_off(bndstrg, msg.OnOff, msg.Band);
-			break;
-
-		case CLI_AGING_RSP:
-			BND_STRG_DBGPRINT(DEBUG_TRACE,
-						"Got aging rsp. return code = %u,"
-						"Addr = %02x:%02x:%02x:%02x:%02x:%02x\n",
-						msg.ReturnCode, PRINT_MAC(msg.Addr));
-
-			if (msg.ReturnCode == BND_STRG_SUCCESS)
-			{
-				struct bndstrg_cli_entry *entry = &table->Entry[msg.TableIndex];
-
-				switch (msg.Band)
-				{
-					case BAND_2G:
-						entry->AgingConfirmed[0] = 1;
-						break;
-					case BAND_5G:
-						entry->AgingConfirmed[1] = 1;
-						break;
-					case (BAND_2G|BAND_5G):
-						entry->AgingConfirmed[0] = 1;
-						entry->AgingConfirmed[1] = 1;
-						break;
-					default:
-						BND_STRG_DBGPRINT(DEBUG_ERROR,
-						"Invalid Band (%u) from aging rsp\n", msg.Band);
-						return BND_STRG_INVALID_ARG;
-						break;
-				}
-
-				if (entry->AgingConfirmed[0] && entry->AgingConfirmed[1]) {
-					if(entry->bActiveStatus == CLI_ACTIVE) {
-						if(entry->band == BAND_2G)
-							table->active_client_2G--;
-						else
-							table->active_client_5G--;
+			if (bndstrg->state != BNDSTRG_FROZEN)
+            {
+                struct bnd_msg_onoff *onoff = &msg.data.onoff;
+			    _bndstrg_event_on_off(bndstrg, onoff->OnOff, onoff->Band, onoff->Channel, (char*)onoff->ucIfName);
+				if (!onoff->OnOff){
+					if(table->fStopBndstrg)
+						bndstrg->state = BNDSTRG_LEAVE;
+					else
+						bndstrg->state = BNDSTRG_INF_POLL;
 					}
-					if (MAC_ADDR_EQUAL(table->MonitorAddr, msg.Addr)) {
-						DBGPRINT(DEBUG_OFF,
-							"%s %02x:%02x:%02x:%02x:%02x:%02x, Action = %u\n",__func__,PRINT_MAC(msg.Addr), msg.Action);
-						}
-					bndstrg_delete_entry(table, msg.Addr, msg.TableIndex);
-				}
+            }
+			break;
+
+		case CLI_STATUS_RSP:
+			if (bndstrg->state != BNDSTRG_FROZEN)
+			{
+				struct bnd_msg_cli_status_rsp *cli_status_rsp = &msg.data.cli_status_rsp;
+				if (cli_status_rsp->ReturnCode == BND_STRG_SUCCESS)
+				{
+					bndstrg_cli_status_rsp(bndstrg, cli_status_rsp);
+				} else{
+					BND_STRG_DBGPRINT(DEBUG_OFF,"Got cli status rsp. return code = %u\n\r", cli_status_rsp->ReturnCode);
+				}		
 			}
-
 			break;
 
-		case CLI_DEL:
-			bndstrg_delete_entry(table, msg.Addr, msg.TableIndex);
+		case CHANLOAD_STATUS_RSP:
+			if (bndstrg->state != BNDSTRG_FROZEN)
+            {
+                struct bnd_msg_chanload_status_rsp *chanload_status_rsp = &msg.data.chanload_status_rsp;
+				/* update chanload information */
+				if (chanload_status_rsp->ReturnCode == BND_STRG_SUCCESS) 
+				{
+					inf = bndstrg_get_interface_by_channel(ctrl_iface,chanload_status_rsp->Channel);
+					if(inf){
+						inf->chanload = chanload_status_rsp->chanload;
+						inf->avg_chanload.avg -= inf->avg_chanload.data[inf->avg_chanload.idx];
+						inf->avg_chanload.avg += inf->chanload;
+						inf->avg_chanload.data[inf->avg_chanload.idx] = inf->chanload;
+						INC(inf->avg_chanload.idx,BND_STRG_DATA_SAMPLE);
+					}
+					}
+					BND_STRG_DBGPRINT(DEBUG_TRACE,
+									  "band=%d,channel=%d,(%d,%d,%d)\n",
+										chanload_status_rsp->band,
+										chanload_status_rsp->Channel,
+										inf->obss_load,
+										inf->edcca_load,
+										inf->myair_load);
+            }
 			break;
 
-		case SET_CND_PRIORITY:
-			bndstrg_set_priority(table, &msg);
-			break;
-
-		case SET_RSSI_DIFF:
-			table->RssiDiff = msg.RssiDiff;
-			break;
-
-		case SET_RSSI_LOW:
-			table->RssiLow = msg.RssiLow;
-			break;
-
-		case SET_AGE_TIME:
-			table->AgeTime = msg.Time;
-			break;
-
-		case SET_HOLD_TIME:
-			table->HoldTime = msg.Time;
-			break;
-
-		case SET_CHECK_TIME:
-			if(msg.Band == BAND_2G)
-				table->CheckTime_2G = msg.Time;
-			else
-				table->CheckTime_5G = msg.Time; 
-			break;
-
-		case SET_CHEK_CONDITIONS:
-			BND_STRG_DBGPRINT(DEBUG_OFF,
-						"SET_CHEK_CONDITIONS\n");
-			table->AlgCtrl.ConditionCheck = msg.ConditionCheck;
-			break;
-			
 #ifdef BND_STRG_DBG
 		case SET_MNT_ADDR:
-			memcpy(table->MonitorAddr, msg.Addr, MAC_ADDR_LEN);
+            {
+                struct bnd_msg_mnt_addr *mnt_addr = &msg.data.mnt_addr;
+			    memcpy(table->MonitorAddr, mnt_addr->Addr, MAC_ADDR_LEN);
+            }
 			break;
 #endif
 
-		case CLI_UPDATE:
-			bndstrg_update_entry(bndstrg, &msg);
-			break;
 #ifdef BNDSTRG_NVRAM_SUPPORT
 		case NVRAM_UPDATE:
-			if(!(bndstrg_nvram_table_lookup(table, msg.Addr))) {
-				if(bndstrg_nvram_insert_entry(bndstrg, &msg, msg.nvram_entry.Manipulable))
-				{
-					DBGPRINT(DEBUG_TRACE,GRN("\nClient Added To NVRAM Table\n"));
-				}
-				else
-				{
-					DBGPRINT(DEBUG_TRACE,RED("\n NVRAM Table full\n"));
-				}
-			}			
+			if (bndstrg->state != BNDSTRG_FROZEN)
+            {
+                struct bnd_msg_nvram_entry_update *entry_update = &msg.data.entry_update;
+    			if(!(bndstrg_nvram_table_lookup(table, entry_update->Addr))) {
+    				if(_bndstrg_nvram_insert_entry(bndstrg, &msg, entry_update->nvram_entry.Manipulable))
+    				{
+    					DBGPRINT(DEBUG_TRACE,("\n%s[%d]Client Added To NVRAM Table\n"),__func__,__LINE__);
+    				}
+    				else
+    				{
+    					DBGPRINT(DEBUG_TRACE,("\n%s[%d] NVRAM Table full\n"),__func__,__LINE__);
+    				}
+    			}	
+            }
 			break;
 #endif
+
+		case REJECT_EVENT:
+			if (bndstrg->state != BNDSTRG_FROZEN) {
+				/* driver was occupied by other daemon*/
+				if (msg.data.reject_body.DaemonPid != getpid()) {
+					BND_STRG_DBGPRINT(DEBUG_OFF,
+									  "driver was occpuy by other daemon,pid=%d,%d\n\r",getpid(),msg.data.reject_body.DaemonPid);
+					bndstrg->state = BNDSTRG_LEAVE;
+				}
+			}
+			break;
+
+		case BNDSTRG_PARAM:
+			bndstrg_param(bndstrg, &msg);
+			break;
+
+		case BNDSTRG_NEIGHBOR_REPORT:
+			{
+				struct bnd_msg_neighbor_report *NeighborReport = &msg.data.NeighborReport;
+				inf = bndstrg_get_interface_by_channel(ctrl_iface,NeighborReport->Channel);
+				memcpy(&inf->NeighborRepInfo, &NeighborReport->NeighborRepInfo, sizeof(RRM_NEIGHBOR_REP_INFO));
+			}
+			break;
+
 		default:
 			BND_STRG_DBGPRINT(DEBUG_WARN,
 						"Unkown event. (%u)\n",
 						msg.Action);
 			break;
 	}
-	
+
 	return 0;
 }
 
 
 struct bndstrg_event_ops bndstrg_event_ops = {
 	.event_handle = bndstrg_event_handle,
+	.wnm_event_handle = bndstrg_wnm_event_handle,		
 };
 
-inline int bndstrg_accessible_cli(
-				struct bndstrg *bndstrg,
-				const char *iface,
-				struct bndstrg_cli_entry *entry,
-				u8 action)
+u8 bndstrg_chanload_heavy_update(struct bndstrg *bndstrg)
 {
-	int ret = 0;
-
-	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
-#if 0
-	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
-
-	if (ret) {
-		DBGPRINT(DEBUG_ERROR, "%s: bndstrg drv ops pre check fail\n", __FUNCTION__);
-		return -1;
-	}
-#endif
-	bndstrg->table.sent_action_code_counter[action - 1]++;
-	ret = bndstrg->drv_ops->drv_accessible_cli(bndstrg->drv_data, iface, entry, action);
-
-	return ret;
+	u8 i;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf = NULL;
+	for(i=0;i<ctrl_iface->Size;i++){
+		inf=&ctrl_iface->inf[i];
+		if(inf->bValid){
+			if (inf->chanload > inf->chanload_thr)
+				(inf->chanload_heavy_cnt >= inf->chanload_heavy_max_cnt)?
+									inf->chanload_heavy_cnt = inf->chanload_heavy_max_cnt: inf->chanload_heavy_cnt++;
+	else
+				(inf->chanload_heavy_cnt>0)?inf->chanload_heavy_cnt--:0; 
+		}
+	}	
+	return TRUE;
 }
 
-inline int bndstrg_inf_status_query(
-				struct bndstrg *bndstrg,
-				const char *iface)
+void bndstrg_worst_sta_update(struct bndstrg *bndstrg, 
+					struct bndstrg_cli_entry *entry, 
+					u8 band,
+					u8 stat_idx)
 {
-	int ret = 0;
-
-	DBGPRINT(DEBUG_TRACE, "\n");
-#if 0
-	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
-
-	if (ret) {
-		DBGPRINT(DEBUG_ERROR, "%s: bndstrg drv ops pre check fail\n", __FUNCTION__);
-		return -1;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf = NULL;
+	struct bndstrg_cli_entry **worst_entry = NULL;
+	u32	tx_bad=0;
+	u32	rx_bad=0;
+	inf= bndstrg_get_interface(ctrl_iface, NULL, band, TRUE);
+	worst_entry = &inf->worst_entry;
+	if(inf->chanload_heavy_cnt >= inf->chanload_heavy_max_cnt){	
+		if (entry->statistics[stat_idx].data_tx_util.avg/(BND_STRG_DATA_SAMPLE) >= LOW_CHANNEL_UTIL) {
+			if (entry->statistics[stat_idx].data_tx_mcs <= LOW_MCS_IDX) {
+				tx_bad = 1;
+			} else {
+				tx_bad = 0;
+			}
+		} else {
+			tx_bad = 0;
+		}
+		/* decide bad rx sta */
+		if (entry->statistics[stat_idx].data_rx_util.avg/(BND_STRG_DATA_SAMPLE) >= LOW_CHANNEL_UTIL) {
+			if (entry->statistics[stat_idx].data_rx_mcs <= LOW_MCS_IDX) {
+				rx_bad = 1;
+			} else {
+				rx_bad = 0;
+			} 
+		} else {
+			rx_bad = 0;
+		}
+	} else {
+		tx_bad = 0;
+		rx_bad = 0;
+		*worst_entry = NULL;
 	}
-#endif
-	bndstrg->table.sent_action_code_counter[INF_STATUS_QUERY - 1]++;
-	ret = bndstrg->drv_ops->drv_inf_status_query(bndstrg->drv_data, iface);
-
-	return ret;
+	if(tx_bad) {
+		if (*worst_entry == NULL)
+			*worst_entry = entry;
+		else {
+			if ((*worst_entry)->statistics[stat_idx].data_tx_util.avg < 
+				entry->statistics[stat_idx].data_tx_util.avg)
+				*worst_entry = entry;
+		}
+		entry->Isbad = TRUE;
+	}
+	else if(rx_bad){
+		if (*worst_entry == NULL)
+			*worst_entry = entry;
+		else {
+			if ((*worst_entry)->statistics[stat_idx].data_rx_util.avg < 
+				entry->statistics[stat_idx].data_rx_util.avg)
+				*worst_entry = entry;
+		}
+		entry->Isbad = TRUE;
+	}else
+		entry->Isbad = FALSE;
+	return;
 }
 
-inline int bndstrg_onoff(
-				struct bndstrg *bndstrg,
-				const char *iface,
-				u8 onoff)
+u8 bndstrg_sta_update(struct bndstrg *bndstrg)
 {
-	int ret = 0;
-
-	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
-#if 0
-	ret = bndstrg_drv_ops_pre_check(bndstrg, iface);
-
-	if (ret) {
-		DBGPRINT(DEBUG_ERROR, "%s: bndstrg drv ops pre check fail\n", __FUNCTION__);
-		return -1;
-	}
-#endif
-	bndstrg->table.sent_action_code_counter[BNDSTRG_ONOFF - 1]++;
-	ret = bndstrg->drv_ops->drv_bndstrg_onoff(bndstrg->drv_data, iface, onoff);
-
-	return ret;
-}
-
-#if 0
-static u8 _bndstrg_allow_sta_conn_2g(
-		struct bndstrg_cli_table *table,
-		struct bndstrg_cli_entry *entry)
-{
-	struct bndstrg_entry_stat *statistics_2G = NULL, *statistics_5G = NULL;
-
-	if (!table)
-	{
-		DBGPRINT(DEBUG_ERROR,
-					"%s(): Error! table is NULL!\n", __FUNCTION__);
-		return FALSE;
-	}
-
-	if (!entry)
-	{
-		DBGPRINT(DEBUG_ERROR,
-			RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
-		return FALSE;
-	}
-
-	if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
-	{
-		statistics_2G = &entry->statistics[0];
-		statistics_5G = &entry->statistics[1];
+	u32	i;
+	u32 count=0;
+	struct bndstrg_cli_entry *entry = NULL;
+	struct bndstrg_cli_table *table = &bndstrg->table;
 	
-		/* Condition 1: 2G Rssi >> 5G Rssi */
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_RSSI_DIFF) &&
-			(statistics_2G->Rssi & statistics_5G->Rssi))
+	for (i = 0; i < table->max_steering_size; i++)
+	{
+		entry = &table->Entry[i];
+		if ((entry->bValid == TRUE) && (entry->bConnStatus))
 		{
-			s8 RssiDiff = statistics_2G->Rssi - statistics_5G->Rssi;
-
-			if (RssiDiff >= table->RssiDiff)
+		    count++;
+			if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) ||
+				IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
-#ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry, 
-				YLW("check RssiDiff >= %d, client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" is allowed to connect 2.4G.\n"),
-				table->RssiDiff, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-				return TRUE;
+				switch(entry->band) 
+				{
+					case BAND_2G:
+						if (entry->statistics[IDX_2G].data_tx_byte.avg  <= IDLE_RXTX_BYTE_COUNT &&
+							entry->statistics[IDX_2G].data_rx_byte.avg  <= IDLE_RXTX_BYTE_COUNT ) 
+						{
+							entry->IsIdle = TRUE;
+						}else
+							entry->IsIdle = FALSE;
+						break;
+					case BAND_5G_L:
+						bndstrg_worst_sta_update(bndstrg, entry, BAND_5G_L, IDX_5GL);
+						if ( entry->statistics[IDX_5GL].data_tx_byte.avg  <= IDLE_RXTX_BYTE_COUNT &&
+							 entry->statistics[IDX_5GL].data_rx_byte.avg  <= IDLE_RXTX_BYTE_COUNT ) 
+						{
+							entry->IsIdle = TRUE;
+						}else
+							entry->IsIdle = FALSE;
+						break;
+					case BAND_5G_H:
+						bndstrg_worst_sta_update(bndstrg, entry, BAND_5G_H, IDX_5GH);
+						entry->IsIdle = FALSE;
+						break;
+					default:
+						break;
+				}
 			}
 		}
-
-		/* Condition 2: Client really don't want to connect 5G */
-		if ( (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_BAND_PERSIST) && 
-			entry->elapsed_time >= table->HoldTime &&
-			statistics_5G->AuthReqCount == 0 &&
-			statistics_2G->AuthReqCount != 0)
+		if(count >= table->Size)
 		{
-#ifdef BND_STRG_QA
-			BND_STRG_PRINTQAMSG(table, entry,
-			YLW("check elapsed_time >= %u (sec) and no auth req found in 5G,"
-			" client (%02x:%02x:%02x:%02x:%02x:%02x) is allowed to connect 2.4G.\n"),
-			table->HoldTime/1000, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-			return TRUE;
+			break;
 		}
+	}
+	return TRUE;
+}
 
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
-		    (entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G) &&
-		    !(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G))
-		{
-#ifdef BND_STRG_QA
-			BND_STRG_PRINTQAMSG(table, entry,
-			YLW("check 5G Rssi(%d) < %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-			" is allowed to connect 2.4G.\n"),
-			entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-			return TRUE;
-		}
+u8 bndstrg_check_entry_aged(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
+{
+	u32 elapsed_time;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf = NULL;
 
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) && 
-		      (entry->Control_Flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G))
+	elapsed_time = bndstrg_get_entry_elapsed_time(entry);
+
+	/* Update elapsed time */
+	entry->elapsed_time = elapsed_time;
+
+	if (table->op_mode == OP_TRIBAND) {
+		/* for triband, it should wait L5G/H5G probe information ready */
+		if (elapsed_time > 5) {
+			entry->enable_compare_flag = TRUE;
+    		} else {
+        	    if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) &&
+				(entry->AssocProbeInfoMissMatch != TRUE)) {
+    			if ((entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) &&
+                	    (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G))
+    				entry->enable_compare_flag = TRUE;
+            	    else
+    				entry->enable_compare_flag = FALSE;
+		    }
+    		}
+	} else
+		entry->enable_compare_flag = TRUE;
+
+	if(entry->Channel == 0 && elapsed_time >= table->DormantTime)
 	{
+		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
 #ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry,
-		YLW("check HT support: [legacy]. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-		" is allowed to connect 2.4G.\n"), PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= DormantTime:%d \n"),
+			PRINT_MAC(entry->Addr), elapsed_time, table->DormantTime);
+#endif
+		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
 		return TRUE;
+	}else if (/* (elapsed_time >= table->AgeTime) && */(entry->Channel != 0) && (!entry->bConnStatus))
+	{
+
+		if((IS_BND_STRG_2G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
+			 IS_BND_STRG_L5G_ONLY_BAND_CLIENT(entry->Control_Flags) ||
+			 IS_BND_STRG_H5G_ONLY_BAND_CLIENT(entry->Control_Flags)
+#if 0
+			|| (entry->match_steered_rule_id[CMP_5GH_5GL] = fBND_STRG_PRIORITY_BAND_PERSIST)
+			|| (entry->match_steered_rule_id[CMP_5GH_2G] = fBND_STRG_PRIORITY_BAND_PERSIST)
+			|| (entry->match_steered_rule_id[CMP_5GL_2G] = fBND_STRG_PRIORITY_BAND_PERSIST)
+#endif
+			) && (elapsed_time <= table->single_band_timeout)) {
+				return TRUE;
+			}
+
+		inf = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+#ifdef BND_STRG_QA
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete entry (%02x:%02x:%02x:%02x:%02x:%02x) as elapsed time %u sec >= AgeTime:%d \n"),
+			PRINT_MAC(entry->Addr),elapsed_time, table->AgeTime);
+#endif
+		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
+		return TRUE;
+	} if (entry->bConnStatus && elapsed_time >= table->CheckTime && IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags) &&
+		!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G) && !(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_H5G)) {
+
+		/* dissallow connect to 2.4GHz and clear 2G only flag */
+		entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+
+		inf = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+		if(inf)
+			bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+#ifdef BND_STRG_QA
+		BND_STRG_PRINTQAMSG(table, entry, RED("Delete 2GHz entry (%02x:%02x:%02x:%02x:%02x:%02x), is dualband client and 5GHz RSSI good.\n"),
+			PRINT_MAC(entry->Addr));
+#endif
+		bndstrg_delete_entry(table, entry->Addr, entry->TableIndex);
+		return TRUE;
+	}
+	else
+	{
+
+		if(!entry->bConnStatus){
+
+			if (elapsed_time >= table->CheckTime &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY))
+			{
+			/* If we don't get any connection req from 5G for a long time,
+			  * we condider this client is 2.4G only 
+			  */
+#ifdef BND_STRG_QA
+			BND_STRG_PRINTQAMSG(table, entry, YLW("Receive no frame by 5G interface within %u seconds,"
+				" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 2.4G only.\n"),
+				table->CheckTime, PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
+			entry->Control_Flags |=	fBND_STRG_CLIENT_IS_2G_ONLY;
+
+			}else if (elapsed_time >= table->CheckTime &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_2G) &&
+				!(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY))
+			{
+			    /*	If we don't get any connection req from 2G for a long time,
+			    *   we condider this client is 5G only 
+			    */
+#ifdef BND_STRG_QA
+			    BND_STRG_PRINTQAMSG(table, entry,
+								YLW("Receive no frame by 2G interface within %u seconds,"
+									" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 5G only.\n"),
+									table->CheckTime, PRINT_MAC(entry->Addr));
+#endif /* BND_STRG_QA */
+			    entry->Control_Flags |= fBND_STRG_CLIENT_IS_5G_ONLY;
+			    /* dissallow connect to 2.4GHz and clear 2G only flag */
+			    entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+			    entry->Control_Flags &= (~fBND_STRG_CLIENT_IS_2G_ONLY);
+			}
+		}
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+u8 bndstrg_polling_connected_sta(struct bndstrg *bndstrg, u8 inf_num)
+{
+	if(inf_num < MAX_INF_NUM)
+	{
+		struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+		struct bndstrg_iface *inf = &ctrl_iface->inf[inf_num];
+		if(inf->bValid && inf->bInfReady)
+			bndstrg_accessible_cli(bndstrg, inf, NULL, CLI_STATUS_REQ);
+	}
+	return TRUE;
+}
+
+/*
+ * compare_mode: 0=H-5G vs L-5G    prio,H > L
+ * 				 1=H-5G vs 2.4G		prio,H > 2.4G
+ * 				 2=L-5G vs 2.4G		prio,L > 2.4G
+ * return: band: BAND_5G_L/BAND_5G_H/BAND_2G/0xff means fail
+ */
+u8 bndstrg_mtk_rule_iterate(
+	struct bndstrg_cli_table *table,
+	struct bndstrg_cli_entry *entry,
+	struct bndstrg *bndstrg,
+	int	compare_mode)
+{
+	struct bndstrg_entry_stat *statistics_1st_band = NULL, *statistics_2nd_band = NULL;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf_1st_band = NULL, *inf_2nd_band = NULL;
+	u8 i, band = BAND_INVALID, done = FALSE; 
+	u8 pre_band[2];
+	u32 allow_to_connect_band_flag[2]={0,0};
+	u32 low_rssi_flag[2];
+	u32 not_support_ht_flag[2]={0,0};
+	u32 band_assoc_percent[2]={0,0};
+	u32 chanload_heavy_cnt[2]={0,0};
+	s32 min_rssi[2]={0,0};
+	u32 nss_thres[2]={0,0};
+
+	u32 total_assoc_cnt = (table->active_client_2G+table->active_client_5G);
+	if (!table)
+	{
+		DBGPRINT(DEBUG_ERROR,"%s(): Error! table is NULL!\n", __FUNCTION__);
+		return BAND_INVALID;
+	}
+	if (!entry)
+	{
+		DBGPRINT(DEBUG_ERROR,RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
+		return BAND_INVALID;
+	}
+
+	if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
+	{
+		if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+		{//H5G vs L5G can run compare rule
+		//	DBGPRINT(DEBUG_ERROR,RED("%s(): Error! this sta doesn't support dual band!\n"), __FUNCTION__);
+		} else {
+		    DBGPRINT(DEBUG_ERROR,RED("%s(): Error! this sta doesn't support dual band!\n"), __FUNCTION__);
+		    return BAND_INVALID;
 		}
 	}
 
-	if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
-	{
-#ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry,
-		YLW("check 2.4G only. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-		" is allowed to connect 2.4G.\n"), PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-		return TRUE;
+	switch (compare_mode) {
+		case CMP_5GH_5GL:
+        		inf_1st_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_H, TRUE);
+        		inf_2nd_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_L, TRUE);
+			statistics_1st_band = &entry->statistics[IDX_5GH];
+			statistics_2nd_band = &entry->statistics[IDX_5GL];
+			pre_band[0]=BAND_5G_H;
+			pre_band[1]=BAND_5G_L;
+			allow_to_connect_band_flag[0]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G;
+			allow_to_connect_band_flag[1]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G;
+			low_rssi_flag[0]=fBND_STRG_CLIENT_LOW_RSSI_H5G;
+			low_rssi_flag[1]=fBND_STRG_CLIENT_LOW_RSSI_L5G;
+			not_support_ht_flag[0]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G;
+			not_support_ht_flag[1]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G;
+			if (total_assoc_cnt != 0) {
+				band_assoc_percent[0]=table->active_client_H5G*100/total_assoc_cnt;
+				band_assoc_percent[1]=table->active_client_L5G*100/total_assoc_cnt;
+			}
+			chanload_heavy_cnt[0] = inf_1st_band->chanload_heavy_cnt;
+			chanload_heavy_cnt[1] = inf_2nd_band->chanload_heavy_cnt;
+			min_rssi[0] = inf_1st_band->min_rssi_thr;
+			min_rssi[1] = inf_2nd_band->min_rssi_thr;
+			nss_thres[0] = inf_1st_band->min_nss_thr;
+			nss_thres[1] = inf_2nd_band->min_nss_thr;
+
+			break;
+		case CMP_5GH_2G:
+			inf_1st_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_H, TRUE);
+        		inf_2nd_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+			statistics_1st_band = &entry->statistics[IDX_5GH];
+			statistics_2nd_band = &entry->statistics[IDX_2G];
+			pre_band[0]=BAND_5G_H;
+			pre_band[1]=BAND_2G;
+			allow_to_connect_band_flag[0]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G;
+			allow_to_connect_band_flag[1]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
+			low_rssi_flag[0]=fBND_STRG_CLIENT_LOW_RSSI_H5G;
+			low_rssi_flag[1]=fBND_STRG_CLIENT_LOW_RSSI_2G;
+			not_support_ht_flag[0]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G;
+			not_support_ht_flag[1]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G;
+			if (total_assoc_cnt != 0) {
+				band_assoc_percent[0]=table->active_client_H5G*100/total_assoc_cnt;
+				band_assoc_percent[1]=table->active_client_2G*100/total_assoc_cnt;
+			}
+			chanload_heavy_cnt[0] = inf_1st_band->chanload_heavy_cnt;
+			chanload_heavy_cnt[1] = inf_2nd_band->chanload_heavy_cnt;
+			min_rssi[0] = inf_1st_band->min_rssi_thr;
+			min_rssi[1] = inf_2nd_band->min_rssi_thr;
+			nss_thres[0] = inf_1st_band->min_nss_thr;
+			nss_thres[1] = inf_2nd_band->min_nss_thr;
+			break;
+		case CMP_5GL_2G:
+			inf_1st_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_L, TRUE);
+            inf_2nd_band = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+			statistics_1st_band = &entry->statistics[IDX_5GL];
+			statistics_2nd_band = &entry->statistics[IDX_2G];
+			pre_band[0]=BAND_5G_L;
+			pre_band[1]=BAND_2G;
+			allow_to_connect_band_flag[0]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G;
+			allow_to_connect_band_flag[1]=fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
+			low_rssi_flag[0]=fBND_STRG_CLIENT_LOW_RSSI_L5G;
+			low_rssi_flag[1]=fBND_STRG_CLIENT_LOW_RSSI_2G;
+			not_support_ht_flag[0]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G;
+			not_support_ht_flag[1]=fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G;
+			if (total_assoc_cnt != 0) {
+				band_assoc_percent[0]=table->active_client_L5G*100/total_assoc_cnt;
+				band_assoc_percent[1]=table->active_client_2G*100/total_assoc_cnt;
+			}
+			chanload_heavy_cnt[0] = inf_1st_band->chanload_heavy_cnt;
+			chanload_heavy_cnt[1] = inf_2nd_band->chanload_heavy_cnt;
+			min_rssi[0] = inf_1st_band->min_rssi_thr;
+			min_rssi[1] = inf_2nd_band->min_rssi_thr;
+			nss_thres[0] = inf_1st_band->min_nss_thr;
+			nss_thres[1] = inf_2nd_band->min_nss_thr;
+			break;
+		default:
+			return BAND_INVALID;
 	}
 
+	for(i=0; i < table->PriorityListSize; i++)
+	{
+		if (entry->bConnStatus) {
+			if ((table->PriorityList[i] != fBND_STRG_PRIORITY_RSSI_DOWNSTEER) &&
+			    (table->PriorityList[i] != fBND_STRG_PRIORITY_LB_CND_CHANLOAD_IDLE)	&&
+			    (table->PriorityList[i] != fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE) &&
+			    (table->PriorityList[i] != fBND_STRG_PRIORITY_LB_CND_MCS) &&
+			    (table->PriorityList[i] != fBND_STRG_PRIORITY_RSSI_UPSTEER)
+#ifdef VENDOR_FEATURE7_SUPPORT
+			    &&(table->PriorityList[i] != fBND_STRG_PRIORITY_DOWNSTEER_CHLOAD_RSSI)
+			    &&(table->PriorityList[i] != fBND_STRG_PRIORITY_UPSTEER_CHLOAD_RSSI)
+#endif
+				)
+				continue;
+		}
+		if ((entry->elapsed_time >= table->HoldTime) && (!entry->bConnStatus))
+		{
+			/* low band must be have more then pow4 auth+assoc req for allow connect
+			    or assoc+auth req in low band > 1 and high band req 0
+			*/
+			if((statistics_1st_band->AuthReqCount != 0 && statistics_2nd_band->AuthReqCount != 0 &&
+				statistics_1st_band->AuthReqCount < (statistics_2nd_band->AuthReqCount/4)) ||
+				(statistics_1st_band->AuthReqCount == 0 && statistics_2nd_band->AuthReqCount > 1))
+			{
+				entry->Control_Flags |= allow_to_connect_band_flag[1];
+				done = TRUE;
+				band = pre_band[1];
+				BND_STRG_PRINTQAMSG(table, entry, YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				" Auth only from lowband, is one band client? Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
+			} else if(statistics_1st_band->AuthReqCount != 0 || statistics_2nd_band->AuthReqCount == 0) /* first allow for high band */
+			{
+				/* disallow low band per default */
+				entry->Control_Flags |= allow_to_connect_band_flag[0];
+
+				/* for tri band 2G dissallow to if high band connect ready */
+				if((!(entry->Control_Flags & low_rssi_flag[0]) && statistics_1st_band->AuthReqCount != 0) &&
+					(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G))
+				{
+				    /* dissallow connect to 2.4GHz */
+				    entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+
+				}
+
+				done = TRUE;
+				band = pre_band[0];
+
+				BND_STRG_PRINTQAMSG(table, entry,
+				    YLW("AUTH: client (%02x:%02x:%02x:%02x:%02x:%02x)"
+				    " RSSI good, force allow high band connect and disallow lowband connect.\n"), PRINT_MAC(entry->Addr));
+			} else {
+				if((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_BAND_PERSIST)){
+					if(entry->band == pre_band[0])
+					{
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+					}else if(entry->band == pre_band[1])
+					{
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						done = TRUE;
+						band = pre_band[0];
+					}
+				}
+				else
+				{
+					done = TRUE;
+					band = entry->band;
+				}
+			}
+			entry->match_steered_rule_id[compare_mode] = fBND_STRG_PRIORITY_BAND_PERSIST;
+		} else {
+			switch(table->PriorityList[i]){
+
+			case fBND_STRG_PRIORITY_RSSI_DIFF:
+				if (statistics_1st_band->Rssi & statistics_2nd_band->Rssi)
+				{
+					s8 RssiDiff = statistics_2nd_band->Rssi - statistics_1st_band->Rssi;
+					if (RssiDiff >= table->RssiDiff)
+					{//allow coonnect to 2nd band
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+					}
+				}
+				break;
+				
+			case fBND_STRG_PRIORITY_RSSI_DOWNSTEER:
+				if((entry->bConnStatus) &&
+					((entry->band & pre_band[0]) == pre_band[0]) &&
+					(statistics_1st_band->got_cli_status)) 
+				{
+					if (entry->low_rssi_bad_cnt >= RSSI_CHECK_COUNT)
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+					}else
+						band = pre_band[0];
+				}
+				break;
+
+			case fBND_STRG_PRIORITY_RSSI_UPSTEER:
+				if((entry->bConnStatus) &&
+					((entry->band & pre_band[1]) == pre_band[1]) &&
+					(statistics_2nd_band->got_cli_status)) 
+				{
+					if (entry->good_rssi_cnt >= RSSI_CHECK_COUNT)
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						done = TRUE;
+						band = pre_band[0];
+						entry->Manipulable = TRUE;
+					}else
+						band = pre_band[1];
+				}
+				break;
+
+			case fBND_STRG_PRIORITY_HT_SUPPORT:
+				if (entry->Control_Flags & not_support_ht_flag[0])
+				{       /*
+					done = TRUE;
+					band = pre_band[1];
+					entry->Control_Flags |= allow_to_connect_band_flag[1];
+					entry->Manipulable = TRUE;
+					*/
+				}
+				break;
+
+			case fBND_STRG_PRIORITY_5G_RSSI:
+					if(entry->Control_Flags & low_rssi_flag[0])
+					{
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						BND_STRG_PRINTQAMSG(table, entry, YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
+						"Highband rssi low? Allow lowband connect..\n"), PRINT_MAC(entry->Addr));
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+					} else {
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+						BND_STRG_PRINTQAMSG(table, entry,
+						YLW("RSSI: client (%02x:%02x:%02x:%02x:%02x:%02x)"
+						" RSSI good, force allow high band connect and disallow 2.4GHz connect.\n"), PRINT_MAC(entry->Addr));
+						done = TRUE;
+						band = pre_band[0];
+						entry->Manipulable = TRUE;
+					}
+				break;
+
+            case fBND_STRG_PRIORITY_VHT_SUPPORT:
+				{
+                    if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT)
+    				{
+    				    if(inf_1st_band && inf_1st_band->bVHTCapable) 
+                        {
+                            entry->Control_Flags |= allow_to_connect_band_flag[0];
+        					done = TRUE;
+        					band = pre_band[0];
+        					entry->Manipulable = TRUE;
+                        }
+                        else if(inf_2nd_band && inf_2nd_band->bVHTCapable) 
+                        {
+                            entry->Control_Flags |= allow_to_connect_band_flag[1];
+        					done = TRUE;
+        					band = pre_band[1];
+        					entry->Manipulable = TRUE;
+                        }
+    				}
+                }
+                break;
+                
+			case fBND_STRG_PRIORITY_NSS_SUPPORT:				
+				/* high band prefer if STA's NSS >= nss_thres */
+				{
+					if ((nss_thres[0]!= 0) && (entry->Nss >= nss_thres[0]))
+					{
+						if (!(entry->Control_Flags & not_support_ht_flag[0]))
+						{
+							/* HT support*/
+							entry->Control_Flags |= allow_to_connect_band_flag[0];
+							done = TRUE;
+							band = pre_band[0];
+							entry->Manipulable = TRUE;
+						}
+					}
+				}
+				break;
+			case fBND_STRG_PRIORITY_LB_CND_STA_CONNECTED_COUNT:
+				/*sta connected count, it will balance the connected sta for each band*/
+				{
+					u32		assoc_bl_delta=0;
+					if (band_assoc_percent[0] > band_assoc_percent[1]) 
+					{
+						assoc_bl_delta = band_assoc_percent[0] - band_assoc_percent[1];
+						if (assoc_bl_delta >= table->assoc_bl_th)
+						{
+							entry->Control_Flags |= allow_to_connect_band_flag[1];
+							done = TRUE;
+							band = pre_band[1];
+							entry->Manipulable = TRUE;
+						}
+					} 
+					else 
+					{
+						assoc_bl_delta = band_assoc_percent[1] - band_assoc_percent[0];
+						if (assoc_bl_delta >= table->assoc_bl_th)
+						{
+							entry->Control_Flags |= allow_to_connect_band_flag[0];
+							done = TRUE;
+							band = pre_band[0];
+							entry->Manipulable = TRUE;
+						}
+					}
+					
+				}
+				break;
+
+			case fBND_STRG_PRIORITY_LB_CND_CHANLOAD_STATIC:
+				if((chanload_heavy_cnt[0]  >= inf_1st_band->chanload_heavy_max_cnt) && 
+					(chanload_heavy_cnt[1]  < inf_2nd_band->chanload_heavy_max_cnt))
+				{
+					entry->Control_Flags |= allow_to_connect_band_flag[1];
+					done = TRUE;
+					band = pre_band[1];
+					entry->Manipulable = TRUE;
+					//entry->match_lb_chanload_cond_id[compare_mode] = fBND_STRG_CHANLOAD_STATIC; 
+				}
+				break;
+				
+			case fBND_STRG_PRIORITY_LB_CND_CHANLOAD_IDLE:
+					if((entry->bConnStatus) &&
+						(chanload_heavy_cnt[0] <= inf_1st_band->chanload_heavy_max_cnt) &&
+						(entry->band & pre_band[1]) &&
+						(entry->IsIdle) && 
+						(!(entry->Control_Flags & (fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G))) 
+						&& (statistics_2nd_band->data_Rssi >= inf_1st_band->min_rssi_thr)) 
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						done = TRUE;
+						band = pre_band[0];
+						entry->Manipulable = TRUE;
+						//entry->match_lb_chanload_cond_id[compare_mode] = fBND_STRG_CHANLOAD_IDLE_CLI;
+					}
+
+				break;
+
+			case fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE:
+					/* if sta is in heavy band, steer it to low priority band */
+					if((entry->bConnStatus) &&
+						(chanload_heavy_cnt[0] >= inf_1st_band->chanload_heavy_max_cnt) &&
+						(chanload_heavy_cnt[1] < inf_1st_band->chanload_heavy_max_cnt) &&
+						(entry->band & pre_band[0]) &&
+						(entry->Isbad)) 
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+						entry->match_lb_chanload_active_cond_id[compare_mode] = fBND_STRG_CHANLOAD_ACTIVE_DOWN_STEER;
+					}
+
+					if((entry->bConnStatus) &&
+						(chanload_heavy_cnt[1] >= inf_2nd_band->chanload_heavy_max_cnt) &&
+						((entry->band & pre_band[1]) == pre_band[1])) 
+					{
+						if(statistics_2nd_band->data_tx_util.avg/BND_STRG_DATA_SAMPLE  >= LOW_CHANNEL_UTIL || 
+						   statistics_2nd_band->data_rx_util.avg/BND_STRG_DATA_SAMPLE  >= LOW_CHANNEL_UTIL)
+						{
+							if((inf_1st_band->avg_chanload.avg/BND_STRG_DATA_SAMPLE) <= inf_1st_band->chanload_thr/2 &&
+							   statistics_2nd_band->data_Rssi >= inf_1st_band->min_rssi_thr &&
+							   !(entry->Control_Flags & (fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G | fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G)))
+							{
+								entry->Operation_steered = TRUE;
+								entry->Control_Flags |= allow_to_connect_band_flag[0];
+								done = TRUE;
+								band = pre_band[0];
+								entry->Manipulable = TRUE;
+								entry->match_lb_chanload_active_cond_id[compare_mode] = fBND_STRG_CHANLOAD_ACTIVE_UP_STEER;
+							}
+						}
+					}
+				break;
+
+			case fBND_STRG_PRIORITY_LB_CND_RSSI:
+				{
+					/*
+					 * use default rssi to classify the sta to prefer band
+					 * RSSI >= -45 : H5G
+					 * RSSI >= -55 : L5G
+					 * RSSI >= -65 : 2G
+					 */
+					if (statistics_1st_band->Rssi >= min_rssi[0]) 
+					{
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						done = TRUE;
+						band = pre_band[0];
+						entry->Manipulable = TRUE;
+					} 
+					else if (statistics_2nd_band->Rssi >= min_rssi[1]) 
+					{
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+					}
+				}
+				break;
+			case fBND_STRG_PRIORITY_LB_CND_MCS: 
+				if ((entry->bConnStatus) && (statistics_1st_band->got_cli_status)) 
+				{
+					switch(entry->band) {
+					case BAND_5G_L:
+					case BAND_5G_H:
+						if (entry->tx_mcs_bad_cnt >= MCS_BAD_COUNT) 
+						{
+							/* Tx MCS based*/
+							entry->Operation_steered = TRUE;
+							entry->Control_Flags |= allow_to_connect_band_flag[1];
+							done = TRUE;
+							band = pre_band[1];
+							entry->Manipulable = TRUE;
+						}else if ((entry->rx_mcs_bad_cnt >= MCS_BAD_COUNT) &&
+							(statistics_1st_band->data_Rssi < (table->RSSILowDownSteer + 5)))
+						{
+							/*
+							 * for rx MCS, steer it if rx MCS is too low 
+							 * and RSSI is below RssiLow+5
+							 */
+							entry->Operation_steered = TRUE;
+							entry->Control_Flags |= allow_to_connect_band_flag[1];
+							done = TRUE;
+							band = pre_band[1];
+							entry->Manipulable = TRUE;
+						}else
+							band = pre_band[0];
+							
+						break;
+					default:
+						break;
+					}
+				} 
+				break;
+
+#ifdef VENDOR_FEATURE7_SUPPORT
+			case fBND_STRG_PRIORITY_DOWNSTEER_CHLOAD_RSSI:
+				if((entry->bConnStatus) &&
+					((entry->band & pre_band[0]) == pre_band[0]) &&
+					(statistics_1st_band->got_cli_status)){
+
+					if ((entry->low_rssi_bad_cnt >= RSSI_CHECK_COUNT) && 
+						(chanload_heavy_cnt[1] == 0))
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[1];
+						done = TRUE;
+						band = pre_band[1];
+						entry->Manipulable = TRUE;
+					}else
+						band = pre_band[0];
+				}
+				break;
+
+			case fBND_STRG_PRIORITY_UPSTEER_CHLOAD_RSSI:
+				if((entry->bConnStatus) &&
+					((entry->band & pre_band[1]) == pre_band[1]) &&
+					(statistics_2nd_band->got_cli_status)){
+
+					if ((entry->good_rssi_cnt >= RSSI_CHECK_COUNT) && 
+						(chanload_heavy_cnt[0] == 0))
+					{
+						entry->Operation_steered = TRUE;
+						entry->Control_Flags |= allow_to_connect_band_flag[0];
+						done = TRUE;
+						band = pre_band[0];
+						entry->Manipulable = TRUE;
+					}else
+						band = pre_band[1];
+				}
+				
+				break;
+#endif
+
+			case fBND_STRG_PRIORITY_DEFAULT_2G:
+					entry->Control_Flags |= allow_to_connect_band_flag[1];
+					done = TRUE;
+					band = pre_band[1];
+					entry->Manipulable = TRUE;
+			break;
+				
+			case fBND_STRG_PRIORITY_DEFAULT_5G:
+					entry->Control_Flags |= allow_to_connect_band_flag[0];
+					done = TRUE;
+					band = pre_band[0];
+					entry->Manipulable = TRUE;
+				break;
+			default:
+				break;
+
+		}		
+		}
+
+		if(done)  // break for loop if decision has made.
+		{
+			if(entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_BAND_PERSIST)
+				entry->match_steered_rule_id[compare_mode] = table->PriorityList[i];
+			if ((entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_DEFAULT_2G) &&
+					(entry->match_steered_rule_id[compare_mode] != fBND_STRG_PRIORITY_DEFAULT_5G)) 
+			{
+					entry->steered ++;
+			}
+			break;
+		}
+	}
+	return band;
+}
+
+u8 bndstrg_client_band_update(
+	struct bndstrg *bndstrg,
+	struct bndstrg_cli_entry *entry,
+	u8 band)
+
+{
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_iface *inf_source = NULL, *inf_target = NULL;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+
+	/* Check for is re-steering triggered for entry */
+	if(entry->Control_Flags & fBND_STRG_CLIENT_RE_STEERING){
+		inf_source = bndstrg_get_interface(ctrl_iface, NULL, entry->connected_band, TRUE);
+		if(band == entry->connected_band){
+			/* CLI entry already present on driver table, adjust stat */
+			inf_source->driver_table_size--;
+			inf_source = NULL;
+		}
+		entry->Control_Flags &= ~fBND_STRG_CLIENT_RE_STEERING;
+		entry->connected_band = BAND_INVALID;
+	} else{
+		inf_source = bndstrg_get_interface(ctrl_iface, NULL, entry->band, TRUE);
+	}
+
+	inf_target = bndstrg_get_interface(ctrl_iface, NULL, band, TRUE);
+
+	if(!inf_target)
+	{
+		DBGPRINT(DEBUG_TRACE,("Invalid target band [%d] for Addr::%02x:%02x:%02x:%0x:%02x:%02x\n\r"),
+		band,PRINT_MAC(entry->Addr));
+		return FALSE;
+	}
+
+#ifdef BND_STRG_QA
+
+	BND_STRG_PRINTQAMSG(table,entry,"Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s,prefer_band=%s elpased_time=%u sec\n",
+						PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band),bndstrg_get_entry_band(band), bndstrg_get_elapsed_time(entry->tp));
+	BND_STRG_PRINTQAMSG(table,entry,"5GH_5GL:%s \t5GH_2G:%s \t5GL_2G:%s \n",
+					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_5GL]],
+					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GH_2G]],
+					entry_match_steering_str[entry->match_steered_rule_id[CMP_5GL_2G]]);
+#endif /* BND_STRG_QA */
+
+	if(table->BtmMode != BTM_Only || 
+		entry->Operation_steered != TRUE)
+	{
+		switch (entry->band) {
+		case BAND_2G :
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		break;
+
+		case BAND_5G_L :
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+		break;
+
+		case BAND_5G_H :
+			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+		break;
+		
+		}
+	}
+
+	if(entry->Operation_steered && entry->btm_info.BTMSupport && (table->BtmMode != BTM_Off)){
+		/* Steer 11v client using BTM*/
+		entry->btm_info.BTMSourceBand = entry->connected_band;
+		bndstrg_wnm_send_btm_req(bndstrg, inf_source, inf_target, entry);
+	} else {
+		if(inf_source) bndstrg_accessible_cli(bndstrg, inf_source, entry, CLI_DEL);
+	}
+	
+	if(inf_target->driver_table_size >=  inf_target->max_driver_table_size){
+		struct bndstrg_cli_entry *entry_del = NULL;
+		entry_del = bndstrg_get_old_entry(bndstrg, inf_target);
+		if(entry_del){
+			bndstrg_accessible_cli(bndstrg, inf_target, entry_del, CLI_DEL);
+			bndstrg_delete_entry(table,entry_del->Addr,entry_del->TableIndex);
+			bndstrg_accessible_cli(bndstrg, inf_target, entry, CLI_ADD);
+		}
+	}else{
+		bndstrg_accessible_cli(bndstrg, inf_target, entry, CLI_ADD);
+	}
+
+	entry->band = band;
+
+	if(table->BndStrgMode == POST_CONNECTION_STEERING && table->BtmMode != BTM_Only)
+	{
+		bndstrg_update_white_black_list(bndstrg, inf_source, entry->Addr, bndstrg_blacklist, 1);
+	}
+
+	if (IS_5G_BAND(entry->band) || IS_5G_BAND(entry->connected_band)) {
+		inf_source = bndstrg_get_interface(ctrl_iface, NULL, BAND_2G, TRUE);
+		if(inf_source) {
+			BND_STRG_PRINTQAMSG(table,entry,"UPDATE: Remove target 5GHz record from 2.4GHz access table. Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s,prefer_band=%s elpased_time=%u sec\n",
+						PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band),bndstrg_get_entry_band(band), bndstrg_get_elapsed_time(entry->tp));
+			bndstrg_accessible_cli(bndstrg, inf_source, entry, CLI_DEL);
+		}
+		BND_STRG_PRINTQAMSG(table,entry,"Remove target 5GHz record from 2.4GHz access table. Addr=%02x:%02x:%02x:%02x:%02x:%02x,entry->band=%s,prefer_band=%s elpased_time=%u sec\n",
+					PRINT_MAC(entry->Addr),bndstrg_get_entry_band(entry->band),bndstrg_get_entry_band(band), bndstrg_get_elapsed_time(entry->tp));
+	}
+
+	return TRUE;
+}
+
+u8 bndstrg_dump_steered_STA(
+	struct bndstrg *bndstrg,
+	struct bndstrg_cli_entry *entry)
+{
+	if (entry->steered)
+	{
+		if (entry->bConnStatus) 
+		{
+			DBGPRINT(DEBUG_ERROR,YLW("[Operation Steering]steering![%d|%d|%d|%d]\n"),
+				entry->steered,IS_2G_BAND(entry->band)?1:0,IS_5G_L_BAND(entry->band)?1:0,IS_5G_H_BAND(entry->band)?1:0);
+		}
+		else
+		{
+			DBGPRINT(DEBUG_TRACE,RED("[Association Steering]steering![%d|%d|%d|%d]\n"),
+				entry->steered,IS_2G_BAND(entry->band)?1:0,IS_5G_L_BAND(entry->band)?1:0,IS_5G_H_BAND(entry->band)?1:0);
+		}
+		return TRUE;
+	}
+	DBGPRINT(DEBUG_TRACE,RED("[Association Steering]Default steering!\n"));
 	return FALSE;
 }
 
-static u8 _bndstrg_allow_sta_conn_5g(
-		struct bndstrg_cli_table *table,
-		struct bndstrg_cli_entry *entry)
-{
-	struct bndstrg_entry_stat *statistics_2G = NULL, *statistics_5G = NULL;
-	if (!table)
-	{
-		DBGPRINT(DEBUG_ERROR,
-					"%s(): Error! table is NULL!\n", __FUNCTION__);
-		return FALSE;
-	}
-
-	if (!entry)
-	{
-		DBGPRINT(DEBUG_ERROR,
-			RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
-		return FALSE;
-	}
-
-	if (!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_5G))
-		return FALSE;
-
-	if (IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
-	{
-		statistics_2G = &entry->statistics[0];
-		statistics_5G = &entry->statistics[1];
-		/* Condition 1: 2G Rssi >> 5G Rssi */
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_RSSI_DIFF) &&
-				(statistics_2G->Rssi & statistics_5G->Rssi))
-		{
-			s8 RssiDiff = statistics_2G->Rssi - statistics_5G->Rssi;
-			if (RssiDiff >= table->RssiDiff)
-			{	
-#ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry,
-			      	RED("check RssiDiff >= %d, client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" is not allowed to connect 5G.\n"),table->RssiDiff, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-				return FALSE;
-			}
-		}
-
-		/* Condition 2: Client really don't want to connect 5G */
-		if ( (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_BAND_PERSIST) && 
-		   entry->elapsed_time >= table->HoldTime &&
-		   statistics_5G->AuthReqCount == 0 &&
-	   	   statistics_2G->AuthReqCount != 0)
-		{
-#ifdef BND_STRG_QA
-			BND_STRG_PRINTQAMSG(table, entry,
-			RED("check elapsed_time >= %u (sec) and no auth req found in 5G,"
-			" client (%02x:%02x:%02x:%02x:%02x:%02x) is not allowed to connect 5G.\n"),
-			table->HoldTime/1000, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-			return FALSE;
-		}
-											
-		if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) &&
-		 (entry->Control_Flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G))
-		{
-#ifdef BND_STRG_QA
-			if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
-				BND_STRG_PRINTQAMSG(table, entry,
-				RED("check 5G HT support. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-				" does not support HT.\n"), PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-			return FALSE;	
-		}
-	if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
-		(entry->statistics[1].Rssi != 0))
-	{
-		if (entry->statistics[1].Rssi > table->RssiLow)
-		//if (!(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G))
-		{
-#ifdef BND_STRG_QA
-			if (!(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G))
-			BND_STRG_PRINTQAMSG(table, entry,
-			YLW("check 5G Rssi(%d) > %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-			" is allowed to connect 5G.\n"),
-			entry->statistics[1].Rssi, table->RssiLow, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-#if 1 // TODO: move to 2.4G check
-			entry->Control_Flags &=  (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-			/* bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);*/
-#endif
-			return TRUE;
-		}
-		else if (entry->statistics[1].Rssi < (table->RssiLow - 10 /*Test*/))
-		{
-#ifdef BND_STRG_QA
-			if (entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
-			BND_STRG_PRINTQAMSG(table, entry,
-			RED("check 5G Rssi(%d) < %d. client (%02x:%02x:%02x:%02x:%02x:%02x)"
-			" is not allowed to connect 5G.\n"),
-			entry->statistics[1].Rssi, (table->RssiLow -10), PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-			return FALSE;
-		}
-			else 
-				return FALSE;
-		}
-		else if(entry->statistics[1].Rssi == 0)
-		{
-			DBGPRINT(DEBUG_ERROR,RED("%s(): Wrong RSSI value!\n"), __FUNCTION__);
-			return FALSE;
-		}
-	}
-	BND_STRG_PRINTQAMSG(table, entry,
-	YLW("client (%02x:%02x:%02x:%02x:%02x:%02x)"
-	" is allowed to connect 5G.\n"),PRINT_MAC(entry->Addr));
-	return TRUE;
-}
-#endif
-
-static u8 _bndstrg_allow_connection(struct bndstrg_cli_table *table,
+/* this function only run by noCt connected yet STA*/
+u8 bndstrg_association_steering(
+        struct bndstrg_cli_table *table,
 		struct bndstrg_cli_entry *entry,
-		struct bndstrg *bndstrg )
+		struct bndstrg *bndstrg)
 {
-
-	struct bndstrg_entry_stat *statistics_2G = NULL, *statistics_5G = NULL;
-	u8 i, band = 0, done = FALSE; 
+	u8 band = BAND_INVALID; 
 	
 	if (!table)
 	{
@@ -1613,440 +4212,791 @@ static u8 _bndstrg_allow_connection(struct bndstrg_cli_table *table,
 		DBGPRINT(DEBUG_ERROR,RED("%s(): Error! entry is NULL!\n"), __FUNCTION__);
 		return FALSE;
 	}
-	if(IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
+				
+    if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)) 
 	{
-		statistics_2G = &entry->statistics[0];
-		statistics_5G = &entry->statistics[1];
-		
-		for(i=0; i < table->PriorityListSize; i++)
+        if (entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
+		{
+            entry->Manipulable = FALSE;
+			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
+			band = BAND_2G;
+		}
+		else if(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY)
+		{
+            entry->Manipulable = FALSE;
+			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
-				switch(table->PriorityList[i]){
-				case fBND_STRG_CND_BAND_PERSIST:
-					if ( (table->AlgCtrl.ConditionCheck & fBND_STRG_CND_BAND_PERSIST) && 
-						entry->elapsed_time >= table->HoldTime)
-					{
-						if(statistics_5G->AuthReqCount < statistics_2G->AuthReqCount)
+				 band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
+			}
+            else if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G) 
+			{
+                entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G;
+                band = BAND_5G_H;
+            }
+            else 
+			{
+                entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G;
+				band = BAND_5G_L;
+            }
+		}else if(!IS_2G_BAND(table->Band)){
+			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+			{
+				 band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
+			}
+		}
+    }
+    else 
+	{
+        /*
+              * compare_mode:  0=H-5G vs L-5G
+              *                         1=H-5G vs 2.4G
+              *                         2=L-5G vs 2.4G
+             */
+        if(table->op_mode == OP_TRIBAND) 
+		{
+			u8 temp_band = BAND_INVALID; 
+            /* For 5G L/H band all support case*/
+			if ((entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G)&&
+				(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G))
+			{
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
+                switch(band)
+				{
+                    case BAND_5G_L:
+					case BAND_5G_H:
+						temp_band = band;
+						if (band == BAND_5G_L)
+							band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
+						else if (band == BAND_5G_H)
+							band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);
+						if (band == BAND_INVALID)
 						{
-							entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-							band = BAND_2G;
+							//restore 1st round prefer band
+							band = temp_band;
 						}
-						else if(statistics_5G->AuthReqCount !=0){
-							entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-							band = BAND_5G;
-						}
-						else
-						{
-							if(entry->matched_rule_id != fBND_STRG_PRIORITY_BAND_PERSIST){
-								if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G)
-								{
-									entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-									band = BAND_5G;
-								}else
-								{
-									entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-									band = BAND_2G;
-								}
-							}else{
-								if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G)
-									band = BAND_2G;
-								else
-									band = BAND_5G;
-							}
-						}
-						entry->matched_rule_id = fBND_STRG_PRIORITY_BAND_PERSIST;
-						done = TRUE;
-					}
-					break;
-					
-				case fBND_STRG_CND_RSSI_DIFF:					
-					if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_RSSI_DIFF) &&
-						(statistics_2G->Rssi & statistics_5G->Rssi))
-					{
-						s8 RssiDiff = statistics_2G->Rssi - statistics_5G->Rssi;
-						if (RssiDiff >= table->RssiDiff)
-						{
-							entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-							done = TRUE;
-							band = BAND_2G;
-							entry->Manipulable = TRUE;
-							entry->matched_rule_id = fBND_STRG_PRIORITY_RSSI_DIFF;
-						}
-					}
-					break;
-		
-			    case fBND_STRG_CND_HT_SUPPORT:			   	
-					if ((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_HT_SUPPORT) && 
-  						(entry->Control_Flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G))
-					{
-							entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-							done = TRUE;
-							band = BAND_2G;
-							entry->Manipulable = TRUE;
-							entry->matched_rule_id = fBND_STRG_PRIORITY_HT_SUPPORT;
-					}
-					break;
+                        break;
+                    
+                    case BAND_2G:
+                    default:
+					    //DBGPRINT(DEBUG_ERROR,RED("%s():[%d] debug here!\n"), __FUNCTION__,__LINE__);
+					    break;
+                }
+            }
+            /* For 5G L band only support case*/
+            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G) 
+			{
+                band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
+            }
+            /* For 5G H band only support case*/
+            else if (entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G)
+			{
+                band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);       
+            }
+            else 
+			{
+                DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error!\n"), __FUNCTION__);
+                return FALSE;
+            }
+        }
+        else if(table->op_mode == OP_DUALBAND) 
+		{
+		    //if(IS_2G_BAND(table->Band)){
+	        	if(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_L5G)
+	            	    band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G); 
+	        	else
+			{
+	            	    DBGPRINT(DEBUG_ERROR,RED("%s(): Unexpected Error!\n"), __FUNCTION__);
+	            	    return FALSE;
+	        	}
+		    //}
+        }
+	}
 
-			    case fBND_STRG_CND_5G_RSSI:					
-					if((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_5G_RSSI) &&
-						(entry->Control_Flags & fBND_STRG_CLIENT_LOW_RSSI_5G))
-					{
-						entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-						done = TRUE;
-						band = BAND_2G;
-						entry->Manipulable = TRUE;
-						entry->matched_rule_id = fBND_STRG_PRIORITY_5G_RSSI;
-					}
-					break;
+	if ((band != BAND_INVALID) && (band != entry->band)) 
+	{
+		if (!IS_2G_BAND(band))
+		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		entry->state = ENTRY_READY_TO_ASSOC;
+		bndstrg_client_band_update(bndstrg,entry,band);
+		bndstrg_dump_steered_STA(bndstrg,entry);
+	}
 
-				case fBND_STRG_CND_NSS_SUPPORT:				
-					if((table->AlgCtrl.ConditionCheck & fBND_STRG_CND_NSS_SUPPORT) &&
-						(!(entry->Control_Flags & fBND_STRG_CLIENT_NOT_SUPPORT_HT_5G) ||
-						(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_VHT))&&
-							(entry->Nss >= BND_STRG_NSS_THR) )
-					{			
-						entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-						done = TRUE;
-						band = BAND_5G;
-						entry->Manipulable = TRUE;
-						entry->matched_rule_id = fBND_STRG_PRIORITY_NSS_SUPPORT;
-					}
-					break;
-									
-				case fBND_STRG_CND_LOAD_BALANCE:				
-					if(table->AlgCtrl.ConditionCheck & fBND_STRG_CND_LOAD_BALANCE)
-					{
-						if( (table->active_client_5G - table->active_client_2G) >= BND_STRG_N_DIFF)
-						{
-								entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-								done = TRUE;
-								band = BAND_2G;
-						}
-						else if ((table->active_client_2G - table->active_client_5G) >= BND_STRG_N_DIFF )
-						{
-								entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-								done = TRUE;
-								band = BAND_5G;
-						}
-						if(done){
-							entry->Manipulable = TRUE;
-							entry->matched_rule_id = fBND_STRG_PRIORITY_LOAD_BALANCE;
-						}
-					}	
-					break;
-								
-				case fBND_STRG_CND_DEFAULT_2G:
-					{
-						entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-						done = TRUE;
-						band = BAND_2G;	
-						entry->Manipulable = TRUE;
-						entry->matched_rule_id = fBND_STRG_PRIORITY_DEFAULT_2G;
-					}
-				break;
-						
-				case fBND_STRG_CND_DEFAULT_5G:
-					{
-						entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-						done = TRUE;
-						band = BAND_5G;
-						entry->Manipulable = TRUE;
-						entry->matched_rule_id = fBND_STRG_PRIORITY_DEFAULT_5G;
-					}		
-			}		
+	return TRUE;
+}
 
-			if(done)  // break for loop if decision has made.
-				break;
+u8 bndstrg_steer_sta(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
+{
+	u8 band = BAND_INVALID;
+	u32 elapsed_time;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	if (!entry || (!entry->bValid))
+		return FALSE;
+
+	if((table->BtmMode & BTM_Only) && (!entry->btm_info.BTMSupport))
+		return FALSE;
+	
+	if (entry->Operation_steered == TRUE)
+	{
+		entry->Operation_steered_tick++;
+		/* give up operation steering after 30 sec*/
+		if (entry->Operation_steered_tick >= ENTRY_BACKUP_TIME)
+		{
+			entry->Operation_steered_tick = 0;
+			entry->Operation_steered = FALSE;
+		}
+
+		if ((table->BtmMode == BTM_Only) && 
+			(entry->btm_info.BTMSupport) &&
+			(entry->bConnStatus == TRUE) &&
+			(entry->Operation_steered_tick >= 3))
+		{
+			bndstrg_update_btm_status(bndstrg, entry);
+		}
+
+		band = entry->band;
+		goto find_out;
+	}
+
+	if(!entry->bConnStatus)
+		return FALSE;	
+	
+	if(entry->total_steered_cnt)
+		elapsed_time = bndstrg_get_elapsed_time(entry->CliSteerInfo.steer_tp[entry->CliSteerInfo.end_idx]);
+	else
+		elapsed_time = bndstrg_get_elapsed_time(entry->tp);
+	
+	if((elapsed_time) < table->dwell_time){
+#ifdef BND_STRG_QA		
+		BND_STRG_PRINTQAMSG(table, entry,("%s:%d Addr=%02x:%02x:%02x:%02x:%02x:%02x skip operational steering as elapsed time is %u sec less than dwell time %u sec\n"),
+						__func__,__LINE__,PRINT_MAC(entry->Addr), elapsed_time, table->dwell_time);
+#endif
+		return FALSE;
+	}
+
+	if(entry->total_steered_cnt >= table->max_steer_count){
+#ifdef BND_STRG_QA		
+		BND_STRG_PRINTQAMSG(table, entry,("%s:%d Addr=%02x:%02x:%02x:%02x:%02x:%02x Max Steer count reached to %d, can't do operational steering\n"),
+						__func__,__LINE__,PRINT_MAC(entry->Addr), entry->total_steered_cnt);
+#endif
+		bndstrg_check_steering_limit(table,entry);
+		return FALSE;
+	}
+	
+	if (!IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags))
+	{
+		if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
+		{
+			/* 5GH vs 5GL up/down steer call*/
+			band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
 		}
 	}
 	else
 	{
-		if(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY)
+		if (IS_5G_H_BAND(entry->band))
 		{
-			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G;
-			band = BAND_2G;
-			done = TRUE;
-		}
-
-		if(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY)
-		{
-			entry->Control_Flags |= fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G;
-			band = BAND_5G;
-			done = TRUE;
-		}
-	}
-#ifdef BND_STRG_QA
-		BND_STRG_PRINTQAMSG(table, entry,
-			(" %02x:%02x:%02x:%02x:%02x:%02x [%s client], ElapsedTime = %u ms bndstrg_matched_rule: %s Band:%s\n"),
-			PRINT_MAC(entry->Addr),(IS_BND_STRG_DUAL_BAND_CLIENT(entry->Control_Flags)? "DUAL_BAND":"SINGLE_BAND"),entry->elapsed_time,
-			((entry->matched_rule_id > -1)? bndstrg_matched_rule[entry->matched_rule_id] : "Unknown"),Cli_Band[band]);
-#endif /* BND_STRG_QA */
-
-	if((band == BAND_2G) && done)
-	{
-#ifdef BNDSTRG_NVRAM_SUPPORT	
-		if((bndstrg_nvram_table_lookup(table, entry->Addr)) && (entry->statistics[0].AuthReqCount > 0))
-		{	
-				table->active_client_2G ++;
-				entry->bActiveStatus = CLI_ACTIVE;
-				entry->band = band;
-				DBGPRINT(DEBUG_TRACE,GRN("%s(): nvram Entry 2G found::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(entry->Addr));
-		}
-#endif		
-		if (table->dbdc_mode == 1) {
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G);
-			bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_ADD);
-			bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_UPDATE);
-		} else {
-			bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_ADD);
-			if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
+			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
-				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G);
-				if (table->dbdc_mode == 1) 
-					bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_UPDATE); 
-				else 
-					bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_DEL);
+				/* 5GH vs 5GL down steer call */
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
+				if (band == BAND_INVALID)
+				{
+					/* 5GH vs 2.4G down steer call*/
+					band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);
+				}
+			}
+			else
+			{
+				/*5GH vs 2.4G down steer call*/
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);
 			}
 		}
-
-	}
-	else if((band == BAND_5G) && done)
-	{
-#ifdef BNDSTRG_NVRAM_SUPPORT
-		if((bndstrg_nvram_table_lookup(table, entry->Addr)) && (entry->statistics[1].AuthReqCount > 0))
+		else if (IS_5G_L_BAND(entry->band))
 		{
-			table->active_client_5G ++;
-			entry->bActiveStatus = CLI_ACTIVE;
-			entry->band = band;
-			DBGPRINT(DEBUG_TRACE,GRN("%s(): nvram Entry 5G found::%02x:%02x:%02x:%02x:%02x:%02x \n"), __FUNCTION__, PRINT_MAC(entry->Addr));
-		}
-#endif		
-		if (table->dbdc_mode == 1) {
-			entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-			bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_ADD);
-			bndstrg_accessible_cli(bndstrg, table->uc5GIfName, entry, CLI_UPDATE);
-		} else {
-			bndstrg_accessible_cli(bndstrg, IFNAME_5G, entry, CLI_ADD);
-			if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G)
+			if (IS_BND_STRG_H5G_L5G_BAND_CLIENT(entry->Control_Flags))
 			{
-				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
-				if (table->dbdc_mode == 1) 
-					bndstrg_accessible_cli(bndstrg, table->uc2GIfName, entry, CLI_UPDATE); 
-				else 
-					bndstrg_accessible_cli(bndstrg, IFNAME_2G, entry, CLI_DEL);
+				/* 5GL vs 2.4G down steer call*/
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
+				if (band == BAND_INVALID)
+				{
+					/* 5GL vs 5GH  up steer call*/
+					band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_5GL);
+				}
+			}
+			else
+			{
+				/*5GL vs 2.4G down steer call */
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
 			}
 		}
+		else if(IS_2G_BAND(entry->band)) {
+			if ((entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_H5G))
+			{
+				/* H-5G vs 2.4G */
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GH_2G);
+				if (band == BAND_INVALID)
+				{
+					/* L-5G vs 2.4G */
+					band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
+				}
+			}
+			else
+			{
+				/* L-5G vs 2.4G */
+				band = bndstrg_mtk_rule_iterate(table,entry,bndstrg,CMP_5GL_2G);
+			}
+		}
+	}
+
+find_out:
+	if ((band != BAND_INVALID) && (band != entry->band)) 
+	{
+		entry->state = ENTRY_OPER_STEER_ACTIVE;
+		if (!IS_2G_BAND(band))
+		    entry->Control_Flags &= (~ fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+		bndstrg_client_band_update(bndstrg,entry,band);
+		bndstrg_dump_steered_STA(bndstrg,entry);
+
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/* this function only run by connected STA*/
+u8 bndstrg_operation_steering(
+	struct bndstrg_cli_table *table,
+	struct bndstrg *bndstrg)
+{
+	u8 i;
+	struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+	struct bndstrg_cli_entry *entry=NULL;
+#ifdef VENDOR_FEATURE7_SUPPORT
+	struct bndstrg_iface *inf=NULL;
+#else
+	struct bndstrg_iface *inf_5GL=NULL, *inf_5GH=NULL;
+#endif
+	u32 count=0;
+	u8 steered;
+	if (!table)
+	{
+		DBGPRINT(DEBUG_ERROR,"%s(): Error! table is NULL!\n", __FUNCTION__);
+		return FALSE;
+	}
+
+#ifndef VENDOR_FEATURE7_SUPPORT
+	if(bndstrg->table.op_mode == OP_TRIBAND){
+		inf_5GL = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_L, TRUE);
+		inf_5GH = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_H, TRUE);
+	}else{
+		if(IS_2G_BAND(bndstrg->table.Band))
+			inf_5GL = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_L, TRUE);
+		else
+			inf_5GH = bndstrg_get_interface(ctrl_iface, NULL, BAND_5G_H, TRUE);
+	}
+	
+	if(inf_5GH && inf_5GH->worst_entry) {
+		steered = bndstrg_steer_sta(bndstrg, inf_5GH->worst_entry);
+		if(steered == TRUE){
+			DBGPRINT(DEBUG_OFF, "%s::5G_H worst client %02x:%02x:%02x:%02x:%02x:%02x steer to lower band",
+				__FUNCTION__, PRINT_MAC(inf_5GH->worst_entry->Addr));
+			inf_5GH->worst_entry = NULL;
+			return TRUE;
+		}
+	}
+	else if(inf_5GL && inf_5GL->worst_entry) {
+		steered = bndstrg_steer_sta(bndstrg, inf_5GL->worst_entry);
+		if(steered == TRUE){
+			DBGPRINT(DEBUG_OFF, "%s::5G_L worst client %02x:%02x:%02x:%02x:%02x:%02x steer to lower band",
+				__FUNCTION__, PRINT_MAC(inf_5GL->worst_entry->Addr));
+			inf_5GL->worst_entry = NULL;
+			return TRUE;
+		}
+	}
+#endif
+	
+	for(i=0;i<table->max_steering_size;i++){
+
+		entry = &table->Entry[i];
+		if ((!entry) || (!entry->bValid))
+			continue;
+		else
+		    count++;
 		
+		if ((entry->bConnStatus == FALSE) && (entry->Operation_steered == FALSE))
+			continue;
+		
+#ifdef VENDOR_FEATURE7_SUPPORT
+		if(entry->low_rssi_disconnect_cnt >= RSSI_CHECK_COUNT){
+#ifdef BND_STRG_QA		
+		BND_STRG_PRINTQAMSG(table, entry,("Addr=%02x:%02x:%02x:%02x:%02x:%02x Disconnect STA as rssi less than %d rssi threshold\n"),
+			PRINT_MAC(entry->Addr), table->RSSIDisconnect);
+#endif
+			bndstrg_update_white_black_list(bndstrg,NULL,entry->Addr,bndstrg_blacklist,1);
+			entry->BlackListTimer = table->BlackListTime;
+			inf = bndstrg_get_interface(ctrl_iface, NULL, entry->connected_band, TRUE);
+			if(inf) bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+			break;
+		}
+#endif
+		steered = bndstrg_steer_sta(bndstrg, entry);
+
+		if (steered == TRUE)
+			break;
+		
+		if(count >= table->Size)
+		    break;
 	}
+
 	return TRUE;
 }
 
-static u8 BndStrg_status_polling(struct bndstrg *bndstrg,struct bndstrg_cli_table *table)
+u8 bndstrg_inf_status_polling(struct bndstrg *bndstrg,struct bndstrg_cli_table *table)
 {
-	u8	BndStrg_status = FALSE;
-	if (table->bEnabled == FALSE) {
-		if ((table->status_queried_cnt >= 3) || (table->table_enable_cnt >= 3)) {
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): Give up (2G ready=%d,5G ready=%d)(status query cnt=%d,enable cnt=%d), re-exec bndstrg again.\n", __FUNCTION__,
-					 table->b2GInfReady,
-					 table->b5GInfReady,
-					 table->status_queried_cnt,
-					 table->table_enable_cnt);
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): bndstrg->table.b2GInfDiable_by_drv=%d\n", __FUNCTION__,
-					 table->b2GInfDiable_by_drv);
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): bndstrg->table.b5GInfDiable_by_drv=%d\n", __FUNCTION__,
-					 table->b5GInfDiable_by_drv);
-			
-			eloop_terminate();
-			return BndStrg_status;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf;
+    u8 i,inf_ready_count = 0;
+	u8 band_cnt[MAX_INF_NUM] = {0};
+	static	int polling_cnt = 0;
+	
+	polling_cnt++;
+	memset(band_cnt,0x00,sizeof(band_cnt));
+    /* polling all interface until bndstrg is ready */
+    for(i=0; i<ctrl_iface->Size; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid && !inf->bInfReady){
+            bndstrg_inf_status_query(bndstrg, (char*)ctrl_iface->inf[i].ucIfName, INF_STATUS_QUERY);
+			DBGPRINT(DEBUG_OFF, "\n[%s]inf_name:[%s]\n",__FUNCTION__,ctrl_iface->inf[i].ucIfName);
+        }
+		
+		if (inf->bInfReady) {
+			if ((inf->Band&BAND_2G) == BAND_2G)
+				band_cnt[0]++;
+			if ((inf->Band&BAND_5G_L) == BAND_5G_L)
+				band_cnt[1]++;
+			if ((inf->Band&BAND_5G_H) == BAND_5G_H)
+				band_cnt[2]++;
 		}
-		/* polling all interface until bndstrg is ready */
-		if ((table->b2GInfReady == FALSE) || (table->b5GInfReady == FALSE)){
-			if ((table->b2GInfReady == FALSE) && (table->b2GInfDiable_by_drv == 0)) {
-				table->status_queried_cnt++;
-				bndstrg_inf_status_query(bndstrg, IFNAME_2G);
-			}
-			if (table->b2GInfDiable_by_drv == 1) {
-				/* remove other interface bndstrg if anyone Bndstrg was disabled */
-				if ((table->Band & BAND_5G) == BAND_5G) {
-					if (table->dbdc_mode == 1) {
-						bndstrg_onoff(bndstrg, (char*)table->uc5GIfName, 0);
-					} else {
-						bndstrg_onoff(bndstrg, (char*)IFNAME_5G, 0);
-					}
-				}
-				return BndStrg_status;
-			}
-			if ((table->b5GInfReady == FALSE) && (table->b5GInfDiable_by_drv == 0)) {
-				table->status_queried_cnt++;
-				bndstrg_inf_status_query(bndstrg, IFNAME_5G);
-			} 
-			if (table->b5GInfDiable_by_drv == 1) {
-				/* remove other interface bndstrg if anyone Bndstrg was disabled */
-				if ((table->Band & BAND_2G) == BAND_2G) {
-					if (table->dbdc_mode == 1) {
-						bndstrg_onoff(bndstrg, (char*)table->uc2GIfName, 0);
-					} else {
-						bndstrg_onoff(bndstrg, (char*)IFNAME_2G, 0);
-					}
-				}
-				return BndStrg_status;
-			}
-		} else {
-			/* If both 2G inf and 5G inf are ready, then tell driver to start running */
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): table->dbdc_mode=%d,table->Band=%d\n", __FUNCTION__,table->dbdc_mode,table->Band);
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): bndstrg->table.b2GInfDiable_by_drv=%d\n", __FUNCTION__,bndstrg->table.b2GInfDiable_by_drv);
-			DBGPRINT(DEBUG_OFF,
-					 "%s(): bndstrg->table.b5GInfDiable_by_drv=%d\n", __FUNCTION__,bndstrg->table.b5GInfDiable_by_drv);
-			if (table->dbdc_mode == 1) {
-				if ((table->Band & BAND_2G) != BAND_2G) {
-					if (table->b2GInfDiable_by_drv == 0) {
-						table->table_enable_cnt ++;
-						bndstrg_onoff(bndstrg, (char*)table->uc2GIfName, 1);
-					} else
-						table->table_enable_cnt = 0;
-				}
-				if ((table->Band & BAND_5G) != BAND_5G) {
-					if (table->b5GInfDiable_by_drv == 0) {
-						table->table_enable_cnt ++;
-						bndstrg_onoff(bndstrg, (char*)table->uc5GIfName, 1);
-					} else
-						table->table_enable_cnt = 0;
-				}
-			} else {
-				if ((table->Band & BAND_2G) != BAND_2G) {
-					if (table->b2GInfDiable_by_drv == 0) {
-						table->table_enable_cnt ++;
-						bndstrg_onoff(bndstrg, (char*)IFNAME_2G, 1);
-					} else
-						table->table_enable_cnt = 0;
-				}
-				if ((table->Band & BAND_5G) != BAND_5G) {
-					if (table->b5GInfDiable_by_drv == 0) {
-						table->table_enable_cnt ++;
-						bndstrg_onoff(bndstrg, (char*)IFNAME_5G, 1);
-					} else
-						table->table_enable_cnt = 0;
-				}
-			}
-			return BndStrg_status;
+
+		if(inf->bValid && inf->bInfReady)
+			inf_ready_count++;	
+    }
+
+	if(ctrl_iface->Size < 2){
+		DBGPRINT(DEBUG_OFF, RED("[%d]:Invalid Band topology. 2.4G=%d,L-5G=%d,H-5G=%d\n"),__LINE__,band_cnt[0],band_cnt[1],band_cnt[2]);
+		return FALSE;
+	}	
+		
+    if(inf_ready_count != ctrl_iface->Size)
+        return FALSE;
+
+	if ((band_cnt[0]>=2) ||(band_cnt[1]>=2)||(band_cnt[2]>=2)){
+		if (polling_cnt > 3) {
+			DBGPRINT(DEBUG_OFF, RED("[%d]:Invalid Band topology. 2.4G=%d,L-5G=%d,H-5G=%d\n"),__LINE__,band_cnt[0],band_cnt[1],band_cnt[2]);
 		}
-	} else {
-		table->status_queried_cnt = 0;
-		table->table_enable_cnt = 0;
-		BndStrg_status = TRUE;
+        return FALSE;
 	}
-	return BndStrg_status;
+	polling_cnt = 0;
+    return TRUE;
+}
+
+u8 bndstrg_chanload_status_polling(struct bndstrg *bndstrg,struct bndstrg_cli_table *table)
+{
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf;
+    u8 i;
+
+    /* polling all interface until bndstrg is ready */
+    for(i=0; i<ctrl_iface->Size; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid && inf->bInfReady)
+            bndstrg_chanload_status_query(bndstrg, (char*)ctrl_iface->inf[i].ucIfName);
+    }
+    return TRUE;
+}
+
+u8 bndstrg_table_en_polling(struct bndstrg *bndstrg,struct bndstrg_cli_table *table,u8 en)
+{
+//    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf;
+	u8 i;
+	if (bndstrg == NULL) {
+		DBGPRINT(DEBUG_ERROR,RED("bndstrg is NULL\n"));
+		return FALSE;
+	}
+	if (table == NULL) {
+		DBGPRINT(DEBUG_ERROR,RED("table is NULL\n"));
+		return FALSE;
+	}
+	DBGPRINT(DEBUG_OFF,("bndstrg=%p,table=%p,en=%d\n"),bndstrg,table,en);
+	if (en) {
+		for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
+		{
+	    	inf = &bndstrg->ctrl_iface.inf[i];
+	    	if(inf && !inf->binfEnable)
+	       		bndstrg_onoff(bndstrg, (char*)inf->ucIfName, en, table->BndStrgMode);
+		}
+	}
+	else {
+		for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
+		{
+	    	inf = &bndstrg->ctrl_iface.inf[i];
+	    	if(inf && inf->binfEnable)
+	       		bndstrg_onoff(bndstrg, (char*)inf->ucIfName, en, table->BndStrgMode);
+		}
+	}
+
+	return TRUE;
+}
+
+void bndstrg_send_heartbeat(struct bndstrg *bndstrg)
+{
+    struct bndstrg_iface *inf = NULL;
+	u8 i;
+	
+	for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
+	{
+    	inf = &bndstrg->ctrl_iface.inf[i];
+    	if(inf->bValid && inf->bInfReady)
+       		bndstrg_inf_status_query(bndstrg, (char*)inf->ucIfName, HEARTBEAT_MONITOR);
+	}
 }
 
 void bndstrg_periodic_exec(void *eloop_data, void *user_ctx)
 {
-	int i;
-	u32 elapsed_time = 0;
+	int i, count=0;
 	struct bndstrg_cli_entry *entry = NULL;
 	struct bndstrg *bndstrg = (struct bndstrg*) user_ctx;
 	struct bndstrg_cli_table *table = &bndstrg->table;
-
-	if (!table)
-	{
-		DBGPRINT(DEBUG_ERROR,
-					"%s(): Error! table is NULL!\n", __FUNCTION__);
-		goto end_of_periodic_exec;
+	struct bndstrg_iface *inf = NULL;
+	static enum bndstrg_state old_state;
+	static char *bndstrg_state[]={"BNDSTRG_INIT","BNDSTRG_INF_POLL","BNDSTRG_TBL_EN","BNDSTRG_TBL_READY","BNDSTRG_LEAVE","BNDSTRG_FROZEN"};
+	static char *table_opmode[]={"NO_BNDSTR","DUALBAND","TRIBAND"};
+	if (bndstrg->state != old_state)
+		DBGPRINT(DEBUG_OFF, GRN("bndstrg->state=%s %s\n"),bndstrg_state[bndstrg->state],
+				(bndstrg->state==BNDSTRG_TBL_READY)?(table_opmode[table->op_mode]):"");
+	switch (bndstrg->state) {
+		case BNDSTRG_INIT:
+			old_state = bndstrg->state;
+			bndstrg->state = BNDSTRG_INF_POLL;
+			goto end_of_periodic_exec;
+		case BNDSTRG_INF_POLL:
+			if (bndstrg->state != old_state) {
+				/*
+				 * state change, disable bandstrg
+				 * remove all daemon entry and disable dirver band steering
+				 */
+				for (i=0;i<table->max_steering_size;i++) {
+					bndstrg_delete_entry(table, NULL, i);
+				}
+				table->active_client_2G=0;
+				table->active_client_5G=0;
+				table->active_client_L5G=0;
+				table->active_client_H5G=0;
+				bndstrg_table_en_polling(bndstrg,table,0);
+			}
+			old_state = bndstrg->state;
+			/* polling band inf status */
+			if (bndstrg_inf_status_polling(bndstrg,table) == FALSE) {
+				goto end_of_periodic_exec;
+			}
+			bndstrg->inf_stable_cnt++;
+			if (bndstrg->inf_stable_cnt >= 1) {
+				bndstrg->inf_stable_cnt = 0;
+				bndstrg->state = BNDSTRG_TBL_EN;
+			}
+			goto end_of_periodic_exec;
+		case BNDSTRG_TBL_EN:
+			old_state = bndstrg->state;
+			/* enale all active inf bandsteering */
+			bndstrg_table_en_polling(bndstrg,table,1);
+			bndstrg->inf_stable_cnt++;
+			if (bndstrg->inf_stable_cnt >= 1) {
+				bndstrg->inf_stable_cnt = 0;
+				if (table->bEnabled) {
+					bndstrg->state = BNDSTRG_TBL_READY;
+				}
+			}
+			goto end_of_periodic_exec;
+		case BNDSTRG_TBL_READY:
+			old_state = bndstrg->state;/* Ready to run bndstrg algorithm */
+			bndstrg_read_inf_param(bndstrg); /*Read interface related parameters*/
+			break;
+		case BNDSTRG_LEAVE:
+			old_state = bndstrg->state;
+			eloop_terminate();
+			return;
+		case BNDSTRG_FROZEN:
+			old_state = bndstrg->state;
+			goto end_of_periodic_exec;
+		default:
+			goto end_of_periodic_exec;
 	}
 
-	if (table->bInitialized == FALSE)
-	{
-		DBGPRINT(DEBUG_ERROR,
-					"%s(): Error! table is not initialized!\n", __FUNCTION__);
-		goto end_of_periodic_exec;
-	}
-
-	if (BndStrg_status_polling(bndstrg,table) == FALSE) {
-		goto end_of_periodic_exec;
-	}
-
-	for (i = 0; i < BND_STRG_MAX_TABLE_SIZE; i++)
+	for (i = 0; i < table->max_steering_size; i++)
 	{
 		entry = &table->Entry[i];
 		if (entry->bValid == TRUE)
 		{
-			elapsed_time = bndstrg_get_entry_elapsed_time(entry);
-			if(entry->band == 0 && elapsed_time >= table->DormantTime)
-			{
-				if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G)
-					bndstrg_accessible_cli(bndstrg,table->uc2GIfName,entry,CLI_DEL);
-				else if(entry->Control_Flags & fBND_STRG_CLIENT_ALLOW_TO_CONNET_5G)
-					bndstrg_accessible_cli(bndstrg,table->uc5GIfName,entry,CLI_DEL);
-#ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry,
-					("Elapsed_Time(%d) > DormantTime(%d) delet entry for (%02x:%02x:%02x:%02x:%02x:%02x)\n"),
-					elapsed_time, table->DormantTime, PRINT_MAC(entry->Addr));
-#endif
-				bndstrg_delete_entry(table,entry->Addr,entry->TableIndex);
-			}else if ((entry->band != 0) && (elapsed_time >= table->AgeTime) && (entry->bActiveStatus != CLI_ACTIVE))
-			{
-				if((entry->band & BAND_2G) == BAND_2G)
-					bndstrg_accessible_cli(bndstrg,table->uc2GIfName,entry,CLI_DEL);
-				else if((entry->band & BAND_5G) == BAND_5G)
-					bndstrg_accessible_cli(bndstrg,table->uc5GIfName,entry,CLI_DEL);
-#ifdef BND_STRG_QA
-				BND_STRG_PRINTQAMSG(table, entry,
-					("AgeOut entry (%02x:%02x:%02x:%02x:%02x:%02x)\n"),PRINT_MAC(entry->Addr));
-#endif
-				
-				bndstrg_delete_entry(table,entry->Addr,entry->TableIndex);
+		    count++;
+
+			/* process non-connected STA entry only */
+			if((entry->Operation_steered == TRUE) || (entry->bConnStatus == TRUE))
+				continue;
+
+#ifdef VENDOR_FEATURE7_SUPPORT
+			if(entry->BlackListTimer > 0){
+				entry->BlackListTimer --;
+				if(entry->BlackListTimer == 0)
+					bndstrg_update_white_black_list(bndstrg, NULL, entry->Addr, bndstrg_blacklist, 0);
+				continue;
 			}
-			else
+#endif
+
+#ifdef WPS_SUPPORT
+			//WPS: update wps first connection timer
+			if(entry->WpsFirstAssocCounter > 0)
+				entry->WpsFirstAssocCounter++;
+
+			if(entry->WpsFirstAssocCounter > 20)
 			{
-				/* Update elapsed time */
-				entry->elapsed_time = elapsed_time;
-
-				if (elapsed_time >= table->CheckTime_5G &&
-					!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_5G) &&
-					!(entry->Control_Flags & fBND_STRG_CLIENT_IS_2G_ONLY))
-				{
-					/*	If we don't get any connection req from 5G for a long time,
-						we condider this client is 2.4G only */
+				entry->bConnStatus = FALSE;
 #ifdef BND_STRG_QA
-					BND_STRG_PRINTQAMSG(table, entry,
-					YLW("Receive no frame by 5G interface within %u seconds,"
-					" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 2.4G only.\n"),
-					table->CheckTime_5G, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-					entry->Control_Flags |= \
-						fBND_STRG_CLIENT_IS_2G_ONLY;
-				}
+				BND_STRG_PRINTQAMSG(table, entry, RED("entry (%02x:%02x:%02x:%02x:%02x:%02x) WPS second connection timed out, change ConnStatus to FALSE\n"),
+					PRINT_MAC(entry->Addr));
+#endif
+			}
+#endif /*WPS_SUPPORT*/
 
-				if (elapsed_time >= table->CheckTime_2G &&
-					!(entry->Control_Flags & fBND_STRG_CLIENT_SUPPORT_2G) &&
-					!(entry->Control_Flags & fBND_STRG_CLIENT_IS_5G_ONLY))
-				{
-					/*	If we don't get any connection req from 2G for a long time,
-						we condider this client is 5G only */
-#ifdef BND_STRG_QA
-					BND_STRG_PRINTQAMSG(table, entry,
-					YLW("Receive no frame by 2G interface within %u seconds,"
-					" set client (%02x:%02x:%02x:%02x:%02x:%02x) to 5G only.\n"),
-					table->CheckTime_2G, PRINT_MAC(entry->Addr));
-#endif /* BND_STRG_QA */
-					entry->Control_Flags |= \
-						fBND_STRG_CLIENT_IS_5G_ONLY;
-				}
+			/* check aged entry */
+			if (bndstrg_check_entry_aged(bndstrg,entry)) 
+			{
+				/* if entry is connected, it should run _bndstrg_allow_connection
+				 * to do 5G_DYNAMIC_RSSI and LOAD_BALANCE
+				 */
+				if (!entry->bConnStatus)
+					continue;
+			}
 
-				if(entry->band == 0)
-					_bndstrg_allow_connection(table, entry, bndstrg);
+			/* For disconnected STA, process association steering */
+			if((table->BndStrgMode & PRE_CONNECTION_STEERING) &&
+			    (entry->enable_compare_flag) && (entry->Channel == 0))
+				bndstrg_association_steering(table, entry, bndstrg);
 
+			/* Handle Assoc Probe info missmatch case*/
+			if((entry->AssocProbeInfoMissMatch == TRUE) && (entry->state == ENTRY_ASSOC_RCD)){
+				entry->bConnStatus = TRUE;
+				inf = bndstrg_get_interface(&bndstrg->ctrl_iface,NULL,entry->band,TRUE);
+				entry->Channel = inf->Channel;
 			}
 		}
+		if(count >= table->Size)
+		    break;
 	}
 
-end_of_periodic_exec:
+	if(table->BndStrgMode & POST_CONNECTION_STEERING){
+		if(table->chanload_priority_enabled == TRUE) {
+			bndstrg_chanload_status_polling(bndstrg,table);
+		}
+		bndstrg_polling_connected_sta(bndstrg, (table->bndstrg_run_time % table->polling_sta_period));
+		if(table->chanload_priority_enabled == TRUE){ 
+			/*heavy chanload update*/
+			bndstrg_chanload_heavy_update(bndstrg);
+			/*update connect STA */
+			bndstrg_sta_update(bndstrg);
+		}
+		
+		table->bndstrg_run_time++;
+		if((table->bndstrg_run_time % table->dynamic_bndstrg_period) == 0)
+			bndstrg_operation_steering(table, bndstrg);
+	}else if(table->chanload_priority_enabled){
+		bndstrg_chanload_status_polling(bndstrg,table);
+		bndstrg_chanload_heavy_update(bndstrg);
+	}
+	bndstrg_send_heartbeat(bndstrg);
 
+end_of_periodic_exec:
 	eloop_register_timeout(1, 0, bndstrg_periodic_exec, NULL, bndstrg);
 
+}
+
+int BndStrgGetKeyParameter(char *key, char *keyvalue, char *buf)
+{
+	char pMemBuf[128] = { 0 }, *temp_buf1 = NULL, *temp_buf2 = NULL;
+	char *start_ptr, *end_ptr;
+	char *ptr;
+	int  len;
+
+	temp_buf1 = pMemBuf;
+	temp_buf2 = (char *)(pMemBuf + 64);
+
+	strcpy(temp_buf1, "\n");
+	strcat(temp_buf1, key);
+	strcat(temp_buf1, "=");
+
+	/*search key*/
+	if((start_ptr = strstr(buf, temp_buf1)) == NULL)
+	{
+		return (FALSE);
+	}
+
+	start_ptr += strlen("\n");
+	if((end_ptr = strstr(start_ptr, "\n")) == NULL)
+		end_ptr = start_ptr+strlen(start_ptr);
+
+	if (end_ptr < start_ptr)
+	{
+		return (FALSE);
+	}
+
+	strncpy(temp_buf2, start_ptr, end_ptr-start_ptr);
+	temp_buf2[end_ptr-start_ptr]='\0';
+
+	if((start_ptr = strstr(temp_buf2, "=")) == NULL)
+	{
+		return (FALSE);
+	}
+	ptr = (start_ptr + 1);
+	len = strlen(start_ptr);
+
+	memset(keyvalue, 0x00, 64);
+	strncpy(keyvalue, ptr, len);
+
+
+	return TRUE;
+}
+
+
+void BndStrg_Update_Default_Param(struct bndstrg_cli_table *table)
+{
+	FILE *fp;
+	char buf[FILE_BUFFER_SIZE] = {0};
+	char keyvalue[64] = { 0 };
+	int i = 0, value = 0;
+	int PriorityList[fBND_STRG_PRIORITY_MAX] = { 0 }, PriorityListSize = 0;
+	char *macptr = NULL;
+	//DBGPRINT(DEBUG_TRACE,"\n");
+	
+	fp = fopen(BNDSTRG_DAT_FILE_PATH, "r");
+	
+	if (fp) {
+		fread(buf, sizeof(char), FILE_BUFFER_SIZE, fp);
+		if (BndStrgGetKeyParameter("DwellTime", keyvalue, buf)) {
+			table->dwell_time = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("SteerTimeWindow", keyvalue, buf)) {
+			table->max_steer_time_window = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("MaxSteerCount", keyvalue, buf)) {
+			table->max_steer_count = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("AgeTime", keyvalue, buf)) {
+			table->AgeTime = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("CheckTime", keyvalue, buf)) {
+			table->CheckTime = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("HoldTime", keyvalue, buf)) {
+			table->HoldTime = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("RssiLow", keyvalue, buf)) {
+			table->RssiLow = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("RSSILowDownSteer", keyvalue, buf)) {
+			table->RSSILowDownSteer = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("RSSIHighUpSteer", keyvalue, buf)) {
+			table->RSSIHighUpSteer = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("BtmMode", keyvalue, buf)) {
+			table->BtmMode = strtol(keyvalue, NULL, 10);
+		}
+		if (BndStrgGetKeyParameter("CndPriority", keyvalue, buf)) {
+			//memset(table->PriorityList, 0, sizeof(table->PriorityList));
+			//table->PriorityListSize = 0;
+			for (i = 0, macptr = strtok(keyvalue, ";"); macptr; macptr = strtok(NULL, ";"), i++) {
+				value = strtol(macptr, NULL, 10);
+				if(value < fBND_STRG_PRIORITY_MAX){
+					PriorityList[i] = value;
+					PriorityListSize ++;
+				}
+			}
+			if(PriorityListSize > 0){
+				os_memcpy(table->PriorityList, PriorityList, sizeof(PriorityList));
+				table->PriorityListSize = PriorityListSize;
+			}
+		}
+		if (BndStrgGetKeyParameter("NVRAMReset", keyvalue, buf)) {
+			value = strtol(keyvalue, NULL, 10);
+			if(value == 0 || value == 1)
+				table->nvram_reset = value;
+			else
+				table->nvram_reset = FALSE;
+		}
+#ifdef VENDOR_FEATURE7_SUPPORT
+		if (BndStrgGetKeyParameter("RSSIDisconnect", keyvalue, buf)) {
+			value = strtol(keyvalue, NULL, 10);
+			if(value < 0)
+				table->RSSIDisconnect = value;
+		}
+		if (BndStrgGetKeyParameter("BlackListTime", keyvalue, buf)) {
+			value = strtol(keyvalue, NULL, 10);
+			if(value > 0)
+				table->BlackListTime = value;
+		}
+		if (BndStrgGetKeyParameter("NVRAMTableSize", keyvalue, buf)) {
+			value = strtol(keyvalue, NULL, 10);
+			if(value <= MAX_NVRAM_TABLE_SIZE)
+				table->nvram_table_size = value;
+		}
+#endif
+		fclose(fp);
+	}
+	return;
+}
+
+void bndstrg_read_inf_param(struct bndstrg *bndstrg)
+{
+	FILE *fp;
+	char buf[FILE_BUFFER_SIZE] = {0};
+	char keyvalue[64] = { 0 }, *temp;
+	int i = 0;// value = 0;
+	//char *macptr = NULL;
+	//DBGPRINT(DEBUG_TRACE,"\n");
+	struct bndstrg_iface *inf_2G=NULL, *inf_5GL=NULL, *inf_5GH=NULL;
+
+	fp = fopen(BNDSTRG_DAT_FILE_PATH, "r");
+
+	inf_2G = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, BAND_2G, TRUE);
+	inf_5GL = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, BAND_5G_L, TRUE);
+	inf_5GH = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, BAND_5G_H, TRUE);
+
+	if (fp) {
+		fread(buf, sizeof(char), FILE_BUFFER_SIZE, fp);
+		if (BndStrgGetKeyParameter("ChanLoadThr", keyvalue, buf)) {
+				for (i = 0, temp = strtok(keyvalue, ";"); temp; temp = strtok(NULL, ";"), i++){
+					switch (i) {
+						case 0:
+							if(inf_2G) inf_2G->chanload_thr = strtol(temp, 0, 10);
+							break;
+							
+						case 1:
+							if(inf_5GL) inf_5GL->chanload_thr = strtol(temp, 0, 10);
+							break;
+
+						case 2:
+							if(inf_5GH) inf_5GH->chanload_thr = strtol(temp, 0, 10);
+							break;
+
+						default:
+							DBGPRINT(DEBUG_ERROR, "Error \n");
+					}
+				}
+				memset(keyvalue, 0, sizeof(keyvalue)/sizeof(keyvalue[0]));
+			}
+			fclose(fp);
+		}
+	return;
 }
 
 int bndstrg_table_init(struct bndstrg_cli_table *table)
@@ -2054,7 +5004,9 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	u32 BndStrgAge = 0, BndStrgHoldTime = 0, BndStrgCheckTime = 0;
 	char BandSteering = 0, BndStrgRssiDiff = 0, BndStrgRssiLow = 0;
 	char *BandSteering_s, *BndStrgRssiDiff_s, *BndStrgRssiLow_s, *BndStrgAge_s, *BndStrgHoldTime_s, *BndStrgCheckTime_s;
+	char cmd[256];
 
+	int i;
 	if (table->bInitialized == TRUE)
 		return BND_STRG_SUCCESS;
 
@@ -2074,54 +5026,121 @@ int bndstrg_table_init(struct bndstrg_cli_table *table)
 	BndStrgHoldTime  = (BndStrgHoldTime_s == NULL) ? 0 : atoi(BndStrgHoldTime_s);
 	BndStrgCheckTime = (BndStrgCheckTime_s == NULL) ? 0 : atoi(BndStrgCheckTime_s);
 
+	/* disable band steering in driver before configure userspace daemon (prevent tables daemon and driver unconsystent) rai0=>ra0*/
+	sprintf(cmd, "iwpriv rai0 set BndStrgEnable=0 && iwpriv ra0 set BndStrgEnable=0");
+	system(cmd);
+
 	memset(table, 0, sizeof(struct bndstrg_cli_table));
 
-	table->status_queried_cnt = 0;
-	table->table_enable_cnt = 0;
 	table->Band = 0;
 	table->bEnabled = 0;
-	table->b2GInfDiable_by_drv = 0;
-	table->b5GInfDiable_by_drv = 0;
+	table->op_mode = OP_DUALBAND;
+//#ifdef CONFIG_MT7615_AP_WNM_SUPPORT
+#if 0
+	table->BtmMode = BTM_Force_Steer; /* default use BTM for seamless steering */
+#else
+	table->BtmMode = BTM_Off;
+#endif
+     	table->RssiDiff= BND_STRG_RSSI_DIFF;
+	table->RssiLow = BND_STRG_RSSI_LOW;
+	table->AgeTime = BND_STRG_AGE_TIME;
 	table->DormantTime = BND_STRG_DORMANT_TIME;
+	table->HoldTime = BND_STRG_HOLD_TIME;
+	table->CheckTime = BND_STRG_CHECK_TIME;
 
-	//for compat with legacy convert ms to sec
-	if (BndStrgRssiDiff != 0)
-	    table->RssiDiff= BndStrgRssiDiff;
-	else
-	    table->RssiDiff= BND_STRG_RSSI_DIFF;
-
-	if (BndStrgRssiLow != 0)
-	    table->RssiLow = BndStrgRssiLow;
-	else
-	    table->RssiLow = BND_STRG_RSSI_LOW;
-
-	if (BndStrgAge != 0)
-	    table->AgeTime = (BndStrgAge/1000);
-	else
-	    table->AgeTime = BND_STRG_AGE_TIME;
-	if (BndStrgHoldTime != 0)
-	    table->HoldTime = (BndStrgHoldTime/1000);
-	else
-	    table->HoldTime = BND_STRG_HOLD_TIME;
-
-	if (BndStrgCheckTime != 0) {
-	    table->CheckTime_5G = (BndStrgCheckTime/1000);
-	    table->CheckTime_2G = (BndStrgCheckTime/1000);
-	} else {
-	    table->CheckTime_5G = BND_STRG_CHECK_TIME_5G;
-	    table->CheckTime_2G = BND_STRG_CHECK_TIME_2G;
-	}
-
-	table->AlgCtrl.ConditionCheck = /*fBND_STRG_CND_RSSI_DIFF | \
-								fBND_STRG_CND_2G_PERSIST | \
-								fBND_STRG_CND_HT_SUPPORT | \ */
-								fBND_STRG_CND_5G_RSSI;
-	table->AlgCtrl.FrameCheck =  fBND_STRG_FRM_CHK_PRB_REQ | \
-								fBND_STRG_FRM_CHK_ATH_REQ;
-	table->bInitialized = TRUE;
+	table->RSSILowDownSteer = BND_STRG_DOWNSTEER_RSSI;
+	table->RSSIHighUpSteer = BND_STRG_UPSTEER_RSSI;
+#ifdef VENDOR_FEATURE7_SUPPORT
+	table->RSSIDisconnect = BND_STRG_DISCONNECT_RSSI;
+	table->BlackListTime = BLACK_LIST_TIME;
+#endif
 	os_memcpy(table->PriorityList, PriorityList, sizeof(PriorityList));
 	table->PriorityListSize = PriorityListSize;
 	table->n_diff= BND_STRG_N_DIFF;
+	table->op_mode = OP_NO_BNDSTR;
+	table->max_steering_size = BND_STRG_MAX_TABLE_SIZE;
+	table->assoc_bl_th = BND_STRG_ASSOC_THR;
+	table->dynamic_bndstrg_period = BND_STRG_DYNAMIC_STEERING_PERIOD; // sec, min is 3sec
+	table->polling_sta_period = 3; // sec, min is 3sec	
+	table->debug_only_allow_monitor_addr = fg_only_allow_monitor_addr;
+	table->max_steer_count = MAX_STEERING_COUNT;
+	table->dwell_time = DWELL_TIME;
+	table->max_steer_time_window = MAX_STEER_TIME_WINDOW;
+	table->fDynamicSteering = FALSE;
+	table->single_band_timeout = BND_STRG_SINGLE_BAND_TIMEOUT;
+	table->nvram_table_size = NVRAM_TABLE_SIZE;
+	table->nvram_reset = FALSE;
+
+	//get from config
+	BndStrg_Update_Default_Param(table);
+
+	//set parametrs from nvram, for compat with legacy convert ms to sec
+	if (BndStrgRssiDiff != 0)
+	    table->RssiDiff= BndStrgRssiDiff;
+
+	if (BndStrgRssiLow != 0)
+	    table->RssiLow = BndStrgRssiLow;
+
+	if (BndStrgAge != 0) {
+	    table->AgeTime = (BndStrgAge/1000);
+	    table->DormantTime = (BndStrgAge/1000);
+	}
+
+	if (BndStrgHoldTime != 0)
+	    table->HoldTime = (BndStrgHoldTime/1000);
+
+	if (BndStrgCheckTime != 0)
+	    table->CheckTime = (BndStrgCheckTime/1000);
+
+
+	{
+		u8 bDefault_set = FALSE;
+		table->chanload_priority_enabled = FALSE;
+		for(i=0; i < table->PriorityListSize; i++)
+		{
+			if(table->PriorityList[i] < fBND_STRG_PRIORITY_LB_CND_MCS){
+				table->BndStrgMode |= PRE_CONNECTION_STEERING;
+			} else if((table->PriorityList[i] == fBND_STRG_PRIORITY_DEFAULT_5G) ||
+			(table->PriorityList[i] == fBND_STRG_PRIORITY_DEFAULT_2G)){
+				bDefault_set = TRUE;
+			} else
+				table->BndStrgMode |= POST_CONNECTION_STEERING;
+
+			if ((table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_STATIC) ||
+				 (table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_IDLE) ||
+				 (table->PriorityList[i] == fBND_STRG_PRIORITY_LB_CND_CHANLOAD_ACTIVE)
+#ifdef VENDOR_FEATURE7_SUPPORT
+				 ||(table->PriorityList[i] == fBND_STRG_PRIORITY_DOWNSTEER_CHLOAD_RSSI)
+				 ||(table->PriorityList[i] == fBND_STRG_PRIORITY_UPSTEER_CHLOAD_RSSI)
+#endif
+				){
+					table->chanload_priority_enabled = TRUE;
+			}
+		}
+		if((table->BndStrgMode & PRE_CONNECTION_STEERING) && (bDefault_set == FALSE)){
+			table->PriorityList[table->PriorityListSize] = fBND_STRG_PRIORITY_DEFAULT_5G;
+			table->PriorityListSize ++;
+		}
+	}
+
+	table->bInitialized = TRUE;
+
+	if (BandSteering) {
+	    /* configure OK:
+	     * 1: disconnect all sta from all bands (5->2)
+	     * 2: enable steering (5->2)
+	     * 3: force steer bi kick form (2)
+	     *
+	    */
+	    sprintf(cmd, "iwpriv rai0 set DisConnectAllSta=1 && iwpriv ra0 set DisConnectAllSta=1");
+	    system(cmd);
+	    sprintf(cmd, "iwpriv rai0 set BndStrgEnable=1 && iwpriv ra0 set BndStrgEnable=1");
+	    system(cmd);
+	    sprintf(cmd, "iwpriv ra0 set DisConnectAllSta=1");
+	    system(cmd);
+	    sync();
+	}
+
 	return BND_STRG_SUCCESS;
 }
 
@@ -2154,12 +5173,19 @@ int bndstrg_init(struct bndstrg *bndstrg,
 	bndstrg->drv_data = bndstrg->drv_ops->drv_inf_init(bndstrg, opmode, drv_mode);
 
 	ret = bndstrg_table_init(&bndstrg->table);
-
+	bndstrg->table.bndstrg = bndstrg;//quick path to access bndstrg
+	DBGPRINT(DEBUG_TRACE,GRN("::bndstrg=%p,table=%p\n\r"), bndstrg,&bndstrg->table);
+#ifdef BNDSTRG_NVRAM_SUPPORT
+	bndstrg->nvram_support = TRUE;
+	if(bndstrg->table.nvram_reset == TRUE){
+		DBGPRINT(DEBUG_OFF,"Clear NVRAM data\n");
+		bndstrg_nvram_clear_all_entry(&bndstrg->table);
+	}
+#endif
 	bndstrg_nvram_read_all(bndstrg);
-	
+
 	if (ret == BND_STRG_SUCCESS)
 		ret = eloop_register_timeout(1, 0, bndstrg_periodic_exec, NULL, bndstrg);
-
 	return 0;
 }
 
@@ -2167,7 +5193,7 @@ int bndstrg_deinit(struct bndstrg *bndstrg)
 {
     int ret = 0;
 
-    DBGPRINT(DEBUG_TRACE, "\n");
+    //DBGPRINT(DEBUG_TRACE, "\n");
 
     ret = bndstrg->drv_ops->drv_inf_exit(bndstrg);
 
@@ -2177,38 +5203,446 @@ int bndstrg_deinit(struct bndstrg *bndstrg)
     return 0;
 }
 
-static void bndstrg_terminate(int sig, void *signal_ctx)
+static void _bndstrg_terminate(int sig, void *signal_ctx)
 {
-	DBGPRINT(DEBUG_TRACE, "\n");
-	
-	eloop_terminate();
+	DBGPRINT(DEBUG_OFF, "sig[%d]\n",sig);
+	if (sig == SIGINT) {
+		DBGPRINT(DEBUG_ERROR, "%s[%d]:receive SIGINT\n",__func__,__LINE__);
+	}
+	if (sig == SIGTERM) {
+		DBGPRINT(DEBUG_ERROR, RED("%s[%d]:receive SIGTERM, kill daemon\n"),__func__,__LINE__);
+		eloop_terminate();
+	}
 }
 
 void bndstrg_run(struct bndstrg *bndstrg)
 {
-	struct bndstrg_cli_table *table = &bndstrg->table;
+    struct bndstrg_ctrl_iface *ctrl_iface = &bndstrg->ctrl_iface;
+    struct bndstrg_iface *inf;
+    u8 i;
 
-	DBGPRINT(DEBUG_TRACE, "%s\n", __FUNCTION__);
-	
-	eloop_register_signal_terminate(bndstrg_terminate, bndstrg);
+	DBGPRINT(DEBUG_OFF, GRN("%s[%d]:start\n"),__func__,__LINE__);
+	eloop_register_signal_terminate(_bndstrg_terminate, bndstrg);
 
 	eloop_run();
 
 	/* before daemon leaved, make sure all bandstrg disable */
-	if (table->dbdc_mode == 1) {
-		if ((table->Band & BAND_2G) == BAND_2G) {
-			bndstrg_onoff(bndstrg, table->uc2GIfName, 0);
-		}
-		if ((table->Band & BAND_5G) == BAND_5G) {
-			bndstrg_onoff(bndstrg, table->uc5GIfName, 0);
-		}
-	} else {
-		if ((table->Band & BAND_2G) == BAND_2G) {
-			bndstrg_onoff(bndstrg, IFNAME_2G, 0);
-		}
-		if ((table->Band & BAND_5G) == BAND_5G) {
-			bndstrg_onoff(bndstrg, IFNAME_5G, 0);
+    for(i=0; i < ctrl_iface->Size; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid && inf->bInfReady)
+           bndstrg_onoff(bndstrg, (char*)inf->ucIfName, 0, 0);
+    }
+	DBGPRINT(DEBUG_OFF, GRN("%s[%d]:exit\n"),__func__,__LINE__);
+}
+
+void bndstrg_check_steering_limit(struct bndstrg_cli_table *table,struct bndstrg_cli_entry *entry)
+{
+	u8 start_idx,end_idx,i;
+	end_idx = entry->CliSteerInfo.end_idx;
+	start_idx = end_idx; /* end index will be max_steer_count -1*/
+	INC(start_idx,table->max_steer_count);
+	for(i=0;i<table->max_steer_count;i++)
+	{
+		if(bndstrg_get_elapsed_time(entry->CliSteerInfo.steer_tp[start_idx]) < (table->max_steer_time_window))
+			break;
+		else
+		{
+			INC(start_idx,table->max_steer_count);
 		}
 	}
+	if(i == 0)
+		return;
+	else
+	{
+		if(end_idx > start_idx)
+			entry->total_steered_cnt = end_idx - start_idx + 1;
+		else if (end_idx < start_idx)
+			entry->total_steered_cnt -= (start_idx - end_idx - 1);
+		else
+			entry->total_steered_cnt = 0;
+	}
+	return;
+}
+
+void bndstrg_inf_init(struct bndstrg_iface *inf)
+{
+	if(IS_5G_H_BAND(inf->Band)){
+		inf->min_nss_thr = BND_STRG_NSS_THR_5GH;
+		inf->min_rssi_thr = BND_STRG_MIN_RSSI_5GH;
+		inf->chanload_thr = BND_STRG_CHANLOAD_THR_5GH;
+		inf->chanload_heavy_max_cnt = BND_STRG_CHANLOAD_MAX_CNT_5G_H;
+	}
+	
+	if(IS_5G_L_BAND(inf->Band)){	
+		inf->min_nss_thr = BND_STRG_NSS_THR_5GL;
+		inf->min_rssi_thr = BND_STRG_MIN_RSSI_5GL;
+		inf->chanload_thr = BND_STRG_CHANLOAD_THR_5GL;
+		inf->chanload_heavy_max_cnt = BND_STRG_CHANLOAD_MAX_CNT_5G_L;
+	}
+
+	if(IS_2G_BAND(inf->Band)){
+		inf->min_nss_thr = BND_STRG_NSS_THR_2G;
+		inf->min_rssi_thr = BND_STRG_MIN_RSSI_2G;
+		inf->chanload_thr = BND_STRG_CHANLOAD_THR_2G;
+		inf->chanload_heavy_max_cnt = BND_STRG_CHANLOAD_MAX_CNT_2G;
+	}
+	return;
+}
+
+struct bndstrg_iface * bndstrg_get_interface_by_channel(
+    struct bndstrg_ctrl_iface *ctrl_iface,  
+    u8 channel)
+{
+    u8 i,cnt;
+    struct bndstrg_iface *inf = NULL;
+    for(i=0,cnt=0; i<ctrl_iface->Size; i++)
+    {
+        inf = &ctrl_iface->inf[i];
+        if(inf->bValid)
+        {
+        	cnt++;
+        	if(inf->bInfReady && (inf->Channel == channel))
+            	return inf;
+        }
+    }
+    return NULL;
+}
+
+struct bndstrg_cli_entry * bndstrg_get_old_entry(
+	struct bndstrg *bndstrg,
+	struct bndstrg_iface *inf)
+{
+	u8 i, elapsed_time = 0, max_elapsed_time = 0, count=0;
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bndstrg_cli_entry * entry = NULL, *temp_entry = NULL;
+	u32 AuthReqCount = 0;
+
+	for(i=0; i<table->max_steering_size; i++){
+		temp_entry = & table->Entry[i];
+		if (temp_entry->bValid == TRUE)
+		{
+			count ++;
+			elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
+			if(temp_entry->bConnStatus ||
+				temp_entry->Operation_steered ||
+				(inf && inf->Band != temp_entry->band) ||
+				(!IS_BND_STRG_DUAL_BAND_CLIENT(temp_entry->Control_Flags) &&
+				elapsed_time < (table->CheckTime + 20)))
+				continue;
+			if(elapsed_time > max_elapsed_time){
+				max_elapsed_time = elapsed_time;
+				entry = temp_entry;
+			}
+		}
+		if(count >= table->Size)
+			break;
+	}
+	if(!entry){
+		max_elapsed_time = 0;
+		for(i=0; i<table->max_steering_size; i++){
+			temp_entry = & table->Entry[i];
+			if (temp_entry->bValid == TRUE)
+			{
+				count ++;
+				if(temp_entry->bConnStatus || temp_entry->Operation_steered || (inf && inf->Band != temp_entry->band))
+					continue;
+				AuthReqCount = temp_entry->statistics[0].AuthReqCount + temp_entry->statistics[1].AuthReqCount + temp_entry->statistics[2].AuthReqCount;
+				if (AuthReqCount == 0) {
+					elapsed_time = bndstrg_get_elapsed_time(temp_entry->tp);
+					if(elapsed_time > max_elapsed_time){
+						max_elapsed_time = elapsed_time;
+						entry = temp_entry;
+					}
+				}
+			}
+			if(count >= table->Size)
+				break;				
+		}
+	}
+	if(!entry){
+		if(inf)
+		bndstrg_stop(bndstrg, BNDSTRG_LIMIT);
+		else
+			bndstrg_stop(bndstrg, BNDSTRG_DAEMON_TBL_FULL);
+	}
+	return entry;
+};
+
+void bndstrg_stop(struct bndstrg *bndstrg, u8 reason_code)
+{
+	u8 i;
+	struct bndstrg_iface *inf;
+	DBGPRINT(DEBUG_OFF,RED("<%s>\n"),bndstrg_stop_str[reason_code]);
+	for(i = 0; i < bndstrg->ctrl_iface.Size; i++)
+	{
+    	inf = &bndstrg->ctrl_iface.inf[i];
+    	if(inf->bValid && inf->bInfReady)
+       	bndstrg_onoff(bndstrg, (char*)inf->ucIfName, 0, 0);
+	}
+	_bndstrg_event_table_info(bndstrg);
+	for (i = 0; i < bndstrg->table.max_steering_size; i++)
+	{
+		if(bndstrg->table.Entry[i].bValid)
+			_bndstrg_print_entry(&bndstrg->table, &bndstrg->table.Entry[i]);
+	}
+	bndstrg->table.fStopBndstrg = TRUE;
+	return;
+}
+
+void bndstrg_cli_status_rsp (struct bndstrg *bndstrg, struct bnd_msg_cli_status_rsp *cli_status_rsp)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct data_avg *data_tx_util=NULL,*data_rx_util=NULL,*data_tx_byte=NULL,*data_rx_byte=NULL;
+	u32 tx_util=0,rx_util=0;
+	int update_stat_idx = 0;
+	struct bndstrg_cli_entry *entry = &table->Entry[cli_status_rsp->TableIndex];
+	if(!entry || !entry->bValid) {
+		DBGPRINT(DEBUG_ERROR,"[%d]: entry not found = %02x:%02x:%02x:%02x:%02x:%02x TableIdx:%d\n",
+			__LINE__, PRINT_MAC(cli_status_rsp->Addr), cli_status_rsp->TableIndex);
+		return ;
+	}
+	if(entry->state != ENTRY_ASSOC_RCD)
+	{
+		DBGPRINT(DEBUG_ERROR,"[%d]: entry state is not assoc [state:%s] = %02x:%02x:%02x:%02x:%02x:%02x TableIdx:%d\n",
+			__LINE__, entry_state[entry->state], PRINT_MAC(cli_status_rsp->Addr), cli_status_rsp->TableIndex);
+		return ;
+	}
+#ifdef BND_STRG_QA					
+	BND_STRG_PRINTQAMSG(table, entry, 
+						YLW("Got cli status rsp. return code = %u,"
+						"Addr = %02x:%02x:%02x:%02x:%02x:%02x, RSSI=%d,tx/rx PHY RATE=%d/%d, tx/rx TP=%u/%u Mbps"
+						"  tx/rx packets = %lu/%lu tx/rx byte = %u/%u\n"),
+						cli_status_rsp->ReturnCode,
+						PRINT_MAC(cli_status_rsp->Addr),
+						cli_status_rsp->data_Rssi,
+						cli_status_rsp->data_tx_Rate,
+						cli_status_rsp->data_rx_Rate,
+						(unsigned int)(cli_status_rsp->data_tx_Byte >> 17),
+						(unsigned int)(cli_status_rsp->data_rx_Byte >> 17),
+						(long unsigned int)cli_status_rsp->data_tx_packets,
+						(long unsigned int)cli_status_rsp->data_rx_packets,
+						(unsigned int)cli_status_rsp->data_tx_Byte,
+						(unsigned int)cli_status_rsp->data_rx_Byte); 
+#endif		
+	if(IS_2G_BAND(entry->band))
+		update_stat_idx = 0;
+	else if(IS_5G_L_BAND(entry->band))
+		update_stat_idx = 1;
+	else if(IS_5G_H_BAND(entry->band))
+		update_stat_idx = 2;
+	else
+	{
+		DBGPRINT(DEBUG_OFF,"entry band[%d] not correct %02x:%02x:%02x:%02x:%02x:%02x TableIdx:%d\n",
+			entry->band,PRINT_MAC(entry->Addr), cli_status_rsp->TableIndex);
+	}
+	data_tx_util = &entry->statistics[update_stat_idx].data_tx_util;
+	data_rx_util = &entry->statistics[update_stat_idx].data_rx_util;
+	data_tx_byte = &entry->statistics[update_stat_idx].data_tx_byte;
+	data_rx_byte = &entry->statistics[update_stat_idx].data_rx_byte;
+	
+	entry->statistics[update_stat_idx].got_cli_status = 1;
+	/*update Data rssi related info*/
+	entry->statistics[update_stat_idx].data_Rssi = cli_status_rsp->data_Rssi;
+
+#ifdef VENDOR_FEATURE7_SUPPORT
+	if (cli_status_rsp->data_Rssi < table->RSSIDisconnect){
+		if(entry->low_rssi_disconnect_cnt < RSSI_CHECK_COUNT)
+			entry->low_rssi_disconnect_cnt ++;
+	} else if (cli_status_rsp->data_Rssi < table->RSSILowDownSteer){
+		if(entry->low_rssi_bad_cnt < RSSI_CHECK_COUNT)
+			entry->low_rssi_bad_cnt ++;
+		entry->low_rssi_disconnect_cnt = 0;
+	}	else{
+		entry->low_rssi_bad_cnt = 0;
+		entry->low_rssi_disconnect_cnt = 0;
+	}
+#else
+	if(cli_status_rsp->data_Rssi < table->RSSILowDownSteer){
+		if(entry->low_rssi_bad_cnt < RSSI_CHECK_COUNT)
+			entry->low_rssi_bad_cnt ++;
+	}else {
+		entry->low_rssi_bad_cnt = 0;
+	}
+#endif
+
+	if(cli_status_rsp->data_Rssi > table->RSSIHighUpSteer){
+		if(entry->good_rssi_cnt < RSSI_CHECK_COUNT)
+			entry->good_rssi_cnt ++;
+	} else{ 
+		entry->good_rssi_cnt = 0;
+	}
+
+	/*update  MCS info*/
+	entry->statistics[update_stat_idx].data_tx_mcs = cli_status_rsp->data_tx_mcs;
+	entry->statistics[update_stat_idx].data_rx_mcs = cli_status_rsp->data_rx_mcs;
+
+	if(cli_status_rsp->data_tx_mcs < LOW_MCS_IDX)
+		entry->tx_mcs_bad_cnt ++ ;
+	else
+		entry->tx_mcs_bad_cnt = 0;
+	
+	if(cli_status_rsp->data_rx_mcs < LOW_MCS_IDX)
+		entry->rx_mcs_bad_cnt ++ ;
+	else
+		entry->rx_mcs_bad_cnt = 0;
+	
+	entry->statistics[update_stat_idx].data_tx_Rate = cli_status_rsp->data_tx_Rate;
+	entry->statistics[update_stat_idx].data_rx_Rate = cli_status_rsp->data_rx_Rate;
+	entry->statistics[update_stat_idx].data_tx_TP = cli_status_rsp->data_tx_Byte >> 17; // Mbps
+	entry->statistics[update_stat_idx].data_rx_TP = cli_status_rsp->data_rx_Byte >> 17; // Mbps
+	entry->statistics[update_stat_idx].data_tx_Phymode = cli_status_rsp->data_tx_Phymode;
+	entry->statistics[update_stat_idx].data_rx_Phymode = cli_status_rsp->data_rx_Phymode;
+	entry->statistics[update_stat_idx].data_tx_bw = cli_status_rsp->data_tx_bw;
+	entry->statistics[update_stat_idx].data_rx_bw = cli_status_rsp->data_rx_bw;
+	entry->statistics[update_stat_idx].data_tx_sgi = cli_status_rsp->data_tx_sgi;
+	entry->statistics[update_stat_idx].data_rx_sgi = cli_status_rsp->data_rx_sgi;
+	entry->statistics[update_stat_idx].data_tx_stbc = cli_status_rsp->data_tx_stbc;
+	entry->statistics[update_stat_idx].data_rx_stbc = cli_status_rsp->data_rx_stbc;
+	entry->statistics[update_stat_idx].data_tx_ant = cli_status_rsp->data_tx_ant;
+	entry->statistics[update_stat_idx].data_rx_ant = cli_status_rsp->data_rx_ant;
+	if ((entry->statistics[update_stat_idx].data_tx_packets != cli_status_rsp->data_tx_packets) ||
+		(entry->statistics[update_stat_idx].data_rx_packets != cli_status_rsp->data_rx_packets))
+	{
+		entry->statistics[update_stat_idx].data_tx_packets = cli_status_rsp->data_tx_packets;
+		get_current_system_tick(&entry->activity_tp);
+	}
+	entry->statistics[update_stat_idx].data_tx_packets = cli_status_rsp->data_tx_packets;
+	entry->statistics[update_stat_idx].data_rx_packets = cli_status_rsp->data_rx_packets;
+	
+	tx_util = entry->statistics[update_stat_idx].data_tx_TP*100/entry->statistics[update_stat_idx].data_tx_Rate;
+	rx_util = entry->statistics[update_stat_idx].data_rx_TP*100/entry->statistics[update_stat_idx].data_rx_Rate;
+
+	data_tx_util->avg += tx_util;
+	data_tx_util->avg -= (data_tx_util->data[data_tx_util->idx]);
+	data_tx_util->data[data_tx_util->idx] = tx_util;
+	INC(data_tx_util->idx,BND_STRG_DATA_SAMPLE);
+	data_rx_util->avg += rx_util;
+	data_rx_util->avg -= (data_rx_util->data[data_rx_util->idx]);
+	data_rx_util->data[data_rx_util->idx] = rx_util;
+	INC(data_rx_util->idx,BND_STRG_DATA_SAMPLE);
+
+	data_tx_byte->avg += cli_status_rsp->data_tx_Byte;
+	data_tx_byte->avg -= (data_tx_byte->data[data_tx_byte->idx]);
+	data_tx_byte->data[data_tx_byte->idx] = cli_status_rsp->data_tx_Byte;
+	INC(data_tx_byte->idx,BND_STRG_DATA_SAMPLE);
+	data_rx_byte->avg += cli_status_rsp->data_rx_Byte;
+	data_rx_byte->avg -= (data_rx_byte->data[data_rx_byte->idx]);
+	data_rx_byte->data[data_rx_byte->idx] = cli_status_rsp->data_rx_Byte;
+	INC(data_rx_byte->idx,BND_STRG_DATA_SAMPLE);
+	return;
+}
+
+void bndstrg_update_probe_info(	struct bndstrg *bndstrg,
+										struct bndstrg_iface *inf,
+										struct bndstrg_cli_entry *entry,
+										struct bnd_msg_cli_event *cli_event)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_probe *cli_probe = &cli_event->data.cli_probe;
+	signed char	*rssi = cli_probe->Rssi;
+	u8	Nss = cli_probe->Nss;			
+	s8 	MaxRssi = -128, i;
+
+#ifdef BND_STRG_QA
+	BND_STRG_PRINTQAMSG(table, entry," [%s] %02x:%02x:%02x:%02x:%02x:%02x, Band:%s, Channel:%d Probe, rssi = %hhd/%hhd/%hhd/%hhd HTCap %s, VHTCap %s, Nss %d\n",
+			inf->ucIfName,PRINT_MAC(cli_event->Addr),bndstrg_get_entry_band(cli_event->Band),cli_event->Channel, rssi[0], rssi[1], rssi[2], rssi[3], 
+			(cli_probe->bAllowStaConnectInHt == 1 ? "TRUE":"FALSE"), (cli_probe->bVHTCapable == 1 ? "TRUE":"FALSE"), Nss);
+#endif /* BND_STRG_QA */
+
+	/* -128 - stream not support by chip - skip it */
+	for ( i = 0; i < 4; i++)
+	{
+		if (rssi[i] && (rssi[i] < 0) && (rssi[i] != -128))
+			MaxRssi = max(MaxRssi, rssi[i]);
+	}
+
+	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, inf->Band, MaxRssi, APMT2_PEER_PROBE_REQ);
+
+	if (entry->AssocProbeInfoMissMatch == FALSE){
+		if (!(cli_probe->bAllowStaConnectInHt == TRUE)){
+			if(IS_2G_BAND(inf->Band))
+				entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_2G;
+			else if(IS_5G_L_BAND(inf->Band))
+				entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_L5G;
+			else if(IS_5G_H_BAND(inf->Band))
+				entry->Control_Flags |= fBND_STRG_CLIENT_NOT_SUPPORT_HT_H5G;
+		}
+		if (cli_probe->bVHTCapable == TRUE){
+			entry->Control_Flags |= fBND_STRG_CLIENT_SUPPORT_VHT;
+		}
+		entry->Nss = Nss;
+	}
+	return;
+}
+
+void bndstrg_update_auth_info(	struct bndstrg *bndstrg,
+										struct bndstrg_iface *inf,
+										struct bndstrg_cli_entry *entry,
+										struct bnd_msg_cli_event *cli_event)
+{
+	struct bndstrg_cli_table *table = &bndstrg->table;
+	struct bnd_msg_cli_auth *cli_auth = &cli_event->data.cli_auth;
+	signed char	*rssi = cli_auth->Rssi;
+	s8	MaxRssi = -128, i;
+
+#ifdef BND_STRG_QA
+	BND_STRG_PRINTQAMSG(table, entry," [%s] %02x:%02x:%02x:%02x:%02x:%02x, Band:%s, Channel:%d Auth, rssi = %hhd/%hhd/%hhd/%hhd\n",
+			inf->ucIfName,PRINT_MAC(cli_event->Addr), bndstrg_get_entry_band(cli_event->Band), cli_event->Channel, rssi[0], rssi[1], rssi[2], rssi[3]);
+#endif /* BND_STRG_QA */
+
+	/* -128 - stream not support by chip - skip it */
+	for ( i = 0; i < 4; i++)
+	{
+		if (rssi[i] && (rssi[i] < 0) && (rssi[i] != -128))
+			MaxRssi = max(MaxRssi, rssi[i]);
+	}
+
+	bndstrg_update_entry_statistics_control_flags(bndstrg, entry, inf, inf->Band, MaxRssi, APMT2_PEER_AUTH_REQ);
+	return;
+}
+
+void bndstrg_update_btm_status(struct bndstrg *bndstrg, struct bndstrg_cli_entry *entry)
+{
+	struct bndstrg_iface *inf = NULL;
+	if(entry->btm_info.BTMState != btm_rsp_rx || entry->btm_info.BTMRsp != 0)
+	{
+#ifdef VENDOR_FEATURE7_SUPPORT
+		bndstrg_update_white_black_list(bndstrg, NULL, entry->Addr, bndstrg_blacklist, 1);
+		entry->BlackListTimer = bndstrg->table.BlackListTime;
+		inf = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, entry->connected_band, TRUE);
+		if(inf) bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+#else
+		/*BTM rejected clear target band info from entry*/
+		switch (entry->band){
+			case BAND_2G:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_2G);
+			break;
+			case BAND_5G_L:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_L5G);
+			break;
+			case BAND_5G_H:
+				entry->Control_Flags &= (~fBND_STRG_CLIENT_ALLOW_TO_CONNET_H5G);
+			break;
+		}
+		if(entry->steered){
+			entry->steered = 0;
+			entry->tx_mcs_bad_cnt = 0;
+			entry->rx_mcs_bad_cnt = 0;
+			entry->low_rssi_bad_cnt = 0;
+			entry->good_rssi_cnt = 0;
+			if(entry->Operation_steered == TRUE){
+				entry->Operation_steered = FALSE;
+				entry->Operation_steered_tick = 0;
+			}
+		}
+		inf = bndstrg_get_interface(&bndstrg->ctrl_iface, NULL, entry->band, TRUE);
+		if(inf) bndstrg_accessible_cli(bndstrg, inf, entry, CLI_DEL);
+		entry->band = entry->connected_band;
+		entry->state = ENTRY_ASSOC_RCD;
+#endif
+	} 
+	entry->btm_info.BTMState = btm_init;
+	return;
 }
 

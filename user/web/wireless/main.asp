@@ -3152,7 +3152,7 @@ table.form tr.ssid-row {
 		<tr id="row_BndStrgRssiDiff" style="display:none;">
 			<td class="head wordwrap" data-tr="basic bandsteering rssidiff">Allow fallback to 2.4GHz if bands RSSI diff bigger</td>
 			<td class="val"><input type="text" name="BndStrgRssiDiff" class="normal" maxlength="2">
-				<span class="range" data-tr="basic bandsteering rssidiff default">0 - 40 db, default 15</span></td>
+				<span class="range" data-tr="basic bandsteering rssidiff default">0 - 40 db, default 30</span></td>
 		</tr>
 		<tr id="row_BndStrgRssiLow" style="display:none;">
 			<td class="head wordwrap" data-tr="basic bandsteering rssilow">Force fallback to 2.4GHz if rssi smaller</td>

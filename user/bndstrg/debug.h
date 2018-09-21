@@ -79,4 +79,5 @@ extern int DebugLevel;
 #else  /* BND_STRG_QA */
 #define BND_STRG_PRINTQAMSG(_Level, _Fmt)
 #endif /* BND_STRG_QA */
+void hex_dump(char *str, unsigned char *pSrcBufVA, unsigned int SrcBufLen);
 #endif /* __DEBUG_H__ */

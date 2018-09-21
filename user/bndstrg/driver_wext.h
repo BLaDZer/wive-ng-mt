@@ -80,7 +80,21 @@
 #define OID_802_11_QOSMAP_CONFIGURE             0x0945
 #define OID_802_11_GET_STA_HSINFO             	0x0946
 #define OID_802_11_BSS_LOAD			           	0x0947
+#define OID_802_11_WNM_COMMAND					0x094A
+#define OID_802_11_WNM_EVENT					0x094B
 #endif
+#define MAC_ADDR_LEN				6
+
+enum WNM_COMMAND {
+	OID_802_11_WNM_CMD_ENABLE 	= 0x01,
+	OID_802_11_WNM_CMD_CAP 		= 0x02,
+	OID_802_11_WNM_CMD_SEND_BTM_REQ = 0x03,
+};
+
+enum WNM_EVENT {
+	OID_802_11_WNM_EVT_BTM_QUERY    = 0x01,
+	OID_802_11_WNM_EVT_BTM_RSP    	= 0x02
+};
 
 struct driver_wext_data {
 	int opmode;
@@ -120,25 +134,99 @@ struct hs_param_setting {
 	u32 value;
 };
 
-struct btm_req_data {
+typedef union GNU_PACKED _RRM_BSSID_INFO
+{
+	struct GNU_PACKED
+	{
+#ifdef RT_BIG_ENDIAN
+		u32 Reserved:18;
+		u32 FTM:1;		
+		u32 VHT:1;
+		u32 HT:1;
+		u32 MobilityDomain:1;
+		u32 ImmediateBA:1;
+		u32 DelayBlockAck:1;
+		u32 RRM:1;
+		u32 APSD:1;
+		u32 Qos:1;
+		u32 SepctrumMng:1;
+		u32 KeyScope:1;
+		u32 Security:1;
+		u32 APReachAble:2;
+#else
+		u32 APReachAble:2;
+		u32 Security:1;
+		u32 KeyScope:1;
+		u32 SepctrumMng:1;
+		u32 Qos:1;
+		u32 APSD:1;
+		u32 RRM:1;
+		u32 DelayBlockAck:1;
+		u32 ImmediateBA:1;
+		u32 MobilityDomain:1;
+		u32 HT:1;
+		u32 VHT:1;
+		u32 FTM:1;
+		u32 Reserved:18;
+#endif
+	} field;
+	u32 word;
+} RRM_BSSID_INFO, *PRRM_BSSID_INFO;
+
+typedef struct GNU_PACKED _RRM_NEIGHBOR_REP_INFO
+{
+	u8 Bssid[MAC_ADDR_LEN];
+	u32 BssidInfo;
+	u8 RegulatoryClass;
+	u8 ChNum;
+	u8 PhyType;
+	u8 Oct[0];
+} RRM_NEIGHBOR_REP_INFO, *RRM_PNEIGHBOR_REP_INFO;
+
+struct GNU_PACKED btm_req_data {
 	u32 ifindex;
 	char peer_mac_addr[6];
 	u32 btm_req_len;	
 	char btm_req[0];
 };
 
-struct btm_rsp_data {
+struct GNU_PACKED btm_rsp_data {
 	u32 ifindex;
 	char peer_mac_addr[6];
 	u32 btm_rsp_len;
 	char btm_rsp[0];
 };
 
-struct btm_query_data {
+struct GNU_PACKED btm_query_data {
 	u32 ifindex;
-	char peer_mac_addr[6];
+	unsigned char peer_mac_addr[6];
 	u32 btm_query_len;
 	char btm_query[0];
+};
+
+struct GNU_PACKED btm_req_frame{
+	u8 request_mode;
+	u16 disassociation_timer;
+	u8 validity_interval;
+	u8 variable[0];
+};
+
+struct GNU_PACKED btm_rsp_frame{
+	u8 status_code;
+	u8 bss_termination_delay;
+	u8 variable[0];
+};
+
+struct GNU_PACKED wnm_command {
+	u8 command_id;
+	u8 command_len;
+	u8 command_body[0];
+};
+
+struct GNU_PACKED wnm_event {
+	u8 event_id;
+	u8 event_len;
+	u8 event_body[0];
 };
 
 struct proxy_arp_entry {

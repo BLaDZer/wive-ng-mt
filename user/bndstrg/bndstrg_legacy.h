@@ -37,12 +37,11 @@
 
 #define BND_STRG_MAX_TABLE_SIZE		512
 #define BND_HASH_TABLE_SIZE		BND_STRG_MAX_TABLE_SIZE*2
-#define BND_STRG_TIMER_PERIOD		1000
 #define BND_STRG_AGE_TIME		600000	/* orig 150000 */
-#define BND_STRG_HOLD_TIME		3000	/* orig 90000 */
-#define BND_STRG_CHECK_TIME_5G		6000	/* orig 30000 */
-#define BND_STRG_RSSI_DIFF		15	/* allow to 2.4 GHz connect */
-#define BND_STRG_RSSI_LOW		-88
+#define BND_STRG_HOLD_TIME		5000	/* orig 90000 */
+#define BND_STRG_CHECK_TIME_5G		7000	/* orig 30000 */
+#define BND_STRG_RSSI_DIFF		30	/* allow to 2.4 GHz connect */
+#define BND_STRG_RSSI_LOW		-85
 
 #define MAC_ADDR_LEN			6
 #define BAND_5G				1
