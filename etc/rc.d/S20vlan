@@ -45,6 +45,14 @@ set_egress_vlan_prio_map_sip()
     fi
 }
 
+set_arp_filter_mode()
+{
+    sysctl -w net.ipv4.conf.$1.arp_announce=2
+    sysctl -w net.ipv4.conf.$1.arp_ignore=1
+    sysctl -w net.ipv4.conf.$1.arp_filter=1
+    sysctl -w net.ipv4.conf.$1.rp_filter=0
+}
+
 idx=6
 hw_tx_vlan_map()
 {
@@ -84,14 +92,17 @@ bridgewlvlan() {
 		set_default_vlan_prio_map "$2.${vid}"
 		$LOG "Add BRIDGE brvl${vid}wl${count} to system"
 		brctl addbr "brvl${vid}wl${count}"
+		set_arp_filter_mode "brvl${vid}wl${count}"
 		ip link set "brvl${vid}wl${count}" up
 		$LOG "Add VLAN interface $2.${vid} to bridge brvl${vid}wl${count}"
 		brctl addif "brvl${vid}wl${count}" "$2.${vid}"
+		set_arp_filter_mode "$2.${vid}"
 		ip link set "$2.${vid}" up
 	    fi
 	    $LOG "Move interface $3${count} from br0 and to new bridge brvl${vid}wl${count}"
 	    delif_from_br br0 "$3${count}"
 	    brctl addif "brvl${vid}wl${count}" "$3${count}"
+	    set_arp_filter_mode "$3${count}"
 	    ip link set "$3${count}" up
 	fi
 	count="$(($count+1))"
@@ -119,11 +130,13 @@ start() {
 		    ip -4 addr flush dev "$vlantvif"
 		    ip -4 addr add "$rndip"/32 dev "$vlantvif"
 		fi
+		set_arp_filter_mode "$vlantvif"
 		ip link set "$vlantvif" up
 		$LOG "Add vlan to esw for TV/STB"
 		vconfig add $rootif 3
 		hw_tx_vlan_map "3"
 		set_default_vlan_prio_map "${rootif}.3"
+		set_arp_filter_mode "${rootif}.3"
 		brctl addif "$vlantvif" "${rootif}.3"
 		ip link set "${rootif}.3" up
 	    fi
@@ -136,11 +149,13 @@ start() {
 		    ip -4 addr flush dev "$vlansipif"
 		    ip -4 addr add "$rndip"/32 dev "$vlansipif"
 		fi
+		set_arp_filter_mode "$vlansipif"
 		ip link set "$vlansipif" up
 		$LOG "Add vlan to esw for SIP/STB"
 		vconfig add $rootif 4
 		hw_tx_vlan_map "4"
 		set_default_vlan_prio_map "${rootif}.4"
+		set_arp_filter_mode "${rootif}.4"
 		brctl addif "$vlansipif" "${rootif}.4"
 		ip link set "${rootif}.4" up
 	    fi
@@ -158,6 +173,7 @@ start() {
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		set_egress_vlan_prio_map_tv "${phys_wan_if}.${vid}" "$vidcount"
+		set_arp_filter_mode "${phys_wan_if}.${vid}"
 		brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done
@@ -171,6 +187,7 @@ start() {
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		set_egress_vlan_prio_map_sip "${phys_wan_if}.${vid}" "$vidcount"
+		set_arp_filter_mode "${phys_wan_if}.${vid}"
 		brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done
@@ -192,6 +209,7 @@ start() {
 		vconfig add "$phys_lan_if" "$vid"
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_lan_if}.${vid}"
+		set_arp_filter_mode "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
 	    done

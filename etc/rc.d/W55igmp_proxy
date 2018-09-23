@@ -13,9 +13,6 @@ LOG="logger -t igmpproxy"
 start() {
     # if igmpproxy enable and mode not full bridge
     if [ "$igmpEnabled" = "1" ] && [ "$OperationMode" != "0" ] && [ "$ApCliBridgeOnly" != "1" ]; then
-      # disable arp filter for lan (temp fix iptv hybryd snooping work)
-      sysctl -wq net.ipv4.conf.$lan_if.arp_filter=0
-
       # wait wireless connect if need
       wait_connect
       ( # send to background
@@ -28,6 +25,11 @@ start() {
 	#generate config file
 	get_param
 	gen_config
+
+	# disable arp filter for lan (temp fix iptv hybryd snooping work)
+	if [ "$igmpSnoopMode" != "n" ]
+    	    sysctl -wq net.ipv4.conf.$lan_if.arp_filter=0
+	fi
 
 	# if need kill igmpproxy
 	igmp_is_start=`pidof igmpproxy`
@@ -63,7 +65,7 @@ phyint $vpn_if disabled
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpFastLeave`
+    eval `nvram_buf_get 2860 igmpSnoopMode M2UEnabled igmpFastLeave VlanLan VlanWifiLan VlanWifiLanINIC VlanWifiWan VlanWifiWanINIC`
     ####################################
     # remap wan if to vlan bridge
     ####################################
@@ -95,8 +97,10 @@ get_param() {
     ####################################
     # correct mode for igmpsnooping
     ####################################
-    if [ "$igmpSnoopMode" = "n" ] || [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ]; then
-        # if force HW by user or enabled portmapped switch config - hibryd mode snooping disable
+    if [ "$igmpSnoopMode" = "n" ] || [ "$igmpSnoopMode" = "h" ] || [ "$tv_port" = "1" ] || [ "$sip_port" = "1" ] || \
+	[ "$VlanLan" != "" ] || [ "$VlanWifiLan" != "" ] || [ "$VlanWifiLanINIC" != "" ] || [ "$VlanWifiWan" != "" ] || [ "$VlanWifiWanINIC" != "" ]; then
+	# if force HW by user or enabled portmapped switch config - hibryd mode snooping disable
+	# some modes incompatable with snooping, need disable this, need use M2U for this modes
 	igmpSnoopMode="n"
     else
         # default snooping auto mode enable
