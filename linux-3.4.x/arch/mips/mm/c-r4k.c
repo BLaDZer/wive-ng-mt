@@ -707,7 +707,8 @@ static void r4k_flush_icache_range(unsigned long start, unsigned long end)
 static void __fastpathsys r4k_dma_cache_wback_inv(unsigned long addr, unsigned long size)
 {
 	/* Catch bad driver code */
-	BUG_ON(size == 0);
+	if (WARN_ON(size == 0))
+		return;
 
 	preempt_disable();
 	if (cpu_has_inclusive_pcaches) {
@@ -743,7 +744,8 @@ static void __fastpathsys r4k_dma_cache_wback_inv(unsigned long addr, unsigned l
 static void __fastpathsys r4k_dma_cache_inv(unsigned long addr, unsigned long size)
 {
 	/* Catch bad driver code */
-	BUG_ON(size == 0);
+	if (WARN_ON(size == 0))
+		return;
 
 	preempt_disable();
 	if (cpu_has_inclusive_pcaches) {

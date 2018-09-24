@@ -4248,37 +4248,38 @@
 69) kernel: net: tcp: fix missing range_truesize enlargement in the backport.<br>
 70) kernel: mips: make (UN)CAC_ADDR() PHYS_OFFSET-agnostic.<br>
 71) kernel: mips: fix ISA virt/bus conversion for non-zero PHYS_OFFSET.<br>
-72) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
-73) kernel: block: fix an error code in add_partition().<br>
-74) kernel: block: store partition_meta_info.uuid as a string.<br>
-75) kernel: block/partitions: enable EFI/GPT support by default.<br>
-76) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
-77) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
-78) kernel: block/partitions/efi: use lba-aware partition records.<br>
-79) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
-80) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
-81) kernel: block/partitions/efi: detect hybrid MBRs.<br>
-82) kernel: block/partitions/efi: account for pmbr size in lba.<br>
-83) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
-84) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
-85) kernel: block/partitions/efi: consistently use pr_foo().<br>
-86) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
-87) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
-88) kernel: block/partitions/efi: fix bound check.<br>
-89) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
-90) kernel: fs: ext4: reset error code in ext4_find_entry in fallback.<br>
-91) kernel: fs: fuse: don't access pipe->buffers without pipe_lock().<br>
-92) kernel: kthread: fix use-after-free if kthread fork fails.<br>
-93) kernel: kthread: fix boot hang (regression) on MIPS/OpenRISC.<br>
-94) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
-95) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
-96) kernel: ralink_wifi: rrm: cleanup supported modes anonse (compat last update SGS A5).<br>
-97) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
-98) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
-99) kernel: ralink_wifi: force update DS more accuracly.<br>
-100) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
-101) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
-102) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
-103) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+72) kernel: mips: WARN_ON invalid DMA cache maintenance, not BUG_ON.<br>
+73) kernel: block: partition: add partition specific uevent callbacks for partition info.<br>
+74) kernel: block: fix an error code in add_partition().<br>
+75) kernel: block: store partition_meta_info.uuid as a string.<br>
+76) kernel: block/partitions: enable EFI/GPT support by default.<br>
+77) kernel: block/partitions/efi: ensure that the GPT header is at least the size of the structure.<br>
+78) kernel: block/partitions/efi: replace useless kzalloc's by kmalloc's.<br>
+79) kernel: block/partitions/efi: use lba-aware partition records.<br>
+80) kernel: block/partitions/efi: check pmbr record's starting lba.<br>
+81) kernel: block/partitions/efi: do not require gpt partition to begin at sector 1.<br>
+82) kernel: block/partitions/efi: detect hybrid MBRs.<br>
+83) kernel: block/partitions/efi: account for pmbr size in lba.<br>
+84) kernel: block/partitions/efi: compare first and last usable LBAs.<br>
+85) kernel: block/partitions/efi: delete annoying emacs style comments.<br>
+86) kernel: block/partitions/efi: consistently use pr_foo().<br>
+87) kernel: block/partitions/efi: loosen check fot pmbr size in lba.<br>
+88) kernel: block/partitions/efi: treat size mismatch as a warning, not an error.<br>
+89) kernel: block/partitions/efi: fix bound check.<br>
+90) kernel: block/partitions/efi: fix integer overflow in GPT size calculation.<br>
+91) kernel: fs: ext4: reset error code in ext4_find_entry in fallback.<br>
+92) kernel: fs: fuse: don't access pipe->buffers without pipe_lock().<br>
+93) kernel: kthread: fix use-after-free if kthread fork fails.<br>
+94) kernel: kthread: fix boot hang (regression) on MIPS/OpenRISC.<br>
+95) kernel: ralink_wifi: rrm: handle 160 && 80+80 VHT_BW in RRM scan.<br>
+96) kernel: ralink_wifi: rrm: avoid periodic scan in apcli mode (connect drop fix).<br>
+97) kernel: ralink_wifi: rrm: cleanup supported modes anonse (compat last update SGS A5).<br>
+98) kernel: ralink_wifi: handoff: more accuracly handle sleep with no data stations.<br>
+99) kernel: ralink_wifi: increase minimal sta idle timeout to 120 seconds.<br>
+100) kernel: ralink_wifi: force update DS more accuracly.<br>
+101) kernel: ralink_wifi: increase channel auto scan skip list and add 132,136 channels to skip.<br>
+102) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
+103) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
+104) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>
