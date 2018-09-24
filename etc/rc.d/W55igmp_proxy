@@ -27,7 +27,7 @@ start() {
 	gen_config
 
 	# disable arp filter for lan (temp fix iptv hybryd snooping work)
-	if [ "$igmpSnoopMode" != "n" ]
+	if [ "$igmpSnoopMode" != "n" ]; then
     	    sysctl -wq net.ipv4.conf.$lan_if.arp_filter=0
 	fi
 
