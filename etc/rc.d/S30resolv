@@ -31,9 +31,15 @@ if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
 	echo "nameserver 8.8.8.8" >> $fname
 	echo "nameserver 8.8.4.4" >> $fname
     fi
+
+    if [ "$vpnEnabled" = "on" ] && [ "$vpnPeerDNS" = "on" ] && [ -e /etc/ppp/resolv.conf ]; then
+	    $LOG "Add ISP DNS from vpn servers for local resolv"
+	    cat /etc/ppp/resolv.conf | grep "nameserver" >> $fname
+    fi
+
     if [ "$IPv6OpMode" != "0" ]; then
 	if [ -e /etc/resolvipv6.conf ]; then
-	    $LOG "Add ISP ipv6 servers for local resolv"
+	    $LOG "Add ISP DNS from ipv6 servers for local resolv"
 	    cat /etc/resolvipv6.conf | grep "nameserver" >> $fname
 	else
 	    if [ "$IPv6DNSPrimary" != "" -o "$IPv6DNSSecondary" != "" ]; then
@@ -57,7 +63,7 @@ fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName IPv6DNSPrimary IPv6DNSSecondary`
+    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName IPv6DNSPrimary IPv6DNSSecondary vpnPeerDNS`
     fname="/etc/resolv.conf"
 
     #if no file create
