@@ -116,8 +116,6 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
 
 	top_of_kernel_stack = sp;
 
-	p->set_child_tid = p->clear_child_tid = NULL;
-
 	/* Copy registers */
 	/* redzone */
 	sp -= STACK_FRAME_OVERHEAD;
