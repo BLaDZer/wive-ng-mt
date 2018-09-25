@@ -2,6 +2,9 @@
 
 LOG="logger -t resolv"
 
+# include global config
+. /etc/scripts/global.sh
+
 start() {
 get_param
 if [ ! -e /tmp/bootgood ] || [ "$wan_static_dns" = "on" ]; then
@@ -63,7 +66,7 @@ fi
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 wan_static_dns wan_primary_dns wan_secondary_dns dnsPEnabled IPv6OpMode HostName IPv6DNSPrimary IPv6DNSSecondary vpnPeerDNS`
+    eval `nvram_buf_get 2860 wan_primary_dns wan_secondary_dns IPv6DNSPrimary IPv6DNSSecondary vpnPeerDNS`
     fname="/etc/resolv.conf"
 
     #if no file create
