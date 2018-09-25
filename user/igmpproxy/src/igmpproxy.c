@@ -66,7 +66,7 @@ void    igmpProxyRun();
 
 #ifdef RALINK_ESW_SUPPORT
 /* wan port select */
-uint32_t WanPort = 0x1;
+uint32_t WanPort = 0x1;		/* 0000001 */
 int auto_lan_snooping = 1;
 #ifdef WIFI_IGMPSNOOP_SUPPORT
 int auto_wifi_snooping = 0;
@@ -102,7 +102,7 @@ int main( int ArgCn, char *ArgVc[] ) {
 	} else
     	    fclose(fp);
 
-	// set default wan port position
+	// set default wan port position (0000001)
 	WanPort = 0x1;
 
 	// Parse the commandline options and setup basic settings..
@@ -118,7 +118,7 @@ int main( int ArgCn, char *ArgVc[] ) {
             break;
 #ifdef RALINK_ESW_SUPPORT
         case 'w':
-	    WanPort = 0x10;
+	    WanPort = 0x10; /* 0010000 */
             break;
         case 'n':
 	    auto_lan_snooping = 0;
