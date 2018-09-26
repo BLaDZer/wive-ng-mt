@@ -460,5 +460,5 @@ next_entry:
 		i++;
 		mac_iter = internal_mac_table[i].mac1;
 	}
-	return -1;
+	return OTHER_INTERFACE; /* may be wifi ?*/
 }

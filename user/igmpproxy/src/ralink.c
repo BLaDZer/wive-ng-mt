@@ -516,9 +516,17 @@ static void update_group_port_map(struct group *entry)
 		if(pos->port_num == -1){
 			// can't find which port it's in, so opens all ports for it.
 			my_log(LOG_DEBUG, 0, "****************************************");
-			my_log(LOG_DEBUG, 0, "*** rtGSW: can't find %s's port number.", inetFmt(htonl(pos->ip_addr), s1));
+			my_log(LOG_DEBUG, 0, "*** rtGSW: can't find %s's switch port number.", inetFmt(htonl(pos->ip_addr), s1));
 			my_log(LOG_DEBUG, 0, "****************************************");
 			new_portmap =  (0x5f & ~(WanPort)); // All Lan ports
+			break;
+		 } else if(pos->port_num == OTHER_INTERFACE){
+			// can't find which port it's in, so opens all ports for it.
+			my_log(LOG_DEBUG, 0, "***********************************************");
+			my_log(LOG_DEBUG, 0, "*** rtGSW: can't find %s's switch port number.*", inetFmt(htonl(pos->ip_addr), s1));
+			my_log(LOG_DEBUG, 0, "*** Client really exist, may by wifi?         *");
+			my_log(LOG_DEBUG, 0, "***********************************************");
+			new_portmap = entry->port_map; /* do not touch lan portmap, client really exist on wifi or external interface, do not touch portmap */
 			break;
 		}else{
 			new_portmap = new_portmap | (0x1 << pos->port_num);

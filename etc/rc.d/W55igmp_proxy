@@ -82,7 +82,7 @@ get_param() {
     ####################################
     # wan port number set
     ####################################
-    if [ "$wan_port" = "0" ]; then
+    if [ "$wan_port" = "4" ]; then
 	# switch managment mode enabled
 	igmpPort="w"
     fi
