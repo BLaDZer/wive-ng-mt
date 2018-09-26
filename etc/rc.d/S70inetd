@@ -20,7 +20,7 @@ start() {
 	    if [ "$FtpIdleTime" != "" ]; then
 		timeout="-t $FtpIdleTime"
 	    fi
-	    echo "$FtpPort stream tcp nowait $Login /bin/ftpd ftpd -wS $timeout $FtpRootDir" >> /etc/inetd.conf
+	    echo "$FtpPort stream tcp nowait $Login /bin/ftpd ftpd -wS $timeout /media" >> /etc/inetd.conf
 	    need_start=1
 	fi
 	if [ -e /bin/telnetd ] && [ "$RemoteTelnet" != "" ] && [ "$RemoteTelnet" != "0" ]; then
@@ -35,7 +35,7 @@ start() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 Login RemoteSSH RemoteSSHPort RemoteFTP FtpPort FtpRootDir FtpIdleTime RemoteTelnet`
+    eval `nvram_buf_get 2860 Login RemoteSSH RemoteSSHPort RemoteFTP FtpPort FtpIdleTime RemoteTelnet`
 }
 
 stop() {
