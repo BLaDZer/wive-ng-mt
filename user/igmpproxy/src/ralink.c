@@ -291,19 +291,27 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 {
 	struct in_addr 		tmp;
 	struct group_member *new_member;
+	unsigned char port_num;
+
+	/* get current esw port */
+	tmp.s_addr = htonl(u_ip_addr);
+	port_num = portLookUpByIP(inet_ntoa(tmp));
+
+	/* skip not raeth members add */
+	if (port_num == OTHER_INTERFACE) {
+		my_log(LOG_DEBUG, 0, "*** rtGSW: find the same member [%s] in [%s] at external dev, skip it.", inetFmt(htonl(u_ip_addr), s1), inetFmt(htonl(m_ip_addr), s2));
+		return NULL;
+	}
 
 	if(entry->members != NULL){
 		struct group_member *member = lookup_member(entry, m_ip_addr, u_ip_addr);
 		if(member){
-			 my_log(LOG_DEBUG, 0, "*** rtGSW: find the same member [%s] in [%s]. ", inetFmt(htonl(u_ip_addr), s1), inetFmt(htonl(m_ip_addr), s2));
+			my_log(LOG_DEBUG, 0, "*** rtGSW: find the same member [%s] in [%s].", inetFmt(htonl(u_ip_addr), s1), inetFmt(htonl(m_ip_addr), s2));
 
-			/* check if port changed */
-			unsigned char port_num;
-
-			tmp.s_addr = htonl(u_ip_addr);
-			port_num = portLookUpByIP(inet_ntoa(tmp));
+			/* select port */
 			if(port_num != member->port_num)
 				member->port_num = port_num;
+
 			/* update its report flag */
 			member->has_report = 1;
 			member->report_count = INTERVAL_ESWAGEOUT;
@@ -317,10 +325,11 @@ static struct group_member *insert_member(struct group *entry, uint32 m_ip_addr,
 			my_log(LOG_DEBUG, 0, "*** rtGSW: Out of memory.");
 			return NULL;
 	}
-	tmp.s_addr			= htonl(u_ip_addr);
+
+
 	new_member->ip_addr		= u_ip_addr;
 	new_member->a0			= IP_GET_LOST_MAPPING( m_ip_addr);
-	new_member->port_num		= portLookUpByIP(inet_ntoa(tmp));
+	new_member->port_num		= port_num;
 	new_member->has_report		= 1;
 	new_member->report_count	= INTERVAL_ESWAGEOUT;
 	new_member->next		= entry->members;
