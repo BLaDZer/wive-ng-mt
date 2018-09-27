@@ -86,7 +86,6 @@ static void storageDiskPart(webs_t* wp, char_t *mpath, char_t *query)
 parameter_fetch_t ftp_server_args[] =
 {
 	{ T("ftp_port"), "FtpPort", 0, T("") },
-	{ T("ftp_rootdir"), "FtpRootDir", 0, T("") },
 	{ T("ftp_idle_timeout"), "FtpIdleTime", 0, T("") },
 	{ NULL, NULL, 0, NULL }
 };

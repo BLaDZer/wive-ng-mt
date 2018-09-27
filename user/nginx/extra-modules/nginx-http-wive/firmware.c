@@ -125,7 +125,7 @@ int check_binary_content_type(const char *content_type)
 }
 
 
-static int mtd_write_firmware(char *filename, int offset, int len)
+int mtd_write_firmware(char *filename, int offset, int len)
 {
     char cmd[512];
     int status;
@@ -481,7 +481,7 @@ int firmware_upgrade(webs_t* wp)
         ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade started\n");
         websDone(wp, 200);
 
-        mtd_write_firmware(filename, 0, (int)file_size);
+	wp->on_response_ok = DO_FIRMWARE_UPGRADE;
 
 	return 0;
 }

@@ -83,7 +83,8 @@ enum ResponseSentAction {
     DO_REBOOT = 1,
     DO_RECONFIGURE = 2,
     DO_RECONFIGURE_AND_SAMBA_RESTART = 3,
-    DO_RESTART_MISC = 4
+    DO_RESTART_MISC = 4,
+    DO_FIRMWARE_UPGRADE = 5
 };
 
 typedef struct keyval_t {

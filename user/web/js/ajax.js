@@ -688,3 +688,12 @@ function lang_gettext(key) {
 		console.log('Warning! Translation dictionary not loaded!');
 	}
 }
+
+function init_translation_model()
+{
+	var trlist = document.getElementsByAttribute("data-tr");
+	for (var i=0; i<trlist.length; i++) {
+		var elem = trlist[i];
+		_TR(elem, elem.getAttribute("data-tr"));
+	}
+}

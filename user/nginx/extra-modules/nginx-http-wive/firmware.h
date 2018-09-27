@@ -41,5 +41,6 @@ void upload_html_header(webs_t* wp);
 void upload_html_success(webs_t* wp, int timeout);
 void upload_html_error(webs_t* wp, char* err);
 int firmware_upgrade(webs_t* wp);
+int mtd_write_firmware(char *filename, int offset, int len);
 
 #endif//__FIRMWARE_H__

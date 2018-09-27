@@ -76,7 +76,7 @@
 			}
 
 			function syslogdSelect() {
-				displayElement([ 'rmtSysLogIP', 'klogdRow', 'syslog_view' ], document.getElementById('SysLogd').value == '1');
+				displayElement([ 'rmtSysLogIP', 'klogdRow', 'syslog_view', 'logLevelRow' ], document.getElementById('SysLogd').value == '1');
 			}
 			
 			function refreshSysLog() {

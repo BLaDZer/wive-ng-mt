@@ -619,15 +619,6 @@
 				mbssid_select_update(form);
 			}
 
-			function initTranslation()
-			{
-				var trlist = document.getElementsByAttribute("data-tr");
-				for (var i=0; i<trlist.length; i++) {
-					var elem = trlist[i];
-					_TR(elem, elem.getAttribute("data-tr"));
-				}
-			}
-
 			function calculate_ac_channel(countrycode, channel_indexac)
 			{
 				var res = 0;
@@ -1422,7 +1413,7 @@
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
 
-				initTranslation();
+				init_translation_model();
 				showWarning();
 
 				// Minimize all menus
