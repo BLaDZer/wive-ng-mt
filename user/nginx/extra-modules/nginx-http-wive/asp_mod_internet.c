@@ -46,14 +46,8 @@ static void formVPNSetup(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	//kill helpers firt sigterm second sigkill
-	doSystem("killall -q W60vpnhelper");
-	doSystem("killall -q vpnhelper");
-	doSystem("killall -q -SIGKILL W60vpnhelper");
-	doSystem("killall -q -SIGKILL vpnhelper");
 	doSystem("service vpnhelper restart > /dev/console 2>&1");
 
-//	websHeader(wp);
 	websDone(wp, 200);
 }
 
