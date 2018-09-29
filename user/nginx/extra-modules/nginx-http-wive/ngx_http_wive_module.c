@@ -760,7 +760,7 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
         case DO_RESTART_MISC:
             doSystem("services_restart.sh misc &"); break;
         case DO_FIRMWARE_UPGRADE:
-            doSystem("%s", "unload_all.sh > /dev/null 2>&1"); /* always to dev null */
+            //doSystem("%s", "unload_all.sh > /dev/null 2>&1"); /* always to dev null */
             mtd_write_firmware(filename, 0, (int)file_size); break;
     }
 }
