@@ -2,11 +2,15 @@
 
 # Description: Wive-NG Megakill script..
 
+#############################
+# do not stop syslog/klog !
+#############################
+
 stop_serv="chillispot transmission samba xupnp radvd dynroute shaper crontab ddns udpxy miniupnpd \
-	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd syslog watchdog"
+	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd watchdog"
 
 kill_apps="chilli_stat chilli transmission-daemon smbd nmbd xupnpd udhcpd dhcp6s radvd zebra ripd crond igmpproxy \
-	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd syslogd klogd"
+	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd"
 
 unload_modules() {
     echo "Unload modules"
@@ -27,11 +31,19 @@ unload_apps() {
     do
 	service $serv stop > /dev/null 2>&1
     done
-    echo "Kill aplications." # second step terminate and kill application
-    for apps in $kill_apps
+
+    echo "Kill aplications." # second step terminate and kill application if not correct stopped
+    for app in $kill_apps
     do
-	(killall -q $apps && usleep 10000 && killall -q -SIGKILL $apps) > /dev/null 2>&1
+	killapp=`pidof $app`
+	if [ "$killapp" != "" ]; then
+	    (killall -q $app && usleep 50000 && killall -q -SIGKILL $app) > /dev/null 2>&1
+	fi
     done
+
+    # shure ready
+    usleep 500000
+
     # remove web pages from tmpfs and link to rootfs
     if [ -d /tmp/web ]; then
 	echo "Remove web pages from tmpfs."
