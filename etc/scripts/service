@@ -4,11 +4,6 @@
 INITDIR="/etc/init.d"
 RC_DIR="/etc/rc.d"
 
-##########################################################
-# drop prio to normal for prevent services prio jitter
-##########################################################
-renice 0 -p $$
-
 if [ $# -eq 0 ]; then
    echo "Usage:"
    echo "      service <type> <args>"
@@ -21,6 +16,11 @@ if [ "$1" = "list" ]; then
 fi
 
 if [ -x "$INITDIR/$1" ]; then
+    ##########################################################
+    # drop prio to normal for prevent services prio jitter
+    ##########################################################
+    renice 0 -p $$
+
     # include kernel config
     . /etc/scripts/config.sh
 
