@@ -5582,6 +5582,7 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 				if(pEntry && (pEntry->LockEntryTx == TRUE)) 
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("Receive WDS packet, disable TX lock state!\n"));
+					pEntry->NoDataIdleCount = 0;
 					pEntry->ContinueTxFailCnt = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
