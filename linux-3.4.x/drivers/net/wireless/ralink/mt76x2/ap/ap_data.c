@@ -5144,7 +5144,7 @@ VOID APHandleRxDataFrame(RTMP_ADAPTER *pAd, RX_BLK *pRxBlk)
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("Receive WDS packet, disable TX lock state!\n"));
 					pEntry->ContinueTxFailCnt = 0;
-					pEntry->ContinueTxFailCnt = 0;
+					pEntry->NoDataIdleCount = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
 
@@ -5778,7 +5778,7 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("Receive WDS packet, disable TX lock state!\n"));
 					pEntry->ContinueTxFailCnt = 0;
-					pEntry->ContinueTxFailCnt = 0;
+					pEntry->NoDataIdleCount = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
 
