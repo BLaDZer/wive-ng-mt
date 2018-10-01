@@ -5016,6 +5016,7 @@ VOID APHandleRxDataFrame(
 				{
 					DBGPRINT(RT_DEBUG_TRACE, ("Receive WDS packet, disable TX lock state!\n"));
 					pEntry->ContinueTxFailCnt = 0;
+					pEntry->ContinueTxFailCnt = 0;
 					pEntry->LockEntryTx = FALSE;
 				}
 			}
@@ -5450,6 +5451,7 @@ VOID APHandleRxDataFrame(
 
 		if (pEntry)
 		{
+			pEntry->NoDataIdleCount = 0;
 			pEntry->RxBytes+=pRxWI->RxWIMPDUByteCnt;
 			INC_COUNTER64(pEntry->RxPackets);
 		}
@@ -5934,6 +5936,7 @@ VOID APHandleRxDataFrame_Hdr_Trns(
 
 		if (pEntry)
 		{
+			pEntry->NoDataIdleCount = 0;
 			pEntry->RxBytes+=pRxWI->RxWIMPDUByteCnt;
 			INC_COUNTER64(pEntry->RxPackets);
 		}
