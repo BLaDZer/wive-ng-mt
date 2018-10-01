@@ -1,6 +1,6 @@
 #
 # Automatically generated make config: don't edit
-# Busybox version: 1.29.2
+# Busybox version: 1.29.3
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -536,7 +536,7 @@ CONFIG_PASSWD=y
 # Linux Ext2 FS Progs
 #
 CONFIG_CHATTR=y
-CONFIG_FSCK=y
+# CONFIG_FSCK is not set
 CONFIG_LSATTR=y
 CONFIG_TUNE2FS=y
 
