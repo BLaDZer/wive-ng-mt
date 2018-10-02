@@ -51,7 +51,7 @@ struct sta_info* Ap_get_sta(rtapd *apd, u8 *sa, u8 *apidx, u16 ethertype, int so
 
 		if (s->ApIdx == 0)
 		{
-			DBGPRINT(RT_DEBUG_TRACE,"Create a new STA(in %s%d)\n", apd->main_wlan_name);
+			DBGPRINT(RT_DEBUG_TRACE,"Create a new STA(in %s)\n", apd->main_wlan_name);
 		}
 		else
 		{

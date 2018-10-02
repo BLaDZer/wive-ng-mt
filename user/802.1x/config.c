@@ -127,9 +127,9 @@ Config_read_radius_addr(struct hostapd_radius_server **server,
 
 BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd_config *conf, int *errors, int *flag)
 {
-	char 	*buf;	
-	int 	len;	
-    int		i, idx, m_num; 
+	char 	*buf = NULL;	
+	int 	len = 0;
+	int		i, idx, m_num; 
 	int		radius_count = 0, radius_port_count = 0, radius_key_count = 0;    
 	int		num_eap_if = 0, num_preauth_if = 0; 
 	PDOT1X_CMM_CONF pDot1xCmmConf;
@@ -140,7 +140,7 @@ BOOLEAN Query_config_from_driver(int ioctl_sock, char *prefix_name, struct rtapd
 
 	if (conf == NULL)
 	{
-		DBGPRINT(RT_DEBUG_ERROR, "conf from driver get failed\n", len);
+		DBGPRINT(RT_DEBUG_ERROR, "conf from driver get failed\n");
 		return FALSE;
 	}
 
