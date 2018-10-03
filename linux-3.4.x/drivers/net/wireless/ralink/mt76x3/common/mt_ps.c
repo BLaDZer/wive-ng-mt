@@ -375,7 +375,6 @@ BOOLEAN MtPsIndicate(RTMP_ADAPTER *pAd, UCHAR *pAddr, UCHAR wcid, UCHAR Psm)
 	*/
 	old_psmode = pEntry->PsMode;
 	pEntry->NoDataIdleCount = 0;
-	pEntry->ContinueTxFailCnt = 0;
 	pEntry->PsMode = Psm;
 	pAd->MacTab.tr_entry[wcid].PsMode = Psm;
 
@@ -384,6 +383,10 @@ BOOLEAN MtPsIndicate(RTMP_ADAPTER *pAd, UCHAR *pAddr, UCHAR wcid, UCHAR Psm)
 		/*
 			STA wakes up.
 		*/		
+
+		/* drop tx fail count */
+		pEntry->ContinueTxFailCnt = 0;
+
 		if(tr_entry->ps_state == APPS_RETRIEVE_DONE)
 		{
 			tr_entry->ps_state = APPS_RETRIEVE_IDLE;
