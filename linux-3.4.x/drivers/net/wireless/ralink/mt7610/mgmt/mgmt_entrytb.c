@@ -12,6 +12,8 @@ VOID mgmt_tb_set_mcast_entry(RTMP_ADAPTER *pAd)
 	pEntry->Sst = SST_ASSOC;
 	pEntry->Aid = MCAST_WCID;	/* Softap supports 1 BSSID and use WCID=0 as multicast Wcid index*/
 	pEntry->PsMode = PWR_ACTIVE;
+	pEntry->NoDataIdleCount = 0;
+	pEntry->ContinueTxFailCnt = 0;
 	pEntry->CurrTxRate = pAd->CommonCfg.MlmeRate;
 
 	pEntry->Addr[0] = 0x01;

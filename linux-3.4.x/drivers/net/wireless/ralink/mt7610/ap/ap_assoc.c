@@ -1534,6 +1534,8 @@ VOID ap_cmm_peer_assoc_req_action(
 	if (StatusCode == MLME_SUCCESS)
 	{
 		pEntry->PsMode = PWR_ACTIVE;
+		pEntry->NoDataIdleCount = 0;
+		pEntry->ContinueTxFailCnt = 0;
 
 		/* This is a reassociation procedure */
 		pEntry->IsReassocSta = isReassoc;

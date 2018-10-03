@@ -1781,6 +1781,7 @@ BOOLEAN APPsIndicate(
 			RTMPDeQueuePacket().
 		*/
 		pEntry->NoDataIdleCount = 0;
+		pEntry->ContinueTxFailCnt = 0;
 		pEntry->PsMode = Psm;
 
 		if ((old_psmode == PWR_SAVE) && (Psm == PWR_ACTIVE))

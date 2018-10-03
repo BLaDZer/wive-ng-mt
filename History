@@ -4292,6 +4292,7 @@
 113) kernel: ralink_wifi: fix ignore ovelap bss remove.<br>
 114) kernel: ralink_wifi: more smooth fallback t 40MHz BW at TxErrors, first try SGI disable.<br>
 115) kernel: ralink_wifi: drop NoDataIdleCount before all rx counters update.<br>
-116) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
+116) kernel: ralink_wifi: correct init/drop NoDataIdleCout/ContinueTxFailCnt at psm mode changes.<br>
+117) kernel: ralink_wifi: mt7603: fallback to OFDM from HT instead of CCK if allowed.<br>
 <br>
 <br>

@@ -183,6 +183,7 @@ BOOLEAN RalPsIndicate(RTMP_ADAPTER *pAd, UCHAR *pAddr, UCHAR wcid, UCHAR Psm)
 			RTMPDeQueuePacket().
 		*/
 		pEntry->NoDataIdleCount = 0;
+		pEntry->ContinueTxFailCnt = 0;
 		pEntry->PsMode = Psm;
 		// TODO: shiang-usw, we need to rmove upper setting and migrate to tr_entry->PsMode	
 		pAd->MacTab.tr_entry[wcid].PsMode = Psm;

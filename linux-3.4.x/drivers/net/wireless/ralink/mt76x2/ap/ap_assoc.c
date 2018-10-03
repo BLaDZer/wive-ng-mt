@@ -1818,6 +1818,8 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 	if (StatusCode == MLME_SUCCESS)
 	{
 		pEntry->PsMode = PWR_ACTIVE;
+		pEntry->NoDataIdleCount = 0;
+		pEntry->ContinueTxFailCnt = 0;
 
 		wdev->allow_data_tx = TRUE;
 

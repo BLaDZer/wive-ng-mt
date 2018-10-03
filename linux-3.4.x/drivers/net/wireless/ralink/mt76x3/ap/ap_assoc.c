@@ -2180,6 +2180,9 @@ if (pAd->CommonCfg.bAggregationCapable || pAd->CommonCfg.bPiggyBackCapable || pA
 		// TODO: shiang-usw, we need to rmove upper setting and migrate to tr_entry->PsMode
 		pAd->MacTab.tr_entry[pEntry->wcid].PsMode = PWR_ACTIVE;
 
+		pEntry->NoDataIdleCount = 0;
+		pEntry->ContinueTxFailCnt = 0;
+
 		wdev->allow_data_tx = TRUE;
 
 		/* This is a reassociation procedure */
