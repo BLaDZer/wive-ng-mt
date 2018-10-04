@@ -45,6 +45,10 @@ logout (const char *line)
   /* Read the record.  */
   if ((ut = getutline(&tmp)) != NULL)
     {
+      /* We can't use the utmp static buffer on the rewrite so copy over */
+      memcpy(&tmp, ut, sizeof tmp);
+      ut = &tmp;
+
       /* Clear information about who & from where.  */
       memset (ut->ut_name, 0, sizeof ut->ut_name);
 #if _HAVE_UT_HOST - 0

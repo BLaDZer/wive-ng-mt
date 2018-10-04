@@ -42,6 +42,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <atomic.h>
+#if defined __UCLIBC_HAS_THREADS__ && defined __UCLIBC_HAS_THREADS_NATIVE__
+#include <fork.h>
+#endif
 
 #include <bits/uClibc_mutex.h>
 __UCLIBC_MUTEX_EXTERN(__atexit_lock);
@@ -207,16 +210,14 @@ void __cxa_finalize(void *dso_handle)
         }
     }
 
-#if 0 /* haven't looked into this yet... */
     /*
      * Remove the registered fork handlers. We do not have to
      * unregister anything if the program is going to terminate anyway.
      */
 #ifdef UNREGISTER_ATFORK
-    if (d != NULL) {
-        UNREGISTER_ATFORK(d);
+    if (dso_handle != NULL) {
+        UNREGISTER_ATFORK(dso_handle);
     }
-#endif
 #endif
 }
 #endif
