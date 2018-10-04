@@ -394,14 +394,14 @@ def configure(conf):
     xattr_headers='sys/attributes.h attr/xattr.h sys/xattr.h'
 
     # default to 1, we set it to 0 if we don't find any EA implementation below:
-            conf.DEFINE('HAVE_XATTR_SUPPORT', 1)
+    conf.DEFINE('HAVE_XATTR_SUPPORT', 1)
     if conf.CHECK_FUNCS_IN('getxattr', 'attr', checklibc=True, headers=xattr_headers):
         conf.DEFINE('HAVE_XATTR_XATTR', 1)
-    # Darwin has extra options to xattr-family functions
-    conf.CHECK_CODE('getxattr(NULL, NULL, NULL, 0, 0, 0)',
-                    headers=xattr_headers, local_include=False,
-                    define='XATTR_ADDITIONAL_OPTIONS',
-                    msg="Checking whether xattr interface takes additional options")
+        # Darwin has extra options to xattr-family functions
+        conf.CHECK_CODE('getxattr(NULL, NULL, NULL, 0, 0, 0)',
+                        headers=xattr_headers, local_include=False,
+                        define='XATTR_ADDITIONAL_OPTIONS',
+                        msg="Checking whether xattr interface takes additional options")
     elif conf.CHECK_FUNCS_IN('attr_listf', 'attr', checklibc=True, headers=xattr_headers):
         conf.DEFINE('HAVE_XATTR_ATTR', 1)
     elif conf.CHECK_FUNCS('extattr_list_fd'):
