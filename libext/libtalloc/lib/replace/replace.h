@@ -691,10 +691,12 @@ typedef int bool;
 
 #if !defined(HAVE_INTPTR_T)
 typedef long long intptr_t ;
+#define __intptr_t_defined
 #endif
 
 #if !defined(HAVE_UINTPTR_T)
 typedef unsigned long long uintptr_t ;
+#define __uintptr_t_defined
 #endif
 
 #if !defined(HAVE_PTRDIFF_T)
@@ -922,6 +924,15 @@ void rep_setproctitle(const char *fmt, ...) PRINTF_ATTRIBUTE(1, 2);
 #define setproctitle_init rep_setproctitle_init
 void rep_setproctitle_init(int argc, char *argv[], char *envp[]);
 #endif
+
+#ifndef FALL_THROUGH
+# ifdef HAVE_FALLTHROUGH_ATTRIBUTE
+#  define FALL_THROUGH __attribute__ ((fallthrough))
+# else /* HAVE_FALLTHROUGH_ATTRIBUTE */
+#  define FALL_THROUGH ((void)0)
+# endif /* HAVE_FALLTHROUGH_ATTRIBUTE */
+#endif /* FALL_THROUGH */
+
 bool nss_wrapper_enabled(void);
 bool nss_wrapper_hosts_enabled(void);
 bool socket_wrapper_enabled(void);

@@ -365,7 +365,7 @@ def CHECK_CODE(conf, code, define,
                headers=None, msg=None, cflags='', includes='# .',
                local_include=True, lib=None, link=True,
                define_ret=False, quote=False,
-               on_target=True):
+               on_target=True, strict=False):
     '''check if some code compiles and/or runs'''
 
     if CONFIG_SET(conf, define):
@@ -394,6 +394,16 @@ def CHECK_CODE(conf, code, define,
         msg="Checking for %s" % define
 
     cflags = TO_LIST(cflags)
+
+    # Be strict when relying on a compiler check
+    # Some compilers (e.g. xlc) ignore non-supported features as warnings
+    if strict:
+        extra_cflags = None
+        if conf.env["CC_NAME"] == "gcc":
+            extra_cflags = "-Werror"
+        elif conf.env["CC_NAME"] == "xlc":
+            extra_cflags = "-qhalt=w"
+        cflags.append(extra_cflags)
 
     if local_include:
         cflags.append('-I%s' % conf.curdir)
@@ -454,7 +464,8 @@ def CHECK_CODE(conf, code, define,
 
 @conf
 def CHECK_STRUCTURE_MEMBER(conf, structname, member,
-                           always=False, define=None, headers=None):
+                           always=False, define=None, headers=None,
+                           lib=None):
     '''check for a structure member'''
     if define is None:
         define = 'HAVE_%s' % member.upper()
@@ -463,6 +474,7 @@ def CHECK_STRUCTURE_MEMBER(conf, structname, member,
                       define,
                       execute=False,
                       link=False,
+                      lib=lib,
                       always=always,
                       headers=headers,
                       local_include=False,
@@ -708,6 +720,10 @@ def SAMBA_CONFIG_H(conf, path=None):
         conf.ADD_CFLAGS('-Werror=return-type -Wreturn-type',
                         testflags=True)
         conf.ADD_CFLAGS('-Werror=uninitialized -Wuninitialized',
+                        testflags=True)
+        conf.ADD_CFLAGS('-Wimplicit-fallthrough',
+                        testflags=True)
+        conf.ADD_CFLAGS('-Werror=strict-overflow -Wstrict-overflow=2',
                         testflags=True)
 
         conf.ADD_CFLAGS('-Wformat=2 -Wno-format-y2k', testflags=True)

@@ -4299,6 +4299,7 @@
 <b>7.6.x</b><br>
 1) uclibc: apply some postfixes.<br>
 2) openssl: up to 1.0.2p version.<br>
-3) dnsmasq: up to 2.80 test7 version.<br>
+3) libtalloc: up to 2.1.14 version.<br>
+4) dnsmasq: up to 2.80 test7 version.<br>
 <br>
 <br>

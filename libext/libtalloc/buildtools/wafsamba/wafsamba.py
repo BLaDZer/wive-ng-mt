@@ -353,6 +353,7 @@ def SAMBA_BINARY(bld, binname, source,
                  modules=None,
                  ldflags=None,
                  cflags='',
+                 cflags_end=None,
                  autoproto=None,
                  use_hostcc=False,
                  use_global_deps=True,
@@ -410,6 +411,7 @@ def SAMBA_BINARY(bld, binname, source,
                         deps           = deps,
                         includes       = includes,
                         cflags         = pie_cflags,
+                        cflags_end     = cflags_end,
                         group          = subsystem_group,
                         autoproto      = autoproto,
                         subsystem_name = subsystem_name,
@@ -458,6 +460,7 @@ def SAMBA_MODULE(bld, modname, source,
                  autoproto=None,
                  autoproto_extra_source='',
                  cflags='',
+                 cflags_end=None,
                  internal_module=True,
                  local_include=True,
                  global_include=True,
@@ -488,6 +491,7 @@ def SAMBA_MODULE(bld, modname, source,
                     autoproto=autoproto,
                     autoproto_extra_source=autoproto_extra_source,
                     cflags=cflags,
+                    cflags_end=cflags_end,
                     local_include=local_include,
                     global_include=global_include,
                     allow_warnings=allow_warnings,
@@ -527,6 +531,7 @@ def SAMBA_MODULE(bld, modname, source,
                       deps=deps,
                       includes=includes,
                       cflags=cflags,
+                      cflags_end=cflags_end,
                       realname = realname,
                       autoproto = autoproto,
                       local_include=local_include,
@@ -900,7 +905,7 @@ def INSTALL_DIR(bld, path, chmod=0o755, env=None):
             try:
                 os.makedirs(destpath)
                 os.chmod(destpath, chmod)
-            except OSError, e:
+            except OSError as e:
                 if not os.path.isdir(destpath):
                     raise Utils.WafError("Cannot create the folder '%s' (error: %s)" % (path, e))
 Build.BuildContext.INSTALL_DIR = INSTALL_DIR

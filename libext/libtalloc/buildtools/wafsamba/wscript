@@ -269,6 +269,7 @@ def configure(conf):
     conf.env.MODULESDIR = Options.options.MODULESDIR
     conf.env.PRIVATELIBDIR = Options.options.PRIVATELIBDIR
     conf.env.BUNDLED_LIBS = Options.options.BUNDLED_LIBS.split(',')
+    conf.env.SYSTEM_LIBS = ()
     conf.env.PRIVATE_LIBS = Options.options.PRIVATE_LIBS.split(',')
     conf.env.BUILTIN_LIBRARIES = Options.options.BUILTIN_LIBRARIES.split(',')
     conf.env.NONSHARED_BINARIES = Options.options.NONSHARED_BINARIES.split(',')
@@ -313,10 +314,6 @@ def configure(conf):
 
     conf.env.GIT_LOCAL_CHANGES = Options.options.GIT_LOCAL_CHANGES
 
-    conf.CHECK_COMMAND(['uname', '-a'],
-                       msg='Checking build system',
-                       define='BUILD_SYSTEM',
-                       on_target=False)
     conf.CHECK_UNAME()
 
     # see if we can compile and run a simple C program
@@ -378,6 +375,7 @@ def configure(conf):
         conf.CHECK_CODE('''int main(void) { return 0; }
                            __attribute__((visibility("default"))) void vis_foo2(void) {}''',
                         cflags=conf.env.VISIBILITY_CFLAGS,
+                        strict=True,
                         define='HAVE_VISIBILITY_ATTR', addmain=False)
 
     # check HAVE_CONSTRUCTOR_ATTRIBUTE
@@ -395,6 +393,7 @@ def configure(conf):
             ''',
             'HAVE_CONSTRUCTOR_ATTRIBUTE',
             addmain=False,
+            strict=True,
             msg='Checking for library constructor support')
 
         # check HAVE_DESTRUCTOR_ATTRIBUTE
@@ -412,6 +411,7 @@ def configure(conf):
             ''',
             'HAVE_DESTRUCTOR_ATTRIBUTE',
             addmain=False,
+            strict=True,
             msg='Checking for library destructor support')
 
     conf.CHECK_CODE('''
@@ -428,6 +428,7 @@ def configure(conf):
             ''',
             'HAVE___ATTRIBUTE__',
             addmain=False,
+            strict=True,
             msg='Checking for __attribute__')
 
     if sys.platform.startswith('aix'):
