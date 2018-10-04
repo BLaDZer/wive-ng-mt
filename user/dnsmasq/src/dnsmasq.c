@@ -216,7 +216,7 @@ int main (int argc, char **argv)
 #endif
 
 #ifndef HAVE_AUTH
-  if (daemon->authserver)
+  if (daemon->authserver || daemon->auth_zones)
     die(_("authoritative DNS not available: set HAVE_AUTH in src/config.h"), NULL, EC_BADCONF);
 #endif
 
@@ -225,13 +225,18 @@ int main (int argc, char **argv)
     die(_("loop detection not available: set HAVE_LOOP in src/config.h"), NULL, EC_BADCONF);
 #endif
 
+#ifndef HAVE_UBUS
+  if (option_bool(OPT_UBUS))
+    die(_("Ubus not available: set HAVE_UBUS in src/config.h"), NULL, EC_BADCONF);
+#endif
+  
   if (daemon->max_port < daemon->min_port)
     die(_("max_port cannot be smaller than min_port"), NULL, EC_BADCONF);
 
   now = dnsmasq_time();
 
   /* Create a serial at startup if not configured. */
-  if (daemon->authinterface && daemon->soa_sn == 0)
+  if (daemon->auth_zones && daemon->soa_sn == 0)
 #ifdef HAVE_BROKEN_RTC
     die(_("zone serial must be configured in --auth-soa"), NULL, EC_BADCONF);
 #else
@@ -367,6 +372,15 @@ int main (int argc, char **argv)
     daemon->inotifyfd = -1;
 #endif
        
+  if (daemon->dump_file)
+#ifdef HAVE_DUMPFILE
+    dump_init();
+  else 
+    daemon->dumpfd = -1;
+#else
+  die(_("Packet dumps not available: set HAVE_DUMP in src/config.h"), NULL, EC_BADCONF);
+#endif
+  
   if (option_bool(OPT_DBUS))
 #ifdef HAVE_DBUS
     {
@@ -730,8 +744,11 @@ int main (int argc, char **argv)
     my_syslog(LOG_INFO, _("started, version %s DNS disabled"), VERSION);
   else 
     {
-      if (daemon->cachesize != 0)
+      if (daemon->cachesize != 0) {
     my_syslog(LOG_INFO, _("started, version %s cachesize %d"), VERSION, daemon->cachesize);
+	  if (daemon->cachesize > 10000)
+	    my_syslog(LOG_WARNING, _("cache size greater than 10000 may cause performance issues, and is unlikely to be useful."));
+    }
   else
     my_syslog(LOG_INFO, _("started, version %s cache disabled"), VERSION);
   
@@ -758,6 +775,7 @@ int main (int argc, char **argv)
   if (option_bool(OPT_DNSSEC_VALID))
     {
       int rc;
+      struct ds_config *ds;
 
       /* Delay creating the timestamp file until here, after we've changed user, so that
 	 it has the correct owner to allow updating the mtime later. 
@@ -768,6 +786,9 @@ int main (int argc, char **argv)
 	  _exit(0);
 	}
       
+      if (option_bool(OPT_DNSSEC_IGN_NS))
+	my_syslog(LOG_INFO, _("DNSSEC validation enabled but all unsigned answers are trusted"));
+      else
       my_syslog(LOG_INFO, _("DNSSEC validation enabled"));
       
       daemon->dnssec_no_time_check = option_bool(OPT_DNSSEC_TIME);
@@ -776,6 +797,10 @@ int main (int argc, char **argv)
       
       if (rc == 1)
 	my_syslog(LOG_INFO, _("DNSSEC signature timestamps not checked until system time valid"));
+
+      for (ds = daemon->ds; ds; ds = ds->next)
+	my_syslog(LOG_INFO, _("configured with trust anchor for %s keytag %u"),
+		  ds->name[0] == 0 ? "<root>" : ds->name, ds->keytag);
     }
 #endif
 
@@ -928,6 +953,11 @@ int main (int argc, char **argv)
       set_dbus_listeners();
 #endif	
   
+#ifdef HAVE_UBUS
+      if (option_bool(OPT_UBUS))
+	  set_ubus_listeners();
+#endif
+	  
 #ifdef HAVE_DHCP
       if (daemon->dhcp || daemon->relay4)
 	{
@@ -1058,6 +1088,11 @@ int main (int argc, char **argv)
       check_dbus_listeners();
 #endif
       
+#ifdef HAVE_UBUS
+      if (option_bool(OPT_UBUS))
+        check_ubus_listeners();
+#endif
+
       check_dns_listeners(now);
 
 #ifdef HAVE_TFTP
@@ -1421,6 +1456,11 @@ static void async_event(int pipe, time_t now)
 
 	if (daemon->runfile)
 	  unlink(daemon->runfile);
+	
+#ifdef HAVE_DUMPFILE
+	if (daemon->dumpfd != -1)
+	  close(daemon->dumpfd);
+#endif
 	
 	my_syslog(LOG_INFO, _("exiting on receipt of SIGTERM"));
 	flush_log();

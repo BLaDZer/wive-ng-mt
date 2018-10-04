@@ -99,6 +99,9 @@ HAVE_DBUS
    support some methods to allow (re)configuration of the upstream DNS 
    servers via DBus.
 
+HAVE_UBUS
+   define this if you want to link against libubus
+
 HAVE_IDN
    define this if you want international domain name 2003 support.
 
@@ -121,6 +124,9 @@ HAVE_AUTH
 
 HAVE_DNSSEC
    include DNSSEC validator.
+
+HAVE_DUMPFILE
+   include code to dump packets to a libpcap-format file for debugging.
 
 HAVE_LOOP
    include functionality to probe for and remove DNS forwarding loops.
@@ -280,7 +286,7 @@ NOTES:
    stable RTC (it uses uptime, not epoch time) and writes the DHCP leases file less often to avoid flash wear.
 */
 
-/* #define HAVE_BROKEN_RTC */
+//#define HAVE_BROKEN_RTC
 
 /* rules to implement compile-time option dependencies and 
    the NO_XXX flags */
@@ -331,6 +337,10 @@ NOTES:
 
 #ifdef NO_LOOP
 #undef HAVE_LOOP
+#endif
+
+#ifdef NO_DUMPFILE
+#undef HAVE_DUMPFILE
 #endif
 
 #if defined (HAVE_LINUX_NETWORK) && !defined(NO_INOTIFY)
@@ -421,8 +431,11 @@ static char *compile_opts =
 #ifndef HAVE_INOTIFY
 "no-"
 #endif
-"inotify";
-
+"inotify "
+#ifndef HAVE_DUMPFILE
+"no-"
+#endif
+"dumpfile";
 
 #endif
 

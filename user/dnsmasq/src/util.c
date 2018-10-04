@@ -144,7 +144,7 @@ static int check_name(char *in)
 #endif
       else if (c != ' ')
 	{
-	nowhite = 1;
+	  nowhite = 1;
 	  if (c == '_')
 	    hasuscore = 1;
 	}
@@ -193,7 +193,7 @@ char *canonicalise(char *in, int *nomem)
 {
   char *ret = NULL;
   int rc;
-
+  
   if (nomem)
     *nomem = 0;
   
@@ -207,26 +207,26 @@ char *canonicalise(char *in, int *nomem)
 #endif
 #if defined(HAVE_IDN) || defined(HAVE_LIBIDN2)
     {
-#ifdef HAVE_LIBIDN2
-  rc = idn2_to_ascii_lz(in, &ret, IDN2_NONTRANSITIONAL);
-  if (rc == IDN2_DISALLOWED)
-    rc = idn2_to_ascii_lz(in, &ret, IDN2_TRANSITIONAL);
-#else
-  rc = idna_to_ascii_lz(in, &ret, 0);
-#endif
-  if (rc != IDNA_SUCCESS)
-    {
-      if (ret)
-	free(ret);
-
-      if (nomem && (rc == IDNA_MALLOC_ERROR || rc == IDNA_DLOPEN_ERROR))
+#  ifdef HAVE_LIBIDN2
+      rc = idn2_to_ascii_lz(in, &ret, IDN2_NONTRANSITIONAL);
+      if (rc == IDN2_DISALLOWED)
+	rc = idn2_to_ascii_lz(in, &ret, IDN2_TRANSITIONAL);
+#  else
+      rc = idna_to_ascii_lz(in, &ret, 0);
+#  endif
+      if (rc != IDNA_SUCCESS)
 	{
-	  my_syslog(LOG_ERR, _("failed to allocate memory"));
-	  *nomem = 1;
+	  if (ret)
+	    free(ret);
+	  
+	  if (nomem && (rc == IDNA_MALLOC_ERROR || rc == IDNA_DLOPEN_ERROR))
+	    {
+	      my_syslog(LOG_ERR, _("failed to allocate memory"));
+	      *nomem = 1;
+	    }
+	  
+	  return NULL;
 	}
-    
-      return NULL;
-    }
       
       return ret;
     }
@@ -263,10 +263,12 @@ unsigned char *do_rfc1035_name(unsigned char *p, char *sval, char *limit)
 #endif		
 	    *p++ = *sval;
 	}
+      
       *cp  = j;
       if (*sval)
 	sval++;
     }
+  
   return p;
 }
 
@@ -277,9 +279,20 @@ void *safe_malloc(size_t size)
   
   if (!ret)
     die(_("could not get memory"), NULL, EC_NOMEM);
-     
+      
   return ret;
-}    
+}
+
+/* Ensure limited size string is always terminated.
+ * Can be replaced by (void)strlcpy() on some platforms */
+void safe_strncpy(char *dest, const char *src, size_t size)
+{
+  if (size != 0)
+    {
+      dest[size-1] = '\0';
+      strncpy(dest, src, size-1);
+    }
+}
 
 void safe_pipe(int *fd, int read_noblock)
 {
@@ -295,7 +308,7 @@ void *whine_malloc(size_t size)
 
   if (!ret)
     my_syslog(LOG_ERR, _("failed to allocate %d bytes"), (int) size);
-
+  
   return ret;
 }
 
@@ -352,7 +365,45 @@ int hostname_isequal(const char *a, const char *b)
   
   return 1;
 }
-    
+
+/* is b equal to or a subdomain of a return 2 for equal, 1 for subdomain */
+int hostname_issubdomain(char *a, char *b)
+{
+  char *ap, *bp;
+  unsigned int c1, c2;
+  
+  /* move to the end */
+  for (ap = a; *ap; ap++); 
+  for (bp = b; *bp; bp++);
+
+  /* a shorter than b or a empty. */
+  if ((bp - b) < (ap - a) || ap == a)
+    return 0;
+
+  do
+    {
+      c1 = (unsigned char) *(--ap);
+      c2 = (unsigned char) *(--bp);
+  
+       if (c1 >= 'A' && c1 <= 'Z')
+	 c1 += 'a' - 'A';
+       if (c2 >= 'A' && c2 <= 'Z')
+	 c2 += 'a' - 'A';
+
+       if (c1 != c2)
+	 return 0;
+    } while (ap != a);
+
+  if (bp == b)
+    return 2;
+
+  if (*(--bp) == '.')
+    return 1;
+
+  return 0;
+}
+ 
+  
 time_t dnsmasq_time(void)
 {
 #ifdef HAVE_BROKEN_RTC
