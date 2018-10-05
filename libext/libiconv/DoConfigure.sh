@@ -18,9 +18,9 @@ LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
-    #autoreconf -fi
-    #sh ./autogen.sh --skip-gnulib
     autoheader -f
+    automake -c --add-missing
+    aclocal
     cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
 fi
 
@@ -43,8 +43,9 @@ LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
-    #sh ./autogen.sh --skip-gnulib
     autoheader -f
+    automake -c --add-missing
+    aclocal
     cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
 fi
 
