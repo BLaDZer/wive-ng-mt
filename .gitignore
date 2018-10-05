@@ -149,7 +149,6 @@ fulldump
 /libext/libevent/test/Makefile
 /libext/libiconv/libcharset/libext/Makefile
 /libext/libiconv/lib/aliases_aix_sysaix.h
-/libext/libiconv/libcharset/config.h
 /libext/libiconv/preload/Makefile
 /libext/libiconv/man/Makefile
 /libext/libiconv/po/Makefile
