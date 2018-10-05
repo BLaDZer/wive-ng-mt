@@ -159,7 +159,6 @@ fulldump
 /libext/libiconv/src/Makefile
 /libext/libiconv/libext/config.h
 /libext/libiconv/libext/Makefile
-/libext/libiconv/config.h
 /libext/libiconv/configure
 /libext/libiconv/Makefile
 /libext/libiconv/libcharset/Makefile
