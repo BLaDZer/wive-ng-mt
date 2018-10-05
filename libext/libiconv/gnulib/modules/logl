@@ -1,0 +1,34 @@
+Description:
+logl() function: logarithm with long double argument.
+
+Files:
+lib/logl.c
+m4/logl.m4
+
+Depends-on:
+math
+extensions
+frexpl          [test $HAVE_LOGL = 0]
+isnanl          [test $HAVE_LOGL = 0]
+floorl          [test $HAVE_LOGL = 0]
+
+configure.ac:
+gl_FUNC_LOGL
+if test $HAVE_LOGL = 0; then
+  AC_LIBOBJ([logl])
+fi
+gl_MATH_MODULE_INDICATOR([logl])
+
+Makefile.am:
+
+Include:
+<math.h>
+
+Link:
+$(LOGL_LIBM)
+
+License:
+LGPL
+
+Maintainer:
+Paolo Bonzini

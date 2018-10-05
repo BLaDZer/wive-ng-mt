@@ -1,0 +1,29 @@
+Description:
+getsockname() function: return information about the local end of a connected
+socket.
+
+Files:
+lib/getsockname.c
+lib/w32sock.h
+
+Depends-on:
+sys_socket
+errno           [test "$ac_cv_header_winsock2_h" = yes]
+
+configure.ac:
+AC_REQUIRE([gl_HEADER_SYS_SOCKET])
+if test "$ac_cv_header_winsock2_h" = yes; then
+  AC_LIBOBJ([getsockname])
+fi
+gl_SYS_SOCKET_MODULE_INDICATOR([getsockname])
+
+Makefile.am:
+
+Include:
+<sys/socket.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Paolo Bonzini, Simon Josefsson

@@ -1,0 +1,34 @@
+Description:
+ftruncate() function: truncate an open file to a specified length.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/ftruncate.c
+m4/ftruncate.m4
+
+Depends-on:
+unistd
+
+configure.ac:
+gl_FUNC_FTRUNCATE
+if test $HAVE_FTRUNCATE = 0; then
+  AC_LIBOBJ([ftruncate])
+  gl_PREREQ_FTRUNCATE
+fi
+gl_UNISTD_MODULE_INDICATOR([ftruncate])
+
+Makefile.am:
+
+Include:
+<unistd.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering

@@ -1,0 +1,28 @@
+Description:
+Send a signal to the executing process.
+
+Status:
+obsolete
+
+Notice:
+This module is obsolete.
+
+Files:
+lib/raise.c
+
+Depends-on:
+
+configure.ac:
+AC_REPLACE_FUNCS(raise)
+
+Makefile.am:
+
+Include:
+<signal.h>
+
+License:
+LGPLv2+
+
+Maintainer:
+Jim Meyering
+

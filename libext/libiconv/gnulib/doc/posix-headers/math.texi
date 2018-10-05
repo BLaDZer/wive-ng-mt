@@ -1,0 +1,30 @@
+@node math.h
+@section @file{math.h}
+
+POSIX specification:@* @url{http://www.opengroup.org/onlinepubs/9699919799/basedefs/math.h.html}
+
+Gnulib module: math
+
+Portability problems fixed by Gnulib:
+@itemize
+@item
+The macro @code{NAN} is not defined on some platforms:
+OpenBSD 4.0, AIX 5.1, IRIX 6.5, OSF/1 5.1.
+
+@item
+The macro @code{NAN} is not exposed outside of C99 compilation on some
+platforms:
+glibc.
+
+@item
+The macros @code{NAN} and @code{HUGE_VAL} expand to a function address
+rather than a floating point constant on some platforms:
+Solaris 10.
+@end itemize
+
+Portability problems not fixed by Gnulib:
+@itemize
+@item
+@code{NAN} is not a compile time constant with some compilers:
+OSF/1 with Compaq (ex-DEC) C 6.4.
+@end itemize

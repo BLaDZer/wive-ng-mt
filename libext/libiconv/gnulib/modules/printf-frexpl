@@ -1,0 +1,32 @@
+Description:
+printf_frexpl() function: split a long double into fraction and mantissa,
+for hexadecimal printf, without requiring libm.
+
+Files:
+lib/printf-frexpl.h
+lib/printf-frexpl.c
+lib/printf-frexp.c
+m4/printf-frexpl.m4
+m4/frexpl.m4
+m4/ldexpl.m4
+
+Depends-on:
+float
+math
+fpucw
+
+configure.ac:
+gl_FUNC_PRINTF_FREXPL
+
+Makefile.am:
+lib_SOURCES += printf-frexpl.c
+
+Include:
+"printf-frexpl.h"
+
+License:
+LGPL
+
+Maintainer:
+Bruno Haible
+

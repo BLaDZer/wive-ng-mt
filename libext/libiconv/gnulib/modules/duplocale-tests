@@ -1,0 +1,13 @@
+Files:
+tests/test-duplocale.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+
+configure.ac:
+AC_CHECK_FUNCS_ONCE([duplocale])
+
+Makefile.am:
+TESTS += test-duplocale
+check_PROGRAMS += test-duplocale

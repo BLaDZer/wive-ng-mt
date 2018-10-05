@@ -1,0 +1,17 @@
+Files:
+tests/test-frexp.c
+tests/minus-zero.h
+tests/nan.h
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+isnand-nolibm
+signbit
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-frexp-nolibm
+check_PROGRAMS += test-frexp-nolibm
+test_frexp_nolibm_SOURCES = test-frexp.c

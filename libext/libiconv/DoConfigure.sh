@@ -18,10 +18,8 @@ LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
-    autoheader -f
-    automake -c --add-missing
-    aclocal
-    cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
+    autoreconf -fi
+    sh ./autogen.sh --skip-gnulib
 fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
@@ -43,10 +41,11 @@ LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
-    autoheader -f
-    automake -c --add-missing
-    aclocal
-    cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
+    sh ./autogen.sh --skip-gnulib
+fi
+if [ ! -f $APROOTDIR/Makefile.in ]; then
+    automake --add-missing
+    automake
 fi
 
 CONFOPTS="--host=mipsel-linux --prefix=$APROOTDIR/filesystem"

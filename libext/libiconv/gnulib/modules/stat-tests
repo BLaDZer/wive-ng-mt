@@ -1,0 +1,17 @@
+Files:
+tests/test-stat.h
+tests/test-stat.c
+tests/signature.h
+tests/macros.h
+
+Depends-on:
+getcwd-lgpl
+same-inode
+stdbool
+symlink
+
+configure.ac:
+
+Makefile.am:
+TESTS += test-stat
+check_PROGRAMS += test-stat

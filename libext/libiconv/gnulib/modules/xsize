@@ -1,0 +1,25 @@
+Description:
+Checked size_t computations.
+
+Files:
+lib/xsize.h
+m4/xsize.m4
+
+Depends-on:
+size_max
+
+configure.ac:
+gl_XSIZE
+
+Makefile.am:
+lib_SOURCES += xsize.h
+
+Include:
+"xsize.h"
+
+License:
+LGPLv2+
+
+Maintainer:
+Bruno Haible
+

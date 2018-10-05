@@ -1,0 +1,32 @@
+Description:
+readlinkat(): read symlinks relative to a directory
+
+Files:
+lib/readlinkat.c
+m4/readlinkat.m4
+
+Depends-on:
+unistd
+extensions
+fcntl-h
+openat          [test $HAVE_READLINKAT = 0]
+readlink        [test $HAVE_READLINKAT = 0]
+
+configure.ac:
+gl_FUNC_READLINKAT
+if test $HAVE_READLINKAT = 0; then
+  AC_LIBOBJ([readlinkat])
+fi
+gl_UNISTD_MODULE_INDICATOR([readlinkat])
+
+Makefile.am:
+
+Include:
+<fcntl.h>
+<unistd.h>
+
+License:
+GPL
+
+Maintainer:
+Jim Meyering, Eric Blake
