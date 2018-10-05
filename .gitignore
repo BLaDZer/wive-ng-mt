@@ -74,13 +74,6 @@ fulldump
 /libext/libssl/openssl-1.0.2/Makefile
 /libext/libssl/openssl-1.0.2/Makefile.bak
 /libext/libssl/config_done
-/libext/libiconv/libcharset/libext/Makefile
-/libext/libiconv/lib/aliases_aix_sysaix.h
-/libext/libiconv/libcharset/config.h
-/libext/libiconv/preload/Makefile
-/libext/libiconv/man/Makefile
-/libext/libiconv/po/Makefile
-/libext/libiconv/po/Makefile.in
 /libext/libcurl/curl-config
 /libext/libcurl/Makefile.in
 /libext/libcurl/configure
@@ -154,6 +147,13 @@ fulldump
 /libext/libevent/*/Makefile.in
 /libext/libevent/sample/Makefile
 /libext/libevent/test/Makefile
+/libext/libiconv/libcharset/libext/Makefile
+/libext/libiconv/lib/aliases_aix_sysaix.h
+/libext/libiconv/libcharset/config.h
+/libext/libiconv/preload/Makefile
+/libext/libiconv/man/Makefile
+/libext/libiconv/po/Makefile
+/libext/libiconv/po/Makefile.in
 /libext/libiconv/tests/Makefile
 /libext/libiconv/srclib/Makefile
 /libext/libiconv/src/Makefile
@@ -162,9 +162,6 @@ fulldump
 /libext/libiconv/config.h
 /libext/libiconv/configure
 /libext/libiconv/Makefile
-/libext/libiconv/libtool
-/libext/libiconv/preload/libtool
-/libext/libiconv/libcharset/libtool
 /libext/libiconv/libcharset/Makefile
 /libext/libiconv/libcharset/configure
 /libext/libiconv/libcharset/config.h.in
