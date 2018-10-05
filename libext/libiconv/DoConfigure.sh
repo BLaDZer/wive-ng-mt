@@ -20,6 +20,7 @@ export CFLAGS LDFLAGS CPPFLAGS
 if [ ! -f $APROOTDIR/configure ]; then
     #autoreconf -fi
     #sh ./autogen.sh --skip-gnulib
+    autoheader -f
     cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
 fi
 
@@ -43,6 +44,7 @@ export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
     #sh ./autogen.sh --skip-gnulib
+    autoheader -f
     cp -f $APROOTDIR/configure.tmpl $APROOTDIR/configure
 fi
 
