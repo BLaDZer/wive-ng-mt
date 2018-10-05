@@ -3,17 +3,16 @@
 
 SHELL = /bin/sh
 MAKE = make
-AUTOCONF = autoconf
-AUTOHEADER = autoheader
-ACLOCAL = aclocal
+AUTOCONF = autoconf-2.69
+AUTOHEADER = autoheader-2.69
+ACLOCAL = aclocal-1.15
 CP = cp
 RM = rm -f
 
 all : configures include/localcharset.h.build.in
-	mkdir -p autoconf
 
 autoconf/aclocal.m4 : $(wildcard m4/*.m4)
-	mkdir -p autoconf
+	test -d autoconf || mkdir autoconf
 	$(ACLOCAL) -I m4 --output=$@
 
 configures : configure config.h.in
@@ -29,5 +28,8 @@ include/localcharset.h.build.in : include/localcharset.h.in include/export.h
 	sed -e 's/extern \([^"]\)/extern LIBCHARSET_DLL_EXPORTED \1/' \
 	    -e '/#define _LOCALCHARSET_H/r include/export.h' \
 	  < $< > $@
+
+totally-clean : force
+	rm -f autoconf/aclocal.m4 configure config.h.in include/localcharset.h.build.in
 
 force :
