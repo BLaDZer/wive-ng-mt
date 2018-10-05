@@ -101,7 +101,6 @@
 #  endif
 #endif
 
-
 /*
  * Definition of timeval struct for platforms that don't have it.
  */

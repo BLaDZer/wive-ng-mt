@@ -35,10 +35,10 @@ my $verbose;
 my %whitelist;
 
 my %warnings = (
-    'LONGLINE' =>         "Line longer than $max_column",
-    'TABS' =>             'TAB characters not allowed',
-    'TRAILINGSPACE' =>    'Trailing white space on the line',
-    'CPPCOMMENTS' =>      '// comment detected',
+    'LONGLINE'         => "Line longer than $max_column",
+    'TABS'             => 'TAB characters not allowed',
+    'TRAILINGSPACE'    => 'Trailing white space on the line',
+    'CPPCOMMENTS'      => '// comment detected',
     'SPACEBEFOREPAREN' => 'space before an open parenthesis',
     'SPACEAFTERPAREN'  => 'space after open parenthesis',
     'SPACEBEFORECLOSE' => 'space before a close parenthesis',
@@ -47,7 +47,7 @@ my %warnings = (
     'COMMANOSPACE'     => 'comma without following space',
     'BRACEELSE'        => '} else on the same line',
     'PARENBRACE'       => '){ without sufficient space',
-    'SPACESEMILCOLON'  => 'space before semicolon',
+    'SPACESEMICOLON'   => 'space before semicolon',
     'BANNEDFUNC'       => 'a banned function was used',
     'FOPENMODE'        => 'fopen needs a macro for the mode string',
     'BRACEPOS'         => 'wrong position for an open brace',
@@ -58,11 +58,12 @@ my %warnings = (
     'OPENCOMMENT'      => 'file ended with a /* comment still "open"',
     'ASTERISKSPACE'    => 'pointer declared with space after asterisk',
     'ASTERISKNOSPACE'  => 'pointer declared without space before asterisk',
-    'ASSIGNWITHINCONDITION'  => 'assignment within conditional expression',
+    'ASSIGNWITHINCONDITION' => 'assignment within conditional expression',
     'EQUALSNOSPACE'    => 'equals sign without following space',
     'NOSPACEEQUALS'    => 'equals sign without preceding space',
     'SEMINOSPACE'      => 'semicolon without following space',
     'MULTISPACE'       => 'multiple spaces used when not suitable',
+    'SIZEOFNOPAREN'    => 'use of sizeof without parentheses',
     );
 
 sub readwhitelist {
@@ -417,6 +418,17 @@ sub scanfile {
             }
         }
 
+        # check for "sizeof" without parenthesis
+        if(($l =~ /^(.*)sizeof *([ (])/) && ($2 ne "(")) {
+            if($1 =~ / *\#/) {
+                # this is a #if, treat it differently
+            }
+            else {
+                checkwarn("SIZEOFNOPAREN", $line, length($1)+6, $file, $l,
+                          "sizeof without parenthesis");
+            }
+        }
+
         # check for comma without space
         if($l =~ /^(.*),[^ \n]/) {
             my $pref=$1;
@@ -462,14 +474,14 @@ sub scanfile {
 
         # check for space before the semicolon last in a line
         if($l =~ /^(.*[^ ].*) ;$/) {
-            checkwarn("SPACESEMILCOLON",
+            checkwarn("SPACESEMICOLON",
                       $line, length($1), $file, $ol, "space before last semicolon");
         }
 
         # scan for use of banned functions
         if($l =~ /^(.*\W)
                    (gets|
-	            strtok|
+                    strtok|
                     v?sprintf|
                     (str|_mbs|_tcs|_wcs)n?cat|
                     LoadLibrary(Ex)?(A|W)?)
@@ -499,9 +511,9 @@ sub scanfile {
         }
 
         # if the previous line starts with if/while/for AND ends with an open
-        # brace, check that this line is indented $indent more steps, if not
-        # a cpp line
-        if($prevl =~ /^( *)(if|while|for)\(.*\{\z/) {
+        # brace, or an else statement, check that this line is indented $indent
+        # more steps, if not a cpp line
+        if($prevl =~ /^( *)((if|while|for)\(.*\{|else)\z/) {
             my $first = length($1);
 
             # this line has some character besides spaces
@@ -511,7 +523,7 @@ sub scanfile {
                 if($expect != $second) {
                     my $diff = $second - $first;
                     checkwarn("INDENTATION", $line, length($1), $file, $ol,
-                              "not indented $indent steps, uses $diff)");
+                              "not indented $indent steps (uses $diff)");
 
                 }
             }
@@ -573,7 +585,7 @@ sub scanfile {
         if($nostr =~ /(.*)\;[a-z0-9]/i) {
             checkwarn("SEMINOSPACE",
                       $line, length($1)+1, $file, $ol,
-                      "no space after semilcolon");
+                      "no space after semicolon");
         }
 
         # check for more than one consecutive space before open brace or

@@ -119,6 +119,7 @@ static int parsedate(const char *date, time_t *output);
 #define tDAYZONE -60       /* offset for daylight savings time */
 static const struct tzinfo tz[]= {
   {"GMT", 0},              /* Greenwich Mean */
+  {"UT",  0},              /* Universal Time */
   {"UTC", 0},              /* Universal (Coordinated) */
   {"WET", 0},              /* Western European */
   {"BST", 0 tDAYZONE},     /* British Summer */
@@ -308,8 +309,8 @@ static void my_timegm(struct my_tm *tm, time_t *t)
                - (1969 / 4) + (1969 / 100) - (1969 / 400));
 
   *t = ((((time_t) (year - 1970) * 365
-            + leap_days + month_days_cumulative [month] + tm->tm_mday - 1) * 24
-           + tm->tm_hour) * 60 + tm->tm_min) * 60 + tm->tm_sec;
+          + leap_days + month_days_cumulative[month] + tm->tm_mday - 1) * 24
+         + tm->tm_hour) * 60 + tm->tm_min) * 60 + tm->tm_sec;
 }
 
 /*
@@ -539,14 +540,14 @@ static int parsedate(const char *date, time_t *output)
   */
   my_timegm(&tm, &t);
 
-    /* Add the time zone diff between local time zone and GMT. */
+  /* Add the time zone diff between local time zone and GMT. */
   if(tzoff == -1)
     tzoff = 0;
 
   if((tzoff > 0) && (t > TIME_T_MAX - tzoff)) {
     *output = TIME_T_MAX;
-      return PARSEDATE_LATER; /* time_t overflow */
-    }
+    return PARSEDATE_LATER; /* time_t overflow */
+  }
 
   t += tzoff;
 

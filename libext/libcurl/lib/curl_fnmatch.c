@@ -30,6 +30,17 @@
 /* The last #include file should be: */
 #include "memdebug.h"
 
+#ifndef HAVE_FNMATCH
+
+/*
+ * TODO:
+ *
+ * Make this function match POSIX. Test 1307 includes a set of test patterns
+ * that returns different results with a POSIX fnmatch() than with this
+ * implementation and this is considered a bug where POSIX is the guiding
+ * light.
+ */
+
 #define CURLFNM_CHARSET_LEN (sizeof(char) * 256)
 #define CURLFNM_CHSET_SIZE (CURLFNM_CHARSET_LEN + 15)
 
@@ -240,9 +251,9 @@ static int setcharset(unsigned char **p, unsigned char *charset)
     case CURLFNM_SCHS_RIGHTBRLEFTBR:
       if(c == ']')
         return SETCHARSET_OK;
-        state  = CURLFNM_SCHS_DEFAULT;
-        charset[c] = 1;
-        (*p)++;
+      state  = CURLFNM_SCHS_DEFAULT;
+      charset[c] = 1;
+      (*p)++;
       break;
     }
   }
@@ -262,8 +273,8 @@ static int loop(const unsigned char *pattern, const unsigned char *string,
 
     switch(*p) {
     case '*':
-        if(!maxstars)
-          return CURL_FNMATCH_NOMATCH;
+      if(!maxstars)
+        return CURL_FNMATCH_NOMATCH;
       /* Regroup consecutive stars and question marks. This can be done because
          '*?*?*' can be expressed as '??*'. */
       for(;;) {
@@ -271,8 +282,8 @@ static int loop(const unsigned char *pattern, const unsigned char *string,
           return CURL_FNMATCH_MATCH;
         if(*p == '?') {
           if(!*s++)
-          return CURL_FNMATCH_NOMATCH;
-      }
+            return CURL_FNMATCH_NOMATCH;
+        }
         else if(*p != '*')
           break;
       }
@@ -286,7 +297,7 @@ static int loop(const unsigned char *pattern, const unsigned char *string,
       if(!*s)
         return CURL_FNMATCH_NOMATCH;
       s++;
-        p++;
+      p++;
       break;
     case '\0':
       return *s? CURL_FNMATCH_NOMATCH: CURL_FNMATCH_MATCH;
@@ -298,48 +309,48 @@ static int loop(const unsigned char *pattern, const unsigned char *string,
       break;
     case '[':
       pp = p + 1; /* Copy in case of syntax error in set. */
-        if(setcharset(&pp, charset)) {
-          int found = FALSE;
+      if(setcharset(&pp, charset)) {
+        int found = FALSE;
         if(!*s)
           return CURL_FNMATCH_NOMATCH;
-          if(charset[(unsigned int)*s])
-            found = TRUE;
-          else if(charset[CURLFNM_ALNUM])
-            found = ISALNUM(*s);
-          else if(charset[CURLFNM_ALPHA])
-            found = ISALPHA(*s);
-          else if(charset[CURLFNM_DIGIT])
-            found = ISDIGIT(*s);
-          else if(charset[CURLFNM_XDIGIT])
-            found = ISXDIGIT(*s);
-          else if(charset[CURLFNM_PRINT])
-            found = ISPRINT(*s);
-          else if(charset[CURLFNM_SPACE])
-            found = ISSPACE(*s);
-          else if(charset[CURLFNM_UPPER])
-            found = ISUPPER(*s);
-          else if(charset[CURLFNM_LOWER])
-            found = ISLOWER(*s);
-          else if(charset[CURLFNM_BLANK])
-            found = ISBLANK(*s);
-          else if(charset[CURLFNM_GRAPH])
-            found = ISGRAPH(*s);
+        if(charset[(unsigned int)*s])
+          found = TRUE;
+        else if(charset[CURLFNM_ALNUM])
+          found = ISALNUM(*s);
+        else if(charset[CURLFNM_ALPHA])
+          found = ISALPHA(*s);
+        else if(charset[CURLFNM_DIGIT])
+          found = ISDIGIT(*s);
+        else if(charset[CURLFNM_XDIGIT])
+          found = ISXDIGIT(*s);
+        else if(charset[CURLFNM_PRINT])
+          found = ISPRINT(*s);
+        else if(charset[CURLFNM_SPACE])
+          found = ISSPACE(*s);
+        else if(charset[CURLFNM_UPPER])
+          found = ISUPPER(*s);
+        else if(charset[CURLFNM_LOWER])
+          found = ISLOWER(*s);
+        else if(charset[CURLFNM_BLANK])
+          found = ISBLANK(*s);
+        else if(charset[CURLFNM_GRAPH])
+          found = ISGRAPH(*s);
 
-          if(charset[CURLFNM_NEGATE])
-            found = !found;
+        if(charset[CURLFNM_NEGATE])
+          found = !found;
 
         if(!found)
           return CURL_FNMATCH_NOMATCH;
-            p = pp + 1;
-              s++;
+        p = pp + 1;
+        s++;
         break;
       }
+      /* Syntax error in set; mismatch! */
+      return CURL_FNMATCH_NOMATCH;
 
-      /* Syntax error in set: this must be taken as a regular character. */
-      /* FALLTHROUGH */
     default:
-        if(*p++ != *s++)
-          return CURL_FNMATCH_NOMATCH;
+      if(*p++ != *s++)
+        return CURL_FNMATCH_NOMATCH;
       break;
     }
   }
@@ -355,5 +366,31 @@ int Curl_fnmatch(void *ptr, const char *pattern, const char *string)
   if(!pattern || !string) {
     return CURL_FNMATCH_FAIL;
   }
-  return loop((unsigned char *)pattern, (unsigned char *)string, 5);
+  return loop((unsigned char *)pattern, (unsigned char *)string, 2);
 }
+#else
+#include <fnmatch.h>
+/*
+ * @unittest: 1307
+ */
+int Curl_fnmatch(void *ptr, const char *pattern, const char *string)
+{
+  int rc;
+  (void)ptr; /* the argument is specified by the curl_fnmatch_callback
+                prototype, but not used by Curl_fnmatch() */
+  if(!pattern || !string) {
+    return CURL_FNMATCH_FAIL;
+  }
+  rc = fnmatch(pattern, string, 0);
+  switch(rc) {
+  case 0:
+    return CURL_FNMATCH_MATCH;
+  case FNM_NOMATCH:
+    return CURL_FNMATCH_NOMATCH;
+  default:
+    return CURL_FNMATCH_FAIL;
+  }
+  /* not reached */
+}
+
+#endif

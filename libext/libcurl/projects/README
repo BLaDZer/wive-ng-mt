@@ -105,7 +105,7 @@ Running DLL based configurations
 
    ... where 'Path to DLL` is the configuration specific path. For example the
    following configurations in Visual Studio 2010 might be:
-   
+
    DLL Debug - DLL OpenSSL (Win32):
    PATH=..\..\..\..\..\openssl\build\Win32\VC10\DLL Debug;C:\Windows\system32;
         C:\Windows;C:\Windows\System32\Wbem
@@ -130,7 +130,7 @@ Notes
 =====
 
    The following keywords have been used in the directory hierarchy:
-   
+
    <platform>      - The platform (For example: Windows)
    <ide>           - The IDE (For example: VC6, VC10, BCC5)
    <architecture>  - The platform architecture (For example: Win32, Win64)
@@ -139,12 +139,12 @@ Notes
 
    If you are using the source code from the git repository, rather than a
    release archive or nightly build, you will need to generate the project
-   files. Please run "generate -help" for usage details. 
+   files. Please run "generate -help" for usage details.
 
    Should you wish to help out with some of the items on the TODO list, or
    find bugs in the project files that need correcting, and would like to
    submit updated files back then please note that, whilst the solution files
-   can be edited directly, the templates for the project files (which are 
+   can be edited directly, the templates for the project files (which are
    stored in the git repositoty) will need to be modified rather than the
    generated project files that Visual Studio uses.
 

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2017, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2018, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -620,7 +620,7 @@ void Curl_persistconninfo(struct connectdata *conn)
 /* retrieves ip address and port from a sockaddr structure.
    note it calls Curl_inet_ntop which sets errno on fail, not SOCKERRNO. */
 bool Curl_getaddressinfo(struct sockaddr *sa, char *addr,
-                           long *port)
+                         long *port)
 {
   unsigned short us_port;
   struct sockaddr_in *si = NULL;
@@ -701,7 +701,7 @@ void Curl_updateconninfo(struct connectdata *conn, curl_socket_t sockfd)
     }
 
     if(!Curl_getaddressinfo((struct sockaddr*)&ssrem,
-                        conn->primary_ip, &conn->primary_port)) {
+                            conn->primary_ip, &conn->primary_port)) {
       failf(data, "ssrem inet_ntop() failed with errno %d: %s",
             errno, Curl_strerror(conn, errno));
       return;
@@ -709,7 +709,7 @@ void Curl_updateconninfo(struct connectdata *conn, curl_socket_t sockfd)
     memcpy(conn->ip_addr_str, conn->primary_ip, MAX_IPADR_LEN);
 
     if(!Curl_getaddressinfo((struct sockaddr*)&ssloc,
-                       conn->local_ip, &conn->local_port)) {
+                            conn->local_ip, &conn->local_port)) {
       failf(data, "ssloc inet_ntop() failed with errno %d: %s",
             errno, Curl_strerror(conn, errno));
       return;
@@ -1007,7 +1007,7 @@ static CURLcode singleipconnect(struct connectdata *conn,
 
   /* store remote address and port used in this connection attempt */
   if(!Curl_getaddressinfo((struct sockaddr*)&addr.sa_addr,
-                     ipaddress, &port)) {
+                          ipaddress, &port)) {
     /* malformed address or bug in inet_ntop, try next address */
     failf(data, "sa_addr inet_ntop() failed with errno %d: %s",
           errno, Curl_strerror(conn, errno));
@@ -1237,8 +1237,6 @@ static int conn_is_conn(struct connectdata *conn, void *param)
 curl_socket_t Curl_getconnectinfo(struct Curl_easy *data,
                                   struct connectdata **connp)
 {
-  curl_socket_t sockfd;
-
   DEBUGASSERT(data);
 
   /* this works for an easy handle:
@@ -1261,15 +1259,15 @@ curl_socket_t Curl_getconnectinfo(struct Curl_easy *data,
       return CURL_SOCKET_BAD;
     }
 
-    if(connp)
+    if(connp) {
       /* only store this if the caller cares for it */
       *connp = c;
-    sockfd = c->sock[FIRSTSOCKET];
+      c->data = data;
+    }
+    return c->sock[FIRSTSOCKET];
   }
   else
     return CURL_SOCKET_BAD;
-
-  return sockfd;
 }
 
 /*
