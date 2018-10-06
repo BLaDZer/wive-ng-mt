@@ -1,5 +1,5 @@
-# locale-ar.m4 serial 3
-dnl Copyright (C) 2003, 2005-2011 Free Software Foundation, Inc.
+# locale-ar.m4 serial 8
+dnl Copyright (C) 2003, 2005-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -24,35 +24,42 @@ changequote(,)dnl
 struct tm t;
 char buf[16];
 int main () {
+  /* On BeOS and Haiku, locales are not implemented in libc.  Rather, libintl
+     imitates locale dependent behaviour by looking at the environment
+     variables, and all locales use the UTF-8 encoding.  */
+#if defined __BEOS__ || defined __HAIKU__
+  return 1;
+#else
   /* Check whether the given locale name is recognized by the system.  */
-#if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
-  /* On native Win32, setlocale(category, "") looks at the system settings,
+# if defined _WIN32 && !defined __CYGWIN__
+  /* On native Windows, setlocale(category, "") looks at the system settings,
      not at the environment variables.  Also, when an encoding suffix such
-     as ".65001" or ".54936" is speficied, it succeeds but sets the LC_CTYPE
+     as ".65001" or ".54936" is specified, it succeeds but sets the LC_CTYPE
      category of the locale to "C".  */
   if (setlocale (LC_ALL, getenv ("LC_ALL")) == NULL
       || strcmp (setlocale (LC_CTYPE, NULL), "C") == 0)
     return 1;
-#else
+# else
   if (setlocale (LC_ALL, "") == NULL) return 1;
-#endif
+# endif
   /* Check that nl_langinfo(CODESET) is nonempty and not "ASCII" or "646"
      and ends in "6". */
-#if HAVE_LANGINFO_CODESET
+# if HAVE_LANGINFO_CODESET
   {
     const char *cs = nl_langinfo (CODESET);
     if (cs[0] == '\0' || strcmp (cs, "ASCII") == 0 || strcmp (cs, "646") == 0
         || cs[strlen (cs) - 1] != '6')
       return 1;
   }
-#endif
-#ifdef __CYGWIN__
+# endif
+# ifdef __CYGWIN__
   /* On Cygwin, avoid locale names without encoding suffix, because the
      locale_charset() function relies on the encoding suffix.  Note that
      LC_ALL is set on the command line.  */
   if (strchr (getenv ("LC_ALL"), '.') == NULL) return 1;
-#endif
+# endif
   return 0;
+#endif
 }
 changequote([,])dnl
       ])])
@@ -65,14 +72,14 @@ changequote([,])dnl
         # "ja" as "Japanese" or "Japanese_Japan.932",
         # and similar.
         mingw*)
-          # Note that on native Win32, the Arabic locale is
+          # Note that on native Windows, the Arabic locale is
           # "Arabic_Saudi Arabia.1256", and CP1256 is very different from
           # ISO-8859-6, so we cannot use it here.
           gt_cv_locale_ar=none
           ;;
         *)
           # Setting LC_ALL is not enough. Need to set LC_TIME to empty, because
-          # otherwise on MacOS X 10.3.5 the LC_TIME=C from the beginning of the
+          # otherwise on Mac OS X 10.3.5 the LC_TIME=C from the beginning of the
           # configure script would override the LC_ALL setting. Likewise for
           # LC_CTYPE, which is also set at the beginning of the configure script.
           # Values tested:

@@ -10,12 +10,16 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function has an incompatible declaration on some platforms:
-Solaris 11 2010-11 (when @code{_POSIX_PTHREAD_SEMANTICS} is not defined).
+Solaris 11.3 (when @code{_POSIX_PTHREAD_SEMANTICS} is not defined).
 @end itemize
 
 Portability problems not fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-OpenBSD 3.8, Minix 3.1.8, mingw, BeOS.
+OpenBSD 3.8, Minix 3.1.8, mingw, MSVC 14, BeOS, Android 3.0.
+@item
+This function has an incompatible declaration, with fewer than five
+arguments, on some platforms:
+IRIX 5.3.
 @end itemize

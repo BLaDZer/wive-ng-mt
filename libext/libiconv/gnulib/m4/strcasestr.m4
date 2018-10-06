@@ -1,5 +1,5 @@
-# strcasestr.m4 serial 20
-dnl Copyright (C) 2005, 2007-2011 Free Software Foundation, Inc.
+# strcasestr.m4 serial 24
+dnl Copyright (C) 2005, 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -17,28 +17,37 @@ AC_DEFUN([gl_FUNC_STRCASESTR_SIMPLE],
   if test $ac_cv_func_strcasestr = no; then
     HAVE_STRCASESTR=0
   else
-    if test "$gl_cv_func_memchr_works" != yes; then
+    if test $HAVE_MEMCHR = 0 || test $REPLACE_MEMCHR = 1; then
       REPLACE_STRCASESTR=1
     else
-      dnl Detect http://sourceware.org/bugzilla/show_bug.cgi?id=12092.
+      dnl Detect https://sourceware.org/bugzilla/show_bug.cgi?id=12092
+      dnl and https://sourceware.org/bugzilla/show_bug.cgi?id=23637.
       AC_CACHE_CHECK([whether strcasestr works],
         [gl_cv_func_strcasestr_works_always],
-        [AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        [AC_RUN_IFELSE(
+           [AC_LANG_PROGRAM([[
 #include <string.h> /* for strcasestr */
+#ifdef __GNU_LIBRARY__
+ #include <features.h>
+ #if __GLIBC__ == 2 && __GLIBC_MINOR__ == 28
+  Unlucky user
+ #endif
+#endif
 #define P "_EF_BF_BD"
 #define HAYSTACK "F_BD_CE_BD" P P P P "_C3_88_20" P P P "_C3_A7_20" P
 #define NEEDLE P P P P P
-]], [[return !!strcasestr (HAYSTACK, NEEDLE);
-      ]])],
-          [gl_cv_func_strcasestr_works_always=yes],
-          [gl_cv_func_strcasestr_works_always=no],
-          [dnl glibc 2.12 and cygwin 1.7.7 have a known bug.  uClibc is not
-           dnl affected, since it uses different source code for strcasestr
-           dnl than glibc.
-           dnl Assume that it works on all other platforms, even if it is not
-           dnl linear.
-           AC_EGREP_CPP([Lucky user],
-             [
+]],
+              [[return !!strcasestr (HAYSTACK, NEEDLE);
+              ]])],
+           [gl_cv_func_strcasestr_works_always=yes],
+           [gl_cv_func_strcasestr_works_always=no],
+           [dnl glibc 2.12 and cygwin 1.7.7 have a known bug.  uClibc is not
+            dnl affected, since it uses different source code for strcasestr
+            dnl than glibc.
+            dnl Assume that it works on all other platforms, even if it is not
+            dnl linear.
+            AC_EGREP_CPP([Lucky user],
+              [
 #ifdef __GNU_LIBRARY__
  #include <features.h>
  #if ((__GLIBC__ == 2 && __GLIBC_MINOR__ > 12) || (__GLIBC__ > 2)) \
@@ -53,14 +62,17 @@ AC_DEFUN([gl_FUNC_STRCASESTR_SIMPLE],
 #else
   Lucky user
 #endif
-             ],
-             [gl_cv_func_strcasestr_works_always=yes],
-             [gl_cv_func_strcasestr_works_always="guessing no"])
-          ])
+              ],
+              [gl_cv_func_strcasestr_works_always="guessing yes"],
+              [gl_cv_func_strcasestr_works_always="guessing no"])
+           ])
         ])
-      if test "$gl_cv_func_strcasestr_works_always" != yes; then
-        REPLACE_STRCASESTR=1
-      fi
+      case "$gl_cv_func_strcasestr_works_always" in
+        *yes) ;;
+        *)
+          REPLACE_STRCASESTR=1
+          ;;
+      esac
     fi
   fi
 ]) # gl_FUNC_STRCASESTR_SIMPLE
@@ -77,7 +89,7 @@ AC_DEFUN([gl_FUNC_STRCASESTR],
 #include <string.h> /* for strcasestr */
 #include <stdlib.h> /* for malloc */
 #include <unistd.h> /* for alarm */
-static void quit (int sig) { exit (sig + 128); }
+static void quit (int sig) { _exit (sig + 128); }
 ]], [[
     int result = 0;
     size_t m = 1000000;
@@ -99,6 +111,9 @@ static void quit (int sig) { exit (sig + 128); }
         if (!strcasestr (haystack, needle))
           result |= 1;
       }
+    /* Free allocated memory, in case some sanitizer is watching.  */
+    free (haystack);
+    free (needle);
     return result;
     ]])],
         [gl_cv_func_strcasestr_linear=yes], [gl_cv_func_strcasestr_linear=no],
@@ -120,13 +135,16 @@ static void quit (int sig) { exit (sig + 128); }
  #endif
 #endif
            ],
-           [gl_cv_func_strcasestr_linear=yes],
+           [gl_cv_func_strcasestr_linear="guessing yes"],
            [gl_cv_func_strcasestr_linear="guessing no"])
         ])
       ])
-    if test "$gl_cv_func_strcasestr_linear" != yes; then
-      REPLACE_STRCASESTR=1
-    fi
+    case "$gl_cv_func_strcasestr_linear" in
+      *yes) ;;
+      *)
+        REPLACE_STRCASESTR=1
+        ;;
+    esac
   fi
 ]) # gl_FUNC_STRCASESTR
 

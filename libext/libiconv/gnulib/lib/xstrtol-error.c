@@ -1,6 +1,6 @@
 /* A more useful interface to strtol.
 
-   Copyright (C) 1995-1996, 1998-1999, 2001-2004, 2006-2011 Free Software
+   Copyright (C) 1995-1996, 1998-1999, 2001-2004, 2006-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include "xstrtol.h"
@@ -60,16 +60,16 @@ xstrtol_error (enum strtol_error err,
       abort ();
 
     case LONGINT_INVALID:
-      msgid = N_("invalid %s%s argument `%s'");
+      msgid = N_("invalid %s%s argument '%s'");
       break;
 
     case LONGINT_INVALID_SUFFIX_CHAR:
     case LONGINT_INVALID_SUFFIX_CHAR_WITH_OVERFLOW:
-      msgid = N_("invalid suffix in %s%s argument `%s'");
+      msgid = N_("invalid suffix in %s%s argument '%s'");
       break;
 
     case LONGINT_OVERFLOW:
-      msgid = N_("%s%s argument `%s' too large");
+      msgid = N_("%s%s argument '%s' too large");
       break;
     }
 

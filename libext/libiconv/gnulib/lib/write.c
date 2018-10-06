@@ -1,5 +1,5 @@
 /* POSIX compatible write() function.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2008.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,42 +13,71 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <unistd.h>
 
-/* Replace this function only if module 'nonblocking' or module 'sigpipe' is
-   requested.  */
-#if GNULIB_NONBLOCKING || GNULIB_SIGPIPE
-
 /* On native Windows platforms, SIGPIPE does not exist.  When write() is
    called on a pipe with no readers, WriteFile() fails with error
    GetLastError() = ERROR_NO_DATA, and write() in consequence fails with
    error EINVAL.  */
 
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 
-#  include <errno.h>
-#  include <signal.h>
+# include <errno.h>
+# include <signal.h>
+# include <io.h>
+
+# define WIN32_LEAN_AND_MEAN  /* avoid including junk */
+# include <windows.h>
+
+# if HAVE_MSVC_INVALID_PARAMETER_HANDLER
+#  include "msvc-inval.h"
+# endif
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
 #  include <io.h>
+# endif
 
-#  define WIN32_LEAN_AND_MEAN  /* avoid including junk */
-#  include <windows.h>
+# undef write
+
+# if HAVE_MSVC_INVALID_PARAMETER_HANDLER
+static ssize_t
+write_nothrow (int fd, const void *buf, size_t count)
+{
+  ssize_t result;
+
+  TRY_MSVC_INVAL
+    {
+      result = write (fd, buf, count);
+    }
+  CATCH_MSVC_INVAL
+    {
+      result = -1;
+      errno = EBADF;
+    }
+  DONE_MSVC_INVAL;
+
+  return result;
+}
+# else
+#  define write_nothrow write
+# endif
 
 ssize_t
 rpl_write (int fd, const void *buf, size_t count)
-#undef write
 {
   for (;;)
     {
-      ssize_t ret = write (fd, buf, count);
+      ssize_t ret = write_nothrow (fd, buf, count);
 
       if (ret < 0)
         {
-#  if GNULIB_NONBLOCKING
+# if GNULIB_NONBLOCKING
           if (errno == ENOSPC)
             {
               HANDLE h = (HANDLE) _get_osfhandle (fd);
@@ -99,9 +128,9 @@ rpl_write (int fd, const void *buf, size_t count)
                 }
             }
           else
-#  endif
+# endif
             {
-#  if GNULIB_SIGPIPE
+# if GNULIB_SIGPIPE
               if (GetLastError () == ERROR_NO_DATA
                   && GetFileType ((HANDLE) _get_osfhandle (fd))
                      == FILE_TYPE_PIPE)
@@ -112,12 +141,11 @@ rpl_write (int fd, const void *buf, size_t count)
                      EINVAL to EPIPE.  */
                   errno = EPIPE;
                 }
-#  endif
+# endif
             }
         }
       return ret;
     }
 }
 
-# endif
 #endif

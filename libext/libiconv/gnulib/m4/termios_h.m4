@@ -1,5 +1,5 @@
-# termios_h.m4 serial 3
-dnl Copyright (C) 2010-2011 Free Software Foundation, Inc.
+# termios_h.m4 serial 4
+dnl Copyright (C) 2010-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -14,6 +14,9 @@ AC_DEFUN([gl_TERMIOS_H],
   if test $ac_cv_header_termios_h != yes; then
     HAVE_TERMIOS_H=0
   fi
+
+  dnl Ensure the type pid_t gets defined.
+  AC_REQUIRE([AC_TYPE_PID_T])
 
   dnl Check for declarations of anything we want to poison if the
   dnl corresponding gnulib module is not in use, and which is not

@@ -1,5 +1,5 @@
 /* Fuzzy string comparison.
-   Copyright (C) 1995, 2000, 2002-2003, 2006, 2008-2011 Free Software
+   Copyright (C) 1995, 2000, 2002-2003, 2006, 2008-2018 Free Software
    Foundation, Inc.
 
    This file was written by Peter Miller <pmiller@agso.gov.au>
@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _FSTRCMP_H
 #define _FSTRCMP_H

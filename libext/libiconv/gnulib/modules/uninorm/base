@@ -9,7 +9,7 @@ Depends-on:
 unitypes
 
 configure.ac:
-gl_LIBUNISTRING_LIBHEADER([0.9], [uninorm.h])
+gl_LIBUNISTRING_LIBHEADER([0.9.4], [uninorm.h])
 
 Makefile.am:
 BUILT_SOURCES += $(LIBUNISTRING_UNINORM_H)
@@ -29,5 +29,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

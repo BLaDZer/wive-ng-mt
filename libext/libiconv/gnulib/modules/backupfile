@@ -1,25 +1,32 @@
 Description:
-Determination of the filename of a backup file, according to user environment
-variables.
+Determine the name of a backup file.
 
 Files:
-lib/backupfile.h
+lib/backup-internal.h
+lib/backup-find.c
 lib/backupfile.c
+lib/backupfile.h
 m4/backupfile.m4
 
 Depends-on:
 argmatch
+closedir
 d-ino
 dirent-safer
+dirfd
 dirname-lgpl
+fcntl
 memcmp
+opendir
+renameatu
+readdir
 stdbool
 
 configure.ac:
 gl_BACKUPFILE
 
 Makefile.am:
-lib_SOURCES += backupfile.c
+lib_SOURCES += backupfile.c backup-find.c
 
 Include:
 "backupfile.h"

@@ -1,7 +1,7 @@
-# serial 29
+# serial 33
 # How to list mounted file systems.
 
-# Copyright (C) 1998-2004, 2006, 2009-2011 Free Software Foundation, Inc.
+# Copyright (C) 1998-2004, 2006, 2009-2018 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -26,6 +26,7 @@ AC_CHECK_FUNCS([getmntent])
 # gl_LIST_MOUNTED_FILE_SYSTEMS([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
 AC_DEFUN([gl_LIST_MOUNTED_FILE_SYSTEMS],
   [
+AC_REQUIRE([AC_CANONICAL_HOST])
 AC_CHECK_FUNCS([listmntent getmntinfo])
 AC_CHECK_HEADERS_ONCE([sys/param.h sys/statvfs.h])
 
@@ -70,7 +71,7 @@ AC_FUNC_GETMNTENT
 # with other getmntent implementations.
 
 # NOTE: Normally, I wouldn't use a check for system type as I've done for
-# `CRAY' below since that goes against the whole autoconf philosophy.  But
+# 'CRAY' below since that goes against the whole autoconf philosophy.  But
 # I think there is too great a chance that some non-Cray system has a
 # function named listmntent to risk the false positive.
 
@@ -110,7 +111,7 @@ if test -z "$ac_list_mounted_fs"; then
     AC_DEFINE([MOUNTED_VMOUNT], [1],
         [Define if there is a function named mntctl that can be used to read
          the list of mounted file systems, and there is a system header file
-         that declares `struct vmount.'  (AIX)])
+         that declares 'struct vmount'.  (AIX)])
   fi
 fi
 
@@ -120,7 +121,7 @@ if test $ac_cv_func_getmntent = yes; then
   # Determine whether it's the one-argument variant or the two-argument one.
 
   if test -z "$ac_list_mounted_fs"; then
-    # 4.3BSD, SunOS, HP-UX, Dynix, Irix
+    # GNU/Linux, 4.3BSD, SunOS, HP-UX, Dynix, Irix
     AC_MSG_CHECKING([for one-argument getmntent function])
     AC_CACHE_VAL([fu_cv_sys_mounted_getmntent1],
                  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -151,6 +152,7 @@ if test $ac_cv_func_getmntent = yes; then
         [Define if there is a function named getmntent for reading the list
          of mounted file systems, and that function takes a single argument.
          (4.3BSD, SunOS, HP-UX, Dynix, Irix)])
+      AC_CHECK_FUNCS([hasmntopt])
     fi
   fi
 
@@ -339,7 +341,7 @@ if test -z "$ac_list_mounted_fs"; then
       ac_list_mounted_fs=found
       AC_DEFINE([MOUNTED_INTERIX_STATVFS], [1],
                 [Define if we are on interix, and ought to use statvfs plus
-                 some special knowledge on where mounted filesystems can be
+                 some special knowledge on where mounted file systems can be
                  found. (Interix)])
     fi
     ;;

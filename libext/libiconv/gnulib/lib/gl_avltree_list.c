@@ -1,5 +1,5 @@
 /* Sequential list data type implemented by a binary tree.
-   Copyright (C) 2006, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2008-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -37,7 +37,9 @@
 #include "gl_anytree_list2.h"
 
 /* For debugging.  */
-static unsigned int
+extern void gl_avltree_list_check_invariants (gl_list_t list);
+
+static unsigned int _GL_ATTRIBUTE_PURE
 check_invariants (gl_list_node_t node, gl_list_node_t parent)
 {
   unsigned int left_height =
@@ -59,11 +61,12 @@ check_invariants (gl_list_node_t node, gl_list_node_t parent)
 
   return 1 + (left_height > right_height ? left_height : right_height);
 }
-void
+
+void _GL_ATTRIBUTE_CONST
 gl_avltree_list_check_invariants (gl_list_t list)
 {
   if (list->root != NULL)
-    check_invariants (list->root, NULL);
+    (void) check_invariants (list->root, NULL);
 }
 
 const struct gl_list_implementation gl_avltree_list_implementation =

@@ -1,5 +1,5 @@
-# ptsname.m4 serial 2
-dnl Copyright (C) 2010-2011 Free Software Foundation, Inc.
+# ptsname.m4 serial 5
+dnl Copyright (C) 2010-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -7,6 +7,7 @@ dnl with or without modifications, as long as this notice is preserved.
 AC_DEFUN([gl_FUNC_PTSNAME],
 [
   AC_REQUIRE([gl_UNISTD_H_DEFAULTS])
+  AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
 
   dnl Persuade glibc <stdlib.h> to declare ptsname().
   AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
@@ -14,6 +15,26 @@ AC_DEFUN([gl_FUNC_PTSNAME],
   AC_CHECK_FUNCS([ptsname])
   if test $ac_cv_func_ptsname = no; then
     HAVE_PTSNAME=0
+  else
+    AC_CACHE_CHECK([whether ptsname sets errno on failure],
+      [gl_cv_func_ptsname_sets_errno],
+      [AC_RUN_IFELSE(
+         [AC_LANG_PROGRAM([[#include <errno.h>
+      ]], [[
+      return ptsname (-1) || !errno;
+           ]])],
+         [gl_cv_func_ptsname_sets_errno=yes],
+         [gl_cv_func_ptsname_sets_errno=no],
+         [case "$host_os" in
+                           # Guess yes on glibc systems.
+            *-gnu* | gnu*) gl_cv_func_ptsname_sets_errno="guessing yes" ;;
+                           # If we don't know, assume the worst.
+            *)             gl_cv_func_ptsname_sets_errno="guessing no" ;;
+          esac
+         ])])
+    case $gl_cv_func_ptsname_sets_errno in
+      *no) REPLACE_PTSNAME=1 ;;
+    esac
   fi
 ])
 

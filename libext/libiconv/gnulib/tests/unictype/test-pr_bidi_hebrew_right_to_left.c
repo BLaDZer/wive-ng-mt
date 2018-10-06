@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -30,7 +30,9 @@
     { 0x0824, 0x0824 },
     { 0x0828, 0x0828 },
     { 0x082E, 0x0858 },
-    { 0x085C, 0x08FF },
+    { 0x085C, 0x089F },
+    { 0x08B5, 0x08B5 },
+    { 0x08BE, 0x08D3 },
     { 0x200F, 0x200F },
     { 0xFB1D, 0xFB1D },
     { 0xFB1F, 0xFB28 },
@@ -41,9 +43,15 @@
     { 0x10A07, 0x10A0B },
     { 0x10A10, 0x10A37 },
     { 0x10A3B, 0x10A3E },
-    { 0x10A40, 0x10B38 },
+    { 0x10A40, 0x10AE4 },
+    { 0x10AE7, 0x10B38 },
     { 0x10B40, 0x10E5F },
-    { 0x10E7F, 0x10FFF }
+    { 0x10E7F, 0x10FFF },
+    { 0x1E800, 0x1E8C4 },
+    { 0x1E8C7, 0x1E8CF },
+    { 0x1E900, 0x1E943 },
+    { 0x1E950, 0x1E959 },
+    { 0x1E95E, 0x1E95F }
 
 #define PREDICATE(c) uc_is_property_bidi_hebrew_right_to_left (c)
 #include "test-predicate-part2.h"

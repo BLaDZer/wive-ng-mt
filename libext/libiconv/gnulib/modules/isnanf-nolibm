@@ -26,8 +26,7 @@ Include:
 "isnanf-nolibm.h"
 
 License:
-LGPL
+LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

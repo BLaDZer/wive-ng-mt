@@ -1,5 +1,5 @@
 /* Test of yesno module.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <config.h>
@@ -27,8 +27,6 @@
 #include "closein.h"
 #include "binary-io.h"
 
-char *program_name;
-
 /* Test yesno.  Without arguments, read one line.  If first argument
    is zero, close stdin before attempting to read one line.
    Otherwise, read the number of lines specified by first
@@ -37,7 +35,6 @@ int
 main (int argc, char **argv)
 {
   int i = 1;
-  program_name = argv[0];
 
   /* yesno recommends that all clients use close_stdin in main.  */
   atexit (close_stdin);
@@ -50,7 +47,7 @@ main (int argc, char **argv)
      position and the last filled buffer end position.  (I.e. the repositioning
      from the end-of-buffer to the expected position does not work if the input
      file contains end-of-line markers in Unix convention.)  */
-  SET_BINARY (0);
+  set_binary_mode (0, O_BINARY);
 
   if (1 < argc)
     i = atoi (argv[1]);

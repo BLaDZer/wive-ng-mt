@@ -1,5 +1,5 @@
 /* Searching in a string.
-   Copyright (C) 2001-2003, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 
 /* The functions defined in this file assume a nearly ASCII compatible
@@ -33,7 +33,7 @@ extern "C" {
         [this restriction is needed because of BIG5, BIG5-HKSCS, GBK, GB18030,
          Shift_JIS, JOHAB], and
      3. does not consist entirely of decimal digits, or has at least length 4
-        [this restricion is needed because of GB18030].
+        [this restriction is needed because of GB18030].
    This function is also safe to be called, even in a multibyte locale, if
    HAYSTACK and NEEDLE are known to both consist solely of printable ASCII
    characters excluding '\\' and '~'.  */

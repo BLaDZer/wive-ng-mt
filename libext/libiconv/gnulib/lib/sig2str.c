@@ -1,6 +1,6 @@
 /* sig2str.c -- convert between signal names and numbers
 
-   Copyright (C) 2002, 2004, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2004, 2006, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert.  */
 
@@ -251,7 +251,7 @@ static struct numname { int num; char const name[8]; } numname_table[] =
    - It's typically faster.
    POSIX says that only '0' through '9' are digits.  Prefer ISDIGIT to
    isdigit unless it's important to use the locale's definition
-   of `digit' even when the host does not conform to POSIX.  */
+   of "digit" even when the host does not conform to POSIX.  */
 #define ISDIGIT(c) ((unsigned int) (c) - '0' <= 9)
 
 /* Convert the signal name SIGNAME to a signal number.  Return the
@@ -325,21 +325,25 @@ sig2str (int signum, char *signame)
   {
     int rtmin = SIGRTMIN;
     int rtmax = SIGRTMAX;
+    int base, delta;
 
     if (! (rtmin <= signum && signum <= rtmax))
       return -1;
 
     if (signum <= rtmin + (rtmax - rtmin) / 2)
       {
-        int delta = signum - rtmin;
-        sprintf (signame, delta ? "RTMIN+%d" : "RTMIN", delta);
+        strcpy (signame, "RTMIN");
+        base = rtmin;
       }
     else
       {
-        int delta = rtmax - signum;
-        sprintf (signame, delta ? "RTMAX-%d" : "RTMAX", delta);
+        strcpy (signame, "RTMAX");
+        base = rtmax;
       }
 
+    delta = signum - base;
+    if (delta != 0)
+      sprintf (signame + 5, "%+d", delta);
     return 0;
   }
 }

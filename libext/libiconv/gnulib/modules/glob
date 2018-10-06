@@ -3,58 +3,48 @@ glob() function: Search for files and directories with paths matching a
 pattern, with GNU extensions.
 
 Files:
-lib/glob.in.h
-lib/glob-libc.h
 lib/glob.c
+lib/glob_internal.h
+lib/glob_pattern_p.c
+lib/globfree.c
 m4/glob.m4
 
 Depends-on:
-extensions
+glob-h
+c99
 largefile
-snippet/arg-nonnull
-snippet/c++defs
-snippet/warn-on-use
-alloca          [test -n "$GLOB_H"]
-d-type          [test -n "$GLOB_H"]
-dirfd           [test -n "$GLOB_H"]
-fnmatch         [test -n "$GLOB_H"]
-getlogin_r      [test -n "$GLOB_H"]
-memchr          [test -n "$GLOB_H"]
-mempcpy         [test -n "$GLOB_H"]
-stdbool         [test -n "$GLOB_H"]
-strdup          [test -n "$GLOB_H"]
-sys_stat        [test -n "$GLOB_H"]
-unistd          [test -n "$GLOB_H"]
-malloc-posix    [test -n "$GLOB_H"]
+alloca          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+builtin-expect  [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+closedir        [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+d-type          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+flexmember      [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+fnmatch         [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+getlogin_r      [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+libc-config     [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+memchr          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+mempcpy         [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+opendir         [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+readdir         [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+scratch_buffer  [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+stdbool         [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+stdint          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+strdup          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+unistd          [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
+malloc-posix    [test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1]
 
 configure.ac:
 gl_GLOB
-if test -n "$GLOB_H"; then
+if test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1; then
   AC_LIBOBJ([glob])
+  AC_LIBOBJ([globfree])
   gl_PREREQ_GLOB
 fi
+if test $HAVE_GLOB_PATTERN_P = 0 || test $REPLACE_GLOB_PATTERN_P = 1; then
+  AC_LIBOBJ([glob_pattern_p])
+fi
+gl_GLOB_MODULE_INDICATOR([glob])
 
 Makefile.am:
-BUILT_SOURCES += $(GLOB_H)
-
-# We need the following in order to create <glob.h> when the system
-# doesn't have one that works with the given compiler.
-if GL_GENERATE_GLOB_H
-glob.h: glob.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H) $(WARN_ON_USE_H)
-	$(AM_V_GEN)rm -f $@-t $@ && \
-	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
-	  sed -e 's|@''HAVE_SYS_CDEFS_H''@|$(HAVE_SYS_CDEFS_H)|g' \
-	      -e '/definitions of _GL_FUNCDECL_RPL/r $(CXXDEFS_H)' \
-	      -e '/definition of _GL_ARG_NONNULL/r $(ARG_NONNULL_H)' \
-	      -e '/definition of _GL_WARN_ON_USE/r $(WARN_ON_USE_H)' \
-	      < $(srcdir)/glob.in.h; \
-	} > $@-t && \
-	mv -f $@-t $@
-else
-glob.h: $(top_builddir)/config.status
-	rm -f $@
-endif
-MOSTLYCLEANFILES += glob.h glob.h-t
 
 Include:
 <glob.h>

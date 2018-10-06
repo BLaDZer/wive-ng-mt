@@ -1,5 +1,5 @@
 /* Line breaking auxiliary tables.
-   Copyright (C) 2001-2003, 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "unitypes.h"
 
@@ -21,22 +21,22 @@
 
 enum
 {
-  /* Values >= 25 are resolved at run time. */
-  LBP_BK = 25, /* mandatory break */
+  /* Values >= 30 are resolved at run time. */
+  LBP_BK = 30, /* mandatory break */
 /*LBP_CR,         carriage return - not used here because it's a DOSism */
 /*LBP_LF,         line feed - not used here because it's a DOSism */
-  LBP_CM = 26, /* attached characters and combining marks */
+  LBP_CM = 31, /* attached characters and combining marks */
 /*LBP_NL,         next line - not used here because it's equivalent to LBP_BK */
 /*LBP_SG,         surrogates - not used here because they are not characters */
   LBP_WJ =  0, /* word joiner */
-  LBP_ZW = 27, /* zero width space */
+  LBP_ZW = 32, /* zero width space */
   LBP_GL =  1, /* non-breaking (glue) */
-  LBP_SP = 28, /* space */
+  LBP_SP = 33, /* space */
   LBP_B2 =  2, /* break opportunity before and after */
   LBP_BA =  3, /* break opportunity after */
   LBP_BB =  4, /* break opportunity before */
   LBP_HY =  5, /* hyphen */
-  LBP_CB = 29, /* contingent break opportunity */
+  LBP_CB = 34, /* contingent break opportunity */
   LBP_CL =  6, /* closing punctuation */
   LBP_CP =  7, /* closing parenthesis */
   LBP_EX =  8, /* exclamation/interrogation */
@@ -49,16 +49,22 @@ enum
   LBP_PO = 15, /* postfix (numeric) */
   LBP_PR = 16, /* prefix (numeric) */
   LBP_SY = 17, /* symbols allowing breaks */
-  LBP_AI = 30, /* ambiguous (alphabetic or ideograph) */
+  LBP_AI = 35, /* ambiguous (alphabetic or ideograph) */
   LBP_AL = 18, /* ordinary alphabetic and symbol characters */
+/*LBP_CJ,         conditional Japanese starters, resolved to NS */
   LBP_H2 = 19, /* Hangul LV syllable */
   LBP_H3 = 20, /* Hangul LVT syllable */
+  LBP_HL = 25, /* Hebrew letter */
   LBP_ID = 21, /* ideographic */
   LBP_JL = 22, /* Hangul L Jamo */
   LBP_JV = 23, /* Hangul V Jamo */
   LBP_JT = 24, /* Hangul T Jamo */
-  LBP_SA = 31, /* complex context (South East Asian) */
-  LBP_XX = 32  /* unknown */
+  LBP_RI = 26, /* regional indicator */
+  LBP_SA = 36, /* complex context (South East Asian) */
+  LBP_ZWJ = 27, /* zero width joiner */
+  LBP_EB = 28, /* emoji base */
+  LBP_EM = 29, /* emoji modifier */
+  LBP_XX = 37  /* unknown */
 };
 
 #include "lbrkprop1.h"
@@ -89,7 +95,7 @@ unilbrkprop_lookup (ucs4_t uc)
 #define I 2  /* indirect break opportunity, '%' in table 7.3 of UTR #14 */
 #define P 3  /* prohibited break,           '^' in table 7.3 of UTR #14 */
 
-extern const unsigned char unilbrk_table[25][25];
+extern const unsigned char unilbrk_table[30][30];
 
 /* We don't support line breaking of complex-context dependent characters
    (Thai, Lao, Myanmar, Khmer) yet, because it requires dictionary lookup. */

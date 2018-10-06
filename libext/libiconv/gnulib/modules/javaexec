@@ -17,6 +17,7 @@ xmalloca
 error
 gettext-h
 javaexec-script
+sh-filename
 
 configure.ac:
 
@@ -31,5 +32,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible
-
+all

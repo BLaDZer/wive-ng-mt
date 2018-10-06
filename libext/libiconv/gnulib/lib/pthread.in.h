@@ -1,6 +1,6 @@
 /* Implement a trivial subset of POSIX 1003.1-2008 pthread.h.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,31 +13,69 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert and Glen Lenker.  */
-
-#ifndef _@GUARD_PREFIX@_PTHREAD_H_
 
 #if __GNUC__ >= 3
 @PRAGMA_SYSTEM_HEADER@
 #endif
 @PRAGMA_COLUMNS@
 
-/* The include_next requires a split double-inclusion guard.  */
+#if defined _GL_ALREADY_INCLUDING_PTHREAD_H
+/* Special invocation convention:
+   On Android, we have a sequence of nested includes
+   <pthread.h> -> <time.h> -> <sys/time.h> -> <sys/select.h> ->
+   <signal.h> -> <pthread.h>.
+   In this situation, PTHREAD_COND_INITIALIZER is not yet defined,
+   therefore we should not attempt to define PTHREAD_MUTEX_NORMAL etc.  */
+
+#@INCLUDE_NEXT@ @NEXT_PTHREAD_H@
+
+#else
+/* Normal invocation convention.  */
+
+#ifndef _@GUARD_PREFIX@_PTHREAD_H_
+
 #if @HAVE_PTHREAD_H@
+
+# define _GL_ALREADY_INCLUDING_PTHREAD_H
+
+/* The include_next requires a split double-inclusion guard.  */
 # @INCLUDE_NEXT@ @NEXT_PTHREAD_H@
+
+# undef _GL_ALREADY_INCLUDING_PTHREAD_H
+
 #endif
 
 #ifndef _@GUARD_PREFIX@_PTHREAD_H_
 #define _@GUARD_PREFIX@_PTHREAD_H_
 
-#include <errno.h>
+#define __need_system_stdlib_h
 #include <stdlib.h>
+#undef __need_system_stdlib_h
+
+
+/* The pthreads-win32 <pthread.h> defines a couple of broken macros.  */
+#undef asctime_r
+#undef ctime_r
+#undef gmtime_r
+#undef localtime_r
+#undef rand_r
+#undef strtok_r
+
+#include <errno.h>
 #include <sched.h>
 #include <sys/types.h>
 #include <time.h>
+
+#ifndef _GL_INLINE_HEADER_BEGIN
+ #error "Please include config.h first."
+#endif
+_GL_INLINE_HEADER_BEGIN
+#ifndef _GL_PTHREAD_INLINE
+# define _GL_PTHREAD_INLINE _GL_INLINE
+#endif
 
 #if ! @HAVE_PTHREAD_T@
 # if !GNULIB_defined_pthread_types
@@ -111,14 +149,14 @@
    know what to do, so that they elicit a compile-time error for
    now.  */
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_cond_destroy (pthread_cond_t *cond)
 {
   /* COND is never seriously used.  */
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_cond_init (pthread_cond_t *restrict cond,
                    pthread_condattr_t const *restrict attr)
 {
@@ -126,14 +164,14 @@ pthread_cond_init (pthread_cond_t *restrict cond,
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_cond_signal (pthread_cond_t *cond)
 {
   /* No threads can currently be blocked on COND.  */
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_cond_wait (pthread_cond_t *restrict cond,
                    pthread_mutex_t *restrict mutex)
 {
@@ -142,7 +180,7 @@ pthread_cond_wait (pthread_cond_t *restrict cond,
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_create (pthread_t *restrict thread,
                 pthread_attr_t const *restrict attr,
                 void * (*start_routine) (void*), void *restrict arg)
@@ -151,14 +189,14 @@ pthread_create (pthread_t *restrict thread,
   return EAGAIN;
 }
 
-static inline void
+_GL_PTHREAD_INLINE void
 pthread_exit (void *value)
 {
   /* There is just one thread, so the process exits.  */
   exit (0);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_join (pthread_t thread, void **pvalue)
 {
   /* Properly-written applications never come here.  */
@@ -166,32 +204,32 @@ pthread_join (pthread_t thread, void **pvalue)
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutexattr_destroy (pthread_mutexattr_t *attr)
 {
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutexattr_init (pthread_mutexattr_t *attr)
 {
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutexattr_settype (pthread_mutexattr_t *attr, int attr_type)
 {
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutex_destroy (pthread_mutex_t *mutex)
 {
   /* MUTEX is never seriously used.  */
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutex_init (pthread_mutex_t *restrict mutex,
                     pthread_mutexattr_t const *restrict attr)
 {
@@ -199,7 +237,7 @@ pthread_mutex_init (pthread_mutex_t *restrict mutex,
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutex_lock (pthread_mutex_t *mutex)
 {
   /* There is only one thread, so it always gets the lock.  This
@@ -207,13 +245,13 @@ pthread_mutex_lock (pthread_mutex_t *mutex)
   return 0;
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutex_trylock (pthread_mutex_t *mutex)
 {
   return pthread_mutex_lock (mutex);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_mutex_unlock (pthread_mutex_t *mutex)
 {
   /* There is only one thread, so it always unlocks successfully.
@@ -235,31 +273,31 @@ pthread_mutex_unlock (pthread_mutex_t *mutex)
 
 typedef pthread_mutex_t pthread_spinlock_t;
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_spin_init (pthread_spinlock_t *lock, int pshared)
 {
   return pthread_mutex_init (lock, NULL);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_spin_destroy (pthread_spinlock_t *lock)
 {
   return pthread_mutex_destroy (lock);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_spin_lock (pthread_spinlock_t *lock)
 {
   return pthread_mutex_lock (lock);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_spin_trylock (pthread_spinlock_t *lock)
 {
   return pthread_mutex_trylock (lock);
 }
 
-static inline int
+_GL_PTHREAD_INLINE int
 pthread_spin_unlock (pthread_spinlock_t *lock)
 {
   return pthread_mutex_unlock (lock);
@@ -270,5 +308,8 @@ pthread_spin_unlock (pthread_spinlock_t *lock)
 
 #endif
 
+_GL_INLINE_HEADER_END
+
 #endif /* _@GUARD_PREFIX@_PTHREAD_H_ */
 #endif /* _@GUARD_PREFIX@_PTHREAD_H_ */
+#endif

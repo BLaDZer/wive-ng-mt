@@ -3,7 +3,7 @@
 
 POSIX specification:@* @url{http://www.opengroup.org/onlinepubs/9699919799/basedefs/monetary.h.html}
 
-Gnulib module: ---
+Gnulib module: monetary
 
 Portability problems fixed by Gnulib:
 @itemize
@@ -13,5 +13,5 @@ Portability problems not fixed by Gnulib:
 @itemize
 @item
 This header file is missing on some platforms:
-NetBSD 3.0, OpenBSD 3.8, Minix 3.1.8, Cygwin, mingw, BeOS.
+NetBSD 3.0, OpenBSD 3.8, Minix 3.1.8, Cygwin, mingw, MSVC 14, BeOS, Android 9.0.
 @end itemize

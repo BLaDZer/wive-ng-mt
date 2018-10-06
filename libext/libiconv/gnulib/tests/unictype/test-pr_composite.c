@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -288,12 +288,18 @@
     { 0x1109A, 0x1109A },
     { 0x1109C, 0x1109C },
     { 0x110AB, 0x110AB },
+    { 0x1112E, 0x1112F },
+    { 0x1134B, 0x1134C },
+    { 0x114BB, 0x114BC },
+    { 0x114BE, 0x114BE },
+    { 0x115BA, 0x115BB },
     { 0x1D15E, 0x1D164 },
     { 0x1D1BB, 0x1D1C0 },
     { 0x1F100, 0x1F10A },
     { 0x1F110, 0x1F12A },
     { 0x1F12D, 0x1F12E },
     { 0x1F14A, 0x1F14F },
+    { 0x1F16A, 0x1F16B },
     { 0x1F190, 0x1F190 },
     { 0x1F200, 0x1F201 },
     { 0x1F240, 0x1F248 }

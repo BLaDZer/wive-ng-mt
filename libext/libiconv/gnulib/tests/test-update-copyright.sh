@@ -1,6 +1,6 @@
 #!/bin/sh
 # Test suite for update-copyright.
-# Copyright (C) 2009-2011 Free Software Foundation, Inc.
+# Copyright (C) 2009-2018 Free Software Foundation, Inc.
 # This file is part of the GNUlib Library.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 diffout=`diff -u /dev/null /dev/null 2>&1`
 if test x"$diffout" = x"" && test $? -eq 0; then
@@ -37,7 +37,7 @@ trap 'rm -f $TMP_BASE*' 0 1 2 3 15
 TMP=$TMP_BASE
 s=$TMP-script
 cat <<\EOF > $s
-eval '(exit $?0)' && eval 'exec perl -wS -0777 -pi "$0" ${1+"$@"}'
+eval '(exit $?0)' && eval 'exec perl -wS -0777 -pi "$0" "$@"'
   & eval 'exec perl -wS -0777 -pi "$0" $argv:q'
     if 0;
 s/a/b/
@@ -103,7 +103,7 @@ Copyright (C) 1990-2005, 2007-2009 Acme, Inc.
 EOF
 
 UPDATE_COPYRIGHT_YEAR=2009 \
-  update-copyright $TMP.* 1> $TMP-stdout 2> $TMP-stderr
+  update-copyright $TMP.? 1> $TMP-stdout 2> $TMP-stderr
 compare /dev/null $TMP-stdout || exit 1
 compare - $TMP-stderr <<EOF || exit 1
 $TMP.4: warning: copyright statement not found
@@ -145,7 +145,7 @@ Copyright (C) 1990-2005, 2007-2009 Acme, Inc.
 EOF
 
 UPDATE_COPYRIGHT_YEAR=2010 UPDATE_COPYRIGHT_USE_INTERVALS=1 \
-  update-copyright $TMP.* 1> $TMP-stdout 2> $TMP-stderr
+  update-copyright $TMP.? 1> $TMP-stdout 2> $TMP-stderr
 compare /dev/null $TMP-stdout || exit 1
 compare - $TMP-stderr <<EOF || exit 1
 $TMP.4: warning: copyright statement not found
@@ -183,7 +183,7 @@ Copyright (C) 1990-2005, 2007-2009 Acme, Inc.
 EOF
 
 UPDATE_COPYRIGHT_YEAR=2010 UPDATE_COPYRIGHT_FORCE=1 \
-  update-copyright $TMP.* 1> $TMP-stdout 2> $TMP-stderr
+  update-copyright $TMP.? 1> $TMP-stdout 2> $TMP-stderr
 compare /dev/null $TMP-stdout || exit 1
 compare - $TMP-stderr <<EOF || exit 1
 $TMP.4: warning: copyright statement not found
@@ -424,6 +424,13 @@ compare - $TMP <<EOF || exit 1
 		# Copyright (C) 1987-1988, 1991-2011 Free Software
 		# Foundation, Inc.
 EOF
+UPDATE_COPYRIGHT_YEAR=2011 UPDATE_COPYRIGHT_USE_INTERVALS=2 \
+  UPDATE_COPYRIGHT_FORCE=1 update-copyright $TMP 1> $TMP-stdout 2> $TMP-stderr
+compare /dev/null $TMP-stdout || exit 1
+compare /dev/null $TMP-stderr || exit 1
+compare - $TMP <<EOF || exit 1
+		# Copyright (C) 1987-2011 Free Software Foundation, Inc.
+EOF
 rm $TMP*
 
 ## --------- ##
@@ -498,6 +505,9 @@ cat > $TMP.extra-text-space <<EOF
  /* Copyright 1987, 1988, 1991, 1992 Free Software Foundation, Inc. ***
     * End of comments. */
 EOF
+cat > $TMP.two-digit-final-is-substr-of-first <<EOF
+ /* Copyright 1991, 99 Free Software Foundation, Inc. */
+EOF
 UPDATE_COPYRIGHT_YEAR=2010 \
   update-copyright $TMP.* 1> $TMP-stdout 2> $TMP-stderr
 compare /dev/null $TMP-stdout || exit 1
@@ -528,6 +538,9 @@ compare - $TMP.extra-text-space <<EOF || exit 1
  /* Copyright 1987, 1988, 1991, 1992, 2010 Free Software Foundation,
     Inc. ***
     * End of comments. */
+EOF
+compare - $TMP.two-digit-final-is-substr-of-first <<EOF || exit 1
+ /* Copyright 1991, 1999, 2010 Free Software Foundation, Inc. */
 EOF
 rm $TMP*
 

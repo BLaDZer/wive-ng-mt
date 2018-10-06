@@ -1,5 +1,5 @@
 /* Test of file timestamp modification functions.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-utimens-common.h"
 
@@ -27,7 +27,7 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
   struct stat st2;
 
   ASSERT (close (creat (BASE "file", 0600)) == 0);
-  /* If utimens truncates to less resolution than the file system
+  /* If utimens truncates to worse resolution than the file system
      supports, then time can appear to go backwards between now and a
      follow-up utimens with UTIME_NOW or a NULL timespec.  Use
      UTIMECMP_TRUNCATE_SOURCE to compensate, with st1 as the
@@ -38,9 +38,7 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
   ASSERT (stat (BASE "file", &st2) == 0);
   ASSERT (0 <= utimecmp (BASE "file", &st2, &st1, UTIMECMP_TRUNCATE_SOURCE));
   if (check_ctime)
-    ASSERT (st1.st_ctime < st2.st_ctime
-            || (st1.st_ctime == st2.st_ctime
-                && get_stat_ctime_ns (&st1) < get_stat_ctime_ns (&st2)));
+    ASSERT (ctime_compare (&st1, &st2) < 0);
   {
     /* On some NFS systems, the 'now' timestamp of creat or a NULL
        timespec is determined by the server, but the 'now' timestamp
@@ -68,19 +66,30 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
   ASSERT (func ("", NULL) == -1);
   ASSERT (errno == ENOENT);
   {
-    struct timespec ts[2] = { { Y2K, UTIME_BOGUS_POS }, { Y2K, 0 } };
+    struct timespec ts[2];
+    ts[0].tv_sec = Y2K;
+    ts[0].tv_nsec = UTIME_BOGUS_POS;
+    ts[1].tv_sec = Y2K;
+    ts[1].tv_nsec = 0;
     errno = 0;
     ASSERT (func (BASE "file", ts) == -1);
     ASSERT (errno == EINVAL);
   }
   {
-    struct timespec ts[2] = { { Y2K, 0 }, { Y2K, UTIME_BOGUS_NEG } };
+    struct timespec ts[2];
+    ts[0].tv_sec = Y2K;
+    ts[0].tv_nsec = 0;
+    ts[1].tv_sec = Y2K;
+    ts[1].tv_nsec = UTIME_BOGUS_NEG;
     errno = 0;
     ASSERT (func (BASE "file", ts) == -1);
     ASSERT (errno == EINVAL);
   }
   {
-    struct timespec ts[2] = { { Y2K, 0 }, { Y2K, 0 } };
+    struct timespec ts[2];
+    ts[0].tv_sec = Y2K;
+    ts[0].tv_nsec = 0;
+    ts[1] = ts[0];
     errno = 0;
     ASSERT (func (BASE "file/", ts) == -1);
     ASSERT (errno == ENOTDIR || errno == EINVAL);
@@ -92,7 +101,11 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
 
   /* Set both times.  */
   {
-    struct timespec ts[2] = { { Y2K, BILLION / 2 - 1 }, { Y2K, BILLION - 1 } };
+    struct timespec ts[2];
+    ts[0].tv_sec = Y2K;
+    ts[0].tv_nsec = BILLION / 2 - 1;
+    ts[1].tv_sec = Y2K;
+    ts[1].tv_nsec = BILLION - 1;
     ASSERT (func (BASE "file", ts) == 0);
     ASSERT (stat (BASE "file", &st2) == 0);
     ASSERT (st2.st_atime == Y2K);
@@ -102,15 +115,17 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
     ASSERT (0 <= get_stat_mtime_ns (&st2));
     ASSERT (get_stat_mtime_ns (&st2) < BILLION);
     if (check_ctime)
-      ASSERT (st1.st_ctime < st2.st_ctime
-              || (st1.st_ctime == st2.st_ctime
-                  && get_stat_ctime_ns (&st1) < get_stat_ctime_ns (&st2)));
+      ASSERT (ctime_compare (&st1, &st2) < 0);
   }
 
   /* Play with UTIME_OMIT, UTIME_NOW.  */
   {
     struct stat st3;
-    struct timespec ts[2] = { { BILLION, UTIME_OMIT }, { 0, UTIME_NOW } };
+    struct timespec ts[2];
+    ts[0].tv_sec = BILLION;
+    ts[0].tv_nsec = UTIME_OMIT;
+    ts[1].tv_sec = 0;
+    ts[1].tv_nsec = UTIME_NOW;
     nap ();
     ASSERT (func (BASE "file", ts) == 0);
     ASSERT (stat (BASE "file", &st3) == 0);
@@ -120,9 +135,7 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
     /* See comment above about this utimecmp call.  */
     ASSERT (0 <= utimecmp (BASE "file", &st3, &st1, UTIMECMP_TRUNCATE_SOURCE));
     if (check_ctime)
-      ASSERT (st2.st_ctime < st3.st_ctime
-              || (st2.st_ctime == st3.st_ctime
-                  && get_stat_ctime_ns (&st2) < get_stat_ctime_ns (&st3)));
+      ASSERT (ctime_compare (&st2, &st3) < 0);
     nap ();
     ts[0].tv_nsec = 0;
     ts[1].tv_nsec = UTIME_OMIT;
@@ -133,9 +146,7 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
     ASSERT (st3.st_mtime == st2.st_mtime);
     ASSERT (get_stat_mtime_ns (&st3) == get_stat_mtime_ns (&st2));
     if (check_ctime)
-      ASSERT (st3.st_ctime < st2.st_ctime
-              || (st3.st_ctime == st2.st_ctime
-                  && get_stat_ctime_ns (&st3) < get_stat_ctime_ns (&st2)));
+      ASSERT (ctime_compare (&st3, &st2) < 0);
   }
 
   /* Make sure this dereferences symlinks.  */
@@ -153,7 +164,10 @@ test_utimens (int (*func) (char const *, struct timespec const *), bool print)
   ASSERT (func (BASE "link/", NULL) == -1);
   ASSERT (errno == ENOTDIR);
   {
-    struct timespec ts[2] = { { Y2K, 0 }, { Y2K, 0 } };
+    struct timespec ts[2];
+    ts[0].tv_sec = Y2K;
+    ts[0].tv_nsec = 0;
+    ts[1] = ts[0];
     ASSERT (func (BASE "link", ts) == 0);
     ASSERT (lstat (BASE "link", &st2) == 0);
     /* Can't compare atimes, since lstat() changes symlink atime on cygwin.  */

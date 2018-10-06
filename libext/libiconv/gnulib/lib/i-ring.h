@@ -1,5 +1,5 @@
 /* definitions for a simple ring buffer
-   Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <stdbool.h>
 #include "verify.h"
@@ -41,4 +41,4 @@ typedef struct I_ring I_ring;
 void i_ring_init (I_ring *ir, int ir_default_val);
 int i_ring_push (I_ring *ir, int val);
 int i_ring_pop (I_ring *ir);
-bool i_ring_empty (I_ring const *ir);
+bool i_ring_empty (I_ring const *ir) _GL_ATTRIBUTE_PURE;

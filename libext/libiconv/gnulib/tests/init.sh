@@ -1,6 +1,6 @@
 # source this file; set up for tests
 
-# Copyright (C) 2009-2011 Free Software Foundation, Inc.
+# Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Using this file in a test
 # =========================
@@ -45,6 +45,9 @@
 # Running a single test, with verbose output:
 #   $ make check TESTS=test-foo.sh VERBOSE=yes
 #
+# Running a single test, keeping the temporary directory:
+#   $ make check TESTS=test-foo.sh KEEP=yes
+#
 # Running a single test, with single-stepping:
 #   1. Go into a sub-shell:
 #   $ bash
@@ -59,9 +62,22 @@
 
 ME_=`expr "./$0" : '.*/\(.*\)$'`
 
+# Prepare PATH_SEPARATOR.
+# The user is always right.
+if test "${PATH_SEPARATOR+set}" != set; then
+  # Determine PATH_SEPARATOR by trying to find /bin/sh in a PATH which
+  # contains only /bin. Note that ksh looks also at the FPATH variable,
+  # so we have to set that as well for the test.
+  PATH_SEPARATOR=:
+  (PATH='/bin;/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 \
+    && { (PATH='/bin:/bin'; FPATH=$PATH; sh -c :) >/dev/null 2>&1 \
+           || PATH_SEPARATOR=';'
+       }
+fi
+
 # We use a trap below for cleanup.  This requires us to go through
 # hoops to get the right exit status transported through the handler.
-# So use `Exit STATUS' instead of `exit STATUS' inside of the tests.
+# So use 'Exit STATUS' instead of 'exit STATUS' inside of the tests.
 # Turn off errexit here so that we don't trip the bug with OSF1/Tru64
 # sh inside this function.
 Exit () { set +e; (exit $1); exit $1; }
@@ -74,11 +90,45 @@ Exit () { set +e; (exit $1); exit $1; }
 # the reason for skip/failure to console, rather than to the .log files.
 : ${stderr_fileno_=2}
 
-warn_ () { echo "$@" 1>&$stderr_fileno_; }
+# Note that correct expansion of "$*" depends on IFS starting with ' '.
+# Always write the full diagnostic to stderr.
+# When stderr_fileno_ is not 2, also emit the first line of the
+# diagnostic to that file descriptor.
+warn_ ()
+{
+  # If IFS does not start with ' ', set it and emit the warning in a subshell.
+  case $IFS in
+    ' '*) printf '%s\n' "$*" >&2
+          test $stderr_fileno_ = 2 \
+            || { printf '%s\n' "$*" | sed 1q >&$stderr_fileno_ ; } ;;
+    *) (IFS=' '; warn_ "$@");;
+  esac
+}
 fail_ () { warn_ "$ME_: failed test: $@"; Exit 1; }
 skip_ () { warn_ "$ME_: skipped test: $@"; Exit 77; }
 fatal_ () { warn_ "$ME_: hard error: $@"; Exit 99; }
 framework_failure_ () { warn_ "$ME_: set-up failure: $@"; Exit 99; }
+
+# This is used to simplify checking of the return value
+# which is useful when ensuring a command fails as desired.
+# I.e., just doing `command ... &&fail=1` will not catch
+# a segfault in command for example.  With this helper you
+# instead check an explicit exit code like
+#   returns_ 1 command ... || fail
+returns_ () {
+  # Disable tracing so it doesn't interfere with stderr of the wrapped command
+  { set +x; } 2>/dev/null
+
+  local exp_exit="$1"
+  shift
+  "$@"
+  test $? -eq $exp_exit && ret_=0 || ret_=1
+
+  if test "$VERBOSE" = yes && test "$gl_set_x_corrupts_stderr_" = false; then
+    set -x
+  fi
+  { return $ret_; } 2>/dev/null
+}
 
 # Sanitize this shell to POSIX mode, if possible.
 DUALCASE=1; export DUALCASE
@@ -94,6 +144,13 @@ else
 fi
 
 # We require $(...) support unconditionally.
+# We require non-surprising "local" semantics (this eliminates dash).
+# This takes the admittedly draconian step of eliminating dash, because the
+# assignment tab=$(printf '\t') works fine, yet preceding it with "local "
+# transforms it into an assignment that sets the variable to the empty string.
+# That is too counter-intuitive, and can lead to subtle run-time malfunction.
+# The example below is less subtle in that with dash, it evokes the run-time
+# exception "dash: 1: local: 1: bad variable name".
 # We require a few additional shell features only when $EXEEXT is nonempty,
 # in order to support automatic $EXEEXT emulation:
 # - hyphen-containing alias names
@@ -116,6 +173,8 @@ fi
 #  ? - not ok
 gl_shell_test_script_='
 test $(echo y) = y || exit 1
+f_local_() { local v=1; }; f_local_ || exit 1
+f_dash_local_fail_() { local t=$(printf " 1"); }; f_dash_local_fail_
 score_=10
 if test "$VERBOSE" = yes; then
   test -n "$( (exec 3>&1; set -x; P=1 true 2>&3) 2> /dev/null)" && score_=9
@@ -159,7 +218,7 @@ else
     if test "$re_shell_" = __current__; then
       # 'eval'ing this code makes Solaris 10's /bin/sh exit with
       # $? set to 2.  It does not evaluate any of the code after the
-      # "unexpected" first `('.  Thus, we must run it in a subshell.
+      # "unexpected" first '('.  Thus, we must run it in a subshell.
       ( eval "$gl_shell_test_script_" ) > /dev/null 2>&1
     else
       "$re_shell_" -c "$gl_shell_test_script_" 2>/dev/null
@@ -188,13 +247,23 @@ else
       *x*) opts_=-x ;;
       *) opts_= ;;
     esac
+    re_shell=$re_shell_
+    export re_shell
     exec "$re_shell_" $opts_ "$0" --no-reexec "$@"
     echo "$ME_: exec failed" 1>&2
     exit 127
   fi
 fi
 
-test -n "$EXEEXT" && shopt -s expand_aliases
+# If this is bash, turn off all aliases.
+test -n "$BASH_VERSION" && unalias -a
+
+# Note that when supporting $EXEEXT (transparently mapping from PROG_NAME to
+# PROG_NAME.exe), we want to support hyphen-containing names like test-acos.
+# That is part of the shell-selection test above.  Why use aliases rather
+# than functions?  Because support for hyphen-containing aliases is more
+# widespread than that for hyphen-containing function names.
+test -n "$EXEEXT" && test -n "$BASH_VERSION" && shopt -s expand_aliases
 
 # Enable glibc's malloc-perturbing option.
 # This is useful for exposing code that depends on the fact that
@@ -208,13 +277,84 @@ export MALLOC_PERTURB_
 # a partition, or to undo any other global state changes.
 cleanup_ () { :; }
 
-if ( diff --version < /dev/null 2>&1 | grep GNU ) > /dev/null 2>&1; then
-  compare () { diff -u "$@"; }
-elif ( cmp --version < /dev/null 2>&1 | grep GNU ) > /dev/null 2>&1; then
-  compare () { cmp -s "$@"; }
+# Emit a header similar to that from diff -u;  Print the simulated "diff"
+# command so that the order of arguments is clear.  Don't bother with @@ lines.
+emit_diff_u_header_ ()
+{
+  printf '%s\n' "diff -u $*" \
+    "--- $1	1970-01-01" \
+    "+++ $2	1970-01-01"
+}
+
+# Arrange not to let diff or cmp operate on /dev/null,
+# since on some systems (at least OSF/1 5.1), that doesn't work.
+# When there are not two arguments, or no argument is /dev/null, return 2.
+# When one argument is /dev/null and the other is not empty,
+# cat the nonempty file to stderr and return 1.
+# Otherwise, return 0.
+compare_dev_null_ ()
+{
+  test $# = 2 || return 2
+
+  if test "x$1" = x/dev/null; then
+    test -s "$2" || return 0
+    emit_diff_u_header_ "$@"; sed 's/^/+/' "$2"
+    return 1
+  fi
+
+  if test "x$2" = x/dev/null; then
+    test -s "$1" || return 0
+    emit_diff_u_header_ "$@"; sed 's/^/-/' "$1"
+    return 1
+  fi
+
+  return 2
+}
+
+for diff_opt_ in -u -U3 -c '' no; do
+  test "$diff_opt_" != no &&
+    diff_out_=`exec 2>/dev/null; diff $diff_opt_ "$0" "$0" < /dev/null` &&
+    break
+done
+if test "$diff_opt_" != no; then
+  if test -z "$diff_out_"; then
+    compare_ () { diff $diff_opt_ "$@"; }
+  else
+    compare_ ()
+    {
+      # If no differences were found, AIX and HP-UX 'diff' produce output
+      # like "No differences encountered".  Hide this output.
+      diff $diff_opt_ "$@" > diff.out
+      diff_status_=$?
+      test $diff_status_ -eq 0 || cat diff.out || diff_status_=2
+      rm -f diff.out || diff_status_=2
+      return $diff_status_
+    }
+  fi
+elif cmp -s /dev/null /dev/null 2>/dev/null; then
+  compare_ () { cmp -s "$@"; }
 else
-  compare () { cmp "$@"; }
+  compare_ () { cmp "$@"; }
 fi
+
+# Usage: compare EXPECTED ACTUAL
+#
+# Given compare_dev_null_'s preprocessing, defer to compare_ if 2 or more.
+# Otherwise, propagate $? to caller: any diffs have already been printed.
+compare ()
+{
+  # This looks like it can be factored to use a simple "case $?"
+  # after unchecked compare_dev_null_ invocation, but that would
+  # fail in a "set -e" environment.
+  if compare_dev_null_ "$@"; then
+    return 0
+  else
+    case $? in
+      1) return 1;;
+      *) compare_ "$@";;
+    esac
+  fi
+}
 
 # An arbitrary prefix to help distinguish test directories.
 testdir_prefix_ () { printf gt; }
@@ -225,11 +365,15 @@ remove_tmp_ ()
 {
   __st=$?
   cleanup_
-  # cd out of the directory we're about to remove
-  cd "$initial_cwd_" || cd / || cd /tmp
-  chmod -R u+rwx "$test_dir_"
-  # If removal fails and exit status was to be 0, then change it to 1.
-  rm -rf "$test_dir_" || { test $__st = 0 && __st=1; }
+  if test "$KEEP" = yes; then
+    echo "Not removing temporary directory $test_dir_"
+  else
+    # cd out of the directory we're about to remove
+    cd "$initial_cwd_" || cd / || cd /tmp
+    chmod -R u+rwx "$test_dir_"
+    # If removal fails and exit status was to be 0, then change it to 1.
+    rm -rf "$test_dir_" || { test $__st = 0 && __st=1; }
+  fi
   exit $__st
 }
 
@@ -298,14 +442,13 @@ path_prepend_ ()
     path_dir_=$1
     case $path_dir_ in
       '') fail_ "invalid path dir: '$1'";;
-      /*) abs_path_dir_=$path_dir_;;
-      *) abs_path_dir_=`cd "$initial_cwd_/$path_dir_" && echo "$PWD"` \
-           || fail_ "invalid path dir: $path_dir_";;
+      /* | ?:*) abs_path_dir_=$path_dir_;;
+      *) abs_path_dir_=$initial_cwd_/$path_dir_;;
     esac
     case $abs_path_dir_ in
-      *:*) fail_ "invalid path dir: '$abs_path_dir_'";;
+      *$PATH_SEPARATOR*) fail_ "invalid path dir: '$abs_path_dir_'";;
     esac
-    PATH="$abs_path_dir_:$PATH"
+    PATH="$abs_path_dir_$PATH_SEPARATOR$PATH"
 
     # Create an alias, FOO, for each FOO.exe in this directory.
     create_exe_shims_ "$abs_path_dir_" \
@@ -331,12 +474,11 @@ setup_ ()
   fi
 
   initial_cwd_=$PWD
-  fail=0
 
   pfx_=`testdir_prefix_`
   test_dir_=`mktempd_ "$initial_cwd_" "$pfx_-$ME_.XXXX"` \
     || fail_ "failed to create temporary directory in $initial_cwd_"
-  cd "$test_dir_"
+  cd "$test_dir_" || fail_ "failed to cd to temporary directory"
 
   # As autoconf-generated configure scripts do, ensure that IFS
   # is defined initially, so that saving and restoring $IFS works.
@@ -385,7 +527,7 @@ rand_bytes_ ()
   fi
 
   n_plus_50_=`expr $n_ + 50`
-  cmds_='date; date +%N; free; who -a; w; ps auxww; ps ef; netstat -n'
+  cmds_='date; date +%N; free; who -a; w; ps auxww; ps -ef'
   data_=` (eval "$cmds_") 2>&1 | gzip `
 
   # Ensure that $data_ has length at least 50+$n_
@@ -415,8 +557,9 @@ mktempd_ ()
   # Disallow any trailing slash on specified destdir:
   # it would subvert the post-mktemp "case"-based destdir test.
   case $destdir_ in
-  /) ;;
+  / | //) destdir_slash_=$destdir;;
   */) fail_ "invalid destination dir: remove trailing slash(es)";;
+  *) destdir_slash_=$destdir_/;;
   esac
 
   case $template_ in
@@ -426,20 +569,17 @@ mktempd_ ()
   esac
 
   # First, try to use mktemp.
-  d=`unset TMPDIR; mktemp -d -t -p "$destdir_" "$template_" 2>/dev/null` \
-    || fail=1
+  d=`unset TMPDIR; { mktemp -d -t -p "$destdir_" "$template_"; } 2>/dev/null` &&
 
   # The resulting name must be in the specified directory.
-  case $d in "$destdir_"*);; *) fail=1;; esac
+  case $d in "$destdir_slash_"*) :;; *) false;; esac &&
 
   # It must have created the directory.
-  test -d "$d" || fail=1
+  test -d "$d" &&
 
   # It must have 0700 permissions.  Handle sticky "S" bits.
-  perms=`ls -dgo "$d" 2>/dev/null|tr S -` || fail=1
-  case $perms in drwx------*) ;; *) fail=1;; esac
-
-  test $fail = 0 && {
+  perms=`ls -dgo "$d" 2>/dev/null` &&
+  case $perms in drwx--[-S]---*) :;; *) false;; esac && {
     echo "$d"
     return
   }
@@ -458,7 +598,7 @@ mktempd_ ()
   i_=1
   while :; do
     X_=`rand_bytes_ $nx_`
-    candidate_dir_="$destdir_/$base_template_$X_"
+    candidate_dir_="$destdir_slash_$base_template_$X_"
     err_=`mkdir -m 0700 "$candidate_dir_" 2>&1` \
       && { echo "$candidate_dir_"; return; }
     test $MAX_TRIES_ -le $i_ && break;

@@ -1,5 +1,5 @@
 /* Memory allocation with expensive empty allocations.
-   Copyright (C) 2003, 2008, 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2008, 2010-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003,
    based on prior work by Jim Meyering.
 
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _EEALLOC_H
 #define _EEALLOC_H
@@ -31,18 +31,27 @@
 
 #include <stdlib.h>
 
+#ifndef _GL_INLINE_HEADER_BEGIN
+ #error "Please include config.h first."
+#endif
+_GL_INLINE_HEADER_BEGIN
+#ifndef EEALLOC_INLINE
+# define EEALLOC_INLINE _GL_INLINE
+#endif
+
+#if ! defined __clang__ && \
+    (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
+# define _GL_ATTRIBUTE_ALLOC_SIZE(args) __attribute__ ((__alloc_size__ args))
+#else
+# define _GL_ATTRIBUTE_ALLOC_SIZE(args)
+#endif
+
 #if MALLOC_0_IS_NONNULL
 # define eemalloc malloc
 #else
-# if __GNUC__ >= 3
-static inline void *eemalloc (size_t n)
-     __attribute__ ((__malloc__))
-#  if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
-     __attribute__ ((__alloc_size__ (1)))
-#  endif
-  ;
-# endif
-static inline void *
+EEALLOC_INLINE void *eemalloc (size_t n)
+     _GL_ATTRIBUTE_MALLOC _GL_ATTRIBUTE_ALLOC_SIZE ((1));
+EEALLOC_INLINE void *
 eemalloc (size_t n)
 {
   /* If n is zero, allocate a 1-byte block.  */
@@ -55,11 +64,9 @@ eemalloc (size_t n)
 #if REALLOC_0_IS_NONNULL
 # define eerealloc realloc
 #else
-# if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
-static inline void *eerealloc (void *p, size_t n)
-     __attribute__ ((__alloc_size__ (2)));
-# endif
-static inline void *
+EEALLOC_INLINE void *eerealloc (void *p, size_t n)
+     _GL_ATTRIBUTE_ALLOC_SIZE ((2));
+EEALLOC_INLINE void *
 eerealloc (void *p, size_t n)
 {
   /* If n is zero, allocate or keep a 1-byte block.  */
@@ -75,5 +82,7 @@ eerealloc (void *p, size_t n)
     eecalloc (size_t n, size_t s) - like eemalloc (n * s) followed by memset 0
     eenrealloc (void *p, size_t n, size_t s) - like eerealloc (p, n * s)
    If this would be useful in your application. please speak up.  */
+
+_GL_INLINE_HEADER_END
 
 #endif /* _EEALLOC_H */

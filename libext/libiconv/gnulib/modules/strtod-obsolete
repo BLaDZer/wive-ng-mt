@@ -22,7 +22,7 @@ Include:
 <string.h>
 
 License:
-LGPLv2+
+LGPL
 
 Maintainer:
-Bruno Haible
+all

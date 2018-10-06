@@ -1,5 +1,5 @@
 /* Test of rounding towards zero.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -25,6 +25,7 @@ SIGNATURE_CHECK (truncf, float, (float));
 
 #include "isnanf-nolibm.h"
 #include "minus-zero.h"
+#include "infinity.h"
 #include "nan.h"
 #include "macros.h"
 
@@ -55,8 +56,8 @@ main ()
   ASSERT (truncf (-65536.0f) == -65536.0f);
   ASSERT (truncf (-2.341e31f) == -2.341e31f);
   /* Infinite numbers.  */
-  ASSERT (truncf (1.0f / 0.0f) == 1.0f / 0.0f);
-  ASSERT (truncf (-1.0f / 0.0f) == -1.0f / 0.0f);
+  ASSERT (truncf (Infinityf ()) == Infinityf ());
+  ASSERT (truncf (- Infinityf ()) == - Infinityf ());
   /* NaNs.  */
   ASSERT (isnanf (truncf (NaNf ())));
 

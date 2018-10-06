@@ -1,5 +1,5 @@
 /* Sequential list data type implemented by a circular array.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -624,7 +624,7 @@ gl_carray_iterator (gl_list_t list)
   result.count = list->count;
   result.i = 0;
   result.j = list->count;
-#ifdef lint
+#if defined GCC_LINT || defined lint
   result.p = 0;
   result.q = 0;
 #endif
@@ -645,7 +645,7 @@ gl_carray_iterator_from_to (gl_list_t list, size_t start_index, size_t end_index
   result.count = list->count;
   result.i = start_index;
   result.j = end_index;
-#ifdef lint
+#if defined GCC_LINT || defined lint
   result.p = 0;
   result.q = 0;
 #endif

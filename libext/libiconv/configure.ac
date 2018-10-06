@@ -20,6 +20,7 @@ AC_PREREQ([2.60])
 AC_INIT
 AC_CONFIG_SRCDIR([lib/iconv.c])
 AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([srcm4])
 AM_INIT_AUTOMAKE([libiconv], [1.14])
 AC_CONFIG_HEADERS([config.h lib/config.h])
 AC_PROG_MAKE_SET
@@ -66,8 +67,8 @@ AC_SUBST([USE_EXTRA_ENCODINGS])
 
 dnl           checks for programs
 
-CL_PROG_CP
-CL_PROG_LN
+#CL_PROG_CP
+#CL_PROG_LN
 AC_PROG_LN_S
 
 dnl           checks for compiler output filename suffixes
@@ -152,7 +153,7 @@ AC_REPLACE_FUNCS([memmove])
 AM_LANGINFO_CODESET
 gl_FCNTL_O_FLAGS
 
-AC_EILSEQ
+#AC_EILSEQ
 
 CL_WORDS_LITTLEENDIAN
 

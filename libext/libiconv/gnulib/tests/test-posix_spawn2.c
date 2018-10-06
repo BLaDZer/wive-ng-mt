@@ -1,5 +1,5 @@
 /* Test of posix_spawn() function.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2008.  */
 
@@ -30,8 +30,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-extern char **environ;
 
 #define CHILD_PROGRAM_FILENAME "test-posix_spawn2.sh"
 
@@ -53,7 +51,7 @@ fd_safer (int fd)
 int
 main ()
 {
-  char *argv[3] = { "/bin/sh", CHILD_PROGRAM_FILENAME, NULL };
+  char *argv[3] = { (char *) BOURNE_SHELL, (char *) CHILD_PROGRAM_FILENAME, NULL };
   int ofd[2];
   sigset_t blocked_signals;
   sigset_t fatal_signal_set;
@@ -92,7 +90,7 @@ main ()
           || (attrs_allocated = true,
               (err = posix_spawnattr_setsigmask (&attrs, &blocked_signals)) != 0
               || (err = posix_spawnattr_setflags (&attrs, POSIX_SPAWN_SETSIGMASK)) != 0)
-          || (err = posix_spawnp (&child, "/bin/sh", &actions, &attrs, argv, environ)) != 0))
+          || (err = posix_spawnp (&child, BOURNE_SHELL, &actions, &attrs, argv, environ)) != 0))
     {
       if (actions_allocated)
         posix_spawn_file_actions_destroy (&actions);

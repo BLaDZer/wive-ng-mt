@@ -1,5 +1,5 @@
 /* gc-libgcrypt.c --- Crypto wrappers around Libgcrypt for GC.
- * Copyright (C) 2002-2011 Free Software Foundation, Inc.
+ * Copyright (C) 2002-2018 Free Software Foundation, Inc.
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published
@@ -12,9 +12,7 @@
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this file; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
+ * along with this file; if not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -306,13 +304,17 @@ gc_hash_open (Gc_hash hash, Gc_hash_mode mode, gc_hash_handle * outhandle)
       gcryalg = GCRY_MD_RMD160;
       break;
 
+    case GC_SM3:
+      gcryalg = GCRY_MD_SM3;
+      break;
+
     default:
       rc = GC_INVALID_HASH;
     }
 
   switch (mode)
     {
-    case 0:
+    case GC_NULL:
       gcrymode = 0;
       break;
 
@@ -405,6 +407,10 @@ gc_hash_digest_length (Gc_hash hash)
       len = GC_SHA224_DIGEST_SIZE;
       break;
 
+    case GC_SM3:
+      len = GC_SM3_DIGEST_SIZE;
+      break;
+
     default:
       return 0;
     }
@@ -451,7 +457,7 @@ gc_hash_read (gc_hash_handle handle)
 #endif
     {
       gcry_md_final (ctx->gch);
-      digest = gcry_md_read (ctx->gch, 0);
+      digest = (const char *) gcry_md_read (ctx->gch, 0);
     }
 
   return digest;
@@ -529,6 +535,12 @@ gc_hash_buffer (Gc_hash hash, const void *in, size_t inlen, char *resbuf)
 #ifdef GNULIB_GC_RMD160
     case GC_RMD160:
       gcryalg = GCRY_MD_RMD160;
+      break;
+#endif
+
+#ifdef GNULIB_GC_SM3
+    case GC_SM3:
+      gcryalg = GCRY_MD_SM3;
       break;
 #endif
 
@@ -648,6 +660,38 @@ gc_sha1 (const void *in, size_t inlen, void *resbuf)
 }
 #endif
 
+#ifdef GNULIB_GC_SM3
+Gc_rc
+gc_sm3  (const void *in, size_t inlen, void *resbuf)
+{
+  size_t outlen = gcry_md_get_algo_dlen (GCRY_MD_SM3);
+  gcry_md_hd_t hd;
+  gpg_error_t err;
+  unsigned char *p;
+
+  assert (outlen == GC_SM3_DIGEST_SIZE);
+
+  err = gcry_md_open (&hd, GCRY_MD_SM3, 0);
+  if (err != GPG_ERR_NO_ERROR)
+    return GC_INVALID_HASH;
+
+  gcry_md_write (hd, in, inlen);
+
+  p = gcry_md_read (hd, GCRY_MD_SM3);
+  if (p == NULL)
+    {
+      gcry_md_close (hd);
+      return GC_INVALID_HASH;
+    }
+
+  memcpy (resbuf, p, outlen);
+
+  gcry_md_close (hd);
+
+  return GC_OK;
+}
+#endif
+
 #ifdef GNULIB_GC_HMAC_MD5
 Gc_rc
 gc_hmac_md5 (const void *key, size_t keylen,
@@ -658,7 +702,7 @@ gc_hmac_md5 (const void *key, size_t keylen,
   unsigned char *hash;
   gpg_error_t err;
 
-  assert (hlen == 16);
+  assert (hlen == GC_MD5_DIGEST_SIZE);
 
   err = gcry_md_open (&mdh, GCRY_MD_MD5, GCRY_MD_FLAG_HMAC);
   if (err != GPG_ERR_NO_ERROR)
@@ -714,6 +758,86 @@ gc_hmac_sha1 (const void *key, size_t keylen,
   gcry_md_write (mdh, in, inlen);
 
   hash = gcry_md_read (mdh, GCRY_MD_SHA1);
+  if (hash == NULL)
+    {
+      gcry_md_close (mdh);
+      return GC_INVALID_HASH;
+    }
+
+  memcpy (resbuf, hash, hlen);
+
+  gcry_md_close (mdh);
+
+  return GC_OK;
+}
+#endif
+
+#ifdef GNULIB_GC_HMAC_SHA256
+Gc_rc
+gc_hmac_sha256 (const void *key, size_t keylen,
+             const void *in, size_t inlen, char *resbuf)
+{
+  size_t hlen = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
+  gcry_md_hd_t mdh;
+  unsigned char *hash;
+  gpg_error_t err;
+
+  assert (hlen == GC_SHA256_DIGEST_SIZE);
+
+  err = gcry_md_open (&mdh, GCRY_MD_SHA256, GCRY_MD_FLAG_HMAC);
+  if (err != GPG_ERR_NO_ERROR)
+    return GC_INVALID_HASH;
+
+  err = gcry_md_setkey (mdh, key, keylen);
+  if (err != GPG_ERR_NO_ERROR)
+    {
+      gcry_md_close (mdh);
+      return GC_INVALID_HASH;
+    }
+
+  gcry_md_write (mdh, in, inlen);
+
+  hash = gcry_md_read (mdh, GCRY_MD_SHA256);
+  if (hash == NULL)
+    {
+      gcry_md_close (mdh);
+      return GC_INVALID_HASH;
+    }
+
+  memcpy (resbuf, hash, hlen);
+
+  gcry_md_close (mdh);
+
+  return GC_OK;
+}
+#endif
+
+#ifdef GNULIB_GC_HMAC_SHA512
+Gc_rc
+gc_hmac_sha512 (const void *key, size_t keylen,
+              const void *in, size_t inlen, char *resbuf)
+{
+  size_t hlen = gcry_md_get_algo_dlen (GCRY_MD_SHA512);
+  gcry_md_hd_t mdh;
+  unsigned char *hash;
+  gpg_error_t err;
+
+  assert (hlen == GC_SHA512_DIGEST_SIZE);
+
+  err = gcry_md_open (&mdh, GCRY_MD_SHA512, GCRY_MD_FLAG_HMAC);
+  if (err != GPG_ERR_NO_ERROR)
+    return GC_INVALID_HASH;
+
+  err = gcry_md_setkey (mdh, key, keylen);
+  if (err != GPG_ERR_NO_ERROR)
+    {
+      gcry_md_close (mdh);
+      return GC_INVALID_HASH;
+    }
+
+  gcry_md_write (mdh, in, inlen);
+
+  hash = gcry_md_read (mdh, GCRY_MD_SHA512);
   if (hash == NULL)
     {
       gcry_md_close (mdh);

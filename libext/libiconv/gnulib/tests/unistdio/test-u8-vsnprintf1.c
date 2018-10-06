@@ -1,5 +1,5 @@
 /* Test of u8_vsnprintf() function.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -29,7 +29,6 @@
 
 #include "unistr.h"
 #include "xalloc.h"
-#include "progname.h"
 #include "macros.h"
 
 #include "test-u8-printf1.h"
@@ -63,8 +62,6 @@ test_vsnprintf ()
 int
 main (int argc, char *argv[])
 {
-  set_program_name (argv[0]);
-
   test_vsnprintf ();
 
   return 0;

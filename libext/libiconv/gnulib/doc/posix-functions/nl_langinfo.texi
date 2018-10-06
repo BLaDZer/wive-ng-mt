@@ -10,10 +10,14 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-Minix 3.1.8, mingw, BeOS.
+Minix 3.1.8, mingw, MSVC 14, BeOS, Android 7.1.
 @item
 The constant @code{CODESET} is not supported on some platforms:
 glibc 2.0.6, OpenBSD 3.8.
+@item
+The constants @code{ALTMON_1} to @code{ALTMON_12} are not defined on some
+platforms:
+glibc 2.26 and many others.
 @item
 The constants @code{ERA}, @code{ERA_D_FMT}, @code{ERA_D_T_FMT},
 @code{ERA_T_FMT}, @code{ALT_DIGITS} are not supported on some platforms:
@@ -41,4 +45,9 @@ On Cygwin 1.7.0, only the charset portion of a locale designation is honored.
 On NetBSD 5.0, in some locales, @code{nl_langinfo(CRNCYSTR)} returns the
 empty string, although the local currency symbol, as returned by
 @code{localeconv()->currency_symbol}, is non-empty.
+
+@item
+On NetBSD 5.1, in the "C" locale, the results of
+@code{nl_langinfo(ABMON_1)} ... @code{nl_langinfo(ABMON_12)} are full month
+names, not abbreviated month names.
 @end itemize

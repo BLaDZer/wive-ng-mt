@@ -1,5 +1,5 @@
 /* Grapheme cluster break function.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
    Written by Ben Pfaff <blp@cs.stanford.edu>, 2010.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -48,15 +48,21 @@
    ((A) == GBP_LVT || (A) == GBP_T) && (B) == GBP_T ? false :           \
                                                                         \
    /* GB9 */                                                            \
-   (B) == GBP_EXTEND ? false :                                          \
+   (B) == GBP_EXTEND || (B) == GBP_ZWJ ? false :                        \
                                                                         \
    /* GB9a */                                                           \
    (B) == GBP_SPACINGMARK ? false :                                     \
                                                                         \
    /* GB9b */                                                           \
-   (A) == GBP_PREPEND ? false                                           \
+   (A) == GBP_PREPEND ? false :                                         \
                                                                         \
-   /* GB10 */                                                           \
+   /* GB10 -- incomplete */                                             \
+   ((A) == GBP_EB || (A) == GBP_EBG) && (B) == GBP_EM ? false :         \
+                                                                        \
+   /* GB11 */                                                           \
+   (A) == GBP_ZWJ && ((B) == GBP_GAZ || (B) == GBP_EBG) ? false         \
+                                                                        \
+   /* GB999 */                                                          \
    : true)
 
 #define UC_GRAPHEME_BREAKS_FOR(A)                                       \
@@ -71,9 +77,15 @@
    | (UC_IS_GRAPHEME_BREAK(A, GBP_V)           << GBP_V)                \
    | (UC_IS_GRAPHEME_BREAK(A, GBP_T)           << GBP_T)                \
    | (UC_IS_GRAPHEME_BREAK(A, GBP_LV)          << GBP_LV)               \
-   | (UC_IS_GRAPHEME_BREAK(A, GBP_LVT)         << GBP_LVT))
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_LVT)         << GBP_LVT)              \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_RI)          << GBP_RI)               \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_ZWJ)         << GBP_ZWJ)              \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_EB)          << GBP_EB)               \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_EM)          << GBP_EM)               \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_GAZ)         << GBP_GAZ)              \
+   | (UC_IS_GRAPHEME_BREAK(A, GBP_EBG)         << GBP_EBG))
 
-static const unsigned short int gb_table[12] =
+static const unsigned long int gb_table[18] =
   {
     UC_GRAPHEME_BREAKS_FOR(0),  /* GBP_OTHER */
     UC_GRAPHEME_BREAKS_FOR(1),  /* GBP_CR */
@@ -87,6 +99,12 @@ static const unsigned short int gb_table[12] =
     UC_GRAPHEME_BREAKS_FOR(9),  /* GBP_T */
     UC_GRAPHEME_BREAKS_FOR(10), /* GBP_LV */
     UC_GRAPHEME_BREAKS_FOR(11), /* GBP_LVT */
+    UC_GRAPHEME_BREAKS_FOR(12), /* GBP_RI */
+    UC_GRAPHEME_BREAKS_FOR(13), /* GBP_ZWJ */
+    UC_GRAPHEME_BREAKS_FOR(14), /* GBP_EB */
+    UC_GRAPHEME_BREAKS_FOR(15), /* GBP_EM */
+    UC_GRAPHEME_BREAKS_FOR(16), /* GBP_GAZ */
+    UC_GRAPHEME_BREAKS_FOR(17), /* GBP_EBG */
   };
 
 bool

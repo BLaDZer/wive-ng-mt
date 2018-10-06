@@ -1,6 +1,6 @@
 /* A more useful interface to strtol.
 
-   Copyright (C) 1995-1996, 1998-1999, 2001-2004, 2006-2011 Free Software
+   Copyright (C) 1995-1996, 1998-1999, 2001-2004, 2006-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef XSTRTOL_H_
 # define XSTRTOL_H_ 1
@@ -66,7 +66,7 @@ _DECLARE_XSTRTOL (xstrtoull, unsigned long long int)
 
    After reporting an error, exit with a failure status.  */
 
-void _Noreturn xstrtol_fatal (enum strtol_error,
+_Noreturn void xstrtol_fatal (enum strtol_error,
                               int, char, struct option const *,
                               char const *);
 

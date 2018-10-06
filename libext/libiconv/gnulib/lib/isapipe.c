@@ -1,6 +1,6 @@
 /* Test whether a file descriptor is a pipe.
 
-   Copyright (C) 2006, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert.  */
 
@@ -23,14 +23,18 @@
 
 #include <errno.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 /* Windows platforms.  */
-
-/* Get _get_osfhandle.  */
-# include <io.h>
 
 /* Get GetFileType.  */
 # include <windows.h>
+
+/* Get _get_osfhandle.  */
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
+#  include <io.h>
+# endif
 
 int
 isapipe (int fd)

@@ -1,5 +1,5 @@
-# ansi-c++.m4 serial 8
-dnl Copyright (C) 2002-2003, 2005, 2010-2011 Free Software Foundation, Inc.
+# ansi-c++.m4 serial 10
+dnl Copyright (C) 2002-2003, 2005, 2010-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -84,7 +84,7 @@ AC_DEFUN([gl_PROG_ANSI_CXX],
     AC_LANG_POP([C++])
     AC_MSG_RESULT([$gl_cv_prog_ansicxx_works])
     if test $gl_cv_prog_ansicxx_works = no; then
-      CXX=:
+      CXX=no
     else
       dnl Test for namespaces.
       dnl We don't bother supporting pre-ANSI-C++ compilers.
@@ -105,7 +105,7 @@ EOF
       AC_LANG_POP([C++])
       AC_MSG_RESULT([$gl_cv_prog_ansicxx_namespaces])
       if test $gl_cv_prog_ansicxx_namespaces = no; then
-        CXX=:
+        CXX=no
       fi
     fi
   fi
@@ -119,10 +119,20 @@ EOF
   if test "$$1" != no; then
     dnl This macro invocation resolves an automake error:
     dnl /usr/local/share/automake-1.11/am/depend2.am: am__fastdepCXX does not appear in AM_CONDITIONAL
-    dnl /usr/local/share/automake-1.11/am/depend2.am:   The usual way to define `am__fastdepCXX' is to add `AC_PROG_CXX'
-    dnl /usr/local/share/automake-1.11/am/depend2.am:   to `configure.ac' and run `aclocal' and `autoconf' again.
+    dnl /usr/local/share/automake-1.11/am/depend2.am:   The usual way to define 'am__fastdepCXX' is to add 'AC_PROG_CXX'
+    dnl /usr/local/share/automake-1.11/am/depend2.am:   to 'configure.ac' and run 'aclocal' and 'autoconf' again.
     _AM_DEPENDENCIES([CXX])
   else
     AM_CONDITIONAL([am__fastdepCXX], [false])
   fi
+])
+
+# gl_ANSI_CXX
+# Sets CXX to the name of a sufficiently ANSI C++ compliant compiler, or to
+# "no" if none is found.
+# Defines the Automake condition ANSICXX to true if such a compiler was found,
+# or to false if not.
+AC_DEFUN([gl_ANSI_CXX],
+[
+  gl_PROG_ANSI_CXX([CXX], [ANSICXX])
 ])

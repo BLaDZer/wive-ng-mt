@@ -12,6 +12,7 @@ accept
 fcntl-h
 binary-io
 extensions
+msvc-nothrow
 
 configure.ac:
 gl_FUNC_ACCEPT4
@@ -23,8 +24,11 @@ lib_SOURCES += accept4.c
 Include:
 <sys/socket.h>
 
+Link:
+$(LIBSOCKET)
+
 License:
 LGPL
 
 Maintainer:
-Bruno Haible, Simon Josefsson
+Simon Josefsson

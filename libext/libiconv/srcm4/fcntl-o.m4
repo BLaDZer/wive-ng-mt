@@ -1,5 +1,5 @@
-# fcntl-o.m4 serial 3
-dnl Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
+# fcntl-o.m4 serial 5
+dnl Copyright (C) 2006, 2009-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -17,12 +17,22 @@ AC_DEFUN([gl_FCNTL_O_FLAGS],
   m4_ifdef([AC_USE_SYSTEM_EXTENSIONS],
     [AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])],
     [AC_REQUIRE([AC_GNU_SOURCE])])
+
+  AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
+  AC_CHECK_HEADERS_ONCE([unistd.h])
+  AC_CHECK_FUNCS_ONCE([symlink])
   AC_CACHE_CHECK([for working fcntl.h], [gl_cv_header_working_fcntl_h],
     [AC_RUN_IFELSE(
        [AC_LANG_PROGRAM(
           [[#include <sys/types.h>
            #include <sys/stat.h>
-           #include <unistd.h>
+           #if HAVE_UNISTD_H
+           # include <unistd.h>
+           #else /* on Windows with MSVC */
+           # include <io.h>
+           # include <stdlib.h>
+           # defined sleep(n) _sleep ((n) * 1000)
+           #endif
            #include <fcntl.h>
            #ifndef O_NOATIME
             #define O_NOATIME 0
@@ -38,9 +48,21 @@ AC_DEFUN([gl_FCNTL_O_FLAGS],
           ]],
           [[
             int result = !constants;
+            #if HAVE_SYMLINK
             {
               static char const sym[] = "conftest.sym";
-              if (symlink (".", sym) != 0)
+              if (symlink ("/dev/null", sym) != 0)
+                result |= 2;
+              else
+                {
+                  int fd = open (sym, O_WRONLY | O_NOFOLLOW | O_CREAT, 0);
+                  if (fd >= 0)
+                    {
+                      close (fd);
+                      result |= 4;
+                    }
+                }
+              if (unlink (sym) != 0 || symlink (".", sym) != 0)
                 result |= 2;
               else
                 {
@@ -53,6 +75,7 @@ AC_DEFUN([gl_FCNTL_O_FLAGS],
                 }
               unlink (sym);
             }
+            #endif
             {
               static char const file[] = "confdefs.h";
               int fd = open (file, O_RDONLY | O_NOATIME);
@@ -94,7 +117,13 @@ AC_DEFUN([gl_FCNTL_O_FLAGS],
         68) gl_cv_header_working_fcntl_h='no (bad O_NOATIME, O_NOFOLLOW)';; #(
          *) gl_cv_header_working_fcntl_h='no';;
         esac],
-       [gl_cv_header_working_fcntl_h=cross-compiling])])
+       [case "$host_os" in
+                  # Guess 'no' on native Windows.
+          mingw*) gl_cv_header_working_fcntl_h='no' ;;
+          *)      gl_cv_header_working_fcntl_h=cross-compiling ;;
+        esac
+       ])
+    ])
 
   case $gl_cv_header_working_fcntl_h in #(
   *O_NOATIME* | no | cross-compiling) ac_val=0;; #(

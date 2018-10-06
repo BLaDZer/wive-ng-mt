@@ -7,8 +7,9 @@ tests/macros.h
 
 Depends-on:
 ignore-value
+intprops
 mgetgroups
-usleep
+nanosleep
 stat-time
 stdbool
 symlink
@@ -19,3 +20,4 @@ AC_CHECK_FUNCS_ONCE([getegid])
 Makefile.am:
 TESTS += test-lchown
 check_PROGRAMS += test-lchown
+test_lchown_LDADD = $(LDADD) $(LIB_NANOSLEEP)

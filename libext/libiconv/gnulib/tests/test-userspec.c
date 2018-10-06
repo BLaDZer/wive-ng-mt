@@ -1,5 +1,5 @@
 /* Test userspec.c
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Jim Meyering.  */
 
@@ -45,30 +45,30 @@ struct test
 
 static struct test T[] =
   {
-    { "",                      -1, -1, "",   "",   NULL},
-    { ":",                     -1, -1, "",   "",   NULL},
-    { "0:0",                    0,  0, "",   "",   NULL},
-    { ":1",                    -1,  1, "",   "",   NULL},
-    { "1",                      1, -1, "",   "",   NULL},
-    { ":+0",                   -1,  0, "",   "",   NULL},
-    { "22:42",                 22, 42, "",   "",   NULL},
+    { "",                       -1, -1, "",   "",   NULL},
+    { ":",                      -1, -1, "",   "",   NULL},
+    { "+0:+0",                   0,  0, "",   "",   NULL},
+    { ":+1",                    -1,  1, "",   "",   NULL},
+    { "+1",                      1, -1, "",   "",   NULL},
+    { ":+0",                    -1,  0, "",   "",   NULL},
+    { "+22:+42",                22, 42, "",   "",   NULL},
     /* (uint32_t)-1 should be invalid everywhere */
-    { "4294967295:4294967295",  0,  0, NULL, NULL, "invalid user"},
+    { "+4294967295:+4294967295", 0,  0, NULL, NULL, "invalid user"},
     /* likewise, but with only the group being invalid */
-    { "0:4294967295",           0,  0, NULL, NULL, "invalid group"},
-    { ":4294967295",            0,  0, NULL, NULL, "invalid group"},
+    { "+0:+4294967295",          0,  0, NULL, NULL, "invalid group"},
+    { ":+4294967295",            0,  0, NULL, NULL, "invalid group"},
     /* and only the user being invalid */
-    { "4294967295:0",           0,  0, NULL, NULL, "invalid user"},
+    { "+4294967295:+0",          0,  0, NULL, NULL, "invalid user"},
     /* and using 2^32 */
-    { "4294967296:4294967296",  0,  0, NULL, NULL, "invalid user"},
-    { "0:4294967296",           0,  0, NULL, NULL, "invalid group"},
-    { ":4294967296",            0,  0, NULL, NULL, "invalid group"},
-    { "4294967296:0",           0,  0, NULL, NULL, "invalid user"},
+    { "+4294967296:+4294967296", 0,  0, NULL, NULL, "invalid user"},
+    { "+0:+4294967296",          0,  0, NULL, NULL, "invalid group"},
+    { ":+4294967296",            0,  0, NULL, NULL, "invalid group"},
+    { "+4294967296:+0",          0,  0, NULL, NULL, "invalid user"},
     /* numeric user and no group is invalid */
-    { "4294967295:",            0,  0, NULL, NULL, "invalid spec"},
-    { "4294967296:",            0,  0, NULL, NULL, "invalid spec"},
-    { "1:",                     0,  0, NULL, NULL, "invalid spec"},
-    { "+0:",                    0,  0, NULL, NULL, "invalid spec"},
+    { "+4294967295:",            0,  0, NULL, NULL, "invalid spec"},
+    { "+4294967296:",            0,  0, NULL, NULL, "invalid spec"},
+    { "+1:",                     0,  0, NULL, NULL, "invalid spec"},
+    { "+0:",                     0,  0, NULL, NULL, "invalid spec"},
 
     /* "username:" must expand to UID:GID where GID is username's login group */
     /* Add an entry like the following to the table, if possible.
@@ -173,13 +173,21 @@ main (void)
       if (!diag && !T[i].result)
         continue;
 
-        {
-          printf ("%s diagnostic mismatch (-: expected uid,gid; +:actual)\n"
-                  "-%s\n+%s\n",
-                  T[i].in, T[i].result, diag);
-          fail = 1;
-        }
+      printf ("%s diagnostic mismatch (-: expected uid,gid; +:actual)\n"
+              "-%s\n+%s\n", T[i].in, T[i].result, diag);
+      fail = 1;
     }
+
+  /* Ensure NULL parameters are ignored.  */
+  {
+    uid_t uid = (uid_t) -1;
+    char const *diag = parse_user_spec ("", &uid, NULL, NULL, NULL);
+    if (diag)
+      {
+        printf ("unexpected error: %s\n", diag);
+        fail = 1;
+      }
+  }
 
   return fail;
 }

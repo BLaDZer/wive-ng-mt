@@ -8,10 +8,14 @@ m4/poll.m4
 Depends-on:
 poll-h
 alloca          [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
+assure          [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
 select          [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
+sockets         [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
 sys_select      [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
+sys_socket      [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
 sys_time        [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
 errno           [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
+msvc-nothrow    [test $HAVE_POLL = 0 || test $REPLACE_POLL = 1]
 
 configure.ac:
 gl_FUNC_POLL
@@ -25,6 +29,9 @@ Makefile.am:
 
 Include:
 <poll.h>
+
+Link:
+$(LIB_POLL)
 
 License:
 LGPLv2+

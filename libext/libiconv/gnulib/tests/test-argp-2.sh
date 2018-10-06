@@ -1,6 +1,6 @@
 #! /bin/sh
 # Test suite for argp.
-# Copyright (C) 2006-2011 Free Software Foundation, Inc.
+# Copyright (C) 2006-2018 Free Software Foundation, Inc.
 # This file is part of the GNUlib Library.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 TMP=argp.$$
 
@@ -35,8 +35,8 @@ func_compare() {
 cat > $TMP <<EOT
 Usage: test-argp [-tvCSOlp?V] [-f FILE] [-r FILE] [-o[ARG]] [--test]
             [--file=FILE] [--input=FILE] [--read=FILE] [--verbose] [--cantiga]
-            [--sonet] [--option] [--optional[=ARG]] [--limerick] [--poem]
-            [--help] [--usage] [--version] ARGS...
+            [--sonet] [--option] [--optional[=ARG]] [--many] [--one] [--two]
+            [--limerick] [--poem] [--help] [--usage] [--version] ARGS...
 EOT
 
 ./test-argp$EXEEXT --usage | func_compare || ERR=1
@@ -47,8 +47,8 @@ EOT
 cat > $TMP <<EOT
 Usage: test-argp [-tvCSOlp?V] [-f FILE] [-r FILE] [-o[ARG]] [--test]
 [--file=FILE] [--input=FILE] [--read=FILE] [--verbose] [--cantiga] [--sonet]
-[--option] [--optional[=ARG]] [--limerick] [--poem] [--help] [--usage]
-[--version] ARGS...
+[--option] [--optional[=ARG]] [--many] [--one] [--two] [--limerick] [--poem]
+[--help] [--usage] [--version] ARGS...
 EOT
 
 ARGP_HELP_FMT='usage-indent=0' ./test-argp$EXEEXT --usage | func_compare || ERR=1

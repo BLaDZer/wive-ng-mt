@@ -1,5 +1,5 @@
 /* Copy a file descriptor, applying specific flags.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -31,6 +30,10 @@ dup3 (int oldfd, int newfd, int flags)
 {
 #if HAVE_DUP3
 # undef dup3
+# if HAVE_SETDTABLESIZE
+  /* Avoid a cygwin crasher. */
+  setdtablesize (newfd + 1);
+# endif
   /* Try the system call first, if it exists.  (We may be running with a glibc
      that has the function but with an older kernel that lacks it.)  */
   {
@@ -93,9 +96,9 @@ dup3 (int oldfd, int newfd, int flags)
 
 #if O_BINARY
   if (flags & O_BINARY)
-    setmode (newfd, O_BINARY);
+    set_binary_mode (newfd, O_BINARY);
   else if (flags & O_TEXT)
-    setmode (newfd, O_TEXT);
+    set_binary_mode (newfd, O_TEXT);
 #endif
 
   return newfd;

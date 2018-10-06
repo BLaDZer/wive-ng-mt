@@ -1,5 +1,5 @@
-# setlocale.m4 serial 4
-dnl Copyright (C) 2011 Free Software Foundation, Inc.
+# setlocale.m4 serial 5
+dnl Copyright (C) 2011-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -25,5 +25,8 @@ AC_DEFUN([gl_FUNC_SETLOCALE],
 # Prerequisites of lib/setlocale.c.
 AC_DEFUN([gl_PREREQ_SETLOCALE],
 [
+  dnl No need to check for CFLocaleCopyPreferredLanguages and
+  dnl CFPreferencesCopyAppValue because lib/setlocale.c is not used on Mac OS X.
+  dnl (The Mac OS X specific code is only used in libintl.)
   :
 ])

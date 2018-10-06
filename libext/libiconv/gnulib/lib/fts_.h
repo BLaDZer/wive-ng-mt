@@ -1,6 +1,6 @@
 /* Traverse a file hierarchy.
 
-   Copyright (C) 2004-2011 Free Software Foundation, Inc.
+   Copyright (C) 2004-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /*
  * Copyright (c) 1989, 1993
@@ -31,7 +31,7 @@
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
@@ -51,7 +51,13 @@
 
 # ifdef _LIBC
 #  include <features.h>
+#  if __STDC_VERSION__ < 199901L
+#   define __FLEXIBLE_ARRAY_MEMBER 1
+#  else
+#   define __FLEXIBLE_ARRAY_MEMBER
+#  endif
 # else
+#  define __FLEXIBLE_ARRAY_MEMBER FLEXIBLE_ARRAY_MEMBER
 #  undef __THROW
 #  define __THROW
 #  undef __BEGIN_DECLS
@@ -98,8 +104,8 @@ typedef struct {
      The lazy way (which works only with FTS_PHYSICAL),
      with which one may process a directory that is a
      part of the cycle several times before detecting the cycle.
-     The `tight' way, whereby fts uses more memory (proportional
-     to number of `active' directories, aka distance from root
+     The "tight" way, whereby fts uses more memory (proportional
+     to number of "active" directories, aka distance from root
      of current tree to current directory -- see active_dir_ht)
      to detect any cycle right away.  For example, du must use
      this option to avoid counting disk space in a cycle multiple
@@ -145,10 +151,14 @@ typedef struct {
 
 # define FTS_NOATIME    0x0800          /* use O_NOATIME during traversal */
 
-# define FTS_OPTIONMASK 0x0fff          /* valid user option mask */
+  /* Use this flag to disable stripping of trailing slashes
+     from input path names during fts_open initialization.  */
+# define FTS_VERBATIM   0x1000
 
-# define FTS_NAMEONLY   0x1000          /* (private) child names only */
-# define FTS_STOP       0x2000          /* (private) unrecoverable error */
+# define FTS_OPTIONMASK 0x1fff          /* valid user option mask */
+
+# define FTS_NAMEONLY   0x2000          /* (private) child names only */
+# define FTS_STOP       0x4000          /* (private) unrecoverable error */
         int fts_options;                /* fts_open options, global flags */
 
         /* Map a directory's device number to a boolean.  The boolean is
@@ -210,7 +220,11 @@ typedef struct _ftsent {
         ptrdiff_t fts_level;            /* depth (-1 to N) */
 
         size_t fts_namelen;             /* strlen(fts_name) */
-        nlink_t fts_n_dirs_remaining;   /* count down from st_nlink */
+
+        /* If not (nlink_t) -1, an upper bound on the number of
+           remaining subdirectories of interest.  If this becomes
+           zero, some work can be avoided.  */
+        nlink_t fts_n_dirs_remaining;
 
 # define FTS_D           1              /* preorder directory */
 # define FTS_DC          2              /* directory that causes cycles */
@@ -239,7 +253,7 @@ typedef struct _ftsent {
         unsigned short int fts_instr;   /* fts_set() instructions */
 
         struct stat fts_statp[1];       /* stat(2) information */
-        char fts_name[1];               /* file name */
+        char fts_name[__FLEXIBLE_ARRAY_MEMBER]; /* file name */
 } FTSENT;
 
 #ifndef __GNUC_PREREQ

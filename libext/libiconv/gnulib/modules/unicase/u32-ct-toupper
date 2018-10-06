@@ -11,7 +11,7 @@ unicase/special-casing
 unicase/toupper
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [unicase/u32-ct-toupper])
+gl_LIBUNISTRING_MODULE([0.9.8], [unicase/u32-ct-toupper])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNICASE_U32_CT_TOUPPER
@@ -22,8 +22,7 @@ Include:
 "unicase.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Bruno Haible
-
+all

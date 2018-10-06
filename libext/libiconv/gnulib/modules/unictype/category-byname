@@ -49,15 +49,15 @@ unictype/category-none
 gperf
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [unictype/category-byname])
+gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-byname])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNICTYPE_CATEGORY_BYNAME
 lib_SOURCES += unictype/categ_byname.c
 endif
 
-unictype/categ_byname.h: unictype/categ_byname.gperf
-	$(GPERF) -m 10 $(srcdir)/unictype/categ_byname.gperf > $(srcdir)/unictype/categ_byname.h-t
+$(srcdir)/unictype/categ_byname.h: $(srcdir)/unictype/categ_byname.gperf
+	$(V_GPERF)$(GPERF) -m 10 $(srcdir)/unictype/categ_byname.gperf > $(srcdir)/unictype/categ_byname.h-t && \
 	mv $(srcdir)/unictype/categ_byname.h-t $(srcdir)/unictype/categ_byname.h
 BUILT_SOURCES        += unictype/categ_byname.h
 MOSTLYCLEANFILES     += unictype/categ_byname.h-t
@@ -68,8 +68,7 @@ Include:
 "unictype.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Bruno Haible
-
+all

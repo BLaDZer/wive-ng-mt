@@ -1,6 +1,6 @@
 /* Host name canonicalization
 
-   Copyright (C) 2005, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005, 2009-2018 Free Software Foundation, Inc.
 
    Written by Derek Price <derek@ximbiot.com>
 
@@ -15,13 +15,13 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef CANON_HOST_H
 # define CANON_HOST_H 1
 
-char *canon_host (char const *host);
-char *canon_host_r (char const *host, int *cherror);
+char *canon_host (char const *host) _GL_ATTRIBUTE_MALLOC;
+char *canon_host_r (char const *host, int *cherror) _GL_ATTRIBUTE_MALLOC;
 
 const char *ch_strerror (void);
 # define ch_strerror_r(cherror) gai_strerror (cherror);

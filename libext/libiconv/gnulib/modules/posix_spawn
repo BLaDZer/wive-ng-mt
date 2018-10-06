@@ -23,9 +23,11 @@ Makefile.am:
 Include:
 <spawn.h>
 
+Link:
+$(LIB_POSIX_SPAWN)
+
 License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible, glibc
-
+glibc

@@ -6,9 +6,9 @@ lib/parse-duration.h
 lib/parse-duration.c
 
 Depends-on:
+intprops
 
 configure.ac:
-AC_REQUIRE([AC_C_INLINE])
 
 Makefile.am:
 lib_SOURCES += parse-duration.c
@@ -17,8 +17,7 @@ Include:
 "parse-duration.h"
 
 License:
-GPL
+LGPLv2+
 
 Maintainer:
 Bruce Korb
-

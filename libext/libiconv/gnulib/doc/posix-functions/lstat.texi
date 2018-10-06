@@ -21,6 +21,11 @@ On some platforms, @code{lstat("file/",buf)} succeeds instead of
 failing with @code{ENOTDIR}.
 Solaris 9.
 @item
+On Solaris 11.3, when this function yields a timestamp with a
+nonpositive @code{tv_sec} value, @code{tv_nsec} might be in the range
+@minus{}1000000000..@minus{}1, representing a negative nanoseconds
+offset from @code{tv_sec}.
+@item
 On Windows platforms (excluding Cygwin), symlinks are not supported, so
 @code{lstat} does not exist.
 @end itemize
@@ -28,15 +33,5 @@ On Windows platforms (excluding Cygwin), symlinks are not supported, so
 Portability problems not fixed by Gnulib:
 @itemize
 @item
-On Windows platforms (excluding Cygwin), @code{st_ino} is always 0.
-@item
-Because of the definition of @code{struct stat}, it is not possible to
-portably replace @code{stat} via an object-like macro.  Therefore,
-expressions such as @code{(islnk ? lstat : stat) (name, buf)} are not
-portable, and should instead be written @code{islnk ? lstat (name,
-buf) : stat (name, buf)}.
-@item
-On some file systems, @code{st_size} contains bogus information for
-symlinks; use the gnulib module areadlink-with-size for a better way
-to get symlink contents.
+@xref{sys/stat.h}, for general portability problems with @code{struct stat}.
 @end itemize

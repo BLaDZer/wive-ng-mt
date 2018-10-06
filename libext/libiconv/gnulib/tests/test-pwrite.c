@@ -1,5 +1,5 @@
 /* Test the pwrite function.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -76,5 +76,21 @@ main (void)
     ASSERT (close (fd) == 0);
     ASSERT (strcmp ("W1W3W5W7W9",buf) == 0);
   }
+
+  /* Test behaviour for invalid file descriptors.  */
+  {
+    char byte = 'x';
+    errno = 0;
+    ASSERT (pwrite (-1, &byte, 1, 0) == -1);
+    ASSERT (errno == EBADF);
+  }
+  {
+    char byte = 'x';
+    close (99);
+    errno = 0;
+    ASSERT (pwrite (99, &byte, 1, 0) == -1);
+    ASSERT (errno == EBADF);
+  }
+
   return 0;
 }

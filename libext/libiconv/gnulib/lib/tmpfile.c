@@ -1,5 +1,5 @@
 /* Create a temporary file.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Ben Pfaff. */
 
@@ -53,6 +53,11 @@ supports_delete_on_close ()
   if (!known)
     {
       OSVERSIONINFO v;
+
+      /* According to
+         <https://msdn.microsoft.com/en-us/library/ms724451.aspx>
+         this structure must be initialized as follows:  */
+      v.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
 
       if (GetVersionEx (&v))
         known = (v.dwPlatformId == VER_PLATFORM_WIN32_NT ? 1 : -1);

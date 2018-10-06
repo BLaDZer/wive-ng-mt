@@ -1,5 +1,5 @@
 /* gc.h --- Header file for implementation agnostic crypto wrapper API.
- * Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008  Simon Josefsson
+ * Copyright (C) 2002-2005, 2007-2008, 2011-2018 Free Software Foundation, Inc.
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published
@@ -12,9 +12,7 @@
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this file; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
+ * along with this file; if not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,13 +47,15 @@ enum Gc_hash
   GC_SHA256,
   GC_SHA384,
   GC_SHA512,
-  GC_SHA224
+  GC_SHA224,
+  GC_SM3
 };
 typedef enum Gc_hash Gc_hash;
 
 enum Gc_hash_mode
 {
-  GC_HMAC = 1
+  GC_NULL,
+  GC_HMAC
 };
 typedef enum Gc_hash_mode Gc_hash_mode;
 
@@ -70,6 +70,7 @@ typedef void *gc_hash_handle;
 #define GC_SHA384_DIGEST_SIZE 48
 #define GC_SHA512_DIGEST_SIZE 64
 #define GC_SHA224_DIGEST_SIZE 24
+#define GC_SM3_DIGEST_SIZE 32
 
 /* Cipher types. */
 enum Gc_cipher
@@ -135,7 +136,8 @@ extern Gc_rc gc_cipher_close (gc_cipher_handle handle);
 extern Gc_rc gc_hash_open (Gc_hash hash, Gc_hash_mode mode,
                            gc_hash_handle *outhandle);
 extern Gc_rc gc_hash_clone (gc_hash_handle handle, gc_hash_handle *outhandle);
-extern size_t gc_hash_digest_length (Gc_hash hash);
+extern size_t gc_hash_digest_length (Gc_hash hash)
+                                     _GL_ATTRIBUTE_CONST;
 extern void gc_hash_hmac_setkey (gc_hash_handle handle,
                                  size_t len, const char *key);
 extern void gc_hash_write (gc_hash_handle handle,
@@ -157,10 +159,15 @@ extern Gc_rc gc_md2 (const void *in, size_t inlen, void *resbuf);
 extern Gc_rc gc_md4 (const void *in, size_t inlen, void *resbuf);
 extern Gc_rc gc_md5 (const void *in, size_t inlen, void *resbuf);
 extern Gc_rc gc_sha1 (const void *in, size_t inlen, void *resbuf);
+extern Gc_rc gc_sm3 (const void *in, size_t inlen, void *resbuf);
 extern Gc_rc gc_hmac_md5 (const void *key, size_t keylen,
                           const void *in, size_t inlen, char *resbuf);
 extern Gc_rc gc_hmac_sha1 (const void *key, size_t keylen,
                            const void *in, size_t inlen, char *resbuf);
+extern Gc_rc gc_hmac_sha256 (const void *key, size_t keylen,
+                             const void *in, size_t inlen, char *resbuf);
+extern Gc_rc gc_hmac_sha512 (const void *key, size_t keylen,
+                             const void *in, size_t inlen, char *resbuf);
 
 /* Derive cryptographic keys from a password P of length PLEN, with
    salt S of length SLEN, placing the result in pre-allocated buffer

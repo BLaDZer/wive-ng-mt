@@ -1,5 +1,5 @@
 /* Common macros used by gnulib tests.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 
 /* This file contains macros that are used by many gnulib tests.
@@ -20,6 +20,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef FALLTHROUGH
+# if __GNUC__ < 7
+#  define FALLTHROUGH ((void) 0)
+# else
+#  define FALLTHROUGH __attribute__ ((__fallthrough__))
+# endif
+#endif
 
 /* Define ASSERT_STREAM before including this file if ASSERT must
    target a stream other than stderr.  */
@@ -48,8 +56,8 @@
     {                                                                        \
       if (!(expr))                                                           \
         {                                                                    \
-          fprintf (ASSERT_STREAM, "%s:%d: assertion failed\n",               \
-                   __FILE__, __LINE__);                                      \
+          fprintf (ASSERT_STREAM, "%s:%d: assertion '%s' failed\n",     \
+                   __FILE__, __LINE__, #expr);                          \
           fflush (ASSERT_STREAM);                                            \
           abort ();                                                          \
         }                                                                    \
@@ -66,3 +74,8 @@
 /* STREQ (str1, str2)
    Return true if two strings compare equal.  */
 #define STREQ(a, b) (strcmp (a, b) == 0)
+
+/* Some numbers in the interval [0,1).  */
+extern const float randomf[1000];
+extern const double randomd[1000];
+extern const long double randoml[1000];

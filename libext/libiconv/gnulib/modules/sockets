@@ -11,9 +11,10 @@ Depends-on:
 socketlib
 sys_socket
 fd-hook
+msvc-nothrow
 
 configure.ac:
-gl_SOCKETS
+AC_REQUIRE([gl_SOCKETS])
 
 Makefile.am:
 lib_SOURCES += sockets.h sockets.c

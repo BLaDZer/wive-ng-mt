@@ -1,5 +1,5 @@
 /* Test of <stat-time.h>.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by James Youngman <jay@gnu.org>, 2007.  */
 
@@ -22,12 +22,38 @@
 
 #include <fcntl.h>
 #include <signal.h>
+#include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "macros.h"
 
+#define BASE "test-stat-time.t"
+#include "nap.h"
+
 enum { NFILES = 4 };
+
+static char filename_stamp1[50];
+static char filename_testfile[50];
+static char filename_stamp2[50];
+static char filename_stamp3[50];
+
+/* Use file names that are different at each run.
+   This is necessary for test_birthtime() to pass on native Windows:
+   On this platform, the file system apparently remembers the creation time
+   of a file even after it is removed and created anew.  See
+   "Windows NT Contains File System Tunneling Capabilities"
+   <https://support.microsoft.com/en-us/help/172190/>  */
+static void
+initialize_filenames (void)
+{
+  long t = (long) time (NULL);
+  sprintf (filename_stamp1,   "t-stt-%ld-stamp1", t);
+  sprintf (filename_testfile, "t-stt-%ld-testfile", t);
+  sprintf (filename_stamp2,   "t-stt-%ld-stamp2", t);
+  sprintf (filename_stamp3,   "t-stt-%ld-stamp3", t);
+}
 
 static int
 force_unlink (const char *filename)
@@ -42,11 +68,10 @@ static void
 cleanup (int sig)
 {
   /* Remove temporary files.  */
-  force_unlink ("t-stt-stamp1");
-  force_unlink ("t-stt-testfile");
-  force_unlink ("t-stt-stamp2");
-  force_unlink ("t-stt-renamed");
-  force_unlink ("t-stt-stamp3");
+  force_unlink (filename_stamp1);
+  force_unlink (filename_testfile);
+  force_unlink (filename_stamp2);
+  force_unlink (filename_stamp3);
 
   if (sig != 0)
     _exit (1);
@@ -79,67 +104,25 @@ do_stat (const char *filename, struct stat *p)
   ASSERT (stat (filename, p) == 0);
 }
 
-/* Sleep long enough to notice a timestamp difference on the file
-   system in the current directory.  */
-static void
-nap (void)
-{
-  static long delay;
-  if (!delay)
-    {
-      /* Initialize only once, by sleeping for 20 milliseconds (needed
-         since xfs has a quantization of about 10 milliseconds, even
-         though it has a granularity of 1 nanosecond, and since NTFS
-         has a default quantization of 15.25 milliseconds, even though
-         it has a granularity of 100 nanoseconds).  If the seconds
-         differ, repeat the test one more time (in case we crossed a
-         quantization boundary on a file system with 1 second
-         resolution).  If we can't observe a difference in only the
-         nanoseconds, then fall back to 1 second if the time is odd,
-         and 2 seconds (needed for FAT) if time is even.  */
-      struct stat st1;
-      struct stat st2;
-      ASSERT (stat ("t-stt-stamp1", &st1) == 0);
-      ASSERT (force_unlink ("t-stt-stamp1") == 0);
-      delay = 20000;
-      usleep (delay);
-      create_file ("t-stt-stamp1");
-      ASSERT (stat ("t-stt-stamp1", &st2) == 0);
-      if (st1.st_mtime != st2.st_mtime)
-        {
-          /* Seconds differ, give it one more shot.  */
-          st1 = st2;
-          ASSERT (force_unlink ("t-stt-stamp1") == 0);
-          usleep (delay);
-          create_file ("t-stt-stamp1");
-          ASSERT (stat ("t-stt-stamp1", &st2) == 0);
-        }
-      if (! (st1.st_mtime == st2.st_mtime
-             && get_stat_mtime_ns (&st1) < get_stat_mtime_ns (&st2)))
-        delay = (st1.st_mtime & 1) ? 1000000 : 2000000;
-    }
-  usleep (delay);
-}
-
 static void
 prepare_test (struct stat *statinfo, struct timespec *modtimes)
 {
   int i;
 
-  create_file ("t-stt-stamp1");
+  create_file (filename_stamp1);
   nap ();
-  create_file ("t-stt-testfile");
+  create_file (filename_testfile);
   nap ();
-  create_file ("t-stt-stamp2");
+  create_file (filename_stamp2);
   nap ();
-  ASSERT (chmod ("t-stt-testfile", 0400) == 0);
+  ASSERT (chmod (filename_testfile, 0400) == 0);
   nap ();
-  create_file ("t-stt-stamp3");
+  create_file (filename_stamp3);
 
-  do_stat ("t-stt-stamp1",  &statinfo[0]);
-  do_stat ("t-stt-testfile", &statinfo[1]);
-  do_stat ("t-stt-stamp2",  &statinfo[2]);
-  do_stat ("t-stt-stamp3",  &statinfo[3]);
+  do_stat (filename_stamp1,   &statinfo[0]);
+  do_stat (filename_testfile, &statinfo[1]);
+  do_stat (filename_stamp2,   &statinfo[2]);
+  do_stat (filename_stamp3,   &statinfo[3]);
 
   /* Now use our access functions. */
   for (i = 0; i < NFILES; ++i)
@@ -184,7 +167,7 @@ test_mtime (const struct stat *statinfo, struct timespec *modtimes)
     }
 }
 
-#if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
+#if defined _WIN32 && !defined __CYGWIN__
 /* Skip the ctime tests on native Windows platforms, because their
    st_ctime is either the same as st_mtime (plus or minus an offset)
    or set to the file _creation_ time, and is not influenced by rename
@@ -199,7 +182,7 @@ test_ctime (const struct stat *statinfo)
   if (statinfo[0].st_mtime != statinfo[0].st_ctime)
     return;
 
-  /* mtime(stamp2) < ctime(renamed) */
+  /* mtime(stamp2) < ctime(testfile) */
   ASSERT (statinfo[2].st_mtime < statinfo[1].st_ctime
           || (statinfo[2].st_mtime == statinfo[1].st_ctime
               && (get_stat_mtime_ns (&statinfo[2])
@@ -222,11 +205,11 @@ test_birthtime (const struct stat *statinfo,
         return;
     }
 
-  /* mtime(stamp1) < birthtime(renamed) */
+  /* mtime(stamp1) < birthtime(testfile) */
   ASSERT (modtimes[0].tv_sec < birthtimes[1].tv_sec
           || (modtimes[0].tv_sec == birthtimes[1].tv_sec
               && modtimes[0].tv_nsec < birthtimes[1].tv_nsec));
-  /* birthtime(renamed) < mtime(stamp2) */
+  /* birthtime(testfile) < mtime(stamp2) */
   ASSERT (birthtimes[1].tv_sec < modtimes[2].tv_sec
           || (birthtimes[1].tv_sec == modtimes[2].tv_sec
               && birthtimes[1].tv_nsec < modtimes[2].tv_nsec));
@@ -238,6 +221,8 @@ main (void)
   struct stat statinfo[NFILES];
   struct timespec modtimes[NFILES];
   struct timespec birthtimes[NFILES];
+
+  initialize_filenames ();
 
 #ifdef SIGHUP
   signal (SIGHUP, cleanup);

@@ -1,5 +1,5 @@
 /* POSIX compatible signal blocking.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
    Written by Eric Blake <ebb9@byu.net>, 2008.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-/* This implementation of sigaction is tailored to Woe32 behavior:
+/* This implementation of sigaction is tailored to native Windows behavior:
    signal() has SysV semantics (ie. the handler is uninstalled before
    it is invoked).  This is an inherent data race if an asynchronous
    signal is sent twice in a row before we can reinstall our handler,
@@ -39,9 +39,9 @@
      - We don't implement SA_NOCLDSTOP or SA_NOCLDWAIT, because SIGCHLD
        is not defined.
      - We don't implement SA_ONSTACK, because sigaltstack() is not present.
-     - We ignore SA_RESTART, because blocking Win32 calls are not interrupted
-       anyway when an asynchronous signal occurs, and the MSVCRT runtime
-       never sets errno to EINTR.
+     - We ignore SA_RESTART, because blocking native Windows API calls are
+       not interrupted anyway when an asynchronous signal occurs, and the
+       MSVCRT runtime never sets errno to EINTR.
      - We don't implement SA_SIGINFO because it is impossible to do so
        portably.
 
@@ -67,7 +67,7 @@
 /* On native Windows, as of 2008, the signal SIGABRT_COMPAT is an alias
    for the signal SIGABRT.  Only one signal handler is stored for both
    SIGABRT and SIGABRT_COMPAT.  SIGABRT_COMPAT is not a signal of its own.  */
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # undef SIGABRT_COMPAT
 # define SIGABRT_COMPAT 6
 #endif

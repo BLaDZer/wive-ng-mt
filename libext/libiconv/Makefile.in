@@ -33,7 +33,7 @@ all : lib/localcharset.h force
 	cd lib && $(MAKE) all
 	cd srclib && $(MAKE) all
 	cd src && $(MAKE) all
-	cd po && $(MAKE) all
+#	cd po && $(MAKE) all
 	make install
 
 lib/localcharset.h :
@@ -53,8 +53,8 @@ install : lib/localcharset.h force
 	cd src && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	if [ ! -d $(DESTDIR)$(includedir) ] ; then $(mkinstalldirs) $(DESTDIR)$(includedir) ; fi
 	$(INSTALL_DATA) include/iconv.h.inst $(DESTDIR)$(includedir)/iconv.h
-	cd po && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
-	cd man && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
+#	cd po && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
+#	cd man && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
 
 install-strip : lib/localcharset.h force
 	cd libcharset && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
@@ -63,8 +63,8 @@ install-strip : lib/localcharset.h force
 	cd src && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	if [ ! -d $(DESTDIR)$(includedir) ] ; then $(mkinstalldirs) $(DESTDIR)$(includedir) ; fi
 	$(INSTALL_DATA) include/iconv.h.inst $(DESTDIR)$(includedir)/iconv.h
-	cd po && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
-	cd man && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
+#	cd po && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
+#	cd man && $(MAKE) install-strip prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
 
 installdirs : force
 	cd libcharset && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
@@ -72,8 +72,8 @@ installdirs : force
 	cd srclib && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	cd src && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	if [ ! -d $(DESTDIR)$(includedir) ] ; then $(mkinstalldirs) $(DESTDIR)$(includedir) ; fi
-	cd po && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
-	cd man && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
+#	cd po && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
+#	cd man && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
 
 uninstall : force
 	cd libcharset && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
@@ -81,17 +81,17 @@ uninstall : force
 	cd srclib && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	cd src && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
 	$(RM) $(DESTDIR)$(includedir)/iconv.h
-	cd po && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
-	cd man && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
+#	cd po && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)'
+#	cd man && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' datarootdir='$(datarootdir)' datadir='$(datadir)' mandir='$(mandir)'
 
 check : all force
 	cd libcharset && $(MAKE) check
 	cd lib && $(MAKE) check
 	cd srclib && $(MAKE) check
 	cd src && $(MAKE) check
-	cd po && $(MAKE) check
-	cd man && $(MAKE) check
-	if test -d tests; then cd tests && $(MAKE) check; fi
+#	cd po && $(MAKE) check
+#	cd man && $(MAKE) check
+#	if test -d tests; then cd tests && $(MAKE) check; fi
 
 mostlyclean : force
 	cd libcharset && $(MAKE) mostlyclean
@@ -99,9 +99,9 @@ mostlyclean : force
 	cd lib && $(MAKE) mostlyclean
 	cd srclib && $(MAKE) mostlyclean
 	cd src && $(MAKE) mostlyclean
-	cd po && $(MAKE) mostlyclean
-	cd man && $(MAKE) mostlyclean
-	if test -d tests; then cd tests && $(MAKE) mostlyclean; fi
+#	cd po && $(MAKE) mostlyclean
+#	cd man && $(MAKE) mostlyclean
+#	if test -d tests; then cd tests && $(MAKE) mostlyclean; fi
 	rm -rf bin
 
 shared: install
@@ -116,9 +116,9 @@ clean : force
 	cd lib && $(MAKE) clean
 	cd srclib && $(MAKE) clean
 	cd src && $(MAKE) clean
-	cd po && $(MAKE) clean
-	cd man && $(MAKE) clean
-	if test -d tests; then cd tests && $(MAKE) clean; fi
+#	cd po && $(MAKE) clean
+#	cd man && $(MAKE) clean
+#	if test -d tests; then cd tests && $(MAKE) clean; fi
 	rm -rf bin
 
 distclean : force
@@ -127,9 +127,9 @@ distclean : force
 	cd lib && if test -f Makefile; then $(MAKE) distclean; fi
 	cd srclib && if test -f Makefile; then $(MAKE) distclean; fi
 	cd src && if test -f Makefile; then $(MAKE) distclean; fi
-	cd po && if test -f Makefile; then $(MAKE) distclean; fi
-	cd man && if test -f Makefile; then $(MAKE) distclean; fi
-	if test -d tests; then cd tests && if test -f Makefile; then $(MAKE) distclean; fi; fi
+#	cd po && if test -f Makefile; then $(MAKE) distclean; fi
+#	cd man && if test -f Makefile; then $(MAKE) distclean; fi
+#	if test -d tests; then cd tests && if test -f Makefile; then $(MAKE) distclean; fi; fi
 	$(RM) config.status config.log config.cache Makefile libtool
 	$(RM) config.h stamp-h1 lib/stamp-h2
 	$(RM) include/iconv.h include/iconv.h.inst
@@ -141,9 +141,9 @@ maintainer-clean : force
 	cd lib && if test -f Makefile; then $(MAKE) maintainer-clean; fi
 	cd srclib && if test -f Makefile; then $(MAKE) maintainer-clean; fi
 	cd src && if test -f Makefile; then $(MAKE) maintainer-clean; fi
-	cd po && if test -f Makefile; then $(MAKE) maintainer-clean; fi
-	cd man && if test -f Makefile; then $(MAKE) maintainer-clean; fi
-	if test -d tests; then cd tests && if test -f Makefile; then $(MAKE) maintainer-clean; fi; fi
+#	cd po && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+#	cd man && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+#	if test -d tests; then cd tests && if test -f Makefile; then $(MAKE) maintainer-clean; fi; fi
 	$(RM) config.status config.log config.cache Makefile libtool
 	$(RM) config.h stamp-h1 lib/stamp-h2
 	$(RM) include/iconv.h include/iconv.h.inst

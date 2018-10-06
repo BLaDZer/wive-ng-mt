@@ -1,5 +1,5 @@
 /* xgetdomainname.c -- Return the NIS domain name, without size limitations.
-   Copyright (C) 1992, 1996, 2000-2001, 2003-2004, 2006, 2008-2011 Free
+   Copyright (C) 1992, 1996, 2000-2001, 2003-2004, 2006, 2008-2018 Free
    Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Based on xgethostname.c, written by Jim Meyering.  */
 

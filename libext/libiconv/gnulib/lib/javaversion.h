@@ -1,5 +1,5 @@
 /* Determine the Java version supported by javaexec.
-   Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _JAVAVERSION_H
 #define _JAVAVERSION_H
@@ -26,8 +26,8 @@ extern "C" {
 
 /* Return information about the Java version used by execute_java_class().
    This is the value of System.getProperty("java.specification.version").
-   Some possible values are: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6.  Return NULL if
-   the Java version cannot be determined.  */
+   Some possible values are: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 9, 10, 11.
+   Return NULL if the Java version cannot be determined.  */
 extern char * javaexec_version (void);
 
 

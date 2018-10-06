@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004, 2007-2011 Free Software Foundation, Inc.
+ * Copyright (C) 2004, 2007-2018 Free Software Foundation, Inc.
  * Written by Bruno Haible and Eric Blake
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -37,8 +37,9 @@ main (int argc, char *argv[])
      caused by SIGALRM.  All known platforms that lack alarm also have
      a quadratic strstr, and the replacement strstr is known to not
      take too long.  */
+  int alarm_value = 50;
   signal (SIGALRM, SIG_DFL);
-  alarm (50);
+  alarm (alarm_value);
 #endif
 
   {
@@ -57,7 +58,7 @@ main (int argc, char *argv[])
     /* On some platforms, the memchr() functions reads past the first
        occurrence of the byte to be searched, leading to an out-of-bounds
        read access for strstr().
-       See <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=521737>.
+       See <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=521737>.
        This is a bug in memchr(), see the Austin Group's clarification
        <http://www.opengroup.org/austin/docs/austin_454.txt>.  */
     const char *fix = "aBaaaaaaaaaaax";
@@ -271,6 +272,29 @@ main (int argc, char *argv[])
         ASSERT (p);
         ASSERT (p - haystack == i);
       }
+    free (haystack);
+  }
+
+  /* Test long needles.  */
+  {
+    size_t m = 1024;
+    char *haystack = (char *) malloc (2 * m + 1);
+    char *needle = (char *) malloc (m + 1);
+    if (haystack != NULL && needle != NULL)
+      {
+        const char *p;
+        haystack[0] = 'x';
+        memset (haystack + 1, ' ', m - 1);
+        memset (haystack + m, 'x', m);
+        haystack[2 * m] = '\0';
+        memset (needle, 'x', m);
+        needle[m] = '\0';
+        p = strstr (haystack, needle);
+        ASSERT (p);
+        ASSERT (p - haystack == m);
+      }
+    free (needle);
+    free (haystack);
   }
 
   return 0;

@@ -1,6 +1,6 @@
 # If possible, ignore libraries that are not depended on.
 
-dnl Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
+dnl Copyright (C) 2006, 2009-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -53,7 +53,7 @@ AC_DEFUN([gl_IGNORE_UNUSED_LIBRARIES],
      gl_saved_ldflags=$LDFLAGS
      gl_saved_libs=$LIBS
      # Link with -lm to detect binutils 2.16 bug with --as-needed; see
-     # <http://lists.gnu.org/archive/html/bug-gnulib/2006-06/msg00131.html>.
+     # <https://lists.gnu.org/r/bug-gnulib/2006-06/msg00131.html>.
      LIBS="$LIBS -lm"
      # Use long option sequences like '-z ignore' to test for the feature,
      # to forestall problems with linkers that have -z, -i, -g, -n, etc. flags.

@@ -1,5 +1,5 @@
 /* Test of obstack_printf() and obstack_vprintf() functions.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2008.  */
 
@@ -32,7 +32,6 @@ SIGNATURE_CHECK (obstack_vprintf, int, (struct obstack *, char const *,
 #include <stdlib.h>
 #include <string.h>
 
-#include "progname.h"
 #include "macros.h"
 
 #define obstack_chunk_alloc xmalloc
@@ -130,8 +129,6 @@ test_obstack_printf ()
 int
 main (int argc, char *argv[])
 {
-  set_program_name (argv[0]);
-
   test_obstack_vprintf ();
   test_obstack_printf ();
   return 0;

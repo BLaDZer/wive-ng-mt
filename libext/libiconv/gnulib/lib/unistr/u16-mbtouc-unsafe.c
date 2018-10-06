@@ -1,5 +1,5 @@
 /* Look at first character in UTF-16 string.
-   Copyright (C) 1999-2002, 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1999-2002, 2006-2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -38,15 +38,11 @@ u16_mbtouc_unsafe (ucs4_t *puc, const uint16_t *s, size_t n)
       *puc = c;
       return 1;
     }
-#if CONFIG_UNICODE_SAFETY
   if (c < 0xdc00)
-#endif
     {
       if (n >= 2)
         {
-#if CONFIG_UNICODE_SAFETY
           if (s[1] >= 0xdc00 && s[1] < 0xe000)
-#endif
             {
               *puc = 0x10000 + ((c - 0xd800) << 10) + (s[1] - 0xdc00);
               return 2;

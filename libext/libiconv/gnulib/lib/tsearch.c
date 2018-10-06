@@ -1,4 +1,4 @@
-/* Copyright (C) 1995-1997, 2000, 2006-2007, 2009-2011 Free Software
+/* Copyright (C) 1995-1997, 2000, 2006-2007, 2009-2018 Free Software
    Foundation, Inc.
    Contributed by Bernd Schmidt <crux@Pool.Informatik.RWTH-Aachen.DE>, 1997.
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Tree search for red/black trees.
    The algorithm for adding nodes is taken from one of the many "Algorithms"
@@ -85,11 +85,11 @@
    In this case, A has been rotated left.  This preserves the ordering of the
    binary tree.  */
 
-#include <config.h>
-
 /* Don't use __attribute__ __nonnull__ in this compilation unit.  Otherwise gcc
    optimizes away the rootp == NULL tests below.  */
 #define _GL_ARG_NONNULL(params)
+
+#include <config.h>
 
 /* Specification.  */
 #ifdef IN_LIBINTL
@@ -173,6 +173,8 @@ check_tree (node root)
 #define CHECK_TREE(a)
 
 #endif
+
+#if GNULIB_defined_tsearch
 
 /* Possibly "split" a node with two red successors, and/or fix up two red
    edges in a row.  ROOTP is a pointer to the lowest node we visited, PARENTP
@@ -331,10 +333,7 @@ weak_alias (__tsearch, tsearch)
    KEY is the key to be located, ROOTP is the address of tree root,
    COMPAR the ordering function.  */
 void *
-__tfind (key, vrootp, compar)
-     const void *key;
-     void *const *vrootp;
-     __compar_fn_t compar;
+__tfind (const void *key, void *const *vrootp, __compar_fn_t compar)
 {
   node *rootp = (node *) vrootp;
 
@@ -612,6 +611,10 @@ __tdelete (const void *key, void **vrootp, __compar_fn_t compar)
 weak_alias (__tdelete, tdelete)
 #endif
 
+#endif /* GNULIB_defined_tsearch */
+
+
+#if GNULIB_defined_twalk
 
 /* Walk the nodes of a tree.
    ROOT is the root of the tree to be walked, ACTION the function to be
@@ -653,6 +656,8 @@ __twalk (const void *vroot, __action_fn_t action)
 #ifdef weak_alias
 weak_alias (__twalk, twalk)
 #endif
+
+#endif /* GNULIB_defined_twalk */
 
 
 #ifdef _LIBC

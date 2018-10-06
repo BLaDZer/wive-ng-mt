@@ -13,10 +13,11 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
+    { 0x1885, 0x1886 },
     { 0x2118, 0x2118 },
     { 0x212E, 0x212E },
     { 0x309B, 0x309C }

@@ -1,6 +1,6 @@
 /* mgetgroups.c -- return a list of the groups a user or current process is in
 
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Extracted from coreutils' src/id.c. */
 
@@ -32,6 +32,12 @@
 
 #include "getugroups.h"
 #include "xalloc-oversized.h"
+
+/* Work around an incompatibility of OS X 10.11: getgrouplist
+   accepts int *, not gid_t *, and int and gid_t differ in sign.  */
+#if 4 < __GNUC__ + (3 <= __GNUC_MINOR__)
+# pragma GCC diagnostic ignored "-Wpointer-sign"
+#endif
 
 static gid_t *
 realloc_groupbuf (gid_t *g, size_t num)
@@ -133,7 +139,7 @@ mgetgroups (char const *username, gid_t gid, gid_t **groups)
       return -1;
     }
 
-  if (!username && gid != (gid_t) -1)
+  if (max_n_groups == 0 || (!username && gid != (gid_t) -1))
     max_n_groups++;
   g = realloc_groupbuf (NULL, max_n_groups);
   if (g == NULL)

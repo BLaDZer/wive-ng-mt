@@ -1,5 +1,5 @@
 /* Filtering of data through a subprocess.
-   Copyright (C) 2001-2003, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2008-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -25,8 +25,129 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # include <windows.h>
+#elif defined __KLIBC__
+# define INCL_DOS
+# include <os2.h>
+
+/* Simple implementation of Win32 APIs */
+
+# define WINAPI
+
+typedef struct _HANDLE
+{
+  TID tid;
+  HEV hevDone;
+  unsigned int WINAPI (*start) (void *);
+  void *arg;
+} *HANDLE;
+
+typedef ULONG DWORD;
+
+static void
+start_wrapper (void *arg)
+{
+  HANDLE h = (HANDLE) arg;
+
+  h->start (h->arg);
+
+  DosPostEventSem (h->hevDone);
+  _endthread ();
+}
+
+static HANDLE
+_beginthreadex (void *s, unsigned n, unsigned int WINAPI (*start) (void *),
+                void *arg, unsigned fl, unsigned *th)
+{
+  HANDLE h;
+
+  h = malloc (sizeof (*h));
+  if (!h)
+    return NULL;
+
+  if (DosCreateEventSem (NULL, &h->hevDone, 0, FALSE))
+    goto exit_free;
+
+  h->start = start;
+  h->arg = arg;
+
+  h->tid = _beginthread (start_wrapper, NULL, n, (void *) h);
+  if (h->tid == -1)
+    goto exit_close_event_sem;
+
+  return h;
+
+ exit_close_event_sem:
+  DosCloseEventSem (h->hevDone);
+
+ exit_free:
+  free (h);
+
+  return NULL;
+}
+
+static BOOL
+CloseHandle (HANDLE h)
+{
+  DosCloseEventSem (h->hevDone);
+  free (h);
+}
+
+# define _endthreadex(x) return (x)
+# define TerminateThread(h, e) DosKillThread (h->tid)
+
+# define GetLastError()  -1
+
+# ifndef ERROR_NO_DATA
+#  define ERROR_NO_DATA 232
+# endif
+
+# define INFINITE SEM_INDEFINITE_WAIT
+# define WAIT_OBJECT_0  0
+
+static DWORD
+WaitForSingleObject (HANDLE h, DWORD ms)
+{
+  return DosWaitEventSem (h->hevDone, ms) == 0 ? WAIT_OBJECT_0 : (DWORD) -1;
+}
+
+static DWORD
+WaitForMultipleObjects (DWORD nCount, const HANDLE *pHandles, BOOL bWaitAll,
+                        DWORD ms)
+{
+  HMUX hmux;
+  PSEMRECORD psr;
+  ULONG ulUser;
+  ULONG rc = (ULONG) -1;
+  DWORD i;
+
+  psr = malloc (sizeof (*psr) * nCount);
+  if (!psr)
+    goto exit_return;
+
+  for (i = 0; i < nCount; ++i)
+    {
+      psr[i].hsemCur = (HSEM) pHandles[i]->hevDone;
+      psr[i].ulUser  = WAIT_OBJECT_0 + i;
+    }
+
+  if (DosCreateMuxWaitSem (NULL, &hmux, nCount, psr,
+                           bWaitAll ? DCMW_WAIT_ALL : DCMW_WAIT_ANY))
+    goto exit_free;
+
+  rc = DosWaitMuxWaitSem (hmux, ms, &ulUser);
+  DosCloseMuxWaitSem (hmux);
+
+ exit_free:
+  free (psr);
+
+ exit_return:
+  if (rc)
+    return (DWORD) -1;
+
+  return ulUser;
+}
 #else
 # include <signal.h>
 # include <sys/select.h>
@@ -41,7 +162,7 @@
 
 #include "pipe-filter-aux.h"
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if (defined _WIN32 && ! defined __CYGWIN__) || defined __KLIBC__
 
 struct locals
 {
@@ -143,7 +264,7 @@ pipe_filter_ii_execute (const char *progname,
 {
   pid_t child;
   int fd[2];
-#if !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
+#if !((defined _WIN32 && ! defined __CYGWIN__) || defined __KLIBC__)
   struct sigaction orig_sigpipe_action;
 #endif
 
@@ -154,8 +275,8 @@ pipe_filter_ii_execute (const char *progname,
   if (child == -1)
     return -1;
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-  /* Native Woe32 API.  */
+#if (defined _WIN32 && ! defined __CYGWIN__) || defined __KLIBC__
+  /* Native Windows API.  */
   /* Pipes have a non-blocking mode, see function SetNamedPipeHandleState and
      the article "Named Pipe Type, Read, and Wait Modes", but Microsoft's
      documentation discourages its use.  So don't use it.
@@ -309,7 +430,7 @@ pipe_filter_ii_execute (const char *progname,
     for (;;)
       {
 # if HAVE_SELECT
-        int n;
+        int n, retval;
 
         FD_SET (fd[0], &readfds);
         n = fd[0] + 1;
@@ -320,8 +441,15 @@ pipe_filter_ii_execute (const char *progname,
               n = fd[1] + 1;
           }
 
-        n = select (n, &readfds, (!done_writing ? &writefds : NULL), NULL,
-                    NULL);
+        /* Do EINTR handling here instead of in pipe-filter-aux.h,
+           because select() cannot be referred to from an inline
+           function on AIX 7.1.  */
+        do
+          retval = select (n, &readfds, (!done_writing ? &writefds : NULL),
+                           NULL, NULL);
+        while (retval < 0 && errno == EINTR);
+        n = retval;
+
         if (n < 0)
           {
             if (exit_on_error)
@@ -348,7 +476,7 @@ pipe_filter_ii_execute (const char *progname,
             if (buf != NULL)
               {
                 /* Writing to a pipe in non-blocking mode is tricky: The
-                   write() call may fail with EAGAIN, simply because suffcient
+                   write() call may fail with EAGAIN, simply because sufficient
                    space is not available in the pipe. See POSIX:2008
                    <http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html>.
                    This happens actually on AIX and IRIX, when bufsize >= 8192
@@ -455,7 +583,7 @@ pipe_filter_ii_execute (const char *progname,
   {
     int saved_errno = errno;
     close (fd[1]);
-#if !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
+#if !((defined _WIN32 && ! defined __CYGWIN__) || defined __KLIBC__)
     if (sigaction (SIGPIPE, &orig_sigpipe_action, NULL) < 0)
       abort ();
 #endif

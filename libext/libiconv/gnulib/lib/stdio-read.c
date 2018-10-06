@@ -1,5 +1,5 @@
 /* POSIX compatible FILE stream read function.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2011.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -29,13 +29,19 @@
    read() function is at the basis of the function which fills the buffer of
    a FILE stream.  */
 
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
 
 #  include <errno.h>
 #  include <io.h>
 
 #  define WIN32_LEAN_AND_MEAN  /* avoid including junk */
 #  include <windows.h>
+
+#  if GNULIB_MSVC_NOTHROW
+#   include "msvc-nothrow.h"
+#  else
+#   include <io.h>
+#  endif
 
 #  define CALL_WITH_ERRNO_FIX(RETTYPE, EXPRESSION, FAILED) \
   if (ferror (stream))                                                        \
@@ -70,6 +76,9 @@
       return ret;                                                             \
     }
 
+/* Enable this function definition only if gnulib's <stdio.h> has prepared it.
+   Otherwise we get a function definition conflict with mingw64's <stdio.h>.  */
+#  if GNULIB_SCANF
 int
 scanf (const char *format, ...)
 {
@@ -82,7 +91,11 @@ scanf (const char *format, ...)
 
   return retval;
 }
+#  endif
 
+/* Enable this function definition only if gnulib's <stdio.h> has prepared it.
+   Otherwise we get a function definition conflict with mingw64's <stdio.h>.  */
+#  if GNULIB_FSCANF
 int
 fscanf (FILE *stream, const char *format, ...)
 {
@@ -95,19 +108,28 @@ fscanf (FILE *stream, const char *format, ...)
 
   return retval;
 }
+#  endif
 
+/* Enable this function definition only if gnulib's <stdio.h> has prepared it.
+   Otherwise we get a function definition conflict with mingw64's <stdio.h>.  */
+#  if GNULIB_VSCANF
 int
 vscanf (const char *format, va_list args)
 {
   return vfscanf (stdin, format, args);
 }
+#  endif
 
+/* Enable this function definition only if gnulib's <stdio.h> has prepared it.
+   Otherwise we get a function definition conflict with mingw64's <stdio.h>.  */
+#  if GNULIB_VFSCANF
 int
 vfscanf (FILE *stream, const char *format, va_list args)
 #undef vfscanf
 {
   CALL_WITH_ERRNO_FIX (int, vfscanf (stream, format, args), ret == EOF)
 }
+#  endif
 
 int
 getchar (void)
@@ -129,13 +151,7 @@ fgets (char *s, int n, FILE *stream)
   CALL_WITH_ERRNO_FIX (char *, fgets (s, n, stream), ret == NULL)
 }
 
-char *
-gets (char *s)
-#undef gets
-{
-  FILE *stream = stdin;
-  CALL_WITH_ERRNO_FIX (char *, gets (s), ret == NULL)
-}
+/* We intentionally don't bother to fix gets.  */
 
 size_t
 fread (void *ptr, size_t s, size_t n, FILE *stream)

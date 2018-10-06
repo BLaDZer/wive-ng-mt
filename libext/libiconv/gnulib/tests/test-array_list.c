@@ -1,5 +1,5 @@
 /* Test of sequential list data type implementation.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2007.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 
-#include "progname.h"
 #include "macros.h"
 
 static const char *objects[15] =
@@ -49,8 +48,6 @@ int
 main (int argc, char *argv[])
 {
   gl_list_t list1, list2;
-
-  set_program_name (argv[0]);
 
   /* Allow the user to provide a non-default random seed on the command line.  */
   if (argc > 1)

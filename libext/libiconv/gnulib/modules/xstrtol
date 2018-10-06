@@ -9,11 +9,11 @@ lib/xstrtol-error.c
 m4/xstrtol.m4
 
 Depends-on:
+assure
 exitfail
 error
 getopt-gnu
 gettext-h
-intprops
 inttypes-incomplete
 
 configure.ac:

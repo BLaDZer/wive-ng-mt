@@ -1,5 +1,5 @@
-/* Filtering of data through a subprocess.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+/* Filtering of data through a subprocess.  -*- coding: utf-8 -*-
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2009,
    and Paolo Bonzini <bonzini@gnu.org>, 2009.
 
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _PIPE_FILTER_H
 #define _PIPE_FILTER_H
@@ -47,7 +47,7 @@ extern "C" {
 
    The side that writes data to the subprocess can be seen as a "generator",
    that is, as a subroutine that produces and writes a piece of data here and
-   there, see <http://en.wikipedia.org/wiki/Generator_(computer_science)>.
+   there, see <https://en.wikipedia.org/wiki/Generator_(computer_science)>.
    But often, it can be written in the form of an "iterator", that is, as a
    function that, each time it is invoked, produces and writes one more piece
    of data.
@@ -70,8 +70,8 @@ extern "C" {
 
    The last one uses threads in order to implement two generators running at
    the same time.  (For the relation between generators, coroutines, and
-   threads, see <http://en.wikipedia.org/wiki/Generator_(computer_science)>
-   and <http://en.wikipedia.org/wiki/Coroutine>.)  It is therefore only
+   threads, see <https://en.wikipedia.org/wiki/Generator_(computer_science)>
+   and <https://en.wikipedia.org/wiki/Coroutine>.)  It is therefore only
    portable to platforms with kernel-based POSIX threads.  */
 
 /* These two functions together describe the side that writes data to the
@@ -119,7 +119,7 @@ typedef void (*done_read_fn) (void *data_read, size_t num_bytes_read,
    true, otherwise return 127.
    Callback arguments are as described above.
 
-   Data is alternatingly written to the subprocess, through the functions
+   Data is alternately written to the subprocess, through the functions
    prepare_write and done_write, and read from the subprocess, through the
    functions prepare_read and done_read.
 
@@ -167,7 +167,7 @@ struct pipe_filter_gi;
    true, otherwise return NULL and set errno.
 
    The caller will write to the subprocess through pipe_filter_gi_write
-   and finally call pipe_filter_gi_write.  During such calls, the
+   and finally call pipe_filter_gi_close.  During such calls, the
    prepare_read and done_read function may be called to process any data
    that the subprocess has written.
 

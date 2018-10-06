@@ -1,6 +1,6 @@
-# getline.m4 serial 25
+# getline.m4 serial 28
 
-dnl Copyright (C) 1998-2003, 2005-2007, 2009-2011 Free Software Foundation,
+dnl Copyright (C) 1998-2003, 2005-2007, 2009-2018 Free Software Foundation,
 dnl Inc.
 dnl
 dnl This file is free software; the Free Software Foundation
@@ -46,7 +46,8 @@ AC_DEFUN([gl_FUNC_GETLINE],
         size_t siz = 0;
         int len = getline (&line, &siz, in);
         if (!(len == 4 && line && strcmp (line, "foo\n") == 0))
-          return 2;
+          { free (line); fclose (in); return 2; }
+        free (line);
       }
       {
         /* Test result for a NULL buffer and a non-zero size.
@@ -54,8 +55,10 @@ AC_DEFUN([gl_FUNC_GETLINE],
         char *line = NULL;
         size_t siz = (size_t)(~0) / 4;
         if (getline (&line, &siz, in) == -1)
-          return 3;
+          { fclose (in); return 3; }
+        free (line);
       }
+      fclose (in);
       return 0;
     }
     ]])], [am_cv_func_working_getline=yes] dnl The library version works.
@@ -70,8 +73,8 @@ AC_DEFUN([gl_FUNC_GETLINE],
  #endif
 #endif
          ],
-         [am_cv_func_working_getline=yes],
-         [am_cv_func_working_getline=no])]
+         [am_cv_func_working_getline="guessing yes"],
+         [am_cv_func_working_getline="guessing no"])]
     )])
   fi
 
@@ -79,12 +82,14 @@ AC_DEFUN([gl_FUNC_GETLINE],
     HAVE_DECL_GETLINE=0
   fi
 
-  if test $am_cv_func_working_getline = no; then
-    dnl Set REPLACE_GETLINE always: Even if we have not found the broken
-    dnl getline function among $LIBS, it may exist in libinet and the
-    dnl executable may be linked with -linet.
-    REPLACE_GETLINE=1
-  fi
+  case "$am_cv_func_working_getline" in
+    *no)
+      dnl Set REPLACE_GETLINE always: Even if we have not found the broken
+      dnl getline function among $LIBS, it may exist in libinet and the
+      dnl executable may be linked with -linet.
+      REPLACE_GETLINE=1
+      ;;
+  esac
 ])
 
 # Prerequisites of lib/getline.c.

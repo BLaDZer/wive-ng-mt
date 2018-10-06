@@ -1,5 +1,5 @@
 /* Tokenize UTF-8 string.
-   Copyright (C) 1999, 2002, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1999, 2002, 2006, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2002.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -24,4 +24,5 @@
 #define UNIT uint8_t
 #define U_STRSPN u8_strspn
 #define U_STRPBRK u8_strpbrk
+#define U_STRMBLEN u8_strmblen
 #include "u-strtok.h"

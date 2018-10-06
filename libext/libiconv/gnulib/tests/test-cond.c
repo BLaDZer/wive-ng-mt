@@ -1,5 +1,5 @@
 /* Test of condition variables in multithreaded situations.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,11 +12,11 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
-#if USE_POSIX_THREADS || USE_SOLARIS_THREADS || USE_PTH_THREADS || USE_WIN32_THREADS
+#if USE_POSIX_THREADS || USE_SOLARIS_THREADS || USE_PTH_THREADS || USE_WINDOWS_THREADS
 
 /* Which tests to perform.
    Uncomment some of these, to verify that all tests crash if no locking
@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include "glthread/cond.h"
 #include "glthread/lock.h"
@@ -58,7 +59,6 @@
 /*
  * Condition check
  */
-#include <unistd.h>
 static int cond_value = 0;
 gl_cond_define_initialized(static, condtest)
 gl_lock_define_initialized(static, lockcond)

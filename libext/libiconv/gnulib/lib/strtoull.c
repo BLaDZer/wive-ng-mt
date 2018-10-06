@@ -1,5 +1,5 @@
-/* Function to parse an `unsigned long long int' from text.
-   Copyright (C) 1995-1997, 1999, 2009-2011 Free Software Foundation, Inc.
+/* Function to parse an 'unsigned long long int' from text.
+   Copyright (C) 1995-1997, 1999, 2009-2018 Free Software Foundation, Inc.
    NOTE: The canonical source of this file is maintained with the GNU C
    Library.  Bugs can be reported to bug-glibc@gnu.org.
 
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #define QUAD 1
 

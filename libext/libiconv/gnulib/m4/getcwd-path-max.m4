@@ -1,4 +1,4 @@
-# serial 16
+# serial 21
 # Check for several getcwd bugs with long file names.
 # If so, arrange to compile the wrapper function.
 
@@ -6,7 +6,7 @@
 # I've heard that this is due to a Linux kernel bug, and that it has
 # been fixed between 2.4.21-pre3 and 2.4.21-pre4.
 
-# Copyright (C) 2003-2007, 2009-2011 Free Software Foundation, Inc.
+# Copyright (C) 2003-2007, 2009-2018 Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -16,9 +16,12 @@
 AC_DEFUN([gl_FUNC_GETCWD_PATH_MAX],
 [
   AC_CHECK_DECLS_ONCE([getcwd])
+  AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+  AC_CHECK_HEADERS_ONCE([unistd.h])
+  AC_REQUIRE([gl_PATHMAX_SNIPPET_PREREQ])
   AC_CACHE_CHECK([whether getcwd handles long file names properly],
-    gl_cv_func_getcwd_path_max,
+    [gl_cv_func_getcwd_path_max],
     [# Arrange for deletion of the temporary directory this test creates.
      ac_clean_files="$ac_clean_files confdir3"
      dnl Please keep this in sync with tests/test-getcwd.c.
@@ -27,12 +30,18 @@ AC_DEFUN([gl_FUNC_GETCWD_PATH_MAX],
           [[
 #include <errno.h>
 #include <stdlib.h>
-#include <unistd.h>
+#if HAVE_UNISTD_H
+# include <unistd.h>
+#else
+# include <direct.h>
+#endif
 #include <string.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+
+]gl_PATHMAX_SNIPPET[
 
 #ifndef AT_FDCWD
 # define AT_FDCWD 0
@@ -42,6 +51,9 @@ AC_DEFUN([gl_FUNC_GETCWD_PATH_MAX],
 #else
 # define is_ENAMETOOLONG(x) 0
 #endif
+
+/* Use the getcwd function, not any macro.  */
+#undef getcwd
 
 /* Don't get link errors because mkdir is redefined to rpl_mkdir.  */
 #undef mkdir
@@ -110,15 +122,32 @@ main ()
 
       if (PATH_MAX <= cwd_len && cwd_len < PATH_MAX + DIR_NAME_SIZE)
         {
+          struct stat sb;
+
           c = getcwd (buf, PATH_MAX);
           if (!c && errno == ENOENT)
             {
               fail = 11;
               break;
             }
-          if (c || ! (errno == ERANGE || is_ENAMETOOLONG (errno)))
+          if (c)
+            {
+              fail = 31;
+              break;
+            }
+          if (! (errno == ERANGE || is_ENAMETOOLONG (errno)))
             {
               fail = 21;
+              break;
+            }
+
+          /* Our replacement needs to be able to stat() long ../../paths,
+             so generate a path larger than PATH_MAX to check,
+             avoiding the replacement if we can't stat().  */
+          c = getcwd (buf, cwd_len + 1);
+          if (c && !AT_FDCWD && stat (c, &sb) != 0 && is_ENAMETOOLONG (errno))
+            {
+              fail = 32;
               break;
             }
         }
@@ -173,17 +202,28 @@ main ()
 #endif
 }
           ]])],
-    [gl_cv_func_getcwd_path_max=yes],
-    [case $? in
-     10|11|12) gl_cv_func_getcwd_path_max='no, but it is partly working';;
-     *) gl_cv_func_getcwd_path_max=no;;
-     esac],
-    [gl_cv_func_getcwd_path_max=no])
-  ])
-  case $gl_cv_func_getcwd_path_max in
-  no,*)
-    AC_DEFINE([HAVE_PARTLY_WORKING_GETCWD], [1],
-      [Define to 1 if getcwd works, except it sometimes fails when it shouldn't,
-       setting errno to ERANGE, ENAMETOOLONG, or ENOENT.]);;
-  esac
+       [gl_cv_func_getcwd_path_max=yes],
+       [case $? in
+        10|11|12) gl_cv_func_getcwd_path_max='no, but it is partly working';;
+        31) gl_cv_func_getcwd_path_max='no, it has the AIX bug';;
+        32) gl_cv_func_getcwd_path_max='yes, but with shorter paths';;
+        *) gl_cv_func_getcwd_path_max=no;;
+        esac],
+       [# Cross-compilation guesses:
+        case "$host_os" in
+          aix*) # On AIX, it has the AIX bug.
+            gl_cv_func_getcwd_path_max='no, it has the AIX bug' ;;
+          gnu*) # On Hurd, it is 'yes'.
+            gl_cv_func_getcwd_path_max=yes ;;
+          linux* | kfreebsd*)
+            # On older Linux+glibc it's 'no, but it is partly working',
+            # on newer Linux+glibc it's 'yes'.
+            # On Linux+musl libc, it's 'no, but it is partly working'.
+            # On kFreeBSD+glibc, it's 'no, but it is partly working'.
+            gl_cv_func_getcwd_path_max='no, but it is partly working' ;;
+          *) # If we don't know, assume the worst.
+            gl_cv_func_getcwd_path_max=no ;;
+        esac
+       ])
+    ])
 ])

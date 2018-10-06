@@ -9,8 +9,11 @@ m4/intlmacosx.m4
 m4/lcmessage.m4
 
 Depends-on:
+extensions
+flexmember
 strdup
 lock
+langinfo
 
 configure.ac:
 gl_LOCALENAME
@@ -29,5 +32,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

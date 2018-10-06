@@ -1,5 +1,5 @@
 /* Test of conversion of multibyte character to wide character.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2008.  */
 
@@ -46,10 +46,7 @@ main (int argc, char *argv[])
     memset (&state, '\0', sizeof (mbstate_t));
     wc = (wchar_t) 0xBADFACE;
     ret = mbrtowc (&wc, "x", 0, &state);
-    /* gnulib's implementation returns (size_t)(-2).
-       The AIX 5.1 implementation returns (size_t)(-1).
-       glibc's implementation returns 0.  */
-    ASSERT (ret == (size_t)(-2) || ret == (size_t)(-1) || ret == 0);
+    ASSERT (ret == (size_t)(-2));
     ASSERT (mbsinit (&state));
   }
 
@@ -75,6 +72,10 @@ main (int argc, char *argv[])
     for (c = 0; c < 0x100; c++)
       switch (c)
         {
+        default:
+          if (! (c && 1 < argc && argv[1][0] == '5'))
+            break;
+          FALLTHROUGH;
         case '\t': case '\v': case '\f':
         case ' ': case '!': case '"': case '#': case '%':
         case '&': case '\'': case '(': case ')': case '*':
@@ -96,12 +97,21 @@ main (int argc, char *argv[])
         case 'p': case 'q': case 'r': case 's': case 't':
         case 'u': case 'v': case 'w': case 'x': case 'y':
         case 'z': case '{': case '|': case '}': case '~':
-          /* c is in the ISO C "basic character set".  */
+          /* c is in the ISO C "basic character set", or argv[1] starts
+             with '5' so we are testing all nonnull bytes.  */
           buf[0] = c;
           wc = (wchar_t) 0xBADFACE;
           ret = mbrtowc (&wc, buf, 1, &state);
           ASSERT (ret == 1);
-          ASSERT (wc == c);
+          if (c < 0x80)
+            /* c is an ASCII character.  */
+            ASSERT (wc == c);
+          else
+            /* argv[1] starts with '5', that is, we are testing the C or POSIX
+               locale.
+               On most platforms, the bytes 0x80..0xFF map to U+0080..U+00FF.
+               But on musl libc, the bytes 0x80..0xFF map to U+DF80..U+DFFF.  */
+            ASSERT (wc == (btowc (c) == WEOF ? c : btowc (c)));
           ASSERT (mbsinit (&state));
           ret = mbrtowc (NULL, buf, 1, &state);
           ASSERT (ret == 1);
@@ -336,6 +346,10 @@ main (int argc, char *argv[])
           ASSERT (wc == 'r');
           ASSERT (mbsinit (&state));
         }
+        return 0;
+
+      case '5':
+        /* C locale; tested above.  */
         return 0;
       }
 

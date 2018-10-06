@@ -39,7 +39,7 @@ AC_CANONICAL_HOST
 
 dnl           checks for installer options
 
-gl_RELOCATABLE_LIBRARY
+#gl_RELOCATABLE_LIBRARY
 
 dnl           checks for programs
 

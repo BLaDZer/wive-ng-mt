@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -44,7 +44,6 @@
     { 0x21D2, 0x21D2 },
     { 0x21D4, 0x21D4 },
     { 0x21F4, 0x22FF },
-    { 0x2308, 0x230B },
     { 0x2320, 0x2321 },
     { 0x237C, 0x237C },
     { 0x239B, 0x23B3 },
@@ -54,9 +53,7 @@
     { 0x25F8, 0x25FF },
     { 0x266F, 0x266F },
     { 0x27C0, 0x27C4 },
-    { 0x27C7, 0x27CA },
-    { 0x27CC, 0x27CC },
-    { 0x27CE, 0x27E5 },
+    { 0x27C7, 0x27E5 },
     { 0x27F0, 0x27FF },
     { 0x2900, 0x2982 },
     { 0x2999, 0x29D7 },
@@ -82,7 +79,8 @@
     { 0x1D76F, 0x1D76F },
     { 0x1D789, 0x1D789 },
     { 0x1D7A9, 0x1D7A9 },
-    { 0x1D7C3, 0x1D7C3 }
+    { 0x1D7C3, 0x1D7C3 },
+    { 0x1EEF0, 0x1EEF1 }
 
 #define PREDICATE(c) uc_is_general_category (c, UC_CATEGORY_Sm)
 #include "test-predicate-part2.h"

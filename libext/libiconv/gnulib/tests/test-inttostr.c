@@ -1,5 +1,5 @@
 /* Test inttostr functions, and incidentally, INT_BUFSIZE_BOUND
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Jim Meyering.  */
 
@@ -28,10 +28,6 @@
 #include "macros.h"
 
 #define STREQ(a, b) (strcmp (a, b) == 0)
-#define FMT(T) (TYPE_SIGNED (T) ? "%jd" : "%ju")
-#define CAST_VAL(T,V) (TYPE_SIGNED (T) ? (intmax_t) (V) : (uintmax_t) (V))
-#define V_min(T) (CAST_VAL (T, TYPE_MINIMUM (T)))
-#define V_max(T) (CAST_VAL (T, TYPE_MAXIMUM (T)))
 #define IS_TIGHT(T) (_GL_SIGNED_TYPE_OR_EXPR (T) == TYPE_SIGNED (T))
 #define ISDIGIT(c) ((unsigned int) (c) - '0' <= 9)
 
@@ -49,11 +45,19 @@
       char const *p;                                                    \
       ASSERT (buf);                                                     \
       *buf = '\0';                                                      \
-      ASSERT (snprintf (ref, sizeof ref, FMT (T), V_min (T)) < sizeof ref); \
+      ASSERT                                                            \
+        ((TYPE_SIGNED (T)                                               \
+          ? snprintf (ref, sizeof ref, "%jd", (intmax_t) TYPE_MINIMUM (T)) \
+          : snprintf (ref, sizeof ref, "%ju", (uintmax_t) TYPE_MINIMUM (T))) \
+         < sizeof ref);                                                 \
       ASSERT (STREQ ((p = Fn (TYPE_MINIMUM (T), buf)), ref));           \
       /* Ensure that INT_BUFSIZE_BOUND is tight for signed types.  */   \
       ASSERT (! TYPE_SIGNED (T) || (p == buf && *p == '-'));            \
-      ASSERT (snprintf (ref, sizeof ref, FMT (T), V_max (T)) < sizeof ref); \
+      ASSERT                                                            \
+        ((TYPE_SIGNED (T)                                               \
+          ? snprintf (ref, sizeof ref, "%jd", (intmax_t) TYPE_MAXIMUM (T)) \
+          : snprintf (ref, sizeof ref, "%ju", (uintmax_t) TYPE_MAXIMUM (T))) \
+         < sizeof ref);                                                 \
       ASSERT (STREQ ((p = Fn (TYPE_MAXIMUM (T), buf)), ref));           \
       /* For unsigned types, the bound is not always tight.  */         \
       ASSERT (! IS_TIGHT (T) || TYPE_SIGNED (T)                         \
@@ -80,9 +84,11 @@ main (void)
       CK (off_t,        offtostr);
       CK (uintmax_t,    umaxtostr);
       CK (intmax_t,     imaxtostr);
+      free (b);
       return 0;
     }
 
   /* snprintf doesn't accept %ju; skip this test.  */
+  free (b);
   return 77;
 }

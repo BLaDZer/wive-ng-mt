@@ -1,5 +1,5 @@
 /* Filtering of data through a subprocess.
-   Copyright (C) 2001-2003, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2008-2018 Free Software Foundation, Inc.
    Written by Paolo Bonzini <bonzini@gnu.org>, 2009,
    and Bruno Haible <bruno@clisp.org>, 2009.
 
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # include <windows.h>
 #else
 # include <signal.h>
@@ -66,7 +66,7 @@ struct pipe_filter_gi
   volatile bool reader_terminated;
   volatile int reader_errno;
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   CRITICAL_SECTION lock; /* protects the volatile fields */
   HANDLE reader_thread_handle;
 #else
@@ -81,7 +81,7 @@ struct pipe_filter_gi
 
 /* Perform additional initializations.
    Return 0 if successful, -1 upon failure.  */
-static inline int filter_init (struct pipe_filter_gi *filter);
+static int filter_init (struct pipe_filter_gi *filter);
 
 /* Write count bytes starting at buf, while at the same time invoking the
    read iterator (the functions prepare_read/done_read) when needed.  */
@@ -91,12 +91,12 @@ static void filter_loop (struct pipe_filter_gi *filter,
 /* Perform cleanup actions at the end.
    finish_reading is true if there was no error, or false if some error
    occurred already.  */
-static inline void filter_cleanup (struct pipe_filter_gi *filter,
-                                   bool finish_reading);
+static void filter_cleanup (struct pipe_filter_gi *filter,
+                            bool finish_reading);
 
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-/* Native Woe32 API.  */
+#if defined _WIN32 && ! defined __CYGWIN__
+/* Native Windows API.  */
 
 static unsigned int WINAPI
 reader_thread_func (void *thread_arg)
@@ -136,7 +136,7 @@ reader_thread_func (void *thread_arg)
   abort ();
 }
 
-static inline int
+static int
 filter_init (struct pipe_filter_gi *filter)
 {
   InitializeCriticalSection (&filter->lock);
@@ -200,7 +200,7 @@ filter_loop (struct pipe_filter_gi *filter, const char *wbuf, size_t count)
     }
 }
 
-static inline void
+static void
 filter_cleanup (struct pipe_filter_gi *filter, bool finish_reading)
 {
   if (finish_reading)
@@ -218,10 +218,10 @@ filter_cleanup (struct pipe_filter_gi *filter, bool finish_reading)
 #else
 /* Unix API.  */
 
-static inline int
+static int
 filter_init (struct pipe_filter_gi *filter)
 {
-#if !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
+#if !(defined _WIN32 && ! defined __CYGWIN__)
   /* When we write to the child process and it has just terminated,
      we don't want to die from a SIGPIPE signal.  So set the SIGPIPE
      handler to SIG_IGN, and handle EPIPE error codes in write().  */
@@ -302,7 +302,7 @@ filter_loop (struct pipe_filter_gi *filter, const char *wbuf, size_t count)
       /* Here, if done_writing, filter->reader_terminated is false.  When
          filter->reader_terminated becomes true, this loop is terminated.  */
 # if HAVE_SELECT
-      int n;
+      int n, retval;
 
       /* See whether reading or writing is possible.  */
       n = 1;
@@ -317,10 +317,16 @@ filter_loop (struct pipe_filter_gi *filter, const char *wbuf, size_t count)
           if (n <= filter->fd[1])
             n = filter->fd[1] + 1;
         }
-      n = select (n,
-                  (!filter->reader_terminated ? &filter->readfds : NULL),
-                  (!done_writing ? &filter->writefds : NULL),
-                  NULL, NULL);
+      /* Do EINTR handling here instead of in pipe-filter-aux.h,
+         because select() cannot be referred to from an inline
+         function on AIX 7.1.  */
+      do
+        retval = select (n,
+                         (!filter->reader_terminated ? &filter->readfds : NULL),
+                         (!done_writing ? &filter->writefds : NULL),
+                         NULL, NULL);
+      while (retval < 0 && errno == EINTR);
+      n = retval;
 
       if (n < 0)
         {
@@ -459,7 +465,7 @@ filter_terminate (struct pipe_filter_gi *filter)
    Return 0 upon success, or (only if exit_on_error is false):
    - -1 with errno set upon failure,
    - the positive exit code of the subprocess if that failed.  */
-static inline int
+static int
 filter_retcode (struct pipe_filter_gi *filter)
 {
   if (filter->writer_errno != 0)

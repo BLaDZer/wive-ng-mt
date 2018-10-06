@@ -1,5 +1,5 @@
-# frexpl.m4 serial 16
-dnl Copyright (C) 2007-2011 Free Software Foundation, Inc.
+# frexpl.m4 serial 21
+dnl Copyright (C) 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -7,9 +7,15 @@ dnl with or without modifications, as long as this notice is preserved.
 AC_DEFUN([gl_FUNC_FREXPL],
 [
   AC_REQUIRE([gl_MATH_H_DEFAULTS])
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
+
+  dnl Persuade glibc <math.h> to declare frexpl().
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+
   dnl Check whether it's declared.
-  dnl MacOS X 10.3 has frexpl() in libc but doesn't declare it in <math.h>.
-  AC_CHECK_DECL([frexpl], , [HAVE_DECL_FREXPL=0], [#include <math.h>])
+  dnl Mac OS X 10.3 has frexpl() in libc but doesn't declare it in <math.h>.
+  AC_CHECK_DECL([frexpl], , [HAVE_DECL_FREXPL=0], [[#include <math.h>]])
+
   FREXPL_LIBM=
   if test $HAVE_DECL_FREXPL = 1; then
     gl_CHECK_FREXPL_NO_LIBM
@@ -40,7 +46,7 @@ AC_DEFUN([gl_FUNC_FREXPL],
       LIBS="$save_LIBS"
       case "$gl_cv_func_frexpl_works" in
         *yes) gl_func_frexpl=yes ;;
-        *)    gl_func_frexpl=no; REPLACE_FREXPL=1; FREXPL_LIBM= ;;
+        *)    gl_func_frexpl=no; REPLACE_FREXPL=1 ;;
       esac
     else
       gl_func_frexpl=no
@@ -50,15 +56,25 @@ AC_DEFUN([gl_FUNC_FREXPL],
         [Define if the frexpl() function is available.])
     fi
   fi
+  if test $HAVE_DECL_FREXPL = 0 || test $gl_func_frexpl = no; then
+    dnl Find libraries needed to link lib/frexpl.c.
+    if test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1; then
+      AC_REQUIRE([gl_FUNC_FREXP])
+      FREXPL_LIBM="$FREXP_LIBM"
+    else
+      FREXPL_LIBM=
+    fi
+  fi
   AC_SUBST([FREXPL_LIBM])
 ])
 
 AC_DEFUN([gl_FUNC_FREXPL_NO_LIBM],
 [
   AC_REQUIRE([gl_MATH_H_DEFAULTS])
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
   dnl Check whether it's declared.
-  dnl MacOS X 10.3 has frexpl() in libc but doesn't declare it in <math.h>.
-  AC_CHECK_DECL([frexpl], , [HAVE_DECL_FREXPL=0], [#include <math.h>])
+  dnl Mac OS X 10.3 has frexpl() in libc but doesn't declare it in <math.h>.
+  AC_CHECK_DECL([frexpl], , [HAVE_DECL_FREXPL=0], [[#include <math.h>]])
   if test $HAVE_DECL_FREXPL = 1; then
     gl_CHECK_FREXPL_NO_LIBM
     if test $gl_cv_func_frexpl_no_libm = yes; then
@@ -97,8 +113,8 @@ AC_DEFUN([gl_CHECK_FREXPL_NO_LIBM],
 ])
 
 dnl Test whether frexpl() works on finite numbers (this fails on
-dnl MacOS X 10.4/PowerPC, on AIX 5.1, and on BeOS), on denormalized numbers
-dnl (this fails on MacOS X 10.5/i386), and also on infinite numbers (this
+dnl Mac OS X 10.4/PowerPC, on AIX 5.1, and on BeOS), on denormalized numbers
+dnl (this fails on Mac OS X 10.5/i386), and also on infinite numbers (this
 dnl fails e.g. on IRIX 6.5 and mingw).
 AC_DEFUN([gl_FUNC_FREXPL_WORKS],
 [
@@ -115,7 +131,7 @@ AC_DEFUN([gl_FUNC_FREXPL_WORKS],
 # undef LDBL_MIN_EXP
 # define LDBL_MIN_EXP    (-16381)
 #endif
-#if defined __i386__ && defined __FreeBSD__
+#if defined __i386__ && (defined __FreeBSD__ || defined __DragonFly__)
 # undef LDBL_MIN_EXP
 # define LDBL_MIN_EXP    (-16381)
 #endif
@@ -146,7 +162,7 @@ int main()
     if (exp != 5)
       result |= 1;
   }
-  /* Test on finite numbers that fails on MacOS X 10.4, because its frexpl
+  /* Test on finite numbers that fails on Mac OS X 10.4, because its frexpl
      function returns an invalid (incorrectly normalized) value: it returns
                y = { 0x3fe028f5, 0xc28f5c28, 0x3c9eb851, 0xeb851eb8 }
      but the correct result is
@@ -185,7 +201,7 @@ int main()
         int exp;
         long double y = frexpl (x, &exp);
         /* On machines with IEEE854 arithmetic: x = 1.68105e-4932,
-           exp = -16382, y = 0.5.  On MacOS X 10.5: exp = -16384, y = 0.5.  */
+           exp = -16382, y = 0.5.  On Mac OS X 10.5: exp = -16384, y = 0.5.  */
         if (exp != LDBL_MIN_EXP - 1)
           result |= 8;
       }

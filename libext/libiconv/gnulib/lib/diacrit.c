@@ -1,6 +1,6 @@
-/* Diacritics processing for a few character codes.
+/* Diacritics processing for a few character codes.  -*- coding: utf-8 -*-
 
-   Copyright (C) 1990-1993, 2000, 2006, 2009-2011 Free Software Foundation,
+   Copyright (C) 1990-1993, 2000, 2006, 2009-2018 Free Software Foundation,
    Inc.
 
    François Pinard <pinard@iro.umontreal.ca>, 1988.
@@ -18,7 +18,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -94,9 +94,9 @@ const char diacrit_base[256] =
 
 /*------------------------------------------------------------------------.
 | For each alphabetic character, returns a code of what its diacritic is, |
-| according to the following codes: 1 (eE) over aA for latin diphtongs; 2 |
-| (') acute accent; 3 (`) grave accent; 4 (^) circumflex accent; 5 (")    |
-| umlaut or diaraesis; 6 (~) tilda; 7 (,) cedilla; 8 (o) covering degree  |
+| according to the following codes: 1 (eE) over aA for latin diphthongs;  |
+| 2 (') acute accent; 3 (`) grave accent; 4 (^) circumflex accent; 5 (")  |
+| umlaut or diaeresis; 6 (~) tilda; 7 (,) cedilla; 8 (o) covering degree  |
 | symbol; 9 (|) slashed character.                                        |
 `------------------------------------------------------------------------*/
 

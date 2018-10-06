@@ -1,6 +1,6 @@
 /* Unicode character output to streams with locale dependent encoding.
 
-   Copyright (C) 2000-2003, 2006, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2000-2003, 2006, 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <haible@clisp.cons.org>.  */
 
@@ -38,7 +38,6 @@
 
 #include "localcharset.h"
 #include "unistr.h"
-#include "ignore-value.h"
 
 /* When we pass a Unicode character to iconv(), we must pass it in a
    suitable encoding. The standardized Unicode encodings are
@@ -169,7 +168,7 @@ fwrite_success_callback (const char *buf, size_t buflen, void *callback_arg)
      conditions (STREAM is an open stream and not wide-character oriented)
      when fwrite() returns a value != buflen it also sets STREAM's error
      indicator.  */
-  ignore_value (fwrite (buf, 1, buflen, stream));
+  fwrite (buf, 1, buflen, stream);
   return 0;
 }
 

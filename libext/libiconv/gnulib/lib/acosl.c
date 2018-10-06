@@ -14,6 +14,19 @@
 /* Specification.  */
 #include <math.h>
 
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+acosl (long double x)
+{
+  return acos (x);
+}
+
+#else
+
+/* Code based on glibc/sysdeps/ieee754/ldbl-128/e_asinl.c
+   and           glibc/sysdeps/ieee754/ldbl-128/e_acosl.c.  */
+
 /*
   Long double expansions contributed by
   Stephen L. Moshier <moshier@na-net.ornl.gov>
@@ -185,6 +198,8 @@ acosl (long double x)
   else
     return 2 * asinl (sqrtl ((1 - x) / 2));
 }
+
+#endif
 
 #if 0
 int

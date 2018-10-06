@@ -1,5 +1,5 @@
 /* Test of command line argument processing.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2009.  */
 
@@ -87,7 +87,7 @@ getopt_long_loop (int argc, const char **argv,
           ASSERT (options[0] == ':'
                   || ((options[0] == '-' || options[0] == '+')
                       && options[1] == ':'));
-          /* fall through */
+          FALLTHROUGH;
         case '?':
           *unrecognized = optopt;
           break;
@@ -315,7 +315,7 @@ test_getopt_long (void)
   }
 
   /* Test that 'W' does not dump core:
-     http://sourceware.org/bugzilla/show_bug.cgi?id=12922  */
+     https://sourceware.org/bugzilla/show_bug.cgi?id=12922  */
   {
     int argc = 0;
     const char *argv[10];
@@ -1815,7 +1815,7 @@ test_getopt_long (void)
 /* Test behavior of getopt_long when POSIXLY_CORRECT is set in the
    environment.  Options with optional arguments should not change
    behavior just because of an environment variable.
-   http://lists.gnu.org/archive/html/bug-m4/2006-09/msg00028.html  */
+   https://lists.gnu.org/r/bug-m4/2006-09/msg00028.html  */
 static void
 test_getopt_long_posix (void)
 {

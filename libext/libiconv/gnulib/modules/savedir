@@ -7,8 +7,12 @@ lib/savedir.c
 m4/savedir.m4
 
 Depends-on:
+closedir
 dirent-safer
 fdopendir
+opendir
+readdir
+stpcpy
 xalloc
 
 configure.ac:

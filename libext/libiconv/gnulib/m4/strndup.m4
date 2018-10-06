@@ -1,5 +1,5 @@
-# strndup.m4 serial 20
-dnl Copyright (C) 2002-2003, 2005-2011 Free Software Foundation, Inc.
+# strndup.m4 serial 22
+dnl Copyright (C) 2002-2003, 2005-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -24,18 +24,21 @@ AC_DEFUN([gl_FUNC_STRNDUP],
       [AC_RUN_IFELSE([
          AC_LANG_PROGRAM([[#include <string.h>
                            #include <stdlib.h>]], [[
-#ifndef HAVE_DECL_STRNDUP
+#if !HAVE_DECL_STRNDUP
   extern
   #ifdef __cplusplus
   "C"
   #endif
   char *strndup (const char *, size_t);
 #endif
+  int result;
   char *s;
   s = strndup ("some longer string", 15);
   free (s);
   s = strndup ("shorter string", 13);
-  return s[13] != '\0';]])],
+  result = s[13] != '\0';
+  free (s);
+  return result;]])],
          [gl_cv_func_strndup_works=yes],
          [gl_cv_func_strndup_works=no],
          [

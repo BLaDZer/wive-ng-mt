@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -35,17 +35,31 @@
     { 0x17D2, 0x17D2 },
     { 0x1A60, 0x1A60 },
     { 0x1B44, 0x1B44 },
-    { 0x1BAA, 0x1BAA },
+    { 0x1BAA, 0x1BAB },
     { 0x1BF2, 0x1BF3 },
     { 0x2D7F, 0x2D7F },
     { 0xA806, 0xA806 },
     { 0xA8C4, 0xA8C4 },
     { 0xA953, 0xA953 },
     { 0xA9C0, 0xA9C0 },
+    { 0xAAF6, 0xAAF6 },
     { 0xABED, 0xABED },
     { 0x10A3F, 0x10A3F },
     { 0x11046, 0x11046 },
-    { 0x110B9, 0x110B9 }
+    { 0x1107F, 0x1107F },
+    { 0x110B9, 0x110B9 },
+    { 0x11133, 0x11134 },
+    { 0x111C0, 0x111C0 },
+    { 0x11235, 0x11235 },
+    { 0x112EA, 0x112EA },
+    { 0x1134D, 0x1134D },
+    { 0x11442, 0x11442 },
+    { 0x114C2, 0x114C2 },
+    { 0x115BF, 0x115BF },
+    { 0x1163F, 0x1163F },
+    { 0x116B6, 0x116B6 },
+    { 0x1172B, 0x1172B },
+    { 0x11C3F, 0x11C3F }
 
 #define PREDICATE(c) uc_is_property_grapheme_link (c)
 #include "test-predicate-part2.h"

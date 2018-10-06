@@ -1,5 +1,5 @@
 /* Test of opening a file descriptor.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,9 +12,20 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
+
+/* Make test_open always inline if we're using Fortify, which defines
+   __always_inline to do that.  Do nothing otherwise.  This works
+   around a glibc bug whereby 'open' cannot be used as a function
+   pointer when _FORTIFY_SOURCE is positive.  */
+
+#if __GLIBC__ && defined __always_inline
+# define ALWAYS_INLINE __always_inline
+#else
+# define ALWAYS_INLINE
+#endif
 
 /* This file is designed to test both open(n,buf[,mode]) and
    openat(AT_FDCWD,n,buf[,mode]).  FUNC is the function to test.
@@ -22,7 +33,7 @@
    appropriate headers are already included.  If PRINT, warn before
    skipping symlink tests with status 77.  */
 
-static int
+static ALWAYS_INLINE int
 test_open (int (*func) (char const *, int, ...), bool print)
 {
   int fd;

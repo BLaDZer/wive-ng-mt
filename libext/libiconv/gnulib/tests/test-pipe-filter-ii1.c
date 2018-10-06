@@ -1,5 +1,5 @@
 /* Test of filtering of data through a subprocess.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -22,12 +22,12 @@
 #include "binary-io.h"
 #include "c-ctype.h"
 #include "read-file.h"
-#include "progname.h"
 #include "macros.h"
 
 
-/* Pipe a text file through 'tr "[a-z]" "[A-Z]"', which converts ASCII
-   characters from lower case to upper case.  */
+/* Pipe a text file through 'LC_ALL=C tr "[a-z]" "[A-Z]"', or equivalently,
+   'tr "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ"', which
+   converts ASCII characters from lower case to upper case.  */
 
 struct locals
 {
@@ -96,8 +96,6 @@ main (int argc, char *argv[])
   size_t input_size;
   char *input;
 
-  set_program_name (argv[0]);
-
   ASSERT (argc == 3);
 
   tr_program = argv[1];
@@ -119,8 +117,8 @@ main (int argc, char *argv[])
     l.nread = 0;
 
     argv[0] = tr_program;
-    argv[1] = "[a-z]";
-    argv[2] = "[A-Z]";
+    argv[1] = "abcdefghijklmnopqrstuvwxyz";
+    argv[2] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     argv[3] = NULL;
 
     result = pipe_filter_ii_execute ("tr", tr_program, argv, false, true,

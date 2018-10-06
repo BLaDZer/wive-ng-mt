@@ -1,5 +1,5 @@
 /* An interface to read() that retries after interrupts.
-   Copyright (C) 2002, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2006, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,12 +12,12 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Some system calls may be interrupted and fail with errno = EINTR in the
    following situations:
      - The process is stopped and restarted (signal SIGSTOP and SIGCONT, user
-       types Ctrl-Z) on some platforms: MacOS X.
+       types Ctrl-Z) on some platforms: Mac OS X.
      - The process receives a signal for which a signal handler was installed
        with sigaction() with an sa_flags field that does not contain
        SA_RESTART.

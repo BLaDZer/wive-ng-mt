@@ -6,8 +6,11 @@ lib/accept.c
 lib/w32sock.h
 
 Depends-on:
+extensions
 sys_socket
+socketlib
 errno           [test "$ac_cv_header_winsock2_h" = yes]
+msvc-nothrow    [test "$ac_cv_header_winsock2_h" = yes]
 
 configure.ac:
 AC_REQUIRE([gl_HEADER_SYS_SOCKET])
@@ -20,6 +23,9 @@ Makefile.am:
 
 Include:
 <sys/socket.h>
+
+Link:
+$(LIBSOCKET)
 
 License:
 LGPLv2+

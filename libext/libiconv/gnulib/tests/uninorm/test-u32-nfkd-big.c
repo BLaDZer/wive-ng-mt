@@ -1,5 +1,5 @@
 /* Test of Unicode compliance of compatibility decomposition of UTF-32 strings.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2009.  */
 
@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "unistr.h"
-#include "progname.h"
 #include "test-u32-normalize-big.h"
 
 static int
@@ -99,7 +98,6 @@ main (int argc, char *argv[])
 {
   struct normalization_test_file file;
 
-  set_program_name (argv[0]);
   read_normalization_test_file (argv[1], &file);
 
   test_specific (&file, check);

@@ -1,7 +1,7 @@
 /* Emulation for ldexpl.
    Contributed by Paolo Bonzini
 
-   Copyright 2002-2003, 2007-2011 Free Software Foundation, Inc.
+   Copyright 2002-2003, 2007-2018 Free Software Foundation, Inc.
 
    This file is part of gnulib.
 
@@ -16,15 +16,25 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <math.h>
 
-#include <float.h>
-#include "fpucw.h"
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+ldexpl (long double x, int exp)
+{
+  return ldexp (x, exp);
+}
+
+#else
+
+# include <float.h>
+# include "fpucw.h"
 
 long double
 ldexpl (long double x, int exp)
@@ -64,6 +74,8 @@ ldexpl (long double x, int exp)
 
   return x;
 }
+
+#endif
 
 #if 0
 int

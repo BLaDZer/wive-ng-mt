@@ -1,5 +1,5 @@
 /* Test of execution of program termination handlers.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -33,15 +33,11 @@ SIGNATURE_CHECK (canonicalize_file_name, char *, (const char *));
 
 #include "same-inode.h"
 #include "ignore-value.h"
+
+#include "null-ptr.h"
 #include "macros.h"
 
 #define BASE "t-can-lgpl.tmp"
-
-static void *
-null_ptr (void)
-{
-  return NULL;
-}
 
 int
 main (void)
@@ -191,12 +187,16 @@ main (void)
     ASSERT (result2);
     ASSERT (stat ("/", &st1) == 0);
     ASSERT (stat ("//", &st2) == 0);
+    /* On IBM z/OS, "/" and "//" are distinct, yet they both have
+       st_dev == st_ino == 1.  */
+#ifndef __MVS__
     if (SAME_INODE (st1, st2))
       {
         ASSERT (strcmp (result1, "/") == 0);
         ASSERT (strcmp (result2, "/") == 0);
       }
     else
+#endif
       {
         ASSERT (strcmp (result1, "//") == 0);
         ASSERT (strcmp (result2, "//") == 0);

@@ -1,5 +1,5 @@
 /* Canonical list of all signal names.
-   Copyright (C) 1996-1999, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 1996-1999, 2008-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* This file should be usable for any platform, since it just associates
    the SIG* macros with text names and descriptions.  The actual values

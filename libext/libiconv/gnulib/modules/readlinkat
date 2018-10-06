@@ -1,20 +1,27 @@
 Description:
-readlinkat(): read symlinks relative to a directory
+readlinkat() function: read symlinks relative to a directory
 
 Files:
 lib/readlinkat.c
+lib/at-func.c
 m4/readlinkat.m4
 
 Depends-on:
 unistd
 extensions
-fcntl-h
-openat          [test $HAVE_READLINKAT = 0]
+at-internal     [test $HAVE_READLINKAT = 0]
+dosname         [test $HAVE_READLINKAT = 0]
+errno           [test $HAVE_READLINKAT = 0]
+fchdir          [test $HAVE_READLINKAT = 0]
+fcntl-h         [test $HAVE_READLINKAT = 0]
+openat-die      [test $HAVE_READLINKAT = 0]
+openat-h        [test $HAVE_READLINKAT = 0]
+save-cwd        [test $HAVE_READLINKAT = 0]
 readlink        [test $HAVE_READLINKAT = 0]
 
 configure.ac:
 gl_FUNC_READLINKAT
-if test $HAVE_READLINKAT = 0; then
+if test $HAVE_READLINKAT = 0 || test $REPLACE_READLINKAT = 1; then
   AC_LIBOBJ([readlinkat])
 fi
 gl_UNISTD_MODULE_INDICATOR([readlinkat])

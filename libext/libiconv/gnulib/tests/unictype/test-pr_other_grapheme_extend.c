@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -29,10 +29,17 @@
     { 0x0D57, 0x0D57 },
     { 0x0DCF, 0x0DCF },
     { 0x0DDF, 0x0DDF },
-    { 0x200C, 0x200D },
+    { 0x200C, 0x200C },
+    { 0x302E, 0x302F },
     { 0xFF9E, 0xFF9F },
+    { 0x1133E, 0x1133E },
+    { 0x11357, 0x11357 },
+    { 0x114B0, 0x114B0 },
+    { 0x114BD, 0x114BD },
+    { 0x115AF, 0x115AF },
     { 0x1D165, 0x1D165 },
-    { 0x1D16E, 0x1D172 }
+    { 0x1D16E, 0x1D172 },
+    { 0xE0020, 0xE007F }
 
 #define PREDICATE(c) uc_is_property_other_grapheme_extend (c)
 #include "test-predicate-part2.h"

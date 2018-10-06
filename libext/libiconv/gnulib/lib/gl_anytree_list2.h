@@ -1,5 +1,5 @@
 /* Sequential list data type implemented by a binary tree.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Common code of gl_avltree_list.c, gl_rbtree_list.c,
                   gl_avltreehash_list.c, gl_rbtreehash_list.c.  */
@@ -100,7 +100,7 @@ gl_tree_node_nx_set_value (gl_list_t list, gl_list_node_t node, const void *elt)
   return 0;
 }
 
-static gl_list_node_t
+static gl_list_node_t _GL_ATTRIBUTE_PURE
 gl_tree_next_node (gl_list_t list, gl_list_node_t node)
 {
   if (node->right != NULL)
@@ -118,7 +118,7 @@ gl_tree_next_node (gl_list_t list, gl_list_node_t node)
   return node;
 }
 
-static gl_list_node_t
+static gl_list_node_t _GL_ATTRIBUTE_PURE
 gl_tree_previous_node (gl_list_t list, gl_list_node_t node)
 {
   if (node->left != NULL)
@@ -137,7 +137,7 @@ gl_tree_previous_node (gl_list_t list, gl_list_node_t node)
 }
 
 /* Return the node at the given position < gl_tree_size (list).  */
-static inline gl_list_node_t
+static gl_list_node_t _GL_ATTRIBUTE_PURE
 node_at (gl_list_node_t root, size_t position)
 {
   /* Here we know that root != NULL.  */
@@ -162,7 +162,7 @@ node_at (gl_list_node_t root, size_t position)
   return node;
 }
 
-static const void *
+static const void * _GL_ATTRIBUTE_PURE
 gl_tree_get_at (gl_list_t list, size_t position)
 {
   gl_list_node_t node = list->root;
@@ -564,7 +564,7 @@ gl_tree_iterator (gl_list_t list)
   result.p = node;
   /* End point is past the rightmost node.  */
   result.q = NULL;
-#ifdef lint
+#if defined GCC_LINT || defined lint
   result.i = 0;
   result.j = 0;
   result.count = 0;
@@ -588,7 +588,7 @@ gl_tree_iterator_from_to (gl_list_t list, size_t start_index, size_t end_index)
   result.p = (start_index < count ? node_at (list->root, start_index) : NULL);
   /* End point is the node at position end_index.  */
   result.q = (end_index < count ? node_at (list->root, end_index) : NULL);
-#ifdef lint
+#if defined GCC_LINT || defined lint
   result.i = 0;
   result.j = 0;
   result.count = 0;

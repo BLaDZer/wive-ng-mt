@@ -1,5 +1,5 @@
 /* Test whether two files have the same ACLs.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2008.  */
 
@@ -33,7 +33,6 @@
 # include <aclv.h>
 #endif
 
-#include "progname.h"
 #include "read-file.h"
 #include "xalloc.h"
 #include "macros.h"
@@ -43,8 +42,6 @@ main (int argc, char *argv[])
 {
   const char *file1;
   const char *file2;
-
-  set_program_name (argv[0]);
 
   ASSERT (argc == 3);
 
@@ -115,11 +112,11 @@ main (int argc, char *argv[])
       }
   }
   {
-#if HAVE_ACL_GET_FILE /* Linux, FreeBSD, MacOS X, IRIX, Tru64 */
+#if HAVE_ACL_GET_FILE /* Linux, FreeBSD, Mac OS X, IRIX, Tru64 */
     static const int types[] =
       {
         ACL_TYPE_ACCESS
-# if HAVE_ACL_TYPE_EXTENDED /* MacOS X */
+# if HAVE_ACL_TYPE_EXTENDED /* Mac OS X */
         , ACL_TYPE_EXTENDED
 # endif
       };
@@ -227,7 +224,11 @@ main (int argc, char *argv[])
   int count2;
 
   count1 = acl (file1, GETACLCNT, 0, NULL);
+  if (count1 < 0 && errno == ENOSYS) /* Can happen on Solaris 10 with ZFS */
+    count1 = 0;
   count2 = acl (file2, GETACLCNT, 0, NULL);
+  if (count2 < 0 && errno == ENOSYS) /* Can happen on Solaris 10 with ZFS */
+    count2 = 0;
 
   if (count1 < 0)
     {
@@ -253,13 +254,13 @@ main (int argc, char *argv[])
       aclent_t *entries2 = XNMALLOC (count2, aclent_t);
       int i;
 
-      if (acl (file1, GETACL, count1, entries1) < count1)
+      if (count1 > 0 && acl (file1, GETACL, count1, entries1) < count1)
         {
           fprintf (stderr, "error retrieving the ACLs of file %s\n", file1);
           fflush (stderr);
           abort ();
         }
-      if (acl (file2, GETACL, count2, entries2) < count1)
+      if (count2 > 0 && acl (file2, GETACL, count2, entries2) < count1)
         {
           fprintf (stderr, "error retrieving the ACLs of file %s\n", file2);
           fflush (stderr);
@@ -306,58 +307,66 @@ main (int argc, char *argv[])
       fflush (stderr);
       abort ();
     }
-  if (count1 != count2)
-    {
-      fprintf (stderr, "files %s and %s have different number of ACE-ACLs: %d and %d\n",
-               file1, file2, count1, count2);
-      return 1;
-    }
-  else if (count1 > 0)
-    {
-      ace_t *entries1 = XNMALLOC (count1, ace_t);
-      ace_t *entries2 = XNMALLOC (count2, ace_t);
-      int i;
+  {
+    ace_t *entries1 = XNMALLOC (count1, ace_t);
+    ace_t *entries2 = XNMALLOC (count2, ace_t);
+    int ret;
+    int i;
 
-      if (acl (file1, ACE_GETACL, count1, entries1) < count1)
-        {
-          fprintf (stderr, "error retrieving the ACE-ACLs of file %s\n", file1);
-          fflush (stderr);
-          abort ();
-        }
-      if (acl (file2, ACE_GETACL, count2, entries2) < count1)
-        {
-          fprintf (stderr, "error retrieving the ACE-ACLs of file %s\n", file2);
-          fflush (stderr);
-          abort ();
-        }
-      for (i = 0; i < count1; i++)
-        {
-          if (entries1[i].a_type != entries2[i].a_type)
-            {
-              fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different types %d and %d\n",
-                       file1, file2, i, entries1[i].a_type, entries2[i].a_type);
-              return 1;
-            }
-          if (entries1[i].a_who != entries2[i].a_who)
-            {
-              fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different ids %d and %d\n",
-                       file1, file2, i, (int)entries1[i].a_who, (int)entries2[i].a_who);
-              return 1;
-            }
-          if (entries1[i].a_access_mask != entries2[i].a_access_mask)
-            {
-              fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different access masks %03o and %03o\n",
-                       file1, file2, i, (unsigned int) entries1[i].a_access_mask, (unsigned int) entries2[i].a_access_mask);
-              return 1;
-            }
-          if (entries1[i].a_flags != entries2[i].a_flags)
-            {
-              fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different flags 0x%x and 0x%x\n",
-                       file1, file2, i, (unsigned int) entries1[i].a_flags, (unsigned int) entries2[i].a_flags);
-              return 1;
-            }
-        }
-    }
+    ret = acl (file1, ACE_GETACL, count1, entries1);
+    if (ret < 0 && errno == EINVAL)
+      count1 = 0;
+    else if (ret < count1)
+      {
+        fprintf (stderr, "error retrieving the ACE-ACLs of file %s\n", file1);
+        fflush (stderr);
+        abort ();
+      }
+    ret = acl (file2, ACE_GETACL, count2, entries2);
+    if (ret < 0 && errno == EINVAL)
+      count2 = 0;
+    else if (ret < count2)
+      {
+        fprintf (stderr, "error retrieving the ACE-ACLs of file %s\n", file2);
+        fflush (stderr);
+        abort ();
+      }
+
+    if (count1 != count2)
+      {
+        fprintf (stderr, "files %s and %s have different number of ACE-ACLs: %d and %d\n",
+                 file1, file2, count1, count2);
+        return 1;
+      }
+
+    for (i = 0; i < count1; i++)
+      {
+        if (entries1[i].a_type != entries2[i].a_type)
+          {
+            fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different types %d and %d\n",
+                     file1, file2, i, entries1[i].a_type, entries2[i].a_type);
+            return 1;
+          }
+        if (entries1[i].a_who != entries2[i].a_who)
+          {
+            fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different ids %d and %d\n",
+                     file1, file2, i, (int)entries1[i].a_who, (int)entries2[i].a_who);
+            return 1;
+          }
+        if (entries1[i].a_access_mask != entries2[i].a_access_mask)
+          {
+            fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different access masks %03o and %03o\n",
+                     file1, file2, i, (unsigned int) entries1[i].a_access_mask, (unsigned int) entries2[i].a_access_mask);
+            return 1;
+          }
+        if (entries1[i].a_flags != entries2[i].a_flags)
+          {
+            fprintf (stderr, "files %s and %s: different ACE-ACL entry #%d: different flags 0x%x and 0x%x\n",
+                     file1, file2, i, (unsigned int) entries1[i].a_flags, (unsigned int) entries2[i].a_flags);
+            return 1;
+          }
+      }
+  }
 # endif
 #elif HAVE_GETACL /* HP-UX */
   int count1;
@@ -523,32 +532,44 @@ main (int argc, char *argv[])
   type1.u64 = ACL_ANY;
   if (aclx_get (file1, 0, &type1, acl1, &aclsize1, &mode1) < 0)
     {
-      fprintf (stderr, "error accessing the ACLs of file %s\n", file1);
-      fflush (stderr);
-      abort ();
+      if (errno == ENOSYS)
+        text1[0] = '\0';
+      else
+        {
+          fprintf (stderr, "error accessing the ACLs of file %s\n", file1);
+          fflush (stderr);
+          abort ();
+        }
     }
-  if (aclx_printStr (text1, &textsize1, acl1, aclsize1, type1, file1, 0) < 0)
-    {
-      fprintf (stderr, "cannot convert the ACLs of file %s to text\n", file1);
-      fflush (stderr);
-      abort ();
-    }
+  else
+    if (aclx_printStr (text1, &textsize1, acl1, aclsize1, type1, file1, 0) < 0)
+      {
+        fprintf (stderr, "cannot convert the ACLs of file %s to text\n", file1);
+        fflush (stderr);
+        abort ();
+      }
 
   /* The docs say that type2 being 0 is equivalent to ACL_ANY, but it is not
      true, in AIX 5.3.  */
   type2.u64 = ACL_ANY;
   if (aclx_get (file2, 0, &type2, acl2, &aclsize2, &mode2) < 0)
     {
-      fprintf (stderr, "error accessing the ACLs of file %s\n", file2);
-      fflush (stderr);
-      abort ();
+      if (errno == ENOSYS)
+        text2[0] = '\0';
+      else
+        {
+          fprintf (stderr, "error accessing the ACLs of file %s\n", file2);
+          fflush (stderr);
+          abort ();
+        }
     }
-  if (aclx_printStr (text2, &textsize2, acl2, aclsize2, type2, file2, 0) < 0)
-    {
-      fprintf (stderr, "cannot convert the ACLs of file %s to text\n", file2);
-      fflush (stderr);
-      abort ();
-    }
+  else
+    if (aclx_printStr (text2, &textsize2, acl2, aclsize2, type2, file2, 0) < 0)
+      {
+        fprintf (stderr, "cannot convert the ACLs of file %s to text\n", file2);
+        fflush (stderr);
+        abort ();
+      }
 
   if (strcmp (text1, text2) != 0)
     {

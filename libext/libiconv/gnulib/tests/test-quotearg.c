@@ -1,5 +1,5 @@
 /* Test of quotearg family of functions.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2008.  */
 
@@ -27,36 +26,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "progname.h"
 #include "gettext.h"
 #include "macros.h"
 
-#include "test-quotearg.h"
-
 #if ENABLE_NLS
+
+# include "test-quotearg.h"
 
 static struct result_groups locale_results[] = {
   /* locale_quoting_style */
   { { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
     { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ},
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ},
     { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a\\:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ } },
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ } },
 
   /* clocale_quoting_style */
   { { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
     { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ },
     { LQ RQ, LQ "\\0001\\0" RQ, 11, LQ "simple" RQ,
       LQ " \\t\\n'\"\\033?""?/\\\\" RQ, LQ "a\\:b" RQ, LQ "a\\\\b" RQ,
-      LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ } }
+      LQ "a' b" RQ, LQ LQ RQ_ESC RQ, LQ LQ RQ_ESC RQ } }
 };
 
 #endif /* ENABLE_NLS */
@@ -64,8 +62,6 @@ static struct result_groups locale_results[] = {
 int
 main (int argc _GL_UNUSED, char *argv[])
 {
-  set_program_name (argv[0]);
-
 #if ENABLE_NLS
   /* Clean up environment.  */
   unsetenv ("LANGUAGE");

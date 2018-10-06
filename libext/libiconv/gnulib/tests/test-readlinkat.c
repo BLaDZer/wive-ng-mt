@@ -1,5 +1,5 @@
 /* Tests of readlinkat.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -58,6 +58,19 @@ main (void)
 
   /* Remove any leftovers from a previous partial run.  */
   ignore_value (system ("rm -rf " BASE "*"));
+
+  /* Test behaviour for invalid file descriptors.  */
+  {
+    errno = 0;
+    ASSERT (readlinkat (-1, "foo", buf, sizeof buf) == -1);
+    ASSERT (errno == EBADF);
+  }
+  {
+    close (99);
+    errno = 0;
+    ASSERT (readlinkat (99, "foo", buf, sizeof buf) == -1);
+    ASSERT (errno == EBADF);
+  }
 
   /* Perform same checks as counterpart functions.  */
   result = test_readlink (do_readlink, false);

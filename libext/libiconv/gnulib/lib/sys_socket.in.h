@@ -1,6 +1,6 @@
 /* Provide a sys/socket header file for systems lacking it (read: MinGW)
    and for systems where it is incomplete.
-   Copyright (C) 2005-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005-2018 Free Software Foundation, Inc.
    Written by Simon Josefsson.
 
    This program is free software; you can redistribute it and/or modify
@@ -14,8 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* This file is supposed to be used on platforms that lack <sys/socket.h>,
    on platforms where <sys/socket.h> cannot be included standalone, and on
@@ -64,6 +63,14 @@
 #ifndef _@GUARD_PREFIX@_SYS_SOCKET_H
 #define _@GUARD_PREFIX@_SYS_SOCKET_H
 
+#ifndef _GL_INLINE_HEADER_BEGIN
+ #error "Please include config.h first."
+#endif
+_GL_INLINE_HEADER_BEGIN
+#ifndef _GL_SYS_SOCKET_INLINE
+# define _GL_SYS_SOCKET_INLINE _GL_INLINE
+#endif
+
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 
 /* The definition of _GL_ARG_NONNULL is copied here.  */
@@ -72,7 +79,12 @@
 
 #if !@HAVE_SA_FAMILY_T@
 # if !GNULIB_defined_sa_family_t
+/* On OS/2 kLIBC, sa_family_t is unsigned char unless TCPV40HDRS is defined. */
+#  if !defined __KLIBC__ || defined TCPV40HDRS
 typedef unsigned short  sa_family_t;
+#  else
+typedef unsigned char   sa_family_t;
+#  endif
 #  define GNULIB_defined_sa_family_t 1
 # endif
 #endif
@@ -85,7 +97,7 @@ typedef unsigned short  sa_family_t;
 #  endif
 # endif
 #else
-# include <alignof.h>
+# include <stdalign.h>
 /* Code taken from glibc sysdeps/unix/sysv/linux/bits/socket.h on
    2009-05-08, licensed under LGPLv2.1+, plus portability fixes. */
 # define __ss_aligntype unsigned long int
@@ -129,6 +141,15 @@ struct sockaddr_storage
 #  define SHUT_RDWR 2
 # endif
 
+# ifdef __VMS                        /* OpenVMS */
+#  ifndef CMSG_SPACE
+#   define CMSG_SPACE(length) _CMSG_SPACE(length)
+#  endif
+#  ifndef CMSG_LEN
+#   define CMSG_LEN(length) _CMSG_LEN(length)
+#  endif
+# endif
+
 #else
 
 # ifdef __CYGWIN__
@@ -143,12 +164,12 @@ struct sockaddr_storage
    that you can influence which definitions you get by setting the
    WINVER symbol before including these two files.  For example,
    getaddrinfo is only available if _WIN32_WINNT >= 0x0501 (that
-   symbol is set indiriectly through WINVER).  You can set this by
+   symbol is set indirectly through WINVER).  You can set this by
    adding AC_DEFINE(WINVER, 0x0501) to configure.ac.  Note that your
    code may not run on older Windows releases then.  My Windows 2000
    box was not able to run the code, for example.  The situation is
    slightly confusing because
-   <http://msdn.microsoft.com/en-us/library/ms738520>
+   <https://msdn.microsoft.com/en-us/library/ms738520>
    suggests that getaddrinfo should be available on all Windows
    releases. */
 
@@ -194,6 +215,15 @@ struct msghdr {
 
 #endif
 
+/* Ensure SO_REUSEPORT is defined.  */
+/* For the subtle differences between SO_REUSEPORT and SO_REUSEADDR, see
+   https://stackoverflow.com/questions/14388706/socket-options-so-reuseaddr-and-so-reuseport-how-do-they-differ-do-they-mean-t
+   and https://lwn.net/Articles/542629/
+ */
+#ifndef SO_REUSEPORT
+# define SO_REUSEPORT SO_REUSEADDR
+#endif
+
 /* Fix some definitions from <winsock2.h>.  */
 
 #if @HAVE_WINSOCK2_H@
@@ -202,7 +232,7 @@ struct msghdr {
 
 /* Re-define FD_ISSET to avoid a WSA call while we are not using
    network sockets.  */
-static inline int
+_GL_SYS_SOCKET_INLINE int
 rpl_fd_isset (SOCKET fd, fd_set * set)
 {
   u_int i;
@@ -650,7 +680,7 @@ _GL_WARN_ON_USE (shutdown, "shutdown is not always POSIX compliant - "
    The flags are a bitmask, possibly including O_CLOEXEC (defined in <fcntl.h>)
    and O_TEXT, O_BINARY (defined in "binary-io.h").
    See also the Linux man page at
-   <http://www.kernel.org/doc/man-pages/online/pages/man2/accept4.2.html>.  */
+   <https://www.kernel.org/doc/man-pages/online/pages/man2/accept4.2.html>.  */
 # if @HAVE_ACCEPT4@
 #  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
 #   define accept4 rpl_accept4
@@ -677,6 +707,8 @@ _GL_WARN_ON_USE (accept4, "accept4 is unportable - "
                  "use gnulib module accept4 for portability");
 # endif
 #endif
+
+_GL_INLINE_HEADER_END
 
 #endif /* _@GUARD_PREFIX@_SYS_SOCKET_H */
 #endif /* _@GUARD_PREFIX@_SYS_SOCKET_H */

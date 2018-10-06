@@ -1,6 +1,6 @@
 /* The writer part of a test program for non-blocking communication.
 
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* This program implements 4 tests:
 
@@ -124,7 +124,7 @@ main_writer_loop (int test, size_t data_block_size, int fd,
                         (long) ret, dbgstrerror (ret < 0, saved_errno));
             if (ret < 0 && bytes_written >= data_block_size)
               {
-                ASSERT (saved_errno == EAGAIN);
+                ASSERT (saved_errno == EAGAIN || saved_errno == EWOULDBLOCK);
                 ASSERT (spent_time < 0.5);
                 break;
               }
@@ -133,7 +133,7 @@ main_writer_loop (int test, size_t data_block_size, int fd,
             ASSERT (spent_time < 0.5);
             if (ret < 0)
               {
-                ASSERT (saved_errno == EAGAIN);
+                ASSERT (saved_errno == EAGAIN || saved_errno == EWOULDBLOCK);
                 usleep (SMALL_DELAY);
               }
             else
@@ -165,7 +165,7 @@ main_writer_loop (int test, size_t data_block_size, int fd,
             ASSERT (spent_time < 0.5);
             if (ret < 0)
               {
-                ASSERT (saved_errno == EAGAIN);
+                ASSERT (saved_errno == EAGAIN || saved_errno == EWOULDBLOCK);
                 usleep (SMALL_DELAY);
               }
             else

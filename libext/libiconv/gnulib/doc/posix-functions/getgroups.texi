@@ -10,7 +10,7 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-mingw.
+mingw, MSVC 14.
 @item
 On some platforms, this function fails to reject a negative count,
 even though that is less than the size that would be returned:
@@ -26,9 +26,14 @@ even though that was a different size than an array of @samp{gid_t}.
 Portability problems not fixed by Gnulib:
 @itemize
 @item
+This function is unsafe to call between @code{fork} and @code{exec} if
+the parent process is multi-threaded.
+@item
 It is unspecified whether the effective group id will be included in
 the returned list, nor whether the list will be sorted in any
 particular order.  For that matter, some platforms include the
 effective group id twice, if it is also a member of the current
 supplemental group ids.
 @end itemize
+
+The Gnulib module @code{mgetgroups} provides a similar API.

@@ -2,12 +2,22 @@ Description:
 modf() function: get signed integer and fractional parts.
 
 Files:
+lib/modf.c
+m4/modf.m4
 m4/mathfunc.m4
 
 Depends-on:
+math
+isfinite        [test $REPLACE_MODF = 1]
+trunc           [test $REPLACE_MODF = 1]
+isinf           [test $REPLACE_MODF = 1]
 
 configure.ac:
-gl_MATHFUNC([modf], [double], [(double, double *)])
+gl_FUNC_MODF
+if test $REPLACE_MODF = 1; then
+  AC_LIBOBJ([modf])
+fi
+gl_MATH_MODULE_INDICATOR([modf])
 
 Makefile.am:
 
@@ -21,4 +31,4 @@ License:
 LGPL
 
 Maintainer:
-Bruno Haible
+all

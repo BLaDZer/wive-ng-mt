@@ -1,5 +1,5 @@
 /* Unlock the slave side of a pseudo-terminal from its master side.
-   Copyright (C) 1998, 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 1998, 2010-2018 Free Software Foundation, Inc.
    Contributed by Zack Weinberg <zack@rabi.phys.columbia.edu>, 1998.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,12 +13,13 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 #include <stdlib.h>
 
+#include <fcntl.h>
 #include <unistd.h>
 
 int
@@ -27,7 +28,7 @@ unlockpt (int fd)
   /* Platforms which have the TIOCSPTLCK ioctl (Linux) already have the
      unlockpt function.  */
 #if HAVE_REVOKE
-  /* MacOS X 10.3, OpenBSD 3.8 do not have the unlockpt function, but they
+  /* Mac OS X 10.3, OpenBSD 3.8 do not have the unlockpt function, but they
      have revoke().  */
   char *name = ptsname (fd);
   if (name == NULL)
@@ -36,6 +37,8 @@ unlockpt (int fd)
 #else
   /* Assume that the slave side of a pseudo-terminal is already unlocked
      by default.  */
+  if (fcntl (fd, F_GETFD) < 0)
+    return -1;
   return 0;
 #endif
 }

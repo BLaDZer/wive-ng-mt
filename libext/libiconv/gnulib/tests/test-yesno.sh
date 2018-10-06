@@ -14,7 +14,7 @@ else
   cr='\r'
 fi
 
-# Test with seekable stdin; the followon process must see remaining data.
+# Test with seekable stdin; the follow-on process must see remaining data.
 tr @ '\177' <<EOF > in.tmp
 nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn - entire line consumed
 y@n - backspace does not change result
@@ -46,6 +46,14 @@ Y
 N
 EOF
 echo yes | test-yesno 2 > out1.tmp || fail=1
+LC_ALL=C tr -d "$cr" < out1.tmp > out.tmp || fail=1
+cmp xout.tmp out.tmp || fail=1
+
+# Test for behavior with no EOL at EOF
+cat <<EOF > xout.tmp
+Y
+EOF
+printf y | test-yesno 1 > out1.tmp || fail=1
 LC_ALL=C tr -d "$cr" < out1.tmp > out.tmp || fail=1
 cmp xout.tmp out.tmp || fail=1
 

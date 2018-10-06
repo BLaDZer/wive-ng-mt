@@ -1,6 +1,6 @@
 /* Declarations of functions and data types used for SHA256 and SHA224 sum
    library functions.
-   Copyright (C) 2005-2006, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005-2006, 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef SHA256_H
 # define SHA256_H 1
@@ -21,22 +21,32 @@
 # include <stdio.h>
 # include <stdint.h>
 
+# if HAVE_OPENSSL_SHA256
+#  include <openssl/sha.h>
+# endif
+
 # ifdef __cplusplus
 extern "C" {
 # endif
 
+enum { SHA224_DIGEST_SIZE = 224 / 8 };
+enum { SHA256_DIGEST_SIZE = 256 / 8 };
+
+# if HAVE_OPENSSL_SHA256
+#  define GL_OPENSSL_NAME 224
+#  include "gl_openssl.h"
+#  define GL_OPENSSL_NAME 256
+#  include "gl_openssl.h"
+# else
 /* Structure to save state of computation between the single steps.  */
 struct sha256_ctx
 {
   uint32_t state[8];
 
   uint32_t total[2];
-  size_t buflen;
-  uint32_t buffer[32];
+  size_t buflen;       /* ≥ 0, ≤ 128 */
+  uint32_t buffer[32]; /* 128 bytes; the first buflen bytes are in use */
 };
-
-enum { SHA224_DIGEST_SIZE = 224 / 8 };
-enum { SHA256_DIGEST_SIZE = 256 / 8 };
 
 /* Initialize structure containing state of computation. */
 extern void sha256_init_ctx (struct sha256_ctx *ctx);
@@ -71,12 +81,6 @@ extern void *sha256_read_ctx (const struct sha256_ctx *ctx, void *resbuf);
 extern void *sha224_read_ctx (const struct sha256_ctx *ctx, void *resbuf);
 
 
-/* Compute SHA256 (SHA224) message digest for bytes read from STREAM.  The
-   resulting message digest number will be written into the 32 (28) bytes
-   beginning at RESBLOCK.  */
-extern int sha256_stream (FILE *stream, void *resblock);
-extern int sha224_stream (FILE *stream, void *resblock);
-
 /* Compute SHA256 (SHA224) message digest for LEN bytes beginning at BUFFER.  The
    result is always in little endian byte order, so that a byte-wise
    output yields to the wanted ASCII representation of the message
@@ -84,8 +88,26 @@ extern int sha224_stream (FILE *stream, void *resblock);
 extern void *sha256_buffer (const char *buffer, size_t len, void *resblock);
 extern void *sha224_buffer (const char *buffer, size_t len, void *resblock);
 
+# endif
+/* Compute SHA256 (SHA224) message digest for bytes read from STREAM.
+   STREAM is an open file stream.  Regular files are handled more efficiently.
+   The contents of STREAM from its current position to its end will be read.
+   The case that the last operation on STREAM was an 'ungetc' is not supported.
+   The resulting message digest number will be written into the 32 (28) bytes
+   beginning at RESBLOCK.  */
+extern int sha256_stream (FILE *stream, void *resblock);
+extern int sha224_stream (FILE *stream, void *resblock);
+
+
 # ifdef __cplusplus
 }
 # endif
 
 #endif
+
+/*
+ * Hey Emacs!
+ * Local Variables:
+ * coding: utf-8
+ * End:
+ */

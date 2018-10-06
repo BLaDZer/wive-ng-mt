@@ -1,6 +1,6 @@
-/* Convert string to double, using the C locale.
+/* Convert string to double, using the C locale.  -*- coding: utf-8 -*-
 
-   Copyright (C) 2003-2004, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2003-2004, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,14 +13,18 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Parse the initial portion of the string pointed to by NPTR as a floating-
    point number (in decimal or hexadecimal notation), like in the C locale:
    accepting only the ASCII digits '0'..'9', and only '.' as decimal point
    character.
    If ENDPTR is not NULL, set *ENDPTR to point to the first byte beyond the
-   parsed number or to NPTR if the string does not start with a parseable
+   parsed number or to NPTR if the string does not start with a parsable
    number.
    Return value:
    - If successful, return the value as a double or 'long double',
@@ -35,3 +39,7 @@
    - In case of other error, return 0 and set errno, for example to ENOMEM.  */
 extern double      c_strtod  (char const *nptr, char **endptr);
 extern long double c_strtold (char const *nptr, char **endptr);
+
+#ifdef __cplusplus
+}
+#endif

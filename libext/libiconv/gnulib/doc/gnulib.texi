@@ -23,7 +23,7 @@ This manual is for GNU Gnulib (updated @value{UPDATED}),
 which is a library of common routines intended to be shared at the
 source level.
 
-Copyright @copyright{} 2004-2011 Free Software Foundation, Inc.
+Copyright @copyright{} 2004--2018 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -57,7 +57,8 @@ Documentation License''.
 @end ifnottex
 
 @menu
-* Introduction::
+* Brief Overview::
+* Philosophy::
 * Invoking gnulib-tool::
 * Writing modules::
 * Extending Gnulib::
@@ -68,8 +69,10 @@ Documentation License''.
 * Legacy Function Substitutes::     Replacing system functions.
 * Glibc Header File Substitutes::   Overriding system headers.
 * Glibc Function Substitutes::      Replacing system functions.
+* Native Windows Support::          Support for the native Windows platforms.
 * Particular Modules::              Documentation of individual modules.
 * Regular expressions::             The regex module.
+* Build Infrastructure Modules::    Modules that extend the GNU Build System.
 * GNU Free Documentation License::  Copying and sharing this manual.
 * Index::
 @end menu
@@ -87,22 +90,31 @@ If you need this particular \thing\, you may write to
 @end macro
 
 
-@node Introduction
-@chapter Introduction
+@node Brief Overview
+@chapter Brief Overview
 
-Gnulib is a source code library. It provides basic functionalities to
-programs and libraries.  Currently (as of October 2006) more than 30
-packages make use of Gnulib.
+Gnulib is a source code library that provides basic functionality to
+programs and libraries.  Many software packages make use of Gnulib
+to avoid reinventing the portability wheel.
 
 Resources:
 
 @itemize
 @item Gnulib is hosted at Savannah:
-      @url{http://savannah.gnu.org/projects/gnulib}.  Get the sources
-      through Git or CVS from there.
+      @url{https://savannah.gnu.org/projects/gnulib}.  Get the sources
+      through Git from there.
 @item The Gnulib home page:
-      @url{http://www.gnu.org/software/gnulib/}.
+      @url{https://www.gnu.org/software/gnulib/}.
 @end itemize
+
+@include gnulib-readme.texi
+
+@node Philosophy
+@chapter Philosophy
+
+Gnulib's design and development philosophy is organized around steady,
+collaborative, and open development of reusable modules that are
+suitable for a reasonably wide variety of platforms.
 
 @menu
 * Benefits::
@@ -154,7 +166,7 @@ Every API (C functions or variables) provided should be declared in a header
 file (.h file) and implemented in one or more implementation files (.c files).
 The separation has the effect that users of your module need to read only
 the contents of the .h file and the module description in order to understand
-what the module is about and how to use it - not the entire implementation.
+what the module is about and how to use it---not the entire implementation.
 Furthermore, users of your module don't need to repeat the declarations of
 the functions in their code, and are likely to receive notification through
 compiler errors if you make incompatible changes to the API (like, adding a
@@ -186,7 +198,7 @@ body of header file goes here
 @end example
 
 Whether to use @code{FOO_H} or @code{_FOO_H} is a matter of taste and
-style.  The C89 and C99 standards reserve all identifiers that begin with an
+style.  The C99 and C11 standards reserve all identifiers that begin with an
 underscore and either an uppercase letter or another underscore, for
 any use.  Thus, in theory, an application might not safely assume that
 @code{_FOO_H} has not already been defined by a library.  On the other
@@ -389,7 +401,7 @@ required module automatically, unless it is specified with option
 @code{--avoid} or it is marked as obsolete and the option
 @code{--with-obsolete} is not given.
 
-A test modules @code{foo-tests} implicity depends on the corresponding non-test
+A test modules @code{foo-tests} implicitly depends on the corresponding non-test
 module @code{foo}.  @code{foo} implicitly depends on @code{foo-tests} if the
 latter exists and if the option @code{--with-tests} has been given.
 
@@ -579,10 +591,10 @@ check_PROGRAMS += test-foo
 
 Here, the @code{TESTS_ENVIRONMENT} variable can be used to pass values
 determined by @code{configure} or by the @code{Makefile} to the shell
-script, as environment variables.  The values of @code{EXEEXT} and of
-@code{srcdir}, from Autoconf and Automake, are already provided as
-environment variables, through an initial value of @code{TESTS_ENVIRONMENT}
-that @code{gnulib-tool} puts in place.
+script, as environment variables.  The Autoconf values @code{EXEEXT}
+and @code{srcdir} are already provided as environment variables,
+through an initial value of @code{TESTS_ENVIRONMENT} that
+@code{gnulib-tool} puts in place.
 
 Regardless of the specific form of the unit test, the following guidelines
 should be respected:
@@ -674,21 +686,21 @@ You can add modules of your own, that are not (yet) in Gnulib.
 You can also add unstructured amounts of code to the library, by
 grouping the non-Gnulib files of the library in a single kitchen-sink
 ``module.''  (This kind of kitchen-sink module is not needed when you
-use the @command{gnulib-tool} option @samp{--makefile-name}.)
+use the @command{gnulib-tool} option @option{--makefile-name}.)
 @end itemize
 
 In a release tarball, you can distribute the contents of this
 @option{--local-dir} directory that will be combinable with newer
 versions of Gnulib, barring incompatible changes to Gnulib.
 
-If the @samp{--local-dir=@var{directory}} option is specified, then
+If the @option{--local-dir=@var{directory}} option is specified, then
 @command{gnulib-tool} looks in @file{@var{directory}} whenever it
 reads a file from the Gnulib directory.  Suppose @command{gnulib-tool}
 is looking for @var{file}.  Then:
 
 @itemize @bullet
 @item
-If @file{@var{directory}/@var{file}} exists, then @samp{gnulib-tool} uses
+If @file{@var{directory}/@var{file}} exists, then @command{gnulib-tool} uses
 it instead of the file included in Gnulib.
 
 @item
@@ -705,7 +717,6 @@ hold back modifications you make to Gnulib macros in cases it may be
 better to share them.
 
 
-
 @node Miscellaneous Notes
 @chapter Miscellaneous Notes
 
@@ -713,397 +724,29 @@ better to share them.
 * Out of memory handling::
 * Obsolete modules::
 * Extra tests modules::
+* Modules that modify the way other modules work::
 * A C++ namespace for gnulib::      A different way of using Gnulib in C++
-* Library version handling::
-* Windows sockets::
-* Libtool and Windows::
+* Running self-tests under valgrind::
 * License Texinfo sources::
-* Build robot for gnulib::
+* Building gnulib::
 @end menu
 
+@include out-of-memory.texi
 
-@node Out of memory handling
-@section Out of memory handling
+@include obsolete.texi
 
-@cindex Out of Memory handling
-@cindex Memory allocation failure
-The gnulib API does not have a standard error code for the out of memory
-error condition.  Instead of adding a non-standard error code, gnulib
-has chosen to adopt a different strategy.  Out of memory handling
-happens in rare situations, but performing the out of memory error
-handling after almost all API function invocations pollute your source
-code and might make it harder to spot more serious problems.  The
-strategy chosen improves code readability and robustness.
+@include extra-tests.texi
 
-@cindex Aborting execution
-For most applications, aborting the application with an error message
-when the out of memory situation occurs is the best that can be wished
-for.  This is how the library behaves by default (using
-the @samp{xalloc-die} module).
+@include transversal.texi
 
-@vindex xalloc_die
-However, we realize that some applications may not want to abort
-execution in any situation.  Gnulib supports a hook to let the
-application regain control and perform its own cleanups when an out of
-memory situation has occurred.  The application can define a function
-(having a @code{void} prototype, i.e., no return value and no
-parameters) and set the library variable
-@code{xalloc_die} to that function.  The variable should be
-declared as follows.
+@include namespace.texi
 
-@example
-extern void (*xalloc_die) (void);
-@end example
+@include valgrind-tests.texi
 
-Gnulib will invoke this function if an out of memory error occurs.  Note
-that the function should not return.  Of course, care must be taken to
-not allocate more memory, as that will likely also fail.
+@include licenses-texi.texi
 
+@include build-automation.texi
 
-@node Obsolete modules
-@section Obsolete modules
-
-@cindex Obsolete modules
-Modules can be marked obsolete.  This means that the problems they fix
-don't occur any more on the platforms that are reasonable porting targets
-now.  @code{gnulib-tool} warns when obsolete modules are mentioned on the
-command line, and by default ignores dependencies from modules to obsolete
-modules.  When you pass the option @code{--with-obsolete} to
-@code{gnulib-tool}, dependencies to obsolete modules will be included,
-however, unless blocked through an @code{--avoid} option.  This option
-is useful if your package should be portable even to very old platforms.
-
-In order to mark a module obsolete, you need to add this to the module
-description:
-
-@example
-Status:
-obsolete
-
-Notice:
-This module is obsolete.
-@end example
-
-
-@node Extra tests modules
-@section Extra tests modules
-
-@cindex Extra tests modules
-@cindex C++ tests modules
-@cindex tests modules, C++
-@cindex long-running tests modules
-@cindex tests modules, long-running
-@cindex privileged tests modules
-@cindex tests modules, privileged
-@cindex unportable tests modules
-@cindex tests modules, unportable
-Test modules can be marked with some special status attributes.  When a
-test module has such an attribute, @code{gnulib-tool --import} will not
-include it by default.
-
-The supported status attributes are:
-
-@table @code
-@item c++-test
-Indicates that the test is testing C++ interoperability.  Such a test is
-useful in a C++ or mixed C/C++ package, but is useless in a C package.
-
-@item longrunning-test
-Indicates that the test takes a long time to compile or execute (more
-than five minutes or so).  Such a test is better avoided in a release
-that is made for the general public.
-
-@item privileged-test
-Indicates that the test will request special privileges, for example,
-ask for the superuser password.  Such a test may hang when run
-non-interactively and is therefore better avoided in a release that is
-made for the general public.
-
-@item unportable-test
-Indicates that the test is known to fail on some systems, and that
-there is no workaround about it.  Such a test is better avoided in a
-release that is made for the general public.
-@end table
-
-@code{gnulib-tool --import} will not include tests marked with these
-attributes by default.  When @code{gnulib-tool} is invoked with one
-of the options @code{--with-c++-tests}, @code{--with-longrunning-tests},
-@code{--with-privileged-tests}, @code{--with-unportable-tests}, it
-will include tests despite the corresponding special status attribute.
-When @code{gnulib-tool} receives the option @code{--with-all-tests},
-it will include all tests regardless of their status attributes.
-
-@code{gnulib-tool --create-testdir} and
-@code{gnulib-tool --create-megatestdir} by default include all tests of
-modules specified on the command line, regardless of their status
-attributes.  Tests of modules occurring as dependencies are not included
-by default if they have one of these status attributes.  The options
-@code{--with-c++-tests}, @code{--with-longrunning-tests},
-@code{--with-privileged-tests}, @code{--with-unportable-tests} are
-recognized here as well.  Additionally, @code{gnulib-tool} also
-understands the options @code{--without-c++-tests},
-@code{--without-longrunning-tests}, @code{--without-privileged-tests},
-@code{--without-unportable-tests}.
-
-In order to mark a module with a status attribute, you need to add it
-to the module description, like this:
-
-@example
-Status:
-longrunning-test
-@end example
-
-If only a part of a test deserves a particular status attribute, you
-can split the module into a primary and a secondary test module,
-say @code{foo-tests} and @code{foo-extra-tests}.  Then add a dependency
-from @code{foo-tests} to @code{foo-extra-tests}, and mark the
-@code{foo-extra-tests} with the particular status attribute.
-
-
-@node A C++ namespace for gnulib
-@section A C++ namespace for gnulib
-
-The function definitions provided by Gnulib (@code{.c} code) are meant
-to be compiled by a C compiler.  The header files (@code{.h} files),
-on the other hand, can be used in either C or C++.
-
-By default, when used in a C++ compilation unit, the @code{.h} files
-declare the same symbols and overrides as in C mode, except that functions
-defined by Gnulib or by the system are declared as @samp{extern "C"}.
-
-It is also possible to indicate to Gnulib to provide many of its symbols
-in a dedicated C++ namespace.  If you define the macro
-@code{GNULIB_NAMESPACE} to an identifier, many functions will be defined
-in the namespace specified by the identifier instead of the global
-namespace.  For example, after you have defined
-@smallexample
-#define GNULIB_NAMESPACE gnulib
-@end smallexample
-@noindent
-at the beginning of a compilation unit, Gnulib's @code{<fcntl.h>} header
-file will make available the @code{open} function as @code{gnulib::open}.
-The symbol @code{open} will still refer to the system's @code{open} function,
-with its platform specific bugs and limitations.
-
-The symbols provided in the Gnulib namespace are those for which the
-corresponding header file contains a @code{_GL_CXXALIAS_RPL} or
-@code{_GL_CXXALIAS_SYS} macro invocation.
-
-The benefits of this namespace mode are:
-@itemize
-@item
-Gnulib defines fewer symbols as preprocessor macros.  For example, on a
-platform where @code{open} has to be overridden, Gnulib normally does
-@code{#define open rpl_open}.  If your package has a class with a member
-@code{open}, for example a class @code{foo} with a method @code{foo::open},
-then if you define this member in a compilation unit that includes
-@code{<fcntl.h>} and use it in a compilation unit that does not include
-@code{<fcntl.h>}, or vice versa, you will get a link error.  Worse: You
-will not notice this problem on the platform where the system's @code{open}
-function works fine.  This problem goes away in namespace mode.
-
-@item
-It provides a safety check whether the set of modules your package requests
-from Gnulib is sufficient.  For example, if you use the function
-@code{gnulib::open} in your code, and you forgot to request the module
-@samp{open} from Gnulib, you will get a compilation error (regardless of
-the platform).
-@end itemize
-
-The drawback of this namespace mode is that the system provided symbols in
-the global namespace are still present, even when they contain bugs that
-Gnulib fixes.  For example, if you call @code{open (...)} in your code,
-it will invoke the possibly buggy system function, even if you have
-requested the module @samp{open} from gnulib-tool.
-
-You can turn on the namespace mode in some compilation units and keep it
-turned off in others.  This can be useful if your package consists of
-an application layer that does not need to invoke POSIX functions and
-an operating system interface layer that contains all the OS function
-calls.  In such a situation, you will want to turn on the namespace mode
-for the application layer --- to avoid many preprocessor macro
-definitions --- and turn it off for the OS interface layer --- to avoid
-the drawback of the namespace mode, mentioned above.
-
-
-@node Library version handling
-@section Library version handling
-
-The module @samp{check-version} can be useful when your gnulib
-application is a system library.  You will typically wrap the call to
-the @code{check_version} function through a library API, your library
-header file may contain:
-
-@example
-#define STRINGPREP_VERSION "0.5.18"
-...
-  extern const char *stringprep_check_version (const char *req_version);
-@end example
-
-To avoid ELF symbol collisions with other libraries that use the
-@samp{check-version} module, add to @file{config.h} through a
-AC_DEFINE something like:
-
-@example
-AC_DEFINE(check_version, stringprep_check_version,
-          [Rename check_version.])
-@end example
-
-The @code{stringprep_check_version} function will thus be implemented
-by the @code{check_version} module.
-
-There are two uses of the interface.  The first is a way to provide
-for applications to find out the version number of the library it
-uses.  The application may contain diagnostic code such as:
-
-@example
-  printf ("Stringprep version: header %s library %s",
-          STRINGPREP_VERSION,
-          stringprep_check_version (NULL));
-@end example
-
-Separating the library and header file version can be useful when
-searching for version mismatch related problems.
-
-The second uses is as a rudimentary test of proper library version, by
-making sure the application get a library version that is the same, or
-newer, than the header file used when building the application.  This
-doesn't catch all problems, libraries may change backwards incompatibly
-in later versions, but enable applications to require a certain
-minimum version before it may proceed.
-
-Typical uses look like:
-
-@example
-       /* Check version of libgcrypt. */
-       if (!gcry_check_version (GCRYPT_VERSION))
-         die ("version mismatch\n");
-@end example
-
-
-@node Windows sockets
-@section Windows sockets
-
-There are several issues when building applications that should work
-under Windows.  The most problematic part is for applications that use
-sockets.
-
-Hopefully, we can add helpful notes to this section that will help you
-port your application to Windows using gnulib.
-
-@subsection Getaddrinfo and WINVER
-
-This was written for the getaddrinfo module, but may be applicable to
-other functions too.
-
-The getaddrinfo function exists in ws2tcpip.h and -lws2_32 on Windows
-XP.  The function declaration is present if @code{WINVER >= 0x0501}.
-Windows 2000 does not have getaddrinfo in its @file{WS2_32.DLL}.
-
-Thus, if you want to assume Windows XP or later, you can add
-AC_DEFINE(WINVER, 0x0501) to avoid compiling the (partial) getaddrinfo
-implementation.
-
-If you want to support Windows 2000, don't do anything.  The
-replacement function will open @file{WS2_32.DLL} during run-time to
-see if there is a getaddrinfo function available, and use it when
-available.
-
-@node Libtool and Windows
-@section Libtool and Windows
-
-If you want it to be possible to cross-compile your program to MinGW
-and you use Libtool, you need to put:
-
-@example
-AC_LIBTOOL_WIN32_DLL
-@end example
-
-in your @file{configure.ac}.  This sets the correct names for the
-@code{OBJDUMP}, @code{DLLTOOL}, and @code{AS} tools for the build.
-
-If you are building a library, you will also need to pass
-@code{-no-undefined} to make sure Libtool produces a DLL for your
-library.  From a @file{Makefile.am}:
-
-@example
-libgsasl_la_LDFLAGS += -no-undefined
-@end example
-
-
-@node License Texinfo sources
-@section License Texinfo sources
-
-Gnulib provides copies of the GNU GPL, GNU LGPL, and GNU FDL licenses
-in Texinfo form.  (The master location is
-@url{http://www.gnu.org/licenses/}).  These Texinfo documents do not
-have any node names and structures built into them; for your manual,
-you should @code{@@include} them in an appropriate @code{@@node}.
-
-The conventional name for the GPL node is @samp{Copying} and for the FDL
-@samp{GNU Free Documentation License}.  The LGPL doesn't seem to have
-a conventional node name.
-
-Of course the license texts themselves should not be changed at all.
-
-
-@node Build robot for gnulib
-@section Build robot for gnulib
-
-To simplify testing on a wide set of platforms, gnulib is built on
-many platforms every day and the results are uploaded to:
-
-@url{http://autobuild.josefsson.org/gnulib/}
-
-If you wish to help the gnulib development effort with build logs for
-your favorite platform, you may perform these steps:
-
-@enumerate
-
-@item Create gnulib directory
-
-On a machine with recent automake, autoconf, m4 installed and with a
-gnulib git or cvs checkout (typically a Linux machine), use
-
-@example
-gnulib-tool --create-megatestdir --with-tests --dir=...
-@end example
-
-Note: The created directory uses ca. 512 MB on disk.
-
-@item Transfer gnulib directory
-
-Transfer this directory to a build machine (HP-UX, Cygwin, or
-whatever).  Often it is easier to transfer one file, and this can be
-achieved by running, inside the directory the following commands:
-
-@example
-./configure
-make dist
-@end example
-
-And then transferring the @file{dummy-0.tar.gz} file.
-
-@item Build modules
-
-On the build machine, run ./do-autobuild (or "nohup ./do-autobuild").
-It creates a directory 'logs/' with a log file for each module.
-
-@item Submit build logs
-
-Submit each log file to Simon's site, either through a
-
-@example
-mail `echo gnulib__at__autobuild.josefsson.org | sed -e s/__at__/@@/`
-@end example
-
-or through netcat
-
-@example
-autobuild-submit logs/*
-@end example
-
-@end enumerate
 
 @node POSIX Substitutes Library
 @chapter Building the ISO C and POSIX Substitutes
@@ -1187,12 +830,14 @@ which (known) portability problems are not worked around by Gnulib.
 * setjmp.h::
 * signal.h::
 * spawn.h::
+* stdalign.h::
 * stdarg.h::
 * stdbool.h::
 * stddef.h::
 * stdint.h::
 * stdio.h::
 * stdlib.h::
+* stdnoreturn.h::
 * string.h::
 * strings.h::
 * stropts.h::
@@ -1220,6 +865,7 @@ which (known) portability problems are not worked around by Gnulib.
 * tgmath.h::
 * time.h::
 * trace.h::
+* uchar.h::
 * ucontext.h::
 * ulimit.h::
 * unistd.h::
@@ -1273,12 +919,14 @@ which (known) portability problems are not worked around by Gnulib.
 @include posix-headers/setjmp.texi
 @include posix-headers/signal.texi
 @include posix-headers/spawn.texi
+@include posix-headers/stdalign.texi
 @include posix-headers/stdarg.texi
 @include posix-headers/stdbool.texi
 @include posix-headers/stddef.texi
 @include posix-headers/stdint.texi
 @include posix-headers/stdio.texi
 @include posix-headers/stdlib.texi
+@include posix-headers/stdnoreturn.texi
 @include posix-headers/string.texi
 @include posix-headers/strings.texi
 @include posix-headers/stropts.texi
@@ -1306,6 +954,7 @@ which (known) portability problems are not worked around by Gnulib.
 @include posix-headers/tgmath.texi
 @include posix-headers/time.texi
 @include posix-headers/trace.texi
+@include posix-headers/uchar.texi
 @include posix-headers/ucontext.texi
 @include posix-headers/ulimit.texi
 @include posix-headers/unistd.texi
@@ -1355,6 +1004,7 @@ by Gnulib.
 * aio_suspend::
 * aio_write::
 * alarm::
+* aligned_alloc::
 * alphasort::
 * asctime::
 * asctime_r::
@@ -1383,6 +1033,8 @@ by Gnulib.
 * bind::
 * bsearch::
 * btowc::
+* c16rtomb::
+* c32rtomb::
 * cabs::
 * cabsf::
 * cabsl::
@@ -1868,6 +1520,8 @@ by Gnulib.
 * malloc::
 * mblen::
 * mbrlen::
+* mbrtoc16::
+* mbrtoc32::
 * mbrtowc::
 * mbsinit::
 * mbsnrtowcs::
@@ -2156,6 +1810,7 @@ by Gnulib.
 * putwchar::
 * pwrite::
 * qsort::
+* quick_exit::
 * raise::
 * rand::
 * rand_r::
@@ -2548,6 +2203,7 @@ by Gnulib.
 @include posix-functions/aio_suspend.texi
 @include posix-functions/aio_write.texi
 @include posix-functions/alarm.texi
+@include posix-functions/aligned_alloc.texi
 @include posix-functions/alphasort.texi
 @include posix-functions/asctime.texi
 @include posix-functions/asctime_r.texi
@@ -2576,6 +2232,8 @@ by Gnulib.
 @include posix-functions/bind.texi
 @include posix-functions/bsearch.texi
 @include posix-functions/btowc.texi
+@include posix-functions/c16rtomb.texi
+@include posix-functions/c32rtomb.texi
 @include posix-functions/cabs.texi
 @include posix-functions/cabsf.texi
 @include posix-functions/cabsl.texi
@@ -3061,6 +2719,8 @@ by Gnulib.
 @include posix-functions/malloc.texi
 @include posix-functions/mblen.texi
 @include posix-functions/mbrlen.texi
+@include posix-functions/mbrtoc16.texi
+@include posix-functions/mbrtoc32.texi
 @include posix-functions/mbrtowc.texi
 @include posix-functions/mbsinit.texi
 @include posix-functions/mbsnrtowcs.texi
@@ -3349,6 +3009,7 @@ by Gnulib.
 @include posix-functions/putwchar.texi
 @include posix-functions/pwrite.texi
 @include posix-functions/qsort.texi
+@include posix-functions/quick_exit.texi
 @include posix-functions/raise.texi
 @include posix-functions/rand.texi
 @include posix-functions/rand_r.texi
@@ -3715,7 +3376,7 @@ by Gnulib.
 @chapter Past POSIX Function Substitutes
 
 This chapter describes which functions and function-like macros specified by
-older versions of POSIX (POSIX:2001) are substituted by Gnulib, which
+older versions of POSIX are substituted by Gnulib, which
 portability pitfalls are fixed by Gnulib, and which (known) portability
 problems are not worked around by Gnulib.
 
@@ -3735,7 +3396,12 @@ problems are not worked around by Gnulib.
 * gethostbyname::
 * getwd::
 * h_errno::
+@ifhtml
+* _index::
+@end ifhtml
+@ifnothtml
 * index::
+@end ifnothtml
 * makecontext::
 * mktemp::
 * pthread_attr_getstackaddr::
@@ -3941,6 +3607,7 @@ This list of functions is sorted according to the header that declares them.
 * Glibc string.h::
 * Glibc sys/capability.h::
 * Glibc sys/epoll.h::
+* Glibc sys/fanotify.h::
 * Glibc sys/file.h::
 * Glibc sys/fsuid.h::
 * Glibc sys/gmon.h::
@@ -3955,6 +3622,7 @@ This list of functions is sorted according to the header that declares them.
 * Glibc sys/ptrace.h::
 * Glibc sys/quota.h::
 * Glibc sys/reboot.h::
+* Glibc sys/resource.h::
 * Glibc sys/sem.h::
 * Glibc sys/sendfile.h::
 * Glibc sys/socket.h::
@@ -4164,10 +3832,12 @@ This list of functions is sorted according to the header that declares them.
 
 @menu
 * getdirentries::
+* scandirat::
 * versionsort::
 @end menu
 
 @include glibc-functions/getdirentries.texi
+@include glibc-functions/scandirat.texi
 @include glibc-functions/versionsort.texi
 
 @node Glibc dlfcn.h
@@ -4278,11 +3948,15 @@ This list of functions is sorted according to the header that declares them.
 
 @menu
 * fallocate::
+* name_to_handle_at::
 * readahead::
+* open_by_handle_at::
 @end menu
 
 @include glibc-functions/fallocate.texi
+@include glibc-functions/name_to_handle_at.texi
 @include glibc-functions/readahead.texi
+@include glibc-functions/open_by_handle_at.texi
 
 @node Glibc fenv.h
 @section Glibc Extensions to @code{<fenv.h>}
@@ -4770,6 +4444,19 @@ This list of functions is sorted according to the header that declares them.
 * inet6_option_init::
 * inet6_option_next::
 * inet6_option_space::
+* inet6_opt_append::
+* inet6_opt_find::
+* inet6_opt_finish::
+* inet6_opt_get_val::
+* inet6_opt_init::
+* inet6_opt_next::
+* inet6_opt_set_val::
+* inet6_rth_add::
+* inet6_rth_getaddr::
+* inet6_rth_init::
+* inet6_rth_reverse::
+* inet6_rth_segments::
+* inet6_rth_space::
 * setipv4sourcefilter::
 * setsourcefilter::
 @end menu
@@ -4785,6 +4472,19 @@ This list of functions is sorted according to the header that declares them.
 @include glibc-functions/inet6_option_init.texi
 @include glibc-functions/inet6_option_next.texi
 @include glibc-functions/inet6_option_space.texi
+@include glibc-functions/inet6_opt_append.texi
+@include glibc-functions/inet6_opt_find.texi
+@include glibc-functions/inet6_opt_finish.texi
+@include glibc-functions/inet6_opt_get_val.texi
+@include glibc-functions/inet6_opt_init.texi
+@include glibc-functions/inet6_opt_next.texi
+@include glibc-functions/inet6_opt_set_val.texi
+@include glibc-functions/inet6_rth_add.texi
+@include glibc-functions/inet6_rth_getaddr.texi
+@include glibc-functions/inet6_rth_init.texi
+@include glibc-functions/inet6_rth_reverse.texi
+@include glibc-functions/inet6_rth_segments.texi
+@include glibc-functions/inet6_rth_space.texi
 @include glibc-functions/setipv4sourcefilter.texi
 @include glibc-functions/setsourcefilter.texi
 
@@ -5599,11 +5299,13 @@ This list of functions is sorted according to the header that declares them.
 * clone::
 * sched_getaffinity::
 * sched_setaffinity::
+* setns::
 @end menu
 
 @include glibc-functions/clone.texi
 @include glibc-functions/sched_getaffinity.texi
 @include glibc-functions/sched_setaffinity.texi
+@include glibc-functions/setns.texi
 
 @node Glibc search.h
 @section Glibc Extensions to @code{<search.h>}
@@ -5804,9 +5506,9 @@ This list of functions is sorted according to the header that declares them.
 * qfcvt_r::
 * qgcvt::
 * qsort_r::
-* quick_exit::
 * random_r::
 * rpmatch::
+* secure_getenv::
 * seed48_r::
 * setstate_r::
 * srand48_r::
@@ -5849,9 +5551,9 @@ This list of functions is sorted according to the header that declares them.
 @include glibc-functions/qfcvt_r.texi
 @include glibc-functions/qgcvt.texi
 @include glibc-functions/qsort_r.texi
-@include glibc-functions/quick_exit.texi
 @include glibc-functions/random_r.texi
 @include glibc-functions/rpmatch.texi
+@include glibc-functions/secure_getenv.texi
 @include glibc-functions/seed48_r.texi
 @include glibc-functions/setstate_r.texi
 @include glibc-functions/srand48_r.texi
@@ -5871,6 +5573,7 @@ This list of functions is sorted according to the header that declares them.
 @section Glibc Extensions to @code{<string.h>}
 
 @menu
+* explicit_bzero::
 * ffsl::
 * ffsll::
 * memfrob::
@@ -5885,6 +5588,7 @@ This list of functions is sorted according to the header that declares them.
 * strverscmp::
 @end menu
 
+@include glibc-functions/explicit_bzero.texi
 @include glibc-functions/ffsl.texi
 @include glibc-functions/ffsll.texi
 @include glibc-functions/memfrob.texi
@@ -5927,6 +5631,17 @@ This list of functions is sorted according to the header that declares them.
 @include glibc-functions/epoll_create.texi
 @include glibc-functions/epoll_ctl.texi
 @include glibc-functions/epoll_wait.texi
+
+@node Glibc sys/fanotify.h
+@section Glibc @code{<sys/fanotify.h>}
+
+@menu
+* fanotify_init::
+* fanotify_mark::
+@end menu
+
+@include glibc-functions/fanotify_init.texi
+@include glibc-functions/fanotify_mark.texi
 
 @node Glibc sys/file.h
 @section Glibc @code{<sys/file.h>}
@@ -6077,8 +5792,14 @@ This list of functions is sorted according to the header that declares them.
 
 @include glibc-functions/reboot.texi
 
-@c @node Glibc sys/resource.h
-@c @section Glibc Extensions to @code{<sys/resource.h>}
+@node Glibc sys/resource.h
+@section Glibc Extensions to @code{<sys/resource.h>}
+
+@menu
+* prlimit::
+@end menu
+
+@include glibc-functions/prlimit.texi
 
 @c @node Glibc sys/select.h
 @c @section Glibc Extensions to @code{<sys/select.h>}
@@ -6110,10 +5831,14 @@ This list of functions is sorted according to the header that declares them.
 @menu
 * accept4::
 * isfdtype::
+* recvmmsg::
+* sendmmsg::
 @end menu
 
 @include glibc-functions/accept4.texi
 @include glibc-functions/isfdtype.texi
+@include glibc-functions/recvmmsg.texi
+@include glibc-functions/sendmmsg.texi
 
 @node Glibc sys/stat.h
 @section Glibc Extensions to @code{<sys/stat.h>}
@@ -6227,11 +5952,13 @@ This list of functions is sorted according to the header that declares them.
 * adjtimex::
 * ntp_adjtime::
 * ntp_gettime::
+* ntp_gettimex::
 @end menu
 
 @include glibc-functions/adjtimex.texi
 @include glibc-functions/ntp_adjtime.texi
 @include glibc-functions/ntp_gettime.texi
+@include glibc-functions/ntp_gettimex.texi
 
 @c @node Glibc sys/types.h
 @c @section Glibc Extensions to @code{<sys/types.h>}
@@ -6241,10 +5968,14 @@ This list of functions is sorted according to the header that declares them.
 
 @menu
 * preadv::
+* process_vm_readv::
+* process_vm_writev::
 * pwritev::
 @end menu
 
 @include glibc-functions/preadv.texi
+@include glibc-functions/process_vm_readv.texi
+@include glibc-functions/process_vm_writev.texi
 @include glibc-functions/pwritev.texi
 
 @c @node Glibc sys/un.h
@@ -6358,20 +6089,24 @@ This list of functions is sorted according to the header that declares them.
 @section Glibc Extensions to @code{<time.h>}
 
 @menu
+* clock_adjtime::
 * dysize::
 * getdate_r::
 * stime::
 * strptime_l::
 * timegm::
 * timelocal::
+* timespec_get::
 @end menu
 
+@include glibc-functions/clock_adjtime.texi
 @include glibc-functions/dysize.texi
 @include glibc-functions/getdate_r.texi
 @include glibc-functions/stime.texi
 @include glibc-functions/strptime_l.texi
 @include glibc-functions/timegm.texi
 @include glibc-functions/timelocal.texi
+@include glibc-functions/timespec_get.texi
 
 @c @node Glibc trace.h
 @c @section Glibc Extensions to @code{<trace.h>}
@@ -6390,6 +6125,9 @@ This list of functions is sorted according to the header that declares them.
 @include glibc-functions/getttyent.texi
 @include glibc-functions/getttynam.texi
 @include glibc-functions/setttyent.texi
+
+@c @node Glibc uchar.h
+@c @section Glibc Extensions to @code{<uchar.h>}
 
 @c @node Glibc ucontext.h
 @c @section Glibc Extensions to @code{<ucontext.h>}
@@ -6486,6 +6224,7 @@ This list of functions is sorted according to the header that declares them.
 * setutent::
 * updwtmp::
 * utmpname::
+* login::
 * login_tty::
 @end menu
 
@@ -6500,6 +6239,7 @@ This list of functions is sorted according to the header that declares them.
 @include glibc-functions/setutent.texi
 @include glibc-functions/updwtmp.texi
 @include glibc-functions/utmpname.texi
+@include glibc-functions/login.texi
 @include glibc-functions/login_tty.texi
 
 @node Glibc utmpx.h
@@ -6570,6 +6310,49 @@ This list of functions is sorted according to the header that declares them.
 @c @node Glibc wordexp.h
 @c @section Glibc Extensions to @code{<wordexp.h>}
 
+
+@node Native Windows Support
+@chapter Native Windows Support
+
+There are three ways to create binaries that run on Microsoft Windows:
+@itemize
+@item
+Native binaries, built using the MinGW tool chain.
+@item
+Native binaries, built using the MSVC (MS Visual C/C++) tool chain.
+@item
+Binaries for the Cygwin environment.
+@end itemize
+
+This chapter deals with the MinGW and MSVC platforms, commonly called
+``native Windows'' platforms.  Cygwin, on the other hand, is close enough
+to POSIX that it can be treated like any other Unix-like platform.
+
+@menu
+* Libtool and Windows::
+* Large File Support::
+* Inode numbers on Windows::
+* Precise file timestamps on Windows::
+* Avoiding the year 2038 problem::
+* Windows sockets::
+* Native Windows Support without MSVC Support::
+@end menu
+
+@include windows-libtool.texi
+
+@include largefile.texi
+
+@include windows-stat-inodes.texi
+
+@include windows-stat-timespec.texi
+
+@include year2038.texi
+
+@include windows-sockets.texi
+
+@include windows-without-msvc.texi
+
+
 @node Particular Modules
 @chapter Particular Modules
 
@@ -6579,20 +6362,15 @@ This list of functions is sorted according to the header that declares them.
 * Safe Allocation Macros::
 * Compile-time Assertions::
 * Integer Properties::
+* extern inline::
 * String Functions in C Locale::
 * Quoting::
 * error and progname::
 * gcd::
-* Searching for Libraries::
-* Exported Symbols of Shared Libraries::
-* LD Version Scripts::
-* Visual Studio Compatibility::
+* Profiling of program phases::
+* Library version handling::
 * Supporting Relocation::
 * func::
-* configmake::
-* warnings::
-* manywarnings::
-* Running self-tests under valgrind::
 * stat-size::
 @end menu
 
@@ -6612,57 +6390,9 @@ This list of functions is sorted according to the header that declares them.
 
 @include intprops.texi
 
-@node String Functions in C Locale
-@section Character and String Functions in C Locale
+@include extern-inline.texi
 
-The functions in this section are similar to the generic string functions
-from the standard C library, except that
-@itemize
-@item
-They behave as if the locale was set to the "C" locale, even when the
-locale is different, and/or
-@item
-They are specially optimized for the case where all characters are plain
-ASCII characters.
-@end itemize
-
-@menu
-* c-ctype::
-* c-strcase::
-* c-strcaseeq::
-* c-strcasestr::
-* c-strstr::
-* c-strtod::
-* c-strtold::
-@end menu
-
-@node c-ctype
-@subsection c-ctype
-@include c-ctype.texi
-
-@node c-strcase
-@subsection c-strcase
-@include c-strcase.texi
-
-@node c-strcaseeq
-@subsection c-strcaseeq
-@include c-strcaseeq.texi
-
-@node c-strcasestr
-@subsection c-strcasestr
-@include c-strcasestr.texi
-
-@node c-strstr
-@subsection c-strstr
-@include c-strstr.texi
-
-@node c-strtod
-@subsection c-strtod
-@include c-strtod.texi
-
-@node c-strtold
-@subsection c-strtold
-@include c-strtold.texi
+@include c-locale.texi
 
 @include quote.texi
 
@@ -6670,25 +6400,13 @@ ASCII characters.
 
 @include gcd.texi
 
-@include havelib.texi
+@include timevar.texi
 
-@include lib-symbol-visibility.texi
-
-@include ld-version-script.texi
-
-@include ld-output-def.texi
+@include check-version.texi
 
 @include relocatable-maint.texi
 
 @include func.texi
-
-@include configmake.texi
-
-@include warnings.texi
-
-@include manywarnings.texi
-
-@include valgrind-tests.texi
 
 @include stat-size.texi
 
@@ -6720,6 +6438,39 @@ varies.  The descriptions given here for the different types are
 generated automatically.
 
 @include regexprops-generic.texi
+
+
+@node Build Infrastructure Modules
+@chapter Build Infrastructure Modules
+
+Gnulib has a couple of modules that don't provide code, but rather
+extend the GNU Build System.  That is, they are convenience facilities
+for use with GNU Automake (in particular).
+
+@menu
+* Searching for Libraries::
+* Exported Symbols of Shared Libraries::
+* LD Version Scripts::
+* Visual Studio Compatibility::
+* configmake::
+* warnings::
+* manywarnings::
+@end menu
+
+@include havelib.texi
+
+@include lib-symbol-visibility.texi
+
+@include ld-version-script.texi
+
+@include ld-output-def.texi
+
+@include configmake.texi
+
+@include warnings.texi
+
+@include manywarnings.texi
+
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License

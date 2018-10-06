@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007, 2010-2011 Free Software Foundation, Inc.
+ * Copyright (C) 2006-2007, 2010-2018 Free Software Foundation, Inc.
  * Written by Simon Josefsson
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -57,7 +57,8 @@ main (void)
               /* FILE1 is a regular file or a symlink to a regular file.  */
               if (len != statbuf.st_size)
                 {
-                  fprintf (stderr, "Read %ld from %s...\n", (unsigned long) len, FILE1);
+                  fprintf (stderr, "Read %lu from %s...\n",
+                           (unsigned long) len, FILE1);
                   err = 1;
                 }
             }
@@ -98,7 +99,8 @@ main (void)
              is not a regular file.  */
           if (len != 0)
             {
-              fprintf (stderr, "Read %ld from %s...\n", (unsigned long) len, FILE2);
+              fprintf (stderr, "Read %lu from %s...\n",
+                       (unsigned long) len, FILE2);
               err = 1;
             }
           free (out);

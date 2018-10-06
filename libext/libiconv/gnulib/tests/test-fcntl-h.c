@@ -1,5 +1,5 @@
 /* Test of <fcntl.h> substitute.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -21,15 +21,20 @@
 #include <fcntl.h>
 
 /* Check that the various O_* macros are defined.  */
-int o = O_DIRECT | O_DIRECTORY | O_DSYNC | O_NDELAY | O_NOATIME | O_NONBLOCK
-        | O_NOCTTY | O_NOFOLLOW | O_NOLINKS | O_RSYNC | O_SYNC | O_TTY_INIT
-        | O_BINARY | O_TEXT;
+int o = (O_DIRECT | O_DIRECTORY | O_DSYNC | O_IGNORE_CTTY | O_NDELAY | O_NOATIME
+         | O_NONBLOCK | O_NOCTTY | O_NOFOLLOW | O_NOLINK | O_NOLINKS | O_NOTRANS
+         | O_RSYNC | O_SYNC | O_TTY_INIT | O_BINARY | O_TEXT);
 
 /* Check that the various SEEK_* macros are defined.  */
 int sk[] = { SEEK_CUR, SEEK_END, SEEK_SET };
 
 /* Check that the FD_* macros are defined.  */
 int i = FD_CLOEXEC;
+
+/* Check that the types are all defined.  */
+pid_t t1;
+off_t t2;
+mode_t t3;
 
 int
 main (void)
@@ -56,7 +61,7 @@ main (void)
 #if O_SEARCH && O_EXEC != O_SEARCH && O_SEARCH != O_RDONLY
     case O_SEARCH:
 #endif
-      i = O_ACCMODE == (O_RDONLY | O_WRONLY | O_RDWR | O_EXEC | O_SEARCH);
+      i = ! (~O_ACCMODE & (O_RDONLY | O_WRONLY | O_RDWR | O_EXEC | O_SEARCH));
       break;
 
       /* Everyone should have these */
@@ -79,6 +84,9 @@ main (void)
 #if O_DSYNC
     case O_DSYNC:
 #endif
+#if O_IGNORE_CTTY
+    case O_IGNORE_CTTY:
+#endif
 #if O_NOATIME
     case O_NOATIME:
 #endif
@@ -91,13 +99,19 @@ main (void)
 #if O_NOFOLLOW
     case O_NOFOLLOW:
 #endif
+#if O_NOLINK
+    case O_NOLINK:
+#endif
 #if O_NOLINKS
     case O_NOLINKS:
+#endif
+#if O_NOTRANS
+    case O_NOTRANS:
 #endif
 #if O_RSYNC && O_RSYNC != O_DSYNC
     case O_RSYNC:
 #endif
-#if O_SYNC && O_SYNC != O_RSYNC
+#if O_SYNC && O_SYNC != O_DSYNC && O_SYNC != O_RSYNC
     case O_SYNC:
 #endif
 #if O_TTY_INIT

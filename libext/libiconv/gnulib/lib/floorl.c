@@ -1,5 +1,5 @@
 /* Round towards negative infinity.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,9 +12,26 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
-#define USE_LONG_DOUBLE
-#include "floor.c"
+#include <config.h>
+
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+/* Specification.  */
+# include <math.h>
+
+long double
+floorl (long double x)
+{
+  return floor (x);
+}
+
+#else
+
+# define USE_LONG_DOUBLE
+# include "floor.c"
+
+#endif

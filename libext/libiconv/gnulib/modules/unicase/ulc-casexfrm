@@ -11,7 +11,7 @@ uniconv/u8-conv-from-enc
 localcharset
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [unicase/ulc-casexfrm])
+gl_LIBUNISTRING_MODULE([0.9.8], [unicase/ulc-casexfrm])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNICASE_ULC_CASEXFRM
@@ -22,8 +22,7 @@ Include:
 "unicase.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Bruno Haible
-
+all

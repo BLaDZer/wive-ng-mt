@@ -1,5 +1,5 @@
 /* Test of logl() function.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -23,11 +23,20 @@
 #include "signature.h"
 SIGNATURE_CHECK (logl, long double, (long double));
 
+#include <float.h>
+
 #include "fpucw.h"
+#include "minus-zero.h"
 #include "macros.h"
 
-volatile long double x;
-long double y;
+#define DOUBLE long double
+#define HUGEVAL HUGE_VALL
+#define L_(literal) literal##L
+#define MANT_DIG LDBL_MANT_DIG
+#define MINUS_ZERO minus_zerol
+#define LOG logl
+#define RANDOM randoml
+#include "test-log.h"
 
 int
 main ()
@@ -40,6 +49,8 @@ main ()
   x = 0.6L;
   y = logl (x);
   ASSERT (y >= -0.5108256238L && y <= -0.5108256237L);
+
+  test_function ();
 
   return 0;
 }

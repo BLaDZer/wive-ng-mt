@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -25,6 +25,8 @@
     { 0x2010, 0x2015 },
     { 0x2E17, 0x2E17 },
     { 0x2E1A, 0x2E1A },
+    { 0x2E3A, 0x2E3B },
+    { 0x2E40, 0x2E40 },
     { 0x301C, 0x301C },
     { 0x3030, 0x3030 },
     { 0x30A0, 0x30A0 },

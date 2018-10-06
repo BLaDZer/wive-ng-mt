@@ -5,6 +5,10 @@ tests/macros.h
 
 Depends-on:
 binary-io
+close
+fcntl-h
+getdtablesize
+msvc-nothrow
 open
 
 configure.ac:

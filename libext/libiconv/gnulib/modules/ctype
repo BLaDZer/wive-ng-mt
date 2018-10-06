@@ -6,6 +6,7 @@ lib/ctype.in.h
 m4/ctype.m4
 
 Depends-on:
+extern-inline
 include_next
 snippet/c++defs
 snippet/warn-on-use
@@ -42,4 +43,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
+all

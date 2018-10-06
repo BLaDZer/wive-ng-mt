@@ -1,5 +1,5 @@
 /* Test of posix_spawn() function.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2008.  */
 
@@ -37,8 +37,6 @@ SIGNATURE_CHECK (posix_spawn, int, (pid_t *, char const *,
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-extern char **environ;
 
 #define CHILD_PROGRAM_FILENAME "test-posix_spawn3"
 #define DATA_FILENAME "t!#$%&'()*+,-;=?@[\\]^_`{|}~.tmp"
@@ -75,10 +73,14 @@ parent_main (void)
     }
 
   /* Avoid reading from our stdin, as it could block.  */
-  freopen ("/dev/null", "rb", stdin);
+  if (freopen ("/dev/null", "rb", stdin) == NULL)
+    {
+      perror ("cannot redirect stdin");
+      return 1;
+    }
 
   /* Test whether posix_spawn_file_actions_addopen with this file name
-     actually works, but spawning a child that reads from this file.  */
+     actually works, by spawning a child that reads from this file.  */
   actions_allocated = false;
   if ((err = posix_spawn_file_actions_init (&actions)) != 0
       || (actions_allocated = true,

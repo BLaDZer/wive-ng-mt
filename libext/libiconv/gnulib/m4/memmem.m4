@@ -1,5 +1,5 @@
-# memmem.m4 serial 23
-dnl Copyright (C) 2002-2004, 2007-2011 Free Software Foundation, Inc.
+# memmem.m4 serial 25
+dnl Copyright (C) 2002-2004, 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -21,7 +21,7 @@ AC_DEFUN([gl_FUNC_MEMMEM_SIMPLE],
   if test $ac_cv_have_decl_memmem = no; then
     HAVE_DECL_MEMMEM=0
   else
-    dnl Detect http://sourceware.org/bugzilla/show_bug.cgi?id=12092.
+    dnl Detect https://sourceware.org/bugzilla/show_bug.cgi?id=12092.
     dnl Also check that we handle empty needles correctly.
     AC_CACHE_CHECK([whether memmem works],
       [gl_cv_func_memmem_works_always],
@@ -67,13 +67,16 @@ AC_DEFUN([gl_FUNC_MEMMEM_SIMPLE],
   Lucky user
 #endif
            ],
-           [gl_cv_func_memmem_works_always=yes],
+           [gl_cv_func_memmem_works_always="guessing yes"],
            [gl_cv_func_memmem_works_always="guessing no"])
         ])
       ])
-    if test "$gl_cv_func_memmem_works_always" != yes; then
-      REPLACE_MEMMEM=1
-    fi
+    case "$gl_cv_func_memmem_works_always" in
+      *yes) ;;
+      *)
+        REPLACE_MEMMEM=1
+        ;;
+    esac
   fi
   gl_PREREQ_MEMMEM
 ]) # gl_FUNC_MEMMEM_SIMPLE
@@ -90,7 +93,7 @@ AC_DEFUN([gl_FUNC_MEMMEM],
 #include <string.h> /* for memmem */
 #include <stdlib.h> /* for malloc */
 #include <unistd.h> /* for alarm */
-static void quit (int sig) { exit (sig + 128); }
+static void quit (int sig) { _exit (sig + 128); }
 ]], [[
     int result = 0;
     size_t m = 1000000;
@@ -110,6 +113,9 @@ static void quit (int sig) { exit (sig + 128); }
         if (!memmem (haystack, 2 * m + 1, needle, m + 1))
           result |= 1;
       }
+    /* Free allocated memory, in case some sanitizer is watching.  */
+    free (haystack);
+    free (needle);
     return result;
     ]])],
         [gl_cv_func_memmem_works_fast=yes], [gl_cv_func_memmem_works_fast=no],
@@ -131,13 +137,16 @@ static void quit (int sig) { exit (sig + 128); }
  #endif
 #endif
            ],
-           [gl_cv_func_memmem_works_fast=yes],
+           [gl_cv_func_memmem_works_fast="guessing yes"],
            [gl_cv_func_memmem_works_fast="guessing no"])
         ])
       ])
-    if test "$gl_cv_func_memmem_works_fast" != yes; then
-      REPLACE_MEMMEM=1
-    fi
+    case "$gl_cv_func_memmem_works_fast" in
+      *yes) ;;
+      *)
+        REPLACE_MEMMEM=1
+        ;;
+    esac
   fi
 ]) # gl_FUNC_MEMMEM
 

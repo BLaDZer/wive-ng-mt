@@ -1,5 +1,5 @@
 /* Execute a Java program.
-   Copyright (C) 2001-2003, 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include <alloca.h>
@@ -172,11 +172,11 @@ execute_java_class (const char *class_name,
         if (verbose)
           printf ("%s\n", command);
 
-        argv[0] = "/bin/sh";
+        argv[0] = BOURNE_SHELL;
         argv[1] = "-c";
         argv[2] = command;
         argv[3] = NULL;
-        err = executer (java, "/bin/sh", argv, private_data);
+        err = executer (java, BOURNE_SHELL, argv, private_data);
 
         freea (command);
 
@@ -357,8 +357,8 @@ execute_java_class (const char *class_name,
       }
   }
 
-#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__
-  /* Win32, Cygwin */
+#if defined _WIN32 || defined __CYGWIN__
+  /* Native Windows, Cygwin */
   {
     static bool jview_tested;
     static bool jview_present;

@@ -1,5 +1,5 @@
 /* Pausing execution of the current thread.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2007.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -24,7 +24,7 @@
 
 #include "verify.h"
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 
 # define WIN32_LEAN_AND_MEAN  /* avoid including junk */
 # include <windows.h>
@@ -35,7 +35,7 @@ sleep (unsigned int seconds)
   unsigned int remaining;
 
   /* Sleep for 1 second many times, because
-       1. Sleep is not interruptiple by Ctrl-C,
+       1. Sleep is not interruptible by Ctrl-C,
        2. we want to avoid arithmetic overflow while multiplying with 1000.  */
   for (remaining = seconds; remaining > 0; remaining--)
     Sleep (1000);

@@ -1,5 +1,5 @@
 /* Test suite for exclude.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    This file is part of the GNUlib Library.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include <stdio.h>
@@ -24,7 +24,6 @@
 #include <fnmatch.h>
 
 #include "exclude.h"
-#include "progname.h"
 #include "error.h"
 #include "argmatch.h"
 
@@ -75,8 +74,6 @@ main (int argc, char **argv)
   int exclude_options = 0;
   struct exclude *exclude = new_exclude ();
 
-  set_program_name (argv[0]);
-
   if (argc == 1)
     error (1, 0, "usage: %s file -- words...", argv[0]);
 
@@ -104,6 +101,15 @@ main (int argc, char **argv)
             exclude_options &= ~flag;
           else
             exclude_options |= flag;
+
+          /* Skip this test if invoked with -leading-dir on a system that
+             lacks support for FNM_LEADING_DIR. */
+          if (strcmp (s, "leading_dir") == 0 && FNM_LEADING_DIR == 0)
+            exit (77);
+
+          /* Likewise for -casefold and FNM_CASEFOLD.  */
+          if (strcmp (s, "casefold") == 0 && FNM_CASEFOLD == 0)
+            exit (77);
         }
       else if (add_exclude_file (add_exclude, exclude, opt,
                                  exclude_options, '\n') != 0)
@@ -116,5 +122,7 @@ main (int argc, char **argv)
 
       printf ("%s: %d\n", word, excluded_file_name (exclude, word));
     }
+
+  free_exclude (exclude);
   return 0;
 }

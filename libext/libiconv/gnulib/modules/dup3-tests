@@ -4,7 +4,10 @@ tests/signature.h
 tests/macros.h
 
 Depends-on:
+getdtablesize
+msvc-nothrow
 open
+close
 
 configure.ac:
 

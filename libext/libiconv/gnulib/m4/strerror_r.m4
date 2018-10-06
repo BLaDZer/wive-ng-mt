@@ -1,5 +1,5 @@
-# strerror_r.m4 serial 13
-dnl Copyright (C) 2002, 2007-2011 Free Software Foundation, Inc.
+# strerror_r.m4 serial 19
+dnl Copyright (C) 2002, 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -43,6 +43,7 @@ AC_DEFUN([gl_PREREQ_STRERROR_R], [
   dnl glibc >= 2.3.4 and cygwin 1.7.9 have a function __xpg_strerror_r.
   AC_CHECK_FUNCS_ONCE([__xpg_strerror_r])
   AC_CHECK_FUNCS_ONCE([catgets])
+  AC_CHECK_FUNCS_ONCE([snprintf])
 ])
 
 # Detect if strerror_r works, but without affecting whether a replacement
@@ -75,7 +76,7 @@ AC_DEFUN([gl_FUNC_STRERROR_R_WORKS],
         dnl HP-UX 11.31 strerror_r always fails when the buffer length argument
         dnl is less than 80.
         dnl FreeBSD 8.s strerror_r claims failure on 0
-        dnl MacOS X 10.5 strerror_r treats 0 like -1
+        dnl Mac OS X 10.5 strerror_r treats 0 like -1
         dnl Solaris 10 strerror_r corrupts errno on failure
         AC_CACHE_CHECK([whether strerror_r works],
           [gl_cv_func_strerror_r_works],

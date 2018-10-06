@@ -1,5 +1,5 @@
 /* Test of sequential list data type implementation.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "gl_array_list.h"
-#include "progname.h"
 #include "macros.h"
 
 extern void gl_avltreehash_list_check_invariants (gl_list_t list);
@@ -46,7 +45,7 @@ string_equals (const void *x1, const void *x2)
 
 /* A hash function for NUL-terminated char* strings using
    the method described by Bruno Haible.
-   See http://www.haible.de/bruno/hashfunc.html.  */
+   See https://www.haible.de/bruno/hashfunc.html.  */
 static size_t
 string_hash (const void *x)
 {
@@ -88,8 +87,6 @@ int
 main (int argc, char *argv[])
 {
   gl_list_t list1, list2, list3;
-
-  set_program_name (argv[0]);
 
   /* Allow the user to provide a non-default random seed on the command line.  */
   if (argc > 1)

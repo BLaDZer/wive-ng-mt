@@ -1,7 +1,7 @@
 # Configure a replacement for <strings.h>.
-# serial 5
+# serial 6
 
-# Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+# Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -16,7 +16,14 @@ AC_DEFUN([gl_HEADER_STRINGS_H],
 AC_DEFUN([gl_HEADER_STRINGS_H_BODY],
 [
   AC_REQUIRE([gl_HEADER_STRINGS_H_DEFAULTS])
+
   gl_CHECK_NEXT_HEADERS([strings.h])
+  if test $ac_cv_header_strings_h = yes; then
+    HAVE_STRINGS_H=1
+  else
+    HAVE_STRINGS_H=0
+  fi
+  AC_SUBST([HAVE_STRINGS_H])
 
   dnl Check for declarations of anything we want to poison if the
   dnl corresponding gnulib module is not in use.

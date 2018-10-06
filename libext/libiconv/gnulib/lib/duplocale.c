@@ -1,5 +1,5 @@
 /* Duplicate a locale object.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -32,9 +32,11 @@ locale_t
 rpl_duplocale (locale_t locale)
 {
   /* Work around crash in the duplocale function in glibc < 2.12.
-     See <http://sourceware.org/bugzilla/show_bug.cgi?id=10969>.
+     See <https://sourceware.org/bugzilla/show_bug.cgi?id=10969>.
      Also, on AIX 7.1, duplocale(LC_GLOBAL_LOCALE) returns (locale_t)0 with
-     errno set to EINVAL.  */
+     errno set to EINVAL.
+     Also, on NetBSD 7.0, duplocale(LC_GLOBAL_LOCALE) returns a locale that
+     corresponds to the C locale.  */
   if (locale == LC_GLOBAL_LOCALE)
     {
       /* Create a copy of the locale by fetching the name of each locale

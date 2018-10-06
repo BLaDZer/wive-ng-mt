@@ -1,5 +1,5 @@
 /* Test of pty.h and openpty function.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Simon Josefsson <simon@josefsson.org>, 2009
    and Bruno Haible <bruno@clisp.org>, 2010.  */
@@ -34,6 +34,7 @@ int
 main ()
 {
   {
+#ifndef _WIN32
     int master;
     int slave;
 
@@ -48,7 +49,7 @@ main ()
     }
 
     /* Set the terminal characteristics.
-       On Linux or MacOS X, they can be set on either the master or the slave;
+       On Linux or Mac OS X, they can be set on either the master or the slave;
        the effect is the same.  But on Solaris, they have to be set on the
        master; tcgetattr on the slave fails.  */
     {
@@ -101,8 +102,9 @@ main ()
     }
 
     /* Close the master side before the slave side gets closed.
-       This is necessary on MacOS X 10.4.11.  */
+       This is necessary on Mac OS X 10.4.11.  */
     close (master);
+#endif
   }
 
   return 0;

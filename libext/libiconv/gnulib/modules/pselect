@@ -9,6 +9,7 @@ Depends-on:
 sys_select
 pthread_sigmask [test $HAVE_PSELECT = 0 || test $REPLACE_PSELECT = 1]
 select          [test $HAVE_PSELECT = 0 || test $REPLACE_PSELECT = 1]
+dup2            [test $REPLACE_PSELECT = 1]
 
 configure.ac:
 gl_FUNC_PSELECT
@@ -23,10 +24,10 @@ Include:
 <sys/select.h>
 
 Link:
-$(LIBSOCKET) $(LIB_PTHREAD_SIGMASK)
+$(LIB_SELECT) $(LIB_PTHREAD_SIGMASK)
 
 License:
 LGPLv2+
 
 Maintainer:
-Paul Eggert, Bruno Haible, Jim Meyering
+Paul Eggert, Jim Meyering

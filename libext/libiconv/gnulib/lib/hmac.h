@@ -1,5 +1,5 @@
 /* hmac.h -- hashed message authentication codes
-   Copyright (C) 2005, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Simon Josefsson.  */
 
@@ -37,5 +36,21 @@ hmac_md5 (const void *key, size_t keylen,
 int
 hmac_sha1 (const void *key, size_t keylen,
            const void *in, size_t inlen, void *resbuf);
+
+/* Compute Hashed Message Authentication Code with SHA-256, over BUFFER
+   data of BUFLEN bytes using the KEY of KEYLEN bytes, writing the
+   output to pre-allocated 32 byte minimum RESBUF buffer.  Return 0 on
+   success.  */
+int
+hmac_sha256 (const void *key, size_t keylen,
+             const void *in, size_t inlen, void *resbuf);
+
+/* Compute Hashed Message Authentication Code with SHA-512, over BUFFER
+   data of BUFLEN bytes using the KEY of KEYLEN bytes, writing the
+   output to pre-allocated 64 byte minimum RESBUF buffer.  Return 0 on
+   success.  */
+int
+hmac_sha512 (const void *key, size_t keylen,
+             const void *in, size_t inlen, void *resbuf);
 
 #endif /* HMAC_H */

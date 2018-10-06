@@ -1,5 +1,5 @@
 /* Check UTF-16 string.
-   Copyright (C) 2002, 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2006-2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2002.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -27,7 +27,7 @@ u16_check (const uint16_t *s, size_t n)
 
   while (s < s_end)
     {
-      /* Keep in sync with unistr.h and utf16-ucs4.c.  */
+      /* Keep in sync with unistr.h and u16-mbtouc-aux.c.  */
       uint16_t c = *s;
 
       if (c < 0xd800 || c >= 0xe000)

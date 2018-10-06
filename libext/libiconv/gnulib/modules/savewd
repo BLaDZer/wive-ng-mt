@@ -7,14 +7,18 @@ lib/savewd.c
 m4/savewd.m4
 
 Depends-on:
+assure
+chdir
 dosname
 errno
+extern-inline
 fchdir
 fcntl-safer
 fcntl-h
 raise
 stdbool
 stdlib
+sys_wait
 xalloc
 
 configure.ac:

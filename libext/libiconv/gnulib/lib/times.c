@@ -1,6 +1,6 @@
 /* Get process times
 
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Simon Josefsson <simon@josefsson.org>, 2008.  */
 
@@ -63,5 +62,5 @@ times (struct tms * buffer)
   buffer->tms_cutime = 0;
   buffer->tms_cstime = 0;
 
-  return filetime2clock (creation_time);
+  return clock ();
 }

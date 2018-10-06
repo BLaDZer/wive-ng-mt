@@ -1,5 +1,5 @@
 /* Construct a regular expression from a literal string.
-   Copyright (C) 1995, 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 1995, 2010-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2010.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -104,7 +104,7 @@ regex_quote_spec_pcre (int options, bool anchored)
   char *p;
 
   p = result.special;
-  memcpy (p, bre_special, sizeof (pcre_special) - 1);
+  memcpy (p, pcre_special, sizeof (pcre_special) - 1);
   p += sizeof (pcre_special) - 1;
   if (options & PCRE_EXTENDED)
     {

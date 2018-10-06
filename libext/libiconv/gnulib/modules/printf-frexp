@@ -20,8 +20,7 @@ Include:
 "printf-frexp.h"
 
 License:
-LGPL
+LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

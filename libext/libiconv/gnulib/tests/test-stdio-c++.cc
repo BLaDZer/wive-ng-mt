@@ -1,5 +1,5 @@
 /* Test of <stdio.h> substitute in C++ mode.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -30,6 +30,10 @@ SIGNATURE_CHECK (GNULIB_NAMESPACE::dprintf, int, (int, const char *, ...));
 
 #if GNULIB_TEST_FCLOSE
 SIGNATURE_CHECK (GNULIB_NAMESPACE::fclose, int, (FILE *));
+#endif
+
+#if GNULIB_TEST_FDOPEN
+SIGNATURE_CHECK (GNULIB_NAMESPACE::fdopen, FILE *, (int, const char *));
 #endif
 
 #if GNULIB_TEST_FFLUSH
@@ -118,15 +122,17 @@ SIGNATURE_CHECK (GNULIB_NAMESPACE::getline, ssize_t,
                  (char **, size_t *, FILE *));
 #endif
 
-#if GNULIB_TEST_GETS
-SIGNATURE_CHECK (GNULIB_NAMESPACE::gets, char *, (char *));
-#endif
+/* Don't bother testing gets; it should never be used.  */
 
 #if GNULIB_TEST_OBSTACK_PRINTF || GNULIB_TEST_OBSTACK_PRINTF_POSIX
 SIGNATURE_CHECK (GNULIB_NAMESPACE::obstack_printf, int,
                  (struct obstack *, const char *, ...));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::obstack_vprintf, int,
                  (struct obstack *, const char *, va_list));
+#endif
+
+#if GNULIB_TEST_PCLOSE
+SIGNATURE_CHECK (GNULIB_NAMESPACE::pclose, int, (FILE *));
 #endif
 
 //SIGNATURE_CHECK (GNULIB_NAMESPACE::pclose, int, (FILE *));

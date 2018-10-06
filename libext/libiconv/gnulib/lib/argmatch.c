@@ -1,6 +1,6 @@
 /* argmatch.c -- find a match for a string in an array
 
-   Copyright (C) 1990, 1998-1999, 2001-2007, 2009-2011 Free Software
+   Copyright (C) 1990, 1998-1999, 2001-2007, 2009-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by David MacKenzie <djm@ai.mit.edu>
    Modified by Akim Demaille <demaille@inf.enst.fr> */
@@ -35,6 +35,7 @@
 #include "error.h"
 #include "quotearg.h"
 #include "quote.h"
+#include "getprogname.h"
 
 #if USE_UNLOCKED_IO
 # include "unlocked-io.h"
@@ -77,7 +78,7 @@ argmatch_exit_fn argmatch_die = __argmatch_die;
    synonyms, i.e., for
      "yes", "yop" -> 0
      "no", "nope" -> 1
-   "y" is a valid argument, for `0', and "n" for `1'.  */
+   "y" is a valid argument, for 0, and "n" for 1.  */
 
 ptrdiff_t
 argmatch (const char *arg, const char *const *arglist,
@@ -150,17 +151,17 @@ argmatch_valid (const char *const *arglist,
 
   /* We try to put synonyms on the same line.  The assumption is that
      synonyms follow each other */
-  fprintf (stderr, _("Valid arguments are:"));
+  fputs (_("Valid arguments are:"), stderr);
   for (i = 0; arglist[i]; i++)
     if ((i == 0)
         || memcmp (last_val, vallist + valsize * i, valsize))
       {
-        fprintf (stderr, "\n  - `%s'", arglist[i]);
+        fprintf (stderr, "\n  - %s", quote (arglist[i]));
         last_val = vallist + valsize * i;
       }
     else
       {
-        fprintf (stderr, ", `%s'", arglist[i]);
+        fprintf (stderr, ", %s", quote (arglist[i]));
       }
   putc ('\n', stderr);
 }
@@ -209,7 +210,6 @@ argmatch_to_argument (const char *value,
 /*
  * Based on "getversion.c" by David MacKenzie <djm@gnu.ai.mit.edu>
  */
-char *program_name;
 
 /* When to make backup files.  */
 enum backup_type
@@ -253,11 +253,9 @@ main (int argc, const char *const *argv)
   const char *cp;
   enum backup_type backup_type = no_backups;
 
-  program_name = (char *) argv[0];
-
   if (argc > 2)
     {
-      fprintf (stderr, "Usage: %s [VERSION_CONTROL]\n", program_name);
+      fprintf (stderr, "Usage: %s [VERSION_CONTROL]\n", getprogname ());
       exit (1);
     }
 
@@ -266,10 +264,10 @@ main (int argc, const char *const *argv)
                              backup_args, backup_vals);
 
   if (argc == 2)
-    backup_type = XARGMATCH (program_name, argv[1],
+    backup_type = XARGMATCH (getprogname (), argv[1],
                              backup_args, backup_vals);
 
-  printf ("The version control is `%s'\n",
+  printf ("The version control is '%s'\n",
           ARGMATCH_TO_ARGUMENT (backup_type, backup_args, backup_vals));
 
   return 0;

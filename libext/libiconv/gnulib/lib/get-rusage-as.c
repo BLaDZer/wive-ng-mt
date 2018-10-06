@@ -1,5 +1,5 @@
 /* Getter for RLIMIT_AS.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2011.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,9 +13,21 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
+
+/* On Android, when targeting Android 4.4 or older with a GCC toolchain,
+   prevent a compilation error
+     "error: call to 'mmap' declared with attribute error: mmap is not
+      available with _FILE_OFFSET_BITS=64 when using GCC until android-21.
+      Either raise your minSdkVersion, disable _FILE_OFFSET_BITS=64, or
+      switch to Clang."
+   The files that we access in this compilation unit are less than 2 GB
+   large.  */
+#if defined __ANDROID__
+# undef _FILE_OFFSET_BITS
+#endif
 
 /* Specification.  */
 #include "resource-ext.h"
@@ -49,7 +61,7 @@
      get_rusage_as_via_iterator() is 4 KB higher than
      get_rusage_as_via_setrlimit().
 
-   MacOS X:
+   Mac OS X:
      a) setrlimit with RLIMIT_AS succeeds but does not really work: The OS
         ignores RLIMIT_AS. mmap() of a page always succeeds, therefore
         get_rusage_as_via_setrlimit() is always 0.
@@ -76,7 +88,11 @@
 
    HP-UX:
      a) setrlimit with RLIMIT_AS works.
-     b) No VMA iteration API exists.
+     b) pstat_getprocvm() can be used to find out about the virtual memory
+        areas.
+     Both methods agree, except that the value of get_rusage_as_via_iterator()
+     is slighly larger higher than get_rusage_as_via_setrlimit(), by 4 KB in
+     32-bit mode and by 40 KB in 64-bit mode.
 
    IRIX:
      a) setrlimit with RLIMIT_AS works.
@@ -91,22 +107,24 @@
 
    Solaris:
      a) setrlimit with RLIMIT_AS works.
-     b) No VMA iteration API exists.
+     b) The /proc/$pid file supports ioctls PIOCNMAP and PIOCMAP, and the
+        /proc/self/maps file contains a list of the virtual memory areas.
+     Both methods agree,
 
    Cygwin:
      a) setrlimit with RLIMIT_AS always fails when the limit is < 0x80000000.
         get_rusage_as_via_setrlimit() therefore produces a wrong value.
      b) The /proc/$pid/maps file lists only the memory areas belonging to
         the executable and shared libraries, not the anonymous memory.
-        But the native Win32 API works.
+        But the native Windows API works.
 
    mingw:
      a) There is no setrlimit function.
-     b) The native Win32 API works.
+     b) The native Windows API works.
 
    BeOS, Haiku:
      a) On BeOS, there is no setrlimit function.
-        On Haiku, setrlimit exists. RLIMIT_AS is defined but unsupported.
+        On Haiku, setrlimit exists. RLIMIT_AS is defined but setrlimit fails.
      b) There is a specific BeOS API: get_next_area_info().
  */
 
@@ -144,9 +162,9 @@
 #include "vma-iter.h"
 
 
-#if HAVE_SETRLIMIT && defined RLIMIT_AS && HAVE_SYS_MMAN_H && HAVE_MPROTECT
+#if HAVE_SETRLIMIT && defined RLIMIT_AS && HAVE_SYS_MMAN_H && HAVE_MPROTECT && !defined __HAIKU__
 
-static inline uintptr_t
+static uintptr_t
 get_rusage_as_via_setrlimit (void)
 {
   uintptr_t result;
@@ -310,7 +328,7 @@ get_rusage_as_via_setrlimit (void)
 
 #else
 
-static inline uintptr_t
+static uintptr_t
 get_rusage_as_via_setrlimit (void)
 {
   return 0;
@@ -331,7 +349,7 @@ vma_iterate_callback (void *data, uintptr_t start, uintptr_t end,
   return 0;
 }
 
-static inline uintptr_t
+static uintptr_t
 get_rusage_as_via_iterator (void)
 {
   uintptr_t total = 0;
@@ -343,7 +361,7 @@ get_rusage_as_via_iterator (void)
 
 #else
 
-static inline uintptr_t
+static uintptr_t
 get_rusage_as_via_iterator (void)
 {
   return 0;
@@ -355,11 +373,11 @@ get_rusage_as_via_iterator (void)
 uintptr_t
 get_rusage_as (void)
 {
-#if (defined __APPLE__ && defined __MACH__) || defined _AIX || defined __CYGWIN__ /* MacOS X, AIX, Cygwin */
+#if (defined __APPLE__ && defined __MACH__) || defined _AIX || defined __CYGWIN__ || defined __MVS__ /* Mac OS X, AIX, Cygwin, z/OS */
   /* get_rusage_as_via_setrlimit() does not work.
      Prefer get_rusage_as_via_iterator().  */
   return get_rusage_as_via_iterator ();
-#elif HAVE_SETRLIMIT && defined RLIMIT_AS && HAVE_SYS_MMAN_H && HAVE_MPROTECT
+#elif HAVE_SETRLIMIT && defined RLIMIT_AS && HAVE_SYS_MMAN_H && HAVE_MPROTECT && !defined __HAIKU__
   /* Prefer get_rusage_as_via_setrlimit() if it succeeds,
      because the caller may want to use the result with setrlimit().  */
   uintptr_t result;

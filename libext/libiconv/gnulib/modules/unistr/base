@@ -12,7 +12,7 @@ stdbool
 inline
 
 configure.ac:
-gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
+gl_LIBUNISTRING_LIBHEADER([0.9.4], [unistr.h])
 
 Makefile.am:
 BUILT_SOURCES += $(LIBUNISTRING_UNISTR_H)
@@ -32,5 +32,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

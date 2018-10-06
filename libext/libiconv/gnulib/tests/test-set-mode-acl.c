@@ -1,5 +1,5 @@
 /* Test of setting an ACL equivalent to a mode.
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2008.  */
 
@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 
-#include "progname.h"
 #include "macros.h"
 
 int
@@ -30,8 +29,6 @@ main (int argc, char *argv[])
 {
   const char *file;
   int mode;
-
-  set_program_name (argv[0]);
 
   ASSERT (argc == 3);
 

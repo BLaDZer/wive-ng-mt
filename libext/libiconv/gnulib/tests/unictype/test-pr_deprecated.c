@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -24,8 +24,7 @@
     { 0x17A3, 0x17A4 },
     { 0x206A, 0x206F },
     { 0x2329, 0x232A },
-    { 0xE0001, 0xE0001 },
-    { 0xE0020, 0xE007F }
+    { 0xE0001, 0xE0001 }
 
 #define PREDICATE(c) uc_is_property_deprecated (c)
 #include "test-predicate-part2.h"

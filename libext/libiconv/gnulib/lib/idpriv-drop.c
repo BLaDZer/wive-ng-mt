@@ -1,5 +1,5 @@
 /* Dropping uid/gid privileges of the current process permanently.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -42,7 +42,7 @@ idpriv_drop (void)
      setresuid.  */
   if (setresgid (gid, gid, gid) < 0)
     return -1;
-#elif HAVE_SETREGID /* MacOS X, NetBSD, AIX, IRIX, Solaris, OSF/1, Cygwin */
+#elif HAVE_SETREGID /* Mac OS X, NetBSD, AIX, IRIX, Solaris, OSF/1, Cygwin */
   if (setregid (gid, gid) < 0)
     return -1;
 #elif HAVE_SETEGID /* Solaris 2.4 */
@@ -54,14 +54,15 @@ idpriv_drop (void)
 #if HAVE_SETRESUID /* glibc, FreeBSD, OpenBSD, HP-UX */
   /* On systems which have setresuid(), we use it instead of setreuid(),
      because
-       <http://www.usenix.org/events/sec02/full_papers/chen/chen.pdf>
+       Hao Chen, David Wagner, Drew Dean: Setuid Demystified
+       <https://www.usenix.org/legacy/publications/library/proceedings/sec02/full_papers/chen/chen.pdf>
      says about setreuid(): "The rule by which the saved uid id is modified
      is complicated." Similarly, <http://unixpapa.com/incnote/setuid.html>
      says about setreuid(): "What exactly happens to the saved UID when this
      is used seems to vary a lot."  */
   if (setresuid (uid, uid, uid) < 0)
     return -1;
-#elif HAVE_SETREUID /* MacOS X, NetBSD, AIX, IRIX, Solaris, OSF/1, Cygwin */
+#elif HAVE_SETREUID /* Mac OS X, NetBSD, AIX, IRIX, Solaris, OSF/1, Cygwin */
   if (setreuid (uid, uid) < 0)
     return -1;
 #elif HAVE_SETEUID /* Solaris 2.4 */
@@ -76,7 +77,8 @@ idpriv_drop (void)
      functions), we could read /proc/<pid>/cred and verify the saved uid and
      gid found there. But it's not clear to me when to interpret the file as a
      'prcred_t' and when as a 'prcred32_t'.
-     <http://www.usenix.org/events/sec02/full_papers/chen/chen.pdf>
+     Hao Chen, David Wagner, Drew Dean: Setuid Demystified
+     <https://www.usenix.org/legacy/publications/library/proceedings/sec02/full_papers/chen/chen.pdf>
      section 8.1.3 also recommends to use a setreuid call as a probe, but
      this call would unexpectedly succeed (and the verification thus fail)
      on Linux if the process has the CAP_SETUID capability.

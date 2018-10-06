@@ -1,5 +1,5 @@
 /* Test manipulation of non-blocking flag.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2011.  */
 
@@ -85,7 +85,7 @@ main (void)
     bool sock_works = true;
     int fd_sock;
 
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
     /* For now, we can't get nonblocking status of windows sockets.  */
     sock_works = false;
 # endif
@@ -124,7 +124,7 @@ main (void)
   }
   {
     errno = 0;
-    ASSERT (set_nonblocking_flag (10000000, false) == -1);
+    ASSERT (set_nonblocking_flag (getdtablesize (), false) == -1);
     ASSERT (errno == EBADF);
   }
 

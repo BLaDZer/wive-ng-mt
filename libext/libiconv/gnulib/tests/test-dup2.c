@@ -1,5 +1,5 @@
 /* Test duplicating file descriptors.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -26,16 +26,26 @@ SIGNATURE_CHECK (dup2, int, (int, int));
 #include <errno.h>
 #include <fcntl.h>
 
+#if HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+
 #include "binary-io.h"
 
 #if GNULIB_TEST_CLOEXEC
 # include "cloexec.h"
 #endif
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-/* Get declarations of the Win32 API functions.  */
+#if defined _WIN32 && ! defined __CYGWIN__
+/* Get declarations of the native Windows API functions.  */
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
+/* Get _get_osfhandle.  */
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
+#  include <io.h>
+# endif
 #endif
 
 #include "macros.h"
@@ -44,8 +54,8 @@ SIGNATURE_CHECK (dup2, int, (int, int));
 static int
 is_open (int fd)
 {
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-  /* On Win32, the initial state of unassigned standard file
+#if defined _WIN32 && ! defined __CYGWIN__
+  /* On native Windows, the initial state of unassigned standard file
      descriptors is that they are open but point to an
      INVALID_HANDLE_VALUE, and there is no fcntl.  */
   return (HANDLE) _get_osfhandle (fd) != INVALID_HANDLE_VALUE;
@@ -62,8 +72,8 @@ is_open (int fd)
 static int
 is_inheritable (int fd)
 {
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-  /* On Win32, the initial state of unassigned standard file
+# if defined _WIN32 && ! defined __CYGWIN__
+  /* On native Windows, the initial state of unassigned standard file
      descriptors is that they are open but point to an
      INVALID_HANDLE_VALUE, and there is no fcntl.  */
   HANDLE h = (HANDLE) _get_osfhandle (fd);
@@ -101,6 +111,7 @@ main (void)
 {
   const char *file = "test-dup2.tmp";
   char buffer[1];
+  int bad_fd = getdtablesize ();
   int fd = open (file, O_CREAT | O_TRUNC | O_RDWR, 0600);
 
   /* Assume std descriptors were provided by invoker.  */
@@ -119,6 +130,10 @@ main (void)
   /* The source must be valid.  */
   errno = 0;
   ASSERT (dup2 (-1, fd) == -1);
+  ASSERT (errno == EBADF);
+  close (99);
+  errno = 0;
+  ASSERT (dup2 (99, fd) == -1);
   ASSERT (errno == EBADF);
   errno = 0;
   ASSERT (dup2 (AT_FDCWD, fd) == -1);
@@ -139,8 +154,17 @@ main (void)
   errno = 0;
   ASSERT (dup2 (fd, -2) == -1);
   ASSERT (errno == EBADF);
+  if (bad_fd > 256)
+    {
+      ASSERT (dup2 (fd, 255) == 255);
+      ASSERT (dup2 (fd, 256) == 256);
+      ASSERT (close (255) == 0);
+      ASSERT (close (256) == 0);
+    }
+  ASSERT (dup2 (fd, bad_fd - 1) == bad_fd - 1);
+  ASSERT (close (bad_fd - 1) == 0);
   errno = 0;
-  ASSERT (dup2 (fd, 10000000) == -1);
+  ASSERT (dup2 (fd, bad_fd) == -1);
   ASSERT (errno == EBADF);
 
   /* Using dup2 can skip fds.  */

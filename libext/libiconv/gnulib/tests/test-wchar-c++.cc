@@ -1,5 +1,5 @@
 /* Test of <wchar.h> substitute in C++ mode.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -209,6 +209,11 @@ SIGNATURE_CHECK (GNULIB_NAMESPACE::wcstok, wchar_t *,
 
 #if GNULIB_TEST_WCSWIDTH
 SIGNATURE_CHECK (GNULIB_NAMESPACE::wcswidth, int, (const wchar_t *, size_t));
+#endif
+
+#if GNULIB_TEST_WCSFTIME
+SIGNATURE_CHECK (GNULIB_NAMESPACE::wcsftime, size_t,
+                 (wchar_t *, size_t, const wchar_t *, const struct tm *));
 #endif
 
 

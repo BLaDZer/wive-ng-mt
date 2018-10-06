@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -30,6 +30,7 @@
     { 0x0C66, 0x0C6F },
     { 0x0CE6, 0x0CEF },
     { 0x0D66, 0x0D6F },
+    { 0x0DE6, 0x0DEF },
     { 0x0E50, 0x0E59 },
     { 0x0ED0, 0x0ED9 },
     { 0x0F20, 0x0F29 },
@@ -49,12 +50,27 @@
     { 0xA8D0, 0xA8D9 },
     { 0xA900, 0xA909 },
     { 0xA9D0, 0xA9D9 },
+    { 0xA9F0, 0xA9F9 },
     { 0xAA50, 0xAA59 },
     { 0xABF0, 0xABF9 },
     { 0xFF10, 0xFF19 },
     { 0x104A0, 0x104A9 },
     { 0x11066, 0x1106F },
-    { 0x1D7CE, 0x1D7FF }
+    { 0x110F0, 0x110F9 },
+    { 0x11136, 0x1113F },
+    { 0x111D0, 0x111D9 },
+    { 0x112F0, 0x112F9 },
+    { 0x11450, 0x11459 },
+    { 0x114D0, 0x114D9 },
+    { 0x11650, 0x11659 },
+    { 0x116C0, 0x116C9 },
+    { 0x11730, 0x11739 },
+    { 0x118E0, 0x118E9 },
+    { 0x11C50, 0x11C59 },
+    { 0x16A60, 0x16A69 },
+    { 0x16B50, 0x16B59 },
+    { 0x1D7CE, 0x1D7FF },
+    { 0x1E950, 0x1E959 }
 
 #define PREDICATE(c) uc_is_property_decimal_digit (c)
 #include "test-predicate-part2.h"

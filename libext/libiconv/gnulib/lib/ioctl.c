@@ -1,6 +1,6 @@
 /* ioctl.c --- wrappers for Windows ioctl function
 
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paolo Bonzini */
 
@@ -46,7 +46,17 @@ rpl_ioctl (int fd, int request, ... /* {void *,char *} arg */)
 
 # include <errno.h>
 
+/* Get HANDLE.  */
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+
 # include "fd-hook.h"
+/* Get _get_osfhandle.  */
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
+#  include <io.h>
+# endif
 
 static int
 primary_ioctl (int fd, int request, void *arg)
@@ -55,7 +65,10 @@ primary_ioctl (int fd, int request, void *arg)
      fds non-blocking, use the gnulib 'nonblocking' module, until
      gnulib implements fcntl F_GETFL / F_SETFL with O_NONBLOCK.  */
 
-  errno = ENOSYS;
+  if ((HANDLE) _get_osfhandle (fd) != INVALID_HANDLE_VALUE)
+    errno = ENOSYS;
+  else
+    errno = EBADF;
   return -1;
 }
 

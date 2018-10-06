@@ -1,5 +1,5 @@
 /* ffsl.h -- find the first set bit in a word.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,13 +12,16 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake.  */
 
 /* This file is meant to be included by ffsl.c and ffsll.c, after
    they have defined FUNC and TYPE.  */
 
+#include <config.h>
+
+/* Specification.  */
 #include <string.h>
 
 #include <limits.h>
@@ -31,17 +34,34 @@
 int
 FUNC (TYPE i)
 {
-  int result = 0;
+#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) && defined GCC_BUILTIN
+  return GCC_BUILTIN (i);
+#else
   unsigned TYPE j = i;
+  /* Split j into chunks, and look at one chunk after the other.  */
+  enum { chunk_bits = CHAR_BIT * sizeof (unsigned int) };
+  /* The number of chunks is ceil (sizeof (TYPE) / sizeof (unsigned int))
+     = (sizeof (TYPE) - 1) / sizeof (unsigned int) + 1. */
+  enum { chunk_count = (sizeof (TYPE) - 1) / sizeof (unsigned int) + 1 };
 
-  /* GCC has __builtin_ffs, but it is limited to int.  */
-  if (!i)
-    return 0;
-  while (1)
+  if (chunk_count > 1)
     {
+      size_t k;
+
+      /* It is tempting to write  if (!j)  here, but if we do this,
+         Solaris 10/x86 "cc -O" miscompiles the code.  */
+      if (!i)
+        return 0;
+      /* Unroll the first loop round.  k = 0.  */
       if ((unsigned int) j)
-        return result + ffs ((unsigned int) j);
-      j >>= CHAR_BIT * sizeof (unsigned int);
-      result += CHAR_BIT * sizeof (unsigned int);
+        return ffs ((unsigned int) j);
+      /* Generic loop.  */
+      for (k = 1; k < chunk_count - 1; k++)
+        if ((unsigned int) (j >> (k * chunk_bits)) != 0)
+          return k * chunk_bits + ffs ((unsigned int) (j >> (k * chunk_bits)));
     }
+  /* Last loop round.  k = chunk_count - 1.  */
+  return (chunk_count - 1) * chunk_bits
+         + ffs ((unsigned int) (j >> ((chunk_count - 1) * chunk_bits)));
+#endif
 }

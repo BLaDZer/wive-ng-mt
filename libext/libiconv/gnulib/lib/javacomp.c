@@ -1,5 +1,5 @@
 /* Compile a Java program.
-   Copyright (C) 2001-2003, 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include <alloca.h>
@@ -50,11 +50,6 @@
 #include "gettext.h"
 
 #define _(str) gettext (str)
-
-/* The results of open() in this file are not used with fchdir,
-   therefore save some unnecessary work in fchdir.c.  */
-#undef open
-#undef close
 
 
 /* Survey of Java compilers.
@@ -103,10 +98,28 @@ default_target_version (void)
     {
       /* Determine the version from the found JVM.  */
       java_version_cache = javaexec_version ();
-      if (java_version_cache == NULL
-          || !(java_version_cache[0] == '1' && java_version_cache[1] == '.'
-               && (java_version_cache[2] >= '1' && java_version_cache[2] <= '6')
-               && java_version_cache[3] == '\0'))
+      if (java_version_cache == NULL)
+        java_version_cache = "1.1";
+      else if ((java_version_cache[0] == '1'
+                && java_version_cache[1] == '.'
+                && java_version_cache[2] >= '1' && java_version_cache[2] <= '8'
+                && java_version_cache[3] == '\0')
+               || (java_version_cache[0] == '9'
+                   && java_version_cache[1] == '\0')
+               || (java_version_cache[0] == '1'
+                   && (java_version_cache[1] >= '0'
+                       && java_version_cache[1] <= '1')
+                   && java_version_cache[2] == '\0'))
+        /* It's one of the valid target version values.  */
+        ;
+      else if (java_version_cache[0] == '1'
+               && (java_version_cache[1] >= '2'
+                   && java_version_cache[1] <= '7')
+               && java_version_cache[2] == '\0')
+        /* Assume that these (not yet released) Java versions will behave
+           like the preceding ones.  */
+        java_version_cache = "11";
+      else
         java_version_cache = "1.1";
     }
   return java_version_cache;
@@ -115,14 +128,25 @@ default_target_version (void)
 /* ======================= Source version dependent ======================= */
 
 /* Convert a source version to an index.  */
-#define SOURCE_VERSION_BOUND 3 /* exclusive upper bound */
+#define SOURCE_VERSION_BOUND 8 /* exclusive upper bound */
 static unsigned int
 source_version_index (const char *source_version)
 {
-  if (source_version[0] == '1' && source_version[1] == '.'
-      && (source_version[2] >= '3' && source_version[2] <= '5')
-      && source_version[3] == '\0')
-    return source_version[2] - '3';
+  if (source_version[0] == '1' && source_version[1] == '.')
+    {
+      if ((source_version[2] >= '3' && source_version[2] <= '5')
+          && source_version[3] == '\0')
+        return source_version[2] - '3';
+      if ((source_version[2] >= '7' && source_version[2] <= '8')
+          && source_version[3] == '\0')
+        return source_version[2] - '4';
+    }
+  else if (source_version[0] == '9' && source_version[1] == '\0')
+    return 5;
+  else if (source_version[0] == '1'
+           && (source_version[1] >= '0' && source_version[1] <= '1')
+           && source_version[2] == '\0')
+    return source_version[1] - '0' + 6;
   error (EXIT_FAILURE, 0, _("invalid source_version argument to compile_java_class"));
   return 0;
 }
@@ -137,6 +161,16 @@ get_goodcode_snippet (const char *source_version)
     return "class conftest { static { assert(true); } }\n";
   if (strcmp (source_version, "1.5") == 0)
     return "class conftest<T> { T foo() { return null; } }\n";
+  if (strcmp (source_version, "1.7") == 0)
+    return "class conftest { void foo () { switch (\"A\") {} } }\n";
+  if (strcmp (source_version, "1.8") == 0)
+    return "class conftest { void foo () { Runnable r = () -> {}; } }\n";
+  if (strcmp (source_version, "9") == 0)
+    return "interface conftest { private void foo () {} }\n";
+  if (strcmp (source_version, "10") == 0)
+    return "class conftest { public void m() { var i = new Integer(0); } }\n";
+  if (strcmp (source_version, "11") == 0)
+    return "class conftest { Readable r = (var b) -> 0; }\n";
   error (EXIT_FAILURE, 0, _("invalid source_version argument to compile_java_class"));
   return NULL;
 }
@@ -152,6 +186,16 @@ get_failcode_snippet (const char *source_version)
   if (strcmp (source_version, "1.4") == 0)
     return "class conftestfail<T> { T foo() { return null; } }\n";
   if (strcmp (source_version, "1.5") == 0)
+    return "class conftestfail { void foo () { switch (\"A\") {} } }\n";
+  if (strcmp (source_version, "1.7") == 0)
+    return "class conftestfail { void foo () { Runnable r = () -> {}; } }\n";
+  if (strcmp (source_version, "1.8") == 0)
+    return "interface conftestfail { private void foo () {} }\n";
+  if (strcmp (source_version, "9") == 0)
+    return "class conftestfail { public void m() { var i = new Integer(0); } }\n";
+  if (strcmp (source_version, "10") == 0)
+    return "class conftestfail { Readable r = (var b) -> 0; }\n";
+  if (strcmp (source_version, "11") == 0)
     return NULL;
   error (EXIT_FAILURE, 0, _("invalid source_version argument to compile_java_class"));
   return NULL;
@@ -160,14 +204,20 @@ get_failcode_snippet (const char *source_version)
 /* ======================= Target version dependent ======================= */
 
 /* Convert a target version to an index.  */
-#define TARGET_VERSION_BOUND 6 /* exclusive upper bound */
+#define TARGET_VERSION_BOUND 11 /* exclusive upper bound */
 static unsigned int
 target_version_index (const char *target_version)
 {
   if (target_version[0] == '1' && target_version[1] == '.'
-      && (target_version[2] >= '1' && target_version[2] <= '6')
+      && (target_version[2] >= '1' && target_version[2] <= '8')
       && target_version[3] == '\0')
     return target_version[2] - '1';
+  else if (target_version[0] == '9' && target_version[1] == '\0')
+    return 8;
+  else if (target_version[0] == '1'
+           && (target_version[1] >= '0' && target_version[1] <= '1')
+           && target_version[2] == '\0')
+    return target_version[1] - '0' + 9;
   error (EXIT_FAILURE, 0, _("invalid target_version argument to compile_java_class"));
   return 0;
 }
@@ -189,8 +239,34 @@ corresponding_classfile_version (const char *target_version)
     return 49;
   if (strcmp (target_version, "1.6") == 0)
     return 50;
+  if (strcmp (target_version, "1.7") == 0)
+    return 51;
+  if (strcmp (target_version, "1.8") == 0)
+    return 52;
+  if (strcmp (target_version, "9") == 0)
+    return 53;
+  if (strcmp (target_version, "10") == 0)
+    return 54;
+  if (strcmp (target_version, "11") == 0)
+    return 55;
   error (EXIT_FAILURE, 0, _("invalid target_version argument to compile_java_class"));
   return 0;
+}
+
+/* Return the source version to pass to javac.  */
+static const char *
+get_source_version_for_javac (const char *source_version,
+                              const char *target_version)
+{
+  /* The javac option '-source 1.5' has the same meaning as '-source 1.6',
+     but since Java 9 supports only the latter, prefer the latter if a
+     target_version >= 1.6 is requested.  */
+  if (strcmp (source_version, "1.5") == 0
+      && !(target_version[0] == '1' && target_version[1] == '.'
+           && (target_version[2] >= '1' && target_version[2] <= '5')
+           && target_version[3] == '\0'))
+    return "1.6";
+  return source_version;
 }
 
 /* ======================== Compilation subroutines ======================== */
@@ -263,11 +339,11 @@ compile_using_envjavac (const char *javac,
   if (verbose)
     printf ("%s\n", command);
 
-  argv[0] = "/bin/sh";
+  argv[0] = BOURNE_SHELL;
   argv[1] = "-c";
   argv[2] = command;
   argv[3] = NULL;
-  exitstatus = execute (javac, "/bin/sh", argv, false, false, false,
+  exitstatus = execute (javac, BOURNE_SHELL, argv, false, false, false,
                         null_stderr, true, true, NULL);
   err = (exitstatus != 0);
 
@@ -530,7 +606,10 @@ get_classfile_version (const char *compiled_file_name)
           /* Verify the class file signature.  */
           if (header[0] == 0xCA && header[1] == 0xFE
               && header[2] == 0xBA && header[3] == 0xBE)
-            return header[7];
+            {
+              close (fd);
+              return header[7];
+            }
         }
       close (fd);
     }
@@ -577,11 +656,11 @@ is_envjavac_gcj (const char *javac)
         abort ();
 
       /* Call $JAVAC --version 2>/dev/null.  */
-      argv[0] = "/bin/sh";
+      argv[0] = BOURNE_SHELL;
       argv[1] = "-c";
       argv[2] = command;
       argv[3] = NULL;
-      child = create_pipe_in (javac, "/bin/sh", argv, DEV_NULL, true, true,
+      child = create_pipe_in (javac, BOURNE_SHELL, argv, DEV_NULL, true, true,
                               false, fd);
       if (child == -1)
         goto failed;
@@ -659,11 +738,11 @@ is_envjavac_gcj43 (const char *javac)
         abort ();
 
       /* Call $JAVAC --version 2>/dev/null.  */
-      argv[0] = "/bin/sh";
+      argv[0] = BOURNE_SHELL;
       argv[1] = "-c";
       argv[2] = command;
       argv[3] = NULL;
-      child = create_pipe_in (javac, "/bin/sh", argv, DEV_NULL, true, true,
+      child = create_pipe_in (javac, BOURNE_SHELL, argv, DEV_NULL, true, true,
                               false, fd);
       if (child == -1)
         goto failed;
@@ -1060,6 +1139,7 @@ is_envjavac_oldgcj_14_13_usable (const char *javac,
 static bool
 is_envjavac_nongcj_usable (const char *javac,
                            const char *source_version,
+                           const char *source_version_for_javac,
                            const char *target_version,
                            bool *usablep,
                            bool *source_option_p, bool *target_option_p)
@@ -1115,7 +1195,7 @@ is_envjavac_nongcj_usable (const char *javac,
           /* $JAVAC compiled conftest.java successfully.  */
           /* Try adding -source option if it is useful.  */
           char *javac_source =
-            xasprintf ("%s -source %s", javac, source_version);
+            xasprintf ("%s -source %s", javac, source_version_for_javac);
 
           unlink (compiled_file_name);
 
@@ -1167,8 +1247,8 @@ is_envjavac_nongcj_usable (const char *javac,
                                                   tmpdir->dir_name,
                                                   false, false, false, true))
                         /* $JAVAC compiled conftestfail.java successfully, and
-                           "$JAVAC -source $source_version" rejects it.  So the
-                           -source option is useful.  */
+                           "$JAVAC -source $source_version_for_javac" rejects it.
+                           So the -source option is useful.  */
                         resultp->source_option = true;
                     }
                 }
@@ -1199,7 +1279,7 @@ is_envjavac_nongcj_usable (const char *javac,
                  successfully.  */
               /* Try adding -source option if it is useful.  */
               char *javac_target_source =
-                xasprintf ("%s -source %s", javac_target, source_version);
+                xasprintf ("%s -source %s", javac_target, source_version_for_javac);
 
               unlink (compiled_file_name);
 
@@ -1255,7 +1335,7 @@ is_envjavac_nongcj_usable (const char *javac,
                                                       true))
                             /* "$JAVAC -target $target_version" compiled
                                conftestfail.java successfully, and
-                               "$JAVAC -target $target_version -source $source_version"
+                               "$JAVAC -target $target_version -source $source_version_for_javac"
                                rejects it.  So the -source option is useful.  */
                             resultp->source_option = true;
                         }
@@ -1273,7 +1353,7 @@ is_envjavac_nongcj_usable (const char *javac,
                  -target and -source options. (Supported by Sun javac 1.4 and
                  higher.)  */
               char *javac_target_source =
-                xasprintf ("%s -source %s", javac_target, source_version);
+                xasprintf ("%s -source %s", javac_target, source_version_for_javac);
 
               unlink (compiled_file_name);
 
@@ -1285,7 +1365,7 @@ is_envjavac_nongcj_usable (const char *javac,
                   && get_classfile_version (compiled_file_name)
                      <= corresponding_classfile_version (target_version))
                 {
-                  /* "$JAVAC -target $target_version -source $source_version"
+                  /* "$JAVAC -target $target_version -source $source_version_for_javac"
                      compiled conftest.java successfully.  */
                   resultp->source_option = true;
                   resultp->target_option = true;
@@ -1805,7 +1885,9 @@ is_javac_present (void)
    -target option.
    Return a failure indicator (true upon error).  */
 static bool
-is_javac_usable (const char *source_version, const char *target_version,
+is_javac_usable (const char *source_version,
+                 const char *source_version_for_javac,
+                 const char *target_version,
                  bool *usablep, bool *source_option_p, bool *target_option_p)
 {
   /* The cache depends on the source_version and target_version.  */
@@ -1850,7 +1932,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
       java_sources[0] = conftest_file_name;
       if (!compile_using_javac (java_sources, 1,
-                                false, source_version,
+                                false, source_version_for_javac,
                                 false, target_version,
                                 tmpdir->dir_name, false, false, false, true)
           && stat (compiled_file_name, &statbuf) >= 0
@@ -1863,7 +1945,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
           java_sources[0] = conftest_file_name;
           if (!compile_using_javac (java_sources, 1,
-                                    true, source_version,
+                                    true, source_version_for_javac,
                                     false, target_version,
                                     tmpdir->dir_name, false, false, false, true)
               && stat (compiled_file_name, &statbuf) >= 0
@@ -1896,7 +1978,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
                   java_sources[0] = conftest_file_name;
                   if (!compile_using_javac (java_sources, 1,
-                                            false, source_version,
+                                            false, source_version_for_javac,
                                             false, target_version,
                                             tmpdir->dir_name,
                                             false, false, false, true)
@@ -1906,13 +1988,13 @@ is_javac_usable (const char *source_version, const char *target_version,
 
                       java_sources[0] = conftest_file_name;
                       if (compile_using_javac (java_sources, 1,
-                                               true, source_version,
+                                               true, source_version_for_javac,
                                                false, target_version,
                                                tmpdir->dir_name,
                                                false, false, false, true))
                         /* javac compiled conftestfail.java successfully, and
-                           "javac -source $source_version" rejects it.  So the
-                           -source option is useful.  */
+                           "javac -source $source_version_for_javac" rejects it.
+                           So the -source option is useful.  */
                         resultp->source_option = true;
                     }
                 }
@@ -1928,7 +2010,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
           java_sources[0] = conftest_file_name;
           if (!compile_using_javac (java_sources, 1,
-                                    false, source_version,
+                                    false, source_version_for_javac,
                                     true, target_version,
                                     tmpdir->dir_name,
                                     false, false, false, true)
@@ -1943,7 +2025,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
               java_sources[0] = conftest_file_name;
               if (!compile_using_javac (java_sources, 1,
-                                        true, source_version,
+                                        true, source_version_for_javac,
                                         true, target_version,
                                         tmpdir->dir_name,
                                         false, false, false, true)
@@ -1978,7 +2060,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
                       java_sources[0] = conftest_file_name;
                       if (!compile_using_javac (java_sources, 1,
-                                                false, source_version,
+                                                false, source_version_for_javac,
                                                 true, target_version,
                                                 tmpdir->dir_name,
                                                 false, false, false, true)
@@ -1988,13 +2070,13 @@ is_javac_usable (const char *source_version, const char *target_version,
 
                           java_sources[0] = conftest_file_name;
                           if (compile_using_javac (java_sources, 1,
-                                                   true, source_version,
+                                                   true, source_version_for_javac,
                                                    true, target_version,
                                                    tmpdir->dir_name,
                                                    false, false, false, true))
                             /* "javac -target $target_version" compiled
                                conftestfail.java successfully, and
-                               "javac -target $target_version -source $source_version"
+                               "javac -target $target_version -source $source_version_for_javac"
                                rejects it.  So the -source option is useful.  */
                             resultp->source_option = true;
                         }
@@ -2013,7 +2095,7 @@ is_javac_usable (const char *source_version, const char *target_version,
 
               java_sources[0] = conftest_file_name;
               if (!compile_using_javac (java_sources, 1,
-                                        true, source_version,
+                                        true, source_version_for_javac,
                                         true, target_version,
                                         tmpdir->dir_name,
                                         false, false, false, true)
@@ -2021,7 +2103,7 @@ is_javac_usable (const char *source_version, const char *target_version,
                   && get_classfile_version (compiled_file_name)
                      <= corresponding_classfile_version (target_version))
                 {
-                  /* "javac -target $target_version -source $source_version"
+                  /* "javac -target $target_version -source $source_version_for_javac"
                      compiled conftest.java successfully.  */
                   resultp->source_option = true;
                   resultp->target_option = true;
@@ -2092,9 +2174,13 @@ compile_java_class (const char * const *java_sources,
         bool target_option = false;
         bool fsource_option = false;
         bool ftarget_option = false;
+        const char *source_version_for_javac;
 
         if (target_version == NULL)
           target_version = default_target_version ();
+
+        source_version_for_javac =
+          get_source_version_for_javac (source_version, target_version);
 
         if (is_envjavac_gcj (javac))
           {
@@ -2142,7 +2228,9 @@ compile_java_class (const char * const *java_sources,
           {
             /* It's not gcj.  Assume the classfile versions are correct.  */
             if (is_envjavac_nongcj_usable (javac,
-                                           source_version, target_version,
+                                           source_version,
+                                           source_version_for_javac,
+                                           target_version,
                                            &usable,
                                            &source_option, &target_option))
               {
@@ -2166,7 +2254,7 @@ compile_java_class (const char * const *java_sources,
                : xasprintf ("%s%s%s%s%s%s%s%s%s",
                             javac,
                             source_option ? " -source " : "",
-                            source_option ? source_version : "",
+                            source_option ? source_version_for_javac : "",
                             target_option ? " -target " : "",
                             target_option ? target_version : "",
                             fsource_option ? " -fsource=" : "",
@@ -2275,11 +2363,16 @@ compile_java_class (const char * const *java_sources,
       bool usable = false;
       bool source_option = false;
       bool target_option = false;
+      const char *source_version_for_javac;
 
       if (target_version == NULL)
         target_version = default_target_version ();
 
-      if (is_javac_usable (source_version, target_version,
+      source_version_for_javac =
+        get_source_version_for_javac (source_version, target_version);
+
+      if (is_javac_usable (source_version, source_version_for_javac,
+                           target_version,
                            &usable, &source_option, &target_option))
         {
           err = true;
@@ -2299,7 +2392,7 @@ compile_java_class (const char * const *java_sources,
                            verbose);
 
           err = compile_using_javac (java_sources, java_sources_count,
-                                     source_option, source_version,
+                                     source_option, source_version_for_javac,
                                      target_option, target_version,
                                      directory, optimize, debug, verbose,
                                      false);

@@ -1,6 +1,6 @@
 /* Provide a working getlogin for systems which lack it.
 
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible, 2010.  */
 
@@ -22,7 +22,7 @@
 /* Specification.  */
 #include <unistd.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif
@@ -30,7 +30,7 @@
 char *
 getlogin (void)
 {
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   static char login_name[1024];
   DWORD sz = sizeof (login_name);
 

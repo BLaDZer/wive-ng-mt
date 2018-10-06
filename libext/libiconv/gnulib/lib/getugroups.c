@@ -1,6 +1,6 @@
 /* getugroups.c -- return a list of the groups a user is in
 
-   Copyright (C) 1990-1991, 1998-2000, 2003-2011 Free Software Foundation, Inc.
+   Copyright (C) 1990-1991, 1998-2000, 2003-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by David MacKenzie. */
 
@@ -27,10 +27,13 @@
 #include <string.h>
 #include <unistd.h>
 
-#if !HAVE_GRP_H
+#if !HAVE_GRP_H || defined __ANDROID__
 
 /* Mingw lacks all things related to group management.  The best we
-   can do is fail with ENOSYS.  */
+   can do is fail with ENOSYS.
+
+   Bionic declares e.g. getgrent() in <grp.h> but it isn't actually
+   defined in the library.  */
 
 int
 getugroups (int maxcount _GL_UNUSED,
@@ -47,7 +50,7 @@ getugroups (int maxcount _GL_UNUSED,
 
 # define STREQ(a, b) (strcmp (a, b) == 0)
 
-/* Like `getgroups', but for user USERNAME instead of for the current
+/* Like 'getgroups', but for user USERNAME instead of for the current
    process.  Store at most MAXCOUNT group IDs in the GROUPLIST array.
    If GID is not -1, store it first (if possible).  GID should be the
    group ID (pw_gid) obtained from getpwuid, in case USERNAME is not

@@ -1,4 +1,4 @@
-/* Copyright (C) 1992-1998, 2000, 2002-2003, 2009-2011 Free Software
+/* Copyright (C) 1992-1998, 2000, 2002-2003, 2009-2018 Free Software
    Foundation, Inc.
    This file is part of the GNU C Library.
 
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -27,17 +26,21 @@
 # include <bits/libc-lock.h>
 #endif
 
-#if ! defined __builtin_expect && __GNUC__ < 3
-# define __builtin_expect(expr, expected) (expr)
-#endif
-
 #undef select
 
 #ifndef _D_EXACT_NAMLEN
 # define _D_EXACT_NAMLEN(d) strlen ((d)->d_name)
 #endif
 #ifndef _D_ALLOC_NAMLEN
-# define _D_ALLOC_NAMLEN(d) (_D_EXACT_NAMLEN (d) + 1)
+# ifndef __KLIBC__
+#  define _D_ALLOC_NAMLEN(d) (_D_EXACT_NAMLEN (d) + 1)
+# else
+/* On OS/2 kLIBC, d_name is not the last field of struct dirent. See
+   <https://trac.netlabs.org/libc/browser/branches/libc-0.6/src/emx/include/sys/dirent.h#L68>.  */
+#  include <stddef.h>
+#  define _D_ALLOC_NAMLEN(d) (sizeof (struct dirent) - \
+                              offsetof (struct dirent, d_name))
+# endif
 #endif
 
 #if _LIBC
@@ -90,10 +93,19 @@ cancel_handler (void *arg)
 
 
 int
+#ifndef __KLIBC__
 SCANDIR (const char *dir,
          DIRENT_TYPE ***namelist,
          int (*select) (const DIRENT_TYPE *),
          int (*cmp) (const DIRENT_TYPE **, const DIRENT_TYPE **))
+#else
+/* On OS/2 kLIBC, scandir() declaration is different from POSIX. See
+   <https://trac.netlabs.org/libc/browser/branches/libc-0.6/src/emx/include/dirent.h#L141>.  */
+SCANDIR (const char *dir,
+         DIRENT_TYPE ***namelist,
+         int (*select) (DIRENT_TYPE *),
+         int (*cmp) (const void *, const void *))
+#endif
 {
   DIR *dp = __opendir (dir);
   DIRENT_TYPE **v = NULL;

@@ -1,5 +1,5 @@
 /* Test of glob/globfree functions.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Simon Josefsson <simon@josefsson.org>, 2009.  */
 
@@ -25,10 +25,13 @@ SIGNATURE_CHECK (glob, int, (char const *, int, int (*) (char const *, int),
                              glob_t *));
 SIGNATURE_CHECK (globfree, void, (glob_t *));
 
+#include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "macros.h"
 
+#define BASE "test-glob.t"
 #define GL_NO_SUCH_FILE "/gnulib-magic-does-not-exist"
 
 int
@@ -36,11 +39,6 @@ main ()
 {
   int res;
   glob_t g;
-
-  /* Make sure glob_t struct members exists. */
-  ASSERT (sizeof (g.gl_pathc));
-  ASSERT (sizeof (g.gl_pathv));
-  ASSERT (sizeof (g.gl_offs));
 
   res = glob (".", 0, NULL, &g);
   ASSERT (res == 0 && g.gl_pathc == 1);
@@ -72,6 +70,22 @@ main ()
   ASSERT (res == 0 && g.gl_pathc == 1);
   ASSERT (strcmp (g.gl_pathv[0], GL_NO_SUCH_FILE) == 0);
   globfree (&g);
+
+  if ((symlink (GL_NO_SUCH_FILE, BASE "globlink1") == 0 || errno == EEXIST)
+      && (symlink (".", BASE "globlink2") == 0 || errno == EEXIST))
+    {
+      res = glob (BASE "globlink[12]", 0, NULL, &g);
+      ASSERT (res == 0 && g.gl_pathc == 2);
+      ASSERT (strcmp (g.gl_pathv[0], BASE "globlink1") == 0);
+      ASSERT (strcmp (g.gl_pathv[1], BASE "globlink2") == 0);
+      globfree (&g);
+
+      res = glob (BASE "globlink[12]", GLOB_MARK, NULL, &g);
+      ASSERT (res == 0 && g.gl_pathc == 2);
+      ASSERT (strcmp (g.gl_pathv[0], BASE "globlink1") == 0);
+      ASSERT (strcmp (g.gl_pathv[1], BASE "globlink2/") == 0);
+      globfree (&g);
+    }
 
   return 0;
 }

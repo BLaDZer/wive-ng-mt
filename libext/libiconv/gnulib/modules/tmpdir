@@ -7,8 +7,10 @@ lib/tmpdir.c
 m4/tmpdir.m4
 
 Depends-on:
+secure_getenv
 stdbool
 sys_stat
+pathmax
 
 configure.ac:
 gt_TMPDIR
@@ -23,5 +25,4 @@ License:
 LGPL
 
 Maintainer:
-Bruno Haible
-
+all

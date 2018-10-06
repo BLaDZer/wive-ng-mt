@@ -1,5 +1,5 @@
 /* Test of safe automatic memory allocation.
-   Copyright (C) 2005, 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005, 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2005.  */
 
@@ -45,7 +45,7 @@ main ()
     {
       /* Try various values.
          n = 0 gave a crash on Alpha with gcc-2.5.8.
-         Some versions of MacOS X have a stack size limit of 512 KB.  */
+         Some versions of Mac OS X have a stack size limit of 512 KB.  */
       func (34);
       func (134);
       func (399);

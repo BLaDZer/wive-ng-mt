@@ -1,6 +1,6 @@
 /* yesno.c -- read a yes/no response from stdin
 
-   Copyright (C) 1990, 1998, 2001, 2003-2011 Free Software Foundation, Inc.
+   Copyright (C) 1990, 1998, 2001, 2003-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -42,7 +42,10 @@ yesno (void)
     yes = false;
   else
     {
-      response[response_len - 1] = '\0';
+      /* Remove EOL if present as that's not part of the matched response,
+         and not matched by $ for example.  */
+      if (response[response_len - 1] == '\n')
+        response[response_len - 1] = '\0';
       yes = (0 < rpmatch (response));
     }
 

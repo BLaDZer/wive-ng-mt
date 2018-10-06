@@ -1,5 +1,5 @@
 /* Test of rounding towards negative infinity.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,14 +12,17 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 #include <math.h>
 
 #include "fpucw.h"
+#include "isnanl-nolibm.h"
 #include "minus-zero.h"
+#include "infinity.h"
+#include "nan.h"
 #include "macros.h"
 
 int
@@ -43,6 +46,14 @@ main ()
   /* Negative numbers.  */
   ASSERT (!!signbit (floorl (-0.3L)) == !!signbit (minus_zerol));
   ASSERT (!!signbit (floorl (-0.7L)) == !!signbit (minus_zerol));
+
+  /* [MX] shaded specification in POSIX.  */
+
+  /* NaN.  */
+  ASSERT (isnanl (floorl (NaNl ())));
+  /* Infinity.  */
+  ASSERT (floorl (Infinityl ()) == Infinityl ());
+  ASSERT (floorl (- Infinityl ()) == - Infinityl ());
 
   return 0;
 }

@@ -10,11 +10,9 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-glibc 2.3.6, MacOS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8,
-AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 10, Cygwin 1.5.x, mingw,
-Interix 3.5, BeOS.
+glibc 2.3.6, Mac OS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 10, Cygwin 1.5.x, mingw, MSVC 14, Interix 3.5, BeOS, Android 4.3.
 However, the replacement function may end up truncating timestamps to
-less resolution than supported by the file system.
+worse resolution than supported by the file system.
 @item
 This function returns a bogus value instead of failing with
 @code{ENOSYS} on some platforms:
@@ -27,7 +25,7 @@ Linux kernel 2.6.25.
 @item
 When using @code{UTIME_OMIT} for the modification time, but specifying
 an access time, some systems fail to update the change time:
-Linux kernel 2.6.32.
+Linux kernel 2.6.32, Solaris 11.1.
 @item
 Passing @code{AT_FDCWD} as the fd argument does not properly fail with
 @code{EBADF} on some systems:

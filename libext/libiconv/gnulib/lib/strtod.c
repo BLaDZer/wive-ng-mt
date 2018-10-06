@@ -1,4 +1,4 @@
-/* Copyright (C) 1991-1992, 1997, 1999, 2003, 2006, 2008-2011 Free Software
+/* Copyright (C) 1991-1992, 1997, 1999, 2003, 2006, 2008-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -30,9 +30,6 @@
 
 #ifndef HAVE_LDEXP_IN_LIBC
 #define HAVE_LDEXP_IN_LIBC 0
-#endif
-#ifndef HAVE_RAW_DECL_STRTOD
-#define HAVE_RAW_DECL_STRTOD 0
 #endif
 
 /* Return true if C is a space in the current locale, avoiding
@@ -149,7 +146,7 @@ parse_number (const char *nptr,
       else
         {
           /* The value of the digit doesn't matter, since we have already
-             gotten as many digits as can be represented in a `double'.
+             gotten as many digits as can be represented in a 'double'.
              This doesn't necessarily mean the result will overflow.
              The exponent may reduce it to within range.
 
@@ -193,7 +190,7 @@ static double underlying_strtod (const char *, char **);
 /* HP cc on HP-UX 10.20 has a bug with the constant expression -0.0.
    ICC 10.0 has a bug when optimizing the expression -zero.
    The expression -DBL_MIN * DBL_MIN does not work when cross-compiling
-   to PowerPC on MacOS X 10.5.  */
+   to PowerPC on Mac OS X 10.5.  */
 #if defined __hpux || defined __sgi || defined __ICC
 static double
 compute_minus_zero (void)
@@ -218,7 +215,7 @@ strtod (const char *nptr, char **endptr)
   const char *s = nptr;
   const char *end;
   char *endbuf;
-  int saved_errno;
+  int saved_errno = errno;
 
   /* Eat whitespace.  */
   while (locale_isspace (*s))
@@ -229,7 +226,6 @@ strtod (const char *nptr, char **endptr)
   if (*s == '-' || *s == '+')
     ++s;
 
-  saved_errno = errno;
   num = underlying_strtod (s, &endbuf);
   end = endbuf;
 
@@ -242,7 +238,12 @@ strtod (const char *nptr, char **endptr)
       if (*s == '0' && c_tolower (s[1]) == 'x')
         {
           if (! c_isxdigit (s[2 + (s[2] == '.')]))
-            end = s + 1;
+            {
+              end = s + 1;
+
+              /* strtod() on z/OS returns ERANGE for "0x".  */
+              errno = saved_errno;
+            }
           else if (end <= s + 2)
             {
               num = parse_number (s + 2, 16, 2, 4, 'p', &endbuf);
@@ -324,7 +325,7 @@ strtod (const char *nptr, char **endptr)
          better to use the underlying implementation's result, since a
          nice implementation populates the bits of the NaN according
          to interpreting n-char-sequence as a hexadecimal number.  */
-      if (s != end)
+      if (s != end || num == num)
         num = NAN;
       errno = saved_errno;
     }
@@ -344,24 +345,11 @@ strtod (const char *nptr, char **endptr)
   return negative ? -num : num;
 }
 
-/* The "underlying" strtod implementation.  This must be defined
+/* The underlying strtod implementation.  This must be defined
    after strtod because it #undefs strtod.  */
 static double
 underlying_strtod (const char *nptr, char **endptr)
 {
-  if (HAVE_RAW_DECL_STRTOD)
-    {
-      /* Prefer the native strtod if available.  Usually it should
-         work and it should give more-accurate results than our
-         approximation.  */
-      #undef strtod
-      return strtod (nptr, endptr);
-    }
-  else
-    {
-      /* Approximate strtod well enough for this module.  There's no
-         need to handle anything but finite unsigned decimal
-         numbers with nonnull ENDPTR.  */
-      return parse_number (nptr, 10, 10, 1, 'e', endptr);
-    }
+#undef strtod
+  return strtod (nptr, endptr);
 }

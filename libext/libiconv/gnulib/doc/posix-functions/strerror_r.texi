@@ -10,10 +10,10 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-NetBSD 3.0, Minix 3.1.8, HP-UX 11.23, IRIX 6.5, Solaris 9, mingw.
+NetBSD 3.0, Minix 3.1.8, HP-UX 11.23, IRIX 6.5, Solaris 9, mingw, MSVC 14.
 @item
-glibc and Cygwin have an incompatible version of this function.  The
-POSIX compliant code
+glibc, Cygwin, and Android have an incompatible version of this function.
+The POSIX compliant code
 @smallexample
 char *s = (strerror_r (err, buf, buflen) == 0 ? buf : NULL);
 @end smallexample
@@ -32,12 +32,16 @@ The third argument is of type @code{int} instead of @code{size_t} on some
 platforms:
 AIX 5.1, OSF/1 5.1.
 @item
-When this function fails, it returns -1 and sets @code{errno}, instead of
+When this function fails, it returns @minus{}1 and sets @code{errno}, instead of
 returning the error number, on some platforms:
 glibc 2.12 with @code{-D_POSIX_C_SOURCE=200112L}, AIX 6.1, OSF/1 5.1.
 @item
 When this function fails, it corrupts @code{errno}, on some platforms:
 Solaris 10.
+@item
+This function does not support many error values defined in @code{<errno.h>} on
+some platforms:
+MSVC 14.
 @item
 This function does not support the error values that are specified by POSIX
 but not defined by the system, on some platforms:
@@ -49,7 +53,7 @@ FreeBSD 8.2.
 @item
 This function produces a different string for @code{0} than
 @code{strerror} on some platforms:
-MacOS X 10.5.
+Mac OS X 10.5.
 @item
 This function always fails when the third argument is less than 80 on some
 platforms:
@@ -58,7 +62,7 @@ HP-UX 11.31.
 When the buffer is too small and the value is in range, this function
 does not fail, but instead truncates the result and returns 0 on some
 platforms:
-AIX 6.1, OSF/1 5.1.
+AIX 6.1, OSF/1 5.1, Haiku 2017.
 @item
 When the value is not in range or the buffer is too small, this
 function fails to leave a NUL-terminated string in the buffer on some

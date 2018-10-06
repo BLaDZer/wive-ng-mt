@@ -1,5 +1,5 @@
-/* Word breaks in UTF-8/UTF-16/UTF-32 strings.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+/* Word breaks in UTF-8/UTF-16/UTF-32 strings.  -*- coding: utf-8 -*-
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 void
 FUNC (const UNIT *s, size_t n, char *p)
@@ -39,6 +39,8 @@ FUNC (const UNIT *s, size_t n, char *p)
          -1 at the very beginning of the string.  */
       int secondlast_compchar_prop = -1;
 
+      size_t ri_count = 0;
+
       /* Don't break inside multibyte characters.  */
       memset (p, 0, n);
 
@@ -51,60 +53,82 @@ FUNC (const UNIT *s, size_t n, char *p)
           /* No break at the start of the string.  */
           if (last_char_prop >= 0)
             {
-              /* No break between CR and LF.  */
+              /* No break between CR and LF (WB3).  */
               if (last_char_prop == WBP_CR && prop == WBP_LF)
                 /* *p = 0 */;
-              /* Break before and after newlines.  */
-              else if (last_char_prop >= WBP_NEWLINE
-                       /* same as:
-                          last_char_prop == WBP_CR
-                          || last_char_prop == WBP_LF
-                          || last_char_prop == WBP_NEWLINE */
-                       || prop >= WBP_NEWLINE
-                          /* same as:
-                             prop == WBP_CR
-                             || prop == WBP_LF
-                             || prop == WBP_NEWLINE */)
+              /* Break before and after newlines (WB3a, WB3b).  */
+              else if ((last_char_prop == WBP_CR
+                        || last_char_prop == WBP_LF
+                        || last_char_prop == WBP_NEWLINE)
+                       || (prop == WBP_CR
+                           || prop == WBP_LF
+                           || prop == WBP_NEWLINE))
                 *p = 1;
+              /* No break within emoji zwj sequence (WB3c).  */
+              else if (last_char_prop == WBP_ZWJ &&
+                       (prop == WBP_GAZ || prop == WBP_EBG))
+                /* *p = 0 */;
               /* Ignore Format and Extend characters.  */
-              else if (!(prop == WBP_EXTEND || prop == WBP_FORMAT))
+              else if (!(prop == WBP_EXTEND || prop == WBP_FORMAT || prop == WBP_ZWJ))
                 {
                   /* No break in these situations (see UAX #29):
 
                       secondlast          last             current
 
-                       ALetter   (MidLetter | MidNumLet) × ALetter      (WB7)
-                       ALetter × (MidLetter | MidNumLet)   ALetter      (WB6)
-                       Numeric   (MidNum | MidNumLet)    × Numeric      (WB11)
-                       Numeric × (MidNum | MidNumLet)      Numeric      (WB12)
-                                                 ALetter × ALetter      (WB5)
-                                                 ALetter × Numeric      (WB9)
-                                                 Numeric × ALetter      (WB10)
-                                                 Numeric × Numeric      (WB8)
-                                                Katakana × Katakana     (WB13)
-                          (ALetter | Numeric | Katakana) × ExtendNumLet (WB13a)
-                                            ExtendNumLet × ExtendNumLet (WB13a)
-                         ExtendNumLet × (ALetter | Numeric | Katakana)  (WB13b)
+    (ALetter | HL)   (MidLetter | MidNumLet | SQ) × (ALetter | HL)      (WB7)
+    (ALetter | HL) × (MidLetter | MidNumLet | SQ)   (ALetter | HL)      (WB6)
+                  Numeric   (MidNum | MidNumLet | SQ)    × Numeric      (WB11)
+                  Numeric × (MidNum | MidNumLet | SQ)      Numeric      (WB12)
+                                                        HL × DQ HL      (WB7b)
+                                                        HL DQ × HL      (WB7c)
+                                                ^ (RI RI)* RI × RI      (WB15)
+                                            [^RI] (RI RI)* RI × RI      (WB16)
                    */
                   /* No break across certain punctuation.  Also, disable word
                      breaks that were recognized earlier (due to lookahead of
                      only one complex character).  */
-                  if ((prop == WBP_ALETTER
+                  if (((prop == WBP_ALETTER
+                        || prop == WBP_HL)
                        && (last_compchar_prop == WBP_MIDLETTER
-                           || last_compchar_prop == WBP_MIDNUMLET)
-                       && secondlast_compchar_prop == WBP_ALETTER)
+                           || last_compchar_prop == WBP_MIDNUMLET
+                           || last_compchar_prop == WBP_SQ)
+                       && (secondlast_compchar_prop == WBP_ALETTER
+                           || secondlast_compchar_prop == WBP_HL))
                       || (prop == WBP_NUMERIC
                           && (last_compchar_prop == WBP_MIDNUM
-                              || last_compchar_prop == WBP_MIDNUMLET)
-                          && secondlast_compchar_prop == WBP_NUMERIC))
+                              || last_compchar_prop == WBP_MIDNUMLET
+                              || last_compchar_prop == WBP_SQ)
+                          && secondlast_compchar_prop == WBP_NUMERIC)
+                      || (prop == WBP_HL
+                          && last_compchar_prop == WBP_DQ
+                          && secondlast_compchar_prop == WBP_HL))
                     {
                       *last_compchar_ptr = 0;
                       /* *p = 0; */
                     }
+                  /* Break before RI, if odd number of RI's are
+                     preceding (WB15, WB16).  */
+                  else if (last_compchar_prop == WBP_RI && prop == WBP_RI)
+                    {
+                      if (ri_count % 2 == 0)
+                        *p = 1;
+                      /* else *p = 0 */
+                    }
+                  /* Break after Format and Extend character.  */
+                  else if (last_compchar_prop == WBP_EXTEND
+                           || last_compchar_prop == WBP_FORMAT)
+                    *p = 1;
                   else
                     {
+                      int last_compchar_index =
+                        uniwbrk_prop_index[last_compchar_prop];
+                      int index = uniwbrk_prop_index[prop];
+
+                      /* Break between unknown pair (WB999).  */
+                      if (last_compchar_index < 0 || index < 0)
+                        *p = 1;
                       /* Perform a single table lookup.  */
-                      if (uniwbrk_table[last_compchar_prop][prop])
+                      else if (uniwbrk_table[last_compchar_index][index])
                         *p = 1;
                       /* else *p = 0; */
                     }
@@ -112,12 +136,23 @@ FUNC (const UNIT *s, size_t n, char *p)
             }
 
           last_char_prop = prop;
-          /* Ignore Format and Extend characters, except at the start of the string.  */
-          if (last_compchar_prop < 0 || !(prop == WBP_EXTEND || prop == WBP_FORMAT))
+
+          /* Ignore Format and Extend characters, except at the
+             start of the line.  */
+          if (last_compchar_prop < 0
+              || last_compchar_prop == WBP_CR
+              || last_compchar_prop == WBP_LF
+              || last_compchar_prop == WBP_NEWLINE
+              || !(prop == WBP_EXTEND || prop == WBP_FORMAT || prop == WBP_ZWJ))
             {
               secondlast_compchar_prop = last_compchar_prop;
               last_compchar_prop = prop;
               last_compchar_ptr = p;
+
+              if (prop == WBP_RI)
+                ri_count++;
+              else
+                ri_count = 0;
             }
 
           s += count;

@@ -18,12 +18,24 @@
 /* Specification.  */
 #include <math.h>
 
-/* sinl(x)
- * Return sine function of x.
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+cosl (long double x)
+{
+  return cos (x);
+}
+
+#else
+
+/* Code based on glibc/sysdeps/ieee754/ldbl-128/s_cosl.c.  */
+
+/* cosl(x)
+ * Return cosine function of x.
  *
  * kernel function:
  *      __kernel_sinl           ... sine function on [-pi/4,pi/4]
- *      __kernel_cosl           ... cose function on [-pi/4,pi/4]
+ *      __kernel_cosl           ... cosine function on [-pi/4,pi/4]
  *      __ieee754_rem_pio2l     ... argument reduction routine
  *
  * Method.
@@ -49,7 +61,7 @@
  *      TRIG(x) returns trig(x) nearly rounded
  */
 
-#include "trigl.h"
+# include "trigl.h"
 
 long double
 cosl (long double x)
@@ -87,6 +99,8 @@ cosl (long double x)
         }
     }
 }
+
+#endif
 
 #if 0
 int

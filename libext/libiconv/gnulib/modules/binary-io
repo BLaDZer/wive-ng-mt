@@ -3,14 +3,16 @@ Binary mode I/O.
 
 Files:
 lib/binary-io.h
+lib/binary-io.c
 
 Depends-on:
+extern-inline
 fcntl-h
 
 configure.ac:
 
 Makefile.am:
-lib_SOURCES += binary-io.h
+lib_SOURCES += binary-io.h binary-io.c
 
 Include:
 "binary-io.h"
@@ -19,5 +21,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

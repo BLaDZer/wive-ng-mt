@@ -10,6 +10,7 @@ diffseq
 lock
 tls
 minmax
+stdint
 xalloc
 
 configure.ac:
@@ -24,5 +25,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible
-
+all

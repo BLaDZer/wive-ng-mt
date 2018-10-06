@@ -1,5 +1,5 @@
 /* Test of execution of file name canonicalization.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -30,15 +30,11 @@
 
 #include "same-inode.h"
 #include "ignore-value.h"
+
+#include "null-ptr.h"
 #include "macros.h"
 
 #define BASE "t-can.tmp"
-
-static void *
-null_ptr (void)
-{
-  return NULL;
-}
 
 int
 main (void)
@@ -80,6 +76,9 @@ main (void)
     ASSERT (errno == EINVAL);
     errno = 0;
     result2 = canonicalize_filename_mode (NULL, CAN_EXISTING);
+    ASSERT (result2 == NULL);
+    ASSERT (errno == EINVAL);
+    result2 = canonicalize_filename_mode (".", CAN_MISSING | CAN_ALL_BUT_LAST);
     ASSERT (result2 == NULL);
     ASSERT (errno == EINVAL);
   }
@@ -133,6 +132,15 @@ main (void)
   ASSERT (close (creat (BASE "/d/2", 0600)) == 0);
   ASSERT (symlink ("../s/2", BASE "/d/1") == 0);
   ASSERT (symlink ("//.//../..", BASE "/droot") == 0);
+
+  /* Check that symbolic links are not resolved, with CAN_NOLINKS.  */
+  {
+    char *result1 = canonicalize_filename_mode (BASE "/huk", CAN_NOLINKS);
+    ASSERT (result1 != NULL);
+    ASSERT (strcmp (result1 + strlen (result1) - strlen ("/" BASE "/huk"),
+                    "/" BASE "/huk") == 0);
+    free (result1);
+  }
 
   /* Check that the symbolic link to a file can be resolved.  */
   {

@@ -1,5 +1,5 @@
 /* Test program for tsearch et al.
-   Copyright (C) 1997, 2000-2001, 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 1997, 2000-2001, 2007-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software: you can redistribute it and/or
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -33,6 +33,8 @@ SIGNATURE_CHECK (twalk, void, (void const *,
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "macros.h"
 
 #define SEED 0
 #if HAVE_TSEARCH
@@ -75,7 +77,7 @@ static int error = 0;
 /* The keys we add to the tree.  */
 static int x[SIZE];
 
-/* Pointers into the key array, possibly permutated, to define an order
+/* Pointers into the key array, possibly permuted, to define an order
    for insertion/removal.  */
 static int y[SIZE];
 
@@ -234,7 +236,7 @@ mangle_tree (enum order how, enum action what, void **root, int lag)
             break;
 
           j = k;
-          /* fall through */
+          FALLTHROUGH;
 
         case delete:
           elem = tfind (x + j, (void *const *) root, cmp_fn);

@@ -8,7 +8,7 @@ Depends-on:
 unictype/base
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9], [unictype/syntax-c-whitespace])
+gl_LIBUNISTRING_MODULE([0.9.8], [unictype/syntax-c-whitespace])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNICTYPE_SYNTAX_C_WHITESPACE
@@ -19,8 +19,7 @@ Include:
 "unictype.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Bruno Haible
-
+all

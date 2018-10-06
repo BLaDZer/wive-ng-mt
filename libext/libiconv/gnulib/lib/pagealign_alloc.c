@@ -1,6 +1,6 @@
 /* Memory allocation aligned to system page boundaries.
 
-   Copyright (C) 2005-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2005-2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Derek R. Price <derek@ximbiot.com>.  */
 
@@ -47,11 +47,6 @@
 #  define MAP_FAILED ((void *)-1)
 # endif
 #endif
-
-/* The results of open() in this file are not used with fchdir,
-   therefore save some unnecessary work in fchdir.c.  */
-#undef open
-#undef close
 
 
 #if HAVE_MMAP || ! HAVE_POSIX_MEMALIGN
@@ -123,6 +118,9 @@ void *
 pagealign_alloc (size_t size)
 {
   void *ret;
+  /* We prefer the mmap() approach over the posix_memalign() or malloc()
+     based approaches, since the latter often waste an entire memory page
+     per call.  */
 #if HAVE_MMAP
 # ifdef HAVE_MAP_ANONYMOUS
   const int fd = -1;

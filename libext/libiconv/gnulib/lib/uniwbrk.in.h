@@ -1,5 +1,5 @@
 /* Word breaks in Unicode strings.
-   Copyright (C) 2001-2003, 2005-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2005-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _UNIWBRK_H
 #define _UNIWBRK_H
@@ -49,12 +49,22 @@ enum
   WBP_MIDLETTER    = 4,
   WBP_MIDNUM       = 5,
   WBP_NUMERIC      = 6,
-  WBP_EXTENDNUMLET = 7
+  WBP_EXTENDNUMLET = 7,
+  WBP_RI           = 13,
+  WBP_DQ           = 14,
+  WBP_SQ           = 15,
+  WBP_HL           = 16,
+  WBP_ZWJ          = 17,
+  WBP_EB           = 18,
+  WBP_EM           = 19,
+  WBP_GAZ          = 20,
+  WBP_EBG          = 21
 };
 
 /* Return the Word_Break property of a Unicode character.  */
 extern int
-       uc_wordbreak_property (ucs4_t uc);
+       uc_wordbreak_property (ucs4_t uc)
+       _UC_ATTRIBUTE_CONST;
 
 /* ========================================================================= */
 

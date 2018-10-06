@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2002-2008, 2010-2011 Free Software Foundation, Inc.
+# Copyright (C) 2002-2008, 2010-2018 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
 progname=$0
@@ -24,9 +24,14 @@ package=gnulib
 func_usage ()
 {
   echo "\
-Usage: posix-modules
+Usage: posix-modules [option]
 
 Lists the gnulib modules that implement POSIX interfaces.
+
+Options:
+
+      --for-mingw           list only modules that work on mingw
+      --for-msvc            list only modules that work on MSVC
 
 Report bugs to <bug-gnulib@gnu.org>."
 }
@@ -52,25 +57,15 @@ q
     date=`date -d "$date" -u +"%Y-%m-%d %H:%M:%S"`
     version=' '`cd "$gnulib_dir" && ./build-aux/git-version-gen /dev/null | sed -e 's/-dirty/-modified/'`
   else
-    if test -d "$gnulib_dir"/CVS \
-       && (cvs --version) >/dev/null 2>/dev/null; then
-      # gnulib checked out from CVS.
-      sed_extract_first_date='/^date: /{
-s/^date: \([0-9][0-9][0-9][0-9]\).\([0-9][0-9]\).\([0-9][0-9]\) \([0-9][0-9]:[0-9][0-9]:[0-9][0-9]\).*/\1-\2-\3 \4/p
-q
-}'
-      date=`cd "$gnulib_dir" && cvs log -N ChangeLog 2>/dev/null | sed -n -e "$sed_extract_first_date"`
-    else
-      # gnulib copy without versioning information.
-      date=`sed -e 's/ .*//;q' "$gnulib_dir"/ChangeLog`
-    fi
+    # gnulib copy without versioning information.
+    date=`sed -e 's/ .*//;q' "$gnulib_dir"/ChangeLog`
     version=
   fi
   year=`"$gnulib_dir"/build-aux/mdate-sh "$self_abspathname" | sed 's,^.* ,,'`
   echo "\
 posix-modules (GNU $package $date)$version
 Copyright (C) $year Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 
@@ -227,9 +222,27 @@ else
   }
 fi
 
+# Excludes for mingw.
+exclude_for_mingw=
+# <grp.h> does not exist.
+exclude_for_mingw="$exclude_for_mingw pt_chown grantpt posix_openpt-tests posix_openpt"
+# The functions getuid, getgid, geteuid, getegid don't exist.
+exclude_for_mingw="$exclude_for_mingw faccessat"
+exclude_for_mingw="$exclude_for_mingw fchownat-tests fchownat"
+
+# Excludes for MSVC.
+exclude_for_msvc="$exclude_for_mingw"
+
 # Command-line option processing.
+exclude=
 while test $# -gt 0; do
   case "$1" in
+    --for-mingw | --for-ming | --for-min | --for-mi )
+      exclude="$exclude $exclude_for_mingw"
+      shift ;;
+    --for-msvc | --for-msv | --for-ms )
+      exclude="$exclude $exclude_for_msvc"
+      shift ;;
     --help | --hel | --he | --h )
       func_usage
       exit $? ;;
@@ -248,6 +261,18 @@ while test $# -gt 0; do
 done
 
 func_gnulib_dir
+func_tmpdir
+trap 'exit_status=$?
+      if test "$signal" != 0; then
+        echo "caught signal $signal" >&2
+      fi
+      rm -rf "$tmp"
+      exit $exit_status' 0
+for signal in 1 2 3 13 15; do
+  trap '{ signal='$signal'; func_exit 1; }' $signal
+done
+signal=0
+
 (
   # Get the header modules.
   LC_ALL=C grep -h '^Gnulib module: ' "$gnulib_dir"/doc/posix-headers/*.texi 2>/dev/null \
@@ -260,7 +285,16 @@ func_gnulib_dir
   | { # Then filter out the words "---", "and", "or" and remove *-gnu modules.
       tr ' ' '\012' | sed -e '/^---$/d' -e '/^and$/d' -e '/^or$/d' -e '/-gnu$/d'
     } \
-  | LC_ALL=C sort | LC_ALL=C uniq
+  | LC_ALL=C sort | LC_ALL=C uniq \
+  | { # Then filter out the excludes.
+      if test -n "$exclude"; then
+        for m in $exclude; do echo $m; done | LC_ALL=C sort -u > "$tmp"/excludes
+        LC_ALL=C join -v 1 - "$tmp"/excludes
+        rm -f "$tmp"/excludes
+      else
+        cat
+      fi
+    }
 
 # Local Variables:
 # indent-tabs-mode: nil

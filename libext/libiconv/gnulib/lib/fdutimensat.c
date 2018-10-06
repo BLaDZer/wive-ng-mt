@@ -1,6 +1,6 @@
 /* Set file access and modification times.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake.  */
 
@@ -27,14 +27,14 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-/* Set the access and modification time stamps of FD (a.k.a. FILE) to be
+/* Set the access and modification timestamps of FD (a.k.a. FILE) to be
    TIMESPEC[0] and TIMESPEC[1], respectively; relative to directory DIR.
    FD must be either negative -- in which case it is ignored --
    or a file descriptor that is open on FILE.
    If FD is nonnegative, then FILE can be NULL, which means
    use just futimes (or equivalent) instead of utimes (or equivalent),
    and fail if on an old system without futimes (or equivalent).
-   If TIMESPEC is null, set the time stamps to the current time.
+   If TIMESPEC is null, set the timestamps to the current time.
    ATFLAG is passed to utimensat if FD is negative or futimens was
    unsupported, which can allow operation on FILE as a symlink.
    Return 0 on success, -1 (setting errno) on failure.  */

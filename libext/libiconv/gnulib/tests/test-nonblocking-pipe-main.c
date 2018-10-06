@@ -1,6 +1,6 @@
 /* Test for nonblocking read and write on pipes.
 
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # include <process.h>
 #else
 # include <spawn.h>
@@ -41,11 +41,14 @@
 int
 main (int argc, char *argv[])
 {
-  const char *child_path = argv[1];
-  int test = atoi (argv[2]);
+  const char *child_path;
+  int test;
   int fd[2];
   int child;
   int exitcode;
+
+  child_path = argv[1];
+  test = atoi (argv[2]);
 
   /* Create a pipe.  */
   ASSERT (pipe (fd) >= 0);
@@ -78,7 +81,7 @@ main (int argc, char *argv[])
     child_argv[1] = argv[2];
     child_argv[2] = NULL;
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
     child = spawnvpe (P_NOWAIT, child_path, child_argv,
                       (const char **) environ);
     ASSERT (child >= 0);

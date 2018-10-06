@@ -1,6 +1,6 @@
 /* Test the getaddrinfo module.
 
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Simon Josefsson.  */
 
@@ -22,11 +22,16 @@
 #include <netdb.h>
 
 #include "signature.h"
-SIGNATURE_CHECK (freeaddrinfo, void, (struct addrinfo *));
 SIGNATURE_CHECK (gai_strerror, char const *, (int));
+/* On native Windows, these two functions may have the __stdcall calling
+   convention.  But the SIGNATURE_CHECK works only for functions with __cdecl
+   calling convention.  */
+#if !(defined _WIN32 && !defined __CYGWIN__)
+SIGNATURE_CHECK (freeaddrinfo, void, (struct addrinfo *));
 SIGNATURE_CHECK (getaddrinfo, int, (char const *, char const *,
                                     struct addrinfo const *,
                                     struct addrinfo **));
+#endif
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -114,15 +119,16 @@ simple (char const *host, char const *service)
 
   for (ai = ai0; ai; ai = ai->ai_next)
     {
-      dbgprintf ("\tflags %x\n", ai->ai_flags);
-      dbgprintf ("\tfamily %x\n", ai->ai_family);
-      dbgprintf ("\tsocktype %x\n", ai->ai_socktype);
-      dbgprintf ("\tprotocol %x\n", ai->ai_protocol);
-      dbgprintf ("\taddrlen %ld: ", (unsigned long) ai->ai_addrlen);
+      void *ai_addr = ai->ai_addr;
+      struct sockaddr_in *sock_addr = ai_addr;
+      dbgprintf ("\tflags %x\n", ai->ai_flags + 0u);
+      dbgprintf ("\tfamily %x\n", ai->ai_family + 0u);
+      dbgprintf ("\tsocktype %x\n", ai->ai_socktype + 0u);
+      dbgprintf ("\tprotocol %x\n", ai->ai_protocol + 0u);
+      dbgprintf ("\taddrlen %lu: ", (unsigned long) ai->ai_addrlen);
       dbgprintf ("\tFound %s\n",
                  inet_ntop (ai->ai_family,
-                            &((struct sockaddr_in *)
-                              ai->ai_addr)->sin_addr,
+                            &sock_addr->sin_addr,
                             buf, sizeof (buf) - 1));
       if (ai->ai_canonname)
         dbgprintf ("\tFound %s...\n", ai->ai_canonname);

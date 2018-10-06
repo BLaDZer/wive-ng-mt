@@ -1,25 +1,26 @@
 # Portability macros for glibc argz.                    -*- Autoconf -*-
 #
-#   Copyright (C) 2004-2011 Free Software Foundation, Inc.
+#   Copyright (C) 2004-2018 Free Software Foundation, Inc.
 #   Written by Gary V. Vaughan <gary@gnu.org>
 #
 # This file is free software; the Free Software Foundation gives
 # unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
 
-# serial 10 argz.m4
+# serial 12 argz.m4
 
 AC_DEFUN([gl_FUNC_ARGZ],
 [gl_PREREQ_ARGZ
 
 AC_REQUIRE([AC_C_RESTRICT])
+AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
 
 AC_CHECK_HEADERS([argz.h], [], [], [AC_INCLUDES_DEFAULT])
 
 AC_CHECK_TYPES([error_t],
   [],
   [AC_DEFINE([error_t], [int],
-   [Define to a type to use for `error_t' if it is not otherwise available.])
+   [Define to a type to use for 'error_t' if it is not otherwise available.])
    AC_DEFINE([__error_t_defined], [1], [Define so that glibc/gnulib argp.h
     does not typedef error_t.])],
   [#if defined(HAVE_ARGZ_H)

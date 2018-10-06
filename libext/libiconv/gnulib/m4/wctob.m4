@@ -1,5 +1,5 @@
-# wctob.m4 serial 9
-dnl Copyright (C) 2008-2011 Free Software Foundation, Inc.
+# wctob.m4 serial 11
+dnl Copyright (C) 2008-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -17,7 +17,7 @@ AC_DEFUN([gl_FUNC_WCTOB],
 
     dnl Solaris 9 has the wctob() function but it does not work.
     dnl Cygwin 1.7.2 has the wctob() function but it clobbers caller-owned
-    dnl registers, see <http://cygwin.com/ml/cygwin/2010-05/msg00015.html>.
+    dnl registers, see <https://cygwin.com/ml/cygwin/2010-05/msg00015.html>.
     AC_REQUIRE([AC_PROG_CC])
     AC_REQUIRE([gt_LOCALE_FR])
     AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
@@ -30,6 +30,9 @@ changequote(,)dnl
         case "$host_os" in
             # Guess no on Solaris <= 9 and Cygwin.
           solaris2.[1-9] | solaris2.[1-9].* | cygwin*)
+            gl_cv_func_wctob_works="guessing no" ;;
+            # Guess no on native Windows.
+          mingw*)
             gl_cv_func_wctob_works="guessing no" ;;
             # Guess yes otherwise.
           *) gl_cv_func_wctob_works="guessing yes" ;;
@@ -104,7 +107,7 @@ int main ()
     if test $REPLACE_WCTOB = 0; then
 
       dnl IRIX 6.5 has the wctob() function but does not declare it.
-      AC_CHECK_DECLS([wctob], [], [], [
+      AC_CHECK_DECLS([wctob], [], [], [[
 /* Tru64 with Desktop Toolkit C has a bug: <stdio.h> must be included before
    <wchar.h>.
    BSD/OS 4.0.1 has a bug: <stddef.h>, <stdio.h> and <time.h> must be included
@@ -113,7 +116,7 @@ int main ()
 #include <stdio.h>
 #include <time.h>
 #include <wchar.h>
-])
+]])
       if test $ac_cv_have_decl_wctob != yes; then
         HAVE_DECL_WCTOB=0
       fi

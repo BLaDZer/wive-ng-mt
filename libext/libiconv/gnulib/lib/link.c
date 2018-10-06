@@ -1,6 +1,6 @@
 /* Emulate link on platforms that lack it, namely native Windows platforms.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -26,10 +25,14 @@
 #include <sys/stat.h>
 
 #if !HAVE_LINK
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
 
 #  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
+
+/* Avoid warnings from gcc -Wcast-function-type.  */
+#  define GetProcAddress \
+    (void *) GetProcAddress
 
 /* CreateHardLink was introduced only in Windows 2000.  */
 typedef BOOL (WINAPI * CreateHardLinkFuncType) (LPCTSTR lpFileName,

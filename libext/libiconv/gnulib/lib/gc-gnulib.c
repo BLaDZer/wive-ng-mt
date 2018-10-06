@@ -1,5 +1,5 @@
 /* gc-gnulib.c --- Common gnulib internal crypto interface functions
- * Copyright (C) 2002-2011 Free Software Foundation, Inc.
+ * Copyright (C) 2002-2018 Free Software Foundation, Inc.
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published
@@ -12,9 +12,7 @@
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this file; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
+ * along with this file; if not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,7 +48,10 @@
 #ifdef GNULIB_GC_SHA1
 # include "sha1.h"
 #endif
-#if defined(GNULIB_GC_HMAC_MD5) || defined(GNULIB_GC_HMAC_SHA1)
+#ifdef GNULIB_GC_SM3
+# include "sm3.h"
+#endif
+#if defined(GNULIB_GC_HMAC_MD5) || defined(GNULIB_GC_HMAC_SHA1) || defined(GNULIB_GC_HMAC_SHA256) || defined(GNULIB_GC_HMAC_SHA512)
 # include "hmac.h"
 #endif
 
@@ -68,13 +69,8 @@
 # include "rijndael-api-fst.h"
 #endif
 
-/* The results of open() in this file are not used with fchdir,
-   therefore save some unnecessary work in fchdir.c.  */
-#undef open
-#undef close
-
 #ifdef GNULIB_GC_RANDOM
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
 #  include <windows.h>
 #  include <wincrypt.h>
 HCRYPTPROV g_hProv = 0;
@@ -91,7 +87,7 @@ Gc_rc
 gc_init (void)
 {
 #ifdef GNULIB_GC_RANDOM
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
   if (g_hProv)
     CryptReleaseContext (g_hProv, 0);
 
@@ -118,7 +114,7 @@ void
 gc_done (void)
 {
 #ifdef GNULIB_GC_RANDOM
-# if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+# if defined _WIN32 && ! defined __CYGWIN__
   if (g_hProv)
     {
       CryptReleaseContext (g_hProv, 0);
@@ -137,7 +133,7 @@ gc_done (void)
 static Gc_rc
 randomize (int level, char *data, size_t datalen)
 {
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   if (!g_hProv)
     return GC_RANDOM_ERROR;
   CryptGenRandom (g_hProv, (DWORD) datalen, data);
@@ -606,7 +602,7 @@ gc_cipher_close (gc_cipher_handle handle)
 
 /* Hashes. */
 
-#define MAX_DIGEST_SIZE 20
+#define MAX_DIGEST_SIZE 32
 
 typedef struct _gc_hash_ctx
 {
@@ -625,6 +621,9 @@ typedef struct _gc_hash_ctx
 #ifdef GNULIB_GC_SHA1
   struct sha1_ctx sha1Context;
 #endif
+#ifdef GNULIB_GC_SM3
+  struct sm3_ctx sm3Context;
+#endif
 } _gc_hash_ctx;
 
 Gc_rc
@@ -632,6 +631,9 @@ gc_hash_open (Gc_hash hash, Gc_hash_mode mode, gc_hash_handle * outhandle)
 {
   _gc_hash_ctx *ctx;
   Gc_rc rc = GC_OK;
+
+  if (mode != 0)
+    return GC_INVALID_HASH;
 
   ctx = calloc (sizeof (*ctx), 1);
   if (!ctx)
@@ -666,15 +668,11 @@ gc_hash_open (Gc_hash hash, Gc_hash_mode mode, gc_hash_handle * outhandle)
       break;
 #endif
 
-    default:
-      rc = GC_INVALID_HASH;
+#ifdef GNULIB_GC_SM3
+    case GC_SM3:
+      sm3_init_ctx (&ctx->sm3Context);
       break;
-    }
-
-  switch (mode)
-    {
-    case 0:
-      break;
+#endif
 
     default:
       rc = GC_INVALID_HASH;
@@ -731,6 +729,10 @@ gc_hash_digest_length (Gc_hash hash)
       len = GC_SHA1_DIGEST_SIZE;
       break;
 
+    case GC_SM3:
+      len = GC_SM3_DIGEST_SIZE;
+      break;
+
     default:
       return 0;
     }
@@ -766,6 +768,12 @@ gc_hash_write (gc_hash_handle handle, size_t len, const char *data)
 #ifdef GNULIB_GC_SHA1
     case GC_SHA1:
       sha1_process_bytes (data, len, &ctx->sha1Context);
+      break;
+#endif
+
+#ifdef GNULIB_GC_SM3
+    case GC_SM3:
+      sm3_process_bytes (data, len, &ctx->sm3Context);
       break;
 #endif
 
@@ -806,6 +814,13 @@ gc_hash_read (gc_hash_handle handle)
 #ifdef GNULIB_GC_SHA1
     case GC_SHA1:
       sha1_finish_ctx (&ctx->sha1Context, ctx->hash);
+      ret = ctx->hash;
+      break;
+#endif
+
+#ifdef GNULIB_GC_SM3
+    case GC_SM3:
+      sm3_finish_ctx (&ctx->sm3Context, ctx->hash);
       ret = ctx->hash;
       break;
 #endif
@@ -854,6 +869,12 @@ gc_hash_buffer (Gc_hash hash, const void *in, size_t inlen, char *resbuf)
       break;
 #endif
 
+#ifdef GNULIB_GC_SM3
+    case GC_SM3:
+      sm3_buffer (in, inlen, resbuf);
+      break;
+#endif
+
     default:
       return GC_INVALID_HASH;
     }
@@ -897,6 +918,15 @@ gc_sha1 (const void *in, size_t inlen, void *resbuf)
 }
 #endif
 
+#ifdef GNULIB_GC_SM3
+Gc_rc
+gc_sm3 (const void *in, size_t inlen, void *resbuf)
+{
+  sm3_buffer (in, inlen, resbuf);
+  return GC_OK;
+}
+#endif
+
 #ifdef GNULIB_GC_HMAC_MD5
 Gc_rc
 gc_hmac_md5 (const void *key, size_t keylen,
@@ -913,6 +943,26 @@ gc_hmac_sha1 (const void *key, size_t keylen,
               const void *in, size_t inlen, char *resbuf)
 {
   hmac_sha1 (key, keylen, in, inlen, resbuf);
+  return GC_OK;
+}
+#endif
+
+#ifdef GNULIB_GC_HMAC_SHA256
+Gc_rc
+gc_hmac_sha256 (const void *key, size_t keylen,
+                const void *in, size_t inlen, char *resbuf)
+{
+  hmac_sha256 (key, keylen, in, inlen, resbuf);
+  return GC_OK;
+}
+#endif
+
+#ifdef GNULIB_GC_HMAC_SHA512
+Gc_rc
+gc_hmac_sha512 (const void *key, size_t keylen,
+                const void *in, size_t inlen, char *resbuf)
+{
+  hmac_sha512 (key, keylen, in, inlen, resbuf);
   return GC_OK;
 }
 #endif

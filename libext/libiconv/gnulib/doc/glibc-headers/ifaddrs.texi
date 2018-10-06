@@ -7,7 +7,7 @@ Defines the type @code{struct ifaddrs} and declares the functions
 Documentation:
 @itemize
 @item
-@url{http://ecos.sourceware.org/docs-latest/ref/net-common-tcpip-manpages-getifaddrs.html}.
+@url{https://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html}.
 @end itemize
 
 Gnulib module: ---
@@ -20,5 +20,5 @@ Portability problems not fixed by Gnulib:
 @itemize
 @item
 This header file is missing on some platforms:
-AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 10, Cygwin, mingw, Interix 3.5, BeOS.
+AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 10, Cygwin, mingw, MSVC 14, Interix 3.5, BeOS.
 @end itemize

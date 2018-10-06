@@ -1,6 +1,6 @@
 /* idcache.c -- map user and group IDs, cached for speed
 
-   Copyright (C) 1985, 1988-1990, 1997-1998, 2003, 2005-2007, 2009-2011 Free
+   Copyright (C) 1985, 1988-1990, 1997-1998, 2003, 2005-2007, 2009-2018 Free
    Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -27,6 +27,7 @@
 
 #include <unistd.h>
 
+#include "flexmember.h"
 #include "xalloc.h"
 
 #ifdef __DJGPP__
@@ -46,7 +47,7 @@ struct userid
 
 /* FIXME: provide a function to free any malloc'd storage and reset lists,
    so that an application can use code like this just before exiting:
-   #ifdef lint
+   #if defined GCC_LINT || defined lint
      idcache_clear ();
    #endif
 */
@@ -83,7 +84,7 @@ getuser (uid_t uid)
     {
       struct passwd *pwent = getpwuid (uid);
       char const *name = pwent ? pwent->pw_name : "";
-      match = xmalloc (offsetof (struct userid, name) + strlen (name) + 1);
+      match = xmalloc (FLEXSIZEOF (struct userid, name, strlen (name) + 1));
       match->id.u = uid;
       strcpy (match->name, name);
 
@@ -127,7 +128,7 @@ getuidbyname (const char *user)
     }
 #endif
 
-  tail = xmalloc (offsetof (struct userid, name) + strlen (user) + 1);
+  tail = xmalloc (FLEXSIZEOF (struct userid, name, strlen (user) + 1));
   strcpy (tail->name, user);
 
   /* Add to the head of the list, so most recently used is first.  */
@@ -165,7 +166,7 @@ getgroup (gid_t gid)
     {
       struct group *grent = getgrgid (gid);
       char const *name = grent ? grent->gr_name : "";
-      match = xmalloc (offsetof (struct userid, name) + strlen (name) + 1);
+      match = xmalloc (FLEXSIZEOF (struct userid, name, strlen (name) + 1));
       match->id.g = gid;
       strcpy (match->name, name);
 
@@ -209,7 +210,7 @@ getgidbyname (const char *group)
     }
 #endif
 
-  tail = xmalloc (offsetof (struct userid, name) + strlen (group) + 1);
+  tail = xmalloc (FLEXSIZEOF (struct userid, name, strlen (group) + 1));
   strcpy (tail->name, group);
 
   /* Add to the head of the list, so most recently used is first.  */

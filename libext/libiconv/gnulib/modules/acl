@@ -1,26 +1,22 @@
 Description:
-Access control lists of files.  (Unportable.)
+Access control lists of files, with diagnostics.  (Unportable.)
 
 Files:
-lib/acl.h
-lib/acl-internal.h
-lib/acl_entries.c
-lib/set-mode-acl.c
 lib/copy-acl.c
-lib/file-has-acl.c
-m4/acl.m4
+lib/set-acl.c
 
 Depends-on:
 error
 gettext-h
+qcopy-acl
+qset-acl
 quote
-sys_stat
+stdbool
 
 configure.ac:
-gl_FUNC_ACL
 
 Makefile.am:
-lib_SOURCES += set-mode-acl.c copy-acl.c file-has-acl.c
+lib_SOURCES += copy-acl.c set-acl.c
 
 Include:
 "acl.h"
@@ -32,4 +28,4 @@ License:
 GPL
 
 Maintainer:
-Paul Eggert, Jim Meyering, Bruno Haible
+Paul Eggert, Jim Meyering

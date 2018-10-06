@@ -1,5 +1,5 @@
 /* provide a chdir function that tries not to fail due to ENAMETOOLONG
-   Copyright (C) 2004-2011 Free Software Foundation, Inc.
+   Copyright (C) 2004-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* written by Jim Meyering */
 
@@ -20,13 +20,14 @@
 
 #include "chdir-long.h"
 
-#include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+
+#include "assure.h"
 
 #ifndef PATH_MAX
 # error "compile this file only if your system defines PATH_MAX"
@@ -42,25 +43,25 @@ struct cd_buf
   int fd;
 };
 
-static inline void
+static void
 cdb_init (struct cd_buf *cdb)
 {
   cdb->fd = AT_FDCWD;
 }
 
-static inline int
+static int
 cdb_fchdir (struct cd_buf const *cdb)
 {
   return fchdir (cdb->fd);
 }
 
-static inline void
+static void
 cdb_free (struct cd_buf const *cdb)
 {
   if (0 <= cdb->fd)
     {
       bool close_fail = close (cdb->fd);
-      assert (! close_fail);
+      assure (! close_fail);
     }
 }
 
@@ -83,7 +84,7 @@ cdb_advance_fd (struct cd_buf *cdb, char const *dir)
 }
 
 /* Return a pointer to the first non-slash in S.  */
-static inline char *
+static char * _GL_ATTRIBUTE_PURE
 find_non_slash (char const *s)
 {
   size_t n_slash = strspn (s, "/");
@@ -96,7 +97,7 @@ find_non_slash (char const *s)
    name.  It handles an arbitrarily long directory name by operating
    on manageable portions of the name.  On systems without the openat
    syscall, this means changing the working directory to more and more
-   `distant' points along the long directory name and then restoring
+   "distant" points along the long directory name and then restoring
    the working directory.  If any of those attempts to save or restore
    the working directory fails, this function exits nonzero.
 
@@ -122,8 +123,8 @@ chdir_long (char *dir)
 
     /* If DIR is the empty string, then the chdir above
        must have failed and set errno to ENOENT.  */
-    assert (0 < len);
-    assert (PATH_MAX <= len);
+    assure (0 < len);
+    assure (PATH_MAX <= len);
 
     /* Count leading slashes.  */
     n_leading_slash = strspn (dir, "/");
@@ -158,8 +159,8 @@ chdir_long (char *dir)
         dir += n_leading_slash;
       }
 
-    assert (*dir != '/');
-    assert (dir <= dir_end);
+    assure (*dir != '/');
+    assure (dir <= dir_end);
 
     while (PATH_MAX <= dir_end - dir)
       {
@@ -175,7 +176,7 @@ chdir_long (char *dir)
           }
 
         *slash = '\0';
-        assert (slash - dir < PATH_MAX);
+        assure (slash - dir < PATH_MAX);
         err = cdb_advance_fd (&cdb, dir);
         *slash = '/';
         if (err != 0)
@@ -211,8 +212,6 @@ chdir_long (char *dir)
 # include "closeout.h"
 # include "error.h"
 
-char *program_name;
-
 int
 main (int argc, char *argv[])
 {
@@ -220,7 +219,6 @@ main (int argc, char *argv[])
   size_t n = 0;
   int len;
 
-  program_name = argv[0];
   atexit (close_stdout);
 
   len = getline (&line, &n, stdin);
@@ -245,7 +243,7 @@ main (int argc, char *argv[])
 
   if (argc <= 1)
     {
-      /* Using `pwd' here makes sense only if it is a robust implementation,
+      /* Using 'pwd' here makes sense only if it is a robust implementation,
          like the one in coreutils after the 2004-04-19 changes.  */
       char const *cmd = "pwd";
       execlp (cmd, (char *) NULL);

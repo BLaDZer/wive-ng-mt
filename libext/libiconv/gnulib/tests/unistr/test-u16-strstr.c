@@ -1,5 +1,5 @@
 /* Test of u16_strstr() function.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Pádraig Brady <P@draigBrady.com>, 2011.  */
 
@@ -38,7 +38,7 @@ main (void)
   /* Declare failure if test takes too long, by using default abort
      caused by SIGALRM.  */
   signal (SIGALRM, SIG_DFL);
-  alarm (5);
+  alarm (10);
 #endif
 
   test_u_strstr ();

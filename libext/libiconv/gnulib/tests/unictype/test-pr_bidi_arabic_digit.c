@@ -13,15 +13,15 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
-    { 0x0600, 0x0603 },
+    { 0x0600, 0x0605 },
     { 0x0660, 0x0669 },
     { 0x066B, 0x066C },
     { 0x06DD, 0x06DD },
-    { 0x070F, 0x070F },
+    { 0x08E2, 0x08E2 },
     { 0x10E60, 0x10E7E }
 
 #define PREDICATE(c) uc_is_property_bidi_arabic_digit (c)

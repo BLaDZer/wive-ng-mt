@@ -7,6 +7,7 @@ m4/string_h.m4
 
 Depends-on:
 extensions
+extern-inline
 include_next
 snippet/arg-nonnull
 snippet/c++defs
@@ -29,6 +30,7 @@ string.h: string.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's|@''PRAGMA_SYSTEM_HEADER''@|@PRAGMA_SYSTEM_HEADER@|g' \
 	      -e 's|@''PRAGMA_COLUMNS''@|@PRAGMA_COLUMNS@|g' \
 	      -e 's|@''NEXT_STRING_H''@|$(NEXT_STRING_H)|g' \
+	      -e 's/@''GNULIB_EXPLICIT_BZERO''@/$(GNULIB_EXPLICIT_BZERO)/g' \
 	      -e 's/@''GNULIB_FFSL''@/$(GNULIB_FFSL)/g' \
 	      -e 's/@''GNULIB_FFSLL''@/$(GNULIB_FFSLL)/g' \
 	      -e 's/@''GNULIB_MBSLEN''@/$(GNULIB_MBSLEN)/g' \
@@ -67,7 +69,8 @@ string.h: string.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's/@''GNULIB_STRSIGNAL''@/$(GNULIB_STRSIGNAL)/g' \
 	      -e 's/@''GNULIB_STRVERSCMP''@/$(GNULIB_STRVERSCMP)/g' \
 	      < $(srcdir)/string.in.h | \
-	  sed -e 's|@''HAVE_FFSL''@|$(HAVE_FFSL)|g' \
+	  sed -e 's|@''HAVE_EXPLICIT_BZERO''@|$(HAVE_EXPLICIT_BZERO)|g' \
+	      -e 's|@''HAVE_FFSL''@|$(HAVE_FFSL)|g' \
 	      -e 's|@''HAVE_FFSLL''@|$(HAVE_FFSLL)|g' \
 	      -e 's|@''HAVE_MBSLEN''@|$(HAVE_MBSLEN)|g' \
 	      -e 's|@''HAVE_MEMCHR''@|$(HAVE_MEMCHR)|g' \
@@ -88,20 +91,20 @@ string.h: string.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's|@''HAVE_DECL_STRERROR_R''@|$(HAVE_DECL_STRERROR_R)|g' \
 	      -e 's|@''HAVE_DECL_STRSIGNAL''@|$(HAVE_DECL_STRSIGNAL)|g' \
 	      -e 's|@''HAVE_STRVERSCMP''@|$(HAVE_STRVERSCMP)|g' \
-	      -e 's|@''REPLACE_STPNCPY''@|$(REPLACE_STPNCPY)|g' \
 	      -e 's|@''REPLACE_MEMCHR''@|$(REPLACE_MEMCHR)|g' \
 	      -e 's|@''REPLACE_MEMMEM''@|$(REPLACE_MEMMEM)|g' \
-	      -e 's|@''REPLACE_STRCASESTR''@|$(REPLACE_STRCASESTR)|g' \
+	      -e 's|@''REPLACE_STPNCPY''@|$(REPLACE_STPNCPY)|g' \
 	      -e 's|@''REPLACE_STRCHRNUL''@|$(REPLACE_STRCHRNUL)|g' \
 	      -e 's|@''REPLACE_STRDUP''@|$(REPLACE_STRDUP)|g' \
-	      -e 's|@''REPLACE_STRSTR''@|$(REPLACE_STRSTR)|g' \
-	      -e 's|@''REPLACE_STRERROR''@|$(REPLACE_STRERROR)|g' \
-	      -e 's|@''REPLACE_STRERROR_R''@|$(REPLACE_STRERROR_R)|g' \
 	      -e 's|@''REPLACE_STRNCAT''@|$(REPLACE_STRNCAT)|g' \
 	      -e 's|@''REPLACE_STRNDUP''@|$(REPLACE_STRNDUP)|g' \
 	      -e 's|@''REPLACE_STRNLEN''@|$(REPLACE_STRNLEN)|g' \
-	      -e 's|@''REPLACE_STRSIGNAL''@|$(REPLACE_STRSIGNAL)|g' \
+	      -e 's|@''REPLACE_STRSTR''@|$(REPLACE_STRSTR)|g' \
+	      -e 's|@''REPLACE_STRCASESTR''@|$(REPLACE_STRCASESTR)|g' \
 	      -e 's|@''REPLACE_STRTOK_R''@|$(REPLACE_STRTOK_R)|g' \
+	      -e 's|@''REPLACE_STRERROR''@|$(REPLACE_STRERROR)|g' \
+	      -e 's|@''REPLACE_STRERROR_R''@|$(REPLACE_STRERROR_R)|g' \
+	      -e 's|@''REPLACE_STRSIGNAL''@|$(REPLACE_STRSIGNAL)|g' \
 	      -e 's|@''UNDEFINE_STRTOK_R''@|$(UNDEFINE_STRTOK_R)|g' \
 	      -e '/definitions of _GL_FUNCDECL_RPL/r $(CXXDEFS_H)' \
 	      -e '/definition of _GL_ARG_NONNULL/r $(ARG_NONNULL_H)' \

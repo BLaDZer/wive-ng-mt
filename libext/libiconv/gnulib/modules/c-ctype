@@ -6,6 +6,7 @@ lib/c-ctype.h
 lib/c-ctype.c
 
 Depends-on:
+extern-inline
 stdbool
 
 configure.ac:
@@ -20,5 +21,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible
-
+all

@@ -1,5 +1,5 @@
 /* Formatted output to strings.
-   Copyright (C) 1999, 2002, 2005-2007, 2009-2011 Free Software Foundation,
+   Copyright (C) 1999, 2002, 2005-2007, 2009-2018 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 DCHAR_T *
 ASNPRINTF (DCHAR_T *resultbuf, size_t *lengthp, const FCHAR_T *format, ...)

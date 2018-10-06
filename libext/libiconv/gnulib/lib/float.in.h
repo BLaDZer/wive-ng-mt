@@ -1,6 +1,6 @@
 /* A correct <float.h>.
 
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _@GUARD_PREFIX@_FLOAT_H
 
@@ -62,8 +62,8 @@
 
 /* On FreeBSD/x86 6.4, the 'long double' type really has only 53 bits of
    precision in the compiler but 64 bits of precision at runtime.  See
-   <http://lists.gnu.org/archive/html/bug-gnulib/2008-07/msg00063.html>.  */
-#if defined __i386__ && defined __FreeBSD__
+   <https://lists.gnu.org/r/bug-gnulib/2008-07/msg00063.html>.  */
+#if defined __i386__ && (defined __FreeBSD__ || defined __DragonFly__)
 /* Number of mantissa units, in base FLT_RADIX.  */
 # undef LDBL_MANT_DIG
 # define LDBL_MANT_DIG   64
@@ -81,7 +81,7 @@
 # define LDBL_MAX_EXP    16384
 /* Minimum positive normalized number.  */
 # undef LDBL_MIN
-# define LDBL_MIN        3.3621031431120935E-4932L /* = 0x1p-16382L */
+# define LDBL_MIN        3.362103143112093506262677817321752E-4932L /* = 0x1p-16382L */
 /* Maximum representable finite number.  */
 # undef LDBL_MAX
 /* LDBL_MAX is represented as { 0xFFFFFFFF, 0xFFFFFFFF, 32766 }.
@@ -109,7 +109,8 @@ extern const union gl_long_double_union gl_LDBL_MAX;
 #endif
 
 /* On AIX 7.1 with gcc 4.2, the values of LDBL_MIN_EXP, LDBL_MIN, LDBL_MAX are
-   wrong.  */
+   wrong.
+   On Linux/PowerPC with gcc 4.4, the value of LDBL_MAX is wrong.  */
 #if (defined _ARCH_PPC || defined _POWER) && defined _AIX && (LDBL_MANT_DIG == 106) && defined __GNUC__
 # undef LDBL_MIN_EXP
 # define LDBL_MIN_EXP DBL_MIN_EXP
@@ -117,6 +118,8 @@ extern const union gl_long_double_union gl_LDBL_MAX;
 # define LDBL_MIN_10_EXP DBL_MIN_10_EXP
 # undef LDBL_MIN
 # define LDBL_MIN 2.22507385850720138309023271733240406422e-308L /* DBL_MIN = 2^-1022 */
+#endif
+#if (defined _ARCH_PPC || defined _POWER) && (defined _AIX || defined __linux__) && (LDBL_MANT_DIG == 106) && defined __GNUC__
 # undef LDBL_MAX
 /* LDBL_MAX is represented as { 0x7FEFFFFF, 0xFFFFFFFF, 0x7C8FFFFF, 0xFFFFFFFF }.
    It is not easy to define:
@@ -168,6 +171,17 @@ extern const union gl_long_double_union gl_LDBL_MAX;
 #  undef LDBL_EPSILON
 #  define LDBL_EPSILON 2.46519032881566189191165176650870696773e-32L /* 2^-105 */
 # endif
+#endif
+
+#if @REPLACE_ITOLD@
+/* Pull in a function that fixes the 'int' to 'long double' conversion
+   of glibc 2.7.  */
+extern
+# ifdef __cplusplus
+"C"
+# endif
+void _Qp_itoq (long double *, int);
+static void (*_gl_float_fix_itold) (long double *, int) = _Qp_itoq;
 #endif
 
 #endif /* _@GUARD_PREFIX@_FLOAT_H */

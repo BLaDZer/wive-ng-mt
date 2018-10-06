@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* README:
    The default merge driver of 'git' *always* produces conflicts when
@@ -75,8 +75,16 @@
           $ bzr extmerge ChangeLog
 
    Additionally, for hg users:
-     - Add to your $HOME/.hgrc a couple of lines in a section [merge-tools].
-       See <http://www.selenic.com/mercurial/hgrc.5.html> section merge-tools
+     - Add to your $HOME/.hgrc the lines
+
+        [merge-patterns]
+        ChangeLog = git-merge-changelog
+
+        [merge-tools]
+        git-merge-changelog.executable = /usr/local/bin/git-merge-changelog
+        git-merge-changelog.args = $base $local $other
+
+       See <https://www.selenic.com/mercurial/hgrc.5.html> section merge-tools
        for reference.
  */
 
@@ -156,7 +164,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "progname.h"
 #include "error.h"
 #include "read-file.h"
 #include "gl_xlist.h"
@@ -170,6 +177,7 @@
 #include "minmax.h"
 #include "c-strstr.h"
 #include "fwriteerror.h"
+#include "getprogname.h"
 
 #define ASSERT(expr) \
   do                                                                         \
@@ -224,7 +232,7 @@ entry_hashcode (const void *elt)
   struct entry *entry = (struct entry *) elt;
   if (!entry->hashcode_cached)
     {
-      /* See http://www.haible.de/bruno/hashfunc.html.  */
+      /* See https://www.haible.de/bruno/hashfunc.html.  */
       const char *s;
       size_t n;
       size_t h = 0;
@@ -958,17 +966,17 @@ static const struct option long_options[] =
   { NULL, 0, NULL, 0 }
 };
 
-/* Print a usage mesage and exit.  */
+/* Print a usage message and exit.  */
 static void
 usage (int status)
 {
   if (status != EXIT_SUCCESS)
-    fprintf (stderr, "Try `%s --help' for more information.\n",
-             program_name);
+    fprintf (stderr, "Try '%s --help' for more information.\n",
+             getprogname ());
   else
     {
       printf ("Usage: %s [OPTION] O-FILE-NAME A-FILE-NAME B-FILE-NAME\n",
-              program_name);
+              getprogname ());
       printf ("\n");
       printf ("Merges independent modifications of a ChangeLog style file.\n");
       printf ("O-FILE-NAME names the original file, the ancestor of the two others.\n");
@@ -990,7 +998,7 @@ usage (int status)
       printf ("  -h, --help                  display this help and exit\n");
       printf ("  -V, --version               output version information and exit\n");
       printf ("\n");
-      fputs ("Report bugs to <bug-gnu-gettext@gnu.org>.\n",
+      fputs ("Report bugs to <bug-gnulib@gnu.org>.\n",
              stdout);
     }
 
@@ -1004,9 +1012,6 @@ main (int argc, char *argv[])
   bool do_help;
   bool do_version;
   bool split_merged_entry;
-
-  /* Set program name for messages.  */
-  set_program_name (argv[0]);
 
   /* Set default values for variables.  */
   do_help = false;
@@ -1034,9 +1039,9 @@ main (int argc, char *argv[])
   if (do_version)
     {
       /* Version information is requested.  */
-      printf ("%s\n", program_name);
+      printf ("%s\n", getprogname ());
       printf ("Copyright (C) %s Free Software Foundation, Inc.\n\
-License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>\n\
+License GPLv2+: GNU GPL version 2 or later <https://gnu.org/licenses/gpl.html>\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\
 ",

@@ -1,5 +1,5 @@
 /* Test of fclose module.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake.  */
 
@@ -76,12 +75,37 @@ main (int argc, char **argv)
 
   /* Test that fclose() sets errno if someone else closes the stream
      fd behind the back of stdio.  */
-  f = fdopen (fd, "w+");
-  ASSERT (f);
-  ASSERT (close (fd) == 0);
-  errno = 0;
-  ASSERT (fclose (f) == EOF);
-  ASSERT (errno == EBADF);
+  {
+    FILE *fp = fdopen (fd, "w+");
+    ASSERT (fp != NULL);
+    ASSERT (close (fd) == 0);
+    errno = 0;
+    ASSERT (fclose (fp) == EOF);
+    ASSERT (errno == EBADF);
+  }
+
+  /* Test that fclose() sets errno if the stream was constructed with
+     an invalid file descriptor.  */
+  {
+    FILE *fp = fdopen (-1, "r");
+    if (fp != NULL)
+      {
+        errno = 0;
+        ASSERT (fclose (fp) == EOF);
+        ASSERT (errno == EBADF);
+      }
+  }
+  {
+    FILE *fp;
+    close (99);
+    fp = fdopen (99, "r");
+    if (fp != NULL)
+      {
+        errno = 0;
+        ASSERT (fclose (fp) == EOF);
+        ASSERT (errno == EBADF);
+      }
+  }
 
   /* Clean up.  */
   ASSERT (remove (BASE) == 0);

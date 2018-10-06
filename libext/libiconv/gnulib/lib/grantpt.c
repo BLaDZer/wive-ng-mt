@@ -1,5 +1,5 @@
 /* Acquire ownership of the slave side of a pseudo-terminal.
-   Copyright (C) 1998-2002, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1998-2002, 2009-2018 Free Software Foundation, Inc.
    Contributed by Zack Weinberg <zack@rabi.phys.columbia.edu>, 1998.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -35,7 +35,6 @@
 #include "pty-private.h"
 
 #ifndef _LIBC
-# define __builtin_expect(expr,val) (expr)
 # define __set_errno(e) errno = (e)
 # define __dup2 dup2
 # define __fork fork
@@ -46,6 +45,12 @@
 int
 grantpt (int fd)
 {
+#if defined __OpenBSD__ || defined _WIN32
+  /* On OpenBSD, master and slave of a pseudo-terminal are allocated together,
+     through an ioctl on /dev/ptm.  On Windows there are no ptys.
+     Therefore in either case there is no need for grantpt().  */
+  return 0;
+#else
   /* This function is most often called from a process without 'root'
      credentials.  Use the helper program.  */
   int retval = -1;
@@ -56,20 +61,20 @@ grantpt (int fd)
     {
       /* This is executed in the child process.  */
 
-#if HAVE_SETRLIMIT && defined RLIMIT_CORE
+# if HAVE_SETRLIMIT && defined RLIMIT_CORE
       /* Disable core dumps.  */
       struct rlimit rl = { 0, 0 };
       __setrlimit (RLIMIT_CORE, &rl);
-#endif
+# endif
 
       /* We pass the master pseudo terminal as file descriptor PTY_FILENO.  */
       if (fd != PTY_FILENO)
         if (__dup2 (fd, PTY_FILENO) < 0)
           _exit (FAIL_EBADF);
 
-#ifdef CLOSE_ALL_FDS
+# ifdef CLOSE_ALL_FDS
       CLOSE_ALL_FDS ();
-#endif
+# endif
 
       execle (_PATH_PT_CHOWN, strrchr (_PATH_PT_CHOWN, '/') + 1, NULL, NULL);
       _exit (FAIL_EXEC);
@@ -111,4 +116,5 @@ grantpt (int fd)
 
  cleanup:
   return retval;
+#endif
 }

@@ -1,5 +1,5 @@
 /* Tests of renameat.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -60,6 +60,31 @@ main (void)
 
   /* Clean up any trash from prior testsuite runs.  */
   ignore_value (system ("rm -rf " BASE "*"));
+
+  /* Test behaviour for invalid file descriptors.  */
+  {
+    errno = 0;
+    ASSERT (renameat (-1, "foo", AT_FDCWD, "bar") == -1);
+    ASSERT (errno == EBADF);
+  }
+  {
+    close (99);
+    errno = 0;
+    ASSERT (renameat (99, "foo", AT_FDCWD, "bar") == -1);
+    ASSERT (errno == EBADF);
+  }
+  ASSERT (close (creat (BASE "oo", 0600)) == 0);
+  {
+    errno = 0;
+    ASSERT (renameat (AT_FDCWD, BASE "oo", -1, "bar") == -1);
+    ASSERT (errno == EBADF);
+  }
+  {
+    errno = 0;
+    ASSERT (renameat (AT_FDCWD, BASE "oo", 99, "bar") == -1);
+    ASSERT (errno == EBADF);
+  }
+  ASSERT (unlink (BASE "oo") == 0);
 
   /* Test basic rename functionality, using current directory.  */
   result = test_rename (do_rename, false);
@@ -130,10 +155,12 @@ main (void)
   errno = 0;
   ASSERT (renameat (dfd, BASE "sub2", dfd, BASE "sub1/.") == -1);
   ASSERT (errno == EINVAL || errno == EISDIR || errno == EBUSY
-          || errno == ENOTEMPTY);
+          || errno == ENOTEMPTY || errno == EEXIST
+          || errno == ENOENT /* WSL */);
   errno = 0;
   ASSERT (renameat (dfd, BASE "sub2/.", dfd, BASE "sub1") == -1);
-  ASSERT (errno == EINVAL || errno == EBUSY || errno == EEXIST);
+  ASSERT (errno == EINVAL || errno == EBUSY || errno == EEXIST
+          || errno == ENOENT /* WSL */);
   errno = 0;
   ASSERT (renameat (dfd, BASE "17", dfd, BASE "sub1") == -1);
   ASSERT (errno == EISDIR);

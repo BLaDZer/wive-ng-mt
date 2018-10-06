@@ -6,6 +6,7 @@ Files:
 doc/relocatable.texi
 lib/relocatable.h
 lib/relocatable.c
+lib/relocatable.valgrind
 m4/relocatable-lib.m4
 
 Depends-on:
@@ -13,6 +14,9 @@ strdup
 
 configure.ac:
 gl_RELOCATABLE_LIBRARY
+if test $RELOCATABLE = yes; then
+  AC_LIBOBJ([relocatable])
+fi
 
 Makefile.am:
 DEFS += -DNO_XMALLOC
@@ -24,5 +28,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible, Ben Pfaff
-
+Ben Pfaff

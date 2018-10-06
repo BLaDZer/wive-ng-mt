@@ -1,5 +1,5 @@
 /* Look at first character in UTF-16 string.
-   Copyright (C) 1999-2000, 2002, 2006-2007, 2009-2011 Free Software
+   Copyright (C) 1999-2000, 2002, 2006-2007, 2009-2018 Free Software
    Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2002.
 
@@ -14,7 +14,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -26,24 +26,17 @@ u16_mblen (const uint16_t *s, size_t n)
 {
   if (n > 0)
     {
-      /* Keep in sync with unistr.h and utf16-ucs4.c.  */
+      /* Keep in sync with unistr.h and u16-mbtouc-aux.c.  */
       uint16_t c = *s;
 
       if (c < 0xd800 || c >= 0xe000)
         return (c != 0 ? 1 : 0);
-#if CONFIG_UNICODE_SAFETY
       if (c < 0xdc00)
         {
           if (n >= 2
               && s[1] >= 0xdc00 && s[1] < 0xe000)
             return 2;
         }
-#else
-        {
-          if (n >= 2)
-            return 2;
-        }
-#endif
     }
   /* invalid or incomplete multibyte character */
   return -1;

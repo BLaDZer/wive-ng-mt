@@ -1,6 +1,6 @@
 /* Close standard input, rewinding seekable stdin if necessary.
 
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -72,7 +72,7 @@ close_stdin_set_file_name (const char *file)
    the removal of these files.
 
    It's important to detect such failures and exit nonzero because many
-   tools (most notably `make' and other build-management systems) depend
+   tools (most notably 'make' and other build-management systems) depend
    on being able to detect failure in other tools via their exit status.  */
 
 void

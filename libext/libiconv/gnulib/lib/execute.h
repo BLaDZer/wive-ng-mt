@@ -1,5 +1,5 @@
 /* Creation of autonomous subprocesses.
-   Copyright (C) 2001-2003, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2008-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _EXECUTE_H
 #define _EXECUTE_H
@@ -33,7 +33,7 @@
    the subprocess (if supported by the platform: not on native Windows
    platforms), otherwise 0.
    It is recommended that no signal is blocked or ignored while execute()
-   is called.  See pipe.h for the reason.  */
+   is called.  See spawn-pipe.h for the reason.  */
 extern int execute (const char *progname,
                     const char *prog_path, char **prog_argv,
                     bool ignore_sigpipe,

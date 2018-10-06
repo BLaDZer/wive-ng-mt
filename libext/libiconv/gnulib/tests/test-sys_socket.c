@@ -1,5 +1,5 @@
 /* Test of <sys/socket.h> substitute.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007.  */
 
@@ -30,6 +30,10 @@ int a[] = { SHUT_RD, SHUT_WR, SHUT_RDWR };
 /* Check that the 'socklen_t' type is defined.  */
 socklen_t t1;
 
+/* Check that the 'size_t' and 'ssize_t' types are defined.  */
+size_t t2;
+ssize_t t3;
+
 /* Check that 'struct iovec' is defined.  */
 struct iovec io;
 
@@ -43,7 +47,7 @@ main (void)
   sa_family_t i;
 
   /* Check some errno values.  */
-  switch (0)
+  switch (ENOTSOCK)
     {
     case ENOTSOCK:
     case EADDRINUSE:

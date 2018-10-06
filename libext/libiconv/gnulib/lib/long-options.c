@@ -1,6 +1,6 @@
 /* Utility to accept --help and --version options as unobtrusively as possible.
 
-   Copyright (C) 1993-1994, 1998-2000, 2002-2006, 2009-2011 Free Software
+   Copyright (C) 1993-1994, 1998-2000, 2002-2006, 2009-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Jim Meyering.  */
 
@@ -38,7 +38,7 @@ static struct option const long_options[] =
 };
 
 /* Process long options --help and --version, but only if argc == 2.
-   Be careful not to gobble up `--'.  */
+   Be careful not to gobble up "--".  */
 
 void
 parse_long_options (int argc,
@@ -64,6 +64,7 @@ parse_long_options (int argc,
         {
         case 'h':
           (*usage_func) (EXIT_SUCCESS);
+          break;
 
         case 'v':
           {

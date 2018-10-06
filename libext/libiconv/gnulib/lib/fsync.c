@@ -2,12 +2,12 @@
    cross-compilers like MinGW.
 
    This is derived from sqlite3 sources.
-   http://www.sqlite.org/cvstrac/rlog?f=sqlite/src/os_win.c
-   http://www.sqlite.org/copyright.html
+   https://www.sqlite.org/src/finfo?name=src/os_win.c
+   https://www.sqlite.org/copyright.html
 
    Written by Richard W.M. Jones <rjones.at.redhat.com>
 
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -20,21 +20,25 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include <unistd.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-
-/* _get_osfhandle */
-# include <io.h>
+#if defined _WIN32 && ! defined __CYGWIN__
 
 /* FlushFileBuffers */
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 
 # include <errno.h>
+
+/* Get _get_osfhandle.  */
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
+#  include <io.h>
+# endif
 
 int
 fsync (int fd)
@@ -57,6 +61,11 @@ fsync (int fd)
       err = GetLastError ();
       switch (err)
         {
+        case ERROR_ACCESS_DENIED:
+          /* For a read-only handle, fsync should succeed, even though we have
+             no way to sync the access-time changes.  */
+          return 0;
+
           /* eg. Trying to fsync a tty. */
         case ERROR_INVALID_HANDLE:
           errno = EINVAL;

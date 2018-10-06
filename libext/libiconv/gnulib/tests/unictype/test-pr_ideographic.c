@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
@@ -21,13 +21,15 @@
     { 0x3021, 0x3029 },
     { 0x3038, 0x303A },
     { 0x3400, 0x4DB5 },
-    { 0x4E00, 0x9FCB },
-    { 0xF900, 0xFA2D },
-    { 0xFA30, 0xFA6D },
+    { 0x4E00, 0x9FD5 },
+    { 0xF900, 0xFA6D },
     { 0xFA70, 0xFAD9 },
+    { 0x17000, 0x187EC },
+    { 0x18800, 0x18AF2 },
     { 0x20000, 0x2A6D6 },
     { 0x2A700, 0x2B734 },
     { 0x2B740, 0x2B81D },
+    { 0x2B820, 0x2CEA1 },
     { 0x2F800, 0x2FA1D }
 
 #define PREDICATE(c) uc_is_property_ideographic (c)

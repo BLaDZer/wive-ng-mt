@@ -1,5 +1,5 @@
 /* Test of sigprocmask.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2011.  */
 
@@ -30,7 +30,7 @@ SIGNATURE_CHECK (sigprocmask, int, (int, const sigset_t *, sigset_t *));
 
 #include "macros.h"
 
-#if !((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__)
+#if !(defined _WIN32 && !defined __CYGWIN__)
 
 static volatile int sigint_occurred;
 
@@ -44,8 +44,14 @@ int
 main (int argc, char *argv[])
 {
   sigset_t set;
-  int pid = getpid ();
+  pid_t pid = getpid ();
   char command[80];
+
+  if (sizeof (int) < sizeof pid && 0x7fffffff < pid)
+    {
+      fputs ("Skipping test: pid too large\n", stderr);
+      return 77;
+    }
 
   signal (SIGINT, sigint_handler);
 
@@ -60,7 +66,7 @@ main (int argc, char *argv[])
   ASSERT (sigprocmask (SIG_BLOCK, &set, NULL) == 0);
 
   /* Request a SIGINT signal from outside.  */
-  sprintf (command, "sh -c 'sleep 1; kill -%d %d' &", SIGINT, pid);
+  sprintf (command, "sh -c 'sleep 1; kill -%d %d' &", SIGINT, (int) pid);
   ASSERT (system (command) == 0);
 
   /* Wait.  */

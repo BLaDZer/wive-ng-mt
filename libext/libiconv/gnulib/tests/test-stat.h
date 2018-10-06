@@ -1,5 +1,5 @@
 /* Tests of stat.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -95,6 +95,7 @@ test_stat_func (int (*func) (char const *, struct stat *), bool print)
   ASSERT (unlink (BASE "link2") == 0);
   ASSERT (unlink (BASE "link3") == 0);
   ASSERT (unlink (BASE "link4") == 0);
+  free (cwd);
 
   return 0;
 }

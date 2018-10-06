@@ -4,6 +4,8 @@ tests/macros.h
 
 Depends-on:
 binary-io
+getdtablesize
+msvc-nothrow
 
 configure.ac:
 

@@ -1,6 +1,6 @@
 /* Work around unlinkat bugs on Solaris 9 and Hurd.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake.  */
 
@@ -35,9 +35,12 @@
 
 # undef unlinkat
 
-/* unlinkat without AT_REMOVEDIR does not honor trailing / on Solaris
-   9.  Solve it in a similar manner to unlink.  Hurd has the same
-   issue. */
+/* unlinkat without AT_REMOVEDIR does not honor trailing / on Solaris 9.
+   Hurd has the same issue.
+
+   unlinkat without AT_REMOVEDIR erroneously ignores ".." on Darwin 14.
+
+   Solve these in a similar manner to unlink.  */
 
 int
 rpl_unlinkat (int fd, char const *name, int flag)
@@ -78,14 +81,24 @@ rpl_unlinkat (int fd, char const *name, int flag)
         }
     }
   if (!result)
-    result = unlinkat (fd, name, flag);
+    {
+# if UNLINK_PARENT_BUG
+      if (len >= 2 && name[len - 1] == '.' && name[len - 2] == '.'
+          && (len == 2 || ISSLASH (name[len - 3])))
+        {
+          errno = EISDIR; /* could also use EPERM */
+          return -1;
+        }
+# endif
+      result = unlinkat (fd, name, flag);
+    }
   return result;
 }
 
 #else /* !HAVE_UNLINKAT */
 
 /* Replacement for Solaris' function by the same name.
-   <http://www.google.com/search?q=unlinkat+site:docs.sun.com>
+   <https://www.google.com/search?q=unlinkat+site:docs.oracle.com>
    First, try to simulate it via (unlink|rmdir) ("/proc/self/fd/FD/FILE").
    Failing that, simulate it via save_cwd/fchdir/(unlink|rmdir)/restore_cwd.
    If either the save_cwd or the restore_cwd fails (relatively unlikely),

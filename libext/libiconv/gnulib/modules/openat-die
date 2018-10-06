@@ -5,10 +5,11 @@ Files:
 lib/openat-die.c
 
 Depends-on:
-openat
+openat-h
 error
-gettext-h
 exitfail
+gettext-h
+snippet/_Noreturn
 
 configure.ac:
 

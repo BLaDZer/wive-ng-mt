@@ -1,6 +1,6 @@
 /* Test harness for pipe-filter-gi.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    Written by Paolo Bonzini <bonzini@gnu.org>, 2009.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -27,7 +27,6 @@
 #include <signal.h>
 
 #include "full-write.h"
-#include "progname.h"
 #include "macros.h"
 
 /* 0.1 sec pause */
@@ -72,8 +71,6 @@ main (int argc, char **argv)
 {
   struct pipe_filter_gi *f;
   const char *path[] = { NULL, NULL };
-
-  set_program_name (argv[0]);
 
   ASSERT (argc == 2);
 

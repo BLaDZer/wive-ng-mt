@@ -1,5 +1,5 @@
-# ceill.m4 serial 10
-dnl Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+# ceill.m4 serial 17
+dnl Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -8,10 +8,14 @@ AC_DEFUN([gl_FUNC_CEILL],
 [
   m4_divert_text([DEFAULTS], [gl_ceill_required=plain])
   AC_REQUIRE([gl_MATH_H_DEFAULTS])
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
+  AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
+
   dnl Persuade glibc <math.h> to declare ceill().
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+
   dnl Test whether ceill() is declared.
-  AC_CHECK_DECLS([ceill], , , [#include <math.h>])
+  AC_CHECK_DECLS([ceill], , , [[#include <math.h>]])
   if test "$ac_cv_have_decl_ceill" = yes; then
     dnl Test whether ceill() can be used without libm.
     gl_FUNC_CEILL_LIBS
@@ -47,7 +51,15 @@ int main (int argc, char *argv[])
               ]])],
               [gl_cv_func_ceill_ieee=yes],
               [gl_cv_func_ceill_ieee=no],
-              [gl_cv_func_ceill_ieee="guessing no"])
+              [case "$host_os" in
+                                # Guess yes on glibc systems.
+                 *-gnu* | gnu*) gl_cv_func_ceill_ieee="guessing yes" ;;
+                                # Guess yes on native Windows.
+                 mingw*)        gl_cv_func_ceill_ieee="guessing yes" ;;
+                                # If we don't know, assume the worst.
+                 *)             gl_cv_func_ceill_ieee="guessing no" ;;
+               esac
+              ])
             LIBS="$save_LIBS"
           ])
         case "$gl_cv_func_ceill_ieee" in
@@ -59,9 +71,42 @@ int main (int argc, char *argv[])
   else
     HAVE_DECL_CEILL=0
   fi
+  dnl On OpenBSD5.6 the system's native ceill() is buggy:
+  dnl it returns '0' for small values. Test for this anomaly.
+  if test $REPLACE_CEILL = 0 ; then
+    AC_CACHE_CHECK([whether ceill() breaks with small values],
+        [gl_cv_func_ceill_buggy],
+        [
+          save_LIBS="$LIBS"
+          LIBS="$CEILL_LIBM"
+          AC_RUN_IFELSE(
+           [AC_LANG_PROGRAM(
+             [[#include <math.h>
+long double d = 0.3L;]],
+             [[return (!(ceill (d) == 1)); ]])],
+             [gl_cv_func_ceill_buggy=no], [gl_cv_func_ceill_buggy=yes],
+             [case "$host_os" in
+                openbsd*) gl_cv_func_ceill_buggy="guessing yes" ;;
+                          # Guess no on native Windows.
+                mingw*)   gl_cv_func_ceill_buggy="guessing no" ;;
+                *)        gl_cv_func_ceill_buggy="guessing no" ;;
+              esac
+             ])
+          LIBS="$save_LIBS"
+        ])
+    case "$gl_cv_func_ceill_buggy" in
+      *yes)
+        REPLACE_CEILL=1 ;;
+    esac
+  fi
   if test $HAVE_DECL_CEILL = 0 || test $REPLACE_CEILL = 1; then
-    dnl No libraries are needed to link lib/ceill.c.
-    CEILL_LIBM=
+    dnl Find libraries needed to link lib/ceill.c.
+    if test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1; then
+      AC_REQUIRE([gl_FUNC_CEIL])
+      CEILL_LIBM="$CEIL_LIBM"
+    else
+      CEILL_LIBM=
+    fi
   fi
   AC_SUBST([CEILL_LIBM])
 ])
@@ -78,8 +123,9 @@ AC_DEFUN([gl_FUNC_CEILL_LIBS],
            # define __NO_MATH_INLINES 1 /* for glibc */
            #endif
            #include <math.h>
+           long double (*funcptr) (long double) = ceill;
            long double x;]],
-         [[x = ceill(x);]])],
+         [[x = funcptr(x) + ceill(x);]])],
       [gl_cv_func_ceill_libm=])
     if test "$gl_cv_func_ceill_libm" = "?"; then
       save_LIBS="$LIBS"
@@ -90,8 +136,9 @@ AC_DEFUN([gl_FUNC_CEILL_LIBS],
              # define __NO_MATH_INLINES 1 /* for glibc */
              #endif
              #include <math.h>
+             long double (*funcptr) (long double) = ceill;
              long double x;]],
-           [[x = ceill(x);]])],
+           [[x = funcptr(x) + ceill(x);]])],
         [gl_cv_func_ceill_libm="-lm"])
       LIBS="$save_LIBS"
     fi

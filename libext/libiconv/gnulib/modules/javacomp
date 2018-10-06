@@ -28,6 +28,7 @@ xvasprintf
 c-strstr
 gettext-h
 javacomp-script
+sh-filename
 
 configure.ac:
 
@@ -41,5 +42,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible
-
+all

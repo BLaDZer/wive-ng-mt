@@ -1,5 +1,5 @@
-# trunc.m4 serial 7
-dnl Copyright (C) 2007, 2010-2011 Free Software Foundation, Inc.
+# trunc.m4 serial 11
+dnl Copyright (C) 2007, 2010-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -11,7 +11,7 @@ AC_DEFUN([gl_FUNC_TRUNC],
   dnl Persuade glibc <math.h> to declare trunc().
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   dnl Test whether trunc() is declared.
-  AC_CHECK_DECLS([trunc], , , [#include <math.h>])
+  AC_CHECK_DECLS([trunc], , , [[#include <math.h>]])
   if test "$ac_cv_have_decl_trunc" = yes; then
     dnl Test whether trunc() can be used without libm.
     TRUNC_LIBM=?
@@ -43,6 +43,7 @@ AC_DEFUN([gl_FUNC_TRUNC],
     fi
     m4_ifdef([gl_FUNC_TRUNC_IEEE], [
       if test $gl_trunc_required = ieee && test $REPLACE_TRUNC = 0; then
+        AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
         AC_CACHE_CHECK([whether trunc works according to ISO C 99 with IEC 60559],
           [gl_cv_func_trunc_ieee],
           [
@@ -68,7 +69,15 @@ int main (int argc, char *argv[])
               ]])],
               [gl_cv_func_trunc_ieee=yes],
               [gl_cv_func_trunc_ieee=no],
-              [gl_cv_func_trunc_ieee="guessing no"])
+              [case "$host_os" in
+                                # Guess yes on glibc systems.
+                 *-gnu* | gnu*) gl_cv_func_trunc_ieee="guessing yes" ;;
+                                # Guess yes on native Windows.
+                 mingw*)        gl_cv_func_trunc_ieee="guessing yes" ;;
+                                # If we don't know, assume the worst.
+                 *)             gl_cv_func_trunc_ieee="guessing no" ;;
+               esac
+              ])
             LIBS="$save_LIBS"
           ])
         case "$gl_cv_func_trunc_ieee" in

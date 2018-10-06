@@ -6,6 +6,7 @@ Files:
 doc/relocatable.texi
 lib/relocatable.h
 lib/relocatable.c
+lib/relocatable.valgrind
 m4/relocatable-lib.m4
 
 Depends-on:
@@ -27,5 +28,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible, Ben Pfaff
-
+Ben Pfaff

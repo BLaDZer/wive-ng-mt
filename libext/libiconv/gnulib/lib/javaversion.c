@@ -1,5 +1,5 @@
 /* Determine the Java version supported by javaexec.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -23,11 +23,13 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #if ENABLE_RELOCATABLE
 # include "relocatable.h"
 #else
 # define relocate(pathname) (pathname)
+# define relocate2(pathname,allocatedp) (*(allocatedp) = NULL, (pathname))
 #endif
 
 #include "javaexec.h"
@@ -106,7 +108,8 @@ char *
 javaexec_version (void)
 {
   const char *class_name = "javaversion";
-  const char *pkgdatadir = relocate (PKGDATADIR);
+  char *malloc_pkgdatadir;
+  const char *pkgdatadir = relocate2 (PKGDATADIR, &malloc_pkgdatadir);
   const char *args[1];
   struct locals locals;
 
@@ -115,5 +118,6 @@ javaexec_version (void)
   execute_java_class (class_name, &pkgdatadir, 1, true, NULL, args,
                       false, false, execute_and_read_line, &locals);
 
+  free (malloc_pkgdatadir);
   return locals.line;
 }

@@ -1,5 +1,5 @@
-# spawn_h.m4 serial 13
-dnl Copyright (C) 2008-2011 Free Software Foundation, Inc.
+# spawn_h.m4 serial 17
+dnl Copyright (C) 2008-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -31,6 +31,12 @@ AC_DEFUN([gl_SPAWN_H],
   fi
   AC_SUBST([HAVE_SPAWN_H])
 
+  dnl Ensure the type pid_t gets defined.
+  AC_REQUIRE([AC_TYPE_PID_T])
+
+  dnl Ensure the type mode_t gets defined.
+  AC_REQUIRE([AC_TYPE_MODE_T])
+
   AC_REQUIRE([gl_HAVE_POSIX_SPAWN])
 
   AC_REQUIRE([AC_C_RESTRICT])
@@ -47,7 +53,7 @@ AC_DEFUN([gl_SPAWN_H],
     posix_spawnattr_getschedparam posix_spawnattr_setschedparam
     posix_spawn_file_actions_init posix_spawn_file_actions_destroy
     posix_spawn_file_actions_addopen posix_spawn_file_actions_addclose
-    posix_spawn_file_actions_adddup2])
+    posix_spawn_file_actions_adddup2 posix_spawn_file_actions_addchdir])
 ])
 
 dnl Checks whether the system has the functions posix_spawn.
@@ -58,7 +64,15 @@ AC_DEFUN([gl_HAVE_POSIX_SPAWN],
   dnl once only, before all statements that occur in other macros.
   AC_REQUIRE([gl_SPAWN_H_DEFAULTS])
 
-  AC_CHECK_FUNCS_ONCE([posix_spawn])
+  LIB_POSIX_SPAWN=
+  AC_SUBST([LIB_POSIX_SPAWN])
+  gl_saved_libs=$LIBS
+    AC_SEARCH_LIBS([posix_spawn], [rt],
+                   [test "$ac_cv_search_posix_spawn" = "none required" ||
+                    LIB_POSIX_SPAWN=$ac_cv_search_posix_spawn])
+    AC_CHECK_FUNCS([posix_spawn])
+  LIBS=$gl_saved_libs
+
   if test $ac_cv_func_posix_spawn != yes; then
     HAVE_POSIX_SPAWN=0
   fi
@@ -78,6 +92,7 @@ AC_DEFUN([gl_SPAWN_H_DEFAULTS],
   GNULIB_POSIX_SPAWN=0;                       AC_SUBST([GNULIB_POSIX_SPAWN])
   GNULIB_POSIX_SPAWNP=0;                      AC_SUBST([GNULIB_POSIX_SPAWNP])
   GNULIB_POSIX_SPAWN_FILE_ACTIONS_INIT=0;     AC_SUBST([GNULIB_POSIX_SPAWN_FILE_ACTIONS_INIT])
+  GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR=0; AC_SUBST([GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR])
   GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDCLOSE=0; AC_SUBST([GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDCLOSE])
   GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDDUP2=0;  AC_SUBST([GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDDUP2])
   GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDOPEN=0;  AC_SUBST([GNULIB_POSIX_SPAWN_FILE_ACTIONS_ADDOPEN])
@@ -101,5 +116,15 @@ AC_DEFUN([gl_SPAWN_H_DEFAULTS],
   HAVE_POSIX_SPAWNATTR_T=1;  AC_SUBST([HAVE_POSIX_SPAWNATTR_T])
   HAVE_POSIX_SPAWN_FILE_ACTIONS_T=1;
                              AC_SUBST([HAVE_POSIX_SPAWN_FILE_ACTIONS_T])
+  HAVE_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR=1;
+                             AC_SUBST([HAVE_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR])
   REPLACE_POSIX_SPAWN=0;     AC_SUBST([REPLACE_POSIX_SPAWN])
+  REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR=0;
+                             AC_SUBST([REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDCHDIR])
+  REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDCLOSE=0;
+                             AC_SUBST([REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDCLOSE])
+  REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDDUP2=0;
+                             AC_SUBST([REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDDUP2])
+  REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDOPEN=0;
+                             AC_SUBST([REPLACE_POSIX_SPAWN_FILE_ACTIONS_ADDOPEN])
 ])

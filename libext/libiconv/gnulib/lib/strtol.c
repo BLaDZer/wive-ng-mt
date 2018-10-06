@@ -1,6 +1,6 @@
 /* Convert string representation of a number into an integer value.
 
-   Copyright (C) 1991-1992, 1994-1999, 2003, 2005-2007, 2009-2011 Free Software
+   Copyright (C) 1991-1992, 1994-1999, 2003, 2005-2007, 2009-2018 Free Software
    Foundation, Inc.
 
    NOTE: The canonical source of this file is maintained with the GNU C
@@ -17,7 +17,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef _LIBC
 # define USE_NUMBER_GROUPING
@@ -40,7 +40,7 @@
 # include "../locale/localeinfo.h"
 #endif
 
-/* Nonzero if we are defining `strtoul' or `strtoull', operating on
+/* Nonzero if we are defining 'strtoul' or 'strtoull', operating on
    unsigned integers.  */
 #ifndef UNSIGNED
 # define UNSIGNED 0
@@ -110,53 +110,13 @@
 # endif
 #endif
 
-/* If QUAD is defined, we are defining `strtoll' or `strtoull',
-   operating on `long long int's.  */
+/* If QUAD is defined, we are defining 'strtoll' or 'strtoull',
+   operating on 'long long int's.  */
 #ifdef QUAD
 # define LONG long long
 # define STRTOL_LONG_MIN LLONG_MIN
 # define STRTOL_LONG_MAX LLONG_MAX
 # define STRTOL_ULONG_MAX ULLONG_MAX
-
-/* The extra casts in the following macros work around compiler bugs,
-   e.g., in Cray C 5.0.3.0.  */
-
-/* True if negative values of the signed integer type T use two's
-   complement, ones' complement, or signed magnitude representation,
-   respectively.  Much GNU code assumes two's complement, but some
-   people like to be portable to all possible C hosts.  */
-# define TYPE_TWOS_COMPLEMENT(t) ((t) ~ (t) 0 == (t) -1)
-# define TYPE_ONES_COMPLEMENT(t) ((t) ~ (t) 0 == 0)
-# define TYPE_SIGNED_MAGNITUDE(t) ((t) ~ (t) 0 < (t) -1)
-
-/* True if the arithmetic type T is signed.  */
-# define TYPE_SIGNED(t) (! ((t) 0 < (t) -1))
-
-/* The maximum and minimum values for the integer type T.  These
-   macros have undefined behavior if T is signed and has padding bits.
-   If this is a problem for you, please let us know how to fix it for
-   your host.  */
-# define TYPE_MINIMUM(t) \
-   ((t) (! TYPE_SIGNED (t) \
-         ? (t) 0 \
-         : TYPE_SIGNED_MAGNITUDE (t) \
-         ? ~ (t) 0 \
-         : ~ TYPE_MAXIMUM (t)))
-# define TYPE_MAXIMUM(t) \
-   ((t) (! TYPE_SIGNED (t) \
-         ? (t) -1 \
-         : ((((t) 1 << (sizeof (t) * CHAR_BIT - 2)) - 1) * 2 + 1)))
-
-# ifndef ULLONG_MAX
-#  define ULLONG_MAX TYPE_MAXIMUM (unsigned long long)
-# endif
-# ifndef LLONG_MAX
-#  define LLONG_MAX TYPE_MAXIMUM (long long int)
-# endif
-# ifndef LLONG_MIN
-#  define LLONG_MIN TYPE_MINIMUM (long long int)
-# endif
-
 # if __GNUC__ == 2 && __GNUC_MINOR__ < 7
    /* Work around gcc bug with using this constant.  */
    static const unsigned long long int maxquad = ULLONG_MAX;
@@ -227,7 +187,7 @@
 
 
 
-/* Convert NPTR to an `unsigned long int' or `long int' in base BASE.
+/* Convert NPTR to an 'unsigned long int' or 'long int' in base BASE.
    If BASE is 0 the base is determined by the presence of a leading
    zero, indicating octal or a leading "0x" or "0X", indicating hexadecimal.
    If BASE is < 2 or > 36, it is reset to 10.
@@ -380,7 +340,7 @@ INTERNAL (strtol) (const STRING_TYPE *nptr, STRING_TYPE **endptr,
 
 #if !UNSIGNED
   /* Check for a value that is within the range of
-     `unsigned LONG int', but outside the range of `LONG int'.  */
+     'unsigned LONG int', but outside the range of 'LONG int'.  */
   if (overflow == 0
       && i > (negative
               ? -((unsigned LONG int) (STRTOL_LONG_MIN + 1)) + 1
@@ -405,7 +365,7 @@ noconv:
   /* We must handle a special case here: the base is 0 or 16 and the
      first two characters are '0' and 'x', but the rest are no
      hexadecimal digits.  This is no error case.  We return 0 and
-     ENDPTR points to the `x`.  */
+     ENDPTR points to the 'x'.  */
   if (endptr != NULL)
     {
       if (save - nptr >= 2 && TOUPPER (save[-1]) == L_('X')

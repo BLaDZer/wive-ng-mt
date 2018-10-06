@@ -1,5 +1,5 @@
 /* An lseek() function that detects pipes.
-   Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,18 +12,23 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <unistd.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 /* Windows platforms.  */
 /* Get GetFileType.  */
 # include <windows.h>
+/* Get _get_osfhandle.  */
+# if GNULIB_MSVC_NOTHROW
+#  include "msvc-nothrow.h"
+# else
+#  include <io.h>
+# endif
 #else
 # include <sys/stat.h>
 #endif
@@ -34,7 +39,7 @@
 off_t
 rpl_lseek (int fd, off_t offset, int whence)
 {
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   /* mingw lseek mistakenly succeeds on pipes, sockets, and terminals.  */
   HANDLE h = (HANDLE) _get_osfhandle (fd);
   if (h == INVALID_HANDLE_VALUE)
@@ -58,5 +63,9 @@ rpl_lseek (int fd, off_t offset, int whence)
       return -1;
     }
 #endif
+#if _GL_WINDOWS_64_BIT_OFF_T
+  return _lseeki64 (fd, offset, whence);
+#else
   return lseek (fd, offset, whence);
+#endif
 }

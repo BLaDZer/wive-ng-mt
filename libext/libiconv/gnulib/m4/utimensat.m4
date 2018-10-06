@@ -1,7 +1,7 @@
-# serial 5
+# serial 6
 # See if we need to provide utimensat replacement.
 
-dnl Copyright (C) 2009-2011 Free Software Foundation, Inc.
+dnl Copyright (C) 2009-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -34,14 +34,22 @@ AC_DEFUN([gl_FUNC_UTIMENSAT],
               }
               /* Test whether UTIME_NOW and UTIME_OMIT work.  */
               {
-                struct timespec ts[2] = { { 1, UTIME_OMIT }, { 1, UTIME_NOW } };
+                struct timespec ts[2];
+                ts[0].tv_sec = 1;
+                ts[0].tv_nsec = UTIME_OMIT;
+                ts[1].tv_sec = 1;
+                ts[1].tv_nsec = UTIME_NOW;
                 if (utimensat (AT_FDCWD, f, ts, 0))
                   result |= 4;
               }
               sleep (1);
               {
-                struct timespec ts[2] = { { 1, UTIME_NOW }, { 1, UTIME_OMIT } };
                 struct stat st;
+                struct timespec ts[2];
+                ts[0].tv_sec = 1;
+                ts[0].tv_nsec = UTIME_NOW;
+                ts[1].tv_sec = 1;
+                ts[1].tv_nsec = UTIME_OMIT;
                 if (utimensat (AT_FDCWD, f, ts, 0))
                   result |= 8;
                 if (stat (f, &st))
@@ -51,20 +59,10 @@ AC_DEFUN([gl_FUNC_UTIMENSAT],
               }
               return result;
             ]])],
-dnl FIXME: simplify this in 2012, when file system bugs are no longer common
-         [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#ifdef __linux__
-/* The Linux kernel added utimensat in 2.6.22, but has bugs with UTIME_OMIT
-   in several file systems as recently as 2.6.32.  Always replace utimensat
-   to support older kernels.  */
-choke me
-#endif
-      ]])],
-           [gl_cv_func_utimensat_works=yes],
-           [gl_cv_func_utimensat_works="needs runtime check"])],
+         [gl_cv_func_utimensat_works=yes],
          [gl_cv_func_utimensat_works=no],
-         [gl_cv_func_utimensat_works="guessing no"])])
-    if test "$gl_cv_func_utimensat_works" != yes; then
+         [gl_cv_func_utimensat_works="guessing yes"])])
+    if test "$gl_cv_func_utimensat_works" = no; then
       REPLACE_UTIMENSAT=1
     fi
   fi

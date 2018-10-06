@@ -1,5 +1,5 @@
 /* Test of rint() function.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -23,39 +23,78 @@
 #include "signature.h"
 SIGNATURE_CHECK (rint, double, (double));
 
+#include <float.h>
+#include <stdio.h>
+
+#include "isnand-nolibm.h"
+#include "minus-zero.h"
+#include "infinity.h"
+#include "nan.h"
 #include "macros.h"
 
-volatile double x;
-double y;
+#undef INFINITY
+#undef NAN
+
+#define DOUBLE double
+#define ISNAN isnand
+#define INFINITY Infinityd ()
+#define NAN NaNd ()
+#define L_(literal) literal
+#define RINT rint
+#define RANDOM randomd
+#include "test-rint.h"
 
 int
 main ()
 {
-  /* Assume round-to-nearest rounding (the default in IEEE 754).  */
+  /* Consider the current rounding mode, cf.
+     <http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/float.h.html>  */
+  if (FLT_ROUNDS == 1)
+    {
+      /* The current rounding mode is round-to-nearest
+         (the default in IEEE 754).  */
 
-  x = 2.1;
-  y = rint (x);
-  ASSERT (y == 2.0);
+      /* Zero.  */
+      ASSERT (rint (0.0) == 0.0);
+      ASSERT (rint (minus_zerod) == 0.0);
+      /* Positive numbers.  */
+      ASSERT (rint (0.3) == 0.0);
+      ASSERT (rint (0.5) == 0.0); /* unlike round() */
+      ASSERT (rint (0.7) == 1.0);
+      ASSERT (rint (1.0) == 1.0);
+      ASSERT (rint (1.5) == 2.0);
+      ASSERT (rint (1.999) == 2.0);
+      ASSERT (rint (2.0) == 2.0);
+      ASSERT (rint (2.1) == 2.0);
+      ASSERT (rint (2.5) == 2.0); /* unlike round() */
+      ASSERT (rint (2.7) == 3.0);
+      ASSERT (rint (65535.999) == 65536.0);
+      ASSERT (rint (65536.0) == 65536.0);
+      ASSERT (rint (65536.001) == 65536.0);
+      ASSERT (rint (2.341e31) == 2.341e31);
+      /* Negative numbers.  */
+      ASSERT (rint (-0.3) == 0.0);
+      ASSERT (rint (-0.5) == 0.0); /* unlike round() */
+      ASSERT (rint (-0.7) == -1.0);
+      ASSERT (rint (-1.0) == -1.0);
+      ASSERT (rint (-1.5) == -2.0);
+      ASSERT (rint (-1.999) == -2.0);
+      ASSERT (rint (-2.0) == -2.0);
+      ASSERT (rint (-2.1) == -2.0);
+      ASSERT (rint (-2.5) == -2.0); /* unlike round() */
+      ASSERT (rint (-2.7) == -3.0);
+      ASSERT (rint (-65535.999) == -65536.0);
+      ASSERT (rint (-65536.0) == -65536.0);
+      ASSERT (rint (-65536.001) == -65536.0);
+      ASSERT (rint (-2.341e31) == -2.341e31);
 
-  x = -2.1;
-  y = rint (x);
-  ASSERT (y == -2.0);
+      test_function ();
 
-  x = 2.7;
-  y = rint (x);
-  ASSERT (y == 3.0);
-
-  x = -2.7;
-  y = rint (x);
-  ASSERT (y == -3.0);
-
-  x = 2.5;
-  y = rint (x);
-  ASSERT (y == 2.0);
-
-  x = 3.5;
-  y = rint (x);
-  ASSERT (y == 4.0);
-
-  return 0;
+      return 0;
+    }
+  else
+    {
+      fputs ("Skipping test: non-standard rounding mode\n", stderr);
+      return 77;
+    }
 }

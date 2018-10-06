@@ -1,5 +1,5 @@
 /* fchdir replacement.
-   Copyright (C) 2006-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,14 +12,13 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <unistd.h>
 
-#include <assert.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -29,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "assure.h"
 #include "dosname.h"
 #include "filenamecat.h"
 
@@ -132,7 +132,7 @@ _gl_register_fd (int fd, const char *filename)
 {
   struct stat statbuf;
 
-  assert (0 <= fd);
+  assure (0 <= fd);
   if (REPLACE_OPEN_DIRECTORY
       || (fstat (fd, &statbuf) == 0 && S_ISDIR (statbuf.st_mode)))
     {
@@ -156,7 +156,7 @@ _gl_register_fd (int fd, const char *filename)
 int
 _gl_register_dup (int oldfd, int newfd)
 {
-  assert (0 <= oldfd && 0 <= newfd && oldfd != newfd);
+  assure (0 <= oldfd && 0 <= newfd && oldfd != newfd);
   if (oldfd < dirs_allocated && dirs[oldfd].name)
     {
       /* Duplicated a directory; must ensure newfd is allocated.  */
@@ -195,69 +195,6 @@ _gl_directory_name (int fd)
   else
     errno = EBADF;
   return NULL;
-}
-
-#if REPLACE_OPEN_DIRECTORY
-/* Return stat information about FD in STATBUF.  Needed when
-   rpl_open() used a dummy file to work around an open() that can't
-   normally visit directories.  */
-# undef fstat
-int
-rpl_fstat (int fd, struct stat *statbuf)
-{
-  if (0 <= fd && fd < dirs_allocated && dirs[fd].name != NULL)
-    return stat (dirs[fd].name, statbuf);
-  return fstat (fd, statbuf);
-}
-#endif
-
-/* Override opendir() and closedir(), to keep track of the open file
-   descriptors.  Needed because there is a function dirfd().  */
-
-int
-rpl_closedir (DIR *dp)
-#undef closedir
-{
-  int fd = dirfd (dp);
-  int retval = closedir (dp);
-
-  if (retval >= 0)
-    _gl_unregister_fd (fd);
-  return retval;
-}
-
-DIR *
-rpl_opendir (const char *filename)
-#undef opendir
-{
-  DIR *dp;
-
-  dp = opendir (filename);
-  if (dp != NULL)
-    {
-      int fd = dirfd (dp);
-      if (0 <= fd && _gl_register_fd (fd, filename) != fd)
-        {
-          int saved_errno = errno;
-          closedir (dp);
-          errno = saved_errno;
-          return NULL;
-        }
-    }
-  return dp;
-}
-
-/* Override dup(), to keep track of open file descriptors.  */
-
-int
-rpl_dup (int oldfd)
-#undef dup
-{
-  int newfd = dup (oldfd);
-
-  if (0 <= newfd)
-    newfd = _gl_register_dup (oldfd, newfd);
-  return newfd;
 }
 
 

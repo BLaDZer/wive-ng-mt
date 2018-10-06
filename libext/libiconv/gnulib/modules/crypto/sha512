@@ -2,22 +2,20 @@ Description:
 Compute SHA384 and SHA512 checksums.
 
 Files:
-lib/sha512.h
-lib/sha512.c
-m4/sha512.m4
 
 Depends-on:
-stdint
-u64
+crypto/af_alg
+crypto/sha512-buffer
 
 configure.ac:
-gl_SHA512
+AC_DEFINE([GL_COMPILE_CRYPTO_STREAM], 1, [Compile Gnulib crypto stream ops.])
 
 Makefile.am:
-lib_SOURCES += sha512.c
 
 Include:
 "sha512.h"
+
+Link:
 
 License:
 LGPLv2+

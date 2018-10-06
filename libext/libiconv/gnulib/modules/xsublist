@@ -7,6 +7,7 @@ lib/gl_xsublist.c
 
 Depends-on:
 sublist
+extern-inline
 xalloc-die
 
 configure.ac:
@@ -21,4 +22,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible
+all

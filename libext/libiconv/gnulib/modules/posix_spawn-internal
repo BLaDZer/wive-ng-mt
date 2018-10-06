@@ -12,6 +12,7 @@ alloca-opt
 dup2
 errno
 open
+sh-filename
 strchrnul
 
 configure.ac:
@@ -24,5 +25,4 @@ License:
 LGPLv2+
 
 Maintainer:
-Bruno Haible, glibc
-
+glibc

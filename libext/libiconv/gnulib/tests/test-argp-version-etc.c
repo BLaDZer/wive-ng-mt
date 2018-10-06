@@ -1,5 +1,5 @@
 /* Test suite for argp-version-etc.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    This file is part of the GNUlib Library.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,12 +13,11 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 #include "argp-version-etc.h"
 #include "argp.h"
-#include "progname.h"
 
 static char doc[] = "test for the argp-version-etc module";
 
@@ -42,7 +41,6 @@ const char *authors[] =
 int
 main (int argc, char **argv)
 {
-  set_program_name (argv[0]);
   argp_version_setup ("test-argp-version-etc", authors);
   return argp_parse (&test_argp, argc, argv, 0, NULL, NULL);
 }

@@ -1,6 +1,6 @@
 /* Detect the number of processors.
 
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,14 +13,14 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Glen Lenker and Bruno Haible.  */
 
 #include <config.h>
 #include "nproc.h"
 
+#include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -50,12 +50,14 @@
 # include <sys/sysctl.h>
 #endif
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif
 
 #include "c-ctype.h"
+
+#include "minmax.h"
 
 #define ARRAY_SIZE(a) (sizeof (a) / sizeof ((a)[0]))
 
@@ -174,7 +176,7 @@ num_processors_via_affinity_mask (void)
   }
 #endif
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   { /* This works on native Windows platforms.  */
     DWORD_PTR process_mask;
     DWORD_PTR system_mask;
@@ -197,41 +199,12 @@ num_processors_via_affinity_mask (void)
   return 0;
 }
 
-unsigned long int
-num_processors (enum nproc_query query)
+
+/* Return the total number of processors.  Here QUERY must be one of
+   NPROC_ALL, NPROC_CURRENT.  The result is guaranteed to be at least 1.  */
+static unsigned long int
+num_processors_ignoring_omp (enum nproc_query query)
 {
-  if (query == NPROC_CURRENT_OVERRIDABLE)
-    {
-      /* Test the environment variable OMP_NUM_THREADS, recognized also by all
-         programs that are based on OpenMP.  The OpenMP spec says that the
-         value assigned to the environment variable "may have leading and
-         trailing white space". */
-      const char *envvalue = getenv ("OMP_NUM_THREADS");
-
-      if (envvalue != NULL)
-        {
-          while (*envvalue != '\0' && c_isspace (*envvalue))
-            envvalue++;
-          /* Convert it from decimal to 'unsigned long'.  */
-          if (c_isdigit (*envvalue))
-            {
-              char *endptr = NULL;
-              unsigned long int value = strtoul (envvalue, &endptr, 10);
-
-              if (endptr != NULL)
-                {
-                  while (*endptr != '\0' && c_isspace (*endptr))
-                    endptr++;
-                  if (*endptr == '\0')
-                    return (value > 0 ? value : 1);
-                }
-            }
-        }
-
-      query = NPROC_CURRENT;
-    }
-  /* Here query is one of NPROC_ALL, NPROC_CURRENT.  */
-
   /* On systems with a modern affinity mask system call, we have
          sysconf (_SC_NPROCESSORS_CONF)
             >= sysconf (_SC_NPROCESSORS_ONLN)
@@ -257,7 +230,7 @@ num_processors (enum nproc_query query)
       }
 
 #if defined _SC_NPROCESSORS_ONLN
-      { /* This works on glibc, MacOS X 10.5, FreeBSD, AIX, OSF/1, Solaris,
+      { /* This works on glibc, Mac OS X 10.5, FreeBSD, AIX, OSF/1, Solaris,
            Cygwin, Haiku.  */
         long int nprocs = sysconf (_SC_NPROCESSORS_ONLN);
         if (nprocs > 0)
@@ -268,7 +241,7 @@ num_processors (enum nproc_query query)
   else /* query == NPROC_ALL */
     {
 #if defined _SC_NPROCESSORS_CONF
-      { /* This works on glibc, MacOS X 10.5, FreeBSD, AIX, OSF/1, Solaris,
+      { /* This works on glibc, Mac OS X 10.5, FreeBSD, AIX, OSF/1, Solaris,
            Cygwin, Haiku.  */
         long int nprocs = sysconf (_SC_NPROCESSORS_CONF);
 
@@ -333,7 +306,7 @@ num_processors (enum nproc_query query)
      NPROC_CURRENT and NPROC_ALL.  */
 
 #if HAVE_SYSCTL && defined HW_NCPU
-  { /* This works on MacOS X, FreeBSD, NetBSD, OpenBSD.  */
+  { /* This works on Mac OS X, FreeBSD, NetBSD, OpenBSD.  */
     int nprocs;
     size_t len = sizeof (nprocs);
     static int mib[2] = { CTL_HW, HW_NCPU };
@@ -345,7 +318,7 @@ num_processors (enum nproc_query query)
   }
 #endif
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   { /* This works on native Windows platforms.  */
     SYSTEM_INFO system_info;
     GetSystemInfo (&system_info);
@@ -355,4 +328,68 @@ num_processors (enum nproc_query query)
 #endif
 
   return 1;
+}
+
+/* Parse OMP environment variables without dependence on OMP.
+   Return 0 for invalid values.  */
+static unsigned long int
+parse_omp_threads (char const* threads)
+{
+  unsigned long int ret = 0;
+
+  if (threads == NULL)
+    return ret;
+
+  /* The OpenMP spec says that the value assigned to the environment variables
+     "may have leading and trailing white space".  */
+  while (*threads != '\0' && c_isspace (*threads))
+    threads++;
+
+  /* Convert it from positive decimal to 'unsigned long'.  */
+  if (c_isdigit (*threads))
+    {
+      char *endptr = NULL;
+      unsigned long int value = strtoul (threads, &endptr, 10);
+
+      if (endptr != NULL)
+        {
+          while (*endptr != '\0' && c_isspace (*endptr))
+            endptr++;
+          if (*endptr == '\0')
+            return value;
+          /* Also accept the first value in a nesting level,
+             since we can't determine the nesting level from env vars.  */
+          else if (*endptr == ',')
+            return value;
+        }
+    }
+
+  return ret;
+}
+
+unsigned long int
+num_processors (enum nproc_query query)
+{
+  unsigned long int omp_env_limit = ULONG_MAX;
+
+  if (query == NPROC_CURRENT_OVERRIDABLE)
+    {
+      unsigned long int omp_env_threads;
+      /* Honor the OpenMP environment variables, recognized also by all
+         programs that are based on OpenMP.  */
+      omp_env_threads = parse_omp_threads (getenv ("OMP_NUM_THREADS"));
+      omp_env_limit = parse_omp_threads (getenv ("OMP_THREAD_LIMIT"));
+      if (! omp_env_limit)
+        omp_env_limit = ULONG_MAX;
+
+      if (omp_env_threads)
+        return MIN (omp_env_threads, omp_env_limit);
+
+      query = NPROC_CURRENT;
+    }
+  /* Here query is one of NPROC_ALL, NPROC_CURRENT.  */
+  {
+    unsigned long nprocs = num_processors_ignoring_omp (query);
+    return MIN (nprocs, omp_env_limit);
+  }
 }

@@ -1,6 +1,6 @@
 /* Save and restore the working directory, possibly using a subprocess.
 
-   Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert.  */
 
@@ -22,6 +22,14 @@
 
 #include <stdbool.h>
 #include <sys/types.h>
+
+#ifndef _GL_INLINE_HEADER_BEGIN
+ #error "Please include config.h first."
+#endif
+_GL_INLINE_HEADER_BEGIN
+#ifndef SAVEWD_INLINE
+# define SAVEWD_INLINE _GL_INLINE
+#endif
 
 /* A saved working directory.  The member names and constants defined
    by this structure are private to the savewd module.  */
@@ -67,27 +75,22 @@ struct savewd
 };
 
 /* Initialize a saved working directory object.  */
-static inline void
+SAVEWD_INLINE void
 savewd_init (struct savewd *wd)
 {
   wd->state = INITIAL_STATE;
 }
 
 
-/* Options for savewd_chdir.  */
+/* Options for savewd_chdir.  Can be ORed together.  */
 enum
   {
     /* Do not follow symbolic links, if supported.  */
     SAVEWD_CHDIR_NOFOLLOW = 1,
 
-    /* The directory should be readable, so fail if it happens to be
-       discovered that the directory is not readable.  (Unreadable
-       directories are not necessarily diagnosed, though.)  */
-    SAVEWD_CHDIR_READABLE = 2,
-
     /* Do not chdir if the directory is readable; simply succeed
        without invoking chdir if the directory was opened.  */
-    SAVEWD_CHDIR_SKIP_READABLE = 4
+    SAVEWD_CHDIR_SKIP_READABLE = 2
   };
 
 /* Change the directory, and if successful, record into *WD the fact
@@ -117,7 +120,7 @@ int savewd_chdir (struct savewd *wd, char const *dir, int options,
 int savewd_restore (struct savewd *wd, int status);
 
 /* Return WD's error number, or 0 if WD is not in an error state.  */
-static inline int
+SAVEWD_INLINE int _GL_ATTRIBUTE_PURE
 savewd_errno (struct savewd const *wd)
 {
   return (wd->state == ERROR_STATE ? wd->val.errnum : 0);
@@ -144,5 +147,7 @@ void savewd_finish (struct savewd *wd);
 int savewd_process_files (int n_files, char **file,
                           int (*act) (char *, struct savewd *, void *),
                           void *options);
+
+_GL_INLINE_HEADER_END
 
 #endif

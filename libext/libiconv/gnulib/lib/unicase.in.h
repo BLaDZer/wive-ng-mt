@@ -1,5 +1,5 @@
 /* Unicode character case mappings.
-   Copyright (C) 2002, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify it
    under the terms of the GNU Lesser General Public License as published
@@ -12,7 +12,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _UNICASE_H
 #define _UNICASE_H
@@ -42,15 +42,18 @@ extern "C" {
 
 /* Return the uppercase mapping of a Unicode character.  */
 extern ucs4_t
-       uc_toupper (ucs4_t uc);
+       uc_toupper (ucs4_t uc)
+       _UC_ATTRIBUTE_CONST;
 
 /* Return the lowercase mapping of a Unicode character.  */
 extern ucs4_t
-       uc_tolower (ucs4_t uc);
+       uc_tolower (ucs4_t uc)
+       _UC_ATTRIBUTE_CONST;
 
 /* Return the titlecase mapping of a Unicode character.  */
 extern ucs4_t
-       uc_totitle (ucs4_t uc);
+       uc_totitle (ucs4_t uc)
+       _UC_ATTRIBUTE_CONST;
 
 /* ========================================================================= */
 
@@ -63,7 +66,8 @@ extern ucs4_t
 /* Return the ISO 639 language code of the current locale.
    Return "" if it is unknown, or in the "C" locale.  */
 extern const char *
-       uc_locale_language (void);
+       uc_locale_language (void)
+       _UC_ATTRIBUTE_PURE;
 
 /* Conventions:
 

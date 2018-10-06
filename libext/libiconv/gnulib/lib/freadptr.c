@@ -1,5 +1,5 @@
 /* Retrieve information about a FILE stream.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -23,13 +23,17 @@
 
 #include "stdio-impl.h"
 
+/* This file is not used on systems that have the __freadptr function,
+   namely musl libc.  */
+
 const char *
 freadptr (FILE *fp, size_t *sizep)
 {
   size_t size;
 
   /* Keep this code in sync with freadahead!  */
-#if defined _IO_ftrylockfile || __GNU_LIBRARY__ == 1 /* GNU libc, BeOS, Haiku, Linux libc5 */
+#if defined _IO_EOF_SEEN || defined _IO_ftrylockfile || __GNU_LIBRARY__ == 1
+  /* GNU libc, BeOS, Haiku, Linux libc5 */
   if (fp->_IO_write_ptr > fp->_IO_write_base)
     return NULL;
   size = fp->_IO_read_end - fp->_IO_read_ptr;
@@ -37,7 +41,8 @@ freadptr (FILE *fp, size_t *sizep)
     return NULL;
   *sizep = size;
   return (const char *) fp->_IO_read_ptr;
-#elif defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+#elif defined __sferror || defined __DragonFly__ || defined __ANDROID__
+  /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin, Minix 3, Android */
   if ((fp_->_flags & __SWR) != 0 || fp_->_r < 0)
     return NULL;
   size = fp_->_r;
@@ -64,7 +69,7 @@ freadptr (FILE *fp, size_t *sizep)
     return NULL;
   *sizep = size;
   return (const char *) fp_->_ptr;
-#elif defined _IOERR                /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, NonStop Kernel */
+#elif defined _IOERR                /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, MSVC, NonStop Kernel, OpenVMS */
   if ((fp_->_flag & _IOWRT) != 0)
     return NULL;
   size = fp_->_cnt;
@@ -75,6 +80,8 @@ freadptr (FILE *fp, size_t *sizep)
 #elif defined __UCLIBC__            /* uClibc */
 # ifdef __STDIO_BUFFERS
   if (fp->__modeflags & __FLAG_WRITING)
+    return NULL;
+  if (fp->__modeflags & __FLAG_UNGOT)
     return NULL;
   size = fp->__bufread - fp->__bufpos;
   if (size == 0)
@@ -101,6 +108,13 @@ freadptr (FILE *fp, size_t *sizep)
     return NULL;
   *sizep = size;
   return fp->__bufp;
+#elif defined EPLAN9                /* Plan9 */
+  if (fp->state == 4 /* WR */)
+    return NULL;
+  if (fp->rp >= fp->wp)
+    return NULL;
+  *sizep = fp->wp - fp->rp;
+  return fp->rp;
 #elif defined SLOW_BUT_NO_HACKS     /* users can define this */
   /* This implementation is correct on any ANSI C platform.  It is just
      awfully slow.  */

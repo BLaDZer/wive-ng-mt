@@ -1,5 +1,5 @@
 /* Temporary directories and temporary files with automatic cleanup.
-   Copyright (C) 2001, 2003, 2006-2007, 2009-2011 Free Software Foundation,
+   Copyright (C) 2001, 2003, 2006-2007, 2009-2018 Free Software Foundation,
    Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 
 #include <config.h>
@@ -30,7 +30,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # define WIN32_LEAN_AND_MEAN  /* avoid including junk */
 # include <windows.h>
 #endif
@@ -67,13 +67,6 @@
 
 #ifndef uintptr_t
 # define uintptr_t unsigned long
-#endif
-
-#if !GNULIB_FCNTL_SAFER
-/* The results of open() in this file are not used with fchdir,
-   therefore save some unnecessary work in fchdir.c.  */
-# undef open
-# undef close
 #endif
 
 
@@ -172,7 +165,7 @@ string_equals (const void *x1, const void *x2)
 
 /* A hash function for NUL-terminated char* strings using
    the method described by Bruno Haible.
-   See http://www.haible.de/bruno/hashfunc.html.  */
+   See https://www.haible.de/bruno/hashfunc.html.  */
 static size_t
 string_hash (const void *x)
 {
@@ -556,7 +549,10 @@ cleanup_temp_dir (struct temp_dir *dir)
           }
         else
           cleanup_list.tempdir_list[i] = NULL;
-        /* Now only we can free the tmpdir->dirname and tmpdir itself.  */
+        /* Now only we can free the tmpdir->dirname, tmpdir->subdirs,
+           tmpdir->files, and tmpdir itself.  */
+        gl_list_free (tmpdir->files);
+        gl_list_free (tmpdir->subdirs);
         free (tmpdir->dirname);
         free (tmpdir);
         return err;
@@ -567,7 +563,7 @@ cleanup_temp_dir (struct temp_dir *dir)
 }
 
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 
 /* On Windows, opening a file with _O_TEMPORARY has the effect of passing
    the FILE_FLAG_DELETE_ON_CLOSE flag to CreateFile(), which has the effect
@@ -582,6 +578,11 @@ supports_delete_on_close ()
   if (!known)
     {
       OSVERSIONINFO v;
+
+      /* According to
+         <https://msdn.microsoft.com/en-us/library/ms724451.aspx>
+         this structure must be initialized as follows:  */
+      v.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
 
       if (GetVersionEx (&v))
         known = (v.dwPlatformId == VER_PLATFORM_WIN32_NT ? 1 : -1);
@@ -631,7 +632,7 @@ open_temp (const char *file_name, int flags, mode_t mode)
 
   block_fatal_signals ();
   /* Note: 'open' here is actually open() or open_safer().  */
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   /* Use _O_TEMPORARY when possible, to increase the chances that the
      temporary file is removed when the process crashes.  */
   if (supports_delete_on_close ())
@@ -657,7 +658,7 @@ fopen_temp (const char *file_name, const char *mode)
 
   block_fatal_signals ();
   /* Note: 'fopen' here is actually fopen() or fopen_safer().  */
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
   /* Use _O_TEMPORARY when possible, to increase the chances that the
      temporary file is removed when the process crashes.  */
   if (supports_delete_on_close ())

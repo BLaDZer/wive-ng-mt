@@ -22,8 +22,7 @@ Include:
 <math.h>
 
 License:
-LGPL
+LGPLv2+
 
 Maintainer:
-Bruno Haible, Paolo Bonzini
-
+Paolo Bonzini

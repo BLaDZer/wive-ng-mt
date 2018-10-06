@@ -14,6 +14,7 @@ error
 fatal-signal
 wait-process
 gettext-h
+msvc-nothrow
 spawn
 posix_spawnp
 posix_spawn_file_actions_init
@@ -42,4 +43,4 @@ License:
 GPL
 
 Maintainer:
-Bruno Haible
+all

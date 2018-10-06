@@ -1,5 +1,5 @@
-/* Case-insensitive searching in a string.
-   Copyright (C) 2005-2011 Free Software Foundation, Inc.
+/* Case-insensitive searching in a string.  -*- coding: utf-8 -*-
+   Copyright (C) 2005-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2005.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -35,7 +35,7 @@
 #include "str-kmp.h"
 
 /* Knuth-Morris-Pratt algorithm.
-   See http://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
+   See https://en.wikipedia.org/wiki/Knuth-Morris-Pratt_algorithm
    Return a boolean indicating success:
    Return true and set *RESULTP if the search was completed.
    Return false if it was aborted because not enough memory was available.  */

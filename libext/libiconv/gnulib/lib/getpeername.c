@@ -1,6 +1,6 @@
 /* getpeername.c --- wrappers for Windows getpeername function
 
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paolo Bonzini */
 
@@ -32,9 +32,18 @@ int
 rpl_getpeername (int fd, struct sockaddr *addr, socklen_t *addrlen)
 {
   SOCKET sock = FD_TO_SOCKET (fd);
-  int r = getpeername (sock, addr, addrlen);
-  if (r < 0)
-    set_winsock_errno ();
 
-  return r;
+  if (sock == INVALID_SOCKET)
+    {
+      errno = EBADF;
+      return -1;
+    }
+  else
+    {
+      int r = getpeername (sock, addr, addrlen);
+      if (r < 0)
+        set_winsock_errno ();
+
+      return r;
+    }
 }

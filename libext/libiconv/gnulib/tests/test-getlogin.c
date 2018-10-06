@@ -1,5 +1,5 @@
 /* Test of getting user name.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,9 +12,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-/* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
+/* Written by Bruno Haible and Paul Eggert.  */
 
 #include <config.h>
 
@@ -23,52 +23,16 @@
 #include "signature.h"
 SIGNATURE_CHECK (getlogin, char *, (void));
 
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "macros.h"
+#include "test-getlogin.h"
 
 int
 main (void)
 {
-  char *buf;
-
   /* Test value.  */
-  buf = getlogin ();
-  if (buf == NULL)
-    {
-      /* getlogin() fails when stdin is not connected to a tty.  */
-      ASSERT (errno == ENOTTY);
-#if !defined __hpux /* On HP-UX 11.11 it fails anyway.  */
-      ASSERT (! isatty (0));
-#endif
-      fprintf (stderr, "Skipping test: stdin is not a tty.\n");
-      return 77;
-    }
-
-  /* Compare against the value from the environment.  */
-#if !((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__)
-  /* Unix platform */
-  {
-    const char *name = getenv ("LOGNAME");
-    if (name == NULL || name[0] == '\0')
-      name = getenv ("USER");
-    if (name != NULL && name[0] != '\0')
-      ASSERT (strcmp (buf, name) == 0);
-  }
-#endif
-#if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
-  /* Native Windows platform.
-     Note: This test would fail on Cygwin in an ssh session, because sshd
-     sets USERNAME=SYSTEM.  */
-  {
-    const char *name = getenv ("USERNAME");
-    if (name != NULL && name[0] != '\0')
-      ASSERT (strcmp (buf, name) == 0);
-  }
-#endif
+  char *buf = getlogin ();
+  int err = buf ? 0 : errno;
+  ASSERT (buf || err);
+  test_getlogin_result (buf, err);
 
   return 0;
 }

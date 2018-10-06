@@ -19,6 +19,19 @@
 /* Specification.  */
 #include <math.h>
 
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+tanl (long double x)
+{
+  return tan (x);
+}
+
+#else
+
+/* Code based on glibc/sysdeps/ieee754/ldbl-128/s_tanl.c
+   and           glibc/sysdeps/ieee754/ldbl-128/k_tanl.c.  */
+
 /* tanl(x)
  * Return tangent function of x.
  *
@@ -49,7 +62,7 @@
  *      TRIG(x) returns trig(x) nearly rounded
  */
 
-#include "trigl.h"
+# include "trigl.h"
 
 /*
  * ====================================================
@@ -207,6 +220,8 @@ tanl (long double x)
       return kernel_tanl (y[0], y[1], 1 - ((n & 1) << 1));
     }
 }
+
+#endif
 
 #if 0
 int

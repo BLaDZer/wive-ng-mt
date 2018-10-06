@@ -1,5 +1,5 @@
 /* Java CLASSPATH handling.
-   Copyright (C) 2001-2003, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2003, 2006, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <haible@clisp.cons.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,9 +13,13 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
-#include <config.h>
+/* If CLASSPATHVAR is defined, this file is being #included, and config.h is
+   therefore already included.  */
+#if !defined CLASSPATHVAR
+# include <config.h>
+#endif
 
 /* Specification.  */
 #include "classpath.h"
@@ -33,8 +37,8 @@
 #endif
 
 /* Separator in PATH like lists of pathnames.  */
-#if ((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
-  /* Win32, OS/2, DOS */
+#if (defined _WIN32 && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
+  /* Native Windows, OS/2, DOS */
 # define PATH_SEPARATOR ';'
 #else
   /* Unix */

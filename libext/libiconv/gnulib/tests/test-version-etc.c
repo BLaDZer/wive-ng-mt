@@ -1,5 +1,5 @@
 /* Test suite for version-etc.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
    This file is part of the GNUlib Library.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,20 +13,18 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 #include "version-etc.h"
 
-#include "progname.h"
 
 #define AUTHORS "Sergey Poznyakoff", "Eric Blake"
 
 int
 main (int argc _GL_UNUSED, char **argv)
 {
-  set_program_name (argv[0]);
   version_etc (stdout, "test-version-etc", "dummy", "0", AUTHORS,
                (const char *) NULL);
   return 0;

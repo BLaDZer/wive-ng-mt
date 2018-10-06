@@ -1,5 +1,5 @@
-# fopen.m4 serial 8
-dnl Copyright (C) 2007-2011 Free Software Foundation, Inc.
+# fopen.m4 serial 10
+dnl Copyright (C) 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -27,7 +27,11 @@ AC_DEFUN([gl_FUNC_FOPEN],
 #include <stdio.h>
 int main ()
 {
-  return fopen ("conftest.sl/", "w") != NULL;
+  FILE *fp = fopen ("conftest.sl/", "w");
+  int result = (fp != NULL);
+  if (fp != NULL)
+    fclose (fp);
+  return result;
 }]])],
             [gl_cv_func_fopen_slash=yes],
             [gl_cv_func_fopen_slash=no],
@@ -55,7 +59,4 @@ changequote([,])dnl
 ])
 
 # Prerequisites of lib/fopen.c.
-AC_DEFUN([gl_PREREQ_FOPEN],
-[
-  AC_REQUIRE([AC_C_INLINE])
-])
+AC_DEFUN([gl_PREREQ_FOPEN], [:])

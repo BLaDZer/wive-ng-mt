@@ -1,6 +1,6 @@
 /* Add two struct timespec values.
 
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,12 +13,12 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert.  */
 
 /* Return the sum of two timespec values A and B.  On overflow, return
-   an extremal value.  This assumes 0 <= tv_nsec <= 999999999.  */
+   an extremal value.  This assumes 0 <= tv_nsec < TIMESPEC_HZ.  */
 
 #include <config.h>
 #include "timespec.h"
@@ -28,44 +28,44 @@
 struct timespec
 timespec_add (struct timespec a, struct timespec b)
 {
-  struct timespec r;
   time_t rs = a.tv_sec;
   time_t bs = b.tv_sec;
   int ns = a.tv_nsec + b.tv_nsec;
-  int nsd = ns - 1000000000;
+  int nsd = ns - TIMESPEC_HZ;
   int rns = ns;
+  time_t tmin = TYPE_MINIMUM (time_t);
+  time_t tmax = TYPE_MAXIMUM (time_t);
 
   if (0 <= nsd)
     {
       rns = nsd;
-      if (rs == TYPE_MAXIMUM (time_t))
-        {
-          if (0 <= bs)
-            goto high_overflow;
-          bs++;
-        }
-      else
+      if (bs < tmax)
+        bs++;
+      else if (rs < 0)
         rs++;
+      else
+        goto high_overflow;
     }
 
-  if (INT_ADD_OVERFLOW (rs, bs))
+  /* INT_ADD_WRAPV is not appropriate since time_t might be unsigned.
+     In theory time_t might be narrower than int, so plain
+     INT_ADD_OVERFLOW does not suffice.  */
+  if (! INT_ADD_OVERFLOW (rs, bs) && tmin <= rs + bs && rs + bs <= tmax)
+    rs += bs;
+  else
     {
       if (rs < 0)
         {
-          rs = TYPE_MINIMUM (time_t);
+          rs = tmin;
           rns = 0;
         }
       else
         {
         high_overflow:
-          rs = TYPE_MAXIMUM (time_t);
-          rns = 999999999;
+          rs = tmax;
+          rns = TIMESPEC_HZ - 1;
         }
     }
-  else
-    rs += bs;
 
-  r.tv_sec = rs;
-  r.tv_nsec = rns;
-  return r;
+  return make_timespec (rs, rns);
 }

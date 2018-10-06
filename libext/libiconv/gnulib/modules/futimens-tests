@@ -7,9 +7,13 @@ tests/signature.h
 tests/macros.h
 
 Depends-on:
+gettext-h
+fcntl-h
 ignore-value
+intprops
+nanosleep
 timespec
-usleep
+dup
 utimecmp
 
 configure.ac:
@@ -17,4 +21,4 @@ configure.ac:
 Makefile.am:
 TESTS += test-futimens
 check_PROGRAMS += test-futimens
-test_futimens_LDADD = $(LDADD) $(LIB_CLOCK_GETTIME)
+test_futimens_LDADD = $(LDADD) $(LIB_CLOCK_GETTIME) $(LIB_NANOSLEEP) @LIBINTL@

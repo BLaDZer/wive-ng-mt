@@ -1,5 +1,5 @@
 /* Test of POSIX compatible vasnprintf() and asnprintf() functions.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -26,13 +26,14 @@
 
 #include "macros.h"
 
+/* glibc >= 2.2 supports the 'I' flag, and in glibc >= 2.2.3 the fa_IR
+   locale defines the 'outdigits' to be U+06F0..U+06F9.
+   So we test for glibc >= 2.3.  */
+#if (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)) && !defined __UCLIBC__
+
 static void
 test_function (char * (*my_asnprintf) (char *, size_t *, const char *, ...))
 {
-  /* glibc >= 2.2 supports the 'I' flag, and in glibc >= 2.2.3 the fa_IR
-     locale defines the 'outdigits' to be U+06F0..U+06F9.
-     So we test for glibc >= 2.3.  */
-#if (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 3)) && !defined __UCLIBC__
   /* Test that the 'I' flag is supported.  */
   {
     size_t length;
@@ -45,7 +46,6 @@ test_function (char * (*my_asnprintf) (char *, size_t *, const char *, ...))
     ASSERT (length == strlen (result));
     free (result);
   }
-#endif
 }
 
 static char *
@@ -71,6 +71,8 @@ test_asnprintf ()
 {
   test_function (asnprintf);
 }
+
+#endif
 
 int
 main (int argc, char *argv[])

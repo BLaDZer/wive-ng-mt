@@ -1,5 +1,5 @@
-# getaddrinfo.m4 serial 28
-dnl Copyright (C) 2004-2011 Free Software Foundation, Inc.
+# getaddrinfo.m4 serial 31
+dnl Copyright (C) 2004-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -8,7 +8,7 @@ AC_DEFUN([gl_GETADDRINFO],
 [
   AC_REQUIRE([gl_HEADER_SYS_SOCKET])dnl for HAVE_SYS_SOCKET_H, HAVE_WINSOCK2_H
   AC_REQUIRE([gl_HEADER_NETDB])dnl for HAVE_NETDB_H
-  AC_MSG_NOTICE([checking how to do getaddrinfo, freeaddrinfo and getnameinfo])
+  AC_MSG_CHECKING([how to do getaddrinfo, freeaddrinfo and getnameinfo])
   GETADDRINFO_LIB=
   gai_saved_LIBS="$LIBS"
 
@@ -134,7 +134,6 @@ AC_DEFUN([gl_PREREQ_GETADDRINFO], [
   AC_REQUIRE([AC_C_RESTRICT])
   AC_REQUIRE([gl_SOCKET_FAMILIES])
   AC_REQUIRE([gl_HEADER_SYS_SOCKET])
-  AC_REQUIRE([AC_C_INLINE])
   AC_REQUIRE([AC_USE_SYSTEM_EXTENSIONS])
 
   dnl Including sys/socket.h is wrong for Windows, but Windows does not
@@ -146,7 +145,7 @@ AC_DEFUN([gl_PREREQ_GETADDRINFO], [
 
   AC_CHECK_HEADERS_ONCE([netinet/in.h])
 
-  AC_CHECK_DECLS([getaddrinfo, freeaddrinfo, getnameinfo],,,[
+  AC_CHECK_DECLS([getaddrinfo, freeaddrinfo, getnameinfo],,,[[
   /* sys/types.h is not needed according to POSIX, but the
      sys/socket.h in i386-unknown-freebsd4.10 and
      powerpc-apple-darwin5.5 required it. */
@@ -160,7 +159,7 @@ AC_DEFUN([gl_PREREQ_GETADDRINFO], [
 #ifdef HAVE_WS2TCPIP_H
 #include <ws2tcpip.h>
 #endif
-])
+]])
   if test $ac_cv_have_decl_getaddrinfo = no; then
     HAVE_DECL_GETADDRINFO=0
   fi

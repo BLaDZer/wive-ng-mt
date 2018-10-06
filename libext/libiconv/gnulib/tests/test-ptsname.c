@@ -1,5 +1,5 @@
 /* Test of ptsname(3).
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -21,7 +21,9 @@
 #include "signature.h"
 SIGNATURE_CHECK (ptsname, char *, (int));
 
+#include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -54,6 +56,25 @@ same_slave (const char *slave_name1, const char *slave_name2)
 int
 main (void)
 {
+#if HAVE_DECL_ALARM
+  /* Declare failure if test takes too long, by using default abort
+     caused by SIGALRM.  */
+  int alarm_value = 5;
+  signal (SIGALRM, SIG_DFL);
+  alarm (alarm_value);
+#endif
+
+  {
+    char *result;
+
+    errno = 0;
+    result = ptsname (-1);
+    ASSERT (result == NULL);
+    ASSERT (errno == EBADF
+            || errno == ENOTTY /* seen on glibc */
+           );
+  }
+
   {
     int fd;
     char *result;
@@ -101,7 +122,7 @@ main (void)
 
 #else
 
-  /* Try various master names of MacOS X: /dev/pty[p-w][0-9a-f]  */
+  /* Try various master names of Mac OS X: /dev/pty[p-w][0-9a-f]  */
   {
     int char1;
     int char2;

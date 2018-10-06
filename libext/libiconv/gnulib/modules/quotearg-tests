@@ -13,11 +13,11 @@ m4/codeset.m4
 
 Depends-on:
 gettext
-progname
 stdint
 setenv
 unsetenv
 setlocale
+localcharset
 
 configure.ac:
 gt_LOCALE_FR

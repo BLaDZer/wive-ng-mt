@@ -1,4 +1,4 @@
-/* Copyright (C) 1993, 1995-1997, 2002-2003, 2005-2007, 2009-2011 Free Software
+/* Copyright (C) 1993, 1995-1997, 2002-2003, 2005-2007, 2009-2018 Free Software
  * Foundation, Inc.
 
    NOTE: The canonical source of this file is maintained with the GNU C Library.
@@ -15,7 +15,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* This is almost copied from strncpy.c, written by Torbjorn Granlund.  */
 
@@ -31,7 +31,7 @@
 /* Copy no more than N bytes of SRC to DST, returning a pointer past the
    last non-NUL byte written into DST.  */
 char *
-__stpncpy (char *dest, const char *src, size_t n)
+(__stpncpy) (char *dest, const char *src, size_t n)
 {
   char c;
   char *s = dest;

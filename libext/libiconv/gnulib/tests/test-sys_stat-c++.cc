@@ -1,5 +1,5 @@
 /* Test of <sys/stat.h> substitute in C++ mode.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -29,7 +29,9 @@ SIGNATURE_CHECK (GNULIB_NAMESPACE::fchmodat, int,
                  (int, char const *, mode_t, int));
 #endif
 
+#if GNULIB_TEST_FSTAT
 SIGNATURE_CHECK (GNULIB_NAMESPACE::fstat, int, (int, struct stat *));
+#endif
 
 #if GNULIB_TEST_FSTATAT
 SIGNATURE_CHECK (GNULIB_NAMESPACE::fstatat, int,

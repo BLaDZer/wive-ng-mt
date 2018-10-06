@@ -1,5 +1,5 @@
 /* Test suite for argp.
-   Copyright (C) 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2007, 2009-2018 Free Software Foundation, Inc.
    This file is part of the GNUlib Library.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -25,7 +25,8 @@
 #if HAVE_STRINGS_H
 # include <strings.h>
 #endif
-#include "progname.h"
+
+#include "macros.h"
 
 struct test_args
 {
@@ -64,7 +65,7 @@ group1_parser (int key, char *arg, struct argp_state *state)
 
     case 'r':
       args->read = 1;
-      /* fall through */
+      FALLTHROUGH;
     case 'f':
       args->file = arg;
       break;
@@ -458,8 +459,6 @@ main (int argc, char **argv)
 {
   struct argp_child argp_children[3], group1_children[2], group2_children[2];
   test_fp *fun;
-
-  set_program_name (argv[0]);
 
   group1_children[0] = group1_1_child;
   group1_children[1].argp = NULL;

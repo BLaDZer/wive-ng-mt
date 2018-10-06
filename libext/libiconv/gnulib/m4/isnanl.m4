@@ -1,5 +1,5 @@
-# isnanl.m4 serial 16
-dnl Copyright (C) 2007-2011 Free Software Foundation, Inc.
+# isnanl.m4 serial 20
+dnl Copyright (C) 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -56,6 +56,7 @@ dnl Prerequisites of replacement isnanl definition. It does not need -lm.
 AC_DEFUN([gl_PREREQ_ISNANL],
 [
   gl_LONG_DOUBLE_EXPONENT_LOCATION
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
 ])
 
 dnl Test whether isnanl() can be used without libm.
@@ -107,15 +108,13 @@ AC_DEFUN([gl_HAVE_ISNANL_IN_LIBM],
     ])
 ])
 
-dnl Test whether isnanl() recognizes all numbers which are neither finite nor
-dnl infinite. This test fails e.g. on NetBSD/i386 and on glibc/ia64.
-dnl Also, the GCC >= 4.0 built-in __builtin_isnanl does not pass the tests
-dnl - for pseudo-denormals on i686 and x86_64,
-dnl - for pseudo-zeroes, unnormalized numbers, and pseudo-denormals on ia64.
+dnl Test whether isnanl() recognizes all canonical numbers which are neither
+dnl finite nor infinite.
 AC_DEFUN([gl_FUNC_ISNANL_WORKS],
 [
   AC_REQUIRE([AC_PROG_CC])
   AC_REQUIRE([gl_BIGENDIAN])
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
   AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
   AC_CACHE_CHECK([whether isnanl works], [gl_cv_func_isnanl_works],
     [
@@ -169,13 +168,13 @@ int main ()
       result |= 1;
   }
 
-#if ((defined __ia64 && LDBL_MANT_DIG == 64) || (defined __x86_64__ || defined __amd64__) || (defined __i386 || defined __i386__ || defined _I386 || defined _M_IX86 || defined _X86_))
+#if ((defined __ia64 && LDBL_MANT_DIG == 64) || (defined __x86_64__ || defined __amd64__) || (defined __i386 || defined __i386__ || defined _I386 || defined _M_IX86 || defined _X86_)) && !HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
 /* Representation of an 80-bit 'long double' as an initializer for a sequence
    of 'unsigned int' words.  */
 # ifdef WORDS_BIGENDIAN
 #  define LDBL80_WORDS(exponent,manthi,mantlo) \
      { ((unsigned int) (exponent) << 16) | ((unsigned int) (manthi) >> 16), \
-       ((unsigned int) (manthi) << 16) | (unsigned int) (mantlo) >> 16),    \
+       ((unsigned int) (manthi) << 16) | ((unsigned int) (mantlo) >> 16),   \
        (unsigned int) (mantlo) << 16                                        \
      }
 # else
@@ -195,41 +194,35 @@ int main ()
     if (!isnanl (x.value))
       result |= 2;
   }
-  /* The isnanl function should recognize Pseudo-NaNs, Pseudo-Infinities,
-     Pseudo-Zeroes, Unnormalized Numbers, and Pseudo-Denormals, as defined in
-       Intel IA-64 Architecture Software Developer's Manual, Volume 1:
-       Application Architecture.
-       Table 5-2 "Floating-Point Register Encodings"
-       Figure 5-6 "Memory to Floating-Point Register Data Translation"
-   */
+  /* isnanl should return something even for noncanonical values.  */
   { /* Pseudo-NaN.  */
     static memory_long_double x =
       { LDBL80_WORDS (0xFFFF, 0x40000001, 0x00000000) };
-    if (!isnanl (x.value))
+    if (isnanl (x.value) && !isnanl (x.value))
       result |= 4;
   }
   { /* Pseudo-Infinity.  */
     static memory_long_double x =
       { LDBL80_WORDS (0xFFFF, 0x00000000, 0x00000000) };
-    if (!isnanl (x.value))
+    if (isnanl (x.value) && !isnanl (x.value))
       result |= 8;
   }
   { /* Pseudo-Zero.  */
     static memory_long_double x =
       { LDBL80_WORDS (0x4004, 0x00000000, 0x00000000) };
-    if (!isnanl (x.value))
+    if (isnanl (x.value) && !isnanl (x.value))
       result |= 16;
   }
   { /* Unnormalized number.  */
     static memory_long_double x =
       { LDBL80_WORDS (0x4000, 0x63333333, 0x00000000) };
-    if (!isnanl (x.value))
+    if (isnanl (x.value) && !isnanl (x.value))
       result |= 32;
   }
   { /* Pseudo-Denormal.  */
     static memory_long_double x =
       { LDBL80_WORDS (0x0000, 0x83333333, 0x00000000) };
-    if (!isnanl (x.value))
+    if (isnanl (x.value) && !isnanl (x.value))
       result |= 64;
   }
 #endif
@@ -238,15 +231,17 @@ int main ()
 }]])],
         [gl_cv_func_isnanl_works=yes],
         [gl_cv_func_isnanl_works=no],
-        [case "$host_cpu" in
-                                 # Guess no on ia64, x86_64, i386.
-           ia64 | x86_64 | i*86) gl_cv_func_isnanl_works="guessing no";;
-           *)
-             case "$host_os" in
-               netbsd*) gl_cv_func_isnanl_works="guessing no";;
-               *)       gl_cv_func_isnanl_works="guessing yes";;
-             esac
+        [case "$host_os" in
+           mingw*) # Guess yes on mingw, no on MSVC.
+             AC_EGREP_CPP([Known], [
+#ifdef __MINGW32__
+ Known
+#endif
+               ],
+               [gl_cv_func_isnanl_works="guessing yes"],
+               [gl_cv_func_isnanl_works="guessing no"])
              ;;
+           *) gl_cv_func_isnanl_works="guessing yes" ;;
          esac
         ])
     ])

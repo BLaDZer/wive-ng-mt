@@ -1,5 +1,5 @@
 /* Real definitions for extern inline functions in argp-fmtstream.h
-   Copyright (C) 1997, 2003-2004, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1997-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Written by Miles Bader <miles@gnu.ai.mit.edu>.
 
@@ -14,13 +14,17 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
-#define ARGP_FS_EI
+#ifdef _LIBC
+# define ARGP_FS_EI
+#else
+# define ARGP_FS_EI _GL_EXTERN_INLINE
+#endif
 #undef __OPTIMIZE__
 #define __OPTIMIZE__ 1
 #include "argp-fmtstream.h"

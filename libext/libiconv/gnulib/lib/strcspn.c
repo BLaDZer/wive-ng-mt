@@ -1,4 +1,4 @@
-/* Copyright (C) 1991, 1994, 1996-1997, 2002-2003, 2005-2006, 2009-2011 Free
+/* Copyright (C) 1991, 1994, 1996-1997, 2002-2003, 2005-2006, 2009-2018 Free
  * Software Foundation, Inc.
 
    NOTE: The canonical source of this file is maintained with the GNU C Library.
@@ -15,14 +15,16 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 #include <stddef.h>
 #include <string.h>
 
-#undef strcspn
+#if _LIBC
+# undef strcspn
+#endif
 
 /* Return the length of the maximum initial segment of S
    which contains no characters from REJECT.  */

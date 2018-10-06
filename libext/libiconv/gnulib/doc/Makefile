@@ -1,5 +1,5 @@
-# Makefile for gnulib doc.
-# Copyright (C) 2004, 2006-2011 Free Software Foundation, Inc.
+# Makefile for gnulib doc.  -*- coding: utf-8 -*-
+# Copyright (C) 2004, 2006-2018 Free Software Foundation, Inc.
 #
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
@@ -37,31 +37,29 @@ pdf: $(doc).pdf
 
 INSTALL_PRELUDE = echo '@firstparagraphindent insert'
 
-# INSTALL file with old ASCII quotation marks (looks ugly on modern machines).
+OMIT_TRAILING_EMPTY_LINES = /^$$/H; /^$$/d; x; s/\n//p; s/\n*//; x
+
+# INSTALL file with directed ASCII quotation marks.
 INSTALL: install.texi
 	$(INSTALL_PRELUDE) | cat - $< > tmp.texi
-	$(MAKEINFO) --plaintext --no-validate tmp.texi > $@
+	$(MAKEINFO) --plaintext --no-validate tmp.texi \
+	  | sed -e '$(OMIT_TRAILING_EMPTY_LINES)' > $@
 	rm -f tmp.texi
 
 # INSTALL file with ISO 646 or ISO 8859 quotation marks.
-INSTALL.ISO: install.texi
-	$(INSTALL_PRELUDE) | cat - $< > tmpi.texi
-	$(MAKEINFO) --plaintext --no-validate tmpi.texi \
-	  | sed -e "s/\`\([^']*\)'/'\1'/g" > $@
-	rm -f tmpi.texi
+INSTALL.ISO: INSTALL
+	sed -e "s/\`\([^']*\)'/'\1'/g" $< > $@
 
-# INSTALL file wit ISO 10646 (Unicode) quotation marks.
-INSTALL.UTF-8: install.texi
-	$(INSTALL_PRELUDE) | cat - $< > tmpu.texi
-	$(MAKEINFO) --plaintext --no-validate tmpu.texi \
-	  | sed -e "s/\`\([^']*\)'/‘\1’/g" > $@
-	rm -f tmpu.texi
+# INSTALL file with ISO 10646 (Unicode) quotation marks.
+INSTALL.UTF-8: INSTALL
+	sed -e "s/\`\([^']*\)'/‘\1’/g" $< > $@
 
 GNULIB_TEXI_FILES = $(filter-out maintain.texi make-stds.texi standards.texi,$(wildcard *.texi)) $(wildcard posix-headers/*.texi) $(wildcard posix-functions/*.texi) $(wildcard glibc-headers/*.texi) $(wildcard glibc-functions/*.texi)
+NEWEST_GNULIB_TEXI_FILE = $(shell ls -t $(GNULIB_TEXI_FILES) | sed 1q)
 
 # Date of last update. Requires GNU date.
 updated-stamp: $(GNULIB_TEXI_FILES)
-	date -u -r `ls -t $^ | sed 1q` +"@set UPDATED %F %T" > $@
+	date -u -r $(NEWEST_GNULIB_TEXI_FILE) +"@set UPDATED %F %T" > $@
 
 # Dependencies. Search for @include to find them all.
 gnulib.info gnulib.html gnulib.dvi gnulib.pdf: $(GNULIB_TEXI_FILES) updated-stamp

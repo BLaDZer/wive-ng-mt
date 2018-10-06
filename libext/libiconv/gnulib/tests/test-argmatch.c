@@ -1,5 +1,5 @@
 /* Test of exact or abbreviated match search.
-   Copyright (C) 1990, 1998-1999, 2001-2011 Free Software Foundation, Inc.
+   Copyright (C) 1990, 1998-1999, 2001-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2007, based on test code
    by David MacKenzie <djm@gnu.ai.mit.edu>.  */
@@ -23,7 +23,6 @@
 
 #include <stdlib.h>
 
-#include "progname.h"
 #include "macros.h"
 
 /* Some packages define ARGMATCH_DIE and ARGMATCH_DIE_DECL in <config.h>, and
@@ -63,8 +62,6 @@ static const enum backup_type backup_vals[] =
 int
 main (int argc, char *argv[])
 {
-  set_program_name (argv[0]);
-
   /* Not found.  */
   ASSERT (ARGMATCH ("klingon", backup_args, backup_vals) == -1);
 

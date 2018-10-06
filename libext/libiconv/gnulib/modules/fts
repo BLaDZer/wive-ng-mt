@@ -8,21 +8,27 @@ lib/fts-cycle.c
 m4/fts.m4
 
 Depends-on:
-cloexec
+closedir
 cycle-check
 d-ino
 d-type
-dirent-safer
 fchdir
+fcntl
 fcntl-h
-fcntl-safer
+fdopendir
+flexmember
+fstat
 hash
 i-ring
 lstat
 memmove
+openat-h
 openat-safer
+opendir
+readdir
+stdalign
 stdbool
-unistd-safer
+stddef
 
 configure.ac:
 gl_FUNC_FTS

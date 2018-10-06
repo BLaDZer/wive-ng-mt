@@ -1,5 +1,5 @@
 /* Set the access and modification time of a file relative to directory fd.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* written by Eric Blake */
 
@@ -48,7 +48,7 @@ int
 rpl_utimensat (int fd, char const *file, struct timespec const times[2],
                int flag)
 {
-# ifdef __linux__
+# if defined __linux__ || defined __sun
   struct timespec ts[2];
 # endif
 
@@ -57,7 +57,7 @@ rpl_utimensat (int fd, char const *file, struct timespec const times[2],
   if (0 <= utimensat_works_really)
     {
       int result;
-# ifdef __linux__
+# if defined __linux__ || defined __sun
       struct stat st;
       /* As recently as Linux kernel 2.6.32 (Dec 2009), several file
          systems (xfs, ntfs-3g) have bugs with a single UTIME_OMIT,
@@ -65,8 +65,12 @@ rpl_utimensat (int fd, char const *file, struct timespec const times[2],
          UTIME_NOW.  Work around it with a preparatory [l]stat prior
          to calling utimensat; fortunately, there is not much timing
          impact due to the extra syscall even on file systems where
-         UTIME_OMIT would have worked.  FIXME: Simplify this in 2012,
-         when file system bugs are no longer common.  */
+         UTIME_OMIT would have worked.
+
+         The same bug occurs in Solaris 11.1 (Apr 2013).
+
+         FIXME: Simplify this in 2024, when these file system bugs are
+         no longer common on Gnulib target platforms.  */
       if (times && (times[0].tv_nsec == UTIME_OMIT
                     || times[1].tv_nsec == UTIME_OMIT))
         {
@@ -84,7 +88,22 @@ rpl_utimensat (int fd, char const *file, struct timespec const times[2],
             ts[1] = times[1];
           times = ts;
         }
-# endif /* __linux__ */
+#  ifdef __hppa__
+      /* Linux kernel 2.6.22.19 on hppa does not reject invalid tv_nsec
+         values.  */
+      else if (times
+               && ((times[0].tv_nsec != UTIME_NOW
+                    && ! (0 <= times[0].tv_nsec
+                          && times[0].tv_nsec < TIMESPEC_HZ))
+                   || (times[1].tv_nsec != UTIME_NOW
+                       && ! (0 <= times[1].tv_nsec
+                             && times[1].tv_nsec < TIMESPEC_HZ))))
+        {
+          errno = EINVAL;
+          return -1;
+        }
+#  endif
+# endif
       result = utimensat (fd, file, times, flag);
       /* Linux kernel 2.6.25 has a bug where it returns EINVAL for
          UTIME_NOW or UTIME_OMIT with non-zero tv_sec, which
@@ -114,11 +133,11 @@ rpl_utimensat (int fd, char const *file, struct timespec const times[2],
 
 #endif /* !HAVE_UTIMENSAT */
 
-/* Set the access and modification time stamps of FILE to be
+/* Set the access and modification timestamps of FILE to be
    TIMESPEC[0] and TIMESPEC[1], respectively; relative to directory
    FD.  If flag is AT_SYMLINK_NOFOLLOW, change the times of a symlink,
    or fail with ENOSYS if not possible.  If TIMESPEC is null, set the
-   time stamps to the current time.  If possible, do it without
+   timestamps to the current time.  If possible, do it without
    changing the working directory.  Otherwise, resort to using
    save_cwd/fchdir, then utimens/restore_cwd.  If either the save_cwd
    or the restore_cwd fails, then give a diagnostic and exit nonzero.

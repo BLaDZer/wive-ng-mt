@@ -1,5 +1,5 @@
-# tmpfile.m4 serial 2
-# Copyright (C) 2007, 2009-2011 Free Software Foundation, Inc.
+# tmpfile.m4 serial 3
+# Copyright (C) 2007, 2009-2018 Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -23,7 +23,7 @@ AC_DEFUN([gl_FUNC_TMPFILE], [
   AC_CACHE_CHECK([whether tmpfile should be overridden],
     [gl_cv_func_tmpfile_unusable],
     [AC_EGREP_CPP([choke me], [
-#if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
+#if defined _WIN32 && !defined __CYGWIN__
 choke me
 #endif
        ],

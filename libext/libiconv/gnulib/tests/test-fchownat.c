@@ -1,5 +1,5 @@
 /* Tests of fchownat.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -32,7 +32,6 @@ SIGNATURE_CHECK (fchownat, int, (int, char const *, uid_t, gid_t, int));
 
 #include "mgetgroups.h"
 #include "openat.h"
-#include "progname.h"
 #include "stat-time.h"
 #include "ignore-value.h"
 #include "macros.h"
@@ -64,10 +63,21 @@ main (int argc _GL_UNUSED, char *argv[])
   int result1; /* Skip because of no chown/symlink support.  */
   int result2; /* Skip because of no lchown support.  */
 
-  set_program_name (argv[0]);
-
   /* Clean up any trash from prior testsuite runs.  */
   ignore_value (system ("rm -rf " BASE "*"));
+
+  /* Test behaviour for invalid file descriptors.  */
+  {
+    errno = 0;
+    ASSERT (fchownat (-1, "foo", getuid (), getgid (), 0) == -1);
+    ASSERT (errno == EBADF);
+  }
+  {
+    close (99);
+    errno = 0;
+    ASSERT (fchownat (99, "foo", getuid (), getgid (), 0) == -1);
+    ASSERT (errno == EBADF);
+  }
 
   /* Basic tests.  */
   result1 = test_chown (do_chown, true);

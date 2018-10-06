@@ -1,5 +1,5 @@
 /* Iterate over next character in UTF-32 string.
-   Copyright (C) 2002, 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2006-2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2002.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -30,10 +30,8 @@ u32_next (ucs4_t *puc, const uint32_t *s)
     return s + count;
   else
     {
-#if CONFIG_UNICODE_SAFETY
       if (count < 0)
         *puc = 0xfffd;
-#endif
       return NULL;
     }
 }

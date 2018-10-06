@@ -8,7 +8,7 @@ and have it work correctly (including i18n).  So many users need to go
 through @code{configure; make; make install} with all its
 dependencies, options, and hurdles.
 
-Red Hat, Debian, and similar package systems solve the ``ease of
+Red Hat, Debian, and other binary distributions solve the ``ease of
 installation'' problem, but they hardwire path names, usually to
 @file{/usr} or @file{/usr/local}.  This means that users need root
 privileges to install a binary package, and prevents installing two
@@ -44,10 +44,6 @@ On other Unix systems, it installs a wrapper executable.  The wrapper
 sets the environment variable that controls shared library searching
 (usually @env{LD_LIBRARY_PATH}) and then invokes the real executable.
 
-This approach does not always work.  On OpenBSD and OpenServer,
-prereleases of Libtool 1.5 put absolute file names of libraries in
-executables, which prevents searching any other locations.
-
 @item
 On Windows, the executable's own directory is searched for libraries,
 so installing shared libraries into the executable's directory is
@@ -58,7 +54,10 @@ You can make your program relocatable by following these steps:
 
 @enumerate
 @item
-Import the @code{relocatable-prog} module.
+Import the @code{relocatable-prog} module.  For libraries, use the
+@code{relocatable-lib} or @code{relocatable-lib-lgpl} module.
+If you need more than one module, or you need to use them with different
+settings, you will need multiple copies of gnulib (@pxref{Multiple instances}).
 
 @item
 In every program, add to @code{main} as the first statement (even
@@ -69,6 +68,10 @@ set_program_name (argv[0]);
 @end example
 
 The prototype for this function is in @file{progname.h}.
+
+@item
+If you want your code to be portable to platforms that do not support
+automatic initialization, call @code{set_relocation_prefix}.
 
 @item
 Everywhere where you use a constant pathname from installation-time,
@@ -87,6 +90,9 @@ bindtextdomain (PACKAGE, relocate (LOCALEDIR));
 @end example
 
 The prototype for this function is in @file{relocatable.h}.
+
+There is also a variant of this function, named @code{relocate2}, that
+makes it easy to reclaim the memory allocated by the call.
 
 @item
 The @code{set_program_name} function can also configure some
@@ -114,7 +120,7 @@ If your package installs shell scripts, also import the
 @code{relocatable-script} module.  Then, near the beginning of each
 shell script that your package installs, add the following:
 
-@example
+@smallexample
 @@relocatable_sh@@
 if test "@@RELOCATABLE@@" = yes; then
   exec_prefix="@@exec_prefix@@"
@@ -122,17 +128,61 @@ if test "@@RELOCATABLE@@" = yes; then
   orig_installdir="$bindir" # see Makefile.am's *_SCRIPTS variables
   func_find_curr_installdir # determine curr_installdir
   func_find_prefixes
-  # Relocate the directory variables that we use.
-  gettext_dir=`
-    echo "$gettext_dir/" \
+  relocate () @{
+    echo "$1/" \
     | sed -e "s%^$@{orig_installprefix@}/%$@{curr_installprefix@}/%" \
-    | sed -e 's,/$,,'`
+    | sed -e 's,/$,,'
+  @}
+else
+  relocate () @{
+    echo "$1"
+  @}
 fi
-@end example
+
+# Get some relocated directory names.
+sysconfdir=`relocate "@@sysconfdir@@"`
+some_datadir=`relocate "@@datadir@@/something"`
+@end smallexample
 
 You must adapt the definition of @code{orig_installdir}, depending on
 where the script gets installed.  Also, at the end, instead of
-@code{gettext_dir}, transform those variables that you need.
+@code{sysconfdir} and @code{some_datadir}, transform those variables
+that you need.
+
+@item
+If your package installs Perl scripts, also import the
+@code{relocatable-perl} module.  Then, near the beginning of each
+Perl script that your package installs, add the following:
+
+@smallexample
+@@relocatable_pl@@
+if ("@@RELOCATABLE@@" eq "yes") @{
+  my $exec_prefix = "@@exec_prefix@@";
+  my $orig_installdir = "@@bindir@@"; # see Makefile.am's *_SCRIPTS variables
+  my ($orig_installprefix, $curr_installprefix) =
+    find_prefixes($orig_installdir, find_curr_installdir());
+
+  # the subroutine is defined whether or not the enclosing block is executed
+  sub relocate @{
+    my ($dir) = @@_;
+    if ("@@RELOCATABLE@@" eq "yes") @{
+      $dir =~ s%^$orig_installprefix/%$curr_installprefix/%;
+      $dir =~ s,/$,,;
+    @}
+    return $dir;
+  @}
+@}
+
+# Get some relocated directory names.
+# (The gnulib module 'configmake' can help with this.)
+$sysconfdir = relocate("@@sysconfdir@@");
+$some_datadir = relocate(@@datadir@@/something");
+@end smallexample
+
+You must adapt the definition of @code{$orig_installdir}, depending on
+where the script gets installed.  Also, at the end, instead of
+@code{sysconfdir} and @code{some_datadir}, transform those variables
+that you need.
 
 @item
 In your @file{Makefile.am}, for every program @command{foo} that gets
@@ -144,6 +194,30 @@ if RELOCATABLE_VIA_LD
 foo_LDFLAGS = `$(RELOCATABLE_LDFLAGS) $(bindir)`
 endif
 @end example
+
+When building gnulib to use with a relocatable library, you need to
+define the preprocessor symbol @code{IN_LIBRARY}.
+You may also want to build with @code{ENABLE_COSTLY_RELOCATABLE}, in which case
+you will also need to define @code{INSTALLDIR}.
+The following fragment can be added to an override @code{Makefile.am} used
+to build gnulib (@pxref{Modified build rules}).
+
+@example
+AM_CPPFLAGS += -DIN_LIBRARY -DENABLE_COSTLY_RELOCATABLE
+
+if SHLIBS_IN_BINDIR
+AM_CPPFLAGS += -DINSTALLDIR=\"$(bindir)\"
+else
+AM_CPPFLAGS += -DINSTALLDIR=\"$(libdir)\"
+endif
+@end example
+
+@code{SHLIBS_IN_BINDIR} is defined in @file{configure.ac} as follows:
+
+@smallexample
+AM_CONDITIONAL([SHLIBS_IN_BINDIR],
+               [case "$host_os" in mingw* | cygwin*) true;; *) false;; esac])
+@end smallexample
 
 @item
 You may also need to add a couple of variable assignments to your

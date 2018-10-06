@@ -1,6 +1,6 @@
 /* Test for nonblocking read and write on sockets.
 
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
 # include <process.h>
 #else
 # include <spawn.h>
@@ -43,13 +43,16 @@
 int
 main (int argc, char *argv[])
 {
-  const char *child_path = argv[1];
-  int test = atoi (argv[2]);
+  const char *child_path;
+  int test;
   int server;
   int port;
   int child;
   int server_socket;
   int exitcode;
+
+  child_path = argv[1];
+  test = atoi (argv[2]);
 
   /* Create a server socket.  */
   server = create_server (0, 1, &port);
@@ -65,7 +68,7 @@ main (int argc, char *argv[])
     child_argv[2] = port_arg;
     child_argv[3] = NULL;
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
+#if defined _WIN32 && ! defined __CYGWIN__
     child = spawnvpe (P_NOWAIT, child_path, child_argv,
                       (const char **) environ);
     ASSERT (child >= 0);

@@ -1,7 +1,7 @@
 /* getndelim2 - Read a line from a stream, stopping at one of 2 delimiters,
    with bounded memory allocation.
 
-   Copyright (C) 1993, 1996-1998, 2000, 2003-2004, 2006, 2008-2011 Free
+   Copyright (C) 1993, 1996-1998, 2000, 2003-2004, 2006, 2008-2018 Free
    Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Originally written by Jan Brittenson, bson@gnu.ai.mit.edu.  */
 
@@ -51,8 +51,8 @@
 # define SSIZE_MAX ((ssize_t) (SIZE_MAX / 2))
 #endif
 
-/* Use this to suppress gcc's `...may be used before initialized' warnings. */
-#ifdef lint
+/* Use this to suppress gcc's "...may be used before initialized" warnings. */
+#if defined GCC_LINT || defined lint
 # define IF_LINT(Code) Code
 #else
 # define IF_LINT(Code) /* empty */

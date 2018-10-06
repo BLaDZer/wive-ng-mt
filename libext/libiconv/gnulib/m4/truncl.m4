@@ -1,5 +1,5 @@
-# truncl.m4 serial 8
-dnl Copyright (C) 2007-2008, 2010-2011 Free Software Foundation, Inc.
+# truncl.m4 serial 13
+dnl Copyright (C) 2007-2008, 2010-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -8,11 +8,14 @@ AC_DEFUN([gl_FUNC_TRUNCL],
 [
   m4_divert_text([DEFAULTS], [gl_truncl_required=plain])
   AC_REQUIRE([gl_MATH_H_DEFAULTS])
+  AC_REQUIRE([gl_LONG_DOUBLE_VS_DOUBLE])
   AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
+
   dnl Persuade glibc <math.h> to declare truncl().
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+
   dnl Test whether truncl() is declared.
-  AC_CHECK_DECLS([truncl], , , [#include <math.h>])
+  AC_CHECK_DECLS([truncl], , , [[#include <math.h>]])
   if test "$ac_cv_have_decl_truncl" = yes; then
     dnl Test whether truncl() can be used without libm.
     TRUNCL_LIBM=?
@@ -59,8 +62,10 @@ int main()
           [gl_cv_func_truncl_works=yes],
           [gl_cv_func_truncl_works=no],
           [case "$host_os" in
-             osf4*) gl_cv_func_truncl_works="guessing no";;
-             *)     gl_cv_func_truncl_works="guessing yes";;
+             osf4*)  gl_cv_func_truncl_works="guessing no" ;;
+                     # Guess yes on native Windows.
+             mingw*) gl_cv_func_truncl_works="guessing yes" ;;
+             *)      gl_cv_func_truncl_works="guessing yes" ;;
            esac
           ])
       ])
@@ -71,6 +76,7 @@ int main()
     esac
     m4_ifdef([gl_FUNC_TRUNCL_IEEE], [
       if test $gl_truncl_required = ieee && test $REPLACE_TRUNCL = 0; then
+        AC_REQUIRE([AC_CANONICAL_HOST]) dnl for cross-compiles
         AC_CACHE_CHECK([whether truncl works according to ISO C 99 with IEC 60559],
           [gl_cv_func_truncl_ieee],
           [
@@ -96,7 +102,15 @@ int main (int argc, char *argv[])
               ]])],
               [gl_cv_func_truncl_ieee=yes],
               [gl_cv_func_truncl_ieee=no],
-              [gl_cv_func_truncl_ieee="guessing no"])
+              [case "$host_os" in
+                                # Guess yes on glibc systems.
+                 *-gnu* | gnu*) gl_cv_func_truncl_ieee="guessing yes" ;;
+                                # Guess yes on native Windows.
+                 mingw*)        gl_cv_func_truncl_ieee="guessing yes" ;;
+                                # If we don't know, assume the worst.
+                 *)             gl_cv_func_truncl_ieee="guessing no" ;;
+               esac
+              ])
             LIBS="$save_LIBS"
           ])
         case "$gl_cv_func_truncl_ieee" in
@@ -109,8 +123,13 @@ int main (int argc, char *argv[])
     HAVE_DECL_TRUNCL=0
   fi
   if test $HAVE_DECL_TRUNCL = 0 || test $REPLACE_TRUNCL = 1; then
-    dnl No libraries are needed to link lib/truncl.c.
-    TRUNCL_LIBM=
+    dnl Find libraries needed to link lib/truncl.c.
+    if test $HAVE_SAME_LONG_DOUBLE_AS_DOUBLE = 1; then
+      AC_REQUIRE([gl_FUNC_TRUNC])
+      TRUNCL_LIBM="$TRUNC_LIBM"
+    else
+      TRUNCL_LIBM=
+    fi
   fi
   AC_SUBST([TRUNCL_LIBM])
 ])

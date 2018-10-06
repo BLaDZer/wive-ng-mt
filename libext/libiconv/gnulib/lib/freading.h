@@ -1,5 +1,5 @@
 /* Retrieve information about a FILE stream.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -33,7 +33,7 @@
    STREAM must not be wide-character oriented.  */
 
 #if HAVE___FREADING && (!defined __GLIBC__ || defined __UCLIBC__ || __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 7))
-/* Solaris >= 7, not glibc >= 2.2, but glibc >= 2.7  */
+/* Solaris >= 7, Android API >= 29, not glibc >= 2.2, but glibc >= 2.7, or musl libc  */
 
 # include <stdio_ext.h>
 # define freading(stream) (__freading (stream) != 0)
@@ -44,7 +44,7 @@
 extern "C" {
 # endif
 
-extern bool freading (FILE *stream);
+extern bool freading (FILE *stream) _GL_ATTRIBUTE_PURE;
 
 # ifdef __cplusplus
 }

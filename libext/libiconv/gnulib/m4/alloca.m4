@@ -1,5 +1,5 @@
-# alloca.m4 serial 13
-dnl Copyright (C) 2002-2004, 2006-2007, 2009-2011 Free Software Foundation,
+# alloca.m4 serial 14
+dnl Copyright (C) 2002-2004, 2006-2007, 2009-2018 Free Software Foundation,
 dnl Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
@@ -44,17 +44,17 @@ AC_DEFUN([gl_FUNC_ALLOCA],
 AC_DEFUN([gl_PREREQ_ALLOCA], [:])
 
 # This works around a bug in autoconf <= 2.68.
-# See <http://lists.gnu.org/archive/html/bug-gnulib/2011-06/msg00277.html>.
+# See <https://lists.gnu.org/r/bug-gnulib/2011-06/msg00277.html>.
 
 m4_version_prereq([2.69], [] ,[
 
 # This is taken from the following Autoconf patch:
-# http://git.savannah.gnu.org/cgit/autoconf.git/commit/?id=6cd9f12520b0d6f76d3230d7565feba1ecf29497
+# https://git.savannah.gnu.org/gitweb/?p=autoconf.git;a=commitdiff;h=6cd9f12520b0d6f76d3230d7565feba1ecf29497
 
 # _AC_LIBOBJ_ALLOCA
 # -----------------
-# Set up the LIBOBJ replacement of `alloca'.  Well, not exactly
-# AC_LIBOBJ since we actually set the output variable `ALLOCA'.
+# Set up the LIBOBJ replacement of 'alloca'.  Well, not exactly
+# AC_LIBOBJ since we actually set the output variable 'ALLOCA'.
 # Nevertheless, for Automake, AC_LIBSOURCES it.
 m4_define([_AC_LIBOBJ_ALLOCA],
 [# The SVR3 libPW and SVR4 libucb both contain incompatible functions
@@ -63,9 +63,9 @@ m4_define([_AC_LIBOBJ_ALLOCA],
 # use ar to extract alloca.o from them instead of compiling alloca.c.
 AC_LIBSOURCES(alloca.c)
 AC_SUBST([ALLOCA], [\${LIBOBJDIR}alloca.$ac_objext])dnl
-AC_DEFINE(C_ALLOCA, 1, [Define to 1 if using `alloca.c'.])
+AC_DEFINE(C_ALLOCA, 1, [Define to 1 if using 'alloca.c'.])
 
-AC_CACHE_CHECK(whether `alloca.c' needs Cray hooks, ac_cv_os_cray,
+AC_CACHE_CHECK(whether 'alloca.c' needs Cray hooks, ac_cv_os_cray,
 [AC_EGREP_CPP(webecray,
 [#if defined CRAY && ! defined CRAY2
 webecray
@@ -77,10 +77,10 @@ if test $ac_cv_os_cray = yes; then
   for ac_func in _getb67 GETB67 getb67; do
     AC_CHECK_FUNC($ac_func,
                   [AC_DEFINE_UNQUOTED(CRAY_STACKSEG_END, $ac_func,
-                                      [Define to one of `_getb67', `GETB67',
-                                       `getb67' for Cray-2 and Cray-YMP
+                                      [Define to one of '_getb67', 'GETB67',
+                                       'getb67' for Cray-2 and Cray-YMP
                                        systems. This function is required for
-                                       `alloca.c' support on those systems.])
+                                       'alloca.c' support on those systems.])
     break])
   done
 fi

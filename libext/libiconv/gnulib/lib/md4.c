@@ -1,6 +1,6 @@
 /* Functions to compute MD4 message digest of files or memory blocks.
    according to the definition of MD4 in RFC 1320 from April 1992.
-   Copyright (C) 1995-1997, 1999-2003, 2005-2006, 2008-2011 Free Software
+   Copyright (C) 1995-1997, 1999-2003, 2005-2006, 2008-2018 Free Software
    Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
@@ -14,8 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 /* Adapted by Simon Josefsson from gnulib md5.? and Libgcrypt
    cipher/md4.c . */
@@ -24,8 +23,8 @@
 
 #include "md4.h"
 
-#include <stddef.h>
-#include <stdlib.h>
+#include <stdalign.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -34,9 +33,9 @@
 # include "unlocked-io.h"
 #endif
 
+#include <byteswap.h>
 #ifdef WORDS_BIGENDIAN
-# define SWAP(n)                                                        \
-  (((n) << 24) | (((n) & 0xff00) << 8) | (((n) >> 8) & 0xff00) | ((n) >> 24))
+# define SWAP(n) bswap_32 (n)
 #else
 # define SWAP(n) (n)
 #endif
@@ -68,7 +67,7 @@ md4_init_ctx (struct md4_ctx *ctx)
 /* Copy the 4 byte value from v into the memory location pointed to by *cp,
    If your architecture allows unaligned access this is equivalent to
    * (uint32_t *) cp = v  */
-static inline void
+static void
 set_uint32 (char *cp, uint32_t v)
 {
   memcpy (cp, &v, sizeof v);
@@ -238,15 +237,8 @@ md4_process_bytes (const void *buffer, size_t len, struct md4_ctx *ctx)
   /* Process available complete blocks.  */
   if (len >= 64)
     {
-#if !_STRING_ARCH_unaligned
-      /* To check alignment gcc has an appropriate operator.  Other
-         compilers don't.  */
-# if __GNUC__ >= 2
-#  define UNALIGNED_P(p) (((uintptr_t) p) % __alignof__ (uint32_t) != 0)
-# else
-#  define alignof(type) offsetof (struct { char c; type x; }, x)
-#  define UNALIGNED_P(p) (((size_t) p) % alignof (uint32_t) != 0)
-# endif
+#if !(_STRING_ARCH_unaligned || _STRING_INLINE_unaligned)
+# define UNALIGNED_P(p) ((uintptr_t) (p) % alignof (uint32_t) != 0)
       if (UNALIGNED_P (buffer))
         while (len > 64)
           {
@@ -309,13 +301,13 @@ md4_process_block (const void *buffer, size_t len, struct md4_ctx *ctx)
   uint32_t B = ctx->B;
   uint32_t C = ctx->C;
   uint32_t D = ctx->D;
+  uint32_t lolen = len;
 
   /* First increment the byte count.  RFC 1320 specifies the possible
      length of the file up to 2^64 bits.  Here we only compute the
      number of bytes.  Do a double word increment.  */
-  ctx->total[0] += len;
-  if (ctx->total[0] < len)
-    ++ctx->total[1];
+  ctx->total[0] += lolen;
+  ctx->total[1] += (len >> 31 >> 1) + (ctx->total[0] < lolen);
 
   /* Process all bytes in the buffer with 64 bytes in each round of
      the loop.  */

@@ -1,6 +1,6 @@
 /* human.h -- print human readable file size
 
-   Copyright (C) 1996-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1996-2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert and Larry McVoy.  */
 
@@ -52,7 +52,7 @@ enum
   /* Round to minus infinity.  */
   human_floor = 2,
 
-  /* Group digits together, e.g. `1,000,000'.  This uses the
+  /* Group digits together, e.g. "1,000,000".  This uses the
      locale-defined grouping; the traditional C locale does not group,
      so this has effect only if some other locale is in use.  */
   human_group_digits = 4,

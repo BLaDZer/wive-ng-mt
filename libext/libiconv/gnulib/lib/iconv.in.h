@@ -1,6 +1,6 @@
 /* A GNU-like <iconv.h>.
 
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _@GUARD_PREFIX@_ICONV_H
 
@@ -53,6 +52,12 @@ _GL_CXXALIAS_SYS (iconv_open, iconv_t,
                   (const char *tocode, const char *fromcode));
 # endif
 _GL_CXXALIASWARN (iconv_open);
+#elif defined GNULIB_POSIXCHECK
+# undef iconv_open
+# if HAVE_RAW_DECL_ICONV_OPEN
+_GL_WARN_ON_USE (iconv_open, "iconv_open is not working correctly everywhere - "
+                 "use gnulib module iconv for portability");
+# endif
 #endif
 
 #if @REPLACE_ICONV_UTF@
@@ -90,6 +95,12 @@ _GL_CXXALIAS_SYS (iconv, size_t,
 _GL_CXXALIASWARN (iconv);
 # ifndef ICONV_CONST
 #  define ICONV_CONST @ICONV_CONST@
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef iconv
+# if HAVE_RAW_DECL_ICONV
+_GL_WARN_ON_USE (iconv, "iconv is not working correctly everywhere - "
+                 "use gnulib module iconv for portability");
 # endif
 #endif
 

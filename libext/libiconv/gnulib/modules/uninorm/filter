@@ -12,7 +12,7 @@ uninorm/decompose-internal
 malloc-posix
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [uninorm/filter])
+gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/filter])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNINORM_FILTER
@@ -23,8 +23,7 @@ Include:
 "uninorm.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Bruno Haible
-
+all

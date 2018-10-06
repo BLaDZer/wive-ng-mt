@@ -11,6 +11,7 @@ Files:
 lib/fprintf.c
 m4/fprintf-posix.m4
 m4/printf.m4
+m4/math_h.m4
 
 Depends-on:
 stdio
@@ -42,5 +43,4 @@ License:
 LGPL
 
 Maintainer:
-Bruno Haible
-
+all

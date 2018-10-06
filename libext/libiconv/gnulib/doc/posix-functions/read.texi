@@ -9,10 +9,13 @@ Gnulib module: stdio, nonblocking
 Portability problems fixed by Gnulib module @code{stdio}, together with module @code{nonblocking}:
 @itemize
 @item
+This function crashes when invoked with invalid arguments on some platforms:
+MSVC 14.
+@item
 When reading from a non-blocking pipe whose buffer is empty, this function
 fails with @code{errno} being set to @code{EINVAL} instead of @code{EAGAIN} on
 some platforms:
-mingw.
+mingw, MSVC 14.
 @end itemize
 
 Portability problems not fixed by Gnulib:
@@ -20,7 +23,7 @@ Portability problems not fixed by Gnulib:
 @item
 This function may fail with error @code{EINTR}, even in programs that don't
 install any signal handlers, on some platforms:
-MacOS X 10.5.
+Mac OS X 10.5.
 @end itemize
 
 For handling @code{EINTR}, Gnulib provides a module @samp{safe-read} with a

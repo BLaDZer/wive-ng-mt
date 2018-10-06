@@ -1,6 +1,6 @@
 /* accept.c --- wrappers for Windows accept function
 
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paolo Bonzini */
 
@@ -31,12 +31,22 @@
 int
 rpl_accept (int fd, struct sockaddr *addr, socklen_t *addrlen)
 {
-  SOCKET fh = accept (FD_TO_SOCKET (fd), addr, addrlen);
-  if (fh == INVALID_SOCKET)
+  SOCKET sock = FD_TO_SOCKET (fd);
+
+  if (sock == INVALID_SOCKET)
     {
-      set_winsock_errno ();
+      errno = EBADF;
       return -1;
     }
   else
-    return SOCKET_TO_FD (fh);
+    {
+      SOCKET fh = accept (sock, addr, addrlen);
+      if (fh == INVALID_SOCKET)
+        {
+          set_winsock_errno ();
+          return -1;
+        }
+      else
+        return SOCKET_TO_FD (fh);
+    }
 }

@@ -1,5 +1,5 @@
 /* Dropping uid/gid privileges of the current process temporarily.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -51,18 +51,20 @@ idpriv_temp_drop (void)
 # if HAVE_SETRESGID /* glibc, FreeBSD, OpenBSD, HP-UX */
   if (setresgid (-1, gid, saved_gid) < 0)
     return -1;
-# else /* MacOS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
+# else /* Mac OS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
   if (setregid (-1, gid) < 0)
     return -1;
 # endif
 
   /* This is for executables that have the setuid bit set.  */
 # if HAVE_SETRESUID /* glibc, FreeBSD, OpenBSD, HP-UX */
-  /* See <http://www.usenix.org/events/sec02/full_papers/chen/chen.pdf>
+  /* See
+       Hao Chen, David Wagner, Drew Dean: Setuid Demystified
+       <https://www.usenix.org/legacy/publications/library/proceedings/sec02/full_papers/chen/chen.pdf>
      figure 14.  */
   if (setresuid (-1, uid, saved_uid) < 0)
     return -1;
-# else /* MacOS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
+# else /* Mac OS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
   if (setreuid (-1, uid) < 0)
     return -1;
 # endif
@@ -134,11 +136,13 @@ idpriv_temp_restore (void)
 
   /* This is for executables that have the setuid bit set.  */
 # if HAVE_SETRESUID /* glibc, FreeBSD, OpenBSD, HP-UX */
-  /* See <http://www.usenix.org/events/sec02/full_papers/chen/chen.pdf>
+  /* See
+       Hao Chen, David Wagner, Drew Dean: Setuid Demystified
+       <https://www.usenix.org/legacy/publications/library/proceedings/sec02/full_papers/chen/chen.pdf>
      figure 14.  */
   if (setresuid (-1, saved_uid, -1) < 0)
     return -1;
-# else /* MacOS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
+# else /* Mac OS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
   if (setreuid (-1, saved_uid) < 0)
     return -1;
 # endif
@@ -147,7 +151,7 @@ idpriv_temp_restore (void)
 # if HAVE_SETRESGID /* glibc, FreeBSD, OpenBSD, HP-UX */
   if (setresgid (-1, saved_gid, -1) < 0)
     return -1;
-# else /* MacOS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
+# else /* Mac OS X, NetBSD, AIX, IRIX, Solaris >= 2.5, OSF/1, Cygwin */
   if (setregid (-1, saved_gid) < 0)
     return -1;
 # endif

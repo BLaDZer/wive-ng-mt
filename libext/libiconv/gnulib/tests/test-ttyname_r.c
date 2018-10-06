@@ -1,5 +1,5 @@
 /* Test of ttyname_r(3).
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -46,6 +46,22 @@ main (void)
 
   ASSERT (ttyname_r (fd, buf, sizeof (buf)) == 0);
   ASSERT (memcmp (buf, "/dev/", 5) == 0);
+
+  /* Test behaviour for invalid file descriptors.  */
+  {
+    int err = ttyname_r (-1, buf, sizeof (buf));
+    ASSERT (err == EBADF
+            || err == ENOTTY /* seen on FreeBSD 6.4 */
+           );
+  }
+  {
+    int err;
+    close (99);
+    err = ttyname_r (99, buf, sizeof (buf));
+    ASSERT (err == EBADF
+            || err == ENOTTY /* seen on FreeBSD 6.4 */
+           );
+  }
 
   return 0;
 }

@@ -1,5 +1,5 @@
 /* ffs.c -- find the first set bit in a word.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,10 +12,13 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake.  */
 
+#include <config.h>
+
+/* Specification.  */
 #include <strings.h>
 
 #include <limits.h>
@@ -26,7 +29,7 @@ ffs (int i)
 #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)
   return __builtin_ffs (i);
 #else
-  /* http://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
+  /* <https://github.com/gibsjose/BitHacks>
      gives this deBruijn constant for a branch-less computation, although
      that table counted trailing zeros rather than bit position.  This
      requires 32-bit int, we fall back to a naive algorithm on the rare

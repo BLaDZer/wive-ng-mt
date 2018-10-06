@@ -1,5 +1,5 @@
 /* Arabic joining group of Unicode characters.
-   Copyright (C) 2011 Free Software Foundation, Inc.
+   Copyright (C) 2011-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2011.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 ELEM (NONE,                  "No Joining Group")
 ELEM (AIN,                   "Ain")
@@ -72,3 +72,32 @@ ELEM (YUDH,                  "Yudh")
 ELEM (YUDH_HE,               "Yudh He")
 ELEM (ZAIN,                  "Zain")
 ELEM (ZHAIN,                 "Zhain")
+ELEM (ROHINGYA_YEH,          "Rohingya Yeh")
+ELEM (STRAIGHT_WAW,          "Straight Waw")
+ELEM (MANICHAEAN_ALEPH,      "Manichaean Aleph")
+ELEM (MANICHAEAN_BETH,       "Manichaean Beth")
+ELEM (MANICHAEAN_GIMEL,      "Manichaean Gimel")
+ELEM (MANICHAEAN_DALETH,     "Manichaean Daleth")
+ELEM (MANICHAEAN_WAW,        "Manichaean Waw")
+ELEM (MANICHAEAN_ZAYIN,      "Manichaean Zayin")
+ELEM (MANICHAEAN_HETH,       "Manichaean Heth")
+ELEM (MANICHAEAN_TETH,       "Manichaean Teth")
+ELEM (MANICHAEAN_YODH,       "Manichaean Yodh")
+ELEM (MANICHAEAN_KAPH,       "Manichaean Kaph")
+ELEM (MANICHAEAN_LAMEDH,     "Manichaean Lamedh")
+ELEM (MANICHAEAN_DHAMEDH,    "Manichaean Dhamedh")
+ELEM (MANICHAEAN_THAMEDH,    "Manichaean Thamedh")
+ELEM (MANICHAEAN_MEM,        "Manichaean Mem")
+ELEM (MANICHAEAN_NUN,        "Manichaean Nun")
+ELEM (MANICHAEAN_SAMEKH,     "Manichaean Samekh")
+ELEM (MANICHAEAN_AYIN,       "Manichaean Ayin")
+ELEM (MANICHAEAN_PE,         "Manichaean Pe")
+ELEM (MANICHAEAN_SADHE,      "Manichaean Sadhe")
+ELEM (MANICHAEAN_QOPH,       "Manichaean Qoph")
+ELEM (MANICHAEAN_RESH,       "Manichaean Resh")
+ELEM (MANICHAEAN_TAW,        "Manichaean Taw")
+ELEM (MANICHAEAN_ONE,        "Manichaean One")
+ELEM (MANICHAEAN_FIVE,       "Manichaean Five")
+ELEM (MANICHAEAN_TEN,        "Manichaean Ten")
+ELEM (MANICHAEAN_TWENTY,     "Manichaean Twenty")
+ELEM (MANICHAEAN_HUNDRED,    "Manichaean Hundred")

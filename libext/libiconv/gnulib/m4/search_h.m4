@@ -1,5 +1,5 @@
-# search_h.m4 serial 8
-dnl Copyright (C) 2007-2011 Free Software Foundation, Inc.
+# search_h.m4 serial 10
+dnl Copyright (C) 2007-2018 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -14,6 +14,27 @@ AC_DEFUN([gl_SEARCH_H],
     HAVE_SEARCH_H=0
   fi
   AC_SUBST([HAVE_SEARCH_H])
+
+  if test $HAVE_SEARCH_H = 1; then
+    AC_CACHE_CHECK([for type VISIT], [gl_cv_type_VISIT],
+      [AC_COMPILE_IFELSE(
+         [AC_LANG_PROGRAM(
+            [[#if HAVE_SEARCH_H
+               #include <search.h>
+              #endif
+            ]],
+            [[static VISIT x; x = postorder;]])],
+         [gl_cv_type_VISIT=yes],
+         [gl_cv_type_VISIT=no])])
+  else
+    gl_cv_type_VISIT=no
+  fi
+  if test $gl_cv_type_VISIT = yes; then
+    HAVE_TYPE_VISIT=1
+  else
+    HAVE_TYPE_VISIT=0
+  fi
+  AC_SUBST([HAVE_TYPE_VISIT])
 
   dnl Check for declarations of anything we want to poison if the
   dnl corresponding gnulib module is not in use.
@@ -35,5 +56,6 @@ AC_DEFUN([gl_SEARCH_H_DEFAULTS],
   GNULIB_TSEARCH=0; AC_SUBST([GNULIB_TSEARCH])
   dnl Assume proper GNU behavior unless another module says otherwise.
   HAVE_TSEARCH=1;    AC_SUBST([HAVE_TSEARCH])
+  HAVE_TWALK=1;      AC_SUBST([HAVE_TWALK])
   REPLACE_TSEARCH=0; AC_SUBST([REPLACE_TSEARCH])
 ])

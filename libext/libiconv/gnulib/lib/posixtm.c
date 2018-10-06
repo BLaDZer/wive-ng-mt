@@ -1,6 +1,6 @@
 /* Parse dates for touch and date.
 
-   Copyright (C) 1989-1991, 1998, 2000-2011 Free Software Foundation, Inc.
+   Copyright (C) 1989-1991, 1998, 2000-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Yacc-based version written by Jim Kingdon and David MacKenzie.
    Rewritten by Jim Meyering.  */
@@ -37,7 +37,7 @@
    - It's typically faster.
    POSIX says that only '0' through '9' are digits.  Prefer ISDIGIT to
    isdigit unless it's important to use the locale's definition
-   of `digit' even when the host does not conform to POSIX.  */
+   of "digit" even when the host does not conform to POSIX.  */
 #define ISDIGIT(c) ((unsigned int) (c) - '0' <= 9)
 
 /*
@@ -45,7 +45,7 @@
 
   touch -t [[CC]YY]mmddhhmm[.ss] FILE...
     8, 10, or 12 digits, followed by optional .ss
-    (PDS_LEADING_YEAR | PDS_CENTURY | PDS_SECONDS)
+    (PDS_CENTURY | PDS_SECONDS)
 
   touch mmddhhmm[YY] FILE... (obsoleted by POSIX 1003.1-2001)
     8 or 10 digits, YY (if present) must be in the range 69-99
@@ -57,7 +57,7 @@
 
 */
 
-static int
+static bool
 year (struct tm *tm, const int *digit_pair, size_t n, unsigned int syntax_bits)
 {
   switch (n)
@@ -70,14 +70,14 @@ year (struct tm *tm, const int *digit_pair, size_t n, unsigned int syntax_bits)
       if (digit_pair[0] <= 68)
         {
           if (syntax_bits & PDS_PRE_2000)
-            return 1;
+            return false;
           tm->tm_year += 100;
         }
       break;
 
     case 2:
       if (! (syntax_bits & PDS_CENTURY))
-        return 1;
+        return false;
       tm->tm_year = digit_pair[0] * 100 + digit_pair[1] - 1900;
       break;
 
@@ -90,7 +90,7 @@ year (struct tm *tm, const int *digit_pair, size_t n, unsigned int syntax_bits)
         time (&now);
         tmp = localtime (&now);
         if (! tmp)
-          return 1;
+          return false;
         tm->tm_year = tmp->tm_year;
       }
       break;
@@ -99,10 +99,10 @@ year (struct tm *tm, const int *digit_pair, size_t n, unsigned int syntax_bits)
       abort ();
     }
 
-  return 0;
+  return true;
 }
 
-static int
+static bool
 posix_time_parse (struct tm *tm, const char *s, unsigned int syntax_bits)
 {
   const char *dot = NULL;
@@ -111,40 +111,40 @@ posix_time_parse (struct tm *tm, const char *s, unsigned int syntax_bits)
   size_t i;
 
   size_t s_len = strlen (s);
-  size_t len = (((syntax_bits & PDS_SECONDS) && (dot = strchr (s, '.')))
-                ? (size_t) (dot - s)
-                : s_len);
+  size_t len = s_len;
 
-  if (len != 8 && len != 10 && len != 12)
-    return 1;
-
-  if (dot)
+  if (syntax_bits & PDS_SECONDS)
     {
-      if (!(syntax_bits & PDS_SECONDS))
-        return 1;
-
-      if (s_len - len != 3)
-        return 1;
+      dot = strchr (s, '.');
+      if (dot)
+        {
+          len = dot - s;
+          if (s_len - len != 3)
+            return false;
+        }
     }
+
+  if (! (8 <= len && len <= 12 && len % 2 == 0))
+    return false;
 
   for (i = 0; i < len; i++)
     if (!ISDIGIT (s[i]))
-      return 1;
+      return false;
 
   len /= 2;
   for (i = 0; i < len; i++)
     pair[i] = 10 * (s[2*i] - '0') + s[2*i + 1] - '0';
 
   p = pair;
-  if (syntax_bits & PDS_LEADING_YEAR)
+  if (! (syntax_bits & PDS_TRAILING_YEAR))
     {
-      if (year (tm, p, len - 4, syntax_bits))
-        return 1;
+      if (! year (tm, p, len - 4, syntax_bits))
+        return false;
       p += len - 4;
       len = 4;
     }
 
-  /* Handle 8 digits worth of `MMDDhhmm'.  */
+  /* Handle 8 digits worth of 'MMDDhhmm'.  */
   tm->tm_mon = *p++ - 1;
   tm->tm_mday = *p++;
   tm->tm_hour = *p++;
@@ -154,28 +154,19 @@ posix_time_parse (struct tm *tm, const char *s, unsigned int syntax_bits)
   /* Handle any trailing year.  */
   if (syntax_bits & PDS_TRAILING_YEAR)
     {
-      if (year (tm, p, len, syntax_bits))
-        return 1;
+      if (! year (tm, p, len, syntax_bits))
+        return false;
     }
 
   /* Handle seconds.  */
   if (!dot)
-    {
-      tm->tm_sec = 0;
-    }
+    tm->tm_sec = 0;
+  else if (ISDIGIT (dot[1]) && ISDIGIT (dot[2]))
+    tm->tm_sec = 10 * (dot[1] - '0') + dot[2] - '0';
   else
-    {
-      int seconds;
+    return false;
 
-      ++dot;
-      if (!ISDIGIT (dot[0]) || !ISDIGIT (dot[1]))
-        return 1;
-      seconds = 10 * (dot[0] - '0') + dot[1] - '0';
-
-      tm->tm_sec = seconds;
-    }
-
-  return 0;
+  return true;
 }
 
 /* Parse a POSIX-style date, returning true if successful.  */
@@ -188,10 +179,15 @@ posixtime (time_t *p, const char *s, unsigned int syntax_bits)
   struct tm const *tm;
   time_t t;
 
-  if (posix_time_parse (&tm0, s, syntax_bits))
+  if (! posix_time_parse (&tm0, s, syntax_bits))
     return false;
 
-  tm1 = tm0;
+  tm1.tm_sec = tm0.tm_sec;
+  tm1.tm_min = tm0.tm_min;
+  tm1.tm_hour = tm0.tm_hour;
+  tm1.tm_mday = tm0.tm_mday;
+  tm1.tm_mon = tm0.tm_mon;
+  tm1.tm_year = tm0.tm_year;
   tm1.tm_isdst = -1;
   t = mktime (&tm1);
 
@@ -207,7 +203,9 @@ posixtime (time_t *p, const char *s, unsigned int syntax_bits)
     }
 
   /* Reject dates like "September 31" and times like "25:61".
-     Do not reject times that specify "60" as the number of seconds.  */
+     However, allow a seconds count of 60 even in time zones that do
+     not support leap seconds, treating it as the following second;
+     POSIX requires this.  */
   if ((tm0.tm_year ^ tm->tm_year)
       | (tm0.tm_mon ^ tm->tm_mon)
       | (tm0.tm_mday ^ tm->tm_mday)

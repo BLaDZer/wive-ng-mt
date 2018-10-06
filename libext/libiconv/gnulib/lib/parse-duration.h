@@ -1,5 +1,5 @@
 /* Parse a time duration and return a seconds count
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
    Written by Bruce Korb <bkorb@gnu.org>, 2008.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /*
 
@@ -22,7 +22,7 @@
 
   At the time of writing, this worked:
 
-  http://en.wikipedia.org/wiki/ISO_8601#Durations
+  https://en.wikipedia.org/wiki/ISO_8601#Durations
 
   The string must start with a 'P', 'T' or a digit.
 
@@ -31,7 +31,7 @@
   the string may contain:  NNN Y NNN M NNN W NNN d NNN h NNN m NNN s
   This represents NNN years, NNN months, NNN weeks, NNN days, NNN hours,
     NNN minutes and NNN seconds.
-  The embeded white space is optional.
+  The embedded white space is optional.
   These terms must appear in this order.
   Case is significant:  'M' is months and 'm' is minutes.
   The final "s" is optional.

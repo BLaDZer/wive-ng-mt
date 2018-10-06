@@ -11,12 +11,24 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <math.h>
+
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+atanl (long double x)
+{
+  return atan (x);
+}
+
+#else
+
+/* Code based on glibc/sysdeps/ieee754/ldbl-128/s_atanl.c.  */
 
 /*                                                      s_atanl.c
  *
@@ -222,3 +234,5 @@ atanl (long double x)
   else
     return u;
 }
+
+#endif

@@ -1,6 +1,6 @@
 /* argmatch.h -- definitions and prototypes for argmatch.c
 
-   Copyright (C) 1990, 1998-1999, 2001-2002, 2004-2005, 2009-2011 Free Software
+   Copyright (C) 1990, 1998-1999, 2001-2002, 2004-2005, 2009-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by David MacKenzie <djm@ai.mit.edu>
    Modified by Akim Demaille <demaille@inf.enst.fr> */
@@ -25,6 +25,10 @@
 # include <stddef.h>
 
 # include "verify.h"
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
 # define ARRAY_CARDINALITY(Array) (sizeof (Array) / sizeof *(Array))
 
@@ -40,14 +44,14 @@
    to the same values in VALLIST).  */
 
 ptrdiff_t argmatch (char const *arg, char const *const *arglist,
-                    char const *vallist, size_t valsize);
+                    char const *vallist, size_t valsize) _GL_ATTRIBUTE_PURE;
 
 # define ARGMATCH(Arg, Arglist, Vallist) \
   argmatch (Arg, Arglist, (char const *) (Vallist), sizeof *(Vallist))
 
 /* xargmatch calls this function when it fails.  This function should not
    return.  By default, this is a function that calls ARGMATCH_DIE which
-   in turn defaults to `exit (exit_failure)'.  */
+   in turn defaults to 'exit (exit_failure)'.  */
 typedef void (*argmatch_exit_fn) (void);
 extern argmatch_exit_fn argmatch_die;
 
@@ -93,10 +97,15 @@ ptrdiff_t __xargmatch_internal (char const *context,
 
 char const *argmatch_to_argument (char const *value,
                                   char const *const *arglist,
-                                  char const *vallist, size_t valsize);
+                                  char const *vallist, size_t valsize)
+  _GL_ATTRIBUTE_PURE;
 
 # define ARGMATCH_TO_ARGUMENT(Value, Arglist, Vallist)                  \
   argmatch_to_argument (Value, Arglist,                                 \
                         (char const *) (Vallist), sizeof *(Vallist))
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif /* ARGMATCH_H_ */

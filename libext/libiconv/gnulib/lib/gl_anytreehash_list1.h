@@ -1,5 +1,5 @@
 /* Sequential list data type implemented by a hash table with a binary tree.
-   Copyright (C) 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Common code of gl_avltreehash_list.c and gl_rbtreehash_list.c.  */
 
@@ -29,7 +29,7 @@ struct gl_multiple_nodes
 #define MULTIPLE_NODES_MAGIC  (void *) -1
 
 /* Resize the hash table if needed, after list->count was incremented.  */
-static inline void
+static void
 hash_resize_after_add (gl_list_t list)
 {
   size_t count = (list->root != 0 ? list->root->branch_size : 0);
@@ -87,7 +87,7 @@ compare_position_threshold (const void *x, const void *threshold)
 }
 
 /* Return the first element of a non-empty ordered set of nodes.  */
-static inline gl_list_node_t
+static gl_list_node_t
 gl_oset_first (gl_oset_t set)
 {
   gl_oset_iterator_t iter = gl_oset_iterator (set);
@@ -185,10 +185,8 @@ add_to_bucket (gl_list_t list, gl_list_node_t new_node)
   return 0;
 }
 /* Tell GCC that the likely return value is 0.  */
-#if __GNUC__ >= 3
-# define add_to_bucket(list,node) \
+#define add_to_bucket(list,node) \
     __builtin_expect ((add_to_bucket) (list, node), 0)
-#endif
 
 /* Remove a node from the hash table structure.
    If duplicates are allowed, this function performs in average time
@@ -272,7 +270,7 @@ remove_from_bucket (gl_list_t list, gl_list_node_t old_node)
 /* Build up the hash table during initialization: Store all the nodes of
    list->root in the hash table.
    Return 0 upon success, -1 upon out-of-memory.  */
-static inline int
+static int
 add_nodes_to_buckets (gl_list_t list)
 {
   /* Iterate across all nodes.  */

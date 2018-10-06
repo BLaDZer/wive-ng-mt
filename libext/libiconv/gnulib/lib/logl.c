@@ -11,12 +11,37 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
 /* Specification.  */
 #include <math.h>
+
+#if HAVE_SAME_LONG_DOUBLE_AS_DOUBLE
+
+long double
+logl (long double x)
+{
+  return log (x);
+}
+
+#elif HAVE_LOGL
+
+long double
+logl (long double x)
+# undef logl
+{
+  /* Work around the OSF/1 5.1 bug.  */
+  if (x == 0.0L)
+    /* Return -Infinity.  */
+    return -1.0L / 0.0L;
+  return logl (x);
+}
+
+#else
+
+/* Code based on glibc/sysdeps/ieee754/ldbl-128/e_logl.c.  */
 
 /*                                                      logll.c
  *
@@ -122,7 +147,7 @@ static const long double logtbl[92] = {
 -2.7902661731604211834685052867305795169688E-4L,
 -1.2335696813916860754951146082826952093496E-4L,
 -3.0677461025892873184042490943581654591817E-5L,
-#define ZERO logtbl[38]
+# define ZERO logtbl[38]
  0.0000000000000000000000000000000000000000E0L,
 -3.0359557945051052537099938863236321874198E-5L,
 -1.2081346403474584914595395755316412213151E-4L,
@@ -259,3 +284,5 @@ logl (long double x)
   y += e * ln2a;
   return y;
 }
+
+#endif

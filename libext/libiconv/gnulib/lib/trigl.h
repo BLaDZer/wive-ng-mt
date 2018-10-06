@@ -1,7 +1,7 @@
-/* Declarations for sinl, cosl, tanl internal functions
+/* Declarations for sinl, cosl, tanl internal functions.  -*- coding: utf-8 -*-
    Contributed by Paolo Bonzini
 
-   Copyright 2002-2003, 2009-2011 Free Software Foundation, Inc.
+   Copyright 2002-2003, 2009-2018 Free Software Foundation, Inc.
 
    This file is part of gnulib.
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Decompose x into x = k * π/2 + r
    where k is an integer and abs(r) <= π/4.

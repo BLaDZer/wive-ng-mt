@@ -1,5 +1,5 @@
 /* Parse a time duration and return a seconds count
-   Copyright (C) 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 2008-2018 Free Software Foundation, Inc.
    Written by Bruce Korb <bkorb@gnu.org>, 2008.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "intprops.h"
 
 #ifndef NUL
 #define NUL '\0'
@@ -51,17 +53,18 @@ typedef enum {
 #define SEC_PER_MONTH   (SEC_PER_DAY * 30)
 #define SEC_PER_YEAR    (SEC_PER_DAY * 365)
 
-#define TIME_MAX        0x7FFFFFFF
+#undef  MAX_DURATION
+#define MAX_DURATION    TYPE_MAXIMUM(time_t)
 
 /* Wrapper around strtoul that does not require a cast.  */
-static unsigned long inline
+static unsigned long
 str_const_to_ul (cch_t * str, cch_t ** ppz, int base)
 {
   return strtoul (str, (char **)ppz, base);
 }
 
 /* Wrapper around strtol that does not require a cast.  */
-static long inline
+static long
 str_const_to_l (cch_t * str, cch_t ** ppz, int base)
 {
   return strtol (str, (char **)ppz, base);
@@ -70,7 +73,7 @@ str_const_to_l (cch_t * str, cch_t ** ppz, int base)
 /* Returns BASE + VAL * SCALE, interpreting BASE = BAD_TIME
    with errno set as an error situation, and returning BAD_TIME
    with errno set in an error situation.  */
-static time_t inline
+static time_t
 scale_n_add (time_t base, time_t val, int scale)
 {
   if (base == BAD_TIME)
@@ -80,14 +83,14 @@ scale_n_add (time_t base, time_t val, int scale)
       return BAD_TIME;
     }
 
-  if (val > TIME_MAX / scale)
+  if (val > MAX_DURATION / scale)
     {
       errno = ERANGE;
       return BAD_TIME;
     }
 
   val *= scale;
-  if (base > TIME_MAX - val)
+  if (base > MAX_DURATION - val)
     {
       errno = ERANGE;
       return BAD_TIME;

@@ -1,18 +1,19 @@
 /*
-   Copyright (C) 1995, 2005, 2008-2011 Free Software Foundation, Inc.
+   Copyright (C) 1995-2018 Free Software Foundation, Inc.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
+   The GNU C Library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
 
 /*
    Copyright (C) 1983 Regents of the University of California.
@@ -31,7 +32,7 @@
       may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
-   THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+   THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND
    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
    ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
@@ -50,18 +51,25 @@
  * Rewritten to be reentrant by Ulrich Drepper, 1995
  */
 
-#include <config.h>
-
+#ifndef _LIBC
 /* Don't use __attribute__ __nonnull__ in this compilation unit.  Otherwise gcc
    optimizes away the buf == NULL, arg_state == NULL, result == NULL tests
    below.  */
-#define _GL_ARG_NONNULL(params)
+# define _GL_ARG_NONNULL(params)
+
+# include <libc-config.h>
+# define __srandom_r srandom_r
+# define __initstate_r initstate_r
+# define __setstate_r setstate_r
+# define __random_r random_r
+#endif
+
+/* Specification.  */
+#include <stdlib.h>
 
 #include <errno.h>
-#include <limits.h>
 #include <stddef.h>
-#include <stdlib.h>
-#include <inttypes.h>
+#include <string.h>
 
 
 /* An improved random number generation package.  In addition to the standard
@@ -153,15 +161,19 @@ static const struct random_poly_info random_poly_info =
   { DEG_0, DEG_1, DEG_2, DEG_3, DEG_4 }
 };
 
-#ifndef _LIBC
-# define weak_alias(local, symbol)
-# define __set_errno(e) errno = (e)
-# define __srandom_r srandom_r
-# define __initstate_r initstate_r
-# define __setstate_r setstate_r
-# define __random_r random_r
-#endif
+static int32_t
+get_int32 (void *p)
+{
+  int32_t v;
+  memcpy (&v, p, sizeof v);
+  return v;
+}
 
+static void
+set_int32 (void *p, int32_t v)
+{
+  memcpy (p, &v, sizeof v);
+}
 
 
 /* Initialize the random number generator based on the given seed.  If the
@@ -178,7 +190,7 @@ __srandom_r (unsigned int seed, struct random_data *buf)
   int type;
   int32_t *state;
   long int i;
-  long int word;
+  int32_t word;
   int32_t *dst;
   int kc;
 
@@ -192,7 +204,7 @@ __srandom_r (unsigned int seed, struct random_data *buf)
   /* We must make sure the seed is not 0.  Take arbitrarily 1 in this case.  */
   if (seed == 0)
     seed = 1;
-  state[0] = seed;
+  set_int32 (&state[0], seed);
   if (type == TYPE_0)
     goto done;
 
@@ -209,7 +221,7 @@ __srandom_r (unsigned int seed, struct random_data *buf)
       word = 16807 * lo - 2836 * hi;
       if (word < 0)
         word += 2147483647;
-      *++dst = word;
+      set_int32 (++dst, word);
     }
 
   buf->fptr = &state[buf->rand_sep];
@@ -240,51 +252,44 @@ weak_alias (__srandom_r, srandom_r)
    lose this information and will be able to restart with setstate.
    Note: The first thing we do is save the current state, if any, just like
    setstate so that it doesn't matter when initstate is called.
-   Returns a pointer to the old state.  */
+   Returns 0 on success, non-zero on failure.  */
 int
 __initstate_r (unsigned int seed, char *arg_state, size_t n,
                struct random_data *buf)
 {
-  int32_t *old_state;
-  int32_t *state;
-  int type;
-  int degree;
-  int separation;
-
   if (buf == NULL)
     goto fail;
 
-  old_state = buf->state;
+  int32_t *old_state = buf->state;
   if (old_state != NULL)
     {
       int old_type = buf->rand_type;
-      if (old_type == TYPE_0)
-        old_state[-1] = TYPE_0;
-      else
-        old_state[-1] = (MAX_TYPES * (buf->rptr - old_state)) + old_type;
+      set_int32 (&old_state[-1],
+                 (old_type == TYPE_0
+                  ? TYPE_0
+                  : (MAX_TYPES * (buf->rptr - old_state)) + old_type));
     }
 
+  int type;
   if (n >= BREAK_3)
     type = n < BREAK_4 ? TYPE_3 : TYPE_4;
   else if (n < BREAK_1)
     {
       if (n < BREAK_0)
-        {
-          __set_errno (EINVAL);
-          goto fail;
-        }
+        goto fail;
+
       type = TYPE_0;
     }
   else
     type = n < BREAK_2 ? TYPE_1 : TYPE_2;
 
-  degree = random_poly_info.degrees[type];
-  separation = random_poly_info.seps[type];
+  int degree = random_poly_info.degrees[type];
+  int separation = random_poly_info.seps[type];
 
   buf->rand_type = type;
   buf->rand_sep = separation;
   buf->rand_deg = degree;
-  state = &((int32_t *) arg_state)[1];  /* First location.  */
+  int32_t *state = &((int32_t *) arg_state)[1]; /* First location.  */
   /* Must set END_PTR before srandom.  */
   buf->end_ptr = &state[degree];
 
@@ -292,9 +297,8 @@ __initstate_r (unsigned int seed, char *arg_state, size_t n,
 
   __srandom_r (seed, buf);
 
-  state[-1] = TYPE_0;
-  if (type != TYPE_0)
-    state[-1] = (buf->rptr - state) * MAX_TYPES + type;
+  set_int32 (&state[-1],
+             type == TYPE_0 ? TYPE_0 : (buf->rptr - state) * MAX_TYPES + type);
 
   return 0;
 
@@ -312,7 +316,7 @@ weak_alias (__initstate_r, initstate_r)
    location into the zeroth word of the state information. Note that due
    to the order in which things are done, it is OK to call setstate with the
    same state as the current state
-   Returns a pointer to the old state information.  */
+   Returns 0 on success, non-zero on failure.  */
 int
 __setstate_r (char *arg_state, struct random_data *buf)
 {
@@ -328,12 +332,12 @@ __setstate_r (char *arg_state, struct random_data *buf)
 
   old_type = buf->rand_type;
   old_state = buf->state;
-  if (old_type == TYPE_0)
-    old_state[-1] = TYPE_0;
-  else
-    old_state[-1] = (MAX_TYPES * (buf->rptr - old_state)) + old_type;
+  set_int32 (&old_state[-1],
+             (old_type == TYPE_0
+              ? TYPE_0
+              : (MAX_TYPES * (buf->rptr - old_state)) + old_type));
 
-  type = new_state[-1] % MAX_TYPES;
+  type = get_int32 (&new_state[-1]) % MAX_TYPES;
   if (type < TYPE_0 || type > TYPE_4)
     goto fail;
 
@@ -343,7 +347,7 @@ __setstate_r (char *arg_state, struct random_data *buf)
 
   if (type != TYPE_0)
     {
-      int rear = new_state[-1] / MAX_TYPES;
+      int rear = get_int32 (&new_state[-1]) / MAX_TYPES;
       buf->rptr = &new_state[rear];
       buf->fptr = &new_state[(rear + separation) % degree];
     }
@@ -383,9 +387,9 @@ __random_r (struct random_data *buf, int32_t *result)
 
   if (buf->rand_type == TYPE_0)
     {
-      int32_t val = state[0];
-      val = ((state[0] * 1103515245) + 12345) & 0x7fffffff;
-      state[0] = val;
+      int32_t val = (((get_int32 (&state[0]) * 1103515245U) + 12345U)
+                     & 0x7fffffff);
+      set_int32 (&state[0], val);
       *result = val;
     }
   else
@@ -393,11 +397,14 @@ __random_r (struct random_data *buf, int32_t *result)
       int32_t *fptr = buf->fptr;
       int32_t *rptr = buf->rptr;
       int32_t *end_ptr = buf->end_ptr;
-      int32_t val;
-
-      val = *fptr += *rptr;
+      /* F and R are unsigned int, not uint32_t, to avoid undefined
+         overflow behavior on platforms where INT_MAX == UINT32_MAX.  */
+      unsigned int f = get_int32 (fptr);
+      unsigned int r = get_int32 (rptr);
+      uint32_t val = f + r;
+      set_int32 (fptr, val);
       /* Chucking least random bit.  */
-      *result = (val >> 1) & 0x7fffffff;
+      *result = val >> 1;
       ++fptr;
       if (fptr >= end_ptr)
         {

@@ -13,12 +13,14 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include "test-predicate-part1.h"
 
+    { 0x061C, 0x061C },
     { 0x200E, 0x200F },
-    { 0x202A, 0x202E }
+    { 0x202A, 0x202E },
+    { 0x2066, 0x2069 }
 
 #define PREDICATE(c) uc_is_property_bidi_control (c)
 #include "test-predicate-part2.h"

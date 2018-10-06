@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2002-2011 Free Software Foundation, Inc.
+# Copyright (C) 2002-2018 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
 # Usage: MODULES.html.sh [--git-urls] > MODULES.html
@@ -30,7 +30,7 @@ if test $# != 0; then
   case "$1" in
     --git-urls)
       # Generate URLs to the official gnulib git repository.
-      repo_url_prefix='http://git.sv.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;f='
+      repo_url_prefix='https://git.sv.gnu.org/gitweb/?p=gnulib.git;a=blob_plain;f='
       repo_url_suffix=''
       ;;
   esac
@@ -1512,19 +1512,26 @@ func_module ()
     #   parentheses (as per GNU standards, section "GNU Manuals").
     # - Flag the remaining symbol() constructs as errors.
     # - Change 'xxx' to <CODE>xxx</CODE>.
+    sed_extract_element='
+      '$sed_lt'
+      '$sed_gt'
+      '$sed_remove_trailing_empty_line'
+      s,^, ,
+      s,$, ,
+      s,\([^a-zA-Z_]\)'$posix_functions'() \(function\|macro\),\1<A HREF="'$POSIX2008_URL'/functions/\2.html">\2</A> \3,g
+      s,\([^a-zA-Z_]\)'$posix_functions' \(function\|macro\),\1<A HREF="'$POSIX2008_URL'/functions/\2.html">\2</A> \3,g
+      s,\([^a-zA-Z_]\)'$posix_functions'(),\1<A HREF="'$POSIX2008_URL'/functions/\2.html">\2</A> <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g
+      s,\([^a-zA-Z_]\)'$posix2001_functions'() \(function\|macro\),\1<A HREF="'$POSIX2001_URL'xsh/\2.html">\2</A> \3,g
+      s,\([^a-zA-Z_]\)'$posix2001_functions' \(function\|macro\),\1<A HREF="'$POSIX2001_URL'xsh/\2.html">\2</A> \3,g
+      s,\([^a-zA-Z_]\)'$posix2001_functions'(),\1<A HREF="'$POSIX2001_URL'xsh/\2.html">\2</A> <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g
+      s,\([^a-zA-Z_]\)\([a-zA-Z_][a-zA-Z0-9_]*\)() \(function\|macro\),\1\2 \3,g
+      s,\([^a-zA-Z_]\)\([a-zA-Z_][a-zA-Z0-9_]*\)(),\1\2 <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g
+      s, '"'"'\([a-zA-Z0-9_ -]*\)'"'"'\([^a-zA-Z0-9_]\), <CODE>\1</CODE>\2,g
+      s,^ ,,
+      s, $,,
+    '
     element=`gnulib-tool --extract-description $1 \
-             | sed -e "$sed_lt" -e "$sed_gt" -e "$sed_remove_trailing_empty_line" \
-                   -e 's,^, ,' -e 's,$, ,' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix_functions}"'() \(function\|macro\),\1<A HREF="'"$POSIX2008_URL"'/functions/\2.html">\2</A> \3,g' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix_functions}"' \(function\|macro\),\1<A HREF="'"$POSIX2008_URL"'/functions/\2.html">\2</A> \3,g' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix_functions}"'(),\1<A HREF="'"$POSIX2008_URL"'/functions/\2.html">\2</A> <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix2001_functions}"'() \(function\|macro\),\1<A HREF="'"$POSIX2001_URL"'xsh/\2.html">\2</A> \3,g' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix2001_functions}"' \(function\|macro\),\1<A HREF="'"$POSIX2001_URL"'xsh/\2.html">\2</A> \3,g' \
-                   -e 's,\([^a-zA-Z_]\)'"${posix2001_functions}"'(),\1<A HREF="'"$POSIX2001_URL"'xsh/\2.html">\2</A> <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g' \
-                   -e 's,\([^a-zA-Z_]\)\([a-zA-Z_][a-zA-Z0-9_]*\)() \(function\|macro\),\1\2 \3,g' \
-                   -e 's,\([^a-zA-Z_]\)\([a-zA-Z_][a-zA-Z0-9_]*\)(),\1\2 <SPAN STYLE="color:#FF0000;">what?? If you mean a function\, please say so.</SPAN>,g' \
-                   -e 's, '"'"'\([a-zA-Z0-9_ -]*\)'"'"'\([^a-zA-Z0-9_]\), <CODE>\1</CODE>\2,g' \
-                   -e 's,^ ,,' -e 's, $,,'`
+             | LC_ALL=C sed -e "$sed_extract_element"`
     func_echo "<TD ALIGN=LEFT VALIGN=TOP WIDTH=\"80%\">$element"
 
     func_end TR
@@ -1539,13 +1546,19 @@ func_module ()
     includes=`gnulib-tool --extract-include-directive $1`
     files=`gnulib-tool --extract-filelist $1 \
            | grep -v '^m4/gnulib-common\.m4$'`
+    sed_extract_element='
+      '$sed_lt'
+      '$sed_gt'
+      '$sed_remove_trailing_empty_line'
+      s,^#include "\(.*\)"$,#include "<A HREF="'$repo_url_prefix'lib/\1'$repo_url_suffix_repl'">\1</A>",
+      s,^#include &lt;'$posix_headers'\.h&gt;$,#include \&lt;<A HREF="'$POSIX2008_URL'/basedefs/\1.h.html">\1.h</A>\&gt;,
+      s,<A HREF="'$POSIX2008_URL'/basedefs/\([a-zA-Z0-9_]*\)/\([a-zA-Z0-9_]*\)\.h\.html">,<A HREF="'$POSIX2008_URL'/basedefs/\1_\2.h.html">,
+      s,^#include &lt;'$posix2001_headers'\.h&gt;$,#include \&lt;<A HREF="'$POSIX2001_URL'xbd/\1.h.html">\1.h</A>\&gt;,
+      s/$/<BR>/
+    '
     element=`echo "$includes" \
-             | sed -e "$sed_lt" -e "$sed_gt" -e "$sed_remove_trailing_empty_line" \
-                   -e 's,^#include "\(.*\)"$,#include "<A HREF="'$repo_url_prefix'lib/\1'$repo_url_suffix_repl'">\1</A>",' \
-                   -e 's,^#include &lt;'"${posix_headers}"'\.h&gt;$,#include \&lt;<A HREF="'"$POSIX2008_URL"'/basedefs/\1.h.html">\1.h</A>\&gt;,' \
-                   -e 's,<A HREF="'"$POSIX2008_URL"'/basedefs/\([a-zA-Z0-9_]*\)/\([a-zA-Z0-9_]*\)\.h\.html">,<A HREF="'"$POSIX2008_URL"'/basedefs/\1_\2.h.html">,' \
-                   -e 's,^#include &lt;'"${posix2001_headers}"'\.h&gt;$,#include \&lt;<A HREF="'"$POSIX2001_URL"'xbd/\1.h.html">\1.h</A>\&gt;,' \
-                   -e 's/$/<BR>/' | tr -d "$trnl" | sed -e 's/<BR>$//'`
+             | LC_ALL=C sed -e "$sed_extract_element" | tr -d "$trnl" \
+             | sed -e 's/<BR>$//'`
     test -n "$element" || element='---'
     func_echo "<TD ALIGN=LEFT VALIGN=TOP>$element"
 
@@ -1554,21 +1567,28 @@ func_module ()
                  | sed -n -e "$sed_choose_unconditional_nonstandard_include" \
                  | sed -e "$sed_escape_dot" | tr -d "$trnl"`
     sed_choose_lib_files='s,^lib/\(.*\)$,\1,p'
+    sed_extract_include='
+      \|^'"$includefile"'$|d
+      s,^\(.*\)$,<A HREF="'$repo_url_prefix'lib/\1'$repo_url_suffix_repl'">\1</A>,
+      s/$/<BR>/
+    '
     element=`echo "$files" \
              | sed -e '/^$/d' \
              | sed -n -e "$sed_choose_lib_files" \
-             | sed -e '\|^'"${includefile}"'$|d' \
-                   -e 's,^\(.*\)$,<A HREF="'$repo_url_prefix'lib/\1'$repo_url_suffix_repl'">\1</A>,' \
-                   -e 's/$/<BR>/' | tr -d "$trnl" | sed -e 's/<BR>$//'`
+             | sed -e "$sed_extract_include" \
+             | tr -d "$trnl" | sed -e 's/<BR>$//'`
     test -n "$element" || element='---'
     func_echo "<TD ALIGN=LEFT VALIGN=TOP>$element"
 
     sed_choose_m4_files='s,^m4/\(.*\)$,\1,p'
+    sed_extract_repo_url='
+      /^onceonly/d
+      s,^\(.*\)$,<A HREF="'$repo_url_prefix'm4/\1'$repo_url_suffix_repl'">\1</A>,
+    '
     element=`(echo "$files" \
               | sed -e "$sed_remove_trailing_empty_line" \
               | sed -n -e "$sed_choose_m4_files" \
-              | sed -e '/^onceonly/d' \
-                    -e 's,^\(.*\)$,<A HREF="'$repo_url_prefix'm4/\1'$repo_url_suffix_repl'">\1</A>,'; \
+              | sed -e "$sed_extract_repo_url"; \
               gnulib-tool --extract-autoconf-snippet $1 \
               | sed -e "$sed_remove_trailing_empty_line") \
               | sed -e 's/$/<BR>/' | tr -d "$trnl" | sed -e 's/<BR>$//'`
@@ -1624,6 +1644,8 @@ func_all_modules ()
 
   func_begin_table
   func_module atexit
+  func_module ctime
+  func_module localtime
   func_module strtod
   func_module strerror
   func_module strerror-override
@@ -1643,6 +1665,7 @@ func_all_modules ()
 
   func_begin_table
   func_module assert
+  func_module assure
   func_module verify
   func_end_table
 
@@ -1680,6 +1703,7 @@ func_all_modules ()
   func_module free
   func_module malloc-gnu
   func_module realloc-gnu
+  func_module reallocarray
   func_module pagealign_alloc
   func_end_table
 
@@ -1692,6 +1716,7 @@ func_all_modules ()
   func_begin_table
   func_module array-mergesort
   func_module mpsort
+  func_module qsort_r
   func_end_table
 
   element="Date and time <time.h>"
@@ -1702,7 +1727,11 @@ func_all_modules ()
 
   func_begin_table
   func_module fprintftime
-  func_module strftime
+  func_module localtime-buffer
+  func_module nstrftime
+  func_module strftime-fixes
+  func_module time_rz
+  func_module year2038
   func_end_table
 
   element="Extra functions based on ANSI C 89"
@@ -1735,7 +1764,9 @@ func_all_modules ()
   func_echo "$element"
 
   func_begin_table
+  func_module count-leading-zeros
   func_module count-one-bits
+  func_module count-trailing-zeros
   func_module ffs
   func_module ffsl
   func_module ffsll
@@ -1751,6 +1782,7 @@ func_all_modules ()
 
   func_begin_table
   func_module putenv
+  func_module secure_getenv
   func_module setenv
   func_module unsetenv
   func_module xsetenv
@@ -1774,6 +1806,7 @@ func_all_modules ()
 
   func_begin_table
   func_module bcopy
+  func_module explicit_bzero
   func_module memchr
   func_module memchr2
   func_module memcmp2
@@ -1931,6 +1964,7 @@ func_all_modules ()
   func_module crypto/sha1
   func_module crypto/sha256
   func_module crypto/sha512
+  func_module crypto/sm3
   func_end_table
 
   element="Cryptographic computations (high-level)"
@@ -1954,6 +1988,7 @@ func_all_modules ()
   func_module crypto/gc-random
   func_module crypto/gc-rijndael
   func_module crypto/gc-sha1
+  func_module crypto/gc-sm3
   func_end_table
 
   element="Compiler warning management"
@@ -1973,11 +2008,13 @@ func_all_modules ()
   func_echo "$element"
 
   func_begin_table
+  func_module base32
   func_module base64
   func_module check-version
   func_module crc
   func_module diacrit
   func_module diffseq
+  func_module execinfo
   func_module getline
   func_module getdelim
   func_module getnline
@@ -1988,6 +2025,7 @@ func_all_modules ()
   func_module obstack-printf
   func_module obstack-printf-posix
   func_module hash-pjw
+  func_module hash-pjw-bare
   func_module hash
   func_module readline
   func_module readtokens
@@ -2009,6 +2047,7 @@ func_all_modules ()
 
   func_begin_table
   func_module alignof
+  func_module c99
   func_module flexmember
   func_module fpucw
   func_module func
@@ -2017,16 +2056,7 @@ func_all_modules ()
   func_module snippet/unused-parameter
   func_module va-args
   func_module vararrays
-  func_end_table
-
-  element="Sizes of integer types <limits.h>"
-  element=`printf "%s" "$element" | sed -e "$sed_lt" -e "$sed_gt"`
-  func_section_wrap isoc_sup_limits
-  func_wrap H3
-  func_echo "$element"
-
-  func_begin_table
-  func_module size_max
+  func_module vla
   func_end_table
 
   element="Variable arguments <stdarg.h>"
@@ -2066,6 +2096,7 @@ func_all_modules ()
   func_echo "$element"
 
   func_begin_table
+  func_module size_max
   func_module stdint
   func_end_table
 
@@ -2308,16 +2339,42 @@ func_all_modules ()
   func_module mbfile
   func_end_table
 
-  element="Support for systems lacking draft ISO C 1X"
-  func_section_wrap c1x_sup
+  element="Support for systems lacking ISO C 11"
+  func_section_wrap c11_sup
   func_wrap H2
   func_echo "$element"
 
   element="Core language properties"
   element=`printf "%s" "$element" | sed -e "$sed_lt" -e "$sed_gt"`
-  func_section_wrap c1x_core_properties
+  func_section_wrap c11_core_properties
   func_wrap H3
   func_echo "$element"
+
+  func_begin_table
+  func_module noreturn
+  func_module std-gnu11
+  func_module stdalign
+  func_end_table
+
+  element="Support for standard extensions to ISO C 11"
+  func_section_wrap c11_ext
+  func_wrap H2
+  func_echo "$element"
+
+  func_begin_table
+  func_module builtin-expect
+  func_module ieee754-h
+  func_module limits-h
+  func_end_table
+
+  element="Support for sharing code with the GNU C Library"
+  func_section_wrap glibc
+  func_wrap H2
+  func_echo "$element"
+
+  func_begin_table
+  func_module libc-config
+  func_end_table
 
   element="Support for obsolete systems lacking POSIX:2008"
   func_section_wrap posix_sup_obsolete
@@ -2356,6 +2413,7 @@ func_all_modules ()
   func_module fclose
   func_module fcntl-h
   func_module fcntl
+  func_module fdatasync
   func_module flock
   func_module fopen
   func_module fprintf-posix
@@ -2402,6 +2460,7 @@ func_all_modules ()
   func_module mkfifo
   func_module mknod
   func_module mkstemp
+  func_module net_if
   func_module netdb
   func_module netinet_in
   func_module nl_langinfo
@@ -2409,6 +2468,7 @@ func_all_modules ()
   func_module perror
   func_module poll
   func_module popen
+  func_module posix_openpt
   func_module posix_spawn
   func_module posix_spawnattr_destroy
   func_module posix_spawnattr_getflags
@@ -2450,7 +2510,7 @@ func_all_modules ()
   func_module servent
   func_module setsockopt
   func_module shutdown
-  func_module signal
+  func_module signal-h
   func_module sleep
   func_module snprintf-posix
   func_module socket
@@ -2486,12 +2546,15 @@ func_all_modules ()
   func_module sys_uio
   func_module sys_utsname
   func_module sys_wait
+  func_module truncate
   func_module tsearch
   func_module ttyname_r
   func_module uname
   func_module unistd
   func_module unlink
   func_module unlockpt
+  func_module utime
+  func_module utime-h
   func_module utimensat
   func_module vasnprintf-posix
   func_module vasprintf-posix
@@ -2503,6 +2566,9 @@ func_all_modules ()
   func_module vsprintf-posix
   func_module wcsnrtombs
   func_module wcwidth
+  func_module windows-stat-inodes
+  func_module windows-stat-override
+  func_module windows-stat-timespec
   func_module write
   func_end_table
 
@@ -2578,14 +2644,15 @@ func_all_modules ()
 
   func_begin_table
   func_module acl
+  func_module acl-permissions
   func_module areadlink
   func_module areadlink-with-size
   func_module areadlinkat
   func_module areadlinkat-with-size
   func_module backupfile
+  func_module backup-rename
   func_module canonicalize
   func_module canonicalize-lgpl
-  func_module chdir-safer
   func_module clean-temp
   func_module concat-filename
   func_module copy-file
@@ -2618,8 +2685,12 @@ func_all_modules ()
   func_module openat
   func_module openat-die
   func_module pathmax
+  func_module qacl
+  func_module qcopy-acl
+  func_module qset-acl
   func_module read-file
   func_module readlinkat
+  func_module renameatu
   func_module same
   func_module save-cwd
   func_module savedir
@@ -2663,20 +2734,20 @@ func_all_modules ()
   func_echo "$element"
 
   func_begin_table
+  func_module binary-io
   func_module dup3
-  func_module fd-safer-flag
-  func_module getdtablesize
   func_module fcntl-safer
-  func_module openat-safer
-  func_module safe-read
-  func_module safe-write
+  func_module fd-safer-flag
   func_module full-read
   func_module full-write
-  func_module binary-io
+  func_module getdtablesize
   func_module isapipe
+  func_module openat-safer
   func_module pipe-posix
   func_module pipe2
   func_module pipe2-safer
+  func_module safe-read
+  func_module safe-write
   func_end_table
 
   element="File stream based Input/Output"
@@ -3403,6 +3474,7 @@ func_all_modules ()
   func_module argz
   func_module bitrotate
   func_module byteswap
+  func_module dfa
   func_module exitfail
   func_module error
   func_module extensions
@@ -3411,6 +3483,7 @@ func_all_modules ()
   func_module xgetdomainname
   func_module getloadavg
   func_module getpagesize
+  func_module getprogname
   func_module getusershell
   func_module lib-symbol-visibility
   func_module login_tty
@@ -3420,6 +3493,7 @@ func_all_modules ()
   func_module physmem
   func_module posixver
   func_module progname
+  func_module ptsname_r
   func_module pty
   func_module quotearg
   func_module quote
@@ -3443,7 +3517,6 @@ func_all_modules ()
   func_module config-h
   func_module configmake
   func_module dummy
-  func_module elisp-comp
   func_module gperf
   func_module havelib
   func_module include_next
@@ -3476,6 +3549,7 @@ func_all_modules ()
   func_module gpl-2.0
   func_module gpl-3.0
   func_module lgpl-2.1
+  func_module lgpl-3.0
   func_module pmccabe2html
   func_module regexprops-generic
   func_end_table
@@ -3496,7 +3570,9 @@ func_all_modules ()
   func_module gnupload
   func_module maintainer-makefile
   func_module mktempd
+  func_module non-recursive-gnulib-prefix-hack
   func_module readme-release
+  func_module test-framework-sh
   func_module update-copyright
   func_module useless-if-before-free
   func_module vc-list-files
@@ -3562,8 +3638,8 @@ func_all_modules
 
 gnulib-tool --list > "$tmp/all-modules"
 missed_modules=`for module in $seen_modules; do echo $module; done \
-		  | LC_ALL=C sort -u \
-		  | LC_ALL=C join -v 2 - "$tmp/all-modules"`
+                  | LC_ALL=C sort -u \
+                  | LC_ALL=C join -v 2 - "$tmp/all-modules"`
 
 if test -n "$missed_modules"; then
 
@@ -3580,10 +3656,10 @@ if test -n "$missed_modules"; then
 
 fi
 
-{ find lib -type f -print; find m4 -type f -print; } | LC_ALL=C sort | sed -e '/\/\./d' -e /CVS/d -e /README/d -e /ChangeLog/d -e /Makefile/d -e /TODO/d -e '/tags$/d' -e '/TAGS$/d' -e '/~$/d' > "$tmp/all-files"
+{ find lib -type f -print; find m4 -type f -print; } | LC_ALL=C sort | sed -e '/\/\./d' -e /README/d -e /ChangeLog/d -e /Makefile/d -e /TODO/d -e '/tags$/d' -e '/TAGS$/d' -e '/~$/d' > "$tmp/all-files"
 missed_files=`for file in $seen_files; do echo $file; done \
-		| LC_ALL=C sort -u \
-		| LC_ALL=C join -v 2 - "$tmp/all-files"`
+                | LC_ALL=C sort -u \
+                | LC_ALL=C join -v 2 - "$tmp/all-files"`
 
 if test -n "$missed_files"; then
 
@@ -3593,7 +3669,7 @@ if test -n "$missed_files"; then
   func_echo "$element"
 
   func_echo '<PRE>'
-  echo "$missed_files" | sed -e 's,^\(.*\)$,<A HREF="'$repo_url_prefix'\1'$repo_url_suffix_repl'">\1</A>,'
+  echo "$missed_files" | sed -e 's,^\(.*\)$,<A HREF="'"$repo_url_prefix"'\1'"$repo_url_suffix_repl"'">\1</A>,'
   echo '</PRE>'
 
 fi

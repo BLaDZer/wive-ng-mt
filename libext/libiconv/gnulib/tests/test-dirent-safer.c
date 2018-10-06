@@ -1,5 +1,5 @@
 /* Test that directory streams leave standard fds alone.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Eric Blake <ebb9@byu.net>, 2009.  */
 
@@ -24,8 +24,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
-
-#include "unistd-safer.h"
 
 /* This test intentionally closes stderr.  So, we arrange to have fd 10
    (outside the range of interesting fd's during the test) set up to
@@ -75,7 +73,7 @@ main (void)
 
 #if HAVE_FDOPENDIR || GNULIB_TEST_FDOPENDIR
       {
-        int fd = dup_safer (dfd);
+        int fd = fcntl (dfd, F_DUPFD_CLOEXEC, STDERR_FILENO + 1);
         ASSERT (STDERR_FILENO < fd);
         dp = fdopendir (fd);
         ASSERT (dp);

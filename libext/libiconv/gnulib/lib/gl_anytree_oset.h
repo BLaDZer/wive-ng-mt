@@ -1,5 +1,5 @@
 /* Ordered set data type implemented by a binary tree.
-   Copyright (C) 2006-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2006-2007, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Common code of gl_avltree_oset.c and gl_rbtree_oset.c.  */
 
@@ -255,7 +255,7 @@ gl_tree_iterator (gl_oset_t set)
   result.p = node;
   /* End point is past the rightmost node.  */
   result.q = NULL;
-#ifdef lint
+#if defined GCC_LINT || defined lint
   result.i = 0;
   result.j = 0;
   result.count = 0;

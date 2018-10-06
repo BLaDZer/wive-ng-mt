@@ -9,7 +9,7 @@ unigbrk/base
 unigbrk/uc-gbrk-prop
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [unigbrk/uc-is-grapheme-break])
+gl_LIBUNISTRING_MODULE([0.9.8], [unigbrk/uc-is-grapheme-break])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNIGBRK_UC_IS_GRAPHEME_BREAK
@@ -20,7 +20,7 @@ Include:
 "unigbrk.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Ben Pfaff, Bruno Haible
+Ben Pfaff, Daiki Ueno

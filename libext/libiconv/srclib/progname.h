@@ -1,5 +1,5 @@
 /* Program name management.
-   Copyright (C) 2001-2004, 2006, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2001-2004, 2006, 2009-2018 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2001.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _PROGNAME_H
 #define _PROGNAME_H
@@ -29,7 +29,7 @@ extern "C" {
 
 
 /* String containing name the program is called with.  */
-extern DLL_VARIABLE const char *program_name;
+extern const char *program_name;
 
 /* Set program_name, based on argv[0].
    argv0 must be a string allocated with indefinite extent, and must not be

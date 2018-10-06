@@ -1,5 +1,5 @@
 /* userspec.c -- Parse a user and group string.
-   Copyright (C) 1989-1992, 1997-1998, 2000, 2002-2011 Free Software
+   Copyright (C) 1989-1992, 1997-1998, 2000, 2002-2018 Free Software
    Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by David MacKenzie <djm@gnu.ai.mit.edu>.  */
 
@@ -79,7 +79,7 @@
    - It's typically faster.
    POSIX says that only '0' through '9' are digits.  Prefer ISDIGIT to
    isdigit unless it's important to use the locale's definition
-   of `digit' even when the host does not conform to POSIX.  */
+   of "digit" even when the host does not conform to POSIX.  */
 # define ISDIGIT(c) ((unsigned int) (c) - '0' <= 9)
 
 /* Return true if STR represents an unsigned decimal integer.  */
@@ -114,10 +114,13 @@ parse_with_separator (char const *spec, char const *separator,
   char const *g;
   char *gname = NULL;
   uid_t unum = *uid;
-  gid_t gnum = *gid;
+  gid_t gnum = gid ? *gid : -1;
 
   error_msg = NULL;
-  *username = *groupname = NULL;
+  if (username)
+    *username = NULL;
+  if (groupname)
+    *groupname = NULL;
 
   /* Set U and G to nonzero length strings corresponding to user and
      group specifiers or to NULL.  If U is not NULL, it is a newly
@@ -145,7 +148,7 @@ parse_with_separator (char const *spec, char const *separator,
 
 #ifdef __DJGPP__
   /* Pretend that we are the user U whose group is G.  This makes
-     pwd and grp functions ``know'' about the UID and GID of these.  */
+     pwd and grp functions "know" about the UID and GID of these.  */
   if (u && !is_number (u))
     setenv ("USER", u, 1);
   if (g && !is_number (g))
@@ -215,27 +218,36 @@ parse_with_separator (char const *spec, char const *separator,
   if (error_msg == NULL)
     {
       *uid = unum;
-      *gid = gnum;
-      *username = u;
-      *groupname = gname;
-      u = NULL;
+      if (gid)
+        *gid = gnum;
+      if (username)
+        {
+          *username = u;
+          u = NULL;
+        }
+      if (groupname)
+        {
+          *groupname = gname;
+          gname = NULL;
+        }
     }
-  else
-    free (gname);
 
   free (u);
-  return _(error_msg);
+  free (gname);
+  return error_msg ? _(error_msg) : NULL;
 }
 
 /* Extract from SPEC, which has the form "[user][:.][group]",
    a USERNAME, UID U, GROUPNAME, and GID G.
+   If the GID parameter is NULL the entire SPEC is treated as a user.
+   If the USERNAME and GROUPNAME parameters are NULL they're ignored.
    Either user or group, or both, must be present.
    If the group is omitted but the separator is given,
    use the given user's login group.
-   If SPEC contains a `:', then use that as the separator, ignoring
-   any `.'s.  If there is no `:', but there is a `.', then first look
+   If SPEC contains a ':', then use that as the separator, ignoring
+   any '.'s.  If there is no ':', but there is a '.', then first look
    up the entire SPEC as a login name.  If that look-up fails, then
-   try again interpreting the `.'  as a separator.
+   try again interpreting the '.'  as a separator.
 
    USERNAME and GROUPNAME will be in newly malloc'd memory.
    Either one might be NULL instead, indicating that it was not
@@ -247,11 +259,11 @@ char const *
 parse_user_spec (char const *spec, uid_t *uid, gid_t *gid,
                  char **username, char **groupname)
 {
-  char const *colon = strchr (spec, ':');
+  char const *colon = gid ? strchr (spec, ':') : NULL;
   char const *error_msg =
     parse_with_separator (spec, colon, uid, gid, username, groupname);
 
-  if (!colon && error_msg)
+  if (gid && !colon && error_msg)
     {
       /* If there's no colon but there is a dot, and if looking up the
          whole spec failed (i.e., the spec is not an owner name that

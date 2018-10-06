@@ -1,5 +1,5 @@
 /* Association between Unicode characters and their names.
-   Copyright (C) 2000-2002, 2005, 2007, 2009-2011 Free Software Foundation,
+   Copyright (C) 2000-2002, 2005, 2007, 2009-2018 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify it
@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #ifndef _UNINAME_H
 #define _UNINAME_H
@@ -35,7 +35,8 @@ extern char *
 /* Looks up the Unicode character with a given name, in upper- or lowercase
    ASCII.  Returns the character if found, or UNINAME_INVALID if not found.  */
 extern ucs4_t
-       unicode_name_character (const char *name);
+       unicode_name_character (const char *name)
+       _UC_ATTRIBUTE_PURE;
 #define UNINAME_INVALID ((ucs4_t) 0xFFFF)
 
 #ifdef __cplusplus

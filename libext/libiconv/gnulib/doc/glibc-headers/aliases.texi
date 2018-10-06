@@ -9,7 +9,7 @@ Defines the type @code{struct aliasent} and declares the functions
 Documentation:
 @itemize
 @item
-@uref{http://www.kernel.org/doc/man-pages/online/pages/man3/setaliasent.3.html,,man setaliasent}.
+@uref{https://www.kernel.org/doc/man-pages/online/pages/man3/setaliasent.3.html,,man setaliasent}.
 @end itemize
 
 Gnulib module: ---
@@ -22,5 +22,5 @@ Portability problems not fixed by Gnulib:
 @itemize
 @item
 This header file is missing on all non-glibc platforms:
-MacOS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 11 2010-11, Cygwin, mingw, Interix 3.5, BeOS.
+Mac OS X 10.5, FreeBSD 6.0, NetBSD 5.0, OpenBSD 3.8, Minix 3.1.8, AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 11.3, Cygwin, mingw, MSVC 14, Interix 3.5, BeOS, Android 9.0.
 @end itemize

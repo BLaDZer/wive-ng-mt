@@ -1,6 +1,6 @@
 /* human.c -- print human readable file size
 
-   Copyright (C) 1996-2007, 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 1996-2007, 2009-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Paul Eggert and Larry McVoy.  */
 
@@ -72,7 +72,7 @@ adjust_value (int inexact_style, long double value)
    each byte inserted.  Return the starting address of the modified
    number.
 
-   To group the digits, use GROUPING and THOUSANDS_SEP as in `struct
+   To group the digits, use GROUPING and THOUSANDS_SEP as in 'struct
    lconv' from <locale.h>.  */
 
 static char *
@@ -128,7 +128,7 @@ group_number (char *number, size_t numberlen,
    that cannot be expressed exactly.
 
    If (OPTS & human_group_digits), group the thousands digits
-   according to the locale, e.g., `1,000,000' in an American English
+   according to the locale, e.g., "1,000,000" in an American English
    locale.
 
    If (OPTS & human_autoscale), deduce the output block size
@@ -185,7 +185,8 @@ human_readable (uintmax_t n, char *buf, int opts,
   if (strlen (l->thousands_sep) <= MB_LEN_MAX)
     thousands_sep = l->thousands_sep;
 
-  psuffix = buf + LONGEST_HUMAN_READABLE - HUMAN_READABLE_SUFFIX_LENGTH_MAX;
+  /* Leave room for a trailing space and following suffix.  */
+  psuffix = buf + LONGEST_HUMAN_READABLE - 1 - HUMAN_READABLE_SUFFIX_LENGTH_MAX;
   p = psuffix;
 
   /* Adjust AMT out of FROM_BLOCK_SIZE units and into TO_BLOCK_SIZE

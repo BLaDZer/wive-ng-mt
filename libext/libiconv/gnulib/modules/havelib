@@ -8,6 +8,7 @@ m4/lib-prefix.m4
 build-aux/config.rpath
 
 Depends-on:
+host-cpu-c-abi
 
 configure.ac:
 
@@ -19,4 +20,4 @@ License:
 unlimited
 
 Maintainer:
-Bruno Haible
+all

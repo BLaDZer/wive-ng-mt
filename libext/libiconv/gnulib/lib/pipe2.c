@@ -1,5 +1,5 @@
 /* Create a pipe, with specific opening flags.
-   Copyright (C) 2009-2011 Free Software Foundation, Inc.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License along
-   with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   with this program; if not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
@@ -30,8 +29,8 @@
 # include "nonblocking.h"
 #endif
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-/* Native Woe32 API.  */
+#if defined _WIN32 && ! defined __CYGWIN__
+/* Native Windows API.  */
 
 # include <io.h>
 
@@ -74,8 +73,8 @@ pipe2 (int fd[2], int flags)
       return -1;
     }
 
-#if (defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__
-/* Native Woe32 API.  */
+#if defined _WIN32 && ! defined __CYGWIN__
+/* Native Windows API.  */
 
   if (_pipe (fd, 4096, flags & ~O_NONBLOCK) < 0)
     {
@@ -95,7 +94,9 @@ pipe2 (int fd[2], int flags)
         goto fail;
     }
 # else
-  verify (O_NONBLOCK == 0);
+  {
+    verify (O_NONBLOCK == 0);
+  }
 # endif
 
   return 0;
@@ -137,13 +138,13 @@ pipe2 (int fd[2], int flags)
 # if O_BINARY
   if (flags & O_BINARY)
     {
-      setmode (fd[1], O_BINARY);
-      setmode (fd[0], O_BINARY);
+      set_binary_mode (fd[1], O_BINARY);
+      set_binary_mode (fd[0], O_BINARY);
     }
   else if (flags & O_TEXT)
     {
-      setmode (fd[1], O_TEXT);
-      setmode (fd[0], O_TEXT);
+      set_binary_mode (fd[1], O_TEXT);
+      set_binary_mode (fd[0], O_TEXT);
     }
 # endif
 
@@ -151,8 +152,7 @@ pipe2 (int fd[2], int flags)
 
 #endif
 
-#if GNULIB_defined_O_NONBLOCK || \
-  !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
+#if GNULIB_defined_O_NONBLOCK || !(defined _WIN32 && ! defined __CYGWIN__)
  fail:
   {
     int saved_errno = errno;

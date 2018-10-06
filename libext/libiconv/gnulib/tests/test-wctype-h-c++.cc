@@ -1,5 +1,5 @@
 /* Test of <wctype.h> substitute in C++ mode.
-   Copyright (C) 2010-2011 Free Software Foundation, Inc.
+   Copyright (C) 2010-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2010.  */
 
@@ -26,9 +26,6 @@
 
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswalnum, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswalpha, int, (wint_t));
-#if GNULIB_TEST_ISWBLANK
-SIGNATURE_CHECK (GNULIB_NAMESPACE::iswblank, int, (wint_t));
-#endif
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswcntrl, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswdigit, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswgraph, int, (wint_t));
@@ -38,6 +35,9 @@ SIGNATURE_CHECK (GNULIB_NAMESPACE::iswpunct, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswspace, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswupper, int, (wint_t));
 SIGNATURE_CHECK (GNULIB_NAMESPACE::iswxdigit, int, (wint_t));
+#if GNULIB_TEST_ISWBLANK
+SIGNATURE_CHECK (GNULIB_NAMESPACE::iswblank, int, (wint_t));
+#endif
 
 #if GNULIB_TEST_WCTYPE
 SIGNATURE_CHECK (GNULIB_NAMESPACE::wctype, wctype_t, (const char *));

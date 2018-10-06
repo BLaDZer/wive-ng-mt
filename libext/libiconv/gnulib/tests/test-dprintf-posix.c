@@ -1,5 +1,5 @@
 /* Test of POSIX compatible dprintf() function.
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>, 2009.  */
 
@@ -27,6 +27,7 @@ SIGNATURE_CHECK (dprintf, int, (int, const char *, ...));
 #include <stdint.h>
 #include <string.h>
 
+#include "infinity.h"
 #include "macros.h"
 
 static void
@@ -50,13 +51,13 @@ test_function (int (*my_dprintf) (int, const char *, ...))
   my_dprintf (fileno (stdout), "%a %d\n", 0.0, 33, 44, 55);
 
   /* Positive infinity.  */
-  my_dprintf (fileno (stdout), "%a %d\n", 1.0 / 0.0, 33, 44, 55);
+  my_dprintf (fileno (stdout), "%a %d\n", Infinityd (), 33, 44, 55);
 
   /* Negative infinity.  */
-  my_dprintf (fileno (stdout), "%a %d\n", -1.0 / 0.0, 33, 44, 55);
+  my_dprintf (fileno (stdout), "%a %d\n", - Infinityd (), 33, 44, 55);
 
   /* FLAG_ZERO with infinite number.  */
-  my_dprintf (fileno (stdout), "%010a %d\n", 1.0 / 0.0, 33, 44, 55);
+  my_dprintf (fileno (stdout), "%010a %d\n", Infinityd (), 33, 44, 55);
 
   /* Test the support of the %f format directive.  */
 

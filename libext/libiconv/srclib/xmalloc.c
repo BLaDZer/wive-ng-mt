@@ -1,5 +1,6 @@
 /* xmalloc.c -- malloc with out of memory checking
-   Copyright (C) 1990-1996, 2000-2003, 2005-2007 Free Software Foundation, Inc.
+
+   Copyright (C) 1990-2000, 2002-2006, 2008-2018 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -12,117 +13,110 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 #include <config.h>
 
-/* Specification.  */
+#define XALLOC_INLINE _GL_EXTERN_INLINE
+
 #include "xalloc.h"
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "error.h"
-#include "gettext.h"
-
-#define _(str) gettext (str)
-
-
-/* Exit value when the requested amount of memory is not available.
-   The caller may set it to some other value.  */
-int xmalloc_exit_failure = EXIT_FAILURE;
-
-void
-xalloc_die ()
-{
-  error (xmalloc_exit_failure, 0, _("memory exhausted"));
-  /* The `noreturn' cannot be given to error, since it may return if
-     its first argument is 0.  To help compilers understand the
-     xalloc_die does terminate, call exit. */
-  exit (EXIT_FAILURE);
-}
-
-static void *
-fixup_null_alloc (size_t n)
-{
-  void *p;
-
-  p = NULL;
-  if (n == 0)
-    p = malloc ((size_t) 1);
-  if (p == NULL)
-    xalloc_die ();
-  return p;
-}
+/* 1 if calloc is known to be compatible with GNU calloc.  This
+   matters if we are not also using the calloc module, which defines
+   HAVE_CALLOC_GNU and supports the GNU API even on non-GNU platforms.  */
+#if defined HAVE_CALLOC_GNU || (defined __GLIBC__ && !defined __UCLIBC__)
+enum { HAVE_GNU_CALLOC = 1 };
+#else
+enum { HAVE_GNU_CALLOC = 0 };
+#endif
 
 /* Allocate N bytes of memory dynamically, with error checking.  */
 
 void *
 xmalloc (size_t n)
 {
-  void *p;
-
-  p = malloc (n);
-  if (p == NULL)
-    p = fixup_null_alloc (n);
-  return p;
-}
-
-/* Allocate memory for NMEMB elements of SIZE bytes, with error checking.
-   SIZE must be > 0.  */
-
-void *
-xnmalloc (size_t nmemb, size_t size)
-{
-  size_t n;
-  void *p;
-
-  if (xalloc_oversized (nmemb, size))
+  void *p = malloc (n);
+  if (!p && n != 0)
     xalloc_die ();
-  n = nmemb * size;
-  p = malloc (n);
-  if (p == NULL)
-    p = fixup_null_alloc (n);
   return p;
 }
 
-/* Allocate SIZE bytes of memory dynamically, with error checking,
-   and zero it.  */
+/* Change the size of an allocated block of memory P to N bytes,
+   with error checking.  */
 
 void *
-xzalloc (size_t size)
+xrealloc (void *p, size_t n)
 {
-  void *p;
+  if (!n && p)
+    {
+      /* The GNU and C99 realloc behaviors disagree here.  Act like
+         GNU, even if the underlying realloc is C99.  */
+      free (p);
+      return NULL;
+    }
 
-  p = xmalloc (size);
-  memset (p, 0, size);
+  p = realloc (p, n);
+  if (!p && n)
+    xalloc_die ();
   return p;
 }
 
-/* Allocate memory for N elements of S bytes, with error checking,
-   and zero it.  */
+/* If P is null, allocate a block of at least *PN bytes; otherwise,
+   reallocate P so that it contains more than *PN bytes.  *PN must be
+   nonzero unless P is null.  Set *PN to the new block's size, and
+   return the pointer to the new block.  *PN is never set to zero, and
+   the returned pointer is never null.  */
+
+void *
+x2realloc (void *p, size_t *pn)
+{
+  return x2nrealloc (p, pn, 1);
+}
+
+/* Allocate S bytes of zeroed memory dynamically, with error checking.
+   There's no need for xnzalloc (N, S), since it would be equivalent
+   to xcalloc (N, S).  */
+
+void *
+xzalloc (size_t s)
+{
+  return memset (xmalloc (s), 0, s);
+}
+
+/* Allocate zeroed memory for N elements of S bytes, with error
+   checking.  S must be nonzero.  */
 
 void *
 xcalloc (size_t n, size_t s)
 {
   void *p;
-
-  p = calloc (n, s);
-  if (p == NULL)
-    p = fixup_null_alloc (n);
+  /* Test for overflow, since objects with size greater than
+     PTRDIFF_MAX cause pointer subtraction to go awry.  Omit size-zero
+     tests if HAVE_GNU_CALLOC, since GNU calloc never returns NULL if
+     successful.  */
+  if (xalloc_oversized (n, s)
+      || (! (p = calloc (n, s)) && (HAVE_GNU_CALLOC || n != 0)))
+    xalloc_die ();
   return p;
 }
 
-/* Change the size of an allocated block of memory P to N bytes,
-   with error checking.
-   If P is NULL, run xmalloc.  */
+/* Clone an object P of size S, with error checking.  There's no need
+   for xnmemdup (P, N, S), since xmemdup (P, N * S) works without any
+   need for an arithmetic overflow check.  */
 
 void *
-xrealloc (void *p, size_t n)
+xmemdup (void const *p, size_t s)
 {
-  if (p == NULL)
-    return xmalloc (n);
-  p = realloc (p, n);
-  if (p == NULL)
-    p = fixup_null_alloc (n);
-  return p;
+  return memcpy (xmalloc (s), p, s);
+}
+
+/* Clone STRING.  */
+
+char *
+xstrdup (char const *string)
+{
+  return xmemdup (string, strlen (string) + 1);
 }

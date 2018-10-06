@@ -10,7 +10,7 @@ Portability problems fixed by Gnulib:
 @itemize
 @item
 This function is missing on some platforms:
-mingw.
+MSVC 14.
 @item
 This function is declared with a nonstandard function prototype (only one
 argument, or ``...'' after the first argument) on some platforms.
@@ -26,7 +26,10 @@ appropriate type for use in avoiding a compiler warning if assigning
 @item
 On some platforms, @code{gettimeofday} clobbers the buffer in which
 @code{localtime} returns its result:
-MacOS X 10.0.
+Mac OS X 10.0.
+@item
+This function has only a precision of 15.6 milliseconds on some platforms:
+mingw.
 @end itemize
 
 Portability problems not fixed by Gnulib:

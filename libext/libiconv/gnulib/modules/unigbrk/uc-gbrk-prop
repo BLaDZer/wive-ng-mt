@@ -9,7 +9,7 @@ Depends-on:
 unigbrk/base
 
 configure.ac:
-gl_LIBUNISTRING_MODULE([0.9.4], [unigbrk/uc-gbrk-prop])
+gl_LIBUNISTRING_MODULE([0.9.8], [unigbrk/uc-gbrk-prop])
 
 Makefile.am:
 if LIBUNISTRING_COMPILE_UNIGBRK_UC_GBRK_PROP
@@ -20,7 +20,7 @@ Include:
 "unigbrk.h"
 
 License:
-LGPL
+LGPLv3+ or GPLv2
 
 Maintainer:
-Ben Pfaff, Bruno Haible
+Ben Pfaff, Daiki Ueno
