@@ -215,8 +215,8 @@ am__libicrt_a_SOURCES_DIST = allocator.c areadlink.c binary-io.h \
 	stripslash.c exitfail.c getprogname.h getprogname.c gettext.h \
 	malloca.c progname.h progname.c safe-read.c stat-time.c \
 	unistd.c uniwidth/width.c xmalloc.c xalloc-die.c xreadlink.c
-@LIBUNISTRING_COMPILE_UNIWIDTH_WIDTH_TRUE@am__objects_1 =  \
-@LIBUNISTRING_COMPILE_UNIWIDTH_WIDTH_TRUE@	width.$(OBJEXT)
+am__dirstamp = $(am__leading_dot)dirstamp
+@LIBUNISTRING_COMPILE_UNIWIDTH_WIDTH_TRUE@am__objects_1 = uniwidth/width.$(OBJEXT)
 am_libicrt_a_OBJECTS = allocator.$(OBJEXT) areadlink.$(OBJEXT) \
 	binary-io.$(OBJEXT) careadlinkat.$(OBJEXT) \
 	dirname-lgpl.$(OBJEXT) basename-lgpl.$(OBJEXT) \
@@ -240,12 +240,12 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir) -I$(top_builddir)/lib
 depcomp =
 am__depfiles_maybe =
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
@@ -1013,7 +1013,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AUTOMAKE_OPTIONS = 1.5 gnits no-dependencies
+AUTOMAKE_OPTIONS = 1.5 gnits subdir-objects no-dependencies
 
 # If your project uses "gettextize --intl" to put a source-code
 # copy of libintl into the package, every Makefile.am needs
@@ -1138,6 +1138,10 @@ $(am__aclocal_m4_deps):
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+uniwidth/$(am__dirstamp):
+	@$(MKDIR_P) uniwidth
+	@: > uniwidth/$(am__dirstamp)
+uniwidth/width.$(OBJEXT): uniwidth/$(am__dirstamp)
 
 libicrt.a: $(libicrt_a_OBJECTS) $(libicrt_a_DEPENDENCIES) $(EXTRA_libicrt_a_DEPENDENCIES) 
 	$(AM_V_at)-rm -f libicrt.a
@@ -1146,6 +1150,7 @@ libicrt.a: $(libicrt_a_OBJECTS) $(libicrt_a_DEPENDENCIES) $(EXTRA_libicrt_a_DEPE
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f uniwidth/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -1158,12 +1163,6 @@ distclean-compile:
 
 .c.lo:
 	$(AM_V_CC)$(LTCOMPILE) -c -o $@ $<
-
-width.o: uniwidth/width.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o width.o `test -f 'uniwidth/width.c' || echo '$(srcdir)/'`uniwidth/width.c
-
-width.obj: uniwidth/width.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o width.obj `if test -f 'uniwidth/width.c'; then $(CYGPATH_W) 'uniwidth/width.c'; else $(CYGPATH_W) '$(srcdir)/uniwidth/width.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1286,6 +1285,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f uniwidth/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"

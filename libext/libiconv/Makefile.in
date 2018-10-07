@@ -120,6 +120,7 @@ clean : force
 #	cd man && $(MAKE) clean
 #	if test -d tests; then cd tests && $(MAKE) clean; fi
 	rm -rf bin
+	rm -rf ./filesystem
 
 distclean : force
 	cd libcharset && if test -f Makefile; then $(MAKE) distclean; fi
@@ -134,6 +135,7 @@ distclean : force
 	$(RM) config.h stamp-h1 lib/stamp-h2
 	$(RM) include/iconv.h include/iconv.h.inst
 	rm -rf bin
+	rm -rf ./filesystem
 
 maintainer-clean : force
 	cd libcharset && if test -f Makefile; then $(MAKE) maintainer-clean; fi
@@ -148,6 +150,7 @@ maintainer-clean : force
 	$(RM) config.h stamp-h1 lib/stamp-h2
 	$(RM) include/iconv.h include/iconv.h.inst
 	rm -rf bin
+	rm -rf ./filesystem
 
 force :
 
