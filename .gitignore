@@ -253,7 +253,6 @@ fulldump
 /user/radvd/configure
 /user/radvd/confcache
 /user/radvd/config.h
-/user/radvd/configure
 /user/radvd/device.c
 /user/radvd/Makefile.in
 /user/radvd/scanner.c
