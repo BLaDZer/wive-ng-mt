@@ -3,7 +3,7 @@
 top_srcdir = ..
 srcdir = .
 
-SHELL = /bin/sh
+SHELL ?= /bin/sh
 
 all: README fnchange.lst
 

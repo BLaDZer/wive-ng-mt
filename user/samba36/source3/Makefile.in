@@ -113,7 +113,7 @@ builddir=@abs_builddir@
 # XXX: Perhaps this should be @SHELL@ instead -- apparently autoconf
 # will search for a POSIX-compliant shell, and that might not be
 # /bin/sh on some platforms.  I guess it's not a big problem -- mbp
-SHELL=/bin/sh
+SHELL ?= /bin/sh
 DESTDIR=/
 
 # See the autoconf manual "Installation Directory Variables" for a

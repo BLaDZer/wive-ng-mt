@@ -15,7 +15,7 @@ VERSION = @VERSION@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 
 SED = @SED@
-SHELL = /bin/sh
+SHELL ?= /bin/sh
 @SET_MAKE@
 
 srcdir = @srcdir@

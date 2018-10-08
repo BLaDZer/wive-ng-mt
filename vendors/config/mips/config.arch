@@ -60,6 +60,8 @@ RANLIB				:= $(CROSS_COMPILE)ranlib
 ELF2FLT				:= elf2flt
 STRIPTOOL			:= $(CROSS_COMPILE)strip
 STRIP				:= $(STRIPTOOL)
+SHELL 				:= /bin/bash
+CONFIG_SHELL			:= $(SHELL)
 
 # stub
 GIT				:= /bin/true

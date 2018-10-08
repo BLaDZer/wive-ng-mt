@@ -1,7 +1,7 @@
 # This is the developer's makefile, not the user's makefile.
 # Don't use it unless you know exactly what you do!
 
-SHELL = /bin/sh
+SHELL ?= /bin/sh
 MAKE = make
 AUTOCONF = autoconf
 AUTOHEADER = autoheader

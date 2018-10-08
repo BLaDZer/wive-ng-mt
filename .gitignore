@@ -69,7 +69,6 @@ fulldump
 #
 # exclude generated files from libs
 #
-/libext/libtalloc/**/*.pyc
 /libext/libssl/openssl-1.0.2/include/openssl/*
 /libext/libssl/openssl-1.0.2/Makefile
 /libext/libssl/openssl-1.0.2/Makefile.bak
@@ -162,6 +161,8 @@ fulldump
 /libext/libiconv/libcharset/Makefile
 /libext/libiconv/libcharset/configure
 /libext/libiconv/libcharset/config.h.in
+/libext/libiconv/preload/configure
+/libext/libiconv/preload/Makefile
 /libext/libupnp/configure
 /libext/libupnp/Makefile
 /libext/libupnp/Makefile.in
@@ -196,11 +197,13 @@ fulldump
 /libext/libpcap/Makefile
 /libext/libpcap/Mkaefile.in
 /libext/libpcap/configure
+/libext/libtalloc/**/*.pyc
 /libext/libtalloc/mips.txt
 /libext/libtalloc/bin
 /libext/libmicrohttpd/Makefile
 /libext/libmicrohttpd/Makefile.in
 /libext/libmicrohttpd/configure
+/libext/libmicrohttpd/po/configare
 /libext/libmicrohttpd/po/configargs.stamp
 /libext/libmicrohttpd/doc/Makefile
 /libext/libmicrohttpd/doc/doxygen/Makefile
@@ -356,6 +359,7 @@ fulldump
 /user/chillispot/coova-chilli-master/extern/.dirstamp
 /user/lldpd/osx/Makefile
 /user/lldpd/tests/Makefile
+/user/lldpd/configure
 /user/netcwmp/configure
 /user/netcwmp/Makefile
 /user/netcwmp/Makefile.in

@@ -54,6 +54,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
     ISMAGEIA=`grep Mageia -i -c < /etc/issue`
     ISUBUNTU=`grep Ubuntu -i -c < /etc/issue`
     if [ "$ISOPENMANDRIVA" = "1" ] || [ "$ISROSA" = "1" ]; then
+	urpmi --auto -a bash --download-all --allow-force
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
 	urpmi --auto -ay gcc --download-all --allow-force
@@ -75,6 +76,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto -ay openssl --download-all --allow-force
 	urpmi --auto -ay links --download-all --allow-force
     elif [ "$ISMAGEIA" = "1" ]; then
+	urpmi --auto bash --download-all
 	urpmi --auto bc --download-all
 	urpmi --auto flex --download-all
 	urpmi --auto make --download-all
@@ -106,6 +108,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	urpmi --auto links --download-all
     elif [ "$ISUBUNTU" = "1" ]; then
 	sudo apt-get update
+	sudo apt-get -y install bash
 	sudo apt-get -y install build-essential
 	sudo apt-get -y install flex
 	sudo apt-get -y install gcc
@@ -130,6 +133,7 @@ if [ "$INSTALL_DEP" = "YES" ]; then
 	sudo apt-get -y install openssl
 	sudo apt-get -y install links
     else
+	urpmi --auto -a bash --download-all --allow-force
 	urpmi --auto -a flex --download-all --allow-force
 	urpmi --auto -a make --download-all --allow-force
 	urpmi --auto -a gcc- --download-all --allow-force

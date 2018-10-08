@@ -28,7 +28,7 @@ mkinstalldirs = $(SHELL) @top_srcdir@/build-aux/mkinstalldirs
 
 #### End of system configuration section. ####
 
-SHELL = /bin/sh
+SHELL ?= /bin/sh
 
 all : include/libcharset.h force
 	mkdir -p autoconf

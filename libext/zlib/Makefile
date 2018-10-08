@@ -30,7 +30,7 @@ ARFLAGS=rc
 LDCONFIG=ldconfig
 LDSHAREDLIBC=-lc
 TAR=tar
-SHELL=/bin/sh
+SHELL ?= /bin/sh
 EXE=
 
 prefix =/usr/local
