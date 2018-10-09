@@ -7,6 +7,15 @@ cd $APROOTDIR/source3
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 if [ ! -f configure ]; then
     sh ./autogen.sh
 fi

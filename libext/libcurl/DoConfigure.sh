@@ -15,7 +15,14 @@ CFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
 CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
 LDFLAGS="$BACKUPLDFLAGS -R$LIBS/lib"
 
-export CFLAGS LDFLAGS CPPFLAGS
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export CFLAGS LDFLAGS CPPFLAGS SHELL
 
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal

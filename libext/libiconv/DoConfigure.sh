@@ -16,7 +16,14 @@ CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 GNULIB_TOOL="$APROOTDIR/gnulib/gnulib-tool"
 
-export CFLAGS LDFLAGS CPPFLAGS GNULIB_TOOL
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export CFLAGS LDFLAGS CPPFLAGS GNULIB_TOOL SHELL
 
 if [ ! -f $APROOTDIR/configure ]; then
 #    libtoolize -f -c
@@ -43,12 +50,6 @@ CONFOPTS="--prefix=$APROOTDIR/filesystem"
 
 cd $APROOTDIR/libcharset
 APROOTDIR=`pwd`
-
-CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
-CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
-LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
-
-export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
     sh ./autogen.sh

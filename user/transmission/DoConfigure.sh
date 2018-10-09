@@ -8,6 +8,15 @@ $APROOTDIR/update-version-h.sh
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 if [ ! -f $APROOTDIR/configure ]; then
     autoreconf -fi
     sh ./autogen.sh

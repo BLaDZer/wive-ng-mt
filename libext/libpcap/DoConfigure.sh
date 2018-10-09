@@ -15,7 +15,14 @@ CFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES"
 LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 
-export CFLAGS LDFLAGS CPPFLAGS
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export CFLAGS LDFLAGS CPPFLAGS SHELL
 
 if [ ! -f $APROOTDIR/Makefile.in ]; then
     cp -f $APROOTDIR/Makefile.in.tmpl $APROOTDIR/Makefile.in

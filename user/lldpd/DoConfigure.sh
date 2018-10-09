@@ -6,6 +6,15 @@ APROOTDIR=`pwd`
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 if [ ! -f $APROOTDIR/Makefile.in ]; then
     ./autogen.sh
 fi

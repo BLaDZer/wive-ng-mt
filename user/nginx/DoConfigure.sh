@@ -6,6 +6,15 @@ APROOTDIR=`pwd`
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 CONFOPTS="--build=$HTARGET --crossbuild=$HTARGET"
 
 CONFOPTS="$CONFOPTS --with-cc-opt=-I$ROOTDIR/lib/shared/include,-I$ROOTDIR/libnvram,-ffunction-sections,-fdata-sections,-Os"

@@ -4298,14 +4298,15 @@
 <br>
 <b>7.6.x</b><br>
 1) build_system: fix build on some systems with not bash shell default.<br>
-2) uclibc: apply some postfixes.<br>
-3) libopenssl: up to 1.0.2p version.<br>
-4) libtalloc: up to 2.1.14 version.<br>
-5) libusb: update to 1.22 version.<br>
-6) libpcap: update to 1.9.0 version.<br>
-7) libcurl: update to 7.61.1 version.<br>
-8) libiconv: update to 1.15 version.<br>
-9) dnsmasq: up to 2.80 test7 version.<br>
-10) nginx: up to 1.14.0 version.<br>
+2) build_system: fix build on some systems with multishell.<br>
+3) uclibc: apply some postfixes.<br>
+4) libopenssl: up to 1.0.2p version.<br>
+5) libtalloc: up to 2.1.14 version.<br>
+6) libusb: update to 1.22 version.<br>
+7) libpcap: update to 1.9.0 version.<br>
+8) libcurl: update to 7.61.1 version.<br>
+9) libiconv: update to 1.15 version.<br>
+10) dnsmasq: up to 2.80 test7 version.<br>
+11) nginx: up to 1.14.0 version.<br>
 <br>
 <br>

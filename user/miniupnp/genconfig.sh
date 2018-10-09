@@ -13,6 +13,15 @@
 UPNP_VERSION_MAJOR=1
 UPNP_VERSION_MINOR=1
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 for argv; do
 case "$argv" in
 	--ipv6) IPV6=1 ;;
