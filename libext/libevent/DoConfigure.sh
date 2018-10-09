@@ -18,7 +18,7 @@ LDFLAGS="$BACKUPLDFLAGS -L$LIBS"
 export CFLAGS LDFLAGS CPPFLAGS
 
 if [ ! -f $APROOTDIR/configure ]; then
-    autoreconf -fi
+    autoreconf -fi -I include
     sh ./autogen.sh
 fi
 if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
