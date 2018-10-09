@@ -8,7 +8,7 @@ HTARGET=mipsel-linux
 
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
-    autoreconf -fi
+    autoreconf -fi -I lib
     autoconf
 fi
 if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
