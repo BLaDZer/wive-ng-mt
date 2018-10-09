@@ -46,7 +46,7 @@ static void formVPNSetup(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	doSystem("service vpnhelper restart > /dev/console 2>&1");
+	doSystem("service vpnhelper restart");
 
 	websDone(wp, 200);
 }
@@ -886,7 +886,7 @@ static void restoremac(webs_t* wp, char_t *path, char_t *query)
 	outputTimerForReload(wp, 60000);
         websFooter(wp);
         websDone(wp, 200);
-	doSystem("fs factory_mac > /dev/console 2>&1");
+	doSystem("fs factory_mac");
         wp->on_response_ok = DO_REBOOT;
 }
 
@@ -921,7 +921,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 						"dhcpVendorClass", "natEnabled", "wan_static_dns", "wan_static_dns_profile", "wan_static_dns_profile_yandex",
 						"wan_static_dns_profile_adguard", "wan_primary_dns", "wan_secondary_dns", "wan_mtu", "wan_manual_mtu",
 						"CHECKMAC" );
-		doSystem("fs factory_mac > /dev/console 2>&1");
+		doSystem("fs factory_mac");
 	}
 	else {
 		if (!strncmp(ctype, "STATIC", 7) || opmode == 0)

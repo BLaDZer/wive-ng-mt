@@ -151,6 +151,12 @@ sub handle_requests {
             exit 0;
         }
         my $data = $self->process_body($client, $req);
+        my %query_params = $req->uri->query_form;
+        for my $k (keys %query_params) {
+            if ($k ne 'headers') {
+                $data->{$k} = $query_params{$k};
+            }
+        }
         my %headers = $req->headers->flatten;
         my @headers = ();
         for my $k (sort keys %headers) {
@@ -160,7 +166,7 @@ sub handle_requests {
         my @fields = ();
         for my $k (sort keys %$data) {
             my $v = $data->{$k};
-            if ($v->isa('File')) {
+            if ($v && $v->isa('File')) {
                 my $filename = $v->{filename};
                 $k .= "(${filename})";
                 $v = $v->{contents};

@@ -1,0 +1,12 @@
+comment:
+  require_changes: yes
+  layout: "header, diff, flags, files, footer"
+
+coverage:
+  status:
+    project: no
+    patch: no
+    changes: no
+  range: 60..100
+  round: down
+  precision: 2

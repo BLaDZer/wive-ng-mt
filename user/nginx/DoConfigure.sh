@@ -60,6 +60,7 @@ CONFOPTS="$CONFOPTS \
   --without-http_upstream_ip_hash_module \
   --without-http_upstream_least_conn_module \
   --without-http_upstream_keepalive_module \
+  --without-http_grpc_module \
 "
 
 # build with support ssl only if project configured and builded with openssl
@@ -67,4 +68,4 @@ if [ -e ../../lib/shared/lib/libssl.so ]; then
     CONFOPTS="$CONFOPTS --with-http_ssl_module"
 fi
 
-./auto/configure $CONFOPTS
+./configure $CONFOPTS

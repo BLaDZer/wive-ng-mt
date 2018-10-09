@@ -54,8 +54,6 @@ typedef struct {
 
 #define NGX_HTTP_V2_FRAME_BUFFER_SIZE            24
 
-#define NGX_HTTP_V2_DEFAULT_FRAME_SIZE           (1 << 14)
-
 #define NGX_HTTP_V2_ROOT                         (void *) -1
 
 
@@ -783,8 +781,8 @@ ngx_http_v2_state_head(ngx_http_v2_connection_t *h2c, u_char *pos, u_char *end)
                    type, h2c->state.flags, h2c->state.length, h2c->state.sid);
 
     if (type >= NGX_HTTP_V2_FRAME_STATES) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
-                       "http2 frame with unknown type %ui", type);
+        ngx_log_error(NGX_LOG_INFO, h2c->connection->log, 0,
+                      "client sent frame with unknown type %ui", type);
         return ngx_http_v2_state_skip(h2c, pos, end);
     }
 
@@ -1992,6 +1990,9 @@ ngx_http_v2_state_settings(ngx_http_v2_connection_t *h2c, u_char *pos,
         return ngx_http_v2_connection_error(h2c, NGX_HTTP_V2_SIZE_ERROR);
     }
 
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
+                   "http2 SETTINGS frame");
+
     return ngx_http_v2_state_settings_params(h2c, pos, end);
 }
 
@@ -2132,8 +2133,8 @@ ngx_http_v2_state_ping(ngx_http_v2_connection_t *h2c, u_char *pos, u_char *end)
         return ngx_http_v2_state_save(h2c, pos, end, ngx_http_v2_state_ping);
     }
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
-                   "http2 PING frame, flags: %ud", h2c->state.flags);
+    ngx_log_debug0(NGX_LOG_DEBUG_HTTP, h2c->connection->log, 0,
+                   "http2 PING frame");
 
     if (h2c->state.flags & NGX_HTTP_V2_ACK_FLAG) {
         return ngx_http_v2_state_skip(h2c, pos, end);

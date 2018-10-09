@@ -207,6 +207,7 @@ int check_shadow_pass(char* username, char* password)
 int doSystem(char *fmt, ...)
 {
     char buf[1024] = {0};
+    char buf2[1060] = {0};
 
     va_list vl;
     va_start(vl, fmt);
@@ -219,12 +220,13 @@ int doSystem(char *fmt, ...)
         return -1;
     }
 
-
     int len = strlen(buf);
     if (len == 0) return 0;
 
-    errcode = system(buf);
-    syslog(LOG_WARNING, "doSystem: %s (%i)", buf, errcode);
+    snprintf(buf2, sizeof(buf2)-1, "(%s) > /dev/console 2>&1", buf);
+
+    errcode = system(buf2);
+    syslog(LOG_INFO, "doSystem: %s (%i)", buf2, errcode);
 
     return errcode;
 }

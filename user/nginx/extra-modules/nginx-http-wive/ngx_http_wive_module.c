@@ -748,9 +748,6 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
     }
     ngx_http_finalize_request(r, rc);
 
-    char *filename = websGetVar(wp, "filename.path", NULL);
-    long file_size = strToIntDef(websGetVar(wp, "filename.size", NULL),0);
-
     switch (wp->on_response_ok) {
         case DO_REBOOT:
             reboot_now(); break;
@@ -759,9 +756,6 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
             doSystem("internet.sh &"); break;
         case DO_RESTART_MISC:
             doSystem("services_restart.sh misc &"); break;
-        case DO_FIRMWARE_UPGRADE:
-            doSystem("%s", "unload_all.sh > /dev/null 2>&1"); /* always to dev null */
-            mtd_write_firmware(filename, 0, (int)file_size); break;
     }
 }
 

@@ -471,7 +471,7 @@ int firmware_upgrade(webs_t* wp)
 	// start web timer and crash rwfs BEFORE flash destroy
 	if (reset_rwfs)
 	{
-		doSystem("%s", "fs restore > /dev/null 2>&1");
+		doSystem("%s", "fs restore");
 		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 20);
 	} else
 		upload_html_success(wp, 8*(IMAGE1_SIZE/0x100000) + 10);
@@ -481,7 +481,8 @@ int firmware_upgrade(webs_t* wp)
         ELOG_INFO(wp->request->connection->log, 0, "Firmware upgrade started\n");
         websDone(wp, 200);
 
-	wp->on_response_ok = DO_FIRMWARE_UPGRADE;
+        doSystem("%s", "unload_all.sh");
+        mtd_write_firmware(filename, 0, (int)file_size);
 
 	return 0;
 }

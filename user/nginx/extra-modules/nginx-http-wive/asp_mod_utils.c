@@ -677,7 +677,7 @@ static void reboot_web(webs_t* wp, char_t *path, char_t *query)
     websDone(wp, 200);
 
     /* only by save and reboot logic must save rwfs */
-    doSystem("fs save > /dev/null 2>&1");
+    doSystem("fs save");
 
     /* Reboot */
     wp->on_response_ok = DO_REBOOT;
