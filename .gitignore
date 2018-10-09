@@ -371,6 +371,7 @@ fulldump
 /user/freeradius/Make.inc
 /user/freeradius/configure
 /user/freeradius/src/freeradius-devel
+/user/ethtool/Makefile
 /user/ethtool/Makefile.in
 /user/ethtool/configure
 /user/nginx/History
