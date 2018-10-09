@@ -21,7 +21,7 @@ RM = rm -f
 
 #### End of system configuration section. ####
 
-SHELL ?= /bin/sh
+SHELL = @SHELL@
 
 # Needed by $(LIBTOOL).
 top_builddir = ..
