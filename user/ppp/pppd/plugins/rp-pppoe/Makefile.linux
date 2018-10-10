@@ -39,10 +39,10 @@ clean:
 	rm -f *.o *.so *.a
 
 plugin.o: plugin.c
-	$(CC) $(CFLAGS) -I../../.. -c -o $@ -fPIC plugin.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -I../../.. -c -o $@ -fPIC plugin.c
 
 libplugin.a: discovery.o if.o common.o debug.o
 	$(AR) -rc $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ -fPIC $^
+	$(CC) $(LDFLAGS) $(CFLAGS) -c -o $@ -fPIC $^

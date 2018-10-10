@@ -1,7 +1,7 @@
 CFLAGS	+= -I. -I../.. -I../../../include $(COPTS)
 # Uncoment this to enable check kernel l2tp support
 #CFLAGS	+= -DL2TP_CHECK_KERNEL
-LDFLAGS	= -shared
+LDFLAGS_SHARED	= -shared
 INSTALL	= install
 
 #***********************************************************************
@@ -20,7 +20,7 @@ endif
 all: $(PLUGINS)
 
 %.so: %.o
-	$(CC) $(CFLAGS) -o $@ -shared $^ $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(LDFLAGS_SHARED) $^ $(LIBS)
 
 install: all
 	$(INSTALL) -d -m 755 $(LIBDIR)

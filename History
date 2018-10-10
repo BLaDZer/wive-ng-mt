@@ -4309,5 +4309,6 @@
 10) dnsmasq: up to 2.80 test7 version.<br>
 11) nginx: up to 1.14.0 version.<br>
 12) coovachilli: up to 1.4 from git (commit e433b7).<br>
+13) pppd: sync some patches from new git of project (commit f6be15).<br>
 <br>
 <br>
