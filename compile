@@ -111,6 +111,15 @@ export PRODUCTID="$DEVNAME"
 export MODEL_NAME="$DEVNAME"
 export KERNEL_VER="$VERSIONPKG"
 
+# prefer use bash if multishell
+if [ -e /bin/bash ]; then
+    SHELL="/bin/bash"
+else
+    SHELL="/bin/sh"
+fi
+
+export SHELL
+
 echo "_________________________________________________________"
 echo "> Building for $PRODUCTID version $KERNEL_VER <"
 echo "_________________________________________________________"
