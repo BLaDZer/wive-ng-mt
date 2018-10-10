@@ -116,7 +116,6 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             upload_set_form_field \$upload_field_name.name "\$upload_file_name";
             upload_set_form_field \$upload_field_name.content_type "\$upload_content_type";
             upload_set_form_field \$upload_field_name.path "\$upload_tmp_path";
-            upload_aggregate_form_field "\$upload_field_name.md5" "\$upload_file_md5";
             upload_aggregate_form_field "\$upload_field_name.size" "\$upload_file_size";
 
             upload_cleanup 400 404 499 500-505;
@@ -130,7 +129,6 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             upload_set_form_field \$upload_field_name.name "\$upload_file_name";
             upload_set_form_field \$upload_field_name.content_type "\$upload_content_type";
             upload_set_form_field \$upload_field_name.path "\$upload_tmp_path";
-            upload_aggregate_form_field "\$upload_field_name.md5" "\$upload_file_md5";
             upload_aggregate_form_field "\$upload_field_name.size" "\$upload_file_size";
 
             upload_cleanup 400 404 499 500-505;
@@ -144,7 +142,6 @@ cat <<EOT >> $NGINX_CONFIG_FILE
             upload_set_form_field \$upload_field_name.name "\$upload_file_name";
             upload_set_form_field \$upload_field_name.content_type "\$upload_content_type";
             upload_set_form_field \$upload_field_name.path "\$upload_tmp_path";
-            upload_aggregate_form_field "\$upload_field_name.md5" "\$upload_file_md5";
             upload_aggregate_form_field "\$upload_field_name.size" "\$upload_file_size";
 
             upload_cleanup 400 404 499 500-505;
