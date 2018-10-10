@@ -112,18 +112,18 @@
 #include <signal.h>
 #endif
 
-#ifdef HAVE_INTTYPES_H
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
-#endif
-
+#ifdef HAVE_SYS_SYSINFO_H
+#include <sys/sysinfo.h>
+#else
 #ifdef HAVE_LINUX_SYSINFO_H
 #define _LINUX_KERNEL_H
 #include <linux/sysinfo.h>
-#else
-#ifdef HAVE_SYS_SYSINFO_H
-#include <sys/sysinfo.h>
 #endif
+#endif
+
+#ifdef HAVE_INTTYPES_H
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #endif
 
 #if defined(__linux__)
