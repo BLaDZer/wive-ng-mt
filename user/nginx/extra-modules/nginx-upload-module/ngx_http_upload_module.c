@@ -20,7 +20,15 @@ typedef ngx_md5_t MD5_CTX;
 
 #define MD5_DIGEST_LENGTH 16
 
+#define SHA_DIGEST_LENGTH 20
+#define SHA224_DIGEST_LENGTH    28
+#define SHA256_DIGEST_LENGTH    32
+#define SHA384_DIGEST_LENGTH    48
+#define SHA512_DIGEST_LENGTH    64
+
+#ifdef NGX_HTTP_SSL
 #include <openssl/sha.h>
+#endif
 
 #else
 
@@ -193,6 +201,7 @@ typedef struct ngx_http_upload_md5_ctx_s {
     u_char      md5_digest[MD5_DIGEST_LENGTH * 2];
 } ngx_http_upload_md5_ctx_t;
 
+#ifdef NGX_HTTP_SSL
 typedef struct ngx_http_upload_sha1_ctx_s {
     SHA_CTX     sha1;
     u_char      sha1_digest[SHA_DIGEST_LENGTH * 2];
@@ -207,6 +216,7 @@ typedef struct ngx_http_upload_sha512_ctx_s {
     SHA512_CTX  sha512;
     u_char      sha512_digest[SHA512_DIGEST_LENGTH * 2];
 } ngx_http_upload_sha512_ctx_t;
+#endif
 
 struct ngx_http_upload_ctx_s;
 
@@ -270,9 +280,11 @@ typedef struct ngx_http_upload_ctx_s {
     ngx_pool_cleanup_t          *cln;
 
     ngx_http_upload_md5_ctx_t   *md5_ctx;    
+#ifdef NGX_HTTP_SSL
     ngx_http_upload_sha1_ctx_t  *sha1_ctx;    
     ngx_http_upload_sha256_ctx_t *sha256_ctx;
     ngx_http_upload_sha512_ctx_t *sha512_ctx;
+#endif
     uint32_t                    crc32;    
     ngx_path_t          *store_path;
     ngx_path_t          *state_store_path;
@@ -306,12 +318,16 @@ static ngx_int_t ngx_http_upload_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_upload_md5_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
+
+#ifdef NGX_HTTP_SSL
 static ngx_int_t ngx_http_upload_sha1_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_upload_sha256_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_upload_sha512_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
+#endif
+
 static ngx_int_t ngx_http_upload_file_size_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static void ngx_http_upload_content_range_variable_set(ngx_http_request_t *r,
@@ -746,6 +762,7 @@ static ngx_http_variable_t  ngx_http_upload_aggregate_variables[] = { /* {{{ */
       (uintptr_t) "0123456789ABCDEF",
       NGX_HTTP_VAR_CHANGEABLE|NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_NOHASH, 0 },
 
+#ifdef NGX_HTTP_SSL
     { ngx_string("upload_file_sha1"), NULL, ngx_http_upload_sha1_variable,
       (uintptr_t) "0123456789abcdef",
       NGX_HTTP_VAR_CHANGEABLE|NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_NOHASH, 0 },
@@ -769,6 +786,7 @@ static ngx_http_variable_t  ngx_http_upload_aggregate_variables[] = { /* {{{ */
     { ngx_string("upload_file_sha512_uc"), NULL, ngx_http_upload_sha512_variable,
       (uintptr_t) "0123456789ABCDEF",
       NGX_HTTP_VAR_CHANGEABLE|NGX_HTTP_VAR_NOCACHEABLE|NGX_HTTP_VAR_NOHASH, 0 },
+#endif
 
     { ngx_string("upload_file_crc32"), NULL, ngx_http_upload_crc32_variable,
       (uintptr_t) offsetof(ngx_http_upload_ctx_t, crc32),
@@ -830,34 +848,46 @@ ngx_http_upload_handler(ngx_http_request_t *r)
         u->md5_ctx = NULL;
 
     if(ulcf->sha1) {
+#ifdef NGX_HTTP_SSL
         if(u->sha1_ctx == NULL) {
             u->sha1_ctx = ngx_palloc(r->pool, sizeof(ngx_http_upload_sha1_ctx_t));
             if (u->sha1_ctx == NULL) {
                 return NGX_HTTP_INTERNAL_SERVER_ERROR;
             }
         }
+#endif
     }else
+#ifdef NGX_HTTP_SSL
         u->sha1_ctx = NULL;
+#endif
 
     if(ulcf->sha256) {
+#ifdef NGX_HTTP_SSL
         if(u->sha256_ctx == NULL) {
             u->sha256_ctx = ngx_palloc(r->pool, sizeof(ngx_http_upload_sha256_ctx_t));
             if (u->sha256_ctx == NULL) {
                 return NGX_HTTP_INTERNAL_SERVER_ERROR;
             }
         }
+#endif
     }else
+#ifdef NGX_HTTP_SSL
         u->sha256_ctx = NULL;
+#endif
 
     if(ulcf->sha512) {
+#ifdef NGX_HTTP_SSL
         if(u->sha512_ctx == NULL) {
             u->sha512_ctx = ngx_palloc(r->pool, sizeof(ngx_http_upload_sha512_ctx_t));
             if (u->sha512_ctx == NULL) {
                 return NGX_HTTP_INTERNAL_SERVER_ERROR;
             }
         }
+#endif
     }else
+#ifdef NGX_HTTP_SSL
         u->sha512_ctx = NULL;
+#endif
 
     u->calculate_crc32 = ulcf->crc32;
 
@@ -1521,6 +1551,7 @@ static ngx_int_t ngx_http_upload_start_handler(ngx_http_upload_ctx_t *u) { /* {{
         if(u->md5_ctx != NULL)
             MD5Init(&u->md5_ctx->md5);
 
+#if (NGX_HAVE_OPENSSL_SHA1_H)
         if(u->sha1_ctx != NULL)
             SHA1_Init(&u->sha1_ctx->sha1);
 
@@ -1529,6 +1560,7 @@ static ngx_int_t ngx_http_upload_start_handler(ngx_http_upload_ctx_t *u) { /* {{
 
         if(u->sha512_ctx != NULL)
             SHA512_Init(&u->sha512_ctx->sha512);
+#endif
 
         if(u->calculate_crc32)
             ngx_crc32_init(u->crc32);
@@ -1620,6 +1652,7 @@ static void ngx_http_upload_finish_handler(ngx_http_upload_ctx_t *u) { /* {{{ */
         if(u->md5_ctx)
             MD5Final(u->md5_ctx->md5_digest, &u->md5_ctx->md5);
 
+#if (NGX_HAVE_OPENSSL_SHA1_H)
         if(u->sha1_ctx)
             SHA1_Final(u->sha1_ctx->sha1_digest, &u->sha1_ctx->sha1);
 
@@ -1628,6 +1661,7 @@ static void ngx_http_upload_finish_handler(ngx_http_upload_ctx_t *u) { /* {{{ */
 
         if(u->sha512_ctx)
             SHA512_Final(u->sha512_ctx->sha512_digest, &u->sha512_ctx->sha512);
+#endif
 
         if(u->calculate_crc32)
             ngx_crc32_final(u->crc32);
@@ -1777,6 +1811,7 @@ static ngx_int_t ngx_http_upload_flush_output_buffer(ngx_http_upload_ctx_t *u, u
         if(u->md5_ctx)
             MD5Update(&u->md5_ctx->md5, buf, len);
 
+#if (NGX_HAVE_OPENSSL_SHA1_H)
         if(u->sha1_ctx)
             SHA1_Update(&u->sha1_ctx->sha1, buf, len);
 
@@ -1785,6 +1820,7 @@ static ngx_int_t ngx_http_upload_flush_output_buffer(ngx_http_upload_ctx_t *u, u
 
         if(u->sha512_ctx)
             SHA512_Update(&u->sha512_ctx->sha512, buf, len);
+#endif
 
         if(u->calculate_crc32)
             ngx_crc32_update(&u->crc32, buf, len);
@@ -2445,13 +2481,21 @@ ngx_http_upload_md5_variable(ngx_http_request_t *r,
 
     u = ngx_http_get_module_ctx(r, ngx_http_upload_module);
 
+#ifdef NGX_HTTP_SSL
     if(u->sha1_ctx == NULL || u->partial_content) {
         v->not_found = 1;
         return NGX_OK;
     }
+
     return ngx_http_upload_hash_variable(r, v, data, u->md5_ctx->md5_digest, MD5_DIGEST_LENGTH);
+#else
+    v->not_found = 1;
+    return NGX_OK;
+#endif
+
 } /* }}} */
 
+#ifdef NGX_HTTP_SSL
 static ngx_int_t /* {{{ ngx_http_upload_sha1_variable */
 ngx_http_upload_sha1_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v,  uintptr_t data)
@@ -2499,6 +2543,7 @@ ngx_http_upload_sha512_variable(ngx_http_request_t *r,
 
     return ngx_http_upload_hash_variable(r, v, data, u->sha512_ctx->sha512_digest, SHA512_DIGEST_LENGTH);
 } /* }}} */
+#endif
 
 static ngx_int_t /* {{{ ngx_http_upload_crc32_variable */
 ngx_http_upload_crc32_variable(ngx_http_request_t *r,
@@ -2747,6 +2792,7 @@ ngx_http_upload_set_form_field(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
                 if(v->get_handler == ngx_http_upload_md5_variable)
                     ulcf->md5 = 1;
 
+#ifdef NGX_HTTP_SSL
                 if(v->get_handler == ngx_http_upload_sha1_variable)
                     ulcf->sha1 = 1;
 
@@ -2755,6 +2801,7 @@ ngx_http_upload_set_form_field(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
                 if(v->get_handler == ngx_http_upload_sha512_variable)
                     ulcf->sha512 = 1;
+#endif
 
                 if(v->get_handler == ngx_http_upload_crc32_variable)
                     ulcf->crc32 = 1;
