@@ -82,22 +82,32 @@ int init_network (void)
      * values.
      */
     arg=1;
-    if(setsockopt(server_socket, IPPROTO_IP, gconfig.sarefnum, &arg, sizeof(arg)) != 0) {
+    if (!gconfig.ipsecsaref)
+    {
+#ifdef DEBUG_MORE
+        l2tp_log (LOG_INFO, "Not looking for kernel SAref support.\n");
+#endif
+    }
+    else
+    {
+	if(setsockopt(server_socket, IPPROTO_IP, gconfig.sarefnum, &arg, sizeof(arg)) != 0) {
 #ifdef DEBUG_MORE
 	    l2tp_log(LOG_CRIT, "setsockopt recvref[%d]: %s\n", gconfig.sarefnum, strerror(errno));
 #endif
 	    gconfig.ipsecsaref=0;
-    }
-
-    arg=1;
-    if(setsockopt(server_socket, IPPROTO_IP, IP_PKTINFO, (char*)&arg, sizeof(arg)) != 0) {
-	    l2tp_log(LOG_CRIT, "setsockopt IP_PKTINFO: %s\n", strerror(errno));
+	}
+        else
+        {
+	    arg=1;
+	    if(setsockopt(server_socket, IPPROTO_IP, IP_PKTINFO, (char*)&arg, sizeof(arg)) != 0) {
+#ifdef DEBUG_MORE
+		l2tp_log(LOG_CRIT, "setsockopt IP_PKTINFO: %s\n", strerror(errno));
+#endif
+	    }
+        }
     }
 #else
-    {
-	l2tp_log(LOG_INFO, "No attempt being made to use IPsec SAref's since we're not on a Linux machine.\n");
-    }
-
+    l2tp_log(LOG_INFO, "No attempt being made to use IPsec SAref's since we're not on a Linux machine.\n");
 #endif
 
 #ifdef USE_KERNEL
@@ -279,6 +289,20 @@ void control_xmit (void *b)
 #endif
         udp_xmit (buf, t);
     }
+}
+
+unsigned char* get_inner_tos_byte (struct buffer *buf)
+{
+	int tos_offset = 10;
+	unsigned char *tos_byte = buf->start+tos_offset;
+	return tos_byte;
+}
+
+unsigned char* get_inner_ppp_type (struct buffer *buf)
+{
+	int ppp_type_offset = 8;
+	unsigned char *ppp_type_byte = buf->start+ppp_type_offset;
+	return ppp_type_byte;
 }
 
 void udp_xmit (struct buffer *buf, struct tunnel *t)
@@ -705,6 +729,18 @@ void network_thread ()
                         }
                         sc->tx_bytes += sc->ppp_buf->len;
                         sc->tx_pkts++;
+
+                        unsigned char* tosval,typeval;
+                        tosval = *get_inner_tos_byte(sc->ppp_buf);
+                        typeval = *get_inner_ppp_type(sc->ppp_buf);
+
+                        int tosval_dec = (int)tosval;
+                        int typeval_dec = (int)typeval;
+
+                        if (typeval_dec != 33 )
+                        	tosval_dec=atoi(gconfig.controltos);
+                        setsockopt(server_socket, IPPROTO_IP, IP_TOS, &tosval_dec, sizeof(tosval_dec));
+
                         udp_xmit (sc->ppp_buf, st);
                         recycle_payload (sc->ppp_buf, sc->container->peer);
                     }
