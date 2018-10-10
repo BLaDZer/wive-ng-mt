@@ -80,6 +80,13 @@ getTxqlenByMode() {
     else
 	txqueuelentun="360"
     fi
+
+    # l2tp set txbps per device
+    if [ -e /proc/mt7621/gmac ]; then
+	txbps="1000000000"
+    else
+	txbps="100000000"
+    fi
 }
 
 # name/mask for first wlanmodule used in system logic

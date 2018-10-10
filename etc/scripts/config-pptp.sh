@@ -173,8 +173,8 @@ load_modules() {
     fi
 
     if [ "$vpnLCPFailure" = "" ] || [ "$vpnLCPInterval" = "" ]; then
-	vpnLCPFailure=5
-	vpnLCPInterval=30
+	vpnLCPFailure=10
+	vpnLCPInterval=25
     fi
 
     if [ "$IPv6OpMode" = "1" ] && [ "$Ipv6InVPN" = "1" ]; then

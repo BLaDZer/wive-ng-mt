@@ -4311,5 +4311,6 @@
 12) coovachilli: up to 1.4 from git (commit e433b7).<br>
 13) xl2tpd: update to 1.3.12 version (commit bb7ca1).<br>
 14) pppd: sync some patches from new git of project (commit f6be15).<br>
+15) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
 <br>
 <br>

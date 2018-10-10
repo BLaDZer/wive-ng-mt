@@ -71,13 +71,16 @@ exclusive = yes
 refuse authentication = no
 require authentication = yes
 require chap = yes
+tx bps = $txbps
+rx bps = $txbps
+tunnel rws = 8
 pppoptfile = $ppp/options.l2tp\n
 " > $ppp/l2tpd.conf
 
 printf "
 auth
-lcp-echo-interval 3
-lcp-echo-failure 8
+lcp-echo-interval 25
+lcp-echo-failure 10
 nodeflate
 nomp
 $l2tp_srv_proxyarp

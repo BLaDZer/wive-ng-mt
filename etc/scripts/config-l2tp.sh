@@ -184,8 +184,8 @@ load_modules() {
     fi
 
     if [ "$vpnLCPFailure" = "" ] || [ "$vpnLCPInterval" = "" ]; then
-	vpnLCPFailure=5
-	vpnLCPInterval=30
+	vpnLCPFailure=10
+	vpnLCPInterval=25
     fi
 
     if [ "$IPv6OpMode" = "1" ] && [ "$Ipv6InVPN" = "1" ]; then
@@ -206,8 +206,8 @@ load_modules() {
     lns = $SERVER
     name = $vpnUser
     autodial = yes
-    tx bps = 100000000
-    rx bps = 100000000
+    tx bps = $txbps
+    rx bps = $txbps
     tunnel rws = 8
     pppoptfile = $ppp/options.l2tp
     " > $ppp/l2tpd.conf
