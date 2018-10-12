@@ -1058,7 +1058,7 @@ void reply_query(int fd, int family, time_t now)
 		    status = STAT_ABANDONED;
 		  else
 		    {
-		      int fd, type = SERV_DO_DNSSEC;
+		      int querytype, fd, type = SERV_DO_DNSSEC;
 		      struct frec *next = new->next;
 		      char *domain;
 		      
@@ -1111,15 +1111,26 @@ void reply_query(int fd, int family, time_t now)
 		      if (status == STAT_NEED_KEY)
 			{
 			  new->flags |= FREC_DNSKEY_QUERY; 
-			  nn = dnssec_generate_query(header, ((unsigned char *) header) + server->edns_pktsz,
-						     daemon->keyname, forward->class, T_DNSKEY, &server->addr, server->edns_pktsz);
+			  querytype = T_DNSKEY;
 			}
 		      else 
 			{
 			  new->flags |= FREC_DS_QUERY;
-			  nn = dnssec_generate_query(header,((unsigned char *) header) + server->edns_pktsz,
-						     daemon->keyname, forward->class, T_DS, &server->addr, server->edns_pktsz);
+			  querytype = T_DS;
 			}
+
+		      nn = dnssec_generate_query(header,((unsigned char *) header) + server->edns_pktsz,
+						 daemon->keyname, forward->class, querytype, server->edns_pktsz);
+
+		      if (server->addr.sa.sa_family == AF_INET) 
+			log_query(F_NOEXTRA | F_DNSSEC | F_IPV4, daemon->keyname, (struct all_addr *)&(server->addr.in.sin_addr),
+				  querystr("dnssec-query", querytype));
+#ifdef HAVE_IPV6
+		      else
+			log_query(F_NOEXTRA | F_DNSSEC | F_IPV6, daemon->keyname, (struct all_addr *)&(server->addr.in6.sin6_addr),
+				  querystr("dnssec-query", querytype));
+#endif
+  
 		      if ((hash = hash_questions(header, nn, daemon->namebuff)))
 			memcpy(new->hash, hash, HASH_SIZE);
 		      new->new_id = get_id();
@@ -1655,7 +1666,7 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
 	}
 	 
       m = dnssec_generate_query(new_header, ((unsigned char *) new_header) + 65536, keyname, class, 
-				new_status == STAT_NEED_KEY ? T_DNSKEY : T_DS, &server->addr, server->edns_pktsz);
+				new_status == STAT_NEED_KEY ? T_DNSKEY : T_DS, server->edns_pktsz);
       
       *length = htons(m);
 
@@ -1728,6 +1739,16 @@ static int tcp_key_recurse(time_t now, int status, struct dns_header *header, si
 	      else
 		continue;
 	    }
+	  
+
+	  if (server->addr.sa.sa_family == AF_INET) 
+	    log_query(F_NOEXTRA | F_DNSSEC | F_IPV4, keyname, (struct all_addr *)&(server->addr.in.sin_addr),
+		      querystr("dnssec-query", new_status == STAT_NEED_KEY ? T_DNSKEY : T_DS));
+#ifdef HAVE_IPV6
+	  else
+	    log_query(F_NOEXTRA | F_DNSSEC | F_IPV6, keyname, (struct all_addr *)&(server->addr.in6.sin6_addr),
+		      querystr("dnssec-query", new_status == STAT_NEED_KEY ? T_DNSKEY : T_DS));
+#endif
 	  
 	  server->flags |= SERV_GOT_TCP;
 	  

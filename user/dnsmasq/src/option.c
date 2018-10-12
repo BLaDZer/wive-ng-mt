@@ -1902,12 +1902,12 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
       }
       
     case LOPT_AUTHSERV: /* --auth-server */
-      if (!(comma = split(arg)))
-	ret_err(gen_err);
+      comma = split(arg);
       
       daemon->authserver = opt_string_alloc(arg);
-      arg = comma;
-      do {
+      
+      while ((arg = comma))
+	{
 	struct iname *new = opt_malloc(sizeof(struct iname));
 	comma = split(arg);
 	new->name = NULL;
@@ -1937,9 +1937,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  }
 	new->next = daemon->authinterface;
 	daemon->authinterface = new;
-	
-	arg = comma;
-      } while (arg);
+	};
             
       break;
 

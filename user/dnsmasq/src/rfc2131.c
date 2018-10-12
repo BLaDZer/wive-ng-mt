@@ -700,39 +700,9 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	client_hostname = daemon->dhcp_buff;
     }
 
-  if (client_hostname)
-    {
-      struct dhcp_match_name *m;
-      size_t nl = strlen(client_hostname); 
-      
-      if (option_bool(OPT_LOG_OPTS))
+  if (client_hostname && option_bool(OPT_LOG_OPTS))
     my_syslog(MS_DHCP | LOG_INFO, _("%u client provides name: %s"), ntohl(mess->xid), client_hostname);
-  
 
-      for (m = daemon->dhcp_name_match; m; m = m->next)
-	{
-	  size_t ml = strlen(m->name);
-	  char save = 0;
-	  
-	  if (nl < ml)
-	    continue;
-	  if (nl > ml)
-	    {
-	      save = client_hostname[ml];
-	      client_hostname[ml] = 0;
-	    }
-
-	  if (hostname_isequal(client_hostname, m->name) &&
-	      (save == 0 || m->wildcard))
-	    {
-	      m->netid->next = netid;
-	      netid = m->netid;
-	    }
-
-	  if (save != 0)
-	    client_hostname[ml] = save;
-	}
-    }
   
   if (have_config(config, CONFIG_NAME))
     {
@@ -745,11 +715,15 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
     }
   else if (client_hostname)
     {
+      struct dhcp_match_name *m;
+      size_t nl;
+
       domain = strip_hostname(client_hostname);
       
-      if (strlen(client_hostname) != 0)
+      if ((nl = strlen(client_hostname)) != 0)
 	{
 	  hostname = client_hostname;
+	  
 	  if (!config)
 	    {
 	      /* Search again now we have a hostname. 
@@ -766,6 +740,30 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 		  known_id.next = netid;
 		  netid = &known_id;
 		}
+	    }
+
+	  for (m = daemon->dhcp_name_match; m; m = m->next)
+	    {
+	      size_t ml = strlen(m->name);
+	      char save = 0;
+	      
+	      if (nl < ml)
+		continue;
+	      if (nl > ml)
+		{
+		  save = client_hostname[ml];
+		  client_hostname[ml] = 0;
+		}
+	      
+	      if (hostname_isequal(client_hostname, m->name) &&
+		  (save == 0 || m->wildcard))
+		{
+		  m->netid->next = netid;
+		  netid = m->netid;
+	    }
+	      
+	      if (save != 0)
+		client_hostname[ml] = save;
 	    }
 	}
     }
@@ -1129,7 +1127,8 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 		 netid, subnet_addr, fqdn_flags, borken_opt, pxearch, uuid, vendor_class_len, now, time, fuzz);
       
       return dhcp_packet_size(mess, agent_id, real_end);
-      
+	
+
     case DHCPREQUEST:
       if (ignore || have_config(config, CONFIG_DISABLE))
 	return 0;
@@ -1227,10 +1226,10 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 	  fuzz = rand16();
 	  mess->yiaddr = mess->ciaddr;
 	}
-      
+
       daemon->metrics[METRIC_DHCPREQUEST]++;
       log_packet("DHCPREQUEST", &mess->yiaddr, emac, emac_len, iface_name, NULL, NULL, mess->xid);
- 
+      
     rapid_commit:
       if (!message)
 	{
@@ -1466,14 +1465,14 @@ size_t dhcp_reply(struct dhcp_context *context, char *iface_name, int int_index,
 
 	  daemon->metrics[METRIC_DHCPACK]++;
 	  log_packet("DHCPACK", &mess->yiaddr, emac, emac_len, iface_name, hostname, NULL, mess->xid);  
-	  
+
 	  clear_packet(mess, end);
 	  option_put(mess, end, OPTION_MESSAGE_TYPE, 1, DHCPACK);
 	  option_put(mess, end, OPTION_SERVER_IDENTIFIER, INADDRSZ, ntohl(server_id(context, override, fallback).s_addr));
 	  option_put(mess, end, OPTION_LEASE_TIME, 4, time);
 	  if (rapid_commit)
 	     option_put(mess, end, OPTION_RAPID_COMMIT, 0, 0);
-	  do_options(context, mess, end, req_options, hostname, get_domain(mess->yiaddr), 
+	   do_options(context, mess, end, req_options, hostname, get_domain(mess->yiaddr), 
 		     netid, subnet_addr, fqdn_flags, borken_opt, pxearch, uuid, vendor_class_len, now, time, fuzz);
 	}
 
