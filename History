@@ -4313,5 +4313,6 @@
 14) pppd: sync some patches from new git of project (commit f6be15).<br>
 15) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
 16) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+17) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
 <br>
 <br>

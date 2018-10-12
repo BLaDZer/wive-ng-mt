@@ -1712,7 +1712,7 @@ static void ip_rt_update_pmtu(struct dst_entry *dst, u32 mtu)
 		if (dst_metric_locked(dst, RTAX_MTU))
 			    return;
 
-		if (dst->dev->mtu < mtu)
+		if (ipv4_mtu(dst) < mtu)
 			    return;
 
 		if (mtu < ip_rt_min_pmtu)
