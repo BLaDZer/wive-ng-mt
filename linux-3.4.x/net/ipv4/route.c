@@ -1699,6 +1699,7 @@ static void check_peer_pmtu(struct dst_entry *dst, struct inet_peer *peer)
 static void ip_rt_update_pmtu(struct dst_entry *dst, u32 mtu)
 {
 	struct rtable *rt = (struct rtable *) dst;
+	u32 old_mtu = ipv4_mtu(dst);
 	struct inet_peer *peer;
 
 	dst_confirm(dst);
@@ -1712,11 +1713,12 @@ static void ip_rt_update_pmtu(struct dst_entry *dst, u32 mtu)
 		if (dst_metric_locked(dst, RTAX_MTU))
 			    return;
 
-		if (ipv4_mtu(dst) < mtu)
+		if (old_mtu < mtu)
 			    return;
 
 		if (mtu < ip_rt_min_pmtu)
-			mtu = ip_rt_min_pmtu;
+			mtu = min(old_mtu, ip_rt_min_pmtu);
+
 		if (!pmtu_expires || mtu < peer->pmtu_learned) {
 
 			pmtu_expires = jiffies + ip_rt_mtu_expires;
