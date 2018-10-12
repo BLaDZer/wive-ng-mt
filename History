@@ -4315,5 +4315,6 @@
 16) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
 17) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
 18) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+19) init.d: only once flush conntrack and route cahce at wlan if down.<br>
 <br>
 <br>

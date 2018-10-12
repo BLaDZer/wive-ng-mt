@@ -208,9 +208,6 @@ wlan_down_all() {
 	    delif_from_br br0 ${first_wlan}${ifnum}
 	done
     fi
-
-    # always clear conntrack and routes tables/caches
-    flush_net_caches
 }
 
 stop() {
