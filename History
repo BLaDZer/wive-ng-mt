@@ -4312,9 +4312,10 @@
 13) xl2tpd: update to 1.3.12 version (commit bb7ca1).<br>
 14) pppd: sync some patches from new git of project (commit f6be15).<br>
 15) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
-16) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-17) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
-18) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-19) init.d: only once flush conntrack and route cahce at wlan if down.<br>
+16) init.d: only once flush conntrack and route cahce at wlan if down.<br>
+17) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+18) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
+19) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+20) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
 <br>
 <br>
