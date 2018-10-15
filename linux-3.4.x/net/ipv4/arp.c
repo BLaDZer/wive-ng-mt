@@ -855,14 +855,16 @@ static int arp_process(struct sk_buff *skb)
 
 	n = __neigh_lookup(&arp_tbl, &sip, dev, 0);
 
+	if (n || IN_DEV_ARP_ACCEPT(in_dev)) {
+		is_garp = arp->ar_op == htons(ARPOP_REQUEST) && tip == sip &&
+			  inet_addr_type(net, sip) == RTN_UNICAST;
+	}
+
 	if (IN_DEV_ARP_ACCEPT(in_dev)) {
 		/* Unsolicited ARP is not accepted by default.
 		   It is possible, that this option should be enabled for some
 		   devices (strip is candidate)
 		 */
-		is_garp = arp->ar_op == htons(ARPOP_REQUEST) && tip == sip &&
-			  inet_addr_type(net, sip) == RTN_UNICAST;
-
 		if (n == NULL &&
 		    ((arp->ar_op == htons(ARPOP_REPLY)  &&
 		      inet_addr_type(net, sip) == RTN_UNICAST) || is_garp))
