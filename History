@@ -4319,5 +4319,6 @@
 20) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
 21) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
 22) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+23) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
 <br>
 <br>
