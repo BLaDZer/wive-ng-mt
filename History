@@ -4317,5 +4317,6 @@
 18) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
 19) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
 20) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+21) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
 <br>
 <br>
