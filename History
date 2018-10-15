@@ -4317,9 +4317,10 @@
 18) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
 19) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
 20) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-21) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-22) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-23) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-24) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+21) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+22) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+23) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+24) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+25) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
 <br>
 <br>

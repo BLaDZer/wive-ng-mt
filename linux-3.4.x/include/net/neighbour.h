@@ -416,4 +416,19 @@ static inline void neigh_ha_snapshot(char *dst, const struct neighbour *n,
 		memcpy(dst, n->ha, dev->addr_len);
 	} while (read_seqretry(&n->ha_lock, seq));
 }
+
+static inline void neigh_update_is_router(struct neighbour *neigh, u32 flags,
+					  int *notify)
+{
+	u8 ndm_flags = 0;
+
+	ndm_flags |= (flags & NEIGH_UPDATE_F_ISROUTER) ? NTF_ROUTER : 0;
+	if ((neigh->flags ^ ndm_flags) & NTF_ROUTER) {
+		if (ndm_flags & NTF_ROUTER)
+			neigh->flags |= NTF_ROUTER;
+		else
+			neigh->flags &= ~NTF_ROUTER;
+		*notify = 1;
+	}
+}
 #endif
