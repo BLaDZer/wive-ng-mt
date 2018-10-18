@@ -1,6 +1,8 @@
 #ifndef __ASP_PARSER_H__
 #define __ASP_PARSER_H__
 
+#define _GNU_SOURCE
+
 #include "util.h"
 
 #include "asp_mod_utils.h"
@@ -30,8 +32,8 @@ int asp_parser_parse_form(webs_t* wp, char_t* name, char_t* path, char_t* query)
 
 
 int asp_state_machine(webs_t *wp, ngx_chain_t *in);
-int parseInner(webs_t *wp, char* cmds, ngx_array_t *out);
-int parseCmd(webs_t *wp, ngx_array_t* out, ngx_array_t *params_arr);
+int parseInner(webs_t *wp, char* cmds);
+int parseCmd(webs_t *wp, ngx_array_t *params_arr);
 
 
 

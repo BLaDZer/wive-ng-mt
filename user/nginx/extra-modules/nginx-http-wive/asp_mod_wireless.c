@@ -475,8 +475,10 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	char 	ieee80211k[2 * MAX_NUMBER_OF_BSSID] = "";
 #endif
 #if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-	char_t	*ft;
+	char_t	*ft, *ftmdid, *ftr0khid;
 	char 	ieee80211r[2 * MAX_NUMBER_OF_BSSID] = "";
+	char 	ft_mdid_var[8] = "FtMdId\0\0", ft_r0khid_var[10] = "FtR0khId\0\0";
+
 #endif
 	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
 	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
@@ -491,7 +493,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout, *regulatoryclassinic;
 	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
 	int ssid_num, tmp;
-	char_t *ackpolicy_ssid, *life_check, *submitUrl, *tokenadv;
+	char_t *ackpolicy_ssid, *life_check, *tokenadv;
 	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";	
 #if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
 	char_t *ed_mode;
@@ -584,6 +586,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 #if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
 	ft = websGetVar(wp, T("FtSupport"), T("1"));
+	ftmdid = websGetVar(wp, T("FtMdId"), T("A1"));
+	ftr0khid = websGetVar(wp, T("FtR0khId"), T("4f577274"));
 #endif
 
 	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
@@ -727,6 +731,17 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 	ngx_nvram_bufset(wp,"IEEE80211H", ieee80211h);
 #endif
+#endif
+
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
+	if (CHK_IF_DIGIT(ft, 1)) {
+		for (i=1;i<=4;i++) {
+			ft_mdid_var[6] = '0' + i;
+			ft_r0khid_var[8] = '0' + i;
+			ngx_nvram_bufset(wp, ft_mdid_var, ftmdid);
+			ngx_nvram_bufset(wp, ft_r0khid_var, ftr0khid);
+		}
+	}
 #endif
 	// SSID settings
 	ngx_nvram_bufset(wp,"BssidNum", bssid_num);
@@ -1835,15 +1850,25 @@ static void getScanAp(webs_t* wp, char_t *path, char_t *query)
 	int ent_count = 0;
 	char str[18];
 	char ssid[64];
-	int inic;
 	struct WLAN_AP_ENTRY *entries;
+        char *iface = NULL;
 
-	sscanf(query, "%d", &inic);
-	if (inic == 0) {
-		entries = wlanAPScan("ra0", &ent_count);
+	char *inic = websGetVar(wp, T("inic"), T("0"));
+	char *rescan = websGetVar(wp, T("rescan"), T("1"));
+
+	if (CHK_IF_DIGIT(inic, 1)) {
+		iface = getWlanRadioModuleName(2);
+	}
+
+	if (!iface) {
+		iface = getWlanRadioModuleName(1);
+	}
+
+	if (CHK_IF_DIGIT(rescan, 1)) {
+		entries = wlanAPScan(iface, &ent_count);
 	}
 	else {
-		entries = wlanAPScan("rai0", &ent_count);
+		entries = getWlanAPScanResult(iface, &ent_count);
 	}
 
         websSetContentType(wp, "text/plain");

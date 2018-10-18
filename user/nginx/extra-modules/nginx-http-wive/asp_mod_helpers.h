@@ -23,11 +23,13 @@ typedef void (*asp_form_proto)(webs_t* wp, char_t *path, char_t *query);
 typedef struct asp_func_t{
     char* name;
     asp_func_proto ptr;
+    enum UserRole perm;
 } asp_func_t;
 
 typedef struct asp_form_t{
     char* name;
     asp_form_proto ptr;
+    enum UserRole perm;
 } asp_form_t;
 
 

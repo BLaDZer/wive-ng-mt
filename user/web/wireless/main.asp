@@ -113,7 +113,7 @@
 					displayElement('basicRescanG', form.sz11gChannel.value == 0);
 
 					// Hide 'SCAN' buttons if IE8 (no SVG support)
-					displayElement( 'scanapLegendButtonScan', browser.browser != 'ie' || browser.versionShort > 8);
+					displayElement( ['scanapLegendButtonScan', 'scanapLegendButtonScanResult'], browser.browser != 'ie' || browser.versionShort > 8);
 
 					// Disable scan buttons if radio modules are disabled
 					form.scanapLegendButtonScan.disabled = NVRAM_RadioOn != '1';
@@ -147,7 +147,7 @@
 					displayElement('basicRescanA', form.sz11aChannel.value == 0);
 
 					// Hide 'SCAN' buttons if IE8 (no SVG support)
-					displayElement( 'scanapLegendButtonScanINIC', browser.browser != 'ie' || browser.versionShort > 8);
+					displayElement( ['scanapLegendButtonScanINIC', 'scanapLegendButtonScanResultINIC'], browser.browser != 'ie' || browser.versionShort > 8);
 
 					// Disable scan buttons if radio modules are disabled
 					form.scanapLegendButtonScanINIC.disabled = NVRAM_RadioOnINIC != '1';
@@ -222,9 +222,24 @@
 					else
 						_TR("secureWPAPassPhrase", "secure wpa pass phrase");
 
+					// Save the minimization states of access policy submenus
+					var submenus = document.getElementById("accessPolicyDiv").childNodes;
+					var pol_min_list = [];
+					for (var i=0;i<submenus.length;i++) {
+						pol_min_list[submenus[i].id] = submenus[i].getAttribute("minimized");
+					}
+
 					createAccessPolicyTable();
 					prepareAccessPolicy();
 
+					// Restore previous minimization states
+					submenus = document.getElementById("accessPolicyDiv").childNodes;
+					for (var i=0;i<submenus.length;i++) {
+						if (submenus[i].id in pol_min_list)
+						{
+							showMenu(submenus[i], 1-1*pol_min_list[submenus[i].id]);
+						}
+					}
 				}
 
 				// HT Physical Mode
@@ -284,15 +299,16 @@
 
 				// Basic roaming settings (Fast Roaming)
 				var updateVisibility_roaming = function() {
-					displayElement([ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'basicFtSupport_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'], 1);
+					displayElement([ 'advMaxStaNum_tr', 'fastRoaming_tr', 'basicRRMEnable_tr', 'basicRRMclassINIC_tr', 'advIdleTimeout_tr', 'advEntryLifeCheck_tr', 'advBeaconInterval_tr', 'advBeaconIntervalINIC_tr'], 1);
 					displayElement([ 'basicRRMEnable_tr' ], rrm_built);
-					displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
+					displayElement([ 'basicRRMclassINIC_tr' ], BUILD_5GHZ_SUPPORT && rrm_built && form.RRMEnable.value == '1' && form.country_code.value == 'RU');
 					displayElement([ 'basicFtSupport_tr', 'basicKickStaRssiLowFT_tr'], ft_built);
+					displayElement([ 'basicFtMdId_tr', 'basicFtR0khId_tr'], ft_built && form.FtSupport.value == "1" );
 					displayElement('advBeaconIntervalINIC_tr', BUILD_5GHZ_SUPPORT)
 
 					displayElement('div_roaming', enableWirelessAny);
 					// Regulatory Class INIC
-					displayElement('basicRRMclassINIC_tr', BUILD_5GHZ_SUPPORT && rrm_built && document.wireless_basic.RRMEnable.value == '1' && document.wireless_basic.country_code.value == 'RU');
+					displayElement('basicRRMclassINIC_tr', BUILD_5GHZ_SUPPORT && rrm_built && form.RRMEnable.value == '1' && form.country_code.value == 'RU');
 
 					displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowFT_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr"], form.FastRoaming.value == "1");
 					displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1" && BUILD_5GHZ_SUPPORT);
@@ -1381,6 +1397,8 @@
 
 				form.RRMEnable.options.selectedIndex = 1*NVRAM_RRMEnable.split(";")[0];
 				form.FtSupport.options.selectedIndex = 1*NVRAM_FtSupport.split(";")[0];
+				form.FtMdId.value = NVRAM_FtMdId1;
+				form.FtR0khId.value = NVRAM_FtR0khId1;
 
 				form.LanWifiIsolate.options.selectedIndex = 1*NVRAM_LanWifiIsolate;
 
@@ -1578,14 +1596,6 @@
 
 			// Check WEP keys
 			function checkWEP() {
-				// validate HEX string
-				function validateHex(str) {
-					var re = /^[0-9a-fA-F]+$/;
-					if (!re.test(str))
-						return false;
-					else
-						return true;
-				}
 
 				var keyValue;
 				var keyLength;
@@ -1802,6 +1812,25 @@
 					form.rts.select();
 					return false;
 				}
+
+				if (form.FtSupport.value == "1" && (form.FtMdId.value.length != 2 || !validateHex(form.FtMdId.value)))
+				{
+					showMenu('div_roaming', 1);
+					alert(_("basic roaming ft invalid mobility domain"));
+					form.FtMdId.focus();
+					form.FtMdId.select();
+					return false;
+				}
+
+				if (form.FtSupport.value == "1" && (form.FtR0khId.value.length != 8 || !validateHex(form.FtR0khId.value)))
+				{
+					showMenu('div_roaming', 1);
+					alert(_("basic roaming ft invalid key holder"));
+					form.FtR0khId.focus();
+					form.FtR0khId.select();
+					return false;
+				}
+
 
 				if (!inRange(form.maxstanum.value, 1, MAX_STA_NUM))
 				{
@@ -2285,7 +2314,8 @@ table.form tr.ssid-row {
 				<td><select id="sz11gChannel" name="sz11gChannel" class="normal" onChange="ChannelOnChange(this.form, false);">
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
 					</select>
-					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('2.4');">
+					<input id="scanapLegendButtonScan" name="scanapLegendButtonScan" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('2.4', 0, true);">
+					<input id="scanapLegendButtonScanResult" name="scanapLegendButtonScanResult" type="button" class="half" value="Scan Results" data-tr="scanap legend button scan result" onClick="scanAp('2.4', 0, false);">
 				</td>
 			</tr>
 
@@ -2374,7 +2404,8 @@ table.form tr.ssid-row {
 					<option value="0" data-tr="basic frequency auto">AutoSelect</option>
 					<% getWlan11aChannels(); %>
 					</select>
-					<input id="scanapLegendButtonScanINIC" name="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('5');">
+					<input id="scanapLegendButtonScanINIC" name="scanapLegendButtonScanINIC" type="button" class="short" value="Scan" data-tr="scanap legend button scan" onClick="scanAp('5', 0, true);">
+					<input id="scanapLegendButtonScanResultINIC" name="scanapLegendButtonScanResultINIC" type="button" class="half" value="Scan Results" data-tr="scanap legend button scan result" onClick="scanAp('5', 0, false);">
 				</td>
 			</tr>
 
@@ -3060,11 +3091,22 @@ table.form tr.ssid-row {
 		</tr>
 		<tr id="basicFtSupport_tr">
 			<td class="head" data-tr="basic roaming ft">FtSupport</td>
-			<td class="val"><select name="FtSupport" class="normal">
+			<td class="val"><select name="FtSupport" class="normal" onChange="updateVisibility(this.form);">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
+
+		<tr id="basicFtMdId_tr">
+			<td class="head" data-tr="basic roaming ft mobility domain id">Mobility Domain ID</td>
+			<td class="val"><input type="text" name="FtMdId" class="normal" maxlength="2" value=""></td>
+		</tr>
+
+		<tr id="basicFtR0khId_tr">
+			<td class="head" data-tr="basic roaming ft key holder id">R0 Key Holder ID</td>
+			<td class="val"><input type="text" name="FtR0khId" class="normal" maxlength="8" value=""></td>
+		</tr>
+
 		<tr id="advMaxStaNum_tr">
 			<td class="head" data-tr="adv maximum stations number">Maximum clients per SSID</td>
 			<td class="val"><input type="text" name="maxstanum" class="normal" maxlength="3" value="">

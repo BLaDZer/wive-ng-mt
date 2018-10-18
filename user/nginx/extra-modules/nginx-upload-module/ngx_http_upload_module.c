@@ -20,12 +20,6 @@ typedef ngx_md5_t MD5_CTX;
 
 #define MD5_DIGEST_LENGTH 16
 
-#define SHA_DIGEST_LENGTH 20
-#define SHA224_DIGEST_LENGTH    28
-#define SHA256_DIGEST_LENGTH    32
-#define SHA384_DIGEST_LENGTH    48
-#define SHA512_DIGEST_LENGTH    64
-
 #ifdef NGX_HTTP_SSL
 #include <openssl/sha.h>
 #endif
@@ -2437,6 +2431,7 @@ ngx_http_upload_variable(ngx_http_request_t *r,
     return NGX_OK;
 } /* }}} */
 
+#ifdef NGX_HTTP_SSL
 static ngx_int_t
 ngx_http_upload_hash_variable(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data, u_char *digest,
@@ -2472,6 +2467,7 @@ ngx_http_upload_hash_variable(ngx_http_request_t *r,
 
     return NGX_OK;
 } /* }}} */
+#endif
 
 static ngx_int_t /* {{{ ngx_http_upload_md5_variable */
 ngx_http_upload_md5_variable(ngx_http_request_t *r,

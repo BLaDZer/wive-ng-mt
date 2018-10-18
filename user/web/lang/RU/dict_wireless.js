@@ -142,6 +142,10 @@ var wireless_dictionary = {
 	'basic roaming rssi thres range'		: ' 0 - -100 dBm, по умолчанию -70',
 	'basic roaming rrm'				: 'Управление радиоресурсами 802.11K',
 	'basic roaming ft'				: 'Поддержка быстрой миграции 802.11R',
+	'basic roaming ft mobility domain id'		: 'Mobility Domain ID',
+	'basic roaming ft invalid mobility domain'	: 'Некорректное значение Mobility Domain ID! Параметр должен содержать ровно две шестнадцатеричные цифры',
+	'basic roaming ft key holder id'		: 'R0 Key Holder ID',
+	'basic roaming ft invalid key holder'		: 'Некорректное значение Invalid Key Holder ID! Параметр должен содержать ровно восемь шестнадцатеричных цифр',
 	'basic roaming rc inic'				: 'Нормативный список (5ГГц)',
 	'basic roaming rc inic channel 1'		: '36, 40, 44, 48 каналы',
 	'basic roaming rc inic channel 2'		: '52, 56, 60, 64 каналы',
@@ -517,6 +521,7 @@ var wireless_dictionary = {
 	'scanap legend 80211'				: '802.11',
 	'scanap legend type'				: 'Тип',
 	'scanap legend button scan'			: 'Скан.',
+	'scanap legend button scan result'		: 'Результат',
 	'scanap legend button select'			: 'Выбрать',
 	'scanap legend button refresh'			: 'Обновить',
 	'scanap legend button close'			: 'Закрыть'

@@ -47,6 +47,8 @@ ngx_array_t* asp_nvram_acl_array;
 #define outWrite(...) arrsWrite(wp->out, __VA_ARGS__)
 #define websWrite(x,...) arrsWrite(x->out, __VA_ARGS__)
 
+#define UNUSED(x) (void)(x)
+
 #define FUNCTION_TRACE(x) ngx_log_error(NGX_LOG_DEBUG, x, 0, ": %s(%s:%i)\n", __func__, __FILE__, __LINE__)
 
 #define ELOG_DEBUG(...) ngx_log_error(NGX_LOG_DEBUG, __VA_ARGS__)
@@ -83,8 +85,7 @@ enum ResponseSentAction {
     DO_REBOOT = 1,
     DO_RECONFIGURE = 2,
     DO_RECONFIGURE_AND_SAMBA_RESTART = 3,
-    DO_RESTART_MISC = 4,
-    DO_FIRMWARE_UPGRADE = 5
+    DO_RESTART_MISC = 4
 };
 
 typedef struct keyval_t {

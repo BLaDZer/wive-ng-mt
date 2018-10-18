@@ -10,6 +10,11 @@ function validateNum(str, floating)
 	return re.test(str);
 }
 
+function validateHex(str) {
+	var re = /^[0-9a-fA-F]+$/;
+	return re.test(str);
+}
+
 function validatePort(field, info)
 {
 	var re = /^\d+$/;
@@ -377,6 +382,15 @@ function checkFilePresent(filename)
                 throw new Error("ipaddr: cannot match ipv4 address with non-ipv4 one");
             }
             return matchCIDR(this.octets, other.octets, 8, cidrRange);
+        };
+
+        IPv4.prototype.toNumber = function() {
+            var res = 0;
+            var arr = this.octets.reverse();
+            for (ind in arr) {
+                res = res + Number(arr[ind]) * Math.pow(256, ind);
+            }
+            return res;
         };
 
         IPv4.prototype.SpecialRanges = {

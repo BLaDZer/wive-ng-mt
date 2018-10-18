@@ -76,8 +76,7 @@ auth_session_t* getSessionOlderThan(unsigned int seconds)
 
     for (i=0;i<auth_sessions->nelts;i++)
     {
-
-        if ((current_time - sessions[i].start_time) > seconds)
+        if (current_time > sessions[i].start_time && (unsigned int)(current_time - sessions[i].start_time) > seconds)
         {
             return &(sessions[i]);
         }

@@ -54,8 +54,6 @@ static int test_n_skipchar(webs_t *wp, char** params, int nparams)
 static int test_n_strcmp(webs_t *wp, char** params, int nparams)
 {
     outWrite("n_strcmp: <br>");
-    ngx_str_t ptr;
-    ngx_str_t str1, str2;
     int res;
 
     res = n_strcmp(NG("ABCD"), NG("ABC"));

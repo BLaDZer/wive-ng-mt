@@ -129,14 +129,6 @@ ngx_int_t  ngx_http_mymodule_phase_handler ( ngx_http_request_t *r )
     return rc;
 }
 
-static char* split_http_val(char* str, char separator)
-{
-    char* ptr = strchr(str, separator);
-    if (ptr == NULL) return NULL;
-    *ptr = '\0';
-    return ptr+1;
-}
-
 static int http_arg_decode(char* arg, int bufsize)
 {
     char* out = (char*) calloc(bufsize, sizeof(char));
@@ -220,7 +212,6 @@ parse_multipart_args(ngx_http_request_t *r, ngx_str_t headers, ngx_str_t body, n
     char* line = (char*)headers.data;
     char* next_line = NULL;
 
-    char* url = ngx_to_cstring(r->pool, r->uri);
     ELOG_DEBUG(r->connection->log, 0, "ASP FORM BODY SIZE %i \n", body.len);
 
 // parse multipart-form part headers
@@ -255,24 +246,7 @@ parse_multipart_args(ngx_http_request_t *r, ngx_str_t headers, ngx_str_t body, n
                 break;
             }
         }
-/*
-        if (strcmp(args[0], "Content-Disposition: form-data"  ) == 0)
-        {
-            if (strcmp(args[1], "name=\"filename\"") == 0 && strcmp(url, "/cgi-bin/upload.cgi") == 0)
-            {
-                FILE *f=fopen("/tmp/download.bin","wb");
-                fwrite((char*)body.data, 1, body.len, f);
-                fclose(f);
-            }
-        }
-*/
 
-/*
-        for (i=0;i<arr->nelts;i++)
-        {
-            ELOG_DEBUG(r->connection->log, 0, "IIII header line arg[%i]: |%.100s|\n", i, ((char**)arr->elts)[i]);
-        }
-*/
         line = next_line;
     }
 
@@ -441,90 +415,6 @@ static void parse_http_args2(ngx_http_request_t *r, char* line, ngx_array_t* htt
     ELOG_DEBUG(r->connection->log, 0, "ASP FORM PARSE HTTP ARGS 2 end \n");
 }
 
-// DEPRECATED http args parser
-/*
-static void parse_http_args(ngx_http_request_t *r, char* line, ngx_array_t* http_args)
-{
-    char* ptr = line;
-    char* arg_ptr = line;
-    ELOG_DEBUG(r->connection->log, 0, "ASP FORM PARSE HTTP ARGS 1 start \n");
-*/
-/*
-    ngx_hash_t       * args_hashtable;
-    ngx_hash_keys_arrays_t  args_hashkeys;
-    ngx_hash_init_t  hash;
-
-    args_hashtable = (ngx_hash_t*) ngx_pcalloc(r->pool, sizeof(ngx_hash_t));
-
-    hash.hash = args_hashtable;
-    hash.key = ngx_hash_key;
-    hash.max_size = 512;
-    hash.bucket_size = ngx_align(64, ngx_cacheline_size);
-    hash.name = "args_hashkeys";
-    hash.pool = r->pool;
-    hash.temp_pool = NULL;
-
-    args_hashkeys.pool = r->pool;
-    args_hashkeys.temp_pool = NULL;
-    
-    ngx_hash_keys_array_init(&args_hashkeys, NGX_HASH_SMALL);
-*/
-
-/*
-    while (1)
-    {
-        char c = ptr[0];
-        if (c == '&' || c == '\0')
-        {
-            *ptr = '\0';
-
-//            printf("arg: %s \n", arg_ptr);
-            char* arg_name = cstring_copy(r->pool, arg_ptr);
-            char* arg_val = NULL;
-            if (arg_name)
-            {
-//                arg_val = split_http_val(arg_name, '=');
-                arg_val = cstring_split_inplace(arg_name, "=");
-
-                http_arg_decode(arg_name, strlen(arg_name)+1);
-
-                if (arg_val != NULL)
-                {
-                    http_arg_decode(arg_val, strlen(arg_val)+1);
-                    ptr = arg_val + strlen(arg_val);
-                    ELOG_DEBUG(r->connection->log, 0, "ASP FORM PARSE HTTP ARG %s = %s \n", arg_name, arg_val);
-
-                }
-                else
-                {
-                    ELOG_DEBUG(r->connection->log, 0, "ASP FORM PARSE HTTP ARG %s = NULL \n", arg_name);
-                }
-
-//                ngx_str_t key = cstring_to_ngx(r->pool, arg_name);
-//                ngx_hash_add_key(&args_hashkeys, &key, (void*)arg_val, 0);//NGX_HASH_READONLY_KEY);
-
-                keyval_t* keyval = ngx_array_push(http_args);
-                keyval->key = arg_name;
-                keyval->val = arg_val;
-            }
-
-            arg_ptr = ptr + 1;
-            if (c == '\0') break;
-        }
-        ptr++;
-    }
-*/
-//TODO: hash tables
-/*    if (ngx_hash_init(&hash, args_hashkeys.keys.elts, args_hashkeys.keys.nelts) != NGX_OK)
-    {
-        ELOG_CRIT(r->connection->log, 0, "Unable to init http arguments hashtable!");
-        return NULL;
-    }
-
-    return args_hashtable;*/
-//    ELOG_DEBUG(r->connection->log, 0, "ASP FORM PARSE HTTP ARGS 1 end \n");
-//}
-
 static int check_auth(webs_t* wp)
 {
     ngx_http_wive_loc_conf_t  *lcf;
@@ -548,7 +438,6 @@ static int check_auth(webs_t* wp)
     }
 
     ELOG_DEBUG(wp->log, 0, "??? my id: %s \n", sessionid);
-    unsigned int i;
 
     char* desired_addr = ngx_to_cstring(wp->pool, wp->request->connection->addr_text);
     ELOG_DEBUG(wp->log, 0, "??? Desired address: %s \n", desired_addr);
@@ -756,6 +645,9 @@ static void ngx_http_mymodule_body_handler ( ngx_http_request_t *r )
             doSystem("internet.sh &"); break;
         case DO_RESTART_MISC:
             doSystem("services_restart.sh misc &"); break;
+        case DO_NOTHING:
+            /* doing nothing */
+            break;
     }
 }
 
@@ -766,7 +658,6 @@ static ngx_int_t ngx_http_asp_form_handler(ngx_http_request_t *r)
 //    size_t                     root;
 //    ngx_str_t                  path;
 //    u_char                    *last, *ptr;
-    ngx_chain_t                 *cl;
     ngx_int_t                   rc;
 
 
@@ -1062,14 +953,15 @@ static ngx_int_t ngx_http_asp_handler(ngx_http_request_t *r)
         }
     }
 
+/*
     asp_nvram_acl_t* acl_arr = (asp_nvram_acl_t*)asp_nvram_acl_array->elts;
     unsigned int n;
     for (n=0;n<asp_nvram_acl_array->nelts;n++)
     {
         asp_nvram_acl_t acl = acl_arr[n];
-//        ELOG_DEBUG(r->connection->log, 0, "ACL %s=%i\n", acl.name, acl.flags);
+        ELOG_DEBUG(r->connection->log, 0, "ACL %s=%i\n", acl.name, acl.flags);
     }
-
+*/
     b->start = wp->out->elts;
     b->end = (unsigned char*)(wp->out->elts) + wp->out->nelts;
     b->pos = b->start;
@@ -1196,7 +1088,6 @@ ngx_http_wive_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
 static ngx_int_t ngx_http_wive_init(ngx_conf_t *cf)
 {
-    int i;
     ngx_http_handler_pt        *h;
     ngx_http_core_main_conf_t  *cmcf;
 

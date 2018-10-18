@@ -11,6 +11,41 @@ static int vpnShowVPNStatus(webs_t *wp, char** params, int nparams)
         return 0;
 }
 
+#ifdef CONFIG_USER_KABINET
+static parameter_fetch_t lanauth_args[] =
+{
+	{ ("vpn_type"),               "vpnType",              0,       ("") },
+	{ ("vpn_pass"),               "vpnPassword",          0,       ("") },
+	{ ("lanauth_access"),         "LANAUTH_LVL",          0,       ("") },
+
+	{ NULL, NULL, 0, NULL } // Terminator
+};
+#endif
+
+static parameter_fetch_t vpn_args[] =
+{
+	{ ("vpn_server"),             "vpnServer",            0,       ("") },
+	{ ("vpn_range"),              "vpnRange",             0,       ("") },
+	{ ("vpn_user"),               "vpnUser",              0,       ("") },
+	{ ("vpn_pass"),               "vpnPassword",          0,       ("") },
+	{ ("vpn_mtu"),                "vpnMTU",               0,       ("") },
+	{ ("vpn_type"),               "vpnType",              0,       ("") },
+	{ ("vpn_mppe"),               "vpnMPPE",              1,       ("") },
+	{ ("vpn_dgw"),                "vpnDGW",               0,       ("") },
+	{ ("vpn_peerdns"),            "vpnPeerDNS",           1,       ("") },
+	{ ("vpn_debug"),              "vpnDebug",             1,       ("") },
+	{ ("vpn_nat"),                "vpnNAT",               1,       ("") },
+	{ ("vpn_lcp"),                "vpnEnableLCP",         1,       ("") },
+	{ ("vpn_auth_type"),          "vpnAuthProtocol",      0,       ("") },
+	{ ("vpn_pppoe_iface"),        "vpnInterface",         0,       ("") },
+	{ ("vpn_pppoe_service"),      "vpnService",           0,       ("") },
+	{ ("vpn_pure_pppoe"),         "vpnPurePPPOE",         2,       ("") },
+	{ ("vpn_lcp_errors"),         "vpnLCPFailure",        0,       ("") },
+	{ ("vpn_lcp_interval"),       "vpnLCPInterval",       0,       ("") },
+	{ ("vpn_test_reachable"),     "vpnTestReachable",     2,       ("") },
+	{ NULL,                        NULL,                   0,       NULL  }  // Terminator
+};
+
 static void formVPNSetup(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *vpn_enabled, *vpn_type;
@@ -531,7 +566,8 @@ static int getRoutingTable(webs_t *wp, char** params, int nparams)
 	int   rule_count;
 
 	// Determine work mode
-	int isBridgeMode = (nvram_get_int(RT2860_NVRAM, "OperationMode", -1) == 0) ? 1 : 0;
+// FIXME: check whether it should have been used somewhere
+//	int isBridgeMode = (nvram_get_int(RT2860_NVRAM, "OperationMode", -1) == 0) ? 1 : 0;
 	int isVPN = (strcmp(getVPNStatusStr(), "online") == 0 || 
 		     strcmp(getVPNStatusStr(), "kabinet networks") == 0 || 
 		     strcmp(getVPNStatusStr(), "full access") == 0) ? 1 : 0;
@@ -895,10 +931,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *ctype, *req_ip, *dhcpVen;
 	char_t *ip, *nm, *gw, *mac, *oldmac;
-	char_t *eth, *user, *pass;
 	char_t *nat_enable;
-	char_t *vpn_srv, *vpn_mode;
-	char_t *l2tp_srv, *l2tp_mode;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 	char_t *reboot = websGetVar(wp, T("reboot"), T("0"));
 
@@ -907,7 +940,7 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
-	ip = nm = gw = eth = user = pass = mac = vpn_srv = vpn_mode = l2tp_srv = l2tp_mode = NULL;
+	ip = nm = gw = mac = NULL;
 
 	ctype = websGetVar(wp, T("connectionType"), T("0"));
 	req_ip = websGetVar(wp, T("dhcpReqIP"), T(""));
@@ -1395,9 +1428,6 @@ parameter_fetch_t service_eoip_flags[] =
 
 static void eoipConfig(webs_t* wp, char_t *path, char_t *query)
 {
-	char user_var[16];
-	char pass_var[16];
-	int i, count;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
@@ -1440,9 +1470,6 @@ parameter_fetch_t service_l2tp_eth_flags[] =
 
 static void l2tpv3Config(webs_t* wp, char_t *path, char_t *query)
 {
-	char user_var[16];
-	char pass_var[16];
-	int i, count;
 	char_t *reset = websGetVar(wp, T("reset"), T("0"));
 
 	if (CHK_IF_DIGIT(reset, 1)) {

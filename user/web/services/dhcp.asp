@@ -94,6 +94,16 @@
 						document.dhcpCfg.dhcpEnd.select();
 						return false;
 					}
+
+					var startIp = ipaddr.IPv4.parse(document.dhcpCfg.dhcpStart.value);
+					var endIp = ipaddr.IPv4.parse(document.dhcpCfg.dhcpEnd.value);
+					if (startIp === null || endIp === null || startIp.toNumber() > endIp.toNumber()) {
+						alert(_("services dhcp end ip less than start"));
+						document.dhcpCfg.dhcpEnd.focus();
+						document.dhcpCfg.dhcpEnd.select();
+						return false;
+					}
+
 					if (!validateIP(document.dhcpCfg.dhcpMask)) {
 						document.dhcpCfg.dhcpMask.focus();
 						document.dhcpCfg.dhcpMask.select();

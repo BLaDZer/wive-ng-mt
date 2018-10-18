@@ -123,7 +123,6 @@ void freeHeaderProfileSettings(void)
  * description: write station Adhoc Channel (a << 8 | bg)
  */
 static int getStaAdhocChannel(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned int country_region_bg, country_region_a;
 	long country_region = 0;
@@ -139,7 +138,6 @@ static int getStaAdhocChannel(webs_t *wp, char** params, int nparams)
  * description: write the BSSID list (site survey)
  */
 static int getStaBSSIDList(webs_t *wp, char** params, int nparams)
-
 {
 	int                         ret, retry=1, rowcount=0;
 	unsigned int                lBufLen = 4096, we_version=16; // 64K
@@ -306,7 +304,7 @@ static int getStaBSSIDList(webs_t *wp, char** params, int nparams)
 				pBssid->MacAddress[3], pBssid->MacAddress[4], pBssid->MacAddress[5]);
 
 			nSigQua = ConvertRssiToSignalQuality(pBssid->Rssi);
-			sprintf((char *)tmpRSSI,"%d%%", nSigQua);
+			sprintf((char *)tmpRSSI,"%u%%", nSigQua);
 
 			nChannel = -1;	
 			for(j = 0; j < G_nChanFreqCount; j++)
@@ -601,7 +599,6 @@ static int getStaBSSIDList(webs_t *wp, char** params, int nparams)
  * description: write the BSSID that station connected to
  */
 static int getStaConnectedBSSID(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned char BssidQuery[6];
 
@@ -636,9 +633,8 @@ static int getStaConnectedBSSID(webs_t *wp, char** params, int nparams)
  * description: return G_bdBm_ischeck (displaying dbm or % type)
  */
 static int getStaDbm(webs_t *wp, char** params, int nparams)
-
 {
-//FIXME
+//FIXME STUB
 //	ejSetResult(eid, (G_bdBm_ischeck == 1) ? "1" : "0");
 	return 0;
 }
@@ -647,7 +643,6 @@ static int getStaDbm(webs_t *wp, char** params, int nparams)
  * description: write station extra info
  */
 static int getStaExtraInfo(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned long lExtraInfo;
 	int ret;
@@ -680,7 +675,6 @@ static int getStaExtraInfo(webs_t *wp, char** params, int nparams)
 }
 
 static int getLinkingMode(webs_t *wp, char** params, int nparams)
-
 {
 	MACHTTRANSMIT_SETTING HTSetting;
 
@@ -698,7 +692,6 @@ static int getLinkingMode(webs_t *wp, char** params, int nparams)
  * description: write station HT transmit
  */
 static int getStaHT(webs_t *wp, char** params, int nparams)
-
 {
 	MACHTTRANSMIT_SETTING HTSetting;
 	char tmp[8], tmpBW[88], tmpGI[88], tmpSTBC[88], tmpMCS[88];
@@ -755,7 +748,6 @@ static int getStaHT(webs_t *wp, char** params, int nparams)
  * description: write station extra info
  */
 static int getStaLinkChannel(webs_t *wp, char** params, int nparams)
-
 {
 	RT_802_11_LINK_STATUS     LinkStatus;
 	MACHTTRANSMIT_SETTING HTSetting;
@@ -848,7 +840,6 @@ static int getStaLinkQuality(webs_t *wp, char** params, int nparams)
  */
 static int getStaLinkRxRate(webs_t *wp, char** params, int nparams)
 {
-
 	if (G_ConnectStatus == NdisMediaStateDisconnected)
 		return websWrite(wp, "0");
 
@@ -870,7 +861,6 @@ static int getStaLinkRxRate(webs_t *wp, char** params, int nparams)
  * description: write station link status
  */
 static int getStaLinkStatus(webs_t *wp, char** params, int nparams)
-
 {
 	int s, ret;
 
@@ -924,7 +914,6 @@ static int getStaLinkStatus(webs_t *wp, char** params, int nparams)
 /*
  */
 static int getStaLinkTxRate(webs_t *wp, char** params, int nparams)
-
 {
 #ifdef HAVE_MT76X2_3
 	char buf[32];
@@ -951,7 +940,6 @@ static int getStaLinkTxRate(webs_t *wp, char** params, int nparams)
  * description: write station new profile name
  */
 static int getStaNewProfileName(webs_t *wp, char** params, int nparams)
-
 {
 	char profilename[32+1]; //refer to _RT_PROFILE_SETTING.
 	strcpy(profilename, "PROF00");
@@ -987,7 +975,6 @@ static int getStaNewProfileName(webs_t *wp, char** params, int nparams)
  * description: write station noise level
  */
 static int getStaNoiseLevel(webs_t *wp, char** params, int nparams)
-
 {
 	int nNoiseDbm = 0;
 	int nNoisePercent;
@@ -1410,7 +1397,6 @@ int PasswordHash(char *password, unsigned char *ssid, int ssidlength, unsigned c
 }
 
 static int getCACLCertList(webs_t *wp, char** params, int nparams)
-
 {
 	websWrite(wp, T("<option value=\"\"></option>"));
 
@@ -1418,7 +1404,6 @@ static int getCACLCertList(webs_t *wp, char** params, int nparams)
 }
 
 static int getKeyCertList(webs_t *wp, char** params, int nparams)
-
 {
 	websWrite(wp, T("<option value=\"\"></option>"));
 
@@ -1459,7 +1444,6 @@ void initStaConnection(webs_t* wp)
 		return;
 	}
 
-	ret = 0;
 	// step 0: OID_802_11_INFRASTRUCTURE_MODE
 	ret = OidSetInformation(OID_802_11_INFRASTRUCTURE_MODE, "ra0", &p->NetworkType, sizeof(int));
 	if (ret < 0)
@@ -1650,7 +1634,6 @@ void initStaConnection(webs_t* wp)
 }
 
 static int getActiveProfileStatus(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned int ConnectStatus = 0;
 
@@ -1759,13 +1742,11 @@ static int getStaModes(webs_t* wp, const auth_modes_t *pt)
 }
 
 static int getStaAuthModes(webs_t *wp, char** params, int nparams)
-
 {
 	return getStaModes(wp, authModes);
 }
 
 static int getStaEncryptModes(webs_t *wp, char** params, int nparams)
-
 {
 	return getStaModes(wp, encryptModes);
 }
@@ -1774,7 +1755,6 @@ static int getStaEncryptModes(webs_t *wp, char** params, int nparams)
  * description: return station radio status
  */
 static int getStaRadioStatus(webs_t *wp, char** params, int nparams)
-
 {
 #ifdef HAVE_MT76X2_3
 	int ret = getWlanHWRadioStatus(1);
@@ -1792,7 +1772,6 @@ static int getStaRadioStatus(webs_t *wp, char** params, int nparams)
  * description: write station link Rx throughput
  */
 static int getStaRxThroughput(webs_t *wp, char** params, int nparams)
-
 {
 	RT_802_11_LINK_STATUS LinkStatus;
 	char tmp[8];
@@ -1821,7 +1800,6 @@ static int getStaRxThroughput(webs_t *wp, char** params, int nparams)
  * description: write station link Tx throughput
  */
 static int getStaTxThroughput(webs_t *wp, char** params, int nparams)
-
 {
 	RT_802_11_LINK_STATUS LinkStatus;
 	char tmp[8];
@@ -1905,7 +1883,6 @@ static int getRSSI(webs_t* wp, int antenna)
  * description: write station signal strength
  */
 static int getStaSignalStrength(webs_t *wp, char** params, int nparams)
-
 {
 	return getRSSI(wp, 0);
 }
@@ -1914,7 +1891,6 @@ static int getStaSignalStrength(webs_t *wp, char** params, int nparams)
  * description: write station signal strength
  */
 static int getStaSignalStrength_1(webs_t *wp, char** params, int nparams)
-
 {
 	return getRSSI(wp, 1);
 }
@@ -1923,7 +1899,6 @@ static int getStaSignalStrength_1(webs_t *wp, char** params, int nparams)
  * description: write station signal strength
  */
 static int getStaSignalStrength_2(webs_t *wp, char** params, int nparams)
-
 {
 	return getRSSI(wp, 2);
 }
@@ -1932,7 +1907,6 @@ static int getStaSignalStrength_2(webs_t *wp, char** params, int nparams)
  * description: write station SNR
  */
 static int getStaSNR(webs_t *wp, char** params, int nparams)
-
 {
 	int n=0, ret;
 	unsigned long SNR;
@@ -1970,7 +1944,6 @@ static int getStaSNR(webs_t *wp, char** params, int nparams)
  * description: write station statistics Rx CRC error
  */
 static int getStaStatsRxCRCErr(webs_t *wp, char** params, int nparams)
-
 {
 	NDIS_802_11_STATISTICS  Statistics;
 
@@ -1989,7 +1962,6 @@ static int getStaStatsRxCRCErr(webs_t *wp, char** params, int nparams)
  * description: write station statistics Rx duplicate
  */
 static int getStaStatsRxDup(webs_t *wp, char** params, int nparams)
-
 {
 	NDIS_802_11_STATISTICS  Statistics;
 
@@ -2007,7 +1979,6 @@ static int getStaStatsRxDup(webs_t *wp, char** params, int nparams)
  * description: write station statistics Rx ok
  */
 static int getStaStatsRxOk(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned long lRcvOk = 0;
 
@@ -2024,7 +1995,6 @@ static int getStaStatsRxOk(webs_t *wp, char** params, int nparams)
  * description: write station statistics Rx no buffer
  */
 static int getStaStatsRxNoBuf(webs_t *wp, char** params, int nparams)
-
 {
 	unsigned long lRcvNoBuf = 0;
 
@@ -2041,7 +2011,6 @@ static int getStaStatsRxNoBuf(webs_t *wp, char** params, int nparams)
  * description: write station statistics Tx all
  */
 static int getStaStatsTx(webs_t *wp, char** params, int nparams)
-
 {
 	NDIS_802_11_STATISTICS  Statistics;
 	char  tmpStatisics[16];
@@ -2115,9 +2084,8 @@ static int myGetSuppAMode(void)
  * description: return station support A band
  */
 static int getStaSuppAMode(webs_t *wp, char** params, int nparams)
-
 {
-//FIXME
+//FIXME STUB
 //	ejSetResult(eid, (myGetSuppAMode() == 1) ? "1" : "0");
 	return 0;
 }
@@ -2235,12 +2203,11 @@ static void setStaAdvance(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t *w_mode, *cr_bg, *cr_a, *bg_prot, *burst;
 	char_t *ht, *bw, *gi, *mcs, *tx_power, *sta_ar, *sta_ac, *sta_fc;
-	int ret, wireless_mode=0;
+	int ret;
 
 	unsigned char radio_status=0;
 
 	w_mode = websGetVar(wp, T("wireless_mode"), T("0"));
-	wireless_mode = atoi(w_mode);
 	cr_bg = websGetVar(wp, T("country_region_bg"), T("0"));
 	cr_a = websGetVar(wp, T("country_region_a"), T("0"));
 	bg_prot = websGetVar(wp, T("bg_protection"), T("0"));
@@ -2442,15 +2409,16 @@ static void setStaOrgAdd(webs_t* wp, char_t *path, char_t *query)
  */
 static void setStaOrgDel(webs_t* wp, char_t *path, char_t *query)
 {
+// FIXME: STUB
+/*
 	char_t *button;
-
 	button = websGetVar(wp, T("hiddenButton"), T("0"));
+*/
 }
 
 static int getStaTrModes(webs_t *wp, char** params, int nparams)
-
 {
-	char_t *result= "0";
+	char_t *result;
 #if defined(CONFIG_RT_FIRST_IF_MT7610E)
 	result = "1";
 #elif defined(CONFIG_RT_FIRST_IF_MT7620) || defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_FIRST_IF_MT7603E)

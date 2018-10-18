@@ -251,7 +251,7 @@ static int checkimage(webs_t* wp, char *imagefile, int offset, int len)
 	 */
 #if defined(CONFIG_RT2880_ROOTFS_IN_FLASH)
 #ifdef CONFIG_ROOTFS_IN_FLASH_NO_PADDING
-	if(len > MAX_IMG_SIZE || len > getMTDPartSize("\"Kernel_RootFS\"")){
+	if(len > MAX_IMG_SIZE || (unsigned)len > getMTDPartSize("\"Kernel_RootFS\"")){
 		munmap(ptr, len);
 		close(ifd);
 		fprintf(stderr,"*** ERROR: the image file(0x%x) is bigger than Kernel_RootFS MTD partition.\n", len);

@@ -5,12 +5,11 @@
  */
 static void setSysAdm(webs_t* wp, char_t *path, char_t *query)
 {
-        if (wp->auth_session == NULL) return;
-
         char_t *admuser, *admpass, *orduser, *ordpass, *mgmtuser, *mgmtpass;
         char *old_admin, *old_user, *old_mgmt;
         char_t *submitUrl;
 
+        if (wp->auth_session == NULL) return;
         old_admin = nvram_get(RT2860_NVRAM, "Login");
         admuser = websGetVar(wp, T("admuser"), NULL);
         admpass = websGetVar(wp, T("admpass"), NULL);
@@ -91,24 +90,14 @@ static void setSysAdm(webs_t* wp, char_t *path, char_t *query)
 
         if (wp->auth_session->role == ADMIN)
         {
-            if (admuser)
-            {
-                closeSessionsByUser(old_admin);
-                closeSessionsByUser(admuser);
-            }
-
-            if (mgmtuser)
-            {
-                closeSessionsByUser(old_mgmt);
-                closeSessionsByUser(mgmtuser);
-            }
+            closeSessionsByUser(old_admin);
+            closeSessionsByUser(admuser);
+            closeSessionsByUser(old_mgmt);
+            closeSessionsByUser(mgmtuser);
         }
 
-        if (orduser)
-        {
-            closeSessionsByUser(old_user);
-            closeSessionsByUser(orduser);
-        }
+        closeSessionsByUser(old_user);
+        closeSessionsByUser(orduser);
 
 	/* modify /etc/passwd to new user name and passwd */
 	doSystem("sed -e 's/^%s:/%s:/;s/^%s:/%s:/;s/^%s:/%s:/' /etc/passwd > /etc/newpw", old_admin, admuser, old_user, orduser, old_mgmt, mgmtuser);
@@ -149,8 +138,6 @@ static void setSysAdm(webs_t* wp, char_t *path, char_t *query)
  */
 static void setSysLang(webs_t* wp, char_t *path, char_t *query)
 {
-        FUNCTION_TRACE(wp->log);
-
 	char_t *lang;
 	char_t *submitUrl;
 

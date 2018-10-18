@@ -55,7 +55,6 @@ void websError(webs_t* wp, int code, char_t *fmt, ...)
     va_list	args;
     char_t	*msg, *userMsg;/*, *buf;*/
 //    char_t*     safeUrl = NULL;
-    char_t*     safeMsg = NULL;
 
 //    char* url = ngx_to_cstring(wp->pool, wp->request->uri);
 
@@ -246,6 +245,7 @@ int aspDefineFunc(char* func_name, asp_func_proto func_ptr, enum UserPermission 
 
     arr_ptr->name = func_name;
     arr_ptr->ptr = func_ptr;
+    arr_ptr->perm = perm;
 
     return NGX_OK;
 }
@@ -257,6 +257,7 @@ int websFormDefine(char* func_name, asp_form_proto form_ptr, enum UserPermission
 
     arr_ptr->name = func_name;
     arr_ptr->ptr = form_ptr;
+    arr_ptr->perm = perm;
 
     return NGX_OK;
 }

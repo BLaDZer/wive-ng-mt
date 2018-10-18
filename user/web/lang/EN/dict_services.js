@@ -9,6 +9,7 @@ var services_dictionary = {
 	'services dhcp delete record'		: 'Delete record',
 	'services dhcp invalid mac'		: 'You have entered invalid MAC address',
 	'services dhcp invalid ip'		: 'You have entered invalid IP address',
+	'services dhcp end ip less than start'	: 'You have entered an End IP address that is less than the Start IP address',
 	'services dhcp invalid desc'		: 'Please specify correct descripton (a-z, A-Z, 0-9, _).',
 	'services dhcp invalid lease'		: 'You have entered invalid Lease Time',
 	'services dhcp invalid arptimeout'	: 'You have entered invalid address conflict check timeout',

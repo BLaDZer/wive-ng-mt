@@ -154,17 +154,7 @@ int asp_state_machine(webs_t *wp, ngx_chain_t *in) {
                             break;
                         }
 
-                        ngx_array_t* inner_outarr = ngx_array_create(wp->pool, 128, sizeof(char));
-                        parseInner(wp, ptr2, inner_outarr);
-
-                        int inner_len = inner_outarr->nelts;
-
-                        if (inner_len > 0) // copy to buffer
-                        {
-                            w = (char*)ngx_array_push_n(wp->out, inner_len);
-                            memcpy(w, inner_outarr->elts, inner_len);
-                        }
-
+                        parseInner(wp, ptr2);
                         state = TEXT;
                     }
                     else 
@@ -189,7 +179,7 @@ int asp_state_machine(webs_t *wp, ngx_chain_t *in) {
     return state;
 }
 
-int parseInner(webs_t *wp, char* cmds, ngx_array_t *out)
+int parseInner(webs_t *wp, char* cmds)
 {
     int state = 0;
 
@@ -314,7 +304,7 @@ int parseInner(webs_t *wp, char* cmds, ngx_array_t *out)
         {
             if (c == ';')
             {
-                parseCmd(wp, out, params);
+                parseCmd(wp, params);
                 params = ngx_array_create(wp->pool, 10, sizeof(char*));
                 state = 0;
             }
@@ -327,7 +317,7 @@ int parseInner(webs_t *wp, char* cmds, ngx_array_t *out)
     return 0;
 }
 
-int parseCmd(webs_t *wp, ngx_array_t *out, ngx_array_t *params_arr)
+int parseCmd(webs_t *wp, ngx_array_t *params_arr)
 {
 //    TRACE_FUNCTION(wp->log);
 
@@ -335,6 +325,15 @@ int parseCmd(webs_t *wp, ngx_array_t *out, ngx_array_t *params_arr)
     {
         return NGX_ERROR;
     }
+
+    enum UserRole role = DENY;
+
+    if (wp->auth_session != NULL)
+    {
+        role = wp->auth_session->role;
+    }
+
+    if (role == DENY) return NGX_OK;
 
     char **params = ((char**)(params_arr->elts));
     int nparams = params_arr->nelts-1;
@@ -348,10 +347,15 @@ int parseCmd(webs_t *wp, ngx_array_t *out, ngx_array_t *params_arr)
 
     int func_found = 0;
 
+
     for (asp_func=(asp_func_t*)asp_func_array->elts;asp_func<((asp_func_t*)asp_func_array->elts+asp_func_array->nelts);asp_func++)
     {
         if (strcmp(cmd, asp_func->name) == 0) 
         {
+            if (asp_func->perm == DENY) continue; else
+            if (asp_func->perm == ADMIN && role != ADMIN) continue; else
+            if (asp_func->perm == USER && role != ADMIN && role != USER) continue;
+
             (*(asp_func->ptr))(wp, params, nparams);
             func_found = 1;
             break;
@@ -372,12 +376,26 @@ int asp_parser_parse_form(webs_t* wp, char_t* name, char_t* path, char_t* query)
 
     asp_form_t* asp_form;
 
+    enum UserRole role = DENY;
+
+    if (wp->auth_session != NULL)
+    {
+        role = wp->auth_session->role;
+    }
+
+    if (role == DENY) return NGX_OK;
+
     // iterate asp form array
     for (asp_form=(asp_form_t*)asp_form_array->elts;asp_form<((asp_form_t*)asp_form_array->elts+asp_form_array->nelts);asp_form++)
     {
         if (strcmp(name, asp_form->name) == 0) 
         {
+            if (asp_form->perm == DENY) continue; else
+            if (asp_form->perm == ADMIN && role != ADMIN) continue; else
+            if (asp_form->perm == USER && role != ADMIN && role != USER) continue;
+
             (*(asp_form->ptr))(wp, path, query);
+            break;
         }
     }
 

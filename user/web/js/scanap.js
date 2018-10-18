@@ -387,8 +387,10 @@ function showGraph(svg, scanApFreq)
 }
 
 // Scan AP
-function scanAp(f, cli)
+function scanAp(f, cli, rescan)
 {
+	rescan = rescan ? "1" : "0";
+
 	if (f == "apcli") {
 		hideElement('scanAp');
 		hideElement('scanApPlot');
@@ -413,14 +415,14 @@ function scanAp(f, cli)
 		hideElement('scanApPlot');
 		hideElement('scanApButtons');
 		showElement('scanApPreloader');
-		scanApHTTPmakeRequest("/goform/getScanAp", "0", scanApHTTPrequestHandler);
+		scanApHTTPmakeRequest("/goform/getScanAp", "inic=0&rescan="+rescan, scanApHTTPrequestHandler);
 	}
 	else {
 		showElement('scanApINIC');
 		hideElement('scanApPlotINIC');
 		hideElement('scanApButtonsINIC');
 		showElement('scanApPreloaderINIC');
-		scanApHTTPmakeRequest("/goform/getScanAp", "1", scanApHTTPrequestHandler);
+		scanApHTTPmakeRequest("/goform/getScanAp", "inic=1&rescan="+rescan, scanApHTTPrequestHandler);
 	}
 }
 

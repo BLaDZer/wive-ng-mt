@@ -140,6 +140,10 @@ var wireless_dictionary = {
 	'basic roaming probe rssi range'	: '  0 - -100 dBm, default -76',
 	'basic roaming rrm'			: 'Radio Resource Managment 802.11K',
 	'basic roaming ft'			: 'Fast Transition 802.11R',
+	'basic roaming ft mobility domain id'	: 'Mobility Domain ID',
+	'basic roaming ft invalid mobility domain'	: 'Invalid Mobility Domain ID value! It should be exactly two hexademical digits',
+	'basic roaming ft key holder id'	: 'R0 Key Holder ID',
+	'basic roaming ft invalid key holder'	: 'Invalid Key Holder ID value! It should be exactly eight hexademical digits',
 	'basic roaming rc inic'			: 'Regulatory Class (5GHz)',
 	'basic roaming rc inic channel 1'	: '36, 40, 44, 48 channels',
 	'basic roaming rc inic channel 2'	: '52, 56, 60, 64 channels',
@@ -512,6 +516,7 @@ var wireless_dictionary = {
 	'scanap legend 80211'			: '802.11',
 	'scanap legend type'			: 'Type',
 	'scanap legend button scan'		: 'Scan',
+	'scanap legend button scan result'	: 'Scan Result',
 	'scanap legend button select'		: 'Select',
 	'scanap legend button refresh'		: 'Refresh',
 	'scanap legend button close'		: 'Close'
