@@ -492,7 +492,7 @@ static int getPlatform(webs_t *wp, char** params, int nparams)
     return outWrite(T("MT7621 CPU, MT7603 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
 #elif defined(CONFIG_RT_FIRST_IF_MT7602E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
     return outWrite(T("MT7621 CPU, MT7602 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
-#elif defined(CONFIG_MT7615_AP)
+#elif defined(CONFIG_RT_FIRST_IF_MT7615E) && defined(CONFIG_RT_SECOND_IF_MT7615E)
 #if defined(CONFIG_MT7615_AP_DBDC_MODE)
     return outWrite(T("MT7621 CPU, MT7615DN 2T2R DBDC MODE, 1000FDX"));
 #else
