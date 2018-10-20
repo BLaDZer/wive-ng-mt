@@ -38,16 +38,20 @@ const char* getSystemPlatform()
     return "MT7620 2T2R 2.4GHz, 100FDX";
 #endif
 #elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
-#ifdef CONFIG_MT76X3_AP
-    return "MT7621 1000FDX MT7603 MT7612 2T2R dualband";
-#elif CONFIG_MT7615_AP
-#ifdef CONFIG_MT7615_AP_DBDC_MODE
-    return "MT7621 1000FDX MT7615DN 2T2R dualband";
+#if defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7610E)
+    return "MT7621 CPU, MT7603 2T2R 2.4GHz, MT7610 1T1R 5GHz, 1000FDX";
+#elif defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
+    return "MT7621 CPU, MT7603 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX";
+#elif defined(CONFIG_RT_FIRST_IF_MT7602E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
+    return "MT7621 CPU, MT7602 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX";
+#elif defined(CONFIG_RT_FIRST_IF_MT7615E) && defined(CONFIG_RT_SECOND_IF_MT7615E)
+#if defined(CONFIG_MT7615_AP_DBDC_MODE)
+    return "MT7621 CPU, MT7615DN 2T2R DBDC MODE, 1000FDX";
 #else
-    return "MT7621 1000FDX MT7615N 4T4R dualband";
+    return "MT7621 CPU, MT7615N 4T4R 2.4GHz, MT7615N 4T4R 5GHz, 1000FDX";
 #endif
 #else
-    return "MT7621 1000FDX MT7602 MT7612 2T2R dualband";
+    return "MT7621 CPU, 1000FDX unknown radio.";
 #endif
 #else
     return "Unknown system platform";

@@ -477,34 +477,7 @@ static int getLangDictionary(webs_t *wp, char** params, int nparams)
  */
 static int getPlatform(webs_t *wp, char** params, int nparams)
 {
-#if defined(CONFIG_RALINK_MT7620) && defined(CONFIG_RAETH_ESW)
-#if defined(CONFIG_RT_SECOND_IF_MT7610E)
-    return outWrite(T("MT7620 2T2R 2.4GHz, MT7610 1T1R 5GHz, 100FDX"));
-#elif defined(CONFIG_RT_SECOND_IF_MT7612E)
-    return outWrite(T("MT7620 2T2R 2.4GHz, MT7612 2T2R 5GHz, 100FDX"));
-#else
-    return outWrite(T("MT7620 2T2R 2.4GHz, 100FDX"));
-#endif
-#elif defined(CONFIG_RALINK_MT7621) && defined(CONFIG_MT7530_GSW)
-#if defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7610E)
-    return outWrite(T("MT7621 CPU, MT7603 2T2R 2.4GHz, MT7610 1T1R 5GHz, 1000FDX"));
-#elif defined(CONFIG_RT_FIRST_IF_MT7603E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
-    return outWrite(T("MT7621 CPU, MT7603 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
-#elif defined(CONFIG_RT_FIRST_IF_MT7602E) && defined(CONFIG_RT_SECOND_IF_MT7612E)
-    return outWrite(T("MT7621 CPU, MT7602 2T2R 2.4GHz, MT7612 2T2R 5GHz, 1000FDX"));
-#elif defined(CONFIG_RT_FIRST_IF_MT7615E) && defined(CONFIG_RT_SECOND_IF_MT7615E)
-#if defined(CONFIG_MT7615_AP_DBDC_MODE)
-    return outWrite(T("MT7621 CPU, MT7615DN 2T2R DBDC MODE, 1000FDX"));
-#else
-    return outWrite(T("MT7621 CPU, MT7615N 4T4R 2.4GHz, MT7615N 4T4R 5GHz, 1000FDX"));
-#endif
-#else
-    return outWrite(T("MT7621 CPU, 1000FDX unknown radio."));
-#endif
-#else
-    return outWrite(T("Unknown switch mode"));
-#endif
-    return 0;
+    return outWrite(T(getSystemPlatform()));
 }
 
 static int getStationBuilt(webs_t *wp, char** params, int nparams)
