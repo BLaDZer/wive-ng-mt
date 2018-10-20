@@ -3103,7 +3103,7 @@ table.form tr.ssid-row {
 		</tr>
 
 		<tr id="basicFtR0khId_tr">
-			<td class="head" data-tr="basic roaming ft key holder id">R0 Key Holder ID</td>
+			<td class="head" data-tr="basic roaming ft key holder id">APs Key Holder</td>
 			<td class="val"><input type="text" name="FtR0khId" class="normal" maxlength="8" value=""></td>
 		</tr>
 
