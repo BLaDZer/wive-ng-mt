@@ -4313,7 +4313,7 @@
 14) pppd: sync some patches from new git of project (commit f6be15).<br>
 15) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
 16) init.d: only once flush conntrack and route cahce at wlan if down.<br>
-17) webui/cli fix system platfor info.<br>
+17) webui/cli: fix system platform info.<br>
 18) webui: C code review, cleanup and fixup.<br>
 19) webui: fix some options permissions check.<br>
 20) webui: add check dhcp leases ip range.<br>
