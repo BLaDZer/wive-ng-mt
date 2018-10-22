@@ -2842,6 +2842,7 @@ static struct ppp *ppp_create_interface(struct net *net, int unit,
 
 	ppp = netdev_priv(dev);
 	ppp->dev = dev;
+	ppp->ppp_net = net;
 	ppp->mru = PPP_MRU;
 	init_ppp_file(&ppp->file, INTERFACE);
 	ppp->file.hdrlen = PPP_HDRLEN - 2;	/* don't count proto bytes */
@@ -2910,8 +2911,6 @@ static struct ppp *ppp_create_interface(struct net *net, int unit,
 			   dev->name, ret);
 		goto out2;
 	}
-
-	ppp->ppp_net = net;
 
 	atomic_inc(&ppp_unit_count);
 	mutex_unlock(&pn->all_ppp_mutex);
