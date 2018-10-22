@@ -650,7 +650,7 @@ static int eoip_tunnel_bind_dev(struct net_device *dev)
 
 	if (tdev) {
 		hlen = tdev->hard_header_len + tdev->needed_headroom;
-		mtu = tdev->mtu;
+		mtu = min(tdev->mtu, IP_MAX_MTU);
 	}
 	dev->iflink = tunnel->parms.link;
 
@@ -668,7 +668,7 @@ static int eoip_tunnel_bind_dev(struct net_device *dev)
 static int eoip_if_change_mtu(struct net_device *dev, int new_mtu)
 {
 	struct ip_tunnel *tunnel = netdev_priv(dev);
-	if (new_mtu < IPV4_MIN_MTU || new_mtu > 0xFFF8 - dev->hard_header_len - tunnel->hlen)
+	if (new_mtu < IPV4_MIN_MTU || new_mtu > IP_MAX_MTU - dev->hard_header_len - tunnel->hlen)
 		return -EINVAL;
 	dev->mtu = new_mtu;
 	return 0;
