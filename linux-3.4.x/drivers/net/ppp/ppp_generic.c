@@ -2904,8 +2904,11 @@ static struct ppp *ppp_create_interface(struct net *net, int unit,
 	ppp->file.index = unit;
 	sprintf(dev->name, "ppp%d", unit);
 
+	mutex_unlock(&pn->all_ppp_mutex);
+
 	ret = register_netdevice(dev);
 	if (ret != 0) {
+		mutex_lock(&pn->all_ppp_mutex);
 		unit_put(&pn->units_idr, unit);
 		netdev_err(ppp->dev, "PPP: couldn't register device %s (%d)\n",
 			   dev->name, ret);
@@ -2913,7 +2916,6 @@ static struct ppp *ppp_create_interface(struct net *net, int unit,
 	}
 
 	atomic_inc(&ppp_unit_count);
-	mutex_unlock(&pn->all_ppp_mutex);
 	rtnl_unlock();
 
 	*retp = 0;
