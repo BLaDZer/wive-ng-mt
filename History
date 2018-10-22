@@ -4322,17 +4322,18 @@
 23) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
 24) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
 25) kernel: net: ppp: unlock all_ppp_mutex before registering device.<br>
-26) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-27) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-28) kernel: net: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-29) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-30) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-31) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-32) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-33) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-34) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-35) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-36) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-37) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+26) kernel: net: ppp: remove the PPPIOCDETACH ioctl.<br>
+27) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+28) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+29) kernel: net: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+30) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+31) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+32) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+33) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+34) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+35) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+36) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+37) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+38) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
 <br>
 <br>
