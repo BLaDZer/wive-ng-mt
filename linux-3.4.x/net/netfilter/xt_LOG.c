@@ -547,7 +547,7 @@ static void dump_ipv6_packet(struct sbuff *m,
 			}
 
 			/* Max length: 6 "65535 " */
-			sb_add(m, "%u ", ntohs(fh->frag_off) & 0xFFF8);
+			sb_add(m, "%u ", ntohs(fh->frag_off) & IP_MAX_MTU);
 
 			/* Max length: 11 "INCOMPLETE " */
 			if (fh->frag_off & htons(0x0001))
@@ -555,7 +555,7 @@ static void dump_ipv6_packet(struct sbuff *m,
 
 			sb_add(m, "ID:%08x ", ntohl(fh->identification));
 
-			if (ntohs(fh->frag_off) & 0xFFF8)
+			if (ntohs(fh->frag_off) & IP_MAX_MTU)
 				fragment = 1;
 
 			hdrlen = 8;
