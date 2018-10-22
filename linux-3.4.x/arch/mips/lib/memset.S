@@ -208,7 +208,7 @@
 
 .Llast_fixup\@:
 	jr		ra
-	andi		v1, a2, STORMASK
+	nop
 
 	.endm
 
