@@ -4326,15 +4326,14 @@
 27) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
 28) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
 29) kernel: net: ppp: unlock all_ppp_mutex before registering device.<br>
-30) kernel: net: ppp: remove the PPPIOCDETACH ioctl.<br>
-31) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-32) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-33) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-34) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-35) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-36) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-37) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-38) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-39) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+30) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+31) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+32) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+33) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+34) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+35) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+36) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+37) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+38) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
 <br>
 <br>
