@@ -4318,17 +4318,18 @@
 19) webui: fix some options permissions check.<br>
 20) webui: add check dhcp leases ip range.<br>
 21) webui: add mobile domain and keyholder to webui.<br>
-22) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-23) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-24) kernel: net: route: Use ipv4_mtu instead of raw rt_pmtu.<br>
-25) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-26) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-27) kernel: net: ipv6: Display all addresses in output of /proc/net/if_inet6.<br>
-28) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-29) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-30) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-31) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-32) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-33) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+22) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+23) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+24) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+25) kernel: net: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+26) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+27) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+28) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+29) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+30) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+31) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+32) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+33) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+34) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
 <br>
 <br>
