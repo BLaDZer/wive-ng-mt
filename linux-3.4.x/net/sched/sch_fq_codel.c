@@ -441,14 +441,25 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 	struct fq_codel_sched_data *q = qdisc_priv(sch);
 	int i;
 
-	sch->limit = 1024;
-	q->flows_cnt = 1024;
-	q->drop_batch_size = 64;
-#if 1
-	q->quantum = psched_mtu(qdisc_dev(sch));
+/* MTK/Ralink radio drivers prevent ring overload hack and tune perf */
+#if defined (CONFIG_RALINK_MT7621)
+	sch->limit = 4 * 1024;
+	q->flows_cnt = (sch->limit / 8);
+#elif defined (CONFIG_RALINK_RT2880) || \
+    defined (CONFIG_RALINK_RT3352) || \
+    defined (CONFIG_RALINK_RT3052) || \
+    defined (CONFIG_RALINK_RT5350) || \
+    defined (CONFIG_RALINK_RT3883) || \
+    defined (CONFIG_RALINK_MT7620)
+	sch->limit = 2 * 1024;
+	q->flows_cnt = (sch->limit / 8);
 #else
-	q->quantum = 300;
+	sch->limit = 10 * 1024;
+	q->flows_cnt = 1024;
 #endif
+
+	q->drop_batch_size = 64;
+	q->quantum = psched_mtu(qdisc_dev(sch));
 	q->perturbation = random32();
 	INIT_LIST_HEAD(&q->new_flows);
 	INIT_LIST_HEAD(&q->old_flows);
