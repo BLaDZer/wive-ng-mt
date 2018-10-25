@@ -360,7 +360,7 @@ CHAR RTMP_GetTxPwr(
 
 	if (MaxTxPwr > CurTxPwr) {
 	    /* calculate real power constraint limit for clients - reduce client side interference */
-	    pAd->CommonCfg.PwrConstraint = (MaxTxPwr - CurTxPwr);
+	    pAd->CommonCfg.PwrConstraint = ((MaxTxPwr - CurTxPwr) / 2);
 	} else {
 	    pAd->CommonCfg.PwrConstraint = 0;
 	}

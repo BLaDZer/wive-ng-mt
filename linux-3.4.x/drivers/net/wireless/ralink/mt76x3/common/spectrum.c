@@ -358,7 +358,7 @@ CHAR RTMP_GetTxPwr(RTMP_ADAPTER *pAd, HTTRANSMIT_SETTING HTTxMode)
 
 	if (MaxTxPwr > CurTxPwr) {
 	    /* calculate real power constraint limit for clients - reduce client side interference */
-	    pAd->CommonCfg.PwrConstraint = (MaxTxPwr - CurTxPwr);
+	    pAd->CommonCfg.PwrConstraint = ((MaxTxPwr - CurTxPwr) / 2);
 	} else {
 	    pAd->CommonCfg.PwrConstraint = 0;
 	}
