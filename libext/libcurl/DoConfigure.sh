@@ -13,7 +13,7 @@ HTARGET=mipsel-linux
 
 CFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
 CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
-LDFLAGS="$BACKUPLDFLAGS -R$LIBS/lib"
+LDFLAGS="$BACKUPLDFLAGS -L$LIBS/lib"
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
