@@ -1181,7 +1181,6 @@ AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
 m4_include([m4/acx-pthread.m4])
-m4_include([m4/check-ssl.m4])
 m4_include([m4/glib-gettext.m4])
 m4_include([m4/intltool.m4])
 m4_include([m4/libtool.m4])
@@ -1190,4 +1189,3 @@ m4_include([m4/ltsugar.m4])
 m4_include([m4/ltversion.m4])
 m4_include([m4/lt~obsolete.m4])
 m4_include([m4/pkg.m4])
-m4_include([m4/zlib.m4])

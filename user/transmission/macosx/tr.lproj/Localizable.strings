@@ -1110,7 +1110,7 @@
 "Transfer Not Active" = "Aktarım Etkin Değil";
 
 /* Preferences -> toolbar item title */
-"Transfers" = "Transfers";
+"Transfers" = "Aktarımlar";
 
 /* Inspector -> Peers tab -> peers */
 "Transfers Not Active" = "Aktarımlar Etkin Değil";

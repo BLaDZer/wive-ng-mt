@@ -113,7 +113,7 @@ bool UTP_HandleICMP(const byte* buffer, size_t len, const struct sockaddr *to, s
 
 // Write bytes to the uTP socket.
 // Returns true if the socket is still writable.
-//bool UTP_Write(struct UTPSocket *socket, size_t count);
+bool UTP_Write(struct UTPSocket *socket, size_t count);
 
 // Notify the uTP socket of buffer drain
 void UTP_RBDrained(struct UTPSocket *socket);

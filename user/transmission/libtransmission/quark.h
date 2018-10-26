@@ -4,11 +4,15 @@
  * It may be used under the GNU GPL versions 2 or 3
  * or any future license endorsed by Mnemosyne LLC.
  *
- * $Id: utils.h 13667 2012-12-14 04:34:42Z jordan $
+ * $Id$
  */
 
 #ifndef TR_QUARK_H
 #define TR_QUARK_H 1
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Quarks — a 2-way association between a string and a unique integer identifier */
 typedef size_t tr_quark;
@@ -287,6 +291,8 @@ enum
   TR_KEY_rpc_authentication_required,
   TR_KEY_rpc_bind_address,
   TR_KEY_rpc_enabled,
+  TR_KEY_rpc_host_whitelist,
+  TR_KEY_rpc_host_whitelist_enabled,
   TR_KEY_rpc_password,
   TR_KEY_rpc_port,
   TR_KEY_rpc_url,
@@ -420,5 +426,12 @@ const char * tr_quark_get_string (tr_quark quark, size_t * len);
  */
 tr_quark tr_quark_new (const void * str, size_t len);
 
+/***
+****
+***/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

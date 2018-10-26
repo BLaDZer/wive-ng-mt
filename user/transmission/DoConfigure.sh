@@ -18,7 +18,10 @@ fi
 export SHELL
 
 if [ ! -f $APROOTDIR/configure ]; then
+    libtoolize -c -f -i
+    aclocal --force
     autoreconf -fi
+    autoconf --force
     sh ./autogen.sh
 fi
 if [ ! -f $APROOTDIR/Makefile.in ] || [ ! -f $APROOTDIR/missing -a ! -f $APROOTDIR/build-aux/missing ]; then
@@ -30,9 +33,10 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 ./configure $CONFOPTS \
 	    --prefix=$APROOTDIR/filesystem \
 	    --enable-shared --disable-static \
-	    --disable-cli --disable-mac --disable-nls --disable-utp \
+	    --disable-cli --disable-mac --disable-nls \
 	    --without-gtk \
 	    --enable-external-natpmp \
+	    --enable-largefile \
 	    --enable-lightweight \
 	    --with-zlib=$FIRMROOT/lib/shared/lib \
 	    --with-zlib-includes=$FIRMROOT/lib/shared/include \
@@ -42,5 +46,7 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    LIBCURL_LIBS="-L$FIRMROOT/lib/shared/lib -lcurl" \
 	    LIBEVENT_CFLAGS="-I$FIRMROOT/lib/shared/include" \
 	    LIBEVENT_LIBS="-L$FIRMROOT/lib/shared/lib -levent" \
+	    --with-crypto=openssl \
 	    --with-systemd-daemon=no \
-	    --disable-dependency-tracking
+	    --with-inotifty=yes \
+	    --with-kqueue=no

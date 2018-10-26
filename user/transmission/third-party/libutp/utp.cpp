@@ -2709,7 +2709,7 @@ bool UTP_HandleICMP(const byte* buffer, size_t len, const struct sockaddr *to, s
 
 // Write bytes to the UTP socket.
 // Returns true if the socket is still writable.
-bool UTP_Write(struct UTPSocket *conn, size_t bytes)
+bool UTP_Write(UTPSocket *conn, size_t bytes)
 {
 	assert(conn);
 
