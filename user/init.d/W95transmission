@@ -64,7 +64,7 @@ get_param() {
 	whitelist="-a $WhiteListNet"
     fi
 
-    #export variables for transmissions
+    # export variables for transmissions
     export TRANSMISSION_WEB_HOME=/share/transmission/web
     export XDG_DATA_HOME=/share/transmission/web
     export XDG_DATA_DIRS=/share/transmission/web
@@ -86,12 +86,10 @@ get_param() {
 	exit 0
     fi
 
-    #default download dir
-    if [ -e /bin/transmission-daemon ] && [ "$public" != "" ]; then
-	export TRANSMISSION_HOME="$public"/transmission
-	export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
-	$LOG "Transmission home directory set to $public and download directory is $public/downloads."
-    fi
+    # default download dir
+    export TRANSMISSION_HOME="$public"/transmission
+    export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
+    $LOG "Transmission home directory set to $public and download directory is $public/downloads."
 }
 
 case "$1" in
