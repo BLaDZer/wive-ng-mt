@@ -22,21 +22,26 @@ fi
 
 #arch options
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
-#some function direct enable
-CONFOPTS="$CONFOPTS --with-syslog --enable-largefile"
+
 #disable some function
-CONFOPTS="$CONFOPTS --disable-iprint --disable-pie --disable-cups --disable-avahi --disable-static"
-CONFOPTS="$CONFOPTS --disable-swat --disable-shared-libs --disable-relro"
+CONFOPTS="$CONFOPTS --disable-iprint --disable-pie --disable-cups --disable-avahi --disable-smbtorture4 --disable-static"
+CONFOPTS="$CONFOPTS --disable-swat --disable-shared-libs --disable-relro --disable-fam"
 CONFOPTS="$CONFOPTS --disable-developer --disable-krb5developer --disable-debug"
 CONFOPTS="$CONFOPTS --without-ads --without-krb5 --without-ldap --without-winbind --without-pam"
 CONFOPTS="$CONFOPTS --without-sys-quotas --without-quotas --without-cluster-support"
-CONFOPTS="$CONFOPTS --without-acl-support --without-automount --with-sendfile-support"
+CONFOPTS="$CONFOPTS --without-acl-support --without-automount --without-dnsupdate --without-sys-quotas"
 CONFOPTS="$CONFOPTS --without-libaddns --without-libnetapi --without-libsmbclient --without-libsmbsharemodes"
+CONFOPTS="$CONFOPTS --without-utmp --without-dmapi"
 CONFOPTS="$CONFOPTS --without-libtdb --disable-external-libtdb"
 CONFOPTS="$CONFOPTS --without-libtalloc --disable-external-libtalloc"
 CONFOPTS="$CONFOPTS --without-libtevent --disable-external-libtevent"
+
+#some function direct enable
+CONFOPTS="$CONFOPTS --with-syslog --enable-largefile"
 CONFOPTS="$CONFOPTS --with-included-iniparser --with-included-popt"
-CONFOPTS="$CONFOPTS --with-static-modules=nss_info_template,idmap_nss"
+CONFOPTS="$CONFOPTS --with-sendfile-support --with-libiconv=$FIRMROOT/lib/shared/lib"
+
+#build some fuctions as shared lib (skip install)
 CONFOPTS="$CONFOPTS --with-shared-modules=pdb_tdbsam,pdb_wbc_sam,auth_winbind,auth_wbc,auth_domain"
 
 #path options
