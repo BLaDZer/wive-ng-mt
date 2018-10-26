@@ -1760,7 +1760,7 @@ int dnssec_validate_reply(time_t now, struct dns_header *header, size_t plen, ch
 
   unsigned char *ans_start, *p1, *p2;
   int type1, class1, rdlen1 = 0, type2, class2, rdlen2, qclass, qtype, targetidx;
-  int i, j, rc;
+  int i, j, rc = STAT_INSECURE;
   int secure = STAT_SECURE;
 
   /* extend rr_status if necessary */
