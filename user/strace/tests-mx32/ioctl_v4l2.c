@@ -34,11 +34,11 @@
 #include <linux/types.h>
 #include <linux/videodev2.h>
 
-# define cc0(arg) ((unsigned int) (unsigned char) (arg))
-# define cc1(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 8))
-# define cc2(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 16))
-# define cc3(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 24))
-# define fourcc(a0, a1, a2, a3) \
+#define cc0(arg) ((unsigned int) (unsigned char) (arg))
+#define cc1(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 8))
+#define cc2(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 16))
+#define cc3(arg) ((unsigned int) (unsigned char) ((unsigned int) (arg) >> 24))
+#define fourcc(a0, a1, a2, a3) \
 	((unsigned int)(a0) | \
 	 ((unsigned int)(a1) << 8) | \
 	 ((unsigned int)(a2) << 16) | \
@@ -62,7 +62,7 @@ init_v4l2_format(struct v4l2_format *const f,
 		f->fmt.pix.width = 0x657b8160;
 		f->fmt.pix.height = 0x951c0047;
 		if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-		f->fmt.pix.pixelformat = magic;
+			f->fmt.pix.pixelformat = magic;
 		else
 			f->fmt.pix.pixelformat = pf_magic;
 		f->fmt.pix.field = V4L2_FIELD_NONE;
@@ -79,7 +79,7 @@ init_v4l2_format(struct v4l2_format *const f,
 		f->fmt.pix_mp.width = 0x1f3b774b;
 		f->fmt.pix_mp.height = 0xab96a8d6;
 		if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-		f->fmt.pix_mp.pixelformat = magic;
+			f->fmt.pix_mp.pixelformat = magic;
 		else
 			f->fmt.pix_mp.pixelformat = pf_magic;
 		f->fmt.pix_mp.field = V4L2_FIELD_NONE;
@@ -129,7 +129,7 @@ init_v4l2_format(struct v4l2_format *const f,
 		f->fmt.vbi.offset = 0x055b3a09;
 		f->fmt.vbi.samples_per_line = 0xf176d436;
 		if (buf_type == V4L2_BUF_TYPE_VBI_CAPTURE)
-		f->fmt.vbi.sample_format = magic;
+			f->fmt.vbi.sample_format = magic;
 		else
 			f->fmt.vbi.sample_format = pf_magic;
 		f->fmt.vbi.start[0] = 0x9858e2eb;
@@ -165,9 +165,9 @@ init_v4l2_format(struct v4l2_format *const f,
 #if HAVE_DECL_V4L2_BUF_TYPE_SDR_CAPTURE
 	case V4L2_BUF_TYPE_SDR_CAPTURE:
 		f->fmt.sdr.pixelformat = magic;
-#ifdef HAVE_STRUCT_V4L2_SDR_FORMAT_BUFFERSIZE
+# ifdef HAVE_STRUCT_V4L2_SDR_FORMAT_BUFFERSIZE
 		f->fmt.sdr.buffersize = 0x25afabfb;
-#endif
+# endif
 		break;
 #endif
 	}
@@ -220,7 +220,7 @@ dprint_ioctl_v4l2(struct v4l2_format *const f,
 
 		if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
 			printf("v4l2_fourcc('\\x%x', '\\x%x', '\\x%x', '\\x%x')",
-		       cc0(magic), cc1(magic), cc2(magic), cc3(magic));
+			       cc0(magic), cc1(magic), cc2(magic), cc3(magic));
 		else
 			printf("v4l2_fourcc('%c', '%c', '%c', '%c') "
 			       "/* V4L2_PIX_FMT_SPCA508 */",
@@ -842,6 +842,21 @@ main(void)
 	printf("ioctl(-1, VIDIOC_S_EXT_CTRLS, {ctrl_class=V4L2_CTRL_CLASS_USER"
 	       ", count=%u}) = -1 EBADF (%m)\n", p_ext_controls->count);
 
+	p_ext_controls->ctrl_class = 0x00a30000;
+	p_ext_controls->count = magic;
+	ioctl(-1, VIDIOC_S_EXT_CTRLS, p_ext_controls);
+	printf("ioctl(-1, VIDIOC_S_EXT_CTRLS, {ctrl_class=V4L2_CTRL_CLASS_DETECT"
+	       ", count=%u, controls=%p}) = -1 EBADF (%m)\n",
+	       p_ext_controls->count, p_ext_controls->controls);
+
+	p_ext_controls->ctrl_class = 0x00a40000;
+	p_ext_controls->count = magic;
+	ioctl(-1, VIDIOC_S_EXT_CTRLS, p_ext_controls);
+	printf("ioctl(-1, VIDIOC_S_EXT_CTRLS"
+	       ", {ctrl_class=0xa40000 /* V4L2_CTRL_CLASS_??? */"
+	       ", count=%u, controls=%p}) = -1 EBADF (%m)\n",
+	       p_ext_controls->count, p_ext_controls->controls);
+
 	p_ext_controls->ctrl_class = V4L2_CTRL_CLASS_MPEG;
 	p_ext_controls->count = magic;
 	ioctl(-1, VIDIOC_S_EXT_CTRLS, p_ext_controls);
@@ -883,7 +898,7 @@ main(void)
 	       ", {ctrl_class=V4L2_CTRL_CLASS_MPEG, count=%u, controls="
 	       "[{id=V4L2_CID_BRIGHTNESS, size=0, value=%d, value64=%lld}"
 	       ", {id=V4L2_CID_CONTRAST, size=2, string=\"\\377\\377\"}"
-	       ", %p]}) = -1 EBADF (%m)\n",
+	       ", ... /* %p */]}) = -1 EBADF (%m)\n",
 	       p_ext_controls->count,
 	       p_ext_controls->controls[0].value,
 	       (long long) p_ext_controls->controls[0].value64,

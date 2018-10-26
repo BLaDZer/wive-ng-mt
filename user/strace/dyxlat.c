@@ -92,7 +92,7 @@ dyxlat_add_pair(struct dyxlat *const dyxlat, const uint64_t val,
 
 	if (dyxlat->used >= dyxlat->allocated)
 		dyxlat->xlat = xgrowarray(dyxlat->xlat, &dyxlat->allocated,
-					     sizeof(struct xlat));
+					  sizeof(struct xlat));
 
 	dyxlat->xlat[dyxlat->used - 1].val = val;
 	dyxlat->xlat[dyxlat->used - 1].str = xstrndup(str, len);

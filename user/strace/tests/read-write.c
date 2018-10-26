@@ -133,12 +133,12 @@ test_dump(const unsigned int len, bool err_desc)
 
 	tprintf("%s(%d, ", "read", in_fd);
 	if (!err_desc)
-	print_hex(buf, len);
+		print_hex(buf, len);
 	else
 		tprintf("%p", buf);
 	tprintf(", %d) = %s\n", len, rc_str);
 	if (!err_desc)
-	dump_str(buf, len);
+		dump_str(buf, len);
 
 	unsigned int i;
 	for (i = 0; i < len; ++i)

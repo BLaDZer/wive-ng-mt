@@ -29,9 +29,9 @@
 #ifndef STRACE_TESTS_H
 #define STRACE_TESTS_H
 
-# ifdef HAVE_CONFIG_H
-#  include "config.h"
-# endif
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #ifdef TESTS_SIZEOF_KERNEL_LONG_T
 # undef SIZEOF_KERNEL_LONG_T
@@ -44,10 +44,10 @@
 #endif
 
 #include <stdbool.h>
-# include <sys/types.h>
-# include "kernel_types.h"
-# include "gcc_compat.h"
-# include "macros.h"
+#include <sys/types.h>
+#include "kernel_types.h"
+#include "gcc_compat.h"
+#include "macros.h"
 
 /*
  * The printf-like function to use in header files
@@ -60,6 +60,14 @@
 /* Tests of "strace -v" are expected to define VERBOSE to 1. */
 #ifndef VERBOSE
 # define VERBOSE 0
+#endif
+
+/* xlat verbosity defaults */
+#ifndef XLAT_RAW
+# define XLAT_RAW 0
+#endif
+#ifndef XLAT_VERBOSE
+# define XLAT_VERBOSE 0
 #endif
 
 #ifndef DEFAULT_STRLEN
@@ -108,6 +116,9 @@ void *tail_alloc(const size_t)
 /* Allocate memory using tail_alloc, then memcpy. */
 void *tail_memdup(const void *, const size_t)
 	ATTRIBUTE_MALLOC ATTRIBUTE_ALLOC_SIZE((2));
+
+#define midtail_alloc(after_, before_) \
+	((void *) ((char *) tail_alloc(((before_) + (after_))) + (before_)))
 
 /*
  * Allocate an object of the specified type at the end
@@ -162,6 +173,12 @@ void print_quoted_string(const char *);
  * in a quoted form.
  */
 void print_quoted_cstring(const char *str, size_t size);
+
+/*
+ * Print a NUL-terminated string `str' of length up to `size'
+ * in a quoted form.
+ */
+void print_quoted_stringn(const char *str, size_t size);
 
 /* Print memory in a quoted form with optional escape characters. */
 void print_quoted_memory_ex(const void *, size_t, bool quote,
@@ -267,19 +284,18 @@ f8ill_ptr_to_kulong(const void *const ptr)
 	 sizeof(v) == sizeof(long) ? (long long) (long) (v) : \
 	 (long long) (v))
 
-# define SKIP_MAIN_UNDEFINED(arg) \
+#define SKIP_MAIN_UNDEFINED(arg) \
 	int main(void) { error_msg_and_skip("undefined: %s", arg); }
 
-# if WORDS_BIGENDIAN
-#  define LL_PAIR(HI, LO) (HI), (LO)
-# else
-#  define LL_PAIR(HI, LO) (LO), (HI)
-# endif
-# define LL_VAL_TO_PAIR(llval) LL_PAIR((long) ((llval) >> 32), (long) (llval))
+#if WORDS_BIGENDIAN
+# define LL_PAIR(HI, LO) (HI), (LO)
+#else
+# define LL_PAIR(HI, LO) (LO), (HI)
+#endif
+#define LL_VAL_TO_PAIR(llval) LL_PAIR((long) ((llval) >> 32), (long) (llval))
 
-# define _STR(_arg) #_arg
-# define ARG_STR(_arg) (_arg), #_arg
-# define ARG_ULL_STR(_arg) _arg##ULL, #_arg
+#define ARG_STR(_arg) (_arg), #_arg
+#define ARG_ULL_STR(_arg) _arg##ULL, #_arg
 
 /*
  * Assign an object of type DEST_TYPE at address DEST_ADDR

@@ -240,7 +240,7 @@ sub handle_trace {
 	my ($basename) = $filename =~ m/([^\/]*)$/;
 	if ($basename ne $$argv[0]) {
 	    $$argv[0] = "$basename($$argv[0])";
-        }
+	}
 	my $seq = $pr{$pid_fqname}{seq};
 	$seq = [] if not defined $seq;
 
@@ -330,11 +330,11 @@ sub display_pid_trace {
 	    }
 	} elsif ($$elem[0] eq 'FORK') {
 	    if ($i == 1) {
-                if ($lead =~ /-$/) {
+		if ($lead =~ /-$/) {
 		    display_pid_trace($$elem[1], "$lead--+--");
-                } else {
+		} else {
 		    display_pid_trace($$elem[1], "$lead  +--");
-                }
+		}
 	    } elsif ($i == @seq) {
 		display_pid_trace($$elem[1], "$lead  `--");
 	    } else {

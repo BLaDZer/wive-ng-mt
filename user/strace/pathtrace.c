@@ -89,7 +89,7 @@ storepath(const char *path, struct path_set *set)
 	if (set->num_selected >= set->size)
 		set->paths_selected =
 			xgrowarray(set->paths_selected, &set->size,
-					    sizeof(set->paths_selected[0]));
+				   sizeof(set->paths_selected[0]));
 
 	set->paths_selected[set->num_selected++] = path;
 }
@@ -253,7 +253,7 @@ pathtrace_match_set(struct tcb *tcp, struct path_set *set)
 	case SEN_old_mmap:
 # if HAVE_ARCH_OLD_MMAP_PGOFF
 	case SEN_old_mmap_pgoff:
-#endif
+# endif
 	{
 		kernel_ulong_t *args =
 			fetch_indirect_syscall_args(tcp, tcp->u_arg[0], 6);
@@ -300,7 +300,7 @@ pathtrace_match_set(struct tcb *tcp, struct path_set *set)
 			fetch_indirect_syscall_args(tcp, tcp->u_arg[0], 5);
 
 		return args && match_xselect_args(tcp, args, set);
-				}
+	}
 #endif
 	case SEN_pselect6:
 	case SEN_select:

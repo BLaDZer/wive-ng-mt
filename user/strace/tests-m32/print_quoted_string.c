@@ -33,6 +33,18 @@ print_quoted_cstring(const char *instr, const size_t size)
 	}
 }
 
+void
+print_quoted_stringn(const char *instr, const size_t size)
+{
+	const size_t len = strnlen(instr, size);
+	if (len < size) {
+		print_quoted_memory(instr, len);
+	} else {
+		print_quoted_memory(instr, size);
+		printf("...");
+	}
+}
+
 static void
 print_octal(unsigned char c, char next)
 {
@@ -64,7 +76,7 @@ print_quoted_memory_ex(const void *const instr, const size_t len,
 	size_t i;
 
 	if (quote)
-	putchar('"');
+		putchar('"');
 
 	for (i = 0; i < len; ++i) {
 		const int c = str[i];
@@ -94,7 +106,7 @@ print_quoted_memory_ex(const void *const instr, const size_t len,
 				if (c >= ' ' && c <= 0x7e &&
 				    !(escape_chars && strchr(escape_chars, c))) {
 					putchar(c);
-					} else {
+				} else {
 					print_octal(c,
 						i < (len - 1) ? str[i + 1] : 0);
 				}
@@ -104,7 +116,7 @@ print_quoted_memory_ex(const void *const instr, const size_t len,
 	}
 
 	if (quote)
-	putchar('"');
+		putchar('"');
 }
 
 void

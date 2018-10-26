@@ -68,8 +68,8 @@ print_user_desc(struct tcb *const tcp, const kernel_ulong_t addr,
 		break;
 
 	case USER_DESC_BOTH:
-	if (umove_or_printaddr(tcp, addr, &desc))
-		return;
+		if (umove_or_printaddr(tcp, addr, &desc))
+			return;
 
 		break;
 	}
@@ -136,11 +136,11 @@ SYS_FUNC(modify_ldt)
 {
 	if (entering(tcp)) {
 		tprintf("%d, ", (int) tcp->u_arg[0]);
-	if (tcp->u_arg[2] != sizeof(struct user_desc))
-		printaddr(tcp->u_arg[1]);
-	else
+		if (tcp->u_arg[2] != sizeof(struct user_desc))
+			printaddr(tcp->u_arg[1]);
+		else
 			print_user_desc(tcp, tcp->u_arg[1], USER_DESC_BOTH);
-	tprintf(", %" PRI_klu, tcp->u_arg[2]);
+		tprintf(", %" PRI_klu, tcp->u_arg[2]);
 
 		return 0;
 	}

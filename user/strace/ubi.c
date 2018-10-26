@@ -32,8 +32,8 @@
 # include <linux/ioctl.h>
 # include <mtd/ubi-user.h>
 
-#include "xlat/ubi_volume_types.h"
-#include "xlat/ubi_volume_props.h"
+# include "xlat/ubi_volume_types.h"
+# include "xlat/ubi_volume_props.h"
 
 int
 ubi_ioctl(struct tcb *const tcp, const unsigned int code,
@@ -178,12 +178,12 @@ ubi_ioctl(struct tcb *const tcp, const unsigned int code,
 		printnum_int(tcp, arg, "%d");
 		break;
 
-#ifdef UBI_IOCVOLCRBLK
+# ifdef UBI_IOCVOLCRBLK
 	case UBI_IOCVOLCRBLK:
-#endif
-#ifdef UBI_IOCVOLRMBLK
+# endif
+# ifdef UBI_IOCVOLRMBLK
 	case UBI_IOCVOLRMBLK:
-#endif
+# endif
 		/* no arguments */
 		break;
 

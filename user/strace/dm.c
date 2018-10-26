@@ -237,7 +237,7 @@ dm_decode_dm_target_deps(struct tcb *const tcp, const kernel_ulong_t addr,
 
 	tprints(", deps=");
 	print_array(tcp, addr + offset_end, s.count, &dev_buf, sizeof(dev_buf),
-		    umoven_or_printaddr, dm_print_dev, NULL);
+		    tfetch_mem, dm_print_dev, NULL);
 
 	tprints("}");
 
@@ -291,7 +291,7 @@ dm_decode_dm_name_list(struct tcb *const tcp, const kernel_ulong_t addr,
 		tprints(", name=");
 		rc = printstr_ex(tcp, addr + offset_end,
 				 ioc->data_size - offset_end,
-			    QUOTE_0_TERMINATED);
+				 QUOTE_0_TERMINATED);
 
 		/*
 		 * In Linux v4.13-rc1~137^2~13 it has been decided to cram in

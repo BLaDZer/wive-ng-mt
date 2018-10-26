@@ -64,17 +64,25 @@
  */
 static bool
 fetch_nlmsghdr(struct tcb *const tcp, struct nlmsghdr *const nlmsghdr,
-	       const kernel_ulong_t addr, const kernel_ulong_t len)
+	       const kernel_ulong_t addr, const kernel_ulong_t len,
+	       const bool in_array)
 {
 	if (len < sizeof(struct nlmsghdr)) {
 		printstr_ex(tcp, addr, len, QUOTE_FORCE_HEX);
 		return false;
 	}
 
-	if (umove_or_printaddr(tcp, addr, nlmsghdr))
-		return false;
+	if (tfetch_obj(tcp, addr, nlmsghdr))
+		return true;
 
-	return true;
+	if (in_array) {
+		tprints("...");
+		printaddr_comment(addr);
+	} else {
+		printaddr(addr);
+	}
+
+	return false;
 }
 
 static int
@@ -161,7 +169,7 @@ decode_nlmsg_type_netfilter(struct tcb *tcp, const struct xlat *const xlat,
 	/* Reserved control nfnetlink messages first. */
 	const char *const text = xlookup(nl_netfilter_msg_types, type);
 	if (text) {
-		tprints(text);
+		print_xlat_ex(type, text, XLAT_STYLE_DEFAULT);
 		return;
 	}
 
@@ -240,13 +248,13 @@ decode_nlmsg_type(struct tcb *tcp, const uint16_t type,
 static const struct xlat *
 decode_nlmsg_flags_crypto(const uint16_t type)
 {
-		switch (type) {
-		case CRYPTO_MSG_NEWALG:
+	switch (type) {
+	case CRYPTO_MSG_NEWALG:
 		return netlink_new_flags;
 	case CRYPTO_MSG_DELALG:
 	case CRYPTO_MSG_DELRNG:
 		return netlink_delete_flags;
-		case CRYPTO_MSG_GETALG:
+	case CRYPTO_MSG_GETALG:
 		return netlink_get_flags;
 	}
 
@@ -351,7 +359,7 @@ decode_nlmsg_flags_netfilter(const uint16_t type)
 			return netlink_get_flags;
 		}
 		break;
-		}
+	}
 
 	return NULL;
 }
@@ -362,14 +370,14 @@ decode_nlmsg_flags_route(const uint16_t type)
 	/* RTM_DELACTION uses NLM_F_ROOT flags */
 	if (type == RTM_DELACTION)
 		return netlink_get_flags;
-		switch (type & 3) {
-		case  0:
+	switch (type & 3) {
+	case  0:
 		return netlink_new_flags;
 	case  1:
 		return netlink_delete_flags;
-		case  2:
+	case  2:
 		return netlink_get_flags;
-		}
+	}
 
 	return NULL;
 }
@@ -383,26 +391,26 @@ decode_nlmsg_flags_sock_diag(const uint16_t type)
 static const struct xlat *
 decode_nlmsg_flags_xfrm(const uint16_t type)
 {
-		switch (type) {
-		case XFRM_MSG_NEWSA:
-		case XFRM_MSG_NEWPOLICY:
-		case XFRM_MSG_NEWAE:
-		case XFRM_MSG_NEWSADINFO:
-		case XFRM_MSG_NEWSPDINFO:
+	switch (type) {
+	case XFRM_MSG_NEWSA:
+	case XFRM_MSG_NEWPOLICY:
+	case XFRM_MSG_NEWAE:
+	case XFRM_MSG_NEWSADINFO:
+	case XFRM_MSG_NEWSPDINFO:
 		return netlink_new_flags;
 	case XFRM_MSG_DELSA:
 	case XFRM_MSG_DELPOLICY:
 		return netlink_delete_flags;
-		case XFRM_MSG_GETSA:
-		case XFRM_MSG_GETPOLICY:
-		case XFRM_MSG_GETAE:
-		case XFRM_MSG_GETSADINFO:
-		case XFRM_MSG_GETSPDINFO:
+	case XFRM_MSG_GETSA:
+	case XFRM_MSG_GETPOLICY:
+	case XFRM_MSG_GETAE:
+	case XFRM_MSG_GETSADINFO:
+	case XFRM_MSG_GETSPDINFO:
 		return netlink_get_flags;
-		}
+	}
 
 	return NULL;
-	}
+}
 
 typedef const struct xlat *(*nlmsg_flags_decoder_t)(const uint16_t type);
 
@@ -430,7 +438,8 @@ decode_nlmsg_flags(const uint16_t flags, const uint16_t type,
 	} else if (family < ARRAY_SIZE(nlmsg_flags) && nlmsg_flags[family])
 		table = nlmsg_flags[family](type);
 
-	printflags_ex(flags, "NLM_F_???", netlink_flags, table, NULL);
+	printflags_ex(flags, "NLM_F_???", XLAT_STYLE_ABBREV,
+		      netlink_flags, table, NULL);
 }
 
 static void
@@ -472,7 +481,7 @@ decode_nlmsgerr_attr_cookie(struct tcb *const tcp,
 	const size_t nmemb = len / sizeof(cookie);
 
 	print_array(tcp, addr, nmemb, &cookie, sizeof(cookie),
-		    umoven_or_printaddr, print_cookie, 0);
+		    tfetch_mem, print_cookie, 0);
 
 	return true;
 }
@@ -521,7 +530,7 @@ decode_nlmsgerr(struct tcb *const tcp,
 
 	if (len) {
 		tprints(", msg=");
-		if (fetch_nlmsghdr(tcp, &err.msg, addr, len)) {
+		if (fetch_nlmsghdr(tcp, &err.msg, addr, len, false)) {
 			unsigned int payload =
 				capped ? sizeof(err.msg) : err.msg.nlmsg_len;
 			if (payload > len)
@@ -606,8 +615,7 @@ decode_nlmsghdr_with_payload(struct tcb *const tcp,
 			     const kernel_ulong_t addr,
 			     const kernel_ulong_t len)
 {
-	const unsigned int nlmsg_len =
-		nlmsghdr->nlmsg_len > len ? len : nlmsghdr->nlmsg_len;
+	const unsigned int nlmsg_len = MIN(nlmsghdr->nlmsg_len, len);
 
 	if (nlmsg_len > NLMSG_HDRLEN)
 		tprints("{");
@@ -631,15 +639,16 @@ decode_netlink(struct tcb *const tcp,
 	const int family = get_fd_nl_family(tcp, fd);
 
 	if (family == NETLINK_KOBJECT_UEVENT) {
-		printstrn(tcp, addr, len);
+		decode_netlink_kobject_uevent(tcp, addr, len);
 		return;
 	}
 
 	struct nlmsghdr nlmsghdr;
-	bool print_array = false;
+	bool is_array = false;
 	unsigned int elt;
 
-	for (elt = 0; fetch_nlmsghdr(tcp, &nlmsghdr, addr, len); elt++) {
+	for (elt = 0; fetch_nlmsghdr(tcp, &nlmsghdr, addr, len, is_array);
+	     elt++) {
 		if (abbrev(tcp) && elt == max_strlen) {
 			tprints("...");
 			break;
@@ -656,9 +665,9 @@ decode_netlink(struct tcb *const tcp,
 				next_addr = addr + nlmsg_len;
 		}
 
-		if (!print_array && next_addr) {
+		if (!is_array && next_addr) {
 			tprints("[");
-			print_array = true;
+			is_array = true;
 		}
 
 		decode_nlmsghdr_with_payload(tcp, fd, family,
@@ -672,7 +681,7 @@ decode_netlink(struct tcb *const tcp,
 		len = next_len;
 	}
 
-	if (print_array) {
+	if (is_array) {
 		tprints("]");
 	}
 }

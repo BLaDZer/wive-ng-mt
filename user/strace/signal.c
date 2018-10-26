@@ -54,7 +54,7 @@
 #ifdef HAVE_ARCH_SA_RESTORER
 # define HAVE_SA_RESTORER HAVE_ARCH_SA_RESTORER
 #else /* !HAVE_ARCH_SA_RESTORER */
-#ifdef SA_RESTORER
+# ifdef SA_RESTORER
 #  define HAVE_SA_RESTORER 1
 # else
 #  define HAVE_SA_RESTORER 0
@@ -117,7 +117,7 @@ print_sa_handler(kernel_ulong_t handler)
 	const char *sa_handler_str = get_sa_handler_str(handler);
 
 	if (sa_handler_str)
-		tprints(sa_handler_str);
+		print_xlat_ex(handler, sa_handler_str, XLAT_STYLE_DEFAULT);
 	else
 		printaddr(handler);
 }

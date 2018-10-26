@@ -80,7 +80,7 @@ SYS_FUNC(kcmp)
 			tprints(", ");
 
 			if (umove_or_printaddr(tcp, idx2, &slot))
-			break;
+				break;
 
 			PRINT_FIELD_PIDFD("{",  slot, efd, tcp, pid2);
 			PRINT_FIELD_PIDFD(", ", slot, tfd, tcp, pid2);

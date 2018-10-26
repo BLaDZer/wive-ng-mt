@@ -4306,36 +4306,37 @@
 7) libpcap: update to 1.9.0 version.<br>
 8) libcurl: update to 7.61.1 version.<br>
 9) libiconv: update to 1.15 version.<br>
-10) dnsmasq: up to 2.80 version.<br>
-11) nginx: up to 1.14.0 version.<br>
-12) coovachilli: up to 1.4 from git (commit e433b7).<br>
-13) xl2tpd: update to 1.3.12 version (commit bb7ca1).<br>
-14) pppd: sync some patches from new git of project (commit f6be15).<br>
-15) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
-16) init.d: only once flush conntrack and route cahce at wlan if down.<br>
-17) webui/cli: fix system platform info.<br>
-18) webui: C code review, cleanup and fixup.<br>
-19) webui: fix some options permissions check.<br>
-20) webui: add check dhcp leases ip range.<br>
-21) webui: add mobile domain and keyholder to webui.<br>
-22) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
-23) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
-24) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-25) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
-26) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
-27) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
-28) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-29) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-30) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
-31) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-32) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-33) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-34) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-35) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-36) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-37) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-38) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-39) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-40) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+10) strace: update to 4.24 version.<br>
+11) dnsmasq: up to 2.80 version.<br>
+12) nginx: up to 1.14.0 version.<br>
+13) coovachilli: up to 1.4 from git (commit e433b7).<br>
+14) xl2tpd: update to 1.3.12 version (commit bb7ca1).<br>
+15) pppd: sync some patches from new git of project (commit f6be15).<br>
+16) xl2tp: fix tx/rx bps report for 1Gb devices.<br>
+17) init.d: only once flush conntrack and route cahce at wlan if down.<br>
+18) webui/cli: fix system platform info.<br>
+19) webui: C code review, cleanup and fixup.<br>
+20) webui: fix some options permissions check.<br>
+21) webui: add check dhcp leases ip range.<br>
+22) webui: add mobile domain and keyholder to webui.<br>
+23) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+24) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
+25) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+26) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
+27) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
+28) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
+29) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+30) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+31) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
+32) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+33) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+34) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+35) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+36) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+37) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+38) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+39) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+40) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+41) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
 <br>
 <br>
