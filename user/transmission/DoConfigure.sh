@@ -38,8 +38,6 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    --enable-external-natpmp \
 	    --enable-largefile \
 	    --enable-lightweight \
-	    --with-zlib=$FIRMROOT/lib/shared/lib \
-	    --with-zlib-includes=$FIRMROOT/lib/shared/include \
 	    OPENSSL_CFLAGS="-I$FIRMROOT/lib/shared/include" \
 	    OPENSSL_LIBS="-L$FIRMROOT/lib/shared/lib -lcrypto -lssl" \
 	    LIBCURL_CFLAGS="-I$FIRMROOT/lib/shared/include" \
@@ -47,6 +45,6 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    LIBEVENT_CFLAGS="-I$FIRMROOT/lib/shared/include" \
 	    LIBEVENT_LIBS="-L$FIRMROOT/lib/shared/lib -levent" \
 	    --with-crypto=openssl \
+	    --with-inotify=yes \
 	    --with-systemd-daemon=no \
-	    --with-inotifty=yes \
 	    --with-kqueue=no
