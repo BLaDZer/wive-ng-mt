@@ -15,10 +15,7 @@ wait_for_close() {
     pid=`pidof transmission-daemon`
     if [ "$pid" != "" ]; then
         $LOG "Stop transmission daemon."
-        killall -q transmission-daemon
-        # wait one second and reread pid
-        sleep 1
-	pid=`pidof transmission-daemon`
+	killall -q transmission-daemon
         #wait before save files and connections stop
         count=0
         while [ "$pid" != "" ] && [ "$count" != "15" ]; do
@@ -26,7 +23,7 @@ wait_for_close() {
 	    count="$(($count+1))"
 	    pid=`pidof transmission-daemon`
 	done
-	#kill if not stopped
+	#kill by if not stopped
 	killall -q -SIGKILL transmission-daemon
     fi
 }
@@ -38,12 +35,6 @@ start() {
 
 	# if need kill transmission-daemon
 	wait_for_close
-
-	# get mounted parts for public (last mounted)
-	public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
-	if [ "$public" = "" ]; then
-	    exit 0
-	fi
 
 	$LOG "Start transmission daemon."
 	mkdir -p $TRANSMISSION_HOME
@@ -60,7 +51,7 @@ stop() {
 get_param() {
     eval `nvram_buf_get 2860 TransmissionEnabled TransRPCPort TransAuthor TransInPort TransLogin TransPass`
 
-    # autorisation mode    
+    # auth mode
     if [ "$TransAuthor" = "1" ]; then
 	authory="-t -u $TransLogin -v $TransPass"
     else
@@ -78,13 +69,18 @@ get_param() {
     export XDG_DATA_HOME=/share/transmission/web
     export XDG_DATA_DIRS=/share/transmission/web
 
+    # get mounted parts for public (last mounted)
+    public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
+
     #default download dir
     if [ -e /bin/transmission-daemon ] && [ "$public" != "" ]; then
 	export TRANSMISSION_HOME="$public"/transmission
+	export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
+	$LOG "Transmission home directory set to $public and download directory is $public/downloads."
     else
-	export TRANSMISSION_HOME="/media/sda1/transmission"
+	$LOG "Not any disk connected."
+	exit 0
     fi
-    export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
 }
 
 case "$1" in
