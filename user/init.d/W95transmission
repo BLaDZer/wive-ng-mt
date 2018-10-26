@@ -49,7 +49,7 @@ stop() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 TransmissionEnabled TransRPCPort TransAuthor TransInPort TransLogin TransPass`
+    eval `nvram_buf_get 2860 TransmissionEnabled TransRPCPort TransAuthor TransInPort TransLogin TransPass TransDir`
 
     # auth mode
     if [ "$TransAuthor" = "1" ]; then
@@ -71,15 +71,26 @@ get_param() {
 
     # get mounted parts for public (last mounted)
     public=`df -h | grep -E "/dev/sd.*media" | awk {' print $6 '} | tail -qn1`
+    if [ "$public" = "" ]; then
+	$LOG "Not any disk connected."
+	exit 0
+    fi
+
+    # replace path to public with /media/$TransDir selected by user
+    if [ "$TransDir" != "" ]; then
+	public="/media/${TransDir}"
+    fi
+
+    if [ ! -e $public ]; then
+	$LOG "Directory for transmission downloads not correct or not exist $public."
+	exit 0
+    fi
 
     #default download dir
     if [ -e /bin/transmission-daemon ] && [ "$public" != "" ]; then
 	export TRANSMISSION_HOME="$public"/transmission
 	export TRANSMISSION_DOWNLOADS="$TRANSMISSION_HOME"/downloads
 	$LOG "Transmission home directory set to $public and download directory is $public/downloads."
-    else
-	$LOG "Not any disk connected."
-	exit 0
     fi
 }
 
