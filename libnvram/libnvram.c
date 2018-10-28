@@ -994,8 +994,11 @@ int gen_wifi_config(int mode, int genmode)
 	    FPRINT_DAT(Channel);
 	    FPRINT_DAT(BasicRate);
 	    FPRINT_DAT(SSID1);
-	    FPRINT_DAT(AutoChannelSkipList);
 	    FPRINT_DAT(ACSCheckTime);
+	    FPRINT_DAT(AutoChannelSkipList);
+#ifndef CONFIG_MT7615_AP_DBDC_MODE /* in dbdc only one variable for bgrscan skip, split for future */
+	    FPRINT_DAT(BgndScanSkipCh);
+#endif
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
 #else
@@ -1008,9 +1011,10 @@ int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "TxPower=%s\n", nvram_get(mode, "TxPowerINIC"));
 	    fprintf(fp, "Channel=%s\n", nvram_get(mode, "ChannelINIC"));
 	    fprintf(fp, "BasicRate=%s\n", nvram_get(mode, "BasicRateINIC"));
+	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
 	    fprintf(fp, "SSID1=%s\n", nvram_get(mode, "SSID1INIC"));
 	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
-	    fprintf(fp, "ACSCheckTime=%s\n", nvram_get(mode, "ACSCheckTimeINIC"));
+	    fprintf(fp, "BgndScanSkipCh=%s\n", nvram_get(mode, "BgndScanSkipChINIC"));
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	    fprintf(fp, "AutoChannelSelect=%d\n", resultalg);
 #else
@@ -1137,7 +1141,7 @@ int gen_wifi_config(int mode, int genmode)
 	    fprintf(fp, "HT_BW=%s\n", nvram_get(mode, "HT_BWINIC"));
 	else
 #endif
-	    FPRINT_DAT(HT_BW);
+	FPRINT_DAT(HT_BW);
 	FPRINT_DAT(HT_HTC);
 	FPRINT_DAT(HT_RDG);
 	FPRINT_DAT(HT_OpMode);
@@ -1412,21 +1416,11 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(RED_Enable);
 	FPRINT_DAT(EDCCAEnable);
 	FPRINT_DAT(VHT_Sec80_Channel);
+	FPRINT_DAT(ChannelGrp);
 #ifdef CONFIG_MT7615_AP_DBDC_MODE
 	FPRINT_DAT(DBDC_MODE);
 	FPRINT_DAT(ApCliWirelessMode);
 	FPRINT_DAT(ApCliNum);
-#endif
-#ifdef CONFIG_MT7615_AP_BACKGROUND_SCAN_SUPPORT
-#ifndef CONFIG_KERNEL_NVRAM_SPLIT_INIC
-	if (!inic) {
-	    FPRINT_DAT(BgndScanSkipCh);
-	} else {
-	    fprintf(fp, "AutoChannelSkipList=%s\n", nvram_get(mode, "AutoChannelSkipListINIC"));
-	}
-#else
-	FPRINT_DAT(BgndScanSkipCh);
-#endif
 #endif
 #ifdef CONFIG_MT7615_AP_VOW_SUPPORT
 	FPRINT_DAT(VOW_Airtime_Ctrl_En);
