@@ -4320,30 +4320,35 @@
 21) init.d: add VlanUntagIsolate var for isolate root LAN interface from bridged interfaces.<br>
 22) webui/cli: fix system platform info.<br>
 23) webui: C code review, cleanup and fixup.<br>
-24) webui: fix some options permissions check.<br>
-25) webui: add check dhcp leases ip range.<br>
-26) webui: add mobile domain and keyholder to webui.<br>
-27) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
-28) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
-29) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-30) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
-31) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
-32) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
-33) kernel: net: arp: honour gratuitous ARP _replies_<br>
-34) kernel: net: arp: decompose is_garp logic into a separate function.<br>
-35) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
-36) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-37) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-38) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
-39) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-40) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-41) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-42) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-43) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-44) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-45) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-46) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-47) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-48) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+24) webui: add check dhcp leases ip range.<br>
+25) webui: auto set gre alg if pptp selected (pptp use gre as transort).<br>
+26) webui: hide L2 tunnels from regular user.<br>
+27) webui: add mobile domain and keyholder to webui.<br>
+28) webui: fix some options permissions check.<br>
+29) webui: fix user permissions.<br>
+30) webui: fix check managment parametrs set.<br>
+31) webui: fix get current dns servers for wan config.<br>
+32) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+33) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
+34) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+35) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
+36) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
+37) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
+38) kernel: net: arp: honour gratuitous ARP _replies_<br>
+39) kernel: net: arp: decompose is_garp logic into a separate function.<br>
+40) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
+41) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+42) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+44) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
+45) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+46) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+47) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+48) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+49) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+50) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+51) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+52) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+53) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+54) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
 <br>
 <br>

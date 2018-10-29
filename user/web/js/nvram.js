@@ -7,8 +7,6 @@ var MAX_STA_NUM                                                      = parseInt(
 var SDK_VERSION                                                      = '<% getSdkVersion(); %>';
 var PLATFORM                                                         = '<% getPlatform(); %>';
 
-var PRIMARY_DNS                                                      = '<% getDns(1); %>';
-var SECONDARY_DNS                                                    = '<% getDns(2); %>';
 var LAN_IP                                                           = '<% getLanIp(); %>';
 var LAN_NETMASK                                                      = '<% getLanNetmask(); %>';
 
@@ -148,6 +146,8 @@ var NVRAM_port5_fcmode                                               = '<% getCf
 var NVRAM_wanConnectionMode                                          = '<% getCfgGeneral(1, "wanConnectionMode",                   "DHCP"); %>';
 var NVRAM_natEnabled                                                 = '<% getCfgGeneral(1, "natEnabled",                          "1"); %>';
 var NVRAM_wan_static_dns                                             = '<% getCfgGeneral(1, "wan_static_dns",                      "off"); %>';
+var NVRAM_wan_primary_dns                                            = '<% getCfgGeneral(1, "wan_primary_dns",                     ""); %>';
+var NVRAM_wan_secondary_dns                                          = '<% getCfgGeneral(1, "wan_secondary_dns",                   ""); %>';
 var NVRAM_wan_manual_mtu                                             = '<% getCfgGeneral(1, "wan_manual_mtu",                      "0"); %>';
 var NVRAM_wan_ipaddr                                                 = '<% getCfgGeneral(1, "wan_ipaddr",                          ""); %>';
 var NVRAM_lan_ipaddr                                                 = '<% getCfgGeneral(1, "lan_ipaddr",                          "192.168.1.1"); %>';

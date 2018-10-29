@@ -75,7 +75,7 @@ if (BUILD_IPV6 == "1" && NVRAM_OperationMode != '0') {
 
 a.add(304, 300, _("treeapp vpn"),			"javascript:go('internet/vpn.asp');");
 
-if (NVRAM_OperationMode != '2') {
+if (NVRAM_OperationMode != '2' && AUTH_ROLE == 2) {
 	a.add(310, 300, _("treeapp l2tunnels"),		"javascript:go('internet/l2tunnels.asp');");
 }
 

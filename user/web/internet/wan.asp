@@ -71,8 +71,8 @@
 				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
 				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex; 
 				form.wStaticDnsAdguardProfile.value	= NVRAM_wan_static_dns_profile_adguard; 
-				form.staticPriDns.value				= PRIMARY_DNS;
-				form.staticSecDns.value				= SECONDARY_DNS;
+				form.staticPriDns.value				= NVRAM_wan_primary_dns;
+				form.staticSecDns.value				= NVRAM_wan_secondary_dns;
 				form.wanMac.value					= NVRAM_WAN_MAC_ADDR;
 
 				displayElement(document.getElementById("natRowDisplay"), NVRAM_OperationMode != "0");

@@ -135,7 +135,7 @@
 				}
 
 
-				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/; //'
 				if (!re_pass.test(form.admpass.value)) {
 					alert(_("management uncorrect password"));
 					form.admpass.select();
@@ -143,7 +143,7 @@
 					return false;
 				}
 
-				var re_pass_user = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]*$/;
+				var re_pass_user = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]*$/; //'
 				if (!re_pass_user.test(form.ordpass.value)) {
 					alert(_("management uncorrect password"));
 					form.ordpass.select();
@@ -169,9 +169,9 @@
 
 				if (form.ordpass.value != form.ordpassconf.value) {
 					alert(_("management password confirmation")); 
-					form.admpass.value = "";
-					form.admpassconf.value = "";
-					form.admpass.focus();
+					form.ordpass.value = "";
+					form.ordpassconf.value = "";
+					form.ordpass.focus();
 					return false;
 				}
 

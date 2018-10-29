@@ -69,7 +69,7 @@
 							</tr>
 							<tr>
 								<td class="head">PPTP</td>
-								<td><input type="checkbox" id="alg_pptp" name="alg_pptp"></td>
+								<td><input type="checkbox" id="alg_pptp" name="alg_pptp" onClick="if (this.checked) this.form.alg_gre.checked = true;"></td>
 							</tr>
 							<tr>
 								<td class="head">SIP</td>

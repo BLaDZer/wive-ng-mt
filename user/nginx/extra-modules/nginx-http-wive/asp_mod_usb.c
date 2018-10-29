@@ -190,10 +190,10 @@ int initUSB(void)
 
 void asp_mod_usb_init(void) {
 #ifdef CONFIG_USER_P910ND
-	websFormDefine("printersrv", printersrv, ADMIN);
+	websFormDefine("printersrv", printersrv, EVERYONE);
 #endif
 #ifdef CONFIG_USB_MODESWITCH
-	websFormDefine("usbmodem", usbmodem, ADMIN);
-	aspDefineFunc("modemShowStatus", modemShowStatus, ADMIN);
+	websFormDefine("usbmodem", usbmodem, EVERYONE);
+	aspDefineFunc("modemShowStatus", modemShowStatus, EVERYONE);
 #endif
 }

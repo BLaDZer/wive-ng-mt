@@ -54,8 +54,8 @@
 				form.lanIp.value					= LAN_IP;
 				form.lanNetmask.value				= LAN_NETMASK;
 				form.lanGateway.value				= NVRAM_wan_gateway;
-				form.lanPriDns.value				= PRIMARY_DNS;
-				form.lanSecDns.value				= SECONDARY_DNS;
+				form.lanPriDns.value				= NVRAM_wan_primary_dns;
+				form.lanSecDns.value				= NVRAM_wan_secondary_dns;
 				form.dhcpStart.value				= NVRAM_dhcpStart;
 				form.dhcpEnd.value					= NVRAM_dhcpEnd;
 				form.dhcpGateway.value				= NVRAM_dhcpGateway;
