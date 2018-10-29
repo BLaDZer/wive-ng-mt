@@ -165,6 +165,7 @@ start() {
 	# ADD WAN VLANS FOR IPTV/SIP/ETC USAGE
 	##############################################
 	if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ]; then
+	    needarpcacheclear=1
 	    vidcount=0
 	    for vid in $tv_portVLAN; do
 		$LOG "Add vlan $vid for TV/STB port input (WAN) $tv_portVLAN"
@@ -179,6 +180,7 @@ start() {
 	    done
 	fi
 	if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ]; then
+	    needarpcacheclear=1
 	    vidcount=0
 	    for vid in $sip_portVLAN; do
 		$LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
@@ -203,6 +205,7 @@ start() {
 	#############################################
 	VlanLan=`nvram_get 2860 VlanLan | awk '{ gsub(","," "); print }'`
 	if [ "$VlanLan" != "" ] && [ "$VlanLan" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    needarpcacheclear=1
 	    for vid in $VlanLan
 	    do
 		$LOG "Add LAN network VLAN interface ${phys_lan_if}.${vid} to system"
@@ -231,19 +234,23 @@ start() {
 	#############################################
 	VlanWifiLan=`nvram_get 2860 VlanWifiLan | awk '{ gsub(","," "); print }'`
 	if [ "$VlanWifiLan" != "" ] && [ "$VlanWifiLan" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    needarpcacheclear=1
 	    bridgewlvlan "$VlanWifiLan" "${phys_lan_if}" "$first_wlan_mbss"
 	fi
 	VlanWifiLanINIC=`nvram_get 2860 VlanWifiLanINIC | awk '{ gsub(","," "); print }'`
 	if [ "$VlanWifiLanINIC" != "" ] && [ "$VlanWifiLanINIC" != "0" ] && [ "$lan_if" = "br0" ]; then
+	    needarpcacheclear=1
 	    bridgewlvlan "$VlanWifiLanINIC" "${phys_lan_if}" "$second_wlan_mbss"
 	fi
 	if [ "$switchpart" != "LLLLL" ]; then
 	    VlanWifiWan=`nvram_get 2860 VlanWifiWan | awk '{ gsub(","," "); print }'`
 	    if [ "$VlanWifiWan" != "" ] && [ "$VlanWifiWan" != "0" ] && [ "$lan_if" = "br0" ]; then
+		needarpcacheclear=1
 		bridgewlvlan "$VlanWifiWan" "${phys_wan_if}" "$first_wlan_mbss"
 	    fi
 	    VlanWifiWanINIC=`nvram_get 2860 VlanWifiWanINIC | awk '{ gsub(","," "); print }'`
 	    if [ "$VlanWifiWanINIC" != "" ] && [ "$VlanWifiWanINIC" != "0" ] && [ "$lan_if" = "br0" ]; then
+		needarpcacheclear=1
 		bridgewlvlan "$VlanWifiWanINIC" "${phys_wan_if}" "$second_wlan_mbss"
 	    fi
 	fi
@@ -253,6 +260,13 @@ start() {
 	if [ -d /etc/vlan.d -a -x /bin/run-parts ]; then
 	    $LOG "Run scripts from /etc/vlan.d"
 	    run-parts /etc/vlan.d
+	fi
+	#############################################
+	# clear arp tables in ESW and kernel
+	#############################################
+	if [ "$needarpcacheclear" = "1" ]; then
+	    switch clear
+	    ip neigh flush all
 	fi
     fi
 }
