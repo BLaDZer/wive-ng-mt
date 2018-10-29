@@ -254,6 +254,15 @@ start() {
 		bridgewlvlan "$VlanWifiWanINIC" "${phys_wan_if}" "$second_wlan_mbss"
 	    fi
 	fi
+
+	#############################################
+	# ISOLATE UNTAGGED LAN INTERFACE FROM BIDGE
+	#############################################
+	if [ "$switchpart" != "LLLLL" ] && [ "$VlanUntagIsolate" = "1" ]; then
+	    $LOG "Untagged LAN ${phys_lan_if} isolate from others in bridge."
+	    echo 1 > /sys/devices/virtual/net/${phys_lan_if}/brport/isolate_mode
+	fi
+
 	#############################################
 	# CALL USER SCRIPTS AFTER VLAN CONFIG
 	#############################################
@@ -320,7 +329,7 @@ stop() {
 
 get_param() {
     # need get offlad mode for limit hw_vlan_tx slot use
-    eval `nvram_buf_get 2860 vlanDoubleTag offloadMode`
+    eval `nvram_buf_get 2860 vlanDoubleTag offloadMode VlanUntagIsolate`
     if [ -e /proc/sys/net/core/vlan_double_tag ]; then
 	# get currecnt double vlan tag mode if present
 	vlanDoubleTag=`cat /proc/sys/net/core/vlan_double_tag`
