@@ -220,6 +220,7 @@ NoForwarding=0;0;0;0
 NoForwardingMBCast=0;0;0;0
 NoForwardingBTNBSSID=0
 LanWifiIsolate=0
+VlanUntagIsolate=0
 NTPEnabled=1
 NTPServerIP=ru.pool.ntp.org
 OperationMode=1
