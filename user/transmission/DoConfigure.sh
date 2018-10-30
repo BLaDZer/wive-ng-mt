@@ -2,11 +2,21 @@
 
 echo "==================CONFIGURE-TRANSMISSION======================="
 APROOTDIR=`pwd`
+BACKUPCFLAGS=$CFLAGS
+BACKUPCPPFLAGS=$CPPFLAGS
+BACKUPLDFLAGS=$LDFLAGS
+LIBDIR=$FIRMROOT/lib/shared
+LIBS=$LIBDIR/lib
+INCLUDES=$LIBDIR/include
 
-$APROOTDIR/update-version-h.sh
+export PKG_CONFIG=/bin/true
 
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
+
+CFLAGS="$BACKUPCFLAGS -I$LIBDIR -I$INCLUDES -I$INCLUDES/openssl"
+CPPFLAGS="$BACKUPCFLAGS -I$LIBDIR -I$INCLUDES -I$INCLUDES/openssl"
+LDFLAGS="$BACKUPLDFLAGS -L$LIBDIR -L$LIBS"
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
@@ -15,7 +25,9 @@ else
     SHELL="/bin/sh"
 fi
 
-export SHELL
+export CFLAGS LDFLAGS CPPFLAGS SHELL
+
+$APROOTDIR/update-version-h.sh
 
 if [ ! -f $APROOTDIR/configure ]; then
     libtoolize -c -f -i
@@ -38,12 +50,14 @@ CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 	    --enable-external-natpmp \
 	    --enable-largefile \
 	    --enable-lightweight \
-	    OPENSSL_CFLAGS="-I$FIRMROOT/lib/shared/include" \
-	    OPENSSL_LIBS="-L$FIRMROOT/lib/shared/lib -lcrypto -lssl" \
-	    LIBCURL_CFLAGS="-I$FIRMROOT/lib/shared/include" \
-	    LIBCURL_LIBS="-L$FIRMROOT/lib/shared/lib -lcurl" \
-	    LIBEVENT_CFLAGS="-I$FIRMROOT/lib/shared/include" \
-	    LIBEVENT_LIBS="-L$FIRMROOT/lib/shared/lib -levent" \
+	    OPENSSL_CFLAGS="-I$INCLUDES" \
+	    OPENSSL_LIBS="-L$LIBS -lcrypto -lssl" \
+	    LIBCURL_CFLAGS="-I$INCLUDES" \
+	    LIBCURL_LIBS="-L$LIBS -lcurl" \
+	    LIBEVENT_CFLAGS="-I$INCLUDES" \
+	    LIBEVENT_LIBS="-L$LIBS -levent" \
+	    ZLIB_CFLAGS="-L$LIBS -lz" \
+	    ZLIB_LIBS="-I$INCLUDES" \
 	    --with-crypto=openssl \
 	    --with-inotify=yes \
 	    --with-systemd-daemon=no \

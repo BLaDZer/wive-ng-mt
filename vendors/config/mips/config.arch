@@ -155,9 +155,6 @@ endif
 ifdef CONFIG_LIB_CURL
 	CFLAGS += -I$(LIBCDIRSHARED)/include/curl
 endif
-ifdef CONFIG_LIB_UPNP
-	CFLAGS += -I$(LIBCDIRSHARED)/include/upnp
-endif
 ifdef CONFIG_LIB_PCAP
 	CFLAGS += -I$(LIBCDIRSHARED)/include/pcap
 endif
@@ -169,9 +166,6 @@ ifdef CONFIG_LIB_USB1
 endif
 ifdef CONFIG_LIB_XML2
 	CFLAGS += -I$(LIBCDIRSHARED)/include/libxml2
-endif
-ifdef CONFIG_LIB_NEON
-	CFLAGS += -I$(LIBCDIRSHARED)/include/neon
 endif
 ifdef CONFIG_USER_IPTABLES
 	CFLAGS += -I$(ROOTDIR)/user/iptables/include
@@ -189,7 +183,7 @@ endif
 	CFLAGS += -isystem $(LIBCDIRSHARED)/include
 
 	# link options
-	LDFLAGS += -L$(LIBCDIRSHARED)/lib
+	LDFLAGS += -L$(LIBCDIRSHARED) -L$(LIBCDIRSHARED)/lib
 	ifeq ($(findstring glibc,$(LIBCDIR)),glibc)
 	    CRTI     = -nostartfiles $(ROOTDIR)/lib/crt1.o \
 			$(ROOTDIR)/lib/crti.o \
@@ -208,10 +202,10 @@ endif
 	endif
 
 	SH_LDFLAGS := $(LDFLAGS) $(SH_CRTI) -nodefaultlibs
-	SH_LDLIBS  := $(LIBC) $(LIBGCC) $(SH_CRTN)
-	LDLIBS   = $(LIBC) $(LIBGCC) $(CRTN)
+	SH_LDLIBS  := $(LIBC) $(LIBGCC) $(LIBGCC_S) $(SH_CRTN)
+	LDLIBS   = $(LIBC) $(LIBGCC) $(LIBGCC_S) $(CRTN)
 
-	CXXLIBS  = -Wl,-Bstatic $(LIBSTDCPP) -Wl,-Bdynamic $(LIBC) $(LIBGCC) $(CRTN)
+	CXXLIBS  = -Wl,-Bstatic $(LIBSTDCPP) -Wl,-Bdynamic $(LIBC) $(LIBGCC) $(LIBGCC_S) $(CRTN)
 
 	FLTFLAGS :=
 

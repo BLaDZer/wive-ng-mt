@@ -57,6 +57,7 @@ ifeq ($(UCLINUX_COMMON_LIB),1)
 	# Dynamic versions
 	LIBDL		=	-ldl
 	LIBGCC		=	-lgcc
+	LIBGCC_S	=	-lgcc_s
 	LIBIBERTY	=	-liberty
 	LIBIO		=	-lio
 	LIBIOSTREAM	=	-liostream

@@ -3,17 +3,18 @@
 echo "=====================CONFIGURE-LIBCURL===================="
 APROOTDIR=`pwd`
 BACKUPCFLAGS=$CFLAGS
+BACKUPCPPFLAGS=$CPPFLAGS
 BACKUPLDFLAGS=$LDFLAGS
 LIBDIR=$FIRMROOT/lib/shared
-LIBS=$LIBDIR
+LIBS=$LIBDIR/lib
 INCLUDES=$LIBDIR/include
 
 HBUILD=`uname -m`-pc-linux-gnu
 HTARGET=mipsel-linux
 
-CFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
-CPPFLAGS="$BACKUPCFLAGS -I$INCLUDES -I$INCLUDES/openssl"
-LDFLAGS="$BACKUPLDFLAGS -L$LIBS/lib"
+CFLAGS="$BACKUPCFLAGS -I$LIBDIR -I$INCLUDES -I$INCLUDES/openssl"
+CPPFLAGS="$BACKUPCFLAGS -I$LIBDIR -I$INCLUDES -I$INCLUDES/openssl"
+LDFLAGS="$BACKUPLDFLAGS -L$LIBDIR -L$LIBS"
 
 # prefer use bash if multishell
 if [ -e /bin/bash ]; then
@@ -23,6 +24,8 @@ else
 fi
 
 export CFLAGS LDFLAGS CPPFLAGS SHELL
+
+export PKG_CONFIG=/bin/true
 
 if [ ! -f $APROOTDIR/configure ]; then
     aclocal
@@ -35,7 +38,7 @@ fi
 
 CONFOPTS="--host=$HTARGET --target=$HTARGET --build=$HBUILD"
 CONFOPTS="$CONFOPTS --enable-shared --disable-static"
-CONFOPTS="$CONFOPTS --with-ssl=$LIBS --with-zlib=$LIBS"
+CONFOPTS="$CONFOPTS --with-ssl=$LIBDIR --with-zlib=$LIBDIR"
 CONFOPTS="$CONFOPTS --without-random --without-winssl --without-darwinssl --without-gnutls --without-polarssl --without-mbedtls --without-cyassl"
 CONFOPTS="$CONFOPTS --without-nss --without-axtls --without-ca-bundle --without-ca-path --without-ca-fallback --without-libpsl --without-libmetalink"
 CONFOPTS="$CONFOPTS --without-libssh2 --without-librtmp --without-winidn --without-libidn --without-nghttp2 --without-zsh-functions-dir"
