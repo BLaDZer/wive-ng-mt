@@ -4318,7 +4318,7 @@
 19) init.d: only once flush conntrack and route cahce at wlan if down.<br>
 20) init.d: flush arp caches in kernel and switch after vlan config.<br>
 21) init.d: add VlanUntagIsolate var for isolate root LAN interface from bridged interfaces.<br>
-22) init.d: generate individual mac for vlan2lan interfaces.<br>
+22) init.d: generate individual mac/ip for vlan2lan interfaces.<br>
 23) webui/cli: fix system platform info.<br>
 24) webui: C code review, cleanup and fixup.<br>
 25) webui: add check dhcp leases ip range.<br>
