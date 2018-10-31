@@ -73,7 +73,7 @@ set_mac_ip_vlan()
     # set mac per vlan
     ifconfig "$1" hw ether "$VLANMAC" txqueuelen "$txqueuelen"
     # ser ip per vlan
-    ip -4 addr replace $VLANRIP/32 dev $interface
+    ip -4 addr replace $VLANRIP/32 dev $1
 }
 
 ##########################################################################
