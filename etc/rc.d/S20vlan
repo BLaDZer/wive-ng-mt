@@ -47,10 +47,22 @@ set_egress_vlan_prio_map_sip()
 
 set_arp_filter_mode()
 {
-    sysctl -w net.ipv4.conf.$1.arp_announce=2
-    sysctl -w net.ipv4.conf.$1.arp_ignore=1
-    sysctl -w net.ipv4.conf.$1.arp_filter=1
-    sysctl -w net.ipv4.conf.$1.rp_filter=0
+    sysctl -wq net.ipv4.conf.$1.arp_announce=2
+    sysctl -wq net.ipv4.conf.$1.arp_ignore=1
+    sysctl -wq net.ipv4.conf.$1.arp_filter=1
+    sysctl -wq net.ipv4.conf.$1.rp_filter=0
+}
+
+set_mac()
+{
+    # get oui from wan
+    VENDMASK=`echo $WAN_MAC_ADDR | cut -f -3 -d :`
+    # generate new last octets
+    RNDMACLO=`printf "%02x:%02x:%02x" $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) | awk '{print toupper($0) }'`
+    # temp mac per vlan
+    VLANMAC="$VENDMASK:$RNDMACLO"
+    # set mac per vlan
+    ifconfig "$1" hw ether "$VLANMAC" txqueuelen "$txqueuelen"
 }
 
 idx=6
@@ -213,6 +225,7 @@ start() {
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_lan_if}.${vid}"
 		set_arp_filter_mode "${phys_lan_if}.${vid}"
+		set_mac "${phys_lan_if}.${vid}"
 		brctl addif "$lan_if" "${phys_lan_if}.${vid}"
 		ip link set "${phys_lan_if}.${vid}" up
 	    done
@@ -270,6 +283,7 @@ start() {
 	    $LOG "Run scripts from /etc/vlan.d"
 	    run-parts /etc/vlan.d
 	fi
+
 	#############################################
 	# clear arp tables in ESW and kernel
 	#############################################
