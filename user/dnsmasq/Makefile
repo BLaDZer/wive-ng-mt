@@ -44,7 +44,7 @@ ifndef CONFIG_INOTIFY_USER
 COPTS += -DNO_INOTIFY
 endif
 
-LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
+LDFLAGS += -Wl,--gc-sections
 
 #################################################################
 

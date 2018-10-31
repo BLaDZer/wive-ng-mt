@@ -1,7 +1,7 @@
 CFLAGS+=-Os -fPIC -fomit-frame-pointer -Isrc -Wall
 #-ffunction-sections -fdata-sections
 LDFLAGS+=-pthread
-#-ffunction-sections -fdata-sections -Wl,--gc-sections
+#-Wl,--gc-sections
 LDLIBS=-lmicrohttpd
 
 STRIP=no

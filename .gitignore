@@ -378,6 +378,9 @@ fulldump
 /user/nginx/history.html
 /user/samba36/source3/Makefile
 /user/samba36/source3/configure
+/user/haveged/Makefile
+/user/haveged/Makefile.in
+/user/haveged/configure
 
 #
 # exclude enerated files from kernel

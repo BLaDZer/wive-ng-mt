@@ -111,6 +111,11 @@ ifdef CONFIG_RALINK_MT7621
 dir_$(CONFIG_USER_IRQBALANCE)		    += irqbalance
 endif
 
+# increase entropy daemon (more security)
+ifndef CONFIG_RT2880_FLASH_8M
+dir_y                                       += haveged
+endif
+
 # development tools
 dir_$(CONFIG_USER_STRACE)		    += strace
 

@@ -25,7 +25,7 @@ endif
 CFLAGS += -DDBG -DSYSLOG
 
 CFLAGS += -Os -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
-LDFLAGS += -ffunction-sections -fdata-sections -Wl,--gc-sections
+LDFLAGS += -Wl,--gc-sections
 
 OBJS =	rtdot1x.o eloop.o eapol_sm.o radius.o md5.o  \
 	config.o ieee802_1x.o  \

@@ -8,7 +8,7 @@
 CFLAGS    += -Os -fPIC -membedded-data -muninit-const-in-rodata
 #-ffunction-sections -fdata-sections
 CFLAGS    += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
-#LDFLAGS   += -ffunction-sections -fdata-sections -Wl,--gc-sections
+#LDFLAGS   += -Wl,--gc-sections
 
 
 PWD	  := $(shell pwd)
