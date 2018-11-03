@@ -116,17 +116,17 @@ int sysctl_igmp_llm_reports __read_mostly = 1;
 #ifdef CONFIG_IP_MULTICAST
 /* Parameter names and values are taken from igmp-v2-06 draft */
 
-#define IGMP_V1_Router_Present_Timeout		(400*HZ)
-#define IGMP_V2_Router_Present_Timeout		(400*HZ)
-#define IGMP_V2_Unsolicited_Report_Interval	(10*HZ)
-#define IGMP_V3_Unsolicited_Report_Interval	(1*HZ)
-#define IGMP_Query_Response_Interval		(10*HZ)
-#define IGMP_Unsolicited_Report_Count		2
+#define IGMP_V1_ROUTER_PRESENT_TIMEOUT		(400*HZ)
+#define IGMP_V2_ROUTER_PRESENT_TIMEOUT		(400*HZ)
+#define IGMP_V2_UNSOLICITED_REPORT_INTERVAL	(10*HZ)
+#define IGMP_V3_UNSOLICITED_REPORT_INTERVAL	(1*HZ)
+#define IGMP_QUERY_RESPONSE_INTERVAL		(10*HZ)
+#define IGMP_QUERY_ROBUSTNESS_VARIABLE		2
+#define IGMP_UNSOLICITED_REPORT_COUNT		2
 
+#define IGMP_INITIAL_REPORT_DELAY		(1)
 
-#define IGMP_Initial_Report_Delay		(1)
-
-/* IGMP_Initial_Report_Delay is not from IGMP specs!
+/* IGMP_INITIAL_REPORT_DELAY is not from IGMP specs!
  * IGMP specs require to report membership immediately after
  * joining a group, but we delay the first report by a
  * small interval. It seems more natural and still does not
@@ -801,7 +801,7 @@ static void igmp_ifc_event(struct in_device *in_dev)
 	if (IGMP_V1_SEEN(in_dev) || IGMP_V2_SEEN(in_dev))
 		return;
 	in_dev->mr_ifc_count = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_Unsolicited_Report_Count;
+		IGMP_UNSOLICITED_REPORT_COUNT;
 	igmp_ifc_start_timer(in_dev, 1);
 }
 
@@ -925,15 +925,15 @@ static bool igmp_heard_query(struct in_device *in_dev, struct sk_buff *skb,
 		if (ih->code == 0) {
 			/* Alas, old v1 router presents here. */
 
-			max_delay = IGMP_Query_Response_Interval;
+			max_delay = IGMP_QUERY_RESPONSE_INTERVAL;
 			in_dev->mr_v1_seen = jiffies +
-				IGMP_V1_Router_Present_Timeout;
+				IGMP_V1_ROUTER_PRESENT_TIMEOUT;
 			group = 0;
 		} else {
 			/* v2 router present */
 			max_delay = ih->code*(HZ/IGMP_TIMER_SCALE);
 			in_dev->mr_v2_seen = jiffies +
-				IGMP_V2_Router_Present_Timeout;
+				IGMP_V2_ROUTER_PRESENT_TIMEOUT;
 		}
 		/* cancel the interface change timer */
 		in_dev->mr_ifc_count = 0;
@@ -945,7 +945,7 @@ static bool igmp_heard_query(struct in_device *in_dev, struct sk_buff *skb,
 		return true;	/* ignore bogus packet; freed by caller */
 	} else if (IGMP_V1_SEEN(in_dev)) {
 		/* This is a v3 query with v1 queriers present */
-		max_delay = IGMP_Query_Response_Interval;
+		max_delay = IGMP_QUERY_RESPONSE_INTERVAL;
 		group = 0;
 	} else if (IGMP_V2_SEEN(in_dev)) {
 		/* this is a v3 query with v2 queriers present;
@@ -1143,7 +1143,7 @@ static void igmpv3_add_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	in_dev_hold(in_dev);
 	pmc->multiaddr = im->multiaddr;
 	pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_Unsolicited_Report_Count;
+		IGMP_UNSOLICITED_REPORT_COUNT;
 	pmc->sfmode = im->sfmode;
 	if (pmc->sfmode == MCAST_INCLUDE) {
 		struct ip_sf_list *psf;
@@ -1190,7 +1190,7 @@ static void igmpv3_del_delrec(struct in_device *in_dev, struct ip_mc_list *im)
 	if (pmc) {
 		im->interface = pmc->interface;
 		im->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_Unsolicited_Report_Count;
+		IGMP_UNSOLICITED_REPORT_COUNT;
 		if (im->sfmode == MCAST_INCLUDE) {
 			im->tomb = pmc->tomb;
 			im->sources = pmc->sources;
@@ -1294,17 +1294,17 @@ static void igmp_group_added(struct ip_mc_list *im)
 	if (in_dev->dead)
 		return;
 
-	im->unsolicit_count = IGMP_Unsolicited_Report_Count;
+	im->unsolicit_count = IGMP_UNSOLICITED_REPORT_COUNT;
 	if (IGMP_V1_SEEN(in_dev) || IGMP_V2_SEEN(in_dev)) {
 		spin_lock_bh(&im->lock);
-		igmp_start_timer(im, IGMP_Initial_Report_Delay);
+		igmp_start_timer(im, IGMP_INITIAL_REPORT_DELAY);
 		spin_unlock_bh(&im->lock);
 		return;
 	}
 	/* else, v3 */
 
 	im->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-		IGMP_Unsolicited_Report_Count;
+		IGMP_UNSOLICITED_REPORT_COUNT;
 	igmp_ifc_event(in_dev);
 #endif
 }
@@ -1488,7 +1488,7 @@ void ip_mc_init_dev(struct in_device *in_dev)
 			(unsigned long)in_dev);
 	setup_timer(&in_dev->mr_ifc_timer, igmp_ifc_timer_expire,
 			(unsigned long)in_dev);
-	in_dev->mr_qrv = IGMP_Unsolicited_Report_Count;
+	in_dev->mr_qrv = IGMP_UNSOLICITED_REPORT_COUNT;
 #endif
 
 	spin_lock_init(&in_dev->mc_tomb_lock);
@@ -1608,7 +1608,7 @@ static int ip_mc_del1_src(struct ip_mc_list *pmc, int sfmode,
 		if (psf->sf_oldin &&
 		    !IGMP_V1_SEEN(in_dev) && !IGMP_V2_SEEN(in_dev)) {
 			psf->sf_crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-				IGMP_Unsolicited_Report_Count;
+				IGMP_UNSOLICITED_REPORT_COUNT;
 			psf->sf_next = pmc->tomb;
 			pmc->tomb = psf;
 			rv = 1;
@@ -1672,7 +1672,7 @@ static int ip_mc_del_src(struct in_device *in_dev, __be32 *pmca, int sfmode,
 		pmc->sfmode = MCAST_INCLUDE;
 #ifdef CONFIG_IP_MULTICAST
 		pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-			IGMP_Unsolicited_Report_Count;
+			IGMP_UNSOLICITED_REPORT_COUNT;
 		in_dev->mr_ifc_count = pmc->crcount;
 		for (psf=pmc->sources; psf; psf = psf->sf_next)
 			psf->sf_crcount = 0;
@@ -1851,7 +1851,7 @@ static int ip_mc_add_src(struct in_device *in_dev, __be32 *pmca, int sfmode,
 		/* else no filters; keep old mode for reports */
 
 		pmc->crcount = in_dev->mr_qrv ? in_dev->mr_qrv :
-			IGMP_Unsolicited_Report_Count;
+			IGMP_UNSOLICITED_REPORT_COUNT;
 		in_dev->mr_ifc_count = pmc->crcount;
 		for (psf=pmc->sources; psf; psf = psf->sf_next)
 			psf->sf_crcount = 0;
