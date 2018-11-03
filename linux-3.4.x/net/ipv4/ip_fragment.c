@@ -705,7 +705,10 @@ fail:
 	kfree_skb(skb);
 	return -ENOMEM;
 }
+
+#if !defined(CONFIG_IP_VS_MODULE) && !defined(NF_DEFRAG_IPV4_MODULE)
 EXPORT_SYMBOL(ip_defrag);
+#endif
 
 struct sk_buff *ip_check_defrag(struct sk_buff *skb, u32 user)
 {
@@ -747,7 +750,10 @@ struct sk_buff *ip_check_defrag(struct sk_buff *skb, u32 user)
 	}
 	return skb;
 }
+
+#if !defined(CONFIG_MACVLAN_MODULE) && !defined(CONFIG_PACKET_MODULE)
 EXPORT_SYMBOL(ip_check_defrag);
+#endif
 
 #ifdef CONFIG_SYSCTL
 static int zero;
