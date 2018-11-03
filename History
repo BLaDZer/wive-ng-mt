@@ -4352,6 +4352,7 @@
 53) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
 54) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
 55) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-56) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+56) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
+57) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
 <br>
 <br>
