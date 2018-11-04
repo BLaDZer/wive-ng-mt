@@ -1619,16 +1619,6 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 		}
 #endif /* MT76x0_TSSI_CAL_COMPENSATION */
 
-
-		if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF | fRTMP_ADAPTER_DISABLE_DEQUEUEPACKET) == FALSE)
-		{
-			if ((pAd->Mlme.OneSecPeriodicRound % 10) == 0)
-			{
-				{
-				}
-			}
-		}
-
 #ifdef DOT11_N_SUPPORT
 #ifdef MT_MAC
         if (pAd->chipCap.hif_type == HIF_MT)

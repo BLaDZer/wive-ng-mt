@@ -946,6 +946,7 @@ VOID ApCliIfUp(
 	/* Reset is in progress, stop immediately */
 	if ( RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RESET_IN_PROGRESS) ||
 		 RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_HALT_IN_PROGRESS) ||
+		 RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF) ||
 		 !RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_START_UP))
 		return;
 
