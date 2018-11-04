@@ -1631,18 +1631,6 @@ void __exit rt_pci_cleanup_module(void);
 
 #endif /* MULTI_INF_SUPPORT */
 
-
-
-#ifdef MT7603_WLAN_HOOK_SUPPORT
-/*define os layer hook function implementation*/
-#include <os/rt_linux_txrx_hook.h>
-#define RTMP_OS_TXRXHOOK_CALL(hook,packet,queIdx,priv) RtmpOsTxRxHookCall(hook,packet,queIdx,priv)
-#define RTMP_OS_TXRXHOOK_INIT() RtmpOsTxRxHookInit()
-#else
-#define RTMP_OS_TXRXHOOK_CALL(hook,packet,queIdx,priv) if(priv!=NULL) {}
-#define RTMP_OS_TXRXHOOK_INIT()
-#endif
-
 #define RA_WEXT 	0
 #define RA_NETLINK  	1
 

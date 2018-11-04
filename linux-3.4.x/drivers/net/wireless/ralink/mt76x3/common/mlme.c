@@ -1687,12 +1687,6 @@ NTSTATUS MlmePeriodicExec(IN PRTMP_ADAPTER pAd, IN PCmdQElmt CMDQelmt)
 	WSC_HDR_BTN_MR_HANDLE(pAd);
 #endif /* WSC_INCLUDED */
 
-
-
-
-	/*add for hook function on Mlme timer interrupt*/
-	RTMP_OS_TXRXHOOK_CALL(WLAN_TX_MLME_PERIOD,NULL,1,pAd);
-
 	pAd->bUpdateBcnCntDone = FALSE;
 
 #ifdef ED_MONITOR

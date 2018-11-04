@@ -1644,8 +1644,6 @@ static VOID EventExtCmdResult(struct cmd_msg *msg, char *Data, UINT16 Len)
 
 	DBGPRINT(RT_DEBUG_INFO, ("%s: EventExtCmdResult.u4Status = 0x%x\n",
 									__FUNCTION__, EventExtCmdResult->u4Status));
-
-	RTMP_OS_TXRXHOOK_CALL(WLAN_CALIB_TEST_RSP,NULL,EventExtCmdResult->u4Status,pAd);
 }
 
 
@@ -1661,8 +1659,6 @@ VOID EventExtCmdResultHandler(RTMP_ADAPTER *pAd, char *Data, UINT16 Len)
 
 	DBGPRINT(RT_DEBUG_INFO, ("%s: EventExtCmdResult.u4Status = 0x%x\n",
 									__FUNCTION__, EventExtCmdResult->u4Status));
-
-	RTMP_OS_TXRXHOOK_CALL(WLAN_CALIB_TEST_RSP,NULL,EventExtCmdResult->u4Status,pAd);
 }
 
 

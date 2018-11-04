@@ -192,8 +192,6 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 #endif /* DBG */
 		goto drop_pkt;
 	}
-	/*add hook point when enqueue*/
-	RTMP_OS_TXRXHOOK_CALL(WLAN_TX_ENQUEUE,pPacket,QueIdx,pAd);
 
 #ifdef CONFIG_HOTSPOT
 	/* 
@@ -475,8 +473,7 @@ INT APSendPacket(RTMP_ADAPTER *pAd, PNDIS_PACKET pPacket)
 drop_pkt:	
 	RELEASE_NDIS_PACKET(pAd, pPacket, NDIS_STATUS_FAILURE);
 nofree_drop_pkt:
-	/*add hook point when drop*/
-	RTMP_OS_TXRXHOOK_CALL(WLAN_TX_DROP,NULL,QueIdx,pAd);
+
 	DBGPRINT(RT_DEBUG_INFO, ("%s():drop pkt, drop_reason=%d!, wcid = %d\n", __FUNCTION__, drop_reason, wcid));
 
 	return NDIS_STATUS_FAILURE;
@@ -3050,9 +3047,6 @@ NDIS_STATUS APHardTransmit(RTMP_ADAPTER *pAd, TX_BLK *pTxBlk)
 	{
 		RTMP_SET_PACKET_VLAN(pTxBlk->pPacket, FALSE);
 	}
-
-	/*add hook point when dequeue*/
-	RTMP_OS_TXRXHOOK_CALL(WLAN_TX_DEQUEUE,pPacket,pTxBlk->QueIdx,pAd);
 
 #ifdef DOT11K_RRM_SUPPORT
 #ifdef QUIET_SUPPORT_TXSTOP

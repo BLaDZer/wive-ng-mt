@@ -2753,8 +2753,6 @@ enq_end:
 		rtmp_sta_txq_dump(pAd, tr_entry, qidx);
 	}
 #endif
-        /*add hook point for enqueue progress*/
-	RTMP_OS_TXRXHOOK_CALL(WLAN_TX_ENQUEUE_PROGRESS,NULL,qidx,fifo_swq);
 
 	return enq_done;
 }
