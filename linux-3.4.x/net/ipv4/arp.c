@@ -734,8 +734,8 @@ static int arp_process(struct sk_buff *skb)
 	 * is ARP'able.
 	 */
 
-	if (in_dev == NULL)
-		goto out;
+	if (!in_dev)
+		goto out_free_skb;
 
 	arp = arp_hdr(skb);
 
@@ -743,7 +743,7 @@ static int arp_process(struct sk_buff *skb)
 	default:
 		if (arp->ar_pro != htons(ETH_P_IP) ||
 		    htons(dev_type) != arp->ar_hrd)
-			goto out;
+			goto out_free_skb;
 		break;
 	case ARPHRD_ETHER:
 	case ARPHRD_FDDI:
@@ -760,17 +760,17 @@ static int arp_process(struct sk_buff *skb)
 		if ((arp->ar_hrd != htons(ARPHRD_ETHER) &&
 		     arp->ar_hrd != htons(ARPHRD_IEEE802)) ||
 		    arp->ar_pro != htons(ETH_P_IP))
-			goto out;
+			goto out_free_skb;
 		break;
 	case ARPHRD_AX25:
 		if (arp->ar_pro != htons(AX25_P_IP) ||
 		    arp->ar_hrd != htons(ARPHRD_AX25))
-			goto out;
+			goto out_free_skb;
 		break;
 	case ARPHRD_NETROM:
 		if (arp->ar_pro != htons(AX25_P_IP) ||
 		    arp->ar_hrd != htons(ARPHRD_NETROM))
-			goto out;
+			goto out_free_skb;
 		break;
 	}
 
@@ -778,7 +778,7 @@ static int arp_process(struct sk_buff *skb)
 
 	if (arp->ar_op != htons(ARPOP_REPLY) &&
 	    arp->ar_op != htons(ARPOP_REQUEST))
-		goto out;
+		goto out_free_skb;
 
 /*
  *	Extract fields
@@ -796,7 +796,7 @@ static int arp_process(struct sk_buff *skb)
  *	addresses.  If this is one such, delete it.
  */
 	if (ipv4_is_loopback(tip) || ipv4_is_multicast(tip))
-		goto out;
+		goto out_free_skb;
 
 /*
  *     Special case: We must set Frame Relay source Q.922 address
@@ -828,7 +828,7 @@ static int arp_process(struct sk_buff *skb)
 		    !arp_ignore(in_dev, sip, tip))
 			arp_send(ARPOP_REPLY, ETH_P_ARP, sip, dev, tip, sha,
 				 dev->dev_addr, sha);
-		goto out;
+		goto out_consume_skb;
 	}
 
 	if (arp->ar_op == htons(ARPOP_REQUEST) &&
@@ -852,7 +852,7 @@ static int arp_process(struct sk_buff *skb)
 					neigh_release(n);
 				}
 			}
-			goto out;
+			goto out_consume_skb;
 		} else if (IN_DEV_FORWARD(in_dev)) {
 			if (addr_type == RTN_UNICAST  &&
 			    (arp_fwd_proxy(in_dev, dev, rt) ||
@@ -872,9 +872,9 @@ static int arp_process(struct sk_buff *skb)
 				} else {
 					pneigh_enqueue(&arp_tbl,
 						       in_dev->arp_parms, skb);
-					return 0;
+					goto out_free_dst;
 				}
-				goto out;
+				goto out_consume_skb;
 			}
 		}
 	}
@@ -927,9 +927,15 @@ static int arp_process(struct sk_buff *skb)
 		neigh_release(n);
 	}
 
-out:
+out_consume_skb:
 	consume_skb(skb);
-	return 0;
+
+out_free_dst:
+	return NET_RX_SUCCESS;
+
+out_free_skb:
+	kfree_skb(skb);
+	return NET_RX_DROP;
 }
 
 static void parp_redo(struct sk_buff *skb)
@@ -971,11 +977,11 @@ static int arp_rcv(struct sk_buff *skb, struct net_device *dev,
 
 consumeskb:
 	consume_skb(skb);
-	return 0;
+	return NET_RX_SUCCESS;
 freeskb:
 	kfree_skb(skb);
 out_of_mem:
-	return 0;
+	return NET_RX_DROP;
 }
 
 /*
@@ -988,7 +994,7 @@ out_of_mem:
 
 static int arp_req_set_proxy(struct net *net, struct net_device *dev, int on)
 {
-	if (dev == NULL) {
+	if (!dev) {
 		IPV4_DEVCONF_ALL(net, PROXY_ARP) = on;
 		return 0;
 	}
@@ -1035,7 +1041,7 @@ static int arp_req_set(struct net *net, struct arpreq *r,
 	ip = ((struct sockaddr_in *)&r->arp_pa)->sin_addr.s_addr;
 	if (r->arp_flags & ATF_PERM)
 		r->arp_flags |= ATF_COM;
-	if (dev == NULL) {
+	if (!dev) {
 		struct rtable *rt = ip_route_output(net, ip, 0, RTO_ONLINK, 0);
 
 		if (IS_ERR(rt))
@@ -1157,7 +1163,7 @@ static int arp_req_delete(struct net *net, struct arpreq *r,
 		return arp_req_delete_public(net, r, dev);
 
 	ip = ((struct sockaddr_in *)&r->arp_pa)->sin_addr.s_addr;
-	if (dev == NULL) {
+	if (!dev) {
 		struct rtable *rt = ip_route_output(net, ip, 0, RTO_ONLINK, 0);
 		if (IS_ERR(rt))
 			return PTR_ERR(rt);
@@ -1206,7 +1212,7 @@ int arp_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 	if (r.arp_dev[0]) {
 		err = -ENODEV;
 		dev = __dev_get_by_name(net, r.arp_dev);
-		if (dev == NULL)
+		if (!dev)
 			goto out;
 
 		/* Mmmm... It is wrong... ARPHRD_NETROM==0 */
@@ -1259,7 +1265,7 @@ static int arp_netdev_event(struct notifier_block *this, unsigned long event,
 		/* Send bcast  ARP in neighbours to update arp tables */
 		rcu_read_lock();
 		in_dev = __in_dev_get_rcu(dev);
-		if (!in_dev)
+		if (!in_dev || !dev)
 		    goto out;
 
 		for (ifa = in_dev->ifa_list; ifa; ifa = ifa->ifa_next)
