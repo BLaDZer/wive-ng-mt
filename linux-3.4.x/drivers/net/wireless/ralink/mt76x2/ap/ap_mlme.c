@@ -444,6 +444,14 @@ VOID APMlmePeriodicExec(
 			    PeriodicScan = FALSE;
 	    }
 #endif
+
+	    /* hw not ready or disabled - skip scan */
+	    if (RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_HALT_IN_PROGRESS) ||
+		RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST) ||
+		RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_SUSPEND) ||
+		!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_START_UP))
+	    PeriodicScan = FALSE;
+
 	    /* after boot need force first scan at 15sec */
 	    if ((PeriodicScan && pAd->Mlme.OneSecPeriodicRound % 240 == 0) ||
 		    (pAd->Mlme.OneSecPeriodicRound % 15 == 0 && pAd->CommonCfg.RRMFirstScan == TRUE))

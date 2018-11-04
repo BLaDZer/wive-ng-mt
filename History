@@ -4362,6 +4362,6 @@
 63) kernel: net: igmp: remove camel case definitions.<br>
 64) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
 65) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-66) kernel: ralink_wifi: do not try aplci start if radio off.<br>
+66) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
 <br>
 <br>
