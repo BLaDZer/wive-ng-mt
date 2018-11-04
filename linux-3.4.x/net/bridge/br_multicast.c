@@ -953,19 +953,18 @@ static void br_multicast_query_received(struct net_bridge *br,
 					int saddr,
 					bool is_general_query)
 {
+	/* Based on RFC4541, section 2.1.1 IGMP Forwarding Rules,
+	 * the arrival port for IGMP Queries where the source address
+	 * is 0.0.0.0 should not be added to router port list.
+	 */
 	if (saddr && is_general_query)
 		mod_timer(&br->multicast_querier_timer,
 			  jiffies + br->multicast_querier_interval);
 	else if (timer_pending(&br->multicast_querier_timer))
 		return;
 
-	/* Based on RFC4541, section 2.1.1 IGMP Forwarding Rules,
-	 * the arrival port for IGMP Queries where the source address
-	 * is 0.0.0.0 should not be added to router port list.
-	 */
-	if ((saddr->proto == htons(ETH_P_IP) && saddr->u.ip4) ||
-	    saddr->proto == htons(ETH_P_IPV6))
-		br_multicast_mark_router(br, port);
+	if (saddr)
+	    br_multicast_mark_router(br, port);
 }
 
 static int br_ip4_multicast_query(struct net_bridge *br,
@@ -1111,7 +1110,15 @@ static int br_ip6_multicast_query(struct net_bridge *br,
 		goto out;
 	}
 
-	br_multicast_query_received(br, port, !ipv6_addr_any(&ip6h->saddr), is_general_query);
+	/* Recently a check was added which prevents marking of routers with zero source address,
+	    but for IPv6 that cannot happen as the relevant RFCs actually forbid such packets: RFC 2710 (MLDv1):
+	    "To be valid, the Query message MUST come from a link-local IPv6 Source Address, be at least 24 octets long,
+	     and have a correct MLD checksum." Same goes for RFC 3810. And also it can be seen as a requirement in ipv6_mc_check_mld_query()
+	     which is used by the bridge to validate the message before processing it. Thus any queries with :: source address won't be processed anyway.
+	     So just remove the check for zero IPv6 source address from the query processing function.
+	*/
+
+	br_multicast_query_received(br, port, /*!ipv6_addr_any(&ip6h->saddr) */ 1, is_general_query);
 
 	if (!group)
 		goto out;
