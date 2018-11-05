@@ -4332,40 +4332,41 @@
 33) webui: fix user permissions.<br>
 34) webui: fix check managment parametrs set.<br>
 35) webui: fix get current dns servers for wan config.<br>
-36) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
-37) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
-38) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
-39) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-40) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
-41) kernel: net: drop skb on failure in ip_check_defrag().<br>
-42) kernel: net: do not abort bulk send on BQL status.<br>
-43) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
-44) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
-45) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-46) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
-47) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
-48) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
-49) kernel: net: arp: honour gratuitous ARP _replies_<br>
-50) kernel: net: arp: decompose is_garp logic into a separate function.<br>
-51) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
-52) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-53) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-54) kernel: net: arp: decrease retrans time to 1sec.<br>
-55) kernel: net: arp: correct return value of arp_rcv.<br>
-56) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-57) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-58) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-59) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-60) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-61) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-62) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-63) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-64) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-65) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
-66) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
-67) kernel: net: igmp: remove camel case definitions.<br>
-68) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
-69) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-70) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+36) kernel: crypto: algapi - fix NULL dereference in crypto_remove_spawns().<br>
+37) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+38) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
+39) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
+40) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+41) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
+42) kernel: net: drop skb on failure in ip_check_defrag().<br>
+43) kernel: net: do not abort bulk send on BQL status.<br>
+44) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
+45) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
+46) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
+47) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
+48) kernel: net: fq_codel: add batch ability to fq_codel_drop().<br>
+49) kernel: net: fq_codel match flows_cnt to limit sizing.<br>
+50) kernel: net: arp: honour gratuitous ARP _replies_<br>
+51) kernel: net: arp: decompose is_garp logic into a separate function.<br>
+52) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
+53) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+54) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+55) kernel: net: arp: decrease retrans time to 1sec.<br>
+56) kernel: net: arp: correct return value of arp_rcv.<br>
+57) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+58) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+59) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+60) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+61) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+62) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+63) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+64) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+65) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+66) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
+67) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
+68) kernel: net: igmp: remove camel case definitions.<br>
+69) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
+70) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+71) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
 <br>
 <br>
