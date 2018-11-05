@@ -8841,6 +8841,7 @@ INT Set_PacketSourceDeleteEntry(
 #endif /* CONFIG_WIFI_PKT_FWD */
 
 #ifdef DOT11_N_SUPPORT
+#ifdef DBG
 void assoc_ht_info_debugshow(
 	IN PRTMP_ADAPTER pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
@@ -8914,7 +8915,7 @@ void assoc_ht_info_debugshow(
 #endif /* DOT11N_DRAFT3 */
 	}
 }
-
+#endif
 
 INT	Set_BurstMode_Proc(
 	IN	PRTMP_ADAPTER	pAd, 
@@ -8936,6 +8937,7 @@ INT	Set_BurstMode_Proc(
 
 
 #ifdef DOT11_VHT_AC
+#ifdef DBG
 VOID assoc_vht_info_debugshow(
 	IN RTMP_ADAPTER *pAd,
 	IN MAC_TABLE_ENTRY *pEntry,
@@ -8996,6 +8998,7 @@ VOID assoc_vht_info_debugshow(
 	DBGPRINT(RT_DEBUG_TRACE, ("\n"));
 
 }
+#endif
 #endif /* DOT11_VHT_AC */
 
 

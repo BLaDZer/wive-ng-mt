@@ -57,8 +57,9 @@ static void ap_assoc_info_debugshow(
 #ifdef DOT11_N_SUPPORT
 	if (ie_list->ht_cap_len && WMODE_CAP_N(pAd->CommonCfg.PhyMode))
 	{
+#ifdef DBG
 		assoc_ht_info_debugshow(pAd, pEntry, ie_list->ht_cap_len, &ie_list->HTCapability);
-
+#endif
 		printk("\n%s - HT support STA. Update AP OperaionMode=%d, fAnyStationIsLegacy=%d, fAnyStation20Only=%d, fAnyStationNonGF=%d\n\n",
 					sAssoc,
 					pAd->CommonCfg.AddHTInfo.AddHtInfo2.OperaionMode,
@@ -72,7 +73,9 @@ static void ap_assoc_info_debugshow(
 			(pAd->CommonCfg.Channel > 14))
 		{
 			printk("%s - VHT STA\n", sAssoc);
+#ifdef DBG
 			assoc_vht_info_debugshow(pAd, pEntry, &ie_list->vht_cap, NULL);
+#endif
 		}
 #endif /* DOT11_VHT_AC */
 
