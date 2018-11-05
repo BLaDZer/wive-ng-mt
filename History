@@ -4356,17 +4356,18 @@
 57) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
 58) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
 59) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-60) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-61) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-62) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-63) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-64) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-65) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-66) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
-67) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
-68) kernel: net: igmp: remove camel case definitions.<br>
-69) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
-70) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-71) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+60) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
+61) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+62) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+63) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+64) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+65) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+66) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+67) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
+68) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
+69) kernel: net: igmp: remove camel case definitions.<br>
+70) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
+71) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+72) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
 <br>
 <br>
