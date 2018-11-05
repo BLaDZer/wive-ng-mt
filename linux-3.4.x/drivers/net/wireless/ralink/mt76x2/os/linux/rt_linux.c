@@ -152,6 +152,9 @@ static inline VOID __RTMP_SetPeriodicTimer(
 	IN OS_NDIS_MINIPORT_TIMER * pTimer,
 	IN unsigned long timeout)
 {
+	if (timer_pending(pTimer))
+		return;
+
 	timeout = ((timeout * OS_HZ) / 1000);
 	pTimer->expires = jiffies + timeout;
 	add_timer(pTimer);
@@ -405,8 +408,11 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 */
 VOID RTMPFreeNdisPacket(VOID *pReserved, PNDIS_PACKET pPacket)
 {
-	dev_kfree_skb_any(RTPKT_TO_OSPKT(pPacket));
-	MEM_DBG_PKT_FREE_INC(pPacket);
+	if (pPacket) {
+	    dev_kfree_skb_any(RTPKT_TO_OSPKT(pPacket));
+	    MEM_DBG_PKT_FREE_INC(pPacket);
+	    pPacket = NULL;
+	}
 }
 
 
@@ -2754,8 +2760,13 @@ VOID RTMP_SetPeriodicTimer(NDIS_MINIPORT_TIMER *pTimerOrg, ULONG timeout)
 	OS_NDIS_MINIPORT_TIMER *pTimer;
 
 	pTimer = (OS_NDIS_MINIPORT_TIMER *) (pTimerOrg->pContent);
-	if (pTimer)
+
+	if (pTimer) {
+		if (timer_pending(pTimer))
+			return;
+
 		__RTMP_SetPeriodicTimer(pTimer, timeout);
+	}
 }
 
 
