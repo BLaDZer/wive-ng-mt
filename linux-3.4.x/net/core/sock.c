@@ -1635,7 +1635,8 @@ struct sk_buff *sock_alloc_send_pskb(struct sock *sk, unsigned long header_len,
 		timeo = sock_wait_for_wmem(sk, timeo);
 	}
 
-	skb_set_owner_w(skb, sk);
+	if (skb)
+	    skb_set_owner_w(skb, sk);
 	return skb;
 
 interrupted:
