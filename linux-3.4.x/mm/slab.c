@@ -3286,7 +3286,7 @@ static void *cache_alloc_debugcheck_after(struct kmem_cache *cachep,
 
 static bool slab_should_failslab(struct kmem_cache *cachep, gfp_t flags)
 {
-	if (cachep == &cache_cache)
+	if (unlikely(cachep == &cache_cache))
 		return false;
 
 	return should_failslab(obj_size(cachep), flags, cachep->flags);
