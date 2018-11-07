@@ -579,7 +579,6 @@ struct tc_netem_gemodel {
 enum {
 	TCA_DRR_UNSPEC,
 	TCA_DRR_QUANTUM,
-	TCA_FQ_CODEL_DROP_BATCH_SIZE,
 	__TCA_DRR_MAX
 };
 

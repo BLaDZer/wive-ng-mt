@@ -58,7 +58,6 @@ struct fq_codel_sched_data {
 	u32		flows_cnt;	/* number of flows */
 	u32		perturbation;	/* hash perturbation */
 	u32		quantum;	/* psched_mtu(qdisc_dev(sch)); */
-	u32		drop_batch_size;
 	struct codel_params cparams;
 	struct codel_stats cstats;
 	u32		drop_overlimit;
@@ -138,20 +137,17 @@ static inline void flow_queue_add(struct fq_codel_flow *flow,
 	skb->next = NULL;
 }
 
-static unsigned int fq_codel_drop(struct Qdisc *sch, unsigned int max_packets)
+static unsigned int fq_codel_drop(struct Qdisc *sch)
 {
 	struct fq_codel_sched_data *q = qdisc_priv(sch);
 	struct sk_buff *skb;
 	unsigned int maxbacklog = 0, idx = 0, i, len;
 	struct fq_codel_flow *flow;
-	unsigned int threshold;
 
-	/* Queue is full! Find the fat flow and drop packet(s) from it.
+	/* Queue is full! Find the fat flow and drop packet from it.
 	 * This might sound expensive, but with 1024 flows, we scan
 	 * 4KB of memory, and we dont need to handle a complex tree
 	 * in fast path (packet queue/enqueue) with many cache misses.
-	 * In stress mode, we'll try to drop 64 packets from the flow,
-	 * amortizing this linear lookup to one cache line per drop.
 	 */
 	for (i = 0; i < q->flows_cnt; i++) {
 		if (q->backlogs[i] > maxbacklog) {
@@ -159,27 +155,15 @@ static unsigned int fq_codel_drop(struct Qdisc *sch, unsigned int max_packets)
 			idx = i;
 		}
 	}
-
-	/* Our goal is to drop half of this fat flow backlog */
-	threshold = maxbacklog >> 1;
-
 	flow = &q->flows[idx];
-
-	len = 0;
-	i = 0;
-	do {
-		skb = dequeue_head(flow);
-		len += qdisc_pkt_len(skb);
-		kfree_skb(skb);
-	} while (++i < max_packets && len < threshold);
-
-	flow->dropped += i;
-
+	skb = dequeue_head(flow);
+	len = qdisc_pkt_len(skb);
 	q->backlogs[idx] -= len;
 	kfree_skb(skb);
-	sch->qstats.drops += i;
+	sch->q.qlen--;
+	sch->qstats.drops++;
 	sch->qstats.backlog -= len;
-	sch->q.qlen -= i;
+	flow->dropped++;
 	return idx;
 }
 
@@ -188,14 +172,14 @@ static unsigned int fq_codel_qdisc_drop(struct Qdisc *sch)
 	unsigned int prev_backlog;
 
 	prev_backlog = sch->qstats.backlog;
-	fq_codel_drop(sch, 1U);
+	fq_codel_drop(sch);
 	return prev_backlog - sch->qstats.backlog;
 }
 
 static int fq_codel_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 {
 	struct fq_codel_sched_data *q = qdisc_priv(sch);
-	unsigned int idx, prev_backlog, prev_qlen;
+	unsigned int idx;
 	struct fq_codel_flow *flow;
 	int uninitialized_var(ret);
 
@@ -222,22 +206,16 @@ static int fq_codel_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	if (++sch->q.qlen <= sch->limit)
 		return NET_XMIT_SUCCESS;
 
- 	prev_backlog = sch->qstats.backlog;
-	prev_qlen = sch->q.qlen;
-
-	/* fq_codel_drop() is quite expensive, as it performs a linear search
-	 * in q->backlogs[] to find a fat flow.
-	 * So instead of dropping a single packet, drop half of its backlog
-	 * with a 64 packets limit to not add a too big cpu spike here.
+	q->drop_overlimit++;
+	/* Return Congestion Notification only if we dropped a packet
+	 * from this flow.
 	 */
-	ret = fq_codel_drop(sch, q->drop_batch_size);
+	if (fq_codel_drop(sch) == idx)
+		return NET_XMIT_CN;
 
-	q->drop_overlimit += prev_qlen - sch->q.qlen;
-
-	/* As we dropped packet(s), better let upper stack know this */
-	qdisc_tree_decrease_qlen(sch, prev_qlen - sch->q.qlen);
-
-	return ret == idx ? NET_XMIT_CN : NET_XMIT_SUCCESS;
+	/* As we dropped a packet, better let upper stack know this */
+	qdisc_tree_decrease_qlen(sch, 1);
+	return NET_XMIT_SUCCESS;
 }
 
 /* This is the specific function called from codel_dequeue()
@@ -342,7 +320,6 @@ static const struct nla_policy fq_codel_policy[TCA_FQ_CODEL_MAX + 1] = {
 	[TCA_FQ_CODEL_ECN]	= { .type = NLA_U32 },
 	[TCA_FQ_CODEL_FLOWS]	= { .type = NLA_U32 },
 	[TCA_FQ_CODEL_QUANTUM]	= { .type = NLA_U32 },
-	[TCA_FQ_CODEL_DROP_BATCH_SIZE] = { .type = NLA_U32 },
 };
 
 static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt)
@@ -387,9 +364,6 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt)
 
 	if (tb[TCA_FQ_CODEL_QUANTUM])
 		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
-
-	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
-		q->drop_batch_size = min(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
 
 	while (sch->q.qlen > sch->limit) {
 		struct sk_buff *skb = fq_codel_dequeue(sch);
@@ -441,25 +415,13 @@ static int fq_codel_init(struct Qdisc *sch, struct nlattr *opt)
 	struct fq_codel_sched_data *q = qdisc_priv(sch);
 	int i;
 
-/* MTK/Ralink radio drivers prevent ring overload hack and tune perf */
-#if defined (CONFIG_RALINK_MT7621)
-	sch->limit = 4 * 1024;
-	q->flows_cnt = (sch->limit / 8);
-#elif defined (CONFIG_RALINK_RT2880) || \
-    defined (CONFIG_RALINK_RT3352) || \
-    defined (CONFIG_RALINK_RT3052) || \
-    defined (CONFIG_RALINK_RT5350) || \
-    defined (CONFIG_RALINK_RT3883) || \
-    defined (CONFIG_RALINK_MT7620)
-	sch->limit = 2 * 1024;
-	q->flows_cnt = (sch->limit / 8);
-#else
-	sch->limit = 10 * 1024;
+	sch->limit = 1024;
 	q->flows_cnt = 1024;
-#endif
-
-	q->drop_batch_size = 64;
+#if 1
 	q->quantum = psched_mtu(qdisc_dev(sch));
+#else
+	q->quantum = 300;
+#endif
 	q->perturbation = random32();
 	INIT_LIST_HEAD(&q->new_flows);
 	INIT_LIST_HEAD(&q->old_flows);
@@ -514,8 +476,6 @@ static int fq_codel_dump(struct Qdisc *sch, struct sk_buff *skb)
 			q->cparams.ecn) ||
 	    nla_put_u32(skb, TCA_FQ_CODEL_QUANTUM,
 			q->quantum) ||
-	    nla_put_u32(skb, TCA_FQ_CODEL_DROP_BATCH_SIZE,
-			q->drop_batch_size) ||
 	    nla_put_u32(skb, TCA_FQ_CODEL_FLOWS,
 			q->flows_cnt))
 		goto nla_put_failure;
