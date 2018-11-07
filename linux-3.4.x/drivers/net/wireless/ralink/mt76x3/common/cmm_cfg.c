@@ -2640,7 +2640,7 @@ INT	Set_RadioOn_Proc(
 	    } else {
 		MacTableReset(pAd, 1);
 		RtmpusecDelay(3000);
-
+#if 0
 		/*  Stop send TX packets */
 		RTMP_OS_NETDEV_STOP_QUEUE(pAd->net_dev);
 #ifdef CONFIG_AP_SUPPORT
@@ -2659,6 +2659,7 @@ INT	Set_RadioOn_Proc(
 			}
 		}
 #endif /* CONFIG_AP_SUPPORT */
+#endif
 		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DEQUEUEPACKET);
 		RtmpusecDelay(3000);
 		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF);
