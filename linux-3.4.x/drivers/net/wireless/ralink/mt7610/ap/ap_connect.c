@@ -49,6 +49,9 @@ BOOLEAN BeaconTransmitRequired(
 	do
 	{
 
+	if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RADIO_OFF)))
+		break;
+
 #ifdef DOT11K_RRM_SUPPORT
 #ifdef QUIET_SUPPORT_TXSTOP
 	if ((apidx < pAd->ApCfg.BssidNum)

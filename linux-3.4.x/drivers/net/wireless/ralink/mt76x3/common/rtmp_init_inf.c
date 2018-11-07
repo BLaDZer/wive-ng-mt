@@ -516,12 +516,12 @@ int rt28xx_init(VOID *pAdSrc, RTMP_STRING *pDefaultMac, RTMP_STRING *pHostName)
 			RTMP_IRQ_ENABLE(pAd);
 
 #ifdef LOAD_FW_ONE_TIME
-	{
-		UINT32 value;
-		RTMP_IO_READ32(pAd, AGG_TEMP, &value);
-		value &= 0x0000ffff;
-		RTMP_IO_WRITE32(pAd, AGG_TEMP, value);
-	}
+			{
+				UINT32 value;
+				RTMP_IO_READ32(pAd, AGG_TEMP, &value);
+				value &= 0x0000ffff;
+				RTMP_IO_WRITE32(pAd, AGG_TEMP, value);
+			}
 #endif /* LOAD_FW_ONE_TIME */
 
 #endif /* RTMP_MAC_PCI */
@@ -574,8 +574,6 @@ int rt28xx_init(VOID *pAdSrc, RTMP_STRING *pDefaultMac, RTMP_STRING *pHostName)
 	pAd->bUSBIOTReady = TRUE;
 #endif
 
-	/* Set mlme periodic timer*/
-	RTMPSetTimer(&pAd->Mlme.PeriodicTimer, MLME_TASK_EXEC_INTV);
 	DBGPRINT_S(("<==== rt28xx_init, Status=%x\n", Status));
 
 	return TRUE;

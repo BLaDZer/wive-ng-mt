@@ -1635,7 +1635,7 @@ VOID CmdIORead32(struct _RTMP_ADAPTER *pAd, UINT32 Offset, UINT32 *Value)
 static VOID EventExtCmdResult(struct cmd_msg *msg, char *Data, UINT16 Len)
 {
 	struct _EVENT_EXT_CMD_RESULT_T *EventExtCmdResult = (struct _EVENT_EXT_CMD_RESULT_T *)Data;
-	RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)msg->priv;
+	//RTMP_ADAPTER *pAd = (RTMP_ADAPTER *)msg->priv;
 
 	DBGPRINT(RT_DEBUG_INFO, ("%s: EventExtCmdResult.ucExTenCID = 0x%x\n",
 									__FUNCTION__, EventExtCmdResult->ucExTenCID));

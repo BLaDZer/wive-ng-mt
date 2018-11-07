@@ -2597,23 +2597,77 @@ INT	Set_RadioOn_Proc(
 	radio = simple_strtol(arg, 0, 10);
 
 	pAd->iwpriv_command = FALSE;
+#ifdef CONFIG_ATE
+	if (ATE_ON(pAd)) {
 #ifdef MT_MAC
-	if (pAd->chipCap.hif_type == HIF_MT) {
-		pAd->iwpriv_command = TRUE;		
-	}
+	    if (pAd->chipCap.hif_type == HIF_MT) {
+		pAd->iwpriv_command = TRUE;
+	    }
 #endif /* MT_MAC */
-
-	if (radio)
-	{
+	    if (radio)
+	    {
 		MlmeRadioOn(pAd);
 		DBGPRINT(RT_DEBUG_OFF, ("==>Set_RadioOn_Proc (ON)\n"));
-	}
-	else
-	{
+	    }
+	    else
+	    {
+		MacTableReset(pAd, 1);
+		RtmpusecDelay(3000);
 		MlmeRadioOff(pAd);
 		DBGPRINT(RT_DEBUG_OFF, ("==>Set_RadioOn_Proc (OFF)\n"));
-	}
+	    }
+	} else
+#endif /* CONFIG_ATE*/
+	{
+	    /* workaround mcu freez and pcidev lost with kernel crash after few time radio off
+		MCU microcode bug. Only software block rings and BCN processing, not disable BBP */
+	    if (radio) {
+#ifdef MT_MAC
+		if (pAd->chipCap.hif_type == HIF_MT) {
+		    pAd->iwpriv_command = TRUE;
+		}
+#endif /* MT_MAC */
+#ifdef LED_CONTROL_SUPPORT
+		RTMPSetLED(pAd, LED_RADIO_ON);
+#endif /* LED_CONTROL_SUPPORT */
+		MacTableReset(pAd, 1);
+		RtmpusecDelay(3000);
+		MlmeRadioOff(pAd);
+		RtmpusecDelay(3000);
+		RTMPSetLED(pAd, LED_RADIO_ON);
+		MlmeRadioOn(pAd);
+		DBGPRINT(RT_DEBUG_OFF, ("==>Set_RadioOn_Proc (ON)\n"));
+	    } else {
+		MacTableReset(pAd, 1);
+		RtmpusecDelay(3000);
 
+		/*  Stop send TX packets */
+		RTMP_OS_NETDEV_STOP_QUEUE(pAd->net_dev);
+#ifdef CONFIG_AP_SUPPORT
+		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
+		{
+			INT32 IdBss, MaxNumBss = pAd->ApCfg.BssidNum;
+
+			if (MaxNumBss > MAX_MBSSID_NUM(pAd))
+				MaxNumBss = MAX_MBSSID_NUM(pAd);
+
+			/* first IdBss must not be 0 (BSS0), must be 1 (BSS1) */
+			for (IdBss = FIRST_MBSSID; IdBss < MAX_MBSSID_NUM(pAd); IdBss++)
+			{
+				if (pAd->ApCfg.MBSSID[IdBss].wdev.if_dev)
+				    RTMP_OS_NETDEV_STOP_QUEUE(pAd->ApCfg.MBSSID[IdBss].wdev.if_dev);
+			}
+		}
+#endif /* CONFIG_AP_SUPPORT */
+		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_DISABLE_DEQUEUEPACKET);
+		RtmpusecDelay(3000);
+		RTMP_SET_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF);
+#ifdef LED_CONTROL_SUPPORT
+		RTMPSetLED(pAd, LED_RADIO_OFF);
+#endif /* LED_CONTROL_SUPPORT */
+		DBGPRINT(RT_DEBUG_OFF, ("==>Set_RadioOn_Proc (OFF)\n"));
+	    }
+	}
 	return TRUE;
 }
 

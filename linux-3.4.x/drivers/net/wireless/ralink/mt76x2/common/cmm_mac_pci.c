@@ -2733,7 +2733,7 @@ VOID RT28xxPciMlmeRadioOFF(RTMP_ADAPTER *pAd)
 #ifdef AP_SCAN_SUPPORT
 	{
 		BOOLEAN Cancelled;
-		RTMPCancelTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
+		RTMPReleaseTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
 	}
 #endif /* AP_SCAN_SUPPORT */
 #endif /* CONFIG_AP_SUPPORT */

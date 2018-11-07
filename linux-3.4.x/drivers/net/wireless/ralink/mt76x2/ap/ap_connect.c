@@ -45,6 +45,9 @@ BOOLEAN BeaconTransmitRequired(RTMP_ADAPTER *pAd, INT apidx, MULTISSID_STRUCT *p
 
 	do
 	{
+		if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RADIO_OFF)))
+			break;
+
 #ifdef WDS_SUPPORT
 		if (pAd->WdsTab.Mode == WDS_BRIDGE_MODE)
 			break;

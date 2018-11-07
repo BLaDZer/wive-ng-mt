@@ -434,7 +434,7 @@ void MT76xx_PciMlmeRadioOFF(RTMP_ADAPTER *pAd)
 	{
 		BOOLEAN		Cancelled;
 
-		RTMPCancelTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
+		RTMPReleaseTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
 	}
 #endif /* AP_SCAN_SUPPORT */
 

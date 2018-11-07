@@ -46,6 +46,9 @@ BOOLEAN BeaconTransmitRequired(RTMP_ADAPTER *pAd, INT apidx, BSS_STRUCT *pMbss)
 
 	do
 	{
+		if (RTMP_TEST_FLAG(pAd, (fRTMP_ADAPTER_RADIO_OFF)))
+			break;
+
 #ifdef WDS_SUPPORT
 		if (pAd->WdsTab.Mode == WDS_BRIDGE_MODE)
 			break;
@@ -554,8 +557,8 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 
 	if(!BeaconTransmitRequired(pAd, apidx, pMbss)) {
 #ifdef BCN_OFFLOAD_SUPPORT
-        RT28xx_UpdateBeaconToMcu(pAd, apidx, FALSE, 0, 0, 0);
-        pMbss->updateEventIsTriggered = FALSE;
+    		RT28xx_UpdateBeaconToMcu(pAd, apidx, FALSE, 0, 0, 0);
+    		pMbss->updateEventIsTriggered = FALSE;
 #endif /* BCN_OFFLOAD_SUPPORT */
 		return;
     }
@@ -591,7 +594,7 @@ VOID APUpdateBeaconFrame(RTMP_ADAPTER *pAd, INT apidx)
 #endif /* RTMP_PCI_SUPPORT */
 
 	if (pMbss->bcn_buf.bcn_state != BCN_TX_IDLE) {
-		if (!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_HALT_IN_PROGRESS)) {
+		if (!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_HALT_IN_PROGRESS) && !RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_RADIO_OFF)) {
 			DBGPRINT(RT_DEBUG_WARN, ("%s()=>BSS%d:BcnPkt not idle(%d)!\n",
 							__FUNCTION__, apidx, pMbss->bcn_buf.bcn_state));
 		}

@@ -869,6 +869,9 @@ NDIS_STATUS MlmeInit(RTMP_ADAPTER *pAd)
 		/* Init mlme periodic timer*/
 		RTMPInitTimer(pAd, &pAd->Mlme.PeriodicTimer, GET_TIMER_FUNCTION(MlmePeriodicExec), pAd, TRUE);
 
+		/* Set mlme periodic timer*/
+		RTMPSetTimer(&pAd->Mlme.PeriodicTimer, MLME_TASK_EXEC_INTV);
+
 		/* software-based RX Antenna diversity*/
 		RTMPInitTimer(pAd, &pAd->Mlme.RxAntEvalTimer, GET_TIMER_FUNCTION(AsicRxAntEvalTimeout), pAd, FALSE);
 
@@ -1046,7 +1049,7 @@ VOID MlmeHalt(RTMP_ADAPTER *pAd)
 #endif /* WSC_AP_SUPPORT */
 		}
 #endif /* APCLI_SUPPORT */
-		RTMPCancelTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
+		RTMPReleaseTimer(&pAd->MlmeAux.APScanTimer, &Cancelled);
 	}
 
 #endif /* CONFIG_AP_SUPPORT */

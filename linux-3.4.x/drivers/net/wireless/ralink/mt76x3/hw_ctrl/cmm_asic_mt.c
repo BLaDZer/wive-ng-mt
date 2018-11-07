@@ -210,24 +210,22 @@ NTSTATUS MtCmdAsicUpdateProtect(RTMP_ADAPTER *pAd, PCmdQElmt CMDQelmt)
 
 	if (pAd->chipCap.hif_type == HIF_MT) {
 		/* Config ASIC RTS threshold register*/
-    	RTMP_IO_READ32(pAd, AGG_PCR1, &Value);
+    	    RTMP_IO_READ32(pAd, AGG_PCR1, &Value);
 	    Value &= ~RTS_THRESHOLD_MASK;
-        Value &= ~RTS_PKT_NUM_THRESHOLD_MASK;
+    	    Value &= ~RTS_PKT_NUM_THRESHOLD_MASK;
 
-#if 0
 
-		if ((
+	if ((
 #ifdef DOT11_N_SUPPORT
             (pAd->CommonCfg.BACapability.field.AmsduEnable) ||
 #endif /* DOT11_N_SUPPORT */
             (pAd->bDisableRtsProtect == TRUE))
             && (pAd->CommonCfg.RtsThreshold == MAX_RTS_THRESHOLD))
         {
-            Value |= RTS_THRESHOLD(0xFFFFF);
-            Value |= RTS_PKT_NUM_THRESHOLD(0x7F);
+            Value |= RTS_THRESHOLD(pAd->CommonCfg.RtsThreshold);
+            Value |= RTS_PKT_NUM_THRESHOLD(3);
         }
         else
-#endif
         {
 #ifdef APCLI_CERT_SUPPORT
             if (pAd->bApCliCertForceRTS)
@@ -235,24 +233,19 @@ NTSTATUS MtCmdAsicUpdateProtect(RTMP_ADAPTER *pAd, PCmdQElmt CMDQelmt)
             else
 #endif /* APCLI_CERT_SUPPORT */
             Value |= RTS_THRESHOLD(pAd->CommonCfg.RtsThreshold);
-			
             Value |= RTS_PKT_NUM_THRESHOLD(1);
-
-
         }
 
-		RTMP_IO_WRITE32(pAd, AGG_PCR1, Value);
+	RTMP_IO_WRITE32(pAd, AGG_PCR1, Value);
 
 		/* Handle legacy(B/G) protection*/
-	    if (bDisableBGProtect)
+	if (bDisableBGProtect)
     	{
-			RTMP_IO_READ32(pAd, AGG_PCR, &Value);
-			Value &= ~ERP_PROTECTION_MASK;
-            RTMP_IO_WRITE32(pAd, AGG_PCR, Value);
-    	    pAd->FlgCtsEnabled = 0; /* CTS-self is not used */
-	    }
-    	else
-	    {
+		RTMP_IO_READ32(pAd, AGG_PCR, &Value);
+		Value &= ~ERP_PROTECTION_MASK;
+        	RTMP_IO_WRITE32(pAd, AGG_PCR, Value);
+    		pAd->FlgCtsEnabled = 0; /* CTS-self is not used */
+	} else {
 	        pAd->FlgCtsEnabled = 1; /* CTS-self is used */
     	}
 
@@ -971,14 +964,6 @@ INT AsicGetTsfTime(RTMP_ADAPTER *pAd, UINT32 *high_part, UINT32 *low_part)
 
 	return TRUE;
 }
-
-
-#ifdef LINUX
-#ifdef MT7603_WLAN_HOOK_SUPPORT
-EXPORT_SYMBOL(AsicGetTsfTime);
-#endif /* MT7603_WLAN_HOOK_SUPPORT */
-#endif /* LINUX */
-
 
 #ifdef CONFIG_AP_SUPPORT
 static UCHAR    check_point_num = 0;

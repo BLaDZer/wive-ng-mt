@@ -6511,6 +6511,8 @@ INT	Set_RadioOn_Proc(
 	}
 	else
 	{
+		MacTableReset(pAd);
+		RTMPusecDelay(3000);
 		MlmeRadioOff(pAd);
 		DBGPRINT(RT_DEBUG_TRACE, ("==>Set_RadioOn_Proc (OFF)\n"));
 	}
