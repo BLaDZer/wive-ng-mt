@@ -4378,12 +4378,13 @@
 79) kernel: net: net_sched: red: avoid illegal values.<br>
 80) kernel: net: xfrm: return error on unknown encap_type in init_state.<br>
 81) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
-82) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-83) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-84) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-85) kernel: ralink_wifi: rework timer race fixup.<br>
-86) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-87) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-88) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+82) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
+83) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+84) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+85) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+86) kernel: ralink_wifi: rework timer race fixup.<br>
+87) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+88) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+89) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
