@@ -4386,12 +4386,13 @@
 87) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
 88) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
 89) kernel: usb: usbfs: filter flags passed in from user space.<br>
-90) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-91) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-92) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-93) kernel: ralink_wifi: rework timer race fixup.<br>
-94) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-95) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-96) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+90) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
+91) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+92) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+93) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+94) kernel: ralink_wifi: rework timer race fixup.<br>
+95) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+96) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+97) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
