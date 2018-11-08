@@ -4381,12 +4381,13 @@
 82) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
 83) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
 84) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
-85) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-86) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-87) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-88) kernel: ralink_wifi: rework timer race fixup.<br>
-89) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-90) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-91) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+85) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
+86) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+87) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+88) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+89) kernel: ralink_wifi: rework timer race fixup.<br>
+90) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+91) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+92) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
