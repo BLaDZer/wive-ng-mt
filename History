@@ -4374,13 +4374,14 @@
 75) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
 76) kernel: net: igmp: remove camel case definitions.<br>
 77) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
-78) kernel: net: net_sched: red: Avoid devision by zero.<br>
-79) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-80) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-81) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-82) kernel: ralink_wifi: rework timer race fixup.<br>
-83) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-84) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-85) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+78) kernel: net: net_sched: red: avoid devision by zero.<br>
+79) kernel: net: net_sched: red: avoid illegal values.<br>
+80) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+81) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+82) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+83) kernel: ralink_wifi: rework timer race fixup.<br>
+84) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+85) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+86) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
