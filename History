@@ -4378,18 +4378,19 @@
 79) kernel: net: net_sched: red: avoid illegal values.<br>
 80) kernel: net: xfrm: return error on unknown encap_type in init_state.<br>
 81) kernel: scsi: dma-mapping: always provide dma_get_cache_alignment.<br>
-82) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
-83) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
-84) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
-85) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
-86) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
-87) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
-88) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-89) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-90) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-91) kernel: ralink_wifi: rework timer race fixup.<br>
-92) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-93) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-94) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+82) kernel: scsi: use dma_get_cache_alignment() as minimum DMA alignment.<br>
+83) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
+84) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
+85) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
+86) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
+87) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
+88) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
+89) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+90) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+91) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+92) kernel: ralink_wifi: rework timer race fixup.<br>
+93) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+94) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+95) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
