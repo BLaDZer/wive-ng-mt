@@ -381,6 +381,11 @@ fulldump
 /user/haveged/Makefile
 /user/haveged/Makefile.in
 /user/haveged/configure
+/user/haveged/ent/Makefile
+/user/haveged/init.d/Makefile
+/user/haveged/man/Makefile
+/user/haveged/nist/Makefile
+/user/haveged/src/Makefile
 
 #
 # exclude enerated files from kernel
