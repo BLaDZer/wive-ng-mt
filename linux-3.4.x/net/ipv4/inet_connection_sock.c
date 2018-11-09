@@ -692,7 +692,6 @@ int inet_csk_listen_start(struct sock *sk, const int nr_table_entries)
 	if (rc != 0)
 		return rc;
 
-	sk->sk_max_ack_backlog = 0;
 	sk->sk_ack_backlog = 0;
 	inet_csk_delack_init(sk);
 
