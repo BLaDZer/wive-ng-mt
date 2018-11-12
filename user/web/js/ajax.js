@@ -608,6 +608,8 @@ var displayServiceStatus_interval;
 
 function displayServiceStatus(services) {
 	var xmlHttp = createXMLHttp();
+	var LAN_IP = '<% getLanIp(); %>';
+
 	if (xmlHttp) {
 		xmlHttp.onreadystatechange = function() {
 			if (xmlHttp.readyState == 4) {

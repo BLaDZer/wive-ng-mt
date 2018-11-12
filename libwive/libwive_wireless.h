@@ -16,6 +16,8 @@ char* getPhyMode(int Mode);
 int getMCS(MACHTTRANSMIT_SETTING HTSetting);
 int getWlanRate(MACHTTRANSMIT_SETTING HTSetting);
 
+char* getWlanRadioModuleName(int radio_module_ind);
+
 int getWlanStationTable(RT_802_11_MAC_TABLE* table, int radio_module_ind);
 int getWlanStationTableIf(RT_802_11_MAC_TABLE* table, char *if_name);
 

@@ -221,6 +221,8 @@ var services_dictionary = {
 	'services misc hwnat over'		: 'Hardware NAT threshold must be a value between 0 and 500',
 	'services misc http over'		: 'HTTP port must be a value between 1 and 65535',
 	'services misc ssh over'		: 'SSH port must be a value between 1 and 65535',
+	'services misc http invalid pass'	: 'HTTP remote WAN management is denied when using the default administrator password!',
+	'services misc ssh invalid pass'	: 'SSH remote WAN management is denied when using the default administrator password!',
 	'services misc irqbalance'		: 'IRQ per cpu core balance',
 	'services misc auto'			: 'Auto',
 	'services misc hw'			: 'HW Only',

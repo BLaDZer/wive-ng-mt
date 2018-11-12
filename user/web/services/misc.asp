@@ -227,6 +227,7 @@
 						form.hwnatThreshold.focus();
 						return false;
 					}
+
 				// HTTP Remote management
 				if (form.rmtHTTP.value > 0)
 				{
@@ -244,9 +245,17 @@
 						form.RemoteManagementPortHTTPS.focus();
 						return false;
 					}
+
+					if (form.rmtHTTP.value == '2' && NVRAM_Password == 'Admin') {
+						alert(_("services misc http invalid pass"));
+						form.rmtHTTP.focus();
+						return false;
+					}
 				}
+
 				// SSH Remote management
 				if (form.rmtSSH.value > 0)
+				{
 					if (!validateNum(form.RemoteSSHPort.value, false) || form.RemoteSSHPort.value < 0 || form.RemoteSSHPort.value > 65535) {
 						window.scrollTo(0, 0);
 						alert(_("services misc ssh over"));
@@ -254,6 +263,13 @@
 						form.RemoteSSHPort.focus();
 						return false;
 					}
+
+					if (form.rmtSSH.value == '2' && NVRAM_Password == 'Admin') {
+						alert(_("services misc ssh invalid pass"));
+						form.rmtSSH.focus();
+						return false;
+					}
+				}
 
 				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS) {
 					form.goaheadrestart.value = 0;

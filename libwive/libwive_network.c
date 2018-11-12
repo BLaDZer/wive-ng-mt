@@ -689,6 +689,73 @@ static int findRoutingRule(char *rrs, char *buf, const char *dest, const char *n
 	return -1;
 }
 
+#ifdef CONFIG_IPV6
+/* parseRoutingTableIPv6 - Generate routing rule table
+ *
+ * arg: (out) res_rule_num - output array length
+ * return: RoutingRule struct array (don't forget to free it afterwards) or NULL
+ */
+struct RoutingRuleIPv6* parseRoutingTableIPv6(int *res_rule_num)
+{
+	char   buff[512];
+	int    nl = 0;
+	int rule_num;
+
+	int res_arr_capacity = 32;
+	struct RoutingRuleIPv6 *table;
+
+	FILE *fp = fopen("/proc/net/ipv6_route", "r");
+	if (!fp)
+		return NULL;
+
+	table = calloc(res_arr_capacity,sizeof(struct RoutingRuleIPv6));
+
+	rule_num = 0;
+
+	while ((fgets(buff, sizeof(buff), fp)) != NULL)
+	{
+
+		if (nl > 0)
+		{
+			struct RoutingRuleIPv6* rule = &table[rule_num];
+
+			int nnn = sscanf(buff, "%32s %02x %32s %02x %32s %08x %08x %08x %08x %8s",
+						rule->dest, &rule->dest_prefix, rule->src, &rule->src_prefix, rule->next_hop,
+						&rule->metric, &rule->ref, &rule->use, &rule->flgs, rule->interface);
+
+			if (nnn != 10)
+			{
+				syslog(LOG_ERR, "format error, %s (%i)", __FUNCTION__, nnn);
+				fclose(fp);
+				return NULL;
+			}
+
+			rule_num++;
+
+			if (rule_num == res_arr_capacity)
+			{
+				res_arr_capacity += 32;
+				void* nnc = realloc(table,res_arr_capacity*sizeof(struct RoutingRuleIPv6));
+				if (nnc == NULL) {
+					syslog(LOG_ERR, "Memory allocation error, %s", __FUNCTION__);
+					break;
+				}
+				table = (struct RoutingRuleIPv6*)nnc;
+			}
+			table[rule_num].interface[0] = '\0';
+		}
+		nl++;
+	}
+
+	fclose(fp);
+
+	if (res_rule_num)
+		(*res_rule_num) = rule_num;
+
+	return table;
+}
+#endif
+
 /* parseRoutingTable - Generate routing rule table
  *
  * arg: rules_str          - semicolon-separated rule list string from NVRAM

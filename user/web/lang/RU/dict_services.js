@@ -221,6 +221,8 @@ var services_dictionary = {
 	'services misc hwnat over'		: 'Порог аппаратного NAT должен иметь значение от 0 до 500',
 	'services misc http over'		: 'HTTP порт должен иметь значение от 1 до 65535',
 	'services misc ssh over'		: 'SSH порт должен иметь значение от 1 до 65535',
+	'services misc http invalid pass'	: 'Удалённое управление через HTTP посредством WAN запрещено при использовании паролей доступа по умолчанию!',
+	'services misc ssh invalid pass'	: 'Удалённое управление через SSH посредством WAN запрещено при использовании паролей доступа по умолчанию!',
 	'services misc irqbalance'		: 'Распределение прерываний по ядрам',
 	'services misc auto'			: 'Автоматически',
 	'services misc hw'			: 'Только аппаратный',

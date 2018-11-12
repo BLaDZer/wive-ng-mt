@@ -336,6 +336,38 @@ static int getSysLogBuilt(webs_t *wp, char** params, int nparams)
 #endif
 }
 
+static int getLanIf(webs_t *wp, char** params, int nparams)
+{
+	return outWrite("%s", getLanIfName());
+}
+
+static int getWanIf(webs_t *wp, char** params, int nparams)
+{
+	return outWrite("%s", getWanIfName());
+}
+
+static int getWlanIf(webs_t *wp, char** params, int nparams)
+{
+	int num = 1;
+	if (nparams > 0) {
+		num = strToIntDef(params[0], 1);
+	}
+
+	char* name = getWlanRadioModuleName(num);
+
+	if (name != NULL)
+		return outWrite("%s", name);
+	else
+		return 0;
+}
+
+static int getVpnIf(webs_t *wp, char** params, int nparams)
+{
+	return outWrite("%s", getPPPIfName());
+}
+
+
+
 /*
  * description: write LAN ip address accordingly
  */
@@ -553,6 +585,40 @@ static int getWanGateway(webs_t *wp, char** params, int nparams)
 	return outWrite(T(""));
 }
 
+
+/*
+ * description: get routing table
+ */
+static int getRoutingTableIPv6(webs_t *wp, char** params, int nparams)
+{
+#ifdef CONFIG_IPV6
+	int i;
+	char  *rrs;
+
+	// Get routing table
+	int parsed_rule_count = 0;
+	struct RoutingRuleIPv6* table = parseRoutingTableIPv6(&parsed_rule_count);
+
+	if (table == NULL) {
+		syslog(LOG_ERR, "Routing table parse error in function %s", __FUNCTION__);
+		return -1;
+	}
+
+	for (i = 0 ; i < parsed_rule_count; i++) {
+		struct RoutingRuleIPv6 rule = table[i];
+		if (i > 0) outWrite(T(",\n"));
+/*
+		char* lanwanif = getLanWanNamebyIf(rule.interface);
+		if(!strcmp(lanwanif, "LAN") && strcmp(rule.interface, getLanIfName()) != 0)
+			lanwanif = rule.interface;
+*/
+
+		outWrite(T("[ '%s', '%s', %u, '%s', %u, '%s', %u, %u, %u, %u ]"), rule.interface, rule.dest, rule.dest_prefix, rule.src, rule.src_prefix, rule.next_hop, rule.metric, rule.ref, rule.use, rule.flgs);
+	}
+	free(table);
+#endif
+	return 0;
+}
 
 /*
  * description: get routing table
@@ -884,12 +950,13 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 	char* wifi_wan_inic	= websGetVar(wp, T("wifi_wan_inic"), T("0"));
 	char* vlan_lan		= websGetVar(wp, T("vlan_lan"), T("0"));
 	char* vlan_lan_isolate	= websGetVar(wp, T("vlan_lan_isolate"), T("0"));
+	char* vlan_lan_untag_isolate	= websGetVar(wp, T("vlan_lan_untag_isolate"), T("0"));
 	char* reboot		= websGetVar(wp, T("reboot"), T(""));
 	char* reset		= websGetVar(wp, T("reset"), T(""));
 
 	if (CHK_IF_DIGIT(reset, 1)) {
-		nvram_fromdef(RT2860_NVRAM, 6, "VlanWifiLan", "VlanWifiLanINIC", "VlanWifiWan", "VlanWifiWanINIC",
-						"VlanLan", "VlanLanIsolate");
+		nvram_fromdef(RT2860_NVRAM, 7, "VlanWifiLan", "VlanWifiLanINIC", "VlanWifiWan", "VlanWifiWanINIC", "VlanLan",
+						"VlanLanIsolate", "VlanUntagIsolate");
 	}
 	else {
 		nvram_init(RT2860_NVRAM);
@@ -899,6 +966,7 @@ static void setWlanLanVLAN(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp, "VlanWifiWanINIC", wifi_wan_inic);
 		ngx_nvram_bufset(wp, "VlanLan",         vlan_lan);
 		ngx_nvram_bufset(wp, "VlanLanIsolate",  vlan_lan_isolate);
+		ngx_nvram_bufset(wp, "VlanUntagIsolate",  vlan_lan_untag_isolate);
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
 	}
@@ -1521,6 +1589,7 @@ int asp_mod_internet_init()
 	aspDefineFunc(("getDns"), getDns, EVERYONE);
 	aspDefineFunc(("getIgmpProxyBuilt"), getIgmpProxyBuilt, EVERYONE);
 	aspDefineFunc(("getVPNBuilt"), getVPNBuilt, EVERYONE);
+	aspDefineFunc(("getLanIf"), getLanIf, EVERYONE);
 	aspDefineFunc(("getLanIp"), getLanIp, EVERYONE);
 	aspDefineFunc(("getLanMac"), getLanMac, EVERYONE);
 	aspDefineFunc(("getLanNetmask"), getLanNetmask, EVERYONE);
@@ -1534,9 +1603,13 @@ int asp_mod_internet_init()
 	aspDefineFunc(("getIntIp"), getIntIp, EVERYONE);
 	aspDefineFunc(("getWanIp"), getWanIp, EVERYONE);
 	aspDefineFunc(("getWanMac"), getWanMac, EVERYONE);
+	aspDefineFunc(("getWanIf"), getWanIf, EVERYONE);
+	aspDefineFunc(("getWlanIf"), getWlanIf, EVERYONE);
+	aspDefineFunc(("getVpnIf"), getVpnIf, EVERYONE);
 	aspDefineFunc(("getWanNetmask"), getWanNetmask, EVERYONE);
 	aspDefineFunc(("getWanGateway"), getWanGateway, EVERYONE);
 	aspDefineFunc(("getRoutingTable"), getRoutingTable, EVERYONE);
+	aspDefineFunc(("getRoutingTableIPv6"), getRoutingTableIPv6, EVERYONE);
 	aspDefineFunc(("getWDSBuilt"), getWDSBuilt, EVERYONE);
 	aspDefineFunc(("getMBSSIDBuilt"), getMBSSIDBuilt, EVERYONE);
 	aspDefineFunc(("getUSBBuilt"), getUSBBuilt, EVERYONE);

@@ -86,6 +86,25 @@ struct RoutingRule {
     int category;
 };
 
+#ifdef CONFIG_IPV6
+struct RoutingRuleIPv6 {
+    char dest[INET6_ADDRSTRLEN];
+    int dest_prefix;
+
+    char src[INET6_ADDRSTRLEN];
+    int src_prefix;
+
+    char next_hop[INET6_ADDRSTRLEN];
+
+    unsigned int metric;
+    unsigned int ref;
+    unsigned int use;
+    unsigned int flgs;
+
+    char interface[IFNAMSIZ];
+};
+#endif
+
 /*** Busybox leases.h ***/
 uint64_t hton64(uint64_t v);
 
@@ -137,6 +156,7 @@ void arplookup(char *ip, char *arp);
 int parse_portforward_rule(char* rulestr, struct PortForwardRule* rule, int rule_num);
 int parse_portfiltering_rule(char* rulestr, struct PortFilteringRule* rule, int rule_num);
 
+struct RoutingRuleIPv6* parseRoutingTableIPv6(int *res_rule_num);
 struct RoutingRule* parseRoutingTable(char* rules_str, int *res_rule_num);
 int removeRoutingRuleNvram(const char *iftype, const char *dest, const char *netmask, const char *gw);
 void addRoutingRuleNvram(const char *iftype, const char *dest, const char *netmask, const char *gw, const char *ifname, const char *custom_if, const char *comment);

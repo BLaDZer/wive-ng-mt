@@ -111,7 +111,7 @@ int cwmp_conf_get(const char * key, char *value)
     /* get nvram value */
     TRsnprintf(nvram_name, sizeof(nvram_name), "%s_%s", s, k);
     nvram_val = cwmp_nvram_get(nvram_name);
-    if (nvram_val == NULL || nvram_val[0] == NULL) {
+    if (nvram_val == NULL || nvram_val[0] == '\0') {
         char _val[512] = {};
         ini_gets(s, k, NULL, _val, sizeof(_val), cwmp_conf_handle->filename);
         if (*_val) {

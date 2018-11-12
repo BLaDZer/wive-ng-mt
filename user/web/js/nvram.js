@@ -7,9 +7,6 @@ var MAX_STA_NUM                                                      = parseInt(
 var SDK_VERSION                                                      = '<% getSdkVersion(); %>';
 var PLATFORM                                                         = '<% getPlatform(); %>';
 
-var LAN_IP                                                           = '<% getLanIp(); %>';
-var LAN_NETMASK                                                      = '<% getLanNetmask(); %>';
-
 var AUTH_USERNAME                                                    = '<% getAuthUsername(); %>';
 var AUTH_ROLE                                                        = parseInt('<% getAuthRole(); %>') || 0;
 
@@ -151,6 +148,7 @@ var NVRAM_wan_secondary_dns                                          = '<% getCf
 var NVRAM_wan_manual_mtu                                             = '<% getCfgGeneral(1, "wan_manual_mtu",                      "0"); %>';
 var NVRAM_wan_ipaddr                                                 = '<% getCfgGeneral(1, "wan_ipaddr",                          ""); %>';
 var NVRAM_lan_ipaddr                                                 = '<% getCfgGeneral(1, "lan_ipaddr",                          "192.168.1.1"); %>';
+var NVRAM_lan_netmask                                                = '<% getCfgGeneral(1, "lan_netmask",                         "255.255.255.0"); %>';
 var NVRAM_wan_netmask                                                = '<% getCfgGeneral(1, "wan_netmask",                         ""); %>';
 var NVRAM_wan_gateway                                                = '<% getCfgGeneral(1, "wan_gateway",                         ""); %>';
 var NVRAM_dhcpRequestIP                                              = '<% getCfgGeneral(1, "dhcpRequestIP",                       ""); %>';

@@ -19,6 +19,8 @@
 		<script src="/js/controls.js"></script>
 		<script>
 
+			var WLAN_IF_INIC = '<% getWlanIf(2); %>';
+
 			function initTranslation()
 			{
 				var trlist = document.getElementsByAttribute("data-tr");
@@ -31,22 +33,65 @@
 			// Set inintal values
 			function initValues() {
 
-				document.getElementById('l2tp_eth_enabled').value		= NVRAM_l2tp_eth_enabled;
-				document.getElementById('l2tp_eth_local').value			= NVRAM_l2tp_eth_local;
-				document.getElementById('l2tp_eth_remote').value		= NVRAM_l2tp_eth_remote;
-				document.getElementById('l2tp_eth_tid').value			= NVRAM_l2tp_eth_tid;
-				document.getElementById('l2tp_eth_ptid').value			= NVRAM_l2tp_eth_ptid;
-				document.getElementById('l2tp_eth_sid').value			= NVRAM_l2tp_eth_sid;
-				document.getElementById('l2tp_eth_psid').value			= NVRAM_l2tp_eth_psid;
-				document.getElementById('l2tp_eth_sport').value			= NVRAM_l2tp_eth_sport;
-				document.getElementById('l2tp_eth_dport').value			= NVRAM_l2tp_eth_dport;
-				document.getElementById('l2tp_eth_brifs').value			= NVRAM_l2tp_eth_brifs;
+				form = document.getElementById('l2tunnelsConfig');
 
-				document.getElementById('eoip_enabled').value			= NVRAM_eoip_enabled;
-				document.getElementById('eoip_local').value			= NVRAM_eoip_local;
-				document.getElementById('eoip_remote').value			= NVRAM_eoip_remote;
-				document.getElementById('eoip_tid').value			= NVRAM_eoip_tid;
-				document.getElementById('eoip_brifs').value			= NVRAM_eoip_brifs;
+				form.l2tp_eth_enabled.value		= NVRAM_l2tp_eth_enabled;
+				form.l2tp_eth_local.value		= NVRAM_l2tp_eth_local;
+				form.l2tp_eth_remote.value		= NVRAM_l2tp_eth_remote;
+				form.l2tp_eth_tid.value			= NVRAM_l2tp_eth_tid;
+				form.l2tp_eth_ptid.value		= NVRAM_l2tp_eth_ptid;
+				form.l2tp_eth_sid.value			= NVRAM_l2tp_eth_sid;
+				form.l2tp_eth_psid.value		= NVRAM_l2tp_eth_psid;
+				form.l2tp_eth_sport.value		= NVRAM_l2tp_eth_sport;
+				form.l2tp_eth_dport.value		= NVRAM_l2tp_eth_dport;
+				form.l2tp_eth_brifs.value		= NVRAM_l2tp_eth_brifs;
+
+				form.eoip_enabled.value			= NVRAM_eoip_enabled;
+				form.eoip_local.value			= NVRAM_eoip_local;
+				form.eoip_remote.value			= NVRAM_eoip_remote;
+				form.eoip_tid.value			= NVRAM_eoip_tid;
+				form.eoip_brifs.value			= NVRAM_eoip_brifs;
+
+				function populateBrif(brifs, custom, elem) {
+					var ind = brifs.indexOf(elem.value)
+					elem.checked = ( ind != -1 );
+					if (ind != -1) custom.splice( ind, 1 );
+				}
+
+				if (NVRAM_l2tp_eth_enabled != "0") {
+					var l2tp_eth_brifs_list = NVRAM_l2tp_eth_brifs.split(" ");
+					var l2tp_eth_brifs_custom = [];
+					if (NVRAM_l2tp_eth_brifs == "all") {
+						form.l2tp_eth_brifs_all.checked = true;
+					}
+					else
+					{
+						populateBrif(l2tp_eth_brifs_list, l2tp_eth_brifs_custom, form.l2tp_eth_brifs_wan);
+						populateBrif(l2tp_eth_brifs_list, l2tp_eth_brifs_custom, form.l2tp_eth_brifs_vpn);
+						populateBrif(l2tp_eth_brifs_list, l2tp_eth_brifs_custom, form.l2tp_eth_brifs_wlan);
+						populateBrif(l2tp_eth_brifs_list, l2tp_eth_brifs_custom, form.l2tp_eth_brifs_wlan_inic);
+
+						form.l2tp_eth_brifs_custom.value = l2tp_eth_brifs_custom.join(" ");
+					}
+				}
+
+				if (NVRAM_eoip_enabled != "0") {
+					var eoip_brifs_list = NVRAM_eoip_brifs.split(" ");
+					var eoip_brifs_custom = [];
+
+					if (NVRAM_eoip_brifs == "all") {
+						form.eoip_brifs_all.checked = true;
+					}
+					else
+					{
+						populateBrif(eoip_brifs_list, eoip_brifs_custom, form.eoip_brifs_wan);
+						populateBrif(eoip_brifs_list, eoip_brifs_custom, form.eoip_brifs_vpn);
+						populateBrif(eoip_brifs_list, eoip_brifs_custom, form.eoip_brifs_wlan);
+						populateBrif(eoip_brifs_list, eoip_brifs_custom, form.eoip_brifs_wlan_inic);
+
+						form.eoip_brifs_custom.value = eoip_brifs_custom.join(" ");
+					}
+				}
 
 				displayServiceStatus([[ NVRAM_l2tp_eth_enabled, 'ethtun_l2tpv3', 'ethtun' ]]);
 				displayServiceStatus([[ NVRAM_eoip_enabled,     'ethtun_eoip', 'ethtun' ]]);
@@ -71,11 +116,16 @@
 				displayElement('l2tp_eth_dport_tr', l2tp_eth_enabled);
 				displayElement('l2tp_eth_brifs_tr', l2tp_eth_enabled);
 
+				displayElement(['l2tp_eth_brifs_wlan_inic_div', 'eoip_brifs_wlan_inic_div'], BUILD_5GHZ_SUPPORT && (WLAN_IF_INIC != ''));
+
 				eoip_enabled = form.eoip_enabled.value == "1";
 				displayElement('eoip_local_tr', eoip_enabled);
 				displayElement('eoip_remote_tr', eoip_enabled);
 				displayElement('eoip_tid_tr', eoip_enabled);
 				displayElement('eoip_brifs_tr', eoip_enabled);
+
+				displayElement('l2tp_eth_brifs_inner', form.l2tp_eth_brifs_all.checked == false);
+				displayElement('eoip_brifs_inner', form.eoip_brifs_all.checked == false);
 			}
 
 			function brifsListDupes(brifs1, brifs2) {
@@ -102,11 +152,37 @@
 			}
 
 			// Check values
-			function CheckValues() {
-				l2tpv3_brifs = document.getElementById('l2tp_eth_brifs').value.toLowerCase().split(" ");
-				eoip_brifs = document.getElementById('eoip_brifs').value.toLowerCase().split(" ");
+			function CheckValues(form) {
+				l2tp_eth_brifs = form.l2tp_eth_brifs_custom.value.toLowerCase().split(" ");
+				eoip_brifs = form.eoip_brifs_custom.value.toLowerCase().split(" ");
+
+				if (l2tp_eth_brifs.length == 1 && l2tp_eth_brifs[0] == "") l2tp_eth_brifs = [];
 				if (eoip_brifs.length == 1 && eoip_brifs[0] == "") eoip_brifs = [];
-				if (l2tpv3_brifs.length == 1 && l2tpv3_brifs[0] == "") l2tpv3_brifs = [];
+
+				if (form.l2tp_eth_brifs_all.checked) {
+					l2tp_eth_brifs = [ "all" ];
+				}
+				else
+				{
+					if (form.l2tp_eth_brifs_wan.checked) l2tp_eth_brifs.push(form.l2tp_eth_brifs_wan.value);
+					if (form.l2tp_eth_brifs_vpn.checked) l2tp_eth_brifs.push(form.l2tp_eth_brifs_vpn.value);
+					if (form.l2tp_eth_brifs_wlan.checked) l2tp_eth_brifs.push(form.l2tp_eth_brifs_wlan.value);
+					if (form.l2tp_eth_brifs_wlan_inic.checked) l2tp_eth_brifs.push(form.l2tp_eth_brifs_wlan_inic.value);
+				}
+
+				if (form.eoip_brifs_all.checked) {
+					eoip_brifs = [ "all" ];
+				}
+				else
+				{
+					if (form.eoip_brifs_wan.checked) eoip_brifs.push(form.eoip_brifs_wan.value);
+					if (form.eoip_brifs_vpn.checked) eoip_brifs.push(form.eoip_brifs_vpn.value);
+					if (form.eoip_brifs_wlan.checked) eoip_brifs.push(form.eoip_brifs_wlan.value);
+					if (form.eoip_brifs_wlan_inic.checked) eoip_brifs.push(form.eoip_brifs_wlan_inic.value);
+				}
+
+				form.l2tp_eth_brifs.value = l2tp_eth_brifs.join(' ');
+				form.eoip_brifs.value = eoip_brifs.join(' ');
 
 				if (document.getElementById('l2tp_eth_enabled').value != "0") {
 
@@ -175,14 +251,14 @@
 					}
 
 					// Check Interfaces
-					if (l2tpv3_brifs.length == 0) {
+					if (l2tp_eth_brifs.length == 0) {
 						alert(_("l2tpv3 invalid brifs"));
 						document.getElementById('l2tp_eth_brifs').select();
 						document.getElementById('l2tp_eth_brifs').focus();
 						return false;
 					}
 
-					if (brifsListDupes(l2tpv3_brifs))
+					if (brifsListDupes(l2tp_eth_brifs))
 					{
 						alert(_("l2tpv3 brifs duplicate"));
 						document.getElementById('l2tp_eth_brifs').select();
@@ -190,7 +266,7 @@
 						return false;
 					}
 
-					if (NVRAM_eoip_enabled == "1" && brifsListDupes(l2tpv3_brifs, eoip_brifs))
+					if (form.eoip_enabled.value != "0" && brifsListDupes(l2tp_eth_brifs, eoip_brifs))
 					{
 						alert(_("l2tpv3 brifs in use"));
 						document.getElementById('l2tp_eth_brifs').select();
@@ -199,7 +275,7 @@
 					}
 				}
 
-				if (document.getElementById('eoip_enabled').value != "0") {
+				if (form.eoip_enabled.value != "0") {
 
 					// Check Local IP
 					if (document.getElementById('eoip_local').value != "" && !validateIP(document.getElementById('eoip_local'))) {
@@ -228,32 +304,32 @@
 					// Check Interfaces
 					if (document.getElementById('eoip_brifs').value == "") {
 						alert(_("eoip invalid brifs"));
-						document.getElementById('eoip_brifs').select();
-						document.getElementById('eoip_brifs').focus();
+						document.getElementById('eoip_brifs_custom').select();
+						document.getElementById('eoip_brifs_custom').focus();
 						return false;
 					}
 
 					// Check Interfaces
 					if (eoip_brifs.length == 0) {
 						alert(_("eoip invalid brifs"));
-						document.getElementById('eoip_brifs').select();
-						document.getElementById('eoip_brifs').focus();
+						document.getElementById('eoip_brifs_custom').select();
+						document.getElementById('eoip_brifs_custom').focus();
 						return false;
 					}
 
 					if (brifsListDupes(eoip_brifs))
 					{
 						alert(_("eoip brifs duplicate"));
-						document.getElementById('eoip_brifs').select();
-						document.getElementById('eoip_brifs').focus();
+						document.getElementById('eoip_brifs_custom').select();
+						document.getElementById('eoip_brifs_custom').focus();
 						return false;
 					}
 
-					if (NVRAM_l2tp_eth_enabled == "1" && (brifsListDupes(eoip_brifs, l2tp_eth_brifs)))
+					if (form.l2tp_eth_enabled.value != "0" && (brifsListDupes(eoip_brifs, l2tp_eth_brifs)))
 					{
 						alert(_("eoip brifs in use"));
-						document.getElementById('eoip_brifs').select();
-						document.getElementById('eoip_brifs').focus();
+						document.getElementById('eoip_brifs_custom').select();
+						document.getElementById('eoip_brifs_custom').focus();
 						return false;
 					}
 				}
@@ -296,7 +372,7 @@
 					<p data-tr="l2 tunnels introduction" >Here you can configure L2 tunnels settings.</p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" name="l2tunnelsConfig" action="/goform/l2tunnelsConfig">
+					<form method="POST" name="l2tunnelsConfig" id="l2tunnelsConfig" action="/goform/l2tunnelsConfig">
 
 						<table class="form">
 							<col style="width: 40%;" />
@@ -372,7 +448,24 @@
 								<tr id="l2tp_eth_brifs_tr">
 									<td class="head"data-tr="l2tpv3 brifs">Tunneling bridged interfaces</td>
 									<td colspan="2">
-										<input id="l2tp_eth_brifs" name="l2tp_eth_brifs" class="mid" maxlength="15">
+										<div>
+											<input name="l2tp_eth_brifs_all"      type="checkbox" value="all" onClick="updateVisibility(this.form)"><span data-tr="l2 tunnels all ifaces">All interfaces</span>
+										</div>
+										<div id="l2tp_eth_brifs_inner">
+										<div>
+											<input name="l2tp_eth_brifs_wan"       type="checkbox" value="<% getWanIf(); %>"><span>WAN (<% getWanIf(); %>)</span>
+											<input name="l2tp_eth_brifs_vpn"       type="checkbox" value="<% getVpnIf(); %>"><span>VPN (<% getVpnIf(); %>)</span>
+										</div>
+										<div>
+											<input name="l2tp_eth_brifs_wlan"      type="checkbox" value="<% getWlanIf(1); %>"><span>WLAN 2.4 GHz (<% getWlanIf(1); %>)</span>
+										</div>
+										<div id="l2tp_eth_brifs_wlan_inic_div">
+											<input name="l2tp_eth_brifs_wlan_inic" type="checkbox" value="<% getWlanIf(2); %>"><span>WLAN 5 GHz (<% getWlanIf(2); %>)</span>
+										</div>
+										<div data-tr="l2 tunnels custom brifs">Custom: </div>
+										<div><input name="l2tp_eth_brifs_custom"></div>
+										</div>
+										<div><input id="l2tp_eth_brifs" name="l2tp_eth_brifs" type="hidden"></div>
 									</td>
 								</tr>
 
@@ -419,7 +512,24 @@
 								<tr id="eoip_brifs_tr">
 									<td class="head" data-tr="eoip brifs">Tunneling bridged interfaces</td>
 									<td colspan="2">
-										<input id="eoip_brifs" name="eoip_brifs" class="mid" maxlength="15">
+										<div>
+											<input name="eoip_brifs_all"      type="checkbox" value="all" onClick="updateVisibility(this.form)"><span data-tr="l2 tunnels all ifaces">All interfaces</span>
+										</div>
+										<div id="eoip_brifs_inner">
+										<div>
+											<input name="eoip_brifs_wan"       type="checkbox" value="<% getWanIf(); %>"><span>WAN (<% getWanIf(); %>)</span>
+											<input name="eoip_brifs_vpn"       type="checkbox" value="<% getVpnIf(); %>"><span>VPN (<% getVpnIf(); %>)</span>
+										</div>
+										<div>
+											<input name="eoip_brifs_wlan"      type="checkbox" value="<% getWlanIf(1); %>"><span>WLAN 2.4 GHz (<% getWlanIf(1); %>)</span>
+										</div>
+										<div id="eoip_brifs_wlan_inic_div">
+											<input name="eoip_brifs_wlan_inic" type="checkbox" value="<% getWlanIf(2); %>"><span>WLAN 5 GHz (<% getWlanIf(2); %>)</span>
+										</div>
+										<div data-tr="l2 tunnels custom brifs">Custom: </div>
+										<div><input name="eoip_brifs_custom"></div>
+										</div>
+										<div><input id="eoip_brifs" name="eoip_brifs" type="hidden"></div>
 									</td>
 								</tr>
 
@@ -429,7 +539,7 @@
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" data-tr="button apply"  value="Apply"  onClick="return CheckValues();">
+									<input type="submit" class="normal" data-tr="button apply"  value="Apply"  onClick="return CheckValues(this.form);">
 									<input type="button" class="normal" data-tr="button cancel" value="Cancel" onClick="window.location.reload();">
 									<input type="button" class="normal" data-tr="button reset"  value="Reset"  onClick="resetValues(this.form);">
 									<input value="0" name="reset" type="hidden">

@@ -50,18 +50,18 @@
 			function initValues() {
 				var form = document.lanCfg;
 			
-				form.hostname.value					= NVRAM_HostName;
-				form.lanIp.value					= LAN_IP;
-				form.lanNetmask.value				= LAN_NETMASK;
+				form.hostname.value				= NVRAM_HostName;
+				form.lanIp.value				= NVRAM_lan_ipaddr;
+				form.lanNetmask.value				= NVRAM_lan_netmask;
 				form.lanGateway.value				= NVRAM_wan_gateway;
 				form.lanPriDns.value				= NVRAM_wan_primary_dns;
 				form.lanSecDns.value				= NVRAM_wan_secondary_dns;
 				form.dhcpStart.value				= NVRAM_dhcpStart;
-				form.dhcpEnd.value					= NVRAM_dhcpEnd;
+				form.dhcpEnd.value				= NVRAM_dhcpEnd;
 				form.dhcpGateway.value				= NVRAM_dhcpGateway;
-				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
-				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex;
-				form.wStaticDnsAdguardProfile.value	= NVRAM_wan_static_dns_profile_adguard; 
+				form.wStaticDnsProfile.value			= NVRAM_wan_static_dns_profile;
+				form.wStaticDnsYandexProfile.value		= NVRAM_wan_static_dns_profile_yandex;
+				form.wStaticDnsAdguardProfile.value		= NVRAM_wan_static_dns_profile_adguard;
 
 				displayElement( [ 'brGateway', 'brPriDns', 'brSecDns', 'staticDNSprofile', 'staticDNSyandexProfile', 'staticDNSadguardProfile' ], NVRAM_OperationMode == '0' );
 
@@ -114,7 +114,7 @@
 						}
 				}
 
-				if ((form.lanIp.value != LAN_IP || form.lanNetmask.value != LAN_NETMASK && NVRAM_dhcpEnabled == '1') && NVRAM_OperationMode != '0') {
+				if ((form.lanIp.value != NVRAM_lan_ipaddr || form.lanNetmask.value != NVRAM_lan_netmask && NVRAM_dhcpEnabled == '1') && NVRAM_OperationMode != '0') {
 					if (confirm(_("lan accept dhcp opts"))) {
 						var ip = form.lanIp.value.split(".");
 						var mask = form.lanNetmask.value.split(".");
@@ -128,12 +128,12 @@
 						ip_end[3] = ((ip_end[3] - ip[3]) > ip[3]) ? ip_end[3] : ip[3];
 						form.dhcpStart.value = ip_start[0] + "." + ip_start[1] + "." + ip_start[2] + "." + (ip_start[3] * 1 + 1);
 						form.dhcpEnd.value = ip_end[0] + "." + ip_end[1] + "." + ip_end[2] + "." + (ip_end[3] - 1);
-						if (form.dhcpGateway.value == LAN_IP)
+						if (form.dhcpGateway.value == NVRAM_lan_ipaddr)
 							form.dhcpGateway.value = form.lanIp.value;
 					}
 				}
 
-				if (form.lanIp.value != LAN_IP && document.location.host == LAN_IP)
+				if (form.lanIp.value != NVRAM_lan_ipaddr && document.location.host == NVRAM_lan_ipaddr)
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30, document.location.protocol+"//"+form.lanIp.value);
 				else
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);

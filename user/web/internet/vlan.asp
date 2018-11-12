@@ -67,6 +67,7 @@
 				_TR("vlanModeApply",		"button apply");
 				_TR("vlanModeCancel",		"button cancel");
 				_TR("vlanModeReset",		"button reset");
+				_TR("vlanMode_lan_untag_isolate_td",		"vlan mode lan isolate untagged");
 				
 				var elements = document.getElementsByTagName('option');
 				for (var i = 0; i < elements.length; i++)
@@ -83,6 +84,7 @@
 				document.getElementById('tv_stbMcast').value		= ('<% getCfgGeneral(1, "tv_port_mcast"); %>' == '1') ? "1" : "0";
 				document.getElementById('sip_stbEnabled').value		= ('<% getCfgGeneral(1, "sip_port"); %>' == '1') ? "1" : "0";
 				document.getElementById('sip_stbMcast').value		= ('<% getCfgGeneral(1, "sip_port_mcast"); %>' == '1') ? "1" : "0";
+				document.getElementById('vlanMode_lan_untag_isolate').checked	= ('<% getCfgGeneral(1, "VlanUntagIsolate"); %>' == '1');
 
 				// Clearing empty table;
 				if ((vlanTv.length > 0 && vlanTv[0].length == "") || document.getElementById('tv_stbEnabled').value == 0) {
@@ -230,6 +232,7 @@
 				form.wifi_wan_inic.value	= wifi_wan_inic;
 				form.vlan_lan.value			= vlan_lan;
 				form.vlan_lan_isolate.value	= vlan_lan_isolate;
+				form.vlan_lan_untag_isolate.value	= form.vlanMode_lan_untag_isolate.checked?"1":"0";
 
 				if (!confirm(_('vlan reboot confirm')))
 					return false;
@@ -479,7 +482,7 @@
 
 				displayElement([ 'vlanModeWLANVLAN_table', 'vlanMode_wlan_ap_tr',   'vlanMode_wlan_iface_tr',  'vlanMode_wlan_vlan_tr', 'vlanMode_wlan_vlan_add' ], mode == 1);
 				displayElement([ 'vlanMode_wlan_iface_tr' ], mode == 1 && NVRAM_OperationMode != '0');
-				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr' ],  mode == 2);
+				displayElement([ 'vlanModeLANVLAN_table', 'vlanMode_lan_vlanid_tr', 'vlanMode_lan_isolated_tr', 'vlanMode_lan_untag_isolate_tr' ],  mode == 2);
 
 				if (mode == 1) {
 					changeWLANVLAN();
@@ -1062,6 +1065,10 @@
 							<td id="vlanMode_lan_isolated" class="head">Isolated</td>
 							<td><input type="checkbox" id="vlanMode_lan_isolated_input"></td>
 						</tr>
+						<tr id="vlanMode_lan_untag_isolate_tr">
+							<td id="vlanMode_lan_untag_isolate_td" class="head">Isolate untagged</td>
+							<td><input type="checkbox" id="vlanMode_lan_untag_isolate"></td>
+						</tr>
 						<tr id="vlanMode_lan_vlanid_tr">
 							<td id="vlanMode_lan_vlanid" class="head">VLAN ID</td>
 							<td>
@@ -1080,6 +1087,7 @@
 								<input type="hidden" value="" name="wifi_wan_inic">
 								<input type="hidden" value="" name="vlan_lan">
 								<input type="hidden" value="" name="vlan_lan_isolate">
+								<input type="hidden" value="" name="vlan_lan_untag_isolate">
 								<input type="hidden" value="0" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>

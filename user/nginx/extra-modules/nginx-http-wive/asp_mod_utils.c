@@ -23,6 +23,79 @@ static int _getCfgGeneral(webs_t *wp, char* key, char** out)
     return NGX_OK;
 }
 
+static char* escapeJsString(char* str)
+{
+    if (str == NULL) return NULL;
+
+    int len = strlen(str);
+    char* out = calloc(len*2+1, sizeof(char)); // it means you should never add more than 2 escaping symbols per input symbol
+    if (out == NULL) return NULL;
+
+    char* in_ptr = str;
+    char* out_ptr = out;
+    while (in_ptr[0] != '\0') {
+        char c = *in_ptr;
+        if (c == '\'' || c == '\\' || c == '"')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = c;
+            out_ptr++;
+        }
+        else if (c == '\t')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 't';
+            out_ptr++;
+        }
+        else if (c == '\r')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 'r';
+            out_ptr++;
+        }
+        else if (c == '\n')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 'n';
+            out_ptr++;
+        }
+        else if (c == '\v')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 'v';
+            out_ptr++;
+        }
+        else if (c == '\f')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 'f';
+            out_ptr++;
+        }
+        else if (c == '\b')
+        {
+            out_ptr[0] = '\\';
+            out_ptr++;
+            out_ptr[0] = 'b';
+            out_ptr++;
+        }
+        else
+        {
+            out_ptr[0] = c;
+            out_ptr++;
+        }
+
+        in_ptr++;
+    }
+
+    return out;
+}
+
 
 static int getCfgGeneral(webs_t *wp, char** params, int nparams)
 {
@@ -38,7 +111,7 @@ static int getCfgGeneral(webs_t *wp, char** params, int nparams)
         def = params[2];
     }
 
-    // FIXME: implement zero-type function
+    // Deprecated zero-type function usage
     int type = strToIntDef(params[0], 0);
     if (type == 0)
     {
@@ -46,70 +119,20 @@ static int getCfgGeneral(webs_t *wp, char** params, int nparams)
         return NGX_ERROR;
     }
 
-
     char* val = NULL;
     int ret = _getCfgGeneral(wp, params[1], &val);
     if (ret != NGX_OK || val == NULL || val[0] == '\0')
     {
-        arrsWrite(wp->out, def); //FIXME: escape symbols
+        char* esc_def = escapeJsString(def);
+        outWrite("%s", esc_def);
+        free(esc_def);
         return NGX_ERROR;
     }
 
-    arrsWrite(wp->out, val); //FIXME: escape symbols
+    char* esc_val = escapeJsString(val);
+    outWrite("%s", esc_val);
+    free(esc_val);
     return NGX_OK;
-
-
-//FIXME: check implementation
-/*
-	int type, j;
-	char_t *field;
-	char *value;
-	char str[16384];
-
-	if (ejArgs(argc, argv, T("%d %s"), &type, &field) < 2)
-		return outWrite(T("Insufficient args\n"));
-
-	value = nvram_get(RT2860_NVRAM, field);
-
-	if ((!value) && (strcmp(field, "Language") == 0)) {
-	    syslog(LOG_ERR, "Unknown lang %s. Set lang to en, %s", value, __FUNCTION__);
-	    value = "en";
-	}
-
-        if (type == 1) {
-                if (!value)
-                        return outWrite(T(""));
-		str[0] = '\0';
-		for (j = 0; j < strlen(value); j++) {
-		    if (value[j] == '"' ||
-			value[j] == '\\' ||
-			value[j] == '\'' ||
-			value[j] == '\t' ||
-			value[j] == '\r' ||
-			value[j] == '\n' ||
-			value[j] == '\v' ||
-			value[j] == '\f' ||
-			value[j] == '\b'
-			)
-			sprintf(str, "%s%c", str, '\\');
-		    sprintf(str, "%s%c", str, value[j]);
-		}
-                return outWrite(T("%s"), str);
-        }
-
-	if (!value)
-	    ejSetResult(eid, "");
-	else {
-	    str[0] = '\0';
-	    for (j = 0; j < strlen(value); j++) {
-		if (value[j] == '"' || value[j] == '\\' || value[j] == '\'')
-		    sprintf(str, "%s%c", str, '\\');
-		sprintf(str, "%s%c", str, value[j]);
-	    }
-	    ejSetResult(eid, str);
-	}
-
-    return 0;*/
 }
 
 /*
@@ -126,7 +149,7 @@ static int getCfgGeneralHTML(webs_t *wp, char** params, int nparams)
         return outWrite(T("Insufficient args\n"));
     }
 
-    // FIXME: implement zero-type function
+    // Deprecated zero-type function usage
     int type = strToIntDef(params[0], 0);
     if (type == 0)
     {
@@ -147,10 +170,10 @@ static int getCfgGeneralHTML(webs_t *wp, char** params, int nparams)
     str.len = strlen(val);
 
     ngx_str_t escaped_str = n_escape_html(wp->pool, str);
-//    arrsWrite(out, "value_of_");
     outWrite("%.*s", escaped_str.len, escaped_str.data);
     return NGX_OK;
 
+// Previous html-escaping function:
 /*
 	int type;
 	char_t *field;
@@ -221,7 +244,7 @@ static int getCfgNthGeneral(webs_t *wp, char** params, int nparams)
         return outWrite(T("Insufficient args\n"));
     }
 
-    // FIXME: implement zero-type function
+    // Deprecated zero-type function usage
     int type = strToIntDef(params[0], 0);
     if (type == 0)
     {
@@ -245,8 +268,9 @@ static int getCfgNthGeneral(webs_t *wp, char** params, int nparams)
         return NGX_ERROR;
     }
 
-//    arrsWrite(out, "value_of_");
-    arrsWrite(wp->out, val); //FIXME: escape symbols
+    char* esc_val = escapeJsString(val);
+    outWrite("%s", esc_val);
+    free(esc_val);
     return NGX_OK;
 
 
@@ -321,15 +345,18 @@ static int writeIfCfgZeroEq(webs_t *wp, char** params, int nparams)
 
     if (strcmp(val, desired_val) == 0)
     {
-        arrsWrite(wp->out, output_text); //FIXME: escape symbols
+        char* esc_val = escapeJsString(output_text);
+        outWrite("%s", esc_val);
+        free(esc_val);
     }
     else if (else_text != NULL)
     {
-        arrsWrite(wp->out, else_text); //FIXME: escape symbols
+        char* esc_val = escapeJsString(else_text);
+        outWrite("%s", esc_val);
+        free(esc_val);
     }
 
     return NGX_OK;
-
 }
 
 /*
@@ -346,7 +373,7 @@ static int getCfgZero(webs_t *wp, char** params, int nparams)
         return outWrite(T("Insufficient args\n"));
     }
 
-    // FIXME: implement zero-type function
+    // Deprectaed zero-type function usage
     int type = strToIntDef(params[0], 0);
     if (type == 0)
     {
@@ -359,17 +386,20 @@ static int getCfgZero(webs_t *wp, char** params, int nparams)
 
     if (ret != NGX_OK || val == NULL)
     {
-        arrsWrite(wp->out, "0");
+        outWrite("0");
         return NGX_ERROR;
     }
 
     if (val[0] == '\0')
     {
-        arrsWrite(wp->out, "0");
+        outWrite("0");
         return NGX_OK;
     }
 
-    arrsWrite(wp->out, val); //FIXME: escape symbols
+    char* esc_val = escapeJsString(val);
+    outWrite("%s", esc_val);
+    free(esc_val);
+
     return NGX_OK;
 
 /*	int type;
@@ -399,13 +429,10 @@ static int getCfgZero(webs_t *wp, char** params, int nparams)
  * description: read general configurations from nvram (if value is NULL -> "0")
  *              parse it and return the Nth value delimited by semicolon
  */
+/*
 static int getCfgNthZero(webs_t *wp, char** params, int nparams)
 {
-    // FIXME: implement me
-    ELOG_ERR(wp->log, 0, "STUB FUNCTION USED: %s \n", __FUNCTION__);
-    return NGX_OK;
-
-/*	int type, idx;
+	int type, idx;
 	char_t *field;
 	char *value;
 	char *nth;
@@ -428,8 +455,9 @@ static int getCfgNthZero(webs_t *wp, char** params, int nparams)
 	if (NULL == nth)
 		ejSetResult(eid, "0");
 	ejSetResult(eid, value);
-	return 0;*/
+	return 0;
 }
+*/
 
 static int getLangBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -992,74 +1020,6 @@ static int isNginx(webs_t *wp, char** params, int nparams)
 }
 
 
-/*
-static int ifAuthRole(webs_t *wp, char** params, int nparams)
-{
-    if (nparams < 2) return NGX_OK;
-
-    unsigned int role_id = strToIntDef(params[0], -1);
-
-    if ((wp->auth_session && role_id == wp->auth_session->role) || (role_id == 0 && wp->auth_session == NULL))
-    {
-        outWrite("%s", params[1]);
-    }
-    else
-    if (nparams > 2)
-    {
-        outWrite("%s", params[2]);
-    }
-
-    return 0;
-}
-
-
-static int showAdminOnly(webs_t *wp, char** params, int nparams)
-{
-    if (nparams < 1) return NGX_OK;
-    char* param = params[0];
-
-    if (!wp->auth_session || wp->auth_session->role != 2)
-    {
-        if (*param == '1')
-        {
-            outWrite("%s", "<!--");
-        }
-        else
-        {
-            outWrite("%s", "-->");
-        }
-    }
-
-    return NGX_OK;
-}
-
-static int getAuthRoles(webs_t* wp, char** params, int nparams)
-{
-    unsigned int i;
-
-    outWrite("{ \"roles\": [ ");
-
-    ngx_array_t* users = get_passwd_users(wp->pool);
-    if (users != NULL)
-    {
-        for (i=0;i<users->nelts;i++)
-        {
-            if (i>0) outWrite(", ");
-            char* username = ((char**)users->elts)[i];
-            enum UserRole role = get_user_role(username);
-
-            outWrite("{\"name\":\"%s\", \"role\":%i}", username, role);
-        }
-    }
-
-    outWrite("] }");
-
-    return NGX_OK;
-}
-*/
-
-
-
 /*********************************************************************
  * Web Related Utilities
  */
@@ -1069,16 +1029,13 @@ void asp_mod_utils_init()
         aspDefineFunc("getAuthUsername", getAuthUsername, EVERYONE);
         aspDefineFunc("getAuthRole", getAuthRole, EVERYONE);
         aspDefineFunc("isNginx", isNginx, EVERYONE);
-//        aspDefineFunc("ifAuthRole", ifAuthRole, EVERYONE);
-//        aspDefineFunc("showAdminOnly", showAdminOnly, EVERYONE);
-//	aspDefineFunc("getAuthRoles", getAuthRoles, EVERYONE);
 
         aspDefineFunc("writeIfCfgZeroEq", writeIfCfgZeroEq, EVERYONE);
 
 	aspDefineFunc("getCfgGeneralHTML", getCfgGeneralHTML, EVERYONE);
 	aspDefineFunc("getCfgNthGeneral", getCfgNthGeneral, EVERYONE);
 	aspDefineFunc("getCfgZero", getCfgZero, EVERYONE);
-	aspDefineFunc("getCfgNthZero", getCfgNthZero, EVERYONE);
+//	aspDefineFunc("getCfgNthZero", getCfgNthZero, EVERYONE);
 	aspDefineFunc("getLangBuilt", getLangBuilt, EVERYONE);
 	aspDefineFunc("getLangDictionary", getLangDictionary, EVERYONE);
 	aspDefineFunc("getPlatform", getPlatform, EVERYONE);

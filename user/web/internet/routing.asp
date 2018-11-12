@@ -17,44 +17,10 @@
 		<script src="/js/validation.js"></script>
 		<script>
 			var ROUTING_TABLE = [ <% getRoutingTable(); %> ];
+			var ROUTING_TABLE_IPV6 = [ <% getRoutingTableIPv6(); %> ];
 
 			function initTranslation() {
-				_TR("routingTitle", 					"routing title");
-				_TR("routingIntroduction", 				"routing introduction");
-				_TR("routingAddRule", 					"routing add rule");
-				_TR("routingDest", 						"routing dest");
-				_TR("routingTableDest", 				"routing dest");
-				_TR("routingRange", 					"routing range");
-				_TR("routingNetmask", 					"routing netmask");
-				_TR("routingTableNetmask", 				"routing netmask");
-				_TR("routingGateway",					"routing gateway");
-				_TR("routingTableGateway", 				"routing gateway");
-				_TR("routingInterface",					"routing interface");
-				_TR("routingTableInterface",			"routing interface");
-				_TR("routingIfaceName",					"routing interface name");
-				_TR("routingComment",					"routing comment");
-				_TR("routingTableComment",				"routing comment");
-				_TR("routingHost",						"routing host");
-				_TR("routingNet",						"routing net");
-				_TR("dynamicRoutingTitle",				"routing dynamic title");
-				_TR("RIP",								"routing rip")
-				_TR("RIPDisable",						"button disable");
-				_TR("RIPEnable",						"button enable");
-				_TR("routingCurrentRoutingTableRules",	"routing del title");
-				_TR("routingTableNo", 					"routing number");
-				_TR("routingDelFlags",					"routing del flags");
-				_TR("routingDelMetric",					"routing del metric");
-				_TR("routingDelRef",					"routing del ref");
-				_TR("routingDelUse",					"routing del use");
-				_TR("routingAction",					"routing action");
-
-				_TR("buttonAdd",					"button add rule");
-				_TR("routingApply",					"button apply");
-				_TR("routingApply2",					"button apply");
-				_TR("routingCancel",					"button cancel");
-				_TR("routingCancel2",					"button cancel");
-				_TR("routingReset",					"button reset");
-				_TR("routingReset2",					"button reset");
+				init_translation_model();
 			}
 
 			function initValues() {
@@ -106,21 +72,82 @@
 				return (idle == 1) ? "<del>" + str + "</del>" : str;
 			}
 
+			function genRoutingTableIPv6() {
+				function chunkSubstr(str, size) {
+					const numChunks = Math.ceil(str.length / size)
+					const chunks = new Array(numChunks)
+
+					for (var i = 0, o = 0; i < numChunks; ++i, o += size) {
+						chunks[i] = str.substr(o, size)
+					}
+
+					return chunks
+				}
+
+				if (ROUTING_TABLE_IPV6.length == 0) {
+					setInnerHTML('ajxCtxRoutingTableIPv6', '');
+					return;
+				}
+
+				var html = '<table class="form">';
+
+				html += '<tr><td class="title" colspan="11" data-tr="routing del title ipv6">Current IPv6 Routing table:</td></tr>'; // Header
+				html += '<tr><th data-tr="routing number">ID</th>' +
+					'<th data-tr="routing dest" align="center">Destination</th>' +
+					'<th data-tr="routing next hop" align="center">Next Hop</th>' +
+					'<th data-tr="routing del flags" align="center">Flags</th>' +
+					'<th data-tr="routing del metric" align="center">Metric</th>' +
+					'<th data-tr="routing del ref" align="center">Ref</th>' +
+					'<th data-tr="routing del use" align="center">Use</th>' +
+					'<th data-tr="routing interface" align="center">Interface</th>' +
+					'</tr>';
+
+				for (var i = 0; i < ROUTING_TABLE_IPV6.length; i++) {
+					var row = ROUTING_TABLE_IPV6[i];
+
+					var d		= row[10];
+					var iface	= (row[9] == 'Custom') ? (row[9] + ' (' + row[0] + ')') : row[9];
+
+					iface = ROUTING_TABLE_IPV6[i][0];
+					dest = ipaddr.parseCIDR(chunkSubstr(ROUTING_TABLE_IPV6[i][1], 4).join(":")+"/"+ROUTING_TABLE_IPV6[0][2]);
+					src = ipaddr.parseCIDR(chunkSubstr(ROUTING_TABLE_IPV6[i][3], 4).join(":")+"/"+ROUTING_TABLE_IPV6[0][4]);
+					next_hop = ipaddr.parse(chunkSubstr(ROUTING_TABLE_IPV6[i][5], 4).join(":"));
+					metric = ROUTING_TABLE_IPV6[i][6];
+					ref = ROUTING_TABLE_IPV6[i][7];
+					use = ROUTING_TABLE_IPV6[i][8];
+					flags = ROUTING_TABLE_IPV6[i][9];
+
+					html += '<tr>' +
+						'<td style="text-align: center;">' + (i+1) + '</td>' + // rownum
+						'<td>' + dest.toString().replace(',','/') + '</td>' + // destination
+						'<td>' + next_hop + '</td>' + // next hop
+						'<td style="text-align: center;">' + flags + '</td>' + // flags
+						'<td style="text-align: center;">' + metric + '</td>' + // metric
+						'<td style="text-align: center;">' + ref + '</td>' + // ref
+						'<td style="text-align: center;">' + use + '</td>' + // use
+						'<td style="text-align: center;">' + iface + '</td>' + // interface
+						'</tr>';
+				}
+
+				html += '</table><br>';
+				setInnerHTML('ajxCtxRoutingTableIPv6', html);
+			}
+
 			function genRoutingTable() {
 				var html = '<table class="form">';
 				
-				html += '<tr><td class="title" colspan="11" id="routingCurrentRoutingTableRules">Current Routing table in the system:</td></tr>'; // Header
-				html += '<tr><th id="routingTableNo">ID</th>' +
-					'<th id="routingTableDest" align="center">Destination</th>' +
-					'<th id="routingTableNetmask" align="center">Netmask</th>' +
-					'<th id="routingTableGateway" align="center">Gateway</th>' +
-					'<th id="routingDelFlags" align="center">Flags</th>' +
-					'<th id="routingDelMetric" align="center">Metric</th>' +
-					'<th id="routingDelRef" align="center">Ref</th>' +
-					'<th id="routingDelUse" align="center">Use</th>' +
-					'<th id="routingTableInterface" align="center">Interface</th>' +
-					'<th id="routingTableComment" align="center">Comment</th>' +
-					'<th id="routingAction">Actions</th></tr>';
+				html += '<tr><td class="title" colspan="11" data-tr="routing del title">Current Routing table in the system:</td></tr>'; // Header
+				html += '<tr><th data-tr="routing number">ID</th>' +
+					'<th data-tr="routing dest" align="center">Destination</th>' +
+					'<th data-tr="routing netmask" align="center">Netmask</th>' +
+					'<th data-tr="routing gateway" align="center">Gateway</th>' +
+					'<th data-tr="routing del flags" align="center">Flags</th>' +
+					'<th data-tr="routing del metric" align="center">Metric</th>' +
+					'<th data-tr="routing del ref" align="center">Ref</th>' +
+					'<th data-tr="routing del use" align="center">Use</th>' +
+					'<th data-tr="routing interface" align="center">Interface</th>' +
+					'<th data-tr="routing comment" align="center">Comment</th>' +
+					'<th data-tr="routing action">Actions</th></tr>';
 				
 				for (var i = 0; i < ROUTING_TABLE.length; i++) {
 					var row = ROUTING_TABLE[i];
@@ -150,7 +177,9 @@
 				html += '</table><br>';
 
 				setInnerHTML('ajxCtxRoutingTable', html);
+				genRoutingTableIPv6();
 				initTranslation();
+
 			}
 
 			function removeRoutingItem(index) {
@@ -228,11 +257,12 @@
 		<div id="warning"></div>
 		<table class="body">
 			<tr>
-				<td><h1 id="routingTitle">Static Routing Settings</h1>
-					<p id="routingIntroduction"> You may add or remote Internet routing rules here.</p>
+				<td><h1 data-tr="routing title">Static Routing Settings</h1>
+					<p id="routingIntroduction" data-tr="routing introduction"> You may add or remote Internet routing rules here.</p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" action="/goform/editRouting" name="editRouting">
+						<div id="ajxCtxRoutingTableIPv6"></div>
 						<div id="ajxCtxRoutingTable"></div>
 						<div id="dynamicRoutingDiv" style="display:none;">
 							<table class="form">
@@ -240,14 +270,14 @@
 								<col style="width: 60%;" />
 								<tbody>
 									<tr>
-										<td class="title" colspan="2" id="dynamicRoutingTitle">Dynamic routing</td>
+										<td class="title" colspan="2" data-tr="routing dynamic title">Dynamic routing</td>
 									</tr>
 									<tr>
-										<td class="head" id="RIP">RIP</td>
+										<td class="head" data-tr="routing rip">RIP</td>
 										<td>
 											<select name="RIPSelect" class="mid">
-												<option value="0" id="RIPDisable">Disable</option>
-												<option value="1" id="RIPEnable">Enable</option>
+												<option value="0" data-tr="button disable">Disable</option>
+												<option value="1" data-tr="button enable">Enable</option>
 											</select>
 										</td>
 									</tr>
@@ -260,41 +290,41 @@
 							<col style="width: 60%;" />
 							<tbody>
 								<tr>
-									<td class="title" colspan="2" id="routingAddRule">Add a routing rule</td>
+									<td class="title" colspan="2" data-tr="routing add rule">Add a routing rule</td>
 								</tr>
 								<tr>
-									<td class="head" id="routingDest">Destination</td>
+									<td class="head" data-tr="routing dest">Destination</td>
 									<td><input class="mid" name="dest" type="text" maxlength="15"></td>
 								</tr>
 								<tr>
-									<td class="head" id="routingRange">Host/Net</td>
+									<td class="head" data-tr="routing range">Host/Net</td>
 									<td>
 										<select class="mid" name="hostnet" onChange="hostnetChange(this.form);">
-											<option selected="selected" value="host" id="routingHost">Host</option>
-											<option value="net" id="routingNet">Net</option>
+											<option selected="selected" value="host" data-tr="routing host">Host</option>
+											<option value="net" data-tr="routing net">Net</option>
 										</select>
 									</td>
 								</tr>
 								<tr id="routingNetmaskRow">
-									<td class="head" id="routingNetmask">Subnet Mask</td>
+									<td class="head" data-tr="routing netmask">Subnet Mask</td>
 									<td><input class="mid" name="netmask" type="text" maxlength="15"></td>
 								</tr>
 								<tr>
-									<td class="head" id="routingGateway">Gateway</td>
+									<td class="head" data-tr="routing gateway">Gateway</td>
 									<td><input class="mid" name="gateway" type="text" maxlength="15"></td>
 								</tr>
 								<tr>
-									<td class="head" id="routingInterface">Interface</td>
+									<td class="head" data-tr="routing interface">Interface</td>
 									<td>
 										<select class="mid" name="interface" onChange="interfaceChange(this.form);"></select>
 									</td>
 								</tr>
 								<tr id="customInterfaceRow" style="display: none;">
-									<td class="head" id="routingIfaceName">Interface Name</td>
+									<td class="head" data-tr="routing interface name">Interface Name</td>
 									<td><input alias="right" class="mid" name="custom_interface" type="text" maxlength="8"></td>
 								</tr>
 								<tr>
-									<td class="head" id="routingComment">Comment</td>
+									<td class="head" data-tr="routing comment">Comment</td>
 									<td><input name="comment" class="mid" type="text" maxlength="15"></td>
 								</tr>
 								<tr>
@@ -305,7 +335,10 @@
 							<tr>
 								<td>
 									<input type="hidden" name="routingTableDiff" >
-									<input value="Add" id="buttonAdd" class="normal" onClick="addRoutingRule(this.form);" type="button"><input type="submit" class="normal" value="Apply" id="routingApply" onClick="return checkValues(this.form);"><input type="button" class="normal" value="Cancel" id="routingCancel" name="routingCancel" onClick="window.location.reload();"><input type="reset"  class="normal" value="Reset"  id="routingReset"  name="routingReset"  onClick="resetValues(this.form, 30);">
+									<input type="button" class="normal" value="Add" data-tr="button add rule" onClick="addRoutingRule(this.form);">
+									<input type="submit" class="normal" value="Apply" data-tr="button apply" onClick="return checkValues(this.form);">
+									<input type="button" class="normal" value="Cancel" data-tr="button cancel" name="routingCancel" onClick="window.location.reload();">
+									<input type="reset"  class="normal" value="Reset"  data-tr="button reset"  name="routingReset"  onClick="resetValues(this.form, 30);">
 									<input type="hidden" name="reset" value="0">
 								</td>
 							</tr>
