@@ -4374,40 +4374,41 @@
 75) kernel: net: xfrm: return error on unknown encap_type in init_state.<br>
 76) kernel: net: inet: minor optimization for backlog setting in listen(2).<br>
 77) kernel: net: llc: do not use sk_eat_skb().<br>
-78) kernel: net: net_sched: red: avoid devision by zero.<br>
-79) kernel: net: net_sched: red: avoid illegal values.<br>
-80) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-81) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
-82) kernel: net: arp: honour gratuitous ARP _replies_<br>
-83) kernel: net: arp: decompose is_garp logic into a separate function.<br>
-84) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
-85) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-86) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-87) kernel: net: arp: decrease retrans time to 1sec.<br>
-88) kernel: net: arp: correct return value of arp_rcv.<br>
-89) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-90) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-91) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-92) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
-93) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
-94) kernel: net: ipv4: emulate READ_ONCE() on ->hdrincl bit-field in raw_sendmsg().<br>
-95) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-96) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-97) kernel: net: ipv6: fix cleanup ordering for ip6_mr failure.<br>
-98) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-99) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-100) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-101) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-102) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
-103) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
-104) kernel: net: igmp: remove camel case definitions.<br>
-105) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
-106) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-107) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-108) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-109) kernel: ralink_wifi: rework timer race fixup.<br>
-110) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-111) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-112) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+78) kernel: net: tcp: remove BUG_ON from tcp_v4_err.<br>
+79) kernel: net: net_sched: red: avoid devision by zero.<br>
+80) kernel: net: net_sched: red: avoid illegal values.<br>
+81) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
+82) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
+83) kernel: net: arp: honour gratuitous ARP _replies_<br>
+84) kernel: net: arp: decompose is_garp logic into a separate function.<br>
+85) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
+86) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+87) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+88) kernel: net: arp: decrease retrans time to 1sec.<br>
+89) kernel: net: arp: correct return value of arp_rcv.<br>
+90) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+91) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+92) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+93) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
+94) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
+95) kernel: net: ipv4: emulate READ_ONCE() on ->hdrincl bit-field in raw_sendmsg().<br>
+96) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+97) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+98) kernel: net: ipv6: fix cleanup ordering for ip6_mr failure.<br>
+99) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+100) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+101) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+102) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+103) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
+104) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
+105) kernel: net: igmp: remove camel case definitions.<br>
+106) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
+107) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+108) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+109) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+110) kernel: ralink_wifi: rework timer race fixup.<br>
+111) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+112) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+113) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
