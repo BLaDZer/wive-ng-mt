@@ -1238,7 +1238,6 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(ITxBfEn);
 	FPRINT_DAT(ITxBfTimeout);
 	FPRINT_DAT(ETxBfEnCond);
-	FPRINT_DAT(ETxBfeeEn);
 	FPRINT_DAT(ETxBfTimeout);
 	FPRINT_DAT(ETxBfNoncompress);
 	FPRINT_DAT(ETxBfIncapable);

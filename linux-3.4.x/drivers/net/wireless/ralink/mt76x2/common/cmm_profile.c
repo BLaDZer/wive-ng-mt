@@ -3605,13 +3605,6 @@ NDIS_STATUS	RTMPSetProfileParameters(
 				DBGPRINT(RT_DEBUG_TRACE, ("ITxBfCalibMode = %ld\n", pAd->CommonCfg.ITxBfCalibMode));
 			}
 
-			/* ETxBfeeEn*/
-			if(RTMPGetKeyParameter("ETxBfeeEn", tmpbuf, 32, pBuffer, TRUE))
-			{
-				pAd->CommonCfg.ETxBfeeEn = simple_strtol(tmpbuf, 0, 10);
-				DBGPRINT(RT_DEBUG_TRACE, ("ETxBfeeEn = %d\n", pAd->CommonCfg.ETxBfeeEn));
-			}
-
 			/* ETxBfTimeout*/
 			if(RTMPGetKeyParameter("ETxBfTimeout", tmpbuf, 32, pBuffer, TRUE))
 			{

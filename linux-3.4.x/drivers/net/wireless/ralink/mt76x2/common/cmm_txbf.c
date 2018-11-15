@@ -401,13 +401,10 @@ void setETxBFCap(RTMP_ADAPTER *pAd, HT_BF_CAP *pTxBFCap)
 #if defined(CONFIG_AP_SUPPORT) && defined(MT76x2)
     IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
     {
-        if (!pAd->CommonCfg.ETxBfeeEn )
-        {
           pTxBFCap->RxNDPCapable =  FALSE;
           pTxBFCap->RxSoundCapable = FALSE;
           pTxBFCap->ExpNoComBF = HT_ExBF_FB_CAP_NONE;
-		  pTxBFCap->ExpComBF = HT_ExBF_FB_CAP_NONE;           
-        }
+          pTxBFCap->ExpComBF = HT_ExBF_FB_CAP_NONE;
     }
 #endif /*CONFIG_AP_SUPPORT && MT76x2*/
 }
@@ -434,12 +431,9 @@ void setVHTETxBFCap(RTMP_ADAPTER *pAd, VHT_CAP_INFO *pTxBFCap)
     // Disable BFee in AP mode to avoid IOT issue, beacuse MT76x2 can not response to 3x3 or 4x4 sounding
 #if defined(CONFIG_AP_SUPPORT) && defined(MT76x2)
     IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
-    {   
-        if (!pAd->CommonCfg.ETxBfeeEn )
-        {
+    {
           pTxBFCap->bfee_cap_mu = FALSE;
-    	  pTxBFCap->bfee_cap_su = FALSE;		
-        }
+    	  pTxBFCap->bfee_cap_su = FALSE;
     }
 #endif /*CONFIG_AP_SUPPORT && MT76x2*/
 }

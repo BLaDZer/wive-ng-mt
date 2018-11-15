@@ -2292,7 +2292,6 @@ typedef struct _COMMON_CONFIG {
 #ifdef TXBF_SUPPORT
 	ULONG ITxBfTimeout;
 	ULONG ETxBfTimeout;
-    BOOLEAN	ETxBfeeEn;	        /* Enable BFee feature */
 	ULONG	ETxBfEnCond;		/* Enable sending of sounding and beamforming */
 	BOOLEAN	ETxBfNoncompress;	/* Force non-compressed Sounding Response */
 	BOOLEAN	ETxBfIncapable;		/* Report Incapable of BF in TX BF Capabilities */
