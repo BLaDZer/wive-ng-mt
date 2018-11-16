@@ -21,7 +21,7 @@
  * that would just muddy the log. So we report the first one and
  * shut up after that.
  */
-int debug_locks = 0;
+int debug_locks __read_mostly = 0;
 EXPORT_SYMBOL_GPL(debug_locks);
 
 /*
@@ -29,7 +29,7 @@ EXPORT_SYMBOL_GPL(debug_locks);
  * 'silent failure': nothing is printed to the console when
  * a locking bug is detected.
  */
-int debug_locks_silent;
+int debug_locks_silent __read_mostly;
 
 /*
  * Generic 'turn off all lock debugging' function:
