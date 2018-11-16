@@ -4341,77 +4341,78 @@
 42) kernel: relay.c: limit kmalloc size to KMALLOC_MAX_SIZE.<br>
 43) kernel: crypto: algapi - fix NULL dereference in crypto_remove_spawns().<br>
 44) kernel: genirq: fix race on spurious interrupt detection.<br>
-45) kernel: locking/lockdep: fix debug_locks off performance problem.<br>
-46) kernel: locking/lockdep: Make global debug_locks* variables read-mostly.<br>
-47) kernel: fs: fat: add cond_resched() to fat_count_free_clusters().<br>
-48) kernel: fs: cachefiles: fix the race between cachefiles_bury_object() and rmdir(2).<br>
-49) kernel: slab: suppress out of memory warning unless debug is enabled.<br>
-50) kernel: slab: add unlikely macro to help compiler.<br>
-51) kernel: slab: move cache_flusharray() out of unlikely.text section.<br>
-52) kernel: slab: improve checking for invalid gfp_flags.<br>
-53) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
-54) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
-55) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
-56) kernel: scsi: dma-mapping: always provide dma_get_cache_alignment.<br>
-57) kernel: scsi: use dma_get_cache_alignment() as minimum DMA alignment.<br>
-58) kernel: usb: cdc-wdm: ignore -EPIPE from GetEncapsulatedResponse.<br>
-59) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
-60) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
-61) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
-62) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
-63) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
-64) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
-65) kernel: usb: usbfs: filter flags passed in from user space.<br>
-66) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
-67) kernel: usb: xhci: don't print a warning when setting link state for disabled ports.<br>
-68) kernel: usb: xhci: fix USB3 NULL pointer dereference at logical disconnect.<br>
-69) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-70) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
-71) kernel: net: drop skb on failure in ip_check_defrag().<br>
-72) kernel: net: do not abort bulk send on BQL status.<br>
-73) kernel: net: core: fix null pointer dereference in sock_alloc_send_pskb.<br>
-74) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
-75) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
-76) kernel: net: skbuff.h: remove unnecessary unlikely().<br>
-77) kernel: net: netfilter: x_tables: fix ordering of jumpstack allocation and table update.<br>
-78) kernel: net: xfrm: return error on unknown encap_type in init_state.<br>
-79) kernel: net: inet: minor optimization for backlog setting in listen(2).<br>
-80) kernel: net: llc: do not use sk_eat_skb().<br>
-81) kernel: net: tcp: remove BUG_ON from tcp_v4_err.<br>
-82) kernel: net: net_sched: red: avoid devision by zero.<br>
-83) kernel: net: net_sched: red: avoid illegal values.<br>
-84) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
-85) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
-86) kernel: net: arp: honour gratuitous ARP _replies_<br>
-87) kernel: net: arp: decompose is_garp logic into a separate function.<br>
-88) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
-89) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
-90) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
-91) kernel: net: arp: decrease retrans time to 1sec.<br>
-92) kernel: net: arp: correct return value of arp_rcv.<br>
-93) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
-94) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
-95) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
-96) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
-97) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
-98) kernel: net: ipv4: emulate READ_ONCE() on ->hdrincl bit-field in raw_sendmsg().<br>
-99) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
-100) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
-101) kernel: net: ipv6: fix cleanup ordering for ip6_mr failure.<br>
-102) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
-103) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
-104) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
-105) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
-106) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
-107) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
-108) kernel: net: igmp: remove camel case definitions.<br>
-109) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
-110) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
-111) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
-112) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
-113) kernel: ralink_wifi: rework timer race fixup.<br>
-114) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
-115) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
-116) kernel: ralink_wifi: prevent beacon make if radio off.<br>
+45) kernel: genirq: set irq thread to RT priority on creation.<br>
+46) kernel: locking/lockdep: fix debug_locks off performance problem.<br>
+47) kernel: locking/lockdep: Make global debug_locks* variables read-mostly.<br>
+48) kernel: fs: fat: add cond_resched() to fat_count_free_clusters().<br>
+49) kernel: fs: cachefiles: fix the race between cachefiles_bury_object() and rmdir(2).<br>
+50) kernel: slab: suppress out of memory warning unless debug is enabled.<br>
+51) kernel: slab: add unlikely macro to help compiler.<br>
+52) kernel: slab: move cache_flusharray() out of unlikely.text section.<br>
+53) kernel: slab: improve checking for invalid gfp_flags.<br>
+54) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+55) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
+56) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
+57) kernel: scsi: dma-mapping: always provide dma_get_cache_alignment.<br>
+58) kernel: scsi: use dma_get_cache_alignment() as minimum DMA alignment.<br>
+59) kernel: usb: cdc-wdm: ignore -EPIPE from GetEncapsulatedResponse.<br>
+60) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
+61) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
+62) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
+63) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
+64) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
+65) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
+66) kernel: usb: usbfs: filter flags passed in from user space.<br>
+67) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
+68) kernel: usb: xhci: don't print a warning when setting link state for disabled ports.<br>
+69) kernel: usb: xhci: fix USB3 NULL pointer dereference at logical disconnect.<br>
+70) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+71) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
+72) kernel: net: drop skb on failure in ip_check_defrag().<br>
+73) kernel: net: do not abort bulk send on BQL status.<br>
+74) kernel: net: core: fix null pointer dereference in sock_alloc_send_pskb.<br>
+75) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
+76) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
+77) kernel: net: skbuff.h: remove unnecessary unlikely().<br>
+78) kernel: net: netfilter: x_tables: fix ordering of jumpstack allocation and table update.<br>
+79) kernel: net: xfrm: return error on unknown encap_type in init_state.<br>
+80) kernel: net: inet: minor optimization for backlog setting in listen(2).<br>
+81) kernel: net: llc: do not use sk_eat_skb().<br>
+82) kernel: net: tcp: remove BUG_ON from tcp_v4_err.<br>
+83) kernel: net: net_sched: red: avoid devision by zero.<br>
+84) kernel: net: net_sched: red: avoid illegal values.<br>
+85) kernel: net: bridge: do not add port to router list when receives query with source 0.0.0.0.<br>
+86) kernel: net: bridge: remove ipv6 zero address check in mcast queries.<br>
+87) kernel: net: arp: honour gratuitous ARP _replies_<br>
+88) kernel: net: arp: decompose is_garp logic into a separate function.<br>
+89) kernel: net: arp: postpone addr_type calculation to as late as possible.<br>
+90) kernel: net: arp: make arp_hdr_len() return unsigned int.<br>
+91) kernel: net: arp: always override existing neigh entries with gratuitous ARP.<br>
+92) kernel: net: arp: decrease retrans time to 1sec.<br>
+93) kernel: net: arp: correct return value of arp_rcv.<br>
+94) kernel: net: ipv4: fix use-after-free in ip_cmsg_recv_dstaddr().<br>
+95) kernel: net: ipv4: route: use ipv4_mtu instead of raw rt_pmtu.<br>
+96) kernel: net: ipv4: don't let PMTU updates increase route MTU.<br>
+97) kernel: net: ipv4: avoid reading user iov twice after raw_probe_proto_opt.<br>
+98) kernel: net: ipv4: fix for a race condition in raw_sendmsg.<br>
+99) kernel: net: ipv4: emulate READ_ONCE() on ->hdrincl bit-field in raw_sendmsg().<br>
+100) kernel: net: ipv6: fix possible use-after-free in ip6_xmit().<br>
+101) kernel: net: ipv6: display all addresses in output of /proc/net/if_inet6.<br>
+102) kernel: net: ipv6: fix cleanup ordering for ip6_mr failure.<br>
+103) kernel: net: neighbour: confirm neigh entries when ARP packet is received.<br>
+104) kernel: net: neighbour: allow admin to set NTF_ROUTER.<br>
+105) kernel: net: neighbour: send netlink notification if NTF_ROUTER changes.<br>
+106) kernel: net: neighbour: force neigh_invalidate when NUD_FAILED update is from admin.<br>
+107) kernel: net: igmp: fix incorrect unsolicit report count when join group.<br>
+108) kernel: net: igmp: fix incorrect unsolicit report count after link down and up.<br>
+109) kernel: net: igmp: remove camel case definitions.<br>
+110) kernel: net: igmp: fix v1/v2 switchback timeout based on rfc3376, 8.12.<br>
+111) kernel: ralink_wifi: mt7603: fix rst protect tune.<br>
+112) kernel: ralink_wifi: power constrain in client side must be 0.5 of tx power reduce in AP for stable ACK at long range.<br>
+113) kernel: ralink_wifi: do not try rrm_scan or aplci start if radio off.<br>
+114) kernel: ralink_wifi: rework timer race fixup.<br>
+115) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
+116) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
+117) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 <br>
 <br>
