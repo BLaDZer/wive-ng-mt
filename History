@@ -4367,10 +4367,11 @@
 68) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
 69) kernel: usb: xhci: don't print a warning when setting link state for disabled ports.<br>
 70) kernel: usb: xhci: fix USB3 NULL pointer dereference at logical disconnect.<br>
-71) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-72) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
-73) kernel: net: drop skb on failure in ip_check_defrag().<br>
-74) kernel: net: do not abort bulk send on BQL status.<br>
+71) kernel: net: get rid of __tcp_checksum_complete().<br>
+72) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+73) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
+74) kernel: net: drop skb on failure in ip_check_defrag().<br>
+75) kernel: net: do not abort bulk send on BQL status.<br>
 76) kernel: net: core: fix null pointer dereference in sock_alloc_send_pskb.<br>
 77) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
 78) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
