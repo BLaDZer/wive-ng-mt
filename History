@@ -4340,38 +4340,37 @@
 41) webui: add vlan untag isolated checkbox for isolate root if (without tag) from others bridget vlans.<br>
 42) kernel: relay.c: limit kmalloc size to KMALLOC_MAX_SIZE.<br>
 43) kernel: crypto: algapi - fix NULL dereference in crypto_remove_spawns().<br>
-44) kernel: genirq: fix race on spurious interrupt detection.<br>
-45) kernel: genirq: set irq thread to RT priority on creation.<br>
-46) kernel: genirq: fix null pointer reference in irq_set_affinity_hint().<br>
-47) kernel: genirq: ensure IRQ descriptor is valid when setting-up the IRQ.<br>
-48) kernel: locking/lockdep: fix debug_locks off performance problem.<br>
-49) kernel: locking/lockdep: Make global debug_locks* variables read-mostly.<br>
-50) kernel: fs: fat: add cond_resched() to fat_count_free_clusters().<br>
-51) kernel: fs: cachefiles: fix the race between cachefiles_bury_object() and rmdir(2).<br>
-52) kernel: slab: suppress out of memory warning unless debug is enabled.<br>
-53) kernel: slab: add unlikely macro to help compiler.<br>
-54) kernel: slab: move cache_flusharray() out of unlikely.text section.<br>
-55) kernel: slab: improve checking for invalid gfp_flags.<br>
-56) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
-57) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
-58) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
-59) kernel: scsi: dma-mapping: always provide dma_get_cache_alignment.<br>
-60) kernel: scsi: use dma_get_cache_alignment() as minimum DMA alignment.<br>
-61) kernel: usb: cdc-wdm: ignore -EPIPE from GetEncapsulatedResponse.<br>
-62) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
-63) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
-64) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
-65) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
-66) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
-67) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
-68) kernel: usb: usbfs: filter flags passed in from user space.<br>
-69) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
-70) kernel: usb: xhci: don't print a warning when setting link state for disabled ports.<br>
-71) kernel: usb: xhci: fix USB3 NULL pointer dereference at logical disconnect.<br>
-72) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
-73) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
-74) kernel: net: drop skb on failure in ip_check_defrag().<br>
-75) kernel: net: do not abort bulk send on BQL status.<br>
+44) kernel: genirq: set irq thread to RT priority on creation.<br>
+45) kernel: genirq: fix null pointer reference in irq_set_affinity_hint().<br>
+46) kernel: genirq: ensure IRQ descriptor is valid when setting-up the IRQ.<br>
+47) kernel: locking/lockdep: fix debug_locks off performance problem.<br>
+48) kernel: locking/lockdep: Make global debug_locks* variables read-mostly.<br>
+49) kernel: fs: fat: add cond_resched() to fat_count_free_clusters().<br>
+50) kernel: fs: cachefiles: fix the race between cachefiles_bury_object() and rmdir(2).<br>
+51) kernel: slab: suppress out of memory warning unless debug is enabled.<br>
+52) kernel: slab: add unlikely macro to help compiler.<br>
+53) kernel: slab: move cache_flusharray() out of unlikely.text section.<br>
+54) kernel: slab: improve checking for invalid gfp_flags.<br>
+55) kernel: mips: memset.S: fix return of __clear_user from Lpartial_fixup.<br>
+56) kernel: mips: memset.S: fix clobber of v1 in last_fixup.<br>
+57) kernel: mips: workaround GCC __builtin_unreachable reordering bug.<br>
+58) kernel: scsi: dma-mapping: always provide dma_get_cache_alignment.<br>
+59) kernel: scsi: use dma_get_cache_alignment() as minimum DMA alignment.<br>
+60) kernel: usb: cdc-wdm: ignore -EPIPE from GetEncapsulatedResponse.<br>
+61) kernel: usb: xhci: don't show incorrect WARN message about events for empty rings.<br>
+62) kernel: usb: xhci: don't add a virt_dev to the devs array before it's fully allocated.<br>
+63) kernel: usb: uas and storage: Add US_FL_BROKEN_FUA for another JMicron JMS567 ID.<br>
+64) kernel: usb: serial: option: adding support for YUGA CLM920-NC5.<br>
+65) kernel: usb: qmi_wwan: add support for YUGA CLM920-NC5 PID 0x9625.<br>
+66) kernel: usb: core: add type-specific length check of BOS descriptors.<br>
+67) kernel: usb: usbfs: filter flags passed in from user space.<br>
+68) kernel: usb: add helper to extract bits 12:11 of wMaxPacketSize.<br>
+69) kernel: usb: xhci: don't print a warning when setting link state for disabled ports.<br>
+70) kernel: usb: xhci: fix USB3 NULL pointer dereference at logical disconnect.<br>
+71) kernel: net: make skb_partial_csum_set() more robust against overflows.<br>
+72) kernel: net: fix pskb_trim_rcsum_slow() with odd trim offset.<br>
+73) kernel: net: drop skb on failure in ip_check_defrag().<br>
+74) kernel: net: do not abort bulk send on BQL status.<br>
 76) kernel: net: core: fix null pointer dereference in sock_alloc_send_pskb.<br>
 77) kernel: net: ppp: fix null pointer dereference on registration failure.<br>
 78) kernel: net: ip_tunnel: restore binding to ifaces with a large mtu.<br>
