@@ -329,6 +329,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 		UCHAR BAD_HUAWEI_4_OUI[]  = {0xA8, 0xC8, 0x3A};
 		UCHAR BAD_HUAWEI_5_OUI[]  = {0x10, 0xB1, 0xF8};
 		UCHAR BAD_HUAWEI_6_OUI[]  = {0x5C, 0xC3, 0x07};
+		UCHAR BAD_HUAWEI_7_OUI[]  = {0x0C, 0x8F, 0xFF};
 		UCHAR BAD_ONEPLUS_1_OUI[]  = {0x94, 0x0E, 0x6B};
 		if (NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_1_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_MACBOOK_2_OUI, 3)
@@ -350,6 +351,7 @@ INT vht_mode_adjust(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry, VHT_CAP_IE *cap,
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_4_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_5_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_6_OUI, 3)
+			    || NdisEqualMemory(pEntry->Addr, BAD_HUAWEI_7_OUI, 3)
 			    || NdisEqualMemory(pEntry->Addr, BAD_ONEPLUS_1_OUI, 3)) {
 			    pEntry->MaxHTPhyMode.field.BW = BW_40;
 			    printk("Client %02x:%02x:%02x:%02x:%02x:%02x is bcm BCM4345x based. Disable 80MHz channel (bcm bug).\n", PRINT_MAC(pEntry->Addr));
