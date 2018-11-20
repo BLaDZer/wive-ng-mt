@@ -26,7 +26,7 @@ INT Show_BndStrg_Info(
 {
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->ShowTableInfo(table);
 
 	return TRUE;	
@@ -39,7 +39,7 @@ INT Show_BndStrg_List(
 {
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 	
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->ShowTableEntries(P_BND_STRG_TABLE);
 
 	return TRUE;	
@@ -53,7 +53,7 @@ INT Set_BndStrg_Enable(
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 	UCHAR enable = (UCHAR) simple_strtol(arg, 0, 10);
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetEnable(table, enable);
 
 	return TRUE;
@@ -67,7 +67,7 @@ INT Set_BndStrg_RssiDiff(
 	CHAR RssiDiff = (CHAR) simple_strtol(arg, 0, 10);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetRssiDiff(table, RssiDiff);
 
 	table->RssiDiff = RssiDiff;
@@ -85,7 +85,7 @@ INT Set_BndStrg_RssiLow(
 	CHAR RssiLow = (CHAR) simple_strtol(arg, 0, 10);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetRssiLow(table, RssiLow);
 
 	table->RssiLow = RssiLow;
@@ -103,7 +103,7 @@ INT Set_BndStrg_Age(
 	UINT32 AgeTime = (UINT32) simple_strtol(arg, 0, 10);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetAgeTime(table, AgeTime);
 
 	return TRUE;
@@ -117,7 +117,7 @@ INT Set_BndStrg_HoldTime(
 	UINT32 HoldTime = (UINT32) simple_strtol(arg, 0, 10);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetHoldTime(table, HoldTime);
 
 	return TRUE;
@@ -131,7 +131,7 @@ INT Set_BndStrg_CheckTime5G(
 	UINT32 CheckTime = (UINT32) simple_strtol(arg, 0, 10);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetCheckTime(table, CheckTime);
 
 	return TRUE;
@@ -145,7 +145,7 @@ INT Set_BndStrg_FrmChkFlag(
 	UINT32 FrmChkFlag = (UINT32) simple_strtol(arg, 0, 16);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetFrmChkFlag(table, FrmChkFlag);
 
 	return TRUE;
@@ -159,7 +159,7 @@ INT Set_BndStrg_CndChkFlag(
 	UINT32 CndChkFlag = (UINT32) simple_strtol(arg, 0, 16);
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetCndChkFlag(table, CndChkFlag);
 
 	return TRUE;
@@ -187,7 +187,7 @@ INT Set_BndStrg_MonitorAddr(
 		AtoH(value, (UCHAR *)&MonitorAddr[i++], 1);
 	}
 
-	if (table->Ops)
+	if (table && table->Ops)
 		table->Ops->SetMntAddr(table, MonitorAddr);
 
 	return TRUE;
@@ -444,7 +444,7 @@ BOOLEAN BndStrg_CheckConnectionReq(
 
 	PBND_STRG_CLI_TABLE table = P_BND_STRG_TABLE;
 
-	if (table->Ops && table->bEnabled == TRUE)
+	if (table && table->Ops && table->bEnabled == TRUE)
 	{
 		ret = table->Ops->CheckConnectionReq(
 										pAd,
@@ -731,11 +731,13 @@ static BOOLEAN D_CheckConnectionReq(
 		frame_check_flags & table->AlgCtrl.FrameCheck)
 	{
 		PBND_STRG_CLI_ENTRY entry = NULL;
+		MAC_TABLE_ENTRY *pEntry = MacTableLookup(pAd, pSrcAddr);
 
 		if (table->Ops)
 			entry = table->Ops->TableLookup(table, pSrcAddr);
 
-		if (entry/* || table->Band == BAND_5G*/)
+		/* allways allow if entry found, if is 5g and client stable connect and work 10 and more seconds, avoid not successed migration try=>back reject on roam */
+		if (entry || table->Band == BAND_5G || (pEntry && pEntry->StaConnectTime > 10 && pEntry->NoDataIdleCount < 10))
 			return TRUE;
 		else
 		{

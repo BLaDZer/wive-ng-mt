@@ -4418,6 +4418,7 @@
 119) kernel: ralink_wifi: review and small fixup linux os layer code.<br>
 120) kernel: ralink_wifi: send deauth and mac table reset berore radio off.<br>
 121) kernel: ralink_wifi: prevent beacon make if radio off.<br>
-122) kernel: ralink_wifi: add new honor8 oui 0C:8F:FF bcm fix.<br>
+122) kernel: ralink_wifi: add new honor8 0C:8F:FF oui and AMPAK CC:4B:73 oui to bcm fix.<br>
+123) kernel: ralink_wifi: band steering, optimize handle allready connected clients.<br>
 <br>
 <br>
