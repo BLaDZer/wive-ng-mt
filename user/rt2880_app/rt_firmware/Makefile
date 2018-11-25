@@ -116,6 +116,8 @@ ifdef CONFIG_RT_SECOND_IF_MT7615E
 endif
 	$(ROMFSINST) -S	defaults/default-4t4r-4t4r-wan0							/etc/default/nvram_default
 endif
+	$(ROMFSINST) -S sku/7615_SingleSKU_BF_default.dat						/etc/Wireless/SingleSKU_BF.dat
+	$(ROMFSINST) -S sku/7615_SingleSKU_default.dat							/etc/Wireless/SingleSKU.dat
 endif
 ###################################################################################################################################################
 # full backups dualband devices
