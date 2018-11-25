@@ -1423,7 +1423,7 @@ int gen_wifi_config(int mode, int genmode)
 #endif
 #ifdef CONFIG_MT7615_AP_VOW_SUPPORT
 	FPRINT_DAT(VOW_Airtime_Ctrl_En);
-	FPRINT_DAT(VOW_Airtime_Fairness_En);
+	FPRINT_DAT(VOW_Airtime_Fairness_En); /* Airtime Fairness */
 	FPRINT_DAT(VOW_BW_Ctrl);
 	FPRINT_DAT(VOW_Group_Backlog);
 	FPRINT_DAT(VOW_Group_DWRR_Max_Wait_Time);
@@ -1445,7 +1445,7 @@ int gen_wifi_config(int mode, int genmode)
 	FPRINT_DAT(VOW_Sta_DWRR_Max_Wait_Time);
 	FPRINT_DAT(VOW_Sta_VI_DWRR_Quantum);
 	FPRINT_DAT(VOW_Sta_VO_DWRR_Quantum);
-	FPRINT_DAT(VOW_WATF_Enable);
+	FPRINT_DAT(VOW_WATF_Enable); /* Weigthed Airtime Fairness */
 	FPRINT_DAT(VOW_WATF_MAC_LV0);
 	FPRINT_DAT(VOW_WATF_MAC_LV1);
 	FPRINT_DAT(VOW_WATF_MAC_LV2);
