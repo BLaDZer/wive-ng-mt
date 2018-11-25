@@ -812,6 +812,8 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	}
 
 
+	if (((UCHAR)pAd->ALNAGain0 == 0xFF) || (pAd->ALNAGain0 == 0x00))
+		pAd->ALNAGain0 = 0x0A;
 	if (((UCHAR)pAd->ALNAGain1 == 0xFF) || (pAd->ALNAGain1 == 0x00))
 		pAd->ALNAGain1 = pAd->ALNAGain0;
 	if (((UCHAR)pAd->ALNAGain2 == 0xFF) || (pAd->ALNAGain2 == 0x00))
@@ -821,13 +823,14 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 					pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
 
 	/* Validate 11a/b/g RSSI 0/1/2 offset.*/
+	/* if 0 - default for sky epa need allways compensate (see NF to Gain diagram) */
 	for (i =0 ; i < 3; i++)
 	{
-		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10))
-			pAd->BGRssiOffset[i] = 0;
+		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10) || (pAd->BGRssiOffset[i] == 0))
+			pAd->BGRssiOffset[i] = 3;
 
-		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10))
-			pAd->ARssiOffset[i] = 0;
+		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10) || (pAd->ARssiOffset[i] == 0))
+			pAd->ARssiOffset[i] = 3;
 	}
 
 	

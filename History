@@ -4422,5 +4422,6 @@
 123) kernel: ralink_wifi: prevent beacon make if radio off.<br>
 124) kernel: ralink_wifi: add new honor8 0C:8F:FF oui and AMPAK CC:4B:73 oui to bcm fix.<br>
 125) kernel: ralink_wifi: band steering, optimize handle allready connected clients.<br>
+126) kernel: ralink_wifi: mt7610: chip does not consider NF need allways rssi offset compensate (seed sky NF diagramm).<br>
 <br>
 <br>
