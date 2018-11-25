@@ -376,10 +376,9 @@ static int getLanIp(webs_t *wp, char** params, int nparams)
 	char if_addr[16] = {0};
 
 	if (getIfIp(getLanIfName(), if_addr) == -1) {
-		websError(wp, 500, T("getLanIp: calling getIfIp error\n"));
                 return 0;
-//		return outWrite(T(""));
 	}
+
 	return outWrite(T("%s"), if_addr);
 }
 
@@ -391,9 +390,7 @@ static int getLanMac(webs_t *wp, char** params, int nparams)
 	char if_mac[18] = {0};
 
 	if (getIfMac(getLanIfName(), if_mac, ':') == -1) {
-		websError(wp, 500, T("getLanIp: calling getIfMac error\n"));
                 return 0;
-//		return outWrite(T(""));
 	}
 	return outWrite(T("%s"), if_mac);
 }
@@ -407,9 +404,7 @@ static int getLanNetmask(webs_t *wp, char** params, int nparams)
 	char* ifname = getLanIfName();
 
 	if (getIfNetmask(ifname, if_net) == -1) {
-		websError(wp, 500, T("getLanNetmask: calling getIfNetmask(ifname=%s) error\n"), ifname);
                 return 0;
-//		return outWrite(T(""));
 	}
 	return outWrite(T("%s"), if_net);
 }
@@ -607,13 +602,9 @@ static int getRoutingTableIPv6(webs_t *wp, char** params, int nparams)
 	for (i = 0 ; i < parsed_rule_count; i++) {
 		struct RoutingRuleIPv6 rule = table[i];
 		if (i > 0) outWrite(T(",\n"));
-/*
-		char* lanwanif = getLanWanNamebyIf(rule.interface);
-		if(!strcmp(lanwanif, "LAN") && strcmp(rule.interface, getLanIfName()) != 0)
-			lanwanif = rule.interface;
-*/
 
-		outWrite(T("[ '%s', '%s', %u, '%s', %u, '%s', %u, %u, %u, %u ]"), rule.interface, rule.dest, rule.dest_prefix, rule.src, rule.src_prefix, rule.next_hop, rule.metric, rule.ref, rule.use, rule.flgs);
+		char* lanwanif = getLanWanNamebyIf(rule.interface);
+		outWrite(T("[ '%s', '%s', %u, '%s', %u, '%s', %u, %u, %u, %u ]"), lanwanif, rule.dest, rule.dest_prefix, rule.src, rule.src_prefix, rule.next_hop, rule.metric, rule.ref, rule.use, rule.flgs);
 	}
 	free(table);
 #endif

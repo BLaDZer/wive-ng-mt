@@ -81,66 +81,74 @@
 			}
 
 			function CheckValue() {
-				if (document.dhcpCfg.dhcpEnabled.options.selectedIndex == 1) {
-					if (!validateIP(document.dhcpCfg.dhcpStart)) {
-						alert(_("services dhcp invalid ip"));
-						document.dhcpCfg.dhcpStart.focus();
-						document.dhcpCfg.dhcpStart.select();
-						return false;
-					}
-					if (!validateIP(document.dhcpCfg.dhcpEnd)) {
-						alert(_("services dhcp invalid ip"));
-						document.dhcpCfg.dhcpEnd.focus();
-						document.dhcpCfg.dhcpEnd.select();
+				var form = document.dhcpCfg;
+				if (form.dhcpEnabled.options.selectedIndex == 1) {
+					if ( /^[A-Za-z0-9_.@#=+ -]+$/.test(form.dhcpDomain.value) == false){
+						alert(_("services dhcp invalid domain"));
+						form.dhcpDomain.focus();
+						form.dhcpDomain.select();
 						return false;
 					}
 
-					var startIp = ipaddr.IPv4.parse(document.dhcpCfg.dhcpStart.value);
-					var endIp = ipaddr.IPv4.parse(document.dhcpCfg.dhcpEnd.value);
+					if (!validateIP(form.dhcpStart)) {
+						alert(_("services dhcp invalid ip"));
+						form.dhcpStart.focus();
+						form.dhcpStart.select();
+						return false;
+					}
+					if (!validateIP(form.dhcpEnd)) {
+						alert(_("services dhcp invalid ip"));
+						form.dhcpEnd.focus();
+						form.dhcpEnd.select();
+						return false;
+					}
+
+					var startIp = ipaddr.IPv4.parse(form.dhcpStart.value);
+					var endIp = ipaddr.IPv4.parse(form.dhcpEnd.value);
 					if (startIp === null || endIp === null || startIp.toNumber() > endIp.toNumber()) {
 						alert(_("services dhcp end ip less than start"));
-						document.dhcpCfg.dhcpEnd.focus();
-						document.dhcpCfg.dhcpEnd.select();
+						form.dhcpEnd.focus();
+						form.dhcpEnd.select();
 						return false;
 					}
 
-					if (!validateIP(document.dhcpCfg.dhcpMask)) {
-						document.dhcpCfg.dhcpMask.focus();
-						document.dhcpCfg.dhcpMask.select();
+					if (!validateIP(form.dhcpMask)) {
+						form.dhcpMask.focus();
+						form.dhcpMask.select();
 						return false;
 					}
-					if (document.dhcpCfg.dhcpPriDns.value != "") {
-						if (!validateIP(document.dhcpCfg.dhcpPriDns)) {
+					if (form.dhcpPriDns.value != "") {
+						if (!validateIP(form.dhcpPriDns)) {
 							alert(_("services dhcp invalid ip"));
-							document.dhcpCfg.dhcpPriDns.focus();
-							document.dhcpCfg.dhcpPriDns.select();
+							form.dhcpPriDns.focus();
+							form.dhcpPriDns.select();
 							return false;
 						}
 					}
-					if (document.dhcpCfg.dhcpSecDns.value != "") {
-						if (!validateIP(document.dhcpCfg.dhcpSecDns)) {
+					if (form.dhcpSecDns.value != "") {
+						if (!validateIP(form.dhcpSecDns)) {
 							alert(_("services dhcp invalid ip"));
-							document.dhcpCfg.dhcpSecDns.focus();
-							document.dhcpCfg.dhcpSecDns.select();
+							form.dhcpSecDns.focus();
+							form.dhcpSecDns.select();
 							return false;
 						}
 					}
-					if (!validateIP(document.dhcpCfg.dhcpGateway)) {
+					if (!validateIP(form.dhcpGateway)) {
 						alert(_("services dhcp invalid ip"));
-						document.dhcpCfg.dhcpGateway.focus();
-						document.dhcpCfg.dhcpGateway.select();
+						form.dhcpGateway.focus();
+						form.dhcpGateway.select();
 						return false;
 					}
-					if (!validateNum(document.dhcpCfg.dhcpLease.value) || +document.dhcpCfg.dhcpLease.value < 0) {
+					if (!validateNum(form.dhcpLease.value) || +form.dhcpLease.value < 0) {
 						alert(_("services dhcp invalid lease"));
-						document.dhcpCfg.dhcpLease.focus();
-						document.dhcpCfg.dhcpLease.select();
+						form.dhcpLease.focus();
+						form.dhcpLease.select();
 						return false;
 					}
-					if (!validateNum(document.dhcpCfg.dhcpARPPTimeout.value) || +document.dhcpCfg.dhcpARPPTimeout.value < 0) {
+					if (!validateNum(form.dhcpARPPTimeout.value) || +form.dhcpARPPTimeout.value < 0) {
 						alert(_("services dhcp invalid arptimeout"));
-						document.dhcpCfg.dhcpARPPTimeout.focus();
-						document.dhcpCfg.dhcpARPPTimeout.select();
+						form.dhcpARPPTimeout.focus();
+						form.dhcpARPPTimeout.select();
 						return false;
 					}
 					genIPTableData();

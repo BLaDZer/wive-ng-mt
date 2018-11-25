@@ -214,6 +214,14 @@
 				disableControlsByAuth();
 			}
 
+			function validateComm(val) {
+				if (/[`]/.test(val))
+					return false;
+
+				return validateASCII(val, true, false);
+			}
+
+
 			function CheckValues(form) {
 				var rmtManagementPort = NVRAM_RemoteManagementPort;
 				var rmtManagementPortHTTPS = NVRAM_RemoteManagementPortHTTPS;
@@ -269,6 +277,34 @@
 						form.rmtSSH.focus();
 						return false;
 					}
+				}
+
+				if (!validateNum(form.ping_check_time.value, false) && form.pingerEnable.selectedIndex > 0) {
+					alert(_("services misc ping time invalid"));
+					form.ping_check_time.select();
+					form.ping_check_time.focus();
+					return false;
+				}
+
+				if (!validateNum(form.ping_check_interval.value, false) && form.pingerEnable.selectedIndex > 0) {
+					alert(_("services misc ping interval invalid"));
+					form.ping_check_interval.select();
+					form.ping_check_interval.focus();
+					return false;
+				}
+
+				if (!validateNum(form.udpxyPort.value, false) && form.udpxyMode.selectedIndex > 0) {
+					alert(_("services misc udpxy port invalid"));
+					form.udpxyPort.select();
+					form.udpxyPort.focus();
+					return false;
+				}
+
+				if (!validateComm(form.snmpdcommunity.value) && form.SnmpdEnabled.selectedIndex > 0) {
+					alert(_("services misc snmp community invalid"));
+					form.snmpdcommunity.select();
+					form.snmpdcommunity.focus();
+					return false;
 				}
 
 				if (form.RemoteManagementPort.value == rmtManagementPort && form.RemoteManagementPortHTTPS.value == rmtManagementPortHTTPS) {

@@ -17,7 +17,26 @@
 		<script src="/js/validation.js"></script>
 		<script>
 			var ROUTING_TABLE = [ <% getRoutingTable(); %> ];
-			var ROUTING_TABLE_IPV6 = [ <% getRoutingTableIPv6(); %> ];
+			var ROUTING_TABLE_IPV6 = getRoutingTableIPv6();
+
+			function getRoutingTableIPv6() {
+				var routing_tbl = [ <% getRoutingTableIPv6(); %> ];
+				var res = [];
+				for (var i=0;i<routing_tbl.length;i++) // >
+				{
+					var hasOne = false;
+					for (var j=0;j<i;j++) { // >
+						if (routing_tbl[j].toString() == routing_tbl[i].toString()) {
+							hasOne = true;
+							break;
+						}
+					}
+					if (hasOne == false) {
+						res.push(routing_tbl[i]);
+					}
+				}
+				return res;
+			}
 
 			function initTranslation() {
 				init_translation_model();
@@ -262,29 +281,7 @@
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" action="/goform/editRouting" name="editRouting">
-						<div id="ajxCtxRoutingTableIPv6"></div>
 						<div id="ajxCtxRoutingTable"></div>
-						<div id="dynamicRoutingDiv" style="display:none;">
-							<table class="form">
-								<col style="width: 40%;" />
-								<col style="width: 60%;" />
-								<tbody>
-									<tr>
-										<td class="title" colspan="2" data-tr="routing dynamic title">Dynamic routing</td>
-									</tr>
-									<tr>
-										<td class="head" data-tr="routing rip">RIP</td>
-										<td>
-											<select name="RIPSelect" class="mid">
-												<option value="0" data-tr="button disable">Disable</option>
-												<option value="1" data-tr="button enable">Enable</option>
-											</select>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<br>
-						</div>
 						<table class="form">
 							<col style="width: 40%;" />
 							<col style="width: 60%;" />
@@ -330,12 +327,35 @@
 								<tr>
 							</tbody>
 						</table>
+						<input type="button" class="normal" value="Add" data-tr="button add rule" onClick="addRoutingRule(this.form);">
 						<br>
+						<br>
+						<div id="dynamicRoutingDiv" style="display:none;">
+							<table class="form">
+								<col style="width: 40%;" />
+								<col style="width: 60%;" />
+								<tbody>
+									<tr>
+										<td class="title" colspan="2" data-tr="routing dynamic title">Dynamic routing</td>
+									</tr>
+									<tr>
+										<td class="head" data-tr="routing rip">RIP</td>
+										<td>
+											<select name="RIPSelect" class="mid">
+												<option value="0" data-tr="button disable">Disable</option>
+												<option value="1" data-tr="button enable">Enable</option>
+											</select>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<br>
+						</div>
+						<div id="ajxCtxRoutingTableIPv6"></div>
 						<table class="buttons">
 							<tr>
 								<td>
 									<input type="hidden" name="routingTableDiff" >
-									<input type="button" class="normal" value="Add" data-tr="button add rule" onClick="addRoutingRule(this.form);">
 									<input type="submit" class="normal" value="Apply" data-tr="button apply" onClick="return checkValues(this.form);">
 									<input type="button" class="normal" value="Cancel" data-tr="button cancel" name="routingCancel" onClick="window.location.reload();">
 									<input type="reset"  class="normal" value="Reset"  data-tr="button reset"  name="routingReset"  onClick="resetValues(this.form, 30);">

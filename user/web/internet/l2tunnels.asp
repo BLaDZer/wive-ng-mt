@@ -53,14 +53,14 @@
 				form.eoip_brifs.value			= NVRAM_eoip_brifs;
 
 				function populateBrif(brifs, custom, elem) {
-					var ind = brifs.indexOf(elem.value)
-					elem.checked = ( ind != -1 );
+					elem.checked = ( brifs.indexOf(elem.value) != -1 );
+					var ind = custom.indexOf(elem.value)
 					if (ind != -1) custom.splice( ind, 1 );
 				}
 
 				if (NVRAM_l2tp_eth_enabled != "0") {
 					var l2tp_eth_brifs_list = NVRAM_l2tp_eth_brifs.split(" ");
-					var l2tp_eth_brifs_custom = [];
+					var l2tp_eth_brifs_custom = l2tp_eth_brifs_list.slice();
 					if (NVRAM_l2tp_eth_brifs == "all") {
 						form.l2tp_eth_brifs_all.checked = true;
 					}
@@ -77,7 +77,7 @@
 
 				if (NVRAM_eoip_enabled != "0") {
 					var eoip_brifs_list = NVRAM_eoip_brifs.split(" ");
-					var eoip_brifs_custom = [];
+					var eoip_brifs_custom = eoip_brifs_list.slice();
 
 					if (NVRAM_eoip_brifs == "all") {
 						form.eoip_brifs_all.checked = true;

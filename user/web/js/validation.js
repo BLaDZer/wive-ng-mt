@@ -15,6 +15,17 @@ function validateHex(str) {
 	return re.test(str);
 }
 
+function validateASCII(str, printable, extended) {
+    var re;
+
+    if (extended)
+        re = printable ? /^[\x20-\xFF]*$/ : /^[\x00-\xFF]*$/;
+    else
+        re = printable ? /^[\x20-\x7F]*$/ : /^[\x00-\x7F]*$/;
+
+    return re.test(str);
+}
+
 function validatePort(field, info)
 {
 	var re = /^\d+$/;

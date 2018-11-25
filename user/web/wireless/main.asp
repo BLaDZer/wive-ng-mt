@@ -198,8 +198,13 @@
 				var updateVisibility_security = function() {
 					displayElement('div_security', enableWirelessAny);
 
-					var wpa_psk_mode = form.security_mode.value == 'WPAPSK' || form.security_mode.value == 'WPA2PSK' || form.security_mode.value == 'WPAPSKWPA2PSK';
-					var wpa_ent_mode = form.security_mode.value == 'WPA' || form.security_mode.value == 'WPA2' || form.security_mode.value == 'WPA1WPA2';
+					var wpa1_psk_mode = form.security_mode.value == 'WPAPSK';
+					var wpa2_psk_mode = form.security_mode.value == 'WPA2PSK' || form.security_mode.value == 'WPAPSKWPA2PSK';
+					var wpa_psk_mode =  wpa1_psk_mode || wpa2_psk_mode;
+
+					var wpa1_ent_mode = form.security_mode.value == 'WPA';
+					var wpa2_ent_mode = form.security_mode.value == 'WPA2' || form.security_mode.value == 'WPA1WPA2';
+					var wpa_ent_mode =  wpa1_ent_mode || wpa2_ent_mode;
 
 					// Security: WEP
 					displayElement('div_wep', form.security_mode.value == 'WEPAUTO');
@@ -214,6 +219,8 @@
 					// WPA Pre-shared
 					displayElement('wpa_passphrase', wpa_psk_mode);
 					displayElement('wpa_passphrase5', wpa_psk_mode && old_MBSSID == 0 && enableWirelessAc && form.mssid_1.value != form.mssidac_1.value);
+
+					displayElement(['wpa_pmf_mode', 'wpa_pmf_sha256'], BUILD_WLAN_PMF && (wpa2_ent_mode || wpa2_psk_mode) && (form.cipher.selectedIndex != 0)); // if PMF built && (WPA2 + AES)
 
 
 					//WPA Passphrase label (2.4/5 GHz)
@@ -246,7 +253,7 @@
 				var updateVisibility_ht = function() {
 					displayElement('div_11n', htmode);
 
-					displayElement(['basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTDelBA_tr', 'basicHTOPMode_tr', 'basicHTRDG_tr' ], 1);
+					displayElement(['basicHTMCS_tr', 'basicHTGI_tr','basicHSTBC_tr', 'basicHTAMSDU_tr', 'basicHTAddBA_tr', 'basicHTOPMode_tr' ], 1);
 					updateMCSOptions(form);
 
 					displayElement('extension_channel', form.sz11gChannel.value != 0 && (1*wmode) >= 5 && form.n_bandwidth.value == 1 );
@@ -259,7 +266,6 @@
 					displayElement("basicHtRx2Stream", NVRAM_RXPath != "1");
 
 					form.n_mode.disabled = !htmode;
-					form.n_rdg.disabled = !htmode;
 					form.n_gi.disabled = !htmode;
 					form.n_stbc.disabled = !htmode;
 					form.n_mcs.disabled = !htmode;
@@ -295,6 +301,12 @@
 
 					// IEEE 802.11h support
 					displayElement('div_dot11h', (BUILD_DFS == '1') && enableWirelessAc);
+
+					// 256QAM support
+					displayElement('div_g256qam', (BUILD_WLAN_256QAM == '1') && enableWireless);
+
+					// VOW
+					displayElement('div_vow_airtime_fairness', (BUILD_WLAN_VOW == '1'));
 				}
 
 				// Basic roaming settings (Fast Roaming)
@@ -313,15 +325,16 @@
 					displayElement(["basicApProbeRspTimes_tr", "basicAuthRspFail_tr", "basicBandDeltaRssi_tr", "basicAuthRspRssi_tr", "basicAssocReqRssiThres_tr", "basicAssocRspIgnor_tr", "basicKickStaRssiLow_tr", "basicKickStaRssiLowPSM_tr", "basicKickStaRssiLowFT_tr", "basicKickStaRssiLowDelay_tr", "basicProbeRspRssi_tr", "tmpBlockAfterKick_tr"], form.FastRoaming.value == "1");
 					displayElement("basicBandDeltaRssi_tr", form.FastRoaming.value == "1" && BUILD_5GHZ_SUPPORT);
 					displayElement("basicKickStaRssiLowFT_tr", form.FastRoaming.value == "1" && ft_built);
+
+					// WNM
+					displayElement('div_WNMEnable', (BUILD_WLAN_WNM == '1'));
 				}
 
 				// Beamforming
 				var updateVisibility_beamforming = function() {
 					displayElement('div_txbf', BUILD_TXBF == '1' && enableWirelessAny);
-					// BFee feature
-					displayElement('div_ETxBfeeEn', form.ITxBfEn.value == "1");
 					// Sending of sounding and beamforming
-					displayElement('div_ETxBfEnCond', form.ITxBfEn.value == "1");
+//					displayElement('div_ETxBfEnCond', form.ITxBfEn.value == "1");
 				}
 
 				// Band steering settings
@@ -535,6 +548,8 @@
 					form["EncrypType"+i].value = "AES";
 					form["RekeyInterval"+i].value = "3600";
 					form["passphrase"+i].value = "";
+					form["PMFMode"+i].value = "0";
+					form["PMFSHA256_"+i].value = "0";
 
 					form["Key1Str"+i].value = "";
 					form["Key2Str"+i].value = "";
@@ -590,6 +605,8 @@
 						form["EncrypType"+i].value = form["EncrypType"+(i+1)].value;
 						form["RekeyInterval"+i].value = form["RekeyInterval"+(i+1)].value;
 						form["passphrase"+i].value = form["passphrase"+(i+1)].value;
+						form["PMFMode"+i].value = form["PMFMode"+(i+1)].value;
+						form["PMFSHA256_"+i].value = form["PMFSHA256_"+(i+1)].value;
 
 						form["Key1Str"+i].value = form["Key1Str"+(i+1)].value;
 						form["Key2Str"+i].value = form["Key2Str"+(i+1)].value;
@@ -910,6 +927,8 @@
 
 				form["passphrase"+old_MBSSID].value = form.passphrase.value;
 				form["RekeyInterval"+old_MBSSID].value = form.keyRenewalInterval.value;
+				form["PMFMode"+old_MBSSID].value = form.PMFMode.value;
+				form["PMFSHA256_"+old_MBSSID].value = form.PMFSHA256.value;
 
 				form["PreAuth"+old_MBSSID].value = (form.PreAuthentication.selectedIndex == 0)?'0':'1';
 
@@ -1009,6 +1028,8 @@
 
 				form.passphrase.value			= form["passphrase"+MBSSID].value;
 				form.keyRenewalInterval.value		= form["RekeyInterval"+MBSSID].value;
+				form.PMFMode.value			= form["PMFMode"+MBSSID].value;
+				form.PMFSHA256.value			= form["PMFSHA256_"+MBSSID].value;
 				if (form["PreAuth"+MBSSID] == '0')
 					form.PreAuthentication[0].selected = true;
 				else
@@ -1055,6 +1076,8 @@
 							RADIUS_Port:"",
 							RADIUS_Server:"",
 							RekeyInterval:"",
+							PMFMode:"",
+							PMFSHA256:"",
 							RekeyMethod:"",
 							WPAPSK:"",
 							session_timeout_interval:""
@@ -1086,6 +1109,8 @@
 					setExtraField(form, cnt, "RekeyMethod"+i, network.data[i].RekeyMethod);
 					setExtraField(form, cnt, "RekeyInterval"+i, network.data[i].RekeyInterval);
 					setExtraField(form, cnt, "DefaultKeyID"+i, network.data[i].DefaultKeyID);
+					setExtraField(form, cnt, "PMFMode"+i, network.data[i].PMFMode);
+					setExtraField(form, cnt, "PMFSHA256_"+i, network.data[i].PMFSHA256);
 
 					setExtraField(form, cnt, "Key1Type"+i, network.data[i].Key1Type);
 					setExtraField(form, cnt, "Key2Type"+i, network.data[i].Key2Type);
@@ -1303,6 +1328,9 @@
 
 				form.n_bandwidth.options.selectedIndex = 1*NVRAM_HT_BW;
 				form.dot11h.options.selectedIndex = 1*dot11hArray[0];
+				form.g256qam.options.selectedIndex = 1*(NVRAM_G_BAND_256QAM.split(";")[0]);
+				form.vow_airtime_fairness.options.selectedIndex = 1*(NVRAM_VOW_Airtime_Fairness_En.split(";")[0]);
+				form.WNMEnable.options.selectedIndex = 1*(NVRAM_WNMEnable.split(";")[0]);
 				initChecktime(form);
 
 				updateChannelList(form, true); // generate primary full channel list
@@ -1346,11 +1374,8 @@
 				form.n_gi.options.selectedIndex = (NVRAM_HT_GI == "1") ? 1 : 0;
 				form.n_stbc.options.selectedIndex = (NVRAM_HT_STBC == "1") ? 1 : 0;
 
-				form.n_rdg.options.selectedIndex = (NVRAM_HT_RDG == "0") ? 0 : 1;
-
 				form.n_amsdu.options.selectedIndex = (NVRAM_HT_AMSDU ==  "0") ? 0 : 1;
 				form.n_autoba.options.selectedIndex = (NVRAM_HT_AutoBA == "0") ? 0 : 1;
-				form.n_badecline.options.selectedIndex = (NVRAM_HT_BADecline == "0") ? 0 : 1;
 
 				if (BUILD_WLAN_4T4R == "1")
 				{
@@ -1391,7 +1416,6 @@
 
 				if (BUILD_TXBF == '1') {
 					form.ITxBfEn.options.selectedIndex = NVRAM_ITxBfEn;
-					form.ETxBfeeEn.options.selectedIndex = NVRAM_ETxBfeeEn;
 					form.ETxBfEnCond.options.selectedIndex = NVRAM_ETxBfEnCond;
 				}
 
@@ -1689,7 +1713,7 @@
 					return false;
 				}
 				// validate RADIUS secret
-				if( !checkStrictInjection(document.getElementById('RadiusServerSecret').value) || 
+				if( !checkInjection(document.getElementById('RadiusServerSecret').value) ||
 					!document.getElementById('RadiusServerSecret').value.length) {
 					document.getElementById('RadiusServerSecret').focus();
 					document.getElementById('RadiusServerSecret').select();
@@ -1707,35 +1731,20 @@
 				return true;
 			}
 
-			// Check ASCII 10 & 13 on string
-			function checkInjection(str) {
-				var re = /[\r\n]/;
-				if (re.test(str))
-					return false;
-				else
-					return true;
-			}
-
 			// Check ASCII 10, 13 and ; , on string
-			function checkStrictInjection(str) {
-				var re = /^[\r\n;,]+$/;
+			function checkInjection(str) {
+				if (!validateASCII(str, true, false))
+					return false;
+
+				var re = /[;,]/;
 				if (re.test(str))
 					return false;
 				else
 					return true;
 			}
-
 
 			function checkValues(form)
 			{
-
-				if (form.mssid_1.value == "" &&  form.radioWirelessEnabled.value == 1)
-				{
-					alert(_("adv no mssid_1"));
-					form.mssid_1.focus();
-					form.mssid_1.select();
-					return false;
-				}
 
 				if (form.mssidac_1.value == "" &&  form.radioWirelessEnabledAc.value == 1)
 				{
@@ -1745,14 +1754,36 @@
 					return false;
 				}
 
+				if (!validateASCII(form.mssidac_1.value, true, false))
+				{
+					alert(_("basic invalid ssid"));
+					form.mssidac_1.focus();
+					form.mssidac_1.select();
+					return false;
+				}
+
 				// multiple ssids
-				for (var i=2;i<=form.bssid_num.value;i++)
+				for (var i=1;i<=form.bssid_num.value;i++)
 				{
 					var elem = form.elements["mssid_"+i];
-					// if empty and visible on page
-					if (elem.value == "" && elem.offsetParent != null)
+					// first SSID
+					if (i == 1 && form.radioWirelessEnabled.value == 0)
+						continue;
+					// visible on page
+					if (elem.offsetParent == null)
+						continue;
+
+					if (elem.value == "")
 					{
 						alert(_("adv no mssid_1"));
+						elem.focus();
+						elem.select();
+						return false;
+					}
+
+					if (!validateASCII(elem.value, true, false))
+					{
+						alert(_("basic invalid ssid"));
 						elem.focus();
 						elem.select();
 						return false;
@@ -2325,7 +2356,7 @@ table.form tr.ssid-row {
 					<option value="1" data-tr="basic select by sta">by STA count</option>
 					<option value="2" data-tr="basic select by rssi">by RSSI</option>
 					<option value="3" data-tr="basic select by qbss" id="autoselect_g_qbss">by QBSS</option>
-					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g">
+					</select>&nbsp;&nbsp;<select name="checktime_g" id="checktime_g" class="normal">
 				</select>
 				</td>
 			</tr>
@@ -2705,6 +2736,29 @@ table.form tr.ssid-row {
 								</select>
 							</td>
 						</tr>
+
+						<tr id="wpa_pmf_mode" name="wpa_pmf_mode">
+							<td class="head" data-tr="secure wpa pmf mode">Protection Management Frame Mode</td>
+							<td>
+								<select name="PMFMode" id="PMFMode" class="normal">
+									<option value="0" data-tr="button disable">Disable</option>
+									<option value="1" data-tr="secure wpa pmf capable">Capable</option>
+									<option value="2" data-tr="secure wpa pmf required">Required</option>
+								</select>
+							</td>
+						</tr>
+
+						<tr id="wpa_pmf_sha256" name="wpa_pmf_sha256">
+							<td class="head" data-tr="secure wpa pmf sha256">Support SHA256 for Protection Management Frame</td>
+							<td>
+								<select name="PMFSHA256" id="PMFSHA256" class="normal">
+									<option value="0" data-tr="button disable">Disable</option>
+									<option value="1" data-tr="button enable">Enable</option>
+								</select>
+							</td>
+						</tr>
+
+
 					</table>
 					<table id="div_radius_server" name="div_radius_server" class="form" style="display: none;">
 						<tr>
@@ -2815,23 +2869,9 @@ table.form tr.ssid-row {
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
-		<tr id="basicHTDelBA_tr">
-			<td class="head" data-tr="basic ht delba">Decline Block ACK Request</td>
-			<td class="val"><select name="n_badecline" class="normal">
-				<option value="0" data-tr="button disable">Disable</option>
-				<option value="1" data-tr="button enable">Enable</option>
-			</select></td>
-		</tr>
 		<tr id="basicHTOPMode_tr" style="display: none;">
 			<td class="head" data-tr="basic ht op mode">Greenfield Mode</td>
 			<td class="val"><select name="n_mode" class="normal">
-				<option value="0" data-tr="button disable">Disable</option>
-				<option value="1" data-tr="button enable">Enable</option>
-			</select></td>
-		</tr>
-		<tr id="basicHTRDG_tr">
-			<td class="head" data-tr="basic ht rdg">Reverse Direction Grant</td>
-			<td class="val"><select name="n_rdg" class="normal">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
@@ -2959,6 +2999,20 @@ table.form tr.ssid-row {
 		<tr id="div_dot11h">
 			<td class="head" data-tr="adv dot11h">IEEE802.11H</td>
 			<td colspan="5"><select name="dot11h" class="normal">
+				<option value="0" data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
+		<tr id="div_g256qam">
+			<td class="head" data-tr="adv g256qam">256QAM</td>
+			<td colspan="5"><select name="g256qam" class="normal">
+				<option value="0" data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
+		<tr id="div_vow_airtime_fairness">
+			<td class="head" data-tr="adv vow airtime fairness">Airtime Fairness</td>
+			<td colspan="5"><select name="vow_airtime_fairness" class="normal">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
@@ -3096,6 +3150,13 @@ table.form tr.ssid-row {
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
+		<tr id="div_WNMEnable">
+			<td class="head" data-tr="roaming wnm enable">Wireless Network Management</td>
+			<td colspan="5"><select name="WNMEnable" class="normal">
+				<option value="0" data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
 
 		<tr id="basicFtMdId_tr">
 			<td class="head" data-tr="basic roaming ft mobility domain id">Mobility Domain ID</td>
@@ -3140,32 +3201,41 @@ table.form tr.ssid-row {
 	</tbody>
 	</table>
 
-	<table id="div_txbf" class="form auth-hide-user" style="display:none;">
-	<thead>
+	<table id="div_txbf" class="form showHideMenu auth-hide-user">
+	<thead onclick="switchShowMenu(this);">
 		<tr>
-			<td class="title head" data-tr="basic txbf">Beamforming</td>
-			<td class="title" style="text-align:right">
-				<select name="ITxBfEn" class="half" onChange="updateVisibility(this.form);">
+			<td class="title" colspan=2  data-tr="basic tx beam title">TX Beamforming</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="div_ITxBfEn">
+			<td class="head" data-tr="basic tx beam implicit">Implicit TX Beamforming</td>
+			<td class="val"><select name="ITxBfEn" class="normal">
 					<option value="0" data-tr="button disable">Disable</option>
 					<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
-	</thead>
-	<tbody>
-		<tr id="div_ETxBfeeEn" style="display:none;">
-			<td class="head" data-tr="basic etxbfeeen">BFee feature</td>
-			<td class="val"><select name="ETxBfeeEn" class="normal">
-				<option value="0" data-tr="button disable">Disable</option>
-				<option value="1" data-tr="button enable">Enable</option>
-			</select></td>
-		</tr>
-		<tr id="div_ETxBfEnCond" style="display:none;">
-			<td class="head" data-tr="basic etxbfencond">Sending of sounding and beamforming</td>
+
+		<tr id="div_ETxBfEnCond">
+			<td class="head" data-tr="basic tx beam explicit">Explicit TX Beamforming</td>
 			<td class="val"><select name="ETxBfEnCond" class="normal">
 				<option value="0" data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
 		</tr>
+
+		<tr id="div_MUTxRxEnable">
+			<td class="head" data-tr="basic tx beam mu">Multiuser TX Beamforming</td>
+			<td class="val"><select name="MUTxRxEnable" class="normal">
+				<option value="0" data-tr="basic tx beam mu off">Off</option>
+				<option value="1" data-tr="basic tx beam mu beamformer">Beamformer</option>
+				<option value="2" data-tr="basic tx beam mu beamformee">Beamformee</option>
+				<option value="3" data-tr="basic tx beam mu all">All</option>
+			</select></td>
+		</tr>
+
+
+
 	</tbody>
 	</table>
 	<table id="div_bandsteering" class="form auth-hide-user" style="display:none;">

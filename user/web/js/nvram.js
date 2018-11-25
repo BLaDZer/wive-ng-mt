@@ -52,6 +52,10 @@ var BUILD_ARPWATCH                                                   = '<% getAR
 var BUILD_SMP                                                        = '<% getSMPBuilt(); %>'             == '1';
 var BUILD_GW                                                         = '<% getGWBuilt(); %>'              == '1';
 var BUILD_WLANAPCLI                                                  = '<% getWlanApcliBuilt(); %>'       == '1';
+var BUILD_WLAN_256QAM                                                = '<% getWlan256QAMBuilt(); %>'      == '1';
+var BUILD_WLAN_PMF                                                   = '<% getWlanPMFBuilt(); %>'         == '1';
+var BUILD_WLAN_VOW                                                   = '<% getWlanVOWBuilt(); %>'         == '1';
+var BUILD_WLAN_WNM                                                   = '<% getWlanWNMBuilt(); %>'         == '1';
 var BUILD_WLAN_4T4R                                                  = '<% getWlan4T4RBuilt(); %>'        == '1';
 var BUILD_STATION                                                    = '<% getStationBuilt(); %>'         == '1';
 var BUILD_VPN                                                        = '<% getVPNBuilt(); %>';
@@ -414,11 +418,9 @@ var NVRAM_HT_GI                                                      = '<% getCf
 var NVRAM_HT_STBC                                                    = '<% getCfgGeneral(1, "HT_STBC",                            "1"); %>';
 var NVRAM_HT_MCS                                                     = '<% getCfgGeneral(1, "HT_MCS",                             "33"); %>';
 var NVRAM_HT_HTC                                                     = '<% getCfgGeneral(1, "HT_HTC",                             "0"); %>';
-var NVRAM_HT_RDG                                                     = '<% getCfgGeneral(1, "HT_RDG",                             "0"); %>';
 var NVRAM_HT_EXTCHA                                                  = '<% getCfgGeneral(1, "HT_EXTCHA",                          "1"); %>';
 var NVRAM_HT_AMSDU                                                   = '<% getCfgGeneral(1, "HT_AMSDU",                           "1"); %>';
 var NVRAM_HT_AutoBA                                                  = '<% getCfgGeneral(1, "HT_AutoBA",                          "1"); %>';
-var NVRAM_HT_BADecline                                               = '<% getCfgGeneral(1, "HT_BADecline",                       "0"); %>';
 var NVRAM_HT_BW                                                      = '<% getCfgGeneral(1, "HT_BW",                              "1"); %>';
 var NVRAM_HT_BWINIC                                                  = '<% getCfgGeneral(1, "HT_BWINIC",                          "1"); %>';
 var NVRAM_VHT_SGI                                                    = '<% getCfgGeneral(1, "VHT_SGI",                            "1"); %>';
@@ -452,6 +454,9 @@ var NVRAM_HideSSID                                                   = '<% getCf
 var NVRAM_NoForwarding                                               = '<% getCfgGeneral(1, "NoForwarding",                       "0;0;0;0"); %>';
 var NVRAM_NoForwardingMBCast                                         = '<% getCfgGeneral(1, "NoForwardingMBCast",                 "0;0;0;0"); %>';
 var NVRAM_IEEE80211H                                                 = '<% getCfgGeneral(1, "IEEE80211H",                         "1"); %>';
+var NVRAM_G_BAND_256QAM                                              = '<% getCfgGeneral(1, "G_BAND_256QAM",                      "1"); %>';
+var NVRAM_VOW_Airtime_Fairness_En                                    = '<% getCfgGeneral(1, "VOW_Airtime_Fairness_En",            "1"); %>';
+var NVRAM_WNMEnable                                                  = '<% getCfgGeneral(1, "WNMEnable",                          "0"); %>';
 var NVRAM_TXPath                                                     = '<% getCfgGeneral(1, "TXPath",                             ""); %>';
 var NVRAM_RXPath                                                     = '<% getCfgGeneral(1, "RXPath",                             ""); %>';
 var NVRAM_BandSteering                                               = '<% getCfgGeneral(1, "BandSteering",                       "0"); %>';

@@ -60,6 +60,13 @@
 							'div_time_server' ], document.getElementById('SmbEnabled').value == '1');
 			}
 
+			function validateSmb(val) {
+				if (/[`"]/.test(val))
+					return false;
+
+				return validateASCII(val, true, false);
+			}
+
 			function checkForm() {
 				if (document.getElementById('SmbEnabled').value == '1') {
 					if (document.getElementById('WorkGroup').value == '') {
@@ -68,9 +75,27 @@
 						return false;
 					}
 
+					if (!validateSmb(document.getElementById('WorkGroup').value)) {
+						alert(_("services samba invalid workgroup"));
+						document.getElementById('WorkGroup').focus();
+						return false;
+					}
+
 					if (document.getElementById('SmbNetBIOS').value == '') {
 						alert(_("services samba no netbios"));
 						document.getElementById('SmbNetBIOS').focus();
+						return false;
+					}
+
+					if (!validateSmb(document.getElementById('SmbNetBIOS').value)) {
+						alert(_("services samba invalid netbios"));
+						document.getElementById('SmbNetBIOS').focus();
+						return false;
+					}
+
+					if (!validateSmb(document.getElementById('SmbString').value)) {
+						alert(_("services samba invalid server string"));
+						document.getElementById('SmbString').focus();
 						return false;
 					}
 

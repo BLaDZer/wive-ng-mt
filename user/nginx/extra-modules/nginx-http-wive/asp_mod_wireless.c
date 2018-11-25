@@ -7,6 +7,42 @@ static int default_shown_mbssid[3]  = {0,0,0};
 
 static void setSecurity(webs_t* wp, int nvram);
 
+static int getWlanWNMBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_MT7615_AP_WNM_SUPPORT)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
+
+static int getWlanVOWBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_MT7615_AP_VOW_SUPPORT)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
+
+static int getWlan256QAMBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
+
+static int getWlanPMFBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_MT76X3_AP_80211W_PMF) || defined(CONFIG_MT7615_AP_80211W_PMF)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
+
 static int getWlan4T4RBuilt(webs_t *wp, char** params, int nparams)
 {
 #if defined(CONFIG_RT_FIRST_IF_MT7615E) || defined(CONFIG_RT_SECOND_IF_MT7615E)
@@ -15,7 +51,6 @@ static int getWlan4T4RBuilt(webs_t *wp, char** params, int nparams)
 	return outWrite("0");
 #endif
 }
-
 
 static int getWlanApcliBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -453,9 +488,12 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 {
 	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssids, *hidden_ssids, *isolated_ssids, *mbssidapisolated;
 	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_rdg, *n_extcha, *n_amsdu, *n_autoba, *n_badecline;
-	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate, *PMKCachePeriod;
+	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_extcha, *n_amsdu, *n_autoba;
+	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate, *PMKCachePeriod, *g256qam, *vow_airtime_fairness, *WNMEnable;
 	char_t pmktmpbuf[32] = {0};
+	char 	g256qam_out[2 * MAX_NUMBER_OF_BSSID] = "";
+	char 	vow_airtime_fairness_out[2 * MAX_NUMBER_OF_BSSID] = "";
+	char 	WNMEnable_out[2 * MAX_NUMBER_OF_BSSID] = "";
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	char_t *ids_enable;
 #endif
@@ -468,7 +506,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 #endif
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
-	char_t	*ITxBfEn, *ETxBfeeEn, *ETxBfEnCond;
+	char_t	*ITxBfEn, *ETxBfEnCond, *MUTxRxEnable;
 #endif
 #if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	char_t	*rrm;
@@ -540,11 +578,9 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	n_gi = websGetVar(wp, T("n_gi"), T("1"));
 	n_stbc = websGetVar(wp, T("n_stbc"), T("1"));
 	n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
-	n_rdg = websGetVar(wp, T("n_rdg"), T("0"));
 	n_extcha = websGetVar(wp, T("n_extcha"), T("0"));
 	n_amsdu = websGetVar(wp, T("n_amsdu"), T("1"));
 	n_autoba = websGetVar(wp, T("n_autoba"), T("1"));
-	n_badecline = websGetVar(wp, T("n_badecline"), T("0"));
 	g_autoselect = websGetVar(wp, T("autoselect_g"), T("0"));
 	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
 	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
@@ -572,14 +608,18 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
 #ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 	dot11h = websGetVar(wp, T("dot11h"), T(""));
+	g256qam = websGetVar(wp, T("g256qam"), T(""));
+	vow_airtime_fairness = websGetVar(wp, T("vow_airtime_fairness"), T(""));
+	WNMEnable = websGetVar(wp, T("WNMEnable"), T(""));
 #endif
 #endif
 	new_bssid_num = atoi(bssid_num);
 
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
-	ETxBfeeEn = websGetVar(wp, T("ETxBfeeEn"), T("1"));
 	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
+	MUTxRxEnable = websGetVar(wp, T("MUTxRxEnable"), T("3"));
+
 #endif
 #if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
 	rrm = websGetVar(wp, T("RRMEnable"), T("1"));
@@ -708,6 +748,15 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 			sprintf(noforwarding, "%s%s", noforwarding, token);
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
 			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
+
+			sprintf(g256qam_out, "%s%s", g256qam_out, (CHK_IF_DIGIT(g256qam, 1)) ? "1" : "0");
+			sprintf(g256qam_out, "%s%s", g256qam_out, token);
+			sprintf(vow_airtime_fairness_out, "%s%s", vow_airtime_fairness_out, (CHK_IF_DIGIT(vow_airtime_fairness, 1)) ? "1" : "0");
+			sprintf(vow_airtime_fairness_out, "%s%s", vow_airtime_fairness_out, token);
+
+			sprintf(WNMEnable_out, "%s%s", WNMEnable_out, (CHK_IF_DIGIT(WNMEnable, 1)) ? "1" : "0");
+			sprintf(WNMEnable_out, "%s%s", WNMEnable_out, token);
+
 #ifndef CONFIG_RT_SECOND_IF_NONE
 #ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
 			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
@@ -725,6 +774,11 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 			i++;
 		}
 	}
+
+	ngx_nvram_bufset(wp,"G_BAND_256QAM", g256qam_out);
+	ngx_nvram_bufset(wp,"VOW_Airtime_Fairness_En", vow_airtime_fairness_out);
+	ngx_nvram_bufset(wp,"WNMEnable", WNMEnable_out);
+
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// Fist SSID for iNIC
 	ngx_nvram_bufset(wp,"SSID1INIC", ssid1ac);
@@ -802,12 +856,11 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
 		ngx_nvram_bufset(wp,"HT_AMSDU", n_amsdu);
 		ngx_nvram_bufset(wp,"HT_AutoBA", n_autoba);
-		ngx_nvram_bufset(wp,"HT_BADecline", n_badecline);
 		ngx_nvram_bufset(wp,"HT_TxStream", tx_stream);
 		ngx_nvram_bufset(wp,"HT_RxStream", rx_stream);
 		// HT_RGD depend at HT_HTC+ frame support
-		ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
-		ngx_nvram_bufset(wp,"HT_RDG", n_rdg);
+		// FIXME
+		//ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
 
 	} else {
 		// Rate for a, b, g, n, ac
@@ -859,8 +912,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 #if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
 	ngx_nvram_bufset(wp,"ITxBfEn", ITxBfEn);
-	ngx_nvram_bufset(wp,"ETxBfeeEn", ETxBfeeEn);
 	ngx_nvram_bufset(wp,"ETxBfEnCond", ETxBfEnCond);
+	ngx_nvram_bufset(wp,"MUTxRxEnable", MUTxRxEnable);
 #endif
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -1092,11 +1145,9 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		outWrite(T("n_gi: %s<br>\n"), n_gi);
 		outWrite(T("n_stbc: %s<br>\n"), n_stbc);
 		outWrite(T("n_mcs: %s<br>\n"), n_mcs);
-		outWrite(T("n_rdg: %s<br>\n"), n_rdg);
 		outWrite(T("n_extcha: %s<br>\n"), n_extcha);
 		outWrite(T("n_amsdu: %s<br>\n"), n_amsdu);
 		outWrite(T("n_autoba: %s<br>\n"), n_autoba);
-		outWrite(T("n_badecline: %s<br>\n"), n_badecline);
 
 	}
 #ifndef CONFIG_RT_SECOND_IF_NONE
@@ -1288,7 +1339,7 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
         int nvram = RT2860_NVRAM;
 
 	char_t	*PreAuth, *AuthMode, *EncrypType, *DefaultKeyID, *Key1Type, *Key2Type,
-		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval,
+		*Key3Type, *Key4Type, *RekeyMethod, *RekeyInterval, *PMFMFPC, *PMFMFPR, *PMFSHA256,
 		*RADIUS_Server, *RADIUS_Port, *RADIUS_Key, *STR;
 	char	str[64];
 
@@ -1382,6 +1433,32 @@ static void getSecurity(webs_t* wp, char_t *path, char_t *query)
 
 			strcat(result, "\"RekeyInterval\":\"");
 			LFF(result, nvram, RekeyInterval, i);
+			strcat(result, "\", ");
+
+			strcat(result, "\"PMFMode\":\"");
+
+			str[0] = '\0';
+			PMFMFPC = ngx_nvram_get(wp, "PMFMFPC");
+			PMFMFPR = ngx_nvram_get(wp, "PMFMFPR");
+			if (PMFMFPC && (getNthValueSafe(i, PMFMFPC, ';', str, 64) != -1) && str[0] == '1') {
+				strcat(result, "1");
+			}
+			else
+			{
+				str[0] = '\0';
+				if (PMFMFPR && (getNthValueSafe(i, PMFMFPR, ';', str, 64) != -1) && str[0] == '1') {
+					strcat(result, "2");
+				}
+				else
+				{
+					strcat(result, "0");
+				}
+			}
+
+			strcat(result, "\", ");
+
+			strcat(result, "\"PMFSHA256\":\"");
+			LFF(result, nvram, PMFSHA256, i);
 			strcat(result, "\", ");
 
 			strcat(result, "\"RADIUS_Server\":\"");
@@ -1531,6 +1608,9 @@ static void confWPAGeneral(webs_t* wp, int nvram, int mbssid)
 	char_t *encType = websGetVar(wp, racat("EncrypType", mbssid), T("AES"));
 	char_t *key_renewal_interval = websGetVar(wp, racat("RekeyInterval", mbssid), T(""));
 
+	char_t *pmf_mode = websGetVar(wp, racat("PMFMode", mbssid), T(""));
+	char_t *pmf_sha = websGetVar(wp, racat("PMFSHA256_", mbssid), T(""));
+
 	STFs(nvram, mbssid, "EncrypType", encType);
 
 /*
@@ -1547,6 +1627,12 @@ static void confWPAGeneral(webs_t* wp, int nvram, int mbssid)
 		goto out;
 	}
 */
+
+	STFs(nvram, mbssid, "PMFMFPC", (pmf_mode[0] == '1')?"1":"0");
+	STFs(nvram, mbssid, "PMFMFPR", (pmf_mode[0] == '2')?"1":"0");
+
+	STFs(nvram, mbssid, "PMFSHA256", pmf_sha);
+
 	STFs(nvram, mbssid, "DefaultKeyID", "1");
 	STFs(nvram, mbssid, "RekeyInterval", key_renewal_interval);
 	STFs(nvram, mbssid, "RekeyMethod", "TIME");
@@ -1574,9 +1660,10 @@ static void setSecurity(webs_t* wp, int nvram)
 		}
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		nvram_fromdef(RT2860_NVRAM, 13, "PreAuth", "AuthMode", "EncrypType", "DefaultKeyID", "RekeyMethod",
+		nvram_fromdef(RT2860_NVRAM, 16, "PreAuth", "AuthMode", "EncrypType", "DefaultKeyID", "RekeyMethod",
 						"RekeyInterval", "session_timeout_interval", "Key1Type", "Key2Type", "Key3Type",
-						"Key4Type", "WPAPSK1", "WPAPSK1INIC");
+						"Key4Type", "WPAPSK1", "WPAPSK1INIC", "PMFMFPC", "PMFMFPR", 
+						"PMFSHA256");
 		default_shown_mbssid[nvram] = 0;
 #ifdef CONFIG_USER_802_1X
 		for (i = 0; i < MAX_NUMBER_OF_BSSID; i++) {
@@ -1586,8 +1673,9 @@ static void setSecurity(webs_t* wp, int nvram)
 #endif
 	}
 	else {
-	nvram_fromdef(RT2860_NVRAM, 10, "AuthMode", "EncrypType", "RekeyInterval", "RADIUS_Port", "RADIUS_Key",
-					"RADIUS_Server", "IEEE8021X", "PreAuth", "RekeyMethod", "DefaultKeyID");
+	nvram_fromdef(RT2860_NVRAM, 13, "AuthMode", "EncrypType", "RekeyInterval", "RADIUS_Port", "RADIUS_Key",
+					"RADIUS_Server", "IEEE8021X", "PreAuth", "RekeyMethod", "DefaultKeyID",
+					"PMFMFPC", "PMFMFPR", "PMFSHA256");
 
 	for (mbssid = 0; mbssid < bssid_num; mbssid++) {
 		char_t *security_mode = websGetVar(wp,  racat("AuthMode", mbssid), T(""));
@@ -1907,6 +1995,10 @@ int asp_mod_wireless_init()
 	aspDefineFunc("getWlan11aChannels", getWlan11aChannels, EVERYONE);
 	aspDefineFunc("getWlan11gChannels", getWlan11gChannels, EVERYONE);
 	aspDefineFunc("getWlanApcliBuilt", getWlanApcliBuilt, EVERYONE);
+	aspDefineFunc("getWlan256QAMBuilt", getWlan256QAMBuilt, EVERYONE);
+	aspDefineFunc("getWlanVOWBuilt", getWlanVOWBuilt, EVERYONE);
+	aspDefineFunc("getWlanWNMBuilt", getWlanWNMBuilt, EVERYONE);
+	aspDefineFunc("getWlanPMFBuilt", getWlanPMFBuilt, EVERYONE);
 	aspDefineFunc("getWlan4T4RBuilt", getWlan4T4RBuilt, EVERYONE);
 	aspDefineFunc("getWlanWdsBuilt", getWlanWdsBuilt, EVERYONE);
 	aspDefineFunc("getWlanChannel", getWlanChannel, EVERYONE);
