@@ -780,8 +780,10 @@ struct _RTMP_CHIP_CAP_ {
 	UCHAR delta_tw_pwr_bw40_2G;
 	UCHAR delta_tw_pwr_bw80;
 	BOOLEAN bInternalTxALC; /* Internal Tx ALC */
+#ifdef RTMP_TEMPERATURE_COMPENSATION_VGA
 	CHAR LastTempSensorState;
 	BOOLEAN IsTempSensorStateReset;
+#endif /* RTMP_TEMPERATURE_COMPENSATION_VGA */
 #ifdef MT76x0_TSSI_CAL_COMPENSATION
 	UCHAR tssi_info_1;
 	UCHAR tssi_info_2;

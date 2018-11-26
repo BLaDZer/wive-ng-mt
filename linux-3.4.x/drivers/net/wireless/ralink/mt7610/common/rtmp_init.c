@@ -3484,9 +3484,10 @@ VOID UserCfgInit(RTMP_ADAPTER *pAd)
 	pAd->chipCap.RXIQBackup = 0;
 #endif /* MT76x0 */
 
+#ifdef RTMP_TEMPERATURE_COMPENSATION_VGA
 	pAd->chipCap.LastTempSensorState = 0;
-    pAd->chipCap.IsTempSensorStateReset = FALSE;
-
+	pAd->chipCap.IsTempSensorStateReset = FALSE;
+#endif /* RTMP_TEMPERATURE_COMPENSATION_VGA */
 #ifdef DOT11_VHT_AC
 	pAd->CommonCfg.bNonVhtDisallow = FALSE;
 #ifdef CONFIG_DISABLE_VHT80_256_QAM

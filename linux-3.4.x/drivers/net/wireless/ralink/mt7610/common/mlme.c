@@ -830,6 +830,7 @@ VOID MlmePeriodicExec(
 
 #ifdef DYNAMIC_VGA_SUPPORT
 #ifdef CONFIG_AP_SUPPORT
+#ifdef RTMP_TEMPERATURE_COMPENSATION_VGA
 		IF_DEV_CONFIG_OPMODE_ON_AP(pAd)
 		{
 			if ((IS_MT76x0(pAd) && pAd->chipCap.bDoTemperatureSensor) && 
@@ -912,6 +913,7 @@ VOID MlmePeriodicExec(
 					RTMP_ASIC_DYNAMIC_VGA_GAIN_CONTROL(pAd);
 			}
 		}
+#endif /* RTMP_TEMPERATURE_COMPENSATION_VGA */
 #endif /* CONFIG_AP_SUPPORT */
 #endif /* DYNAMIC_VGA_SUPPORT */
 

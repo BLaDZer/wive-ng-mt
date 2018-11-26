@@ -2217,8 +2217,9 @@ static VOID MT76x0_ChipSwitchChannel(
 						eLNAgain -= (pAd->ALNAGain1*2);
 					else
 						eLNAgain -= (pAd->ALNAGain2*2);
-		
-					pAd->chipCap.IsTempSensorStateReset = TRUE;					
+#ifdef RTMP_TEMPERATURE_COMPENSATION_VGA
+					pAd->chipCap.IsTempSensorStateReset = TRUE;
+#endif /* RTMP_TEMPERATURE_COMPENSATION_VGA */
 				}
 				else
 				{
