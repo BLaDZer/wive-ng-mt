@@ -819,21 +819,39 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	if (((UCHAR)pAd->ALNAGain2 == 0xFF) || (pAd->ALNAGain2 == 0x00))
 		pAd->ALNAGain2 = pAd->ALNAGain0;
 
+	/* Validate 11a/b/g RSSI 0/1/2 offset.*/
+	for (i =0 ; i < 3; i++)
+	{
+		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10))
+			pAd->BGRssiOffset[i] = 0;
+
+		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10))
+			pAd->ARssiOffset[i] = 0;
+	}
+
+#ifdef LNA_COMPENSATE
+#ifdef RALINK_ATE
+	if (!ATE_ON(pAd))
+#endif
+	{
+		/* default for sky epa need allways compensate (see NF to Gain diagram at lower SQ range) */
+		pAd->ARssiOffset[i] += 2;
+
+		/* ixqtest DUT very pessimistic limit LNA gain (OFDM base test side effect) need increase LNA gain for restore sensitive */
+		if (pAd->ALNAGain0 >= 0x0A)
+		    pAd->ALNAGain0 -= 0x02;
+
+		if (pAd->ALNAGain1 >= 0x0A)
+		    pAd->ALNAGain1 -= 0x02;
+
+		if (pAd->ALNAGain2 >= 0x0A)
+		    pAd->ALNAGain2 -= 0x02;
+	}
+#endif
+
 	DBGPRINT(RT_DEBUG_TRACE, ("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", 
 					pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
 
-	/* Validate 11a/b/g RSSI 0/1/2 offset.*/
-	/* if 0 - default for sky epa need allways compensate (see NF to Gain diagram) */
-	for (i =0 ; i < 3; i++)
-	{
-		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10) || (pAd->BGRssiOffset[i] == 0))
-			pAd->BGRssiOffset[i] = 3;
-
-		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10) || (pAd->ARssiOffset[i] == 0))
-			pAd->ARssiOffset[i] = 3;
-	}
-
-	
 #ifdef LED_CONTROL_SUPPORT
 	/* LED Setting */
 	RTMPGetLEDSetting(pAd);
