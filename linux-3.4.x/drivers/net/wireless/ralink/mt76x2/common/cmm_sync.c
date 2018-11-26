@@ -444,7 +444,7 @@ CHAR ConvertToRssi(RTMP_ADAPTER *pAd, CHAR Rssi, UCHAR rssi_idx)
 	CHAR	BaseVal;
 
 	/* Rssi equals to zero or rssi_idx larger than 3 should be an invalid value*/
-	if (Rssi == 0 || rssi_idx >= 3)
+	if (Rssi == 0 || rssi_idx >= pAd->Antenna.field.RxPath)
 		return -99;
 
 	LNAGain = GET_LNA_GAIN(pAd);

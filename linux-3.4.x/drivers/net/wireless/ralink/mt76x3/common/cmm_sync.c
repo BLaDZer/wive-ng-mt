@@ -500,7 +500,7 @@ CHAR ConvertToRssi(RTMP_ADAPTER *pAd, struct raw_rssi_info *rssi_info, UCHAR rss
 	CHAR rssi;
 
 	/* Rssi equals to zero or rssi_idx larger than 3 should be an invalid value*/
-	if (rssi_idx >= 3)
+	if (rssi_idx >= pAd->Antenna.field.RxPath)
 		return -99;
 
 	rssi = rssi_info->raw_rssi[rssi_idx];
