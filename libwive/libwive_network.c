@@ -216,6 +216,12 @@ char *getLanWanNamebyIf(const char *ifname)
 {
 	if(!strcmp(ifname, getLanIfName()))
 		return "LAN";
+	if(!strcmp(ifname, getWlanRadioModuleName(1)))
+		return "LAN";
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	if(!strcmp(ifname, getWlanRadioModuleName(2)))
+		return "LAN";
+#endif
 	if(!strcmp(ifname, getWanIfName()))
 		return "WAN";
 	if (vpn_mode_enabled() == 1 && strstr(ifname, getPPPIfName()) != NULL)
@@ -729,6 +735,9 @@ struct RoutingRuleIPv6* parseRoutingTableIPv6(int *res_rule_num)
 				fclose(fp);
 				return NULL;
 			}
+
+			if (!strcmp(rule->interface, "lo"))
+				continue;
 
 			rule_num++;
 
