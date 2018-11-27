@@ -2236,8 +2236,10 @@ VOID MlmeUpdateTxRates(RTMP_ADAPTER *pAd, BOOLEAN bLinkUp, UCHAR apidx)
 		else
 			pAd->CommonCfg.TxRate = pAd->CommonCfg.MaxTxRate; 
 
-		if (dbm < -75)
+		if (dbm < -80)
 			pAd->CommonCfg.TxRate = RATE_11;
+		else if (dbm < -75)
+			pAd->CommonCfg.TxRate = RATE_18;
 		else if (dbm < -70)
 			pAd->CommonCfg.TxRate = RATE_24;
 
@@ -2275,7 +2277,7 @@ VOID MlmeUpdateTxRates(RTMP_ADAPTER *pAd, BOOLEAN bLinkUp, UCHAR apidx)
 
 	}
 
-	if (pAd->CommonCfg.TxRate <= RATE_11)
+	if (pAd->CommonCfg.TxRate < RATE_FIRST_OFDM_RATE)
 	{
 		pMaxHtPhy->field.MODE = MODE_CCK;
 
@@ -2327,11 +2329,11 @@ VOID MlmeUpdateTxRates(RTMP_ADAPTER *pAd, BOOLEAN bLinkUp, UCHAR apidx)
 		
 		/* Keep Basic Mlme Rate.*/
 		pAd->MacTab.Content[MCAST_WCID].HTPhyMode.word = pAd->CommonCfg.MlmeTransmit.word;
-		if (pAd->CommonCfg.MlmeTransmit.field.MODE == MODE_OFDM)
+		if (pAd->CommonCfg.MlmeTransmit.field.MODE == MODE_CCK)
+			pAd->MacTab.Content[MCAST_WCID].HTPhyMode.field.MCS = RATE_1;
+		else
 			/* MTK patch fix dhcp issue on new Apple and others buggy clients (use RATE_6 instead of 24) */
 			pAd->MacTab.Content[MCAST_WCID].HTPhyMode.field.MCS = OfdmRateToRxwiMCS[RATE_6];
-		else
-			pAd->MacTab.Content[MCAST_WCID].HTPhyMode.field.MCS = RATE_1;
 		pAd->CommonCfg.BasicMlmeRate = pAd->CommonCfg.MlmeRate;
 
 #ifdef CONFIG_AP_SUPPORT
