@@ -3,9 +3,27 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
+/*
+#define CONFIG_MT7615_AP_SMART_CARRIER_SENSE
+#define CONFIG_MT7615_AP_WNM_SUPPORT
+#define CONFIG_MT7615_AP_VOW_SUPPORT
+#define CONFIG_MT7615_AP_80211W_PMF
+#define CONFIG_MT7615_AP_TXBF_SUPPORT
+#define CONFIG_MT7615_AP
+*/
+
 static int default_shown_mbssid[3]  = {0,0,0};
 
 static void setSecurity(webs_t* wp, int nvram);
+
+static int getWlanSCSBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_MT7615_AP_SMART_CARRIER_SENSE) || defined(CONFIG_MT76X3_AP_SMART_CARRIER_SENSE)
+	return outWrite("1");
+#else
+	return outWrite("0");
+#endif
+}
 
 static int getWlanWNMBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -482,68 +500,49 @@ parameter_fetch_t ids_flags[] =
 };
 #endif
 
+static char* repeatValueTimes(char* buf, char* value, int times)
+{
+	int i;
+	buf[0] = '\0';
+
+	for (i=0; i < times; i++)
+	{
+		if (i > 0)
+			sprintf(buf, "%s;%s", buf, value);
+		else
+			sprintf(buf, "%s%s", buf, value);
+	}
+	return buf;
+}
+
+
+
 /* goform/wirelessBasic */
 
 static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 {
-	char_t	*wirelessmode, *mbssid_mode, *bssid_num, *mbcastisolated_ssids, *hidden_ssids, *isolated_ssids, *mbssidapisolated;
-	char_t	*sz11gChannel, *abg_rate, *tx_power, *tx_stream, *rx_stream, *g_autoselect, *a_autoselect, *g_checktime, *a_checktime;
-	char_t	*n_mode, *n_bandwidth, *n_gi, *n_stbc, *n_mcs, *n_extcha, *n_amsdu, *n_autoba;
-	char_t  *fastroaming, *bandsteering, *token, *LanWifiIsolate, *PMKCachePeriod, *g256qam, *vow_airtime_fairness, *WNMEnable;
-	char_t pmktmpbuf[32] = {0};
-	char 	g256qam_out[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	vow_airtime_fairness_out[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	WNMEnable_out[2 * MAX_NUMBER_OF_BSSID] = "";
+	int i;
+	char_t	*wirelessmode, *mbssid_mode, *bssid_num;
+	char_t	*sz11gChannel;
+	char_t  *bandsteering, *token;
+	char 	mbssidtmpbuf[8 * MAX_NUMBER_OF_BSSID] = "";
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	char_t *ids_enable;
 #endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	char_t	*wirelessmodeac, *tx_power_ac, *sz11aChannel, *ssid1ac, *ac_gi, *ac_stbc, *ac_ldpc, *ac_bw, *ac_bwsig;
-	int     is_vht = 0, mode_ac;
-#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
-	char_t	*dot11h;
-	char 	ieee80211h[2 * MAX_NUMBER_OF_BSSID] = "";
+	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac;
+	int     mode_ac;
 #endif
-#endif
-#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
-	char_t	*ITxBfEn, *ETxBfEnCond, *MUTxRxEnable;
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
-	char_t	*rrm;
-	char 	ieee80211k[2 * MAX_NUMBER_OF_BSSID] = "";
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-	char_t	*ft, *ftmdid, *ftr0khid;
-	char 	ieee80211r[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	ft_mdid_var[8] = "FtMdId\0\0", ft_r0khid_var[10] = "FtR0khId\0\0";
+	int     is_ht = 0, new_bssid_num, mode;
 
-#endif
-	int     is_ht = 0, i = 1, ssid = 0, new_bssid_num, mode;
-	char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
-	char 	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+	char_t *rd_region, *dyn_vga;
+	int ssid_num;
 
-	// Get current mode & new mode
-	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
-#endif
-
-	char_t *bg_protection, *beacon, *beaconinic, *dtim, *fragment, *rts, *preamble_type, *maxstanum, *tmpblockafterkick, *kickstarssilowft, *keepalive, *idletimeout, *regulatoryclassinic;
-	char_t *short_slot, *tx_burst, *pkt_aggregate, *countrycode, *country_region, *rd_region, *wmm_capable, *dyn_vga;
-	int ssid_num, tmp;
-	char_t *ackpolicy_ssid, *life_check, *tokenadv;
-	char ackpolicy[2 * MAX_NUMBER_OF_BSSID] = "", stanum_array[2 * MAX_NUMBER_OF_MAC] = "", keepalive_array[2 * MAX_NUMBER_OF_MAC] = "";	
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
-	char_t *ed_mode;
-#endif
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	char_t *dyn_vga_long, *dyn_vga_clamp;
 #endif
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	char_t *dyn_vga_long;
-#endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
-	char_t *mcast_mode, *mcast_mcs;
 #endif
 #if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	char_t *m2u_enable;
@@ -555,41 +554,19 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	// fetch from web input
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("7")); //7: gn mode
 	mode = atoi(wirelessmode);
-	tx_power = websGetVar(wp, T("tx_power"), T("100"));
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
-	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
-	hidden_ssids = websGetVar(wp, T("hidden_ssids"), T("")); 
-	isolated_ssids = websGetVar(wp, T("isolated_ssids"), T(""));
-	LanWifiIsolate = websGetVar(wp, T("LanWifiIsolate"), T("0"));
 
-	mbcastisolated_ssids = websGetVar(wp, T("mbcastisolated_ssids"), T(""));
-	mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
+	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
+	new_bssid_num = atoi(bssid_num);
+	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
+		websError(wp, 500, T("'bssid_num' %s is out of range!"), bssid_num);
+		return;
+	}
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
-	abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
-	int rate = atoi(abg_rate);
 
-	tx_stream = websGetVar(wp, T("tx_stream"), T("1"));
-	rx_stream = websGetVar(wp, T("rx_stream"), T("1"));
-
-	n_mode = websGetVar(wp, T("n_mode"), T("1"));
-	n_bandwidth = websGetVar(wp, T("n_bandwidth"), T("1"));
-
-	n_gi = websGetVar(wp, T("n_gi"), T("1"));
-	n_stbc = websGetVar(wp, T("n_stbc"), T("1"));
-	n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
-	n_extcha = websGetVar(wp, T("n_extcha"), T("0"));
-	n_amsdu = websGetVar(wp, T("n_amsdu"), T("1"));
-	n_autoba = websGetVar(wp, T("n_autoba"), T("1"));
-	g_autoselect = websGetVar(wp, T("autoselect_g"), T("0"));
-	a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
-	g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
-	a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
 	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
 	bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
-	fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
-	fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
-        PMKCachePeriod = websGetVar(wp, T("PMKCachePeriod"), T("480"));
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
 	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
@@ -598,54 +575,13 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("14")); //14: a,an/ac mode
 	mode_ac = atoi(wirelessmodeac);
-	tx_power_ac = websGetVar(wp, T("tx_powerac"), T("100"));
-	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T("")); 
+	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T(""));
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
-	ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
-	ac_stbc = websGetVar(wp, T("ac_stbc"), T("1"));
-	ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("1"));
-	ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
-	ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
-#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
-	dot11h = websGetVar(wp, T("dot11h"), T(""));
-	g256qam = websGetVar(wp, T("g256qam"), T(""));
-	vow_airtime_fairness = websGetVar(wp, T("vow_airtime_fairness"), T(""));
-	WNMEnable = websGetVar(wp, T("WNMEnable"), T(""));
-#endif
-#endif
-	new_bssid_num = atoi(bssid_num);
-
-#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
-	ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
-	ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
-	MUTxRxEnable = websGetVar(wp, T("MUTxRxEnable"), T("3"));
-
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
-	rrm = websGetVar(wp, T("RRMEnable"), T("1"));
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-	ft = websGetVar(wp, T("FtSupport"), T("1"));
-	ftmdid = websGetVar(wp, T("FtMdId"), T("A1"));
-	ftr0khid = websGetVar(wp, T("FtR0khId"), T("4f577274"));
 #endif
 
-	bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
-	beacon = websGetVar(wp, T("beacon"), T("100"));
-	beaconinic = websGetVar(wp, T("beaconINIC"), T("100"));
-	dtim = websGetVar(wp, T("dtim"), T("1"));
-	fragment = websGetVar(wp, T("fragment"), T("2346"));
-	rts = websGetVar(wp, T("rts"), T("2347"));
-	preamble_type = websGetVar(wp, T("preamble_type"), T("0"));
-	short_slot = websGetVar(wp, T("short_slot"), T("0"));
-	tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
-	pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
+
 	rd_region = websGetVar(wp, T("rd_region"), T("FCC"));
-	countrycode = websGetVar(wp, T("country_code"), T("NONE"));
-	country_region = websGetVar(wp, T("country_region"), T("0"));
-	wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
 	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
-	regulatoryclassinic = websGetVar(wp, T("RegulatoryClassINIC"), T("1;2;3;4;0"));
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 	dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
@@ -653,31 +589,13 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
-	mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
-	mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
-#endif
 #if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
 #if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
 #endif
 #endif
-	maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
-	tmpblockafterkick = websGetVar(wp, T("TmpBlockAfterKick"), T("14"));
-	kickstarssilowft = websGetVar(wp, T("KickStaRssiLowFT"), T("0"));
-	keepalive = websGetVar(wp, T("keepalive"), T("0"));
-	idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
-	life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
-	ackpolicy_ssid = websGetVar(wp, T("AckPolicy"), T("0"));
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
-	ed_mode = websGetVar(wp, T("ED_MODE"), T("0"));
-#endif
 
-	if (new_bssid_num < 1 || new_bssid_num > MAX_NUMBER_OF_BSSID) {
-		websError(wp, 500, T("'bssid_num' %s is out of range!"), bssid_num);
-		return;
-	}
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// 11abgnac Channel or AutoSelect
@@ -692,19 +610,13 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	}
 
 	is_ht = (mode >= 5) ? 1 : 0;
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	is_vht = (mode_ac >= 14) ? 1 : 0;
-#endif
 
 	nvram_init(RT2860_NVRAM);
 
-	// Wireless mode
-	ngx_nvram_bufset(wp,"WirelessMode", wirelessmode);
-	ngx_nvram_bufset(wp,"TxPower", tx_power);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	ngx_nvram_bufset(wp,"WirelessModeINIC", wirelessmodeac);
-	ngx_nvram_bufset(wp,"TxPowerINIC", tx_power_ac);
+#ifdef PRINT_DEBUG
+	websHeader(wp);
 #endif
+
 	// Virtual iface modes
 	ngx_nvram_bufset(wp,"BssidIfName", mbssid_mode);
 
@@ -723,171 +635,188 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 	default_shown_mbssid[RT2860_NVRAM] = 0;
 
-	ngx_nvram_bufset(wp,"WmmCapable", wmm_capable);
+////////////////
+	void wirelessBasic_net24() {
+		// 2.4GHz enable
+		char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
+		ngx_nvram_bufset(wp,"RadioOn", web_radio_on);
 
-	// Fill-in SSID
-	for (ssid=0; ssid < new_bssid_num; ssid++)
-	{
-		ssid_web_var[6] = ssid  + '1';
-		ssid_nvram_var[4] = i  + '0';
-		token = (i != new_bssid_num) ? ";" : "";
+		// Network Mode (2.4GHz)
+		ngx_nvram_bufset(wp,"WirelessMode", wirelessmode);
 
-		char_t *mssid = websGetVar(wp, ssid_web_var, T(""));
-		if (CHK_IF_SET(mssid))
-		{
-			ngx_nvram_bufset(wp, ssid_nvram_var, mssid);
-			STFs(RT2860_NVRAM, ssid, "WirelessMode", wirelessmode);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-			STFs(RT2860_NVRAM, ssid, "WirelessModeINIC", wirelessmodeac);
-#endif
-			STFs(RT2860_NVRAM, ssid, "WmmCapable", wmm_capable);
+		// TX Power (2.4GHz)
+		char_t *tx_power = websGetVar(wp, T("tx_power"), T("100"));
+		ngx_nvram_bufset(wp,"TxPower", tx_power);
 
-			sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
-			sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
-			sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
-			sprintf(noforwarding, "%s%s", noforwarding, token);
-			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
-			sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
-
-			sprintf(g256qam_out, "%s%s", g256qam_out, (CHK_IF_DIGIT(g256qam, 1)) ? "1" : "0");
-			sprintf(g256qam_out, "%s%s", g256qam_out, token);
-			sprintf(vow_airtime_fairness_out, "%s%s", vow_airtime_fairness_out, (CHK_IF_DIGIT(vow_airtime_fairness, 1)) ? "1" : "0");
-			sprintf(vow_airtime_fairness_out, "%s%s", vow_airtime_fairness_out, token);
-
-			sprintf(WNMEnable_out, "%s%s", WNMEnable_out, (CHK_IF_DIGIT(WNMEnable, 1)) ? "1" : "0");
-			sprintf(WNMEnable_out, "%s%s", WNMEnable_out, token);
-
-#ifndef CONFIG_RT_SECOND_IF_NONE
-#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
-			sprintf(ieee80211h, "%s%s", ieee80211h, (CHK_IF_DIGIT(dot11h, 1)) ? "1" : "0");
-			sprintf(ieee80211h, "%s%s", ieee80211h, token);
-#endif
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
-			sprintf(ieee80211k, "%s%s", ieee80211k, (CHK_IF_DIGIT(rrm, 1)) ? "1" : "0");
-			sprintf(ieee80211k, "%s%s", ieee80211k, token);
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-			sprintf(ieee80211r, "%s%s", ieee80211r, (CHK_IF_DIGIT(ft, 1)) ? "1" : "0");
-			sprintf(ieee80211r, "%s%s", ieee80211r, token);
-#endif
-			i++;
+		// Channel (2.4GHz)
+		if (CHK_IF_SET(sz11gChannel)) {
+			ngx_nvram_bufset(wp,"Channel", sz11gChannel);
 		}
+
+		// Channel Autoselect (2.4GHz)
+		char_t *g_autoselect = websGetVar(wp, T("autoselect_g"), T("0"));
+		char_t *g_checktime = websGetVar(wp, T("checktime_g"), T("0"));
+
+		if (CHK_IF_SET(sz11gChannel)) {
+			if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
+				ngx_nvram_bufset(wp,"AutoChannelSelect", g_autoselect);
+				ngx_nvram_bufset(wp,"ACSCheckTime", (CHK_IF_SET(g_checktime)) ? g_checktime : "24");
+			} else {
+				ngx_nvram_bufset(wp,"AutoChannelSelect", "0");
+				ngx_nvram_bufset(wp,"ACSCheckTime", "0");
+			}
+		}
+
+		// Channel BandWidth (2.4GHz)
+		char_t *n_bandwidth = websGetVar(wp, T("n_bandwidth"), T("1"));
+		if (is_ht) {
+			ngx_nvram_bufset(wp,"HT_BW", n_bandwidth);
+		}
+
+#ifdef PRINT_DEBUG
+		outWrite(T("<h2>mode: %s</h2><br>\n"), wirelessmode);
+		outWrite(T("tx_power: %s<br>\n"), tx_power);
+		outWrite(T("sz11gChannel: %s<br>\n"), sz11gChannel);
+
+		if (is_ht) {
+			outWrite(T("n_bandwidth: %s<br>\n"), n_bandwidth);
+		}
+#endif
 	}
 
-	ngx_nvram_bufset(wp,"G_BAND_256QAM", g256qam_out);
-	ngx_nvram_bufset(wp,"VOW_Airtime_Fairness_En", vow_airtime_fairness_out);
-	ngx_nvram_bufset(wp,"WNMEnable", WNMEnable_out);
-
+////////////////
+	void wirelessBasic_net5() {
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	// Fist SSID for iNIC
-	ngx_nvram_bufset(wp,"SSID1INIC", ssid1ac);
-#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
-	ngx_nvram_bufset(wp,"IEEE80211H", ieee80211h);
-#endif
-#endif
+		// 5GHz enable
+		char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
+		ngx_nvram_bufset(wp,"RadioOnINIC", web_radio_ac_on);
 
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-	if (CHK_IF_DIGIT(ft, 1)) {
-		for (i=1;i<=4;i++) {
-			ft_mdid_var[6] = '0' + i;
-			ft_r0khid_var[8] = '0' + i;
-			ngx_nvram_bufset(wp, ft_mdid_var, ftmdid);
-			ngx_nvram_bufset(wp, ft_r0khid_var, ftr0khid);
+		// Network Mode (5GHz)
+		ngx_nvram_bufset(wp,"WirelessModeINIC", wirelessmodeac);
+
+		// TX Power (5GHz)
+		char_t *tx_power_ac = websGetVar(wp, T("tx_powerac"), T("100"));
+		ngx_nvram_bufset(wp,"TxPowerINIC", tx_power_ac);
+
+		// Channel Autoselect (5GHz)
+		char_t *a_autoselect = websGetVar(wp, T("autoselect_a"), T("0"));
+		char_t *a_checktime = websGetVar(wp, T("checktime_a"), T("0"));
+
+		// Channel (5GHz)
+		if (CHK_IF_SET(sz11aChannel)) {
+			ngx_nvram_bufset(wp,"ChannelINIC", sz11aChannel);
 		}
-	}
-#endif
-	// SSID settings
-	ngx_nvram_bufset(wp,"BssidNum", bssid_num);
-	ngx_nvram_bufset(wp,"HideSSID", hidden_ssid);
-	ngx_nvram_bufset(wp,"LanWifiIsolate", LanWifiIsolate);
-	ngx_nvram_bufset(wp,"NoForwarding", noforwarding);
-	ngx_nvram_bufset(wp,"NoForwardingBTNBSSID", mbssidapisolated);
-	ngx_nvram_bufset(wp,"NoForwardingMBCast", noforwardingmbcast);
-#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
-	ngx_nvram_bufset(wp,"RRMEnable", ieee80211k);
-#endif
-#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
-	ngx_nvram_bufset(wp,"FtSupport", ieee80211r);
-#endif
 
-	// Channel & automatic channel select
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	if (CHK_IF_SET(sz11aChannel)) {
-		ngx_nvram_bufset(wp,"ChannelINIC", sz11aChannel);
-		if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
-		    ngx_nvram_bufset(wp,"AutoChannelSelectINIC", a_autoselect);
-		    ngx_nvram_bufset(wp,"ACSCheckTimeINIC", (CHK_IF_SET(a_checktime)) ? a_checktime : "24");
-		} else {
-		    ngx_nvram_bufset(wp,"AutoChannelSelectINIC", "0");
-		    ngx_nvram_bufset(wp,"ACSCheckTimeINIC", "0");
+		// Channel & automatic channel select
+		if (CHK_IF_SET(sz11aChannel)) {
+			if ((!strncmp(sz11aChannel, "0", 2)) && (CHK_IF_SET(a_autoselect))) {
+			    ngx_nvram_bufset(wp,"AutoChannelSelectINIC", a_autoselect);
+			    ngx_nvram_bufset(wp,"ACSCheckTimeINIC", (CHK_IF_SET(a_checktime)) ? a_checktime : "24");
+			} else {
+			    ngx_nvram_bufset(wp,"AutoChannelSelectINIC", "0");
+			    ngx_nvram_bufset(wp,"ACSCheckTimeINIC", "0");
+			}
 		}
-	}
-#endif
-	if (CHK_IF_SET(sz11gChannel)) {
-		ngx_nvram_bufset(wp,"Channel", sz11gChannel);
-		if ((!strncmp(sz11gChannel, "0", 2)) && (CHK_IF_SET(g_autoselect))) {
-		    ngx_nvram_bufset(wp,"AutoChannelSelect", g_autoselect);
-		    ngx_nvram_bufset(wp,"ACSCheckTime", (CHK_IF_SET(g_checktime)) ? g_checktime : "24");
-		} else {
-		    ngx_nvram_bufset(wp,"AutoChannelSelect", "0");
-		    ngx_nvram_bufset(wp,"ACSCheckTime", "0");
-		}
-	}
 
-	// HT_OpMode, HT_BW, HT_GI, VHT_SGI, VHT_LDPC, HT_MCS, HT_HTC, HT_RDG, HT_EXTCHA, HT_AMSDU, HT_TxStream, HT_RxStream
-	if (is_ht) {
-		ngx_nvram_bufset(wp,"HT_MCS", n_mcs);
-		ngx_nvram_bufset(wp,"HT_OpMode", n_mode);
-		ngx_nvram_bufset(wp,"HT_BW", n_bandwidth);
-
-#ifndef CONFIG_RT_SECOND_IF_NONE
+		// Channel BandWidth (5GHz)
+		char_t *ac_bw = websGetVar(wp, T("ac_bw"), T("1"));
 		char bw_str[2] = "0";
-		if (strlen(ac_bw) == 2) {
+		if (is_ht && strlen(ac_bw) == 2) {
 			bw_str[0] = ac_bw[0];
 			ngx_nvram_bufset(wp,"HT_BWINIC", bw_str);
 			bw_str[0] = ac_bw[1];
 			ngx_nvram_bufset(wp,"VHT_BW", bw_str );
 		}
+
+#ifdef PRINT_DEBUG
+	outWrite(T("mode ac: %s<br>\n"), wirelessmodeac);
+	outWrite(T("tx_power_ac: %s<br>\n"), tx_power_ac);
+	outWrite(T("ac_bw: %s<br>\n"), ac_bw);
+#endif
+#endif
+	}
+
+////////////////
+	void wirelessBasic_ssid() {
+		char_t *hidden_ssids = websGetVar(wp, T("hidden_ssids"), T(""));
+		char_t *isolated_ssids = websGetVar(wp, T("isolated_ssids"), T(""));
+		char_t *mbcastisolated_ssids = websGetVar(wp, T("mbcastisolated_ssids"), T(""));
+		char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
+		char	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
+		int ssid;
+		i = 1;
+
+		// Fill-in SSID
+		for (ssid=0; ssid < new_bssid_num; ssid++)
+		{
+			ssid_web_var[6] = ssid  + '1';
+			ssid_nvram_var[4] = i  + '0';
+			token = (i != new_bssid_num) ? ";" : "";
+
+			char_t *mssid = websGetVar(wp, ssid_web_var, T(""));
+			if (CHK_IF_SET(mssid))
+			{
+				ngx_nvram_bufset(wp, ssid_nvram_var, mssid);
+				STFs(RT2860_NVRAM, ssid, "WirelessMode", wirelessmode);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+				STFs(RT2860_NVRAM, ssid, "WirelessModeINIC", wirelessmodeac);
 #endif
 
-		ngx_nvram_bufset(wp,"HT_GI", n_gi);
-		ngx_nvram_bufset(wp,"HT_STBC", n_stbc);
-		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
-		ngx_nvram_bufset(wp,"HT_AMSDU", n_amsdu);
-		ngx_nvram_bufset(wp,"HT_AutoBA", n_autoba);
-		ngx_nvram_bufset(wp,"HT_TxStream", tx_stream);
-		ngx_nvram_bufset(wp,"HT_RxStream", rx_stream);
-		// HT_RGD depend at HT_HTC+ frame support
-		// FIXME
-		//ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
+				sprintf(hidden_ssid, "%s%s", hidden_ssid, (strchr(hidden_ssids, ssid + '0') != NULL) ? "1" : "0");
+				sprintf(hidden_ssid, "%s%s", hidden_ssid, token);
+				sprintf(noforwarding, "%s%s", noforwarding, (strchr(isolated_ssids, ssid + '0') != NULL) ? "1" : "0");
+				sprintf(noforwarding, "%s%s", noforwarding, token);
+				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, (strchr(mbcastisolated_ssids, ssid + '0') != NULL) ? "1" : "0");
+				sprintf(noforwardingmbcast, "%s%s", noforwardingmbcast, token);
 
-	} else {
+				i++;
+			}
+		}
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		// First SSID for iNIC
+		ngx_nvram_bufset(wp,"SSID1INIC", ssid1ac);
+#endif
+
+		// SSID settings
+		ngx_nvram_bufset(wp,"BssidNum", bssid_num);
+		ngx_nvram_bufset(wp,"HideSSID", hidden_ssid);
+
+		char_t *LanWifiIsolate = websGetVar(wp, T("LanWifiIsolate"), T("0"));
+		ngx_nvram_bufset(wp,"LanWifiIsolate", LanWifiIsolate);
+
+		ngx_nvram_bufset(wp,"NoForwarding", noforwarding);
+
+		char_t *mbssidapisolated = websGetVar(wp, T("mbssidapisolated"), T("0"));
+		ngx_nvram_bufset(wp,"NoForwardingBTNBSSID", mbssidapisolated);
+
+		ngx_nvram_bufset(wp,"NoForwardingMBCast", noforwardingmbcast);
+	}
+
+////////////////
+
+	void wirelessBasic_no_ht() {
 		// Rate for a, b, g, n, ac
 		// In the future need allow set this per MBSSID
+
+		char_t *abg_rate = websGetVar(wp, T("abg_rate"), T("")); 
+		int rate = atoi(abg_rate);
+
 		if (strncmp(abg_rate, "", 1)) {
 		    switch (rate) {
 			case 1:
-				ngx_nvram_bufset(wp,"HT_MCS", "0");
-				break;
-			case 2:
-				ngx_nvram_bufset(wp,"HT_MCS", "1");
-				break;
-			case 5:
-				ngx_nvram_bufset(wp,"HT_MCS", "2");
-				break;
 			case 6:
 				ngx_nvram_bufset(wp,"HT_MCS", "0");
 				break;
+			case 2:
 			case 9:
 				ngx_nvram_bufset(wp,"HT_MCS", "1");
 				break;
-			case 11:
-				ngx_nvram_bufset(wp,"HT_MCS", "3");
-				break;
+			case 5:
 			case 12:
 				ngx_nvram_bufset(wp,"HT_MCS", "2");
 				break;
+			case 11:
 			case 18:
 				ngx_nvram_bufset(wp,"HT_MCS", "3");
 				break;
@@ -908,25 +837,99 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 				break;
 		    }
 		}
+
+#ifdef PRINT_DEBUG
+		if (strncmp(abg_rate, "", 1)) {
+			outWrite(T("abg_rate: %s<br>\n"), abg_rate);
+		}
+#endif
 	}
 
-#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
-	ngx_nvram_bufset(wp,"ITxBfEn", ITxBfEn);
-	ngx_nvram_bufset(wp,"ETxBfEnCond", ETxBfEnCond);
-	ngx_nvram_bufset(wp,"MUTxRxEnable", MUTxRxEnable);
-#endif
+	void wirelessBasic_ht() {
+		if (!is_ht) {
+			wirelessBasic_no_ht();
+			return;
+		}
 
+		// Extension Channel
+		char_t *n_extcha = websGetVar(wp, T("n_extcha"), T("0"));
+		ngx_nvram_bufset(wp,"HT_EXTCHA", n_extcha);
+		// HT_RGD depend at HT_HTC+ frame support
+		// FIXME
+		//ngx_nvram_bufset(wp,"HT_HTC", n_rdg);
+
+		// HT TxStream
+		char_t *tx_stream = websGetVar(wp, T("tx_stream"), T("1"));
+		ngx_nvram_bufset(wp,"HT_TxStream", tx_stream);
+
+		// HT RxStream
+		char_t *rx_stream = websGetVar(wp, T("rx_stream"), T("1"));
+		ngx_nvram_bufset(wp,"HT_RxStream", rx_stream);
+
+		// MCS
+		char_t *n_mcs = websGetVar(wp, T("n_mcs"), T("33"));
+		ngx_nvram_bufset(wp,"HT_MCS", n_mcs);
+
+		// Guard Interval
+		char_t *n_gi = websGetVar(wp, T("n_gi"), T("1"));
+		ngx_nvram_bufset(wp,"HT_GI", n_gi);
+
+		// Space-Time Block Coding
+		char_t *n_stbc = websGetVar(wp, T("n_stbc"), T("1"));
+		ngx_nvram_bufset(wp,"HT_STBC", n_stbc);
+
+		// Aggregation MSDU
+		char_t *n_amsdu = websGetVar(wp, T("n_amsdu"), T("1"));
+		ngx_nvram_bufset(wp,"HT_AMSDU", n_amsdu);
+
+		// Auto Block ACK
+		char_t *n_autoba = websGetVar(wp, T("n_autoba"), T("1"));
+		ngx_nvram_bufset(wp,"HT_AutoBA", n_autoba);
+
+		// Greenfield Mode
+		char_t *n_mode = websGetVar(wp, T("n_mode"), T("1"));
+		ngx_nvram_bufset(wp,"HT_OpMode", n_mode);
+
+#ifdef PRINT_DEBUG
+		outWrite(T("n_extcha: %s<br>\n"), n_extcha);
+		outWrite(T("tx_stream: %s<br>\n"), tx_stream);
+		outWrite(T("rx_stream: %s<br>\n"), rx_stream);
+		outWrite(T("n_mcs: %s<br>\n"), n_mcs);
+		outWrite(T("n_gi: %s<br>\n"), n_gi);
+		outWrite(T("n_stbc: %s<br>\n"), n_stbc);
+		outWrite(T("n_amsdu: %s<br>\n"), n_amsdu);
+		outWrite(T("n_autoba: %s<br>\n"), n_autoba);
+		outWrite(T("n_mode: %s<br>\n"), n_mode);
+#endif
+	}
+
+////////////////
+	void wirelessBasic_vht() {
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	// VHT_Modes
-	if (is_vht)
-	{
+		int is_vht = (mode_ac >= 14) ? 1 : 0;
+
+		if (!is_vht)
+			return;
+
+		// BandWidth Signaling Mode
+		char_t *ac_bwsig = websGetVar(wp, T("ac_bwsig"), T("1"));
+		ngx_nvram_bufset(wp,"VHT_BW_SIGNAL", ac_bwsig);
+
+		// Guard Interval
+		char_t *ac_gi = websGetVar(wp, T("ac_gi"), T("1"));
+		ngx_nvram_bufset(wp,"VHT_SGI", ac_gi);
+
+		// Space-Time Block Coding
+		char_t *ac_stbc = websGetVar(wp, T("ac_stbc"), T("1"));
 // STBC for 1T1R module (as 7610) always disable (support only in STA mode for 1T1R)
 #if (CONFIG_RT_SECOND_CARD == 7610)
 		ngx_nvram_bufset(wp,"VHT_STBC", "0");
 #else
 		ngx_nvram_bufset(wp,"VHT_STBC", ac_stbc);
 #endif
-// LDPC support ONLY for 7602/7612/7615
+
+		// Low Density Parity Check (only for 7602/7612/7615)
+		char_t *ac_ldpc = websGetVar(wp, T("ac_ldpc"), T("1"));
 #if (CONFIG_RT_FIRST_CARD == 7602) || (CONFIG_RT_SECOND_CARD == 7612) || (CONFIG_RT_FIRST_CARD == 7615) || (CONFIG_RT_SECOND_CARD == 7615)
 		ngx_nvram_bufset(wp,"VHT_LDPC", ac_ldpc);
 		ngx_nvram_bufset(wp,"HT_LDPC", ac_ldpc);
@@ -934,35 +937,337 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"VHT_LDPC", "0");
 		ngx_nvram_bufset(wp,"HT_LDPC", "0");
 #endif
-		ngx_nvram_bufset(wp,"VHT_SGI", ac_gi);
-		ngx_nvram_bufset(wp,"VHT_BW_SIGNAL", ac_bwsig);
+
+#ifdef PRINT_DEBUG
+		outWrite(T("ac_bwsig: %s<br>\n"), ac_bwsig);
+		outWrite(T("ac_gi: %s<br>\n"), ac_gi);
+		outWrite(T("ac_stbc: %s<br>\n"), ac_stbc);
+		outWrite(T("ac_ldpc: %s<br>\n"), ac_ldpc);
+#endif
+#endif
 	}
-#endif
-	ngx_nvram_bufset(wp,"RadioOn", web_radio_on);
+
+////////////////
+	void wirelessBasic_advanced_region() {
+		char_t *countrycode = websGetVar(wp, T("country_code"), T("NONE"));
+		char_t *country_region = websGetVar(wp, T("country_region"), T("0"));
+		char_t *regulatoryclassinic = websGetVar(wp, T("RegulatoryClassINIC"), T("1;2;3;4;0"));
+
+		ngx_nvram_bufset(wp,"CountryRegion", country_region);
+		ngx_nvram_bufset(wp,"CountryCode", countrycode);
+		if (!strncmp(countrycode, "US", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+		}
+		else if (!strncmp(countrycode, "JP", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "6");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		}
+		else if (!strncmp(countrycode, "RU", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "7");
+			// set regulatory class for current county see spectrum.c for Russia, subbands divided ;
+			ngx_nvram_bufset(wp,"RegulatoryClass", "5;0;0;0;0");
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	ngx_nvram_bufset(wp,"RadioOnINIC", web_radio_ac_on);
+			if (CHK_IF_DIGIT(websGetVar(wp, T("sz11aChannel"), T("")), 0))
+			    ngx_nvram_bufset(wp,"RegulatoryClassINIC", "1;2;3;4;0");
+			else
+			    ngx_nvram_bufset(wp,"RegulatoryClassINIC", regulatoryclassinic);
+#else
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
 #endif
+		}
+		else if (!strncmp(countrycode, "FR", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "2");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		}
+		else if (!strncmp(countrycode, "TW", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "3");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		}
+		else if (!strncmp(countrycode, "IE", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "2");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		}
+		else if (!strncmp(countrycode, "HK", 3)) {
+			ngx_nvram_bufset(wp,"CountryRegionABand", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		} else { // default unknown
+			ngx_nvram_bufset(wp,"CountryRegionABand", "7");
+			ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
+			ngx_nvram_bufset(wp,"RegulatoryClass", "0");
+		}
+#ifdef PRINT_DEBUG
+		outWrite(T("countrycode: %s<br>\n"), countrycode);
+#endif
+	}
+
+////////////////
+	void wirelessBasic_advanced() {
+		// BG Protection Mode
+		char_t *bg_protection = websGetVar(wp, T("bg_protection"), T("0"));
+		ngx_nvram_bufset(wp,"BGProtection", bg_protection );
+
+		// Data Beacon Rate
+		char_t *dtim = websGetVar(wp, T("dtim"), T("1"));
+		ngx_nvram_bufset(wp,"DtimPeriod", dtim);
+
+		// Fragment Threshold
+		char_t *fragment = websGetVar(wp, T("fragment"), T("2346"));
+		ngx_nvram_bufset(wp,"FragThreshold", fragment);
+
+		// RTS Threshold
+		char_t *rts = websGetVar(wp, T("rts"), T("2347"));
+		ngx_nvram_bufset(wp,"RTSThreshold", rts);
+
+		// Station Keep-Alive
+		char_t *keepalive = websGetVar(wp, T("keepalive"), T("0"));
+		char_t keepalive_str[4] = "60";
+
+		if (NULL != keepalive) {
+			int tmp = atoi(keepalive);
+			if ((tmp >= 10) && (tmp <= 300))
+				sprintf(keepalive_str, "%d", tmp);
+
+			ngx_nvram_bufset(wp, "StationKeepAlive", repeatValueTimes(mbssidtmpbuf, keepalive_str, new_bssid_num));
+		}
+
+		// Preamble Type
+		char_t *preamble_type = websGetVar(wp, T("preamble_type"), T("0"));
+		ngx_nvram_bufset(wp,"TxPreamble", preamble_type);
+
+		// Short Slot
+		char_t *short_slot = websGetVar(wp, T("short_slot"), T("0"));
+		ngx_nvram_bufset(wp,"ShortSlot", short_slot);
+
+		// Tx Burst
+		char_t *tx_burst = websGetVar(wp, T("tx_burst"), T("0"));
+			//txburst and burst mode set in one place
+		ngx_nvram_bufset(wp,"TxBurst", tx_burst);
+			//switch to normal txburst mode (speed regression with some adapters)
+		ngx_nvram_bufset(wp,"BurstMode", "0");
+
+		// Pkt Aggregate
+		char_t *pkt_aggregate = websGetVar(wp, T("pkt_aggregate"), T("0"));
+		ngx_nvram_bufset(wp,"PktAggregate", pkt_aggregate);
+
+		// Wireless Multimedia
+		char_t *wmm_capable = websGetVar(wp, T("WmmCapable"), T("0"));
+		ngx_nvram_bufset(wp, "WmmCapable", repeatValueTimes(mbssidtmpbuf, wmm_capable, new_bssid_num));
+
+		// ACK Policy
+		char_t *ackpolicy = websGetVar(wp, T("AckPolicy"), T("0"));
+		ngx_nvram_bufset(wp, "AckPolicy", repeatValueTimes(mbssidtmpbuf, ackpolicy, new_bssid_num));
+
+		// IEEE 802.11h support
+#ifndef CONFIG_RT_SECOND_IF_NONE
+#ifdef CONFIG_RT_SECOND_IF_RANGE_5GHZ
+		char_t	*dot11h = websGetVar(wp, T("dot11h"), T(""));
+		ngx_nvram_bufset(wp,"IEEE80211H", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(dot11h, 1) ? "1" : "0", new_bssid_num));
+#endif
+#endif
+		// 256QAM Support (2.4GHz)
+		char_t *g256qam = websGetVar(wp, T("g256qam"), T(""));
+		ngx_nvram_bufset(wp,"G_BAND_256QAM", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(g256qam, 1) ? "1" : "0", new_bssid_num));
+
+		// Airtime Fairness
+#if defined(CONFIG_MT7615_AP_VOW_SUPPORT)
+		char_t *vow_airtime_fairness = websGetVar(wp, T("vow_airtime_fairness"), T(""));
+		ngx_nvram_bufset(wp,"VOW_Airtime_Ctrl_En",     repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(vow_airtime_fairness, 1) ? "1" : "0", new_bssid_num));
+		ngx_nvram_bufset(wp,"VOW_Airtime_Fairness_En", CHK_IF_DIGIT(vow_airtime_fairness, 1) ? "1" : "0");
+		ngx_nvram_bufset(wp,"VOW_WATF_Enable",         CHK_IF_DIGIT(vow_airtime_fairness, 1) ? "1" : "0");
+#endif
+
+		// Multicast TX Mode
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
+		char_t *mcast_mode = websGetVar(wp, T("McastPhyMode"), T("2"));
+		char_t *mcast_mcs = websGetVar(wp, T("McastMcs"), T("0"));
+		ngx_nvram_bufset(wp,"McastPhyMode", mcast_mode);
+		ngx_nvram_bufset(wp,"McastMcs", mcast_mcs);
+#endif
+
+		// Clear-Channel Assessment Energy Detection
+#if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
+		char_t *EDCCAEnable = websGetVar(wp, T("EDCCAEnable"), T(""));
+		ngx_nvram_bufset(wp,"EDCCAEnable", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(EDCCAEnable, 1) ? "1" : "0", new_bssid_num));
+#endif
+
+		// Smart Carrier Sense
+#if defined(CONFIG_MT7615_AP_SMART_CARRIER_SENSE) || defined(CONFIG_MT76X3_AP_SMART_CARRIER_SENSE)
+		char_t *SCSEnable= websGetVar(wp, T("SCSEnable"), T(""));
+		ngx_nvram_bufset(wp,"SCSEnable", SCSEnable);
+#endif
+
+		// Region settings
+		wirelessBasic_advanced_region();
+
+#ifdef PRINT_DEBUG
+		outWrite(T("bg_protection: %s<br>\n"), bg_protection);
+		outWrite(T("dtim: %s<br>\n"), dtim);
+		outWrite(T("fragment: %s<br>\n"), fragment);
+		outWrite(T("rts: %s<br>\n"), rts);
+		outWrite(T("preamble_type: %s<br>\n"), preamble_type);
+		outWrite(T("short_slot: %s<br>\n"), short_slot);
+		outWrite(T("tx_burst: %s<br>\n"), tx_burst);
+		outWrite(T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
+#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
+		outWrite(T("McastPhyMode: %s<br>\n"), mcast_mode);
+		outWrite(T("mcast_mcs: %s<br>\n"), mcast_mcs);
+#endif
+#endif
+	}
+
+////////////////
+	void wirelessBasic_txbf() {
+#if defined(CONFIG_MT76X2_AP_TXBF_SUPPORT) || defined(CONFIG_MT7615_AP_TXBF_SUPPORT)
+		// Implicit TX Beamforming
+		char_t *ITxBfEn = websGetVar(wp, T("ITxBfEn"), T("1"));
+		ngx_nvram_bufset(wp,"ITxBfEn", ITxBfEn);
+
+		// Explicit TX Beamforming
+		char_t *ETxBfEnCond = websGetVar(wp, T("ETxBfEnCond"), T("1"));
+		ngx_nvram_bufset(wp,"ETxBfEnCond", ETxBfEnCond);
+
+		// Multiuser TX Beamforming
+		char_t *MUTxRxEnable = websGetVar(wp, T("MUTxRxEnable"), T("3"));
+		ngx_nvram_bufset(wp,"MUTxRxEnable", MUTxRxEnable);
+#endif
+	}
+
+////////////////
+	void wirelessBasic_roaming() {
+		char_t *fastroaming = websGetVar(wp, T("FastRoaming"), T("0"));
+		fastroaming = (fastroaming == NULL) ? "0" : fastroaming;
+
+		ngx_nvram_bufset(wp,"FastRoaming", fastroaming);
+		if (CHK_IF_DIGIT(fastroaming, 1))
+			setupParameters(wp, fast_roaming_flags, 0);
+
+		// Auto disonnect sta if rssi low (FT clients)
+		char_t *kickstarssilowft = websGetVar(wp, T("KickStaRssiLowFT"), T("0"));
+		ngx_nvram_bufset(wp,"KickStaRssiLowFT", kickstarssilowft);
+
+		// Temporary block probe/assoc req from kicked client
+		char_t *tmpblockafterkick = websGetVar(wp, T("TmpBlockAfterKick"), T("14"));
+		ngx_nvram_bufset(wp,"TmpBlockAfterKick", tmpblockafterkick);
+
+		// Radio Resource Managment 802.11K
+#if defined(CONFIG_MT7610_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11K_RRM_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11K_RRM_SUPPORT)
+		char_t *rrm = websGetVar(wp, T("RRMEnable"), T("1"));
+		ngx_nvram_bufset(wp,"RRMEnable", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(rrm, 1) ? "1" : "0", new_bssid_num));
+#endif
+
+		// Fast Transition 802.11R
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
+		char_t *ft = websGetVar(wp, T("FtSupport"), T("1"));
+		ngx_nvram_bufset(wp,"FtSupport", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(ft, 1) ? "1" : "0", new_bssid_num));
+#endif
+
+		// Wireless Network Management
+#if defined(CONFIG_MT7615_AP_WNM_SUPPORT)
+		char_t *WNMEnable = websGetVar(wp, T("WNMEnable"), T(""));
+		ngx_nvram_bufset(wp,"WNMEnable", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(WNMEnable, 1) ? "1" : "0", new_bssid_num));
+#endif
+
+		// Mobility Domain ID, APs Key Holder
+#if defined(CONFIG_MT7610_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X2_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT76X3_AP_DOT11R_FT_SUPPORT) || defined(CONFIG_MT7615_AP_DOT11R_FT_SUPPORT)
+		char_t *ftmdid = websGetVar(wp, T("FtMdId"), T("A1"));
+		char_t *ftr0khid = websGetVar(wp, T("FtR0khId"), T("4f577274"));
+		char 	ft_mdid_var[8] = "FtMdId\0\0";
+		char 	ft_r0khid_var[10] = "FtR0khId\0\0";
+
+		if (CHK_IF_DIGIT(ft, 1)) {
+			for (i=1;i<=4;i++) {
+				ft_mdid_var[6] = '0' + i;
+				ft_r0khid_var[8] = '0' + i;
+				ngx_nvram_bufset(wp, ft_mdid_var, ftmdid);
+				ngx_nvram_bufset(wp, ft_r0khid_var, ftr0khid);
+			}
+		}
+#endif
+
+		// Maximum clients per SSID
+		char_t *maxstanum = websGetVar(wp, T("maxstanum"), T("0"));
+		char_t maxstanum_str[8] = "";
+		sprintf(maxstanum_str, "%d", MAX_NUMBER_OF_MAC);
+
+		if (NULL != maxstanum) {
+			int tmp = atoi(maxstanum);
+			if ((tmp >= 0) && (tmp <= MAX_NUMBER_OF_MAC))
+				sprintf(maxstanum_str, "%d", tmp);
+
+			ngx_nvram_bufset(wp, "MaxStaNum", repeatValueTimes(mbssidtmpbuf, maxstanum_str, new_bssid_num));
+		}
+
+		// Idle timeout before disconnect
+		char_t *idletimeout = websGetVar(wp, T("idletimeout"), T("0"));
+		char_t idletimeout_str[8] = "480";
+
+		if (NULL != idletimeout) {
+			int tmp = atoi(idletimeout);
+			if ((tmp >= 120) && (tmp <= 600))
+				sprintf(idletimeout_str, "%d", tmp);
+
+			ngx_nvram_bufset(wp, "IdleTimeout", idletimeout_str);
+		}
+
+		// TX retry fail before disconnect
+		char_t *life_check = websGetVar(wp, T("EntryLifeCheck"), T("0"));
+		char_t life_check_str[8] = "1024";
+
+		if (NULL != life_check) {
+			int tmp = atoi(life_check);
+			if (tmp < 256)
+				tmp = 256;
+
+			if (tmp > 4096)
+				tmp = 4096;
+
+			sprintf(life_check_str, "%d", tmp);
+			ngx_nvram_bufset(wp,"EntryLifeCheck", life_check_str);
+		}
+
+		// Beacon Interval
+		char_t *beacon = websGetVar(wp, T("beacon"), T("100"));
+		ngx_nvram_bufset(wp,"BeaconPeriod", beacon);
+
+		// Beacon Interval (5GHz)
+		char_t *beaconinic = websGetVar(wp, T("beaconINIC"), T("100"));
+		ngx_nvram_bufset(wp,"BeaconPeriodINIC", beaconinic);
+
+		// PMK Cache Period
+		char_t *PMKCachePeriod = websGetVar(wp, T("PMKCachePeriod"), T("480"));
+		int cachePeriod = strToIntDef(PMKCachePeriod, -1);
+		if (cachePeriod > 0 && cachePeriod < 10000)
+		{
+			ngx_nvram_bufset(wp, "PMKCachePeriod", repeatValueTimes(mbssidtmpbuf, PMKCachePeriod, new_bssid_num));
+		}
+
+#ifdef PRINT_DEBUG
+		outWrite(T("beacon: %s<br>\n"), beacon);
+#endif
+	}
+
+////////////////
+	wirelessBasic_net24();
+	wirelessBasic_net5();
+	wirelessBasic_ssid();
+	wirelessBasic_ht();
+	wirelessBasic_vht();
+	wirelessBasic_advanced();
+	wirelessBasic_txbf();
+	wirelessBasic_roaming();
 
 	// Band Steering
 	ngx_nvram_bufset(wp,"BandSteering", bandsteering);
 	if (CHK_IF_DIGIT(bandsteering, 1))
 		setupParameters(wp, band_steering_flags, 0);
 
-	// Fast roaming
-	ngx_nvram_bufset(wp,"FastRoaming", fastroaming);
-	if (CHK_IF_DIGIT(fastroaming, 1))
-		setupParameters(wp, fast_roaming_flags, 0);
-
-	int cachePeriod = strToIntDef(PMKCachePeriod, -1);
-	if (cachePeriod > 0 && cachePeriod < 10000)
-	for (i=0;i<new_bssid_num;i++)
-	{
-		if (i>0)
-			strcat(pmktmpbuf, ";");
-
-		strcat(pmktmpbuf, PMKCachePeriod);
-	}
-	ngx_nvram_bufset(wp,"PMKCachePeriod", pmktmpbuf);
 
 #if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
 	ngx_nvram_bufset(wp,"IdsEnable", ids_enable);
@@ -978,74 +1283,8 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	//set to nvram
 	nvram_init(RT2860_NVRAM);
-	ngx_nvram_bufset(wp,"BGProtection", bg_protection);
-	ngx_nvram_bufset(wp,"BeaconPeriod", beacon);
-	ngx_nvram_bufset(wp,"BeaconPeriodINIC", beaconinic);
-	ngx_nvram_bufset(wp,"DtimPeriod", dtim);
-	ngx_nvram_bufset(wp,"FragThreshold", fragment);
-	ngx_nvram_bufset(wp,"RTSThreshold", rts);
-	ngx_nvram_bufset(wp,"TxPreamble", preamble_type);
-	ngx_nvram_bufset(wp,"ShortSlot", short_slot);
-	ngx_nvram_bufset(wp,"PktAggregate", pkt_aggregate);
 	ngx_nvram_bufset(wp,"RDRegion", rd_region);
-	//txburst and burst mode set in one place
-	ngx_nvram_bufset(wp,"TxBurst", tx_burst);
 
-	//switch to normal txburst mode (speed regression with some adapters)
-	ngx_nvram_bufset(wp,"BurstMode", "0");
-
-	if (NULL != maxstanum) {
-		tmp = atoi(maxstanum);
-		if ((tmp < 0) || (tmp > MAX_NUMBER_OF_MAC))
-			tmp = MAX_NUMBER_OF_MAC;
-		sprintf(stanum_array, "%d", tmp);
-		for (i=2; i <= ssid_num; i++)
-			sprintf(stanum_array, "%s;%d", stanum_array, tmp);
-		ngx_nvram_bufset(wp,"MaxStaNum", stanum_array);
-	}
-
-	ngx_nvram_bufset(wp,"TmpBlockAfterKick", tmpblockafterkick);
-	ngx_nvram_bufset(wp,"KickStaRssiLowFT", kickstarssilowft);
-
-	if (NULL != keepalive) {
-		tmp = atoi(keepalive);
-		if ((tmp < 10) || (tmp > 300))
-			tmp = 60;
-		sprintf(keepalive_array, "%d", tmp);
-		for (i=2; i <= ssid_num; i++)
-			sprintf(keepalive_array, "%s;%d", keepalive_array, tmp);
-		ngx_nvram_bufset(wp,"StationKeepAlive", keepalive_array);
-	}
-
-	if (NULL != idletimeout) {
-		tmp = atoi(idletimeout);
-		if ((tmp < 120) || (tmp > 600))
-			tmp = 480;
-		sprintf(idletimeout, "%d", tmp);
-		ngx_nvram_bufset(wp,"IdleTimeout", idletimeout);
-	}
-
-	if (NULL != life_check) {
-		tmp = atoi(life_check);
-		if (tmp < 256)
-			tmp = 256;
-
-		if (tmp > 4096)
-			tmp = 4096;
-
-		sprintf(life_check, "%d", tmp);
-		ngx_nvram_bufset(wp,"EntryLifeCheck", life_check);
-	}
-
-	i = 1;
-	for (ssid=0; ssid < ssid_num; ssid++) {
-		tokenadv = (i != ssid_num) ? ";" : "";
-		sprintf(ackpolicy, "%s%s", ackpolicy, ackpolicy_ssid);
-		sprintf(ackpolicy, "%s%s", ackpolicy, tokenadv);
-		i++;
-	}
-
-	ngx_nvram_bufset(wp,"AckPolicy", ackpolicy);
 	ngx_nvram_bufset(wp,"DyncVgaEnable", dyn_vga);
 #if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
 	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
@@ -1054,70 +1293,11 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #if defined(CONFIG_RT_SECOND_IF_MT7610E)
 	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
 #endif
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
-	ngx_nvram_bufset(wp,"McastPhyMode", mcast_mode);
-	ngx_nvram_bufset(wp,"McastMcs", mcast_mcs);
-#endif
 #if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	ngx_nvram_bufset(wp,"M2UEnabled", m2u_enable);
 #if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
 	ngx_nvram_bufset(wp,"VideoTurbine", video_turbine);
 #endif
-#endif
-	ngx_nvram_bufset(wp,"CountryCode", countrycode);
-	if (!strncmp(countrycode, "US", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-	}
-	else if (!strncmp(countrycode, "JP", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "6");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	}
-	else if (!strncmp(countrycode, "RU", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "7");
-		// set regulatory class for current county see spectrum.c for Russia, subbands divided ; 
-		ngx_nvram_bufset(wp,"RegulatoryClass", "5;0;0;0;0");
-#ifndef CONFIG_RT_SECOND_IF_NONE
-		if (CHK_IF_DIGIT(sz11aChannel, 0))
-		    ngx_nvram_bufset(wp,"RegulatoryClassINIC", "1;2;3;4;0");
-		else
-		    ngx_nvram_bufset(wp,"RegulatoryClassINIC", regulatoryclassinic);
-#else
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-#endif
-	}
-	else if (!strncmp(countrycode, "FR", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "2");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	}
-	else if (!strncmp(countrycode, "TW", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "3");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	}
-	else if (!strncmp(countrycode, "IE", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "2");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	}
-	else if (!strncmp(countrycode, "HK", 3)) {
-		ngx_nvram_bufset(wp,"CountryRegionABand", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	} else { // default uncknown
-		ngx_nvram_bufset(wp,"CountryRegionABand", "7");
-		ngx_nvram_bufset(wp,"RegulatoryClassINIC", "0");
-		ngx_nvram_bufset(wp,"RegulatoryClass", "0");
-	}
-
-	// Set-up country region
-	ngx_nvram_bufset(wp,"CountryRegion", country_region);
-
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
-	ngx_nvram_bufset(wp,"ED_MODE", ed_mode);
 #endif
 
 	nvram_commit(RT2860_NVRAM);
@@ -1127,63 +1307,16 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 #ifdef PRINT_DEBUG
 	// debug print
-	websHeader(wp);
-	outWrite(T("<h2>mode: %s</h2><br>\n"), wirelessmode);
 	outWrite(T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
-	outWrite(T("hidden_ssids: %s<br>\n"), hssid);
-	outWrite(T("isolated_ssids: %s<br>\n"), isolated_ssids);
 	outWrite(T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
 	outWrite(T("sz11aChannel: %s<br>\n"), sz11aChannel);
-	outWrite(T("sz11gChannel: %s<br>\n"), sz11gChannel);
-	outWrite(T("tx_power: %s<br>\n"), tx_power);
-	if (strncmp(abg_rate, "", 1)) {
-		outWrite(T("abg_rate: %s<br>\n"), abg_rate);
-	}
-	if (is_ht) {
-		outWrite(T("n_mode: %s<br>\n"), n_mode);
-		outWrite(T("n_bandwidth: %s<br>\n"), n_bandwidth);
-		outWrite(T("n_gi: %s<br>\n"), n_gi);
-		outWrite(T("n_stbc: %s<br>\n"), n_stbc);
-		outWrite(T("n_mcs: %s<br>\n"), n_mcs);
-		outWrite(T("n_extcha: %s<br>\n"), n_extcha);
-		outWrite(T("n_amsdu: %s<br>\n"), n_amsdu);
-		outWrite(T("n_autoba: %s<br>\n"), n_autoba);
-
-	}
 #ifndef CONFIG_RT_SECOND_IF_NONE
-	outWrite(T("mode ac: %s<br>\n"), wirelessmodeac);
 	outWrite(T("mssidac_1: %s<br>\n"), ssid1ac);
-	outWrite(T("tx_power_ac: %s<br>\n"), tx_power_ac);
-	if (is_vht)
-	{
-		outWrite(T("ac_gi: %s<br>\n"), ac_gi);
-		outWrite(T("ac_stbc: %s<br>\n"), ac_gi);
-		outWrite(T("ac_ldpc: %s<br>\n"), ac_ldpc);
-		outWrite(T("ac_bw: %s<br>\n"), ac_bw);
-		outWrite(T("ac_bwsig: %s<br>\n"), ac_bwsig);
-	}
 #endif
-	outWrite(T("tx_stream: %s<br>\n"), tx_stream);
-	outWrite(T("rx_stream: %s<br>\n"), rx_stream);
-	outWrite(T("bg_protection: %s<br>\n"), bg_protection);
-	outWrite(T("beacon: %s<br>\n"), beacon);
-	outWrite(T("dtim: %s<br>\n"), dtim);
-	outWrite(T("fragment: %s<br>\n"), fragment);
-	outWrite(T("rts: %s<br>\n"), rts);
-	outWrite(T("preamble_type: %s<br>\n"), preamble_type);
-	outWrite(T("short_slot: %s<br>\n"), short_slot);
-	outWrite(T("tx_burst: %s<br>\n"), tx_burst);
-	outWrite(T("pkt_aggregate: %s<br>\n"), pkt_aggregate);
 	outWrite(T("rd_region: %s<br>\n"), rd_region);
-	outWrite(T("countrycode: %s<br>\n"), countrycode);
-#if defined(CONFIG_MT7610_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X2_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT76X3_AP_MCAST_RATE_SPECIFIC) || defined(CONFIG_MT7615_AP_MCAST_RATE_SPECIFIC)
-	outWrite(T("McastPhyMode: %s<br>\n"), mcast_mode);
-	outWrite(T("mcast_mcs: %s<br>\n"), mcast_mcs);
-#endif
 #if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
 	outWrite(T("m2u_enable: %s<br>\n"), m2u_enable);
 #endif
-	outWrite(T("ED_MODE: %s<br>\n"), ed_mode);
 #endif
 	// reconfigure system
 	websDone(wp, 200);
@@ -1900,7 +2033,7 @@ static int getFTBuilt(webs_t *wp, char** params, int nparams) {
 }
 
 static int getEDCCABuilt(webs_t *wp, char** params, int nparams) {
-#if defined(CONFIG_MT7610_ED_MONITOR) || defined(CONFIG_MT76X2_AP_ED_MONITOR) || defined(CONFIG_MT76X3_AP_ED_MONITOR)
+#if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
 	return outWrite(T("1"));
 #else
 	return outWrite(T("0"));
@@ -1996,6 +2129,7 @@ int asp_mod_wireless_init()
 	aspDefineFunc("getWlan11gChannels", getWlan11gChannels, EVERYONE);
 	aspDefineFunc("getWlanApcliBuilt", getWlanApcliBuilt, EVERYONE);
 	aspDefineFunc("getWlan256QAMBuilt", getWlan256QAMBuilt, EVERYONE);
+	aspDefineFunc("getWlanSCSBuilt", getWlanSCSBuilt, EVERYONE);
 	aspDefineFunc("getWlanVOWBuilt", getWlanVOWBuilt, EVERYONE);
 	aspDefineFunc("getWlanWNMBuilt", getWlanWNMBuilt, EVERYONE);
 	aspDefineFunc("getWlanPMFBuilt", getWlanPMFBuilt, EVERYONE);

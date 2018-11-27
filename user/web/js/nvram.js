@@ -56,6 +56,7 @@ var BUILD_WLAN_256QAM                                                = '<% getWl
 var BUILD_WLAN_PMF                                                   = '<% getWlanPMFBuilt(); %>'         == '1';
 var BUILD_WLAN_VOW                                                   = '<% getWlanVOWBuilt(); %>'         == '1';
 var BUILD_WLAN_WNM                                                   = '<% getWlanWNMBuilt(); %>'         == '1';
+var BUILD_WLAN_SCS                                                   = '<% getWlanSCSBuilt(); %>'         == '1';
 var BUILD_WLAN_4T4R                                                  = '<% getWlan4T4RBuilt(); %>'        == '1';
 var BUILD_STATION                                                    = '<% getStationBuilt(); %>'         == '1';
 var BUILD_VPN                                                        = '<% getVPNBuilt(); %>';
@@ -445,7 +446,7 @@ var NVRAM_StationKeepAlive                                           = '<% getCf
 var NVRAM_IdleTimeout                                                = '<% getCfgGeneral(1, "IdleTimeout",                        "480"); %>';
 var NVRAM_AckPolicy                                                  = '<% getCfgGeneral(1, "AckPolicy",                          "0;0;0;0"); %>';
 var NVRAM_WmmCapable                                                 = '<% getCfgGeneral(1, "WmmCapable",                         "1"); %>';
-var NVRAM_ED_MODE                                                    = '<% getCfgGeneral(1, "ED_MODE",                            "0"); %>';
+var NVRAM_EDCCAEnable                                                = '<% getCfgGeneral(1, "EDCCAEnable",                        "0"); %>';
 var NVRAM_AutoChannelSelect                                          = '<% getCfgGeneral(1, "AutoChannelSelect",                  "0"); %>';
 var NVRAM_AutoChannelSelectINIC                                      = '<% getCfgGeneral(1, "AutoChannelSelectINIC",              "0"); %>';
 var NVRAM_ACSCheckTime                                               = '<% getCfgGeneral(1, "ACSCheckTime",                       "0"); %>';
@@ -465,6 +466,7 @@ var NVRAM_IdsEnable                                                  = '<% getCf
 var NVRAM_ITxBfEn                                                    = '<% getCfgGeneral(1, "ITxBfEn",                            "0"); %>';
 var NVRAM_ETxBfeeEn                                                  = '<% getCfgGeneral(1, "ETxBfeeEn",                          "0"); %>';
 var NVRAM_ETxBfEnCond                                                = '<% getCfgGeneral(1, "ETxBfEnCond",                        "0"); %>';
+var NVRAM_MUTxRxEnable                                               = '<% getCfgGeneral(1, "MUTxRxEnable",                       "0"); %>';
 var NVRAM_RRMEnable                                                  = '<% getCfgGeneral(1, "RRMEnable",                          "0"); %>';
 var NVRAM_FtSupport                                                  = '<% getCfgGeneral(1, "FtSupport",                          "0"); %>';
 var NVRAM_FtMdId1                                                    = '<% getCfgGeneral(1, "FtMdId1",                            "A1"); %>';

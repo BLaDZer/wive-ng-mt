@@ -588,7 +588,6 @@ static int getRoutingTableIPv6(webs_t *wp, char** params, int nparams)
 {
 #ifdef CONFIG_IPV6
 	int i;
-	char  *rrs;
 
 	// Get routing table
 	int parsed_rule_count = 0;

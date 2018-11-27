@@ -13,6 +13,7 @@
 		<script src="/lang/<% getLangDictionary(); %>/dict_services.js"></script>
 		<script src="/js/nvram.js"></script>
 		<script src="/js/ajax.js"></script>
+		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
 			function initTranslation() {
@@ -49,17 +50,46 @@
 				displayServiceStatus([[ NVRAM_DDNSProvider, 'inadyn', 'inadyn' ]]);
 			}
 
+			function validateValue(val) {
+				if (val == '')
+					return false;
+
+				if (validateASCII(val, true, false) == false)
+					return false;
+
+				if (/[;"]/.test(val))
+					return false;
+
+				return true;
+			}
+
 			function DDNSFormCheck() {
-				if (document.getElementById('DDNSProvider').value != 'none' && document.getElementById('DDNSProvider').value != 'freedns.afraid.org' &&
-					(document.getElementById('Account').value == '' || document.getElementById('Password').value == '' || document.getElementById('DDNS').value == '')) {
-					alert(_("services ddns specify"));
-					return false;
+				var form = document.DDNSForm;
+
+				if (form.DDNSProvider.value != 'none')
+				{
+					if (form.DDNSProvider.value != 'freedns.afraid.org' && !validateValue(form.Account.value)) {
+						alert(_("services ddns invalid login"));
+						form.Account.focus();
+						form.Account.select();
+						return false;
+					}
+
+					if (!validateValue(form.Password.value)) {
+						alert(_("services ddns invalid password"));
+						form.Password.focus();
+						form.Password.select();
+						return false;
+					}
+
+					if (!validateValue(form.DDNS.value)) {
+						alert(_("services ddns invalid domain"));
+						form.DDNS.focus();
+						form.DDNS.select();
+						return false;
+					}
 				}
-				else if (document.getElementById('DDNSProvider').value == 'freedns.afraid.org' && 
-						(document.getElementById('Password').value == '' || document.getElementById('DDNS').value == '')) {
-					alert(_("services ddns specify"));
-					return false;
-				}
+
 				ajaxShowTimer(document.DDNSForm, 'timerReloader', _('message apply'), 5);
 				return true;
 			}

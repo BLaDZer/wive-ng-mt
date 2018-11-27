@@ -215,7 +215,7 @@
 			}
 
 			function validateComm(val) {
-				if (/[`]/.test(val))
+				if (/[`"]/.test(val))
 					return false;
 
 				return validateASCII(val, true, false);

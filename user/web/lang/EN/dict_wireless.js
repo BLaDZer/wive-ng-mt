@@ -79,7 +79,7 @@ var wireless_dictionary = {
 	'basic ht channel bandwidth ac'	: 'Channel BandWidth (5GHz)',
 	'basic ht guard interval'	: 'Guard Interval',
 	'basic stbc'			: 'Space-Time Block Coding',
-	'basic ldpc'			: 'Low Disenty Parity Check',
+	'basic ldpc'			: 'Low Density Parity Check',
 	'basic ht extension channel'	: 'Extension Channel',
 	'basic ht amsdu'		: 'Aggregation MSDU',
 	'basic ht addba'		: 'Auto Block ACK',
@@ -274,6 +274,8 @@ var wireless_dictionary = {
 
 	'adv dot11h'				: 'IEEE 802.11h support',
 	'adv g256qam'				: '256QAM support (2.4 GHz)',
+	'adv edcca enable'			: 'Clear-Channel Assessment Energy Detection',
+	'adv scs enable'			: 'Smart Carrier Sense',
 	'adv vow airtime fairness'		: 'Airtime Fairness',
 
 	'roaming wnm enable'			: 'Wireless Network Management',

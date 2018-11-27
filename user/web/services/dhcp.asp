@@ -112,7 +112,8 @@
 						return false;
 					}
 
-					if (!validateIP(form.dhcpMask)) {
+					if (!validateIPMask(form.dhcpMask)) {
+						alert(_("services dhcp invalid mask"));
 						form.dhcpMask.focus();
 						form.dhcpMask.select();
 						return false;

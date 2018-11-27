@@ -297,7 +297,7 @@
 					displayElement(AdvWirelessElement, enableWirelessAny);
 
 					// Clear-Channel Assessment Monitor
-					displayElement('advEDMODE_tr', BUILD_EDCCA == "1");
+					displayElement('advEDCCAEnable_tr', BUILD_EDCCA == "1");
 
 					// IEEE 802.11h support
 					displayElement('div_dot11h', (BUILD_DFS == '1') && enableWirelessAc);
@@ -328,13 +328,16 @@
 
 					// WNM
 					displayElement('div_WNMEnable', (BUILD_WLAN_WNM == '1'));
+
+					// Smart Carrier Sense
+					displayElement('advSCSEnable_tr', (BUILD_WLAN_SCS == '1'));
 				}
 
 				// Beamforming
 				var updateVisibility_beamforming = function() {
 					displayElement('div_txbf', BUILD_TXBF == '1' && enableWirelessAny);
 					// Sending of sounding and beamforming
-//					displayElement('div_ETxBfEnCond', form.ITxBfEn.value == "1");
+					displayElement('div_MUTxRxEnable', form.ETxBfEnCond.value == "1");
 				}
 
 				// Band steering settings
@@ -1417,6 +1420,7 @@
 				if (BUILD_TXBF == '1') {
 					form.ITxBfEn.options.selectedIndex = NVRAM_ITxBfEn;
 					form.ETxBfEnCond.options.selectedIndex = NVRAM_ETxBfEnCond;
+					form.MUTxRxEnable.options.selectedIndex = NVRAM_MUTxRxEnable;
 				}
 
 				form.RRMEnable.options.selectedIndex = 1*NVRAM_RRMEnable.split(";")[0];
@@ -1451,7 +1455,7 @@
 
 				form.AckPolicy.options.selectedIndex = 1*NVRAM_AckPolicy.split(";")[0];
 
-				form.ED_MODE.options.selectedIndex = (NVRAM_ED_MODE == '1') ? 1 : 0;
+				form.EDCCAEnable.options.selectedIndex = 1*NVRAM_EDCCAEnable;
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
 
@@ -1713,8 +1717,8 @@
 					return false;
 				}
 				// validate RADIUS secret
-				if( !checkInjection(document.getElementById('RadiusServerSecret').value) ||
-					!document.getElementById('RadiusServerSecret').value.length) {
+				var radius_secret = document.getElementById('RadiusServerSecret').value;
+				if( !radius_secret.length || !checkInjection(radius_secret) || /[\\"]/.test(radius_secret) ) {
 					document.getElementById('RadiusServerSecret').focus();
 					document.getElementById('RadiusServerSecret').select();
 					alert(_("secure invalid radius secret"));
@@ -3025,9 +3029,16 @@ table.form tr.ssid-row {
 				</select>&nbsp;&nbsp;&nbsp;
 				<select name="McastMcs" class="normal"></select></td>
 		</tr>
-		<tr id="advEDMODE_tr">
-			<td class="head" data-tr="adv ed mode">Clear-Channel Assessment Monitor</td>
-			<td class="val"><select name="ED_MODE" class="normal">
+		<tr id="advEDCCAEnable_tr">
+			<td class="head" data-tr="adv edcca enable">Clear-Channel Assessment Energy Detection</td>
+			<td class="val"><select name="EDCCAEnable" class="normal">
+				<option value="0" selected data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
+		<tr id="advSCSEnable_tr">
+			<td class="head" data-tr="adv scs enable">Smart Carrier Sense</td>
+			<td class="val"><select name="SCSEnable" class="normal">
 				<option value="0" selected data-tr="button disable">Disable</option>
 				<option value="1" data-tr="button enable">Enable</option>
 			</select></td>
@@ -3040,6 +3051,41 @@ table.form tr.ssid-row {
 				<option value="5">CH1-14 (MKK)</option>
 				</select>&nbsp;&nbsp;&nbsp;
 				<select name="country_code" class="normal" onChange="countryCodeChange();"><% listCountryCodes(); %>
+			</select></td>
+		</tr>
+	</tbody>
+	</table>
+
+	<table id="div_txbf" class="form showHideMenu auth-hide-user">
+	<thead onclick="switchShowMenu(this);">
+		<tr>
+			<td class="title" colspan=2  data-tr="basic tx beam title">TX Beamforming</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="div_ITxBfEn">
+			<td class="head" data-tr="basic tx beam implicit">Implicit TX Beamforming</td>
+			<td class="val"><select name="ITxBfEn" class="normal">
+					<option value="0" data-tr="button disable">Disable</option>
+					<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
+
+		<tr id="div_ETxBfEnCond">
+			<td class="head" data-tr="basic tx beam explicit">Explicit TX Beamforming</td>
+			<td class="val"><select name="ETxBfEnCond" class="normal" onChange="updateVisibility(this.form);">
+				<option value="0" data-tr="button disable">Disable</option>
+				<option value="1" data-tr="button enable">Enable</option>
+			</select></td>
+		</tr>
+
+		<tr id="div_MUTxRxEnable">
+			<td class="head" data-tr="basic tx beam mu">Multiuser TX Beamforming</td>
+			<td class="val"><select name="MUTxRxEnable" class="normal">
+				<option value="0" data-tr="basic tx beam mu off">Off</option>
+				<option value="1" data-tr="basic tx beam mu beamformer">Beamformer</option>
+				<option value="2" data-tr="basic tx beam mu beamformee">Beamformee</option>
+				<option value="3" data-tr="basic tx beam mu all">All</option>
 			</select></td>
 		</tr>
 	</tbody>
@@ -3201,43 +3247,6 @@ table.form tr.ssid-row {
 	</tbody>
 	</table>
 
-	<table id="div_txbf" class="form showHideMenu auth-hide-user">
-	<thead onclick="switchShowMenu(this);">
-		<tr>
-			<td class="title" colspan=2  data-tr="basic tx beam title">TX Beamforming</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr id="div_ITxBfEn">
-			<td class="head" data-tr="basic tx beam implicit">Implicit TX Beamforming</td>
-			<td class="val"><select name="ITxBfEn" class="normal">
-					<option value="0" data-tr="button disable">Disable</option>
-					<option value="1" data-tr="button enable">Enable</option>
-			</select></td>
-		</tr>
-
-		<tr id="div_ETxBfEnCond">
-			<td class="head" data-tr="basic tx beam explicit">Explicit TX Beamforming</td>
-			<td class="val"><select name="ETxBfEnCond" class="normal">
-				<option value="0" data-tr="button disable">Disable</option>
-				<option value="1" data-tr="button enable">Enable</option>
-			</select></td>
-		</tr>
-
-		<tr id="div_MUTxRxEnable">
-			<td class="head" data-tr="basic tx beam mu">Multiuser TX Beamforming</td>
-			<td class="val"><select name="MUTxRxEnable" class="normal">
-				<option value="0" data-tr="basic tx beam mu off">Off</option>
-				<option value="1" data-tr="basic tx beam mu beamformer">Beamformer</option>
-				<option value="2" data-tr="basic tx beam mu beamformee">Beamformee</option>
-				<option value="3" data-tr="basic tx beam mu all">All</option>
-			</select></td>
-		</tr>
-
-
-
-	</tbody>
-	</table>
 	<table id="div_bandsteering" class="form auth-hide-user" style="display:none;">
 	<thead>
 		<tr id="row_BndStrg">

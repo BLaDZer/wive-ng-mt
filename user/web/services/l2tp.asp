@@ -232,7 +232,7 @@
 				}
 
 				// Check pass
-				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 				if (!re_pass.test(pass)) {
 					alert(_("services l2tp uncorrect password"));
 					document.getElementById('l2tpPassword').select();

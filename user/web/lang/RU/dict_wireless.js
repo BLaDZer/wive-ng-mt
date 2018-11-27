@@ -278,7 +278,9 @@ var wireless_dictionary = {
 
 	'adv dot11h'					: 'Поддержка IEEE 802.11h',
 	'adv g256qam'					: 'Поддержка 256QAM (2.4ГГц)',
-	'adv vow airtime fairness'			: 'Airtime Fairness',
+	'adv edcca enable'				: 'Определять доступность среды по уровню сигнала',
+	'adv scs enable'				: 'Автонастройка чувствительности приёмника',
+	'adv vow airtime fairness'			: 'Обеспечение равного доступа к радиоэфиру',
 
 	'roaming wnm enable'				: 'Wireless Network Management',
 	'roaming invalid BndStrgRssiDiff'		: 'Неверно указана дельта RSSI',

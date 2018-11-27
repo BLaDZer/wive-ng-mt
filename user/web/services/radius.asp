@@ -119,7 +119,7 @@
 				}
 
 				// Check pass
-				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
+				var re_pass = /^[a-zA-Z0-9_\{\}\[\];:\'\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 				if (!re_pass.test(pass)) {
 					alert(_("services radius uncorrect pass"));
 					document.getElementById('radiusPass').select();

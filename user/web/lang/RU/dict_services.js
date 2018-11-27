@@ -9,6 +9,7 @@ var services_dictionary = {
 	'services dhcp delete record'		: 'Удалить запись',
 	'services dhcp invalid mac'		: 'Вы ввели неправильный MAC адрес',
 	'services dhcp invalid ip'		: 'Вы ввели неправильный IP адрес',
+	'services dhcp invalid mask'		: 'Вы ввели неправильную маску сети',
 	'services dhcp end ip less than start'	: 'Введённый конечный IP адрес не может быть меньше начального IP адреса',
 	'services dhcp invalid desc'		: 'Пожалуйста, укажите правильное описание (a-z, A-Z, 0-9, _).',
 	'services dhcp invalid lease'		: 'Вы ввели неправильный срок аренды адреса',
@@ -43,7 +44,10 @@ var services_dictionary = {
 	'services ddns none'			: 'Отсутствует',
 	'services ddns'				: 'Имя домена',
 	'services ddns key'			: 'Ключ',
-	'services ddns specify'			: 'Пожалуйста, укажите имя пользователя, пароль и доменное имя.',
+	'services ddns invalid login'		: 'Указано недопустимое имя пользователя',
+	'services ddns invalid password'	: 'Указан недопустимый пароль',
+	'services ddns invalid domain'		: 'Указано недопустимое имя домена',
+
 
 	'services account title'		: 'Учета трафика',
 	'services account introduction'		: 'Здесь вы можете настроить сбор статистики по трафику для узлов вашей сети.',
