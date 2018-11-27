@@ -836,7 +836,7 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	{
 		/* default for sky epa need allways compensate (see NF to Gain diagram at lower SQ range) */
 		for (i =0 ; i < 3; i++)
-		    pAd->ARssiOffset[i] += 2;
+		    pAd->ARssiOffset[i] += 4;
 
 		/* ixqtest DUT very pessimistic limit LNA gain (OFDM base test side effect) need increase LNA gain for restore sensitive */
 		if (pAd->ALNAGain0 >= 0x0A)
