@@ -633,8 +633,8 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 		pAd->bAutoTxAgcA = pAd->bAutoTxAgcG = TRUE;
 	else
 		pAd->bAutoTxAgcA = pAd->bAutoTxAgcG = FALSE;
-	
-	
+
+
 	/* Save value for future using */
 	pAd->NicConfig2.word = NicConfig2.word;
 
@@ -713,13 +713,13 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	if (IS_MT76x0(pAd))
 		MT76x0_AntennaSelCtrl(pAd);
 #endif /* MT76x0 */
-	
+
 	RTMP_NET_DEV_NICKNAME_INIT(pAd);
 
 	LoadTssiInfoFromEEPROM(pAd);
 
 	pAd->BbpRssiToDbmDelta = 0x0;
-	
+
 	/* Read frequency offset setting for RF*/
 	RT28xx_EEPROM_READ16(pAd, EEPROM_FREQ_OFFSET, value);
 
@@ -727,7 +727,6 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 		pAd->RfFreqOffset = (ULONG) (value & 0x00FF);
 	else
 		pAd->RfFreqOffset = 0;
-	
 
 	DBGPRINT(RT_DEBUG_TRACE, ("E2PROM: RF FreqOffset=0x%lx \n", pAd->RfFreqOffset));
 
@@ -737,7 +736,7 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 		value = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] >> 8;		/* 2.4G band*/
 		value2 = pAd->EEPROMDefaultValue[EEPROM_COUNTRY_REG_OFFSET] & 0x00FF;	/* 5G band*/
 	}
-	
+
 	if ((value <= REGION_MAXIMUM_BG_BAND) || (value == REGION_32_BG_BAND) || (value == REGION_33_BG_BAND))
 	{
 		pAd->CommonCfg.CountryRegion = ((UCHAR) value) | 0x80;
@@ -748,9 +747,9 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 		pAd->CommonCfg.CountryRegionForABand = ((UCHAR) value2) | 0x80;
 	}
 #endif
-	
+
 	/*
-	    Get RSSI Offset on EEPROM 0x9Ah & 0x9Ch.*/
+	    Get RSSI Offset on EEPROM 0x9Ah & 0x9Ch.
 	    The valid value are (-10 ~ 10)
 	*/
 	RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_BG_OFFSET, value);
@@ -797,26 +796,27 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	pAd->ARssiOffset[1] = (value >> 8);
 
 	/* Validate 11a/b/g RSSI 0/1/2 offset.*/
-	for (i = 0 ; i < 3; i++)
-	{
-		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10))
+	for (i = 0; i < 3; i++) {
+		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10)) {
 			if (i > 0)
 			    pAd->BGRssiOffset[i] = pAd->BGRssiOffset[i-1];
 			else
 			    pAd->BGRssiOffset[i] = 0;
+		}
 
-		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10))
+		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10)) {
 			if (i > 0)
 			    pAd->ARssiOffset[i] = pAd->ARssiOffset[i-1];
 			else
 			    pAd->ARssiOffset[i] = 0;
+		}
 	}
 
 
 	DBGPRINT(RT_DEBUG_TRACE, ("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", ARssiOffset[0], ARssiOffset[1], ARssiOffset[2]));
 	DBGPRINT(RT_DEBUG_TRACE, ("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
 
-	printk("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", ARssiOffset[0], ARssiOffset[1], ARssiOffset[2]);
+	printk("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", pAd->ARssiOffset[0], pAd->ARssiOffset[1], pAd->ARssiOffset[2]);
 	printk("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2);
 
 #ifdef LED_CONTROL_SUPPORT
