@@ -816,9 +816,6 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	DBGPRINT(RT_DEBUG_TRACE, ("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", ARssiOffset[0], ARssiOffset[1], ARssiOffset[2]));
 	DBGPRINT(RT_DEBUG_TRACE, ("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
 
-	printk("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", pAd->ARssiOffset[0], pAd->ARssiOffset[1], pAd->ARssiOffset[2]);
-	printk("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2);
-
 #ifdef LED_CONTROL_SUPPORT
 	/* LED Setting */
 	RTMPGetLEDSetting(pAd);
