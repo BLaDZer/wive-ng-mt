@@ -4952,6 +4952,11 @@ VOID APHandleRxDataFrame(
 		goto err;		
 	}
 	
+	if (pRxInfo->U2M)
+	{
+		Update_Rssi_Sample(pAd, &pAd->ApCfg.RssiSample, pRxWI);
+	}
+
 	/* handle WDS */
 	if ((pFmeCtrl->FrDs == 1) && (pFmeCtrl->ToDs == 1))
 	{

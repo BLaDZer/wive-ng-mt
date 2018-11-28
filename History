@@ -4424,7 +4424,7 @@
 125) kernel: ralink_wifi: band steering, optimize handle allready connected clients.<br>
 126) kernel: ralink_wifi: fix number stream limit in convert to RSSI logic.<br>
 127) kernel: ralink_wifi: fix initial rate/phy mode for long range/initial conect clients.<br>
-128) kernel: ralink_wifi: mt7610: chip does not consider NF need allways rssi offset compensate (seed sky NF diagramm).<br>
-129) kernel: ralink_wifi: mt7610: do not eLNA gain depended by temp (avoid RX deviation, only TX path temp compensate need).<br>
+128) kernel: ralink_wifi: mt7610: do not eLNA gain depended by temp (avoid RX deviation, only TX path temp compensate need).<br>
+129) kernel: ralink_wifi: mt7610: avoid 0 rssi sample in some cases.<br>
 <br>
 <br>
