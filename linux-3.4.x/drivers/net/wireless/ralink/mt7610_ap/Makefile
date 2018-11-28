@@ -272,9 +272,6 @@ EXTRA_CFLAGS += -DCONFIG_WIFI_PREFETCH_RXDATA
 # Fat channels workaround for some BCM buggy client
 EXTRA_CFLAGS += -DBADBCM_FIX
 
-# LNA paramms calibs for SKY fem at IxQ compensate
-EXTRA_CFLAGS += -DLNA_COMPENSATE
-
 EXTRA_CFLAGS += -DSYSTEM_LOG_SUPPORT
 
 ifeq ($(CONFIG_MT7610_AP_DBG),y)

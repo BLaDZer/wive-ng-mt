@@ -721,7 +721,7 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	pAd->BbpRssiToDbmDelta = 0x0;
 	
 	/* Read frequency offset setting for RF*/
-		RT28xx_EEPROM_READ16(pAd, EEPROM_FREQ_OFFSET, value);
+	RT28xx_EEPROM_READ16(pAd, EEPROM_FREQ_OFFSET, value);
 
 	if ((value & 0x00FF) != 0x00FF)
 		pAd->RfFreqOffset = (ULONG) (value & 0x00FF);
@@ -749,68 +749,38 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	}
 #endif
 	
-	/* Get RSSI Offset on EEPROM 0x9Ah & 0x9Ch.*/
-	/* The valid value are (-10 ~ 10) */
-	/* */
-	{
-		RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_BG_OFFSET, value);
-		pAd->BGRssiOffset[0] = value & 0x00ff;
-		pAd->BGRssiOffset[1] = (value >> 8);
-	}
+	/*
+	    Get RSSI Offset on EEPROM 0x9Ah & 0x9Ch.*/
+	    The valid value are (-10 ~ 10)
+	*/
+	RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_BG_OFFSET, value);
+	pAd->BGRssiOffset[0] = value & 0x00ff;
+	pAd->BGRssiOffset[1] = (value >> 8);
 
-	{
-		RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_BG_OFFSET+2, value);
-#ifdef MT76x0
-		/*
-			External LNA gain for 5GHz Band(CH100~CH128)
-		*/
-		if (IS_MT76x0(pAd))
-		{
-			pAd->ALNAGain1 = (value >> 8);
-		}
-		else
-#endif /* MT76x0 */
-		{
-/*		if (IS_RT2860(pAd))  RT2860 supports 3 Rx and the 2.4 GHz RSSI #2 offset is in the EEPROM 0x48*/
-			pAd->BGRssiOffset[2] = value & 0x00ff;
-			pAd->ALNAGain1 = (value >> 8);
-		}
-	}
+	/*
+		External LNA gain for 2GHz Band(CH1~CH14)
+	*/
+	RT28xx_EEPROM_READ16(pAd, EEPROM_LNA_OFFSET, value);
+	pAd->BLNAGain = value & 0x00ff;
 
-	{
-		RT28xx_EEPROM_READ16(pAd, EEPROM_LNA_OFFSET, value);
-		pAd->BLNAGain = value & 0x00ff;
-		/*
-			External LNA gain for 5GHz Band(CH36~CH64)
-		*/
-		pAd->ALNAGain0 = (value >> 8);
-	}
-	
+	/*
+		External LNA gain for 5GHz Band(CH36~CH64)
+	*/
+	RT28xx_EEPROM_READ16(pAd, EEPROM_LNA_OFFSET, value);
+	pAd->ALNAGain0 = (value >> 8);
 
-	{
-		RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_A_OFFSET, value);
-		pAd->ARssiOffset[0] = value & 0x00ff;
-		pAd->ARssiOffset[1] = (value >> 8);
-	}
+	/*
+		External LNA gain for 5GHz Band(CH100~CH128)
+	*/
+	RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_BG_OFFSET+2, value);
+	pAd->ALNAGain1 = (value >> 8);
 
-	{
-		RT28xx_EEPROM_READ16(pAd, (EEPROM_RSSI_A_OFFSET+2), value);
-#ifdef MT76x0
-		if (IS_MT76x0(pAd))
-		{
-			/* 
-				External LNA gain for 5GHz Band(CH132~CH165)
-			*/
-			pAd->ALNAGain2 = (value >> 8);
-		}
-		else
-#endif /* MT76x0 */
-		{
-			pAd->ARssiOffset[2] = value & 0x00ff;
-			pAd->ALNAGain2 = (value >> 8);
-		}
-	}
 
+	/*
+		External LNA gain for 5GHz Band(CH132~CH165)
+	*/
+	RT28xx_EEPROM_READ16(pAd, (EEPROM_RSSI_A_OFFSET+2), value);
+	pAd->ALNAGain2 = (value >> 8);
 
 	if (((UCHAR)pAd->ALNAGain0 == 0xFF) || (pAd->ALNAGain0 == 0x00))
 		pAd->ALNAGain0 = 0x0A;
@@ -819,40 +789,35 @@ VOID NICReadEEPROMParameters(RTMP_ADAPTER *pAd, PSTRING mac_addr)
 	if (((UCHAR)pAd->ALNAGain2 == 0xFF) || (pAd->ALNAGain2 == 0x00))
 		pAd->ALNAGain2 = pAd->ALNAGain0;
 
+	/*
+		External LNA rssi offsets
+	*/
+	RT28xx_EEPROM_READ16(pAd, EEPROM_RSSI_A_OFFSET, value);
+	pAd->ARssiOffset[0] = value & 0x00ff;
+	pAd->ARssiOffset[1] = (value >> 8);
+
 	/* Validate 11a/b/g RSSI 0/1/2 offset.*/
-	for (i =0 ; i < 3; i++)
+	for (i = 0 ; i < 3; i++)
 	{
 		if ((pAd->BGRssiOffset[i] < -10) || (pAd->BGRssiOffset[i] > 10))
-			pAd->BGRssiOffset[i] = 0;
+			if (i > 0)
+			    pAd->BGRssiOffset[i] = pAd->BGRssiOffset[i-1];
+			else
+			    pAd->BGRssiOffset[i] = 0;
 
 		if ((pAd->ARssiOffset[i] < -10) || (pAd->ARssiOffset[i] > 10))
-			pAd->ARssiOffset[i] = 0;
+			if (i > 0)
+			    pAd->ARssiOffset[i] = pAd->ARssiOffset[i-1];
+			else
+			    pAd->ARssiOffset[i] = 0;
 	}
 
-#ifdef LNA_COMPENSATE
-#ifdef RALINK_ATE
-	if (!ATE_ON(pAd))
-#endif
-	{
-		/* ixqtest DUT very pessimistic limit LNA gain (OFDM base test side effect)
-			need increase LNA gain for restore dynamic range */
-		if (pAd->ALNAGain0 >= 0x0A)
-		    pAd->ALNAGain0 += 0x02;
 
-		if (pAd->ALNAGain1 >= 0x0A)
-		    pAd->ALNAGain1 += 0x02;
+	DBGPRINT(RT_DEBUG_TRACE, ("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", ARssiOffset[0], ARssiOffset[1], ARssiOffset[2]));
+	DBGPRINT(RT_DEBUG_TRACE, ("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
 
-		if (pAd->ALNAGain2 >= 0x0A)
-		    pAd->ALNAGain2 += 0x02;
-
-		/* default for sky epa need allways compensate (see NF to Gain diagram at lower SQ range) */
-		for (i =0 ; i < 3; i++)
-		    pAd->ARssiOffset[i] += 4;
-	}
-#endif
-
-	DBGPRINT(RT_DEBUG_TRACE, ("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", 
-					pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2));
+	printk("ARssiOffset0 = %d, ARssiOffset1 = %d, ARssiOffset2 = %d\n", ARssiOffset[0], ARssiOffset[1], ARssiOffset[2]);
+	printk("ALNAGain0 = %d, ALNAGain1 = %d, ALNAGain2 = %d\n", pAd->ALNAGain0, pAd->ALNAGain1, pAd->ALNAGain2);
 
 #ifdef LED_CONTROL_SUPPORT
 	/* LED Setting */
