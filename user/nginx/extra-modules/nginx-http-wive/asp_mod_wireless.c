@@ -533,7 +533,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac;
 	int     mode_ac;
 #endif
-	int     is_ht = 0, new_bssid_num, mode;
+	int     is_ht = 0, is_vht = 0, new_bssid_num, mode;
 
 	char_t *rd_region, *dyn_vga;
 	int ssid_num;
@@ -552,6 +552,14 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 
 	// fetch from web input
+	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
+	int radio_on = CHK_IF_DIGIT(web_radio_on, 1);
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
+	int radio_ac_on = CHK_IF_DIGIT(web_radio_ac_on, 1);
+#endif
+
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("7")); //7: gn mode
 	mode = atoi(wirelessmode);
 	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
@@ -609,7 +617,15 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		return;
 	}
 
-	is_ht = (mode >= 5) ? 1 : 0;
+	if (radio_on && mode >= 5)
+		is_ht = 1;
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+	if (radio_ac_on && mode_ac >= 14)
+		is_vht = 1;
+	if (radio_ac_on && mode_ac >= 8)
+		is_ht = 1;
+#endif
 
 	nvram_init(RT2860_NVRAM);
 
@@ -638,7 +654,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 ////////////////
 	void wirelessBasic_net24() {
 		// 2.4GHz enable
-		char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
 		ngx_nvram_bufset(wp,"RadioOn", web_radio_on);
 
 		// Network Mode (2.4GHz)
@@ -688,7 +703,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	void wirelessBasic_net5() {
 #ifndef CONFIG_RT_SECOND_IF_NONE
 		// 5GHz enable
-		char *web_radio_ac_on = websGetVar(wp, T("radioWirelessEnabledAc"), T("0"));
 		ngx_nvram_bufset(wp,"RadioOnINIC", web_radio_ac_on);
 
 		// Network Mode (5GHz)
@@ -906,8 +920,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 ////////////////
 	void wirelessBasic_vht() {
 #ifndef CONFIG_RT_SECOND_IF_NONE
-		int is_vht = (mode_ac >= 14) ? 1 : 0;
-
 		if (!is_vht)
 			return;
 
@@ -1072,9 +1084,10 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 #endif
 #endif
 		// 256QAM Support (2.4GHz)
+#if defined(CONFIG_MT7615_AP) || defined(CONFIG_MT7615_AP_MODULE)
 		char_t *g256qam = websGetVar(wp, T("g256qam"), T(""));
 		ngx_nvram_bufset(wp,"G_BAND_256QAM", repeatValueTimes(mbssidtmpbuf, CHK_IF_DIGIT(g256qam, 1) ? "1" : "0", new_bssid_num));
-
+#endif
 		// Airtime Fairness
 #if defined(CONFIG_MT7615_AP_VOW_SUPPORT)
 		char_t *vow_airtime_fairness = websGetVar(wp, T("vow_airtime_fairness"), T(""));
@@ -1443,7 +1456,7 @@ static void wirelessApcli(webs_t* wp, char_t *path, char_t *query)
 static int getAPCliStatus(webs_t *wp, char** params, int nparams)
 {
 	char addr[ETH_ALEN] = { 0 };
-	char str[17];
+	char str[18] = {0};
 	char *apcliifname = ngx_nvram_get(wp, "ApCliIfName");
 	int ap_ret;
 
@@ -1457,7 +1470,7 @@ static int getAPCliStatus(webs_t *wp, char** params, int nparams)
 	if (ap_ret <= 0)
 		outWrite(T("%i"), ap_ret);
 	else {
-		sprintf(str, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+		snprintf(str, 18, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 		outWrite(T("%s"), str);
 	}
 

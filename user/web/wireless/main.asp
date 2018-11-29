@@ -106,7 +106,8 @@
 					form.sz11gChannel.disabled = false;
 					// Channel bandwidth (2.4GHz)
 					displayElement( 'basicChannelBW_tr', enableWireless);
-					form.n_bandwidth.disabled = !htmode;
+					form.n_bandwidth.disabled = !(enableWireless && (wmode*1) >= 5);
+					displayElement( ['n_bandwidth_20_40'], wmode >= 5);
 
 					displayElement('autoselect_g', form.sz11gChannel.value == 0);
 					displayElement('checktime_g',  form.sz11gChannel.value == 0);
@@ -117,6 +118,12 @@
 
 					// Disable scan buttons if radio modules are disabled
 					form.scanapLegendButtonScan.disabled = NVRAM_RadioOn != '1';
+
+					// Lower channel bandwidth to the first available option
+					while (form.n_bandwidth.selectedIndex > 0 && form.n_bandwidth.options[form.n_bandwidth.selectedIndex].style.display == "none")
+					{
+						form.n_bandwidth.selectedIndex--;
+					}
 				}
 
 				// Wireless Network 5 GHz
@@ -964,9 +971,7 @@
 				if (document.getElementById('cipher').value != 1)
 					setTimeout(function () { showWarningEncriptionAlgo(); }, 100);
 
-				if (document.getElementById('cipher').value == 0 && WPAAlgorithms == "TKIP")	return;
-				if (document.getElementById('cipher').value == 1 && WPAAlgorithms == "AES")		return;
-				if (document.getElementById('cipher').value == 2 && WPAAlgorithms == "TKIPAES")	return;
+				updateVisibility(document.wireless_basic);
 			}
 
 			// Pre-Authentication change
@@ -1033,6 +1038,10 @@
 				form.keyRenewalInterval.value		= form["RekeyInterval"+MBSSID].value;
 				form.PMFMode.value			= form["PMFMode"+MBSSID].value;
 				form.PMFSHA256.value			= form["PMFSHA256_"+MBSSID].value;
+
+				if (form.PMFSHA256.selectedIndex < 0)
+					form.PMFSHA256.selectedIndex = 0;
+
 				if (form["PreAuth"+MBSSID] == '0')
 					form.PreAuthentication[0].selected = true;
 				else
@@ -1080,7 +1089,7 @@
 							RADIUS_Server:"",
 							RekeyInterval:"",
 							PMFMode:"",
-							PMFSHA256:"",
+							PMFSHA256:"0",
 							RekeyMethod:"",
 							WPAPSK:"",
 							session_timeout_interval:""
@@ -1455,7 +1464,8 @@
 
 				form.AckPolicy.options.selectedIndex = 1*NVRAM_AckPolicy.split(";")[0];
 
-				form.EDCCAEnable.options.selectedIndex = 1*NVRAM_EDCCAEnable;
+				form.EDCCAEnable.options.selectedIndex = 1*NVRAM_EDCCAEnable.split(";")[0];
+				form.SCSEnable.options.selectedIndex = 1*NVRAM_SCSEnable;
 
 				document.getElementById('tmpBlockAfterKick_td_2').title = _('adv tmpblockafterkick title');
 
@@ -2099,6 +2109,11 @@
 				}
 			}
 
+			function wmodeChange(form) {
+				form.n_bandwidth.selectedIndex = form.n_bandwidth.options.length-1;
+				updateVisibility(form);
+			}
+
 			function wmodeChangeAC(form) {
 				form.ac_bw.selectedIndex = form.ac_bw.options.length-1;
 				updateVisibility(form);
@@ -2323,7 +2338,7 @@ table.form tr.ssid-row {
 		<tbody>
 			<tr id="div_11g_basic">
 				<td class="head head-narrow" data-tr="basic network mode">Network Mode</td>
-				<td class="wordwrap"><select name="wirelessmode" id="wirelessmode" class="normal" onChange="updateVisibility(this.form);">
+				<td class="wordwrap"><select name="wirelessmode" id="wirelessmode" class="normal" onChange="wmodeChange(this.form);">
 					<option value="0" data-tr="basic bg">BG</option>
 					<option value="1" data-tr="basic b">B</option>
 					<option value="4" data-tr="basic g">G</option>
@@ -2383,8 +2398,8 @@ table.form tr.ssid-row {
 			<tr id="basicChannelBW_tr">
 				<td class="head" data-tr="basic ht channel bandwidth">Channel BandWidth (2.4GHz)</td>
 				<td class="val"><select id="n_bandwidth" name="n_bandwidth" class="normal" onClick="GExtChannelDisplay(this.form);">
-					<option value="0">20MHz</option>
-					<option value="1" selected>20/40MHz</option>
+					<option value="0" id="n_bandwidth_20">20MHz</option>
+					<option value="1" id="n_bandwidth_20_40" selected>20/40MHz</option>
 				</select></td>
 			</tr>
 

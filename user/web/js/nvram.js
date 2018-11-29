@@ -447,6 +447,7 @@ var NVRAM_IdleTimeout                                                = '<% getCf
 var NVRAM_AckPolicy                                                  = '<% getCfgGeneral(1, "AckPolicy",                          "0;0;0;0"); %>';
 var NVRAM_WmmCapable                                                 = '<% getCfgGeneral(1, "WmmCapable",                         "1"); %>';
 var NVRAM_EDCCAEnable                                                = '<% getCfgGeneral(1, "EDCCAEnable",                        "0"); %>';
+var NVRAM_SCSEnable                                                  = '<% getCfgGeneral(1, "SCSEnable",                          "1"); %>';
 var NVRAM_AutoChannelSelect                                          = '<% getCfgGeneral(1, "AutoChannelSelect",                  "0"); %>';
 var NVRAM_AutoChannelSelectINIC                                      = '<% getCfgGeneral(1, "AutoChannelSelectINIC",              "0"); %>';
 var NVRAM_ACSCheckTime                                               = '<% getCfgGeneral(1, "ACSCheckTime",                       "0"); %>';
