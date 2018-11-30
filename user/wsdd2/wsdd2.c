@@ -628,7 +628,7 @@ int main(int argc, char **argv)
 	}
 
 	openlog(prog, LOG_PID, LOG_USER);
-	syslog(LOG_USER | LOG_INFO, "starting.");
+	//syslog(LOG_USER | LOG_INFO, "starting.");
 
 again:
 	{}	/* Necessary to satisfy C syntax for statement labeling. */
@@ -790,8 +790,8 @@ end:
 	}
 
 	if (badep) {
-		syslog(LOG_USER | LOG_ERR, "%s: %s: terminating.",
-			badservice, badbad);
+		//syslog(LOG_USER | LOG_ERR, "%s: %s: terminating.",
+		//	badservice, badbad);
 		closelog();
 		errno = baderrno;
 		err(EXIT_FAILURE, "%s: %s", badservice, badbad);
@@ -802,7 +802,7 @@ end:
 		goto again;
 	}
 
-	syslog(LOG_USER | LOG_INFO, "terminating.");
+	//syslog(LOG_USER | LOG_INFO, "terminating.");
 	closelog();
 	return rv;
 }
