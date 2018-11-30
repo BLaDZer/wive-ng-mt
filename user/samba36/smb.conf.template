@@ -12,6 +12,9 @@
     syslog only			= yes
     max log size		= 10
 
+    password level		= 8
+    username level		= 8
+
     encrypt passwords		= yes
     guest account		= nobody
 
