@@ -39,8 +39,8 @@
 #else
 #define WIFISPEED 17320000	// 1732Mbit wireless...
 #define MAXWIFISPEED 3464	// 3464 / 2 = 1732
-#endfi
-#if defined(CONFIG_RT_SECOND_IF_MT7612E)
+#endif
+#elif defined(CONFIG_RT_SECOND_IF_MT7612E)
 #define WIFISPEED 8660000	// 866Mbit wireless...
 #define MAXWIFISPEED 1732	// 1732 / 2 = 866
 #elif defined(CONFIG_RT_SECOND_IF_MT7610E)

@@ -955,7 +955,7 @@ get_support_info(void *data)
 {
 /*    TLVDEF( ucs2char_t,       support_info,    [32], 0x10, Access_unset ) // RLS: was "contact_info" */
 
-    ucs2char_t * support = (ucs2char_t*) data;
+    //ucs2char_t * support = (ucs2char_t*) data;
 
     return TLV_GET_FAILED;
 }
@@ -966,7 +966,7 @@ get_friendly_name(void *data)
 {
 /*    TLVDEF( ucs2char_t,       friendly_name,   [32], 0x11, Access_unset ) */
 
-    ucs2char_t * fname = (ucs2char_t*) data;
+    //ucs2char_t * fname = (ucs2char_t*) data;
 
     return TLV_GET_FAILED;
 }
@@ -988,7 +988,7 @@ get_hw_id(void *data)
 {
 /*    TLVDEF( ucs2char_t,       hw_id,          [200], 0x13, Access_unset ) // 400 bytes long, max */
 
-    ucs2char_t * hwid = (ucs2char_t*) data;
+    //ucs2char_t * hwid = (ucs2char_t*) data;
 
     return TLV_GET_FAILED;
 }

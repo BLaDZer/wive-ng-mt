@@ -8,7 +8,7 @@ DCFILES = $(OS_LAYER) main.c event.c util.c packetio.c band.c \
 	state.c sessionmgr.c enumeration.c mapping.c seeslist.c \
 	tlv.c qospktio.c
 
-TCFILES = $(OS_LAYER) ctmain.c event.c util.c ctpacketio.c ctstate.c
+TCFILES = $(OS_LAYER) ctmain.c event.c ctpacketio.c util.c ctstate.c
 
 DOBJFILES = $(patsubst %c,%o,$(DCFILES))
 TOBJFILES = $(patsubst %c,%o,$(TCFILES))

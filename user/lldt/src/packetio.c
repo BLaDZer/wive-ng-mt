@@ -120,6 +120,7 @@ validate_queryltlv()
 }
 
 
+#ifdef  __DEBUG__
 static char *
 ed_type2name(uint8_t type)
 {
@@ -134,7 +135,7 @@ ed_type2name(uint8_t type)
 	return buf;
     }
 }
-
+#endif
 
 static uint
 validate_emit()

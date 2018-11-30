@@ -84,7 +84,7 @@ state_inactivity_timeout(void *cookie)
     state_process_timeout();
 }
 
-
+#ifdef  __DEBUG__
 /* This function locates an existing session that is associated with the passed-in address */
 static session_t *
 find_session(etheraddr_t *this_addr)
@@ -103,7 +103,6 @@ find_session(etheraddr_t *this_addr)
     DEBUG({puts("find_session returning NULL");})
     return NULL;
 }
-
 
 static session_t *
 new_session()
@@ -127,6 +126,7 @@ new_session()
     }
     return NULL;
 }
+#endif
 
 
 void
@@ -212,9 +212,6 @@ extern	etheraddr_t	uutMAC;
 uint
 state_process_packet()
 {
-    session_t           *this_session;
-    enum sm_Status       smStatus;
-
 #ifdef  __DEBUG__
     IF_TRACED((TRC_STATE|TRC_PACKET))
         printf("state_process_packet: Entered with event %s",smEvent_names[g_this_event.evtType]);
@@ -248,8 +245,6 @@ state_process_packet()
 uint
 state_process_timeout()
 {
-    enum sm_Status         smStatus;
-
 #ifdef  __DEBUG__
     IF_TRACED(TRC_STATE)
         if (g_this_event.evtType!=evtBlockTimeout)

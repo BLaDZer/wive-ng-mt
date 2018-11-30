@@ -107,6 +107,7 @@ validate_queryltlv()
 }
 
 
+#ifdef  __DEBUG__
 static char *
 ed_type2name(uint8_t type)
 {
@@ -121,7 +122,7 @@ ed_type2name(uint8_t type)
 	return buf;
     }
 }
-
+#endif
 
 static uint
 validate_emit()
@@ -483,8 +484,6 @@ packetio_send_emit(uint16_t thisSeqNum, etheraddr_t* pDst, uint16_t emiteeCnt)
     topo_emitee_desc_t	       *pEmitee;
     topo_emitee_desc_t		emitee;
     etheraddr_t			OUI_hwaddr = {{0x00,0x0d,0x3a,0xd7,0xf1,0x50}};
-
-    uint	count = emiteeCnt;
 
 #ifdef  __DEBUG__
     IF_TRACED(TRC_PACKET)
