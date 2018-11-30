@@ -545,76 +545,10 @@ get_physical_medium(void *data)
 int
 get_wireless_mode(void *data)
 {
-/*    TLVDEF( uint32_t,         wireless_mode,       ,   4,  Access_unset ) */
-
     uint32_t* wl_mode = (uint32_t*) data;
 
-    int rqfd;
-    struct iwreq req;
-    int ret;
-
-    memset(&req, 0, sizeof(req));
-    strncpy(req.ifr_ifrn.ifrn_name, g_osl->wireless_if, sizeof(req.ifr_ifrn.ifrn_name));
-//*/printf("get_wireless_mode: requesting addr for interface \'%s\'\n",g_osl->wireless_if);
-    rqfd = socket(AF_INET,SOCK_DGRAM,0);
-    if (rqfd<0)
-    {
-        warn("get_wireless_mode: FAILED creating request socket for \'%s\' : %s\n",g_osl->wireless_if,strerror(errno));
-        return FALSE;
-    }
-    ret = ioctl(rqfd, SIOCGIWMODE, &req);
-    close(rqfd);
-    if (ret != 0)
-    {
-	/* We don't whine about "Operation Not Supported" since that
-	 * just means the interface does not have wireless extensions. */
-	if (errno != EOPNOTSUPP  &&  errno != EFAULT)
-	    warn("get_wireless_mode: get associated Access Point MAC failed: Error %d, %s\n",
-		 errno,strerror(errno));
-	return TLV_GET_FAILED;
-    }
-
-    switch (req.u.mode) {
-    case IW_MODE_AUTO:
-	*wl_mode = 2;
-        break;
-
-    case IW_MODE_ADHOC:
-	*wl_mode = 0;
-        break;
-
-    case IW_MODE_INFRA:
-	*wl_mode = 1;
-        break;
-
-    case IW_MODE_MASTER:
-	*wl_mode = 1;
-        break;
-
-    case IW_MODE_REPEAT:
-	*wl_mode = 1;
-        break;
-
-    case IW_MODE_SECOND:
-	*wl_mode = 1;
-        break;
-
-    default:
-	/* this is a wireless device that is probably acting
-	 * as a listen-only monitor; we can't express its features like
-	 * this, so we'll not return a wireless mode TLV. */
-#ifdef  __DEBUG__
-        IF_TRACED(TRC_TLVINFO)
-            printf("get_wireless_mode(): mode (%d) unrecognizable - FAILING the get...\n", req.u.mode);
-        END_TRACE
-#endif
-	return TLV_GET_FAILED;
-    }
-#ifdef  __DEBUG__
-    IF_TRACED(TRC_TLVINFO)
-        printf("get_wireless_mode(): wireless_mode=%d\n", *wl_mode);
-    END_TRACE
-#endif
+    /* infrastructure */
+    *wl_mode = 1;
 
     return TLV_GET_SUCCEEDED;
 }
@@ -1144,7 +1078,7 @@ get_sees_max(void *data)
 /*    TLVDEF( uint16_t,     sees_max,            , 0x19, Access_unset, TRUE ) */
 
     uint16_t    *sees_max = (uint16_t*)data;
-    
+
     g_short_reorder_buffer = htons(NUM_SEES);
     memcpy(sees_max, &g_short_reorder_buffer, 2);
 
@@ -1160,10 +1094,10 @@ get_component_tbl(void *data)
 /*    TLVDEF( comptbl_t,    component_tbl,       , 0x1A, Access_unset, FALSE ) */
 
     comptbl_t    *cmptbl = (comptbl_t*)data;
-    
+
     uint16_t    cur_mode;
     etheraddr_t bssid;
-    
+
     cmptbl->version = 1;
     cmptbl->bridge_behavior = 0;            // all packets transiting the bridge are seen by Responder
     cmptbl->link_speed = htonl((uint32_t)(100000000/100));     // units of 100bps
@@ -1173,14 +1107,12 @@ get_component_tbl(void *data)
     cmptbl->radios->MOR = htons((uint16_t)(54000000/500000));  // units of 1/2 Mb/sec
     cmptbl->radios->PHYtype = 2;            // 0=>Unk; 1=>2.4G-FH; 2=>2.4G-DS; 3=>IR; 4=>OFDM5G; 5=>HRDSSS; 6=>ERP
     if (get_wireless_mode((void*)&cur_mode) == TLV_GET_FAILED)
-    {
         cur_mode = 2;   // default is "automatic or unknown"
-    }
+
     cmptbl->radios->mode = (uint8_t)cur_mode;
     if (get_bssid((void*)&bssid) == TLV_GET_FAILED)
-    {
         memcpy(&bssid, &g_hwaddr, sizeof(etheraddr_t));
-    }
+
     memcpy(&cmptbl->radios->BSSID, &bssid, sizeof(etheraddr_t));
 
     return TLV_GET_SUCCEEDED;

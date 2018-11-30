@@ -38,7 +38,7 @@
     TLVDEF( icon_file_t,  icon_image,          , 0xE,  Access_dynamic, TRUE ) // (Windows .ico file always LTLV)
     TLVDEF( ucs2char_t,   machine_name,    [16], 0xF,  Access_unset, TRUE )
     TLVDEF( ucs2char_t,   support_info,    [32], 0x10, Access_unset, FALSE )
-    TLVDEF( ucs2char_t,   friendly_name,   [32], 0x11, Access_unset, TRUE )
+//    TLVDEF( ucs2char_t,   friendly_name,   [32], 0x11, Access_unset, TRUE )
 //    TLVDEF( uuid_t,       upnp_uuid,           , 0x12, Access_unset, TRUE ) // 16 bytes long
     TLVDEF( ucs2char_t,   hw_id,          [200], 0x13, Access_unset, FALSE ) // 400 bytes long, max
     TLVDEF( uint32_t,     qos_flags,           , 0x14, Access_unset, TRUE )
