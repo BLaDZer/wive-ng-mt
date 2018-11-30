@@ -85,6 +85,8 @@ else
 dir_$(CONFIG_USER_SAMBA)		    += samba36
 endif
 
+dir_$(CONFIG_USER_WSDD2)		    += wsdd2
+
 dir_$(CONFIG_USER_CHILLISPOT)               += chillispot
 dir_$(CONFIG_USER_NODOGSPLASH)              += nodogsplash
 

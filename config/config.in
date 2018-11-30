@@ -33,6 +33,7 @@ bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
 bool 'samba server (storage/wins)'		CONFIG_USER_SAMBA
+bool 'WSD/LLMNR Discovery/Name Service Daemon'	CONFIG_USER_WSDD2
 bool 'radius server (802.1x managment)'		CONFIG_USER_RADIUS
 bool 'Transmission (BitTorrent Client)'		CONFIG_USER_TRANSMISSION
 if [ "$CONFIG_USER_RADIUS" = "y" ]; then
