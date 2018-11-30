@@ -117,27 +117,33 @@
 			}
 
 			function checkValues(form) {
-				if (form.vpn_pass.value.match(/[\s\$]/)) {
-					alert(_("vpn alert password"));
-					form.vpn_pass.focus();
-					return false;
-				}
+				var vpn_on = (form.vpn_enabled.value == 'on');
+				var re_login = /^[a-zA-Z0-9_]+$/;
+				var re_pass = /^[a-zA-Z0-9\(\)_\{\}\[\];:\,\.\/\?<>\-\=\+\!\~\`\|\@^\&\*]+$/;
 
-				if (form.vpn_type.value != "0" && form.vpn_type.value != "3" ) {
-					if (form.vpn_user.value.match(/[\s\$]/)) {
+				if (vpn_on) {
+					if (!re_pass.test(form.vpn_pass.value)) {
+						alert(_("vpn alert password"));
+						form.vpn_pass.focus();
+						return false;
+					}
+
+					if (!re_login.test(form.vpn_user.value) && form.vpn_type.value != "3") {
 						alert(_("vpn alert username"));
 						form.vpn_user.focus();
 						return false;
 					}
 
-					if ((!validateIP(form.vpn_server, false)) && (!validateDNS(form.vpn_server, false))) {
-						alert(_("vpn alert invalid ip"));
-						form.vpn_type.focus();
-						return false;
+					if (form.vpn_type.value != "0" && form.vpn_type.value != "3" ) {
+						if ((!validateIP(form.vpn_server, false)) && (!validateDNS(form.vpn_server, false))) {
+							alert(_("vpn alert invalid ip"));
+							form.vpn_type.focus();
+							return false;
+						}
 					}
 				}
 
-				if ((form.vpn_type.value != '0') || (!form.vpn_enabled.value == 'on'))
+				if (form.vpn_type.value != '0' || !vpn_on )
 					form.vpn_pure_pppoe.checked = false;
 
 				clearInterval(stat_interval);

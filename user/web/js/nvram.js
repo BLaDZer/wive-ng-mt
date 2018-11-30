@@ -465,7 +465,6 @@ var NVRAM_BandSteering                                               = '<% getCf
 var NVRAM_FastRoaming                                                = '<% getCfgGeneral(1, "FastRoaming",                        "0"); %>';
 var NVRAM_IdsEnable                                                  = '<% getCfgGeneral(1, "IdsEnable",                          "0"); %>';
 var NVRAM_ITxBfEn                                                    = '<% getCfgGeneral(1, "ITxBfEn",                            "0"); %>';
-var NVRAM_ETxBfeeEn                                                  = '<% getCfgGeneral(1, "ETxBfeeEn",                          "0"); %>';
 var NVRAM_ETxBfEnCond                                                = '<% getCfgGeneral(1, "ETxBfEnCond",                        "0"); %>';
 var NVRAM_MUTxRxEnable                                               = '<% getCfgGeneral(1, "MUTxRxEnable",                       "0"); %>';
 var NVRAM_RRMEnable                                                  = '<% getCfgGeneral(1, "RRMEnable",                          "0"); %>';
