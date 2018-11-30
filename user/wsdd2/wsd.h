@@ -25,11 +25,7 @@
 #ifndef WSD_H
 #define WSD_H
 
-#define WSD_PORT		3702
-#define WSD_HTTP_PORT		WSD_PORT
-#define WSD_MCAST_ADDR		("239.255.255.250")
-#define WSD_MCAST6_ADDR		("FF02::C")
-#define WSD_HTTP_TIMEOUT	120
+#include "libnvram.h"
 
 enum wsd_action {
 	WSD_ACTION_NONE,

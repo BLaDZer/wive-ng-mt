@@ -22,6 +22,7 @@ start() {
 	    touch /var/upnp_leases
 	fi
 	gen_config
+	# add/replace route multicast local srv to LAN
 	ip -4 route replace $upnmp_net dev $lan_if
         miniupnpd -f /etc/miniupnpd.conf -i "$real_wan_if" -o "$real_wan_ipaddr" -a "$lan_if" -z "$HostName" &
     fi
@@ -83,7 +84,6 @@ stop() {
 		rm -f /var/run/miniupnpd.pid
 	    fi
 	fi
-	ip -4 route del "$upnmp_net" dev "$lan_if" > /dev/null 2>&1
     fi
 }
 

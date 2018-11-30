@@ -674,18 +674,15 @@ again:
 
 		if (sv->family == AF_INET || sv->family == AF_INET6) {
 			for (ifa = ifaddrs; ifa; ifa = ifa->ifa_next) {
-				/* bind only loopback and LAN/WLAN segments interfaces in any combinations */
-				if (!ifa->ifa_addr ||
-					(ifa->ifa_addr->sa_family != sv->family) ||
-					(ifa->ifa_flags & IFF_LOOPBACK) ||
-					(strncmp(ifa->ifa_name, "br0", 3)) ||
-					(strncmp(ifa->ifa_name, "eth2.1", 2)) ||
-					(strncmp(ifa->ifa_name, "eth2", 2)) ||
-					(strncmp(ifa->ifa_name, "ra", 2)) ||
-					(strncmp(ifa->ifa_name, "rai", 2)) ||
-					(sv->mcast_addr &&
-					!(ifa->ifa_flags & IFF_MULTICAST)))
+				/* bind only LAN segments br0 interface */
+				if ((!ifa->ifa_addr) ||
+				    (ifa->ifa_flags & IFF_LOOPBACK) ||
+				    (sv->mcast_addr && !(ifa->ifa_flags & IFF_MULTICAST)) ||
+				    (ifa->ifa_addr->sa_family != sv->family) ||
+				    (strncmp(ifa->ifa_name, "br0", 3))) {
+					DEBUG(2, W, "SKIP %s %s %s", sv->name,sv->mcast_addr ? sv->mcast_addr : "", ifa->ifa_name);
 					continue;
+				}
 
 				char ifaddr[_ADDRSTRLEN];
 				void *addr =

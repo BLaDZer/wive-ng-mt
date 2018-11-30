@@ -122,61 +122,17 @@ static void uuid_endpoint(char *uuid, size_t len)
 	}
 }
 
-static char *get_smbparm(struct endpoint *ep,
-			const char *name, const char *_default)
-{
-#define __FUNCTION__	"get_smbparm"
-	char *cmd = NULL, *result = NULL;
-
-	if (asprintf(&cmd, "testparm -s --parameter-name=\"%s\" 2>/dev/null",
-			name) <= 0) {
-		ep->_errno = errno;
-		ep->errstr = __FUNCTION__ ": Can't allocate cmd string";
-		return NULL;
-	}
-
-	FILE *pp = popen(cmd, "r");
-
-	if (!pp) {
-		ep->_errno = errno;
-		ep->errstr = __FUNCTION__ ": Can't run testparam";
-		free(cmd);
-		return strdup(_default);
-	} else {
-		char buf[80];
-
-		if (!fgets(buf, sizeof buf, pp) || !buf[0]  || buf[0] == '\n') {
-			DEBUG(0, W, "cannot read %s from testparm", name);
-			result = strdup(_default);
-		} else {/* Trim sapces. */
-			char *p;
-
-			for (p = buf + strlen(buf) - 1;
-				buf < p && isspace(*p); p--)
-				*p = '\0';
-			for (p = buf; *p && isspace(*p); p++)
-				;
-			result = strdup(p);
-		}
-		pclose(pp);
-		free(cmd);
-	}
-
-	return result;
-#undef __FUNCTION__
-}
-
 static struct {
 	const char *key, *_default;
 	char *value;
 } bootinfo[] = {
-	{ .key	= "vendor:",	._default = "NETGEAR"},
-	{ .key	= "model:",	._default = "ReadyNAS 314"},
+	{ .key	= "vendor:",	._default = "Wi-CAT"},
+	{ .key	= "model:",	._default = "Wive-NG-MT"},
 	{ .key	= "serial:",	._default = "0"},
-	{ .key	= "sku:",	._default = "RN314"},
-	{ .key	= "vendorurl:",	._default = "http://www.netgear.com"},
-	{ .key	= "modelurl:",	._default = "http://www.netgear.com"},
-	{ .key	= "presentationurl:",	._default = "http://www.netgear.com"},
+	{ .key	= "sku:",	._default = "MT"},
+	{ .key	= "vendorurl:",	._default = "http://wi-cat.ru"},
+	{ .key	= "modelurl:",	._default = "http://wive-ng.sg.net"},
+	{ .key	= "presentationurl:",	._default = "http://wi-cat.ru"},
 	{}
 };
 
@@ -754,7 +710,7 @@ static int send_http_resp_header(int fd, struct endpoint *ep,
 {
 	const char resp_hdr_fmt[] =
 		"HTTP/1.1 %s\r\n"
-		"Server: NETGEAR WSD Server\r\n"
+		"Server: Wi-CAT WSD Server\r\n"
 		"Date: %s\r\n"
 		"Connection: close\r\n"
 		"Content-Type: application/soap+xml\r\n"
@@ -1012,11 +968,12 @@ int wsd_init(struct endpoint *ep)
 		return -1;
 	}
 
-	if (!workgroup &&
-		!(workgroup = get_smbparm(ep, "workgroup", "WORKGROUP")))
+	workgroup = nvram_get(RT2860_NVRAM, "WorkGroup");
+	netbiosname = nvram_get(RT2860_NVRAM, "SmbNetBIOS");
+
+	if (!workgroup)
 		return -1;
-	if (!netbiosname &&
-		!(netbiosname = get_smbparm(ep, "netbios name", hostname)))
+	if (!netbiosname)
 		return -1;
 
 	if (!getresp_inited)

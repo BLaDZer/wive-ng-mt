@@ -45,7 +45,8 @@ CONFOPTS="$CONFOPTS --with-sendfile-support --with-libiconv=$FIRMROOT/lib/shared
 CONFOPTS="$CONFOPTS --with-shared-modules=pdb_tdbsam,pdb_wbc_sam,auth_winbind,auth_wbc,auth_domain"
 
 #path options
-CONFOPTS="$CONFOPTS --with-logfilebase=/var/log --with-configdir=/etc --with-piddir=/var/lock --with-lockdir=/var/lock --sysconfdir=/etc --prefix=/"
+CONFOPTS="$CONFOPTS --with-codepagedir=/usr/lib/samba --with-logfilebase=/var/log --with-configdir=/etc"
+CONFOPTS="$CONFOPTS --with-piddir=/var/lock --with-lockdir=/var/lock --sysconfdir=/etc --prefix=/"
 
 libreplace_cv_HAVE_C99_VSNPRINTF=yes \
 libreplace_cv_HAVE_GETADDRINFO=no \

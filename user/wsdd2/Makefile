@@ -6,19 +6,12 @@
 #
 
 #allways agressive optimize for size
-CFLAGS	+= -ffunction-sections -fdata-sections
-LDFLAGS	+= -Wl,--gc-sections
+CFLAGS	+= -lnvram 
+#-ffunction-sections -fdata-sections
+#LDFLAGS	+= -Wl,--gc-sections
 
-OBJFILES	= wsdd2.o wsd.o llmnr.o
-HEADERS		= wsdd.h wsd.h
-
-INSTALLPREFIX	= ./fileystem
-SBININSTALLDIR	= $(INSTALLPREFIX)/sbin
-MANINSTALLDIR	= $(INSTALLPREFIX)/share/man
-
-all: wsdd2
-
-wsdd2:  $(OBJFILES)
+all:
+	$(CC) $(CFLAGS) $(LDFLAGS) wsdd2.c wsd.c llmnr.c -o wsdd2
 
 install:
 	#ok
@@ -27,4 +20,4 @@ romfs:
 	$(ROMFSINST) -S wsdd2 /bin/wsdd2
 
 clean:
-	rm -f wsdd2 $(OBJFILES)
+	rm -f wsdd2 *.o

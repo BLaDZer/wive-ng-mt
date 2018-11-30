@@ -71,12 +71,19 @@ if [ "$SmbEnabled" = "1" ]; then
     $LOG "Starting WINS/SMB SERVER."
     nmbd -s /etc/smb.conf -d0 -D &
     nice -n 8 smbd -s /etc/smb.conf -d0 -D &
+
+    if [ "$WsddEnabled" = "1" ]; then
+	$LOG "Starting WSD/LLMNR Discovery/Name Service Daemon."
+	# add/replace route multicast local srv to LAN
+	ip -4 route replace $upnmp_net dev $lan_if
+	wsdd2 -4 -d &
+    fi
 fi
 }
 
 
 get_param() {
-    eval `nvram_buf_get 2860 WorkGroup SmbNetBIOS SmbString SmbOsLevel SmbTimeserver NTPEnabled NTPServerIP Login l2tp_srv_enabled`
+    eval `nvram_buf_get 2860 WorkGroup SmbNetBIOS SmbString SmbOsLevel SmbTimeserver NTPEnabled NTPServerIP Login l2tp_srv_enabled WsddEnabled`
     CONFIG="/etc/smb.conf"
     TEMPLATE="/etc/smb.conf.template"
 
@@ -139,6 +146,13 @@ stop() {
 	    fi
 	    usleep 500000
     done
+
+    pid=`pidof wsdd2`
+    if [ "$pid" != "" ]; then
+	$LOG "Stop wsdd2."
+	killall -q wsdd2
+	killall -q -SIGKILL wsdd2
+    fi
 
 }
 

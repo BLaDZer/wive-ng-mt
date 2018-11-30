@@ -13,6 +13,8 @@ LOG="logger -t xupnpd "
 start() {
     get_param
     if [ "$xupnpd" = "1" ]; then
+	# add/replace route multicast local srv to LAN
+	ip -4 route replace $upnmp_net dev $lan_if
 	# make config dirs if not exist
 	mkdir -p /etc/xupnpd/config /etc/xupnpd/config/postinit /tmp/xupnpd-feeds
 	( # send to background

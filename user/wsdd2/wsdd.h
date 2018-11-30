@@ -45,6 +45,20 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 #include <linux/rtnetlink.h>
+#include <err.h>
+
+#ifndef err
+#define err(exitcode, format, args...) errx(exitcode, format ": %s", ## args, strerror(errno))
+#endif
+#ifndef errx
+#define errx(exitcode, format, args...) { warnx(format, ## args); exit(exitcode); }
+#endif
+#ifndef warn
+#define warn(format, args...) warnx(format ": %s", ## args, strerror(errno))
+#endif
+#ifndef warnx
+#define warnx(format, args...) fprintf(stderr, format "\n", ## args)
+#endif
 
 extern int debug_L, debug_W;
 #define DEBUG(x, y, ...)	\

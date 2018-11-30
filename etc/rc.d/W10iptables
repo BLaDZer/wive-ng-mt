@@ -118,6 +118,11 @@ servicelimit() {
 	    $LOG "Samba allow to connect"
 	    iptables -A servicelimit -i $lan_if -p udp --dport 137:138 -j ACCEPT
 	    iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp -m multiport --dport 139,445 -j ACCEPT
+	    if [ "$WsddEnabled" = "1" ]; then
+		$LOG "Wsdd2 allow to connect"
+		iptables -A servicelimit -i $lan_if $STATE_NEW -p tcp -m multiport --dport 3702,5355 -j ACCEPT
+		iptables -A servicelimit -i $lan_if -p udp -m multiport --dport 3702,5355 -j ACCEPT
+	    fi
 	fi
 	if [ "$RemoteManagement" != "0" ]; then
 	    $LOG "Remote managment web limit"
@@ -643,7 +648,7 @@ get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable IPPortFilterInputEnable WANPingFilter \
 	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpdEnabled cwmpd_httpd_port \
-	    RIPEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
+	    WsddEnabled RIPEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
 	    ForwardSesLimit dnsToLocalRedir QoSEnable`
