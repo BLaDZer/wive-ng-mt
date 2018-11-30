@@ -183,15 +183,13 @@ main(int argc, char **argv)
     {
         if (optind >= argc)
         {
-#if defined (CONFIG_RALINK_RT3883) || \
-    defined (CONFIG_RALINK_RT3352) || \
-    defined (CONFIG_RALINK_RT3052) || \
-    defined (CONFIG_RALINK_RT5350)
+#if defined (CONFIG_RALINK_MT7620) || \
+    defined (CONFIG_RALINK_MT7621)
             g_interface = "br0";
             g_wl_interface = "ra0";
 #else
             g_interface = strstr(g_Progname,"x86") != NULL ? "eth0" : "br0";
-            g_wl_interface = strstr(g_Progname,"x86") != NULL ? "eth0" : "eth1";
+            g_wl_interface = strstr(g_Progname,"x86") != NULL ? "eth0" : "ra0";
 #endif
             printf("%s: no interface-name argument; '%s' assumed.\n", g_Progname, g_interface);
         } else {
