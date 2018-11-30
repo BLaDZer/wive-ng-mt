@@ -330,7 +330,7 @@ main(int argc, char **argv)
 
     if (optind >= argc)
     {
-        g_interface = "eth0";
+        g_interface = "br0";
         printf("%s: no interface-name argument; '%s' assumed.\n", g_Progname, g_interface);
     } else {
         g_interface = strdup(argv[optind]);
