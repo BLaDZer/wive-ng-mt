@@ -382,7 +382,7 @@ static int open_ep(struct endpoint **epp, struct service *sv,
 		ep->_errno = errno;
 		close(ep->sock);
 		ep->sock = -1;
-		DEBUG(0, W, "%s: %s: %s",
+		DEBUG(1, W, "%s: %s: %s",
 			ep->service->name, ep->errstr, strerror(ep->_errno));
 		return (ep->_errno == EADDRINUSE) ? 0 : -1;
 	}
@@ -516,7 +516,7 @@ static int netlink_recv(struct endpoint *ep)
 
 static void sighandler(int sig)
 {
-	DEBUG(0, W, "%s received.", strsignal(sig));
+	//DEBUG(0, W, "%s received.", strsignal(sig));
 	switch (sig) {
 	case SIGHUP:
 		restart = 1;
