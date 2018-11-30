@@ -14,7 +14,8 @@ VPATH = src
 
 OS_LAYER = osl-linux.c
 
-all: lld2d lld2test
+all: lld2d
+#lld2test
 
 include src/common.mk
 
