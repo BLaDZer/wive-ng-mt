@@ -274,7 +274,7 @@ var wireless_dictionary = {
 
 	'adv dot11h'				: 'IEEE 802.11h support',
 	'adv g256qam'				: '256QAM support (2.4 GHz)',
-	'adv edcca enable'			: 'Clear-Channel Assessment Energy Detection',
+	'adv edcca enable'			: 'Energy Detection CCA mode',
 	'adv scs enable'			: 'Smart Carrier Sense',
 	'adv vow airtime fairness'		: 'Airtime Fairness',
 
