@@ -6,9 +6,8 @@
 #
 
 #allways agressive optimize for size
-CFLAGS	+= -lnvram 
-#-ffunction-sections -fdata-sections
-#LDFLAGS	+= -Wl,--gc-sections
+CFLAGS	+= -lnvram -ffunction-sections -fdata-sections
+LDFLAGS	+= -Wl,--gc-sections
 
 all:
 	$(CC) $(CFLAGS) $(LDFLAGS) wsdd2.c wsd.c llmnr.c -o wsdd2
