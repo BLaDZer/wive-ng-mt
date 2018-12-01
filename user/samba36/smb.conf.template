@@ -12,10 +12,11 @@
     syslog only			= yes
     max log size		= 10
 
+    encrypt passwords		= yes
+    pam password change		= no
+    obey pam restrictions	= no
     password level		= 8
     username level		= 8
-
-    encrypt passwords		= yes
     guest account		= nobody
 
     enable core files 		= no
@@ -61,4 +62,5 @@
     inherit permissions		= yes
     map acl inherit		= yes
     hide unreadable		= yes
+    host msdfs			= no
 ############TEMPLATE SECTION END########################
