@@ -33,7 +33,6 @@
 
     unix charset		= UTF-8
     display charset		= UTF-8
-    dos charset			= CP866
     force directory mode	= 0771
     default case		= upper
     preserve case		= yes
