@@ -39,7 +39,7 @@ CONFOPTS="$CONFOPTS --without-libtevent --disable-external-libtevent"
 #some function direct enable
 CONFOPTS="$CONFOPTS --with-syslog --enable-largefile"
 CONFOPTS="$CONFOPTS --with-included-iniparser --with-included-popt"
-CONFOPTS="$CONFOPTS --with-sendfile-support --with-libiconv=$FIRMROOT/lib/shared/lib"
+CONFOPTS="$CONFOPTS --with-sendfile-support"
 
 #build some fuctions as shared lib (skip install)
 CONFOPTS="$CONFOPTS --with-shared-modules=pdb_tdbsam,pdb_wbc_sam,auth_winbind,auth_wbc,auth_domain"
