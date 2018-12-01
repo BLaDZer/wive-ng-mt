@@ -2293,11 +2293,6 @@ table.form tr.ssid-row {
 .mssid-button {
     width: 80px;
 }
-
-.wordwrap {
-    white-space: normal !important;
-}
-
 		</style>
 
 	</head>

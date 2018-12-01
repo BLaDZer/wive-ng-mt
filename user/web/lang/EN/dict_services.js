@@ -142,6 +142,7 @@ var services_dictionary = {
 	'services samba server string'		: 'Server string',
 	'services samba os level'		: 'OS level',
 	'services samba time server'		: 'Enable time server',
+	'services samba wsdd'			: 'Enable WSD/LLMNR Name Service',
 	'services samba no workgroup'		: 'Workgroup not specified.',
 	'services samba no netbios'		: 'NetBIOS name not specified.',
 	'services samba invalid workgroup'	: 'Invalid workgroup specified.',

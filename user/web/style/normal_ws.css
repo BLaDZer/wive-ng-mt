@@ -350,6 +350,10 @@ div.tab_control
     background-image: url('/graphics/menu_plus.gif');
 }
 
+.wordwrap {
+    white-space: normal !important;
+}
+
 span.range {
     color: #808080;
 }

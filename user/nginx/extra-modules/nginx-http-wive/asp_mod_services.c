@@ -192,6 +192,16 @@ static void setDhcp(webs_t* wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
+static int getWSDDBuilt(webs_t *wp, char** params, int nparams)
+{
+#if defined(CONFIG_USER_SAMBA) && defined(CONFIG_USER_WSDD2)
+	outWrite(T("1"));
+#else
+	outWrite(T("0"));
+#endif
+	return 0;
+}
+
 
 static int getSNMPDBuilt(webs_t *wp, char** params, int nparams)
 {
@@ -446,6 +456,7 @@ static void cwmpConfig(webs_t* wp, char_t *path, char_t *query)
 // Samba/Wins setup
 parameter_fetch_t service_samba_flags[] =
 {
+	{ ("WsddEnabled"), "WsddEnabled", 0, ("") },
 	{ ("WorkGroup"), "WorkGroup", 0, ("") },
 	{ ("SmbNetBIOS"), "SmbNetBIOS", 0, ("") },
 	{ ("SmbString"), "SmbString", 0, ("") },
@@ -885,6 +896,7 @@ void asp_mod_services_init()
 	aspDefineFunc(("getRadiusUserList"), getRadiusUserList, EVERYONE);
 	aspDefineFunc(("getDhcpCliList"), getDhcpCliList, EVERYONE);
 	aspDefineFunc(("iptStatList"), iptStatList, EVERYONE);
+	aspDefineFunc(("getWSDDBuilt"), getWSDDBuilt, EVERYONE);
 	aspDefineFunc(("getARPptBuilt"), getARPptBuilt, EVERYONE);
 	aspDefineFunc(("getFastPathBuilt"), getFastPathBuilt, EVERYONE);
 	aspDefineFunc(("getTelnetdBuilt"), getTelnetdBuilt, EVERYONE);

@@ -284,6 +284,7 @@ RTSThreshold=2347
 SecurityMode=0
 ShortSlot=1
 SmbEnabled=0
+WsddEnabled=1
 SmbNetBIOS=Wive-NG-MT
 SmbOsLevel=255
 SmbString=SERVER

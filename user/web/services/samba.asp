@@ -28,8 +28,13 @@
 				_TR("sambaString",		"services samba server string");
 				_TR("sambaOSLevel",		"services samba os level");
 				_TR("sambaTimeServer",		"services samba time server");
+				_TR("sambaWsddEnabled",		"services samba wsdd");
+
 				_TR("sambaDisable2",		"button disable");
 				_TR("sambaEnable2",		"button enable");
+				_TR("sambaDisable3",		"button disable");
+				_TR("sambaEnable3",		"button enable");
+
 				_TR("sambaApply",		"button apply");
 			}
 
@@ -40,6 +45,7 @@
 				document.getElementById('SmbNetBIOS').value		= NVRAM_SmbNetBIOS;
 				document.getElementById('SmbString').value		= NVRAM_SmbString;
 				document.getElementById('SmbOsLevel').value		= NVRAM_SmbOsLevel;
+				document.getElementById('WsddEnabled').value		= NVRAM_WsddEnabled;
 
 				smbEnabledSwitch(document.formSamba);
 				initTranslation();
@@ -48,16 +54,20 @@
 			}
 
 			function smbEnabledSwitch() {
+				var smb_enabled = document.getElementById('SmbEnabled').value == '1';
 				enableElements([	document.getElementById('WorkGroup'),
 							document.getElementById('SmbNetBIOS'),
 							document.getElementById('SmbString'),
 							document.getElementById('SmbOsLevel'),
-							document.getElementById('SmbTimeserver') ], document.getElementById('SmbEnabled').value == '1');
+							document.getElementById('SmbTimeserver') ], smb_enabled);
 				displayElement([	'div_workgroup',
 							'div_netbios',
 							'div_desc',
 							'div_os_level',
-							'div_time_server' ], document.getElementById('SmbEnabled').value == '1');
+							'div_time_server' ], smb_enabled);
+
+				enableElements([document.getElementById('WsddEnabled')], smb_enabled && BUILD_WSDD);
+				displayElement(['div_wsdd'], smb_enabled && BUILD_WSDD);
 			}
 
 			function validateSmb(val) {
@@ -165,6 +175,15 @@
 									<select name="SmbTimeserver" id="SmbTimeserver" class="mid">
 										<option value="0" id="sambaDisable2">Disable</option>
 										<option value="1" id="sambaEnable2">Enable</option>
+									</select>
+								</td>
+							</tr>
+							<tr id="div_wsdd">
+								<td class="head wordwrap" id="sambaWsddEnabled">WSD/LLMNR Name Service</td>
+								<td colspan="2">
+									<select name="WsddEnabled" id="WsddEnabled" class="mid">
+										<option value="0" id="sambaDisable3">Disable</option>
+										<option value="1" id="sambaEnable3">Enable</option>
 									</select>
 								</td>
 							</tr>

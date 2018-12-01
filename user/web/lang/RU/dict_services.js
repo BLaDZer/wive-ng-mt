@@ -142,6 +142,7 @@ var services_dictionary = {
 	'services samba server string'		: 'Описание',
 	'services samba os level'		: 'Уровень (OS level)',
 	'services samba time server'		: 'Сервер времени',
+	'services samba wsdd'			: 'Cлужба имён WSD/LLMNR',
 	'services samba no workgroup'		: 'Не указана рабочая группа.',
 	'services samba no netbios'		: 'Не указано NetBIOS имя.',
 	'services samba invalid workgroup'	: 'Задана некорректная рабочая группа.',

@@ -66,6 +66,7 @@ var BUILD_USB                                                        = '<% getUS
 var BUILD_STORAGE                                                    = '<% getStorageBuilt(); %>';
 var BUILD_FTP                                                        = '<% getFtpBuilt(); %>';
 var BUILD_SMB                                                        = '<% getSmbBuilt(); %>';
+var BUILD_WSDD                                                       = '<% getWSDDBuilt(); %>' == '1';
 var BUILD_WEBSTR                                                     = '<% getWebstrBuilt(); %>';
 var BUILD_RADIUS                                                     = '<% getRadiusBuilt(); %>';
 var BUILD_CWMP                                                       = '<% getCwmpBuilt(); %>';
@@ -332,6 +333,7 @@ var NVRAM_WorkGroup                                                  = '<% getCf
 var NVRAM_SmbNetBIOS                                                 = '<% getCfgGeneral(1, "SmbNetBIOS",                          "Wive-NG-MT"); %>';
 var NVRAM_SmbString                                                  = '<% getCfgGeneral(1, "SmbString",                           "SERVER"); %>';
 var NVRAM_SmbOsLevel                                                 = '<% getCfgGeneral(1, "SmbOsLevel",                          "255"); %>';
+var NVRAM_WsddEnabled                                                = '<% getCfgGeneral(1, "WsddEnabled",                         "1"); %>';
 var NVRAM_radius_srv_enabled                                         = '<% getCfgGeneral(1, "radius_srv_enabled",                  "0"); %>';
 var NVRAM_radius_srv_secret                                          = '<% getCfgGeneral(1, "radius_srv_secret",                   "wive-ng-mt"); %>';
 var NVRAM_RemoteManagementPort                                       = '<% getCfgGeneral(1, "RemoteManagementPort",                "80"); %>';
