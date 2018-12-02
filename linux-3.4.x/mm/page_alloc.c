@@ -2231,17 +2231,6 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 	bool deferred_compaction = false;
 
 	/*
-	 * In the slowpath, we sanity check order to avoid ever trying to
-	 * reclaim >= MAX_ORDER areas which will never succeed. Callers may
-	 * be using allocators in order of preference for an area that is
-	 * too large.
-	 */
-	if (order >= MAX_ORDER) {
-		WARN_ON_ONCE(!(gfp_mask & __GFP_NOWARN));
-		return NULL;
-	}
-
-	/*
 	 * GFP_THISNODE (meaning __GFP_THISNODE, __GFP_NORETRY and
 	 * __GFP_NOWARN set) should not cause reclaim since the subsystem
 	 * (f.e. slab) using GFP_THISNODE may choose to trigger reclaim
@@ -2421,6 +2410,15 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order,
 	struct page *page = NULL;
 	int migratetype = allocflags_to_migratetype(gfp_mask);
 	unsigned int cpuset_mems_cookie;
+
+	/*
+	 * There are several places where we assume that the order value is sane
+	 * so bail out early if the request is out of bound.
+	 */
+	if (order >= MAX_ORDER) {
+		WARN_ON_ONCE(!(gfp_mask & __GFP_NOWARN));
+		return NULL;
+	}
 
 	gfp_mask &= gfp_allowed_mask;
 
