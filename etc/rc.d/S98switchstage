@@ -11,8 +11,8 @@ LOG="logger -t 2nd_stage"
 WAITBOOTCOMPLETE="20"
 
 start() {
-    # wait 2 seconds for shure full preconfigure complete
-    sleep 2
+    # wait 1 seconds for shure full preconfigure complete
+    sleep 1
 
     #set bootcomplite flag
     touch /tmp/bootgood
