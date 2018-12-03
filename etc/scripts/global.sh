@@ -338,6 +338,11 @@ flush_net_caches() {
     echo f > /proc/net/nf_conntrack
 }
 
+flush_arp_caches() {
+    switch clear
+    ip neigh flush all
+}
+
 delif_from_br() {
     ip -4 addr flush dev $2 > /dev/null 2>&1
     ip link set $2 down > /dev/null 2>&1

@@ -293,8 +293,7 @@ start() {
 	# clear arp tables in ESW and kernel
 	#############################################
 	if [ "$needarpcacheclear" = "1" ]; then
-	    switch clear
-	    ip neigh flush all
+	    flush_arp_caches
 	fi
     fi
 }

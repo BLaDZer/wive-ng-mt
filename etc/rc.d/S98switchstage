@@ -5,6 +5,9 @@ LOG="logger -t 2nd_stage"
 # include kernel config
 . /etc/scripts/config.sh
 
+#get params
+. /etc/scripts/global.sh
+
 WAITBOOTCOMPLETE="20"
 
 start() {
@@ -17,6 +20,10 @@ start() {
 	    gpio l "$CONFIG_RALINK_GPIO_SYS_LED" 1 1 0 0 $WAITBOOTCOMPLETE
 	fi
     fi
+
+    #flush all networks caches before start final config
+    flush_arp_caches
+    flush_net_caches
 
     $LOG "Switch to 2nd boot stage and start webui."
     internet.sh
