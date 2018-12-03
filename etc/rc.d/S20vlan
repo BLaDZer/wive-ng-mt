@@ -151,13 +151,8 @@ start() {
 	    if [ "$tv_port" = "1" ] && [ "$tv_portVLAN" != "" ]; then
 		$LOG "Add bridge for TV/STB"
 		brctl addbr "$vlantvif"
-		if [ "$tv_port_mcast" = "1" ]; then
-		    # generate random ip from zeroconfig range end set need for igmpproxy work
-		    rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
-		    ip -4 addr flush dev "$vlantvif"
-		    ip -4 addr add "$rndip"/32 dev "$vlantvif"
-		fi
 		set_arp_filter_mode "$vlantvif"
+		set_mac_ip_vlan "$vlantvif"
 		ip link set "$vlantvif" up
 		$LOG "Add vlan to esw for TV/STB"
 		vconfig add $rootif 3
@@ -170,13 +165,8 @@ start() {
 	    if [ "$sip_port" = "1" ] && [ "$sip_portVLAN" != "" ]; then
 		$LOG "Add bridge for SIP/STB"
 		brctl addbr "$vlansipif"
-		if [ "$sip_port_mcast" = "1" ]; then
-		    # generate random ip from zeroconfig range end set need for igmpproxy work
-		    rndip="169.254.$(($RANDOM%253+1)).$(($RANDOM%253+1))"
-		    ip -4 addr flush dev "$vlansipif"
-		    ip -4 addr add "$rndip"/32 dev "$vlansipif"
-		fi
 		set_arp_filter_mode "$vlansipif"
+		set_mac_ip_vlan "$vlantvif"
 		ip link set "$vlansipif" up
 		$LOG "Add vlan to esw for SIP/STB"
 		vconfig add $rootif 4
