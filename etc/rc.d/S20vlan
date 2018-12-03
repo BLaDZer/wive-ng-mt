@@ -73,7 +73,10 @@ set_mac_ip_vlan()
     # set mac per vlan
     ifconfig "$1" hw ether "$VLANMAC" txqueuelen "$txqueuelen"
     # ser ip per vlan
-    ip -4 addr replace $VLANRIP/32 dev $1
+    # sikp sip/tv ports
+    if[ "$2" != "skipip" ]; then
+	ip -4 addr replace $VLANRIP/32 dev $1
+    fi
 }
 
 ##########################################################################
@@ -159,6 +162,7 @@ start() {
 		hw_tx_vlan_map "3"
 		set_default_vlan_prio_map "${rootif}.3"
 		set_arp_filter_mode "${rootif}.3"
+		set_mac_ip_vlan "${rootif}.3" "skipip"
 		brctl addif "$vlantvif" "${rootif}.3"
 		ip link set "${rootif}.3" up
 	    fi
@@ -173,6 +177,7 @@ start() {
 		hw_tx_vlan_map "4"
 		set_default_vlan_prio_map "${rootif}.4"
 		set_arp_filter_mode "${rootif}.4"
+		set_mac_ip_vlan "${rootif}.4" "skipip"
 		brctl addif "$vlansipif" "${rootif}.4"
 		ip link set "${rootif}.4" up
 	    fi
@@ -192,6 +197,7 @@ start() {
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		set_egress_vlan_prio_map_tv "${phys_wan_if}.${vid}" "$vidcount"
 		set_arp_filter_mode "${phys_wan_if}.${vid}"
+		set_mac_ip_vlan "${phys_wan_if}.${vid}" "skipip"
 		brctl addif "$vlantvif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done
@@ -200,13 +206,14 @@ start() {
 	    needarpcacheclear=1
 	    vidcount=0
 	    for vid in $sip_portVLAN; do
-		$LOG "Add vlan $vid for TV/STB port input (WAN) $sip_portVLAN"
+		$LOG "Add vlan $vid for SIP port input (WAN) $sip_portVLAN"
 		vidcount="$(($vidcount+1))"
 		vconfig add "$phys_wan_if" "$vid"
 		hw_tx_vlan_map "$vid"
 		set_default_vlan_prio_map "${phys_wan_if}.${vid}"
 		set_egress_vlan_prio_map_sip "${phys_wan_if}.${vid}" "$vidcount"
 		set_arp_filter_mode "${phys_wan_if}.${vid}"
+		set_mac_ip_vlan "${phys_wan_if}.${vid}" "skipip"
 		brctl addif "$vlansipif" "${phys_wan_if}.${vid}"
 		ip link set "${phys_wan_if}.${vid}" up
 	    done
