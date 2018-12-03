@@ -214,11 +214,11 @@ fi
 # reconfigure wan port
 service wan restart
 
-# rebuild switch part for full renew
-config-vlan.sh $switchmode $switchpart
-
 # reconfigure external vlans
 service vlan restart
+
+# rebuild switch part for full renew
+config-vlan.sh $switchmode $switchpart
 
 # reconfigure l2 tunnels
 service ethtun restart
