@@ -28,22 +28,15 @@ start() {
     if [ "$IRQBalance" = "auto" ] || [ "$IRQBalance" = "router" ]; then
 	$LOG "Start irqbalance routing/wifi optimize mode"
 	if [ $cpunum = "4" ]; then
-	    # in auto mode hwirq start map to last core,
-	    # first core default use for software path
-	    if [ "$IRQBalance" = "auto" ]; then
-		echo 8 > /proc/irq/11/smp_affinity  #GMAC
-		echo 2 > /proc/irq/27/smp_affinity #VPN
-		echo 2 > /proc/irq/28/smp_affinity #SDXC
-		echo 2 > /proc/irq/30/smp_affinity #USB
-	    else
-		echo 2 > /proc/irq/11/smp_affinity  #GMAC
-		echo 8 > /proc/irq/27/smp_affinity #VPN
-		echo 8 > /proc/irq/28/smp_affinity #SDXC
-		echo 8 > /proc/irq/30/smp_affinity #USB
-	    fi
-	    echo 4 > /proc/irq/12/smp_affinity  #PCIe0
+	    # first core default use for software path as core 1
+	    echo 2 > /proc/irq/11/smp_affinity #GMAC
+	    echo 4 > /proc/irq/12/smp_affinity #PCIe0
 	    echo 8 > /proc/irq/32/smp_affinity #PCIe1
-	    echo 8 > /proc/irq/33/smp_affinity #PCIe2
+
+	    echo 1 > /proc/irq/33/smp_affinity #PCIe2
+	    echo 1 > /proc/irq/28/smp_affinity #SDXC
+	    echo 8 > /proc/irq/30/smp_affinity #USB
+	    echo 1 > /proc/irq/27/smp_affinity #VPN
 
 	    # phys
 	    echo 3 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
@@ -65,9 +58,9 @@ start() {
 	    echo 1 > /proc/irq/12/smp_affinity  #PCIe0
 	    echo 2 > /proc/irq/32/smp_affinity #PCIe1
 	    echo 2 > /proc/irq/33/smp_affinity #PCIe2
-	    echo 1 > /proc/irq/27/smp_affinity #VPN
 	    echo 1 > /proc/irq/28/smp_affinity #SDXC
 	    echo 1 > /proc/irq/30/smp_affinity #USB
+	    echo 1 > /proc/irq/27/smp_affinity #VPN
 
 	    # phys
 	    echo 2 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
