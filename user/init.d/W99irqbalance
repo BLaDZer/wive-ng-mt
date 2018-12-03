@@ -28,7 +28,13 @@ start() {
     if [ "$IRQBalance" = "auto" ] || [ "$IRQBalance" = "router" ]; then
 	$LOG "Start irqbalance routing/wifi optimize mode"
 	if [ $cpunum = "4" ]; then
-	    echo 2 > /proc/irq/11/smp_affinity  #GMAC
+	    # in auto mode hwirq start map to last core,
+	    # first core default use for software path
+	    if [ "$IRQBalance" = "auto" ]; then
+		echo 8 > /proc/irq/11/smp_affinity  #GMAC
+	    else
+		echo 2 > /proc/irq/11/smp_affinity  #GMAC
+	    fi
 	    echo 4 > /proc/irq/12/smp_affinity  #PCIe0
 	    echo 8 > /proc/irq/32/smp_affinity #PCIe1
 	    echo 8 > /proc/irq/33/smp_affinity #PCIe2
@@ -79,8 +85,8 @@ start() {
     elif [ "$IRQBalance" = "storage" ]; then
 	$LOG "Start irqbalance storage/local services optimize mode"
 	if [ $cpunum = "4" ]; then
-	    echo 2 > /proc/irq/11/smp_affinity  #GMAC
-	    echo 4 > /proc/irq/12/smp_affinity  #PCIe0
+	    echo 2 > /proc/irq/11/smp_affinity #GMAC
+	    echo 4 > /proc/irq/12/smp_affinity #PCIe0
 	    echo 4 > /proc/irq/32/smp_affinity #PCIe1
 	    echo 8 > /proc/irq/33/smp_affinity #PCIe2
 	    echo 8 > /proc/irq/27/smp_affinity #VPN
@@ -103,8 +109,8 @@ start() {
 		echo 1 > $dev_ppp/queues/tx-0/xps_cpus
 	    done
 	elif [ $cpunum = "2" ]; then
-	    echo 1 > /proc/irq/11/smp_affinity  #GMAC
-	    echo 1 > /proc/irq/12/smp_affinity  #PCIe0
+	    echo 1 > /proc/irq/11/smp_affinity #GMAC
+	    echo 1 > /proc/irq/12/smp_affinity #PCIe0
 	    echo 1 > /proc/irq/32/smp_affinity #PCIe1
 	    echo 1 > /proc/irq/33/smp_affinity #PCIe2
 	    echo 1 > /proc/irq/27/smp_affinity #VPN
@@ -147,6 +153,9 @@ get_param() {
     eval `nvram_buf_get 2860 IRQBalance`
     cpunum=`grep -c processor /proc/cpuinfo`
     banirq=`grep ipi_ /proc/interrupts | cut -f1 -d":" | awk {' print "--banirq="$1 '}`
+    # do not balance manual static optimal configured nic/wlan
+    # wlan only fist and second cards static, third card need be auto balanced
+    banirq="$banirq --banirq=11 --banirq=12 --banirq=32"
 }
 
 case "$1" in
