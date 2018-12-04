@@ -74,7 +74,7 @@ set_mac_ip_vlan()
     ifconfig "$1" hw ether "$VLANMAC" txqueuelen "$txqueuelen"
     # set ip per vlan
     # sikp sip/tv ports
-    if[ "$2" != "skipip" ]; then
+    if [ "$2" != "skipip" ]; then
 	ip -4 addr replace $VLANRIP/32 dev $1
     fi
 }
