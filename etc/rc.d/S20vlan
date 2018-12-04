@@ -123,13 +123,16 @@ bridgewlvlan() {
 		$LOG "Add BRIDGE brvl${vid}wl${count} to system"
 		brctl addbr "brvl${vid}wl${count}"
 		set_arp_filter_mode "brvl${vid}wl${count}"
+		set_mac_ip_vlan "brvl${vid}wl${count}" "skipip"
 		ip link set "brvl${vid}wl${count}" up
 		$LOG "Add VLAN interface $2.${vid} to bridge brvl${vid}wl${count}"
-		brctl addif "brvl${vid}wl${count}" "$2.${vid}"
 		set_arp_filter_mode "$2.${vid}"
+		set_mac_ip_vlan "$2.${vid}" "skipip"
+		brctl addif "brvl${vid}wl${count}" "$2.${vid}"
 		ip link set "$2.${vid}" up
 	    fi
-	    $LOG "Move interface $3${count} from br0 and to new bridge brvl${vid}wl${count}"
+	    $LOG "Move wlan interface $3${count} from br0 and to new bridge brvl${vid}wl${count}"
+	    # note: not touch mac on vlan interfaces
 	    delif_from_br br0 "$3${count}"
 	    brctl addif "brvl${vid}wl${count}" "$3${count}"
 	    set_arp_filter_mode "$3${count}"
