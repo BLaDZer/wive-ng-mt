@@ -985,7 +985,7 @@ VOID TYPE_FUNC FT_KDP_StationInform(
 	/* check if we are in security mode; if not, return */
 	for(IdBssNum=0; IdBssNum<pAd->ApCfg.BssidNum; IdBssNum++)
 	{
-		if (pAd->ApCfg.MBSSID[IdBssNum].WepStatus != Ndis802_11WEPDisabled)
+		if (pAd->ApCfg.MBSSID[IdBssNum].wdev.WepStatus != Ndis802_11WEPDisabled)
 			break;
 		/* End of if */
 	} /* End of for */
@@ -1029,7 +1029,7 @@ VOID TYPE_FUNC FT_KDP_StationInform(
 	for(IdBssNum=0; IdBssNum<pAd->ApCfg.BssidNum; IdBssNum++)
 	{
 #ifndef FT_KDP_FUNC_TEST
-		if (pAd->ApCfg.MBSSID[IdBssNum].WepStatus != Ndis802_11WEPDisabled)
+		if (pAd->ApCfg.MBSSID[IdBssNum].wdev.WepStatus != Ndis802_11WEPDisabled)
 #endif /* FT_KDP_FUNC_TEST */
 		{
 			/* copy our MAC address to be the R1KHID */
