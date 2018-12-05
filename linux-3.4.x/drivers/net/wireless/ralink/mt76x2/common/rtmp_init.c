@@ -4639,12 +4639,12 @@ INT RtmpRaDevCtrlInit(VOID *pAdSrc, RTMP_INF_TYPE infType)
 
 #ifdef CONFIG_STA_SUPPORT
 	pAd->OpMode = OPMODE_STA;
-	printk("%s STA Driver version: %s\n", "MT76x2", STA_DRIVER_VERSION);
+	printk("%s STA Driver version: %s\n", "MT7620/MT76x2", STA_DRIVER_VERSION);
 #endif /* CONFIG_STA_SUPPORT */
 
 #ifdef CONFIG_AP_SUPPORT
 	pAd->OpMode = OPMODE_AP;
-	printk("%s AP Driver version: %s\n", "MT76x2", AP_DRIVER_VERSION);
+	printk("%s AP Driver version: %s\n", "MT7620/MT76x2", AP_DRIVER_VERSION);
 #endif /* CONFIG_AP_SUPPORT */
 
 	DBGPRINT(RT_DEBUG_TRACE, ("pAd->infType=%d\n", pAd->infType));

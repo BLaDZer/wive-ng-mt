@@ -84,9 +84,9 @@
 #include "ft_cmm.h"
 
 #define TYPE_FUNC
-#define FT_KDP_DEBUG
-#define FT_KDP_FUNC_TEST
-/*#define FT_KDP_EMPTY */ /* empty codes to debug */
+/* #define FT_KDP_DEBUG */ /* debug messages for FT */
+/* #define FT_KDP_FUNC_TEST */ /* do not check security of bssid for debug*/
+/* #define FT_KDP_EMPTY */ /* empty codes to debug */
 
 #define IAPP_SHOW_IP_HTONL(__IP)	\
 	(htonl(__IP) >> 24) & 0xFF,		\
