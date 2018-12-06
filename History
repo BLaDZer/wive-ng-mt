@@ -4435,3 +4435,7 @@
 136) kernel: ralink_wifi: mt7610: avoid 0 rssi sample in some cases.<br>
 <br>
 <br>
+<b>7.7.x</b><br>
+1) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
+<br>
+<br>
