@@ -866,7 +866,6 @@ static int team_set_mac_address(struct net_device *dev, void *p)
 	struct team_port *port;
 	struct sockaddr *addr = p;
 
-	dev->addr_assign_type &= ~NET_ADDR_RANDOM;
 	memcpy(dev->dev_addr, addr->sa_data, ETH_ALEN);
 	rcu_read_lock();
 	list_for_each_entry_rcu(port, &team->port_list, list)
