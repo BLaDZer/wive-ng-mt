@@ -598,7 +598,13 @@ static int vlan_dev_init(struct net_device *dev)
 
 	if (is_zero_ether_addr(dev->dev_addr)) {
 		memcpy(dev->dev_addr, real_dev->dev_addr, dev->addr_len);
+#ifndef CONFIG_VLAN_8021Q_DOUBLE_TAG
+		/*
+		    do not inheriting the MAC address of the physical interface,
+		    this cause LAN vif and vlan vif arp jam issue
+		*/
 		dev->addr_assign_type = NET_ADDR_STOLEN;
+#endif
 	}
 	if (is_zero_ether_addr(dev->broadcast))
 		memcpy(dev->broadcast, real_dev->broadcast, dev->addr_len);
