@@ -600,7 +600,7 @@ static int vlan_dev_init(struct net_device *dev)
 		memcpy(dev->dev_addr, real_dev->dev_addr, dev->addr_len);
 #ifndef CONFIG_VLAN_8021Q_DOUBLE_TAG
 		/*
-		    do not inheriting the MAC address of the physical interface,
+		    if QinQ support (allways 762x use) do not inheriting the MAC address of the physical interface,
 		    this cause LAN vif and vlan vif arp jam issue
 		*/
 		dev->addr_assign_type = NET_ADDR_STOLEN;
