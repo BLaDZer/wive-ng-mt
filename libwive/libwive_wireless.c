@@ -275,7 +275,10 @@ const int MCSMappingRateTable[] =
 	59, 117, 176, 234, 351, 468, 527, 585, 702, 780,				// 11ac: 80Mhz, 800ns GI, MCS: 0~9
 	14,  29,  43,  57,  87, 115, 130, 144, 173,					// 11ac: 20Mhz, 400ns GI, MCS: 0~8
 	30,  60,  90, 120, 180, 240, 270, 300, 360, 400,				// 11ac: 40Mhz, 400ns GI, MCS: 0~9
-	65, 130, 195, 260, 390, 520, 585, 650, 780, 867					// 11ac: 80Mhz, 400ns GI, MCS: 0~9
+	65, 130, 195, 260, 390, 520, 585, 650, 780, 867,					// 11ac: 80Mhz, 400ns GI, MCS: 0~9
+
+	59 * 2, 117 * 2, 176 * 2, 234 * 2, 351 * 2, 468 * 2, 527 * 2, 585 * 2, 702 * 2, 780 * 2, /*11ac: 160Mhz, 800ns GI, MCS: 0~9 */
+	65 * 2, 130 * 2, 195 * 2, 260 * 2, 390 * 2, 520 * 2, 585 * 2, 650 * 2, 780 * 2, 867 * 2  /*11ac: 160Mhz, 400ns GI, MCS: 0~9 */
 };
 
 /* getWlanRate - Get client rate in MBit/s
@@ -302,6 +305,8 @@ int getWlanRate(MACHTTRANSMIT_SETTING HTSetting)
 			rate_index = 117 + ((unsigned char)HTSetting.field.ShortGI * 29) + mcs_1ss;
 		else if (HTSetting.field.BW == BW_80)
 			rate_index = 127 + ((unsigned char)HTSetting.field.ShortGI * 29) + mcs_1ss;
+		else if (HTSetting.field.BW > BW_80)
+			rate_index = 127 + 29 + 10 + ((unsigned char)HTSetting.field.ShortGI * 10) + mcs_1ss;
 	}
 	else if (HTSetting.field.MODE >= MODE_HTMIX)
 		rate_index = 12 + ((unsigned char)HTSetting.field.BW * 24) + ((unsigned char)HTSetting.field.ShortGI * 48) + ((unsigned char)HTSetting.field.MCS);
