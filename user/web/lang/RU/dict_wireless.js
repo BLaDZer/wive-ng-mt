@@ -485,7 +485,7 @@ var wireless_dictionary = {
 	'stalist wireless mode basic'			: 'Базовый',
 	'stalist wireless mode advanced'		: 'Расширенный',
 	'stalist wireless plot type'			: 'Тип графика ',
-	'stalist wireless plot type txrate'		: 'Скорось подключения',
+	'stalist wireless plot type txrate'		: 'Скорость подключения',
 	'stalist wireless plot type rssi'		: 'Уровень сигнала',
 	'stalist wireless plot type quality'		: 'Качество сигнала',
 	'stalist wireless plot type rxtx'		: 'Cкорость приема/передачи',
