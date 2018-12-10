@@ -565,6 +565,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
 		ret = -ENOPROTOOPT;
 		break;
 	case SO_DONTROUTE:
+		sk_dst_reset(sk);
 		sock_valbool_flag(sk, SOCK_LOCALROUTE, valbool);
 		break;
 	case SO_BROADCAST:
