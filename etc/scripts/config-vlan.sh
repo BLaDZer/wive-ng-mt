@@ -466,9 +466,10 @@ config_dualrgmii()
 	    if [ "$wan_port" = "4" ]; then
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    wantocpuportmap="11000100"
 		    #VLAN member port
 		    switch vlan set 0 1 00011010 0 0 -----uuu
-		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 3 01000010
 		    switch vlan set 3 4 00100010
 		    # set PVID
@@ -479,9 +480,10 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
+		    wantocpuportmap="10000100"
 		    # VLAN member port
 		    switch vlan set 0 1 00111010 0 0 -----uuu
-		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 3 01000010
 		    # set PVID
 		    switch pvid 0 2
@@ -491,9 +493,10 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
+		    wantocpuportmap="10000100"
 		    # VLAN member port
 		    switch vlan set 0 1 01011010 0 0 -----uuu
-		    switch vlan set 1 2 10000100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 4 00100010
 		    # set PVID
 		    switch pvid 0 2
@@ -505,9 +508,10 @@ config_dualrgmii()
 	    else
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    wantocpuportmap="00011100"
 		    # VLAN member port
 		    switch vlan set 0 1 11000010 0 0 -----uuu
-		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 3 00010010
 		    switch vlan set 3 4 00100010
 		    # set PVID
@@ -518,9 +522,10 @@ config_dualrgmii()
 		    switch pvid 4 2
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
+		    wantocpuportmap="00001100"
 		    # VLAN member port
 		    switch vlan set 0 1 11100010 0 0 -----uuu
-		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 3 00010010
 		    # set PVID
 		    switch pvid 0 1
@@ -530,9 +535,10 @@ config_dualrgmii()
 		    switch pvid 4 2
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
+		    wantocpuportmap="00001100"
 		    # VLAN member port
 		    switch vlan set 0 1 11010010 0 0 -----uuu
-		    switch vlan set 1 2 00001100 0 0 -----uuu
+		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
 		    switch vlan set 2 4 00100010
 		    # set PVID
 		    switch pvid 0 1
@@ -543,11 +549,12 @@ config_dualrgmii()
 		fi
 	    fi
 	    # forward external vlan ports to wan cpu as tagged
+	    # for soft bridge with real vlan from WAN
 	    if [ "$sip_portVLAN" != "" ]; then
-		switch vlan set 4 $sip_portVLAN 11111100 0 0 tttttttt
+		switch vlan set 4 $sip_portVLAN $wantocpuportmap 0 0 tttttttt
 	    fi
 	    if [ "$tv_portVLAN" != "" ]; then
-		switch vlan set 5 $tv_portVLAN  11111100 0 0 tttttttt
+		switch vlan set 5 $tv_portVLAN  $wantocpuportmap 0 0 tttttttt
 	    fi
 	fi
 
