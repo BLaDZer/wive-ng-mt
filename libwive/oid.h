@@ -186,11 +186,13 @@
 #define MODE_VHT		4
 
 // BW
-#define BW_20       0
-#define BW_40       1
-#define BW_80       2
-#define BW_160      3
-#define BW_10       4
+#define BW_20                   0
+#define BW_40                   1
+#define BW_80                   2
+#define BW_160                  3
+#define BW_10                   4
+#define BW_5                    5
+#define BW_8080	                6
 
 // SHORTGI
 #define GI_400      1 // only support in HT mode

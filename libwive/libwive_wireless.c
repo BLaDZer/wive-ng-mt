@@ -206,6 +206,8 @@ char* getBW(int BW)
 {
 	switch(BW)
 	{
+	    case BW_5:
+		return "5MHz";
 	    case BW_10:
 		return "10MHz";
 	    case BW_20:
@@ -216,6 +218,8 @@ char* getBW(int BW)
 		return "80MHz";
 	    case BW_160:
 		return "160MHz";
+	    case BW_8080:
+		return "80+80MHz";
 	    default:
 		return "N/A";
 	}
