@@ -464,9 +464,9 @@ config_dualrgmii()
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
 	    if [ "$wan_port" = "4" ]; then
+		wantocpuportmap="10000100"
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    wantocpuportmap="11000100"
 		    #VLAN member port
 		    switch vlan set 0 1 00011010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -480,7 +480,6 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    wantocpuportmap="10000100"
 		    # VLAN member port
 		    switch vlan set 0 1 00111010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -493,7 +492,6 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
-		    wantocpuportmap="10000100"
 		    # VLAN member port
 		    switch vlan set 0 1 01011010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -506,9 +504,9 @@ config_dualrgmii()
 		    switch pvid 4 1
 		fi
 	    else
+		wantocpuportmap="00001100"
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		    wantocpuportmap="00011100"
 		    # VLAN member port
 		    switch vlan set 0 1 11000010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -522,7 +520,6 @@ config_dualrgmii()
 		    switch pvid 4 2
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
-		    wantocpuportmap="00001100"
 		    # VLAN member port
 		    switch vlan set 0 1 11100010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -535,7 +532,6 @@ config_dualrgmii()
 		    switch pvid 4 2
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
-		    wantocpuportmap="00001100"
 		    # VLAN member port
 		    switch vlan set 0 1 11010010 0 0 -----uuu
 		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
@@ -550,6 +546,13 @@ config_dualrgmii()
 	    fi
 	    # forward external vlan ports to wan cpu as tagged
 	    # for soft bridge with real vlan from WAN
+	    if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		if [ "$wantocpuportmap" = "10000100" ]; then
+		    wantocpuportmap="11000100"
+		elif [ "$wantocpuportmap" = "00001100" ]; then
+		    wantocpuportmap="00011100"
+		fi
+	    fi
 	    if [ "$sip_portVLAN" != "" ]; then
 		switch vlan set 4 $sip_portVLAN $wantocpuportmap 0 0 tttttttt
 	    fi
