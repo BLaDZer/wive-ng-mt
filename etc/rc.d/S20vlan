@@ -25,23 +25,27 @@ set_default_vlan_prio_map()
 
 set_egress_vlan_prio_map_tv()
 {
+    # get prio for needed vid
     if [ "$tv_portVLANPRIO" != "" ]; then
-	# get prio for needed vid
-	qostag=`echo $tv_portVLANPRIO | awk -vPRIONUM=$2 {' print $PRIONUM '}`
-	if [ "$qostag" != "" ]; then
-	    vconfig set_egress_map $1 0 $qostag
-	fi
+	qostag="$tv_portVLANPRIO"
+    elif [ "$2" != "" ]; then
+	qostag="$2"
+    fi
+    if [ "$qostag" != "" ]; then
+	vconfig set_egress_map $1 0 $qostag
     fi
 }
 
 set_egress_vlan_prio_map_sip()
 {
+    # get prio for needed vid
     if [ "$sip_portVLANPRIO" != "" ]; then
-	# get prio for needed vid
-	qostag=`echo $sip_portVLANPRIO | awk -vPRIONUM=$2 {' print $PRIONUM '}`
-	if [ "$qostag" != "" ]; then
-	    vconfig set_egress_map $1 0 $qostag
-	fi
+	qostag="$sip_portVLANPRIO"
+    elif [ "$2" != "" ]; then
+	qostag="$2"
+    fi
+    if [ "$qostag" != "" ]; then
+	vconfig set_egress_map $1 0 $qostag
     fi
 }
 

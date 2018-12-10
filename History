@@ -4438,12 +4438,13 @@
 <b>7.7.x</b><br>
 1) libwive: add support 160MHz channel in get rates.<br>
 2) init.d: tune irq balance for more fair cpu load.<br>
-3) kernel: mips: r4k_cache: use more efficient cache blast.<br>
-4) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
-5) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
-6) kernel: net: split eth_mac_addr for better error handling.<br>
-7) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
-8) kernel: net: allow setting mac address of loopback device.<br>
-9) kernel: net: do not inheriting the MAC address of the physical interface.<br>
+3) init.d: vlan: fix user priomap for tv/sip ports.<br>
+4) kernel: mips: r4k_cache: use more efficient cache blast.<br>
+5) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
+6) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
+7) kernel: net: split eth_mac_addr for better error handling.<br>
+8) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
+9) kernel: net: allow setting mac address of loopback device.<br>
+10) kernel: net: do not inheriting the MAC address of the physical interface.<br>
 <br>
 <br>
