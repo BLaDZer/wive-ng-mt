@@ -119,6 +119,6 @@ void websError(webs_t* wp, int code, char_t *fmt, ...);
 void websHeader(webs_t* wp);
 void websFooter(webs_t* wp);
 
-int getBasicAuthCredentials(webs_t* wp, char** username, char** password);
+//int getBasicAuthCredentials(webs_t* wp, char** username, char** password);
 
 #endif // __ASP_MOD_HELPERS_H__

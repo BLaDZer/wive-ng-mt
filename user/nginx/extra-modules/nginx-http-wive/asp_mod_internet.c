@@ -996,6 +996,8 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 	char_t *wan_mtu;
 	char_t *st_en, *pd, *sd, *st_pr, *st_pr_ya, *st_pr_ag;
 
+	char_t *dns_local_hosts = websGetVar(wp, T("dns_local_hosts"), T(""));
+
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
 	ip = nm = gw = mac = NULL;
@@ -1112,6 +1114,9 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
 		}
+
+		// Hosts
+		ngx_nvram_bufset(wp, "dns_local_hosts", dns_local_hosts);
 
 		// Reboot
 		if (CHK_IF_DIGIT(reboot, 1)) {
@@ -1573,6 +1578,52 @@ static int getEOIPBuilt(webs_t *wp, char** params, int nparams)
 	return 0;
 }
 
+static int getHosts(webs_t *wp, char** params, int nparams)
+{
+	FILE* f = fopen("/etc/hosts", "rt");
+	int user_defined = 0;
+	int first_line = 1;
+
+	outWrite("[\n");
+
+	char line[384];
+	while (fgets(line, sizeof(line), f))
+	{
+		int line_len = strlen(line);
+		if (line_len > 0 && line[line_len - 1] == '\n')
+		{
+			line[line_len - 1] = '\0';
+		}
+
+		if (!strcmp(line, "# user-defined entries"))
+		{
+			user_defined = 1;
+		}
+
+		if (line[0] != '#')
+		{
+
+			char* name = cstring_split_inplace(line, "\t");
+			if (name != NULL)
+			{
+				if (!first_line) {
+					outWrite(",\n");
+				}
+
+				outWrite("[ '%s', '%s', %i ]", line, name, user_defined);
+			}
+		}
+
+		first_line = 0;
+	}
+
+	fclose(f);
+
+	outWrite("\n]");
+	websDone(wp, 200);
+}
+
+
 int asp_mod_internet_init()
 {
 
@@ -1655,6 +1706,8 @@ int asp_mod_internet_init()
 
 	aspDefineFunc(("getEOIPBuilt"), getEOIPBuilt, EVERYONE);
 	websFormDefine(T("l2tunnelsConfig"), l2tunnelsConfig, ADMIN);
+
+	aspDefineFunc(("getHosts"), getHosts, EVERYONE);
 
     return 0;
 }

@@ -57,6 +57,9 @@ gen_hosts() {
 	fi
     fi
 
+    echo "# user-defined entries"			>> /etc/hosts
+    echo "$dns_local_hosts" | tr ',' '\t' | tr ';' '\n'	>> /etc/hosts
+
     # read for all write by root
     chmod 644 "$cname" > /dev/null 2>&1
     chmod 644 "$fname" > /dev/null 2>&1
@@ -64,7 +67,7 @@ gen_hosts() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress`
+    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"

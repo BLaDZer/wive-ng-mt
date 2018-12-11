@@ -16,64 +16,19 @@
 		<script src="/js/validation.js"></script>
 		<script src="/js/controls.js"></script>
 		<script>
-			function initTranslation() {
-				_TR("wTitle",					"wan title");
-				_TR("wIntroduction",			"wan introduction");
-				_TR("wConnectionType",			"wan connection type");
-				_TR("wConnection",				"wan connection");
-				_TR("wConnTypeStatic",			"wan connection type static");
-				_TR("wConnTypeDhcp",			"wan connection type dhcp");
-				_TR("wConnTypeZero",			"wan connection type zero");
-				_TR("wStaticMode",				"wan static mode");
-				_TR("wStaticDns",				"wan static dns");
-				_TR("wStaticIp",				"inet ip");
-				_TR("wStaticNetmask",			"inet netmask");
-				_TR("wStaticGateway",			"inet gateway");
-				_TR("wStaticDnsProfile",		"inet dns profile");
-				_TR("dnsProfileManual",			"inet dns profile manual");
-				_TR("dnsProfileGoogle",			"inet dns profile google");
-				_TR("dnsProfileYandex",			"inet dns profile yandex");
-				_TR("dnsProfileSky",			"inet dns profile sky");
-				_TR("dnsProfileOpen",			"inet dns profile open");
-				_TR("dnsProfileAdguard",		"inet dns profile adguard");
-				_TR("wStaticDnsYandexProfile",	"inet dns profile yandex title");
-				_TR("dnsProfileYandexBasic",	"inet dns profile yandex basic");
-				_TR("dnsProfileYandexSafe",		"inet dns profile yandex safe");
-				_TR("dnsProfileYandexFamily",	"inet dns profile yandex family");
-				_TR("wStaticDnsAdguardProfile",	"inet dns profile adguard title");
-				_TR("dnsProfileAdguardDefault",	"inet dns profile adguard default");
-				_TR("dnsProfileAdguardFamily",	"inet dns profile adguard family");
-				_TR("wStaticPriDns",			"inet pri dns");
-				_TR("wStaticSecDns",			"inet sec dns");
-				_TR("wDhcpMode",				"wan dhcp mode");
-				_TR("wAdditionalOptions",		"wan additional options");
-				_TR("wReqFromDHCP",				"wan request from dhcp");
-				_TR("wDHCPVendorClass",			"wan dhcp vendor class");
-				_TR("wMTU",						"wan mtu");
-				_TR("wAuto",					"inet auto");
-				_TR("wCustom",					"inet custom");
-				_TR("wNatEnabled",				"wan nat enabled");
-				_TR("wMacAddress",				"inet mac");
-				_TR("wMacAddr",					"wan mac");
-				_TR("wApply",					"button apply");
-				_TR("wCancel",					"button cancel");
-				_TR("wReset",					"button reset");
-				_TR("WanMacRestore",			"button restore factory");
-			}
-
 			function initValues() {
-				var form							= document.wanCfg;
-				form.staticIp.value					= NVRAM_wan_ipaddr;
+				var form					= document.wanCfg;
+				form.staticIp.value				= NVRAM_wan_ipaddr;
 				form.staticNetmask.value			= NVRAM_wan_netmask;
 				form.staticGateway.value			= NVRAM_wan_gateway;
 				form.dhcpReqIP.value				= NVRAM_dhcpRequestIP;
 				form.dhcpVendorClass.value			= NVRAM_dhcpVendorClass;
-				form.wStaticDnsProfile.value		= NVRAM_wan_static_dns_profile;
-				form.wStaticDnsYandexProfile.value	= NVRAM_wan_static_dns_profile_yandex; 
-				form.wStaticDnsAdguardProfile.value	= NVRAM_wan_static_dns_profile_adguard; 
+				form.wStaticDnsProfile.value			= NVRAM_wan_static_dns_profile;
+				form.wStaticDnsYandexProfile.value		= NVRAM_wan_static_dns_profile_yandex; 
+				form.wStaticDnsAdguardProfile.value		= NVRAM_wan_static_dns_profile_adguard; 
 				form.staticPriDns.value				= NVRAM_wan_primary_dns;
 				form.staticSecDns.value				= NVRAM_wan_secondary_dns;
-				form.wanMac.value					= NVRAM_WAN_MAC_ADDR;
+				form.wanMac.value				= NVRAM_WAN_MAC_ADDR;
 
 				displayElement(document.getElementById("natRowDisplay"), NVRAM_OperationMode != "0");
 				form.natEnabled.checked 			= (NVRAM_natEnabled == '1');
@@ -90,8 +45,10 @@
 				dnsSwitchClick(form);
 				wanMtuChange(form);
 				showWarning();
-				initTranslation();
+				init_translation_model();
 				disableControlsByAuth();
+
+				initHosts();
 			}
 
 			function CheckValues(form) {
@@ -161,6 +118,20 @@
 					return false;
 				}
 				form.wan_mtu.value = +form.wan_mtu.value + "";
+
+				var elems = document.getElementsByClassName("hosts_entry_user_defined");
+				var hosts_str = "";
+				for (var i=0;i<elems.length;i++) {
+					var hostarr = hostsEntryToArray(elems[i]);
+					var hosts_ip = hostarr[0];
+					var hosts_name = hostarr[1];
+					if (i>0) hosts_str += ";";
+					hosts_str += hosts_ip;
+					hosts_str += ",";
+					hosts_str += hosts_name;
+				}
+				form.dns_local_hosts.value = hosts_str;
+
 				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR)
 					if (!confirm(_('wan reboot confirm')))
 //						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
@@ -173,6 +144,104 @@
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 
 				return true;
+			}
+
+			function deleteDnsEntry(elem) {
+				var entries_container = document.getElementById("localDnsEntries");
+				entries_container.removeChild(elem);
+			}
+
+			function addDnsEntry() {
+				var entries_container = document.getElementById("localDnsEntries");
+				var ip_elem = document.getElementById("hosts_new_ip");
+				var name_elem = document.getElementById("hosts_new_name");
+
+				try {
+					ipaddr.IPv6.parse(ip_elem.value);
+				} catch (e) {
+					if (!validateIP(ip_elem, true)) {
+						ip_elem.focus();
+						return false;
+					}
+				}
+
+				if (!/^[A-Za-z0-9.-]+$/.test(name_elem.value)) {
+					alert(_('inet dns hosts wrong domain'));
+					name_elem.focus();
+					return false;
+				}
+
+				var elems = document.getElementsByClassName("hosts_entry");
+				for (var i=0;i<elems.length;i++) {
+
+					var hosts_name = hostsEntryToArray(elems[i])[1];
+					if (hosts_name == name_elem.value) {
+						alert(_('inet dns hosts domain in use'));
+						name_elem.focus();
+						return false;
+					}
+				}
+
+				entries_container.appendChild(generateHostsEntry(ip_elem.value, name_elem.value, 1));
+				return true;
+			}
+
+			function hostsEntryToArray(entry) {
+				var user_defined = 0;
+				var ip = "";
+				var name = "";
+
+				if (entry.className.indexOf(" hosts_entry_user_defined") != -1) user_defined = 1;
+				for (var i=0;i<entry.childNodes.length;i++) {
+					var cnode = entry.childNodes[i];
+					if (cnode.className == "hosts_ip") ip = cnode.innerHTML;
+					if (cnode.className == "hosts_name") name = cnode.innerHTML;
+				}
+				return [ip, name, user_defined];
+			}
+
+			function generateHostsEntry(ip, name, user_defined) {
+				var tr = document.createElement("tr");
+				tr.className = "hosts_entry";
+
+				var td = document.createElement("td");
+				td.className = "hosts_ip";
+				td.innerHTML = ip;
+				tr.appendChild(td);
+
+				var td = document.createElement("td");
+				td.className = "hosts_name";
+				td.innerHTML = name;
+				if (!user_defined) td.colSpan = 2;
+				tr.appendChild(td);
+
+				if (user_defined) {
+					tr.className = "hosts_entry hosts_entry_user_defined";
+					var td = document.createElement("td");
+					td.style.textAlign = "center";
+					td.style.cursor = "pointer";
+					td.innerHTML = "<a onClick='deleteDnsEntry(this.parentElement.parentElement);' style='color: #ff0000;' title='" + _("inet dns hosts remove") + "' ><img src='/graphics/cross.png' alt='[x]'></a>";
+					tr.appendChild(td);
+				}
+				return tr;
+			}
+
+			function initHosts(form) {
+				var hosts_data = <% getHosts(); %>;
+
+				var entries_container = document.getElementById("localDnsEntries");
+				while (entries_container.firstChild)
+					entries_container.removeChild(entries_container.firstChild);
+
+				var html = '';
+				for (var i=0;i<hosts_data.length;i++) {
+					var entry = hosts_data[i]; // ip, name, user_defined
+					var ip = entry[0];
+					var name = entry[1];
+					var user_defined = entry[2];
+
+					entries_container.appendChild(generateHostsEntry(ip, name, user_defined));
+				}
 			}
 
 			function connectionTypeSwitch(form) {
@@ -274,8 +343,8 @@
 		</form>
 		<table class="body">
 			<tr>
-				<td><h1 id="wTitle"></h1>
-					<p id="wIntroduction"></p>
+				<td><h1 data-tr="wan title"></h1>
+					<p data-tr="wan introduction"></p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="wanCfg" action="/goform/setWan">
@@ -284,14 +353,14 @@
 						<col style="width: 60%" />
 						<tbody>
 							<tr>
-								<td class="title" colspan="2" id="wConnection">WAN connection type</td>
+								<td class="title" colspan="2" data-tr="wan connection">WAN connection type</td>
 							</tr>
 							<tr>
-								<td class="head" id="wConnectionType">Connection type</td>
+								<td class="head" data-tr="wan connection type">Connection type</td>
 								<td><select name="connectionType" class="mid auth-disable-user" onChange="connectionTypeSwitch(this.form);" >
-									<option id="wConnTypeStatic" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
-									<option id="wConnTypeDhcp"   value="DHCP">DHCP (Auto Config)</option>
-									<option id="wConnTypeZero"   value="ZERO">Zeroconf</option>
+									<option data-tr="wan connection type static" value="STATIC" selected="selected">Static Mode (fixed IP)</option>
+									<option data-tr="wan connection type dhcp"   value="DHCP">DHCP (Auto Config)</option>
+									<option data-tr="wan connection type zero"   value="ZERO">Zeroconf</option>
 								</select></td>
 							</tr>
 						</tbody>
@@ -302,18 +371,18 @@
 						<col style="width: 60%" />
 						<tbody>
 							<tr>
-								<td class="title" colspan="2" id="wStaticMode">Static Mode</td>
+								<td class="title" colspan="2" data-tr="wan static mode">Static Mode</td>
 							</tr>
 							<tr>
-								<td class="head" id="wStaticIp">IP Address</td>
+								<td class="head" data-tr="inet ip">IP Address</td>
 								<td><input name="staticIp" class="mid auth-disable-user"></td>
 							</tr>
 							<tr>
-								<td class="head" id="wStaticNetmask">Subnet Mask</td>
+								<td class="head" data-tr="inet netmask">Subnet Mask</td>
 								<td><input name="staticNetmask" class="mid auth-disable-user"></td>
 							</tr>
 							<tr>
-								<td class="head" id="wStaticGateway">Default Gateway</td>
+								<td class="head" data-tr="inet gateway">Default Gateway</td>
 								<td><input name="staticGateway" class="mid auth-disable-user"></td>
 							</tr>
 						</tbody>
@@ -323,23 +392,23 @@
 						<col style="width: 60%" />
 						<tbody>
 							<tr>
-								<td class="title" colspan="2" id="wAdditionalOptions">Additional Options</td>
+								<td class="title" colspan="2" data-tr="wan additional options">Additional Options</td>
 							</tr>
 
 							<tr id="dhcpReqIPRow" class="auth-hide-user">
-								<td class="head" id="wReqFromDHCP">Request IP from DHCP (optional)</td>
+								<td class="head" data-tr="wan request from dhcp">Request IP from DHCP (optional)</td>
 								<td><input name="dhcpReqIP" class="mid"></td>
 							</tr>
 							<tr id="dhcpVendorRow" class="auth-hide-user">
-								<td class="head" id="wDHCPVendorClass">Vendor class identifier (optional)</td>
+								<td class="head" data-tr="wan dhcp vendor class">Vendor class identifier (optional)</td>
 								<td><input name="dhcpVendorClass" class="mid"></td>
 							</tr>
 							<tr class="auth-hide-user">
-								<td class="head" id="wMTU">WAN MTU</td>
+								<td class="head" data-tr="wan mtu">WAN MTU</td>
 								<td><input name="wan_mtu" type="text" class="half" style="display:none;">
 									<select name="wan_mtu_type" onChange="wanMtuChange(this.form);" class="mid">
-										<option value="0" id="wAuto">AUTO</option>
-										<option value="1" selected="selected" id="wCustom">Custom</option>
+										<option value="0" data-tr="inet auto">AUTO</option>
+										<option value="1" selected="selected" data-tr="inet custom">Custom</option>
 										<option value="1500">1500</option>
 										<option value="1492">1492</option>
 										<option value="1460">1460</option>
@@ -353,77 +422,122 @@
 							</tr>
 
 							<tr id="staticDNSAssignRow">
-								<td class="head" id="wStaticDns">Assign static DNS Server</td>
+								<td class="head" data-tr="wan static dns">Assign static DNS Server</td>
 								<td><input name="wStaticDnsEnable" type="checkbox" onClick="dnsSwitchClick(this.form);" class="auth-disable-user"></td>
 							</tr>
 							<tr id="staticDNSprofile">
-								<td class="head" id="wStaticDnsProfile">DNS Profile</td>
+								<td class="head" data-tr="inet dns profile">DNS Profile</td>
 								<td><div style="float: left">
 									<select name="wStaticDnsProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
-										<option id="dnsProfileManual" value="manual">Manual</option>
-										<option id="dnsProfileGoogle" value="google">Google DNS</option>
-										<option id="dnsProfileYandex" value="yandex">Yandex DNS</option>
-										<option id="dnsProfileSky" value="sky">Sky DNS</option>
-										<option id="dnsProfileOpen" value="open">Open DNS</option>
-										<option id="dnsProfileAdguard" value="adguard">AdGuard DNS</option>
+										<option data-tr="inet dns profile manual"  value="manual">Manual</option>
+										<option data-tr="inet dns profile google"  value="google">Google DNS</option>
+										<option data-tr="inet dns profile yandex"  value="yandex">Yandex DNS</option>
+										<option data-tr="inet dns profile sky"     value="sky">Sky DNS</option>
+										<option data-tr="inet dns profile open"    value="open">Open DNS</option>
+										<option data-tr="inet dns profile adguard" value="adguard">AdGuard DNS</option>
 									</select>
 									</div>
 									<div id="wStaticDnsProfile_learne" style="float: left; margin: 3px 10px"></div>
 								</td>
 							</tr>
 							<tr id="staticDNSyandexProfile">
-								<td class="head" id="wStaticDnsYandexProfile">Yandex Profile</td>
+								<td class="head" data-tr="inet dns profile yandex title">Yandex Profile</td>
 								<td>
 									<select name="wStaticDnsYandexProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
-										<option id="dnsProfileYandexBasic" value="basic">Basic</option>
-										<option id="dnsProfileYandexSafe" value="safe">Safe</option>
-										<option id="dnsProfileYandexFamily" value="family">Family</option>
+										<option data-tr="inet dns profile yandex basic"  value="basic">Basic</option>
+										<option data-tr="inet dns profile yandex safe"   value="safe">Safe</option>
+										<option data-tr="inet dns profile yandex family" value="family">Family</option>
 									</select>
 								</td>
 							</tr>
 							<tr id="staticDNSadguardProfile">
-								<td class="head" id="wStaticDnsAdguardProfile">AdGuard Profile</td>
+								<td class="head" data-tr="inet dns profile adguard title">AdGuard Profile</td>
 								<td>
 									<select name="wStaticDnsAdguardProfile" onChange="dnsSwitchClick(this.form);" class="mid auth-disable-user">
-										<option id="dnsProfileAdguardDefault" value="default">Default</option>
-										<option id="dnsProfileAdguardFamily" value="family">Family</option>
+										<option data-tr="inet dns profile adguard default" value="default">Default</option>
+										<option data-tr="inet dns profile adguard family"  value="family">Family</option>
 									</select>
 								</td>
 							</tr>
 							<tr id="priDNSrow">
-								<td class="head" id="wStaticPriDns">Primary DNS Server</td>
+								<td class="head" data-tr="inet pri dns">Primary DNS Server</td>
 								<td><input name="staticPriDns" class="mid auth-disable-user"></td>
 							</tr>
 							<tr id="secDNSrow">
-								<td class="head" id="wStaticSecDns">Secondary DNS Server</td>
+								<td class="head" data-tr="inet sec dns">Secondary DNS Server</td>
 								<td><input name="staticSecDns" class="mid auth-disable-user"></td>
 							</tr>
 							<tr id="natRowDisplay">
-								<td class="head" id="wNatEnabled">Enable NAT</td>
+								<td class="head" data-tr="wan nat enabled">Enable NAT</td>
 								<td><input name="natEnabled" type="checkbox" class="auth-disable-user"></td>
 							</tr>
 						</tbody>
 					</table>
+
 					<table class="form">
 						<col style="width: 40%" />
 						<col style="width: 60%" />
 						<tbody>
 							<tr>
-								<td class="title" colspan="2" id="wMacAddress">MAC address</td>
+								<td class="title" colspan="2" data-tr="inet mac">MAC address</td>
 							</tr>
 							<tr id="MACrow">
-								<td class="head" id="wMacAddr">WAN MAC address</td>
+								<td class="head" data-tr="wan mac">WAN MAC address</td>
 								<td>
 									<input name="wanMac" id="wanMac" class="mid auth-disable-user">
-									<input type="button" value="Restore Factory" class="auth-disable-user" id="WanMacRestore" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
+									<input type="button" value="Restore Factory" class="auth-disable-user" data-tr="button restore factory" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
 								</td>
 							</tr>
 						</tbody>
 					</table>
+
+					<input type="hidden" id="dns_local_hosts" name="dns_local_hosts"></input>
+					<table class="form">
+						<col style="width: 40%" />
+						<col style="width: 50%" />
+						<col style="width: 10%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="inet dns hosts title" colspan="3">Local DNS Entries</td>
+							</tr>
+							<tr>
+								<th data-tr="inet ip">IP Address</th>
+								<th data-tr="inet domain" colspan="2">Domain Name</th>
+							</tr>
+						</thead>
+						<tbody id="localDnsEntries">
+						</tbody>
+					</table>
+
+					<table class="form">
+						<col style="width: 40%" />
+						<col style="width: 60%" />
+						<thead>
+							<tr>
+								<td class="title" data-tr="inet dns hosts add title"  colspan="3">Add Local DNS Entry</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="head" data-tr="inet ip">IP Address</td>
+								<td><input type='text' id='hosts_new_ip'></input></td>
+							</tr>
+							<tr>
+								<td class="head" data-tr="inet domain">Domain Name</td>
+								<td><input type='text' id='hosts_new_name'></input></td>
+							</tr>
+							<tr>
+								<td colspan=2><input type='button' data-tr="inet dns hosts add button" onClick='addDnsEntry();'></input></td>
+							</tr>
+						</tbody>
+					</table>
+
 					<table class="buttons auth-hide-user">
 						<tr>
 							<td>
-								<input type="submit" class="normal" value="Apply" id="wApply" onClick="return CheckValues(this.form);"><input type="button" class="normal" value="Cancel" id="wCancel" onClick="window.location.reload();"><input type="button" class="normal" value="Reset" id="wReset" onClick="resetValues(this.form, 30);">
+								<input type="submit" class="normal" value="Apply"  data-tr="button apply"  onClick="return CheckValues(this.form);">
+								<input type="button" class="normal" value="Cancel" data-tr="button cancel" onClick="window.location.reload();">
+								<input type="button" class="normal" value="Reset"  data-tr="button reset"  onClick="resetValues(this.form, 30);">
 								<input type="hidden" value="0" name="reboot">
 								<input type="hidden" value="0" name="reset">
 							</td>

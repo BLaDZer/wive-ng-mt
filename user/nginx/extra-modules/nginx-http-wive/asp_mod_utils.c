@@ -272,45 +272,6 @@ static int getCfgNthGeneral(webs_t *wp, char** params, int nparams)
     outWrite("%s", esc_val);
     free(esc_val);
     return NGX_OK;
-
-
-//////////////////
-    char *value;
-
-    if (nparams < 3)
-    {
-        return outWrite(T("Insufficient args\n"));
-    }
-
-    value = (char *) nvram_get(RT2860_NVRAM, field);
-
-
-    return NGX_OK;
-/*
-	int type, idx;
-	char_t *field;
-	char *value;
-	char *nth;
-
-	if (ejArgs(argc, argv, T("%d %s %d"), &type, &field, &idx) < 3) {
-		return outWrite(T("Insufficient args\n"));
-	}
-	value = (char *) nvram_get(RT2860_NVRAM, field);
-	if (1 == type) {
-		if (NULL == value)
-			return outWrite(T(""));
-		nth = getNthValue(idx, value);
-		if (NULL == nth)
-			return outWrite(T(""));
-		return outWrite(T("%s"), nth);
-	}
-	if (NULL == value)
-		ejSetResult(eid, "");
-	nth = getNthValue(idx, value);
-	if (NULL == nth)
-		ejSetResult(eid, "");
-	ejSetResult(eid, value);
-	return 0;*/
 }
 
 static int writeIfCfgZeroEq(webs_t *wp, char** params, int nparams)

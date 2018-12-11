@@ -4,6 +4,7 @@ var internet_dictionary = {
 	'inet mac'				: 'MAC адрес',
 	'inet ip'				: 'IP адрес',
 	'inet netmask'				: 'Маска подсети',
+	'inet domain'				: 'Доменное имя',
 	'inet gateway'				: 'Шлюз по умолчанию',
 	'inet pri dns'				: 'Основной DNS',
 	'inet sec dns'				: 'Альтернативный DNS',
@@ -29,6 +30,13 @@ var internet_dictionary = {
 	'inet dns profile adguard title'	: 'Профиль AdGuard DNS',
 	'inet dns profile adguard default'	: 'По умолчанию',
 	'inet dns profile adguard family'	: 'Семейный',
+	'inet dns hosts title'			: 'Локальные записи DNS',
+	'inet dns hosts add title'		: 'Добавить локальную запись DNS',
+	'inet dns hosts add button'		: 'Добавить новую запись',
+	'inet dns hosts remove'			: 'Удалить запись',
+	'inet dns hosts wrong domain'		: 'Введено некорректное доменное имя!',
+	'inet dns hosts domain in use'		: 'Введённое доменное имя уже присутствует в списке!',
+
 
 	// Internet / LAN
 	'lan title'				: 'Настройки локальной сети (LAN)',

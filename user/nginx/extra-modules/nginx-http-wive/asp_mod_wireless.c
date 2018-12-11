@@ -522,34 +522,14 @@ static char* repeatValueTimes(char* buf, char* value, int times)
 static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 {
 	int i;
-	char_t	*wirelessmode, *mbssid_mode, *bssid_num;
+	char_t	*wirelessmode, *bssid_num;
 	char_t	*sz11gChannel;
-	char_t  *bandsteering, *token;
 	char 	mbssidtmpbuf[8 * MAX_NUMBER_OF_BSSID] = "";
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
-	char_t *ids_enable;
-#endif
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	char_t	*wirelessmodeac, *sz11aChannel, *ssid1ac;
 	int     mode_ac;
 #endif
 	int     is_ht = 0, is_vht = 0, new_bssid_num, mode;
-
-	char_t *rd_region, *dyn_vga;
-	int ssid_num;
-
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	char_t *dyn_vga_long, *dyn_vga_clamp;
-#endif
-#if defined(CONFIG_RT_SECOND_IF_MT7610E)
-	char_t *dyn_vga_long;
-#endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
-	char_t *m2u_enable;
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
-	char_t *video_turbine;
-#endif
-#endif
 
 	// fetch from web input
 	char *web_radio_on = websGetVar(wp, T("radioWirelessEnabled"), T("0"));
@@ -562,7 +542,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	wirelessmode = websGetVar(wp, T("wirelessmode"), T("7")); //7: gn mode
 	mode = atoi(wirelessmode);
-	mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
 
 	bssid_num = websGetVar(wp, T("bssid_num"), T("1"));
 	new_bssid_num = atoi(bssid_num);
@@ -573,37 +552,12 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 
 	sz11gChannel = websGetVar(wp, T("sz11gChannel"), T("")); 
 
-	bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
-	bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
-	ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
-	ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
-#endif
-
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	wirelessmodeac = websGetVar(wp, T("wirelessmodeac"), T("14")); //14: a,an/ac mode
 	mode_ac = atoi(wirelessmodeac);
 	sz11aChannel = websGetVar(wp, T("sz11aChannel"), T(""));
 	ssid1ac = websGetVar(wp, T("mssidac_1"), T("0"));
 #endif
-
-
-	rd_region = websGetVar(wp, T("rd_region"), T("FCC"));
-	dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
-	dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
-#endif
-#if defined(CONFIG_RT_SECOND_IF_MT7610E)
-	dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
-#endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
-	m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
-	video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
-#endif
-#endif
-
 
 #ifndef CONFIG_RT_SECOND_IF_NONE
 	// 11abgnac Channel or AutoSelect
@@ -633,23 +587,6 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	websHeader(wp);
 #endif
 
-	// Virtual iface modes
-	ngx_nvram_bufset(wp,"BssidIfName", mbssid_mode);
-
-	// BasicRate: a,an,ac: 336; bg,bgn:15; b:3; g,gn,n:351
-	if (mode == 2 || mode == 8 || mode == 11 || mode == 14 || mode == 15) //a, a/an, an, a/an/ac, an/ac
-		ngx_nvram_bufset(wp,"BasicRate", "336"); // a,an,ac
-	else if (mode == 4 || mode == 6 || mode == 7) //g, n, gn
-		ngx_nvram_bufset(wp,"BasicRate", "351");
-	else if ((mode == 1)) //b
-		ngx_nvram_bufset(wp,"BasicRate", "3");
-	else // bg,bgn,abgn (9,0,5)
-		ngx_nvram_bufset(wp,"BasicRate", "15");
-
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	ngx_nvram_bufset(wp,"BasicRateINIC", "336"); // a,an,ac
-#endif
-	default_shown_mbssid[RT2860_NVRAM] = 0;
 
 ////////////////
 	void wirelessBasic_net24() {
@@ -746,6 +683,7 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	outWrite(T("mode ac: %s<br>\n"), wirelessmodeac);
 	outWrite(T("tx_power_ac: %s<br>\n"), tx_power_ac);
 	outWrite(T("ac_bw: %s<br>\n"), ac_bw);
+	outWrite(T("sz11aChannel: %s<br>\n"), sz11aChannel);
 #endif
 #endif
 	}
@@ -758,7 +696,28 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		char	hidden_ssid[2 * MAX_NUMBER_OF_BSSID] = "", noforwarding[2 * MAX_NUMBER_OF_BSSID] = "", noforwardingmbcast[2 * MAX_NUMBER_OF_BSSID] = "";
 		char	ssid_web_var[8] = "mssid_\0", ssid_nvram_var[8] = "SSID\0\0\0";
 		int ssid;
+		char_t  *token;
 		i = 1;
+
+		default_shown_mbssid[RT2860_NVRAM] = 0;
+
+	// Virtual iface modes
+		char_t *mbssid_mode = websGetVar(wp, T("mbssid_mode"), T("ra"));
+		ngx_nvram_bufset(wp,"BssidIfName", mbssid_mode);
+
+	// BasicRate: a,an,ac: 336; bg,bgn:15; b:3; g,gn,n:351
+		if (mode == 2 || mode == 8 || mode == 11 || mode == 14 || mode == 15) //a, a/an, an, a/an/ac, an/ac
+			ngx_nvram_bufset(wp,"BasicRate", "336"); // a,an,ac
+		else if (mode == 4 || mode == 6 || mode == 7) //g, n, gn
+			ngx_nvram_bufset(wp,"BasicRate", "351");
+		else if ((mode == 1)) //b
+			ngx_nvram_bufset(wp,"BasicRate", "3");
+		else // bg,bgn,abgn (9,0,5)
+			ngx_nvram_bufset(wp,"BasicRate", "15");
+
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		ngx_nvram_bufset(wp,"BasicRateINIC", "336"); // a,an,ac
+#endif
 
 		// Fill-in SSID
 		for (ssid=0; ssid < new_bssid_num; ssid++)
@@ -805,6 +764,14 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp,"NoForwardingBTNBSSID", mbssidapisolated);
 
 		ngx_nvram_bufset(wp,"NoForwardingMBCast", noforwardingmbcast);
+
+#ifdef PRINT_DEBUG
+		outWrite(T("bssid_num: %s<br>\n"), bssid_num);
+		outWrite(T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
+#ifndef CONFIG_RT_SECOND_IF_NONE
+		outWrite(T("mssidac_1: %s<br>\n"), ssid1ac);
+#endif
+#endif
 	}
 
 ////////////////
@@ -1267,6 +1234,61 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	}
 
 ////////////////
+	void wirelessBasic_bandsteering() {
+		char_t  *bandsteering = websGetVar(wp, T("BandSteering"), T("0"));
+		bandsteering = (bandsteering == NULL) ? "0" : bandsteering;
+
+		ngx_nvram_bufset(wp,"BandSteering", bandsteering);
+		if (CHK_IF_DIGIT(bandsteering, 1))
+			setupParameters(wp, band_steering_flags, 0);
+	}
+
+////////////////
+	void wirelessBasic_intrusion() {
+#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
+		char_t *ids_enable = websGetVar(wp, T("IdsEnable"), T("0"));
+		ids_enable = (ids_enable == NULL) ? "0" : ids_enable;
+
+		ngx_nvram_bufset(wp,"IdsEnable", ids_enable);
+		if (CHK_IF_DIGIT(ids_enable, 1))
+			setupParameters(wp, ids_flags, 0);
+#endif
+	}
+
+////////////////
+	void wirelessBasic_m2u_turbine() {
+#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
+		char_t *m2u_enable = websGetVar(wp, T("m2u_enable"), T("0"));
+		ngx_nvram_bufset(wp,"M2UEnabled", m2u_enable);
+#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
+		char_t *video_turbine = websGetVar(wp, T("video_turbine"), T("0"));
+		ngx_nvram_bufset(wp,"VideoTurbine", video_turbine);
+#endif
+
+#ifdef PRINT_DEBUG
+	outWrite(T("m2u_enable: %s<br>\n"), m2u_enable);
+#endif
+#endif
+	}
+
+////////////////
+	void wirelessBasic_palna() {
+		char_t *dyn_vga = websGetVar(wp, T("dyn_vga"), T("1"));
+		char_t *dyn_vga_long = websGetVar(wp, T("advDynVGALong"), T("0"));
+		char_t *dyn_vga_clamp = websGetVar(wp, T("advDynVGAClamp"), T("0"));
+
+		ngx_nvram_bufset(wp,"DyncVgaEnable", dyn_vga);
+
+#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
+		ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
+		ngx_nvram_bufset(wp,"VgaClamp", dyn_vga_clamp);
+#endif
+#if defined(CONFIG_RT_SECOND_IF_MT7610E)
+		ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
+#endif
+	}
+
+////////////////
 	wirelessBasic_net24();
 	wirelessBasic_net5();
 	wirelessBasic_ssid();
@@ -1275,65 +1297,26 @@ static void wirelessBasic(webs_t* wp, char_t *path, char_t *query)
 	wirelessBasic_advanced();
 	wirelessBasic_txbf();
 	wirelessBasic_roaming();
-
-	// Band Steering
-	ngx_nvram_bufset(wp,"BandSteering", bandsteering);
-	if (CHK_IF_DIGIT(bandsteering, 1))
-		setupParameters(wp, band_steering_flags, 0);
-
-
-#if defined(CONFIG_MT7610_AP_IDS) || defined(CONFIG_MT76X2_AP_IDS) || defined(CONFIG_MT76X3_AP_IDS) || defined(CONFIG_MT7615_AP_IDS)
-	ngx_nvram_bufset(wp,"IdsEnable", ids_enable);
-	if (CHK_IF_DIGIT(ids_enable, 1))
-		setupParameters(wp, ids_flags, 0);
-#endif
-
-	ssid_num = ngx_nvram_get_int(wp, "BssidNum", 1);
+	wirelessBasic_bandsteering();
+	wirelessBasic_intrusion();
+	wirelessBasic_m2u_turbine();
+	wirelessBasic_palna();
 
 	//Radar Detect region
+	char_t *rd_region = websGetVar(wp, T("rd_region"), T("FCC"));
 	if ((rd_region == NULL) || (strlen(rd_region)<=0))
 		rd_region = "FCC";
 
-	//set to nvram
-	nvram_init(RT2860_NVRAM);
 	ngx_nvram_bufset(wp,"RDRegion", rd_region);
-
-	ngx_nvram_bufset(wp,"DyncVgaEnable", dyn_vga);
-#if defined(CONFIG_RT_FIRST_IF_MT7602E) || defined(CONFIG_RT_SECOND_IF_MT7612E)
-	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
-	ngx_nvram_bufset(wp,"VgaClamp", dyn_vga_clamp);
-#endif
-#if defined(CONFIG_RT_SECOND_IF_MT7610E)
-	ngx_nvram_bufset(wp,"SkipLongRangeVga", dyn_vga_long);
-#endif
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
-	ngx_nvram_bufset(wp,"M2UEnabled", m2u_enable);
-#if defined(CONFIG_MT7610_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X2_AP_VIDEO_TURBINE) || defined(CONFIG_MT76X3_AP_VIDEO_TURBINE) || defined(CONFIG_MT7615_AP_VIDEO_TURBINE)
-	ngx_nvram_bufset(wp,"VideoTurbine", video_turbine);
-#endif
-#endif
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
 	setSecurity(wp, RT2860_NVRAM);
 
-#ifdef PRINT_DEBUG
-	// debug print
-	outWrite(T("ssid: %s, bssid_num: %s<br>\n"), ssid, bssid_num);
-	outWrite(T("mbssidapisolated: %s<br>\n"), mbssidapisolated);
-	outWrite(T("sz11aChannel: %s<br>\n"), sz11aChannel);
-#ifndef CONFIG_RT_SECOND_IF_NONE
-	outWrite(T("mssidac_1: %s<br>\n"), ssid1ac);
-#endif
-	outWrite(T("rd_region: %s<br>\n"), rd_region);
-#if defined(CONFIG_MT7610_AP_IGMP_SNOOP) || defined(CONFIG_MT76X2_AP_IGMP_SNOOP) || defined(CONFIG_MT76X3_AP_IGMP_SNOOP) || defined(CONFIG_MT7615_AP_IGMP_SNOOP)
-	outWrite(T("m2u_enable: %s<br>\n"), m2u_enable);
-#endif
-#endif
 	// reconfigure system
-	websDone(wp, 200);
 	wp->on_response_ok = DO_RECONFIGURE;
+	websDone(wp, 200);
 }
 
 static int getVideoTurbineBuilt(webs_t *wp, char** params, int nparams)

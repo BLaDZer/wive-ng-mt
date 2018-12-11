@@ -459,6 +459,7 @@ void websFooter(webs_t* wp)
 	websWrite(wp, "</body>\n</html>\n");
 }
 
+/*
 int getBasicAuthCredentials(webs_t* wp, char** username, char** password)
 {
     ngx_str_t prefix = ngx_string("Basic ");
@@ -506,4 +507,4 @@ int getBasicAuthCredentials(webs_t* wp, char** username, char** password)
 
     return 0;
 }
-
+*/
