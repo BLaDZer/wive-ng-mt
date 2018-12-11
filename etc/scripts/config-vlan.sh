@@ -464,12 +464,13 @@ config_dualrgmii()
 	    $LOG "TV/STB/SIP with VLANs mode enabled."
 	    # internal VLAN for TV = 3, for SIP = 4
 	    if [ "$wan_port" = "4" ]; then
-		wantocpuportmap="10000100"
+		maskwan="10000100"
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    masklan="00011010"
 		    #VLAN member port
-		    switch vlan set 0 1 00011010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 3 01000010
 		    switch vlan set 3 4 00100010
 		    # set PVID
@@ -480,9 +481,10 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
+		    masklan="00111010"
 		    # VLAN member port
-		    switch vlan set 0 1 00111010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 3 01000010
 		    # set PVID
 		    switch pvid 0 2
@@ -492,9 +494,10 @@ config_dualrgmii()
 		    switch pvid 4 1
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
+		    masklan="01011010"
 		    # VLAN member port
-		    switch vlan set 0 1 01011010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 4 00100010
 		    # set PVID
 		    switch pvid 0 2
@@ -504,12 +507,13 @@ config_dualrgmii()
 		    switch pvid 4 1
 		fi
 	    else
-		wantocpuportmap="00001100"
+		maskwan="00001100"
 		# tv and sip
 		if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
+		    masklan="11000010"
 		    # VLAN member port
-		    switch vlan set 0 1 11000010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 3 00010010
 		    switch vlan set 3 4 00100010
 		    # set PVID
@@ -521,8 +525,9 @@ config_dualrgmii()
 		# only tv
 		elif [ "$tv_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 11100010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    masklan="11100010"
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 3 00010010
 		    # set PVID
 		    switch pvid 0 1
@@ -533,8 +538,9 @@ config_dualrgmii()
 		# only sip
 		elif [ "$sip_port" = "1" ]; then
 		    # VLAN member port
-		    switch vlan set 0 1 11010010 0 0 -----uuu
-		    switch vlan set 1 2 $wantocpuportmap 0 0 -----uuu
+		    masklan="11010010"
+		    switch vlan set 0 1 $masklan 0 0 -----uuu
+		    switch vlan set 1 2 $maskwan 0 0 -----uuu
 		    switch vlan set 2 4 00100010
 		    # set PVID
 		    switch pvid 0 1
@@ -547,17 +553,17 @@ config_dualrgmii()
 	    # forward external vlan ports to wan cpu as tagged
 	    # for soft bridge with real vlan from WAN
 	    if [ "$tv_port" = "1" ] && [ "$sip_port" = "1" ]; then
-		if [ "$wantocpuportmap" = "10000100" ]; then
-		    wantocpuportmap="11000100"
-		elif [ "$wantocpuportmap" = "00001100" ]; then
-		    wantocpuportmap="00011100"
+		if [ "$maskwan" = "10000100" ]; then
+		    maskwan="11000100"
+		elif [ "$maskwan" = "00001100" ]; then
+		    maskwan="00011100"
 		fi
 	    fi
 	    if [ "$sip_portVLAN" != "" ]; then
-		switch vlan set 4 $sip_portVLAN $wantocpuportmap 0 0 tttttttt
+		switch vlan set 4 $sip_portVLAN $maskwan 0 0 tttttttt
 	    fi
 	    if [ "$tv_portVLAN" != "" ]; then
-		switch vlan set 5 $tv_portVLAN  $wantocpuportmap 0 0 tttttttt
+		switch vlan set 5 $tv_portVLAN  $maskwan 0 0 tttttttt
 	    fi
 	fi
 
@@ -573,7 +579,7 @@ config_dualrgmii()
 	for vid in $VlanWifiWan $VlanWifiWanINIC
 	do
 	    if [ "$vid" != "0" ]; then
-		switch vlan set $count $vid 11111100 0 0 tttttttt
+		switch vlan set $count $vid $maskwan 0 0 tttttttt
 		count="$(($count+1))"
 	    fi
 	done
@@ -581,7 +587,7 @@ config_dualrgmii()
 	for vid in $VlanWifiLan $VlanWifiLanINIC $VlanLan
 	do
 	    if [ "$vid" != "0" ]; then
-		switch vlan set $count $vid 11111010 0 0 tttttttt
+		switch vlan set $count $vid $masklan 0 0 tttttttt
 		count="$(($count+1))"
 	    fi
 	done

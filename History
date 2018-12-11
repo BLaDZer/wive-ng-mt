@@ -4441,7 +4441,7 @@
 3) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
 4) init.d: irqbalance: unify set defaults param for xps/rps.<br>
 5) init.d: vlan: fix user priomap for tv/sip ports.<br>
-6) init.d: vlan: fix sip/tv vlan isolate for dual rgmii.<br>
+6) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
 7) kernel: genirq: Remove bogus restriction in irq_move_mask_irq().<br>
 8) kernel: mips: r4k_cache: use more efficient cache blast.<br>
 9) kernel: mips: mips-gic: Let the core set struct irq_common_data affinity.<br>
