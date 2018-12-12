@@ -27,8 +27,9 @@ start() {
 		# need allways renew flow map for avoid slowdown
 		echo 0 > /sys/class/net/$dev_net/queues/rx-0/rps_flow_cnt
 	    fi
-	    echo f > /sys/class/net/$dev_net/queues/rx-0/rps_cpus
-	    echo f > /sys/class/net/$dev_net/queues/tx-0/xps_cpus
+	    # default XPS/RPS soft flow to 0/2 cores
+	    echo 5 > /sys/class/net/$dev_net/queues/rx-0/rps_cpus
+	    echo 5 > /sys/class/net/$dev_net/queues/tx-0/xps_cpus
     done
 
     if [ "$IRQBalance" = "auto" ] || [ "$IRQBalance" = "router" ]; then
