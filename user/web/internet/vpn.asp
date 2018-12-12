@@ -118,7 +118,7 @@
 
 			function checkValues(form) {
 				var vpn_on = (form.vpn_enabled.value == 'on');
-				var re_login = /^[a-zA-Z0-9_]+$/;
+				var re_login = /^[a-zA-Z0-9\(\)_\{\}\[\];:\,\.\/\?<>\-\=\+\!\~\|\@^\&\*]+$/;
 				var re_pass = /^[a-zA-Z0-9\(\)_\{\}\[\];:\,\.\/\?<>\-\=\+\!\~\`\|\@^\&\*]+$/;
 
 				if (vpn_on) {
