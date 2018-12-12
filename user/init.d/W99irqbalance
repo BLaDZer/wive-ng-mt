@@ -19,9 +19,10 @@ start() {
     get_param
 
     # tune defaults RPS/XPS
-    echo 16384 > /proc/sys/net/core/rps_sock_flow_entries
+    echo 128 > /proc/sys/net/core/rps_sock_flow_entries
     ls /sys/devices/virtual/net | while read dev_net; do
-	echo 4096 > /sys/class/net/$dev_net/queues/rx-0/rps_flow_cnt
+	# disable recive flow steering (use this not good idea for one stream device and virtual core cpu)
+	echo 0 > /sys/class/net/$dev_net/queues/rx-0/rps_flow_cnt
 	echo f > /sys/class/net/$dev_net/queues/rx-0/rps_cpus
 	echo f > /sys/class/net/$dev_net/queues/tx-0/xps_cpus
     done
