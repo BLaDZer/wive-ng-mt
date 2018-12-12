@@ -54,8 +54,8 @@ start() {
 
 	    if [ "$CONFIG_MT7615_AP_DBDC_MODE" = "y" ]; then
 		# WLAN 2.4GHz
-		echo 8 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
-		echo 8 > /sys/class/net/$first_wlan_root_if/queues/tx-0/xps_cpus
+		echo 2 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
+		echo 2 > /sys/class/net/$first_wlan_root_if/queues/tx-0/xps_cpus
 	    else
 		# WLAN 2.4GHz
 		echo 3 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
