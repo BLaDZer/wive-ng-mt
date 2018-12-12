@@ -167,7 +167,7 @@ get_param() {
     banirq=`grep ipi_ /proc/interrupts | cut -f1 -d":" | awk {' print "--banirq="$1 '}`
     # do not balance manual static optimal configured nic/wlan
     # wlan only fist and second cards static, third card need be auto balanced
-    banirq="$banirq --banirq=11 --banirq=12 --banirq=32"
+    banirq="$banirq --banirq=11 --banirq=12 --banirq=32 -t1"
 }
 
 case "$1" in
