@@ -142,6 +142,12 @@ start() {
 	    echo c > /sys/class/net/$phys_wan_if/queues/rx-0/rps_cpus
 	    echo c > /sys/class/net/$phys_wan_if/queues/tx-0/xps_cpus
 
+	    # defalt LAN bridge to CPU3
+	    if [ -e /sys/class/net/br0 ]; then
+		echo 8 > /sys/class/net/br0/queues/rx-0/rps_cpus
+		echo 8 > /sys/class/net/br0/queues/tx-0/xps_cpus
+	    fi
+
 	    # VPN
 	    find /sys -type d -name 'ppp[0-10]' | while read dev_ppp; do
 		echo 1 > $dev_ppp/queues/rx-0/rps_cpus
