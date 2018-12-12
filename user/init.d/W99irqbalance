@@ -21,10 +21,14 @@ start() {
     # tune defaults RPS/XPS
     echo 128 > /proc/sys/net/core/rps_sock_flow_entries
     ls /sys/devices/virtual/net | while read dev_net; do
-	# disable recive flow steering (use this not good idea for one stream device and virtual core cpu)
-	echo 0 > /sys/class/net/$dev_net/queues/rx-0/rps_flow_cnt
-	echo f > /sys/class/net/$dev_net/queues/rx-0/rps_cpus
-	echo f > /sys/class/net/$dev_net/queues/tx-0/xps_cpus
+	    if [ "$CONFIG_RFS_ACCEL" = "y" ]; then
+		# disable store RFS flow table for prevent slowdown ppp tunnels,
+		# PPE and others offload break correct calculations mapping,
+		# need allways renew flow map for avoid slowdown
+		echo 0 > /sys/class/net/$dev_net/queues/rx-0/rps_flow_cnt
+	    fi
+	    echo f > /sys/class/net/$dev_net/queues/rx-0/rps_cpus
+	    echo f > /sys/class/net/$dev_net/queues/tx-0/xps_cpus
     done
 
     if [ "$IRQBalance" = "auto" ] || [ "$IRQBalance" = "router" ]; then
@@ -68,7 +72,7 @@ start() {
 	    # VPN
 	    find /sys -type d -name 'ppp[0-10]' | while read dev_ppp; do
 		echo 4 > $dev_ppp/queues/rx-0/rps_cpus
-		echo 4 > $dev_ppp/queues/tx-0/xps_cpus
+		echo 8 > $dev_ppp/queues/tx-0/xps_cpus
 	    done
 	elif [ $cpunum = "2" ]; then
 	    echo 2 > /proc/irq/11/smp_affinity #GMAC
@@ -168,7 +172,7 @@ get_param() {
     banirq=`grep ipi_ /proc/interrupts | cut -f1 -d":" | awk {' print "--banirq="$1 '}`
     # do not balance manual static optimal configured nic/wlan
     # wlan only fist and second cards static, third card need be auto balanced
-    banirq="$banirq --banirq=11 --banirq=12 --banirq=32 -t1"
+    banirq="$banirq -t1"
 }
 
 case "$1" in
