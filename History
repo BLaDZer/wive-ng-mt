@@ -4448,7 +4448,7 @@
 10) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites.<br>
 11) web: fix vpn login symbols limit.<br>
 12) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
-13) kernel: kobject: replace strncpy with memcpy.<br>
+13) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
 14) kernel: mips: r4k_cache: use more efficient cache blast.<br>
 15) kernel: mips: mips-gic: Let the core set struct irq_common_data affinity.<br>
 16) kernel: net: ip: do not set RFS core on error queue reads.<br>
