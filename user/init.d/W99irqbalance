@@ -87,11 +87,28 @@ start() {
 	    find /sys -type d -name 'ppp[0-10]' | while read dev_ppp; do
 		echo 4 > $dev_ppp/queues/rx-0/rps_cpus
 		echo 4 > $dev_ppp/queues/tx-0/xps_cpus
-		# if tunnel up first radio move to diff core for prevent WAN/TUN RX path overload
+		vpnused="1"
+	    done
+
+	    # if tunnel up first radio move to diff core for prevent WAN/TUN RX path overload
+	    if [ "$vpnused" = "1" ]; then
 		echo 8 > /proc/irq/12/smp_affinity #PCIe0 - 2.4GHz radio
 		echo 8 > /sys/class/net/$first_wlan_root_if/queues/rx-0/rps_cpus
 		echo 8 > /sys/class/net/$first_wlan_root_if/queues/tx-0/xps_cpus
-	    done
+	    fi
+
+	    if [ -e /sys/class/net/br0 ]; then
+		# without hw_nat and IPOE move bridge processing to cpu 3 with 2.4GHz radio
+		if [ "$vpnused" != "1" ] && [ ! -d /sys/module/hw_nat ] && ; then
+		    # defalt LAN bridge to CPU3
+		    echo 4 > /sys/class/net/br0/queues/rx-0/rps_cpus
+		    echo 4 > /sys/class/net/br0/queues/tx-0/xps_cpus
+		else
+		    # defalt LAN bridge to CPU2
+		    echo 2 > /sys/class/net/br0/queues/rx-0/rps_cpus
+		    echo 2 > /sys/class/net/br0/queues/tx-0/xps_cpus
+		fi
+	    fi
 
 	elif [ $cpunum = "2" ]; then
 	    echo 2 > /proc/irq/11/smp_affinity #GMAC
