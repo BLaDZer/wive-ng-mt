@@ -611,6 +611,9 @@ KBUILD_CFLAGS += $(call cc-option, -funit-at-a-time)
 # conserve stack if available
 KBUILD_CFLAGS += $(call cc-option, -fconserve-stack)
 
+# disable stringop warnings in gcc 8+
+KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+
 # disable invalid "can't wrap" optimizations for signed / pointers
 KBUILD_CFLAGS += $(call cc-option, -fno-strict-overflow)
 
