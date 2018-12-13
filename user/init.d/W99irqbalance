@@ -70,7 +70,7 @@ start() {
 
 
 	    # LAN
-	    # RPS/XPS: CPU0/2
+	    # RPS/XPS: CPU0
 	    echo 1 > /sys/class/net/$phys_lan_if/queues/rx-0/rps_cpus
 	    echo 1 > /sys/class/net/$phys_lan_if/queues/tx-0/xps_cpus
 	    # RPS/XPS: CPU0/1
