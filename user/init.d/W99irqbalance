@@ -93,7 +93,7 @@ start() {
 
 	    if [ -e /sys/class/net/br0 ]; then
 		# without hw_nat and IPOE move bridge processing to cpu 3 with 2.4GHz radio
-		if [ "$vpnused" != "1" ] && [ ! -d /sys/module/hw_nat ] && ; then
+		if [ "$vpnused" != "1" ] && [ ! -d /sys/module/hw_nat ]; then
 		    # defalt LAN bridge to CPU3
 		    echo 4 > /sys/class/net/br0/queues/rx-0/rps_cpus
 		    echo 4 > /sys/class/net/br0/queues/tx-0/xps_cpus
