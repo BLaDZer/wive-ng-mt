@@ -251,8 +251,8 @@ void nvram_close(int index)
 }
 
 
-/* buffered get variable with/without copy to new memory block */
-static char *__nvram_bufget(int index, char *name, int copy)
+/* buffered get variable without copy to new memory block */
+static char *__nvram_bufget(int index, char *name)
 {
 	int idx;
 	/* Initial value should be NULL */
@@ -318,10 +318,8 @@ static char *__nvram_bufget(int index, char *name, int copy)
 			NVFREE(fb[index].cache[idx].value);
 			fb[index].cache[idx].value = strdup(nvr.value);
 			NVFREE(nvr.value);
-			if (!copy)
-			    ret = fb[index].cache[idx].value;
-			else
-			    ret = strdup(fb[index].cache[idx].value);
+
+			ret = fb[index].cache[idx].value;
 			RANV_PRINT("bufget %d '%s'->'%s'\n", index, name, ret);
 			//btw, we don't return NULL anymore!
 			if (!ret)
@@ -341,31 +339,13 @@ static char *__nvram_bufget(int index, char *name, int copy)
 /* get variable with copy to new memory block */
 char *nvram_get_copy(int index, char *name)
 {
-	/* Initial value should be NULL */
-	char *recv = NULL;
-
-	recv = __nvram_bufget(index, name, 1);
-
-	//btw, we don't return NULL anymore!
-	if (!recv)
-	    recv = "";
-
-	return recv;
+	return strdup(__nvram_bufget(index, name));
 }
 
 /* get variable without copy to new memory block */
 char *nvram_get(int index, char *name)
 {
-	/* Initial value should be NULL */
-	char *recv = NULL;
-
-	recv = __nvram_bufget(index, name, 0);
-
-	//btw, we don't return NULL anymore!
-	if (!recv)
-	    recv = "";
-
-	return recv;
+	return __nvram_bufget(index, name);
 }
 
 int nvram_bufset(int index, char *name, char *value)
