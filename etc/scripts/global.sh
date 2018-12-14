@@ -40,6 +40,7 @@ eval `nvram_buf_get 2860 HostName OperationMode \
 	dnsPEnabled SmbEnabled UDPXYMode UDPXYPort igmpEnabled SysLogd \
 	vpnEnabled vpnPurePPPOE vpnType vpnDGW \
 	IPv6OpMode IPv6Dhcpc Ipv6InVPN \
+	cwmpdEnabled \
 	chilli_enable chilli_net \
 	MODEMENABLED MODEMTYPE`
 

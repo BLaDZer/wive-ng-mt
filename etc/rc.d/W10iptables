@@ -647,7 +647,7 @@ iptmodulesload() {
 get_param() {
     # get network, vpn, netfiletrs and others config variables
     eval `nvram_buf_get 2860 natEnabled DMZEnable DMZIPAddress DMZNATLoopback PortForwardEnable IPPortFilterEnable IPPortFilterInputEnable WANPingFilter \
-	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpdEnabled cwmpd_httpd_port \
+	    RemoteSSH RemoteSSHPort RemoteFTP FtpPort RemoteTelnet RemoteManagement RemoteManagementPort RemoteManagementPortHTTPS cwmpd_httpd_port \
 	    WsddEnabled RIPEnable dhcpEnabled ipt_account upnpEnabled igmpEnabled xupnpd \
 	    TransmissionEnabled TransRPCPort TransInPort TransAccess snmpd parproutedEnabled PrinterSrvEnabled vpnType vpnNAT \
 	    l2tp_srv_enabled radius_srv_enabled store_ttl store_ttl_mcast mss_use_pmtu IPv6AllowForward \
