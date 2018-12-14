@@ -45,6 +45,7 @@ const struct dhcp_optflag dhcp_optflags[] = {
 	{ OPTION_STRING_HOST                      , 0x28 }, /* DHCP_NIS_DOMAIN    */
 	{ OPTION_IP | OPTION_LIST                 , 0x29 }, /* DHCP_NIS_SERVER    */
 	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x2a }, /* DHCP_NTP_SERVER    */
+	{ OPTION_STRING               | OPTION_REQ, 0x2b }, /* DHCP_VENDOR_SPECIFIC */
 	{ OPTION_IP | OPTION_LIST                 , 0x2c }, /* DHCP_WINS_SERVER   */
 	{ OPTION_U32                              , 0x33 }, /* DHCP_LEASE_TIME    */
 	{ OPTION_IP                               , 0x36 }, /* DHCP_SERVER_ID     */
@@ -113,6 +114,7 @@ const char dhcp_option_strings[] ALIGN1 =
 	"nisdomain" "\0"   /* DHCP_NIS_DOMAIN     */
 	"nissrv" "\0"      /* DHCP_NIS_SERVER     */
 	"ntpsrv" "\0"      /* DHCP_NTP_SERVER     */
+	"vendorspecific" "\0"      /* DHCP_VENDOR_SPECIFIC     */
 	"wins" "\0"        /* DHCP_WINS_SERVER    */
 	"lease" "\0"       /* DHCP_LEASE_TIME     */
 	"serverid" "\0"    /* DHCP_SERVER_ID      */

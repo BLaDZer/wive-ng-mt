@@ -134,6 +134,7 @@ enum {
 //#define DHCP_NIS_DOMAIN       0x28
 //#define DHCP_NIS_SERVER       0x29
 //#define DHCP_NTP_SERVER       0x2a
+#define DHCP_VENDOR_SPECIFIC	0x2b
 //#define DHCP_WINS_SERVER      0x2c
 #define DHCP_REQUESTED_IP       0x32 /* sent by client if specific IP is wanted */
 #define DHCP_LEASE_TIME         0x33
