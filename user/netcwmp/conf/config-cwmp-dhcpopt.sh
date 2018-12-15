@@ -84,7 +84,13 @@ generate_netfilter_rules() {
 # option is not exist - exit with ok exit code
 if [ "$vendorspecific" = "" ]; then
     if [ "$cwmpdEnabled" = "2" ]; then
-	$LOG "ISP not support TR case - disable now."
+	uptime=`cat /proc/uptime | awk '{printf "%0.f", $1}'`
+	# if uptime more than 1 hour
+	# avoid false positive result at first renew
+	# only if work or more than one hour without CWMP configure get
+	if [ "$uptime" -lt "3600" ]; then
+	    $LOG "ISP not support TR case - disable now."
+	fi
 	nvram_set 2860 cwmpdEnabled 0
     fi
     exit 0
