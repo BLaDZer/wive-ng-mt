@@ -99,6 +99,50 @@ int showDHCPStaticTable()
     return 0;
 }
 
+int showDHCPStaticTable_report()
+{
+    char* staticList = nvram_get_copy(RT2860_NVRAM, "dhcpStatic");
+
+    char *ptr = strtok(staticList, ";");
+
+    if (ptr)
+        printf("DHCPSTATICIPLIST\n");
+
+    while (ptr)
+    {
+        if (strlen(ptr) > 164) {
+            ptr = strtok(NULL, ";");
+            continue;
+        }
+
+        char mac[18];
+        char ip[16];
+        char comment[128];
+
+        if (sscanf(ptr, "%17s %15s %127s", mac, ip, comment) == 3)
+        {
+            mac[17] = '\0';
+            ip[15] = '\0';
+            comment[127] = '\0';
+
+            printf("DHCPSTATICIPLISTELEM");
+            // MAC
+            printf("\t%s", mac);
+            // IP
+            printf("\t%s", ip);
+            // Comment
+            printf("\t%s", comment);
+            printf("\n");
+        }
+
+        ptr = strtok(NULL, ";");
+    }
+
+    free(staticList);
+
+    return 0;
+}
+
 int showDHCPClientTable()
 {
     int rownum;
@@ -155,6 +199,70 @@ int showDHCPClientTable()
         else
         {
             printf("    expired");
+        }
+
+        printf("\n");
+    }
+
+    if (leases)
+        free(leases);
+
+    return 0;
+
+}
+
+int showDHCPClientTable_report()
+{
+    int rownum;
+    struct in_addr addr;
+    uint64_t written_at, curr, expired_abs;
+
+    int row_len = 0;
+    struct dyn_lease* leases = getDhcpClientList(&row_len, &written_at);
+
+    if (leases == NULL)
+        return 1;
+
+    curr = time(NULL);
+
+    if (row_len)
+        printf("DHCPCLIENTLIST\n");
+
+    /* Output leases file */
+    for (rownum=0; rownum<row_len; rownum++)
+    {
+        struct dyn_lease lease = leases[rownum];
+
+        expired_abs = ntohl(lease.expires) + written_at;
+        if (expired_abs < curr)
+            continue;
+
+        printf("DHCPCLIENTLISTELEM");
+        // Host
+        printf("\t%s", lease.hostname);
+        // MAC
+        printf("\t%02X:%02X:%02X:%02X:%02X:%02X", lease.lease_mac[0], lease.lease_mac[1], lease.lease_mac[2], lease.lease_mac[3], lease.lease_mac[4], lease.lease_mac[5]);
+        // IP
+        addr.s_addr = lease.lease_nip;
+        printf("\t%s", inet_ntoa(addr));
+
+        printf("\t");
+        // Expire Date
+        if (expired_abs > curr)
+        {
+            leasetime_t expires = expired_abs - curr;
+            unsigned d = expires / (24*60*60);
+            expires %= (24*60*60);
+            unsigned h = expires / (60*60);
+            expires %= (60*60);
+            unsigned m = expires / 60;
+            expires %= 60;
+
+            printf("%02u:%02u:%02u:%02u", d, h, m, (unsigned)expires);
+        }
+        else
+        {
+            printf("expired");
         }
 
         printf("\n");
@@ -248,9 +356,35 @@ int func_st_samba(int argc, char* argv[])
     return 0;
 }
 
+int func_st_dhcp_report(int argc, char* argv[])
+{
+    printf("DHCP Status\t%d\n", nvram_get_int(RT2860_NVRAM, "dhcpEnabled", -1) );
+    printf("DHCP Domain\t%s\n", nvram_get(RT2860_NVRAM, "dhcpDomain") );
+    printf("DHCP Start IP Address\t%s\n", nvram_get(RT2860_NVRAM, "dhcpStart") );
+    printf("DHCP End IP Address\t%s\n", nvram_get(RT2860_NVRAM, "dhcpEnd") );
+    printf("DHCP Subnet Mask\t%s\n", nvram_get(RT2860_NVRAM, "dhcpMask") );
+    printf("DHCP Default Gateway\t%s\n", nvram_get(RT2860_NVRAM, "dhcpGateway") );
+    printf("DHCP Lease Time (sec)\t%s\n", nvram_get(RT2860_NVRAM, "dhcpLease") );
+
+    showDHCPClientTable_report();
+
+    showDHCPStaticTable_report();
+
+    printf("COMMIT\tdhcp\n");
+
+    return 0;
+}
+
 int func_st_dhcp(int argc, char* argv[])
 {
     int dhcpEnabled = nvram_get_int(RT2860_NVRAM, "dhcpEnabled", -1);
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        return func_st_dhcp_report(argc, argv);
+    }
 
     writeHeader("DHCP");
 
