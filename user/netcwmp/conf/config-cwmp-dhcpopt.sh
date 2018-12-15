@@ -62,7 +62,7 @@ generate_netfilter_rules() {
 
     if [ -e /tmp/acsaddrip ]; then
 	ipaddrlist=`cat /tmp/acsaddrip`
-	if [ "$cwmpdEnabled" = "2" ] && [ "$cwmpd_httpd_port" != "" ] && [ "$ipaddrlist" != "" ]; then
+	if [ "$cwmpd_httpd_port" != "" ] && [ "$ipaddrlist" != "" ]; then
 	    # create iptables user scrips dir if not exist
 	    mkdir -p /etc/iptables.d
 	    echo "#!/bin/sh" > /etc/iptables.d/cwmpdfw
