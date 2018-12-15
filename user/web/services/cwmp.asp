@@ -63,6 +63,8 @@
 						elements[i].innerHTML = _("button disable");
 					else if (elements[i].id == "Enable")
 						elements[i].innerHTML = _("button enable");
+
+				init_translation_model();
 			}
 
 			// Set inintal values
@@ -116,7 +118,7 @@
 
 			// Check values
 			function CheckValues() {
-				if (document.getElementById('cwmp_enabled').value == 1) {
+				if (document.getElementById('cwmp_enabled').value != 0) {
 					var re_url	= /^[а-яА-Яa-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
 					var re_name	= /^[a-zA-Z0-9_-]+$/;
 					var re_pass	= /^[a-zA-Z0-9_\{\}\[\];:\'\"\,\.\/\?<>\-\=\+\\\!\~\`\|\@\#\%^\&\*\(\~`)]+$/;
@@ -261,11 +263,11 @@
 
 			// Show/hide CWMP settings
 			function cwmpEnableSwitch() {
-				displayElement([ 'cwmpACStype_tr', "cwmpACSurl_tr", 'cwmpCPEauth_tr', 'cwmpACSauth_tr', 'cwmpSSLprivatekey_tr', 'cwmpSSLpublickey_tr', 'cwmpCAfile_tr', 'cwmpSSLcapassword_tr', 'cwmpAdvanced_tr' ], document.getElementById('cwmp_enabled').value == 1);
-				displayElement([ 'cwmpCPEusername_tr', 'cwmpCPEpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_cpe_auth').value == 1);
-				displayElement([ 'cwmpACSusername_tr', 'cwmpACSpassword_tr' ], document.getElementById('cwmp_enabled').value == 1 && document.getElementById('cwmp_acs_auth').value == 1);
+				displayElement([ 'cwmpACStype_tr', "cwmpACSurl_tr", 'cwmpCPEauth_tr', 'cwmpACSauth_tr', 'cwmpSSLprivatekey_tr', 'cwmpSSLpublickey_tr', 'cwmpCAfile_tr', 'cwmpSSLcapassword_tr', 'cwmpAdvanced_tr' ], document.getElementById('cwmp_enabled').value != 0);
+				displayElement([ 'cwmpCPEusername_tr', 'cwmpCPEpassword_tr' ], document.getElementById('cwmp_enabled').value != 0 && document.getElementById('cwmp_cpe_auth').value == 1);
+				displayElement([ 'cwmpACSusername_tr', 'cwmpACSpassword_tr' ], document.getElementById('cwmp_enabled').value != 0 && document.getElementById('cwmp_acs_auth').value == 1);
 				displayElement([ 'cwmpLogLevel_tr', 'cwmpHTTPport_tr', 'cwmpHTTPtimeout_tr', 'cwmpSesConnTimeout_tr', 'cwmpSesRespTimeout_tr',
-								 'cwmpCPEmanifactire_tr', 'cwmpCPEoui_tr', 'cwmpCPEpc_tr' ], document.getElementById('cwmp_enabled').value == 1 && statusAdvancedMenu == 1);
+								 'cwmpCPEmanifactire_tr', 'cwmpCPEoui_tr', 'cwmpCPEpc_tr' ], document.getElementById('cwmp_enabled').value != 0 && statusAdvancedMenu == 1);
 			}
 
 			// Show/hide CWMP Inform Periodic Interval
@@ -310,8 +312,9 @@
 									<td class="head" id="cwmpdEnabled">CWMP (TR-069)</td>
 									<td>
 										<select id="cwmp_enabled" name="cwmp_enabled" class="mid" onChange="cwmpEnableSwitch();">
-											<option value="0" id="Disable">Disable</option>
-											<option value="1" id="Enable">Enable</option>
+											<option value="0" data-tr="button disable">Disable</option>
+											<option value="1" data-tr="button enable">Enable</option>
+											<option value="2" data-tr="services cwmp enabled auto">Auto</option>
 										</select>
 									</td>
 									<td style="text-align: center;"></td>
@@ -336,8 +339,8 @@
 									<td class="head" id="cwmpACSauth">ACS Authentification</td>
 									<td colspan="2">
 										<select id="cwmp_acs_auth" name="cwmp_acs_auth" class="mid" onChange="cwmpEnableSwitch();">
-											<option value="0" id="Disable">Disable</option>
-											<option value="1" id="Enable">Enable</option>
+											<option value="0" data-tr="button disable">Disable</option>
+											<option value="1" data-tr="button enable">Enable</option>
 										</select>
 									</td>
 								</tr>
@@ -357,8 +360,8 @@
 									<td class="head" id="cwmpCPEauth">CPE Authentification</td>
 									<td colspan="2">
 										<select id="cwmp_cpe_auth" name="cwmp_cpe_auth" class="mid" onChange="cwmpEnableSwitch();">
-											<option value="0" id="Disable">Disable</option>
-											<option value="1" id="Enable">Enable</option>
+											<option value="0" data-tr="button disable">Disable</option>
+											<option value="1" data-tr="button enable">Enable</option>
 										</select>
 									</td>
 								</tr>
@@ -405,8 +408,8 @@
 									<td class="head" id="cwmpInformPeriodic">CPE Inform periodic</td>
 									<td colspan="2">
 										<select name="cwmpd_inform_periodic_enable" id="cwmpd_inform_periodic_enable" class="mid" onChange="cwmpPeriodicSwitch();">
-											<option value="0" id="Disable">Disable</option>
-											<option value="1" id="Enable">Enable</option>
+											<option value="0" data-tr="button disable">Disable</option>
+											<option value="1" data-tr="button enable">Enable</option>
 										</select>
 									</td>
 								</tr>

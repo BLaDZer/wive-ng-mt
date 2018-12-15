@@ -414,8 +414,8 @@ static void cwmpConfig(webs_t* wp, char_t *path, char_t *query)
 
 		nvram_init(RT2860_NVRAM);
 
-		if (CHK_IF_DIGIT(cwmp_enabled, 1)) {
-			ngx_nvram_bufset(wp, "cwmpdEnabled",			"1");
+		if (CHK_IF_DIGIT(cwmp_enabled, 1) || CHK_IF_DIGIT(cwmp_enabled, 2)) {
+			ngx_nvram_bufset(wp, "cwmpdEnabled",			cwmp_enabled);
 			ngx_nvram_bufset(wp, "cwmp_acs_type",			websGetVar(wp, T("cwmp_acs_type"), T("")));
 			ngx_nvram_bufset(wp, "cwmp_acs_url",			websGetVar(wp, T("cwmp_acs_url"), T("")));
 			ngx_nvram_bufset(wp, "cwmp_acs_auth",			websGetVar(wp, T("cwmp_acs_auth"), T("")));

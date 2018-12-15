@@ -20,6 +20,15 @@ start() {
 	cwmpd
 	) & # send to background
     fi
+
+    if [ "$cwmpdEnabled" = "2" ]; then
+	( # send to background
+	$LOG "Starting CWMPD"
+	export DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	export VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+	cwmpd cwmp:acs_url=http://192.168.0.63:9595/
+	) & # send to background
+    fi
 }
 
 get_param() {

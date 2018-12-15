@@ -691,8 +691,8 @@ void cwmp_agent_session(cwmp_t * cwmp)
 
     print_param(cwmp->root);
 
-    CWMP_SPRINTF_PARAMETER_NAME(name, 3, InternetGatewayDeviceModule, ManagementServerModule, URLModule);
-    cwmp_data_set_parameter_value(cwmp, cwmp->root, name, cwmp->acs_url, TRstrlen(cwmp->acs_url), cwmp->pool);
+//    CWMP_SPRINTF_PARAMETER_NAME(name, 3, InternetGatewayDeviceModule, ManagementServerModule, URLModule);
+//    cwmp_data_set_parameter_value(cwmp, cwmp->root, name, cwmp->acs_url, TRstrlen(cwmp->acs_url), cwmp->pool);
 
     CWMP_SPRINTF_PARAMETER_NAME(name, 3, InternetGatewayDeviceModule, ManagementServerModule, ConnectionRequestURLModule);
     TRsnprintf(value, 1024, "http://%s:%d", local_ip, cwmp->httpd_port);
@@ -808,9 +808,8 @@ int cwmp_agent_upload_file(cwmp_t * cwmp, upload_arg_t * ularg)
         http_dest_t* tourl_dest;
         http_dest_create(&tourl_dest, tourl, cwmp->pool);
 
-        char* acs_url = cwmp_nvram_pool_get(cwmp->pool, "cwmp_acs_url");
         http_dest_t* acsurl_dest;
-        http_dest_create(&acsurl_dest, acs_url, cwmp->pool);
+        http_dest_create(&acsurl_dest, cwmp->acs_url, cwmp->pool);
 
         char tourl2[1024];
         strncpy(tourl_dest->host,acsurl_dest->host,MAX_HOST_NAME_LEN);

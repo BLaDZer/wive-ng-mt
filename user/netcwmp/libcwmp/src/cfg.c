@@ -27,11 +27,13 @@ struct conf_t {
     FILE * fd;
     bool write_to_nvram;
     bool read_from_nvram;
+    int argc;
+    char **argv;
 };
 
 static conf_t * cwmp_conf_handle = NULL;
 
-int cwmp_conf_open(const char * filename)
+int cwmp_conf_open(const char * filename, int argc, char **argv)
 {
     char buf[INI_BUFFERSIZE] = {};
 
@@ -61,6 +63,9 @@ int cwmp_conf_open(const char * filename)
             cwmp_conf_handle->write_to_nvram ? "true" : "false",
             cwmp_conf_handle->read_from_nvram ? "true" : "false");
 
+    cwmp_conf_handle->argc = argc;
+    cwmp_conf_handle->argv = argv;
+
     return CWMP_OK;
 }
 
@@ -79,6 +84,7 @@ void cwmp_conf_split(char * name, char **s , char **k)
 
 int cwmp_conf_get(const char * key, char *value)
 {
+    int i;
     char *s, *k;
     char name[INI_BUFFERSIZE] = {};
 
@@ -95,6 +101,23 @@ int cwmp_conf_get(const char * key, char *value)
     if (cwmp_conf_handle == NULL) {
         cwmp_log_error("%s: config file handle is not initialized!", __func__);
         return CWMP_ERROR;
+    }
+
+    /* check if overrided */
+    for (i=1;i<cwmp_conf_handle->argc;i++) {
+        char* override = (cwmp_conf_handle->argv)[i];
+
+        if (strstr(override, key) == override && override[strlen(key)] == '=') {
+
+            char* ov_val = override+strlen(key)+1;
+
+            size_t _nv_sz = strlen(ov_val);
+            TRstrncpy(value, ov_val, MIN(INI_BUFFERSIZE, _nv_sz));
+            cwmp_log_debug("%s(\"%s\", %p) = \"%s\": read from overrides",
+                __func__, key, (void*)value, value);
+
+            return CWMP_OK;
+        }
     }
 
     TRstrncpy(name, key, INI_BUFFERSIZE);

@@ -95,6 +95,7 @@ var services_dictionary = {
 	'services cwmp introduction'		: 'Here you can configure CWMP (TR-069) settings.',
 	'services cwmp settings'		: 'CWMP (TR-069) Settings',
 	'services cwmp enabled'			: 'CWMP (TR-069)',
+	'services cwmp enabled auto'		: 'Auto by Option 43',
 	'services cwmp acs type'		: 'ACS Type',
 	'services cwmp acs url'			: 'ACS Address',
 	'services cwmp acs auth'		: 'ACS Authentification',

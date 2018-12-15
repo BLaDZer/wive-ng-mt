@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     cwmp_global_pool = pool_create("main", POOL_DEFAULT_SIZE);
     cwmp = pool_pcalloc(cwmp_global_pool, sizeof(cwmp_t));
 
-    cwmp_conf_open("/etc/cwmp.conf");
+    cwmp_conf_open("/etc/cwmp.conf", argc, argv);
 
     char* loglevel = cwmp_conf_pool_get(cwmp_global_pool,"cwmpd:log_level");
     char* log_filename = cwmp_conf_pool_get(cwmp_global_pool, "cwmpd:log_filename");

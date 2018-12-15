@@ -136,7 +136,7 @@ servicelimit() {
 		iptables -A servicelimit $STATE_NEW -p tcp --dport $RemoteManagementPortHTTPS -j ACCEPT
 	    fi
 	fi
-	if [ "$cwmpdEnabled" = "1" ] && [ "$cwmpd_httpd_port" != "" ]; then
+	if [ "$cwmpdEnabled" != "0" ] && [ "$cwmpd_httpd_port" != "" ]; then
 	    $LOG "CWMP allow to 4 callback connections from WAN."
     	    iptables -A servicelimit $STATE_NEW -p tcp --dport $cwmpd_httpd_port $CONNLIMIT 4 -j REJECT
 	    iptables -A servicelimit ! -i $lan_if $STATE_NEW -p tcp --dport $cwmpd_httpd_port -j ACCEPT
