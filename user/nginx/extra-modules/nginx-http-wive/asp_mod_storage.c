@@ -106,7 +106,7 @@ static void storageFtpSrv(webs_t* wp, char_t *mpath, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	firewall_rebuild();
+	firewall_rebuild(0);
 	doSystem("service inetd restart");
 
 	submitUrl = websGetVar(wp, T("submit-url"), T(""));
@@ -146,7 +146,7 @@ static void transmission(webs_t* wp, char_t *mpath, char_t *query)
 
 		nvram_commit(RT2860_NVRAM);
 		nvram_close(RT2860_NVRAM);
-		firewall_rebuild();
+		firewall_rebuild(0);
 		doSystem("service transmission restart");
 	} else if (0 == strcmp(submit, "start")) {
 		doSystem("service transmission start");

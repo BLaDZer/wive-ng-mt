@@ -103,12 +103,13 @@ static int getPortFilteringInputRules(webs_t *wp, char** params, int nparams)
 }
 
 
-void firewall_rebuild(void)
+void firewall_rebuild(int flushconntrack)
 {
 	//rebuild firewall scripts in etc
 	firewall_rebuild_etc();
 	doSystem("service iptables restart");
-	doSystem("echo f > /proc/net/nf_conntrack");
+	if (flushconntrack)
+	    doSystem("echo f > /proc/net/nf_conntrack");
 }
 
 /* goform/portForward */
@@ -124,7 +125,7 @@ static void portForward(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -146,7 +147,7 @@ static void portFiltering(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -164,7 +165,7 @@ static void portFilteringInput(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -195,7 +196,7 @@ static void setFirewallDMZ(webs_t* wp, char_t *path, char_t *query)
 			ngx_nvram_set(wp, "DMZEnable", "0");
 		}
 	}
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -215,7 +216,6 @@ parameter_fetch_t alg_params[] =
 static void setFirewallALG(webs_t* wp, char_t *path, char_t *query)
 {
 	setupParameters(wp, alg_params, 1);
-	firewall_rebuild();
 	doSystem("/etc/init.d/modules load_nat_helpers");
 //	websHeader(wp);
 	websDone(wp, 200);
@@ -232,7 +232,7 @@ parameter_fetch_t firewall_params[] =
 static void setFirewall(webs_t* wp, char_t *path, char_t *query)
 {
 	setupParameters(wp, firewall_params, 1);
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }
@@ -253,7 +253,7 @@ parameter_fetch_t content_filtering_args[] =
 static void webContentFilterSetup(webs_t* wp, char_t *path, char_t *query)
 {
 	setupParameters(wp, content_filtering_args, 1);
-	firewall_rebuild();
+	firewall_rebuild(1);
 //	websHeader(wp);
 	websDone(wp, 200);
 }

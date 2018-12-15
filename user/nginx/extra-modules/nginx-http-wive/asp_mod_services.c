@@ -446,7 +446,7 @@ static void cwmpConfig(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	firewall_rebuild();
+	firewall_rebuild(0);
 	doSystem("service cwmpd restart");
 
 //	websHeader(wp);
@@ -462,7 +462,7 @@ static void cwmpEnableAuto(webs_t* wp, char_t *path, char_t *query)
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
-	firewall_rebuild();
+	firewall_rebuild(0);
 	doSystem("service cwmpd restart");
 	websDone(wp, 200);
 }
@@ -530,7 +530,7 @@ void formIptAccounting(webs_t* wp, char_t *path, char_t *query)
 		}
 	}
 
-    firewall_rebuild();
+    firewall_rebuild(0);
     websRedirect(wp, "/services/account.asp");
 }
 
@@ -713,7 +713,7 @@ static void l2tpConfig(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	firewall_rebuild();
+	firewall_rebuild(1);
 	doSystem("service vpnserver restart");
 
 //	websHeader(wp);
@@ -822,7 +822,7 @@ static void radiusConfig(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	firewall_rebuild();
+	firewall_rebuild(0);
 	if (!strcmp(radius_secret, ssecret))
 		doSystem("service radius reload");
 	else

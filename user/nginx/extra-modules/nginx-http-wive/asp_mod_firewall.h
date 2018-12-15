@@ -12,5 +12,5 @@
 #include "asp_mod_helpers.h"
 
 void asp_mod_firewall_init();
-void firewall_rebuild();
+void firewall_rebuild(int flushconntrack);
 #endif //__ASP_MOD_FIREWALL_H__
