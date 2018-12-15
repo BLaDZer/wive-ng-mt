@@ -90,8 +90,8 @@ if [ "$vendorspecific" = "" ]; then
 	# only if work or more than one hour without CWMP configure get
 	if [ "$uptime" -lt "3600" ]; then
 	    $LOG "ISP not support TR case - disable now."
+	    nvram_set 2860 cwmpdEnabled 0
 	fi
-	nvram_set 2860 cwmpdEnabled 0
     fi
     exit 0
 fi
