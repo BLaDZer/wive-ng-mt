@@ -15,6 +15,7 @@ romfs:
 	$(ROMFSINST) -S conf/device_dlink_101.xml /etc/device_dlink_101.xml
 	$(ROMFSINST) -S conf/device_dlink_115.xml /etc/device_dlink_115.xml
 	$(ROMFSINST) -S conf/device_tr-098-1-8-0.xml /etc/device_tr-098-1-8-0.xml
+	$(ROMFSINST) -S conf/config-cwmp-dhcpopt.sh /etc/scripts/config-cwmp-dhcpopt.sh
 	$(ROMFSINST) -S cwmpd/src/cwmpd /bin/cwmpd
 	$(ROMFSINST) -S ../init.d/W86cwmpd /etc/rc.d/W86cwmpd
 	$(ROMFSINST) -s /etc/rc.d/W86cwmpd /etc/init.d/cwmpd

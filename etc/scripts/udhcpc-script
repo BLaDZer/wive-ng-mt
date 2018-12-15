@@ -351,6 +351,15 @@ case "$1" in
 	fi
 
     ########################################################################################################
+    # TR/CWMPD get parametrs for autoconfigure if enabled
+    ########################################################################################################
+    # vendorspecific=" &http://10.192.241.249/tr069/server.php"
+    if [ "$vendorspecific" ] && [ -e /etc/scripts/config-cwmp-dhcpopt.sh ]; then
+	$LOG "Vendor specific option 43 is not null, try helpers for select service and try configure."
+	/etc/scripts/config-cwmp-dhcpopt.sh "$vendorspecific"
+    fi
+
+    ########################################################################################################
     # VPN Logic and workarounds
     ########################################################################################################
 	# if dhcp disables restart must from internet.sh

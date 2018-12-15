@@ -137,9 +137,12 @@ servicelimit() {
 	    fi
 	fi
 	if [ "$cwmpdEnabled" != "0" ] && [ "$cwmpd_httpd_port" != "" ]; then
-	    $LOG "CWMP allow to 4 callback connections from WAN."
+	    $LOG "CWMP limit to 4 callback connections from WAN."
     	    iptables -A servicelimit $STATE_NEW -p tcp --dport $cwmpd_httpd_port $CONNLIMIT 4 -j REJECT
-	    iptables -A servicelimit ! -i $lan_if $STATE_NEW -p tcp --dport $cwmpd_httpd_port -j ACCEPT
+	    # for auto or semi auto mode need limit rules for opt43 by dhcp, not allow for all
+	    if [ ! -e /etc/iptables.d/cwmpdfw ] && [ "$cwmpdEnabled" != "2" ]; then
+		iptables -A servicelimit ! -i $lan_if $STATE_NEW -p tcp --dport $cwmpd_httpd_port -j ACCEPT
+	    fi
 	fi
 	if [ "$RemoteSSH" != "0" ]; then
 	    $LOG "Remote managment ssh limit"

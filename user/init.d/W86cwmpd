@@ -12,27 +12,28 @@ LOG="logger -t cwmpd"
 
 start() {
     get_param
-    if [ "$cwmpdEnabled" = "1" ]; then
+
+    # cwmp allways use url by dhcp if exist
+    # only if ISP not send url by dhcp use static mode
+    if [ "$cwmpdEnabled" = "1" ] && [ "$acs_url" = "" ]; then
 	( # send to background
 	$LOG "Starting CWMPD"
-	export DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
-	export VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
 	cwmpd
 	) & # send to background
-    fi
-
-    if [ "$cwmpdEnabled" = "2" ]; then
+    elif [ "$cwmpdEnabled" != "0" ] && [ "$acs_url" != "" ]; then
 	( # send to background
 	$LOG "Starting CWMPD"
-	export DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
-	export VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
-	cwmpd cwmp:acs_url=http://192.168.0.63:9595/
+	cwmpd cwmp:acs_url="$acs_url"
 	) & # send to background
     fi
 }
 
 get_param() {
-    :
+    export DEVNAME=`grep "DEVNAME" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+    export VERSIONPKG=`grep "VERSIONPKG" < /etc/version | awk {' print $3 '} | sed s'@"@@'g`
+    if [ -e /tmp/acsurl ]; then
+	acs_url=`tail -qn1 /tmp/acsurl`
+    fi
 }
 
 stop() {

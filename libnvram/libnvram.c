@@ -787,7 +787,7 @@ static int strToIntDef(char* value, int def)
 {
     char* endptr = value;
 
-    if (value == NULL) 
+    if (value == NULL)
         return def;
 
     long val = strtol(value, &endptr, 10);
@@ -812,7 +812,7 @@ int nvram_load_default(void)
 	/* default macs is OK */
 	int mac_err = 0;
         char *LAN_MAC_ADDR = NULL, *WAN_MAC_ADDR = NULL, *WLAN_MAC_ADDR = NULL, *WLAN2_MAC_ADDR = NULL, *CHECKMAC = NULL;
-        char  *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL;
+        char *MngmtLogin = NULL, *MngmtPassword = NULL, *MngmtStoreSettings = NULL, *cwmpdEnabled = NULL, *cwmp_acs_url = NULL;
 
 	/* copy old remotemanagment settings if enabled */
 	MngmtStoreSettings = nvram_get_copy(RT2860_NVRAM, "MngmtStoreSettings");
@@ -820,6 +820,7 @@ int nvram_load_default(void)
 	    MngmtLogin		= nvram_get_copy(RT2860_NVRAM, "MngmtLogin");
 	    MngmtPassword	= nvram_get_copy(RT2860_NVRAM, "MngmtPassword");
 	    cwmpdEnabled	= nvram_get_copy(RT2860_NVRAM, "cwmpdEnabled");
+	    cwmp_acs_url	= nvram_get_copy(RT2860_NVRAM, "cwmp_acs_url");
 
 	    printf("Store remote managment user settings.\n");
 	}
@@ -887,6 +888,7 @@ int nvram_load_default(void)
 
 	    /* restore cwmpd settings */
 	    nvram_bufset(RT2860_NVRAM, "cwmpdEnabled", cwmpdEnabled);
+	    nvram_bufset(RT2860_NVRAM, "cwmp_acs_url", cwmp_acs_url);
 
 	    /* set keep remote managment flag */
 	    nvram_bufset(RT2860_NVRAM, "MngmtStoreSettings", "1");
