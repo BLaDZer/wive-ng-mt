@@ -4452,7 +4452,7 @@
 14) init.d: vlan: fix user priomap for tv/sip ports.<br>
 15) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
 16) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
-17) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites.<br>
+17) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
 18) web: fix vpn login symbols limit.<br>
 19) web: add info message for user if ISP use TR for remote control device.<br>
 20) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
