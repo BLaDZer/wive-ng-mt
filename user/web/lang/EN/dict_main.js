@@ -2,6 +2,7 @@ var lang_dictionary = {
 	'warning header'		: 'Warning!',
 	'warning access password'	: 'Recommended change your password to access the router.',
 	'warning wireless security'	: 'Recommended set the encryption and/or change your password the wireless network.',
+	'warning cwmpd'			: 'The remote control of the router by ISP experts is active.',
 	'button warning'		: 'Go to settings',
 
 	'message apply'			: 'Please wait while settings are applied...',
