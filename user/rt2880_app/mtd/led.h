@@ -22,4 +22,5 @@
 #define LED_ON				1
 #define LED_OFF				0
 
-int ledAlways(int gpio, int on);
+extern int ledAlways(int gpio, int on);
+extern int gpioLedSet(int gpio, unsigned int on, unsigned int off, unsigned int blinks, unsigned int rests, unsigned int times);

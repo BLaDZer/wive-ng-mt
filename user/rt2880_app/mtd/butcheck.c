@@ -8,6 +8,7 @@
 #include <linux/reboot.h>
 #include <linux/autoconf.h>
 #include "linux/ralink_gpio.h"
+#include "led.h"
 
 //#define DEBUG
 
@@ -19,8 +20,9 @@
 #define TEST_BIT(x, n)		(((x) & (1 << n)) != 0)
 #endif
 
-#define LOADDEFAULTS		5
-#define FULLRESETTIME		90
+#define LOADDEFAULTS		5   //seconds
+#define FULLRESETTIME		90  //seconds
+#define CWMPENABLEAUTO		3   //times
 
 static int gpio_read_but(int *value) {
 	int fd, req;
@@ -71,7 +73,7 @@ static int gpio_set_dir_in(int gpio_num) {
 }
 
 static void gpio_wait(void) {
-	int d, presstime_reset=0;
+	int d, presstime_reset=0, short_press_count=0;
 #if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
 	int presstime_wps=0;
 #endif
@@ -102,8 +104,19 @@ static void gpio_wait(void) {
 			    reboot(RB_AUTOBOOT);
 	    		}
 		    }
-		    printf("butcheck_reset: short press - skip...\n");
 		    presstime_reset=0;
+		    short_press_count++;
+#ifdef CWMPDSP
+		    if (short_press_count >= CWMPENABLEAUTO) {
+			short_press_count = 0;
+			printf("butcheck_reset: enable cwmp autoconfigure.\n");
+			gpioLedSet(CONFIG_RALINK_GPIO_SYS_LED, 0, 0, 1, 10, 10);
+    			system("nvram_set 2860 cwmpdEnabled 2 && service cwmpd restart");
+	    		sleep(2);
+			ledAlways(CONFIG_RALINK_GPIO_SYS_LED, LED_ON);
+		    } else
+#endif
+		    printf("butcheck_reset: short press - skip...\n");
 	    	}
 	    }
 #if (CONFIG_RALINK_GPIO_BTN_WPS > 0) && defined(CONFIG_USER_STORAGE)
@@ -132,7 +145,7 @@ static void gpio_wait(void) {
 }
 
 int main(int argc, char *argv[]) {
-    printf("Start buttons WDG\n");
+    printf("Start buttons services\n");
     gpio_wait();
     return 0;
 }

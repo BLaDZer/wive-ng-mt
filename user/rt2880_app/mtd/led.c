@@ -18,7 +18,7 @@
  *   times: stop blinking after <times> times of blinking
  * where 1 tick == 100 ms
  */
-static int gpioLedSet(int gpio, unsigned int on, unsigned int off, unsigned int blinks, unsigned int rests, unsigned int times)
+int gpioLedSet(int gpio, unsigned int on, unsigned int off, unsigned int blinks, unsigned int rests, unsigned int times)
 {
 	int fd;
 	ralink_gpio_led_info led;

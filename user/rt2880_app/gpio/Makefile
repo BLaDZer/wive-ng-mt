@@ -1,4 +1,4 @@
-EXEC = gpio butcheck
+EXEC = gpio
 
 all: $(EXEC)
 
@@ -7,7 +7,6 @@ $(EXEC): $(EXEC).c
 
 romfs:
 	$(ROMFSINST) -S /bin/gpio
-	$(ROMFSINST) -S /bin/butcheck
 
 clean:
 	-rm -f $(EXEC) *.elf *.gdb *.o
