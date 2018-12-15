@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ###################################################################
-# config-cwmp opt43 - configure lanauth client helper for Wive-NG #
+# config-cwmp opt43 - configure cwmp/tr client helper for Wive-NG #
 ###################################################################
 
 #include global config
