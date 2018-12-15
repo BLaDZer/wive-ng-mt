@@ -113,5 +113,5 @@ if [ -e /tmp/acsurl ]; then
 fi
 echo "$url" > /tmp/acsurl
 
-# generate ruleset for security reason
+# generate firewall ruleset for security reason
 generate_netfilter_rules
