@@ -93,6 +93,7 @@ dhcpSecDns=
 dhcpStart=192.168.1.2
 dhcpSwReset=0
 dhcpARPPTimeout=2000
+dhcpStatic=
 DisableOLBC=1
 DMZEnable=0
 DMZIPAddress=
