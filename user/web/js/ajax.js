@@ -537,6 +537,12 @@ function getBrowser() {
     return browsrObj;
 }
 
+function enableCWMPAutoClick() {
+	if (confirm(_("warning cwmpd auto alert"))) {
+		ajaxPostRequest('/goform/cwmpEnableAuto', '', true, null);
+	}
+}
+
 function showWarning() {
 
 	getRunningServices(function(services) {
@@ -545,9 +551,10 @@ function showWarning() {
 		var warning_wireless_security		= NVRAM_AuthMode == "OPEN";
 		var warning_wireless_key		= NVRAM_WPAPSK1 == "1234567890";
 		var warning_cwmpd			= services.indexOf("cwmpd") != -1;
-		var warningHTML					= '';
+		var warning_cwmpd_auto_available	= BUILD_CWMP == '1' && ('<% getCWMPAutoAvailable(); %>' == '1') && NVRAM_cwmpdEnabled == '0';
+		var warningHTML				= '';
 
-		if (warning_access_password || warning_wireless_security || warning_wireless_key || warning_cwmpd) {
+		if (warning_access_password || warning_wireless_security || warning_wireless_key || warning_cwmpd || warning_cwmpd_auto_available) {
 			warningHTML += '<br>';
 			warningHTML += '<table class="warning">';
 			warningHTML += '<tr><th class="warning" align="center" colspan="2">' + _("warning header") + '</th></tr>';
@@ -571,6 +578,13 @@ function showWarning() {
 				warningHTML += '<tr>';
 				warningHTML += '<td class="warning">' + _("warning cwmpd") + '</td>';
 				warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button warning") + '" onClick=\'window.location.assign("/services/cwmp.asp");\'></td>';
+				warningHTML += '</tr>';
+			}
+
+			if  (warning_cwmpd_auto_available) {
+				warningHTML += '<tr>';
+				warningHTML += '<td class="warning">' + _("warning cwmpd auto available") + '</td>';
+				warningHTML += '<td align="right" class="warning"><input align="right" type="button" style="{width:120px;}" value="' + _("button enable") + '" onClick="enableCWMPAutoClick();"></td>';
 				warningHTML += '</tr>';
 			}
 

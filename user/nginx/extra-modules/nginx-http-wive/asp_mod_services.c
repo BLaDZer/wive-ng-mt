@@ -453,6 +453,20 @@ static void cwmpConfig(webs_t* wp, char_t *path, char_t *query)
 	websDone(wp, 200);
 }
 
+static void cwmpEnableAuto(webs_t* wp, char_t *path, char_t *query)
+{
+	nvram_init(RT2860_NVRAM);
+
+	ngx_nvram_bufset(wp, "cwmpdEnabled", "2");
+
+	nvram_commit(RT2860_NVRAM);
+	nvram_close(RT2860_NVRAM);
+
+	firewall_rebuild();
+	doSystem("service cwmpd restart");
+	websDone(wp, 200);
+}
+
 
 //------------------------------------------------------------------------------
 // Samba/Wins setup
@@ -881,6 +895,17 @@ static int getARPwatchBuilt(webs_t *wp, char** params, int nparams) {
 #endif
 }
 
+static int getCWMPAutoAvailable(webs_t *wp, char** params, int nparams) {
+#if defined(CONFIG_USER_CWMPD)
+	FILE *f = fopen("/tmp/acsurl", "rt");
+	if (f) {
+		fclose(f);
+		return outWrite(T("1"));
+	}
+#endif
+	return outWrite(T("0"));
+}
+
 void asp_mod_services_init()
 {
 	// Define forms
@@ -892,6 +917,7 @@ void asp_mod_services_init()
 	websFormDefine(T("l2tpConfig"), l2tpConfig, ADMIN);
 	websFormDefine(T("radiusConfig"), radiusConfig, ADMIN);
 	websFormDefine(T("cwmpConfig"), cwmpConfig, ADMIN);
+	websFormDefine(T("cwmpEnableAuto"), cwmpEnableAuto, ADMIN);
 
 	// Define functions
 	aspDefineFunc(("getL2TPUserList"), getL2TPUserList, EVERYONE);
@@ -909,4 +935,5 @@ void asp_mod_services_init()
 	aspDefineFunc(("getOpenSSLBuilt"), getOpenSSLBuilt, EVERYONE);
 	aspDefineFunc(("getSmbFPBuilt"), getSmbFPBuilt, EVERYONE);
 	aspDefineFunc(("getARPwatchBuilt"), getARPwatchBuilt, EVERYONE);
+	aspDefineFunc(("getCWMPAutoAvailable"), getCWMPAutoAvailable, EVERYONE);
 }

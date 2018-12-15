@@ -3,6 +3,8 @@ var lang_dictionary = {
 	'warning access password'	: 'Recommended change your password to access the router.',
 	'warning wireless security'	: 'Recommended set the encryption and/or change your password the wireless network.',
 	'warning cwmpd'			: 'The remote control of the router by ISP experts is active.',
+	'warning cwmpd auto available'	: 'Your ISP can automatically configure your internet connection. Enable remote control of the router?',
+	'warning cwmpd auto alert'	: 'Are you sure you want to enable remote router control? Before using this feature, check with your provider if the configuration of this router model is supported.',
 	'button warning'		: 'Go to settings',
 
 	'message apply'			: 'Please wait while settings are applied...',
