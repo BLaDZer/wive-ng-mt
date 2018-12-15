@@ -23,14 +23,14 @@ extract_url() {
     fi
 
     # extract first url
-    url=${vendorspecific:2:$length}
+    url="${vendorspecific:2:$length}"
     if [ "$url" = "" ]; then
 	$LOG "ACS URL is null."
 	return
     fi
 
     # base url check
-    isurl=`echo "$url" | grep -iEc "^http://|^https://"`
+    isurl=`echo "${url}" | grep -iEc "^http://|^https://"`
     if [ "$isurl" = "0" ]; then
 	$LOG "ACS URL $url is not http/https url."
 	url=""
