@@ -713,7 +713,7 @@ static void l2tpConfig(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 
-	firewall_rebuild(1);
+	firewall_rebuild(0);
 	doSystem("service vpnserver restart");
 
 //	websHeader(wp);
