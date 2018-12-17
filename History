@@ -4474,5 +4474,6 @@
 36) kernel: net: allow setting mac address of loopback device.<br>
 37) kernel: net: do not inheriting the MAC address of the physical interface.<br>
 38) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
+39) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
 <br>
 <br>
