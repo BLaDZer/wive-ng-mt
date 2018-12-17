@@ -14,10 +14,21 @@ vendorspecific="$1"
 # extract url form option string
 # get first value on option 43 (format id|value_length|value)
 extract_url() {
-    # get and check len
+    # check opt len
+    # first two bytes in option is id and urllength
+    # next http:// is 7 bytes len, and minimal name is one byte
+    # optlen must be > 10 bytes
+    length=`echo ${#vendorspecific}`
+    if [ "$length" -lt "10" ] || [ "2048" -lt "$length" ]; then
+	$LOG "ACS URL $url is incorrect opt length."
+	url=""
+	return
+    fi
+
+    # get and check utr len
     length=`printf "%d" "'${vendorspecific:1:1}"`
-    if [ "$length" = "" ] || [ "$length" = "0" ] || [ "255" -lt "$length" ]; then
-	$LOG "ACS URL $url is incorrect length."
+    if [ "$length" = "" ] || [ "$length" = "0" ]; then
+	$LOG "ACS URL $url is incorrect utl length."
 	url=""
 	return
     fi
