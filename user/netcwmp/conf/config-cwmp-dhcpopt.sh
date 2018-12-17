@@ -28,7 +28,7 @@ extract_url() {
     # get and check utr len
     length=`printf "%d" "'${vendorspecific:1:1}"`
     if [ "$length" = "" ] || [ "$length" = "0" ]; then
-	$LOG "ACS URL $url is incorrect utl length."
+	$LOG "ACS URL $url is incorrect url length."
 	url=""
 	return
     fi
