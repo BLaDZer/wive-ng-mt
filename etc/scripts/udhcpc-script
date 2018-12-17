@@ -354,7 +354,6 @@ case "$1" in
     # TR/CWMPD get parametrs for autoconfigure if enabled
     ########################################################################################################
     if [ -e /etc/scripts/config-cwmp-dhcpopt.sh ]; then
-	$LOG "Vendor specific option 43 is not null, try helpers for select service and try configure."
 	/etc/scripts/config-cwmp-dhcpopt.sh "$vendorspecific"
     fi
 

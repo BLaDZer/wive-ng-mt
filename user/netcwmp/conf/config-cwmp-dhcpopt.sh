@@ -96,6 +96,8 @@ if [ "$vendorspecific" = "" ]; then
     exit 0
 fi
 
+$LOG "Vendor specific option 43 is not null, try helpers for select service and try configure."
+
 # parse, check and normalize acs url from option string
 extract_url
 if [ "$url" = "" ]; then
