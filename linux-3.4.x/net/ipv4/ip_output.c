@@ -193,7 +193,7 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
 		struct sk_buff *skb2;
 
-		skb2 = skb_realloc_headroom(skb, LL_RESERVED_SPACE(dev));
+		skb2 = skb_realloc_headroom(skb, hh_len);
 		if (skb2 == NULL) {
 			kfree_skb(skb);
 			return -ENOMEM;
