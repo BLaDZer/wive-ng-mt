@@ -4444,7 +4444,7 @@
 6) netcwmpd: allow replace some varibles from commandline.<br>
 7) netcwmpd: fix update procedure indication to ACS.<br>
 8) butcheck: add start auto cwmp parametrs get from ISP by 3 short times reset press.<br>
-9) cli: add report mode for cli st dhcp.<br>
+9) cli: add report mode for cli st dhcp/ltp/ntp/ddns/samba.<br>
 10) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
 11) init.d: irqbalance: unify set defaults param for xps/rps.<br>
 12) init.d: irqbalance: disable store RFS flow table for prevent slowdown ppp tunnels.<br>

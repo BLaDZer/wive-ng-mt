@@ -287,6 +287,22 @@ int func_st_l2tp(int argc, char* argv[])
     int l2tp_debug = nvram_get_int(RT2860_NVRAM, "l2tp_srv_debug", 0);
     int l2tp_proxyarp = nvram_get_int(RT2860_NVRAM, "l2tp_srv_proxyarp", 0);
 
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        printf("L2TP Status\t%d\n", l2tp_enabled);
+        printf("L2TP Local IP to use\t%s\n", ip_local);
+        printf("L2TP Allocate from IP range\t%s\n", ip_range);
+        printf("L2TP Adaptive LCP\t%d\n", l2tp_lcp_adapt);
+        printf("L2TP Enable NAT\t%d\n", l2tp_nat);
+        printf("L2TP Allow MPPE\t%d\n", l2tp_mppe);
+        printf("L2TP Allow Debug\t%d\n", l2tp_debug);
+        printf("L2TP Proxyarp\t%d\n", l2tp_proxyarp);
+
+        printf("COMMIT\tl2tp\n");
+        return 0;
+    }
 
     writeHeader("L2TP");
 
@@ -312,6 +328,18 @@ int func_st_ntp(int argc, char* argv[])
     char* tz = nvram_get(RT2860_NVRAM, "TZ");
     char* ntp_server = nvram_get(RT2860_NVRAM, "NTPServerIP");
 
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        printf("NTP Status\t%d\n", ntp_enabled);
+        printf("NTP Timezone\t%s\n", tz);
+        printf("NTP Server IP\t%s\n", ntp_server);
+
+        printf("COMMIT\tntp\n");
+        return 0;
+    }
+
     writeHeader("NTP");
 
     printf("Status:                  %s \n", ntp_enabled?"enabled":"disabled");
@@ -325,6 +353,16 @@ int func_st_ntp(int argc, char* argv[])
 int func_st_ddns(int argc, char* argv[])
 {
     char* ddns_provider = nvram_get(RT2860_NVRAM, "DDNSProvider");
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        printf("DDNS Provider\t%s\n", ddns_provider);
+
+        printf("COMMIT\tddns\n");
+        return 0;
+    }
 
     writeHeader("Dynamic DNS");
     printf("DDNS Provider:           %s \n", ddns_provider[0]?ddns_provider:"None");
@@ -341,6 +379,22 @@ int func_st_samba(int argc, char* argv[])
     char* smb_serverstring = nvram_get(RT2860_NVRAM, "SmbString");
     int smb_oslevel = nvram_get_int(RT2860_NVRAM, "SmbOsLevel", 255);
     int smb_ts_enabled = nvram_get_int(RT2860_NVRAM, "SmbTimeserver", 0);
+
+    if (is_report(argc, argv))
+    {
+        argc--;
+        argv++;
+        printf("SMB Status\t%d\n", smb_enabled);
+
+        printf("SMB Workgroup\t%s\n", smb_workgroup);
+        printf("SMB Netbios name\t%s\n", smb_netbios);
+        printf("SMB Server string\t%s\n", smb_serverstring);
+        printf("SMB OS Level\t%i\n", smb_oslevel);
+        printf("SMB Timeserver\t%d\n", smb_ts_enabled);
+
+        printf("COMMIT\tsamba\n");
+        return 0;
+    }
 
     writeHeader("Samba / WINS");
 
