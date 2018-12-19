@@ -815,7 +815,7 @@ VirtualIF_open(struct net_device *dev)
 #endif
 	netif_start_queue(dev);
 
-	printk("%s: ===> VirtualIF_open\n", dev->name);
+	//printk("%s: ===> VirtualIF_open\n", dev->name);
 	return 0;
 }
 
@@ -824,7 +824,7 @@ VirtualIF_close(struct net_device *dev)
 {
 	netif_tx_disable(dev);
 
-	printk("%s: ===> VirtualIF_close\n", dev->name);
+	//printk("%s: ===> VirtualIF_close\n", dev->name);
 	return 0;
 }
 
