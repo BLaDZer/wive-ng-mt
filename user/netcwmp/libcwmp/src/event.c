@@ -120,7 +120,7 @@ int cwmp_event_global_init(cwmp_t * cwmp)
 {
     unsigned long long starttime = 0;
     unsigned long long endtime = 0;
-    char fmt[20] = {};
+    char fmt[24] = {};
 
     cwmp_log_trace("%s(cwmp=%p)", __func__, (void*)cwmp);
     assert(cwmp != NULL);
@@ -139,6 +139,7 @@ int cwmp_event_global_init(cwmp_t * cwmp)
     cwmp->event_global.start = (time_t)starttime;
     cwmp->event_global.end = (time_t)endtime;
 
+    cwmp_log_debug("event_global_init: key=%s, starttime=%lld, flag=%i", cwmp->event_global.event_key, starttime, cwmp->event_global.event_flag);
     return CWMP_OK;
 }
 
@@ -203,7 +204,7 @@ int cwmp_event_init(cwmp_t *cwmp)
     }
     else    //reboot
     {
-        cwmp_log_info("reboot_flag=%d, key=%s",
+        cwmp_log_debug("reboot_flag=%d, key=%s",
                 cwmp->event_global.event_flag, cwmp->event_global.event_key);
         cwmp_event_set_value(cwmp, INFORM_BOOT, 1, NULL, 0, 0, 0);
         if(cwmp->event_global.event_flag & EVENT_REBOOT_ACS_FLAG)
@@ -219,7 +220,6 @@ int cwmp_event_init(cwmp_t *cwmp)
         cwmp_event_set_value(cwmp, INFORM_MDOWNLOAD, 1, NULL, 0, 0, 0);
         cwmp_event_set_value(cwmp, INFORM_TRANSFERCOMPLETE, 1, cwmp->event_global.event_key, cwmp->event_global.fault_code, cwmp->event_global.start, cwmp->event_global.end);
     }
-
 
     return CWMP_OK;
 }

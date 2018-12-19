@@ -59,6 +59,26 @@ static char SOAP_ENC_ARRAYTYPE[CWMP_NAME_MAX] = {0};
 
 //static parameter_node_t* gs_root_parameter_node = NULL;
 
+int time_to_datatime(datatime_t *nowtime, time_t tn)
+{
+    struct tm t;
+
+#ifdef WIN32
+    memset(&t, 0, sizeof(struct tm));
+#else
+    t = *localtime(&tn);
+#endif
+
+    nowtime->year = t.tm_year + 1900;
+    nowtime->month = t.tm_mon + 1;
+    nowtime->day = t.tm_mday;
+    nowtime->hour = t.tm_hour;
+    nowtime->min = t.tm_min;
+    nowtime->sec = t.tm_sec;
+
+    return CWMP_OK;
+}
+
 
 #define CWMP_TYPE(x) cwmp_get_type_string(x)
 
@@ -1946,7 +1966,7 @@ parameter_list_t* cwmp_create_parameter_list(env_t * env )
     return pl;
 }
 
-xmlnode_t * cwmp_create_current_time_node(env_t * env ,   xmlnode_t * parent, const datatime_t *currentt)
+xmlnode_t * cwmp_create_time_node(env_t * env ,   xmlnode_t * parent, char * nodeName, const datatime_t *currentt)
 {
     char buffer[CWMP_BUF_SIZE];
 
@@ -1960,12 +1980,16 @@ xmlnode_t * cwmp_create_current_time_node(env_t * env ,   xmlnode_t * parent, co
                currentt->min,
                currentt->sec);
 
-    ESA(currTimeNode, cwmp_xml_create_child_node(env ,  parent, NULL, "CurrentTime", buffer));
+    ESA(currTimeNode, cwmp_xml_create_child_node(env ,  parent, NULL, nodeName, buffer));
     ESN(XML_OK, cwmp_xml_set_node_attribute(env ,  currTimeNode, SOAP_XSI_TYPE, SOAP_XSD_DATETIME));
 
     return currTimeNode;
 }
 
+xmlnode_t * cwmp_create_current_time_node(env_t * env ,   xmlnode_t * parent, const datatime_t *currentt)
+{
+    return cwmp_create_time_node(env, parent, "CurrentTime", currentt);
+}
 
 xmlnode_t * cwmp_create_event_node(env_t * env ,  xmlnode_t * parent, const event_list_t * eventlist)
 {
@@ -2906,17 +2930,21 @@ xmldoc_t * cwmp_create_transfercomplete_message(env_t * env ,  header_t * header
     ESA(node, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "CommandKey", evcode->command_key));
     if(evcode->fault_code)
     {
-
-
         ESA(faultStructNode, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "FaultStruct", NULL));
         ESA(faultCode, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultCode", TRitoa(evcode->fault_code)));
         ESA(faultString, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultString", FAULT_STRING(evcode->fault_code)));
-
+    }
+    else
+    {
+        ESA(faultStructNode, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "FaultStruct", "0"));
     }
 
-    ESA(node, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "StartTime", NULL));
-    ESA(node, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "CompleteTime", NULL));
+    datatime_t startTime, endTime;
+    time_to_datatime(&startTime, evcode->start);
+    time_to_datatime(&endTime, evcode->end);
 
+    ESA(node, cwmp_create_time_node(env, rpcNode, "StartTime", &startTime ));
+    ESA(node, cwmp_create_time_node(env, rpcNode, "CompleteTime", &endTime ));
 
     return doc;
 }

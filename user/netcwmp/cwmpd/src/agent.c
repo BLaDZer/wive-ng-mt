@@ -537,7 +537,7 @@ eventcheck:
             TRstrncpy(ec.command_key, cwmp->event_global.event_key, COMMAND_KEY_LEN);
             ec.fault_code = cwmp->event_global.fault_code;
             ec.start = cwmp->event_global.start;
-            ec.end = cwmp->event_global.end;
+            ec.end = time(NULL); //cwmp->event_global.end; // because we cannot write actual endtime to nvram after flashing
             newdoc = cwmp_session_create_transfercomplete_message(session, &ec, doctmppool);
         }
 
@@ -714,7 +714,7 @@ void cwmp_agent_session(cwmp_t * cwmp)
     cwmp_agent_start_session(cwmp);
 }
 
-int cwmp_agent_download_file(download_arg_t * dlarg)
+int cwmp_agent_download_file(cwmp_t* cwmp, download_arg_t * dlarg)
 {
     int httpcode = 0;
     char * fromurl = dlarg->url;
@@ -742,7 +742,7 @@ int cwmp_agent_download_file(download_arg_t * dlarg)
         if (upgrade) {
             upgrade_set_status(UPGRADE_NONE);
         }
-        cwmp_log_error("ERROR: cwmp_agent_download_file FAULT %i", httpcode);
+        cwmp_log_error("ERROR: cwmp_agent_download_file FAULT %i (url=%s, file=%s)", httpcode, fromurl, tofile);
         return 9001;
     }
 
@@ -754,6 +754,13 @@ int cwmp_agent_download_file(download_arg_t * dlarg)
 
         if (access("/tmp/download.img", F_OK) != -1)
         {
+            time_t starttime = time(NULL);
+
+            // should be here, do not write to nvram after the upgrade process (double starttime because we cannot measure the duration of flashing)
+            cwmp_event_set_value(cwmp, INFORM_TRANSFERCOMPLETE, 1, dlarg->cmdkey, 0, starttime, starttime);
+            cwmp_event_clear_active(cwmp);
+            nvram_commit(RT2860_NVRAM);
+
             firmware_upgrade("/tmp/download.img");
         } else {
             cwmp_log_error("ERROR: downloaded firmware does not exist!");
@@ -887,11 +894,10 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
                 time_t starttime = time(NULL);
                 int faultcode = 0;
 
-                faultcode = cwmp_agent_download_file(dlarg);
+                faultcode = cwmp_agent_download_file(cwmp, dlarg);
 
                 time_t endtime = time(NULL);
                 cwmp_event_set_value(cwmp, INFORM_TRANSFERCOMPLETE, 1,dlarg->cmdkey, faultcode, starttime, endtime);
-
                 free(dlarg);
             }
             break;
@@ -915,7 +921,7 @@ int cwmp_agent_run_tasks(cwmp_t * cwmp)
             case TASK_REBOOT_TAG:
             {
                 //begin reboot system
-                cwmp_log_info("INFO: Rebooting the system ...");
+                cwmp_log_info("Rebooting the system ...");
                 cwmp_event_set_value(cwmp, INFORM_MREBOOT, 1, NULL, 0, 0, 0);
                 cwmp_event_clear_active(cwmp);
                 reboot_now();
