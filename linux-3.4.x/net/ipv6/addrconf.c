@@ -2956,8 +2956,8 @@ static void addrconf_rs_timer(unsigned long data)
 		 * Note: we do not support deprecated "all on-link"
 		 * assumption any longer.
 		 */
-		printk(KERN_DEBUG "%s: no IPv6 routers present\n",
-		       idev->dev->name);
+		//printk(KERN_DEBUG "%s: no IPv6 routers present\n",
+		//       idev->dev->name);
 	}
 
 out:
