@@ -45,7 +45,7 @@ static void ap_assoc_info_debugshow(
 
 
 	wdev = &pAd->ApCfg.MBSSID[pEntry->apidx];
-	printk("%s - Assign AID=%d to %sGHz STA %02x:%02x:%02x:%02x:%02x:%02x%s\n", sAssoc, pEntry->Aid, pRange, PRINT_MAC(pEntry->Addr), sFTSupport);
+	printk("%s - Assign AID=%d to %sGHz AP %02x:%02x:%02x:%02x:%02x:%02x%s\n", sAssoc, pEntry->Aid, pRange, PRINT_MAC(pEntry->Addr), sFTSupport);
 
 #ifdef DOT11_N_SUPPORT
 	if (ie_list->ht_cap_len && WMODE_CAP_N(pAd->CommonCfg.PhyMode))
