@@ -4463,11 +4463,11 @@
 25) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
 26) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
 27) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
-28) kernel: posix-timers: Sanitize overrun handling.<br>
+28) kernel: posix-timers: sanitize overrun handling.<br>
 29) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
-30) kernel  scsi: libiscsi: Fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
+30) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
 31) kernel: mips: r4k_cache: use more efficient cache blast.<br>
-32) kernel: mips: mips-gic: Let the core set struct irq_common_data affinity.<br>
+32) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
 33) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
 34) kernel: net: ip: do not set RFS core on error queue reads.<br>
 35) kernel: net: update RFS target at poll for tcp/udp.<br>
