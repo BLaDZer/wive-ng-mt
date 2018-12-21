@@ -110,11 +110,11 @@ PNDIS_PACKET RTMP_AllocateRxPacketBuffer(
 	DEV_ALLOC_SKB(pReserved, pkt, Length);
 #endif	
 
-	if (pkt == NULL) {
+	if (unlikely(pkt == NULL)) {
 		DBGPRINT(RT_DEBUG_ERROR, ("can't allocate rx %ld size packet\n",Length));
 	}
 
-	if (pkt) {
+	if (likely(pkt)) {
 		*VirtualAddress = (PVOID) pkt->data;	
 		*phy_addr = PCI_MAP_SINGLE_DEV(pPciDev, *VirtualAddress, Length,  -1, RTMP_PCI_DMA_FROMDEVICE);
 		

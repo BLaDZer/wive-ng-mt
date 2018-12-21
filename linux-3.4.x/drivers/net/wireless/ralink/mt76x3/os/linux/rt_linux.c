@@ -340,32 +340,33 @@ void RtmpFlashWrite(
 #endif /* defined(RTMP_RBUS_SUPPORT) || defined(RTMP_FLASH_SUPPORT) */
 
 
-PNDIS_PACKET RtmpOSNetPktAlloc(VOID *dummy, int size)
+inline PNDIS_PACKET RtmpOSNetPktAlloc(VOID *dummy, int size)
 {
 	struct sk_buff *skb;
 	/* Add 2 more bytes for ip header alignment */
 	skb = dev_alloc_skb(size + 2);
-	if (skb != NULL)
+#ifdef VENDOR_FEATURE2_SUPPORT
+	if (likely(skb))
 		MEM_DBG_PKT_ALLOC_INC(skb);
-
+#endif
 	return ((PNDIS_PACKET) skb);
 }
 
-PNDIS_PACKET RTMP_AllocateFragPacketBuffer(VOID *dummy, ULONG len)
+inline PNDIS_PACKET RTMP_AllocateFragPacketBuffer(VOID *dummy, ULONG len)
 {
 	struct sk_buff *pkt;
 
 	pkt = dev_alloc_skb(len);
 
-	if (pkt == NULL) {
+	if (unlikely(pkt == NULL)) {
 		DBGPRINT(RT_DEBUG_ERROR,
 			 ("can't allocate frag rx %ld size packet\n", len));
 	}
-
-	if (pkt) {
+#ifdef VENDOR_FEATURE2_SUPPORT
+	if (likely(pkt)) {
 		MEM_DBG_PKT_ALLOC_INC(pkt);
 	}
-
+#endif
 	return (PNDIS_PACKET) pkt;
 }
 
@@ -375,7 +376,7 @@ PNDIS_PACKET RTMP_AllocateFragPacketBuffer(VOID *dummy, ULONG len)
 /*
 	The allocated NDIS PACKET must be freed via RTMPFreeNdisPacket()
 */
-NDIS_STATUS RTMPAllocateNdisPacket(
+inline NDIS_STATUS RTMPAllocateNdisPacket(
 	IN VOID *pReserved,
 	OUT PNDIS_PACKET *ppPacket,
 	IN UCHAR *pHeader,
@@ -387,7 +388,7 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 
 	/* Add LEN_CCMP_HDR + LEN_CCMP_MIC for PMF */
 	pPacket = dev_alloc_skb(HeaderLen + DataLen + RTMP_PKT_TAIL_PADDING + LEN_CCMP_HDR + LEN_CCMP_MIC);
-	if (pPacket == NULL) {
+	if (unlikely(pPacket == NULL)) {
 		*ppPacket = NULL;
 #ifdef DBG
 		printk(KERN_ERR "RTMPAllocateNdisPacket Fail\n\n");
@@ -417,7 +418,7 @@ NDIS_STATUS RTMPAllocateNdisPacket(
 	corresponding NDIS_BUFFER and allocated memory.
   ========================================================================
 */
-VOID RTMPFreeNdisPacket(VOID *pReserved, PNDIS_PACKET pPacket)
+inline VOID RTMPFreeNdisPacket(VOID *pReserved, PNDIS_PACKET pPacket)
 {
 	if (pPacket) {
 	    dev_kfree_skb_any(RTPKT_TO_OSPKT(pPacket));
@@ -427,7 +428,7 @@ VOID RTMPFreeNdisPacket(VOID *pReserved, PNDIS_PACKET pPacket)
 }
 
 
-void RTMP_QueryPacketInfo(
+inline void RTMP_QueryPacketInfo(
 	IN PNDIS_PACKET pPacket,
 	OUT PACKET_INFO *info,
 	OUT UCHAR **pSrcBufVA,
@@ -464,7 +465,7 @@ void RTMP_QueryPacketInfo(
 
 
 
-PNDIS_PACKET ClonePacket(PNET_DEV ndev, PNDIS_PACKET pkt, UCHAR *buf, ULONG sz)
+inline PNDIS_PACKET ClonePacket(PNET_DEV ndev, PNDIS_PACKET pkt, UCHAR *buf, ULONG sz)
 {
 	struct sk_buff *pRxPkt, *pClonedPkt;
 
@@ -487,7 +488,7 @@ PNDIS_PACKET ClonePacket(PNET_DEV ndev, PNDIS_PACKET pkt, UCHAR *buf, ULONG sz)
 }
 
 
-PNDIS_PACKET DuplicatePacket(PNET_DEV pNetDev, PNDIS_PACKET pPacket)
+inline PNDIS_PACKET DuplicatePacket(PNET_DEV pNetDev, PNDIS_PACKET pPacket)
 {
 	struct sk_buff *skb;
 	PNDIS_PACKET pRetPacket = NULL;
@@ -504,7 +505,7 @@ PNDIS_PACKET DuplicatePacket(PNET_DEV pNetDev, PNDIS_PACKET pPacket)
 }
 
 
-PNDIS_PACKET duplicate_pkt_vlan(
+inline PNDIS_PACKET duplicate_pkt_vlan(
 	IN PNET_DEV pNetDev,
 	IN USHORT VLAN_VID,
 	IN USHORT VLAN_Priority,
@@ -549,7 +550,7 @@ PNDIS_PACKET duplicate_pkt_vlan(
 
 
 #define TKIP_TX_MIC_SIZE		8
-PNDIS_PACKET duplicate_pkt_with_TKIP_MIC(VOID *pReserved, PNDIS_PACKET pPacket)
+inline PNDIS_PACKET duplicate_pkt_with_TKIP_MIC(VOID *pReserved, PNDIS_PACKET pPacket)
 {
 	struct sk_buff *skb, *newskb;
 
@@ -683,7 +684,7 @@ VOID RtmpOsPktInit(
 }
 
 
-void wlan_802_11_to_802_3_packet(
+inline void wlan_802_11_to_802_3_packet(
 	IN PNET_DEV pNetDev,
 	IN UCHAR OpMode,
 	IN USHORT VLAN_VID,
