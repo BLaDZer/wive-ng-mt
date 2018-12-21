@@ -129,7 +129,7 @@ static void bump_cpu_timer(struct k_itimer *timer,
 			if (delta < incr)
 				continue;
 			timer->it.cpu.expires.sched += incr;
-			timer->it_overrun += 1 << i;
+			timer->it_overrun += 1LL << i;
 			delta -= incr;
 		}
 	} else {
@@ -146,7 +146,7 @@ static void bump_cpu_timer(struct k_itimer *timer,
 			if (delta < incr)
 				continue;
 			timer->it.cpu.expires.cpu += incr;
-			timer->it_overrun += 1 << i;
+			timer->it_overrun += 1LL << i;
 			delta -= incr;
 		}
 	}
