@@ -4436,49 +4436,50 @@
 <br>
 <br>
 <b>7.7.x</b><br>
-1) libwive: add support 160MHz channel in get rates.<br>
-2) libwive: add support 160/80+80/5MHz channels in get bw.<br>
-3) libnvram: fix nvram_get_copy if value is null.<br>
-4) libnvram: in managment store save cwmp_acs_url variable to.<br>
-5) busybox: udhcpc: add opt 43 vendorspecific for use as ACS adress.<br>
-6) netcwmpd: allow replace some varibles from commandline.<br>
-7) netcwmpd: fix update procedure indication to ACS.<br>
-8) butcheck: add start auto cwmp parametrs get from ISP by 3 short times reset press.<br>
-9) cli: add report mode for cli st dhcp/ltp/ntp/ddns/samba.<br>
-10) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
-11) init.d: irqbalance: unify set defaults param for xps/rps.<br>
-12) init.d: irqbalance: disable store RFS flow table for prevent slowdown ppp tunnels.<br>
-13) init.d: irqbalance: use one second timeout for rebalance.<br>
-14) init.d: irqbalance: optimize IPOE without PPE case.<br>
-15) init.d: vlan: fix user priomap for tv/sip ports.<br>
-16) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
-17) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
-18) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
-19) web: fix vpn login symbols limit.<br>
-20) web: add info message for user if ISP use TR for remote control device.<br>
-21) web: add support select device auto configure by user if 43 option not null.<br>
-22) web: avoid some unneded call conntrack flush.<br>
-23) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
-24) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
-25) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
-26) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
-27) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
-28) kernel: posix-timers: sanitize overrun handling.<br>
-29) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
-30) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
-31) kernel: mips: r4k_cache: use more efficient cache blast.<br>
-32) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
-33) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
-34) kernel: net: ip: do not set RFS core on error queue reads.<br>
-35) kernel: net: update RFS target at poll for tcp/udp.<br>
-36) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
-37) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
-38) kernel: net: split eth_mac_addr for better error handling.<br>
-39) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
-40) kernel: net: allow setting mac address of loopback device.<br>
-41) kernel: net: do not inheriting the MAC address of the physical interface.<br>
-42) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
-43) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
-44) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
+1) libopenssl: up to 1.0.2q version.<br>
+2) libwive: add support 160MHz channel in get rates.<br>
+3) libwive: add support 160/80+80/5MHz channels in get bw.<br>
+4) libnvram: fix nvram_get_copy if value is null.<br>
+5) libnvram: in managment store save cwmp_acs_url variable to.<br>
+6) busybox: udhcpc: add opt 43 vendorspecific for use as ACS adress.<br>
+7) netcwmpd: allow replace some varibles from commandline.<br>
+8) netcwmpd: fix update procedure indication to ACS.<br>
+9) butcheck: add start auto cwmp parametrs get from ISP by 3 short times reset press.<br>
+10) cli: add report mode for cli st dhcp/ltp/ntp/ddns/samba.<br>
+11) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
+12) init.d: irqbalance: unify set defaults param for xps/rps.<br>
+13) init.d: irqbalance: disable store RFS flow table for prevent slowdown ppp tunnels.<br>
+14) init.d: irqbalance: use one second timeout for rebalance.<br>
+15) init.d: irqbalance: optimize IPOE without PPE case.<br>
+16) init.d: vlan: fix user priomap for tv/sip ports.<br>
+17) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
+18) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
+19) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
+20) web: fix vpn login symbols limit.<br>
+21) web: add info message for user if ISP use TR for remote control device.<br>
+22) web: add support select device auto configure by user if 43 option not null.<br>
+23) web: avoid some unneded call conntrack flush.<br>
+24) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
+25) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
+26) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
+27) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
+28) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
+29) kernel: posix-timers: sanitize overrun handling.<br>
+30) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
+31) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
+32) kernel: mips: r4k_cache: use more efficient cache blast.<br>
+33) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
+34) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
+35) kernel: net: ip: do not set RFS core on error queue reads.<br>
+36) kernel: net: update RFS target at poll for tcp/udp.<br>
+37) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
+38) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
+39) kernel: net: split eth_mac_addr for better error handling.<br>
+40) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
+41) kernel: net: allow setting mac address of loopback device.<br>
+42) kernel: net: do not inheriting the MAC address of the physical interface.<br>
+43) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
+44) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
+45) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
 <br>
 <br>

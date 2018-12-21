@@ -148,7 +148,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
 
     if (evpmd == NULL) {
         if (qsize == SHA_DIGEST_LENGTH)
-        evpmd = EVP_sha1();
+            evpmd = EVP_sha1();
         else if (qsize == SHA224_DIGEST_LENGTH)
             evpmd = EVP_sha224();
         else
@@ -434,6 +434,12 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
 # endif
 
     EVP_MD_CTX_init(&mctx);
+
+    /* make sure L > N, otherwise we'll get trapped in an infinite loop */
+    if (L <= N) {
+        DSAerr(DSA_F_DSA_BUILTIN_PARAMGEN2, DSA_R_INVALID_PARAMETERS);
+        goto err;
+    }
 
     if (evpmd == NULL) {
         if (N == 160)
