@@ -996,8 +996,6 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 	char_t *wan_mtu;
 	char_t *st_en, *pd, *sd, *st_pr, *st_pr_ya, *st_pr_ag;
 
-	char_t *dns_local_hosts = websGetVar(wp, T("dns_local_hosts"), T(""));
-
 	int opmode = nvram_get_int(RT2860_NVRAM, "OperationMode", -1);
 
 	ip = nm = gw = mac = NULL;
@@ -1114,9 +1112,6 @@ static void setWan(webs_t* wp, char_t *path, char_t *query)
 			nvram_commit(RT2860_NVRAM);
 			nvram_close(RT2860_NVRAM);
 		}
-
-		// Hosts
-		ngx_nvram_bufset(wp, "dns_local_hosts", dns_local_hosts);
 
 		// Reboot
 		if (CHK_IF_DIGIT(reboot, 1)) {

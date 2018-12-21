@@ -31,7 +31,6 @@ var firewall_dictionary = {
 	'forward introduction'				: 'Вы можете настроить правила проброса портов для открытия сервисов в Интернет.',
 	'forward virtual server'			: 'Настройки проброса портов',
 	'forward session limit'				: 'Ограничить число TCP соединений с одного IP',
-	'forward dns redirect'				: 'Перенаправлять DNS на локальный сервер',
 	'forward virtual server setting'		: 'Настройки проброса портов',
 	'forward interface'				: 'Интерфейс',
 	'forward protocol'				: 'Протокол',

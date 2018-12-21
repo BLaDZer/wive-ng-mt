@@ -37,8 +37,19 @@ var services_dictionary = {
 	'services ntp server'			: 'Сервер NTP',
 	'services ntp sync'			: 'Синхронизировать',
 
-	'services ddns title'			: 'Настройки Dynamic DNS',
-	'services ddns introduction'		: 'Здесь вы можете настроить параметры Dynamic DNS.',
+	'services dns title'			: 'Службы DNS',
+	'services dns introduction'		: 'Здесь вы можете настроить параметры DNS.',
+
+	'services dns setup'			: 'Настройки DNS Proxy',
+	'services dns redirect'			: 'Перенаправлять DNS на локальный сервер',
+
+	'services dns hosts title'		: 'Локальные записи DNS',
+	'services dns hosts add title'		: 'Добавить локальную запись DNS',
+	'services dns hosts add button'		: 'Добавить новую запись',
+	'services dns hosts remove'		: 'Удалить запись',
+	'services dns hosts wrong domain'	: 'Введено некорректное доменное имя!',
+	'services dns hosts domain in use'	: 'Введённое доменное имя уже присутствует в списке!',
+
 	'services ddns setup'			: 'Настройки DDNS',
 	'services ddns provider'		: 'Провайдер Dynamic DNS',
 	'services ddns none'			: 'Отсутствует',

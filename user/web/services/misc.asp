@@ -134,7 +134,6 @@
 				form.igmpM2UConv.value				= NVRAM_igmpM2UConvMode;
 				form.upnpEnbl.options.selectedIndex		= NVRAM_upnpEnabled;
 				form.xupnpdEnbl.options.selectedIndex		= NVRAM_xupnpd;
-				form.dnspEnbl.options.selectedIndex		= NVRAM_dnsPEnabled;
 				form.cdpEnbl.options.selectedIndex		= NVRAM_cdpEnabled;
 				form.arpwatchEnbl.options.selectedIndex		= NVRAM_arpwatch;
 				form.lltdEnbl.options.selectedIndex		= NVRAM_lltdEnabled;
@@ -191,7 +190,6 @@
 						[ NVRAM_lldpdEnabled,		'lldpd',		'lldpd',		null,					'vincentbernat.github.io/lldpd' ],
 						[ NVRAM_upnpEnabled,		'upnp',			'miniupnpd',		null,					'miniupnp.free.fr/' ],
 						[ NVRAM_cdpEnabled,		'cdp',			'cdp-send',		null,					'freecode.com/projects/cdp-tools' ],
-						[ NVRAM_dnsPEnabled,		'dnsproxy',		'dnsmasq',		null,					'thekelleys.org.uk/dnsmasq/doc.html' ],
 						[ NVRAM_parproutedEnabled,	'parprouted',		'parprouted',		null,					'freecode.com/projects/parprouted' ],
 						[ NVRAM_arpwatch,		'arpwatch',		'arpwatch',		null,					'wikipedia.org/wiki/Arpwatch' ]
 					]
@@ -702,18 +700,6 @@
 					</tr>
 					<tr id="miscServices_hide">
 						<td class="title" colspan="5" onClick="showServicesMenu();"><img src="/graphics/menu_plus.gif" width="25" height="11"><span id="servicesMiscServicesHide"></span></td>
-					</tr>
-					<tr id="dnsproxy" class="auth-hide-user">
-						<td class="head" id="miscDnsp" style="width: 45%">DNS cached proxy</td>
-						<td>
-							<select name="dnspEnbl" class="normal">
-								<option value="0" id="disable">Disable</option>
-								<option value="1" id="enable">Enable</option>
-							</select>
-						</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
 					</tr>
 					<tr id="upnp">
 						<td class="head" id="miscUpnp" style="width: 45%">UPNP support</td>

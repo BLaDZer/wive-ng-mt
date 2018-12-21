@@ -224,16 +224,45 @@ static void NTPSyncWithHost(webs_t* wp, char_t *path, char_t *query)
 #endif
 
 
-#ifdef CONFIG_USER_INADYN
 /*
- * goform/DDNS
+ * goform/setDns
  */
-static void DDNS(webs_t* wp, char_t *path, char_t *query)
+static void setDns(webs_t* wp, char_t *path, char_t *query)
 {
 	char *ddns_provider, *ddns, *ddns_acc, *ddns_pass;
 	char empty_char = '\0';
 	char_t *submitUrl;
 
+	nvram_init(RT2860_NVRAM);
+
+	char_t *reset		= websGetVar(wp, T("reset"), T("0"));
+
+	if (CHK_IF_DIGIT(reset, 1)) {
+		nvram_fromdef(RT2860_NVRAM, 6, "dnsPEnabled", "DDNSProvider", "DDNS", "DDNSAccount", "DDNSPassword", 
+						"dnsToLocalRedir");
+		return;
+	}
+
+        wp->on_response_ok = DO_RECONFIGURE;
+
+	char_t *dns_proxy	= websGetVar(wp, T("dnsPEnabled"), T("0"));
+	ngx_nvram_bufset(wp, "dnsPEnabled", dns_proxy);
+
+	if (CHK_IF_DIGIT(dns_proxy, 1)) {
+		// DNS to local redirect
+		char_t *dnsToLocalRedir = websGetVar(wp, T("dnsToLocalRedir"), T(""));
+		ngx_nvram_bufset(wp, "dnsToLocalRedir", dnsToLocalRedir);
+
+		// Hosts
+		char_t *dns_local_hosts = websGetVar(wp, T("dns_local_hosts"), T(""));
+		ngx_nvram_bufset(wp, "dns_local_hosts", dns_local_hosts);
+	}
+	else
+	{
+		ngx_nvram_bufset(wp, "dnsToLocalRedir", "0");
+	}
+
+#ifdef CONFIG_USER_INADYN
 	ddns_provider = websGetVar(wp, T("DDNSProvider"), T("none"));
 	ddns = websGetVar(wp, T("DDNS"), T(""));
 	ddns_acc = websGetVar(wp, T("Account"), T(""));
@@ -249,11 +278,12 @@ static void DDNS(webs_t* wp, char_t *path, char_t *query)
 		(checkSemicolon(ddns) || checkSemicolon(ddns_acc) || checkSemicolon(ddns_pass)))
 			goto invalid_values;
 
-	nvram_init(RT2860_NVRAM);
 	ngx_nvram_bufset(wp, "DDNSProvider", ddns_provider);
 	ngx_nvram_bufset(wp, "DDNS", ddns);
 	ngx_nvram_bufset(wp, "DDNSAccount", ddns_acc);
 	ngx_nvram_bufset(wp, "DDNSPassword", ddns_pass);
+#endif
+
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
 
@@ -274,7 +304,6 @@ invalid_values:
 	websRedirect(wp, submitUrl);
 #endif
 }
-#endif
 
 static int getPortStatus(webs_t *wp, char** params, int nparams)
 {
@@ -538,7 +567,7 @@ void asp_mod_management_init()
 	websFormDefine(T("NTPSyncWithHost"), NTPSyncWithHost, EVERYONE);
 #endif
 #ifdef CONFIG_USER_INADYN
-	websFormDefine(T("DDNS"), DDNS, EVERYONE);
+	websFormDefine(T("setDns"), setDns, EVERYONE);
 #endif
 #ifdef CONFIG_SYSLOGD
 	websFormDefine(T("getsyslog"), getsyslog, EVERYONE);

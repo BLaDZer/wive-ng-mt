@@ -31,7 +31,6 @@ var firewall_dictionary = {
 	'forward introduction'				: 'You can set up port forwarding to provide services to the Internet.',
 	'forward virtual server'			: 'Port Forwarding Settings',
 	'forward session limit'				: 'Limit TCP session per ip',
-	'forward dns redirect'				: 'Redirect all DNS to local server',
 	'forward virtual server setting'		: 'Port Forwarding Settings',
 	'forward interface'				: 'Interface',
 	'forward protocol'				: 'Protocol',

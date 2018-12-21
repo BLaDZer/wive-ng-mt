@@ -171,12 +171,6 @@ var internet_dictionary = {
 	'inet dns profile adguard title': 'AdGuard DNS profile',
 	'inet dns profile adguard default'	: 'Default',
 	'inet dns profile adguard family'	: 'Family',
-	'inet dns hosts title'		: 'Local DNS Entries',
-	'inet dns hosts add title'	: 'Add Local DNS Entry',
-	'inet dns hosts add button'	: 'Add New Entry',
-	'inet dns hosts remove'		: 'Remove Entry',
-	'inet dns hosts wrong domain'	: 'Incorrect domain name!',
-	'inet dns hosts domain in use'	: 'The domain name you have entered already exists!',
 
 	'wan title'			: 'Wide Area Network (WAN) Settings',
 	'wan introduction'		: 'You can choose connection type suitable for your environment. Also, you can configure parameters according to the selected connection type.',

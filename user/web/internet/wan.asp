@@ -47,8 +47,6 @@
 				showWarning();
 				init_translation_model();
 				disableControlsByAuth();
-
-				initHosts();
 			}
 
 			function CheckValues(form) {
@@ -119,19 +117,6 @@
 				}
 				form.wan_mtu.value = +form.wan_mtu.value + "";
 
-				var elems = document.getElementsByClassName("hosts_entry_user_defined");
-				var hosts_str = "";
-				for (var i=0;i<elems.length;i++) {
-					var hostarr = hostsEntryToArray(elems[i]);
-					var hosts_ip = hostarr[0];
-					var hosts_name = hostarr[1];
-					if (i>0) hosts_str += ";";
-					hosts_str += hosts_ip;
-					hosts_str += ",";
-					hosts_str += hosts_name;
-				}
-				form.dns_local_hosts.value = hosts_str;
-
 				if (form.wanMac.value != NVRAM_WAN_MAC_ADDR)
 					if (!confirm(_('wan reboot confirm')))
 //						ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
@@ -144,104 +129,6 @@
 					ajaxShowTimer(form, 'timerReloader', _('message apply'), 30);
 
 				return true;
-			}
-
-			function deleteDnsEntry(elem) {
-				var entries_container = document.getElementById("localDnsEntries");
-				entries_container.removeChild(elem);
-			}
-
-			function addDnsEntry() {
-				var entries_container = document.getElementById("localDnsEntries");
-				var ip_elem = document.getElementById("hosts_new_ip");
-				var name_elem = document.getElementById("hosts_new_name");
-
-				try {
-					ipaddr.IPv6.parse(ip_elem.value);
-				} catch (e) {
-					if (!validateIP(ip_elem, true)) {
-						ip_elem.focus();
-						return false;
-					}
-				}
-
-				if (!/^[A-Za-z0-9.-]+$/.test(name_elem.value)) {
-					alert(_('inet dns hosts wrong domain'));
-					name_elem.focus();
-					return false;
-				}
-
-				var elems = document.getElementsByClassName("hosts_entry");
-				for (var i=0;i<elems.length;i++) {
-
-					var hosts_name = hostsEntryToArray(elems[i])[1];
-					if (hosts_name == name_elem.value) {
-						alert(_('inet dns hosts domain in use'));
-						name_elem.focus();
-						return false;
-					}
-				}
-
-				entries_container.appendChild(generateHostsEntry(ip_elem.value, name_elem.value, 1));
-				return true;
-			}
-
-			function hostsEntryToArray(entry) {
-				var user_defined = 0;
-				var ip = "";
-				var name = "";
-
-				if (entry.className.indexOf(" hosts_entry_user_defined") != -1) user_defined = 1;
-				for (var i=0;i<entry.childNodes.length;i++) {
-					var cnode = entry.childNodes[i];
-					if (cnode.className == "hosts_ip") ip = cnode.innerHTML;
-					if (cnode.className == "hosts_name") name = cnode.innerHTML;
-				}
-				return [ip, name, user_defined];
-			}
-
-			function generateHostsEntry(ip, name, user_defined) {
-				var tr = document.createElement("tr");
-				tr.className = "hosts_entry";
-
-				var td = document.createElement("td");
-				td.className = "hosts_ip";
-				td.innerHTML = ip;
-				tr.appendChild(td);
-
-				var td = document.createElement("td");
-				td.className = "hosts_name";
-				td.innerHTML = name;
-				if (!user_defined) td.colSpan = 2;
-				tr.appendChild(td);
-
-				if (user_defined) {
-					tr.className = "hosts_entry hosts_entry_user_defined";
-					var td = document.createElement("td");
-					td.style.textAlign = "center";
-					td.style.cursor = "pointer";
-					td.innerHTML = "<a onClick='deleteDnsEntry(this.parentElement.parentElement);' style='color: #ff0000;' title='" + _("inet dns hosts remove") + "' ><img src='/graphics/cross.png' alt='[x]'></a>";
-					tr.appendChild(td);
-				}
-				return tr;
-			}
-
-			function initHosts(form) {
-				var hosts_data = <% getHosts(); %>;
-
-				var entries_container = document.getElementById("localDnsEntries");
-				while (entries_container.firstChild)
-					entries_container.removeChild(entries_container.firstChild);
-
-				var html = '';
-				for (var i=0;i<hosts_data.length;i++) {
-					var entry = hosts_data[i]; // ip, name, user_defined
-					var ip = entry[0];
-					var name = entry[1];
-					var user_defined = entry[2];
-
-					entries_container.appendChild(generateHostsEntry(ip, name, user_defined));
-				}
 			}
 
 			function connectionTypeSwitch(form) {
@@ -487,47 +374,6 @@
 									<input name="wanMac" id="wanMac" class="mid auth-disable-user">
 									<input type="button" value="Restore Factory" class="auth-disable-user" data-tr="button restore factory" name="restoremac" onClick="this.form.reboot.value = '1'; ajaxPostForm(_('wan reboot confirm'), document.rebootForm, 'rebootReloader', _('message config'), ajaxShowProgress);">
 								</td>
-							</tr>
-						</tbody>
-					</table>
-
-					<input type="hidden" id="dns_local_hosts" name="dns_local_hosts"></input>
-					<table class="form">
-						<col style="width: 40%" />
-						<col style="width: 50%" />
-						<col style="width: 10%" />
-						<thead>
-							<tr>
-								<td class="title" data-tr="inet dns hosts title" colspan="3">Local DNS Entries</td>
-							</tr>
-							<tr>
-								<th data-tr="inet ip">IP Address</th>
-								<th data-tr="inet domain" colspan="2">Domain Name</th>
-							</tr>
-						</thead>
-						<tbody id="localDnsEntries">
-						</tbody>
-					</table>
-
-					<table class="form">
-						<col style="width: 40%" />
-						<col style="width: 60%" />
-						<thead>
-							<tr>
-								<td class="title" data-tr="inet dns hosts add title"  colspan="3">Add Local DNS Entry</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="head" data-tr="inet ip">IP Address</td>
-								<td><input type='text' id='hosts_new_ip'></input></td>
-							</tr>
-							<tr>
-								<td class="head" data-tr="inet domain">Domain Name</td>
-								<td><input type='text' id='hosts_new_name'></input></td>
-							</tr>
-							<tr>
-								<td colspan=2><input type='button' data-tr="inet dns hosts add button" onClick='addDnsEntry();'></input></td>
 							</tr>
 						</tbody>
 					</table>

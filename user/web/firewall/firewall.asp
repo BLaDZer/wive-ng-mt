@@ -32,7 +32,6 @@
 			  _TR("forwardIntroduction",		"forward introduction");
 			  _TR("forwardVirtualSrv",			"forward virtual server");
 			  _TR("ForwardSesLimit_td",			"forward session limit");
-			  _TR("dnsToLocalRedir_td",			"forward dns redirect");
 			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
 			  _TR("forwardVirtualSrvDisable",	"button disable");
 			  _TR("forwardVirtualSrvEnable",	"button enable");
@@ -61,12 +60,6 @@
 				document.getElementById('portFilterEnabled').value			= NVRAM_IPPortFilterEnable;
 				document.getElementById('portFilterInputEnabled').value		= NVRAM_IPPortFilterInputEnable;
 				document.getElementById('ForwardSesLimit').value			= NVRAM_ForwardSesLimit;
-				document.getElementById('dnsToLocalRedir').value			= NVRAM_dnsToLocalRedir;
-				
-				if (NVRAM_dnsPEnabled == '0') {
-					document.getElementById('dnsToLocalRedir').value = 0;
-					displayElement('dnsToLocalRedirRow', false);
-				}
 
 				updateForwardingState(document.portForward);
 				updateFilteringState(document.portFiltering);
@@ -759,15 +752,6 @@
 									<td class="head" id="ForwardSesLimit_td">Limit TCP session per ip</td>
 									<td><input type="text" id="ForwardSesLimit" name="ForwardSesLimit" class="half" maxlength="5">
 										<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
-								</tr>
-								<tr id="dnsToLocalRedirRow">
-									<td class="head" id="dnsToLocalRedir_td">Redirect all DNS to Local server</td>
-									<td>
-										<select id="dnsToLocalRedir" name="dnsToLocalRedir" class="half">
-											<option value="0" id="dnsDisable" selected="selected">Disable</option>
-											<option value="1" id="dnsEnable">Enable</option>
-										</select>
-									</td>
 								</tr>
 							</tbody>
 						</table>

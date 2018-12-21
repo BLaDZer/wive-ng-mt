@@ -1574,7 +1574,7 @@
 												return false;
 											}
 
-											if (!checkInjection(document.getElementById('passphrase').value)) {
+											if (!validateASCII(document.getElementById('passphrase').value, true, false)) {
 												document.getElementById('passphrase').focus();
 												document.getElementById('passphrase').select();
 												alert(_("apcli chars not allowed"));
@@ -1582,7 +1582,7 @@
 											}
 
 											if (BUILD_5GHZ_SUPPORT == '1' && form.radioWirelessEnabledAc.options.selectedIndex > 0)
-												if (!checkInjection(document.getElementById('passphraseinic').value)) {
+												if (!validateASCII(document.getElementById('passphraseinic').value, true, false)) {
 													document.getElementById('passphraseinic').focus();
 													document.getElementById('passphraseinic').select();
 													alert(_("apcli chars not allowed"));

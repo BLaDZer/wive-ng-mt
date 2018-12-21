@@ -145,7 +145,7 @@ if (AUTH_ROLE == 2)
     a.add(505, 500,                          _("treeapp ntp settings"),        "javascript:go('services/ntp.asp');");
 }
 
-if (BUILD_DDNS == "1") a.add(506, 500, _("treeapp ddns settings"),     "javascript:go('services/ddns.asp');");
+a.add(506, 500, _("treeapp dns settings"),     "javascript:go('services/dns.asp');");
 
 if (AUTH_ROLE == 2)
 {

@@ -38,7 +38,7 @@ var tree_dictionary = {
 	'treeapp dhcp server'		: 'DHCP Server',
 	'treeapp l2tp server'		: 'L2TP Server',
 	'treeapp ntp settings'		: 'Network Time',
-	'treeapp ddns settings'		: 'Dynamic DNS',
+	'treeapp dns settings'		: 'DNS Services',
 	'treeapp samba'			: 'Samba/WINS',
 	'treeapp accounting'		: 'IP Accounting',
 	'treeapp radius'		: 'RADIUS Server',

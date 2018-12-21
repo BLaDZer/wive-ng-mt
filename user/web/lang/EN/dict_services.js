@@ -37,8 +37,18 @@ var services_dictionary = {
 	'services ntp server'			: 'NTP Server',
 	'services ntp sync'			: 'Sync with host',
 
-	'services ddns title'			: 'Dynamic DNS Settings',
-	'services ddns introduction'		: 'Here you can configure Dynamic DNS settings.',
+	'services dns title'			: 'DNS Settings',
+	'services dns introduction'		: 'Here you can configure DNS settings.',
+	'services dns setup'			: 'DNS Proxy setup',
+	'services dns redirect'			: 'Redirect all DNS to local server',
+
+	'services dns hosts title'		: 'Local DNS Entries',
+	'services dns hosts add title'		: 'Add Local DNS Entry',
+	'services dns hosts add button'		: 'Add New Entry',
+	'services dns hosts remove'		: 'Remove Entry',
+	'services dns hosts wrong domain'	: 'Incorrect domain name!',
+	'services dns hosts domain in use'	: 'The domain name you have entered already exists!',
+
 	'services ddns setup'			: 'Dynamic DNS setup',
 	'services ddns provider'		: 'Dynamic DNS Provider',
 	'services ddns none'			: 'None',
