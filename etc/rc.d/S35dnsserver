@@ -14,9 +14,16 @@ start() {
   get_param
   gen_hosts
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
+	# create dir for extended configs
+	mkdir -p /etc/dnsmasq.d
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
 	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
+	# adblock auto scripts must be start one time ena never stoped
+	if [ "$dns_adblock" = "1" ] && [ ! -e /tmp/adblock_runing ]; then
+	    # always send to background
+	    /etc/scripts/config-adblock.sh &
+	fi
     fi
 }
 
@@ -67,7 +74,7 @@ gen_hosts() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts`
+    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"

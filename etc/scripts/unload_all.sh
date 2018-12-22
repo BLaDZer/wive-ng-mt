@@ -10,7 +10,7 @@ stop_serv="chillispot transmission samba xupnp radvd dynroute shaper crontab ddn
 	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd watchdog"
 
 kill_apps="chilli_stat chilli transmission-daemon smbd nmbd xupnpd udhcpd dhcp6s radvd zebra ripd crond igmpproxy \
-	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd"
+	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd config-adblock.sh"
 
 unload_modules() {
     echo "Unload modules"

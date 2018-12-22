@@ -28,6 +28,7 @@ CURRENT HOOKS FOR ADVANCED USER LOGIC:
 4) /etc/ppp-l2tpsrv/ip-up(down).d - scripts start after client connect(disconnect) to VPN server
 5) /etc/ppp/ip-up(down).d - scripts start after router connetc(disconnect) to external VPN server
 6) /etc/scripts/wan_up.sh - this script start after WAN up and full services reinit
+7) /etc/dnsmasq.d - include another lot of configuration dnsmasq options
 #############################################################################################################
 McastPhyMode, PHY mode for Multicast frames
 

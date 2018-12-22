@@ -1,0 +1,100 @@
+#!/bin/sh
+
+#############################################################
+# config-adblock.sh - configure ads DNS filter for Wive-NG  #
+#############################################################
+
+# prevent double start adblock configure in one time
+while [ -e /tmp/adblock_runing ]; do
+    # Sleep until file does exists/is created
+    usleep 500000
+done
+touch /tmp/adblock_runing
+
+LOG="logger -t adblock"
+
+list='/tmp/list'
+templist="$list.tmp"
+blocklists="http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
+blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
+blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
+
+get_param()
+{
+    eval `nvram_buf_get 2860 dns_adblock`
+}
+
+get_and_parse_lists()
+{
+    rm -f $templist
+    for url in $blocklists ; do
+	$LOG "Get ad hosts lists from $url"
+	wget "$url" -O - -q -c >> $templist
+    done
+
+    if [ -e $templist ]; then
+	$LOG "Filter and remove duplicated records."
+	dos2unix -u $templist > /dev/null 2>&1
+	grep -vE 'localhost|\|#|^\\|\\$' $templist | grep '^[0-9a-zA-Z]' | awk '{print $2}' | sed $'s/\r$//' | sed '/^$/d' | sort -u > $list
+    fi
+    mv -f "$list" "$templist"
+    if [ -e $templist ]; then
+	domains=`cat $templist`
+	count=0
+	rm -f "$list"
+	for url in $domains ; do
+	    if [ "$url" != "" ]; then
+		echo "address=/${url}/#" >> $list
+		count="$(($count+1))"
+	    fi
+	done
+	if [ -e $list ]; then
+	    mv -f "$list" /etc/dnsmasq.d/ads.conf
+	    $LOG "$count domains blocked by DNS."
+	    service dnsserver restart
+	fi
+	rm -f "$templist"
+    fi
+}
+
+get_addresses() {
+    # get adress from url
+    addr=`echo "${url}" | awk -F/ '{print $3}' | sed 's/:.*//'`
+    if [ "$addr" = "" ]; then
+        $LOG "Error adress get from URL $url."
+        return
+    fi
+}
+
+get_param
+while [ $dns_adblock == "1" ]; do
+	# renew param
+	get_param
+	# check sources
+	reacheble=0
+	for url in $blocklists ; do
+	    get_addresses
+	    ping -q -c 1 "$addr" > /dev/null 2>&1
+	    if [ "$?" -eq 0 ]; then
+		reacheble=1
+		break
+	    fi
+	done
+	# if one or more blocklist source ping ok - try get/parse and apply
+	# if not - wait 15 seconds for new try, may me network not aviable
+	if [ "$reacheble" = "1" ]; then
+		get_and_parse_lists
+		$LOG "Next adblock update after 24h."
+		needsleep="86400"
+	else
+	        $LOG "Server unreachable (internet connection not ready?) wait 15 sec and repeat try."
+		needsleep="15"
+	fi
+	sleep $needsleep
+done
+
+# remove ext dnsmasq option with block lists
+rm -f /etc/dnsmasq.d/ads.conf
+
+# remove running flag
+rm -f /tmp/adblock_runing

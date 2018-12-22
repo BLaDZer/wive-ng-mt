@@ -4455,33 +4455,34 @@
 17) init.d: vlan: fix user priomap for tv/sip ports.<br>
 18) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
 19) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
-20) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
-21) web: fix vpn login symbols limit.<br>
-22) web: add info message for user if ISP use TR for remote control device.<br>
-23) web: add support select device auto configure by user if 43 option not null.<br>
-24) web: avoid some unneded call conntrack flush.<br>
-25) web: move dns server options to different page (future extend config for more usefull variations).<br>
-26) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
-27) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
-28) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
-29) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
-30) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
-31) kernel: posix-timers: sanitize overrun handling.<br>
-32) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
-33) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
-34) kernel: mips: r4k_cache: use more efficient cache blast.<br>
-35) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
-36) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
-37) kernel: net: ip: do not set RFS core on error queue reads.<br>
-38) kernel: net: update RFS target at poll for tcp/udp.<br>
-39) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
-40) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
-41) kernel: net: split eth_mac_addr for better error handling.<br>
-42) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
-43) kernel: net: allow setting mac address of loopback device.<br>
-44) kernel: net: do not inheriting the MAC address of the physical interface.<br>
-45) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
-46) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
-47) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
+20) init.d: add auto dns adblock support.<br>
+21) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
+22) web: fix vpn login symbols limit.<br>
+23) web: add info message for user if ISP use TR for remote control device.<br>
+24) web: add support select device auto configure by user if 43 option not null.<br>
+25) web: avoid some unneded call conntrack flush.<br>
+26) web: move dns server options to different page (future extend config for more usefull variations).<br>
+27) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
+28) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
+29) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
+30) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
+31) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
+32) kernel: posix-timers: sanitize overrun handling.<br>
+33) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
+34) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
+35) kernel: mips: r4k_cache: use more efficient cache blast.<br>
+36) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
+37) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
+38) kernel: net: ip: do not set RFS core on error queue reads.<br>
+39) kernel: net: update RFS target at poll for tcp/udp.<br>
+40) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
+41) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
+42) kernel: net: split eth_mac_addr for better error handling.<br>
+43) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
+44) kernel: net: allow setting mac address of loopback device.<br>
+45) kernel: net: do not inheriting the MAC address of the physical interface.<br>
+46) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
+47) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
+48) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
 <br>
 <br>

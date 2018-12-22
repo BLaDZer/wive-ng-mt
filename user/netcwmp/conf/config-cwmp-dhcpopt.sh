@@ -19,7 +19,7 @@ extract_url() {
     # next http:// is 7 bytes len, and minimal name is one byte
     # optlen must be > 10 bytes
     length=`echo ${#vendorspecific}`
-    if [ "$length" -lt "10" ] || [ "2048" -lt "$length" ]; then
+    if [ "$length" -lt "10" ] || [ "4096" -lt "$length" ]; then
 	$LOG "ACS URL $url is incorrect opt length."
 	url=""
 	return
@@ -53,7 +53,7 @@ get_addresses() {
     # get adress from url
     addr=`echo "${url}" | awk -F/ '{print $3}' | sed 's/:.*//'`
     if [ "$addr" = "" ]; then
-	$LOG "Error adress get for URL $url."
+	$LOG "Error adress get from URL $url."
 	return
     fi
 
