@@ -71,18 +71,18 @@ while [ $dns_adblock == "1" ]; do
 	# renew param
 	get_param
 	# check sources
-	reacheble=0
+	reachable=0
 	for url in $blocklists ; do
 	    get_addresses
 	    ping -q -c 1 "$addr" > /dev/null 2>&1
 	    if [ "$?" -eq 0 ]; then
-		reacheble=1
+		reachable=1
 		break
 	    fi
 	done
 	# if one or more blocklist source ping ok - try get/parse and apply
 	# if not - wait 15 seconds for new try, may me network not aviable
-	if [ "$reacheble" = "1" ]; then
+	if [ "$reachable" = "1" ]; then
 		get_and_parse_lists
 		$LOG "Next adblock update after 24h."
 		needsleep="86400"

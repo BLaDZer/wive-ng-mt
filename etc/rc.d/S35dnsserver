@@ -19,7 +19,7 @@ start() {
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
 	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
-	# adblock auto scripts must be start one time ena never stoped
+	# adblock auto scripts must be start one time and never stoped
 	if [ "$dns_adblock" = "1" ] && [ ! -e /tmp/adblock_runing ]; then
 	    # always send to background
 	    /etc/scripts/config-adblock.sh &
