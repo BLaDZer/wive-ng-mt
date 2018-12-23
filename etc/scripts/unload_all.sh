@@ -10,7 +10,7 @@ stop_serv="chillispot transmission samba xupnp radvd dynroute shaper crontab ddn
 	    igmp_proxy ntp snmpd dnsserver parprouted inetd dhcpd irqbalance lld2d lldpd cwmpd cdp iappd watchdog"
 
 kill_apps="chilli_stat chilli transmission-daemon smbd nmbd xupnpd udhcpd dhcp6s radvd zebra ripd crond igmpproxy \
-	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd config-adblock.sh"
+	    ntpd inadyn miniupnpd dnsmasq snmpd irqbalance inetd lld2d lldpd lldpcli cdp-send ralinkiappd"
 
 unload_modules() {
     echo "Unload modules"
@@ -30,6 +30,10 @@ unload_apps() {
     for serv in $stop_serv
     do
 	service $serv stop > /dev/null 2>&1
+	# stop ext scripts logic for dnsmasq
+	if [ "$serv" = "dnsmasq" ]; then
+	    service $serv adstop > /dev/null 2>&1
+	fi
     done
 
     echo "Kill aplications." # second step terminate and kill application if not correct stopped

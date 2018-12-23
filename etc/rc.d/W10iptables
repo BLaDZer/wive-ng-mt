@@ -5,7 +5,7 @@ while [ -e /tmp/iptables_runing ]; do
     # Sleep until file does exists/is created
     usleep 500000
 done
-touch /tmp/iptables_runing
+echo $$ > /tmp/iptables_runing
 
 #include global config
 . /etc/scripts/global.sh

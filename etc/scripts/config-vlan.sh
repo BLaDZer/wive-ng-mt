@@ -11,7 +11,7 @@ while [ -e /tmp/vlanconfig_runing ]; do
     # Sleep until file does exists/is created
     usleep 500000
 done
-touch /tmp/vlanconfig_runing
+echo $$ > /tmp/vlanconfig_runing
 
 # include kernel config
 . /etc/scripts/config.sh

@@ -9,19 +9,26 @@ while [ -e /tmp/adblock_runing ]; do
     # Sleep until file does exists/is created
     usleep 500000
 done
-touch /tmp/adblock_runing
-
-LOG="logger -t adblock"
-
-list='/tmp/list'
-templist="$list.tmp"
-blocklists="http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
-blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
-blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
+echo $$ > /tmp/adblock_runing
 
 get_param()
 {
-    eval `nvram_buf_get 2860 dns_adblock`
+    eval `nvram_buf_get 2860 dns_adblock dns_adblock_skip`
+
+    LOG="logger -t adblock"
+
+    list='/tmp/list'
+    templist="$list.tmp"
+    blocklists="http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
+    blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
+    blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
+    # skip some counters - prevent break sites view and allow small analitycs
+    unblocklist="liveinternet.ru|counter.yadro.ru|^yadro.ru|top100.ru|mc.yandex.ru|metrica|openstat.net|googletagmanager.com|^stats.g.doubleclick.net|clustrmaps.com"
+    # add user unblock list
+    if [ "$dns_adblock_skip" != "" ]; then
+	unblocklist="$unblocklist|$dns_adblock_skip"
+    fi
+
 }
 
 get_and_parse_lists()
@@ -39,7 +46,12 @@ get_and_parse_lists()
     fi
     mv -f "$list" "$templist"
     if [ -e $templist ]; then
-	domains=`cat $templist`
+	# allow user domains and baisc counters
+	if [ "$unblocklist" != "" ]; then
+	    domains=`cat $templist | grep -vE "$unblocklist"`
+	else
+	    domains=`cat $templist`
+	fi
 	count=0
 	rm -f "$list"
 	for url in $domains ; do

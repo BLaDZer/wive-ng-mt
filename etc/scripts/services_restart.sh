@@ -16,7 +16,7 @@ while [ -e /tmp/servicerestart_runing ]; do
     # Sleep until file does exists/is created
     usleep 500000
 done
-touch /tmp/servicerestart_runing
+echo $$ > /tmp/servicerestart_runing
 
 # include global config
 . /etc/scripts/global.sh
@@ -211,10 +211,17 @@ if [ -e /bin/cwmpd ]; then
 fi
 
 ###########################################################
-# Always rebalance irq by cpus				  #
+# always rebalance irq by cpus				  #
 ###########################################################
 if [ -e /bin/irqbalance ]; then
     service irqbalance restart
+fi
+
+###########################################################
+# start adblock service script				  #
+###########################################################
+if [ -e /etc/scripts/config-adblock.sh ]; then
+    service dnsserver adrestart
 fi
 
 # remove running flag

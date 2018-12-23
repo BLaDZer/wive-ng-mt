@@ -19,11 +19,6 @@ start() {
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
 	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
-	# adblock auto scripts must be start one time and never stoped
-	if [ "$dns_adblock" = "1" ] && [ ! -e /tmp/adblock_runing ]; then
-	    # always send to background
-	    /etc/scripts/config-adblock.sh &
-	fi
     fi
 }
 
@@ -120,6 +115,26 @@ stop() {
     fi
 }
 
+adstart() {
+    get_param
+    # adblock auto scripts must be start one time and never stoped
+    if [ "$dnsPEnabled" = "1" ] && [ "$dns_adblock" = "1" ] && [ ! -e /tmp/adblock_runing ]; then
+        # always send to background
+        /etc/scripts/config-adblock.sh &
+    fi
+}
+
+adstop() {
+    if [ -e /tmp/adblock_runing ]; then
+	pid=`tail -qn1 /tmp/adblock_runing`
+	if [ "$pid" != "" ]; then
+	    kill -9 "$pid"
+	fi
+	rm -f /tmp/adblock_runing
+	rm -f /etc/dnsmasq.d/ads.conf
+    fi
+}
+
 case "$1" in
         start)
             start
@@ -133,11 +148,24 @@ case "$1" in
             reload
             ;;
 
+        adstart)
+            adstart
+            ;;
+
+        adstop)
+            adstop
+            ;;
+
+        adrestart)
+	    adstop
+            adstart
+            ;;
+
         restart)
             stop
             start
             ;;
 
         *)
-            echo $"Usage: $0 {start|stop|reload|restart}"
+            echo $"Usage: $0 {start|stop|reload|restart|adstart|adrestart}"
 esac
