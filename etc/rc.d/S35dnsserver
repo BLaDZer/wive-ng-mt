@@ -11,11 +11,13 @@ fi
 LOG="logger -t dnsserver"
 
 start() {
-  get_param
-  gen_hosts
+    get_param
+    gen_hosts
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	# create dir for extended configs
 	mkdir -p /etc/dnsmasq.d
+	# userdnsblock generate
+	userblockstart
 	$LOG "Starting DNSMASQ"
 	dnsmasq -N -c $cachesize --dns-forward-max=$forwardmax --no-poll --all-servers --clear-on-reload --leasefile-ro \
 	    -u nobody -g nobody -C "$cname" -r "$fname" -H "$hname" &
@@ -69,7 +71,7 @@ gen_hosts() {
 }
 
 get_param() {
-    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock`
+    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"
@@ -113,11 +115,32 @@ stop() {
 	    fi
 	fi
     fi
+    # clean userblock list
+    userblockstop
+}
+
+userblockstart() {
+    if [ "$dns_userblock" != "" ]; then
+	count=0
+	rm -f /etc/dnsmasq.d/userblock.conf
+	for url in $dns_userblock ; do
+	    if [ "$url" != "" ]; then
+		echo "address=/${url}/#" >> /etc/dnsmasq.d/userblock.conf
+		count="$(($count+1))"
+	    fi
+	    $LOG "$count domains user blocked by DNS."
+	done
+    fi
+}
+
+userblockstop() {
+    rm -f /etc/dnsmasq.d/userblock.conf
 }
 
 adstart() {
     get_param
-    # adblock auto scripts must be start one time and never stoped
+    # use different thread for auto update and generate rules
+    # adblock auto scripts must be start one time and never stopped
     if [ "$dnsPEnabled" = "1" ] && [ "$dns_adblock" = "1" ] && [ ! -e /tmp/adblock_runing ]; then
         # always send to background
         /etc/scripts/config-adblock.sh &
