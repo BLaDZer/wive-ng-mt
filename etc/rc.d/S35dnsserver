@@ -128,7 +128,8 @@ adstop() {
     if [ -e /tmp/adblock_runing ]; then
 	pid=`tail -qn1 /tmp/adblock_runing`
 	if [ "$pid" != "" ]; then
-	    kill -9 "$pid"
+	    kill "$pid"		> /dev/null 2>&1
+	    kill -9 "$pid"	> /dev/null 2>&1
 	fi
 	rm -f /tmp/adblock_runing
 	rm -f /etc/dnsmasq.d/ads.conf
