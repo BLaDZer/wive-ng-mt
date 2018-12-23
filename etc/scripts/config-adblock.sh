@@ -19,12 +19,15 @@ get_param()
 
     list='/tmp/list'
     templist="$list.tmp"
+
+    # black list sources
     blocklists="http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
     blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
     blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
     # skip some counters - prevent break sites view and allow small analitycs
     unblocklist="liveinternet.ru|counter.yadro.ru|^yadro.ru|top100.ru|mc.yandex.ru|metrica|openstat.net"
     unblocklist="$unblocklist|google-analytics.com|googletagmanager.com|^stats.g.doubleclick.net|clustrmaps.com"
+
     # add user unblock list
     if [ "$dns_adblock_skip" != "" ]; then
 	unblocklist="$unblocklist|$dns_adblock_skip"
