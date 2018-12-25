@@ -176,7 +176,7 @@ static long ralink_nvram_ioctl(struct file *file, unsigned int req, unsigned lon
 		if ((len > MAX_PERMITTED_VALUE_LEN) || (len < 0))
 			return -EOVERFLOW;
 
-		value = (char *)kzalloc(len, GFP_KERNEL);
+		value = kzalloc(len, GFP_KERNEL);
 		if (!value)
 			return -ENOMEM;
 
@@ -262,7 +262,7 @@ static int init_nvram_block(int index)
 		/* read data from flash */
 		from = from + len;
 		len = fb[i].flash_max_len - len;
-		fb[i].env.data = (char *)kzalloc(len, GFP_KERNEL);
+		fb[i].env.data = kzalloc(len, GFP_KERNEL);
 		if (!fb[i].env.data)
 			return -ENOMEM;
 
@@ -395,7 +395,7 @@ static int nvram_clear(int index)
 	/* construct all 1s env block */
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
+		fb[index].env.data = kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(&nvram_sem);
 			return -ENOMEM;
@@ -447,7 +447,7 @@ static int nvram_commit(int index)
 	/* construct env block */
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
+		fb[index].env.data = kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(&nvram_sem);
 			return -ENOMEM;
@@ -573,7 +573,7 @@ static int const nvram_getall(int index, char *buf)
 
 	len = fb[index].flash_max_len - sizeof(fb[index].env.crc);
 	if (!fb[index].env.data) {
-		fb[index].env.data = (char *)kzalloc(len, GFP_KERNEL);
+		fb[index].env.data = kzalloc(len, GFP_KERNEL);
 		if (!fb[index].env.data) {
 			up(&nvram_sem);
 			return -ENOMEM;
