@@ -2,12 +2,13 @@
 #define _LINUX_ERR_H
 
 #include <linux/compiler.h>
+#include <linux/types.h>
 
 #include <asm/errno.h>
 
 /*
  * Kernel pointers have redundant information, so we can use a
- * scheme where we can return either an error code or a dentry
+ * scheme where we can return either an error code or a normal
  * pointer with the same return value.
  *
  * This should be a per-architecture thing, to allow different
@@ -17,9 +18,7 @@
 
 #ifndef __ASSEMBLY__
 
-#define IS_ERR_VALUE(x) ((typeof(x))(-1) <= 0 \
-				? unlikely((x) <= -1) \
-				: unlikely((x) >= (typeof(x))-MAX_ERRNO))
+#define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
 
 static inline void * __must_check ERR_PTR(long error)
 {
@@ -54,13 +53,16 @@ static inline void * __must_check ERR_CAST(const void *ptr)
 	return (void *) ptr;
 }
 
-static inline int __must_check PTR_RET(const void *ptr)
+static inline int __must_check PTR_ERR_OR_ZERO(const void *ptr)
 {
 	if (IS_ERR(ptr))
 		return PTR_ERR(ptr);
 	else
 		return 0;
 }
+
+/* Deprecated */
+#define PTR_RET(p) PTR_ERR_OR_ZERO(p)
 
 #endif
 
