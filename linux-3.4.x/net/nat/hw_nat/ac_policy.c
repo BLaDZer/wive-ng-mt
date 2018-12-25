@@ -116,7 +116,7 @@ uint32_t AcAddNode(AcPlcyNode * NewNode)
 		return AC_SUCCESS;
 	}
 
-	node = (AcPlcyNode *) kmalloc(sizeof(AcPlcyNode), GFP_ATOMIC);
+	node = kmalloc(sizeof(AcPlcyNode), GFP_ATOMIC);
 
 	if (node == NULL) {
 		return AC_FAIL;

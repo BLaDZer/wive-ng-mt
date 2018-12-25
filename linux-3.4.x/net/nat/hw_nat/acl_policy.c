@@ -321,7 +321,7 @@ uint32_t AclAddNode(AclPlcyNode * NewNode)
 		return ACL_SUCCESS;
 	}
 
-	node = (AclPlcyNode *) kmalloc(sizeof(AclPlcyNode), GFP_ATOMIC);
+	node = kmalloc(sizeof(AclPlcyNode), GFP_ATOMIC);
 
 	if (node == NULL) {
 		return ACL_FAIL;

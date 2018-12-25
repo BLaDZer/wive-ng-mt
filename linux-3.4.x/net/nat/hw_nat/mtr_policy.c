@@ -139,7 +139,7 @@ uint32_t MtrAddNode(MtrPlcyNode * NewNode)
 		node->mtr_info = NewNode->mtr_info;
 
 	} else {
-		node = (MtrPlcyNode *) kmalloc(sizeof(MtrPlcyNode), GFP_ATOMIC);
+		node = kmalloc(sizeof(MtrPlcyNode), GFP_ATOMIC);
 
 		if (node == NULL) {
 			return MTR_FAIL;
