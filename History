@@ -4485,5 +4485,6 @@
 47) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
 48) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
 49) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
+50) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
 <br>
 <br>

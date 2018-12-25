@@ -680,8 +680,6 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 #endif /* DOT11_VHT_AC */
 			}
 
-			//NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
-
 			/* prepare channel information */
 #ifdef EXT_BUILD_CHANNEL_LIST
 			BuildBeaconChList(pAd, TmpFrame, &TmpLen2);
@@ -699,7 +697,7 @@ DBGPRINT(RT_DEBUG_OFF, ("%s():shiang! PeerProbeReqSanity failed!\n", __FUNCTION_
 				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
 			{
 				TmpLen2 = 0;
-				NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+				NdisZeroMemory(TmpFrame, 256);
 				RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
 			}
 #endif /* DOT11K_RRM_SUPPORT */

@@ -201,7 +201,7 @@ VOID APMakeBssBeacon(RTMP_ADAPTER *pAd, INT apidx)
 				&& (pAd->CommonCfg.RegulatoryClass[0] != 0))
 			{
 				TmpLen2 = 0;
-				NdisZeroMemory(TmpFrame, sizeof(TmpFrame));
+				NdisZeroMemory(TmpFrame, 256);
 				RguClass_BuildBcnChList(pAd, TmpFrame, &TmpLen2);
 			}		
 #endif /* DOT11K_RRM_SUPPORT */
