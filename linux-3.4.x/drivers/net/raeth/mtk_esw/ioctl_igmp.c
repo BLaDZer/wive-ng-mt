@@ -726,7 +726,7 @@ esw_mcast_group_event(const u8 *mac_src, const u8 *mac_dst, const char *dev_name
 #endif
 
 	/* create work (do not touch MDIO registers in softirq context) */
-	mw = (struct mcast_work *)kmalloc(sizeof(struct mcast_work), GFP_ATOMIC);
+	mw = kmalloc(sizeof(struct mcast_work), GFP_ATOMIC);
 	if (mw) {
 		INIT_WORK(&mw->ws, mcast_group_event_wq);
 		memcpy(mw->mac_src, mac_src, ETH_ALEN);
