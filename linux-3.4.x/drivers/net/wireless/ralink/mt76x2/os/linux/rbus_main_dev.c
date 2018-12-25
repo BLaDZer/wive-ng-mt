@@ -168,7 +168,6 @@ int __init rt2880_module_init(void)
 	dev_ret = device_create(cl, NULL, dev, NULL, "mynull");
 	
 	cdev_init(&dev_reg_cdev, &dev_reg_fops);
-	dev_reg_cdev.owner = THIS_MODULE;	
 
 	cdev_err = cdev_add(&dev_reg_cdev, MKDEV(dev_reg_major, 0), DEVNUM_COUNT);
 	if(cdev_err){
