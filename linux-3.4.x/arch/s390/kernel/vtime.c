@@ -166,9 +166,9 @@ cputime64_t s390_get_idle_time(int cpu)
 
 	do {
 		now = get_clock();
-		sequence = ACCESS_ONCE(idle->sequence);
-		idle_enter = ACCESS_ONCE(idle->idle_enter);
-		idle_exit = ACCESS_ONCE(idle->idle_exit);
+		sequence = READ_ONCE(idle->sequence);
+		idle_enter = READ_ONCE(idle->idle_enter);
+		idle_exit = READ_ONCE(idle->idle_exit);
 	} while ((sequence & 1) || (idle->sequence != sequence));
 	return idle_enter ? ((idle_exit ? : now) - idle_enter) : 0;
 }

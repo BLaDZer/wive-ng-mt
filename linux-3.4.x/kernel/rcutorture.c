@@ -235,7 +235,7 @@ rcutorture_shutdown_notify(struct notifier_block *unused1,
  */
 static void rcutorture_shutdown_absorb(char *title)
 {
-	if (ACCESS_ONCE(fullstop) == FULLSTOP_SHUTDOWN) {
+	if (READ_ONCE(fullstop) == FULLSTOP_SHUTDOWN) {
 		printk(KERN_NOTICE
 		       "rcutorture thread %s parking due to system shutdown\n",
 		       title);
@@ -1377,7 +1377,7 @@ rcu_torture_shutdown(void *arg)
 	unsigned long jiffies_snap;
 
 	VERBOSE_PRINTK_STRING("rcu_torture_shutdown task started");
-	jiffies_snap = ACCESS_ONCE(jiffies);
+	jiffies_snap = READ_ONCE(jiffies);
 	while (ULONG_CMP_LT(jiffies_snap, shutdown_time) &&
 	       !kthread_should_stop()) {
 		delta = shutdown_time - jiffies_snap;
@@ -1387,7 +1387,7 @@ rcu_torture_shutdown(void *arg)
 			       "jiffies remaining\n",
 			       torture_type, delta);
 		schedule_timeout_interruptible(delta);
-		jiffies_snap = ACCESS_ONCE(jiffies);
+		jiffies_snap = READ_ONCE(jiffies);
 	}
 	if (kthread_should_stop()) {
 		VERBOSE_PRINTK_STRING("rcu_torture_shutdown task stopping");

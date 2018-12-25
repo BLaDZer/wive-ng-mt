@@ -733,7 +733,7 @@ idmap_pipe_downcall(struct file *filp, const char __user *src, size_t mlen)
 	 * will have been woken up and someone else may now have used
 	 * idmap_key_cons - so after this point we may no longer touch it.
 	 */
-	cons = ACCESS_ONCE(idmap->idmap_key_cons);
+	cons = READ_ONCE(idmap->idmap_key_cons);
 	idmap->idmap_key_cons = NULL;
 
 	if (mlen != sizeof(im)) {
@@ -777,7 +777,7 @@ idmap_pipe_destroy_msg(struct rpc_pipe_msg *msg)
 	struct idmap *idmap = data->idmap;
 	struct key_construction *cons;
 	if (msg->errno) {
-		cons = ACCESS_ONCE(idmap->idmap_key_cons);
+		cons = READ_ONCE(idmap->idmap_key_cons);
 		idmap->idmap_key_cons = NULL;
 		complete_request_key(cons, msg->errno);
 	}

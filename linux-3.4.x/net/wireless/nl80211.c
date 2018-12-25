@@ -7778,7 +7778,7 @@ static bool __nl80211_unexpected_frame(struct net_device *dev, u8 cmd,
 	struct sk_buff *msg;
 	void *hdr;
 	int err;
-	u32 nlpid = ACCESS_ONCE(wdev->ap_unexpected_nlpid);
+	u32 nlpid = READ_ONCE(wdev->ap_unexpected_nlpid);
 
 	if (!nlpid)
 		return false;
@@ -8126,7 +8126,7 @@ void cfg80211_report_obss_beacon(struct wiphy *wiphy,
 	struct cfg80211_registered_device *rdev = wiphy_to_dev(wiphy);
 	struct sk_buff *msg;
 	void *hdr;
-	u32 nlpid = ACCESS_ONCE(rdev->ap_beacons_nlpid);
+	u32 nlpid = READ_ONCE(rdev->ap_beacons_nlpid);
 
 	if (!nlpid)
 		return;

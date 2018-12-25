@@ -630,7 +630,7 @@ static ssize_t tun_get_user(struct tun_struct *tun,
 	}
 
 	if (tun->flags & TUN_VNET_HDR) {
-		int vnet_hdr_sz = ACCESS_ONCE(tun->vnet_hdr_sz);
+		int vnet_hdr_sz = READ_ONCE(tun->vnet_hdr_sz);
 
 		if (len < vnet_hdr_sz)
 			return -EINVAL;
@@ -778,7 +778,7 @@ static ssize_t tun_put_user(struct tun_struct *tun,
 	int vnet_hdr_sz = 0;
 
 	if (tun->flags & TUN_VNET_HDR)
-		vnet_hdr_sz = ACCESS_ONCE(tun->vnet_hdr_sz);
+		vnet_hdr_sz = READ_ONCE(tun->vnet_hdr_sz);
 
 	if (!(tun->flags & TUN_NO_PI)) {
 		if ((len -= sizeof(pi)) < 0)

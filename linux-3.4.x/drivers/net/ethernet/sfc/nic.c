@@ -373,7 +373,7 @@ static inline void efx_push_tx_desc(struct efx_tx_queue *tx_queue,
 static inline bool
 efx_may_push_tx_desc(struct efx_tx_queue *tx_queue, unsigned int write_count)
 {
-	unsigned empty_read_count = ACCESS_ONCE(tx_queue->empty_read_count);
+	unsigned empty_read_count = READ_ONCE(tx_queue->empty_read_count);
 
 	if (empty_read_count == 0)
 		return false;
@@ -855,7 +855,7 @@ efx_handle_tx_event(struct efx_channel *channel, efx_qword_t *event)
 	struct efx_nic *efx = channel->efx;
 	int tx_packets = 0;
 
-	if (unlikely(ACCESS_ONCE(efx->reset_pending)))
+	if (unlikely(READ_ONCE(efx->reset_pending)))
 		return 0;
 
 	if (likely(EFX_QWORD_FIELD(*event, FSF_AZ_TX_EV_COMP))) {
@@ -1000,7 +1000,7 @@ efx_handle_rx_event(struct efx_channel *channel, const efx_qword_t *event)
 	struct efx_rx_queue *rx_queue;
 	struct efx_nic *efx = channel->efx;
 
-	if (unlikely(ACCESS_ONCE(efx->reset_pending)))
+	if (unlikely(READ_ONCE(efx->reset_pending)))
 		return;
 
 	/* Basic packet information */

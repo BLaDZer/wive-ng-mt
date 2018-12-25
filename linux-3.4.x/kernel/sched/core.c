@@ -2726,7 +2726,7 @@ static void __update_cpu_load(struct rq *this_rq, unsigned long this_load,
  */
 void update_idle_cpu_load(struct rq *this_rq)
 {
-	unsigned long curr_jiffies = ACCESS_ONCE(jiffies);
+	unsigned long curr_jiffies = READ_ONCE(jiffies);
 	unsigned long load = this_rq->load.weight;
 	unsigned long pending_updates;
 
@@ -2748,7 +2748,7 @@ void update_idle_cpu_load(struct rq *this_rq)
 void update_cpu_load_nohz(void)
 {
 	struct rq *this_rq = this_rq();
-	unsigned long curr_jiffies = ACCESS_ONCE(jiffies);
+	unsigned long curr_jiffies = READ_ONCE(jiffies);
 	unsigned long pending_updates;
 
 	if (curr_jiffies == this_rq->last_load_update_tick)
@@ -3973,7 +3973,7 @@ bool try_wait_for_completion(struct completion *x)
 	 * first without taking the lock so we can
 	 * return early in the blocking case.
 	 */
-	if (!ACCESS_ONCE(x->done))
+	if (!READ_ONCE(x->done))
 		return 0;
 
 	spin_lock_irqsave(&x->wait.lock, flags);

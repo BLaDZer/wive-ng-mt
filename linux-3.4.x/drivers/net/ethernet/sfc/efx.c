@@ -2279,7 +2279,7 @@ out:
 static void efx_reset_work(struct work_struct *data)
 {
 	struct efx_nic *efx = container_of(data, struct efx_nic, reset_work);
-	unsigned long pending = ACCESS_ONCE(efx->reset_pending);
+	unsigned long pending = READ_ONCE(efx->reset_pending);
 
 	if (!pending)
 		return;

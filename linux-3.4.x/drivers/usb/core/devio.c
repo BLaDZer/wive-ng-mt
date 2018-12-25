@@ -129,7 +129,7 @@ static int usbfs_increase_memory_usage(unsigned amount)
 	 * Convert usbfs_memory_mb to bytes, avoiding overflows.
 	 * 0 means use the hard limit (effectively unlimited).
 	 */
-	lim = ACCESS_ONCE(usbfs_memory_mb);
+	lim = READ_ONCE(usbfs_memory_mb);
 	if (lim == 0 || lim > (USBFS_XFER_MAX >> 20))
 		lim = USBFS_XFER_MAX;
 	else

@@ -62,7 +62,7 @@ static void caam_jr_dequeue(unsigned long devarg)
 
 	spin_lock_irqsave(&jrp->outlock, flags);
 
-	head = ACCESS_ONCE(jrp->head);
+	head = READ_ONCE(jrp->head);
 	sw_idx = tail = jrp->tail;
 
 	while (CIRC_CNT(head, tail, JOBR_DEPTH) >= 1 &&
@@ -125,7 +125,7 @@ static void caam_jr_dequeue(unsigned long devarg)
 
 		spin_lock_irqsave(&jrp->outlock, flags);
 
-		head = ACCESS_ONCE(jrp->head);
+		head = READ_ONCE(jrp->head);
 		sw_idx = tail = jrp->tail;
 	}
 
@@ -252,7 +252,7 @@ int caam_jr_enqueue(struct device *dev, u32 *desc,
 	spin_lock_irqsave(&jrp->inplock, flags);
 
 	head = jrp->head;
-	tail = ACCESS_ONCE(jrp->tail);
+	tail = READ_ONCE(jrp->tail);
 
 	if (!rd_reg32(&jrp->rregs->inpring_avail) ||
 	    CIRC_SPACE(head, tail, JOBR_DEPTH) <= 0) {

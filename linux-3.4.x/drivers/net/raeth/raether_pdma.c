@@ -74,28 +74,30 @@ fe_dma_init(END_DEVICE *ei_local)
 		
 		ei_local->txd_buff[i] = NULL;
 		
-		ACCESS_ONCE(txd->txd_info1) = 0;
-		ACCESS_ONCE(txd->txd_info2) = TX2_DMA_DONE;
+		WRITE_ONCE(txd->txd_info1, 0);
+		WRITE_ONCE(txd->txd_info2, TX2_DMA_DONE);
 #if defined (RAETH_PDMA_V2)
-		ACCESS_ONCE(txd->txd_info4) = 0;
+		WRITE_ONCE(txd->txd_info4, 0);
 #else
-		ACCESS_ONCE(txd->txd_info4) = TX4_DMA_QN(3);
+		WRITE_ONCE(txd->txd_info4, TX4_DMA_QN(3));
 #endif
-		ACCESS_ONCE(txd->txd_info3) = 0;
+		WRITE_ONCE(txd->txd_info3, 0);
 	}
 
 	/* init PDMA RX ring */
 	for (i = 0; i < NUM_RX_DESC; i++) {
 		struct PDMA_rxdesc *rxd = &ei_local->rxd_ring[i];
 #if defined (RAETH_PDMA_V2)
-		ACCESS_ONCE(rxd->rxd_info1) = (u32)dma_map_single(NULL, ei_local->rxd_buff[i]->data, MAX_RX_LENGTH + NET_IP_ALIGN, DMA_FROM_DEVICE);
-		ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_SDL0_SET(MAX_RX_LENGTH);
+		WRITE_ONCE(rxd->rxd_info1,
+			   (u32)dma_map_single(NULL, ei_local->rxd_buff[i]->data, MAX_RX_LENGTH + NET_IP_ALIGN, DMA_FROM_DEVICE));
+		WRITE_ONCE(rxd->rxd_info2, RX2_DMA_SDL0_SET(MAX_RX_LENGTH));
 #else
-		ACCESS_ONCE(rxd->rxd_info1) = (u32)dma_map_single(NULL, ei_local->rxd_buff[i]->data, MAX_RX_LENGTH, DMA_FROM_DEVICE);
-		ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_LS0;
+		WRITE_ONCE(rxd->rxd_info1,
+			   (u32)dma_map_single(NULL, ei_local->rxd_buff[i]->data, MAX_RX_LENGTH, DMA_FROM_DEVICE));
+		WRITE_ONCE(rxd->rxd_info2, RX2_DMA_LS0);
 #endif
-		ACCESS_ONCE(rxd->rxd_info3) = 0;
-		ACCESS_ONCE(rxd->rxd_info4) = 0;
+		WRITE_ONCE(rxd->rxd_info3, 0);
+		WRITE_ONCE(rxd->rxd_info4, 0);
 	}
 
 	wmb();
@@ -190,14 +192,14 @@ pdma_write_skb_fragment(END_DEVICE *ei_local,
 		if (*desc_odd == 0) {
 			*txd_info2 = TX2_DMA_SDL0(part_size);
 			
-			ACCESS_ONCE(txd->txd_info1) = part_addr;
-			ACCESS_ONCE(txd->txd_info4) = txd_info4;
+			WRITE_ONCE(txd->txd_info1, part_addr);
+			WRITE_ONCE(txd->txd_info4, txd_info4);
 			
 			if (ls && frag_size == 0) {
 				*txd_info2 |= TX2_DMA_LS0;
 				
-				ACCESS_ONCE(txd->txd_info3) = 0;
-				ACCESS_ONCE(txd->txd_info2) = *txd_info2;
+				WRITE_ONCE(txd->txd_info3, 0);
+				WRITE_ONCE(txd->txd_info2, *txd_info2);
 				
 				/* store skb with LS0 bit */
 				ei_local->txd_buff[desc_idx] = skb;
@@ -216,8 +218,8 @@ pdma_write_skb_fragment(END_DEVICE *ei_local,
 			} else
 				ei_local->txd_buff[desc_idx] = (struct sk_buff *)0xFFFFFFFF; //MAGIC ID
 			
-			ACCESS_ONCE(txd->txd_info3) = part_addr;
-			ACCESS_ONCE(txd->txd_info2) = *txd_info2;
+			WRITE_ONCE(txd->txd_info3, part_addr);
+			WRITE_ONCE(txd->txd_info2, *txd_info2);
 			
 			desc_idx = (desc_idx + 1) % NUM_TX_DESC;
 			*desc_odd = 0;
@@ -425,7 +427,7 @@ dma_xmit_clean(struct net_device *dev, END_DEVICE *ei_local)
 		txd = &ei_local->txd_ring[txd_free_idx];
 		
 		/* check TXD not owned by DMA */
-		if (!(ACCESS_ONCE(txd->txd_info2) & TX2_DMA_DONE))
+		if (!(READ_ONCE(txd->txd_info2) & TX2_DMA_DONE))
 			break;
 		
 		if (skb != (struct sk_buff *)0xFFFFFFFF) {

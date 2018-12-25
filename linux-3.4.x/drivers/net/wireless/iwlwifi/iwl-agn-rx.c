@@ -1180,7 +1180,7 @@ int iwl_rx_dispatch(struct iwl_op_mode *op_mode, struct iwl_rx_cmd_buffer *rxb,
 	 * We need to use ACCESS_ONCE to prevent a case where the handler
 	 * changes between the check and the call.
 	 */
-	pre_rx_handler = ACCESS_ONCE(priv->pre_rx_handler);
+	pre_rx_handler = READ_ONCE(priv->pre_rx_handler);
 	if (pre_rx_handler)
 		pre_rx_handler(priv, rxb);
 	if (priv->ucode_owner != IWL_OWNERSHIP_TM) {

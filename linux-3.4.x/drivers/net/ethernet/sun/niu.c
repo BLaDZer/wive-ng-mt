@@ -6241,7 +6241,7 @@ static void niu_get_rx_stats(struct niu *np,
 
 	pkts = dropped = errors = bytes = 0;
 
-	rx_rings = ACCESS_ONCE(np->rx_rings);
+	rx_rings = READ_ONCE(np->rx_rings);
 	if (!rx_rings)
 		goto no_rings;
 
@@ -6272,7 +6272,7 @@ static void niu_get_tx_stats(struct niu *np,
 
 	pkts = errors = bytes = 0;
 
-	tx_rings = ACCESS_ONCE(np->tx_rings);
+	tx_rings = READ_ONCE(np->tx_rings);
 	if (!tx_rings)
 		goto no_rings;
 

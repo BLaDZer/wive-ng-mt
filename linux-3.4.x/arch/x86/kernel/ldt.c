@@ -81,7 +81,7 @@ static void install_ldt(struct mm_struct *current_mm,
 {
 	/* Synchronizes with smp_read_barrier_depends in load_mm_ldt. */
         barrier();
-        ACCESS_ONCE(current_mm->context.ldt) = ldt;
+        WRITE_ONCE(current_mm->context.ldt, ldt);
 
 	/* Activate the LDT for all CPUs using current_mm. */
 	smp_call_function_many(mm_cpumask(current_mm), flush_ldt, current_mm,

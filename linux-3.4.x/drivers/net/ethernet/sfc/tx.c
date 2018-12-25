@@ -217,7 +217,7 @@ netdev_tx_t efx_enqueue_skb(struct efx_tx_queue *tx_queue, struct sk_buff *skb)
 				 * of read_count. */
 				smp_mb();
 				tx_queue->old_read_count =
-					ACCESS_ONCE(tx_queue->read_count);
+					READ_ONCE(tx_queue->read_count);
 				fill_level = (tx_queue->insert_count
 					      - tx_queue->old_read_count);
 				q_space = efx->txq_entries - 1 - fill_level;
@@ -471,7 +471,7 @@ void efx_xmit_done(struct efx_tx_queue *tx_queue, unsigned int index)
 
 	/* Check whether the hardware queue is now empty */
 	if ((int)(tx_queue->read_count - tx_queue->old_write_count) >= 0) {
-		tx_queue->old_write_count = ACCESS_ONCE(tx_queue->write_count);
+		tx_queue->old_write_count = READ_ONCE(tx_queue->write_count);
 		if (tx_queue->read_count == tx_queue->old_write_count) {
 			smp_mb();
 			tx_queue->empty_read_count =
@@ -820,7 +820,7 @@ static int efx_tx_queue_insert(struct efx_tx_queue *tx_queue,
 			 * queue state from the access of read_count. */
 			smp_mb();
 			tx_queue->old_read_count =
-				ACCESS_ONCE(tx_queue->read_count);
+				READ_ONCE(tx_queue->read_count);
 			fill_level = (tx_queue->insert_count
 				      - tx_queue->old_read_count);
 			q_space = efx->txq_entries - 1 - fill_level;

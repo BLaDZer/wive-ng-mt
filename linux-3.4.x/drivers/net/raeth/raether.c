@@ -387,16 +387,16 @@ dma_recv(struct net_device* dev, END_DEVICE* ei_local, int work_todo)
 		rxd_dma_owner_idx = (rxd_dma_owner_idx + 1) % NUM_RX_DESC;
 		rxd = &ei_local->rxd_ring[rxd_dma_owner_idx];
 		
-		rxd_info2 = ACCESS_ONCE(rxd->rxd_info2);
+		rxd_info2 = READ_ONCE(rxd->rxd_info2);
 		
 		if (!(rxd_info2 & RX2_DMA_DONE))
 			break;
 		
 		/* copy RX desc to CPU */
 #if defined (CONFIG_RAETH_HW_VLAN_RX)
-		rxd_info3 = ACCESS_ONCE(rxd->rxd_info3);
+		rxd_info3 = READ_ONCE(rxd->rxd_info3);
 #endif
-		rxd_info4 = ACCESS_ONCE(rxd->rxd_info4);
+		rxd_info4 = READ_ONCE(rxd->rxd_info4);
 		
 		/* load completed skb pointer */
 		rx_skb = ei_local->rxd_buff[rxd_dma_owner_idx];
@@ -409,9 +409,10 @@ dma_recv(struct net_device* dev, END_DEVICE* ei_local, int work_todo)
 		new_skb = __dev_alloc_skb(MAX_RX_LENGTH + NET_IP_ALIGN, GFP_ATOMIC);
 		if (unlikely(new_skb == NULL)) {
 #if defined (RAETH_PDMA_V2)
-			ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_SDL0_SET(MAX_RX_LENGTH);
+			WRITE_ONCE(rxd->rxd_info2,
+				   RX2_DMA_SDL0_SET(MAX_RX_LENGTH));
 #else
-			ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_LS0;
+			WRITE_ONCE(rxd->rxd_info2, RX2_DMA_LS0);
 #endif
 			wmb();
 			
@@ -437,11 +438,13 @@ dma_recv(struct net_device* dev, END_DEVICE* ei_local, int work_todo)
 		
 		/* map new skb to ring (unmap is not required on generic mips mm) */
 #if defined (RAETH_PDMA_V2)
-		ACCESS_ONCE(rxd->rxd_info1) = (u32)dma_map_single(NULL, new_skb->data, MAX_RX_LENGTH + NET_IP_ALIGN, DMA_FROM_DEVICE);
-		ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_SDL0_SET(MAX_RX_LENGTH);
+		WRITE_ONCE(rxd->rxd_info1,
+			   (u32)dma_map_single(NULL, new_skb->data, MAX_RX_LENGTH + NET_IP_ALIGN, DMA_FROM_DEVICE));
+		WRITE_ONCE(rxd->rxd_info2, RX2_DMA_SDL0_SET(MAX_RX_LENGTH));
 #else
-		ACCESS_ONCE(rxd->rxd_info1) = (u32)dma_map_single(NULL, new_skb->data, MAX_RX_LENGTH, DMA_FROM_DEVICE);
-		ACCESS_ONCE(rxd->rxd_info2) = RX2_DMA_LS0;
+		WRITE_ONCE(rxd->rxd_info1,
+			   (u32)dma_map_single(NULL, new_skb->data, MAX_RX_LENGTH, DMA_FROM_DEVICE));
+		WRITE_ONCE(rxd->rxd_info2, RX2_DMA_LS0);
 #endif
 		wmb();
 		

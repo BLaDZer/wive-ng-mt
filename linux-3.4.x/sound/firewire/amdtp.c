@@ -330,14 +330,14 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
 	syt = calculate_syt(s, cycle);
 
 	buffer = s->buffer.packets[index].buffer;
-	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
+	buffer[0] = cpu_to_be32(READ_ONCE(s->source_node_id_field) |
 				(s->data_block_quadlets << 16) |
 				s->data_block_counter);
 	buffer[1] = cpu_to_be32(CIP_EOH | CIP_FMT_AM | AMDTP_FDF_AM824 |
 				(s->sfc << AMDTP_FDF_SFC_SHIFT) | syt);
 	buffer += 2;
 
-	pcm = ACCESS_ONCE(s->pcm);
+	pcm = READ_ONCE(s->pcm);
 	if (pcm)
 		s->transfer_samples(s, pcm, buffer, data_blocks);
 	else
@@ -371,7 +371,7 @@ static void queue_out_packet(struct amdtp_out_stream *s, unsigned int cycle)
 		ptr = s->pcm_buffer_pointer + data_blocks;
 		if (ptr >= pcm->runtime->buffer_size)
 			ptr -= pcm->runtime->buffer_size;
-		ACCESS_ONCE(s->pcm_buffer_pointer) = ptr;
+		WRITE_ONCE(s->pcm_buffer_pointer, ptr);
 
 		s->pcm_period_pointer += data_blocks;
 		if (s->pcm_period_pointer >= pcm->runtime->period_size) {
@@ -511,8 +511,8 @@ EXPORT_SYMBOL(amdtp_out_stream_start);
  */
 void amdtp_out_stream_update(struct amdtp_out_stream *s)
 {
-	ACCESS_ONCE(s->source_node_id_field) =
-		(fw_parent_device(s->unit)->card->node_id & 0x3f) << 24;
+	WRITE_ONCE(s->source_node_id_field,
+		   (fw_parent_device(s->unit)->card->node_id & 0x3f) << 24);
 }
 EXPORT_SYMBOL(amdtp_out_stream_update);
 
@@ -552,7 +552,7 @@ void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s)
 {
 	struct snd_pcm_substream *pcm;
 
-	pcm = ACCESS_ONCE(s->pcm);
+	pcm = READ_ONCE(s->pcm);
 	if (pcm) {
 		snd_pcm_stream_lock_irq(pcm);
 		if (snd_pcm_running(pcm))

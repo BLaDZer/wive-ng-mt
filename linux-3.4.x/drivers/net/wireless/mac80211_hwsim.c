@@ -721,7 +721,7 @@ static void mac80211_hwsim_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	}
 
 	/* wmediumd mode check */
-	_pid = ACCESS_ONCE(wmediumd_pid);
+	_pid = READ_ONCE(wmediumd_pid);
 
 	if (_pid)
 		return mac80211_hwsim_tx_frame_nl(hw, skb, _pid);
@@ -831,7 +831,7 @@ static void mac80211_hwsim_beacon_tx(void *arg, u8 *mac,
 	mac80211_hwsim_monitor_rx(hw, skb);
 
 	/* wmediumd mode check */
-	_pid = ACCESS_ONCE(wmediumd_pid);
+	_pid = READ_ONCE(wmediumd_pid);
 
 	if (_pid)
 		return mac80211_hwsim_tx_frame_nl(hw, skb, _pid);
@@ -1328,7 +1328,7 @@ static void hwsim_send_ps_poll(void *dat, u8 *mac, struct ieee80211_vif *vif)
 	memcpy(pspoll->ta, mac, ETH_ALEN);
 
 	/* wmediumd mode check */
-	_pid = ACCESS_ONCE(wmediumd_pid);
+	_pid = READ_ONCE(wmediumd_pid);
 
 	if (_pid)
 		return mac80211_hwsim_tx_frame_nl(data->hw, skb, _pid);
@@ -1367,7 +1367,7 @@ static void hwsim_send_nullfunc(struct mac80211_hwsim_data *data, u8 *mac,
 	memcpy(hdr->addr3, vp->bssid, ETH_ALEN);
 
 	/* wmediumd mode check */
-	_pid = ACCESS_ONCE(wmediumd_pid);
+	_pid = READ_ONCE(wmediumd_pid);
 
 	if (_pid)
 		return mac80211_hwsim_tx_frame_nl(data->hw, skb, _pid);

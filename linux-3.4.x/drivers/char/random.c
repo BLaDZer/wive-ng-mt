@@ -499,8 +499,8 @@ static void _mix_pool_bytes(struct entropy_store *r, const void *in,
 	tap5 = r->poolinfo->tap5;
 
 	smp_rmb();
-	input_rotate = ACCESS_ONCE(r->input_rotate);
-	i = ACCESS_ONCE(r->add_ptr);
+	input_rotate = READ_ONCE(r->input_rotate);
+	i = READ_ONCE(r->add_ptr);
 
 	/* mix one byte at a time to simplify size handling and churn faster */
 	while (nbytes--) {
@@ -527,8 +527,8 @@ static void _mix_pool_bytes(struct entropy_store *r, const void *in,
 		input_rotate += i ? 7 : 14;
 	}
 
-	ACCESS_ONCE(r->input_rotate) = input_rotate;
-	ACCESS_ONCE(r->add_ptr) = i;
+	WRITE_ONCE(r->input_rotate, input_rotate);
+	WRITE_ONCE(r->add_ptr, i);
 	smp_wmb();
 
 	if (out)
@@ -598,7 +598,7 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
 
 	DEBUG_ENT("added %d entropy credits to %s\n", nbits, r->name);
 retry:
-	entropy_count = orig = ACCESS_ONCE(r->entropy_count);
+	entropy_count = orig = READ_ONCE(r->entropy_count);
 	entropy_count += nbits;
 
 	if (entropy_count < 0) {
@@ -873,7 +873,7 @@ static size_t account(struct entropy_store *r, size_t nbytes, int min,
 	} else {
 		int entropy_count, orig;
 retry:
-		entropy_count = orig = ACCESS_ONCE(r->entropy_count);
+		entropy_count = orig = READ_ONCE(r->entropy_count);
 		/* If limited, never pull more than available */
 		if (r->limit && nbytes + reserved >= entropy_count / 8)
 			nbytes = entropy_count/8 - reserved;

@@ -1330,7 +1330,7 @@ u32 ip_idents_reserve(u32 hash, int segs)
 {
 	u32 *p_tstamp = ip_tstamps + hash % IP_IDENTS_SZ;
 	atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
-	u32 old = ACCESS_ONCE(*p_tstamp);
+	u32 old = READ_ONCE(*p_tstamp);
 	u32 now = (u32)jiffies;
 	u32 new, delta = 0;
 
@@ -1500,7 +1500,7 @@ reject_redirect:
 
 static bool peer_pmtu_expired(struct inet_peer *peer)
 {
-	unsigned long orig = ACCESS_ONCE(peer->pmtu_expires);
+	unsigned long orig = READ_ONCE(peer->pmtu_expires);
 
 	return orig &&
 	       time_after_eq(jiffies, orig) &&
@@ -1509,7 +1509,7 @@ static bool peer_pmtu_expired(struct inet_peer *peer)
 
 static bool peer_pmtu_cleaned(struct inet_peer *peer)
 {
-	unsigned long orig = ACCESS_ONCE(peer->pmtu_expires);
+	unsigned long orig = READ_ONCE(peer->pmtu_expires);
 
 	return orig &&
 	       cmpxchg(&peer->pmtu_expires, orig, 0) == orig;
@@ -1680,7 +1680,7 @@ out:	kfree_skb(skb);
 
 static void check_peer_pmtu(struct dst_entry *dst, struct inet_peer *peer)
 {
-	unsigned long expires = ACCESS_ONCE(peer->pmtu_expires);
+	unsigned long expires = READ_ONCE(peer->pmtu_expires);
 
 	if (!expires)
 		return;
@@ -1707,7 +1707,7 @@ static void ip_rt_update_pmtu(struct dst_entry *dst, u32 mtu)
 		rt_bind_peer(rt, rt->rt_dst, 1);
 	peer = rt->peer;
 	if (peer) {
-		unsigned long pmtu_expires = ACCESS_ONCE(peer->pmtu_expires);
+		unsigned long pmtu_expires = READ_ONCE(peer->pmtu_expires);
 
 		if (dst_metric_locked(dst, RTAX_MTU))
 			    return;
@@ -3010,7 +3010,7 @@ static int rt_fill_info(struct net *net,
 			ts = peer->tcp_ts;
 			tsage = get_seconds() - peer->tcp_ts_stamp;
 		}
-		expires = ACCESS_ONCE(peer->pmtu_expires);
+		expires = READ_ONCE(peer->pmtu_expires);
 		if (expires) {
 			unsigned long now = jiffies;
 			

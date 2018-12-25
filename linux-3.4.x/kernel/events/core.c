@@ -3007,7 +3007,7 @@ static void put_event(struct perf_event *event)
 		return;
 
 	rcu_read_lock();
-	owner = ACCESS_ONCE(event->owner);
+	owner = READ_ONCE(event->owner);
 	/*
 	 * Matches the smp_wmb() in perf_event_exit_task(). If we observe
 	 * !owner it means the list deletion is complete and we can indeed

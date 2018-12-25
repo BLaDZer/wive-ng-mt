@@ -535,7 +535,7 @@ void falcon_reconfigure_mac_wrapper(struct efx_nic *efx)
 	efx_oword_t reg;
 	int link_speed, isolate;
 
-	isolate = !!ACCESS_ONCE(efx->reset_pending);
+	isolate = !!READ_ONCE(efx->reset_pending);
 
 	switch (link_state->speed) {
 	case 10000: link_speed = 3; break;

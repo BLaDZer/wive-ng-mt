@@ -507,7 +507,7 @@ static int raw_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	 * Doing this indirectly yields the same result.
 	 */
 	hdrincl = inet->hdrincl;
-	hdrincl = ACCESS_ONCE(hdrincl);
+	hdrincl = READ_ONCE(hdrincl);
 	/*
 	 *	Check the flags.
 	 */
