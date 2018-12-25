@@ -1760,7 +1760,7 @@ static void fix_ecc_0(struct ra_nand_chip *ra, int page)
 	int start_page = (page >> CONFIG_NUMPAGE_PER_BLOCK_BIT) << CONFIG_NUMPAGE_PER_BLOCK_BIT;
 	unsigned char *block_buf;
 		
-	block_buf = (unsigned char *) kzalloc(CFG_BLOCKSIZE + CFG_BLOCK_OOBSIZE, GFP_KERNEL | GFP_DMA);
+	block_buf = kzalloc(CFG_BLOCKSIZE + CFG_BLOCK_OOBSIZE, GFP_KERNEL | GFP_DMA);
 	if (!block_buf)
 	{
 		printk("%s: can not allocate buffer\n", __func__);
@@ -3191,7 +3191,7 @@ static int __init ra_nand_init(void)
 	ra_outl(RALINK_PIO_BASE+0x24, ra_inl(RALINK_PIO_BASE+0x24) & ~0x01);
 
 #if !defined (__UBOOT__)
-	ra = (struct ra_nand_chip *)kzalloc(alloc_size, GFP_KERNEL | GFP_DMA);
+	ra = kzalloc(alloc_size, GFP_KERNEL | GFP_DMA);
 #else
 	ra = (struct ra_nand_chip *)malloc(alloc_size);
 #endif

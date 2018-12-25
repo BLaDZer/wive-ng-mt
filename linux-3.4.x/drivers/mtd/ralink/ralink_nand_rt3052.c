@@ -1856,7 +1856,7 @@ static int __init ra_nand_init(void)
 	ra_outl(RALINK_PIO_BASE+0x24, ra_inl(RALINK_PIO_BASE+0x24) & ~0x01);
 
 #if !defined (__UBOOT__)
-	ra = (struct ra_nand_chip *)kzalloc(alloc_size, GFP_KERNEL | GFP_DMA);
+	ra = kzalloc(alloc_size, GFP_KERNEL | GFP_DMA);
 #else
 	ra = (struct ra_nand_chip *)malloc(alloc_size);
 #endif

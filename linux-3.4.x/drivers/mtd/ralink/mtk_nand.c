@@ -1174,7 +1174,7 @@ static void fix_ecc_0(struct mtd_info *mtd, int page)
 	int page_per_block = 1 << page_per_block_shift;
 	int start_page = (page >> page_per_block_shift) << page_per_block_shift;
 
-	block_buf = (unsigned char *) kzalloc((mtd->writesize + mtd->oobsize) * page_per_block, GFP_KERNEL | GFP_DMA);
+	block_buf = kzalloc((mtd->writesize + mtd->oobsize) * page_per_block, GFP_KERNEL | GFP_DMA);
 	if (!block_buf)
 		return;
 
@@ -2172,7 +2172,7 @@ static int load_fact_bbt(struct mtd_info *mtd)
 	fact_bbt_size = total_block >> 2;
 
 	if (fact_bbt_size)
-		fact_bbt = (u8 *)kzalloc(fact_bbt_size, GFP_KERNEL);
+		fact_bbt = kzalloc(fact_bbt_size, GFP_KERNEL);
 
 	if (!fact_bbt)
 		return -ENOMEM;
@@ -2420,7 +2420,6 @@ static struct platform_driver mtk_nand_driver = {
 #endif
 	.driver = {
 		.name = MTK_NAND_DRV_NAME,
-		.owner = THIS_MODULE,
 	},
 };
 
