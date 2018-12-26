@@ -20,8 +20,10 @@ get_param()
     list='/tmp/list'
     templist="$list.tmp"
 
-    # black list sources
-    blocklists="http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
+    # RUSSIAN BLOCK LIST
+    blocklists="http://cdn.raletag.gq/rueasyhosts.txt"
+    # GLOBAL BLOCK LISTS
+    blocklists="$blocklists http://winhelp2002.mvps.org/hosts.txt http://hosts-file.net/ad_servers.txt"
     blocklists="$blocklists https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext"
     blocklists="$blocklists http://www.malwaredomainlist.com/hostslist/hosts.txt"
     # skip some counters - prevent break sites view and allow small analitycs
