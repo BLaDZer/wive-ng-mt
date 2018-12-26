@@ -187,7 +187,7 @@ static void setDhcp(webs_t* wp, char_t *path, char_t *query)
 		nvram_close(RT2860_NVRAM);
 	}
 	// Remove old lease file
-	doSystem("rm -f /var/udhcpd.dhcpLeases");
+	doSystem("rm -f /var/udhcpd.leases");
 	// Restart DHCP service
 	doSystem("service dhcpd restart");
 //	websHeader(wp);

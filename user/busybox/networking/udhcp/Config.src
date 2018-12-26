@@ -37,7 +37,7 @@ config FEATURE_UDHCPD_WRITE_LEASES_EARLY
 
 config DHCPD_LEASES_FILE
 	string "Absolute path to lease file"
-	default "/var/lib/misc/udhcpd.leases"
+	default "/var/udhcpd.leases"
 	depends on UDHCPD
 	help
 	udhcpd stores addresses in a lease file. This is the absolute path

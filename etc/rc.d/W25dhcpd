@@ -13,7 +13,9 @@ start() {
 
 	# cleanup old configs
 	> /etc/udhcpd.conf
-	touch /var/udhcpd.dhcpLeases
+
+	# create lease file
+	touch /var/udhcpd.leases
 
 	# default work interface
 	config-udhcpd.sh -i "$lan_if"
