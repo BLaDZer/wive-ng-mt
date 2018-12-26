@@ -294,7 +294,6 @@ void upload_html_header(webs_t* wp)
 
         outWrite("\n<html>\n<head>\n"
 		"<title>Import Settings</title>\n"
-		"<link rel=\"stylesheet\" href=\"/style/normal_ws.css\" type=\"text/css\">\n"
 		"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n"
 	);
 

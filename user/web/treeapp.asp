@@ -127,7 +127,6 @@ if (NVRAM_OperationMode != '0') {
 	a.add(700,   0, _("treeapp firewall"),              "javascript:a.oo(700);");
 	a.add(701, 700, _("treeapp firewall"),              "javascript:go('firewall/firewall.asp');");
 	a.add(702, 700, _("treeapp alg"),                   "javascript:go('firewall/alg.asp');");
-	a.add(703, 700, _("treeapp dmz"),                   "javascript:go('firewall/DMZ.asp');");
 	if (BUILD_WEBSTR == "1") a.add(704, 700, _("treeapp content filtering"),     "javascript:go('firewall/content_filtering.asp');");
 }
 

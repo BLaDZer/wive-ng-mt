@@ -25,8 +25,7 @@ var firewall_dictionary = {
 	'port filter action accept'			: 'Accept',
 
 	'firewall title'				: 'Other Settings',
-	'firewall bridge warning'			: 'Warning: The current operation mode is \'Bridge mode\' and these settings may not be functional.',
-	'firewall defailt session limit'		: '(default 0 - disabled)',
+	'firewall default session limit'		: '(default 0 - disabled)',
 	'forward title'					: 'Port ForwardingSettings',
 	'forward introduction'				: 'You can set up port forwarding to provide services to the Internet.',
 	'forward virtual server'			: 'Port Forwarding Settings',

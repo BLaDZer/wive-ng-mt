@@ -2928,15 +2928,17 @@ xmldoc_t * cwmp_create_transfercomplete_message(env_t * env ,  header_t * header
     bodyNode        = cwmp_create_body_node(env ,  envelopeNode);
     ESA(rpcNode, cwmp_xml_create_child_node(env ,  bodyNode, NULL, CWMP_RPC_TRANSFERCOMPLETE, NULL));
     ESA(node, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "CommandKey", evcode->command_key));
+    ESA(faultStructNode, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "FaultStruct", NULL));
+
     if(evcode->fault_code)
     {
-        ESA(faultStructNode, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "FaultStruct", NULL));
         ESA(faultCode, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultCode", TRitoa(evcode->fault_code)));
         ESA(faultString, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultString", FAULT_STRING(evcode->fault_code)));
     }
     else
     {
-        ESA(faultStructNode, cwmp_xml_create_child_node(env ,  rpcNode, NULL, "FaultStruct", "0"));
+        ESA(faultCode, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultCode", "0"));
+        ESA(faultString, cwmp_xml_create_child_node(env ,  faultStructNode, NULL, "FaultString", ""));
     }
 
     datatime_t startTime, endTime;

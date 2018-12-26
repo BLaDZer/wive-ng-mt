@@ -25,8 +25,7 @@ var firewall_dictionary = {
 	'port filter action accept'			: 'Разрешить',
 
 	'firewall title'				: 'Другие настройки',
-	'firewall bridge warning'			: 'Внимание: В текущем режиме \'Моста\' данные настройки могут не функционировать.',
-	'firewall defailt session limit'		: '(по умолчанию 0 - неограничено)',
+	'firewall default session limit'		: '(по умолчанию 0 - неограничено)',
 	'forward title'					: 'Настройки проброса портов (Port forwarding)',
 	'forward introduction'				: 'Вы можете настроить правила проброса портов для открытия сервисов в Интернет.',
 	'forward virtual server'			: 'Настройки проброса портов',

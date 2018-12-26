@@ -32,6 +32,10 @@
 				form.dnsPEnabled.options.selectedIndex = NVRAM_dnsPEnabled;
 				form.dnsToLocalRedir.value = NVRAM_dnsToLocalRedir;
 
+				form.dns_adblock.selectedIndex = NVRAM_dns_adblock;
+				form.dns_adblock_skip_text.value = NVRAM_dns_adblock_skip.split("|").join(" ");
+				form.dns_userblock.value = NVRAM_dns_userblock;
+
 				switch (NVRAM_DDNSProvider) {
 					case 'none':			document.getElementById('DDNSProvider').options.selectedIndex = 0;	break;
 					case 'dyndns.org':		document.getElementById('DDNSProvider').options.selectedIndex = 1;	break;
@@ -93,6 +97,8 @@
 					}
 				}
 
+				form.dns_adblock_skip.value = document.getElementById("dns_adblock_skip_text").value.split(" ").join("|");
+
 				var elems = document.getElementsByClassName("hosts_entry_user_defined");
 				var hosts_str = "";
 				for (var i=0;i<elems.length;i++) {
@@ -120,7 +126,8 @@
 
 			function updateVisibility(form) {
 				displayElement('dnsproxy',	BUILD_DNSMASQ);
-				displayElement(['div_hosts', 'div_hosts_add', 'dnsToLocalRedirRow'],	form.dnsPEnabled.value != '0');
+				displayElement(['div_hosts', 'div_hosts_add', 'div_dnsblock', 'dnsToLocalRedirRow'],	form.dnsPEnabled.value != '0');
+				displayElement(['dnsfilter_skip_tr', 'dnsfilter_userblock_tr'], form.dns_adblock.value != '0');
 			}
 
 			function deleteDnsEntry(elem) {
@@ -269,6 +276,40 @@
 						</tbody>
 					</table>
 
+					<table id="div_dnsblock" class="form">
+						<col style="width: 40%"/>
+						<col style="width: 60%"/>
+						<thead>
+							<td class="title" colspan="2" data-tr="services dns filter">DNS Content Filter</td>
+						</thead>
+						<tbody>
+							<tr id="dnsfilter">
+								<td class="head" id="dnsfilter_td" data-tr="services dns filter enable">Enable DNS Filtering</td>
+								<td>
+									<select name="dns_adblock" class="mid" onChange="updateVisibility(this.form);">
+										<option value="0" data-tr="button disable">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr id="dnsfilter_skip_tr">
+								<td class="head" data-tr="services dns filter skip">Do Not Block Domains</td>
+								<td>
+									<input type="text" id="dns_adblock_skip_text"></input>
+									<input type="hidden" id="dns_adblock_skip" name="dns_adblock_skip"></input>
+								</td>
+							</tr>
+
+							<tr id="dnsfilter_userblock_tr">
+								<td class="head" data-tr="services dns filter userblock">Force Block Domains</td>
+								<td>
+									<input type="text" id="dns_userblock" name="dns_userblock"></input>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
 					<input type="hidden" id="dns_local_hosts" name="dns_local_hosts"></input>
 					<table class="form" id="div_hosts">
 						<col style="width: 40%" />
@@ -309,7 +350,6 @@
 							</tr>
 						</tbody>
 					</table>
-
 
 					<table id="div_ddns" class="form">
 						<col style="width: 40%"/>

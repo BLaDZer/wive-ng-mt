@@ -23,39 +23,7 @@
 			var portFilteringInputRules		= [ <% getPortFilteringInputRules(); %> ];
 			var defaultFilterPolicy			= '<% getCfgZero(1, "DefaultFirewallPolicy"); %>';
 
-			function initTranslation() {
-			  _TR("FirewallTitle",				"firewall title");
-			  _TR("bridge_warning",				"firewall bridge warning");
-			  _TR("FirewallSet",				"firewall title");
-			  _TR("defSesLimit",				"firewall defailt session limit");
-			  _TR("forwardTitle",				"forward title");
-			  _TR("forwardIntroduction",		"forward introduction");
-			  _TR("forwardVirtualSrv",			"forward virtual server");
-			  _TR("ForwardSesLimit_td",			"forward session limit");
-			  _TR("forwardVirtualSrvSet",		"forward virtual server setting");
-			  _TR("forwardVirtualSrvDisable",	"button disable");
-			  _TR("forwardVirtualSrvEnable",	"button enable");
-			  _TR("portTitle",					"port title");
-			  _TR("portIntroduction",			"port introduction");
-			  _TR("portBasicSet",				"port basic setting");
-			  _TR("portBasicFilter",			"port basic filter");
-			  _TR("portBasicSetInput",			"port basic setting input");
-			  _TR("portBasicFilterInput",		"port basic filter input");
-			  _TR("portDisable",				"button disable");
-			  _TR("portEnable",					"button enable");
-			  _TR("portInputDisable",			"button disable");
-			  _TR("portInputEnable",			"button enable");
-			  _TR("dnsDisable",					"button disable");
-			  _TR("dnsEnable",					"button enable");
-			  var elements = document.getElementsByTagName('input');
-			  for (i = 0; i < elements.length; i++)
-				if (elements[i].id == "apply")
-					elements[i].value = _("button apply");
-			}
-
 			function initValues() {
-				displayElement('bridge_warning', NVRAM_OperationMode == '0'); // bridge mode
-
 				document.getElementById('portForwardEnabled').value			= NVRAM_PortForwardEnable;
 				document.getElementById('portFilterEnabled').value			= NVRAM_IPPortFilterEnable;
 				document.getElementById('portFilterInputEnabled').value		= NVRAM_IPPortFilterInputEnable;
@@ -65,8 +33,36 @@
 				updateFilteringState(document.portFiltering);
 				updateFilteringInputState(document.portFilteringInput);
 
+				// DMZ
+				document.getElementById('DMZEnabled').options.selectedIndex = +NVRAM_DMZEnable;
+				document.getElementById('dmzLoopback').value = NVRAM_DMZNATLoopback;
+				document.getElementById('DMZIPAddress').value = NVRAM_DMZIPAddress;
+
+				dmzEnableSwitch();
+
 				showWarning();
-				initTranslation();
+				init_translation_model();
+			}
+
+			function checkValuesDMZ(form) {
+				if (document.getElementById('DMZEnabled').options.selectedIndex && !validateIP(document.getElementById('DMZIPAddress'), true)) {
+					document.getElementById('DMZIPAddress').focus();
+					return false;
+				}
+				ajaxShowTimer(form, 'timerReloader', _('message apply'), 15);
+				return true;
+			}
+
+			function dmzEnableSwitch() {
+				enableElements([document.getElementById('DMZIPAddress'), document.getElementById('dmzLoopback')], document.getElementById('DMZEnabled').value == '1');
+				displayElement([ 'dmzAdress', 'dmzLoopback_tr' ], document.getElementById('DMZEnabled').value == '1');
+			}
+
+			function dmzLoopbackWarning() {
+				if (document.getElementById('dmzLoopback').value == '1') {
+					if (!confirm(_("dmz confirm")))
+						document.getElementById('dmzLoopback').value = '0';
+				}
 			}
 
 			function submitForwardForm(form) {
@@ -633,8 +629,8 @@
 			<tr>
 				<td>
 					<!-- Port forwarding -->
-					<h1 id="forwardTitle">Port Forwarding Settings</h1>
-					<p id="forwardIntroduction">Here you can setup port forwarding to provide services to the Internet.</p>
+					<h1 data-tr="forward title">Port Forwarding Settings</h1>
+					<p data-tr="forward introduction">Here you can setup port forwarding to provide services to the Internet.</p>
 					<hr>
 					<iframe name="timerReloader" id="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="portForward" action="/goform/portForward" onSubmit="return submitForwardForm(this);">
@@ -643,13 +639,13 @@
 							<col style="width: 60%" />
 							<tbody>
 								<tr>
-									<td class="title" colspan="2" id="forwardVirtualSrv">Port Forwarding Settings</td>
+									<td class="title" colspan="2" data-tr="forward virtual server">Port Forwarding Settings</td>
 								</tr>
 								<tr>
-									<td class="head" id="forwardVirtualSrvSet"> Port Forwarding Settings </td>
-									<td><select onChange="updateForwardingState(this.form);" id="portForwardEnabled" name="portForwardEnabled" class="half">
-										<option value="0" id="forwardVirtualSrvDisable" selected="selected">Disable</option>
-										<option value="1" id="forwardVirtualSrvEnable">Enable</option>
+									<td class="head" data-tr="forward virtual server setting"> Port Forwarding Settings </td>
+									<td><select onChange="updateForwardingState(this.form);" id="portForwardEnabled" name="portForwardEnabled" class="normal">
+										<option value="0" data-tr="button disable" selected="selected">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
 									</select></td>
 								</tr>
 								<tr id="portForwardingRow">
@@ -661,30 +657,29 @@
 						<table class="buttons">
 							<tr>
 								<td><input type="hidden" name="portForwardRules" value="">
-								<input type="submit" class="normal" id="apply" value="Apply">
+								<input type="submit" class="normal" data-tr="button apply" value="Apply">
 								<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
 						</table>
 					</form>
 					<br>
 					<!-- MAC / IP / Port Filtering Forward-->
-					<h1 id="portTitle">MAC/IP/Port Filtering Settings</h1>
-					<p id="portIntroduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
+					<h1 data-tr="port title">MAC/IP/Port Filtering Settings</h1>
+					<p data-tr="port introduction">Here you can setup firewall rules to protect your network from malware and other security threats from the Internet.</p>
 					<hr>
-					<iframe name="timerReloader2" id="timerReloader2" style="width:0;height:0;border:0px solid #fff;"></iframe>
 					<form method="POST" name="portFiltering" action="/goform/portFiltering" onSubmit="return submitFilterForm(this);">
 						<table class="form">
 							<col style="width: 40%" />
 							<col style="width: 60%" />
 							<tbody>
 								<tr>
-									<td class="title" colspan="2" id="portBasicSet">Basic Settings</td>
+									<td class="title" colspan="2" data-tr="port basic setting">Basic Settings</td>
 								</tr>
 								<tr>
-									<td class="head" id="portBasicFilter"> MAC/IP/Port Filtering </td>
-									<td><select id="portFilterEnabled" name="portFilterEnabled" class="half" onChange="updateFilteringState(this.form);">
-										<option value="0" id="portDisable" selected="selected">Disable</option>
-										<option value="1" id="portEnable">Enable</option>
+									<td class="head" data-tr="port basic filter"> MAC/IP/Port Filtering </td>
+									<td><select id="portFilterEnabled" name="portFilterEnabled" class="normal" onChange="updateFilteringState(this.form);">
+										<option value="0" data-tr="button disable" selected="selected">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
 									</select></td>
 								</tr>
 									<tr id="portFilteringRow">
@@ -696,7 +691,7 @@
 							<tr>
 								<td><input type="hidden" name="portFilteringRules" value="">
 									<input type="hidden" name="defaultFirewallPolicy" value="">
-									<input type="submit" class="normal" id="apply" value="Apply">
+									<input type="submit" class="normal" data-tr="button apply" value="Apply">
 									<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
 						</table>
@@ -709,13 +704,13 @@
 							<col style="width: 60%" />
 							<tbody>
 								<tr>
-									<td class="title" colspan="2" id="portBasicSetInput">Basic Settings</td>
+									<td class="title" colspan="2" data-tr="port basic setting input">Basic Settings</td>
 								</tr>
 								<tr>
-									<td class="head" id="portBasicFilterInput">MAC/IP/Port Filtering</td>
-									<td><select id="portFilterInputEnabled" name="portFilterInputEnabled" class="half" onChange="updateFilteringInputState(this.form);">
-										<option value="0" id="portInputDisable" selected="selected">Disable</option>
-										<option value="1" id="portInputEnable">Enable</option>
+									<td class="head" data-tr="port basic filter input">MAC/IP/Port Filtering</td>
+									<td><select id="portFilterInputEnabled" name="portFilterInputEnabled" class="normal" onChange="updateFilteringInputState(this.form);">
+										<option value="0" data-tr="button disable" selected="selected">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
 									</select></td>
 								</tr>
 									<tr id="portFilteringInputRow">
@@ -727,38 +722,78 @@
 							<tr>
 								<td><input type="hidden" name="portFilteringInputRules" value="">
 									<input type="hidden" name="defaultFirewallInputPolicy" value="">
-									<input type="submit" class="normal" id="apply" value="Apply">
+									<input type="submit" class="normal" data-tr="button apply" value="Apply">
 									<input type="hidden" name="submit-url" value="/firewall/firewall.asp" ></td>
 							</tr>
 						</table>
 					</form>
 					<br>
-					<!-- Other netfilter settings -->
-					<h1 id="FirewallTitle">Other Settings</h1>
-					<div style="display:none;" id="bridge_warning">
-					<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
-					</div>
+
+					<h1 data-tr="dmz title"> DMZ Settings </h1>
+					<p data-tr="dmz introduction"> Here you can setup the De-Militarized Zone (DMZ) to separate your external services from the rest of LAN.</p>
 					<hr>
-					<iframe name="timerReloader3" id="timerReloader3" style="width:0;height:0;border:0px solid #fff;"></iframe>
-					<form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
+					<form method="POST" name="DMZ" action="/goform/setFirewallDMZ">
 						<table class="form">
 							<col style="width: 40%" />
 							<col style="width: 60%" />
 							<tbody>
 								<tr>
-									<td class="title" colspan="2" id="FirewallSet">Firewall Settings</td>
+									<td class="title" colspan="2" data-tr="dmz title">DMZ Settings</td>
 								</tr>
 								<tr>
-									<td class="head" id="ForwardSesLimit_td">Limit TCP session per ip</td>
-									<td><input type="text" id="ForwardSesLimit" name="ForwardSesLimit" class="half" maxlength="5">
-										<font color="#808080" id="defSesLimit">(default 0 - disabled)</font></td>
+									<td class="head" data-tr="dmz setting"> DMZ Settings </td>
+									<td><select onChange="dmzEnableSwitch();" id="DMZEnabled" name="DMZEnabled" class="normal">
+										<option data-tr="button disable" value="0">Disable</option>
+										<option data-tr="button enable"  value="1">Enable</option>
+									</select></td>
+								</tr>
+								<tr id="dmzAdress">
+									<td class="head" data-tr="dmz ipaddr"> DMZ IP Address </td>
+									<td><input type="text" id="DMZIPAddress" name="DMZIPAddress" class="normal"></td>
+								</tr>
+								<tr id="dmzLoopback_tr">
+									<td class="head" id="ldmzLoopback">DMZ NAT loopback</td>
+									<td><select id="dmzLoopback" name="dmzLoopback" class="normal" onChange="dmzLoopbackWarning();">
+										<option value="0" data-tr="button disable">Disable</option>
+										<option value="1" data-tr="button enable">Enable</option>
+									</select></td>
 								</tr>
 							</tbody>
 						</table>
 						<table class="buttons">
 							<tr>
 								<td>
-									<input type="submit" class="normal" id="apply" value="Apply">
+									<input type="submit" class="normal" value="Apply"  data-tr="button apply"  onClick="return checkValuesDMZ(this.form);">
+									<input type="button" class="normal" value="Cancel" data-tr="button cancel" onClick="window.location.reload();">
+									<input type="button" class="normal" value="Reset"  data-tr="button reset"  onClick="resetValues(this.form);">
+									<input type="hidden" name="reset" value="0">
+								</td>
+							</tr>
+						</table>
+					</form>
+
+					<!-- Other netfilter settings -->
+					<h1 data-tr="firewall title">Other Settings</h1>
+					<hr>
+					<form method="POST" name="Firewall" action="/goform/setFirewall" onSubmit="return submitFirewallForm(this);">
+						<table class="form">
+							<col style="width: 40%" />
+							<col style="width: 60%" />
+							<tbody>
+								<tr>
+									<td class="title" colspan="2" data-tr="firewall title">Firewall Settings</td>
+								</tr>
+								<tr>
+									<td class="head" data-tr="forward session limit">Limit TCP session per ip</td>
+									<td><input type="text" id="ForwardSesLimit" name="ForwardSesLimit" class="half" maxlength="5">
+										<font color="#808080" data-tr="firewall default session limit">(default 0 - disabled)</font></td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="buttons">
+							<tr>
+								<td>
+									<input type="submit" class="normal" data-tr="button apply" value="Apply">
 								</td>
 							</tr>
 						</table>

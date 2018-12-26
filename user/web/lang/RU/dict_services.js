@@ -43,6 +43,11 @@ var services_dictionary = {
 	'services dns setup'			: 'Настройки DNS Proxy',
 	'services dns redirect'			: 'Перенаправлять DNS на локальный сервер',
 
+	'services dns filter'			: 'Блокировка рекламы',
+	'services dns filter enable'		: 'Включить фильтрацию DNS',
+	'services dns filter skip'		: 'Не блокировать домены',
+	'services dns filter userblock'		: 'Всегда блокировать домены',
+
 	'services dns hosts title'		: 'Локальные записи DNS',
 	'services dns hosts add title'		: 'Добавить локальную запись DNS',
 	'services dns hosts add button'		: 'Добавить новую запись',

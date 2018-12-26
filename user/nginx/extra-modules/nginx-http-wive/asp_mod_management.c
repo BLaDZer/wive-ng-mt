@@ -256,6 +256,16 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		// Hosts
 		char_t *dns_local_hosts = websGetVar(wp, T("dns_local_hosts"), T(""));
 		ngx_nvram_bufset(wp, "dns_local_hosts", dns_local_hosts);
+
+		// DNS Content Filter
+		char_t *dns_adblock = websGetVar(wp, T("dns_adblock"), T(""));
+		ngx_nvram_bufset(wp, "dns_adblock", dns_adblock);
+
+		char_t *dns_adblock_skip = websGetVar(wp, T("dns_adblock_skip"), T(""));
+		ngx_nvram_bufset(wp, "dns_adblock_skip", dns_adblock_skip);
+
+		char_t *dns_userblock = websGetVar(wp, T("dns_userblock"), T(""));
+		ngx_nvram_bufset(wp, "dns_userblock", dns_userblock);
 	}
 	else
 	{

@@ -28,7 +28,6 @@
 				_TR("websFilterActivex",		"content filter webs content filter activex");
 				_TR("websFilterCookies",		"content filter webs content filter cookies");
 				_TR("websBlockingRules",		"content filter webs blocking rules");
-				_TR("bridge_warning",			"firewall bridge warning");
 				_TR("ContentFilterApply",		"button apply");
 			}
 
@@ -40,8 +39,6 @@
 					'activex' : NVRAM_websFilterActivex,
 					'cookies' : NVRAM_websFilterCookies
 				};
-
-				displayElement('bridge_warning', NVRAM_OperationMode == '0'); // bridge mode
 
 				addAllRules(NVRAM_websURLFilters, 'url');
 				addAllRules(NVRAM_websHostFilters, 'host');
@@ -156,9 +153,6 @@
 		<table class="body">
 			<tr>
 				<td><h1 id="ContentFilterTitle">Content Filter Settings </h1>
-					<div id="bridge_warning" style="display:none;">
-						<p><b>Warning:</b> The current operation mode is "Bridge mode" and these settings may not be functional.</p>
-					</div>
 					<p id="ContentFilterIntrodution">Here you can setup Content Filter to restrict access to unwanted content.</p>
 					<hr>
 					<iframe id="timerReloader" name="timerReloader" style="width:0;height:0;border:0px solid #fff;"></iframe>

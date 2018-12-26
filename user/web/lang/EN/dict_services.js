@@ -42,6 +42,11 @@ var services_dictionary = {
 	'services dns setup'			: 'DNS Proxy setup',
 	'services dns redirect'			: 'Redirect all DNS to local server',
 
+	'services dns filter'			: 'Ad Blocking',
+	'services dns filter enable'		: 'Enable DNS Filtering',
+	'services dns filter skip'		: 'Do Not Block Domains',
+	'services dns filter userblock'		: 'Force Block Domains',
+
 	'services dns hosts title'		: 'Local DNS Entries',
 	'services dns hosts add title'		: 'Add Local DNS Entry',
 	'services dns hosts add button'		: 'Add New Entry',
