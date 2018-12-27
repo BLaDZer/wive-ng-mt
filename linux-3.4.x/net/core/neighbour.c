@@ -2018,6 +2018,11 @@ static int neightbl_set(struct sk_buff *skb, struct nlmsghdr *nlh, void *arg)
 				break;
 			case NDTPA_BASE_REACHABLE_TIME:
 				p->base_reachable_time = nla_get_msecs(tbp[i]);
+				/* update reachable_time as well, otherwise, the change will
+				 * only be effective after the next time neigh_periodic_work
+				 * decides to recompute it (can be multiple minutes)
+				*/
+				p->reachable_time = neigh_rand_reach_time(nla_get_msecs(tbp[i]));
 				break;
 			case NDTPA_GC_STALETIME:
 				p->gc_staletime = nla_get_msecs(tbp[i]);
@@ -2926,6 +2931,31 @@ static struct neigh_sysctl_table {
 	},
 };
 
+static int neigh_proc_base_reachable_time(struct ctl_table *ctl, int write,
+					  void __user *buffer,
+					  size_t *lenp, loff_t *ppos)
+{
+	struct neigh_parms *p = ctl->extra2;
+	int ret;
+
+	if (strcmp(ctl->procname, "base_reachable_time") == 0)
+		ret = proc_dointvec_jiffies(ctl, write, buffer, lenp, ppos);
+	else if (strcmp(ctl->procname, "base_reachable_time_ms") == 0)
+		ret = proc_dointvec_ms_jiffies(ctl, write, buffer, lenp, ppos);
+	else
+		ret = -1;
+
+	if (write && ret == 0) {
+		/* update reachable_time as well, otherwise, the change will
+		 * only be effective after the next time neigh_periodic_work
+		 * decides to recompute it
+		 */
+		if (ctl->data == &p->reachable_time)
+		    p->reachable_time = neigh_rand_reach_time(p->reachable_time);
+	}
+	return ret;
+}
+
 int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
 			  char *p_name, proc_handler *handler)
 {
@@ -2993,6 +3023,17 @@ int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
 		/* ReachableTime (in milliseconds) */
 		t->neigh_vars[NEIGH_VAR_BASE_REACHABLE_TIME_MS].proc_handler = handler;
 		t->neigh_vars[NEIGH_VAR_BASE_REACHABLE_TIME_MS].extra1 = dev;
+	} else {
+		/* Those handlers will update p->reachable_time after
+		 * base_reachable_time(_ms) is set to ensure the new timer starts being
+		 * applied after the next neighbour update instead of waiting for
+		 * neigh_periodic_work to update its value (can be multiple minutes)
+		 * So any handler that replaces them should do this as well
+		 */
+		/* ReachableTime */
+		t->neigh_vars[NEIGH_VAR_BASE_REACHABLE_TIME].proc_handler = neigh_proc_base_reachable_time;
+		/* ReachableTime (in milliseconds) */
+		t->neigh_vars[NEIGH_VAR_BASE_REACHABLE_TIME_MS].proc_handler = neigh_proc_base_reachable_time;
 	}
 
 	t->dev_name = kstrdup(dev_name_source, GFP_KERNEL);
