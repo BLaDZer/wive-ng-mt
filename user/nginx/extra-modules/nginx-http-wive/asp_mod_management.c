@@ -243,7 +243,7 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		return;
 	}
 
-        wp->on_response_ok = DO_RECONFIGURE;
+	wp->on_response_ok = DO_RESTART_MISC;
 
 	char_t *dns_proxy	= websGetVar(wp, T("dnsPEnabled"), T("0"));
 	ngx_nvram_bufset(wp, "dnsPEnabled", dns_proxy);
@@ -300,8 +300,6 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 
 	nvram_commit(RT2860_NVRAM);
 	nvram_close(RT2860_NVRAM);
-
-	doSystem("service ddns restart");
 
 invalid_values:
 #ifdef PRINT_DEBUG

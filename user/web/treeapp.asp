@@ -144,7 +144,7 @@ if (AUTH_ROLE == 2)
     a.add(505, 500,                          _("treeapp ntp settings"),        "javascript:go('services/ntp.asp');");
 }
 
-a.add(506, 500, _("treeapp dns settings"),     "javascript:go('services/dns.asp');");
+if (NVRAM_OperationMode != '0' && NVRAM_OperationMode != '3') a.add(506, 500, _("treeapp dns settings"),     "javascript:go('services/dns.asp');");
 
 if (AUTH_ROLE == 2)
 {

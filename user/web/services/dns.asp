@@ -112,7 +112,7 @@
 				}
 				form.dns_local_hosts.value = hosts_str;
 
-				ajaxShowTimer(document.DNSForm, 'timerReloader', _('message apply'), 20);
+				ajaxShowTimer(document.DNSForm, 'timerReloader', _('message apply'), 7);
 				return true;
 			}
 
