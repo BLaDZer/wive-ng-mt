@@ -272,6 +272,10 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		ngx_nvram_bufset(wp, "dnsToLocalRedir", "0");
 	}
 
+	/* force remove adlist if disable block */
+	if (CHK_IF_DIGIT(dns_adblock, 0))
+		doSystem("rm -f /etc/dnsmasq.d/ads.conf");
+
 #ifdef CONFIG_USER_INADYN
 	ddns_provider = websGetVar(wp, T("DDNSProvider"), T("none"));
 	ddns = websGetVar(wp, T("DDNS"), T(""));
