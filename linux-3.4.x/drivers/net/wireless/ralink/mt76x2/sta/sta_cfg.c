@@ -5317,7 +5317,7 @@ INT RTMPQueryInformation(
 			INT i;
 			RT_802_11_TXBF_TABLE *pMacTab;
 
-			pMacTab = (RT_802_11_TXBF_TABLE *)kmalloc(sizeof(RT_802_11_TXBF_TABLE), MEM_ALLOC_FLAG);
+			pMacTab = kmalloc(sizeof(RT_802_11_TXBF_TABLE), MEM_ALLOC_FLAG);
 			if (pMacTab)
 			{
 				pMacTab->Num = 0;

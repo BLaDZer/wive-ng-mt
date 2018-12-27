@@ -2164,7 +2164,7 @@ VOID N_ChannelCheck(RTMP_ADAPTER *pAd)
 					break;
 				}
 				idx += 2;
-			};
+			}
 			if (wfa_ht_ch_ext[idx] == 0)
 				pAd->CommonCfg.RegTransmitSetting.field.BW  = BW_20;
 		}

@@ -696,7 +696,7 @@ INT mac_tb_del_from_hash(RTMP_ADAPTER *pAd, MAC_TABLE_ENTRY *pEntry)
 
 		pPrevEntry = pProbeEntry;
 		pProbeEntry = pProbeEntry->pNext;
-	};
+	}
 
 	ASSERT(pProbeEntry != NULL);
 			

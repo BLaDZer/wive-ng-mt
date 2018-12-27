@@ -2347,7 +2347,7 @@ VOID rtmp_sta_txq_dump(RTMP_ADAPTER *pAd, STA_TR_ENTRY *tr_entry, INT qidx)
 		if (entry == NULL) {
 			DBGPRINT(RT_DEBUG_OFF, ("\n"));
 		}
-	};
+	}
 
 	RTMP_IRQ_UNLOCK(&pAd->irq_lock /* &tr_entry->txq_lock[qidx]*/, IrqFlags);
 }

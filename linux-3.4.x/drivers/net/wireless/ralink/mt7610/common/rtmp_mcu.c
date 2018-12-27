@@ -1112,7 +1112,7 @@ INT BurstWrite(PRTMP_ADAPTER pAd, UINT32 Offset, UINT32 *Data, UINT32 Cnt)
 		NdisMoveMemory(Pos, &Value, 4);
 		Pos += 4;
 
-	};
+	}
 
 	NdisZeroMemory(&CmdUnit, sizeof(CmdUnit));
 	CmdUnit.u.ANDES.Type = BURST_WRITE;

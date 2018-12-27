@@ -1911,7 +1911,7 @@ int andes_random_write(RTMP_ADAPTER *ad, RTMP_REG_PAIR *reg_pair, u32 num)
 			/* UpdateData */
 			value = cpu2le32(reg_pair[i + cur_index].Value);
 			andes_append_cmd_msg(msg, (char *)&value, 4);
-		};
+		}
 
 		ret = andes_send_cmd_msg(ad, msg);
 

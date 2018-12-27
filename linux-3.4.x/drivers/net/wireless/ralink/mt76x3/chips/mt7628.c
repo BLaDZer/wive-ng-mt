@@ -626,7 +626,7 @@ void mt7628_get_tx_pwr_per_rate(RTMP_ADAPTER *pAd)
 
 void mt7628_get_tx_pwr_info(RTMP_ADAPTER *pAd)
 {
-    bool is_empty = 0;
+    bool is_empty = false;
     UINT16 value = 0;
 	struct MT_TX_PWR_CAP *cap = &pAd->chipCap.MTTxPwrCap;
 

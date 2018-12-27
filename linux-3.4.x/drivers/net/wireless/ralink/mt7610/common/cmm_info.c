@@ -5161,7 +5161,7 @@ INT	Set_StatITxBf_Proc(
 	int profileNum = simple_strtol(arg, 0, 10);
 	PROFILE_DATA *pProfData;
 
-	pProfData = (PROFILE_DATA *)kmalloc(sizeof(PROFILE_DATA), MEM_ALLOC_FLAG);
+	pProfData = kmalloc(sizeof(PROFILE_DATA), MEM_ALLOC_FLAG);
 	if (pProfData == NULL)
 	{
 		DBGPRINT(RT_DEBUG_OFF, ("Set_StatITxBf_Proc: kmalloc failed\n"));
@@ -5221,7 +5221,7 @@ INT	Set_StatETxBf_Proc(
 	int profileNum = simple_strtol(arg, 0, 10);
 	PROFILE_DATA *pProfData;
 
-	pProfData = (PROFILE_DATA *)kmalloc(sizeof(PROFILE_DATA), MEM_ALLOC_FLAG);
+	pProfData = kmalloc(sizeof(PROFILE_DATA), MEM_ALLOC_FLAG);
 	if (pProfData == NULL)
 	{
 		DBGPRINT(RT_DEBUG_OFF, ("Set_StatETxBf_Proc: kmalloc failed\n"));

@@ -2876,7 +2876,7 @@ VOID AsicUpdateBASession(RTMP_ADAPTER *pAd, UCHAR wcid, UCHAR tid, UINT16 sn, UC
 				if (idx == 7)
 					break;
 				idx++;
-			};
+			}
 
 			if (ba_range[idx] > basize)
 				idx--;

@@ -353,7 +353,7 @@ VOID dump_mt_mac_cr(RTMP_ADAPTER *pAd)
 		}
 
 		index++;
-	};
+	}
 }
 #endif /* DBG */
 

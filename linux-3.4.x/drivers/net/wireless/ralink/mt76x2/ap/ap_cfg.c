@@ -14923,7 +14923,7 @@ INT Set_WlanLed_Proc(
 			RTMPStartLEDMode(pAd);
 		else
 			RTMPExitLEDMode(pAd);
-	};
+	}
 
 	return TRUE;
 }

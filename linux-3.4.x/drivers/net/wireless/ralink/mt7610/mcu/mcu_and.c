@@ -709,7 +709,7 @@ INT AndesBurstWrite(PRTMP_ADAPTER pAd, UINT32 Offset, UINT32 *Data, UINT32 Cnt)
 			Value = cpu2le32(Data[i + CurIndex]);
 			NdisMoveMemory(Pos, &Value, 4);
 			Pos += 4;
-		};
+		}
 
 		NdisZeroMemory(&CmdUnit, sizeof(CmdUnit));
 	
@@ -1191,7 +1191,7 @@ INT AndesRandomWrite(PRTMP_ADAPTER pAd, RTMP_REG_PAIR *RegPair, UINT32 Num)
 			Value = cpu2le32(RegPair[i + CurIndex].Value);
 			NdisMoveMemory(Pos, &Value, 4);
 			Pos += 4;
-		};
+		}
 
 		NdisZeroMemory(&CmdUnit, sizeof(CmdUnit));
 	
