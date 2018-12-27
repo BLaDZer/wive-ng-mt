@@ -390,7 +390,7 @@
 					<table id="div_ddns_submit" class="buttons">
 						<tr>
 							<td>
-								<input type="hidden" name="submit-url" value="/services/ddns.asp" >
+								<input type="hidden" name="submit-url" value="/services/dns.asp" >
 								<input type="submit" class="normal" value="Apply" data-tr="button apply">
 								<input type="reset" class="normal" value="Cancel" data-tr="button cancel" onClick="window.location.reload()">
 							</td>
