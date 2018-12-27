@@ -4487,7 +4487,8 @@
 49) kernel: net: do not inheriting the MAC address of the physical interface.<br>
 50) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
 51) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
-52) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
-53) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
+52) kernel: net: neigh: increase queue_len_bytes to match wmem_default.<br>
+53) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
+54) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
 <br>
 <br>
