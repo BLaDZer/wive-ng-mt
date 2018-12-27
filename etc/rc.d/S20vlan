@@ -11,7 +11,6 @@ LOG="logger -t vlan"
 # 0-7 vlan prio to 0-7 skb prio
 ##########################################################################
 # in future add user must be set egress mapping
-# add after rewrite after add vlan prio in UI
 ##########################################################################
 set_default_vlan_prio_map()
 {
