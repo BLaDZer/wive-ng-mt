@@ -44,7 +44,6 @@ dir_$(CONFIG_USER_IAPPD)                    += ralinkiappd
 ifdef CONFIG_BAND_STEERING
 dir_$(CONFIG_USER_BNDSTR)                   += bndstrg
 endif
-dir_$(CONFIG_USER_WPA_SUPPLICANT)	    += wpa_supplicant
 
 dir_$(CONFIG_USER_IPTABLES_IPTABLES)        += iptables
 dir_$(CONFIG_USER_IPTABLES_IP6TABLES)       += iptables

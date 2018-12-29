@@ -16,6 +16,7 @@
 # NOTE: Building the i18n targets requires GNU-make
 
 -include $(LINUX_CONFIG)
+-include $(CONFIG_CONFIG)
 
 # Variables you may well want to override.
 
@@ -35,6 +36,10 @@ endif
 
 COPTS += -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
 COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT -DNO_DUMPFILE
+
+ifdef CONFIG_USER_DNSMASQSEC
+COPTS += -DHAVE_DNSSEC
+endif
 
 ifndef CONFIG_IPV6
 COPTS += -DNO_IPV6

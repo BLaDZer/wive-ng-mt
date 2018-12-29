@@ -11,6 +11,7 @@ bool 'Build libpcap'		CONFIG_LIB_PCAP
 bool 'Build libnatpmp'          CONFIG_LIB_NATPMP
 bool 'Build libnfnetlink'       CONFIG_LIB_NFNETLINK
 bool 'Build libopenssl'		CONFIG_LIB_OPENSSL
+bool 'Build libnettle'		CONFIG_LIB_NETTLE
 bool 'Build libcurl'		CONFIG_LIB_CURL
 bool 'Build libiconv'           CONFIG_LIB_ICONV
 bool 'Build libtalloc'		CONFIG_LIB_TALLOC
@@ -31,6 +32,9 @@ bool 'language pack - Russian'			CONFIG_USER_WEB_LANG_RU
 
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
 bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
+if [ "$CONFIG_USER_DNSMASQ" = "y" ] && [ "$CONFIG_LIB_OPENSSL" = "y" ] && [ "$CONFIG_LIB_NETTLE" = "y" ]; then
+    bool 'support dnssec for dnsmasq'		CONFIG_USER_DNSMASQSEC
+fi
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G
 bool 'samba server (storage/wins)'		CONFIG_USER_SAMBA
 bool 'WSD/LLMNR Discovery/Name Service Daemon'	CONFIG_USER_WSDD2
@@ -81,7 +85,6 @@ bool 'Link Layer Topology Discovery Protocol'	CONFIG_USER_LLTD
 bool 'Link Layer Discovery Protocol'		CONFIG_USER_LLDPD
 bool 'iappd daemon 802.11f/r/k support'		CONFIG_USER_IAPPD
 bool 'bndstr daemon support'			CONFIG_USER_BNDSTR
-bool 'wpa-supplicant'				CONFIG_USER_WPA_SUPPLICANT
 bool 'wireless_tools support'			CONFIG_USER_WIRELESS_TOOLS
 bool '802.1x Authenticator'			CONFIG_USER_802_1X
 bool 'Chillispot captive portal'		CONFIG_USER_CHILLISPOT
@@ -98,10 +101,6 @@ fi
 
 if [ "$CONFIG_USER_LLDPD" = "y" ]; then
 	define_bool CONFIG_LIB_EVENT y
-fi
-
-if [ "$CONFIG_USER_WPA_SUPPLICANT" = "y" ]; then
-	define_bool CONFIG_LIB_OPENSSL y
 fi
 
 if [ "$CONFIG_USER_NODOGSPLASH" = "y" ]; then
