@@ -4446,53 +4446,54 @@
 8) netcwmpd: allow replace some varibles from commandline.<br>
 9) netcwmpd: fix update procedure indication to ACS.<br>
 10) dhcp6: adding option to randomize interface id (ifid-random).<br>
-11) butcheck: add start auto cwmp parametrs get from ISP by 3 short times reset press.<br>
-12) cli: add report mode for cli st dhcp/ltp/ntp/ddns/samba.<br>
-13) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
-14) init.d: irqbalance: unify set defaults param for xps/rps.<br>
-15) init.d: irqbalance: disable store RFS flow table for prevent slowdown ppp tunnels.<br>
-16) init.d: irqbalance: use one second timeout for rebalance.<br>
-17) init.d: irqbalance: optimize IPOE without PPE case.<br>
-18) init.d: vlan: fix user priomap for tv/sip ports.<br>
-19) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
-20) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
-21) init.d: add auto dns adblock support.<br>
-22) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
-23) web: fix vpn login symbols limit.<br>
-24) web: add info message for user if ISP use TR for remote control device.<br>
-25) web: add support select device auto configure by user if 43 option not null.<br>
-26) web: avoid some unneded call conntrack flush.<br>
-27) web: move dns server options to different page (future extend config for more usefull variations).<br>
-28) web: add adblock UI.<br>
-29) web: move DMZ to firewall page.<br>
-30) web: fix update counter if syslog disabled.<br>
-31) web: add session life check.<br>
-32) kernel: locking/atomics: COCCINELLE/treewide: Convert trivial ACCESS_ONCE() patterns.<br>
-33) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
-34) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
-35) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
-36) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
-37) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
-38) kernel: posix-timers: sanitize overrun handling.<br>
-39) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
-40) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
-41) kernel: mips: r4k_cache: use more efficient cache blast.<br>
-42) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
-43) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
-44) kernel: net: ip: do not set RFS core on error queue reads.<br>
-45) kernel: net: update RFS target at poll for tcp/udp.<br>
-46) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
-47) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
-48) kernel: net: split eth_mac_addr for better error handling.<br>
-49) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
-50) kernel: net: allow setting mac address of loopback device.<br>
-51) kernel: net: do not inheriting the MAC address of the physical interface.<br>
-52) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
-53) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
-54) kernel: net: neighbour: increase queue_len_bytes to match wmem_default.<br>
-55) kernel: net: neighbour: fix base_reachable_time(_ms) not effective immediatly when changed.<br>
-56) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
-57) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
-58) kernel: ralink_wifi: add new honor8 18:65:90 oui to bcm fix.<br>
+11) xl2tpd: update to v1.3.13.<br>
+12) butcheck: add start auto cwmp parametrs get from ISP by 3 short times reset press.<br>
+13) cli: add report mode for cli st dhcp/ltp/ntp/ddns/samba.<br>
+14) init.d: irqbalance: tune irq balance for more fair cpu load.<br>
+15) init.d: irqbalance: unify set defaults param for xps/rps.<br>
+16) init.d: irqbalance: disable store RFS flow table for prevent slowdown ppp tunnels.<br>
+17) init.d: irqbalance: use one second timeout for rebalance.<br>
+18) init.d: irqbalance: optimize IPOE without PPE case.<br>
+19) init.d: vlan: fix user priomap for tv/sip ports.<br>
+20) init.d: vlan: fix sip/tv/lanvlan/wifivlan vlan isolate for dual rgmii.<br>
+21) init.d: support router autoconfigure by TR/CWMP with DHCP option 43 url recive.<br>
+22) init.d: add auto dns adblock support.<br>
+23) initd/webui: dns: add support local zone edit (use for internal service, ad remove or block access for sites).<br>
+24) web: fix vpn login symbols limit.<br>
+25) web: add info message for user if ISP use TR for remote control device.<br>
+26) web: add support select device auto configure by user if 43 option not null.<br>
+27) web: avoid some unneded call conntrack flush.<br>
+28) web: move dns server options to different page (future extend config for more usefull variations).<br>
+29) web: add adblock UI.<br>
+30) web: move DMZ to firewall page.<br>
+31) web: fix update counter if syslog disabled.<br>
+32) web: add session life check.<br>
+33) kernel: locking/atomics: COCCINELLE/treewide: Convert trivial ACCESS_ONCE() patterns.<br>
+34) kernel: kobject/unifdef: replace strncpy with memcpy.<br>
+35) kernel: genirq: remove bogus restriction in irq_move_mask_irq().<br>
+36) kernel: scsi: scsi_devinfo: cleanly zero-pad devinfo strings.<br>
+37) kernel: tty: do not set TTY_IO_ERROR flag if console port.<br>
+38) kernel: mm/tlb: remove tlb_remove_table() non-concurrent condition.<br>
+39) kernel: posix-timers: sanitize overrun handling.<br>
+40) kernel: scsi: sr: pass down correctly sized SCSI sense buffer.<br>
+41) kernel  scsi: libiscsi: fix NULL pointer dereference in  iscsi_eh_session_reset.<br>
+42) kernel: mips: r4k_cache: use more efficient cache blast.<br>
+43) kernel: mips: mips-gic: let the core set struct irq_common_data affinity.<br>
+44) kernel: net: rps: protect cpu_rmap.h from double inclusion.<br>
+45) kernel: net: ip: do not set RFS core on error queue reads.<br>
+46) kernel: net: update RFS target at poll for tcp/udp.<br>
+47) kernel: net: introduce new priv_flag indicating iface capable of change mac when running.<br>
+48) kernel: net: remove unnecessary NET_ADDR_RANDOM "bitclean".<br>
+49) kernel: net: split eth_mac_addr for better error handling.<br>
+50) kernel: net: check dev->addr_len for dev_set_mac_address().<br>
+51) kernel: net: allow setting mac address of loopback device.<br>
+52) kernel: net: do not inheriting the MAC address of the physical interface.<br>
+53) kernel: net: call sk_dst_reset when set SO_DONTROUTE.<br>
+54) kernel: net: avoid double use LL_RESERVED_SPACE in some cases.<br>
+55) kernel: net: neighbour: increase queue_len_bytes to match wmem_default.<br>
+56) kernel: net: neighbour: fix base_reachable_time(_ms) not effective immediatly when changed.<br>
+57) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
+58) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
+59) kernel: ralink_wifi: add new honor8 18:65:90 oui to bcm fix.<br>
 <br>
 <br>

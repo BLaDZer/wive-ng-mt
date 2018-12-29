@@ -561,6 +561,8 @@ struct call *new_call (struct tunnel *parent)
 
 struct call *get_tunnel (int tunnel, unsigned int addr, int port)
 {
+    UNUSED(addr);
+    UNUSED(port);
     struct tunnel *st;
     if (tunnel)
     {
