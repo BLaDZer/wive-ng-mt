@@ -974,10 +974,10 @@ static int getAuthRole(webs_t *wp, char** params, int nparams)
     return NGX_OK;
 }
 
-static int isNginx(webs_t *wp, char** params, int nparams)
+/* goform/ping */
+static void form_ping(webs_t* wp, char_t *path, char_t *query)
 {
-    outWrite("1");
-    return NGX_OK;
+	/* do nothing */
 }
 
 
@@ -989,7 +989,6 @@ void asp_mod_utils_init()
         aspDefineFunc("getCfgGeneral", getCfgGeneral, EVERYONE);
         aspDefineFunc("getAuthUsername", getAuthUsername, EVERYONE);
         aspDefineFunc("getAuthRole", getAuthRole, EVERYONE);
-        aspDefineFunc("isNginx", isNginx, EVERYONE);
 
         aspDefineFunc("writeIfCfgZeroEq", writeIfCfgZeroEq, EVERYONE);
 
@@ -1016,4 +1015,7 @@ void asp_mod_utils_init()
 	websFormDefine("firmwareUploadForm", firmwareUploadForm, ADMIN);
 	websFormDefine("rwfsUploadForm", rwfsUploadForm, ADMIN);
 	websFormDefine("settingsUploadForm", settingsUploadForm, ADMIN);
+
+	websFormDefine("ping", form_ping, EVERYONE);
+
 }

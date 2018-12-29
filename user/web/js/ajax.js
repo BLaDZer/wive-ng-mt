@@ -733,3 +733,27 @@ function init_translation_model()
 		_TR(elem, elem.getAttribute("data-tr"));
 	}
 }
+
+function ajaxPing(on_response)
+{
+	var xmlHttp = createXMLHttp();
+	if (!xmlHttp)
+		return;
+
+	xmlHttp.onreadystatechange = function()
+	{
+		if (xmlHttp.readyState == 4)
+		{
+			if (on_response != null) {
+				on_response(xmlHttp.status);
+				on_response = null;
+			}
+
+			xmlHttp.onreadystatechange = null;
+			xmlHttp = null;
+		}
+	}
+
+	xmlHttp.open("POST", "/goform/ping", true);
+	xmlHttp.send();
+}

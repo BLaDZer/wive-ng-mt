@@ -10,6 +10,14 @@
 		<meta http-equiv="Pragma" content="no-cache">
 		<meta http-equiv="Expires" content="-1">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<script type="text/javascript" src="/js/ajax.js"></script>
+		<script>
+			setInterval(function() {
+				ajaxPing(function(status) {
+					if (status == "403") document.location.reload(true);
+				});
+			}, 10000);
+		</script>
 	</head>
 	<frameset id="homeFrameset" rows="70,1*" cols="*" border="0" framespacing="0" frameborder="NO">
 		<frame src="title.htm" name="title" frameborder="NO" scrolling="NO" marginwidth="0" marginheight="0">
