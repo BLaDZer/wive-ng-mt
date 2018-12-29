@@ -4494,6 +4494,6 @@
 56) kernel: net: neighbour: fix base_reachable_time(_ms) not effective immediatly when changed.<br>
 57) kernel: net: ipv6: take rcu lock in rawv6_send_hdrinc().<br>
 58) kernel: ralink_wifi: rrm: fix zero memory in temporary frame.<br>
-59) kernel: ralink_wifi: add new honor8 18:65:90 oui to bcm fix.<br>
+59) kernel: ralink_wifi: add new macbook 18:65:90 oui to bcm fix.<br>
 <br>
 <br>
