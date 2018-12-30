@@ -22,9 +22,6 @@ UCLINUX_BUILD_USER=1
 # don't create a version string containing the actual timestamp
 export KCONFIG_NOTIMESTAMP=1
 
-# stub for target dir
-export DESTDIR=./filesystem
-
 ifdef CONFIG_RALINK_MT7620
 ifdef CONFIG_RAETH_ESW
 CFLAGS += -DCONFIG_RAETH_ESW -DCONFIG_RALINK_MT7620
