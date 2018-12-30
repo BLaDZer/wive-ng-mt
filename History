@@ -4497,5 +4497,6 @@
 <b>7.8.x</b><br>
 1) build_system: add libnettle v3.4.<br>
 2) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
+3) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
 <br>
 <br>

@@ -13,6 +13,7 @@ LOG="logger -t dnsserver"
 start() {
     get_param
     gen_hosts
+    gen_sec
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	# create dir for extended configs
 	mkdir -p /etc/dnsmasq.d
@@ -70,8 +71,15 @@ gen_hosts() {
     chmod 644 "$hname" > /dev/null 2>&1
 }
 
+gen_sec() {
+    if [ "$dns_sec" = "1" ]; then
+	echo "conf-file=/etc/trust-anchors.conf" > /etc/dnsmasq.d/sec.conf
+	echo "dnssec" >> /etc/dnsmasq.d/sec.conf
+    fi
+}
+
 get_param() {
-    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock`
+    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock dns_sec`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"
@@ -115,6 +123,8 @@ stop() {
 	    fi
 	fi
     fi
+    # remove dnssec config
+    rm -f /etc/dnsmasq.d/sec.conf
     # clean userblock list
     userblockstop
 }
