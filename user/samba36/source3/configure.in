@@ -1427,11 +1427,11 @@ fi
 AC_CACHE_CHECK([whether we can compile with __attribute__((destructor))],
 	       samba_cv_function_attribute_destructor,
 	       [
-	         AC_COMPILE_IFELSE(
+	         AC_COMPILE_IFELSE([AC_LANG_SOURCE(
 			[
 				__attribute__((destructor))
 				static void cleanup(void) { }
-			],
+			])],
 			samba_cv_function_attribute_destructor=yes)
 		])
 
@@ -5832,7 +5832,7 @@ esac
 # check for AIO support
 
 AC_MSG_CHECKING(whether to support asynchronous io)
-AC_ARG_WITH(aio-support,
+AC_ARG_WITH([AC_LANG_SOURCE(aio-support,
 [AS_HELP_STRING([--with-aio-support], [Include asynchronous io support (default=no)])],
 [ case "$withval" in
   yes)
@@ -5964,7 +5964,7 @@ int main() { struct aiocb a; return aio_suspend64(&a, 1, NULL); }],
     AC_MSG_RESULT(no)
     AC_DEFINE(HAVE_NO_AIO,1,[Whether no asynchronous io support is available])
     ;;
-  esac ],
+  esac ])],
   AC_DEFINE(HAVE_NO_AIO,1,[Whether no asynchronous io support should be built in])
   AC_MSG_RESULT(no)
 )
