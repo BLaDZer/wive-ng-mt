@@ -7,13 +7,13 @@ SRC_NAME=openssl-1.0.2
 # openssl use CROSS_COMPILE prefix
 CC=gcc $(CPUFLAGS)
 
-COPTS=-Os -ffunction-sections -fdata-sections -Wl,--gc-sections -I$(DESTDIR)/include
+COPTS=-Os -ffunction-sections -fdata-sections -Wl,--gc-sections -I$(LIBCDIRSHARED)/include -I$(SRC_NAME)/include
 COPTS+=$(if $(CONFIG_IPV6),-DOPENSSL_USE_IPV6=1,)
 COPTS+=-DOPENSSL_SMALL_FOOTPRINT
 
-LOPTS=-Wl,--gc-sections -L$(DESTDIR)/lib
+LOPTS=-Wl,--gc-sections -L$(LIBCDIRSHARED)/lib -L$(SRC_NAME)
 
-OPENSSL_APPS = no-speed
+OPENSSL_APPS = no-speed no-apps
 OPENSSL_CIPHERS = no-camellia no-capieng no-cms no-gmp no-jpake no-rfc3779 no-seed \
                   no-ec2m no-err no-threads no-idea no-ripemd no-rmd160 \
                   no-static-engine no-hw no-md2 no-sse2 no-dso no-ts no-sha0 no-mdc2 no-krb5 \
