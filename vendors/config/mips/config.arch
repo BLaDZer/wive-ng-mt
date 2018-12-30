@@ -161,6 +161,9 @@ endif
 ifdef CONFIG_LIB_OPENSSL
 	CFLAGS += -I$(LIBCDIRSHARED)/include/openssl
 endif
+ifdef CONFIG_LIB_NETTLE
+	CFLAGS += -I$(LIBCDIRSHARED)/include/nettle
+endif
 ifdef CONFIG_LIB_USB1
 	CFLAGS += -I$(LIBCDIRSHARED)/include/libusb-1.0
 endif

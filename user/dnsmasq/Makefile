@@ -38,7 +38,8 @@ COPTS += -fPIC -fomit-frame-pointer -ffunction-sections -fdata-sections
 COPTS += -DHAVE_BROKEN_RTC -DNO_IPSET -DNO_HAVE_DBUS -DNO_DHCP -DNO_TFTP -DNO_SCRIPT -DSRV_TRY_NEXT -DNO_DUMPFILE
 
 ifdef CONFIG_USER_DNSMASQSEC
-COPTS += -DHAVE_DNSSEC
+COPTS += -DHAVE_DNSSEC -DNO_GMP
+nettle_libs=-lnettle -lhogweed
 endif
 
 ifndef CONFIG_IPV6
@@ -131,6 +132,9 @@ install-common :
 romfs :
 	$(ROMFSINST) -S src/dnsmasq /bin/dnsmasq
 	$(ROMFSINST) -S dnsmasq.conf /etc/dnsmasq.conf
+ifdef CONFIG_USER_DNSMASQSEC
+	$(ROMFSINST) -S trust-anchors.conf /etc/trust-anchors.conf
+endif
 
 all-i18n : $(BUILDDIR)
 	@cd $(BUILDDIR) && $(MAKE) \

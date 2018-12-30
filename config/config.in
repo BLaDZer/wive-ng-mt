@@ -31,8 +31,8 @@ bool 'nginx webserver'				CONFIG_USER_NGINX
 bool 'language pack - Russian'			CONFIG_USER_WEB_LANG_RU
 
 bool 'irqbalance - automatic IRQ balancing'	CONFIG_USER_IRQBALANCE
-bool 'dnsmasq (DNS forwarder, DHCP server)'	CONFIG_USER_DNSMASQ
-if [ "$CONFIG_USER_DNSMASQ" = "y" ] && [ "$CONFIG_LIB_OPENSSL" = "y" ] && [ "$CONFIG_LIB_NETTLE" = "y" ]; then
+bool 'dnsmasq (DNS forwarder server)'		CONFIG_USER_DNSMASQ
+if [ "$CONFIG_USER_DNSMASQ" = "y" ] && [ "$CONFIG_LIB_NETTLE" = "y" ]; then
     bool 'support dnssec for dnsmasq'		CONFIG_USER_DNSMASQSEC
 fi
 bool 'ntfs-3g'					CONFIG_USER_NTFS3G

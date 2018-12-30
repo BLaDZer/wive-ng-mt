@@ -28,6 +28,7 @@ dir_all = $(shell LC_ALL=C; ls)
 #base user libs
 dir_$(CONFIG_LIB_ZLIB)            += zlib
 dir_$(CONFIG_LIB_OPENSSL)         += libssl
+dir_$(CONFIG_LIB_NETTLE)          += libnettle
 dir_$(CONFIG_LIB_EVENT)           += libevent
 dir_$(CONFIG_LIB_PCAP)            += libpcap
 dir_$(CONFIG_LIB_USB1)            += libusb-1.0
@@ -45,6 +46,8 @@ all:
 	    if [ -f "$$i/DoConfigure.sh" ]; then ( cd $$i; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ; \
 	    if [ -d "$$i" ]; then ( cd $$i; $(MAKE) -j$(HOST_NCPU) ; $(MAKE) shared || exit 1 ; cd .. ) || exit 1 ; fi \
 	done
+	# ">>>>>>>> REMOVE VERSION HEADERS FORM PUBLIC INCLUDES <<<<<<<<<<<"
+	-find $(LIBCDIRSHARED)/include/. -name version.h | xargs -r rm -rf
 
 clean:
 	# ">>>>>>>>>>>>>>>>> START FULL LIB CLEANUP  <<<<<<<<<<<<<<<<<<<<<<"

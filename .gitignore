@@ -208,6 +208,8 @@ fulldump
 /libext/libmicrohttpd/doc/Makefile
 /libext/libmicrohttpd/doc/doxygen/Makefile
 /libext/libmicrohttpd/doc/examples/Makefile
+/libext/libnettle/configure
+/libext/libnettle/Makefile
 
 #
 # exclude enerated files from user apps
