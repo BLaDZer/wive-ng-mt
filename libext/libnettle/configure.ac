@@ -272,7 +272,7 @@ fi
 NUMB_BITS="$nettle_cv_gmp_numb_bits"
 AC_SUBST([NUMB_BITS])
 
-# Substituted in version.h, used only with mini-gmp.
+# Substituted in nettle-version.h, used only with mini-gmp.
 if test "x$enable_mini_gmp" = "xyes" ; then
   GMP_NUMB_BITS="$NUMB_BITS"
 else
@@ -944,7 +944,7 @@ if test x$GCC = xyes ; then
 # inttypes.h.
 fi
 
-AC_CONFIG_FILES([config.make config.m4 Makefile version.h])
+AC_CONFIG_FILES([config.make config.m4 Makefile nettle-version.h])
 AC_CONFIG_FILES([tools/Makefile testsuite/Makefile examples/Makefile])
 AC_CONFIG_FILES([nettle.pc hogweed.pc libnettle.map libhogweed.map])
 

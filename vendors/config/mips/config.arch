@@ -145,7 +145,6 @@ ifdef CONFIG_USER_SMALLSIZE
 	CFLAGS += -fno-caller-saves -fno-reorder-blocks -fno-unwind-tables -fno-asynchronous-unwind-tables
 endif
 	# include extlibs headers
-	CFLAGS += -I$(ROOTDIR)
 ifdef CONFIG_LIB_ICONV
 	CFLAGS += -I$(LIBCDIRSHARED)/include/libiconv
 endif
@@ -183,6 +182,7 @@ endif
 	CFLAGS  += -I$(ROOTDIR)/libwive
 
 	# include system headers
+	CFLAGS += -I$(ROOTDIR)
 	CFLAGS += -isystem $(LIBCDIRSHARED)/include
 
 	# link options

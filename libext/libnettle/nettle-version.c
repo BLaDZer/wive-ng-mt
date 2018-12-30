@@ -33,7 +33,7 @@
 # include "config.h"
 #endif
 
-#include "version.h"
+#include "nettle-version.h"
 
 int
 nettle_version_major (void)

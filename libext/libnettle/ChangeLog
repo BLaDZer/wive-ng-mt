@@ -566,7 +566,7 @@
 2015-12-18  Niels Möller  <nisse@lysator.liu.se>
 
 	* testsuite/testutils.h: Fix include order, system headers before
-	nettle headers. Always include version.h, needed by
+	nettle headers. Always include nettle-version.h, needed by
 	version-test.c. It was included indirectly via bignum.h, but only
 	if configured with publickey support.
 
@@ -749,7 +749,7 @@
 
 2015-03-30  Niels Möller  <nisse@lysator.liu.se>
 
-	* version.h.in (GMP_NUMB_BITS) [NETTLE_USE_MINI_GMP]: Move
+	* nettle-version.h.in (GMP_NUMB_BITS) [NETTLE_USE_MINI_GMP]: Move
 	definition here (uses configure substitution).
 	* bignum.h (GMP_NUMB_BITS): ...old location.
 
@@ -757,14 +757,14 @@
 	(Installation): Document some more configure options.
 
 	* testsuite/symbols-test: Look for NETTLE_USE_MINI_GMP in
-	version.h, not bignum.h. Allow leading underscore on mini-gmp
+	nettle-version.h, not bignum.h. Allow leading underscore on mini-gmp
 	symbols.
 
 2015-03-26  Niels Möller  <nisse@lysator.liu.se>
 
 	* Makefile.in (PRE_CPPFLAGS): Drop -I$(srcdir), no longer needed.
-	(HEADERS): Added bignum.h. Removed version.h.
-	(INSTALL_HEADERS): Added version.h.
+	(HEADERS): Added bignum.h. Removed nettle-version.h.
+	(INSTALL_HEADERS): Added nettle-version.h.
 	(DISTFILES): Removed bignum.h.in.
 	(bignum.h): Deleted make target.
 	(distclean-here): Don't delete bignum.h.
@@ -772,10 +772,10 @@
 	* configure.ac: No longer generate bignum.h.
 
 	* bignum.h: Renamed. Removed substitution of NETTLE_USE_MINI_GMP,
-	and include version.h instead.
+	and include nettle-version.h instead.
 	* bignum.h.in: ... old name.
 
-	* version.h.in (NETTLE_USE_MINI_GMP): Substitute here.
+	* nettle-version.h.in (NETTLE_USE_MINI_GMP): Substitute here.
 
 2015-03-25  Niels Möller  <nisse@lysator.liu.se>
 
@@ -805,16 +805,16 @@
 
 	* nettle.texinfo: Updated EdDSA documentation.
 
-	* Makefile.in (DISTFILES): Added version.h.in, libnettle.map.in,
+	* Makefile.in (DISTFILES): Added nettle-version.h.in, libnettle.map.in,
 	and libhogweed.map.in (latter two patch by Nikos).
-	(version.h): New make target.
-	(distclean-here): Added version.h, libnettle.map, and
+	(nettle-version.h): New make target.
+	(distclean-here): Added nettle-version.h, libnettle.map, and
 	libhogweed.map.
 
 	From Nikos Mavrogiannopoulos.
 	* configure.ac (MAJOR_VERSION, MINOR_VERSION): New substituted
 	variables.
-	* version.h.in: New file, defining version numbers.
+	* nettle-version.h.in: New file, defining version numbers.
 
 2015-03-18  Niels Möller  <nisse@lysator.liu.se>
 

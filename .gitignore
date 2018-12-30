@@ -2,6 +2,7 @@
 # exclude enerated files from all
 #
 *.o
+*.o.d
 *.a
 *.a.*
 *.o.*

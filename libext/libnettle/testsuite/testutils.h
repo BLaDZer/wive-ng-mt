@@ -13,7 +13,7 @@
 #include <string.h>
 
 #include "nettle-types.h"
-#include "version.h"
+#include "nettle-version.h"
 
 #if WITH_HOGWEED
 # include "rsa.h"

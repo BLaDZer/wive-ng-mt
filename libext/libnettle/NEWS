@@ -52,7 +52,7 @@ NEWS for the Nettle 3.4 release
 	  minor API change, and applications may need to be adjusted,
 	  but the ABI is unaffected on all platforms I'm aware of.
 
-	* The contents of the header file nettle/version.h is now
+	* The contents of the header file nettle/nettle-version.h is now
 	  architecture independent, except in --enable-mini-gmp
 	  configurations.
 

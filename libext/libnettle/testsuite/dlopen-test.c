@@ -1,5 +1,5 @@
 #include "testutils.h"
-#include "version.h"
+#include "nettle-version.h"
 
 #if HAVE_DLFCN_H
 #include <dlfcn.h>

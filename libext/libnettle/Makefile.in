@@ -136,7 +136,7 @@ nettle_SOURCES = aes-decrypt-internal.c aes-decrypt.c \
 		 umac-nh.c umac-nh-n.c umac-l2.c umac-l3.c \
 		 umac-poly64.c umac-poly128.c umac-set-key.c \
 		 umac32.c umac64.c umac96.c umac128.c \
-		 version.c \
+		 nettle-version.c \
 		 write-be32.c write-le32.c write-le64.c \
 		 yarrow256.c yarrow_key_event.c
 
@@ -207,7 +207,7 @@ HEADERS = aes.h arcfour.h arctwo.h asn1.h blowfish.h \
 	  serpent.h sha.h sha1.h sha2.h sha3.h twofish.h \
 	  umac.h yarrow.h poly1305.h
 
-INSTALL_HEADERS = $(HEADERS) nettle-stdint.h version.h @IF_MINI_GMP@ mini-gmp.h
+INSTALL_HEADERS = $(HEADERS) nettle-stdint.h nettle-version.h @IF_MINI_GMP@ mini-gmp.h
 
 SOURCES = $(nettle_SOURCES) $(hogweed_SOURCES) \
 	  $(getopt_SOURCES) $(internal_SOURCES) \
@@ -219,7 +219,7 @@ SOURCES = $(nettle_SOURCES) $(hogweed_SOURCES) \
 DISTFILES = $(SOURCES) $(HEADERS) getopt.h getopt_int.h \
 	.bootstrap run-tests \
 	aclocal.m4 configure.ac \
-	configure stamp-h.in version.h.in \
+	configure stamp-h.in nettle-version.h.in \
 	libnettle.map.in libhogweed.map.in \
 	config.guess config.sub install-sh texinfo.tex \
 	config.h.in config.m4.in config.make.in	Makefile.in \
@@ -438,7 +438,7 @@ nettle.pc: nettle.pc.in config.status
 hogweed.pc: hogweed.pc.in config.status
 	./config.status $@
 
-version.h: version.h.in config.status
+nettle-version.h: nettle-version.h.in config.status
 	./config.status $@
 
 # Installation
@@ -635,7 +635,7 @@ clean-here:
 
 distclean-here: clean-here
 	-rm -f config.h stamp-h config.log config.status machine.m4 \
-	config.make config.m4 Makefile nettle-stdint.h version.h \
+	config.make config.m4 Makefile nettle-stdint.h nettle-version.h \
 	nettle.pc hogweed.pc libnettle.map libhogweed.map \
 	*.asm *.d
 	-rm -rf ./filesystem

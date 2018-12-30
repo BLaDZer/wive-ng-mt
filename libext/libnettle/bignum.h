@@ -39,7 +39,7 @@
 #include "nettle-types.h"
 
 /* For NETTLE_USE_MINI_GMP */
-#include "version.h"
+#include "nettle-version.h"
 
 #if NETTLE_USE_MINI_GMP
 # include "mini-gmp.h"
