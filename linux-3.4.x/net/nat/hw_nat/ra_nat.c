@@ -614,7 +614,7 @@ static int PpeHitBindForceToCpuHandler(struct sk_buff *skb, uint32_t foe_entry_n
 		act_dp = -1;
 #endif
 	if (!dev) {
-		NAT_PRINT("HNAT: %s, dest interface (dp: %d, pkt_type: %d) not exist!\n", __FUNCTION__, act_dp, foe_entry->bfib1.pkt_type);
+		NAT_DEBUG("HNAT: %s, dest interface (dp: %d, pkt_type: %d) not exist!\n", __FUNCTION__, act_dp, foe_entry->bfib1.pkt_type);
 		return 1;
 	}
 
