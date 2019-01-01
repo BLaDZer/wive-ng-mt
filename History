@@ -4497,6 +4497,8 @@
 <b>7.8.x</b><br>
 1) build_system: add libnettle v3.4.<br>
 2) build_system: dnsmasq add support dnssec for 16Mb flash devices.<br>
-3) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+3) busybox: update to 1.30.0 version.<br>
+4) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
+5) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
 <br>
 <br>

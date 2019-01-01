@@ -8,7 +8,7 @@
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
 //config:config MDEV
-//config:	bool "mdev (16 kb)"
+//config:	bool "mdev (17 kb)"
 //config:	default y
 //config:	select PLATFORM_LINUX
 //config:	help
@@ -812,6 +812,18 @@ static void make_device(char *device_name, char *path, int operation)
 			break;
 	} /* for (;;) */
 }
+
+#if 0
+static ssize_t readlink2(char *buf, size_t bufsize)
+{
+	// Grr... gcc 8.1.1:
+	// "passing argument 2 to restrict-qualified parameter aliases with argument 1"
+	// dance around that...
+	char *obuf FIX_ALIASING;
+	obuf = buf;
+	return readlink(buf, obuf, bufsize);
+}
+#endif
 
 /* File callback for /sys/ traversal */
 static int FAST_FUNC fileAction(const char *fileName,

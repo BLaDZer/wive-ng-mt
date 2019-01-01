@@ -66,6 +66,7 @@ const struct dhcp_optflag dhcp_optflags[] = {
 #endif
 	{ OPTION_STRING                           , 0xd1 }, /* DHCP_PXE_CONF_FILE */
 	{ OPTION_STRING                           , 0xd2 }, /* DHCP_PXE_PATH_PREFIX */
+	{ OPTION_U32                              , 0xd3 }, /* DHCP_REBOOT_TIME   */
 	{ OPTION_6RD                              , 0xd4 }, /* DHCP_6RD           */
 	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0xf9 }, /* DHCP_MS_STATIC_ROUTES */
 	{ OPTION_STRING                           , 0xfc }, /* DHCP_WPAD          */
@@ -135,6 +136,7 @@ const char dhcp_option_strings[] ALIGN1 =
 #endif
 	"pxeconffile" "\0" /* DHCP_PXE_CONF_FILE  */
 	"pxepathprefix" "\0" /* DHCP_PXE_PATH_PREFIX  */
+	"reboottime" "\0"       /* DHCP_REBOOT_TIME     */
 	"ip6rd" "\0"       /* DHCP_6RD            */
 	"msstaticroutes""\0"/* DHCP_MS_STATIC_ROUTES */
 	"wpad" "\0"        /* DHCP_WPAD           */
@@ -272,6 +274,15 @@ uint8_t* FAST_FUNC udhcp_get_option(struct dhcp_packet *packet, int code)
 			goto complain; /* complain and return NULL */
 
 		if (optionptr[OPT_CODE] == code) {
+			if (optionptr[OPT_LEN] == 0) {
+				/* So far no valid option with length 0 known.
+				 * Having this check means that searching
+				 * for DHCP_MESSAGE_TYPE need not worry
+				 * that returned pointer might be unsafe
+				 * to dereference.
+				 */
+				goto complain; /* complain and return NULL */
+			}
 			log_option("option found", optionptr);
 			return optionptr + OPT_DATA;
 		}
@@ -287,6 +298,16 @@ uint8_t* FAST_FUNC udhcp_get_option(struct dhcp_packet *packet, int code)
 	/* log3 because udhcpc uses it a lot - very noisy */
 	log3("option 0x%02x not found", code);
 	return NULL;
+}
+
+uint8_t* FAST_FUNC udhcp_get_option32(struct dhcp_packet *packet, int code)
+{
+	uint8_t *r = udhcp_get_option(packet, code);
+	if (r) {
+		if (r[-1] != 4)
+			r = NULL;
+	}
+	return r;
 }
 
 /* Return the position of the 'end' option (no bounds checking) */
