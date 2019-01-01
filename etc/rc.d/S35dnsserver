@@ -13,6 +13,7 @@ LOG="logger -t dnsserver"
 start() {
     get_param
     gen_hosts
+    gen_diff_dns
     gen_sec
     if [ "$dnsPEnabled" = "1" ] && [ -e $cname ]; then
 	# create dir for extended configs
@@ -78,8 +79,17 @@ gen_sec() {
     fi
 }
 
+gen_diff_dns() {
+    if [ "$dns_diffsrv" != "" ]; then
+	echo "no-resolv" > /etc/dnsmasq.d/diffsrv.conf
+	for srv in $dns_diffsrv ; do
+	    echo "server=$srv" >> /etc/dnsmasq.d/diffsrv.conf
+	done
+    fi
+}
+
 get_param() {
-    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock dns_sec`
+    eval `nvram_buf_get 2860 DDNS DMZEnable DMZIPAddress dns_local_hosts dns_adblock dns_userblock dns_sec dns_diffsrv`
 
     cname="/etc/dnsmasq.conf"
     fname="/etc/resolv.conf"
@@ -125,6 +135,8 @@ stop() {
     fi
     # remove dnssec config
     rm -f /etc/dnsmasq.d/sec.conf
+    # remove different servers config
+    rm -f /etc/dnsmasq.d/diffsrv.conf
     # clean userblock list
     userblockstop
 }
