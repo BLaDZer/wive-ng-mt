@@ -4500,5 +4500,6 @@
 3) busybox: update to 1.30.0 version.<br>
 4) init.d: dnsmasq: add dnssec mode support (variable must be set dns_sec=1).<br>
 5) init.d: add dns_diffsrv for use as upstream dns for dnsproxy, instead of use resolv.conf.<br>
+6) kernel: ralink_wifi: remove AMPAK CC:4B:73 oui from bcm fix (need fix client driver for AP6255 module).<br>
 <br>
 <br>
