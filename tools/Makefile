@@ -24,19 +24,19 @@ all: install
 
 install:
 	mkdir -p bin
-	make -j$(HOST_NCPU) -C mkimage
-	make -j$(HOST_NCPU) -C sstrip
-	make -j$(HOST_NCPU) -C mksquash_lzma-3.2 install
 	if [ -f "xz/DoConfigure.sh" ]; then ( cd xz; ./DoConfigure.sh || exit 1 ; cd .. ) || exit 1 ; fi ;
-	make -j1 -C mksquash_xz-4.0 install
+	make -j1 -C mksquash_xz install
+	make -j$(HOST_NCPU) -C mksquash_lzma install
+	make -j$(HOST_NCPU) -C mkimage
+	make -j$(HOST_NCPU) -C ELFkickers
 
 clean:
 	rm -rf ./bin
 	rm -rf ./headers
-	make -C sstrip clean
+	make -C ELFkickers clean
 	make -C mkimage clean
-	make -C mksquash_lzma-3.2 clean
-	make -C mksquash_xz-4.0 clean
+	make -C mksquash_xz clean
+	make -C mksquash_lzma clean
 	if [ -f xz/Makefile ]; then \
 	    make -C xz distclean ; \
 	fi ;

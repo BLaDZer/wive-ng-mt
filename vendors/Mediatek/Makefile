@@ -71,7 +71,7 @@ romfs.post::
 	rm -f $(KERNELZ).lzma
 ifeq	($(CONFIG_RT2880_ROOTFS_IN_FLASH),y)
 	#############COMPRESS ROMFS################
-	$(ROOTDIR)/tools/bin/mksquashfs_xz-4.0 $(ROMFSDIR) $(RAMDISK) -all-root -no-exports -noappend -nopad -no-xattrs -no-recovery -always-use-fragments
+	$(ROOTDIR)/tools/bin/mksquashfs_xz $(ROMFSDIR) $(RAMDISK) -all-root -no-exports -noappend -nopad -no-xattrs -no-recovery -always-use-fragments
 endif
 
 image:
