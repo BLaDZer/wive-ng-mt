@@ -277,4 +277,11 @@ endif # NETWORK_FILESYSTEMS
 source "fs/nls/Kconfig"
 source "fs/dlm/Kconfig"
 
+config FLUSH_CACHE_AFTER_WRITE
+	depends on BLOCK && FSCACHE && USB
+	default y
+	bool "Flush disc caches in close fd after write complete."
+	---help---
+	  USB stroage device may be unpluged after write complete.
+	  So, we have to flush cache to disk after sys_close()
 endmenu

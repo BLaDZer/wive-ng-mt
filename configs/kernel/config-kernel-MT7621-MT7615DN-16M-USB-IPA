@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/mips 3.4.113.172 Kernel Configuration
+# Linux/mips 3.4.113.183 Kernel Configuration
 #
 CONFIG_MIPS=y
 
@@ -1511,6 +1511,7 @@ CONFIG_NLS_ISO8859_5=y
 CONFIG_NLS_KOI8_R=y
 CONFIG_NLS_KOI8_U=y
 CONFIG_NLS_UTF8=y
+CONFIG_FLUSH_CACHE_AFTER_WRITE=y
 
 #
 # Kernel hacking

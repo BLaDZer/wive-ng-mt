@@ -1077,6 +1077,12 @@ SYSCALL_DEFINE1(close, unsigned int, fd)
 	rcu_assign_pointer(fdt->fd[fd], NULL);
 	__clear_close_on_exec(fd, fdt);
 	__put_unused_fd(files, fd);
+
+#ifdef CONFIG_FLUSH_CACHE_AFTER_WRITE
+        if (filp->f_mode == (FMODE_WRITE | FMODE_LSEEK | FMODE_PREAD))
+            sys_sync();
+#endif
+
 	spin_unlock(&files->file_lock);
 	retval = filp_close(filp, files);
 
