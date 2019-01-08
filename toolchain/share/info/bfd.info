@@ -1,4 +1,4 @@
-This is bfd.info, produced by makeinfo version 5.2 from bfd.texinfo.
+This is bfd.info, produced by makeinfo version 6.1 from bfd.texinfo.
 
 This file documents the BFD library.
 
@@ -9761,7 +9761,7 @@ lopcodes are:
 'lop_fixrx'
      0x980500ZZ. 'Z' is 16 or 24.  A value 'L' derived from the
      following 32-bit word are used in a manner similar to 'YZ' in
-     lop_fixr: it is xor:ed into the current location minus 4 * L.  The
+     lop_fixr: it is xor:ed into the current location minus 4 * L. The
      first byte of the word is 0 or 1.  If it is 1, then L = (LOWEST 24
      BITS OF WORD) - 2^Z, if 0, then L = (LOWEST 24 BITS OF WORD).
 
@@ -12746,9 +12746,9 @@ Node: coff346856
 Node: elf375330
 Node: mmo375731
 Node: File layout376656
-Node: Symbol-table382294
-Node: mmo section mapping386061
-Node: GNU Free Documentation License389715
-Node: BFD Index414779
+Node: Symbol-table382293
+Node: mmo section mapping386060
+Node: GNU Free Documentation License389714
+Node: BFD Index414778
 
 End Tag Table

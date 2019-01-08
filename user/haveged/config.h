@@ -130,8 +130,7 @@
 /* Define to 1 if you have the `__rdtsc' function. */
 /* #undef HAVE___RDTSC */
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Define to 1 to suppress daemon interface */
