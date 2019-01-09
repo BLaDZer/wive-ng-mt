@@ -274,6 +274,8 @@ static void setDns(webs_t* wp, char_t *path, char_t *query)
 		/* force remove adlist if disable block */
 		if (CHK_IF_DIGIT(dns_adblock, 0))
 		    doSystem("rm -f /etc/dnsmasq.d/ads.conf");
+
+		doSystem("service dnsserver adrestart");
 	}
 	else
 	{

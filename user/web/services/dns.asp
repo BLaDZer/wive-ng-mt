@@ -387,9 +387,9 @@
 
 					<table id="div_dnsproxy" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 38%"/>
-						<col style="width: 10%"/>
-						<col style="width: 12%"/>
+						<col style="width: 34%"/>
+						<col style="width: 13%"/>
+						<col style="width: 13%"/>
 						<thead>
 							<td class="title" colspan="4" data-tr="services dns setup">DNS Settings</td>
 						</thead>
@@ -421,9 +421,9 @@
 
 					<table id="div_dnsblock" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 38%"/>
-						<col style="width: 10%"/>
-						<col style="width: 12%"/>
+						<col style="width: 34%"/>
+						<col style="width: 13%"/>
+						<col style="width: 13%"/>
 						<thead>
 							<td class="title" colspan="4" data-tr="services dns filter">DNS Content Filter</td>
 						</thead>
@@ -446,9 +446,9 @@
 					<input type="hidden" id="dns_userblock" name="dns_userblock"></input>
 
 					<table id="div_dnsblock_except" class="form">
-						<col style="width: 75%" />
-						<col style="width: 10%" />
-						<col style="width: 10%" />
+						<col style="width: 74%" />
+						<col style="width: 13%" />
+						<col style="width: 13%" />
 						<thead>
 							<tr>
 								<td class="title" data-tr="services dns filter except title" colspan="4">DNS Content Filter Exceptions</td>
@@ -494,8 +494,8 @@
 					<input type="hidden" id="dns_local_hosts" name="dns_local_hosts"></input>
 					<table class="form" id="div_hosts">
 						<col style="width: 40%" />
-						<col style="width: 50%" />
-						<col style="width: 10%" />
+						<col style="width: 47%" />
+						<col style="width: 13%" />
 						<thead>
 							<tr>
 								<td class="title" data-tr="services dns hosts title" colspan="3">Local DNS Entries</td>
@@ -534,9 +534,9 @@
 
 					<table id="div_ddns" class="form">
 						<col style="width: 40%"/>
-						<col style="width: 38%"/>
-						<col style="width: 10%"/>
-						<col style="width: 12%"/>
+						<col style="width: 34%"/>
+						<col style="width: 13%"/>
+						<col style="width: 13%"/>
 						<tbody>
 							<tr>
 								<td class="title" colspan="4" data-tr="services ddns setup">DDNS Settings</td>
@@ -573,8 +573,8 @@
 
 					<table class="form" id="div_misc">
 						<col style="width: 40%" />
-						<col style="width: 50%" />
-						<col style="width: 10%" />
+						<col style="width: 47%" />
+						<col style="width: 13%" />
 						<thead>
 							<tr>
 								<td class="title" data-tr="services dns misc title"  colspan="3">Miscellaneous</td>
@@ -590,7 +590,9 @@
 										<option value="1" data-tr="button enable">Enable</option>
 									</select>
 								</td>
-								<td><a data-tr="services status about" href="https://en.wikipedia.org/wiki/DNSSEC" target="_blank">Learn more...</a></td>
+								<td style="text-align: center">
+									<a data-tr="services status about" href="https://en.wikipedia.org/wiki/DNSSEC" target="_blank">Learn more...</a>
+								</td>
 							</tr>
 						</tbody>
 					</table>
